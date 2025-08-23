@@ -52,6 +52,7 @@
     "directory": "packages/language-parsers"
   },
   "publishConfig": {
-    "access": "public"
-  }
+    "access": "restricted"
+  },
+  "private": true
 }

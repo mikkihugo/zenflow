@@ -108,7 +108,7 @@ export class DocumentationLinker {
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus();
   }

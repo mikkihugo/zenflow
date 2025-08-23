@@ -22,18 +22,27 @@
 
 import {
   WorkflowKanban,
-  createWorkflowKanban,
-  type WorkflowKanbanConfig,
-  type TaskState,
+  createTaskFlowController as createWorkflowKanban,
+  type TaskFlowConfig as WorkflowKanbanConfig,
+  type TaskFlowState as TaskState,
   type TaskPriority,
   type WorkflowTask,
   type WIPLimits,
-  type FlowMetrics,
+  type TaskFlowStatus as FlowMetrics,
   type WorkflowBottleneck,
-  type WorkflowKanbanEvents,
-  ALL_WORKFLOW_STATES,
-  DEFAULT_WORKFLOW_STATES,
-} from '@claude-zen/kanban';
+} from '@claude-zen/taskmaster';
+
+// Define constants since they're expected by SAFe integration
+const ALL_WORKFLOW_STATES: TaskState[] = [
+  'backlog',
+  'analysis', 
+  'development',
+  'testing',
+  'deployment',
+  'done'
+];
+
+const DEFAULT_WORKFLOW_STATES: TaskState[] = ALL_WORKFLOW_STATES;
 
 import type { Logger } from '@claude-zen/foundation';
 // Use Node.js EventEmitter until event-system is implemented

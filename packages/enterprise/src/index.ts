@@ -207,8 +207,7 @@ export const getBusinessAgentRegistry = async () => {
   try {
     // Business agents are part of the Enterprise facade itself
     const { AgentRegistry } = await import('@claude-zen/foundation');
-    const registry = new AgentRegistry();
-    return registry;
+    return new AgentRegistry();
   } catch {
     // Fallback to foundation AgentRegistry with business-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
@@ -228,8 +227,7 @@ export const getWorkflowAgentRegistry = async () => {
   try {
     // Workflow agents are part of the Enterprise facade itself
     const { AgentRegistry } = await import('@claude-zen/foundation');
-    const registry = new AgentRegistry();
-    return registry;
+    return new AgentRegistry();
   } catch {
     // Fallback to foundation AgentRegistry with workflow-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');

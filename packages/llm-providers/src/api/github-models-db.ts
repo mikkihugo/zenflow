@@ -20,7 +20,7 @@ export interface GitHubModelMetadata {
   provider: string;
   contextWindow: number;
   maxOutputTokens: number;
-  category: 'low|medium|high|embedding';
+  category: 'low' | 'medium' | 'high' | 'embedding';
   supportsVision: boolean;
   supportsMultimodal: boolean;
   rateLimits: {
@@ -681,7 +681,7 @@ class GitHubModelsDatabase {
    * Get all models
    */
   getAllModels(): GitHubModelMetadata[] {
-    return Array.from(this.models.values())();
+    return Array.from(this.models.values());
   }
 
   /**
@@ -704,7 +704,7 @@ class GitHubModelsDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category:'low|medium|high|embedding'): GitHubModelMetadata[] {
+    category: 'low' | 'medium' | 'high' | 'embedding'): GitHubModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model.category === category
     );

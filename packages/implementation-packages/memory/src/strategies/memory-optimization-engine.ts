@@ -5,19 +5,17 @@
  * automated tuning, and predictive optimization strategies.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { TypedEventBase ,
   getLogger,
   recordMetric,
-  withRetry,
   TelemetryManager,
   withTrace,
 } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 import type {
   OptimizationConfig,
   OptimizationMetrics,
-  StrategyMetrics,
 } from './types';
 
 interface OptimizationSample {

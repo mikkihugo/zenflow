@@ -9,7 +9,7 @@
 import { getLogger, ContextError } from '@claude-zen/foundation';
 // Operations facade for monitoring
 import { getPerformanceTracker, getAgentHealthMonitor } from '@claude-zen/strategic-facades/operations';
-const logger = getLogger('brain-coordinator');
+getLogger('brain-coordinator');
 /**
  * Clean Brain Coordinator implementation using operations facade
  */

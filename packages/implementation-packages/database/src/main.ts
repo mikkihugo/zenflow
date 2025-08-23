@@ -321,7 +321,7 @@ export {
 // =============================================================================
 
 export async function getDatabaseSystemAccess(
-  config?: DatabaseConfig
+  config?: DatabaseConfig,
 ): Promise<any> {
   const factory = new DatabaseFactory(config);
   return {
@@ -340,14 +340,14 @@ export async function getDatabaseSystemAccess(
 
 export async function getDatabaseConnection(
   type: string,
-  config?: any
+  config?: any,
 ): Promise<any> {
   const system = await getDatabaseSystemAccess();
   return system.createConnection(type, config);
 }
 
 export async function getRelationalAccess(
-  config?: DatabaseConfig
+  config?: DatabaseConfig,
 ): Promise<any> {
   const system = await getDatabaseSystemAccess(config);
   return {

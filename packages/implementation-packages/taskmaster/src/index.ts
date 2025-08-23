@@ -28,7 +28,7 @@
  *
  * @example Basic Workflow Coordination
  * ```typescript
- * import { WorkflowKanban, createWorkflowKanban } from '@claude-zen/kanban';
+ * import { WorkflowKanban, createTaskFlowController } from '@claude-zen/taskmaster';
  *
  * // Create workflow kanban engine
  * const kanban = createWorkflowKanban({
@@ -59,7 +59,7 @@
  *
  * @example High-Throughput Configuration
  * ```typescript
- * import { createHighThroughputWorkflowKanban } from '@claude-zen/kanban';
+ * import { createTaskFlowController } from '@claude-zen/taskmaster';
  *
  * const kanban = createHighThroughputWorkflowKanban(eventBus);
  * await kanban.initialize();
@@ -70,7 +70,7 @@
  *
  * @example Event-Driven Integration
  * ```typescript
- * import { WorkflowKanban } from '@claude-zen/kanban';
+ * import { WorkflowKanban } from '@claude-zen/taskmaster';
  * import type { TypeSafeEventBus } from '@claude-zen/event-system';
  *
  * const kanban = new WorkflowKanban(config, eventBus);

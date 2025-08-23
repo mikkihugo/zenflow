@@ -7,13 +7,12 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+
 import type {
   BeamProject,
   BeamAnalysisRule,
-  BeamPattern,
   BeamFinding,
   BeamLanguage,
-  BeamSeverity,
   BeamFindingCategory,
   BeamLocation,
   BeamAnalysisError,
@@ -553,6 +552,7 @@ export class BeamPatternAnalyzer {
       }
     } catch (error) {
       // Directory might not exist or be accessible
+      this.logger.debug(`Directory scan failed: ${error}`);
     }
   }
 }

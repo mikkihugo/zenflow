@@ -35,7 +35,7 @@ interface WorkspaceInfo {
 export interface DetectedProject {
   name: string;
   path: string;
-  type:|'app|package|lib|service|tool|example|test|doc';
+  type: 'app' | 'package' | 'lib' | 'service' | 'tool' | 'example' | 'test' | 'doc';
   framework?: string;
   language?: string;
   packageFile?: string;
@@ -43,7 +43,7 @@ export interface DetectedProject {
 
 export interface DetectedWorkspace {
   root: string;
-  tool:|'yarn|npm|pnpm|lerna|rush|bun|bazel | nx'|unknown';
+  tool: 'yarn' | 'npm' | 'pnpm' | 'lerna' | 'rush' | 'bun' | 'bazel' | 'nx' | 'unknown';
   configFile?: string;
   projects: DetectedProject[];
   totalProjects: number;
@@ -57,7 +57,7 @@ export class WorkspaceDetector {
    * Detect monorepo workspace using @manypkg/find-root
    */
   async detectWorkspaceRoot(
-    startPath: string = process.cwd()
+    startPath: string = process.cwd(),
   ): Promise<DetectedWorkspace|null> {
     try {
       // Use @manypkg/find-root which supports Yarn, npm, Lerna, pnpm, Bun, Rush
@@ -82,7 +82,7 @@ export class WorkspaceDetector {
       workspaceInfo.totalProjects = workspaces.length;
 
       logger.info(
-        `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`
+        `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`,
       );
       return workspaceInfo;
     } catch (error) {
@@ -95,7 +95,7 @@ export class WorkspaceDetector {
    * Get workspace packages using find-workspaces
    */
   private async getWorkspacePackages(
-    rootDir: string
+    rootDir: string,
   ): Promise<DetectedProject[]> {
     try {
       // find-workspaces returns an array of workspace package info
@@ -156,7 +156,7 @@ export class WorkspaceDetector {
     if (fs.existsSync(packageJsonPath)) {
       try {
         const packageJson = JSON.parse(
-          fs.readFileSync(packageJsonPath, 'utf8')
+          fs.readFileSync(packageJsonPath, 'utf8'),
         );
         if (packageJson.workspaces) {
           return 'npm'; // Default to npm if workspaces are defined but no specific tool detected
@@ -222,7 +222,7 @@ export class WorkspaceDetector {
    */
   private detectFramework(
     projectDir: string,
-    packageFile?: string
+    packageFile?: string,
   ): string|undefined {
     if (!packageFile||packageFile !== PACKAGE_JSON_FILE) {
       return undefined;
@@ -286,7 +286,7 @@ export class WorkspaceDetector {
    */
   private detectLanguage(
     _projectDir: string,
-    packageFile?: string
+    packageFile?: string,
   ): string|undefined {
     if (!packageFile) {
       return undefined;
@@ -308,7 +308,7 @@ export class WorkspaceDetector {
    */
   private inferProjectType(
     relativePath: string,
-    name?: string
+    name?: string,
   ): DetectedProject['type'] {
     const pathLower = relativePath.toLowerCase();
     const nameLower = name?.toLowerCase()||'';

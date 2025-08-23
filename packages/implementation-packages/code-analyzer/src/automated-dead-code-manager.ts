@@ -507,12 +507,12 @@ export class AutomatedDeadCodeManager {
           items.push({
             id: `knip-export-${index}`,
             type: 'export',
-            location: `${exp.file||'}:${exp.line|'|1}`,
-            name: exp.name||',
+            location: `${exp.file||'unknown'}:${exp.line||1}`,
+            name: exp.name||'unknown',
             confidence: 0.85,
             safetyScore: this.calculateSafetyScore(
-              exp.file|||,
-              exp.name|||'
+              exp.file||'',
+              exp.name||''
             ),
           });
         });

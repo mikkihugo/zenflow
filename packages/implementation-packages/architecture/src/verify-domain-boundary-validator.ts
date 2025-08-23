@@ -16,7 +16,7 @@ import {
 interface TestAgent {
   id: string;
   capabilities: string[];
-  status: 'idle|busy'';
+  status: 'idle' | 'busy';
 }
 
 interface TestTask {

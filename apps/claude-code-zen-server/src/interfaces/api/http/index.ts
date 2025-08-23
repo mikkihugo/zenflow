@@ -4,6 +4,8 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
+const logger = getLogger('interfaces-api-http-index);
+
 /**
  * REST API Layer - Main Entry Point.
  *
@@ -12,115 +14,395 @@ import { getLogger } from '@claude-zen/foundation';
  * Clean separation between API layer and business domains.
  */
 
-import { type APIClientConfig, APIServer, type APIServerConfig,
-} from '@claude-zen/foundation';
-import { getCORSOrigins, getMCPServerURL } from '@claude-zen/intelligence';
+// ===== TYPE EXPORTS =====
 
-import(/client);
-// Import server types for internal use
+// Client types
+export type {
+  APIClientConfig,
+  APIError,
+  APIResponse,
+  HealthStatus,
+  PerformanceMetrics,
+  Agent,
+  Task,
+  SwarmConfig
 
-const logger = getLogger(interfaces-api-http-index);
+} from './client';
 
-export type { APIClientConfig, PaginationOptions, RequestOptions,
-} from "./client";
-// ===== API CLIENT SDK =====
-export { APIClient, apiClient, createAPIClient } from "./client";
-export type { AuthContext, User } from "./middleware/auth";
-export { authMiddleware, getCurrentUser, hasPermission, hasRole, isAdmin, optionalAuthMiddleware,
-} from "./middleware/auth";
-// ===== MIDDLEWARE =====
-export { APIError as APIErrorClass, asyncHandler, createConflictError, createInternalError, createNotFoundError, createRateLimitError, createValidationError, errorHandler, notFoundHandler,
-} from "./middleware/errors";
-export { LogLevel, log, logError, logPerformance, requestLogger,
-} from "./middleware/logging";
-export type { // Coordination types (re-exported from domain) Agent, APIError, CoordinationError, EvaluationMetrics, HealthResponse, HealthStatus, ListResponse, MetricsResponse, NeuralLayer, // Neural types NeuralNetwork, // Common types PaginationParams, PaginationResponse, PerformanceMetrics, PredictionRequest, PredictionResponse, SuccessResponse, SwarmConfig, Task, TrainingConfig, TrainingJob, TrainingRequest,
-} from "./schemas/index";
-// ===== SCHEMAS AND TYPES =====
-export { RestAPISchema } from "./schemas/index";
-export type { APIServerConfig } from '@claude-zen/foundation';
-// ===== API SERVER =====
-export { APIServer, createAPIServer, DEFAULT_API_CONFIG,
-} from '@claude-zen/foundation';
+// Database types
+export type {
+  QueryRequest,
+  CommandRequest,
+  VectorQueryRequest,
+  VectorInsertRequest,
+  VectorIndexRequest,
+  GraphQueryRequest,
+  DatabaseResponse,
+  VectorData,
+  DatabaseAdapter,
+  VectorDatabaseAdapter,
+  GraphDatabaseAdapter
 
-// ===== ROUTE CREATORS =====
-export { createCoordinationRoutes } from "./v1/coordination";
-export { createDatabaseRoutes } from "./v1/database";
-export { createDocumentRoutes } from "./v1/documents";
-export { createMemoryRoutes } from "./v1/memory";
-export { createNeuralRoutes } from '@claude-zen/intelligence';
-export { createProjectRoutes } from "./v1/projects";
+} from '../database/database-controller';
 
-// ===== VERSION NFORMATION =====
-export const REST_API_VERSION = '1..0' as const;
-export const SUPPORTED_API_VERSIONS = ['v1'] as const;
+// DI Container types
+export type {
+  BatchRequest,
+  MigrationRequest,
+  DatabaseHealthStatus,
+  DatabaseConfig,
+  ConnectionStats
 
-/**
- * API Layer Configuration.
- * Central configuration for the entire API layer.
- *
- * @example
- */
-export interface APILayerConfig { readonly server: APIServerConfig; readonly client: APIClientConfig; readonly enableSwagger: boolean; readonly enableValidation: boolean; readonly enableRateLimit: boolean; readonly logLevel: 'debug  |info| 'warn | erro'r');
+} from './di/database-container';
+
+// ===== CLIENT SDK EXPORTS =====
+export {
+  APIClient,
+  apiClient
+
+} from './client';
+
+// ===== MIDDLEWARE EXPORTS =====
+
+// Auth interfaces (basic definitions for now)
+export interface User {
+  id: string;
+  username: string;
+  email?: string;
+  roles: string[];
+  permissions: string[];
+  createdAt: Date;
+  lastLoginAt?: Date
+
 }
 
-/**
- * Default API layer configuration.
- */
-export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = { server: { port: 3000, host: 'localhost', environment: 'development', enableSwagger: true, enableValidation: true, enableRateLimit: true, rateLimitWindowMs: 15 * 60 * 1000, rateLimitMaxRequests: 100, corsOrigins: getCORSOrigins(), }, client: { baseURL: getMCPServerURL(), timeout: 30000, retryAttempts: 3, retryDelay: 1000, enableAuth: false, }, enableSwagger: true, enableValidation: true, enableRateLimit: true, logLevel: 'info',
-} as const;
+export interface AuthContext {
+  user?: User;
+  token?: string;
+  permissions: string[];
+  roles: string[];
+  isAuthenticated: boolean
 
-/**
- * API Layer Factory.
- * Creates complete API layer with server and client.
- *
- * @example
- */
-export class APILayer { private server: APIServer; private client: APIClient; private config: APILayerConfig; constructor(config: Partial<APILayerConfig> = {}) { this.config = { ...DEFAULT_API_LAYER_CONFIG, ...config }; this.server = new APIServer(this.config.server); this.client = new APIClient(this.config.client); } /** * Start the API server. */ public async start(): Promise<void> { await this.server?.start() } /** * Stop the API server. */ public async stop(): Promise<void> { await this.server?.stop() } /** * Get the API server instance. */ public getServer(): APIServer { return this.server; } /** * Get the API client instance. */ public getClient(): APIClient { return this.client; } /** * Get current configuration. */ public getConfig(): APILayerConfig { return { ...this.config }; } /** * Test API connectivity. */ public async ping(): Promise<boolean> { return this.client?.ping() }
 }
 
+// Basic auth middleware functions (placeholders)
+export const authMiddleware = (req: any, res: any, next: any) => {
+  // Mock auth middleware - in production this would validate JWT tokens
+  const authHeader = req.headers.authorization;
+
+  if(authHeader && authHeader.startsWith('Bearer ))'{
+    // Mock user for development
+    req.auth = {
+      user: {
+  id: '1',
+  username: 'admin',
+  email: 'admin@example.com',
+  roles: ['admin],
+  permissios: [*],
+  createdAt: new Date(),
+  lastLoginAt: new Date()
+
+},
+      token: authHeader.substring(7),
+      permissions: ['*],
+      roles: ['admin],
+      isAutheticated: true
+} as AuthContext
+} else {
+    req.auth = {
+  permissions: [],
+  roles: [],
+  isAuthenticated: false
+
+} as AuthContext
+}
+
+  next()
+};
+
+export const optionalAuthMiddleware = (req: any, res: any, next: any) => {
+  authMiddleware(
+  req,
+  res,
+  next
+)
+
+};
+
+export const getCurrentUser = (req: any): User | undefined => {
+  return req.auth?.user
+};
+
+export const hasRole = (req: any, role: string): boolean => {
+  return req.auth?.roles?.includes(role) || false
+};
+
+export const hasPermission = (req: any, permission: string): boolean => {
+  return req.auth?.permissions?.includes(*) ||
+         req.auth?.permissions?.includes(permission) ||
+         false
+
+};
+
+export const isAdmin = (req: any): boolean => {
+  return hasRole(req,
+  admin);
+
+};
+
+// ===== ERROR HANDLING EXPORTS =====
+
+// Basic error types
+export interface APIError {
+  code: string;
+  message: string;
+  details?: any;
+  status?: number
+
+}
+
+// Error middleware
+export const errorMiddleware = (err: any, req: any, res: any, next: any' => {
+  logger.error('API Error:', err)';
+
+  const apiError: APIError = {
+  code: err.code || 'INTERNAL_ERROR',
+  message: err.message || 'An'internal error occurred',
+  etails: process.env.NODE_ENV === 'development' ? err.sack : undefined,
+  status: err.status || 500
+
+};
+
+  res.status(apiError.status || 500).json(
+  {
+    success: false,
+  error: apiError,
+  metadata: {
+  timestamp: Date.now(
+),
+  requestId: req.id || 'unknown'
+
+}
+})
+};
+
+// ===== LOGGING EXPORTS =====
+
+// Request loggi'g middleware
+export const loggingMiddleware = (req: any, res: any, next: any) => {
+  const startTime = Date.now();
+
+  // Log request
+  logger.info('API Request',
+  {
+  mehod: req.method,
+  url: req.url,
+  userAgent: req.get(User-Agent
+),
+  ip: req.ip,
+  imestamp: new Date().toISOString()
+
+});
+
+  // Log response when finished
+  res.on('finish', () => {
+    const duration = Date.now() - startTime;
+    logger.info('API Response',
+  {
+      mthod: req.method,
+  url: req.url,
+      statusCode: res.statusCode,
+      duration: '' + duration + 'ms',
+      contentLength: re'.get(content-length
+)
+})
+});
+
+  next()
+};
+
+// ===== RATE LIMITING EXPORTS =====
+
+// Basic rate limiting (in-memory store)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+export const rateLimitMiddleware = (maxRequests = 100, windowMs = 60000) => {
+  return(
+  req: any,
+  res: any,
+  next: any
+) => {
+    const key = req.ip || 'unknown;
+    const now = Date.now();
+
+    // Clean up expired entries
+    for (const [k, v] of rateLimitStore.entries()) {
+      if (now > v.resetTime) {
+        rateLimitStore.delete(k)
+}
+    }
+
+    const current = rateLimitStore.get(key);
+
+    if (!current) {
+      rateLimitStore.set(
+  key,
+  {
+  count: 1,
+  resetTime: now + windowMs
+}
+);
+      return next()
+}
+
+    if (now > current.resetTime) {
+      rateLimitStore.set(
+  key,
+  {
+  count: 1,
+  resetTime: now + windowMs
+}
+);
+      return next()
+}
+
+    if (current.count >= maxRequests) {
+      return res.status(429).json(
+  {
+        success: false,
+  error: {
+  code: 'RATE_LIMIT_EXCEEDED',
+  message: 'Too'many requests;
+
+},
+        metadata: {
+  timetamp: Date.now(
+),
+  retryAfter: Math.ceil((current.resetTime - now) / 1000)
+
+}
+})
+}
+
+    current.count++;
+    next()
+}
+};
+
+// ===== DATABASE CONTROLLER EXPORTS =====
+export { DatabaseController } from '../database/database-controller';
+export {
+  getDatabaseController,
+  resetDatabaseContainer,
+  checkDatabaseContainerHealth
+
+} from './di/database-container';
+
+// ===== UTILITY FUNCTIONS =====
+
 /**
- * Create API layer with configuration.
- *
- * @param config
+ * Create standardized API response
  */
-export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => { return new APILayer(config);
+export const createAPIResponse = <T>(
+  success: boolean,
+  data?: T,
+  error?: APIError,
+  metadata?: Record<string, any>
+) => {
+  return {
+    success,
+    data,
+    error,
+    metadata: {
+  timestamp: Date.now(),
+  ...metadata
+
+}
+}
 };
 
 /**
- * API Layer Health Check.
- * Comprehensive health check for the entire API layer.
- *
- * @param layer
+ * Create standardized API error
  */
-export const checkAPILayerHealth = async ( layer: APILayer
-): Promise<{ status: 'healthy | unhealthy'); checks: { server: boolean; client: boolean; connectivity: boolean; }; timestamp: string;
-}> => { const checks = { server: false, client: false, connectivity: false, }; try { // Check if server is running const serverConfig = layer?.getServer?.getConfig() checks.server = 'serverConfig?.port > 0'; // Check if client is configured const clientConfig = layer?.getClient?.getConfig() checks.client = !!clientConfig?.baseURL() // Check connectivity checks.connectivity = await layer?.ping() } catch (error) { logger.error(API layer health check faile'd'':'', error); } const allHealthy = Object.values()(checks).every((check) => check === true); return { status: allHealthy ? 'healthy : unhealthy', checks, timestamp: new Date()?.toISOString, };
+export const createAPIError = (
+  code: string,
+  message: string,
+  status = 500,
+  details?: any
+): APIError => {
+  return {
+  code,
+  message,
+  status,
+  details
+
+}
 };
 
-/**
- * API Documentation URLs.
- * Standard endpoints for API documentation.
- */
-export const API_DOCS = { swagger: '/docs', openapi: '/openapi.json', health: '/health', metrics: '/api/v1/system/metrics',
-} as const;
+// ===== HEALTH CHECK =====
 
 /**
- * API Endpoint Patterns.
- * Standard URL patterns following Google API Design Guide.
+ * Health check endpoint data
  */
-export const API_PATTERNS = { // Collection patterns listResources: '/api/v1/{domain}/{resources}', createResource: '/api/v1/{domain}/{resources}', // Resource patterns getResource: '/api/v1/{domain}/{resources}/{id}', updateResource: '/api/v1/{domain}/{resources}/{id}', deleteResource: '/api/v1/{domain}/{resources}/{id}', // Sub-resource patterns listSubResources: '/api/v1/{domain}/{resources}/{id}/{sub_resources}', createSubResource: '/api/v1/{domain}/{resources}/{id}/{sub_resources}', // Action patterns performAction: '/api/v1/{domain}/{resources}/{id}:{action}', // System patterns health: '/health', systemHealth: '/api/v1/system/health', systemMetrics: '/api/v1/system/metrics',
-} as const;
+export const getAPIHealth = async () => {
+  try {
+    const dbHealth = await checkDatabaseContainerHealth();
 
-/**
- * Standard HTTP Status Codes.
- * Following Google API Design Guide recommendations.
- */
-export const HTTP_STATUS = { // Success OK: 200, CREATED: 201, ACCEPTED: 202, NO_CONTENT: 204, // Client Error BAD_REQUEST: 400, UNAUTHORIZED: 401, FORBIDDEN: 403, NOT_FOUND: 404, METHOD_NOT_ALLOWED: 405, CONFLICT: 409, UNPROCESSABLE_ENTITY: 422, TOO_MANY_REQUESTS: 429, // Server Error INTERNAL_SERVER_ERROR: 500, NOT_IMPLEMENTED: 501, BAD_GATEWAY: 502, SERVICE_UNAVAILABLE: 503, GATEWAY_TIMEOUT: 504,
-} as const;
+    return {
+      status: dbHealth.status === 'healthy' ? 'healthy' : 'degraded',
+      timestamp: Date.now(),
+      uptime: process.uptime(),
+      version: process.env.npm_package_version || '1.0.0',
+      services: {
+  api: true,
+  database: dbHealth.status === 'healthy,
+  auth: true,
+  logging: true
 
-/**
- * Standard Error Codes.
- * Following Google API Design Guide error codes.
- */
-export const ERROR_CODES = { // Client errors INVALID_REQUEST: 'INVALID_REQUEST', AUTHENTICATION_REQUIRED: 'AUTHENTICATION_REQUIRED', PERMISSION_DENIED: 'PERMISSION_DENIED', RESOURCE_NOT_FOUND: 'RESOURCE_NOT_FOUND', METHOD_NOT_SUPPORTED: 'METHOD_NOT_SUPPORTED', RESOURCE_CONFLICT: 'RESOURCE_CONFLICT', VALIDATION_FAILED: 'VALIDATION_FAILED', RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED', // Server errors INTERNAL_ERROR: 'INTERNAL_ERROR', FEATURE_NOT_IMPLEMENTED: 'FEATURE_NOT_IMPLEMENTED', UPSTREAM_ERROR: 'UPSTREAM_ERROR', SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE', TIMEOUT_ERROR: 'TIMEOUT_ERROR',
-} as const;
+},
+      details: {
+        database: dbHealth,
+        memor: {
+  used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+  total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024)
+
+},
+        cpu: process.cpuUsage()
+}
+}
+} catch (error) {
+    logger.error('Health check failed:', error);;
+    return {
+  status: 'unhealthy',
+  timestamp: Date.now(),
+  error: (error as Error).message
+
+}
+}
+};
+
+// ===== DEFAULT EXPORT =====
+export default {
+  // Core exports
+  APIClient,
+  apiClient,
+  // Middleware
+  authMiddleware,
+  optionalAuthMiddleware,
+  errorMiddleware,
+  loggingMiddleware,
+  rateLimitMiddleware,
+  // Database
+  DatabaseController,
+  getDatabaseController,
+  // Utilities
+  createAPIResponse,
+  createAPIError,
+  getAPIHealth,
+  // Auth helpers
+  getCurrentUser,
+  hasRole,
+  hasPermission,
+  isAdmin
+
+};

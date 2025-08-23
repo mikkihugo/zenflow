@@ -19,7 +19,10 @@ export type CanUseTool = (
 ) => Promise<PermissionResult>;
 
 export type PermissionMode =
-  || 'allow-all|deny-all'||interactive|custom'';
+  | 'allow-all'
+  | 'deny-all'
+  | 'interactive'
+  | 'custom';
 
 // =============================================================================
 // MCP Server Configuration
@@ -56,8 +59,8 @@ export interface ClaudeSDKOptions extends BaseClaudeCodeOptions {
   retryDelay?: number;
   enableCancellation?: boolean;
   mcpServers?: McpServerConfig[];
-  logLevel?: 'debug|info|warn|error';
-  outputFormat?: 'json|text|streaming';
+  logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  outputFormat?: 'json' | 'text' | 'streaming';
   includeMetadata?: boolean;
   preserveHistory?: boolean;
   sessionId?: string;
@@ -88,7 +91,7 @@ export interface ClaudeUserMessage {
   timestamp?: number;
   metadata?: {
     source?: string;
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
     context?: Record<string, unknown>;
     attachments?: string[];
     sessionId?: string;
@@ -117,7 +120,7 @@ export interface ClaudeSystemMessage {
   content: string;
   timestamp?: number;
   metadata?: {
-    level?: 'info|warn|error';
+    level?: 'info' | 'warn' | 'error';
     source?: string;
     category?: string;
     sessionId?: string;
@@ -125,7 +128,11 @@ export interface ClaudeSystemMessage {
   };
 }
 
-export type ClaudeMessage =|ClaudeAssistantMessage|ClaudeUserMessage|ClaudeResultMessage|ClaudeSystemMessage;
+export type ClaudeMessage = 
+  | ClaudeAssistantMessage
+  | ClaudeUserMessage
+  | ClaudeResultMessage
+  | ClaudeSystemMessage;
 
 // =============================================================================
 // Configuration Constants

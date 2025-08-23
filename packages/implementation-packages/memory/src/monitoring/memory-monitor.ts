@@ -4,6 +4,7 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
+
 import type { MemoryCoordinator } from '../core/memory-coordinator';
 import type { BackendInterface } from '../core/memory-system';
 import type { PerformanceOptimizer } from '../optimization/performance-optimizer';

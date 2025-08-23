@@ -206,7 +206,14 @@ export class AutonomousCoordinator {
             const averagePerformance = agentStats.averagePerformance;
             // Calculate high performance agents based on performance trends
             const highPerformanceAgents = Object.entries(agentStats.performanceTrends)
-                .filter(([_, trend]) => trend === 'improving' || trend === 'excellent').length;
+                .filter(([, trend]) => {
+                    // Track high performance agents with detailed analysis
+                    const isHighPerforming = trend === 'improving' || trend === 'excellent';
+                    if (isHighPerforming) {
+                        logger.debug(`High performing agent detected with trend: ${trend}`);
+                    }
+                    return isHighPerforming;
+                }).length;
             if (routingEfficiency < 0.6) {
                 return {
                     type: 'agent_routing',

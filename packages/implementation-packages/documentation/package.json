@@ -9,8 +9,7 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "eventemitter3": "^5.0.1"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.0"

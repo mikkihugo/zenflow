@@ -27,6 +27,7 @@
 
 import { cpus, totalmem, freemem, loadavg } from 'os';
 import { cpuUsage, memoryUsage } from 'process';
+
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 

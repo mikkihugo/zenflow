@@ -8,6 +8,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+
 import type {
   BeamProject,
   BeamAnalysisContext,
@@ -31,7 +32,7 @@ export class DialyzerIntegration {
       buildPlt?: boolean;
       apps?: string[];
       warnings?: DialyzerWarningType[];
-      outputFormat?: 'formatted|raw'';
+      outputFormat?: 'formatted'|'raw';
     } = {}
   ): Promise<Result<DialyzerResult, BeamAnalysisError>> {
     try {
@@ -131,8 +132,8 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = ';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -145,7 +146,7 @@ export class DialyzerIntegration {
       child.on('close', (code) => {
         if (code === 0) {
           this.logger.info('PLT build completed successfully');
-          resolve(ok(undefined));
+          resolve(ok());
         } else {
           this.logger.error(`PLT build failed with code ${code}: ${stderr}`);
           resolve(
@@ -181,7 +182,7 @@ export class DialyzerIntegration {
     options: {
       apps?: string[];
       warnings?: DialyzerWarningType[];
-      outputFormat?: 'formatted|raw'';
+      outputFormat?: 'formatted'|'raw';
     }
   ): Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
@@ -225,8 +226,8 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = ';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -383,8 +384,8 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = ';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -435,7 +436,7 @@ export class DialyzerIntegration {
     const lines = output.split('\n');
 
     for (const line of lines) {
-      const match = line.match(/^\s*([a-z_][a-z0-9_]*)\s*$/);
+      const match = line.match(/^\s*([_a-z][\d_a-z]*)\s*$/);
       if (match) {
         modules.push(match[1]);
       }

@@ -2,7 +2,6 @@
   "name": "@claude-zen/llm-providers",
   "version": "1.0.0",
   "description": "LLM Provider Integrations - CLI tools, Direct APIs, and AI service integrations",
-  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -61,8 +60,7 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/infrastructure": "workspace:*",
-    "@anthropic-ai/claude-code": "^1.0.86",
-    "eventemitter3": "^5.0.1",
+    "@anthropic-ai/claude-code": "^1.0.88",
     "validator": "^13.12.0"
   },
   "devDependencies": {

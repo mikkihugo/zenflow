@@ -571,9 +571,9 @@ export interface SwarmTask {
   description: string;
   agents: Array<{
     role: keyof typeof SWARM_AGENT_ROLES;
-    model?: 'sonnet|opus'';
+    model?: 'sonnet' | 'opus';
   }>;
-  coordination?: 'parallel|sequential'';
+  coordination?: 'parallel' | 'sequential';
 }
 
 export interface SwarmTaskResult {

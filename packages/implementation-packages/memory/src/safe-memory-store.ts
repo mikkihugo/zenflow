@@ -2,9 +2,9 @@
  * @file Memory management: safe-memory-store
  */
 
-import { getLogger } from '../config/logging-config';
+import { TypedEventBase } from '@claude-zen/foundation';
 
-const logger = getLogger('src-memory-safe-memory-store');
+import { getLogger } from '../config/logging-config';
 
 /**
  * Enhanced Memory Provider with Union Type Safety.
@@ -13,7 +13,6 @@ const logger = getLogger('src-memory-safe-memory-store');
  * for proper error handling and result discrimination.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
 import {
   isMemoryError,
   isMemoryNotFound,
@@ -23,6 +22,8 @@ import {
   type MemoryResult,
   type MemorySuccess,
 } from '../utils/type-guards';
+
+const logger = getLogger('src-memory-safe-memory-store');
 
 export interface SafeMemoryStoreOptions {
   namespace?: string;

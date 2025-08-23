@@ -21,16 +21,16 @@
  * @version 2.1.0
  */
 
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
+
 import {
   ServiceContainer,
   createServiceContainer,
   Lifetime,
-} from '@claude-zen/foundation';
+ TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
 
 import type { EphemeralSwarm } from './types';
 
@@ -538,8 +538,12 @@ export class SwarmRegistry extends TypedEventBase {
   private async loadAndRegisterSwarms(): Promise<void> {
     const registry = this.loadRegistry();
 
+    // Process swarms sequentially to avoid overwhelming the system
     for (const [id, swarm] of registry) {
       try {
+        // Perform health check asynchronously before registration
+        const healthStatus = await this.performSwarmHealthCheck(swarm);
+        
         // Register each swarm with ServiceContainer
         const registrationResult = this.container.registerInstance(id, swarm, {
           capabilities: this.extractSwarmCapabilities(swarm),
@@ -551,8 +555,9 @@ export class SwarmRegistry extends TypedEventBase {
             loadedFromFile: true,
             expiresAt: swarm.expiresAt,
             persistent: swarm.persistent,
+            healthStatus,
           },
-          enabled: swarm.status !== 'dissolved',
+          enabled: swarm.status !== 'dissolved' && healthStatus.healthy,
           healthCheck: () => this.performSwarmHealthCheck(swarm),
           lifetime: Lifetime.SINGLETON,
         });
@@ -676,7 +681,7 @@ export function getSwarmRegistry(): SwarmRegistry {
     swarmRegistryInstance = new SwarmRegistry();
     // Auto-initialize for convenience
     swarmRegistryInstance.initialize().catch((error) => {
-      console.error('Failed to initialize SwarmRegistry:', error);
+      logger.error('Failed to initialize SwarmRegistry:', error);
     });
   }
   return swarmRegistryInstance;

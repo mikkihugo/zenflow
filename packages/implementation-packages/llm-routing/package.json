@@ -25,8 +25,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
-    "lint": "echo 'Linting disabled due to biome thread pool issues'",
-    "format": "BIOME_DAEMON=0 biome format --write . --max-diagnostics=50",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "eslint . --ext .ts --fix",
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
@@ -34,9 +35,12 @@
     "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.0",
+    "@eslint/js": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "@types/node": "22.17.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.0.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
@@ -57,5 +61,6 @@
     "type": "git",
     "url": "git+https://github.com/zen-neural/claude-code-zen.git",
     "directory": "packages/llm-routing"
-  }
+  },
+  "private": true
 }

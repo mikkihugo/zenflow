@@ -24,9 +24,9 @@ const logger = getLogger('sparc-facade');
 // ============================================================================
 
 // Core SPARC types - Export from real package when available
-export type SPARCPhase =|'specification|pseudocode|architecture|refinement|completion';
-export type ProjectComplexity =|'simple|moderate|high|complex|enterprise';
-export type ProjectDomain =|'swarm-coordination|neural-networks'||wasm-integration|rest-api'||memory-systems|interfaces'||general';
+export type SPARCPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+export type ProjectComplexity = 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
+export type ProjectDomain = 'swarm-coordination' | 'neural-networks' | 'wasm-integration' | 'rest-api' | 'memory-systems' | 'interfaces' | 'general';
 
 export interface SPARCConfig {
   enabled?: boolean;

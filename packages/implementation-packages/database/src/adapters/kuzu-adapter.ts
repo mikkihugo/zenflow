@@ -6,7 +6,21 @@
 
 // Using Awilix DI - no reflect-metadata needed
 // Dynamic import for optional kuzu dependency
-let Database: any, Connection: any;
+interface KuzuDatabase {
+  new (path: string): KuzuDatabase;
+}
+
+interface KuzuConnection {
+  new (database: KuzuDatabase): KuzuConnection;
+  query(query: string): KuzuQueryResult;
+}
+
+interface KuzuQueryResult {
+  hasNext(): boolean;
+  getNext(): unknown[];
+}
+
+let Database: KuzuDatabase, Connection: KuzuConnection;
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { getLogger } from '@claude-zen/foundation';
@@ -16,7 +30,6 @@ import type {
   QueryParams,
   HealthStatus,
 } from '../interfaces.js';
-import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('kuzu-adapter');
 
@@ -54,8 +67,8 @@ export interface GraphQueryOptions {
 }
 
 export class KuzuAdapter implements DatabaseAdapter {
-  private database: any|null = null;
-  private connection: any|null = null;
+  private database: KuzuDatabase | null = null;
+  private connection: KuzuConnection | null = null;
   private config: KuzuConfig;
   private connected = false;
 
@@ -64,20 +77,37 @@ export class KuzuAdapter implements DatabaseAdapter {
     this.initializeKuzu();
   }
 
+  private analyzeLoadError(error: unknown): { reason: string; recoverable: boolean } {
+    if (error instanceof Error) {
+      if (error.message.includes('Cannot resolve module')) {
+        return { reason: 'Module not found', recoverable: true };
+      }
+      if (error.message.includes('ENOENT')) {
+        return { reason: 'File not found', recoverable: true };
+      }
+      return { reason: error.message, recoverable: false };
+    }
+    return { reason: 'Unknown error', recoverable: false };
+  }
+
   private async initializeKuzu(): Promise<void> {
     try {
       const kuzu = await import('@' + 'kuzu'); // Split import to avoid TypeScript resolution
       Database = kuzu.Database;
       Connection = kuzu.Connection;
     } catch (error) {
+      const errorDetails = this.analyzeLoadError(error);
       logger.warn(
-        'Kuzu library not available. Install kuzu package for graph database functionality.'
+        `Kuzu library not available: ${errorDetails.reason}. Install kuzu package for graph database functionality.`,
+        { error: errorDetails },
       );
     }
   }
 
   async connect(): Promise<void> {
-    if (this.connected) return;
+    if (this.connected) {
+      return;
+    }
 
     try {
       // Ensure directory exists for database
@@ -98,7 +128,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       this.connected = true;
 
       logger.info(
-        `✅ Connected to real Kuzu database: ${this.config.database}`
+        `✅ Connected to real Kuzu database: ${this.config.database}`,
       );
     } catch (error) {
       logger.error(`❌ Failed to connect to Kuzu database: ${error}`);
@@ -122,7 +152,9 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   private async initializeSchema(): Promise<void> {
-    if (!this.connection) return;
+    if (!this.connection) {
+      return;
+    }
 
     try {
       // Create node tables
@@ -146,14 +178,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
       // Execute schema creation
       for (const schema of [...nodeSchemas, ...relationshipSchemas]) {
-        try {
-          await this.connection.query(schema);
-        } catch (error) {
-          // Ignore "already exists" errors
-          if (!(error as Error).toString().includes('already exists')) {
-            logger.warn(`Schema creation warning: ${error}`);
-          }
-        }
+        await this.executeSchemaQuery(schema);
       }
 
       logger.info('✅ Kuzu schema initialized');
@@ -163,12 +188,31 @@ export class KuzuAdapter implements DatabaseAdapter {
     }
   }
 
+  private async executeSchemaQuery(schema: string): Promise<void> {
+    if (!this.connection) {
+      return;
+    }
+
+    try {
+      await this.connection.query(schema);
+    } catch (error) {
+      // Ignore "already exists" errors
+      if (!(error as Error).toString().includes('already exists')) {
+        logger.warn(`Schema creation warning: ${error}`);
+      }
+    }
+  }
+
   async createNode(
     label: string,
-    properties: Record<string, unknown>
+    properties: Record<string, unknown>,
   ): Promise<string> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
       const id =
@@ -183,7 +227,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
       // Kuzu doesn't support parameterized queries like SQL - embed values directly
       const queryWithValues = this.embedParameters(query, propValues);
-      const result = await this.connection.query(queryWithValues);
+      await this.connection.query(queryWithValues);
 
       logger.debug(`✅ Created node: ${label} with ID ${id}`);
       return id.toString();
@@ -197,10 +241,14 @@ export class KuzuAdapter implements DatabaseAdapter {
     fromId: string,
     toId: string,
     relationshipType: string,
-    properties: Record<string, unknown> = {}
+    properties: Record<string, unknown> = {},
   ): Promise<string> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
       const relationshipId = `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -230,7 +278,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       await this.connection.query(this.embedParameters(query, params));
 
       logger.debug(
-        `✅ Created relationship: ${relationshipType} from ${fromId} to ${toId}`
+        `✅ Created relationship: ${relationshipType} from ${fromId} to ${toId}`,
       );
       return relationshipId;
     } catch (error) {
@@ -242,70 +290,21 @@ export class KuzuAdapter implements DatabaseAdapter {
   async findNodes(
     label: string,
     properties: Record<string, unknown> = {},
-    options: GraphQueryOptions = {}
+    options: GraphQueryOptions = {},
   ): Promise<GraphNode[]> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
-      let query = `MATCH (n:${label})`;
-      const params: unknown[] = [];
-
-      // Add WHERE clause for properties
-      if (Object.keys(properties).length > 0) {
-        const conditions = Object.entries(properties).map(([key, value]) => {
-          params.push(value);
-          return `n.${key} = $`;
-        });
-        query += ` WHERE ${conditions.join(' AND ')}`;
-      }
-
-      // Add WHERE clause from options
-      if (options.where) {
-        const additionalConditions = Object.entries(options.where).map(
-          ([key, value]) => {
-            params.push(value);
-            return `n.${key} = $`;
-          }
-        );
-
-        if (Object.keys(properties).length > 0) {
-          query += ` AND ${additionalConditions.join(' AND ')}`;
-        } else {
-          query += ` WHERE ${additionalConditions.join(' AND ')}`;
-        }
-      }
-
-      query += ' RETURN n';
-
-      // Add ORDER BY
-      if (options.orderBy) {
-        query += ` ORDER BY n.${options.orderBy}`;
-      }
-
-      // Add LIMIT and OFFSET
-      if (options.limit) {
-        query += ` LIMIT ${options.limit}`;
-      }
-      if (options.offset) {
-        query += ` OFFSET ${options.offset}`;
-      }
-
+      const { query, params } = this.buildNodeQuery(label, properties, options);
       const result = await this.connection.query(
-        this.embedParameters(query, params)
+        this.embedParameters(query, params),
       );
-      const nodes: GraphNode[] = [];
-
-      while (result.hasNext()) {
-        const row = result.getNext();
-        const nodeData = row[0]; // First column is the node
-
-        nodes.push({
-          id: nodeData.id,
-          label: label,
-          properties: nodeData,
-        });
-      }
+      const nodes = this.processNodeResults(result, label);
 
       logger.debug(`✅ Found ${nodes.length} nodes with label ${label}`);
       return nodes;
@@ -315,81 +314,98 @@ export class KuzuAdapter implements DatabaseAdapter {
     }
   }
 
+  private buildNodeQuery(
+    label: string,
+    properties: Record<string, unknown>,
+    options: GraphQueryOptions,
+  ): { query: string; params: unknown[] } {
+    let query = `MATCH (n:${label})`;
+    const params: unknown[] = [];
+
+    // Add WHERE clause for properties
+    if (Object.keys(properties).length > 0) {
+      const conditions = Object.entries(properties).map(([key, value]) => {
+        params.push(value);
+        return `n.${key} = $`;
+      });
+      query += ` WHERE ${conditions.join(' AND ')}`;
+    }
+
+    // Add WHERE clause from options
+    if (options.where) {
+      const additionalConditions = Object.entries(options.where).map(
+        ([key, value]) => {
+          params.push(value);
+          return `n.${key} = $`;
+        },
+      );
+
+      if (Object.keys(properties).length > 0) {
+        query += ` AND ${additionalConditions.join(' AND ')}`;
+      } else {
+        query += ` WHERE ${additionalConditions.join(' AND ')}`;
+      }
+    }
+
+    query += ' RETURN n';
+
+    // Add ORDER BY
+    if (options.orderBy) {
+      query += ` ORDER BY n.${options.orderBy}`;
+    }
+
+    // Add LIMIT and OFFSET
+    if (options.limit) {
+      query += ` LIMIT ${options.limit}`;
+    }
+    if (options.offset) {
+      query += ` OFFSET ${options.offset}`;
+    }
+
+    return { query, params };
+  }
+
+  private processNodeResults(result: KuzuQueryResult, label: string): GraphNode[] {
+    const nodes: GraphNode[] = [];
+
+    while (result.hasNext()) {
+      const row = result.getNext();
+      const nodeData = row[0]; // First column is the node
+
+      nodes.push({
+        id: nodeData.id,
+        label: label,
+        properties: nodeData,
+      });
+    }
+
+    return nodes;
+  }
+
   async findRelationships(
     fromId?: string,
     toId?: string,
     relationshipType?: string,
-    options: GraphQueryOptions = {}
+    options: GraphQueryOptions = {},
   ): Promise<GraphRelationship[]> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
-      let query = 'MATCH (from)-[r';
-      const params: unknown[] = [];
-
-      if (relationshipType) {
-        query += `:${relationshipType}`;
-      }
-
-      query += ']->(to)';
-
-      // Add WHERE conditions
-      const conditions: string[] = [];
-      if (fromId) {
-        conditions.push('from.id = $');
-        params.push(fromId);
-      }
-      if (toId) {
-        conditions.push('to.id = $');
-        params.push(toId);
-      }
-
-      if (options.where) {
-        Object.entries(options.where).forEach(([key, value]) => {
-          conditions.push(`r.${key} = $`);
-          params.push(value);
-        });
-      }
-
-      if (conditions.length > 0) {
-        query += ` WHERE ${conditions.join(' AND ')}`;
-      }
-
-      query += ' RETURN r, from.id, to.id';
-
-      // Add ORDER BY
-      if (options.orderBy) {
-        query += ` ORDER BY r.${options.orderBy}`;
-      }
-
-      // Add LIMIT and OFFSET
-      if (options.limit) {
-        query += ` LIMIT ${options.limit}`;
-      }
-      if (options.offset) {
-        query += ` OFFSET ${options.offset}`;
-      }
-
-      const result = await this.connection.query(
-        this.embedParameters(query, params)
+      const { query, params } = this.buildRelationshipQuery(
+        fromId,
+        toId,
+        relationshipType,
+        options,
       );
-      const relationships: GraphRelationship[] = [];
-
-      while (result.hasNext()) {
-        const row = result.getNext();
-        const relationshipData = row[0]; // Relationship
-        const fromNodeId = row[1]; // From node ID
-        const toNodeId = row[2]; // To node ID
-
-        relationships.push({
-          id: `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          from: fromNodeId,
-          to: toNodeId,
-          type: relationshipType||'UNKNOWN',
-          properties: relationshipData,
-        });
-      }
+      const result = await this.connection.query(
+        this.embedParameters(query, params),
+      );
+      const relationships = this.processRelationshipResults(result, relationshipType);
 
       logger.debug(`✅ Found ${relationships.length} relationships`);
       return relationships;
@@ -399,26 +415,109 @@ export class KuzuAdapter implements DatabaseAdapter {
     }
   }
 
+  private buildRelationshipQuery(
+    fromId?: string,
+    toId?: string,
+    relationshipType?: string,
+    options: GraphQueryOptions = {},
+  ): { query: string; params: unknown[] } {
+    let query = 'MATCH (from)-[r';
+    const params: unknown[] = [];
+
+    if (relationshipType) {
+      query += `:${relationshipType}`;
+    }
+
+    query += ']->(to)';
+
+    // Add WHERE conditions
+    const conditions: string[] = [];
+    if (fromId) {
+      conditions.push('from.id = $');
+      params.push(fromId);
+    }
+    if (toId) {
+      conditions.push('to.id = $');
+      params.push(toId);
+    }
+
+    if (options.where) {
+      Object.entries(options.where).forEach(([key, value]) => {
+        conditions.push(`r.${key} = $`);
+        params.push(value);
+      });
+    }
+
+    if (conditions.length > 0) {
+      query += ` WHERE ${conditions.join(' AND ')}`;
+    }
+
+    query += ' RETURN r, from.id, to.id';
+
+    // Add ORDER BY
+    if (options.orderBy) {
+      query += ` ORDER BY r.${options.orderBy}`;
+    }
+
+    // Add LIMIT and OFFSET
+    if (options.limit) {
+      query += ` LIMIT ${options.limit}`;
+    }
+    if (options.offset) {
+      query += ` OFFSET ${options.offset}`;
+    }
+
+    return { query, params };
+  }
+
+  private processRelationshipResults(
+    result: KuzuQueryResult,
+    relationshipType?: string,
+  ): GraphRelationship[] {
+    const relationships: GraphRelationship[] = [];
+
+    while (result.hasNext()) {
+      const row = result.getNext();
+      const relationshipData = row[0]; // Relationship
+      const fromNodeId = row[1]; // From node ID
+      const toNodeId = row[2]; // To node ID
+
+      relationships.push({
+        id: `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        from: fromNodeId,
+        to: toNodeId,
+        type: relationshipType || 'UNKNOWN',
+        properties: relationshipData,
+      });
+    }
+
+    return relationships;
+  }
+
   async getNeighbors(
     nodeId: string,
-    depth: number = 1,
-    relationshipType?: string
+    depth = 1,
+    relationshipType?: string,
   ): Promise<{
     nodes: GraphNode[];
     relationships: GraphRelationship[];
   }> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
-      let query = `MATCH path = (start {id: $})-[r`;
+      let query = 'MATCH path = (start {id: $})-[r';
       if (relationshipType) {
         query += `:${relationshipType}`;
       }
       query += `*1..${depth}]-(neighbor) RETURN nodes(path), relationships(path)`;
 
       const result = await this.connection.query(
-        this.embedParameters(query, [nodeId])
+        this.embedParameters(query, [nodeId]),
       );
       const nodes: GraphNode[] = [];
       const relationships: GraphRelationship[] = [];
@@ -430,36 +529,12 @@ export class KuzuAdapter implements DatabaseAdapter {
         const pathNodes = row[0]; // Nodes in path
         const pathRels = row[1]; // Relationships in path
 
-        // Process nodes
-        for (const node of pathNodes) {
-          if (!nodeIds.has(node.id)) {
-            nodes.push({
-              id: node.id,
-              label: 'Unknown', // Kuzu doesn't return label info in path results
-              properties: node,
-            });
-            nodeIds.add(node.id);
-          }
-        }
-
-        // Process relationships
-        for (const rel of pathRels) {
-          const relId = `rel_${rel.id||Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          if (!relIds.has(relId)) {
-            relationships.push({
-              id: relId,
-              from: rel.src.id,
-              to: rel.dst.id,
-              type: rel.type||'UNKNOWN',
-              properties: rel,
-            });
-            relIds.add(relId);
-          }
-        }
+        this.processPathNodes(pathNodes, nodes, nodeIds);
+        this.processPathRelationships(pathRels, relationships, relIds);
       }
 
       logger.debug(
-        `✅ Found ${nodes.length} neighbors and ${relationships.length} relationships for node ${nodeId}`
+        `✅ Found ${nodes.length} neighbors and ${relationships.length} relationships for node ${nodeId}`,
       );
       return { nodes, relationships };
     } catch (error) {
@@ -468,12 +543,45 @@ export class KuzuAdapter implements DatabaseAdapter {
     }
   }
 
+  private processPathNodes(pathNodes: unknown[], nodes: GraphNode[], nodeIds: Set<string>): void {
+    for (const node of pathNodes) {
+      if (!nodeIds.has(node.id)) {
+        nodes.push({
+          id: node.id,
+          label: 'Unknown', // Kuzu doesn't return label info in path results
+          properties: node,
+        });
+        nodeIds.add(node.id);
+      }
+    }
+  }
+
+  private processPathRelationships(pathRels: unknown[], relationships: GraphRelationship[], relIds: Set<string>): void {
+    for (const rel of pathRels) {
+      const relId = `rel_${rel.id || Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      if (!relIds.has(relId)) {
+        relationships.push({
+          id: relId,
+          from: rel.src.id,
+          to: rel.dst.id,
+          type: rel.type || 'UNKNOWN',
+          properties: rel,
+        });
+        relIds.add(relId);
+      }
+    }
+  }
+
   async updateNode(
     id: string,
-    properties: Record<string, unknown>
+    properties: Record<string, unknown>,
   ): Promise<void> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
       const propsWithUpdate = {
@@ -482,7 +590,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       };
 
       const setPairs = Object.keys(propsWithUpdate).map(
-        (key) => `n.${key} = $`
+        (key) => `n.${key} = $`,
       );
       const query = `MATCH (n {id: $}) SET ${setPairs.join(', ')} RETURN n`;
 
@@ -500,12 +608,16 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   async deleteNode(id: string): Promise<void> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
       // Delete node and all its relationships
-      const query = `MATCH (n {id: $}) DETACH DELETE n`;
+      const query = 'MATCH (n {id: $}) DETACH DELETE n';
 
       const queryWithValues = this.embedParameters(query, [id]);
       await this.connection.query(queryWithValues);
@@ -524,10 +636,14 @@ export class KuzuAdapter implements DatabaseAdapter {
   // Compatibility methods for database adapter interface
   async query<T = unknown>(
     cypher: string,
-    params?: QueryParams
+    params?: QueryParams,
   ): Promise<QueryResult<T>> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     logger.debug(`Executing Cypher query: ${cypher}`, { params });
 
@@ -547,7 +663,7 @@ export class KuzuAdapter implements DatabaseAdapter {
           const row = result.getNext();
           rows.push(row);
         }
-      } catch (getNextError) {
+      } catch {
         // If no results available, that's ok - just return empty array
         logger.debug('No results available from query');
       }
@@ -564,14 +680,18 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   async execute(cypher: string, params: unknown[] = []): Promise<unknown> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     logger.debug(`Executing Cypher command: ${cypher}`, { params });
 
     try {
       const queryWithValues = this.embedParameters(cypher, params);
-      const result = await this.connection.query(queryWithValues);
+      await this.connection.query(queryWithValues);
 
       return {
         affectedRows: 1, // Kuzu doesn't provide exact affected rows
@@ -637,7 +757,9 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   async getSchema(): Promise<unknown> {
-    if (!this.connected||!this.connection) return { tables: [], views: [] };
+    if (!this.connected||!this.connection) {
+      return { tables: [], views: [] };
+    }
 
     try {
       // Use fallback to known schema - safer approach for Kuzu
@@ -709,17 +831,17 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   // DAO compatibility methods
-  async queryGraph(cypher: string, params: any = {}): Promise<unknown> {
+  async queryGraph(cypher: string, params: Record<string, unknown> = {}): Promise<unknown> {
     try {
       // Convert parameters to array format expected by our query method
       const paramArray = Object.values(params);
       const result = await this.query(cypher, paramArray);
 
       return {
-        rows: (result as any).rows||[],
-        rowCount: (result as any).rowCount||0,
-        executionTime: (result as any).executionTime||0,
-        records: ((result as any).rows||[]).map((row: any) => ({
+        rows: result.rows || [],
+        rowCount: result.rowCount || 0,
+        executionTime: result.rowCount || 0, // Approximation since QueryResult doesn't have executionTime
+        records: (result.rows || []).map((row: unknown) => ({
           fields: row,
         })),
       };
@@ -740,7 +862,10 @@ export class KuzuAdapter implements DatabaseAdapter {
       const query = label
         ? `MATCH (n:${label}) RETURN count(n)`
         :'MATCH (n) RETURN count(n)';
-      const result = await this.connection!.query(query);
+      if (!this.connection) {
+        throw new Error('Database not connected');
+      }
+      const result = await this.connection.query(query);
 
       if (result.hasNext()) {
         const row = result.getNext();
@@ -759,7 +884,10 @@ export class KuzuAdapter implements DatabaseAdapter {
       const query = relationshipType
         ? `MATCH ()-[r:${relationshipType}]->() RETURN count(r)`
         : 'MATCH ()-[r]->() RETURN count(r)';
-      const result = await this.connection!.query(query);
+      if (!this.connection) {
+        throw new Error('Database not connected');
+      }
+      const result = await this.connection.query(query);
 
       if (result.hasNext()) {
         const row = result.getNext();

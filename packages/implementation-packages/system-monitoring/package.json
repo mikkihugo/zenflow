@@ -47,5 +47,6 @@
   "peerDependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/telemetry": "workspace:*"
-  }
+  },
+  "private": true
 }

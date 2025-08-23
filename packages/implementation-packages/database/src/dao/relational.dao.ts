@@ -482,14 +482,14 @@ export class RelationalDao<T>
     try {
       const whereClause = criteria
         ? this.buildWhereClause(this.mapEntityToRow(criteria))
-        : ';
+        : '';
       const sql = `SELECT ${aggregateFunction}(${column}) as result FROM ${this.tableName} ${whereClause}`;
       const params = criteria
         ? Object.values(this.mapEntityToRow(criteria))
         : [];
 
       const result = await this.adapter.query(sql, params);
-      return Number((result?.rows?.[0] as any)?.result|'|0);
+      return Number((result?.rows?.[0] as any)?.result || 0);
     } catch (error) {
       this.logger.error(`Aggregate query failed: ${error}`);
       throw new Error(

@@ -149,13 +149,13 @@ export abstract class BaseConnectionPool {
  */
 export class QueryBuilder {
   private selectFields: string[] = [];
-  private fromTable = ';
+  private fromTable = '';
   private whereConditions: string[] = [];
   private orderByFields: string[] = [];
   private limitValue?: number;
   private offsetValue?: number;
 
-  select(fields: string|'string[]): this {
+  select(fields: string | string[]): this {
     if (typeof fields ==='string') {
       this.selectFields.push(fields);
     } else {
@@ -174,7 +174,7 @@ export class QueryBuilder {
     return this;
   }
 
-  orderBy(field: string, direction: 'ASC|DESC'' = 'ASC'): this {
+  orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
     this.orderByFields.push(`${field} ${direction}`);
     return this;
   }

@@ -9,7 +9,6 @@
  * - Clean separation of concerns
  */
 
-import { Result, ok, err } from 'neverthrow';
 import {
   facadeStatusManager,
   getFacadeStatus,
@@ -21,9 +20,7 @@ import {
   getLogger,
   type Logger,
 } from '@claude-zen/foundation';
-
-// UnknownRecord is defined in foundation - use directly
-type UnknownRecord = Record<string, unknown>;
+import { Result, ok, err } from 'neverthrow';
 
 // Type-safe interfaces
 import type {
@@ -33,6 +30,9 @@ import type {
   FacadeStatus,
   ValidationResult,
 } from './types';
+
+// UnknownRecord is defined in foundation - use directly
+type UnknownRecord = Record<string, unknown>;
 
 // Logger available via foundation getLogger function
 
@@ -129,7 +129,7 @@ class InfrastructureFacade {
 
   public async initialize(): Promise<Result<void, Error>> {
     if (this.isInitialized) {
-      return ok(undefined);
+      return ok();
     }
 
     try {
@@ -156,7 +156,7 @@ class InfrastructureFacade {
 
       this.isInitialized = true;
       this.logger.info('Infrastructure facade initialized successfully');
-      return ok(undefined);
+      return ok();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown initialization error';
@@ -446,7 +446,7 @@ export async function recordMetric(
 
   try {
     await telemetryResult.value.recordMetric(name, value);
-    return ok(undefined);
+    return ok();
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Failed to record metric';
@@ -512,8 +512,7 @@ export interface AgentInstance {
 async function loadAgentRegistry() {
   try {
     // Dynamic import to avoid build-time dependency issues
-    const registryModule = await import('@claude-zen/agent-registry');
-    return registryModule;
+    return await import('@claude-zen/agent-registry');
   } catch {
     const logger = getLogger('infrastructure-facade');
     logger.warn(

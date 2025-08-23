@@ -6,7 +6,7 @@
 
 export interface LLMApprovalConfig {
   enabled: boolean;
-  model: 'claude-3-5-sonnet|claude-3-haiku'||claude-3-opus';
+  model: 'claude-3-5-sonnet' | 'claude-3-haiku' | 'claude-3-opus';
   prompt: string;
   criteria: string[];
   confidenceThreshold: number; // 0.0 - 1.0

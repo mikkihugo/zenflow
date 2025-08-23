@@ -11,6 +11,7 @@
 
 import { spawn } from 'node:child_process';
 import { promisify } from 'node:util';
+
 import type { Logger } from '@claude-zen/foundation';
 
 // Simple interfaces for Rust integration
@@ -257,7 +258,7 @@ export class RustNeuralML {
         'dspy-ml,full-acceleration,ml-optimization,bayesian-optimization,multi-objective,pattern-learning,statistical-analysis',
       ];
 
-      return this.executeCommand(
+      return await this.executeCommand(
         'cargo',
         ['run', '--release', ...features, '--'].concat(args),
         {
@@ -266,11 +267,11 @@ export class RustNeuralML {
       );
     } else {
       // Use compiled binary
-      return this.executeCommand(this.rustPath, args);
+      return await this.executeCommand(this.rustPath, args);
     }
   }
 
-  private async executeCommand(
+  private executeCommand(
     command: string,
     args: string[],
     options: { cwd?: string } = {}
@@ -281,8 +282,8 @@ export class RustNeuralML {
         cwd: options.cwd,
       });
 
-      let stdout = ';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
       child.stdout?.on('data', (data) => {
         stdout += data.toString();
@@ -294,7 +295,7 @@ export class RustNeuralML {
 
       child.on('close', (code) => {
         if (code === 0) {
-          resolve(stdout.trim())();
+          resolve(stdout.trim());
         } else {
           reject(new Error(`Command failed with code ${code}: ${stderr}`));
         }

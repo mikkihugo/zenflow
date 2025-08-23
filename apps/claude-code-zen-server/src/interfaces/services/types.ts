@@ -1,219 +1,741 @@
 /**
  * @file USL (Unified Service Layer) Types and Configuration.
  *
- * Centralized type definitions and configuration schemas for all service types.
+ * Centralized type definitions and configuration schemas for all service types
  * in the Claude-Zen ecosystem.
  */
 
-import(/core/interfaces);
+import type { ServiceOperationOptions } from './core/interfaces';
 
 /**
  * Service type enumeration for all supported service categories.
  */
-export enum ServiceType { // Data Services DATA = 'data', WEB_DATA = 'web-data', DOCUMENT = 'document', // Coordination Services COORDINATION = 'coordination', SWARM = 'swarm', ORCHESTRATION = 'orchestration', DAA = 'daa', // Data Accessibility and Analysis SESSION_RECOVERY = 'session-recovery', ARCHITECTURE_STORAGE = 'architecture-storage', // Interface Services API = 'api', SAFE_API = 'safe-api', WEB = 'web', MCP = 'mcp', CLI = 'cli', // Neural Services NEURAL = 'neural', LEARNING = 'learning', PATTERN_RECOGNITION = 'pattern-recognition', // Memory Services MEMORY = 'memory', CACHE = 'cache', SESSION = 'session', // Database Services DATABASE = 'database', VECTOR = 'vector', GRAPH = 'graph', // System Services NFRASTRUCTURE = 'infrastructure', SYSTEM = 'system', HEALTH = 'health', MONITORING = 'monitoring', LOGGING = 'logging', SECURITY = 'security', // Workflow Services WORKFLOW = 'workflow', TASK = 'task', PIPELINE = 'pipeline', // Communication Services WEBSOCKET = 'websocket', MESSAGE_QUEUE = 'message-queue', EVENT_BUS = 'event-bus', // Custom service type CUSTOM = 'custom',
+export enum ServiceType {
+  // Data Services
+  DATA = 'data',
+  WEB_DATA = 'web-data',
+  DOCUMENT = 'document',
+  // Coordina'ion Services
+  COORDINATION = 'coordination',
+  SWARM = 'swarm',
+  ORCHESTRATION = 'orchestration',
+  DAA = 'daa',
+  // D'ta Accessibility and Analysis
+  SESSION_RECOVERY = 'session-recovery',
+  ARCHITECTURE_STORAGE = 'architecture-storage',
+  // Int'rface Services
+  API = 'api',
+  SAFE_API = 'safe-api',
+  WEB = 'web',
+  MCP = 'mcp',
+  CLI = 'cli',
+  // Neural Serv'ces
+  NEURAL = 'neural',
+  LEARNING = 'learning',
+  PATTERN_RECOGNITION = 'pattern-recognition',
+  // Memory Services
+  MEMORY = 'memory',
+  CACHE = 'cache',
+  SESSION = 'session',
+  // Database Services
+  DATABASE = 'database',
+  VECTOR = 'vector',
+  GRAPH = 'graph',
+  // System Services
+  INFRASTRUCTURE = 'infrastructure',
+  SYSTEM = 'system',
+  HEALTH = 'health',
+  MONITORING = 'monitoring',
+  LOGGING = 'logging',
+  SECURITY = 'security',
+  // Workflow Services
+  WORKFLOW = 'workflow',
+  TASK = 'task',
+  PIPELINE = 'pipeline',
+  // Communication S'rvices
+  WEBSOCKET = 'websocket',
+  MESSAGE_QUEUE = 'message-queue',
+  EVENT_BUS = 'event-bus',
+  // Cu'tom service type
+  CUSTOM = 'custom'
+
 }
 
 /**
- * Service status enumeration
+ * Service status enu'eration
  */
-export enum ServiceStatus { CREATED = 'created', STARTING = 'starting', RUNNING = 'running', STOPPING = 'stopping', STOPPED = 'stopped', ERROR = 'error',
+export enum ServiceStatus {
+  CREATED = 'created',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  STOPPING = 'stopping',
+  STOPPED = 'stopped',
+  ERROR = 'error'
+
 }
 
 /**
- * Service dependency specification
+ * Se'vice dependency specification
  */
-export interface ServiceDependency { serviceName: string; required: boolean;
+export interface ServiceDependency {
+  serviceName: string;
+  required: boolean;
+  version?: string;
+  startupOrder?: number
+
+}
+
+/**
+ * Service metrics for monitoring and health checks
+ */
+export interface ServiceMetrics {
+  uptime: number;
+  responseTime: number;
+  errorRate: number;
+  throughput: number;
+  memoryUsage: number;
+  cpuUsage?: number;
+  customMetrics?: Record<string,
+  number | string>
+
 }
 
 /**
  * Service health information
  */
-export interface ServiceHealth { status: 'healthy  |degraded || unheal't''h'y'); checks: Record<string, boolean>; metrics: ServiceMetrics; lastCheck: Date;
+export interface ServiceHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  checks: Record<string,
+  boolean>;
+  metrics: ServiceMetrics;
+  lastCheck: Date;
+  details?: Record<string,
+  any>
+
 }
 
 /**
  * Service creation request
  */
-export interface ServiceRequest { name: string; type: ServiceType; config?: Record<string, unknown>; dependencies?: ServiceDependency[];
+export interface ServiceRequest {
+  name: string;
+  type: ServiceType;
+  config?: Record<string,
+  unknown>;
+  dependencies?: ServiceDependency[];
+  metadata?: Record<string,
+  any>
+
 }
 
 /**
  * Batch service request for multiple services
  */
-export interface BatchServiceRequest { services: ServiceRequest[]; parallel: boolean; startImmediately: boolean;
+export interface BatchServiceRequest {
+  services: ServiceRequest[];
+  parallel: boolean;
+  startImmediately: boolean;
+  dependencyResolution?: boolean;
+  timeout?: number
+
+}
+
+/**
+ * Service operation result
+ */
+export interface ServiceOperationResult {
+  success: boolean;
+  serviceName: string;
+  operation: string;
+  timestamp: Date;
+  duration?: number;
+  error?: string;
+  metadata?: Record<string,
+  any>
+
+}
+
+/**
+ * Batch service operation result
+ */
+export interface BatchServiceOperationResult {
+  overall: 'success' | 'partial' | 'failure';
+  results: ServiceOperationResult[];
+  summary: {
+  total: number;
+  successful: number;
+  failed: number;
+  duration: number
+
+}
 }
 
 /**
  * Service manager configuration
  */
-export interface ServiceManagerConfig { factory: { maxConcurrentInits: number; enableDependencyResolution: boolean; }; lifecycle: { startupTimeout: number; parallelStartup: boolean; dependencyResolution: boolean; }; monitoring: { healthCheckInterval: number; performanceThresholds: { responseTime: number; errorRate: number; }; }; recovery: { enabled: boolean; maxRetries: number; strategy: 'linear ' || exponential); };
+export interface ServiceManagerConfig {
+  factory: {
+  maxConcurrentInits: number;
+  enableDependencyResolution: boolean;
+  defaultTimeout: number;
+  enableHealthChecks: boolean
+
+};
+  lifecycle: {
+  startupTimeout: number;
+    shutdownTimeout: number;
+    parallelStartup: boolean;
+    dependencyResolution: boolean;
+    gracefulShutdown: boolean
+
+};
+  monitoring: {
+    healthCheckInterval: number;
+    metricsCollectionInterval: number;
+    performanceThresholds: {
+  responseTime: number;
+      errorRate: number;
+      memoryUsage: number
+
+};
+    alerting: {
+  enabled: boolean;
+  channels: string[]
+}
+};
+  recovery: {
+  enabled: boolean;
+    maxRetries: number;
+    strategy: 'linear' | 'exponential';
+    backoffDelay: number;
+    circuitBreakerThreshold: number
+
+}
 }
 
 /**
- * Service interface definition
+ * Service configuration schema
  */
-export interface Service { name: string; type: ServiceType; status: ServiceStatus; dependencies: ServiceDependency[]; metrics: ServiceMetrics; start(): Promise<void>; stop(): Promise<void>; restart(): Promise<void>; getHealth(): Promise<ServiceHealth>;
+export interface ServiceConfigSchema {
+  type: ServiceType;
+  required: string[];
+  optional: string[];
+  defaults: Record<string,
+  any>;
+  validators?: Record<string,
+  (value: any) => boolean>
+
 }
 
 /**
- * Service priority levels for initialization and resource allocation.
+ * Service registry entry
  */
-export enum ServicePriority { CRITICAL = 0, // System-critical services (database, logging) HIGH = 1, // Important services (authentication, security) NORMAL = 2, // Standard services (API, web) LOW = 3, // Optional services (monitoring, analytics) BACKGROUND = 4, // Background services (cleanup, optimization)
+export interface ServiceRegistryEntry {
+  name: string;
+  type: ServiceType;
+  status: ServiceStatus;
+  instance: any;
+  // The actual service instance
+  config: Record<string, unknown>;
+  dependencies: ServiceDependency[];
+  health: ServiceHealth;
+  metadata: {
+  createdAt: Date;
+  lastStarted?: Date;
+  lastStopped?: Date;
+  version?: string;
+  description?: string
+
+}
 }
 
 /**
- * Service environment configuration.
+ * Service factory configuration
  */
-export enum ServiceEnvironment { DEVELOPMENT =developme'n''t', TESTING = 'testing', STAGING = 'staging', PRODUCTION = 'production',
+export interface ServiceFactoryConfig {
+  enableValidation: boolean;
+  enableDependencyInjection: boolean;
+  enableAspectOrientedProgramming: boolean;
+  enableMetrics: boolean;
+  enableHealthChecks: boolean;
+  defaultServiceConfig: Record<string,
+  any>
+
 }
 
 /**
- * Base service configuration with common properties.
- *
- * @example
+ * Service adapter interface for different service implementations
  */
-export interface BaseServiceConfig extends ServiceConfig { type: ServiceType | string; priority?: ServicePriority; environment?: ServiceEnvironment; tags?: string[];
+export interface ServiceAdapter<T = any> {
+  name: string;
+  type: ServiceType;
+  status: ServiceStatus;
+  config: Record<string,
+  unknown>;
+
+  // Lifecycle methods
+  initialize(options?: ServiceOperationOptions): Promise<void>;
+  start(options?: ServiceOperationOptions): Promise<void>;
+  stop(options?: ServiceOperationOptions): Promise<void>;
+  restart(options?: ServiceOperationOptions): Promise<void>;
+
+  // Health and monitoring
+  getHealth(): Promise<ServiceHealth>;
+  getMetrics(): Promise<ServiceMetrics>;
+
+  // Configuration
+  updateConfig(config: Partial<Record<string,
+  unknown>>): Promise<void>;
+  getConfig(): Record<string,
+  unknown>;
+
+  // Service-specific functionality
+  getInstance(): T;
+
+  // Event handling
+  on?(event: string,
+  handler: (...args: any[]) => void): void;
+  off?(event: string,
+  handler: (...args: any[]) => void): void;
+  emit?(event: string,
+  ...args: any[]): void
+
 }
 
 /**
- * Data service configuration for data management services.
- *
- * @example
+ * Service validation result
  */
-export interface DataServiceConfig extends BaseServiceConfig { type: ServiceType.DATA || ServiceType.WEB_DATA  || ServiceType.DOCUMENT; dataSource?: { type: database | memory || ' 'file | a'p'i'); connection?: string; options?: Record<string, unknown>; }; caching?: { enabled: boolean; ttl?: number; maxSize?: number; }; validation?: { enabled: boolean; strict?: boolean; schemas?: Record<string, unknown>; };
+export interface ServiceValidationResult {
+  valid: boolean;
+  errors: Array<{
+    field: string;
+  message: string;
+  code: string
+}>;
+  warnings: Array<{
+  field: string;
+    message: string;
+    code: string
+
+}>
 }
 
 /**
- * Web service configuration for HTTP/WebSocket services.
- *
- * @example
+ * Service event types
  */
-export interface WebServiceConfig extends BaseServiceConfig { type: ServiceType.WEB || ServiceType.API || ServiceType.SAFE_API  || ServiceType.WEBSOCKET; server?: { host?: string; port?: number; ssl?: { enabled: boolean; cert?: string; key?: string; }; }; cors?: { enabled: boolean; origins?: string[]; methods?: string[]; headers?: string[]; }; rateLimit?: { enabled: boolean; requests?: number; window?: number; // milliseconds skipSuccessfulRequests?: boolean; }; middleware?: { compression?: boolean; helmet?: boolean; morgan?: boolean; custom?: Array<{ name: string; options?: Record<string, unknown>; }>; };
+export type ServiceEventType =
+  | 'created'
+  | 'initialized'
+  | 'starting'
+  | 'started'
+  | 'stopping'
+  | 'stopped'
+  | 'error'
+  | 'health-check'
+  | 'config-updated'
+  | 'dependency-resolved'
+  | 'metrics-collected';
+
+/**
+ * Service event payload
+ */
+export interface ServiceEvent<T = any> {
+  type: ServiceEventType;
+  serviceName: string;
+  serviceType: ServiceType;
+  timestamp: Date;
+  payload?: T;
+  metadata?: Record<string,
+  any>
+
 }
 
 /**
- * Coordination service configuration for swarm and orchestration.
- *
- * @example
+ * Service discovery configuration
  */
-export interface CoordinationServiceConfig extends BaseServiceConfig { typ'e'': ServiceType.COORDINATION || ServiceType.SWARM || ServiceType.ORCHESTRATION || ServiceType.DAA || ServiceType.SESSION_RECOVERY; coordination?: { topology?': 'mesh  |hierarchical| 'ring | sta'r'); maxAgents?: number; strategy?: 'parallel  |sequential || adapt'i''v'e'); timeout?: number; }; persistence?: { enabled: boolean; storage?: 'memory  |database || f'i''l'e'); compression?: boolean; }; recovery?: { enabled: boolean; checkInterval?: number; maxRetries?: number; backupInterval?: number; };
+export interface ServiceDiscoveryConfig {
+  enabled: boolean;
+  provider: 'local' | 'consul' | 'etcd' | 'kubernetes';
+  endpoint?: string;
+  namespace?: string;
+  healthCheckPath?: string;
+  tags?: string[]
+
 }
 
 /**
- * Neural service configuration for AI and ML services.
- *
- * @example
+ * Service scaling configuration
  */
-export interface NeuralServiceConfig extends BaseServiceConfig { type: ServiceType.NEURAL || ServiceType.LEARNING  || ServiceType.PATTERN_RECOGNITION; model?: { typ'e'':'neural-network | transformer' || cust'o''m'); path?: string; config?: Record<string, unknown>; }; training?: { enabled: boolean; dataPath?: string; batchSize?: number; epochs?: number; learningRate?: number; }; inference?: { batchSize?: number; timeout?: number; caching?: boolean; }; gpu?: { enabled: boolean; deviceId?: number; memoryLimit?: number; };
+export interface ServiceScalingConfig {
+  enabled: boolean;
+  minInstances: number;
+  maxInstances: number;
+  targetCpuUtilization: number;
+  targetMemoryUtilization: number;
+  scaleUpCooldown: number;
+  scaleDownCooldown: number
+
 }
 
 /**
- * Memory service configuration for caching and session management.
- *
- * @example
+ * Service security configuration
  */
-export interface MemoryServiceConfig extends BaseServiceConfig { type: ServiceType.MEMORY || ServiceType.CACHE || ServiceType.SESSION; storage?: { type: 'memory  |redis| 'memcached | databas'e'); connection?: string; maxMemory?: number; }; eviction?: { policy: 'lru  |lfu| 'fifo | tt'l'); maxSize?: number; ttl?: number; }; serialization?: { type: 'json  |msgpack || cus't''o'm'); compression?: boolean; }; persistence?: { enabled: boolean; interval?: number; path?: string; };
+export interface ServiceSecurityConfig {
+  authentication: {
+  enabled: boolean;
+  provider: 'jwt' | 'oauth' | 'basic' | 'custom';
+  config: Record<string,
+  any>
+
+};
+  authorization: {
+  enabled: boolean;
+    provider: 'rbac' | 'abac' | 'custom';
+    config: Record<string,
+  any>
+
+};
+  encryption: {
+  enabled: boolean;
+    algorithm: string;
+    keyRotationInterval?: number
+
+};
+  rateLimit: {
+  enabled: boolean;
+    windowMs: number;
+    maxRequests: number
+
+}
 }
 
 /**
- * Database service configuration for database integrations.
- *
- * @example
+ * Service network configuration
  */
-export interface DatabaseServiceConfig extends BaseServiceConfig { type: ServiceType.DATABASE || ServiceType.VECTOR || ServiceType.GRAPH; connection?: { host?: string; port?: number; database?: string; username?: string; password?: string; ssl?: boolean; poolSize?: number; }; migrations?: { enabled: boolean; path?: string; autoRun?: boolean; }; backup?: { enabled: boolean; interval?: number; retention?: number; path?: string; }; performance?: { queryTimeout?: number; connectionTimeout?: number; idleTimeout?: number; maxRetries?: number; };
+export interface ServiceNetworkConfig {
+  host?: string;
+  port?: number;
+  protocol?: 'http' | 'https' | 'tcp' | 'udp';
+  ssl?: {
+    enabled: boolean;
+  cert?: string;
+  key?: string
+};
+  proxy?: {
+  enabled: boolean;
+    target: string;
+    pathRewrite?: Record<string,
+  string>
+
+};
+  cors?: {
+  enabled: boolean;
+    origin: string | string[];
+    methods: string[];
+    headers: string[]
+
+}
 }
 
 /**
- * Interface service configuration for CLI, MCP services.
- *
- * @example
+ * Comprehensive service configuration
  */
-export interface InterfaceServiceConfig extends BaseServiceConfig { type: ServiceType.CLI  || ServiceType.MCP; interface?: { interactive?: boolean; colors?: boolean; prompt?: string; history?: boolean; }; commands?: { prefix?: string; aliases?: Record<string, string>; plugins?: string[]; }; output?: { format?: text | json || ' 'yaml | tab'l'e'); verbosity?: 'minimal  |normal| 'verbose | debu'g'); streaming?: boolean; };
+export interface ComprehensiveServiceConfig {
+  name: string;
+  type: ServiceType;
+  description?: string;
+  version?: string;
+  // Core configuration
+  core: Record<string, any>;
+  // Optional configurations
+  discovery?: ServiceDiscoveryConfig;
+  scaling?: ServiceScalingConfig;
+  security?: ServiceSecurityConfig;
+  network?: ServiceNetworkConfig;
+  // Dependencies and relationships
+  dependencies?: ServiceDependency[];
+  // Environment-specific overrides
+  environment?: {
+  development?: Partial<ComprehensiveServiceConfig>;
+  staging?: Partial<ComprehensiveServiceConfig>;
+  production?: Partial<ComprehensiveServiceConfig>
+
+}
 }
 
 /**
- * Monitoring service configuration for health and performance tracking.
- *
- * @example
+ * Service template for creating services with predefined configurations
  */
-export interface MonitoringServiceConfig extends BaseServiceConfig { type: ServiceType.HEALTH || ServiceType.MONITORING  || ServiceType.LOGGING; metrics?: { enabled: boolean; interval?: number; retention?: number; aggregation?: none | avg || ' 'sum | m'a'x' || min); }; alerts?: { enabled: boolean; thresholds?: Record<string, number>; channels?: Array<{ type: email | webho'o''k | conso'l'e'); config: Record<string, unknown>; }>; }; storage?: { type: 'memory  |database| 'file | externa'l'); connection?: string; compression?: boolean; };
+export interface ServiceTemplate {
+  name: string;
+  description: string;
+  serviceType: ServiceType;
+  configTemplate: ComprehensiveServiceConfig;
+  variables?: Array<{
+  name: string;
+  description: string;
+  type: 'string' | 'number' | 'boolean' | 'object';
+  required: boolean;
+  default?: any
+
+}>
 }
 
 /**
- * Workflow service configuration for task and pipeline management.
- *
- * @example
+ * Service blueprint for complex service compositions
  */
-export interface WorkflowServiceConfig extends BaseServiceConfig { type: ServiceType.WORKFLOW || ServiceType.TASK  || ServiceType.PIPELINE; execution?: { parallel?: boolean; maxConcurrency?: number; timeout?: number; retries?: number; }; scheduling?: { enabled: boolean; cron?: string; timezone?: string; }; state?: { persistence: boolean; storage?: memory | database || 'f''i'l'e'); compression?: boolean; }; notifications?: { enabled: boolean; events?: string[]; channels?: string[]; };
+export interface ServiceBlueprint {
+  name: string;
+  description: string;
+  version: string;
+  services: Array<{
+  template: string;
+  config: Record<string,
+  any>;
+  dependencies?: string[]
+
+}>;
+  workflow?: Array<{
+  step: string;
+    services: string[];
+    parallel: boolean;
+    condition?: string
+
+}>
+}
+
+// ============================================
+// Type Guards and Utilities
+// ============================================
+
+/**
+ * Type guard to check if an object is a ServiceRequest
+ */
+export function isServiceRequest(obj: any): obj is ServiceRequest  {
+  return obj &&
+    typeof obj.name === 'string' &&
+    Object.values(ServiceType).includes(obj.type)
+
 }
 
 /**
- * Integration service configuration for integration services.
- *
- * @example
+ * Type 'uard to check if an object is a ServiceHealth
  */
-export interface IntegrationServiceConfig extends BaseServiceConfig { type: ServiceType.API || ServiceType.SAFE_API || ServiceType.ARCHITECTURE_STORAGE; integration?: { architectureStorage?: boolean; safeAPI?: boolean; protocolManagement?: boolean; multiProtocol?: boolean; }; protocols?: { supported?: string[]; default?: string; failover?: boolean; loadBalancing?: boolean; }; performance?: { caching?: boolean; deduplication?: boolean; connectionPooling?: boolean; metricsCollection?: boolean; }; security?: { validation?: boolean; sanitization?: boolean; rateLimiting?: boolean; auditLogging?: boolean; };
+export function isServiceHealth(obj: any): obj is ServiceHealth  {
+  return obj &&
+    ['healthy',
+  'degraded',
+  'unhealthy].includes(obj.status) &&
+    obj.checks &&
+    obj.metrics &&
+    obj.lastCheck instanceof Date
+
 }
 
 /**
- * Infrastructure service configuration for infrastructure and system services.
- *
- * @example
+ * T'pe guard to check if an object is a ServiceAdapter
  */
-export interface InfrastructureServiceConfig extends BaseServiceConfig { type: ServiceType.NFRASTRUCTURE || ServiceType.SYSTEM  || ServiceType.MONITORING; facade?: { enabled: boolean; autoInitialize?: boolean; enableCaching?: boolean; enableMetrics?: boolean; enableHealthChecks?: boolean; systemStatusInterval?: number; }; patternIntegration?: { enabled: boolean; configProfile'?'':'default | production' || developme'n''t'); enableEventSystem?: boolean; enableCommandSystem?: boolean; enableProtocolSystem?: boolean; enableAgentSystem?: boolean; }; orchestration?: { enableServiceDiscovery?: boolean; enableLoadBalancing?: boolean; enableCircuitBreaker?: boolean; maxConcurrentServices?: number; serviceStartupTimeout?: number; shutdownGracePeriod?: number; }; resourceManagement?: { enableResourceTracking?: boolean; enableResourceOptimization?: boolean; memoryThreshold?: number; cpuThreshold?: number; diskThreshold?: number; networkThreshold?: number; cleanupInterval?: number; }; configManagement?: { enableHotReload?: boolean; enableValidation?: boolean; enableVersioning?: boolean; reloadCheckInterval?: number; backupConfigs?: boolean; maxConfigHistory?: number; }; eventCoordination?: { enableCentralizedEvents?: boolean; enableEventPersistence?: boolean; enableEventMetrics?: boolean; maxEventQueueSize?: number; eventRetentionPeriod?: number; enableEventFiltering?: boolean; }; healthMonitoring?: { enableAdvancedChecks?: boolean; enableServiceDependencyTracking?: boolean; enablePerformanceAlerts?: boolean; healthCheckTimeout?: number; performanceThresholds?: { responseTime?: number; errorRate?: number; resourceUsage?: number; }; };
+export function isServiceAdapter(obj: any): obj is ServiceAdapter  {
+  return obj &&
+    typeof obj.name === 'string' &&
+    Object.values(ServiceType).includes(obj.type) &&
+    Object.values(ServiceStatus).includes(obj.status) &&
+    typeof obj.initialize === 'function' &&
+    typeof obj.start === 'function' &&
+    typeof obj.stop === 'function;
+
+}
+
+// ============================================
+// Utility Types
+// ============================================
+
+/**
+ * Extract service names from a service registry
+ */
+export type ServiceNames<T extends Record<string, ServiceRegistryEntry>> = keyof T;
+
+/**
+ * Extract service types from a service registry
+ */
+export type ServiceTypes<T extends Record<string, ServiceRegistryEntry>> =
+  T[keyof T]['type]';
+
+/**
+ * Service configuration for a specific service type
+ */
+export type ServiceConfigFor<T extends ServiceType> =
+  T extends ServiceType.DATABASE ? DatabaseServiceConfig :
+  T extends ServiceType.WEB ? WebServiceConfig :
+  T extends ServiceType.API ? ApiServiceConfig :
+  Record<string, any>;
+
+// Specific service configuration interfaces
+export interface DatabaseServiceConfig {
+  connectionString: string;
+  poolSize: number;
+  timeout: number;
+  ssl: boolean
+
+}
+
+export interface WebServiceConfig {
+  port: number;
+  host: string;
+  staticPath?: string;
+  cors?: boolean
+
+}
+
+export interface ApiServiceConfig {
+  basePath: string;
+  version: string;
+  authentication: boolean;
+  rateLimit: boolean
+
+}
+
+// ============================================
+// Constants and Defaults
+// ============================================
+
+/**
+ * Default service manager configuration
+ */
+export const DEFAULT_SERVICE_MANAGER_CONFIG: ServiceManagerConfig = {
+  factory: {
+  maxConcurrentInits: 5,
+  enableDependencyResolution: true,
+  defaultTimeout: 30000,
+  enableHealthChecks: true
+
+},
+  lifecycle: {
+  startupTimeout: 60000,
+  shutdownTimeout: 30000,
+  parallelStartup: true,
+  dependencyResolution: true,
+  gracefulShutdown: true
+
+},
+  monitoring: {
+    healthCheckInterval: 30000,
+    metricsCollectionInterval: 10000,
+    performanceThresholds: {
+  responseTime: 1000,
+  errorRate: 0.05,
+  memoryUsage: 0.8
+
+},
+    alerting: {
+  enabled: false,
+  channels: []
+
+}
+},
+  recovery: {
+  enabled: true,
+  maxRetries: 3,
+  strategy: 'exponential',
+  backoffDeay: 1000,
+  circuitBreakerThreshold: 5
+
+}
+};
+
+/**
+ * Service type categories for organizing services
+ */
+export const SERVICE_TYPE_CATEGORIES = {
+  DATA: [ServiceType.DATA,
+  ServiceType.WEB_DATA,
+  ServiceType.DOCUMENT,
+  ServiceType.DATABASE,
+  ServiceType.VECTOR,
+  ServiceType.GRAPH],
+  COORDINATION: [ServiceType.COORDINATION,
+  ServiceType.SWARM,
+  ServiceType.ORCHESTRATION,
+  ServiceType.DAA],
+  INTERFACE: [ServiceType.API,
+  ServiceType.SAFE_API,
+  ServiceType.WEB,
+  ServiceType.MCP,
+  ServiceType.CLI],
+  NEURAL: [ServiceType.NEURAL,
+  ServiceType.LEARNING,
+  ServiceType.PATTERN_RECOGNITION],
+  MEMORY: [ServiceType.MEMORY,
+  ServiceType.CACHE,
+  ServiceType.SESSION],
+  SYSTEM: [ServiceType.INFRASTRUCTURE,
+  ServiceType.SYSTEM,
+  ServiceType.HEALTH,
+  ServiceType.MONITORING,
+  ServiceType.LOGGING,
+  ServiceType.SECURITY],
+  WORKFLOW: [ServiceType.WORKFLOW,
+  ServiceType.TASK,
+  ServiceType.PIPELINE],
+  COMMUNICATION: [ServiceType.WEBSOCKET,
+  ServiceType.MESSAGE_QUEUE,
+  ServiceType.EVENT_BUS]
+
+} as const;
+
+/**
+ * Priority levels for service startup ordering
+ */
+export enum ServicePriority {
+  CRITICAL = 'critical',
+  // Must start first(
+  e.g.,
+  database,
+  'ogging
+)
+  HIGH = 'high',
+  // Important services(
+  e.g.,
+  aut'entication,
+  cache
+)
+  MEDIUM = 'medium',
+  // Standard services (e.g.,
+  API endpoints)
+  LOW = 'low'              // Optional services (e.g.,
+  background tasks)
+
 }
 
 /**
- * Union type for all service configurations.
+ * Service startup phases for coordinated initialization
  */
-export type AnyServiceConfig = DataServiceConfig  || WebServiceConfig | CoordinationServiceConf'i''g | NeuralServiceConfi'g | MemoryServiceConfig  || DatabaseServiceConfig | InterfaceServiceConf'i''g | IntegrationServiceConfi'g | InfrastructureServiceConfig  || MonitoringServiceConf'i''g | WorkflowServiceConfig' ' || BaseServiceConfig;
+export enum ServiceStartupPhase {
+  FOUNDATION = 'foundation',
+  // Core i'frastructure services
+  PLATFORM = 'platform',
+  // Platfor' services
+  APPLICATION = 'application',
+  // Applicatio' services
+  INTEGRATION = 'integration',
+  // I'tegration services
+  OPTIMIZATION = 'optimization'  // Performa'ce and monitoring services
 
-/**
- * Service configuration factory for creating typed configurations.
- *
- * @example
- */
-export class ServiceConfigFactory { /** * Create a data service configuration. * * @param name * @param options */ static createDataServiceConfig( name: string, options?: Partial<DataServiceConfig> ): DataServiceConfig { return { name, type: ServiceType.DATA, enabled: true, priority: ServicePriority.NORMAL, environment: ServiceEnvironment.DEVELOPMENT, timeout: 30000, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: false, }, ...options, }; } /** * Create a web service configuration. * * @param name * @param options */ static createWebServiceConfig( name: string, options?: Partial<WebServiceConfig> ): WebServiceConfig { return { name, type: ServiceType.WEB, enabled: true, priority: ServicePriority.HIGH, environment: ServiceEnvironment.DEVELOPMENT, timeout: 30000, server: { host:localho's''t', port: 3000, }, cors: { enabled: true, origins: ['*'], methods: ['GET, POST', 'PUT, DELETE', 'OPTIONS'], headers: ['Content-Type, Authorization'], }, rateLimit: { enabled: false, requests: 100, window: 60000, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create a coordination service configuration. * * @param name * @param options */ static createCoordinationServiceConfig( name: string, options?: Partial<CoordinationServiceConfig> ): CoordinationServiceConfig { return { name, type: ServiceType.COORDINATION, enabled: true, priority: ServicePriority.HIGH, environment: ServiceEnvironment.DEVELOPMENT, timeout: 60000, coordination: { topology: 'mesh', maxAgents: 10, strategy: 'adaptive', timeout: 30000, }, persistence: { enabled: true, storage: 'memory', compression: false, }, recovery: { enabled: true, checkInterval: 10000, maxRetries: 3, backupInterval: 60000, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create a neural service configuration. * * @param name * @param options */ static createNeuralServiceConfig( name: string, options?: Partial<NeuralServiceConfig> ): NeuralServiceConfig { return { name, type: ServiceType.NEURAL, enabled: true, priority: ServicePriority.NORMAL, environment: ServiceEnvironment.DEVELOPMENT, timeout: 120000, model: { type: 'neural-network', config: {}, }, training: { enabled: false, batchSize: 32, epochs: 100, learningRate: .001, }, inference: { batchSize: 1, timeout: 30000, caching: true, }, gpu: { enabled: false, }, health: { enabled: true, interval: 60000, timeout: 10000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 30000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create a memory service configuration. * * @param name * @param options */ static createMemoryServiceConfig( name: string, options?: Partial<MemoryServiceConfig> ): MemoryServiceConfig { return { name, type: ServiceType.MEMORY, enabled: true, priority: ServicePriority.HIGH, environment: ServiceEnvironment.DEVELOPMENT, timeout: 30000, storage: { type: 'memory', maxMemory: 1024 * 1024 * 100, // 100MB }, eviction: { policy: 'lru', maxSize: 10000, ttl: 3600000, // 1 hour }, serialization: { type: 'json', compression: false, }, persistence: { enabled: false, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create a database service configuration. * * @param name * @param options */ static createDatabaseServiceConfig( name: string, options?: Partial<DatabaseServiceConfig> ): DatabaseServiceConfig { return { name, type: ServiceType.DATABASE, enabled: true, priority: ServicePriority.CRITICAL, environment: ServiceEnvironment.DEVELOPMENT, timeout: 60000, connection: { host: 'localhost', port: 5432, poolSize: 10, }, migrations: { enabled: true, autoRun: false, }, backup: { enabled: false, interval: 86400000, // 24 hours retention: 7, // 7 days }, performance: { queryTimeout: 30000, connectionTimeout: 10000, idleTimeout: 300000, // 5 minutes maxRetries: 3, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create a monitoring service configuration. * * @param name * @param options */ static createMonitoringServiceConfig( name: string, options?: Partial<MonitoringServiceConfig> ): MonitoringServiceConfig { return { name, type: ServiceType.MONITORING, enabled: true, priority: ServicePriority.LOW, environment: ServiceEnvironment.DEVELOPMENT, timeout: 30000, metrics: { enabled: true, interval: 5000, retention: 86400000, // 24 hours aggregation: 'avg', }, alerts: { enabled: false, thresholds: { 'cpu.usage': 80, 'memory.usage': 85, 'error.rate': 5, }, }, storage: { type: 'memory', compression: true, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: false, // Don't monitor the monitoring service itself metricsInterval: 30000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create an integration service configuration. * * @param name * @param options */ static createIntegrationServiceConfig( name: string, options?: Partial<IntegrationServiceConfig> ): IntegrationServiceConfig { return { name, type: ServiceType.API, enabled: true, priority: ServicePriority.HIGH, environment: ServiceEnvironment.DEVELOPMENT, timeout: 30000, integration: { architectureStorage: true, safeAPI: true, protocolManagement: true, multiProtocol: true, }, protocols: { supported: ['http, websocket', 'mcp-http, mcp-stdio'], default: 'http', failover: true, loadBalancing: true, }, performance: { caching: true, deduplication: true, connectionPooling: true, metricsCollection: true, }, security: { validation: true, sanitization: true, rateLimiting: true, auditLogging: true, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create an infrastructure service configuration. * * @param name * @param options */ static createInfrastructureServiceConfig( name: string, options?: Partial<InfrastructureServiceConfig> ): InfrastructureServiceConfig { return { name, type: ServiceType.NFRASTRUCTURE, enabled: true, priority: ServicePriority.HIGH, environment: ServiceEnvironment.DEVELOPMENT, timeout: 30000, facade: { enabled: true, autoInitialize: true, enableCaching: true, enableMetrics: true, enableHealthChecks: true, systemStatusInterval: 30000, }, patternIntegration: { enabled: true, configProfile: 'development', enableEventSystem: true, enableCommandSystem: true, enableProtocolSystem: true, enableAgentSystem: true, }, orchestration: { enableServiceDiscovery: true, enableLoadBalancing: true, enableCircuitBreaker: true, maxConcurrentServices: 20, serviceStartupTimeout: 30000, shutdownGracePeriod: 10000, }, resourceManagement: { enableResourceTracking: true, enableResourceOptimization: true, memoryThreshold: .8, cpuThreshold: .8, diskThreshold: .9, networkThreshold: .8, cleanupInterval: 300000, }, configManagement: { enableHotReload: true, enableValidation: true, enableVersioning: true, reloadCheckInterval: 30000, backupConfigs: true, maxConfigHistory: 50, }, eventCoordination: { enableCentralizedEvents: true, enableEventPersistence: false, enableEventMetrics: true, maxEventQueueSize: 10000, eventRetentionPeriod: 3600000, enableEventFiltering: true, }, healthMonitoring: { enableAdvancedChecks: true, enableServiceDependencyTracking: true, enablePerformanceAlerts: true, healthCheckTimeout: 5000, performanceThresholds: { responseTime: 1000, errorRate: .05, resourceUsage: .8, }, }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; } /** * Create a workflow service configuration. * * @param name * @param options */ static createWorkflowServiceConfig( name: string, options?: Partial<WorkflowServiceConfig> ): WorkflowServiceConfig { return { name, type: ServiceType.WORKFLOW, enabled: true, priority: ServicePriority.NORMAL, environment: ServiceEnvironment.DEVELOPMENT, timeout: 300000, // 5 minutes execution: { parallel: true, maxConcurrency: 5, timeout: 120000, // 2 minutes retries: 3, }, scheduling: { enabled: false, timezone: 'UTC', }, state: { persistence: true, storage: 'memory', compression: false, }, notifications: { enabled: false, events: ['started, completed', 'failed'], channels: ['console'], }, health: { enabled: true, interval: 30000, timeout: 5000, failureThreshold: 3, successThreshold: 1, }, monitoring: { enabled: true, metricsInterval: 10000, trackLatency: true, trackThroughput: true, trackErrors: true, trackMemoryUsage: true, }, ...options, }; }
 }
 
-/**
- * Type guard functions for service configurations.
- *
- * @param config
- * @example
- */
-export function isDataServiceConfig( config: AnyServiceConfig
-): config is DataServiceConfig { return [ ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT, ].includes(config?.type as ServiceType);
-}
+// Export all types and utilities
+export type {
+  ServiceOperationOptions,
+  ServiceRegistryEntry,
+  ServiceAdapter,
+  ServiceEvent,
+  ServiceValidationResult,
+  ServiceTemplate,
+  ServiceBlueprint,
+  ComprehensiveServiceConfig,
+  ServiceDiscoveryConfig,
+  ServiceScalingConfig,
+  ServiceSecurityConfig,
+  ServiceNetworkConfig
 
-export function isWebServiceConfig( config: AnyServiceConfig
-): config is WebServiceConfig { return [ ServiceType.WEB, ServiceType.API, ServiceType.SAFE_API, ServiceType.WEBSOCKET, ].includes(config?.type as ServiceType);
-}
-
-export function isCoordinationServiceConfig( config: AnyServiceConfig
-): config is CoordinationServiceConfig { return [ ServiceType.COORDINATION, ServiceType.SWARM, ServiceType.ORCHESTRATION, ServiceType.DAA, ServiceType.SESSION_RECOVERY, ].includes(config?.type as ServiceType);
-}
-
-export function isNeuralServiceConfig( config: AnyServiceConfig
-): config is NeuralServiceConfig { return [ ServiceType.NEURAL, ServiceType.LEARNING, ServiceType.PATTERN_RECOGNITION, ].includes(config?.type as ServiceType);
-}
-
-export function isMemoryServiceConfig( config: AnyServiceConfig
-): config is MemoryServiceConfig { return [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION].includes( config?.type as ServiceType );
-}
-
-export function isDatabaseServiceConfig( config: AnyServiceConfig
-): config is DatabaseServiceConfig { return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes( config?.type as ServiceType );
-}
-
-export function isIntegrationServiceConfig( config: AnyServiceConfig
-): config is IntegrationServiceConfig { return [ ServiceType.API, ServiceType.SAFE_API, ServiceType.ARCHITECTURE_STORAGE, ].includes(config?.type as ServiceType);
-}
-
-export function isInfrastructureServiceConfig( config: AnyServiceConfig
-): config is InfrastructureServiceConfig { return [ ServiceType.NFRASTRUCTURE, ServiceType.SYSTEM, ServiceType.MONITORING, ].includes(config?.type as ServiceType);
-}
-
-export function isMonitoringServiceConfig( config: AnyServiceConfig
-): config is MonitoringServiceConfig { return [ ServiceType.HEALTH, ServiceType.MONITORING, ServiceType.LOGGING, ].includes(config?.type as ServiceType);
-}
+};

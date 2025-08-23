@@ -5,14 +5,14 @@
  * automatic recovery detection, and comprehensive health reporting.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { TypedEventBase ,
   getLogger,
   recordMetric,
   withTimeout,
   withRetry,
 } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 import type { MemoryNode, MemoryHealthStatus } from './types';
 
 interface HealthCheckConfig {
@@ -405,11 +405,8 @@ export class MemoryHealthMonitor extends TypedEventBase {
 
       // Check if last few checks show improvement
       const recent = history.slice(-3);
-      const improving =
-        recent[2].latency < recent[1].latency &&
+      return recent[2].latency < recent[1].latency &&
         recent[1].latency < recent[0].latency;
-
-      return improving;
     }).length;
 
     recordMetric('memory_health_stats_healthy_nodes', this.stats.healthyNodes);

@@ -606,7 +606,7 @@ export enum IndexType {
 export interface IndexColumn {
   name: string;
   position: number;
-  direction: 'asc|desc'';
+  direction: 'asc|desc';
   nullsFirst?: boolean;
   expression?: string;
 }
@@ -818,7 +818,7 @@ export interface VectorFilter {
  */
 export interface VectorCondition {
   field: string;
-  operator:|''eq|ne|gt|gte|lt|lte|in | nin'|contains';
+  operator: 'eq'|'ne'|'gt'|'gte'|'lt'|'lte'|'in'|'nin'|'contains';
   value: QueryValue|QueryValue[];
 }
 
@@ -1299,8 +1299,8 @@ export interface TriggerInfo {
   name: string;
   table: string;
   schema?: string;
-  event: 'INSERT|UPDATE|DELETE';
-  timing: 'BEFORE|AFTER'||INSTEAD OF';
+  event: 'INSERT' | 'UPDATE' | 'DELETE';
+  timing: 'BEFORE' | 'AFTER' | 'INSTEAD OF';
   definition: string;
   enabled: boolean;
   comment?: string;

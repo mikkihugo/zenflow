@@ -420,7 +420,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   async predict(
     input: number[],
-    type: 'prediction|classification'' = 'prediction'
+    type: 'prediction' | 'classification' = 'prediction'
   ): Promise<number[]> {
     const task: NeuralTask = {
       id: `simple-${Date.now()}`,
@@ -1109,8 +1109,8 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     qualityRequirement?: number;
   }): string {
     // Create a hash-like key based on request properties
-    const contextStr = request.context ? JSON.stringify(request.context) : ';
-    const key = `${request.task}-${request.basePrompt.substring(0, 50)}-${request.priority|||medium'}-${request.qualityRequirement||0.8}-${contextStr}`;
+    const contextStr = request.context ? JSON.stringify(request.context) : '';
+    const key = `${request.task}-${request.basePrompt.substring(0, 50)}-${request.priority || 'medium'}-${request.qualityRequirement || 0.8}-${contextStr}`;
     return Buffer.from(key).toString('base64').substring(0, 32);
   }
 

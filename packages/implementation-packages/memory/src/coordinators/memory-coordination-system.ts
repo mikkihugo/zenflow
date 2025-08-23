@@ -207,7 +207,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     value: JSONValue,
     namespace = 'default',
     options?: {
-      consistency?: 'strong|eventual'';
+      consistency?: 'strong' | 'eventual';
       tier?: 'hot|warm|cold';
       replicate?: boolean;
     }
@@ -229,7 +229,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     key: string,
     namespace = 'default',
     options?: {
-      consistency?: 'strong|eventual'';
+      consistency?: 'strong' | 'eventual';
       timeout?: number;
     }
   ): Promise<MemoryOperationResult<T>> {
@@ -249,7 +249,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     key: string,
     namespace = 'default',
     options?: {
-      consistency?: 'strong|eventual'';
+      consistency?: 'strong' | 'eventual';
     }
   ): Promise<MemoryOperationResult<boolean>> {
     this.ensureInitialized();

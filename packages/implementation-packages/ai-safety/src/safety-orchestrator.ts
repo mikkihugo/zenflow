@@ -17,7 +17,6 @@
  * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  */
 
-import { EventEmitter } from 'node:events';
 import {
   getLogger,
   Result,
@@ -25,31 +24,26 @@ import {
   err,
   safeAsync,
   withRetry,
-  withTimeout,
-  withContext,
   PerformanceTracker,
   BasicTelemetryManager,
   TelemetryConfig,
   Storage,
   KeyValueStore,
-  StorageError,
   injectable,
   createErrorAggregator,
   createCircuitBreaker,
   recordMetric,
-  recordHistogram,
   withTrace,
   ensureError,
   generateUUID,
   UUID,
   Timestamp,
   createTimestamp,
-  isUUID,
   validateObject,
-  createContextError,
   ContextError,
   Logger,
 } from '@claude-zen/foundation';
+
 import {
   AIDeceptionDetector,
   type AIInteractionData,
@@ -201,7 +195,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Initialize orchestrator with comprehensive foundation utilities - LAZY LOADING
    */
   async initialize(): Promise<Result<void, SafetyError>> {
-    if (this.initialized) return ok(undefined);
+    if (this.initialized) return ok();
 
     const timer = this.performanceTracker.startTimer(
       'safety_orchestrator_initialize'
@@ -249,7 +243,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         metricsLoaded: !!loadResult.success,
       });
 
-      return ok(undefined);
+      return ok();
     } catch (error) {
       const safetyError = new SafetyError(
         'Safety orchestrator initialization failed',
@@ -346,7 +340,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         this.logger.info('🛑 Enterprise AI Safety monitoring STOPPED');
         this.emit('safety:monitoring-stopped', {});
 
-        return ok(undefined);
+        return ok();
       } catch (error) {
         const safetyError = new SafetyError(
           'Failed to stop safety monitoring',
@@ -984,7 +978,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Load metrics from storage with comprehensive error handling
    */
   private async loadMetricsFromStorage(): Promise<Result<void, SafetyError>> {
-    if (!this.storage) return ok(undefined);
+    if (!this.storage) return ok();
 
     try {
       const metricsData = await this.storage.get('safety-metrics');
@@ -1009,7 +1003,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         }
       }
 
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(
         new SafetyError(
@@ -1025,7 +1019,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Persist current metrics to storage
    */
   private async persistMetricsToStorage(): Promise<Result<void, SafetyError>> {
-    if (!this.storage) return ok(undefined);
+    if (!this.storage) return ok();
 
     try {
       await withRetry(
@@ -1033,7 +1027,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         { maxAttempts: 3, baseDelay: 100 }
       );
 
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(
         new SafetyError(
@@ -1094,7 +1088,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
           '🚨 Enterprise AI Safety Orchestrator shut down successfully'
         );
 
-        return ok(undefined);
+        return ok();
       } catch (error) {
         const safetyError = new SafetyError(
           'Safety orchestrator shutdown failed',

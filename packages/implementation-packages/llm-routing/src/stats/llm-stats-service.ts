@@ -5,13 +5,12 @@
  * Provides comprehensive analytics for multi-provider LLM integration system.
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import { LLM_PROVIDER_CONFIG } from '../config/providers';
 import type {
   AnalysisRequest,
   AnalysisResult,
   LLMCallRecord,
-  LLMError,
   LLMProviderStats,
   LLMRoutingStats,
   LLMSystemHealth,
@@ -44,7 +43,7 @@ export class LLMStatsService {
       requestType?: 'analyze|analyzeSmart|analyzeArchitectureAB';
       tokenUsage?: { inputTokens?: number; outputTokens?: number };
       sessionId?: string;
-    }
+    },
   ): void {
     const record: LLMCallRecord = {
       id: this.generateCallId(),
@@ -53,18 +52,18 @@ export class LLMStatsService {
       provider: result.provider,
       model: this.getProviderModel(result.provider),
       task: request.task,
-      contextLength: (request.prompt||').length,
+      contextLength: (request.prompt||'').length,
       executionTime: result.executionTime,
       success: result.success,
       error: result.error,
       tokenUsage: metadata?.tokenUsage
         ? {
-            inputTokens: metadata.tokenUsage.inputTokens,
-            outputTokens: metadata.tokenUsage.outputTokens,
-            totalTokens:
-              (metadata.tokenUsage.inputTokens|'|0) +
+          inputTokens: metadata.tokenUsage.inputTokens,
+          outputTokens: metadata.tokenUsage.outputTokens,
+          totalTokens:
+              (metadata.tokenUsage.inputTokens||0) +
               (metadata.tokenUsage.outputTokens||0),
-          }
+        }
         : undefined,
       routingDecision: {
         originalPreference: routingInfo.originalPreference,
@@ -93,11 +92,11 @@ export class LLMStatsService {
 
     if (result.success) {
       logger.debug(
-        `LLM call recorded: ${result.provider} → ${request.task} (${result.executionTime}ms)`
+        `LLM call recorded: ${result.provider} → ${request.task} (${result.executionTime}ms)`,
       );
     } else {
       logger.warn(
-        `Failed LLM call recorded: ${result.provider} → ${request.task} (${result.error})`
+        `Failed LLM call recorded: ${result.provider} → ${request.task} (${result.error})`,
       );
     }
   }
@@ -112,7 +111,7 @@ export class LLMStatsService {
     };
 
     const filteredCalls = this.callHistory.filter(
-      (call) => call.timestamp >= range.start && call.timestamp <= range.end
+      (call) => call.timestamp >= range.start && call.timestamp <= range.end,
     );
 
     const providerStats = this.calculateProviderStats(filteredCalls);
@@ -137,7 +136,7 @@ export class LLMStatsService {
             : 0,
         totalTokensUsed: filteredCalls.reduce(
           (sum, c) => sum + (c.tokenUsage?.totalTokens||0),
-          0
+          0,
         ),
         costSavings: this.calculateCostSavings(filteredCalls),
       },
@@ -162,9 +161,11 @@ export class LLMStatsService {
    */
   getProviderStats(providerId: string): LLMProviderStats|null {
     const providerCalls = this.callHistory.filter(
-      (call) => call.provider === providerId
+      (call) => call.provider === providerId,
     );
-    if (providerCalls.length === 0) return null;
+    if (providerCalls.length === 0) {
+      return null;
+    }
 
     return this.calculateSingleProviderStats(providerId, providerCalls);
   }
@@ -176,20 +177,20 @@ export class LLMStatsService {
     efficiency: number;
     recommendations: string[];
     topRoutes: Array<{ route: string; frequency: number; successRate: number }>;
-  } {
+    } {
     const recentCalls = this.getRecentCalls(60); // Last hour
     const routingStats = this.calculateRoutingStats(recentCalls);
 
     const recommendations: string[] = [];
 
     if (routingStats.fallbackRate > 0.3) {
-      recommendations.push('High fallback rate detected - consider adjusting provider priorities'
+      recommendations.push('High fallback rate detected - consider adjusting provider priorities',
       );
     }
 
     if (routingStats.optimalRoutingRate < 0.7) {
       recommendations.push(
-        'Suboptimal routing detected - review provider selection logic'
+        'Suboptimal routing detected - review provider selection logic',
       );
     }
 
@@ -212,7 +213,7 @@ export class LLMStatsService {
   /**
    * Exports statistics data for external analysis
    */
-  exportStats(format: 'json|csv''): string {
+  exportStats(format: 'json'|'csv'): string {
     if (format === 'csv') {
       return this.exportToCsv();
     }
@@ -231,7 +232,7 @@ export class LLMStatsService {
         rawData: this.callHistory,
       },
       null,
-      2
+      2,
     );
   }
 
@@ -265,14 +266,16 @@ export class LLMStatsService {
   }
 
   private assessTaskComplexity(
-    request: AnalysisRequest
+    request: AnalysisRequest,
   ): 'low|medium|high'{
     const contextLength = (request.prompt||'').length;
 
-    if (request.task === 'domain-analysis'||contextLength > 10000)
+    if (request.task === 'domain-analysis'||contextLength > 10000) {
       return'high';
-    if (request.task === 'typescript-error-analysis'||contextLength > 5000)
+    }
+    if (request.task === 'typescript-error-analysis'||contextLength > 5000) {
       return'medium';
+    }
     return 'low';
   }
 
@@ -280,7 +283,9 @@ export class LLMStatsService {
     const config = LLM_PROVIDER_CONFIG[providerId];
     const rateLimits = config?.rateLimits;
 
-    if (!rateLimits) return 50; // Default score
+    if (!rateLimits) {
+      return 50;
+    } // Default score
 
     // Higher requests per minute = higher score
     return Math.min(100, (rateLimits.requestsPerMinute||60) / 3);
@@ -291,7 +296,9 @@ export class LLMStatsService {
       .filter((call) => call.provider === providerId)
       .slice(-100); // Last 100 calls
 
-    if (providerCalls.length === 0) return 50;
+    if (providerCalls.length === 0) {
+      return 50;
+    }
 
     const successRate =
       providerCalls.filter((c) => c.success).length / providerCalls.length;
@@ -300,7 +307,7 @@ export class LLMStatsService {
 
   private calculateCostEfficiency(providerId: string): number {
     // Cost efficiency based on provider characteristics
-    const costScores: Record<string, number> = {'github-models': 100, // Free
+    const costScores: Record<string, number> = { 'github-models': 100, // Free
       gemini: 80, // Generous free tier
       'claude-code': 70, // Local CLI, uses API credits
       'gemini-direct': 60, // Direct API usage
@@ -322,7 +329,7 @@ export class LLMStatsService {
 
   private calculateSingleProviderStats(
     providerId: string,
-    calls: LLMCallRecord[]
+    calls: LLMCallRecord[],
   ): LLMProviderStats {
     const config = LLM_PROVIDER_CONFIG[providerId];
     const successfulCalls = calls.filter((c) => c.success);
@@ -344,15 +351,15 @@ export class LLMStatsService {
           : 0,
       totalTokensUsed: calls.reduce(
         (sum, c) => sum + (c.tokenUsage?.totalTokens||0),
-        0
+        0,
       ),
       successRate: calls.length > 0 ? successfulCalls.length / calls.length : 0,
       averageResponseTime:
         successfulCalls.length > 0
           ? successfulCalls.reduce(
-              (sum, c) => sum + c.performance.responseTime,
-              0
-            ) / successfulCalls.length
+            (sum, c) => sum + c.performance.responseTime,
+            0,
+          ) / successfulCalls.length
           : 0,
       costEfficiency:
         calls.length > 0
@@ -361,7 +368,7 @@ export class LLMStatsService {
           : 0,
       reliability: this.calculateReliabilityScore(providerId),
       rateLimitHits: failedCalls.filter(
-        (c) => c.error?.includes('rate limit')||c.error?.includes('quota')
+        (c) => c.error?.includes('rate limit')||c.error?.includes('quota'),
       ).length,
       lastUsed:
         calls.length > 0
@@ -376,10 +383,10 @@ export class LLMStatsService {
   private calculateRoutingStats(calls: LLMCallRecord[]): LLMRoutingStats {
     const routingDecisions = calls.map((c) => c.routingDecision);
     const optimalRoutes = routingDecisions.filter(
-      (r) => r.fallbackCount === 0
+      (r) => r.fallbackCount === 0,
     ).length;
     const fallbackRoutes = routingDecisions.filter(
-      (r) => r.fallbackCount > 0
+      (r) => r.fallbackCount > 0,
     ).length;
 
     // Analyze routing patterns
@@ -410,8 +417,8 @@ export class LLMStatsService {
       averageFallbackSteps:
         fallbackRoutes > 0
           ? routingDecisions
-              .filter((r) => r.fallbackCount > 0)
-              .reduce((sum, r) => sum + r.fallbackCount, 0) / fallbackRoutes
+            .filter((r) => r.fallbackCount > 0)
+            .reduce((sum, r) => sum + r.fallbackCount, 0) / fallbackRoutes
           : 0,
       routingEfficiency: this.calculateRoutingEfficiency(calls),
       commonRoutingPatterns,
@@ -421,7 +428,7 @@ export class LLMStatsService {
 
   private calculateSystemHealth(calls: LLMCallRecord[]): LLMSystemHealth {
     const recentCalls = calls.filter(
-      (c) => Date.now() - c.timestamp.getTime() < 30 * 60 * 1000 // Last 30 minutes
+      (c) => Date.now() - c.timestamp.getTime() < 30 * 60 * 1000, // Last 30 minutes
     );
 
     const successRate =
@@ -446,11 +453,17 @@ export class LLMStatsService {
     healthScore = Math.max(0, Math.min(100, healthScore));
 
     let overallHealth: LLMSystemHealth['overallHealth'];
-    if (healthScore >= 90) overallHealth = 'excellent';
-    else if (healthScore >= 75) overallHealth = 'good';
-    else if (healthScore >= 60) overallHealth = 'fair';
-    else if (healthScore >= 40) overallHealth = 'poor';
-    else overallHealth = 'critical';
+    if (healthScore >= 90) {
+      overallHealth = 'excellent';
+    } else if (healthScore >= 75) {
+      overallHealth = 'good';
+    } else if (healthScore >= 60) {
+      overallHealth = 'fair';
+    } else if (healthScore >= 40) {
+      overallHealth = 'poor';
+    } else {
+      overallHealth = 'critical';
+    }
 
     const alerts: LLMSystemHealth['alerts'] = [];
 
@@ -482,7 +495,7 @@ export class LLMStatsService {
       recommendations: this.generateHealthRecommendations(
         successRate,
         averageLatency,
-        activeProviders
+        activeProviders,
       ),
       alerts,
     };
@@ -490,27 +503,68 @@ export class LLMStatsService {
 
   private calculateTrends(
     calls: LLMCallRecord[],
-    range: { start: Date; end: Date }
+    range: { start: Date; end: Date },
   ): LLMAnalytics['trends'] {
-    // Implementation for trend calculation would go here
-    // This is a complex calculation that analyzes time-series data
+    // Calculate time intervals based on range
+    const duration = range.end.getTime() - range.start.getTime();
+    const intervalMs = Math.max(60000, duration / 24); // At least 1 minute intervals, max 24 points
+
+    // Generate time buckets
+    const buckets: Array<{ timestamp: Date; calls: LLMCallRecord[] }> = [];
+    for (let time = range.start.getTime(); time < range.end.getTime(); time += intervalMs) {
+      const bucketStart = new Date(time);
+      const bucketEnd = new Date(Math.min(time + intervalMs, range.end.getTime()));
+      const bucketCalls = calls.filter(
+        (call) => call.timestamp >= bucketStart && call.timestamp < bucketEnd,
+      );
+      buckets.push({ timestamp: bucketStart, calls: bucketCalls });
+    }
+
+    // Calculate trends from buckets
+    const callVolume = buckets.map((bucket) => ({
+      timestamp: bucket.timestamp,
+      count: bucket.calls.length,
+    }));
+
+    const successRate = buckets.map((bucket) => ({
+      timestamp: bucket.timestamp,
+      rate: bucket.calls.length > 0
+        ? bucket.calls.filter((call) => call.success).length / bucket.calls.length
+        : 0,
+    }));
+
+    const latency = buckets.map((bucket) => ({
+      timestamp: bucket.timestamp,
+      ms: bucket.calls.length > 0
+        ? bucket.calls.reduce((sum, call) => sum + call.executionTime, 0) / bucket.calls.length
+        : 0,
+    }));
+
+    // Provider usage trends
+    const providerUsage: Record<string, Array<{ timestamp: Date; usage: number }>> = {};
+    const providers = [...new Set(calls.map((call) => call.provider))];
+
+    providers.forEach((provider) => {
+      providerUsage[provider] = this.calculateProviderUsageTrend(buckets, provider);
+    });
+
     return {
-      callVolume: [],
-      successRate: [],
-      latency: [],
-      providerUsage: {},
+      callVolume,
+      successRate,
+      latency,
+      providerUsage,
     };
   }
 
   private generateInsights(
     providerStats: LLMProviderStats[],
-    routingStats: LLMRoutingStats
+    routingStats: LLMRoutingStats,
   ): LLMAnalytics['insights'] {
     const sortedByReliability = [...providerStats].sort(
-      (a, b) => b.reliability - a.reliability
+      (a, b) => b.reliability - a.reliability,
     );
     const sortedByEfficiency = [...providerStats].sort(
-      (a, b) => b.costEfficiency - a.costEfficiency
+      (a, b) => b.costEfficiency - a.costEfficiency,
     );
 
     return {
@@ -519,7 +573,7 @@ export class LLMStatsService {
       bottlenecks: this.identifyBottlenecks(providerStats),
       optimizationOpportunities: this.identifyOptimizations(
         providerStats,
-        routingStats
+        routingStats,
       ),
     };
   }
@@ -531,28 +585,34 @@ export class LLMStatsService {
 
   private getProviderStatus(
     providerId: string,
-    calls: LLMCallRecord[]
+    calls: LLMCallRecord[],
   ): LLMProviderStats['currentStatus'] {
     const recentCalls = calls.filter(
-      (c) => Date.now() - c.timestamp.getTime() < 60 * 60 * 1000 // Last hour
+      (c) => Date.now() - c.timestamp.getTime() < 60 * 60 * 1000, // Last hour
     );
 
-    if (recentCalls.length === 0) return 'disabled';
+    if (recentCalls.length === 0) {
+      return 'disabled';
+    }
 
     const recentErrors = recentCalls.filter((c) => !c.success);
     const rateLimitErrors = recentErrors.filter(
-      (c) => c.error?.includes('rate limit')||c.error?.includes('quota')
+      (c) => c.error?.includes('rate limit')||c.error?.includes('quota'),
     );
 
-    if (rateLimitErrors.length > 0) return 'cooldown';
-    if (recentErrors.length / recentCalls.length > 0.5) return 'error';
+    if (rateLimitErrors.length > 0) {
+      return 'cooldown';
+    }
+    if (recentErrors.length / recentCalls.length > 0.5) {
+      return 'error';
+    }
 
     return 'active';
   }
 
   private getPreferredTasks(
     providerId: string,
-    calls: LLMCallRecord[]
+    calls: LLMCallRecord[],
   ): string[] {
     const taskCounts = new Map<string, number>();
 
@@ -568,9 +628,11 @@ export class LLMStatsService {
   }
 
   private calculatePerformanceTrend(
-    calls: LLMCallRecord[]
+    calls: LLMCallRecord[],
   ):'improving|stable|declining' {
-    if (calls.length < 10) return 'stable';
+    if (calls.length < 10) {
+      return 'stable';
+    }
 
     const recent = calls.slice(-5);
     const earlier = calls.slice(-10, -5);
@@ -582,16 +644,22 @@ export class LLMStatsService {
 
     const improvement = (earlierAvg - recentAvg) / earlierAvg;
 
-    if (improvement > 0.1) return 'improving';
-    if (improvement < -0.1) return 'declining';
+    if (improvement > 0.1) {
+      return 'improving';
+    }
+    if (improvement < -0.1) {
+      return 'declining';
+    }
     return 'stable';
   }
 
   private calculateRoutingEfficiency(calls: LLMCallRecord[]): number {
-    if (calls.length === 0) return 100;
+    if (calls.length === 0) {
+      return 100;
+    }
 
     const optimalCalls = calls.filter(
-      (c) => c.routingDecision.fallbackCount === 0
+      (c) => c.routingDecision.fallbackCount === 0,
     ).length;
     return (optimalCalls / calls.length) * 100;
   }
@@ -630,7 +698,7 @@ export class LLMStatsService {
       });
 
       const sorted = Array.from(providers.entries()).sort(
-        (a, b) => b[1].count - a[1].count
+        (a, b) => b[1].count - a[1].count,
       );
 
       result[task] = {
@@ -659,25 +727,25 @@ export class LLMStatsService {
   private generateHealthRecommendations(
     successRate: number,
     latency: number,
-    activeProviders: number
+    activeProviders: number,
   ): string[] {
     const recommendations: string[] = [];
 
     if (successRate < 0.9) {
       recommendations.push(
-        'Consider adjusting provider priorities to improve success rate'
+        'Consider adjusting provider priorities to improve success rate',
       );
     }
 
     if (latency > 3000) {
       recommendations.push(
-        'High latency detected - consider optimizing prompts or switching providers'
+        'High latency detected - consider optimizing prompts or switching providers',
       );
     }
 
     if (activeProviders < 2) {
       recommendations.push(
-        'Low provider diversity - configure additional backup providers'
+        'Low provider diversity - configure additional backup providers',
       );
     }
 
@@ -701,26 +769,42 @@ export class LLMStatsService {
 
   private identifyOptimizations(
     providerStats: LLMProviderStats[],
-    routingStats: LLMRoutingStats
+    routingStats: LLMRoutingStats,
   ): string[] {
     const optimizations: string[] = [];
 
     if (routingStats.fallbackRate > 0.2) {
       optimizations.push(
-        'Optimize provider selection to reduce fallback usage'
+        'Optimize provider selection to reduce fallback usage',
       );
     }
 
     const underutilized = providerStats.filter(
-      (p) => p.totalCalls < 10 && p.successRate > 0.9
+      (p) => p.totalCalls < 10 && p.successRate > 0.9,
     );
     if (underutilized.length > 0) {
       optimizations.push(
-        `Consider using underutilized high-performing providers: ${underutilized.map((p) => p.displayName).join(', ')}`
+        `Consider using underutilized high-performing providers: ${underutilized.map((p) => p.displayName).join(', ')}`,
       );
     }
 
     return optimizations;
+  }
+
+  private calculateProviderUsageTrend(
+    buckets: Array<{ timestamp: Date; calls: LLMCallRecord[] }>,
+    provider: string,
+  ): Array<{ timestamp: Date; usage: number }> {
+    return buckets.map((bucket) => {
+      const providerCallCount = bucket.calls.reduce((count, call) => {
+        return call.provider === provider ? count + 1 : count;
+      }, 0);
+
+      return {
+        timestamp: bucket.timestamp,
+        usage: providerCallCount,
+      };
+    });
   }
 
   private exportToCsv(): string {
@@ -745,7 +829,7 @@ export class LLMStatsService {
         record.contextLength,
         record.routingDecision.fallbackCount,
         `"${record.routingDecision.routingReason}"`,
-      ].join(',')
+      ].join(','),
     );
 
     return [headers, ...rows].join('\n');

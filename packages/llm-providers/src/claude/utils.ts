@@ -210,10 +210,10 @@ export function sanitizeString(str: string): string {
 
   // Additional security patterns
   sanitized = sanitized
-    .replace(/javascript:/gi, ')
-    .replace(/vbscript:/gi, ')
-    .replace(/data:/gi, ')
-    .replace(/[$&;`|]/g,'); // Command injection chars
+    .replace(/javascript:/gi, '')
+    .replace(/vbscript:/gi, '')
+    .replace(/data:/gi, '')
+    .replace(/[$&;`|]/g, ''); // Command injection chars
 
   return sanitized;
 }

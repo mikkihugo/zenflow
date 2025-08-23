@@ -4,37 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@claude-zen/foundation': link:packages/foundation
-  '@claude-zen/llm-providers': link:packages/llm-providers
-  '@claude-zen/infrastructure': link:packages/infrastructure
-  '@claude-zen/intelligence': link:packages/intelligence
-  '@claude-zen/enterprise': link:packages/enterprise
-  '@claude-zen/operations': link:packages/operations
-  '@claude-zen/development': link:packages/development
-  '@claude-zen/repo-analyzer': link:packages/repo-analyzer
-  '@claude-zen/language-parsers': link:packages/language-parsers
-  '@claude-zen/ai-linter': link:packages/ai-linter
-  '@claude-zen/agui': link:packages/implementation-packages/agui
-  '@claude-zen/brain': link:packages/implementation-packages/brain
-  '@claude-zen/database': link:packages/implementation-packages/database
-  '@claude-zen/memory': link:packages/implementation-packages/memory
-  '@claude-zen/kanban': link:packages/implementation-packages/kanban
-  '@claude-zen/telemetry': link:packages/implementation-packages/telemetry
-  '@claude-zen/system-monitoring': link:packages/implementation-packages/system-monitoring
-  '@claude-zen/agent-monitoring': link:packages/implementation-packages/agent-monitoring
-  '@claude-zen/neural-ml': link:packages/implementation-packages/neural-ml
-  '@claude-zen/workflows': link:packages/implementation-packages/workflows
-  '@claude-zen/teamwork': link:packages/implementation-packages/teamwork
-  '@claude-zen/knowledge': link:packages/implementation-packages/knowledge
-  '@claude-zen/event-system': link:packages/implementation-packages/event-system
-  '@claude-zen/ai-safety': link:packages/implementation-packages/ai-safety
-  '@claude-zen/load-balancing': link:packages/implementation-packages/load-balancing
-  '@claude-zen/otel-collector': link:packages/implementation-packages/otel-collector
-  '@claude-zen/agent-registry': link:packages/implementation-packages/agent-registry
-  '@claude-zen/file-aware-ai': link:packages/file-aware-ai
-  '@claude-zen/llm-routing': link:packages/implementation-packages/llm-routing
-
 importers:
 
   .:
@@ -43,13 +12,13 @@ importers:
         specifier: ^0.0.36
         version: 0.0.36
       '@anthropic-ai/claude-code':
-        specifier: ^1.0.85
-        version: 1.0.88
+        specifier: ^1.0.88
+        version: 1.0.89
       '@anthropic-ai/sdk':
         specifier: ^0.60.0
         version: 0.60.0
       '@claude-zen/agui':
-        specifier: link:packages/implementation-packages/agui
+        specifier: workspace:*
         version: link:packages/implementation-packages/agui
       '@floating-ui/dom':
         specifier: ^1.7.3
@@ -275,14 +244,14 @@ importers:
         version: 2.8.1
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
       '@babel/plugin-syntax-optional-chaining':
         specifier: ^7.8.3
         version: 7.8.3(@babel/core@7.28.3)
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/blessed':
         specifier: ^0.1.25
         version: 0.1.25
@@ -336,10 +305,10 @@ importers:
         version: 8.18.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@vercel/ncc':
         specifier: ^0.38.3
         version: 0.38.3
@@ -366,28 +335,28 @@ importers:
         version: 0.25.9
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       eslint-formatter-compact:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-import:
         specifier: ^2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))
+        version: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))
       eslint-plugin-n:
         specifier: ^17.21.3
-        version: 17.21.3(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 17.21.3(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint-plugin-promise:
         specifier: ^7.2.1
-        version: 7.2.1(eslint@9.33.0(jiti@2.5.1))
+        version: 7.2.1(eslint@9.34.0(jiti@2.5.1))
       eslint-plugin-sonarjs:
         specifier: ^3.0.4
-        version: 3.0.4(eslint@9.33.0(jiti@2.5.1))
+        version: 3.0.4(eslint@9.34.0(jiti@2.5.1))
       eslint-plugin-unicorn:
         specifier: ^60.0.0
-        version: 60.0.0(eslint@9.33.0(jiti@2.5.1))
+        version: 60.0.0(eslint@9.34.0(jiti@2.5.1))
       eslint-plugin-unused-imports:
         specifier: ^4.2.0
-        version: 4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))
+        version: 4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))
       execa:
         specifier: ^9.6.0
         version: 9.6.0
@@ -431,64 +400,61 @@ importers:
         specifier: workspace:*
         version: link:../../packages/implementation-packages/agent-manager
       '@claude-zen/agent-monitoring':
-        specifier: link:../../packages/implementation-packages/agent-monitoring
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/agent-monitoring
       '@claude-zen/agui':
-        specifier: link:../../packages/implementation-packages/agui
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/agui
       '@claude-zen/ai-safety':
-        specifier: link:../../packages/implementation-packages/ai-safety
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/ai-safety
       '@claude-zen/brain':
-        specifier: link:../../packages/implementation-packages/brain
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/brain
       '@claude-zen/chaos-engineering':
         specifier: workspace:*
         version: link:../../packages/implementation-packages/chaos-engineering
       '@claude-zen/development':
-        specifier: link:../../packages/development
+        specifier: workspace:*
         version: link:../../packages/development
       '@claude-zen/dspy':
         specifier: workspace:*
         version: link:../../packages/implementation-packages/dspy
       '@claude-zen/enterprise':
-        specifier: link:../../packages/enterprise
+        specifier: workspace:*
         version: link:../../packages/enterprise
       '@claude-zen/event-system':
-        specifier: link:../../packages/implementation-packages/event-system
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/event-system
       '@claude-zen/fact-system':
         specifier: workspace:*
         version: link:../../packages/implementation-packages/fact-system
       '@claude-zen/foundation':
-        specifier: link:../../packages/foundation
+        specifier: workspace:*
         version: link:../../packages/foundation
       '@claude-zen/infrastructure':
-        specifier: link:../../packages/infrastructure
+        specifier: workspace:*
         version: link:../../packages/infrastructure
       '@claude-zen/intelligence':
-        specifier: link:../../packages/intelligence
+        specifier: workspace:*
         version: link:../../packages/intelligence
-      '@claude-zen/kanban':
-        specifier: link:../../packages/implementation-packages/kanban
-        version: link:../../packages/implementation-packages/kanban
       '@claude-zen/knowledge':
-        specifier: link:../../packages/implementation-packages/knowledge
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/knowledge
       '@claude-zen/llm-routing':
-        specifier: link:../../packages/implementation-packages/llm-routing
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/llm-routing
       '@claude-zen/memory':
-        specifier: link:../../packages/implementation-packages/memory
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/memory
       '@claude-zen/multi-level-orchestration':
         specifier: workspace:*
         version: link:../../packages/implementation-packages/multi-level-orchestration
       '@claude-zen/neural-ml':
-        specifier: link:../../packages/implementation-packages/neural-ml
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/neural-ml
       '@claude-zen/operations':
-        specifier: link:../../packages/operations
+        specifier: workspace:*
         version: link:../../packages/operations
       '@claude-zen/safe-framework':
         specifier: workspace:*
@@ -497,16 +463,16 @@ importers:
         specifier: workspace:*
         version: link:../../packages/implementation-packages/sparc
       '@claude-zen/system-monitoring':
-        specifier: link:../../packages/implementation-packages/system-monitoring
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/system-monitoring
       '@claude-zen/teamwork':
-        specifier: link:../../packages/implementation-packages/teamwork
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/teamwork
       '@claude-zen/telemetry':
-        specifier: link:../../packages/implementation-packages/telemetry
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/telemetry
       '@claude-zen/workflows':
-        specifier: link:../../packages/implementation-packages/workflows
+        specifier: workspace:*
         version: link:../../packages/implementation-packages/workflows
       '@godaddy/terminus':
         specifier: ^4.12.1
@@ -574,9 +540,6 @@ importers:
       diff3:
         specifier: ^0.0.4
         version: 0.0.4
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -690,11 +653,11 @@ importers:
         version: 2.8.1
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.2.0
-        version: 2.2.0
+        version: 2.2.2
       '@types/compression':
         specifier: ^1.8.1
         version: 1.8.1
@@ -862,17 +825,14 @@ importers:
         specifier: ^7.23.9
         version: 7.28.2
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
-      '@claude-zen/intelligence':
-        specifier: link:../intelligence
-        version: link:../intelligence
       '@claude-zen/repo-analyzer':
-        specifier: link:../repo-analyzer
+        specifier: workspace:*
         version: link:../repo-analyzer
       '@typescript-eslint/parser':
         specifier: ^6.21.0
-        version: 6.21.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 6.21.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/typescript-estree':
         specifier: ^6.21.0
         version: 6.21.0(typescript@5.9.2)
@@ -887,7 +847,7 @@ importers:
         version: 3.6.0
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.3
@@ -938,26 +898,26 @@ importers:
         specifier: workspace:*
         version: link:../implementation-packages/codeql
       '@claude-zen/enterprise':
-        specifier: link:../enterprise
+        specifier: workspace:*
         version: link:../enterprise
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
       '@claude-zen/infrastructure':
-        specifier: link:../infrastructure
+        specifier: workspace:*
         version: link:../infrastructure
       '@claude-zen/intelligence':
-        specifier: link:../intelligence
+        specifier: workspace:*
         version: link:../intelligence
       '@claude-zen/operations':
-        specifier: link:../operations
+        specifier: workspace:*
         version: link:../operations
       '@claude-zen/repo-analyzer':
-        specifier: link:../repo-analyzer
+        specifier: workspace:*
         version: link:../repo-analyzer
       '@typescript-eslint/parser':
         specifier: ^6.21.0
-        version: 6.21.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 6.21.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/typescript-estree':
         specifier: ^6.21.0
         version: 6.21.0(typescript@5.9.2)
@@ -1012,7 +972,7 @@ importers:
         version: 0.5.7
       eslint:
         specifier: ^9.17.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.3.3
         version: 5.9.2
@@ -1023,13 +983,13 @@ importers:
   packages/enterprise:
     dependencies:
       '@claude-zen/agui':
-        specifier: link:../implementation-packages/agui
+        specifier: workspace:*
         version: link:../implementation-packages/agui
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
       '@claude-zen/knowledge':
-        specifier: link:../implementation-packages/knowledge
+        specifier: workspace:*
         version: link:../implementation-packages/knowledge
       '@claude-zen/safe-framework':
         specifier: workspace:*
@@ -1038,24 +998,24 @@ importers:
         specifier: workspace:*
         version: link:../implementation-packages/sparc
       '@claude-zen/teamwork':
-        specifier: link:../implementation-packages/teamwork
+        specifier: workspace:*
         version: link:../implementation-packages/teamwork
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1074,39 +1034,45 @@ importers:
       '@types/convict':
         specifier: ^6.1.6
         version: 6.1.6
+      '@types/lodash':
+        specifier: ^4.17.7
+        version: 4.17.20
       '@types/opossum':
         specifier: ^8.1.9
         version: 8.1.9
       '@types/validator':
         specifier: ^13.12.2
         version: 13.15.2
-      ajv:
-        specifier: ^8.12.0
-        version: 8.17.1
       awilix:
         specifier: ^12.0.5
         version: 12.0.5
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
       convict:
         specifier: ^6.2.4
         version: 6.2.4
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       dompurify:
         specifier: ^3.1.7
         version: 3.2.6
-      dotenv:
-        specifier: ^17.2.1
-        version: 17.2.1
       envalid:
         specifier: ^8.0.0
         version: 8.1.0
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       exit-hook:
         specifier: ^4.0.0
         version: 4.0.0
       find-workspaces:
         specifier: ^0.3.1
         version: 0.3.1
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
       neverthrow:
         specifier: ^8.2.0
         version: 8.2.0
@@ -1134,19 +1100,19 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1157,18 +1123,27 @@ importers:
   packages/implementation-packages/agent-manager:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@modelcontextprotocol/sdk':
         specifier: ^1.17.3
         version: 1.17.4
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.0
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.0.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.0.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.0.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.0.0
+        version: 9.34.0(jiti@2.5.1)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1182,16 +1157,16 @@ importers:
   packages/implementation-packages/agent-monitoring:
     dependencies:
       '@claude-zen/brain':
-        specifier: link:../brain
+        specifier: workspace:*
         version: link:../brain
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@claude-zen/telemetry':
-        specifier: link:../telemetry
+        specifier: workspace:*
         version: link:../telemetry
     devDependencies:
       '@types/node':
@@ -1207,7 +1182,7 @@ importers:
   packages/implementation-packages/agent-registry:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
     devDependencies:
       '@types/node':
@@ -1220,24 +1195,18 @@ importers:
   packages/implementation-packages/agui:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       chalk:
         specifier: ^5.6.0
         version: 5.6.0
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
     devDependencies:
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)(yaml@2.8.1)
@@ -1254,20 +1223,14 @@ importers:
   packages/implementation-packages/ai-safety:
     dependencies:
       '@claude-zen/brain':
-        specifier: link:../brain
+        specifier: workspace:*
         version: link:../brain
       '@claude-zen/chaos-engineering':
-        specifier: file:../chaos-engineering
-        version: file:packages/implementation-packages/chaos-engineering
+        specifier: workspace:*
+        version: link:../chaos-engineering
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1282,7 +1245,7 @@ importers:
   packages/implementation-packages/architecture:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
     devDependencies:
       typescript:
@@ -1291,11 +1254,8 @@ importers:
 
   packages/implementation-packages/beam-analyzer:
     dependencies:
-      '@claude-zen/development':
-        specifier: link:../../development
-        version: link:../../development
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       fast-xml-parser:
         specifier: ^4.3.2
@@ -1318,7 +1278,7 @@ importers:
         version: 3.0.4
       eslint:
         specifier: ^9.0.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.3.0
         version: 5.9.2
@@ -1328,21 +1288,12 @@ importers:
 
   packages/implementation-packages/brain:
     dependencies:
-      '@claude-zen/development':
-        specifier: link:../../development
-        version: link:../../development
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      '@claude-zen/infrastructure':
-        specifier: link:../../infrastructure
-        version: link:../../infrastructure
       '@claude-zen/load-balancing':
-        specifier: link:../load-balancing
+        specifier: workspace:*
         version: link:../load-balancing
-      '@claude-zen/operations':
-        specifier: link:../../operations
-        version: link:../../operations
       '@tensorflow/tfjs':
         specifier: ^4.22.0
         version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
@@ -1364,9 +1315,6 @@ importers:
       density-clustering:
         specifier: ^1.3.0
         version: 1.3.0
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       fft-js:
         specifier: ^0.0.12
         version: 0.0.12
@@ -1420,7 +1368,7 @@ importers:
         version: 1.0.1
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1433,10 +1381,10 @@ importers:
         version: 9.2.0
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       eslint-plugin-unused-imports:
         specifier: ^4.2.0
-        version: 4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))
+        version: 4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))
       tsx:
         specifier: ^4.20.4
         version: 4.20.4
@@ -1448,27 +1396,33 @@ importers:
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
     optionalDependencies:
       '@claude-zen/neural-ml':
-        specifier: link:../neural-ml
+        specifier: workspace:*
         version: link:../neural-ml
       openai:
         specifier: ^5.13.1
-        version: 5.15.0(ws@8.18.3)(zod@4.0.17)
+        version: 5.15.0(ws@8.18.3)(zod@4.1.0)
 
   packages/implementation-packages/chaos-engineering:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
-      '@biomejs/biome':
-        specifier: ^2.2.0
-        version: 2.2.0
+      '@eslint/js':
+        specifier: ^9.0.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.0.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.0.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.0.0
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1479,10 +1433,10 @@ importers:
   packages/implementation-packages/code-analyzer:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@claude-zen/repo-analyzer':
-        specifier: link:../../repo-analyzer
+        specifier: workspace:*
         version: link:../../repo-analyzer
       chokidar:
         specifier: ^3.6.0
@@ -1499,27 +1453,24 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: ^22.7.9
         version: 22.17.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
 
   packages/implementation-packages/codeql:
     dependencies:
-      '@claude-zen/development':
-        specifier: link:../../development
-        version: link:../../development
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       fast-xml-parser:
         specifier: ^4.3.2
@@ -1539,7 +1490,7 @@ importers:
         version: 7.7.0
       eslint:
         specifier: ^9.0.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.3.0
         version: 5.9.2
@@ -1550,7 +1501,7 @@ importers:
   packages/implementation-packages/database:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@lancedb/lancedb':
         specifier: ^0.21.3
@@ -1562,12 +1513,24 @@ importers:
         specifier: ^0.11.1
         version: 0.11.2
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.0.0
+        version: 9.34.0
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.0.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.0.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.0.0
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1578,11 +1541,8 @@ importers:
   packages/implementation-packages/document-processing:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       typescript:
         specifier: ^5.6.0
@@ -1591,11 +1551,8 @@ importers:
   packages/implementation-packages/documentation:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       typescript:
         specifier: ^5.6.0
@@ -1604,17 +1561,14 @@ importers:
   packages/implementation-packages/dspy:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      '@claude-zen/neural-ml':
-        specifier: link:../neural-ml
-        version: link:../neural-ml
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1632,11 +1586,8 @@ importers:
   packages/implementation-packages/enterprise-coordination:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       '@types/node':
         specifier: ^20.10.5
@@ -1647,15 +1598,9 @@ importers:
 
   packages/implementation-packages/event-system:
     dependencies:
-      '@claude-zen/brain':
-        specifier: link:../brain
-        version: link:../brain
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1664,17 +1609,26 @@ importers:
         version: 3.0.1
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
-      '@biomejs/biome':
-        specifier: ^2.2.0
-        version: 2.2.0
+      '@eslint/js':
+        specifier: ^9.0.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.0.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.0.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
+      eslint:
+        specifier: ^9.0.0
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1685,11 +1639,8 @@ importers:
   packages/implementation-packages/exporters:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       typescript:
         specifier: ^5.6.0
@@ -1698,11 +1649,8 @@ importers:
   packages/implementation-packages/fact-system:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1717,10 +1665,10 @@ importers:
   packages/implementation-packages/file-aware-ai:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@claude-zen/llm-routing':
-        specifier: link:../llm-routing
+        specifier: workspace:*
         version: link:../llm-routing
       chokidar:
         specifier: ^4.0.1
@@ -1754,7 +1702,7 @@ importers:
   packages/implementation-packages/git-operations:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       node-cron:
         specifier: ^3.0.3
@@ -1765,7 +1713,7 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: ^20.10.5
         version: 20.19.11
@@ -1774,13 +1722,13 @@ importers:
         version: 3.0.11
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.3.3
         version: 5.9.2
@@ -1788,7 +1736,7 @@ importers:
   packages/implementation-packages/interfaces:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
     devDependencies:
       typescript:
@@ -1798,24 +1746,21 @@ importers:
   packages/implementation-packages/knowledge:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/fact-system':
         specifier: file:../fact-system
         version: file:packages/implementation-packages/fact-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)(yaml@2.8.1)
@@ -1829,21 +1774,30 @@ importers:
   packages/implementation-packages/llm-routing:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
     devDependencies:
-      '@biomejs/biome':
-        specifier: ^2.2.0
-        version: 2.2.0
+      '@eslint/js':
+        specifier: ^9.0.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.0.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.0.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
+      eslint:
+        specifier: ^9.0.0
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1854,17 +1808,14 @@ importers:
   packages/implementation-packages/load-balancing:
     dependencies:
       '@claude-zen/brain':
-        specifier: link:../brain
+        specifier: workspace:*
         version: link:../brain
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      '@claude-zen/neural-ml':
-        specifier: link:../neural-ml
-        version: link:../neural-ml
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1892,14 +1843,11 @@ importers:
   packages/implementation-packages/memory:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1920,17 +1868,14 @@ importers:
   packages/implementation-packages/multi-level-orchestration:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@claude-zen/workflows':
-        specifier: link:../workflows
+        specifier: workspace:*
         version: link:../workflows
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1945,17 +1890,8 @@ importers:
   packages/implementation-packages/neural-ml:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      '@claude-zen/infrastructure':
-        specifier: link:../../infrastructure
-        version: link:../../infrastructure
-      '@claude-zen/intelligence':
-        specifier: link:../../intelligence
-        version: link:../../intelligence
-      '@claude-zen/operations':
-        specifier: link:../../operations
-        version: link:../../operations
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -1970,7 +1906,7 @@ importers:
   packages/implementation-packages/otel-collector:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -2035,7 +1971,7 @@ importers:
         version: 22.17.1
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -2046,44 +1982,32 @@ importers:
   packages/implementation-packages/safe-framework:
     dependencies:
       '@claude-zen/ai-safety':
-        specifier: link:../ai-safety
+        specifier: workspace:*
         version: link:../ai-safety
       '@claude-zen/brain':
-        specifier: link:../brain
+        specifier: workspace:*
         version: link:../brain
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
-      '@claude-zen/fact-system':
-        specifier: file:../fact-system
-        version: file:packages/implementation-packages/fact-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      '@claude-zen/kanban':
-        specifier: link:../kanban
-        version: link:../kanban
       '@claude-zen/knowledge':
-        specifier: link:../knowledge
+        specifier: workspace:*
         version: link:../knowledge
       '@claude-zen/sparc':
         specifier: file:../sparc
         version: file:packages/implementation-packages/sparc
       '@claude-zen/teamwork':
-        specifier: link:../teamwork
+        specifier: workspace:*
         version: link:../teamwork
       '@claude-zen/telemetry':
-        specifier: link:../telemetry
+        specifier: workspace:*
         version: link:../telemetry
       '@claude-zen/workflows':
-        specifier: link:../workflows
+        specifier: workspace:*
         version: link:../workflows
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2095,7 +2019,7 @@ importers:
         version: 5.20.2
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -2110,7 +2034,7 @@ importers:
   packages/implementation-packages/service-container:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       awilix:
         specifier: ^11.0.0
@@ -2124,7 +2048,7 @@ importers:
         version: 20.19.11
       eslint:
         specifier: ^9.17.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.3.3
         version: 5.9.2
@@ -2135,13 +2059,13 @@ importers:
   packages/implementation-packages/sparc:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@claude-zen/workflows':
-        specifier: link:../workflows
+        specifier: workspace:*
         version: link:../workflows
     devDependencies:
       '@types/node':
@@ -2157,10 +2081,10 @@ importers:
   packages/implementation-packages/system-monitoring:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@claude-zen/telemetry':
-        specifier: link:../telemetry
+        specifier: workspace:*
         version: link:../telemetry
       pidusage:
         specifier: ^4.0.1
@@ -2185,32 +2109,17 @@ importers:
   packages/implementation-packages/taskmaster:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      '@claude-zen/infrastructure':
-        specifier: link:../../infrastructure
-        version: link:../../infrastructure
-      '@claude-zen/intelligence':
-        specifier: link:../../intelligence
-        version: link:../../intelligence
-      '@claude-zen/operations':
-        specifier: link:../../operations
-        version: link:../../operations
       '@statelyai/inspect':
         specifier: ^0.4.0
         version: 0.4.0(ws@8.18.3)(xstate@5.20.2)
       '@xstate/inspect':
         specifier: ^0.8.0
         version: 0.8.0(@types/ws@8.18.1)(ws@8.18.3)(xstate@5.20.2)
-      ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
-      ajv-formats:
-        specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -2223,9 +2132,6 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.2
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -2235,15 +2141,6 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.6.1
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       express:
         specifier: ^4.19.2
         version: 4.21.2
@@ -2259,15 +2156,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
       multer:
         specifier: ^1.4.5-lts.1
         version: 1.4.5-lts.2
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
       node-cron:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2286,12 +2177,6 @@ importers:
       passport-local:
         specifier: ^1.0.0
         version: 1.0.0
-      pino:
-        specifier: ^9.4.0
-        version: 9.9.0
-      pino-pretty:
-        specifier: ^11.2.2
-        version: 11.3.0
       prom-client:
         specifier: ^15.1.3
         version: 15.1.3
@@ -2319,12 +2204,6 @@ importers:
       table:
         specifier: ^6.8.2
         version: 6.9.0
-      uuid:
-        specifier: ^10.0.0
-        version: 10.0.0
-      winston:
-        specifier: ^3.14.2
-        version: 3.17.0
       ws:
         specifier: ^8.18.0
         version: 8.18.3
@@ -2427,10 +2306,10 @@ importers:
         version: 8.18.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.8.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.8.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
@@ -2466,10 +2345,10 @@ importers:
         version: 4.0.7
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       eslint-plugin-svelte:
         specifier: ^2.43.0
-        version: 2.46.1(eslint@9.33.0(jiti@2.5.1))(svelte@4.2.20)(ts-node@10.9.2(@types/node@22.17.1)(typescript@5.9.2))
+        version: 2.46.1(eslint@9.34.0(jiti@2.5.1))(svelte@4.2.20)(ts-node@10.9.2(@types/node@22.17.1)(typescript@5.9.2))
       husky:
         specifier: ^9.1.6
         version: 9.1.7
@@ -2552,15 +2431,9 @@ importers:
 
   packages/implementation-packages/teamwork:
     dependencies:
-      '@claude-zen/brain':
-        specifier: link:../brain
-        version: link:../brain
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -2575,7 +2448,7 @@ importers:
   packages/implementation-packages/telemetry:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -2610,26 +2483,20 @@ importers:
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)
     optionalDependencies:
       '@claude-zen/otel-collector':
-        specifier: link:../otel-collector
+        specifier: workspace:*
         version: link:../otel-collector
 
   packages/implementation-packages/workflows:
     dependencies:
       '@claude-zen/event-system':
-        specifier: link:../event-system
+        specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
-        specifier: link:../../foundation
+        specifier: workspace:*
         version: link:../../foundation
       async:
         specifier: ^3.2.6
         version: 3.2.6
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       expr-eval:
         specifier: ^2.0.2
         version: 2.0.2
@@ -2642,9 +2509,6 @@ importers:
       mermaid:
         specifier: ^11.10.0
         version: 11.10.1
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
       node-cron:
         specifier: ^4.2.1
         version: 4.2.1
@@ -2659,7 +2523,7 @@ importers:
         version: 5.20.2
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.0
     devDependencies:
       '@types/async':
         specifier: ^3.2.25
@@ -2672,7 +2536,7 @@ importers:
         version: 22.17.1
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)(yaml@2.8.1)
@@ -2686,22 +2550,22 @@ importers:
   packages/infrastructure:
     dependencies:
       '@claude-zen/agent-registry':
-        specifier: link:../implementation-packages/agent-registry
+        specifier: workspace:*
         version: link:../implementation-packages/agent-registry
       '@claude-zen/database':
-        specifier: link:../implementation-packages/database
+        specifier: workspace:*
         version: link:../implementation-packages/database
       '@claude-zen/event-system':
-        specifier: link:../implementation-packages/event-system
+        specifier: workspace:*
         version: link:../implementation-packages/event-system
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
       '@claude-zen/load-balancing':
-        specifier: link:../implementation-packages/load-balancing
+        specifier: workspace:*
         version: link:../implementation-packages/load-balancing
       '@claude-zen/system-monitoring':
-        specifier: link:../implementation-packages/system-monitoring
+        specifier: workspace:*
         version: link:../implementation-packages/system-monitoring
       neverthrow:
         specifier: ^8.2.0
@@ -2709,19 +2573,19 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -2732,33 +2596,30 @@ importers:
   packages/intelligence:
     dependencies:
       '@claude-zen/ai-safety':
-        specifier: link:../implementation-packages/ai-safety
+        specifier: workspace:*
         version: link:../implementation-packages/ai-safety
       '@claude-zen/brain':
-        specifier: link:../implementation-packages/brain
-        version: link:../implementation-packages/brain
-      '@claude-zen/fact-system':
         specifier: workspace:*
-        version: link:../implementation-packages/fact-system
+        version: link:../implementation-packages/brain
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -2769,7 +2630,7 @@ importers:
   packages/language-parsers:
     dependencies:
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
     devDependencies:
       '@types/node':
@@ -2782,17 +2643,14 @@ importers:
   packages/llm-providers:
     dependencies:
       '@anthropic-ai/claude-code':
-        specifier: ^1.0.86
-        version: 1.0.88
+        specifier: ^1.0.88
+        version: 1.0.89
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
       '@claude-zen/infrastructure':
-        specifier: link:../infrastructure
+        specifier: workspace:*
         version: link:../infrastructure
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
       validator:
         specifier: ^13.12.0
         version: 13.15.15
@@ -2816,36 +2674,36 @@ importers:
   packages/operations:
     dependencies:
       '@claude-zen/agent-monitoring':
-        specifier: link:../implementation-packages/agent-monitoring
+        specifier: workspace:*
         version: link:../implementation-packages/agent-monitoring
       '@claude-zen/chaos-engineering':
         specifier: workspace:*
         version: link:../implementation-packages/chaos-engineering
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
       '@claude-zen/memory':
-        specifier: link:../implementation-packages/memory
+        specifier: workspace:*
         version: link:../implementation-packages/memory
       '@claude-zen/telemetry':
-        specifier: link:../implementation-packages/telemetry
+        specifier: workspace:*
         version: link:../implementation-packages/telemetry
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
-        version: 9.33.0
+        version: 9.34.0
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/parser':
         specifier: ^8.40.0
-        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       eslint:
         specifier: ^9.33.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -2859,11 +2717,11 @@ importers:
         specifier: ^7.23.9
         version: 7.28.3
       '@claude-zen/foundation':
-        specifier: link:../foundation
+        specifier: workspace:*
         version: link:../foundation
       '@typescript-eslint/parser':
         specifier: ^6.21.0
-        version: 6.21.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+        version: 6.21.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       acorn:
         specifier: ^8.11.3
         version: 8.15.0
@@ -2909,7 +2767,7 @@ importers:
         version: 20.19.11
       eslint:
         specifier: ^9.17.0
-        version: 9.33.0(jiti@2.5.1)
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.3.3
         version: 5.9.2
@@ -3012,8 +2870,8 @@ packages:
   '@antfu/utils@8.1.1':
     resolution: {integrity: sha512-Mex9nXf9vR6AhcXmMrlz/HVgYYZpVGJ6YlPgwl7UnaFpnshXs6EK/oa5Gpf3CzENMjkvEx2tQtntGnb7UtSTOQ==}
 
-  '@anthropic-ai/claude-code@1.0.88':
-    resolution: {integrity: sha512-Np6H4EjkbmNolUpx98DvqLXV/iJrw2y7dz2rDJ7av9ajMz6HZfB8bdJV5D75+jO+Gk1pvA54HCIm0c65lDrzcw==}
+  '@anthropic-ai/claude-code@1.0.89':
+    resolution: {integrity: sha512-FKzFA0whQ1oVqdq3HG7gE3aojcZfGxrhza9z7OMDUFm4YMADHQxn6TWxWss5dhzXze7vd+QOn8CuH+uHnhAr4w==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -3234,55 +3092,55 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@biomejs/biome@2.2.0':
-    resolution: {integrity: sha512-3On3RSYLsX+n9KnoSgfoYlckYBoU6VRM22cw1gB4Y0OuUVSYd/O/2saOJMrA4HFfA1Ff0eacOvMN1yAAvHtzIw==}
+  '@biomejs/biome@2.2.2':
+    resolution: {integrity: sha512-j1omAiQWCkhuLgwpMKisNKnsM6W8Xtt1l0WZmqY/dFj8QPNkIoTvk4tSsi40FaAAkBE1PU0AFG2RWFBWenAn+w==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.2.0':
-    resolution: {integrity: sha512-zKbwUUh+9uFmWfS8IFxmVD6XwqFcENjZvEyfOxHs1epjdH3wyyMQG80FGDsmauPwS2r5kXdEM0v/+dTIA9FXAg==}
+  '@biomejs/cli-darwin-arm64@2.2.2':
+    resolution: {integrity: sha512-6ePfbCeCPryWu0CXlzsWNZgVz/kBEvHiPyNpmViSt6A2eoDf4kXs3YnwQPzGjy8oBgQulrHcLnJL0nkCh80mlQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.2.0':
-    resolution: {integrity: sha512-+OmT4dsX2eTfhD5crUOPw3RPhaR+SKVspvGVmSdZ9y9O/AgL8pla6T4hOn1q+VAFBHuHhsdxDRJgFCSC7RaMOw==}
+  '@biomejs/cli-darwin-x64@2.2.2':
+    resolution: {integrity: sha512-Tn4JmVO+rXsbRslml7FvKaNrlgUeJot++FkvYIhl1OkslVCofAtS35MPlBMhXgKWF9RNr9cwHanrPTUUXcYGag==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.2.0':
-    resolution: {integrity: sha512-egKpOa+4FL9YO+SMUMLUvf543cprjevNc3CAgDNFLcjknuNMcZ0GLJYa3EGTCR2xIkIUJDVneBV3O9OcIlCEZQ==}
+  '@biomejs/cli-linux-arm64-musl@2.2.2':
+    resolution: {integrity: sha512-/MhYg+Bd6renn6i1ylGFL5snYUn/Ct7zoGVKhxnro3bwekiZYE8Kl39BSb0MeuqM+72sThkQv4TnNubU9njQRw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-arm64@2.2.0':
-    resolution: {integrity: sha512-6eoRdF2yW5FnW9Lpeivh7Mayhq0KDdaDMYOJnH9aT02KuSIX5V1HmWJCQQPwIQbhDh68Zrcpl8inRlTEan0SXw==}
+  '@biomejs/cli-linux-arm64@2.2.2':
+    resolution: {integrity: sha512-JfrK3gdmWWTh2J5tq/rcWCOsImVyzUnOS2fkjhiYKCQ+v8PqM+du5cfB7G1kXas+7KQeKSWALv18iQqdtIMvzw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64-musl@2.2.0':
-    resolution: {integrity: sha512-I5J85yWwUWpgJyC1CcytNSGusu2p9HjDnOPAFG4Y515hwRD0jpR9sT9/T1cKHtuCvEQ/sBvx+6zhz9l9wEJGAg==}
+  '@biomejs/cli-linux-x64-musl@2.2.2':
+    resolution: {integrity: sha512-ZCLXcZvjZKSiRY/cFANKg+z6Fhsf9MHOzj+NrDQcM+LbqYRT97LyCLWy2AS+W2vP+i89RyRM+kbGpUzbRTYWig==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64@2.2.0':
-    resolution: {integrity: sha512-5UmQx/OZAfJfi25zAnAGHUMuOd+LOsliIt119x2soA2gLggQYrVPA+2kMUxR6Mw5M1deUF/AWWP2qpxgH7Nyfw==}
+  '@biomejs/cli-linux-x64@2.2.2':
+    resolution: {integrity: sha512-Ogb+77edO5LEP/xbNicACOWVLt8mgC+E1wmpUakr+O4nKwLt9vXe74YNuT3T1dUBxC/SnrVmlzZFC7kQJEfquQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-win32-arm64@2.2.0':
-    resolution: {integrity: sha512-n9a1/f2CwIDmNMNkFs+JI0ZjFnMO0jdOyGNtihgUNFnlmd84yIYY2KMTBmMV58ZlVHjgmY5Y6E1hVTnSRieggA==}
+  '@biomejs/cli-win32-arm64@2.2.2':
+    resolution: {integrity: sha512-wBe2wItayw1zvtXysmHJQoQqXlTzHSpQRyPpJKiNIR21HzH/CrZRDFic1C1jDdp+zAPtqhNExa0owKMbNwW9cQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.2.0':
-    resolution: {integrity: sha512-Nawu5nHjP/zPKTIryh2AavzTc/KEg4um/MxWdXW0A6P/RZOyIpa7+QSjeXwAwX/utJGaCoXRPWtF3m5U/bB3Ww==}
+  '@biomejs/cli-win32-x64@2.2.2':
+    resolution: {integrity: sha512-DAuHhHekGfiGb6lCcsT4UyxQmVwQiBCBUMwVra/dcOSs9q8OhfaZgey51MlekT3p8UwRqtXQfFuEJBhJNdLZwg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -3305,9 +3163,6 @@ packages:
   '@chevrotain/utils@11.0.3':
     resolution: {integrity: sha512-YslZMgtJUyuMbZ+aKvfF3x1f5liK4mWNxghFRv7jqRR9C3R3fAOGTTKvxXDa2Y1s9zSbcpuO0cAxDYsc9SrXoQ==}
 
-  '@claude-zen/chaos-engineering@file:packages/implementation-packages/chaos-engineering':
-    resolution: {directory: packages/implementation-packages/chaos-engineering, type: directory}
-
   '@claude-zen/fact-system@file:packages/implementation-packages/fact-system':
     resolution: {directory: packages/implementation-packages/fact-system, type: directory}
 
@@ -3316,10 +3171,6 @@ packages:
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
-    engines: {node: '>=0.1.90'}
-
-  '@colors/colors@1.6.0':
-    resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
     engines: {node: '>=0.1.90'}
 
   '@commitlint/cli@19.8.1':
@@ -3394,9 +3245,6 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
-
-  '@dabh/diagnostics@2.0.3':
-    resolution: {integrity: sha512-hrlQOIi7hAfzsMqlGSFyVucrx38O+j6wiGOf//H2ecvIEqYN4ADBSS2iLMh5UFyDunCNniUIPk/q3riFv45xRA==}
 
   '@dependents/detective-less@3.0.2':
     resolution: {integrity: sha512-1YUvQ+e0eeTWAHoN8Uz2x2U37jZs6IGutiIE5LXId7cxfUGhtZjzxE06FdUiuiRrW+UE0vNCdSNPH2lY4dQCOQ==}
@@ -3752,8 +3600,8 @@ packages:
     resolution: {integrity: sha512-gtF186CXhIl1p4pJNGZw8Yc6RlshoePRvE0X91oPGb3vZ8pM3qOS9W9NGPat9LziaBV7XrJWGylNQXkGcnM3IQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/js@9.33.0':
-    resolution: {integrity: sha512-5K1/mKhWaMfreBGJTwval43JJmkip0RmM+3+IuqupeSKNC/Th2Kc7ucaq5ovTSra/OOKB9c58CGSz3QMVbWt0A==}
+  '@eslint/js@9.34.0':
+    resolution: {integrity: sha512-EoyvqQnBNsV1CWaEJ559rxXL4c8V92gxirbawSmVUOWXlsRxxQXl6LmCpdUblgxgSkDIqKnhzba2SjRTI/A5Rw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/object-schema@2.1.6':
@@ -4939,103 +4787,103 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/rollup-android-arm-eabi@4.47.1':
-    resolution: {integrity: sha512-lTahKRJip0knffA/GTNFJMrToD+CM+JJ+Qt5kjzBK/sFQ0EWqfKW3AYQSlZXN98tX0lx66083U9JYIMioMMK7g==}
+  '@rollup/rollup-android-arm-eabi@4.48.0':
+    resolution: {integrity: sha512-aVzKH922ogVAWkKiyKXorjYymz2084zrhrZRXtLrA5eEx5SO8Dj0c/4FpCHZyn7MKzhW2pW4tK28vVr+5oQ2xw==}
     cpu: [arm]
     os: [android]
 
-  '@rollup/rollup-android-arm64@4.47.1':
-    resolution: {integrity: sha512-uqxkb3RJLzlBbh/bbNQ4r7YpSZnjgMgyoEOY7Fy6GCbelkDSAzeiogxMG9TfLsBbqmGsdDObo3mzGqa8hps4MA==}
+  '@rollup/rollup-android-arm64@4.48.0':
+    resolution: {integrity: sha512-diOdQuw43xTa1RddAFbhIA8toirSzFMcnIg8kvlzRbK26xqEnKJ/vqQnghTAajy2Dcy42v+GMPMo6jq67od+Dw==}
     cpu: [arm64]
     os: [android]
 
-  '@rollup/rollup-darwin-arm64@4.47.1':
-    resolution: {integrity: sha512-tV6reObmxBDS4DDyLzTDIpymthNlxrLBGAoQx6m2a7eifSNEZdkXQl1PE4ZjCkEDPVgNXSzND/k9AQ3mC4IOEQ==}
+  '@rollup/rollup-darwin-arm64@4.48.0':
+    resolution: {integrity: sha512-QhR2KA18fPlJWFefySJPDYZELaVqIUVnYgAOdtJ+B/uH96CFg2l1TQpX19XpUMWUqMyIiyY45wje8K6F4w4/CA==}
     cpu: [arm64]
     os: [darwin]
 
-  '@rollup/rollup-darwin-x64@4.47.1':
-    resolution: {integrity: sha512-XuJRPTnMk1lwsSnS3vYyVMu4x/+WIw1MMSiqj5C4j3QOWsMzbJEK90zG+SWV1h0B1ABGCQ0UZUjti+TQK35uHQ==}
+  '@rollup/rollup-darwin-x64@4.48.0':
+    resolution: {integrity: sha512-Q9RMXnQVJ5S1SYpNSTwXDpoQLgJ/fbInWOyjbCnnqTElEyeNvLAB3QvG5xmMQMhFN74bB5ZZJYkKaFPcOG8sGg==}
     cpu: [x64]
     os: [darwin]
 
-  '@rollup/rollup-freebsd-arm64@4.47.1':
-    resolution: {integrity: sha512-79BAm8Ag/tmJ5asCqgOXsb3WY28Rdd5Lxj8ONiQzWzy9LvWORd5qVuOnjlqiWWZJw+dWewEktZb5yiM1DLLaHw==}
+  '@rollup/rollup-freebsd-arm64@4.48.0':
+    resolution: {integrity: sha512-3jzOhHWM8O8PSfyft+ghXZfBkZawQA0PUGtadKYxFqpcYlOYjTi06WsnYBsbMHLawr+4uWirLlbhcYLHDXR16w==}
     cpu: [arm64]
     os: [freebsd]
 
-  '@rollup/rollup-freebsd-x64@4.47.1':
-    resolution: {integrity: sha512-OQ2/ZDGzdOOlyfqBiip0ZX/jVFekzYrGtUsqAfLDbWy0jh1PUU18+jYp8UMpqhly5ltEqotc2miLngf9FPSWIA==}
+  '@rollup/rollup-freebsd-x64@4.48.0':
+    resolution: {integrity: sha512-NcD5uVUmE73C/TPJqf78hInZmiSBsDpz3iD5MF/BuB+qzm4ooF2S1HfeTChj5K4AV3y19FFPgxonsxiEpy8v/A==}
     cpu: [x64]
     os: [freebsd]
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.47.1':
-    resolution: {integrity: sha512-HZZBXJL1udxlCVvoVadstgiU26seKkHbbAMLg7680gAcMnRNP9SAwTMVet02ANA94kXEI2VhBnXs4e5nf7KG2A==}
+  '@rollup/rollup-linux-arm-gnueabihf@4.48.0':
+    resolution: {integrity: sha512-JWnrj8qZgLWRNHr7NbpdnrQ8kcg09EBBq8jVOjmtlB3c8C6IrynAJSMhMVGME4YfTJzIkJqvSUSVJRqkDnu/aA==}
     cpu: [arm]
     os: [linux]
 
-  '@rollup/rollup-linux-arm-musleabihf@4.47.1':
-    resolution: {integrity: sha512-sZ5p2I9UA7T950JmuZ3pgdKA6+RTBr+0FpK427ExW0t7n+QwYOcmDTK/aRlzoBrWyTpJNlS3kacgSlSTUg6P/Q==}
+  '@rollup/rollup-linux-arm-musleabihf@4.48.0':
+    resolution: {integrity: sha512-9xu92F0TxuMH0tD6tG3+GtngwdgSf8Bnz+YcsPG91/r5Vgh5LNofO48jV55priA95p3c92FLmPM7CvsVlnSbGQ==}
     cpu: [arm]
     os: [linux]
 
-  '@rollup/rollup-linux-arm64-gnu@4.47.1':
-    resolution: {integrity: sha512-3hBFoqPyU89Dyf1mQRXCdpc6qC6At3LV6jbbIOZd72jcx7xNk3aAp+EjzAtN6sDlmHFzsDJN5yeUySvorWeRXA==}
+  '@rollup/rollup-linux-arm64-gnu@4.48.0':
+    resolution: {integrity: sha512-NLtvJB5YpWn7jlp1rJiY0s+G1Z1IVmkDuiywiqUhh96MIraC0n7XQc2SZ1CZz14shqkM+XN2UrfIo7JB6UufOA==}
     cpu: [arm64]
     os: [linux]
 
-  '@rollup/rollup-linux-arm64-musl@4.47.1':
-    resolution: {integrity: sha512-49J4FnMHfGodJWPw73Ve+/hsPjZgcXQGkmqBGZFvltzBKRS+cvMiWNLadOMXKGnYRhs1ToTGM0sItKISoSGUNA==}
+  '@rollup/rollup-linux-arm64-musl@4.48.0':
+    resolution: {integrity: sha512-QJ4hCOnz2SXgCh+HmpvZkM+0NSGcZACyYS8DGbWn2PbmA0e5xUk4bIP8eqJyNXLtyB4gZ3/XyvKtQ1IFH671vQ==}
     cpu: [arm64]
     os: [linux]
 
-  '@rollup/rollup-linux-loongarch64-gnu@4.47.1':
-    resolution: {integrity: sha512-4yYU8p7AneEpQkRX03pbpLmE21z5JNys16F1BZBZg5fP9rIlb0TkeQjn5du5w4agConCCEoYIG57sNxjryHEGg==}
+  '@rollup/rollup-linux-loongarch64-gnu@4.48.0':
+    resolution: {integrity: sha512-Pk0qlGJnhILdIC5zSKQnprFjrGmjfDM7TPZ0FKJxRkoo+kgMRAg4ps1VlTZf8u2vohSicLg7NP+cA5qE96PaFg==}
     cpu: [loong64]
     os: [linux]
 
-  '@rollup/rollup-linux-ppc64-gnu@4.47.1':
-    resolution: {integrity: sha512-fAiq+J28l2YMWgC39jz/zPi2jqc0y3GSRo1yyxlBHt6UN0yYgnegHSRPa3pnHS5amT/efXQrm0ug5+aNEu9UuQ==}
+  '@rollup/rollup-linux-ppc64-gnu@4.48.0':
+    resolution: {integrity: sha512-/dNFc6rTpoOzgp5GKoYjT6uLo8okR/Chi2ECOmCZiS4oqh3mc95pThWma7Bgyk6/WTEvjDINpiBCuecPLOgBLQ==}
     cpu: [ppc64]
     os: [linux]
 
-  '@rollup/rollup-linux-riscv64-gnu@4.47.1':
-    resolution: {integrity: sha512-daoT0PMENNdjVYYU9xec30Y2prb1AbEIbb64sqkcQcSaR0zYuKkoPuhIztfxuqN82KYCKKrj+tQe4Gi7OSm1ow==}
+  '@rollup/rollup-linux-riscv64-gnu@4.48.0':
+    resolution: {integrity: sha512-YBwXsvsFI8CVA4ej+bJF2d9uAeIiSkqKSPQNn0Wyh4eMDY4wxuSp71BauPjQNCKK2tD2/ksJ7uhJ8X/PVY9bHQ==}
     cpu: [riscv64]
     os: [linux]
 
-  '@rollup/rollup-linux-riscv64-musl@4.47.1':
-    resolution: {integrity: sha512-JNyXaAhWtdzfXu5pUcHAuNwGQKevR+6z/poYQKVW+pLaYOj9G1meYc57/1Xv2u4uTxfu9qEWmNTjv/H/EpAisw==}
+  '@rollup/rollup-linux-riscv64-musl@4.48.0':
+    resolution: {integrity: sha512-FI3Rr2aGAtl1aHzbkBIamsQyuauYtTF9SDUJ8n2wMXuuxwchC3QkumZa1TEXYIv/1AUp1a25Kwy6ONArvnyeVQ==}
     cpu: [riscv64]
     os: [linux]
 
-  '@rollup/rollup-linux-s390x-gnu@4.47.1':
-    resolution: {integrity: sha512-U/CHbqKSwEQyZXjCpY43/GLYcTVKEXeRHw0rMBJP7fP3x6WpYG4LTJWR3ic6TeYKX6ZK7mrhltP4ppolyVhLVQ==}
+  '@rollup/rollup-linux-s390x-gnu@4.48.0':
+    resolution: {integrity: sha512-Dx7qH0/rvNNFmCcIRe1pyQ9/H0XO4v/f0SDoafwRYwc2J7bJZ5N4CHL/cdjamISZ5Cgnon6iazAVRFlxSoHQnQ==}
     cpu: [s390x]
     os: [linux]
 
-  '@rollup/rollup-linux-x64-gnu@4.47.1':
-    resolution: {integrity: sha512-uTLEakjxOTElfeZIGWkC34u2auLHB1AYS6wBjPGI00bWdxdLcCzK5awjs25YXpqB9lS8S0vbO0t9ZcBeNibA7g==}
+  '@rollup/rollup-linux-x64-gnu@4.48.0':
+    resolution: {integrity: sha512-GUdZKTeKBq9WmEBzvFYuC88yk26vT66lQV8D5+9TgkfbewhLaTHRNATyzpQwwbHIfJvDJ3N9WJ90wK/uR3cy3Q==}
     cpu: [x64]
     os: [linux]
 
-  '@rollup/rollup-linux-x64-musl@4.47.1':
-    resolution: {integrity: sha512-Ft+d/9DXs30BK7CHCTX11FtQGHUdpNDLJW0HHLign4lgMgBcPFN3NkdIXhC5r9iwsMwYreBBc4Rho5ieOmKNVQ==}
+  '@rollup/rollup-linux-x64-musl@4.48.0':
+    resolution: {integrity: sha512-ao58Adz/v14MWpQgYAb4a4h3fdw73DrDGtaiF7Opds5wNyEQwtO6M9dBh89nke0yoZzzaegq6J/EXs7eBebG8A==}
     cpu: [x64]
     os: [linux]
 
-  '@rollup/rollup-win32-arm64-msvc@4.47.1':
-    resolution: {integrity: sha512-N9X5WqGYzZnjGAFsKSfYFtAShYjwOmFJoWbLg3dYixZOZqU7hdMq+/xyS14zKLhFhZDhP9VfkzQnsdk0ZDS9IA==}
+  '@rollup/rollup-win32-arm64-msvc@4.48.0':
+    resolution: {integrity: sha512-kpFno46bHtjZVdRIOxqaGeiABiToo2J+st7Yce+aiAoo1H0xPi2keyQIP04n2JjDVuxBN6bSz9R6RdTK5hIppw==}
     cpu: [arm64]
     os: [win32]
 
-  '@rollup/rollup-win32-ia32-msvc@4.47.1':
-    resolution: {integrity: sha512-O+KcfeCORZADEY8oQJk4HK8wtEOCRE4MdOkb8qGZQNun3jzmj2nmhV/B/ZaaZOkPmJyvm/gW9n0gsB4eRa1eiQ==}
+  '@rollup/rollup-win32-ia32-msvc@4.48.0':
+    resolution: {integrity: sha512-rFYrk4lLk9YUTIeihnQMiwMr6gDhGGSbWThPEDfBoU/HdAtOzPXeexKi7yU8jO+LWRKnmqPN9NviHQf6GDwBcQ==}
     cpu: [ia32]
     os: [win32]
 
-  '@rollup/rollup-win32-x64-msvc@4.47.1':
-    resolution: {integrity: sha512-CpKnYa8eHthJa3c+C38v/E+/KZyF1Jdh2Cz3DyKZqEWYgrM1IHFArXNWvBLPQCKUEsAqqKX27tTqVEFbDNUcOA==}
+  '@rollup/rollup-win32-x64-msvc@4.48.0':
+    resolution: {integrity: sha512-sq0hHLTgdtwOPDB5SJOuaoHyiP1qSwg+71TQWk8iDS04bW1wIE0oQ6otPiRj2ZvLYNASLMaTp8QRGUVZ+5OL5A==}
     cpu: [x64]
     os: [win32]
 
@@ -5843,9 +5691,6 @@ packages:
   '@types/through@0.0.33':
     resolution: {integrity: sha512-HsJ+z3QuETzP3cswwtzt2vEIiHBk/dCcHGhbmG5X3ecnwFD/lPrMpliGXxSCg03L9AhrdwA4Oz/qfspkDW+xGQ==}
 
-  '@types/triple-beam@1.3.5':
-    resolution: {integrity: sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==}
-
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
@@ -6561,10 +6406,6 @@ packages:
     engines: {node: '>= 4.5.0'}
     hasBin: true
 
-  atomic-sleep@1.0.0:
-    resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
-    engines: {node: '>=8.0.0'}
-
   autoprefixer@10.4.21:
     resolution: {integrity: sha512-O+A6LWV5LDHSJD3LjHYoNi4VLsj/Whi7k6zG12xTYaU4cQ8oxQGckXNX8cRHK5yOZ/ppVHe0ZBXGzSV9jXdVbQ==}
     engines: {node: ^10 || ^12 || >=14}
@@ -7122,9 +6963,6 @@ packages:
     resolution: {integrity: sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==}
     hasBin: true
 
-  color@3.2.1:
-    resolution: {integrity: sha512-aBl7dZI9ENN6fUGC7mWpMTPNHmWUSNan9tuWN6ahh5ZLNk9baLJOnSMlrQkHcrfFgz2/RigjUVAjdx36VcemKA==}
-
   color@4.2.3:
     resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
     engines: {node: '>=12.5.0'}
@@ -7134,9 +6972,6 @@ packages:
 
   colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
-
-  colorspace@1.1.4:
-    resolution: {integrity: sha512-BgvKJiuVu1igBUF2kEjRCZXol6wiiGbY5ipL/oVPwm0BL9sIpMIzM8IK7vwuxIIzOXMV3Ey5w+vxhm0rR/TN8w==}
 
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -7670,9 +7505,6 @@ packages:
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
-  dateformat@4.6.3:
-    resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
-
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
@@ -8027,10 +7859,6 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
-  dotenv@17.2.1:
-    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
-    engines: {node: '>=12'}
-
   dox@0.8.1:
     resolution: {integrity: sha512-CJJCQS6XYJ2FQJox4ey7pUdaAjDusPLqGtfe3Jli4N+m2jBKrT9zwEsh2thV9W5d8F359AMWqkWk50CuH3r8dw==}
     hasBin: true
@@ -8098,9 +7926,6 @@ packages:
   empathic@2.0.0:
     resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
     engines: {node: '>=14'}
-
-  enabled@2.0.0:
-    resolution: {integrity: sha512-AKrN98kuwOzMIdAizXGI86UFBoo26CL21UM763y1h/GMSJ4/OHU9k2YlsmBpyScFo/wbLzWQJBMCW4+IO3/+OQ==}
 
   encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
@@ -8377,8 +8202,8 @@ packages:
     resolution: {integrity: sha512-Uhdk5sfqcee/9H/rCOJikYz67o0a2Tw2hGRPOG2Y1R2dg7brRe1uG0yaNQDHu+TO/uQPF/5eCapvYSmHUjt7JQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  eslint@9.33.0:
-    resolution: {integrity: sha512-TS9bTNIryDzStCpJN93aC5VRSW3uTx9sClUn4B87pwiCaJh220otoI0X8mJKr+VcPtniMdN8GKjlwgWGUv5ZKA==}
+  eslint@9.34.0:
+    resolution: {integrity: sha512-RNCHRX5EwdrESy3Jc9o8ie8Bog+PeYvvSR8sDGoZxNFTvZ4dlxUB3WzQ3bQMztFrSRODGrLLj8g6OFuGY/aiQg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
     peerDependencies:
@@ -8590,9 +8415,6 @@ packages:
   fast-content-type-parse@3.0.0:
     resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
 
-  fast-copy@3.0.2:
-    resolution: {integrity: sha512-dl0O9Vhju8IrcLndv2eU4ldt1ftXMqqfgN4H1cpmGV7P6jeB9FwpN9a2c8DPGE1Ys88rNUJVYDHq73CGAGOPfQ==}
-
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -8611,10 +8433,6 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
-
-  fast-redact@3.5.0:
-    resolution: {integrity: sha512-dwsoQlS7h9hMeYUq1W++23NDcBLV4KqONnITDV9DjfS3q1SgDGVrBdvvTLUotWtPSD7asWDV9/CmsZPy8Hf70A==}
-    engines: {node: '>=6'}
 
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
@@ -8640,9 +8458,6 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
-
-  fecha@4.2.3:
-    resolution: {integrity: sha512-OP2IUU6HeYKJi3i0z4A19kHMQoLVs4Hc+DPqqxI2h/DPZHTm/vjsfC6P0b4jCMy14XizLBqvndQ+UilD7707Jw==}
 
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
@@ -8755,9 +8570,6 @@ packages:
   flow-parser@0.279.0:
     resolution: {integrity: sha512-41VremrzImoLcZuqY18U86ojcVy2Stuq4VnjdAcxHjGanvx3VmKVUITIVMt2PM1RvmRJtgtJWvCxVpQ1E9OGDw==}
     engines: {node: '>=0.4.0'}
-
-  fn.name@1.1.0:
-    resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
 
   focus-trap@7.6.5:
     resolution: {integrity: sha512-7Ke1jyybbbPZyZXFxEftUtxFGLMpE2n6A+z//m4CRDlj0hW+o3iYSmh8nFlYMurOiJVDmJRilUQtJr08KfIxlg==}
@@ -9216,9 +9028,6 @@ packages:
   helmet@8.1.0:
     resolution: {integrity: sha512-jOiHyAZsmnr8LqoPGmCjYAaiuWwjAPLgY8ZX2XrmHawt99/u1y6RgrZMTeoPfpUbV96HOalYgz1qzkRbw54Pmg==}
     engines: {node: '>=18.0.0'}
-
-  help-me@5.0.0:
-    resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
   hexer@1.5.0:
     resolution: {integrity: sha512-dyrPC8KzBzUJ19QTIo1gXNqIISRXQ0NwteW6OeQHRN4ZuZeHkdODfj0zHBdOlHbRY8GqbqK57C9oWSvQZizFsg==}
@@ -9965,9 +9774,6 @@ packages:
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
 
-  kuler@2.0.0:
-    resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
-
   kuzu@0.11.2:
     resolution: {integrity: sha512-4DrhdfjxImGqtfuQBhPuptQBQ6OT8G/n/cdpj7etgNJ7XeT6SeMGdo4duMvsSATRommzhTxeLwm7FHUIiYTjhg==}
 
@@ -10255,10 +10061,6 @@ packages:
   log-update@6.1.0:
     resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
     engines: {node: '>=18'}
-
-  logform@2.7.0:
-    resolution: {integrity: sha512-TFYA4jnP7PVbmlBIfhlSe+WKxs9dklXMTEGcBCIvLhE/Tn3H6Gk1norupVW7m5Cnd4bLcr08AytbyV/xj7f/kQ==}
-    engines: {node: '>= 12.0.0'}
 
   long@2.4.0:
     resolution: {integrity: sha512-ijUtjmO/n2A5PaosNG9ZGDsQ3vxJg7ZW8vsY8Kp0f2yIZWhSJvjmegV7t+9RPQKxKrvj8yKGehhS+po14hPLGQ==}
@@ -10702,8 +10504,8 @@ packages:
   ml-xsadd@2.0.0:
     resolution: {integrity: sha512-VoAYUqmPRmzKbbqRejjqceGFp3VF81Qe8XXFGU0UXLxB7Mf4GGvyGq5Qn3k4AiQgDEV6WzobqlPOd+j0+m6IrA==}
 
-  mlly@1.7.4:
-    resolution: {integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==}
+  mlly@1.8.0:
+    resolution: {integrity: sha512-l8D9ODSRWLe2KHJSifWGwBqpTZXIXTeo8mlKjY+E2HAakaTeNpqAyBZ8GSqLzHgw4XmHmC8whvpjJNMbFZN7/g==}
 
   module-definition@3.4.0:
     resolution: {integrity: sha512-XxJ88R1v458pifaSkPNLUTdSPNVGMP2SXVncVmApGO+gAfrLANiYe6JofymCzVceGOMwQE2xogxBSc8uB7XegA==}
@@ -11133,10 +10935,6 @@ packages:
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
-  on-exit-leak-free@2.1.2:
-    resolution: {integrity: sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA==}
-    engines: {node: '>=14.0.0'}
-
   on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
@@ -11155,9 +10953,6 @@ packages:
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
-
-  one-time@1.0.0:
-    resolution: {integrity: sha512-5DXOiRKwuSEcQ/l0kGCF6Q3jcADFv5tSmRaJck/OqkVFcOzutB134KRSfF0xDrL39MNnqxbHBbUUcjZIhTgb2g==}
 
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
@@ -11601,20 +11396,6 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pino-abstract-transport@2.0.0:
-    resolution: {integrity: sha512-F63x5tizV6WCh4R6RHyi2Ml+M70DNRXt/+HANowMflpgGFMAym/VKm6G7ZOQRjqN7XbGxK1Lg9t6ZrtzOaivMw==}
-
-  pino-pretty@11.3.0:
-    resolution: {integrity: sha512-oXwn7ICywaZPHmu3epHGU2oJX4nPmKvHvB/bwrJHlGcbEWaVcotkpyVHMKLKmiVryWYByNp0jpgAcXpFJDXJzA==}
-    hasBin: true
-
-  pino-std-serializers@7.0.0:
-    resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
-
-  pino@9.9.0:
-    resolution: {integrity: sha512-zxsRIQG9HzG+jEljmvmZupOMDUQ0Jpj0yAgE28jQvvrdYTlEaiGwelJpdndMl/MBuRr70heIj83QyqJUWaU8mQ==}
-    hasBin: true
-
   pirates@4.0.7:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
@@ -11882,9 +11663,6 @@ packages:
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
 
-  process-warning@5.0.0:
-    resolution: {integrity: sha512-a39t9ApHNx2L4+HBnQKqxxHNs1r7KF+Intd8Q/g1bUh6q0WIp9voPXJ/x0j+ZL45KF1pJd9+q2jLIRMfvEshkA==}
-
   process@0.10.1:
     resolution: {integrity: sha512-dyIett8dgGIZ/TXKUzeYExt7WA6ldDzys9vTDU/cCA9L17Ypme+KzS+NjQCjpn9xsvi/shbMC+yP/BcFMBz0NA==}
     engines: {node: '>= 0.6.0'}
@@ -11999,9 +11777,6 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  quick-format-unescaped@4.0.4:
-    resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
-
   quick-lru@5.1.1:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
@@ -12083,10 +11858,6 @@ packages:
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
-
-  real-require@0.2.0:
-    resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
-    engines: {node: '>= 12.13.0'}
 
   recast@0.23.11:
     resolution: {integrity: sha512-YTUo+Flmw4ZXiWfQKGcwwc11KnoRAYgzAE2E7mXKCjSviTKShtxBsN6YUUBB2gtaBzKzeKunxhUwNHQuRryhWA==}
@@ -12314,8 +12085,8 @@ packages:
   robust-predicates@3.0.2:
     resolution: {integrity: sha512-IXgzBWvWQwE6PrDI05OvmXUIruQTcoMDzRsOd5CDvHCVLcLHMTSYvOK5Cm46kWqlV3yAbuSpBZdJ5oP5OUoStg==}
 
-  rollup@4.47.1:
-    resolution: {integrity: sha512-iasGAQoZ5dWDzULEUX3jiW0oB1qyFOepSyDyoU6S/OhVlDIwj5knI5QBa5RRQ0sK7OE0v+8VIi2JuV+G+3tfNg==}
+  rollup@4.48.0:
+    resolution: {integrity: sha512-BXHRqK1vyt9XVSEHZ9y7xdYtuYbwVod2mLwOMFP7t/Eqoc1pHRlG/WdV2qNeNvZHRQdLedaFycljaYYM96RqJQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
@@ -12414,9 +12185,6 @@ packages:
 
   secure-compare@3.0.1:
     resolution: {integrity: sha512-AckIIV90rPDcBcglUwXPF3kg0P0qmPsPXAj6BBEENQE1p5yA1xfmDJzfi1Tappj37Pv2mVbKpL3Z1T+Nn7k1Qw==}
-
-  secure-json-parse@2.7.0:
-    resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
 
   seedrandom@3.0.5:
     resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
@@ -12679,9 +12447,6 @@ packages:
     resolution: {integrity: sha512-HLpt+uLy/pxB+bum/9DzAgiKS8CX1EvbWxI4zlmgGCExImLdiad2iCwXT5Z4c9c3Eq8rP2318mPW2c+QbtjK8A==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
-  sonic-boom@4.2.0:
-    resolution: {integrity: sha512-INb7TM37/mAcsGmc9hyyI6+QR3rR1zVRu36B0NeGXKnOOLiZOfER5SA+N7X7k3yUYRzLWafduTDvJAfDswwEww==}
-
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -12769,9 +12534,6 @@ packages:
   ssri@9.0.1:
     resolution: {integrity: sha512-o57Wcn66jMQvfHG1FlYbWeZWW/dHZhJXjpIcTfXldXEk5nz5lStPo3mK0OJQfGR3RbZUlbISexbljkJzuEj/8Q==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-
-  stack-trace@0.0.10:
-    resolution: {integrity: sha512-KGzahc7puUKkzyMt+IqAep+TVNbKP+k2Lmwhub39m1AsTSkaDutx56aDCo+HLDzf/D26BIHTJWNiTG1KAJiQCg==}
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
@@ -13135,9 +12897,6 @@ packages:
     resolution: {integrity: sha512-te/NtwBwfiNRLf9Ijqx3T0nlqZiQ2XrrtBvu+cLL8ZRrGkO0NHTug8MYFKyoSrv/sHTaSKfilUkizV6XhxMJ3g==}
     engines: {node: '>=8'}
 
-  text-hex@1.0.0:
-    resolution: {integrity: sha512-uuVGNWzgJ4yhRaNSiubPY7OjISw4sw4E5Uv0wbjp+OzcbmVU/rsT8ujgcXJhn9ypzsgr5vlzpPqP+MBBKcGvbg==}
-
   thaw.js@2.1.4:
     resolution: {integrity: sha512-si9DSzEzOBUpbE41wE4Q6NXzXDYZfrniYocrduNtNDwLWj1Auueq8UzgePMQa5gfcQtVCG2OmlCTaHldtno3Vw==}
 
@@ -13147,9 +12906,6 @@ packages:
 
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
-
-  thread-stream@3.1.0:
-    resolution: {integrity: sha512-OqyPZ9u96VohAyMfJykzmivOrY2wfMSf3C5TtFJVgN+Hm6aj+voFhlK+kZEIv2FBh1X6Xp3DlnCOfEQ3B2J86A==}
 
   thriftrw@3.11.4:
     resolution: {integrity: sha512-UcuBd3eanB3T10nXWRRMwfwoaC6VMk7qe3/5YIWP2Jtw+EbHqJ0p1/K3x8ixiR5dozKSSfcg1W+0e33G1Di3XA==}
@@ -13267,10 +13023,6 @@ packages:
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
-
-  triple-beam@1.4.1:
-    resolution: {integrity: sha512-aZbgViZrg1QNcG+LULa7nhZpJTZSLm/mXnHXnbAbjmN5aSa0y7V+wvv6+4WaBtpISJzThKy+PIPxc1Nq1EJ9mg==}
-    engines: {node: '>= 14.0.0'}
 
   ts-api-utils@1.4.3:
     resolution: {integrity: sha512-i3eMG77UTMD0hZhgRS562pv83RC6ukSAC2GMNWc+9dieh/+jDM5u5YG+NHX6VNDRHQcHwmsTHctP9LhbC3WxVw==}
@@ -13961,14 +13713,6 @@ packages:
   wide-align@1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
 
-  winston-transport@4.9.0:
-    resolution: {integrity: sha512-8drMJ4rkgaPo1Me4zD/3WLfI/zPdA9o2IipKODunnGDcuqbHwjsbB79ylv04LCGGzU0xQ6vTznOMpQGaLhhm6A==}
-    engines: {node: '>= 12.0.0'}
-
-  winston@3.17.0:
-    resolution: {integrity: sha512-DLiFIXYC5fMPxaRg832S6F5mJYvePtmO5G9v9IgUFPhXm9/GkXarH/TUrBAVzhTCzAj9anE/+GjrgXp/54nOgw==}
-    engines: {node: '>= 12.0.0'}
-
   word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
@@ -14150,8 +13894,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.0.17:
-    resolution: {integrity: sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ==}
+  zod@4.1.0:
+    resolution: {integrity: sha512-UWxluYj2IDX9MHRXTMbB/2eeWrAMmmMSESM+MfT9MQw8U1qo9q5ASW08anoJh6AJ7pkt099fLdNFmfI+4aChHg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -14289,7 +14033,7 @@ snapshots:
 
   '@antfu/utils@8.1.1': {}
 
-  '@anthropic-ai/claude-code@1.0.88':
+  '@anthropic-ai/claude-code@1.0.89':
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.33.5
       '@img/sharp-darwin-x64': 0.33.5
@@ -14587,39 +14331,39 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@biomejs/biome@2.2.0':
+  '@biomejs/biome@2.2.2':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.2.0
-      '@biomejs/cli-darwin-x64': 2.2.0
-      '@biomejs/cli-linux-arm64': 2.2.0
-      '@biomejs/cli-linux-arm64-musl': 2.2.0
-      '@biomejs/cli-linux-x64': 2.2.0
-      '@biomejs/cli-linux-x64-musl': 2.2.0
-      '@biomejs/cli-win32-arm64': 2.2.0
-      '@biomejs/cli-win32-x64': 2.2.0
+      '@biomejs/cli-darwin-arm64': 2.2.2
+      '@biomejs/cli-darwin-x64': 2.2.2
+      '@biomejs/cli-linux-arm64': 2.2.2
+      '@biomejs/cli-linux-arm64-musl': 2.2.2
+      '@biomejs/cli-linux-x64': 2.2.2
+      '@biomejs/cli-linux-x64-musl': 2.2.2
+      '@biomejs/cli-win32-arm64': 2.2.2
+      '@biomejs/cli-win32-x64': 2.2.2
 
-  '@biomejs/cli-darwin-arm64@2.2.0':
+  '@biomejs/cli-darwin-arm64@2.2.2':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.2.0':
+  '@biomejs/cli-darwin-x64@2.2.2':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.2.0':
+  '@biomejs/cli-linux-arm64-musl@2.2.2':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.2.0':
+  '@biomejs/cli-linux-arm64@2.2.2':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.2.0':
+  '@biomejs/cli-linux-x64-musl@2.2.2':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.2.0':
+  '@biomejs/cli-linux-x64@2.2.2':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.2.0':
+  '@biomejs/cli-win32-arm64@2.2.2':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.2.0':
+  '@biomejs/cli-win32-x64@2.2.2':
     optional: true
 
   '@braintree/sanitize-url@7.1.1': {}
@@ -14641,15 +14385,9 @@ snapshots:
 
   '@chevrotain/utils@11.0.3': {}
 
-  '@claude-zen/chaos-engineering@file:packages/implementation-packages/chaos-engineering':
-    dependencies:
-      '@claude-zen/foundation': link:packages/foundation
-      eventemitter3: 5.0.1
-
   '@claude-zen/fact-system@file:packages/implementation-packages/fact-system':
     dependencies:
       '@claude-zen/foundation': link:packages/foundation
-      nanoid: 5.1.5
 
   '@claude-zen/sparc@file:packages/implementation-packages/sparc':
     dependencies:
@@ -14659,8 +14397,6 @@ snapshots:
 
   '@colors/colors@1.5.0':
     optional: true
-
-  '@colors/colors@1.6.0': {}
 
   '@commitlint/cli@19.8.1(@types/node@22.17.1)(typescript@5.9.2)':
     dependencies:
@@ -14775,12 +14511,6 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
-
-  '@dabh/diagnostics@2.0.3':
-    dependencies:
-      colorspace: 1.1.4
-      enabled: 2.0.0
-      kuler: 2.0.0
 
   '@dependents/detective-less@3.0.2':
     dependencies:
@@ -14969,9 +14699,9 @@ snapshots:
   '@esbuild/win32-x64@0.25.9':
     optional: true
 
-  '@eslint-community/eslint-utils@4.7.0(eslint@9.33.0(jiti@2.5.1))':
+  '@eslint-community/eslint-utils@4.7.0(eslint@9.34.0(jiti@2.5.1))':
     dependencies:
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.1': {}
@@ -15004,7 +14734,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/js@9.33.0': {}
+  '@eslint/js@9.34.0': {}
 
   '@eslint/object-schema@2.1.6': {}
 
@@ -15074,7 +14804,7 @@ snapshots:
       globals: 15.15.0
       kolorist: 1.8.0
       local-pkg: 1.1.2
-      mlly: 1.7.4
+      mlly: 1.8.0
     transitivePeerDependencies:
       - supports-color
 
@@ -16470,9 +16200,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@rollup/plugin-commonjs@28.0.6(rollup@4.47.1)':
+  '@rollup/plugin-commonjs@28.0.6(rollup@4.48.0)':
     dependencies:
-      '@rollup/pluginutils': 5.2.0(rollup@4.47.1)
+      '@rollup/pluginutils': 5.2.0(rollup@4.48.0)
       commondir: 1.0.1
       estree-walker: 2.0.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -16480,90 +16210,90 @@ snapshots:
       magic-string: 0.30.18
       picomatch: 4.0.3
     optionalDependencies:
-      rollup: 4.47.1
+      rollup: 4.48.0
 
-  '@rollup/plugin-json@6.1.0(rollup@4.47.1)':
+  '@rollup/plugin-json@6.1.0(rollup@4.48.0)':
     dependencies:
-      '@rollup/pluginutils': 5.2.0(rollup@4.47.1)
+      '@rollup/pluginutils': 5.2.0(rollup@4.48.0)
     optionalDependencies:
-      rollup: 4.47.1
+      rollup: 4.48.0
 
-  '@rollup/plugin-node-resolve@16.0.1(rollup@4.47.1)':
+  '@rollup/plugin-node-resolve@16.0.1(rollup@4.48.0)':
     dependencies:
-      '@rollup/pluginutils': 5.2.0(rollup@4.47.1)
+      '@rollup/pluginutils': 5.2.0(rollup@4.48.0)
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-module: 1.0.0
       resolve: 1.22.10
     optionalDependencies:
-      rollup: 4.47.1
+      rollup: 4.48.0
 
-  '@rollup/pluginutils@5.2.0(rollup@4.47.1)':
+  '@rollup/pluginutils@5.2.0(rollup@4.48.0)':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
       picomatch: 4.0.3
     optionalDependencies:
-      rollup: 4.47.1
+      rollup: 4.48.0
 
-  '@rollup/rollup-android-arm-eabi@4.47.1':
+  '@rollup/rollup-android-arm-eabi@4.48.0':
     optional: true
 
-  '@rollup/rollup-android-arm64@4.47.1':
+  '@rollup/rollup-android-arm64@4.48.0':
     optional: true
 
-  '@rollup/rollup-darwin-arm64@4.47.1':
+  '@rollup/rollup-darwin-arm64@4.48.0':
     optional: true
 
-  '@rollup/rollup-darwin-x64@4.47.1':
+  '@rollup/rollup-darwin-x64@4.48.0':
     optional: true
 
-  '@rollup/rollup-freebsd-arm64@4.47.1':
+  '@rollup/rollup-freebsd-arm64@4.48.0':
     optional: true
 
-  '@rollup/rollup-freebsd-x64@4.47.1':
+  '@rollup/rollup-freebsd-x64@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.47.1':
+  '@rollup/rollup-linux-arm-gnueabihf@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-arm-musleabihf@4.47.1':
+  '@rollup/rollup-linux-arm-musleabihf@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-arm64-gnu@4.47.1':
+  '@rollup/rollup-linux-arm64-gnu@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-arm64-musl@4.47.1':
+  '@rollup/rollup-linux-arm64-musl@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-loongarch64-gnu@4.47.1':
+  '@rollup/rollup-linux-loongarch64-gnu@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-ppc64-gnu@4.47.1':
+  '@rollup/rollup-linux-ppc64-gnu@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-riscv64-gnu@4.47.1':
+  '@rollup/rollup-linux-riscv64-gnu@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-riscv64-musl@4.47.1':
+  '@rollup/rollup-linux-riscv64-musl@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-s390x-gnu@4.47.1':
+  '@rollup/rollup-linux-s390x-gnu@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-x64-gnu@4.47.1':
+  '@rollup/rollup-linux-x64-gnu@4.48.0':
     optional: true
 
-  '@rollup/rollup-linux-x64-musl@4.47.1':
+  '@rollup/rollup-linux-x64-musl@4.48.0':
     optional: true
 
-  '@rollup/rollup-win32-arm64-msvc@4.47.1':
+  '@rollup/rollup-win32-arm64-msvc@4.48.0':
     optional: true
 
-  '@rollup/rollup-win32-ia32-msvc@4.47.1':
+  '@rollup/rollup-win32-ia32-msvc@4.48.0':
     optional: true
 
-  '@rollup/rollup-win32-x64-msvc@4.47.1':
+  '@rollup/rollup-win32-x64-msvc@4.48.0':
     optional: true
 
   '@rtsao/scc@1.1.0': {}
@@ -16843,19 +16573,19 @@ snapshots:
 
   '@sveltejs/adapter-node@5.3.1(@sveltejs/kit@2.36.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@3.1.2(svelte@4.2.20)(vite@5.4.19(@types/node@22.17.1)(lightningcss@1.30.1)))(svelte@4.2.20)(vite@5.4.19(@types/node@22.17.1)(lightningcss@1.30.1)))':
     dependencies:
-      '@rollup/plugin-commonjs': 28.0.6(rollup@4.47.1)
-      '@rollup/plugin-json': 6.1.0(rollup@4.47.1)
-      '@rollup/plugin-node-resolve': 16.0.1(rollup@4.47.1)
+      '@rollup/plugin-commonjs': 28.0.6(rollup@4.48.0)
+      '@rollup/plugin-json': 6.1.0(rollup@4.48.0)
+      '@rollup/plugin-node-resolve': 16.0.1(rollup@4.48.0)
       '@sveltejs/kit': 2.36.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@3.1.2(svelte@4.2.20)(vite@5.4.19(@types/node@22.17.1)(lightningcss@1.30.1)))(svelte@4.2.20)(vite@5.4.19(@types/node@22.17.1)(lightningcss@1.30.1))
-      rollup: 4.47.1
+      rollup: 4.48.0
 
   '@sveltejs/adapter-node@5.3.1(@sveltejs/kit@2.36.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.1.3(svelte@5.38.2)(vite@7.1.3(@types/node@22.17.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(svelte@5.38.2)(vite@7.1.3(@types/node@22.17.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))':
     dependencies:
-      '@rollup/plugin-commonjs': 28.0.6(rollup@4.47.1)
-      '@rollup/plugin-json': 6.1.0(rollup@4.47.1)
-      '@rollup/plugin-node-resolve': 16.0.1(rollup@4.47.1)
+      '@rollup/plugin-commonjs': 28.0.6(rollup@4.48.0)
+      '@rollup/plugin-json': 6.1.0(rollup@4.48.0)
+      '@rollup/plugin-node-resolve': 16.0.1(rollup@4.48.0)
       '@sveltejs/kit': 2.36.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.1.3(svelte@5.38.2)(vite@7.1.3(@types/node@22.17.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(svelte@5.38.2)(vite@7.1.3(@types/node@22.17.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1))
-      rollup: 4.47.1
+      rollup: 4.48.0
 
   '@sveltejs/kit@2.36.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@3.1.2(svelte@4.2.20)(vite@5.4.19(@types/node@22.17.1)(lightningcss@1.30.1)))(svelte@4.2.20)(vite@5.4.19(@types/node@22.17.1)(lightningcss@1.30.1))':
     dependencies:
@@ -17642,8 +17372,6 @@ snapshots:
     dependencies:
       '@types/node': 22.17.1
 
-  '@types/triple-beam@1.3.5': {}
-
   '@types/trusted-types@2.0.7':
     optional: true
 
@@ -17671,15 +17399,15 @@ snapshots:
     dependencies:
       '@types/node': 22.17.1
 
-  '@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)':
+  '@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
       '@eslint-community/regexpp': 4.12.1
-      '@typescript-eslint/parser': 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser': 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/scope-manager': 8.40.0
-      '@typescript-eslint/type-utils': 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/utils': 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/type-utils': 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/utils': 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/visitor-keys': 8.40.0
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       graphemer: 1.4.0
       ignore: 7.0.5
       natural-compare: 1.4.0
@@ -17688,27 +17416,27 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@6.21.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)':
+  '@typescript-eslint/parser@6.21.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/scope-manager': 6.21.0
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.9.2)
       '@typescript-eslint/visitor-keys': 6.21.0
       debug: 4.4.1
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
     optionalDependencies:
       typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)':
+  '@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.40.0
       '@typescript-eslint/types': 8.40.0
       '@typescript-eslint/typescript-estree': 8.40.0(typescript@5.9.2)
       '@typescript-eslint/visitor-keys': 8.40.0
       debug: 4.4.1
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
@@ -17736,13 +17464,13 @@ snapshots:
     dependencies:
       typescript: 5.9.2
 
-  '@typescript-eslint/type-utils@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)':
+  '@typescript-eslint/type-utils@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/types': 8.40.0
       '@typescript-eslint/typescript-estree': 8.40.0(typescript@5.9.2)
-      '@typescript-eslint/utils': 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/utils': 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       debug: 4.4.1
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -17829,13 +17557,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)':
+  '@typescript-eslint/utils@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
       '@typescript-eslint/scope-manager': 8.40.0
       '@typescript-eslint/types': 8.40.0
       '@typescript-eslint/typescript-estree': 8.40.0(typescript@5.9.2)
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
@@ -18520,8 +18248,6 @@ snapshots:
 
   atob@2.1.2: {}
 
-  atomic-sleep@1.0.0: {}
-
   autoprefixer@10.4.21(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.3
@@ -19171,11 +18897,6 @@ snapshots:
 
   color-support@1.1.3: {}
 
-  color@3.2.1:
-    dependencies:
-      color-convert: 1.9.3
-      color-string: 1.9.1
-
   color@4.2.3:
     dependencies:
       color-convert: 2.0.1
@@ -19184,11 +18905,6 @@ snapshots:
   colorette@1.4.0: {}
 
   colorette@2.0.20: {}
-
-  colorspace@1.1.4:
-    dependencies:
-      color: 3.2.1
-      text-hex: 1.0.0
 
   combined-stream@1.0.8:
     dependencies:
@@ -19755,8 +19471,6 @@ snapshots:
 
   date-fns@4.1.0: {}
 
-  dateformat@4.6.3: {}
-
   dayjs@1.11.13: {}
 
   dayjs@1.8.36: {}
@@ -20142,8 +19856,6 @@ snapshots:
 
   dotenv@16.6.1: {}
 
-  dotenv@17.2.1: {}
-
   dox@0.8.1:
     dependencies:
       commander: 2.9.0
@@ -20208,8 +19920,6 @@ snapshots:
   emojilib@2.4.0: {}
 
   empathic@2.0.0: {}
-
-  enabled@2.0.0: {}
 
   encodeurl@1.0.2: {}
 
@@ -20508,9 +20218,9 @@ snapshots:
     dependencies:
       check-types: 5.1.0
 
-  eslint-compat-utils@0.5.1(eslint@9.33.0(jiti@2.5.1)):
+  eslint-compat-utils@0.5.1(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       semver: 7.7.2
 
   eslint-formatter-compact@8.40.0: {}
@@ -20523,24 +20233,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint-import-resolver-node@0.3.9)(eslint@9.33.0(jiti@2.5.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint-import-resolver-node@0.3.9)(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint: 9.33.0(jiti@2.5.1)
+      '@typescript-eslint/parser': 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint: 9.34.0(jiti@2.5.1)
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-es-x@7.8.0(eslint@9.33.0(jiti@2.5.1)):
+  eslint-plugin-es-x@7.8.0(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
       '@eslint-community/regexpp': 4.12.1
-      eslint: 9.33.0(jiti@2.5.1)
-      eslint-compat-utils: 0.5.1(eslint@9.33.0(jiti@2.5.1))
+      eslint: 9.34.0(jiti@2.5.1)
+      eslint-compat-utils: 0.5.1(eslint@9.34.0(jiti@2.5.1))
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -20549,9 +20259,9 @@ snapshots:
       array.prototype.flatmap: 1.3.3
       debug: 3.2.7
       doctrine: 2.1.0
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint-import-resolver-node@0.3.9)(eslint@9.33.0(jiti@2.5.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint-import-resolver-node@0.3.9)(eslint@9.34.0(jiti@2.5.1))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -20563,18 +20273,18 @@ snapshots:
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser': 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-n@17.21.3(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2):
+  eslint-plugin-n@17.21.3(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2):
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
       enhanced-resolve: 5.18.3
-      eslint: 9.33.0(jiti@2.5.1)
-      eslint-plugin-es-x: 7.8.0(eslint@9.33.0(jiti@2.5.1))
+      eslint: 9.34.0(jiti@2.5.1)
+      eslint-plugin-es-x: 7.8.0(eslint@9.34.0(jiti@2.5.1))
       get-tsconfig: 4.10.1
       globals: 15.15.0
       globrex: 0.1.2
@@ -20584,17 +20294,17 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  eslint-plugin-promise@7.2.1(eslint@9.33.0(jiti@2.5.1)):
+  eslint-plugin-promise@7.2.1(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
-      eslint: 9.33.0(jiti@2.5.1)
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
+      eslint: 9.34.0(jiti@2.5.1)
 
-  eslint-plugin-sonarjs@3.0.4(eslint@9.33.0(jiti@2.5.1)):
+  eslint-plugin-sonarjs@3.0.4(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
       '@eslint-community/regexpp': 4.12.1
       builtin-modules: 3.3.0
       bytes: 3.1.2
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       functional-red-black-tree: 1.0.1
       jsx-ast-utils: 3.3.5
       lodash.merge: 4.6.2
@@ -20603,12 +20313,12 @@ snapshots:
       semver: 7.7.2
       typescript: 5.9.2
 
-  eslint-plugin-svelte@2.46.1(eslint@9.33.0(jiti@2.5.1))(svelte@4.2.20)(ts-node@10.9.2(@types/node@22.17.1)(typescript@5.9.2)):
+  eslint-plugin-svelte@2.46.1(eslint@9.34.0(jiti@2.5.1))(svelte@4.2.20)(ts-node@10.9.2(@types/node@22.17.1)(typescript@5.9.2)):
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
       '@jridgewell/sourcemap-codec': 1.5.5
-      eslint: 9.33.0(jiti@2.5.1)
-      eslint-compat-utils: 0.5.1(eslint@9.33.0(jiti@2.5.1))
+      eslint: 9.34.0(jiti@2.5.1)
+      eslint-compat-utils: 0.5.1(eslint@9.34.0(jiti@2.5.1))
       esutils: 2.0.3
       known-css-properties: 0.35.0
       postcss: 8.5.6
@@ -20622,16 +20332,16 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
-  eslint-plugin-unicorn@60.0.0(eslint@9.33.0(jiti@2.5.1)):
+  eslint-plugin-unicorn@60.0.0(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
       '@babel/helper-validator-identifier': 7.27.1
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
       '@eslint/plugin-kit': 0.3.5
       change-case: 5.4.4
       ci-info: 4.3.0
       clean-regexp: 1.0.0
       core-js-compat: 3.45.1
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
       esquery: 1.6.0
       find-up-simple: 1.0.1
       globals: 16.3.0
@@ -20644,11 +20354,11 @@ snapshots:
       semver: 7.7.2
       strip-indent: 4.0.0
 
-  eslint-plugin-unused-imports@4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1)):
+  eslint-plugin-unused-imports@4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1)):
     dependencies:
-      eslint: 9.33.0(jiti@2.5.1)
+      eslint: 9.34.0(jiti@2.5.1)
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/eslint-plugin': 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
 
   eslint-scope@7.2.2:
     dependencies:
@@ -20666,15 +20376,15 @@ snapshots:
 
   eslint-visitor-keys@4.2.1: {}
 
-  eslint@9.33.0(jiti@2.5.1):
+  eslint@9.34.0(jiti@2.5.1):
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.33.0(jiti@2.5.1))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0(jiti@2.5.1))
       '@eslint-community/regexpp': 4.12.1
       '@eslint/config-array': 0.21.0
       '@eslint/config-helpers': 0.3.1
       '@eslint/core': 0.15.2
       '@eslint/eslintrc': 3.3.1
-      '@eslint/js': 9.33.0
+      '@eslint/js': 9.34.0
       '@eslint/plugin-kit': 0.3.5
       '@humanfs/node': 0.16.6
       '@humanwhocodes/module-importer': 1.0.1
@@ -20993,8 +20703,6 @@ snapshots:
 
   fast-content-type-parse@3.0.0: {}
 
-  fast-copy@3.0.2: {}
-
   fast-deep-equal@3.1.3: {}
 
   fast-fifo@1.3.2: {}
@@ -21013,8 +20721,6 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fast-redact@3.5.0: {}
-
   fast-safe-stringify@2.1.1: {}
 
   fast-uri@3.0.6: {}
@@ -21032,8 +20738,6 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
       picomatch: 4.0.3
-
-  fecha@4.2.3: {}
 
   fflate@0.8.2: {}
 
@@ -21164,8 +20868,8 @@ snapshots:
   fix-dts-default-cjs-exports@1.0.1:
     dependencies:
       magic-string: 0.30.18
-      mlly: 1.7.4
-      rollup: 4.47.1
+      mlly: 1.8.0
+      rollup: 4.48.0
 
   flat-cache@4.0.1:
     dependencies:
@@ -21181,8 +20885,6 @@ snapshots:
   flatten@1.0.3: {}
 
   flow-parser@0.279.0: {}
-
-  fn.name@1.1.0: {}
 
   focus-trap@7.6.5:
     dependencies:
@@ -21743,8 +21445,6 @@ snapshots:
   helmet@7.2.0: {}
 
   helmet@8.1.0: {}
-
-  help-me@5.0.0: {}
 
   hexer@1.5.0:
     dependencies:
@@ -22510,8 +22210,6 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  kuler@2.0.0: {}
-
   kuzu@0.11.2:
     dependencies:
       cmake-js: 7.3.1
@@ -22675,12 +22373,12 @@ snapshots:
 
   local-pkg@0.5.1:
     dependencies:
-      mlly: 1.7.4
+      mlly: 1.8.0
       pkg-types: 1.3.1
 
   local-pkg@1.1.2:
     dependencies:
-      mlly: 1.7.4
+      mlly: 1.8.0
       pkg-types: 2.3.0
       quansync: 0.2.11
 
@@ -22787,15 +22485,6 @@ snapshots:
       slice-ansi: 7.1.0
       strip-ansi: 7.1.0
       wrap-ansi: 9.0.0
-
-  logform@2.7.0:
-    dependencies:
-      '@colors/colors': 1.6.0
-      '@types/triple-beam': 1.3.5
-      fecha: 4.2.3
-      ms: 2.1.3
-      safe-stable-stringify: 2.5.0
-      triple-beam: 1.4.1
 
   long@2.4.0: {}
 
@@ -23278,7 +22967,7 @@ snapshots:
 
   ml-xsadd@2.0.0: {}
 
-  mlly@1.7.4:
+  mlly@1.8.0:
     dependencies:
       acorn: 8.15.0
       pathe: 2.0.3
@@ -23462,7 +23151,7 @@ snapshots:
 
   neverthrow@8.2.0:
     optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.47.1
+      '@rollup/rollup-linux-x64-gnu': 4.48.0
 
   no-case@3.0.4:
     dependencies:
@@ -23664,8 +23353,6 @@ snapshots:
 
   ohash@2.0.11: {}
 
-  on-exit-leak-free@2.1.2: {}
-
   on-finished@2.3.0:
     dependencies:
       ee-first: 1.1.1
@@ -23681,10 +23368,6 @@ snapshots:
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
-
-  one-time@1.0.0:
-    dependencies:
-      fn.name: 1.1.0
 
   onetime@5.1.2:
     dependencies:
@@ -23753,10 +23436,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  openai@5.15.0(ws@8.18.3)(zod@4.0.17):
+  openai@5.15.0(ws@8.18.3)(zod@4.1.0):
     optionalDependencies:
       ws: 8.18.3
-      zod: 4.0.17
+      zod: 4.1.0
     optional: true
 
   openapi-types@12.1.3: {}
@@ -24111,43 +23794,6 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pino-abstract-transport@2.0.0:
-    dependencies:
-      split2: 4.2.0
-
-  pino-pretty@11.3.0:
-    dependencies:
-      colorette: 2.0.20
-      dateformat: 4.6.3
-      fast-copy: 3.0.2
-      fast-safe-stringify: 2.1.1
-      help-me: 5.0.0
-      joycon: 3.1.1
-      minimist: 1.2.8
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 2.0.0
-      pump: 3.0.3
-      readable-stream: 4.7.0
-      secure-json-parse: 2.7.0
-      sonic-boom: 4.2.0
-      strip-json-comments: 3.1.1
-
-  pino-std-serializers@7.0.0: {}
-
-  pino@9.9.0:
-    dependencies:
-      atomic-sleep: 1.0.0
-      fast-redact: 3.5.0
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 2.0.0
-      pino-std-serializers: 7.0.0
-      process-warning: 5.0.0
-      quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
-      safe-stable-stringify: 2.5.0
-      sonic-boom: 4.2.0
-      thread-stream: 3.1.0
-
   pirates@4.0.7: {}
 
   pkce-challenge@5.0.0: {}
@@ -24164,7 +23810,7 @@ snapshots:
   pkg-types@1.3.1:
     dependencies:
       confbox: 0.1.8
-      mlly: 1.7.4
+      mlly: 1.8.0
       pathe: 2.0.3
 
   pkg-types@2.3.0:
@@ -24478,8 +24124,6 @@ snapshots:
 
   process-nextick-args@2.0.1: {}
 
-  process-warning@5.0.0: {}
-
   process@0.10.1: {}
 
   process@0.11.10: {}
@@ -24613,8 +24257,6 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  quick-format-unescaped@4.0.4: {}
-
   quick-lru@5.1.1: {}
 
   quote-unquote@1.0.0: {}
@@ -24725,8 +24367,6 @@ snapshots:
       picomatch: 2.3.1
 
   readdirp@4.1.2: {}
-
-  real-require@0.2.0: {}
 
   recast@0.23.11:
     dependencies:
@@ -24987,30 +24627,30 @@ snapshots:
 
   robust-predicates@3.0.2: {}
 
-  rollup@4.47.1:
+  rollup@4.48.0:
     dependencies:
       '@types/estree': 1.0.8
     optionalDependencies:
-      '@rollup/rollup-android-arm-eabi': 4.47.1
-      '@rollup/rollup-android-arm64': 4.47.1
-      '@rollup/rollup-darwin-arm64': 4.47.1
-      '@rollup/rollup-darwin-x64': 4.47.1
-      '@rollup/rollup-freebsd-arm64': 4.47.1
-      '@rollup/rollup-freebsd-x64': 4.47.1
-      '@rollup/rollup-linux-arm-gnueabihf': 4.47.1
-      '@rollup/rollup-linux-arm-musleabihf': 4.47.1
-      '@rollup/rollup-linux-arm64-gnu': 4.47.1
-      '@rollup/rollup-linux-arm64-musl': 4.47.1
-      '@rollup/rollup-linux-loongarch64-gnu': 4.47.1
-      '@rollup/rollup-linux-ppc64-gnu': 4.47.1
-      '@rollup/rollup-linux-riscv64-gnu': 4.47.1
-      '@rollup/rollup-linux-riscv64-musl': 4.47.1
-      '@rollup/rollup-linux-s390x-gnu': 4.47.1
-      '@rollup/rollup-linux-x64-gnu': 4.47.1
-      '@rollup/rollup-linux-x64-musl': 4.47.1
-      '@rollup/rollup-win32-arm64-msvc': 4.47.1
-      '@rollup/rollup-win32-ia32-msvc': 4.47.1
-      '@rollup/rollup-win32-x64-msvc': 4.47.1
+      '@rollup/rollup-android-arm-eabi': 4.48.0
+      '@rollup/rollup-android-arm64': 4.48.0
+      '@rollup/rollup-darwin-arm64': 4.48.0
+      '@rollup/rollup-darwin-x64': 4.48.0
+      '@rollup/rollup-freebsd-arm64': 4.48.0
+      '@rollup/rollup-freebsd-x64': 4.48.0
+      '@rollup/rollup-linux-arm-gnueabihf': 4.48.0
+      '@rollup/rollup-linux-arm-musleabihf': 4.48.0
+      '@rollup/rollup-linux-arm64-gnu': 4.48.0
+      '@rollup/rollup-linux-arm64-musl': 4.48.0
+      '@rollup/rollup-linux-loongarch64-gnu': 4.48.0
+      '@rollup/rollup-linux-ppc64-gnu': 4.48.0
+      '@rollup/rollup-linux-riscv64-gnu': 4.48.0
+      '@rollup/rollup-linux-riscv64-musl': 4.48.0
+      '@rollup/rollup-linux-s390x-gnu': 4.48.0
+      '@rollup/rollup-linux-x64-gnu': 4.48.0
+      '@rollup/rollup-linux-x64-musl': 4.48.0
+      '@rollup/rollup-win32-arm64-msvc': 4.48.0
+      '@rollup/rollup-win32-ia32-msvc': 4.48.0
+      '@rollup/rollup-win32-x64-msvc': 4.48.0
       fsevents: 2.3.3
 
   roughjs@4.6.6:
@@ -25123,8 +24763,6 @@ snapshots:
   search-insights@2.17.3: {}
 
   secure-compare@3.0.1: {}
-
-  secure-json-parse@2.7.0: {}
 
   seedrandom@3.0.5: {}
 
@@ -25577,10 +25215,6 @@ snapshots:
       ip-address: 10.0.1
       smart-buffer: 4.2.0
 
-  sonic-boom@4.2.0:
-    dependencies:
-      atomic-sleep: 1.0.0
-
   source-map-js@1.2.1: {}
 
   source-map-resolve@0.5.3:
@@ -25674,8 +25308,6 @@ snapshots:
   ssri@9.0.1:
     dependencies:
       minipass: 3.3.6
-
-  stack-trace@0.0.10: {}
 
   stackback@0.0.2: {}
 
@@ -26177,8 +25809,6 @@ snapshots:
 
   text-extensions@2.4.0: {}
 
-  text-hex@1.0.0: {}
-
   thaw.js@2.1.4: {}
 
   thenify-all@1.6.0:
@@ -26188,10 +25818,6 @@ snapshots:
   thenify@3.3.1:
     dependencies:
       any-promise: 1.3.0
-
-  thread-stream@3.1.0:
-    dependencies:
-      real-require: 0.2.0
 
   thriftrw@3.11.4:
     dependencies:
@@ -26284,8 +25910,6 @@ snapshots:
   trendyways@1.0.1: {}
 
   trim-lines@3.0.1: {}
-
-  triple-beam@1.4.1: {}
 
   ts-api-utils@1.4.3(typescript@5.9.2):
     dependencies:
@@ -26382,7 +26006,7 @@ snapshots:
       picocolors: 1.1.1
       postcss-load-config: 6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(yaml@2.8.1)
       resolve-from: 5.0.0
-      rollup: 4.47.1
+      rollup: 4.48.0
       source-map: 0.8.0-beta.0
       sucrase: 3.35.0
       tinyexec: 0.3.2
@@ -26732,7 +26356,7 @@ snapshots:
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.6
-      rollup: 4.47.1
+      rollup: 4.48.0
     optionalDependencies:
       '@types/node': 20.19.11
       fsevents: 2.3.3
@@ -26743,7 +26367,7 @@ snapshots:
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.6
-      rollup: 4.47.1
+      rollup: 4.48.0
     optionalDependencies:
       '@types/node': 22.17.1
       fsevents: 2.3.3
@@ -26755,7 +26379,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
-      rollup: 4.47.1
+      rollup: 4.48.0
       tinyglobby: 0.2.14
     optionalDependencies:
       '@types/node': 22.17.1
@@ -27054,26 +26678,6 @@ snapshots:
     dependencies:
       string-width: 4.2.3
 
-  winston-transport@4.9.0:
-    dependencies:
-      logform: 2.7.0
-      readable-stream: 3.6.2
-      triple-beam: 1.4.1
-
-  winston@3.17.0:
-    dependencies:
-      '@colors/colors': 1.6.0
-      '@dabh/diagnostics': 2.0.3
-      async: 3.2.6
-      is-stream: 2.0.1
-      logform: 2.7.0
-      one-time: 1.0.0
-      readable-stream: 3.6.2
-      safe-stable-stringify: 2.5.0
-      stack-trace: 0.0.10
-      triple-beam: 1.4.1
-      winston-transport: 4.9.0
-
   word-wrap@1.2.5: {}
 
   wordnet-db@3.1.14: {}
@@ -27203,6 +26807,6 @@ snapshots:
 
   zod@3.25.76: {}
 
-  zod@4.0.17: {}
+  zod@4.1.0: {}
 
   zwitch@2.0.4: {}

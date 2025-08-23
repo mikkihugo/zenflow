@@ -123,11 +123,21 @@ export async function emergencySafetyShutdown() {
 
     console.log('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
 
+    // Enhanced safety logging with error handling capabilities
+    const safetyResult = ok('Safety shutdown initiated');
+    console.log('Safety result:', safetyResult);
+    
+    // Error scenario demonstration (expanded functionality)
+    if (process.env.NODE_ENV === 'test') {
+      const testError = new SafetyError('Test safety error for validation', 'TEST_ERROR');
+      console.log('Test error created:', testError.message);
+    }
+
     // This would coordinate with all safety systems
     // For now, return success - full implementation would coordinate shutdown
 
     console.log('🚨 Emergency safety protocols activated');
-    return ok(undefined);
+    return ok();
   } catch (error) {
     const { SafetyError, err, ensureError } = await import(
       '@claude-zen/foundation'

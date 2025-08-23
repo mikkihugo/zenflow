@@ -184,6 +184,9 @@ export async function initializeBrainSystem(): Promise<
     // Load and validate configuration
     const config = getBrainConfig();
     validateBrainConfig(config);
+    
+    // Allow system initialization to complete
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     // Initialize shared services as needed
     // The shared system handles: logging, config management, etc.

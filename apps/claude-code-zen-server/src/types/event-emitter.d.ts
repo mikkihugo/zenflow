@@ -2,38 +2,50 @@
  * @file Event Emitter Types
  *
  * Type definitions for event emitters and error objects with proper typing
- * for properties like 'on, code', and other event-related functionality.
+ * for properties like 'on,'code', and oth'r event-related functionality.
  */
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation'';
 /**
  * Base error interface with common error properties
  */
-export interface BaseError extends Error { code?: string  || number; errno?: number; path?: string; syscall?: string; stack?: string;
+export interface BaseError extends Error {
+  code?: string  || number; errno?: number; path?: string; syscall?: string; stack?: string
+
 }
 /**
  * System error with specific properties
  */
-export interface SystemError extends BaseError { code: string; errno: number; syscall: string; path?: string;
+export interface SystemError extends BaseError {
+  code: string; errno: number; syscall: string; path?: string
+
 }
 /**
  * Network error interface
  */
-export interface NetworkError extends BaseError { code: EADDRINUSE | ECONNREFUSED || ' 'ENOTFOUND | ETIMEDO'U'T' ' || string; port?: number; address?: string; hostname?: string;
+export interface NetworkError extends BaseError {
+  code: EADDRINUSE | ECONNREFUSED || ' 'ENOTFOUND'| ETIMEDO'U'T' ''|| string'; port?: number; address?: string; hostname?: string
+
 }
 /**
  * Server instance interface with event emitter capabilities
  */
-export interface ServerInstance extends TypedEventBase { close: (callback?: (err?: Err'o''r'); => void) = '> void'; listen: (port: number, callback?: () => void) = '> this'; on: (event: string, listener: (args: any[]) => void) = '> this'; once: (event: string, listener: (args: any[]) => void) = '> this'; emit: (event: string', args: any[]) = '> boolean';
+export interface ServerInstance extends TypedEventBase {
+  close: (callback?: (err?: Err'o'r')'; => void' = '>'void''; listen: (port: number,
+  callback?: () => void) = '> this''; on: (event: string,
+  listener: (args: any[]) => void) = '> this''; once: (event: string,
+  listener: (args: any[]) => void) = '> this''; emit: (event: string'',
+  args: any[]) = '>'boolean''
+
 }
 /**
  * HTTP Server error events
  */
-export interface ServerErrorEvent { error: BaseError;
+export interface ServerErrorEvent { error: BaseError
 }
 /**
  * Event listener type for server errors
  */
-export type ServerErrorListener = (error: BaseError) = '> void';
+export type ServerErrorListener = (error: BaseError) = '> void'';
 /**
  * Type guard to check if an error has a code property
  */

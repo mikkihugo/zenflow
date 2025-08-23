@@ -33,16 +33,12 @@
     "@claude-zen/ai-safety": "workspace:*",
     "@claude-zen/brain": "workspace:*",
     "@claude-zen/event-system": "workspace:*",
-    "@claude-zen/fact-system": "file:../fact-system",
-    "@claude-zen/foundation": "file:../../foundation",
-    "@claude-zen/kanban": "workspace:*",
+    "@claude-zen/foundation": "workspace:*",
     "@claude-zen/knowledge": "workspace:*",
     "@claude-zen/sparc": "file:../sparc",
     "@claude-zen/teamwork": "workspace:*",
     "@claude-zen/telemetry": "workspace:*",
     "@claude-zen/workflows": "workspace:*",
-    "date-fns": "^4.1.0",
-    "eventemitter3": "^5.0.1",
     "lodash-es": "^4.17.21",
     "rxjs": "^7.8.2",
     "xstate": "^5.20.2",
@@ -56,8 +52,9 @@
   "files": [
     "dist/**/*"
   ],
+  "private": true,
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "keywords": [
     "safe",

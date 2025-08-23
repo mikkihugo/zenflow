@@ -3,8 +3,7 @@
  * Copied from /src/interfaces/agui/ to make package self-contained
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('AGUIAdapter');
 
@@ -37,13 +36,13 @@ const logger = getLogger('AGUIAdapter');
  */
 export interface ValidationQuestion {
   id: string;
-  type:|'relevance|boundary|relationship|naming|priority|checkpoint|review'';
+  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review';
   question: string;
   context: unknown;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
-  priority?: 'critical|high|medium|low';
+  priority?: 'critical' | 'high' | 'medium' | 'low';
   validationReason?: string;
   expectedImpact?: number;
 }
@@ -86,7 +85,7 @@ export interface AGUIInterface {
   showProgress(progress: unknown): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info|warning|error|success'
+    type?: 'info' | 'warning' | 'error' | 'success'
   ): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear?(): Promise<void>;
@@ -245,7 +244,7 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
 
   async showMessage(
     message: string,
-    type: 'info|warning|error|success' = 'info'
+    type: 'info' | 'warning' | 'error' | 'success' = 'info'
   ): Promise<void> {
     if (!this.container) {
       console.log(`[${type.toUpperCase()}] ${message}`);
@@ -326,7 +325,7 @@ export class HeadlessAGUI implements AGUIInterface {
 
   async showMessage(
     message: string,
-    type?: 'info|warning|error|success'): Promise<void> {
+    type?: 'info' | 'warning' | 'error' | 'success'): Promise<void> {
     logger.debug(`Headless AGUI Message [${type||'info'}]:`, message);
   }
 
@@ -347,7 +346,7 @@ export class HeadlessAGUI implements AGUIInterface {
  * Factory function to create appropriate AGUI instance.
  */
 export function createAGUI(
-  type: 'web|headless'' = 'web',
+  type: 'web' | 'headless' = 'web',
   containerSelector?: string
 ): AGUIInterface {
   switch (type) {

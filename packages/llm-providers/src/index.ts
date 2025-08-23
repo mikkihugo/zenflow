@@ -165,7 +165,7 @@ export {
  * Supports CLI tools only (file ops, agentic development)
  */
 export function createLLMProvider(
-  providerId: 'claude-code|cursor-cli'||gemini-cli' = 'claude-code'
+  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
 ): LLMProvider {
   return new LLMProvider(providerId);
 }
@@ -177,8 +177,8 @@ export function createLLMProvider(
 export function listLLMProviders(): Array<{
   id: string;
   name: string;
-  type: 'cli|api'';
-  category: 'file-operations|agentic-dev'||inference|conversational'';
+  type: 'cli' | 'api';
+  category: 'file-operations' | 'agentic-dev' | 'inference' | 'conversational';
   available: boolean;
 }> {
   const cliProviders = [
@@ -232,7 +232,12 @@ export function listLLMProviders(): Array<{
  * Get provider by capability (INTERNAL USE ONLY)
  */
 export function getLLMProviderByCapability(
-  capability:|'file-operations|agentic-development'||code-completion|chat'||inference'
+  capability: 
+    | 'file-operations'
+    | 'agentic-development'
+    | 'code-completion'
+    | 'chat'
+    | 'inference'
 ): LLMProvider {
   switch (capability) {
     case 'file-operations':

@@ -222,7 +222,7 @@ export class ExportSystem {
       if (typeof obj === 'object') {
         const content = Object.entries(obj)
           .map(([key, value]) => xmlify(value, key))
-          .join(');
+          .join('');
         return `<${name}>${content}</${name}>`;
       }
 
@@ -235,8 +235,8 @@ export class ExportSystem {
 
   public convertToMarkdown(data: unknown): string {
     const mdify = (obj: unknown, level = 1): string => {
-      if (obj === null|'|obj === undefined) {
-        return'';
+      if (obj === null || obj === undefined) {
+        return '';
       }
 
       if (typeof obj === 'string') {
@@ -255,11 +255,11 @@ export class ExportSystem {
         ) {
           // Convert array of objects to table
           const headers = Object.keys(obj[0]);
-          const headerRow = `|${headers.join(|)}|`;
-          const separatorRow = `|${headers.map(() =>'---').join(|)}'|`;
+          const headerRow = `|${headers.join('|')}|`;
+          const separatorRow = `|${headers.map(() => '---').join('|')}|`;
           const dataRows = obj.map(
             (item) =>
-              `|${headers.map((header) => item?.[header]?.toString() || '').join(|)}'|`
+              `|${headers.map((header) => item?.[header]?.toString() || '').join('|')}|`
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
         }

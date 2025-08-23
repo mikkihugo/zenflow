@@ -97,7 +97,7 @@ export interface MeetingIssue {
  */
 export interface BrainMeetingParticipant {
   id: string;
-  role:|'queen|commander|matron|specialist|coordinator|analyst|researcher'';
+  role: 'queen' | 'commander' | 'matron' | 'specialist' | 'coordinator' | 'analyst' | 'researcher';
   domain: string;
   expertise: string[];
   availability: number; // 0-1 availability score

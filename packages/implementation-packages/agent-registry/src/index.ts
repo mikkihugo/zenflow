@@ -40,6 +40,10 @@
  */
 
 // Core agent registry implementation
+// Factory functions
+import { AgentRegistry } from './agent-registry';
+import type { AgentRegistryOptions } from './types';
+
 export { AgentRegistry } from './agent-registry';
 
 // Registry adapter for migration and compatibility
@@ -59,10 +63,6 @@ export type {
   AgentTemplate,
   RegistryStats,
 } from './types';
-
-// Factory functions
-import { AgentRegistry } from './agent-registry';
-import type { AgentRegistryOptions } from './types';
 
 /**
  * Create a new agent registry instance with default configuration

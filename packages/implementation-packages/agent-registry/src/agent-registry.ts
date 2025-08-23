@@ -22,15 +22,15 @@
  * @version 2.1.0
  */
 
-import { EventEmitter } from 'node:events';
 import {
-  DIContainer,
-  createContainer,
+  createServiceContainer,
+  type ServiceContainer,
   getLogger,
   Result,
   ok,
   err,
   type Logger,
+  TypedEventBase,
 } from '@claude-zen/foundation';
 import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
 
@@ -41,7 +41,7 @@ import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
  * with auto-discovery, advanced scoping, and intelligent service graphs.
  */
 export class AgentRegistry extends TypedEventBase {
-  private container: DIContainer;
+  private container: ServiceContainer;
   private logger: Logger;
   private agentCache = new Map<string, JsonValue>();
   private performanceMetrics = new Map<
@@ -57,6 +57,7 @@ export class AgentRegistry extends TypedEventBase {
     }
   >();
   private initialized = false;
+  private serviceAccessHandler?: (name: string) => void;
 
   constructor(
     _memoryCoordinator?: JsonObject,
@@ -65,29 +66,29 @@ export class AgentRegistry extends TypedEventBase {
     super();
     this.logger = getLogger(`EnhancedAgentRegistry:${sessionPrefix}`);
 
-    // Create advanced container with performance optimizations
-    this.container = createDIContainer(`agent-registry-${sessionPrefix}`, {
-      injectionMode: InjectionMode.PROXY, // Optimized injection
-      strict: true, // Type safety
-    });
+    // Create service container
+    this.container = createServiceContainer();
 
-    // Enable performance monitoring
-    this.container.startHealthMonitoring(15000); // 15 second intervals
-
-    // Listen for container events
-    this.container.on('serviceResolved', (event) => {
-      const existing = this.performanceMetrics.get(event.name)||{
+    // Simple performance monitoring (ServiceContainer doesn't have events)
+    // TODO: Implement basic monitoring
+    
+    // Note: ServiceContainer doesn't support events, simplified approach
+    const handleServiceAccess = (name: string) => {
+      const existing = this.performanceMetrics.get(name) || {
         createTime: Date.now(),
         accessCount: 0,
         lastAccessed: Date.now(),
         cacheHits: 0,
       };
-      this.performanceMetrics.set(event.name, {
+      this.performanceMetrics.set(name, {
         ...existing,
-        lastResolutionTime: event.resolutionTime,
         lastAccessed: Date.now(),
+        accessCount: existing.accessCount + 1,
       });
-    });
+    };
+    
+    // Set up monitoring for service access
+    this.serviceAccessHandler = handleServiceAccess;
   }
 
   /**
@@ -102,76 +103,30 @@ export class AgentRegistry extends TypedEventBase {
     } = {}
   ): Promise<Result<void, Error>> {
     if (this.initialized) {
-      return ok(undefined);
+      return ok();
     }
-
-    this.logger.info('🚀 Initializing Professional Agent Registry with advanced DI capabilities...'
-    );
-
+    
     try {
-      // Auto-discover agent modules if enabled
-      if (options.autoDiscoverAgents && options.discoveryPattern) {
-        const discoveryResult = await this.container.autoDiscoverServices(
-          options.discoveryPattern,
-          {}
-        );
-
-        if (discoveryResult.isOk()) {
-          this.logger.info(
-            `✅ Auto-discovered ${discoveryResult.value.length} agent services`
-          );
-        }
+      // Auto-discover agents if enabled
+      if (options.autoDiscoverAgents) {
+        await this.performAutoDiscovery(options.discoveryPattern || ['**/*agent*.ts']);
       }
-
-      // Register core agent management services
-      this.container.registerFunction(
-        'agentFactory',
-        this.createAgentFactory(),
-        {
-          lifetime: 'singleton',
-          capabilities: ['agent-creation', 'factory'],
-          tags: ['core', 'factory'],
-          healthCheck: () => true,
-        }
-      );
-
-      this.container.registerFunction(
-        'agentSelector',
-        this.createAgentSelector(),
-        {
-          lifetime: 'singleton',
-          capabilities: ['agent-selection', 'matching'],
-          tags: ['core', 'selector'],
-          priority: 90,
-        }
-      );
-
-      this.container.registerFunction(
-        'agentLoadBalancer',
-        this.createLoadBalancer(),
-        {
-          lifetime: 'singleton',
-          capabilities: ['load-balancing', 'distribution'],
-          tags: ['performance', 'scaling'],
-          priority: 80,
-        }
-      );
-
+      
+      // Set up health monitoring if enabled
+      if (options.healthMonitoring?.enabled) {
+        await this.setupHealthMonitoring(options.healthMonitoring.interval || 30000);
+      }
+      
+      // Set up caching if enabled
+      if (options.caching?.enabled) {
+        await this.setupCaching(options.caching.ttl || 300000);
+      }
+      
       this.initialized = true;
-      this.emit('initialized', {
-        autoDiscovery: !!options.autoDiscoverAgents,
-        healthMonitoring: !!options.healthMonitoring?.enabled,
-      });
-
-      this.logger.info(
-        '✅ Professional Agent Registry initialized successfully'
-      );
-      return ok(undefined);
+      this.logger.info('Agent registry initialized successfully');
+      return ok();
     } catch (error) {
-      this.logger.error(
-        '❌ Failed to initialize Professional Agent Registry:',
-        error
-      );
+      this.logger.error('Failed to initialize agent registry:', error);
       return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
@@ -190,6 +145,14 @@ export class AgentRegistry extends TypedEventBase {
     const startTime = process.hrtime.bigint();
 
     try {
+      // Track service access for performance monitoring
+      if (this.serviceAccessHandler) {
+        this.serviceAccessHandler(`agent-${agent.id}`);
+      }
+      
+      // Perform async validation
+      await this.validateAgentRegistration(agent);
+      
       // Create enhanced agent wrapper with advanced features
       const enhancedAgent = {
         ...agent,
@@ -221,14 +184,21 @@ export class AgentRegistry extends TypedEventBase {
           healthCheck: async () => {
             // Advanced health check with performance metrics
             const now = Date.now();
-            const timeSinceLastSeen = now - enhancedAgent.lastSeen.getTime();
+            const timeSinceLastSeen = now - enhancedAgent.lastSeen;
+            
+            // Perform async health validation
+            const healthMetrics = await this.performAsyncHealthCheck(agent.id);
+            
             const isHealthy =
-              timeSinceLastSeen < 60000 && enhancedAgent.health > 0.5;
+              timeSinceLastSeen < 60000 && 
+              enhancedAgent.health > 0.5 && 
+              healthMetrics.isResponding;
 
             if (!isHealthy) {
               this.logger.warn(`⚠️ Agent ${agent.id} health check failed`, {
                 timeSinceLastSeen,
                 health: enhancedAgent.health,
+                metrics: healthMetrics,
               });
             }
 
@@ -405,10 +375,13 @@ export class AgentRegistry extends TypedEventBase {
   }): Promise<JsonValue[]> {
     const agents: JsonValue[] = [];
 
+    // Perform async validation of query parameters
+    await this.validateQueryParameters(query);
+
     // Use capability-based discovery for performance
     if (query.capabilities) {
       for (const capability of query.capabilities) {
-        const capabilityAgents = this.getAgentsByCapability(capability);
+        const capabilityAgents = await this.getAgentsByCapabilityAsync(capability);
         agents.push(...capabilityAgents);
       }
     }
@@ -573,6 +546,9 @@ export class AgentRegistry extends TypedEventBase {
               'performance-tracking',
               'intelligent-routing',
             ],
+            factorySettings: factoryConfig,
+            priority: factoryConfig.priority || 50,
+            maxConcurrency: factoryConfig.maxConcurrency || 10,
           };
         },
       };
@@ -588,8 +564,14 @@ export class AgentRegistry extends TypedEventBase {
       const registryConfig = registry||{};
       return {
         selectAgents: async (criteria: JsonObject) => {
-          // Intelligent agent selection algorithm
-          const candidates = await this.queryAgents(criteria);
+          // Intelligent agent selection algorithm with registry configuration
+          const enhancedCriteria = {
+            ...criteria,
+            maxResults: criteria.maxResults || registryConfig.defaultMaxResults || 10,
+            timeout: registryConfig.selectionTimeout || 5000,
+            includeMetrics: registryConfig.includeMetrics !== false,
+          };
+          const candidates = await this.queryAgents(enhancedCriteria);
 
           // Apply intelligent sorting based on criteria
           return candidates

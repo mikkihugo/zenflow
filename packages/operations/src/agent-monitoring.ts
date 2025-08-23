@@ -257,7 +257,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
       } catch (error) {
         throw new AgentMonitoringSystemConnectionError(
           'Agent monitoring package not available. Operations requires @claude-zen/agent-monitoring for monitoring operations.',
-          error instanceof Error ? error : undefined
+          error instanceof Error ? error : undefined,
         );
       }
     }
@@ -265,7 +265,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
   }
 
   async createIntelligenceSystem(
-    config?: AgentMonitoringSystemConfig
+    config?: AgentMonitoringSystemConfig,
   ): Promise<IntelligenceSystem> {
     const module = await this.getAgentMonitoringModule();
     logger.debug('Creating intelligence system via operations delegation', {
@@ -277,7 +277,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
   }
 
   async createIntelligenceFactory(
-    config?: AgentMonitoringSystemConfig
+    config?: AgentMonitoringSystemConfig,
   ): Promise<IntelligenceFactory> {
     const module = await this.getAgentMonitoringModule();
     logger.debug('Creating intelligence factory via operations delegation', {
@@ -289,7 +289,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
   }
 
   async createPerformanceTracker(
-    config?: AgentMonitoringSystemConfig
+    config?: AgentMonitoringSystemConfig,
   ): Promise<PerformanceTracker> {
     const module = await this.getAgentMonitoringModule();
     logger.debug('Creating performance tracker via operations delegation', {
@@ -301,7 +301,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
   }
 
   async createTaskPredictor(
-    config?: AgentMonitoringSystemConfig
+    config?: AgentMonitoringSystemConfig,
   ): Promise<TaskPredictor> {
     const module = await this.getAgentMonitoringModule();
     logger.debug('Creating task predictor via operations delegation', {
@@ -311,7 +311,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
   }
 
   async createAgentHealthMonitor(
-    config?: AgentMonitoringSystemConfig
+    config?: AgentMonitoringSystemConfig,
   ): Promise<AgentHealthMonitor> {
     const module = await this.getAgentMonitoringModule();
     logger.debug('Creating agent health monitor via operations delegation', {
@@ -341,7 +341,7 @@ export function getAgentMonitoringSystemAccess(): AgentMonitoringSystemAccess {
  * @param config - Intelligence system configuration
  */
 export function getIntelligenceSystem(
-  config?: AgentMonitoringSystemConfig
+  config?: AgentMonitoringSystemConfig,
 ): IntelligenceSystem {
   const monitoringSystem = getAgentMonitoringSystemAccess();
   return monitoringSystem.createIntelligenceSystem(config);
@@ -352,7 +352,7 @@ export function getIntelligenceSystem(
  * @param config - Intelligence factory configuration
  */
 export async function getIntelligenceFactory(
-  config?: AgentMonitoringSystemConfig
+  config?: AgentMonitoringSystemConfig,
 ): Promise<IntelligenceFactory> {
   const monitoringSystem = getAgentMonitoringSystemAccess();
   return await Promise.resolve(monitoringSystem.createIntelligenceFactory(config));
@@ -363,7 +363,7 @@ export async function getIntelligenceFactory(
  * @param config - Performance tracker configuration
  */
 export async function getPerformanceTracker(
-  config?: AgentMonitoringSystemConfig
+  config?: AgentMonitoringSystemConfig,
 ): Promise<PerformanceTracker> {
   const monitoringSystem = getAgentMonitoringSystemAccess();
   return await Promise.resolve(monitoringSystem.createPerformanceTracker(config));
@@ -374,7 +374,7 @@ export async function getPerformanceTracker(
  * @param config - Task predictor configuration
  */
 export async function getTaskPredictor(
-  config?: AgentMonitoringSystemConfig
+  config?: AgentMonitoringSystemConfig,
 ): Promise<TaskPredictor> {
   const monitoringSystem = getAgentMonitoringSystemAccess();
   return await Promise.resolve(monitoringSystem.createTaskPredictor(config));
@@ -385,7 +385,7 @@ export async function getTaskPredictor(
  * @param config - Agent health monitor configuration
  */
 export async function getAgentHealthMonitor(
-  config?: AgentMonitoringSystemConfig
+  config?: AgentMonitoringSystemConfig,
 ): Promise<AgentHealthMonitor> {
   const monitoringSystem = getAgentMonitoringSystemAccess();
   return await Promise.resolve(monitoringSystem.createAgentHealthMonitor(config));
@@ -418,7 +418,7 @@ interface LLMProviderConfig {
  * @param config - LLM provider configuration
  */
 export async function getLLMProvider(
-  config?: LLMProviderConfig
+  config?: LLMProviderConfig,
 ): Promise<LLMProvider> {
   logger.debug('Creating LLM provider via operations facade (fallback mode)', {
     config,
@@ -435,7 +435,7 @@ export async function getLLMProvider(
     },
     chat: async (
       messages: LLMMessage[],
-      options: LLMCompletionOptions = {}
+      options: LLMCompletionOptions = {},
     ) => {
       logger.debug('LLM chat request (fallback mode)', {
         messageCount: messages.length,

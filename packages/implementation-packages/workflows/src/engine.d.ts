@@ -9,7 +9,7 @@
  * - rxjs: Reactive programming and async coordination
  * - immer: Immutable state management
  */
-import EventEmitter3 from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 export interface WorkflowStep {
   id?: string;
   type: string;

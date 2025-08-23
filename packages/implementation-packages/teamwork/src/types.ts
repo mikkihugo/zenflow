@@ -15,7 +15,7 @@ export interface AgentId {
   instance: number;
 }
 export type AgentType =
-  || 'researcher|coder|analyst|optimizer|coordinator|tester|architect';
+  | 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator' | 'tester' | 'architect';
 
 export interface Tool {
   name: string;
@@ -39,27 +39,27 @@ export interface ConversationMessage {
   metadata: MessageMetadata;
 }
 
-export type MessageType =|''task_request|task_response|question|answer|suggestion|critique|agreement | disagreement'|clarification|summary | decision'|system_notification';
+export type MessageType = 'task_request' | 'task_response' | 'question' | 'answer' | 'suggestion' | 'critique' | 'agreement' | 'disagreement' | 'clarification' | 'summary' | 'decision' | 'system_notification';
 
 export interface MessageContent {
   text: string;
-  code: string|undefined;
-  data: unknown|undefined;
-  attachments: ConversationAttachment[]|undefined;
+  code: string | undefined;
+  data: unknown | undefined;
+  attachments: ConversationAttachment[] | undefined;
 }
 
 export interface MessageMetadata {
-  priority:'low|medium|high|urgent';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
   requiresResponse: boolean;
   context: ConversationContext;
   tags: string[];
-  referencedMessages: string[]|undefined;
+  referencedMessages: string[] | undefined;
 }
 
 export interface ConversationAttachment {
-  type:'file|image|data|code|link';
+  type: 'file' | 'image' | 'data' | 'code' | 'link';
   content: unknown;
-  metadata: Record<string, unknown>|undefined;
+  metadata: Record<string, unknown> | undefined;
 }
 
 /**
@@ -205,7 +205,7 @@ export interface ConversationConfig {
 }
 
 export interface ModerationAction {
-  type:|'mute|unmute|warn|remove|change_role|pause|resume'';
+  type: 'mute' | 'unmute' | 'warn' | 'remove' | 'change_role' | 'pause' | 'resume';
   target: AgentId;
   reason: string;
   duration?: number;

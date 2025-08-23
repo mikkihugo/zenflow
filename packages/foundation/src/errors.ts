@@ -14,7 +14,7 @@ import { getLogger } from './logging';
 export class ValidationError extends Error {
   constructor(
     message: string,
-    public readonly field?: string
+    public readonly field?: string,
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -24,7 +24,7 @@ export class ValidationError extends Error {
 export class ConfigurationError extends Error {
   constructor(
     message: string,
-    public readonly configKey?: string
+    public readonly configKey?: string,
   ) {
     super(message);
     this.name = 'ConfigurationError';
@@ -170,7 +170,7 @@ export abstract class BaseClaudeZenError extends Error {
   /** Error context with tracking information. */
   public readonly context: ErrorContext;
   /** Error severity level. */
-  public readonly severity: 'low|medium|high|critical';
+  public readonly severity: 'low' | 'medium' | 'high' | 'critical';
   /** Error category for classification. */
   public readonly category: string;
   /** Whether the error is recoverable. */
@@ -190,9 +190,9 @@ export abstract class BaseClaudeZenError extends Error {
   constructor(
     message: string,
     category: string,
-    severity: 'low|medium|high|critical' = 'medium',
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
     context: Partial<ErrorContext> = {},
-    recoverable = true
+    recoverable = true,
   ) {
     super(message);
     this.category = category;
@@ -201,7 +201,7 @@ export abstract class BaseClaudeZenError extends Error {
     this.context = {
       timestamp: Date.now(),
       component: category,
-      stackTrace: this.stack||'',
+      stackTrace: this.stack || '',
       ...context,
     };
 
@@ -294,8 +294,8 @@ export class SwarmError extends BaseClaudeZenError {
   constructor(
     message: string,
     public readonly swarmId?: string,
-    severity: 'low|medium|high|critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'Swarm', severity, { ...context, metadata: { swarmId } });
     this.name = 'SwarmError';
@@ -330,7 +330,7 @@ export class AgentError extends BaseClaudeZenError {
     message: string,
     public readonly agentId?: string,
     public readonly agentType?: string,
-    severity: 'low|medium|high|critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Agent', severity, { metadata: { agentId, agentType } });
     this.name = 'AgentError';
@@ -343,7 +343,7 @@ export class SwarmCommunicationError extends SwarmError {
     public readonly fromAgent: string,
     public readonly toAgent: string,
     public readonly messageType?: string,
-    severity: 'low|medium|high|critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, undefined, severity, {
       metadata: { fromAgent, toAgent, messageType },
@@ -357,7 +357,7 @@ export class SwarmCoordinationError extends SwarmError {
     message: string,
     public readonly coordinationType: string,
     public readonly participantCount?: number,
-    severity: 'low|medium|high|critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, undefined, severity, {
       metadata: { coordinationType, participantCount },
@@ -382,7 +382,7 @@ export class TaskError extends BaseClaudeZenError {
     message: string,
     public readonly taskId?: string,
     public readonly taskType?: string,
-    severity: 'low|medium|high|critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Task', severity, { metadata: { taskId, taskType } });
     this.name = 'TaskError';
@@ -396,7 +396,7 @@ export class NotFoundError extends BaseClaudeZenError {
   constructor(
     message: string,
     public readonly resource?: string,
-    public readonly resourceId?: string
+    public readonly resourceId?: string,
   ) {
     super(message, 'NotFound', 'medium', {
       metadata: { resource, resourceId },
@@ -444,7 +444,7 @@ export function isRecoverableError(error: Error): boolean {
 
   // Default classification for non-Claude-Zen errors
   return !(
-    error instanceof TypeError||error instanceof ReferenceError||error.message.includes('out of memory')||error.message.includes('segmentation fault')
+    error instanceof TypeError || error instanceof ReferenceError || error.message.includes('out of memory') || error.message.includes('segmentation fault')
   );
 }
 
@@ -468,17 +468,17 @@ export function isRecoverableError(error: Error): boolean {
  * ```
  */
 export function getErrorSeverity(
-  error: Error
-): 'low|medium|high|critical' {
+  error: Error,
+): 'low' | 'medium' | 'high' | 'critical' {
   if (error instanceof BaseClaudeZenError) {
     return error.severity;
   }
 
   // Default severity classification
-  if (error.message.includes('timeout')||error.message.includes('network')) {
+  if (error.message.includes('timeout') || error.message.includes('network')) {
     return 'medium';
   }
-  if (error.message.includes('memory')||error.message.includes('critical')) {
+  if (error.message.includes('memory') || error.message.includes('critical')) {
     return 'critical';
   }
   return 'high';
@@ -513,7 +513,7 @@ export function getErrorSeverity(
 export function shouldRetry(
   error: Error,
   attempt: number,
-  maxRetries = 3
+  maxRetries = 3,
 ): boolean {
   if (attempt >= maxRetries) {
     return false;

@@ -181,7 +181,7 @@ export class MemorySystemManager extends TypedEventBase {
     value: JSONValue,
     namespace = 'default',
     options?: {
-      consistency?: 'strong|eventual'';
+      consistency?: 'strong' | 'eventual';
       tier?: 'hot|warm|cold';
       ttl?: number;
       priority?: number;
@@ -230,10 +230,10 @@ export class MemorySystemManager extends TypedEventBase {
     key: string,
     namespace = 'default',
     options?: {
-      consistency?: 'strong|eventual';
+      consistency?: 'strong' | 'eventual';
       timeout?: number;
     }
-  ): Promise<T|'null> {
+  ): Promise<T | null> {
     if (!this.coordination) {
       throw new Error('Coordination system not initialized');
     }

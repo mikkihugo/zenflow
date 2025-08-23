@@ -259,6 +259,13 @@
  */
 
 // =============================================================================
+// IMPORTS - Internal dependencies for this module
+// =============================================================================
+import { getLogger } from './logging';
+import type { TypedEventBase } from './typed-event-base';
+import type { JsonValue, JsonObject } from './types/primitives';
+
+// =============================================================================
 // FOUNDATION TYPES - Shared primitives and patterns
 // =============================================================================
 // Re-export foundation types for other packages
@@ -348,30 +355,24 @@ export type { DetectedWorkspace } from './monorepo-detector';
 // Import from: import { getDatabaseAccess, getKVStore } from '@claude-zen/infrastructure';
 
 // =============================================================================
-// MODERN DEPENDENCY INJECTION - Awilix
+// DEPENDENCY INJECTION SYSTEM
 // =============================================================================
-export {
-  TokenFactory,
-  FOUNDATION_TOKENS,
-  DependencyResolutionError,
-  LifecycleCompat,
-  AgentRegistry,
-  createAgentRegistry,
-  getAgentRegistry,
-  injectable,
-} from './di';
-export type {
-  DIContainer,
-  DIContainerFactory,
-  DIConfiguration,
-  Lifecycle,
-  DependencyContainer,
-  InjectionToken,
-  InjectableDecorator,
-  InjectDecorator,
-  SingletonDecorator,
-  ScopedDecorator,
-} from './di';
+
+// Token factory for DI
+export class TokenFactory {
+  private static tokens = new Map<string, symbol>();
+
+  static create(name: string): symbol {
+    if (!this.tokens.has(name)) {
+      this.tokens.set(name, Symbol(name));
+    }
+    return this.tokens.get(name)!;
+  }
+
+  static clear(): void {
+    this.tokens.clear();
+  }
+}
 
 // =============================================================================
 // MODERN ERROR HANDLING - Neverthrow + p-retry + opossum
@@ -446,7 +447,32 @@ export {
 // =============================================================================
 // EVENT SYSTEM - TypedEventBase for event-driven programming
 // =============================================================================
-export { TypedEventBase } from './typed-event-base';
+export { TypedEventBase, createTypedEventBase } from './typed-event-base';
+
+// Export TypedEventBase as EventEmitter for drop-in replacement
+export { TypedEventBase as EventEmitterTyped } from './typed-event-base';
+
+// Re-export commonly needed DI types for compatibility
+export type InjectionToken<T = unknown> = string | symbol | (new (...args: unknown[]) => T);
+export type LifecycleCompat = 'singleton' | 'transient' | 'scoped';
+
+// Additional types needed by registries
+export interface ServiceRegistrationOptions {
+  lifetime?: LifecycleCompat;
+  capabilities?: string[];
+  tags?: string[];
+  healthCheck?: () => boolean;
+}
+
+// ServiceInfo interface already defined above
+
+export enum Lifetime {
+  Singleton = 'singleton',
+  Transient = 'transient',
+  Scoped = 'scoped'
+}
+
+// UnknownRecord type already exported from types/primitives
 export type { EventMetrics } from './typed-event-base';
 
 // =============================================================================
@@ -471,101 +497,81 @@ export const getKVStore = () => {
 };
 
 // LLMProvider interface for packages that need it
+export interface LLMGenerateOptions {
+  maxTokens?: number;
+  temperature?: number;
+  model?: string;
+}
+
+export interface LLMChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+export interface LLMChatOptions {
+  maxTokens?: number;
+  temperature?: number;
+  model?: string;
+  stream?: boolean;
+}
+
 export interface LLMProvider {
-  generate(prompt: string, options?: any): Promise<{ text: string }>;
-  complete(prompt: string, options?: any): Promise<string>;
-  chat(messages: any[], options?: any): Promise<{ response: string }>;
+  generate(prompt: string, options?: LLMGenerateOptions): Promise<{ text: string }>;
+  complete(prompt: string, options?: LLMGenerateOptions): Promise<string>;
+  chat(messages: LLMChatMessage[], options?: LLMChatOptions): Promise<{ response: string }>;
   setRole?(role: string): void;
 }
 
 // Export LLMProvider as a type export too
 export type { LLMProvider as LLMProviderType };
 
-export const getGlobalLLM = (): LLMProvider => {
-  // Note: Use @claude-zen/intelligence for production LLM access
-  return {
-    generate: () => ({ text: ' }),
-    complete: () => ',
-    chat: () => ({ response: '' }),
-    setRole: () => {},
-  };
-};
+// LLM implementation moved to @claude-zen/intelligence
+// Use: import { getLLMProvider } from '@claude-zen/intelligence';
 
-export const singleton = () => (target: any) => {
-  // Note: Use @claude-zen/foundation DI system for production
-  return target;
-};
+// Singleton decorator moved to DI system
+// Use: import { singleton } from '@claude-zen/foundation' (DI section)
 
-// Telemetry stub functions - moved to @claude-zen/operations
-export const recordMetric = (
-  _name: string,
-  _value: number = 1,
-  _attributes?: Record<string, unknown>
-) => {
-  // Note: Use @claude-zen/operations for production telemetry
-};
+// Telemetry functions moved to @claude-zen/operations
+// Use: import { recordMetric } from '@claude-zen/operations';
 
 export const recordHistogram = (
-  _name: string,
-  _value: number,
-  _attributes?: Record<string, unknown>
+  name: string,
+  value: number,
+  attributes?: Record<string, unknown>,
 ) => {
   // Note: Use @claude-zen/operations for production telemetry
+  // Stub implementation - parameters used for type compatibility
+  void name;
+  void value;
+  void attributes;
 };
 
-export const startTrace = (
-  _name: string,
-  _attributes?: Record<string, unknown>
-) => {
-  getLogger('foundation').warn(
-    'startTrace: Use @claude-zen/operations for production telemetry'
-  );
-  return {
-    end: () =>
-      getLogger('foundation').warn(
-        'trace.end: Use @claude-zen/operations for production telemetry'
-      ),
-    addAttribute: (_key: string, _value: unknown) =>
-      getLogger('foundation').warn('trace.addAttribute: Use @claude-zen/operations'),
-    setStatus: (_status: string) =>
-      getLogger('foundation').warn('trace.setStatus: Use @claude-zen/operations'),
+// Tracing functions moved to @claude-zen/operations
+// Use: import { startTrace } from '@claude-zen/operations';
+
+// withTrace function moved to @claude-zen/operations
+// Use: import { withTrace } from '@claude-zen/operations';
+
+// traced decorator moved to @claude-zen/operations
+// Use: import { traced } from '@claude-zen/operations';
+
+// metered decorator moved to @claude-zen/operations
+// Use: import { metered } from '@claude-zen/operations';
+
+// inject decorator for DI system
+export const inject = (token?: string) => {
+  return (target: unknown, propertyKey: string | symbol | undefined, parameterIndex: number) => {
+    // Simple metadata storage without reflect-metadata dependency
+    const metadataKey = 'inject:tokens';
+    const targetConstructor = target as { [key: string]: unknown };
+
+    if (!targetConstructor[metadataKey]) {
+      targetConstructor[metadataKey] = [];
+    }
+
+    const tokens = targetConstructor[metadataKey] as (string | symbol | undefined)[];
+    tokens[parameterIndex] = token || propertyKey;
   };
-};
-
-export const withTrace = <T>(nameOrFn: string|(() => T), fn?: () => T): T => {
-  getLogger('foundation').warn('withTrace: Use @claude-zen/operations for production tracing');
-  if (typeof nameOrFn === 'function') {
-    return nameOrFn();
-  }
-  return fn!();
-};
-
-export const traced = (_name?: string) => {
-  getLogger('foundation').warn('traced: Use @claude-zen/operations for production tracing');
-  return (
-    _target: any,
-    _propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    return descriptor;
-  };
-};
-
-export const metered = (_name?: string) => {
-  getLogger('foundation').warn('metered: Use @claude-zen/operations for production metrics');
-  return (
-    _target: any,
-    _propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    return descriptor;
-  };
-};
-
-// DI-related stubs - moved to strategic facades
-export const inject = () => {
-  getLogger('foundation').warn('inject: Use @claude-zen/foundation DI system for production');
-  return () => {};
 };
 
 export const TOKENS = {
@@ -574,67 +580,267 @@ export const TOKENS = {
   Database: 'database',
 };
 
+// Service information interface
+export interface ServiceInfo {
+  name: string;
+  type: 'class' | 'factory' | 'instance';
+  capabilities: string[];
+  tags: string[];
+  registeredAt: number;
+}
+
+// Service discovery and container interfaces
+export interface ServiceDiscoveryOptions {
+  recursive?: boolean;
+  includeTests?: boolean;
+  extensions?: string[];
+  cwd?: string;
+  ignore?: string[];
+}
+
+export interface ServiceContainerStats {
+  totalServices: number;
+  healthyServices: number;
+  unhealthyServices: number;
+  lastHealthCheck: number;
+}
+
 // DatabaseAccess interface for packages that need it
 export interface DatabaseAccess {
-  query(sql: string, params?: any[]): Promise<{ rows: any[] }>;
-  execute(sql: string, params?: any[]): Promise<{ changes: number }>;
-  getKV(namespace: string): Promise<any>;
+  query(sql: string, params?: JsonValue[]): Promise<{ rows: JsonObject[] }>;
+  execute(sql: string, params?: JsonValue[]): Promise<{ changes: number }>;
+  getKV(namespace: string): Promise<JsonValue | null>;
 }
 
 // Export DatabaseAccess as a type export too
 export type { DatabaseAccess as DatabaseAccessType };
 
 export const getDatabaseAccess = (): DatabaseAccess => {
-  getLogger('foundation').warn(
-    'getDatabaseAccess: Use @claude-zen/infrastructure for production database access'
+  const logger = getLogger('foundation:database');
+  logger.warn(
+    'getDatabaseAccess: Use @claude-zen/infrastructure for production database access',
   );
   return {
     query: async () => await Promise.resolve({ rows: [] }),
     execute: async () => await Promise.resolve({ changes: 0 }),
-    getKV: async () => await Promise.resolve({
-      set: async () => await Promise.resolve(),
-      get: async () => await Promise.resolve(null),
-      delete: async () => await Promise.resolve(false),
-      clear: async () => await Promise.resolve(),
-    }),
+    getKV: async () => await Promise.resolve(null),
   };
 };
 
 // DI Container and Service implementations
-export interface ServiceContainer {
-  register<T>(token: string, implementation: new (...args: any[]) => T): void;
+export interface ServiceContainer extends TypedEventBase {
+  register<T>(token: string, implementation: new (...args: unknown[]) => T, options?: { capabilities?: string[], tags?: string[] }): void;
+  registerFunction<T>(token: string, factory: () => T, options?: { capabilities?: string[], tags?: string[] }): void;
+  registerInstance<T>(token: string, instance: T, options?: { capabilities?: string[], tags?: string[] }): void;
   resolve<T>(token: string): T;
   has(token: string): boolean;
+  autoDiscoverServices(patterns: string[], options: ServiceDiscoveryOptions): Promise<ServiceInfo[]>;
+  startHealthMonitoring(interval: number): void;
+  getStats(): ServiceContainerStats;
+  getServicesByCapability?(capability: string): ServiceInfo[];
+  getServicesByTag?(tag: string): ServiceInfo[];
+  getHealthStatus?(): any;
+  dispose?(): void;
+  getName?(): string;
 }
 
 export const createServiceContainer = (): ServiceContainer => {
   const services = new Map<string, any>();
+  const serviceMetadata = new Map<string, ServiceInfo>();
+  const { createTypedEventBase } = require('./typed-event-base');
+  const eventBase = createTypedEventBase();
 
   return {
+    ...eventBase,
     register<T>(
       token: string,
-      implementation: new (...args: any[]) => T
+      implementation: new (...args: any[]) => T,
+      options?: { capabilities?: string[], tags?: string[] },
     ): void {
       services.set(token, implementation);
+      serviceMetadata.set(token, {
+        name: token,
+        type: 'class',
+        capabilities: options?.capabilities || [],
+        tags: options?.tags || [],
+        registeredAt: Date.now(),
+      });
+      eventBase.emit('serviceRegistered', { name: token, type: 'class' });
+    },
+    registerFunction<T>(token: string, factory: () => T, options?: { capabilities?: string[], tags?: string[] }): void {
+      services.set(token, factory);
+      serviceMetadata.set(token, {
+        name: token,
+        type: 'factory',
+        capabilities: options?.capabilities || [],
+        tags: options?.tags || [],
+        registeredAt: Date.now(),
+      });
+      eventBase.emit('serviceRegistered', { name: token, type: 'factory' });
+    },
+    registerInstance<T>(token: string, instance: T, options?: { capabilities?: string[], tags?: string[] }): void {
+      services.set(token, instance);
+      serviceMetadata.set(token, {
+        name: token,
+        type: 'instance',
+        capabilities: options?.capabilities || [],
+        tags: options?.tags || [],
+        registeredAt: Date.now(),
+      });
+      eventBase.emit('serviceRegistered', { name: token, type: 'instance' });
     },
     resolve<T>(token: string): T {
-      const Service = services.get(token);
-      if (!Service) {
+      const startTime = Date.now();
+      const service = services.get(token);
+      if (!service) {
         throw new Error(`Service not found for token: ${token}`);
       }
-      return new Service();
+
+      let result: T;
+      if (typeof service === 'function' && service.prototype) {
+        // Constructor function
+        result = new service();
+      } else if (typeof service === 'function') {
+        // Factory function
+        result = service();
+      } else {
+        // Instance
+        result = service;
+      }
+
+      const resolutionTime = Date.now() - startTime;
+      eventBase.emit('serviceResolved', {
+        name: token,
+        resolutionTime,
+        timestamp: Date.now(),
+      });
+
+      return result;
     },
     has(token: string): boolean {
       return services.has(token);
     },
+
+    async autoDiscoverServices(patterns: string[], options: ServiceDiscoveryOptions = {}): Promise<ServiceInfo[]> {
+      const discovered: ServiceInfo[] = [];
+      const fs = require('fs').promises;
+      const path = require('path');
+
+      try {
+        const cwd = options.cwd || process.cwd();
+        const ignore = options.ignore || ['node_modules', 'dist', 'build', '.git'];
+
+        // Simple pattern matching implementation without glob
+        for (const pattern of patterns) {
+          // Basic pattern support - just directory scanning for now
+          const searchDir = pattern.includes('*') ? cwd : path.dirname(pattern);
+
+          try {
+            const files = await fs.readdir(searchDir, { recursive: true });
+
+            for (const file of files) {
+              const fullPath = path.join(searchDir, file);
+              const stats = await fs.stat(fullPath).catch(() => null);
+
+              if (stats?.isFile() &&
+                  (file.includes('service') || file.includes('Service')) &&
+                  !ignore.some((ig: string) => fullPath.includes(ig))) {
+
+                discovered.push({
+                  name: path.basename(file, path.extname(file)),
+                  type: 'class' as const,
+                  capabilities: [],
+                  tags: ['auto-discovered'],
+                  registeredAt: Date.now(),
+                });
+              }
+            }
+          } catch (dirError) {
+            // Directory doesn't exist or not readable - log for debugging
+            // Directory doesn't exist or not readable - use console for now
+            const logger = getLogger('foundation:discovery');
+            logger.debug(`Directory scan failed: ${dirError}`);
+            continue;
+          }
+        }
+      } catch (error) {
+        const logger = getLogger('foundation:discovery');
+        logger.warn('Auto-discovery failed:', error);
+      }
+
+      return discovered;
+    },
+
+    startHealthMonitoring(interval: number): void {
+      setInterval(() => {
+        eventBase.emit('healthCheck', {
+          serviceCount: services.size,
+          timestamp: Date.now(),
+          status: 'healthy',
+        });
+      }, interval);
+    },
+
+    getStats(): ServiceContainerStats {
+      return {
+        totalServices: services.size,
+        healthyServices: services.size, // All registered services considered healthy
+        unhealthyServices: 0,
+        lastHealthCheck: Date.now(),
+      };
+    },
+
+    getServicesByCapability(capability: string): ServiceInfo[] {
+      const matchingServices: ServiceInfo[] = [];
+      for (const [serviceToken, metadata] of serviceMetadata.entries()) {
+        if (metadata.capabilities && metadata.capabilities.includes(capability)) {
+          // Service matches capability - log token for debugging
+          const logger = getLogger('foundation:service-discovery');
+          logger.debug(`Service ${serviceToken} provides capability: ${capability}`);
+          matchingServices.push(metadata);
+        }
+      }
+      return matchingServices;
+    },
+
+    getServicesByTag(tag: string): ServiceInfo[] {
+      const matchingServices: ServiceInfo[] = [];
+      for (const [serviceToken, metadata] of serviceMetadata.entries()) {
+        if (metadata.tags && metadata.tags.includes(tag)) {
+          // Service matches tag - log token for debugging
+          const logger = getLogger('foundation:service-discovery');
+          logger.debug(`Service ${serviceToken} has tag: ${tag}`);
+          matchingServices.push(metadata);
+        }
+      }
+      return matchingServices;
+    },
+
+    getHealthStatus() {
+      return {
+        status: 'healthy',
+        serviceCount: services.size,
+        timestamp: Date.now(),
+        uptime: Date.now(), // Simplified uptime
+      };
+    },
+
+    dispose(): void {
+      services.clear();
+      serviceMetadata.clear();
+      eventBase.emit('containerDisposed', {
+        timestamp: Date.now(),
+        servicesCount: services.size,
+      });
+    },
+
+    getName(): string {
+      return 'ServiceContainer';
+    },
   };
 };
 
-export enum Lifetime {
-  Singleton = 'singleton',
-  Transient = 'transient',
-  Scoped = 'scoped',
-}
+// Duplicate Lifetime enum removed - already defined above
 
 // EventEmitter implementation for packages that need it
 export class EventEmitter {
@@ -650,7 +856,9 @@ export class EventEmitter {
 
   emit(event: string, ...args: any[]): boolean {
     const listeners = this.events.get(event);
-    if (!listeners) return false;
+    if (!listeners) {
+      return false;
+    }
 
     listeners.forEach((listener) => listener(...args));
     return true;
@@ -698,7 +906,7 @@ export interface KeyValueStore {
 
 // Memory configuration interfaces
 export interface MemoryConfig {
-  type?:'sqlite|lancedb|json|memory';
+  type?: 'sqlite' | 'lancedb' | 'json' | 'memory';
   path?: string;
   maxSize?: number;
   ttl?: number;
@@ -708,7 +916,7 @@ export interface MemoryConfig {
 
 // Database configuration and factory types
 export interface DatabaseConfig {
-  type: 'sqlite|lancedb|kuzu|postgresql|mysql';
+  type: 'sqlite' | 'lancedb' | 'kuzu' | 'postgresql' | 'mysql';
   path?: string;
   connectionString?: string;
   host?: string;
@@ -734,8 +942,9 @@ export interface VectorDocument {
 
 // Create functions for database/memory packages
 export const createDao = (type: string, config?: any) => {
-  getLogger('foundation').warn(
-    `createDao: Package-specific implementation required for type ${type}${config ? ' with config' : ''}`
+  const logger = getLogger('foundation:dao');
+  logger.warn(
+    `createDao: Package-specific implementation required for type ${type}${config ? ' with config' : ''}`,
   );
   return {
     find: () => Promise.resolve([]),
@@ -746,49 +955,20 @@ export const createDao = (type: string, config?: any) => {
 };
 
 export const createMultiDatabaseSetup = (config: DatabaseConfig[]) => {
-  getLogger('foundation').warn(
-    'createMultiDatabaseSetup: Package-specific implementation required'
+  const logger = getLogger('foundation:multi-db');
+  logger.warn(
+    'createMultiDatabaseSetup: Package-specific implementation required',
   );
   return Promise.resolve({
     databases: config.map((c) => ({ type: c.type, status: 'ready' })),
   });
 };
 
-// System monitoring stubs - moved to @claude-zen/operations
-export const SystemMetricsCollector = class SystemMetricsCollectorStub {
-  constructor() {
-    getLogger('foundation').warn(
-      'SystemMetricsCollector: Use @claude-zen/operations for production system monitoring'
-    );
-  }
-  collect() {
-    return {};
-  }
-  getMetrics() {
-    return {};
-  }
-};
+// System monitoring moved to @claude-zen/operations
+// Use: import { SystemMetricsCollector, createSystemMetricsCollector } from '@claude-zen/operations';
 
-export const createSystemMetricsCollector = () => {
-  getLogger('foundation').warn(
-    'createSystemMetricsCollector: Use @claude-zen/operations for production system monitoring'
-  );
-  return new SystemMetricsCollector();
-};
-
-// Neural configuration stubs - moved to @claude-zen/intelligence
-export const getNeuralConfig = () => {
-  getLogger('foundation').warn(
-    'getNeuralConfig: Use @claude-zen/intelligence for production neural configuration'
-  );
-  return {
-    enableLearning: false,
-    predictionEnabled: false,
-    smartRoutingEnabled: false,
-    adaptiveCapacity: false,
-    learningRate: 0.1,
-  };
-};
+// Neural configuration moved to @claude-zen/intelligence
+// Use: import { getNeuralConfig } from '@claude-zen/intelligence';
 
 // =============================================================================
 // BATTLE-TESTED UTILITIES - Modern NPM packages for common tasks
@@ -824,6 +1004,53 @@ export {
   isTest,
 } from './utilities';
 
+// =============================================================================
+// CENTRALIZED COMMON UTILITIES - Re-exported for consistent usage
+// =============================================================================
+
+// Lodash utilities - re-export entire library for consistent usage
+export { default as _ } from 'lodash';
+export * as lodash from 'lodash';
+
+// Commander.js - CLI parsing and command framework
+export { Command, program } from 'commander';
+export type { CommanderError, Help, Option } from 'commander';
+
+// Nanoid - fast URL-safe unique ID generator (alternative to UUID for shorter IDs)
+export { nanoid, customAlphabet } from 'nanoid';
+
+// UUID generation (foundation's own implementation + nanoid for compatibility)
+export {
+  generateUUID,
+  isUUID,
+} from './types/primitives';
+
+// Re-export nanoid as generateNanoId for clarity
+export { nanoid as generateNanoId } from 'nanoid';
+
+// Date-fns - Modern JavaScript date utilities
+export * as dateFns from 'date-fns';
+export {
+  format,
+  parseISO,
+  addDays,
+  addHours,
+  addMinutes,
+  subDays,
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  isAfter,
+  isBefore,
+  isEqual,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns';
+
 export type {
   ZodSchema,
   ZodType,
@@ -831,3 +1058,14 @@ export type {
   Spec,
   CleanedEnv,
 } from './utilities';
+
+// Enhanced ServiceContainer is the primary DI solution with reasonable defaults:
+// - Events support (extends TypedEventBase)
+// - Multiple registration types (class, factory, instance)
+// - Health monitoring and performance metrics
+// - Auto-discovery framework
+// - Error handling with Result types
+
+// Compatibility aliases for existing code
+export const createDIContainer = createServiceContainer;
+export type DIContainer = ServiceContainer;

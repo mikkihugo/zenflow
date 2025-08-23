@@ -112,7 +112,7 @@ class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
       } catch (error) {
         throw new ChaosEngineeringSystemConnectionError(
           'Chaos engineering package not available. Operations requires @claude-zen/chaos-engineering for chaos operations.',
-          error instanceof Error ? error : undefined
+          error instanceof Error ? error : undefined,
         );
       }
     }
@@ -176,7 +176,7 @@ export function getChaosEngineeringSystemAccess(): ChaosEngineeringSystemAccess 
  * @param config - Chaos engine configuration
  */
 export async function getChaosEngine(
-  config?: ChaosEngineeringSystemConfig
+  config?: ChaosEngineeringSystemConfig,
 ): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
   return await Promise.resolve(chaosSystem.createChaosEngine(config));
@@ -187,7 +187,7 @@ export async function getChaosEngine(
  * @param config - Resilience test suite configuration
  */
 export async function getResilienceTestSuite(
-  config?: ChaosEngineeringSystemConfig
+  config?: ChaosEngineeringSystemConfig,
 ): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
   return await Promise.resolve(chaosSystem.createResilienceTestSuite(config));
@@ -198,7 +198,7 @@ export async function getResilienceTestSuite(
  * @param config - Failure simulator configuration
  */
 export async function getFailureSimulator(
-  config?: ChaosEngineeringSystemConfig
+  config?: ChaosEngineeringSystemConfig,
 ): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
   return await Promise.resolve(chaosSystem.createFailureSimulator(config));
@@ -209,7 +209,7 @@ export async function getFailureSimulator(
  * @param config - Experiment runner configuration
  */
 export async function getExperimentRunner(
-  config?: ChaosEngineeringSystemConfig
+  config?: ChaosEngineeringSystemConfig,
 ): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
   return await Promise.resolve(chaosSystem.createExperimentRunner(config));

@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "keywords": [
-    "document-intelligence", 
+    "document-intelligence",
     "semantic-analysis",
     "strategic-vision",
     "document-processing",
@@ -20,8 +20,7 @@
     "swarm-coordination"
   ],
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "eventemitter3": "^5.0.1"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

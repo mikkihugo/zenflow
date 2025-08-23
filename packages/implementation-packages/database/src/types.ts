@@ -119,7 +119,7 @@ export interface DocumentSearchOptions {
   readonly limit?: number;
   readonly offset?: number;
   readonly sortBy?: 'created_at|updated_at|title|type';
-  readonly sortOrder?: 'asc|desc'';
+  readonly sortOrder?: 'asc|desc';
 }
 
 export interface DocumentSearchResult<T = BaseEntity> {
@@ -197,7 +197,7 @@ export interface MigrationStatus {
 }
 
 // Query builder types
-export type QueryOperator =|'=|!='||>|<'||>=|<='||LIKE|N'||NOT N';
+export type QueryOperator = '='|'!='|'>'|'<'|'>='|'<='|'LIKE'|'IN'|'NOT IN';
 
 export interface QueryCondition {
   readonly field: string;
@@ -208,7 +208,7 @@ export interface QueryCondition {
 export interface QueryOptions {
   readonly select?: readonly string[];
   readonly where?: readonly QueryCondition[];
-  readonly orderBy?: readonly { field: string; direction: 'ASC|DESC'' }[];
+  readonly orderBy?: readonly { field: string; direction: 'ASC' | 'DESC' }[];
   readonly limit?: number;
   readonly offset?: number;
   readonly joins?: readonly {
@@ -232,7 +232,7 @@ export class DatabaseError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly details?: Record<string, unknown>
+    public readonly details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'DatabaseError';
@@ -242,7 +242,7 @@ export class DatabaseError extends Error {
 export class MigrationError extends DatabaseError {
   constructor(
     message: string,
-    public readonly migrationVersion?: string
+    public readonly migrationVersion?: string,
   ) {
     super(message, 'MIGRATION_ERROR');
     this.name = 'MigrationError';
@@ -252,7 +252,7 @@ export class MigrationError extends DatabaseError {
 export class ConnectionError extends DatabaseError {
   constructor(
     message: string,
-    public readonly connectionConfig?: Partial<DatabaseConfig>
+    public readonly connectionConfig?: Partial<DatabaseConfig>,
   ) {
     super(message, 'CONNECTION_ERROR');
     this.name = 'ConnectionError';
@@ -263,7 +263,7 @@ export class QueryError extends DatabaseError {
   constructor(
     message: string,
     public readonly query?: string,
-    public readonly parameters?: unknown[]
+    public readonly parameters?: unknown[],
   ) {
     super(message, 'QUERY_ERROR');
     this.name = 'QueryError';
@@ -271,15 +271,15 @@ export class QueryError extends DatabaseError {
 }
 
 // Utility types
-export type EntityType =|'vision|prd|epic|feature|task|adr|user-story'||test-case|code-snippet'||workflow-run|workflow-step'||swot-analysis|stakeholder'||risk-assessment|project-template'||competitor-analysis';
+export type EntityType = 'vision' | 'prd' | 'epic' | 'feature' | 'task' | 'adr' | 'user-story' | 'test-case' | 'code-snippet' | 'workflow-run' | 'workflow-step' | 'swot-analysis' | 'stakeholder' | 'risk-assessment' | 'project-template' | 'competitor-analysis';
 
-export type EntityStatus =|'draft|active|completed|archived|deprecated';
+export type EntityStatus = 'draft' | 'active' | 'completed' | 'archived' | 'deprecated';
 
-export type EntityPriority = 'low|medium|high|critical';
+export type EntityPriority = 'low' | 'medium' | 'high' | 'critical';
 
 // Event types for database operations
 export interface DatabaseEvent {
-  readonly type: 'created|updated|deleted|migrated|connected|disconnected';
+  readonly type: 'created' | 'updated' | 'deleted' | 'migrated' | 'connected' | 'disconnected';
   readonly entityType?: EntityType;
   readonly entityId?: string;
   readonly timestamp: string;

@@ -85,8 +85,8 @@ export interface SwarmAgentRole {
 export interface LLMProviderInfo {
   id: string;
   name: string;
-  type: 'cli|api'';
-  category: 'file-operations|agentic-dev'||inference|conversational'';
+  type: 'cli' | 'api';
+  category: 'file-operations' | 'agentic-dev' | 'inference' | 'conversational';
   available: boolean;
 }
 

@@ -15,7 +15,6 @@ import type {
   QueryParams,
   HealthStatus,
 } from '../interfaces.js';
-import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('lancedb-adapter');
 
@@ -57,7 +56,9 @@ export class LanceDBAdapter implements DatabaseAdapter {
   }
 
   async connect(): Promise<void> {
-    if (this.connected) return;
+    if (this.connected) {
+      return;
+    }
 
     try {
       // Ensure directory exists for local database
@@ -92,8 +93,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
   }
 
   async createTable(name: string, schema: VectorDocument[]): Promise<void> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
       // Create table with schema
@@ -111,8 +116,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
   }
 
   async getTable(name: string): Promise<Table> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     // Return cached table if available
     if (this.tables.has(name)) {
@@ -126,13 +135,13 @@ export class LanceDBAdapter implements DatabaseAdapter {
       return table;
     } catch (error) {
       // Table doesn't exist, create default vector documents table
-      logger.warn(`Table ${name} not found, creating with default schema`);
+      logger.warn(`Table ${name} not found, creating with default schema`, { error });
 
       const defaultSchema: VectorDocument[] = [
         {
           id: '0',
           vector: new Array(this.config.options?.vectorSize||384).fill(0),
-          text:',
+          text: '',
           metadata: {},
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -146,7 +155,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   async insertVectors(
     tableName: string,
-    documents: VectorDocument[]
+    documents: VectorDocument[],
   ): Promise<void> {
     const table = await this.getTable(tableName);
 
@@ -154,7 +163,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       // Add timestamps if not present
       const documentsWithTimestamps = documents.map((doc) => ({
         ...doc,
-        created_at: doc.created_at|'|new Date().toISOString(),
+        created_at: doc.created_at || new Date().toISOString(),
         updated_at: doc.updated_at||new Date().toISOString(),
       }));
 
@@ -170,7 +179,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   async searchVectors(
     tableName: string,
     queryVector: number[],
-    options: VectorSearchOptions = {}
+    options: VectorSearchOptions = {},
   ): Promise<Array<VectorDocument & { _distance?: number }>> {
     const table = await this.getTable(tableName);
 
@@ -201,7 +210,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       const results = await query.toArray();
 
       logger.debug(
-        `✅ Found ${results.length} similar vectors in ${tableName}`
+        `✅ Found ${results.length} similar vectors in ${tableName}`,
       );
 
       return results;
@@ -214,7 +223,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   async updateVector(
     tableName: string,
     id: string,
-    updates: Partial<VectorDocument>
+    updates: Partial<VectorDocument>,
   ): Promise<void> {
     const table = await this.getTable(tableName);
 
@@ -260,7 +269,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
     } catch (error) {
       logger.error(
         `❌ Failed to delete vector ${id} from ${tableName}:`,
-        error
+        error,
       );
       throw error;
     }
@@ -279,8 +288,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
   }
 
   async listTables(): Promise<string[]> {
-    if (!this.connected) await this.connect();
-    if (!this.connection) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.connection) {
+      throw new Error('Database not connected');
+    }
 
     try {
       const tableNames = await this.connection.tableNames();
@@ -298,9 +311,10 @@ export class LanceDBAdapter implements DatabaseAdapter {
   // Compatibility methods for database adapter interface
   async query<T = unknown>(
     sql: string,
-    params?: QueryParams
+    params?: QueryParams,
   ): Promise<QueryResult<T>> {
     // LanceDB doesn't use SQL, so we interpret common queries
+    logger.debug('Executing query', { sql, params });
     try {
       if (sql.includes('SELECT') && sql.includes('FROM')) {
         // Parse table name from SQL (simplified)
@@ -330,8 +344,9 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   async execute(sql: string, params: unknown[] = []): Promise<unknown> {
     // LanceDB doesn't use SQL, so we interpret common operations
+    logger.debug('Executing command', { sql, params });
     try {
-      if (sql.includes('INSERT NTO')) {
+      if (sql.includes('INSERT INTO')) {
         // Mock insert operation
         return {
           affectedRows: 1,
@@ -428,7 +443,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   // DAO compatibility methods
   async vectorSearch(
     queryVector: number[],
-    options: VectorSearchOptions = {}
+    options: VectorSearchOptions = {},
   ): Promise<unknown> {
     // Default table name for DAO compatibility
     const tableName = 'document_embeddings';
@@ -462,7 +477,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   // LanceDB specific utility methods
   async createEmbeddingIndex(
     tableName: string,
-    columnName: string ='vector'): Promise<void> {
+    columnName ='vector'): Promise<void> {
     const table = await this.getTable(tableName);
 
     try {
@@ -473,7 +488,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
       logger.info(`✅ Created embedding index on ${tableName}.${columnName}`);
     } catch (error) {
-      logger.error(`❌ Failed to create embedding index:`, error);
+      logger.error('❌ Failed to create embedding index:', error);
       throw error;
     }
   }

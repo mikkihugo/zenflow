@@ -37,7 +37,7 @@ const logger = getLogger('AGUIAdapter');
  */
 export interface ValidationQuestion {
   id: string;
-  type:|'relevance|boundary|relationship|naming|priority|checkpoint|review'';
+  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review';
   question: string;
   context: unknown;
   options?: string[];

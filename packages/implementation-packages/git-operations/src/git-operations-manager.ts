@@ -257,7 +257,7 @@ export interface RemoteConfig {
 
 export interface BranchStrategy {
   /** Branch naming convention */
-  namingPattern:|'feature/{name}|hotfix/{name}'||release/{name}|custom'';
+  namingPattern: 'feature/{name}' | 'hotfix/{name}' | 'release/{name}' | 'custom';
   /** Custom naming pattern */
   customPattern?: string;
   /** Auto-cleanup old branches */
@@ -270,15 +270,15 @@ export interface BranchStrategy {
 
 export interface ConflictResolution {
   /** Conflict type */
-  type: 'merge|rebase'||cherry-pick';
+  type: 'merge' | 'rebase' | 'cherry-pick';
   /** Files with conflicts */
   conflictFiles: string[];
   /** AI resolution suggestions */
   aiSuggestions: ConflictSuggestion[];
   /** Resolution strategy */
-  strategy: 'auto|manual'||ai-assisted';
+  strategy: 'auto' | 'manual' | 'ai-assisted';
   /** Resolution result */
-  result?: 'resolved|requires-manual'||failed';
+  result?: 'resolved' | 'requires-manual' | 'failed';
 }
 
 export interface ConflictSuggestion {
@@ -326,7 +326,7 @@ export interface GitOperation {
 
 export interface MaintenanceTask {
   id: string;
-  type:|'cleanup-stale|compress-trees'||update-remotes|verify-integrity';
+  type: 'cleanup-stale' | 'compress-trees' | 'update-remotes' | 'verify-integrity';
   schedule: string; // cron expression
   lastRun?: Date;
   nextRun: Date;
@@ -386,7 +386,7 @@ export class GitOperationsManager extends Commander {
     commanderId?: string,
     config: Partial<GitOperationConfig> = {},
     branchStrategy: Partial<BranchStrategy> = {},
-    claude?: Claude|'undefined
+    claude?: Claude | undefined
   ) {
     super(commanderId);
 
@@ -1019,7 +1019,7 @@ export class GitOperationsManager extends Commander {
    */
   private async resolveConflictsWithAI(
     git: SimpleGit,
-    conflictType: 'merge|rebase'||cherry-pick',
+    conflictType: 'merge' | 'rebase' | 'cherry-pick',
     workingDir: string
   ): Promise<ConflictResolution> {
     logger.info('🤖 Starting AI conflict resolution', {

@@ -14,9 +14,9 @@
 
 // Local type definitions to avoid circular dependency
 export type TaskState =
-  || 'backlog|analysis|development|testing|review|done|blocked';
+  'backlog' | 'analysis' | 'development' | 'testing' | 'review' | 'done' | 'blocked';
 
-export type OptimizationStrategy =|''wip_reduction|bottleneck_removal|parallel_processing|load_balancing|priority_queue|resource_allocation';
+export type OptimizationStrategy = 'wip_reduction' | 'bottleneck_removal' | 'parallel_processing' | 'load_balancing' | 'priority_queue' | 'resource_allocation';
 
 export interface WorkflowTask {
   id: string;

@@ -35,7 +35,7 @@ const logger = getLogger('multi-swarm-ab-testing');
 /**
  * Supported AI model backends for swarm A/B testing
  */
-export type AIModelBackend =|claude-sonnet|claude-opus|claude-haiku|gemini-pro|gemini-flash|gpt-4|gpt-4-turbo|aider|'custom';
+export type AIModelBackend = 'claude-sonnet' | 'claude-opus' | 'claude-haiku' | 'gemini-pro' | 'gemini-flash' | 'gpt-4' | 'gpt-4-turbo' | 'aider' | 'custom';
 
 /**
  * A/B test strategy configuration
@@ -209,11 +209,9 @@ export class MultiSwarmABTesting {
     const testId = `ab-test-${nanoid()}`;
     const startTime = new Date();
 
-    console.log(`🧪 Starting A/B test: ${testId}`);
-    console.log(`📋 Task: ${taskDescription}`);
-    console.log(
-      `🔬 Testing ${strategies.length} strategies: ${strategies.map((s) => s.name).join(', ')}`
-    );
+    logger.info(`🧪 Starting A/B test: ${testId}`);
+    logger.info(`📋 Task: ${taskDescription}`);
+    logger.info(`🔬 Testing ${strategies.length} strategies: ${strategies.map((s) => s.name).join(', ')}`);
 
     try {
       // Prepare git worktrees if configured
@@ -270,14 +268,14 @@ export class MultiSwarmABTesting {
         await this.cleanupGitWorktrees(worktreePaths);
       }
 
-      console.log(`✅ A/B test completed: ${testId}`);
-      console.log(
+      logger.info(`✅ A/B test completed: ${testId}`);
+      logger.info(
         `🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(2)} confidence)`
       );
 
       return testResult;
     } catch (error) {
-      console.error(`❌ A/B test failed: ${testId}`, error);
+      logger.error(`❌ A/B test failed: ${testId}`, error);
       throw error;
     }
   }
@@ -548,7 +546,7 @@ export class MultiSwarmABTesting {
     worktreePaths: Record<string, string>,
     options: any
   ): Promise<SwarmTestResult[]> {
-    console.log(`⚡ Executing ${strategies.length} strategies in parallel...`);
+    logger.info(`⚡ Executing ${strategies.length} strategies in parallel...`);
 
     const promises = strategies.map((strategy) =>
       this.executeStrategy(
@@ -574,14 +572,14 @@ export class MultiSwarmABTesting {
     const enableContinueOnFailure = options.continueOnFailure !== false;
 
     if (enableProgressLogging) {
-      console.log(
+      logger.info(
         `⏭️ Executing ${strategies.length} strategies sequentially...`
       );
-      console.log(
+      logger.info(
         `📊 Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}`
       );
     } else {
-      console.log(
+      logger.info(
         `⏭️ Executing ${strategies.length} strategies sequentially...`
       );
     }
@@ -593,7 +591,7 @@ export class MultiSwarmABTesting {
 
       try {
         if (enableProgressLogging) {
-          console.log(
+          logger.info(
             `📋 Executing strategy ${i + 1}/${strategies.length}: ${strategy.name}`
           );
         }
@@ -607,7 +605,7 @@ export class MultiSwarmABTesting {
         results.push(result);
 
         if (enableProgressLogging) {
-          console.log(
+          logger.info(
             `✅ Strategy ${i + 1} completed: ${strategy.name} (${result.success ?'SUCCESS' : 'FAILED'})`
           );
         }
@@ -651,7 +649,7 @@ export class MultiSwarmABTesting {
       // Add delay between strategies if configured (except for last strategy)
       if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
         if (enableProgressLogging) {
-          console.log(
+          logger.info(
             `⏸️ Pausing ${delayBetweenStrategies}ms before next strategy...`
           );
         }
@@ -678,10 +676,10 @@ export class MultiSwarmABTesting {
     const retryCount = options.retries || 1;
 
     if (enableVerboseLogging) {
-      console.log(
+      logger.info(
         `🚀 Executing strategy: ${strategy.name} (${strategy.modelBackend})`
       );
-      console.log(
+      logger.info(
         `📊 Options: timeout=${timeoutMs}ms, retries=${retryCount}, verbose=${enableVerboseLogging}`
       );
     }
@@ -699,7 +697,7 @@ export class MultiSwarmABTesting {
         // Simulate swarm execution with timeout and options
         const executionResult = await Promise.race([
           this.simulateSwarmExecution(strategy, prompt, worktreePath, options),
-          new Promise<never>((_, reject) =>
+          new Promise<never>((_resolve, reject) =>
             setTimeout(
               () =>
                 reject(
@@ -713,7 +711,7 @@ export class MultiSwarmABTesting {
         const duration = Date.now() - startTime;
 
         if (enableVerboseLogging) {
-          console.log(
+          logger.info(
             `✅ Strategy completed: ${strategy.name} (${duration}ms, attempt ${attempt})`
           );
         }
@@ -739,7 +737,7 @@ export class MultiSwarmABTesting {
         lastError = error instanceof Error ? error : new Error(String(error));
 
         if (enableVerboseLogging) {
-          console.log(
+          logger.info(
             `❌ Strategy failed (attempt ${attempt}/${retryCount}): ${lastError.message}`
           );
         }
@@ -757,7 +755,7 @@ export class MultiSwarmABTesting {
 
     // All retries failed
     const duration = Date.now() - startTime;
-    console.log(`❌ All attempts failed for strategy: ${strategy.name}`);
+    logger.info(`❌ All attempts failed for strategy: ${strategy.name}`);
 
     return {
       strategy,
@@ -1183,7 +1181,7 @@ Execute this task using the specified strategy.`;
 
   private async persistTestResult(testResult: ABTestResult): Promise<void> {
     // In a real implementation, this would save to database
-    console.log(`💾 Persisted A/B test result: ${testResult.testId}`);
+    logger.info(`💾 Persisted A/B test result: ${testResult.testId}`);
   }
 }
 

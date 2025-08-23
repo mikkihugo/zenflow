@@ -1,7 +1,7 @@
 {
   "name": "@claude-zen/agui",
   "version": "1.0.1",
-  "private": false,
+  "private": true,
   "description": "Task approval and human-in-the-loop interaction system for autonomous workflows",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -45,10 +45,8 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "file:../../foundation",
-    "chalk": "^5.6.0",
-    "eventemitter3": "^5.0.1",
-    "nanoid": "^5.1.5"
+    "@claude-zen/foundation": "workspace:*",
+    "chalk": "^5.6.0"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

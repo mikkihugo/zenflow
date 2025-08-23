@@ -20,7 +20,7 @@ import { getLogger } from '@claude-zen/foundation';
 interface Agent {
   id: string;
   capabilities: string[];
-  status: 'idle|busy'';
+  status: 'idle' | 'busy';
 }
 
 interface Task {
@@ -156,7 +156,7 @@ export interface DomainContext {
  */
 export interface RetryPolicy {
   maxAttempts: number;
-  backoffStrategy: 'linear|exponential'';
+  backoffStrategy: 'linear' | 'exponential';
   baseDelay: number;
   maxDelay: number;
 }

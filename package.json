@@ -2,7 +2,7 @@
   "name": "@zen-ai/claude-code-zen",
   "version": "1.0.1",
   "type": "module",
-  "description": "Claude Code Zen: AI swarm orchestration platform with neural networks, web dashboard, and complete bundled system",
+  "description": "Claude Code Zen: 3-Tier strategic architecture with AI swarm orchestration, neural networks, and web dashboard. Features strategic facade delegation, internal implementation packages, and deep internal dependencies.",
   "main": "dist/claude-zen.js",
   "bin": {
     "claude-zen": "dist/claude-zen.js"
@@ -15,7 +15,6 @@
     "packages/agent-manager",
     "packages/agent-monitoring",
     "packages/agui",
-    "packages/ai-linter",
     "packages/ai-safety",
     "packages/brain",
     "packages/chaos-engineering",
@@ -188,7 +187,9 @@
     "packages:list": "./scripts/publish-packages.sh list",
     "packages:publish-all": "./scripts/publish-packages.sh all",
     "packages:publish-agui": "./scripts/publish-packages.sh agui",
-    "packages:publish-foundation": "./scripts/publish-packages.sh foundation"
+    "packages:publish-foundation": "./scripts/publish-packages.sh foundation",
+    "validate:architecture": "node scripts/validate-architecture.js",
+    "fix:architecture": "echo 'Architecture fixes must be applied manually. Run validate:architecture for specific guidance.'"
   },
   "files": [
     "dist/",
@@ -211,6 +212,10 @@
     "orchestration",
     "neural-networks",
     "coordination",
+    "3-tier-architecture",
+    "strategic-facades",
+    "implementation-packages",
+    "deep-internal-dependencies",
     "wasm",
     "web-dashboard",
     "typescript",
@@ -218,9 +223,9 @@
   ],
   "dependencies": {
     "@ag-ui/core": "^0.0.36",
-    "@anthropic-ai/claude-code": "^1.0.85",
+    "@anthropic-ai/claude-code": "^1.0.88",
     "@anthropic-ai/sdk": "^0.60.0",
-    "@claude-zen/agui": "link:packages/implementation-packages/agui",
+    "@claude-zen/agui": "workspace:*",
     "@floating-ui/dom": "^1.7.3",
     "@godaddy/terminus": "^4.12.1",
     "@lancedb/lancedb": "^0.21.3",

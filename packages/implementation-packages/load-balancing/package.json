@@ -36,8 +36,7 @@
   },
   "dependencies": {
     "@claude-zen/event-system": "workspace:*",
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/neural-ml": "workspace:*"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

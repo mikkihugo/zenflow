@@ -15,5 +15,5 @@
  * @referencedBy src/interfaces/shared/config.ts, src/core/interface-manager.ts, src/database/providers/database-providers.ts
  */
 
-export function formatLog(message: string): string { return `[LOG] ${new Date()?.toISOString}: ${message}`;
-}`
+export function formatLog(message: string): string { return `[LOG]'' + new Date()?.toISOString + ': ${message}''
+};

@@ -29,7 +29,7 @@ try {
         module.exports.DSPyModule = dspy.DSPyModule;
     }
 }
-catch (_a) {
+catch {
     // DSPy not available - provide fallback types
 }
 // Note: Signature and Teleprompter types will be enabled when those modules are ready

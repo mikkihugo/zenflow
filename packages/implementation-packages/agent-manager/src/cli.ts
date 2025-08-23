@@ -24,13 +24,107 @@
  * ```
  */
 
-import { Command } from 'commander';
-import { AgentManager } from './agent-manager';
 import { getLogger } from '@claude-zen/foundation';
+import { Command } from 'commander';
+
+import { AgentManager } from './agent-manager';
 import type { CognitiveArchetype, SwarmTopology } from './types';
 
 const logger = getLogger('agent-manager-cli');
 const program = new Command();
+
+/**
+ * Validate cognitive types against allowed types
+ */
+function validateCognitiveTypes(cognitiveTypes: CognitiveArchetype[]): void {
+  const validTypes: CognitiveArchetype[] = [
+    'researcher',
+    'coder',
+    'analyst',
+    'architect',
+  ];
+  
+  for (const type of cognitiveTypes) {
+    if (!validTypes.includes(type)) {
+      logger.error(`❌ Invalid cognitive type: ${type}. Valid types: ${validTypes.join(', ')}`);
+      process.exit(1);
+    }
+  }
+}
+
+/**
+ * Validate topology against allowed topologies
+ */
+function validateTopology(topology: SwarmTopology): void {
+  const validTopologies: SwarmTopology[] = [
+    'mesh',
+    'hierarchical',
+    'ring',
+    'star',
+  ];
+  
+  if (!validTopologies.includes(topology)) {
+    logger.error(`❌ Invalid topology: ${topology}. Valid topologies: ${validTopologies.join(', ')}`);
+    process.exit(1);
+  }
+}
+
+/**
+ * Process manual configuration from CLI options
+ */
+function processManualConfiguration(options: any): {
+  cognitiveTypes: CognitiveArchetype[];
+  topology: SwarmTopology;
+} {
+  logger.info('⚙️ Using manual configuration...');
+
+  const cognitiveTypes = options.cognitive
+    ? (options.cognitive
+        .split(',')
+        .map((type: string) => type.trim()) as CognitiveArchetype[])
+    : ['researcher', 'coder'];
+  
+  const topology = options.topology || 'mesh';
+
+  validateCognitiveTypes(cognitiveTypes);
+  validateTopology(topology);
+
+  return { cognitiveTypes, topology };
+}
+
+/**
+ * Process intelligent configuration using repository analysis
+ */
+async function processIntelligentConfiguration(options: any): Promise<{
+  cognitiveTypes: CognitiveArchetype[];
+  topology: SwarmTopology;
+  recommendation: any;
+}> {
+  logger.info('🧠 Using intelligent configuration...');
+  
+  const { getIntelligentSwarmConfig } = await import('./intelligent-config');
+  const recommendation = await getIntelligentSwarmConfig(
+    options.task,
+    options.analyzeRepo ? undefined : false
+  );
+
+  logger.info('🎯 Intelligent Swarm Recommendation:');
+  logger.info(`├── Task: ${options.task}`);
+  logger.info(`├── Cognitive Types: ${recommendation.cognitiveTypes.join(', ')}`);
+  logger.info(`├── Topology: ${recommendation.topology}`);
+  logger.info(`├── Agent Count: ${recommendation.agentCount}`);
+  logger.info('└── Reasoning:');
+  logger.info(`    ├── Task Analysis: ${recommendation.reasoning.taskAnalysis}`);
+  logger.info(`    ├── Cognitive Rationale: ${recommendation.reasoning.cognitiveRationale}`);
+  logger.info(`    ├── Topology Rationale: ${recommendation.reasoning.topologyRationale}`);
+  logger.info(`    └── Agent Count Rationale: ${recommendation.reasoning.agentCountRationale}`);
+
+  return {
+    cognitiveTypes: recommendation.cognitiveTypes,
+    topology: recommendation.topology,
+    recommendation
+  };
+}
 
 // Global AgentManager instance
 let globalManager: AgentManager|null = null;
@@ -79,125 +173,35 @@ program
   )
   .action(async (options) => {
     try {
-      const manager = await getManager();
+      const _manager = await getManager();
 
       let cognitiveTypes: CognitiveArchetype[];
       let topology: SwarmTopology;
-      let recommendation: any = null;
+      let _recommendation: any = null;
 
       if (options.manual) {
-        // Manual configuration mode
-        console.log('⚙️ Using manual configuration...');
-
-        cognitiveTypes = options.cognitive
-          ? (options.cognitive
-              .split(',')
-              .map((type: string) => type.trim()) as CognitiveArchetype[])
-          : ['researcher', 'coder'];
-        topology = options.topology||'mesh';
-
-        // Validate manual inputs
-        const validTypes: CognitiveArchetype[] = [
-          'researcher',
-          'coder',
-          'analyst',
-          'architect',
-        ];
-        for (const type of cognitiveTypes) {
-          if (!validTypes.includes(type)) {
-            console.error(
-              `❌ Invalid cognitive type: ${type}. Valid types: ${validTypes.join(', ')}`
-            );
-            process.exit(1);
-          }
-        }
-
-        const validTopologies: SwarmTopology[] = [
-          'mesh',
-          'hierarchical',
-          'ring',
-          'star',
-        ];
-        if (!validTopologies.includes(topology)) {
-          console.error(
-            `❌ Invalid topology: ${topology}. Valid topologies: ${validTopologies.join(', ')}`
-          );
-          process.exit(1);
-        }
+        ({ cognitiveTypes, topology } = processManualConfiguration(options));
       } else {
-        // Intelligent configuration mode (default)
-        console.log(
-          '🧠 Analyzing task and repository for optimal swarm configuration...'
-        );
-
-        try {
-          const { generateIntelligentConfig, analyzeRepository } = await import(
-            './intelligent-config'
-          );
-
-          // Analyze repository if requested or auto-detect
-          let repoAnalysis;
-          if (options.analyzeRepo) {
-            console.log('🔍 Performing repository analysis...');
-            repoAnalysis = await analyzeRepository();
-            console.log(
-              `📊 Repository: ${repoAnalysis.projectType} (${repoAnalysis.complexity} complexity)`
-            );
-          }
-
-          // Generate intelligent configuration
-          recommendation = await generateIntelligentConfig(
-            options.task,
-            repoAnalysis
-          );
-
-          // Apply user overrides if provided
+        ({ cognitiveTypes, topology, recommendation: _recommendation } = await processIntelligentConfiguration(options));
+        
+        // Apply user overrides if provided
+        if (options.cognitive) {
           cognitiveTypes = options.cognitive
-            ? (options.cognitive
-                .split(',')
-                .map((type: string) => type.trim()) as CognitiveArchetype[])
-            : recommendation.cognitiveTypes;
-          topology = options.topology||recommendation.topology;
-
-          // Display recommendation
-          console.log('\n🎯 Intelligent Configuration:');
-          console.log(
-            `   🧠 Cognitive Types: ${recommendation.cognitiveTypes.join(', ')}`
-          );
-          console.log(`   🔗 Topology: ${recommendation.topology}`);
-          console.log(`   👥 Agent Count: ${recommendation.agentCount}`);
-          console.log(`   📈 Confidence: ${recommendation.confidence}%`);
-
-          console.log('\n💭 Reasoning:');
-          console.log(
-            `   📝 Task Analysis: ${recommendation.reasoning.taskAnalysis}`
-          );
-          console.log(
-            `   🧩 Cognitive Choice: ${recommendation.reasoning.cognitiveRationale}`
-          );
-          console.log(
-            `   🔗 Topology Choice: ${recommendation.reasoning.topologyRationale}`
-          );
-          if (repoAnalysis) {
-            console.log(
-              `   📁 Repository Influence: ${recommendation.reasoning.repositoryInfluence}`
-            );
-          }
-
-          if (options.cognitive||options.topology) {
-            console.log('\n⚠️  User overrides applied to intelligent configuration'
-            );
-          }
-        } catch (error) {
-          console.warn(
-            `⚠️ Intelligent configuration failed, using fallback: ${error instanceof Error ? error.message : error}`
-          );
-          cognitiveTypes = ['researcher', 'coder'];
-          topology = 'mesh';
+            .split(',')
+            .map((type: string) => type.trim()) as CognitiveArchetype[];
+          validateCognitiveTypes(cognitiveTypes);
+        }
+        if (options.topology) {
+          topology = options.topology;
+          validateTopology(topology);
+        }
+        
+        if (options.cognitive || options.topology) {
+          logger.info('⚠️  User overrides applied to intelligent configuration');
         }
       }
 
-      console.log('\n✨ Creating ephemeral swarm...');
+      logger.info('✨ Creating ephemeral swarm...');
 
       const swarm = await AgentManager.createSwarm({
         task: options.task,
@@ -209,50 +213,49 @@ program
         maxTurns: parseInt(options.maxTurns),
       });
 
-      console.log('\n🎉 Swarm created successfully!');
-      console.log(`\n📋 Swarm Details:`);
-      console.log(`   🆔 ID: ${swarm.id}`);
-      console.log(`   🎯 Task: ${swarm.task}`);
-      console.log(
+      logger.info('🎉 Swarm created successfully!');
+      logger.info('📋 Swarm Details:');
+      logger.info(`   🆔 ID: ${swarm.id}`);
+      logger.info(`   🎯 Task: ${swarm.task}`);
+      logger.info(
         `   🧠 Cognitive Types: ${swarm.agents.map((a) => a.archetype).join(', ')}`
       );
-      console.log(`   🔗 Topology: ${swarm.topology}`);
-      console.log(`   ⏰ Expires: ${swarm.expiresAt.toLocaleString()}`);
-      console.log(`   💾 Persistent: ${swarm.persistent ? '✅ Yes' : '❌ No'}`);
+      logger.info(`   🔗 Topology: ${swarm.topology}`);
+      logger.info(`   ⏰ Expires: ${swarm.expiresAt.toLocaleString()}`);
+      logger.info(`   💾 Persistent: ${swarm.persistent ? '✅ Yes' : '❌ No'}`);
 
       if (options.neural) {
-        console.log('   🧠 Neural acceleration: ✅ Enabled');
+        logger.info('   🧠 Neural acceleration: ✅ Enabled');
       }
 
       // Display agent details
-      console.log('\n👥 Cognitive Agents:');
+      logger.info('👥 Cognitive Agents:');
       for (const agent of swarm.agents) {
-        console.log(`   🤖 ${agent.archetype.toUpperCase()} Agent`);
-        console.log(`      🆔 ID: ${agent.id}`);
-        console.log(
+        logger.info(`   🤖 ${agent.archetype.toUpperCase()} Agent`);
+        logger.info(`      🆔 ID: ${agent.id}`);
+        logger.info(
           `      ⚡ Decision Speed: ${agent.cognition.decisionSpeed}ms`
         );
-        console.log(
+        logger.info(
           `      🧩 Patterns: ${agent.cognition.patterns.join(', ')}`
         );
-        console.log(
+        logger.info(
           `      💪 Strengths: ${agent.cognition.strengths.join(', ')}`
         );
-        console.log('');
       }
 
-      console.log('💡 Next steps:');
-      console.log(
+      logger.info('💡 Next steps:');
+      logger.info(
         `   agent-manager exec ${swarm.id}     # Execute swarm coordination`
       );
-      console.log(
+      logger.info(
         `   agent-manager list                  # View all active swarms`
       );
-      console.log(
+      logger.info(
         `   agent-manager dissolve ${swarm.id}  # Clean up when done`
       );
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to create swarm:',
         error instanceof Error ? error.message : error
       );
@@ -275,53 +278,53 @@ program
     try {
       const manager = await getManager();
 
-      console.log(`⚡ Executing swarm coordination: ${swarmId}`);
+      logger.info(`⚡ Executing swarm coordination: ${swarmId}`);
 
       const result = await manager.executeSwarm(swarmId, {
         maxTurns: parseInt(options.maxTurns),
       });
 
-      console.log('\n🎉 Swarm execution completed!');
-      console.log(`\n📊 Execution Results:`);
-      console.log(`   ⏱️  Duration: ${result.duration}ms`);
-      console.log(
+      logger.info('\n🎉 Swarm execution completed!');
+      logger.info(`\n📊 Execution Results:`);
+      logger.info(`   ⏱️  Duration: ${result.duration}ms`);
+      logger.info(
         `   ${result.success ? '✅' : '❌'} Success: ${result.success}`
       );
-      console.log(
+      logger.info(
         `   🤝 Consensus: ${result.coordination.consensusReached ? '✅ Reached' : '❌ Not reached'}`
       );
-      console.log(
+      logger.info(
         `   🔢 Total Decisions: ${result.coordination.totalDecisions}`
       );
 
       if (result.neuralMetrics) {
-        console.log(`\n🧠 Neural Acceleration:`);
-        console.log(
+        logger.info(`\n🧠 Neural Acceleration:`);
+        logger.info(
           `   🔧 WASM calls: ${result.neuralMetrics.wasmCallsExecuted}`
         );
-        console.log(
+        logger.info(
           `   🚀 Acceleration gain: ${result.neuralMetrics.accelerationGain}x faster`
         );
       }
 
-      console.log('\n👥 Agent Performance:');
+      logger.info('\n👥 Agent Performance:');
       for (const agentResult of result.agentResults) {
-        console.log(`   🤖 ${agentResult.archetype.toUpperCase()}`);
-        console.log(`      🧠 Decisions: ${agentResult.decisions}`);
-        console.log(
+        logger.info(`   🤖 ${agentResult.archetype.toUpperCase()}`);
+        logger.info(`      🧠 Decisions: ${agentResult.decisions}`);
+        logger.info(
           `      ⚡ Avg decision time: ${agentResult.averageDecisionTime}ms`
         );
-        console.log(`      💡 Insights: ${agentResult.insights.length}`);
+        logger.info(`      💡 Insights: ${agentResult.insights.length}`);
       }
 
       if (result.coordination.emergentInsights.length > 0) {
-        console.log('\n💡 Emergent Insights:');
+        logger.info('\n💡 Emergent Insights:');
         for (const insight of result.coordination.emergentInsights) {
-          console.log(`   ✨ ${insight}`);
+          logger.info(`   ✨ ${insight}`);
         }
       }
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to execute swarm:',
         error instanceof Error ? error.message : error
       );
@@ -350,45 +353,45 @@ program
       });
 
       if (swarms.length === 0) {
-        console.log('📭 No active swarms');
+        logger.info('📭 No active swarms');
         return;
       }
 
-      console.log(`🐝 Active Swarms (${swarms.length}):\n`);
+      logger.info(`🐝 Active Swarms (${swarms.length}):\n`);
 
       for (const swarm of swarms) {
-        console.log(`📋 ${swarm.id}`);
-        console.log(`  Task: ${swarm.task}`);
-        console.log(`  Status: ${swarm.status}`);
-        console.log(
+        logger.info(`📋 ${swarm.id}`);
+        logger.info(`  Task: ${swarm.task}`);
+        logger.info(`  Status: ${swarm.status}`);
+        logger.info(
           `  Agents: ${swarm.agents.length} (${swarm.agents.map((a) => a.archetype).join(', ')})`
         );
-        console.log(`  Topology: ${swarm.topology}`);
-        console.log(`  Created: ${swarm.created.toLocaleString()}`);
-        console.log(`  Expires: ${swarm.expiresAt.toLocaleString()}`);
-        console.log(`  Persistent: ${swarm.persistent ? 'Yes' : 'No'}`);
+        logger.info(`  Topology: ${swarm.topology}`);
+        logger.info(`  Created: ${swarm.created.toLocaleString()}`);
+        logger.info(`  Expires: ${swarm.expiresAt.toLocaleString()}`);
+        logger.info(`  Persistent: ${swarm.persistent ? 'Yes' : 'No'}`);
 
         if (options.detailed) {
-          console.log(`  Performance:`);
-          console.log(`    Decisions: ${swarm.performance.decisions}`);
-          console.log(
+          logger.info(`  Performance:`);
+          logger.info(`    Decisions: ${swarm.performance.decisions}`);
+          logger.info(
             `    Avg Decision Time: ${swarm.performance.averageDecisionTime}ms`
           );
-          console.log(
+          logger.info(
             `    Coordination Events: ${swarm.performance.coordinationEvents}`
           );
-          console.log(
+          logger.info(
             `    Claude Interactions: ${swarm.performance.claudeInteractions}`
           );
-          console.log(
+          logger.info(
             `    Last Activity: ${swarm.performance.lastActivity.toLocaleString()}`
           );
         }
 
-        console.log('');
+        logger.info('');
       }
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to list swarms:',
         error instanceof Error ? error.message : error
       );
@@ -407,13 +410,13 @@ program
     try {
       const manager = await getManager();
 
-      console.log(`🗑️ Dissolving swarm: ${swarmId}`);
+      logger.info(`🗑️ Dissolving swarm: ${swarmId}`);
 
       await manager.dissolveSwarm(swarmId);
 
-      console.log('✅ Swarm dissolved successfully!');
+      logger.info('✅ Swarm dissolved successfully!');
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to dissolve swarm:',
         error instanceof Error ? error.message : error
       );
@@ -431,14 +434,14 @@ program
     try {
       const manager = await getManager();
 
-      console.log(`⏸️ Pausing swarm: ${swarmId}`);
+      logger.info(`⏸️ Pausing swarm: ${swarmId}`);
 
       await manager.pauseSwarm(swarmId);
 
-      console.log('✅ Swarm paused successfully!');
-      console.log('💡 The swarm can be resumed after Claude CLI restart');
+      logger.info('✅ Swarm paused successfully!');
+      logger.info('💡 The swarm can be resumed after Claude CLI restart');
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to pause swarm:',
         error instanceof Error ? error.message : error
       );
@@ -456,13 +459,13 @@ program
     try {
       const manager = await getManager();
 
-      console.log(`▶️ Resuming swarm: ${swarmId}`);
+      logger.info(`▶️ Resuming swarm: ${swarmId}`);
 
       await manager.resumeSwarm(swarmId);
 
-      console.log('✅ Swarm resumed successfully!');
+      logger.info('✅ Swarm resumed successfully!');
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to resume swarm:',
         error instanceof Error ? error.message : error
       );
@@ -483,19 +486,19 @@ program
       const metrics = manager.getPerformanceMetrics();
       const swarms = manager.getActiveSwarms();
 
-      console.log('📊 AgentManager Performance Metrics\n');
+      logger.info('📊 AgentManager Performance Metrics\n');
 
-      console.log(`⏰ Uptime: ${Math.round(manager.getUptime() / 1000)}s`);
-      console.log(`🐝 Active Swarms: ${manager.getSwarmCount()}`);
-      console.log(`📈 Total Swarms Created: ${metrics.totalSwarms}`);
-      console.log(`⚡ Average Decision Time: ${metrics.averageDecisionTime}ms`);
-      console.log(
+      logger.info(`⏰ Uptime: ${Math.round(manager.getUptime() / 1000)}s`);
+      logger.info(`🐝 Active Swarms: ${manager.getSwarmCount()}`);
+      logger.info(`📈 Total Swarms Created: ${metrics.totalSwarms}`);
+      logger.info(`⚡ Average Decision Time: ${metrics.averageDecisionTime}ms`);
+      logger.info(
         `✅ Successful Coordinations: ${metrics.successfulCoordinations}`
       );
-      console.log(`🔄 Sessions Restored: ${metrics.sessionsRestored}`);
+      logger.info(`🔄 Sessions Restored: ${metrics.sessionsRestored}`);
 
       if (swarms.length > 0) {
-        console.log('\n🧠 Cognitive Distribution:');
+        logger.info('\n🧠 Cognitive Distribution:');
         const archetypeCounts = new Map<string, number>();
         for (const swarm of swarms) {
           for (const agent of swarm.agents) {
@@ -507,11 +510,11 @@ program
         }
 
         for (const [archetype, count] of archetypeCounts) {
-          console.log(`  • ${archetype}: ${count} agents`);
+          logger.info(`  • ${archetype}: ${count} agents`);
         }
       }
     } catch (error) {
-      console.error('❌ Failed to get metrics:',
+      logger.error('❌ Failed to get metrics:',
         error instanceof Error ? error.message : error
       );
       process.exit(1);
@@ -528,7 +531,7 @@ program
   .option('--detailed', '📝 Show detailed reasoning')
   .action(async (task: string, options) => {
     try {
-      console.log('🧠 Analyzing task for optimal swarm configuration...\n');
+      logger.info('🧠 Analyzing task for optimal swarm configuration...\n');
 
       const { generateIntelligentConfig, analyzeRepository } = await import(
         './intelligent-config'
@@ -537,16 +540,16 @@ program
       // Analyze repository if requested
       let repoAnalysis;
       if (options.analyzeRepo) {
-        console.log('🔍 Performing repository analysis...');
+        logger.info('🔍 Performing repository analysis...');
         repoAnalysis = await analyzeRepository();
-        console.log(
+        logger.info(
           `📊 Repository: ${repoAnalysis.projectType} (${repoAnalysis.complexity} complexity)`
         );
-        console.log(
+        logger.info(
           `🔧 Technologies: ${repoAnalysis.technologies.slice(0, 5).join(', ')}`
         );
-        console.log(`📝 Has Tests: ${repoAnalysis.hasTests ? 'Yes' : 'No'}`);
-        console.log(`📚 Has Docs: ${repoAnalysis.hasDocs ? 'Yes' : 'No'}\n`);
+        logger.info(`📝 Has Tests: ${repoAnalysis.hasTests ? 'Yes' : 'No'}`);
+        logger.info(`📚 Has Docs: ${repoAnalysis.hasDocs ? 'Yes' : 'No'}\n`);
       }
 
       // Generate recommendation
@@ -555,41 +558,41 @@ program
         repoAnalysis
       );
 
-      console.log('🎯 Recommended Configuration:');
-      console.log(
+      logger.info('🎯 Recommended Configuration:');
+      logger.info(
         `   🧠 Cognitive Types: ${recommendation.cognitiveTypes.join(', ')}`
       );
-      console.log(`   🔗 Topology: ${recommendation.topology}`);
-      console.log(`   👥 Agent Count: ${recommendation.agentCount}`);
-      console.log(`   📈 Confidence: ${recommendation.confidence}%\n`);
+      logger.info(`   🔗 Topology: ${recommendation.topology}`);
+      logger.info(`   👥 Agent Count: ${recommendation.agentCount}`);
+      logger.info(`   📈 Confidence: ${recommendation.confidence}%\n`);
 
       if (options.detailed) {
-        console.log('💭 Detailed Reasoning:');
-        console.log(
+        logger.info('💭 Detailed Reasoning:');
+        logger.info(
           `   📝 Task Analysis: ${recommendation.reasoning.taskAnalysis}`
         );
-        console.log(
+        logger.info(
           `   🧩 Cognitive Rationale: ${recommendation.reasoning.cognitiveRationale}`
         );
-        console.log(
+        logger.info(
           `   🔗 Topology Rationale: ${recommendation.reasoning.topologyRationale}`
         );
-        console.log(
+        logger.info(
           `   👥 Agent Count Rationale: ${recommendation.reasoning.agentCountRationale}`
         );
         if (repoAnalysis) {
-          console.log(
+          logger.info(
             `   📁 Repository Influence: ${recommendation.reasoning.repositoryInfluence}`
           );
         }
       }
 
-      console.log('\n💡 To create this swarm:');
-      console.log(
+      logger.info('\n💡 To create this swarm:');
+      logger.info(
         `   agent-manager create --task "${task}" ${recommendation.cognitiveTypes.length > 2 ? '--analyze-repo' : ''}`
       );
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to analyze task:',
         error instanceof Error ? error.message : error
       );
@@ -607,11 +610,11 @@ program
     try {
       const manager = await getManager();
 
-      console.log('🏥 AgentManager Health Check\n');
+      logger.info('🏥 AgentManager Health Check\n');
 
       // Basic health checks
-      console.log('✅ AgentManager: Operational');
-      console.log(
+      logger.info('✅ AgentManager: Operational');
+      logger.info(
         `✅ Foundation Logger: ${logger ? 'Available' : 'Unavailable'}`
       );
 
@@ -619,36 +622,36 @@ program
       try {
         const { isWasmNeuralAvailable } = await import('./wasm-loader');
         const wasmAvailable = await isWasmNeuralAvailable();
-        console.log(
+        logger.info(
           wasmAvailable
             ? '✅ WASM Neural: Available'
             : '⚠️  WASM Neural: Not Available (optional)'
         );
       } catch {
-        console.log('⚠️  WASM Neural: Not Available (optional)');
+        logger.info('⚠️  WASM Neural: Not Available (optional)');
       }
 
       const uptime = manager.getUptime();
       const activeSwarms = manager.getSwarmCount();
 
-      console.log(`✅ Uptime: ${Math.round(uptime / 1000)}s`);
-      console.log(`✅ Active Swarms: ${activeSwarms}`);
+      logger.info(`✅ Uptime: ${Math.round(uptime / 1000)}s`);
+      logger.info(`✅ Active Swarms: ${activeSwarms}`);
 
       if (activeSwarms > 0) {
         const swarms = manager.getActiveSwarms();
         const healthySwarms = swarms.filter(
           (s) => s.status === 'active'
         ).length;
-        console.log(`✅ Healthy Swarms: ${healthySwarms}/${activeSwarms}`);
+        logger.info(`✅ Healthy Swarms: ${healthySwarms}/${activeSwarms}`);
       }
 
-      console.log('\n💚 System Status: Healthy');
+      logger.info('\n💚 System Status: Healthy');
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Health check failed:',
         error instanceof Error ? error.message : error
       );
-      console.log('\n💔 System Status: Unhealthy');
+      logger.info('\n💔 System Status: Unhealthy');
       process.exit(1);
     }
   });
@@ -670,7 +673,7 @@ mcpCommand
       await server.start();
       // The server runs indefinitely on stdio
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to start MCP server:',
         error instanceof Error ? error.message : error
       );
@@ -682,40 +685,40 @@ mcpCommand
   .command('info')
   .description('Show MCP integration information')
   .action(() => {
-    console.log('🔗 AgentManager MCP Integration\n');
-    console.log('To integrate with Claude Code:');
-    console.log(
+    logger.info('🔗 AgentManager MCP Integration\n');
+    logger.info('To integrate with Claude Code:');
+    logger.info(
       '  claude mcp add agent-manager npx @claude-zen/agent-manager mcpserver\n'
     );
-    console.log('Available MCP tools:');
-    console.log(
+    logger.info('Available MCP tools:');
+    logger.info(
       '  • create_swarm       - Create ephemeral swarms with cognitive diversity'
     );
-    console.log(
+    logger.info(
       '  • execute_swarm      - Execute swarm coordination with <100ms decisions'
     );
-    console.log(
+    logger.info(
       '  • list_swarms        - List active swarms with performance metrics'
     );
-    console.log(
+    logger.info(
       '  • dissolve_swarm     - Dissolve swarms and clean up resources'
     );
-    console.log(
+    logger.info(
       '  • pause_swarm        - Pause for Claude CLI session restart'
     );
-    console.log('  • resume_swarm       - Resume after session restart');
-    console.log(
+    logger.info('  • resume_swarm       - Resume after session restart');
+    logger.info(
       '  • get_metrics        - Performance metrics and cognitive distribution'
     );
-    console.log(
+    logger.info(
       '  • health_check       - System health status and WASM availability'
     );
-    console.log('\nExample usage in Claude Code:');
-    console.log(
+    logger.info('\nExample usage in Claude Code:');
+    logger.info(
       '  "Create a swarm with researcher and coder agents for security analysis"'
     );
-    console.log('  "List all active swarms with detailed metrics"');
-    console.log('  "Execute swarm coordination with neural acceleration"');
+    logger.info('  "List all active swarms with detailed metrics"');
+    logger.info('  "Execute swarm coordination with neural acceleration"');
   });
 
 /**
@@ -731,7 +734,7 @@ program
       await server.start();
       // The server runs indefinitely on stdio
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Failed to start MCP server:',
         error instanceof Error ? error.message : error
       );
@@ -741,18 +744,18 @@ program
 
 // Handle uncaught errors
 process.on('uncaughtException', (error) => {
-  console.error('💥 Uncaught exception:', error);
+  logger.error('💥 Uncaught exception:', error);
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason) => {
-  console.error('💥 Unhandled rejection:', reason);
+  logger.error('💥 Unhandled rejection:', reason);
   process.exit(1);
 });
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('\n🛑 Received SIGINT, shutting down gracefully...');
+  logger.info('\n🛑 Received SIGINT, shutting down gracefully...');
   if (globalManager) {
     await globalManager.shutdown();
   }

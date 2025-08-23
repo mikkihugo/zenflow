@@ -10,7 +10,7 @@
  * - WASM integration types
  */
 
-import type { EventEmitter } from 'eventemitter3';
+import type { TypedEventBase } from '@claude-zen/foundation';
 import type { Actor, StateValue } from 'xstate';
 import type { z } from 'zod';
 

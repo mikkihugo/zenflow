@@ -9,14 +9,18 @@ import type { Result } from '@claude-zen/foundation';
 import type { LiteralUnion } from '@claude-zen/foundation/types';
 
 export interface APIMessage {
-  role: 'system|user|assistant';
+  role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
 export interface APIRequest {
   messages: APIMessage[];
   model?: LiteralUnion<
-    'claude-3-5-sonnet|gpt-4'||gemini-pro|gpt-4o'||gpt-4-turbo',
+    | 'claude-3-5-sonnet'
+    | 'gpt-4'
+    | 'gemini-pro'
+    | 'gpt-4o'
+    | 'gpt-4-turbo',
     string
   >;
   temperature?: number;
@@ -106,7 +110,10 @@ export interface APIProviderRegistry {
 export interface APIProviderFactory {
   createProvider(
     type: LiteralUnion<
-      'github-copilot|openai'||anthropic|github-models'',
+      | 'github-copilot'
+      | 'openai'
+      | 'anthropic'
+      | 'github-models',
       string
     >,
     options?: Record<string, unknown>

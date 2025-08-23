@@ -5,15 +5,14 @@
  * automated parameter adjustment, and continuous optimization feedback loops.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { TypedEventBase ,
   getLogger,
   recordMetric,
-  withRetry,
   TelemetryManager,
   withTrace,
 } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 import type {
   PerformanceConfig,
   TuningAction,
@@ -661,10 +660,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   ): Promise<boolean> {
     // Mock implementation - in real scenario, would apply actual configuration changes
     switch (recommendation.action) {
-      case 'increase_cache_size':
+      case 'increase_cache_size': {
         const newSize = recommendation.parameters.newSize as number;
         this.updateTuningParameter('cacheSize', newSize);
         break;
+      }
 
       case 'enable_compression':
         this.updateTuningParameter('compressionLevel', 6);
@@ -682,10 +682,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
         // Would update cleanup interval
         break;
 
-      case 'optimize_ttl':
+      case 'optimize_ttl': {
         const newTtl = recommendation.parameters.ttl as number;
         this.updateTuningParameter('cacheTtl', newTtl);
         break;
+      }
     }
 
     // Simulate success/failure
@@ -786,11 +787,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     return this.tune();
   }
 
-  updateTuningParameter(name: string, value: number): boolean {
+  public setTuningParameter(name: string, value: number): boolean {
     const param = this.tuningParameters.get(name);
     if (!param) return false;
 
-    if (value < param.minValue||value > param.maxValue) {
+    if (value < param.minValue || value > param.maxValue) {
       return false;
     }
 

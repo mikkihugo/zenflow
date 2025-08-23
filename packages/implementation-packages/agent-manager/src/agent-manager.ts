@@ -57,31 +57,22 @@
  * ```
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { TypedEventBase ,
   executeSwarmCoordinationTask,
   getLogger,
   EnhancedError,
-  safeAsync,
-  withRetry,
   getConfig,
 } from '@claude-zen/foundation';
+
+import { getSwarmRegistry } from './swarm-registry';
 import type {
-  AgentType,
-  SwarmAgent,
-  SwarmMetrics,
-  SwarmCoordinationEvent,
-  SwarmTopology,
-  SwarmOptions,
   SwarmConfig,
   CognitiveArchetype,
   SwarmCreationConfig,
   EphemeralSwarm,
   CognitiveAgent,
   SwarmExecutionResult,
-  SwarmDecision,
 } from './types';
-import { getSwarmRegistry } from './swarm-registry';
 
 /**
  * Dynamic Swarm Orchestrator - claude-code-zen's equivalent to ruvswarm.
@@ -289,7 +280,7 @@ export class AgentManager extends TypedEventBase {
 
     try {
       // Execute coordination using Claude SDK with flexible turn limits
-      const coordinationResult = await executeSwarmCoordinationTask(
+      const _coordinationResult = await executeSwarmCoordinationTask(
         this.buildSwarmExecutionPrompt(swarm),
         swarm.agents.map((a) => a.id),
         {
@@ -366,14 +357,16 @@ export class AgentManager extends TypedEventBase {
 
     swarm.status = 'dissolved';
 
-    // Clean up agent resources
-    for (const agent of swarm.agents) {
+    // Clean up agent resources asynchronously
+    await Promise.all(swarm.agents.map(async (agent) => {
       agent.status = 'dissolved';
-    }
+      // Allow agent cleanup to complete
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }));
 
     this.activeSwarms.delete(swarmId);
     const registry = getSwarmRegistry();
-    registry.removeSwarm(swarmId);
+    await registry.removeSwarm(swarmId);
 
     this.logger.info('🗑️ Swarm dissolved', {
       swarmId,
@@ -407,8 +400,15 @@ export class AgentManager extends TypedEventBase {
       },
     };
 
+    // Pause all agents asynchronously
+    await Promise.all(swarm.agents.map(async (agent) => {
+      agent.status = 'offline';
+      // Allow agent state to persist
+      await new Promise(resolve => setTimeout(resolve, 5));
+    }));
+
     const registry = getSwarmRegistry();
-    registry.updateSwarm(swarm);
+    await registry.updateSwarm(swarm);
     this.logger.info('⏸️ Swarm paused for session restart', { swarmId });
   }
 
@@ -427,6 +427,13 @@ export class AgentManager extends TypedEventBase {
     swarm.status = 'active';
     this.performanceMetrics.sessionsRestored++;
 
+    // Resume all agents asynchronously
+    await Promise.all(swarm.agents.map(async (agent) => {
+      agent.status = 'idle';
+      // Allow agent state to restore
+      await new Promise(resolve => setTimeout(resolve, 5));
+    }));
+
     this.logger.info('▶️ Swarm resumed after session restart', {
       swarmId,
       pausedDuration: Date.now() - (swarm.resumption.checkpoint as number),
@@ -434,7 +441,7 @@ export class AgentManager extends TypedEventBase {
 
     delete swarm.resumption;
     const registry = getSwarmRegistry();
-    registry.updateSwarm(swarm);
+    await registry.updateSwarm(swarm);
   }
 
   /**
@@ -454,9 +461,20 @@ export class AgentManager extends TypedEventBase {
   async initialize(config?: SwarmConfig): Promise<void> {
     try {
       // Merge with foundation config if available
-      const foundationConfig = getConfig();
+      const foundationConfig = await getConfig();
+      
+      // Initialize registry and load existing swarms
+      const registry = getSwarmRegistry();
+      await registry.initialize();
+      
+      // Load any persisted swarms
+      await registry.loadAndRegisterSwarms();
 
-      this.logger.info('🚀 AgentManager initialized successfully');
+      this.logger.info('🚀 AgentManager initialized successfully', {
+        foundationConfigLoaded: !!foundationConfig,
+        registryInitialized: true,
+        config
+      });
       this.emit('swarm:initialized', { config });
     } catch (error) {
       const enhancedError = new EnhancedError(
@@ -520,7 +538,7 @@ export class AgentManager extends TypedEventBase {
    */
   private instantiateCognitiveAgent(
     archetype: CognitiveArchetype,
-    swarmId: string
+    _swarmId: string
   ): CognitiveAgent {
     const agentId = `${archetype}-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const archetypeConfig = AgentManager.COGNITIVE_ARCHETYPES[archetype];

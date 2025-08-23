@@ -216,6 +216,9 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
     capabilities: UnknownRecord;
     metrics?: UnknownRecord;
   }): Promise<void> {
+    // Perform async validation
+    await this.validateAgentForRegistration(agent);
+    
     const registrationOptions: ServiceRegistrationOptions = {
       lifetime: Lifetime.SINGLETON,
       capabilities: this.extractCapabilities(agent.capabilities),
@@ -257,6 +260,9 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
    * Unregister an agent
    */
   async unregisterAgent(agentId: string): Promise<void> {
+    // Perform async cleanup before unregistration
+    await this.cleanupAgentResources(agentId);
+    
     this.agents.delete(agentId);
     // ServiceContainer doesn't expose unregister, but we can disable the service
     this.container.setServiceEnabled(agentId, false);
@@ -275,6 +281,9 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
       capabilities?: UnknownRecord;
     }
   ): Promise<void> {
+    // Perform async validation of updates
+    await this.validateAgentUpdates(agentId, updates);
+    
     const agent = this.agents.get(agentId);
     if (agent) {
       Object.assign(agent, updates);
@@ -301,7 +310,10 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
       capabilities?: string[];
     } = {}
   ): Promise<JsonValue[]> {
-    const agents = Array.from(this.agents.values())();
+    // Perform async query optimization
+    await this.optimizeQueryExecution(query);
+    
+    const agents = Array.from(this.agents.values());
 
     return agents.filter((agent) => {
       if (query.type && agent.type !== query.type) {
@@ -431,6 +443,9 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
   // Initialize with existing AgentRegistry compatibility
   async initialize(): Promise<void> {
+    // Perform async initialization tasks
+    await this.setupAdapterConfiguration();
+    
     this.logger.info('AgentRegistryAdapter initialized with ServiceContainer backend'
     );
     this.emitMigrationEvent('initialized', {

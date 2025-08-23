@@ -53,5 +53,6 @@
   },
   "peerDependencies": {
     "@claude-zen/foundation": "workspace:*"
-  }
+  },
+  "private": true
 }

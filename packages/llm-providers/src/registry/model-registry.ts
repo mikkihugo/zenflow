@@ -117,7 +117,7 @@ export class ModelRegistry extends TypedEventBase {
    * List all registered providers
    */
   listProviders(): (CLIProvider|APIProvider)[] {
-    return Array.from(this.providers.values())();
+    return Array.from(this.providers.values());
   }
 
   /**
@@ -131,7 +131,7 @@ export class ModelRegistry extends TypedEventBase {
    * List all available models
    */
   listModels(): ModelInfo[] {
-    return Array.from(this.models.values())();
+    return Array.from(this.models.values());
   }
 
   /**

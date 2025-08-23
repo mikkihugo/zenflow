@@ -22,7 +22,7 @@ export interface ProviderConfig {
     baseUrl?: string;
     tokenPath?: string; // Path to token file
     headers?: Record<string, string>;
-    authType?: 'bearer|api-key'||oauth';
+    authType?: 'bearer'|'api-key'|'oauth';
   };
   features: {
     structuredOutput: boolean;
@@ -41,7 +41,7 @@ export interface ProviderConfig {
 export interface RoutingStrategy {
   SMALL_CONTEXT_THRESHOLD: number;
   LARGE_CONTEXT_THRESHOLD: number;
-  STRATEGY: 'smart|fallback'||round-robin';
+  STRATEGY: 'smart'|'fallback'|'round-robin';
   AUTO_FAILOVER: boolean;
   MAX_RETRIES_PER_PROVIDER: number;
   RULES: {

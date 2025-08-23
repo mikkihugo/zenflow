@@ -6,7 +6,9 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
+
 import { getLogger } from '../config/logging-config';
+
 import { MemorySystem } from './core/memory-system';
 
 const logger = getLogger('context-manager');

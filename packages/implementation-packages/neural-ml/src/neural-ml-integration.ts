@@ -88,7 +88,7 @@ export interface NeuralCoordinationConfig {
   enable_adaptation: boolean;
   enable_prediction: boolean;
   coordination_strategy: 'centralized|distributed|hierarchical';
-  ml_backend: 'rust_wasm|fallback_js'';
+  ml_backend: 'rust_wasm|fallback_js';
   performance_tracking: boolean;
   real_time_optimization: boolean;
 }

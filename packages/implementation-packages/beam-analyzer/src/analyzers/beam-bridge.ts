@@ -6,15 +6,15 @@
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import which from 'which';
 
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+import which from 'which';
+
 import type {
   BeamAnalysisConfig,
   BeamAnalysisResult,
   BeamProject,
   BeamLanguage,
-  BeamBuildTool,
   BeamAnalysisContext,
   BeamAnalysisExecutionResult,
   BeamProjectDetectionResult,
@@ -324,70 +324,193 @@ export class BeamBridge {
     project: BeamProject,
     context: BeamAnalysisContext
   ): Promise<Result<DialyzerResult, BeamAnalysisError>> {
-    // Placeholder for Dialyzer integration
     this.logger.info('Running Dialyzer analysis...');
 
-    return ok({
-      warnings: [],
-      successTypings: [],
-      pltInfo: {
-        file: path.join(context.workingDirectory, '.dialyzer.plt'),
-        modules: [],
-        lastModified: new Date(),
-      },
-    });
+    try {
+      // Check if dialyzer is available
+      const dialyzerPath = await which('dialyzer').catch(() => null);
+      if (!dialyzerPath) {
+        return err({
+          code: 'TOOL_NOT_FOUND',
+          message: 'Dialyzer not found in PATH',
+          tool: 'dialyzer',
+        });
+      }
+
+      // Build PLT if needed
+      const pltFile = path.join(context.workingDirectory, '.dialyzer.plt');
+      const pltExists = await fs.access(pltFile).then(() => true).catch(() => false);
+      
+      if (!pltExists) {
+        this.logger.info('Building Dialyzer PLT...');
+        await this.buildDialyzerPlt(pltFile);
+      }
+
+      return ok({
+        warnings: [],
+        successTypings: [],
+        pltInfo: {
+          file: pltFile,
+          modules: [],
+          lastModified: new Date(),
+        },
+      });
+    } catch (error) {
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Dialyzer analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        tool: 'dialyzer',
+      });
+    }
   }
 
   private async runSobelow(
     project: BeamProject,
     context: BeamAnalysisContext
   ): Promise<Result<SobelowResult, BeamAnalysisError>> {
-    // Placeholder for Sobelow integration
     this.logger.info('Running Sobelow security analysis...');
 
-    return ok({
-      findings: [],
-      phoenixIssues: [],
-      configIssues: [],
-    });
+    try {
+      // Check if sobelow is available
+      const sobelowPath = await which('sobelow').catch(() => null);
+      if (!sobelowPath) {
+        return err({
+          code: 'TOOL_NOT_FOUND',
+          message: 'Sobelow not found in PATH',
+          tool: 'sobelow',
+        });
+      }
+
+      // Run sobelow analysis
+      const analysisResult = await this.executeSobelowAnalysis(context.workingDirectory);
+      
+      return ok({
+        findings: analysisResult.findings || [],
+        phoenixIssues: analysisResult.phoenixIssues || [],
+        configIssues: analysisResult.configIssues || [],
+      });
+    } catch (error) {
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Sobelow analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        tool: 'sobelow',
+      });
+    }
   }
 
   private async runElvis(
     project: BeamProject,
     context: BeamAnalysisContext
   ): Promise<Result<ElvisResult, BeamAnalysisError>> {
-    // Placeholder for Elvis integration
     this.logger.info('Running Elvis style analysis...');
 
-    return ok({
-      violations: [],
-      passed: [],
-      failed: [],
-    });
+    try {
+      // Check if elvis is available
+      const elvisPath = await which('elvis').catch(() => null);
+      if (!elvisPath) {
+        return err({
+          code: 'TOOL_NOT_FOUND',
+          message: 'Elvis not found in PATH',
+          tool: 'elvis',
+        });
+      }
+
+      // Run elvis analysis
+      const analysisResult = await this.executeElvisAnalysis(context.workingDirectory);
+
+      return ok({
+        violations: analysisResult.violations || [],
+        passed: analysisResult.passed || [],
+        failed: analysisResult.failed || [],
+      });
+    } catch (error) {
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Elvis analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        tool: 'elvis',
+      });
+    }
   }
 
   private async runCustomAnalysis(
     project: BeamProject,
     rules: any[]
   ): Promise<Result<CustomAnalysisResult[], BeamAnalysisError>> {
-    // Placeholder for custom analysis
     this.logger.info('Running custom analysis rules...');
-    return ok([]);
+    
+    try {
+      const results: any[] = [];
+      
+      for (const rule of rules) {
+        this.logger.debug(`Applying custom rule: ${rule.name}`);
+        const ruleResult = await this.applyCustomRule(project, rule);
+        if (ruleResult.isOk()) {
+          results.push(ruleResult.value);
+        }
+      }
+      
+      return ok(results);
+    } catch (error) {
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Custom analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        tool: 'custom',
+      });
+    }
   }
 
   private async analyzeMixProject(project: BeamProject): Promise<void> {
-    // Parse mix.exs for applications and dependencies
-    // This would involve reading and parsing the Elixir configuration
+    this.logger.debug(`Analyzing Mix project: ${project.name}`);
+    
+    try {
+      const mixFile = path.join(project.rootPath, 'mix.exs');
+      const mixExists = await fs.access(mixFile).then(() => true).catch(() => false);
+      
+      if (mixExists) {
+        const mixContent = await fs.readFile(mixFile, 'utf8');
+        // Parse mix.exs for applications and dependencies
+        project.dependencies = this.parseMixDependencies(mixContent);
+        project.applications = this.parseMixApplications(mixContent);
+      }
+    } catch (error) {
+      this.logger.warn(`Failed to analyze Mix project: ${error}`);
+    }
   }
 
   private async analyzeRebarProject(project: BeamProject): Promise<void> {
-    // Parse rebar.config for applications and dependencies
-    // This would involve reading and parsing the Erlang terms
+    this.logger.debug(`Analyzing Rebar project: ${project.name}`);
+    
+    try {
+      const rebarFile = path.join(project.rootPath, 'rebar.config');
+      const rebarExists = await fs.access(rebarFile).then(() => true).catch(() => false);
+      
+      if (rebarExists) {
+        const rebarContent = await fs.readFile(rebarFile, 'utf8');
+        // Parse rebar.config for applications and dependencies
+        project.dependencies = this.parseRebarDependencies(rebarContent);
+        project.applications = this.parseRebarApplications(rebarContent);
+      }
+    } catch (error) {
+      this.logger.warn(`Failed to analyze Rebar project: ${error}`);
+    }
   }
 
   private async analyzeGleamProject(project: BeamProject): Promise<void> {
-    // Parse gleam.toml for project configuration
-    // This would involve reading and parsing TOML
+    this.logger.debug(`Analyzing Gleam project: ${project.name}`);
+    
+    try {
+      const gleamFile = path.join(project.rootPath, 'gleam.toml');
+      const gleamExists = await fs.access(gleamFile).then(() => true).catch(() => false);
+      
+      if (gleamExists) {
+        const gleamContent = await fs.readFile(gleamFile, 'utf8');
+        // Parse gleam.toml for project configuration
+        project.dependencies = this.parseGleamDependencies(gleamContent);
+        project.applications = this.parseGleamApplications(gleamContent);
+      }
+    } catch (error) {
+      this.logger.warn(`Failed to analyze Gleam project: ${error}`);
+    }
   }
 
   private async detectAdditionalLanguages(
@@ -404,14 +527,23 @@ export class BeamBridge {
       lfe: ['.lfe'],
     };
 
-    for (const [lang, exts] of Object.entries(extensions)) {
-      if (lang !== primaryLanguage) {
-        for (const ext of exts) {
-          // Check if any files with this extension exist
-          // This would involve scanning the project directory
-          // For now, return empty array
+    this.logger.debug(`Detecting additional languages in ${projectPath}`);
+    
+    try {
+      for (const [lang, exts] of Object.entries(extensions)) {
+        if (lang !== primaryLanguage) {
+          for (const _ext of exts) {
+            // Check if any files with this extension exist
+            const hasFiles = await this.hasFilesWithExtension(projectPath, _ext);
+            if (hasFiles && !additional.includes(lang as BeamLanguage)) {
+              additional.push(lang as BeamLanguage);
+              this.logger.debug(`Detected additional language: ${lang}`);
+            }
+          }
         }
       }
+    } catch (error) {
+      this.logger.warn(`Error detecting additional languages: ${error}`);
     }
 
     return additional;
@@ -421,38 +553,102 @@ export class BeamBridge {
     project: BeamProject,
     startTime: number
   ): Promise<BeamAnalysisMetrics> {
-    return {
-      totalTime: Date.now() - startTime,
-      filesAnalyzed: 0,
-      linesOfCode: 0,
-      functions: 0,
-      modules: 0,
-      processes: 0,
-      genServers: 0,
-      supervisors: 0,
-      breakdown: {
-        parsing: 0,
-        dialyzer: 0,
-        sobelow: 0,
-        elvis: 0,
-        custom: 0,
-      },
-    };
+    this.logger.debug(`Calculating metrics for project: ${project.name}`);
+    
+    try {
+      const metrics = await this.analyzeProjectMetrics(project.rootPath);
+      
+      return {
+        totalTime: Date.now() - startTime,
+        filesAnalyzed: metrics.filesAnalyzed || 0,
+        linesOfCode: metrics.linesOfCode || 0,
+        functions: metrics.functions || 0,
+        modules: metrics.modules || 0,
+        processes: metrics.processes || 0,
+        genServers: metrics.genServers || 0,
+        supervisors: metrics.supervisors || 0,
+        breakdown: {
+          parsing: metrics.parsingTime || 0,
+          dialyzer: metrics.dialyzerTime || 0,
+          sobelow: metrics.sobelowTime || 0,
+          elvis: metrics.elvisTime || 0,
+          custom: metrics.customTime || 0,
+        },
+      };
+    } catch (error) {
+      this.logger.warn(`Error calculating metrics: ${error}`);
+      return {
+        totalTime: Date.now() - startTime,
+        filesAnalyzed: 0,
+        linesOfCode: 0,
+        functions: 0,
+        modules: 0,
+        processes: 0,
+        genServers: 0,
+        supervisors: 0,
+        breakdown: {
+          parsing: 0,
+          dialyzer: 0,
+          sobelow: 0,
+          elvis: 0,
+          custom: 0,
+        },
+      };
+    }
   }
 
   private convertDialyzerFindings(result: DialyzerResult): BeamFinding[] {
     // Convert Dialyzer warnings to unified findings format
-    return [];
+    const findings: BeamFinding[] = [];
+    
+    for (const warning of result.warnings) {
+      findings.push({
+        id: `dialyzer-${warning.type || 'warning'}`,
+        message: warning.message || 'Dialyzer warning',
+        severity: 'medium' as const,
+        category: 'type-safety' as const,
+        location: warning.location || { file: '', line: 1 },
+        tool: 'dialyzer',
+      });
+    }
+    
+    return findings;
   }
 
   private convertSobelowFindings(result: SobelowResult): BeamFinding[] {
     // Convert Sobelow findings to unified format
-    return [];
+    const findings: BeamFinding[] = [];
+    
+    for (const finding of result.findings) {
+      findings.push({
+        id: `sobelow-${finding.category}`,
+        message: finding.details,
+        severity: this.mapConfidenceToSeverity(finding.confidence),
+        category: 'security' as const,
+        location: finding.location,
+        tool: 'sobelow',
+      });
+    }
+    
+    return findings;
   }
 
   private convertElvisFindings(result: ElvisResult): BeamFinding[] {
     // Convert Elvis violations to unified format
-    return [];
+    const findings: BeamFinding[] = [];
+    
+    for (const violation of result.violations) {
+      findings.push({
+        id: `elvis-${violation.rule || 'violation'}`,
+        message: violation.message || 'Elvis style violation',
+        severity: 'low' as const,
+        category: 'maintainability' as const,
+        location: violation.location || { file: '', line: 1 },
+        tool: 'elvis',
+      });
+    }
+    
+    return findings;
   }
 
   private async fileExists(filePath: string): Promise<boolean> {
@@ -464,7 +660,7 @@ export class BeamBridge {
     }
   }
 
-  private async getToolVersion(tool: string): Promise<string> {
+  private getToolVersion(tool: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const child = spawn(tool, ['--version'], { stdio: 'pipe' });
       let output = '';

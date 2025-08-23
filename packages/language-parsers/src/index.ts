@@ -121,6 +121,16 @@ export async function parseFile(
       const parser = factory.createBeamParser(options);
       return await parser.parseFile(filePath);
     }
+    case 'functional': {
+      // Future: Add functional language parser support
+      const parser = factory.createBeamParser(options); // Fallback to beam for now
+      return await parser.parseFile(filePath);
+    }
+    case 'concurrent': {
+      // Future: Add concurrent language parser support
+      const parser = factory.createBeamParser(options); // Fallback to beam for now
+      return await parser.parseFile(filePath);
+    }
     default:
       throw new Error(`Parser not implemented for language family: ${family}`);
   }
@@ -159,6 +169,18 @@ export async function parseFiles(
       switch (family) {
         case 'beam': {
           const parser = factory.createBeamParser(options);
+          const result = await parser.parseFiles(paths);
+          return result.isOk() ? result._unsafeUnwrap() : [];
+        }
+        case 'functional': {
+          // Future: Add functional language parser support
+          const parser = factory.createBeamParser(options); // Fallback to beam for now
+          const result = await parser.parseFiles(paths);
+          return result.isOk() ? result._unsafeUnwrap() : [];
+        }
+        case 'concurrent': {
+          // Future: Add concurrent language parser support
+          const parser = factory.createBeamParser(options); // Fallback to beam for now
           const result = await parser.parseFiles(paths);
           return result.isOk() ? result._unsafeUnwrap() : [];
         }

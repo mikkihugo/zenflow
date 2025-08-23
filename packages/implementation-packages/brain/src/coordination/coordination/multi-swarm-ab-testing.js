@@ -122,12 +122,12 @@ var MultiSwarmABTesting = /** @class */ (function () {
                     case 0:
                         testId = "ab-test-".concat((0, nanoid_1.nanoid)());
                         startTime = new Date();
-                        console.log("\uD83E\uDDEA Starting A/B test: ".concat(testId));
-                        console.log("\uD83D\uDCCB Task: ".concat(taskDescription));
-                        console.log("\uD83D\uDD2C Testing ".concat(strategies.length, " strategies: ").concat(strategies.map(function (s) { return s.name; }).join(', ')));
+                        logger.info("\uD83E\uDDEA Starting A/B test: ".concat(testId));
+                        logger.info("\uD83D\uDCCB Task: ".concat(taskDescription));
+                        logger.info("\uD83D\uDD2C Testing ".concat(strategies.length, " strategies: ").concat(strategies.map(function (s) { return s.name; }).join(', ')));
                         _d.label = 1;
                     case 1:
-                        _d.trys.push([1, 10, , 11]);
+                        _d.trys.push([1, 10, undefined, 11]);
                         return [4 /*yield*/, this.prepareGitWorktrees(strategies, options.gitConfig)];
                     case 2:
                         worktreePaths = _d.sent();
@@ -171,12 +171,12 @@ var MultiSwarmABTesting = /** @class */ (function () {
                         _d.sent();
                         _d.label = 9;
                     case 9:
-                        console.log("\u2705 A/B test completed: ".concat(testId));
-                        console.log("\uD83C\uDFC6 Winner: ".concat(comparison.winner.name, " (").concat(comparison.confidence.toFixed(2), " confidence)"));
+                        logger.info("\u2705 A/B test completed: ".concat(testId));
+                        logger.info("\uD83C\uDFC6 Winner: ".concat(comparison.winner.name, " (").concat(comparison.confidence.toFixed(2), " confidence)"));
                         return [2 /*return*/, testResult];
                     case 10:
                         error_1 = _d.sent();
-                        console.error("\u274C A/B test failed: ".concat(testId), error_1);
+                        logger.error("\u274C A/B test failed: ".concat(testId), error_1);
                         throw error_1;
                     case 11: return [2 /*return*/];
                 }
@@ -414,7 +414,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
             var promises;
             var _this = this;
             return __generator(this, function (_a) {
-                console.log("\u26A1 Executing ".concat(strategies.length, " strategies in parallel..."));
+                logger.info("\u26A1 Executing ".concat(strategies.length, " strategies in parallel..."));
                 promises = strategies.map(function (strategy) {
                     return _this.executeStrategy(taskDescription, strategy, worktreePaths[strategy.id], options);
                 });
@@ -432,11 +432,11 @@ var MultiSwarmABTesting = /** @class */ (function () {
                         delayBetweenStrategies = options.sequentialDelay || 1000;
                         enableContinueOnFailure = options.continueOnFailure !== false;
                         if (enableProgressLogging) {
-                            console.log("\u23ED\uFE0F Executing ".concat(strategies.length, " strategies sequentially..."));
-                            console.log("\uD83D\uDCCA Sequential options: delay=".concat(delayBetweenStrategies, "ms, continueOnFailure=").concat(enableContinueOnFailure));
+                            logger.info("\u23ED\uFE0F Executing ".concat(strategies.length, " strategies sequentially..."));
+                            logger.info("\uD83D\uDCCA Sequential options: delay=".concat(delayBetweenStrategies, "ms, continueOnFailure=").concat(enableContinueOnFailure));
                         }
                         else {
-                            console.log("\u23ED\uFE0F Executing ".concat(strategies.length, " strategies sequentially..."));
+                            logger.info("\u23ED\uFE0F Executing ".concat(strategies.length, " strategies sequentially..."));
                         }
                         results = [];
                         i = 0;
@@ -446,16 +446,16 @@ var MultiSwarmABTesting = /** @class */ (function () {
                         strategy = strategies[i];
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 4, , 5]);
+                        _a.trys.push([2, 4, undefined, 5]);
                         if (enableProgressLogging) {
-                            console.log("\uD83D\uDCCB Executing strategy ".concat(i + 1, "/").concat(strategies.length, ": ").concat(strategy.name));
+                            logger.info("\uD83D\uDCCB Executing strategy ".concat(i + 1, "/").concat(strategies.length, ": ").concat(strategy.name));
                         }
                         return [4 /*yield*/, this.executeStrategy(taskDescription, strategy, worktreePaths[strategy.id], options)];
                     case 3:
                         result = _a.sent();
                         results.push(result);
                         if (enableProgressLogging) {
-                            console.log("\u2705 Strategy ".concat(i + 1, " completed: ").concat(strategy.name, " (").concat(result.success ? 'SUCCESS' : 'FAILED', ")"));
+                            logger.info("\u2705 Strategy ".concat(i + 1, " completed: ").concat(strategy.name, " (").concat(result.success ? 'SUCCESS' : 'FAILED', ")"));
                         }
                         return [3 /*break*/, 5];
                     case 4:
@@ -495,7 +495,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                     case 5:
                         if (!(i < strategies.length - 1 && delayBetweenStrategies > 0)) return [3 /*break*/, 7];
                         if (enableProgressLogging) {
-                            console.log("\u23F8\uFE0F Pausing ".concat(delayBetweenStrategies, "ms before next strategy..."));
+                            logger.info("\u23F8\uFE0F Pausing ".concat(delayBetweenStrategies, "ms before next strategy..."));
                         }
                         return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, delayBetweenStrategies); })];
                     case 6:
@@ -521,8 +521,8 @@ var MultiSwarmABTesting = /** @class */ (function () {
                         timeoutMs = options.timeout || 30000;
                         retryCount = options.retries || 1;
                         if (enableVerboseLogging) {
-                            console.log("\uD83D\uDE80 Executing strategy: ".concat(strategy.name, " (").concat(strategy.modelBackend, ")"));
-                            console.log("\uD83D\uDCCA Options: timeout=".concat(timeoutMs, "ms, retries=").concat(retryCount, ", verbose=").concat(enableVerboseLogging));
+                            logger.info("\uD83D\uDE80 Executing strategy: ".concat(strategy.name, " (").concat(strategy.modelBackend, ")"));
+                            logger.info("\uD83D\uDCCA Options: timeout=".concat(timeoutMs, "ms, retries=").concat(retryCount, ", verbose=").concat(enableVerboseLogging));
                         }
                         lastError = null;
                         _loop_1 = function (attempt) {
@@ -530,7 +530,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
-                                        _b.trys.push([0, 3, , 5]);
+                                        _b.trys.push([0, 3, undefined, 5]);
                                         return [4 /*yield*/, this_1.generateStrategyPrompt(taskDescription, strategy)];
                                     case 1:
                                         prompt_1 = _b.sent();
@@ -544,7 +544,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                                         executionResult = _b.sent();
                                         duration_1 = Date.now() - startTime;
                                         if (enableVerboseLogging) {
-                                            console.log("\u2705 Strategy completed: ".concat(strategy.name, " (").concat(duration_1, "ms, attempt ").concat(attempt, ")"));
+                                            logger.info("\u2705 Strategy completed: ".concat(strategy.name, " (").concat(duration_1, "ms, attempt ").concat(attempt, ")"));
                                         }
                                         return [2 /*return*/, { value: {
                                                     strategy: strategy,
@@ -566,7 +566,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                                         error_3 = _b.sent();
                                         lastError = error_3 instanceof Error ? error_3 : new Error(String(error_3));
                                         if (enableVerboseLogging) {
-                                            console.log("\u274C Strategy failed (attempt ".concat(attempt, "/").concat(retryCount, "): ").concat(lastError.message));
+                                            logger.info("\u274C Strategy failed (attempt ".concat(attempt, "/").concat(retryCount, "): ").concat(lastError.message));
                                         }
                                         // If this is the last attempt, we'll throw below
                                         if (attempt === retryCount) {
@@ -599,7 +599,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                         return [3 /*break*/, 1];
                     case 4:
                         duration = Date.now() - startTime;
-                        console.log("\u274C All attempts failed for strategy: ".concat(strategy.name));
+                        logger.info("\u274C All attempts failed for strategy: ".concat(strategy.name));
                         return [2 /*return*/, {
                                 strategy: strategy,
                                 success: false,
@@ -892,7 +892,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 // In a real implementation, this would save to database
-                console.log("\uD83D\uDCBE Persisted A/B test result: ".concat(testResult.testId));
+                logger.info("\uD83D\uDCBE Persisted A/B test result: ".concat(testResult.testId));
                 return [2 /*return*/];
             });
         });

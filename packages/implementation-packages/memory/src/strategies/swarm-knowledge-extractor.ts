@@ -6,8 +6,8 @@
  * pattern recognition and knowledge preservation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
 import {
+  TypedEventBase,
   getLogger,
   recordMetric,
   withTrace,
@@ -20,7 +20,7 @@ import { DataLifecycleManager } from './data-lifecycle-manager';
 interface SwarmSession {
   sessionId: string;
   swarmId: string;
-  type:|'dev-swarm|ops-swarm'||coordination-swarm|hybrid-swarm'||sparc-swarm';
+  type: 'dev-swarm' | 'ops-swarm' | 'coordination-swarm' | 'hybrid-swarm' | 'sparc-swarm';
   startTime: number;
   endTime: number;
   participants: Array<{

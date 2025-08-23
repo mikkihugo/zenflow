@@ -56,7 +56,7 @@ export class AsyncUtils {
   ): Promise<T> {
     return Promise.race([
       promise,
-      new Promise<never>((_, reject) =>
+      new Promise<never>((_resolve, reject) =>
         setTimeout(() => reject(new Error('Operation timed out')), milliseconds)
       ),
     ]);

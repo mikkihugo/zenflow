@@ -62,7 +62,7 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "keywords": [
     "opentelemetry",
@@ -77,5 +77,6 @@
     "claude-zen"
   ],
   "author": "Claude Code Zen Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

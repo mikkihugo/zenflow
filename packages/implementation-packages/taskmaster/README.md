@@ -1,4 +1,4 @@
-# @claude-zen/kanban
+# @claude-zen/taskmaster
 
 **Professional Workflow Coordination Engine with XState-Powered State Management**
 
@@ -22,19 +22,19 @@ This library is designed for **internal workflow coordination systems** like Que
 
 ```bash
 # Using pnpm (recommended)
-pnpm add @claude-zen/kanban
+pnpm add @claude-zen/taskmaster
 
 # Using npm
-npm install @claude-zen/kanban
+npm install @claude-zen/taskmaster
 
 # Using yarn
-yarn add @claude-zen/kanban
+yarn add @claude-zen/taskmaster
 ```
 
 ## 🏗️ **Architecture**
 
 ```
-@claude-zen/kanban Architecture
+@claude-zen/taskmaster Architecture
 ├── XState State Machines (Foundation)
 │   ├── Reliable state management
 │   ├── Event-driven transitions
@@ -58,7 +58,7 @@ yarn add @claude-zen/kanban
 ### Basic Workflow Coordination
 
 ```typescript
-import { createWorkflowKanban } from '@claude-zen/kanban';
+import { createWorkflowKanban } from '@claude-zen/taskmaster';
 
 // Create workflow kanban engine
 const kanban = createWorkflowKanban({
@@ -93,7 +93,7 @@ console.log('Active Bottlenecks:', bottlenecks.bottlenecks.length);
 ### High-Throughput Configuration
 
 ```typescript
-import { createHighThroughputWorkflowKanban } from '@claude-zen/kanban';
+import { createHighThroughputWorkflowKanban } from '@claude-zen/taskmaster';
 
 // Optimized for high-volume coordination
 const kanban = createHighThroughputWorkflowKanban(eventBus);
@@ -105,7 +105,7 @@ await kanban.initialize();
 ### Event-Driven Integration
 
 ```typescript
-import { WorkflowKanban } from '@claude-zen/kanban';
+import { WorkflowKanban } from '@claude-zen/taskmaster';
 import type { TypeSafeEventBus } from '@claude-zen/event-system';
 
 const kanban = new WorkflowKanban(config, eventBus);
@@ -282,7 +282,7 @@ interface WorkflowKanbanConfig {
 Replace existing flow management with battle-tested XState foundation:
 
 ```typescript
-import { createMigrationHelper } from '@claude-zen/kanban';
+import { createMigrationHelper } from '@claude-zen/taskmaster';
 
 const migrationHelper = createMigrationHelper();
 
@@ -426,7 +426,7 @@ This package is part of the Claude-Zen monorepo. See the main repository for con
 
 **🎯 Perfect Replacement for Custom Flow Management Systems**
 
-This @claude-zen/kanban package provides a complete, battle-tested replacement for custom flow management implementations like flow-manager.ts (1,641 lines) with:
+This @claude-zen/taskmaster package provides a complete, battle-tested replacement for custom flow management implementations like flow-manager.ts (1,641 lines) with:
 
 ✅ **71% Code Reduction** through professional abstraction  
 ✅ **XState Reliability** for production workflow coordination  

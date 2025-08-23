@@ -170,8 +170,7 @@ import type {
 
 export class GraphDao<T>
   extends BaseDao<T>
-  implements GraphRepository<T>, DataAccessObject<T>
-{
+  implements GraphRepository<T>, DataAccessObject<T> {
   private get graphAdapter(): GraphDatabaseAdapter {
     return this.adapter as GraphDatabaseAdapter;
   }
@@ -245,10 +244,10 @@ export class GraphDao<T>
   async traverse(
     startNode: string|number,
     relationshipType: string,
-    maxDepth: number = 3
+    maxDepth = 3,
   ): Promise<GraphTraversalResult> {
     this.logger.debug(
-      `Executing graph traversal from node ${startNode}, relationship: ${relationshipType}, maxDepth: ${maxDepth}`
+      `Executing graph traversal from node ${startNode}, relationship: ${relationshipType}, maxDepth: ${maxDepth}`,
     );
 
     try {
@@ -271,13 +270,13 @@ export class GraphDao<T>
       };
 
       this.logger.debug(
-        `Traversal completed: ${traversalResult.nodes.length} nodes, ${traversalResult.relationships.length} relationships`
+        `Traversal completed: ${traversalResult.nodes.length} nodes, ${traversalResult.relationships.length} relationships`,
       );
       return traversalResult;
     } catch (error) {
       this.logger.error(`Graph traversal failed: ${error}`);
       throw new Error(
-        `Graph traversal failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Graph traversal failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -290,7 +289,7 @@ export class GraphDao<T>
    */
   async findNodesByLabel(
     label: string,
-    properties?: Record<string, unknown>
+    properties?: Record<string, unknown>,
   ): Promise<GraphNode[]> {
     this.logger.debug(`Finding nodes by label: ${label}`, { properties });
 
@@ -315,13 +314,13 @@ export class GraphDao<T>
 
       const result = await this.graphAdapter.queryGraph(
         cypher,
-        Object.values(parameters)
+        Object.values(parameters),
       );
       return result.nodes as GraphNode[];
     } catch (error) {
       this.logger.error(`Find nodes by label failed: ${error}`);
       throw new Error(
-        `Find nodes by label failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find nodes by label failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -336,13 +335,13 @@ export class GraphDao<T>
   async findRelationships(
     fromNodeId: string|number,
     toNodeId: string|number,
-    relationshipType?: string
+    relationshipType?: string,
   ): Promise<GraphRelationship[]> {
     this.logger.debug(
       `Finding relationships between nodes: ${fromNodeId} -> ${toNodeId}`,
       {
         relationshipType,
-      }
+      },
     );
 
     try {
@@ -360,13 +359,13 @@ export class GraphDao<T>
 
       const result = await this.graphAdapter.queryGraph(
         cypher,
-        Object.values(parameters)
+        Object.values(parameters),
       );
       return result.relationships as GraphRelationship[];
     } catch (error) {
       this.logger.error(`Find relationships failed: ${error}`);
       throw new Error(
-        `Find relationships failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find relationships failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -383,11 +382,11 @@ export class GraphDao<T>
     fromNodeId: string|number,
     toNodeId: string|number,
     relationshipType: string,
-    properties?: Record<string, unknown>
+    properties?: Record<string, unknown>,
   ): Promise<GraphRelationship> {
     this.logger.debug(
       `Creating relationship: ${fromNodeId} -[:${relationshipType}]-> ${toNodeId}`,
-      { properties }
+      { properties },
     );
 
     try {
@@ -419,7 +418,7 @@ export class GraphDao<T>
 
       const result = await this.graphAdapter.queryGraph(
         cypher,
-        Object.values(parameters)
+        Object.values(parameters),
       );
 
       if (result.relationships.length === 0) {
@@ -430,7 +429,7 @@ export class GraphDao<T>
     } catch (error) {
       this.logger.error(`Create relationship failed: ${error}`);
       throw new Error(
-        `Create relationship failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Create relationship failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -532,7 +531,7 @@ export class GraphDao<T>
    */
   async executeCypher(
     cypher: string,
-    parameters?: Record<string, unknown>
+    parameters?: Record<string, unknown>,
   ): Promise<GraphQueryResult> {
     this.logger.debug(`Executing Cypher query: ${cypher}`, { parameters });
 
@@ -549,7 +548,7 @@ export class GraphDao<T>
     } catch (error) {
       this.logger.error(`Cypher query failed: ${error}`);
       throw new Error(
-        `Cypher query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Cypher query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -567,26 +566,26 @@ export class GraphDao<T>
    */
   async getNodeDegree(
     nodeId: string|number,
-    direction:'in|out|both' = 'both'
+    direction:'in|out|both' = 'both',
   ): Promise<number> {
     this.logger.debug(
-      `Getting node degree for ${nodeId}, direction: ${direction}`
+      `Getting node degree for ${nodeId}, direction: ${direction}`,
     );
 
     try {
       let cypher: string;
 
       switch (direction) {
-        case 'in':
-          cypher =
+      case 'in':
+        cypher =
             'MATCH (n)<-[]-(connected) WHERE n.id = $nodeId RETURN count(connected) as degree';
-          break;
-        case 'out':
-          cypher =
+        break;
+      case 'out':
+        cypher =
             'MATCH (n)-[]->(connected) WHERE n.id = $nodeId RETURN count(connected) as degree';
-          break;
-        default:
-          cypher =
+        break;
+      default:
+        cypher =
             'MATCH (n)-[]-(connected) WHERE n.id = $nodeId RETURN count(connected) as degree';
       }
 
@@ -597,7 +596,7 @@ export class GraphDao<T>
     } catch (error) {
       this.logger.error(`Get node degree failed: ${error}`);
       throw new Error(
-        `Get node degree failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Get node degree failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -612,7 +611,7 @@ export class GraphDao<T>
   async findShortestPath(
     fromNodeId: string|number,
     toNodeId: string|number,
-    relationshipType?: string
+    relationshipType?: string,
   ): Promise<GraphTraversalResult|null> {
     this.logger.debug(`Finding shortest path: ${fromNodeId} -> ${toNodeId}`, {
       relationshipType,
@@ -645,7 +644,7 @@ export class GraphDao<T>
     } catch (error) {
       this.logger.error(`Find shortest path failed: ${error}`);
       throw new Error(
-        `Find shortest path failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find shortest path failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -667,7 +666,7 @@ export class GraphDao<T>
 
       // Get node labels
       const labelsResult = await this.graphAdapter.queryGraph(
-        'MATCH (n) RETURN DISTINCT labels(n) as labels'
+        'MATCH (n) RETURN DISTINCT labels(n) as labels',
       );
       const nodeLabels = [
         ...new Set((labelsResult.nodes as any[]).flatMap((n: any) => n.labels)),
@@ -675,10 +674,10 @@ export class GraphDao<T>
 
       // Get relationship types
       const typesResult = await this.graphAdapter.queryGraph(
-        'MATCH ()-[r]->() RETURN DISTINCT type(r) as relType'
+        'MATCH ()-[r]->() RETURN DISTINCT type(r) as relType',
       );
       const relationshipTypes = (typesResult.relationships as any[]).map(
-        (r: any) => r.type
+        (r: any) => r.type,
       );
 
       return {
@@ -690,7 +689,7 @@ export class GraphDao<T>
     } catch (error) {
       this.logger.error(`Get graph stats failed: ${error}`);
       throw new Error(
-        `Get graph stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get graph stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -715,7 +714,9 @@ export class GraphDao<T>
   }
 
   protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
-    if (!entity) return {};
+    if (!entity) {
+      return {};
+    }
 
     const { id, labels, ...properties } = entity as any;
 
@@ -742,12 +743,12 @@ export class GraphDao<T>
    * @param customQuery
    */
   override async executeCustomQuery<R = any>(
-    customQuery: CustomQuery
+    customQuery: CustomQuery,
   ): Promise<R> {
     if (customQuery.type ==='cypher') {
       const result = await this.executeCypher(
         customQuery.query as string,
-        customQuery.parameters
+        customQuery.parameters,
       );
       return result as R;
     }

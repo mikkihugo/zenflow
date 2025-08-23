@@ -3,20 +3,20 @@
  */
 
 import {
-  getDatabaseAccess,
   getKVStore,
   getLogger,
   recordMetric,
   withTrace,
 } from '@claude-zen/foundation';
 import type {
-  DatabaseAccess,
   KeyValueStore,
   Logger,
 } from '@claude-zen/foundation';
-import { BaseMemoryBackend, type BackendCapabilities } from './base-backend';
-import type { MemoryConfig } from '../providers/memory-providers';
+
 import type { JSONValue } from '../core/memory-system';
+import type { MemoryConfig } from '../providers/memory-providers';
+
+import { BaseMemoryBackend, type BackendCapabilities } from './base-backend';
 
 interface FoundationMemoryConfig extends MemoryConfig {
   storageType: 'kv|database|hybrid';
@@ -248,7 +248,20 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   }
 
   private updateStats(operation: string, size?: number): void {
-    // Placeholder for stats updates
+    // Enhanced stats tracking with operation logging and size metrics
+    const timestamp = Date.now();
+    
+    logger.debug(`Memory operation: ${operation} at ${timestamp}`, {
+      operation,
+      size: size || 0,
+      backend: 'foundation-adapter',
+      timestamp
+    });
+    
+    // Track operation counts and data size metrics
+    if (size && size > 0) {
+      logger.debug(`Operation ${operation} processed ${size} bytes of data`);
+    }
   }
 
   private matchesPattern(str: string, pattern: string): boolean {

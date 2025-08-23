@@ -17,14 +17,14 @@ const logger = getLogger(NeuralInterface);
  * enough to manage neural-ml delegation, WASM acceleration, etc.
  *
  * @example
- * ```typescript
- * import { BrainCoordinator } from '@claude-zen/intelligence';
+ * ``'typescript
+ * import { BrainCoordinator } from @claude-zen/intelligence;
  *
  * const brain = new BrainCoordinator();
- * await brain?.initialize()` * ```
+ * await brain?.initialize()' * ``'
  */
 
 // Re-export BrainCoordinator for easier migration
-export { BrainCoordinator } from '@claude-zen/intelligence';
+export { BrainCoordinator } from @claude-zen/intelligence'';
 
 // TODO: Remove this file entirely once all imports are updated`

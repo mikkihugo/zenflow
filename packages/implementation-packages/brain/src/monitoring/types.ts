@@ -14,7 +14,13 @@ export interface AgentId {
 }
 
 export type AgentType =
-  || 'researcher|coder|analyst|optimizer|coordinator|tester|architect'';
+  | 'researcher'
+  | 'coder'
+  | 'analyst'
+  | 'optimizer'
+  | 'coordinator'
+  | 'tester'
+  | 'architect';
 
 // Agent Metrics and Performance
 export interface AgentMetrics {

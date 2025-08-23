@@ -48,6 +48,6 @@
     "directory": "packages/implementation-packages/agent-registry"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   }
 }

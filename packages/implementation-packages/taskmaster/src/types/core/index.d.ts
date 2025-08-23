@@ -9,7 +9,7 @@
  * - Real-time monitoring types
  * - WASM integration types
  */
-import type { EventEmitter } from 'eventemitter3';
+import type { TypedEventBase } from '@claude-zen/foundation';
 /**
  * Unique identifier for tasks with enhanced type safety
  */

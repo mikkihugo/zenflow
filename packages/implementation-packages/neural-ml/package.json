@@ -24,10 +24,7 @@
     "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/infrastructure": "workspace:*",
-    "@claude-zen/intelligence": "workspace:*",
-    "@claude-zen/operations": "workspace:*"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

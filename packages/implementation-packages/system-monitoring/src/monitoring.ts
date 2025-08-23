@@ -4,8 +4,6 @@
  * System monitoring using @claude-zen/telemetry for metrics collection.
  */
 
-import * as si from 'systeminformation';
-import pidusage from 'pidusage';
 
 import { getLogger } from '@claude-zen/foundation';
 import {
@@ -17,6 +15,8 @@ import {
   initializeTelemetry,
   type TelemetryConfig,
 } from '@claude-zen/telemetry';
+import pidusage from 'pidusage';
+import * as si from 'systeminformation';
 
 import type {
   SystemMetrics,
@@ -78,7 +78,7 @@ export class SystemMonitor {
     }
   }
 
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = null;
@@ -91,7 +91,7 @@ export class SystemMonitor {
    * Get current system metrics
    */
   async getMetrics(): Promise<SystemMetrics> {
-    return withAsyncTrace('system.get_metrics', async () => {
+    return await withAsyncTrace('system.get_metrics', async () => {
       const [cpu, memory, disk, network, uptime] = await Promise.all([
         si.currentLoad(),
         si.mem(),
@@ -144,7 +144,7 @@ export class SystemMonitor {
    * Get process-specific metrics using pidusage
    */
   async getProcessMetrics(pid?: number): Promise<any> {
-    return withAsyncTrace('system.get_process_metrics', async () => {
+    return await withAsyncTrace('system.get_process_metrics', async () => {
       try {
         const processId = pid||process.pid;
         const stats = await pidusage(processId);
@@ -185,7 +185,7 @@ export class SystemMonitor {
    * Get all running processes metrics
    */
   async getAllProcessesMetrics(): Promise<any[]> {
-    return withAsyncTrace('system.get_all_processes', async () => {
+    return await withAsyncTrace('system.get_all_processes', async () => {
       try {
         const processes = await si.processes();
         const topProcesses = processes.list
@@ -242,7 +242,7 @@ export class SystemMonitor {
    * Get system health status
    */
   async getHealthStatus(): Promise<HealthStatus> {
-    return withAsyncTrace('system.health_check', async () => {
+    return await withAsyncTrace('system.health_check', async () => {
       const [metrics, processMetrics] = await Promise.all([
         this.getMetrics(),
         this.getProcessMetrics(),
@@ -569,7 +569,7 @@ export class HealthChecker {
    * Perform health check
    */
   async check(): Promise<HealthStatus> {
-    return this.monitor.getHealthStatus();
+    return await this.monitor.getHealthStatus();
   }
 }
 

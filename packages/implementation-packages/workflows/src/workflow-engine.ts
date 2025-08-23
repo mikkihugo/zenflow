@@ -908,7 +908,7 @@ export class WorkflowEngine extends TypedEventBase {
       id: entity.id,
       type: entity.type,
       title: entity.title||`${entity.type} Document`,
-      content: entity.content||',
+      content: entity.content || '',
       metadata: {
         entityId: entity.id,
         createdAt: entity.created_at,
@@ -923,7 +923,7 @@ export class WorkflowEngine extends TypedEventBase {
   // DATA ACCESS METHODS
   // --------------------------------------------------------------------------
 
-  getWorkflowData(workflowId: string): WorkflowData|'null {
+  getWorkflowData(workflowId: string): WorkflowData | null {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) return null;
 
@@ -1254,7 +1254,7 @@ export class WorkflowEngine extends TypedEventBase {
         input?: string;
         transformation?: unknown;
       };
-      const inputValue = this.getNestedValue(context, input||');
+      const inputValue = this.getNestedValue(context, input || '');
       return Promise.resolve({
         transformed: this.applyTransformation(inputValue, transformation),
       });

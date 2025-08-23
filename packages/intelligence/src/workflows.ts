@@ -149,11 +149,11 @@ export class WorkflowEngine extends TypedEventBase {
 
   generateWorkflowVisualization(workflow: any): string {
     // Synchronous method, might need initialization first
-    return this.instance?.generateWorkflowVisualization?.(workflow)||';
+    return this.instance?.generateWorkflowVisualization?.(workflow) || '';
   }
 
   listActiveWorkflows(): string[] {
-    return this.instance?.listActiveWorkflows?.()|'|[];
+    return this.instance?.listActiveWorkflows?.() || [];
   }
 
   async shutdown(): Promise<void> {

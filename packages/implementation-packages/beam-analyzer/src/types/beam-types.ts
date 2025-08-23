@@ -112,9 +112,9 @@ export interface BeamFinding {
   related?: string[];
 }
 
-export type BeamSeverity = 'info|low|medium|high|critical';
+export type BeamSeverity = 'info'|'low'|'medium'|'high'|'critical';
 
-export type BeamFindingCategory =|'security|performance|reliability|maintainability||otp-patterns|concurrency'||fault-tolerance|type-safety';
+export type BeamFindingCategory = 'security'|'performance'|'reliability'|'maintainability'|'otp-patterns'|'concurrency'|'fault-tolerance'|'type-safety';
 
 export interface BeamLocation {
   /** File path */
@@ -131,7 +131,7 @@ export interface BeamLocation {
   context?: string;
 }
 
-export type BeamAnalysisTool =|''dialyzer|sobelow|elvis|xref|custom|beam-analyzer';
+export type BeamAnalysisTool = 'dialyzer'|'sobelow'|'elvis'|'xref'|'custom'|'beam-analyzer';
 
 export interface BeamFixSuggestion {
   /** Human-readable description */
@@ -180,7 +180,7 @@ export interface DialyzerWarning {
   location: BeamLocation;
 }
 
-export type DialyzerWarningType =|''no_return|unused_fun|undef|unknown_function|unknown_type|race_condition|contract_types | invalid_contract'|pattern_match|opaque|specdiffs';
+export type DialyzerWarningType = 'no_return'|'unused_fun'|'undef'|'unknown_function'|'unknown_type'|'race_condition'|'contract_types'|'invalid_contract'|'pattern_match'|'opaque'|'specdiffs';
 
 export interface SuccessTyping {
   /** Function name */
@@ -215,7 +215,7 @@ export interface SobelowFinding {
   cwe?: number;
 }
 
-export type SobelowCategory =|'sql_injection|xss|csrf|directory_traversal|command_injection|code_injection|redirect | traversal'|rce|dos|misc';
+export type SobelowCategory = 'sql_injection'|'xss'|'csrf'|'directory_traversal'|'command_injection'|'code_injection'|'redirect'|'traversal'|'rce'|'dos'|'misc';
 
 export interface PhoenixSecurityIssue {
   /** Issue type */
@@ -261,7 +261,7 @@ export interface ElvisViolation {
   category: ElvisCategory;
 }
 
-export type ElvisCategory =|''line_length|no_tabs|no_trailing_whitespace|macro_names|operator_spaces|nesting_level|function_naming | variable_naming'|module_naming';
+export type ElvisCategory = 'line_length'|'no_tabs'|'no_trailing_whitespace'|'macro_names'|'operator_spaces'|'nesting_level'|'function_naming'|'variable_naming'|'module_naming';
 
 export interface CustomAnalysisResult {
   /** Rule name */

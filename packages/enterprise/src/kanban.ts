@@ -14,11 +14,11 @@ let kanbanModuleCache: any = null;
 async function loadKanbanModule() {
   if (!kanbanModuleCache) {
     try {
-      // Load the real Kanban package
-      kanbanModuleCache = await import('@claude-zen/kanban');
+      // Load TaskMaster's kanban implementation
+      kanbanModuleCache = await import('@claude-zen/taskmaster');
     } catch {
       console.warn(
-        'Kanban package not available, providing compatibility layer',
+        'TaskMaster package not available, providing compatibility layer',
       );
       kanbanModuleCache = {
         WorkflowKanban: class CompatibilityWorkflowKanban extends TypedEventBase {
@@ -108,30 +108,60 @@ export const getTaskPriorities = async () => {
   return module.TASK_PRIORITIES;
 };
 
-// Static exports for immediate use (with fallback)
+// Re-export TaskMaster's kanban functionality through strategic facade
 export {
   WorkflowKanban,
-  createWorkflowKanban as createWorkflowKanbanSync,
-  createHighThroughputWorkflowKanban as createHighThroughputWorkflowKanbanSync,
-  DEFAULT_WORKFLOW_STATES,
-  TASK_PRIORITIES,
-  isValidWorkflowState,
-  isValidTaskPriority,
-  getNextWorkflowState,
-  getPreviousWorkflowState,
-  isValidStateTransition,
-} from '@claude-zen/kanban';
+  createTaskFlowController as createWorkflowKanbanSync,
+} from '@claude-zen/taskmaster';
 
-// Type exports
+// Re-export TaskMaster types
 export type {
-  WorkflowKanbanConfig,
-  WorkflowTask,
-  TaskState,
+  TaskFlowState as TaskState,
   TaskPriority,
-  FlowMetrics,
-  BottleneckReport,
+  TaskFlowConfig as WorkflowKanbanConfig,
+  TaskFlowStatus as FlowMetrics,
   WorkflowBottleneck,
   WIPLimits,
-  KanbanOperationResult,
   TaskMovementResult,
-} from '@claude-zen/kanban';
+} from '@claude-zen/taskmaster';
+
+// Define additional compatibility types and constants
+export const DEFAULT_WORKFLOW_STATES: TaskFlowState[] = [
+  'backlog',
+  'analysis', 
+  'development',
+  'testing',
+  'deployment',
+  'done'
+];
+
+export const TASK_PRIORITIES = ['critical', 'high', 'medium', 'low'] as const;
+
+export function isValidWorkflowState(state: string): boolean {
+  return DEFAULT_WORKFLOW_STATES.includes(state as any);
+}
+
+export function isValidTaskPriority(priority: string): boolean {
+  return TASK_PRIORITIES.includes(priority as any);
+}
+
+export function getNextWorkflowState(currentState: string): string | null {
+  const index = DEFAULT_WORKFLOW_STATES.indexOf(currentState as any);
+  return index >= 0 && index < DEFAULT_WORKFLOW_STATES.length - 1 
+    ? DEFAULT_WORKFLOW_STATES[index + 1] 
+    : null;
+}
+
+export function getPreviousWorkflowState(currentState: string): string | null {
+  const index = DEFAULT_WORKFLOW_STATES.indexOf(currentState as any);
+  return index > 0 ? DEFAULT_WORKFLOW_STATES[index - 1] : null;
+}
+
+export function isValidStateTransition(from: string, to: string): boolean {
+  const fromIndex = DEFAULT_WORKFLOW_STATES.indexOf(from as any);
+  const toIndex = DEFAULT_WORKFLOW_STATES.indexOf(to as any);
+  return fromIndex >= 0 && toIndex >= 0 && Math.abs(toIndex - fromIndex) === 1;
+}
+
+// Import TaskMaster types for compatibility
+import type { TaskFlowState, WIPLimits, WorkflowBottleneck, TaskMovementResult } from '@claude-zen/taskmaster';

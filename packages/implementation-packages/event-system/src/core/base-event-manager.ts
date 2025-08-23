@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+import { EventEmitter, EnhancedError } from '@claude-zen/foundation';
 /**
  * @fileoverview Base Event Manager Implementation
  *
@@ -127,6 +127,24 @@ export abstract class BaseEventManager implements EventManager {
   protected processingInterval?: NodeJS.Timeout;
   protected healthCheckInterval?: NodeJS.Timeout;
 
+  // Enhanced functionality properties
+  protected globalFilters?: Map<string, EventFilter>;
+  protected globalTransforms?: Map<string, {
+    mapper?: (event: SystemEvent) => SystemEvent;
+    enricher?: (event: SystemEvent) => Promise<SystemEvent>;
+    validator?: (event: SystemEvent) => boolean;
+    metadata: {
+      transformId: string;
+      createdAt: Date;
+      createdBy: string;
+      active: boolean;
+      executionCount: number;
+      lastExecuted?: Date;
+    };
+  }>;
+  protected eventHistory?: SystemEvent[];
+  protected lifecycleEmitter?: EventEmitter;
+
   constructor(config: EventManagerConfig, logger: Logger) {
     this.config = config;
     this.logger = logger;
@@ -163,6 +181,16 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     this.logger.info(`Event manager started: ${this.name}`);
+    
+    // Emit lifecycle event
+    if (this.lifecycleEmitter) {
+      this.lifecycleEmitter.emit('start', {
+        managerName: this.name,
+        managerType: this.type,
+        processingStrategy: this.processingStrategy,
+        startTime: this.metrics.startTime,
+      });
+    }
   }
 
   /**
@@ -192,6 +220,20 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     this.logger.info(`Event manager stopped: ${this.name}`);
+    
+    // Emit lifecycle event
+    if (this.lifecycleEmitter) {
+      this.lifecycleEmitter.emit('stop', {
+        managerName: this.name,
+        managerType: this.type,
+        uptime: Date.now() - this.metrics.startTime.getTime(),
+        finalMetrics: {
+          eventsProcessed: this.metrics.eventsProcessed,
+          eventsFailed: this.metrics.eventsFailed,
+          subscriptionCount: this.metrics.subscriptionCount,
+        },
+      });
+    }
   }
 
   /**
@@ -265,6 +307,17 @@ export abstract class BaseEventManager implements EventManager {
           await this.processEventImmediate(enrichedEvent);
       }
 
+      // Track event in history
+      if (!this.eventHistory) {
+        this.eventHistory = [];
+      }
+      this.eventHistory.push(enrichedEvent);
+      
+      // Keep history size manageable (last 10,000 events)
+      if (this.eventHistory.length > 10000) {
+        this.eventHistory = this.eventHistory.slice(-5000);
+      }
+
       // Update metrics
       const processingTime = Date.now() - startTime;
       this.metrics.totalProcessingTime += processingTime;
@@ -272,11 +325,31 @@ export abstract class BaseEventManager implements EventManager {
         this.metrics.totalProcessingTime / this.metrics.eventsEmitted;
       this.metrics.eventsProcessed++;
 
+      // Emit lifecycle event
+      if (this.lifecycleEmitter) {
+        this.lifecycleEmitter.emit('emission', {
+          event: enrichedEvent,
+          processingTime,
+          strategy: this.processingStrategy,
+        });
+      }
+
       this.logger.debug(`Event emitted: ${event.type} (${processingTime}ms)`);
     } catch (error) {
       this.metrics.eventsFailed++;
       this.metrics.errorCount++;
       this.logger.error(`Event emission failed: ${event.id}`, error);
+
+      // Emit error lifecycle event
+      if (this.lifecycleEmitter) {
+        this.lifecycleEmitter.emit('error', {
+          type: 'emission_failed',
+          event: enrichedEvent,
+          error: error instanceof Error ? error.message : String(error),
+          managerName: this.name,
+          timestamp: new Date(),
+        });
+      }
 
       // Retry if configured
       if (options?.retries && options.retries > 0) {
@@ -316,6 +389,18 @@ export abstract class BaseEventManager implements EventManager {
     });
 
     this.metrics.subscriptionCount++;
+    
+    // Emit lifecycle event
+    if (this.lifecycleEmitter) {
+      this.lifecycleEmitter.emit('subscription', {
+        action: 'added',
+        subscriptionId,
+        eventTypes: types,
+        managerName: this.name,
+        hasFilter: !!options?.filter,
+        isOnceListener: !!options?.once,
+      });
+    }
 
     this.logger.debug(
       `Subscription created: ${subscriptionId} for types ${types.join(', ')}`
@@ -330,6 +415,16 @@ export abstract class BaseEventManager implements EventManager {
     const removed = this.subscribers.delete(subscriptionId);
     if (removed) {
       this.metrics.subscriptionCount--;
+      
+      // Emit lifecycle event
+      if (this.lifecycleEmitter) {
+        this.lifecycleEmitter.emit('subscription', {
+          action: 'removed',
+          subscriptionId,
+          managerName: this.name,
+        });
+      }
+      
       this.logger.debug(`Subscription removed: ${subscriptionId}`);
     }
     return removed;
@@ -504,75 +599,329 @@ export abstract class BaseEventManager implements EventManager {
   }
 
   /**
-   * Add a global event filter.
+   * Add a global event filter with comprehensive validation and storage.
    */
   addFilter(filter: EventFilter): string {
-    // Stub implementation - filters could be stored and applied globally
     const filterId = `filter-${Date.now()}-${Math.random().toString(36).substring(2)}`;
-    this.logger.debug(`Filter added: ${filterId}`);
+    
+    // Validate filter structure
+    if (!filter || typeof filter !== 'object') {
+      throw new EnhancedError('Invalid filter provided', {
+        context: { filterId, filter },
+        severity: 'high',
+      });
+    }
+
+    // Initialize global filters map if not exists
+    if (!this.globalFilters) {
+      this.globalFilters = new Map<string, EventFilter>();
+    }
+
+    // Store the filter with enhanced metadata
+    this.globalFilters.set(filterId, {
+      ...filter,
+      metadata: {
+        ...filter.metadata,
+        filterId,
+        createdAt: new Date(),
+        createdBy: this.name,
+        active: true,
+      },
+    });
+
+    this.logger.info(`Global event filter added: ${filterId}`, {
+      filterId,
+      filterTypes: filter.types,
+      filterSources: filter.sources,
+      hasCustomFilter: !!filter.customFilter,
+    });
+
     return filterId;
   }
 
   /**
-   * Remove a previously added filter.
+   * Remove a previously added filter with validation.
    */
   removeFilter(filterId: string): boolean {
-    // Stub implementation
-    this.logger.debug(`Filter removed: ${filterId}`);
-    return true;
+    if (!this.globalFilters || !this.globalFilters.has(filterId)) {
+      this.logger.warn(`Filter not found for removal: ${filterId}`);
+      return false;
+    }
+
+    const removedFilter = this.globalFilters.get(filterId);
+    const success = this.globalFilters.delete(filterId);
+    
+    if (success) {
+      this.logger.info(`Global event filter removed: ${filterId}`, {
+        filterId,
+        filterTypes: removedFilter?.types,
+        filterSources: removedFilter?.sources,
+      });
+    }
+    
+    return success;
   }
 
   /**
-   * Add a global event transformation.
+   * Add a global event transformation with comprehensive processing.
    */
   addTransform(transform: {
     mapper?: (event: SystemEvent) => SystemEvent;
     enricher?: (event: SystemEvent) => Promise<SystemEvent>;
     validator?: (event: SystemEvent) => boolean;
   }): string {
-    // Stub implementation
     const transformId = `transform-${Date.now()}-${Math.random().toString(36).substring(2)}`;
-    this.logger.debug(`Transform added: ${transformId}`);
+    
+    // Validate transform structure
+    if (!transform || typeof transform !== 'object') {
+      throw new EnhancedError('Invalid transform provided', {
+        context: { transformId, transform },
+        severity: 'high',
+      });
+    }
+
+    if (!transform.mapper && !transform.enricher && !transform.validator) {
+      throw new EnhancedError('Transform must have at least one processing function', {
+        context: { transformId },
+        severity: 'high',
+      });
+    }
+
+    // Initialize global transforms map if not exists
+    if (!this.globalTransforms) {
+      this.globalTransforms = new Map<string, {
+        mapper?: (event: SystemEvent) => SystemEvent;
+        enricher?: (event: SystemEvent) => Promise<SystemEvent>;
+        validator?: (event: SystemEvent) => boolean;
+        metadata: {
+          transformId: string;
+          createdAt: Date;
+          createdBy: string;
+          active: boolean;
+          executionCount: number;
+          lastExecuted?: Date;
+        };
+      }>();
+    }
+
+    // Store the transform with enhanced metadata
+    this.globalTransforms.set(transformId, {
+      ...transform,
+      metadata: {
+        transformId,
+        createdAt: new Date(),
+        createdBy: this.name,
+        active: true,
+        executionCount: 0,
+      },
+    });
+
+    this.logger.info(`Global event transform added: ${transformId}`, {
+      transformId,
+      hasMapper: !!transform.mapper,
+      hasEnricher: !!transform.enricher,
+      hasValidator: !!transform.validator,
+    });
+
     return transformId;
   }
 
   /**
-   * Remove a previously added transformation.
+   * Remove a previously added transformation with validation.
    */
   removeTransform(transformId: string): boolean {
-    // Stub implementation
-    this.logger.debug(`Transform removed: ${transformId}`);
-    return true;
+    if (!this.globalTransforms || !this.globalTransforms.has(transformId)) {
+      this.logger.warn(`Transform not found for removal: ${transformId}`);
+      return false;
+    }
+
+    const removedTransform = this.globalTransforms.get(transformId);
+    const success = this.globalTransforms.delete(transformId);
+    
+    if (success) {
+      this.logger.info(`Global event transform removed: ${transformId}`, {
+        transformId,
+        executionCount: removedTransform?.metadata.executionCount,
+        lastExecuted: removedTransform?.metadata.lastExecuted,
+      });
+    }
+    
+    return success;
   }
 
   /**
-   * Query historical events with filtering and pagination.
+   * Query historical events with comprehensive filtering and pagination.
    */
   async query<T extends SystemEvent>(options: {
     filter?: EventFilter;
     limit?: number;
     offset?: number;
-    sortBy?: 'timestamp|priority|type|source';
-    sortOrder?: 'asc|desc'';
+    sortBy?: 'timestamp' | 'priority' | 'type' | 'source';
+    sortOrder?: 'asc' | 'desc';
     includeMetadata?: boolean;
   }): Promise<T[]> {
-    // Stub implementation - would query from event store
-    this.logger.debug('Querying historical events:', options);
-    return [];
+    const startTime = Date.now();
+    const queryId = `query-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    
+    this.logger.debug(`Starting historical event query: ${queryId}`, options);
+
+    try {
+      // Initialize event history storage if not exists
+      if (!this.eventHistory) {
+        this.eventHistory = [];
+      }
+
+      let results = [...this.eventHistory] as T[];
+
+      // Apply filtering if provided
+      if (options.filter) {
+        results = results.filter(event => this.eventMatchesFilter(event, options.filter!));
+      }
+
+      // Apply sorting
+      const sortBy = options.sortBy || 'timestamp';
+      const sortOrder = options.sortOrder || 'desc';
+      
+      results.sort((a, b) => {
+        let valueA: any, valueB: any;
+        
+        switch (sortBy) {
+          case 'timestamp':
+            valueA = new Date(a.timestamp).getTime();
+            valueB = new Date(b.timestamp).getTime();
+            break;
+          case 'priority':
+            const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 };
+            valueA = priorityOrder[a.priority as keyof typeof priorityOrder] || 2;
+            valueB = priorityOrder[b.priority as keyof typeof priorityOrder] || 2;
+            break;
+          case 'type':
+            valueA = a.type;
+            valueB = b.type;
+            break;
+          case 'source':
+            valueA = a.source;
+            valueB = b.source;
+            break;
+          default:
+            valueA = a.timestamp;
+            valueB = b.timestamp;
+        }
+        
+        const comparison = valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
+        return sortOrder === 'asc' ? comparison : -comparison;
+      });
+
+      // Apply pagination
+      const offset = options.offset || 0;
+      const limit = options.limit || 100;
+      results = results.slice(offset, offset + limit);
+
+      // Filter metadata if requested
+      if (options.includeMetadata === false) {
+        results = results.map(event => {
+          const { metadata, ...eventWithoutMetadata } = event;
+          return eventWithoutMetadata as T;
+        });
+      }
+
+      const queryTime = Date.now() - startTime;
+      
+      this.logger.info(`Historical event query completed: ${queryId}`, {
+        queryId,
+        resultCount: results.length,
+        queryTimeMs: queryTime,
+        hasFilter: !!options.filter,
+        sortBy,
+        sortOrder,
+        limit,
+        offset,
+      });
+
+      return results;
+      
+    } catch (error) {
+      const queryTime = Date.now() - startTime;
+      
+      this.logger.error(`Historical event query failed: ${queryId}`, {
+        queryId,
+        error: error instanceof Error ? error.message : String(error),
+        queryTimeMs: queryTime,
+        options,
+      });
+      
+      throw new EnhancedError('Failed to query historical events', {
+        context: { queryId, options, queryTime },
+        cause: error instanceof Error ? error : new Error(String(error)),
+        severity: 'high',
+      });
+    }
   }
 
   /**
-   * Get event history for a specific event type.
+   * Get event history for a specific event type with comprehensive filtering.
    */
   async getEventHistory(
     eventType: string,
     limit?: number
   ): Promise<SystemEvent[]> {
-    // Stub implementation - would query from event store
-    this.logger.debug(
-      `Getting event history for type: ${eventType}, limit: ${limit}`
-    );
-    return [];
+    const startTime = Date.now();
+    const historyId = `history-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    
+    this.logger.debug(`Getting event history: ${historyId}`, {
+      eventType,
+      limit,
+    });
+
+    try {
+      // Validate event type
+      if (!eventType || typeof eventType !== 'string') {
+        throw new EnhancedError('Invalid event type provided', {
+          context: { eventType, historyId },
+          severity: 'medium',
+        });
+      }
+
+      // Use the query method with specific type filter
+      const results = await this.query({
+        filter: {
+          types: [eventType],
+        },
+        limit: limit || 100,
+        sortBy: 'timestamp',
+        sortOrder: 'desc',
+        includeMetadata: true,
+      });
+
+      const queryTime = Date.now() - startTime;
+      
+      this.logger.info(`Event history retrieved: ${historyId}`, {
+        historyId,
+        eventType,
+        resultCount: results.length,
+        queryTimeMs: queryTime,
+        limit: limit || 100,
+      });
+
+      return results;
+      
+    } catch (error) {
+      const queryTime = Date.now() - startTime;
+      
+      this.logger.error(`Event history retrieval failed: ${historyId}`, {
+        historyId,
+        eventType,
+        error: error instanceof Error ? error.message : String(error),
+        queryTimeMs: queryTime,
+        limit,
+      });
+      
+      throw new EnhancedError('Failed to get event history', {
+        context: { historyId, eventType, limit, queryTime },
+        cause: error instanceof Error ? error : new Error(String(error)),
+        severity: 'high',
+      });
+    }
   }
 
   /**
@@ -591,30 +940,100 @@ export abstract class BaseEventManager implements EventManager {
   }
 
   /**
-   * Add listener for manager lifecycle events.
+   * Add listener for manager lifecycle events using Foundation EventEmitter.
    */
   on(
-    event: 'start|stop|error|subscription|emission',
+    event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
     handler: (...args: unknown[]) => void
   ): void {
-    // Stub implementation - could use EventEmitter if needed
-    this.logger.debug(`Lifecycle listener added for event: ${event}`);
+    // Initialize lifecycle emitter if not exists
+    if (!this.lifecycleEmitter) {
+      this.lifecycleEmitter = new EventEmitter();
+    }
+
+    // Validate event and handler
+    if (!event || typeof event !== 'string') {
+      throw new EnhancedError('Invalid event name provided', {
+        context: { event, managerName: this.name },
+        severity: 'medium',
+      });
+    }
+
+    if (!handler || typeof handler !== 'function') {
+      throw new EnhancedError('Invalid handler function provided', {
+        context: { event, managerName: this.name },
+        severity: 'medium',
+      });
+    }
+
+    this.lifecycleEmitter.on(event, handler);
+    
+    this.logger.debug(`Lifecycle listener added for event: ${event}`, {
+      event,
+      managerName: this.name,
+      listenerCount: this.lifecycleEmitter.listenerCount(event),
+    });
   }
 
   /**
    * Remove listener for manager events.
    */
   off(event: string, handler?: (...args: unknown[]) => void): void {
-    // Stub implementation
-    this.logger.debug(`Lifecycle listener removed for event: ${event}`);
+    if (!this.lifecycleEmitter) {
+      this.logger.warn(`No lifecycle emitter exists for manager: ${this.name}`);
+      return;
+    }
+
+    if (!event || typeof event !== 'string') {
+      this.logger.warn('Invalid event name provided for removal', { event });
+      return;
+    }
+
+    if (handler && typeof handler === 'function') {
+      this.lifecycleEmitter.off(event, handler);
+    } else {
+      this.lifecycleEmitter.removeAllListeners(event);
+    }
+    
+    this.logger.debug(`Lifecycle listener(s) removed for event: ${event}`, {
+      event,
+      managerName: this.name,
+      removedSpecificHandler: !!handler,
+      remainingListeners: this.lifecycleEmitter.listenerCount(event),
+    });
   }
 
   /**
    * Add one-time listener for manager events.
    */
   once(event: string, handler: (...args: unknown[]) => void): void {
-    // Stub implementation
-    this.logger.debug(`One-time lifecycle listener added for event: ${event}`);
+    // Initialize lifecycle emitter if not exists
+    if (!this.lifecycleEmitter) {
+      this.lifecycleEmitter = new EventEmitter();
+    }
+
+    // Validate event and handler
+    if (!event || typeof event !== 'string') {
+      throw new EnhancedError('Invalid event name provided', {
+        context: { event, managerName: this.name },
+        severity: 'medium',
+      });
+    }
+
+    if (!handler || typeof handler !== 'function') {
+      throw new EnhancedError('Invalid handler function provided', {
+        context: { event, managerName: this.name },
+        severity: 'medium',
+      });
+    }
+
+    this.lifecycleEmitter.once(event, handler);
+    
+    this.logger.debug(`One-time lifecycle listener added for event: ${event}`, {
+      event,
+      managerName: this.name,
+      totalListenerCount: this.lifecycleEmitter.listenerCount(event),
+    });
   }
 
   /**

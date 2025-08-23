@@ -420,7 +420,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     const allEntries: Array<{
       key: string;
       entry: CacheEntry<any>;
-      store:'memory|key'';
+      store: 'memory' | 'key';
     }> = [];
 
     // Collect all entries with their access times

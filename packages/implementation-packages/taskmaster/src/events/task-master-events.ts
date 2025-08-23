@@ -12,9 +12,8 @@
  */
 
 import { getEventSystem } from '@claude-zen/infrastructure';
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import { getTelemetryManager } from '@claude-zen/operations';
-import type { EventEmitter } from 'eventemitter3';
 
 import type {
   TaskId,

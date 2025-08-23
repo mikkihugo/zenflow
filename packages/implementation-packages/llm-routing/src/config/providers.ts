@@ -246,55 +246,43 @@ export const ROUTING_STRATEGY: RoutingStrategy = {
 };
 
 /**
- * Get optimal provider for a given context and requirements
+ * Check if provider meets context size requirements
  */
-export function getOptimalProvider(context: ProviderRoutingContext): string[] {
-  const {
-    contentLength,
-    requiresFileOps,
-    requiresCodebaseAware,
-    requiresStructuredOutput,
-  } = context;
-
-  // Determine context size category
-  const isSmallContext =
-    contentLength < ROUTING_STRATEGY.SMALL_CONTEXT_THRESHOLD;
-  const isLargeContext =
-    contentLength > ROUTING_STRATEGY.LARGE_CONTEXT_THRESHOLD;
-  const estimatedTokens = Math.ceil(contentLength / 4); // Rough estimation
-
-  // Special routing for very large contexts
-  if (estimatedTokens > 150000) {
-    // Only Gemini and Claude Code can handle > 150K tokens
-    return ['gemini', 'claude-code'];
+function meetsContextSizeRequirements(
+  config: ProviderConfig,
+  isSmallContext: boolean,
+  isLargeContext: boolean,
+): boolean {
+  if (isSmallContext) {
+    return config.routing.useForSmallContext;
   }
-
-  // Get available providers based on requirements
-  const candidates: string[] = [];
-
-  // Filter by context size capabilities and token limits
-  for (const [providerId, config] of Object.entries(LLM_PROVIDER_CONFIG)) {
-    const canHandleTokens = estimatedTokens <= config.maxContextTokens;
-
-    const meetsContextRequirements =
-      (isSmallContext && config.routing.useForSmallContext)||(isLargeContext && config.routing.useForLargeContext)||!(isSmallContext||isLargeContext); // Medium context
-
-    const meetsFeatureRequirements =
-      (!requiresFileOps||config.features.fileOperations) &&
-      (!requiresCodebaseAware||config.features.codebaseAware) &&
-      (!requiresStructuredOutput||config.features.structuredOutput);
-
-    if (
-      canHandleTokens &&
-      meetsContextRequirements &&
-      meetsFeatureRequirements
-    ) {
-      candidates.push(providerId);
-    }
+  if (isLargeContext) {
+    return config.routing.useForLargeContext;
   }
+  return true; // Medium context
+}
 
-  // Sort by priority and fallback order
-  candidates.sort((a, b) => {
+/**
+ * Check if provider meets feature requirements
+ */
+function meetsFeatureRequirements(
+  config: ProviderConfig,
+  context: ProviderRoutingContext,
+): boolean {
+  const { requiresFileOps, requiresCodebaseAware, requiresStructuredOutput } = context;
+
+  return (
+    (!requiresFileOps || config.features.fileOperations) &&
+    (!requiresCodebaseAware || config.features.codebaseAware) &&
+    (!requiresStructuredOutput || config.features.structuredOutput)
+  );
+}
+
+/**
+ * Sort providers by priority and fallback order
+ */
+function sortProvidersByPriority(candidates: string[]): string[] {
+  return candidates.sort((a, b) => {
     const configA = LLM_PROVIDER_CONFIG[a];
     const configB = LLM_PROVIDER_CONFIG[b];
 
@@ -306,8 +294,38 @@ export function getOptimalProvider(context: ProviderRoutingContext): string[] {
     // Secondary sort: fallback order
     return configA.routing.fallbackOrder - configB.routing.fallbackOrder;
   });
+}
 
-  return candidates;
+/**
+ * Get optimal provider for a given context and requirements
+ */
+export function getOptimalProvider(context: ProviderRoutingContext): string[] {
+  const { contentLength } = context;
+  const estimatedTokens = Math.ceil(contentLength / 4);
+
+  // Special routing for very large contexts
+  if (estimatedTokens > 150000) {
+    return ['gemini', 'claude-code'];
+  }
+
+  // Determine context size category
+  const isSmallContext = contentLength < ROUTING_STRATEGY.SMALL_CONTEXT_THRESHOLD;
+  const isLargeContext = contentLength > ROUTING_STRATEGY.LARGE_CONTEXT_THRESHOLD;
+
+  // Get available providers based on requirements
+  const candidates: string[] = [];
+
+  for (const [providerId, config] of Object.entries(LLM_PROVIDER_CONFIG)) {
+    const canHandleTokens = estimatedTokens <= config.maxContextTokens;
+    const meetsContextRequirements = meetsContextSizeRequirements(config, isSmallContext, isLargeContext);
+    const meetsFeatures = meetsFeatureRequirements(config, context);
+
+    if (canHandleTokens && meetsContextRequirements && meetsFeatures) {
+      candidates.push(providerId);
+    }
+  }
+
+  return sortProvidersByPriority(candidates);
 }
 
 /**
@@ -333,7 +351,7 @@ export function removeProvider(providerId: string): boolean {
  */
 export function updateProvider(
   providerId: string,
-  updates: Partial<ProviderConfig>
+  updates: Partial<ProviderConfig>,
 ): boolean {
   if (providerId in LLM_PROVIDER_CONFIG) {
     LLM_PROVIDER_CONFIG[providerId] = {
@@ -363,7 +381,7 @@ export function getProviderIds(): string[] {
  * Get providers by capability
  */
 export function getProvidersByCapability(
-  capability: keyof ProviderConfig['features']
+  capability: keyof ProviderConfig['features'],
 ): string[] {
   return Object.entries(LLM_PROVIDER_CONFIG)
     .filter(([, config]) => config.features[capability])

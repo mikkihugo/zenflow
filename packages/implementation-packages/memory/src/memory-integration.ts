@@ -2,9 +2,9 @@
  * @file Memory management: memory-integration.
  */
 
-import { getLogger } from '../config/logging-config';
+import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
 
-const logger = getLogger('src-memory-memory-integration');
+import { getLogger } from '../config/logging-config';
 
 /**
  * Memory Domain DI Integration.
@@ -14,15 +14,17 @@ const logger = getLogger('src-memory-memory-integration');
  */
 
 import type { DALFactory } from '../database/factory';
-import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
+import type { MemoryConfig } from '../memory/interfaces';
+
+import { MemoryController } from './controllers/memory-controller';
+import { MemoryProviderFactory } from './providers/memory-providers';
+
+const logger = getLogger('src-memory-memory-integration');
 
 // Use foundation tokens instead of local ones
 const CORE_TOKENS = TOKENS;
 const DATABASE_TOKENS = TOKENS;
 const MEMORY_TOKENS = TOKENS;
-import type { MemoryConfig } from '../memory/interfaces';
-import { MemoryController } from './controllers/memory-controller';
-import { MemoryProviderFactory } from './providers/memory-providers';
 
 /**
  * Default memory configurations for different use cases.

@@ -10,11 +10,12 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation/logging';
+
 import { RustNeuralML } from './rust-binding';
 import type {
   RustMLConfig,
   RustOptimizationTask,
-  RustOptimizationResult,
 } from './rust-binding';
 
 // Additional exports for DSPy teleprompters
@@ -398,7 +399,7 @@ export class SimpleMLEngine implements MLEngine {
     };
   }
 
-  async destroy(): Promise<void> {
+  destroy(): void {
     // Cleanup handled by Rust
     this.initialized = false;
   }
@@ -418,13 +419,7 @@ export function createMLEngine(config?: any, logger?: Logger): MLEngine {
     enableProfiling: config?.enableProfiling||false,
     parallelEvaluation: config?.parallelEvaluation||false,
   };
-  const loggerInstance =
-    logger||({
-      info: console.log,
-      error: console.error,
-      debug: console.log,
-      warn: console.warn,
-    } as Logger);
+  const loggerInstance = logger || getLogger('neural-ml');
   return new SimpleMLEngine(rustConfig, loggerInstance);
 }
 
@@ -489,7 +484,7 @@ export function createBayesianOptimizer(
           `Parameter dimension mismatch: expected ${Array.from(bounds.lower).length}, got ${params.length}`
         );
       }
-      console.log(`Observed: params=${params}, value=${value}`);
+      logger?.debug(`Observed: params=${params}, value=${value}`);
     },
     // Add aliases for different method names used by teleprompters
     async observe(params: number[], value: number): Promise<void> {
@@ -897,10 +892,10 @@ export function createOnlineLearner(config: any): OnlineLearner {
     async initialize(cfg: any): Promise<void> {
       if (cfg?.weights) weights = [...cfg.weights];
       if (cfg?.dimensions) {
-        weights = Array(cfg.dimensions)
+        weights = new Array(cfg.dimensions)
           .fill(0)
           .map(() => Math.random() * 0.01);
-        momentum = Array(cfg.dimensions).fill(0);
+        momentum = new Array(cfg.dimensions).fill(0);
       }
       iteration = 0;
     },
@@ -915,10 +910,10 @@ export function createOnlineLearner(config: any): OnlineLearner {
       const features = this.extractFeatures(data);
 
       if (weights.length === 0) {
-        weights = Array(features.length)
+        weights = new Array(features.length)
           .fill(0)
           .map(() => Math.random() * 0.01);
-        momentum = Array(features.length).fill(0);
+        momentum = new Array(features.length).fill(0);
       }
 
       if (target !== undefined) {
@@ -1173,7 +1168,7 @@ export function createStatisticalAnalyzer(): StatisticalAnalyzer {
     ): Promise<{ coefficients: number[]; rSquared: number }> {
       // Simplified polynomial regression - would use Rust for real implementation
       return {
-        coefficients: Array(degree + 1).fill(0),
+        coefficients: new Array(degree + 1).fill(0),
         rSquared: 0.8,
       };
     },

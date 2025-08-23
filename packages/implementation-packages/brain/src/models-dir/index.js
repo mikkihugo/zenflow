@@ -55,10 +55,10 @@ export class GraphNeuralNetwork {
         this.config = config;
     }
     async train(data) {
-        console.log('Training Graph Neural Network with data:', data);
+        logger.info('Training Graph Neural Network with data:', data);
     }
     async predict(input) {
-        console.log('Graph Neural Network prediction for input:', input);
+        logger.info('Graph Neural Network prediction for input:', input);
         return { prediction: 'graph_output' };
     }
 }
@@ -68,10 +68,10 @@ export class TransformerModel {
         this.config = config;
     }
     async train(data) {
-        console.log('Training Transformer Model with data:', data);
+        logger.info('Training Transformer Model with data:', data);
     }
     async predict(input) {
-        console.log('Transformer Model prediction for input:', input);
+        logger.info('Transformer Model prediction for input:', input);
         return { prediction: 'transformer_output' };
     }
 }
@@ -81,10 +81,10 @@ export class VAEModel {
         this.config = config;
     }
     async train(data) {
-        console.log('Training VAE Model with data:', data);
+        logger.info('Training VAE Model with data:', data);
     }
     async predict(input) {
-        console.log('VAE Model prediction for input:', input);
+        logger.info('VAE Model prediction for input:', input);
         return { prediction: 'vae_output' };
     }
 }

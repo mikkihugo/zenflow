@@ -5,21 +5,19 @@
  * Supports Jaeger, OTLP (HTTP/gRPC), Prometheus, console, and file exporters.
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation/logging';
 
+import { ConsoleExporter } from './console-exporter.js';
+import { FileExporter } from './file-exporter.js';
+import { JaegerExporter } from './jaeger-exporter.js';
+import { OTLPExporter } from './otlp-exporter.js';
+import { PrometheusExporter } from './prometheus-exporter.js';
 import type {
   ExporterConfig,
   TelemetryData,
   ExportResult,
-  HealthStatus,
 } from '../types.js';
-
-import { JaegerExporter } from './jaeger-exporter.js';
-import { OTLPExporter } from './otlp-exporter.js';
-import { PrometheusExporter } from './prometheus-exporter.js';
-import { ConsoleExporter } from './console-exporter.js';
-import { FileExporter } from './file-exporter.js';
 
 /**
  * Base exporter interface
@@ -144,7 +142,7 @@ export class ExporterManager {
       }
     );
 
-    return Promise.all(exportPromises);
+    return await Promise.all(exportPromises);
   }
 
   /**
@@ -192,7 +190,7 @@ export class ExporterManager {
       }
     );
 
-    return Promise.all(exportPromises);
+    return await Promise.all(exportPromises);
   }
 
   /**

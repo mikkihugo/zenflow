@@ -5,14 +5,13 @@
  * strategies with intelligent priority management and performance optimization.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { TypedEventBase ,
   getLogger,
   recordMetric,
-  withTimeout,
   TelemetryManager,
 } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 import type {
   CacheEvictionConfig,
   CacheEntry,

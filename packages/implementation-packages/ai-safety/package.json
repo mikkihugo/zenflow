@@ -36,10 +36,8 @@
   "license": "MIT",
   "dependencies": {
     "@claude-zen/brain": "workspace:*",
-    "@claude-zen/chaos-engineering": "file:../chaos-engineering",
-    "@claude-zen/foundation": "file:../../foundation",
-    "eventemitter3": "^5.0.1",
-    "nanoid": "^5.1.5"
+    "@claude-zen/chaos-engineering": "workspace:*",
+    "@claude-zen/foundation": "workspace:*"
   },
   "_comment_chaos_engineering": "chaos-engineering is a private implementation detail - only ai-safety package should access it",
   "devDependencies": {
@@ -72,6 +70,7 @@
     "directory": "packages/ai-safety"
   },
   "publishConfig": {
-    "access": "public"
-  }
+    "access": "restricted"
+  },
+  "private": true
 }

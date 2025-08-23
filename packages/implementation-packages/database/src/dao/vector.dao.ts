@@ -38,8 +38,7 @@ import type { VectorDatabaseAdapter } from '../providers/database-providers';
  */
 export class VectorDao<T>
   extends BaseDao<T>
-  implements VectorRepository<T>, DataAccessObject<T>
-{
+  implements VectorRepository<T>, DataAccessObject<T> {
   private get vectorAdapter(): VectorDatabaseAdapter {
     return this.adapter as VectorDatabaseAdapter;
   }
@@ -52,13 +51,13 @@ export class VectorDao<T>
    */
   async similaritySearch(
     queryVector: number[],
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]> {
     this.logger.debug(
       `Performing similarity search with ${queryVector.length}D vector`,
       {
         options,
-      }
+      },
     );
 
     try {
@@ -75,7 +74,7 @@ export class VectorDao<T>
       // Use the vector adapter for similarity search
       const vectorResult = await this.vectorAdapter.vectorSearch(
         queryVector,
-        searchOptions
+        searchOptions,
       );
 
       // Convert results to VectorSearchResult format
@@ -90,13 +89,13 @@ export class VectorDao<T>
           }))||[];
 
       this.logger.debug(
-        `Similarity search completed: ${results.length} results`
+        `Similarity search completed: ${results.length} results`,
       );
       return results;
     } catch (error) {
       this.logger.error(`Similarity search failed: ${error}`);
       throw new Error(
-        `Similarity search failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Similarity search failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -165,7 +164,7 @@ export class VectorDao<T>
     } catch (error) {
       this.logger.error(`Create index failed: ${error}`);
       throw new Error(
-        `Create index failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Create index failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -192,7 +191,7 @@ export class VectorDao<T>
     } catch (error) {
       this.logger.error(`Get vector stats failed: ${error}`);
       throw new Error(
-        `Get vector stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get vector stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -220,7 +219,7 @@ export class VectorDao<T>
       // Simple k-means-like clustering (simplified)
       const clusters = this.performSimpleClustering(
         vectorIds,
-        clusterOptions?.numClusters
+        clusterOptions?.numClusters,
       );
 
       const result: ClusterResult = {
@@ -236,13 +235,13 @@ export class VectorDao<T>
       };
 
       this.logger.debug(
-        `Clustering completed: ${result?.clusters.length} clusters`
+        `Clustering completed: ${result?.clusters.length} clusters`,
       );
       return result;
     } catch (error) {
       this.logger.error(`Clustering failed: ${error}`);
       throw new Error(
-        `Clustering failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Clustering failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -259,7 +258,7 @@ export class VectorDao<T>
    */
   async findSimilarToEntity(
     entityId: string|number,
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]> {
     this.logger.debug(`Finding entities similar to: ${entityId}`);
 
@@ -281,7 +280,7 @@ export class VectorDao<T>
     } catch (error) {
       this.logger.error(`Find similar to entity failed: ${error}`);
       throw new Error(
-        `Find similar to entity failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Find similar to entity failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -294,7 +293,7 @@ export class VectorDao<T>
    */
   async updateVector(
     entityId: string|number,
-    newVector: number[]
+    newVector: number[],
   ): Promise<T> {
     this.logger.debug(`Updating vector for entity: ${entityId}`);
 
@@ -316,7 +315,7 @@ export class VectorDao<T>
     } catch (error) {
       this.logger.error(`Update vector failed: ${error}`);
       throw new Error(
-        `Update vector failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Update vector failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -329,10 +328,10 @@ export class VectorDao<T>
    */
   async batchSimilaritySearch(
     queryVectors: number[][],
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[][]> {
     this.logger.debug(
-      `Performing batch similarity search with ${queryVectors.length} query vectors`
+      `Performing batch similarity search with ${queryVectors.length} query vectors`,
     );
 
     try {
@@ -340,20 +339,20 @@ export class VectorDao<T>
 
       // Execute searches in parallel
       const searchPromises = queryVectors.map((queryVector) =>
-        this.similaritySearch(queryVector, options)
+        this.similaritySearch(queryVector, options),
       );
 
       const batchResults = await Promise.all(searchPromises);
       results?.push(...batchResults);
 
       this.logger.debug(
-        `Batch similarity search completed: ${results.length} result sets`
+        `Batch similarity search completed: ${results.length} result sets`,
       );
       return results;
     } catch (error) {
       this.logger.error(`Batch similarity search failed: ${error}`);
       throw new Error(
-        `Batch similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Batch similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -377,7 +376,9 @@ export class VectorDao<T>
   }
 
   protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
-    if (!entity) return {};
+    if (!entity) {
+      return {};
+    }
 
     const row = { ...entity } as any;
 
@@ -396,7 +397,7 @@ export class VectorDao<T>
    * @param customQuery
    */
   override async executeCustomQuery<R = any>(
-    customQuery: CustomQuery
+    customQuery: CustomQuery,
   ): Promise<R> {
     if (customQuery.type === 'vector') {
       // Handle vector-specific queries
@@ -405,7 +406,7 @@ export class VectorDao<T>
       if (query.operation === 'similarity_search') {
         const results = await this.similaritySearch(
           query.vector,
-          query.options
+          query.options,
         );
         return results as R;
       }
@@ -439,7 +440,7 @@ export class VectorDao<T>
     const expectedDimension = this.getVectorDimension();
     if (expectedDimension && vector.length !== expectedDimension) {
       throw new Error(
-        `Vector dimension mismatch: expected ${expectedDimension}, got ${vector.length}`
+        `Vector dimension mismatch: expected ${expectedDimension}, got ${vector.length}`,
       );
     }
   }
@@ -465,7 +466,7 @@ export class VectorDao<T>
 
   private performSimpleClustering(
     vectorIds: unknown[],
-    numClusters: number
+    numClusters: number,
   ): unknown[] {
     // Simplified clustering implementation
     const clusters: unknown[] = [];

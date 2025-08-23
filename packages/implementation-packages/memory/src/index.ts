@@ -61,7 +61,7 @@ export class SimpleMemoryFactory {
    */
   static async createBasicMemory(
     config: {
-      type?: 'sqlite|memory'';
+      type?: 'sqlite' | 'memory';
       path?: string;
     } = {}
   ) {
@@ -87,14 +87,14 @@ export async function getMemorySystemAccess(
   config?: MemoryConfig
 ): Promise<any> {
   const manager = await SimpleMemoryFactory.createBasicMemory({
-    type: (config?.backendConfig?.type as 'sqlite|memory')|||sqlite',
+    type: (config?.backendConfig?.type as 'sqlite' | 'memory') || 'sqlite',
     path: config?.backendConfig?.path||'./memory.db',
   });
 
   return {
     createManager: (managerConfig?: MemoryConfig) =>
       SimpleMemoryFactory.createBasicMemory({
-        type: managerConfig?.backendConfig?.type as 'sqlite|memory'',
+        type: managerConfig?.backendConfig?.type as 'sqlite' | 'memory',
         path: managerConfig?.backendConfig?.path,
       }),
     createStore: (storeId: string, options?: SessionMemoryStoreOptions) =>

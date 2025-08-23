@@ -911,7 +911,7 @@ export type ExecutionId = Branded<UUID, 'ExecutionId'>;
 export type StepId = Branded<UUID, 'StepId'>;
 
 // Complex type aliases for easier usage
-export type WorkflowEventType =|'workflow.created|workflow.started'||workflow.completed|workflow.failed'||workflow.cancelled|step.started'||step.completed|step.failed'||step.retried';
+export type WorkflowEventType = 'workflow.created' | 'workflow.started' | 'workflow.completed' | 'workflow.failed' | 'workflow.cancelled' | 'step.started' | 'step.completed' | 'step.failed' | 'step.retried';
 
 // Stub definitions for referenced types (to be defined in respective modules)
 export interface WorkflowMetadata {

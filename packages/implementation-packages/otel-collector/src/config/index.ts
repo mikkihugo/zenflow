@@ -6,14 +6,14 @@
  */
 
 import { readFileSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import { getLogger } from '@claude-zen/foundation/logging';
+import { resolve } from 'node:path';
+
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation/logging';
 
 import type {
   CollectorConfig,
   ExporterConfig,
-  ProcessorConfig,
 } from '../types.js';
 
 /**
@@ -30,7 +30,7 @@ export class ConfigManager {
   /**
    * Load configuration from various sources
    */
-  async loadConfig(configPath?: string): Promise<CollectorConfig> {
+  loadConfig(configPath?: string): CollectorConfig {
     if (this.config) {
       return this.config;
     }
@@ -95,7 +95,7 @@ export class ConfigManager {
   /**
    * Reload configuration
    */
-  async reloadConfig(configPath?: string): Promise<CollectorConfig> {
+  reloadConfig(configPath?: string): CollectorConfig {
     this.config = null;
     return this.loadConfig(configPath);
   }
@@ -250,11 +250,9 @@ export class ConfigManager {
         continue;
       }
 
-      if (typeof value ==='object' && !Array.isArray(value)) {
-        merged[key] = { ...merged[key], ...value };
-      } else {
-        merged[key] = value;
-      }
+      merged[key] = typeof value === 'object' && !Array.isArray(value) 
+        ? { ...merged[key], ...value } 
+        : value;
     }
 
     return merged;
@@ -418,7 +416,7 @@ export const configManager = new ConfigManager();
 /**
  * Load default configuration
  */
-export async function loadDefaultConfig(): Promise<CollectorConfig> {
+export function loadDefaultConfig(): CollectorConfig {
   return configManager.loadConfig();
 }
 

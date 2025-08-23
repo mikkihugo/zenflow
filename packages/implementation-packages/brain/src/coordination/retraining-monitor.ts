@@ -60,7 +60,7 @@ export interface MonitoringMetrics {
  */
 // @injectable - Temporarily removed due to constructor type incompatibility
 export class RetrainingMonitor {
-  private intervalId: NodeJS.Timeout|'null = null;
+  private intervalId: NodeJS.Timeout | null = null;
   private dbAccess: any = null; // DatabaseAccess via infrastructure facade
   private isMonitoring = false;
   private logger: Logger;

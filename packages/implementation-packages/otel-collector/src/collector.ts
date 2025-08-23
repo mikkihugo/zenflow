@@ -5,27 +5,26 @@
  * logging and telemetry packages, processes it, and exports to multiple backends.
  */
 
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import compression from 'compression';
 import { createServer, type Server } from 'node:http';
 
-import { getLogger } from '@claude-zen/foundation/logging';
-import type { Logger } from '@claude-zen/foundation';
+import compression from 'compression';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
 
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation/logging';
+
+import { getDefaultConfig } from './config/index.js';
+import { ExporterManager } from './exporters/index.js';
+import { ProcessorManager } from './processors/index.js';
 import type {
   CollectorConfig,
   CollectorStats,
   HealthStatus,
   TelemetryData,
-  ExportResult,
   SignalType,
 } from './types.js';
-
-import { ExporterManager } from './exporters/index.js';
-import { ProcessorManager } from './processors/index.js';
-import { getDefaultConfig } from './config/index.js';
 
 /**
  * Internal OpenTelemetry Collector

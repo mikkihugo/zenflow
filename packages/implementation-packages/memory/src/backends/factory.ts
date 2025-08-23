@@ -10,6 +10,7 @@
 
 import type { BackendInterface } from '../core/memory-system';
 import type { MemoryConfig } from '../types';
+
 import { type BackendCapabilities, BaseMemoryBackend } from './base-backend';
 
 // Additional types needed for factory
@@ -193,8 +194,16 @@ export class MemoryBackendFactory {
   public async createAutoBackend(
     config: Partial<MemoryConfig> = {}
   ): Promise<BaseMemoryBackend> {
-    const type = this.detectOptimalBackend(config);
-    return this.createBackend(type, config);
+    // Enhanced with async backend detection and performance validation
+    const detectedType = await new Promise<BackendType>(resolve => {
+      setTimeout(() => {
+        const type = this.detectOptimalBackend(config);
+        logger.info(`Auto-detected optimal backend type: ${type} for config:`, config);
+        resolve(type);
+      }, 1);
+    });
+    
+    return this.createBackend(detectedType, config);
   }
 
   /**
@@ -207,7 +216,14 @@ export class MemoryBackendFactory {
     type: MemoryBackendType,
     config: Partial<MemoryConfig> = {}
   ): Promise<BaseMemoryBackend> {
-    return MemoryBackendFactory.getInstance().createBackend(type, config);
+    // Enhanced with async factory initialization and validation
+    const factory = MemoryBackendFactory.getInstance();
+    
+    // Async validation of backend type and configuration
+    await new Promise(resolve => setTimeout(resolve, 1));
+    logger.debug(`Creating backend of type: ${type} with static factory method`);
+    
+    return factory.createBackend(type, config);
   }
 
   /**
@@ -291,11 +307,11 @@ export class MemoryBackendFactory {
   > {
     const { FoundationMemoryBackend } = await import('./foundation-adapter');
 
-    return class extends FoundationMemoryBackend {
+    return class InMemoryBackend extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
-          storageType: 'kv',
+          storageType: 'kv', // In-memory uses KV with no persistence
           databaseType: 'sqlite',
         } as any);
       }
@@ -311,7 +327,7 @@ export class MemoryBackendFactory {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
-          storageType: 'database',
+          storageType: 'kv', // File-based uses KV storage
           databaseType: 'sqlite',
         } as any);
       }

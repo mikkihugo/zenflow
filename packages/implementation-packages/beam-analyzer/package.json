@@ -48,9 +48,7 @@
     "vitest": "^1.0.0",
     "eslint": "^9.0.0"
   },
-  "peerDependencies": {
-    "@claude-zen/development": "workspace:*"
-  },
+  "peerDependencies": {},
   "engines": {
     "node": ">=18.0.0"
   },
@@ -65,5 +63,6 @@
     "dist",
     "queries",
     "README.md"
-  ]
+  ],
+  "private": true
 }

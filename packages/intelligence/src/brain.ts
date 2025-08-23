@@ -201,7 +201,7 @@ export class BrainCoordinator extends TypedEventBase {
 
   getStatus(): any {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus?.()||{ status:'active' };
   }
@@ -557,9 +557,8 @@ export const getNeuralAgentRegistry = async () => {
   try {
     // Neural agents are part of the Intelligence facade itself
     const { AgentRegistry } = await import('@claude-zen/foundation');
-    const registry = new AgentRegistry();
     // Configure as neural agent registry
-    return registry;
+    return new AgentRegistry();
   } catch {
     // Fallback to foundation AgentRegistry with neural-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
@@ -579,9 +578,8 @@ export const getIntelligenceAgentRegistry = async () => {
   try {
     // Intelligence agents are part of the Intelligence facade itself
     const { AgentRegistry } = await import('@claude-zen/foundation');
-    const registry = new AgentRegistry();
     // Configure as intelligence agent registry
-    return registry;
+    return new AgentRegistry();
   } catch {
     // Fallback to foundation AgentRegistry with intelligence-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
@@ -623,8 +621,7 @@ export const createIntelligenceAgentRegistry = async (config?: any) => {
 export const createConversationAgentRegistry = async (config?: any) => {
   try {
     const { ConversationAgentRegistry } = await import('./teamwork');
-    const registry = new ConversationAgentRegistry(config);
-    return registry;
+    return new ConversationAgentRegistry(config);
   } catch {
     // Fallback to foundation AgentRegistry with conversation-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
@@ -699,8 +696,7 @@ export async function getMemorySystem(config?: any): Promise<any> {
       });
     `);
 
-    const result = await memorySystemFactory()(config);
-    return result;
+    return await memorySystemFactory()(config);
   } catch (runtimeError) {
     // FALLBACK: Minimal in-memory implementation
     console.warn(

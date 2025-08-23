@@ -15,7 +15,11 @@ const logger = getLogger('APIProviderFactory');
  * Create an API provider instance
  */
 export async function createAPIProvider(
-  providerId:|'github-models-api|github-copilot-api'||anthropic-api|openai-api'',
+  providerId: 
+    | 'github-models-api'
+    | 'github-copilot-api'
+    | 'anthropic-api'
+    | 'openai-api',
   options: Record<string, unknown> = {}
 ): Promise<APIProvider> {
   logger.info(`Creating API provider: ${providerId}`);
@@ -24,7 +28,7 @@ export async function createAPIProvider(
     case 'github-models-api':
       const { GitHubModelsAPI } = await import('../api/github-models');
       return new GitHubModelsAPI({
-        token: process.env.GITHUB_TOKEN||'',
+        token: process.env.GITHUB_TOKEN || '',
         ...options,
       } as any);
 

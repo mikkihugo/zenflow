@@ -69,7 +69,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     protected adapter: DatabaseAdapter,
     protected logger: Logger,
     protected tableName: string,
-    protected entitySchema?: Record<string, unknown>
+    protected entitySchema?: Record<string, unknown>,
   ) {}
 
   /**
@@ -125,7 +125,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   async findById(id: string|number): Promise<T|null> {
     this.logger.debug(
-      `Finding entity by ID: ${id} in table: ${this.tableName}`
+      `Finding entity by ID: ${id} in table: ${this.tableName}`,
     );
 
     try {
@@ -140,7 +140,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to find entity by ID: ${error}`);
       throw new Error(
-        `Find by ID failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Find by ID failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -157,7 +157,7 @@ export abstract class BaseDao<T> implements Repository<T> {
       {
         criteria,
         options,
-      }
+      },
     );
 
     try {
@@ -168,7 +168,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to find entities by criteria: ${error}`);
       throw new Error(
-        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -191,7 +191,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to find all entities: ${error}`);
       throw new Error(
-        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -229,7 +229,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to create entity: ${error}`);
       throw new Error(
-        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -259,7 +259,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to update entity: ${error}`);
       throw new Error(
-        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -280,7 +280,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to delete entity: ${error}`);
       throw new Error(
-        `Delete failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Delete failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -303,7 +303,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Failed to count entities: ${error}`);
       throw new Error(
-        `Count failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Count failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -315,7 +315,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   async exists(id: string|number): Promise<boolean> {
     this.logger.debug(
-      `Checking if entity ${id} exists in table: ${this.tableName}`
+      `Checking if entity ${id} exists in table: ${this.tableName}`,
     );
 
     try {
@@ -353,7 +353,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     } catch (error) {
       this.logger.error(`Custom query failed: ${error}`);
       throw new Error(
-        `Custom query failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Custom query failed: ${error instanceof Error ? error.message :'Unknown error'}`,
       );
     }
   }
@@ -403,14 +403,14 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   protected buildFindByQuery(
     criteria: Partial<T>,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): { sql: string; params: unknown[] } {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
     const orderClause = this.buildOrderClause(options?.['sort']);
     const limitClause = this.buildLimitClause(
       options?.['limit'],
-      options?.['offset']
+      options?.['offset'],
     );
 
     const sql =
@@ -427,7 +427,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     const orderClause = this.buildOrderClause(options?.['sort']);
     const limitClause = this.buildLimitClause(
       options?.['limit'],
-      options?.['offset']
+      options?.['offset'],
     );
 
     const sql =
@@ -497,7 +497,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   protected buildUpdateQuery(
     id: string|number,
-    updates: Partial<T>
+    updates: Partial<T>,
   ): { sql: string; params: unknown[] } {
     const mappedUpdates = this.mapEntityToRow(updates);
     const setClause = Object.keys(mappedUpdates)
@@ -642,7 +642,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
   constructor(
     protected repository: Repository<T>,
     protected adapter: DatabaseAdapter,
-    protected logger: Logger
+    protected logger: Logger,
   ) {}
 
   /**
@@ -659,48 +659,49 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
    */
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(
-      `Executing transaction with ${operations.length} operations`
+      `Executing transaction with ${operations.length} operations`,
     );
 
     try {
-      return await this.adapter.transaction(async (_tx) => {
+      return await this.adapter.transaction(async (tx) => {
+        this.logger.debug('Transaction context initialized', { transactionId: tx });
         const results: unknown[] = [];
 
         for (const operation of operations) {
           let result: unknown;
 
           switch (operation.type) {
-            case 'create':
-              if ((operation as any).data && (operation as any).entityType) {
-                result = await this.repository.create((operation as any).data);
-              }
-              break;
+          case 'create':
+            if ((operation as any).data && (operation as any).entityType) {
+              result = await this.repository.create((operation as any).data);
+            }
+            break;
 
-            case 'update':
-              if ((operation as any).data?.id && (operation as any).data) {
-                const { id, ...updates } = (operation as any).data;
-                result = await this.repository.update(id, updates);
-              }
-              break;
+          case 'update':
+            if ((operation as any).data?.id && (operation as any).data) {
+              const { id, ...updates } = (operation as any).data;
+              result = await this.repository.update(id, updates);
+            }
+            break;
 
-            case 'delete':
-              if ((operation as any).data?.id) {
-                result = await this.repository.delete(
-                  (operation as any).data.id
-                );
-              }
-              break;
+          case 'delete':
+            if ((operation as any).data?.id) {
+              result = await this.repository.delete(
+                (operation as any).data.id,
+              );
+            }
+            break;
 
-            case 'custom':
-              if (operation.customQuery) {
-                result = await this.repository.executeCustomQuery(
-                  operation.customQuery
-                );
-              }
-              break;
+          case 'custom':
+            if (operation.customQuery) {
+              result = await this.repository.executeCustomQuery(
+                operation.customQuery,
+              );
+            }
+            break;
 
-            default:
-              throw new Error(`Unsupported operation type: ${operation.type}`);
+          default:
+            throw new Error(`Unsupported operation type: ${operation.type}`);
           }
 
           results.push(result);
@@ -711,7 +712,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Transaction failed: ${error}`);
       throw new Error(
-        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -737,7 +738,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Failed to get database metadata: ${error}`);
       throw new Error(
-        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -809,7 +810,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Failed to get performance metrics: ${error}`);
       throw new Error(
-        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }

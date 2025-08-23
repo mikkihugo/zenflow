@@ -30,16 +30,16 @@
  * description: Agent type/role in the swarm
  * status:
  * type: string
- * enum: [idle, busy, error, offline]
+ * enum: [idle, busy, error, o"flin, e]
  * description: Current agent status
  * capabilities:
  * type: array
  * items:
  * type: string
  * description: List of agent capabilities
- * example: ["code_analysis, test_generation", "documentation"]
+ * example: ["code_analysis, test_generation", "documentation, "]
  * created:
- * type: string
+ * type: stri"g
  * format: date-time
  * description: Agent creation timestamp
  * lastHeartbeat:
@@ -124,7 +124,7 @@
  * error:
  * $ref: '#/components/schemas/Error'
  *
- * Error:
+ * Eror:
  * type: object
  * required:
  * - code
@@ -132,14 +132,13 @@
  * properties:
  * code:
  * type: string
- * enum: [
- * AGENT_NOT_FOUND,
+ * enum: [* AGENT_NOT_FOUND,
  * TASK_TIMEOUT,
  * INVALID_CONFIG,
  * SWARM_FULL,
- * COORDINATION_FAILED,
+ * COORDINATION_FAILED';
  * INTERNAL_ERROR
- * ]
+ *, ]
  * description: Error code for programmatic handling
  * message:
  * type: string
@@ -182,7 +181,7 @@
  * metrics:
  * $ref: '#/components/schemas/PerformanceMetrics'
  *
- * PerformanceMetrics:
+ * PerformanceMetric:
  * type: object
  * properties:
  * activeAgents:
@@ -216,24 +215,77 @@
  */
 
 // TypeScript interfaces that match OpenAPI schemas
-export interface Agent { readonly id: string; readonly type: 'researcher  |coder| 'analyst | tester | coordinato'r''; status: 'idle' || busy || ' 'error  ' || offline; readonly capabilities: readonly string[]; readonly created: Date; lastHeartbeat: Date; taskCount: number; workload: number;
+export interface Agent {
+  readonly id: string;
+  readonly type: 'researcher' | 'coder' | 'analyst' | 'tester' | 'coordinator';
+  status: 'idle' | 'busy' | 'error' | 'offline';
+  readonly capabilities: readonly string[];
+  readonly created: Date;
+  lastHeartbeat: Date;
+  taskCount: number;
+  workload: number
+
 }
 
-export interface SwarmConfig { topology: mesh | hierarchical | ri'n''g | st'a'r'); maxAgents: number; strategy?: 'balanced  |specialized| 'adaptive | performanc'e'); adaptiveThreshold?: number;
+export interface SwarmConfig {
+  topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  maxAgents: number;
+  strategy?: 'balanced' | 'specialized' | 'adaptive' | 'performance';
+  adaptiveThreshold?: number
+
 }
 
-export interface Task { readonly id: string; readonly type: string; readonly priority: number; readonly description: string; assignedAgent?: string; status: 'pending' || assigned || ' 'in_progress  ' || completed | fai'l''e'd); readonly created: Date; deadline?: Date; result?: any; error?: CoordinationError;
+export interface Task {
+  readonly id: string;
+  readonly type: string;
+  readonly priority: number;
+  readonly description: string;
+  assignedAgent?: string;
+  status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'failed';
+  readonly created: Date;
+  deadline?: Date;
+  result?: any;
+  error?: CoordinationError
+
 }
 
-export interface CoordinationError { readonly code: AGENT_NOT_FOUND  || TASK_TIMEOUT | INVALID_CONF'I''G | SWARM_FUL'L | COORDINATION_FAILED  || INTERNAL_ERR'O''R'); readonly message: string; readonly details?: Record<string, unknown>; readonly timestamp: Date; readonly traceId?: string;
+export interface CoordinationError {
+  readonly code: 'AGENT_NOT_FOUND' | 'TASK_TIMEOUT' | 'INVALID_CONFIG' | 'SWARM_FULL' | 'COORDINATION_FAILED' | 'INTERNAL_ERROR';
+  readonly message: string;
+  readonly details?: Record<string,
+  unknown>;
+  readonly timestamp: Date;
+  readonly traceId?: string
+
 }
 
-export interface HealthStatus { readonly status: 'healthy  |degraded || unheal't''h'y'); readonly timestamp: Date; readonly components: { readonly coordination: 'healthy  |degraded || unheal't''h'y'); readonly agents: 'healthy  |degraded || unheal't''h'y'); readonly swarm: 'healthy  |degraded || unheal't''h'y'); }; readonly metrics: PerformanceMetrics;
+export interface HealthStatus {
+  readonly status: 'healthy' | 'degraded' | 'unhealthy';
+  readonly timestamp: Date;
+  readonly components: {
+  readonly coordination: 'healthy' | 'degraded' | 'unhealthy';
+  readonly agents: 'healthy' | 'degraded' | 'unhealthy';
+  readonly swarm: 'healthy' | 'degraded' | 'unhealthy'
+
+};
+  readonly metrics: PerformanceMetrics
 }
 
-export interface PerformanceMetrics { readonly activeAgents: number; readonly completedTasks: number; readonly averageTaskTime: number; readonly throughput: number; readonly errorRate: number; readonly memoryUsage: number; readonly cpuUsage: number;
+export interface PerformanceMetrics {
+  readonly activeAgents: number;
+  readonly completedTasks: number;
+  readonly averageTaskTime: number;
+  readonly throughput: number;
+  readonly errorRate: number;
+  readonly memoryUsage: number;
+  readonly cpuUsage: number
+
 }
 
 // Schema validation utilities (Google standard: explicit validation)
-export const SchemaValidators = { isValidAgentId: (id: string): boolean => /^[a-z]+(?:-[\da-z]+){2}$/.test(id), isValidTaskId: (id: string): boolean => /^task-[a-z]+(?:-[\da-z]+){2}$/.test(id), isValidPriority: (priority: number): boolean => priority >= 0 && priority <= 100, isValidWorkload: (workload: number): boolean => workload >= 0 && workload <= 100,
+export const SchemaValidators = {
+  isValidAgentId: (id: string): boolean => /^[a-z]+(?:-[\da-z]+){2}$/.test(id),
+  isValidTaskId: (id: string): boolean => /^task-[a-z]+(?:-[\da-z]+){2}$/.test(id),
+  isValidPriority: (priority: number): boolean => priority >= 0 && priority <= 100,
+  isValidWorkload: (workload: number): boolean => workload >= 0 && workload <= 100
 } as const;

@@ -9,19 +9,18 @@
 - ✅ **ALL actual implementation** work
 - ✅ **Project navigation** and code analysis
 
-### claude-code-zen Swarm System Handles:
-- 🧠 **Intelligent Coordination** - Advanced agent learning and adaptation
+### claude-code-zen Event System Handles:
+- 🧠 **Intelligent Coordination** - Advanced learning and adaptation
 - 💾 **Persistent Memory** - Multi-database storage (SQLite, LanceDB, Kuzu)
 - 🤖 **Neural Intelligence** - DSPy integration with cognitive patterns
-- 📊 **Performance Analytics** - Agent health monitoring and prediction
-- 🐝 **Swarm Orchestration** - Internal coordination via events and direct calls
-- 🏗️ **SPARC Integration** - Systematic architecture development
+- 📊 **Performance Analytics** - System health monitoring and prediction
 - ⚡ **Event System** - Comprehensive type-safe event-driven coordination
+- 🏗️ **SPARC Integration** - Systematic architecture development
 - 🌐 **Web API** - RESTful API with OpenAPI 3.0 (web interface ONLY)
 - 🎨 **Svelte Frontend** - Web-based dashboard and interface
 
 ### ⚠️ Key Principle:
-**claude-code-zen provides a complete swarm coordination system.** It uses **internal event-driven coordination** for agent communication and **REST API only for web interface**. The coordination system includes development system components: queens, commanders, cubes, and matrons working together through events and direct method calls.
+**claude-code-zen provides an event-driven coordination system.** All coordination happens through **type-safe events** managed by the event system. The standalone agent manager is separate and not used in the main system.
 
 ## System Architecture
 
@@ -92,93 +91,160 @@ Message 4: Update config
 
 ## 🚀 System Architecture
 
-### **Strategic Architecture v2.0.0 - Complete Implementation**
+### **3-Tier Strategic Package Architecture - PRODUCTION READY**
 
-claude-code-zen now uses a sophisticated **6-layer strategic facade architecture** with **22 production-ready packages**:
+claude-code-zen uses a **battle-tested 3-tier architecture** with **50+ packages** organized for maximum maintainability:
 
-#### **🏗️ Strategic Facade Layers:**
-1. **@claude-zen/foundation** - Core utilities, logging, error handling, type-safe primitives
-2. **@claude-zen/intelligence** - AI/Neural coordination, brain systems, conversation orchestration
-3. **@claude-zen/enterprise** - Business workflows, SAFE framework, portfolio management
-4. **@claude-zen/operations** - Performance tracking, monitoring, telemetry, system health
-5. **@claude-zen/infrastructure** - Database abstraction, event systems, load balancing
-6. **@claude-zen/development** - Development tools, code analysis, security scanning, Git operations
+#### **🏗️ 3-Tier Architecture Overview:**
 
-#### **⚠️ CRITICAL: Strategic Facade Architecture Rules**
+```
+📦 Tier 1: Public API (Strategic Facades + Foundation)
+├── @claude-zen/foundation       ✅ Core utilities, logging, type-safe primitives
+├── @claude-zen/llm-providers    ✅ LLM provider integrations (Claude, Gemini, Cursor, GitHub)
+├── @claude-zen/intelligence     ✅ AI/Neural coordination, brain systems  
+├── @claude-zen/enterprise       ✅ Business workflows, SAFE framework
+├── @claude-zen/operations       ✅ Performance tracking, monitoring
+├── @claude-zen/infrastructure   ✅ Database abstraction, event systems
+└── @claude-zen/development      ✅ Development tools, code analysis, repo analysis, language parsers, AI linting
 
-**🎯 FACADE PURPOSE:**
-Facades are **DELEGATION ONLY** - they provide unified access while delegating to implementation packages.
+🔒 Tier 2: Internal Implementation Packages (Private)
+├── Core: brain, database, memory, event-system, workflows
+├── Intelligence: teamwork, ai-safety, knowledge, agent-manager
+├── Infrastructure: load-balancing, system-monitoring, telemetry
+└── Enterprise: safe-framework, sparc, agui, chaos-engineering
 
-**✅ CORRECT Facade Pattern:**
+🔐 Tier 3: Deep Internal Packages (Restricted Access)
+├── @claude-zen/dspy          → Only accessible via @claude-zen/brain
+├── @claude-zen/neural-ml     → Only accessible via @claude-zen/brain  
+└── @claude-zen/fact-system   → Only accessible via @claude-zen/knowledge
+```
+
+#### **⚠️ CRITICAL: 3-Tier Architecture Rules**
+
+**🎯 TIER SEPARATION PRINCIPLES:**
+- **Tier 1** (Public): Strategic facades + foundation - ONLY packages users import
+- **Tier 2** (Private): Implementation packages - Internal business logic
+- **Tier 3** (Restricted): Deep internals - Accessed only by specific Tier 2 packages
+
+**✅ CORRECT Import Patterns:**
 ```typescript
-// Pure delegation facade
+// ✅ USE STRATEGIC FACADES (Tier 1)
+import { getBrainSystem } from '@claude-zen/intelligence';
+import { getDatabaseSystem } from '@claude-zen/infrastructure';
+import { getLogger } from '@claude-zen/foundation';
+
+// ❌ NEVER IMPORT IMPLEMENTATION PACKAGES DIRECTLY  
+// import { BrainCoordinator } from '@claude-zen/brain';        // WRONG!
+// import { DatabaseProvider } from '@claude-zen/database';     // WRONG!
+```
+
+**✅ CORRECT Facade Delegation Pattern:**
+```typescript
+// Facades are DELEGATION ONLY with lazy loading and fallbacks
 export async function getBrainSystem() {
   try {
     const { BrainSystem } = await import('@claude-zen/brain');
     return new BrainSystem();
   } catch (error) {
-    throw new Error('Brain package required for neural operations');
+    // Graceful fallback when implementation not available
+    return createCompatibilityBrainSystem();
   }
 }
 ```
 
-**❌ WRONG Facade Pattern:**
+**🏗️ Architectural Benefits:**
+- **70%+ Code Reduction** through intelligent delegation  
+- **Zero Breaking Changes** - facades maintain stable interfaces
+- **Lazy Loading** - implementation packages loaded only when needed
+- **Graceful Degradation** - fallbacks when packages unavailable
+
+#### **✅ CRITICAL: 3-Tier Import Guide**
+
+**✅ TIER 1 - Strategic Facades (USE THESE):**
 ```typescript
-// Implementation code in facade (NEVER DO THIS)
-export class BrainSystem {
-  // 500+ lines of implementation logic
-  // This belongs in @claude-zen/brain package, NOT in facade!
-}
+// Foundation (direct import - contains primitives and centralized utilities)
+import { 
+  // Core utilities
+  getLogger, Result, ok, err, UUID, generateUUID, generateNanoId,
+  
+  // Centralized utilities (replaces direct imports)
+  _, lodash,                    // Lodash utilities
+  dateFns, format, addDays,     // Date manipulation  
+  Command, program,             // CLI command parsing
+  z, validateInput,             // Schema validation
+  nanoid, customAlphabet,       // Short ID generation
+  
+  // Configuration and environment
+  getConfig, str, num, bool, port, url, email,
+  isDevelopment, isProduction, isTest,
+  
+  // Process lifecycle
+  onExit, pTimeout,
+  
+  // Error handling
+  safeAsync, withTimeout, withRetry,
+  createCircuitBreaker,
+  
+  // Dependency injection
+  createServiceContainer, inject, TOKENS,
+  
+  // Event system
+  TypedEventBase, createTypedEventBase
+} from '@claude-zen/foundation';
+
+// LLM Provider integrations (direct import - contains provider APIs)
+import { ClaudeProvider, GeminiProvider } from '@claude-zen/llm-providers';
+
+// Strategic facades (delegation to implementation packages)
+import { getBrainSystem } from '@claude-zen/intelligence';
+import { getSafeFramework } from '@claude-zen/enterprise';  
+import { getPerformanceTracker } from '@claude-zen/operations';
+import { getDatabaseSystem } from '@claude-zen/infrastructure';
+import { getCodeAnalyzer, getRepoAnalyzer, getAILinter } from '@claude-zen/development';
 ```
 
-**🏗️ Architectural Separation:**
-- **Facades** (6 strategic packages): Delegation, runtime imports, error handling
-- **Implementation** (28+ packages): Business logic, algorithms, data processing  
-- **Foundation**: Universal primitives only (logging, types, utilities)
-
-#### **✅ CRITICAL: Use Strategic Facades, NOT Direct Package Imports**
-
-**✅ CORRECT - Use Strategic Facades:**
+**❌ TIER 2 - Implementation Packages (INTERNAL ONLY):**
 ```typescript
-// Foundation utilities (direct import - foundation contains primitives)
-import { getLogger, Result, ok, err, UUID } from '@claude-zen/foundation';
-
-// Intelligence systems (facade delegation)
-import { getBrainSystem, getConversationSystem } from '@claude-zen/intelligence';
-
-// Enterprise workflows (facade delegation)
-import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
-
-// Operations monitoring (facade delegation)
-import { getPerformanceTracker, getTelemetryManager } from '@claude-zen/operations';
-
-// Infrastructure services (facade delegation)
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
-
-// Development tools (facade delegation)
-import { getDevelopmentSystem, getCodeAnalyzer, getGitOperations } from '@claude-zen/development';
+// ❌ NEVER IMPORT THESE DIRECTLY - They are private/restricted
+// import { BrainCoordinator } from '@claude-zen/brain';           
+// import { WorkflowEngine } from '@claude-zen/workflows';         
+// import { DatabaseProvider } from '@claude-zen/database';        
+// import { EventBus } from '@claude-zen/event-system';           
+// import { SafeFramework } from '@claude-zen/safe-framework';
+// import { RepoAnalyzer } from '@claude-zen/repo-analyzer';       // Use development.getRepoAnalyzer()
+// import { LanguageParser } from '@claude-zen/language-parsers';  // Use development.getLanguageParsers() 
+// import { AILinter } from '@claude-zen/ai-linter';               // Use development.getAILinter()
 ```
 
-**❌ WRONG - Direct Package Imports (DEPRECATED):**
+**🔐 TIER 3 - Deep Internal Packages (ULTRA RESTRICTED):**
 ```typescript
-// These direct imports are now DEPRECATED - use strategic facades instead
-import { BrainCoordinator } from '@claude-zen/brain';           // Use @claude-zen/intelligence
-import { WorkflowEngine } from '@claude-zen/workflows';         // Use @claude-zen/enterprise  
-import { DatabaseProvider } from '@claude-zen/database';        // Use @claude-zen/infrastructure
-import { EventBus } from '@claude-zen/event-system';           // Use @claude-zen/infrastructure
-import { TelemetryManager } from '@claude-zen/monitoring';     // Use @claude-zen/operations
-import { CodeAnalyzer } from '@claude-zen/code-analyzer';        // Use @claude-zen/development
-import { GitOperationsManager } from '@claude-zen/git-operations'; // Use @claude-zen/development
+// 🔐 ONLY specific packages can access these:
+// @claude-zen/dspy         → ONLY via @claude-zen/brain
+// @claude-zen/neural-ml    → ONLY via @claude-zen/brain  
+// @claude-zen/fact-system  → ONLY via @claude-zen/knowledge
 ```
 
-**❌ WRONG - Implementation Code in Facades:**
+**🚫 FORBIDDEN - Direct Utility Imports (USE FOUNDATION INSTEAD):**
 ```typescript
-// NEVER put implementation classes in facade packages
-// This violates the delegation-only principle
-export class DatabaseSPARCBridge {
-  // 200+ lines of business logic
-  // This should be in @claude-zen/safe-framework package!
-}
+// ❌ These direct utility imports are FORBIDDEN - use foundation instead  
+// import _ from 'lodash';                    // Use: import { _, lodash } from '@claude-zen/foundation'
+// import { nanoid } from 'nanoid';           // Use: import { generateNanoId } from '@claude-zen/foundation'
+// import { v4 as uuidv4 } from 'uuid';       // Use: import { generateUUID } from '@claude-zen/foundation'
+// import { format, addDays } from 'date-fns'; // Use: import { dateFns } from '@claude-zen/foundation'
+// import { Command } from 'commander';       // Use: import { Command, program } from '@claude-zen/foundation'
+// import winston from 'winston';            // Use: import { getLogger } from '@claude-zen/foundation'
+// import pino from 'pino';                  // Use: import { getLogger } from '@claude-zen/foundation'
+// import dotenv from 'dotenv';              // Use: import { getConfig } from '@claude-zen/foundation'
+// import Ajv from 'ajv';                    // Use: import { z, validateInput } from '@claude-zen/foundation'
+```
+
+**🏗️ Architecture Enforcement:**
+```bash
+# Validate architecture compliance
+pnpm validate:architecture
+
+# Check for violations  
+pnpm run validate:architecture
 ```
 
 #### **🎯 Strategic Facade Benefits:**
@@ -202,19 +268,19 @@ export class DatabaseSPARCBridge {
 - **Purpose**: Monitoring, visualization, and external control
 - **Integration**: API consumes internal coordination system
 
-### **Development System Components**
-- **Queens**: Strategic multi-swarm coordination (read-only, no implementation)
-- **Commanders**: Tactical coordination and task routing  
-- **Cubes**: Domain specialists (dev-cube, ops-cube)
-- **Matrons**: Domain leaders and specialized coordination
-- **Agents/Drones**: Task execution and implementation
+### **Event System Components**
+- **Event Coordinators**: Strategic coordination via type-safe events
+- **Task Orchestrators**: Task planning and routing through events
+- **Memory Managers**: Persistent storage via event-driven patterns
+- **Neural Coordinators**: Learning and adaptation via events
+- **Performance Monitors**: System health tracking via events
 
 ### **Coordination Patterns**
-- Event-driven agent communication via comprehensive event system
-- Direct method calls for performance-critical operations
-- Task orchestration with SPARC methodology
-- Memory persistence across sessions through database backends
-- Neural network coordination with DSPy integration
+- **Event-driven communication** via comprehensive type-safe event system
+- **Memory persistence** across sessions through database backends  
+- **Task orchestration** with SPARC methodology via events
+- **Neural coordination** with DSPy integration via events
+- **Performance monitoring** via event-driven patterns
 
 ## 🧠 **Automatic DSPy Integration - COMPLETED**
 
@@ -271,105 +337,89 @@ console.log(`Reasoning: ${result.reasoning}`);      // Detailed explanation
 - Time-critical operations (< 30 seconds)
 - Low accuracy requirements
 
-## 📦 **Strategic Facade Migration Guide**
+## 📦 **3-Tier Architecture Implementation Guide**
 
-### **✅ Package Migration Patterns**
+### **🏗️ Understanding the 3 Tiers**
 
-When migrating existing code to Strategic Architecture v2.0.0, use these patterns:
+#### **📦 Tier 1: Public API - What You Import**
+Only these packages are available in workspace catalog and should be imported by users:
 
-#### **Brain & AI Systems:**
 ```typescript
-// OLD (deprecated)
-import { BrainCoordinator } from '@claude-zen/brain';
-import { NeuralOrchestrator } from '@claude-zen/neural-ml';
+// ✅ Foundation - Core primitives and centralized utilities (always safe to import directly)
+import { 
+  // Core system utilities
+  getLogger, Result, UUID, ok, err, generateUUID, generateNanoId,
+  
+  // Centralized common utilities (no direct imports needed)
+  _, lodash,                    // All lodash functions
+  dateFns, format, addDays,     // All date-fns functions  
+  Command, program,             // Commander.js CLI parsing
+  z, validateInput,             // Zod schema validation
+  nanoid, customAlphabet,       // nanoid short IDs
+  
+  // Configuration system
+  getConfig, createEnvValidator, str, num, bool, port,
+  isDevelopment, isProduction, isTest,
+  
+  // Advanced patterns
+  safeAsync, withTimeout, withRetry, createCircuitBreaker,
+  TypedEventBase, createServiceContainer, inject
+} from '@claude-zen/foundation';
 
-// NEW (Strategic Intelligence Facade)  
-import { getBrainSystem } from '@claude-zen/intelligence';
-
-const brainSystem = await getBrainSystem();
-const coordinator = brainSystem.createCoordinator();    // Same interface
-const orchestrator = brainSystem.createOrchestrator();  // Lazy-loaded
-```
-
-#### **Database & Storage:**
-```typescript
-// OLD (deprecated)
-import { DatabaseProvider } from '@claude-zen/database';
-import { MemoryBackend } from '@claude-zen/memory';
-
-// NEW (Strategic Infrastructure Facade)
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
-
-const dbSystem = await getDatabaseSystem();
-const provider = dbSystem.createProvider('sqlite');     // Battle-tested implementation  
-const memory = dbSystem.createMemoryBackend();          // Integrated memory management
-```
-
-#### **Workflows & Enterprise:**
-```typescript
-// OLD (deprecated) 
-import { WorkflowEngine } from '@claude-zen/workflows';
-import { SafeFramework } from '@claude-zen/safe-framework';
-
-// NEW (Strategic Enterprise Facade)
+// ✅ Strategic Facades - Use these for all functionality  
+import { getBrainSystem, getMemorySystem } from '@claude-zen/intelligence';
+import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
 import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
+import { getPerformanceTracker, getTelemetryManager } from '@claude-zen/operations';
+import { getCodeAnalyzer, getGitOperations } from '@claude-zen/development';
 
-const safeFramework = await getSafeFramework();
-const workflowEngine = await getWorkflowEngine();
+// ✅ Supporting packages (temporary - will become facades)
+import { LLMProvider } from '@claude-zen/llm-providers';
+import { RepositoryAnalyzer } from '@claude-zen/repo-analyzer';
 ```
 
-#### **Monitoring & Operations:**
+#### **🔒 Tier 2: Internal Implementation - Private Packages**
+These packages are `"private": true` and should NEVER be imported directly:
+
 ```typescript
-// OLD (deprecated)
-import { TelemetryManager } from '@claude-zen/monitoring';
-import { PerformanceTracker } from '@claude-zen/load-balancing';
+// ❌ NEVER IMPORT THESE - Use facades instead
+// Core implementations
+// import { BrainCoordinator } from '@claude-zen/brain';           
+// import { DatabaseProvider } from '@claude-zen/database';        
+// import { MemoryManager } from '@claude-zen/memory';            
+// import { EventBus } from '@claude-zen/event-system';           
 
-// NEW (Strategic Operations Facade)  
-import { getTelemetryManager, getPerformanceTracker } from '@claude-zen/operations';
+// Intelligence implementations  
+// import { TeamworkOrchestrator } from '@claude-zen/teamwork';    
+// import { AISafetyMonitor } from '@claude-zen/ai-safety';       
+// import { KnowledgeBase } from '@claude-zen/knowledge';         
 
-const telemetry = await getTelemetryManager();          // Production-ready monitoring
-const performance = await getPerformanceTracker();      // Intelligent load balancing
+// Enterprise implementations
+// import { SafeFramework } from '@claude-zen/safe-framework';    
+// import { SPARCMethodology } from '@claude-zen/sparc';          
+// import { WorkflowEngine } from '@claude-zen/workflows';        
 ```
 
-#### **Development Tools & Security:**
+#### **🔐 Tier 3: Deep Internal - Ultra Restricted**
+These packages can ONLY be accessed by specific Tier 2 packages:
+
 ```typescript
-// OLD (deprecated)
-import { CodeAnalyzer } from '@claude-zen/code-analyzer';
-import { GitOperationsManager } from '@claude-zen/git-operations';
-import { AILinter } from '@claude-zen/ai-linter';
+// 🔐 ULTRA RESTRICTED - Only specific packages can access these
+// @claude-zen/dspy         → Only @claude-zen/brain can import
+// @claude-zen/neural-ml    → Only @claude-zen/brain can import  
+// @claude-zen/fact-system  → Only @claude-zen/knowledge can import
 
-// NEW (Strategic Development Facade)  
-import { getDevelopmentSystem, getCodeAnalyzer, getGitOperations } from '@claude-zen/development';
-
-const devSystem = await getDevelopmentSystem();
-const codeAnalyzer = await getCodeAnalyzer();           // Live code analysis with AI insights
-const gitOps = await getGitOperations();               // AI-powered Git operations
-const security = devSystem.security.comprehensive;     // Multi-tool security analysis
+// Even facades cannot directly access Tier 3!
 ```
 
-### **🔧 Migration Benefits:**
+### **🎯 Architecture Benefits**
 
-- **Zero Breaking Changes** - Facades maintain identical interfaces
-- **70%+ Code Reduction** - Delegate to battle-tested implementations
-- **Performance Improvements** - Lazy loading and intelligent caching
-- **Type Safety** - Full TypeScript support with strict typing
-- **Enterprise Patterns** - Professional architecture standards
-
-### **⚠️ DEPRECATED Package List:**
-
-**Direct imports from these packages are now DEPRECATED:**
-- `@claude-zen/brain` → Use `@claude-zen/intelligence`
-- `@claude-zen/database` → Use `@claude-zen/infrastructure`  
-- `@claude-zen/event-system` → Use `@claude-zen/infrastructure`
-- `@claude-zen/workflows` → Use `@claude-zen/enterprise`
-- `@claude-zen/safe-framework` → Use `@claude-zen/enterprise`
-- `@claude-zen/load-balancing` → Use `@claude-zen/operations`
-- `@claude-zen/monitoring` → Use `@claude-zen/operations`
-- `@claude-zen/memory` → Use `@claude-zen/infrastructure`
-- `@claude-zen/code-analyzer` → Use `@claude-zen/development`
-- `@claude-zen/git-operations` → Use `@claude-zen/development`
-- `@claude-zen/ai-linter` → Use `@claude-zen/development`
-- `@claude-zen/repo-analyzer` → Use `@claude-zen/development`
+1. **🚪 Single Point of Entry**: All functionality via strategic facades
+2. **🔒 Encapsulation**: Implementation details completely hidden  
+3. **⚡ Lazy Loading**: Packages loaded only when actually needed
+4. **🛡️ Graceful Degradation**: Fallbacks when packages unavailable
+5. **💥 Zero Breaking Changes**: Stable facade interfaces forever
+6. **📦 Dependency Management**: Clean, predictable import graph
 
 **Continue using these foundation packages directly:**
 - `@claude-zen/foundation` ✅ (Core utilities, logging, types)
@@ -461,122 +511,50 @@ When using swarm coordination with Claude Code:
 
 ## Integration Tips
 
-1. **Start Simple**: Begin with basic API calls and single agent coordination
-2. **Scale Gradually**: Add more agents as task complexity increases
-3. **Use Memory**: Store important decisions and context via API
-4. **Monitor Progress**: Regular API status checks ensure effective coordination
-5. **Train Patterns**: Let neural agents learn from successful coordinations
+1. **Start Simple**: Begin with foundation utilities and strategic facades
+2. **Use Facades**: Access all functionality through Tier 1 strategic facades
+3. **Leverage Foundation**: Use centralized utilities for consistency
+4. **Batch Operations**: Combine multiple file operations in single messages
+5. **Follow Architecture**: Respect 3-tier separation and import rules
 
-## 🧠 SWARM ORCHESTRATION PATTERN
+## 🧠 **Event-Driven Coordination**
 
-### You are the SWARM ORCHESTRATOR. **IMMEDIATELY USE API CALLS** to coordinate tasks
+### **🎯 Coordination Principles**
 
-### 🚨 CRITICAL INSTRUCTION: You are the SWARM ORCHESTRATOR
+claude-code-zen provides **event-driven coordination** while Claude Code handles all actual implementation work:
 
-**MANDATORY**: When using swarms, you MUST:
-1. **BATCH ALL API CALLS** - Use multiple API requests in ONE message
-2. **EXECUTE TASKS IN PARALLEL** - Never wait for one task before starting another
-3. **USE COORDINATION API** - All agents must use the swarm REST API
+**✅ Event System Handles:**
+- Task planning and coordination
+- Type-safe event communication
+- Memory persistence across sessions
+- Neural pattern learning and adaptation
+- Performance monitoring and optimization
 
-## 📋 COORDINATION PROTOCOL
+**✅ Claude Code Handles:**
+- ALL file operations (Read, Write, Edit, MultiEdit)
+- ALL code generation and implementation
+- ALL bash commands and system operations
+- ALL actual development work
 
-### 🔴 CRITICAL: Every Coordination Step Must Use API
+### **🚀 Efficient Tool Usage Patterns**
 
-When coordinating complex tasks:
-
-**1️⃣ BEFORE Starting Work:**
-```typescript
-// Call coordination API to set up context
-POST /api/v1/coordination/init
-GET /api/v1/memory/session/restore
-```
-
-**2️⃣ DURING Work (After EVERY Major Step):**
-```typescript
-// Store progress via API after each file operation
-POST /api/v1/memory/store
-POST /api/v1/coordination/progress
-GET /api/v1/coordination/status
-```
-
-**3️⃣ AFTER Completing Work:**
-```typescript
-// Save results via API
-POST /api/v1/coordination/complete
-POST /api/v1/analytics/performance
-GET /api/v1/coordination/summary
-```
-
-### ⚡ PARALLEL EXECUTION IS MANDATORY
-
-**THIS IS WRONG ❌ (Sequential - NEVER DO THIS):**
-```
-Message 1: Initialize coordination
-Message 2: Call API endpoint 1
-Message 3: Call API endpoint 2
-Message 4: Create file 1
-Message 5: Create file 2
-```
-
-**THIS IS CORRECT ✅ (Parallel - ALWAYS DO THIS):**
-```
-Message 1: [BatchTool]
-  - POST /api/v1/coordination/init
-  - POST /api/v1/agents/spawn (researcher)
-  - POST /api/v1/agents/spawn (coder)
-  - POST /api/v1/agents/spawn (analyst)
-
-Message 2: [BatchTool]  
-  - Write file1.js
-  - Write file2.js
-  - Write file3.js
-  - Bash mkdir commands
-  - TodoWrite updates
-```
-
-### 🎯 COORDINATION API PATTERNS
-
-When given ANY complex task:
-
-```
-STEP 1: IMMEDIATE PARALLEL COORDINATION (Single Message!)
+**✅ RECOMMENDED - Batch Operations:**
+```javascript
+// Single message with multiple related operations
 [BatchTool]:
-  - POST /api/v1/coordination/init { topology: "hierarchical", maxAgents: 8 }
-  - POST /api/v1/agents/spawn { type: "architect", name: "System Designer" }
-  - POST /api/v1/agents/spawn { type: "coder", name: "API Developer" }
-  - POST /api/v1/agents/spawn { type: "analyst", name: "DB Designer" }
-  - TodoWrite { todos: [multiple todos at once] }
-
-STEP 2: PARALLEL TASK EXECUTION (Single Message!)
-[BatchTool]:
-  - POST /api/v1/tasks/orchestrate { task: "main task", strategy: "parallel" }
-  - POST /api/v1/memory/store { key: "init", value: {...} }
-  - Multiple Read operations
-  - Multiple Write operations
-  - Multiple Bash commands
+  - Read("file1.ts", "file2.ts", "file3.ts")    // Multiple file reads
+  - Write("output.ts", content)                  // Create new file
+  - Edit("config.ts", oldStr, newStr)            // Update configuration
+  - Bash("npm test && npm run lint")             // Combined commands
 ```
 
-### 🎨 VISUAL COORDINATION STATUS
-
-When showing coordination status, use this format:
-
-```
-🐝 claude-code-zen Swarm Status: ACTIVE
-├── 🏗️ Topology: hierarchical
-├── 👥 Agents: 6/8 active (3 learning, 2 optimized)
-├── ⚡ Mode: intelligent parallel execution
-├── 📊 Tasks: 12 total (4 complete, 6 in-progress, 2 pending)
-├── 🧠 Intelligence: Agent learning active, predictions accurate
-├── 🏥 Health: All agents healthy, performance optimal
-└── 💾 Memory: SQLite + LanceDB + Kuzu integration active
-
-Agent Activity:
-├── 🟢 architect: Designing with SPARC methodology...
-├── 🟢 coder-1: Implementing with duration prediction...
-├── 🟢 coder-2: Building with health monitoring...
-├── 🟢 analyst: Optimizing with learning feedback...
-├── 🟡 tester: Adapting learning rate (success: 85%)...
-└── 🟢 coordinator: Neural coordination active...
+**❌ INEFFICIENT - Sequential Operations:**
+```javascript
+// Multiple messages (slower, breaks coordination context)
+Message 1: Read file
+Message 2: Process data  
+Message 3: Write output
+Message 4: Update config
 ```
 
 ## Support

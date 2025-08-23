@@ -19,7 +19,7 @@ export interface MemoryCoordinationConfig {
   };
   loadBalancing: {
     enabled: boolean;
-    algorithm:|'round-robin|least-connections'||weighted|resource-aware';
+    algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware';
     weights?: Record<string, number>;
   };
   failover: {
@@ -29,7 +29,7 @@ export interface MemoryCoordinationConfig {
   };
 }
 
-export type MemoryDistributionStrategy =|''single'// Single backend|'replicated'// Write to all, read from primary|'sharded'// Shard by key hash|'tiered'// Hot/warm/cold storage tiers|'intelligent'; // AI-driven distribution
+export type MemoryDistributionStrategy = 'single' | 'replicated' | 'sharded' | 'tiered' | 'intelligent';
 
 export interface MemoryNode {
   id: string;
@@ -71,7 +71,7 @@ export interface MemoryOperationRequest {
   value?: unknown;
   namespace?: string;
   options?: {
-    consistency?: 'strong|eventual'';
+    consistency?: 'strong' | 'eventual';
     timeout?: number;
     retries?: number;
     tier?: 'hot|warm|cold';

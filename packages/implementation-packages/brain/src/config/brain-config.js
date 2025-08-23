@@ -171,7 +171,6 @@ function initializeBrainSystem() {
                 logger.error('Brain system initialization failed:', error);
                 throw error;
             }
-            return [2 /*return*/];
         });
     });
 }

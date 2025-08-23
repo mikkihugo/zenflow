@@ -36,11 +36,12 @@
   "keywords": [
     "git-operations",
     "ai-conflict-resolution",
-    "branch-management", 
+    "branch-management",
     "enterprise-git",
     "safe-development",
     "automated-maintenance"
   ],
   "author": "Claude Code Zen Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

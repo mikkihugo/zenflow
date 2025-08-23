@@ -761,7 +761,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
    * Circuit breaker operation handler with comprehensive error handling and metrics
    */
   private async performStorageOperation(params: {
-    operation: 'store|retrieve'';
+    operation: 'store' | 'retrieve';
     sessionId: string;
     key?: string;
     data?: any;

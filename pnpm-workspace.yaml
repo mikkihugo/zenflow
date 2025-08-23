@@ -13,40 +13,22 @@ packages:
   - packages/implementation-packages/*
   - '!apps/*-backup'
 
-overrides:
-  # Core foundation and LLM providers
-  '@claude-zen/foundation': link:packages/foundation
-  '@claude-zen/llm-providers': link:packages/llm-providers
+catalog:
+  # Tier 1: Public API - Core foundation and strategic facades only
+  '@claude-zen/foundation': 'workspace:*'
+  '@claude-zen/llm-providers': 'workspace:*'
   
-  # Strategic facades (5 interface packages) - now in packages root
-  '@claude-zen/infrastructure': link:packages/infrastructure
-  '@claude-zen/intelligence': link:packages/intelligence
-  '@claude-zen/enterprise': link:packages/enterprise
-  '@claude-zen/operations': link:packages/operations
-  '@claude-zen/development': link:packages/development
+  # Strategic facades (5 interface packages) - ONLY public packages
+  '@claude-zen/infrastructure': 'workspace:*'
+  '@claude-zen/intelligence': 'workspace:*'
+  '@claude-zen/enterprise': 'workspace:*'
+  '@claude-zen/operations': 'workspace:*'
+  '@claude-zen/development': 'workspace:*'
   
-  # Supporting packages
-  '@claude-zen/repo-analyzer': link:packages/repo-analyzer
-  '@claude-zen/language-parsers': link:packages/language-parsers
-  '@claude-zen/ai-linter': link:packages/ai-linter
+# Development support packages moved to Tier 2 - accessed via @claude-zen/development facade
+  # '@claude-zen/repo-analyzer': 'workspace:*'     # Now internal - use development.getRepoAnalyzer()
+  # '@claude-zen/language-parsers': 'workspace:*'  # Now internal - use development.getLanguageParsers()  
+  # '@claude-zen/ai-linter': 'workspace:*'          # Now internal - use development.getAILinter()
   
-  # Updated implementation package paths
-  '@claude-zen/agui': link:packages/implementation-packages/agui
-  '@claude-zen/brain': link:packages/implementation-packages/brain
-  '@claude-zen/database': link:packages/implementation-packages/database
-  '@claude-zen/memory': link:packages/implementation-packages/memory
-  '@claude-zen/kanban': link:packages/implementation-packages/kanban
-  '@claude-zen/telemetry': link:packages/implementation-packages/telemetry
-  '@claude-zen/system-monitoring': link:packages/implementation-packages/system-monitoring
-  '@claude-zen/agent-monitoring': link:packages/implementation-packages/agent-monitoring
-  '@claude-zen/neural-ml': link:packages/implementation-packages/neural-ml
-  '@claude-zen/workflows': link:packages/implementation-packages/workflows
-  '@claude-zen/teamwork': link:packages/implementation-packages/teamwork
-  '@claude-zen/knowledge': link:packages/implementation-packages/knowledge
-  '@claude-zen/event-system': link:packages/implementation-packages/event-system
-  '@claude-zen/ai-safety': link:packages/implementation-packages/ai-safety
-  '@claude-zen/load-balancing': link:packages/implementation-packages/load-balancing
-  '@claude-zen/otel-collector': link:packages/implementation-packages/otel-collector
-  '@claude-zen/agent-registry': link:packages/implementation-packages/agent-registry
-  '@claude-zen/file-aware-ai': link:packages/file-aware-ai
-  '@claude-zen/llm-routing': link:packages/implementation-packages/llm-routing
+  # NOTE: All implementation packages removed from catalog - they are internal only
+  # Tier 2 & 3 packages are private and accessed only via strategic facades

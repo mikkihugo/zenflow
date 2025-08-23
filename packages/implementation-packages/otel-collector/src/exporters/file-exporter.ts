@@ -42,7 +42,7 @@ export class FileExporter implements BaseExporter {
     this.logger = getLogger(`FileExporter:${config.name}`);
 
     // Extract configuration
-    this.baseFilePath = config.config?.filePath|||./telemetry-data';
+    this.baseFilePath = config.config?.filePath || './telemetry-data';
     this.format = config.config?.format||'jsonl';
     this.maxFileSize = config.config?.maxFileSize||50 * 1024 * 1024; // 50MB
     this.rotationInterval = config.config?.rotationInterval||3600000; // 1 hour

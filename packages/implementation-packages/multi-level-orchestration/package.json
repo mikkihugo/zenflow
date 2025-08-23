@@ -32,8 +32,7 @@
   "dependencies": {
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/workflows": "workspace:*",
-    "eventemitter3": "^5.0.1"
+    "@claude-zen/workflows": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",
@@ -44,7 +43,7 @@
     "dist/**/*"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "keywords": [
     "orchestration",
@@ -56,5 +55,6 @@
     "workflow-management"
   ],
   "author": "Claude-Zen Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

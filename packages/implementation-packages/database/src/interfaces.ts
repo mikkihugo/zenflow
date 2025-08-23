@@ -64,9 +64,8 @@ export interface HealthStatus {
 }
 
 // Core database types
-export type EntityType =
-  || 'relational|vector|graph|memory|coordination';
-export type DatabaseType = 'sqlite|lancedb|kuzu';
+export type EntityType = 'relational'|'vector'|'graph'|'memory'|'coordination';
+export type DatabaseType = 'sqlite'|'lancedb'|'kuzu';
 
 export interface QueryOptions {
   limit?: number;
@@ -76,7 +75,7 @@ export interface QueryOptions {
 
 export interface SortCriteria {
   field: string;
-  direction: 'asc|desc'';
+  direction: 'asc' | 'desc';
 }
 
 export interface CustomQuery {
@@ -450,7 +449,7 @@ export interface QueryOptions {
  */
 export interface SortCriteria {
   field: string;
-  direction: 'asc|desc'';
+  direction: 'asc' | 'desc';
 }
 
 /**

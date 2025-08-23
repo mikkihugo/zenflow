@@ -110,8 +110,9 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                         mergedConfig = __assign(__assign({}, this.defaultConfig), config);
                         complexityScore = this.calculateComplexityScore(context, phase);
                         _a.label = 1;
+                        break;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
+                        _a.trys.push([1, 3, undefined, 4]);
                         researchConfig = {
                             language: mergedConfig.language,
                             domain: this.inferDomainFromContext(context),
@@ -144,10 +145,10 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _a.sent();
-                        console.warn('Meta-learning prompt generation failed, falling back to DSPy optimization:', error_1);
+                        logger.warn('Meta-learning prompt generation failed, falling back to DSPy optimization:', error_1);
                         return [3 /*break*/, 4];
                     case 4:
-                        _a.trys.push([4, 6, , 7]);
+                        _a.trys.push([4, 6, undefined, 7]);
                         return [4 /*yield*/, this.generateWithDSPy(phase, context, mergedConfig)];
                     case 5:
                         dspyOptimizedPrompt = _a.sent();
@@ -163,7 +164,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                         return [3 /*break*/, 7];
                     case 6:
                         error_2 = _a.sent();
-                        console.warn('DSPy prompt generation failed, falling back to static templates:', error_2);
+                        logger.warn('DSPy prompt generation failed, falling back to static templates:', error_2);
                         return [3 /*break*/, 7];
                     case 7:
                         codingStandards = this.generateCodingStandards(mergedConfig);
@@ -303,7 +304,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        _c.trys.push([0, 6, , 7]);
+                        _c.trys.push([0, 6, undefined, 7]);
                         return [4 /*yield*/, Promise.resolve().then(function () { return require('../../coordination/dspy-llm-bridge'); })];
                     case 1:
                         DSPyLLMBridge = (_c.sent()).DSPyLLMBridge;
@@ -361,7 +362,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                         return [2 /*return*/, null];
                     case 6:
                         error_3 = _c.sent();
-                        console.warn('DSPy prompt generation failed:', error_3);
+                        logger.warn('DSPy prompt generation failed:', error_3);
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -512,13 +513,14 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                             return [2 /*return*/, null];
                         }
                         _a.label = 1;
+                        break;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
+                        _a.trys.push([1, 3, undefined, 4]);
                         return [4 /*yield*/, this.codingPrinciplesResearcher.getAdaptivePrinciples(config)];
                     case 2: return [2 /*return*/, _a.sent()];
                     case 3:
                         error_4 = _a.sent();
-                        console.warn('Failed to get adaptive principles:', error_4);
+                        logger.warn('Failed to get adaptive principles:', error_4);
                         return [2 /*return*/, null];
                     case 4: return [2 /*return*/];
                 }
@@ -622,7 +624,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!this.codingPrinciplesResearcher) {
-                            console.warn('Cannot submit feedback: CodingPrinciplesResearcher not available');
+                            logger.warn('Cannot submit feedback: CodingPrinciplesResearcher not available');
                             return [2 /*return*/];
                         }
                         agentFeedback = {
@@ -647,7 +649,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
                         return [4 /*yield*/, this.codingPrinciplesResearcher.submitAgentFeedback(agentFeedback)];
                     case 1:
                         _a.sent();
-                        console.log("Agent feedback submitted for principles ".concat(principlesId, ": accuracy=").concat(feedback.accuracy, ", usefulness=").concat(feedback.usefulness));
+                        logger.info("Agent feedback submitted for principles ".concat(principlesId, ": accuracy=").concat(feedback.accuracy, ", usefulness=").concat(feedback.usefulness));
                         return [2 /*return*/];
                 }
             });

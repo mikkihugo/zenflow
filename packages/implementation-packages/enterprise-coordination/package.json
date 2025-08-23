@@ -11,8 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "eventemitter3": "^5.0.1"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3",
@@ -24,13 +23,13 @@
       "default": "./dist/index.js"
     },
     "./coordination": {
-      "types": "./dist/coordination/index.d.ts", 
+      "types": "./dist/coordination/index.d.ts",
       "default": "./dist/coordination/index.js"
     }
   },
   "keywords": [
     "enterprise",
-    "coordination", 
+    "coordination",
     "safe",
     "sparc",
     "project-management",
@@ -38,5 +37,6 @@
     "lean-portfolio-management"
   ],
   "author": "Claude Code Zen Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

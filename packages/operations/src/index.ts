@@ -50,7 +50,7 @@ registerFacade(
     'Memory management and optimization',
     'System and infrastructure performance monitoring',
     'Real-time operational metrics and alerting',
-  ]
+  ],
 );
 
 // =============================================================================
@@ -226,7 +226,7 @@ export const getPerformanceAgentRegistry = async () => {
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
     logger.warn(
-      'Performance agents package not available, using basic agent registry'
+      'Performance agents package not available, using basic agent registry',
     );
     return registry;
   }
@@ -246,7 +246,7 @@ export const getTelemetryAgentRegistry = async () => {
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
     logger.warn(
-      'Telemetry agents package not available, using basic agent registry'
+      'Telemetry agents package not available, using basic agent registry',
     );
     return registry;
   }
@@ -293,7 +293,7 @@ export const createHealthMonitoringAgentRegistry = async (config?: any) => {
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
     logger.warn(
-      'Agent monitoring package not available, using basic agent registry'
+      'Agent monitoring package not available, using basic agent registry',
     );
     return registry;
   }

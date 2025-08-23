@@ -23,7 +23,22 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
+// Directory utilities for future script extensions
 const __dirname = path.dirname(__filename);
+
+/**
+ * Gets the root directory of the brain package
+ */
+function getPackageRoot() {
+  return path.resolve(__dirname, '..');
+}
+
+/**
+ * Gets the source directory path
+ */
+function _getSourceDir() {
+  return path.join(getPackageRoot(), 'src');
+}
 
 /**
  * Configuration for TSDoc coverage checking

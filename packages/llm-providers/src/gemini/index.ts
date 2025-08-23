@@ -13,6 +13,7 @@ import type {
   CLIResult,
   CLIError,
   CLIProviderCapabilities,
+  SwarmAgentRole,
 } from '../types/cli-providers';
 
 // TODO: Implement GeminiProvider class
@@ -60,8 +61,8 @@ export class GeminiCLI implements CLIProvider {
     return err(error);
   }
 
-  getRole() {
-    return;
+  getRole(): SwarmAgentRole | undefined {
+    return undefined;
   }
 
   async complete(

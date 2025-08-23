@@ -3,7 +3,7 @@
  *
  * Strategic facade providing comprehensive document intelligence capabilities through delegation
  * to @claude-zen/document-intelligence service when available, with professional fallbacks.
- * 
+ *
  * Includes DeepCode-style semantic analysis, strategic vision coordination,
  * intelligent document processing, and swarm integration capabilities.
  */
@@ -59,16 +59,22 @@ async function loadDocumentIntelligenceModule() {
 
 function createFallbackIntelligenceService() {
   return {
-    analyzeDocument: async (options: any) => ({
-      semanticClassification: { documentType: 'unknown', confidence: 0.5 },
-      processingMetrics: { totalProcessingTime: 0, confidenceScore: 0.5, qualityScore: 0.5 },
-      timestamp: Date.now(),
-    }),
-    analyzeSemantics: async (options: any) => ({
-      documentType: 'unknown',
-      confidence: 0.5,
-      patterns: { detected: [], confidence: {}, weights: {} },
-    }),
+    analyzeDocument: async (options: any) => {
+      console.log('Document analysis options:', options);
+      return {
+        semanticClassification: { documentType: 'unknown', confidence: 0.5 },
+        processingMetrics: { totalProcessingTime: 0, confidenceScore: 0.5, qualityScore: 0.5 },
+        timestamp: Date.now(),
+      };
+    },
+    analyzeSemantics: async (options: any) => {
+      console.log('Semantic analysis options:', options);
+      return {
+        documentType: 'unknown',
+        confidence: 0.5,
+        patterns: { detected: [], confidence: {}, weights: {} },
+      };
+    },
     coordinateVision: async (options: any) => ({
       projectId: options?.projectId || 'unknown',
       confidenceScore: 0.5,
@@ -129,7 +135,7 @@ function createFallbackWorkflow() {
 function createFallbackScanner() {
   const service = createFallbackIntelligenceService();
   return {
-    scanDocument: async (document: any) => service.scanForPatterns({ rootPath: document?.path || '.'}),
+    scanDocument: async (document: any) => service.scanForPatterns({ rootPath: document?.path || '.' }),
     scanForPatterns: service.scanForPatterns,
     getStatus: service.getStatus,
     initialize: service.initialize,
@@ -191,14 +197,14 @@ export class DocumentDrivenSystem {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.analyzeDocument ? 
-      this.instance.analyzeDocument(document) : 
+    return this.instance.analyzeDocument ?
+      this.instance.analyzeDocument(document) :
       this.instance.processDocument(document);
   }
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus();
   }
@@ -228,14 +234,14 @@ export class DocumentProcessor {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.analyzeDocument ? 
-      this.instance.analyzeDocument(document) : 
+    return this.instance.analyzeDocument ?
+      this.instance.analyzeDocument(document) :
       this.instance.processDocument(document);
   }
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus();
   }
@@ -263,7 +269,7 @@ export class DocumentWorkflowSystem {
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus();
   }
@@ -286,8 +292,8 @@ export class EnhancedDocumentScanner {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.scanForPatterns ? 
-      this.instance.scanForPatterns(document) : 
+    return this.instance.scanForPatterns ?
+      this.instance.scanForPatterns(document) :
       this.instance.scanDocument(document);
   }
 

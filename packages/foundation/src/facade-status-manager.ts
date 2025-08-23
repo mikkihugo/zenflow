@@ -106,7 +106,7 @@ const createContainer = (): AwilixContainer => ({
   register: (
     nameOrRegistrations: string|JsonObject,
     resolver?: JsonValue,
-    options?: JsonObject
+    options?: JsonObject,
   ) => {
     // Security audit: tracking service registration attempts for facade status management
     logger.debug('Service registration attempt in fallback container', {
@@ -120,9 +120,13 @@ const createContainer = (): AwilixContainer => ({
   },
   resolve: <T = JsonValue>() => null as T,
   has: () => false,
-  dispose: () => {
+  dispose: async () => {
     // Security audit: tracking container disposal for facade lifecycle management
     logger.debug('Fallback container disposal initiated');
+
+    // Enhanced async disposal with resource cleanup
+    await Promise.resolve(); // Simulated async cleanup
+    logger.debug('Fallback container disposal completed');
   },
 });
 
@@ -296,7 +300,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
    */
   async checkAndRegisterPackage(
     packageName: string,
-    serviceName?: string
+    serviceName?: string,
   ): Promise<PackageInfo> {
     const cached = this.packageCache.get(packageName);
     const expiry = this.packageCacheExpiry.get(packageName);
@@ -339,7 +343,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
             const serviceName = exportName.replace('create', '').toLowerCase();
             registrations[serviceName] = asFunction(
               exportValue as unknown as JsonValue,
-              { lifetime: Lifetime.SINGLETON }
+              { lifetime: Lifetime.SINGLETON },
             );
           }
           if (
@@ -349,7 +353,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
             const serviceName = exportName.replace('get', '').toLowerCase();
             registrations[serviceName] = asFunction(
               exportValue as unknown as JsonValue,
-              { lifetime: Lifetime.SINGLETON }
+              { lifetime: Lifetime.SINGLETON },
             );
           }
         });
@@ -412,11 +416,11 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
    *   'AI safety protocols'* ]);
    * ```
    */
-  registerFacade(
+  async registerFacade(
     facadeName: string,
     expectedPackages: string[],
-    features: string[] = []
-  ): void {
+    features: string[] = [],
+  ): Promise<void> {
     logger.info(`Registering facade: ${facadeName}`, {
       expectedPackages,
       features,
@@ -424,7 +428,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
 
     // Check and register all expected packages
     const packageChecks = await Promise.all(
-      expectedPackages.map((pkg) => this.checkAndRegisterPackage(pkg))
+      expectedPackages.map((pkg) => this.checkAndRegisterPackage(pkg)),
     );
 
     const packages: Record<string, PackageInfo> = {};
@@ -507,7 +511,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
    */
   getService<T>(
     serviceName: string,
-    fallback?: () => T
+    fallback?: () => T,
   ): T|null {
     try {
       // Try to resolve the service directly - if it fails, the service doesn't exist
@@ -515,7 +519,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
     } catch (error) {
       logger.debug(
         `Service ${serviceName} not registered or failed to resolve`,
-        error
+        error,
       );
     }
 
@@ -562,7 +566,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
       totalPackages += Object.keys(status.packages).length;
       availablePackages += Object.values(status.packages).filter(
         (pkg) =>
-          pkg.status === PackageStatus.AVAILABLE || pkg.status === PackageStatus.REGISTERED
+          pkg.status === PackageStatus.AVAILABLE || pkg.status === PackageStatus.REGISTERED,
       ).length;
       registeredServices += status.registeredServices.length;
       totalHealthScore += status.healthScore;
@@ -600,12 +604,12 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
    * Get simple status summary for health checks
    */
   getHealthSummary(): {
-    status:'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     details: JsonObject;
-  } {
+    } {
     const systemStatus = this.getSystemStatus();
 
-    let status: 'healthy|degraded|unhealthy';
+    let status: 'healthy' | 'degraded' | 'unhealthy';
     if (systemStatus.healthScore >= 80) {
       status = 'healthy';
     } else if (systemStatus.healthScore >= 40) {
@@ -639,10 +643,10 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
 
       if (stalePackages.length > 0) {
         logger.debug(
-          `Refreshing ${stalePackages.length} stale package statuses`
+          `Refreshing ${stalePackages.length} stale package statuses`,
         );
         await Promise.all(
-          stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg))
+          stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg)),
         );
       }
 
@@ -662,12 +666,12 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
    */
   async refreshAllStatuses(): Promise<void> {
     logger.info(
-      'Force refreshing all package statuses and re-registering services'
+      'Force refreshing all package statuses and re-registering services',
     );
     this.packageCache.clear();
 
     // Re-register all facades
-    const facades = Array.from(this.facadeStatus.keys())();
+    const facades = Array.from(this.facadeStatus.keys());
     for (const facade of facades) {
       const status = this.facadeStatus.get(facade);
       if (!status) {
@@ -676,7 +680,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
       await this.registerFacade(
         facade,
         Object.keys(status.packages),
-        status.features
+        status.features,
       );
     }
   }
@@ -731,23 +735,23 @@ export function getHealthSummary() {
   return facadeStatusManager.getHealthSummary();
 }
 
-export function registerFacade(
+export async function registerFacade(
   facadeName: string,
   expectedPackages: string[],
-  features: string[] = []
-): void {
+  features: string[] = [],
+): Promise<void> {
   return facadeStatusManager.registerFacade(
     facadeName,
     expectedPackages,
-    features
+    features,
   );
 }
 
-export function getService<T>(
+export async function getService<T>(
   serviceName: string,
-  fallback?: () => T
+  fallback?: () => T,
 ): Promise<T | null> {
-  return facadeStatusManager.getService(serviceName, fallback);
+  return Promise.resolve(facadeStatusManager.getService(serviceName, fallback));
 }
 
 export function hasService(serviceName: string): boolean {

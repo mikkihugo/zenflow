@@ -65,7 +65,7 @@ export interface NeuralResult {
   result: number[]|number[][]|Record<string, unknown>;
   metadata: {
     complexity: TaskComplexity;
-    processor:'brain-js|neural-ml-light'||neural-ml-heavy';
+    processor: 'brain-js' | 'neural-ml-light' | 'neural-ml-heavy';
     duration: number;
     confidence?: number;
     storageStrategy: StorageStrategy;
@@ -455,7 +455,7 @@ export class NeuralOrchestrator {
    */
   private async simulateNeuralMlProcessing(
     task: NeuralTask,
-    mode: 'light|heavy'): Promise<number[]|'number[][]> {
+    mode: 'light' | 'heavy'): Promise<number[] | number[][]> {
     // This is a simulation - actual implementation would call neural-ml APIs
     const input = task.data.input;
 
@@ -658,7 +658,7 @@ export class NeuralOrchestrator {
       if (neuralMl.processTask) {
         return await neuralMl.processTask(task, {
           modelType,
-          priority: (task.data.metadata as any)?.priority|||medium',
+          priority: (task.data.metadata as any)?.priority || 'medium',
           timeout: (task.data.metadata as any)?.timeout||30000,
         });
       } else {

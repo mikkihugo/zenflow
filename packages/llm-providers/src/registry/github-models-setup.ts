@@ -245,7 +245,7 @@ export async function setupGitHubModelsDefault(): Promise<ModelRegistryService> 
 export async function setupGitHubModelsAdvanced(options: {
   enableModelsApi?: boolean;
   enableCopilot?: boolean;
-  tokenSource?: 'env|config|auto';
+  tokenSource?: 'env' | 'config' | 'auto';
   filterModels?: (modelId: string) => boolean;
 }): Promise<ModelRegistryService> {
   const config: Partial<GitHubModelsConfig> = {

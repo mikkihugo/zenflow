@@ -44,5 +44,6 @@
     "complexity-analysis"
   ],
   "author": "Claude Code Zen Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

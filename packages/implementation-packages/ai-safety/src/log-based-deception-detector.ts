@@ -5,9 +5,10 @@
  * Cross-references AI claims with actual logged tool usage.
  */
 
-import * as path from 'path';
-import { getLogger, safeAsync, Result } from '@claude-zen/foundation';
 import * as fs from 'fs/promises';
+import * as path from 'path';
+
+import { getLogger, safeAsync } from '@claude-zen/foundation';
 
 export interface LogAnalysisResult {
   toolCallsFound: string[];
@@ -91,7 +92,7 @@ export class LogBasedDeceptionDetector {
         // Read last 1000 lines (recent activity)
         return content.split('\n').slice(-1000).join('\n');
       } catch {
-        return ';
+        return '';
       }
     });
 
@@ -99,7 +100,7 @@ export class LogBasedDeceptionDetector {
       this.logger.warn(`Failed to read log file ${filename}`, {
         error: result.error.message,
       });
-      return ';
+      return '';
     }
 
     return result.value;
@@ -113,13 +114,13 @@ export class LogBasedDeceptionDetector {
   private extractAIClaims(text: string): string[] {
     const claims: string[] = [];
 
-    // Patterns for common deceptive claims
+    // Patterns for common deceptive claims - optimized for case insensitivity
     const claimPatterns = [
-      /I (?:analyzed|examined|reviewed|checked) (?:the )?(.{1,50})/gi,
-      /I (?:implemented|created|built|wrote) (?:the )?(.{1,50})/gi,
-      /I (?:found|discovered|identified) (?:the )?(.{1,50})/gi,
-      /I (?:fixed|resolved|corrected) (?:the )?(.{1,50})/gi,
-      /I (?:can|will) (?:leverage|use|utilize) (?:the )?(.{1,50})/gi,
+      /i (?:analyzed|examined|reviewed|checked) (?:the )?(.{1,50})/gi,
+      /i (?:implemented|created|built|wrote) (?:the )?(.{1,50})/gi,
+      /i (?:found|discovered|identified) (?:the )?(.{1,50})/gi,
+      /i (?:fixed|resolved|corrected) (?:the )?(.{1,50})/gi,
+      /i (?:can|will) (?:leverage|use|utilize) (?:the )?(.{1,50})/gi,
     ];
 
     for (const pattern of claimPatterns) {
@@ -140,14 +141,14 @@ export class LogBasedDeceptionDetector {
   private extractToolCalls(logContent: string): string[] {
     const toolCalls: string[] = [];
 
-    // Look for tool call patterns in logs
+    // Look for tool call patterns in logs - optimized regex patterns
     const toolPatterns = [
-      /Read tool.*file_path.*"([^"]+)"/gi,
-      /Write tool.*file_path.*"([^"]+)"/gi,
-      /Edit tool.*file_path.*"([^"]+)"/gi,
-      /Bash tool.*command.*"([^"]+)"/gi,
-      /Grep tool.*pattern.*"([^"]+)"/gi,
-      /MultiEdit tool.*file_path.*"([^"]+)"/gi,
+      /read tool.*file_path.*"([^"]+)"/gi,
+      /write tool.*file_path.*"([^"]+)"/gi,
+      /edit tool.*file_path.*"([^"]+)"/gi,
+      /bash tool.*command.*"([^"]+)"/gi,
+      /grep tool.*pattern.*"([^"]+)"/gi,
+      /multiedit tool.*file_path.*"([^"]+)"/gi,
     ];
 
     for (const pattern of toolPatterns) {
@@ -169,8 +170,8 @@ export class LogBasedDeceptionDetector {
     const fileOps: string[] = [];
 
     const fileOpPatterns = [
-      /(?:Read|Write|Edit|MultiEdit).*file.*"([^"]+)"/gi,
-      /File operation.*"([^"]+)"/gi,
+      /(?:read|write|edit|multiedit).*file.*"([^"]+)"/gi,
+      /file operation.*"([^"]+)"/gi,
     ];
 
     for (const pattern of fileOpPatterns) {

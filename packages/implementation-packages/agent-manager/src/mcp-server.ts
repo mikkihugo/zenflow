@@ -21,6 +21,7 @@
  * ```
  */
 
+import { getLogger } from '@claude-zen/foundation';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -29,9 +30,9 @@ import {
   McpError,
   ErrorCode,
 } from '@modelcontextprotocol/sdk/types.js';
+
 import { AgentManager } from './agent-manager';
 import type { CognitiveArchetype, SwarmTopology } from './types';
-import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('agent-manager-mcp');
 
@@ -71,6 +72,9 @@ class AgentManagerMCPServer {
   private setupToolHandlers() {
     // List available tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+      // Simulate async operation for tool discovery
+      await new Promise(resolve => setTimeout(resolve, 1));
+      
       return {
         tools: [
           {
@@ -268,7 +272,7 @@ class AgentManagerMCPServer {
   }
 
   private async handleCreateSwarm(args: any) {
-    const manager = await getManager();
+    const _manager = await getManager();
 
     // Validate cognitive types
     const validTypes: CognitiveArchetype[] = [

@@ -113,9 +113,9 @@ export class MemoryCoordinator extends TypedEventBase {
     const decision: CoordinationDecision = {
       id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
       type: operation.type||'read',
-      sessionId: operation.sessionId||',
-      target: operation.target|||,
-      participants: this.selectParticipants(operation.type|||read'),
+      sessionId: operation.sessionId || 'default',
+      target: operation.target || 'default',
+      participants: this.selectParticipants(operation.type || 'read'),
       status: 'pending',
       timestamp: Date.now(),
       metadata: operation.metadata,

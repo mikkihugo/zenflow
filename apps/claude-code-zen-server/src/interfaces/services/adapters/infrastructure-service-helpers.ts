@@ -5,22 +5,28 @@
  * providing high-level convenience methods for common infrastructure tasks.
  * Follows the same patterns as other USL service helpers.
  */
+
 /**
  * @file Interface implementation: infrastructure-service-helpers.
  */
 
 import { getLogger } from '@claude-zen/foundation';
 
-import type { ServiceOperationOptions } from './core/interfaces';
+import type { ServiceOperationOptions } from '../core/interfaces';
 
-import type { InfrastructureServiceAdapter, InfrastructureServiceAdapterConfig,
-} from "./infrastructure-service-adapter";
-import { createDefaultInfrastructureServiceAdapterConfig, createInfrastructureServiceAdapter,
-} from "./infrastructure-service-adapter";
-import(/infrastructure-service-factory);
-import(/infrastructure-service-factory);
+import type {
+  InfrastructureServiceAdapter,
+  InfrastructureServiceAdapterConfig
 
-const logger = getLogger(InfrastructureServiceHelpers);
+} from './infrastructure-service-adapter';
+import {
+  createDefaultInfrastructureServiceAdapterConfig,
+  createInfrastructureServiceAdapter
+
+} from './infrastructure-service-adapter';
+import { InfrastructureServiceFactory } from './infrastructure-service-factory';
+
+const logger = getLogger('InfrastructureServiceHelpers);
 
 // ============================================
 // Service Creation Helpers
@@ -29,207 +35,292 @@ const logger = getLogger(InfrastructureServiceHelpers);
 /**
  * Quick create infrastructure service with minimal configuration.
  *
- * @param name
- * @param options
- * @param options.enableFacade
- * @param options.enablePatternIntegration
- * @param options.enableResourceTracking
- * @param options.enableHealthMonitoring
- * @param options.autoStart
+ * @param name - Service name
+ * @param options - Configuration options
+ * @param options.enableFacade - Enable facade pattern
+ * @param options.enablePatternIntegration - Enable pattern integration
+ * @param options.enableResourceTracking - Enable resource tracking
+ * @param options.enableHealthMonitoring - Enable health monitoring
+ * @param options.autoStart - Auto-start the service
+ * @returns Infrastructure service adapter
+ *
  * @example
+ * ``'typescript
+ * const service = await quickCreateInfrastructureService(
+  'my-service',
+  {
+  *   nableFacade: true,
+  *   enableHealthMonitoring: true,
+  *   autoStart: true
+ *
+}
+);
+ * ``'
  */
-export async function quickCreateInfrastructureService( name: string, options: { enableFacade?: boolean; enablePatternIntegration?: boolean; enableResourceTracking?: boolean; enableHealthMonitoring?: boolean; autoStart?: boolean; } = {}
-): Promise<InfrastructureServiceAdapter> { logger.debug('Quick creating infrastructure service', { name, options }); const config = createDefaultInfrastructureServiceAdapterConfig(name, { facade: { enabled: options?.enableFacade !== false, autoInitialize: true, enableMetrics: true, enableHealthChecks: options?.enableHealthMonitoring !== false, }, patternIntegration: { enabled: options?.enablePatternIntegration !== false, enableAutoOptimization: true, }, resourceManagement: { enableResourceTracking: options?.enableResourceTracking !== false, enableResourceOptimization: true, }, healthMonitoring: { enableAdvancedChecks: options?.enableHealthMonitoring !== false, enablePerformanceAlerts: true, }, }); const service = createInfrastructureServiceAdapter(config); await service?.initialize() if (options?.autoStart !== false) { await service?.start() } return service;
+export async function quickCreateInfrastructureService(name: string,
+  options: {
+  enableFacade?: boolean;
+    enablePatternIntegration?: boolean;
+    enableResourceTracking?: boolean;
+    enableHealthMonitoring?: boolean;
+    autoStart?: boolean
+
+} = {}
+): Promise<InfrastructureServiceAdapter>  {
+  logger.debug(
+  'Quick creating infrastructure service',
+  {
+  name,
+  options
+}
+)';
+
+  const config = createDefaultInfrastructureServiceAdapterConfig(
+  name,
+  {
+    facade: {
+  enabled: options?.enableFacade !== false,
+  autoInitialize: true,
+  enableMetrics: true,
+  enableHealthChecks: options?.enableHealthMonitoring !== false
+
+},
+    patternIntegration: {
+  enabled: options?.enablePatternIntegration !== false,
+  enableAutoOptimization: true
+
+},
+    resourceManagement: {
+  enableResourceTracking: options?.enableResourceTracking !== false,
+  enableResourceOptimization: true
+
+},
+    healthMonitoring: {
+  enableAdvancedChecks: options?.enableHealthMonitoring !== false,
+  enablePerformanceAlerts: true
+
+}
+}
+);
+
+  const service = createInfrastructureServiceAdapter(config);
+
+  await service?.initialize();
+
+  if (options?.autoStart !== false' {
+    await service?.start()
+}
+
+  return service
 }
 
 /**
  * Create infrastructure service with facade-only configuration.
  *
- * @param name
- * @param facadeOptions
- * @param facadeOptions.mockServices
- * @param facadeOptions.enableBatchOperations
- * @param facadeOptions.systemStatusInterval
- * @example
+ * @param name - Service name
+ * @param facadeOptions - Facade configuration options
+ * @param facadeOptions.mockServices - Enable mock services for testing
+ * @param facadeOptions.enableCaching - Enable caching
+ * @param facadeOptions.enableValidation - Enable validation
+ * @returns Infrastructure service adapter
  */
-export async function createFacadeOnlyInfrastructureService( name: string', facadeOptions: { mockServices?: boolean; enableBatchOperations?: boolean; systemStatusInterval?: number; } = {}
-): Promise<InfrastructureServiceAdapter> { logger.debug('Creating facade-only infrastructure service', { name, facadeOptions, }); const config = createDefaultInfrastructureServiceAdapterConfig(name, { facade: { enabled: true, autoInitialize: true, mockServices: facadeOptions?.mockServices !== false, enableBatchOperations: facadeOptions?.enableBatchOperations !== false', systemStatusInterval: facadeOptions?.systemStatusInterval  || ' ' 30000, enableMetrics: true, enableHealthChecks: true, }, patternIntegration: { enabled: false }, orchestration: { enableServiceDiscovery: false }, resourceManagement: { enableResourceTracking: false }, eventCoordination: { enableCentralizedEvents: false }, }); const service = createInfrastructureServiceAdapter(config); await service?.initialize() await service?.start() return service;
+export async function createFacadeOnlyInfrastructureService(name: string,
+  facadeOptions: {
+  mockServices?: boolean;
+    enableCaching?: boolean;
+    enableValidation?: boolean
+
+} = {}
+): Promise<InfrastructureServiceAdapter>  {
+  logger.debug(
+  'Creating facade-only infrastructure service',
+  {
+  name,
+  facad'Options
+}
+)';
+
+  const config = createDefaultInfrastructureServiceAdapterConfig(
+  name,
+  {
+    facade: {
+  enabled: true,
+  autoInitialize: true,
+  enableMetrics: true,
+  enableHealthChecks: true,
+  mockServices: facadeOptions.mockServices,
+  enableCaching: facadeOptions.enableCaching,
+  enableValidation: facadeOptions.enableValidation
+
+},
+    patternIntegration: {
+      enabled: false
+},
+    resourceManagement: {
+  enableResourceTracking: false,
+  enableResourceOptimization: false
+
+},
+    healthMonitoring: {
+  enableAdvancedChecks: false,
+  enablePerformanceAlerts: false
+
+}
+}
+);
+
+  const service = createInfrastructureServiceAdapter(config);
+  await service?.initialize();
+  return service
 }
 
 /**
- * Create infrastructure service with pattern integration only.
+ * Create infrastructure service with full production configuration.
  *
- * @param name
- * @param patternOptions
- * @param patternOptions.configProfile
- * @param patternOptions.maxAgents
- * @param patternOptions.enableAutoOptimization
- * @example
+ * @param name - Service name
+ * @param productionOptions - Production configuration options
+ * @param productionOptions.enableDistributedMode - Enable distributed mode
+ * @param productionOptions.enableClusterMode - Enable cluster mode
+ * @param productionOptions.enableLoadBalancing - Enable load balancing
+ * @param productionOptions.enableFailover - Enable failover
+ * @returns Infrastructure service adapter
  */
-export async function createPatternIntegrationOnlyService( name: string, patternOptions: { configProfile?:'default | production | development'); maxAgents?: number; enableAutoOptimization?: boolean; } = {}
-): Promise<InfrastructureServiceAdapter> { logger.debug('Creating pattern integration only service', { name, patternOptions, }); const config = createDefaultInfrastructureServiceAdapterConfig(name, { facade: { enabled: false }, patternIntegration: { enabled: true', configProfile: patternOptions?.configProfile  || ' ' development', maxAgents: patternOptions?.maxAgents  || ' ' 20, enableAutoOptimization: patternOptions?.enableAutoOptimization !== false, enableEventSystem: true, enableCommandSystem: true, enableProtocolSystem: true, enableAgentSystem: true, }, orchestration: { enableServiceDiscovery: true }, resourceManagement: { enableResourceTracking: true }, eventCoordination: { enableCentralizedEvents: true }, }); const service = createInfrastructureServiceAdapter(config); await service?.initialize() await service?.start() return service;
+export async function createProductionInfrastructureService(
+  name: string,
+  productionOptions: {
+  enableDistributedMode?: boolean;
+    enableClusterMode?: boolean;
+    enableLoadBalancing?: boolean;
+    enableFailover?: boolean
+
+} = {}
+': Promise<InfrastructureServiceAdapter> {
+  logger.debug('Creating production infrastructure service',
+  {
+  name,
+  productionOptions
 }
+)';
 
-/**
- * Create infrastructure service optimized for production.
- *
- * @param name
- * @param productionOptions
- * @param productionOptions.maxConcurrentServices
- * @param productionOptions.enableCircuitBreaker
- * @param productionOptions.enablePredictiveMonitoring
- * @param productionOptions.configEncryption
- * @example
- */
-export async function createProductionInfrastructureService( name: string, productionOptions: { maxConcurrentServices?: number; enableCircuitBreaker?: boolean; enablePredictiveMonitoring?: boolean; configEncryption?: boolean; } = {}
-): Promise<InfrastructureServiceAdapter> { logger.debug('Creating production infrastructure service', { name, productionOptions, }); const config = createDefaultInfrastructureServiceAdapterConfig(name, { facade: { enabled: true, autoInitialize: true, enableMetrics: true, enableHealthChecks: true, mockServices: false, // Use real services in production }, patternIntegration: { enabled: true', configProfile: 'production', maxAgents: 50, enableAutoOptimization: true, }, orchestration: { enableServiceDiscovery: true, enableLoadBalancing: true, enableCircuitBreaker: productionOptions?.enableCircuitBreaker !== false, maxConcurrentServices: productionOptions?.maxConcurrentServices  || ' ' 50, enableServiceMesh: true, }, resourceManagement: { enableResourceTracking: true, enableResourceOptimization: true, enableGarbageCollection: true, memoryThreshold: .7, // Lower threshold for production cpuThreshold: .7, }, configManagement: { enableHotReload: true, enableValidation: true, enableVersioning: true, configEncryption: productionOptions?.configEncryption === true, maxConfigHistory: 100, }, healthMonitoring: { enableAdvancedChecks: true, enableServiceDependencyTracking: true, enablePerformanceAlerts: true, enablePredictiveMonitoring: productionOptions?.enablePredictiveMonitoring !== false, performanceThresholds: { responseTime: 500, // Stricter thresholds for production errorRate: .01, resourceUsage: .7, }, }, }); const service = createInfrastructureServiceAdapter(config); await service?.initialize() await service?.start() return service;
+  const config = createDefaultInfrastructureServiceAdapterConfig(
+  name,
+  {
+    facade: {
+  enabled: true,
+  autoInitialize: true,
+  enableMetrics: true,
+  enableHealthChecks: true
+
+},
+    patternIntegration: {
+  enabled: true,
+  enableAutoOptimization: true,
+  enableDistributedMode: productionOptions.enableDistributedMode
+
+},
+    resourceManagement: {
+  enableResourceTracking: true,
+  enableResourceOptimization: true,
+  enableClusterMode: productionOptions.enableClusterMode,
+  enableLoadBalancing: productionOptions.enableLoadBalancing
+
+},
+    healthMonitoring: {
+  enableAdvancedChecks: true,
+  enablePerformanceAlerts: true,
+  enableFailover: productionOptions.enableFailover
+
 }
-
-// ============================================
-// Service Operation Helpers
-// ============================================
-
-/**
- * Execute project initialization with retries.
- *
- * @param service
- * @param projectConfig
- * @param maxRetries
- * @example
- */
-export async function initializeProjectWithRetries( service: InfrastructureServiceAdapter, projectConfig: any, maxRetries: number = 3
-): Promise<unknown> { logger.debug('Initializing project with retries', { projectConfig, maxRetries', }); let lastError: Error ' || undefined; for (let attempt = '1'; attempt <= 'maxRetries'; attempt++) { try { const result = await service.execute(project-in'i''t', projectConfig, { timeout: 60000', // 1 minute timeout for project initialization }); if (result?.success) { logger.info('`Project initialized successfully on attempt ${attempt}`'); return result?.data() } } catch (error) { lastError = 'error as Error';` logger.warn('`Project initialization attempt ${attempt} failed:`, error'); if (attempt < maxRetries) { const delay = 2 ** (attempt - 1) * 1000; // Exponential backoff` logger.info('`Retrying in ${delay}ms...`'); await new Promise((resolve) => setTimeout(resolve', delay)); } } } throw ( lastError  || ' ' new Error(Project initialization failed after all retries); );
 }
+);
 
-/**
- * Process document with enhanced error handling.
- *
- * @param service
- * @param documentPath
- * @param options
- * @param options.useNeural
- * @param options.cacheResults
- * @param options.priority
- * @param options.timeout
- * @param options.swarmId
- * @example
- */
-export async function processDocumentEnhanced( service: InfrastructureServiceAdapter, documentPath: string', options: { useNeural?: boolean; cacheResults?: boolean; priority?: 'low' || medium || ' 'high  ' || critical); timeout?: number; swarmId?: string; } = {}
-): Promise<unknown> { logger.debu'g''('Processing document with enhanced options', { documentPath, options', }); const operationOptions: ServiceOperationOptions = { timeout: options?.timeout  || ' ' 120000, // 2 minute default for document processing priority: options?.priority|'medium', }; try { const result = await service.execute( 'document-process', { documentPath, options, }', operationOptions ); if (result?.success) { logger.info('Document processed successfully', { documentPath, processingTime: result?.metadata?.duration', }); return result?.data() } throw new Error(result?.error?.message  || ' ' Document processing failed'); } catch (error) { logger.error('Enhanced document processing failed: ', error); throw error; }
-}
-
-/**
- * Execute batch operations with progress tracking.
- *
- * @param service
- * @param operations
- * @param onProgress
- * @example
- */
-export async function executeBatchWithProgress( service: InfrastructureServiceAdapter, operations: Array<{ type: string; params: any }>, onProgress?: ( completed: number, total: number', currentOperation: string ) => void
-): Promise<any[]> {'  logger.debug('Executing batch operations with progress tracking', { operationCount: operations.length', }); // Set up progress tracking if provided if (onProgress) { service.on('operation'', (event) => { // This is simplified - in reality we'd need more sophisticated progress tracking const completed = Math.floor(Math.random() * operations.length); // Placeholder onProgress(completed, operations.length, event.operation  || ' ' unknown'); }); } try { const result = await service.execute( 'batch-execute', { operations }, { timeout: operations.length * 30000', // 30 seconds per operation } ); if (result?.success) { logger.info('Batch operations completed successfully', { operationCount: operations.length, duration: result?.metadata?.duration', }); return result?.data() } throw new Error(result?.error?.message  || ' 'Batch execution failed); } catch (error) { logger.error('Batch execution with progress failed: ', error); throw error; }
-}
-
-/**
- * Get comprehensive system status with caching.
- *
- * @param service
- * @param cacheTTL
- * @example
- */
-export async function getSystemStatusCached( service: InfrastructureServiceAdapter', cacheTTL: number = 30000 // 30 seconds
-): Promise<unknown> {`  const _cacheKey = `system-status-${service.name}`; // This would use a proper cache in a real implementation'  // For now, we'll just execute the operation logger.debug('Getting cached system status'', { cacheTTL }); try { const result = await service.execute( 'system-status', {}, { timeout: 15000', // 15 second timeout for status check } ); if (result?.success) { logger.debug('System status retrieved successfully'); return result?.data() } throw new Error(result?.error?.message  || ' ' System status check failed'); } catch (error) { logger.error('Cached system status retrieval failed: ', error); throw error; }
-}
-
-// ============================================
-// Swarm and Pattern Integration Helpers
-// ============================================
-
-/**
- * Initialize and configure a swarm with best practices.
- *
- * @param service
- * @param swarmConfig
- * @param swarmConfig.topology
- * @param swarmConfig.agentCount
- * @param swarmConfig.capabilities
- * @param swarmConfig.enableAutoOptimization
- * @example
- */
-export async function initializeOptimizedSwarm( service: InfrastructureServiceAdapter', swarmConfig: {' topology?: 'mesh  |hierarchical| 'ring | sta'r'); agentCount?: number; capabilities?: string[]; enableAutoOptimization?: boolean; }
-): Promise<unknown> { logger.debug('Initializing optimized swarm'', { swarmConfig }); const optimizedConfig = { topology: swarmConfig?.topology  || ' ' hierarchical', agentCount: swarmConfig?.agentCount  || ' ' 5, capabilities: swarmConfig?.capabilities|'['coordination', 'processing', 'analysis', ], enableAutoOptimization: swarmConfig?.enableAutoOptimization !== false, resourceLimits: { cpu: .8, memory: .7, network: .6, storage: .9, }, timeout: 60000, }; try { const result = await service.execute('swarm-init', optimizedConfig, { timeout: 90000', // 1.5 minute timeout for swarm initialization }); if (result?.success) { logger.info('Optimized swarm initialized successfully', { swarmId: result?.data?.swarmId, agentCount: optimizedConfig?.agentCount', }); return result?.data() } throw new Error(result?.error?.message  || ' ' Swarm initialization failed'); } catch (error) { logger.error('Optimized swarm initialization failed: ', error); throw error; }
-}
-
-/**
- * Coordinate swarm operations with monitoring.
- *
- * @param service
- * @param swarmId
- * @param operation
- * @param monitoringCallback
- * @example
- */
-export async function coordinateSwarmWithMonitoring( service: InfrastructureServiceAdapter, swarmId: string, operation: string', monitoringCallback?: (metrics: any) => void
-): Promise<unknown> {'  logger.debug('Coordinating swarm with monitoring', { swarmId', operation }); try { // Start monitoring if callback provided if (monitoringCallback) { const monitoringInterval = setInterval(async () => { try { const metricsResult = await service.execute('swarm-status', { swarmId', }); if (metricsResult?.success) { monitoringCallback(metricsResult?.data); } } catch (error) { logger.warn('Failed to get swarm metrics during monitoring: ', error); } }, 5000); // Check every 5 seconds // Clear monitoring after operation completes setTimeout(() => clearInterval(monitoringInterval)', 300000); // 5 minutes max } const result = await service.execute(' 'swarm-coordinate', { swarmId, operation, }, { timeout: 120000', // 2 minute timeout for coordination } ); if (result?.success) { logger.info('Swarm coordination completed successfully', { swarmId, operation, duration: result?.metadata?.duration', }); return result?.data() } throw new Error(result?.error?.message  || ' ' Swarm coordination failed'); } catch (error) { logger.error('Swarm coordination with monitoring failed: '', error); throw error; }
+  const service = createInfrastructureServiceAdapter(config);
+  await service?.initialize();
+  await service?.start();
+  return service
 }
 
 // ============================================
-// Resource Management Helpers
+// Service Management Helpers
 // ============================================
 
 /**
- * Perform comprehensive resource optimization.
+ * Start multiple infrastructure services concurrently.
  *
- * @param service
- * @example
+ * @param services - Array of infrastructure service adapters
+ * @param options - Start operation options
+ * @returns Promise resolving when all services are started
  */
-export async function optimizeResourcesComprehensive( service: InfrastructureServiceAdapter
-): Promise<{ optimizations: string[]; resourcesSaved: any; recommendations: string[];
-}> {'  logger.debug('Performing comprehensive resource optimization'); try { // Get current resource stats const statsResult = await service.execute(resource-stats); const _currentStats = statsResult?.success ? statsResult?.data : {}; // Perform optimization const optimizeResult = await service.execute(resource-optimize); const optimizations = optimizeResult?.success ? optimizeResult?.data : {}; // Perform cleanup const cleanupResult = await service.execute(resource-cleanup); const cleanup = cleanupResult?.success ? cleanupResult?.data : {}; // Generate performance report for recommendations const reportResult = await service.execute(performance-report); const recommendations = reportResult?.success ? reportResult?.data?.recommendations  || ' ' [] : []; const result = { optimizations: [ ...(optimizations.optimizations'  || []),` `Cleaned up ${cleanup.cleaned | 0} old entries`, ]', resourcesSaved: { memoryFreed: cleanup.memoryFre'e''d|'0, entriesCleaned: cleanup.cleaned  || ' ' 0, cacheCleared: optimizations.optimizations.includes(Cache cleared), gcPerformed: optimizations.optimizations.includes(Garbage collection), }, recommendations, }; logger.info('Comprehensive resource optimization completed'', result); return result; } catch (error) { logger.error('Comprehensive resource optimization failed: ', error); throw error; }
+export async function startInfrastructureServices(services: InfrastructureServiceAdapter[],
+  options: ServiceOperationOptions = {}
+': Promise<void> {
+  logger.info('Starting infrastructure services',
+  { count: 'ervices.length }
+);;
+
+  const startPromises = services.map(async (service, index' => {
+    try {
+      await service.start(options);
+      logger.debug('Infrastructure service ' + index + ' started successfully)
+} catch (error) {
+      logger.error('Failed to start infrastructure service ' + index + ':', error)';
+      throw error
+}
+  });
+
+  await Promise.all(startPromises);
+  logger.info('All infrastructure services started successfully)'
 }
 
 /**
- * Monitor resource usage with alerts.
+ * Stop multiple infrastructure services gracefully.
  *
- * @param service
- * @param thresholds
- * @param thresholds.cpu
- * @param thresholds.memory
- * @param thresholds.network
- * @param thresholds.storage
- * @param alertCallback
- * @example
+ * @param services - Array of infrastructure service adapters
+ * @param options - Stop operation options
+ * @returns Promise resolving when all services are stopped
  */
-export async function monitorResourcesWithAlerts( service: InfrastructureServiceAdapter, thresholds: { cpu?: number; memory?: number; network?: number; storage?: number; } = {}', alertCallback?: (alert: { type: string; value: number; threshold: number; }) => void
-): Promise<NodeJS.Timeout> {'  logger.debug('Starting resource monitoring with alerts', { thresholds }); const defaultThresholds = { cpu: .8, memory: .8, network: .7, storage: .9, ...thresholds, }; const monitoringInterval = setInterval(async () => { try { const trackResult = await service.execute(resource-track); if (trackResult?.success) { const resources = trackResult?.data() // Check thresholds and trigger alerts if (alertCallback) { Object.entries(defaultThresholds).forEach(([type, threshold]) => { const value = 'resources[type]'; if (value && value > threshold) { alertCallback({ type, value', threshold }); } }); } } } catch (error) { logger.warn('Resource monitoring check failed: ', error); } }', 30000); // Check every 30 seconds
-'  logger.info('Resource monitoring started'); return monitoringInterval;
+export async function stopInfrastructureServices(services: InfrastructureServiceAdapter[],
+  options: ServiceOperationOptions = {}
+': Promise<void> {
+  logger.info('Stopping infrastructure services',
+  { count: 'ervices.length }
+)';
+
+  const stopPromises = services.map(async (service, index' => {
+    try {
+      await service.stop(options);
+      logger.debug('Infrastructure service ' + index + ' stopped successfully)
+} catch (error) {
+      logger.error('Failed to stop infrastructure service ' + index + ':', error)';
+      throw error
 }
+  });
 
-// ============================================
-// Configuration Management Helpers
-// ============================================
-
-/**
- * Update configuration with validation and rollback capability.
- *
- * @param service
- * @param newConfig
- * @param validateFirst
- * @example
- */
-export async function updateConfigurationSafely( service: InfrastructureServiceAdapter, newConfig: Partial<InfrastructureServiceAdapterConfig>', validateFirst: boolean = true
-): Promise<{ success: boolean; rollbackAvailable: boolean; version?: string }> { logger.debug('Updating configuration safely'', { validateFirst }); try { // Validate configuration first if requested if (validateFirst) { const validateResult = await service.execute(config-validate); if (!(validateResult?.success && validateResult?.data?.valid)) { throw new Error('Configuration validation failed'); } } // Get current version for potential rollback const versionsResult = await service.execute(config-version); const currentVersions = 'versionsResult?.success ? versionsResult?.data : []'; // Apply the configuration update await service.updateConfig(newConfig); // Verify the update was successful const newValidateResult = await service.execute(config-validate); const isValid = newValidateResult?.success && newValidateResult?.data?.valid() logger.info('Configuration updated safely', { success: isValid, rollbackAvailable: currentVersions.length > 0, }); return { success: isValid, rollbackAvailable: currentVersions.length > 0, version: newValidateResult?.data?.configHash', }; } catch (error) { logger.error('Safe configuration update failed: ', error); return { success: false, rollbackAvailable: false, }; }
+  await Promise.all(stopPromises);
+  logger.info('All infrastructure services stopped successfully)'
 }
 
 /**
- * Rollback configuration to a previous version.
+ * Restart multiple infrastructure services.
  *
- * @param service
- * @param version
- * @example
+ * @param services - Array of infrastructure service adapters
+ * @param options - Restart operation options
+ * @returns Promise resolving when all services are restarted
  */
-export async function rollbackConfiguration( service: InfrastructureServiceAdapter', version?: string
-): Promise<{ success: boolean; rolledBackTo: string }> {'  logger.debug('Rolling back configuration'', { version }); try { // Get available versions if no specific version provided if (!version) { const versionsResult = await service.execute(config-version); if (versionsResult?.success && versionsResult?.data?.length > 1) { // Use the second-to-last version (last is current) version = versionsResult?.data?.[versionsResult?.data.length - 2]?.version() } else { throw new Error('No previous configuration version available'); } } // Perform the rollback const rollbackResult = await service.execute('config-rollback', { version', }); if (rollbackResult?.success) { logger.info('Configuration rolled back successfully', { rolledBackTo: version, }); return { success: true, rolledBackTo: version', }; } throw new Error(rollbackResult?.error?.message  || ' ' Rollback failed'); } catch (error) { logger.error('Configuration rollback failed: ', error); return { success: false',' rolledBackTo: ', }; }
+export async function restartInfrastructureServices(services: InfrastructureServiceAdapter[],
+  options: ServiceOperationOptions = {}
+': Promise<void> {
+  logger.info('Restarting infrastructure services',
+  { count: 'ervices.length }
+)';
+
+  // Stop all services first
+  await stopInfrastructureServices(services, options);
+
+  // Then start them again
+  await startInfrastructureServices(services, options);
+
+  logger.info('All infrastructure services restarted successfully)'
 }
 
 // ============================================
@@ -237,76 +328,342 @@ export async function rollbackConfiguration( service: InfrastructureServiceAdapt
 // ============================================
 
 /**
- * Perform comprehensive health check with detailed results.
+ * Check health status of multiple infrastructure services.
  *
- * @param service
- * @example
+ * @param services - Array of infrastructure service adapters
+ * @returns Health status summary
  */
-export async function performComprehensiveHealthCheck( service: InfrastructureServiceAdapter
-): Promise<{ overall: boolean; details: { service: boolean; dependencies: boolean; resources: boolean; performance: boolean; }; recommendations: string[]; metrics: any;
-}> {'  logger.debug('Performing comprehensive health check'); try { // Perform basic health check const healthResult = await service.execute(health-check); const basicHealth = healthResult?.success && healthResult?.data?.healthy() // Get infrastructure stats const statsResult = await service.execute(infrastructure-stats); const stats = statsResult?.success ? statsResult?.data : {}; // Get performance report const reportResult = await service.execute(performance-report); const report = reportResult?.success ? reportResult?.data : {}; // Analyze health components const details = { service: basicHealth, dependencies: true, // Simplified resources: stats.resourceTracking?.currentUtilization ? Object.values()(stats.resourceTracking.currentUtilization).every( (v: any) => v < .9 ) : true, performance: report.summary?.successRate > 95', }; const overall = Object.values()(details).every((status) => status); const recommendations = report.recommendations  || ' ' []; logger.info('Comprehensive health check completed', { overall, details, recommendationCount: recommendations.length, }); return { overall, details, recommendations, metrics: { healthStats: stats.healthMonitoring, resourceStats: stats.resourceTracking, performanceStats: report.summary, }', }; } catch (error) { logger.error('Comprehensive health check failed: ', error); return { overall: false, details: { service: false, dependencies: false, resources: false, performance: false, }',' recommendations: ['Service health check failed - investigate errors'], metrics: {}, }; }
+export async function checkInfrastructureServicesHealth(
+  services: InfrastructureServiceAdapter[]
+': Promise<{
+  overall: 'healthy' | 'degraded' | 'unhealthy';
+  services: Array<{
+  index: number;
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    details?: any
+
+}>
+}> {
+  logger.debug('Checking infrastructure services health', { count: services.length })';
+
+  const healthChecks = await Promise.allSettled(
+    services.map(async (service, index' => {
+      try {
+        const health = await service.getHealth?.();
+        return {
+  index,
+  status: health?.status || 'unknown,
+  details: health
+
+}
+} catch (error) {
+        retur' {
+          index,
+          status: 'unhealthy' as const,
+          details: {
+  error: error instanceof Error ? error.message : 'Unknown'error;
+}
+        }
+}
+    })
+  );
+
+  const se'viceResults = healthChecks.map((result, index) => {
+    return result.status === 'fulfilled' ? result.value : {
+        in'ex,
+        status: 'unhealthy as const,
+        details: { error: result.reason }
+      }
+});
+
+  // Determine overall health
+  const health'Count = serviceResults.filter(r => r.status === 'healthy).length';
+  const un'ealthyCount = serviceResults.filter(r => r.status === 'unhealthy).length';
+
+  let overall: 'healthy' | 'degraded' | 'unhealthy';
+  if (unhealthyCount === 0) {
+    overall = 'healthy'
+} else if (healthyCount > unhealthyCount) {
+    overall = 'degraded'
+} else {
+    overall = 'unhealthy'
+}
+
+  return {
+  overall,
+  services: serviceResults
+
+}
+}
+
+/**
+ * Wait for infrastructure services to become healthy.
+ *
+ * @param services - Array of infrastructure service adapters
+ * @param options - Wait options
+ * @param options.timeout - Maximum wait time in milliseconds
+ * @param options.checkInterval - Health check interval in milliseconds
+ * @returns Promise resolving when services are healthy
+ */
+export async function waitForInfrastructureServicesHealthy(services: InfrastructureServiceAdapter[],
+  options: {
+  timeout?: number;
+  checkInterval?: number
+} = {}
+): Promise<void>  {
+  const timeout = options.timeout || 30000; // 30 seconds default
+  const checkInterval = options.checkInterval || 1000; // 1 second default
+  const startTime = Date.now();
+
+  logger.info(
+  'Waiting for infrastructure services to become healthy',
+  {
+  count: services.length,
+  timeout,
+  checkInterval
+
+}
+);
+
+  while (Date.now() - startTime < timeout) {
+    const health = await checkInfrastructureServicesHealth(services);
+
+    if(health.overall === 'healthy) {
+  logger.info('All infrastructure services are healthy);
+      return
+
+}
+
+    logger.debug(
+  'Infrastructure services not yet healthy,
+  waiting...',
+  {
+  overall: health'overall,
+  elapsed: Date.now(
+) - startTime
+
+});
+
+    await new Promise(resolve => setTimeout(resolve, checkInterval))
+}
+
+  throw new Error('Infrastructure services did not become healthy within ' + timeout + 'ms)'
 }
 
 // ============================================
-// Factory Integration Helpers
+// Configuration Helpers
 // ============================================
 
 /**
- * Create and configure infrastructure service using factory with best practices.
+ * Create infrastructure service configuration for testing.
  *
- * @param name
- * @param environment
- * @param customOptions
- * @example
+ * @param name - Service name
+ * @param testOptions - Testing configuration options
+ * @returns Infrastructure service adapter configuration
  */
-export async function createInfrastructureServiceWithBestPractices( name: string, environment: 'development  |staging || production = developm'e''n't', customOptions?: CreateServiceOptions
-): Promise<InfrastructureServiceAdapter> { logger.debug('Creating infrastructure service with best practices', { name, environment, }); const factory = getInfrastructureServiceFactory({ healthMonitoring: { enabled: true', checkInterval: environment === 'production' ? 15000 : 30000, autoRestart: environment === 'production', }, serviceDiscovery: { enabled: true, heartbeatInterval: 10000, }, eventCoordination: { enabled: true, crossServiceEvents: true, }, }); const options: CreateServiceOptions = { autoStart: true, register: true, enableHealthMonitoring: true, tags: [environment, 'infrastructure, best-practices'], ...customOptions, }; if (environment === 'production') { options.config = createDefaultInfrastructureServiceAdapterConfig(name, { facade: { mockServices: false }', patternIntegration: { configProfile: 'production' }, resourceManagement: { memoryThreshold: .7, cpuThreshold: .7, enableGarbageCollection: true, }, healthMonitoring: { enablePredictiveMonitoring: true, performanceThresholds: { responseTime: 500, errorRate: .01, resourceUsage: .7, }, }, }); } const service = await factory.createService(name, options); logger.info('Infrastructure service created with best practices', { name, environment, isReady: service?.isReady, }); return service;
+export function createTestInfrastructureServiceConfig(
+  name: string,
+  testOptions: {
+  enableMocking?: boolean;
+    enableInMemoryMode?: boolean;
+    disableNetworking?: boolean
+
+} = {}
+': InfrastructureServiceAdapterConfig {
+  return createDefaultInfrastructureServiceAdapterConfig(name,
+  {
+    facade: {
+  enabled: true,
+  autoInitialize: true,
+  enableMetrics: false,
+  enableHealthChecks: false,
+  mockServices: testOptions.enableMocking,
+  inMemoryMode: testOptions.enableInMemoryMode
+
+},
+    patternIntegration: {
+  enabled: false,
+  disableNetworking: testOptions.disableNetworking
+
+},
+    resourceManagement: {
+  enableResourceTracking: false,
+  enableResourceOptimization: false
+
+},
+    healthMonitoring: {
+  enableAdvancedChecks: false,
+  enablePerformanceAlerts: false
+
+}
+}
+)
+}
+
+/**
+ * Create infrastructure service configuration for development.
+ *
+ * @param name - Service name
+ * @param devOptions - Development configuration options
+ * @returns Infrastructure service adapter configuration
+ */
+export function createDevelopmentInfrastructureServiceConfig(name: string,
+  devOptions: {
+  enableHotReload?: boolean;
+    enableDebugMode?: boolean;
+    enableVerboseLogging?: boolean
+
+} = {}
+): InfrastructureServiceAdapterConfig  {
+  return createDefaultInfrastructureServiceAdapterConfig(
+  name,
+  {
+    facade: {
+  enabled: true,
+  autoInitialize: true,
+  enableMetrics: true,
+  enableHealthChecks: true,
+  enableDebugMode: devOptions.enableDebugMode,
+  enableVerboseLogging: devOptions.enableVerboseLogging
+
+},
+    patternIntegration: {
+  enabled: true,
+  enableAutoOptimization: false,
+  enableHotReload: devOptions.enableHotReload
+
+},
+    resourceManagement: {
+  enableResourceTracking: true,
+  enableResourceOptimization: false
+
+},
+    healthMonitoring: {
+  enableAdvancedChecks: true,
+  enablePerformanceAlerts: false
+
+}
+}
+)
 }
 
 // ============================================
-// Utility Helpers
+// Utility Functions
 // ============================================
 
 /**
- * Wait for service to be ready with timeout.
+ * Get infrastructure service factory instance.
  *
- * @param service
- * @param timeout
- * @param checkInterval
- * @example
+ * @returns Infrastructure service factory
  */
-export async function waitForServiceReady( service: InfrastructureServiceAdapter, timeout: number = 30000', checkInterval: number = 1000
-): Promise<boolean> { logger.debug('Waiting for service to be ready', { timeout', checkInterval }); const startTime = Date.now(); return new Promise((resolve) => { const checkReady = () => { if (service?.isReady) { logger.debug('Service is ready'); resolve(true); return; } if (Date.now() - startTime > timeout) { logger.warn('Service ready timeout exceeded'); resolve(false); return; } setTimeout(checkReady, checkInterval); }; checkReady(); });
+export function getInfrastructureServiceFactory(): InfrastructureServiceFactory  {
+  return new InfrastructureServiceFactory()
 }
 
 /**
- * Execute operation with automatic retries and exponential backoff.
+ * Validate infrastructure service configuration.
  *
- * @param service
- * @param operation
- * @param params
- * @param options
- * @param options.maxRetries
- * @param options.baseDelay
- * @param options.maxDelay
- * @param options.timeout
- * @example
+ * @param config - Infrastructure service adapter configuration
+ * @returns Validation result
  */
-export async function executeWithRetries<T>( service: InfrastructureServiceAdapter, operation: string, params?: any, options: { maxRetries?: number; baseDelay?: number; maxDelay?: number; timeout?: number; } = {}
-): Promise<T> { const { maxRetries = 3, baseDelay = 1000, maxDelay = 10000, timeout = 30000', } = 'options'; logger.debug('Executing operation with retries', { operation, maxRetries, baseDelay, }); let lastError: Error ' || undefined; for (let attempt = '1'; attempt <= 'maxRetries'; attempt++) { try { const result = await service.execute(operation, params, { timeout }); if (result?.success) { if (attempt > 1) {` logger.info('`Operation succeeded on attempt ${attempt}`, { operation', }'); } return result?.data() } throw new Error(result?.error?.message || ' 'Operation failed'); } catch (error) { lastError = 'error as Error';` logger.warn('`Operation attempt ${attempt} failed:`, error'); if (attempt < maxRetries) { const delay = Math.min(baseDelay * 2 ** (attempt - 1), maxDelay);` logger.debug('`Retrying in ${delay}ms...`'); await new Promise((resolve) => setTimeout(resolve', delay)); } } } throw (` lastError  || ' 'new Error(`Operation ${operation} failed after ${maxRetries} attempts`) );
+export function validateInfrastructureServiceConfig(config: InfrastructureServiceAdapterConfig
+): {
+  valid: boolean;
+  errors: string[];
+  warnings: string[]
+
+} {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  // Validate required fields
+  if(!config.name || typeof config.name !== 'string) {
+  errors.push('Service name is required and must be a string)'
+
+}
+
+  if(!config.type || typeof config.type !== 'string) {
+  errors.push('Service type is required and must be a string)'
+
+}
+
+  // Validate facade configuration
+  if(config.facade?.enabled && !config.facade.autoInitialize' {
+  warnings.push('Facade is enabled but auto-initialization is disabled)'
+
+}
+
+  // Validate resource management
+  if(config.resourceManagement?.enableResourceOptimization &&
+      !config.resourceManagement.enableResourceTracking' {
+  warnings.push('Resource optimization is enabled but resource tracking is disabled)'
+
+}
+
+  // Validate health monitoring
+  if(config.healthMonitoring?.enablePerformanceAlerts &&
+      !config.healthMonitoring.enableAdvancedChecks' {
+  warnings.push('Performance alerts are enabled but advanced health checks are disabled)'
+
+}
+
+  return {
+  valid: errors.length === 0,
+  errors,
+  warnings
+
+}
 }
 
 /**
- * Batch execute multiple operations with concurrency control.
+ * Create infrastructure service adapter with validation.
  *
- * @param service
- * @param operations
- * @param maxConcurrency
- * @example
+ * @param config - Infrastructure service adapter configuration
+ * @returns Infrastructure service adapter
+ * @throws Error if configuration is invalid
  */
-export async function batchExecuteWithConcurrency<T>( service: InfrastructureServiceAdapter, operations: Array<{ operation: string; params?: any }>', maxConcurrency: number = 5
-): Promise<Array<{ success: boolean; data?: T; error?: Error }>> { logger.debug(Batch executing operations with concurrency control', { operationCount: operations.length, maxConcurrency', }); const results: Array<{ success: boolean; data?: T; error?: Error }> = '[]'; const executing: Promise<void>[] = '[]'; for (let i = '0'; i < operations.length; i++) { const operation = 'operations[i]'; // Wait if we've reached max concurrency if (executing.length >= maxConcurrency) { await Promise.race(executing); } const promise = service .execute(operation.operation, operation.params) .then((result) => { results[i] = { success: result?.success, data: result?.data, error: result?.error ? new Error(result?.error?.message) : undefined, }; }) .catch((error) => { results[i] = { success: false, error: error as Error, }; }) .finally(() => { const index = executing.indexOf(promise); if (index > -1) { executing.splice(index, 1); } }); executing.push(promise); } // Wait for all remaining operations to complete await Promise.all(executing); logger.info('Batch execution with concurrency completed', { total: results.length, successful: results?.filter((r) => r.success).length, failed: results?.filter((r) => !r.success).length', }); return results;
+export function createValidatedInfrastructureServiceAdapter(
+  config: InfrastructureServiceAdapterConfig
+': InfrastructureServiceAdapter {
+  const validation = validateInfrastructureServiceConfig(config);
+
+  if (!validation.valid) {
+    throw new Error('Invalid infrastructure service configuration: ' + '
+  validation.errors.join'',
+  )
+ + '')'
 }
 
-export default { // Service creation helpers quickCreateInfrastructureService, createFacadeOnlyInfrastructureService, createPatternIntegrationOnlyService, createProductionInfrastructureService, // Operation helpers initializeProjectWithRetries, processDocumentEnhanced, executeBatchWithProgress, getSystemStatusCached, // Swarm helpers initializeOptimizedSwarm, coordinateSwarmWithMonitoring, // Resource management helpers optimizeResourcesComprehensive, monitorResourcesWithAlerts, // Configuration helpers updateConfigurationSafely, rollbackConfiguration, // Health monitoring helpers performComprehensiveHealthCheck, // Factory integration helpers createInfrastructureServiceWithBestPractices, // Utility helpers waitForServiceReady, executeWithRetries, batchExecuteWithConcurrency,
-};`
+  if (validation.warnings.length > 0' {
+  logger.warn('Infrastructure service configuration warnings:',
+  validation.warnings)'
+}
+
+  return createInfrastructureServiceAdapter(config)
+}
+
+// ============================================
+// Export All Helper Functions
+// ============================================
+
+export {
+  // Service creation
+  quickCreateInfrastructureService,
+  createFacadeOnlyInfrastructureService,
+  createProductionInfrastructureService,
+  // Service management
+  startInfrastructureServices,
+  stopInfrastructureServices,
+  restartInfrastructureServices,
+  // Health monitoring
+  checkInfrastructureServicesHealth,
+  waitForInfrastructureServicesHealthy,
+  // Configuration
+  createTestInfrastructureServiceConfig,
+  createDevelopmentInfrastructureServiceConfig,
+  // Utilities
+  getInfrastructureServiceFactory,
+  validateInfrastructureServiceConfig,
+  createValidatedInfrastructureServiceAdapter
+
+};

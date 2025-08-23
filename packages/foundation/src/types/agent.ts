@@ -434,7 +434,7 @@ export interface AgentQuery {
   /** Sort order */
   sort?: {
     field: keyof AgentInstance;
-    direction:'asc|desc'';
+    direction:'asc|desc';
   };
 }
 

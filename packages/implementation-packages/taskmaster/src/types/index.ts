@@ -114,9 +114,9 @@ export interface WIPViolation {
   readonly state: TaskState;
   readonly currentCount: number;
   readonly limit: number;
-  readonly violationType: 'soft|hard'';
+  readonly violationType: 'soft' | 'hard';
   readonly detectedAt: Date;
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
   readonly recommendedAction: string;
 }
 
@@ -131,7 +131,7 @@ export interface WorkflowBottleneck {
   readonly id: string;
   readonly state: TaskState;
   readonly type: 'capacity|dependency|resource|skill|process';
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
   readonly impactScore: number; // 0-1
   readonly detectedAt: Date;
   readonly affectedTasks: string[];
@@ -225,7 +225,7 @@ export interface PerformanceThreshold {
   readonly metric: keyof FlowMetrics;
   readonly operator: 'gt|lt|eq|gte|lte';
   readonly value: number;
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
   readonly alertMessage: string;
   readonly enabled: boolean;
 }

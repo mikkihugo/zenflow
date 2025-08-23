@@ -6,6 +6,8 @@
  */
 
 // Re-export memory backend types
+import { ContextError } from '@claude-zen/foundation';
+
 export type { BackendInterface, JSONValue } from './core/memory-system';
 
 // Define core memory interfaces here (instead of importing from non-existent path)
@@ -340,8 +342,6 @@ export {
   withTimeout,
   withContext,
 } from '@claude-zen/foundation';
-
-import { ContextError } from '@claude-zen/foundation';
 
 // Memory-specific error types extending foundation's ContextError
 export class MemoryError extends ContextError {

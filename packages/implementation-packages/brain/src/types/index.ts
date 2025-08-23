@@ -392,8 +392,8 @@ export interface EarlyStoppingConfig {
   enabled: boolean;
   patience: number;
   minDelta: number;
-  metric: 'loss|accuracy|f1|precision|recall';
-  mode: 'min|max'';
+  metric: 'loss' | 'accuracy' | 'f1' | 'precision' | 'recall';
+  mode: 'min' | 'max';
   restoreBestWeights: boolean;
 }
 

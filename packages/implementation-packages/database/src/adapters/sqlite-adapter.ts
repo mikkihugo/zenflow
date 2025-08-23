@@ -9,7 +9,6 @@ import Database from 'better-sqlite3';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { getLogger } from '@claude-zen/foundation';
-import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('sqlite-adapter');
 
@@ -40,7 +39,9 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   async connect(): Promise<void> {
-    if (this.connected) return;
+    if (this.connected) {
+      return;
+    }
 
     try {
       // Ensure directory exists
@@ -62,7 +63,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       this.connected = true;
 
       logger.info(
-        `✅ Connected to real SQLite database: ${this.config.database}`
+        `✅ Connected to real SQLite database: ${this.config.database}`,
       );
     } catch (error) {
       logger.error(`❌ Failed to connect to SQLite database: ${error}`);
@@ -80,10 +81,14 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   async query<T = unknown>(
     sql: string,
-    params?: QueryParams
+    params?: QueryParams,
   ): Promise<QueryResult<T>> {
-    if (!this.connected) await this.connect();
-    if (!this.db) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.db) {
+      throw new Error('Database not connected');
+    }
 
     logger.debug(`Executing SQL query: ${sql}`, { params });
 
@@ -108,8 +113,12 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   async execute(sql: string, params: any[] = []): Promise<any> {
-    if (!this.connected) await this.connect();
-    if (!this.db) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.db) {
+      throw new Error('Database not connected');
+    }
 
     logger.debug(`Executing SQL command: ${sql}`, { params });
 
@@ -129,8 +138,12 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   async transaction<T>(fn: (tx: any) => Promise<T>): Promise<T> {
-    if (!this.connected) await this.connect();
-    if (!this.db) throw new Error('Database not connected');
+    if (!this.connected) {
+      await this.connect();
+    }
+    if (!this.db) {
+      throw new Error('Database not connected');
+    }
 
     const transaction = this.db.transaction((callback: any) => {
       return callback();
@@ -189,7 +202,9 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   async getSchema(): Promise<any> {
-    if (!this.connected||!this.db) return { tables: [], views: [] };
+    if (!this.connected||!this.db) {
+      return { tables: [], views: [] };
+    }
 
     try {
       const tables = this.db
@@ -197,7 +212,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
           `
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name NOT LIKE 'sqlite_%'
-      `
+      `,
         )
         .all();
 
@@ -221,11 +236,22 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   private initializeTables(): void {
-    if (!this.db) return;
+    if (!this.db) {
+      return;
+    }
 
-    // Create documents table
-    this.db.exec(`
-      CREATE TABLE F NOT EXISTS documents (
+    this.createDocumentsTable();
+    this.createDocumentRelationshipsTable();
+    this.createProjectsTable();
+    this.createWorkflowStatesTable();
+    this.runMigrations();
+
+    logger.info('✅ SQLite tables initialized');
+  }
+
+  private createDocumentsTable(): void {
+    this.db!.exec(`
+      CREATE TABLE IF NOT EXISTS documents (
         id TEXT PRIMARY KEY,
         type TEXT NOT NULL,
         title TEXT NOT NULL,
@@ -238,7 +264,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         searchable_content TEXT,
         keywords TEXT,
-        completion_percentage NTEGER DEFAULT 0,
+        completion_percentage INTEGER DEFAULT 0,
         name TEXT,
         description TEXT,
         domain TEXT,
@@ -251,15 +277,16 @@ export class SQLiteAdapter implements DatabaseAdapter {
         epic_document_ids TEXT,
         feature_document_ids TEXT,
         task_document_ids TEXT,
-        overall_progress_percentage NTEGER DEFAULT 0,
+        overall_progress_percentage INTEGER DEFAULT 0,
         phase TEXT,
         sparc_integration TEXT
       )
     `);
+  }
 
-    // Create document_relationships table
-    this.db.exec(`
-      CREATE TABLE F NOT EXISTS document_relationships (
+  private createDocumentRelationshipsTable(): void {
+    this.db!.exec(`
+      CREATE TABLE IF NOT EXISTS document_relationships (
         id TEXT PRIMARY KEY,
         source_document_id TEXT NOT NULL,
         target_document_id TEXT NOT NULL,
@@ -271,10 +298,11 @@ export class SQLiteAdapter implements DatabaseAdapter {
         FOREIGN KEY (target_document_id) REFERENCES documents(id)
       )
     `);
+  }
 
-    // Create projects table
-    this.db.exec(`
-      CREATE TABLE F NOT EXISTS projects (
+  private createProjectsTable(): void {
+    this.db!.exec(`
+      CREATE TABLE IF NOT EXISTS projects (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         description TEXT,
@@ -285,10 +313,11 @@ export class SQLiteAdapter implements DatabaseAdapter {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+  }
 
-    // Create document_workflow_states table
-    this.db.exec(`
-      CREATE TABLE F NOT EXISTS document_workflow_states (
+  private createWorkflowStatesTable(): void {
+    this.db!.exec(`
+      CREATE TABLE IF NOT EXISTS document_workflow_states (
         id TEXT PRIMARY KEY,
         document_id TEXT NOT NULL,
         workflow_name TEXT NOT NULL,
@@ -299,29 +328,26 @@ export class SQLiteAdapter implements DatabaseAdapter {
         FOREIGN KEY (document_id) REFERENCES documents(id)
       )
     `);
-
-    // Run migrations to add missing columns to existing tables
-    this.runMigrations();
-
-    logger.info('✅ SQLite tables initialized');
   }
 
   /**
    * Run database migrations to add missing columns
    */
   private runMigrations(): void {
-    if (!this.db) return;
+    if (!this.db) {
+      return;
+    }
 
     try {
       // Check if searchable_content column exists
       const tableInfo = this.db.prepare('PRAGMA table_info(documents)').all();
       const hasSearchableContent = tableInfo.some(
-        (col: any) => col.name === 'searchable_content'
+        (col: any) => col.name === 'searchable_content',
       );
 
       if (!hasSearchableContent) {
         logger.info(
-          'Adding missing searchable_content column to documents table'
+          'Adding missing searchable_content column to documents table',
         );
         this.db
           .prepare('ALTER TABLE documents ADD COLUMN searchable_content TEXT')
@@ -331,7 +357,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       // Check for other missing columns
       const columnChecks = [
         { name: 'keywords', type: 'TEXT' },
-        { name: 'completion_percentage', type: 'NTEGER DEFAULT 0' },
+        { name: 'completion_percentage', type: 'INTEGER DEFAULT 0' },
         { name: 'name', type: 'TEXT' },
         { name: 'description', type: 'TEXT' },
         { name: 'domain', type: 'TEXT' },
@@ -344,22 +370,22 @@ export class SQLiteAdapter implements DatabaseAdapter {
         { name: 'epic_document_ids', type: 'TEXT' },
         { name: 'feature_document_ids', type: 'TEXT' },
         { name: 'task_document_ids', type: 'TEXT' },
-        { name: 'overall_progress_percentage', type: 'NTEGER DEFAULT 0' },
+        { name: 'overall_progress_percentage', type: 'INTEGER DEFAULT 0' },
         { name: 'phase', type: 'TEXT' },
         { name: 'sparc_integration', type: 'TEXT' },
       ];
 
       for (const column of columnChecks) {
         const hasColumn = tableInfo.some(
-          (col: any) => col.name === column.name
+          (col: any) => col.name === column.name,
         );
         if (!hasColumn) {
           logger.info(
-            `Adding missing ${column.name} column to documents table`
+            `Adding missing ${column.name} column to documents table`,
           );
           this.db
             .prepare(
-              `ALTER TABLE documents ADD COLUMN ${column.name} ${column.type}`
+              `ALTER TABLE documents ADD COLUMN ${column.name} ${column.type}`,
             )
             .run();
         }

@@ -32,7 +32,7 @@ import {
  */
 export interface SPARCStrategy extends ABTestStrategy {
   sparcConfig: {
-    methodology:|full-sparc|rapid-sparc|quality-sparc|'performance-sparc';
+    methodology: 'full-sparc' | 'rapid-sparc' | 'quality-sparc' | 'performance-sparc';
     phaseOptimization: {
       specification: 'detailed|concise|user-driven';
       pseudocode: 'algorithmic|high-level|step-by-step';
@@ -244,7 +244,7 @@ export class SPARCMultiSwarmExecutor {
    * Create predefined SPARC strategy sets for common scenarios
    */
   createSPARCStrategySet(
-    scenario:|rapid-development|quality-focused|enterprise-grade|'comprehensive'
+    scenario: 'rapid-development' | 'quality-focused' | 'enterprise-grade' | 'comprehensive'
   ): SPARCStrategy[] {
     switch (scenario) {
       case 'rapid-development':
@@ -552,8 +552,8 @@ export class SPARCMultiSwarmExecutor {
           testsGenerated: 0,
         },
         gitTreeInfo: {
-          worktreePath: ',
-          branchName: ',
+          worktreePath: '',
+          branchName: '',
           commitsCreated: 0,
           mergedToMain: false,
         },
@@ -896,7 +896,7 @@ export class SPARCMultiSwarmExecutor {
  */
 export async function quickSPARCTest(
   taskDescription: string,
-  scenario:|rapid-development|quality-focused|enterprise-grade|'comprehensive' = 'comprehensive',
+  scenario: 'rapid-development' | 'quality-focused' | 'enterprise-grade' | 'comprehensive' = 'comprehensive',
   options: {
     useGitTrees?: boolean;
     timeoutMs?: number;

@@ -168,7 +168,7 @@ export interface LoadBalancerStats {
 }
 
 export interface LoadBalancerConfig {
-  readonly strategy:|'round-robin|least-connections'||weighted|resource-aware'';
+  readonly strategy: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware';
   readonly maxRetries: number;
   readonly timeoutMs: number;
   readonly healthCheckInterval?: number;

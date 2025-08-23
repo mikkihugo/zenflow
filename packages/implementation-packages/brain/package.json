@@ -23,7 +23,7 @@
     "test:rust": "cd rust/core && cargo test",
     "clean": "rm -rf dist/ && cd rust/core && cargo clean",
     "dev": "concurrently \"pnpm run build:watch\" \"pnpm run test:watch\"",
-    "lint": "eslint . --ext .ts --fix",
+    "lint": "eslint 'src/**/*.ts' --fix",
     "docs:check": "node scripts/check-tsdoc.mjs",
     "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
     "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
@@ -34,9 +34,6 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/load-balancing": "workspace:*",
-    "@claude-zen/infrastructure": "workspace:*",
-    "@claude-zen/operations": "workspace:*",
-    "@claude-zen/development": "workspace:*",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-node": "^4.22.0",
     "@xenova/transformers": "^2.17.2",
@@ -44,7 +41,6 @@
     "consistent-hashing": "^0.3.0",
     "d3-array": "^3.2.4",
     "density-clustering": "^1.3.0",
-    "eventemitter3": "^5.0.1",
     "fft-js": "^0.0.12",
     "hashring": "^3.2.0",
     "ml-distance": "^4.0.1",
@@ -148,6 +144,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "private": true,
   "publishConfig": {
     "access": "restricted"
   }

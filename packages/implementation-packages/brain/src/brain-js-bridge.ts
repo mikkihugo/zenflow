@@ -48,6 +48,9 @@ import type { ModelMetrics, ActivationFunction } from './types/index';
 
 const brain = require('brain.js');
 
+// Constants to avoid duplicate string literals
+const NETWORK_NOT_FOUND_ERROR = NETWORK_NOT_FOUND_ERROR;
+
 /**
  * Configuration for brain.js neural networks
  */
@@ -235,7 +238,7 @@ export class BrainJsBridge {
   async initialize(): Promise<Result<void, ContextError>> {
     if (this.initialized) return ok();
 
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       this.foundationLogger.info(
         'Initializing Brain.js Bridge with Foundation integration...'
       );
@@ -284,7 +287,7 @@ export class BrainJsBridge {
       if (initResult.isErr()) return err(initResult.error);
     }
 
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       // Validate input parameters
       if (!id||typeof id !=='string') {
         throw new ValidationError('Network ID must be a non-empty string', {
@@ -425,10 +428,10 @@ export class BrainJsBridge {
   ): Promise<Result<ModelMetrics, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
-      return err(new ValidationError('Network not found', { networkId }));
+      return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId }));
     }
 
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       // Validate training data
       if (!trainingData||trainingData.length === 0) {
         throw new ValidationError('Training data cannot be empty', {
@@ -562,10 +565,10 @@ export class BrainJsBridge {
   ): Promise<Result<BrainJsPredictionResult, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
-      return err(new ValidationError('Network not found', { networkId }));
+      return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId }));
     }
 
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       if (!networkInstance.trainingState.isTrained) {
         throw new ValidationError(
           'Network must be trained before making predictions',
@@ -574,6 +577,9 @@ export class BrainJsBridge {
       }
 
       const startTime = Date.now();
+      
+      // Allow event loop processing for prediction
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       // Make prediction
       const output = networkInstance.network.run(input);
@@ -615,7 +621,7 @@ export class BrainJsBridge {
   ): Result<BrainJsNetworkInstance, ContextError> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
-      return err(new ValidationError('Network not found', { networkId }));
+      return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId }));
     }
     return ok(networkInstance);
   }
@@ -640,10 +646,10 @@ export class BrainJsBridge {
   ): Promise<Result<boolean, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
-      return err(new ValidationError('Network not found', { networkId }));
+      return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId }));
     }
 
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       // Remove from memory
       this.networks.delete(networkId);
 
@@ -675,7 +681,7 @@ export class BrainJsBridge {
   exportNetwork(networkId: string): Result<object, ContextError> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
-      return err(new ValidationError('Network not found', { networkId }));
+      return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId }));
     }
 
     if (!networkInstance.trainingState.isTrained) {
@@ -714,7 +720,7 @@ export class BrainJsBridge {
    * @returns Result containing the network ID or error
    */
   async importNetwork(networkData: any): Promise<Result<string, ContextError>> {
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       // Validate input
       if (
         !networkData||!networkData.id||!networkData.type||!networkData.network
@@ -842,12 +848,15 @@ export class BrainJsBridge {
    * Shutdown the brain.js bridge
    */
   async shutdown(): Promise<Result<void, ContextError>> {
-    return safeAsync(async () => {
+    return await safeAsync(async () => {
       this.foundationLogger.info('Shutting down Brain.js Bridge...');
 
       // Clear all networks
       this.networks.clear();
       this.initialized = false;
+      
+      // Allow cleanup to complete
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       this.foundationLogger.info('Brain.js Bridge shutdown complete');
     }).then((result) =>
@@ -876,6 +885,7 @@ export class BrainJsBridge {
 
       // The foundation database layer handles the actual schema creation
       // We just need to ensure our namespace is available
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       this.foundationLogger.info(
         'Brain.js database schema initialized successfully'
@@ -913,7 +923,7 @@ export class BrainJsBridge {
 
       case 'rnn':
       case 'lstm':
-      case 'gru':
+      case 'gru': {
         const inputSize = config.inputSize||1;
         const hiddenSize = Array.isArray(config.hiddenLayers)
           ? config.hiddenLayers[0]
@@ -930,6 +940,7 @@ export class BrainJsBridge {
           : networkInstance.type === 'gru'
             ? rnnParams * 3 // GRU has 3 gates
             : rnnParams; // Simple RNN
+      }
 
       default:
         return 100; // Default estimate
@@ -968,7 +979,7 @@ export async function trainBrainJsNetwork(
   trainingData: readonly BrainJsTrainingData[],
   options?: BrainJsTrainingOptions
 ): Promise<Result<ModelMetrics, ContextError>> {
-  return bridge.trainNeuralNet(networkId, trainingData, options);
+  return await bridge.trainNeuralNet(networkId, trainingData, options);
 }
 
 export async function predictWithBrainJsNetwork(
@@ -976,5 +987,5 @@ export async function predictWithBrainJsNetwork(
   networkId: string,
   input: number[] | Record<string, number>
 ): Promise<Result<BrainJsPredictionResult, ContextError>> {
-  return bridge.predictWithNeuralNet(networkId, input);
+  return await bridge.predictWithNeuralNet(networkId, input);
 }

@@ -238,7 +238,7 @@ export class CodeAnalyzer {
    * Start live analysis session with real-time file watching
    */
   async startLiveAnalysis(
-    options: Partial<EnhancedAnalysisOptions> = {}
+    options: Partial<EnhancedAnalysisOptions> = {},
   ): Promise<Result<LiveAnalysisSession, Error>> {
     return await withRetry(
       async () => {
@@ -307,7 +307,7 @@ export class CodeAnalyzer {
                   options: session.options,
                   timestamp: startTime.toISOString(),
                 },
-              }
+              },
             );
           }
         }
@@ -323,7 +323,7 @@ export class CodeAnalyzer {
         logger.info('Live analysis session started', { sessionId, options });
         return session;
       },
-      { retries: 3, minTimeout: 1000 }
+      { retries: 3, minTimeout: 1000 },
     );
   }
 
@@ -332,7 +332,7 @@ export class CodeAnalyzer {
    */
   async analyzeFile(
     filePath: string,
-    options: Partial<EnhancedAnalysisOptions> = {}
+    options: Partial<EnhancedAnalysisOptions> = {},
   ): Promise<Result<CodeAnalysisResult, Error>> {
     const startTime = Date.now();
 
@@ -369,7 +369,7 @@ export class CodeAnalyzer {
         const insightsResult = await this.generateAIInsights(
           content,
           language,
-          absolutePath
+          absolutePath,
         );
         if (insightsResult.isOk()) {
           aiInsights = insightsResult.value;
@@ -463,7 +463,7 @@ export class CodeAnalyzer {
   private async generateAIInsights(
     content: string,
     language: SupportedLanguage,
-    filePath: string
+    filePath: string,
   ): Promise<Result<AICodeInsights, Error>> {
     try {
       if (!this.brainSystem) {
@@ -593,12 +593,12 @@ Provide:
   private detectLanguage(filePath: string): SupportedLanguage | null {
     const ext = path.extname(filePath).toLowerCase();
     switch (ext) {
-      case'.ts':
-        return 'typescript';
-      case '.tsx':
-        return 'tsx';
-      case '.js':
-        return 'javascript';
+    case '.ts':
+      return 'typescript';
+    case '.tsx':
+      return 'tsx';
+    case '.js':
+      return 'javascript';
       case '.jsx':
         return 'jsx';
       case '.py':

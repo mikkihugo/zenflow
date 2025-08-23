@@ -50,7 +50,7 @@ let openaiModule: any = null;
 // Interface definitions
 export interface NeuralBackendConfig {
   /** Primary model strategy */
-  primaryModel: 'all-mpnet-base-v2|all-MiniLM-L6-v2'||custom';
+  primaryModel: 'all-mpnet-base-v2' | 'all-MiniLM-L6-v2' | 'custom';
 
   /** Enable smart fallback chain */
   enableFallbacks: boolean;
@@ -108,7 +108,7 @@ export interface NeuralEmbeddingResult {
   success: boolean;
   embedding: number[];
   confidence: number;
-  model: 'transformers|brain-js'||basic|openai'';
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -147,7 +147,7 @@ export interface NeuralClassificationResult {
     confidence: number;
     scores: Record<string, number>; // All category scores
   };
-  model: 'transformers|brain-js'||basic|openai'';
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -171,7 +171,7 @@ export interface NeuralClassificationResult {
  */
 export interface NeuralGenerationRequest {
   prompt: string;
-  taskType:|'completion|summarization|translation|paraphrase|creative|code|custom'';
+  taskType: 'completion' | 'summarization' | 'translation' | 'paraphrase' | 'creative' | 'code' | 'custom';
   maxLength?: number;
   temperature?: number; // 0.0 - 2.0
   topP?: number;
@@ -191,7 +191,7 @@ export interface NeuralGenerationResult {
     tokensGenerated: number;
     alternatives?: string[]; // Multiple generation candidates
   };
-  model: 'transformers|brain-js'||basic|openai'';
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -246,7 +246,7 @@ export interface NeuralVisionResult {
     };
     analysis?: Record<string, any>; // Custom analysis results
   };
-  model: 'transformers|brain-js'||basic|openai'';
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -337,7 +337,7 @@ export interface NeuralTaskResult {
     // Custom results
     custom?: Record<string, any>;
   };
-  model: 'transformers|brain-js'||basic|openai'';
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -1918,8 +1918,8 @@ export class SmartNeuralCoordinator {
   }
 
   private generateCacheKey(request: NeuralEmbeddingRequest): string {
-    const content = `${request.text}${request.context||'}`;
-    return `${request.qualityLevel|||standard'}:${this.hashString(content)}`;
+    const content = `${request.text}${request.context || ''}`;
+    return `${request.qualityLevel || 'standard'}:${this.hashString(content)}`;
   }
 
   private getCachedEmbedding(cacheKey: string): CacheEntry|null {
@@ -2111,8 +2111,8 @@ export class SmartNeuralCoordinator {
   private generateClassificationCacheKey(
     request: NeuralClassificationRequest
   ): string {
-    const content = `${request.text}${request.taskType}${request.categories?.join(',')||'}${request.context|||}`;
-    return `classify:${request.qualityLevel|||standard'}:${this.hashString(content)}`;
+    const content = `${request.text}${request.taskType}${request.categories?.join(',') || ''}${request.context || ''}`;
+    return `classify:${request.qualityLevel || 'standard'}:${this.hashString(content)}`;
   }
 
   private getCachedClassification(cacheKey: string): any|null {
@@ -2350,8 +2350,8 @@ export class SmartNeuralCoordinator {
   // =============================================================================
 
   private generateGenerationCacheKey(request: NeuralGenerationRequest): string {
-    const content = `${request.prompt}${request.taskType}${request.temperature||0.7}${request.maxLength||1000}${request.context||'}`;
-    return `generate:${request.qualityLevel|||standard'}:${this.hashString(content)}`;
+    const content = `${request.prompt}${request.taskType}${request.temperature||0.7}${request.maxLength||1000}${request.context||''}`;
+    return `generate:${request.qualityLevel||'standard'}:${this.hashString(content)}`;
   }
 
   private getCachedGeneration(cacheKey: string): any|null {
@@ -3422,10 +3422,10 @@ export class SmartNeuralCoordinator {
     return {
       success: true,
       result: cached.result,
-      model: (cached.model||'basic') as|'transformers|brain-js'||basic|openai',
+      model: (cached.model || 'basic') as 'transformers' | 'brain-js' | 'basic' | 'openai',
       processingTime,
       fromCache: true,
-      qualityScore: cached.qualityScore|'|0.8,
+      qualityScore: cached.qualityScore || 0.8,
       metadata: {
         model: cached.model||'cached',
         processingTime,
@@ -3526,7 +3526,7 @@ export class SmartNeuralCoordinator {
       return {
         success: true,
         result: fallbackResult,
-        model: 'basic' as 'transformers|brain-js'||basic|openai'',
+        model: 'basic' as 'transformers' | 'brain-js' | 'basic' | 'openai',
         processingTime,
         fromCache: false,
         qualityScore: 0.1,
@@ -3565,10 +3565,10 @@ export class SmartNeuralCoordinator {
     return {
       success: true,
       generated: cached.generated,
-      model: (cached.model||'basic') as|'transformers|brain-js'||basic|openai',
+      model: (cached.model || 'basic') as 'transformers' | 'brain-js' | 'basic' | 'openai',
       processingTime,
       fromCache: true,
-      qualityScore: cached.qualityScore|'|0.8,
+      qualityScore: cached.qualityScore || 0.8,
       metadata: {
         model: cached.model||'cached',
         processingTime,
@@ -3664,7 +3664,7 @@ export class SmartNeuralCoordinator {
           finishReason:'error',
           tokensGenerated: generatedText.split(' ').length,
         },
-        model: 'basic' as 'transformers|brain-js'||basic|openai'',
+        model: 'basic' as 'transformers' | 'brain-js' | 'basic' | 'openai',
         processingTime,
         fromCache: false,
         qualityScore: 0.1,

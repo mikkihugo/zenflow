@@ -23,7 +23,7 @@ export interface MultiDatabaseDao<T> {
   readPreference: 'primary|fallback|balanced';
   writePolicy: 'primary-only|replicated';
   failoverTimeout: number;
-  findById(id: string): Promise<T|'null>;
+  findById(id: string): Promise<T | null>;
   findAll(): Promise<T[]>;
   create(entity: Omit<T,'id'>): Promise<T>;
   update(id: string, updates: Partial<T>): Promise<T|null>;
@@ -127,7 +127,7 @@ export async function createDao<T>(
     enableCaching?: boolean;
     connectionPoolSize?: number;
     logger?:|Console|{ debug: Function; info: Function; warn: Function; error: Function };
-  } = {}
+  } = {},
 ): Promise<Dao<T>> {
   // Set defaults based on entity type
   const tableName = options?.tableName||getDefaultTableName(entityType);
@@ -150,7 +150,7 @@ export async function createDao<T>(
       details: { mock: true },
       lastCheck: new Date(),
     }),
-    getSchema: async () => ({ tables: [], views: [], version: '1.0.0'}),
+    getSchema: async () => ({ tables: [], views: [], version: '1.0.0' }),
     getConnectionStats: async () => ({
       total: 1,
       active: 1,
@@ -169,22 +169,22 @@ export async function createDao<T>(
 
   // Create specialized DAOs based on entity type
   switch (entityType) {
-    case EntityTypeValues.Memory:
-    case'memory':
-      return createMemoryDao<T>(adapter, iLogger, tableName);
+  case EntityTypeValues.Memory:
+  case'memory':
+    return createMemoryDao<T>(adapter, iLogger, tableName);
 
-    case EntityTypeValues.Product: // Use available enum value instead of Coordination
-    case 'coordination':
-      return createCoordinationDao<T>(adapter, iLogger, tableName);
+  case EntityTypeValues.Product: // Use available enum value instead of Coordination
+  case 'coordination':
+    return createCoordinationDao<T>(adapter, iLogger, tableName);
 
-    case EntityTypeValues.Vector: // Use Vector instead of Graph for GraphDao
-    case 'node':
-    case 'edge':
-      return createGraphDao<T>(adapter, iLogger, tableName);
+  case EntityTypeValues.Vector: // Use Vector instead of Graph for GraphDao
+  case 'node':
+  case 'edge':
+    return createGraphDao<T>(adapter, iLogger, tableName);
 
-    default:
-      // Cannot instantiate abstract BaseDao directly - create a concrete implementation
-      return new ConcreteDao<T>(adapter, iLogger, tableName);
+  default:
+    // Cannot instantiate abstract BaseDao directly - create a concrete implementation
+    return new ConcreteDao<T>(adapter, iLogger, tableName);
   }
 }
 
@@ -247,7 +247,7 @@ export async function createMultiDatabaseSetup<T>(
     writePolicy?: 'primary-only|replicated';
     failoverTimeout?: number;
     logger?:|Console|{ debug: Function; info: Function; warn: Function; error: Function };
-  } = {}
+  } = {},
 ): Promise<MultiDatabaseDao<T>> {
   const primaryDao = await createDao<T>(
     entityType,
@@ -255,22 +255,22 @@ export async function createMultiDatabaseSetup<T>(
     primaryDatabase.config,
     {
       logger: options?.logger,
-    }
+    },
   );
 
   const fallbackDaos = await Promise.all(
     fallbackDatabases.map((db) =>
       createDao<T>(entityType, db.databaseType, db.config, {
         logger: options?.logger,
-      })
-    )
+      }),
+    ),
   );
 
   // Return a multi-database DAO wrapper
   return {
     primary: primaryDao,
     fallbacks: fallbackDaos,
-    readPreference: options?.readPreference|||primary',
+    readPreference: options?.readPreference || 'primary',
     writePolicy: options?.writePolicy||'primary-only',
     failoverTimeout: options?.failoverTimeout||5000,
 
@@ -438,7 +438,7 @@ function getDefaultTableName(entityType: EntityType): string {
 function createMemoryDao<T>(
   adapter: DatabaseAdapter,
   logger: Logger,
-  tableName: string
+  tableName: string,
 ): Dao<T> {
   // Create a specialized memory DAO implementation
   class MemoryDaoImpl extends MemoryDao<T> {
@@ -452,7 +452,7 @@ function createMemoryDao<T>(
 function createCoordinationDao<T>(
   adapter: DatabaseAdapter,
   logger: Logger,
-  tableName: string
+  tableName: string,
 ): Dao<T> {
   // Create a specialized coordination DAO implementation
   class CoordinationDaoImpl extends CoordinationDao<T> {
@@ -466,7 +466,7 @@ function createCoordinationDao<T>(
 function createGraphDao<T>(
   adapter: DatabaseAdapter,
   logger: Logger,
-  tableName: string
+  tableName: string,
 ): Dao<T> {
   // Create a specialized graph DAO implementation
   class GraphDaoImpl extends GraphDao<T> {

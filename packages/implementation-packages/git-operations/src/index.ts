@@ -12,11 +12,11 @@
  * strategic facade delegates to when available.
  */
 
-// Export main GitOperationsManager class and utilities
-export { GitOperationsManager } from './git-operations-manager';
-
 // Import the class for type reference in factory functions
 import { GitOperationsManager } from './git-operations-manager';
+
+// Export main GitOperationsManager class and utilities
+export { GitOperationsManager } from './git-operations-manager';
 
 // Export all types
 export type {

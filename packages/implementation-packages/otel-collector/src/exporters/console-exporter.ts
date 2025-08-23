@@ -167,7 +167,7 @@ export class ConsoleExporter implements BaseExporter {
       );
     }
 
-    console.log('); // Empty line for readability
+    console.log(''); // Empty line for readability
   }
 
   /**
@@ -180,7 +180,7 @@ export class ConsoleExporter implements BaseExporter {
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
           console.log(
-            `     ├─ ${span.name|||unnamed'} (${span.duration||'unknown'}ms)`
+            `     ├─ ${span.name || 'unnamed'} (${span.duration || 'unknown'}ms)`
           );
         }
         if (data.data.spans.length > 3) {

@@ -34,6 +34,9 @@ import Ajv, { type ValidateFunction } from 'ajv';
 import type { Logger } from './logging';
 import type { JsonObject, JsonValue, UnknownRecord } from './types/primitives';
 
+// Node.js fetch polyfill for older versions
+declare const fetch: (url: string) => Promise<{ ok: boolean; status: number; statusText: string; json: () => Promise<unknown> }>;
+
 // ============================================================================
 // FOUNDATION-INTEGRATED JSON SCHEMA SYSTEM
 // ============================================================================
@@ -42,7 +45,7 @@ export interface SchemaRegistry {
   [schemaName: string]: {
     schema: JsonObject; // JSON Schema Draft 7
     validator: ValidateFunction;
-    modes: ('kanban|agile|safe')[];
+    modes: ('kanban' | 'agile' | 'safe')[];
   };
 }
 
@@ -50,7 +53,7 @@ export class SchemaValidationError extends Error {
   constructor(
     message: string,
     public readonly documentType?: string,
-    public readonly validationErrors?: string[]
+    public readonly validationErrors?: string[],
   ) {
     super(message);
     this.name = 'SchemaValidationError';
@@ -129,7 +132,7 @@ export class JsonSchemaManager {
       };
 
       this.logger.info(
-        `Registered schema ${name} for modes: ${modes.join(', ')}`
+        `Registered schema ${name} for modes: ${modes.join(', ')}`,
       );
     } catch (error) {
       this.logger.error(`Failed to register schema ${name}:`, error);
@@ -141,15 +144,15 @@ export class JsonSchemaManager {
    * Extract supported modes from schema metadata
    */
   private extractSupportedModes(
-    schema: JsonObject
-  ): ('kanban|agile|safe')[] {
+    schema: JsonObject,
+  ): ('kanban' | 'agile' | 'safe')[] {
     // Check schema metadata for supported modes
     const metadata = schema['metadata'];
     if (metadata && typeof metadata === 'object' && !Array.isArray(metadata)) {
       const metadataObj = metadata as JsonObject;
       const supportedModes = metadataObj['supportedModes'];
       if (Array.isArray(supportedModes)) {
-        return supportedModes as ('kanban|agile|safe')[];
+        return supportedModes as ('kanban' | 'agile' | 'safe')[];
       }
     }
 
@@ -163,7 +166,7 @@ export class JsonSchemaManager {
   validate(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban|agile|safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): {
     isValid: boolean;
     errors?: string[];
@@ -190,7 +193,7 @@ export class JsonSchemaManager {
     if (!isValid) {
       const errors = schemaEntry.validator.errors?.map((err) => {
         const error = err as unknown as UnknownRecord;
-        return `${error['instancePath']||error['schemaPath']||'root'}: ${error['message']||'Unknown error'}`;
+        return `${error['instancePath'] || error['schemaPath'] || 'root'}: ${error['message'] || 'Unknown error'}`;
       })||['Unknown validation error'];
 
       return { isValid: false, errors };
@@ -205,14 +208,14 @@ export class JsonSchemaManager {
   validateWithErrors(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban|agile|safe' = 'kanban'): JsonValue {
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban'): JsonValue {
     const result = this.validate(documentType, data, mode);
 
     if (!result.isValid) {
       throw new SchemaValidationError(
         `Schema validation failed for ${documentType}`,
         documentType,
-        result.errors||[]
+        result.errors||[],
       );
     }
 
@@ -227,7 +230,7 @@ export class JsonSchemaManager {
    */
   getSchema(
     documentType: string,
-    mode: 'kanban|agile|safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): JsonObject {
     const schemaEntry = this.schemas[documentType];
 
@@ -237,7 +240,7 @@ export class JsonSchemaManager {
 
     if (!schemaEntry.modes.includes(mode)) {
       throw new SchemaValidationError(
-        `Document type ${documentType} not available in ${mode} mode`
+        `Document type ${documentType} not available in ${mode} mode`,
       );
     }
 
@@ -250,7 +253,7 @@ export class JsonSchemaManager {
   createDocument(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban|agile|safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): JsonValue {
     // Apply schema defaults
     const schema = this.getSchema(documentType, mode);
@@ -310,7 +313,7 @@ export class JsonSchemaManager {
    */
   private getSchemaVersion(
     _documentType: string,
-    mode: 'kanban|agile|safe'
+    mode: 'kanban' | 'agile' | 'safe',
   ): string {
     const modeVersionMap = {
       kanban: '1.0.0',
@@ -326,9 +329,32 @@ export class JsonSchemaManager {
    */
   private async loadSchemaAsync(uri: string): Promise<JsonObject> {
     // Implementation for loading external schema references
-    // This would be used for schema composition and references
+    // Used for schema composition and $ref resolution
     this.logger.info(`Loading external schema: ${uri}`);
-    return {};
+
+    try {
+      // Support HTTP/HTTPS URLs and file paths
+      if (uri.startsWith('http://') || uri.startsWith('https://')) {
+        const response = await fetch(uri);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return await response.json();
+      } else if (uri.startsWith('file://') || !uri.includes('://')) {
+        // File path - use fs to load
+        const fs = require('fs').promises;
+        const path = require('path');
+        const filePath = uri.startsWith('file://') ? uri.slice(7) : uri;
+        const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+        const content = await fs.readFile(absolutePath, 'utf-8');
+        return JSON.parse(content);
+      } else {
+        throw new Error(`Unsupported URI scheme: ${uri}`);
+      }
+    } catch (error) {
+      this.logger.error(`Failed to load schema from ${uri}:`, error);
+      throw new Error(`Schema loading failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   /**
@@ -343,7 +369,7 @@ export class JsonSchemaManager {
    */
   isAvailableInMode(
     documentType: string,
-    mode: 'kanban|agile|safe'
+    mode: 'kanban' | 'agile' | 'safe',
   ): boolean {
     const schema = this.schemas[documentType];
     return schema ? schema.modes.includes(mode) : false;
@@ -356,7 +382,7 @@ export class JsonSchemaManager {
     totalSchemas: number;
     schemasByMode: Record<string, number>;
     averageValidationTime: number;
-  } {
+    } {
     const schemasByMode = {
       kanban: 0,
       agile: 0,
@@ -391,7 +417,7 @@ export const JSON_SCHEMA_MANAGER_TOKEN = Symbol('JsonSchemaManager');
  */
 export function createJsonSchemaManager(
   logger: Logger,
-  schemasPath?: string
+  schemasPath?: string,
 ): JsonSchemaManager {
   return new JsonSchemaManager(logger, schemasPath);
 }

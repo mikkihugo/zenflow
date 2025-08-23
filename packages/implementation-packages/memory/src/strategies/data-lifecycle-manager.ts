@@ -5,15 +5,14 @@
  * migration, intelligent promotion/demotion, and efficient cleanup.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { TypedEventBase ,
   getLogger,
   recordMetric,
-  withTimeout,
   TelemetryManager,
   withTrace,
 } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 import type {
   LifecycleConfig,
   LifecycleEntry,

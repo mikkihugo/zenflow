@@ -18,7 +18,7 @@ export { LoggingLevel } from './logging';
  * Basic foundation configuration
  */
 export interface FoundationConfig {
-  logLevel: 'debug|info|warn|error';
+  logLevel: 'debug' | 'info' | 'warn' | 'error';
   enableConsoleLogging?: boolean;
   enableFileLogging?: boolean;
 }
@@ -39,7 +39,7 @@ export const defaultFoundationConfig: FoundationConfig = {
  * ```
  */
 export async function initializeFoundation(
-  config: Partial<FoundationConfig> = {}
+  config: Partial<FoundationConfig> = {},
 ): Promise<void> {
   const finalConfig = { ...defaultFoundationConfig, ...config };
 

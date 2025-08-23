@@ -13,13 +13,13 @@ import type {
 } from '@claude-zen/foundation/types';
 
 export interface CLIMessage {
-  role: 'system|user|assistant';
+  role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
 export interface CLIRequest {
   messages: CLIMessage[];
-  model?: LiteralUnion<'claude-3-5-sonnet|gpt-4'||gemini-pro', string>;
+  model?: LiteralUnion<'claude-3-5-sonnet' | 'gpt-4' | 'gemini-pro', string>;
   temperature?: number;
   maxTokens?: number;
   metadata?: Record<string, unknown>;
@@ -43,7 +43,14 @@ export type CLIResult = Result<CLIResponse, CLIError>;
 
 // Specialized CLI roles for swarm agents
 export interface SwarmAgentRole {
-  role: LiteralUnion<|'assistant|coder|analyst|researcher|coordinator|tester|architect'',
+  role: LiteralUnion<
+    | 'assistant'
+    | 'coder'
+    | 'analyst'
+    | 'researcher'
+    | 'coordinator'
+    | 'tester'
+    | 'architect',
     string
   >;
   systemPrompt: string;
@@ -126,7 +133,7 @@ export interface CLIProviderRegistry {
 // CLI Provider Factory
 export interface CLIProviderFactory {
   createProvider(
-    type: LiteralUnion<'claude-code|gemini-cli'||cursor-cli', string>,
+    type: LiteralUnion<'claude-code' | 'gemini-cli' | 'cursor-cli', string>,
     options?: Record<string, unknown>
   ): CLIProvider;
   getSupportedTypes(): string[];
@@ -135,11 +142,11 @@ export interface CLIProviderFactory {
 // Type utilities for CLI providers with Result pattern support
 export type OptionalCLIRequest = SetOptional<
   CLIRequest,
-  'model|temperature|maxTokens|metadata'
+  'model' | 'temperature' | 'maxTokens' | 'metadata'
 >;
 export type MinimalCLIProvider = SetOptional<
   CLIProvider,
-  'setRole|getRole''
+  'setRole' | 'getRole'
 >;
 export type CLIProviderWithDefaults = Merge<
   CLIProvider,

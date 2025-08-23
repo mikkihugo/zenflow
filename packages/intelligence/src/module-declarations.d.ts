@@ -50,7 +50,7 @@ declare module '@claude-zen/llm-providers' {
     name: string;
     models: string[];
     capabilities: string[];
-    status: 'available|unavailable'';
+    status: 'available' | 'unavailable';
   }
 
   export interface LLMProviderConfig {

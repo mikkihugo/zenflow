@@ -184,7 +184,10 @@ export interface DevelopmentSystemType {
 // =============================================================================
 
 export type DevelopmentToolStatus =
-  || 'active|fallback|error|not-available';
+  | 'active'
+  | 'fallback'
+  | 'error'
+  | 'not-available';
 
 export interface HealthStatus {
   status: string;

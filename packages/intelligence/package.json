@@ -53,17 +53,13 @@
   },
   "peerDependencies": {
     "@claude-zen/ai-safety": "workspace:*",
-    "@claude-zen/brain": "workspace:*",
-    "@claude-zen/fact-system": "workspace:*"
+    "@claude-zen/brain": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@claude-zen/brain": {
       "optional": false
     },
     "@claude-zen/ai-safety": {
-      "optional": true
-    },
-    "@claude-zen/fact-system": {
       "optional": true
     }
   },

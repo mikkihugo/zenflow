@@ -39,8 +39,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "nanoid": "^5.1.5"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

@@ -16,11 +16,12 @@
  * @since 2.0.0
  */
 
-import { getLogger, EnhancedError } from '@claude-zen/foundation';
-import { getLLMProvider } from '@claude-zen/intelligence';
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
+
+import { getLogger } from '@claude-zen/foundation';
+
 import type {
   CognitiveArchetype,
   SwarmTopology,
@@ -30,18 +31,27 @@ import type {
 const logger = getLogger('intelligent-config');
 
 /**
+ * Async helper to check if a file exists
+ */
+async function checkForFile(filePath: string): Promise<boolean> {
+  // Use a promise to make the file check async
+  await new Promise(resolve => setTimeout(resolve, 1));
+  return existsSync(filePath);
+}
+
+/**
  * Repository analysis results for swarm optimization
  */
 export interface RepositoryAnalysis {
-  projectType:|'web-app|api | library'|cli|mobile|desktop|data-science'||unknown';
+  projectType: 'web-app' | 'api' | 'library' | 'cli' | 'mobile' | 'desktop' | 'data-science' | 'unknown';
   technologies: string[];
-  complexity: 'low|medium|high|very-high';
-  codebaseSize: 'small|medium|large|very-large';
+  complexity: 'low' | 'medium' | 'high' | 'very-high';
+  codebaseSize: 'small' | 'medium' | 'large' | 'very-large';
   hasTests: boolean;
   hasDocs: boolean;
   mainLanguages: string[];
   fileCount: number;
-  recentActivity: 'low|medium|high';
+  recentActivity: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -84,9 +94,24 @@ export async function analyzeRepository(
   };
 
   try {
+    // Asynchronously check for different file types to determine project characteristics
+    const [hasPackageJson, hasCargoToml, hasGoMod, hasRequirementsTxt, hasPomXml] = await Promise.all([
+      checkForFile(join(rootDir, 'package.json')),
+      checkForFile(join(rootDir, 'Cargo.toml')),
+      checkForFile(join(rootDir, 'go.mod')),
+      checkForFile(join(rootDir, 'requirements.txt')),
+      checkForFile(join(rootDir, 'pom.xml')),
+    ]);
+    
+    // Use the file check results to determine technologies
+    if (hasCargoToml) analysis.technologies.push('Rust');
+    if (hasGoMod) analysis.technologies.push('Go');
+    if (hasRequirementsTxt) analysis.technologies.push('Python');
+    if (hasPomXml) analysis.technologies.push('Java');
+    
     // Analyze package.json for web/Node.js projects
-    const packageJsonPath = join(rootDir, 'package.json');
-    if (existsSync(packageJsonPath)) {
+    if (hasPackageJson) {
+      const packageJsonPath = join(rootDir, 'package.json');
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
       // Determine project type from dependencies and scripts
@@ -294,7 +319,7 @@ function parseClaudeRecommendation(
 ): SwarmRecommendation {
   try {
     // Extract JSON from Claude's response (now it's a string from LLM provider)
-    const jsonMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
+    const jsonMatch = response.match(/```json\s*([\S\s]*?)\s*```/);
 
     if (!jsonMatch) {
       throw new Error('No JSON configuration found in response');
@@ -316,7 +341,9 @@ function parseClaudeRecommendation(
       'star',
     ];
 
-    const cognitiveTypes = (config.cognitiveTypes||['researcher', 'coder'])
+    const cognitiveTypes = (config.cognitiveTypes && config.cognitiveTypes.length > 0 
+        ? config.cognitiveTypes 
+        : ['researcher', 'coder'])
       .filter((type: string) =>
         validCognitiveTypes.includes(type as CognitiveArchetype)
       )
@@ -328,7 +355,7 @@ function parseClaudeRecommendation(
     const agentCount = Math.min(
       Math.max(
         cognitiveTypes.length,
-        config.agentCount||cognitiveTypes.length
+        config.agentCount || (cognitiveTypes.length > 0 ? cognitiveTypes.length : 2)
       ),
       6
     );

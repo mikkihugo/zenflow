@@ -116,7 +116,7 @@ class MemorySystemAccessImpl implements MemorySystemAccess {
       } catch (error) {
         throw new MemorySystemConnectionError(
           'Memory package not available. Operations requires @claude-zen/memory for memory operations.',
-          error instanceof Error ? error : undefined
+          error instanceof Error ? error : undefined,
         );
       }
     }
@@ -189,7 +189,7 @@ export function getMemorySystemAccess(): MemorySystemAccess {
  * @param config - Memory orchestrator configuration
  */
 export async function getMemoryOrchestrator(
-  config?: MemorySystemConfig
+  config?: MemorySystemConfig,
 ): Promise<any> {
   const memorySystem = getMemorySystemAccess();
   return await Promise.resolve(memorySystem.createMemoryOrchestrator(config));
@@ -200,7 +200,7 @@ export async function getMemoryOrchestrator(
  * @param config - Memory coordinator configuration
  */
 export async function getMemoryCoordinator(
-  config?: MemorySystemConfig
+  config?: MemorySystemConfig,
 ): Promise<any> {
   const memorySystem = getMemorySystemAccess();
   return await Promise.resolve(memorySystem.createMemoryCoordinator(config));
@@ -211,7 +211,7 @@ export async function getMemoryCoordinator(
  * @param config - Persistence manager configuration
  */
 export async function getPersistenceManager(
-  config?: MemorySystemConfig
+  config?: MemorySystemConfig,
 ): Promise<any> {
   const memorySystem = getMemorySystemAccess();
   return await Promise.resolve(memorySystem.createPersistenceManager(config));
@@ -222,7 +222,7 @@ export async function getPersistenceManager(
  * @param config - Memory controller configuration
  */
 export async function getMemoryController(
-  config?: MemorySystemConfig
+  config?: MemorySystemConfig,
 ): Promise<any> {
   const memorySystem = getMemorySystemAccess();
   return await Promise.resolve(memorySystem.createMemoryController(config));
@@ -233,7 +233,7 @@ export async function getMemoryController(
  * @param config - Memory system core configuration
  */
 export async function getMemorySystemCore(
-  config?: MemorySystemConfig
+  config?: MemorySystemConfig,
 ): Promise<any> {
   const memorySystem = getMemorySystemAccess();
   return await Promise.resolve(memorySystem.createMemorySystemCore(config));

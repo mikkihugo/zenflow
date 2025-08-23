@@ -29,7 +29,7 @@ const config: ConfigFile = {
   request: './src/generated/core/request.ts',
   write: true,
   format: true,
-  lint: false, // Disabled due to biome issues mentioned in package.json
+  lint: false, // Disabled to prevent code corruption during manual fixes
   
   // Generate comprehensive API documentation
   exportCore: true,

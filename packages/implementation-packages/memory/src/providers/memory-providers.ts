@@ -17,7 +17,6 @@ import {
   DATABASE_TOKENS,
   type Config,
   type Logger,
-  MEMORY_TOKENS,
 } from '../../di/tokens/core-tokens';
 
 /**

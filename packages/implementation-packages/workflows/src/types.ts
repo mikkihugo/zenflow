@@ -58,7 +58,7 @@ export interface WorkflowRegistry {
 
 // Event types for workflow orchestration
 export interface WorkflowEvent {
-  type:|'workflow.started|workflow.completed'||workflow.failed|step.started'||step.completed|step.failed'';
+  type: 'workflow.started' | 'workflow.completed' | 'workflow.failed' | 'step.started' | 'step.completed' | 'step.failed';
   workflowId: string;
   stepIndex?: number;
   data?: Record<string, unknown>;

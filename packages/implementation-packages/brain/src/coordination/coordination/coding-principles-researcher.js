@@ -109,8 +109,9 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                             return [2 /*return*/, cached];
                         }
                         _a.label = 1;
+                        break;
                     case 1:
-                        _a.trys.push([1, 5, , 6]);
+                        _a.trys.push([1, 5, undefined, 6]);
                         researchTask = {
                             id: "principles-research-".concat(cacheKey, "-").concat(Date.now()),
                             type: 'reasoning',
@@ -139,7 +140,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                     case 4: throw new Error('Research failed to produce valid results');
                     case 5:
                         error_1 = _a.sent();
-                        console.warn('Principles research failed, using fallback:', error_1);
+                        logger.warn('Principles research failed, using fallback:', error_1);
                         return [2 /*return*/, this.getFallbackPrinciples(config)];
                     case 6: return [2 /*return*/];
                 }
@@ -203,6 +204,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                         _a.sent();
                         this.cache.set(cacheKey, existing);
                         _a.label = 2;
+                        break;
                     case 2: return [2 /*return*/];
                 }
             });
@@ -234,12 +236,14 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                         researchAttempts = 0;
                         maxAttempts = 5;
                         _a.label = 1;
+                        break;
                     case 1:
                         if (!(bestConfidence < targetConfidence && researchAttempts < maxAttempts)) return [3 /*break*/, 7];
                         researchAttempts++;
                         _a.label = 2;
+                        break;
                     case 2:
-                        _a.trys.push([2, 5, , 6]);
+                        _a.trys.push([2, 5, undefined, 6]);
                         researchConfig = this.enhanceConfigWithFeedback(config, confidence);
                         return [4 /*yield*/, this.researchPrinciples(researchConfig)];
                     case 3:
@@ -257,11 +261,11 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                                 improvements: ["Research attempt ".concat(researchAttempts, ": confidence ").concat(researchConfidence.toFixed(3))]
                             });
                         }
-                        console.log("Research attempt ".concat(researchAttempts, ": confidence ").concat(researchConfidence.toFixed(3), " (target: ").concat(targetConfidence, ")"));
+                        logger.info("Research attempt ".concat(researchAttempts, ": confidence ").concat(researchConfidence.toFixed(3), " (target: ").concat(targetConfidence, ")"));
                         return [3 /*break*/, 6];
                     case 5:
                         error_2 = _a.sent();
-                        console.warn("Research attempt ".concat(researchAttempts, " failed:"), error_2);
+                        logger.warn("Research attempt ".concat(researchAttempts, " failed:"), error_2);
                         return [3 /*break*/, 6];
                     case 6: return [3 /*break*/, 1];
                     case 7:
@@ -273,7 +277,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                     case 9:
                         // Cache the best principles found
                         this.cache.set(cacheKey, bestPrinciples);
-                        console.log("Research completed after ".concat(researchAttempts, " attempts. Final confidence: ").concat(bestConfidence.toFixed(3)));
+                        logger.info("Research completed after ".concat(researchAttempts, " attempts. Final confidence: ").concat(bestConfidence.toFixed(3)));
                         return [2 /*return*/, bestPrinciples];
                 }
             });
@@ -318,7 +322,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                         cacheKey = this.generateCacheKey(config);
                         confidence = this.getPromptConfidence(cacheKey);
                         if (!(confidence.overallConfidence < this.minimumConfidenceThreshold || confidence.needsImprovement)) return [3 /*break*/, 2];
-                        console.log("Principles need improvement (confidence: ".concat(confidence.overallConfidence.toFixed(3), "). Researching..."));
+                        logger.info("Principles need improvement (confidence: ".concat(confidence.overallConfidence.toFixed(3), "). Researching..."));
                         return [4 /*yield*/, this.researchPrinciplesWithConfidence(config)];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
@@ -690,10 +694,9 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                     return [2 /*return*/, principles];
                 }
                 catch (error) {
-                    console.warn('Failed to parse research result:', error);
+                    logger.warn('Failed to parse research result:', error);
                     return [2 /*return*/, this.getFallbackPrinciples(config)];
                 }
-                return [2 /*return*/];
             });
         });
     };
@@ -819,7 +822,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
             return __generator(this, function (_a) {
                 // Use feedback to improve future research prompts and caching
                 // This would integrate with the behavioral intelligence system
-                console.log('Incorporating human feedback for principles improvement:', feedback.principlesId);
+                logger.info('Incorporating human feedback for principles improvement:', feedback.principlesId);
                 return [2 /*return*/];
             });
         });

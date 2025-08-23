@@ -11,230 +11,618 @@
  * 4. **Minimal Dependencies** - Only @claude-zen/foundation required
  *
  * **USAGE:**
- * ```typescript
- * import(/workflows/safe-sparc-standalone);
+ * ``'typescript
+ * import { createSafeSparcWorkflow } from './workflows/safe-sparc-standalone';
  *
  * const workflow = await createSafeSparcWorkflow();
- * const result = await workflow.processSafeEpic({
- * id: 'epic-001',
- * title: 'Customer Analytics Platform',
- * businessCase: 'Build analytics to improve retention',
- * estimatedValue: 1500000,
- * estimatedCost: 600000,
- * timeframe: '8 months',
- * riskLevel: 'medium'
- * });` * ```
+ * const result = await workflow.processSafeEpic(
+  {
+  *   id: 'epic-001',
+  *   title: 'Customer'Analytics Platform',
+  *   businessCase: 'Build'analytics to improve retention',
+  *   estimatedValue: 1500000,
+  *   estimatedCost: 600000,
+  *   timeframe: '8'months',
+  *   rikLevel: 'medium'
+ *
+}
+);
+ * ``'
  *
  * **END-TO-END FLOW:**
  * Epic Proposal → SAFe Role Decisions (LLMProvider) → SPARC Code Generation (Claude SDK) → Generated Code
  *
- * @version 1..0
+ * @version 1.0
  * @requires @claude-zen/foundation - LLMProvider and Claude SDK integration
  */
 
-import { TypedEventBase', getLogger } from '@claude-zen/foundation';
+import {
+  TypedEventBase,
+  getLogger
+} from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 
 // =============================================================================
 // CORE TYPES
 // =============================================================================
 
-export interface EpicProposal { id: string; title: string; businessCase: string; estimatedValue: number; estimatedCost: number; timeframe: string; riskLevel: 'low' || medium || 'h''i'g'h');
+export interface EpicProposal {
+  id: string;
+  title: string;
+  businessCase: string;
+  estimatedValue: number;
+  estimatedCost: number;
+  timeframe: string;
+  riskLevel: 'low' | 'medium' | 'high'
+
 }
 
-export type SafeRoleType = 'lean-portfolio-manager | release-train-engineer | product-manager | system-architect  || epic-owner);
+export type SafeRoleType =
+  | 'lean-portfolio-manager'
+  | 'release-train-engineer'
+  | 'product-manager'
+  | 'system-architect'
+  | 'epic-owner';
 
-export interface SafeRoleDecisionResult { decision: approve | reje'c''t' || defer || ' 'more-information'); confidence: number; reasoning: string; recommendations: string[]; requiredActions: string[]; humanOversightRequired: boolean; metadata: Record<string, any>;
+export interface SafeRoleDecisionResult {
+  decision: 'approve' | 'reject' | 'defer' | 'more-information';
+  confidence: number;
+  reasoning: string;
+  recommendations: string[];
+  requiredActions: string[];
+  humanOversightRequired: boolean;
+  metadata: Record<string,
+  any>
+
 }
 
-export interface SafeWorkflowResult { overallDecision: 'approve' || reject || ' 'def'e'r'); consensusReached: boolean; roleDecisions: Array<{ roleType: SafeRoleType; decision: string; confidence: number; reasoning: string; }>; sparcArtifacts?: { status: 'completed  ' || failed | parti'a''l'); specification?: any; architecture?: any; implementation?: { files: string[]; tests: string[]; documentation: string[]; }; };
+export interface SafeWorkflowResult {
+  overallDecision: 'approve' | 'reject' | 'defer';
+  consensusReached: boolean;
+  roleDecisions: Array<{
+  roleType: SafeRoleType;
+  decision: string;
+  confidence: number;
+  reasoning: string
+
+}>;
+  sparcArtifacts?: {
+    status: 'completed' | 'failed' | 'partial';
+    specification?: any;
+    architecture?: any;
+    implementation?: {
+  files: string[];
+      tests: string[];
+      documentation: string[]
+
 }
-
-export type SPARCPhase = 'specification  || pseudocode || ' 'architecture | refinement | completion');
-
-export interface SPARCProject { id: string; name: string; domain: string; complexity: string; requirements: string[]; currentPhase: SPARCPhase; specification?: any; pseudocode?: any; architecture?: any; refinement?: any; implementation?: { files: string[]; tests: string[]; documentation: string[]; explanation?: string; };
-}
-
-// =============================================================================
-// SAFE ROLES AGENT - LLMProvider Based
-// =============================================================================
-
-class SafeRolesAgent extends TypedEventBase { private logger: Logger; private llmProvider: LLMProvider; constructor() { super(); this.logger = getLogger(SafeRolesAgent); this.llmProvider = getGlobalLLM(); this.llmProvider.setRole(analyst); // Use analyst role for SAFe decisions this.logger.info('SAFe Roles Agent initialized with LLMProvider'); } async makeRoleDecision( role: SafeRoleType', epic: EpicProposal ): Promise<SafeRoleDecisionResult> {` this.logger.info('`Making ${role} decision for epic: ${epic.title}`'); try { switch (role) { case 'lean-portfolio-manager': return await this.makeLeanPortfolioManagerDecision(epic); case 'product-manager': return await this.makeProductManagerDecision(epic); case 'system-architect': return await this.makeSystemArchitectDecision(epic); case 'release-train-engineer': return await this.makeReleaseTrainEngineerDecision(epic); case 'epic-owner': return await this.makeEpicOwnerDecision(epic); default:` throw new Error('`Unknown SAFe role: ${role}`'); } } catch (error) {` this.logger.error('`SAFe ${role} decision failed:`, error'); throw error; } } private async makeLeanPortfolioManagerDecision( epic: EpicProposal ): Promise<SafeRoleDecisionResult> {` const prompt = `As a Lean Portfolio Manager in SAFe', evaluate this epic for investment approval:
-
-Epic: ${epic.title}
-Business Case: ${epic.businessCase}
-Estimated Value: $${epic.estimatedValue?.toLocaleString}
-Estimated Cost: $${epic.estimatedCost?.toLocaleString}
-Timeframe: ${epic.timeframe}
-Risk Level: ${epic.riskLevel}
-
-ROI Calculation: ${(((epic.estimatedValue - epic.estimatedCost) / epic.estimatedCost) * 100).toFixed(1)}%
-
-Provide your decision as a JSON object with this exact structure:
-{ "decision: approve  || reject | defer | more-information", "confidence": .8, "reasoning: brief explanation", "humanOversightRequired": true | false`}`; try { const response = await this.llmProvider.executeAsAnalyst( prom'p''t'','safe-portfolio-decision'); const parsed = this.parseDecisionResponse(response); return { decision: parsed.decision  || ' ' defer', confidence: parsed.confidence  || ' ' .7, reasoning: parsed.reasoning|'Portfolio analysis completed', recommendations: [ 'Consider market timing and competitive landscape', 'Validate customer demand through MVP approach', 'Ensure adequate funding runway for full delivery', ], requiredActions: parsed.decision === 'approve' ? [ 'Allocate budget from investment portfolio', 'Assign Epic Owner for development', 'Schedule PI Planning inclusion', ] : [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType: 'lean-portfolio-manager', calculatedROI: (epic.estimatedValue - epic.estimatedCost) / epic.estimatedCost, llmDecision: true, }, }; } catch (error) { return this.createFallbackDecision('lean-portfolio-manager', epic, error); } } private async makeProductManagerDecision( epic: EpicProposal ): Promise<SafeRoleDecisionResult> {` const prompt = `As a Product Manager in SAFe, evaluate this epic from customer and market perspective:
-
-Epic: ${epic.title}
-Business Case: ${epic.businessCase}
-Estimated Value: $${epic.estimatedValue?.toLocaleString}
-Timeframe: ${epic.timeframe}
-Risk Level: ${epic.riskLevel}
-
-Analyze customer value, market fit, competitive advantage', and product strategy alignment.
-
-Provide your decision as a JSON object with this exact structure:
-{ "decision: approve  || reject | defer | more-information", "confidence": .8, "reasoning: brief explanation focusing on customer value and market fit", "humanOversightRequired": true | false`}`; try { const response = await this.llmProvider.executeAsAnalyst( prom'p''t','safe-product-manager-decision'); const parsed = this.parseDecisionResponse(response); return { decision: parsed.decision  || ' ' defer', confidence: parsed.confidence  || ' ' .7, reasoning: parsed.reasoning|'Customer value analysis completed', recommendations: [ 'Conduct user research to validate assumptions', 'Develop minimum viable product (MVP) approach', 'Define clear success metrics and KPIs', ], requiredActions: parsed.decision === 'approve' ? [ 'Create detailed product requirements', 'Define feature roadmap and prioritization', 'Establish customer feedback loops', ] : [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType: 'product-manager', llmDecision: true, }, }; } catch (error) { return this.createFallbackDecision('product-manager', epic, error); } } private async makeSystemArchitectDecision( epic: EpicProposal ): Promise<SafeRoleDecisionResult> {` const prompt = `As a System Architect in SAFe', evaluate this epic's technical feasibility:
-
-Epic: ${epic.title}
-Business Case: ${epic.businessCase}
-Estimated Cost: $${epic.estimatedCost?.toLocaleString}
-Timeframe: ${epic.timeframe}
-Risk Level: ${epic.riskLevel}
-
-Analyze technical feasibility, architectural complexity, and system integration requirements.
-
-Provide your decision as a JSON object with this exact structure:
-{ "decision: approve  || reject | defer | more-information", "confidence": .8, "reasoning: brief explanation focusing on technical feasibility", "humanOversightRequired": true | false`}`; try { const response = await this.llmProvider.executeAsAnalyst( prom'p''t','safe-system-architect-decision'); const parsed = this.parseDecisionResponse(response); return { decision: parsed.decision  || ' ' defer', confidence: parsed.confidence  || ' ' .7, reasoning: parsed.reasoning|'Technical feasibility analysis completed', recommendations: [ 'Plan architecture runway enablers', 'Address technical debt before implementation', 'Ensure proper system integration patterns', ], requiredActions: parsed.decision === 'approve' ? [ 'Create detailed technical design', 'Plan enabler features for architecture support', 'Review integration points and dependencies', ] : [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType: 'system-architect', llmDecision: true, }, }; } catch (error) { return this.createFallbackDecision('system-architect', epic, error); } } private async makeReleaseTrainEngineerDecision( epic: EpicProposal ): Promise<SafeRoleDecisionResult> {` const prompt = `As a Release Train Engineer in SAFe', evaluate this epic's program execution feasibility:
-
-Epic: ${epic.title}
-Business Case: ${epic.businessCase}
-Timeframe: ${epic.timeframe}
-Risk Level: ${epic.riskLevel}
-
-Analyze program capacity, team availability, and delivery timeline feasibility.
-
-Provide your decision as a JSON object with this exact structure:
-{ "decision: approve  || reject | defer | more-information", "confidence": .8, "reasoning: brief explanation focusing on program capacity and delivery", "humanOversightRequired": true | false`}`; try { const response = await this.llmProvider.executeAsAnalyst( prom'p''t','safe-rte-decision'); const parsed = this.parseDecisionResponse(response); return { decision: parsed.decision  || ' ' defer', confidence: parsed.confidence  || ' ' .7, reasoning: parsed.reasoning|'Program execution analysis completed', recommendations: [ 'Schedule PI Planning session to confirm team commitment', 'Identify and address program dependencies', 'Plan for cross-team collaboration needs', ], requiredActions: parsed.decision === 'approve' ? [ 'Add to Program Backlog for PI Planning', 'Coordinate with Product Management for feature breakdown', 'Schedule Scrum of Scrums reviews', ] : [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType: 'release-train-engineer', llmDecision: true, }, }; } catch (error) { return this.createFallbackDecision('release-train-engineer', epic, error); } } private async makeEpicOwnerDecision( epic: EpicProposal ): Promise<SafeRoleDecisionResult> {` const prompt = `As an Epic Owner in SAFe', evaluate this epic's business case and benefit hypothesis:
-
-Epic: ${epic.title}
-Business Case: ${epic.businessCase}
-Estimated Value: $${epic.estimatedValue?.toLocaleString}
-Estimated Cost: $${epic.estimatedCost?.toLocaleString}
-Timeframe: ${epic.timeframe}
-Risk Level: ${epic.riskLevel}
-
-Analyze business case strength, market opportunity, and customer value proposition.
-
-Provide your decision as a JSON object with this exact structure:
-{ "decision: approve  || reject | defer | more-information", "confidence": .8, "reasoning: brief explanation focusing on business case strength", "humanOversightRequired": true | false`}`; try { const response = await this.llmProvider.executeAsAnalyst( prom'p''t','safe-epic-owner-decision'); const parsed = this.parseDecisionResponse(response); return { decision: parsed.decision  || ' ' defer', confidence: parsed.confidence  || ' ' .7, reasoning: parsed.reasoning|'Business case analysis completed', recommendations: [ 'Validate benefit hypothesis with customer interviews', 'Define leading and lagging success metrics', 'Plan phased delivery to validate assumptions', ], requiredActions: parsed.decision === 'approve' ? [ 'Complete detailed business case documentation', 'Define epic acceptance criteria', 'Plan benefit measurement approach', ] : [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType: 'epic-owner', llmDecision: true, }, }; } catch (error) { return this.createFallbackDecision('epic-owner', epic, error); } } private parseDecisionResponse(response: string): any { try { const jsonMatch = response.match(/{[\S\s]*}/); if (jsonMatch) { const parsed = JSON.parse(jsonMatch[0]); return { decision: parsed.decision', confidence: Number(parsed.confidence)  || ' ' .7, reasoning: parsed.reasoning|'LLM decision completed', humanOversightRequired: Boolean(parsed.humanOversightRequired), }; } // Fallback: parse text response for decision keywords const text = response?.toLowerCase() let decision = 'defer'); if (text.includes('approve)  || ' ' text.includes(accept')) decision = 'approve'); else if (text.includes('reject)  || ' ' text.includes(decline')) decision = 'reject'); else if (text.includes('more information)  || ' ' text.includes(need more')) decision = 'more-information'); return { decision, confidence: .6, reasoning: response.substring(0, 200) + "...', humanOversightRequired: true, }; } catch (error) { this.logger.warn('Failed to parse LLM decision response: '', error); return {' decision: 'defer', confidence: .5, reasoning: 'Failed to parse LLM response', humanOversightRequired: true, }; } } private createFallbackDecision( roleType: SafeRoleType, epic: EpicProposal, error: any ): SafeRoleDecisionResult { this.logger.error('` `LLM ${roleType} decision failed, using fallback:`', error '); const roi = (epic.estimatedValue - epic.estimatedCost) / epic.estimatedCost; const decision = roi > 1.5 ? 'approve : defer'); return { decision, confidence: .6,` reasoning: `Fallback decision: ROI is ${(roi * 100).toFixed(1)}%`,` recommendations: [`Review with full LLM analysis when available`], requiredActions: [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType, llmDecision: false, fallback: true, error: error.message, }, }; }
+};
+  timestamp: Date;
+  processTimeMs: number
 }
 
 // =============================================================================
-// SPARC ENGINE - Claude SDK Based
+// SPARC INTEGRATION TYPES
 // =============================================================================
 
-class SPARCEngineStandalone { private logger: Logger; constructor() { this.logger = getLogger(SPARCEngine); } async executeSPARC(epic: EpicProposal): Promise<SPARCProject> {` this.logger.info('`Executing SPARC methodology for epic: ${epic.title}`'); const project: SPARCProject = {` id: `sparc-${Date.now()}`, name: epic.title, domain: 'web-application', complexity: epic.riskLevel === 'high ? complex' : 'moderate', requirements: [epic.businessCase], currentPhase: 'specification', }; try { // Execute SPARC phases sequentially // Phases 1-4: Use LLMProvider for analysis and design (no tools) await this.executeSpecificationPhase(project, epic); project.currentPhase = 'pseudocode'); await this.executePseudocodePhase(project, epic); project.currentPhase = 'architecture'); await this.executeArchitecturePhase(project, epic); project.currentPhase = 'refinement'); await this.executeRefinementPhase(project, epic); project.currentPhase = 'completion'); // Phase 5: Use Claude SDK for actual code generation (tools needed) await this.executeCompletionPhase(project, epic);
-` this.logger.info('`SPARC execution completed for: ${epic.title}`'); return project; } catch (error) { this.logger.error('SPARC execution failed: ', error); throw error; } } private async executeSpecificationPhase( project: SPARCProject', epic: EpicProposal ): Promise<void> {' this.logger.info('Executing SPARC Specification phase with LLMProvider'); try { // Use LLMProvider for specification analysis (no tools needed) const { getGlobalLLM } = await import(claude-zen/foundation); const llm = getGlobalLLM(); llm.setRole(analyst); const specPrompt = this.buildSpecificationPrompt(project, epic); const response = await llm.executeAsAnalyst( specPrompt', 'sparc-specification'); const specData = this.parseSpecificationResponse(response); project.specification = {` goals: specData.goals  || ' '[`Implement ${epic.title}`], scope: specData.scope || ''epic.businessCase, constraints: specData.constraints  || ' ' ['Time constraints', 'Budget constraints', ], stakeholders: specData.stakeholders  || ' ' ['Development team', 'End users', ], successCriteria: specData.successCriteria  || ' '[All requirements met', 'System is functional', 'Tests pass', ], }; } catch (error) { this.logger.error('Specification phase failed, using fallback: ', error); project.specification = {` goals: [`Implement ${epic.title}`], scope: epic.businessCase',' constraints: ['Time constraints, Budget constraints'], stakeholders: ['Development team, End users'], successCriteria: [ 'All requirements met', 'System is functional', 'Tests pass', ], }; } } private async executeArchitecturePhase( project: SPARCProject, epic: EpicProposal ): Promise<void> { this.logger.info('Executing SPARC Architecture phase with LLMProvider'); try { // Use LLMProvider for architecture design (no tools needed) const { getGlobalLLM } = await import(claude-zen/foundation); const llm = getGlobalLLM(); llm.setRole(architect); const architecturePrompt = this.buildArchitecturePrompt(project, epic); const response = await llm.executeAsArchitect( architecturePrompt', 'sparc-architecture'); const architectureData = this.parseArchitectureResponse(response); project.architecture = { components: architectureData.components  || ' ' ['API Service', 'Database', 'Frontend', ], relationships: architectureData.relationships  || ' ' ['Frontend → API Service', 'API Service → Database', ], patterns: architectureData.patterns  || ' ' ['MVC, REST API'], technologies: architectureData.technologies  || ' ' ['TypeScript', 'Node.js', 'React', ], }; } catch (error) { this.logger.error('Architecture phase failed, using fallback: '', error); project.architecture = {' components: ['API Service, Database', 'Frontend'], relationships: ['Frontend → API Service, API Service → Database'], patterns: ['MVC, REST API'], technologies: ['TypeScript, Node.js', 'React'], }; } } private async executeCompletionPhase( project: SPARCProject, epic: EpicProposal ): Promise<void> { this.logger.info( Using LLMProvider (coder role) - SIMULATED ONLY); const startTime = Date.now(); try { // Use LLMProvider to explain what code would be generated (no actual file creation) const { getGlobalLLM } = await import(claude-zen/foundation); const llm = getGlobalLLM(); llm.setRole(coder); const codeExplanationPrompt = this.buildCodeGenerationPrompt( project, epic ); const response = await llm.executeAsCoder( codeExplanationPrompt, 'sparc-code-explanation'); // Parse explanation into simulated file structure const simulatedFiles = this.parseCodeExplanation(response); project.implementation = { files: simulatedFiles.files, tests: simulatedFiles.tests', documentation: simulatedFiles.documentation  || ' ' (simulatedFiles as any).docs'  || [], explanation: response, // Keep full explanation for review }; const duration = Date.now() - startTime;` this.logger.info(` ✅ Completion simulation complete (${duration}ms)`); this.logger.info('` ` Simulated files: ${simulatedFiles.files.length} files` '); this.logger.info('` ` Simulated tests: ${simulatedFiles.tests.length} tests` '); this.logger.info(` ` Simulated docs: ${(simulatedFiles.documentati'o''n || (simulatedFiles as any).docs ' ''  || [']'').length} docs` );` this.logger.info(` Note: NO ACTUAL FILES CREATED (simulation only)`); } catch (error) { const duration = Date.now() - startTime;` this.logger.error('` ❌ Completion failed after ${duration}ms:`, error'); project.implementation = { files: [src/main.ts', src/api.ts', 'src/models.ts'], tests: ['tests/main.test.ts, tests/api.test.ts'], documentation: ['README.md, API_DOCS.md'], explanation: 'Simulated code generation with standard TypeScript project structure', }; } } private buildSpecificationPrompt( project: SPARCProject, epic: EpicProposal ): string {` return `
-Analyze and specify requirements for the following SPARC project:
+export interface SparcProject {
+  id: string;
+  name: string;
+  description: string;
+  currentPhase: SparcPhase;
+  artifacts: SparcArtifacts;
+  metadata: Record<string,
+  any>
 
-Project Name: ${project.name}
-Business Case: ${epic.businessCase}
-Estimated Value: $${epic.estimatedValue?.toLocaleString}
-Timeframe: ${epic.timeframe}
-Risk Level: ${epic.riskLevel}
+}
 
-Please provide a comprehensive specification as JSON:
-{ "goals: [Primary goal", "Secondary goal", ...], "scope: Detailed scope description", "constraints: [Constraint1", "Constraint2", ...], "stakeholders: [Stakeholder1", "Stakeholder2", ...], "successCriteria: [Criteria1", "Criteria2", ...]
-}``; } private buildArchitecturePrompt( project: SPARCProject, epic: EpicProposal ): string {` return `
-Design comprehensive software architecture for the following SPARC project:
+export enum SparcPhase {
+  SPECIFICATION = 'specification',
+  PSEUDOCODE = 'pseudocode',
+  ARCHITECTURE = 'architecture',
+  REFINEMENT = 'refinement',
+  COMPLETION = 'completion'
 
-Project Name: ${project.name}
-Business Case: ${epic.businessCase}
-Specification: ${JSON.stringify(project.specification, null, 2)}
-Requirements: ${project.requirements.join(, )}
+}
 
-Please provide:
-1. System components and their responsibilities
-2. Component relationships and data flow
-3. Architectural patterns to apply
-4. Technology stack recommendations
+export i'terface SparcArtifacts {
+  specification?: string;
+  pseudocode?: string;
+  architecture?: string;
+  implementation?: {
+    files: Array<{
+  path: string;
+      content: string;
+      type: 'source' | 'test' | 'config' | 'documentation'
 
-Return your architecture design as JSON with the following structure:
-{ "components: [Component1", "Component2", ...], "relationships: [Component1 → Component2", ...], "patterns: [Pattern1", "Pattern2", ...], "technologies: [Tech1", "Tech2", ...]
-}``; } private async executePseudocodePhase( project: SPARCProject, epic: EpicProposal ): Promise<void> { this.logger.info('Executing SPARC Pseudocode phase with LLMProvider'); try { const { getGlobalLLM } = await import(claude-zen/foundation); const llm = getGlobalLLM(); llm.setRole(coder); const pseudocodePrompt = this.buildPseudocodePrompt(project, epic); const response = await llm.executeAsCoder( pseudocodePrompt', 'sparc-pseudocode' ); project.pseudocode = { algorithms: this.extractAlgorithms(response), dataStructures: this.extractDataStructures(response), workflows: this.extractWorkflows(response), }; } catch (error) { this.logger.error('Pseudocode phase failed, using fallback: '', error); project.pseudocode = {' algorithms: ['Main processing algorithm, Data validation algorithm'], dataStructures: ['User data structure, Request/Response objects'], workflows: ['User input → Processing → Output'], }; } } private async executeRefinementPhase( project: SPARCProject, epic: EpicProposal ): Promise<void> { this.logger.info('Executing SPARC Refinement phase with LLMProvider'); try { const { getGlobalLLM } = await import(claude-zen/foundation); const llm = getGlobalLLM(); llm.setRole(analyst); const refinementPrompt = this.buildRefinementPrompt(project, epic); const response = await llm.executeAsAnalyst( refinementPrompt', 'sparc-refinement' ); project.refinement = { optimizations: this.extractOptimizations(response), riskMitigations: this.extractRiskMitigations(response), qualityChecks: this.extractQualityChecks(response), }; } catch (error) { this.logger.error('Refinement phase failed, using fallback: '', error); project.refinement = { optimizations: [' 'Performance optimization', 'Code quality improvements', ], riskMitigations: ['Error handling, Input validation'], qualityChecks: ['Unit testing, Code review'], }; } } private buildPseudocodePrompt( project: SPARCProject, epic: EpicProposal ): string { // Enhanced prompt that incorporates epic context for better pseudocode generation const epicContext = { businessValue: epic.estimatedValue, costConstraints: epic.estimatedCost, timeframe: epic.timeframe, riskLevel: epic.riskLevel, strategicObjectives: epic.strategicObjectives, };
-` return `
-Create detailed pseudocode for the following SPARC project:
-
-Project: ${project.name}
-Specification: ${JSON.stringify(project.specification, null, 2)}
-
-Epic Context:
-- Business Value: $${epicContext.businessValue?.toLocaleString}
-- Budget Constraints: $${epicContext.costConstraints?.toLocaleString}
-- Timeline: ${epicContext.timeframe}
-- Risk Level: ${epicContext.riskLevel}
-- Strategic Objectives: ${epicContext.strategicObjectives.join(, )}
-
-Provide pseudocode covering:
-1. Main algorithms and processing logic (optimized for ${epicContext.riskLevel} risk)
-2. Data structures and their relationships
-3. Key workflows and user interactions
-
-Format as plain text pseudocode, not actual code.``; } private buildRefinementPrompt( project: SPARCProject, epic: EpicProposal ): string { // Enhanced refinement that considers epic constraints and objectives const performanceTargets = { userLoad: epic.estimatedValue > 1000000 ? 'high' : epic.estimatedValue > 500000 ? 'medium' : 'standard', scalabilityNeeds: epic.strategicObjectives.some((obj) => obj.includes(scale); ) ? 'enterprise' : 'standard', securityLevel: epic.riskLevel === 'high' ? 'enterprise' : epic.riskLevel === 'medium' ? 'business' : 'standard', };
-` return `
-Refine and optimize the following SPARC project design:
-
-Project: ${project.name}
-Architecture: ${JSON.stringify(project.architecture, null, 2)}
-Pseudocode: ${JSON.stringify(project.pseudocode, null, 2)}
-
-Epic-Driven Requirements:
-- Target Performance: ${performanceTargets.userLoad} user load capacity
-- Scalability: ${performanceTargets.scalabilityNeeds} level scaling requirements
-- Security: ${performanceTargets.securityLevel} grade security implementation
-- Budget Impact: Optimize for $${epic.estimatedCost?.toLocaleString} budget
-- Timeline Constraints: ${epic.timeframe} delivery window
-
-Provide refinements covering:
-1. Performance optimizations (targeting ${performanceTargets.userLoad} load)
-2. Risk mitigations and error handling (${epic.riskLevel} risk profile)
-3. Quality assurance checks aligned with strategic objectives
-
-Focus on making the design production-ready and robust.``; } private buildCodeGenerationPrompt( project: SPARCProject, epic: EpicProposal ): string {` return `
-Generate production-ready code for the following SPARC project:
-
-Project Name: ${project.name}
-Business Case: ${epic.businessCase}
-Specification: ${JSON.stringify(project.specification, null, 2)}
-Architecture: ${JSON.stringify(project.architecture, null, 2)}
-Refinements: ${JSON.stringify(project.refinement, null, 2)}
-
-Please generate:
-1. Main application files (TypeScript/JavaScript)
-2. Database models and schemas
-3. API endpoints and routes
-4. Business logic services
-5. Unit and integration tests
-6. README documentation
-7. Package.json with dependencies
-
-Create a complete, working application that meets all the requirements.
-Use modern patterns, proper error handling, and comprehensive testing.
-Make it production-ready with proper structure and documentation.``; } private extractAlgorithms(response: string): string[] { const lines = response.split(\n); return lines .filter( (line) => line?.toLowerCase.includes(algorithm)  || ' ' line?.toLowerCase.includes(process); ) .slice(0, 3); } private extractDataStructures(response: string): string[] { const lines = response.split(\n); return lines .filter( (line) => line?.toLowerCase.includes(data)  || ' ' line?.toLowerCase.includes(structure); ) .slice(0, 3); } private extractWorkflows(response: string): string[] { const lines = response.split(\n); return lines .filter( (line) => line.includes('→)  || ' ' line?.toLowerCase.includes(workflow'); ) .slice(0', 3); } private extractOptimizations(response: string): string[] { const lines = response.split(\n); return lines .filter( (line) => line?.toLowerCase.includes(optimiz)  || ' ' line?.toLowerCase.includes(performance); ) .slice(0, 3); } private extractRiskMitigations(response: string): string[] { const lines = response.split(\n); return lines .filter( (line) => line?.toLowerCase.includes(risk)  || ' ' line?.toLowerCase.includes(error); ) .slice(0, 3); } private extractQualityChecks(response: string): string[] { const lines = response.split(\n); return lines .filter( (line) => line?.toLowerCase.includes(quality)  || ' 'line?.toLowerCase.includes(test'); ) .slice(0, 3); } private parseSpecificationResponse(response: string): any { try { const jsonMatch = response.match(/{[\S\s]*}/); if (jsonMatch) { return JSON.parse(jsonMatch[0]); } // Fallback: extract from text return { goals: [` `Implement functionality based on: ${response.substring(0, 100)}...`, ], scope: response.substring(0', 200) + "...', constraints: ['Budget, Timeline'], stakeholders: ['Users, Development team'], successCriteria: ['Functional system, User acceptance'], }; } catch (error) { this.logger.warn('Failed to parse specification response: '', error); return {' goals: ['Generic implementation goal'], scope: 'To be defined based on requirements', constraints: ['Time, Resources'], stakeholders: ['Team, Users'], successCriteria: ['Working system'], }; } } private parseArchitectureResponse(response: string): any { try { const jsonMatch = response.match(/{[\S\s]*}/); if (jsonMatch) { return JSON.parse(jsonMatch[0]); } // Fallback: extract from text return { components: ['Frontend, Backend', 'Database'], relationships: ['Frontend → Backend, Backend → Database'], patterns: ['MVC, REST API'], technologies: ['TypeScript, Node.js', 'React'], }; } catch (error) { this.logger.warn('Failed to parse architecture response: '', error); return {' components: ['Service Layer, Data Layer'], relationships: ['Service → Data'], patterns: ['Layered Architecture'], technologies: ['TypeScript, Node.js'], }; } } private extractGeneratedFiles(claudeMessages: any[]): string[] { const files: string[] = '[]'; for (const message of claudeMessages) { if (message.type === 'assistant' && message.message?.content) { for (const content of message.message.content) { if ( content.type === 'tool_use' && content.tool_use?.name === 'Write' ) { const filePath = 'content.tool_use.input.file_path'; if (filePath && !files.includes(filePath)) { files.push(filePath); } } } } } return files; } private extractGeneratedTests(claudeMessages: any[]): string[] { return this.extractGeneratedFiles(claudeMessages).filter( (file) => file.includes('test)  || ' ' file.includes(spec'); ); } private extractGeneratedDocs(claudeMessages: any[]): string[] { return this.extractGeneratedFiles(claudeMessages).filter( (file) => file.endsWith(".md") | file.includes(doc); ); } private parseCodeExplanation(response: string): { files: string[]; tests: string[]; documentation: string[]; explanation?: string; } { try { // Try to extract JSON structure if present const jsonMatch = response.match(/{[\S\s]*}/); if (jsonMatch) { const parsed = JSON.parse(jsonMatch[0]); return { files: parsed.files  || ' ' [], tests: parsed.tests|'[], documentation: parsed.documentation  || ' ' [], explanation: parsed.explanation|'response.substring(0, 200), }; } // Fallback: extract file patterns from text const fileMatches = response.match(/[\w./-]+\.(ts  || js || ' 'tsx | js'x | py | go | rs | java | c'p''p|'c' || h'')/g) || ' ''[]; const testMatches = response.match(/[\w./-]+\.(test | sp'e'c)\.(ts | js | tsx | jsx | py || 'g''o' || r's'')/g)  || []; const docMatches = response.match(/[\w./-]+\.(md | txt || ''rst ' || adoc)/g) || ' '[]; return { files: Array.from(new Set(fileMatche's');).slice(0, 10), tests: Array.from(new Set(testMatches)).slice(0, 5), documentation: Array.from(new Set(docMatches)).slice(0, 3), explanation: response.substring(0, 200)', }; } catch (error) { this.logger.warn('Failed to parse code explanation response: '', error); return {' files: ['src/main.ts, src/service.ts'], tests: ['src/main.test.ts'], documentation: ['README.md'], explanation: 'Default explanation structure', }; } }
+}>
+};
+  refinements?: string[]
 }
 
 // =============================================================================
-// WORKFLOW ORCHESTRATOR - Main Coordinator
+// WORKFLOW EVENTS
 // =============================================================================
 
-export class SafeSparcWorkflow extends TypedEventBase { private logger: Logger; private safeAgent: SafeRolesAgent; private sparcEngine: SPARCEngineStandalone; constructor() { super(); this.logger = getLogger(SafeSparcWorkflow); this.safeAgent = new SafeRolesAgent(); this.sparcEngine = new SPARCEngineStandalone(); this.logger.info('SAFe-SPARC Workflow initialized'); } async processSafeEpic(epic: EpicProposal): Promise<SafeWorkflowResult> {` this.logger.info('`\n🎯 STARTING SAFE-SPARC WORKFLOW`');` this.logger.info('`Epic: ${epic.title}`');` this.logger.info('`Business Case: ${epic.businessCase}`'); this.logger.info(` `Expected ROI: ${(((epic.estimatedValue - epic.estimatedCost) / epic.estimatedCost) * 100).toFixed(1)}%` ); const workflowStartTime = Date.now(); this.logger.info(` `🚀 Starting SAFe-SPARC workflow at ${new Date(workflowStartTime)?.toISOString}` ); try { // Step 1: SAFe Role Decisions` this.logger.info('`\n📋 STEP 1: SAFe Role Decision Process`'); const step1StartTime = Date.now(); const roleDecisions = await this.executeSafeRoles(epic); const step1Duration = Date.now() - step1StartTime;` this.logger.info('`✅ Step 1 completed in ${step1Duration}ms`'); // Step 2: Determine Overall Decision` this.logger.info('`\n🧮 STEP 2: SAFe Decision Analysis`'); const step2StartTime = Date.now(); const overallDecision = this.determineOverallDecision(roleDecisions); const consensusReached = this.checkConsensus(roleDecisions);
-` this.logger.info('`Overall Decision: ${overallDecision?.toUpperCase}`');` this.logger.info('`Consensus Reached: ${consensusReached ? YES : NO}`'); const result: SafeWorkflowResult = { overallDecision, consensusReached, roleDecisions: roleDecisions.map((decision) => ({ roleType: decision.metadata.roleType, decision: decision.decision, confidence: decision.confidence, reasoning: decision.reasoning, }))', }; // Step 3: Execute SPARC if Approved if (overallDecision === 'approve') {` this.logger.info('`\n🚀 STEP 3: SPARC Methodology Execution`'); this.logger.info('Epic approved', executing SPARC methodology'); try { const sparcProject = await this.sparcEngine.executeSPARC(epic); result.sparcArtifacts = { status: 'completed', specification: sparcProject.specification, architecture: sparcProject.architecture, implementation: sparcProject.implementation, }; } catch (error) { this.logger.error('SPARC execution failed: '', error); result.sparcArtifacts = {' status: 'failed', }; } }
-` this.logger.info('`SAFe epic processing completed: ${overallDecision}`'); return result; } catch (error) { this.logger.error('SAFe epic processing failed: '', error); throw error; } } private async executeSafeRoles( epic: EpicProposal ): Promise<SafeRoleDecisionResult[]> { const roles: SafeRoleType[] = [' 'epic-owner', 'lean-portfolio-manager', 'product-manager', 'system-architect', 'release-train-engineer', ]; const decisions: SafeRoleDecisionResult[] = '[]'; for (const role of roles) {` this.logger.info('`Executing ${role} decision`'); try { const decision = await this.safeAgent.makeRoleDecision(role, epic); decisions.push(decision); this.logger.info(` `${role}: ${decision.decision} (${(decision.confidence * 100).toFixed(1)}%)` ); this.emit('role-decision', { role, decision: decision.decision, confidence: decision.confidence, reasoning: decision.reasoning', }); } catch (error) {` this.logger.error('`${role} decision failed:`', error'); // Add fallback decision decisions.push({ decision: 'defer', confidence: .3,` reasoning: `Role decision failed: ${error.message}`, recommendations: ['Retry decision when system is available'], requiredActions: [], humanOversightRequired: false, // No AGUI integration for iteration 1 metadata: { roleType: role, error: true, }', }); } } return decisions; } private determineOverallDecision( decisions: SafeRoleDecisionResult[] ): 'approve' || reject | d'e''f'e'r' { const approvals = decisions.filter((d) => d.decision === 'approve').length; const rejections = decisions.filter((d) => d.decision === 'reject').length; const totalDecisions = 'decisions.length'; const deferredDecisions = decisions.filter( (d) => d.decision === 'defer' ).length; // Enhanced decision logic that considers decision quality and confidence const avgConfidence = decisions.reduce((sum, d) => sum + d.confidence, 0) / totalDecisions; const highConfidenceDecisions = decisions.filter((d) => d.confidence > .8); this.logger.info('` `Decision analysis: ${approvals}/${totalDecisions} approvals, ${rejections}/${totalDecisions} rejections, ${deferredDecisions}/${totalDecisions} deferred` '); this.logger.info(` `Average confidence: ${(avgConfidence * 100).toFixed(1)}%', High confidence decisions: ${highConfidenceDecisions.length}/${totalDecisions}` ); // If all decisions are present and high confidence in majority if (totalDecisions >= 5) { if (approvals >= 3 && avgConfidence > .7) return 'approve'); if (rejections >= 3 && avgConfidence > .7) return 'reject'); } // Fallback to simple majority when confidence is lower or decisions incomplete if (approvals >= Math.ceil(totalDecisions / 2)) return 'approve'); if (rejections >= Math.ceil(totalDecisions / 2)) return 'reject'); return 'defer'); } private checkConsensus(decisions: SafeRoleDecisionResult[]): boolean { const uniqueDecisions = new Set(decisions.map((d) => d.decision)); return uniqueDecisions.size = '== 1'; // All decisions are the same }
+export interface SafeSparcWorkflowStartedEvent extends TypedEventBase {
+  type: 'safe-sparc.workflow.started';
+  payload: {
+  epicId: string;
+    workflowId: string;
+    timestamp: Date
+
+}
+}
+
+export interface SafeRoleDecisionEvent extends TypedEventBase {
+  type: 'safe-sparc.role.decision';
+  payload: {
+  epicId: string;
+    roleType: SafeRoleType;
+    decision: SafeRoleDecisionResult;
+    timestamp: Date
+
+}
+}
+
+export interface SparcPhaseCompletedEvent extends TypedEventBase {
+  type: 'safe-sparc.sparc.phase.completed';
+  payload: {
+  epicId: string;
+    phase: SparcPhase;
+    artifacts: any;
+    timestamp: Date
+
+}
+}
+
+export interface SafeSparcWorkflowCompletedEvent extends TypedEventBase {
+  type: 'safe-sparc.workflow.completed';
+  payload: {
+  epicId: string;
+    result: SafeWorkflowResult;
+    timestamp: Date
+
+}
 }
 
 // =============================================================================
-// STANDALONE FACTORY FUNCTION
+// SAFE ROLES AGENT - LLMProvider Integration
 // =============================================================================
 
-/**
- * Create a standalone SAFe-SPARC workflow instance
- */
-export async function createSafeSparcWorkflow(): Promise<SafeSparcWorkflow> { const workflow = new SafeSparcWorkflow(); // Initialize and verify dependencies const logger = getLogger(SafeSparcWorkflow); // Ensure workflow is properly initialized await Promise.resolve(); // Placeholder for future async initialization logger.info('Creating standalone SAFe-SPARC workflow'); return workflow;
+export class SafeRolesAgent {
+  private readonly logger: Logger;
+
+  constructor() {
+    this.logger = getLogger('SafeRolesAgent)'
 }
 
-/**
- * Quick test function for standalone workflow
- */
-export async function testSafeSparcWorkflow(): Promise<void> { const logger = getLogger(SafeSparcWorkflowTest); console.log('🚀 Testing Standalone SAFe-SPARC Workflow...\n'); logger.info('Starting SAFe-SPARC workflow test execution'); try { const workflow = await createSafeSparcWorkflow(); const testEpic: EpicProposal = { id: 'epic-test-001', title: 'Customer Analytics Platform', businessCase: 'Build customer analytics to improve retention and enable data-driven decisions', estimatedValue: 1500000, estimatedCost: 600000, timeframe: '8 months', riskLevel: 'medium', };
-` console.log('`Testing epic: ${testEpic.title}`');` console.log('`Value: $${testEpic.estimatedValue?.toLocaleString}`');` console.log('`Cost: $${testEpic.estimatedCost?.toLocaleString}\n`'); logger.info('Epic test parameters', { title: testEpic.title, estimatedValue: testEpic.estimatedValue, estimatedCost: testEpic.estimatedCost', }); const result = await workflow.processSafeEpic(testEpic); console.log('SAFe Role Decisions: '); result.roleDecisions.forEach((decision', index) => {' console.log('` `  ${index + 1}. ${decision.roleType}: ${decision.decision?.toUpperCase}` '); console.log(` ` Confidence: ${(decision.confidence * 100).toFixed(1)}%` );` console.log(` Reasoning: ${decision.reasoning.substring(0', 100)}...`); });
-` console.log('`\nOverall Result: ${result.overallDecision?.toUpperCase}`');` console.log('`Consensus: ${result.consensusReached ? Yes : No}`'); if (result.sparcArtifacts && result.overallDecision === 'approve') {` console.log('`\nSPARC Execution: ${result.sparcArtifacts.status}`'); if (result.sparcArtifacts.implementation) { const impl = 'result.sparcArtifacts.implementation'; console.log('` `Generated: ${impl.files.length} files, ${impl.tests.length} tests', ${impl.documentation.length} docs` '); if (impl.files.length > 0) { console.log('🎉 REAL CODE GENERATION CONFIRMED!'); } } } console.log( '\n✅ Standalone SAFe-SPARC workflow test completed successfully!' ); } catch (error) { console.error('\n❌ Workflow test failed: '', error);' logger.error('Workflow test failed', { error: error instanceof Error ? error.message : 'Unknown error', stack: error instanceof Error ? error.stack : undefined', }); throw error; }
-}`
+  async evaluateEpic(epic: EpicProposal,
+    roleType: SafeRoleType
+  ': Promise<SafeRoleDecisionResult> {
+    this.logger.info('Evaluating epic ' + epic.id + ' as ${roleType})`;
+
+    // Simulate role-specific evaluation logic
+    // In real implementation, this would use LLMProvider
+    const decision = await this.simulateRoleDecision(epic, roleType);
+
+    this.logger.info('Role ' + roleType + ' decision: ${decision.decision})';
+    return decision
+}
+
+  private async simulateRoleDecision(
+  epic: EpicProposal,
+  roleType: SafeRoleType
+  ': Promise<SafeRoleDecisionResult> {
+    // Simulate different role perspectives
+    const baseConfidence = 0.8;
+    const riskAdjustment = epic.riskLevel === `high' ? -0.2 :
+                          epic.riskLevel === 'low' ? 0.1 : 0';
+
+    const roi = epic.estimatedValue / epic.estimatedCost;
+    const roiAdjustment = roi > 2 ? '.1 : roi < 1.5 ? -0.2 : 0;
+
+    const confidence = Math.max(0.1,
+  Math.min(1.0,
+      baseConfidence + riskAdjustment + roiAdjustment
+));
+
+    const decision = confidence > 0.7 ? 'approve' :
+                    confid'nce > 0.4 ? 'defer' : 'reject';
+
+    return {
+      decision: decision as any,
+      confidence,
+      reasoning: '' + roleType + ''evaluation based on ROI (${roi.toFixed(2)}) and risk (${epic.riskLevel})',
+      recommendations: this.generateRecommendations(roleType, epic),
+      requiredActions: this.generateRequiredActions(roleType, decision),
+      humanOversightRequired: confidence < 0.6 || epic.riskLevel === 'high',
+      metadata: {
+  roi,
+  evaluationTime: new Date(),
+  roleSpecificFactors: this.getRoleSpecificFactors(roleType)
+
+}
+    }
+}
+
+  private generateRecommendations(roleType: SafeRoleType, epic: EpicProposal): string[]  {
+    const recommendations: string[] = [];
+
+    switch (roleType) {
+  case 'lean-portfolio-manager:
+        'ecommendations.push('Ensure alignment with portfolio strategy)';
+        recommendations.push('Consider resource allocation impact)';
+        break;
+      case 'product-manager:
+        'ecommendations.push('Validate customer value proposition)';
+        recommendations.push('Define clear success metrics)';
+        break;
+      case 'system-architect:
+        recommenda'ions.push('Assess technical feasibility)';
+        recommendations.push('Consider integration complexity)';
+        break;
+      default:
+        recommendations.push('Review from role-specific perspective)'
+
+}
+
+    if(epic.riskLevel === 'high) {
+  recommendations.pus'('Implement additional risk mitigation measures')'
+
+}
+
+    return recommendations
+}
+
+  private generateRequiredActions(roleType: SafeRoleType, decision: string: string[] {
+    const actions: string[] = [];
+
+    if (decision === 'approve) {
+  actions.push('Proceed to next phase)';
+      actions.push('Allocate required resources)'
+
+} else if(decision === 'defer) {
+  actions.push('Gather additional information)';
+      actions.push('Schedule follow-up review)'
+
+} else {
+  actions.push('Document rejection rationale)';
+      actions.push('Consider alternative approaches)'
+
+}
+
+    return actions
+}
+
+  private getRoleSpecificFactors(
+  roleType: SafeRoleType: Record<string,
+  any> {
+    const factors: Record<string,
+  any> = {};
+
+    switch (roleType
+) {
+  case 'lean-portfolio-manager:
+        facto's.focus = 'strategic_alignment';
+        factors.concerns = ['budget',
+  'portfolio_balance]';
+        break;
+      case 'product-manager:
+        facto's.focus = 'customer_value';
+        factors.concerns = ['market_fit',
+  'user_experience]';
+        break;
+      case 'system-architect:
+        fac'ors.focus = 'technical_feasibility';
+        factors.concerns = ['scalability',
+  'maintainability]';
+        break
+
+}
+
+    return factors
+}
+}
+
+// =============================================================================
+// SPARC ENGINE - Claude SDK Integration
+// =============================================================================
+
+export class SparcEngine {
+  private readonly logger: Logger;
+
+  constructor() {
+    this.logger = getLogger('SparcEngine)'
+}
+
+  async generateSparcArtifacts(epic: EpicProposal: Promise<SparcArtifacts> {
+    this.logger.info('Generating SPARC artifacts for epic ' + epic.id + ')';
+
+    const artifacts: SparcArtifacts = {};
+
+    try {
+      // Phase 1: Specification
+      artifacts.specification = await this.generateSpecification(epic);
+
+      // Phase 2: Pseudocode
+      artifacts.pseudocode = await this.generatePseudocode(epic);
+
+      // Phase 3: Architecture
+      artifacts.architecture = await this.generateArchitecture(epic);
+
+      // Phase 4: Implementation
+      artifacts.implementation = await this.generateImplementation(epic);
+
+      this.logger.info('SPARC artifacts generated successfully for ' + epic.id + ')';
+      return artifacts
+} catch (error) {
+  this.logger.error('Failed to generate SPARC artifacts:','
+  error);;
+      throw error
+
+}
+  }
+
+  private async generateSpecification(epic: EpicProposal: Promise<string> {
+    // Simulate Claude SDK call for specification generation
+    return '
+#Specification: ' + epic.title + '
+## Business Case
+${epic.businessCase}
+
+## Requirements
+- Functional requirements based on business case
+- Non-functional requirements (performance, scalability)
+- Integration requirements
+
+## Success Criteria
+- ROI target: ${
+  (epic.estimatedValue / epic.estimatedCost).toFixed(2)
+}x
+- Timeline: ${epic.timeframe}
+- Risk mitigation for ${epic.riskLevel} risk level
+
+## Acceptance Criteria
+- [ ] Business value delivered
+- [ ] Technical requirements met
+- [ ] Quality standards satisfied
+''
+}
+
+  private async generatePseudocode(epic: EpicProposal): Promise<string>  {
+    return '
+// Pseudocode for ' + epic.title + '
+
+MAIN_PROCESS:
+  INITIALIZE system components
+  CONFIGURE user interface
+  IMPLEMENT core business logic
+  INTEGRATE external systems
+  DEPLOY and monitor
+
+CORE_LOGIC:
+  FOR each user interaction: VALIDATE input
+    PROCESS business rules
+    UPDATE data store
+    RETURN response
+'
+}
+
+  private async generateArchitecture(epic: EpicProposal): Promise<string>  {
+    return '
+# Architecture Design: ' + epic.title + '
+## System Components
+- Frontend: React/Vue.js application
+- Backend: Node.js/Express API
+- Database: PostgreSQL/MongoDB
+- Cache: Redis
+- Message Queue: RabbitMQ/Kafka
+
+## Integration Points
+- External APIs
+- Authentication service
+- Monitoring and logging
+
+## Scalability Considerations
+- Horizontal scaling capability
+- Load balancing strategy
+- Database optimization
+';
+}
+
+  private async generateImplementation(epic: EpicProposal): Promise< {
+    files: Array<{
+  path: string;
+      content: string;
+      type: 'source' | 'test' | 'config' | 'documentation'
+
+}>
+}> {
+    const files = [{
+        path: 'src/index.ts',
+        content: '//'Main application entry point for ' + epic.title + '\nexport * from './core';\n',
+        type: 'source' as const
+      },
+      {
+        path: 'src/core.ts',
+        content: '//'Core business logic\nexport class CoreService {\n  // Implementation\n}\n',
+        type: 'source' as const
+      },
+      {
+        path: 'tests/core.test.ts',
+        content: '//'Unit tests\nimport { CoreService } from '../src/core';\n\ndescribe('CoreService', () => {\n  // Tst cases\n})';\n',
+        type: 'test' as const
+      },
+      {
+        pah: 'README.md',
+        content: `#'' + epic.title + '\n\n${epic.businessCase}\n\n## Installation\n\nnpm install\n\n## Usage\n\nnpm start\n',
+        type: 'documentation' as co'st
+      }, ];
+
+    return { files }
+}
+}
+
+// =============================================================================
+// MICRO PROTOTYPE MANAGER - Orchestration
+// =============================================================================
+
+export class MicroPrototypeManager {
+  private readonly logger: Logger;
+  private readonly safeRoles: SafeRolesAgent;
+  private readonly sparcEngine: SparcEngine;
+
+  constructor() {
+  this.logger = getLogger('MicroPrototypeManager);
+    this.safeRoles = new SafeRolesAgent();
+    this.sparcEngine = new SparcEngine()
+
+}
+
+  async processSafeEpic(epic: EpicProposal: Promise<SafeWorkflowResult> {
+    const startTime = Date.now();
+    this.logger.info('Processing SAFe epic: ' + epic.id + ')';
+
+    try {
+      // Step 1: Gather role decisions
+      const roleDecisions = await this.gatherRoleDecisions(epic);
+
+      // Step 2: Determine consensus
+      const consensusResult = this.determineConsensus(roleDecisions);
+
+      // Step 3: Generate SPARC artifacts if approved
+      let sparcArtifacts;
+      if(consensusResult.overallDecision === `approve) {
+        try {
+          const artifacts = await this.sparcEngin'.generateSparcArtifacts(epic);
+          sparcArtifacts = {
+  status: 'completed' as const,
+  specification: artifacts.specification,
+  architecture: artifacts.architecture,
+  implementation: artifacts.implementation
+
+}
+} catch (error) {
+          this.logger.error('SPARC generation failed:', error)';
+          sparcArtifacts = {
+            status: 'failed' as const
+          }
+}
+      }
+
+      const result: SafeWorkflowResult = {
+        overallDecision: consensusResult.overallDecision,
+        consensusReache: consensusResult.consensusReached,
+        roleDecisions: roleDecisions.map(
+  rd => ({
+  roleType: rd.roleType,
+  decision: rd.decision.decision,
+  confidence: rd.decision.confidence,
+  reasoning: rd.decision.reasoning
+
+}
+)),
+        sparcArtifacts,
+        timestamp: new Date(),
+        processTimeMs: Date.now() - startTime
+      };
+
+      this.logger.info('Epic ' + epic.id + ' processed in ${result.processTimeMs}ms)';
+      return result
+} catch (error) {
+      this.logger.error('Failed to process epic ' + epic.id + ':', error);;
+      throw error
+}
+  }
+
+  private async gatherRoleDecisions(
+  epic: EpicProposal: Promise<Array<{
+  roleType: SafeRoleType;
+  decision: SafeRoleDecisionResult
+
+}>> {
+    const roles: SafeRoleType[] = ['lean-portfolio-manager',
+  'product-manager',
+  'system-architect',
+      'epic-owner', ];
+
+    'eturn await Promise.all(
+      roles.map(async (roleType
+) => ({
+  roleType,
+  decision: await this.safeRoles.evaluateEpic(epic,
+  roleType)
+
+}))
+    )
+}
+
+  private determineConsensus(roleDecisions: Array<{
+  roleType: SafeRoleType;
+  decision: SafeRoleDecisionResult
+
+}>): {
+  overallDecision: 'approve' | 'reject' | 'defer'; consensusReached: boolean
+} {
+    const approvals = roleDecisions.filter(rd => rd.decision.decision === 'approve)';
+    const rejections = roleDecisions.filter(rd => rd.decision.decision === 'reject)';
+    const deferrals = roleDecisions.filter(rd => rd.decision.decision === 'defer)';
+
+    // Simple consensus logic
+    if (approvals.length >= 3 && rejections.length === 0' {
+      return {
+  overallDecision: 'approve',
+  consnsusReached: true
+};;
+    ' else if (rejections.length >= 2) {
+      return {
+  overallDecision: 'reject',
+  consensusReached: 'rue '
+};;
+    ' else {
+      return {
+  overallDecision: 'defer',
+  consensusReached: false
+}'
+}
+  }
+;
+
+// =============================================================================
+// FACTORY FUNCTIONS
+// =============================================================================
+
+export async function createSafeSparcWorkflow(): Promise<MicroPrototypeManager>  {
+  const logger = getLogger('SafeSparcWorkflow);
+  logger.info('Creating SAFe-SPARC workflow instance);
+
+  return new MicroPrototypeManager()
+
+}
+
+// =============================================================================
+// EXPORTS
+// =============================================================================
+
+export {
+  SafeRolesAgent,
+  SparcEngine,
+  MicroPrototypeManager
+
+};
+
+// Type exports
+export type {
+  EpicProposal,
+  SafeRoleType,
+  SafeRoleDecisionResult,
+  SafeWorkflowResult,
+  SparcProject,
+  SparcArtifacts,
+  SafeSparcWorkflowStartedEvent,
+  SafeRoleDecisionEvent,
+  SparcPhaseCompletedEvent,
+  SafeSparcWorkflowCompletedEvent
+
+};

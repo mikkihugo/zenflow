@@ -8,6 +8,7 @@
  *
  * Architecture: Protocol-based organization, not implementation-based.
  */
+
 /**
  * @file Api module exports.
  */
@@ -15,27 +16,150 @@
 import { getWebDashboardURL } from '@claude-zen/intelligence';
 
 // Import WebSocketClient for internal use in this file
-import(/websocket/client);
+import { WebSocketClient } from './websocket/client';
 
 // HTTP API (REST/GraphQL - consolidated from src/api/)
-export * from "./http/index";
+export * from './http/index';
 
 // WebSocket API (real-time communication)
-export * from "./websocket/index";
+export * from './websocket/index';
 export { WebSocketClient };
 
 // API interface configuration
-export interface APIInterfaceConfig { baseUrl?: string; websocketUrl?: string; timeout?: number; retries?: number; reconnect?: boolean;
+export interface APIInterfaceConfig {
+  baseUrl?: string;
+  websocketUrl?: string;
+  timeout?: number;
+  retries?: number;
+  reconnect?: boolean
+
 }
 
 // API utilities
-export const APIUtils = { /** * Create WebSocket URL from base URL. * * @param baseUrl */ createWebSocketUrl: (baseUrl: string): string => { return `${baseUrl.replace(/^http/, ws).replace(/\/$/, )}/ws`; }, /** * Validate API configuration. * * @param config */ validateConfig: (config: APIInterfaceConfig): boolean => { return Boolean(config?.baseUrl  || ' 'config?.websocketUrl); }', /** * Parse API response. * * @param response */ parseResponse: ( response: any ): { success: boolean; data?: any; error?: string } => { if (response && typeof response ===object') { if (response?.error) { return { success: false, error: response?.error }; } return { success: true, data: response }; } return { success: true, data: response }; }, /** * Format API request. * * @param method * @param params */ formatRequest: (method: string', params: unknown = {}): any => { return { jsonrpc: '2.0', method, params, id: Date.now(), }; },
+export const APIUtils = {
+  /**
+   * Create WebSocket URL from base URL.
+   *
+   * @param baseUrl - The base HTTP URL to convert
+   * @returns WebSocket URL
+   */
+  createWebSocketUrl: (baseUrl: string): string => {
+    return '' +
+  baseUrl.replace(/^http/,
+  ``ws).replace(/\/$/,
+  )
+ + '/ws;
+},
+
+  /**
+   * Validate API configuration.
+   *
+   * @param config - API configuration to validate
+   * @returns True if configuration is valid
+   */
+  validateConfig: (config: APIInterfaceConfig): boolean => {
+  return Boolean(config?.baseUrl || config?.websocketUrl)
+
+},
+
+  /**
+   * Parse API response.
+   *
+   * @param response - Raw API response
+   * @returns Parsed response with success/error status
+   */
+  parseResponse: (
+    response: any
+  ): { success: boolean; data?: any; error?: string } => {
+    if(response && typeof response === object) {
+      if (response?.error) {
+        return {
+  success: false,
+  error: response?.error
+}
+}
+      return {
+  success: true,
+  data: response
+}
+}
+    return {
+  success: true,
+  data: response
+}
+},
+
+  /**
+   * Format API request.
+   *
+   * @param method - API method name
+   * @param params - Request parameters
+   * @returns Formatted JSON-RPC request
+   */
+  formatRequest: (method: string, params: unknown = {}): any => {
+    return {
+  jsonrpc: '2.0,
+  method,
+  params,
+  id: Date.now()
+
+}
+}
 };
 
 // API client factory
-export class APIClientFactory { private static instances = new Map<string, WebSocketClient>(); /** * Create or get a WebSocket client instance. * * @param url * @param instanceKey */ static getWebSocketClient( url: string, instanceKey = 'default' ): WebSocketClient {` const key = `ws:${instanceKey}`; if (!APIClientFactory.instances.has(key)) { const client = new WebSocketClient(url); APIClientFactory.instances.set(key, client); } return APIClientFactory.instances.get(key)!; } /** * Clear all cached instances. */ static clearInstances(): void { for (const [, client] of APIClientFactory.instances) { client?.disconnect() } APIClientFactory.instances?.clear(); } /** * Get all active instances. */ static getActiveInstances(): string[] { return Array.from(APIClientFactory.instances?.keys); }
+export class APIClientFactory {
+  private static instances = new Map<string, WebSocketClient>();
+
+  /**
+   * Create or get a WebSocket client instance.
+   *
+   * @param url - WebSocket URL
+   * @param instanceKey - Unique key for the instance
+   * @returns WebSocket client instance
+   */
+  static getWebSocketClient(url: string,
+    instanceKey = 'default
+  ): WebSocke'Client  {
+    const key = ws:' + instanceKey + ''';
+    if (!APIClientFactory.instances.has(key)) {
+  const client = new WebSocketClient(url);
+      APIClientFactory.instances.set(key,
+  client)
+
+}
+    return APIClientFactory.instances.get(key)!
+}
+
+  /**
+   * Clear all cached instances.
+   */
+  static clearInstances(): void  {
+    for (const [, client] of APIClientFactory.instances) {
+      client?.disconnect?.()
+}
+    APIClientFactory.instances.clear()
+}
+
+  /**
+   * Get all active instances.
+   *
+   * @returns Array of instance keys
+   */
+  static getActiveInstances(): string[]  {
+  return Array.from(APIClientFactory.instances.keys())
+
+}
 }
 
 // Default configuration
-export const DEFAULT_API_CONFIG: APIInterfaceConfig = { baseUrl: getWebDashboardURL()',`  websocketUrl: `${getWebDashboardURL({ protocol: 'ws as any }).replace(/^https?/, ws')}/ws`, timeout: 5000, retries: 3, reconnect: true,
-};`
+export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
+  baseUrl: getWebDashboardURL(),
+  websocketUrl: '' + getWebDashboardURL({ protocol: 'ws' a' any  + ).replace(
+    /^https?/,
+    'ws;
+  )}/w'',
+  timeout: 5000,
+  retries: 3,
+  reconnect: true
+};

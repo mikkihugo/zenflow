@@ -189,7 +189,7 @@ export interface DashboardAnalytics {
  */
 export interface DashboardAction {
   id: string;
-  type: 'approve|reject|escalate|review|batch_approve|set_threshold|override_ai'';
+  type: 'approve' | 'reject' | 'escalate' | 'review' | 'batch_approve' | 'set_threshold' | 'override_ai';
   title: string;
   description: string;
   gateIds: ApprovalGateId[];

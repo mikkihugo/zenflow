@@ -118,8 +118,7 @@ export class AISafetyOrchestrator {
     if (safetyModule.AISafetyOrchestrator) {
       // Initialize real AISafetyOrchestrator with config
       this.instance = new safetyModule.AISafetyOrchestrator();
-      const result = await (this.instance.initialize?.(config)||Promise.resolve())();
-      return result;
+      return await (this.instance.initialize?.(config)||Promise.resolve())();
     }
     // Initialize fallback with config
     this.instance = new safetyModule.AISafetyOrchestrator(config);
@@ -142,7 +141,7 @@ export class AISafetyOrchestrator {
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus();
   }

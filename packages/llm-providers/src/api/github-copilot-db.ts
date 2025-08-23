@@ -23,7 +23,7 @@ export interface GitHubCopilotModelMetadata {
   contextWindow: number;
   maxOutputTokens: number;
   maxPromptTokens: number;
-  category: 'versatile|lightweight|powerful';
+  category: 'versatile' | 'lightweight' | 'powerful';
   supportsVision: boolean;
   supportsToolCalls: boolean;
   supportsStreaming: boolean;
@@ -32,7 +32,7 @@ export interface GitHubCopilotModelMetadata {
   modelPickerEnabled: boolean;
   preview: boolean;
   tokenizer: string;
-  type: 'chat|embeddings'';
+  type: 'chat' | 'embeddings';
   visionLimits?: {
     maxImageSize: number;
     maxImages: number;
@@ -63,13 +63,13 @@ function loadCopilotToken(): string {
     logger.warn('Failed to load Copilot OAuth token from config:', error);
   }
 
-  return process.env.GITHUB_COPILOT_TOKEN||';
+  return process.env.GITHUB_COPILOT_TOKEN || '';
 }
 
 class GitHubCopilotDatabase {
   private models: Map<string, GitHubCopilotModelMetadata> = new Map();
   private lastUpdate: Date = new Date(0);
-  private updateInterval: NodeJS.Timeout|'null = null;
+  private updateInterval: NodeJS.Timeout | null = null;
   private token: string;
 
   constructor() {
@@ -206,7 +206,7 @@ class GitHubCopilotDatabase {
    * Get all models
    */
   getAllModels(): GitHubCopilotModelMetadata[] {
-    return Array.from(this.models.values())();
+    return Array.from(this.models.values());
   }
 
   /**
@@ -229,7 +229,7 @@ class GitHubCopilotDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category:'versatile|lightweight|powerful'
+    category: 'versatile' | 'lightweight' | 'powerful'
   ): GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model.category === category

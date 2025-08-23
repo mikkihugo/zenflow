@@ -1,7 +1,7 @@
 {
   "name": "@claude-zen/knowledge",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "description": "Advanced knowledge management system with distributed learning, reasoning, and storage backends",
   "type": "module",
   "main": "./dist/index.js",
@@ -50,8 +50,7 @@
   "dependencies": {
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/fact-system": "file:../fact-system",
-    "@claude-zen/foundation": "file:../../foundation",
-    "eventemitter3": "^5.0.1"
+    "@claude-zen/foundation": "workspace:*"
   },
   "_comment_fact_system": "fact-system is a private implementation detail - only knowledge package should access it",
   "devDependencies": {

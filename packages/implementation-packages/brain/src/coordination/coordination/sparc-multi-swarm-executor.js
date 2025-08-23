@@ -103,12 +103,12 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
                     case 0:
                         testId = "sparc-multiswarm-".concat((0, nanoid_1.nanoid)());
                         startTime = new Date();
-                        console.log("\uD83E\uDDEA Starting SPARC Multi-Swarm A/B test: ".concat(testId));
-                        console.log("\uD83D\uDCCB Task: ".concat(taskDescription));
-                        console.log("\uD83D\uDD2C Testing ".concat(sparcStrategies.length, " SPARC strategies with git tree isolation"));
+                        logger.info("\uD83E\uDDEA Starting SPARC Multi-Swarm A/B test: ".concat(testId));
+                        logger.info("\uD83D\uDCCB Task: ".concat(taskDescription));
+                        logger.info("\uD83D\uDD2C Testing ".concat(sparcStrategies.length, " SPARC strategies with git tree isolation"));
                         _b.label = 1;
                     case 1:
-                        _b.trys.push([1, 6, , 7]);
+                        _b.trys.push([1, 6, undefined, 7]);
                         gitConfig = {
                             useGitWorktrees: options.useGitTrees !== false,
                             baseBranch: 'main',
@@ -147,13 +147,13 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
                                 totalWorktreesCreated: totalWorktreesCreated
                             }
                         };
-                        console.log("\u2705 SPARC Multi-Swarm test completed: ".concat(testId));
-                        console.log("\uD83C\uDFC6 Winner: ".concat(comparison.winner.name, " (").concat(comparison.confidence.toFixed(2), " confidence)"));
-                        console.log("\uD83C\uDF33 Git trees created: ".concat(totalWorktreesCreated));
+                        logger.info("\u2705 SPARC Multi-Swarm test completed: ".concat(testId));
+                        logger.info("\uD83C\uDFC6 Winner: ".concat(comparison.winner.name, " (").concat(comparison.confidence.toFixed(2), " confidence)"));
+                        logger.info("\uD83C\uDF33 Git trees created: ".concat(totalWorktreesCreated));
                         return [2 /*return*/, multiSwarmResult];
                     case 6:
                         error_1 = _b.sent();
-                        console.error("\u274C SPARC Multi-Swarm test failed: ".concat(testId), error_1);
+                        logger.error("\u274C SPARC Multi-Swarm test failed: ".concat(testId), error_1);
                         throw error_1;
                     case 7: return [2 /*return*/];
                 }
@@ -348,7 +348,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
             var promises;
             var _this = this;
             return __generator(this, function (_a) {
-                console.log("\u26A1 Executing ".concat(strategies.length, " SPARC strategies in parallel with git trees..."));
+                logger.info("\u26A1 Executing ".concat(strategies.length, " SPARC strategies in parallel with git trees..."));
                 promises = strategies.map(function (strategy) {
                     return _this.executeSingleSPARCStrategy(taskDescription, strategy, gitConfig, options);
                 });
@@ -365,7 +365,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("\u23ED\uFE0F Executing ".concat(strategies.length, " SPARC strategies sequentially with git trees..."));
+                        logger.info("\u23ED\uFE0F Executing ".concat(strategies.length, " SPARC strategies sequentially with git trees..."));
                         results = [];
                         _i = 0, strategies_1 = strategies;
                         _a.label = 1;
@@ -395,15 +395,15 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         startTime = Date.now();
-                        console.log("\uD83D\uDE80 Executing SPARC strategy: ".concat(strategy.name, " (").concat(strategy.modelBackend, ")"));
+                        logger.info("\uD83D\uDE80 Executing SPARC strategy: ".concat(strategy.name, " (").concat(strategy.modelBackend, ")"));
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
+                        _a.trys.push([1, 3, undefined, 4]);
                         return [4 /*yield*/, this.simulateSPARCExecution(taskDescription, strategy, gitConfig)];
                     case 2:
                         sparcResult = _a.sent();
                         duration = Date.now() - startTime;
-                        console.log("\u2705 SPARC strategy completed: ".concat(strategy.name, " (").concat(duration, "ms)"));
+                        logger.info("\u2705 SPARC strategy completed: ".concat(strategy.name, " (").concat(duration, "ms)"));
                         return [2 /*return*/, {
                                 strategy: strategy,
                                 success: true,
@@ -417,7 +417,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
                     case 3:
                         error_2 = _a.sent();
                         duration = Date.now() - startTime;
-                        console.error("\u274C SPARC strategy failed: ".concat(strategy.name), error_2);
+                        logger.error("\u274C SPARC strategy failed: ".concat(strategy.name), error_2);
                         return [2 /*return*/, {
                                 strategy: strategy,
                                 success: false,

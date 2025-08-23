@@ -18,12 +18,12 @@
  */
 import { getLogger, ContextError } from '@claude-zen/foundation';
 // Telemetry helpers - will be replaced by operations facade calls
-const recordMetric = (name, value, metadata) => { };
-const recordHistogram = (name, value, metadata) => { };
-const recordGauge = (name, value, metadata) => { };
-const withTrace = (name, fn) => fn({});
-const withAsyncTrace = (name, fn) => fn({});
-const recordEvent = (name, data) => { };
+const recordMetric = (_name, _value, _metadata) => { };
+const recordHistogram = (_name, _value, _metadata) => { };
+const recordGauge = (_name, _value, _metadata) => { };
+const withTrace = (_name, fn) => fn({});
+const withAsyncTrace = (_name, fn) => fn({});
+const recordEvent = (_name, _data) => { };
 // Neural backend imports with smart loading
 let transformersModule = null;
 let brainJsModule = null;
@@ -52,7 +52,7 @@ let openaiModule = null;
  *   priority: 'high'
  * });
  *
- * console.log(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);
+ * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);
  * ```
  */
 export class SmartNeuralCoordinator {
@@ -1983,7 +1983,7 @@ export class SmartNeuralCoordinator {
                 return 'Classify the following text according to the specified categories.';
         }
     }
-    parseOpenAIClassificationResponse(response, request) {
+    parseOpenAIClassificationResponse(response, _request) {
         if (!response) {
             return { label: 'unknown', confidence: 0.5, scores: { unknown: 0.5, other: 0.5 } };
         }
@@ -2124,22 +2124,22 @@ export class SmartNeuralCoordinator {
     // =============================================================================
     // STUB METHODS FOR VISION AND NEURAL TASKS (TO BE FULLY IMPLEMENTED)
     // =============================================================================
-    getCachedVision(cacheKey) { return null; }
-    cacheVision(cacheKey, result, processingTime) { }
-    async processNewImage(request, span, imageInfo) {
+    getCachedVision(_cacheKey) { return null; }
+    cacheVision(_cacheKey, _result, _processingTime) { }
+    async processNewImage(_request, _span, _imageInfo) {
         return { vision: { description: 'Basic image processing' }, model: 'basic', qualityScore: 0.3 };
     }
-    createVisionCacheResult(cached, startTime, request, span, imageInfo) {
+    createVisionCacheResult(_cached, startTime, request, _span, _imageInfo) {
         return this.createVisionErrorResult('Not implemented', startTime, request);
     }
-    recordVisionMetrics(result, processingTime, request, fromCache) { }
-    recordVisionError(error, processingTime, request, span) { }
-    createVisionFallbackResult(request, processingTime, error, imageInfo) {
+    recordVisionMetrics(_result, _processingTime, _request, _fromCache) { }
+    recordVisionError(_error, _processingTime, _request, _span) { }
+    createVisionFallbackResult(request, _processingTime, _error, _imageInfo) {
         return this.createVisionErrorResult('Fallback error', Date.now(), request);
     }
-    getCachedNeuralTask(cacheKey) { return null; }
-    cacheNeuralTask(cacheKey, result, processingTime) { }
-    async executeNewNeuralTask(request, span) {
+    getCachedNeuralTask(_cacheKey) { return null; }
+    cacheNeuralTask(_cacheKey, _result, _processingTime) { }
+    async executeNewNeuralTask(_request, _span) {
         return { result: { custom: 'Basic task result' }, model: 'basic', qualityScore: 0.3 };
     }
     createNeuralTaskCacheResult(cached, startTime, request, span) {
@@ -2198,7 +2198,7 @@ export class SmartNeuralCoordinator {
             error: error.message
         });
     }
-    createNeuralTaskFallbackResult(request, processingTime, error) {
+    createNeuralTaskFallbackResult(request, processingTime, _error) {
         // Attempt basic fallback implementation
         try {
             let fallbackResult;
@@ -2296,7 +2296,7 @@ export class SmartNeuralCoordinator {
             error: error.message
         });
     }
-    createGenerationFallbackResult(prompt, processingTime, request, error) {
+    createGenerationFallbackResult(prompt, processingTime, request, _error) {
         // Attempt basic text completion fallback
         try {
             const generatedText = prompt.length > 50 ?

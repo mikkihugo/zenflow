@@ -12,7 +12,7 @@ import type { MemoryNode, MemoryLoadMetrics } from './types';
 
 interface LoadBalancingConfig {
   enabled: boolean;
-  algorithm:|'round-robin|least-connections'||weighted|resource-aware'';
+  algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware';
   weights?: Record<string, number>;
   thresholds?: {
     maxLatency: number;

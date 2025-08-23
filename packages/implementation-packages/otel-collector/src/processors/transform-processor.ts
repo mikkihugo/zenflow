@@ -244,7 +244,7 @@ export class TransformProcessor implements BaseProcessor {
     }
 
     switch (operation.type) {
-      case 'add':
+      case 'add': {
         if (!data.attributes) {
           data.attributes = {};
         }
@@ -254,8 +254,9 @@ export class TransformProcessor implements BaseProcessor {
           return true;
         }
         break;
+      }
 
-      case 'modify':
+      case 'modify': {
         const currentValue = this.getFieldValue(data, operation.field);
         if (currentValue !== undefined) {
           const newValue = this.resolveValue(
@@ -267,6 +268,7 @@ export class TransformProcessor implements BaseProcessor {
           return true;
         }
         break;
+      }
 
       case 'remove':
         return this.removeFieldValue(data, operation.field);

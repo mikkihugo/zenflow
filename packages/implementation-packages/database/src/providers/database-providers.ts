@@ -65,21 +65,21 @@ export class DatabaseProviderFactory {
 
   async createAdapter(config: DatabaseConfig): Promise<DatabaseAdapter> {
     this.logger.info(
-      `Creating REAL ${config.type} adapter for: ${config.database}`
+      `Creating REAL ${config.type} adapter for: ${config.database}`,
     );
 
     switch (config.type) {
-      case 'sqlite':
-        return new SQLiteAdapter(config as SQLiteConfig);
+    case 'sqlite':
+      return new SQLiteAdapter(config as SQLiteConfig);
 
-      case 'lancedb':
-        return new LanceDBAdapter(config as LanceDBConfig);
+    case 'lancedb':
+      return new LanceDBAdapter(config as LanceDBConfig);
 
-      case 'kuzu':
-        return new KuzuAdapter(config as KuzuConfig);
+    case 'kuzu':
+      return new KuzuAdapter(config as KuzuConfig);
 
-      default:
-        throw new Error(`Unsupported database type: ${config.type}`);
+    default:
+      throw new Error(`Unsupported database type: ${config.type}`);
     }
   }
 }

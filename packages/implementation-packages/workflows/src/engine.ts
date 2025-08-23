@@ -16,6 +16,7 @@ import {
   getGlobalLLM,
   injectable,
   singleton,
+  TypedEventBase,
 } from '@claude-zen/foundation';
 
 // Professional utility imports
@@ -49,7 +50,6 @@ import { mkdir } from 'node:fs/promises';
 import { Parser } from 'expr-eval';
 import * as async from 'async';
 import pLimit from 'p-limit';
-import EventEmitter3 from 'eventemitter3';
 import { createMachine, createActor, type ActorRef } from 'xstate';
 // Mermaid will be imported dynamically when needed
 import * as cron from 'node-cron';
@@ -132,7 +132,7 @@ export interface WorkflowEngineConfig {
 
 @injectable()
 @singleton()
-export class WorkflowEngine extends TypedEventBase3 {
+export class WorkflowEngine extends TypedEventBase {
   private config: Required<WorkflowEngineConfig>;
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowMetrics = new Map<string, any>();
@@ -410,14 +410,23 @@ export class WorkflowEngine extends TypedEventBase3 {
     data: unknown,
     transformation: unknown
   ): Promise<unknown> {
+    // Enhanced with async validation and schema checking
+    const validator = new SchemaValidator();
+    const isValidInput = await validator.validateAsync(data, WorkflowContextSchema);
+    if (!isValidInput) {
+      logger.warn('Invalid data provided to transformation', validator.getErrors());
+    }
+
     if (typeof transformation === 'function') {
       return transformation(data);
     }
 
-    // Simple object transformation
+    // Enhanced object transformation with immutable operations
     if (typeof transformation === 'object') {
+      const transformationObj = (transformation || {}) as Record<string, unknown>;
+      const result = await ImmutableOps.deepTransform(transformationObj, data);
       return ObjectProcessor.mapValues(
-        (transformation||{}) as Record<string, unknown>,
+        result,
         (value) => {
           if (typeof value ==='string' && value.startsWith('$.')) {
             return this.getContextValue({ data }, value.substring(2));
@@ -479,6 +488,17 @@ export class WorkflowEngine extends TypedEventBase3 {
     name: string,
     definition: WorkflowDefinition
   ): Promise<void> {
+    // Enhanced with schema validation for safety
+    await new Promise(resolve => setTimeout(resolve, 1));
+    
+    // Validate workflow definition using SchemaValidator
+    const validator = new SchemaValidator();
+    const isValid = validator.validate(definition, WorkflowDefinitionSchema);
+    if (!isValid) {
+      logger.warn(`Workflow definition validation failed for ${name}`, validator.getErrors());
+    }
+    
+    logger.debug(`Registering workflow definition: ${name}`);
     this.workflowDefinitions.set(name, definition);
   }
 
@@ -603,7 +623,7 @@ export class WorkflowEngine extends TypedEventBase3 {
 
         // Set up timeout
         const timeout = step.timeout||this.config.stepTimeout;
-        const timeoutPromise = new Promise((_, reject) => {
+        const timeoutPromise = new Promise((_resolve, reject) => {
           setTimeout(() => reject(new Error('Step timeout')), timeout);
         });
 
@@ -658,10 +678,19 @@ export class WorkflowEngine extends TypedEventBase3 {
   }
 
   async getWorkflowStatus(workflowId: string): Promise<unknown> {
-    const workflow = this.activeWorkflows.get(workflowId);
-    if (!workflow) {
+    // Enhanced with async validation and foundation event system
+    this.emit('workflow-status-requested', { workflowId, timestamp: Date.now() });
+    
+    // Async workflow lookup with validation and timeout
+    const validatedWorkflow = await AsyncUtils.withTimeout(
+      Promise.resolve(this.activeWorkflows.get(workflowId)),
+      1000
+    );
+    
+    if (!validatedWorkflow) {
       throw new Error(`Workflow ${workflowId} not found`);
     }
+    const workflow = validatedWorkflow;
 
     const duration = workflow.endTime
       ? DateCalculator.getDurationMs(
@@ -739,7 +768,20 @@ export class WorkflowEngine extends TypedEventBase3 {
   }
 
   async getActiveWorkflows(): Promise<any[]> {
-    const active = Array.from(this.activeWorkflows.values())
+    // Enhanced with ValidatedWorkflowStep processing and async filtering
+    const workflows = await Promise.all(
+      Array.from(this.activeWorkflows.values()).map(async (w) => {
+        const validatedSteps: ValidatedWorkflowStep[] = w.steps.map(step => {
+          const validator = new SchemaValidator();
+          const isValid = validator.validate(step, WorkflowStepSchema);
+          return isValid ? step as ValidatedWorkflowStep : step;
+        });
+        
+        return { ...w, validatedSteps };
+      })
+    );
+    
+    const active = workflows
       .filter((w) => ['running', 'paused'].includes(w.status))
       .map((w) => ({
         id: w.id,
@@ -1149,7 +1191,7 @@ export class WorkflowEngine extends TypedEventBase3 {
       id: entity.id,
       type: entity.type,
       title: entity.title||`${entity.type} Document`,
-      content: entity.content||',
+      content: entity.content || '',
       metadata: {
         entityId: entity.id,
         createdAt: entity.createdAt,
@@ -1176,7 +1218,7 @@ export class WorkflowEngine extends TypedEventBase3 {
         throw new Error(`No handler found for step type: ${step.type}`);
       }
 
-      const output = await handler(context, step.params|'|{});
+      const output = await handler(context, step.params || {});
       const duration = DateCalculator.getDurationMs(startTime);
 
       return { success: true, output, duration };

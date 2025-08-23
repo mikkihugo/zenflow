@@ -1,99 +1,362 @@
-/**
- * @fileoverview Product Workflow Engine - Lightweight facade for product flow orchestration.
- *
- * Provides comprehensive product workflow management through delegation to specialized
- * @claude-zen packages for workflow orchestration and SPARC methodology.
- *
- * Delegates to:
- * - @claude-zen/intelligence: WorkflowEngine for process orchestration
- * - @claude-zen/sparc: SPARCCommander for technical methodology
- * - @claude-zen/enterprise: TaskApprovalSystem for human-in-the-loop workflows
- * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging
- * - @claude-zen/foundation: Document management and persistence
- *
- * REDUCTION: 2,093 → 489 lines (76.6% reduction) through package delegation
- *
- * Key Features:
- * - Product Flow orchestration (Vision→ADR→PRD→Epic→Feature→Task)
- * - SPARC methodology integration (technical implementation)
- * - Human approval gates with AGUI integration
- * - Performance monitoring and telemetry
- * - Document lifecycle management
- * - Event-driven coordination
- */
+import { EventEmitter } from 'events';
+import { Logger } from '@claude-zen/foundation';
+import type { 
+  ProductSpecification, 
+  WorkflowStep, 
+  ExecutionContext,
+  WorkflowResult,
+  ProductWorkflowConfig
+} from '../types/interfaces';
+import type { DocumentService } from '../../services/document/document-service';
+import type { MemorySystem } from '../types/memory';
 
-import type { WorkflowContext, WorkflowDefinition, WorkflowEngineConfig, WorkflowStep,
-} from '@claude-zen/enterprise';
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
-import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
-import type { BrainCoordinator, DocumentManager,
-} from '@claude-zen/intelligence';
-import { nanoid } from 'nanoid';
-
-// Document entity types replaced with any
-import { WorkflowAGUIAdapter } from './../interfaces/agui/workflow-agui-adapter';
-import type { WorkflowGateContext, WorkflowGatePriority,
-} from "./workflow-gates";
-import type { WorkflowGateRequest } from './workflows/workflow-gate-request'; // Import WorkflowStep from workflow-types
-
-// Define missing types locally
-type WorkflowStatus = 'pending  || running || ' 'paused | completed | failed | cancelled;
-
-interface CompletedStepInfo { index: number; step: WorkflowStep; result: any; duration: number; timestamp: string;
+export interface ProductWorkflowEngineOptions {
+  maxConcurrentSteps?: number;
+  stepTimeout?: number;
+  retryAttempts?: number;
+  enableParallelExecution?: boolean;
 }
 
-interface WorkflowError { code: string; message: string; recoverable: boolean;
+export class ProductWorkflowEngine extends EventEmitter {
+  private logger: Logger;
+  private memory: MemorySystem;
+  private documentService: DocumentService;
+  private eventBus: EventEmitter;
+  private isInitialized = false;
+  private config: ProductWorkflowEngineOptions;
+
+  constructor(
+    memory: MemorySystem,
+    documentService: DocumentService,
+    eventBus: EventEmitter,
+    config: ProductWorkflowEngineOptions = {}
+  ) {
+    super();
+    this.memory = memory;
+    this.documentService = documentService;
+    this.eventBus = eventBus;
+    this.logger = new Logger('ProductWorkflowEngine');
+    this.config = {
+      maxConcurrentSteps: 5,
+      stepTimeout: 30000,
+      retryAttempts: 3,
+      enableParallelExecution: true,
+      ...config
+    };
+  }
+
+  async initialize(): Promise<void> {
+    try {
+      this.logger.info('Initializing ProductWorkflowEngine');
+      
+      // Initialize memory system
+      await this.memory.initialize();
+      
+      // Set up event listeners
+      this.setupEventListeners();
+      
+      this.isInitialized = true;
+      this.emit('initialized');
+      
+      this.logger.info('ProductWorkflowEngine initialized successfully');
+    } catch (error) {
+      this.logger.error('Failed to initialize ProductWorkflowEngine', error);
+      throw error;
+    }
+  }
+
+  async executeProductFlow(productSpec: ProductSpecification): Promise<WorkflowResult> {
+    if (!this.isInitialized) {
+      throw new Error('ProductWorkflowEngine not initialized');
+    }
+
+    try {
+      this.logger.info(`Starting product workflow execution for: ${productSpec.name}`);
+      
+      const context: ExecutionContext = {
+        productSpec,
+        startTime: Date.now(),
+        steps: [],
+        status: 'running'
+      };
+
+      // Store context in memory
+      await this.memory.store(`workflow:${productSpec.id}`, context);
+
+      // Generate workflow steps
+      const steps = await this.generateWorkflowSteps(productSpec);
+      
+      // Execute steps
+      const result = await this.executeSteps(steps, context);
+      
+      // Update final context
+      context.endTime = Date.now();
+      context.status = result.success ? 'completed' : 'failed';
+      await this.memory.store(`workflow:${productSpec.id}`, context);
+
+      this.logger.info(`Product workflow completed for: ${productSpec.name}`);
+      return result;
+      
+    } catch (error) {
+      this.logger.error('Product workflow execution failed', error);
+      throw error;
+    }
+  }
+
+  private async generateWorkflowSteps(productSpec: ProductSpecification): Promise<WorkflowStep[]> {
+    const steps: WorkflowStep[] = [];
+    
+    // Analysis phase
+    steps.push({
+      id: 'analysis',
+      name: 'Product Analysis',
+      type: 'analysis',
+      dependencies: [],
+      config: { productSpec }
+    });
+
+    // Design phase
+    steps.push({
+      id: 'design',
+      name: 'Product Design',
+      type: 'design',
+      dependencies: ['analysis'],
+      config: { productSpec }
+    });
+
+    // Implementation phase
+    steps.push({
+      id: 'implementation',
+      name: 'Product Implementation',
+      type: 'implementation',
+      dependencies: ['design'],
+      config: { productSpec }
+    });
+
+    // Validation phase
+    steps.push({
+      id: 'validation',
+      name: 'Product Validation',
+      type: 'validation',
+      dependencies: ['implementation'],
+      config: { productSpec }
+    });
+
+    return steps;
+  }
+
+  private async executeSteps(steps: WorkflowStep[], context: ExecutionContext): Promise<WorkflowResult> {
+    const results: Record<string, any> = {};
+    const errors: Error[] = [];
+
+    try {
+      if (this.config.enableParallelExecution) {
+        await this.executeStepsParallel(steps, context, results, errors);
+      } else {
+        await this.executeStepsSequential(steps, context, results, errors);
+      }
+
+      return {
+        success: errors.length === 0,
+        results,
+        errors,
+        duration: Date.now() - context.startTime
+      };
+    } catch (error) {
+      errors.push(error as Error);
+      return {
+        success: false,
+        results,
+        errors,
+        duration: Date.now() - context.startTime
+      };
+    }
+  }
+
+  private async executeStepsParallel(
+    steps: WorkflowStep[], 
+    context: ExecutionContext, 
+    results: Record<string, any>, 
+    errors: Error[]
+  ): Promise<void> {
+    const executing = new Map<string, Promise<any>>();
+    const completed = new Set<string>();
+
+    for (const step of steps) {
+      const canExecute = step.dependencies.every(dep => completed.has(dep));
+      
+      if (canExecute) {
+        const promise = this.executeStep(step, context, results)
+          .then(result => {
+            results[step.id] = result;
+            completed.add(step.id);
+            executing.delete(step.id);
+            return result;
+          })
+          .catch(error => {
+            errors.push(error);
+            executing.delete(step.id);
+            throw error;
+          });
+        
+        executing.set(step.id, promise);
+      }
+    }
+
+    // Wait for all executing steps to complete
+    await Promise.allSettled(Array.from(executing.values()));
+  }
+
+  private async executeStepsSequential(
+    steps: WorkflowStep[], 
+    context: ExecutionContext, 
+    results: Record<string, any>, 
+    errors: Error[]
+  ): Promise<void> {
+    for (const step of steps) {
+      try {
+        const result = await this.executeStep(step, context, results);
+        results[step.id] = result;
+      } catch (error) {
+        errors.push(error as Error);
+        if (!step.optional) {
+          throw error;
+        }
+      }
+    }
+  }
+
+  private async executeStep(
+    step: WorkflowStep, 
+    context: ExecutionContext, 
+    results: Record<string, any>
+  ): Promise<any> {
+    this.logger.debug(`Executing step: ${step.name}`);
+    
+    try {
+      const stepContext = {
+        ...context,
+        currentStep: step,
+        previousResults: results
+      };
+
+      let result;
+      
+      switch (step.type) {
+        case 'analysis':
+          result = await this.executeAnalysisStep(step, stepContext);
+          break;
+        case 'design':
+          result = await this.executeDesignStep(step, stepContext);
+          break;
+        case 'implementation':
+          result = await this.executeImplementationStep(step, stepContext);
+          break;
+        case 'validation':
+          result = await this.executeValidationStep(step, stepContext);
+          break;
+        default:
+          throw new Error(`Unknown step type: ${step.type}`);
+      }
+
+      this.emit('stepCompleted', { step, result });
+      return result;
+      
+    } catch (error) {
+      this.emit('stepFailed', { step, error });
+      throw error;
+    }
+  }
+
+  private async executeAnalysisStep(step: WorkflowStep, context: any): Promise<any> {
+    // Implement analysis logic
+    const productSpec = context.productSpec;
+    
+    return {
+      requirements: productSpec.requirements || [],
+      constraints: productSpec.constraints || [],
+      stakeholders: productSpec.stakeholders || [],
+      timeline: productSpec.timeline || {}
+    };
+  }
+
+  private async executeDesignStep(step: WorkflowStep, context: any): Promise<any> {
+    // Implement design logic
+    const analysisResult = context.previousResults.analysis;
+    
+    return {
+      architecture: 'component-based',
+      components: [],
+      interfaces: [],
+      dataModel: {}
+    };
+  }
+
+  private async executeImplementationStep(step: WorkflowStep, context: any): Promise<any> {
+    // Implement implementation logic
+    const designResult = context.previousResults.design;
+    
+    return {
+      codeFiles: [],
+      testFiles: [],
+      documentation: [],
+      buildArtifacts: []
+    };
+  }
+
+  private async executeValidationStep(step: WorkflowStep, context: any): Promise<any> {
+    // Implement validation logic
+    const implementationResult = context.previousResults.implementation;
+    
+    return {
+      testResults: { passed: 0, failed: 0 },
+      qualityMetrics: {},
+      performanceMetrics: {},
+      securityScan: { vulnerabilities: [] }
+    };
+  }
+
+  private setupEventListeners(): void {
+    this.eventBus.on('workflow:pause', this.handlePause.bind(this));
+    this.eventBus.on('workflow:resume', this.handleResume.bind(this));
+    this.eventBus.on('workflow:cancel', this.handleCancel.bind(this));
+  }
+
+  private async handlePause(workflowId: string): Promise<void> {
+    this.logger.info(`Pausing workflow: ${workflowId}`);
+    // Implement pause logic
+  }
+
+  private async handleResume(workflowId: string): Promise<void> {
+    this.logger.info(`Resuming workflow: ${workflowId}`);
+    // Implement resume logic
+  }
+
+  private async handleCancel(workflowId: string): Promise<void> {
+    this.logger.info(`Cancelling workflow: ${workflowId}`);
+    // Implement cancel logic
+  }
+
+  async getWorkflowStatus(workflowId: string): Promise<ExecutionContext | null> {
+    return await this.memory.retrieve(`workflow:${workflowId}`);
+  }
+
+  async listActiveWorkflows(): Promise<string[]> {
+    // Implement logic to list active workflows
+    return [];
+  }
+
+  async cleanup(): Promise<void> {
+    this.logger.info('Cleaning up ProductWorkflowEngine');
+    this.removeAllListeners();
+    await this.memory.cleanup?.();
+  }
 }
 
-interface WorkflowExecutionOptions { dryRun?: boolean; timeout?: number; maxConcurrency?: number; enableGates?: boolean; gateConfiguration?: { timeout?: number; escalation?: string[]; priority?: string; [key: string]: any; };
-}
-
-interface WorkflowMetrics { totalDuration: number; avgStepDuration: number; successRate: number; retryRate: number; resourceUsage: { cpuTime: number; memoryPeak: number; diskIo: number; networkRequests: number; }; throughput: number;
-}
-
-type WorkflowStepResults = Record<string, any | any>;
-
-interface WorkflowStepState { step: WorkflowStep; status':''pending  || running || ' 'completed | faile'd' || skipped; attempts: number;
-}
-
-/**
- * Product Flow Step Types (Business Flow).
- */
-export type ProductFlowStep '='' 'vision-analysis | prd-creation | epic-breakdown | feature-definition | task-creation | sparc-integration';
-
-/**
- * Mutable workflow state interface for runtime modifications.
- */
-export interface MutableWorkflowState { id: string; definition: WorkflowDefinition; status: WorkflowStatus; context: WorkflowContext; currentStepIndex: number; steps: readonly WorkflowStepState[]; stepResults: WorkflowStepResults; completedSteps: readonly CompletedStepInfo[]; startTime: Date; endTime?: Date; pausedAt?: Date; error?: WorkflowError; progress: { percentage: number; completedSteps: number; totalSteps: number; estimatedTimeRemaining?: number; currentStepName?: string; }; metrics: WorkflowMetrics;
-}
-
-/**
- * Integrated Product Flow + SPARC Workflow State.
- */
-export interface ProductWorkflowState extends MutableWorkflowState { productFlow: { currentStep: ProductFlowStep; completedSteps: ProductFlowStep[]; documents: { vision?: any; adrs: any[]; prds: any[]; epics: any[]; features: any[]; tasks: any[]; }; }; sparcIntegration: { sparcProjects: Map<string, any>; // keyed by feature ID activePhases: Map<string, any>; // keyed by feature ID completedPhases: Map<string, any[]>; // keyed by feature ID };
-}
-
-/**
- * Product Workflow Configuration.
- */
-export interface ProductWorkflowConfig extends WorkflowEngineConfig { enableSPARCIntegration: boolean; sparcDomainMapping: Record<string, string>; // feature type -> SPARC domain autoTriggerSPARC: boolean; sparcQualityGates: boolean; templatesPath?: string; outputPath?: string; enablePersistence?: boolean; maxConcurrentWorkflows?: number; storageBackend?: { type: string; config: any };
-}
-
-/**
- * Product Workflow Engine - Lightweight facade for product flow orchestration.
- *
- * Delegates complex workflow orchestration to @claude-zen packages while maintaining
- * API compatibility and event patterns.
- *
- * @example Basic usage
- * ```typescript
- * const engine = new ProductWorkflowEngine(memory, documentService, eventBus);
- * await engine?.initialize()
- * const result = await engine.executeProductFlow(productSpec);` * ```
- */
-export class ProductWorkflowEngine extends TypedEventBase { private logger: Logger; private memory: BrainCoordinator; private documentService: DocumentManager; private eventBus: TypeSafeEventBus; private configuration: ProductWorkflowConfig; private aguiAdapter?: WorkflowAGUIAdapter; // Package delegates - lazy loaded private workflowEngine: any; private sparcCommander: any; private sparcEngine: any; private taskApprovalSystem: any; private performanceTracker: any; private telemetryManager: any; private initialized = 'false'; // Maintain state for compatibility private activeWorkflows = new Map<string, ProductWorkflowState>(); private workflowDefinitions = new Map<string, WorkflowDefinition>(); private pendingGates = new Map<string, WorkflowGateRequest>(); constructor( memory: BrainCoordinator, documentService: DocumentManager, eventBus: TypeSafeEventBus, aguiAdapter?: WorkflowAGUIAdapter, config: Partial<ProductWorkflowConfig> = {} ) { super(); this.logger = getLogger(ProductWorkflowEngine); this.memory = 'memory'; this.documentService = 'documentService'; this.eventBus = 'eventBus'; this.aguiAdapter = 'aguiAdapter'; this.config = { enableSPARCIntegration: true, sparcDomainMapping: { ui: 'interfaces', api: 'rest-api', database: 'memory-systems', integration: 'swarm-coordination', infrastructure: 'general', }, autoTriggerSPARC: true, sparcQualityGates: true, templatesPath: "./templates", outputPath: "./output", maxConcurrentWorkflows: 10, defaultTimeout: 300000, enableMetrics: true, enablePersistence: true, storageBackend: { type: 'database', config: {} }, ...config, }; } /** * Initialize with package delegation - LAZY LOADING */ async initialize(): Promise<void> { if (this.initialized) return; try { this.logger.info( 'Initializing Product Workflow Engine with package delegation' ); // Delegate to @claude-zen/intelligence for workflow orchestration const { WorkflowEngine } = await import(claude-zen/intelligence); this.workflowEngine = new WorkflowEngine({ persistWorkflows: this.config.enablePersistence, enableVisualization: true, maxConcurrentWorkflows: this.config.maxConcurrentWorkflows, }); await this.workflowEngine?.initialize() // Delegate to SPARC methodology via enterprise strategic facade const { createSPARCCommander, SPARCMethodology } = await import( @claude-zen/enterprise); this.sparcCommander = createSPARCCommander(); this.sparcEngine = new SPARCMethodology(); await this.sparcCommander?.initialize() // Delegate to @claude-zen/enterprise for human-in-the-loop workflows if (this.aguiAdapter) { const { TaskApprovalSystem } = await import(claude-zen/enterprise); this.taskApprovalSystem = new TaskApprovalSystem({ enableRichPrompts: true, enableDecisionLogging: true, auditRetentionDays: 90, }); await this.taskApprovalSystem?.initialize() } // Delegate to @claude-zen/foundation for performance tracking const { PerformanceTracker', BasicTelemetryManager } = await import( @claude-zen/foundation); this.performanceTracker = new PerformanceTracker(); this.telemetryManager = new BasicTelemetryManager({ serviceName: 'product-workflow-engine', enableTracing: true, enableMetrics: this.config.enableMetrics', }); await this.telemetryManager?.initialize() // Initialize document service await this.documentService?.initialize() this.initialized = 'true'; this.logger.info('Product Workflow Engine initialized successfully'); } catch (error) { this.logger.error('Failed to initialize Product Workflow Engine: ', error); throw error; } } /** * Start Product Workflow - Delegates to workflow engine */ async startProductWorkflow( workflowName: string, context: Partial<WorkflowContext> = {}, options: WorkflowExecutionOptions = {} ): Promise<{ success: boolean; workflowId?: string; error?: string }> { if (!this.initialized) await this.initialize; const timer = this.performanceTracker.startTimer(start_product_workflow); try { // Delegate workflow execution to @claude-zen/intelligence` const workflowId = `product-workflow-${Date.now()}-${nanoid()}`; const result = await this.workflowEngine.startWorkflow({ name: workflowName', context: {' workspaceId: context.workspaceId  || ' ' default', sessionId: workflowId, documents: context.documents  || ' ' {}, variables: context.variables'  || {}, ...context, }, options, }); this.performanceTracker.endTime'r''('start_product_workflow'); this.telemetryManager.recordCounter('product_workflows_started'', 1); this.emit('product-workflow:started', { workflowId, workflowName, context, }); return { success: true', workflowId: result.workflowId }; } catch (error) { this.performanceTracker.endTimer(start_product_workflow); this.logger.error('Failed to start product workflow: ', error); return { success: false, error: (error as Error).message }; } } /** * Execute SPARC Integration - Delegates to SPARC commander */ async executeSPARCIntegration( featureId: string, domain: string', requirements: string[] ): Promise<{ success: boolean; projectId?: string; error?: string }> { if (!this.initialized) await this.initialize; const timer = this.performanceTracker.startTimer(' 'execute_sparc_integration' ); try { // Delegate SPARC execution to @claude-zen/sparc const project = await this.sparcCommander.createProject(` `Feature-${featureId}`, domain, requirements', 'moderate' ); const phases = await this.sparcCommander.executeFullWorkflow(project.id); this.performanceTracker.endTimer(execute_sparc_integration); this.telemetryManager.recordCounter('sparc_integrations_executed'', 1); this.emit('sparc:integration-complete', { featureId, projectId: project.id, phases, }); return { success: true', projectId: project.id }; } catch (error) { this.performanceTracker.endTimer(execute_sparc_integration); this.logger.error('Failed to execute SPARC integration: ', error); return { success: false, error: (error as Error).message }; } } /** * Request Human Approval - Delegates to AGUI system */ async requestApproval( gateId: string, context: WorkflowGateContext',' priority: WorkflowGatePriority = 'medium' ): Promise<{ success: boolean; approved?: boolean; error?: string }> { if (!this.initialized) await this.initialize; if (!this.taskApprovalSystem) { return { success: false, error: 'AGUI system not available' }; } const timer = this.performanceTracker.startTimer(request_approval); try { // Delegate approval request to @claude-zen/enterprise const approval = await this.taskApprovalSystem.requestApproval({ id: gateId, title: context.title  || ' ' Product Workflow Approval', description: context.description  || ' ' Approval required for workflow progression', priority, context: context.data  || ' ' {}', }); this.performanceTracker.endTimer(request_approval); this.telemetryManager.recordCounter('approvals_requested'', 1); this.emit('gate:approval-requested', { gateId, context, approval }); return { success: true', approved: approval.approved }; } catch (error) { this.performanceTracker.endTimer(request_approval); this.logger.error('Failed to request approval: ', error); return { success: false', error: (error as Error).message }; } } /** * Get Workflow Status - Delegates to workflow engine */ async getWorkflowStatus( workflowId: string'  ): Promise<ProductWorkflowState ' || undefined> { if (!this.initialized) await this.initialize; try { // Get status from workflow engine and enhance with product flow data const status = await this.workflowEngine.getWorkflowStatus(workflowId); if (!status) return undefined; // Enhance with cached product flow state const productWorkflow = this.activeWorkflows.get(workflowId); return ( productWorkflow  || { ...status, productFlow: { currentStep:vision-analys'i''s', completedSteps: [], documents: { adrs: [], prds: [], epics: [], features: [], tasks: [], }, }, sparcIntegration: { sparcProjects: new Map(), activePhases: new Map(), completedPhases: new Map(), }', } ); } catch (error) { this.logger.error('Failed to get workflow status: ', error); return undefined; } } /** * List Active Workflows - Delegates to workflow engine */ async listActiveWorkflows(): Promise<ProductWorkflowState[]> { if (!this.initialized) await this.initialize; try { const workflows = await this.workflowEngine?.listActiveWorkflows() return workflows.map((workflow: any) => ({ ...workflow', productFlow: {' currentStep: 'vision-analysis' as ProductFlowStep, completedSteps: [], documents: { adrs: [], prds: [], epics: [], features: [], tasks: [] }, }, sparcIntegration: { sparcProjects: new Map(), activePhases: new Map(), completedPhases: new Map(), }, })); } catch (error) { this.logger.error('Failed to list active workflows: ', error); return []; } } /** * Cancel Workflow - Delegates to workflow engine */ async cancelWorkflow( workflowId: string, reason?: string ): Promise<{ success: boolean; error?: string }> { if (!this.initialized) await this.initialize; try { const result = await this.workflowEngine.cancelWorkflow( workflowId', reason ); this.activeWorkflows.delete(workflowId);
-' this.emit('product-workflow:cancelled', { workflowId', reason }); this.telemetryManager.recordCounter('product_workflows_cancelled'', 1); return result; } catch (error) { this.logger.error('Failed to cancel workflow: ', error); return { success: false, error: (error as Error).message }; } } /** * Get Pending Gates - Returns local cache */ async getPendingGates(): Promise<Map<string, WorkflowGateRequest>> { return new Map(this.pendingGates); } /** * Get Performance Metrics - Delegates to performance tracker */ async getMetrics(): Promise<any> { if (!this.initialized) await this.initialize; return { productWorkflows: { active: this.activeWorkflows.size', total: (await this.telemetryManager.getCounterValue(' 'product_workflows_started'))  || ' ' 0, cancelled: (await this.telemetryManager.getCounterValue(product_workflows_cancelled))  || ' ' 0, }, sparc: { integrations: (await this.telemetryManager.getCounterValue(sparc_integrations_executed))  || ' ' 0, }, approvals: { requested: (await this.telemetryManager.getCounterValue(approvals_requested))  || ' ' 0, }, performance: this.performanceTracker?.getMetrics, }; } /** * Cleanup resources */ async shutdown(): Promise<void> { this.logger.info('Shutting down Product Workflow Engine'); if (this.workflowEngine) { await this.workflowEngine?.shutdown(); } if (this.telemetryManager) { await this.telemetryManager?.shutdown(); } this.activeWorkflows?.clear(); this.workflowDefinitions?.clear(); this.pendingGates?.clear(); this.initialized = 'false'; }
-}
-
-export default ProductWorkflowEngine;`
+// Example usage:
+// const memory = new MemorySystem();
+// const documentService = new DocumentService();
+// const eventBus = new EventEmitter();
+// const engine = new ProductWorkflowEngine(memory, documentService, eventBus);
+// await engine.initialize();
+// const result = await engine.executeProductFlow(productSpec);

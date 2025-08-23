@@ -67,8 +67,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       participants: [...config.initialParticipants],
       initiator:
         config.initialParticipants[0]||({
-          id:',
-          swarmId: ',
+          id: '',
+          swarmId: '',
           type: 'researcher' as const,
           instance: 0,
         } as AgentId),

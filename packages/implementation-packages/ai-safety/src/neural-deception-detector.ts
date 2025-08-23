@@ -6,6 +6,7 @@
  */
 
 import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
+
 import {
   type LogAnalysisResult,
   LogBasedDeceptionDetector,
@@ -119,7 +120,7 @@ export class NeuralDeceptionDetector {
   private countVerificationWords(text: string): number {
     const verificationPatterns = [
       /\b(?:analyzed|examined|reviewed|checked|found|discovered|identified)\b/gi,
-      /\b(?:after analyzing|upon examination|I found that|I discovered)\b/gi,
+      /\b(?:after analyzing|upon examination|i found that|i discovered)\b/gi,
     ];
 
     let count = 0;
@@ -138,7 +139,7 @@ export class NeuralDeceptionDetector {
   private countImplementationWords(text: string): number {
     const implementationPatterns = [
       /\b(?:implemented|created|built|wrote|coded|developed|fixed)\b/gi,
-      /\b(?:I will implement|I can build|I'll create)\b/gi,
+      /\b(?:i will implement|i can build|i'll create)\b/gi,
     ];
 
     let count = 0;

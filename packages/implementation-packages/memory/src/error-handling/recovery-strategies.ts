@@ -4,8 +4,10 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
+
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { BackendInterface } from '../core/memory-system';
+
 import { type MemoryError, MemoryErrorCode } from './memory-errors';
 
 export interface RecoveryStrategy {

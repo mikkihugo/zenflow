@@ -23,7 +23,7 @@ const logger = getLogger('EnhancedDocumentScanner');
 /**
  * Types of analysis patterns we can detect in code and documents
  */
-export type AnalysisPattern =|'todo|fixme|hack|deprecated|missing_implementation|empty_function|code_quality | documentation_gap'|test_missing|performance_issue | security_concern'|refactor_needed';
+export type AnalysisPattern = 'todo' | 'fixme' | 'hack' | 'deprecated' | 'missing_implementation' | 'empty_function' | 'code_quality' | 'documentation_gap' | 'test_missing' | 'performance_issue' | 'security_concern' | 'refactor_needed';
 
 /**
  * Detected code issue or improvement opportunity
@@ -31,14 +31,14 @@ export type AnalysisPattern =|'todo|fixme|hack|deprecated|missing_implementation
 export interface CodeAnalysisResult {
   id: string;
   type: AnalysisPattern;
-  severity: 'low|medium|high|critical';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   description: string;
   filePath: string;
   lineNumber?: number;
   codeSnippet?: string;
   suggestedAction: string;
-  estimatedEffort: 'small|medium|large';
+  estimatedEffort: 'small' | 'medium' | 'large';
   tags: string[];
   relatedFiles?: string[];
 }
@@ -50,11 +50,11 @@ export interface GeneratedSwarmTask {
   id: string;
   title: string;
   description: string;
-  type: 'task|feature|epic';
-  priority: 'low|medium|high|critical';
+  type: 'task' | 'feature' | 'epic';
+  priority: 'low' | 'medium' | 'high' | 'critical';
   estimatedHours: number;
   sourceAnalysis: CodeAnalysisResult;
-  suggestedSwarmType:|'single_agent|collaborative|research|implementation';
+  suggestedSwarmType: 'single_agent' | 'collaborative' | 'research' | 'implementation';
   requiredAgentTypes: string[];
   dependencies: string[];
   acceptanceCriteria: string[];
@@ -103,19 +103,22 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     super();
 
     this.config = {
-      rootPath: config.rootPath||'./src',
-      includePatterns: config.includePatterns||['**/*.md',
-        '**/*',
-        '**/*',
+      rootPath: config.rootPath || './src',
+      includePatterns: config.includePatterns || [
+        '**/*.md',
+        '**/*.ts',
+        '**/*.js',
         '**/*.tsx',
         '**/*.jsx',
       ],
-      excludePatterns: config.excludePatterns||['**/node_modules/**',
+      excludePatterns: config.excludePatterns || [
+        '**/node_modules/**',
         '**/dist/**',
         '**/*.test.*',
         '**/*.spec.*',
       ],
-      enabledPatterns: config.enabledPatterns||['todo',
+      enabledPatterns: config.enabledPatterns || [
+        'todo',
         'fixme',
         'hack',
         'deprecated',
@@ -124,7 +127,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         'code_quality',
         'documentation_gap',
       ],
-      maxDepth: config.maxDepth||10,
+      maxDepth: config.maxDepth || 10,
       deepAnalysis: config.deepAnalysis !== false,
     };
 
@@ -315,7 +318,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       // Deep analysis for TypeScript/JavaScript files
       if (
         this.config.deepAnalysis &&
-        ['', '.tsx', '', '.jsx'].includes(fileExt)
+        ['.ts', '.tsx', '.js', '.jsx'].includes(fileExt)
       ) {
         await this.performDeepAnalysis(filePath, content, lines, results);
       }
@@ -345,12 +348,12 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       );
 
       for (const match of emptyFunctionMatches) {
-        const functionName = match[1]||match[2];
-        const lineNumber = this.getLineNumber(content, match.index||0);
+        const functionName = match[1] || match[2];
+        const lineNumber = this.getLineNumber(content, match.index || 0);
 
         results.push({
           id: this.generateId(),
-          type:'empty_function',
+          type: 'empty_function',
           severity: 'medium',
           title: `Empty function: ${functionName}`,
           description: `Function '${functionName}' appears to be empty and may need implementation`,
@@ -370,17 +373,17 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       for (const match of asyncFunctionMatches) {
         const functionText = this.extractFunctionBody(
           content,
-          match.index||0
+          match.index || 0
         );
         if (
           functionText &&
           !functionText.includes('try') &&
           !functionText.includes('catch')
         ) {
-          const lineNumber = this.getLineNumber(content, match.index||0);
+          const lineNumber = this.getLineNumber(content, match.index || 0);
           results.push({
             id: this.generateId(),
-            type:'code_quality',
+            type: 'code_quality',
             severity: 'medium',
             title: 'Missing error handling in async function',
             description: 'Async function lacks proper try-catch error handling',
@@ -418,7 +421,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
 
       results.push({
         id: this.generateId(),
-        type:'documentation_gap',
+        type: 'documentation_gap',
         severity: 'low',
         title: `Empty documentation section: ${sectionName}`,
         description: `Section "${sectionName}" appears to be empty and needs content`,
@@ -440,7 +443,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
 
       results.push({
         id: this.generateId(),
-        type:'documentation_gap',
+        type: 'documentation_gap',
         severity: 'low',
         title: `Verify internal link: ${linkText}`,
         description: `Internal link to "${linkPath}.md" should be verified`,
@@ -504,7 +507,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
   private createSwarmTask(
     groupKey: string,
     results: CodeAnalysisResult[]
-  ): GeneratedSwarmTask|null {
+  ): GeneratedSwarmTask | null {
     if (results.length === 0) return null;
 
     const [patternType, directory] = groupKey.split('-');
@@ -545,9 +548,9 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       },
     };
 
-    const template = taskTemplates[pattern]||{
+    const template = taskTemplates[pattern] || {
       title: `Address ${pattern} issues in ${directory}/`,
-      type:'task' as const,
+      type: 'task' as const,
       swarmType: 'collaborative' as const,
       agents: ['coder', 'reviewer'],
     };
@@ -581,7 +584,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     for (const result of results.slice(0, 5)) {
       // Show first 5 issues
       const fileName = relative(this.config.rootPath, result.filePath);
-      description += `- ${fileName}:${result.lineNumber||'?'} - ${result.description}\n`;
+      description += `- ${fileName}:${result.lineNumber || '?'} - ${result.description}\n`;
     }
 
     if (results.length > 5) {
@@ -677,8 +680,8 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     filePath: string,
     lineNumber: number,
     codeLine?: string
-  ): CodeAnalysisResult|null {
-    const description = match[1]?.trim()||match[0].trim();
+  ): CodeAnalysisResult | null {
+    const description = match[1]?.trim() || match[0].trim();
 
     return {
       id: this.generateId(),
@@ -713,7 +716,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         security_concern: 'critical',
         refactor_needed: 'medium',
       };
-    return severityMap[pattern]||'medium';
+    return severityMap[pattern] || 'medium';
   }
 
   private getPatternEffort(
@@ -736,7 +739,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       security_concern: 'large',
       refactor_needed: 'large',
     };
-    return effortMap[pattern]||'medium';
+    return effortMap[pattern] || 'medium';
   }
 
   private getPatternTags(pattern: AnalysisPattern): string[] {
@@ -754,7 +757,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       security_concern: ['security', 'critical'],
       refactor_needed: ['refactor', 'architecture'],
     };
-    return tagMap[pattern]||['general'];
+    return tagMap[pattern] || ['general'];
   }
 
   private getSuggestedAction(
@@ -775,17 +778,17 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       security_concern: `Address security concern: ${description}`,
       refactor_needed: `Refactor code: ${description}`,
     };
-    return actionMap[pattern]||`Address ${pattern}: ${description}`;
+    return actionMap[pattern] || `Address ${pattern}: ${description}`;
   }
 
   private extractFunctionBody(
     content: string,
     startIndex: number
-  ): string|null {
+  ): string | null {
     // Simple function body extraction - would be more sophisticated with proper AST parsing
     let braceCount = 0;
     let inFunction = false;
-    let body ='';
+    let body = '';
 
     for (let i = startIndex; i < content.length; i++) {
       const char = content[i];

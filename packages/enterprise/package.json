@@ -76,9 +76,6 @@
     },
     "@claude-zen/knowledge": {
       "optional": true
-    },
-    "@claude-zen/kanban": {
-      "optional": true
     }
   },
   "files": [

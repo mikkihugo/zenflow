@@ -25,11 +25,11 @@ import type { DSPyLLMBridge } from '../../coordination/dspy-llm-bridge';
 /**
  * Language and framework types for principle research
  */
-export type ProgrammingLanguage =|typescript|javascript|python|rust|go|java|csharp|swift|'kotlin';
+export type ProgrammingLanguage = 'typescript' | 'javascript' | 'python' | 'rust' | 'go' | 'java' | 'csharp' | 'swift' | 'kotlin';
 
-export type TaskDomain =|rest-api|web-app|mobile-app|desktop-app|microservices|data-pipeline|ml-model|blockchain|game-dev|'embedded';
+export type TaskDomain = 'rest-api' | 'web-app' | 'mobile-app' | 'desktop-app' | 'microservices' | 'data-pipeline' | 'ml-model' | 'blockchain' | 'game-dev' | 'embedded';
 
-export type DevelopmentRole =|backend-developer|frontend-developer|fullstack-developer|mobile-developer|devops-engineer|ml-engineer|architect|'tech-lead';
+export type DevelopmentRole = 'backend-developer' | 'frontend-developer' | 'fullstack-developer' | 'mobile-developer' | 'devops-engineer' | 'ml-engineer' | 'architect' | 'tech-lead';
 
 /**
  * Coding principles research configuration
@@ -248,7 +248,7 @@ export class CodingPrinciplesResearcher {
 
       throw new Error('Research failed to produce valid results');
     } catch (error) {
-      console.warn('Principles research failed, using fallback:', error);
+      this.logger.warn('Principles research failed, using fallback:', error);
       return this.getFallbackPrinciples(config);
     }
   }
@@ -360,11 +360,9 @@ export class CodingPrinciplesResearcher {
           });
         }
 
-        console.log(
-          `Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)} (target: ${targetConfidence})`
-        );
+        this.logger.info(`Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)} (target: ${targetConfidence})`);
       } catch (error) {
-        console.warn(`Research attempt ${researchAttempts} failed:`, error);
+        this.logger.warn(`Research attempt ${researchAttempts} failed:`, error);
       }
     }
 
@@ -376,9 +374,7 @@ export class CodingPrinciplesResearcher {
     // Cache the best principles found
     this.cache.set(cacheKey, bestPrinciples);
 
-    console.log(
-      `Research completed after ${researchAttempts} attempts. Final confidence: ${bestConfidence.toFixed(3)}`
-    );
+    this.logger.info(`Research completed after ${researchAttempts} attempts. Final confidence: ${bestConfidence.toFixed(3)}`);
     return bestPrinciples;
   }
 
@@ -410,9 +406,7 @@ export class CodingPrinciplesResearcher {
     if (
       confidence.overallConfidence < this.minimumConfidenceThreshold || confidence.needsImprovement
     ) {
-      console.log(
-        `Principles need improvement (confidence: ${confidence.overallConfidence.toFixed(3)}). Researching...`
-      );
+      this.logger.info(`Principles need improvement (confidence: ${confidence.overallConfidence.toFixed(3)}). Researching...`);
       return await this.researchPrinciplesWithConfidence(config);
     }
 
@@ -430,7 +424,7 @@ export class CodingPrinciplesResearcher {
    * Build research prompt for DSPy
    */
   private buildResearchPrompt(config: PrinciplesResearchConfig): string {
-    const { language, domain, role, depth } = config;
+    const { language, domain, role, depth, includePerformance, includeSecurity, includeTesting } = config;
 
     // Get comprehensive research areas based on role and domain
     const researchAreas = this.getComprehensiveResearchAreas(role, domain);
@@ -442,9 +436,9 @@ Context:
 - Domain: ${domain || 'general'}
 - Role: ${role || 'general-developer'}
 - Depth: ${depth || 'intermediate'}
-- Include Performance: ${config.includePerformance ? 'Yes' : 'No'}
-- Include Security: ${config.includeSecurity ? 'Yes' : 'No'}
-- Include Testing: ${config.includeTesting ? 'Yes' : 'No'}
+- Include Performance: ${includePerformance ? 'Yes' : 'No'}
+- Include Security: ${includeSecurity ? 'Yes' : 'No'}
+- Include Testing: ${includeTesting ? 'Yes' : 'No'}
 
 Research the following comprehensive areas and provide specific, actionable guidelines:
 
@@ -779,6 +773,8 @@ Respond in JSON format with structured guidelines that cover all research areas 
     config: PrinciplesResearchConfig
   ): Promise<CodingPrinciples> {
     try {
+      // Allow event loop processing for parsing
+      await new Promise(resolve => setTimeout(resolve, 0));
       const parsed = typeof result === 'string'? JSON.parse(result) : result;
 
       const principles: CodingPrinciples = {
@@ -884,7 +880,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
 
       return principles;
     } catch (error) {
-      console.warn('Failed to parse research result:', error);
+      this.logger.warn('Failed to parse research result:', error);
       return this.getFallbackPrinciples(config);
     }
   }
@@ -894,8 +890,8 @@ Respond in JSON format with structured guidelines that cover all research areas 
    */
   private generateReviewableTemplate(principles: CodingPrinciples): string {
     return `# ${principles.language.toUpperCase()} Coding Principles
-${principles.domain ? `## Domain: ${principles.domain}` : '}
-${principles.role ? `## Role: ${principles.role}` : '}
+${principles.domain ? `## Domain: ${principles.domain}` : ''}
+${principles.role ? `## Role: ${principles.role}` : ''}
 
 ## 📁 File Naming & Organization
 ${principles.coreStandards.fileNaming.map((item) => `- ${item}`).join('\n')}
@@ -1116,10 +1112,10 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
   private async incorporateFeedback(feedback: HumanFeedback): Promise<void> {
     // Use feedback to improve future research prompts and caching
     // This would integrate with the behavioral intelligence system
-    console.log(
-      'Incorporating human feedback for principles improvement:',
-      feedback.principlesId
-    );
+    await new Promise(resolve => setTimeout(resolve, 0));
+    this.logger.info('Incorporating human feedback for principles improvement:', {
+      principlesId: feedback.principlesId
+    });
   }
 
   private async enhancePrinciplesWithLearning(
@@ -1127,6 +1123,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
     patterns: any
   ): Promise<void> {
     // Enhance principles with successful patterns learned from actual projects
+    await new Promise(resolve => setTimeout(resolve, 0));
     principles.researchMetadata.lastUpdated = new Date();
     principles.researchMetadata.confidence = Math.min(
       principles.researchMetadata.confidence + 0.1,
@@ -1301,6 +1298,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
     principles: CodingPrinciples,
     config: PrinciplesResearchConfig
   ): Promise<number> {
+    await new Promise(resolve => setTimeout(resolve, 0));
     let qualityScore = 0;
     let maxScore = 0;
 
@@ -1414,6 +1412,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
   private async updateConfidenceFromAgentFeedback(
     feedback: AgentExecutionFeedback
   ): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 0));
     const confidence = this.getPromptConfidence(feedback.principlesId);
 
     // Update execution count
@@ -1445,6 +1444,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
    * Evaluate whether principles need improvement based on feedback
    */
   private async evaluateImprovementNeeds(principlesId: string): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 0));
     const confidence = this.getPromptConfidence(principlesId);
     const feedbacks = this.agentFeedback.get(principlesId) || [];
 

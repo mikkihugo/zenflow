@@ -376,9 +376,9 @@ function startFileWatcher() {
         }
         isCheckingTypes = false;
         debounceTimer = null;
-      }, 120000); // 2 minute debounce for batch file operations
+      }, 30000); // 30 second debounce for batch file operations
       
-      console.log(`${colors.magenta}⏱️ TypeScript check scheduled in 2 minutes... (batching file changes)${colors.reset}`);
+      console.log(`${colors.magenta}⏱️ TypeScript check scheduled in 30 seconds... (batching file changes)${colors.reset}`);
     }
   });
 }

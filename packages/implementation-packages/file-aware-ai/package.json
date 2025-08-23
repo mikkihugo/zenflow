@@ -29,11 +29,12 @@
   },
   "keywords": [
     "ai",
-    "coding-assistant", 
+    "coding-assistant",
     "file-aware",
     "llm",
     "claude-zen"
   ],
   "author": "Claude Code Zen Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

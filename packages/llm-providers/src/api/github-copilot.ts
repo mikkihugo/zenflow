@@ -375,8 +375,8 @@ export async function executeGitHubCopilotTask(
   prompt: string,
   options: {
     token: string;
-    model?: 'gpt-4|gpt-4-turbo'||gpt-3.5-turbo|claude-3-sonnet';
-  } = { token: ' }
+    model?: 'gpt-4' | 'gpt-4-turbo' | 'gpt-3.5-turbo' | 'claude-3-sonnet';
+  } = { token: '' }
 ): Promise<string> {
   const provider = createGitHubCopilotProvider(options);
 

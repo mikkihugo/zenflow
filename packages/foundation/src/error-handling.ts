@@ -42,7 +42,7 @@ export class EnhancedError extends Error {
     message: string,
     context: JsonObject = {},
     code?: string,
-    options?: ErrorOptions
+    options?: ErrorOptions,
   ) {
     super(message, options);
     this.name = 'EnhancedError';
@@ -59,7 +59,7 @@ export class EnhancedError extends Error {
       this.message,
       { ...this.context, ...additionalContext },
       this.code,
-      { cause: this }
+      { cause: this },
     );
   }
 
@@ -87,7 +87,7 @@ export class ContextError extends Error {
     message: string,
     context: JsonObject = {},
     code?: string,
-    options?: ErrorOptions
+    options?: ErrorOptions,
   ) {
     super(message, options);
     this.name = 'ContextError';
@@ -104,7 +104,7 @@ export class ContextError extends Error {
       this.message,
       { ...this.context, ...additionalContext },
       this.code,
-      { cause: this }
+      { cause: this },
     );
   }
 
@@ -207,7 +207,7 @@ export function withContext(error: unknown, context: JsonObject): ContextError {
  * Safe async execution with Result pattern
  */
 export async function safeAsync<T>(
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<Result<T, Error>> {
   try {
     const result = await fn();
@@ -252,7 +252,7 @@ export interface RetryOptions extends Omit<PRetryOptions, 'onFailedAttempt'> {
  */
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  options: RetryOptions = {}
+  options: RetryOptions = {},
 ): Promise<Result<T, Error>> {
   const { onFailedAttempt, shouldRetry, retryIf, abortIf, ...retryOptions } =
     options;
@@ -316,7 +316,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
   constructor(
     action: (...args: T) => Promise<R>,
     options: CircuitBreakerOptions = {},
-    name = 'circuit-breaker'
+    name = 'circuit-breaker',
   ) {
     this.name = name;
 
@@ -435,7 +435,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
 export function createCircuitBreaker<T extends unknown[], R>(
   action: (...args: T) => Promise<R>,
   options: CircuitBreakerOptions = {},
-  name?: string
+  name?: string,
 ): CircuitBreakerWithMonitoring<T, R> {
   return new CircuitBreakerWithMonitoring(action, options, name);
 }
@@ -446,7 +446,7 @@ export function createCircuitBreaker<T extends unknown[], R>(
 export async function withTimeout<T>(
   fn: () => Promise<T>,
   timeoutMs: number,
-  timeoutMessage?: string
+  timeoutMessage?: string,
 ): Promise<Result<T, TimeoutError>> {
   let timeoutHandle: NodeJS.Timeout|undefined;
 
@@ -462,8 +462,8 @@ export async function withTimeout<T>(
       reject(
         new TimeoutError(
           timeoutMessage||`Operation timed out after ${timeoutMs}ms`,
-          { timeoutMs }
-        )
+          { timeoutMs },
+        ),
       );
     }, timeoutMs);
   });
@@ -481,7 +481,7 @@ export async function withTimeout<T>(
       return err(
         new TimeoutError(enhancedError.message, {
           originalError: enhancedError.message,
-        })
+        }),
       );
     }
   }
@@ -491,7 +491,7 @@ export async function withTimeout<T>(
  * Execute all operations in parallel and collect results
  */
 export async function executeAll<T>(
-  operations: (() => Promise<T>)[]
+  operations: (() => Promise<T>)[],
 ): Promise<Result<T[], Error[]>> {
   const results = await Promise.allSettled(operations.map((op) => op()));
 
@@ -513,7 +513,7 @@ export async function executeAll<T>(
  * Execute all operations and return only successful results
  */
 export async function executeAllSuccessful<T>(
-  operations: (() => Promise<T>)[]
+  operations: (() => Promise<T>)[],
 ): Promise<Result<T[], Error[]>> {
   const result = await executeAll(operations);
 
@@ -539,7 +539,7 @@ export async function executeAllSuccessful<T>(
  */
 export function transformError<T, E, F>(
   result: Result<T, E>,
-  transformer: (error: E) => F
+  transformer: (error: E) => F,
 ): Result<T, F> {
   return result.mapErr(transformer);
 }
@@ -549,7 +549,7 @@ export function transformError<T, E, F>(
  */
 export function createErrorRecovery<T>(
   fallbackValue: T,
-  shouldRecover?: (error: Error) => boolean
+  shouldRecover?: (error: Error) => boolean,
 ) {
   return (error: Error): Result<T, Error> => {
     if (!shouldRecover||shouldRecover(error)) {
@@ -597,7 +597,7 @@ export class ErrorAggregator {
 
   toResult<T>(value: T): Result<T, Error[]> {
     if (this.hasErrors()) {
-      return err(this.getErrors())();
+      return err(this.getErrors());
     }
     return ok(value);
   }
@@ -640,7 +640,7 @@ export function createErrorChain(
       errorCount: allErrors.length,
     },
     'ERROR_CHAIN',
-    { cause: baseError }
+    { cause: baseError },
   );
 }
 

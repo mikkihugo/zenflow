@@ -56,7 +56,7 @@ async function loadTeamworkModule() {
             return this;
           }
           async collaborate() {
-            return { result: 'compatibility-collaboration'};
+            return { result: 'compatibility-collaboration' };
           }
           async shutdown() {
             return Promise.resolve();
@@ -109,9 +109,9 @@ export class ConversationOrchestrator extends TypedEventBase {
 
   getStatus(): any {
     if (!this.instance) {
-      return { status:'not-initialized'};
+      return { status:'not-initialized' };
     }
-    return this.instance.getStatus?.()||{ status:'active'};
+    return this.instance.getStatus?.()||{ status:'active' };
   }
 
   async shutdown(): Promise<void> {
@@ -290,8 +290,7 @@ export class InMemoryConversationMemory {
 
 // Export additional types and interfaces from the real package
 export async function getTeamworkTypes() {
-  const teamworkModule = await loadTeamworkModule();
-  return teamworkModule;
+  return await loadTeamworkModule();
 }
 
 // ===============================================================================

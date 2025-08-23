@@ -152,8 +152,17 @@ export async function getWorkflowVisualization(
       system.generateVisualization(workflow),
     export: (
       workflow: WorkflowDefinition,
-      format: 'mermaid|svg'' = 'mermaid'
-    ) => system.generateVisualization(workflow),
+      format: 'mermaid' | 'svg' = 'mermaid'
+    ) => {
+      // Enhanced format validation and logging
+      const supportedFormats = ['mermaid', 'svg'] as const;
+      if (!supportedFormats.includes(format)) {
+        logger.warn(`Unsupported workflow export format: ${format}, defaulting to mermaid`);
+        format = 'mermaid';
+      }
+      logger.debug(`Exporting workflow ${workflow.id} in ${format} format`);
+      return system.generateVisualization(workflow);
+    },
   };
 }
 

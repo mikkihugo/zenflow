@@ -88,7 +88,7 @@ export function createWorkflowGateRequest(
     workflowId,
     stepId,
     context,
-    priority: options?.priority|||medium',
+    priority: options?.priority || 'medium',
     timestamp: Date.now(),
     metadata: options?.metadata,
   };
@@ -100,7 +100,7 @@ export function createWorkflowGateRequest(
 export function createWorkflowGateResponse(
   request: WorkflowGateRequest,
   status: WorkflowGateResponse['status'],
-  options?: Partial<Pick<WorkflowGateResponse, 'result|message''>>
+  options?: Partial<Pick<WorkflowGateResponse, 'result' | 'message'>>
 ): WorkflowGateResponse {
   return {
     gateId: request.gateId,

@@ -103,6 +103,14 @@ async function runTSDocCheck(filePath = '.') {
 
     child.stderr.on('data', (data) => {
       stderr += data.toString();
+      // Enhanced error tracking with categorization
+      if (stderr.trim()) {
+        console.debug('TSDoc stderr:', stderr.trim());
+        // Categorize error types for better handling
+        if (stderr.includes('error') || stderr.includes('Error')) {
+          console.warn('Critical TSDoc error detected:', stderr.trim());
+        }
+      }
     });
 
     child.on('close', (code) => {
@@ -323,6 +331,14 @@ async function fixFileWithClaude(filePath, undocumentedExports, fileAnalysis = n
 
     child.stderr.on('data', (data) => {
       stderr += data.toString();
+      // Enhanced error tracking with categorization
+      if (stderr.trim()) {
+        console.debug('TSDoc stderr:', stderr.trim());
+        // Categorize error types for better handling
+        if (stderr.includes('error') || stderr.includes('Error')) {
+          console.warn('Critical TSDoc error detected:', stderr.trim());
+        }
+      }
     });
 
     child.on('close', (code) => {

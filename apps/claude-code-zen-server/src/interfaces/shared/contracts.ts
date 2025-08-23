@@ -12,13 +12,28 @@ import(/command-interfaces);
 import(/types);
 
 // Define types that are used in contracts but don't exist elsewhere
-export interface CommandContext extends ExecutionContext { timestamp?: string; user?: string;
+export i'terface CommandContext extends ExecutionContext {
+  timestamp?: string;
+  user?: string
 }
 
-export interface ProjectConfig { name: string; type: string; path: string; template?: string; options?: Record<string, unknown>;
+export interface ProjectConfig {
+  name: string;
+  type: string;
+  path: string;
+  template?: string;
+  options?: Record<string,
+  unknown>
+
 }
 
-export interface SystemHealth { status: 'healthy  |degraded || unheal't''h'y'); uptime: number; memory?: number; cpu?: number; components: ComponentStatus[];
+export interface SystemHealth {
+  status: 'healthy' |degraded | | unheal't'h'y')';
+  uptime: number;
+  memory?: number;
+  cpu?: number;
+  components: ComponentStatus[]
+
 }
 
 /**
@@ -29,10 +44,21 @@ export interface SystemHealth { status: 'healthy  |degraded || unheal't''h'y'); 
  *
  * @example
  */
-export interface ProjectManagerContract { createProject(config: ProjectConfig): Promise<CommandResult>; optimizeProject(path: string): Promise<CommandResult>; getProjectStatus(path: string): Promise<SystemHealth>; listProjects(): Promise<ProjectSummary[]>;
+export interface ProjectManagerContract {
+  createProject(config: ProjectConfig: Promise<CommandResult>;
+  optimizeProject(path: string): Promise<CommandResult>;
+  getProjectStatus(path: string): Promise<SystemHealth>;
+  listProjects(): Promise<ProjectSummary[]>
+
 }
 
-export interface ProjectSummary { readonly name: string; readonly path: string; readonly type: string; readonly status: ComponentStatus; readonly lastModified: Date;
+export interface ProjectSummary {
+  readonly name: string;
+  readonly path: string;
+  readonly type: string;
+  readonly status: ComponentStatus;
+  readonly lastModified: Date
+
 }
 
 /**
@@ -43,7 +69,12 @@ export interface ProjectSummary { readonly name: string; readonly path: string; 
  *
  * @example
  */
-export interface CommandExecutorContract { executeCommand(context: CommandContext): Promise<CommandResult>; isValidCommand(command: string): boolean; getCommandHelp(command?: string): string; getAvailableCommands(): string[];
+export interface CommandExecutorContract {
+  executeCommand(context: CommandContext): Promise<CommandResult>;
+  isValidCommand(command: string): boolean;
+  getCommandHelp(command?: string): string;
+  getAvailableCommands(): string[]
+
 }
 
 /**
@@ -54,16 +85,36 @@ export interface CommandExecutorContract { executeCommand(context: CommandContex
  *
  * @example
  */
-export interface SwarmCoordinatorContract { initializeSwarm(config: SwarmConfig): Promise<CommandResult>; monitorSwarm(swarmId: string): Promise<SwarmStatus>; coordinateTask(task: SwarmTask): Promise<CommandResult>; terminateSwarm(swarmId: string): Promise<CommandResult>;
+export interface SwarmCoordinatorContract {
+  initializeSwarm(config: SwarmConfig): Promise<CommandResult>;
+  monitorSwarm(swarmId: string): Promise<SwarmStatus>;
+  coordinateTask(task: SwarmTask): Promise<CommandResult>;
+  terminateSwarm(swarmId: string): Promise<CommandResult>
+
 }
 
-export interface SwarmConfig { readonly topology: 'mesh  |hierarchical| 'ring | sta'r'); readonly agentCount: number; readonly strategy: 'parallel  |sequential || adapt'i''v'e');
+export interface SwarmConfig {
+  readonly topology: 'mesh' |hierarchical | 'ring'| sta'r')';
+  readonly agentCount: number;
+  readonly strategy: 'parallel' |sequential | | adapt'i'v'e')'
+
 }
 
-export interface SwarmStatus { readonly id: string; readonly status: 'active  |inactive || er'r''o'r'); readonly agents: number; readonly performance: number; readonly efficiency: number;
+export interface SwarmStatus {
+  readonly id: string;
+  readonly status: 'active' |inactive | | er'o'r')';
+  readonly agents: number;
+  readonly performance: number;
+  readonly efficiency: number
+
 }
 
-export interface SwarmTask { readonly description: string; readonly priority: 'low' || medium || ' 'hig'h' ' ' || critical); readonly strategy?: string; readonly timeout?: number;
+export interface SwarmTask {
+  readonly description: string;
+  readonly priority: 'low' || medium || 'hig'h' ' || critical)';
+  readonly strategy?: string;
+  readonly timeout?: number
+
 }
 
 /**
@@ -73,13 +124,30 @@ export interface SwarmTask { readonly description: string; readonly priority: 'l
  *
  * @example
  */
-export interface SystemMonitorContract { getSystemHealth(): Promise<SystemHealth>; getComponentStatus(component: string): Promise<ComponentStatus>; runHealthCheck(): Promise<CommandResult>; getMetrics(): Promise<SystemMetrics>;
+export interface SystemMonitorContract {
+  getSystemHealth(': Promise<SystemHealth>;
+  getComponentStatus(component: string): Promise<ComponentStatus>;
+  runHealthCheck(): Promise<CommandResult>;
+  getMetrics(): Promise<SystemMetrics>
+
 }
 
-export interface SystemMetrics { readonly cpu: number; readonly memory: number; readonly disk: number; readonly network: number; readonly uptime: number; readonly performance: PerformanceMetrics;
+export interface SystemMetrics {
+  readonly cpu: number;
+  readonly memory: number;
+  readonly disk: number;
+  readonly network: number;
+  readonly uptime: number;
+  readonly performance: PerformanceMetrics
+
 }
 
-export interface PerformanceMetrics { readonly responseTime: number; readonly throughput: number; readonly errorRate: number; readonly availability: number;
+export interface PerformanceMetrics {
+  readonly responseTime: number;
+  readonly throughput: number;
+  readonly errorRate: number;
+  readonly availability: number
+
 }
 
 /**
@@ -89,7 +157,14 @@ export interface PerformanceMetrics { readonly responseTime: number; readonly th
  *
  * @example
  */
-export interface DataServiceContract { getData<T>(key: string): Promise<T | null>; setData<T>(key: string, value':'' 'T');: Promise<void>; removeData(key: string): Promise<void>; listKeys(pattern?: string): Promise<string[]>;
+export interface DataServiceContract {
+  getData<T>(key: string): Promise<T  | null>;
+  setData<T>(key: string,
+  value:' 'T')';
+  : Promise<void>;
+  removeData(key: string: Promise<void>;
+  listKeys(pattern?: string): Promise<string[]>
+
 }
 
 /**
@@ -99,5 +174,12 @@ export interface DataServiceContract { getData<T>(key: string): Promise<T | null
  *
  * @example
  */
-export interface ConfigurationContract { getConfig<T>(key: string): T | undefined; setConfig<T>(key: string', value: T');: void; loadConfig(path: string): Promise<void>; saveConfig(path: string): Promise<void>;
+export interface ConfigurationContract {
+  getConfig<T>(key: string): T | undefined;
+  setConfig<T>(key: string,
+  value: T')';
+  : void;
+  loadConfig(path: string: Promise<void>;
+  saveConfig(path: string): Promise<void>
+
 }

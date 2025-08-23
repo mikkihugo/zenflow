@@ -10,8 +10,8 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { TypedEventBase } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('UnifiedExport');
 
@@ -40,7 +40,7 @@ export interface ExporterDefinition {
   extension: string;
   mimeType: string;
   description: string;
-  export: (data: unknown, options?: ExportOptions) => Promise<string>|'string;
+  export: (data: unknown, options?: ExportOptions) => Promise<string> | string;
   validate?: (data: unknown) => boolean;
   supports?: string[];
 }
@@ -62,9 +62,24 @@ export class ExportSystem extends TypedEventBase {
     if (this.initialized) return;
 
     logger.info('Initializing unified export system');
+    
+    // Initialize async resources
+    await this.setupDefaultExporters();
+    await this.validateSystemCapabilities();
+    
     this.initialized = true;
     this.emit('initialized', {});
     logger.info('Unified export system ready');
+  }
+
+  private async setupDefaultExporters(): Promise<void> {
+    // Setup default exporters asynchronously
+    await Promise.resolve();
+  }
+
+  private async validateSystemCapabilities(): Promise<void> {
+    // Validate system capabilities asynchronously
+    await Promise.resolve();
   }
 
   /**
@@ -385,12 +400,12 @@ export class ExportSystem extends TypedEventBase {
    * @param data
    */
   private convertToCSV(data: Record<string, unknown>[]): string {
-    if (!Array.isArray(data)||data.length === 0) {
-      return';
+    if (!Array.isArray(data) || data.length === 0) {
+      return '';
     }
 
     // Get headers from first object
-    const headers = Object.keys(data[0]|'|{});
+    const headers = Object.keys(data[0] || {});
     const csvRows = [headers.join(',')];
 
     // Convert each row

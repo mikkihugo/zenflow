@@ -50,7 +50,7 @@ const PACKAGE_MANAGER_TYPE = 'package-manager'as const;
 
 export interface EnvironmentTool {
   name: string;
-  type:|'package-manager|runtime'||compiler|cli-tool'||build-tool|version-control'';
+  type: 'package-manager' | 'runtime' | 'compiler' | 'cli-tool' | 'build-tool' | 'version-control';
   available: boolean;
   version?: string;
   path?: string;
@@ -94,13 +94,13 @@ export interface NixPackage {
   description?: string;
   available: boolean;
   installed: boolean;
-  category: 'nodejs|system'||dev-tools|other';
+  category: 'nodejs' | 'system' | 'dev-tools' | 'other';
 }
 
 export interface NixEnvironment {
   nixAvailable: boolean;
   flakesEnabled: boolean;
-  currentShell: string|'null;
+  currentShell: string | null;
   packages: NixPackage[];
   suggestedSetup: string[];
 }
@@ -117,7 +117,7 @@ export interface EnvironmentSnapshot {
 export class EnvironmentDetectionError extends Error {
   constructor(
     message: string,
-    public readonly tool?: string
+    public readonly tool?: string,
   ) {
     super(message);
     this.name ='EnvironmentDetectionError';
@@ -139,7 +139,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     private projectRoot: string = process.cwd(),
     autoRefresh = true,
     private refreshInterval = 30000, // 30 seconds
-    logger?: Logger
+    logger?: Logger,
   ) {
     super({
       enableValidation: true,
@@ -174,7 +174,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     }, this.refreshInterval);
 
     this.logger.info(
-      `Started auto-detection with ${this.refreshInterval}ms interval`
+      `Started auto-detection with ${this.refreshInterval}ms interval`,
     );
   }
 
@@ -213,7 +213,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
         tools,
         projectContext,
         systemCapabilities,
-        nixEnvironment
+        nixEnvironment,
       );
 
       this.snapshot = {
@@ -240,7 +240,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     } catch (error) {
       this.logger.error('Environment detection failed:', error);
       throw new EnvironmentDetectionError(
-        `Failed to detect environment: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to detect environment: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     } finally {
       this.isDetecting = false;
@@ -342,7 +342,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       toolsToDetect.map(async (tool) => {
         try {
           const { stdout } = await execAsync(tool.command, { timeout: 5000 });
-          const version = this.parseVersion(stdout.trim())();
+          const version = this.parseVersion(stdout.trim());
 
           return {
             name: tool.name,
@@ -364,16 +364,16 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
             available: false,
           };
         }
-      })
+      }),
     );
 
     return results.map((result, index) =>
       result.status === 'fulfilled'? result.value
         : {
-            name: toolsToDetect[index]?.name||'unknown',
-            type: toolsToDetect[index]?.type||'cli-tool',
-            available: false,
-          }
+          name: toolsToDetect[index]?.name||'unknown',
+          type: toolsToDetect[index]?.type||'cli-tool',
+          available: false,
+        },
     );
   }
 
@@ -395,8 +395,8 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       projectFiles.map((file) =>
         access(join(this.projectRoot, file))
           .then(() => true)
-          .catch(() => false)
-      )
+          .catch(() => false),
+      ),
     );
 
     // Integrate with workspace detector for comprehensive project analysis
@@ -408,7 +408,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       }
 
       const detected = await this.workspaceDetector.detectWorkspaceRoot(
-        this.projectRoot
+        this.projectRoot,
       );
       workspace = detected ?? undefined;
     } catch (error) {
@@ -423,25 +423,25 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
 
     return {
       hasPackageJson: Boolean(
-        fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value
+        fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value,
       ),
       hasCargoToml: Boolean(
-        fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value
+        fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value,
       ),
       hasMixExs: Boolean(
-        fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value
+        fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value,
       ),
       hasFlakeNix: Boolean(
-        fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value
+        fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value,
       ),
       hasShellNix: Boolean(
-        fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value
+        fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value,
       ),
       hasDockerfile: Boolean(
-        fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value
+        fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value,
       ),
       hasGitignore: Boolean(
-        fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value
+        fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value,
       ),
       languages,
       frameworks,
@@ -506,7 +506,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       const packages = await this.scanAvailableNixPackages();
       const suggestedSetup = this.generateNixSetupSuggestions(
         flakesEnabled,
-        packages
+        packages,
       );
 
       return {
@@ -645,7 +645,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     try {
       const { stdout } = await execAsync(
         `nix-env -qaP ${packageName}|head -1`,
-        { timeout: 5000 }
+        { timeout: 5000 },
       );
       return stdout.trim().length > 0;
     } catch {
@@ -680,12 +680,12 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    */
   private generateNixSetupSuggestions(
     flakesEnabled: boolean,
-    packages: NixPackage[]
+    packages: NixPackage[],
   ): string[] {
     const suggestions: string[] = [];
 
     if (!flakesEnabled) {
-      suggestions.push('Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf'
+      suggestions.push('Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf',
       );
     }
 
@@ -695,7 +695,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       suggestions.push('Enter development shell: nix develop');
     } else {
       suggestions.push(
-        'Create flake.nix for reproducible development environment'
+        'Create flake.nix for reproducible development environment',
       );
     }
 
@@ -706,7 +706,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     const missingDev = devTools.filter((p) => p.available && !p.installed);
     if (missingDev.length > 0) {
       suggestions.push(
-        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`
+        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`,
       );
     }
 
@@ -732,7 +732,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     tools: EnvironmentTool[],
     projectContext: ProjectContext,
     systemCapabilities: SystemCapabilities,
-    nixEnvironment?: NixEnvironment
+    nixEnvironment?: NixEnvironment,
   ): string[] {
     const suggestions: string[] = [];
 
@@ -742,7 +742,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       !tools.some((t) => t.name === 'pnpm' && t.available)
     ) {
       suggestions.push(
-        'Consider installing pnpm for faster package management'
+        'Consider installing pnpm for faster package management',
       );
     }
 
@@ -860,7 +860,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   hasTools(...toolNames: string[]): boolean {
     const availableTools = this.getAvailableTools();
     return toolNames.every((name) =>
-      availableTools.some((tool) => tool.name === name)
+      availableTools.some((tool) => tool.name === name),
     );
   }
 
@@ -931,7 +931,7 @@ export class NixIntegration {
   constructor(
     private projectRoot: string = process.cwd(),
     private environmentDetector?: EnvironmentDetector,
-    logger?: Logger
+    logger?: Logger,
   ) {
     this.logger = logger||getLogger('NixIntegration');
     this.cachePath = join(projectRoot, '.cache', 'nix-integration.json');
@@ -942,7 +942,7 @@ export class NixIntegration {
         projectRoot,
         false,
         30000,
-        this.logger
+        this.logger,
       );
     }
   }
@@ -1200,7 +1200,7 @@ export const NIX_INTEGRATION_TOKEN = Symbol('NixIntegration');
 export function createEnvironmentDetector(
   projectRoot?: string,
   autoRefresh?: boolean,
-  logger?: Logger
+  logger?: Logger,
 ): EnvironmentDetector {
   return new EnvironmentDetector(projectRoot, autoRefresh, 30000, logger);
 }
@@ -1211,7 +1211,7 @@ export function createEnvironmentDetector(
 export function createNixIntegration(
   projectRoot?: string,
   environmentDetector?: EnvironmentDetector,
-  logger?: Logger
+  logger?: Logger,
 ): NixIntegration {
   return new NixIntegration(projectRoot, environmentDetector, logger);
 }

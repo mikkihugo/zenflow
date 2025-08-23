@@ -279,7 +279,7 @@ export type { SafetyMetrics } from './src/safety-orchestrator';
 
 // Additional safety types
 export interface InterventionAction {
-  type: 'pause'''||''restrict''||''terminate''||'''escalate';
+  type: 'pause'|'restrict'|'terminate'|'escalate';
   target: string;
   reason: string;
   timestamp: number;

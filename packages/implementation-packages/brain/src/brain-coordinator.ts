@@ -8,14 +8,11 @@
  */
 
 import { getLogger, ContextError, type Logger } from '@claude-zen/foundation';
-
 // Operations facade for monitoring
 import {
   getPerformanceTracker,
   getAgentHealthMonitor,
 } from '@claude-zen/operations';
-
-const logger = getLogger('brain-coordinator');
 
 /**
  * Brain configuration interface
@@ -175,6 +172,9 @@ export class BrainCoordinator {
     this.performanceTracker = null;
     this.agentMonitor = null;
 
+    // Allow event loop to process cleanup
+    await new Promise(resolve => setTimeout(resolve, 0));
+    
     this.logger.info('✅ Brain Coordinator shutdown complete');
   }
 
@@ -201,6 +201,9 @@ export class BrainCoordinator {
     }
 
     this.logger.debug(`Optimizing prompt for task: ${request.task}`);
+
+    // Allow event loop to process the optimization request
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     // Simple optimization implementation
     // In a real implementation, this would use DSPy coordination

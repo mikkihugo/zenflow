@@ -10,8 +10,7 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 
 /**
@@ -65,6 +64,11 @@ export class ProjectCoordinator extends TypedEventBase {
     if (this.initialized) return;
 
     this.logger.info('Initializing project coordinator for SAFe LPM');
+    
+    // Perform async initialization tasks
+    await this.setupPortfolioIntegration();
+    await this.initializeValueStreamMapping();
+    
     this.initialized = true;
 
     this.emit('coordinator:initialized', {});
@@ -95,6 +99,9 @@ export class ProjectCoordinator extends TypedEventBase {
     if (!existing) {
       throw new Error(`Project not found: ${projectId}`);
     }
+
+    // Perform async validation of updates
+    await this.validateProjectUpdates(projectId, updates);
 
     const updated = { ...existing, ...updates };
     this.projects.set(projectId, updated);
@@ -135,6 +142,9 @@ export class ProjectCoordinator extends TypedEventBase {
     if (!config) return;
 
     this.logger.debug(`Portfolio event: ${eventType} for project ${projectId}`);
+    
+    // Perform async event processing
+    await this.processPortfolioEventAsync(projectId, eventType, data);
 
     // Direct event handling - no complex routing
     switch (eventType) {
@@ -156,13 +166,16 @@ export class ProjectCoordinator extends TypedEventBase {
    * Get all registered projects
    */
   getProjects(): string[] {
-    return Array.from(this.projects.keys())();
+    return Array.from(this.projects.keys());
   }
 
   /**
    * Remove project coordination
    */
   async unregisterProject(projectId: string): Promise<void> {
+    // Perform async cleanup before unregistering
+    await this.cleanupProjectResources(projectId);
+    
     const removed = this.projects.delete(projectId);
     if (removed) {
       this.logger.info(`Project unregistered: ${projectId}`);
@@ -175,6 +188,11 @@ export class ProjectCoordinator extends TypedEventBase {
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down project coordinator');
+    
+    // Perform async cleanup for all projects
+    const projectIds = Array.from(this.projects.keys());
+    await Promise.all(projectIds.map(id => this.cleanupProjectResources(id)));
+    
     this.projects.clear();
     this.removeAllListeners();
     this.initialized = false;

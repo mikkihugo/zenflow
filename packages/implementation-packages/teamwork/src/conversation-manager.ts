@@ -21,8 +21,8 @@ export class ConversationManager {
       participants,
       initiator:
         participants[0]||({
-          id:',
-          swarmId: ',
+          id: '',
+          swarmId: '',
           type: 'researcher' as const,
           instance: 0,
         } as AgentId),

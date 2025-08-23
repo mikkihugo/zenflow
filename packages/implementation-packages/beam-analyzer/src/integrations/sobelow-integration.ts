@@ -4,9 +4,9 @@
  */
 
 import { spawn } from 'child_process';
-import * as path from 'path';
 
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+
 import type {
   BeamProject,
   BeamAnalysisContext,
@@ -15,7 +15,6 @@ import type {
   SobelowCategory,
   PhoenixSecurityIssue,
   ConfigSecurityIssue,
-  BeamLocation,
   BeamAnalysisError,
   BeamSeverity,
 } from '../types/beam-types';
@@ -147,8 +146,8 @@ export class SobelowIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = ';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -230,10 +229,10 @@ export class SobelowIntegration {
       const sobelowFinding: SobelowFinding = {
         category: this.mapSobelowCategory(finding.type),
         confidence: finding.confidence||'medium',
-        details: finding.details||finding.message||',
+        details: finding.details||finding.message||'',
         location: {
-          file: finding.file|||,
-          line: finding.line|'|1,
+          file: finding.file||'',
+          line: finding.line||1,
           column: finding.column,
           context: finding.fun||finding.variable||finding.module,
         },
@@ -276,7 +275,7 @@ export class SobelowIntegration {
 
         currentFinding = {
           category: this.mapSobelowCategoryFromText(headerMatch[1]),
-          confidence: headerMatch[2].toLowerCase() as 'high|medium|low',
+          confidence: headerMatch[2].toLowerCase() as 'high'|'medium'|'low',
           details: headerMatch[1],
           location: {
             file: '',
@@ -348,8 +347,8 @@ export class SobelowIntegration {
       issues.push({
         file: issue.file||'config/config.exs',
         setting: issue.setting||'unknown',
-        issue: issue.issue||issue.message||',
-        recommendation: issue.recommendation|||Apply security best practices',
+        issue: issue.issue||issue.message||'',
+        recommendation: issue.recommendation||'Apply security best practices',
       });
     }
 
@@ -360,7 +359,7 @@ export class SobelowIntegration {
    * Map Sobelow category strings to enum values
    */
   private mapSobelowCategory(category: string): SobelowCategory {
-    const lowerCategory = category.toLowerCase().replace(/[_\s-]/g, '');
+    const lowerCategory = category.toLowerCase().replace(/[\s_-]/g, '');
 
     switch (lowerCategory) {
       case 'sqlinjection':
@@ -447,8 +446,8 @@ export class SobelowIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = ';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();

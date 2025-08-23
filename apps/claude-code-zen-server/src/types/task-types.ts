@@ -6,4 +6,9 @@
 // Export everything else as well
 export * from './shared-types';
 // Re-export common entities
-export { Task, TaskStatus, TaskType } from './shared-types';
+export {
+  Task,
+  TaskStatus,
+  TaskType
+
+} from './shared-types';
