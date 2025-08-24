@@ -1,0 +1,4 @@
+{"type":"gpt_response","timestamp":"2025-08-24T02:36:45.856Z","model":"gpt-4.1","tokensUsed":2467,"contentLength":4774,"file":"apps/claude-code-zen-server/src/interfaces/shared/contracts.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T02:37:15.110Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/shared/contracts.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T02:37:59.556Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/shared/contracts.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T02:37:59.587Z","contentLength":11879,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/shared/contracts.ts","tier":"inference"}

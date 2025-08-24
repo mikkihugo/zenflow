@@ -1,0 +1,7 @@
+{"type":"gpt_response","timestamp":"2025-08-24T03:30:29.163Z","model":"gpt-4.1","tokensUsed":4337,"contentLength":8535,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T03:30:59.527Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T03:32:19.133Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T03:32:19.155Z","contentLength":17257,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"inference"}
+{"type":"system","timestamp":"2025-08-24T03:32:49.270Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T03:33:36.343Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T03:33:36.381Z","contentLength":10928,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/web-process-manager.ts","tier":"inference"}

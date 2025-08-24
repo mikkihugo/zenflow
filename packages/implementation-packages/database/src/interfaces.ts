@@ -497,7 +497,7 @@ export interface TransactionOperation {
  */
 export interface DatabaseMetadata {
   /** Database type */
-  type: 'sqlite|lancedb|kuzu';
+  type: 'sqlite' | 'lancedb' | 'kuzu';
 
   /** Database version */
   version: string;

@@ -1,13 +1,14 @@
 import { EventEmitter } from 'events';
+
 import { Logger } from '@claude-zen/foundation';
-import type { 
-  ProductSpecification, 
-  WorkflowStep, 
+
+import type { DocumentService } from '../../services/document/document-service';
+import type {
+  ProductSpecification,
+  WorkflowStep,
   ExecutionContext,
   WorkflowResult,
-  ProductWorkflowConfig
 } from '../types/interfaces';
-import type { DocumentService } from '../../services/document/document-service';
 import type { MemorySystem } from '../types/memory';
 
 export interface ProductWorkflowEngineOptions {
@@ -41,23 +42,23 @@ export class ProductWorkflowEngine extends EventEmitter {
       stepTimeout: 30000,
       retryAttempts: 3,
       enableParallelExecution: true,
-      ...config
+      ...config,
     };
   }
 
   async initialize(): Promise<void> {
     try {
       this.logger.info('Initializing ProductWorkflowEngine');
-      
+
       // Initialize memory system
       await this.memory.initialize();
-      
+
       // Set up event listeners
       this.setupEventListeners();
-      
+
       this.isInitialized = true;
       this.emit('initialized');
-      
+
       this.logger.info('ProductWorkflowEngine initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize ProductWorkflowEngine', error);
@@ -65,19 +66,23 @@ export class ProductWorkflowEngine extends EventEmitter {
     }
   }
 
-  async executeProductFlow(productSpec: ProductSpecification): Promise<WorkflowResult> {
+  async executeProductFlow(
+    productSpec: ProductSpecification
+  ): Promise<WorkflowResult> {
     if (!this.isInitialized) {
       throw new Error('ProductWorkflowEngine not initialized');
     }
 
     try {
-      this.logger.info(`Starting product workflow execution for: ${productSpec.name}`);
-      
+      this.logger.info(
+        `Starting product workflow execution for: ${productSpec.name}`
+      );
+
       const context: ExecutionContext = {
         productSpec,
         startTime: Date.now(),
         steps: [],
-        status: 'running'
+        status: 'running',
       };
 
       // Store context in memory
@@ -85,10 +90,10 @@ export class ProductWorkflowEngine extends EventEmitter {
 
       // Generate workflow steps
       const steps = await this.generateWorkflowSteps(productSpec);
-      
+
       // Execute steps
       const result = await this.executeSteps(steps, context);
-      
+
       // Update final context
       context.endTime = Date.now();
       context.status = result.success ? 'completed' : 'failed';
@@ -96,23 +101,24 @@ export class ProductWorkflowEngine extends EventEmitter {
 
       this.logger.info(`Product workflow completed for: ${productSpec.name}`);
       return result;
-      
     } catch (error) {
       this.logger.error('Product workflow execution failed', error);
       throw error;
     }
   }
 
-  private async generateWorkflowSteps(productSpec: ProductSpecification): Promise<WorkflowStep[]> {
+  private async generateWorkflowSteps(
+    productSpec: ProductSpecification
+  ): Promise<WorkflowStep[]> {
     const steps: WorkflowStep[] = [];
-    
+
     // Analysis phase
     steps.push({
       id: 'analysis',
       name: 'Product Analysis',
       type: 'analysis',
       dependencies: [],
-      config: { productSpec }
+      config: { productSpec },
     });
 
     // Design phase
@@ -121,7 +127,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       name: 'Product Design',
       type: 'design',
       dependencies: ['analysis'],
-      config: { productSpec }
+      config: { productSpec },
     });
 
     // Implementation phase
@@ -130,7 +136,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       name: 'Product Implementation',
       type: 'implementation',
       dependencies: ['design'],
-      config: { productSpec }
+      config: { productSpec },
     });
 
     // Validation phase
@@ -139,28 +145,29 @@ export class ProductWorkflowEngine extends EventEmitter {
       name: 'Product Validation',
       type: 'validation',
       dependencies: ['implementation'],
-      config: { productSpec }
+      config: { productSpec },
     });
 
     return steps;
   }
 
-  private async executeSteps(steps: WorkflowStep[], context: ExecutionContext): Promise<WorkflowResult> {
+  private async executeSteps(
+    steps: WorkflowStep[],
+    context: ExecutionContext
+  ): Promise<WorkflowResult> {
     const results: Record<string, any> = {};
     const errors: Error[] = [];
 
     try {
-      if (this.config.enableParallelExecution) {
-        await this.executeStepsParallel(steps, context, results, errors);
-      } else {
-        await this.executeStepsSequential(steps, context, results, errors);
-      }
+      await (this.config.enableParallelExecution
+        ? this.executeStepsParallel(steps, context, results, errors)
+        : this.executeStepsSequential(steps, context, results, errors));
 
       return {
         success: errors.length === 0,
         results,
         errors,
-        duration: Date.now() - context.startTime
+        duration: Date.now() - context.startTime,
       };
     } catch (error) {
       errors.push(error as Error);
@@ -168,37 +175,37 @@ export class ProductWorkflowEngine extends EventEmitter {
         success: false,
         results,
         errors,
-        duration: Date.now() - context.startTime
+        duration: Date.now() - context.startTime,
       };
     }
   }
 
   private async executeStepsParallel(
-    steps: WorkflowStep[], 
-    context: ExecutionContext, 
-    results: Record<string, any>, 
+    steps: WorkflowStep[],
+    context: ExecutionContext,
+    results: Record<string, any>,
     errors: Error[]
   ): Promise<void> {
     const executing = new Map<string, Promise<any>>();
     const completed = new Set<string>();
 
     for (const step of steps) {
-      const canExecute = step.dependencies.every(dep => completed.has(dep));
-      
+      const canExecute = step.dependencies.every((dep) => completed.has(dep));
+
       if (canExecute) {
         const promise = this.executeStep(step, context, results)
-          .then(result => {
+          .then((result) => {
             results[step.id] = result;
             completed.add(step.id);
             executing.delete(step.id);
             return result;
           })
-          .catch(error => {
+          .catch((error) => {
             errors.push(error);
             executing.delete(step.id);
             throw error;
           });
-        
+
         executing.set(step.id, promise);
       }
     }
@@ -208,9 +215,9 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   private async executeStepsSequential(
-    steps: WorkflowStep[], 
-    context: ExecutionContext, 
-    results: Record<string, any>, 
+    steps: WorkflowStep[],
+    context: ExecutionContext,
+    results: Record<string, any>,
     errors: Error[]
   ): Promise<void> {
     for (const step of steps) {
@@ -227,21 +234,21 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   private async executeStep(
-    step: WorkflowStep, 
-    context: ExecutionContext, 
+    step: WorkflowStep,
+    context: ExecutionContext,
     results: Record<string, any>
   ): Promise<any> {
     this.logger.debug(`Executing step: ${step.name}`);
-    
+
     try {
       const stepContext = {
         ...context,
         currentStep: step,
-        previousResults: results
+        previousResults: results,
       };
 
       let result;
-      
+
       switch (step.type) {
         case 'analysis':
           result = await this.executeAnalysisStep(step, stepContext);
@@ -261,58 +268,72 @@ export class ProductWorkflowEngine extends EventEmitter {
 
       this.emit('stepCompleted', { step, result });
       return result;
-      
     } catch (error) {
       this.emit('stepFailed', { step, error });
       throw error;
     }
   }
 
-  private async executeAnalysisStep(step: WorkflowStep, context: any): Promise<any> {
+  private async executeAnalysisStep(
+    step: WorkflowStep,
+    context: any
+  ): Promise<any> {
     // Implement analysis logic
     const productSpec = context.productSpec;
-    
+
     return {
       requirements: productSpec.requirements || [],
       constraints: productSpec.constraints || [],
       stakeholders: productSpec.stakeholders || [],
-      timeline: productSpec.timeline || {}
+      timeline: productSpec.timeline || {},
     };
   }
 
-  private async executeDesignStep(step: WorkflowStep, context: any): Promise<any> {
+  private async executeDesignStep(
+    step: WorkflowStep,
+    context: any
+  ): Promise<any> {
     // Implement design logic
-    const analysisResult = context.previousResults.analysis;
-    
+    // analysisResult is assigned but not used, but this is not a syntax error
+    // const analysisResult = context.previousResults.analysis;
+
     return {
       architecture: 'component-based',
       components: [],
       interfaces: [],
-      dataModel: {}
+      dataModel: {},
     };
   }
 
-  private async executeImplementationStep(step: WorkflowStep, context: any): Promise<any> {
+  private async executeImplementationStep(
+    step: WorkflowStep,
+    context: any
+  ): Promise<any> {
     // Implement implementation logic
-    const designResult = context.previousResults.design;
-    
+    // designResult is assigned but not used, but this is not a syntax error
+    // const designResult = context.previousResults.design;
+
     return {
       codeFiles: [],
       testFiles: [],
       documentation: [],
-      buildArtifacts: []
+      buildArtifacts: [],
     };
   }
 
-  private async executeValidationStep(step: WorkflowStep, context: any): Promise<any> {
+  private async executeValidationStep(
+    step: WorkflowStep,
+    context: any
+  ): Promise<any> {
     // Implement validation logic
-    const implementationResult = context.previousResults.implementation;
-    
+    // implementationResult is assigned but not used, but this is not a syntax error
+    // const implementationResult = context.previousResults.implementation;
+
     return {
       testResults: { passed: 0, failed: 0 },
       qualityMetrics: {},
       performanceMetrics: {},
-      securityScan: { vulnerabilities: [] }
+      securityScan: { vulnerabilities: [] },
     };
   }
 
@@ -337,7 +358,9 @@ export class ProductWorkflowEngine extends EventEmitter {
     // Implement cancel logic
   }
 
-  async getWorkflowStatus(workflowId: string): Promise<ExecutionContext | null> {
+  async getWorkflowStatus(
+    workflowId: string
+  ): Promise<ExecutionContext | null> {
     return await this.memory.retrieve(`workflow:${workflowId}`);
   }
 

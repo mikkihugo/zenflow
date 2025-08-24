@@ -1,0 +1,4 @@
+{"type":"gpt_response","timestamp":"2025-08-24T04:33:09.637Z","model":"gpt-4.1","tokensUsed":10119,"contentLength":19648,"file":"apps/claude-code-zen-server/src/services/document/architecture-runway-service.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T04:33:40.294Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/document/architecture-runway-service.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T04:35:41.749Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/document/architecture-runway-service.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T04:35:41.749Z","contentLength":25333,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/services/document/architecture-runway-service.ts","tier":"inference"}

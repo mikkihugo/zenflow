@@ -52,42 +52,37 @@ import type {
   Logger,
   HealthMonitor,
   PerformanceTracker,
-  ServiceMetrics'
-
 } from '@claude-zen/foundation';
 import {
   getLogger,
   assertDefined,
   getErrorMessage,
-  TypedEventBase'
-
+  TypedEventBase,
 } from '@claude-zen/foundation';
 
 // Strategic imports from @claude-zen packages
 
 import type {
   LoadBalancer,
-  ServiceCoordinator'
-
+  ServiceCoordinator,
 } from '@claude-zen/intelligence';
 
 // Foundation utilities
 import type { WorkflowEngine } from '@claude-zen/intelligence';
 
 // =============================================================================
-// TYPES AND INTERFACES - Service Integration Layer
+/* TYPES AND INTERFACES - Service Integration Layer */
 // =============================================================================
 
 // Import types from centralized types file
-import type { ServiceMetrics } from '?./core/interfaces';
+import type { ServiceMetrics } from './core/interfaces';
 import type {
   ServiceManagerConfig,
   Service,
   ServiceRequest,
   ServiceHealth,
-  BatchServiceRequest'
-
-} from '?./types';
+  BatchServiceRequest,
+} from './types';
 
 // =============================================================================
 // SERVICE MANAGER - Strategic Package Delegation
@@ -110,121 +105,293 @@ import type {
  * - Service coordination via @claude-zen/intelligence
  * - Performance optimization via @claude-zen/foundation
  */
-export class ServiceManager extends TypedEventBase  { private readonly logger: Logger; private readonly settings: ServiceManagerConfig; // Strategic delegation instances private workflowEngine: WorkflowEngine | null = 'null'; private agentManager: AgentManager | null = 'null'; private healthMonitor: HealthMonitor | null = 'null'; private loadBalancer: LoadBalancer | null = 'null'; private serviceCoordinator: ServiceCoordinator  || null = 'null'; private performanceTracker: PerformanceTracker' '|| null = 'null'; private initialized = 'false'; private services = new Map<string, Service>'(')'; constructor(config: ServiceManagerConfig' {
-  super(); this.logger = getLogger'('ServiceManager')'; this.settings = 'config'
+export class ServiceManager extends TypedEventBase {
+  private readonly logger: Logger;
+  private readonly settings: ServiceManagerConfig;
 
-} /** * Initialize service manager with @claude-zen package delegation */ async initialize(): Promise<void>  { if (this.initialized) return; try { // Delegate to @claude-zen/intelligence for service orchestration const { WorkflowEngine } = await import(claude-zen/intelligence); this.workflowEngine = new WorkflowEngine(
-  {
-  maxConcurrentServices: this.settings?.factory?.maxConcurrentInits,
-  enableDependencyResolution: this.settings?.lifecycle?.dependencyResolution,
-  startupTimeout: this.settings?.lifecycle?.startupTimeout
+  // Strategic delegation instances
+  private workflowEngine: WorkflowEngine | null = null;
+  private agentManager: AgentManager | null = null;
+  private healthMonitor: HealthMonitor | null = null;
+  private loadBalancer: LoadBalancer | null = null;
+  private serviceCoordinator: ServiceCoordinator | null = null;
+  private performanceTracker: PerformanceTracker | null = null;
 
-}
-); await this.workflowEngine?.initialize() // Delegate to @claude-zen/agent-manager for service lifecycle const { AgentManager } = await import(claude-zen/agent-manager); this.agentManager = new AgentManager(
-  {
-  parallelStartup: this.settings?.lifecycle?.parallelStartup,
-  dependencyResolution: this.settings?.lifecycle?.dependencyResolution
+  private initialized = false;
+  private services = new Map<string, Service>();
 
-}
-); await this.agentManager?.initialize() // Delegate to @claude-zen/foundation for health tracking const {
-  SystemMonitor,
-  PerformanceTracker
-} = await import(@claude-zen/foundation ); this.healthMonitor = new SystemMonitor(
-  {
-  healthCheckInterval: this.settings?.monitoring?.healthCheckInterval,
-  performanceThresholds: this.settings?.monitoring?.performanceThresholds
+  constructor(config: ServiceManagerConfig) {
+    super();
+    this.logger = getLogger('ServiceManager');
+    this.settings = config;
+  }
 
-}
-); this.performanceTracker = new PerformanceTracker(); await this.healthMonitor?.initialize() // Delegate to @claude-zen/intelligence for resource optimization const { LoadBalancer } = await import(claude-zen/intelligence); this.loadBalancer = new LoadBalancer({ recovery: this.settings?.recovery'
-})'; await this.loadBalancer?.initialize(' // Delegate to @claude-zen/intelligence for service coordination const { ServiceCoordinator } = await import(claude-zen/intelligence); this.serviceCoordinator = new ServiceCoordinator(); await this.serviceCoordinator?.initialize() // Set up event forwarding from delegated components this.setupEventForwarding; this.initialized = 'true'; this.logger?.info( Service Manager facade initialized successfully with @claude-zen delegation)
-} catch (error) {
-  this.logger?.error('Failed to initialize Service Manager facade: '; error); throw error
+  /** Initialize service manager with @claude-zen package delegation */
+  async initialize(): Promise<void> {
+    if (this.initialized) return;
+    try {
+      // Delegate to @claude-zen/intelligence for service orchestration
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      this.workflowEngine = new WorkflowEngine({
+        maxConcurrentServices: this.settings?.factory?.maxConcurrentInits,
+        enableDependencyResolution:
+          this.settings?.lifecycle?.dependencyResolution,
+        startupTimeout: this.settings?.lifecycle?.startupTimeout,
+      });
+      await this.workflowEngine?.initialize();
 
-} } /** * Create service with comprehensive delegation */ async createService(request: ServiceRequest): Promise<Service>  { if (!this.initialized) await this.initialize;'
-' assertDefined(this.agentManager, 'Agent'manager not initialized)'; assertDefined(this.workflowEngine, 'Workflow'engine not initialized)'; const timer = this.performanceTracker?.startTimer(service_creation); try { // Delegate service creation to agent manager const service = await this.agentManager?.createService(
-  {
-  name: request?.name,
-  type: request?.type,
-  config: request?.config',
-  dependencies: request? .dependencies   ||  '[]
+      // Delegate to @claude-zen/agent-manager for service lifecycle
+      const { AgentManager } = await import('@claude-zen/agent-manager');
+      this.agentManager = new AgentManager({
+        parallelStartup: this.settings?.lifecycle?.parallelStartup,
+        dependencyResolution: this.settings?.lifecycle?.dependencyResolution,
+      });
+      await this.agentManager?.initialize();
 
-}
-)'; // Register service with workflow engine for orchestration await this.workflowEngine?.registerService(service); // Start health monitoring if (this.healthMonitor' {
-  await this.healthMonitor?.startMonitoring(service)
+      // Delegate to @claude-zen/foundation for health tracking
+      const { SystemMonitor, PerformanceTracker } = await import(
+        '@claude-zen/foundation'
+      );
+      this.healthMonitor = new SystemMonitor({
+        healthCheckInterval: this.settings?.monitoring?.healthCheckInterval,
+        performanceThresholds: this.settings?.monitoring?.performanceThresholds,
+      });
+      this.performanceTracker = new PerformanceTracker();
+      await this.healthMonitor?.initialize();
 
-} // Register with load balancer for optimization if (this.loadBalancer) { await this.loadBalancer?.registerService(service)
-} this.services?.set(request?.name, service); this.logger?.info(' 'Service'' + request?.name + ' created successfully via delegation )'; this.emit(
-  service-created,
-  {
-  service,
-  timestamp : new Date(
-)
-}); return service
-} catch (error) { this.logger?.error(' 'Failed'to create service ' + request?.name + ':', getErrorMessage(error) )'; throw error
-} finally {
-  this.performanceTracker?.endTimer(service_creation)
+      // Delegate to @claude-zen/intelligence for resource optimization
+      const { LoadBalancer } = await import('@claude-zen/intelligence');
+      this.loadBalancer = new LoadBalancer({
+        recovery: this.settings?.recovery,
+      });
+      await this.loadBalancer?.initialize();
 
-} } /** * Create multiple services with parallel execution */ async createServices(request: BatchServiceRequest: Promise<Service[]> { if (!this.initialized) await this.initialize; assertDefined(this.workflowEngine', 'Workflow'engine not initialized)'; try { let createdServices: Service[]; if (request? .parallel && this.settings?.lifecycle?.parallelStartup' {
-  // Delegate parallel creation to workflow engine createdServices = (await this.workflowEngine?.createServicesParallel( request?.services ))   ||  '[]'
+      // Delegate to @claude-zen/intelligence for service coordination
+      const { ServiceCoordinator } = await import('@claude-zen/intelligence');
+      this.serviceCoordinator = new ServiceCoordinator();
+      await this.serviceCoordinator?.initialize();
 
-} else { // Sequential creation with error handling createdServices = '[]'; for (const serviceRequest of request?.services) { try {
-  const service = await this.createService(serviceRequest); createdServices?.push(service)
+      // Set up event forwarding from delegated components
+      this.setupEventForwarding();
+      this.initialized = true;
+      this.logger?.info(
+        'Service Manager facade initialized successfully with @claude-zen delegation'
+      );
+    } catch (error) {
+      this.logger?.error(
+        'Failed to initialize Service Manager facade: ' + getErrorMessage(error)
+      );
+      throw error as Error;
+    }
+  }
 
-} catch (error) { this.logger?.error(' 'Failed'to create service ' + serviceRequest?.name + ' :', getErrorMessage(error) )'; // Continue with other services } } } // Start services if requested - delegate to workflow engine if (request?.startImmediately && createdServices?.length > 0' {
-  await this.workflowEngine?.startServices( createdServices?.map((s) => s?.name) )
+  /** Create service with comprehensive delegation */
+  async createService(request: ServiceRequest): Promise<Service> {
+    if (!this.initialized) await this.initialize();
+    assertDefined(this.agentManager, 'Agent manager not initialized');
+    assertDefined(this.workflowEngine, 'Workflow engine not initialized');
+    this.performanceTracker?.startTimer('service_creation');
+    try {
+      // Delegate service creation to agent manager
+      const service = (await this.agentManager?.createService({
+        name: request?.name,
+        type: request?.type,
+        config: request?.config,
+        dependencies: request?.dependencies || [],
+      })) as Service;
 
-} this.logger?.info(' 'Successfully'created ' + createdServices?.length + ' services via delegation )'; return createdServices
-} catch (error) {
-  this.logger?.error(Failed to create service batch: ,
-  getErrorMessage(error) ); throw error
+      // Register service with workflow engine for orchestration
+      await this.workflowEngine?.registerService(service);
 
-} } /** * Start service - delegates to workflow engine */ async startService(serviceName: string): Promise<void>  {
-  ' assertDefined(this.workflowEngine,
-  'Workflow'engine not initialized)'; await this.workflowEngine!?.startService(serviceName)
+      // Start health monitoring if available
+      if (this.healthMonitor) {
+        await this.healthMonitor?.startMonitoring(service);
+      }
 
-} /** * Stop service - delegates to workflow engine */ async stopService(serviceName: string: Promise<void> {
-  assertDefined(this.workflowEngine,
-  'Workflow'engine not initialized)'; await this.workflowEngine!?.stopService(serviceName)
+      // Register with load balancer for optimization
+      if (this.loadBalancer) {
+        await this.loadBalancer?.registerService(service);
+      }
 
-} /** * Get service health - delegates to health monitor */ async getServiceHealth(serviceName: string: Promise<ServiceHealth> {
-  assertDefined(this.healthMonitor,
-  'Health'monitor not initialized)'; return this.healthMonitor?.getServiceHealth(serviceName)
+      this.services?.set(request?.name, service);
+      this.logger?.info(
+        'Service ' + request?.name + ' created successfully via delegation'
+      );
+      this.emit('service-created', {
+        service,
+        timestamp: new Date(),
+      });
+      return service;
+    } catch (error) {
+      this.logger?.error(
+        'Failed to create service ' +
+          request?.name +
+          ': ' +
+          getErrorMessage(error)
+      );
+      throw error as Error;
+    } finally {
+      this.performanceTracker?.endTimer('service_creation');
+    }
+  }
 
-} /** * Get service metrics - delegates to performance tracker */ getServiceMetrics(serviceName?: string: ServiceMetrics[] { if (!this.performanceTracker) { return []
-} return serviceName ? [this.performanceTracker?.getMetrics(serviceName)] : this.performanceTracker?.getAllMetrics() } /** * Get service by name */ getService(name: string): Service '|| undefined  { return this.services?.get(name);
-} /** * Get all services */ getAllServices(': Service[] { return Array?.from(this.services?.values())()
-} /** * Setup event forwarding from delegated components */ private setupEventForwarding(): void  {
-  // Forward workflow engine events this.workflowEngine?.on(service-start'e'd',
-  (data) => this.emit('service-started',
-  data) )'; this.workflowEngine?.on('service-stopped',
-  (data) => this.emit('service-stopped',
-  data) )'; this.workflowEngine?.on('service-error',
-  (data) => this.emit('service-error',
-  data) )'; // Forward health monitor events this.healthMonitor?.on('service-health-changed',
-  (data) => this.emit('service-health-changed',
-  data) )'; this.healthMonitor?.on('service-health-degraded',
-  (data) => this.emit('service-health-degraded',
-  data) )'; // Forward load balancer events this.loadBalancer?.on('service-recovered',
-  (data) => this.emit('service-recovered',
-  data) )'; this.loadBalancer?.on('load-balanced',
-  (data) => this.emit('load-balanced',
-  data) )'; // Forward coordination events this.serviceCoordinator?.on('coordination-event',
-  (data) => this.emit('coordination-event',
-  da'a) )'
+  /** Create multiple services with parallel execution */
+  async createServices(request: BatchServiceRequest): Promise<Service[]> {
+    if (!this.initialized) await this.initialize();
+    assertDefined(this.workflowEngine, 'Workflow engine not initialized');
+    try {
+      let createdServices: Service[];
+      if (request?.parallel && this.settings?.lifecycle?.parallelStartup) {
+        // Delegate parallel creation to workflow engine
+        createdServices =
+          (await this.workflowEngine?.createServicesParallel(
+            request?.services
+          )) || [];
+      } else {
+        // Sequential creation with error handling
+        createdServices = [];
+        for (const serviceRequest of request?.services) {
+          try {
+            const service = await this.createService(serviceRequest);
+            createdServices?.push(service);
+          } catch (error) {
+            this.logger?.error(
+              'Failed to create service ' +
+                serviceRequest?.name +
+                ' : ' +
+                getErrorMessage(error)
+            );
+            // Continue with other services
+          }
+        }
+      }
 
-} /** * Shutdown service manager and all delegated components */ async shutdown(): Promise<void> { try { // Shutdown all services via workflow engine if (this.workflowEngine) {
-  await this.workflowEngine?.stopAllServices() await this.workflowEngine?.shutdown()
+      // Start services if requested - delegate to workflow engine
+      if (request?.startImmediately && createdServices?.length > 0) {
+        await this.workflowEngine?.startServices(
+          createdServices?.map((s) => s?.name)
+        );
+      }
 
-} // Shutdown delegated components await Promise?.all([this.agentManager??.shutdown(), this.healthMonitor??.shutdown(), this.loadBalancer??.shutdown()', this.serviceCoordinator??.shutdown(
-  ',
-  ,
-  ]
-)'; this.services?.clear(); this.logger?.info(Service Manager facade shutdown completed)
-} catch (error) {
-  this.logger?.error( 'Error'during Service Manager shutdown: ','
-  'getErrorMessage(error) )'; throw error
+      this.logger?.info(
+        'Successfully created ' +
+          createdServices?.length +
+          ' services via delegation'
+      );
+      return createdServices;
+    } catch (error) {
+      this.logger?.error(
+        'Failed to create service batch: ' + getErrorMessage(error)
+      );
+      throw error as Error;
+    }
+  }
 
-} }
+  /** Start service - delegates to workflow engine */
+  async startService(serviceName: string): Promise<void> {
+    assertDefined(this.workflowEngine, 'Workflow engine not initialized');
+    await this.workflowEngine!.startService(serviceName);
+  }
+
+  /** Stop service - delegates to workflow engine */
+  async stopService(serviceName: string): Promise<void> {
+    assertDefined(this.workflowEngine, 'Workflow engine not initialized');
+    await this.workflowEngine!.stopService(serviceName);
+  }
+
+  /** Get service health - delegates to health monitor */
+  async getServiceHealth(serviceName: string): Promise<ServiceHealth> {
+    assertDefined(this.healthMonitor, 'Health monitor not initialized');
+    return (await this.healthMonitor?.getServiceHealth(
+      serviceName
+    )) as ServiceHealth;
+  }
+
+  /** Get service metrics - delegates to performance tracker */
+  getServiceMetrics(serviceName?: string): ServiceMetrics[] {
+    if (!this.performanceTracker) {
+      return [];
+    }
+    return serviceName
+      ? [
+          this.performanceTracker.getMetrics(
+            serviceName
+          ) as unknown as ServiceMetrics,
+        ]
+      : (this.performanceTracker.getAllMetrics() as unknown as ServiceMetrics[]);
+  }
+
+  /** Get service by name */
+  getService(name: string): Service | undefined {
+    return this.services?.get(name);
+  }
+
+  /** Get all services */
+  getAllServices(): Service[] {
+    return Array.from(this.services?.values());
+  }
+
+  /** Setup event forwarding from delegated components */
+  private setupEventForwarding(): void {
+    // Forward workflow engine events
+    this.workflowEngine?.on('service-started', (data: unknown) =>
+      this.emit('service-started', data)
+    );
+    this.workflowEngine?.on('service-stopped', (data: unknown) =>
+      this.emit('service-stopped', data)
+    );
+    this.workflowEngine?.on('service-error', (data: unknown) =>
+      this.emit('service-error', data)
+    );
+
+    // Forward health monitor events
+    this.healthMonitor?.on('service-health-changed', (data: unknown) =>
+      this.emit('service-health-changed', data)
+    );
+    this.healthMonitor?.on('service-health-degraded', (data: unknown) =>
+      this.emit('service-health-degraded', data)
+    );
+
+    // Forward load balancer events
+    this.loadBalancer?.on('service-recovered', (data: unknown) =>
+      this.emit('service-recovered', data)
+    );
+    this.loadBalancer?.on('load-balanced', (data: unknown) =>
+      this.emit('load-balanced', data)
+    );
+
+    // Forward coordination events
+    this.serviceCoordinator?.on('coordination-event', (data: unknown) =>
+      this.emit('coordination-event', data)
+    );
+  }
+
+  /** Shutdown service manager and all delegated components */
+  async shutdown(): Promise<void> {
+    try {
+      // Shutdown all services via workflow engine
+      if (this.workflowEngine) {
+        await this.workflowEngine?.stopAllServices();
+        await this.workflowEngine?.shutdown();
+      }
+
+      // Shutdown delegated components
+      await Promise.all([
+        this.agentManager?.shutdown?.(),
+        this.healthMonitor?.shutdown?.(),
+        this.loadBalancer?.shutdown?.(),
+        this.serviceCoordinator?.shutdown?.(),
+      ]);
+
+      this.services?.clear();
+      this.logger?.info('Service Manager facade shutdown completed');
+    } catch (error) {
+      this.logger?.error(
+        'Error during Service Manager shutdown: ' + getErrorMessage(error)
+      );
+      throw error as Error;
+    }
+  }
 }
 
 // =============================================================================
@@ -234,29 +401,33 @@ export class ServiceManager extends TypedEventBase  { private readonly logger: L
 /**
  * Create Service Manager with default configuration
  */
-export function createServiceManager'( config?: Pa'tial<ServiceManagerConfig>
-): ServiceManager { const defaultConfig: ServiceManagerConfig = { factory: {
-  maxConcurrentInits: 10,
-  enableDependencyResolution: true
-
-}, lifecycle: {
-  startupTimeout: 60000,
-  parallelStartup: true,
-  dependencyResolution: true
-
-}, monitoring: { healthCheckInterval: 30000, performanceThresholds: {
-  responseTime: 1000,
-  errorRate: 5?.0
-
-}
-}, recovery: {
-  enabled: true,
-  maxRtries: 3' strategy: 'exponential'
-}
-}; return new ServiceManager({
-  ?.?.?.defaultConfig,
-  ?.?.?.config
-})
+export function createServiceManager(
+  config?: Partial<ServiceManagerConfig>
+): ServiceManager {
+  const defaultConfig: ServiceManagerConfig = {
+    factory: {
+      maxConcurrentInits: 10,
+      enableDependencyResolution: true,
+    },
+    lifecycle: {
+      startupTimeout: 60000,
+      parallelStartup: true,
+      dependencyResolution: true,
+    },
+    monitoring: {
+      healthCheckInterval: 30000,
+      performanceThresholds: {
+        responseTime: 1000,
+        errorRate: 5.0,
+      },
+    },
+    recovery: {
+      enabled: true,
+      maxRtries: 3,
+      strategy: 'exponential',
+    },
+  };
+  return new ServiceManager(defaultConfig);
 }
 
 // Re-export types for compatibility
@@ -266,9 +437,8 @@ export type {
   ServiceRequest,
   ServiceHealth,
   BatchServiceRequest,
-  ServiceMetrics'
-
-} from '@claude-zen/foundation;;
+  ServiceMetrics,
+} from './types';
 
 /**
  * SOPHISTICATED TYPE ARCHITECTURE DEMONSTRATION
@@ -293,4 +463,4 @@ export type {
  * This transformation demonstrates how our sophisticated type architecture
  * enables massive code reduction while improving functionality through
  * strategic delegation to specialized, battle-tested packages?.
- */`
+ */

@@ -4,7 +4,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('interfaces-api-http-index);
+const logger = getLogger('interfaces-api-http-index');
 
 /**
  * REST API Layer - Main Entry Point.
@@ -25,8 +25,7 @@ export type {
   PerformanceMetrics,
   Agent,
   Task,
-  SwarmConfig
-
+  SwarmConfig,
 } from './client';
 
 // Database types
@@ -41,8 +40,7 @@ export type {
   VectorData,
   DatabaseAdapter,
   VectorDatabaseAdapter,
-  GraphDatabaseAdapter
-
+  GraphDatabaseAdapter,
 } from '../database/database-controller';
 
 // DI Container types
@@ -51,16 +49,11 @@ export type {
   MigrationRequest,
   DatabaseHealthStatus,
   DatabaseConfig,
-  ConnectionStats
-
+  ConnectionStats,
 } from './di/database-container';
 
 // ===== CLIENT SDK EXPORTS =====
-export {
-  APIClient,
-  apiClient
-
-} from './client';
+export { APIClient, apiClient } from './client';
 
 // ===== MIDDLEWARE EXPORTS =====
 
@@ -72,8 +65,7 @@ export interface User {
   roles: string[];
   permissions: string[];
   createdAt: Date;
-  lastLoginAt?: Date
-
+  lastLoginAt?: Date;
 }
 
 export interface AuthContext {
@@ -81,8 +73,7 @@ export interface AuthContext {
   token?: string;
   permissions: string[];
   roles: string[];
-  isAuthenticated: boolean
-
+  isAuthenticated: boolean;
 }
 
 // Basic auth middleware functions (placeholders)
@@ -90,64 +81,56 @@ export const authMiddleware = (req: any, res: any, next: any) => {
   // Mock auth middleware - in production this would validate JWT tokens
   const authHeader = req.headers.authorization;
 
-  if(authHeader && authHeader.startsWith('Bearer ))'{
+  if (authHeader && authHeader.startsWith('Bearer ')) {
     // Mock user for development
     req.auth = {
       user: {
-  id: '1',
-  username: 'admin',
-  email: 'admin@example.com',
-  roles: ['admin],
-  permissios: [*],
-  createdAt: new Date(),
-  lastLoginAt: new Date()
-
-},
+        id: '1',
+        username: 'admin',
+        email: 'admin@example.com',
+        roles: ['admin'],
+        permissions: ['*'],
+        createdAt: new Date(),
+        lastLoginAt: new Date(),
+      },
       token: authHeader.substring(7),
-      permissions: ['*],
-      roles: ['admin],
-      isAutheticated: true
-} as AuthContext
-} else {
+      permissions: ['*'],
+      roles: ['admin'],
+      isAuthenticated: true,
+    } as AuthContext;
+  } else {
     req.auth = {
-  permissions: [],
-  roles: [],
-  isAuthenticated: false
+      permissions: [],
+      roles: [],
+      isAuthenticated: false,
+    } as AuthContext;
+  }
 
-} as AuthContext
-}
-
-  next()
+  next();
 };
 
 export const optionalAuthMiddleware = (req: any, res: any, next: any) => {
-  authMiddleware(
-  req,
-  res,
-  next
-)
-
+  authMiddleware(req, res, next);
 };
 
 export const getCurrentUser = (req: any): User | undefined => {
-  return req.auth?.user
+  return req.auth?.user;
 };
 
 export const hasRole = (req: any, role: string): boolean => {
-  return req.auth?.roles?.includes(role) || false
+  return req.auth?.roles?.includes(role) || false;
 };
 
 export const hasPermission = (req: any, permission: string): boolean => {
-  return req.auth?.permissions?.includes(*) ||
-         req.auth?.permissions?.includes(permission) ||
-         false
-
+  return (
+    req.auth?.permissions?.includes('*') ||
+    req.auth?.permissions?.includes(permission) ||
+    false
+  );
 };
 
 export const isAdmin = (req: any): boolean => {
-  return hasRole(req,
-  admin);
-
+  return hasRole(req, 'admin');
 };
 
 // ===== ERROR HANDLING EXPORTS =====
@@ -157,68 +140,58 @@ export interface APIError {
   code: string;
   message: string;
   details?: any;
-  status?: number
-
+  status?: number;
 }
 
 // Error middleware
-export const errorMiddleware = (err: any, req: any, res: any, next: any' => {
-  logger.error('API Error:', err)';
+export const errorMiddleware = (err: any, req: any, res: any, next: any) => {
+  logger.error('API Error:', err);
 
   const apiError: APIError = {
-  code: err.code || 'INTERNAL_ERROR',
-  message: err.message || 'An'internal error occurred',
-  etails: process.env.NODE_ENV === 'development' ? err.sack : undefined,
-  status: err.status || 500
+    code: err.code || 'INTERNAL_ERROR',
+    message: err.message || 'An internal error occurred',
+    details: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    status: err.status || 500,
+  };
 
-};
-
-  res.status(apiError.status || 500).json(
-  {
+  res.status(apiError.status || 500).json({
     success: false,
-  error: apiError,
-  metadata: {
-  timestamp: Date.now(
-),
-  requestId: req.id || 'unknown'
-
-}
-})
+    error: apiError,
+    metadata: {
+      timestamp: Date.now(),
+      requestId: req.id || 'unknown',
+    },
+  });
 };
 
 // ===== LOGGING EXPORTS =====
 
-// Request loggi'g middleware
+// Request logging middleware
 export const loggingMiddleware = (req: any, res: any, next: any) => {
   const startTime = Date.now();
 
   // Log request
-  logger.info('API Request',
-  {
-  mehod: req.method,
-  url: req.url,
-  userAgent: req.get(User-Agent
-),
-  ip: req.ip,
-  imestamp: new Date().toISOString()
-
-});
+  logger.info('API Request', {
+    method: req.method,
+    url: req.url,
+    userAgent: req.get('User-Agent'),
+    ip: req.ip,
+    timestamp: new Date().toISOString(),
+  });
 
   // Log response when finished
   res.on('finish', () => {
     const duration = Date.now() - startTime;
-    logger.info('API Response',
-  {
-      mthod: req.method,
-  url: req.url,
+    logger.info('API Response', {
+      method: req.method,
+      url: req.url,
       statusCode: res.statusCode,
       duration: '' + duration + 'ms',
-      contentLength: re'.get(content-length
-)
-})
-});
+      contentLength: res.get('content-length'),
+    });
+  });
 
-  next()
+  next();
 };
 
 // ===== RATE LIMITING EXPORTS =====
@@ -227,66 +200,52 @@ export const loggingMiddleware = (req: any, res: any, next: any) => {
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 export const rateLimitMiddleware = (maxRequests = 100, windowMs = 60000) => {
-  return(
-  req: any,
-  res: any,
-  next: any
-) => {
-    const key = req.ip || 'unknown;
+  return (req: any, res: any, next: any) => {
+    const key = req.ip || 'unknown';
     const now = Date.now();
 
     // Clean up expired entries
     for (const [k, v] of rateLimitStore.entries()) {
       if (now > v.resetTime) {
-        rateLimitStore.delete(k)
-}
+        rateLimitStore.delete(k);
+      }
     }
 
     const current = rateLimitStore.get(key);
 
     if (!current) {
-      rateLimitStore.set(
-  key,
-  {
-  count: 1,
-  resetTime: now + windowMs
-}
-);
-      return next()
-}
+      rateLimitStore.set(key, {
+        count: 1,
+        resetTime: now + windowMs,
+      });
+      return next();
+    }
 
     if (now > current.resetTime) {
-      rateLimitStore.set(
-  key,
-  {
-  count: 1,
-  resetTime: now + windowMs
-}
-);
-      return next()
-}
+      rateLimitStore.set(key, {
+        count: 1,
+        resetTime: now + windowMs,
+      });
+      return next();
+    }
 
     if (current.count >= maxRequests) {
-      return res.status(429).json(
-  {
+      return res.status(429).json({
         success: false,
-  error: {
-  code: 'RATE_LIMIT_EXCEEDED',
-  message: 'Too'many requests;
-
-},
+        error: {
+          code: 'RATE_LIMIT_EXCEEDED',
+          message: 'Too many requests',
+        },
         metadata: {
-  timetamp: Date.now(
-),
-  retryAfter: Math.ceil((current.resetTime - now) / 1000)
-
-}
-})
-}
+          timestamp: Date.now(),
+          retryAfter: Math.ceil((current.resetTime - now) / 1000),
+        },
+      });
+    }
 
     current.count++;
-    next()
-}
+    next();
+  };
 };
 
 // ===== DATABASE CONTROLLER EXPORTS =====
@@ -294,8 +253,7 @@ export { DatabaseController } from '../database/database-controller';
 export {
   getDatabaseController,
   resetDatabaseContainer,
-  checkDatabaseContainerHealth
-
+  checkDatabaseContainerHealth,
 } from './di/database-container';
 
 // ===== UTILITY FUNCTIONS =====
@@ -314,11 +272,10 @@ export const createAPIResponse = <T>(
     data,
     error,
     metadata: {
-  timestamp: Date.now(),
-  ...metadata
-
-}
-}
+      timestamp: Date.now(),
+      ...metadata,
+    },
+  };
 };
 
 /**
@@ -331,12 +288,11 @@ export const createAPIError = (
   details?: any
 ): APIError => {
   return {
-  code,
-  message,
-  status,
-  details
-
-}
+    code,
+    message,
+    status,
+    details,
+  };
 };
 
 // ===== HEALTH CHECK =====
@@ -354,31 +310,28 @@ export const getAPIHealth = async () => {
       uptime: process.uptime(),
       version: process.env.npm_package_version || '1.0.0',
       services: {
-  api: true,
-  database: dbHealth.status === 'healthy,
-  auth: true,
-  logging: true
-
-},
+        api: true,
+        database: dbHealth.status === 'healthy',
+        auth: true,
+        logging: true,
+      },
       details: {
         database: dbHealth,
-        memor: {
-  used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-  total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024)
-
-},
-        cpu: process.cpuUsage()
-}
-}
-} catch (error) {
-    logger.error('Health check failed:', error);;
+        memory: {
+          used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+          total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        },
+        cpu: process.cpuUsage(),
+      },
+    };
+  } catch (error) {
+    logger.error('Health check failed:', error);
     return {
-  status: 'unhealthy',
-  timestamp: Date.now(),
-  error: (error as Error).message
-
-}
-}
+      status: 'unhealthy',
+      timestamp: Date.now(),
+      error: (error as Error).message,
+    };
+  }
 };
 
 // ===== DEFAULT EXPORT =====
@@ -403,6 +356,5 @@ export default {
   getCurrentUser,
   hasRole,
   hasPermission,
-  isAdmin
-
+  isAdmin,
 };

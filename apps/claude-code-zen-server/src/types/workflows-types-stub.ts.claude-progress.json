@@ -1,0 +1,4 @@
+{"type":"gpt_response","timestamp":"2025-08-24T06:12:40.711Z","model":"gpt-4.1","tokensUsed":961,"contentLength":1365,"file":"apps/claude-code-zen-server/src/types/workflows-types-stub.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T06:13:11.464Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/types/workflows-types-stub.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:13:26.666Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/types/workflows-types-stub.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T06:13:26.681Z","contentLength":1033,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/types/workflows-types-stub.ts","tier":"inference"}

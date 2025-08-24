@@ -2,7 +2,14 @@
 
 import { Logger } from '@claude-zen/foundation';
 
-export type TopologyType = 'mesh' | 'hierarchical' | 'ring' | 'star' | 'hybrid' | 'small-world' | 'scale-free';
+export type TopologyType =
+  | 'mesh'
+  | 'hierarchical'
+  | 'ring'
+  | 'star'
+  | 'hybrid'
+  | 'small-world'
+  | 'scale-free';
 
 export interface TopologyConfig {
   type: TopologyType;
@@ -88,9 +95,13 @@ class TypedEventBase {
 class TopologyAdaptationEngine {
   async analyzeTopology(
     config: TopologyConfig,
-    nodes: Map<string, NetworkNode>,
-    metrics: TopologyMetrics,
-    history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
+    _nodes: Map<string, NetworkNode>,
+    _metrics: TopologyMetrics,
+    _history: Array<{
+      topology: TopologyType;
+      timestamp: Date;
+      performance: number;
+    }>
   ): Promise<TopologyDecision> {
     return {
       currentTopology: config.type,
@@ -99,23 +110,32 @@ class TopologyAdaptationEngine {
       reason: 'Analysis complete',
       expectedImprovement: 0.1,
       migrationCost: 0.2,
-      riskLevel: 'low;
+      riskLevel: 'low',
     };
   }
 }
 
 class NetworkOptimizer {
-  async optimize(nodes: Map<string, NetworkNode>, config: TopologyConfig): Promise<void> {
+  async optimize(
+    _nodes: Map<string, NetworkNode>,
+    _config: TopologyConfig
+  ): Promise<void> {
     // Implementation stub
   }
 
-  async repairFragmentation(nodes: Map<string, NetworkNode>, config: TopologyConfig): Promise<void> {
+  async repairFragmentation(
+    _nodes: Map<string, NetworkNode>,
+    _config: TopologyConfig
+  ): Promise<void> {
     // Implementation stub
   }
 }
 
 class FaultDetector {
-  async handleFault(data: any, nodes: Map<string, NetworkNode>): Promise<void> {
+  async handleFault(
+    _data: any,
+    _nodes: Map<string, NetworkNode>
+  ): Promise<void> {
     // Implementation stub
   }
 }
@@ -131,15 +151,18 @@ class MigrationController {
   async createMigrationPlan(
     sourceConfig: TopologyConfig,
     targetConfig: TopologyConfig,
-    nodes: Map<string, NetworkNode>
+    _nodes: Map<string, NetworkNode>
   ): Promise<MigrationPlan> {
     return {
       sourceTopology: sourceConfig.type,
-      targetTopology: targetConfig.type
+      targetTopology: targetConfig.type,
     };
   }
 
-  async executeMigration(plan: MigrationPlan, nodes: Map<string, NetworkNode>): Promise<boolean> {
+  async executeMigration(
+    _plan: MigrationPlan,
+    _nodes: Map<string, NetworkNode>
+  ): Promise<boolean> {
     return true;
   }
 }
@@ -180,16 +203,16 @@ export class TopologyManager extends TypedEventBase {
   }
 
   private setupEventHandlers(): void {
-    this.eventBus.on(node:metrics-updated', (data: any) => {
+    this.eventBus.on('node:metrics-updated', (data: any) => {
       this.handleNodeMetricsUpdate(data);
     });
-    this.eventBus.on(connection:quality-changed', (data: any) => {
+    this.eventBus.on('connection:quality-changed', (data: any) => {
       this.handleConnectionQualityChange(data);
     });
-    this.eventBus.on(network:fault-detected', (data: any) => {
+    this.eventBus.on('network:fault-detected', (data: any) => {
       this.handleNetworkFault(data);
     });
-    this.eventBus.on(workload:pattern-changed', (data: any) => {
+    this.eventBus.on('workload:pattern-changed', (data: any) => {
       this.handleWorkloadPatternChange(data);
     });
   }
@@ -225,7 +248,7 @@ export class TopologyManager extends TypedEventBase {
       type: nodeConfig.type,
     });
 
-    this.emit(node: registered, { node });
+    this.emit('node:registered', { node });
     this.scheduleTopologyOptimization();
   }
 
@@ -240,7 +263,7 @@ export class TopologyManager extends TypedEventBase {
     this.nodes.delete(nodeId);
 
     this.logger.info('Node unregistered from topology', { nodeId });
-    this.emit(node: unregistered, { nodeId });
+    this.emit('node:unregistered', { nodeId });
 
     await this.handleNodeFailure(nodeId);
   }
@@ -267,10 +290,13 @@ export class TopologyManager extends TypedEventBase {
   /**
    * Manually trigger topology migration.
    */
-  async migrateTopology(targetTopology: TopologyType, force = false): Promise<boolean> {
+  async migrateTopology(
+    targetTopology: TopologyType,
+    force = false
+  ): Promise<boolean> {
     const decision = await this.getTopologyDecision();
 
-    if(!force && decision.riskLevel === 'high) {
+    if (!force && decision.riskLevel === 'high') {
       this.logger.warn('Topology migration blocked due to high risk', {
         current: this.currentConfig.type,
         target: targetTopology,
@@ -294,7 +320,7 @@ export class TopologyManager extends TypedEventBase {
   async optimizeNetwork(): Promise<void> {
     await this.networkOptimizer.optimize(this.nodes, this.currentConfig);
     await this.updateTopologyMetrics();
-    this.emit(network: optimized, { metrics: this.metrics });
+    this.emit('network:optimized', { metrics: this.metrics });
   }
 
   async shutdown(): Promise<void> {
@@ -302,7 +328,7 @@ export class TopologyManager extends TypedEventBase {
       clearInterval(this.monitoringInterval);
     }
     this.emit('shutdown', { timestamp: new Date() });
-    this.logger.info('Topology manager shutdown);
+    this.logger.info('Topology manager shutdown');
   }
 
   // Private helper methods
@@ -339,9 +365,9 @@ export class TopologyManager extends TypedEventBase {
 
   private getConnectionStrategy(topology: TopologyType): ConnectionStrategy {
     switch (topology) {
-      case mesh:
+      case 'mesh':
         return new MeshConnectionStrategy();
-      case hierarchical:
+      case 'hierarchical':
         return new HierarchicalConnectionStrategy();
       default:
         return new MeshConnectionStrategy();
@@ -358,7 +384,7 @@ export class TopologyManager extends TypedEventBase {
 
   private async updateTopologyMetrics(): Promise<void> {
     this.metrics = await this.calculateTopologyMetrics();
-    this.emit(metrics: updated, { metrics: this.metrics });
+    this.emit('metrics:updated', { metrics: this.metrics });
   }
 
   private async calculateTopologyMetrics(): Promise<TopologyMetrics> {
@@ -398,12 +424,14 @@ export class TopologyManager extends TypedEventBase {
   private calculateLoadBalance(nodes: NetworkNode[]): number {
     if (nodes.length === 0) return 1;
 
-    const loads = nodes.map(node => node.metrics.taskLoad);
+    const loads = nodes.map((node) => node.metrics.taskLoad);
     const avgLoad = loads.reduce((sum, load) => sum + load, 0) / loads.length;
 
     if (avgLoad === 0) return 1;
 
-    const variance = loads.reduce((sum, load) => sum + (load - avgLoad) ** 2, 0) / loads.length;
+    const variance =
+      loads.reduce((sum, load) => sum + (load - avgLoad) ** 2, 0) /
+      loads.length;
     const standardDeviation = Math.sqrt(variance);
 
     return Math.max(0, 1 - standardDeviation / avgLoad);
@@ -416,10 +444,14 @@ export class TopologyManager extends TypedEventBase {
     for (const node of nodes) {
       for (const connection of node.connections.values()) {
         const latencyScore = Math.max(0, 1 - connection.quality.latency / 1000);
-        const bandwidthScore = Math.min(1, connection.quality.bandwidth / 1000000);
+        const bandwidthScore = Math.min(
+          1,
+          connection.quality.bandwidth / 1000000
+        );
         const reliabilityScore = connection.quality.reliability;
 
-        const efficiency = (latencyScore + bandwidthScore + reliabilityScore) / 3;
+        const efficiency =
+          (latencyScore + bandwidthScore + reliabilityScore) / 3;
         totalEfficiency += efficiency;
         connectionCount++;
       }
@@ -437,7 +469,8 @@ export class TopologyManager extends TypedEventBase {
     if (!this.currentConfig.adaptation.enabled) return;
 
     const now = Date.now();
-    if (now - this.lastMigration < this.currentConfig.adaptation.cooldownPeriod) return;
+    if (now - this.lastMigration < this.currentConfig.adaptation.cooldownPeriod)
+      return;
 
     const decision = await this.getTopologyDecision();
 
@@ -453,7 +486,7 @@ export class TopologyManager extends TypedEventBase {
         improvement: decision.expectedImprovement,
       });
 
-      if(decision.riskLevel !== 'high) {
+      if (decision.riskLevel !== 'high') {
         await this.migrateTopology(decision.recommendedTopology);
       }
     }
@@ -481,9 +514,9 @@ export class TopologyManager extends TypedEventBase {
       health: node.health,
     });
 
-    this.emit(node: unhealthy, {
+    this.emit('node:unhealthy', {
       nodeId: node.id,
-      health: node.health
+      health: node.health,
     });
 
     await this.attemptNodeRecovery(node);
@@ -491,7 +524,10 @@ export class TopologyManager extends TypedEventBase {
 
   private async attemptNodeRecovery(node: NetworkNode): Promise<void> {
     const strategy = this.getConnectionStrategy(this.currentConfig.type);
-    const newConnections = await strategy.establishConnections(node, this.nodes);
+    const newConnections = await strategy.establishConnections(
+      node,
+      this.nodes
+    );
 
     for (const connection of newConnections) {
       if (!node.connections.has(connection.targetId)) {
@@ -499,23 +535,28 @@ export class TopologyManager extends TypedEventBase {
       }
     }
 
-    this.emit(node:recovery-attempted', { nodeId: node.id });
+    this.emit('node:recovery-attempted', { nodeId: node.id });
   }
 
   private scheduleTopologyOptimization(): void {
     setTimeout(() => {
       this.optimizeNetwork().catch((error) => {
-        this.logger.error('Network optimization failed, { error });
+        this.logger.error('Network optimization failed', { error });
       });
     }, 1000);
   }
 
-  private async executeMigration(migrationPlan: MigrationPlan): Promise<boolean> {
+  private async executeMigration(
+    migrationPlan: MigrationPlan
+  ): Promise<boolean> {
     try {
       this.lastMigration = Date.now();
       this.logger.info('Starting topology migration', { plan: migrationPlan });
 
-      const success = await this.migrationController.executeMigration(migrationPlan, this.nodes);
+      const success = await this.migrationController.executeMigration(
+        migrationPlan,
+        this.nodes
+      );
 
       if (success) {
         this.currentConfig.type = migrationPlan.targetTopology;
@@ -525,7 +566,7 @@ export class TopologyManager extends TypedEventBase {
           performance: this.metrics.communicationEfficiency,
         });
 
-        this.emit(topology: migrated, {
+        this.emit('topology:migrated', {
           from: migrationPlan.sourceTopology,
           to: migrationPlan.targetTopology,
         });
@@ -560,7 +601,7 @@ export class TopologyManager extends TypedEventBase {
   private async handleNetworkFault(data: any): Promise<void> {
     this.logger.warn('Network fault detected', data);
     await this.faultDetector.handleFault(data, this.nodes);
-    this.emit(fault: handled, data);
+    this.emit('fault:handled', data);
   }
 
   private async handleWorkloadPatternChange(data: any): Promise<void> {
@@ -578,7 +619,10 @@ export class TopologyManager extends TypedEventBase {
         connectivity,
       });
 
-      await this.networkOptimizer.repairFragmentation(this.nodes, this.currentConfig);
+      await this.networkOptimizer.repairFragmentation(
+        this.nodes,
+        this.currentConfig
+      );
     }
   }
 
@@ -593,7 +637,9 @@ export class TopologyManager extends TypedEventBase {
     }
 
     const maxPossibleConnections = nodes.length * (nodes.length - 1);
-    return maxPossibleConnections > 0 ? totalConnections / maxPossibleConnections : 0;
+    return maxPossibleConnections > 0
+      ? totalConnections / maxPossibleConnections
+      : 0;
   }
 
   private initializeMetrics(): TopologyMetrics {
@@ -662,10 +708,13 @@ class MeshConnectionStrategy implements ConnectionStrategy {
     return connections;
   }
 
-  private calculateInitialQuality(source: NetworkNode, target: NetworkNode): ConnectionQuality {
+  private calculateInitialQuality(
+    source: NetworkNode,
+    target: NetworkNode
+  ): ConnectionQuality {
     const distance = Math.sqrt(
       (source.location.x - target.location.x) ** 2 +
-      (source.location.y - target.location.y) ** 2
+        (source.location.y - target.location.y) ** 2
     );
 
     return {

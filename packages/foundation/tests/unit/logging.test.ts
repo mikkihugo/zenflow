@@ -11,8 +11,8 @@ import {
   getLoggingConfig,
   validateLoggingEnvironment,
   LoggingLevel,
-} from '../../src/logging';
-import type { Logger, LoggingConfig } from '../../src/logging';
+} from '../../src/core/logging';
+import type { Logger, LoggingConfig } from '../../src/core/logging';
 
 describe('Logging System - 100% Coverage', () => {
   let originalEnv: NodeJS.ProcessEnv;

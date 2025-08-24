@@ -17,8 +17,7 @@ export type {
   TrainingResult,
   WASMNeuralAccelerator,
   WASMNeuralConfig,
-  WASMPerformanceMetrics
-
+  WASMPerformanceMetrics,
 } from '@claude-zen/intelligence';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
@@ -31,8 +30,7 @@ export type {
   AgentState,
   AgentStatus as DetailedAgentStatus,
   AgentType as DetailedAgentType,
-  GlobalAgentInfo
-
+  GlobalAgentInfo,
 } from './agent-types';
 // Primary exports from shared-types (these are the main Agent interface)
 // Re-export shared types selectively to avoid conflicts
@@ -43,52 +41,50 @@ export type {
   SwarmConfig,
   TaskStatus,
   ZenSwarm as SwarmType,
-  ZenSwarm
-
+  ZenSwarm,
 } from './shared-types';
 
 // Type guards and utilities
-export function isZenSwarm(obj: any): obj is import('./shared-types).ZenSwarm  {
-  return(
-  obj &&
+export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
-    typeof obj['topology] === 'string' &&
-    Array.isArray(obj['agents]
-)
-  )
-
+    typeof obj['topology'] === 'string' &&
+    Array.isArray(obj['agents'])
+  );
 }
 
-export function i'SwarmAgent(obj: any
-): obj is import('./shared-types).SwarmAgent  {
-  return(obj &&
+export function isSwarmAgent(
+  obj: any
+): obj is import('./shared-types').SwarmAgent {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.name === 'string' &&
-    typeof obj.type === 'string
-  )
-
+    typeof obj.type === 'string'
+  );
 }
 
-export function isSystemEvent(obj: any
-): obj is import('./shared-types).Sy'temEvent  {
-  return(obj &&
+export function isSystemEvent(
+  obj: any
+): obj is import('./shared-types').SystemEvent {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.type === 'string' &&
-    typeof obj['source] === 'string
-  )
-
+    typeof obj['source'] === 'string'
+  );
 }
 
-// Export additional type 'uards from utils for system-wide availability
+// Export additional type guards from utils for system-wide availability
 export {
   isActivationFunction,
   isNeuralNetworkConfig,
   isNonEmptyString,
   isObjectArrayWithProps,
   isPositiveNumber,
-  isValidNumber
-
-} from '@claude-zen/foundation;;
+  isValidNumber,
+} from '@claude-zen/foundation';
 export * from './client-types';
 export * from './events-types';
 export * from './knowledge-types';

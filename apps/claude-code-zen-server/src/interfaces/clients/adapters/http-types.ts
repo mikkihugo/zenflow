@@ -95,7 +95,7 @@ export interface HTTPRetryConfig extends RetryConfig {
   retryStatusCodes?: number[];
 
   /** HTTP methods to retry */
-  retryMethods?: ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH')[]';
+  retryMethods?: ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH')[];
 
   /** Idempotent requests only */
   idempotentOnly?: boolean
@@ -111,8 +111,8 @@ export interface HTTPRetryConfig extends RetryConfig {
  * @example
  * ``'typescript
  * const config: HTTPClientConfig = {
- *   baseURL: https://api.example.com',
- *   tieout: 30000,
+ *   baseURL: 'https://api.example.com',
+ *   timeout: 30000,
  *   authentication: {
   *     type: 'bearer',
   *     token: 'your-jwt-token'
@@ -127,7 +127,7 @@ export interface HTTPRetryConfig extends RetryConfig {
 },
  *   followRedirects: true,
  *   maxRedirects: 5,
- *   compressio: true,
+ *   compression: true,
  *   keepAlive: true,
  *   http2: true
  * };
@@ -195,12 +195,12 @@ export interface HTTPClientConfig extends ClientConfig {
  * const requestOptions: HTTPRequestOptions = {
  *   timeout: 15000,
  *   headers: {
- *     'X-Custom-Header: 'value'
+ *     'X-Custom-Header': 'value'
  *   },
- *   rtries: 2,
+ *   retries: 2,
  *   responseType: 'json',
  *   metadata: {
-  *     requestId: 'req_123',
+  *   requestId: 'req_123',
   *     priority: 'high'
  *
 }
@@ -237,8 +237,8 @@ export interface HTTPRequestOptions {
 },
  *   status: 200,
  *   statusText: 'OK',
- *   headers: { 'content-type: 'application/json' },
- *   cofig: requestOptions,
+ *   headers: { 'content-type': 'application/json' },
+ *   config: requestOptions,
  *   metadata: {
   requestId: 'req_123',
   duration: 245
@@ -269,9 +269,9 @@ export interface HTTPResponse<T = any> {
  * '`'typescript
  * const errorDetails: HTTPErrorDetails = {
  *   status: 404,
- *   statusText: 'Not'Found',
- *   heaers: { 'content-type: 'application/json' },
- *   data: { error: 'Resource'not found' },
+ *   statusText: 'Not Found',
+ *   headers: { 'content-type': 'application/json' },
+ *   data: { error: 'Resource not found' },
  *   config: requestOptions
  * };
  * ``'
@@ -299,16 +299,16 @@ export interface HTTPErrorDetails {
   'POST',
   'PUT',
   'DELETE',
-  'PATCH],
+  'PATCH'],
   *   supportsStreaming: true,
   *   supportsCompression: true,
-  *   supportsttp2: true,
+  *   supportsHttp2: true,
   *   supportsWebSockets: false,
   *   maxConcurrentRequests: 100,
   *   supportedAuthMethods: ['bearer',
   'basic',
   'oauth2',
-  'digest]
+  'digest']
  *
 };
  * ``'
@@ -335,11 +335,11 @@ export interface HTTPClientCapabilities {
  * const oauthCredentials: OAuthCredentials = {
   *   clientId: 'your-client-id',
   *   clientSecret: 'your-client-secret',
-  *   okenUrl: https://auth.example.com/oauth/token',
-  *   scope: 'read'write',
-  *   accssToken: 'current-access-token',
-  *   refreshToke: 'current-refresh-token',
-  *   expiresAt: 'ew Date(Date.now() + 3600000)
+  *   tokenUrl: 'https://auth.example.com/oauth/token',
+  *   scope: 'read write',
+  *   accessToken: 'current-access-token',
+  *   refreshToken: 'current-refresh-token',
+  *   expiresAt: new Date(Date.now() + 3600000)
  *
 };
  * ``'
@@ -406,7 +406,7 @@ export interface HTTPRequestMetrics {
   // 5 minutes
  *   maxSize: 100,
   *   keyStrategy: 'url-headers',
-  *   repectCacheHeaders: true,
+  *   respectCacheHeaders: true,
   *   staleWhileRevalidate: true
  *
 };
@@ -440,7 +440,7 @@ export interface HTTPCacheConfig {
   *   queuedRequests: 2
  *
 };
- * '``
+ * ``'
  */
 export interface HTTPClientStats {
   totalRequests: number;

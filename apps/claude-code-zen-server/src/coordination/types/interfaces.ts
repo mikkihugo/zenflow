@@ -6,20 +6,12 @@
 /**
  * Priority levels for tasks and operations
  */
-export type Priority =
-  | 'low'
-  | 'medium'
-  | 'high'
-  | 'critical';
+export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 /**
  * Risk level assessment
  */
-export type RiskLevel =
-  | 'low'
-  | 'medium'
-  | 'high'
-  | 'critical';
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
 /**
  * Server instance interface - wraps Express.Server with additional metadata
@@ -32,9 +24,7 @@ export interface ServerInstance {
   uptime?: number;
   // Express server instance methods
   close?: (callback?: (err?: Error) => void) => void;
-  on?: (event: string,
-  listener: (...args: any[]) => void) => void
-
+  on?: (event: string, listener: (...args: any[]) => void) => void;
 }
 
 /**
@@ -44,8 +34,7 @@ export interface BaseError {
   code: string;
   message: string;
   details?: any;
-  timestamp: Date
-
+  timestamp: Date;
 }
 
 /**
@@ -58,11 +47,8 @@ export interface TestResult {
   success: boolean;
   duration?: number;
   error?: BaseError | string;
-  details?: Record<string,
-  unknown>;
-  metadata?: Record<string,
-  unknown>
-
+  details?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -74,9 +60,9 @@ export interface CommandResult {
   data?: any;
   error?: BaseError;
   timestamp: Date;
-  // CLI execution specific fields stdout?: string;
-  stderr?: string
-
+  // CLI execution specific fields
+  stdout?: string;
+  stderr?: string;
 }
 
 /**
@@ -88,8 +74,7 @@ export interface BaseApiResponse {
   data?: any;
   error?: BaseError;
   timestamp: Date;
-  requestId?: string
-
+  requestId?: string;
 }
 
 /**
@@ -101,8 +86,7 @@ export interface NeuralConfig {
   activations: string[];
   learningRate: number;
   batchSize?: number;
-  epochs?: number
-
+  epochs?: number;
 }
 
 /**
@@ -112,26 +96,65 @@ export interface NeuralNetworkInterface {
   id: string;
   config: NeuralConfig;
   isInitialized: boolean;
-  /** * Initialize the neural network */ initialize(config: NeuralConfig): Promise<void>;
-  /** * Train the network with data */ train(inputs: number[][], outputs: number[][] ): Promise< {
-  finalError: number;
-  epochsCompleted: number;
-  duration: number;
-  converged: boolean
-
-}>; /** * Predict output for given input */ predict(inputs: number[]): Promise<number[]>; /** * Get network status */ getStatus(): {
-  isReady: boolean; accuracy?: number; lastTrained?: Date
-
-}; /** * Destroy the network and cleanup resources */ destroy(): Promise<void>; /** * Export network configuration and weights */ export?(): Promise<{
-  weights: number[][]; biases: number[][]; config: NeuralConfig
-
-}>; /** * Import network configuration and weights */ import?(data: {
-  weights: number[][]; biases: number[][]; config: NeuralConfig
-
-}): Promise<void>; /** * Get performance metrics (optional method) */ getMetrics?(): Promise<{
-  accuracy?: number; precision?: number; recall?: number; f1Score?: number; lastTrainingTime?: number; inferenceTime?: number
-
-}>
+  /**
+   * Initialize the neural network
+   */
+  initialize(config: NeuralConfig): Promise<void>;
+  /**
+   * Train the network with data
+   */
+  train(
+    inputs: number[][],
+    outputs: number[][]
+  ): Promise<{
+    finalError: number;
+    epochsCompleted: number;
+    duration: number;
+    converged: boolean;
+  }>;
+  /**
+   * Predict output for given input
+   */
+  predict(inputs: number[]): Promise<number[]>;
+  /**
+   * Get network status
+   */
+  getStatus(): {
+    isReady: boolean;
+    accuracy?: number;
+    lastTrained?: Date;
+  };
+  /**
+   * Destroy the network and cleanup resources
+   */
+  destroy(): Promise<void>;
+  /**
+   * Export network configuration and weights
+   */
+  export?(): Promise<{
+    weights: number[][];
+    biases: number[][];
+    config: NeuralConfig;
+  }>;
+  /**
+   * Import network configuration and weights
+   */
+  import?(data: {
+    weights: number[][];
+    biases: number[][];
+    config: NeuralConfig;
+  }): Promise<void>;
+  /**
+   * Get performance metrics (optional method)
+   */
+  getMetrics?(): Promise<{
+    accuracy?: number;
+    precision?: number;
+    recall?: number;
+    f1Score?: number;
+    lastTrainingTime?: number;
+    inferenceTime?: number;
+  }>;
 }
 
 /**
@@ -141,8 +164,7 @@ export interface WasmNeuralBinding {
   /**
    * Load WASM module
    */
-  loadWasm(): Promise<WebAssembly.Module | Record<string,
-  unknown>>;
+  loadWasm(): Promise<WebAssembly.Module | Record<string, unknown>>;
   /**
    * Check if WASM is available
    */
@@ -154,8 +176,7 @@ export interface WasmNeuralBinding {
   /**
    * Create neural network instance
    */
-  createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface>
-
+  createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface>;
 }
 
 /**
@@ -163,7 +184,7 @@ export interface WasmNeuralBinding {
  */
 export type AgentId = string;
 export type AgentType =
-  | // Core hierarchy types
+  // Core hierarchy types
   | 'queen'
   | 'commander'
   | 'drone'
@@ -172,7 +193,7 @@ export type AgentType =
   | 'primary'
   | 'secondary'
   | 'backup'
-  // S'ecialized agent types
+  // Specialized agent types
   | 'coder'
   | 'analyst'
   | 'researcher'
@@ -184,20 +205,20 @@ export type AgentType =
   | 'ops'
   | 'coordinator'
   | 'data'
-  // Perform'nce specialized
+  // Performance specialized
   | 'performance-analyzer'
   | 'cache-optimizer'
   | 'memory-optimizer'
   | 'latency-optimizer'
   | 'bottleneck-analyzer'
-  // Mig'ation and modernization
+  // Migration and modernization
   | 'legacy-analyzer'
   | 'modernization-agent'
   | 'migration-coordinator'
   | 'migration-plan'
   | 'system-architect'
   | 'database-architect'
-  // Tes'ing specialists
+  // Testing specialists
   | 'unit-tester'
   | 'integration-tester'
   | 'e2e-tester'
@@ -215,13 +236,13 @@ export type AgentType =
   | 'user-guide-writer';
 
 export type AgentStatus =
-  | // Basic states
+  // Basic states
   | 'idle'
   | 'active'
   | 'busy'
   | 'error'
   | 'offline'
-  // Ext'nded states
+  // Extended states
   | 'initializing'
   | 'terminated';
 
@@ -235,8 +256,7 @@ export interface AgentCapabilities {
   languages?: string[];
   frameworks?: string[];
   domains?: string[];
-  tools?: string[]
-
+  tools?: string[];
 }
 
 export interface AgentMetrics {
@@ -257,12 +277,11 @@ export interface AgentMetrics {
   diskUsage?: number;
   // Disk usage for queen-coordinator
   resourceUsage?: {
-  memory: number;
-  cpu: number;
-  disk: number;
-  network?: number
-
-}
+    memory: number;
+    cpu: number;
+    disk: number;
+    network?: number;
+  };
 }
 
 export interface AgentError extends BaseError {
@@ -270,11 +289,9 @@ export interface AgentError extends BaseError {
   agentType: AgentType;
   recoverable: boolean;
   type?: string; // Optional type property used by queen-coordinator
-  context?: Record<string,
-  unknown>; // Optional context used by queen-coordinator
+  context?: Record<string, unknown>; // Optional context used by queen-coordinator
   severity?: string; // Optional severity used by queen-coordinator
   resolved?: boolean; // Optional resolved flag used by queen-coordinator
-
 }
 
 /**
@@ -283,8 +300,7 @@ export interface AgentError extends BaseError {
 export interface QueenCommanderConfig {
   maxAgents: number;
   coordinationTimeout: number;
-  failoverEnabled: boolean
-
+  failoverEnabled: boolean;
 }
 
 export interface QueenTemplate {
@@ -292,25 +308,25 @@ export interface QueenTemplate {
   name: string;
   description: string;
   type: AgentType;
-  // Used by queen-coordinator defaultConfig: QueenCommanderConfig;
-  // Additional properties used by queen-coordinator capabilities?: AgentCapabilities;
+  // Used by queen-coordinator
+  defaultConfig: QueenCommanderConfig;
+  // Additional properties used by queen-coordinator
+  capabilities?: AgentCapabilities;
   config?: {
-  autonomyLevel?: number;
-  learningEnabled?: boolean;
-  adaptationEnabled?: boolean;
-  [key: string]: any
-
-}; environment?: Partial<QueenEnvironment>
+    autonomyLevel?: number;
+    learningEnabled?: boolean;
+    adaptationEnabled?: boolean;
+    [key: string]: any;
+  };
+  environment?: Partial<QueenEnvironment>;
 }
 
 export interface QueenCluster {
   id: string;
   queens: QueenId[];
   coordinationStrategy: string;
-  agents?: Map<string,
-  CompleteAgentState>;
+  agents?: Map<string, CompleteAgentState>;
   // Agent map for queen-coordinator
-
 }
 
 export interface QueenPool {
@@ -320,12 +336,11 @@ export interface QueenPool {
   offline: QueenId[];
   // Extended properties used by queen-coordinator
   availableAgents: Array<{
-  id: string;
-  swarmId: string;
-  type: AgentType;
-  instance: number
-
-}>;
+    id: string;
+    swarmId: string;
+    type: AgentType;
+    instance: number;
+  }>;
   currentSize: number;
   minSize: number;
   maxSize: number;
@@ -337,12 +352,11 @@ export interface QueenPool {
   capacity?: number;
   queens?: QueenId[];
   busyAgents?: Array<{
-  id: string;
+    id: string;
     swarmId: string;
     type: AgentType;
-    instance: number
-
-}>
+    instance: number;
+  }>;
 }
 
 export interface QueenHealth {
@@ -356,37 +370,31 @@ export interface QueenHealth {
   components?: Record<
     string,
     {
-  status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
-  lastCheck?: Date;
-  metrics?: Record<string,
-  unknown>
-
-}
+      status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
+      lastCheck?: Date;
+      metrics?: Record<string, unknown>;
+    }
   >; // Optional components used by queen-coordinator
   overall?: {
-  status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
-  score: number
-
-}; // Optional overall health used by queen-coordinator
+    status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
+    score: number;
+  }; // Optional overall health used by queen-coordinator
 }
 
-export type QueenType =
-  | 'primary'
-  | 'secondary'
-  | 'backup';
+export type QueenType = 'primary' | 'secondary' | 'backup';
 
 export interface QueenCapabilities extends AgentCapabilities {
   canManageSwarms: boolean;
-  maxSwarms: number
+  maxSwarms: number;
 }
 
 export interface QueenConfig {
   type: QueenType;
   capabilities: QueenCapabilities;
   failoverConfig: {
-  enabled: boolean;
-  timeout: number
-};
+    enabled: boolean;
+    timeout: number;
+  };
   // Additional coordination configuration
   autonomyLevel?: number;
   learningEnabled?: boolean;
@@ -399,7 +407,7 @@ export interface QueenConfig {
   permissions?: string[];
   trustedAgents?: string[];
   expertise?: string[];
-  preferences?: Record<string, unknown>
+  preferences?: Record<string, unknown>;
 }
 
 export interface QueenEnvironment {
@@ -418,20 +426,18 @@ export interface QueenEnvironment {
   availableTools?: string[];
   toolConfigs?: Record<string, unknown>;
   resources?: {
-  availableMemory?: number;
-  availableCpu?: number;
-  availableDisk?: number;
-  [key: string]: any
-
-}
+    availableMemory?: number;
+    availableCpu?: number;
+    availableDisk?: number;
+    [key: string]: any;
+  };
 }
 
 export interface QueenState {
   id: QueenId;
   status: AgentStatus;
   activeSwarms: number;
-  lastActivity: Date
-
+  lastActivity: Date;
 }
 
 /**
@@ -439,21 +445,43 @@ export interface QueenState {
  */
 export interface CompleteAgentState {
   id: {
-  id: string;
-  swarmId: string;
+    id: string;
+    swarmId: string;
+    type: AgentType;
+    instance: number;
+  };
+  name: string;
   type: AgentType;
-  instance: number
-
-}; name: string; type: AgentType; status: AgentStatus; capabilities: AgentCapabilities; metrics: AgentMetrics; workload: number; health: number; config: {
-  name: string; type: AgentType; swarmId: string; autonomyLevel: number; learningEnabled: boolean; adaptationEnabled: boolean; [key: string]: any
-
-}; environment: {
-  platform?: string; runtime?: string; version?: string; workingDirectory?: string; tempDirectory?: string; logDirectory?: string; [key: string]: any
-
-}; lastHeartbeat: Date; errors: Array<{
-  code: string; message: string; details?: any; timestamp: Date
-
-}>
+  status: AgentStatus;
+  capabilities: AgentCapabilities;
+  metrics: AgentMetrics;
+  workload: number;
+  health: number;
+  config: {
+    name: string;
+    type: AgentType;
+    swarmId: string;
+    autonomyLevel: number;
+    learningEnabled: boolean;
+    adaptationEnabled: boolean;
+    [key: string]: any;
+  };
+  environment: {
+    platform?: string;
+    runtime?: string;
+    version?: string;
+    workingDirectory?: string;
+    tempDirectory?: string;
+    logDirectory?: string;
+    [key: string]: any;
+  };
+  lastHeartbeat: Date;
+  errors: Array<{
+    code: string;
+    message: string;
+    details?: any;
+    timestamp: Date;
+  }>;
 }
 
 /**
@@ -465,8 +493,7 @@ export interface AgentState {
   status: AgentStatus;
   health: number;
   lastHeartbeat: Date;
-  workload: number
-
+  workload: number;
 }
 
 /**
@@ -474,12 +501,11 @@ export interface AgentState {
  */
 export type CompleteAgentStateAlias = 'CompleteAgentState';
 
-export type QueenId = 'string';
+export type QueenId = string;
 
 export interface QueenMetrics extends AgentMetrics {
   swarmsManaged: number;
-  coordinationSuccessRate: number
-
+  coordinationSuccessRate: number;
 }
 
 export interface TaskCompletionData {
@@ -489,24 +515,32 @@ export interface TaskCompletionData {
   success: boolean;
   swarmId: string;
   priority?: string;
-  metrics?: { qualityScore?: number;
-  resourceUsage?: Record<string, unknown>;
-  resourceSavings?: {
-  cpu?: number;
-  memory?: number
-}; timeReduction?: number; resourceUtilization?: number
-}; collaboratedWith?: string[]; taskType?: string; domain?: string; agentTypes?: string[]; agentCount?: number; commanderType?: string
+  metrics?: {
+    qualityScore?: number;
+    resourceUsage?: Record<string, unknown>;
+    resourceSavings?: {
+      cpu?: number;
+      memory?: number;
+    };
+    timeReduction?: number;
+    resourceUtilization?: number;
+  };
+  collaboratedWith?: string[];
+  taskType?: string;
+  domain?: string;
+  agentTypes?: string[];
+  agentCount?: number;
+  commanderType?: string;
 }
 
 export interface SwarmDegradationData {
   swarmId: string;
   degradationLevel: number;
   affectedAgents: AgentId[];
-  reason: string
-
+  reason: string;
 }
 
-export type QueenStatus = 'AgentStatus';
+export type QueenStatus = AgentStatus;
 
 /**
  * Event Bus and Logger interfaces
@@ -516,25 +550,16 @@ export type { SystemEvent } from '@claude-zen/intelligence';
 
 // Use the comprehensive EventBus from event-system package instead of basic interface
 export interface EventBus {
-  emit(event: string | symbol,
-  args: any[]): boolean;
-  on(event: string | symbol,
-  handler: (args: any[]) => void): this;
-  off(event: string | symbol,
-  handler: (args: any[]) => void): this;
+  emit(event: string | symbol, ...args: any[]): boolean;
+  on(event: string | symbol, handler: (...args: any[]) => void): this;
+  off(event: string | symbol, handler: (...args: any[]) => void): this;
   // Add the missing emitSystemEvent method
-  emitSystemEvent(event: SystemEvent): boolean
-
+  emitSystemEvent(event: SystemEvent): boolean;
 }
 
 export interface Logger {
-  debug(message: string,
-  args: any[]): void;
-  info(message: string,
-  args: any[]): void;
-  warn(message: string,
-  args: any[]): void;
-  error(message: string,
-  args: any[]): void
-
+  debug(message: string, ...args: any[]): void;
+  info(message: string, ...args: any[]): void;
+  warn(message: string, ...args: any[]): void;
+  error(message: string, ...args: any[]): void;
 }

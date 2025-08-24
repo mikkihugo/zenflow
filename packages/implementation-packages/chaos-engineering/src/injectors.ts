@@ -6,7 +6,7 @@
  * and application-level chaos testing.
  */
 
-import type { ExperimentParameters } from "./main.js";
+import type { ExperimentParameters } from "./main";
 
 export interface InjectionResult {
 	type: string;

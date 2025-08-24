@@ -347,7 +347,7 @@ export class HeadlessAGUI implements AGUIInterface {
  * Factory function to create appropriate AGUI instance.
  */
 export function createAGUI(
-  type: 'web|headless'' = 'web',
+  type: 'web' | 'headless' = 'web',
   containerSelector?: string
 ): AGUIInterface {
   switch (type) {

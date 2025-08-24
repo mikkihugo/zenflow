@@ -27,11 +27,7 @@ export { createProductionServices } from './factories/production-service-factory
 export type {
   DocumentCreateOptions,
   DocumentQueryOptions,
-  DocumentSearchOptions'
-
+  DocumentSearchOptions,
 } from './document/document-service';
 
-export type {
-  ADRCreateOptions,
-  ADRQueryOptions
-} from './document/adr-service';
+export type { ADRCreateOptions, ADRQueryOptions } from './document/adr-service';

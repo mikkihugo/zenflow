@@ -5,7 +5,7 @@
  */
 
 import { vi } from 'vitest';
-import type { Logger } from '../../src/logging';
+import type { Logger } from '../../src/core/logging';
 
 // Mock implementations
 export const mockLogger: Logger = {

@@ -38,8 +38,7 @@ export interface BaseDocumentEntity {
   // Metadata
   version: string;
   checksum: string;
-  metadata: Record<string,
-  unknown>;
+  metadata: Record<string, unknown>;
   // Generic metadata for extensibility
   name?: string;
   // Optional name property for compatibility
@@ -51,8 +50,7 @@ export interface BaseDocumentEntity {
   keywords: string[];
   // Workflow integration
   workflow_stage?: string;
-  completion_percentage: number
-
+  completion_percentage: number;
 }
 
 /**
@@ -72,12 +70,11 @@ export interface VisionDocumentEntity extends BaseDocumentEntity {
     start_date?: Date;
     target_completion?: Date;
     milestones: Array<{
-  name: string;
+      name: string;
       date: Date;
-      description: string
-
-}>
-};
+      description: string;
+    }>;
+  };
 
   // Generated from vision
   generated_architecture_runways: string[]; // Architecture Runway document IDs
@@ -101,20 +98,18 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
   consequences: string[];
   decision_status: 'proposed' | 'accepted' | 'deprecated' | 'superseded';
   alternatives_considered: Array<{
-  name: string;
+    name: string;
     pros: string[];
     cons: string[];
-    rejected_reason: string
-
-}>;
+    rejected_reason: string;
+  }>;
   stakeholders: string[];
   architecture_impact: 'foundation' | 'system' | 'solution' | 'enterprise';
   implementation_timeline: {
-  start_date?: Date;
+    start_date?: Date;
     target_date?: Date;
-    dependencies: string[]
-
-};
+    dependencies: string[];
+  };
   supersedes: string[];
   superseded_by?: string;
 
@@ -140,13 +135,12 @@ export interface BusinessEpicDocumentEntity extends BaseDocumentEntity {
   // Kanban mode
   // Agile mode additions
   user_stories: Array<{
-  id: string;
+    id: string;
     title: string;
     description: string;
     acceptance_criteria: string[];
-    story_points?: number
-
-}>;
+    story_points?: number;
+  }>;
   acceptance_criteria: string[];
   definition_of_done: string[];
 
@@ -154,20 +148,18 @@ export interface BusinessEpicDocumentEntity extends BaseDocumentEntity {
   epic_type: 'business' | 'enabler';
   epic_owner: string;
   portfolio_canvas: {
-  leading_indicators: string[];
+    leading_indicators: string[];
     success_metrics: string[];
     mvp_hypothesis: string;
-    solution_intent: string
-
-};
+    solution_intent: string;
+  };
   wsjf_score?: {
-  user_business_value: number;
+    user_business_value: number;
     time_criticality: number;
     risk_reduction: number;
     job_size: number;
-    total_score: number
-
-};
+    total_score: number;
+  };
   program_epics_generated: number;
 
   // Source and generation
@@ -195,37 +187,34 @@ export interface ProgramEpicDocumentEntity extends BaseDocumentEntity {
   epic_hypothesis: string;
   success_criteria: string[];
   lean_business_case: {
-  epic_description: string;
+    epic_description: string;
     leading_indicators: string[];
     success_metrics: string[];
     mvp_definition: string;
-    go_no_go_decision: string
-
-};
+    go_no_go_decision: string;
+  };
   solution_intent: string;
   architectural_runway: string[];
 
   // Effort estimation
   effort_estimation: {
-  story_points?: number;
+    story_points?: number;
     time_estimate_weeks?: number;
-    complexity: 'low' | 'medium' | 'high' | 'very_high'
-
-};
+    complexity: 'low' | 'medium' | 'high' | 'very_high';
+  };
 
   timeline: {
-  start_date?: Date;
+    start_date?: Date;
     estimated_completion?: Date;
-    actual_completion?: Date
-
-};
+    actual_completion?: Date;
+  };
 
   // Feature breakdown
   feature_ids: string[]; // Feature document IDs
 
   // Progress tracking
   features_completed: number;
-  features_total: number
+  features_total: number;
 }
 
 /**
@@ -244,28 +233,31 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
 
   api_specification?: {
     endpoints: Array<{
-  method: string;
+      method: string;
       path: string;
       description: string;
       parameters?: any;
-      responses?: any
-
-}>
-};
+      responses?: any;
+    }>;
+  };
 
   ui_specification?: {
-  components: string[];
+    components: string[];
     workflows: string[];
     mockups?: string[]; // File paths or URLs
-
-};
+  };
 
   // Source and breakdown
   source_program_epic_id?: string;
   task_ids: string[]; // Task document IDs
 
   // Implementation tracking
-  implementation_status: 'not_started' | 'in_progress' | 'code_complete' | 'testing' | 'done';
+  implementation_status:
+    | 'not_started'
+    | 'in_progress'
+    | 'code_complete'
+    | 'testing'
+    | 'done';
   test_coverage_percentage?: number;
 
   // SPARC METHODOLOGY INTEGRATION
@@ -273,45 +265,45 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
     sparc_project_id?: string;
     sparc_phases: {
       specification: {
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
         deliverables: string[];
         completion_date?: Date;
-        quality_score?: number
-
-};
+        quality_score?: number;
+      };
       pseudocode: {
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
         deliverables: string[];
         completion_date?: Date;
         algorithms: string[]; // Algorithm names/IDs
-
-};
+      };
       architecture: {
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
         deliverables: string[];
         completion_date?: Date;
         components: string[]; // Component names/IDs
-
-};
+      };
       refinement: {
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
         deliverables: string[];
         completion_date?: Date;
         optimizations: string[]; // Optimization strategy IDs
-
-};
+      };
       completion: {
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
         deliverables: string[];
         completion_date?: Date;
         artifacts: string[]; // Generated code/test artifact IDs
-
-}
-};
-    current_sparc_phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+      };
+    };
+    current_sparc_phase:
+      | 'specification'
+      | 'pseudocode'
+      | 'architecture'
+      | 'refinement'
+      | 'completion';
     sparc_progress_percentage: number;
-    use_sparc_methodology: boolean
-}
+    use_sparc_methodology: boolean;
+  };
 }
 
 /**
@@ -335,19 +327,22 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
   assigned_team_id?: string;
   assigned_user_id?: string;
   persona?: string; // For user stories
-  enabler_type?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance';
+  enabler_type?:
+    | 'infrastructure'
+    | 'architectural'
+    | 'exploration'
+    | 'compliance';
   business_value?: number;
 
   acceptance_criteria_detailed: Array<{
-  id: string;
+    id: string;
     description: string;
     status: 'pending' | 'in_progress' | 'done' | 'failed';
-    test_scenarios: string[]
-
-}>;
+    test_scenarios: string[];
+  }>;
 
   definition_of_done: string[];
-  tasks_generated: number
+  tasks_generated: number;
 }
 
 /**
@@ -360,25 +355,28 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
   type: 'task';
 
   // Task-specific fields
-  task_type: 'development' | 'testing' | 'documentation' | 'deployment' | 'research';
+  task_type:
+    | 'development'
+    | 'testing'
+    | 'documentation'
+    | 'deployment'
+    | 'research';
   estimated_hours: number;
   actual_hours?: number;
 
   implementation_details: {
-  files_to_create: string[];
+    files_to_create: string[];
     files_to_modify: string[];
     test_files: string[];
-    documentation_updates: string[]
-
-};
+    documentation_updates: string[];
+  };
 
   technical_specifications: {
-  component: string;
+    component: string;
     module: string;
     functions: string[];
-    dependencies: string[]
-
-};
+    dependencies: string[];
+  };
 
   // Source and completion
   source_story_id?: string;
@@ -387,52 +385,67 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
   // Code generation
   generated_code?: {
     source_files: Array<{
-  path: string;
+      path: string;
       content: string;
-      language: string
-
-}>;
+      language: string;
+    }>;
     test_files: Array<{
-  path: string;
+      path: string;
       content: string;
-      test_type: 'unit' | 'integration' | 'e2e'
+      test_type: 'unit' | 'integration' | 'e2e';
+    }>;
+  };
 
-}>
-};
-
-  completion_status: 'todo' | 'in_progress' | 'code_review' | 'testing' | 'done';
+  completion_status:
+    | 'todo'
+    | 'in_progress'
+    | 'code_review'
+    | 'testing'
+    | 'done';
 
   // SPARC METHODOLOGY INTEGRATION
   sparc_implementation_details?: {
     parent_feature_sparc_id?: string; // Links to feature's SPARC project
-    sparc_phase_assignment: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
-    sparc_deliverable_type: 'requirements_doc' | 'algorithm_design' | 'component_spec' | 'optimization_plan' | 'production_code';
+    sparc_phase_assignment:
+      | 'specification'
+      | 'pseudocode'
+      | 'architecture'
+      | 'refinement'
+      | 'completion';
+    sparc_deliverable_type:
+      | 'requirements_doc'
+      | 'algorithm_design'
+      | 'component_spec'
+      | 'optimization_plan'
+      | 'production_code';
 
     sparc_quality_gates: {
-  requirement: string;
+      requirement: string;
       status: 'pending' | 'passed' | 'failed';
       validation_method: 'automated' | 'manual' | 'ai_assisted';
-      validation_date?: Date
-
-}[];
+      validation_date?: Date;
+    }[];
 
     sparc_artifacts: {
-  artifact_id: string;
-      artifact_type: 'specification' | 'pseudocode' | 'architecture_diagram' | 'refactored_code' | 'final_implementation';
+      artifact_id: string;
+      artifact_type:
+        | 'specification'
+        | 'pseudocode'
+        | 'architecture_diagram'
+        | 'refactored_code'
+        | 'final_implementation';
       file_path?: string;
       content?: string;
-      checksum?: string
-
-}[];
+      checksum?: string;
+    }[];
 
     complexity_analysis?: {
-  time_complexity: string;
+      time_complexity: string;
       space_complexity: string;
       maintainability_score: number;
-      performance_impact: 'low' | 'medium' | 'high'
-
-}
-}
+      performance_impact: 'low' | 'medium' | 'high';
+    };
+  };
 }
 
 /**
@@ -445,13 +458,16 @@ export interface DocumentRelationshipEntity {
   id: string;
   source_document_id: string;
   target_document_id: string;
-  relationship_type: 'generates' | 'implements' | 'depends_on' | 'relates_to' | 'supersedes';
+  relationship_type:
+    | 'generates'
+    | 'implements'
+    | 'depends_on'
+    | 'relates_to'
+    | 'supersedes';
   strength?: number;
   // Add missing strength property for semantic relationships
   created_at: Date;
-  metadata?: Record<string,
-  unknown>
-
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -477,11 +493,9 @@ export interface DocumentWorkflowStateEntity {
   approved_by?: string;
   approved_at?: Date;
   // Results
-  workflow_results?: Record<string,
-  unknown>;
+  workflow_results?: Record<string, unknown>;
   generated_artifacts: string[];
   // Document IDs or file paths
-
 }
 
 /**
@@ -512,48 +526,64 @@ export interface ProjectEntity {
   task_document_ids: string[];
   // Progress
   overall_progress_percentage: number;
-  phase: 'planning' | 'requirements' | 'design' | 'implementation' | 'testing' | 'deployment' | 'complete';
+  phase:
+    | 'planning'
+    | 'requirements'
+    | 'design'
+    | 'implementation'
+    | 'testing'
+    | 'deployment'
+    | 'complete';
   // COMPREHENSIVE SPARC INTEGRATION
   sparc_integration: {
     enabled: boolean;
-  sparc_project_mappings: Array<{
-  feature_id: string;
-  sparc_project_id: string;
-  sparc_project_name: string;
-  domain: 'swarm-coordination' | 'neural-networks' | 'wasm-integration' | 'rest-api' | 'memory-systems' | 'interfaces' | 'general';
-  complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
-  current_phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
-  progress_percentage: number;
-  created_at: Date;
-  updated_at: Date
-
-}>;
+    sparc_project_mappings: Array<{
+      feature_id: string;
+      sparc_project_id: string;
+      sparc_project_name: string;
+      domain:
+        | 'swarm-coordination'
+        | 'neural-networks'
+        | 'wasm-integration'
+        | 'rest-api'
+        | 'memory-systems'
+        | 'interfaces'
+        | 'general';
+      complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
+      current_phase:
+        | 'specification'
+        | 'pseudocode'
+        | 'architecture'
+        | 'refinement'
+        | 'completion';
+      progress_percentage: number;
+      created_at: Date;
+      updated_at: Date;
+    }>;
     sparc_project_ids: string[]; // All SPARC project IDs associated with this document project
 
     // SPARC workflow coordination
     document_sparc_workflow: {
-  vision_generates_sparc_specs: boolean;
+      vision_generates_sparc_specs: boolean;
       features_trigger_sparc_projects: boolean;
       tasks_map_to_sparc_phases: boolean;
       auto_create_sparc_from_features: boolean;
-      sparc_completion_updates_tasks: boolean
-
-};
+      sparc_completion_updates_tasks: boolean;
+    };
 
     // Integration health and metrics
     integration_health: {
-  document_sparc_sync_status: 'synced' | 'out_of_sync' | 'error';
+      document_sparc_sync_status: 'synced' | 'out_of_sync' | 'error';
       last_sync_date?: Date;
       sync_errors: string[];
       sparc_coverage_percentage: number; // % of features using SPARC
-
-}
-};
+    };
+  };
 
   // Metadata
   tags: string[];
   stakeholders: string[];
-  author: string
+  author: string;
 }
 
 /**
@@ -579,7 +609,7 @@ export interface DocumentSearchIndexEntity {
   tags: string[];
   extracted_entities: string[];
   // Named entities,
-  concepts
+  concepts;
 
   // Faceted search
   status: string;
@@ -595,8 +625,7 @@ export interface DocumentSearchIndexEntity {
   search_rank: number;
   // Popularity/importance score
   last_accessed: Date;
-  access_count: number
-
+  access_count: number;
 }
 
 /**
@@ -604,58 +633,57 @@ export interface DocumentSearchIndexEntity {
  * Defines table structures for database creation.
  */
 export const DATABASE_SCHEMAS = {
-  documents: 'CREATE'TABLE IF NOT EXISTS documents(
+  documents: `CREATE TABLE IF NOT EXISTS documents (
   id TEXT PRIMARY KEY,
   type TEXT NOT NULL,
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   status TEXT DEFAULT 'draft',
-  priori'y TEXT DEFAULT 'medium',
+  priority TEXT DEFAULT 'medium',
   author TEXT,
   tags TEXT,
   -- JSON array
-    project_id TEXT,
-  parent_docu'ent_id TEXT,
+  project_id TEXT,
+  parent_document_id TEXT,
   dependencies TEXT,
   -- JSON array
-    related_documents TEXT,
+  related_documents TEXT,
   -- JSON array
-    version TEXT DEFAULT '1.0',
+  version TEXT DEFAULT '1.0',
   checksum TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   searchable_content TEXT,
   keywords TEXT,
   -- JSON array
-    workflow_stage TEXT,
+  workflow_stage TEXT,
   completion_percentage INTEGER DEFAULT 0,
   -- Type-specific JSON fields
-    vision_data TEXT,
+  vision_data TEXT,
   -- JSON for vision-specific fields
-    architecture_runway_data TEXT,
+  architecture_runway_data TEXT,
   -- JSON for Architecture Runway-specific fields
-    business_epic_data TEXT,
+  business_epic_data TEXT,
   -- JSON for Business Epic-specific fields
-    program_epic_data TEXT,
+  program_epic_data TEXT,
   -- JSON for Program Epic-specific fields
-    feature_data TEXT,
+  feature_data TEXT,
   -- JSON for feature-specific fields
-    story_data TEXT,
+  story_data TEXT,
   -- JSON for story-specific fields
-    task_data TEXT,
+  task_data TEXT,
   -- JSON for task-specific fields
-    FOREIGN KEY (project_id
-) REFERENCES projects(id),
+  FOREIGN KEY (project_id) REFERENCES projects(id),
   FOREIGN KEY (parent_document_id) REFERENCES documents(id)
-  );
-  CREATE INDEX idx_documents_type ON documents(type);
-  CREATE INDEX idx_documents_project ON documents(project_id);
-  CREATE INDEX idx_documents_status ON documents(status);
-  CREATE INDEX idx_documents_created ON documents(created_at);
-  CREATE INDEX idx_documents_updated ON documents(updated_at);
-  CREATE INDEX idx_documents_workflow ON documents(workflow_stage);
-  CREATE UNIQUE INDEX idx_documents_checksum ON documents(checksum);',
-  document_relationships: 'CREATE'TABLE IF NOT EXISTS document_relationships(
+);
+CREATE INDEX idx_documents_type ON documents(type);
+CREATE INDEX idx_documents_project ON documents(project_id);
+CREATE INDEX idx_documents_status ON documents(status);
+CREATE INDEX idx_documents_created ON documents(created_at);
+CREATE INDEX idx_documents_updated ON documents(updated_at);
+CREATE INDEX idx_documents_workflow ON documents(workflow_stage);
+CREATE UNIQUE INDEX idx_documents_checksum ON documents(checksum);`,
+  document_relationships: `CREATE TABLE IF NOT EXISTS document_relationships (
   id TEXT PRIMARY KEY,
   source_document_id TEXT NOT NULL,
   target_document_id TEXT NOT NULL,
@@ -663,28 +691,23 @@ export const DATABASE_SCHEMAS = {
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   metadata TEXT,
   -- JSON
-    FOREIGN KEY (source_document_id
-) REFERENCES documents(id) ON DELETE CASCADE,
+  FOREIGN KEY (source_document_id) REFERENCES documents(id) ON DELETE CASCADE,
   FOREIGN KEY (target_document_id) REFERENCES documents(id) ON DELETE CASCADE,
-  UNIQUE(
-  source_document_id,
-  target_document_id,
-  relationship_type
-)
-  );
-  CREATE INDEX idx_relationships_source ON document_relationships(source_document_id);
-  CREATE INDEX idx_relationships_target ON document_relationships(target_document_id);
-  CREATE INDEX idx_relationships_type ON document_relationships(relationship_type);',
-  document_workflow_states: 'CREATE'TABLE IF NOT EXISTS document_workflow_states(
+  UNIQUE(source_document_id, target_document_id, relationship_type)
+);
+CREATE INDEX idx_relationships_source ON document_relationships(source_document_id);
+CREATE INDEX idx_relationships_target ON document_relationships(target_document_id);
+CREATE INDEX idx_relationships_type ON document_relationships(relationship_type);`,
+  document_workflow_states: `CREATE TABLE IF NOT EXISTS document_workflow_states (
   id TEXT PRIMARY KEY,
   document_id TEXT NOT NULL UNIQUE,
   workflow_name TEXT NOT NULL,
   current_stage TEXT NOT NULL,
   stages_completed TEXT,
   -- JSON array
-    next_stages TEXT,
+  next_stages TEXT,
   -- JSON array
-    started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   estimated_completion DATETIME,
   auto_transitions BOOLEAN DEFAULT TRUE,
@@ -693,146 +716,141 @@ export const DATABASE_SCHEMAS = {
   approved_at DATETIME,
   workflow_results TEXT,
   -- JSON
-    generated_artifacts TEXT,
+  generated_artifacts TEXT,
   -- JSON array
-    FOREIGN KEY (document_id
-) REFERENCES documents(id) ON DELETE CASCADE
-  );
-  CREATE INDEX idx_workflow_states_document ON document_workflow_states(document_id);
-  CREATE INDEX idx_workflow_states_workflow ON document_workflow_states(workflow_name);
-  CREATE INDEX idx_workflow_states_stage ON document_workflow_states(current_stage);',
-  projects: 'CREATE'TABLE IF NOT EXISTS projects(
+  FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_workflow_states_document ON document_workflow_states(document_id);
+CREATE INDEX idx_workflow_states_workflow ON document_workflow_states(workflow_name);
+CREATE INDEX idx_workflow_states_stage ON document_workflow_states(current_stage);`,
+  projects: `CREATE TABLE IF NOT EXISTS projects (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT,
   domain TEXT NOT NULL,
   complexity TEXT DEFAULT 'moderate',
-  cr'ated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   start_date DATETIME,
   target_completion DATETIME,
   actual_completion DATETIME,
   vision_document_ids TEXT,
   -- JSON array
-    architecture_runway_document_ids TEXT,
+  architecture_runway_document_ids TEXT,
   -- JSON array
-    business_epic_document_ids TEXT,
+  business_epic_document_ids TEXT,
   -- JSON array
-    program_epic_document_ids TEXT,
+  program_epic_document_ids TEXT,
   -- JSON array
-    feature_document_ids TEXT,
+  feature_document_ids TEXT,
   -- JSON array
-    story_document_ids TEXT,
+  story_document_ids TEXT,
   -- JSON array
-    task_document_ids TEXT,
+  task_document_ids TEXT,
   -- JSON array
-    overall_progress_percentage INTEGER DEFAULT 0,
+  overall_progress_percentage INTEGER DEFAULT 0,
   phase TEXT DEFAULT 'planning',
   sparc_project_id TEXT,
   sparc_phase TEXT,
-  ta's TEXT,
+  tags TEXT,
   -- JSON array
-    stakeholders TEXT,
+  stakeholders TEXT,
   -- JSON array
-    author TEXT NOT NULL
+  author TEXT NOT NULL
 );
-  CREATE INDEX idx_projects_domain ON projects(domain);
-  CREATE INDEX idx_projects_phase ON projects(phase);
-  CREATE INDEX idx_projects_author ON projects(author);
-  CREATE INDEX idx_projects_created ON projects(created_at);
-  CREATE UNIQUE INDEX idx_projects_sparc ON projects(sparc_project_id) WHERE sparc_project_id IS NOT NULL;',
-  document_search_index: 'CREATE'TABLE IF NOT EXISTS document_search_index(
+CREATE INDEX idx_projects_domain ON projects(domain);
+CREATE INDEX idx_projects_phase ON projects(phase);
+CREATE INDEX idx_projects_author ON projects(author);
+CREATE INDEX idx_projects_created ON projects(created_at);
+CREATE UNIQUE INDEX idx_projects_sparc ON projects(sparc_project_id) WHERE sparc_project_id IS NOT NULL;`,
+  document_search_index: `CREATE TABLE IF NOT EXISTS document_search_index (
   document_id TEXT PRIMARY KEY,
   document_type TEXT NOT NULL,
   project_id TEXT,
   title_vector BLOB,
   -- Serialized embedding vector
-    content_vector BLOB,
+  content_vector BLOB,
   -- Serialized embedding vector
-    combined_vector BLOB,
+  combined_vector BLOB,
   -- Serialized embedding vector
-    keywords TEXT,
+  keywords TEXT,
   -- JSON array
-    tags TEXT,
+  tags TEXT,
   -- JSON array
-    extracted_entities TEXT,
+  extracted_entities TEXT,
   -- JSON array
-    status TEXT,
+  status TEXT,
   priority TEXT,
   author TEXT,
   created_date DATETIME,
   updated_date DATETIME,
   parent_documents TEXT,
   -- JSON array
-    child_documents TEXT,
+  child_documents TEXT,
   -- JSON array
-    related_documents TEXT,
+  related_documents TEXT,
   -- JSON array
-    search_rank REAL DEFAULT 0.0,
+  search_rank REAL DEFAULT 0.0,
   last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
   access_count INTEGER DEFAULT 0,
   -- SPARC INTEGRATION SEARCH FIELDS
-    sparc_project_ids TEXT,
+  sparc_project_ids TEXT,
   -- JSON array of associated SPARC project IDs
-    sparc_phase TEXT,
+  sparc_phase TEXT,
   -- Current SPARC phase if document uses SPARC
-    sparc_progress REAL DEFAULT 0.0,
+  sparc_progress REAL DEFAULT 0.0,
   -- SPARC completion percentage
-    uses_sparc_methodology BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY (document_id
-) REFERENCES documents(id) ON DELETE CASCADE,
+  uses_sparc_methodology BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
-  );
-  CREATE INDEX idx_search_type ON document_search_index(document_type);
-  CREATE INDEX idx_search_project ON document_search_index(project_id);
-  CREATE INDEX idx_search_status ON document_search_index(status);
-  CREATE INDEX idx_search_rank ON document_search_index(search_rank DESC);
-  CREATE INDEX idx_search_accessed ON document_search_index(last_accessed DESC);
-  CREATE INDEX idx_search_sparc_phase ON document_search_index(sparc_phase);
-  CREATE INDEX idx_search_sparc_progress ON document_search_index(sparc_progress);
-  CREATE INDEX idx_search_sparc_enabled ON document_search_index(uses_sparc_methodology);',
+);
+CREATE INDEX idx_search_type ON document_search_index(document_type);
+CREATE INDEX idx_search_project ON document_search_index(project_id);
+CREATE INDEX idx_search_status ON document_search_index(status);
+CREATE INDEX idx_search_rank ON document_search_index(search_rank DESC);
+CREATE INDEX idx_search_accessed ON document_search_index(last_accessed DESC);
+CREATE INDEX idx_search_sparc_phase ON document_search_index(sparc_phase);
+CREATE INDEX idx_search_sparc_progress ON document_search_index(sparc_progress);
+CREATE INDEX idx_search_sparc_enabled ON document_search_index(uses_sparc_methodology);`,
   // NEW TABLE: SPARC Integration tracking
-  sparc_integration_state: 'CREATE'TABLE IF NOT EXISTS sparc_integration_state(
+  sparc_integration_state: `CREATE TABLE IF NOT EXISTS sparc_integration_state (
   id TEXT PRIMARY KEY,
   document_project_id TEXT NOT NULL,
   feature_document_id TEXT,
   sparc_project_id TEXT NOT NULL,
   sparc_project_name TEXT NOT NULL,
   -- SPARC project metadata
-    sparc_domain TEXT NOT NULL,
+  sparc_domain TEXT NOT NULL,
   sparc_complexity TEXT NOT NULL,
   current_sparc_phase TEXT NOT NULL,
   sparc_progress_percentage REAL DEFAULT 0.0,
   -- Integration workflow state
-    sync_status TEXT DEFAULT 'synced',
-  -- synce' | out_of_sync | error
-    last_sync_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  sync_status TEXT DEFAULT 'synced',
+  -- synced | out_of_sync | error
+  last_sync_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   sync_errors TEXT,
   -- JSON array
-    -- Phase completion tracking
-    specification_completed BOOLEAN DEFAULT FALSE,
+  -- Phase completion tracking
+  specification_completed BOOLEAN DEFAULT FALSE,
   pseudocode_completed BOOLEAN DEFAULT FALSE,
   architecture_completed BOOLEAN DEFAULT FALSE,
   refinement_completed BOOLEAN DEFAULT FALSE,
   completion_completed BOOLEAN DEFAULT FALSE,
   -- Timestamps
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   -- Foreign key constraints
-    FOREIGN KEY (document_project_id
-) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY (document_project_id) REFERENCES projects(id) ON DELETE CASCADE,
   FOREIGN KEY (feature_document_id) REFERENCES documents(id) ON DELETE CASCADE,
-  UNIQUE(feature_document_id,
-  sparc_project_id)
-  );
-  CREATE INDEX idx_sparc_integration_project ON sparc_integration_state(document_project_id);
-  CREATE INDEX idx_sparc_integration_feature ON sparc_integration_state(feature_document_id);
-  CREATE INDEX idx_sparc_integration_sparc_project ON sparc_integration_state(sparc_project_id);
-  CREATE INDEX idx_sparc_integration_phase ON sparc_integration_state(current_sparc_phase);
-  CREATE INDEX idx_sparc_integration_sync ON sparc_integration_state(sync_status);
-  CREATE INDEX idx_sparc_integration_progress ON sparc_integration_state(sparc_progress_percentage);'
-
-} as const'
+  UNIQUE(feature_document_id, sparc_project_id)
+);
+CREATE INDEX idx_sparc_integration_project ON sparc_integration_state(document_project_id);
+CREATE INDEX idx_sparc_integration_feature ON sparc_integration_state(feature_document_id);
+CREATE INDEX idx_sparc_integration_sparc_project ON sparc_integration_state(sparc_project_id);
+CREATE INDEX idx_sparc_integration_phase ON sparc_integration_state(current_sparc_phase);
+CREATE INDEX idx_sparc_integration_sync ON sparc_integration_state(sync_status);
+CREATE INDEX idx_sparc_integration_progress ON sparc_integration_state(sparc_progress_percentage);`,
+} as const;
 
 /**
  * Type guards for document entities.
@@ -840,34 +858,44 @@ export const DATABASE_SCHEMAS = {
  * @param doc
  * @example
  */
-export function isVisionDocument(doc: BaseDocumentEntity): doc is VisionDocumentEntity  {
-  return doc.type === `vision'
+export function isVisionDocument(
+  doc: BaseDocumentEntity
+): doc is VisionDocumentEntity {
+  return doc.type === 'vision';
 }
 
-export function isArchitectureRunwayDocument(doc: BaseDocumentEntity
-): doc is ArchitectureRunwayDocumentEntity  {
-  return doc.type === 'architecture_runway'
+export function isArchitectureRunwayDocument(
+  doc: BaseDocumentEntity
+): doc is ArchitectureRunwayDocumentEntity {
+  return doc.type === 'architecture_runway';
 }
 
-export function isBusinessEpicDocument(doc: BaseDocumentEntity
-): doc is BusinessEpicDocumentEntity  {
-  return doc.type === 'business_epic'
+export function isBusinessEpicDocument(
+  doc: BaseDocumentEntity
+): doc is BusinessEpicDocumentEntity {
+  return doc.type === 'business_epic';
 }
 
-export function isProgramEpicDocument(doc: BaseDocumentEntity
-): doc is ProgramEpicDocumentEntity  {
-  return doc.type === 'program_epic'
+export function isProgramEpicDocument(
+  doc: BaseDocumentEntity
+): doc is ProgramEpicDocumentEntity {
+  return doc.type === 'program_epic';
 }
 
-export function isStoryDocument(doc: BaseDocumentEntity
-): doc is StoryDocumentEntity  {
-  return doc.type === 'story'
+export function isStoryDocument(
+  doc: BaseDocumentEntity
+): doc is StoryDocumentEntity {
+  return doc.type === 'story';
 }
 
-export function isFeatureDocument(doc: BaseDocumentEntity): doc is FeatureDocumentEntity  {
-  return doc.type === 'feature'
+export function isFeatureDocument(
+  doc: BaseDocumentEntity
+): doc is FeatureDocumentEntity {
+  return doc.type === 'feature';
 }
 
-export function isTaskDocument(doc: BaseDocumentEntity): doc is TaskDocumentEntity  {
-  return doc.type === 'task;
+export function isTaskDocument(
+  doc: BaseDocumentEntity
+): doc is TaskDocumentEntity {
+  return doc.type === 'task';
 }

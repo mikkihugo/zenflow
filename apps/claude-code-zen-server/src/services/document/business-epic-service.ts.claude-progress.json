@@ -1,0 +1,7 @@
+{"type":"gpt_response","timestamp":"2025-08-24T04:39:41.806Z","model":"gpt-4.1","tokensUsed":12397,"contentLength":24601,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T04:40:12.500Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T04:41:54.990Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T04:41:55.032Z","contentLength":26935,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"inference"}
+{"type":"system","timestamp":"2025-08-24T04:42:12.083Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T04:44:15.411Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T04:44:15.448Z","contentLength":34865,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/services/document/business-epic-service.ts","tier":"inference"}

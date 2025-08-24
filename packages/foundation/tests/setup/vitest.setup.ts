@@ -5,7 +5,7 @@
  */
 
 import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
-import { getLogger } from '../../src/logging';
+import { getLogger } from '../../src/core/logging';
 
 // Global test setup
 beforeAll(async () => {

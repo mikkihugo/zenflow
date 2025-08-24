@@ -1,0 +1,7 @@
+{"type":"gpt_response","timestamp":"2025-08-24T02:08:31.380Z","model":"gpt-4.1","tokensUsed":4661,"contentLength":9712,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T02:09:00.174Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T02:10:20.686Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T02:10:20.720Z","contentLength":19176,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"inference"}
+{"type":"system","timestamp":"2025-08-24T02:10:52.865Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T02:12:58.142Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T02:12:58.171Z","contentLength":28297,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/services/implementations/web-service.ts","tier":"inference"}

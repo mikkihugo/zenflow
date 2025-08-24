@@ -12,75 +12,68 @@
  * - Integration adapters: External system connectivity, protocol management
  * - Infrastructure adapters: System monitoring, health checks, metrics collection.
  * @example
- * ``'typescript
+ * ```typescript
  * import {
-  * DataServiceAdapter,
-  * createDataServiceAdapter,
-  * IntegrationServiceAdapter,
-  * createIntegrationServiceAdapter
- *
-} from '@claude-zen/usl/adapters';
+ *   DataServiceAdapter,
+ *   createDataServiceAdapter,
+ *   IntegrationServiceAdapter,
+ *   createIntegrationServiceAdapter
+ * } from '@claude-zen/usl/adapters';
  *
  * // Create a web-enabled data adapter
  * const webDataAdapter = createDataServiceAdapter({
- * name: 'api-data';
- * web: {
- * enabled: true;
- * apiEndpoint: https://api.example.com';
- * authentication: {
-  type: 'bearer',
-  token: your-token'
-}
- * }
+ *   name: 'api-data',
+ *   web: {
+ *     enabled: true,
+ *     apiEndpoint: 'https://api.example.com',
+ *     authentication: {
+ *       type: 'bearer',
+ *       token: 'your-token'
+ *     }
+ *   }
  * });
  *
- * // Create a' integration adapter with safe API features
- * const integrationAdapter = createIntegrationServiceAdapter(
-  {
- * name: 'external-api';
- * safeAPI: {
- * enabled: true,
-  * baseURL: https://external.api.com';
- * validation: {
-  enabled: true,
-  strictMode: true
-}
- * }
- * }
-);' * '`'
+ * // Create an integration adapter with safe API features
+ * const integrationAdapter = createIntegrationServiceAdapter({
+ *   name: 'external-api',
+ *   safeAPI: {
+ *     enabled: true,
+ *     baseURL: 'https://external.api.com',
+ *     validation: {
+ *       enabled: true,
+ *       strictMode: true
+ *     }
+ *   }
+ * });
+ * ```
  */
 
 // Coordination service adapter exports
-import type {
-  ServiceFactory',
-  ServiceConfig
-} from './core/interfaces';
+import type { ServiceFactory, ServiceConfig } from './core/interfaces';
 // Integration with global service registry
 import { globalServiceRegistry } from './factories';
 import { ServiceType } from './types';
 
-import(/coordination-service-adapter);
-import(/coordination-service-factory);
+import './coordination-service-adapter';
+import './coordination-service-factory';
 // Additional imports for default export
-import(/data-service-adapter);
-import(/data-service-factory);
-import(/data-service-helpers);
-import(/infrastructure-service-adapter);
-import(/infrastructure-service-factory);
-import(/integration-service-adapter);
-import(/integration-service-factory);
+import './data-service-adapter';
+import './data-service-factory';
+import './data-service-helpers';
+import './infrastructure-service-adapter';
+import './infrastructure-service-factory';
+import './integration-service-adapter';
+import './integration-service-factory';
 
 export {
   CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,
   createCoordinationServiceAdapter,
-  createDefaultCoordinationServiceAdapterConfig
-
-} from './coordination-service-adapter";
+  createDefaultCoordinationServiceAdapterConfig,
+} from './coordination-service-adapter';
 export {
   CoordinationServiceFactory,
-  coordinationServiceFactory
-
+  coordinationServiceFactory,
 } from './coordination-service-factory';
 export * from './coordination-service-helpers';
 // Data service adapter exports
@@ -89,13 +82,11 @@ export {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,
   DataServiceAdapter,
-  type DataServiceAdapterConfig
-
+  type DataServiceAdapterConfig,
 } from './data-service-adapter';
 export {
   DataServiceFactory,
-  globalDataServiceFactory
-
+  globalDataServiceFactory,
 } from './data-service-factory';
 // Re-export types for convenience
 export type {
@@ -104,28 +95,21 @@ export type {
   DataOperationResult,
   DataValidationResult,
   EnhancedSearchOptions,
-  TransformationStep
-
+  TransformationStep,
 } from './data-service-helpers';
-export {
-  DataServiceHelper,
-  DataServiceUtils
-
-} from './data-service-helpers';
+export { DataServiceHelper, DataServiceUtils } from './data-service-helpers';
 // Infrastructure service adapter exports
 export {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
   InfrastructureServiceAdapter,
-  type InfrastructureServiceAdapterConfig
-
+  type InfrastructureServiceAdapterConfig,
 } from './infrastructure-service-adapter';
 export {
   createInfrastructureService,
   createInfrastructureServiceFactory,
   getInfrastructureServiceFactory,
-  InfrastructureServiceFactory
-
+  InfrastructureServiceFactory,
 } from './infrastructure-service-factory';
 export * from './infrastructure-service-helpers';
 // Integration service adapter exports
@@ -133,13 +117,11 @@ export {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
   IntegrationServiceAdapter,
-  type IntegrationServiceAdapterConfig
-
+  type IntegrationServiceAdapterConfig,
 } from './integration-service-adapter';
 export {
   IntegrationServiceFactory,
-  integrationServiceFactory
-
+  integrationServiceFactory,
 } from './integration-service-factory';
 export * from './integration-service-helpers';
 
@@ -150,24 +132,33 @@ export * from './integration-service-helpers';
  * @returns {void}
  * @description Registers the specialized data service factory with the global USL registry
  * for handling DATA, WEB_DATA, and DOCUMENT service types.
- * @example' * ``'typescript
+ * @example
+ * ```typescript
  * // Manually register if needed (auto-registered by default)
  * registerDataServiceFactory();
  *
  * // Now data services can be created through the registry
  * const dataService = await globalUSLFactory.create({
- * name: my-data'';
- * type: ServiceType.DATA
- * });' * '`'
+ *   name: 'my-data',
+ *   type: ServiceType.DATA
+ * });
+ * ```
  */
-export function registerDataServiceFactory(): void  {
+export function registerDataServiceFactory(): void {
   // Register the specialized data service factory for DATA,
-  WEB_DATA,
-  and DOCUMENT types globalServiceRegistry.registerFactory( ServiceType.DATA,
-  globalDataServiceFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory( ServiceType.WEB_DATA,
-  globalDataServiceFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory( ServiceType.DOCUMENT,
-  globalDataServiceFactory as ServiceFactory<ServiceConfig> )
-
+  // WEB_DATA, and DOCUMENT types
+  globalServiceRegistry.registerFactory(
+    ServiceType.DATA,
+    globalDataServiceFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.WEB_DATA,
+    globalDataServiceFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.DOCUMENT,
+    globalDataServiceFactory as ServiceFactory<ServiceConfig>
+  );
 }
 
 /**
@@ -176,28 +167,37 @@ export function registerDataServiceFactory(): void  {
  * @function registerCoordinationServiceFactory
  * @returns {void}
  * @description Registers the specialized coordination service factory with the global USL registry
- * for handling COORDINATION, DAA '(Distributed'Autonomous Agent)', and SESSION_RECOVERY service types.
- * @example' * '`'typescript
+ * for handling COORDINATION, DAA '(Distributed Autonomous Agent)', and SESSION_RECOVERY service types.
+ * @example
+ * ```typescript
  * // Coordination services support agent management and task orchestration
  * registerCoordinationServiceFactory();
  *
  * const coordService = await globalUSLFactory.create({
- * name: 'swarm-coordinator';
- * type: ServiceType.COORDINATION';
- * swarm: {
-  topology: mesh,
-  maxAgents: 10
-}
- * });' * '`'
+ *   name: 'swarm-coordinator',
+ *   type: ServiceType.COORDINATION,
+ *   swarm: {
+ *     topology: 'mesh',
+ *     maxAgents: 10
+ *   }
+ * });
+ * ```
  */
-export function registerCoordinationServiceFactory(): void  {
+export function registerCoordinationServiceFactory(): void {
   // Register the specialized coordination service factory for COORDINATION,
-  DAA,
-  and SESSION_RECOVERY types globalServiceRegistry.registerFactory( ServiceType.COORDINATION,
-  coordinationServiceFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory( ServiceType.DAA,
-  coordinationServiceFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory'( ServiceT'pe.SESSION_RECOVERY,
-  coordinationServiceFactory as ServiceFactory<ServiceConfig> )'
-
+  // DAA, and SESSION_RECOVERY types
+  globalServiceRegistry.registerFactory(
+    ServiceType.COORDINATION,
+    coordinationServiceFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.DAA,
+    coordinationServiceFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.SESSION_RECOVERY,
+    coordinationServiceFactory as ServiceFactory<ServiceConfig>
+  );
 }
 
 /**
@@ -206,31 +206,38 @@ export function registerCoordinationServiceFactory(): void  {
  * @function registerIntegrationServiceFactory
  * @returns {void}
  * @description Registers the specialized integration service factory with the global USL registry
- * for handling API, SAFE_API', and ARCH'TECTURE_STORAGE service types.
- * @example' * '`'typescript
+ * for handling API, SAFE_API, and ARCHITECTURE_STORAGE service types.
+ * @example
+ * ```typescript
  * // Integration services provide external system connectivity
  * registerIntegrationServiceFactory();
  *
- * const apiService = await globalUSLFactory.create(
-  {
- * name: 'external-api';
- * type: ServiceType.SAFE_API,
-  * safeAPI: {
- * enabled: true,
-  * baseURL: https://api.example.com';
- * validation: { enabled: true }
- * }
- * }
-);' * '`'
+ * const apiService = await globalUSLFactory.create({
+ *   name: 'external-api',
+ *   type: ServiceType.SAFE_API,
+ *   safeAPI: {
+ *     enabled: true,
+ *     baseURL: 'https://api.example.com',
+ *     validation: { enabled: true }
+ *   }
+ * });
+ * ```
  */
-export function registerIntegrationServiceFactory(): void  {
+export function registerIntegrationServiceFactory(): void {
   // Register the specialized integration service factory for API,
-  SAFE_API,
-  and ARCHITECTURE_STORAGE types globalServiceRegistry.registerFactory( ServiceType.API,
-  integrationServiceFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory( ServiceType.SAFE_API,
-  integrationServiceFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory'( ServiceT'pe.ARCHITECTURE_STORAGE,
-  integrationServiceFactory as ServiceFactory<ServiceConfig> )'
-
+  // SAFE_API, and ARCHITECTURE_STORAGE types
+  globalServiceRegistry.registerFactory(
+    ServiceType.API,
+    integrationServiceFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.SAFE_API,
+    integrationServiceFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.ARCHITECTURE_STORAGE,
+    integrationServiceFactory as ServiceFactory<ServiceConfig>
+  );
 }
 
 /**
@@ -239,32 +246,39 @@ export function registerIntegrationServiceFactory(): void  {
  * @function registerInfrastructureServiceFactory
  * @returns {void}
  * @description Registers the specialized infrastructure service factory with the global USL registry
- * for handling NFRASTRUCTURE, SYSTEM', and 'ONITORING service types.
- * @example' * '`'typescript
+ * for handling INFRASTRUCTURE, SYSTEM, and MONITORING service types.
+ * @example
+ * ```typescript
  * // Infrastructure services provide system monitoring and health checks
  * registerInfrastructureServiceFactory();
  *
- * const monitoringService = await globalUSLFactory.create(
-  {
- * name: system-monitor,
-  * type: ServiceType.MONITORING,
-  * monitoring: {
-  * enabled: true,
-  * metricsInterval: 30000'';
- * trackLatency: true
- *
-}
- * }
-);' * '`'
+ * const monitoringService = await globalUSLFactory.create({
+ *   name: 'system-monitor',
+ *   type: ServiceType.MONITORING,
+ *   monitoring: {
+ *     enabled: true,
+ *     metricsInterval: 30000,
+ *     trackLatency: true
+ *   }
+ * });
+ * ```
  */
-export function registerInfrastructureServiceFactory(): void  {
-  // Register the specialized infrastructure service factory for NFRASTRUCTURE,
-  SYSTEM,
-  and MONITORING types const infrastructureFactory = getInfrastructureServiceFactory(); globalServiceRegistry.registerFactory( ServiceType.NFRASTRUCTURE,
-  infrastructureFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory( ServiceType.SYSTEM,
-  infrastructureFactory as ServiceFactory<ServiceConfig> ); globalServiceRegistry.registerFactory( ServiceType.MONITORING,
-  infrastructureFactory as ServiceFactory<ServiceConfig> )
-
+export function registerInfrastructureServiceFactory(): void {
+  // Register the specialized infrastructure service factory for INFRASTRUCTURE,
+  // SYSTEM, and MONITORING types
+  const infrastructureFactory = getInfrastructureServiceFactory();
+  globalServiceRegistry.registerFactory(
+    ServiceType.INFRASTRUCTURE,
+    infrastructureFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.SYSTEM,
+    infrastructureFactory as ServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.MONITORING,
+    infrastructureFactory as ServiceFactory<ServiceConfig>
+  );
 }
 
 /**
@@ -273,7 +287,7 @@ export function registerInfrastructureServiceFactory(): void  {
 registerDataServiceFactory();
 registerCoordinationServiceFactory();
 registerIntegrationServiceFactory();
-registerInfrastructureServiceFactory'()';
+registerInfrastructureServiceFactory();
 
 export default {
   DataServiceAdapter,
@@ -293,6 +307,5 @@ export default {
   InfrastructureServiceAdapter,
   InfrastructureServiceFactory,
   getInfrastructureServiceFactory,
-  registerInfrastructureServiceFactory'
-
-};`
+  registerInfrastructureServiceFactory,
+};

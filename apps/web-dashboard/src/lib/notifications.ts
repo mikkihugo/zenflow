@@ -5,12 +5,12 @@
 
 import { toast } from '@zerodevx/svelte-toast';
 
-export type NotificationType = 'success|error|warning|info';
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
 export interface NotificationOptions {
   duration?: number;
   dismissible?: boolean;
-  position?: 'top-right|top-left'||bottom-right|bottom-left'';
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
   id?: string;
 }
 
@@ -21,23 +21,23 @@ const themes = {
   success: {
     '--toastBackground': '#10b981',
     '--toastColor': 'white',
-    '--toastBarBackground': '#047857'
+    '--toastBarBackground': '#047857',
   },
   error: {
     '--toastBackground': '#ef4444',
     '--toastColor': 'white',
-    '--toastBarBackground': '#dc2626'
+    '--toastBarBackground': '#dc2626',
   },
   warning: {
     '--toastBackground': '#f59e0b',
     '--toastColor': 'white',
-    '--toastBarBackground': '#d97706'
+    '--toastBarBackground': '#d97706',
   },
   info: {
     '--toastBackground': '#0ea5e9',
     '--toastColor': 'white',
-    '--toastBarBackground': '#0284c7'
-  }
+    '--toastBarBackground': '#0284c7',
+  },
 };
 
 /**
@@ -47,25 +47,26 @@ const icons = {
   success: '✅',
   error: '❌',
   warning: '⚠️',
-  info: 'ℹ️'};
+  info: 'ℹ️',
+};
 
 /**
  * Show success notification
  */
 export function notifySuccess(
-  message: string, 
+  message: string,
   options: NotificationOptions = {}
 ): number {
   return toast.push(`${icons.success} ${message}`, {
     theme: themes.success,
-    duration: options.duration||4000,
+    duration: options.duration || 4000,
     dismissible: options.dismissible ?? true,
-    ...options
+    ...options,
   });
 }
 
 /**
- * Show error notification  
+ * Show error notification
  */
 export function notifyError(
   message: string,
@@ -73,9 +74,9 @@ export function notifyError(
 ): number {
   return toast.push(`${icons.error} ${message}`, {
     theme: themes.error,
-    duration: options.duration||6000,
+    duration: options.duration || 6000,
     dismissible: options.dismissible ?? true,
-    ...options
+    ...options,
   });
 }
 
@@ -88,9 +89,9 @@ export function notifyWarning(
 ): number {
   return toast.push(`${icons.warning} ${message}`, {
     theme: themes.warning,
-    duration: options.duration||5000,
+    duration: options.duration || 5000,
     dismissible: options.dismissible ?? true,
-    ...options
+    ...options,
   });
 }
 
@@ -103,9 +104,9 @@ export function notifyInfo(
 ): number {
   return toast.push(`${icons.info} ${message}`, {
     theme: themes.info,
-    duration: options.duration||4000,
+    duration: options.duration || 4000,
     dismissible: options.dismissible ?? true,
-    ...options
+    ...options,
   });
 }
 
@@ -114,17 +115,17 @@ export function notifyInfo(
  */
 export function notify(
   message: string,
-  type: NotificationType ='info',
+  type: NotificationType = 'info',
   options: NotificationOptions = {}
 ): number {
   const icon = icons[type];
   const theme = themes[type];
-  
+
   return toast.push(`${icon} ${message}`, {
     theme,
-    duration: options.duration||4000,
+    duration: options.duration || 4000,
     dismissible: options.dismissible ?? true,
-    ...options
+    ...options,
   });
 }
 
@@ -136,13 +137,14 @@ export function notifyLoading(
   options: NotificationOptions = {}
 ): number {
   return toast.push(`⏳ ${message}`, {
-    theme: {'--toastBackground': '#64748b',
+    theme: {
+      '--toastBackground': '#64748b',
       '--toastColor': 'white',
-      '--toastBarBackground': '#475569'
+      '--toastBarBackground': '#475569',
     },
     duration: 0, // Persistent
     dismissible: options.dismissible ?? false,
-    ...options
+    ...options,
   });
 }
 
@@ -171,17 +173,20 @@ export const systemNotifications = {
     connected: () => notifySuccess('Real-time updates connected'),
     disconnected: () => notifyWarning('Real-time connection lost'),
     reconnected: () => notifySuccess('Real-time connection restored'),
-    failed: (error?: string) => notifyError(`Connection failed${error ? ': ' + error : ''}`),
+    failed: (error?: string) =>
+      notifyError(`Connection failed${error ? ': ' + error : ''}`),
   },
 
   /**
    * API operation events
    */
   api: {
-    success: (operation: string) => notifySuccess(`${operation} completed successfully`),
-    error: (operation: string, error?: string) => 
+    success: (operation: string) =>
+      notifySuccess(`${operation} completed successfully`),
+    error: (operation: string, error?: string) =>
       notifyError(`${operation} failed${error ? ': ' + error : ''}`),
-    loading: (operation: string) => notifyLoading(`${operation} in progress...`),
+    loading: (operation: string) =>
+      notifyLoading(`${operation} in progress...`),
   },
 
   /**
@@ -198,10 +203,12 @@ export const systemNotifications = {
    * Agent events
    */
   agents: {
-    created: (name: string) => notifySuccess(`Agent "${name}" created successfully`),
+    created: (name: string) =>
+      notifySuccess(`Agent "${name}" created successfully`),
     removed: (name: string) => notifyWarning(`Agent "${name}" removed`),
-    error: (name: string, error: string) => notifyError(`Agent "${name}" error: ${error}`),
-    statusChange: (name: string, status: string) => 
+    error: (name: string, error: string) =>
+      notifyError(`Agent "${name}" error: ${error}`),
+    statusChange: (name: string, status: string) =>
       notifyInfo(`Agent "${name}" status changed to ${status}`),
   },
 
@@ -211,11 +218,11 @@ export const systemNotifications = {
   tasks: {
     created: (title: string) => notifySuccess(`Task "${title}" created`),
     completed: (title: string) => notifySuccess(`Task "${title}" completed`),
-    failed: (title: string, error?: string) => 
+    failed: (title: string, error?: string) =>
       notifyError(`Task "${title}" failed${error ? ': ' + error : ''}`),
-    assigned: (title: string, agent: string) => 
+    assigned: (title: string, agent: string) =>
       notifyInfo(`Task "${title}" assigned to ${agent}`),
-  }
+  },
 };
 
 /**
@@ -230,7 +237,11 @@ export class NotificationQueue {
   private isProcessing = false;
   private delay = 300; // ms between notifications
 
-  add(message: string, type: NotificationType = 'info', options?: NotificationOptions): void {
+  add(
+    message: string,
+    type: NotificationType = 'info',
+    options?: NotificationOptions
+  ): void {
     this.queue.push({ message, type, options });
     if (!this.isProcessing) {
       this.process();
@@ -239,17 +250,17 @@ export class NotificationQueue {
 
   private async process(): Promise<void> {
     this.isProcessing = true;
-    
+
     while (this.queue.length > 0) {
       const item = this.queue.shift();
       if (item) {
         notify(item.message, item.type, item.options);
         if (this.queue.length > 0) {
-          await new Promise(resolve => setTimeout(resolve, this.delay));
+          await new Promise((resolve) => setTimeout(resolve, this.delay));
         }
       }
     }
-    
+
     this.isProcessing = false;
   }
 

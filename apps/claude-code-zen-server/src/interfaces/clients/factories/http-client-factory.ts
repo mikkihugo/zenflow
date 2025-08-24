@@ -7,11 +7,7 @@
  *
  * Key Features:
  * - Type-safe HTTP client creation and configuration
- * - Authentication presets(
-  Bearer,
-  API Key,
-  Basic Auth
-)
+ * - Authentication presets (Bearer, API Key, Basic Auth)
  * - Retry logic configuration and backoff strategies
  * - Health monitoring and metrics collection
  * - Load balancing and failover support
@@ -35,7 +31,6 @@ import type {
   ClientConfig,
   ClientMetrics,
   HealthCheckResult
-
 } from '../core/interfaces';
 
 /**
@@ -44,9 +39,7 @@ import type {
 export type AuthConfig =
   | { type: 'bearer'; token: string }
   | { type: 'apikey'; apiKey: string }
-  | {
-  type: 'basic'; username: string; password: string
-};
+  | { type: 'basic'; username: string; password: string };
 
 /**
  * Retry configuration interface.
@@ -54,8 +47,7 @@ export type AuthConfig =
 export interface RetryConfig {
   attempts: number;
   delay: number;
-  backoff?: 'linear' | 'exponential' | 'fixed'
-
+  backoff?: 'linear' | 'exponential' | 'fixed';
 }
 
 /**
@@ -64,8 +56,7 @@ export interface RetryConfig {
 export interface MonitoringConfig {
   metricsInterval?: number;
   healthCheckInterval?: number;
-  healthEndpoint?: string
-
+  healthEndpoint?: string;
 }
 
 /**
@@ -97,26 +88,24 @@ export class HTTPClientFactory implements ClientFactory<Client, HTTPClientConfig
   private logger: Logger;
 
   constructor() {
-    this.logger = getLogger('HTTPClientFactory)'
-}
+    this.logger = getLogger('HTTPClientFactory');
+  }
 
   // ===== Core ClientFactory Methods =====
 
   /**
    * Create a new HTTP client instance.
    */
-  async create(config: HTTPClientConfig: Promise<Client> {
+  async create(config: HTTPClientConfig): Promise<Client> {
     if (this.isShuttingDown) {
-  throw new Error('Factory is shutting down,
-  cannot create new clients);
+      throw new Error('Factory is shutting down, cannot create new clients');
+    }
 
-}
-
-    const clientName = config.name || 'http-client-' + Date.now() + ''';
+    const clientName = config.name || `http-client-${Date.now()}`;
 
     if (this.clients.has(clientName)) {
-      throw new Error('Client with name ' + clientName + ' already exists)'
-}
+      throw new Error(`Client with name '${clientName}' already exists`);
+    }
 
     try {
       const client = new HTTPClientAdapter(config);
@@ -128,161 +117,157 @@ export class HTTPClientFactory implements ClientFactory<Client, HTTPClientConfig
       this.clients.set(clientName, client);
 
       // Auto-connect if monitoring is enabled
-      if (config.monitoring?.enabled || config.health' {
+      if (config.monitoring?.enabled || config.health) {
         try {
-          await client.connect()
-} catch (error) {
-  // Remove failed client
+          await client.connect();
+        } catch (error) {
+          // Remove failed client
           this.clients.delete(clientName);
-          throw error
-
-}
+          throw error;
+        }
       }
 
-      this.logger.info('Created HTTP client: ' + clientName + ')';
-      return client
-} catch (error) {
-      this.logger.error('Failed to create HTTP client: ' + error + ');;
-      throw error
-}
+      this.logger.info(`Created HTTP client: ${clientName}`);
+      return client;
+    } catch (error) {
+      this.logger.error(`Failed to create HTTP client: ${error}`);
+      throw error;
+    }
   }
 
   /**
    * Get an existing client by name.
    */
-  get(name: string: Client | undefined {
-    return this.clients.get(name)
-}
+  get(name: string): Client | undefined {
+    return this.clients.get(name);
+  }
 
   /**
    * Register a client instance.
    */
-  register(name: string, client: Client): void  {
+  register(name: string, client: Client): void {
     if (this.clients.has(name)) {
-      throw new Error('Client with name ' + name + ' already exists);
-}
+      throw new Error(`Client with name '${name}' already exists`);
+    }
 
-    if (client instanceof HTTPClientAdapter' {
+    if (client instanceof HTTPClientAdapter) {
       this.clients.set(name, client);
       this.setupClientHandlers(client);
-      this.logger.debug('Registered HTTP client: ' + name + ')'
-} else {
-  throw new Error('Client must be an HTTPClientAdapter instance);
-
-}
+      this.logger.debug(`Registered HTTP client: ${name}`);
+    } else {
+      throw new Error('Client must be an HTTPClientAdapter instance');
+    }
   }
 
   /**
    * Unregister a client instance.
    */
-  unregister(name: string: boolean {
+  unregister(name: string): boolean {
     const client = this.clients.get(name);
     if (!client) {
-      return false
-}
+      return false;
+    }
 
     try {
       // Cleanup client if possible
       if (client.shutdown) {
         client.shutdown().catch((error) => {
-          this.logger.warn('Error during client shutdown: ' + error + );
-})
-}
+          this.logger.warn(`Error during client shutdown: ${error}`);
+        });
+      }
 
       this.clients.delete(name);
-      this.logger.debug('Unregistered HTTP client: ' + name + ')';
-      return true
-} catch (error) {
-      this.logger.error('Failed to unregister client ' + name + ': ${error});;
+      this.logger.debug(`Unregistered HTTP client: ${name}`);
+      return true;
+    } catch (error) {
+      this.logger.error(`Failed to unregister client ${name}: ${error}`);
       // Force remove even if cleanup failed
       this.clients.delete(name);
-      return true
-}
+      return true;
+    }
   }
 
   /**
    * Get all registered clients.
    */
-  getAll(': Client[] {
-    return Array.from(this.clients.values())
-}
+  getAll(): Client[] {
+    return Array.from(this.clients.values());
+  }
 
   /**
    * Validate client configuration.
    */
-  validateConfig(config: HTTPClientConfig): boolean  {
-    if(!config.baseURL || typeof config.baseURL !== `string) {
-      return false
-}
+  validateConfig(config: HTTPClientConfig): boolean {
+    if (!config.baseURL || typeof config.baseURL !== 'string') {
+      return false;
+    }
 
-    if(confi'.name && typeof config.name !== 'string) {
-      return false
-}
+    if (config.name && typeof config.name !== 'string') {
+      return false;
+    }
 
-    // Validate authentication confi' if present
+    // Validate authentication config if present
     if (config.authentication) {
       const auth = config.authentication;
       switch (auth.type) {
-  case bearer:
-          'eturn !!auth.token;
-        case apikey:
+        case 'bearer':
+          return !!auth.token;
+        case 'apikey':
           return !!auth.apiKey;
-        case basic:
+        case 'basic':
           return !!(auth.username && auth.password);
         default:
-          return false
-
-}
+          return false;
+      }
     }
 
-    return true
-}
+    return true;
+  }
 
-  /**;
-   * Shutdown all 'lients managed by this factory.
+  /**
+   * Shutdown all clients managed by this factory.
    */
-  async shutdown(): Promise<void>  {
+  async shutdown(): Promise<void> {
     this.isShuttingDown = true;
-    this.logger.info('Shutting down HTTP client factory);
+    this.logger.info('Shutting down HTTP client factory');
 
-    const shutdownPromises = Array.from(this.clients.values()'.map(
+    const shutdownPromises = Array.from(this.clients.values()).map(
       async (client) => {
         try {
-          await client.shutdown()
-} catch (error) {
-          this.logger.error('Failed to shutdown client ' + client.config.name + ': ${error})'
-}
+          await client.shutdown();
+        } catch (error) {
+          this.logger.error(`Failed to shutdown client ${client.config.name}: ${error}`);
+        }
       }
     );
 
     await Promise.allSettled(shutdownPromises);
     this.clients.clear();
-    this.logger.info('HTTP client factory shutdown completed)'
-}
+    this.logger.info('HTTP client factory shutdown completed');
+  }
 
   // ===== Extended Factory Methods =====
 
   /**
    * Create multiple HTTP clients in parallel.
    */
-  async createMultiple(configs: HTTPClientConfig[]': Promise<Client[]> {
+  async createMultiple(configs: HTTPClientConfig[]): Promise<Client[]> {
     const clients: Client[] = [];
     const errors: Array<{ config: HTTPClientConfig; error: Error }> = [];
 
     // Create all clients in parallel
     const promises = configs.map(async (config) => {
       try {
-  const client = await this.create(config);
+        const client = await this.create(config);
         clients.push(client);
-        return client
-
-} catch (error) {
+        return client;
+      } catch (error) {
         errors.push({
-  config,
-  error: error as Error
-});
-        throw error
-}
+          config,
+          error: error as Error
+        });
+        throw error;
+      }
     });
 
     // Wait for all creations to complete or fail
@@ -293,257 +278,232 @@ export class HTTPClientFactory implements ClientFactory<Client, HTTPClientConfig
       // Cleanup successful clients
       for (const client of clients) {
         try {
-  await client.shutdown();
+          await client.shutdown();
           const clientName = client.config.name || 'unknown';
-          this.clients.delete(clientName)
-
-} catch (cleanupError) {
-          this.logger.error('Failed to cleanup client: ' + cleanupError + ')'
-}
+          this.clients.delete(clientName);
+        } catch (cleanupError) {
+          this.logger.error(`Failed to cleanup client: ${cleanupError}`);
+        }
       }
 
       // Create aggregated error
       const errorMessages = errors
-        .map(({
-  config,
-  error
-}' => '' + config.name + ':'${error.message})
-        .join(''; )';
+        .map(({ config, error }) => `${config.name}: ${error.message}`)
+        .join('; ');
 
-      throw new Error('Failed to create ' + errors.length + ' clients: ${errorMessages})'
-}
+      throw new Error(`Failed to create ${errors.length} clients: ${errorMessages}`);
+    }
 
-    return clients
-}
+    return clients;
+  }
 
   /**
    * Create HTTP client with authentication preset.
    */
   async createWithAuth(
-  name: string,
-  baseURL: string,
-  authType: 'bearer' | 'apikey' | 'basic',
-    redentials: string | { username: string; password: string }
-): Promise<Client>  {
+    name: string,
+    baseURL: string,
+    authType: 'bearer' | 'apikey' | 'basic',
+    credentials: string | { username: string; password: string }
+  ): Promise<Client> {
     let authentication: AuthConfig;
 
     switch (authType) {
-      case bearer:
+      case 'bearer':
         authentication = {
-  type: 'bearer',
-  token: c'edentials as string
-
-};
+          type: 'bearer',
+          token: credentials as string
+        };
         break;
-      case apikey:
+      case 'apikey':
         authentication = {
-  tpe: 'apikey',
-  apiKe: credentials as string
-
-};
+          type: 'apikey',
+          apiKey: credentials as string
+        };
         break;
-      case basic: {
-        'onst basicCreds = credentials as { username: string; password: string };
+      case 'basic': {
+        const basicCreds = credentials as { username: string; password: string };
         authentication = {
-  type: 'basic',
-  username: basi'Creds.username,
-  password: basicCreds.password
-
-};
-        break
-}
+          type: 'basic',
+          username: basicCreds.username,
+          password: basicCreds.password
+        };
+        break;
+      }
       default:
-        throw new Error('Unsupported auth type: ' + authType + ')'
-}
+        throw new Error(`Unsupported auth type: ${authType}`);
+    }
 
     const config: HTTPClientConfig = {
       name,
       baseURL,
       authentication: authentication as any,
       retry: {
-  attempts: 3,
-  delay: 1000,
-  backoff: 'exponential'
-},
+        attempts: 3,
+        delay: 1000,
+        backoff: 'exponential'
+      },
       monitoring: {
-  enabed: true,
-  metricsInterval: 60000,
-  trackLatency: true,
-  trackThroughput: true,
-  trackErrors: true
-
-}
+        enabled: true,
+        metricsInterval: 60000,
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true
+      }
     };
 
-    return this.create(config)
-}
+    return this.create(config);
+  }
 
   /**
    * Create HTTP client with retry configuration.
    */
   async createWithRetry(
-  name: string,
-  baseURL: string,
-  retryConfig: RetryConfig
-): Promise<Client>  {
+    name: string,
+    baseURL: string,
+    retryConfig: RetryConfig
+  ): Promise<Client> {
     const config: HTTPClientConfig = {
       name,
       baseURL,
       retry: {
-  attempts: retryConfig.attempts,
-  delay: retryConfig.delay,
-  backoff: retryConfig.backoff || 'exponential;
-
-}
+        attempts: retryConfig.attempts,
+        delay: retryConfig.delay,
+        backoff: retryConfig.backoff || 'exponential'
+      }
     };
 
-    return this.create(config)
-}
+    return this.create(config);
+  }
 
   /**
-   * Create HTTP c'ient with monitoring enabled.
+   * Create HTTP client with monitoring enabled.
    */
   async createWithMonitoring(
-  name: string,
-  baseURL: string,
-  monitoringConfig?: MonitoringConfig
-): Promise<Client>  {
+    name: string,
+    baseURL: string,
+    monitoringConfig?: MonitoringConfig
+  ): Promise<Client> {
     const config: HTTPClientConfig = {
       name,
       baseURL,
       monitoring: {
-  enabled: true,
-  metricsInterval: monitoringConfig?.metricsInterval || 60000,
-  trackLatency: true,
-  trackThroughput: true,
-  trackErrors: true
-
-},
+        enabled: true,
+        metricsInterval: monitoringConfig?.metricsInterval || 60000,
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true
+      },
       health: monitoringConfig?.healthCheckInterval ? {
-  endpoint: monitoringConfig.healthEndpoint || '/health',
-  interval: monitoringConfig.'ealthCheckInterval,
-  timeout: 5000,
-  failureThreshold: 3,
-  successThreshold: 2
-
-} : undefined
+        endpoint: monitoringConfig.healthEndpoint || '/health',
+        interval: monitoringConfig.healthCheckInterval,
+        timeout: 5000,
+        failureThreshold: 3,
+        successThreshold: 2
+      } : undefined
     };
 
-    return this.create(config)
-}
+    return this.create(config);
+  }
 
   /**
    * Create load-balanced HTTP clients.
    */
   async createLoadBalanced(
-  baseName: string,
-  baseURLs: string[],
-  options?: {
-  strategy?: LoadBalancingStrategy;
-  healthCheck?: boolean
-
-}
-): Promise<Client[]>  {
+    baseName: string,
+    baseURLs: string[],
+    options?: {
+      strategy?: LoadBalancingStrategy;
+      healthCheck?: boolean;
+    }
+  ): Promise<Client[]> {
     const configs: HTTPClientConfig[] = baseURLs.map((baseURL, index) => ({
-      name: '' + baseName + '-${index}',
+      name: `${baseName}-${index}`,
       baseURL,
       monitoring: {
-  enabled: options?.healthCheck !== false,
-  metricsInterval: 30000,
-  trackLatency: true,
-  trackThroughput: true,
-  trackErrors: true
-
-},
+        enabled: options?.healthCheck !== false,
+        metricsInterval: 30000,
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true
+      },
       health: options?.healthCheck !== false ? {
-  endpoint: '/health',
-  interval: 10000,
-  timeout: 5000,
-  failureTreshold: 3,
-  successThreshold: 2
-
-} : undefined
+        endpoint: '/health',
+        interval: 10000,
+        timeout: 5000,
+        failureThreshold: 3,
+        successThreshold: 2
+      } : undefined
     }));
 
-    return this.createMultiple(configs)
-}
+    return this.createMultiple(configs);
+  }
 
   // ===== Batch Operations =====
 
   /**
    * Perform health check on all clients.
    */
-  async healthCheckAll(): Promise<Map<string, HealthCheckResult>>  {
+  async healthCheckAll(): Promise<Map<string, HealthCheckResult>> {
     const results = new Map<string, HealthCheckResult>();
 
     const promises = Array.from(this.clients.entries()).map(
       async ([name, client]) => {
         try {
-  const status = await client.healthCheck();
-          results.set(name,
-  status)
-
-} catch (error) {
-          results.set(
-  name,
-  {
+          const status = await client.healthCheck();
+          results.set(name, status);
+        } catch (error) {
+          results.set(name, {
             status: 'unhealthy',
-  timestamp: new Date(
-),
+            timestamp: new Date(),
             responseTime: -1,
             metadata: {
               error: (error as Error).message
             }
-          })
-}
+          });
+        }
       }
     );
 
     await Promise.allSettled(promises);
-    return results
-}
+    return results;
+  }
 
   /**
    * Get metrics for all clients.
    */
-  as'nc getMetricsAll(): Promise<Map<string, ClientMetrics>>  {
+  async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
 
     const promises = Array.from(this.clients.entries()).map(
       async ([name, client]) => {
         try {
-  const metrics = await client.getMetrics();
-          results.set(name,
-  metrics)
-
-} catch (error) {
+          const metrics = await client.getMetrics();
+          results.set(name, metrics);
+        } catch (error) {
           // Return empty metrics on error
-          results.set(
-  name,
-  {
-  totalOperations: 0,
-  successfulOperations: 0,
-  failedOperations: 0,
-  cacheHitRatio: 0,
-  averageLatency: 0,
-  throughput: 0,
-  concurrentOperations: 0,
-  uptime: 0
-
-}
-)
-}
+          results.set(name, {
+            totalOperations: 0,
+            successfulOperations: 0,
+            failedOperations: 0,
+            cacheHitRatio: 0,
+            averageLatency: 0,
+            throughput: 0,
+            concurrentOperations: 0,
+            uptime: 0
+          });
+        }
       }
     );
 
     await Promise.allSettled(promises);
-    return results
-}
+    return results;
+  }
 
   /**
    * Get clients by health status.
    */
-  async getClientsByStatus(status: ClientStatusFilter): Promise<Client[]>  {
+  async getClientsByStatus(status: ClientStatusFilter): Promise<Client[]> {
     const healthResults = await this.healthCheckAll();
     const matchingClients: Client[] = [];
 
@@ -551,13 +511,13 @@ export class HTTPClientFactory implements ClientFactory<Client, HTTPClientConfig
       if (healthResult.status === status) {
         const client = this.clients.get(name);
         if (client) {
-          matchingClients.push(client)
-}
+          matchingClients.push(client);
+        }
       }
     }
 
-    return matchingClients
-}
+    return matchingClients;
+  }
 
   // ===== Statistics and Information =====
 
@@ -565,76 +525,72 @@ export class HTTPClientFactory implements ClientFactory<Client, HTTPClientConfig
    * Get factory statistics.
    */
   getStats(): {
-  totalClients: number;
+    totalClients: number;
     connectedClients: number;
     averageResponseTime: number;
     totalRequests: number;
-    totalErrors: number
-
-} {
+    totalErrors: number;
+  } {
     let connectedCount = 0;
 
     for (const client of this.clients.values()) {
       if (client.isConnected) {
-        connectedCount++
-}
+        connectedCount++;
+      }
     }
 
     return {
-  totalClients: this.clients.size,
-  connectedClients: connectedCount,
-  averageResponseTime: 0,
-  // Would need to aggregate from metrics
-      totalRequests: 0,
-  // Would need to aggregate from metrics
+      totalClients: this.clients.size,
+      connectedClients: connectedCount,
+      averageResponseTime: 0, // Would need to aggregate from metrics
+      totalRequests: 0, // Would need to aggregate from metrics
       totalErrors: 0 // Would need to aggregate from metrics
-
-}
-}
+    };
+  }
 
   /**
    * Get active client count.
    */
-  getActiveCount(): number  {
-    return this.clients.size
-}
+  getActiveCount(): number {
+    return this.clients.size;
+  }
 
   /**
    * Check if factory has a client by name.
    */
-  has(name: string): boolean  {
-    return this.clients.has(name)
-}
+  has(name: string): boolean {
+    return this.clients.has(name);
+  }
 
   /**
    * List all client names.
    */
-  list(): string[]  {
-    return Array.from(this.clients.keys())
-}
+  list(): string[] {
+    return Array.from(this.clients.keys());
+  }
 
   // ===== Private Helper Methods =====
 
   /**
    * Setup event handlers for created clients.
    */
-  private setupClientHandlers(client: HTTPClientAdapter): void  {
-    client.on('error', (e'ror) => {
-      this.logger.error('Client ' + client.config.name + ' error:, error);
-});
+  private setupClientHandlers(client: HTTPClientAdapter): void {
+    client.on('error', (error) => {
+      this.logger.error(`Client ${client.config.name} error:`, error);
+    });
 
     client.on('connect', () => {
-      'his.logger.debug('Client ' + client.config.name + ' connected)
-});
+      this.logger.debug(`Client ${client.config.name} connected`);
+    });
 
     client.on('disconnect', () => {
-      'his.logger.debug('Client ' + client.config.name + ' disconnected)
-});
+      this.logger.debug(`Client ${client.config.name} disconnected`);
+    });
 
     client.on('retry', (info) => {
-      this.logger.debug('Client ' + client.config.name + ' retry attempt:', info)
-})
-}
+      this.logger.debug(`Client ${client.config.name} retry attempt:`, info);
+    });
+  }
 }
 
 /**
@@ -647,16 +603,17 @@ export const httpClientFactory = new HTTPClientFactory();
  */
 export const createHTTPClient = async (
   config: HTTPClientConfig
-`: Promise<Client> => {
-  return httpClientFactory.create(config)
+): Promise<Client> => {
+  return httpClientFactory.create(config);
 };
 
 /**
  * Convenience function to create multiple HTTP clients.
  */
-export const createHTTPClients = async(configs: HTTPClientConfig[]
-): Promise<Client[]> =>  {
-  return httpClientFactory.createMultiple(configs)
+export const createHTTPClients = async (
+  configs: HTTPClientConfig[]
+): Promise<Client[]> => {
+  return httpClientFactory.createMultiple(configs);
 };
 
 export default HTTPClientFactory;

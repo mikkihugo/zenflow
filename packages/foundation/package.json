@@ -36,46 +36,41 @@
     "logging",
     "dependency-injection",
     "config",
-    "storage",
     "claude-code-zen",
     "infrastructure",
     "error-handling",
     "result-pattern",
     "circuit-breaker",
     "retry-logic",
-    "typescript"
+    "typescript",
+    "forcing-patterns"
   ],
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
     "@logtape/logtape": "^1.0.4",
-    "@manypkg/find-root": "^2.2.3",
-    "@types/convict": "^6.1.6",
-    "@types/opossum": "^8.1.9",
     "awilix": "^12.0.5",
-    "convict": "^6.2.4",
-    "find-workspaces": "^0.3.1",
+    "cockatiel": "^3.2.1",
     "neverthrow": "^8.2.0",
-    "opossum": "^9.0.0",
-    "p-retry": "^6.2.1",
-    "ts-essentials": "^10.1.1",
-    "type-fest": "^4.41.0",
-    "validator": "^13.12.0",
-    "dompurify": "^3.1.7",
-    "@types/validator": "^13.12.2",
-    "@types/lodash": "^4.17.7",
     "zod": "^3.23.8",
-    "envalid": "^8.0.0",
     "exit-hook": "^4.0.0",
-    "p-timeout": "^6.1.2",
     "lodash": "^4.17.21",
     "commander": "^12.1.0",
     "nanoid": "^5.1.5",
     "date-fns": "^4.1.0"
   },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "optionalDependencies": {
+    "@manypkg/find-root": "^2.2.3",
+    "find-workspaces": "^0.3.1",
+    "type-fest": "^4.41.0"
+  },
   "_comment_database": "database is now integrated directly into foundation package",
   "devDependencies": {
     "@types/node": "22.17.1",
+    "@types/lodash": "^4.17.7",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
     "eslint": "^9.33.0",
@@ -89,45 +84,33 @@
       "import": "./dist/src/index.js",
       "require": "./dist/src/index.js"
     },
-    "./error-handling": {
-      "import": "./dist/src/error-handling.js",
-      "types": "./dist/src/error-handling.d.ts"
-    },
-    "./logging": {
-      "import": "./dist/src/logging.js",
-      "types": "./dist/src/logging.d.ts"
+    "./core": {
+      "types": "./dist/src/core.d.ts",
+      "import": "./dist/src/core.js"
     },
     "./di": {
-      "import": "./dist/di/index.js",
-      "types": "./dist/di/index.d.ts"
+      "types": "./dist/src/di.d.ts", 
+      "import": "./dist/src/di.js"
     },
-    "./di/container": {
-      "import": "./dist/di/container/di-container.js",
-      "types": "./dist/di/container/di-container.d.ts"
+    "./resilience": {
+      "types": "./dist/src/resilience.d.ts",
+      "import": "./dist/src/resilience.js"
     },
-    "./di/decorators/*": {
-      "import": "./dist/di/decorators/*.js",
-      "types": "./dist/di/decorators/*.d.ts"
+    "./utils": {
+      "types": "./dist/src/utils.d.ts",
+      "import": "./dist/src/utils.js"
     },
-    "./di/tokens/*": {
-      "import": "./dist/di/tokens/*.js",
-      "types": "./dist/di/tokens/*.d.ts"
+    "./full": {
+      "types": "./dist/src/index.full.d.ts",
+      "import": "./dist/src/index.full.js"
+    },
+    "./error-handling": {
+      "import": "./dist/src/error-handling/index.js",
+      "types": "./dist/src/error-handling/index.d.ts"
     },
     "./types": {
       "import": "./dist/src/types/index.js",
       "types": "./dist/src/types/index.d.ts"
-    },
-    "./facade-status-manager": {
-      "import": "./dist/src/facade-status-manager.js",
-      "types": "./dist/src/facade-status-manager.d.ts"
-    },
-    "./config": {
-      "import": "./dist/config.js",
-      "types": "./dist/config.d.ts"
-    },
-    "./utilities": {
-      "import": "./dist/src/utilities.js",
-      "types": "./dist/src/utilities.d.ts"
     }
   },
   "files": [

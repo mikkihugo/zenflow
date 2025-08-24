@@ -213,7 +213,10 @@ export class AgentLifecycleManager extends EventEmitter {
   ) {
     super();
     this.healthMonitor = new HealthMonitor(this.configuration, this.logger);
-    this.performanceTracker = new PerformanceTracker(this.configuration, this.logger);
+    this.performanceTracker = new PerformanceTracker(
+      this.configuration,
+      this.logger
+    );
     this.capabilityDiscovery = new CapabilityDiscovery();
     this.scalingEngine = new ScalingEngine(this.configuration, this.logger);
     this.recoveryEngine = new RecoveryEngine(this.configuration, this.logger);
@@ -223,18 +226,24 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private setupEventHandlers(): void {
-    this.eventBus.on(agent: heartbeat, (data: any) => {
+    this.eventBus.on('agent:heartbeat', (data: any) => {
       this.handleAgentHeartbeat(data);
     });
-    this.eventBus.on(agent:task-completed', (data: any) => {
+    this.eventBus.on('agent:task-completed', (data: any) => {
       this.handleTaskCompletion(data);
     });
-    this.eventBus.on(agent:task-failed', (data: any) => {
+    this.eventBus.on('agent:task-failed', (data: any) => {
       this.handleTaskFailure(data);
     });
-    this.eventBus.on(agent: error, this.handleAgentError.bind(this));
-    this.eventBus.on(system:resource-pressure', this.handleResourcePressure.bind(this));
-    this.eventBus.on(workload:demand-change', this.handleDemandChange.bind(this));
+    this.eventBus.on('agent:error', this.handleAgentError.bind(this));
+    this.eventBus.on(
+      'system:resource-pressure',
+      this.handleResourcePressure.bind(this)
+    );
+    this.eventBus.on(
+      'workload:demand-change',
+      this.handleDemandChange.bind(this)
+    );
   }
 
   /**
@@ -248,7 +257,7 @@ export class AgentLifecycleManager extends EventEmitter {
       type: template.type,
       capabilities: template.capabilities,
     });
-    this.emit(template: registered, { templateId: template.id });
+    this.emit('template:registered', { templateId: template.id });
   }
 
   /**
@@ -259,12 +268,14 @@ export class AgentLifecycleManager extends EventEmitter {
     const template = this.templates.get(request.templateId);
 
     if (!template) {
-      throw new Error('Template ' + request.templateId + ' not found);
+      throw new Error(`Template ${request.templateId} not found`);
     }
 
     // Check limits
     if (this.agents.size + request.count > this.configuration.maxAgents) {
-      throw new Error('Would exceed maximum agent limit (' + this.configuration.maxAgents + )');
+      throw new Error(
+        `Would exceed maximum agent limit (${this.configuration.maxAgents})`
+      );
     }
 
     const result: SpawnResult = {
@@ -300,7 +311,7 @@ export class AgentLifecycleManager extends EventEmitter {
         duration: result.duration,
       });
 
-      this.emit(agents: spawned, { request, result });
+      this.emit('agents:spawned', { request, result });
       return result;
     } catch (error) {
       this.logger.error('Agent spawn request failed', { request, error });
@@ -350,12 +361,15 @@ export class AgentLifecycleManager extends EventEmitter {
     };
   }
 
-  private async spawnSingleAgent(template: AgentTemplate, request: SpawnRequest): Promise<string> {
+  private async spawnSingleAgent(
+    template: AgentTemplate,
+    request: SpawnRequest
+  ): Promise<string> {
     const agentId = this.generateAgentId(template.type);
     const agent: AgentInstance = {
       id: agentId,
       templateId: template.id,
-      name: '' + template.name + '-${agentId.slice(-8)}',
+      name: `${template.name}-${agentId.slice(-8)}`,
       type: template.type,
       status: 'spawning',
       startTime: new Date(),
@@ -374,7 +388,7 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private generateAgentId(type: string): string {
-    return '' + type + '-${Date.now()}-${Math.random().toString(36).substring(2, 10)};;
+    return `${type}-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
   }
 
   private initializeHealth(): HealthStatus {
@@ -426,7 +440,7 @@ export class AgentLifecycleManager extends EventEmitter {
     this.processingInterval = setInterval(async () => {
       await this.processSpawnQueue();
       await this.processTerminationQueue();
-      await this.updateMetrics();
+      this.updateMetrics();
     }, 1000);
   }
 
@@ -451,14 +465,15 @@ export class AgentLifecycleManager extends EventEmitter {
     this.metrics.totalAgents = agents.length;
 
     // Reset status counts
-    Object.keys(this.metrics.agentsByStatus).forEach(status => {
+    Object.keys(this.metrics.agentsByStatus).forEach((status) => {
       this.metrics.agentsByStatus[status as AgentStatus] = 0;
     });
 
     // Count agents by status and type
     for (const agent of agents) {
       this.metrics.agentsByStatus[agent.status]++;
-      this.metrics.agentsByType[agent.type] = (this.metrics.agentsByType[agent.type] || 0) + 1;
+      this.metrics.agentsByType[agent.type] =
+        (this.metrics.agentsByType[agent.type] || 0) + 1;
     }
   }
 
@@ -467,7 +482,7 @@ export class AgentLifecycleManager extends EventEmitter {
     const agent = this.agents.get(data?.agentId);
     if (agent) {
       agent.lastSeen = new Date();
-      if(agent.status === 'ready) {
+      if (agent.status === 'ready') {
         agent.status = 'idle';
       }
     }
@@ -491,7 +506,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private handleAgentError(data: any): void {
     const agent = this.agents.get(data?.agentId);
-    if(agent && data?.error?.severity === 'critical) {
+    if (agent && data?.error?.severity === 'critical') {
       agent.status = 'unhealthy';
     }
   }
@@ -505,7 +520,7 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down agent lifecycle manager);
+    this.logger.info('Shutting down agent lifecycle manager');
 
     // Stop processing
     if (this.processingInterval) clearInterval(this.processingInterval);
@@ -573,7 +588,10 @@ class RecoveryEngine {
     private readonly logger: Logger
   ) {}
 
-  async recoverAgent(agent: AgentInstance, template: AgentTemplate): Promise<void> {
+  async recoverAgent(
+    agent: AgentInstance,
+    template: AgentTemplate
+  ): Promise<void> {
     // Implement agent recovery logic
   }
 }

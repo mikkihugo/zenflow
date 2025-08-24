@@ -1,0 +1,1 @@
+{"type":"gpt_function_call","timestamp":"2025-08-24T09:17:39.372Z","model":"gpt-4.1","tokensUsed":836,"functionName":"fix_typescript_syntax","fixesApplied":4,"claudeNeeded":0,"file":"test-function-calling.ts","tier":"gpt4.1"}

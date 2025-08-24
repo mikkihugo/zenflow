@@ -4,10 +4,7 @@
  * Provides unified interface and cross-system intelligence.
  */
 
-import {
-  getLogger,
-  TypedEventBase
-} from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type { LoggerInterface } from '@claude-zen/foundation';
 
 export interface CoordinatorConfig {
@@ -15,8 +12,7 @@ export interface CoordinatorConfig {
   timeout?: number;
   retryAttempts?: number;
   enableCaching?: boolean;
-  cacheSize?: number
-
+  cacheSize?: number;
 }
 
 export interface OperationContext {
@@ -25,9 +21,7 @@ export interface OperationContext {
   data: any;
   startTime: number;
   timeout?: number;
-  metadata?: Record<string,
-  unknown>
-
+  metadata?: Record<string, unknown>;
 }
 
 export interface CoordinationResult {
@@ -36,8 +30,7 @@ export interface CoordinationResult {
   status: 'completed' | 'failed' | 'timeout' | 'cancelled';
   result?: any;
   error?: Error;
-  duration?: number
-
+  duration?: number;
 }
 
 export interface SystemStatus {
@@ -45,8 +38,7 @@ export interface SystemStatus {
   activeOperations: number;
   cacheSize: number;
   systems: string[];
-  health: 'healthy' | 'degraded' | 'unhealthy'
-
+  health: 'healthy' | 'degraded' | 'unhealthy';
 }
 
 /**
@@ -60,51 +52,41 @@ export class MultiSystemCoordinator extends TypedEventBase {
   private crossSystemCache = new Map<string, any>();
   private configuration: CoordinatorConfig;
 
-  constructor(
-    logger: LoggerInterface,
-    configuration: CoordinatorConfig = {}
-  ) {
+  constructor(logger: LoggerInterface, configuration: CoordinatorConfig = {}) {
     super();
-    this.logger = logger || getLogger('MultiSystemCoordinator);
+    this.logger = logger || getLogger('MultiSystemCoordinator');
     this.configuration = {
-  systems: [],
-  timeout: 30000,
-  retryAttempts: 3,
-  enableCaching: true,
-  cacheSize: 1000,
-  ...configuration
-
-};
-    this.logger.info('MultiSystemCoordinator created)'
-}
+      systems: [],
+      timeout: 30000,
+      retryAttempts: 3,
+      enableCaching: true,
+      cacheSize: 1000,
+      ...configuration,
+    };
+    this.logger.info('MultiSystemCoordinator created');
+  }
 
   /**
    * Initialize all systems with coordination.
    */
-  async initialize(': Promise<void> {
-    this.logger.info('Initializing Multi-System Coordinator...);
+  async initialize(): Promise<void> {
+    this.logger.info('Initializing Multi-System Coordinator...');
 
     try {
       // Initialize systems - placeholder implementation
       // In a real implementation, this would initialize actual system connections
 
       this.isInitialized = true;
-      this.logger.info('Multi-System Coordinator initialized successfully);
+      this.logger.info('Multi-System Coordinator initialized successfully');
 
-      this.emit(
-  'initialized',
-  {
-  systems: this.configuration.systems || [],
-  timestamp: Date.now(
-)
-
-})
-} catch (error) {
-  this.logger.error('Failed to initialize Multi-System Coordinator',
-  e'ror)';
-      throw error
-
-}
+      this.emit('initialized', {
+        systems: this.configuration.systems || [],
+        timestamp: Date.now(),
+      });
+    } catch (error) {
+      this.logger.error('Failed to initialize Multi-System Coordinator', error);
+      throw error;
+    }
   }
 
   /**
@@ -115,116 +97,91 @@ export class MultiSystemCoordinator extends TypedEventBase {
    * @returns Promise resolving to coordination result
    */
   async coordinateOperation(
-  operation: string,
-  data: any,
-  options: {
-  timeout?: number;
+    operation: string,
+    data: any,
+    options: {
+      timeout?: number;
       priority?: 'low' | 'normal' | 'high';
-      metadata?: Record<string,
-  unknown>
-
-} = {}
-): Promise<CoordinationResult>  {
+      metadata?: Record<string, unknown>;
+    } = {}
+  ): Promise<CoordinationResult> {
     if (!this.isInitialized) {
-  throw new Error('MultiSystemCoordinator not initialized);
+      throw new Error('MultiSystemCoordinator not initialized');
+    }
 
-}
-
-    const operationId = 'op_' + Date.now() + '_${
-  Math.random().toString(36).substring(2,
-  '11)
-}`';
+    const operationId = `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
     const context: OperationContext = {
-  operationId,
-  operation,
-  data,
-  startTime,
-  timeout: options.timeout || this.configuration.timeout,
-  metadata: options.metadata
-
-};
+      operationId,
+      operation,
+      data,
+      startTime,
+      timeout: options.timeout || this.configuration.timeout,
+      metadata: options.metadata,
+    };
 
     this.activeOperations.set(operationId, context);
 
     try {
-      this.logger.debug(
-  'Coordinating operation: ' + operation + '',
-  {
-  operationId,
-  priority: options.priority || 'normal'
+      this.logger.debug('Coordinating operation: ' + operation, {
+        operationId,
+        priority: options.priority || 'normal',
+      });
 
-}
-);
+      this.emit('operation:started', {
+        operationId,
+        operation,
+        timestamp: startTime,
+      });
 
-      this.emit(
-  operation: started,
-  {
-  operationId,
-  operation,
-  timestamp: startTime
-
-}
-);
-
-      // Placehol'er coordination logic
+      // Placeholder coordination logic
       // In a real implementation, this would coordinate across actual systems
       const result = await this.executeCoordination(context);
 
       const duration = Date.now() - startTime;
       const coordinationResult: CoordinationResult = {
-  operationId,
-  operation,
-  status: 'completed',
-  result,
-  'uration
-
-};
+        operationId,
+        operation,
+        status: 'completed',
+        result,
+        duration,
+      };
 
       this.activeOperations.delete(operationId);
 
-      this.emit(
-  operation: completed,
-  {
-  operationId,
-  operation,
-  'uration,
-  timestamp: Date.now(
-)
+      this.emit('operation:completed', {
+        operationId,
+        operation,
+        duration,
+        timestamp: Date.now(),
+      });
 
-});
-
-      return coordinationResult
-} catch (error) {
+      return coordinationResult;
+    } catch (error) {
       this.activeOperations.delete(operationId);
       const duration = Date.now() - startTime;
 
-      this.logger.error('Operation failed: ' + operation + '', error)';
+      this.logger.error('Operation failed: ' + operation, error);
 
-      this.emit(
-  operation: failed,
-  {
-  operationId,
-  operation,
-  error: error.message,
-  'uration,
-  timestamp: Date.now(
-)
-
-});
+      this.emit('operation:failed', {
+        operationId,
+        operation,
+        error: (error as Error).message,
+        duration,
+        timestamp: Date.now(),
+      });
 
       const coordinationResult: CoordinationResult = {
-  operationId,
-  operation,
-  status: 'failed',
-  error: error as Error,
-  'uration
+        operationId,
+        operation,
+        status: 'failed',
+        error: error as Error,
+        duration,
+      };
 
-};
-
-      return coordinationResult
-}
+      return coordinationResult;
+    }
   }
 
   /**
@@ -232,123 +189,117 @@ export class MultiSystemCoordinator extends TypedEventBase {
    * @param context Operation context
    * @returns Promise resolving to operation result
    */
-  private async executeCoordination(context: OperationContext): Promise<any>  {
-    const {
-  operation,
-  data
-} = context;
+  private async executeCoordination(context: OperationContext): Promise<any> {
+    const { operation, data } = context;
 
     // Check cache first if enabled
     if (this.configuration.enableCaching) {
-      const cacheKey = '' + operation + ':${JSON.stringify(data)}'';
+      const cacheKey = `${operation}:${JSON.stringify(data)}`;
       const cachedResult = this.crossSystemCache.get(cacheKey);
 
       if (cachedResult) {
-        this.logger.debug('Cache hit for operation: ' + operation + ')';
-        return cachedResult
-}
+        this.logger.debug('Cache hit for operation: ' + operation);
+        return cachedResult;
+      }
     }
 
     // Simulate coordination across systems
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const result = {
-  operation,
-  data,
-  timestamp: Date.now(),
-  systems: this.configuration.systems || [],
-  coordinated: true
-
-};
+      operation,
+      data,
+      timestamp: Date.now(),
+      systems: this.configuration.systems || [],
+      coordinated: true,
+    };
 
     // Cache result if enabled
-    if (this.configuration.enableCaching` {
-      const cacheKey = '' + operation + ':${JSON.stringify(data)}'';
+    if (this.configuration.enableCaching) {
+      const cacheKey = `${operation}:${JSON.stringify(data)}`;
 
       // Implement cache size limit
-      if (this.crossSystemCache.size >= (this.configuration.cacheSize || 1000)) {
+      if (
+        this.crossSystemCache.size >= (this.configuration.cacheSize || 1000)
+      ) {
         const firstKey = this.crossSystemCache.keys().next().value;
         if (firstKey) {
-          this.crossSystemCache.delete(firstKey)
-}
+          this.crossSystemCache.delete(firstKey);
+        }
       }
 
-      this.crossSystemCache.set(cacheKey, result)
-}
+      this.crossSystemCache.set(cacheKey, result);
+    }
 
-    return result
-}
+    return result;
+  }
 
   /**
    * Get coordination status.
    * @returns Current coordinator status
    */
-  getStatus(): SystemStatus  {
-    const health = this.isInitialized ?
-      (this.activeOperations.size > 100 ? 'degraded' : 'healthy') :
-      'unhealthy;;
+  getStatus(): SystemStatus {
+    const health = this.isInitialized
+      ? this.activeOperations.size > 100
+        ? 'degraded'
+        : 'healthy'
+      : 'unhealthy';
 
     return {
-  initialized: this.isInitialized,
-  activeOperations: this.activeOperations.size,
-  cacheSize: this.crossSystemCache.size,
-  systems: this.configuration.systems || [],
-  health
-
-}
-}
+      initialized: this.isInitialized,
+      activeOperations: this.activeOperations.size,
+      cacheSize: this.crossSystemCache.size,
+      systems: this.configuration.systems || [],
+      health,
+    };
+  }
 
   /**
    * Get active operations information.
    * @returns Array of active operation contexts
    */
-  getActiveOperations(): OperationContext[]  {
-    return Array.from(this.activeOperations.values())
-}
+  getActiveOperations(): OperationContext[] {
+    return Array.from(this.activeOperations.values());
+  }
 
   /**
    * Cancel a specific operation.
    * @param operationId Operation identifier to cancel
    * @returns true if operation was cancelled, false if not found
    */
-  cancelOperation(operationId: string): boolean  {
+  cancelOperation(operationId: string): boolean {
     const operation = this.activeOperations.get(operationId);
     if (operation) {
       this.activeOperations.delete(operationId);
 
-      this.emit(
-  operation: cancelled,
-  {
-  operationId,
-  operation: operation.operation,
-  timestamp: Date.now(
-)
+      this.emit('operation:cancelled', {
+        operationId,
+        operation: operation.operation,
+        timestamp: Date.now(),
+      });
 
-});
-
-      return true
-}
-    return false
-}
+      return true;
+    }
+    return false;
+  }
 
   /**
-   * Clear coor'ination cache.
+   * Clear coordination cache.
    */
-  clearCache(): void  {
-  this.crossSystemCache.clear();
-    this.logger.info('Coordination cache cleared)'
-
-}
+  clearCache(): void {
+    this.crossSystemCache.clear();
+    this.logger.info('Coordination cache cleared');
+  }
 
   /**
    * Shutdown coordinator and cleanup resources.
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Multi-System Coordinator...);
+    this.logger.info('Shutting down Multi-System Coordinator...');
 
     // Cancel all active operations
     const activeOperationIds = Array.from(this.activeOperations.keys());
-    activeOperationIds.forEach(id => this.cancelOperation(id));
+    activeOperationIds.forEach((id) => this.cancelOperation(id));
 
     // Clear resources
     this.activeOperations.clear();
@@ -356,9 +307,9 @@ export class MultiSystemCoordinator extends TypedEventBase {
     this.isInitialized = false;
 
     this.emit('shutdown', {
-      timestamp: Date.'ow()
+      timestamp: Date.now(),
     });
 
-    this.logger.info('Multi-System Coordinator shutdown completed)'
-}
+    this.logger.info('Multi-System Coordinator shutdown completed');
+  }
 }

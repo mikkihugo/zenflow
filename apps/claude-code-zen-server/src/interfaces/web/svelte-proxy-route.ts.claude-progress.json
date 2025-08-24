@@ -1,0 +1,4 @@
+{"type":"gpt_response","timestamp":"2025-08-24T03:07:17.103Z","model":"gpt-4.1","tokensUsed":4883,"contentLength":8679,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-proxy-route.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T03:07:46.669Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-proxy-route.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T03:08:15.997Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-proxy-route.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T03:08:16.033Z","contentLength":8089,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-proxy-route.ts","tier":"inference"}

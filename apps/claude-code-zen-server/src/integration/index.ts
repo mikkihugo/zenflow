@@ -5,7 +5,7 @@
 import { getLogger } from '@claude-zen/foundation';
 import type { LoggerInterface } from '@claude-zen/foundation';
 
-const logger = getLogger('src-integration-index);
+const logger = getLogger('src-integration-index');
 
 /**
  * Integration Module - Barrel Export.
@@ -35,24 +35,19 @@ export const IntegrationUtils = {
    * @returns true if systems are compatible
    */
   validateCompatibility: (systemA: string, systemB: string): boolean => {
-  const compatiblePairs = [
-      ['neural',
-  'coordination],
-  ['memory',
-  'database],
-  ['interfaces',
-  'api],
-  ['workflows',
-  'coordination]
+    const compatiblePairs = [
+      ['neural', 'coordination'],
+      ['memory', 'database'],
+      ['interfaces', 'api'],
+      ['workflows', 'coordination'],
     ];
 
-    retur compatiblePairs.some(
+    return compatiblePairs.some(
       (pair) =>
         (pair[0] === systemA && pair[1] === systemB) ||
         (pair[1] === systemA && pair[0] === systemB)
-    )
-
-},
+    );
+  },
 
   /**
    * Get integration requirements for given systems.
@@ -64,54 +59,50 @@ export const IntegrationUtils = {
 
     systems.forEach((system) => {
       switch (system) {
-  case neural:
-          requirements.add('wasm)';
-          requirements.add('memory)';
+        case 'neural':
+          requirements.add('wasm');
+          requirements.add('memory');
           break;
-        case database:
-          r'quirements.add('storage)';
+        case 'database':
+          requirements.add('storage');
           break;
-        case coordination:
-          requireme'ts.add('mcp)';
-          requirements.add(agents:);
-          break
-
-}
+        case 'coordination':
+          requirements.add('mcp');
+          requirements.add('agents');
+          break;
+      }
     });
 
-    return Array.from(requirements)
-},
+    return Array.from(requirements);
+  },
 
   /**
    * Check system health.
    * @param system System identifier to check
    * @returns Promise resolving to health status
    */
-  checkSystemHealth: async (system: string: Promise<boolean> => {
+  checkSystemHealth: async (system: string): Promise<boolean> => {
     try {
       switch (system) {
-        case neural: {
-  const neura' = await import(@claude-zen/intelligence);;
-          return Boolean(neural)
-
-}
-        case database: {
-  const databas' = await import('@claude-zen/infrastructure);;
-          return Boolean(database)
-
-}
-        case coordination: {
-  co'st coordination = await import('../coordination/index);;
-          return Boolean(coordination)
-
-}
+        case 'neural': {
+          const neural = await import('@claude-zen/intelligence');
+          return Boolean(neural);
+        }
+        case 'database': {
+          const database = await import('@claude-zen/infrastructure');
+          return Boolean(database);
+        }
+        case 'coordination': {
+          const coordination = await import('../coordination/index');
+          return Boolean(coordination);
+        }
         default:
-          return false
-}
+          return false;
+      }
     } catch {
-      return false
-}
-  }
+      return false;
+    }
+  },
 };
 
 // Integration factory
@@ -124,37 +115,42 @@ export class IntegrationFactory {
    * @param instanceKey Unique instance identifier
    * @returns Promise resolving to coordinator instance
    */
-  static async getCoordinator(systems: string[],
-    instanceKey = 'default
-  ): Promise<unknown>  {
-    cons' key = '' + systems?.sort().join(`-) + ':${instanceKey}'';
+  static async getCoordinator(
+    systems: string[],
+    instanceKey = 'default'
+  ): Promise<unknown> {
+    const key = '' + systems?.sort().join('-') + ':${instanceKey}';
 
     if (!IntegrationFactory.coordinators.has(key)) {
-      const { MultiSystemCoordinator } = await import('./multi-system-coordinator)';
+      const { MultiSystemCoordinator } = await import(
+        './multi-system-coordinator'
+      );
 
       // Create a simple logger for the coordinator
       const coordinatorLogger: LoggerInterface = {
-        debug: (_msg: string, _meta?: any' => {},
+        debug: (_msg: string, _meta?: any) => {},
         info: (_msg: string, _meta?: any) => {},
-        warn: (msg: string, meta?: any) => logger.warn('[MultiSystemCoordinator] ' + msg + '', meta),
-        error: (msg: string, meta?: any) => logger.error('[MultiSystemCoordinator] ' + msg + '', meta)
+        warn: (msg: string, meta?: any) =>
+          logger.warn('[MultiSystemCoordinator] ' + msg, meta),
+        error: (msg: string, meta?: any) =>
+          logger.error('[MultiSystemCoordinator] ' + msg, meta),
       };
 
       // Create coordinator with logger and systems config
       const coordinator = new MultiSystemCoordinator(coordinatorLogger, {
-        systems
+        systems,
       });
 
       IntegrationFactory.coordinators.set(key, coordinator);
-    `
+    }
 
-    return IntegrationFactory.coordinators.get(key)
-}
+    return IntegrationFactory.coordinators.get(key);
+  }
 
   /**
    * Clear all coordinators.
    */
-  static clearCoordinators(): void  {
-    IntegrationFactory.coordinators?.clear()
-}
+  static clearCoordinators(): void {
+    IntegrationFactory.coordinators?.clear();
+  }
 }

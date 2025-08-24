@@ -24,42 +24,35 @@ export type {
   QueryResult,
   SearchOptions,
   SearchResult,
-  DocumentMetrics'
-
+  DocumentMetrics,
 } from './base-document-service';
 
 // Document Manager
-export {
-  DocumentManager,
-  createDocumentManager
-
-} from './document-service';
+export { DocumentManager, createDocumentManager } from './document-service';
 export type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
-  WorkflowAutomationRule'
-
+  WorkflowAutomationRule,
 } from './document-service';
 
 // Architecture Runway Service (formerly ADR)
-export { ArchitectureRunwayService,
-  architectureRunwayService
-
- } from './architecture-runway-service';
+export {
+  ArchitectureRunwayService,
+  architectureRunwayService,
+} from './architecture-runway-service';
 export type {
   ArchitectureRunwayCreateOptions,
   ArchitectureRunwayQueryOptions,
   ArchitectureRunwayStats,
-  DecisionStatus'
-
+  DecisionStatus,
 } from './architecture-runway-service';
 
 // Business Epic Service (formerly PRD)
-export { BusinessEpicService,
-  businessEpicService
-
- } from './business-epic-service';
+export {
+  BusinessEpicService,
+  businessEpicService,
+} from './business-epic-service';
 export type {
   BusinessEpicCreateOptions,
   BusinessEpicQueryOptions,
@@ -67,49 +60,33 @@ export type {
   FunctionalRequirement,
   NonFunctionalRequirement,
   UserStory,
-  RequirementProgress'
-
+  RequirementProgress,
 } from './business-epic-service';
 
 // Program Epic Service
-export {
-  ProgramEpicService,
-  programEpicService
-
-} from './program-epic-service';
+export { ProgramEpicService, programEpicService } from './program-epic-service';
 export type {
   ProgramEpicCreateOptions,
   ProgramEpicQueryOptions,
-  ProgramEpicStats'
-
+  ProgramEpicStats,
 } from './program-epic-service';
 
 // Feature Service
-export {
-  FeatureService,
-  featureService
-
-} from './feature-service';
+export { FeatureService, featureService } from './feature-service';
 export type {
   FeatureCreateOptions,
   FeatureQueryOptions,
   FeatureStats,
-  BenefitHypothesis'
-
+  BenefitHypothesis,
 } from './feature-service';
 
 // Story Service
-export {
-  StoryService,
-  storyService
-
-} from './story-service';
+export { StoryService, storyService } from './story-service';
 export type {
   StoryCreateOptions,
   StoryQueryOptions,
   StoryStats,
-  AcceptanceCriteria'
-
+  AcceptanceCriteria,
 } from './story-service';
 
 // SAFe Document Hierarchy Utilities
@@ -122,38 +99,43 @@ export const SAFE_DOCUMENT_RELATIONSHIPS = {
 } as const;
 
 // Document type guards
-export function isBusinessEpic(doc: any): boolean  {
-  return doc?.type = '== SAFE_DOCUMENT_HIERARCHY.BUSINESS_EPIC'
-
+export function isBusinessEpic(doc: any): boolean {
+  return doc?.type == SAFE_DOCUMENT_HIERARCHY.BUSINESS_EPIC;
 }
 
-export function isProgramEpic(doc: any): boolean  {
-  return doc?.type = '== SAFE_DOCUMENT_HIERARCHY.PROGRAM_EPIC'
-
+export function isProgramEpic(doc: any): boolean {
+  return doc?.type == SAFE_DOCUMENT_HIERARCHY.PROGRAM_EPIC;
 }
 
-export function isFeature(doc: any): boolean  {
-  return doc?.type = '== SAFE_DOCUMENT_HIERARCHY.FEATURE'
-
+export function isFeature(doc: any): boolean {
+  return doc?.type == SAFE_DOCUMENT_HIERARCHY.FEATURE;
 }
 
-export function isStory(doc: any): boolean  {
-  return doc?.type = '== SAFE_DOCUMENT_HIERARCHY.STORY'
-
+export function isStory(doc: any): boolean {
+  return doc?.type == SAFE_DOCUMENT_HIERARCHY.STORY;
 }
 
-export function isArchitectureRunway(doc: any): boolean  {
-  return doc?.type = '== SAFE_DOCUMENT_HIERARCHY.ARCHITECTURE_RUNWAY;
-
+export function isArchitectureRunway(doc: any): boolean {
+  return doc?.type == SAFE_DOCUMENT_HIERARCHY.ARCHITECTURE_RUNWAY;
 }
 
 // Service factory
-export class DocumentServiceFactory { static createArchitectureRunwayService(): ArchitectureRunwayService  { return new ArchitectureRunwayService()
-} static createBusinessEpicService(): BusinessEpicService  { return new BusinessEpicService()
-} static createProgramEpicService(): ProgramEpicService  { return new ProgramEpicService()
-} static createFeatureService(): FeatureService  { return new FeatureService()
-} static createStoryService(): StoryService  { return new StoryService()
-}
+export class DocumentServiceFactory {
+  static createArchitectureRunwayService(): ArchitectureRunwayService {
+    return new ArchitectureRunwayService();
+  }
+  static createBusinessEpicService(): BusinessEpicService {
+    return new BusinessEpicService();
+  }
+  static createProgramEpicService(): ProgramEpicService {
+    return new ProgramEpicService();
+  }
+  static createFeatureService(): FeatureService {
+    return new FeatureService();
+  }
+  static createStoryService(): StoryService {
+    return new StoryService();
+  }
 }
 
 // Convenience exports for backward compatibility
@@ -162,14 +144,12 @@ export const documentServices = {
   businessEpic: businessEpicService,
   programEpic: programEpicService,
   feature: featureService,
-  story: storyService
-
+  story: storyService,
 };
 
 export default {
   DocumentServiceFactory,
   documentServices,
   SAFE_DOCUMENT_HIERARCHY,
-  SAFE_DOCUMENT_RELATIONSHIPS'
-
+  SAFE_DOCUMENT_RELATIONSHIPS,
 };

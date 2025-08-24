@@ -72,37 +72,42 @@ interface Project {
 
 class ApiClient {
   private baseUrl: string;
-  public currentProjectId: string|null = null;
+  public currentProjectId: string | null = null;
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
   }
 
   // Set current project context for all API calls
-  setProjectContext(projectId: string|null) {
+  setProjectContext(projectId: string | null) {
     this.currentProjectId = projectId;
     console.log('🎯 API client project context updated:', projectId);
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
     // Add project context as query parameter if available
     let url = `${this.baseUrl}${endpoint}`;
     if (this.currentProjectId) {
       const separator = endpoint.includes('?') ? '&' : '?';
       url += `${separator}projectId=${encodeURIComponent(this.currentProjectId)}`;
     }
-    
+
     const defaultOptions: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
         // Also add project context as header for server preference
-        ...(this.currentProjectId && { 'X-Project-Context': this.currentProjectId }),
+        ...(this.currentProjectId && {
+          'X-Project-Context': this.currentProjectId,
+        }),
       },
     };
 
     try {
       const response = await fetch(url, { ...defaultOptions, ...options });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -117,8 +122,10 @@ class ApiClient {
   // ===== COORDINATION API =====
 
   async getAgents(): Promise<Agent[]> {
-    const response = await this.request<{ agents: Agent[]; total: number }>('/v1/coordination/agents');
-    return response.agents||[];
+    const response = await this.request<{ agents: Agent[]; total: number }>(
+      '/v1/coordination/agents'
+    );
+    return response.agents || [];
   }
 
   async createAgent(agentData: Partial<Agent>): Promise<Agent> {
@@ -166,7 +173,11 @@ class ApiClient {
     });
   }
 
-  async initializeSwarm(config: { topology: string; maxAgents: number; strategy?: string }): Promise<any> {
+  async initializeSwarm(config: {
+    topology: string;
+    maxAgents: number;
+    strategy?: string;
+  }): Promise<any> {
     return await this.request('/v1/coordination/swarm/initialize', {
       method: 'POST',
       body: JSON.stringify(config),
@@ -179,7 +190,9 @@ class ApiClient {
 
   async getMetrics(timeRange?: string): Promise<PerformanceMetrics> {
     const params = timeRange ? `?timeRange=${timeRange}` : '';
-    return await this.request<PerformanceMetrics>(`/v1/coordination/metrics${params}`);
+    return await this.request<PerformanceMetrics>(
+      `/v1/coordination/metrics${params}`
+    );
   }
 
   // ===== MEMORY API =====
@@ -189,8 +202,10 @@ class ApiClient {
   }
 
   async getMemoryStores(): Promise<any[]> {
-    const response = await this.request<{ stores: any[]; total: number }>('/v1/memory/stores');
-    return response.stores||[];
+    const response = await this.request<{ stores: any[]; total: number }>(
+      '/v1/memory/stores'
+    );
+    return response.stores || [];
   }
 
   async getMemoryStats(storeId: string): Promise<any> {
@@ -222,7 +237,10 @@ class ApiClient {
     });
   }
 
-  async executeCommand(commandData: { sql: string; params?: any[] }): Promise<any> {
+  async executeCommand(commandData: {
+    sql: string;
+    params?: any[];
+  }): Promise<any> {
     return await this.request('/v1/database/execute', {
       method: 'POST',
       body: JSON.stringify(commandData),
@@ -230,7 +248,7 @@ class ApiClient {
   }
 
   async executeTransaction(transactionData: {
-    operations: Array<{ type: 'query|execute''; sql: string; params?: any[] }>;
+    operations: Array<{ type: 'query|execute'; sql: string; params?: any[] }>;
     useTransaction?: boolean;
   }): Promise<any> {
     return await this.request('/v1/database/transaction', {
@@ -253,27 +271,44 @@ class ApiClient {
 
   // ===== ADVANCED MEMORY API =====
 
-  async getMemoryKeys(storeId: string, pattern?: string, limit = 100): Promise<any> {
+  async getMemoryKeys(
+    storeId: string,
+    pattern?: string,
+    limit = 100
+  ): Promise<any> {
     const params = new URLSearchParams({ limit: limit.toString() });
     if (pattern) params.append('pattern', pattern);
     return await this.request(`/v1/memory/stores/${storeId}/keys?${params}`);
   }
 
   async getMemoryValue(storeId: string, key: string): Promise<any> {
-    return await this.request(`/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`);
+    return await this.request(
+      `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`
+    );
   }
 
-  async setMemoryValue(storeId: string, key: string, value: any, ttl?: number): Promise<any> {
-    return await this.request(`/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`, {
-      method: 'PUT',
-      body: JSON.stringify({ value, ttl }),
-    });
+  async setMemoryValue(
+    storeId: string,
+    key: string,
+    value: any,
+    ttl?: number
+  ): Promise<any> {
+    return await this.request(
+      `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ value, ttl }),
+      }
+    );
   }
 
   async deleteMemoryKey(storeId: string, key: string): Promise<void> {
-    await this.request(`/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`, {
-      method: 'DELETE',
-    });
+    await this.request(
+      `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
+      {
+        method: 'DELETE',
+      }
+    );
   }
 
   async batchGetMemoryValues(storeId: string, keys: string[]): Promise<any> {
@@ -283,7 +318,10 @@ class ApiClient {
     });
   }
 
-  async batchSetMemoryValues(storeId: string, items: Array<{ key: string; value: any; ttl?: number }>): Promise<any> {
+  async batchSetMemoryValues(
+    storeId: string,
+    items: Array<{ key: string; value: any; ttl?: number }>
+  ): Promise<any> {
     return await this.request(`/v1/memory/stores/${storeId}/batch/set`, {
       method: 'POST',
       body: JSON.stringify({ items }),
@@ -297,7 +335,10 @@ class ApiClient {
     });
   }
 
-  async createMemoryStore(storeData: { type: string; config?: any }): Promise<any> {
+  async createMemoryStore(storeData: {
+    type: string;
+    config?: any;
+  }): Promise<any> {
     return await this.request('/v1/memory/stores', {
       method: 'POST',
       body: JSON.stringify(storeData),
@@ -308,7 +349,9 @@ class ApiClient {
 
   async getAgentTasks(agentId: string, status?: string): Promise<any> {
     const params = status ? `?status=${encodeURIComponent(status)}` : '';
-    return await this.request(`/v1/coordination/agents/${agentId}/tasks${params}`);
+    return await this.request(
+      `/v1/coordination/agents/${agentId}/tasks${params}`
+    );
   }
 
   async assignTask(taskId: string, agentId: string): Promise<any> {
@@ -318,7 +361,10 @@ class ApiClient {
     });
   }
 
-  async updateAgentHeartbeat(agentId: string, heartbeatData: { workload?: any; status?: string }): Promise<any> {
+  async updateAgentHeartbeat(
+    agentId: string,
+    heartbeatData: { workload?: any; status?: string }
+  ): Promise<any> {
     return await this.request(`/v1/coordination/agents/${agentId}/heartbeat`, {
       method: 'POST',
       body: JSON.stringify(heartbeatData),
@@ -338,11 +384,14 @@ class ApiClient {
     });
   }
 
-  async spawnSwarmAgent(swarmId: string, config: {
-    type: string;
-    name: string;
-    capabilities?: string[];
-  }): Promise<any> {
+  async spawnSwarmAgent(
+    swarmId: string,
+    config: {
+      type: string;
+      name: string;
+      capabilities?: string[];
+    }
+  ): Promise<any> {
     return await this.request(`/v1/swarm/${swarmId}/agents`, {
       method: 'POST',
       body: JSON.stringify(config),
@@ -362,7 +411,9 @@ class ApiClient {
   }
 
   async getSwarmStatus(swarmId?: string): Promise<any> {
-    const endpoint = swarmId ? `/v1/swarm/${swarmId}/status` : '/v1/swarm/status';
+    const endpoint = swarmId
+      ? `/v1/swarm/${swarmId}/status`
+      : '/v1/swarm/status';
     return await this.request(endpoint);
   }
 
@@ -384,8 +435,10 @@ class ApiClient {
   // ===== PROJECT MANAGEMENT (Enhanced) =====
 
   async getProjects(): Promise<Project[]> {
-    const response = await this.request<{ projects: Project[]; total: number }>('/v1/projects');
-    return response.projects||[];
+    const response = await this.request<{ projects: Project[]; total: number }>(
+      '/v1/projects'
+    );
+    return response.projects || [];
   }
 
   async getCurrentProject(): Promise<Project> {
@@ -436,12 +489,15 @@ class ApiClient {
     return await this.request(`/v1/projects/modes/${mode}/capabilities`);
   }
 
-  async upgradeProjectMode(projectId: string, upgradeData: {
-    toMode: string;
-    preserveData?: boolean;
-    backupBeforeMigration?: boolean;
-    validateAfterMigration?: boolean;
-  }): Promise<any> {
+  async upgradeProjectMode(
+    projectId: string,
+    upgradeData: {
+      toMode: string;
+      preserveData?: boolean;
+      backupBeforeMigration?: boolean;
+      validateAfterMigration?: boolean;
+    }
+  ): Promise<any> {
     return await this.request(`/v1/projects/${projectId}/modes/upgrade`, {
       method: 'POST',
       body: JSON.stringify(upgradeData),
@@ -452,7 +508,10 @@ class ApiClient {
     return await this.request(`/v1/projects/${projectId}/modes/upgrade-paths`);
   }
 
-  async getSchemaMigrationPath(fromVersion: string, toVersion: string): Promise<any> {
+  async getSchemaMigrationPath(
+    fromVersion: string,
+    toVersion: string
+  ): Promise<any> {
     const params = new URLSearchParams({ fromVersion, toVersion });
     return await this.request(`/v1/projects/schema/migration-path?${params}`);
   }
@@ -470,7 +529,9 @@ class ApiClient {
     if (status) params.append('status', status);
     if (priority) params.append('priority', priority);
     const queryString = params.toString();
-    return await this.request(`/roadmap/roadmaps${queryString ? `?${queryString}` : ''}`);
+    return await this.request(
+      `/roadmap/roadmaps${queryString ? `?${queryString}` : ''}`
+    );
   }
 
   async createRoadmap(roadmapData: {
@@ -512,13 +573,19 @@ class ApiClient {
     });
   }
 
-  async getMilestones(roadmapId?: string, status?: string, type?: string): Promise<any> {
+  async getMilestones(
+    roadmapId?: string,
+    status?: string,
+    type?: string
+  ): Promise<any> {
     const params = new URLSearchParams();
     if (roadmapId) params.append('roadmapId', roadmapId);
     if (status) params.append('status', status);
     if (type) params.append('type', type);
     const queryString = params.toString();
-    return await this.request(`/roadmap/milestones${queryString ? `?${queryString}` : ''}`);
+    return await this.request(
+      `/roadmap/milestones${queryString ? `?${queryString}` : ''}`
+    );
   }
 
   async createMilestone(milestoneData: {
@@ -563,7 +630,9 @@ class ApiClient {
     if (status) params.append('status', status);
     if (timeframe) params.append('timeframe', timeframe);
     const queryString = params.toString();
-    return await this.request(`/roadmap/vision${queryString ? `?${queryString}` : ''}`);
+    return await this.request(
+      `/roadmap/vision${queryString ? `?${queryString}` : ''}`
+    );
   }
 
   async createVisionStatement(visionData: {
@@ -613,7 +682,10 @@ class ApiClient {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/progress`);
   }
 
-  async updateRoadmapProgress(roadmapId: string, progress: number): Promise<any> {
+  async updateRoadmapProgress(
+    roadmapId: string,
+    progress: number
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/progress`, {
       method: 'PUT',
       body: JSON.stringify({ progress }),
@@ -624,34 +696,52 @@ class ApiClient {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/dependencies`);
   }
 
-  async addRoadmapDependency(roadmapId: string, dependencyId: string): Promise<any> {
+  async addRoadmapDependency(
+    roadmapId: string,
+    dependencyId: string
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/dependencies`, {
       method: 'POST',
       body: JSON.stringify({ dependencyId }),
     });
   }
 
-  async removeRoadmapDependency(roadmapId: string, dependencyId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/dependencies/${dependencyId}`, {
-      method: 'DELETE',
-    });
+  async removeRoadmapDependency(
+    roadmapId: string,
+    dependencyId: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/dependencies/${dependencyId}`,
+      {
+        method: 'DELETE',
+      }
+    );
   }
 
   async getRoadmapStakeholders(roadmapId: string): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/stakeholders`);
   }
 
-  async addRoadmapStakeholder(roadmapId: string, stakeholder: string): Promise<any> {
+  async addRoadmapStakeholder(
+    roadmapId: string,
+    stakeholder: string
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/stakeholders`, {
       method: 'POST',
       body: JSON.stringify({ stakeholder }),
     });
   }
 
-  async removeRoadmapStakeholder(roadmapId: string, stakeholder: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/stakeholders/${encodeURIComponent(stakeholder)}`, {
-      method: 'DELETE',
-    });
+  async removeRoadmapStakeholder(
+    roadmapId: string,
+    stakeholder: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/stakeholders/${encodeURIComponent(stakeholder)}`,
+      {
+        method: 'DELETE',
+      }
+    );
   }
 
   async getRoadmapKPIs(roadmapId: string): Promise<any> {
@@ -666,21 +756,32 @@ class ApiClient {
   }
 
   async getMilestoneDeliverables(milestoneId: string): Promise<any> {
-    return await this.request(`/roadmap/milestones/${milestoneId}/deliverables`);
+    return await this.request(
+      `/roadmap/milestones/${milestoneId}/deliverables`
+    );
   }
 
-  async updateMilestoneDeliverables(milestoneId: string, deliverables: string[]): Promise<any> {
-    return await this.request(`/roadmap/milestones/${milestoneId}/deliverables`, {
-      method: 'PUT',
-      body: JSON.stringify({ deliverables }),
-    });
+  async updateMilestoneDeliverables(
+    milestoneId: string,
+    deliverables: string[]
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/milestones/${milestoneId}/deliverables`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ deliverables }),
+      }
+    );
   }
 
   async getMilestoneRisks(milestoneId: string): Promise<any> {
     return await this.request(`/roadmap/milestones/${milestoneId}/risks`);
   }
 
-  async updateMilestoneRisks(milestoneId: string, riskFactors: string[]): Promise<any> {
+  async updateMilestoneRisks(
+    milestoneId: string,
+    riskFactors: string[]
+  ): Promise<any> {
     return await this.request(`/roadmap/milestones/${milestoneId}/risks`, {
       method: 'PUT',
       body: JSON.stringify({ riskFactors }),
@@ -688,14 +789,22 @@ class ApiClient {
   }
 
   async getMilestoneSuccessCriteria(milestoneId: string): Promise<any> {
-    return await this.request(`/roadmap/milestones/${milestoneId}/success-criteria`);
+    return await this.request(
+      `/roadmap/milestones/${milestoneId}/success-criteria`
+    );
   }
 
-  async updateMilestoneSuccessCriteria(milestoneId: string, successCriteria: string[]): Promise<any> {
-    return await this.request(`/roadmap/milestones/${milestoneId}/success-criteria`, {
-      method: 'PUT',
-      body: JSON.stringify({ successCriteria }),
-    });
+  async updateMilestoneSuccessCriteria(
+    milestoneId: string,
+    successCriteria: string[]
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/milestones/${milestoneId}/success-criteria`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ successCriteria }),
+      }
+    );
   }
 
   async getRoadmapTimeline(roadmapId: string): Promise<any> {
@@ -710,8 +819,13 @@ class ApiClient {
     return await this.request(`/roadmap/reports/${type}`);
   }
 
-  async exportRoadmap(roadmapId: string, format: 'pdf|excel|json'): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/export?format=${format}`);
+  async exportRoadmap(
+    roadmapId: string,
+    format: 'pdf|excel|json'
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/export?format=${format}`
+    );
   }
 
   async importRoadmap(fileData: FormData): Promise<any> {
@@ -726,7 +840,10 @@ class ApiClient {
     return await this.request('/roadmap/templates');
   }
 
-  async createRoadmapFromTemplate(templateId: string, customizations: any): Promise<any> {
+  async createRoadmapFromTemplate(
+    templateId: string,
+    customizations: any
+  ): Promise<any> {
     return await this.request('/roadmap/templates/create', {
       method: 'POST',
       body: JSON.stringify({ templateId, customizations }),
@@ -737,18 +854,31 @@ class ApiClient {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/notifications`);
   }
 
-  async subscribeToRoadmapNotifications(roadmapId: string, email: string, types: string[]): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/notifications/subscribe`, {
-      method: 'POST',
-      body: JSON.stringify({ email, types }),
-    });
+  async subscribeToRoadmapNotifications(
+    roadmapId: string,
+    email: string,
+    types: string[]
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/notifications/subscribe`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, types }),
+      }
+    );
   }
 
-  async unsubscribeFromRoadmapNotifications(roadmapId: string, email: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/notifications/unsubscribe`, {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-    });
+  async unsubscribeFromRoadmapNotifications(
+    roadmapId: string,
+    email: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/notifications/unsubscribe`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      }
+    );
   }
 
   // Advanced roadmap operations
@@ -779,31 +909,51 @@ class ApiClient {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/comments`);
   }
 
-  async addRoadmapComment(roadmapId: string, comment: string, author: string): Promise<any> {
+  async addRoadmapComment(
+    roadmapId: string,
+    comment: string,
+    author: string
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/comments`, {
       method: 'POST',
       body: JSON.stringify({ comment, author }),
     });
   }
 
-  async updateRoadmapComment(roadmapId: string, commentId: string, comment: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/comments/${commentId}`, {
-      method: 'PUT',
-      body: JSON.stringify({ comment }),
-    });
+  async updateRoadmapComment(
+    roadmapId: string,
+    commentId: string,
+    comment: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/comments/${commentId}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ comment }),
+      }
+    );
   }
 
-  async deleteRoadmapComment(roadmapId: string, commentId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/comments/${commentId}`, {
-      method: 'DELETE',
-    });
+  async deleteRoadmapComment(
+    roadmapId: string,
+    commentId: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/comments/${commentId}`,
+      {
+        method: 'DELETE',
+      }
+    );
   }
 
   async getRoadmapAttachments(roadmapId: string): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/attachments`);
   }
 
-  async uploadRoadmapAttachment(roadmapId: string, fileData: FormData): Promise<any> {
+  async uploadRoadmapAttachment(
+    roadmapId: string,
+    fileData: FormData
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/attachments`, {
       method: 'POST',
       body: fileData,
@@ -811,10 +961,16 @@ class ApiClient {
     });
   }
 
-  async deleteRoadmapAttachment(roadmapId: string, attachmentId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/attachments/${attachmentId}`, {
-      method: 'DELETE',
-    });
+  async deleteRoadmapAttachment(
+    roadmapId: string,
+    attachmentId: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/attachments/${attachmentId}`,
+      {
+        method: 'DELETE',
+      }
+    );
   }
 
   // Milestone-specific advanced operations
@@ -838,7 +994,11 @@ class ApiClient {
     return await this.request(`/roadmap/milestones/${milestoneId}/comments`);
   }
 
-  async addMilestoneComment(milestoneId: string, comment: string, author: string): Promise<any> {
+  async addMilestoneComment(
+    milestoneId: string,
+    comment: string,
+    author: string
+  ): Promise<any> {
     return await this.request(`/roadmap/milestones/${milestoneId}/comments`, {
       method: 'POST',
       body: JSON.stringify({ comment, author }),
@@ -858,7 +1018,10 @@ class ApiClient {
     return await this.request('/roadmap/portfolio/resources');
   }
 
-  async updateResourceAllocation(roadmapId: string, resources: any): Promise<any> {
+  async updateResourceAllocation(
+    roadmapId: string,
+    resources: any
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/resources`, {
       method: 'PUT',
       body: JSON.stringify(resources),
@@ -876,16 +1039,28 @@ class ApiClient {
     });
   }
 
-  async linkRoadmapToInitiative(roadmapId: string, initiativeId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/initiatives/${initiativeId}`, {
-      method: 'POST',
-    });
+  async linkRoadmapToInitiative(
+    roadmapId: string,
+    initiativeId: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/initiatives/${initiativeId}`,
+      {
+        method: 'POST',
+      }
+    );
   }
 
-  async unlinkRoadmapFromInitiative(roadmapId: string, initiativeId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/initiatives/${initiativeId}`, {
-      method: 'DELETE',
-    });
+  async unlinkRoadmapFromInitiative(
+    roadmapId: string,
+    initiativeId: string
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/initiatives/${initiativeId}`,
+      {
+        method: 'DELETE',
+      }
+    );
   }
 
   // Collaboration and workflow operations
@@ -893,18 +1068,29 @@ class ApiClient {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/reviews`);
   }
 
-  async requestRoadmapReview(roadmapId: string, reviewers: string[], deadline: string): Promise<any> {
+  async requestRoadmapReview(
+    roadmapId: string,
+    reviewers: string[],
+    deadline: string
+  ): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/reviews`, {
       method: 'POST',
       body: JSON.stringify({ reviewers, deadline }),
     });
   }
 
-  async submitRoadmapReview(roadmapId: string, reviewId: string, review: any): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/reviews/${reviewId}`, {
-      method: 'PUT',
-      body: JSON.stringify(review),
-    });
+  async submitRoadmapReview(
+    roadmapId: string,
+    reviewId: string,
+    review: any
+  ): Promise<any> {
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/reviews/${reviewId}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(review),
+      }
+    );
   }
 
   async approveRoadmap(roadmapId: string): Promise<any> {
@@ -953,17 +1139,24 @@ class ApiClient {
   }
 
   async getPredictiveAnalytics(roadmapId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/analytics/predictive`);
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/analytics/predictive`
+    );
   }
 
   async getAIRecommendations(roadmapId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/ai/recommendations`);
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/ai/recommendations`
+    );
   }
 
   async optimizeRoadmapSchedule(roadmapId: string): Promise<any> {
-    return await this.request(`/roadmap/roadmaps/${roadmapId}/optimize/schedule`, {
-      method: 'POST',
-    });
+    return await this.request(
+      `/roadmap/roadmaps/${roadmapId}/optimize/schedule`,
+      {
+        method: 'POST',
+      }
+    );
   }
 
   // ===== SYSTEM CAPABILITY API =====
@@ -999,7 +1192,9 @@ class ApiClient {
   }
 
   async getFacadeHealth(facadeName?: string): Promise<any> {
-    const endpoint = facadeName ? `/v1/facades/${facadeName}/health` : '/v1/facades/health';
+    const endpoint = facadeName
+      ? `/v1/facades/${facadeName}/health`
+      : '/v1/facades/health';
     return await this.request(endpoint);
   }
 
@@ -1012,16 +1207,22 @@ class ApiClient {
   }
 
   async refreshFacadeStatus(facadeName?: string): Promise<any> {
-    const endpoint = facadeName ? `/v1/facades/${facadeName}/refresh` : '/v1/facades/refresh';
+    const endpoint = facadeName
+      ? `/v1/facades/${facadeName}/refresh`
+      : '/v1/facades/refresh';
     return await this.request(endpoint, { method: 'POST' });
   }
 
   async getPackageStatus(packageName: string): Promise<any> {
-    return await this.request(`/v1/facades/packages/${encodeURIComponent(packageName)}/status`);
+    return await this.request(
+      `/v1/facades/packages/${encodeURIComponent(packageName)}/status`
+    );
   }
 
   async getServiceStatus(serviceName: string): Promise<any> {
-    return await this.request(`/v1/facades/services/${encodeURIComponent(serviceName)}/status`);
+    return await this.request(
+      `/v1/facades/services/${encodeURIComponent(serviceName)}/status`
+    );
   }
 
   async getFacadeMetrics(): Promise<any> {

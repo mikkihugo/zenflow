@@ -7,7 +7,7 @@
  * CONVERTED FROM VITEST: Uses Jest mocking and assertions
  */
 
-import { vi, describe, it, expect, beforeEach, afterEach } from "vitest" } from "vitest"/globals';
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
 // Mock logger to avoid actual logging during tests
 vi.unstable_mockModule('@claude-zen/foundation/logging', () => ({

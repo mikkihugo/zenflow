@@ -1,1131 +1,737 @@
 /**
- * WebSocket Client Adapter for UACL (Unified API Client Layer).
- *
- * Enterprise-grade WebSocket client implementing UACL patterns for real-time communication.
- * Provides reliable, event-driven connectivity with automatic reconnection, message queuing,
- * and comprehensive monitoring capabilities.
+ * @fileoverview Clean WebSocket Client Implementation for UACL
+ * 
+ * Enterprise-grade WebSocket client with full UACL compliance, providing:
+ * - Real-time bidirectional communication
+ * - Automatic reconnection with exponential backoff
+ * - Message queuing for offline periods
+ * - Subscription/publication model
+ * - Comprehensive health monitoring
+ * - Event-driven architecture
  */
 
-/**
- * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
- */
-
-import {
-  TypedEventBase,
-  getLogger
-} from '@claude-zen/foundation';
-
+import WebSocket from 'ws';
+import { TypedEventBase, Logger, getLogger } from '@claude-zen/foundation';
 import type {
-  ClientConfig,
-  ClientMetadata,
-  ClientMetrics,
   Client,
-  ClientFactory
-
+  ClientConfig,
+  ClientResponse,
+  ClientMetrics,
+  HealthCheckResult
 } from '../core/interfaces';
 
-import type { ProtocolType } from '../types';
-import {
-  ClientStatuses,
-  ProtocolTypes
-} from '../types';
-
-const logger = getLogger('WebSocketClientAdapter);
+const logger: Logger = getLogger('websocket-client-adapter');
 
 /**
- * WebSocket client specific interfaces for UACL integration.
- */
-export interface WebSocketClient<T = any> extends Client {
-  subscribe(topic: string,
-  callback: (data: any' => void): Promise<string>;
-  unsubscribe(subscriptionId: string): Promise<void>;
-  publish(topic: string,
-  data: any): Promise<void>;
-  sendMessage(message: any): Promise<any>
-
-}
-
-/**
- * WebSocket client configuration options.
- *
- * @example
- * ``'typescript
- * const config: WebSocketClientConfig = {
- *   protocol: 'wss',
- *   url: wss://api.example.com/ws',
- *   protocol: ['chat-v1', 'notifications-v1],
- *   authentication: {
-  *     type: 'query',
-  *     token: process.env.WS_TOKEN
- *
-},
- *   reconnection: {
-  *     enabled: true,
-  *     maxAttempts: 10,
-  *     backoffStrateg: 'exponential'
- *
-}
- * };
- * ``'
+ * WebSocket-specific configuration interface
  */
 export interface WebSocketClientConfig extends ClientConfig {
-  /** WebSocket subprotocols to negotiate */
+  /** WebSocket connection URL */
+  url: string;
+  /** WebSocket subprotocols */
   protocols?: string[];
-
-  /** Authentication configuration */
-  authentication?: {
-  type: 'query' | 'header' | 'protocol';
-    token?: string;
-    headers?: Record<string,
-  string>;
-    query?: Record<string,
-  string>
-
-};
-
-  /** Reconnection configuration */
+  /** Reconnection settings */
   reconnection?: {
-  enabled?: boolean;
-    maxAttempts?: number;
-    initialDelay?: number;
-    backoffStrategy?: 'linear' | 'exponential' | 'fixed';
-    maxDelay?: number
-
-};
-
-  /** Message queuing options */
+    enabled: boolean;
+    maxAttempts: number;
+    initialDelay: number;
+    maxDelay: number;
+    backoffMultiplier: number;
+  };
+  /** Message queue settings */
   messageQueue?: {
-  enabled?: boolean;
-    maxSize?: number;
-    persistOffline?: boolean
-
-};
-
-  /** Heartbeat configuration */
+    enabled: boolean;
+    maxSize: number;
+    persistOnDisconnect: boolean;
+  };
+  /** Heartbeat/ping settings */
   heartbeat?: {
-  enabled?: boolean;
-    interval?: number;
-    message?: string | object
-
-};
-
-  /** Compression options */
-  compression?: {
-  enabled?: boolean;
-  threshold?: number
-}
+    enabled: boolean;
+    interval: number;
+    timeout: number;
+  };
+  /** Connection timeout */
+  connectionTimeout?: number;
 }
 
 /**
- * WebSocket message types for communication.
- *
- * @example
- * ``'typescript
- * const subscribeMessage: WebSocketMessage = {
-  *   type: 'subscribe',
-  *   topic: 'market.btc.price',
-  *   id: 'sub_123'
- *
-};
- * ``'
+ * WebSocket message structure
  */
 export interface WebSocketMessage {
-  type: 'subscribe' | 'unsubscribe' | 'publish' | 'request' | 'response' | 'ping' | 'pong';
-  id?: string;
+  id: string;
+  type: 'request' | 'response' | 'subscribe' | 'unsubscribe' | 'publish' | 'ping' | 'pong';
   topic?: string;
   data?: any;
-  timestamp?: number;
-  metadata?: Record<string,
-  unknown>
-
+  timestamp: number;
+  correlationId?: string;
 }
 
 /**
- * WebSocket subscription information.
+ * WebSocket subscription
  */
 export interface WebSocketSubscription {
   id: string;
   topic: string;
   callback: (data: any) => void;
   created: Date;
-  active: boolean
-
+  active: boolean;
 }
 
 /**
- * Mock WebSocket class for Node.js environments without built-in WebSocket.
+ * Clean WebSocket Client Implementation
+ * 
+ * Provides enterprise-grade WebSocket functionality with automatic reconnection,
+ * message queuing, subscription management, and comprehensive monitoring.
  */
-class MockWebSocket extends TypedEventBase {
-  public readyState: number;
-  public url: string;
+export class WebSocketClientAdapter extends TypedEventBase implements Client {
+  public readonly config: WebSocketClientConfig;
+  public readonly type = 'websocket';
+  public readonly version = '2.0.0';
 
-  static readonly CONNECTING = 0;
-  static readonly OPEN = 1;
-  static readonly CLOSING = 2;
-  static readonly CLOSED = 3;
-
-  constructor(url: string, protocols?: string[]) {
-    super();
-    this.url = url;
-    this.readyState = MockWebSocket.CONNECTING;
-
-    // Simulate connection
-    setTimeout(() => {
-      this.readyState = MockWebSocket.OPEN;
-      this.emit('open, {})'
-}, 100)
-}
-
-  send(data: string | ArrayBuffer: void {
-    if (this.readyState !== MockWebSocket.OPEN) {
-      throw new Error('WebSocket is not open);
-}
-
-    logger.debug('Sending WebSocket message:', data)';
-
-    // Simulate message echo for testing
-    setTimeout(
-  (' => {
-      const message = {
-  type: 'echo',
-  data: type'f data === 'string' ? data : 'binary
-}';
-      this.emit('message',
-  { data: JSON.stringify(m'ssage
-) })'
-}, 10)
-}
-
-  close(code?: number, reason?: string: void {
-    if (this.readyState === MockWebSocket.CLOSED || this.readyState === MockWebSocket.CLOSING) {
-      return
-}
-
-    this.readyState = MockWebSocket.CLOSING;
-
-    setTimeout(() => {
-      this.readyState = MockWebSocket.CLOSED;
-      this.emit(
-  'close',
-  {
-  cod: code || 1000,
-  reason: reason || 'Normalclosure
-}
-)'
-}, 10)
-}
-
-  ping(data?: any: void {
-  this.emit('ping',
-  data)'
-
-}
-
-  pong(data?: any: void {
-  this.emit('pong',
-  data)'
-
-}
-}
-
-/**
- * WebSocket Client Adapter implementing UACL interface.
- * Provides enterprise-grade real-time communication capabilities.
- *
- * @example
- * ``'typescript
- * const client = new WebSocketClientAdapter(
-  {
- *   protocol: 'wss',
-  *   url: wss://api.example.com/ws',
-  *   protocol: ['chat-v1],
- *   reconnection: {
-  enabled: true,
-  maxAttempts: 5
-}
- * }
-);
- *
- * await client.connect();
- *
- * // Subscribe to topic
- * const subId = await client.subscribe('notifications', (data) => {
-  *   con'ole.log(Received:','
-  data);
- *
-});
- *
- * // Send message
- * await client.sendMessage({
-  type: 'chat',
-  message: 'Hello!'
-})';
- * ``'
- */
-export class WebSocketClientAdapter extends TypedEventBase implements WebSocketClient {
-  private ws: MockWebSocket | null = null;
-  private _connected = false;
-  private _status: string = ClientStatuses.DISCONNECTED;
-  private metrics: ClientMetrics;
-  private startTime: Date;
+  private ws: WebSocket | null = null;
+  private connectionState: 'disconnected' | 'connecting' | 'connected' | 'reconnecting' = 'disconnected';
   private reconnectAttempts = 0;
-  private messageQueue: Array<{ message: any; resolve: Function; reject: Function }> = [];
-  private subscriptions = new Map<string, WebSocketSubscription>();
+  private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
-  private subscriptionCounter = 0;
+  private messageQueue: Array<{ message: WebSocketMessage; resolve: Function; reject: Function }> = [];
+  private subscriptions = new Map<string, WebSocketSubscription>();
+  private pendingResponses = new Map<string, { resolve: Function; reject: Function; timeout: NodeJS.Timeout }>();
+  private metrics: ClientMetrics;
+  private startTime = Date.now();
+  private messageIdCounter = 0;
 
-  constructor(private configuration: WebSocketClientConfig) {
-  super();
-    this.startTime = new Date();
-    this.metrics = this.initializeMetrics()
+  constructor(config: WebSocketClientConfig) {
+    super();
+    this.config = { ...config };
+    this.metrics = this.initializeMetrics();
+  }
 
-}
+  get isConnected(): boolean {
+    return this.connectionState === 'connected' && this.ws?.readyState === WebSocket.OPEN;
+  }
 
-  /**
-   * Get client configuration.
-   */
-  getConfig(): ClientConfig  {
-    return this.configuration
-}
-
-  /**
-   * Check if client is connected.
-   */
-  isConnected(): boolean  {
-  return this._connected && this.ws?.readyState === MockWebSocket.OPEN
-
-}
+  get isInitialized(): boolean {
+    return this.ws !== null;
+  }
 
   /**
-   * Connect to WebSocket server.
+   * Initialize the WebSocket client
    */
-  async connect(): Promise<void>  {
-    if (this._connected && this.ws?.readyState === MockWebSocket.OPEN) {
-      return
-}
+  async initialize(): Promise<void> {
+    logger.info('Initializing WebSocket client', { url: this.config.url });
+    // Initialization logic if needed
+    this.emit('initialized', { timestamp: new Date() });
+  }
+
+  /**
+   * Connect to WebSocket server
+   */
+  async connect(): Promise<void> {
+    if (this.isConnected) {
+      logger.debug('WebSocket already connected');
+      return;
+    }
+
+    if (this.connectionState === 'connecting') {
+      logger.debug('WebSocket connection already in progress');
+      return;
+    }
 
     try {
-      this._status = ClientStatuses.CONNECTING;
-      this.emit('connecting', { timestamp: new Date() })';
+      this.connectionState = 'connecting';
+      this.emit('connecting', { attempt: this.reconnectAttempts });
 
-      // Build WebSocket URL with authentication
-      const wsUrl = this.buildWebSocketUrl();
+      logger.info('Connecting to WebSocket', { url: this.config.url });
 
-      // Create WebSocket connection
-      this.ws = new MockWebSocket(wsUrl, this.configuration.protocols);
-
-      // Setup event handlers
-      this.setupWebSocketEventHandlers();
+      this.ws = new WebSocket(this.config.url, this.config.protocols);
+      this.setupWebSocketHandlers();
 
       // Wait for connection to open
-      await new Promise<void>((resolve, reject' => {
+      await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
-  reject(new Error('WebSocket connection timeout))
+          reject(new Error('WebSocket connection timeout'));
+        }, this.config.connectionTimeout || 30000);
 
-}, this.configuration.timeout || 10000);
-
-        this.ws!.on('open', () => {
+        this.ws!.once('open', () => {
           clearTimeout(timeout);
-          resolve()
-});
+          resolve();
+        });
 
-        this.ws!.o'('error', (e'ror) => {
+        this.ws!.once('error', (error) => {
           clearTimeout(timeout);
-          reject(error)
-})
-});
+          reject(error);
+        });
+      });
 
-      this._connected = true;
-      this._status = ClientStatuses.CONNECTED;
+      this.connectionState = 'connected';
       this.reconnectAttempts = 0;
-      this.emit('connect', { imestamp: new Date() })';
+      this.emit('connected', { timestamp: new Date() });
 
       // Start heartbeat if configured
       this.startHeartbeat();
 
-      // Process queued messages
+      // Process any queued messages
       await this.processMessageQueue();
 
-      logger.info('WebSocket client connected successfully)'
-} catch (error) {
-      this._status = ClientStatuses.ERROR;
-      this.emit('error', e'ror)';
+      logger.info('WebSocket connected successfully');
 
+    } catch (error) {
+      this.connectionState = 'disconnected';
+      this.ws = null;
+      logger.error('WebSocket connection failed', error);
+      this.emit('error', error);
+      
       // Attempt reconnection if configured
-      if (this.shouldReconnect()' {
-        this.scheduleReconnection()
-} else {
-  logger.error('Failed to connect WebSocket client:','
-  error)';
-        throw error
-
-}
+      if (this.shouldReconnect()) {
+        this.scheduleReconnect();
+      }
+      
+      throw error;
     }
   }
 
   /**
-   * Disconnect from WebSocket server.
+   * Disconnect from WebSocket server
    */
-  async disconnect(': Promise<void> {
-    if (!this._connected || !this.ws) {
-      return
-}
-
-    try {
-      this.stopHeartbeat();
-      this.clearMessageQueue();
-      this.clearSubscriptions();
-
-      if (this.ws.readyState === MockWebSocket.OPEN) {
-  this.ws.close(1000,
-  'Normal'closure)'
-
-}
-
-      this._connected = false;
-      this._status = ClientStatuses.DISCONNECTED;
-      this.emit('disconnect', { imestamp: new Date() })';
-
-      logger.info('WebSocket client disconnected successfully)'
-} catch (error) {
-  this._status = ClientStatuses.ERROR;
-      this.emit('error',
-  e'ror)';
-      logger.error('Failed to disconnect WebSocket client:','
-  error)';
-      throw error
-
-}
-  }
-
-  /**
-   * Send message through WebSocket connection.
-   */
-  async send<R = any>(data: any: Promise<R> {
-    if (!this.isConnected()) {
-      if (this.configuration.messageQueue?.enabled) {
-        return this.queueMessage(data)
-} else {
-        throw new Error('WebSocket is not connected);
-}
+  async disconnect(): Promise<void> {
+    if (!this.ws) {
+      return;
     }
 
-    const startTime = Date.now();
-    this.metrics.totalRequests++;
-
-    try {
-      const message: WebSocketMessage = {
-        type: 'request',
-        id: 'req_' + Date.now() + '_${
-  Math.random().toString(36).substring(2,
-  '11)
-}',
-        data,
-        timestamp: Date.now()
-};
-
-      this.ws!.send(JSON.stringify(message));
-
-      // Update metrics
-      const responseTime = Date.now() - startTime;
-      this.updateMetrics(responseTime, true);
-
-      // For mock implementation, return echo response
-      return {
-  success: true,
-  echo: data ' as R
-
-} catch (error) {
-  const responseTime = Date.now() - startTime;
-      this.updateMetrics(responseTime,
-  false);
-      this.metrics.failedRequests++;
-      this.emit(`error',
-  e'ror)';
-      logger.error('WebSocket send failed:','
-  error)';
-      throw error
-
-}
+    logger.info('Disconnecting WebSocket');
+    
+    this.connectionState = 'disconnected';
+    this.stopHeartbeat();
+    this.clearReconnectTimer();
+    this.clearPendingResponses();
+    
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.close(1000, 'Normal closure');
+    }
+    
+    this.ws = null;
+    this.emit('disconnected', { timestamp: new Date() });
   }
 
   /**
-   * Health check for WebSocket connection.
+   * Send a GET-like request (for UACL compliance)
    */
-  async health(': Promise<boolean> {
-    try {
-      return this.isConnected()
-} catch (error) {
-  logger.warn('WebSocket health check failed:','
-  error);;
-      return false
+  async get<T = any>(endpoint: string, config?: any): Promise<ClientResponse<T>> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'GET', ...config },
+      timestamp: Date.now()
+    };
 
-}
+    return this.sendMessage<T>(message);
   }
 
   /**
-   * Get client metadata.
+   * Send a POST-like request (for UACL compliance)
    */
-  async getMetadata(
-  ': Promise<ClientMetadata> {
-    return {
-      protocol: this.configuration.protocol,
-  version: '1.0.0',
-  features: ['websocket',
-        'real-time',
-        'subscribe-publish',
-        'auto-reconnect',
-        'message-queuing',
-        'heartbeat',
-        'compression', ],
-      conection: {
-  url: this.configuration.url,
-  connected: this._connected,
-  lastConnected: this.startTime,
-  connectionDuration: Date.now(
-) - this.startTime.getTime()
+  async post<T = any>(endpoint: string, data?: any, config?: any): Promise<ClientResponse<T>> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'POST', body: data, ...config },
+      timestamp: Date.now()
+    };
 
-},
-      metrics: this.metrics,
-      custom: {
-  subscriptions: this.subscriptions.size,
-  queuedMessages: this.messageQueue.length,
-  reconnectAttempts: this.reconnectAttempts,
-  protocols: this.configuration.protocols
-
-}
-}
-}
-
-  // WebSocketClient interface implementation
+    return this.sendMessage<T>(message);
+  }
 
   /**
-   * Subscribe to a topic for real-time updates.
+   * Send a PUT-like request (for UACL compliance)
+   */
+  async put<T = any>(endpoint: string, data?: any, config?: any): Promise<ClientResponse<T>> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'PUT', body: data, ...config },
+      timestamp: Date.now()
+    };
+
+    return this.sendMessage<T>(message);
+  }
+
+  /**
+   * Send a DELETE-like request (for UACL compliance)
+   */
+  async delete<T = any>(endpoint: string, config?: any): Promise<ClientResponse<T>> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'DELETE', ...config },
+      timestamp: Date.now()
+    };
+
+    return this.sendMessage<T>(message);
+  }
+
+  /**
+   * Send a PATCH-like request (for UACL compliance)
+   */
+  async patch<T = any>(endpoint: string, data?: any, config?: any): Promise<ClientResponse<T>> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'PATCH', body: data, ...config },
+      timestamp: Date.now()
+    };
+
+    return this.sendMessage<T>(message);
+  }
+
+  /**
+   * Send a HEAD-like request (for UACL compliance)
+   */
+  async head(endpoint: string, config?: any): Promise<ClientResponse> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'HEAD', ...config },
+      timestamp: Date.now()
+    };
+
+    return this.sendMessage(message);
+  }
+
+  /**
+   * Send an OPTIONS-like request (for UACL compliance)
+   */
+  async options(endpoint: string, config?: any): Promise<ClientResponse> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'request',
+      topic: endpoint,
+      data: { method: 'OPTIONS', ...config },
+      timestamp: Date.now()
+    };
+
+    return this.sendMessage(message);
+  }
+
+  /**
+   * Subscribe to a topic for real-time updates
    */
   async subscribe(topic: string, callback: (data: any) => void): Promise<string> {
-    const subscriptionId = 'sub_' + ++this.subscriptionCounter + '_${Date.now()}';;
-
+    const subscriptionId = this.generateMessageId();
+    
     const subscription: WebSocketSubscription = {
-  id: subscriptionId,
-  topic,
-  callback,
-  created: new Date(),
-  active: true
-
-};
+      id: subscriptionId,
+      topic,
+      callback,
+      created: new Date(),
+      active: true
+    };
 
     this.subscriptions.set(subscriptionId, subscription);
 
-    // Send subscribe message if connected
-    if (this.isConnected()) {
+    if (this.isConnected) {
       const message: WebSocketMessage = {
-  type: 'subscribe',
-  id: subscriptionId,
-  topic,
-  timstamp: Date.now()
+        id: this.generateMessageId(),
+        type: 'subscribe',
+        topic,
+        data: { subscriptionId },
+        timestamp: Date.now()
+      };
 
-};
+      await this.sendRawMessage(message);
+    }
 
-      this.ws!.send(JSON.stringify(message))
-}
-
-    logger.debug('Subscribed to topic: ' + topic + ', ID: ${subscriptionId})';
-    return subscriptionId
-}
-
-  /**
-   * Unsubscribe from a topic.
-   */
-  async unsubscribe(subscriptionId: string: Promise<void> {
-    const subscription = this.subscriptions.get(subscriptionId);
-    if (!subscription) {
-      throw new Error('Subscription not found: ' + subscriptionId + ')'
-}
-
-    // Send unsubscribe message if connected
-    if (this.isConnected()' {
-      const message: WebSocketMessage = {
-  type: `unsubscribe',
-  id: subscriptionId,
-  topic: subscription.topic,
-  timstamp: Date.now()
-
-};
-
-      this.ws!.send(JSON.stringify(message))
-}
-
-    this.subscriptions.delete(subscriptionId);
-    logger.debug('Unsubscribed from topic: ' + subscription.topic + ', ID: ${subscriptionId})'
-}
-
-  /**
-   * Publish data to a topic.
-   */
-  async publish(
-  topic: string,
-  data: any: Promise<void> {
-    const message: WebSocketMessage = {
-  type: 'publish',
-  topic,
-  data,
-  timestamp: Date.now(
-)
-
-};
-
-    if (this.isConnected()) {
-      this.ws!.send(JSON.stringify(message))
-} else {
-  throw new Error('Cannot publish: WebSocket is not connected);
-
-}
-
-    logger.debug('Published to topic: ' + topic + ')'
-}
-
-  /**
-   * Send a direct message through WebSocket.
-   */
-  async sendMessage(message: any: Promise<any> {
-    return this.send(message)
-}
-
-  // Private helper methods
-
-  /**
-   * Build WebSocket URL with authentication parameters.
-   */
-  private buildWebSocketUrl(): string  {
-    let url = this.configuration.url;
-    const auth = this.configuration.authentication;
-
-    if (auth?.type === 'query' && auth.query) {
-      const quer'Params = new URLSearchParams(auth.query);
-      if (auth.token) {
-  queryParams.set('token',
-  auth.token)'
-
-}
-      url += '?' + queryParams.toString() + '''
-}
-
-    return url
-}
-
-  /**
-   * Setup WebSocket event handlers.
-   */
-  private setupWebSocketEventHandlers(): void  {
-    if (!this.ws) return;
-
-    this.ws.on('open', () => {
-      logger.debug(WebSocket connection opened)
-});
-
-    this.ws.on('message', (vent: { data: string }) => {
-      try {
-  const message = JSON.parse(event.data) as WebSocketMessage;
-        this.handleIncomingMessage(message)
-
-} catch (error) {
-  logger.warn('Failed to parse WebSocket message:','
-  error)';
-        this.emit('message',
-  'vent.data)'
-
-}
-    });
-
-    this.ws.on('close', (vent: { code: number; eason: string }) => {
-      logger.debug('WebSocket connection closed:',
-  event.code,
-  event.reason
-)';
-      this._connected = false;
-
-      if (this.shouldReconnect() {
-        this.scheduleReconnection()
-}
-    });
-
-    this.ws.on('error', (eror: any) => {
-  logger.error('WebSocket error:','
-  error)';
-      this.emit('error',
-  e'ror)
-
-});
-
-    this.ws.on('ping', (data: any) => {
-      this.ws!.pon(data)
-});
-
-    this.ws.on('pong', () => {
-      lo'ger.debug('Received pong)
-})
-}
-
-  /**
-   * Handle incoming WebSocket messages.
-   */
-  private handleIncomingMessage(message: WebSocketMessage: void {
-    switch (message.type) {
-      case subscribe:
-      cas' unsubscribe:
-        // Subscription acknowl'dgments
-        this.emit('subscription', message)';
-        break;
-
-      case publish:
-        // Publis'ed data to subscribed topics
-        if (message.topic) {
-          for (const subscription of this.subscriptions.values()) {
-            if (subscription.topic === message.topic && subscription.active) {
-              try {
-                subscription.callback(message.data)
-} catch (error) {
-  logger.error('Subscription callback error:',
-  error)'
-}
-            }
-          }
-        }
-        break;
-
-      case response:
-        // R'sponse to request
-        this.emit('response', m'ssage)';
-        break;
-
-      case ping:
-        // Send pon' response
-        this.ws?.send(JSON.stringify({
-  type: 'pong',
-  id: messa'e.id
-}))';
-        break;
-
-      default:
-        this.emit('message', m'ssage)'
-}
+    logger.debug('Subscribed to topic', { topic, subscriptionId });
+    return subscriptionId;
   }
 
   /**
-   * Queue message for later sending.
+   * Unsubscribe from a topic
    */
-  private queueMessage<R>(data: any: Promise<R> {
-    return new Promise((resolve, reject) => {
-      if (this.messageQueue.length >= (this.configuration.messageQueue?.maxSize || 1000)) {
-  reject(new Error(Message queue is full));;
-        return
+  async unsubscribe(subscriptionId: string): Promise<void> {
+    const subscription = this.subscriptions.get(subscriptionId);
+    if (!subscription) {
+      throw new Error(`Subscription ${subscriptionId} not found`);
+    }
 
-}
+    if (this.isConnected) {
+      const message: WebSocketMessage = {
+        id: this.generateMessageId(),
+        type: 'unsubscribe',
+        topic: subscription.topic,
+        data: { subscriptionId },
+        timestamp: Date.now()
+      };
 
-      this.messageQueue.push(
-  {
-  message: data,
-  resolve,
-  reject
-}
-)
-})
-}
+      await this.sendRawMessage(message);
+    }
+
+    this.subscriptions.delete(subscriptionId);
+    logger.debug('Unsubscribed from topic', { topic: subscription.topic, subscriptionId });
+  }
 
   /**
-   * Process queued messages.
+   * Publish data to a topic
    */
-  private async processMessageQueue(': Promise<void> {
-    while (this.messageQueue.length > 0 && this.isConnected()) {
-      const queued = this.messageQueue.shift()!;
-      try {
-  const result = await this.send(queued.message);
-        queued.resolve(result)
+  async publish(topic: string, data: any): Promise<void> {
+    const message: WebSocketMessage = {
+      id: this.generateMessageId(),
+      type: 'publish',
+      topic,
+      data,
+      timestamp: Date.now()
+    };
 
-} catch (error) {
-        queued.reject(error)
-}
+    await this.sendRawMessage(message);
+    logger.debug('Published to topic', { topic });
+  }
+
+  /**
+   * Perform health check
+   */
+  async healthCheck(): Promise<HealthCheckResult> {
+    const timestamp = new Date();
+    const startTime = Date.now();
+
+    try {
+      if (!this.isConnected) {
+        return {
+          status: 'unhealthy',
+          timestamp,
+          responseTime: Date.now() - startTime,
+          components: {
+            connection: { status: 'unhealthy', message: 'Not connected' }
+          }
+        };
+      }
+
+      // Send ping
+      const pingMessage: WebSocketMessage = {
+        id: this.generateMessageId(),
+        type: 'ping',
+        timestamp: Date.now()
+      };
+
+      await this.sendRawMessage(pingMessage);
+
+      return {
+        status: 'healthy',
+        timestamp,
+        responseTime: Date.now() - startTime,
+        components: {
+          connection: { status: 'healthy', responseTime: Date.now() - startTime }
+        }
+      };
+
+    } catch (error) {
+      return {
+        status: 'unhealthy',
+        timestamp,
+        responseTime: Date.now() - startTime,
+        components: {
+          connection: { status: 'unhealthy', message: error instanceof Error ? error.message : 'Unknown error' }
+        }
+      };
     }
   }
 
   /**
-   * Clear message queue.
+   * Get client metrics
    */
-  private clearMessageQueue(): void  {
-    while (this.messageQueue.length > 0) {
-  const queued = this.messageQueue.shift()!;
-      queued.reject(new Error('Connection closed))'
-
-}
+  async getMetrics(): Promise<ClientMetrics> {
+    this.metrics.uptime = Date.now() - this.startTime;
+    this.metrics.concurrentOperations = this.pendingResponses.size;
+    return { ...this.metrics };
   }
 
   /**
-   * Clear all subscriptions.
+   * Reset client metrics
    */
-  private clearSubscriptions(': void {
-    this.subscriptions.clear()
-}
+  resetMetrics(): void {
+    this.metrics = this.initializeMetrics();
+  }
 
   /**
-   * Check if should attempt reconnection.
+   * Configure the client
    */
-  private shouldReconnect(): boolean  {
-  const config = this.configuration.reconnection;
-    return (
-      config?.enabled !== false &&
-      this.reconnectAttempts < (config?.maxAttempts || 5)
-    )
-
-}
+  configure(config: Partial<WebSocketClientConfig>): void {
+    Object.assign(this.config, config);
+    logger.info('WebSocket client reconfigured');
+  }
 
   /**
-   * Schedule reconnection attempt.
+   * Shutdown the client
    */
-  private scheduleReconnection(): void  {
-    const config = this.configuration.reconnection || {};
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down WebSocket client');
+    await this.disconnect();
+    this.clearAllSubscriptions();
+    this.emit('shutdown', { timestamp: new Date() });
+  }
+
+  // Private helper methods
+
+  private setupWebSocketHandlers(): void {
+    if (!this.ws) return;
+
+    this.ws.on('open', () => {
+      logger.debug('WebSocket opened');
+    });
+
+    this.ws.on('message', (data) => {
+      try {
+        const message: WebSocketMessage = JSON.parse(data.toString());
+        this.handleIncomingMessage(message);
+      } catch (error) {
+        logger.error('Failed to parse WebSocket message', error);
+        this.emit('message', data.toString());
+      }
+    });
+
+    this.ws.on('close', (code, reason) => {
+      logger.info('WebSocket closed', { code, reason: reason.toString() });
+      this.connectionState = 'disconnected';
+      this.emit('disconnected', { code, reason: reason.toString() });
+
+      if (this.shouldReconnect()) {
+        this.scheduleReconnect();
+      }
+    });
+
+    this.ws.on('error', (error) => {
+      logger.error('WebSocket error', error);
+      this.emit('error', error);
+    });
+
+    this.ws.on('ping', (data) => {
+      this.ws?.pong(data);
+    });
+  }
+
+  private handleIncomingMessage(message: WebSocketMessage): void {
+    this.metrics.totalOperations++;
+
+    switch (message.type) {
+      case 'response':
+        this.handleResponse(message);
+        break;
+      case 'publish':
+        this.handlePublish(message);
+        break;
+      case 'pong':
+        this.emit('pong', message);
+        break;
+      default:
+        this.emit('message', message);
+    }
+  }
+
+  private handleResponse(message: WebSocketMessage): void {
+    const pending = this.pendingResponses.get(message.id);
+    if (pending) {
+      clearTimeout(pending.timeout);
+      this.pendingResponses.delete(message.id);
+      
+      const response: ClientResponse = {
+        data: message.data,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+        duration: Date.now() - message.timestamp,
+        metadata: {
+          messageId: message.id,
+          timestamp: new Date(message.timestamp).toISOString()
+        }
+      };
+      
+      pending.resolve(response);
+      this.metrics.successfulOperations++;
+    }
+  }
+
+  private handlePublish(message: WebSocketMessage): void {
+    if (message.topic) {
+      for (const subscription of this.subscriptions.values()) {
+        if (subscription.topic === message.topic && subscription.active) {
+          try {
+            subscription.callback(message.data);
+          } catch (error) {
+            logger.error('Subscription callback error', error);
+          }
+        }
+      }
+    }
+  }
+
+  private async sendMessage<T = any>(message: WebSocketMessage): Promise<ClientResponse<T>> {
+    const startTime = Date.now();
+    
+    if (!this.isConnected) {
+      if (this.config.messageQueue?.enabled) {
+        return this.queueMessage<T>(message);
+      } else {
+        throw new Error('WebSocket is not connected');
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.pendingResponses.delete(message.id);
+        reject(new Error('Message timeout'));
+        this.metrics.failedOperations++;
+      }, this.config.timeout?.request || 30000);
+
+      this.pendingResponses.set(message.id, { resolve, reject, timeout });
+      
+      try {
+        this.ws!.send(JSON.stringify(message));
+        this.updateLatencyMetrics(Date.now() - startTime);
+      } catch (error) {
+        clearTimeout(timeout);
+        this.pendingResponses.delete(message.id);
+        reject(error);
+        this.metrics.failedOperations++;
+      }
+    });
+  }
+
+  private async sendRawMessage(message: WebSocketMessage): Promise<void> {
+    if (!this.isConnected) {
+      throw new Error('WebSocket is not connected');
+    }
+
+    this.ws!.send(JSON.stringify(message));
+  }
+
+  private queueMessage<T = any>(message: WebSocketMessage): Promise<ClientResponse<T>> {
+    return new Promise((resolve, reject) => {
+      const maxSize = this.config.messageQueue?.maxSize || 1000;
+      if (this.messageQueue.length >= maxSize) {
+        reject(new Error('Message queue is full'));
+        return;
+      }
+
+      this.messageQueue.push({ message, resolve, reject });
+    });
+  }
+
+  private async processMessageQueue(): Promise<void> {
+    while (this.messageQueue.length > 0 && this.isConnected) {
+      const queued = this.messageQueue.shift()!;
+      try {
+        const result = await this.sendMessage(queued.message);
+        queued.resolve(result);
+      } catch (error) {
+        queued.reject(error);
+      }
+    }
+  }
+
+  private shouldReconnect(): boolean {
+    const reconnectConfig = this.config.reconnection;
+    return reconnectConfig?.enabled === true && 
+           this.reconnectAttempts < (reconnectConfig.maxAttempts || 5);
+  }
+
+  private scheduleReconnect(): void {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+    }
+
+    this.connectionState = 'reconnecting';
     const delay = this.calculateReconnectDelay();
-
-    setTimeout(() => {
+    
+    this.reconnectTimer = setTimeout(() => {
       this.reconnectAttempts++;
-      this.emit('reconnecting, { attempt: this.reconnectAttempts })';
-      this.connect('.catch(error => {
-  logger.error('Reconnection failed:',
-  error)
-})
-}, delay)
-}
-
-  /**
-   * Calculate reconnection delay based on strategy.
-   */
-  private calculateReconnectDelay(': number {
-    const config = this.configuration.reconnection || {};
-    const initialDelay = config.initialDelay || 1000;
-    const maxDelay = config.maxDelay || 30000;
-
-    switch (config.backoffStrategy) {
-  case exponential:
-        return Math.min(initia'Delay * Math.pow(2,
-  this.reconnectAttempts),
-  maxDelay);
-
-      case linear:
-        'eturn Math.min(initialDelay + (initialDelay * this.reconnectAttempts),
-  maxDelay);
-
-      case fixed:
-      efault:
-        return initialDelay
-
-}
+      this.emit('reconnecting', { attempt: this.reconnectAttempts });
+      this.connect().catch(error => {
+        logger.error('Reconnection failed', error);
+      });
+    }, delay);
   }
 
-  /**
-   * Start heartbeat mechanism.
-   */
-  private startHeartbeat(): void  {
-    const config = this.configuration.heartbeat;
-    if (!config?.enabled) return;
+  private calculateReconnectDelay(): number {
+    const config = this.config.reconnection!;
+    const baseDelay = config.initialDelay || 1000;
+    const maxDelay = config.maxDelay || 30000;
+    const multiplier = config.backoffMultiplier || 2;
+    
+    const delay = Math.min(baseDelay * Math.pow(multiplier, this.reconnectAttempts), maxDelay);
+    return delay + (Math.random() * 1000); // Add jitter
+  }
+
+  private startHeartbeat(): void {
+    const heartbeatConfig = this.config.heartbeat;
+    if (!heartbeatConfig?.enabled) return;
 
     this.heartbeatTimer = setInterval(() => {
-      if (this.isConnected()) {
-        const message: WebSocketMessage = {'
-  type: 'ping,
-  timestamp: Date.now()
-
-};
-        this.ws!.send(JSON.strin'ify(message))
-}
-    }, config.interval || 30000)
-}
-
-  /**
-   * Stop heartbeat mechanism.
-   */
-  private stopHeartbeat(): void  {
-    if (this.heartbeatTimer) {
-  clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null
-
-}
+      if (this.isConnected) {
+        const pingMessage: WebSocketMessage = {
+          id: this.generateMessageId(),
+          type: 'ping',
+          timestamp: Date.now()
+        };
+        
+        this.sendRawMessage(pingMessage).catch(error => {
+          logger.error('Heartbeat ping failed', error);
+        });
+      }
+    }, heartbeatConfig.interval || 30000);
   }
 
-  /**
-   * Initialize metrics tracking.
-   */
-  private initializeMetrics(): ClientMetrics  {
+  private stopHeartbeat(): void {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+  }
+
+  private clearReconnectTimer(): void {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+  }
+
+  private clearPendingResponses(): void {
+    for (const [id, pending] of this.pendingResponses) {
+      clearTimeout(pending.timeout);
+      pending.reject(new Error('Connection closed'));
+    }
+    this.pendingResponses.clear();
+  }
+
+  private clearAllSubscriptions(): void {
+    this.subscriptions.clear();
+  }
+
+  private generateMessageId(): string {
+    return `ws-${Date.now()}-${++this.messageIdCounter}`;
+  }
+
+  private initializeMetrics(): ClientMetrics {
     return {
-  totalRequests: 0,
-  successfulRequests: 0,
-  failedRequests: 0,
-  averageResponseTime: 0,
-  lastRequestTime: undefined,
-  uptime: 0,
-  bytesSent: 0,
-  bytesReceived: 0
+      totalOperations: 0,
+      successfulOperations: 0,
+      failedOperations: 0,
+      cacheHitRatio: 0,
+      averageLatency: 0,
+      throughput: 0,
+      concurrentOperations: 0,
+      uptime: 0
+    };
+  }
 
+  private updateLatencyMetrics(latency: number): void {
+    const total = this.metrics.totalOperations;
+    this.metrics.averageLatency = (this.metrics.averageLatency * (total - 1) + latency) / total;
+  }
 }
-}
-
-  /**
-   * Update metrics after request.
-   */
-  private updateMetrics(responseTime: number, success: boolean): void  {
-    if (success) {
-      this.metrics.successfulRequests++
-}
-
-    // Update average response time
-    const totalResponseTime =
-      this.metrics.averageResponseTime * (this.metrics.totalRequests - 1) +
-      responseTime;
-    this.metrics.averageResponseTime =
-      totalResponseTime / this.metrics.totalRequests;
-
-    this.metrics.lastRequestTime = new Date();
-    this.metrics.uptime = Date.now() - this.startTime.getTime()
-}
-}
-
-/**
- * WebSocket Client Factory for creating WebSocket client instances.
- *
- * @example
- * ``'typescript
- * const factory = new WebSocketClientFactory();
- * const client = await factory.create(
-  'wss',
-  {
-  *   protocol: 'wss',
-  *   url: wss://api.example.com/ws',
-  *   protocol: ['chat-v1]
- *
-}
-);
- * ``'
- */
-export class WebSocketClientFactory implements ClientFactory {
-  constructor(
-    private logger?: {
-  debug: Function;
-      info: Function;
-      warn: Function;
-      error: Function
-
-}
-  ) {
-    this.logger = this.logger || {
-  debug: logger.debug.bind(logger),
-  info: logger.info.bind(logger),
-  warn: logger.warn.bind(logger),
-  error: logger.error.bind(logger)
-
-}
-}
-
-  /**
-   * Create a WebSocket client instance.
-   */
-  async create(protocol: ProtocolType, config: ClientConfig): Promise<Client>  {
-    this.logger?.info('Creating WebSocket client with protocol: ' + protocol + ')';
-
-    // Validate configuration
-    if (!this.validateConfig(protocol, config)' {
-      throw new Error('Invalid'configuration for WebSocket client with protocol: ' + protocol + '
-      );
-    '
-
-    const wsConfig = config as WebSocketClientConfig;
-
-    // Create and return WebSocket client adapter
-    const client = new WebSocketClientAdapter(wsConfig);
-
-    this.logger?.info('Successfully created WebSocket client)';
-    return client
-}
-
-  /**
-   * Check if factory supports a protocol.
-   */
-  supports(
-  protocol: ProtocolType: boolean {
-  return [
-      ProtocolTypes.WS as ProtocolType,
-  ProtocolTypes.WSS as ProtocolType,
-  ].includes(protocol
-)
-
-}
-
-  /**
-   * Get supported protocols.
-   */
-  getSupportedProtocols(): ProtocolType[]  {
-  return [ProtocolTypes.WS,
-  ProtocolTypes.WSS]
-
-}
-
-  /**
-   * Validate configuration for a protocol.
-   */
-  validateConfig(protocol: ProtocolType, config: ClientConfig): boolean  {
-    if (!this.supports(protocol)) {
-      return false
-}
-
-    const wsConfig = config as WebSocketClientConfig;
-
-    // Validate required fields
-    if (!wsConfig.url) {
-      return false
-}
-
-    // Validate URL format
-    if(!wsConfig.url.startsWith(ws://) && !wsConfig.url.startsWith(wss://)) {
-      return false
-}
-
-    return true
-}
-}
-
-'**
- * Convenience functions for creating WebSocket clients.
- */
-
-/**
- * Create a real-time WebSocket client for live data feeds.
- *
- * @example
- * ``'typescript
- * const client = await createRealtimeClient(
-  *   wss://live.example.com/feed',
-  *   ['live-feed-v1]
- *
-);
- * ``'
- */
-export async function createRealtimeClient(
-  url: string,
-  protocols?: string[],
-  options?: Partial<WebSocketClientConfig>
-): Promise<WebSocketClientAdapter>  {
-  const config: WebSocketClientConfig = {
-    protocol: url.startsWith(wss://) ? ProtocolTypes.WSS : ProtocolTypes.WS,
-    url,
-    protocols,
-    reconnection: {
-  enabled: true,
-  maxAttempts: 10,
-  backoffStrategy: 'exponential'
-},
-    messageQueue: {
-  enabed: true,
-  maxSize: 1000
-
-},
-    heartbeat: {
-  enabled: true,
-  interval: 30000
-
-},
-    timeout: 10000,
-    ...options
-};
-
-  return new WebSocketClientAdapter(config)
-}
-
-/**
- * Create a WebSocket client for chat/messaging applications.
- *
- * @example
- * ``'typescript
- * const client = await createChatClient(
- *   wss://chat.example.com/ws',
- *   'user-token-123;
- * );
- * ``'
- */
-export async function createChatClient(
-  url: string,
-  token?: string,
-  options?: Partial<WebSocketClientConfig>
-): Promise<WebSocketClientAdapter>  {
-  const config: WebSocketClientConfig = {
-    protocol: url.startsWith(wss://) ? ProtocolTypes.WSS : ProtocolTypes.WS,
-    url,
-    protocols: ['chat-v1],
-    authentication: token
-      ? {
-  type: 'query',
-  token
-
-}
-      : undefined,
-    reconnection: {
-  enabled: true,
-  maxAttempts: 5,
-  backoffStrateg: 'exponential'
-},
-    heartbeat: {
-  enabed: true,
-  interval: 30000
-
-},
-    timeout: 5000,
-    ...options
-};
-
-  return new WebSocketClientAdapter(config)
-}
-
-/**
- * Helper functions for WebSocket operations.
- */
-export const WebSocketHelpers = {
-  /**
-   * Create multiple subscriptions at once.
-   */
-  async createMultipleSubscriptions(
-    client: WebSocketClientAdapter,
-    subscriptions: Array<{ topic: string; callback: (data: any) => void }>
-  ): Promise<string[]> {
-  const promises = subscriptions.map(sub =>
-      client.subscribe(sub.topic,
-  sub.callback)
-    );
-    return await Promise.all(promises)
-
-},
-
-  /**
-   * Broadcast message to multiple topics.
-   */
-  async broadcastToTopics(
-  client: WebSocketClientAdapter,
-  topics: string[],
-  data: any
-): Promise<void>  {
-  const promises = topics.map(topic => client.publish(topic,
-  data));
-    await Promise.all(promises)
-
-},
-
-  /**
-   * Create topic pattern matcher for subscriptions.
-   */
-  createTopicMatcher(pattern: string): (topic: string) => boolean  {
-  const regex = new RegExp(pattern.replace(/\*/g,
-  '.*).replace(/\?/g,
-  '.),
-  'i'
-    );
-    return (topc: string) => regex.test(topic)
-
-}
-};
 
 export default WebSocketClientAdapter;

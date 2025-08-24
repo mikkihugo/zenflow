@@ -15,21 +15,21 @@ export enum ServiceType {
   DATA = 'data',
   WEB_DATA = 'web-data',
   DOCUMENT = 'document',
-  // Coordina'ion Services
+  // Coordination Services
   COORDINATION = 'coordination',
   SWARM = 'swarm',
   ORCHESTRATION = 'orchestration',
   DAA = 'daa',
-  // D'ta Accessibility and Analysis
+  // Data Accessibility and Analysis
   SESSION_RECOVERY = 'session-recovery',
   ARCHITECTURE_STORAGE = 'architecture-storage',
-  // Int'rface Services
+  // Interface Services
   API = 'api',
   SAFE_API = 'safe-api',
   WEB = 'web',
   MCP = 'mcp',
   CLI = 'cli',
-  // Neural Serv'ces
+  // Neural Services
   NEURAL = 'neural',
   LEARNING = 'learning',
   PATTERN_RECOGNITION = 'pattern-recognition',
@@ -52,17 +52,16 @@ export enum ServiceType {
   WORKFLOW = 'workflow',
   TASK = 'task',
   PIPELINE = 'pipeline',
-  // Communication S'rvices
+  // Communication Services
   WEBSOCKET = 'websocket',
   MESSAGE_QUEUE = 'message-queue',
   EVENT_BUS = 'event-bus',
-  // Cu'tom service type
-  CUSTOM = 'custom'
-
+  // Custom service type
+  CUSTOM = 'custom',
 }
 
 /**
- * Service status enu'eration
+ * Service status enumeration
  */
 export enum ServiceStatus {
   CREATED = 'created',
@@ -70,19 +69,17 @@ export enum ServiceStatus {
   RUNNING = 'running',
   STOPPING = 'stopping',
   STOPPED = 'stopped',
-  ERROR = 'error'
-
+  ERROR = 'error',
 }
 
 /**
- * Se'vice dependency specification
+ * Service dependency specification
  */
 export interface ServiceDependency {
   serviceName: string;
   required: boolean;
   version?: string;
-  startupOrder?: number
-
+  startupOrder?: number;
 }
 
 /**
@@ -95,9 +92,7 @@ export interface ServiceMetrics {
   throughput: number;
   memoryUsage: number;
   cpuUsage?: number;
-  customMetrics?: Record<string,
-  number | string>
-
+  customMetrics?: Record<string, number | string>;
 }
 
 /**
@@ -105,13 +100,10 @@ export interface ServiceMetrics {
  */
 export interface ServiceHealth {
   status: 'healthy' | 'degraded' | 'unhealthy';
-  checks: Record<string,
-  boolean>;
+  checks: Record<string, boolean>;
   metrics: ServiceMetrics;
   lastCheck: Date;
-  details?: Record<string,
-  any>
-
+  details?: Record<string, any>;
 }
 
 /**
@@ -120,12 +112,9 @@ export interface ServiceHealth {
 export interface ServiceRequest {
   name: string;
   type: ServiceType;
-  config?: Record<string,
-  unknown>;
+  config?: Record<string, unknown>;
   dependencies?: ServiceDependency[];
-  metadata?: Record<string,
-  any>
-
+  metadata?: Record<string, any>;
 }
 
 /**
@@ -136,8 +125,7 @@ export interface BatchServiceRequest {
   parallel: boolean;
   startImmediately: boolean;
   dependencyResolution?: boolean;
-  timeout?: number
-
+  timeout?: number;
 }
 
 /**
@@ -150,9 +138,7 @@ export interface ServiceOperationResult {
   timestamp: Date;
   duration?: number;
   error?: string;
-  metadata?: Record<string,
-  any>
-
+  metadata?: Record<string, any>;
 }
 
 /**
@@ -162,12 +148,11 @@ export interface BatchServiceOperationResult {
   overall: 'success' | 'partial' | 'failure';
   results: ServiceOperationResult[];
   summary: {
-  total: number;
-  successful: number;
-  failed: number;
-  duration: number
-
-}
+    total: number;
+    successful: number;
+    failed: number;
+    duration: number;
+  };
 }
 
 /**
@@ -175,42 +160,38 @@ export interface BatchServiceOperationResult {
  */
 export interface ServiceManagerConfig {
   factory: {
-  maxConcurrentInits: number;
-  enableDependencyResolution: boolean;
-  defaultTimeout: number;
-  enableHealthChecks: boolean
-
-};
+    maxConcurrentInits: number;
+    enableDependencyResolution: boolean;
+    defaultTimeout: number;
+    enableHealthChecks: boolean;
+  };
   lifecycle: {
-  startupTimeout: number;
+    startupTimeout: number;
     shutdownTimeout: number;
     parallelStartup: boolean;
     dependencyResolution: boolean;
-    gracefulShutdown: boolean
-
-};
+    gracefulShutdown: boolean;
+  };
   monitoring: {
     healthCheckInterval: number;
     metricsCollectionInterval: number;
     performanceThresholds: {
-  responseTime: number;
+      responseTime: number;
       errorRate: number;
-      memoryUsage: number
-
-};
+      memoryUsage: number;
+    };
     alerting: {
-  enabled: boolean;
-  channels: string[]
-}
-};
+      enabled: boolean;
+      channels: string[];
+    };
+  };
   recovery: {
-  enabled: boolean;
+    enabled: boolean;
     maxRetries: number;
     strategy: 'linear' | 'exponential';
     backoffDelay: number;
-    circuitBreakerThreshold: number
-
-}
+    circuitBreakerThreshold: number;
+  };
 }
 
 /**
@@ -220,11 +201,8 @@ export interface ServiceConfigSchema {
   type: ServiceType;
   required: string[];
   optional: string[];
-  defaults: Record<string,
-  any>;
-  validators?: Record<string,
-  (value: any) => boolean>
-
+  defaults: Record<string, any>;
+  validators?: Record<string, (value: any) => boolean>;
 }
 
 /**
@@ -240,13 +218,12 @@ export interface ServiceRegistryEntry {
   dependencies: ServiceDependency[];
   health: ServiceHealth;
   metadata: {
-  createdAt: Date;
-  lastStarted?: Date;
-  lastStopped?: Date;
-  version?: string;
-  description?: string
-
-}
+    createdAt: Date;
+    lastStarted?: Date;
+    lastStopped?: Date;
+    version?: string;
+    description?: string;
+  };
 }
 
 /**
@@ -258,9 +235,7 @@ export interface ServiceFactoryConfig {
   enableAspectOrientedProgramming: boolean;
   enableMetrics: boolean;
   enableHealthChecks: boolean;
-  defaultServiceConfig: Record<string,
-  any>
-
+  defaultServiceConfig: Record<string, any>;
 }
 
 /**
@@ -270,8 +245,7 @@ export interface ServiceAdapter<T = any> {
   name: string;
   type: ServiceType;
   status: ServiceStatus;
-  config: Record<string,
-  unknown>;
+  config: Record<string, unknown>;
 
   // Lifecycle methods
   initialize(options?: ServiceOperationOptions): Promise<void>;
@@ -284,22 +258,16 @@ export interface ServiceAdapter<T = any> {
   getMetrics(): Promise<ServiceMetrics>;
 
   // Configuration
-  updateConfig(config: Partial<Record<string,
-  unknown>>): Promise<void>;
-  getConfig(): Record<string,
-  unknown>;
+  updateConfig(config: Partial<Record<string, unknown>>): Promise<void>;
+  getConfig(): Record<string, unknown>;
 
   // Service-specific functionality
   getInstance(): T;
 
   // Event handling
-  on?(event: string,
-  handler: (...args: any[]) => void): void;
-  off?(event: string,
-  handler: (...args: any[]) => void): void;
-  emit?(event: string,
-  ...args: any[]): void
-
+  on?(event: string, handler: (...args: any[]) => void): void;
+  off?(event: string, handler: (...args: any[]) => void): void;
+  emit?(event: string, ...args: any[]): void;
 }
 
 /**
@@ -309,15 +277,14 @@ export interface ServiceValidationResult {
   valid: boolean;
   errors: Array<{
     field: string;
-  message: string;
-  code: string
-}>;
-  warnings: Array<{
-  field: string;
     message: string;
-    code: string
-
-}>
+    code: string;
+  }>;
+  warnings: Array<{
+    field: string;
+    message: string;
+    code: string;
+  }>;
 }
 
 /**
@@ -345,9 +312,7 @@ export interface ServiceEvent<T = any> {
   serviceType: ServiceType;
   timestamp: Date;
   payload?: T;
-  metadata?: Record<string,
-  any>
-
+  metadata?: Record<string, any>;
 }
 
 /**
@@ -359,8 +324,7 @@ export interface ServiceDiscoveryConfig {
   endpoint?: string;
   namespace?: string;
   healthCheckPath?: string;
-  tags?: string[]
-
+  tags?: string[];
 }
 
 /**
@@ -373,8 +337,7 @@ export interface ServiceScalingConfig {
   targetCpuUtilization: number;
   targetMemoryUtilization: number;
   scaleUpCooldown: number;
-  scaleDownCooldown: number
-
+  scaleDownCooldown: number;
 }
 
 /**
@@ -382,31 +345,25 @@ export interface ServiceScalingConfig {
  */
 export interface ServiceSecurityConfig {
   authentication: {
-  enabled: boolean;
-  provider: 'jwt' | 'oauth' | 'basic' | 'custom';
-  config: Record<string,
-  any>
-
-};
+    enabled: boolean;
+    provider: 'jwt' | 'oauth' | 'basic' | 'custom';
+    config: Record<string, any>;
+  };
   authorization: {
-  enabled: boolean;
+    enabled: boolean;
     provider: 'rbac' | 'abac' | 'custom';
-    config: Record<string,
-  any>
-
-};
+    config: Record<string, any>;
+  };
   encryption: {
-  enabled: boolean;
+    enabled: boolean;
     algorithm: string;
-    keyRotationInterval?: number
-
-};
+    keyRotationInterval?: number;
+  };
   rateLimit: {
-  enabled: boolean;
+    enabled: boolean;
     windowMs: number;
-    maxRequests: number
-
-}
+    maxRequests: number;
+  };
 }
 
 /**
@@ -418,23 +375,20 @@ export interface ServiceNetworkConfig {
   protocol?: 'http' | 'https' | 'tcp' | 'udp';
   ssl?: {
     enabled: boolean;
-  cert?: string;
-  key?: string
-};
+    cert?: string;
+    key?: string;
+  };
   proxy?: {
-  enabled: boolean;
+    enabled: boolean;
     target: string;
-    pathRewrite?: Record<string,
-  string>
-
-};
+    pathRewrite?: Record<string, string>;
+  };
   cors?: {
-  enabled: boolean;
+    enabled: boolean;
     origin: string | string[];
     methods: string[];
-    headers: string[]
-
-}
+    headers: string[];
+  };
 }
 
 /**
@@ -456,11 +410,10 @@ export interface ComprehensiveServiceConfig {
   dependencies?: ServiceDependency[];
   // Environment-specific overrides
   environment?: {
-  development?: Partial<ComprehensiveServiceConfig>;
-  staging?: Partial<ComprehensiveServiceConfig>;
-  production?: Partial<ComprehensiveServiceConfig>
-
-}
+    development?: Partial<ComprehensiveServiceConfig>;
+    staging?: Partial<ComprehensiveServiceConfig>;
+    production?: Partial<ComprehensiveServiceConfig>;
+  };
 }
 
 /**
@@ -472,13 +425,12 @@ export interface ServiceTemplate {
   serviceType: ServiceType;
   configTemplate: ComprehensiveServiceConfig;
   variables?: Array<{
-  name: string;
-  description: string;
-  type: 'string' | 'number' | 'boolean' | 'object';
-  required: boolean;
-  default?: any
-
-}>
+    name: string;
+    description: string;
+    type: 'string' | 'number' | 'boolean' | 'object';
+    required: boolean;
+    default?: any;
+  }>;
 }
 
 /**
@@ -489,19 +441,16 @@ export interface ServiceBlueprint {
   description: string;
   version: string;
   services: Array<{
-  template: string;
-  config: Record<string,
-  any>;
-  dependencies?: string[]
-
-}>;
+    template: string;
+    config: Record<string, any>;
+    dependencies?: string[];
+  }>;
   workflow?: Array<{
-  step: string;
+    step: string;
     services: string[];
     parallel: boolean;
-    condition?: string
-
-}>
+    condition?: string;
+  }>;
 }
 
 // ============================================
@@ -511,39 +460,40 @@ export interface ServiceBlueprint {
 /**
  * Type guard to check if an object is a ServiceRequest
  */
-export function isServiceRequest(obj: any): obj is ServiceRequest  {
-  return obj &&
+export function isServiceRequest(obj: any): obj is ServiceRequest {
+  return (
+    obj &&
     typeof obj.name === 'string' &&
     Object.values(ServiceType).includes(obj.type)
-
+  );
 }
 
 /**
- * Type 'uard to check if an object is a ServiceHealth
+ * Type guard to check if an object is a ServiceHealth
  */
-export function isServiceHealth(obj: any): obj is ServiceHealth  {
-  return obj &&
-    ['healthy',
-  'degraded',
-  'unhealthy].includes(obj.status) &&
+export function isServiceHealth(obj: any): obj is ServiceHealth {
+  return (
+    obj &&
+    ['healthy', 'degraded', 'unhealthy'].includes(obj.status) &&
     obj.checks &&
     obj.metrics &&
     obj.lastCheck instanceof Date
-
+  );
 }
 
 /**
- * T'pe guard to check if an object is a ServiceAdapter
+ * Type guard to check if an object is a ServiceAdapter
  */
-export function isServiceAdapter(obj: any): obj is ServiceAdapter  {
-  return obj &&
+export function isServiceAdapter(obj: any): obj is ServiceAdapter {
+  return (
+    obj &&
     typeof obj.name === 'string' &&
     Object.values(ServiceType).includes(obj.type) &&
     Object.values(ServiceStatus).includes(obj.status) &&
     typeof obj.initialize === 'function' &&
     typeof obj.start === 'function' &&
-    typeof obj.stop === 'function;
-
+    typeof obj.stop === 'function'
+  );
 }
 
 // ============================================
@@ -553,46 +503,47 @@ export function isServiceAdapter(obj: any): obj is ServiceAdapter  {
 /**
  * Extract service names from a service registry
  */
-export type ServiceNames<T extends Record<string, ServiceRegistryEntry>> = keyof T;
+export type ServiceNames<T extends Record<string, ServiceRegistryEntry>> =
+  keyof T;
 
 /**
  * Extract service types from a service registry
  */
 export type ServiceTypes<T extends Record<string, ServiceRegistryEntry>> =
-  T[keyof T]['type]';
+  T[keyof T]['type'];
 
 /**
  * Service configuration for a specific service type
  */
 export type ServiceConfigFor<T extends ServiceType> =
-  T extends ServiceType.DATABASE ? DatabaseServiceConfig :
-  T extends ServiceType.WEB ? WebServiceConfig :
-  T extends ServiceType.API ? ApiServiceConfig :
-  Record<string, any>;
+  T extends ServiceType.DATABASE
+    ? DatabaseServiceConfig
+    : T extends ServiceType.WEB
+      ? WebServiceConfig
+      : T extends ServiceType.API
+        ? ApiServiceConfig
+        : Record<string, any>;
 
 // Specific service configuration interfaces
 export interface DatabaseServiceConfig {
   connectionString: string;
   poolSize: number;
   timeout: number;
-  ssl: boolean
-
+  ssl: boolean;
 }
 
 export interface WebServiceConfig {
   port: number;
   host: string;
   staticPath?: string;
-  cors?: boolean
-
+  cors?: boolean;
 }
 
 export interface ApiServiceConfig {
   basePath: string;
   version: string;
   authentication: boolean;
-  rateLimit: boolean
-
+  rateLimit: boolean;
 }
 
 // ============================================
@@ -604,83 +555,85 @@ export interface ApiServiceConfig {
  */
 export const DEFAULT_SERVICE_MANAGER_CONFIG: ServiceManagerConfig = {
   factory: {
-  maxConcurrentInits: 5,
-  enableDependencyResolution: true,
-  defaultTimeout: 30000,
-  enableHealthChecks: true
-
-},
+    maxConcurrentInits: 5,
+    enableDependencyResolution: true,
+    defaultTimeout: 30000,
+    enableHealthChecks: true,
+  },
   lifecycle: {
-  startupTimeout: 60000,
-  shutdownTimeout: 30000,
-  parallelStartup: true,
-  dependencyResolution: true,
-  gracefulShutdown: true
-
-},
+    startupTimeout: 60000,
+    shutdownTimeout: 30000,
+    parallelStartup: true,
+    dependencyResolution: true,
+    gracefulShutdown: true,
+  },
   monitoring: {
     healthCheckInterval: 30000,
     metricsCollectionInterval: 10000,
     performanceThresholds: {
-  responseTime: 1000,
-  errorRate: 0.05,
-  memoryUsage: 0.8
-
-},
+      responseTime: 1000,
+      errorRate: 0.05,
+      memoryUsage: 0.8,
+    },
     alerting: {
-  enabled: false,
-  channels: []
-
-}
-},
+      enabled: false,
+      channels: [],
+    },
+  },
   recovery: {
-  enabled: true,
-  maxRetries: 3,
-  strategy: 'exponential',
-  backoffDeay: 1000,
-  circuitBreakerThreshold: 5
-
-}
+    enabled: true,
+    maxRetries: 3,
+    strategy: 'exponential',
+    backoffDelay: 1000,
+    circuitBreakerThreshold: 5,
+  },
 };
 
 /**
  * Service type categories for organizing services
  */
 export const SERVICE_TYPE_CATEGORIES = {
-  DATA: [ServiceType.DATA,
-  ServiceType.WEB_DATA,
-  ServiceType.DOCUMENT,
-  ServiceType.DATABASE,
-  ServiceType.VECTOR,
-  ServiceType.GRAPH],
-  COORDINATION: [ServiceType.COORDINATION,
-  ServiceType.SWARM,
-  ServiceType.ORCHESTRATION,
-  ServiceType.DAA],
-  INTERFACE: [ServiceType.API,
-  ServiceType.SAFE_API,
-  ServiceType.WEB,
-  ServiceType.MCP,
-  ServiceType.CLI],
-  NEURAL: [ServiceType.NEURAL,
-  ServiceType.LEARNING,
-  ServiceType.PATTERN_RECOGNITION],
-  MEMORY: [ServiceType.MEMORY,
-  ServiceType.CACHE,
-  ServiceType.SESSION],
-  SYSTEM: [ServiceType.INFRASTRUCTURE,
-  ServiceType.SYSTEM,
-  ServiceType.HEALTH,
-  ServiceType.MONITORING,
-  ServiceType.LOGGING,
-  ServiceType.SECURITY],
-  WORKFLOW: [ServiceType.WORKFLOW,
-  ServiceType.TASK,
-  ServiceType.PIPELINE],
-  COMMUNICATION: [ServiceType.WEBSOCKET,
-  ServiceType.MESSAGE_QUEUE,
-  ServiceType.EVENT_BUS]
-
+  DATA: [
+    ServiceType.DATA,
+    ServiceType.WEB_DATA,
+    ServiceType.DOCUMENT,
+    ServiceType.DATABASE,
+    ServiceType.VECTOR,
+    ServiceType.GRAPH,
+  ],
+  COORDINATION: [
+    ServiceType.COORDINATION,
+    ServiceType.SWARM,
+    ServiceType.ORCHESTRATION,
+    ServiceType.DAA,
+  ],
+  INTERFACE: [
+    ServiceType.API,
+    ServiceType.SAFE_API,
+    ServiceType.WEB,
+    ServiceType.MCP,
+    ServiceType.CLI,
+  ],
+  NEURAL: [
+    ServiceType.NEURAL,
+    ServiceType.LEARNING,
+    ServiceType.PATTERN_RECOGNITION,
+  ],
+  MEMORY: [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION],
+  SYSTEM: [
+    ServiceType.INFRASTRUCTURE,
+    ServiceType.SYSTEM,
+    ServiceType.HEALTH,
+    ServiceType.MONITORING,
+    ServiceType.LOGGING,
+    ServiceType.SECURITY,
+  ],
+  WORKFLOW: [ServiceType.WORKFLOW, ServiceType.TASK, ServiceType.PIPELINE],
+  COMMUNICATION: [
+    ServiceType.WEBSOCKET,
+    ServiceType.MESSAGE_QUEUE,
+    ServiceType.EVENT_BUS,
+  ],
 } as const;
 
 /**
@@ -688,23 +641,12 @@ export const SERVICE_TYPE_CATEGORIES = {
  */
 export enum ServicePriority {
   CRITICAL = 'critical',
-  // Must start first(
-  e.g.,
-  database,
-  'ogging
-)
+  // Must start first (e.g., database, logging)
   HIGH = 'high',
-  // Important services(
-  e.g.,
-  aut'entication,
-  cache
-)
+  // Important services (e.g., authentication, cache)
   MEDIUM = 'medium',
-  // Standard services (e.g.,
-  API endpoints)
-  LOW = 'low'              // Optional services (e.g.,
-  background tasks)
-
+  // Standard services (e.g., API endpoints)
+  LOW = 'low', // Optional services (e.g., background tasks)
 }
 
 /**
@@ -712,15 +654,14 @@ export enum ServicePriority {
  */
 export enum ServiceStartupPhase {
   FOUNDATION = 'foundation',
-  // Core i'frastructure services
+  // Core infrastructure services
   PLATFORM = 'platform',
-  // Platfor' services
+  // Platform services
   APPLICATION = 'application',
-  // Applicatio' services
+  // Application services
   INTEGRATION = 'integration',
-  // I'tegration services
-  OPTIMIZATION = 'optimization'  // Performa'ce and monitoring services
-
+  // Integration services
+  OPTIMIZATION = 'optimization', // Performance and monitoring services
 }
 
 // Export all types and utilities
@@ -736,6 +677,5 @@ export type {
   ServiceDiscoveryConfig,
   ServiceScalingConfig,
   ServiceSecurityConfig,
-  ServiceNetworkConfig
-
+  ServiceNetworkConfig,
 };

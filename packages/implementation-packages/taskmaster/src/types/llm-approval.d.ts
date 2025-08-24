@@ -5,7 +5,7 @@
  */
 export interface LLMApprovalConfig {
   enabled: boolean;
-  model: 'claude-3-5-sonnet|claude-3-haiku'||claude-3-opus';
+  model: 'claude-3-5-sonnet' | 'claude-3-haiku' | 'claude-3-opus';
   prompt: string;
   criteria: string[];
   confidenceThreshold: number;
@@ -48,7 +48,7 @@ export interface EnhancedApprovalGate {
   humanFallback: boolean;
   allowHumanOverride: boolean;
   escalationConditions: string[];
-  state:|'pending|llm_analyzing|auto_approved|human_review|approved|rejected|escalated | timed_out'|cancelled';
+  state: 'pending' | 'llm_analyzing' | 'auto_approved' | 'human_review' | 'approved' | 'rejected' | 'escalated' | 'timed_out' | 'cancelled';
   llmDecisions: LLMApprovalDecision[];
   humanOverrides: HumanOverride[];
   createdAt: Date;
@@ -90,7 +90,7 @@ export interface LLMApprovalContext {
   history: {
     similarTasks: Array<{
       taskId: string;
-      decision: 'approved|rejected'';
+      decision: 'approved' | 'rejected';
       confidence: number;
       reasoning: string;
     }>;

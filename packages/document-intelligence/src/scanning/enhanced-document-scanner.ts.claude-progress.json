@@ -1,0 +1,4 @@
+{"type":"gpt_response","timestamp":"2025-08-24T06:45:52.415Z","model":"gpt-4.1","tokensUsed":14147,"contentLength":28270,"file":"packages/document-intelligence/src/scanning/enhanced-document-scanner.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T06:46:23.262Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/document-intelligence/src/scanning/enhanced-document-scanner.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:49:39.433Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/document-intelligence/src/scanning/enhanced-document-scanner.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T06:49:39.480Z","contentLength":47554,"hasToolUse":false,"messageCount":3,"file":"packages/document-intelligence/src/scanning/enhanced-document-scanner.ts","tier":"inference"}

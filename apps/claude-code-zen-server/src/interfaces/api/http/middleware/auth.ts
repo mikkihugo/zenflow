@@ -3,17 +3,13 @@
  * Provides no-op authentication for development with structure for future implementation.
  */
 
-import type {
-  NextFunction,
-  Request,
-  Response
-} from 'express';
 import { getLogger } from '@claude-zen/foundation';
+import type { NextFunction, Request, Response } from 'express';
 
-const logger = getLogger('auth-middleware);
+const logger = getLogger('auth-middleware');
 
 /**
- * User information interface (for future use'
+ * User information interface (for future use)
  * Following Google Identity standards structure.
  */
 export interface User {
@@ -22,8 +18,7 @@ export interface User {
   readonly name?: string;
   readonly roles: readonly string[];
   readonly permissions: readonly string[];
-  readonly isAuthenticated: boolean
-
+  readonly isAuthenticated: boolean;
 }
 
 /**
@@ -33,8 +28,7 @@ export interface AuthContext {
   readonly user?: User;
   readonly token?: string;
   readonly tokenType?: 'bearer' | 'api_key';
-  readonly isAuthenticated: boolean
-
+  readonly isAuthenticated: boolean;
 }
 
 /**
@@ -51,101 +45,87 @@ export const authMiddleware = (
   // Create anonymous user context
   const authContext: AuthContext = {
     user: {
-  id: 'anonymous',
-  name: 'Anonymous'User',
-  oles: ['public],
-  permissions: ['read',
-  'write],
-  // Allow all oprations for now
-      isAuthenticated: false
-
-},
-    isAuthenticated: false
-};
+      id: 'anonymous',
+      name: 'Anonymous User',
+      roles: ['public'],
+      permissions: ['read', 'write'],
+      // Allow all operations for now
+      isAuthenticated: false,
+    },
+    isAuthenticated: false,
+  };
 
   // Attach auth context to request for use in route handlers
   req.auth = authContext;
 
   // Log authentication status (only in development)
-  if(process.env.NODE_ENV === 'development) {
-    logger.debug(
-  Authentication: No auth required - allowing request',
-  {
-  auhStatus: 'no_auth_required',
-  userType: 'anonymous',
-  permisions: authContext.user?.permissions
-
-}
-)
-}
+  if (process.env.NODE_ENV === 'development') {
+    logger.debug('Authentication: No auth required - allowing request', {
+      authStatus: 'no_auth_required',
+      userType: 'anonymous',
+      permissions: authContext.user?.permissions,
+    });
+  }
 
   // Continue to next middleware
-  next()
+  next();
 };
 
 /**
  * Optional Authentication Middleware.
  *
  * For routes that might have authentication but don't require it.
- * Checks for auth toke's but doesn't reject if missi'g.
+ * Checks for auth tokens but doesn't reject if missing.
  */
 export const optionalAuthMiddleware = (
   req: Request & { auth?: AuthContext },
   res: Response,
   next: NextFunction
 ): void => {
-  // Check for auth headers (but don't e'force)
-  const authHeader = req.headers['authorization]';
-  const apiKey = req.headers['x-api-key] as string';
+  // Check for auth headers (but don't enforce)
+  const authHeader = req.headers['authorization'] as string | undefined;
+  const apiKey = req.headers['x-api-key'] as string | undefined;
   let authContext: AuthContext;
 
   if (authHeader || apiKey) {
     // Some auth provided - could be validated here in future
     authContext = {
       user: {
-  id: 'anonymous',
-  name: 'Anonymous'User',
-  oles: ['public],
-  permissions: ['read',
-  'write],
-  isAuthnticated: false,
-  // Still false since we'r not actually validating
-
-},
-      token: authHeader?.replace('Bearer ',) || apiKey,
+        id: 'anonymous',
+        name: 'Anonymous User',
+        roles: ['public'],
+        permissions: ['read', 'write'],
+        isAuthenticated: false,
+        // Still false since we're not actually validating
+      },
+      token: authHeader?.replace('Bearer ', '') || apiKey,
       tokenType: authHeader ? 'bearer' : 'api_key',
-      isAuthenticated: false
-};
+      isAuthenticated: false,
+    };
 
-    if(process.env.NODE_ENV === 'development) {
-      logger.debug(
-  'Optional auth: Token provided but not validated,
-  {
-  hasAuthHeaer: !!authHeader,
-  hasApiKey: !!apiKey,
-  tokenType: authContext.tokenType
-
-}
-)
-}
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('Optional auth: Token provided but not validated', {
+        hasAuthHeader: !!authHeader,
+        hasApiKey: !!apiKey,
+        tokenType: authContext.tokenType,
+      });
+    }
   } else {
     // No auth provided
     authContext = {
       user: {
-  id: 'anonymous',
-  name: 'Anonymous'User',
-  oles: ['public],
-  permissions: ['read',
-  'write],
-  isAuthnticated: false
-
-},
-      isAuthenticated: false
-}
-}
+        id: 'anonymous',
+        name: 'Anonymous User',
+        roles: ['public'],
+        permissions: ['read', 'write'],
+        isAuthenticated: false,
+      },
+      isAuthenticated: false,
+    };
+  }
 
   req.auth = authContext;
-  next()
+  next();
 };
 
 /**
@@ -161,20 +141,19 @@ export const hasPermission = (
   const authContext = req.auth;
 
   if (!authContext?.user) {
-  return true; // Allow all since no auth required
-
-}
+    return true; // Allow all since no auth required
+  }
 
   return (
     authContext.user.permissions.includes(permission) ||
-    authContext.user.permissions.includes('admin)
-  )
+    authContext.user.permissions.includes('admin')
+  );
 };
 
 /**
  * Role Check Helper.
  *
- * Utility fu'ction to check if current user has required role.
+ * Utility function to check if current user has required role.
  * Currently always returns true since no auth is required.
  */
 export const hasRole = (
@@ -184,25 +163,23 @@ export const hasRole = (
   const authContext = req.auth;
 
   if (!authContext?.user) {
-  return true; // Allow all since no auth required
-
-}
+    return true; // Allow all since no auth required
+  }
 
   return (
     authContext.user.roles.includes(role) ||
-    authContext.user.roles.includes('admin)
-  )
+    authContext.user.roles.includes('admin')
+  );
 };
 
 /**
- * Admi' Check Helper.
+ * Admin Check Helper.
  *
  * Utility function to check if current user is admin.
  * Currently always returns true since no auth is required.
  */
 export const isAdmin = (req: Request): boolean => {
   return true; // Allow all admin operations since no auth required
-
 };
 
 /**
@@ -214,7 +191,7 @@ export const isAdmin = (req: Request): boolean => {
 export const getCurrentUser = (
   req: Request & { auth?: AuthContext }
 ): User | undefined => {
-  return req.auth?.user
+  return req.auth?.user;
 };
 
 /**
@@ -248,7 +225,7 @@ export const getCurrentUser = (
 declare global {
   namespace Express {
     interface Request {
-      auth?: AuthContext
-}
+      auth?: AuthContext;
+    }
   }
 }

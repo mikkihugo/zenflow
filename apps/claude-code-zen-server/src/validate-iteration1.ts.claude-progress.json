@@ -1,0 +1,7 @@
+{"type":"gpt_response","timestamp":"2025-08-24T06:22:07.110Z","model":"gpt-4.1","tokensUsed":3373,"contentLength":5750,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T06:22:38.477Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:23:20.307Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T06:23:20.333Z","contentLength":11283,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"inference"}
+{"type":"system","timestamp":"2025-08-24T06:23:53.976Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:24:37.016Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T06:24:37.023Z","contentLength":9402,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/validate-iteration1.ts","tier":"inference"}

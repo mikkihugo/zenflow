@@ -12,12 +12,11 @@
  * Standard across all list endpoints.
  *
  * @example
- * ``'typescript
+ * `'typescript
  * const params: PaginationParams = {
-  *   limit: 20,
-  *   offset: 0
- *
-};
+ *   limit: 20,
+ *   offset: 0
+ * };
  * '`'
  */
 export interface PaginationParams {
@@ -25,8 +24,7 @@ export interface PaginationParams {
   default 20) */
   readonly limit?: number;
   /** Number of items to skip (default 0) */
-  readonly offset?: number
-
+  readonly offset?: number;
 }
 
 /**
@@ -36,12 +34,11 @@ export interface PaginationParams {
  * @example
  * '`'typescript
  * const response: PaginationResponse = {
-  *   total: 1000,
-  *   offset: 0,
-  *   limit: 20,
-  *   hasMore: true
- *
-};
+ *   total: 1000,
+ *   offset: 0,
+ *   limit: 20,
+ *   hasMore: true
+ * };
  * '`'
  */
 export interface PaginationResponse {
@@ -52,8 +49,7 @@ export interface PaginationResponse {
   /** Current limit */
   readonly limit: number;
   /** Whether more items are available */
-  readonly hasMore: boolean
-
+  readonly hasMore: boolean;
 }
 
 /**
@@ -63,23 +59,21 @@ export interface PaginationResponse {
  * @example
  * '`'typescript
  * const response: ListResponse<User> = {
-  *   items: [user1,
-  user2],
-  *   total: 1000,
-  *   offset: 0,
-  *   limit: 20,
-  *   hasMore: true,
-  *   timestamp: '2023-01-01T00:00:00.000Z'
- *
-};
- * ``'
+ *   items: [user1,
+ *   user2],
+ *   total: 1000,
+ *   offset: 0,
+ *   limit: 20,
+ *   hasMore: true,
+ *   timestamp: '2023-01-01T00:00:00.000Z'
+ * };
+ * '`'
  */
 export interface ListResponse<T> extends PaginationResponse {
   /** Array of items */
   readonly items: readonly T[];
   /** ISO timestamp when list was generated */
-  readonly timestamp: string
-
+  readonly timestamp: string;
 }
 
 /**
@@ -90,28 +84,25 @@ export interface ListResponse<T> extends PaginationResponse {
  * '`'typescript
  * const errorResponse: APIError = {
  *   error: {
-  *     code: 'INVALID_REQUEST',
-  *     message: 'Missing'required field',
-  *     timestamp: '2023-01-01T00:00:00.000Z',
-  *     path: '/api/users',
-  *     method: 'POST'
- *
-}
+ *     code: 'INVALID_REQUEST',
+ *     message: 'Missing required field',
+ *     timestamp: '2023-01-01T00:00:00.000Z',
+ *     path: '/api/users',
+ *     method: 'POST'
+ *   }
  * };
- * ``'
+ * '`'
  */
 export interface APIError {
   readonly error: {
-  readonly code: string;
-  readonly message: string;
-  readonly details?: Record<string,
-  unknown>;
-  readonly timestamp: string;
-  readonly path: string;
-  readonly method: string;
-  readonly traceId?: string
-
-}
+    readonly code: string;
+    readonly message: string;
+    readonly details?: Record<string, unknown>;
+    readonly timestamp: string;
+    readonly path: string;
+    readonly method: string;
+    readonly traceId?: string;
+  };
 }
 
 /**
@@ -121,20 +112,17 @@ export interface APIError {
  * @example
  * '`'typescript
  * const response: SuccessResponse<User> = {
-  *   success: true,
-  *   data: user,
-  *   timestamp: '2023-01-01T00:00:00.000Z'
- *
-};
- * ``'
+ *   success: true,
+ *   data: user,
+ *   timestamp: '2023-01-01T00:00:00.000Z'
+ * };
+ * '`'
  */
 export interface SuccessResponse<T = unknown> {
   readonly success: true;
   readonly data: T;
   readonly timestamp: string;
-  readonly metadata?: Record<string,
-  unknown>
-
+  readonly metadata?: Record<string, unknown>;
 }
 
 /**
@@ -144,14 +132,13 @@ export interface SuccessResponse<T = unknown> {
  * @example
  * '`'typescript
  * const health: HealthResponse = {
-  *   status: 'healthy',
-  *   timestamp: '2023-01-01T00:00:00.000Z',
-  *   version: '1.0.0',
-  *   uptime: 36'0,
-  *   environment: 'production'
- *
-};
- * ``'
+ *   status: 'healthy',
+ *   timestamp: '2023-01-01T00:00:00.000Z',
+ *   version: '1.0.0',
+ *   uptime: 3600,
+ *   environment: 'production'
+ * };
+ * '`'
  */
 export interface HealthResponse {
   readonly status: 'healthy' | 'unhealthy' | 'degraded';
@@ -159,14 +146,13 @@ export interface HealthResponse {
   readonly version: string;
   readonly uptime: number;
   readonly environment: 'development' | 'production' | 'test';
-  readonly services?: Record<string, 'healthy' | 'unhealthy' | 'degraded'>';
+  readonly services?: Record<string, 'healthy' | 'unhealthy' | 'degraded'>;
   readonly checks?: readonly {
-  readonly name: string;
-  readonly status: 'healthy' | 'unhealthy';
-  readonly message?: string;
-  readonly duration?: number
-
-}[]
+    readonly name: string;
+    readonly status: 'healthy' | 'unhealthy';
+    readonly message?: string;
+    readonly duration?: number;
+  }[];
 }
 
 /**
@@ -174,53 +160,51 @@ export interface HealthResponse {
  * Performance and operational metrics.
  *
  * @example
- * ``'typescript
+ * '`'typescript
  * const metrics: MetricsResponse = {
  *   timestamp: '2023-01-01T00:00:00.000Z',
  *   uptime: 3600,
  *   memory: {
-  rss: 100000,
-  heapTotal: 50000,
-  heapUsed: 30000,
-  external: 5000,
-  arrayBuffers: 1000
-},
+ *     rss: 100000,
+ *     heapTotal: 50000,
+ *     heapUsed: 30000,
+ *     external: 5000,
+ *     arrayBuffers: 1000
+ *   },
  *   cpu: {
-  user: 1000,
-  system: 500
-},
+ *     user: 1000,
+ *     system: 500
+ *   },
  *   process: {
-  pid: 12345,
-  version: '18.17.0',
-  platform: 'linux',
-  architecture: 'x64'
-}
+ *     pid: 12345,
+ *     version: '18.17.0',
+ *     platform: 'linux',
+ *     architecture: 'x64'
+ *   }
  * };
- * ``'
+ * '`'
  */
 export interface MetricsResponse {
   readonly timestamp: string;
   readonly uptime: number;
   readonly memory: {
-  readonly rss: number;
-  readonly heapTotal: number;
-  readonly heapUsed: number;
-  readonly external: number;
-  readonly arrayBuffers: number
-
-};
+    readonly rss: number;
+    readonly heapTotal: number;
+    readonly heapUsed: number;
+    readonly external: number;
+    readonly arrayBuffers: number;
+  };
   readonly cpu: {
-  readonly user: number;
-  readonly system: number
-};
+    readonly user: number;
+    readonly system: number;
+  };
   readonly process: {
-  readonly pid: number;
+    readonly pid: number;
     readonly version: string;
     readonly platform: string;
-    readonly architecture: string
-
-};
-  readonly custom?: Record<string, number | string>
+    readonly architecture: string;
+  };
+  readonly custom?: Record<string, number | string>;
 }
 
 /**
@@ -230,18 +214,16 @@ export interface MetricsResponse {
  * @example
  * '`'typescript
  * const sortParams: SortParams = {
-  *   sortBy: 'createdAt',
-  *   sorOrder: 'desc'
- *
-};
- * ``'
+ *   sortBy: 'createdAt',
+ *   sortOrder: 'desc'
+ * };
+ * '`'
  */
 export interface SortParams {
   /** Field to sort by */
   readonly sortBy?: string;
   /** Sort direction */
-  readonly sortOrder?: 'asc' | 'desc'
-
+  readonly sortOrder?: 'asc' | 'desc';
 }
 
 /**
@@ -249,14 +231,13 @@ export interface SortParams {
  * Common filtering patterns.
  *
  * @example
- * ``'typescript
+ * '`'typescript
  * const filters: FilterParams = {
-  *   search: 'john'doe',
-  *   cratedAfter: '2023-01-01T00:00:00.000Z',
-  *   createdBefore: '2023-12-31T23:59:59.999Z'
- *
-};
- * ``'
+ *   search: 'john doe',
+ *   createdAfter: '2023-01-01T00:00:00.000Z',
+ *   createdBefore: '2023-12-31T23:59:59.999Z'
+ * };
+ * '`'
  */
 export interface FilterParams {
   /** Text search query */
@@ -268,8 +249,7 @@ export interface FilterParams {
   /** ISO date filter */
   readonly updatedAfter?: string;
   /** ISO date filter */
-  readonly updatedBefore?: string
-
+  readonly updatedBefore?: string;
 }
 
 /**
@@ -279,15 +259,14 @@ export interface FilterParams {
  * @example
  * '`'typescript
  * const entity: TimestampFields = {
-  *   created: new Date(),
-  *   updated: new Date()
- *
-};
+ *   created: new Date(),
+ *   updated: new Date()
+ * };
  * '`'
  */
 export interface TimestampFields {
   readonly created: Date;
-  readonly updated?: Date
+  readonly updated?: Date;
 }
 
 /**
@@ -297,18 +276,16 @@ export interface TimestampFields {
  * @example
  * '`'typescript
  * const entity: EntityFields = {
-  *   id: 'user-123',
-  *   version: 1,
-  *   etag: ''abc123"
- *
-};
+ *   id: 'user-123',
+ *   version: 1,
+ *   etag: 'abc123'
+ * };
  * '`'
  */
 export interface EntityFields {
   readonly id: string;
   readonly version?: number;
-  readonly etag?: string
-
+  readonly etag?: string;
 }
 
 /**
@@ -318,20 +295,18 @@ export interface EntityFields {
  * @example
  * '`'typescript
  * const auditInfo: AuditFields = {
-  *   created: new Date(),
-  *   createdBy: 'user-123',
-  *   updated: new Date(),
-  *   updatedBy: 'user-456'
- *
-};
- * ``'
+ *   created: new Date(),
+ *   createdBy: 'user-123',
+ *   updated: new Date(),
+ *   updatedBy: 'user-456'
+ * };
+ * '`'
  */
 export interface AuditFields extends TimestampFields {
   readonly createdBy?: string;
   readonly updatedBy?: string;
   readonly deletedAt?: Date;
-  readonly deletedBy?: string
-
+  readonly deletedBy?: string;
 }
 
 /**
@@ -341,18 +316,16 @@ export interface AuditFields extends TimestampFields {
  * @example
  * '`'typescript
  * const state: ResourceState = {
-  *   status: 'active',
-  *   statusMssage: 'Resource'is operational',
-  *   statusUpdated: new Date()
- *
-};
- * ``'
+ *   status: 'active',
+ *   statusMessage: 'Resource is operational',
+ *   statusUpdated: new Date()
+ * };
+ * '`'
  */
 export interface ResourceState {
   readonly status: 'active' | 'inactive' | 'pending' | 'error' | 'deleted';
   readonly statusMessage?: string;
-  readonly statusUpdated?: Date
-
+  readonly statusUpdated?: Date;
 }
 
 /**
@@ -360,23 +333,20 @@ export interface ResourceState {
  * Common configuration properties.
  *
  * @example
- * ``'typescript
+ * '`'typescript
  * const config: ConfigurationFields = {
  *   enabled: true,
  *   config: { timeout: 5000 },
- *   tags: ['production', 'api],
- *   metadata: { regon: 'us-east-1' }
+ *   tags: ['production', 'api'],
+ *   metadata: { region: 'us-east-1' }
  * };
- * ``'
+ * '`'
  */
 export interface ConfigurationFields {
   readonly enabled: boolean;
-  readonly config?: Record<string,
-  unknown>;
+  readonly config?: Record<string, unknown>;
   readonly tags?: readonly string[];
-  readonly metadata?: Record<string,
-  unknown>
-
+  readonly metadata?: Record<string, unknown>;
 }
 
 /**
@@ -386,22 +356,20 @@ export interface ConfigurationFields {
  * @example
  * '`'typescript
  * const error: ValidationError = {
-  *   field: 'email',
-  *   code: 'INVALID_FORMAT',
-  *   message: 'Email'must be a valid email address',
-  *   value: 'invalid-email',
-  *   constraint: 'email'
- *
-};
- * ``'
+ *   field: 'email',
+ *   code: 'INVALID_FORMAT',
+ *   message: 'Email must be a valid email address',
+ *   value: 'invalid-email',
+ *   constraint: 'email'
+ * };
+ * '`'
  */
 export interface ValidationError {
   readonly field: string;
   readonly code: string;
   readonly message: string;
   readonly value?: any;
-  readonly constraint?: string
-
+  readonly constraint?: string;
 }
 
 /**
@@ -413,22 +381,20 @@ export interface ValidationError {
  * const batchRequest: BatchRequest<CreateUserRequest> = {
  *   items: [user1Request, user2Request],
  *   options: {
-  *     failOnError: false,
-  *     maxBatchSize: 100,
-  *     timeout: 30000
- *
-}
+ *     failOnError: false,
+ *     maxBatchSize: 100,
+ *     timeout: 30000
+ *   }
  * };
  * '`'
  */
 export interface BatchRequest<T> {
   readonly items: readonly T[];
   readonly options?: {
-  readonly failOnError?: boolean;
+    readonly failOnError?: boolean;
     readonly maxBatchSize?: number;
-    readonly timeout?: number
-
-}
+    readonly timeout?: number;
+  };
 }
 
 /**
@@ -438,45 +404,44 @@ export interface BatchRequest<T> {
  * @example
  * '`'typescript
  * const batchResponse: BatchResponse<User> = {
- *   results: [*     {
-  index: 0,
-  success: true,
-  data: user1
-},
+ *   results: [
+ *     {
+ *       index: 0,
+ *       success: true,
+ *       data: user1
+ *     },
  *     { index: 1, success: false, error: { error: {
-  code: 'INVALID_INPUT',
-  message: 'Invalid'data',
-  timestmp: '...',
-  path: '/batch',
-  metod: 'POST'
-} } }
- *, ],
+ *       code: 'INVALID_INPUT',
+ *       message: 'Invalid data',
+ *       timestamp: '...',
+ *       path: '/batch',
+ *       method: 'POST'
+ *     } } }
+ *   ],
  *   summary: {
-  total: 2,
-  successful: 1,
-  failed: 1,
-  duration: 1500
-},
+ *     total: 2,
+ *     successful: 1,
+ *     failed: 1,
+ *     duration: 1500
+ *   },
  *   timestamp: '2023-01-01T00:00:00.000Z'
  * };
- * ``'
+ * '`'
  */
 export interface BatchResponse<T> {
   readonly results: readonly {
-  readonly index: number;
+    readonly index: number;
     readonly success: boolean;
     readonly data?: T;
-    readonly error?: APIError['error]
-
-}[];
+    readonly error?: APIError['error'];
+  }[];
   readonly summary: {
-  readonly total: number;
+    readonly total: number;
     readonly successful: number;
     readonly failed: number;
-    readonly duration: number
-
-};
-  readonly timestamp: string
+    readonly duration: number;
+  };
+  readonly timestamp: string;
 }
 
 /**
@@ -484,17 +449,16 @@ export interface BatchResponse<T> {
  * For long-running operations.
  *
  * @example
- * ``'typescript
+ * '`'typescript
  * const asyncOp: AsyncOperationResponse = {
-  *   operationId: 'op-123',
-  *   status: 'running',
-  *   proress: 50,
-  *   message: 'Processing'data...',
-  *   created: '2023-01-01T00:00:00.000Z',
-  *   updated: '2023-01-01T00:05:00.000Z'
- *
-};
- * ``'
+ *   operationId: 'op-123',
+ *   status: 'running',
+ *   progress: 50,
+ *   message: 'Processing data...',
+ *   created: '2023-01-01T00:00:00.000Z',
+ *   updated: '2023-01-01T00:05:00.000Z'
+ * };
+ * '`'
  */
 export interface AsyncOperationResponse {
   readonly operationId: string;
@@ -505,10 +469,9 @@ export interface AsyncOperationResponse {
   /** ISO timestamp */
   readonly estimatedCompletion?: string;
   readonly result?: any;
-  readonly error?: APIError['error];
+  readonly error?: APIError['error'];
   readonly created: string;
-  readonly updated: string
-
+  readonly updated: string;
 }
 
 /**
@@ -516,17 +479,16 @@ export interface AsyncOperationResponse {
  * For file upload operations.
  *
  * @example
- * ``'typescript
+ * '`'typescript
  * const uploadResponse: FileUploadResponse = {
-  *   fileId: 'file-123',
-  *   filename: 'document.pdf',
-  *   size: 1024000,
-  *   mimeType: 'application/pdf',
-  *   url: https://example.com/files/file-123',
-  *   uploaded: '2023-01-01T00:00:00.000Z'
- *
-};
- * ``'
+ *   fileId: 'file-123',
+ *   filename: 'document.pdf',
+ *   size: 1024000,
+ *   mimeType: 'application/pdf',
+ *   url: 'https://example.com/files/file-123',
+ *   uploaded: '2023-01-01T00:00:00.000Z'
+ * };
+ * '`'
  */
 export interface FileUploadResponse {
   readonly fileId: string;
@@ -536,8 +498,7 @@ export interface FileUploadResponse {
   readonly url?: string;
   readonly checksum?: string;
   readonly uploaded: string;
-  readonly expiresAt?: string
-
+  readonly expiresAt?: string;
 }
 
 /**
@@ -547,12 +508,11 @@ export interface FileUploadResponse {
  * @example
  * '`'typescript
  * const rateLimit: RateLimitInfo = {
-  *   limit: 1000,
-  *   remaining: 950,
-  *   reset: 1672531200,
-  *   window: 3600
- *
-};
+ *   limit: 1000,
+ *   remaining: 950,
+ *   reset: 1672531200,
+ *   window: 3600
+ * };
  * '`'
  */
 export interface RateLimitInfo {
@@ -561,255 +521,220 @@ export interface RateLimitInfo {
   /** Unix timestamp */
   readonly reset: number;
   /** Window size in seconds */
-  readonly window: number
-
+  readonly window: number;
 }
 
 // OpenAPI 3.0 Schema definitions for common types
 export const Schemas = {
   PaginationParams: {
     type: 'object',
-    properies: {
+    properties: {
       limit: {
-  type: 'integer',
-  minimum: 1,
-  maximum: 100,
-  default: 20,
-  desciption: 'Maximum'number of items to return'
-
-},
+        type: 'integer',
+        minimum: 1,
+        maximum: 100,
+        default: 20,
+        description: 'Maximum number of items to return',
+      },
       offset: {
-  type: 'integer',
-  minimum: 0,
-  default: 0,
-  desciption: 'Number'of items to skip'
-
-}
-}
-},
+        type: 'integer',
+        minimum: 0,
+        default: 0,
+        description: 'Number of items to skip',
+      },
+    },
+  },
 
   SortParams: {
-    tye: 'object',
-    properies: {
-      sortBy: {
-  type: 'string',
-  description: 'Field'to sort by'
-
-},
-      sortOrder: {
-  tpe: 'string',
-  enum: ['asc',
-  'desc],
-  default: 'asc',
-  desription: 'Sort'direction'
-
-}
-}
-},
-
-  ErrorRespose: {
     type: 'object',
-    required: ['error],
-    poperties: {
+    properties: {
+      sortBy: {
+        type: 'string',
+        description: 'Field to sort by',
+      },
+      sortOrder: {
+        type: 'string',
+        enum: ['asc', 'desc'],
+        default: 'asc',
+        description: 'Sort direction',
+      },
+    },
+  },
+
+  ErrorResponse: {
+    type: 'object',
+    required: ['error'],
+    properties: {
       error: {
         type: 'object',
-        required: ['code', 'message', 'timestamp', 'path', 'method],
+        required: ['code', 'message', 'timestamp', 'path', 'method'],
         properties: {
-          coe: {
-  type: 'string',
-  description: 'Error'code for programmatic handling'
-
-},
-          messae: {
-  type: 'string',
-  description: 'Human-readable'error message'
-
-},
-          dtails: {
-  type: 'object',
-  description: 'Additional'error details'
-
-},
-          timetamp: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'When'the error occurred'
-
-},
+          code: {
+            type: 'string',
+            description: 'Error code for programmatic handling',
+          },
+          message: {
+            type: 'string',
+            description: 'Human-readable error message',
+          },
+          details: {
+            type: 'object',
+            description: 'Additional error details',
+          },
+          timestamp: {
+            type: 'string',
+            format: 'date-time',
+            description: 'When the error occurred',
+          },
           path: {
-  type: 'string',
-  description: 'Request'path that caused the error'
-
-},
+            type: 'string',
+            description: 'Request path that caused the error',
+          },
           method: {
-  type: 'string',
-  description: 'HTTP'method that caused the error'
-
-},
-          taceId: {
-  type: 'string',
-  description: 'Trace'ID for debugging'
-
-}
-}
-}
-}
-},
+            type: 'string',
+            description: 'HTTP method that caused the error',
+          },
+          traceId: {
+            type: 'string',
+            description: 'Trace ID for debugging',
+          },
+        },
+      },
+    },
+  },
 
   HealthResponse: {
     type: 'object',
-    required: ['status', 'timestamp', 'version', 'uptime', 'environment],
-    properies: {
+    required: ['status', 'timestamp', 'version', 'uptime', 'environment'],
+    properties: {
       status: {
-  type: 'string',
-  enum: ['healthy',
-  'unhealthy',
-  'degraded],
-  escription: 'Overall'system health status'
-
-},
-      timetamp: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'When'health check was performed'
-
-},
-      version: {
-  type: 'string',
-  description: 'Application'version'
-
-},
-      uptime: {
-  type: 'number',
-  desciption: 'System'uptime in seconds'
-
-},
-      environment: {
-  type: 'string',
-  enum: ['development',
-  'production',
-  'test],
-  description: 'Runtime'environment'
-
-},
-      services: {
-        ype: 'object',
-        addiionalProperties: {
-  type: 'string',
-  enum: ['healthy',
-  'unhealthy',
-  'degraded]
-
-},
-        escription: 'Health'status of individual services'
-}
-}
-},
-
-  MetricResponse: {
-    type: 'object',
-    required: ['timestamp', 'uptime', 'memory', 'cpu', 'process],
-    propertie: {
+        type: 'string',
+        enum: ['healthy', 'unhealthy', 'degraded'],
+        description: 'Overall system health status',
+      },
       timestamp: {
-  type: 'string',
-  format: 'date-time'
-},
-      uptim: {
-  type: 'number',
-  desciption: 'System'uptime in seconds'
+        type: 'string',
+        format: 'date-time',
+        description: 'When health check was performed',
+      },
+      version: {
+        type: 'string',
+        description: 'Application version',
+      },
+      uptime: {
+        type: 'number',
+        description: 'System uptime in seconds',
+      },
+      environment: {
+        type: 'string',
+        enum: ['development', 'production', 'test'],
+        description: 'Runtime environment',
+      },
+      services: {
+        type: 'object',
+        additionalProperties: {
+          type: 'string',
+          enum: ['healthy', 'unhealthy', 'degraded'],
+        },
+        description: 'Health status of individual services',
+      },
+    },
+  },
 
-},
+  MetricsResponse: {
+    type: 'object',
+    required: ['timestamp', 'uptime', 'memory', 'cpu', 'process'],
+    properties: {
+      timestamp: {
+        type: 'string',
+        format: 'date-time',
+      },
+      uptime: {
+        type: 'number',
+        description: 'System uptime in seconds',
+      },
       memory: {
         type: 'object',
-        properies: {
+        properties: {
           rss: { type: 'number' },
           heapTotal: { type: 'number' },
           heapUsed: { type: 'number' },
-          extenal: { type: 'number' },
-          arayBuffers: { type: 'number' }
-}
-},
+          external: { type: 'number' },
+          arrayBuffers: { type: 'number' },
+        },
+      },
       cpu: {
         type: 'object',
-        properies: {
+        properties: {
           user: { type: 'number' },
-          system: { type: 'number' }
-}
-},
-      pocess: {
+          system: { type: 'number' },
+        },
+      },
+      process: {
         type: 'object',
-        properies: {
+        properties: {
           pid: { type: 'number' },
-          vesion: { type: 'string' },
+          version: { type: 'string' },
           platform: { type: 'string' },
-          architecture: { type: 'string' }
-}
-}
-}
-},
+          architecture: { type: 'string' },
+        },
+      },
+    },
+  },
 
   FilterParams: {
     type: 'object',
-    properies: {
+    properties: {
       search: {
-  type: 'string',
-  description: 'Text'search query'
-
-},
+        type: 'string',
+        description: 'Text search query',
+      },
       createdAfter: {
-  tpe: 'string',
-  format: 'date-time',
-  dscription: 'Filter'items created after this date'
-
-},
-      cratedBefore: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'Filter'items created before this date'
-
-},
-      updatdAfter: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'Filter'items updated after this date'
-
-},
-      updatdBefore: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'Filter'items updated before this date'
-
-}
-}
-},
+        type: 'string',
+        format: 'date-time',
+        description: 'Filter items created after this date',
+      },
+      createdBefore: {
+        type: 'string',
+        format: 'date-time',
+        description: 'Filter items created before this date',
+      },
+      updatedAfter: {
+        type: 'string',
+        format: 'date-time',
+        description: 'Filter items updated after this date',
+      },
+      updatedBefore: {
+        type: 'string',
+        format: 'date-time',
+        description: 'Filter items updated before this date',
+      },
+    },
+  },
 
   ValidationError: {
-    typ: 'object',
-    required: ['field', 'code', 'message],
-    proprties: {
+    type: 'object',
+    required: ['field', 'code', 'message'],
+    properties: {
       field: {
-  type: 'string',
-  description: 'Field'that failed validation'
-
-},
+        type: 'string',
+        description: 'Field that failed validation',
+      },
       code: {
-  type: 'string',
-  description: 'Validation'error code'
-
-},
-      mssage: {
-  type: 'string',
-  description: 'Human-readable'error message'
-
-},
-      valu: {
-        description: 'Value'that failed validation'
-},
-      costraint: {
-  type: 'string',
-  description: 'Validation'constraint that was violated'
-
-}
-}
-}
+        type: 'string',
+        description: 'Validation error code',
+      },
+      message: {
+        type: 'string',
+        description: 'Human-readable error message',
+      },
+      value: {
+        description: 'Value that failed validation',
+      },
+      constraint: {
+        type: 'string',
+        description: 'Validation constraint that was violated',
+      },
+    },
+  },
 } as const;

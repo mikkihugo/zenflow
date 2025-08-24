@@ -5,16 +5,14 @@
 
 export interface EventManagerConfig {
   maxListeners: number;
-  errorHandling: 'throw' |log | | ign'o'r'e')';
-  enableMetrics: boolean
-
+  errorHandling: 'throw' | 'log' | 'ignore';
+  enableMetrics: boolean;
 }
 
 export interface EventManagerTypes {
   maxListeners: number;
-  errorHandling: 'throw' |log | | ign'o'r'e')';
-  enableMetrics: boolean
-
+  errorHandling: 'throw' | 'log' | 'ignore';
+  enableMetrics: boolean;
 }
 
 // Interfaces are already exported above - no need for type exports

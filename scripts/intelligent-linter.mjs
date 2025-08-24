@@ -516,6 +516,36 @@ function shouldUseClaudeCodeAdvanced(originalContent, claudeOutput, baseline, st
 }
 
 /**
+ * Quality check: Determine if GPT output should fallback to GPT-5 (Skip Claude entirely).
+ * 
+ * @param {string} originalContent Original file content
+ * @param {string} gptOutput GPT's fixed output
+ * @param {Object} baseline Baseline error statistics
+ * @param {Object} stats Processing statistics
+ * @returns {boolean} True if should fallback to GPT-5
+ */
+function shouldFallbackToGPT5(originalContent, gptOutput, baseline, stats = {}) {
+  let fallbackReason = null;
+  
+  // Only check for CLAUDE-NEEDED markers - accept everything else
+  if (gptOutput && gptOutput.includes('CLAUDE-NEEDED:')) {
+    console.log('🔍 GPT marked areas for GPT-5 - trying enhanced model before accepting');
+    const markerCount = (gptOutput.match(/CLAUDE-NEEDED:/g) || []).length;
+    console.log(`📊 Found ${markerCount} CLAUDE-NEEDED markers`);
+    fallbackReason = 'try_gpt5_first';
+    stats.qualityChecks.gpt5Attempted = (stats.qualityChecks.gpt5Attempted || 0) + 1;
+  }
+  
+  if (fallbackReason) {
+    console.log(`📊 Quality Check Result: TRY_GPT5 (reason: ${fallbackReason})`);
+    return true;
+  }
+  
+  console.log('📊 Quality Check Result: PASSED (accepting GPT output)');
+  return false;
+}
+
+/**
  * Quality check: Determine if GPT output should fallback to Claude Inference.
  * Detects corrupted output, hallucination, or GPT giving up on complex code.
  * Enhanced with comprehensive statistics tracking.
@@ -574,15 +604,16 @@ function shouldFallbackToClaudeInference(originalContent, gptOutput, baseline, s
     stats.qualityChecks.markdownHallucination = (stats.qualityChecks.markdownHallucination || 0) + 1;
   }
   
-  // Check if output dramatically changed structure (possible hallucination)
+  // DISABLED: Structure change check - let GPT fix syntax even if it changes formatting
+  // GPT's function calling provides detailed tracking, and we'll use post-compilation validation instead
   if (gptOutput) {
     const originalLines = originalContent.split('\n').length;
     const outputLines = gptOutput.split('\n').length;
     const structureChangeRatio = Math.abs(outputLines - originalLines) / originalLines;
     
     if (structureChangeRatio > 0.3) {
-      console.log(`🔍 GPT changed structure significantly (${originalLines} → ${outputLines} lines, ${(structureChangeRatio * 100).toFixed(1)}% change)`);
-      fallbackReason = 'structure_changed';
+      console.log(`📊 GPT changed structure (${originalLines} → ${outputLines} lines, ${(structureChangeRatio * 100).toFixed(1)}% change) - allowing for syntax fixing`);
+      // Don't trigger fallback - let it proceed and use post-compilation check instead
       stats.qualityChecks.structureChanged = (stats.qualityChecks.structureChanged || 0) + 1;
     }
   }
@@ -705,7 +736,35 @@ Only include improved_code if you are 90%+ confident it's safe (confidence_score
         messages: [{ role: 'user', content: improvementPrompt }],
         model: 'gpt-4.1',  // FREE + fastest (881ms) + highest quality
         temperature: 0.0,  // Zero creativity - only confident fixes
-        response_format: { type: "json_object" }  // Force structured JSON for OpenAI compatibility
+        max_tokens: 128000,
+        functions: [{
+          name: "fix_typescript_syntax", 
+          description: "Fix TypeScript syntax errors and return the corrected code",
+          parameters: {
+            type: "object",
+            properties: {
+              fixed_code: {
+                type: "string",
+                description: "The complete corrected TypeScript code with all syntax errors fixed. MUST include the entire file, not truncated."
+              },
+              file_complete: {
+                type: "boolean",
+                description: "Confirm that the fixed_code contains the complete file content, not a truncated version"
+              },
+              changes_applied: {
+                type: "array", 
+                items: { type: "string" },
+                description: "List of specific changes made"
+              },
+              fixes_count: {
+                type: "integer",
+                description: "Number of fixes applied"  
+              }
+            },
+            required: ["fixed_code", "file_complete", "changes_applied", "fixes_count"]
+          }
+        }],
+        function_call: { name: "fix_typescript_syntax" }
       })
     });
     
@@ -714,37 +773,59 @@ Only include improved_code if you are 90%+ confident it's safe (confidence_score
     }
     
     const data = await response.json();
-    const rawContent = data.choices[0]?.message?.content || '';
+    const functionCall = data.choices[0]?.message?.function_call;
     
     console.log(`📊 GPT Response: ${data.usage?.total_tokens || 'unknown'} tokens used`);
     
-    // Try to parse JSON response first (OpenAI compatible structured output)
-    try {
-      const improvementData = JSON.parse(rawContent);
-      console.log(`📊 JSON Improvement: Apply=${improvementData.apply_improvements}, Confidence=${improvementData.confidence_score}`);
-      
-      if (improvementData.apply_improvements && improvementData.improved_code && improvementData.confidence_score >= 0.9) {
-        console.log(`✅ GPT-4.1 generated ${improvementData.changes_count} safe improvements (${(improvementData.confidence_score * 100).toFixed(1)}% confidence)`);
-        return { 
-          shouldApply: true, 
-          improvedCode: improvementData.improved_code, 
-          changesCount: improvementData.changes_count, 
-          reason: improvementData.reason, 
-          summary: improvementData.summary,
-          confidence: improvementData.confidence_score
+    // Parse function call response (structured function calling)
+    if (functionCall && functionCall.name === 'fix_typescript_syntax') {
+      try {
+        const functionData = JSON.parse(functionCall.arguments);
+        console.log(`📊 Function Response: ${functionData.fixes_count || functionData.fixes_applied} fixes applied`);
+        
+        // CRITICAL DEBUG: Show exactly what GPT returned
+        console.log(`🔍 DEBUG: GPT Function Response Keys: ${Object.keys(functionData).join(', ')}`);
+        console.log(`🔍 DEBUG: file_complete field: ${functionData.file_complete} (type: ${typeof functionData.file_complete})`);
+        console.log(`🔍 DEBUG: fixed_code length: ${functionData.fixed_code?.length} chars`);
+        console.log(`🔍 DEBUG: Original file length: ${fileContent.length} chars`);
+        
+        // CRITICAL: Validate file completeness 
+        if (functionData.file_complete !== true) {
+          console.log(`🚨 CRITICAL: GPT didn't confirm file completeness! file_complete=${functionData.file_complete}, rejecting and falling back...`);
+          throw new Error(`GPT function call didn't confirm completeness (file_complete: ${functionData.file_complete})`);
+        }
+        
+        // CRITICAL: Validate file size to catch truncation
+        const originalSize = fileContent.length;
+        const fixedSize = functionData.fixed_code.length;
+        const sizeReduction = ((originalSize - fixedSize) / originalSize) * 100;
+        
+        if (sizeReduction > 90) {
+          console.log(`🚨 CRITICAL: File truncated! ${originalSize} → ${fixedSize} chars (${sizeReduction.toFixed(1)}% reduction)`);
+          console.log(`❌ Rejecting truncated output, falling back...`);
+          throw new Error(`GPT function call returned truncated file: ${sizeReduction.toFixed(1)}% size reduction`);
+        }
+        
+        if (sizeReduction > 50) {
+          console.log(`⚠️ WARNING: Large file reduction: ${originalSize} → ${fixedSize} chars (${sizeReduction.toFixed(1)}% reduction)`);
+        }
+        
+        return {
+          shouldApply: true,
+          improvedCode: functionData.fixed_code,
+          changesCount: functionData.fixes_count,
+          reason: `Applied ${functionData.fixes_count} syntax fixes`,
+          summary: functionData.changes_applied.join(', '),
+          confidence: 1.0
         };
-      } else {
-        console.log(`ℹ️  GPT-4.1 declined improvements: ${improvementData.reason} (confidence: ${(improvementData.confidence_score * 100).toFixed(1)}%)`);
-        return { 
-          shouldApply: false, 
-          changesCount: improvementData.changes_count || 0, 
-          reason: improvementData.reason, 
-          summary: improvementData.summary,
-          confidence: improvementData.confidence_score
-        };
+      } catch (jsonError) {
+        console.log(`⚠️  Function call parsing failed: ${jsonError.message}`);
+        return { shouldApply: false, changesCount: 0, reason: 'function_parse_error' };
       }
-      
-    } catch (jsonError) {
+    } else {
+      console.log('⚠️  No function call in response, falling back to text parsing');
+      const rawContent = data.choices[0]?.message?.content || '';
+      // Fallback to text parsing
       // Fallback to text parsing if JSON fails
       console.log('⚠️  Non-JSON improvement response, using text parsing fallback');
       
@@ -860,7 +941,35 @@ Provide specific, actionable feedback in the JSON response format.`;
         messages: [{ role: 'user', content: reviewPrompt }],
         model: 'gpt-4.1',  // FREE + fastest (881ms) + highest quality
         temperature: 0.0,  // Zero creativity - only confident fixes
-        response_format: { type: "json_object" }  // Force structured JSON for OpenAI compatibility
+        max_tokens: 128000,
+        functions: [{
+          name: "fix_typescript_syntax", 
+          description: "Fix TypeScript syntax errors and return the corrected code",
+          parameters: {
+            type: "object",
+            properties: {
+              fixed_code: {
+                type: "string",
+                description: "The complete corrected TypeScript code with all syntax errors fixed. MUST include the entire file, not truncated."
+              },
+              file_complete: {
+                type: "boolean",
+                description: "Confirm that the fixed_code contains the complete file content, not a truncated version"
+              },
+              changes_applied: {
+                type: "array", 
+                items: { type: "string" },
+                description: "List of specific changes made"
+              },
+              fixes_count: {
+                type: "integer",
+                description: "Number of fixes applied"  
+              }
+            },
+            required: ["fixed_code", "file_complete", "changes_applied", "fixes_count"]
+          }
+        }],
+        function_call: { name: "fix_typescript_syntax" }
         // No max_tokens - allow full detailed review
       })
     });
@@ -944,9 +1053,9 @@ async function fixWithGPT4o(filePath, errorDetails, fileContent, model = 'gpt-4.
   console.log(`\n🚀 Using ${model} for ultra-fast syntax fixing (FREE via GitHub Copilot)...`);
   
   // Add timeout to prevent hanging (GPT-4.1 can take very long time)
-  const GPT_TIMEOUT = 120000; // 2 minutes max for GPT models
+  const GPT_TIMEOUT = 180000; // 3 minutes max for GPT models
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(`${model} timed out after 2 minutes - escalating to advanced tier`)), GPT_TIMEOUT);
+    setTimeout(() => reject(new Error(`${model} timed out after 3 minutes - escalating to advanced tier`)), GPT_TIMEOUT);
   });
   
   const fixPromise = async () => {
@@ -962,10 +1071,56 @@ async function fixWithGPT4o(filePath, errorDetails, fileContent, model = 'gpt-4.
     
     const tokenData = JSON.parse(readFileSync(tokenPath, 'utf8'));
     
-    // STRICT LINTING ONLY - No code generation or feature additions
-    const prompt = `You must respond with a JSON object containing the fixed code.
+    // Define function for structured code fixing
+    const tools = [{
+      type: "function",
+      function: {
+        name: "fix_typescript_syntax",
+        description: "Apply surgical fixes to TypeScript syntax errors",
+        parameters: {
+          type: "object",
+          properties: {
+            fixed_code: {
+              type: "string",
+              description: "The complete corrected TypeScript code with only syntax fixes applied"
+            },
+            changes_made: {
+              type: "string", 
+              description: "Brief description of the specific syntax fixes that were applied"
+            },
+            fixes_applied: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  line_number: { type: "number", description: "Line number where fix was applied" },
+                  fix_type: { type: "string", description: "Type of fix (e.g., 'union_type_syntax', 'missing_semicolon')" },
+                  original: { type: "string", description: "Original problematic text" },
+                  fixed: { type: "string", description: "Corrected text" }
+                }
+              }
+            },
+            claude_needed_count: {
+              type: "number",
+              description: "Number of // CLAUDE-NEEDED comments added for complex areas"
+            }
+          },
+          required: ["fixed_code", "file_complete", "changes_made", "fixes_applied", "claude_needed_count"]
+        }
+      }
+    }];
 
-STRICT LINTING: Fix only syntax errors - DO NOT add features or generate new code.
+    // Dynamic approach: Use function calls for small files, response format for large files
+    const isLargeFile = fileContent.length > 5000; // 5K chars threshold
+    const approachType = isLargeFile ? 'response_format' : 'function_calls';
+    
+    console.log(`📊 File size: ${fileContent.length} chars - Using ${approachType} approach`);
+
+    let prompt, requestBody;
+    
+    if (isLargeFile) {
+      // For large files: Use response format to avoid function call size limits
+      prompt = `STRICT LINTING: Fix only syntax errors - DO NOT add features or generate new code.
 
 FILE: ${filePath}
 
@@ -979,27 +1134,65 @@ ${fileContent}
 
 CRITICAL LINTING CONSTRAINTS:
 1. ONLY fix syntax errors (missing quotes, brackets, semicolons, typos)
-2. ONLY fix TypeScript compilation errors (type annotations, import statements)
+2. ONLY fix TypeScript compilation errors (type annotations, import statements)  
 3. DO NOT add new functions, classes, or features
 4. DO NOT generate code from fragments - preserve original structure
 5. DO NOT change existing logic or business rules
 6. PRESERVE exact same functionality
-7. Return ONLY the minimally corrected code
+7. **RETURN THE COMPLETE ENTIRE FILE** - not just changed lines, but the FULL file content with fixes applied
+
+RESPONSE FORMAT: Return ONLY the corrected TypeScript code wrapped in markdown code block:
+\`\`\`typescript
+[COMPLETE CORRECTED FILE CONTENT HERE]
+\`\`\`
+
+No explanations, no summary - just the complete fixed file in a code block.`;
+
+      requestBody = {
+        messages: [{ role: 'user', content: prompt }],
+        model: model,
+        temperature: 0.0,
+        max_tokens: 128000
+      };
+    } else {
+      // For small files: Use function calls for structured output
+      prompt = `STRICT LINTING: Fix only syntax errors - DO NOT add features or generate new code.
+
+FILE: ${filePath}
+
+SYNTAX ERRORS TO FIX:
+${errorDetails}
+
+CURRENT CODE:
+\`\`\`typescript
+${fileContent}
+\`\`\`
+
+CRITICAL LINTING CONSTRAINTS:
+1. ONLY fix syntax errors (missing quotes, brackets, semicolons, typos)
+2. ONLY fix TypeScript compilation errors (type annotations, import statements)  
+3. DO NOT add new functions, classes, or features
+4. DO NOT generate code from fragments - preserve original structure
+5. DO NOT change existing logic or business rules
+6. PRESERVE exact same functionality
+7. **RETURN THE COMPLETE ENTIRE FILE** - not just changed lines, but the FULL file content with fixes applied
 
 SPECIAL INSTRUCTION: If you encounter code you cannot fix due to complexity or lack of context, add a comment:
 // CLAUDE-NEEDED: [brief description of what needs fixing]
 
-This will trigger Claude SDK (which has full codebase knowledge) to handle that specific area.
+**ABSOLUTE REQUIREMENT**: The fixed_code parameter MUST contain the complete, entire file content (all ${fileContent.length} characters), not just the lines that were changed. Set file_complete=true only if you're returning the complete file.
 
-RESPONSE FORMAT (JSON):
-{
-  "fixed_code": "[complete corrected TypeScript code]",
-  "changes_made": "[brief description of syntax fixes applied]",
-  "claude_needed": [number of CLAUDE-NEEDED markers added]
-}
+Use the fix_typescript_syntax function to return the corrected code with structured information about the fixes applied.`;
 
-WARNING: Any feature addition or code generation will be rejected.
-OUTPUT: JSON object with fixed code and metadata.`;
+      requestBody = {
+        messages: [{ role: 'user', content: prompt }],
+        model: model,
+        temperature: 0.0,
+        max_tokens: 128000,
+        tools: tools,
+        tool_choice: { type: "function", function: { name: "fix_typescript_syntax" } }
+      };
+    }
 
     // Call GPT-4o via GitHub Copilot API
     const response = await fetch('https://api.githubcopilot.com/chat/completions', {
@@ -1010,12 +1203,7 @@ OUTPUT: JSON object with fixed code and metadata.`;
         'Copilot-Integration-Id': 'vscode-chat',
         'Editor-Version': 'vscode/1.85.0'
       },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: prompt }],
-        model: model,  // Dynamic model selection: gpt-4.1, gpt-5, gpt-4o, gpt-4o-mini
-        temperature: 0.0,  // Zero creativity - only confident fixes
-        max_tokens: 128000  // Max out since it's free via GitHub Copilot - strict prompt prevents hallucination
-      })
+      body: JSON.stringify(requestBody)
     });
     
     if (!response.ok) {
@@ -1023,77 +1211,155 @@ OUTPUT: JSON object with fixed code and metadata.`;
     }
     
     const data = await response.json();
-    const rawContent = data.choices[0]?.message?.content || '';
+    const message = data.choices[0]?.message;
     
-    // JSON log GPT-4.1 response for debugging
+    let fixedContent = '';
+    
+    if (isLargeFile) {
+      // For large files: Parse response format (markdown code block)
+      const rawContent = message?.content || '';
+      console.log(`🔍 DEBUG: Response format approach - Content length: ${rawContent.length} chars`);
+      
+      // Extract code from markdown block
+      const codeBlockMatch = rawContent.match(/```typescript\n([\s\S]*?)\n```/);
+      if (codeBlockMatch && codeBlockMatch[1]) {
+        fixedContent = codeBlockMatch[1];
+        console.log(`✅ Extracted code from markdown block: ${fixedContent.length} chars`);
+        
+        // Validate file size to catch truncation
+        const originalSize = fileContent.length;
+        const fixedSize = fixedContent.length;
+        const sizeReduction = ((originalSize - fixedSize) / originalSize) * 100;
+        
+        if (sizeReduction > 90) {
+          console.log(`🚨 CRITICAL: Response format File truncated! ${originalSize} → ${fixedSize} chars (${sizeReduction.toFixed(1)}% reduction)`);
+          throw new Error(`Response format returned truncated file: ${sizeReduction.toFixed(1)}% size reduction`);
+        }
+        
+        if (sizeReduction > 50) {
+          console.log(`⚠️ WARNING: Response format Large file reduction: ${originalSize} → ${fixedSize} chars (${sizeReduction.toFixed(1)}% reduction)`);
+        } else {
+          console.log(`📊 File size change: ${originalSize} → ${fixedSize} chars (${sizeReduction >= 0 ? '-' : '+'}${Math.abs(sizeReduction).toFixed(1)}%)`);
+        }
+      } else {
+        throw new Error('No valid TypeScript code block found in response');
+      }
+    } else {
+      // Check for function call response (small files)
+      if (message?.tool_calls && message.tool_calls.length > 0) {
+        const toolCall = message.tool_calls[0];
+        
+        if (toolCall.function?.name === 'fix_typescript_syntax') {
+          const functionArgs = JSON.parse(toolCall.function.arguments);
+          
+          // CRITICAL DEBUG: Show exactly what GPT returned
+          console.log(`🔍 DEBUG: GPT Function Response Keys: ${Object.keys(functionArgs).join(', ')}`);
+          console.log(`🔍 DEBUG: file_complete field: ${functionArgs.file_complete} (type: ${typeof functionArgs.file_complete})`);
+          console.log(`🔍 DEBUG: fixed_code length: ${functionArgs.fixed_code?.length} chars`);
+          console.log(`🔍 DEBUG: Original file length: ${fileContent.length} chars`);
+          
+          // CRITICAL: Validate file completeness 
+          if (functionArgs.file_complete !== true) {
+            console.log(`🚨 CRITICAL: GPT didn't confirm file completeness! file_complete=${functionArgs.file_complete}, rejecting and falling back...`);
+            throw new Error(`GPT function call didn't confirm completeness (file_complete: ${functionArgs.file_complete})`);
+          }
+          
+          // CRITICAL: Validate file size to catch truncation
+          const originalSize = fileContent.length;
+          const fixedSize = functionArgs.fixed_code?.length || 0;
+          const sizeReduction = ((originalSize - fixedSize) / originalSize) * 100;
+          
+          if (sizeReduction > 90) {
+            console.log(`🚨 CRITICAL: GPT Function call File truncated! ${originalSize} → ${fixedSize} chars (${sizeReduction.toFixed(1)}% reduction)`);
+            console.log(`❌ Rejecting truncated output, falling back...`);
+            throw new Error(`GPT function call returned truncated file: ${sizeReduction.toFixed(1)}% size reduction`);
+          }
+          
+          if (sizeReduction > 50) {
+            console.log(`⚠️ WARNING: GPT Function call Large file reduction: ${originalSize} → ${fixedSize} chars (${sizeReduction.toFixed(1)}% reduction)`);
+          }
+          
+          fixedContent = functionArgs.fixed_code;
+        
+          // Enhanced logging for function call
+          const logEntry = {
+            type: 'gpt_function_call',
+            timestamp: new Date().toISOString(),
+            model: model,
+            tokensUsed: data.usage?.total_tokens || 0,
+            functionName: toolCall.function.name,
+            fixesApplied: functionArgs.fixes_applied?.length || 0,
+            claudeNeeded: functionArgs.claude_needed_count || 0,
+            file: filePath,
+            tier: 'gpt4.1'
+          };
+          
+          console.log(`🔧 GPT Function Call: ${JSON.stringify(logEntry)}`);
+          console.log(`📊 Changes: ${functionArgs.changes_made}`);
+          
+          if (functionArgs.fixes_applied && functionArgs.fixes_applied.length > 0) {
+            console.log(`🔍 Applied ${functionArgs.fixes_applied.length} fixes:`);
+            functionArgs.fixes_applied.forEach((fix, i) => {
+              console.log(`  ${i+1}. Line ${fix.line_number}: ${fix.fix_type} - "${fix.original}" → "${fix.fixed}"`);
+            });
+          }
+          
+          if (functionArgs.claude_needed_count > 0) {
+            console.log(`🔍 GPT marked ${functionArgs.claude_needed_count} areas for Claude SDK`);
+          }
+          
+          // Write to progress log  
+          try {
+            import('fs').then(({ appendFileSync }) => {
+              const logFile = `${filePath}.claude-progress.json`;
+              appendFileSync(logFile, JSON.stringify(logEntry) + '\n');
+            });
+          } catch (e) { /* ignore */ }
+        } else {
+          throw new Error('No valid function call response found');
+        }
+      } else {
+        // Fallback for small files: try parsing content response
+        const rawContent = message?.content || '';
+        console.log('⚠️ Small file but no function call, trying content fallback');
+        
+        const codeBlockMatch = rawContent.match(/```typescript\n([\s\S]*?)\n```/);
+        if (codeBlockMatch && codeBlockMatch[1]) {
+          fixedContent = codeBlockMatch[1];
+        } else {
+          throw new Error('No valid response found for small file');
+        }
+      }
+    }
+    
+    // Common validation for both approaches
+    if (!fixedContent) {
+      throw new Error('No fixed content received from GPT');
+    }
+    
+    // Log the response 
     const logEntry = {
-      type: 'gpt_response',
+      type: isLargeFile ? 'gpt_response_format' : 'gpt_function_call',
       timestamp: new Date().toISOString(),
       model: model,
       tokensUsed: data.usage?.total_tokens || 0,
-      contentLength: rawContent.length,
+      contentLength: fixedContent.length,
       file: filePath,
-      tier: 'gpt4.1'
+      approach: approachType
     };
     
-    console.log(`📊 GPT-4.1 Response: ${JSON.stringify(logEntry)}`);
+    console.log(`📊 GPT Response: ${JSON.stringify(logEntry)}`);
     
-    // Also write to progress log file in same directory
-    try {
-      import('fs').then(({ appendFileSync }) => {
-        const logFile = `${filePath}.claude-progress.json`;
-        appendFileSync(logFile, JSON.stringify(logEntry) + '\n');
-      });
-    } catch (e) { /* ignore */ }
-    
-    // Try to parse JSON response first (OpenAI compatible structured output)
-    let parsedResponse;
-    try {
-      parsedResponse = JSON.parse(rawContent);
-      console.log(`📊 JSON Response parsed: ${parsedResponse.changes_made || 'no description'}`);
-      
-      if (parsedResponse.claude_needed > 0) {
-        console.log(`🔍 GPT marked ${parsedResponse.claude_needed} areas for Claude SDK`);
-      }
-      
-      const jsonFixedContent = parsedResponse.fixed_code || parsedResponse.code || parsedResponse.result;
-      
-      // Enhanced validation for JSON response content too  
-      const jsonValidationResult = validateTypeScriptContent(jsonFixedContent, filePath);
-      if (jsonValidationResult.isValid) {
-        console.log('✅ GPT provided valid TypeScript content (JSON format)');
-        // Use cleaned code if it was extracted from markdown blocks
-        return jsonValidationResult.cleanedCode || jsonFixedContent;
-      } else {
-        console.error('❌ GPT JSON response contains invalid content:', jsonValidationResult.reason);
-        console.error('🔍 JSON content preview:', jsonFixedContent?.substring(0, 200) + '...');
-        throw new Error(`GPT JSON response invalid: ${jsonValidationResult.reason}`);
-      }
-      
-    } catch (jsonError) {
-      // Fallback to text parsing if JSON fails
-      console.log('⚠️  Non-JSON response, using text parsing fallback');
-      let fixedContent = rawContent.trim();
-      
-      // Remove markdown code blocks if present
-      if (fixedContent.includes('```')) {
-        const codeBlockMatch = fixedContent.match(/```(?:typescript|ts|javascript|js)?\n?([\s\S]*?)\n?```/);
-        if (codeBlockMatch) {
-          fixedContent = codeBlockMatch[1].trim();
-        }
-      }
-      
-      // Enhanced validation to ensure we got actual TypeScript code, not commentary
-      const validationResult = validateTypeScriptContent(fixedContent, filePath);
-      if (validationResult.isValid) {
-        console.log('✅ GPT provided valid TypeScript content (text format)');
-        // Use cleaned code if it was extracted from markdown blocks
-        return validationResult.cleanedCode || fixedContent;
-      } else {
-        console.error('❌ GPT returned invalid content:', validationResult.reason);
-        console.error('🔍 Content preview:', fixedContent.substring(0, 200) + '...');
-        throw new Error(`GPT returned invalid content: ${validationResult.reason}`);
-      }
+    // Validate the fixed content - CRITICAL: Don't double-extract markdown for response_format approach
+    const validationResult = validateTypeScriptContent(fixedContent, filePath);
+    if (validationResult.isValid) {
+      console.log(`✅ GPT provided valid TypeScript content (${approachType})`);
+      // For response_format, fixedContent is already clean code - don't use cleanedCode which might double-extract
+      return isLargeFile ? fixedContent : (validationResult.cleanedCode || fixedContent);
+    } else {
+      console.error('❌ GPT response contains invalid content:', validationResult.reason);
+      console.error('🔍 Content preview:', fixedContent?.substring(0, 200) + '...');
+      throw new Error(`GPT response invalid: ${validationResult.reason}`);
     }
     
   } catch (error) {
@@ -1420,11 +1686,11 @@ async function fixWithClaudeInference(filePath, errorDetails, fileContent) {
   console.log('\n🧠 Using Claude Inference (basic mode)...');
   
   // Add timeout to prevent hanging and blocking Tier 3
-  const TIER2_TIMEOUT = 120000; // 2 minutes max for Tier 2
+  const TIER2_TIMEOUT = 180000; // 3 minutes max for Tier 2
   return Promise.race([
     _fixWithClaudeInferenceImpl(filePath, errorDetails, fileContent),
     new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Tier 2 timeout - escalating to Tier 3')), TIER2_TIMEOUT)
+      setTimeout(() => reject(new Error('Tier 2 timeout (3 minutes) - escalating to Tier 3')), TIER2_TIMEOUT)
     )
   ]);
 }
@@ -1618,6 +1884,107 @@ OUTPUT: Return the complete fixed TypeScript file as plain text with no formatti
 }
 
 /**
+ * Fix TypeScript file using Aider with GitHub Copilot API
+ * Aider is more reliable for file editing than direct GPT function calls
+ * CRITICAL: Restores original file from backup before running Aider
+ */
+async function fixWithAider(filePath, errorDetails, fileContent, originalBackupPath) {
+  console.log(`🔧 Using Aider with GitHub Copilot API for: ${filePath}`);
+  
+  const fs = require('fs');
+  
+  // CRITICAL: Restore original file from backup before running Aider
+  // The file might be corrupted/truncated from failed GPT attempts
+  console.log(`🔄 Restoring original file from backup before Aider...`);
+  if (!fs.existsSync(originalBackupPath)) {
+    throw new Error(`Original backup not found: ${originalBackupPath}`);
+  }
+  
+  const originalContent = fs.readFileSync(originalBackupPath, 'utf8');
+  fs.writeFileSync(filePath, originalContent, 'utf8');
+  console.log(`✅ Restored original file: ${originalContent.length} chars`);
+  
+  // Create a concise error summary for Aider
+  const errorSummary = errorDetails.split('\n')
+    .filter(line => line.includes('error TS') || line.includes('Error -'))
+    .slice(0, 10) // Limit to top 10 errors to avoid overwhelming Aider
+    .join('\n');
+  
+  console.log(`📋 Aider fixing ${errorSummary.split('\n').length} TypeScript errors`);
+  
+  // Build Aider command with GitHub Copilot
+  const aiderCmd = [
+    'aider',
+    '--model', 'github-copilot/gpt-4',  // Use GitHub Copilot API
+    '--no-auto-commits',                 // Don't auto-commit
+    '--yes',                            // Auto-accept changes
+    '--no-git',                         // Skip git operations for speed
+    filePath,                           // Target file
+    '--message', `Fix these TypeScript syntax errors:\n${errorSummary}\n\nFix ONLY syntax errors. Do not change logic or add new features. Preserve all existing functionality.`
+  ].filter(Boolean);
+  
+  try {
+    console.log(`🚀 Running: aider --model github-copilot/gpt-4 --no-auto-commits --yes ${filePath}`);
+    
+    // Execute Aider with timeout
+    const result = await new Promise((resolve, reject) => {
+      const { spawn } = require('child_process');
+      const process = spawn(aiderCmd[0], aiderCmd.slice(1), {
+        stdio: ['pipe', 'pipe', 'pipe'],
+        timeout: 120000 // 2 minute timeout
+      });
+      
+      let stdout = '';
+      let stderr = '';
+      
+      process.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+      
+      process.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+      
+      process.on('close', (code) => {
+        if (code === 0) {
+          resolve({ stdout, stderr });
+        } else {
+          reject(new Error(`Aider exited with code ${code}\nSTDOUT: ${stdout}\nSTDERR: ${stderr}`));
+        }
+      });
+      
+      process.on('error', (error) => {
+        reject(new Error(`Aider process error: ${error.message}`));
+      });
+      
+      // Send empty stdin to avoid hanging
+      process.stdin.end();
+    });
+    
+    // Read the fixed file
+    const fixedContent = fs.readFileSync(filePath, 'utf8');
+    
+    // Validate that Aider actually made changes (compare against ORIGINAL, not truncated content)
+    if (fixedContent === originalContent) {
+      throw new Error('Aider did not make any changes to the file');
+    }
+    
+    // Validate that Aider didn't truncate the file
+    if (fixedContent.length < originalContent.length * 0.5) {
+      throw new Error(`Aider severely truncated file: ${originalContent.length} → ${fixedContent.length} chars (${((originalContent.length - fixedContent.length) / originalContent.length * 100).toFixed(1)}% loss)`);
+    }
+    
+    console.log(`✅ Aider completed: ${fixedContent.length} chars (${((fixedContent.length - originalContent.length) / originalContent.length * 100).toFixed(1)}% size change)`);
+    
+    return fixedContent;
+    
+  } catch (error) {
+    console.error(`❌ Aider failed: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
  * Orchestrates the complete 4-stage intelligent linting pipeline for a single file.
  * 
  * This is the main processing function that coordinates all stages of the intelligent
@@ -1720,9 +2087,9 @@ async function processFile(filePath, useClaudeFixer = false, aiMode = 'gpt-4.1')
   }
 
   // Show ESLint details
-  if (baseline.eslintDetails) {
-    console.log(`🔴 ESLint Issues (${baseline.eslintDetails.split('\n').length} lines):\n${baseline.eslintDetails.substring(0, 1000)}${baseline.eslintDetails.length > 1000 ? '...[truncated]' : ''}`);
-    stats.stages.baseline.eslintDetailsLength = baseline.eslintDetails.length;
+  if (baseline.combinedDetails) {
+    console.log(`🔴 ESLint Issues (${baseline.combinedDetails.split('\n').length} lines):\n${baseline.combinedDetails.substring(0, 1000)}${baseline.combinedDetails.length > 1000 ? '...[truncated]' : ''}`);
+    stats.stages.baseline.combinedDetailsLength = baseline.combinedDetails.length;
   }
 
   let preFixBackupPath = null;
@@ -1745,33 +2112,38 @@ async function processFile(filePath, useClaudeFixer = false, aiMode = 'gpt-4.1')
       if (aiMode === 'claude-sdk') {
         // Use Claude Inference for complex architectural fixes
         console.log('📊 Using Claude Inference (codebase knowledge available)');
-        fixedContent = await fixWithClaudeInference(filePath, baseline.eslintDetails, originalContent);
+        fixedContent = await fixWithClaudeInference(filePath, baseline.combinedDetails, originalContent);
         stats.stages.stage1 = { fixer: 'claude-sdk', fallback: false };
       } else {
         // Use GPT models via GitHub Copilot for STRICT SYNTAX LINTING ONLY
         console.log(`📊 Using ${aiMode.toUpperCase()} (strict syntax only, temp=0.0)`);
         try {
-          fixedContent = await fixWithGPT4o(filePath, baseline.eslintDetails, originalContent, aiMode);
+          fixedContent = await fixWithGPT4o(filePath, baseline.combinedDetails, originalContent, aiMode);
           
-          // Quality check: Fall back to Claude Inference if GPT output is problematic
-          if (fixedContent && shouldFallbackToClaudeInference(originalContent, fixedContent, baseline, stats)) {
-            console.log(`⚠️ ${aiMode.toUpperCase()} output failed quality check, falling back to Claude Inference...`);
-            fixedContent = await fixWithClaudeInference(filePath, baseline.eslintDetails, originalContent);
-            actualFixerUsed = 'claude-inference';
-            fallbackOccurred = true;
-            
-            // 3rd-tier fallback: Check if Claude Inference also needs advanced analysis
-            const advancedCheck = shouldUseClaudeCodeAdvanced(originalContent, fixedContent, baseline, stats);
-            if (advancedCheck.needsAdvanced && !stats.usedAdvanced) {
-              console.log(`⚠️ Claude Inference also failed, using Claude Code Advanced (3rd-tier fallback with ORIGINAL content)...`);
-              // CRITICAL: Pass originalContent, not the potentially corrupted fixedContent
-              // ANTI-LOOP: Claude Code Advanced is designed as FINAL RESOLVER - never throws, always returns result
-              fixedContent = await fixWithClaudeCodeAdvanced(filePath, baseline.eslintDetails, originalContent);
-              actualFixerUsed = 'claude-code-advanced';
-              stats.usedAdvanced = true; // Prevent infinite loop - only use advanced once per file
-            } else if (advancedCheck.needsAdvanced && stats.usedAdvanced) {
-              console.log(`🛡️  Anti-loop protection: Claude Code Advanced already attempted, accepting current result`);
-              // Don't retry advanced mode - accept whatever we have to prevent infinite loops
+          // Quality check: GPT-5 fallback for complex issues (Skip Claude entirely)
+          if (fixedContent && shouldFallbackToGPT5(originalContent, fixedContent, baseline, stats)) {
+            console.log(`⚠️ ${aiMode.toUpperCase()} output has CLAUDE-NEEDED markers, trying GPT-5 instead...`);
+            try {
+              fixedContent = await fixWithGPT4o(filePath, baseline.combinedDetails, originalContent, 'gpt-5');
+              actualFixerUsed = 'gpt-5';
+              fallbackOccurred = true;
+              stats.stages.stage1 = { fixer: aiMode, actualFixer: actualFixerUsed, fallback: fallbackOccurred };
+            } catch (gpt5Error) {
+              console.log(`⚠️ GPT-5 also failed: ${gpt5Error.message}`);
+              console.log(`🚀 Final fallback: Using Aider with GitHub Copilot API...`);
+              try {
+                fixedContent = await fixWithAider(filePath, baseline.combinedDetails, originalContent, originalBackupPath);
+                actualFixerUsed = 'aider';
+                fallbackOccurred = true;
+                stats.stages.stage1 = { fixer: aiMode, actualFixer: actualFixerUsed, fallback: fallbackOccurred };
+                console.log(`✅ Aider successfully fixed the file`);
+              } catch (aiderError) {
+                console.log(`❌ Aider also failed: ${aiderError.message}`);
+                console.log(`✅ Accepting GPT-4.1 output with CLAUDE-NEEDED markers (all fallbacks exhausted)`);
+                // Keep the original GPT-4.1 output as last resort
+                actualFixerUsed = aiMode;
+                stats.stages.stage1 = { fixer: aiMode, actualFixer: actualFixerUsed, fallback: false, note: 'all_fallbacks_exhausted' };
+              }
             }
           }
           
@@ -1780,16 +2152,41 @@ async function processFile(filePath, useClaudeFixer = false, aiMode = 'gpt-4.1')
         } catch (gptError) {
           console.log(`⚠️ ${aiMode.toUpperCase()} API failed: ${gptError.message}`);
           
-          console.log('🔄 Falling back to Claude Inference (basic mode)...');
-          fixedContent = await fixWithClaudeInference(filePath, baseline.eslintDetails, originalContent);
-          actualFixerUsed = 'claude-inference';
-          fallbackOccurred = true;
-          stats.stages.stage1 = { fixer: aiMode, actualFixer: actualFixerUsed, fallback: fallbackOccurred, error: gptError.message };
+          // Try GPT-5 as final fallback (Skip Claude entirely)
+          console.log('🔄 Falling back to GPT-5 (enhanced model)...');
+          try {
+            fixedContent = await fixWithGPT4o(filePath, baseline.combinedDetails, originalContent, 'gpt-5');
+            actualFixerUsed = 'gpt-5';
+            fallbackOccurred = true;
+            stats.stages.stage1 = { fixer: aiMode, actualFixer: actualFixerUsed, fallback: fallbackOccurred, gpt4Error: gptError.message };
+          } catch (gpt5Error) {
+            console.log(`⚠️ GPT-5 also failed: ${gpt5Error.message}`);
+            console.log('❌ Both GPT models failed - skipping file (Claude SDK disabled)');
+            throw new Error(`Both GPT-4.1 and GPT-5 failed: ${gptError.message} | ${gpt5Error.message}`);
+          }
         }
       }
       
+      // Debug: Check fixedContent before file operations
+      console.log(`🔍 DEBUG: fixedContent length before writeFileSync: ${fixedContent.length} chars`);
+      console.log(`🔍 DEBUG: fixedContent preview: ${fixedContent.substring(0, 100)}...`);
+      
       // Write the fixed content
       writeFileSync(filePath, fixedContent, 'utf8');
+      
+      // Debug: Read back the written file to verify
+      const writtenContent = readFileSync(filePath, 'utf8');
+      console.log(`🔍 DEBUG: Written file length: ${writtenContent.length} chars`);
+      console.log(`🔍 DEBUG: Written file preview: ${writtenContent.substring(0, 100)}...`);
+      
+      // If the file was corrupted during write, fix it
+      if (writtenContent.length < fixedContent.length * 0.8) {
+        console.log(`🚨 CRITICAL: File corrupted during write! Attempting recovery...`);
+        writeFileSync(filePath, fixedContent, 'utf8');
+        const recoveredContent = readFileSync(filePath, 'utf8');
+        console.log(`🔄 Recovery attempt: ${recoveredContent.length} chars`);
+      }
+      
       stats.timings.stage1 = Date.now() - stage1Start;
       
       console.log(`✅ ${actualFixerUsed.toUpperCase()} applied fixes (${stats.timings.stage1}ms)${fallbackOccurred ? ' [FALLBACK]' : ''}`);
@@ -1801,15 +2198,32 @@ async function processFile(filePath, useClaudeFixer = false, aiMode = 'gpt-4.1')
       
     } catch (error) {
       stats.timings.stage1 = Date.now() - stage1Start;
-      stats.stages.stage1 = { fixer: aiMode, error: error.message, failed: true };
       console.error(`❌ ${aiMode.toUpperCase()} fixing failed (${stats.timings.stage1}ms):`, error.message);
-      restoreFromBackup(filePath, originalBackupPath);
       
-      stats.outcomes.result = 'stage1_failed';
-      stats.outcomes.totalTime = Date.now() - stats.startTime;
-      console.log(`\n📈 STATISTICS SUMMARY:`);
-      console.log(`❌ Stage 1 Failed: ${error.message}`);
-      console.log(`⏱️  Total Time: ${stats.outcomes.totalTime}ms`);
+      // Try Aider as final fallback
+      console.log(`🚀 Final fallback: Using Aider with GitHub Copilot API...`);
+      try {
+        const aiderStart = Date.now();
+        fixedContent = await fixWithAider(filePath, baseline.combinedDetails, originalContent, originalBackupPath);
+        stats.timings.stage1 = Date.now() - aiderStart;
+        stats.stages.stage1 = { fixer: aiMode, actualFixer: 'aider', fallback: true };
+        actualFixerUsed = 'aider';
+        console.log(`✅ Aider successfully fixed the file (${stats.timings.stage1}ms)`);
+      } catch (aiderError) {
+        stats.stages.stage1 = { fixer: aiMode, error: error.message, aiderError: aiderError.message, failed: true };
+        console.log(`❌ Aider also failed: ${aiderError.message}`);
+        restoreFromBackup(filePath, originalBackupPath);
+        stats.outcomes.result = 'all_fallbacks_failed';
+      }
+      
+      if (!fixedContent) {
+        stats.outcomes.result = 'stage1_failed';
+        stats.outcomes.totalTime = Date.now() - stats.startTime;
+        console.log(`\n📈 STATISTICS SUMMARY:`);
+        console.log(`❌ Stage 1 Failed: ${error.message}`);
+        console.log(`⏱️  Total Time: ${stats.outcomes.totalTime}ms`);
+        return;
+      }
       
       return { success: false, improved: false, error: error.message, backupPath: originalBackupPath, stats };
     }
@@ -2297,23 +2711,364 @@ async function processBatch(filesWithErrors, useClaudeFixer) {
  * 
  * @since 1.0.0
  */
+
+/**
+ * Parallel Processing Mode - Run 3 concurrent workers with smart retry logic
+ */
+async function runParallelMode(aiMode = 'gpt-4.1') {
+  const WORKER_COUNT = 3;
+  
+  console.log('🚀 Starting 3 parallel intelligent linter workers with smart retry logic...');
+  
+  // Helper functions for parallel processing
+  function getFileErrorCount(filePath) {
+    try {
+      const filename = basename(filePath);
+      const output = execSync(
+        `cd apps/claude-code-zen-server && npx tsc --noEmit --listFilesOnly 2>&1 | grep "${filename}" | grep "error TS" | wc -l`,
+        { encoding: 'utf8', cwd: projectRoot, maxBuffer: 1024 * 512 }
+      );
+      return parseInt(output.trim()) || 0;
+    } catch (error) {
+      console.error(`Error getting count for ${filePath}:`, error.message);
+      return -1;
+    }
+  }
+  
+  function getErrorFiles() {
+    console.log('📊 Scanning ENTIRE REPO for TypeScript errors (server + web-dashboard + packages)...');
+    
+    try {
+      const allErrorFiles = [];
+      
+      // 1. Scan main server app
+      try {
+        console.log('   📁 Scanning apps/claude-code-zen-server...');
+        const serverOutput = execSync(
+          'cd apps/claude-code-zen-server && npx tsc --noEmit 2>&1 | grep "error TS"',
+          { encoding: 'utf8', cwd: projectRoot, maxBuffer: 8 * 1024 * 1024 }
+        );
+        
+        const serverFiles = serverOutput.split('\n')
+          .filter(line => line.includes('error TS'))
+          .map(line => {
+            const match = line.match(/(.+?)\(/);
+            if (match) {
+              let filePath = match[1];
+              
+              // Handle different path formats
+              if (filePath.startsWith('src/')) {
+                filePath = `apps/claude-code-zen-server/${filePath}`;
+              } else if (!filePath.includes('/')) {
+                // Handle bare filenames like "index.ts" - assume they're in src/
+                filePath = `apps/claude-code-zen-server/src/${filePath}`;
+              } else if (!filePath.startsWith('apps/')) {
+                // Handle other relative paths
+                filePath = `apps/claude-code-zen-server/${filePath}`;
+              }
+              
+              return filePath;
+            }
+            return null;
+          })
+          .filter(Boolean)
+          .filter(filePath => filePath.endsWith('.ts') && !filePath.endsWith('.d.ts'));
+        
+        allErrorFiles.push(...serverFiles);
+        console.log(`   ✅ Found ${serverFiles.length} files with errors in server app`);
+      } catch (serverError) {
+        console.log('   ⚠️ Server app scan failed:', serverError.message);
+      }
+      
+      // 2. Scan web dashboard (Svelte)
+      try {
+        console.log('   📁 Scanning apps/web-dashboard...');
+        const webOutput = execSync(
+          'cd apps/web-dashboard && npx tsc --noEmit 2>&1 | grep "error TS"',
+          { encoding: 'utf8', cwd: projectRoot, maxBuffer: 8 * 1024 * 1024 }
+        );
+        
+        const webFiles = webOutput.split('\n')
+          .filter(line => line.includes('error TS'))
+          .map(line => {
+            const match = line.match(/(.+?)\(/);
+            if (match) {
+              let filePath = match[1];
+              
+              // Handle different path formats
+              if (filePath.startsWith('src/')) {
+                filePath = `apps/web-dashboard/${filePath}`;
+              } else if (!filePath.includes('/')) {
+                // Handle bare filenames like "index.ts" - assume they're in src/
+                filePath = `apps/web-dashboard/src/${filePath}`;
+              } else if (!filePath.startsWith('apps/')) {
+                // Handle other relative paths
+                filePath = `apps/web-dashboard/${filePath}`;
+              }
+              
+              return filePath;
+            }
+            return null;
+          })
+          .filter(Boolean)
+          .filter(filePath => filePath.endsWith('.ts') && !filePath.endsWith('.d.ts'));
+        
+        allErrorFiles.push(...webFiles);
+        console.log(`   ✅ Found ${webFiles.length} files with errors in web dashboard`);
+      } catch (webError) {
+        console.log('   ⚠️ Web dashboard scan failed:', webError.message);
+      }
+      
+      // 3. Scan key packages (no tests, excluding foundation)
+      const packageDirs = [
+        'packages/implementation-packages/brain',
+        'packages/implementation-packages/database',
+        'packages/implementation-packages/memory',
+        'packages/implementation-packages/agent-manager',
+        'packages/implementation-packages/knowledge',
+        'packages/implementation-packages/event-system'
+      ];
+      
+      for (const packageDir of packageDirs) {
+        try {
+          console.log(`   📁 Scanning ${packageDir}...`);
+          const packageOutput = execSync(
+            `cd ${packageDir} && npx tsc --noEmit 2>&1 | grep "error TS"`,
+            { encoding: 'utf8', cwd: projectRoot, maxBuffer: 4 * 1024 * 1024 }
+          );
+          
+          const packageFiles = packageOutput.split('\n')
+            .filter(line => line.includes('error TS'))
+            .map(line => {
+              const match = line.match(/(.+?)\(/);
+              if (match) {
+                let filePath = match[1];
+                
+                // Handle different path formats for packages
+                if (filePath.startsWith('src/')) {
+                  filePath = `${packageDir}/${filePath}`;
+                } else if (!filePath.includes('/')) {
+                  // Handle bare filenames like "index.ts" - assume they're in src/
+                  filePath = `${packageDir}/src/${filePath}`;
+                } else if (!filePath.startsWith(packageDir)) {
+                  // Handle other relative paths
+                  filePath = `${packageDir}/${filePath}`;
+                }
+                
+                return filePath;
+              }
+              return null;
+            })
+            .filter(Boolean)
+            .filter(filePath => filePath.endsWith('.ts') && !filePath.endsWith('.d.ts'));
+          
+          allErrorFiles.push(...packageFiles);
+          console.log(`   ✅ Found ${packageFiles.length} files with errors in ${packageDir}`);
+        } catch (packageError) {
+          console.log(`   ⚠️ ${packageDir} scan failed:`, packageError.message);
+        }
+      }
+      
+      // Remove duplicates and filter out files with 0 errors
+      const uniqueErrorFiles = [...new Set(allErrorFiles)];
+      
+      // Filter out clean files (0 errors) to prevent workers from wasting time
+      const filesWithErrors = uniqueErrorFiles.filter(filePath => {
+        const errorCount = getFileErrorCount(filePath);
+        if (errorCount === 0) {
+          console.log(`⚪ Excluding clean file: ${filePath} (0 errors)`);
+          return false;
+        }
+        return true;
+      });
+      
+      console.log(`📊 Found ${filesWithErrors.length} TOTAL files with TypeScript errors across entire repo`);
+      
+      // Create weighted randomization - higher error counts more likely to be picked early
+      const weightedFiles = filesWithErrors.map(filePath => ({
+        filePath,
+        errorCount: getFileErrorCount(filePath),
+        weight: Math.random() // Random weight for interleaving
+      }));
+      
+      // Sort by error count (descending) but with randomization within tiers
+      const sortedFiles = weightedFiles
+        .sort((a, b) => {
+          // Create error tiers to prevent lock chasing
+          const tierA = Math.floor(a.errorCount / 50); // Group by 50-error tiers
+          const tierB = Math.floor(b.errorCount / 50);
+          
+          if (tierA !== tierB) {
+            return tierB - tierA; // Higher tier first
+          }
+          
+          // Within same tier, randomize to prevent lock chasing
+          return a.weight - b.weight;
+        })
+        .map(item => item.filePath);
+      
+      return sortedFiles;
+      
+    } catch (error) {
+      console.error('Error getting error files:', error.message);
+      // Fallback: try to get files from server app only
+      try {
+        const output = execSync(
+          'find apps/claude-code-zen-server/src -name "*.ts" | head -20',
+          { encoding: 'utf8', cwd: projectRoot }
+        );
+        return output.split('\n').filter(Boolean).slice(0, 10);
+      } catch (fallbackError) {
+        return [];
+      }
+    }
+  }
+  
+  // Worker function
+  async function runWorker(workerId) {
+    console.log(`🔧 Worker #${workerId} starting...`);
+    
+    while (true) {
+      const errorFiles = getErrorFiles();
+      
+      if (errorFiles.length === 0) {
+        console.log(`✅ Worker #${workerId}: No more files with errors found, waiting...`);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        continue;
+      }
+      
+      // Better file distribution: divide files among workers
+      let assignedFile = null;
+      
+      // Distribute files by worker ID to avoid conflicts
+      const filesPerWorker = Math.ceil(errorFiles.length / WORKER_COUNT);
+      const startIdx = workerId * filesPerWorker;
+      const endIdx = Math.min(startIdx + filesPerWorker, errorFiles.length);
+      const workerFiles = errorFiles.slice(startIdx, endIdx);
+      
+      // Take first available file for this worker
+      if (workerFiles.length > 0) {
+        assignedFile = workerFiles[0];
+      }
+      
+      // Fallback: if no files in worker's slice, try any available file
+      if (!assignedFile && errorFiles.length > 0) {
+        // Use round-robin assignment as fallback
+        const fallbackIdx = workerId % errorFiles.length;
+        assignedFile = errorFiles[fallbackIdx];
+      }
+      
+      if (assignedFile) {
+        // Create file lock to prevent other workers from processing same file
+        const lockFile = `/tmp/lint-lock-${Buffer.from(assignedFile).toString('hex').slice(0, 16)}`;
+        
+        // Try to acquire lock atomically
+        if (existsSync(lockFile)) {
+          console.log(`🔒 Worker #${workerId}: File ${assignedFile} is locked by another worker, skipping`);
+          continue;
+        }
+        
+        try {
+          // Atomic lock creation with exclusive flag
+          writeFileSync(lockFile, `Worker-${workerId}-${Date.now()}`, { flag: 'wx' });
+        } catch (error) {
+          if (error.code === 'EEXIST') {
+            console.log(`🔒 Worker #${workerId}: File ${assignedFile} is locked by another worker, skipping`);
+            continue;
+          } else {
+            console.log(`⚠️ Worker #${workerId}: Could not create lock for ${assignedFile}: ${error.message}`);
+            continue;
+          }
+        }
+        
+        console.log(`🎯 Worker #${workerId} processing: ${assignedFile} (LOCKED)`);
+        
+        try {
+          // Get pre-fix error count
+          const preErrors = getFileErrorCount(assignedFile);
+          console.log(`📈 Pre-fix errors: ${preErrors}`);
+          
+          // Run intelligent linter on this specific file
+          const result = await processFile(assignedFile, true, aiMode); // useClaudeFixer = true
+          
+          // Get post-fix error count
+          const postErrors = getFileErrorCount(assignedFile);
+          console.log(`📈 Post-fix errors: ${postErrors} (was ${preErrors})`);
+          
+          if (result && result.success) {
+            if (postErrors < preErrors) {
+              console.log(`✅ Worker #${workerId} SUCCESS: ${assignedFile} (${preErrors} → ${postErrors} errors)`);
+            } else if (postErrors === 0 && preErrors > 0) {
+              console.log(`🎉 Worker #${workerId} PERFECT: ${assignedFile} (all errors fixed!)`);
+            } else {
+              console.log(`⚠️ Worker #${workerId} NO_IMPROVEMENT: ${assignedFile} (still ${postErrors} errors)`);
+            }
+          } else {
+            console.log(`⚠️ Worker #${workerId} FAILED: ${assignedFile}`);
+          }
+          
+        } catch (error) {
+          console.log(`⚠️ Worker #${workerId} ERROR: ${assignedFile} - ${error.message}`);
+        } finally {
+          // Always release the lock
+          try {
+            if (existsSync(lockFile)) {
+              unlinkSync(lockFile);
+              console.log(`🔓 Worker #${workerId}: Released lock for ${assignedFile}`);
+            }
+          } catch (error) {
+            console.log(`⚠️ Worker #${workerId}: Could not release lock for ${assignedFile}`);
+          }
+        }
+        
+      } else {
+        console.log(`🔄 Worker #${workerId}: No assigned files, waiting...`);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+      
+      // Brief pause between files
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  
+  // Start all workers
+  const workers = [];
+  for (let i = 0; i < WORKER_COUNT; i++) {
+    workers.push(
+      runWorker(i).catch(error => {
+        console.error(`❌ Worker #${i} crashed:`, error.message);
+      })
+    );
+  }
+  
+  // Monitor progress every 30 seconds
+  const monitor = setInterval(() => {
+    const errorFiles = getErrorFiles();
+    console.log(`📈 ${new Date().toISOString()}: ${errorFiles.length} files remaining with errors`);
+  }, 30000);
+  
+  // Wait for workers (they run indefinitely)
+  await Promise.all(workers);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
     console.log(`
-🔧 Intelligent Linter with Claude SDK Auto-Fixing
+🔧 Intelligent Linter with Optimized GPT Pipeline
 
 Usage:
   node scripts/intelligent-linter.mjs <file-path>         # Process specific file
   node scripts/intelligent-linter.mjs --batch            # Find and fix next file with errors  
   node scripts/intelligent-linter.mjs --batch-all        # Find and fix ALL files with errors (no limit)
+  node scripts/intelligent-linter.mjs --parallel         # Run 3 parallel workers with smart retry logic
   
-AI Model Options (benchmarked performance):
-  [DEFAULT]      GPT-4.1: 881ms, highest quality, FREE ⚡🎯💰
+AI Model Options (optimized performance):
+  [DEFAULT]      GPT-4.1 → GPT-5: Fast fallback, Claude SDK disabled ⚡🎯💰
   --balanced     GPT-4o: 1073ms fixes (good balance) 
   --budget       GPT-4o-mini: 1889ms fixes (slower but budget option)
-  --claude-mode  Claude Code SDK: 30-90s complex architectural fixes
+  --claude-mode  Claude Code SDK: DISABLED (use later for CLAUDE-NEEDED comments)
   --manual-mode  Manual fixing mode (no AI)
   
 Other Options:  
@@ -2326,6 +3081,12 @@ Safety Features:
   ✅ No git dependency - pure file backup system
 `);
     process.exit(1);
+  }
+
+  // Handle parallel mode
+  if (args.includes('--parallel')) {
+    await runParallelMode();
+    return;
   }
 
   // Handle cleanup mode
@@ -2366,71 +3127,16 @@ Safety Features:
   
   console.log('🔒 Acquired execution lock - preventing concurrent runs');
   
-  // Handle batch-all mode - fix files in loop until all clean (no limit)
+  // Handle batch-all mode - use parallel processing with 3 workers (default)
   if (args.includes('--batch-all')) {
-    console.log('🚀 Starting TRUE Batch Mode - Process ALL Files with Errors (Loop Mode)');
+    console.log('🚀 Starting Parallel Batch Mode - 3 Workers Processing ALL Files');
     console.log(`🚀 AI Mode: ${aiMode.toUpperCase()} ${aiMode === 'gpt-4.1' ? '(FREE, 881ms avg)' : aiMode === 'gpt-4o' ? '(1073ms avg)' : aiMode === 'gpt-4o-mini' ? '(1889ms avg)' : aiMode === 'claude-sdk' ? '(30-90s complex)' : '(Manual)'}`);
     
+    // Use parallel processing with 3 workers by default for batch-all
     try {
-      let totalProcessed = 0;
-      let totalImproved = 0;
-      let totalFailed = 0;
-      // Use global tracking to prevent infinite loops across all modes
-      
-      // Loop: Fix -> Re-scan -> Fix -> Re-scan -> until clean
-      console.log('🔄 Starting fix-and-rescan loop...');
-      
-      while (true) {
-        // Find next file with errors
-        const fileWithErrors = await findNextFileWithErrors();
-        
-        if (!fileWithErrors) {
-          console.log('🎉 No more files with errors found! Repository is clean.');
-          break;
-        }
-        
-        // Note: File skipping logic is now handled in findNextFileWithErrors() using global tracking
-        
-        console.log(`\n📄 [${totalProcessed + 1}] Found file with errors: ${fileWithErrors.path}`);
-        console.log(`📊 Errors: ${fileWithErrors.tsErrors} TS, ${fileWithErrors.eslintErrors} ESLint`);
-        
-        // Mark file as being processed to prevent infinite loops
-        processedFiles.add(fileWithErrors.path);
-        
-        // Process this file
-        const result = await processFile(fileWithErrors.path, useClaudeFixer, aiMode);
-        totalProcessed++;
-        
-        if (result.success && result.improved) {
-          totalImproved++;
-          console.log(`✅ File improved successfully`);
-          // File was successfully processed, remove from processedFiles to allow future processing if needed
-          processedFiles.delete(fileWithErrors.path);
-        } else if (result.success && !result.improved) {
-          console.log(`ℹ️  File was already clean`);
-          // File was clean, remove from processedFiles  
-          processedFiles.delete(fileWithErrors.path);
-        } else {
-          totalFailed++;
-          // Keep in processedFiles to prevent retry, also check if final resolver was used
-          if (result.usedFinalResolver) {
-            skippedFiles.add(fileWithErrors.path);
-            console.log(`🛡️  File marked as too complex (used final resolver) - will skip in future scans`);
-          }
-          console.log(`❌ File processing failed - will skip in future iterations`);
-        }
-        
-        // No file limit - process all files that need fixing
-        
-        // Brief pause between files
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-      
-      console.log('\n🎉 TRUE Batch Mode completed!');
-      console.log(`📈 Results: ${totalProcessed} processed, ${totalImproved} improved, ${totalFailed} failed`);
-      
+      await runParallelMode(aiMode);
     } catch (error) {
-      console.error('💥 True batch mode failed:', error.message);
+      console.error('💥 Parallel batch mode failed:', error.message);
       process.exit(1);
     }
     

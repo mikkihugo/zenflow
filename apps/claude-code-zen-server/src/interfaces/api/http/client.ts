@@ -12,7 +12,6 @@ import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse
-
 } from 'axios';
 
 // API Configuration interface
@@ -21,16 +20,14 @@ export interface APIClientConfig {
   timeout?: number;
   retries?: number;
   apiKey?: string;
-  headers?: Record<string,
-  string>
-
+  headers?: Record<string, string>;
 }
 
 // Common API types
 export interface APIError {
   code: string;
   message: string;
-  details?: any
+  details?: any;
 }
 
 export interface APIResponse<T = any> {
@@ -38,9 +35,9 @@ export interface APIResponse<T = any> {
   data?: T;
   error?: APIError;
   metadata?: {
-  timestamp: number;
-  requestId?: string
-}
+    timestamp: number;
+    requestId?: string;
+  };
 }
 
 // Basic health status interface
@@ -48,10 +45,9 @@ export interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';
   uptime: number;
   services: Record<string, {
-  status: 'up' | 'down' | 'degraded';
-  responseTime?: number
-
-}>
+    status: 'up' | 'down' | 'degraded';
+    responseTime?: number;
+  }>;
 }
 
 // Performance metrics interface
@@ -59,12 +55,11 @@ export interface PerformanceMetrics {
   cpu: number;
   memory: number;
   requests: {
-  total: number;
-  successful: number;
-  failed: number;
-  avgResponseTime: number
-
-}
+    total: number;
+    successful: number;
+    failed: number;
+    avgResponseTime: number;
+  };
 }
 
 // Agent interfaces
@@ -74,8 +69,7 @@ export interface Agent {
   type: string;
   status: 'active' | 'inactive' | 'error';
   createdAt: Date;
-  lastActivity?: Date
-
+  lastActivity?: Date;
 }
 
 export interface Task {
@@ -86,16 +80,14 @@ export interface Task {
   status: 'pending' | 'running' | 'completed' | 'failed';
   createdAt: Date;
   completedAt?: Date;
-  result?: any
-
+  result?: any;
 }
 
 export interface SwarmConfig {
   maxAgents: number;
   strategy: 'parallel' | 'sequential' | 'adaptive';
   timeout: number;
-  retryAttempts: number
-
+  retryAttempts: number;
 }
 
 /**
@@ -103,14 +95,13 @@ export interface SwarmConfig {
  * Following Google client library patterns.
  *
  * @example
- * ``'typescript
+ * ```typescript
  * const config: APIClientConfig = {
-  *   baseURL: http://localhost:3000',
-  *   timeout: 3'000,
-  *   apiKey: 'your-api-key'
- *
-};
- * ``'
+ *   baseURL: 'http://localhost:3000',
+ *   timeout: 30000,
+ *   apiKey: 'your-api-key'
+ * };
+ * ```
  */
 export class APIClient {
   private client: AxiosInstance;
@@ -118,68 +109,62 @@ export class APIClient {
 
   constructor(config: APIClientConfig = {}) {
     this.config = {
-  baseURL: http://localhost:3000',
-  timeout: 3'000,
-  retries: 3,
-  ...config
+      baseURL: 'http://localhost:3000',
+      timeout: 30000,
+      retries: 3,
+      ...config
+    };
 
-};
-
-    this.client = axios.create(
-  {
+    this.client = axios.create({
       baseURL: this.config.baseURL,
-  timeout: this.config.timeout,
-  headers: {
-  'Content-Type: 'application/json',
-  ...this.co'fig.headers
-
-}
-}
-);
+      timeout: this.config.timeout,
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.config.headers
+      }
+    });
 
     // Add auth header if API key provided
     if (this.config.apiKey) {
-      this.client.defaults.headers.common['Authorization] =
-        'Bearer'' + this.config.apiKey + '''
-}
+      this.client.defaults.headers.common['Authorization'] =
+        `Bearer ${this.config.apiKey}`;
+    }
 
     // Add response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
-        return Promise.reject(this.handleAPIError(error))
-}
-    )
-}
+        return Promise.reject(this.handleAPIError(error));
+      }
+    );
+  }
 
   /**
    * Handle API errors consistently
    */
-  private handleAPIError(error: any): APIError  {
+  private handleAPIError(error: any): APIError {
     if (error.response) {
       return {
-        code: 'HTTP_' + error.response.status + '',
+        code: `HTTP_${error.response.status}`,
         message: error.response.data?.message || error.message,
         details: error.response.data
-};
-    '
+      };
+    }
 
     if (error.request) {
       return {
-  code: 'NETWORK_ERROR',
-  message: 'Network'request failed',
-  etails: error.message
-
-}
-}
+        code: 'NETWORK_ERROR',
+        message: 'Network request failed',
+        details: error.message
+      };
+    }
 
     return {
-  code: 'UNKNOWN_ERROR',
-  message: error.message || 'An'unknown error occurred',
-  etails: error
-
-}
-}
+      code: 'UNKNOWN_ERROR',
+      message: error.message || 'An unknown error occurred',
+      details: error
+    };
+  }
 
   /**
    * Generic GET request
@@ -195,17 +180,17 @@ export class APIClient {
         data: response.data,
         metadata: {
           timestamp: Date.now()
-}
-}
-} catch (error) {
+        }
+      };
+    } catch (error) {
       return {
         success: false,
         error: error as APIError,
         metadata: {
           timestamp: Date.now()
-}
-}
-}
+        }
+      };
+    }
   }
 
   /**
@@ -218,26 +203,26 @@ export class APIClient {
   ): Promise<APIResponse<T>> {
     try {
       const response: AxiosResponse<T> = await this.client.post(
-  endpoint,
-  data,
-  config
-);
+        endpoint,
+        data,
+        config
+      );
       return {
         success: true,
         data: response.data,
         metadata: {
           timestamp: Date.now()
-}
-}
-} catch (error) {
+        }
+      };
+    } catch (error) {
       return {
         success: false,
         error: error as APIError,
         metadata: {
           timestamp: Date.now()
-}
-}
-}
+        }
+      };
+    }
   }
 
   /**
@@ -250,26 +235,26 @@ export class APIClient {
   ): Promise<APIResponse<T>> {
     try {
       const response: AxiosResponse<T> = await this.client.put(
-  endpoint,
-  data,
-  config
-);
+        endpoint,
+        data,
+        config
+      );
       return {
         success: true,
         data: response.data,
         metadata: {
           timestamp: Date.now()
-}
-}
-} catch (error) {
+        }
+      };
+    } catch (error) {
       return {
         success: false,
         error: error as APIError,
         metadata: {
           timestamp: Date.now()
-}
-}
-}
+        }
+      };
+    }
   }
 
   /**
@@ -286,17 +271,17 @@ export class APIClient {
         data: response.data,
         metadata: {
           timestamp: Date.now()
-}
-}
-} catch (error) {
+        }
+      };
+    } catch (error) {
       return {
         success: false,
         error: error as APIError,
         metadata: {
           timestamp: Date.now()
-}
-}
-}
+        }
+      };
+    }
   }
 
   // Specific API methods
@@ -304,100 +289,90 @@ export class APIClient {
   /**
    * Get system health status
    */
-  async getHealth(): Promise<APIResponse<HealthStatus>>  {
-    return this.get<HealthStatus>('/api/health')'
-}
+  async getHealth(): Promise<APIResponse<HealthStatus>> {
+    return this.get<HealthStatus>('/api/health');
+  }
 
   /**
    * Get performance metrics
    */
-  async getMetrics(': Promise<APIResponse<PerformanceMetrics>> {
-  return this.get<PerformanceMetrics>('/api/metrics)'
-
-}
+  async getMetrics(): Promise<APIResponse<PerformanceMetrics>> {
+    return this.get<PerformanceMetrics>('/api/metrics');
+  }
 
   /**
    * List all agents
    */
-  async listAgents(': Promise<APIResponse<Agent[]>> {
-    return this.get<Agent[]>('/api/agents:)'
-}
+  async listAgents(): Promise<APIResponse<Agent[]>> {
+    return this.get<Agent[]>('/api/agents');
+  }
 
   /**
    * Get specific agent by ID
    */
-  async getAgent(agentId: string: Promise<APIResponse<Agent>> {
-    return this.get<Agent>('/api/agents/' + agentId + ')'
-}
+  async getAgent(agentId: string): Promise<APIResponse<Agent>> {
+    return this.get<Agent>(`/api/agents/${agentId}`);
+  }
 
   /**
    * Create a new agent
    */
-  async createAgent(agentConfig: Partial<Agent>': Promise<APIResponse<Agent>> {
-  return this.post<Agent>('/api/agents:,
-  agentConfig)'
-
-}
+  async createAgent(agentConfig: Partial<Agent>): Promise<APIResponse<Agent>> {
+    return this.post<Agent>('/api/agents', agentConfig);
+  }
 
   /**
    * Update an existing agent
    */
   async updateAgent(
-  agentId: string,
-  updates: Partial<Agent>
-  ': Promise<APIResponse<Agent>> {
-    return this.put<Agent>('/api/agents/' + agentId + '',
-  updates
-)'
-}
+    agentId: string,
+    updates: Partial<Agent>
+  ): Promise<APIResponse<Agent>> {
+    return this.put<Agent>(`/api/agents/${agentId}`, updates);
+  }
 
   /**
    * Delete an agent
    */
-  async deleteAgent(agentId: string: Promise<APIResponse<void>> {
-    return this.delete<void>('/api/agents/' + agentId + ')'
-}
+  async deleteAgent(agentId: string): Promise<APIResponse<void>> {
+    return this.delete<void>(`/api/agents/${agentId}`);
+  }
 
   /**
    * List tasks for an agent
    */
-  async listTasks(agentId?: string: Promise<APIResponse<Task[]>> {
-    const endpoint = agentId ? '/api/agents/' + agentId + '/tasks' : '/api/tasks;;
-    return this.get<Task[]>(endpoint)
-}
+  async listTasks(agentId?: string): Promise<APIResponse<Task[]>> {
+    const endpoint = agentId ? `/api/agents/${agentId}/tasks` : '/api/tasks';
+    return this.get<Task[]>(endpoint);
+  }
 
   /**
    * Create a new task
    */
-  async createTask(task: Partial<Task>): Promise<APIResponse<Task>>  {
-  return this.post<Task>('/api/tasks',
-  ta'k)'
-
-}
+  async createTask(task: Partial<Task>): Promise<APIResponse<Task>> {
+    return this.post<Task>('/api/tasks', task);
+  }
 
   /**
    * Get task by ID
    */
-  async getTask(taskId: string: Promise<APIResponse<Task>> {
-    return this.get<Task>('/api/tasks/' + taskId + ')'
-}
+  async getTask(taskId: string): Promise<APIResponse<Task>> {
+    return this.get<Task>(`/api/tasks/${taskId}`);
+  }
 
   /**
    * Update swarm configuration
    */
-  async updateSwarmConfig(config: SwarmConfig: Promise<APIResponse<SwarmConfig>> {
-  return this.put<SwarmConfig>(`/api/swarm/config',
-  config)'
-
-}
+  async updateSwarmConfig(config: SwarmConfig): Promise<APIResponse<SwarmConfig>> {
+    return this.put<SwarmConfig>('/api/swarm/config', config);
+  }
 
   /**
    * Get current swarm configuration
    */
-  async getSwarmConfig(': Promise<APIResponse<SwarmConfig>> {
-  return this.get<SwarmConfig>('/api/swarm/config);
-
-}
+  async getSwarmConfig(): Promise<APIResponse<SwarmConfig>> {
+    return this.get<SwarmConfig>('/api/swarm/config');
+  }
 }
 
 /**

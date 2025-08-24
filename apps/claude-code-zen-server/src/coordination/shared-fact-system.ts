@@ -83,9 +83,9 @@ export class SharedFactSystem {
   async searchFacts(query: any): Promise<any[]>  {
     // Import search function and use it
     const { searchCoordinationFacts } = await import(
-      '@claude-zen/intelligence;
+      '@claude-zen/intelligence'
     );
-    r'turn searchCoordinationFacts(query)
+    return searchCoordinationFacts(query);
 }
 }
 

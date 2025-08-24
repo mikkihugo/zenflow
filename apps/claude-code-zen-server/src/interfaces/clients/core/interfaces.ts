@@ -563,7 +563,7 @@ export interface ClientType {
  * Function that can modify requests before they are sent.
  */
 export type RequestInterceptor =
-  | (config: any) => any
+  | ((config: any) => any)
   | Promise<any>;
 
 /**
@@ -572,7 +572,7 @@ export type RequestInterceptor =
  * Function that can modify responses before they are returned.
  */
 export type ResponseInterceptor =
-  | (response: ClientResponse) => ClientResponse
+  | ((response: ClientResponse) => ClientResponse)
   | Promise<ClientResponse>;
 
 /**
@@ -581,7 +581,7 @@ export type ResponseInterceptor =
  * Function that can handle or transform errors.
  */
 export type ErrorInterceptor =
-  | (error: ClientError) => ClientError
+  | ((error: ClientError) => ClientError)
   | Promise<ClientError>;
 
 /**

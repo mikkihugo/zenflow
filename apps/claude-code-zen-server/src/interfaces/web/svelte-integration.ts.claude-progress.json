@@ -1,0 +1,7 @@
+{"type":"gpt_response","timestamp":"2025-08-24T03:02:28.471Z","model":"gpt-4.1","tokensUsed":6345,"contentLength":11908,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T03:02:57.747Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T03:04:18.117Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T03:04:18.149Z","contentLength":18852,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"inference"}
+{"type":"system","timestamp":"2025-08-24T03:04:50.039Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T03:06:52.492Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T03:06:52.492Z","contentLength":22835,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/svelte-integration.ts","tier":"inference"}

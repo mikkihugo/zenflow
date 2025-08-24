@@ -1,4 +1,4 @@
-/**
+/*
  * REST API Schemas.
  *
  * Consolidated OpenAPI 3.0 schemas from all domains.
@@ -12,8 +12,7 @@ export * from './common';
 
 // Simple fallback for MCP server URL
 function getMCPServerURL(): string {
-  return process.env.MCP_SERVER_URL || http://localhost:3000;
-
+  return process.env.MCP_SERVER_URL || 'http://localhost:3000';
 }
 
 /**
@@ -28,8 +27,7 @@ export interface Agent {
   created: string;
   lastHeartbeat: string;
   taskCount: number;
-  workload: number
-
+  workload: number;
 }
 
 export interface Task {
@@ -40,35 +38,31 @@ export interface Task {
   priority: number;
   created: string;
   deadline?: string;
-  assignedTo?: string
-
+  assignedTo?: string;
 }
 
 export interface CoordinationError {
   code: string;
   message: string;
-  timestamp: string
-
+  timestamp: string;
 }
 
 export interface SwarmConfig {
   maxAgents: number;
   strategy: 'parallel' | 'sequential' | 'adaptive';
   timeout: number;
-  retryAttempts: number
-
+  retryAttempts: number;
 }
 
 export interface PerformanceMetrics {
   cpu: number;
   memory: number;
   requests: {
-  total: number;
-  successful: number;
-  failed: number;
-  avgResponseTime: number
-
-}
+    total: number;
+    successful: number;
+    failed: number;
+    avgResponseTime: number;
+  };
 }
 
 /**
@@ -78,400 +72,385 @@ export interface PerformanceMetrics {
 export const RestAPISchema = {
   openapi: '3.0.0',
   info: {
-    title: 'Claude'Code Flow API',
+    title: "Claude'Code Flow API",
     version: '1.0.0',
-    description: 'Unified'API for coordination, neural networks, memory, and database operations',
+    description:
+      "Unified'API for coordination, neural networks, memory, and database operations",
     contact: {
-  name: 'Claude'Code Flow Team',
-  url: https://github.com/claude-zen-flow'
-
-},
+      name: "Claude'Code Flow Team",
+      url: 'https://github.com/claude-zen-flow',
+    },
     license: {
-  name: 'MIT',
-  url: https://opensource.org/licenses/MIT'
-
-}
-},
-  servers: [{
-  url: getMCPServerURL(),
-  description: 'Development'server'
-
-},
+      name: 'MIT',
+      url: 'https://opensource.org/licenses/MIT',
+    },
+  },
+  servers: [
     {
-  ul: https://api.claude-zen-flow.com',
-  description: 'Production'server'
-
-}, ],
+      url: getMCPServerURL(),
+      description: "Development'server",
+    },
+    {
+      url: 'https://api.claude-zen-flow.com',
+      description: "Production'server",
+    },
+  ],
   paths: {
     // Coo'dination endpoints
-    '/api/v1/coordination/agents:: {
+    '/api/v1/coordination/agents': {
       get: {
-        tag: ['Agents],
-        ummary: 'List'all agents:,
-        decription: 'Retrieve'a list of all agents in the coordination system',
-        paraeters: [
+        tags: ['Agents'],
+        summary: "List'all agents",
+        description: "Retrieve'a list of all agents in the coordination system",
+        parameters: [
           {
             in: 'query',
             name: 'status',
-            chema: {
-  type: 'string',
-  enum: ['idle',
-  'busy',
-  'error',
-  'offline]
-
-},
-            dscription: 'Filter'agents by status'
-},
+            schema: {
+              type: 'string',
+              enum: ['idle', 'busy', 'error', 'offline'],
+            },
+            description: "Filter'agents by status",
+          },
           {
             in: 'query',
             name: 'type',
-            schma: {
-  type: 'string',
-  enum: ['researcher',
-  'coder',
-  'analyst',
-  'tester',
-  'coordinator]
-
-},
-            desciption: 'Filter'agents by type'
-},
+            schema: {
+              type: 'string',
+              enum: ['researcher', 'coder', 'analyst', 'tester', 'coordinator'],
+            },
+            description: "Filter'agents by type",
+          },
           {
             in: 'query',
             name: 'limit',
             schema: {
-  ype: 'integer',
-  minimum: 1,
-  maximum: 100,
-  default: 20
-
-},
-            desciption: 'Maximum'number of agents to return'
-},
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 20,
+            },
+            description: "Maximum'number of agents to return",
+          },
           {
-            i: 'query',
+            in: 'query',
             name: 'offset',
             schema: {
-  ype: 'integer',
-  minimum: 0,
-  default: 0
-
-},
-            desciption: 'Number'of agents to skip'
-},
+              type: 'integer',
+              minimum: 0,
+              default: 0,
+            },
+            description: "Number'of agents to skip",
+          },
         ],
-        resonses: {
+        responses: {
           200: {
-            description: 'List'of agents:,
+            description: "List'of agents",
             content: {
-              'application/json: {
+              'application/json': {
                 schema: {
                   type: 'object',
-                  properies: {
+                  properties: {
                     agents: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/Agent' }
-},
+                      items: { $ref: '#/components/schemas/Agent' },
+                    },
                     total: { type: 'integer' },
                     offset: { type: 'integer' },
-                    limit: { type: 'integer' }
-}
-}
-}
-}
-},
+                    limit: { type: 'integer' },
+                  },
+                },
+              },
+            },
+          },
           500: {
-            desciption: 'Internal'server error',
+            description: "Internal'server error",
             content: {
-              'application/json: {
-                schema: { $ref: '#/components/schemas/Error' }
-}
-}
-}
-}
-},
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' },
+              },
+            },
+          },
+        },
+      },
       post: {
-        tags: ['Agents],
-        ummary: 'Create'a new agent',
-        description: 'Create'and register a new agent in the coordination system',
+        tags: ['Agents'],
+        summary: "Create'a new agent",
+        description:
+          "Create'and register a new agent in the coordination system",
         requestBody: {
           required: true,
           content: {
-            'application/json: {
+            'application/json': {
               schema: {
                 type: 'object',
-                required: ['type', 'capabilities],
-                propertie: {
+                required: ['type', 'capabilities'],
+                properties: {
                   type: {
-  type: 'string',
-  enum: ['researcher',
-  'coder',
-  'analyst',
-  'tester',
-  'coordinator]
-
-},
+                    type: 'string',
+                    enum: [
+                      'researcher',
+                      'coder',
+                      'analyst',
+                      'tester',
+                      'coordinator',
+                    ],
+                  },
                   capabilities: {
                     type: 'array',
-                    items: { tpe: 'string' },
-                    minItems: 1
-}
-}
-}
-}
-}
-},
+                    items: { type: 'string' },
+                    minItems: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
         responses: {
           201: {
-            description: 'Agent'created successfully',
+            description: "Agent'created successfully",
             content: {
-              'application/json: {
-                schema: { $ref: '#/components/schemas/Agent' }
-}
-}
-},
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Agent' },
+              },
+            },
+          },
           400: {
-            description: 'Invalid'request',
-            conent: {
-              'application/json: {
-                schema: { $ref: '#/components/schemas/Error' }
-}
-}
-}
-}
-}
-},
+            description: "Invalid'request",
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' },
+              },
+            },
+          },
+        },
+      },
+    },
 
     // System health endpoints
-    '/health: {
+    '/health': {
       get: {
-        tags: ['System],
-        sumary: 'System'health check',
-        description: 'Get'overall system health status',
-        reponses: {
+        tags: ['System'],
+        summary: "System'health check",
+        description: "Get'overall system health status",
+        responses: {
           200: {
-            description: 'System'is healthy',
+            description: "System'is healthy",
             content: {
-              'application/json: {
+              'application/json': {
                 schema: {
                   type: 'object',
-                  properies: {
+                  properties: {
                     status: {
-  type: 'string',
-  example: 'healthy'
-},
+                      type: 'string',
+                      example: 'healthy',
+                    },
                     timestamp: {
-  tpe: 'string',
-  format: 'date-time'
-},
-                    vrsion: { type: 'string' },
+                      type: 'string',
+                      format: 'date-time',
+                    },
+                    version: { type: 'string' },
                     uptime: { type: 'number' },
-                    envionment: { type: 'string' }
-}
-}
-}
-}
-}
-}
-}
-},
+                    environment: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
 
-    '/api/v1/system/health: {
+    '/api/v1/system/health': {
       get: {
-        tags: ['System],
-        sumary: 'Detailed'health check',
-        description: 'Get'detailed system health with all services',
-        reponses: {
+        tags: ['System'],
+        summary: "Detailed'health check",
+        description: "Get'detailed system health with all services",
+        responses: {
           200: {
-            description: 'Detailed'system health',
+            description: "Detailed'system health",
             content: {
-              'application/json: {
+              'application/json': {
                 schema: {
                   type: 'object',
-                  properies: {
+                  properties: {
                     status: { type: 'string' },
                     timestamp: {
-  type: 'string',
-  format: 'date-time'
-},
-                    srvices: {
+                      type: 'string',
+                      format: 'date-time',
+                    },
+                    services: {
                       type: 'object',
-                      properies: {
+                      properties: {
                         coordination: { type: 'string' },
                         neural: { type: 'string' },
                         memory: { type: 'string' },
-                        database: { type: 'string' }
-}
-},
+                        database: { type: 'string' },
+                      },
+                    },
                     uptime: { type: 'number' },
-                    memoy: {
+                    memory: {
                       type: 'object',
-                      properies: {
+                      properties: {
                         rss: { type: 'number' },
                         heapTotal: { type: 'number' },
                         heapUsed: { type: 'number' },
-                        extenal: { type: 'number' }
-}
-},
-                    vesion: { type: 'string' }
-}
-}
-}
-}
-}
-}
-}
-}
-},
+                        external: { type: 'number' },
+                      },
+                    },
+                    version: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 
   components: {
     schemas: {
       // Common schemas
       Error: {
         type: 'object',
-        required: ['error],
-        poperties: {
+        required: ['error'],
+        properties: {
           error: {
             type: 'object',
-            required: ['code', 'message', 'timestamp', 'path', 'method],
+            required: ['code', 'message', 'timestamp', 'path', 'method'],
             properties: {
-              coe: { type: 'string' },
-              messae: { type: 'string' },
+              code: { type: 'string' },
+              message: { type: 'string' },
               details: { type: 'object' },
-              imestamp: {
-  type: 'string',
-  format: 'date-time'
-},
-              path: { typ: 'string' },
+              timestamp: {
+                type: 'string',
+                format: 'date-time',
+              },
+              path: { type: 'string' },
               method: { type: 'string' },
-              traceId: { type: 'string' }
-}
-}
-}
-},
+              traceId: { type: 'string' },
+            },
+          },
+        },
+      },
 
       // Coordination schemas
-      Aent: {
+      Agent: {
         type: 'object',
-        required: ['id', 'type', 'status', 'capabilities', 'created', 'lastHeartbeat', 'taskCount', 'workload],
+        required: [
+          'id',
+          'type',
+          'status',
+          'capabilities',
+          'created',
+          'lastHeartbeat',
+          'taskCount',
+          'workload',
+        ],
         properties: {
-          i: {
-  type: 'string',
-  pattern: '^[a-z]+-[0-9a-z]+-[0-9a-z]+$',
-  description: 'Unique'agent identifier',
-  example: 'researcher-1a2b3c-4d5e6f'
-},
+          id: {
+            type: 'string',
+            pattern: '^[a-z]+-[0-9a-z]+-[0-9a-z]+$',
+            description: "Unique'agent identifier",
+            example: 'researcher-1a2b3c-4d5e6f',
+          },
           type: {
-  type: 'string',
-  enum: ['researcher',
-  'coder',
-  'analyst',
-  'tester',
-  'coordinator],
-  desciption: 'Agent'specialization type'
-
-},
+            type: 'string',
+            enum: ['researcher', 'coder', 'analyst', 'tester', 'coordinator'],
+            description: "Agent'specialization type",
+          },
           status: {
-  typ: 'string',
-  enum: ['idle',
-  'busy',
-  'error',
-  'offline],
-  dscription: 'Current'agent status'
-
-},
-          capabilitie: {
+            type: 'string',
+            enum: ['idle', 'busy', 'error', 'offline'],
+            description: "Current'agent status",
+          },
+          capabilities: {
             type: 'array',
-            items: { tpe: 'string' },
-            description: 'List'of agent capabilities',
-            example: ['code_analysis', 'bug_detection', 'performance_optimization]
-},
+            items: { type: 'string' },
+            description: "List'of agent capabilities",
+            example: [
+              'code_analysis',
+              'bug_detection',
+              'performance_optimization',
+            ],
+          },
           created: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'Agent'creation timestamp'
-
-},
+            type: 'string',
+            format: 'date-time',
+            description: "Agent'creation timestamp",
+          },
           lastHeartbeat: {
-  tye: 'string',
-  format: 'date-time',
-  dscription: 'Last'heartbeat timestamp'
-
-},
+            type: 'string',
+            format: 'date-time',
+            description: "Last'heartbeat timestamp",
+          },
           taskCount: {
-  tye: 'integer',
-  minimum: 0,
-  desciption: 'Number'of completed tasks'
-
-},
+            type: 'integer',
+            minimum: 0,
+            description: "Number'of completed tasks",
+          },
           workload: {
-  type: 'number',
-  minimum: 0,
-  maximum: 100,
-  desciption: 'Current'workload percentage'
-
-}
-}
-},
+            type: 'number',
+            minimum: 0,
+            maximum: 100,
+            description: "Current'workload percentage",
+          },
+        },
+      },
 
       Task: {
-        typ: 'object',
-        required: ['id', 'type', 'description', 'status', 'priority', 'created],
+        type: 'object',
+        required: [
+          'id',
+          'type',
+          'description',
+          'status',
+          'priority',
+          'created',
+        ],
         properties: {
-          i: {
-  type: 'string',
-  pattern: '^task-[a-z]+-[0-9a-z]+-[0-9a-z]+$',
-  description: 'Unique'task identifier'
-
-},
+          id: {
+            type: 'string',
+            pattern: '^task-[a-z]+-[0-9a-z]+-[0-9a-z]+$',
+            description: "Unique'task identifier",
+          },
           type: {
-  type: 'string',
-  description: 'Task'type/category'
-
-},
+            type: 'string',
+            description: "Task'type/category",
+          },
           description: {
-  tpe: 'string',
-  maxLenth: 500,
-  description: 'Task'description'
-
-},
+            type: 'string',
+            maxLength: 500,
+            description: "Task'description",
+          },
           status: {
-  type: 'string',
-  enum: ['pending',
-  'assigned',
-  'in_progress',
-  'completed',
-  'failed],
-  escription: 'Current'task status'
-
-},
+            type: 'string',
+            enum: ['pending', 'assigned', 'in_progress', 'completed', 'failed'],
+            description: "Current'task status",
+          },
           priority: {
-  type: 'integer',
-  minimum: 0,
-  maximum: 100,
-  desciption: 'Task'priority (0-100)'
-
-},
+            type: 'integer',
+            minimum: 0,
+            maximum: 100,
+            description: "Task'priority (0-100)",
+          },
           created: {
-  type: 'string',
-  format: 'date-time',
-  dscription: 'Task'creation timestamp'
-
-},
+            type: 'string',
+            format: 'date-time',
+            description: "Task'creation timestamp",
+          },
           deadline: {
-  tye: 'string',
-  format: 'date-time',
-  dscription: 'Task'deadline'
-
-},
-          assigndTo: {
-  type: 'string',
-  description: 'ID'of assigned agent'
-
-}
-}
-}
-}
-}
+            type: 'string',
+            format: 'date-time',
+            description: "Task'deadline",
+          },
+          assignedTo: {
+            type: 'string',
+            description: "ID'of assigned agent",
+          },
+        },
+      },
+    },
+  },
 } as const;

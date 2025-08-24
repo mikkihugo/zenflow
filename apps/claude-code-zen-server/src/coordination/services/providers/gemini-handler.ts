@@ -10,28 +10,25 @@ export interface GeminiConfig {
   model?: string;
   endpoint?: string;
   timeout?: number;
-  maxTokens?: number
-
+  maxTokens?: number;
 }
 
 export interface GeminiResponse {
   content: string;
   usage?: {
-  inputTokens: number;
-  outputTokens: number;
-  totalTokens: number
-
-};
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+  };
   model: string;
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>;
 }
 
 export interface GeminiRequest {
   prompt: string;
   temperature?: number;
   maxTokens?: number;
-  systemPrompt?: string
-
+  systemPrompt?: string;
 }
 
 /**
@@ -45,106 +42,87 @@ export class GeminiHandler {
 
   constructor(config: GeminiConfig = {}) {
     this.config = {
-  model: 'gemini-pro',
-  timeut: 30000,
-  maxTokens: 8192,
-  ...config
+      model: 'gemini-pro',
+      timeout: 30000,
+      maxTokens: 8192,
+      ...config,
+    };
 
-};
-    this.logger = getLogger('GeminiHandler)'
-}
+    this.logger = getLogger('GeminiHandler');
+  }
 
-  async initialize(': Promise<void> {
+  async initialize(): Promise<void> {
     if (this.isInitialized) {
-      return
-}
+      return;
+    }
 
-    this.logger.info('Initializing Gemini API Handler);
+    this.logger.info('Initializing Gemini API Handler');
 
     // Validate configuration
-    if(!this.config.apiKey' {
-  this.logger.warn('No API key provided for Gemini integration)'
+    if (!this.config.apiKey) {
+      this.logger.warn('No API key provided for Gemini integration');
+    }
 
-}
-
-    if(!this.config.endpoint' {
-  this.config.endpoint = https://generativelanguage.googleapis.com/v1/models'
-
-}
+    if (!this.config.endpoint) {
+      this.config.endpoint =
+        'https://generativelanguage.googleapis.com/v1/models';
+    }
 
     this.isInitialized = true;
-    this.logger.info('Gemini API Handler initialized successfully)'
-}
+    this.logger.info('Gemini API Handler initialized successfully');
+  }
 
-  async generateText(request: GeminiRequest: Promise<GeminiResponse> {
+  async generateText(request: GeminiRequest): Promise<GeminiResponse> {
     if (!this.isInitialized) {
-      throw new Error('GeminiHandler not initialized);
-}
+      throw new Error('GeminiHandler not initialized');
+    }
 
-    this.logger.debug(
-  'Generating text with Gemini',
-  {
-  prompt: request.prompt.substr'ng(0,
-  100
-) + '...',
-  model: this'config.model
-
-});
+    this.logger.debug('Generating text with Gemini', {
+      prompt: request.prompt.substring(0, 100) + '...',
+      model: this.config.model,
+    });
 
     // TODO: Implement actual Gemini API integration
     // For now, return mock response
     return {
-      content: 'This'is a mock response from Gemini API integration. Implement actual API calls here.',
+      content:
+        'This is a mock response from Gemini API integration. Implement actual API calls here.',
       usage: {
-  inputTokens: Math'floor(request.prompt.length / 4),
-  outputTokens: 50,
-  totalTokens: Math.floor(request.prompt.length / 4) + 50
-
-},
+        inputTokens: Math.floor(request.prompt.length / 4),
+        outputTokens: 50,
+        totalTokens: Math.floor(request.prompt.length / 4) + 50,
+      },
       model: this.config.model || 'gemini-pro',
       metadata: {
-  temperature: request.temperature || 0.1,
-  timestamp: new Date().t'ISOString()
+        temperature: request.temperature || 0.1,
+        timestamp: new Date().toISOString(),
+      },
+    };
+  }
 
-}
-}
-}
+  async analyzeCode(
+    code: string,
+    instructions: string
+  ): Promise<GeminiResponse> {
+    const prompt = `Analyze the following code and ${instructions}:\n\n${code}`;
 
-  async analyzeCode(code: string, instructions: string): Promise<GeminiResponse>  {
-    const prompt = 'Analyze'the following code and ' + instructions + ':\n\n\'\'\'\n' + code + '\n\'\'\'`;;
+    return this.generateText({
+      prompt,
+      temperature: 0.1,
+      maxTokens: this.config.maxTokens,
+    });
+  }
 
-    return this.generateText(
-  {
-  prompt,
-  systemPrompt: 'You'are an expert code analyzer. Provide detailed,
-  actionable feedback.;
+  async dispose(): Promise<void> {
+    if (!this.isInitialized) {
+      return;
+    }
 
-}
-)
-}
+    this.logger.info('Disposing Gemini API Handler');
+    this.isInitialized = false;
+  }
 
-  async shutdown(): Promise<void>  {
-    if (!this'isInitialized) {
-      return
-}
-
-    this.logger.info('Shutting down Gemini API Handler);
-    this.isInitialized = false
-}
-
-  getStatus(': {
-  initialized: boolean; config: Partial<GeminiConfig>
-} {
-    return {
-      initialized: this.isInitialized,
-      config: {
-  model: this.config.model,
-  endpoint: this.config.endpoint,
-  timeout: this.config.timeout,
-  maxTokens: this.config.maxTokens,
-  // Don't expose API key
-
-}
-}
-}
+  get initialized(): boolean {
+    return this.isInitialized;
+  }
 }

@@ -261,12 +261,12 @@ describe('Foundation Core - Working Systems', () => {
 
   describe('Edge Cases', () => {
     it('should handle empty values', () => {
-      const emptyString = ';
+      const emptyString = '';
       const nullValue = null;
       const undefinedValue = undefined;
       const zeroValue = 0;
 
-      expect(emptyString).toBe(');
+      expect(emptyString).toBe('');
       expect(nullValue).toBeNull();
       expect(undefinedValue).toBeUndefined();
       expect(zeroValue).toBe(0);

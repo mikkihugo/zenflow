@@ -1941,7 +1941,7 @@ ${
   /**
    * Export approval decisions for audit with Foundation telemetry
    */
-  exportDecisions(format: 'json|csv'' = 'json'): string {
+  exportDecisions(format: 'json' | 'csv' = 'json'): string {
     return withTrace('export-approval-decisions', (span) => {
       const startTime = Date.now();
 

@@ -29,15 +29,13 @@ import type {
   CompressionType,
   SerializationFormat,
   CircuitBreakerState,
-  LoadBalancingStrategy
-
+  LoadBalancingStrategy,
 } from '@claude-zen/foundation';
 import { isString } from '@claude-zen/foundation';
 import type {
   WebSocketEventType,
   KnowledgeQueryType,
-  McpClientMessageType
-
+  McpClientMessageType,
 } from '@claude-zen/intelligence';
 
 // Re-export foundation types
@@ -51,8 +49,7 @@ export type {
   LoadBalancingStrategy,
   WebSocketEventType,
   KnowledgeQueryType,
-  McpClientMessageType
-
+  McpClientMessageType,
 };
 
 // Client-specific types (minimal custom definitions)
@@ -101,8 +98,7 @@ export const ClientTypes = {
   WEBSOCKET: 'websocket' as const,
   KNOWLEDGE: 'knowledge' as const,
   MCPCLIENT: 'mcpclient' as const,
-  GENERIC: 'generic' as 'onst
-
+  GENERIC: 'generic' as const,
 } as const;
 
 export const ClientStatuses = {
@@ -111,12 +107,11 @@ export const ClientStatuses = {
   CONNECTED: 'connected' as const,
   RECONNECTING: 'reconnecting' as const,
   ERROR: 'error' as const,
-  SUSPENDED: 'suspended' as const
-
+  SUSPENDED: 'suspended' as const,
 } as const;
 
 // Essential client configuration (minimal)
-export const ProtocolToClientTypeMap: Recor'<ProtocolType, ClientType> = {
+export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
   http: ClientTypes.HTTP,
   https: ClientTypes.HTTP,
   ws: ClientTypes.WEBSOCKET,
@@ -125,8 +120,7 @@ export const ProtocolToClientTypeMap: Recor'<ProtocolType, ClientType> = {
   udp: ClientTypes.GENERIC,
   stdio: ClientTypes.MCPCLIENT,
   ipc: ClientTypes.GENERIC,
-  custom: ClientTypes.GENERIC
-
+  custom: ClientTypes.GENERIC,
 } as const;
 
 // Basic client instance interface for UACL compatibility
@@ -141,28 +135,25 @@ export interface ClientInstance {
   isConnected?: boolean;
   healthCheck?: () => boolean;
   config?: {
-  enabled: boolean;
-  priority?: number;
-  timeout?: number;
-  [key: string]: any
-
-}
+    enabled: boolean;
+    priority?: number;
+    timeout?: number;
+    [key: string]: any;
+  };
 }
 
 export const TypeGuards = {
   isClientType: (value: any): value is ClientType => {
-  return (
+    return (
       isString(value) &&
       Object.values(ClientTypes).includes(value as ClientType)
-    )
-
-},
+    );
+  },
 
   isClientStatus: (value: any): value is ClientStatus => {
-  return (
+    return (
       isString(value) &&
       Object.values(ClientStatuses).includes(value as ClientStatus)
-    )
-
-}
+    );
+  },
 } as const;

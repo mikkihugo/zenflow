@@ -317,121 +317,66 @@ export type {
 // JSON types are also exported from primitives via type-fest re-export
 
 /**
- * Practical TypeScript utility types from ts-essentials library.
- * These utilities focus on common patterns and practical type operations
- * for everyday development scenarios in the claude-code-zen ecosystem.
+ * Additional TypeScript utility types.
+ * These utilities extend type-fest with common patterns used in claude-code-zen.
+ * All utilities now sourced from type-fest for consistency.
  *
- * @example Deep Type Operations
+ * @example Deep Type Operations (type-fest equivalents)
  * ```typescript
  * interface Config {
- *   database: {
- *     host: string;
- *     port: number;
- *     credentials: {
- *       username: string;
- *       password: string;
- *     };
- *   };
- *   api: {
- *     baseUrl: string;
- *     timeout: number;
- *   };
+ *   database: { host: string; port: number; };
+ *   api: { baseUrl: string; timeout: number; };
  * }
  *
- * // Make all properties optional recursively
- * type ConfigUpdate = DeepPartial<Config>;
- *
- * // Make all properties required recursively
- * type ValidatedConfig = DeepRequired<Config>;
- *
- * // Make all properties readonly recursively
- * type ImmutableConfig = DeepReadonly<Config>;
- * ```
- *
- * @example Selective Property Modification
- * ```typescript
- * interface Agent {
- *   id: string;
- *   name: string;
- *   status: 'active|inactive';
- *   config: Record<string, unknown>;
- *   metadata: object;
- * }
- *
- * // Mark specific properties as optional
- * type AgentInput = MarkOptional<Agent, 'id|metadata'>;
- *
- * // Mark specific properties as required
- * type ValidAgent = MarkRequired<AgentInput, 'name|status''>;
- *
- * // Make specific properties readonly
- * type ImmutableAgent = MarkReadonly<Agent, 'id|name''>;
- * ```
- *
- * @example Dictionary and Type Guards
- * ```typescript
- * // Safe dictionary access
- * type UserCache = SafeDictionary<User>;
- * const cache: UserCache = {}; // All values must be User type
- *
- * // Type-safe primitive checking
- * function isPrimitive(value: unknown): value is Primitive {
- *   return value !== null && (typeof value !== 'object' && typeof value !== 'function');
- * }
- *
- * // Non-undefined type checking
- * function isDefined<T>(value: T|undefined): value is T {
- *   return value !== undefined;
- * }
+ * // type-fest provides these
+ * type ConfigUpdate = PartialDeep<Config>; // Instead of DeepPartial
+ * type ValidatedConfig = RequiredDeep<Config>; // Instead of DeepRequired
+ * type ImmutableConfig = ReadonlyDeep<Config>; // Instead of DeepReadonly
  * ```
  */
-export type {
-  // Deep type transformations - recursive operations
-  DeepPartial,
-  DeepRequired,
-  DeepReadonly,
-  // Writable - Already imported from type-fest above
 
-  // Selective property modifications
-  MarkOptional,
-  MarkRequired,
-  MarkReadonly,
+// All these types are now available from type-fest above, so we provide aliases
+export type DeepPartial<T> = import('type-fest').PartialDeep<T>;
+export type DeepRequired<T> = import('type-fest').RequiredDeep<T>;
+export type DeepReadonly<T> = import('type-fest').ReadonlyDeep<T>;
 
-  // Advanced type operations - strict and precise
-  StrictOmit,
-  // StrictPick - Use native Pick instead
-  NonNever,
+// Selective property modifications - using type-fest equivalents
+export type MarkOptional<T, K extends keyof T> = import('type-fest').SetOptional<T, K>;
+export type MarkRequired<T, K extends keyof T> = import('type-fest').SetRequired<T, K>;
+export type MarkReadonly<T, K extends keyof T> = import('type-fest').SetReadonly<T, K>;
 
-  // Type assertions and checks
-  Primitive,
-  // NonPrimitive - Use opposite of Primitive
-  AsyncOrSync,
-  AsyncOrSyncType,
+// Additional utility types for backwards compatibility
+export type StrictOmit<T, K extends keyof T> = import('type-fest').Except<T, K>;
+export type NonNever<T> = T extends never ? never : T;
 
-  // Object utilities - value and key extraction
-  ValueOf,
-  // KeysOfType, PickByType, OmitByType - Not available in this version
+// Type checking utilities
+export type Primitive = string | number | boolean | symbol | null | undefined;
+export type AsyncOrSync<T> = T | Promise<T>;
+export type AsyncOrSyncType<T> = T extends Promise<infer U> ? U : T;
 
-  // Dictionary and collection types
-  Dictionary,
-  SafeDictionary,
+// Object utilities
+export type ValueOf<T> = T[keyof T];
+export type Dictionary<T = unknown> = Record<string, T>;
+export type SafeDictionary<T> = Record<string, T>;
 
-  // Advanced union operations - branding and tagging
-  UnionToIntersection as TSEUnionToIntersection, // Avoid conflict with type-fest
-  // Brand, Tagged - Not available in this version
+// Utility types for common patterns (backwards compatibility)
+export type Head<T extends readonly unknown[]> = T extends readonly [infer H, ...unknown[]] ? H : never;
+export type Tail<T extends readonly unknown[]> = T extends readonly [unknown, ...infer Rest] ? Rest : [];
+export type ReadonlyKeys<T> = {
+  [K in keyof T]: T[K] extends Readonly<T[K]> ? K : never;
+}[keyof T];
+export type WritableKeys<T> = {
+  [K in keyof T]: T[K] extends Readonly<T[K]> ? never : K;
+}[keyof T];
+export type RequiredKeys<T> = {
+  [K in keyof T]: T extends Record<K, T[K]> ? K : never;
+}[keyof T];
+export type OptionalKeys<T> = {
+  [K in keyof T]: T extends Record<K, T[K]> ? never : K;
+}[keyof T];
 
-  // Utility types for common patterns
-  Head,
-  Tail,
-  ReadonlyKeys,
-  WritableKeys,
-  RequiredKeys,
-  OptionalKeys,
-
-  // Function type utilities
-  AnyFunction,
-  // AnyAsyncFunction - Use AnyFunction instead
-} from'ts-essentials';
+// Function utilities
+export type AnyFunction = (...args: unknown[]) => unknown;
 
 // =============================================================================
 // TYPE GUARDS AND UTILITIES - Runtime type checking and validation
@@ -501,24 +446,8 @@ export {
 } from './patterns';
 
 // =============================================================================
-// AGENT TYPES - Agent management and coordination
+// AGENT TYPES MOVED TO INTELLIGENCE PACKAGE
 // =============================================================================
 
-/**
- * Agent types for agent management, lifecycle, and coordination.
- * Provides comprehensive types for agent instances, configuration,
- * health monitoring, and performance tracking.
- *
- * @example Agent Management
- * ```typescript
- * import { AgentInstance, AgentRegistrationConfig } from '@claude-zen/foundation';
- *
- * const config: AgentRegistrationConfig = {
- *   templateId: 'worker-template',
- *   name: 'Data Processor',
- *   type: 'worker',
- *   config: { maxTasks: 10 }
- * };
- * ```
- */
-export * from './agent';
+// Agent types moved to @claude-zen/intelligence
+// Use: import { AgentInstance, AgentRegistrationConfig } from '@claude-zen/intelligence';

@@ -75,7 +75,7 @@ export class ExternalMCPClient {
 
   constructor(servers: MCPServerConfig[] = []) {
     this.servers = servers;
-    this.logger = getLogger('ExternalMCPClient);
+    this.logger = getLogger('ExternalMCPClient');
   }
 
   /**
@@ -93,7 +93,7 @@ export class ExternalMCPClient {
         async callTool(serverName: string, toolName: string, args: any) {
           // Fallback implementation for MCP tool calls
           return {
-            result: 'Tool ' + toolName + ' called on ${serverName}',
+            result: 'Tool ' + toolName + ' called on ' + serverName,
             success: true,
           };
         },
@@ -107,14 +107,17 @@ export class ExternalMCPClient {
       };
 
       this.initialized = true;
-      this.logger.info('ExternalMCPClient initialized successfully with package delegation);
+      this.logger.info(
+        'ExternalMCPClient initialized successfully with package delegation'
+      );
     } catch (error) {
       this.logger.error('Failed to initialize ExternalMCPClient:', error);
 
       // Fallback to minimal implementation for compatibility
       this.mcpManager = {
         listTools: async () => this.fallbackListTools(),
-        executeTool: async (request: MCPToolRequest) => this.fallbackExecuteTool(request),
+        executeTool: async (request: MCPToolRequest) =>
+          this.fallbackExecuteTool(request),
         getCapabilities: async () => this.fallbackGetCapabilities(),
         getServerStatus: async () => this.fallbackGetServerStatus(),
       };
@@ -130,8 +133,8 @@ export class ExternalMCPClient {
     if (!this.initialized) await this.initialize();
 
     try {
-      return await this.mcpManager?.listTools() || [];
-    } catch (error) {'
+      return (await this.mcpManager?.listTools()) || [];
+    } catch (error) {
       this.logger.error('Failed to list MCP tools:', error);
       return this.fallbackListTools();
     }
@@ -145,7 +148,7 @@ export class ExternalMCPClient {
 
     try {
       return await this.mcpManager.executeTool(request);
-    } catch (error) {'
+    } catch (error) {
       this.logger.error('Failed to execute MCP tool:', error);
       return this.fallbackExecuteTool(request);
     }
@@ -158,8 +161,8 @@ export class ExternalMCPClient {
     if (!this.initialized) await this.initialize();
 
     try {
-      return await this.mcpManager?.getCapabilities() || {};
-    } catch (error) {'
+      return (await this.mcpManager?.getCapabilities()) || {};
+    } catch (error) {
       this.logger.error('Failed to get MCP capabilities:', error);
       return this.fallbackGetCapabilities();
     }
@@ -172,8 +175,8 @@ export class ExternalMCPClient {
     if (!this.initialized) await this.initialize();
 
     try {
-      return await this.mcpManager?.getServerStatus() || {};
-    } catch (error) {'
+      return (await this.mcpManager?.getServerStatus()) || {};
+    } catch (error) {
       this.logger.error('Failed to get MCP server status:', error);
       return this.fallbackGetServerStatus();
     }
@@ -187,7 +190,7 @@ export class ExternalMCPClient {
 
     try {
       await this.mcpManager?.connect?.();
-    } catch (error) {'
+    } catch (error) {
       this.logger.error('Failed to connect to MCP servers:', error);
     }
   }
@@ -200,7 +203,7 @@ export class ExternalMCPClient {
 
     try {
       await this.mcpManager?.disconnect?.();
-    } catch (error) {'
+    } catch (error) {
       this.logger.error('Failed to disconnect from MCP servers:', error);
     }
   }
@@ -215,8 +218,8 @@ export class ExternalMCPClient {
   /**
    * Fallback tools list for compatibility
    */
-  private async fallbackListTools(): Promise<MCPTool[]> {'
-    this.logger.warn('Using fallback tools list);
+  private async fallbackListTools(): Promise<MCPTool[]> {
+    this.logger.warn('Using fallback tools list');
     return [
       {
         name: 'echo',
@@ -226,7 +229,7 @@ export class ExternalMCPClient {
           properties: {
             text: {
               type: 'string',
-              description: 'Text to echo;
+              description: 'Text to echo',
             },
           },
           required: ['text'],
@@ -238,10 +241,12 @@ export class ExternalMCPClient {
   /**
    * Fallback tool execution for compatibility
    */
-  private async fallbackExecuteTool(request: MCPToolRequest): Promise<MCPToolResponse> {
-    this.logger.warn('Fallback execution for tool: ' + request.name + ');
+  private async fallbackExecuteTool(
+    request: MCPToolRequest
+  ): Promise<MCPToolResponse> {
+    this.logger.warn('Fallback execution for tool: ' + request.name);
 
-    if(request.name === 'echo) {
+    if (request.name === 'echo') {
       return {
         content: [
           {
@@ -311,7 +316,9 @@ export class ExternalMCPClient {
 /**
  * Factory function for creating External MCP Client
  */
-export const createExternalMCPClient = (servers: MCPServerConfig[]): ExternalMCPClient => {
+export const createExternalMCPClient = (
+  servers: MCPServerConfig[]
+): ExternalMCPClient => {
   return new ExternalMCPClient(servers);
 };
 
@@ -320,7 +327,9 @@ export const createExternalMCPClient = (servers: MCPServerConfig[]): ExternalMCP
  */
 let defaultInstance: ExternalMCPClient | null = null;
 
-export const getDefaultMCPClient = (servers?: MCPServerConfig[]): ExternalMCPClient => {
+export const getDefaultMCPClient = (
+  servers?: MCPServerConfig[]
+): ExternalMCPClient => {
   if (!defaultInstance && servers) {
     defaultInstance = new ExternalMCPClient(servers);
   } else if (!defaultInstance) {

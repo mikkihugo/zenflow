@@ -1,0 +1,8 @@
+{"type":"gpt_response","timestamp":"2025-08-24T06:31:18.207Z","model":"gpt-4.1","tokensUsed":9006,"contentLength":18887,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T06:31:49.548Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}
+{"type":"system","timestamp":"2025-08-24T06:33:49.036Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:38:03.864Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:38:03.948Z","contentLength":0,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T06:38:03.957Z","contentLength":157,"hasToolUse":false,"messageCount":4,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T06:39:29.222Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T06:39:29.293Z","contentLength":93306,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/workflows/safe-sparc-standalone.ts","tier":"inference"}

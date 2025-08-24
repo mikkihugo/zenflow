@@ -38,8 +38,7 @@ export interface ClientManagerConfig {
   /** Connection timeout in milliseconds */
   connectionTimeout?: number;
   /** Health check interval in milliseconds */
-  healthCheckInterval?: number
-
+  healthCheckInterval?: number;
 }
 
 /**
@@ -48,35 +47,27 @@ export interface ClientManagerConfig {
 export interface UACLMetrics {
   initialized: boolean;
   clientCount: number;
-  activeTypes: number;
-  timestamp: number
-
+  healthCheckCount: number;
+  uptime: number;
+  lastActivity: Date;
+  errors: number;
+  connections: {
+    active: number;
+    total: number;
+    failed: number;
+  };
+  performance: {
+    avgResponseTime: number;
+    maxResponseTime: number;
+    throughput: number;
+  };
 }
 
 /**
- * UACL health status interface.
- */
-export interface UACLHealthStatus {
-  status: 'healthy' | 'not_initialized' | 'unhealthy';
-  initialized: boolean;
-  clientsActive: boolean;
-  timestamp: number
-
-}
-
-/**
- * Health check result interface.
- */
-export interface HealthCheckResult {
-  component: string;
-  status: 'healthy' | 'unhealthy' | 'warning';
-  details?: any
-
-}
-
-/**
- * UACL Instance Manager.
+ * Client Instance Manager.
  *
+ * Provides centralized management for client instances with health monitoring,
+ * metrics collection, and lifecycle management. Follows singleton pattern for
  * Core functionality for managing multiple client types with unified interface.
  * Implements singleton pattern to ensure single point of access.
  */
@@ -86,321 +77,282 @@ export class ClientInstanceManager {
   private logger: Logger;
   private clients = new Map<string, ClientInstance>();
   private config?: ClientManagerConfig;
+  private healthCheckInterval?: NodeJS.Timeout;
+  private metricsInterval?: NodeJS.Timeout;
+  private startTime = Date.now();
+  private errorCount = 0;
+  private healthCheckCount = 0;
 
   private constructor(config?: ClientManagerConfig) {
-  this.logger = getLogger('ClientInstanceManager);
+    this.logger = getLogger('ClientInstanceManager');
     this.config = config;
-    this.logger.debug('UACL instance created)
-
-}
+    this.logger.debug('UACL instance created');
+  }
 
   /**
    * Get singleton instance of ClientInstanceManager.
    */
-  public static getInstance(config?: ClientManagerConfig: ClientInstanceManager {
+  public static getInstance(config?: ClientManagerConfig): ClientInstanceManager {
     if (!ClientInstanceManager.instance) {
-  ClientInstanceManager.instance = new ClientInstanceManager(config)
-
-}
-    return ClientInstanceManager.instance
-}
+      ClientInstanceManager.instance = new ClientInstanceManager(config);
+    }
+    return ClientInstanceManager.instance;
+  }
 
   /**
    * Initialize UACL system.
    */
-  public async initialize(config?: ClientManagerConfig): Promise<void>  {
+  public async initialize(config?: ClientManagerConfig): Promise<void> {
     if (this.initialized) {
-  this.logger.debug('UACL already initialized);
-      return
+      this.logger.debug('UACL already initialized');
+      return;
+    }
 
-}
-
-    if(config' {
+    if (config) {
       this.config = {
-  ...this.config,
-  ...config
-}
-}
+        ...this.config,
+        ...config
+      };
+    }
 
-    this.logger.info('Initializing UACL system...);
+    this.logger.info('Initializing UACL system...');
 
     try {
-  // Initialize internal systems
+      // Initialize internal systems
       this.setupHealthChecks();
       this.setupMetricsCollection();
 
       this.initialized = true;
-      this.logger.info('✅ UACL system initialized successfully)'
-
-} catch (error) {
-  this.logger.error('Failed to initialize UACL system:','
-  error)';
-      throw error
-
-}
+      this.logger.info('UACL system initialized successfully');
+    } catch (error) {
+      this.logger.error('Failed to initialize UACL system:', error);
+      this.errorCount++;
+      throw error;
+    }
   }
 
   /**
    * Check if UACL is initialized.
    */
-  public isInitialized(': boolean {
-    return this.initialized
-}
+  public isInitialized(): boolean {
+    return this.initialized;
+  }
 
   /**
    * Register a client instance.
    */
-  public registerClient(id: string, client: ClientInstance): void  {
+  public registerClient(id: string, client: ClientInstance): void {
+    if (this.clients.has(id)) {
+      throw new Error(`Client with ID '${id}' is already registered`);
+    }
+
     this.clients.set(id, client);
-    this.logger.debug('Registered client: ' + id + ')'
-}
-
-  /**
-   * Get client by ID.
-   */
-  public getClient(id: string: ClientInstance | undefined {
-    return this.clients.get(id)
-}
-
-  /**
-   * Remove client by ID.
-   */
-  public removeClient(id: string): boolean  {
-    const removed = this.clients.delete(id);
-    if (removed) {
-      this.logger.debug('Removed client: ' + id + ')'
-}
-    return removed
-}
-
-  /**
-   * Get all registered clients.
-   */
-  public getAllClients(': ClientInstance[] {
-    return Array.from(this.clients.values())
-}
-
-  /**
-   * Get clients by type.
-   */
-  public getClientsByType(type: string): ClientInstance[]  {
-  return this.getAllClients().filter(client =>
-      client.metadata?.type === type
-    )
-
-}
-
-  /**
-   * Get system metrics.
-   */
-  public getMetrics(): UACLMetrics  {
-    const clientTypes = new Set(
-      this.getAllClients().map(client => client.metadata?.type || 'unknown)
-    );
-
-    retur' {
-  initialized: this.initialized,
-  clientCount: this.clients.size,
-  activeTypes: clientTypes.size,
-  timestamp: Date.now()
-
-}
-}
-
-  /**
-   * Get health status.
-   */
-  public getHealthStatus(): UACLHealthStatus  {
-    const status = this.initialized
-      ? (this.clients.size > 0 ? 'healthy' : 'healthy')
-      : 'not_initialized';
-
-    return {
-  status: status as 'healthy' | 'not_initialized' | 'unhealthy,
-  initialized: this.initialized,
-  clientsActive: this.clients.size > 0,
-  timestamp: Date.now()
-
-}
-}
-
-  /**
-   * Shutdown the UACL s'stem.
-   */
-  public async shutdown(): Promise<void>  {
-    if (!this.initialized) {
-      return
-}
-
-    this.logger.info('Shutting down UACL system...);
-
-    try {
-      // Disconnect all clients
-      const disconnectPromises = this.getAllClients('.map(async (client) => {
-        try {
-          if (client.isConnected) {
-            await client.disconnect()
-}
-        } catch (error) {
-          this.logger.warn('Failed to disconnect client ' + client.id + ':', error)'
-}
-      });
-
-      await Promise.allSettled(disconnectPromises);
-
-      // Clear client registry
-      this.clients.clear();
-
-      this.initialized = false;
-      this.logger.info('UACL system shutdown completed)'
-} catch (error) {
-  this.logger.error('Error during UACL shutdown:','
-  error)';
-      throw error
-
-}
+    this.logger.info(`Client registered: ${id}`);
   }
 
-  // Private helper methods
-
-  private setupHealthChecks(': void {
-    if (!this.config?.enableHealthChecks) {
-      return
-}
-
-    const interval = this.config.healthCheckInterval || 30000;
-
-    setInterval(async () => {
-      try {
-        const healthStatus = this.getHealthStatus();
-        if(healthStatus.status !== 'healthy) {
-  this.logger.warn('System health check failed:',
-  healthStatus)
-}
-      } catch (error) {
-  this.logger.error('Health check error:',
-  error)'
-}
-    }, interval);
-
-    this.logger.debug('Health checks enabled with ' + interval + 'ms interval)'
-}
-
-  private setupMetricsCollection(': void {
-    if (!this.config?.enableMetrics) {
-      return
-}
-
-    const interval = this.config.metricsInterval || 60000;
-
-    setInterval(() => {
-      try {
-  const metrics = this.getMetrics();
-        this.logger.debug('System metrics:',
-  metrics)
-} catch (error) {
-  this.logger.error('Metrics collection error:',
-  error)'
-}
-    }, interval);
-
-    this.logger.debug('Metrics collection enabled with ' + interval + 'ms interval)'
-}
-}
-
-/**
- * UACL singleton instance - available without circular dependency.
- */
-export const uacl = ClientInstanceManager.getInstance();
-
-/**
- * Helper functions for UACL operations.
- */
-export const UACLHelpers = {
   /**
-   * Get quick status overview.
+   * Unregister a client instance.
    */
-  getQuickStatus(': {
-  status: string;
-    initialized: boolean;
-    clientCount: number
+  public unregisterClient(id: string): boolean {
+    const removed = this.clients.delete(id);
+    if (removed) {
+      this.logger.info(`Client unregistered: ${id}`);
+    }
+    return removed;
+  }
 
-} {
-    const metrics = uacl.getMetrics();
+  /**
+   * Get a client instance by ID.
+   */
+  public getClient(id: string): ClientInstance | undefined {
+    return this.clients.get(id);
+  }
+
+  /**
+   * Get all client instances.
+   */
+  public getAllClients(): ClientInstance[] {
+    return Array.from(this.clients.values());
+  }
+
+  /**
+   * Get client IDs.
+   */
+  public getClientIds(): string[] {
+    return Array.from(this.clients.keys());
+  }
+
+  /**
+   * Check if client exists.
+   */
+  public hasClient(id: string): boolean {
+    return this.clients.has(id);
+  }
+
+  /**
+   * Get client count.
+   */
+  public getClientCount(): number {
+    return this.clients.size;
+  }
+
+  /**
+   * Get UACL metrics.
+   */
+  public getMetrics(): UACLMetrics {
+    const uptime = Date.now() - this.startTime;
+    let activeConnections = 0;
+    let totalConnections = 0;
+    let failedConnections = 0;
+
+    // Count connection statistics from clients
+    for (const client of this.clients.values()) {
+      totalConnections++;
+      if (client.isConnected) {
+        activeConnections++;
+      }
+      // Note: failedConnections would need to be tracked separately
+    }
+
     return {
-  status: uacl.isInitialized() ? 'ready' : 'not_ready',
-  initialized: metrics.initialized,
-  clientCount: metrics.clientCount
-
-}
-},
+      initialized: this.initialized,
+      clientCount: this.clients.size,
+      healthCheckCount: this.healthCheckCount,
+      uptime,
+      lastActivity: new Date(),
+      errors: this.errorCount,
+      connections: {
+        active: activeConnections,
+        total: totalConnections,
+        failed: failedConnections
+      },
+      performance: {
+        avgResponseTime: 0, // Would need response time tracking
+        maxResponseTime: 0,
+        throughput: 0
+      }
+    };
+  }
 
   /**
-   * Perform comprehensive health check.
+   * Perform health check on all clients.
    */
-  as'nc performHealthCheck(): Promise<HealthCheckResult[]>  {
-    const results: HealthCheckResult[] = [];
+  public async healthCheck(): Promise<Map<string, boolean>> {
+    const results = new Map<string, boolean>();
+    this.healthCheckCount++;
 
-    // Check UACL initialization
-    results.push({
-  component: 'UACL_Core',
-  status: uacl.isInitializ'd() ? 'healthy' : 'unhealthy',
-  details: uacl.getHealthStatus()
-
-});
-
-    // Check client registr'
-    const allClients = uacl.getAllClients();
-    results.push(
-  {
-      component: 'Client_Registry',
-  status: allClients.length >= 0 ? 'healthy' : 'warning',
-  details: { clientCount: allClients.len'th }
-    }
-);
-
-    // Test individual clients
-    for (const client of allClients) {
+    for (const [id, client] of this.clients) {
       try {
-        const healthResult = await client.healthCheck();
-        results.push(
-  {
-          component: 'Client_' + client.id + '',
-  status: healthResult.status === 'healthy' ? 'healthy' : 'unhealthy',
-  details: healthResult
+        // Check if client has health check method
+        let isHealthy = true;
+        if (typeof client.healthCheck === 'function') {
+          const healthResult = await client.healthCheck();
+          isHealthy = healthResult.status === 'healthy';
+        } else if ('isConnected' in client) {
+          isHealthy = Boolean(client.isConnected);
         }
-)
-} catch (error) {
-        results.push(
-  {
-          component: 'Client_' + client.id + '',
-  status: `unhealthy',
-  details: { error: (error as Error
-).message }
-        })
-}
+
+        results.set(id, isHealthy);
+      } catch (error) {
+        this.logger.warn(`Health check failed for client ${id}:`, error);
+        results.set(id, false);
+        this.errorCount++;
+      }
     }
 
-    return results
-},
+    return results;
+  }
 
   /**
-   * Initialize UACL with default configuration.
+   * Shutdown UACL system.
    */
-  as'nc initialize(config?: ClientManagerConfig): Promise<void>  {
-    return uacl.initialize(config)
+  public async shutdown(): Promise<void> {
+    this.logger.info('Shutting down UACL system...');
+
+    // Stop intervals
+    if (this.healthCheckInterval) {
+      clearInterval(this.healthCheckInterval);
+    }
+    if (this.metricsInterval) {
+      clearInterval(this.metricsInterval);
+    }
+
+    // Shutdown all clients
+    const shutdownPromises = Array.from(this.clients.values()).map(async (client) => {
+      try {
+        if (typeof client.shutdown === 'function') {
+          await client.shutdown();
+        } else if (typeof client.disconnect === 'function') {
+          await client.disconnect();
+        }
+      } catch (error) {
+        this.logger.error(`Error shutting down client:`, error);
+        this.errorCount++;
+      }
+    });
+
+    await Promise.allSettled(shutdownPromises);
+
+    // Clear clients
+    this.clients.clear();
+
+    this.initialized = false;
+    this.logger.info('UACL system shutdown completed');
+  }
+
+  /**
+   * Setup health checking.
+   */
+  private setupHealthChecks(): void {
+    if (this.config?.enableHealthChecks !== false) {
+      const interval = this.config?.healthCheckInterval || 30000; // 30 seconds
+      this.healthCheckInterval = setInterval(async () => {
+        try {
+          await this.healthCheck();
+        } catch (error) {
+          this.logger.error('Error during health check:', error);
+          this.errorCount++;
+        }
+      }, interval);
+    }
+  }
+
+  /**
+   * Setup metrics collection.
+   */
+  private setupMetricsCollection(): void {
+    if (this.config?.enableMetrics !== false) {
+      const interval = this.config?.metricsInterval || 60000; // 1 minute
+      this.metricsInterval = setInterval(() => {
+        try {
+          const metrics = this.getMetrics();
+          this.logger.debug('UACL metrics:', metrics);
+        } catch (error) {
+          this.logger.error('Error collecting metrics:', error);
+          this.errorCount++;
+        }
+      }, interval);
+    }
+  }
 }
+
+/**
+ * Global instance manager.
+ */
+export const globalInstanceManager = ClientInstanceManager.getInstance();
+
+/**
+ * Initialize UACL globally.
+ */
+export const initializeUACLInstance = async (config?: ClientManagerConfig): Promise<void> => {
+  return globalInstanceManager.initialize(config);
 };
 
 /**
- * Initialize UACL with default configuration.
+ * Check if UACL is initialized globally.
  */
-export async function initializeUACL(config?: ClientManagerConfig): Promise<void>  {
-  return uacl.initialize(config)
-}
+export const isUACLInstanceInitialized = (): boolean => {
+  return globalInstanceManager.isInitialized();
+};
 
-// Re-export types for convenience
-export type {
-  ClientInstance,
-  ClientConfig
-} from './core/interfaces;;
+export default ClientInstanceManager;
