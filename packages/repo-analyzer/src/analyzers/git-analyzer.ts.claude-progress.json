@@ -1,0 +1,4 @@
+{"type":"gpt_response","timestamp":"2025-08-24T07:13:12.431Z","model":"gpt-4.1","tokensUsed":10057,"contentLength":20455,"file":"packages/repo-analyzer/src/analyzers/git-analyzer.ts","tier":"gpt4.1"}
+{"type":"system","timestamp":"2025-08-24T07:13:43.138Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/repo-analyzer/src/analyzers/git-analyzer.ts","tier":"inference"}
+{"type":"assistant","timestamp":"2025-08-24T07:14:55.886Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/repo-analyzer/src/analyzers/git-analyzer.ts","tier":"inference"}
+{"type":"result","timestamp":"2025-08-24T07:14:55.982Z","contentLength":19316,"hasToolUse":false,"messageCount":3,"file":"packages/repo-analyzer/src/analyzers/git-analyzer.ts","tier":"inference"}
