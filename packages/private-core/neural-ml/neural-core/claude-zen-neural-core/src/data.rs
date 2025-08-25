@@ -658,7 +658,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       }
     }
 
-    let metadata = self.compute_metadata(&series_data);
+    let metadata = Self::compute_metadata(&series_data);
 
     Ok(TimeSeriesDataset {
       unique_ids,
@@ -765,8 +765,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
             .f64()
             .map_err(|e| {
               ErrorBuilder::data(format!(
-                "Failed to convert static feature to float: {}",
-                e
+                "Failed to convert static feature to float: {e}"
               ))
               .build()
             })?
@@ -779,8 +778,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
             .i64()
             .map_err(|e| {
               ErrorBuilder::data(format!(
-                "Failed to convert static feature to int: {}",
-                e
+                "Failed to convert static feature to int: {e}"
               ))
               .build()
             })?
@@ -798,7 +796,6 @@ impl<T: Float> TimeSeriesDataFrame<T> {
 
   /// Compute dataset metadata
   fn compute_metadata(
-    &self,
     series_data: &HashMap<String, SeriesData<T>>,
   ) -> DatasetMetadata {
     let n_series = series_data.len();
