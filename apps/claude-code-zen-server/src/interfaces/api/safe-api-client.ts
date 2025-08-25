@@ -159,7 +159,7 @@ export class SafeAPIClient {
 
     try {
       const url =
-        this.baseURL + (endpoint.startsWith('/') ? endpoint : '/' + endpoint);
+        this.baseURL + (endpoint.startsWith('/') ? endpoint : `/${  endpoint}`);
       const headers = {
         ...this.defaultHeaders,
         ...options?.headers,
@@ -217,7 +217,7 @@ export class SafeAPIClient {
           return {
             success: false,
             error: {
-              code: 'HTTP_' + response.status,
+              code: `HTTP_${  response.status}`,
               message: (errorData as any)?.message || response.statusText,
               details: {
                 status: response.status,
@@ -331,7 +331,7 @@ export class SafeAPIClient {
 
   private generateRequestId(): string {
     return (
-      'req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11)
+      `req_${  Date.now()  }_${  Math.random().toString(36).substring(2, 11)}`
     );
   }
 
@@ -357,7 +357,7 @@ export class SafeAPIService {
   private client: SafeAPIClient;
 
   constructor(baseURL: string, apiKey?: string) {
-    const headers = apiKey ? { Authorization: 'Bearer ' + apiKey } : {};
+    const headers = apiKey ? { Authorization: `Bearer ${  apiKey}` } : {};
     this.client = new SafeAPIClient(baseURL, headers);
   }
 
@@ -386,7 +386,7 @@ export class SafeAPIService {
     endpoint: string,
     id: string | number
   ): Promise<APIResult<TResource>> {
-    return this.client.get<TResource>(endpoint + '/' + id);
+    return this.client.get<TResource>(`${endpoint  }/${  id}`);
   }
 
   /**
@@ -401,7 +401,7 @@ export class SafeAPIService {
     params?: Record<string, unknown>
   ): Promise<APIResult<{ items: TResource[]; pagination: any }>> {
     const queryString = params
-      ? '?' + new URLSearchParams(params as Record<string, string>).toString()
+      ? `?${  new URLSearchParams(params as Record<string, string>).toString()}`
       : '';
     return this.client.get<{ items: TResource[]; pagination: any }>(
       endpoint + queryString
@@ -421,7 +421,7 @@ export class SafeAPIService {
     id: string | number,
     data: TUpdateData
   ): Promise<APIResult<TResource>> {
-    return this.client.put<TResource>(endpoint + '/' + id, data);
+    return this.client.put<TResource>(`${endpoint  }/${  id}`, data);
   }
 
   /**
@@ -435,7 +435,7 @@ export class SafeAPIService {
     endpoint: string,
     id: string | number
   ): Promise<APIResult<{ deleted: boolean }>> {
-    return this.client.delete<{ deleted: boolean }>(endpoint + '/' + id);
+    return this.client.delete<{ deleted: boolean }>(`${endpoint  }/${  id}`);
   }
 }
 
@@ -544,17 +544,17 @@ export async function safeConcurrentAPIExample(): Promise<void> {
   const successfulUsers: User[] = [];
   const errors: string[] = [];
 
-  results.forEach((result, index) => {
+  for (const [index, result] of results.entries()) {
     if (isAPISuccess(result)) {
       successfulUsers.push(result.data);
     } else if (isAPIError(result)) {
-      errors.push('User ' + userIds[index] + ': ' + result.error.message);
+      errors.push(`User ${  userIds[index]  }: ${  result.error.message}`);
     }
-  });
+  }
 
   if (errors.length > 0) {
     logger.error('Errors:', errors);
   }
 
-  logger.info('Successfully retrieved ' + successfulUsers.length + ' users');
+  logger.info(`Successfully retrieved ${  successfulUsers.length  } users`);
 }

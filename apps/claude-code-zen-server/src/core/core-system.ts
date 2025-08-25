@@ -6,17 +6,21 @@
  * preserving the expected interface.
  */
 
-import { WorkflowEngine } from '@claude-zen/enterprise';
+import { createSafeFrameworkAgentRegistry } from '@claude-zen/enterprise';
 import {
   getLogger,
-  TypedEventBase,
-  DocumentationManager,
-  ExportSystem as ExportManager,
-  InterfaceManager,
+  EventEmitter,
 } from '@claude-zen/foundation';
-import { BrainCoordinator } from '@claude-zen/intelligence';
+import { getBrainSystem } from '@claude-zen/intelligence';
+// DocumentationManager, ExportSystem, InterfaceManager moved - using fallbacks
+import { getTaskMasterService, type TaskMasterService } from '../services/taskmaster/taskmaster-service';
 
 const logger = getLogger('core-system');
+
+// Constants for duplicate strings
+const STATUS_CHANGED_EVENT = 'status-changed';
+const READY_STATUS = 'ready';
+const TASKMASTER_NOT_AVAILABLE = 'TaskMaster service not available';
 
 export interface SystemConfig {
   memory?: {
@@ -65,29 +69,34 @@ export interface SystemStatus {
  * Simplified Core System stub to fix compilation.
  * TODO: Restore full functionality from corrupted original.
  */
-export class System extends TypedEventBase {
+export class System extends EventEmitter {
   private configuration: SystemConfig;
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
   private initialized = false;
 
-  // Component placeholders
-  private memorySystem?: BrainCoordinator;
-  private workflowEngine?: WorkflowEngine;
-  private exportManager?: ExportManager;
-  private documentationManager?: DocumentationManager;
-  private interfaceManager?: InterfaceManager;
+  // Component placeholders - using facade types
+  private brainSystem?: any;
+  private enterpriseSystem?: any; 
+  private taskMasterService?: TaskMasterService;
 
   constructor(config: SystemConfig = {}) {
     super();
     this.configuration = config;
     this.startTime = Date.now();
-    this.initializeComponents();
     this.setupEventHandlers();
   }
 
-  private initializeComponents(): void {
-    // Minimal component initialization
+  private async initializeComponents(): Promise<void> {
+    // Initialize TaskMaster service
+    try {
+      this.taskMasterService = getTaskMasterService();
+      await this.taskMasterService.initialize();
+      logger.info('TaskMaster service initialized');
+    } catch (error) {
+      logger.error('Failed to initialize TaskMaster service', error);
+    }
+    
     logger.info('Core components initialized (stub mode)');
   }
 
@@ -103,10 +112,10 @@ export class System extends TypedEventBase {
 
     try {
       this.status = 'initializing';
-      this.emit('status-changed', this.status);
+      this.emit(STATUS_CHANGED_EVENT, this.status);
 
-      // Minimal initialization
-      await Promise.resolve();
+      // Initialize components including TaskMaster
+      await this.initializeComponents();
 
       this.status = 'ready';
       this.initialized = true;
@@ -115,7 +124,7 @@ export class System extends TypedEventBase {
       logger.info('✅ Core System ready (stub mode)');
     } catch (error) {
       this.status = 'error';
-      this.emit('status-changed', this.status);
+      this.emit(STATUS_CHANGED_EVENT, this.status);
       logger.error('❌ Failed to initialize Core System:', error);
       throw error;
     }
@@ -126,33 +135,33 @@ export class System extends TypedEventBase {
     logger.info('Interface launched (stub mode)');
   }
 
-  async getSystemStatus(): Promise<SystemStatus> {
+  getSystemStatus(): Promise<SystemStatus> {
     return {
       status: this.status,
       version: '2.0.0-clean-architecture-stub',
       components: {
         memory: {
-          status: 'ready',
+          status: READY_STATUS,
           entries: 0,
         },
         workflow: {
-          status: 'ready',
+          status: READY_STATUS,
           active: 0,
         },
         documents: {
-          status: 'ready',
+          status: READY_STATUS,
           loaded: 0,
         },
         export: {
-          status: 'ready',
+          status: READY_STATUS,
           formats: 0,
         },
         documentation: {
-          status: 'ready',
+          status: READY_STATUS,
           indexed: 0,
         },
         interface: {
-          status: 'ready',
+          status: READY_STATUS,
           mode: 'auto',
         },
       },
@@ -167,27 +176,37 @@ export class System extends TypedEventBase {
     error?: string;
   }> {
     await this.ensureInitialized();
-    logger.info('Processing document: ' + documentPath + ' (stub mode)');
+    logger.info(`Processing document: ${  documentPath  } (stub mode)`);
     return { success: true };
   }
 
   async exportSystemData(
-    format: string,
-    options: any = {}
+    format: string
   ): Promise<{
     success: boolean;
     filename?: string;
     error?: string;
   }> {
     await this.ensureInitialized();
-    logger.info('Exporting system data to ' + format + ' (stub mode)');
-    return { success: true, filename: 'export.' + format };
+    logger.info(`Exporting system data to ${  format  } (stub mode)`);
+    return { success: true, filename: `export.${  format}` };
   }
 
   async shutdown(): Promise<void> {
     logger.info('Shutting down Core System (stub mode)');
+    
+    // Shutdown TaskMaster service
+    if (this.taskMasterService) {
+      try {
+        await this.taskMasterService.shutdown();
+        logger.info('TaskMaster service shutdown complete');
+      } catch (error) {
+        logger.error('Error shutting down TaskMaster service', error);
+      }
+    }
+    
     this.status = 'shutdown';
-    this.emit('status-changed', this.status);
+    this.emit(STATUS_CHANGED_EVENT, this.status);
     this.removeAllListeners();
     this.emit('shutdown', {});
     logger.info('Core System shutdown complete');
@@ -195,11 +214,10 @@ export class System extends TypedEventBase {
 
   getComponents() {
     return {
-      memory: this.memorySystem,
-      workflow: this.workflowEngine,
-      export: this.exportManager,
-      documentation: this.documentationManager,
-      interface: this.interfaceManager,
+      brain: this.brainSystem,
+      enterprise: this.enterpriseSystem,
+      // export, documentation, interface managers not available
+      taskmaster: this.taskMasterService,
     };
   }
 
@@ -222,16 +240,16 @@ export class System extends TypedEventBase {
   }
 
   // Additional stub methods to maintain interface compatibility
-  async runSystemChaosTest(): Promise<{
+  runSystemChaosTest(): Promise<{
     success: boolean;
-    results?: any;
+    results?: Record<string, unknown>;
     error?: string;
   }> {
     logger.info('Chaos test run (stub mode)');
-    return { success: true, results: { message: 'Stub implementation' } };
+    return Promise.resolve({ success: true, results: { message: 'Stub implementation' } });
   }
 
-  async getAISystemStatus(): Promise<{
+  getAISystemStatus(): Promise<{
     chaosEngineering: boolean;
     factSystem: boolean;
     neuralML: boolean;
@@ -245,5 +263,50 @@ export class System extends TypedEventBase {
       agentMonitoring: false,
       overallHealth: 'unavailable',
     };
+  }
+
+  // TaskMaster SAFe workflow methods
+  async createSAFeTask(taskData: {
+    title: string;
+    description?: string;
+    priority: 'critical' | 'high' | 'medium' | 'low';
+    estimatedEffort: number;
+    assignedAgent?: string;
+  }): Promise<unknown> {
+    await this.ensureInitialized();
+    if (!this.taskMasterService) {
+      throw new Error(TASKMASTER_NOT_AVAILABLE);
+    }
+    return this.taskMasterService.createTask(taskData);
+  }
+
+  async moveSAFeTask(taskId: string, toState: string): Promise<boolean> {
+    await this.ensureInitialized();
+    if (!this.taskMasterService) {
+      throw new Error(TASKMASTER_NOT_AVAILABLE);
+    }
+    return this.taskMasterService.moveTask(taskId, toState as string);
+  }
+
+  async getSAFeFlowMetrics(): Promise<unknown> {
+    await this.ensureInitialized();
+    if (!this.taskMasterService) {
+      throw new Error(TASKMASTER_NOT_AVAILABLE);
+    }
+    return this.taskMasterService.getFlowMetrics();
+  }
+
+  async createPIPlanningEvent(eventData: {
+    planningIntervalNumber: number;
+    artId: string;
+    startDate: Date;
+    endDate: Date;
+    facilitator: string;
+  }): Promise<unknown> {
+    await this.ensureInitialized();
+    if (!this.taskMasterService) {
+      throw new Error(TASKMASTER_NOT_AVAILABLE);
+    }
+    return this.taskMasterService.createPIPlanningEvent(eventData);
   }
 }

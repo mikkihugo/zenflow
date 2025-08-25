@@ -45,28 +45,5 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "src/__tests__/**/*"
-  ],
-  "references": [
-    // Foundation Layer
-    { "path": "../../packages/foundation" },
-    
-    // Strategic Facades 
-    { "path": "../../packages/infrastructure" },
-    { "path": "../../packages/intelligence" },
-    { "path": "../../packages/enterprise" },
-    { "path": "../../packages/operations" },
-    { "path": "../../packages/development" },
-    
-    // Implementation Packages (selected core ones used directly)
-    { "path": "../../packages/implementation-packages/database" },
-    { "path": "../../packages/implementation-packages/memory" },
-    { "path": "../../packages/implementation-packages/neural-ml" },
-    { "path": "../../packages/implementation-packages/fact-system" },
-    { "path": "../../packages/implementation-packages/chaos-engineering" },
-    { "path": "../../packages/implementation-packages/dspy" },
-    { "path": "../../packages/implementation-packages/llm-routing" },
-    { "path": "../../packages/implementation-packages/enterprise-coordination" },
-    { "path": "../../packages/implementation-packages/git-operations" },
-    { "path": "../../packages/implementation-packages/code-analyzer" }
   ]
 }

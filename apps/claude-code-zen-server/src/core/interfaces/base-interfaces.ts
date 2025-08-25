@@ -12,7 +12,7 @@
 export interface CoordinationRequest {
   readonly id: string;
   readonly type: string;
-  readonly payload: any;
+  readonly payload: unknown;
   readonly priority?: 'low' | 'medium' | 'high';
   readonly timeout?: number;
   readonly timestamp: number;
@@ -21,7 +21,7 @@ export interface CoordinationRequest {
 export interface CoordinationResponse {
   readonly id: string;
   readonly success: boolean;
-  readonly result?: any;
+  readonly result?: unknown;
   readonly error?: string;
   readonly timestamp: number;
   readonly processingTime: number;
@@ -74,7 +74,7 @@ export interface Task {
   readonly id: string;
   readonly type: string;
   readonly description: string;
-  readonly payload: any;
+  readonly payload: unknown;
   readonly requirements: readonly string[];
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly estimatedDuration?: number;
@@ -86,7 +86,7 @@ export interface Task {
 export interface TaskResult {
   readonly taskId: string;
   readonly success: boolean;
-  readonly result?: any;
+  readonly result?: unknown;
   readonly error?: string;
   readonly agentId: string;
   readonly startTime: string;
@@ -152,7 +152,7 @@ export interface SystemEvent {
   readonly type: string;
   readonly source: string;
   readonly target?: string;
-  readonly payload: any;
+  readonly payload: unknown;
   readonly timestamp: string;
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
 }
@@ -169,14 +169,14 @@ export interface EventSubscription {
 }
 
 export interface EventBus {
-  emit(event: string | symbol, ...args: any[]): boolean;
-  on(event: string | symbol, handler: (...args: any[]) => void): this;
-  off(event: string | symbol, handler: (...args: any[]) => void): this;
-  once(event: string | symbol, handler: (...args: any[]) => void): this;
+  emit(event: string | symbol, ...args: unknown[]): boolean;
+  on(event: string | symbol, handler: (...args: unknown[]) => void): this;
+  off(event: string | symbol, handler: (...args: unknown[]) => void): this;
+  once(event: string | symbol, handler: (...args: unknown[]) => void): this;
   removeAllListeners(event?: string | symbol): this;
-  publish(event: string, data: any): void;
-  subscribe(event: string, handler: (data: any) => void): void;
-  unsubscribe(event: string, handler: (data: any) => void): void;
+  publish(event: string, data: unknown): void;
+  subscribe(event: string, handler: (data: unknown) => void): void;
+  unsubscribe(event: string, handler: (data: unknown) => void): void;
 }
 
 // =============================================================================
@@ -243,16 +243,16 @@ export interface Registry<T> {
 }
 
 export interface Logger {
-  debug(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
-  trace(message: string, ...args: any[]): void;
+  debug(message: string, ...args: unknown[]): void;
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
+  trace(message: string, ...args: unknown[]): void;
 }
 
 export interface KeyValueStore {
-  get<T = any>(key: string): Promise<T | null>;
-  set(key: string, value: any, ttl?: number): Promise<void>;
+  get<T = unknown>(key: string): Promise<T | null>;
+  set(key: string, value: unknown, ttl?: number): Promise<void>;
   delete(key: string): Promise<boolean>;
   has(key: string): Promise<boolean>;
   clear(): Promise<void>;
@@ -270,36 +270,5 @@ export interface Lifecycle {
 }
 
 // =============================================================================
-// EXPORT ALL INTERFACES
+// ALL INTERFACES EXPORTED INDIVIDUALLY ABOVE
 // =============================================================================
-
-export default {
-  // Coordination
-  CoordinationRequest,
-  CoordinationResponse,
-  CoordinationContext,
-  // Agents
-  AgentCapability,
-  AgentStatus,
-  AgentConfig,
-  // Tasks
-  Task,
-  TaskResult,
-  TaskExecution,
-  // System
-  SystemHealth,
-  ComponentHealth,
-  SystemMetrics,
-  // Events
-  SystemEvent,
-  EventHandler,
-  EventSubscription,
-  // Configuration
-  BaseConfig,
-  DatabaseConfig,
-  NetworkConfig,
-  // Patterns
-  Factory,
-  Registry,
-  Lifecycle,
-};

@@ -1,96 +1,139 @@
 /**
- * Types Module - Barrel Export.
- *
- * Central export point for all shared types across the system.
+ * Types Index
+ * 
+ * Main export point for all type definitions.
+ * Foundation-style organization with clean, focused modules.
  */
 
-// Neural WASM types export for system-wide availability
-/**
- * @file Types module exports.
- */
+// ============================================================================
+// Core System Types
+// ============================================================================
+export * from './core';
 
+// ============================================================================
+// API & Web Interface Types
+// ============================================================================
+export * from './api';
 export type {
-  ActivationFunction,
-  NetworkConfig,
-  OptimizerType,
-  TrainingData,
-  TrainingResult,
-  WASMNeuralAccelerator,
-  WASMNeuralConfig,
-  WASMPerformanceMetrics,
-} from '@claude-zen/intelligence';
-// Export specific types from agent-types with unique names to avoid conflicts
+  ApiResponse,
+  ApiError,
+  PaginatedResponse,
+  PaginationParams,
+  FilterParams,
+  QueryParams,
+  HttpClient,
+  ClientConfig,
+  WebSocketMessage,
+  WebSocketConfig,
+  RouteDefinition,
+  DashboardConfig,
+  DashboardWidget
+} from './api';
+
+// ============================================================================
+// Coordination & Swarm Types
+// ============================================================================
+export * from './coordination';
 export type {
-  AgentCapabilities,
-  AgentConfig,
-  AgentEnvironment,
-  AgentError,
-  AgentId,
-  AgentMetrics,
-  AgentState,
-  AgentStatus as DetailedAgentStatus,
-  AgentType as DetailedAgentType,
-  GlobalAgentInfo,
-} from './agent-types';
-// Primary exports from shared-types (these are the main Agent interface)
-// Re-export shared types selectively to avoid conflicts
-export type {
-  SwarmAgent as Agent,
-  SwarmAgent,
-  SwarmConfig as SwarmConfiguration,
-  SwarmConfig,
-  TaskStatus,
-  ZenSwarm as SwarmType,
   ZenSwarm,
-} from './shared-types';
+  SwarmAgent,
+  SwarmConfig,
+  Task,
+  TaskResult,
+  TaskPayload,
+  AgentCapabilities,
+  AgentMetrics,
+  SwarmResult,
+  SwarmMetrics,
+  SwarmMessage
+} from './coordination';
 
-// Type guards and utilities
-export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
-  return (
-    obj &&
-    typeof obj.id === 'string' &&
-    typeof obj['topology'] === 'string' &&
-    Array.isArray(obj['agents'])
-  );
-}
+// ============================================================================
+// Shared Cross-Domain Types
+// ============================================================================
+export * from './shared';
+export type {
+  UUID,
+  Timestamp,
+  BaseEntity,
+  SystemEvent,
+  Service,
+  ServiceHealth,
+  SecurityContext,
+  Result,
+  Success,
+  Failure,
+  DeepPartial,
+  DeepRequired,
+  Nullable,
+  Optional,
+  Awaitable
+} from './shared';
 
-export function isSwarmAgent(
-  obj: any
-): obj is import('./shared-types').SwarmAgent {
-  return (
-    obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.name === 'string' &&
-    typeof obj.type === 'string'
-  );
-}
-
-export function isSystemEvent(
-  obj: any
-): obj is import('./shared-types').SystemEvent {
-  return (
-    obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.type === 'string' &&
-    typeof obj['source'] === 'string'
-  );
-}
-
-// Export additional type guards from utils for system-wide availability
+// ============================================================================
+// Type Guards (Re-exported for convenience)
+// ============================================================================
 export {
-  isActivationFunction,
-  isNeuralNetworkConfig,
-  isNonEmptyString,
-  isObjectArrayWithProps,
-  isPositiveNumber,
-  isValidNumber,
+  isSystemConfig,
+  isSystemHealth,
+  isApiResponse,
+  isApiError,
+  isPaginatedResponse,
+  isZenSwarm,
+  isSwarmAgent,
+  isTask,
+  isSwarmMessage,
+  isBaseEntity,
+  isSystemEvent,
+  isService,
+  isSuccess,
+  isFailure
+} from './core';
+// Removed duplicate export - already included in export * from './api'
+// Removed duplicate export - already included in export * from './coordination'
+// Removed duplicate export - already included in export * from './shared'
+
+// ============================================================================
+// Utility Functions (Re-exported for convenience)
+// ============================================================================
+export { success, failure } from './shared';
+
+// ============================================================================
+// Constants
+// ============================================================================
+export {
+  DEFAULT_TIMEOUT,
+  DEFAULT_RETRY_ATTEMPTS,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+  EVENT_PRIORITIES,
+  SERVICE_STATUSES
+} from './shared';
+
+// ============================================================================
+// External Package Types (Strategic Facade Compliance)
+// ============================================================================
+// Import types from strategic facades following 5-tier architecture
+export type {
+  // Foundation types
+  Logger,
+  Result as FoundationResult,
+  UUID as FoundationUUID
 } from '@claude-zen/foundation';
-export * from './client-types';
-export * from './events-types';
-export * from './knowledge-types';
-// Neural types now available via @claude-zen/intelligence package - no need to export
-export * from './protocol-types';
-export * from './services-types';
-export * from './singletons';
-// Workflow types now available via @claude-zen/intelligence package - no need to export
-export * from './logger';
+
+// Note: Only import types that are actually available and needed
+// Removed imports for packages that may not exist or aren't being used
+
+// ============================================================================
+// Legacy Compatibility (Temporary)
+// ============================================================================
+// These aliases maintain backward compatibility during migration
+export type Agent = SwarmAgent;
+export type SwarmConfiguration = SwarmConfig;
+export type SystemStatus = SystemHealth;
+
+// ============================================================================
+// Version Information
+// ============================================================================
+export const TYPE_SYSTEM_VERSION = '2.0.0';
+export const LAST_CONSOLIDATED = new Date().toISOString();

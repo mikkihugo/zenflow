@@ -33,9 +33,15 @@
     "verbatimModuleSyntax": false
   },
   "include": [
-    "packages/*/src/**/*.ts",
-    "packages/*/index.ts",
-    "packages/*/*.ts",
+    // 5-Tier Architecture - Updated paths
+    "packages/tier1-public/*/src/**/*.ts",
+    "packages/tier1-public/*/*/src/**/*.ts",
+    "packages/tier2-private/*/src/**/*.ts",
+    "packages/tier3-internal/*/src/**/*.ts",
+    "packages/tier4-restricted/*/src/**/*.ts",
+    "packages/tier5-deepcore/*/src/**/*.ts",
+    "packages/tier*/*/index.ts",
+    "packages/tier*/*/*.ts",
     "apps/*/src/**/*.ts",
     "scripts/**/*.ts"
   ],

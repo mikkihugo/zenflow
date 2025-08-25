@@ -1,7 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T03:55:45.417Z","model":"gpt-4.1","tokensUsed":6871,"contentLength":13936,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T03:56:14.754Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:57:40.078Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:57:40.120Z","contentLength":19269,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T03:58:10.679Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:59:23.391Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:59:23.430Z","contentLength":16487,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/knowledge/project-context-analyzer.ts","tier":"inference"}

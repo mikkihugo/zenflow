@@ -113,25 +113,17 @@ export const optionalAuthMiddleware = (req: any, res: any, next: any) => {
   authMiddleware(req, res, next);
 };
 
-export const getCurrentUser = (req: any): User | undefined => {
-  return req.auth?.user;
-};
+export const getCurrentUser = (req: any): User | undefined => req.auth?.user;
 
-export const hasRole = (req: any, role: string): boolean => {
-  return req.auth?.roles?.includes(role) || false;
-};
+export const hasRole = (req: any, role: string): boolean => req.auth?.roles?.includes(role) || false;
 
-export const hasPermission = (req: any, permission: string): boolean => {
-  return (
+export const hasPermission = (req: any, permission: string): boolean => (
     req.auth?.permissions?.includes('*') ||
     req.auth?.permissions?.includes(permission) ||
     false
   );
-};
 
-export const isAdmin = (req: any): boolean => {
-  return hasRole(req, 'admin');
-};
+export const isAdmin = (req: any): boolean => hasRole(req, 'admin');
 
 // ===== ERROR HANDLING EXPORTS =====
 
@@ -186,7 +178,7 @@ export const loggingMiddleware = (req: any, res: any, next: any) => {
       method: req.method,
       url: req.url,
       statusCode: res.statusCode,
-      duration: '' + duration + 'ms',
+      duration: `${  duration  }ms`,
       contentLength: res.get('content-length'),
     });
   });
@@ -199,8 +191,7 @@ export const loggingMiddleware = (req: any, res: any, next: any) => {
 // Basic rate limiting (in-memory store)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-export const rateLimitMiddleware = (maxRequests = 100, windowMs = 60000) => {
-  return (req: any, res: any, next: any) => {
+export const rateLimitMiddleware = (maxRequests = 100, windowMs = 60000) => (req: any, res: any, next: any) => {
     const key = req.ip || 'unknown';
     const now = Date.now();
 
@@ -246,7 +237,6 @@ export const rateLimitMiddleware = (maxRequests = 100, windowMs = 60000) => {
     current.count++;
     next();
   };
-};
 
 // ===== DATABASE CONTROLLER EXPORTS =====
 export { DatabaseController } from '../database/database-controller';
@@ -266,8 +256,7 @@ export const createAPIResponse = <T>(
   data?: T,
   error?: APIError,
   metadata?: Record<string, any>
-) => {
-  return {
+) => ({
     success,
     data,
     error,
@@ -275,8 +264,7 @@ export const createAPIResponse = <T>(
       timestamp: Date.now(),
       ...metadata,
     },
-  };
-};
+  });
 
 /**
  * Create standardized API error
@@ -286,14 +274,12 @@ export const createAPIError = (
   message: string,
   status = 500,
   details?: any
-): APIError => {
-  return {
+): APIError => ({
     code,
     message,
     status,
     details,
-  };
-};
+  });
 
 // ===== HEALTH CHECK =====
 

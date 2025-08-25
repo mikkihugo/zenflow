@@ -1237,6 +1237,81 @@ class ApiClient {
   async getSystemDependencies(): Promise<any> {
     return await this.request('/v1/facades/dependencies');
   }
+
+  // ===== TASKMASTER SAFE WORKFLOW API =====
+
+  async getTaskMasterMetrics(): Promise<any> {
+    return await this.request('/v1/taskmaster/metrics');
+  }
+
+  async getTaskMasterHealth(): Promise<any> {
+    return await this.request('/v1/taskmaster/health');
+  }
+
+  async getTaskMasterDashboard(): Promise<any> {
+    return await this.request('/v1/taskmaster/dashboard');
+  }
+
+  async createSAFeTask(taskData: {
+    title: string;
+    description?: string;
+    priority: 'critical' | 'high' | 'medium' | 'low';
+    estimatedEffort: number;
+    assignedAgent?: string;
+  }): Promise<any> {
+    return await this.request('/v1/taskmaster/tasks', {
+      method: 'POST',
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async getTaskMasterTask(taskId: string): Promise<any> {
+    return await this.request(`/v1/taskmaster/tasks/${taskId}`);
+  }
+
+  async moveSAFeTask(taskId: string, toState: string): Promise<any> {
+    return await this.request(`/v1/taskmaster/tasks/${taskId}/move`, {
+      method: 'PUT',
+      body: JSON.stringify({ toState }),
+    });
+  }
+
+  async getTasksByState(state: string): Promise<any> {
+    return await this.request(`/v1/taskmaster/tasks/state/${state}`);
+  }
+
+  async createPIPlanningEvent(eventData: {
+    planningIntervalNumber: number;
+    artId: string;
+    startDate: string;
+    endDate: string;
+    facilitator: string;
+  }): Promise<any> {
+    return await this.request('/v1/taskmaster/pi-planning', {
+      method: 'POST',
+      body: JSON.stringify(eventData),
+    });
+  }
+
+  // Convenience methods for SAFe workflow states
+  async getAllSAFeTasks(): Promise<{
+    backlog: any[];
+    analysis: any[];
+    development: any[];
+    testing: any[];
+    review: any[];
+    deployment: any[];
+    done: any[];
+    blocked: any[];
+  }> {
+    const dashboard = await this.getTaskMasterDashboard();
+    return dashboard.data.tasksByState;
+  }
+
+  async getSAFeFlowMetrics(): Promise<any> {
+    const metrics = await this.getTaskMasterMetrics();
+    return metrics.data;
+  }
 }
 
 // Export singleton instance

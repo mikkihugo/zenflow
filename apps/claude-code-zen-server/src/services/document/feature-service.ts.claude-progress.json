@@ -1,4 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T04:55:29.682Z","model":"gpt-4.1","tokensUsed":7879,"contentLength":17366,"file":"apps/claude-code-zen-server/src/services/document/feature-service.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T04:56:00.029Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/document/feature-service.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T04:58:02.223Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/document/feature-service.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T04:58:02.223Z","contentLength":21045,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/services/document/feature-service.ts","tier":"inference"}

@@ -15,7 +15,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 import {
   getRegisteredProjects,
   getCurrentProject,
@@ -65,7 +65,7 @@ export interface ProjectSwitcherStatus {
  *
  * Manages graceful switching between projects with proper coordination system lifecycle.
  */
-export class ProjectSwitcher extends TypedEventBase {
+export class ProjectSwitcher extends EventEmitter {
   private isSwitching = false;
   private switchTimeout = 30000; // 30 seconds default timeout
   private lastSwitch?: Date;
@@ -193,7 +193,7 @@ export class ProjectSwitcher extends TypedEventBase {
 
       logger.info('Project switch completed successfully', {
         projectId: result.projectId,
-        duration: '' + duration + 'ms',
+        duration: `${  duration  }ms`,
         previousProject: result.previousProject,
       });
 
@@ -294,13 +294,13 @@ export class ProjectSwitcher extends TypedEventBase {
 
       if (!project) {
         throw new Error(
-          'Project with ID ' + request.projectId + ' not found in registry'
+          `Project with ID ${  request.projectId  } not found in registry`
         );
       }
 
       // Verify project path still exists
       if (!fs.existsSync(project.path)) {
-        throw new Error('Project path ' + project.path + ' no longer exists');
+        throw new Error(`Project path ${  project.path  } no longer exists`);
       }
 
       return {
@@ -313,7 +313,7 @@ export class ProjectSwitcher extends TypedEventBase {
       const absolutePath = path.resolve(request.projectPath);
 
       if (!fs.existsSync(absolutePath)) {
-        throw new Error('Project path ' + absolutePath + ' does not exist');
+        throw new Error(`Project path ${  absolutePath  } does not exist`);
       }
 
       // Generate project info for new path
@@ -337,7 +337,7 @@ export class ProjectSwitcher extends TypedEventBase {
     // Create timeout promise
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => {
-        reject(new Error('Shutdown timeout after ' + timeout + 'ms'));
+        reject(new Error(`Shutdown timeout after ${  timeout  }ms`));
       }, timeout);
     });
 

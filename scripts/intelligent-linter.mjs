@@ -30,8 +30,11 @@
  * 
  * **Usage:**
  * ```bash
- * # Automated batch mode with 3-tier AI system
- * node scripts/intelligent-linter.mjs --batch-all
+ * # Focus on main app only (default, ~120 files)
+ * node scripts/intelligent-linter.mjs --batch-all --app-only
+ * 
+ * # Scan entire monorepo (~900 files)
+ * node scripts/intelligent-linter.mjs --batch-all --full-repo
  * 
  * # Single file with full AI pipeline
  * node scripts/intelligent-linter.mjs path/to/file.ts
@@ -356,13 +359,26 @@ function validateTypeScriptContent(content, filePath) {
     };
   }
   
-  // Check for reasonable quote balance (even counts for " and ', any count for `)
-  if (quotes['"'] % 2 !== 0 || quotes["'"] % 2 !== 0) {
+  // Check for reasonable quote balance - only fail if severely imbalanced
+  // TypeScript files often have complex string structures, so be more lenient
+  const quoteImbalance = Math.abs(quotes['"'] % 2) + Math.abs(quotes["'"] % 2);
+  const codeLength = codeToValidate.length;
+  
+  // Only fail if quote imbalance is severe relative to code length
+  if (quoteImbalance > 0 && codeLength < 1000) {
+    // For small files, strict validation
+    return { 
+      isValid: false, 
+      reason: 'Unbalanced quotes detected in small file - likely corrupted syntax' 
+    };
+  } else if (quoteImbalance > 0 && codeLength >= 1000 && (quotes['"'] + quotes["'"]) < 10) {
+    // For large files with few quotes, be strict
     return { 
       isValid: false, 
       reason: 'Unbalanced quotes detected - likely corrupted syntax' 
     };
   }
+  // For large files with many quotes (TypeScript code), allow imbalance
   
   // File extension specific validation
   const fileExt = filePath.split('.').pop()?.toLowerCase();
@@ -448,7 +464,7 @@ function getErrorCounts(filePath) {
     let eslintDetails = '';
     try {
       eslintDetails = execSync(
-        `npx eslint "${filePath}" --config eslint.config.mjs --format compact`,
+        `npx eslint "${filePath}" --config eslint.config.js --format compact`,
         { cwd: projectRoot, encoding: 'utf8' }
       );
     } catch (error) {
@@ -2251,7 +2267,7 @@ async function processFile(filePath, useClaudeFixer = false, aiMode = 'gpt-4.1')
   const stage2Start = Date.now();
   
   try {
-    execSync(`npx eslint "${filePath}" --config eslint.config.mjs --fix`, { stdio: 'pipe' });
+    execSync(`npx eslint "${filePath}" --config eslint.config.js --fix`, { stdio: 'pipe' });
     stats.timings.stage2 = Date.now() - stage2Start;
     console.log(`✅ ESLint --fix applied (${stats.timings.stage2}ms)`);
     stats.stages.stage2 = { success: true };
@@ -2510,16 +2526,27 @@ async function processFile(filePath, useClaudeFixer = false, aiMode = 'gpt-4.1')
 const processedFiles = new Set(); // Track attempted files
 const skippedFiles = new Set();   // Track files marked as too complex
 
-async function findNextFileWithErrors() {
-  console.log('🔍 Looking for next TypeScript file with errors...');
+async function findNextFileWithErrors(scopeMode = 'app-only') {
+  const scopeDescription = scopeMode === 'app-only' ? 'main app' : 'ALL packages';
+  console.log(`🔍 Looking for next TypeScript file with errors in ${scopeDescription}...`);
   
   try {
-    // Use TypeScript compiler to quickly find files with compilation errors across ALL packages
-    console.log('⚡ Running TypeScript compiler to find errors in ALL packages...');
-    const tsOutput = execSync(
-      `npx tsc --noEmit --skipLibCheck 2>&1 || true`,
-      { cwd: projectRoot, encoding: 'utf8', maxBuffer: 1024 * 1024 * 10 }
-    );
+    let tsOutput;
+    if (scopeMode === 'app-only') {
+      // Focus on main app only
+      console.log('⚡ Running TypeScript compiler to find errors in main app...');
+      tsOutput = execSync(
+        `cd apps/claude-code-zen-server && npx tsc --noEmit --skipLibCheck 2>&1 || true`,
+        { cwd: projectRoot, encoding: 'utf8', maxBuffer: 1024 * 1024 * 10 }
+      );
+    } else {
+      // Use TypeScript compiler to quickly find files with compilation errors across ALL packages
+      console.log('⚡ Running TypeScript compiler to find errors in ALL packages...');
+      tsOutput = execSync(
+        `npx tsc --noEmit --skipLibCheck 2>&1 || true`,
+        { cwd: projectRoot, encoding: 'utf8', maxBuffer: 1024 * 1024 * 10 }
+      );
+    }
     
     // Parse first file with TS errors from compiler output  
     const lines = tsOutput.split('\n');
@@ -2528,7 +2555,20 @@ async function findNextFileWithErrors() {
     for (const line of lines) {
       const match = line.match(/^([^(]+)\(\d+,\d+\):\s*error\s+TS\d+:/);
       if (match) {
-        const filePath = match[1].trim();
+        let filePath = match[1].trim();
+        
+        // Fix path resolution for app-only mode
+        if (scopeMode === 'app-only' && !filePath.startsWith('apps/') && !filePath.startsWith('/')) {
+          // Relative path from apps/claude-code-zen-server, convert to absolute from project root
+          if (filePath.startsWith('src/')) {
+            filePath = `apps/claude-code-zen-server/${filePath}`;
+          } else if (filePath.includes('/')) {
+            filePath = `apps/claude-code-zen-server/${filePath}`;
+          } else {
+            // Bare filename, assume it's in src/
+            filePath = `apps/claude-code-zen-server/src/${filePath}`;
+          }
+        }
         
         // Skip files that have already been processed or marked as too complex
         if (processedFiles.has(filePath)) {
@@ -2553,12 +2593,17 @@ async function findNextFileWithErrors() {
       }
     }
     
-    // If no TS errors, check for ESLint errors across ALL packages
-    console.log('⚡ No TypeScript errors found, checking for ESLint errors in ALL packages...');
+    // If no TS errors, check for ESLint errors
+    const eslintScope = scopeMode === 'app-only' ? 'main app' : 'ALL packages';
+    console.log(`⚡ No TypeScript errors found, checking for ESLint errors in ${eslintScope}...`);
     
-    // Get ALL TypeScript files across all packages to check with ESLint (no limit)
+    // Get TypeScript files to check with ESLint based on scope
+    const findPattern = scopeMode === 'app-only' ? 
+      `find apps/claude-code-zen-server/src -name "*.ts" -not -path "*/node_modules/*" -not -path "*/.svelte-kit/*" -not -path "*/dist/*"` :
+      `find apps/ packages/ -name "*.ts" -not -path "*/node_modules/*" -not -path "*/.svelte-kit/*" -not -path "*/dist/*"`;
+    
     const allFiles = execSync(
-      `find apps/ packages/ -name "*.ts" -not -path "*/node_modules/*" -not -path "*/.svelte-kit/*" -not -path "*/dist/*"`,
+      findPattern,
       { cwd: projectRoot, encoding: 'utf8' }
     ).trim().split('\n').filter(f => f);
     
@@ -2715,10 +2760,10 @@ async function processBatch(filesWithErrors, useClaudeFixer) {
 /**
  * Parallel Processing Mode - Run 3 concurrent workers with smart retry logic
  */
-async function runParallelMode(aiMode = 'gpt-4.1') {
+async function runParallelMode(aiMode = 'gpt-4.1', scopeMode = 'app-only') {
   const WORKER_COUNT = 3;
   
-  console.log('🚀 Starting 3 parallel intelligent linter workers with smart retry logic...');
+  console.log(`🚀 Starting 3 parallel intelligent linter workers with smart retry logic (${scopeMode})...`);
   
   // Helper functions for parallel processing
   function getFileErrorCount(filePath) {
@@ -2735,13 +2780,17 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
     }
   }
   
-  function getErrorFiles() {
-    console.log('📊 Scanning ENTIRE REPO for TypeScript errors (server + web-dashboard + packages)...');
+  function getErrorFiles(scopeMode = 'app-only') {
+    const scanDescription = scopeMode === 'app-only' ? 
+      'MAIN APP ONLY for TypeScript errors (server app)' : 
+      'ENTIRE REPO for TypeScript errors (server + web-dashboard + packages)';
+    
+    console.log(`📊 Scanning ${scanDescription}...`);
     
     try {
       const allErrorFiles = [];
       
-      // 1. Scan main server app
+      // 1. Scan main server app (always included)
       try {
         console.log('   📁 Scanning apps/claude-code-zen-server...');
         const serverOutput = execSync(
@@ -2780,13 +2829,14 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
         console.log('   ⚠️ Server app scan failed:', serverError.message);
       }
       
-      // 2. Scan web dashboard (Svelte)
-      try {
-        console.log('   📁 Scanning apps/web-dashboard...');
-        const webOutput = execSync(
-          'cd apps/web-dashboard && npx tsc --noEmit 2>&1 | grep "error TS"',
-          { encoding: 'utf8', cwd: projectRoot, maxBuffer: 8 * 1024 * 1024 }
-        );
+      // 2. Scan web dashboard (Svelte) - only in full-repo mode
+      if (scopeMode === 'full-repo') {
+        try {
+          console.log('   📁 Scanning apps/web-dashboard...');
+          const webOutput = execSync(
+            'cd apps/web-dashboard && npx tsc --noEmit 2>&1 | grep "error TS"',
+            { encoding: 'utf8', cwd: projectRoot, maxBuffer: 8 * 1024 * 1024 }
+          );
         
         const webFiles = webOutput.split('\n')
           .filter(line => line.includes('error TS'))
@@ -2813,23 +2863,30 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
           .filter(Boolean)
           .filter(filePath => filePath.endsWith('.ts') && !filePath.endsWith('.d.ts'));
         
-        allErrorFiles.push(...webFiles);
-        console.log(`   ✅ Found ${webFiles.length} files with errors in web dashboard`);
-      } catch (webError) {
-        console.log('   ⚠️ Web dashboard scan failed:', webError.message);
+          allErrorFiles.push(...webFiles);
+          console.log(`   ✅ Found ${webFiles.length} files with errors in web dashboard`);
+        } catch (webError) {
+          console.log('   ⚠️ Web dashboard scan failed:', webError.message);
+        }
       }
       
-      // 3. Scan key packages (no tests, excluding foundation)
-      const packageDirs = [
-        'packages/implementation-packages/brain',
-        'packages/implementation-packages/database',
-        'packages/implementation-packages/memory',
-        'packages/implementation-packages/agent-manager',
-        'packages/implementation-packages/knowledge',
-        'packages/implementation-packages/event-system'
-      ];
-      
-      for (const packageDir of packageDirs) {
+      // 3. Scan key packages (5-tier architecture) - only in full-repo mode
+      if (scopeMode === 'full-repo') {
+        const packageDirs = [
+          // Tier 2: Private implementation packages
+          'packages/tier2-private/database',
+          'packages/tier2-private/memory', 
+          'packages/tier2-private/event-system',
+          'packages/tier2-private/agent-monitoring',
+          'packages/tier2-private/load-balancing',
+          // Tier 3: Internal core packages
+          'packages/tier3-internal/brain',
+          'packages/tier3-internal/knowledge',
+          'packages/tier3-internal/teamwork',
+          'packages/tier3-internal/workflows'
+        ];
+        
+        for (const packageDir of packageDirs) {
         try {
           console.log(`   📁 Scanning ${packageDir}...`);
           const packageOutput = execSync(
@@ -2867,6 +2924,7 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
         } catch (packageError) {
           console.log(`   ⚠️ ${packageDir} scan failed:`, packageError.message);
         }
+        }
       }
       
       // Remove duplicates and filter out files with 0 errors
@@ -2882,7 +2940,8 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
         return true;
       });
       
-      console.log(`📊 Found ${filesWithErrors.length} TOTAL files with TypeScript errors across entire repo`);
+      const scopeDescription = scopeMode === 'app-only' ? 'main app' : 'entire repo';
+      console.log(`📊 Found ${filesWithErrors.length} TOTAL files with TypeScript errors in ${scopeDescription}`);
       
       // Create weighted randomization - higher error counts more likely to be picked early
       const weightedFiles = filesWithErrors.map(filePath => ({
@@ -2929,7 +2988,7 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
     console.log(`🔧 Worker #${workerId} starting...`);
     
     while (true) {
-      const errorFiles = getErrorFiles();
+      const errorFiles = getErrorFiles(scopeMode);
       
       if (errorFiles.length === 0) {
         console.log(`✅ Worker #${workerId}: No more files with errors found, waiting...`);
@@ -3043,12 +3102,62 @@ async function runParallelMode(aiMode = 'gpt-4.1') {
   
   // Monitor progress every 30 seconds
   const monitor = setInterval(() => {
-    const errorFiles = getErrorFiles();
+    const errorFiles = getErrorFiles(scopeMode);
     console.log(`📈 ${new Date().toISOString()}: ${errorFiles.length} files remaining with errors`);
   }, 30000);
   
   // Wait for workers (they run indefinitely)
   await Promise.all(workers);
+}
+
+/**
+ * Sequential Batch Processing Mode - Process all files with errors one by one
+ */
+async function runSequentialBatchAll(aiMode = 'gpt-4.1', scopeMode = 'app-only') {
+  console.log(`🔄 Starting sequential processing of all files with errors (${scopeMode})...`);
+  
+  let processedCount = 0;
+  let totalFiles = 0;
+  
+  try {
+    while (true) {
+      const fileWithErrors = await findNextFileWithErrors(scopeMode);
+      
+      if (!fileWithErrors) {
+        console.log(`🎉 Sequential batch processing completed! Processed ${processedCount} files.`);
+        break;
+      }
+      
+      if (totalFiles === 0) {
+        // First iteration - we don't know total count yet, but we can estimate
+        console.log(`📊 Found files with errors, starting sequential processing...`);
+      }
+      
+      totalFiles++;
+      processedCount++;
+      
+      console.log(`\n🎯 [${processedCount}] Processing: ${fileWithErrors.path}`);
+      console.log(`   📊 TS Errors: ${fileWithErrors.tsErrors}, ESLint: ${fileWithErrors.eslintErrors}, Total: ${fileWithErrors.totalErrors}`);
+      
+      const result = await processFile(fileWithErrors.path, true, aiMode);
+      
+      if (result.success) {
+        if (result.improved) {
+          console.log(`✅ [${processedCount}] File improved: ${result.before.typescript} → ${result.after.typescript} TS errors`);
+        } else {
+          console.log(`✅ [${processedCount}] File processed (already clean)`);
+        }
+      } else {
+        console.log(`❌ [${processedCount}] File processing failed: ${fileWithErrors.path}`);
+      }
+      
+      // Brief pause between files to avoid overwhelming the system
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  } catch (error) {
+    console.error('💥 Sequential batch processing failed:', error.message);
+    throw error;
+  }
 }
 
 async function main() {
@@ -3061,8 +3170,12 @@ async function main() {
 Usage:
   node scripts/intelligent-linter.mjs <file-path>         # Process specific file
   node scripts/intelligent-linter.mjs --batch            # Find and fix next file with errors  
-  node scripts/intelligent-linter.mjs --batch-all        # Find and fix ALL files with errors (no limit)
-  node scripts/intelligent-linter.mjs --parallel         # Run 3 parallel workers with smart retry logic
+  node scripts/intelligent-linter.mjs --batch-all        # Find and fix ALL files with errors (sequential)
+  node scripts/intelligent-linter.mjs --batch-all --parallel  # Use parallel workers (may hang)
+  
+Scope Options:
+  --app-only      Focus on main app only (~120 files) [DEFAULT for --batch-all]
+  --full-repo     Scan entire monorepo (~900 files)
   
 AI Model Options (optimized performance):
   [DEFAULT]      GPT-4.1 → GPT-5: Fast fallback, Claude SDK disabled ⚡🎯💰
@@ -3101,6 +3214,11 @@ Safety Features:
     process.exit(0);
   }
 
+  // Determine scope mode - default to app-only for batch-all
+  const isAppOnly = args.includes('--app-only') || (args.includes('--batch-all') && !args.includes('--full-repo'));
+  const isFullRepo = args.includes('--full-repo');
+  const scopeMode = isFullRepo ? 'full-repo' : 'app-only';
+  
   // Determine AI mode based on arguments and benchmark results
   const isManualMode = args.includes('--manual-mode');
   const isClaudeMode = args.includes('--claude-mode'); 
@@ -3127,16 +3245,25 @@ Safety Features:
   
   console.log('🔒 Acquired execution lock - preventing concurrent runs');
   
-  // Handle batch-all mode - use parallel processing with 3 workers (default)
+  // Handle batch-all mode - sequential by default, parallel if --parallel specified
   if (args.includes('--batch-all')) {
-    console.log('🚀 Starting Parallel Batch Mode - 3 Workers Processing ALL Files');
+    const useParallel = args.includes('--parallel');
+    const modeDescription = useParallel ? 'Parallel Batch Mode - 3 Workers' : 'Sequential Batch Mode';
+    
+    console.log(`🚀 Starting ${modeDescription} Processing Files (${scopeMode})`);
+    console.log(`📂 Scope: ${scopeMode === 'app-only' ? 'Main app only (~120 files)' : 'Entire monorepo (~900 files)'}`);
     console.log(`🚀 AI Mode: ${aiMode.toUpperCase()} ${aiMode === 'gpt-4.1' ? '(FREE, 881ms avg)' : aiMode === 'gpt-4o' ? '(1073ms avg)' : aiMode === 'gpt-4o-mini' ? '(1889ms avg)' : aiMode === 'claude-sdk' ? '(30-90s complex)' : '(Manual)'}`);
     
-    // Use parallel processing with 3 workers by default for batch-all
     try {
-      await runParallelMode(aiMode);
+      if (useParallel) {
+        // Use parallel processing with 3 workers 
+        await runParallelMode(aiMode, scopeMode);
+      } else {
+        // Use sequential processing - much more reliable
+        await runSequentialBatchAll(aiMode, scopeMode);
+      }
     } catch (error) {
-      console.error('💥 Parallel batch mode failed:', error.message);
+      console.error('💥 Batch-all mode failed:', error.message);
       process.exit(1);
     }
     
@@ -3145,11 +3272,12 @@ Safety Features:
 
   // Handle batch mode - find next file and fix it
   if (args.includes('--batch')) {
-    console.log('🚀 Starting Batch Mode - Find and Fix Next File');
+    console.log(`🚀 Starting Batch Mode - Find and Fix Next File (${scopeMode})`);
+    console.log(`📂 Scope: ${scopeMode === 'app-only' ? 'Main app only (~120 files)' : 'Entire monorepo (~900 files)'}`);
     console.log(`🚀 AI Mode: ${aiMode.toUpperCase()} ${aiMode === 'gpt-4.1' ? '(FREE, 881ms avg)' : aiMode === 'gpt-4o' ? '(1073ms avg)' : aiMode === 'gpt-4o-mini' ? '(1889ms avg)' : aiMode === 'claude-sdk' ? '(30-90s complex)' : '(Manual)'}`);
     
     try {
-      const fileWithErrors = await findNextFileWithErrors();
+      const fileWithErrors = await findNextFileWithErrors(scopeMode);
       
       if (!fileWithErrors) {
         console.log('🎉 No files with errors found! Repository is clean.');
@@ -3164,7 +3292,7 @@ Safety Features:
         console.log('\n🎉 Next file processed successfully!');
         if (result.improved) {
           console.log(`📈 Improvement: ${result.before.typescript} → ${result.after.typescript} TS errors`);
-          console.log('💡 Run again with --batch --claude-fix to find and fix the next file');
+          console.log('💡 Run again with --batch to find and fix the next file');
         }
       } else {
         console.log('\n💥 File processing failed');

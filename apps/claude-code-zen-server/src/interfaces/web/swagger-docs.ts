@@ -39,12 +39,12 @@
  */
 
 /**
- * @swagge'
- * /api/agu/workflows:
+ * @swagger
+ * /api/v1/taskmaster/tasks:
  * get:
- * summary: Get AGU workflows
- * description: Retrieve all AI Governance Unit workflows with optional filtering by status and priority
- * tags: [AGU]
+ * summary: Get Taskmaster tasks
+ * description: Retrieve all Taskmaster/AGUI tasks with optional filtering by status and priority
+ * tags: [Taskmaster]
  * parameters:
  * - $ref: '#/components/parameters/WorkflowStatus'
  * - $ref: '#/components/parameters/WorkflowPriority'

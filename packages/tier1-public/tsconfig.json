@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "references": [
+    { "path": "./core/foundation" },
+    { "path": "./facades/intelligence" },
+    { "path": "./facades/infrastructure" },
+    { "path": "./facades/enterprise" },
+    { "path": "./facades/operations" },
+    { "path": "./facades/development" }
+  ]
+}

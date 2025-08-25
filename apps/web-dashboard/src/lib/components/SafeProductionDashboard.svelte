@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Writable } from 'svelte/store';
+  import { apiClient } from '$lib/api';
   // Widget imports disabled due to TailwindCSS compatibility issues
   // import SafeVisualizationWidget from './SafeVisualizationWidget.svelte';
   // import SafeCoachingWidget from './SafeCoachingWidget.svelte';
@@ -125,8 +126,54 @@
         updatePredictionWidgets(event);
       });
 
+      // Listen for TaskMaster SAFe workflow events
+      socket.on('taskmaster:task_updated', (event: any) => {
+        eventLog.update(log => [
+          { timestamp: new Date(), type: 'taskmaster_task', data: event },
+          ...log.slice(0, 99)
+        ]);
+        // Refresh TaskMaster data when tasks are updated
+        loadTaskMasterData();
+      });
+
+      socket.on('taskmaster:metrics_updated', (event: any) => {
+        eventLog.update(log => [
+          { timestamp: new Date(), type: 'taskmaster_metrics', data: event },
+          ...log.slice(0, 99)
+        ]);
+        // Update dashboard metrics immediately
+        dashboardState.update(state => ({
+          ...state,
+          performanceMetrics: {
+            ...state.performanceMetrics,
+            renderTime: event.metrics.averageCycleTime || state.performanceMetrics.renderTime,
+            userEngagement: event.metrics.teamVelocity / 100 || state.performanceMetrics.userEngagement,
+            predictionAccuracy: event.metrics.predictiveAccuracy || state.performanceMetrics.predictionAccuracy,
+            workflowEfficiency: event.metrics.throughput / 10 || state.performanceMetrics.workflowEfficiency
+          }
+        }));
+      });
+
+      socket.on('taskmaster:pi_event', (event: any) => {
+        eventLog.update(log => [
+          { timestamp: new Date(), type: 'taskmaster_pi', data: event },
+          ...log.slice(0, 99)
+        ]);
+        // Show PI Planning notification
+        if (event.type === 'pi_planning_started') {
+          showAchievementNotification({
+            type: 'pi_planning',
+            message: `PI Planning ${event.piNumber} has started`,
+            priority: 'high'
+          });
+        }
+      });
+
       // Load initial dashboard configuration
       await loadDashboardConfiguration();
+
+      // Load real TaskMaster SAFe data
+      await loadTaskMasterData();
 
     } catch (error) {
       console.error('Failed to initialize dashboard:', error);
@@ -182,6 +229,79 @@
       ...state,
       widgets
     }));
+  }
+
+  async function loadTaskMasterData() {
+    try {
+      console.log('Loading TaskMaster SAFe data...');
+      
+      // Fetch real-time SAFe metrics from TaskMaster
+      const [metrics, dashboard, health] = await Promise.all([
+        apiClient.getTaskMasterMetrics(),
+        apiClient.getTaskMasterDashboard(),
+        apiClient.getTaskMasterHealth()
+      ]);
+
+      console.log('TaskMaster data loaded:', { metrics, dashboard, health });
+
+      // Update dashboard state with real SAFe data
+      dashboardState.update(state => ({
+        ...state,
+        realTimeUpdates: true,
+        performanceMetrics: {
+          ...state.performanceMetrics,
+          workflowEfficiency: metrics.wipEfficiency || 0.85,
+          predictionAccuracy: health.overallHealth || 0.9,
+        },
+        widgets: state.widgets.map(widget => ({
+          ...widget,
+          data: {
+            ...widget.data,
+            realMetrics: metrics,
+            healthData: health,
+            tasksByState: dashboard.tasksByState,
+            safeMetrics: {
+              totalTasks: metrics.totalTasks,
+              averageCycleTime: metrics.averageCycleTime,
+              throughput: metrics.throughput,
+              systemHealth: health.overallHealth,
+              wipUtilization: health.wipUtilization,
+              activeBottlenecks: health.activeBottlenecks
+            }
+          }
+        }))
+      }));
+
+      // Log event for dashboard visibility
+      eventLog.update(log => [
+        { 
+          timestamp: new Date(), 
+          type: 'taskmaster_data_loaded', 
+          data: { 
+            totalTasks: metrics.totalTasks,
+            systemHealth: health.overallHealth,
+            message: 'Real TaskMaster SAFe data loaded successfully'
+          }
+        },
+        ...log.slice(0, 99)
+      ]);
+
+    } catch (error) {
+      console.error('Failed to load TaskMaster data:', error);
+      
+      // Log error event
+      eventLog.update(log => [
+        { 
+          timestamp: new Date(), 
+          type: 'taskmaster_data_error', 
+          data: { 
+            error: error.message,
+            message: 'Using mock data - TaskMaster API not available'
+          }
+        },
+        ...log.slice(0, 99)
+      ]);
+    }
   }
 
   function generateInitialWidgetData(type: string) {
@@ -241,17 +361,36 @@
         // Request dashboard refresh
         socket.emit('dashboard:request_update', { userId, userRole });
         
-        // Update performance metrics
-        dashboardState.update(state => ({
-          ...state,
-          performanceMetrics: {
-            ...state.performanceMetrics,
-            renderTime: Math.random() * 50 + 10, // Simulate render time
-            userEngagement: Math.random() * 0.3 + 0.7, // 70-100%
-            predictionAccuracy: Math.random() * 0.2 + 0.8, // 80-100%
-            workflowEfficiency: Math.random() * 0.25 + 0.75 // 75-100%
-          }
-        }));
+        try {
+          // Fetch real TaskMaster data for live updates
+          await loadTaskMasterData();
+          
+          // Update performance metrics with real data
+          const metrics = await apiClient.getTaskMasterMetrics();
+          dashboardState.update(state => ({
+            ...state,
+            performanceMetrics: {
+              ...state.performanceMetrics,
+              renderTime: metrics.averageCycleTime || Math.random() * 50 + 10,
+              userEngagement: metrics.teamVelocity / 100 || Math.random() * 0.3 + 0.7,
+              predictionAccuracy: metrics.predictiveAccuracy || Math.random() * 0.2 + 0.8,
+              workflowEfficiency: metrics.throughput / 10 || Math.random() * 0.25 + 0.75
+            }
+          }));
+        } catch (error) {
+          console.warn('Failed to fetch real-time TaskMaster data, using fallback metrics:', error);
+          // Fallback to simulated metrics if TaskMaster API is unavailable
+          dashboardState.update(state => ({
+            ...state,
+            performanceMetrics: {
+              ...state.performanceMetrics,
+              renderTime: Math.random() * 50 + 10,
+              userEngagement: Math.random() * 0.3 + 0.7,
+              predictionAccuracy: Math.random() * 0.2 + 0.8,
+              workflowEfficiency: Math.random() * 0.25 + 0.75
+            }
+          }));
+        }
       }
     }, 30000); // Update every 30 seconds
   }

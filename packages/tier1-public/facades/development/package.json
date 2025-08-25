@@ -1,0 +1,80 @@
+{
+  "name": "@claude-zen/development",
+  "version": "2.0.0",
+  "description": "Strategic Development Facade - Repository analysis, code analysis, linting, and development tools",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "development",
+    "code-analysis",
+    "repository-analysis",
+    "linting",
+    "static-analysis",
+    "ast",
+    "refactoring",
+    "code-quality",
+    "strategic-facade"
+  ],
+  "author": "Claude Code Zen",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
+    "@babel/parser": "^7.23.9",
+    "@babel/traverse": "^7.23.9",
+    "@babel/types": "^7.23.9",
+    "@claude-zen/beam-analyzer": "workspace:*",
+    "@claude-zen/codeql": "workspace:*",
+    "@claude-zen/enterprise": "workspace:*",
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/infrastructure": "workspace:*",
+    "@claude-zen/intelligence": "workspace:*",
+    "@claude-zen/operations": "workspace:*",
+    "@claude-zen/repo-analyzer": "workspace:*",
+    "@jridgewell/source-map": "^0.3.6",
+    "@typescript-eslint/parser": "^8.20.0",
+    "@typescript-eslint/typescript-estree": "^8.20.0",
+    "acorn": "^8.11.3",
+    "acorn-walk": "^8.3.2",
+    "chokidar": "^3.6.0",
+    "esprima": "^4.0.1",
+    "estree-walker": "^3.0.3",
+    "fast-glob": "^3.3.2",
+    "magic-string": "^0.30.7",
+    "openai": "^5.15.0",
+    "picomatch": "^4.0.3",
+    "ts-morph": "^26.0.0"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.20.5",
+    "@types/esprima": "^4.0.6",
+    "@types/estree": "^1.0.5",
+    "@types/node": "^20.19.11",
+    "@types/source-map": "^0.5.7",
+    "eslint": "^9.17.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ]
+}

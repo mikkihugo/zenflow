@@ -212,7 +212,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
         const validationResult = this.validateWorkflowGateRequest(gateRequest);
         if (!validationResult.success) {
           throw new Error(
-            'Gate validation failed: ' + validationResult.error?.message
+            `Gate validation failed: ${  validationResult.error?.message}`
           );
         }
       }
@@ -282,41 +282,41 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     const { workflowId, stepName, businessImpact, stakeholders, dependencies } =
       context;
 
-    console.log('\n' + '='.repeat(80));
-    console.log('🔀 WORKFLOW GATE: ' + gateRequest.gateType?.toUpperCase());
+    console.log(`\n${  '='.repeat(80)}`);
+    console.log(`🔀 WORKFLOW GATE: ${  gateRequest.gateType?.toUpperCase()}`);
     console.log('='.repeat(80));
 
     // Workflow Information
-    console.log('📋 Workflow: ' + workflowId);
-    console.log('📍 Current Step: ' + stepName);
-    console.log('⚡ Business Impact: ' + businessImpact?.toUpperCase());
-    console.log('🎯 Decision Scope: ' + context.decisionScope);
+    console.log(`📋 Workflow: ${  workflowId}`);
+    console.log(`📍 Current Step: ${  stepName}`);
+    console.log(`⚡ Business Impact: ${  businessImpact?.toUpperCase()}`);
+    console.log(`🎯 Decision Scope: ${  context.decisionScope}`);
 
     // Stakeholders
     if (stakeholders.length > 0) {
-      console.log('👥 Stakeholders: ' + stakeholders.join(', '));
+      console.log(`👥 Stakeholders: ${  stakeholders.join(', ')}`);
     }
 
     // Dependencies
     if (dependencies && dependencies.length > 0) {
       console.log('🔗 Dependencies:');
-      dependencies.forEach((dep) => {
+      for (const dep of dependencies) {
         console.log(
           `  • ${dep.reference} (${dep.type}, ${dep.criticality} criticality)`
         );
-      });
+      }
     }
 
-    console.log('\n' + '-'.repeat(80));
-    console.log('❓ ' + gateRequest.question);
+    console.log(`\n${  '-'.repeat(80)}`);
+    console.log(`❓ ${  gateRequest.question}`);
     console.log('-'.repeat(80));
 
     // Options
     if (gateRequest.options && gateRequest.options.length > 0) {
       console.log('\n📝 Available Options:');
-      gateRequest.options.forEach((option, index) => {
+      for (const [index, option] of gateRequest.options.entries()) {
         console.log(`  ${index + 1}. ${option}`);
-      });
+      }
       if (gateRequest.allowCustom) {
         console.log('  0. Custom response');
       }
@@ -381,7 +381,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     // Notify about timeout
     if (this.config.timeoutConfig.notifyOnTimeout) {
       console.log(
-        '\n⏰ TIMEOUT WARNING: Gate ' + gateId + ' has exceeded its time limit.'
+        `\n⏰ TIMEOUT WARNING: Gate ${  gateId  } has exceeded its time limit.`
       );
     }
   }
@@ -399,7 +399,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     }
 
     // Clear escalation timers
-    activeGate.escalationTimers.forEach((timer) => clearTimeout(timer));
+    for (const timer of activeGate.escalationTimers) clearTimeout(timer);
 
     // Remove from active gates
     this.activeGates.delete(gateId);
@@ -590,7 +590,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     const lowerResponse = response.toLowerCase();
 
     if (urgentKeywords.some((keyword) => lowerResponse.includes(keyword))) {
-      return 'URGENT: ' + response;
+      return `URGENT: ${  response}`;
     }
 
     return response;

@@ -18,7 +18,7 @@ interface Task {
   type: string;
   description: string;
   priority: number;
-  input: any;
+  input: unknown;
   metadata: {
     userId: string;
     sessionId: string;
@@ -28,9 +28,16 @@ interface Task {
 interface TaskResult {
   id: string;
   status: 'success' | 'failure' | 'timeout';
-  result?: any;
+  result?: unknown;
   error?: string;
   duration: number;
+}
+
+interface OrchestratorDependencies {
+  terminalManager: TerminalManager;
+  memoryManager: MemoryManager;
+  coordinationManager: CoordinationManager;
+  eventBus: EventBus;
 }
 
 export class Orchestrator {
@@ -38,14 +45,20 @@ export class Orchestrator {
   private isStarted = false;
   private activeTasks = new Map<string, Promise<TaskResult>>();
 
+  private terminalManager: TerminalManager;
+  private memoryManager: MemoryManager;
+  private coordinationManager: CoordinationManager;
+  private eventBus: EventBus;
+
   constructor(
     private config: OrchestratorConfig,
-    private terminalManager: TerminalManager,
-    private memoryManager: MemoryManager,
-    private coordinationManager: CoordinationManager,
-    private eventBus: EventBus,
-    private customLogger = getLogger('Orchestrator')
+    dependencies: OrchestratorDependencies,
+    customLogger = getLogger('Orchestrator')
   ) {
+    this.terminalManager = dependencies.terminalManager;
+    this.memoryManager = dependencies.memoryManager;
+    this.coordinationManager = dependencies.coordinationManager;
+    this.eventBus = dependencies.eventBus;
     this.logger = customLogger;
   }
 
@@ -129,7 +142,7 @@ export class Orchestrator {
     task: Task,
     startTime: number
   ): Promise<TaskResult> {
-    const timeoutPromise = new Promise<TaskResult>((_, reject) => {
+    const timeoutPromise = new Promise<TaskResult>((resolve, reject) => {
       setTimeout(() => {
         reject(new Error('Task timeout'));
       }, this.config.timeout);
@@ -160,11 +173,10 @@ export class Orchestrator {
     await this.memoryManager.storeTask(task);
 
     // Coordinate with other systems
-    const coordinationResult =
-      await this.coordinationManager.coordinateTask(task);
+    await this.coordinationManager.coordinateTask(task);
 
     // Execute based on task type
-    let result: any;
+    let result: unknown;
     switch (task.type) {
       case 'neural_training':
         result = await this.executeNeuralTraining(task);
@@ -187,22 +199,22 @@ export class Orchestrator {
     };
   }
 
-  private async executeNeuralTraining(task: Task): Promise<any> {
+  private executeNeuralTraining(task: Task): Promise<unknown> {
     this.logger.info('Executing neural training', { task });
     // Neural training implementation would go here
-    return { trained: true, model: task.input.dataset };
+    return Promise.resolve({ trained: true, model: (task.input as Record<string, unknown>)?.dataset });
   }
 
-  private async executeDataProcessing(task: Task): Promise<any> {
+  private executeDataProcessing(task: Task): Promise<unknown> {
     this.logger.info('Executing data processing', { task });
     // Data processing implementation would go here
-    return { processed: true, records: task.input.recordCount || 0 };
+    return Promise.resolve({ processed: true, records: (task.input as Record<string, unknown>)?.recordCount || 0 });
   }
 
-  private async executeSystemCoordination(task: Task): Promise<any> {
+  private executeSystemCoordination(task: Task): Promise<unknown> {
     this.logger.info('Executing system coordination', { task });
     // System coordination implementation would go here
-    return { coordinated: true, systems: task.input.systems || [] };
+    return Promise.resolve({ coordinated: true, systems: (task.input as Record<string, unknown>)?.systems || [] });
   }
 
   private startHealthCheck(): void {
@@ -220,7 +232,7 @@ export class Orchestrator {
     }, this.config.healthCheckInterval);
   }
 
-  async getHealthStatus(): Promise<{ healthy: boolean; details: any }> {
+  async getHealthStatus(): Promise<{ healthy: boolean; details: unknown }> {
     const details = {
       started: this.isStarted,
       activeTasks: this.activeTasks.size,

@@ -1,7 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T03:22:43.869Z","model":"gpt-4.1","tokensUsed":3466,"contentLength":6119,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T03:23:12.847Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:24:28.383Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:24:28.414Z","contentLength":19501,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T03:24:59.988Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:25:38.828Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:25:38.854Z","contentLength":9895,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/web-data-service.ts","tier":"inference"}

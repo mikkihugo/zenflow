@@ -13,17 +13,9 @@
  * @version 2.3.0
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 
-// Use simple console logging for now instead of complex logger dependencies
-const logger = {
-  info: (msg: string, ...args: any[]) =>
-    console.log('[ProjectModeManager] ' + msg + '', ...args),
-  error: (msg: string, ...args: any[]) =>
-    console.error('[ProjectModeManager] ' + msg + '', ...args),
-  debug: (msg: string, ...args: any[]) =>
-    console.debug('[ProjectModeManager] ' + msg + '', ...args),
-};
+const logger = getLogger('project-mode-manager');
 
 /**
  * Project modes - progressive enhancement approach
@@ -139,7 +131,7 @@ export interface SchemaVersion {
  *
  * Kanban mode management with progressive enhancement capability
  */
-export class ProjectModeManager extends TypedEventBase {
+export class ProjectModeManager extends EventEmitter {
   private modeConfigs: Map<ProjectMode, ProjectModeConfig> = new Map();
   private schemaVersions: Map<string, SchemaVersion> = new Map();
   private initialized = false;

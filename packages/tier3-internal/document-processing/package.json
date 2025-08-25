@@ -1,0 +1,17 @@
+{
+  "name": "@claude-zen/document-processing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Document processing and workflow management for Claude Code Zen",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

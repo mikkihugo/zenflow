@@ -1,16 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind variants;
 
 html,
 body {
-	@apply h-full overflow-hidden;
+	@apply h-full bg-gray-50;
+	font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
 }
 
-/* modern theme */
+/* Custom font */
 @font-face {
 	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
+	src: url('/fonts/Quicksand.ttf') format('truetype');
 	font-display: swap;
+	font-weight: 300 700;
 }

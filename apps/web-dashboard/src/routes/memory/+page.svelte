@@ -392,7 +392,7 @@
 					/>
 					<textarea
 						bind:value={newKeyValue}
-						placeholder="{&quot;example&quot;: &quot;JSON value&quot;}"
+						placeholder='{"example": "JSON value"}'
 						class="textarea text-xs"
 						rows="3"
 					></textarea>

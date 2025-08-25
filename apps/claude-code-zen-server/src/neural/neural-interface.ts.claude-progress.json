@@ -1,7 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T04:04:35.890Z","model":"gpt-4.1","tokensUsed":864,"contentLength":1303,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T04:05:05.112Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T04:05:34.489Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T04:05:34.523Z","contentLength":8796,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T04:06:05.754Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T04:06:21.003Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T04:06:21.038Z","contentLength":4337,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/neural/neural-interface.ts","tier":"inference"}

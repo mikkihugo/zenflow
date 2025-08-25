@@ -7,7 +7,7 @@
 
 import * as readline from 'node:readline';
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
 
 const logger = getLogger('AGUIAdapter');
 
@@ -49,7 +49,7 @@ export interface AGUIInterface {
  * Terminal-based AGUI implementation.
  * Since @ag-ui/core is a protocol definition, we implement our own UI.
  */
-export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
+export class TerminalAGUI extends EventEmitter implements AGUIInterface {
   private rl: readline.Interface | null = null;
 
   private getReadline(): readline.Interface {
@@ -67,8 +67,8 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
     const rl = this.getReadline();
 
     // Display formatted question
-    console.log('\n' + '='.repeat(60));
-    console.log('📋 ' + question.type?.toUpperCase() + ' QUESTION');
+    console.log(`\n${  '='.repeat(60)}`);
+    console.log(`📋 ${  question.type?.toUpperCase()  } QUESTION`);
     console.log('='.repeat(60));
 
     // Show priority if set
@@ -95,14 +95,14 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
       console.log(`💡 Reason: ${question.validationReason}`);
     }
 
-    console.log('\n' + question.question);
+    console.log(`\n${  question.question}`);
 
     // Show options if available
     if (question.options && question.options.length > 0) {
       console.log('\n📝 Available Options:');
-      question.options.forEach((opt, idx) => {
+      for (const [idx, opt] of question.options.entries()) {
         console.log(`  ${idx + 1}. ${opt}`);
-      });
+      }
       if (question.allowCustom) {
         console.log(`  0. Custom response`);
       }
@@ -111,13 +111,13 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
     // Show context if available
     if (question.context && Object.keys(question.context).length > 0) {
       console.log('\n📊 Context Information:');
-      Object.entries(question.context).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(question.context)) {
         if (typeof value === 'object' && value !== null) {
           console.log(`  ${key}: ${JSON.stringify(value, null, 2)}`);
         } else {
           console.log(`  ${key}: ${value}`);
         }
-      });
+      }
     }
 
     // Get user input
@@ -146,8 +146,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
     const answers: string[] = [];
 
-    for (let i = 0; i < questions.length; i++) {
-      const question = questions[i];
+    for (const question of questions) {
       if (question) {
         const answer = await this.askQuestion(question);
         answers.push(answer);
@@ -219,7 +218,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
     console.log(`\n📋 ${title}`);
     console.log('='.repeat(Math.max(title.length + 3, 40)));
 
-    Object.entries(data).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(data)) {
       if (typeof value === 'object' && value !== null) {
         console.log(`  ${key}:`);
         console.log(
@@ -228,7 +227,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
       } else {
         console.log(`  ${key}: ${value}`);
       }
-    });
+    }
 
     console.log();
   }

@@ -1,0 +1,40 @@
+{
+  "name": "@claude-zen/file-aware-ai",
+  "version": "1.0.0",
+  "description": "File-aware AI system for claude-code-zen with multi-LLM support",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/llm-routing": "workspace:*",
+    "chokidar": "^4.0.1",
+    "diff": "^7.0.0",
+    "fast-glob": "^3.3.3",
+    "ignore": "^6.0.2",
+    "simple-git": "^3.27.0",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/diff": "^6.0.0",
+    "@types/node": "^22.17.2",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "ai",
+    "coding-assistant",
+    "file-aware",
+    "llm",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "private": true
+}

@@ -1,4 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T05:14:54.248Z","model":"gpt-4.1","tokensUsed":6948,"contentLength":13871,"file":"apps/claude-code-zen-server/src/services/project/portfolio-management.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T05:15:25.507Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/project/portfolio-management.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T05:16:19.095Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/project/portfolio-management.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T05:16:19.125Z","contentLength":15525,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/services/project/portfolio-management.ts","tier":"inference"}

@@ -14,7 +14,7 @@ import path from 'path';
 
 import {
   getConsoleReplacementLogger,
-  TypedEventBase,
+  EventEmitter,
 } from '@claude-zen/foundation';
 import type { LoggerInterface } from '@claude-zen/foundation';
 
@@ -58,7 +58,7 @@ interface SwarmCoordinatorOptions {
  * ESLint Swarm Coordinator
  * Coordinates multiple specialized ESLint fixing agents for efficient parallel processing
  */
-export class ESLintSwarmCoordinator extends TypedEventBase {
+export class ESLintSwarmCoordinator extends EventEmitter {
   private logger: LoggerInterface;
   private options: SwarmCoordinatorOptions;
   private agents: SwarmAgentConfig[];
@@ -143,14 +143,14 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
    */
   async startCoordination(): Promise<void> {
     this.logger.info('🚀 Starting ESLint Swarm Coordination');
-    this.logger.info('Project root: ' + this.options.projectRoot);
-    this.logger.info('Concurrent agents: ' + this.options.concurrentAgents);
+    this.logger.info(`Project root: ${  this.options.projectRoot}`);
+    this.logger.info(`Concurrent agents: ${  this.options.concurrentAgents}`);
 
     try {
       // 1. Discover all violations
       const violations = await this.discoverViolations();
       this.logger.info(
-        '📊 Discovered ' + violations.length + ' files with violations'
+        `📊 Discovered ${  violations.length  } files with violations`
       );
 
       // 2. Categorize violations by agent specialization
@@ -182,7 +182,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
       'json',
       '--ext',
       this.options.extensions.join(','),
-      ...this.options.excludePatterns.map((p) => '--ignore-pattern=' + p),
+      ...this.options.excludePatterns.map((p) => `--ignore-pattern=${  p}`),
       this.options.projectRoot,
     ].join(' ');
 
@@ -218,26 +218,26 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     const categorized = new Map<string, ESLintViolation[]>();
 
     // Initialize categories
-    this.agents.forEach((agent) => {
+    for (const agent of this.agents) {
       categorized.set(agent.name, []);
-    });
+    }
 
     // Categorize violations
-    violations.forEach((violation) => {
+    for (const violation of violations) {
       const agentAssigned = this.assignViolationToAgent(violation);
       const existingViolations = categorized.get(agentAssigned.name) || [];
       existingViolations.push(violation);
       categorized.set(agentAssigned.name, existingViolations);
-    });
+    }
 
     // Log categorization results
-    categorized.forEach((violations, agentName) => {
+    for (const [agentName, violations] of categorized.entries()) {
       if (violations.length > 0) {
         this.logger.info(
-          '📋 ' + agentName + ': ' + violations.length + ' files assigned'
+          `📋 ${  agentName  }: ${  violations.length  } files assigned`
         );
       }
-    });
+    }
 
     return categorized;
   }
@@ -295,7 +295,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     violations: ESLintViolation[]
   ): Promise<void> {
     this.logger.info(
-      '🤖 ' + agent.name + ' processing ' + violations.length + ' files...'
+      `🤖 ${  agent.name  } processing ${  violations.length  } files...`
     );
 
     const batchSize = agent.maxConcurrentFixes;
@@ -308,7 +308,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
       await Promise.allSettled(batchPromises);
     }
 
-    this.logger.info('✅ ' + agent.name + ' completed processing');
+    this.logger.info(`✅ ${  agent.name  } completed processing`);
   }
 
   /**
@@ -322,7 +322,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
       const fixCmd = ['npx', 'eslint', '--fix', violation.filePath].join(' ');
 
       if (this.options.dryRun) {
-        this.logger.info('[DRY RUN] Would fix: ' + violation.filePath);
+        this.logger.info(`[DRY RUN] Would fix: ${  violation.filePath}`);
         return;
       }
 
@@ -334,37 +334,37 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
         });
 
         this.activeProcesses.set(
-          agent.name + '-' + violation.filePath,
+          `${agent.name  }-${  violation.filePath}`,
           process
         );
 
         process.on('close', (code) => {
-          this.activeProcesses.delete(agent.name + '-' + violation.filePath);
+          this.activeProcesses.delete(`${agent.name  }-${  violation.filePath}`);
           if (code === 0) {
             if (this.options.verboseLogging) {
-              this.logger.debug('Fixed: ' + violation.filePath);
+              this.logger.debug(`Fixed: ${  violation.filePath}`);
             }
             resolve();
           } else {
             reject(
               new Error(
-                'ESLint fix failed for ' +
-                  violation.filePath +
-                  ' with code ' +
-                  code
+                `ESLint fix failed for ${ 
+                  violation.filePath 
+                  } with code ${ 
+                  code}`
               )
             );
           }
         });
 
         process.on('error', (error) => {
-          this.activeProcesses.delete(agent.name + '-' + violation.filePath);
+          this.activeProcesses.delete(`${agent.name  }-${  violation.filePath}`);
           reject(error);
         });
       });
     } catch (error) {
       this.logger.warn(
-        '⚠️ ' + agent.name + ' failed to fix ' + violation.filePath + ':',
+        `⚠️ ${  agent.name  } failed to fix ${  violation.filePath  }:`,
         error
       );
     }
@@ -387,26 +387,26 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
         this.logger.info('🎉 All violations have been fixed!');
       } else {
         this.logger.warn(
-          '⚠️ ' + remainingCount + ' violations remaining after fixes'
+          `⚠️ ${  remainingCount  } violations remaining after fixes`
         );
 
         // Log details about remaining violations
-        remainingViolations.forEach((violation) => {
-          violation.messages.forEach((msg) => {
+        for (const violation of remainingViolations) {
+          for (const msg of violation.messages) {
             if (this.options.verboseLogging) {
               this.logger.debug(
-                'Remaining: ' +
-                  violation.filePath +
-                  ':' +
-                  msg.line +
-                  ':' +
-                  msg.column +
-                  ' - ' +
-                  msg.ruleId
+                `Remaining: ${ 
+                  violation.filePath 
+                  }:${ 
+                  msg.line 
+                  }:${ 
+                  msg.column 
+                  } - ${ 
+                  msg.ruleId}`
               );
             }
-          });
-        });
+          }
+        }
       }
     } catch (error) {
       this.logger.error('Failed to verify results:', error);
@@ -432,7 +432,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
 
     // Kill all active processes
     for (const [key, process] of this.activeProcesses) {
-      this.logger.debug('Terminating process: ' + key);
+      this.logger.debug(`Terminating process: ${  key}`);
       process.kill('SIGTERM');
     }
 

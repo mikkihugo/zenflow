@@ -29,8 +29,7 @@ import {
   getLogger,
   Result,
   ok,
-  err,
-  UUID
+  err
 } from '@claude-zen/foundation';
 
 const logger = getLogger('ZenSwarmOrchestrator');
@@ -587,19 +586,19 @@ export class ZenOrchestratorIntegration {
   public async initialize(): Promise<Result<void, Error>> {
     if (this.initializationPromise) {
       await this.initializationPromise;
-      return this.isInitialized ? ok(undefined) : err(new Error('Initialization failed'));
+      return this.isInitialized ? ok() : err(new Error('Initialization failed'));
     }
 
     if (this.isInitialized) {
       logger.warn('⚠️ zen-orchestrator already initialized');
-      return ok(undefined);
+      return ok();
     }
 
     this.initializationPromise = this.performInitialization();
 
     try {
       await this.initializationPromise;
-      return ok(undefined);
+      return ok();
     } catch (error) {
       const errorObj = error instanceof Error ? error : new Error(String(error));
       return err(errorObj);

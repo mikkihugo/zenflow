@@ -1,16 +1,12 @@
 packages:
   - apps/*
-  - packages/foundation
-  - packages/llm-providers
-  - packages/development
-  - packages/enterprise
-  - packages/infrastructure
-  - packages/intelligence
-  - packages/operations
-  - packages/repo-analyzer
-  - packages/language-parsers
-  - packages/ai-linter
-  - packages/implementation-packages/*
+  - packages/tier1-public/core/*
+  - packages/tier1-public/facades/*
+  - packages/tier1-public/integrations/*
+  - packages/tier2-private/*
+  - packages/tier3-internal/*
+  - packages/tier4-restricted/*
+  - packages/tier5-deepcore/*
   - '!apps/*-backup'
 
 catalog:

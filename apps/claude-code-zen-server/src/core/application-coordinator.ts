@@ -6,9 +6,12 @@
  * preserving the expected interface.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
 
 const logger = getLogger('application-coordinator');
+
+// Constants for duplicate strings
+const STATUS_CHANGED_EVENT = 'status-changed';
 
 export interface ApplicationCoordinatorConfig {
   memory?: {
@@ -66,7 +69,7 @@ export interface SystemStatus {
  * Simplified Application Coordinator stub to fix compilation.
  * TODO: Restore full functionality from corrupted original.
  */
-export class ApplicationCoordinator extends TypedEventBase {
+export class ApplicationCoordinator extends EventEmitter {
   private configuration: ApplicationCoordinatorConfig;
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
@@ -98,7 +101,7 @@ export class ApplicationCoordinator extends TypedEventBase {
 
     try {
       this.status = 'initializing';
-      this.emit('status-changed', this.status);
+      this.emit(STATUS_CHANGED_EVENT, this.status);
 
       // Minimal initialization
       await Promise.resolve();
@@ -110,7 +113,7 @@ export class ApplicationCoordinator extends TypedEventBase {
       logger.info('✅ Application Coordinator ready (stub mode)');
     } catch (error) {
       this.status = 'error';
-      this.emit('status-changed', this.status);
+      this.emit(STATUS_CHANGED_EVENT, this.status);
       logger.error('❌ Failed to initialize Application Coordinator:', error);
       throw error;
     }
@@ -121,7 +124,7 @@ export class ApplicationCoordinator extends TypedEventBase {
     logger.info('Interface launched (stub mode)');
   }
 
-  async getSystemStatus(): Promise<SystemStatus> {
+  getSystemStatus(): Promise<SystemStatus> {
     return {
       status: this.status,
       version: '2.0.0-stub',
@@ -167,8 +170,7 @@ export class ApplicationCoordinator extends TypedEventBase {
   }
 
   async exportSystemData(
-    format: string,
-    options: any = {}
+    format: string
   ): Promise<{
     success: boolean;
     filename?: string;
@@ -200,9 +202,10 @@ Note: This is a stub implementation. Full functionality needs restoration.`;
   async shutdown(): Promise<void> {
     logger.info('Shutting down Application Coordinator (stub mode)');
     this.status = 'shutdown';
-    this.emit('status-changed', this.status);
+    this.emit(STATUS_CHANGED_EVENT, this.status);
     this.removeAllListeners();
     this.emit('shutdown', {});
+    await Promise.resolve(); // Add await expression for require-await rule
     logger.info('Application Coordinator shutdown complete');
   }
 

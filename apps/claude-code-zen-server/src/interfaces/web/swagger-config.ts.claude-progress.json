@@ -1,7 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T03:09:16.220Z","model":"gpt-4.1","tokensUsed":6172,"contentLength":14314,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T03:09:46.176Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:10:22.813Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:10:22.840Z","contentLength":13412,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T03:10:54.414Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:11:25.962Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:11:26.000Z","contentLength":13758,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/swagger-config.ts","tier":"inference"}

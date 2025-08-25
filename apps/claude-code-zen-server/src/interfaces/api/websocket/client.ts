@@ -8,7 +8,7 @@
  * @file Interface implementation: client.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 // Use Node.js WebSocket API when available, fallback to DOM types
 
@@ -29,7 +29,7 @@ interface WebSocketClientOptions {
  * - Connection state management
  * - Error handling and recovery
  */
-export class WebSocketClient extends TypedEventBase {
+export class WebSocketClient extends EventEmitter {
   private url: string;
   private options: WebSocketClientOptions;
   private ws: WebSocket | null = null;

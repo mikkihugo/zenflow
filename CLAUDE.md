@@ -91,51 +91,83 @@ Message 4: Update config
 
 ## 🚀 System Architecture
 
-### **3-Tier Strategic Package Architecture - PRODUCTION READY**
+### **5-Tier Strategic Package Architecture - PRODUCTION READY**
 
-claude-code-zen uses a **battle-tested 3-tier architecture** with **50+ packages** organized for maximum maintainability:
+claude-code-zen uses a **battle-tested 5-tier architecture** with **50+ packages** organized for maximum maintainability and security:
 
-#### **🏗️ 3-Tier Architecture Overview:**
+#### **🏗️ 5-Tier Architecture Overview:**
 
 ```
 📦 Tier 1: Public API (Strategic Facades + Foundation)
-├── @claude-zen/foundation       ✅ Core utilities, logging, type-safe primitives
-├── @claude-zen/llm-providers    ✅ LLM provider integrations (Claude, Gemini, Cursor, GitHub)
-├── @claude-zen/intelligence     ✅ AI/Neural coordination, brain systems  
-├── @claude-zen/enterprise       ✅ Business workflows, SAFE framework
-├── @claude-zen/operations       ✅ Performance tracking, monitoring
-├── @claude-zen/infrastructure   ✅ Database abstraction, event systems
-└── @claude-zen/development      ✅ Development tools, code analysis, repo analysis, language parsers, AI linting
+├── @claude-zen/foundation       ✅ Core utilities, logging, type-safe primitives (direct import)
+├── @claude-zen/llm-providers    ✅ LLM provider integrations (direct import)
+├── @claude-zen/repo-analyzer    ✅ Repository analysis tools (direct import)
+└── Strategic Facades (delegation only):
+    ├── @claude-zen/intelligence     ✅ AI/Neural coordination facades
+    ├── @claude-zen/enterprise       ✅ Business workflow facades
+    ├── @claude-zen/operations       ✅ Performance tracking facades
+    ├── @claude-zen/infrastructure   ✅ Database/event system facades
+    └── @claude-zen/development      ✅ Development tool facades
 
-🔒 Tier 2: Internal Implementation Packages (Private)
-├── Core: brain, database, memory, event-system, workflows
-├── Intelligence: teamwork, ai-safety, knowledge, agent-manager
-├── Infrastructure: load-balancing, system-monitoring, telemetry
-└── Enterprise: safe-framework, sparc, agui, chaos-engineering
+🔒 Tier 2: Private Implementation (Internal Business Logic)
+├── Core Systems: database, memory, event-system, service-container
+├── Infrastructure: load-balancing, system-monitoring, telemetry, otel-collector
+├── Document Intelligence: document-intelligence, documentation, exporters
+├── Language Support: language-parsers, file-aware-ai, interfaces
+└── Agent Systems: agent-monitoring, agent-registry, llm-routing
 
-🔐 Tier 3: Deep Internal Packages (Restricted Access)
-├── @claude-zen/dspy          → Only accessible via @claude-zen/brain
-├── @claude-zen/neural-ml     → Only accessible via @claude-zen/brain  
-└── @claude-zen/fact-system   → Only accessible via @claude-zen/knowledge
+🔐 Tier 3: Internal Specialized Systems
+├── Neural/AI: brain, knowledge, teamwork
+├── Enterprise: safe-framework, sparc, agui
+├── Development: code-analyzer, git-operations, architecture
+├── Analysis: beam-analyzer, codeql, document-processing
+├── Coordination: enterprise-coordination, multi-level-orchestration
+└── Advanced: singularity-coder, workflows
+
+🚫 Tier 4: Restricted Access (Special Authorization)
+├── ai-safety           → Ultra-restricted safety systems
+├── chaos-engineering   → Restricted failure simulation
+└── taskmaster         → Restricted task orchestration
+
+⛔ Tier 5: Deep Core (Ultra Restricted)
+├── dspy               → Only via @claude-zen/brain
+├── neural-ml          → Only via @claude-zen/brain
+├── fact-system        → Only via @claude-zen/knowledge
+└── memory-root        → Only via @claude-zen/memory
 ```
 
-#### **⚠️ CRITICAL: 3-Tier Architecture Rules**
+#### **⚠️ CRITICAL: 5-Tier Architecture Rules**
 
 **🎯 TIER SEPARATION PRINCIPLES:**
 - **Tier 1** (Public): Strategic facades + foundation - ONLY packages users import
-- **Tier 2** (Private): Implementation packages - Internal business logic
-- **Tier 3** (Restricted): Deep internals - Accessed only by specific Tier 2 packages
+- **Tier 2** (Private): Implementation packages - Internal business logic  
+- **Tier 3** (Internal): Specialized systems - Advanced internal functionality
+- **Tier 4** (Restricted): Special authorization required - Security-critical systems
+- **Tier 5** (Deep Core): Ultra-restricted - Accessed only by specific Tier 2/3 packages
 
-**✅ CORRECT Import Patterns:**
+**✅ CORRECT Import Patterns (TIER 1 ONLY):**
 ```typescript
-// ✅ USE STRATEGIC FACADES (Tier 1)
+// ✅ TIER 1 ONLY - These are the ONLY allowed imports
+
+// Foundation (direct import)
+import { getLogger, createContainer, getConfig } from '@claude-zen/foundation';
+
+// Direct integrations (direct import)
+import { ClaudeProvider, GeminiProvider } from '@claude-zen/llm-providers';
+import { RepoAnalyzer } from '@claude-zen/repo-analyzer';
+
+// Strategic facades (delegation only)
 import { getBrainSystem } from '@claude-zen/intelligence';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import { getLogger } from '@claude-zen/foundation';
+import { getSafeFramework } from '@claude-zen/enterprise';
+import { getPerformanceTracker } from '@claude-zen/operations';
+import { getCodeAnalyzer } from '@claude-zen/development';
 
-// ❌ NEVER IMPORT IMPLEMENTATION PACKAGES DIRECTLY  
-// import { BrainCoordinator } from '@claude-zen/brain';        // WRONG!
-// import { DatabaseProvider } from '@claude-zen/database';     // WRONG!
+// ❌ NEVER IMPORT FROM TIERS 2-5 DIRECTLY
+// import { BrainCoordinator } from '@claude-zen/brain';         // Tier 3 - FORBIDDEN!
+// import { DatabaseProvider } from '@claude-zen/database';      // Tier 2 - FORBIDDEN!
+// import { AISafety } from '@claude-zen/ai-safety';            // Tier 4 - FORBIDDEN!
+// import { DSPy } from '@claude-zen/dspy';                     // Tier 5 - FORBIDDEN!
 ```
 
 **✅ CORRECT Facade Delegation Pattern:**
@@ -152,13 +184,15 @@ export async function getBrainSystem() {
 }
 ```
 
-**🏗️ Architectural Benefits:**
+**🏗️ 5-Tier Architectural Benefits:**
 - **70%+ Code Reduction** through intelligent delegation  
 - **Zero Breaking Changes** - facades maintain stable interfaces
 - **Lazy Loading** - implementation packages loaded only when needed
 - **Graceful Degradation** - fallbacks when packages unavailable
+- **Enhanced Security** - 5-tier isolation prevents unauthorized access
+- **Simplified Dependencies** - Only Tier 1 imports needed
 
-#### **✅ CRITICAL: 3-Tier Import Guide**
+#### **✅ CRITICAL: 5-Tier Import Guide - TIER 1 ONLY**
 
 **✅ TIER 1 - Strategic Facades (USE THESE):**
 ```typescript
@@ -203,26 +237,38 @@ import { getDatabaseSystem } from '@claude-zen/infrastructure';
 import { getCodeAnalyzer, getRepoAnalyzer, getAILinter } from '@claude-zen/development';
 ```
 
-**❌ TIER 2 - Implementation Packages (INTERNAL ONLY):**
+**❌ TIER 2-5 - NEVER IMPORT THESE DIRECTLY:**
 ```typescript
-// ❌ NEVER IMPORT THESE DIRECTLY - They are private/restricted
-// import { BrainCoordinator } from '@claude-zen/brain';           
-// import { WorkflowEngine } from '@claude-zen/workflows';         
-// import { DatabaseProvider } from '@claude-zen/database';        
-// import { EventBus } from '@claude-zen/event-system';           
+// ❌ TIER 2 - Private Implementation (FORBIDDEN)
+// import { DatabaseProvider } from '@claude-zen/database';
+// import { EventBus } from '@claude-zen/event-system';
+// import { MemoryManager } from '@claude-zen/memory';
+// import { LoadBalancer } from '@claude-zen/load-balancing';
+// import { TelemetryCollector } from '@claude-zen/telemetry';
+
+// ❌ TIER 3 - Internal Specialized (FORBIDDEN)
+// import { BrainCoordinator } from '@claude-zen/brain';
+// import { KnowledgeBase } from '@claude-zen/knowledge';
 // import { SafeFramework } from '@claude-zen/safe-framework';
-// import { RepoAnalyzer } from '@claude-zen/repo-analyzer';       // Use development.getRepoAnalyzer()
-// import { LanguageParser } from '@claude-zen/language-parsers';  // Use development.getLanguageParsers() 
-// import { AILinter } from '@claude-zen/ai-linter';               // Use development.getAILinter()
+// import { SPARCEngine } from '@claude-zen/sparc';
+// import { CodeAnalyzer } from '@claude-zen/code-analyzer';
+
+// ❌ TIER 4 - Restricted Access (FORBIDDEN)
+// import { AISafety } from '@claude-zen/ai-safety';
+// import { ChaosEngine } from '@claude-zen/chaos-engineering';
+// import { TaskMaster } from '@claude-zen/taskmaster';
+
+// ❌ TIER 5 - Deep Core Ultra Restricted (FORBIDDEN)
+// import { DSPy } from '@claude-zen/dspy';
+// import { NeuralML } from '@claude-zen/neural-ml';
+// import { FactSystem } from '@claude-zen/fact-system';
+// import { MemoryRoot } from '@claude-zen/memory-root';
 ```
 
-**🔐 TIER 3 - Deep Internal Packages (ULTRA RESTRICTED):**
-```typescript
-// 🔐 ONLY specific packages can access these:
-// @claude-zen/dspy         → ONLY via @claude-zen/brain
-// @claude-zen/neural-ml    → ONLY via @claude-zen/brain  
-// @claude-zen/fact-system  → ONLY via @claude-zen/knowledge
-```
+**🎯 KEY PRINCIPLE: TIER 1 ONLY**
+- ✅ **Import**: Only Tier 1 packages (foundation, facades, direct integrations)
+- ❌ **Never**: Import from Tiers 2-5 directly
+- 🏗️ **Access**: Lower tiers accessed via Tier 1 facades only
 
 **🚫 FORBIDDEN - Direct Utility Imports (USE FOUNDATION INSTEAD):**
 ```typescript
@@ -247,13 +293,15 @@ pnpm validate:architecture
 pnpm run validate:architecture
 ```
 
-#### **🎯 Strategic Facade Benefits:**
+#### **🎯 5-Tier Strategic Benefits:**
 - **70%+ Code Reduction** through intelligent delegation
 - **Battle-Tested Logic** via proven package implementations  
 - **Lazy Loading** for optimal performance
 - **Type Safety** with comprehensive TypeScript support
 - **Zero Breaking Changes** through facade compatibility layers
 - **Professional Patterns** matching enterprise architecture standards
+- **Security Isolation** through 5-tier access control
+- **Dependency Simplification** - import only from Tier 1
 
 ### **Internal Coordination System**
 - **Technology**: TypeScript with comprehensive event system and strategic facades

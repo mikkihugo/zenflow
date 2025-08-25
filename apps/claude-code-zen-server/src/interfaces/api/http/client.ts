@@ -133,9 +133,7 @@ export class APIClient {
     // Add response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
-      (error) => {
-        return Promise.reject(this.handleAPIError(error));
-      }
+      (error) => Promise.reject(this.handleAPIError(error))
     );
   }
 

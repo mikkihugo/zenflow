@@ -1,7 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T03:36:58.253Z","model":"gpt-4.1","tokensUsed":3133,"contentLength":5832,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T03:37:28.568Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:38:23.005Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:38:23.030Z","contentLength":16268,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T03:38:54.266Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T03:39:19.567Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T03:39:19.597Z","contentLength":7106,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/web/web-socket-coordinator.ts","tier":"inference"}

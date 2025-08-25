@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+/* eslint-disable no-console */
 /**
  * @fileoverview Claude Code Zen Auth Commands
  *
@@ -9,6 +9,7 @@
 
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
+import fetch from 'node-fetch';
 import { homedir } from 'os';
 import { join } from 'path';
 import { createInterface } from 'readline';
@@ -34,17 +35,19 @@ interface TokenResponse {
 const GITHUB_CLIENT_ID = '01ab8ac9400c4e429b23'; // VSCode client ID for Copilot
 const DEVICE_CODE_URL = 'https://github.com/login/device/code';
 const ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token';
+const CONFIG_PATH = '.claude-zen';
+const TOKEN_FILENAME = 'copilot-token.json';
 
 // Simple config reader that uses foundation logging
 async function getAuthConfig(): Promise<{ useProjectConfig?: boolean }> {
   // Check for project-local config first
-  const projectConfigPath = join(process.cwd(), '.claude-zen', 'config.json');
+  const projectConfigPath = join(process.cwd(), CONFIG_PATH, 'config.json');
   try {
     const projectConfig = JSON.parse(await fs.readFile(projectConfigPath, 'utf8'));
     return projectConfig.auth || {};
   } catch {
     // Fall back to user config
-    const userConfigPath = join(homedir(), '.claude-zen', 'config.json');
+    const userConfigPath = join(homedir(), CONFIG_PATH, 'config.json');
     try {
       const userConfig = JSON.parse(await fs.readFile(userConfigPath, 'utf8'));
       return userConfig.auth || {};
@@ -61,11 +64,11 @@ async function ensureClaudeZenDir(): Promise<string> {
   let claudeZenDir: string;
   if (authConfig.useProjectConfig) {
     // Store in project directory if configured
-    claudeZenDir = join(process.cwd(), '.claude-zen');
+    claudeZenDir = join(process.cwd(), CONFIG_PATH);
     logger.info('Using project-local config directory');
   } else {
     // Default to user home directory
-    claudeZenDir = join(homedir(), '.claude-zen');
+    claudeZenDir = join(homedir(), CONFIG_PATH);
     logger.info('Using user home config directory');
   }
 
@@ -82,7 +85,9 @@ async function initiateDeviceFlow(): Promise<DeviceFlowResponse> {
   const response = await fetch(DEVICE_CODE_URL, {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Accept': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
@@ -92,7 +97,7 @@ async function initiateDeviceFlow(): Promise<DeviceFlowResponse> {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to initiate device flow: ' + response.statusText);
+    throw new Error(`Failed to initiate device flow: ${  response.statusText}`);
   }
 
   return await response.json();
@@ -108,7 +113,9 @@ async function pollForToken(deviceCode: string, interval: number): Promise<Token
     const response = await fetch(ACCESS_TOKEN_URL, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'Accept': 'application/json',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
@@ -119,7 +126,7 @@ async function pollForToken(deviceCode: string, interval: number): Promise<Token
     });
 
     if (!response.ok) {
-      throw new Error('Token request failed: ' + response.statusText);
+      throw new Error(`Token request failed: ${  response.statusText}`);
     }
 
     const data = await response.json();
@@ -145,7 +152,7 @@ async function pollForToken(deviceCode: string, interval: number): Promise<Token
       throw new Error('Access denied by user.');
     }
 
-    throw new Error('OAuth error: ' + (data.error_description || data.error));
+    throw new Error(`OAuth error: ${  data.error_description || data.error}`);
   }
 
   throw new Error('Authentication timeout. Please try again.');
@@ -153,7 +160,7 @@ async function pollForToken(deviceCode: string, interval: number): Promise<Token
 
 async function saveToken(token: string): Promise<void> {
   const claudeZenDir = await ensureClaudeZenDir();
-  const tokenPath = join(claudeZenDir, 'copilot-token.json');
+  const tokenPath = join(claudeZenDir, TOKEN_FILENAME);
 
   const tokenData = {
     access_token: token,
@@ -164,8 +171,8 @@ async function saveToken(token: string): Promise<void> {
   };
 
   await fs.writeFile(tokenPath, JSON.stringify(tokenData, null, 2));
-  console.log('✅ Token saved to: ' + tokenPath);
-  logger.info('GitHub Copilot token saved successfully to ' + tokenPath);
+  console.log(`✅ Token saved to: ${  tokenPath}`);
+  logger.info(`GitHub Copilot token saved successfully to ${  tokenPath}`);
 }
 
 function promptUser(message: string): Promise<void> {
@@ -200,7 +207,7 @@ async function copyToClipboard(text: string): Promise<void> {
         await new Promise<void>((resolve, reject) => {
           proc.on('exit', (code) => {
             if (code === 0) resolve();
-            else reject(new Error('Exit code ' + code));
+            else reject(new Error(`Exit code ${  code}`));
           });
           proc.on('error', reject);
         });
@@ -208,7 +215,7 @@ async function copyToClipboard(text: string): Promise<void> {
         logger.debug('Successfully copied to clipboard using', cmd[0]);
         return;
       } catch (error) {
-        logger.debug('Failed to use ' + cmd[0] + ':', error);
+        logger.debug(`Failed to use ${  cmd[0]  }:`, error);
         continue;
       }
     }
@@ -230,9 +237,9 @@ export async function authLogin(): Promise<void> {
     // Step 2: Display user code and instructions
     console.log('\n🔐 GitHub Copilot Authentication');
     console.log('═'.repeat(50));
-    console.log('\n📋 Your verification code: ' + deviceFlow.user_code);
-    console.log('🌐 Visit: ' + deviceFlow.verification_uri);
-    console.log('⏰ Code expires in ' + Math.floor(deviceFlow.expires_in / 60) + ' minutes\n');
+    console.log(`\n📋 Your verification code: ${  deviceFlow.user_code}`);
+    console.log(`🌐 Visit: ${  deviceFlow.verification_uri}`);
+    console.log(`⏰ Code expires in ${  Math.floor(deviceFlow.expires_in / 60)  } minutes\n`);
 
     // Try to copy code to clipboard
     await copyToClipboard(deviceFlow.user_code);
@@ -258,16 +265,16 @@ export async function authLogin(): Promise<void> {
 export async function authStatus(): Promise<void> {
   try {
     const claudeZenDir = await ensureClaudeZenDir();
-    const tokenPath = join(claudeZenDir, 'copilot-token.json');
+    const tokenPath = join(claudeZenDir, TOKEN_FILENAME);
 
     try {
       const tokenData = JSON.parse(await fs.readFile(tokenPath, 'utf8'));
       console.log('\n🔐 Authentication Status');
       console.log('═'.repeat(30));
       console.log('✅ Authenticated: Yes');
-      console.log('📅 Token created: ' + tokenData.created_at);
-      console.log('📍 Token location: ' + tokenPath);
-      console.log('🔑 Source: ' + tokenData.source);
+      console.log(`📅 Token created: ${  tokenData.created_at}`);
+      console.log(`📍 Token location: ${  tokenPath}`);
+      console.log(`🔑 Source: ${  tokenData.source}`);
     } catch {
       console.log('\n🔐 Authentication Status');
       console.log('═'.repeat(30));
@@ -283,7 +290,7 @@ export async function authStatus(): Promise<void> {
 export async function authLogout(): Promise<void> {
   try {
     const claudeZenDir = await ensureClaudeZenDir();
-    const tokenPath = join(claudeZenDir, 'copilot-token.json');
+    const tokenPath = join(claudeZenDir, TOKEN_FILENAME);
 
     try {
       await fs.unlink(tokenPath);
@@ -335,7 +342,7 @@ Examples:
 }
 
 // Only run main if this file is executed directly
-if (import.meta.url === 'file://' + process.argv[1]) {
+if (import.meta.url === `file://${  process.argv[1]}`) {
   main().catch((error) => {
     logger.error('Command failed:', error);
     process.exit(1);

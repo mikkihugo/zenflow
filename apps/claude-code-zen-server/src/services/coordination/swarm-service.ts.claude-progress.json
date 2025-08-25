@@ -1,3 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T04:13:44.376Z","model":"gpt-4.1","tokensUsed":10240,"contentLength":21918,"file":"apps/claude-code-zen-server/src/services/coordination/swarm-service.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T04:14:14.898Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/coordination/swarm-service.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T04:16:16.778Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/coordination/swarm-service.ts","tier":"inference"}

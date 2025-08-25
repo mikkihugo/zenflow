@@ -1,6 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T00:47:19.420Z","model":"gpt-4.1","tokensUsed":11383,"contentLength":25562,"file":"apps/claude-code-zen-server/src/interfaces/services/adapters/data-service-factory.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T00:47:48.110Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/services/adapters/data-service-factory.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T00:49:47.919Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/interfaces/services/adapters/data-service-factory.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T00:49:55.369Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/services/adapters/data-service-factory.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T00:49:55.399Z","contentLength":26388,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/interfaces/services/adapters/data-service-factory.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T00:51:50.345Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/interfaces/services/adapters/data-service-factory.ts","tier":"inference"}

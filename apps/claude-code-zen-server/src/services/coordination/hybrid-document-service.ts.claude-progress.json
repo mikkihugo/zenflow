@@ -1,4 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T04:10:42.387Z","model":"gpt-4.1","tokensUsed":8357,"contentLength":18359,"file":"apps/claude-code-zen-server/src/services/coordination/hybrid-document-service.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T04:11:13.405Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"apps/claude-code-zen-server/src/services/coordination/hybrid-document-service.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T04:12:30.058Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"apps/claude-code-zen-server/src/services/coordination/hybrid-document-service.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T04:12:30.089Z","contentLength":17801,"hasToolUse":false,"messageCount":3,"file":"apps/claude-code-zen-server/src/services/coordination/hybrid-document-service.ts","tier":"inference"}
