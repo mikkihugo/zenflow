@@ -66,6 +66,7 @@ packages/private-packages/*/src/rust/target/
 .env
 .env.*
 .mcp.json
+.mise.toml
 node_modules
 
 # IDE and system files
