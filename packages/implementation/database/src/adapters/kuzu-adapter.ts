@@ -87,7 +87,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       }
       return { reason: error.message, recoverable: false };
     }
-    return { reason: 'Unknown error', recoverable: false };'
+    return { reason: 'Unknown error', recoverable: false };
   }
 
   private async initializeKuzu(): Promise<void> {
