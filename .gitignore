@@ -199,6 +199,18 @@ build-*.md
 clippy_output.txt
 coordination-log.txt
 
+# OpenTelemetry data and monitoring
+otel-data/
+apps/*/otel-data/
+
+# Development script logs
+failed-files.log
+attempt-tracker.log
+dev-runner.log
+
+# NPM test directories
+npm-test/
+
 # Docker files (not used)
 Dockerfile*
 docker-compose*.yml

@@ -65,7 +65,7 @@ export class AvatarOptimizer extends Teleprompter {
      */
     async compile(student, config) {
         const { trainset } = config;
-        let best_actor = this._deepcopy(student);
+        const best_actor = this._deepcopy(student);
         let best_score = this.optimize_for === 'max' ? -999 : 999;
         for (let i = 0; i < this.max_iters; i++) {
             console.log('='.repeat(20));

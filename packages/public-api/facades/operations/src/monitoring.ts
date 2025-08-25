@@ -437,10 +437,10 @@ export class TelemetryManager {
 export const monitoringSystem = {
   getAccess: getMonitoringSystemAccess,
   getFacade: getMonitoringFacade,
-  getObservabilityFramework: getObservabilityFramework,
-  getTelemetryCollector: getTelemetryCollector,
-  getMetricsAggregator: getMetricsAggregator,
-  getHealthChecker: getHealthChecker,
+  getObservabilityFramework,
+  getTelemetryCollector,
+  getMetricsAggregator,
+  getHealthChecker,
 };
 
 // Additional facade functions for compatibility with legacy usage patterns

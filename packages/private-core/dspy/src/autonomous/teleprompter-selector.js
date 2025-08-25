@@ -460,7 +460,7 @@ Description: ${task.description}
     async enhancePerformanceEstimate(variant, task) {
         // Use historical data and task characteristics to refine estimates
         const history = this.performanceHistory.get(variant.name);
-        let enhanced = { ...variant.estimatedPerformance };
+        const enhanced = { ...variant.estimatedPerformance };
         if (history) {
             // Adjust based on historical performance
             enhanced.accuracy.mean =

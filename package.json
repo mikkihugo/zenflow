@@ -13,7 +13,10 @@
     "apps/claude-code-zen-server",
     "apps/web-dashboard",
     "packages/public-api/core/*",
-    "packages/public-api/facades/*"
+    "packages/public-api/facades/*",
+    "packages/implementation/*",
+    "packages/enterprise/*",
+    "packages/private-core/*"
   ],
   "scripts": {
     "start": "pnpm --filter @claude-zen/server start",
@@ -60,7 +63,6 @@
     "@ag-ui/core": "^0.0.36",
     "@anthropic-ai/claude-code": "^1.0.89",
     "@anthropic-ai/sdk": "^0.60.0",
-    "@claude-zen/agui": "workspace:*",
     "@floating-ui/dom": "^1.7.4",
     "@godaddy/terminus": "^4.12.1",
     "@lancedb/lancedb": "^0.21.3",

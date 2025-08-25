@@ -6,12 +6,10 @@
  * preserving the expected interface.
  */
 
-import { createSafeFrameworkAgentRegistry } from '@claude-zen/enterprise';
 import {
   getLogger,
   EventEmitter,
 } from '@claude-zen/foundation';
-import { getBrainSystem } from '@claude-zen/intelligence';
 // DocumentationManager, ExportSystem, InterfaceManager moved - using fallbacks
 import { getTaskMasterService, type TaskMasterService } from '../services/taskmaster/taskmaster-service';
 

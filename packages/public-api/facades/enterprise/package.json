@@ -55,7 +55,6 @@
     "@eslint/js": "^9.33.0"
   },
   "peerDependencies": {
-    "@claude-zen/agui": "workspace:*",
     "@claude-zen/knowledge": "workspace:*",
     "@claude-zen/safe-framework": "workspace:*",
     "@claude-zen/sparc": "workspace:*",
@@ -69,9 +68,6 @@
       "optional": false
     },
     "@claude-zen/teamwork": {
-      "optional": true
-    },
-    "@claude-zen/agui": {
       "optional": true
     },
     "@claude-zen/knowledge": {

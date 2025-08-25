@@ -101,7 +101,7 @@ export function createPerformanceChart(data: {
           label: 'CPU Usage (%)',
           data: data.cpu,
           borderColor: chartTheme.colors.primary,
-          backgroundColor: chartTheme.colors.primary + '20',
+          backgroundColor: `${chartTheme.colors.primary  }20`,
           tension: 0.4,
           fill: false,
         },
@@ -109,7 +109,7 @@ export function createPerformanceChart(data: {
           label: 'Memory Usage (%)',
           data: data.memory,
           borderColor: chartTheme.colors.secondary,
-          backgroundColor: chartTheme.colors.secondary + '20',
+          backgroundColor: `${chartTheme.colors.secondary  }20`,
           tension: 0.4,
           fill: false,
         }
@@ -125,8 +125,8 @@ export function createPerformanceChart(data: {
           max: 100,
           ticks: {
             ...baseChartOptions.scales?.y?.ticks,
-            callback: function(value) {
-              return value + '%';
+            callback(value) {
+              return `${value  }%`;
             }
           }
         }
@@ -208,7 +208,7 @@ export function createTaskTrendChart(data: {
           label: 'Completed',
           data: data.completed,
           borderColor: chartTheme.colors.success,
-          backgroundColor: chartTheme.colors.success + '10',
+          backgroundColor: `${chartTheme.colors.success  }10`,
           fill: 'origin',
           tension: 0.4,
         },
@@ -216,7 +216,7 @@ export function createTaskTrendChart(data: {
           label: 'In Progress',
           data: data.inProgress,
           borderColor: chartTheme.colors.info,
-          backgroundColor: chartTheme.colors.info + '10',
+          backgroundColor: `${chartTheme.colors.info  }10`,
           fill: '-1',
           tension: 0.4,
         },
@@ -224,7 +224,7 @@ export function createTaskTrendChart(data: {
           label: 'Pending',
           data: data.pending,
           borderColor: chartTheme.colors.warning,
-          backgroundColor: chartTheme.colors.warning + '10',
+          backgroundColor: `${chartTheme.colors.warning  }10`,
           fill: '-1',
           tension: 0.4,
         }
@@ -271,7 +271,7 @@ export function createRealTimeChart(
         label: 'CPU Usage',
         data: [],
         borderColor: chartTheme.colors.primary,
-        backgroundColor: chartTheme.colors.primary + '10',
+        backgroundColor: `${chartTheme.colors.primary  }10`,
         tension: 0.4,
         fill: false,
       },
@@ -279,7 +279,7 @@ export function createRealTimeChart(
         label: 'Memory Usage',
         data: [],
         borderColor: chartTheme.colors.secondary,
-        backgroundColor: chartTheme.colors.secondary + '10',
+        backgroundColor: `${chartTheme.colors.secondary  }10`,
         tension: 0.4,
         fill: false,
       }
@@ -327,18 +327,18 @@ export function createRealTimeChart(
     chartData.labels.push(label);
 
     // Add data points to each dataset
-    values.forEach((value, index) => {
+    for (const [index, value] of values.entries()) {
       if (chartData.datasets[index]) {
         chartData.datasets[index].data.push(value);
       }
-    });
+    }
 
     // Remove old data points if we exceed max
     if (chartData.labels.length > maxDataPoints) {
       chartData.labels = chartData.labels.slice(-maxDataPoints);
-      chartData.datasets.forEach(dataset => {
+      for (const dataset of chartData.datasets) {
         dataset.data = dataset.data.slice(-maxDataPoints);
-      });
+      }
     }
   };
 

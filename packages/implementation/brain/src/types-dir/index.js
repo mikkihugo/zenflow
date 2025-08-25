@@ -4,9 +4,9 @@
  *
  * Central export point for all neural system types and utilities.
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+const __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
+    let desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
       desc = { enumerable: true, get: function() { return m[k]; } };
     }
@@ -15,13 +15,13 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+const __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (const p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // DSPy types - optional import to avoid circular dependencies
 try {
-    var dspy = require('@claude-zen/dspy');
+    const dspy = require('@claude-zen/dspy');
     // Export types only if dspy is available
     if (dspy) {
         module.exports.DSPyExample = dspy.Example;

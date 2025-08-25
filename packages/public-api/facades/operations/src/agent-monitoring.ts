@@ -469,10 +469,10 @@ export function createAgentMonitor() {
 // Professional agent monitoring object with proper naming (matches Storage/Telemetry patterns)
 export const agentMonitoringSystem = {
   getAccess: getAgentMonitoringSystemAccess,
-  getIntelligenceSystem: getIntelligenceSystem,
-  getIntelligenceFactory: getIntelligenceFactory,
-  getPerformanceTracker: getPerformanceTracker,
-  getTaskPredictor: getTaskPredictor,
+  getIntelligenceSystem,
+  getIntelligenceFactory,
+  getPerformanceTracker,
+  getTaskPredictor,
   getHealthMonitor: getAgentHealthMonitor,
 };
 

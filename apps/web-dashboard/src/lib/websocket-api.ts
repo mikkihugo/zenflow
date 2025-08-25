@@ -83,7 +83,7 @@ export class WebSocketAPIClient {
       }
     } else if (message.type === 'event') {
       const handlers = this.eventHandlers.get(message.action) || [];
-      handlers.forEach(handler => handler(message.data));
+      for (const handler of handlers) handler(message.data);
     }
   }
 
@@ -105,7 +105,7 @@ export class WebSocketAPIClient {
   }
 
   private notifyConnectionHandlers(connected: boolean): void {
-    this.connectionHandlers.forEach(handler => handler(connected));
+    for (const handler of this.connectionHandlers) handler(connected);
   }
 
   private generateId(): string {

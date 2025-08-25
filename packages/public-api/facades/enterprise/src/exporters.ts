@@ -173,7 +173,7 @@ export class ExportManager {
 // Professional naming patterns - matches expected interface
 export const exportersSystem = {
   getManager: getExportManager,
-  getExporters: getExporters,
+  getExporters,
 };
 
 // Additional exports for compatibility

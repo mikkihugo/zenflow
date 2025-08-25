@@ -22,14 +22,14 @@ var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            for (const p in s) if (Object.prototype.hasOwnProperty.call(s, p))
                 t[p] = s[p];
         }
         return t;
     };
     return __assign.apply(this, arguments);
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+const __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -38,8 +38,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+const __generator = (this && this.__generator) || function (thisArg, body) {
+    let _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
     return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
@@ -65,7 +65,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+const __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
             if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -77,27 +77,27 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.multiSwarmABTesting = exports.MultiSwarmABTesting = void 0;
 exports.quickABTest = quickABTest;
-var foundation_1 = require("@claude-zen/foundation");
-var nanoid_1 = require("nanoid");
-var coding_principles_researcher_1 = require("./coding-principles-researcher");
-var intelligent_prompt_generator_1 = require("./intelligent-prompt-generator");
-var logger = (0, foundation_1.getLogger)('multi-swarm-ab-testing');
+const foundation_1 = require("@claude-zen/foundation");
+const nanoid_1 = require("nanoid");
+const coding_principles_researcher_1 = require("./coding-principles-researcher");
+const intelligent_prompt_generator_1 = require("./intelligent-prompt-generator");
+const logger = (0, foundation_1.getLogger)('multi-swarm-ab-testing');
 /**
  * Multi-Swarm A/B Testing System
  *
  * Orchestrates parallel execution of multiple swarm strategies to identify
  * optimal approaches through statistical comparison and analysis.
  */
-var MultiSwarmABTesting = /** @class */ (function () {
+const MultiSwarmABTesting = /** @class */ (function () {
     function MultiSwarmABTesting(codingPrinciplesResearcher, promptGenerator) {
-        var _this = this;
+        const _this = this;
         this.testHistory = [];
         if (codingPrinciplesResearcher) {
             this.codingPrinciplesResearcher = codingPrinciplesResearcher;
         }
         else {
             // Create a placeholder DSPyLLMBridge for initialization
-            var dspyBridge = {
+            const dspyBridge = {
                 initialize: function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
                     return [2 /*return*/];
                 }); }); },
@@ -114,8 +114,8 @@ var MultiSwarmABTesting = /** @class */ (function () {
      */
     MultiSwarmABTesting.prototype.executeABTest = function (taskDescription_1, strategies_1) {
         return __awaiter(this, arguments, void 0, function (taskDescription, strategies, options) {
-            var testId, startTime, worktreePaths, results, _a, comparison, insights, endTime, testResult, error_1;
-            var _b, _c;
+            let testId, startTime, worktreePaths, results, _a, comparison, insights, endTime, testResult, error_1;
+            let _b, _c;
             if (options === void 0) { options = {}; }
             return __generator(this, function (_d) {
                 switch (_d.label) {
@@ -320,12 +320,12 @@ var MultiSwarmABTesting = /** @class */ (function () {
             };
         }
         // Analyze historical performance
-        var relevantTests = this.testHistory.filter(function (test) {
+        const relevantTests = this.testHistory.filter(function (test) {
             return test.description.toLowerCase().includes(taskType.toLowerCase());
         });
         if (relevantTests.length === 0) {
-            var allWinners = this.testHistory.map(function (test) { return test.comparison.winner; });
-            var mostSuccessful = this.findMostSuccessfulStrategy(allWinners);
+            const allWinners = this.testHistory.map(function (test) { return test.comparison.winner; });
+            const mostSuccessful = this.findMostSuccessfulStrategy(allWinners);
             return {
                 recommendedStrategy: mostSuccessful,
                 confidence: 0.3,
@@ -336,9 +336,9 @@ var MultiSwarmABTesting = /** @class */ (function () {
                 ]
             };
         }
-        var winners = relevantTests.map(function (test) { return test.comparison.winner; });
-        var recommended = this.findMostSuccessfulStrategy(winners);
-        var successRate = winners.filter(function (w) { return w.id === (recommended === null || recommended === void 0 ? void 0 : recommended.id); }).length / winners.length;
+        const winners = relevantTests.map(function (test) { return test.comparison.winner; });
+        const recommended = this.findMostSuccessfulStrategy(winners);
+        const successRate = winners.filter(function (w) { return w.id === (recommended === null || recommended === void 0 ? void 0 : recommended.id); }).length / winners.length;
         return {
             recommendedStrategy: recommended,
             confidence: successRate,
@@ -355,8 +355,8 @@ var MultiSwarmABTesting = /** @class */ (function () {
      */
     MultiSwarmABTesting.prototype.prepareGitWorktrees = function (strategies, gitConfig) {
         return __awaiter(this, void 0, void 0, function () {
-            var worktreePaths, maxWorktrees, baseBranch, branchPrefix, cleanupAfterTest, strategiesToProcess, _i, strategiesToProcess_1, strategy, branchName, worktreePath;
-            var _a;
+            let worktreePaths, maxWorktrees, baseBranch, branchPrefix, cleanupAfterTest, strategiesToProcess, _i, strategiesToProcess_1, strategy, branchName, worktreePath;
+            let _a;
             return __generator(this, function (_b) {
                 worktreePaths = {};
                 if (!(gitConfig === null || gitConfig === void 0 ? void 0 : gitConfig.useGitWorktrees)) {
@@ -411,8 +411,8 @@ var MultiSwarmABTesting = /** @class */ (function () {
     };
     MultiSwarmABTesting.prototype.executeStrategiesParallel = function (taskDescription, strategies, worktreePaths, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var promises;
-            var _this = this;
+            let promises;
+            const _this = this;
             return __generator(this, function (_a) {
                 logger.info("\u26A1 Executing ".concat(strategies.length, " strategies in parallel..."));
                 promises = strategies.map(function (strategy) {
@@ -424,7 +424,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
     };
     MultiSwarmABTesting.prototype.executeStrategiesSequential = function (taskDescription, strategies, worktreePaths, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var enableProgressLogging, delayBetweenStrategies, enableContinueOnFailure, results, i, strategy, result, error_2, failureResult;
+            let enableProgressLogging, delayBetweenStrategies, enableContinueOnFailure, results, i, strategy, result, error_2, failureResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -511,7 +511,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
     };
     MultiSwarmABTesting.prototype.executeStrategy = function (taskDescription_1, strategy_1, worktreePath_1) {
         return __awaiter(this, arguments, void 0, function (taskDescription, strategy, worktreePath, options) {
-            var startTime, enableVerboseLogging, timeoutMs, retryCount, lastError, _loop_1, this_1, attempt, state_1, duration;
+            let startTime, enableVerboseLogging, timeoutMs, retryCount, lastError, _loop_1, this_1, attempt, state_1, duration;
             if (options === void 0) { options = {}; }
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -526,7 +526,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                         }
                         lastError = null;
                         _loop_1 = function (attempt) {
-                            var prompt_1, executionResult, duration_1, error_3, retryDelay_1;
+                            let prompt_1, executionResult, duration_1, error_3, retryDelay_1;
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
@@ -636,8 +636,8 @@ var MultiSwarmABTesting = /** @class */ (function () {
     };
     MultiSwarmABTesting.prototype.generateStrategyPrompt = function (taskDescription, strategy) {
         return __awaiter(this, void 0, void 0, function () {
-            var adaptivePrinciples;
-            var _a, _b;
+            let adaptivePrinciples;
+            let _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -658,7 +658,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
     };
     MultiSwarmABTesting.prototype.simulateSwarmExecution = function (strategy_1, prompt_2, worktreePath_1) {
         return __awaiter(this, arguments, void 0, function (strategy, prompt, worktreePath, options) {
-            var qualityBoost, speedMultiplier, enableDetailedMetrics, baseQuality, topologyMultiplier, agentMultiplier, qualityScore, baseDelay, adjustedDelay;
+            let qualityBoost, speedMultiplier, enableDetailedMetrics, baseQuality, topologyMultiplier, agentMultiplier, qualityScore, baseDelay, adjustedDelay;
             if (options === void 0) { options = {}; }
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -725,25 +725,25 @@ var MultiSwarmABTesting = /** @class */ (function () {
         }
     };
     MultiSwarmABTesting.prototype.analyzeResults = function (results) {
-        var successfulResults = results.filter(function (r) { return r.success; });
+        const successfulResults = results.filter(function (r) { return r.success; });
         if (successfulResults.length === 0) {
             throw new Error('No successful strategy executions to compare');
         }
         // Find winner based on overall score
-        var winner = successfulResults.reduce(function (best, current) {
+        const winner = successfulResults.reduce(function (best, current) {
             return current.qualityMetrics.overallScore > best.qualityMetrics.overallScore ? current : best;
         });
         // Calculate confidence based on score difference
-        var scores = successfulResults.map(function (r) { return r.qualityMetrics.overallScore; });
-        var avgScore = scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length;
-        var scoreDiff = winner.qualityMetrics.overallScore - avgScore;
-        var confidence = Math.min(1, scoreDiff / 20); // Normalize to 0-1
+        const scores = successfulResults.map(function (r) { return r.qualityMetrics.overallScore; });
+        const avgScore = scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length;
+        const scoreDiff = winner.qualityMetrics.overallScore - avgScore;
+        const confidence = Math.min(1, scoreDiff / 20); // Normalize to 0-1
         // Determine statistical significance
-        var significance = confidence > 0.7 ? 'high' :
+        const significance = confidence > 0.7 ? 'high' :
             confidence > 0.4 ? 'medium' :
                 confidence > 0.1 ? 'low' : 'none';
         // Calculate performance deltas
-        var performanceDelta = {};
+        const performanceDelta = {};
         successfulResults.forEach(function (result) {
             performanceDelta[result.strategy.id] =
                 result.qualityMetrics.overallScore - winner.qualityMetrics.overallScore;
@@ -756,7 +756,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
         };
     };
     MultiSwarmABTesting.prototype.generateInsights = function (results, comparison) {
-        var insights = [];
+        const insights = [];
         // Add comparison-specific insights based on winner and confidence
         if (comparison.winner) {
             insights.push("\uD83C\uDFC6 Winner: ".concat(comparison.winner.name, " with ").concat(comparison.confidence.toFixed(1), "% confidence"));
@@ -767,7 +767,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
                 insights.push("\u26A0\uFE0F  Low statistical significance (".concat(comparison.significance, ") - results may be inconclusive"));
             }
             // Find the winner's performance delta
-            var winnerDelta = comparison.performanceDelta[comparison.winner.id];
+            const winnerDelta = comparison.performanceDelta[comparison.winner.id];
             if (winnerDelta && winnerDelta > 10) {
                 insights.push("\u26A1 Significant performance advantage: ".concat(winnerDelta.toFixed(1), "% improvement"));
             }
@@ -776,33 +776,33 @@ var MultiSwarmABTesting = /** @class */ (function () {
             }
         }
         // Model performance insights
-        var modelPerformance = results
+        const modelPerformance = results
             .filter(function (r) { return r.success; })
             .reduce(function (acc, result) {
-            var model = result.strategy.modelBackend;
+            const model = result.strategy.modelBackend;
             if (!acc[model])
                 acc[model] = [];
             acc[model].push(result.qualityMetrics.overallScore);
             return acc;
         }, {});
         Object.entries(modelPerformance).forEach(function (_a) {
-            var model = _a[0], scores = _a[1];
-            var avgScore = scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length;
+            const model = _a[0], scores = _a[1];
+            const avgScore = scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length;
             insights.push("".concat(model, ": Average quality score ").concat(avgScore.toFixed(1)));
         });
         // Topology insights
-        var topologyPerformance = results
+        const topologyPerformance = results
             .filter(function (r) { return r.success; })
             .reduce(function (acc, result) {
-            var topology = result.strategy.swarmConfig.topology;
+            const topology = result.strategy.swarmConfig.topology;
             if (!acc[topology])
                 acc[topology] = [];
             acc[topology].push(result.qualityMetrics.overallScore);
             return acc;
         }, {});
-        var bestTopology = Object.entries(topologyPerformance)
+        const bestTopology = Object.entries(topologyPerformance)
             .map(function (_a) {
-            var topology = _a[0], scores = _a[1];
+            const topology = _a[0], scores = _a[1];
             return ({
                 topology: topology,
                 avgScore: scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length
@@ -811,7 +811,7 @@ var MultiSwarmABTesting = /** @class */ (function () {
             .sort(function (a, b) { return b.avgScore - a.avgScore; })[0];
         insights.push("Best topology: ".concat(bestTopology.topology, " (").concat(bestTopology.avgScore.toFixed(1), " avg score)"));
         // Performance vs Speed insights
-        var speedVsQuality = results
+        const speedVsQuality = results
             .filter(function (r) { return r.success; })
             .map(function (r) { return ({
             strategy: r.strategy.name,
@@ -819,16 +819,16 @@ var MultiSwarmABTesting = /** @class */ (function () {
             quality: r.qualityMetrics.overallScore
         }); })
             .sort(function (a, b) { return b.quality - a.quality; });
-        var fastest = speedVsQuality.sort(function (a, b) { return b.speed - a.speed; })[0];
+        const fastest = speedVsQuality.sort(function (a, b) { return b.speed - a.speed; })[0];
         insights.push("Fastest execution: ".concat(fastest.strategy, " (").concat(fastest.speed.toFixed(2), " ops/sec)"));
         // Agent count insights
-        var agentEfficiency = results
+        const agentEfficiency = results
             .filter(function (r) { return r.success; })
             .map(function (r) { return ({
             agents: r.strategy.swarmConfig.maxAgents,
             efficiency: r.qualityMetrics.overallScore / r.strategy.swarmConfig.maxAgents
         }); });
-        var avgEfficiency = agentEfficiency.reduce(function (sum, item) { return sum + item.efficiency; }, 0) / agentEfficiency.length;
+        const avgEfficiency = agentEfficiency.reduce(function (sum, item) { return sum + item.efficiency; }, 0) / agentEfficiency.length;
         insights.push("Average efficiency: ".concat(avgEfficiency.toFixed(1), " quality points per agent"));
         return insights;
     };
@@ -836,22 +836,22 @@ var MultiSwarmABTesting = /** @class */ (function () {
         if (strategies.length === 0)
             return null;
         // Count strategy occurrences
-        var counts = strategies.reduce(function (acc, strategy) {
+        const counts = strategies.reduce(function (acc, strategy) {
             acc[strategy.id] = (acc[strategy.id] || 0) + 1;
             return acc;
         }, {});
         // Find most frequent
-        var mostFrequentId = Object.entries(counts)
+        const mostFrequentId = Object.entries(counts)
             .sort(function (_a, _b) {
-            var a = _a[1];
-            var b = _b[1];
+            const a = _a[1];
+            const b = _b[1];
             return b - a;
         })[0][0];
         return strategies.find(function (s) { return s.id === mostFrequentId; }) || null;
     };
     MultiSwarmABTesting.prototype.cleanupGitWorktrees = function (worktreePaths) {
         return __awaiter(this, void 0, void 0, function () {
-            var _i, _a, _b, strategyId, path;
+            let _i, _a, _b, strategyId, path;
             return __generator(this, function (_c) {
                 logger.debug("\uD83E\uDDF9 Cleaning up ".concat(Object.keys(worktreePaths).length, " git worktrees..."));
                 // Use strategyId for cleanup tracking and validation
@@ -905,7 +905,7 @@ exports.MultiSwarmABTesting = MultiSwarmABTesting;
  */
 function quickABTest(taskDescription_1) {
     return __awaiter(this, arguments, void 0, function (taskDescription, scenario, options) {
-        var abTesting, strategies, gitConfig;
+        let abTesting, strategies, gitConfig;
         if (scenario === void 0) { scenario = 'comprehensive'; }
         if (options === void 0) { options = {}; }
         return __generator(this, function (_a) {

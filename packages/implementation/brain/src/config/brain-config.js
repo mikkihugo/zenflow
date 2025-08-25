@@ -13,14 +13,14 @@ var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            for (const p in s) if (Object.prototype.hasOwnProperty.call(s, p))
                 t[p] = s[p];
         }
         return t;
     };
     return __assign.apply(this, arguments);
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+const __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -29,8 +29,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+const __generator = (this && this.__generator) || function (thisArg, body) {
+    let _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
     return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
@@ -61,8 +61,8 @@ exports.DEFAULT_BRAIN_CONFIG = void 0;
 exports.getBrainConfig = getBrainConfig;
 exports.validateBrainConfig = validateBrainConfig;
 exports.initializeBrainSystem = initializeBrainSystem;
-var foundation_1 = require("@claude-zen/foundation");
-var logger = (0, foundation_1.getLogger)('BrainConfig');
+const foundation_1 = require("@claude-zen/foundation");
+const logger = (0, foundation_1.getLogger)('BrainConfig');
 exports.DEFAULT_BRAIN_CONFIG = {
     wasmPath: './wasm/claude_zen_neural',
     maxNetworks: 10,
@@ -90,9 +90,9 @@ exports.DEFAULT_BRAIN_CONFIG = {
 function getBrainConfig() {
     try {
         // Get shared configuration (handles environment, validation, etc.)
-        var sharedConfig = (0, foundation_1.getConfig)();
+        const sharedConfig = (0, foundation_1.getConfig)();
         // Get neural-specific config from shared system  
-        var neuralConfig = foundation_1.getNeuralConfig ? (0, foundation_1.getNeuralConfig)() || {} : {};
+        const neuralConfig = foundation_1.getNeuralConfig ? (0, foundation_1.getNeuralConfig)() || {} : {};
         // Log neural config availability for debugging
         logger.debug('Neural configuration loaded', {
             hasNeuralConfig: Object.keys(neuralConfig).length > 0,
@@ -100,12 +100,12 @@ function getBrainConfig() {
             getNeuralConfigAvailable: Boolean(foundation_1.getNeuralConfig)
         });
         // Get environment-specific settings
-        var debugMode = (0, foundation_1.isDebugMode)();
+        const debugMode = (0, foundation_1.isDebugMode)();
         // Use NODE_ENV or fallback to debug mode inference
-        var environment = process.env.NODE_ENV || (debugMode ? 'development' : 'production');
+        const environment = process.env.NODE_ENV || (debugMode ? 'development' : 'production');
         logger.info("Loading brain config for environment: ".concat(environment), { debugMode: debugMode });
         // Merge configurations with proper precedence
-        var brainConfig = __assign(__assign(__assign({}, exports.DEFAULT_BRAIN_CONFIG), neuralConfig), { 
+        const brainConfig = __assign(__assign(__assign({}, exports.DEFAULT_BRAIN_CONFIG), neuralConfig), { 
             // Environment-specific overrides
             enableGPU: environment === 'production' ? false : exports.DEFAULT_BRAIN_CONFIG.enableGPU, performance: __assign(__assign({}, exports.DEFAULT_BRAIN_CONFIG.performance), { enableBenchmarking: debugMode, trackMetrics: (0, foundation_1.areMetricsEnabled)() && environment !== 'test' }), 
             // Production optimizations
@@ -126,7 +126,7 @@ function getBrainConfig() {
  * Validate brain configuration
  */
 function validateBrainConfig(config) {
-    var _a;
+    let _a;
     try {
         if (!config.wasmPath || typeof config.wasmPath !== 'string') {
             throw new Error('wasmPath must be a valid string');
@@ -153,7 +153,7 @@ function validateBrainConfig(config) {
  */
 function initializeBrainSystem() {
     return __awaiter(this, void 0, void 0, function () {
-        var config;
+        let config;
         return __generator(this, function (_a) {
             logger.info('Initializing brain system with shared infrastructure...');
             try {

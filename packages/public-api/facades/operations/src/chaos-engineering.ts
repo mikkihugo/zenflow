@@ -221,7 +221,7 @@ export const chaosEngineeringSystem = {
   getEngine: getChaosEngine,
   getTestSuite: getResilienceTestSuite,
   getSimulator: getFailureSimulator,
-  getExperimentRunner: getExperimentRunner,
+  getExperimentRunner,
 };
 
 // Type exports for external consumers

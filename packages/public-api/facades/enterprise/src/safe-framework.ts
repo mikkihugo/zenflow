@@ -189,7 +189,7 @@ export class SafePortfolioManager {
   private async initializeManager(config: any) {
     try {
       const safeModule = await import('@claude-zen/safe-framework');
-      const SafePortfolioManager = (safeModule as any).SafePortfolioManager;
+      const {SafePortfolioManager} = (safeModule as any);
       if (SafePortfolioManager) {
         this.realManager = new SafePortfolioManager(config);
       } else {

@@ -174,7 +174,7 @@ export const systemNotifications = {
     disconnected: () => notifyWarning('Real-time connection lost'),
     reconnected: () => notifySuccess('Real-time connection restored'),
     failed: (error?: string) =>
-      notifyError(`Connection failed${error ? ': ' + error : ''}`),
+      notifyError(`Connection failed${error ? `: ${  error}` : ''}`),
   },
 
   /**
@@ -184,7 +184,7 @@ export const systemNotifications = {
     success: (operation: string) =>
       notifySuccess(`${operation} completed successfully`),
     error: (operation: string, error?: string) =>
-      notifyError(`${operation} failed${error ? ': ' + error : ''}`),
+      notifyError(`${operation} failed${error ? `: ${  error}` : ''}`),
     loading: (operation: string) =>
       notifyLoading(`${operation} in progress...`),
   },
@@ -219,7 +219,7 @@ export const systemNotifications = {
     created: (title: string) => notifySuccess(`Task "${title}" created`),
     completed: (title: string) => notifySuccess(`Task "${title}" completed`),
     failed: (title: string, error?: string) =>
-      notifyError(`Task "${title}" failed${error ? ': ' + error : ''}`),
+      notifyError(`Task "${title}" failed${error ? `: ${  error}` : ''}`),
     assigned: (title: string, agent: string) =>
       notifyInfo(`Task "${title}" assigned to ${agent}`),
   },

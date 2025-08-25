@@ -72,29 +72,21 @@ export class ClaudeZenCore {
 
 
     // Register enterprise system
-    container.registerFunction(TOKENS.enterprise, () => {
-      return createSafeFrameworkAgentRegistry();
-    });
+    container.registerFunction(TOKENS.enterprise, () => createSafeFrameworkAgentRegistry());
 
     // Register brain system
-    container.registerFunction(TOKENS.brain, () => {
-      return getBrainSystem();
-    });
+    container.registerFunction(TOKENS.brain, () => getBrainSystem());
 
     // Register teamwork orchestrator
-    container.registerFunction(TOKENS.teamwork, () => {
-      return getTeamworkOrchestrator();
-    });
+    container.registerFunction(TOKENS.teamwork, () => getTeamworkOrchestrator());
 
     // Register agent coordinator
-    container.registerFunction(TOKENS.agentCoordinator, () => {
-      return createAgentCoordinator({
+    container.registerFunction(TOKENS.agentCoordinator, () => createAgentCoordinator({
         maxAgents: 10,
         heartbeatInterval: 5000,
         timeout: 30000,
         enableHealthCheck: true,
-      });
-    });
+      }));
 
 
     return container;

@@ -103,9 +103,9 @@ export class WebSocketManager {
       }));
       
       // Resubscribe to channels after reconnection
-      this.subscriptions.forEach(channel => {
+      for (const channel of this.subscriptions) {
         this.socket?.emit('subscribe', channel);
-      });
+      }
 
       toast.push('📡 Real-time updates connected', {
         theme: {
@@ -373,7 +373,7 @@ export class WebSocketManager {
    */
   subscribeToAll(): void {
     const channels = ['system', 'agents', 'tasks', 'performance', 'logs', 'stories', 'epics', 'features', 'teams', 'safe-metrics'];
-    channels.forEach(channel => this.subscribe(channel));
+    for (const channel of channels) this.subscribe(channel);
   }
 
   /**

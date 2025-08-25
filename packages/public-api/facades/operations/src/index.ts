@@ -185,11 +185,11 @@ export const operationsSystem = {
   llm: () => import('./llm-routing'),
 
   // Direct access functions
-  getSystemMonitor: getSystemMonitor,
-  getSystemMetrics: getSystemMetrics,
+  getSystemMonitor,
+  getSystemMetrics,
 
   // Utilities
-  logger: logger,
+  logger,
   init: async () => {
     logger.info('Operations system initialized');
     return await Promise.resolve({ success: true, message: 'Operations ready' });

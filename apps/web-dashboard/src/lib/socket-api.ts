@@ -69,7 +69,7 @@ export class SocketIOAPIClient {
   }
 
   private notifyConnectionHandlers(connected: boolean): void {
-    this.connectionHandlers.forEach(handler => handler(connected));
+    for (const handler of this.connectionHandlers) handler(connected);
   }
 
   // Subscribe to real-time data channels (uses existing backend channels)

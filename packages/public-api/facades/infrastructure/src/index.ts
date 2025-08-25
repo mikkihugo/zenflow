@@ -253,15 +253,15 @@ export const infrastructureSystem = {
   serviceContainer: () => loadServiceContainer(),
 
   // Direct access functions
-  getOtelCollector: getOtelCollector,
-  getServiceContainer: getServiceContainer,
+  getOtelCollector,
+  getServiceContainer,
   getDatabaseAccess: async () => {
     const { getDatabaseAccess } = await import('./database');
     return getDatabaseAccess();
   },
 
   // Utilities
-  logger: logger,
+  logger,
   init: async () => {
     logger.info('Infrastructure system initialized');
     return { success: true, message: 'Infrastructure ready' };

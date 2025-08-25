@@ -144,12 +144,12 @@ export const infrastructureSystem = {
   serviceContainer: () => import('@claude-zen/service-container').catch(() => ({ default: {} })),
 
   // Direct access functions
-  getOtelCollector: getOtelCollector,
-  getServiceContainer: getServiceContainer,
-  getDatabaseAccess: getDatabaseAccess,
+  getOtelCollector,
+  getServiceContainer,
+  getDatabaseAccess,
 
   // Utilities
-  logger: logger,
+  logger,
   init: async () => {
     logger.info('Infrastructure system initialized');
     return { success: true, message: 'Infrastructure ready' };

@@ -164,4 +164,4 @@ export function isValidStateTransition(from: string, to: string): boolean {
 }
 
 // Import TaskMaster types for compatibility
-import type { TaskFlowState, WIPLimits, WorkflowBottleneck, TaskMovementResult } from '@claude-zen/taskmaster';
+import type { TaskFlowState } from '@claude-zen/taskmaster';

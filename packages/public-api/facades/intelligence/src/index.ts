@@ -198,15 +198,15 @@ export const intelligenceSystem = {
   llmProviders: () => import('@claude-zen/llm-providers').catch(() => ({ default: {} })),
 
   // Direct access functions
-  getBrainSystem: getBrainSystem,
-  getMemorySystem: getMemorySystem,
-  getAISafetyMonitor: getAISafetyMonitor,
-  getKnowledgeBase: getKnowledgeBase,
-  getTeamworkOrchestrator: getTeamworkOrchestrator,
-  getLLMProvider: getLLMProvider,
+  getBrainSystem,
+  getMemorySystem,
+  getAISafetyMonitor,
+  getKnowledgeBase,
+  getTeamworkOrchestrator,
+  getLLMProvider,
 
   // Utilities
-  logger: logger,
+  logger,
   init: async () => {
     logger.info('Intelligence system initialized');
     return { success: true, message: 'Intelligence ready' };

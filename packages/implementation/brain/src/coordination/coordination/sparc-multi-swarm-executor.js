@@ -17,7 +17,7 @@
  * @version 1.0.0
  * @since 2024-01-01
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+const __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -26,8 +26,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+const __generator = (this && this.__generator) || function (thisArg, body) {
+    let _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
     return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
@@ -53,7 +53,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+const __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
             if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -65,21 +65,21 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sparcMultiSwarmExecutor = exports.SPARCMultiSwarmExecutor = void 0;
 exports.quickSPARCTest = quickSPARCTest;
-var nanoid_1 = require("nanoid");
-var coding_principles_researcher_1 = require("./coding-principles-researcher");
-var intelligent_prompt_generator_1 = require("./intelligent-prompt-generator");
-var multi_swarm_ab_testing_1 = require("./multi-swarm-ab-testing");
+const nanoid_1 = require("nanoid");
+const coding_principles_researcher_1 = require("./coding-principles-researcher");
+const intelligent_prompt_generator_1 = require("./intelligent-prompt-generator");
+const multi_swarm_ab_testing_1 = require("./multi-swarm-ab-testing");
 /**
  * SPARC Multi-Swarm Executor
  *
  * Orchestrates parallel execution of multiple SPARC methodologies to identify
  * optimal approaches for systematic development workflows.
  */
-var SPARCMultiSwarmExecutor = /** @class */ (function () {
+const SPARCMultiSwarmExecutor = /** @class */ (function () {
     function SPARCMultiSwarmExecutor() {
-        var _this = this;
+        const _this = this;
         // Create a placeholder DSPyLLMBridge for initialization
-        var dspyBridge = {
+        const dspyBridge = {
             initialize: function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
                 return [2 /*return*/];
             }); }); },
@@ -96,7 +96,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      */
     SPARCMultiSwarmExecutor.prototype.executeSPARCMultiSwarmTest = function (taskDescription_1, sparcStrategies_1) {
         return __awaiter(this, arguments, void 0, function (taskDescription, sparcStrategies, options) {
-            var testId, startTime, gitConfig, results, _a, comparison, recommendations, endTime, totalWorktreesCreated, multiSwarmResult, error_1;
+            let testId, startTime, gitConfig, results, _a, comparison, recommendations, endTime, totalWorktreesCreated, multiSwarmResult, error_1;
             if (options === void 0) { options = {}; }
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -345,8 +345,8 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      */
     SPARCMultiSwarmExecutor.prototype.executeSPARCStrategiesParallel = function (taskDescription, strategies, gitConfig, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var promises;
-            var _this = this;
+            let promises;
+            const _this = this;
             return __generator(this, function (_a) {
                 logger.info("\u26A1 Executing ".concat(strategies.length, " SPARC strategies in parallel with git trees..."));
                 promises = strategies.map(function (strategy) {
@@ -361,7 +361,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      */
     SPARCMultiSwarmExecutor.prototype.executeSPARCStrategiesSequential = function (taskDescription, strategies, gitConfig, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var results, _i, strategies_1, strategy, result;
+            let results, _i, strategies_1, strategy, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -461,7 +461,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      */
     SPARCMultiSwarmExecutor.prototype.simulateSPARCExecution = function (taskDescription, strategy, gitConfig) {
         return __awaiter(this, void 0, void 0, function () {
-            var baseQuality, methodologyMultiplier, intelligenceBonus, overallScore, executionDelay, worktreePath, branchName, commitsCreated;
+            let baseQuality, methodologyMultiplier, intelligenceBonus, overallScore, executionDelay, worktreePath, branchName, commitsCreated;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -526,7 +526,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      */
     SPARCMultiSwarmExecutor.prototype.getBaseSPARCQuality = function (strategy) {
         // Base quality from model
-        var quality = 0;
+        let quality = 0;
         switch (strategy.modelBackend) {
             case 'claude-opus':
                 quality = 92;
@@ -554,7 +554,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
                 break;
         }
         // Adjust for swarm configuration
-        var topologyBonus = strategy.swarmConfig.topology === 'mesh' ? 5 :
+        const topologyBonus = strategy.swarmConfig.topology === 'mesh' ? 5 :
             strategy.swarmConfig.topology === 'hierarchical' ? 3 : 0;
         return quality + topologyBonus;
     };
@@ -574,7 +574,7 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      * Get intelligence systems bonus
      */
     SPARCMultiSwarmExecutor.prototype.getIntelligenceBonus = function (systems) {
-        var bonus = 0;
+        let bonus = 0;
         if (systems.usePromptGeneration)
             bonus += 3;
         if (systems.useBehavioralIntelligence)
@@ -601,26 +601,26 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      * Analyze and compare SPARC results
      */
     SPARCMultiSwarmExecutor.prototype.analyzeSPARCResults = function (results) {
-        var successfulResults = results.filter(function (r) { return r.success; });
+        const successfulResults = results.filter(function (r) { return r.success; });
         if (successfulResults.length === 0) {
             throw new Error('No successful SPARC strategy executions to compare');
         }
         // Find winner based on overall SPARC score
-        var winner = successfulResults.reduce(function (best, current) {
+        const winner = successfulResults.reduce(function (best, current) {
             return current.sparcMetrics.overallSPARCScore > best.sparcMetrics.overallSPARCScore ? current : best;
         });
         // Calculate confidence based on score difference
-        var scores = successfulResults.map(function (r) { return r.sparcMetrics.overallSPARCScore; });
-        var avgScore = scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length;
-        var scoreDiff = winner.sparcMetrics.overallSPARCScore - avgScore;
-        var confidence = Math.min(1, scoreDiff / 20);
+        const scores = successfulResults.map(function (r) { return r.sparcMetrics.overallSPARCScore; });
+        const avgScore = scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length;
+        const scoreDiff = winner.sparcMetrics.overallSPARCScore - avgScore;
+        const confidence = Math.min(1, scoreDiff / 20);
         // Determine statistical significance
-        var significance = confidence > 0.7 ? 'high' :
+        const significance = confidence > 0.7 ? 'high' :
             confidence > 0.4 ? 'medium' :
                 confidence > 0.1 ? 'low' : 'none';
         // Calculate performance deltas
-        var sparcPerformanceDelta = {};
-        var qualityDelta = {};
+        const sparcPerformanceDelta = {};
+        const qualityDelta = {};
         successfulResults.forEach(function (result) {
             sparcPerformanceDelta[result.strategy.id] =
                 result.sparcMetrics.overallSPARCScore - winner.sparcMetrics.overallSPARCScore;
@@ -639,24 +639,24 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
      * Generate SPARC-specific recommendations
      */
     SPARCMultiSwarmExecutor.prototype.generateSPARCRecommendations = function (results, comparison) {
-        var winner = results.find(function (r) { return r.strategy.id === comparison.winner.id; });
+        const winner = results.find(function (r) { return r.strategy.id === comparison.winner.id; });
         if (!winner) {
             throw new Error('Winner strategy not found in results');
         }
-        var reasoning = [];
+        const reasoning = [];
         // Analyze methodology effectiveness
-        var methodologyPerformance = results
+        const methodologyPerformance = results
             .filter(function (r) { return r.success; })
             .reduce(function (acc, result) {
-            var methodology = result.strategy.sparcConfig.methodology;
+            const methodology = result.strategy.sparcConfig.methodology;
             if (!acc[methodology])
                 acc[methodology] = [];
             acc[methodology].push(result.sparcMetrics.overallSPARCScore);
             return acc;
         }, {});
-        var bestMethodology = Object.entries(methodologyPerformance)
+        const bestMethodology = Object.entries(methodologyPerformance)
             .map(function (_a) {
-            var methodology = _a[0], scores = _a[1];
+            const methodology = _a[0], scores = _a[1];
             return ({
                 methodology: methodology,
                 avgScore: scores.reduce(function (sum, score) { return sum + score; }, 0) / scores.length
@@ -665,21 +665,21 @@ var SPARCMultiSwarmExecutor = /** @class */ (function () {
             .sort(function (a, b) { return b.avgScore - a.avgScore; })[0];
         reasoning.push("Best methodology: ".concat(bestMethodology.methodology, " (").concat(bestMethodology.avgScore.toFixed(1), " avg score)"));
         // Analyze git tree usage
-        var gitTreeResults = results.filter(function (r) { return r.gitTreeInfo.worktreePath; });
+        const gitTreeResults = results.filter(function (r) { return r.gitTreeInfo.worktreePath; });
         if (gitTreeResults.length > 0) {
-            var successfulMerges = gitTreeResults.filter(function (r) { return r.gitTreeInfo.mergedToMain; }).length;
+            const successfulMerges = gitTreeResults.filter(function (r) { return r.gitTreeInfo.mergedToMain; }).length;
             reasoning.push("Git tree isolation: ".concat(gitTreeResults.length, " worktrees created, ").concat(successfulMerges, " successfully merged"));
         }
         // Analyze intelligent systems impact
-        var withIntelligence = results.filter(function (r) {
+        const withIntelligence = results.filter(function (r) {
             return Object.values(r.strategy.sparcConfig.intelligentSystems).some(function (enabled) { return enabled; });
         });
-        var withoutIntelligence = results.filter(function (r) {
+        const withoutIntelligence = results.filter(function (r) {
             return !Object.values(r.strategy.sparcConfig.intelligentSystems).some(function (enabled) { return enabled; });
         });
         if (withIntelligence.length > 0 && withoutIntelligence.length > 0) {
-            var avgWithIntelligence = withIntelligence.reduce(function (sum, r) { return sum + r.sparcMetrics.overallSPARCScore; }, 0) / withIntelligence.length;
-            var avgWithoutIntelligence = withoutIntelligence.reduce(function (sum, r) { return sum + r.sparcMetrics.overallSPARCScore; }, 0) / withoutIntelligence.length;
+            const avgWithIntelligence = withIntelligence.reduce(function (sum, r) { return sum + r.sparcMetrics.overallSPARCScore; }, 0) / withIntelligence.length;
+            const avgWithoutIntelligence = withoutIntelligence.reduce(function (sum, r) { return sum + r.sparcMetrics.overallSPARCScore; }, 0) / withoutIntelligence.length;
             reasoning.push("Intelligent systems impact: ".concat((avgWithIntelligence - avgWithoutIntelligence).toFixed(1), " point improvement"));
         }
         return {
@@ -696,7 +696,7 @@ exports.SPARCMultiSwarmExecutor = SPARCMultiSwarmExecutor;
  */
 function quickSPARCTest(taskDescription_1) {
     return __awaiter(this, arguments, void 0, function (taskDescription, scenario, options) {
-        var executor, strategies;
+        let executor, strategies;
         if (scenario === void 0) { scenario = 'comprehensive'; }
         if (options === void 0) { options = {}; }
         return __generator(this, function (_a) {

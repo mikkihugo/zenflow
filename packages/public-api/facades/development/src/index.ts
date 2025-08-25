@@ -577,23 +577,23 @@ export const developmentSystem = {
   architecture: () => loadArchitecture(),
 
   // Direct access functions
-  getCodeAnalyzer: getCodeAnalyzer,
-  getGitOperationsManager: getGitOperationsManager,
-  getCodeQLBridge: getCodeQLBridge,
-  getBeamAnalyzer: getBeamAnalyzer,
-  getRepositoryAnalyzer: getRepositoryAnalyzer,
-  getAILinter: getAILinter,
-  getLanguageParser: getLanguageParser,
-  getArchitectureValidator: getArchitectureValidator,
+  getCodeAnalyzer,
+  getGitOperationsManager,
+  getCodeQLBridge,
+  getBeamAnalyzer,
+  getRepositoryAnalyzer,
+  getAILinter,
+  getLanguageParser,
+  getArchitectureValidator,
 
   // SAFe 6.0 Development Management
-  getSafe6DevelopmentManager: getSafe6DevelopmentManager,
-  createSafe6SolutionTrainManager: createSafe6SolutionTrainManager,
-  createSafe6BusinessAgilityManager: createSafe6BusinessAgilityManager,
+  getSafe6DevelopmentManager,
+  createSafe6SolutionTrainManager,
+  createSafe6BusinessAgilityManager,
   safe6DevelopmentManager: () => loadSafe6DevelopmentManager(),
 
   // Utilities
-  logger: logger,
+  logger,
   init: () => {
     logger.info('Development system initialized');
     return { success: true, message: 'Development tools ready' };

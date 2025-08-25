@@ -173,7 +173,7 @@ export const enterpriseSystem = {
   },
 
   // Utilities
-  logger: logger,
+  logger,
   init: async () => {
     logger.info('Enterprise system initialized');
     return { success: true, message: 'Enterprise ready' };

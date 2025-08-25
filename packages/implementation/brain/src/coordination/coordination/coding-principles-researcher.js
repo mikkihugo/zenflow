@@ -21,14 +21,14 @@ var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            for (const p in s) if (Object.prototype.hasOwnProperty.call(s, p))
                 t[p] = s[p];
         }
         return t;
     };
     return __assign.apply(this, arguments);
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+const __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -37,8 +37,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+const __generator = (this && this.__generator) || function (thisArg, body) {
+    let _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
     return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
@@ -64,7 +64,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+const __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
             if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -76,14 +76,14 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DEFAULT_LANGUAGE_CONFIGS = exports.CodingPrinciplesResearcher = void 0;
 exports.createCodingPrinciplesResearcher = createCodingPrinciplesResearcher;
-var foundation_1 = require("@claude-zen/foundation");
+const foundation_1 = require("@claude-zen/foundation");
 /**
  * Coding Principles Researcher
  *
  * Dynamically researches and learns coding principles for different languages,
  * domains, and roles using AI research and human feedback loops.
  */
-var CodingPrinciplesResearcher = /** @class */ (function () {
+const CodingPrinciplesResearcher = /** @class */ (function () {
     function CodingPrinciplesResearcher(dspyBridge, behavioralIntelligence) {
         this.dspyBridge = dspyBridge;
         this.behavioralIntelligence = behavioralIntelligence;
@@ -99,7 +99,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.researchPrinciples = function (config) {
         return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, researchTask, researchResult, principles, error_1;
+            let cacheKey, cached, researchTask, researchResult, principles, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -152,7 +152,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.submitHumanFeedback = function (feedback) {
         return __awaiter(this, void 0, void 0, function () {
-            var existing;
+            let existing;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -174,7 +174,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.getReviewableTemplate = function (config) {
         return __awaiter(this, void 0, void 0, function () {
-            var principles;
+            let principles;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.researchPrinciples(config)];
@@ -190,7 +190,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.learnFromSuccess = function (config, successPatterns) {
         return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, existing;
+            let cacheKey, existing;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -217,7 +217,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.researchPrinciplesWithConfidence = function (config_1) {
         return __awaiter(this, arguments, void 0, function (config, targetConfidence) {
-            var cacheKey, confidence, cached, bestPrinciples, bestConfidence, researchAttempts, maxAttempts, researchConfig, principles, researchConfidence, error_2;
+            let cacheKey, confidence, cached, bestPrinciples, bestConfidence, researchAttempts, maxAttempts, researchConfig, principles, researchConfidence, error_2;
             if (targetConfidence === void 0) { targetConfidence = this.minimumConfidenceThreshold; }
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -288,7 +288,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.submitAgentFeedback = function (feedback) {
         return __awaiter(this, void 0, void 0, function () {
-            var existing;
+            let existing;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -315,7 +315,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.getAdaptivePrinciples = function (config) {
         return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, confidence, cached;
+            let cacheKey, confidence, cached;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -342,9 +342,9 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Build research prompt for DSPy
      */
     CodingPrinciplesResearcher.prototype.buildResearchPrompt = function (config) {
-        var language = config.language, domain = config.domain, role = config.role, depth = config.depth;
+        const language = config.language, domain = config.domain, role = config.role, depth = config.depth;
         // Get comprehensive research areas based on role and domain
-        var researchAreas = this.getComprehensiveResearchAreas(role, domain);
+        const researchAreas = this.getComprehensiveResearchAreas(role, domain);
         return "Research and compile comprehensive coding principles for ".concat(language, " development.\n\nContext:\n- Language: ").concat(language, "\n- Domain: ").concat(domain || 'general', "\n- Role: ").concat(role || 'general-developer', "\n- Depth: ").concat(depth || 'intermediate', "\n- Include Performance: ").concat(config.includePerformance ? 'Yes' : 'No', "\n- Include Security: ").concat(config.includeSecurity ? 'Yes' : 'No', "\n- Include Testing: ").concat(config.includeTesting ? 'Yes' : 'No', "\n\nResearch the following comprehensive areas and provide specific, actionable guidelines:\n\n1. CORE STANDARDS:\n   - Repository structure and organization for ").concat(domain || 'general', " projects\n   - File naming conventions specific to ").concat(language, " and ").concat(role || 'general-developer', " workflows\n   - Folder organization patterns for ").concat(domain || 'general', " applications\n   - Function complexity guidelines appropriate for ").concat(role || 'developer', " responsibilities\n   - Code organization patterns that scale with team size\n   - Error handling best practices for ").concat(domain || 'general', " environments\n   - Documentation standards for ").concat(role || 'developer', " deliverables\n   - Code quality metrics and enforcement strategies\n   - Testing strategy for ").concat(language, " in ").concat(domain || 'general', " context\n\n2. LANGUAGE-SPECIFIC:\n   - ").concat(language, " type system best practices for ").concat(role || 'developer', " work\n   - Memory management patterns (if applicable to ").concat(language, ")\n   - Concurrency and async patterns for ").concat(domain || 'general', " applications\n   - Package/module management strategies\n   - Build tools and CI/CD pipeline recommendations for ").concat(language, "\n\n").concat(researchAreas.domainSpecific.length > 0 ? "\n3. DOMAIN-SPECIFIC (".concat(domain || 'general', "):\n").concat(researchAreas.domainSpecific.map(function (area) { return "   - ".concat(area); }).join('\n'), "\n") : '', "\n\n").concat(researchAreas.roleSpecific.length > 0 ? "\n4. ROLE-SPECIFIC (".concat(role || 'general-developer', "):\n").concat(researchAreas.roleSpecific.map(function (area) { return "   - ".concat(area); }).join('\n'), "\n") : '', "\n\n5. QUALITY METRICS & STANDARDS:\n   - Measurable complexity thresholds for ").concat(language, "\n   - Code coverage expectations for ").concat(domain || 'general', " projects\n   - Maintainability indices and technical debt management\n   - Performance benchmarks relevant to ").concat(role || 'developer', " work\n   - Security validation requirements for ").concat(domain || 'general', " applications\n\n6. ADVANCED PRACTICES:\n").concat(researchAreas.advanced.map(function (area) { return "   - ".concat(area); }).join('\n'), "\n\nProvide specific, actionable guidelines that a ").concat(role || 'developer', " can immediately apply in ").concat(language, " development.\nFocus on current industry best practices and emerging patterns for ").concat(domain || 'general', " domain.\nInclude specific examples and anti-patterns to avoid.\nConsider the unique challenges and responsibilities of ").concat(role || 'developer', " role.\n\nRespond in JSON format with structured guidelines that cover all research areas comprehensively.");
     };
     /**
@@ -361,7 +361,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Get domain-specific research areas
      */
     CodingPrinciplesResearcher.prototype.getDomainSpecificResearchAreas = function (domain) {
-        var domainAreas = {
+        const domainAreas = {
             'rest-api': [
                 'RESTful API design principles and OpenAPI specification',
                 'Authentication and authorization patterns (JWT, OAuth2, API keys)',
@@ -459,7 +459,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Get role-specific research areas
      */
     CodingPrinciplesResearcher.prototype.getRoleSpecificResearchAreas = function (role) {
-        var roleAreas = {
+        const roleAreas = {
             'backend-developer': [
                 'Database design and query optimization',
                 'Server architecture and scalability patterns',
@@ -539,7 +539,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Get advanced research areas based on role and domain combination
      */
     CodingPrinciplesResearcher.prototype.getAdvancedResearchAreas = function (role, domain) {
-        var baseAdvanced = [
+        const baseAdvanced = [
             'Design patterns and architectural patterns',
             'SOLID principles and clean code practices',
             'Domain-driven design (DDD) concepts',
@@ -549,7 +549,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
             'Technical documentation and knowledge sharing'
         ];
         // Add role-specific advanced areas
-        var roleAdvanced = {
+        const roleAdvanced = {
             'architect': [
                 'Enterprise architecture patterns and frameworks',
                 'Distributed systems design and CAP theorem',
@@ -573,7 +573,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
             ]
         };
         // Add domain-specific advanced areas
-        var domainAdvanced = {
+        const domainAdvanced = {
             'microservices': [
                 'Service mesh architecture and implementation',
                 'Distributed tracing and observability',
@@ -589,7 +589,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                 'AutoML and neural architecture search'
             ]
         };
-        var advanced = __spreadArray([], baseAdvanced, true);
+        const advanced = __spreadArray([], baseAdvanced, true);
         if (role && roleAdvanced[role]) {
             advanced.push.apply(advanced, roleAdvanced[role]);
         }
@@ -603,8 +603,8 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.parseResearchResult = function (result, config) {
         return __awaiter(this, void 0, void 0, function () {
-            var parsed, principles;
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+            let parsed, principles;
+            let _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
             return __generator(this, function (_z) {
                 try {
                     parsed = typeof result === 'string' ? JSON.parse(result) : result;
@@ -772,7 +772,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
         return "".concat(config.language, "-").concat(config.domain || 'general', "-").concat(config.role || 'general', "-").concat(config.depth || 'intermediate');
     };
     CodingPrinciplesResearcher.prototype.isCacheValid = function (principles) {
-        var ageInDays = (Date.now() - principles.researchMetadata.researchedAt.getTime()) / (1000 * 60 * 60 * 24);
+        const ageInDays = (Date.now() - principles.researchMetadata.researchedAt.getTime()) / (1000 * 60 * 60 * 24);
         return ageInDays < 30; // Cache valid for 30 days
     };
     CodingPrinciplesResearcher.prototype.getFallbackPrinciples = function (config) {
@@ -829,7 +829,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
     };
     CodingPrinciplesResearcher.prototype.enhancePrinciplesWithLearning = function (principles, patterns) {
         return __awaiter(this, void 0, void 0, function () {
-            var patternKeys, patternSuccessRate;
+            let patternKeys, patternSuccessRate;
             return __generator(this, function (_a) {
                 // Enhance principles with successful patterns learned from actual projects
                 principles.researchMetadata.lastUpdated = new Date();
@@ -865,7 +865,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
         try {
             if (Array.isArray(patterns)) {
                 // If patterns is an array of success/failure data
-                var successCount = patterns.filter(function (p) { return p.success === true || p.successful === true; }).length;
+                const successCount = patterns.filter(function (p) { return p.success === true || p.successful === true; }).length;
                 return patterns.length > 0 ? successCount / patterns.length : 0;
             }
             else if (typeof patterns === 'object') {
@@ -876,7 +876,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                     return patterns.total > 0 ? patterns.success / patterns.total : 0;
                 }
                 // Default success rate based on pattern existence and structure
-                var patternCount = Object.keys(patterns).length;
+                const patternCount = Object.keys(patterns).length;
                 return patternCount > 3 ? 0.7 : 0.5; // Heuristic: more patterns indicate higher success
             }
             return 0.5; // Default moderate success rate
@@ -890,8 +890,8 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Extract best practices from successful patterns
      */
     CodingPrinciplesResearcher.prototype.extractBestPracticesFromPatterns = function (principles, patterns) {
-        var _a, _b;
-        var _c;
+        let _a, _b;
+        let _c;
         try {
             // Look for common successful patterns to enhance principles
             if (patterns.commonPatterns) {
@@ -937,7 +937,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Update prompt confidence based on research quality
      */
     CodingPrinciplesResearcher.prototype.updatePromptConfidence = function (cacheKey, update) {
-        var confidence = this.getPromptConfidence(cacheKey);
+        const confidence = this.getPromptConfidence(cacheKey);
         if (update.initialConfidence !== undefined) {
             confidence.initialConfidence = update.initialConfidence;
             confidence.overallConfidence = update.initialConfidence;
@@ -957,7 +957,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.evaluateResearchQuality = function (principles, config) {
         return __awaiter(this, void 0, void 0, function () {
-            var qualityScore, maxScore, requiredCoreAreas, filledCoreAreas, requiredLangAreas, filledLangAreas, requiredDomainAreas, filledDomainAreas, hasValidMetrics, templateQuality;
+            let qualityScore, maxScore, requiredCoreAreas, filledCoreAreas, requiredLangAreas, filledLangAreas, requiredDomainAreas, filledDomainAreas, hasValidMetrics, templateQuality;
             return __generator(this, function (_a) {
                 qualityScore = 0;
                 maxScore = 0;
@@ -998,15 +998,15 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Enhance research config based on existing feedback
      */
     CodingPrinciplesResearcher.prototype.enhanceConfigWithFeedback = function (config, confidence) {
-        var enhancedConfig = __assign({}, config);
+        const enhancedConfig = __assign({}, config);
         // Get agent feedback for this principles ID
-        var feedbacks = this.agentFeedback.get(confidence.principlesId) || [];
+        const feedbacks = this.agentFeedback.get(confidence.principlesId) || [];
         if (feedbacks.length > 0) {
             // Analyze common missing areas and focus research there
-            var missingAreas = feedbacks.flatMap(function (f) { return f.missingAreas; });
-            var commonMissing = this.getMostCommon(missingAreas);
+            const missingAreas = feedbacks.flatMap(function (f) { return f.missingAreas; });
+            const commonMissing = this.getMostCommon(missingAreas);
             // Increase depth if complexity is often too low
-            var avgComplexity = feedbacks.reduce(function (sum, f) { return sum +
+            const avgComplexity = feedbacks.reduce(function (sum, f) { return sum +
                 (f.context.taskComplexity === 'simple' ? 1 : f.context.taskComplexity === 'moderate' ? 2 : 3); }, 0) / feedbacks.length;
             if (avgComplexity > 2) {
                 enhancedConfig.depth = 'advanced';
@@ -1029,7 +1029,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.updateConfidenceFromAgentFeedback = function (feedback) {
         return __awaiter(this, void 0, void 0, function () {
-            var confidence, count;
+            let confidence, count;
             return __generator(this, function (_a) {
                 confidence = this.getPromptConfidence(feedback.principlesId);
                 // Update execution count
@@ -1054,7 +1054,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      */
     CodingPrinciplesResearcher.prototype.evaluateImprovementNeeds = function (principlesId) {
         return __awaiter(this, void 0, void 0, function () {
-            var confidence, feedbacks, recentFeedbacks, recentAvgAccuracy, recentAvgUsefulness;
+            let confidence, feedbacks, recentFeedbacks, recentAvgAccuracy, recentAvgUsefulness;
             return __generator(this, function (_a) {
                 confidence = this.getPromptConfidence(principlesId);
                 feedbacks = this.agentFeedback.get(principlesId) || [];
@@ -1080,7 +1080,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
      * Get most common items from an array
      */
     CodingPrinciplesResearcher.prototype.getMostCommon = function (items) {
-        var frequency = new Map();
+        const frequency = new Map();
         items.forEach(function (item) {
             frequency.set(item, (frequency.get(item) || 0) + 1);
         });
@@ -1088,7 +1088,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
             .sort(function (a, b) { return b[1] - a[1]; })
             .slice(0, 3)
             .map(function (_a) {
-            var item = _a[0];
+            const item = _a[0];
             return item;
         });
     };

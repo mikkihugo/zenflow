@@ -21,14 +21,14 @@ var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            for (const p in s) if (Object.prototype.hasOwnProperty.call(s, p))
                 t[p] = s[p];
         }
         return t;
     };
     return __assign.apply(this, arguments);
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+const __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -37,8 +37,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+const __generator = (this && this.__generator) || function (thisArg, body) {
+    let _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
     return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
@@ -64,7 +64,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+const __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
             if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -76,14 +76,14 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DEFAULT_CODING_STANDARDS = exports.IntelligentPromptGenerator = void 0;
 exports.createIntelligentPromptGenerator = createIntelligentPromptGenerator;
-var foundation_1 = require("@claude-zen/foundation");
+const foundation_1 = require("@claude-zen/foundation");
 /**
  * Intelligent Prompt Generator
  *
  * Generates context-aware, high-quality development prompts with
  * integrated coding standards and best practices.
  */
-var IntelligentPromptGenerator = /** @class */ (function () {
+const IntelligentPromptGenerator = /** @class */ (function () {
     function IntelligentPromptGenerator(behavioralIntelligence, codingPrinciplesResearcher) {
         this.logger = (0, foundation_1.getLogger)('IntelligentPromptGenerator');
         this.behavioralIntelligence = behavioralIntelligence;
@@ -103,7 +103,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      */
     IntelligentPromptGenerator.prototype.generatePrompt = function (phase, context, config) {
         return __awaiter(this, void 0, void 0, function () {
-            var mergedConfig, complexityScore, researchConfig, adaptivePrinciples, content_1, error_1, dspyOptimizedPrompt, error_2, codingStandards, phaseGuidelines, qualityMetrics, content, enhancedContent;
+            let mergedConfig, complexityScore, researchConfig, adaptivePrinciples, content_1, error_1, dspyOptimizedPrompt, error_2, codingStandards, phaseGuidelines, qualityMetrics, content, enhancedContent;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -197,8 +197,8 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Generate comprehensive coding standards
      */
     IntelligentPromptGenerator.prototype.generateCodingStandards = function (config) {
-        var language = config.language, maxComplexity = config.maxComplexity, maxLinesPerFunction = config.maxLinesPerFunction, maxParameters = config.maxParameters, fileNaming = config.fileNaming;
-        var standards = "\n## \uD83C\uDFAF Coding Standards & Best Practices (".concat(language.toUpperCase(), ")\n\n### \uD83D\uDCC1 File Organization & Naming:\n- **Descriptive filenames**: Use clear, descriptive names that indicate file purpose\n  - \u2705 user-authentication-service.").concat(language === 'typescript' ? 'ts' : 'js', "\n  - \u2705 product-catalog-manager.").concat(language === 'typescript' ? 'ts' : 'js', "\n  - \u2705 order-validation-utils.").concat(language === 'typescript' ? 'ts' : 'js', "\n  - \u274C helper.").concat(language === 'typescript' ? 'ts' : 'js', ", utils.").concat(language === 'typescript' ? 'ts' : 'js', ", data.").concat(language === 'typescript' ? 'ts' : 'js', "\n- **Single responsibility**: Each file should have ONE clear purpose\n- **Naming convention**: Use ").concat(fileNaming, " for files\n- **Max functions per file**: 5-7 focused functions maximum\n\n### \u26A1 Function Quality Guidelines:\n- **Single responsibility**: Each function does ONE thing well\n- **Max ").concat(maxLinesPerFunction, " lines**: Keep functions focused and readable\n- **Max ").concat(maxParameters, " parameters**: Use objects for complex parameter sets\n- **Cyclomatic complexity**: Keep below ").concat(maxComplexity, "\n- **Pure functions**: Prefer pure functions when possible\n- **Clear naming**: Function names should describe what they do");
+        const language = config.language, maxComplexity = config.maxComplexity, maxLinesPerFunction = config.maxLinesPerFunction, maxParameters = config.maxParameters, fileNaming = config.fileNaming;
+        let standards = "\n## \uD83C\uDFAF Coding Standards & Best Practices (".concat(language.toUpperCase(), ")\n\n### \uD83D\uDCC1 File Organization & Naming:\n- **Descriptive filenames**: Use clear, descriptive names that indicate file purpose\n  - \u2705 user-authentication-service.").concat(language === 'typescript' ? 'ts' : 'js', "\n  - \u2705 product-catalog-manager.").concat(language === 'typescript' ? 'ts' : 'js', "\n  - \u2705 order-validation-utils.").concat(language === 'typescript' ? 'ts' : 'js', "\n  - \u274C helper.").concat(language === 'typescript' ? 'ts' : 'js', ", utils.").concat(language === 'typescript' ? 'ts' : 'js', ", data.").concat(language === 'typescript' ? 'ts' : 'js', "\n- **Single responsibility**: Each file should have ONE clear purpose\n- **Naming convention**: Use ").concat(fileNaming, " for files\n- **Max functions per file**: 5-7 focused functions maximum\n\n### \u26A1 Function Quality Guidelines:\n- **Single responsibility**: Each function does ONE thing well\n- **Max ").concat(maxLinesPerFunction, " lines**: Keep functions focused and readable\n- **Max ").concat(maxParameters, " parameters**: Use objects for complex parameter sets\n- **Cyclomatic complexity**: Keep below ").concat(maxComplexity, "\n- **Pure functions**: Prefer pure functions when possible\n- **Clear naming**: Function names should describe what they do");
         if (language === 'typescript') {
             standards += "\n\n### \uD83D\uDD37 TypeScript Quality Standards:\n- **Strict typing**: Always use explicit types, avoid 'any'\n- **Interface definitions**: Define clear interfaces for all data structures\n- **Generic types**: Use generics for reusable components\n- **Null safety**: Handle undefined/null cases explicitly\n- **Union types**: Use union types for controlled variants\n- **Type guards**: Implement proper type guards for runtime checks";
         }
@@ -233,7 +233,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Generate quality metrics for the phase
      */
     IntelligentPromptGenerator.prototype.generateQualityMetrics = function (phase, config) {
-        var baseMetrics = [
+        const baseMetrics = [
             "Cyclomatic complexity: < ".concat(config.maxComplexity),
             "Function length: < ".concat(config.maxLinesPerFunction, " lines"),
             "Parameter count: < ".concat(config.maxParameters),
@@ -267,15 +267,15 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Build the main prompt content
      */
     IntelligentPromptGenerator.prototype.buildPromptContent = function (phase, context, codingStandards, phaseGuidelines) {
-        var _a, _b;
+        let _a, _b;
         return "\n# \uD83D\uDE80 ".concat(phase.charAt(0).toUpperCase() + phase.slice(1), " Phase Development Prompt\n\n## \uD83D\uDCCB Project Context:\n- **Project**: ").concat(context.name, "\n- **Domain**: ").concat(context.domain, "\n- **Requirements**: ").concat(((_a = context.requirements) === null || _a === void 0 ? void 0 : _a.length) || 0, " defined\n- **Tech Stack**: ").concat(((_b = context.techStack) === null || _b === void 0 ? void 0 : _b.join(', ')) || 'To be determined', "\n\n").concat(codingStandards, "\n\n").concat(phaseGuidelines, "\n\n## \uD83C\uDFAF Implementation Focus:\n1. **Follow naming conventions** - Use descriptive, purpose-driven filenames\n2. **Maintain function complexity** - Keep functions simple and focused\n3. **Ensure type safety** - Use explicit typing throughout\n4. **Write clean code** - Self-documenting, maintainable code\n5. **Plan for testing** - Design with testability in mind\n\n## \uD83D\uDD0D Quality Checklist:\n- [ ] Descriptive filenames that indicate purpose\n- [ ] Single responsibility per file/function\n- [ ] Appropriate complexity levels\n- [ ] Comprehensive error handling\n- [ ] Clear documentation and comments\n- [ ] Type safety (for TypeScript)\n- [ ] Performance considerations\n- [ ] Security best practices\n\nRemember: Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.");
     };
     /**
      * Calculate complexity score based on context and phase
      */
     IntelligentPromptGenerator.prototype.calculateComplexityScore = function (context, phase) {
-        var _a, _b;
-        var score = 1; // Base complexity
+        let _a, _b;
+        let score = 1; // Base complexity
         // Add complexity based on requirements
         score += (((_a = context.requirements) === null || _a === void 0 ? void 0 : _a.length) || 0) * 0.1;
         // Add complexity based on tech stack
@@ -299,8 +299,8 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      */
     IntelligentPromptGenerator.prototype.generateWithDSPy = function (phase, context, config) {
         return __awaiter(this, void 0, void 0, function () {
-            var DSPyLLMBridge, NeuralBridge, getLogger_1, logger, neuralBridge, dspyBridge, promptTask, result, dspyResult, error_3;
-            var _a, _b;
+            let DSPyLLMBridge, NeuralBridge, getLogger_1, logger, neuralBridge, dspyBridge, promptTask, result, dspyResult, error_3;
+            let _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -408,7 +408,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      */
     IntelligentPromptGenerator.prototype.enhanceWithBehavioralIntelligence = function (content, context) {
         return __awaiter(this, void 0, void 0, function () {
-            var projectTags, complexityLevel, agentProfiles, enhancedStats, contextualInsights;
+            let projectTags, complexityLevel, agentProfiles, enhancedStats, contextualInsights;
             return __generator(this, function (_a) {
                 if (!this.behavioralIntelligence) {
                     return [2 /*return*/, content];
@@ -446,7 +446,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Extract project tags from context for behavioral analysis
      */
     IntelligentPromptGenerator.prototype.extractProjectTags = function (context) {
-        var tags = [];
+        const tags = [];
         if (context.currentPhase)
             tags.push(context.currentPhase);
         if (context.domainSpecific)
@@ -464,14 +464,14 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Assess project complexity based on context
      */
     IntelligentPromptGenerator.prototype.assessProjectComplexity = function (context) {
-        var complexity = 0.5; // Base complexity
+        let complexity = 0.5; // Base complexity
         // Factor in requirements count
         if (context.requirements) {
             complexity += Math.min(context.requirements.length * 0.05, 0.3);
         }
         // Factor in phase complexity
         if (context.currentPhase) {
-            var phaseComplexity = {
+            const phaseComplexity = {
                 'specification': 0.1,
                 'pseudocode': 0.2,
                 'architecture': 0.4,
@@ -482,16 +482,16 @@ var IntelligentPromptGenerator = /** @class */ (function () {
         }
         // Domain-specific complexity
         if (context.domainSpecific) {
-            var domainComplexity = {
+            const domainComplexity = {
                 'ml': 0.3,
                 'ai': 0.3,
                 'distributed': 0.4,
                 'security': 0.4,
                 'performance': 0.3
             };
-            var domain = String(context.domainSpecific).toLowerCase();
-            for (var _i = 0, _a = Object.entries(domainComplexity); _i < _a.length; _i++) {
-                var _b = _a[_i], key = _b[0], value = _b[1];
+            const domain = String(context.domainSpecific).toLowerCase();
+            for (let _i = 0, _a = Object.entries(domainComplexity); _i < _a.length; _i++) {
+                const _b = _a[_i], key = _b[0], value = _b[1];
                 if (domain.includes(key)) {
                     complexity += value;
                     break;
@@ -505,7 +505,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      */
     IntelligentPromptGenerator.prototype.getAdaptivePrinciples = function (config) {
         return __awaiter(this, void 0, void 0, function () {
-            var error_4;
+            let error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -531,8 +531,8 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Infer domain from project context
      */
     IntelligentPromptGenerator.prototype.inferDomainFromContext = function (context) {
-        var _a;
-        var domain = (_a = context.domain) === null || _a === void 0 ? void 0 : _a.toLowerCase();
+        let _a;
+        const domain = (_a = context.domain) === null || _a === void 0 ? void 0 : _a.toLowerCase();
         if ((domain === null || domain === void 0 ? void 0 : domain.includes('api')) || (domain === null || domain === void 0 ? void 0 : domain.includes('rest')) || (domain === null || domain === void 0 ? void 0 : domain.includes('service'))) {
             return 'rest-api';
         }
@@ -586,14 +586,14 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      * Build meta-learning prompt content using researched principles
      */
     IntelligentPromptGenerator.prototype.buildMetaLearningPromptContent = function (phase, context, principles) {
-        var _a, _b;
+        let _a, _b;
         return "# \uD83D\uDE80 ".concat(phase.charAt(0).toUpperCase() + phase.slice(1), " Phase Development Prompt\n## META-LEARNING ENABLED \u2728\n\n## \uD83D\uDCCB Project Context:\n- **Project**: ").concat(context.name, "\n- **Domain**: ").concat(context.domain, "\n- **Requirements**: ").concat(((_a = context.requirements) === null || _a === void 0 ? void 0 : _a.length) || 0, " defined\n- **Tech Stack**: ").concat(((_b = context.techStack) === null || _b === void 0 ? void 0 : _b.join(', ')) || 'To be determined', "\n- **Research Confidence**: ").concat((principles.researchMetadata.confidence * 100).toFixed(1), "%\n\n## \uD83C\uDFAF AI-Researched Standards:\n").concat(principles.template, "\n\n## \uD83D\uDD0D Quality Metrics (Research-Based):\n- **Complexity**: ").concat(principles.qualityMetrics.complexity.metric, " < ").concat(principles.qualityMetrics.complexity.threshold, "\n- **Coverage**: ").concat(principles.qualityMetrics.coverage.metric, " > ").concat(principles.qualityMetrics.coverage.threshold, "%\n- **Maintainability**: ").concat(principles.qualityMetrics.maintainability.metric, " > ").concat(principles.qualityMetrics.maintainability.threshold, "\n- **Performance**: ").concat(principles.qualityMetrics.performance.metric, " < ").concat(principles.qualityMetrics.performance.threshold, "ms\n\n## \uD83E\uDDE0 Meta-Learning Instructions:\n1. **Track your execution**: Note what works well and what doesn't\n2. **Report feedback**: Identify missing guidelines or incorrect assumptions\n3. **Continuous improvement**: This prompt adapts based on your feedback\n4. **Second opinion validation**: Your work may be reviewed by another AI for accuracy\n\n## \uD83D\uDCDD CRITICAL INSTRUCTIONS:\n1. **Follow research-based guidelines** above - these improve over time\n2. **Use descriptive, purpose-driven filenames** \n3. **Maintain function complexity** within researched thresholds\n4. **Consider domain-specific patterns** for ").concat(context.domain || 'general', " applications\n5. **Plan for validation** - another AI may review your work for accuracy\n\nRemember: This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.");
     };
     /**
      * Convert principles to quality metrics
      */
     IntelligentPromptGenerator.prototype.convertPrinciplesToMetrics = function (principles) {
-        var metrics = [];
+        const metrics = [];
         if (principles.qualityMetrics.complexity) {
             metrics.push("Complexity: ".concat(principles.qualityMetrics.complexity.metric, " < ").concat(principles.qualityMetrics.complexity.threshold));
         }
@@ -619,7 +619,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      */
     IntelligentPromptGenerator.prototype.submitAgentFeedback = function (principlesId, feedback) {
         return __awaiter(this, void 0, void 0, function () {
-            var agentFeedback;
+            let agentFeedback;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -663,7 +663,7 @@ var IntelligentPromptGenerator = /** @class */ (function () {
      */
     IntelligentPromptGenerator.prototype.generateSecondOpinionPrompt = function (originalPrompt, agentResponse, context) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
+            let _a;
             return __generator(this, function (_b) {
                 return [2 /*return*/, "# \uD83D\uDD0D SECOND OPINION VALIDATION\n\n## Original Task Prompt:\n```\n".concat(originalPrompt, "\n```\n\n## Agent's Implementation:\n```\n").concat(agentResponse, "\n```\n\n## Project Context:\n- **Project**: ").concat(context.name, "\n- **Domain**: ").concat(context.domain, "\n- **Requirements**: ").concat(((_a = context.requirements) === null || _a === void 0 ? void 0 : _a.join(', ')) || 'Not specified', "\n\n## Validation Instructions:\n\n### 1. \uD83D\uDCCB Requirement Compliance Check\n- Did the agent address all requirements from the original prompt?\n- Are there any missing or misunderstood requirements?\n- Rate compliance: 0-100%\n\n### 2. \uD83C\uDFAF Quality Standards Validation  \n- Does the implementation follow the coding standards specified?\n- Are naming conventions, complexity, and structure appropriate?\n- Rate quality adherence: 0-100%\n\n### 3. \uD83D\uDD0D Misunderstanding Detection\n- Identify any apparent misunderstandings of the task\n- Note any implementations that don't match the intent\n- Highlight areas where clarification might have helped\n\n### 4. \u2705 Correctness Assessment\n- Is the implementation functionally correct?\n- Are there logical errors or potential bugs?\n- Does it solve the intended problem?\n\n### 5. \uD83D\uDE80 Improvement Opportunities\n- What could be improved in the implementation?\n- Are there better approaches or patterns?\n- What additional considerations were missed?\n\n## Output Format:\nProvide your validation in JSON format:\n```json\n{\n  \"compliance_score\": 85,\n  \"quality_score\": 90,\n  \"correctness_score\": 95,\n  \"misunderstandings\": [\"Example: Agent interpreted X as Y instead of Z\"],\n  \"missing_requirements\": [\"Example: Error handling was not implemented\"],\n  \"improvement_suggestions\": [\"Example: Could use more descriptive variable names\"],\n  \"overall_assessment\": \"Good implementation with minor areas for improvement\",\n  \"validation_confidence\": 0.9\n}\n```\n\nBe thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.")];
             });

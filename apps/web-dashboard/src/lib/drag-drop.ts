@@ -345,13 +345,13 @@ export class DragDropManager {
    * Highlight or unhighlight drop zones
    */
   private highlightDropZones(highlight: boolean): void {
-    this.dropZones.forEach(element => {
+    for (const element of this.dropZones) {
       if (highlight) {
         element.classList.add('drop-zone-active');
       } else {
         element.classList.remove('drop-zone-active');
       }
-    });
+    }
   }
 
   /**
