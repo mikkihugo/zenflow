@@ -1,6 +1,5 @@
 # Set the default behavior for all files to automatically handle line endings
 * text=auto eol=lf
-
 # Explicitly declare files that must have LF line endings
 *.sh eol=lf
 *.bash eol=lf
@@ -34,3 +33,4 @@ Makefile eol=lf
 .gitignore text eol=lf
 .gitattributes text eol=lf
 *.tar.gz filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text

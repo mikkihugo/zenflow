@@ -802,7 +802,7 @@ mod tests {
   #[test]
   fn test_training_bridge_creation() {
     let algorithm =
-      Box::new(ruv_fann::training::BackpropagationAlgorithm::new());
+      Box::new(ruv_fann::training::IncrementalBackprop::new(0.7));
     let bridge = TrainingBridge::<f64>::new(algorithm);
 
     assert_eq!(bridge.config.max_epochs, 1000);

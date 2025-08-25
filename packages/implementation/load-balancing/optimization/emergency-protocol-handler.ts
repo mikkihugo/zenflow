@@ -14,24 +14,24 @@ import type { EmergencyHandler } from '../interfaces';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    console.log(`[DEBUG] ${message}`, meta||'),
+    console.log(`[DEBUG] ${message}`, meta || ''),
   info: (message: string, meta?: unknown) =>
-    console.log(`[INFO] ${message}`, meta|||),`
+    console.log(`[INFO] ${message}`, meta || ''),
   warn: (message: string, meta?: unknown) =>
-    console.warn(`[WARN] ${message}`, meta|||),`
+    console.warn(`[WARN] ${message}`, meta || ''),
   error: (message: string, meta?: unknown) =>
-    console.error(`[ERROR] ${message}`, meta|||'),
+    console.error(`[ERROR] ${message}`, meta || ''),
 };
 
 interface EmergencyProtocol {
   name: string;
-  severity: 'low|medium|high|critical;
+  severity: 'low' | 'medium' | 'high' | 'critical';
   actions: EmergencyAction[];
   triggers: string[];
 }
 
 interface EmergencyAction {
-  type: 'load_shed|scale_up|failover|throttle|alert;
+  type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
   parameters: Record<string, unknown>;
   timeout: number;
 }
