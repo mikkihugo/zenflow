@@ -16,23 +16,19 @@ export default [
       parserOptions: {
         ecmaVersion: 2024,
         sourceType: 'module',
-        // Optimized for 5-tier architecture - specific paths for all tiers
+        // Optimized for 4-tier architecture - specific paths for all tiers
         project: [
           './tsconfig.json',
           './apps/*/tsconfig.json',
-          // Tier 1: Public API packages (in workspace)
-          './packages/tier1-public/*/tsconfig.json',
-          './packages/tier1-public/*/*/tsconfig.json',
-          // Tier 2: Private implementation packages
-          './packages/tier2-private/*/tsconfig.json',
-          // Tier 3: Internal core packages  
-          './packages/tier3-internal/*/tsconfig.json',
-          // Tier 4: Restricted access packages
-          './packages/tier4-restricted/*/tsconfig.json',
-          // Tier 5: Deep core packages
-          './packages/tier5-deepcore/*/tsconfig.json',
+          // Public API packages
+          './packages/public-api/*/tsconfig.json',
+          './packages/public-api/*/*/tsconfig.json',
           // Implementation packages
-          './packages/implementation-packages/*/tsconfig.json'
+          './packages/implementation/*/tsconfig.json',
+          // Enterprise packages
+          './packages/enterprise/*/tsconfig.json',
+          // Private core packages
+          './packages/private-core/*/tsconfig.json',
         ],
         tsconfigRootDir: import.meta.dirname,
       },
@@ -207,20 +203,56 @@ export default [
   // Ignore patterns
   {
     ignores: [
+      // Build artifacts and compiled output
       'scripts/**/*',
       'dist/**/*',
+      'build/**/*',
+      'target/**/*',
+      'packages/**/dist/**/*',
+      'apps/**/dist/**/*',
+      'apps/**/.svelte-kit/**/*',
+      
+      // Node modules and dependencies
       'coverage/**/*', 
       'node_modules/**/*',
+      
+      // Configuration and cache files
       '*.config.*',
       'test-results.json',
       '.eslintcache',
       'gts.json',
       'jest.config.js',
+      '**/*.tsbuildinfo',
+      
+      // Generated files
       '**/*.d.ts',
+      'packages/**/*.js',
+      'packages/**/*.js.map',
+      
+      // Database and storage
+      '*.db',
+      '*.sqlite*',
+      'storage/**/*',
+      'qdrant_storage/**/*',
+      '**/*.kuzu/**/*',
+      
+      // Environment and local files
+      '.env*',
+      '.mise.toml',
+      
+      // Development directories
       'ruv-FANN/**/*', // Rust code
       '.claude/**/*', // Claude commands
+      '.claude-zen/**/*', // Local data
       '.github/**/*', // GitHub workflows
-      // Root-level utility scripts (relaxed rules)
+      'tmp/**/*',
+      'logs/**/*',
+      
+      // Test setup files not in tsconfig
+      'tests/setup*.ts',
+      'tests/vitest-setup.ts',
+      
+      // Root-level utility scripts
       'analyze-corruption-patterns.mjs',
       'apply-ast-union-fix.mjs',
       'fix-remaining-corruption.sh',
@@ -228,11 +260,21 @@ export default [
       'test-*.mjs',
       '*.test.*',
       '*.spec.*',
+      
       // Mock and script files
       '**/mock-*.{js,cjs,mjs}',
       '**/scripts/**/*.{js,mjs,cjs}',
       '**/*-codegen.config.ts',
       'apps/*/scripts/**/*.{js,mjs,cjs}',
+      
+      // Bazel and analysis artifacts
+      'bazel-*/**/*',
+      '.bazel-*/**/*',
+      'analysis-reports/**/*',
+      'graph-db/**/*',
+      
+      // Playwright artifacts
+      '.playwright-mcp/**/*',
     ],
   },
 ];

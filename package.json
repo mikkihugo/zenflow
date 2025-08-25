@@ -12,14 +12,13 @@
   "workspaces": [
     "apps/claude-code-zen-server",
     "apps/web-dashboard",
-    "packages/tier1-public/core/*",
-    "packages/tier1-public/facades/*",
-    "packages/tier1-public/integrations/*"
+    "packages/public-api/core/*",
+    "packages/public-api/facades/*"
   ],
   "scripts": {
     "start": "pnpm --filter @claude-zen/server start",
     "dev": "concurrently \"pnpm --filter @claude-zen/server dev\" \"pnpm --filter @claude-zen/web-dashboard dev\"",
-    "build": "pnpm --filter @claude-zen/foundation build && pnpm --filter @claude-zen/server build && pnpm --filter @claude-zen/web-dashboard build",
+    "build": "echo 'Building foundation packages first...' && pnpm --filter @claude-zen/foundation build && echo 'Building applications...' && pnpm --filter @claude-zen/server build && pnpm --filter @claude-zen/web-dashboard build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
