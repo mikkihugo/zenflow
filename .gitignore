@@ -47,6 +47,25 @@ bin/ncc/build/
 *.exe
 *.bin
 
+# Large binary files and archives - prevent accidental commits
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+*.7z
+# Large compiled binaries
+claude-flow
+claude-zen-linux  
+claude-zen-macos
+claude-zen-win.exe
+qdrant
+# Large database files
+*.db-wal
+*.db-shm
+# Archive and release files
+archive/releases/
+releases/
+
 # Package build artifacts - prevent committing compiled output
 packages/**/dist/
 packages/**/*.d.ts
