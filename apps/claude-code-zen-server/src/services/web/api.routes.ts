@@ -116,7 +116,7 @@ export class WebApiRoutes {
   private dataService: WebDataService;
   
   // Strategic delegation instances
-  private advancedGUI: any | null = null;
+  // Note: AGUI functionality handled by TaskMaster service
   private workflowEngine: any | null = null;
   private healthMonitor: any | null = null;
   private webMiddleware: any | null = null;
@@ -141,14 +141,8 @@ export class WebApiRoutes {
     if (this.initialized) return;
     
     try {
-      // Delegate to @claude-zen/enterprise for advanced GUI capabilities
-      const safeFramework = await getSafeFramework();
-      this.advancedGUI = safeFramework.getAdvancedGUI({
-        enableApprovalWorkflows: true,
-        enableHumanInTheLoop: true,
-        enableTaskApproval: true
-      });
-      await this.advancedGUI?.initialize();
+      // Note: AGUI functionality delegated to TaskMaster service
+      // Advanced GUI capabilities provided through TaskMaster API endpoints
       
       // Delegate to @claude-zen/intelligence for task orchestration
       // Delegate to @claude-zen/intelligence for task orchestration
@@ -514,7 +508,7 @@ private async setupCollaborationRoutes(app: Express, api: string): Promise<void>
       totalRoutes: 25, // Comprehensive route count via delegation
       routesByPackage: {
         core: 4,
-        agui: 6, // Updated from 'taskmaster' to 'agui'
+        taskmaster: 6, // AGUI functionality provided by TaskMaster
         workflows: 8,
         monitoring: 4,
         collaboration: 3

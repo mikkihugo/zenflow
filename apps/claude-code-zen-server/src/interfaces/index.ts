@@ -28,8 +28,8 @@ export interface InterfaceConfig {
   // Enable intelligent project scaffolding
 }
 
-// Enhanced Interface launcher utilities
-export const InterfaceUtils = {
+// Enhanced Interface launcher utilities  
+export const interfaceUtils = {
   detectMode(): 'terminal' | 'web' | 'mcp' | 'api' | 'advanced-cli' {
     // Auto-detect interface mode based on environment and commands
     if (process.env['CLAUDE_CODE_MCP']) return 'mcp';
@@ -45,10 +45,14 @@ export const InterfaceUtils = {
       'swarm',
       'neural',
     ];
+    const AI_ASSIST_FLAG = '--ai-assist';
+    const REAL_TIME_FLAG = '--real-time'; 
+    const OPTIMIZE_FLAG = '--optimize';
+    
     const aiFlags = [
-      '--ai-assist',
-      '--real-time',
-      '--optimize',
+      AI_ASSIST_FLAG,
+      REAL_TIME_FLAG,
+      OPTIMIZE_FLAG,
       '--neural',
       '--swarm',
     ];
@@ -75,10 +79,14 @@ export const InterfaceUtils = {
       'swarm',
       'neural',
     ];
+    const AI_ASSIST_FLAG = '--ai-assist';
+    const REAL_TIME_FLAG = '--real-time'; 
+    const OPTIMIZE_FLAG = '--optimize';
+    
     const aiFlags = [
-      '--ai-assist',
-      '--real-time',
-      '--optimize',
+      AI_ASSIST_FLAG,
+      REAL_TIME_FLAG,
+      OPTIMIZE_FLAG,
       '--neural',
       '--swarm',
     ];
@@ -125,10 +133,14 @@ export const InterfaceUtils = {
       'swarm',
       'neural',
     ];
+    const AI_ASSIST_FLAG = '--ai-assist';
+    const REAL_TIME_FLAG = '--real-time'; 
+    const OPTIMIZE_FLAG = '--optimize';
+    
     const aiFlags = [
-      '--ai-assist',
-      '--real-time',
-      '--optimize',
+      AI_ASSIST_FLAG,
+      REAL_TIME_FLAG,
+      OPTIMIZE_FLAG,
       '--neural',
       '--swarm',
     ];
@@ -145,7 +157,7 @@ export const InterfaceUtils = {
 };
 
 // Enhanced capabilities
-export const INTERFACE_CAPABILITIES = {
+export const interfaceCapabilities = {
   advancedCLI: true,
   aiAssistedDevelopment: true,
   realTimeMonitoring: true,
@@ -157,6 +169,6 @@ export const INTERFACE_CAPABILITIES = {
 };
 
 export default {
-  InterfaceUtils,
-  INTERFACE_CAPABILITIES,
+  interfaceUtils,
+  interfaceCapabilities,
 };

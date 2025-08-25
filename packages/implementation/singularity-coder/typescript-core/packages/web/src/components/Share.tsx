@@ -127,12 +127,10 @@ export default function Share(props: {
             setStore("messages", messageID, reconcile(d.content))
           }
           if (type === "part") {
-            setStore("messages", d.content.messageID, "parts", arr => {
+            setStore("messages", d.content.messageID, "parts", (arr) => {
               const index = arr.findIndex((x) => x.id === d.content.id)
-              if (index === -1)
-                arr.push(d.content)
-              if (index > -1)
-                arr[index] = d.content
+              if (index === -1) arr.push(d.content)
+              if (index > -1) arr[index] = d.content
               return [...arr]
             })
           }
@@ -348,7 +346,7 @@ export default function Share(props: {
                       if (x.type === "tool" && (x.state.status === "pending" || x.state.status === "running"))
                         return false
                       return true
-                    })
+                    }),
                   )
 
                   return (

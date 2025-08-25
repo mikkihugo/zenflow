@@ -139,7 +139,7 @@ const testCases: TestCase[] = [
     replace: "/\\\\w+/g",
   },
   {
-    content:'const message = "Hello 世界! 🌍";',
+    content: 'const message = "Hello 世界! 🌍";',
     find: "Hello 世界! 🌍",
     replace: "Hello World! 🌎",
   },

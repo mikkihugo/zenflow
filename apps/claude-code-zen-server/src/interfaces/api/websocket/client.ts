@@ -54,7 +54,7 @@ export class WebSocketClient extends EventEmitter {
   /**
    * Connect to WebSocket server
    */
-  async connect(): Promise<void> {
+  connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         // Use Node.js 22 built-in WebSocket
@@ -129,7 +129,7 @@ export class WebSocketClient extends EventEmitter {
   /**
    * Send message to server
    */
-  send(data: any): void {
+  send(data: unknown): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
 
     if (this.isConnected && this.ws) {

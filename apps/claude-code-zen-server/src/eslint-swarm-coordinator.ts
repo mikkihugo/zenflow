@@ -196,18 +196,40 @@ export class ESLintSwarmCoordinator extends EventEmitter {
 
       return JSON.parse(output) as ESLintViolation[];
     } catch (error: unknown) {
-      // ESLint returns non-zero exit code when violations are found
-      if (error && typeof error === 'object' && 'stdout' in error && typeof error.stdout === 'string') {
-        try {
-          return JSON.parse(error.stdout) as ESLintViolation[];
-        } catch (parseError) {
-          this.logger.error('Failed to parse ESLint output:', parseError);
-          return [];
-        }
-      }
+      return this.handleEslintError(error);
+    }
+  }
+
+  /**
+   * Handle ESLint execution error
+   */
+  private handleEslintError(error: unknown): ESLintViolation[] {
+    // ESLint returns non-zero exit code when violations are found
+    if (!this.isEslintOutputError(error)) {
       this.logger.error('ESLint command failed:', error);
       return [];
     }
+
+    try {
+      return JSON.parse(error.stdout) as ESLintViolation[];
+    } catch (parseError) {
+      this.logger.error('Failed to parse ESLint output:', parseError);
+      return [];
+    }
+  }
+
+  /**
+   * Check if error contains ESLint output
+   */
+  private isEslintOutputError(
+    error: unknown
+  ): error is { stdout: string } {
+    return (
+      error &&
+      typeof error === 'object' &&
+      'stdout' in error &&
+      typeof (error as { stdout: unknown }).stdout === 'string'
+    );
   }
 
   /**
@@ -253,10 +275,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
 
     for (const agent of this.agents.slice(0, -1)) {
       // Exclude GeneralAgent from scoring
-      const ruleMatches = violation.messages.filter(
-        (msg) =>
-          msg.ruleId && agent.rules.some((rule) => msg.ruleId?.includes(rule))
-      ).length;
+      const ruleMatches = this.countRuleMatches(violation, agent);
 
       if (ruleMatches > bestScore) {
         bestScore = ruleMatches;
@@ -265,6 +284,19 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     }
 
     return bestAgent;
+  }
+
+  /**
+   * Count rule matches between violation and agent
+   */
+  private countRuleMatches(
+    violation: ESLintViolation,
+    agent: SwarmAgentConfig
+  ): number {
+    return violation.messages.filter(
+      (msg) =>
+        msg.ruleId && agent.rules.some((rule) => msg.ruleId?.includes(rule))
+    ).length;
   }
 
   /**
@@ -392,25 +424,34 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         );
 
         // Log details about remaining violations
-        for (const violation of remainingViolations) {
-          for (const msg of violation.messages) {
-            if (this.options.verboseLogging) {
-              this.logger.debug(
-                `Remaining: ${ 
-                  violation.filePath 
-                  }:${ 
-                  msg.line 
-                  }:${ 
-                  msg.column 
-                  } - ${ 
-                  msg.ruleId}`
-              );
-            }
-          }
-        }
+        this.logRemainingViolations(remainingViolations);
       }
     } catch (error) {
       this.logger.error('Failed to verify results:', error);
+    }
+  }
+
+  /**
+   * Log remaining violations details
+   */
+  private logRemainingViolations(violations: ESLintViolation[]): void {
+    if (!this.options.verboseLogging) {
+      return;
+    }
+
+    for (const violation of violations) {
+      for (const msg of violation.messages) {
+        this.logger.debug(
+          `Remaining: ${ 
+            violation.filePath 
+            }:${ 
+            msg.line 
+            }:${ 
+            msg.column 
+            } - ${ 
+            msg.ruleId}`
+        );
+      }
     }
   }
 

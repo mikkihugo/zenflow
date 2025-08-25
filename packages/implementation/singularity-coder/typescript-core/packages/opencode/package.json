@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "dev": "bun run ./src/index.ts"
+    "dev": "node ./src/index.ts",
+    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "bin": {
     "opencode": "./bin/opencode"

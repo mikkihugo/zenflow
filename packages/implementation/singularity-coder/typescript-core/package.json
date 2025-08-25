@@ -3,10 +3,11 @@
   "name": "opencode",
   "private": true,
   "type": "module",
-  "packageManager": "bun@1.2.14",
+  "packageManager": "pnpm@10.15.0",
   "scripts": {
-    "dev": "bun run packages/opencode/src/index.ts",
-    "typecheck": "bun run --filter='*' typecheck",
+    "dev": "node packages/opencode/src/index.ts",
+    "typecheck": "pnpm --filter='*' typecheck",
+    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "stainless": "./scripts/stainless",
     "postinstall": "./scripts/hooks"
   },

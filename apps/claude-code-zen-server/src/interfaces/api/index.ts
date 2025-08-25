@@ -18,8 +18,7 @@ import { getWebDashboardURL } from '@claude-zen/intelligence';
 // Import WebSocketClient for internal use in this file
 import { WebSocketClient } from './websocket/client';
 
-// HTTP API (REST/GraphQL - consolidated from src/api/)
-export * from './http/index';
+// HTTP API removed - using WebSocket-only architecture
 
 // WebSocket API (real-time communication)
 export * from './websocket/index';
@@ -35,7 +34,7 @@ export interface APIInterfaceConfig {
 }
 
 // API utilities
-export const APIUtils = {
+export const apiUtils = {
   /**
    * Create WebSocket URL from base URL.
    *
@@ -59,8 +58,8 @@ export const APIUtils = {
    * @returns Parsed response with success/error status
    */
   parseResponse: (
-    response: any
-  ): { success: boolean; data?: any; error?: string } => {
+    response: unknown
+  ): { success: boolean; data?: unknown; error?: string } => {
     if (response && typeof response === 'object') {
       if (response?.error) {
         return {
@@ -86,7 +85,7 @@ export const APIUtils = {
    * @param params - Request parameters
    * @returns Formatted JSON-RPC request
    */
-  formatRequest: (method: string, params: unknown = {}): any => ({
+  formatRequest: (method: string, params: unknown = {}): unknown => ({
       jsonrpc: '2.0',
       method,
       params,
@@ -141,7 +140,7 @@ export class APIClientFactory {
 export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
   baseUrl: getWebDashboardURL(),
   websocketUrl:
-    `${getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') 
+    `${getWebDashboardURL({ protocol: 'ws' as 'ws' }).replace(/^https?/, 'ws') 
     }/ws`,
   timeout: 5000,
   retries: 3,

@@ -4,6 +4,10 @@
   "$schema": "https://json.schemastore.org/package.json",
   "private": true,
   "type": "module",
+  "scripts": {
+    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "tsc --noEmit"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20250522.0",
     "typescript": "catalog:",

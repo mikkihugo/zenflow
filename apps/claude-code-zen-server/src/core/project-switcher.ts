@@ -100,129 +100,36 @@ export class ProjectSwitcher extends EventEmitter {
     this.lastError = undefined;
 
     try {
-      logger.info('Starting project switch', {
-        projectId: request.projectId,
-        projectPath: request.projectPath ? '[provided]' : '[from registry]',
-      });
-
       this.emit('switchStarted', request);
-
-      // Step 1: Validate and resolve project information
+      
       const projectInfo = this.resolveProjectInfo(request);
-
-      // Step 2: Get current project for comparison
       const currentProject = getCurrentProject();
-
-      // Check if we're already on the target project
-      if (currentProject.path === projectInfo.path) {
-        logger.info('Already on target project', {
-          projectId: projectInfo.id,
-        });
-
-        this.isSwitching = false;
-        return {
-          success: true,
-          projectId: projectInfo.id,
-          projectName: projectInfo.name,
-          projectPath: projectInfo.path,
-          switchedAt: new Date().toISOString(),
-          initializationTime: 0,
-        };
+      
+      const alreadyOnTarget = this.checkIfAlreadyOnTarget(currentProject, projectInfo);
+      if (alreadyOnTarget) {
+        return alreadyOnTarget;
       }
 
-      // Step 3: Graceful shutdown of current coordination
-      logger.info('Shutting down current project coordination', {
-        currentProject: currentProject.id,
-      });
-
-      this.emit('shutdownStarted', { currentProject: currentProject.id });
-      await this.gracefulShutdown(request.timeout || this.switchTimeout);
-      this.emit('shutdownCompleted', { currentProject: currentProject.id });
-
-      // Step 4: Switch working directory and context
-      logger.info('Switching project context', {
-        from: currentProject.path,
-        to: projectInfo.path,
-      });
-
-      this.switchProjectContext(projectInfo.path);
-      this.emit('contextSwitched', {
-        from: currentProject.path,
-        to: projectInfo.path,
-      });
-
-      // Step 5: Ensure data directories exist for new project
-      ensureDataDirectories();
-
-      // Step 6: Reinitialize coordination system
-      logger.info('Reinitializing coordination system', {
-        projectId: projectInfo.id,
-      });
-
-      this.emit('initializationStarted', { projectId: projectInfo.id });
-      await initializeClaudeZen();
-      this.emit('initializationCompleted', { projectId: projectInfo.id });
-
-      // Step 7: Record switch completion
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-      this.lastSwitch = new Date();
-
-      this.switchHistory.push({
-        from: currentProject.id,
-        to: projectInfo.id,
-        timestamp: new Date().toISOString(),
-        duration,
-        success: true,
-      });
-
-      // Keep only last 50 switches in history
-      if (this.switchHistory.length > 50) {
-        this.switchHistory = this.switchHistory.slice(-50);
-      }
-
-      const result: ProjectSwitchResult = {
-        success: true,
-        projectId: projectInfo.id,
-        projectName: projectInfo.name,
-        projectPath: projectInfo.path,
-        previousProject: currentProject.id,
-        switchedAt: new Date().toISOString(),
-        initializationTime: duration,
-      };
-
+      await this.performProjectSwitch(request, currentProject, projectInfo);
+      
+      const result = this.createSwitchResult(
+        currentProject,
+        projectInfo,
+        startTime
+      );
+      
+      this.recordSuccessfulSwitch(currentProject.id, projectInfo.id, startTime);
+      
       logger.info('Project switch completed successfully', {
         projectId: result.projectId,
-        duration: `${  duration  }ms`,
+        duration: `${Date.now() - startTime}ms`,
         previousProject: result.previousProject,
       });
 
       this.emit('switchCompleted', result);
       return result;
     } catch (error) {
-      const errorMessage = (error as Error).message;
-      this.lastError = errorMessage;
-
-      logger.error('Project switch failed', {
-        error: errorMessage,
-        projectId: request.projectId,
-        projectPath: request.projectPath,
-      });
-
-      // Record failed switch
-      const currentProject = getCurrentProject();
-      this.switchHistory.push({
-        from: currentProject.id,
-        to: request.projectId || 'unknown',
-        timestamp: new Date().toISOString(),
-        duration: Date.now() - startTime,
-        success: false,
-      });
-
-      this.emit('switchFailed', {
-        error: errorMessage,
-        request,
-      });
+      this.handleSwitchError(error as Error, request, startTime);
       throw error;
     } finally {
       this.isSwitching = false;
@@ -329,13 +236,158 @@ export class ProjectSwitcher extends EventEmitter {
   }
 
   /**
+   * Check if already on target project
+   */
+  private checkIfAlreadyOnTarget(
+    currentProject: { id: string; path: string },
+    projectInfo: { id: string; name: string; path: string }
+  ): ProjectSwitchResult | null {
+    if (currentProject.path !== projectInfo.path) {
+      return null;
+    }
+
+    logger.info('Already on target project', {
+      projectId: projectInfo.id,
+    });
+
+    this.isSwitching = false;
+    return {
+      success: true,
+      projectId: projectInfo.id,
+      projectName: projectInfo.name,
+      projectPath: projectInfo.path,
+      switchedAt: new Date().toISOString(),
+      initializationTime: 0,
+    };
+  }
+
+  /**
+   * Perform the actual project switch
+   */
+  private async performProjectSwitch(
+    request: ProjectSwitchRequest,
+    currentProject: { id: string; path: string },
+    projectInfo: { id: string; name: string; path: string }
+  ): Promise<void> {
+    logger.info('Starting project switch', {
+      projectId: request.projectId,
+      projectPath: request.projectPath ? '[provided]' : '[from registry]',
+    });
+
+    // Shutdown current coordination
+    logger.info('Shutting down current project coordination', {
+      currentProject: currentProject.id,
+    });
+    this.emit('shutdownStarted', { currentProject: currentProject.id });
+    await this.gracefulShutdown(request.timeout || this.switchTimeout);
+    this.emit('shutdownCompleted', { currentProject: currentProject.id });
+
+    // Switch context
+    logger.info('Switching project context', {
+      from: currentProject.path,
+      to: projectInfo.path,
+    });
+    this.switchProjectContext(projectInfo.path);
+    this.emit('contextSwitched', {
+      from: currentProject.path,
+      to: projectInfo.path,
+    });
+
+    // Ensure directories and reinitialize
+    ensureDataDirectories();
+    
+    logger.info('Reinitializing coordination system', {
+      projectId: projectInfo.id,
+    });
+    this.emit('initializationStarted', { projectId: projectInfo.id });
+    await initializeClaudeZen();
+    this.emit('initializationCompleted', { projectId: projectInfo.id });
+  }
+
+  /**
+   * Create switch result object
+   */
+  private createSwitchResult(
+    currentProject: { id: string },
+    projectInfo: { id: string; name: string; path: string },
+    startTime: number
+  ): ProjectSwitchResult {
+    return {
+      success: true,
+      projectId: projectInfo.id,
+      projectName: projectInfo.name,
+      projectPath: projectInfo.path,
+      previousProject: currentProject.id,
+      switchedAt: new Date().toISOString(),
+      initializationTime: Date.now() - startTime,
+    };
+  }
+
+  /**
+   * Record successful switch in history
+   */
+  private recordSuccessfulSwitch(
+    fromProjectId: string,
+    toProjectId: string,
+    startTime: number
+  ): void {
+    this.lastSwitch = new Date();
+    
+    this.switchHistory.push({
+      from: fromProjectId,
+      to: toProjectId,
+      timestamp: new Date().toISOString(),
+      duration: Date.now() - startTime,
+      success: true,
+    });
+
+    // Keep only last 50 switches in history
+    if (this.switchHistory.length > 50) {
+      this.switchHistory = this.switchHistory.slice(-50);
+    }
+  }
+
+  /**
+   * Handle switch error
+   */
+  private handleSwitchError(
+    error: Error,
+    request: ProjectSwitchRequest,
+    startTime: number
+  ): void {
+    const errorMessage = error.message;
+    this.lastError = errorMessage;
+
+    logger.error('Project switch failed', {
+      error: errorMessage,
+      projectId: request.projectId,
+      projectPath: request.projectPath,
+    });
+
+    // Record failed switch
+    const currentProject = getCurrentProject();
+    this.switchHistory.push({
+      from: currentProject.id,
+      to: request.projectId || 'unknown',
+      timestamp: new Date().toISOString(),
+      duration: Date.now() - startTime,
+      success: false,
+    });
+
+    this.emit('switchFailed', {
+      error: errorMessage,
+      request,
+    });
+  }
+
+  /**
    * Graceful shutdown of current coordination system
    */
   private async gracefulShutdown(timeout: number): Promise<void> {
     const shutdownPromise = shutdownClaudeZen();
 
     // Create timeout promise
-    const timeoutPromise = new Promise<never>((unusedResolve, reject) => {
+    const timeoutPromise = new Promise<never>((resolve, reject) => {
       setTimeout(() => {
         reject(new Error(`Shutdown timeout after ${  timeout  }ms`));
       }, timeout);

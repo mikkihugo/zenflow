@@ -30,8 +30,8 @@ const swarmService = new SwarmService();
 /**
  * Validation middleware for JSON schemas
  */
-function validateSchema(schema: any) {
-  return (req: express.Request, res: express.Response, next: any) => {
+function validateSchema(schema: unknown) {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       // Basic validation (in production, use ajv or similar)
       const data = req.body;
@@ -50,17 +50,17 @@ function validateSchema(schema: any) {
       for (const [key, prop] of Object.entries(schema.properties)) {
         if (
           data[key] &&
-          (prop as any).enum &&
-          !(prop as any).enum.includes(data[key])
+          (prop as { enum?: unknown[] }).enum &&
+          !(prop as { enum: unknown[] }).enum.includes(data[key])
         ) {
           return res.status(400).json({
-            error: `Invalid value for ${key}. Must be one of: ${(prop as any).enum.join(', ')}`,
+            error: `Invalid value for ${key}. Must be one of: ${(prop as { enum: string[] }).enum.join(', ')}`,
             code: 'VALIDATION_ERROR',
           });
         }
       }
       next();
-    } catch (error) {
+    } catch {
       res.status(400).json({ error: 'Invalid JSON', code: 'PARSE_ERROR' });
     }
   };

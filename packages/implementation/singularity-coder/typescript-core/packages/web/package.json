@@ -3,23 +3,17 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "dev:remote": "sst shell --stage=dev --target=Web astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.5.4",
-    "@astrojs/markdown-remark": "6.3.1",
-    "@astrojs/solid-js": "5.1.0",
-    "@astrojs/starlight": "0.34.3",
     "@fontsource/ibm-plex-mono": "5.2.5",
     "@shikijs/transformers": "3.4.2",
     "@types/luxon": "3.6.2",
     "ai": "catalog:",
-    "astro": "^5.13.2",
     "diff": "8.0.2",
     "js-base64": "3.7.7",
     "lang-map": "0.4.0",
@@ -29,12 +23,13 @@
     "rehype-autolink-headings": "7.1.0",
     "sharp": "^0.32.6",
     "shiki": "3.4.2",
-    "solid-js": "1.9.7",
-    "toolbeam-docs-theme": "0.4.3"
+    "solid-js": "1.9.7"
   },
   "devDependencies": {
     "opencode": "workspace:*",
     "@types/node": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vite": "^7.1.3",
+    "@vitejs/plugin-react": "^4.3.4"
   }
 }

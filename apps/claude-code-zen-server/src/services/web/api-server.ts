@@ -23,6 +23,7 @@ import express, { type Express, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import statusMonitor from 'express-status-monitor';
 
 import { ControlApiRoutes } from './control-api-routes';
 import { SystemCapabilityRoutes } from './system-capability-routes';
@@ -62,6 +63,38 @@ export class ApiServer {
 
   private setupMiddleware(): void {
     this.logger.info('🔒 Setting up production middleware...');
+    
+    // Status monitoring dashboard (visit /status for real-time metrics)
+    this.app.use(statusMonitor({
+      title: 'Claude Code Zen API Health',
+      path: '/status',
+      spans: [{
+        interval: 1,    // Every second
+        retention: 60   // Keep 60 seconds of data
+      }, {
+        interval: 5,    // Every 5 seconds  
+        retention: 60   // Keep 5 minutes of data
+      }, {
+        interval: 15,   // Every 15 seconds
+        retention: 60   // Keep 15 minutes of data  
+      }],
+      chartVisibility: {
+        cpu: true,
+        mem: true,
+        load: true,
+        heap: true,
+        responseTime: true,
+        rps: true,
+        statusCodes: true
+      },
+      healthChecks: [{
+        protocol: 'http',
+        host: 'localhost',
+        path: '/api/health',
+        port: this.config.port
+      }]
+    }));
+
     // Basic middleware
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
