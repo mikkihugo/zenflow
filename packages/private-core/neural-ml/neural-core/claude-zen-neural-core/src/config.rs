@@ -19,7 +19,7 @@ use crate::{
 };
 
 /// Generic model configuration implementation
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GenericModelConfig<T: Float + Send + Sync + 'static> {
   /// Model type identifier
   pub model_type: String,

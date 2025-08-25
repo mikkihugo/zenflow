@@ -55,15 +55,15 @@ export class EmergencyProtocolHandler
 
   public async handleEmergency(
     type: string,
-    severity: 'low|medium|high|critical''
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     const protocol = this.activeProtocols.get(type);
     await (protocol
       ? this.executeProtocol(protocol)
       : this.executeDefaultEmergencyResponse(type, severity));
 
-    this.recordEmergency(type, severity, 'protocol_executed');'
-    this.emit('emergency:activated', type, severity);'
+    this.recordEmergency(type, severity, 'protocol_executed');
+    this.emit('emergency:activated', type, severity);
   }
 
   public async shedLoad(percentage: number): Promise<void> {
