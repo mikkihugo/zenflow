@@ -81,7 +81,7 @@ export class EmergencyProtocolHandler
     // 2. Redirect traffic to healthy agents
     // 3. Isolate failed components
 
-    this.recordEmergency('failover', 'critical', 'failover_activated');'
+    this.recordEmergency('failover', 'critical', 'failover_activated');
   }
 
   public async throttleRequests(rate: number): Promise<void> {

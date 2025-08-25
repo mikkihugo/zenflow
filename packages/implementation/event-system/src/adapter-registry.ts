@@ -119,41 +119,41 @@ export const adapterRegistry = new EventAdapterRegistry();
  */
 export function registerDefaultAdapters(): void {
   // Register workflow event factory
-  adapterRegistry.register('workflow', async () => {'
-    const module = await import('./adapters/workflow-event-factory');'
-    const logger = getLogger('WorkflowEventFactory');'
+  adapterRegistry.register('workflow', async () => {
+    const module = await import('./adapters/workflow-event-factory');
+    const logger = getLogger('WorkflowEventFactory');
     const config = getConfig();
     return new module.WorkflowEventManagerFactory(logger, config);
   });
 
   // Register neural event factory
-  adapterRegistry.register('neural', async () => {'
-    const module = await import('./adapters/neural-event-factory');'
-    const logger = getLogger('NeuralEventFactory');'
+  adapterRegistry.register('neural', async () => {
+    const module = await import('./adapters/neural-event-factory');
+    const logger = getLogger('NeuralEventFactory');
     const config = getConfig();
     return new module.NeuralEventManagerFactory(logger, config);
   });
 
   // Register memory event factory
-  adapterRegistry.register('memory', async () => {'
-    const module = await import('./adapters/memory-event-factory');'
-    const logger = getLogger('MemoryEventFactory');'
+  adapterRegistry.register('memory', async () => {
+    const module = await import('./adapters/memory-event-factory');
+    const logger = getLogger('MemoryEventFactory');
     const config = getConfig();
     return new module.MemoryEventManagerFactory(logger, config);
   });
 
   // Register interface event factory
-  adapterRegistry.register('interface', async () => {'
-    const module = await import('./adapters/interface-event-factory');'
-    const logger = getLogger('InterfaceEventFactory');'
+  adapterRegistry.register('interface', async () => {
+    const module = await import('./adapters/interface-event-factory');
+    const logger = getLogger('InterfaceEventFactory');
     const config = getConfig();
     return new module.InterfaceEventManagerFactory(logger, config);
   });
 
   // Register database event factory
-  adapterRegistry.register('database', async () => {'
-    const module = await import('./adapters/database-event-factory');'
-    const logger = getLogger('DatabaseEventFactory');'
+  adapterRegistry.register('database', async () => {
+    const module = await import('./adapters/database-event-factory');
+    const logger = getLogger('DatabaseEventFactory');
     const config = getConfig();
     return new module.DatabaseEventManagerFactory(logger, config);
   });

@@ -90,7 +90,7 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
       this.healthStatuses.set(agent.id, status);
 
       if (status.consecutiveFailures >= 3) {
-        this.emit('agent:unhealthy', agent.id);'
+        this.emit('agent:unhealthy', agent.id);
       }
 
       return false;

@@ -506,15 +506,22 @@ where
   T: Float + Send + Sync + 'static,
 {
   /// Build the configuration
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the configuration is invalid or cannot be built.
   fn build(self) -> NeuroDivergentResult<C>;
 
   /// Set the forecast horizon
+  #[must_use]
   fn with_horizon(self, horizon: usize) -> Self;
 
   /// Set the input size
+  #[must_use]
   fn with_input_size(self, input_size: usize) -> Self;
 
   /// Set exogenous configuration
+  #[must_use]
   fn with_exogenous_config(self, config: ExogenousConfig) -> Self;
 }
 
@@ -599,13 +606,13 @@ mod tests {
 
   #[test]
   fn test_config_parameter_serialization() {
-    let param = ConfigParameter::<f64>::Float(3.14);
+    let param = ConfigParameter::<f64>::Float(std::f64::consts::PI);
     let serialized = serde_json::to_string(&param).unwrap();
     let deserialized: ConfigParameter<f64> =
       serde_json::from_str(&serialized).unwrap();
 
     match deserialized {
-      ConfigParameter::Float(val) => assert!((val - 3.14).abs() < f64::EPSILON),
+      ConfigParameter::Float(val) => assert!((val - std::f64::consts::PI).abs() < f64::EPSILON),
       _ => panic!("Expected Float parameter"),
     }
   }

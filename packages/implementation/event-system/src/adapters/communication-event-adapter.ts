@@ -14,7 +14,7 @@
 import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
 
 const logger = getLogger(
-  'interfaces-events-adapters-communication-event-adapter''
+  'interfaces-events-adapters-communication-event-adapter'
 );
 
 // Generic RPC client and server interfaces - library should not import external SDK dependencies

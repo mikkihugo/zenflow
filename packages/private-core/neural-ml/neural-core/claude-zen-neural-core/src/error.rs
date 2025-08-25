@@ -268,6 +268,7 @@ impl ErrorBuilder {
   }
 
   /// Add a source error
+  #[must_use]
   pub fn source<E: std::error::Error + Send + Sync + 'static>(
     mut self,
     source: E,
@@ -277,6 +278,7 @@ impl ErrorBuilder {
   }
 
   /// Add context information
+  #[must_use]
   pub fn context<K: Into<String>, V: Into<String>>(
     mut self,
     key: K,

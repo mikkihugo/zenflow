@@ -905,7 +905,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Get time range
-  pub fn time_range(
+  pub const fn time_range(
     &self,
   ) -> NeuroDivergentResult<(DateTime<Utc>, DateTime<Utc>)> {
     // TODO: Fix timestamp extraction with proper polars API
@@ -950,7 +950,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 }
 
-/// Builder for TimeSeriesDataset
+/// Builder for `TimeSeriesDataset`
 pub struct TimeSeriesDatasetBuilder<T: Float> {
   unique_id_col: Option<String>,
   ds_col: Option<String>,
@@ -963,7 +963,8 @@ pub struct TimeSeriesDatasetBuilder<T: Float> {
 
 impl<T: Float> TimeSeriesDatasetBuilder<T> {
   /// Create a new builder
-  pub fn new() -> Self {
+  #[must_use]
+  pub const fn new() -> Self {
     Self {
       unique_id_col: None,
       ds_col: None,
@@ -976,18 +977,21 @@ impl<T: Float> TimeSeriesDatasetBuilder<T> {
   }
 
   /// Set the unique ID column name
+  #[must_use]
   pub fn with_unique_id_column(mut self, col: impl Into<String>) -> Self {
     self.unique_id_col = Some(col.into());
     self
   }
 
   /// Set the timestamp column name
+  #[must_use]
   pub fn with_time_column(mut self, col: impl Into<String>) -> Self {
     self.ds_col = Some(col.into());
     self
   }
 
   /// Set the target column name
+  #[must_use]
   pub fn with_target_column(mut self, col: impl Into<String>) -> Self {
     self.y_col = Some(col.into());
     self
