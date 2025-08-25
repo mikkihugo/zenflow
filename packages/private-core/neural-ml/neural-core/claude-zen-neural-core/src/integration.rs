@@ -787,7 +787,7 @@ mod tests {
 
   #[test]
   fn test_network_adapter_creation() {
-    let network = NetworkBuilder::new()
+    let network: Network<f64> = NetworkBuilder::new()
       .input_layer(3)
       .hidden_layer(5)
       .output_layer(1)
@@ -810,7 +810,7 @@ mod tests {
 
   #[test]
   fn test_default_preprocessor() {
-    let mut preprocessor = DefaultInputPreprocessor::<f64>::new();
+    let preprocessor = DefaultInputPreprocessor::<f64>::new();
 
     let input = TimeSeriesInput {
       target_history: vec![1.0, 2.0, 3.0, 4.0, 5.0],

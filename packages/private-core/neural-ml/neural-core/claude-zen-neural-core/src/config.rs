@@ -906,16 +906,18 @@ impl ConfigManager {
   }
 
   /// Get current configuration
-  pub fn config(&self) -> Option<&SystemConfig> {
+  #[must_use]
+  pub const fn config(&self) -> Option<&SystemConfig> {
     self.current_config.as_ref()
   }
 
   /// Get mutable reference to current configuration
-  pub fn config_mut(&mut self) -> Option<&mut SystemConfig> {
+  pub const fn config_mut(&mut self) -> Option<&mut SystemConfig> {
     self.current_config.as_mut()
   }
 
   /// Validate current configuration
+  #[must_use]
   pub fn validate(&self) -> ValidationResult {
     let mut result = ValidationResult {
       is_valid: true,
@@ -937,8 +939,7 @@ impl ConfigManager {
     result
   }
 
-  fn validate_system_config(
-    &self,
+  const fn validate_system_config(
     _config: &SystemConfig,
     _result: &mut ValidationResult,
   ) {
