@@ -40,7 +40,7 @@ async function performBasicSQLiteTests(adapter: SQLiteAdapter): Promise<void> {
   expect(health.score).toBeGreaterThan(0);
 }
 
-async function transactionCallback(tx: TransactionConnection): Promise<void> {
+async function transactionCallback(tx: any): Promise<void> { // Use any to avoid import issues
   await tx.execute(INSERT_TEST_SQL, [TRANSACTION_TEST]);
   const txResult = await tx.query<{ count: number }>(COUNT_QUERY);
   expect(txResult.rows[0].count).toBe(2);

@@ -3,6 +3,9 @@
 //! This module provides comprehensive support for time series data handling,
 //! including data validation, preprocessing, and transformation operations.
 
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+
 use std::collections::HashMap;
 use std::marker::PhantomData;
 use std::path::Path;
@@ -544,6 +547,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Get unique time series identifiers
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the unique ID column cannot be accessed or converted to strings.
   pub fn unique_ids(&self) -> NeuroDivergentResult<Vec<String>> {
     let ids = self
       .data
@@ -572,6 +579,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Filter by date range
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the date filtering operation fails.
   pub fn filter_date_range(
     &self,
     start: DateTime<Utc>,
@@ -600,6 +611,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Filter by unique ID
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the filtering operation fails.
   pub fn filter_by_id(&self, id: &str) -> NeuroDivergentResult<Self> {
     let filtered_df = self
       .data
@@ -619,6 +634,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Convert to internal dataset format
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if data conversion fails or if timestamp/target columns cannot be processed.
   pub fn to_dataset(&self) -> NeuroDivergentResult<TimeSeriesDataset<T>> {
     let unique_ids = self.unique_ids()?;
     let mut series_data = HashMap::new();

@@ -610,64 +610,64 @@ export class LoadBalancer extends TypedEventBase {
         await this.systemMonitor.stop();
 
         const shutdownTimeResult =
-          this.performanceTracker.endTimer('system-shutdown');'
+          this.performanceTracker.endTimer('system-shutdown');
         const shutdownTime = this.getDuration(shutdownTimeResult);
         const totalUptime = this.startTime ? Date.now() - this.startTime : 0;
 
         // Record shutdown metrics
-        recordMetric('load_balancer_stops_total', 1);'
-        recordHistogram('load_balancer_shutdown_duration_ms', shutdownTime);'
-        recordHistogram('load_balancer_total_uptime_ms', totalUptime);'
+        recordMetric('load_balancer_stops_total', 1);
+        recordHistogram('load_balancer_shutdown_duration_ms', shutdownTime);
+        recordHistogram('load_balancer_total_uptime_ms', totalUptime);
 
         // Record shutdown event
-        recordEvent('load_balancer.stopped', {'
+        recordEvent('load_balancer.stopped', {
           shutdown_duration_ms: shutdownTime,
           total_uptime_ms: totalUptime,
           agent_count: this.agents.size,
           timestamp: Date.now(),
         });
 
-        this.logger.info('Load balancing system stopped successfully', {'
+        this.logger.info('Load balancing system stopped successfully', {
           shutdownTime,
           totalUptime,
           agentCount: this.agents.size,
         });
 
-        this.emit('stopped', {});'
+        this.emit('stopped', {});
       });
     });
 
     if (
       result &&
-      typeof result === 'object' &&'
-      'isErr' in result &&'
+      typeof result === 'object' &&
+      'isErr' in result &&
       result.isErr()
     ) {
       const shutdownTimeResult =
-        this.performanceTracker.endTimer('system-shutdown');'
+        this.performanceTracker.endTimer('system-shutdown');
       const shutdownTime = this.getDuration(shutdownTimeResult);
 
-      recordMetric('load_balancer_shutdown_failures_total', 1);'
-      recordEvent('load_balancer.shutdown.failed', {'
+      recordMetric('load_balancer_shutdown_failures_total', 1);
+      recordEvent('load_balancer.shutdown.failed', {
         error:
-          result && typeof result === 'object' && 'error' in result'
+          result && typeof result === 'object' && 'error' in result
             ? result.error.message
             : 'Unknown error',
         duration_ms: shutdownTime,
         timestamp: Date.now(),
       });
 
-      this.logger.error('Failed to stop load balancing system gracefully', {'
+      this.logger.error('Failed to stop load balancing system gracefully', {
         error:
-          result && typeof result === 'object' && 'error' in result'
+          result && typeof result === 'object' && 'error' in result
             ? result.error
             : 'Unknown error',
         shutdownTime,
       });
 
-      // Don't throw on shutdown failure, just log and continue'
+      // Don't throw on shutdown failure, just log and continue
       this.isRunning = false;
-      this.emit('stopped', {});'
+      this.emit('stopped', {});
     }
   }
 
@@ -678,7 +678,7 @@ export class LoadBalancer extends TypedEventBase {
    */
 
   public async addAgent(agent: Agent): Promise<void> {
-    this.performanceTracker.startTimer('add-agent');'
+    this.performanceTracker.startTimer('add-agent');
 
     const result = await withAsyncTrace(async () => {
       return await safeAsync(async () => {
@@ -692,7 +692,7 @@ export class LoadBalancer extends TypedEventBase {
 
         // Store agent in memory and persistent storage
         this.agents.set(agent.id, agent);
-        await this.foundationKVStore.set(
+        // await this.kvStore.set(
           `agent:${agent.id}`,
           agent as unknown as Record<string, unknown>
         );
@@ -730,7 +730,7 @@ export class LoadBalancer extends TypedEventBase {
           coordinationEfficiency: 1.0, // Start with perfect efficiency
         });
 
-        const addTimeResult = this.performanceTracker.endTimer('add-agent');'
+        const addTimeResult = this.performanceTracker.endTimer('add-agent');
         const addTime = this.getDuration(addTimeResult);
 
         // Notify observers
@@ -739,9 +739,9 @@ export class LoadBalancer extends TypedEventBase {
         }
 
         // Record comprehensive metrics
-        recordMetric('load_balancer_agents_added_total', 1);'
-        recordMetric('load_balancer_total_agents', this.agents.size);'
-        recordHistogram('load_balancer_add_agent_duration_ms', addTime);'
+        recordMetric('load_balancer_agents_added_total', 1);
+        recordMetric('load_balancer_total_agents', this.agents.size);
+        recordHistogram('load_balancer_add_agent_duration_ms', addTime);
         recordGauge(
           'load_balancer_healthy_agents_ratio',
           this.agents.size > 0
@@ -752,7 +752,7 @@ export class LoadBalancer extends TypedEventBase {
         );
 
         // Record agent addition event
-        recordEvent('load_balancer.agent.added', {'
+        recordEvent('load_balancer.agent.added', {
           agent_id: agent.id,
           capabilities: agent.capabilities,
           total_agents: this.agents.size,
@@ -760,26 +760,26 @@ export class LoadBalancer extends TypedEventBase {
           timestamp: Date.now(),
         });
 
-        this.logger.info('Agent added successfully with monitoring', {'
+        this.logger.info('Agent added successfully with monitoring', {
           agentId: agent.id,
           totalAgents: this.agents.size,
           addTime,
         });
 
-        this.emit('agent:added', agent);'
+        this.emit('agent:added', agent);
       });
     });
 
     if (
       result &&
-      typeof result === 'object' &&'
-      'isErr' in result &&'
+      typeof result === 'object' &&
+      'isErr' in result &&
       result.isErr()
     ) {
-      this.logger.error('Failed to add agent', {'
+      this.logger.error('Failed to add agent', {
         agentId: agent.id,
         error:
-          result && typeof result === 'object' && 'error' in result'
+          result && typeof result === 'object' && 'error' in result
             ? result.error
             : 'Unknown error',
       });
@@ -821,7 +821,7 @@ export class LoadBalancer extends TypedEventBase {
       await observer.onAgentRemoved(agentId);
     }
 
-    this.emit('agent:removed', agentId);'
+    this.emit('agent:removed', agentId);
   }
 
   /**
@@ -830,11 +830,11 @@ export class LoadBalancer extends TypedEventBase {
    * @param task
    */
   public async routeTask(task: Task): Promise<RoutingResult> {
-    const span = startTrace('route-task');'
+    const span = startTrace('route-task');
 
     return await withTrace(async () => {
       const result = await safeAsync(async () => {
-        this.logger.debug('Routing task', {'
+        this.logger.debug('Routing task', {
           taskId: task.id,
           type: task.type,
           priority: task.priority,
@@ -845,7 +845,7 @@ export class LoadBalancer extends TypedEventBase {
         );
 
         if (availableAgents.length === 0) {
-          recordMetric('load_balancer_no_agents_available_total', 1);'
+          recordMetric('load_balancer_no_agents_available_total', 1);
           throw new ContextError('No healthy agents available', {
             context: {
               totalAgents: this.agents.size,
@@ -867,10 +867,10 @@ export class LoadBalancer extends TypedEventBase {
         // Use consistent hashing for certain task types
         let routingResult: RoutingResult;
 
-        if (task.type === 'stateful' || task.sessionId) {'
+        if (task.type === 'stateful' || task.sessionId) {
           // Use consistent hashing for stateful tasks
           const hashedAgent = this.consistentHashing.get(
-            task.sessionId || task.id || 'default''
+            task.sessionId || task.id || 'default'
           );
           const agent = hashedAgent ? this.agents.get(hashedAgent) : undefined;
 

@@ -571,7 +571,7 @@ export class SQLiteAdapter implements DatabaseConnection {
           const db = new Database(this.config.database, {
             readonly: false,
             fileMustExist: false,
-            timeout: this.config.pool!.createTimeoutMillis,
+            timeout: this.config.pool?.createTimeoutMillis,
             verbose: (message?: unknown) => {
               logger.debug('SQLite operation', { message, connectionId: id });
             },
@@ -635,10 +635,10 @@ export class SQLiteAdapter implements DatabaseConnection {
   private async acquireConnection(
     correlationId: string
   ): Promise<PooledConnection> {
-    const timeout = this.config.pool!.acquireTimeoutMillis;
+    const timeout = this.config.pool?.acquireTimeoutMillis;
     const startTime = Date.now();
 
-    while (Date.now() - startTime < timeout) {
+    while (Date.now() - startTime < timeout ?? 30000) {
       // Find available connection
       const available = this.pool.find((conn) => !conn.inUse);
 
@@ -649,7 +649,7 @@ export class SQLiteAdapter implements DatabaseConnection {
       }
 
       // Create new connection if under limit
-      if (this.pool.length < this.config.pool!.max) {
+      if (this.pool.length < this.config.pool?.max ?? 10) {
         const newConnection = await this.createConnection();
         newConnection.inUse = true;
         return newConnection;
@@ -885,20 +885,20 @@ export class SQLiteAdapter implements DatabaseConnection {
   private startPoolMaintenance(): void {
     setInterval(() => {
       this.maintainPool();
-    }, this.config.pool!.reapIntervalMillis);
+    }, this.config.pool?.reapIntervalMillis);
   }
 
   private maintainPool(): void {
     const now = Date.now();
-    const idleTimeout = this.config.pool!.idleTimeoutMillis;
-    const minConnections = this.config.pool!.min;
+    const idleTimeout = this.config.pool?.idleTimeoutMillis;
+    const minConnections = this.config.pool?.min;
 
     // Remove idle connections beyond idle timeout, but keep minimum
     const toRemove = this.pool.filter(
       (conn) =>
         !conn.inUse &&
-        now - conn.lastUsedAt.getTime() > idleTimeout &&
-        this.pool.length > minConnections
+        now - conn.lastUsedAt.getTime() > (idleTimeout ?? 300000) &&
+        this.pool.length > (minConnections ?? 1)
     );
 
     for (const conn of toRemove) {
@@ -942,7 +942,9 @@ class SQLiteTransactionConnection implements TransactionConnection {
 
         try {
           const stmt = this.db.prepare(sql);
-          const paramArray = this.normalizeParams(params);
+          // Use instance method for transaction connections
+          const paramArray = (this as any).normalizeParams ? (this as any).normalizeParams(params) : 
+            Array.isArray(params) ? [...params] : Object.values(params || {});
 
           let rows: unknown[];
           if (
@@ -957,7 +959,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
               rowCount: 0,
               executionTimeMs: Date.now() - startTime,
               affectedRows: runResult.changes,
-              insertId: runResult.lastInsertRowid,
+              insertId: typeof runResult.lastInsertRowid === 'bigint' ? Number(runResult.lastInsertRowid) : (runResult.lastInsertRowid as number | undefined),
             });
             return;
           }
@@ -1052,5 +1054,12 @@ class SQLiteTransactionConnection implements TransactionConnection {
         }
       });
     });
+  }
+
+  private normalizeParams(params?: QueryParams): unknown[] {
+    if (!params) return [];
+    if (Array.isArray(params)) return [...params];
+    if (params instanceof Map) return [...params.values()];
+    return Object.values(params);
   }
 }
