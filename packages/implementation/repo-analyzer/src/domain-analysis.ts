@@ -13,7 +13,7 @@ import { basename, dirname, join } from 'node:path';
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-const logger = getLogger('DomainAnalyzer');
+const logger = getLogger('DomainAnalyzer');'
 
 export interface DomainBoundary {
   /** Unique identifier for the domain boundary */
@@ -29,7 +29,7 @@ export interface DomainBoundary {
   /** Subdirectories within the domain */
   subdirectories: string[];
   /** Domain type classification */
-  type: 'core | support | infrastructure | application | presentation';
+  type: 'core | support | infrastructure | application | presentation;
   /** Confidence score for domain identification (0-1) */
   confidence: number;
 }
@@ -40,7 +40,7 @@ export interface DomainRelationship {
   /** Target domain ID */
   targetId: string;
   /** Relationship type */
-  type: 'depends-on | uses | extends | implements | aggregates | composes';
+  type: 'depends-on | uses | extends | implements | aggregates | composes;
   /** Relationship strength (0-1) */
   strength: number;
   /** Evidence for the relationship */
@@ -157,7 +157,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
    * Perform comprehensive domain analysis
    */
   async analyzeDomains(): Promise<DomainAnalysis> {
-    logger.info('Starting domain analysis', {
+    logger.info('Starting domain analysis', {'
       rootPath: this.configuration.rootPath,
     });
 
@@ -188,17 +188,17 @@ export class DomainAnalysisEngine extends TypedEventBase {
         config: this.configuration,
       };
 
-      logger.info('Domain analysis completed', {
+      logger.info('Domain analysis completed', {'
         domainCount: analysis.domains.length,
         relationshipCount: analysis.relationships.length,
         quality: metrics.architecturalQuality,
       });
 
-      this.emit('analysis-completed', analysis);
+      this.emit('analysis-completed', analysis);'
       return analysis;
     } catch (error) {
-      logger.error('Domain analysis failed', { error });
-      this.emit('analysis-failed', error);
+      logger.error('Domain analysis failed', { error });'
+      this.emit('analysis-failed', error);'
       throw error;
     }
   }
@@ -218,7 +218,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
    * Analyze a specific domain
    */
   async analyzeDomain(domainPath: string): Promise<DomainBoundary | null> {
-    logger.debug('Analyzing specific domain', { domainPath });
+    logger.debug('Analyzing specific domain', { domainPath });'
 
     if (!existsSync(domainPath)) {
       return null;
@@ -256,24 +256,24 @@ export class DomainAnalysisEngine extends TypedEventBase {
     const suggestions: string[] = [];
 
     if (metrics.coupling > 0.7) {
-      suggestions.push('Consider reducing coupling by extracting shared interfaces');
+      suggestions.push('Consider reducing coupling by extracting shared interfaces');'
     }
 
     if (metrics.cohesion < 0.5) {
       suggestions.push(
-        'Consider splitting domain into smaller, more cohesive units'
+        'Consider splitting domain into smaller, more cohesive units''
       );
     }
 
     if (metrics.cyclomaticComplexity > 20) {
       suggestions.push(
-        'Consider refactoring complex methods to reduce complexity'
+        'Consider refactoring complex methods to reduce complexity''
       );
     }
 
     if (metrics.maintainabilityIndex < 60) {
       suggestions.push(
-        'Consider improving code maintainability through refactoring'
+        'Consider improving code maintainability through refactoring''
       );
     }
 
@@ -288,11 +288,11 @@ export class DomainAnalysisEngine extends TypedEventBase {
         const codeFile = await this.analyzeFile(filePath);
         this.analyzedFiles.set(filePath, codeFile);
       } catch (error) {
-        logger.warn('Failed to analyze file', { filePath, error });
+        logger.warn('Failed to analyze file', { filePath, error });'
       }
     }
 
-    logger.debug('File discovery completed', {
+    logger.debug('File discovery completed', {'
       fileCount: this.analyzedFiles.size,
     });
   }
@@ -316,7 +316,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
           // Check if directory should be excluded
           const shouldExclude = this.configuration.excludePatterns.some(
             (pattern) =>
-              fullPath.includes(pattern.replace('**/', '').replace('/**', ''))
+              fullPath.includes(pattern.replace('**/', '').replace('/**', ''))'
           );
 
           if (!shouldExclude) {
@@ -330,8 +330,8 @@ export class DomainAnalysisEngine extends TypedEventBase {
           // Check if file matches include patterns
           const shouldInclude = this.configuration.includePatterns.some(
             (pattern) => {
-              const ext = pattern.split('.').pop();
-              return fullPath.endsWith(`.${ext}`);
+              const ext = pattern.split('.').pop();'
+              return fullPath.endsWith(`.${ext}`);`
             }
           );
 
@@ -341,14 +341,14 @@ export class DomainAnalysisEngine extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.warn('Failed to read directory', { rootPath, error });
+      logger.warn('Failed to read directory', { rootPath, error });'
     }
 
     return files;
   }
 
   private async analyzeFile(filePath: string): Promise<CodeFile> {
-    const content = readFileSync(filePath, 'utf8');
+    const content = readFileSync(filePath, 'utf8');'
 
     const codeFile: CodeFile = {
       path: filePath,
@@ -364,7 +364,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
   private extractImports(content: string): string[] {
     const imports: string[] = [];
-    const importRegex = /import\s+.*?from\s+["'`]([^"'`]+)["'`]/g;
+    const importRegex = /import\s+.*?from\s+["'`]([^"'`]+)["'`]/g;`
     let match;
 
     while ((match = importRegex.exec(content)) !== null) {
@@ -417,9 +417,9 @@ export class DomainAnalysisEngine extends TypedEventBase {
     complexity: number;
     maintainability: number;
   } {
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
     const linesOfCode = lines.filter(
-      (line) => line.trim() && !line.trim().startsWith('//')
+      (line) => line.trim() && !line.trim().startsWith('//')'
     ).length;
 
     // Simple complexity calculation
@@ -441,11 +441,11 @@ export class DomainAnalysisEngine extends TypedEventBase {
     // Group files by directory structure
     for (const filePath of this.analyzedFiles.keys()) {
       const dir = dirname(filePath);
-      const segments = dir.split('/').filter((s) => s && s !== '.');
+      const segments = dir.split('/').filter((s) => s && s !== '.');'
 
       // Try different levels of grouping
       for (let level = 1; level <= Math.min(3, segments.length); level++) {
-        const groupKey = segments.slice(0, level).join('/');
+        const groupKey = segments.slice(0, level).join('/');'
         if (!pathGroups.has(groupKey)) {
           pathGroups.set(groupKey, []);
         }
@@ -461,7 +461,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
       }
     }
 
-    logger.debug('Domain identification completed', {
+    logger.debug('Domain identification completed', {'
       domainCount: this.discoveredDomains.size,
     });
   }
@@ -470,7 +470,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     path: string,
     files: string[]
   ): Promise<DomainBoundary> {
-    const name = basename(path) || 'root';
+    const name = basename(path) || 'root;
     const concepts = new Set<string>();
 
     // Collect concepts from all files in domain
@@ -482,9 +482,9 @@ export class DomainAnalysisEngine extends TypedEventBase {
     }
 
     const domain: DomainBoundary = {
-      id: `domain_${path.replace(/[^\dA-Za-z]/g, '_')}`,
+      id: `domain_${path.replace(/[^\dA-Za-z]/g, '_')}`,`
       name,
-      description: `Domain containing ${files.length} files with concepts: ${Array.from(concepts).slice(0, 5).join(', ')}`,
+      description: `Domain containing ${files.length} files with concepts: ${Array.from(concepts).slice(0, 5).join(', ')}`,`
       rootPath: path,
       files,
       subdirectories: this.getSubdirectories(path),
@@ -516,42 +516,42 @@ export class DomainAnalysisEngine extends TypedEventBase {
   private classifyDomainType(
     name: string,
     concepts: string[]
-  ): DomainBoundary['type'] {
+  ): DomainBoundary['type'] {'
     const nameUpper = name.toLowerCase();
 
     if (
-      nameUpper.includes('core') || 
-      nameUpper.includes('domain') || 
-      nameUpper.includes('model')
+      nameUpper.includes('core') || '
+      nameUpper.includes('domain') || '
+      nameUpper.includes('model')'
     ) {
-      return 'core';
+      return 'core;
     }
 
     if (
-      nameUpper.includes('infra') || 
-      nameUpper.includes('database') || 
-      nameUpper.includes('storage')
+      nameUpper.includes('infra') || '
+      nameUpper.includes('database') || '
+      nameUpper.includes('storage')'
     ) {
-      return 'infrastructure';
+      return 'infrastructure;
     }
 
     if (
-      nameUpper.includes('ui') || 
-      nameUpper.includes('view') || 
-      nameUpper.includes('component')
+      nameUpper.includes('ui') || '
+      nameUpper.includes('view') || '
+      nameUpper.includes('component')'
     ) {
-      return 'presentation';
+      return 'presentation;
     }
 
     if (
-      nameUpper.includes('service') || 
-      nameUpper.includes('util') || 
-      nameUpper.includes('helper')
+      nameUpper.includes('service') || '
+      nameUpper.includes('util') || '
+      nameUpper.includes('helper')'
     ) {
-      return 'support';
+      return 'support;
     }
 
-    return 'application';
+    return 'application;
   }
 
   private calculateDomainConfidence(
@@ -623,7 +623,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
       }
     }
 
-    logger.debug('Relationship analysis completed', {
+    logger.debug('Relationship analysis completed', {'
       relationshipCount: this.relationships.length,
     });
   }
@@ -643,7 +643,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
       for (const importPath of codeFile.imports) {
         if (target.files.some((file) => file.includes(importPath))) {
           connectionCount++;
-          evidence.push(`${sourceFile} imports from ${importPath}`);
+          evidence.push(`${sourceFile} imports from ${importPath}`);`
         }
       }
     }
@@ -741,7 +741,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     return Math.min(1, externalDependencies.size / domain.files.length);
   }
 
-  private async calculateOverallMetrics(): Promise<DomainAnalysis['metrics']> {
+  private async calculateOverallMetrics(): Promise<DomainAnalysis['metrics']> {'
     const domains = Array.from(this.discoveredDomains.values());
     let totalCohesion = 0;
     let totalCoupling = 0;

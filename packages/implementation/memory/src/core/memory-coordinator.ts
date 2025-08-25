@@ -22,16 +22,16 @@ export interface MemoryCoordinationConfig {
   consensus: {
     quorum: number;
     timeout: number;
-    strategy:'majority|unanimous|leader';
+    strategy:'majority' | 'unanimous' | 'leader';
   };
   distributed: {
     replication: number;
-    consistency: 'eventual|strong|weak';
-    partitioning: 'hash|range|consistent';
+    consistency: 'eventual' | 'strong' | 'weak';
+    partitioning: 'hash' | 'range' | 'consistent';
   };
   optimization: {
     autoCompaction: boolean;
-    cacheEviction: 'lru|lfu|adaptive';
+    cacheEviction: 'lru' | 'lfu' | 'adaptive';
     memoryThreshold: number;
   };
 }
@@ -39,7 +39,7 @@ export interface MemoryCoordinationConfig {
 export interface MemoryNode {
   id: string;
   backend: BackendInterface;
-  status: 'active|inactive|degraded';
+  status: 'active' | 'inactive' | 'degraded';
   lastHeartbeat: number;
   load: number;
   capacity: number;
@@ -47,11 +47,11 @@ export interface MemoryNode {
 
 export interface CoordinationDecision {
   id: string;
-  type: 'read|write|delete|sync|repair';
+  type: 'read|write|delete|sync|repair;
   sessionId: string;
   target: string;
   participants: string[];
-  status: 'pending|executing|completed|failed';
+  status: 'pending|executing|completed|failed;
   timestamp: number;
   metadata?: Record<string, unknown>;
 }
@@ -89,7 +89,7 @@ export class MemoryCoordinator extends TypedEventBase {
     };
 
     this.nodes.set(id, node);
-    this.emit('nodeRegistered', { nodeId: id, node });
+    this.emit('nodeRegistered', { nodeId: id, node });'
   }
 
   /**
@@ -99,7 +99,7 @@ export class MemoryCoordinator extends TypedEventBase {
    */
   async unregisterNode(id: string): Promise<void> {
     this.nodes.delete(id);
-    this.emit('nodeUnregistered', { nodeId: id });
+    this.emit('nodeUnregistered', { nodeId: id });'
   }
 
   /**
@@ -111,7 +111,7 @@ export class MemoryCoordinator extends TypedEventBase {
     operation: Partial<CoordinationDecision>
   ): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
-      id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,`
       type: operation.type||'read',
       sessionId: operation.sessionId || 'default',
       target: operation.target || 'default',
@@ -122,15 +122,15 @@ export class MemoryCoordinator extends TypedEventBase {
     };
 
     this.decisions.set(decision.id, decision);
-    this.emit('coordinationStarted', decision);
+    this.emit('coordinationStarted', decision);'
 
     try {
       await this.executeCoordination(decision);
       decision.status = 'completed';
-      this.emit('coordinationCompleted', decision);
+      this.emit('coordinationCompleted', decision);'
     } catch (error) {
       decision.status = 'failed';
-      this.emit('coordinationFailed', { decision, error });
+      this.emit('coordinationFailed', { decision, error });'
       throw error;
     }
 
@@ -144,15 +144,15 @@ export class MemoryCoordinator extends TypedEventBase {
    */
   private selectParticipants(operationType: string): string[] {
     const activeNodes = Array.from(this.nodes.entries())
-      .filter(([, node]) => node?.status === 'active')
+      .filter(([, node]) => node?.status === 'active')'
       .sort(([, a], [, b]) => a.load - b.load);
 
-    if (operationType === 'read') {
+    if (operationType === 'read') {'
       // For reads, prefer nodes with lower load
       return activeNodes?.slice(0, 1).map(([id]) => id);
     }
 
-    if (operationType === 'write') {
+    if (operationType === 'write') {'
       // For writes, use replication factor
       const replicationCount = Math.min(
         this.config.distributed.replication,
@@ -176,23 +176,23 @@ export class MemoryCoordinator extends TypedEventBase {
     decision.status = 'executing';
 
     switch (decision.type) {
-      case 'read':
+      case 'read':'
         await this.executeRead(decision);
         break;
-      case 'write':
+      case 'write':'
         await this.executeWrite(decision);
         break;
-      case 'delete':
+      case 'delete':'
         await this.executeDelete(decision);
         break;
-      case 'sync':
+      case 'sync':'
         await this.executeSync(decision);
         break;
-      case 'repair':
+      case 'repair':'
         await this.executeRepair(decision);
         break;
       default:
-        throw new Error(`Unknown coordination type: ${decision.type}`);
+        throw new Error(`Unknown coordination type: ${decision.type}`);`
     }
   }
 
@@ -204,7 +204,7 @@ export class MemoryCoordinator extends TypedEventBase {
   private async executeRead(decision: CoordinationDecision): Promise<unknown> {
     const node = this.nodes.get(decision.participants[0]);
     if (!node) {
-      throw new Error(`Node not found: ${decision.participants[0]}`);
+      throw new Error(`Node not found: ${decision.participants[0]}`);`
     }
 
     return await node?.backend?.retrieve(decision.target);
@@ -219,7 +219,7 @@ export class MemoryCoordinator extends TypedEventBase {
     const writePromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) {
-        throw new Error(`Node not found: ${nodeId}`);
+        throw new Error(`Node not found: ${nodeId}`);`
       }
 
       return await node?.backend?.store(
@@ -228,7 +228,7 @@ export class MemoryCoordinator extends TypedEventBase {
       );
     });
 
-    if (this.config.distributed.consistency === 'strong') {
+    if (this.config.distributed.consistency === 'strong') {'
       // Wait for all writes to complete
       await Promise.all(writePromises);
     } else {
@@ -257,7 +257,7 @@ export class MemoryCoordinator extends TypedEventBase {
     const deletePromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) {
-        throw new Error(`Node not found: ${nodeId}`);
+        throw new Error(`Node not found: ${nodeId}`);`
       }
 
       return await node?.backend?.delete(decision.target);
@@ -275,7 +275,7 @@ export class MemoryCoordinator extends TypedEventBase {
     // Synchronize data between nodes
     const sourceNode = this.nodes.get(decision.participants[0]);
     if (!sourceNode) {
-      throw new Error(`Source node not found: ${decision.participants[0]}`);
+      throw new Error(`Source node not found: ${decision.participants[0]}`);`
     }
 
     for (let i = 1; i < decision.participants.length; i++) {
@@ -346,25 +346,25 @@ export class MemoryCoordinator extends TypedEventBase {
       nodes: {
         total: this.nodes.size,
         active: Array.from(this.nodes.values()).filter(
-          (n) => n.status ==='active'
+          (n) => n.status ==='active''
         ).length,
         degraded: Array.from(this.nodes.values()).filter(
-          (n) => n.status === 'degraded'
+          (n) => n.status === 'degraded''
         ).length,
       },
       decisions: {
         total: this.decisions.size,
         pending: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'pending'
+          (d) => d.status === 'pending''
         ).length,
         executing: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'executing'
+          (d) => d.status === 'executing''
         ).length,
         completed: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'completed'
+          (d) => d.status === 'completed''
         ).length,
         failed: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'failed'
+          (d) => d.status === 'failed''
         ).length,
       },
       config: this.config,
@@ -391,8 +391,8 @@ export class MemoryCoordinator extends TypedEventBase {
       metadata: { data, options },
     });
 
-    if (decision.status === 'failed') {
-      throw new Error(`Failed to store data for key: ${key}`);
+    if (decision.status === 'failed') {'
+      throw new Error(`Failed to store data for key: ${key}`);`
     }
   }
 
@@ -407,8 +407,8 @@ export class MemoryCoordinator extends TypedEventBase {
       target: key,
     });
 
-    if (decision.status === 'failed') {
-      throw new Error(`Failed to retrieve data for key: ${key}`);
+    if (decision.status === 'failed') {'
+      throw new Error(`Failed to retrieve data for key: ${key}`);`
     }
 
     return await this.executeRead(decision);
@@ -425,8 +425,8 @@ export class MemoryCoordinator extends TypedEventBase {
       target: key,
     });
 
-    if (decision.status === 'failed') {
-      throw new Error(`Failed to delete data for key: ${key}`);
+    if (decision.status === 'failed') {'
+      throw new Error(`Failed to delete data for key: ${key}`);`
     }
   }
 
@@ -440,15 +440,15 @@ export class MemoryCoordinator extends TypedEventBase {
 
     // Get all active nodes
     const activeNodes = Array.from(this.nodes.values()).filter(
-      (n) => n.status === 'active'
+      (n) => n.status === 'active''
     );
 
     for (const node of activeNodes) {
       try {
         // Assuming backend implements a keys() method
         if (
-          'keys' in node?.backend &&
-          typeof node?.backend?.keys === 'function'
+          'keys' in node?.backend &&'
+          typeof node?.backend?.keys === 'function''
         ) {
           const keys = await node?.backend?.keys();
           const matchingKeys = keys.filter((key) =>
@@ -485,13 +485,13 @@ export class MemoryCoordinator extends TypedEventBase {
   private matchesPattern(key: string, pattern: string): boolean {
     // Convert simple glob pattern to regex
     const regexPattern = pattern
-      .replace(/\\/g, '\\\\')
-      .replace(/\*/g, '.*')
-      .replace(/\?/g, '.')
-      .replace(/\[/g, '\\[')
-      .replace(/\]/g, '\\]');
+      .replace(/\\/g, '\\\\')'
+      .replace(/\*/g, '.*')'
+      .replace(/\?/g, '.')'
+      .replace(/\[/g, '\\[')'
+      .replace(/\]/g, '\\]');'
 
-    const regex = new RegExp(`^${regexPattern}$`);
+    const regex = new RegExp(`^${regexPattern}$`);`
     return regex.test(key);
   }
 
@@ -501,7 +501,7 @@ export class MemoryCoordinator extends TypedEventBase {
   async healthCheck(): Promise<{ status: string; details: unknown }> {
     const stats = this.getStats();
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
-      (n) => n.status !== 'active'
+      (n) => n.status !== 'active''
     );
 
     return {

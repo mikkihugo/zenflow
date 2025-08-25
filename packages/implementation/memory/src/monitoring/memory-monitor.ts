@@ -37,7 +37,7 @@ export interface MemoryMetrics {
   // Backend Metrics
   backends: {
     [id: string]: {
-      status: 'healthy|degraded|failed';
+      status: 'healthy' | 'degraded' | 'failed';
       operations: number;
       errors: number;
       latency: number;
@@ -52,8 +52,8 @@ export interface MemoryMetrics {
 
 export interface MemoryAlert {
   id: string;
-  type: 'performance|capacity|error|coordination';
-  severity: 'info|warning|error|critical';
+  type: 'performance|capacity|error|coordination;
+  severity: 'info|warning|error|critical;
   message: string;
   timestamp: number;
   source: string;
@@ -126,17 +126,17 @@ export class MemoryMonitor extends TypedEventBase {
    */
   registerBackend(id: string, backend: BackendInterface): void {
     this.backends.set(id, backend);
-    this.emit('backendRegistered', { id });
+    this.emit('backendRegistered', { id });'
   }
 
   registerCoordinator(coordinator: MemoryCoordinator): void {
     this.coordinator = coordinator;
-    this.emit('coordinatorRegistered', {});
+    this.emit('coordinatorRegistered', {});'
   }
 
   registerOptimizer(optimizer: PerformanceOptimizer): void {
     this.optimizer = optimizer;
-    this.emit('optimizerRegistered', {});
+    this.emit('optimizerRegistered', {});'
   }
 
   /**
@@ -150,7 +150,7 @@ export class MemoryMonitor extends TypedEventBase {
       this.collectMetrics();
     }, this.configuration.collectInterval);
 
-    this.emit('collectionStarted', {});
+    this.emit('collectionStarted', {});'
   }
 
   /**
@@ -165,7 +165,7 @@ export class MemoryMonitor extends TypedEventBase {
       this.collectInterval = null;
     }
 
-    this.emit('collectionStopped', {});
+    this.emit('collectionStopped', {});'
   }
 
   /**
@@ -205,7 +205,7 @@ export class MemoryMonitor extends TypedEventBase {
       this.latencyHistogram = new Map(sortedBuckets);
     }
 
-    this.emit('operationRecorded', record);
+    this.emit('operationRecorded', record);'
   }
 
   /**
@@ -269,7 +269,7 @@ export class MemoryMonitor extends TypedEventBase {
       }
 
       // Get backend metrics
-      const backendMetrics: MemoryMetrics['backends'] = {};
+      const backendMetrics: MemoryMetrics['backends'] = {};'
       for (const [id, _backend] of this.backends) {
         const backendOps = recentOperations.filter((op) =>
           op.operation.includes(id)
@@ -284,7 +284,7 @@ export class MemoryMonitor extends TypedEventBase {
         backendMetrics[id] = {
           status:
             errors / Math.max(backendOps.length, 1) > 0.1
-              ? 'degraded'
+              ? 'degraded''
               : 'healthy',
           operations: backendOps.length,
           errors,
@@ -333,14 +333,14 @@ export class MemoryMonitor extends TypedEventBase {
         this.metrics = this.metrics.slice(-Math.floor(maxMetrics * 0.8));
       }
 
-      this.emit('metricsCollected', metrics);
+      this.emit('metricsCollected', metrics);'
 
       // Check for alerts
       if (this.configuration.alerts.enabled) {
         this.checkAlerts(metrics);
       }
     } catch (error) {
-      this.emit('collectionError', { error: error.message });
+      this.emit('collectionError', { error: error.message });'
     }
   }
 
@@ -358,9 +358,9 @@ export class MemoryMonitor extends TypedEventBase {
         type: 'performance',
         severity:
           metrics.averageLatency > thresholds.latency * 2
-            ? 'critical'
+            ? 'critical''
             : 'warning',
-        message: `Average latency (${metrics.averageLatency.toFixed(2)}ms) exceeds threshold (${thresholds.latency}ms)`,
+        message: `Average latency (${metrics.averageLatency.toFixed(2)}ms) exceeds threshold (${thresholds.latency}ms)`,`
         source: 'latency_monitor',
         metadata: {
           currentLatency: metrics.averageLatency,
@@ -377,7 +377,7 @@ export class MemoryMonitor extends TypedEventBase {
         type: 'error',
         severity:
           metrics.errorRate > thresholds.errorRate * 2 ? 'critical' : 'warning',
-        message: `Error rate (${(metrics.errorRate * 100).toFixed(2)}%) exceeds threshold (${(thresholds.errorRate * 100).toFixed(2)}%)`,
+        message: `Error rate (${(metrics.errorRate * 100).toFixed(2)}%) exceeds threshold (${(thresholds.errorRate * 100).toFixed(2)}%)`,`
         source: 'error_monitor',
         metadata: {
           currentErrorRate: metrics.errorRate,
@@ -393,9 +393,9 @@ export class MemoryMonitor extends TypedEventBase {
         type: 'capacity',
         severity:
           metrics.totalMemoryUsage > thresholds.memoryUsage * 1.5
-            ? 'critical'
+            ? 'critical''
             : 'warning',
-        message: `Memory usage (${metrics.totalMemoryUsage.toFixed(2)}MB) exceeds threshold (${thresholds.memoryUsage}MB)`,
+        message: `Memory usage (${metrics.totalMemoryUsage.toFixed(2)}MB) exceeds threshold (${thresholds.memoryUsage}MB)`,`
         source: 'memory_monitor',
         metadata: {
           currentUsage: metrics.totalMemoryUsage,
@@ -411,9 +411,9 @@ export class MemoryMonitor extends TypedEventBase {
         type: 'performance',
         severity:
           metrics.cacheHitRate < thresholds.cacheHitRate * 0.5
-            ? 'critical'
+            ? 'critical''
             : 'warning',
-        message: `Cache hit rate (${(metrics.cacheHitRate * 100).toFixed(2)}%) below threshold (${(thresholds.cacheHitRate * 100).toFixed(2)}%)`,
+        message: `Cache hit rate (${(metrics.cacheHitRate * 100).toFixed(2)}%) below threshold (${(thresholds.cacheHitRate * 100).toFixed(2)}%)`,`
         source: 'cache_monitor',
         metadata: {
           currentHitRate: metrics.cacheHitRate,
@@ -429,9 +429,9 @@ export class MemoryMonitor extends TypedEventBase {
         type: 'coordination',
         severity:
           metrics.healthyNodes < metrics.activeNodes * 0.5
-            ? 'critical'
+            ? 'critical''
             : 'warning',
-        message: `${metrics.activeNodes - metrics.healthyNodes} nodes are unhealthy (${metrics.healthyNodes}/${metrics.activeNodes} healthy)`,
+        message: `${metrics.activeNodes - metrics.healthyNodes} nodes are unhealthy (${metrics.healthyNodes}/${metrics.activeNodes} healthy)`,`
         source: 'node_monitor',
         metadata: {
           activeNodes: metrics.activeNodes,
@@ -450,11 +450,11 @@ export class MemoryMonitor extends TypedEventBase {
   private createAlert(
     alertData: Omit<
       MemoryAlert,
-      'id|timestamp|acknowledged|resolved'
+      'id|timestamp|acknowledged|resolved''
     >
   ): void {
     const alert: MemoryAlert = {
-      id: `alert_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id: `alert_${Date.now()}_${Math.random().toString(36).slice(2)}`,`
       timestamp: Date.now(),
       acknowledged: false,
       resolved: false,
@@ -468,7 +468,7 @@ export class MemoryMonitor extends TypedEventBase {
       this.alerts = this.alerts.slice(-800);
     }
 
-    this.emit('alertCreated', alert);
+    this.emit('alertCreated', alert);'
   }
 
   /**
@@ -480,7 +480,7 @@ export class MemoryMonitor extends TypedEventBase {
     const alert = this.alerts.find((a) => a.id === alertId);
     if (alert) {
       alert.acknowledged = true;
-      this.emit('alertAcknowledged', alert);
+      this.emit('alertAcknowledged', alert);'
       return true;
     }
     return false;
@@ -495,7 +495,7 @@ export class MemoryMonitor extends TypedEventBase {
     const alert = this.alerts.find((a) => a.id === alertId);
     if (alert) {
       alert.resolved = true;
-      this.emit('alertResolved', alert);
+      this.emit('alertResolved', alert);'
       return true;
     }
     return false;
@@ -583,7 +583,7 @@ export class MemoryMonitor extends TypedEventBase {
    * Generate a health report.
    */
   generateHealthReport(): {
-    overall:'healthy|warning|critical';
+    overall:'healthy' | 'warning' | 'critical';
     score: number;
     details: Record<string, unknown>;
     recommendations: string[];
@@ -621,7 +621,7 @@ export class MemoryMonitor extends TypedEventBase {
       Object.values(scores).reduce((sum, score) => sum + score, 0) /
       Object.keys(scores).length;
 
-    let overall: 'healthy|warning|critical';
+    let overall: 'healthy' | 'warning' | 'critical';
     if (overallScore >= 80) {
       overall = 'healthy';
     } else if (overallScore >= 60) {
@@ -631,13 +631,13 @@ export class MemoryMonitor extends TypedEventBase {
     }
 
     const recommendations: string[] = [];
-    if (scores.latency < 70) recommendations.push('Optimize system latency');
+    if (scores.latency < 70) recommendations.push('Optimize system latency');'
     if (scores.errorRate < 70)
-      recommendations.push('Investigate and fix error sources');
-    if (scores.memory < 70) recommendations.push('Optimize memory usage');
-    if (scores.cache < 70) recommendations.push('Improve cache configuration');
+      recommendations.push('Investigate and fix error sources');'
+    if (scores.memory < 70) recommendations.push('Optimize memory usage');'
+    if (scores.cache < 70) recommendations.push('Improve cache configuration');'
     if (scores.nodes < 90)
-      recommendations.push('Check node health and connectivity');
+      recommendations.push('Check node health and connectivity');'
 
     return {
       overall,
@@ -646,7 +646,7 @@ export class MemoryMonitor extends TypedEventBase {
         scores,
         metrics: currentMetrics,
         activeAlerts: activeAlerts.length,
-        criticalAlerts: activeAlerts.filter((a) => a.severity === 'critical')
+        criticalAlerts: activeAlerts.filter((a) => a.severity === 'critical')'
           .length,
       },
       recommendations,

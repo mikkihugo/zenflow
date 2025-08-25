@@ -1,7 +1,7 @@
 export const domain = (() => {
   if ($app.stage === "production") return "opencode.ai"
   if ($app.stage === "dev") return "dev.opencode.ai"
-  return `${$app.stage}.dev.opencode.ai`
+  return `${$app.stage}.dev.opencode.ai``
 })()
 
 const GITHUB_APP_ID = new sst.Secret("GITHUB_APP_ID")
@@ -9,7 +9,7 @@ const GITHUB_APP_PRIVATE_KEY = new sst.Secret("GITHUB_APP_PRIVATE_KEY")
 const bucket = new sst.cloudflare.Bucket("Bucket")
 
 export const api = new sst.cloudflare.Worker("Api", {
-  domain: `api.${domain}`,
+  domain: `api.${domain}`,`
   handler: "packages/function/src/api.ts",
   environment: {
     WEB_DOMAIN: domain,

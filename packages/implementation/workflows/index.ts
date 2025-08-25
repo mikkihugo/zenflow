@@ -25,7 +25,7 @@
  * - Emergency workflow termination and cleanup
  *
  * @example Basic Workflow Creation and Execution
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine, WorkflowUtils } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -35,12 +35,12 @@
  * });
  *
  * // Create a multi-step workflow
- * const workflow = WorkflowUtils.createWorkflow('data-processing', [
+ * const workflow = WorkflowUtils.createWorkflow('data-processing', ['
  *   {
  *     id: 'validate-input',
  *     type: 'validation',
  *     action: async (context) => {
- *       return context.data.isValid ? 'success' : 'failure';
+ *       return context.data.isValid ? 'success' : 'failure;
  *     }
  *   },
  *   {
@@ -63,12 +63,12 @@
  *
  * // Execute workflow
  * const result = await engine.execute(workflow, {
- *   data: { userId: '123', payload: {...} }
+ *   data: { userId: '123', payload: {...} }'
  * });
- * ```
+ * ````
  *
  * @example Conditional Workflow with Error Handling
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const conditionalWorkflow = {
@@ -86,7 +86,7 @@
  *       condition: (result) => result === 'premium-flow',
  *       action: async (context) => {
  *         await setupPremiumFeatures(context.user);
- *         return { onboarded: true, type: 'premium' };
+ *         return { onboarded: true, type: 'premium' };'
  *       }
  *     },
  *     {
@@ -94,7 +94,7 @@
  *       condition: (result) => result === 'standard-flow',
  *       action: async (context) => {
  *         await setupStandardFeatures(context.user);
- *         return { onboarded: true, type: 'standard' };
+ *         return { onboarded: true, type: 'standard' };'
  *       }
  *     }
  *   ],
@@ -109,12 +109,12 @@
  * };
  *
  * const result = await engine.execute(conditionalWorkflow, {
- *   user: { id: '123', type: 'premium', email: 'user@example.com' }
+ *   user: { id: '123', type: 'premium', email: 'user@example.com' }'
  * });
- * ```
+ * ````
  *
  * @example Workflow Monitoring and Analytics
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine, WorkflowAnalytics } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -129,15 +129,15 @@
  *
  * // Monitor execution in real-time
  * analytics.onStepCompleted(workflowId, (stepResult) => {
- *   console.log(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);
+ *   console.log(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`
  * });
  *
  * // Get workflow performance insights
  * const insights = await analytics.getWorkflowInsights(workflowId);
- * console.log(`Total execution time: ${insights.totalDuration}ms`);
- * console.log(`Bottleneck step: ${insights.bottleneckStep}`);
- * console.log(`Success rate: ${insights.successRate}%`);
- * ```
+ * console.log(`Total execution time: ${insights.totalDuration}ms`);`
+ * console.log(`Bottleneck step: ${insights.bottleneckStep}`);`
+ * console.log(`Success rate: ${insights.successRate}%`);`
+ * ````
  *
  * @author Claude Code Zen Team
  * @since 1.0.0
@@ -214,7 +214,7 @@ export const WORKFLOWS_INFO = {
  *
  * ## Architecture
  *
- * ```
+ * ````
  * ┌─────────────────────────────────────────────────────┐
  * │                Workflow Designer                    │
  * │           (Visual workflow creation)                │
@@ -240,11 +240,11 @@ export const WORKFLOWS_INFO = {
  * │  • Circuit breaker protection                      │
  * │  • Configuration management                        │
  * └─────────────────────────────────────────────────────┘
- * ```
+ * ````
  *
  * ## Workflow Types and Patterns
  *
- *'''||''Pattern''||''Use Case''||''Complexity''||''*''||''---------''||''----------''||''------------''||''*''||''Sequential''||''Linear step-by-step processes''||''Low''||''*''||''Conditional''||''Decision-based branching''||''Medium''||''*''||''Parallel''||''Concurrent execution''||''Medium''||''*''||''Loop''||''Iterative processing''||''Medium''||''*''||''Nested''||''Complex hierarchical workflows''||''High''||'''*
+ *'''||''Pattern''||''Use Case''||''Complexity''||''*''||''---------''||''----------''||''------------''||''*''||''Sequential''||''Linear step-by-step processes''||''Low''||''*''||''Conditional''||''Decision-based branching''||''Medium''||''*''||''Parallel''||''Concurrent execution''||''Medium''||''*''||''Loop''||''Iterative processing''||''Medium''||''*''||''Nested''||''Complex hierarchical workflows''||''High''||'''*'
  * ## Performance Characteristics
  *
  * - **Execution Overhead**: <5ms per workflow step
@@ -256,9 +256,9 @@ export const WORKFLOWS_INFO = {
  *
  * ## Getting Started
  *
- * ```bash
+ * ```bash`
  * npm install @claude-zen/workflows @claude-zen/foundation
- * ```
+ * ````
  *
  * See the examples above for usage patterns.
  */
@@ -275,7 +275,7 @@ export const WorkflowUtils = {
     name,
     steps,
     version:'1.0.0',
-    description: `Auto-generated workflow: ${name}`,
+    description: `Auto-generated workflow: ${name}`,`
   }),
 
   /**
@@ -286,7 +286,7 @@ export const WorkflowUtils = {
    */
   createDelayStep: (duration: number, name?: string) => ({
     type: 'delay',
-    name: name'''||''''''||'''`Delay ${duration}ms`,
+    name: name'''||''''''||'''`Delay ${duration}ms`,`
     params: { duration },
   }),
 
@@ -360,7 +360,7 @@ export const WorkflowUtils = {
    * @param workflow
    */
   validateWorkflow: (workflow: unknown): boolean => {
-    if (!workflow'''||''''''||'''typeof workflow !=='object') {
+    if (!workflow'''||''''''||'''typeof workflow !=='object') {'
       return false;
     }
 
@@ -399,7 +399,7 @@ export class WorkflowFactory {
    */
   static getInstance(
     config: unknown = {},
-    instanceKey = 'default'
+    instanceKey = 'default''
   ): WorkflowEngine {
     if (!WorkflowFactory.instances.has(instanceKey)) {
       const engine = new WorkflowEngine(config);

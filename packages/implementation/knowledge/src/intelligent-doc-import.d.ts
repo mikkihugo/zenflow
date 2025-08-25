@@ -10,21 +10,21 @@
  * 5. Stores directly in database (not file system)
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workflow = new IntelligentDocImport({
  *   swarmConfig: { maxAgents: 5, topology: 'mesh' },
- *   databaseConfig: { type: 'postgresql' }
+ *   databaseConfig: { type: 'postgresql' }'
  * });
  *
- * const result = await workflow.importAndAnalyze('/path/to/repo');
+ * const result = await workflow.importAndAnalyze('/path/to/repo');'
  * // Returns: { suggestions: [...], approvalRequired: true }
- * ```
+ * ````
  */
 import { TypedEventBase } from '@claude-zen/foundation';
 interface WorkflowGateRequest {
   id: string;
-  type: 'approval|decision|input|confirmation';
-  gateType: 'approval|decision|input|confirmation';
+  type: 'approval|decision|input|confirmation;
+  gateType: 'approval|decision|input|confirmation;
   workflowContext: {
     workflowId: string;
     stepName: string;
@@ -44,12 +44,12 @@ export interface IntelligentDocImportConfig {
   /** Swarm configuration for analysis */
   swarmConfig: {
     maxAgents: number;
-    topology: 'mesh|hierarchical|star';
+    topology: 'mesh' | 'hierarchical' | 'star';
     enableUltraThink: boolean;
   };
   /** Database configuration */
   databaseConfig: {
-    type: 'postgresql|sqlite|mysql';
+    type: 'postgresql' | 'sqlite' | 'mysql';
     connectionString?: string;
   };
   /** Analysis configuration */
@@ -69,9 +69,9 @@ export interface IntelligentDocImportConfig {
  */
 export interface FileAnalysisResult {
   filePath: string;
-  fileType: 'document|code|config|other';
+  fileType: 'document|code|config|other;
   /** Document classification (if document) */
-  documentType?:|'vision|adr|prd|epic|feature|task|spec'';
+  documentType?:|'vision|adr|prd|epic|feature|task|spec';
   /** Documentation completeness (if code) */
   documentationScore?: {
     overall: number;
@@ -90,7 +90,7 @@ export interface FileAnalysisResult {
   };
   /** Recommended actions */
   recommendations: {
-    action: 'import|improve|reject|manual_review';
+    action: 'import|improve|reject|manual_review;
     reasoning: string;
     improvements?: string[];
     confidence: number;
@@ -115,7 +115,7 @@ export interface ImportWorkflowResult {
     summary: string;
     keyFindings: string[];
     suggestedActions: string[];
-    estimatedEffort: 'low|medium|high';
+    estimatedEffort: 'low' | 'medium' | 'high';
   };
   /** Approval gates created */
   approvalGates: WorkflowGateRequest[];
@@ -133,7 +133,7 @@ export interface ImportWorkflowResult {
  * and code with human-in-the-loop approval workflows.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workflow = new IntelligentDocImport({
  *   repositoryPath: '/path/to/repo',
  *   swarmConfig: { maxAgents: 5, topology: 'mesh' },
@@ -142,7 +142,7 @@ export interface ImportWorkflowResult {
  * });
  *
  * const result = await workflow.importAndAnalyze();
- * ```
+ * ````
  */
 export declare class IntelligentDocImport extends TypedEventBase {
   private config;
@@ -171,11 +171,11 @@ export declare class IntelligentDocImport extends TypedEventBase {
    * @throws Error if workflow fails at any phase
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const result = await workflow.importAndAnalyze();
-   * console.log(`Found ${result.totalFiles} files`);
-   * console.log(`Ready for import: ${result.readyForImport.length}`);
-   * ```
+   * console.log(`Found ${result.totalFiles} files`);`
+   * console.log(`Ready for import: ${result.readyForImport.length}`);`
+   * ````
    */
   importAndAnalyze(): Promise<ImportWorkflowResult>;
   /**
@@ -453,11 +453,11 @@ export declare class IntelligentDocImport extends TypedEventBase {
    * @returns Promise that resolves when all files are stored
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const approvedFiles = result.readyForImport;
    * await workflow.executeApprovedImports(approvedFiles);
-   * console.log(`Imported ${approvedFiles.length} files`);
-   * ```
+   * console.log(`Imported ${approvedFiles.length} files`);`
+   * ````
    */
   executeApprovedImports(approvedFiles: FileAnalysisResult[]): Promise<void>;
   /**
@@ -473,11 +473,11 @@ export declare class IntelligentDocImport extends TypedEventBase {
    * @returns Array of approval gate status objects
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const status = workflow.getApprovalStatus();
-   * const pending = status.filter(s => s.status === 'pending');
-   * console.log(`${pending.length} gates awaiting approval`);
-   * ```
+   * const pending = status.filter(s => s.status === 'pending');'
+   * console.log(`${pending.length} gates awaiting approval`);`
+   * ````
    */
   getApprovalStatus(): Array<{
     gateId: string;

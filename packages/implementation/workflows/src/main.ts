@@ -21,7 +21,7 @@
  * - Type-safe workflow orchestration
  *
  * @example Basic workflow engine usage
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -31,20 +31,20 @@
  *
  * await engine.initialize();
  * const result = await engine.startWorkflow(workflowDefinition);
- * ```
+ * ````
  *
  * @example Advanced scheduling and state management
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine();
  *
  * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');
+ * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
  *
  * // Generate Mermaid visualization
  * const diagram = engine.generateWorkflowVisualization(workflow);
- * ```
+ * ````
  */
 
 // =============================================================================
@@ -152,15 +152,15 @@ export async function getWorkflowVisualization(
       system.generateVisualization(workflow),
     export: (
       workflow: WorkflowDefinition,
-      format: 'mermaid' | 'svg' = 'mermaid'
+      format: 'mermaid' | 'svg' = 'mermaid''
     ) => {
       // Enhanced format validation and logging
-      const supportedFormats = ['mermaid', 'svg'] as const;
+      const supportedFormats = ['mermaid', 'svg'] as const;'
       if (!supportedFormats.includes(format)) {
-        logger.warn(`Unsupported workflow export format: ${format}, defaulting to mermaid`);
+        logger.warn(`Unsupported workflow export format: ${format}, defaulting to mermaid`);`
         format = 'mermaid';
       }
-      logger.debug(`Exporting workflow ${workflow.id} in ${format} format`);
+      logger.debug(`Exporting workflow ${workflow.id} in ${format} format`);`
       return system.generateVisualization(workflow);
     },
   };

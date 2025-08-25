@@ -12,7 +12,7 @@ import type {
 } from '../../types';
 import type { RTEManagerConfig } from '../release-train-engineer-manager';
 
-describe('ReleaseTrainEngineerManager', () => {
+describe('ReleaseTrainEngineerManager', () => {'
   let manager: ReleaseTrainEngineerManager;
   let mockLogger: Logger;
   let mockMemory: MemorySystem;
@@ -72,7 +72,7 @@ describe('ReleaseTrainEngineerManager', () => {
     manager = new ReleaseTrainEngineerManager(config);
   });
 
-  it('should initialize with default configuration', () => {
+  it('should initialize with default configuration', () => {'
     expect(manager).toBeDefined();
     expect(mockLogger.info).toHaveBeenCalledWith(
       'RTE Manager initialized with configuration',
@@ -83,7 +83,7 @@ describe('ReleaseTrainEngineerManager', () => {
     );
   });
 
-  it('should initialize successfully', async () => {
+  it('should initialize successfully', async () => {'
     await expect(manager.initialize()).resolves.not.toThrow();
 
     expect(mockEventBus.emit).toHaveBeenCalledWith(
@@ -98,7 +98,7 @@ describe('ReleaseTrainEngineerManager', () => {
     );
   });
 
-  it('should facilitate PI Planning', async () => {
+  it('should facilitate PI Planning', async () => {'
     await manager.initialize();
 
     const planningConfig = {
@@ -127,57 +127,57 @@ describe('ReleaseTrainEngineerManager', () => {
     });
 
     expect(result).toBeDefined();
-    expect(result.piId).toBe('PI-1');
-    expect(result.artId).toBe('ART-1');
+    expect(result.piId).toBe('PI-1');'
+    expect(result.artId).toBe('ART-1');'
     expect(result.planningDate).toBeInstanceOf(Date);
     expect(result.confidenceVote.averageConfidence).toBe(3.5);
   });
 
-  it('should coordinate Scrum of Scrums', async () => {
+  it('should coordinate Scrum of Scrums', async () => {'
     await manager.initialize();
 
-    const result = await manager.coordinateScrumOfScrums('ART-1', []);
+    const result = await manager.coordinateScrumOfScrums('ART-1', []);'
 
     expect(result).toBeDefined();
-    expect(result.artId).toBe('ART-1');
+    expect(result.artId).toBe('ART-1');'
     expect(result.sessionDate).toBeInstanceOf(Date);
     expect(result.coordinationEffectiveness).toBe(85);
   });
 
-  it('should manage program risks', async () => {
+  it('should manage program risks', async () => {'
     await manager.initialize();
 
-    const result = await manager.manageProgramRisks('ART-1');
+    const result = await manager.manageProgramRisks('ART-1');'
 
     expect(result).toBeDefined();
-    expect(result.artId).toBe('ART-1');
+    expect(result.artId).toBe('ART-1');'
     expect(result.assessmentDate).toBeInstanceOf(Date);
     expect(result.overallRiskScore).toBe(75);
   });
 
-  it('should coordinate ART synchronization', async () => {
+  it('should coordinate ART synchronization', async () => {'
     await manager.initialize();
 
-    const result = await manager.coordinateARTSynchronization('ART-1');
+    const result = await manager.coordinateARTSynchronization('ART-1');'
 
     expect(result).toBeDefined();
-    expect(result.artId).toBe('ART-1');
+    expect(result.artId).toBe('ART-1');'
     expect(result.synchronizationDate).toBeInstanceOf(Date);
     expect(result.effectiveness.overallScore).toBe(85);
   });
 
-  it('should track program predictability', async () => {
+  it('should track program predictability', async () => {'
     await manager.initialize();
 
-    const result = await manager.trackProgramPredictability('ART-1');
+    const result = await manager.trackProgramPredictability('ART-1');'
 
     expect(result).toBeDefined();
-    expect(result.piId).toBe('PI-1');
-    expect(result.artId).toBe('ART-1');
+    expect(result.piId).toBe('PI-1');'
+    expect(result.artId).toBe('ART-1');'
     expect(result.predictability.predictabilityScore).toBe(82);
   });
 
-  it('should facilitate Inspect & Adapt', async () => {
+  it('should facilitate Inspect & Adapt', async () => {'
     await manager.initialize();
 
     const iaConfig = {
@@ -195,12 +195,12 @@ describe('ReleaseTrainEngineerManager', () => {
     );
 
     expect(result).toBeDefined();
-    expect(result.piId).toBe('PI-1');
-    expect(result.artId).toBe('ART-1');
+    expect(result.piId).toBe('PI-1');'
+    expect(result.artId).toBe('ART-1');'
     expect(result.workshopDate).toBeInstanceOf(Date);
   });
 
-  it('should manage System Demo', async () => {
+  it('should manage System Demo', async () => {'
     await manager.initialize();
 
     const features = [
@@ -226,13 +226,13 @@ describe('ReleaseTrainEngineerManager', () => {
     });
 
     expect(result).toBeDefined();
-    expect(result.piId).toBe('PI-1');
-    expect(result.artId).toBe('ART-1');
+    expect(result.piId).toBe('PI-1');'
+    expect(result.artId).toBe('ART-1');'
     expect(result.featuresPresented).toHaveLength(1);
     expect(result.stakeholderSatisfaction).toBe(85);
   });
 
-  it('should handle configuration with disabled features', () => {
+  it('should handle configuration with disabled features', () => {'
     const disabledConfig = {
       enablePIPlanningFacilitation: false,
       enableScrumOfScrums: false,
@@ -247,7 +247,7 @@ describe('ReleaseTrainEngineerManager', () => {
     expect(disabledManager).toBeDefined();
   });
 
-  it('should throw error when trying disabled features', async () => {
+  it('should throw error when trying disabled features', async () => {'
     const disabledConfig = { enablePIPlanningFacilitation: false };
     const disabledManager = new ReleaseTrainEngineerManager({
       ...config,
@@ -274,6 +274,6 @@ describe('ReleaseTrainEngineerManager', () => {
         objectives: [],
         features: [],
       })
-    ).rejects.toThrow('PI Planning facilitation is not enabled');
+    ).rejects.toThrow('PI Planning facilitation is not enabled');'
   });
 });

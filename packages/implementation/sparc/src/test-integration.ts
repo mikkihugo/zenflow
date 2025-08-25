@@ -11,7 +11,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('safe6-integration-test');
+const logger = getLogger('safe6-integration-test');'
 
 async function testSafe6CrossPackageIntegration(): Promise<{
   success: boolean;
@@ -22,13 +22,13 @@ async function testSafe6CrossPackageIntegration(): Promise<{
   const errors: string[] = [];
 
   try {
-    logger.info('🧪 Starting SAFe 6.0 cross-package integration test...');
+    logger.info('🧪 Starting SAFe 6.0 cross-package integration test...');'
 
     // Test 1: Development Facade Integration
-    logger.info('📦 Testing development facade integration...');
+    logger.info('📦 Testing development facade integration...');'
     try {
       const { getSafe6DevelopmentManager, createSafe6SolutionTrainManager } =
-        await import('@claude-zen/development');
+        await import('@claude-zen/development');'
 
       const Safe6DevelopmentManagerClass = await getSafe6DevelopmentManager();
       const manager = new Safe6DevelopmentManagerClass({
@@ -47,40 +47,40 @@ async function testSafe6CrossPackageIntegration(): Promise<{
       });
 
       await manager.initialize();
-      results.developmentFacade = { status: 'success', manager: !!manager };
-      logger.info('✅ Development facade integration working');
+      results.developmentFacade = { status: 'success', manager: !!manager };'
+      logger.info('✅ Development facade integration working');'
     } catch (error) {
-      const errorMsg = `Development facade integration failed: ${error}`;
+      const errorMsg = `Development facade integration failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.developmentFacade = { status: 'failed', error: String(error) };
+      results.developmentFacade = { status: 'failed', error: String(error) };'
     }
 
     // Test 2: Safe Framework Integration
-    logger.info('🔐 Testing safe framework integration...');
+    logger.info('🔐 Testing safe framework integration...');'
     try {
-      const { getSafeFramework } = await import('@claude-zen/enterprise');
+      const { getSafeFramework } = await import('@claude-zen/enterprise');'
       const safeFramework = await getSafeFramework();
-      results.safeFramework = { status: 'success', framework: !!safeFramework };
-      logger.info('✅ Safe framework integration working');
+      results.safeFramework = { status: 'success', framework: !!safeFramework };'
+      logger.info('✅ Safe framework integration working');'
     } catch (error) {
-      const errorMsg = `Safe framework integration failed: ${error}`;
+      const errorMsg = `Safe framework integration failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.safeFramework = { status: 'failed', error: String(error) };
+      results.safeFramework = { status: 'failed', error: String(error) };'
     }
 
     // Test 3: Brain Package Coordination
-    logger.info('🧠 Testing brain package coordination...');
+    logger.info('🧠 Testing brain package coordination...');'
     try {
-      const { getBrainSystem } = await import('@claude-zen/intelligence');
+      const { getBrainSystem } = await import('@claude-zen/intelligence');'
       const brainSystem = await getBrainSystem();
       const coordinator = brainSystem.createCoordinator();
 
       // Test SAFe 6.0 coordination if the method exists
       if (
         coordinator &&
-        typeof coordinator.coordinateWithSafe6 === 'function'
+        typeof coordinator.coordinateWithSafe6 === 'function''
       ) {
         const coordination = await coordinator.coordinateWithSafe6({
           epicId: 'test-epic-123',
@@ -93,7 +93,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
           safe6Method: true,
           coordination: !!coordination,
         };
-        logger.info('✅ Brain SAFe 6.0 coordination working');
+        logger.info('✅ Brain SAFe 6.0 coordination working');'
       } else {
         results.brainCoordination = {
           status: 'partial',
@@ -102,21 +102,21 @@ async function testSafe6CrossPackageIntegration(): Promise<{
           note: 'Brain coordinator available but SAFe 6.0 method not found',
         };
         logger.warn(
-          '⚠️ Brain coordinator available but SAFe 6.0 method not found'
+          '⚠️ Brain coordinator available but SAFe 6.0 method not found''
         );
       }
     } catch (error) {
-      const errorMsg = `Brain coordination failed: ${error}`;
+      const errorMsg = `Brain coordination failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.brainCoordination = { status: 'failed', error: String(error) };
+      results.brainCoordination = { status: 'failed', error: String(error) };'
     }
 
     // Test 4: SPARC SAFe 6.0 Development Manager Direct
-    logger.info('🎯 Testing SPARC SAFe 6.0 Development Manager directly...');
+    logger.info('🎯 Testing SPARC SAFe 6.0 Development Manager directly...');'
     try {
       const { Safe6DevelopmentManager } = await import(
-        './safe6-development-manager'
+        './safe6-development-manager''
       );
 
       const manager = new Safe6DevelopmentManager({
@@ -186,27 +186,27 @@ async function testSafe6CrossPackageIntegration(): Promise<{
       await manager.initialize();
 
       // Test flow metrics
-      const flowMetrics = await manager.getFlowMetrics('test-epic-123');
+      const flowMetrics = await manager.getFlowMetrics('test-epic-123');'
 
       results.sparcDirect = {
         status: 'success',
         manager: !!manager,
         flowMetrics: !!flowMetrics,
       };
-      logger.info('✅ SPARC SAFe 6.0 Development Manager working directly');
+      logger.info('✅ SPARC SAFe 6.0 Development Manager working directly');'
     } catch (error) {
-      const errorMsg = `SPARC direct test failed: ${error}`;
+      const errorMsg = `SPARC direct test failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.sparcDirect = { status: 'failed', error: String(error) };
+      results.sparcDirect = { status: 'failed', error: String(error) };'
     }
 
     // Test 5: TaskMaster Integration Test (Simple)
-    logger.info('📋 Testing TaskMaster integration...');
+    logger.info('📋 Testing TaskMaster integration...');'
     try {
       // Test that the imports work
       const taskMasterIntegration = await import(
-        '../../taskmaster/src/integrations/safe-framework-integration'
+        '../../taskmaster/src/integrations/safe-framework-integration''
       );
 
       results.taskMasterIntegration = {
@@ -214,9 +214,9 @@ async function testSafe6CrossPackageIntegration(): Promise<{
         integration:
           !!taskMasterIntegration.default||!!taskMasterIntegration.SafeFrameworkIntegration,
       };
-      logger.info('✅ TaskMaster integration imports working');
+      logger.info('✅ TaskMaster integration imports working');'
     } catch (error) {
-      const errorMsg = `TaskMaster integration test failed: ${error}`;
+      const errorMsg = `TaskMaster integration test failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
       results.taskMasterIntegration = {
@@ -227,26 +227,26 @@ async function testSafe6CrossPackageIntegration(): Promise<{
 
     // Summary
     const successCount = Object.values(results).filter(
-      (r) => r.status === 'success'
+      (r) => r.status === 'success''
     ).length;
     const totalTests = Object.keys(results).length;
     const success = errors.length === 0 && successCount === totalTests;
 
     logger.info(
-      `🎯 Integration test complete: ${successCount}/${totalTests} tests passed`
+      `🎯 Integration test complete: ${successCount}/${totalTests} tests passed``
     );
 
     if (success) {
       logger.info(
-        '🎉 All SAFe 6.0 cross-package integrations working correctly!'
+        '🎉 All SAFe 6.0 cross-package integrations working correctly!''
       );
     } else {
-      logger.warn(`⚠️ Some integration issues found: ${errors.length} errors`);
+      logger.warn(`⚠️ Some integration issues found: ${errors.length} errors`);`
     }
 
     return { success, results, errors };
   } catch (error) {
-    const errorMsg = `Integration test failed: ${error}`;
+    const errorMsg = `Integration test failed: ${error}`;`
     errors.push(errorMsg);
     logger.error(errorMsg);
 
@@ -265,19 +265,19 @@ export { testSafe6CrossPackageIntegration };
 if (require.main === module) {
   testSafe6CrossPackageIntegration()
     .then((result) => {
-      console.log('\n📊 Integration Test Results:');
-      console.log('Success:', result.success);
-      console.log('Results:', JSON.stringify(result.results, null, 2));
+      console.log('\n📊 Integration Test Results:');'
+      console.log('Success:', result.success);'
+      console.log('Results:', JSON.stringify(result.results, null, 2));'
 
       if (result.errors.length > 0) {
-        console.log('\n❌ Errors:');
-        result.errors.forEach((error) => console.log(`  - ${error}`));
+        console.log('\n❌ Errors:');'
+        result.errors.forEach((error) => console.log(`  - ${error}`));`
       }
 
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('Integration test failed:', error);
+      console.error('Integration test failed:', error);'
       process.exit(1);
     });
 }

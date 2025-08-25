@@ -18,11 +18,11 @@ export class CapacityPredictor {
     debug: (message: string, meta?: unknown) =>
       console.log(`[DEBUG] ${message}`, meta || '),
     info: (message: string, meta?: unknown) =>
-      console.log(`[INFO] ${message}`, meta|||),
+      console.log(`[INFO] ${message}`, meta|||),`
     warn: (message: string, meta?: unknown) =>
-      console.warn(`[WARN] ${message}`, meta|||),
+      console.warn(`[WARN] ${message}`, meta|||),`
     error: (message: string, meta?: unknown) =>
-      console.error(`[ERROR] ${message}`, meta|||),
+      console.error(`[ERROR] ${message}`, meta|||),`
   };
 
   public async predict(
@@ -33,7 +33,7 @@ export class CapacityPredictor {
     const history = profile.utilizationHistory.slice(-20);
     if (history.length < 5) {
       return (
-        profile.utilizationHistory[profile.utilizationHistory.length - 1]|'|5
+        profile.utilizationHistory[profile.utilizationHistory.length - 1]|'|5'
       );
     }
 
@@ -73,7 +73,7 @@ export class CapacityPredictor {
     const prediction = Math.max(1, Math.round(avgDemand * demandFactor));
 
     // Log prediction with confidence metrics
-    this.logger.debug('Capacity prediction', {
+    this.logger.debug('Capacity prediction', {'
       avgDemand,
       variance,
       volatilityFactor,

@@ -25,7 +25,7 @@ export namespace Share {
         if (content === undefined) return
         pending.delete(key)
 
-        return fetch(`${URL}/share_sync`, {
+        return fetch(`${URL}/share_sync`, {`
           method: "POST",
           body: JSON.stringify({
             sessionID: sessionID,
@@ -56,7 +56,7 @@ export namespace Share {
     (Installation.isSnapshot() || Installation.isDev() ? "https://api.dev.opencode.ai" : "https://api.opencode.ai")
 
   export async function create(sessionID: string) {
-    return fetch(`${URL}/share_create`, {
+    return fetch(`${URL}/share_create`, {`
       method: "POST",
       body: JSON.stringify({ sessionID: sessionID }),
     })
@@ -65,7 +65,7 @@ export namespace Share {
   }
 
   export async function remove(sessionID: string, secret: string) {
-    return fetch(`${URL}/share_delete`, {
+    return fetch(`${URL}/share_delete`, {`
       method: "POST",
       body: JSON.stringify({ sessionID, secret }),
     }).then((x) => x.json())

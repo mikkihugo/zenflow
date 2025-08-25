@@ -13,17 +13,17 @@
  * - Professional Google TypeScript naming conventions
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * const bridge = container.get(BrainJsBridge);
  * await bridge.initialize();
  *
- * const networkId = await bridge.createNeuralNet('classifier', 'feedforward', {
+ * const networkId = await bridge.createNeuralNet('classifier', 'feedforward', {'
  *   hiddenLayers: [10, 5],
- *   activation: 'relu'
+ *   activation: 'relu''
  * });
  *
  * const result = await bridge.trainNeuralNet(networkId, trainingData);
- * ```
+ * ````
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -56,7 +56,7 @@ export interface BrainJsConfig {
  */
 export interface BrainJsNetworkConfig {
   /** Type of neural network */
-  readonly type: 'feedforward|rnn|lstm|gru';
+  readonly type: 'feedforward|rnn|lstm|gru;
   /** Hidden layer sizes (for feedforward networks) */
   readonly hiddenLayers?: readonly number[];
   /** Input size (for RNN/LSTM/GRU networks) */
@@ -122,7 +122,7 @@ export interface BrainJsNetworkInstance {
   /** Unique network identifier */
   readonly id: string;
   /** Network type */
-  readonly type: BrainJsNetworkConfig['type'];
+  readonly type: BrainJsNetworkConfig['type'];'
   /** The actual brain.js network instance */
   readonly network: any;
   /** Network configuration */
@@ -155,13 +155,13 @@ export interface BrainJsNetworkInstance {
  * - Integration with existing coordination system
  *
  * @example Creating and training a feedforward network
- * ```typescript
+ * ```typescript`
  * const bridge = container.get(BrainJsBridge);
  * await bridge.initialize();
  *
- * const result = await bridge.createNeuralNet('xor-classifier', 'feedforward', {
+ * const result = await bridge.createNeuralNet('xor-classifier', 'feedforward', {'
  *   hiddenLayers: [4],
- *   activation: 'sigmoid'
+ *   activation: 'sigmoid''
  * });
  *
  * if (result.isOk()) {
@@ -174,7 +174,7 @@ export interface BrainJsNetworkInstance {
  *
  *   const trainResult = await bridge.trainNeuralNet(result.value, trainingData);
  * }
- * ```
+ * ````
  */
 export declare class BrainJsBridge {
   private foundationLogger;
@@ -198,7 +198,7 @@ export declare class BrainJsBridge {
   createNeuralNet(
     id: string,
     type: BrainJsNetworkConfig['type'],
-    config: Omit<BrainJsNetworkConfig, 'type'>
+    config: Omit<BrainJsNetworkConfig, 'type'>'
   ): Promise<Result<string, ContextError>>;
   /**
    * Train a brain.js neural network

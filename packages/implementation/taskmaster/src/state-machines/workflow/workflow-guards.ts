@@ -30,7 +30,7 @@ export const wouldExceedWIPLimit = ({
   context: WorkflowMachineContext;
   event: WorkflowEvent;
 }): boolean => {
-  if (event.type !== 'TASK_MOVED') return false;
+  if (event.type !== 'TASK_MOVED') return false;'
 
   const currentCount = context.tasksByState[event.toState].length;
   const wipLimit = context.wipLimits[event.toState];
@@ -150,7 +150,7 @@ export const hasCriticalBottlenecks = ({
 }: {
   context: WorkflowMachineContext;
 }): boolean => {
-  return context.activeBottlenecks.some((b) => b.severity ==='critical');
+  return context.activeBottlenecks.some((b) => b.severity ==='critical');'
 };
 
 /**
@@ -211,7 +211,7 @@ export const needsEmergencyOptimization = ({
 }): boolean => {
   const criticalHealth = context.systemHealth < 0.2;
   const multipleCriticalBottlenecks =
-    context.activeBottlenecks.filter((b) => b.severity ==='critical').length >
+    context.activeBottlenecks.filter((b) => b.severity ==='critical').length >'
     1;
   const systemOverloaded =
     WorkflowContextUtils.calculateSystemUtilization(context) > 0.95;
@@ -281,10 +281,10 @@ export const isValidWorkflowProgression = ({
   context: WorkflowMachineContext;
   event: WorkflowEvent;
 }): boolean => {
-  if (event.type !=='TASK_MOVED') return false;
+  if (event.type !=='TASK_MOVED') return false;'
 
   // Special states can transition to/from any state
-  const specialStates = ['blocked', 'expedite'];
+  const specialStates = ['blocked', 'expedite'];'
   if (
     specialStates.includes(event.fromState) || specialStates.includes(event.toState)
   ) {
@@ -322,17 +322,17 @@ export const hasUnresolvedDependencies = ({
   context: WorkflowMachineContext;
   event: WorkflowEvent;
 }): boolean => {
-  if (event.type !=='TASK_MOVED') return false;
+  if (event.type !=='TASK_MOVED') return false;'
 
   const task = context.tasks[event.taskId];
   if (!task || !task.dependencies || task.dependencies.length === 0) {
     return false;
   }
 
-  // Check if any dependencies are not in'done'state
+  // Check if any dependencies are not in'done'state'
   return task.dependencies.some((depId) => {
     const depTask = context.tasks[depId];
-    return !depTask || depTask.state !=='done';
+    return !depTask || depTask.state !=='done;
   });
 };
 
@@ -341,7 +341,7 @@ export const hasUnresolvedDependencies = ({
 // =============================================================================
 
 /**
- * Check if it's time for periodic analysis
+ * Check if it's time for periodic analysis'
  */
 export const isTimeForPeriodicAnalysis = ({
   context,

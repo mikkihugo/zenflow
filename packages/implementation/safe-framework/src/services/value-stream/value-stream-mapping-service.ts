@@ -21,7 +21,7 @@ import type {
   MultiLevelOrchestrationManager,
 } from '../../types';
 
-// Define types locally as they don't exist in the manager
+// Define types locally as they don't exist in the manager'
 export interface ValueStreamMapperConfig {
   readonly enableIntelligentMapping: boolean;
   readonly enableWorkflowIntegration: boolean;
@@ -42,7 +42,7 @@ export interface FlowStepAnalysis {
   readonly stepId: string;
   readonly name: string;
   readonly duration: number;
-  readonly type:|value-added|non-value-added|'necessary-non-value-added';
+  readonly type:|value-added|non-value-added|'necessary-non-value-added;
 }
 
 export interface DetailedFlowMetrics {
@@ -53,7 +53,7 @@ export interface DetailedFlowMetrics {
 }
 
 export interface ValueStreamMapperState {
-  readonly status: 'idle|mapping|optimizing|completed';
+  readonly status: 'idle|mapping|optimizing|completed;
   readonly progress: number;
   readonly currentStep?: string;
 }
@@ -80,7 +80,7 @@ export interface ValueStreamMappingConfig {
 export interface WorkflowValueStreamMapping {
   readonly workflowId: string;
   readonly valueStreamId: string;
-  readonly mappingType: 'direct|composite|distributed';
+  readonly mappingType: 'direct' | 'composite' | 'distributed';
   readonly confidence: number;
   readonly mappingReason: string;
   readonly steps: WorkflowStepMapping[];
@@ -104,8 +104,8 @@ export interface WorkflowStepMapping {
  */
 export interface ValueStreamCreationContext {
   readonly workflowType: string;
-  readonly complexity: 'simple|moderate|complex|enterprise';
-  readonly organizationalLevel: 'team|program|portfolio|enterprise';
+  readonly complexity: 'simple|moderate|complex|enterprise;
+  readonly organizationalLevel: 'team|program|portfolio|enterprise;
   readonly businessContext: BusinessContext;
   readonly technicalContext: TechnicalContext;
   readonly stakeholderContext: StakeholderContext;
@@ -160,8 +160,8 @@ export interface MappingValidationResult {
  * Mapping validation issue
  */
 export interface MappingValidationIssue {
-  readonly type: 'conflict|gap|redundancy|misalignment';
-  readonly severity: 'low|medium|high|critical';
+  readonly type: 'conflict|gap|redundancy|misalignment;
+  readonly severity: 'low|medium|high|critical;
   readonly description: string;
   readonly affectedElements: string[];
   readonly suggestedResolution: string;
@@ -202,7 +202,7 @@ export class ValueStreamMappingService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping optimization
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      const { BrainCoordinator } = await import('@claude-zen/brain');'
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -213,11 +213,11 @@ export class ValueStreamMappingService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');
+      const { PerformanceTracker } = await import('@claude-zen/foundation');'
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/workflows for workflow integration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      const { WorkflowEngine } = await import('@claude-zen/workflows');'
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
         enableVisualization: true,
@@ -225,7 +225,7 @@ export class ValueStreamMappingService {
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for mapping approvals
-      const { AGUISystem } = await import('@claude-zen/agui');
+      const { AGUISystem } = await import('@claude-zen/agui');'
       const aguiResult = await AGUISystem({
         aguiType: 'terminal',
         taskApprovalConfig: {
@@ -237,7 +237,7 @@ export class ValueStreamMappingService {
       this.aguiService = aguiResult.agui;
 
       this.initialized = true;
-      this.logger.info('Value Stream Mapping Service initialized successfully');
+      this.logger.info('Value Stream Mapping Service initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Value Stream Mapping Service:',
@@ -256,11 +256,11 @@ export class ValueStreamMappingService {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer(
-      'map_workflows_to_value_streams'
+      'map_workflows_to_value_streams''
     );
 
     try {
-      this.logger.info('Starting intelligent workflow to value stream mapping');
+      this.logger.info('Starting intelligent workflow to value stream mapping');'
 
       const valueStreams = new Map<string, ValueStream>();
 
@@ -310,9 +310,9 @@ export class ValueStreamMappingService {
       // Validate mappings with AI analysis
       this.validateMappingsWithAI(valueStreams, mappingStrategy);
 
-      this.performanceTracker.endTimer('map_workflows_to_value_streams');
+      this.performanceTracker.endTimer('map_workflows_to_value_streams');'
 
-      this.logger.info('Workflow to value stream mapping completed', {
+      this.logger.info('Workflow to value stream mapping completed', {'
         valueStreamCount: valueStreams.size,
         mappingStrategy: mappingStrategy.strategy || 'intelligent_auto',
         validationScore: mappingStrategy.validationScore || 0.8,
@@ -320,8 +320,8 @@ export class ValueStreamMappingService {
 
       return valueStreams;
     } catch (error) {
-      this.performanceTracker.endTimer('map_workflows_to_value_streams');
-      this.logger.error('Workflow to value stream mapping failed:', error);
+      this.performanceTracker.endTimer('map_workflows_to_value_streams');'
+      this.logger.error('Workflow to value stream mapping failed:', error);'
       throw error;
     }
   }
@@ -335,10 +335,10 @@ export class ValueStreamMappingService {
   ): Promise<ValueStream> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('create_value_stream');
+    const timer = this.performanceTracker.startTimer('create_value_stream');'
 
     try {
-      this.logger.info('Creating optimized value stream from workflow', {
+      this.logger.info('Creating optimized value stream from workflow', {'
         workflowId,
         complexity: context.complexity,
       });
@@ -356,8 +356,8 @@ export class ValueStreamMappingService {
 
       // Create value stream with intelligent configuration
       const valueStream: ValueStream = {
-        id: `vs-${workflowId}-${Date.now()}`,
-        name: streamDesign.name || `Value Stream for ${workflowId}`,
+        id: `vs-${workflowId}-${Date.now()}`,`
+        name: streamDesign.name || `Value Stream for ${workflowId}`,`
         description: streamDesign.description || 'AI-optimized value stream',
         steps: this.createOptimizedFlowSteps(streamDesign, context),
         budget: streamDesign.estimatedBudget || 100000,
@@ -370,14 +370,14 @@ export class ValueStreamMappingService {
         // Create AGUI task for manual review
         const approval = await this.aguiService.createApprovalTask({
           taskType:'value_stream_design_review',
-          description: `Value stream design requires review: ${validation.issues.length} issues found`,
+          description: `Value stream design requires review: ${validation.issues.length} issues found`,`
           context: { valueStream, validation },
           approvers: ['product-owner', 'solution-architect'],
           timeout: 1800000,
         });
 
         if (!approval.approved) {
-          throw new Error(`Value stream design rejected: ${approval.reason}`);
+          throw new Error(`Value stream design rejected: ${approval.reason}`);`
         }
       }
 
@@ -395,9 +395,9 @@ export class ValueStreamMappingService {
       this.valueStreamMappings.set(workflowId, mapping);
       this.validatedMappings.set(valueStream.id, validation);
 
-      this.performanceTracker.endTimer('create_value_stream');
+      this.performanceTracker.endTimer('create_value_stream');'
 
-      this.logger.info('Value stream created successfully', {
+      this.logger.info('Value stream created successfully', {'
         workflowId,
         valueStreamId: valueStream.id,
         stepCount: valueStream.steps?.length || 0,
@@ -406,8 +406,8 @@ export class ValueStreamMappingService {
 
       return valueStream;
     } catch (error) {
-      this.performanceTracker.endTimer('create_value_stream');
-      this.logger.error('Value stream creation failed:', error);
+      this.performanceTracker.endTimer('create_value_stream');'
+      this.logger.error('Value stream creation failed:', error);'
       throw error;
     }
   }
@@ -425,7 +425,7 @@ export class ValueStreamMappingService {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('mapping_insights');
+    const timer = this.performanceTracker.startTimer('mapping_insights');'
 
     try {
       let mappings: WorkflowValueStreamMapping[];
@@ -435,7 +435,7 @@ export class ValueStreamMappingService {
         const mapping = this.valueStreamMappings.get(workflowId);
         mappings = mapping ? [mapping] : [];
         const validation = this.validatedMappings.get(
-          mapping?.valueStreamId || ''
+          mapping?.valueStreamId || '''
         );
         validations = validation ? [validation] : [];
       } else {
@@ -460,9 +460,9 @@ export class ValueStreamMappingService {
         validationIssues: validations.flatMap((v) => v.issues),
       };
 
-      this.performanceTracker.endTimer('mapping_insights');
+      this.performanceTracker.endTimer('mapping_insights');'
 
-      this.logger.info('Mapping insights generated', {
+      this.logger.info('Mapping insights generated', {'
         totalMappings: result.totalMappings,
         validMappings: result.validMappings,
         averageConfidence: result.averageConfidence,
@@ -470,8 +470,8 @@ export class ValueStreamMappingService {
 
       return result;
     } catch (error) {
-      this.performanceTracker.endTimer('mapping_insights');
-      this.logger.error('Failed to generate mapping insights:', error);
+      this.performanceTracker.endTimer('mapping_insights');'
+      this.logger.error('Failed to generate mapping insights:', error);'
       throw error;
     }
   }
@@ -490,7 +490,7 @@ export class ValueStreamMappingService {
       await this.aguiService.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Value Stream Mapping Service shutdown complete');
+    this.logger.info('Value Stream Mapping Service shutdown complete');'
   }
 
   // ============================================================================
@@ -537,7 +537,7 @@ export class ValueStreamMappingService {
     strategy: any
   ): void {
     // Validate mappings using AI analysis
-    this.logger.debug('Validating value stream mappings with AI', {
+    this.logger.debug('Validating value stream mappings with AI', {'
       streamCount: valueStreams.size,
     });
   }

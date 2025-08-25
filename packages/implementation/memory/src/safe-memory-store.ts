@@ -23,7 +23,7 @@ import {
   type MemorySuccess,
 } from '../utils/type-guards';
 
-const logger = getLogger('src-memory-safe-memory-store');
+const logger = getLogger('src-memory-safe-memory-store');'
 
 export interface SafeMemoryStoreOptions {
   namespace?: string;
@@ -75,11 +75,11 @@ export class SafeMemoryStore extends TypedEventBase {
       // Initialize any required resources
       this.startCleanupInterval();
       this.initialized = true;
-      this.emit('initialized', {});
+      this.emit('initialized', {});'
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown initialization error';
-      throw new Error(`Failed to initialize SafeMemoryStore: ${errorMessage}`);
+        error instanceof Error ? error.message : 'Unknown initialization error;
+      throw new Error(`Failed to initialize SafeMemoryStore: ${errorMessage}`);`
     }
   }
 
@@ -100,7 +100,7 @@ export class SafeMemoryStore extends TypedEventBase {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized'
+          'Memory store not initialized''
         );
       }
 
@@ -108,7 +108,7 @@ export class SafeMemoryStore extends TypedEventBase {
         return this.createMemoryError(
           key,
           'STORE_FULL',
-          'Memory store has reached maximum capacity'
+          'Memory store has reached maximum capacity''
         );
       }
 
@@ -138,7 +138,7 @@ export class SafeMemoryStore extends TypedEventBase {
         this.setTTL(fullKey, newMetadata?.ttl);
       }
 
-      this.emit('stored', { key: fullKey, size: newMetadata.size });
+      this.emit('stored', { key: fullKey, size: newMetadata.size });'
 
       return {
         found: true,
@@ -150,8 +150,8 @@ export class SafeMemoryStore extends TypedEventBase {
       } as MemorySuccess<void>;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown storage error';
-      return this.createMemoryError(key, 'STORE_FAILED', errorMessage);
+        error instanceof Error ? error.message : 'Unknown storage error;
+      return this.createMemoryError(key, 'STORE_FAILED', errorMessage);'
     }
   }
 
@@ -166,7 +166,7 @@ export class SafeMemoryStore extends TypedEventBase {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized'
+          'Memory store not initialized''
         );
       }
 
@@ -187,7 +187,7 @@ export class SafeMemoryStore extends TypedEventBase {
         return this.createMemoryError(
           key,
           'METADATA_MISSING',
-          'Metadata not found for key'
+          'Metadata not found for key''
         );
       }
 
@@ -197,7 +197,7 @@ export class SafeMemoryStore extends TypedEventBase {
       metadata.accessCount++;
       this.metadata.set(fullKey, metadata);
 
-      this.emit('accessed', {
+      this.emit('accessed', {'
         key: fullKey,
         accessCount: metadata?.accessCount,
       });
@@ -217,8 +217,8 @@ export class SafeMemoryStore extends TypedEventBase {
       } as MemorySuccess<T>;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown retrieval error';
-      return this.createMemoryError(key, 'RETRIEVE_FAILED', errorMessage);
+        error instanceof Error ? error.message : 'Unknown retrieval error;
+      return this.createMemoryError(key, 'RETRIEVE_FAILED', errorMessage);'
     }
   }
 
@@ -233,7 +233,7 @@ export class SafeMemoryStore extends TypedEventBase {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized'
+          'Memory store not initialized''
         );
       }
 
@@ -258,7 +258,7 @@ export class SafeMemoryStore extends TypedEventBase {
       const deleted = this.store.delete(fullKey);
       this.metadata.delete(fullKey);
 
-      this.emit('deleted', { key: fullKey });
+      this.emit('deleted', { key: fullKey });'
 
       return {
         found: true,
@@ -269,8 +269,8 @@ export class SafeMemoryStore extends TypedEventBase {
       } as MemorySuccess<boolean>;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown deletion error';
-      return this.createMemoryError(key, 'DELETE_FAILED', errorMessage);
+        error instanceof Error ? error.message : 'Unknown deletion error;
+      return this.createMemoryError(key, 'DELETE_FAILED', errorMessage);'
     }
   }
 
@@ -302,8 +302,8 @@ export class SafeMemoryStore extends TypedEventBase {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : 'Unknown existence check error';
-      return this.createMemoryError(key, 'EXISTS_CHECK_FAILED', errorMessage);
+          : 'Unknown existence check error;
+      return this.createMemoryError(key, 'EXISTS_CHECK_FAILED', errorMessage);'
     }
   }
 
@@ -354,8 +354,8 @@ export class SafeMemoryStore extends TypedEventBase {
       } as MemorySuccess<typeof stats>;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown stats error';
-      return this.createMemoryError('stats', 'STATS_FAILED', errorMessage);
+        error instanceof Error ? error.message : 'Unknown stats error;
+      return this.createMemoryError('stats', 'STATS_FAILED', errorMessage);'
     }
   }
 
@@ -372,7 +372,7 @@ export class SafeMemoryStore extends TypedEventBase {
     this.metadata.clear();
     this.ttlTimers.clear();
 
-    this.emit('cleared', {});
+    this.emit('cleared', {});'
   }
 
   /**
@@ -381,7 +381,7 @@ export class SafeMemoryStore extends TypedEventBase {
   async shutdown(): Promise<void> {
     await this.clear();
     this.initialized = false;
-    this.emit('shutdown', {});
+    this.emit('shutdown', {});'
   }
 
   // ============================================
@@ -389,7 +389,7 @@ export class SafeMemoryStore extends TypedEventBase {
   // ============================================
 
   private createKey(key: string): string {
-    return `${this.options.namespace}:${key}`;
+    return `${this.options.namespace}:${key}`;`
   }
 
   private createMemoryError(
@@ -427,7 +427,7 @@ export class SafeMemoryStore extends TypedEventBase {
       this.store.delete(key);
       this.metadata.delete(key);
       this.ttlTimers.delete(key);
-      this.emit('expired', { key });
+      this.emit('expired', { key });'
     }, ttl);
 
     this.ttlTimers.set(key, timer);
@@ -454,7 +454,7 @@ export class SafeMemoryStore extends TypedEventBase {
           this.ttlTimers.delete(key);
         }
 
-        this.emit('expired', { key });
+        this.emit('expired', { key });'
       }
     }
   }
@@ -468,11 +468,11 @@ export class SafeMemoryStore extends TypedEventBase {
  * Example function showing safe property access patterns.
  */
 export async function safeMemoryUsageExample(): Promise<void> {
-  const store = new SafeMemoryStore({ namespace: 'example' });
+  const store = new SafeMemoryStore({ namespace: 'example' });'
   await store.initialize();
 
   // Store some data
-  const storeResult = await store.storeData('user:123', {
+  const storeResult = await store.storeData('user:123', {'
     name: 'Alice',
     age: 30,
   });
@@ -480,22 +480,22 @@ export async function safeMemoryUsageExample(): Promise<void> {
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
   } else if (isMemoryError(storeResult)) {
-    logger.error('❌ Storage failed:', storeResult?.error?.message);
+    logger.error('❌ Storage failed:', storeResult?.error?.message);'
   }
 
   // Retrieve data with safe access
   const retrieveResult = await store.retrieve<{ name: string; age: number }>(
-    'user:123'
+    'user:123''
   );
 
   if (isMemorySuccess(retrieveResult)) {
   } else if (isMemoryNotFound(retrieveResult)) {
   } else if (isMemoryError(retrieveResult)) {
-    logger.error('Error retrieving user:', retrieveResult?.error?.message);
+    logger.error('Error retrieving user:', retrieveResult?.error?.message);'
   }
 
   // Check existence safely
-  const existsResult = await store.exists('user:456');
+  const existsResult = await store.exists('user:456');'
 
   if (isMemorySuccess(existsResult)) {
   } else if (isMemoryNotFound(existsResult)) {

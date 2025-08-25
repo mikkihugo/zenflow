@@ -31,21 +31,21 @@ export class SafeDateUtils {
    * Format date for SAFe reporting (ISO string)
    */
   static formatISOString(date: Date = new Date()): string {
-    return format(date, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+    return format(date, "yyyy-MM-dd'T'HH:mm:ss'Z'");'
   }
 
   /**
    * Format date for SAFe milestone display
    */
   static formatMilestone(date: Date): string {
-    return format(date, 'MMM dd, yyyy');
+    return format(date, 'MMM dd, yyyy');'
   }
 
   /**
    * Format PI planning date range
    */
   static formatPIDateRange(startDate: Date, endDate: Date): string {
-    return `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd, yyyy')}`;
+    return `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd, yyyy')}`;`
   }
 
   /**
@@ -86,7 +86,7 @@ export class SafeDateUtils {
       quarters.push({
         start: quarterStart,
         end: quarterEnd,
-        label: `Q${(i % 4) + 1} ${quarterStart.getFullYear()}`,
+        label: `Q${(i % 4) + 1} ${quarterStart.getFullYear()}`,`
       });
     }
 
@@ -190,7 +190,7 @@ export class SafeCalendarUtils {
     sprintDemoDates: Date[];
   }> {
     return Array.from({ length: numberOfARTs }, (_, i) => ({
-      artId: `ART-${i + 1}`,
+      artId: `ART-${i + 1}`,`
       syncDate: addWeeks(piStart, 1), // Week 2 of PI
       sprintDemoDates: Array.from(
         { length: 5 },

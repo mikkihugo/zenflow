@@ -17,7 +17,7 @@ import {
   getLogger,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('BrainConfig');
+const logger = getLogger('BrainConfig');'
 
 export interface BrainSpecificConfig {
   wasmPath: string;
@@ -30,7 +30,7 @@ export interface BrainSpecificConfig {
     customPresets?: Record<string, any>;
   };
   dspy: {
-    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble';
+    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;
     maxTokens: number;
     optimizationSteps: number;
     coordinationFeedback: boolean;
@@ -77,7 +77,7 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
     const neuralConfig = getNeuralConfig ? getNeuralConfig()||{} : {};
 
     // Log neural config availability for debugging
-    logger.debug('Neural configuration loaded', {
+    logger.debug('Neural configuration loaded', {'
       hasNeuralConfig: Object.keys(neuralConfig).length > 0,
       neuralConfigKeys: Object.keys(neuralConfig),
       getNeuralConfigAvailable: Boolean(getNeuralConfig),
@@ -87,9 +87,9 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
     const environment =
-      process.env.NODE_ENV||(debugMode ?'development' : 'production');
+      process.env.NODE_ENV||(debugMode ?'development' : 'production');'
 
-    logger.info(`Loading brain config for environment: ${environment}`, {
+    logger.info(`Loading brain config for environment: ${environment}`, {`
       debugMode,
     });
 
@@ -104,7 +104,7 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
       performance: {
         ...DEFAULT_BRAIN_CONFIG.performance,
         enableBenchmarking: debugMode,
-        trackMetrics: environment !== 'test', // Controlled by operations facade
+        trackMetrics: environment !== 'test', // Controlled by operations facade'
       },
       // Production optimizations
       dspy: {
@@ -114,7 +114,7 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
       },
     };
 
-    logger.info('Brain configuration loaded successfully', {
+    logger.info('Brain configuration loaded successfully', {'
       wasmEnabled: !!brainConfig.wasmPath,
       gpuEnabled: brainConfig.enableGPU,
       environment,
@@ -125,9 +125,9 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
       ...sharedConfig,
     } as BrainSpecificConfig & Partial<Config>;
   } catch (error) {
-    logger.error('Failed to load brain configuration:', error);
+    logger.error('Failed to load brain configuration:', error);'
     throw new Error(
-      `Brain configuration failed: ${error instanceof Error ? error.message : String(error)}`
+      `Brain configuration failed: ${error instanceof Error ? error.message : String(error)}``
     );
   }
 }
@@ -139,35 +139,35 @@ export function validateBrainConfig(
   config: Partial<BrainSpecificConfig>
 ): boolean {
   try {
-    if (!config.wasmPath||typeof config.wasmPath !=='string') {
-      throw new Error('wasmPath must be a valid string');
+    if (!config.wasmPath||typeof config.wasmPath !=='string') {'
+      throw new Error('wasmPath must be a valid string');'
     }
 
     if (
       config.maxNetworks &&
       (config.maxNetworks < 1||config.maxNetworks > 100)
     ) {
-      throw new Error('maxNetworks must be between 1 and 100');
+      throw new Error('maxNetworks must be between 1 and 100');'
     }
 
     if (
       config.defaultBatchSize &&
       (config.defaultBatchSize < 1||config.defaultBatchSize > 1024)
     ) {
-      throw new Error('defaultBatchSize must be between 1 and 1024');
+      throw new Error('defaultBatchSize must be between 1 and 1024');'
     }
 
     if (
       config.dspy?.maxTokens &&
       (config.dspy.maxTokens < 100||config.dspy.maxTokens > 10000)
     ) {
-      throw new Error('DSPy maxTokens must be between 100 and 10000');
+      throw new Error('DSPy maxTokens must be between 100 and 10000');'
     }
 
-    logger.info('Brain configuration validation passed');
+    logger.info('Brain configuration validation passed');'
     return true;
   } catch (error) {
-    logger.error('Brain configuration validation failed:', error);
+    logger.error('Brain configuration validation failed:', error);'
     throw error;
   }
 }
@@ -178,7 +178,7 @@ export function validateBrainConfig(
 export async function initializeBrainSystem(): Promise<
   BrainSpecificConfig & Partial<Config>
 > {
-  logger.info('Initializing brain system with shared infrastructure...');
+  logger.info('Initializing brain system with shared infrastructure...');'
 
   try {
     // Load and validate configuration
@@ -191,14 +191,14 @@ export async function initializeBrainSystem(): Promise<
     // Initialize shared services as needed
     // The shared system handles: logging, config management, etc.
 
-    logger.info('Brain system initialization completed', {
+    logger.info('Brain system initialization completed', {'
       configValid: true,
       sharedInfrastructure: 'active',
     });
 
     return config;
   } catch (error) {
-    logger.error('Brain system initialization failed:', error);
+    logger.error('Brain system initialization failed:', error);'
     throw error;
   }
 }

@@ -55,7 +55,7 @@ export namespace Provider {
             const access = await AuthAnthropic.access()
             const headers = {
               ...init.headers,
-              authorization: `Bearer ${access}`,
+              authorization: `Bearer ${access}`,`
               "anthropic-beta": "oauth-2025-04-20",
             }
             delete headers["x-api-key"]
@@ -113,7 +113,7 @@ export namespace Provider {
             const headers: Record<string, string> = {
               ...init.headers,
               ...copilot.HEADERS,
-              Authorization: `Bearer ${info.access}`,
+              Authorization: `Bearer ${info.access}`,`
               "Openai-Intent": "conversation-edits",
               "X-Initiator": isAgentCall ? "agent" : "user",
             }
@@ -157,7 +157,7 @@ export namespace Provider {
             case "us": {
               const modelRequiresPrefix = ["claude", "deepseek"].some((m) => modelID.includes(m))
               if (modelRequiresPrefix) {
-                modelID = `${regionPrefix}.${modelID}`
+                modelID = `${regionPrefix}.${modelID}``
               }
               break
             }
@@ -174,7 +174,7 @@ export namespace Provider {
                 modelID.includes(m),
               )
               if (regionRequiresPrefix && modelRequiresPrefix) {
-                modelID = `${regionPrefix}.${modelID}`
+                modelID = `${regionPrefix}.${modelID}``
               }
               break
             }
@@ -184,7 +184,7 @@ export namespace Provider {
               )
               if (modelRequiresPrefix) {
                 regionPrefix = "apac"
-                modelID = `${regionPrefix}.${modelID}`
+                modelID = `${regionPrefix}.${modelID}``
               }
               break
             }
@@ -302,7 +302,7 @@ export namespace Provider {
       if (!apiKey) continue
       mergeProvider(
         providerID,
-        // only include apiKey if there's only one potential option
+        // only include apiKey if there's only one potential option'
         provider.env.length === 1 ? { apiKey } : {},
         "env",
       )
@@ -369,7 +369,7 @@ export namespace Provider {
   }
 
   export async function getModel(providerID: string, modelID: string) {
-    const key = `${providerID}/${modelID}`
+    const key = `${providerID}/${modelID}``
     const s = await state()
     if (s.models.has(key)) return s.models.get(key)!
 

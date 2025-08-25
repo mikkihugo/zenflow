@@ -5,7 +5,7 @@
  * without bloated "unified" architecture.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const interfaceManager = new InterfaceManager({
  *   defaultMode: 'auto',
  *   webPort: 3456,
@@ -14,7 +14,7 @@
  *
  * await interfaceManager.initialize();
  * await interfaceManager.launch();
- * ```
+ * ````
  */
 /**
  * @file Interface management system.
@@ -25,7 +25,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 const { getConfig } = (global as any).claudeZenFoundation;
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('InterfaceManager');
+const logger = getLogger('InterfaceManager');'
 
 /**
  * Interface mode types.
@@ -43,7 +43,7 @@ export interface InterfaceManagerConfig {
   /** Web interface port */
   webPort?: number;
   /** TUI theme */
-  theme?: 'dark' | 'light';
+  theme?: 'dark' | 'light;
   /** Enable real-time updates */
   enableRealTime?: boolean;
   /** Reference to core system */
@@ -95,37 +95,37 @@ export class InterfaceManager extends TypedEventBase {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    logger.info('Initializing interface manager');
+    logger.info('Initializing interface manager');'
 
     // Detect appropriate interface mode if auto
     this.currentMode =
-      this.config.defaultMode === 'auto'
+      this.config.defaultMode === 'auto''
         ? this.detectInterfaceMode()
         : this.config.defaultMode;
 
     this.initialized = true;
-    this.emit('initialized', {});
-    logger.info(`Interface manager ready (mode: ${this.currentMode})`);
+    this.emit('initialized', {});'
+    logger.info(`Interface manager ready (mode: ${this.currentMode})`);`
   }
 
   async launch(): Promise<void> {
     await this.ensureInitialized();
 
     if (this.isActive) {
-      logger.warn('Interface already active');
+      logger.warn('Interface already active');'
       return;
     }
 
-    logger.info(`Launching ${this.currentMode} interface...`);
+    logger.info(`Launching ${this.currentMode} interface...`);`
 
     switch (this.currentMode) {
-      case 'cli':
+      case 'cli':'
         await this.launchCLI();
         break;
-      case 'tui':
+      case 'tui':'
         await this.launchTUI();
         break;
-      case 'web':
+      case 'web':'
         await this.launchWeb();
         break;
       default:
@@ -133,8 +133,8 @@ export class InterfaceManager extends TypedEventBase {
     }
 
     this.isActive = true;
-    this.emit('launched', { mode: this.currentMode });
-    logger.info(`${this.currentMode} interface launched`);
+    this.emit('launched', { mode: this.currentMode });'
+    logger.info(`${this.currentMode} interface launched`);`
   }
 
   async getStats(): Promise<InterfaceStats> {
@@ -146,12 +146,12 @@ export class InterfaceManager extends TypedEventBase {
   }
 
   async shutdown(): Promise<void> {
-    logger.info('Shutting down interface manager...');
+    logger.info('Shutting down interface manager...');'
 
     this.isActive = false;
     this.removeAllListeners();
 
-    logger.info('Interface manager shutdown complete');
+    logger.info('Interface manager shutdown complete');'
   }
 
   // ==================== PRIVATE METHODS ====================
@@ -179,31 +179,31 @@ export class InterfaceManager extends TypedEventBase {
 
     // CI environment detection
     if (environment.isCI || !process.stdout.isTTY) {
-      return 'cli';
+      return 'cli;
     }
 
-    // Check if we're in a terminal that supports TUI
+    // Check if we're in a terminal that supports TUI'
     const termConfig = (centralConfig?.interfaces as any)?.terminal;
     if (termConfig?.enableColors && termConfig?.enableProgressBars) {
-      return 'tui';
+      return 'tui;
     }
 
-    return 'cli';
+    return 'cli;
   }
 
   private async launchCLI(): Promise<void> {
-    logger.info('CLI interface active - commands available');
+    logger.info('CLI interface active - commands available');'
     // In a real implementation, this would set up CLI command handlers
   }
 
   private async launchTUI(): Promise<void> {
-    logger.info('TUI interface would be launched here');
+    logger.info('TUI interface would be launched here');'
     // In a real implementation, this would launch the terminal UI
   }
 
   private async launchWeb(): Promise<void> {
     logger.info(
-      `Web interface would be launched on port ${this.config.webPort}`
+      `Web interface would be launched on port ${this.config.webPort}``
     );
     // In a real implementation, this would start the web server
   }

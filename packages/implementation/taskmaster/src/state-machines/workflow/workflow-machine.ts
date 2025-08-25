@@ -41,7 +41,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
       // Essential actions using assign from XState 5.20.2
       addTask: assign({
         tasks: ({ context, event }: any) => {
-          if (event.type !== 'TASK_CREATED') return context.tasks;
+          if (event.type !== 'TASK_CREATED') return context.tasks;'
           return {
             ...context.tasks,
             [event.task.id]: event.task,
@@ -51,7 +51,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
 
       moveTask: assign({
         tasks: ({ context, event }: any) => {
-          if (event.type !== 'TASK_MOVED') return context.tasks;
+          if (event.type !== 'TASK_MOVED') return context.tasks;'
           const task = context.tasks[event.taskId];
           if (!task) return context.tasks;
 
@@ -68,7 +68,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
 
       recordError: assign({
         errors: ({ context, event }: any) => {
-          if (event.type !== 'ERROR_OCCURRED') return context.errors;
+          if (event.type !== 'ERROR_OCCURRED') return context.errors;'
 
           const errorEntry = {
             timestamp: new Date(),
@@ -84,12 +84,12 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
     guards: {
       // Essential guards
       canMoveTask: ({ context, event }: any) => {
-        if (event.type !== 'TASK_MOVED') return false;
+        if (event.type !== 'TASK_MOVED') return false;'
         return context.tasks[event.taskId] !== undefined;
       },
 
       isValidTransition: ({ context, event }: any) => {
-        if (event.type !== 'TASK_MOVED') return false;
+        if (event.type !== 'TASK_MOVED') return false;'
         // Simplified validation - allow all moves for now
         return true;
       },

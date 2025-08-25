@@ -31,7 +31,7 @@
 import { getLogger } from '@claude-zen/foundation';
 import { AGUIVisualization } from '../interfaces/agui-dashboard';
 
-const logger = getLogger('TeamworkConversationDashboard');
+const logger = getLogger('TeamworkConversationDashboard');'
 
 // ============================================================================
 // CONVERSATION DASHBOARD TYPES
@@ -51,7 +51,7 @@ export interface ActiveConversationSummary {
     id: string;
     name: string;
     role: string;
-    status: 'active|idle|disconnected';
+    status: 'active' | 'idle' | 'disconnected';
     lastActivity: string;
   }>;
   startTime: string;
@@ -59,7 +59,7 @@ export interface ActiveConversationSummary {
   messageCount: number;
   decisionsPending: number;
   decisionsReached: number;
-  urgency: 'low|medium|high|critical';
+  urgency: 'low|medium|high|critical;
   progress: number; // 0-100%
   healthScore: number; // 0-100%
 }
@@ -121,7 +121,7 @@ export class TeamworkConversationDashboard {
           averageResponseTime: metrics.averageResponseTime,
           healthScore: metrics.participantSatisfaction,
           urgentConversations: activeConversations.filter(
-            (c) => c.urgency === 'critical'
+            (c) => c.urgency === 'critical''
           ).length,
         },
         conversations: {
@@ -137,7 +137,7 @@ export class TeamworkConversationDashboard {
             lastActivity: c.participants.reduce(
               (latest, p) =>
                 p.lastActivity > latest ? p.lastActivity : latest,
-              ''
+              '''
             ),
             status: this.calculateConversationStatus(c),
           })),
@@ -200,7 +200,7 @@ export class TeamworkConversationDashboard {
    */
   async generateARTSyncConversationView(): Promise<AGUIVisualization> {
     const artSyncConversations = await this.getConversationsByType(
-      'art-sync-coordination'
+      'art-sync-coordination''
     );
 
     return {
@@ -256,7 +256,7 @@ export class TeamworkConversationDashboard {
    */
   async generatePIPlanningConversationView(): Promise<AGUIVisualization> {
     const piPlanningConversations = await this.getConversationsByType(
-      'pi-planning-breakout'
+      'pi-planning-breakout''
     );
 
     return {
@@ -327,7 +327,7 @@ export class TeamworkConversationDashboard {
    */
   async generateSystemDemoConversationView(): Promise<AGUIVisualization> {
     const demoConversations = await this.getConversationsByType(
-      'system-demo-feedback'
+      'system-demo-feedback''
     );
 
     return {
@@ -392,7 +392,7 @@ export class TeamworkConversationDashboard {
       
       // Apply real-time updates and filter active conversations
       const activeConversations = conversations.filter(conv => 
-        conv.status === 'active' && 
+        conv.status === 'active' && '
         conv.lastActivity && 
         Date.now() - conv.lastActivity.getTime() < 24 * 60 * 60 * 1000 // Last 24 hours
       );
@@ -401,11 +401,11 @@ export class TeamworkConversationDashboard {
       return activeConversations.map(conv => ({
         ...conv,
         realtimeParticipants: realtimeUpdates[conv.id]?.participants || conv.participants,
-        currentActivity: realtimeUpdates[conv.id]?.activity || 'idle'
+        currentActivity: realtimeUpdates[conv.id]?.activity || 'idle''
       }));
       
     } catch (error) {
-      console.warn('Failed to load active conversations:', error);
+      console.warn('Failed to load active conversations:', error);'
       // Fallback to local cache
       return Array.from(this.activeConversations.values());
     }
@@ -468,7 +468,7 @@ export class TeamworkConversationDashboard {
       return detectedPatterns;
       
     } catch (error) {
-      console.warn('Failed to analyze conversation patterns:', error);
+      console.warn('Failed to analyze conversation patterns:', error);'
       // Fallback to static patterns
       return [
         {
@@ -497,7 +497,7 @@ export class TeamworkConversationDashboard {
         ...aiInsights,
       conversationHealth: {
         overall: 87,
-        trends: 'improving',
+        trends: 'improving' | 'stable' | 'declining'',
         factors: [
           'Better participant preparation',
           'Clearer agendas',
@@ -527,7 +527,7 @@ export class TeamworkConversationDashboard {
       };
       
     } catch (error) {
-      console.warn('Failed to generate conversation insights:', error);
+      console.warn('Failed to generate conversation insights:', error);'
       // Fallback to basic insights
       return {
         conversationHealth: { overall: 75, trends: 'stable', factors: ['Basic monitoring active'] },
@@ -549,10 +549,10 @@ export class TeamworkConversationDashboard {
     try {
       // Simulate database call
       await new Promise(resolve => setTimeout(resolve, 5));
-      // In real implementation: await this.database.query('SELECT * FROM conversations WHERE active = true')
+      // In real implementation: await this.database.query('SELECT * FROM conversations WHERE active = true')'
       return [];
     } catch (error) {
-      console.warn('Failed to load conversations from storage:', error);
+      console.warn('Failed to load conversations from storage:', error);'
       return [];
     }
   }
@@ -567,7 +567,7 @@ export class TeamworkConversationDashboard {
       // In real implementation: await this.websocket.getConversationUpdates()
       return {};
     } catch (error) {
-      console.warn('Failed to fetch real-time updates:', error);
+      console.warn('Failed to fetch real-time updates:', error);'
       return {};
     }
   }
@@ -582,7 +582,7 @@ export class TeamworkConversationDashboard {
       // In real implementation: await this.dataWarehouse.getHistoricalConversations(timeRange)
       return [];
     } catch (error) {
-      console.warn('Failed to load historical data:', error);
+      console.warn('Failed to load historical data:', error);'
       return [];
     }
   }
@@ -597,7 +597,7 @@ export class TeamworkConversationDashboard {
       // In real implementation: await this.mlService.analyzePatterns(conversations, historicalData)
       return [];
     } catch (error) {
-      console.warn('Failed to perform pattern analysis:', error);
+      console.warn('Failed to perform pattern analysis:', error);'
       return [];
     }
   }
@@ -613,11 +613,11 @@ export class TeamworkConversationDashboard {
       return {
         generatedAt: new Date(),
         confidence: 0.85,
-        dataQuality: 'high'
+        dataQuality: 'high''
       };
     } catch (error) {
-      console.warn('Failed to generate AI insights:', error);
-      return { generatedAt: new Date(), confidence: 0.5, dataQuality: 'limited' };
+      console.warn('Failed to generate AI insights:', error);'
+      return { generatedAt: new Date(), confidence: 0.5, dataQuality: 'limited' };'
     }
   }
 
@@ -630,7 +630,7 @@ export class TeamworkConversationDashboard {
       // In real implementation: await this.timeSeriesDB.getDailyMetrics()
       return { dataAvailable: true };
     } catch (error) {
-      console.warn('Failed to load daily metrics:', error);
+      console.warn('Failed to load daily metrics:', error);'
       return { dataAvailable: false };
     }
   }
@@ -649,7 +649,7 @@ export class TeamworkConversationDashboard {
         satisfaction: [85, 87, 84, 88, 86, 89, 87]
       };
     } catch (error) {
-      console.warn('Failed to calculate daily trends:', error);
+      console.warn('Failed to calculate daily trends:', error);'
       return {};
     }
   }
@@ -661,10 +661,10 @@ export class TeamworkConversationDashboard {
     try {
       await new Promise(resolve => setTimeout(resolve, 12));
       // In real implementation: await this.analytics.getWeeklyData()
-      return { weeks: 4, dataQuality: 'high' };
+      return { weeks: 4, dataQuality: 'high' };'
     } catch (error) {
-      console.warn('Failed to load weekly analytics:', error);
-      return { weeks: 0, dataQuality: 'limited' };
+      console.warn('Failed to load weekly analytics:', error);'
+      return { weeks: 0, dataQuality: 'limited' };'
     }
   }
 
@@ -679,12 +679,12 @@ export class TeamworkConversationDashboard {
         effectiveness: metrics.weeks > 0 ? [80, 83, 85, 87] : null,
         quality: [84, 86, 89, 91],
         engagement: [77, 81, 84, 87],
-        direction: 'improving',
+        direction: 'improving' | 'stable' | 'declining'',
         confidence: 0.92
       };
     } catch (error) {
-      console.warn('Failed to calculate weekly trends:', error);
-      return { direction: 'stable', confidence: 0.5 };
+      console.warn('Failed to calculate weekly trends:', error);'
+      return { direction: 'stable', confidence: 0.5 };'
     }
   }
 
@@ -705,11 +705,11 @@ export class TeamworkConversationDashboard {
   private calculateConversationStatus(
     conversation: ActiveConversationSummary
   ): string {
-    if (conversation.progress >= 90) return'completing';
-    if (conversation.progress >= 70) return 'progressing';
-    if (conversation.healthScore < 60) return 'struggling';
-    if (this.isConversationStalled(conversation)) return 'stalled';
-    return 'active';
+    if (conversation.progress >= 90) return'completing;
+    if (conversation.progress >= 70) return 'progressing;
+    if (conversation.healthScore < 60) return 'struggling;
+    if (this.isConversationStalled(conversation)) return 'stalled;
+    return 'active;
   }
 
   private isConversationStalled(
@@ -718,7 +718,7 @@ export class TeamworkConversationDashboard {
     const lastActivity = new Date(
       conversation.participants.reduce(
         (latest, p) => (p.lastActivity > latest ? p.lastActivity : latest),
-        ''
+        '''
       )
     );
     const stalledThreshold = 15; // minutes
@@ -741,7 +741,7 @@ export class TeamworkConversationDashboard {
     const activeParticipants = new Set();
     conversations.forEach((c) =>
       c.participants
-        .filter((p) => p.status === 'active')
+        .filter((p) => p.status === 'active')'
         .forEach((p) => activeParticipants.add(p.id))
     );
     return activeParticipants.size;
@@ -842,7 +842,7 @@ export class TeamworkConversationDashboard {
     conversations: ActiveConversationSummary[]
   ): number {
     const escalatedConversations = conversations.filter(
-      (c) => c.urgency ==='critical'
+      (c) => c.urgency ==='critical''
     ).length;
     return conversations.length > 0
       ? Math.round((escalatedConversations / conversations.length) * 100)
@@ -864,10 +864,10 @@ export class TeamworkConversationDashboard {
         averageResponseTime: dailyData.responseTime || [4.5, 4.2, 3.8, 4.1, 3.9, 4.0, 3.7],
         participantSatisfaction: dailyData.satisfaction || [82, 84, 86, 83, 87, 85, 88],
         generatedAt: new Date(),
-        dataQuality: 'real-time'
+        dataQuality: 'real-time''
       };
     } catch (error) {
-      console.warn('Failed to generate daily trends:', error);
+      console.warn('Failed to generate daily trends:', error);'
       // Fallback to static data
       return {
         conversationsStarted: [12, 15, 8, 22, 18, 14, 20],
@@ -888,12 +888,12 @@ export class TeamworkConversationDashboard {
         coordinationEffectiveness: trendAnalysis.effectiveness || [78, 81, 83, 85],
         decisionQuality: trendAnalysis.quality || [82, 84, 87, 89],
         stakeholderEngagement: trendAnalysis.engagement || [75, 79, 82, 85],
-        trendDirection: trendAnalysis.direction || 'improving',
+        trendDirection: trendAnalysis.direction || 'improving' | 'stable' | 'declining'',
         confidence: trendAnalysis.confidence || 0.85,
         generatedAt: new Date()
       };
     } catch (error) {
-      console.warn('Failed to generate weekly trends:', error);
+      console.warn('Failed to generate weekly trends:', error);'
       return {
         coordinationEffectiveness: [78, 81, 83, 85],
         decisionQuality: [82, 84, 87, 89],
@@ -1045,7 +1045,7 @@ export class TeamworkConversationDashboard {
       averageParticipation: 92, // percentage
       highParticipation: ['Team A', 'Team C'],
       lowParticipation: ['Team D'],
-      participationTrend: 'improving',
+      participationTrend: 'improving' | 'stable' | 'declining'',
     };
   }
 

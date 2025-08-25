@@ -4,17 +4,17 @@
  * **⚠️ RECOMMENDED USAGE: Access via ../../main Package**
  *
  * While this package can be used directly, it is recommended to access database
- * functionality through `../../main` which provides integrated database
+ * functionality through `../../main` which provides integrated database`
  * access with telemetry, logging, and configuration management.
  *
- * ```typescript
+ * ```typescript`
  * // ✅ RECOMMENDED: Use via foundation
  * import { getDatabaseAccess, Storage } from '../../main';
  * const db = getDatabaseAccess();
  *
  * // ⚠️ DIRECT USE: Only if you need fine-grained control
  * import { SQLiteAdapter, VectorDao } from '@claude-zen/database';
- * ```
+ * ````
  *
  * **COMPREHENSIVE MULTI-DATABASE ECOSYSTEM**
  *
@@ -55,73 +55,73 @@
  * **WHEN TO USE EACH DATABASE:**
  *
  * 🗃️ **SQLite + RelationalDAO** - Structured data with ACID compliance
- * ```typescript
+ * ```typescript`
  * import { SQLiteAdapter, RelationalDao } from '@claude-zen/database';
  * // USE FOR: Configuration, user data, application state
  * // PERFORMANCE: 100K+ ops/sec, local transactions
  * // FEATURES: ACID compliance, SQL queries, indexes
- * ```
+ * ````
  *
  * 🚀 **LanceDB + VectorDAO** - AI/ML embeddings and similarity search
- * ```typescript
+ * ```typescript`
  * import { LanceDBAdapter, VectorDao } from '@claude-zen/database';
  * // USE FOR: Vector embeddings, semantic search, AI features
  * // PERFORMANCE: 10K+ vector searches/sec, sub-ms latency
  * // FEATURES: Similarity search, embedding storage, ML integration
- * ```
+ * ````
  *
  * 🕸️ **Kuzu + GraphDAO** - Complex relationships and network analysis
- * ```typescript
+ * ```typescript`
  * import { KuzuAdapter, GraphDao } from '@claude-zen/database';
  * // USE FOR: Social networks, dependencies, hierarchies
  * // PERFORMANCE: Complex traversals <100ms, millions of nodes
  * // FEATURES: Path finding, relationship analysis, graph algorithms
- * ```
+ * ````
  *
  * 💾 **MemoryDAO** - High-speed caching and temporary storage
- * ```typescript
+ * ```typescript`
  * import { MemoryDao } from '@claude-zen/database';
  * // USE FOR: Caching, session storage, temporary data
  * // PERFORMANCE: Microsecond access times, memory-based
  * // FEATURES: TTL expiration, LRU eviction, atomic operations
- * ```
+ * ````
  *
  * 🤝 **CoordinationDAO** - Multi-agent coordination and state management
- * ```typescript
+ * ```typescript`
  * import { CoordinationDao } from '@claude-zen/database';
  * // USE FOR: Agent coordination, distributed state, workflow tracking
  * // PERFORMANCE: Optimized for coordination patterns
  * // FEATURES: State machines, event sourcing, coordination primitives
- * ```
+ * ````
  *
  * **INTEGRATION EXAMPLES:**
  *
  * @example Basic Multi-Database Setup
- * ```typescript
+ * ```typescript`
  * import { createMultiDatabaseSetup, DatabaseFactory } from '@claude-zen/database';
  *
  * // Create integrated database system
  * const dbSetup = await createMultiDatabaseSetup({
  *   sqlite: { path: './app.db', enableWAL: true },
  *   lancedb: { path: './vectors', dimensions: 1536 },
- *   kuzu: { path: './graph.kuzu', enableOptimizations: true }
+ *   kuzu: { path: './graph.kuzu', enableOptimizations: true }'
  * });
  *
  * // Access specialized DAOs
- * const userDao = dbSetup.getRelationalDao('users');
- * const embeddingDao = dbSetup.getVectorDao('embeddings');
- * const relationDao = dbSetup.getGraphDao('relationships');
- * ```
+ * const userDao = dbSetup.getRelationalDao('users');'
+ * const embeddingDao = dbSetup.getVectorDao('embeddings');'
+ * const relationDao = dbSetup.getGraphDao('relationships');'
+ * ````
  *
  * @example Advanced Vector Operations with AI/ML Integration
- * ```typescript
+ * ```typescript`
  * import { LanceDBAdapter, VectorDao } from '@claude-zen/database';
  * import type { VectorDocument, VectorSearchOptions } from '@claude-zen/database';
  *
  * const vectorDb = new LanceDBAdapter({
  *   path: './vectors',
  *   dimensions: 1536, // OpenAI embedding size
- *   metric: 'cosine'
+ *   metric: 'cosine''
  * });
  *
  * const vectorDao = new VectorDao(vectorDb);
@@ -141,14 +141,14 @@
  * const results = await vectorDao.search(queryEmbedding, {
  *   limit: 10,
  *   threshold: 0.8,
- *   filter: { category: 'machine-learning' }
+ *   filter: { category: 'machine-learning' }'
  * });
  *
- * console.log(`Found ${results.length} similar documents`);
- * ```
+ * console.log(`Found ${results.length} similar documents`);`
+ * ````
  *
  * @example Complex Graph Traversal and Relationship Analysis
- * ```typescript
+ * ```typescript`
  * import { KuzuAdapter, GraphDao } from '@claude-zen/database';
  * import type { GraphNode, GraphRelationship, GraphPath } from '@claude-zen/database';
  *
@@ -160,39 +160,39 @@
  * const graphDao = new GraphDao(graphDb);
  *
  * // Create knowledge graph
- * await graphDao.createNode('Person', {
+ * await graphDao.createNode('Person', {'
  *   id: 'person_1',
  *   name: 'Alice',
- *   expertise: ['AI', 'ML']
+ *   expertise: ['AI', 'ML']'
  * });
  *
- * await graphDao.createNode('Project', {
+ * await graphDao.createNode('Project', {'
  *   id: 'proj_1',
- *   name: 'Neural Network Research'
+ *   name: 'Neural Network Research''
  * });
  *
- * await graphDao.createRelationship('person_1', 'proj_1', 'WORKS_ON', {
+ * await graphDao.createRelationship('person_1', 'proj_1', 'WORKS_ON', {'
  *   role: 'lead-researcher',
- *   since: '2024-01-01'
+ *   since: '2024-01-01''
  * });
  *
  * // Find paths and relationships
- * const paths = await graphDao.findPaths('person_1', 'proj_1', {
+ * const paths = await graphDao.findPaths('person_1', 'proj_1', {'
  *   maxDepth: 3,
- *   relationshipTypes: ['WORKS_ON', 'COLLABORATES_WITH']
+ *   relationshipTypes: ['WORKS_ON', 'COLLABORATES_WITH']'
  * });
  *
- * console.log(`Found ${paths.length} connection paths`);
- * ```
+ * console.log(`Found ${paths.length} connection paths`);`
+ * ````
  *
  * @example Production Multi-Database Transaction Management
- * ```typescript
+ * ```typescript`
  * import { createDao, DatabaseFactory } from '@claude-zen/database';
  * import type { TransactionOperation } from '@claude-zen/database';
  *
  * const factory = new DatabaseFactory({
  *   sqlite: { path: './main.db', poolSize: 20 },
- *   lancedb: { path: './vectors', dimensions: 1536 }
+ *   lancedb: { path: './vectors', dimensions: 1536 }'
  * });
  *
  * // Cross-database transaction
@@ -201,7 +201,7 @@
  *     type: 'relational',
  *     operation: 'insert',
  *     table: 'users',
- *     data: { id: 'user_123', name: 'John Doe' }
+ *     data: { id: 'user_123', name: 'John Doe' }'
  *   },
  *   {
  *     type: 'vector',
@@ -210,14 +210,14 @@
  *     data: {
  *       id: 'user_123',
  *       vector: profileEmbedding,
- *       metadata: { userId: 'user_123' }
+ *       metadata: { userId: 'user_123' }'
  *     }
  *   }
  * ]);
- * ```
+ * ````
  *
  * @example Tree-Shakable Imports for Optimal Bundle Size
- * ```typescript
+ * ```typescript`
  * // Import only SQLite functionality (smallest bundle)
  * import { SQLiteAdapter } from '@claude-zen/database/adapters/sqlite-adapter';
  * import { RelationalDao } from '@claude-zen/database/dao/relational.dao';
@@ -228,7 +228,7 @@
  *
  * // Import specific types only (zero runtime cost)
  * import type { VectorDocument, GraphNode } from '@claude-zen/database';
- * ```
+ * ````
  *
  * **MIGRATION AND VERSIONING:**
  * - Automatic schema detection and migration

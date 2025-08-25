@@ -21,22 +21,22 @@ import type { z } from 'zod';
 /**
  * Unique identifier for tasks with enhanced type safety
  */
-export type TaskId = string & { readonly __brand: 'TaskId' };
+export type TaskId = string & { readonly __brand: 'TaskId' };'
 
 /**
  * Unique identifier for approval gates
  */
-export type ApprovalGateId = string & { readonly __brand: 'ApprovalGateId' };
+export type ApprovalGateId = string & { readonly __brand: 'ApprovalGateId' };'
 
 /**
  * Unique identifier for workflow instances
  */
-export type WorkflowId = string & { readonly __brand: 'WorkflowId' };
+export type WorkflowId = string & { readonly __brand: 'WorkflowId' };'
 
 /**
  * Unique identifier for users
  */
-export type UserId = string & { readonly __brand: 'UserId' };
+export type UserId = string & { readonly __brand: 'UserId' };'
 
 /**
  * Task priority levels with numerical weights for algorithms
@@ -100,11 +100,11 @@ export enum TransitionDirection {
  * Task complexity estimation for WASM performance prediction
  */
 export enum TaskComplexity {
-  TRIVIAL = 'trivial', // < 1 hour
-  SIMPLE = 'simple', // 1-4 hours
-  MODERATE = 'moderate', // 4-16 hours
-  COMPLEX = 'complex', // 16-40 hours
-  EPIC = 'epic', // > 40 hours
+  TRIVIAL = 'trivial', // < 1 hour'
+  SIMPLE = 'simple', // 1-4 hours'
+  MODERATE = 'moderate', // 4-16 hours'
+  COMPLEX = 'complex', // 16-40 hours'
+  EPIC = 'epic', // > 40 hours'
 }
 
 /**
@@ -243,7 +243,7 @@ export interface ApprovalGateRequirement {
  */
 export interface ApprovalCondition {
   /** Condition type */
-  type: 'user_role|task_complexity|time_based|custom';
+  type: 'user_role|task_complexity|time_based|custom;
 
   /** Condition parameters */
   parameters: Record<string, unknown>;
@@ -392,7 +392,7 @@ export interface SecurityConfig {
 export interface IntegrationConfig {
   /** Database configuration */
   database: {
-    type: 'postgresql|mysql|sqlite';
+    type: 'postgresql' | 'mysql' | 'sqlite';
     host: string;
     port: number;
     database: string;
@@ -505,13 +505,13 @@ export interface BottleneckInfo {
   estimatedDelayHours: number;
 
   /** Bottleneck type classification */
-  type: 'capacity|skill|dependency|process|resource';
+  type: 'capacity|skill|dependency|process|resource;
 
   /** Contributing factors */
   factors: string[];
 
   /** Historical trend */
-  trend: 'improving|stable|degrading';
+  trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
 }
 
 /**
@@ -696,7 +696,7 @@ export interface AuditLogEntry {
   userId: UserId;
 
   /** Affected resource type */
-  resourceType: 'task|workflow|user|config';
+  resourceType: 'task|workflow|user|config;
 
   /** Affected resource ID */
   resourceId: string;
@@ -714,7 +714,7 @@ export interface AuditLogEntry {
   details: Record<string, unknown>;
 
   /** Action result */
-  result: 'success|failure|partial';
+  result: 'success' | 'failure' | 'partial';
 }
 
 // =============================================================================
@@ -726,39 +726,39 @@ export interface AuditLogEntry {
  */
 export interface TaskMasterEventMap {
   // Task lifecycle events
-  'task:created': (task: TaskMetadata) => void;
-  'task:updated': (task: TaskMetadata, previousState: TaskMetadata) => void;
-  'task:deleted': (taskId: TaskId) => void;
-  'task:state_changed': (transition: TaskStateTransition) => void;
+  'task:created': (task: TaskMetadata) => void;'
+  'task:updated': (task: TaskMetadata, previousState: TaskMetadata) => void;'
+  'task:deleted': (taskId: TaskId) => void;'
+  'task:state_changed': (transition: TaskStateTransition) => void;'
 
   // Workflow events
-  'workflow:started': (workflowId: WorkflowId, tasks: TaskMetadata[]) => void;
-  'workflow:completed': (workflowId: WorkflowId, metrics: FlowMetrics) => void;
-  'workflow:failed': (workflowId: WorkflowId, error: APIError) => void;
+  'workflow:started': (workflowId: WorkflowId, tasks: TaskMetadata[]) => void;'
+  'workflow:completed': (workflowId: WorkflowId, metrics: FlowMetrics) => void;'
+  'workflow:failed': (workflowId: WorkflowId, error: APIError) => void;'
 
   // Approval gate events
-  'approval:requested': (gateId: ApprovalGateId, taskId: TaskId) => void;
-  'approval:granted': (
+  'approval:requested': (gateId: ApprovalGateId, taskId: TaskId) => void;'
+  'approval:granted': ('
     gateId: ApprovalGateId,
     taskId: TaskId,
     approver: UserId
   ) => void;
-  'approval:rejected': (
+  'approval:rejected': ('
     gateId: ApprovalGateId,
     taskId: TaskId,
     approver: UserId,
     reason: string
   ) => void;
-  'approval:timeout': (gateId: ApprovalGateId, taskId: TaskId) => void;
+  'approval:timeout': (gateId: ApprovalGateId, taskId: TaskId) => void;'
 
   // Performance events
-  'performance:threshold_exceeded': (
+  'performance:threshold_exceeded': ('
     metric: keyof FlowMetrics,
     value: number,
     threshold: number
   ) => void;
-  'performance:bottleneck_detected': (bottleneck: BottleneckInfo) => void;
-  'performance:wip_violation': (
+  'performance:bottleneck_detected': (bottleneck: BottleneckInfo) => void;'
+  'performance:wip_violation': ('
     state: TaskState,
     count: number,
     limit: number,
@@ -766,19 +766,19 @@ export interface TaskMasterEventMap {
   ) => void;
 
   // System events
-  'system:started': (config: TaskMasterConfig) => void;
-  'system:shutdown': () => void;
-  'system:error': (error: APIError) => void;
-  'system:health_check': (health: SystemHealthStatus) => void;
+  'system:started': (config: TaskMasterConfig) => void;'
+  'system:shutdown': () => void;'
+  'system:error': (error: APIError) => void;'
+  'system:health_check': (health: SystemHealthStatus) => void;'
 
   // Security events
-  'security:authentication_failed': (userId: string, clientIp: string) => void;
-  'security:authorization_denied': (
+  'security:authentication_failed': (userId: string, clientIp: string) => void;'
+  'security:authorization_denied': ('
     userId: UserId,
     resource: string,
     action: string
   ) => void;
-  'security:rate_limit_exceeded': (clientIp: string, endpoint: string) => void;
+  'security:rate_limit_exceeded': (clientIp: string, endpoint: string) => void;'
 }
 
 /**
@@ -809,7 +809,7 @@ export interface SystemHealthStatus {
  */
 export interface ComponentHealth {
   /** Component status */
-  status: 'healthy|degraded|unhealthy|unknown';
+  status: 'healthy|degraded|unhealthy|unknown;
 
   /** Response time in milliseconds */
   responseTimeMs: number;
@@ -832,7 +832,7 @@ export interface SystemAlert {
   readonly id: string;
 
   /** Alert severity */
-  severity: 'info|warning|error|critical';
+  severity: 'info|warning|error|critical;
 
   /** Alert message */
   message: string;
@@ -870,14 +870,14 @@ export type DeepPartial<T> = {
  * Type guard for TaskId
  */
 export function isTaskId(value: unknown): value is TaskId {
-  return typeof value === 'string' && value.length > 0;
+  return typeof value === 'string' && value.length > 0;'
 }
 
 /**
  * Type guard for UserId
  */
 export function isUserId(value: unknown): value is UserId {
-  return typeof value === 'string' && value.length > 0;
+  return typeof value === 'string' && value.length > 0;'
 }
 
 /**
@@ -885,11 +885,11 @@ export function isUserId(value: unknown): value is UserId {
  */
 export function isAPIResponse<T>(value: unknown): value is APIResponse<T> {
   return (
-    typeof value === 'object' &&
+    typeof value === 'object' &&'
     value !== null &&
-    'success' in value &&
-    'metadata' in value &&
-    typeof (value as any).success === 'boolean');
+    'success' in value &&'
+    'metadata' in value &&'
+    typeof (value as any).success === 'boolean');'
 }
 
 /**
@@ -897,7 +897,7 @@ export function isAPIResponse<T>(value: unknown): value is APIResponse<T> {
  */
 export function createTaskId(value: string): TaskId {
   if (!value || value.trim().length === 0) {
-    throw new Error('TaskId cannot be empty');
+    throw new Error('TaskId cannot be empty');'
   }
   return value.trim() as TaskId;
 }
@@ -907,7 +907,7 @@ export function createTaskId(value: string): TaskId {
  */
 export function createUserId(value: string): UserId {
   if (!value || value.trim().length === 0) {
-    throw new Error('UserId cannot be empty');
+    throw new Error('UserId cannot be empty');'
   }
   return value.trim() as UserId;
 }
@@ -917,7 +917,7 @@ export function createUserId(value: string): UserId {
  */
 export function createApprovalGateId(value: string): ApprovalGateId {
   if (!value || value.trim().length === 0) {
-    throw new Error('ApprovalGateId cannot be empty');
+    throw new Error('ApprovalGateId cannot be empty');'
   }
   return value.trim() as ApprovalGateId;
 }
@@ -927,7 +927,7 @@ export function createApprovalGateId(value: string): ApprovalGateId {
  */
 export function createWorkflowId(value: string): WorkflowId {
   if (!value || value.trim().length === 0) {
-    throw new Error('WorkflowId cannot be empty');
+    throw new Error('WorkflowId cannot be empty');'
   }
   return value.trim() as WorkflowId;
 }

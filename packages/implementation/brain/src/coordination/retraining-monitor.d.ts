@@ -21,7 +21,7 @@ export interface RetrainingTrigger {
   timestamp: Date;
   reason: string;
   metrics: Record<string, number>;
-  strategy: 'performance|manual|scheduled';
+  strategy: 'performance' | 'manual' | 'scheduled';
 }
 export interface RetrainingResult {
   success: boolean;
@@ -37,7 +37,7 @@ export interface MonitoringMetrics {
   currentCoordinationSuccessRate: number;
   lastRetrainingTimestamp?: number;
   retrainingFrequency: number;
-  cooldownStatus: 'active|inactive'';
+  cooldownStatus: 'active|inactive';
   dailyLimitStatus: {
     used: number;
     limit: number;
@@ -88,11 +88,11 @@ export declare class RetrainingMonitor {
    */
   private getCurrentMetrics;
   /**
-   * Check if we're currently in a cooldown period from the last retraining.
+   * Check if we're currently in a cooldown period from the last retraining.'
    */
   private isInCooldownPeriod;
   /**
-   * Check if we've exceeded the daily retraining limit.
+   * Check if we've exceeded the daily retraining limit.'
    */
   private hasExceededDailyLimit;
   /**

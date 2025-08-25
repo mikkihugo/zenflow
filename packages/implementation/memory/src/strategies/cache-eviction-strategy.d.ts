@@ -57,7 +57,7 @@ export declare class CacheEvictionStrategy extends TypedEventBase {
     maxSize: number;
     memoryUsage: number;
     maxMemory: number;
-    algorithm:'ttl|lru|lfu|adaptive|fifo|random';
+    algorithm:'ttl|lru|lfu|adaptive|fifo|random;
     metrics: {
       totalEvictions: number;
       evictionsByReason: Record<EvictionReason, number>;

@@ -9,7 +9,7 @@ import { getLogger } from '@claude-zen/foundation';
 import { getTaskMasterSystem } from './facades/taskmaster-facade';
 import type { TaskMasterSystem } from './facades/taskmaster-facade';
 
-const logger = getLogger('TaskMaster');
+const logger = getLogger('TaskMaster');'
 
 // ============================================================================
 // MAIN TASKMASTER SYSTEM EXPORT
@@ -19,7 +19,7 @@ const logger = getLogger('TaskMaster');
  * Get TaskMaster system for SAFe 6.0 Essentials workflow management
  * 
  * @example
- * ```typescript
+ * ```typescript`
  * import { getTaskMaster } from '@claude-zen/taskmaster';
  * 
  * const taskMaster = await getTaskMaster();
@@ -33,8 +33,8 @@ const logger = getLogger('TaskMaster');
  * });
  * 
  * // Move through SAFe workflow
- * await taskMaster.moveTask(task.id, 'development');
- * await taskMaster.moveTask(task.id, 'testing');
+ * await taskMaster.moveTask(task.id, 'development');'
+ * await taskMaster.moveTask(task.id, 'testing');'
  * 
  * // Create PI Planning event
  * const piEvent = await taskMaster.createPIPlanningEvent({
@@ -43,15 +43,15 @@ const logger = getLogger('TaskMaster');
  *   startDate: new Date(),
  *   endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
  * });
- * ```
+ * ````
  */
 export async function getTaskMaster(): Promise<TaskMasterSystem> {
   try {
     const system = getTaskMasterSystem();
-    logger.info('TaskMaster system accessed');
+    logger.info('TaskMaster system accessed');'
     return system;
   } catch (error) {
-    logger.error('Failed to get TaskMaster system', error);
+    logger.error('Failed to get TaskMaster system', error);'
     throw error;
   }
 }
@@ -65,12 +65,12 @@ export async function createTaskMaster(config?: {
   enableFlowOptimization?: boolean;
 }): Promise<TaskMasterSystem> {
   try {
-    const { createTaskMasterSystem } = await import('./facades/taskmaster-facade');
+    const { createTaskMasterSystem } = await import('./facades/taskmaster-facade');'
     const system = createTaskMasterSystem(config);
-    logger.info('TaskMaster system created with custom config');
+    logger.info('TaskMaster system created with custom config');'
     return system;
   } catch (error) {
-    logger.error('Failed to create TaskMaster system', error);
+    logger.error('Failed to create TaskMaster system', error);'
     throw error;
   }
 }

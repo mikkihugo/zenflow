@@ -36,7 +36,7 @@ export type {
  * Default CodeQL configuration for Claude Zen projects
  */
 export const DEFAULT_CODEQL_CONFIG: Partial<
-  import('./types/codeql-types').CodeQLConfig
+  import('./types/codeql-types').CodeQLConfig'
 > = {
   maxMemory: 4096,
   threads: Math.max(1, Math.floor(require('os').cpus().length / 2)),
@@ -50,11 +50,11 @@ export const DEFAULT_CODEQL_CONFIG: Partial<
 export async function analyzeRepository(
   repositoryPath: string,
   options: {
-    languages?: import('./types/codeql-types').CodeQLLanguage[];
-    queryPacks?: import('./types/codeql-types').QueryPack[];
-    config?: Partial<import('./types/codeql-types').CodeQLConfig>;
+    languages?: import('./types/codeql-types').CodeQLLanguage[];'
+    queryPacks?: import('./types/codeql-types').QueryPack[];'
+    config?: Partial<import('./types/codeql-types').CodeQLConfig>;'
   } = {}
-): Promise<import('./types/codeql-types').QueryExecutionResult> {
+): Promise<import('./types/codeql-types').QueryExecutionResult> {'
   const bridge = createCodeQLBridge(options.config);
 
   // Use provided query packs or defaults
@@ -73,22 +73,22 @@ export async function analyzeRepository(
 export async function performSecurityScan(
   repositoryPath: string,
   options: {
-    languages?: import('./types/codeql-types').CodeQLLanguage[];
-    config?: Partial<import('./types/codeql-types').CodeQLConfig>;
+    languages?: import('./types/codeql-types').CodeQLLanguage[];'
+    config?: Partial<import('./types/codeql-types').CodeQLConfig>;'
   } = {}
-): Promise<import('./types/codeql-types').QueryExecutionResult> {
+): Promise<import('./types/codeql-types').QueryExecutionResult> {'
   const bridge = createCodeQLBridge(options.config);
 
   // Get security-focused query packs
-  const languages = options.languages||['typescript', 'javascript'];
-  const securityQueryPacks: import('./types/codeql-types').QueryPack[] = [];
+  const languages = options.languages||['typescript', 'javascript'];'
+  const securityQueryPacks: import('./types/codeql-types').QueryPack[] = [];'
 
   for (const language of languages) {
     securityQueryPacks.push({
-      name: `${language}-security-extended`,
+      name: `${language}-security-extended`,`
       version: 'latest',
       metadata: {
-        description: `Security queries for ${language}`,
+        description: `Security queries for ${language}`,`
         category: 'security',
         focus: 'vulnerability-detection',
       },
@@ -98,7 +98,7 @@ export async function performSecurityScan(
   // Add custom Claude Zen security queries
   const customQueryPacks = await bridge.getCustomQueryPacks();
   securityQueryPacks.push(
-    ...customQueryPacks.filter((pack) => pack.metadata?.category === 'security')
+    ...customQueryPacks.filter((pack) => pack.metadata?.category === 'security')'
   );
 
   return bridge.analyzeRepository(repositoryPath, securityQueryPacks, {
@@ -115,16 +115,16 @@ export async function performSecurityScan(
 export async function analyzeFile(
   filePath: string,
   options: {
-    queryPacks?: import('./types/codeql-types').QueryPack[];
-    config?: Partial<import('./types/codeql-types').CodeQLConfig>;
+    queryPacks?: import('./types/codeql-types').QueryPack[];'
+    config?: Partial<import('./types/codeql-types').CodeQLConfig>;'
   } = {}
-): Promise<import('./types/codeql-types').QueryExecutionResult> {
+): Promise<import('./types/codeql-types').QueryExecutionResult> {'
   const bridge = createCodeQLBridge(options.config);
 
   // Detect language from file extension
   const language = detectLanguageFromPath(filePath);
   if (!language) {
-    throw new Error(`Unsupported file type: ${filePath}`);
+    throw new Error(`Unsupported file type: ${filePath}`);`
   }
 
   const queryPacks =
@@ -138,12 +138,12 @@ export async function analyzeFile(
  */
 function detectLanguageFromPath(
   filePath: string
-): import('./types/codeql-types').CodeQLLanguage|null {
-  const ext = require('path').extname(filePath).toLowerCase();
+): import('./types/codeql-types').CodeQLLanguage|null {'
+  const ext = require('path').extname(filePath).toLowerCase();'
 
   const languageMap: Record<
     string,
-    import('./types/codeql-types').CodeQLLanguage
+    import('./types/codeql-types').CodeQLLanguage'
   > = {
     '.ts': 'typescript',
     '.tsx': 'typescript',
@@ -168,40 +168,40 @@ function detectLanguageFromPath(
  * Create CodeQL configuration for different project types
  */
 export function createProjectConfig(
-  projectType:'web-app|library | api'|cli|monorepo''
-): Partial<import('./types/codeql-types').CodeQLConfig> {
+  projectType: 'web-app' | 'library' | 'api' | 'cli' | 'monorepo''
+): Partial<import('./types/codeql-types').CodeQLConfig> {'
   const baseConfig = { ...DEFAULT_CODEQL_CONFIG };
 
   switch (projectType) {
-    case 'web-app':
+    case 'web-app':'
       return {
         ...baseConfig,
         maxMemory: 6144,
         timeout: 600000, // 10 minutes for larger web apps
       };
 
-    case 'library':
+    case 'library':'
       return {
         ...baseConfig,
         maxMemory: 2048,
         timeout: 180000, // 3 minutes for smaller libraries
       };
 
-    case 'api':
+    case 'api':'
       return {
         ...baseConfig,
         maxMemory: 4096,
         timeout: 300000, // 5 minutes for APIs
       };
 
-    case 'cli':
+    case 'cli':'
       return {
         ...baseConfig,
         maxMemory: 1024,
         timeout: 120000, // 2 minutes for CLI tools
       };
 
-    case 'monorepo':
+    case 'monorepo':'
       return {
         ...baseConfig,
         maxMemory: 8192,
@@ -218,17 +218,17 @@ export function createProjectConfig(
  * Get available query packs for security analysis
  */
 export function getSecurityQueryPacks(
-  languages: import('./types/codeql-types').CodeQLLanguage[]
-): import('./types/codeql-types').QueryPack[] {
-  const queryPacks: import('./types/codeql-types').QueryPack[] = [];
+  languages: import('./types/codeql-types').CodeQLLanguage[]'
+): import('./types/codeql-types').QueryPack[] {'
+  const queryPacks: import('./types/codeql-types').QueryPack[] = [];'
 
   for (const language of languages) {
     // OWASP Top 10 queries
     queryPacks.push({
-      name: `${language}-security-extended`,
+      name: `${language}-security-extended`,`
       version: 'latest',
       metadata: {
-        description: `OWASP Top 10 security queries for ${language}`,
+        description: `OWASP Top 10 security queries for ${language}`,`
         category: 'security',
         tags: ['owasp', 'top-10'],
       },
@@ -236,10 +236,10 @@ export function getSecurityQueryPacks(
 
     // CWE-specific queries
     queryPacks.push({
-      name: `${language}-security-and-quality`,
+      name: `${language}-security-and-quality`,`
       version: 'latest',
       metadata: {
-        description: `CWE-based security and quality queries for ${language}`,
+        description: `CWE-based security and quality queries for ${language}`,`
         category: 'security',
         tags: ['cwe', 'quality'],
       },
@@ -249,12 +249,12 @@ export function getSecurityQueryPacks(
   // Custom Claude Zen security suite
   queryPacks.push({
     name: 'claude-zen-security-suite',
-    path: require('path').join(
+    path: require('path').join('
       __dirname,
       '..',
       'queries',
       'security',
-      'claude-zen-security-suite.ql'
+      'claude-zen-security-suite.ql''
     ),
     metadata: {
       description: 'Claude Zen comprehensive security analysis',
@@ -271,20 +271,20 @@ export function getSecurityQueryPacks(
  * Get performance analysis query packs
  */
 export function getPerformanceQueryPacks(
-  languages: import('./types/codeql-types').CodeQLLanguage[]
-): import('./types/codeql-types').QueryPack[] {
-  const queryPacks: import('./types/codeql-types').QueryPack[] = [];
+  languages: import('./types/codeql-types').CodeQLLanguage[]'
+): import('./types/codeql-types').QueryPack[] {'
+  const queryPacks: import('./types/codeql-types').QueryPack[] = [];'
 
   for (const language of languages) {
-    if (language === 'javascript'||language ==='typescript') {
+    if (language === 'javascript'||language ==='typescript') {'
       queryPacks.push({
         name: 'claude-zen-performance',
-        path: require('path').join(
+        path: require('path').join('
           __dirname,
           '..',
           'queries',
           'javascript',
-          'performance-antipatterns.ql'
+          'performance-antipatterns.ql''
         ),
         metadata: {
           description: 'JavaScript/TypeScript performance anti-patterns',

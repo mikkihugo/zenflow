@@ -1,7 +1,7 @@
 /**
  * @file Core Types for Event System
  *
- * Standalone type definitions that don't depend on external modules
+ * Standalone type definitions that don't depend on external modules'
  */
 
 /**

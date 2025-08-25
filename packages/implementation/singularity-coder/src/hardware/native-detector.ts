@@ -1,20 +1,20 @@
 import * as os from 'os';
-import '../types/hardware-types';
+import '../types/hardware-types;
 
 // Optional native dependencies for enhanced hardware detection
-let osUtils: typeof import('os-utils')|null = null;
-let si: typeof import('systeminformation')|null = null;
+let osUtils: typeof import('os-utils')|null = null;'
+let si: typeof import('systeminformation')|null = null;'
 
 try {
-  osUtils = require('os-utils');
+  osUtils = require('os-utils');'
 } catch (e) {
-  console.log('os-utils not available, using fallback detection');
+  console.log('os-utils not available, using fallback detection');'
 }
 
 try {
-  si = require('systeminformation');
+  si = require('systeminformation');'
 } catch (e) {
-  console.log('systeminformation not available, using fallback detection');
+  console.log('systeminformation not available, using fallback detection');'
 }
 
 export interface HardwareInfo {
@@ -27,7 +27,7 @@ export interface HardwareInfo {
   gpu_memory_mb?: number;
   gpu_vendor?: string;
   platform: string;
-  optimization_level: 'Low|Medium|High';
+  optimization_level: 'Low' | 'Medium' | 'High';
   cpu_model: string;
   cpu_speed_ghz: number;
   load_average: number[];
@@ -56,7 +56,7 @@ export class NativeHardwareDetector {
       return this.cachedInfo;
     }
 
-    console.log('Native hardware detection starting...');
+    console.log('Native hardware detection starting...');'
 
     // Basic Node.js detection
     const cpus = os.cpus();
@@ -81,13 +81,13 @@ export class NativeHardwareDetector {
     };
 
     console.log(
-      `Basic detection: ${cpus.length} cores, ${Math.round(totalMemory / (1024 * 1024))}MB RAM`
+      `Basic detection: ${cpus.length} cores, ${Math.round(totalMemory / (1024 * 1024))}MB RAM``
     );
 
     // Enhanced detection with systeminformation
     if (si) {
       try {
-        console.log('Using systeminformation for enhanced detection...');
+        console.log('Using systeminformation for enhanced detection...');'
 
         // Get detailed CPU info
         const cpuInfo = await si.cpu();
@@ -121,9 +121,9 @@ export class NativeHardwareDetector {
             if (gpu.vram) {
               hardwareInfo.gpu_memory_mb = gpu.vram;
             }
-            hardwareInfo.gpu_vendor = gpu.vendor||'Unknown';
+            hardwareInfo.gpu_vendor = gpu.vendor||'Unknown;
             console.log(
-              `GPU detected: ${gpu.vendor||'Unknown'} with ${gpu.vram||0}MB VRAM`
+              `GPU detected: ${gpu.vendor||'Unknown'} with ${gpu.vram||0}MB VRAM``
             );
           }
         }
@@ -137,12 +137,12 @@ export class NativeHardwareDetector {
     // Enhanced detection with os-utils
     if (osUtils) {
       try {
-        console.log('Using os-utils for CPU utilization...');
+        console.log('Using os-utils for CPU utilization...');'
         // Get current CPU usage (this is async in os-utils)
         const cpuUsage = await new Promise<number>((resolve) => {
           osUtils.cpuUsage((v: number) => resolve(v));
         });
-        console.log(`CPU usage: ${(cpuUsage * 100).toFixed(1)}%`);
+        console.log(`CPU usage: ${(cpuUsage * 100).toFixed(1)}%`);`
       } catch (error) {
         console.log(
           'os-utils detection failed:',
@@ -156,7 +156,7 @@ export class NativeHardwareDetector {
       this.determineOptimizationLevel(hardwareInfo);
 
     console.log(
-      `Final detection: ${hardwareInfo.cpu_cores} cores, ${hardwareInfo.memory_total_mb}MB RAM, GPU: ${hardwareInfo.has_gpu}, Level: ${hardwareInfo.optimization_level}`
+      `Final detection: ${hardwareInfo.cpu_cores} cores, ${hardwareInfo.memory_total_mb}MB RAM, GPU: ${hardwareInfo.has_gpu}, Level: ${hardwareInfo.optimization_level}``
     );
 
     // Cache the result
@@ -168,7 +168,7 @@ export class NativeHardwareDetector {
 
   private determineOptimizationLevel(
     info: HardwareInfo
-  ): 'Low|Medium|High' {
+  ): 'Low|Medium|High' {'
     let score = 0;
 
     // CPU cores scoring
@@ -191,9 +191,9 @@ export class NativeHardwareDetector {
     else if (info.cpu_speed_ghz >= 2.0) score += 1;
 
     // Determine level based on total score
-    if (score >= 8) return 'High';
-    else if (score >= 4) return 'Medium';
-    else return 'Low';
+    if (score >= 8) return 'High;
+    else if (score >= 4) return 'Medium;
+    else return 'Low;
   }
 
   generateOptimizationStrategy(
@@ -218,21 +218,21 @@ export class NativeHardwareDetector {
 
     // Adjust based on optimization level
     switch (level) {
-      case 'High':
+      case 'High':'
         strategy.parallel_tasks = Math.max(4, coreCount - 1);
         strategy.memory_buffer_size = 16 * 1024 * 1024; // 16MB
         strategy.cache_size_mb = Math.max(64, Math.floor(memoryMB * 0.15));
         strategy.batch_size = Math.max(8, coreCount);
         strategy.max_concurrent_operations = coreCount * 4;
         break;
-      case 'Medium':
+      case 'Medium':'
         strategy.parallel_tasks = Math.max(2, Math.floor(coreCount * 0.75));
         strategy.memory_buffer_size = 4 * 1024 * 1024; // 4MB
         strategy.cache_size_mb = Math.max(16, Math.floor(memoryMB * 0.08));
         strategy.batch_size = Math.max(4, Math.floor(coreCount / 2));
         strategy.max_concurrent_operations = coreCount * 2;
         break;
-      case 'Low':
+      case 'Low':'
         strategy.parallel_tasks = Math.max(1, Math.floor(coreCount / 2));
         strategy.memory_buffer_size = 1024 * 1024; // 1MB
         strategy.cache_size_mb = Math.max(4, Math.floor(memoryMB * 0.05));
@@ -253,7 +253,7 @@ export class NativeHardwareDetector {
     ); // Max 128MB
 
     console.log(
-      `Generated optimization strategy for ${level} level: ${strategy.parallel_tasks} tasks, ${strategy.cache_size_mb}MB cache`
+      `Generated optimization strategy for ${level} level: ${strategy.parallel_tasks} tasks, ${strategy.cache_size_mb}MB cache``
     );
 
     return strategy;

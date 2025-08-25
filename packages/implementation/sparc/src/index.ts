@@ -94,7 +94,7 @@ export class SPARC {
    */
   static getEngine(): any {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+      'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );
   }
 
@@ -106,10 +106,10 @@ export class SPARC {
     name: string,
     domain: any,
     requirements: string[],
-    complexity: any = 'moderate'
+    complexity: any = 'moderate''
   ): Promise<any> {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+      'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );
   }
 
@@ -119,7 +119,7 @@ export class SPARC {
    */
   static async executeFullWorkflow(projectId: string): Promise<any[]> {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+      'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );
   }
 
@@ -129,7 +129,7 @@ export class SPARC {
    */
   static getProject(projectId: string): any {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+      'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );
   }
 
@@ -139,7 +139,7 @@ export class SPARC {
    */
   static listProjects(): any[] {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+      'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );
   }
 }

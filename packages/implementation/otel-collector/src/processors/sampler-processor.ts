@@ -14,7 +14,7 @@ import type { TelemetryData, ProcessorConfig } from '../types.js';
 /**
  * Sampling strategy types
  */
-type SamplingStrategy =|'rate|probabilistic|attribute|priority|adaptive';
+type SamplingStrategy =|'rate|probabilistic|attribute|priority|adaptive;
 
 /**
  * Sampling rule interface
@@ -25,7 +25,7 @@ interface SamplingRule {
   probability?: number;
   attribute?: string;
   value?: any;
-  priority?: 'high|medium|low';
+  priority?: 'high' | 'medium' | 'low';
   condition?: string;
 }
 
@@ -53,7 +53,7 @@ export class SamplerProcessor implements BaseProcessor {
 
   constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`SamplerProcessor:${config.name}`);
+    this.logger = getLogger(`SamplerProcessor:${config.name}`);`
 
     // Parse sampling rules
     this.samplingRules = this.parseSamplingRules(config.config?.rules||[]);
@@ -62,7 +62,7 @@ export class SamplerProcessor implements BaseProcessor {
   }
 
   async initialize(): Promise<void> {
-    this.logger.info('Sampler processor initialized', {
+    this.logger.info('Sampler processor initialized', {'
       samplingRules: this.samplingRules.length,
       targetRate: this.targetRate,
       strategies: [...new Set(this.samplingRules.map((r) => r.strategy))],
@@ -81,7 +81,7 @@ export class SamplerProcessor implements BaseProcessor {
       this.lastError = null;
 
       if (!shouldSample) {
-        this.logger.debug('Data sampled out', {
+        this.logger.debug('Data sampled out', {'
           service: data.service.name,
           type: data.type,
         });
@@ -103,7 +103,7 @@ export class SamplerProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Sampler processing failed', error);
+      this.logger.error('Sampler processing failed', error);'
 
       // Return original data on error
       return data;
@@ -133,7 +133,7 @@ export class SamplerProcessor implements BaseProcessor {
 
       if (sampledItems.length < dataItems.length) {
         this.logger.debug(
-          `Sampled ${sampledItems.length} out of ${dataItems.length} items`
+          `Sampled ${sampledItems.length} out of ${dataItems.length} items``
         );
       }
 
@@ -141,7 +141,7 @@ export class SamplerProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Sampler batch processing failed', error);
+      this.logger.error('Sampler batch processing failed', error);'
 
       // Return original data on error
       return dataItems;
@@ -149,19 +149,19 @@ export class SamplerProcessor implements BaseProcessor {
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Sampler processor shut down', {
+    this.logger.info('Sampler processor shut down', {'
       totalProcessed: this.processedCount,
       totalSampled: this.sampledCount,
       sampleRate:
         this.processedCount > 0
-          ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) + '%'
+          ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) + '%''
           : '0%',
       finalAdaptiveRate: this.currentRate,
     });
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
@@ -197,8 +197,8 @@ export class SamplerProcessor implements BaseProcessor {
   } {
     const actualRate =
       this.processedCount > 0
-        ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) +'%'
-        : '0%';
+        ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) +'%''
+        : '0%;
 
     return {
       processed: this.processedCount,
@@ -238,19 +238,19 @@ export class SamplerProcessor implements BaseProcessor {
     rule: SamplingRule
   ): boolean|null {
     switch (rule.strategy) {
-      case'rate':
+      case'rate':'
         return this.applyRateSampling(rule.rate||1);
 
-      case'probabilistic':
+      case'probabilistic':'
         return Math.random() < (rule.probability||0.1);
 
-      case'attribute':
+      case'attribute':'
         return this.applyAttributeSampling(data, rule);
 
-      case 'priority':
+      case 'priority':'
         return this.applyPrioritySampling(data, rule);
 
-      case 'adaptive':
+      case 'adaptive':'
         return Math.random() < this.currentRate;
 
       default:
@@ -327,9 +327,9 @@ export class SamplerProcessor implements BaseProcessor {
         continue;
       }
 
-      if (rule.strategy ==='probabilistic' && rule.probability) {
+      if (rule.strategy ==='probabilistic' && rule.probability) {'
         return rule.probability;
-      } else if (rule.strategy === 'rate' && rule.rate) {
+      } else if (rule.strategy === 'rate' && rule.rate) {'
         return 1 / rule.rate;
       }
     }
@@ -340,37 +340,37 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Infer priority from telemetry data
    */
-  private inferPriority(data: TelemetryData): 'high|medium|low' {
+  private inferPriority(data: TelemetryData): 'high|medium|low' {'
     // Check for error indicators
-    if (data.type === 'logs' && data.data && typeof data.data === 'object') {
+    if (data.type === 'logs' && data.data && typeof data.data === 'object') {'
       const level = (data.data as any).level;
-      if (level === 'error'||level ==='critical'||level ==='fatal') {
-        return 'high';
+      if (level === 'error'||level ==='critical'||level ==='fatal') {'
+        return 'high;
       }
-      if (level === 'warn') {
-        return 'medium';
+      if (level === 'warn') {'
+        return 'medium;
       }
     }
 
     // Check for trace errors
     if (
-      data.type === 'traces' &&
+      data.type === 'traces' &&'
       data.data &&
-      (data.data as any).status === 'ERROR'
+      (data.data as any).status === 'ERROR''
     ) {
-      return 'high';
+      return 'high;
     }
 
     // Check attributes for priority hints
     const priority = data.attributes?.priority||data.attributes?.level;
-    if (priority ==='high'||priority ==='error') {
-      return 'high';
+    if (priority ==='high'||priority ==='error') {'
+      return 'high;
     }
-    if (priority === 'medium'||priority ==='warn') {
-      return 'medium';
+    if (priority === 'medium'||priority ==='warn') {'
+      return 'medium;
     }
 
-    return 'low';
+    return 'low;
   }
 
   /**
@@ -415,7 +415,7 @@ export class SamplerProcessor implements BaseProcessor {
         this.currentRate = this.targetRate;
       }
 
-      this.logger.debug('Adaptive sampling adjusted', {
+      this.logger.debug('Adaptive sampling adjusted', {'
         recentTotal,
         newRate: this.currentRate,
         targetRate: this.targetRate,
@@ -427,7 +427,7 @@ export class SamplerProcessor implements BaseProcessor {
    * Get field value using dot notation
    */
   private getFieldValue(data: any, fieldPath: string): any {
-    const parts = fieldPath.split('.');
+    const parts = fieldPath.split('.');'
     let value = data;
 
     for (const part of parts) {
@@ -446,24 +446,24 @@ export class SamplerProcessor implements BaseProcessor {
   private evaluateCondition(data: TelemetryData, condition: string): boolean {
     try {
       // Simple condition evaluation
-      const parts = condition.split(' ');
+      const parts = condition.split(' ');'
       if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==':
+          case '==':'
             return actualValue == expectedValue;
-          case '!=':
+          case '!=':'
             return actualValue != expectedValue;
-          case 'contains':
+          case 'contains':'
             return String(actualValue).includes(expectedValue);
-          case 'exists':
+          case 'exists':'
             return actualValue !== undefined;
         }
       }
     } catch (error) {
-      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
+      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);`
     }
 
     return true;

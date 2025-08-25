@@ -43,9 +43,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/agent-registry": "workspace:*",
-    "neverthrow": "^8.2.0"
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",
@@ -60,7 +58,9 @@
     "@claude-zen/database": "workspace:*",
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/load-balancing": "workspace:*",
-    "@claude-zen/system-monitoring": "workspace:*"
+    "@claude-zen/telemetry": "workspace:*",
+    "@claude-zen/otel-collector": "workspace:*",
+    "@claude-zen/service-container": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@claude-zen/database": {
@@ -72,8 +72,14 @@
     "@claude-zen/load-balancing": {
       "optional": true
     },
-    "@claude-zen/system-monitoring": {
+    "@claude-zen/telemetry": {
+      "optional": false
+    },
+    "@claude-zen/otel-collector": {
       "optional": true
+    },
+    "@claude-zen/service-container": {
+      "optional": false
     }
   },
   "files": [

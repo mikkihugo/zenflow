@@ -31,19 +31,19 @@ import type { MonitoringEvent } from './types';
  * @interface WorkflowEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const workflowManager = await createWorkflowEventManager('task-orchestrator');
+ * ```typescript`
+ * const workflowManager = await createWorkflowEventManager('task-orchestrator');'
  *
  * // Process a workflow step
- * await workflowManager.processWorkflowStep('step-1', {
+ * await workflowManager.processWorkflowStep('step-1', {'
  *   action: 'validate',
- *   payload: { userId: '123', data: {...} }
+ *   payload: { userId: '123', data: {...} }'
  * });
  *
  * // Check workflow status
- * const status = await workflowManager.getWorkflowStatus('workflow-456');
- * console.log(`Workflow status: ${status}`);
- * ```
+ * const status = await workflowManager.getWorkflowStatus('workflow-456');'
+ * console.log(`Workflow status: ${status}`);`
+ * ````
  */
 export interface WorkflowEventManager extends EventManager {
   /**
@@ -60,7 +60,7 @@ export interface WorkflowEventManager extends EventManager {
    * Get the current status of a workflow execution.
    *
    * @param workflowId - Unique identifier for the workflow
-   * @returns Promise resolving to workflow status ('pending', 'running', 'completed', 'failed')
+   * @returns Promise resolving to workflow status ('pending', 'running', 'completed', 'failed')'
    * @throws {Error} If workflow is not found
    */
   getWorkflowStatus(workflowId: string): Promise<string>;
@@ -85,8 +85,8 @@ export interface WorkflowEventManager extends EventManager {
  * @interface NeuralEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const neuralManager = await createNeuralEventManager('ai-coordinator');
+ * ```typescript`
+ * const neuralManager = await createNeuralEventManager('ai-coordinator');'
  *
  * // Process neural signals
  * await neuralManager.processNeuralSignal({
@@ -96,8 +96,8 @@ export interface WorkflowEventManager extends EventManager {
  * });
  *
  * // Train model with new data
- * await neuralManager.trainModel('transformer-v1', trainingData);
- * ```
+ * await neuralManager.trainModel('transformer-v1', trainingData);'
+ * ````
  */
 export interface NeuralEventManager extends EventManager {
   /**
@@ -123,7 +123,7 @@ export interface NeuralEventManager extends EventManager {
    * Get the current status of a neural model.
    *
    * @param modelId - Unique identifier for the model
-   * @returns Promise resolving to model status ('training', 'ready', 'error', 'updating')
+   * @returns Promise resolving to model status ('training', 'ready', 'error', 'updating')'
    * @throws {Error} If model is not found
    */
   getModelStatus(modelId: string): Promise<string>;
@@ -139,18 +139,18 @@ export interface NeuralEventManager extends EventManager {
  * @interface MemoryEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const memoryManager = await createMemoryEventManager('cache-coordinator');
+ * ```typescript`
+ * const memoryManager = await createMemoryEventManager('cache-coordinator');'
  *
  * // Store data in distributed memory
- * await memoryManager.storeMemoryEvent('session:user123', {
+ * await memoryManager.storeMemoryEvent('session:user123', {'
  *   preferences: {...},
  *   lastActivity: new Date()
  * });
  *
  * // Retrieve cached data
- * const userData = await memoryManager.retrieveMemoryEvent('session:user123');
- * ```
+ * const userData = await memoryManager.retrieveMemoryEvent('session:user123');'
+ * ````
  */
 export interface MemoryEventManager extends EventManager {
   /**
@@ -191,25 +191,25 @@ export interface MemoryEventManager extends EventManager {
  * @interface InterfaceEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const uiManager = await createInterfaceEventManager('ui-coordinator');
+ * ```typescript`
+ * const uiManager = await createInterfaceEventManager('ui-coordinator');'
  *
  * // Handle user interactions
- * await uiManager.handleUIInteraction('submit-button', 'click');
+ * await uiManager.handleUIInteraction('submit-button', 'click');'
  *
  * // Update component state
- * await uiManager.updateInterface('user-profile', {
+ * await uiManager.updateInterface('user-profile', {'
  *   name: 'John Doe',
- *   status: 'online'
+ *   status: 'online''
  * });
- * ```
+ * ````
  */
 export interface InterfaceEventManager extends EventManager {
   /**
    * Handle user interface interactions with event coordination.
    *
    * @param element - CSS selector or element identifier
-   * @param action - Type of interaction ('click', 'focus', 'change', etc.)
+   * @param action - Type of interaction ('click', 'focus', 'change', etc.)'
    * @returns Promise that resolves when interaction handling is complete
    * @throws {Error} If element is not found or action is invalid
    */
@@ -245,15 +245,15 @@ export interface InterfaceEventManager extends EventManager {
  * @interface DatabaseEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const dbManager = await createDatabaseEventManager('db-coordinator');
+ * ```typescript`
+ * const dbManager = await createDatabaseEventManager('db-coordinator');'
  *
  * // Process database transaction
- * await dbManager.processTransaction('txn-12345');
+ * await dbManager.processTransaction('txn-12345');'
  *
  * // Handle schema changes
- * await dbManager.handleSchemaChange('migration-v2.1');
- * ```
+ * await dbManager.handleSchemaChange('migration-v2.1');'
+ * ````
  */
 export interface DatabaseEventManager extends EventManager {
   /**
@@ -294,15 +294,15 @@ export interface DatabaseEventManager extends EventManager {
  * @interface SystemEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const systemManager = await createSystemEventManager('system-coordinator');
+ * ```typescript`
+ * const systemManager = await createSystemEventManager('system-coordinator');'
  *
  * // Handle system alerts
- * await systemManager.handleSystemAlert('cpu-threshold-exceeded');
+ * await systemManager.handleSystemAlert('cpu-threshold-exceeded');'
  *
  * // Perform health checks
  * const isHealthy = await systemManager.processHealthCheck();
- * ```
+ * ````
  */
 export interface SystemEventManager extends EventManager {
   /**
@@ -342,19 +342,19 @@ export interface SystemEventManager extends EventManager {
  * @interface CommunicationEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const commManager = await createCommunicationEventManager('comm-coordinator');
+ * ```typescript`
+ * const commManager = await createCommunicationEventManager('comm-coordinator');'
  *
  * // Send messages through channels
- * await commManager.sendMessage('agent-coordination', {
+ * await commManager.sendMessage('agent-coordination', {'
  *   type: 'task_assignment',
  *   agentId: 'agent-123',
  *   task: {...}
  * });
  *
  * // Receive messages from channels
- * const message = await commManager.receiveMessage('status-updates');
- * ```
+ * const message = await commManager.receiveMessage('status-updates');'
+ * ````
  */
 export interface CommunicationEventManager extends EventManager {
   /**
@@ -396,18 +396,18 @@ export interface CommunicationEventManager extends EventManager {
  * @interface CoordinationEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const coordManager = await createCoordinationEventManager('agent-coordinator');
+ * ```typescript`
+ * const coordManager = await createCoordinationEventManager('agent-coordinator');'
  *
  * // Coordinate task execution
- * await coordManager.coordinateTask('task-456');
+ * await coordManager.coordinateTask('task-456');'
  *
  * // Assign agents to tasks
- * await coordManager.assignAgent('agent-123', 'code-review');
+ * await coordManager.assignAgent('agent-123', 'code-review');'
  *
  * // Check coordination status
  * const status = await coordManager.getCoordinationStatus();
- * ```
+ * ````
  */
 export interface CoordinationEventManager extends EventManager {
   /**
@@ -448,19 +448,19 @@ export interface CoordinationEventManager extends EventManager {
  * @interface MonitoringEventManager
  * @extends EventManager
  * @example
- * ```typescript
- * const monitorManager = await createMonitoringEventManager('system-monitor');
+ * ```typescript`
+ * const monitorManager = await createMonitoringEventManager('system-monitor');'
  *
  * // Process metrics events
- * await monitorManager.processMetricEvent('cpu-usage', {
+ * await monitorManager.processMetricEvent('cpu-usage', {'
  *   value: 85.3,
  *   timestamp: new Date(),
  *   threshold: 90
  * });
  *
  * // Generate performance reports
- * const report = await monitorManager.generateReport('performance-summary');
- * ```
+ * const report = await monitorManager.generateReport('performance-summary');'
+ * ````
  */
 export interface MonitoringEventManager extends EventManager {
   /**
@@ -484,7 +484,7 @@ export interface MonitoringEventManager extends EventManager {
   /**
    * Generate monitoring reports based on collected metrics and health data.
    *
-   * @param type - Type of report to generate ('performance', 'health', 'alerts', etc.)
+   * @param type - Type of report to generate ('performance', 'health', 'alerts', etc.)'
    * @returns Promise resolving to the generated report data
    * @throws {Error} If report generation fails or type is invalid
    */

@@ -17,7 +17,7 @@
  * - Foundation integration for robust error handling
  *
  * @example Type-safe event usage
- * ```typescript
+ * ```typescript`
  * import { TypedEventBus } from '@claude-zen/event-system/core';
  * import { EventSchemas } from '@claude-zen/event-system/validation';
  *
@@ -27,18 +27,18 @@
  * });
  *
  * // Type-safe event handling with validation
- * eventBus.on('user.login', (event) => {
+ * eventBus.on('user.login', (event) => {'
  *   // event is fully typed from schema
- *   console.log('User logged in:', event.payload.userId);
+ *   console.log('User logged in:', event.payload.userId);'
  * });
  *
  * // Emit with automatic validation
- * eventBus.emit('user.login', {
+ * eventBus.emit('user.login', {'
  *   id: 'evt_123',
  *   type: 'user.login',
- *   payload: { userId: 'user_456' }
+ *   payload: { userId: 'user_456' }'
  * });
- * ```
+ * ````
  */
 
 import mitt, { type Emitter } from 'mitt';
@@ -63,7 +63,7 @@ import {
   type AllEventTypes,
 } from '../validation/zod-validation';
 
-const logger = getLogger('TypedEventBus');
+const logger = getLogger('TypedEventBus');'
 
 // =============================================================================
 // TYPE-SAFE EVENT SYSTEM CONFIGURATION
@@ -87,7 +87,7 @@ export interface TypedEventBusConfig {
 // Event map for type safety with mitt
 export interface TypedEventMap {
   // Base events
-  '*': BaseEvent;
+  '*': BaseEvent;'
   [key: string]: any;
   [key: symbol]: any;
 }
@@ -133,7 +133,7 @@ export class TypedEventBus {
     this.initializeValidators();
 
     if (this.config.enableLogging) {
-      logger.info('[TypedEventBus] Initialized with mitt + zod integration', {
+      logger.info('[TypedEventBus] Initialized with mitt + zod integration', {'
         config: this.config,
         validatorCount: this.validators.size,
       });
@@ -148,19 +148,19 @@ export class TypedEventBus {
    * Emit type-safe event with optional validation and telemetry.
    * Provides compile-time type safety and runtime validation.
    */
-  @traced('typed_event.emit')
-  @metered('typed_event_bus_emit')
+  @traced('typed_event.emit')'
+  @metered('typed_event_bus_emit')'
   async emit<K extends keyof TypedEventMap>(
     type: K,
     event: TypedEventMap[K]
   ): Promise<Result<void, Error>> {
-    return withTrace('typed_event.emit', async (span) => {
+    return withTrace('typed_event.emit', async (span) => {'
       return safeAsync(async () => {
         const startTime = Date.now();
 
         // Record telemetry metrics
         if (this.config.enableTelemetry) {
-          recordMetric('typed_event_bus.events_total', 1, {
+          recordMetric('typed_event_bus.events_total', 1, {'
             event_type: String(type),
           });
           recordMetric(
@@ -178,11 +178,11 @@ export class TypedEventBus {
           );
           if (!validationResult.isOk()) {
             const error = new Error(
-              `Event validation failed for '${String(type)}': ${validationResult.error.message}`
+              `Event validation failed for '${String(type)}': ${validationResult.error.message}``
             );
 
             if (this.config.enableTelemetry) {
-              recordMetric('typed_event_bus.validation_errors', 1, {
+              recordMetric('typed_event_bus.validation_errors', 1, {'
                 event_type: String(type),
               });
             }
@@ -205,14 +205,14 @@ export class TypedEventBus {
 
         // Log if enabled
         if (this.config.enableLogging) {
-          logger.debug(`[TypedEventBus] Emitting event: ${String(type)}`, {
+          logger.debug(`[TypedEventBus] Emitting event: ${String(type)}`, {`
             type: String(type),
             eventId: (event as any)?.id,
             timestamp: (event as any)?.timestamp,
           });
         }
 
-        // Use mitt's emit (functional and tiny)
+        // Use mitt's emit (functional and tiny)'
         this.emitter.emit(type, event);
 
         // Record processing time telemetry
@@ -244,7 +244,7 @@ export class TypedEventBus {
       this.emitter.emit(type, event);
     } catch (error) {
       logger.error(
-        `[TypedEventBus] Error emitting event '${String(type)}':`,
+        `[TypedEventBus] Error emitting event '${String(type)}':`,`
         error
       );
     }
@@ -266,7 +266,7 @@ export class TypedEventBus {
     const currentCount = this.listenerCounts.get(String(type))||0;
     if (currentCount >= this.config.maxListeners) {
       logger.warn(
-        `[TypedEventBus] Max listeners (${this.config.maxListeners}) reached for event: ${String(type)}`
+        `[TypedEventBus] Max listeners (${this.config.maxListeners}) reached for event: ${String(type)}``
       );
       return;
     }
@@ -276,7 +276,7 @@ export class TypedEventBus {
 
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('typed_event_bus.listeners_registered', 1, {
+      recordMetric('typed_event_bus.listeners_registered', 1, {'
         event_type: String(type),
       });
       recordMetric(
@@ -287,7 +287,7 @@ export class TypedEventBus {
 
     if (this.config.enableLogging) {
       logger.debug(
-        `[TypedEventBus] Registered listener for event: ${String(type)}`,
+        `[TypedEventBus] Registered listener for event: ${String(type)}`,`
         {
           type: String(type),
           listenerCount: currentCount + 1,
@@ -336,18 +336,18 @@ export class TypedEventBus {
    */
   onAny(handler: WildcardHandler): void {
     if (!this.config.enableWildcards) {
-      logger.warn('[TypedEventBus] Wildcard listeners disabled in config');
+      logger.warn('[TypedEventBus] Wildcard listeners disabled in config');'
       return;
     }
 
-    this.emitter.on('*', handler as any);
+    this.emitter.on('*', handler as any);'
   }
 
   /**
    * Remove wildcard listener.
    */
   offAny(handler: WildcardHandler): void {
-    this.emitter.off('*', handler as any);
+    this.emitter.off('*', handler as any);'
   }
 
   // =============================================================================
@@ -363,7 +363,7 @@ export class TypedEventBus {
 
     if (this.config.enableLogging) {
       logger.debug(
-        `[TypedEventBus] Registered validator for event: ${eventType}`
+        `[TypedEventBus] Registered validator for event: ${eventType}``
       );
     }
   }
@@ -376,11 +376,11 @@ export class TypedEventBus {
     event: unknown
   ): Promise<Result<unknown, Error>> {
     const validator =
-      this.validators.get(eventType)||this.validators.get('*');
+      this.validators.get(eventType)||this.validators.get('*');'
 
     if (!validator) {
       // Try base event validation as fallback
-      const baseValidator = new EventValidator(BaseEventSchema, 'BaseEvent');
+      const baseValidator = new EventValidator(BaseEventSchema, 'BaseEvent');'
       return baseValidator.validate(event);
     }
 
@@ -392,14 +392,14 @@ export class TypedEventBus {
    */
   private initializeValidators(): void {
     // Register base event validator
-    this.validators.set('*', new EventValidator(BaseEventSchema, 'BaseEvent'));
+    this.validators.set('*', new EventValidator(BaseEventSchema, 'BaseEvent'));'
 
     // Register specific event type validators from EventSchemas
     for (const [schemaName, schema] of Object.entries(EventSchemas)) {
-      if (schemaName !== 'BaseEvent') {
-        // Convert schema name to event type (e.g., 'AgentCreated' -> 'agent.created')
+      if (schemaName !== 'BaseEvent') {'
+        // Convert schema name to event type (e.g., 'AgentCreated' -> 'agent.created')'
         const eventType = schemaName
-          .replace(/([A-Z])/g, '.$1')
+          .replace(/([A-Z])/g, '.$1')'
           .toLowerCase()
           .slice(1);
 
@@ -444,7 +444,7 @@ export class TypedEventBus {
     this.listenerCounts.clear();
 
     if (this.config.enableLogging) {
-      logger.info('[TypedEventBus] Cleared all event listeners');
+      logger.info('[TypedEventBus] Cleared all event listeners');'
     }
   }
 
@@ -462,7 +462,7 @@ export class TypedEventBus {
     this.config = { ...this.config, ...updates };
 
     if (this.config.enableLogging) {
-      logger.info('[TypedEventBus] Configuration updated', {
+      logger.info('[TypedEventBus] Configuration updated', {'
         config: this.config,
       });
     }

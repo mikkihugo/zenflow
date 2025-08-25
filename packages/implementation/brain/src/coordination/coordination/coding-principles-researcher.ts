@@ -48,7 +48,7 @@ export interface PrinciplesResearchConfig {
   /** Include testing guidelines */
   includeTesting?: boolean;
   /** Research depth level */
-  depth?: 'basic|intermediate|advanced|expert';
+  depth?: 'basic|intermediate|advanced|expert;
 }
 
 /**
@@ -153,7 +153,7 @@ export interface AgentExecutionFeedback {
     language: ProgrammingLanguage;
     domain?: TaskDomain;
     role?: DevelopmentRole;
-    taskComplexity:'simple|moderate|complex';
+    taskComplexity:'simple' | 'moderate' | 'complex';
     requirementsCount: number;
   };
   timestamp: Date;
@@ -192,7 +192,7 @@ export class CodingPrinciplesResearcher {
   private agentFeedback = new Map<string, AgentExecutionFeedback[]>();
   private promptConfidence = new Map<string, PromptConfidence>();
   private minimumConfidenceThreshold = 0.7; // Minimum confidence before using principles
-  private logger = getLogger('CodingPrinciplesResearcher');
+  private logger = getLogger('CodingPrinciplesResearcher');'
 
   constructor(
     private dspyBridge: DSPyLLMBridge,
@@ -216,7 +216,7 @@ export class CodingPrinciplesResearcher {
     try {
       // Use DSPy to research coding principles
       const researchTask = {
-        id: `principles-research-${cacheKey}-${Date.now()}`,
+        id: `principles-research-${cacheKey}-${Date.now()}`,`
         type: 'reasoning'as const,
         input: this.buildResearchPrompt(config),
         context: {
@@ -246,9 +246,9 @@ export class CodingPrinciplesResearcher {
         return principles;
       }
 
-      throw new Error('Research failed to produce valid results');
+      throw new Error('Research failed to produce valid results');'
     } catch (error) {
-      this.logger.warn('Principles research failed, using fallback:', error);
+      this.logger.warn('Principles research failed, using fallback:', error);'
       return this.getFallbackPrinciples(config);
     }
   }
@@ -353,16 +353,16 @@ export class CodingPrinciplesResearcher {
           // Update confidence tracking
           confidence = this.updatePromptConfidence(cacheKey, {
             initialConfidence: researchConfidence,
-            version: `research-v${researchAttempts}`,
+            version: `research-v${researchAttempts}`,`
             improvements: [
-              `Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)}`,
+              `Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)}`,`
             ],
           });
         }
 
-        this.logger.info(`Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)} (target: ${targetConfidence})`);
+        this.logger.info(`Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)} (target: ${targetConfidence})`);`
       } catch (error) {
-        this.logger.warn(`Research attempt ${researchAttempts} failed:`, error);
+        this.logger.warn(`Research attempt ${researchAttempts} failed:`, error);`
       }
     }
 
@@ -374,7 +374,7 @@ export class CodingPrinciplesResearcher {
     // Cache the best principles found
     this.cache.set(cacheKey, bestPrinciples);
 
-    this.logger.info(`Research completed after ${researchAttempts} attempts. Final confidence: ${bestConfidence.toFixed(3)}`);
+    this.logger.info(`Research completed after ${researchAttempts} attempts. Final confidence: ${bestConfidence.toFixed(3)}`);`
     return bestPrinciples;
   }
 
@@ -406,7 +406,7 @@ export class CodingPrinciplesResearcher {
     if (
       confidence.overallConfidence < this.minimumConfidenceThreshold || confidence.needsImprovement
     ) {
-      this.logger.info(`Principles need improvement (confidence: ${confidence.overallConfidence.toFixed(3)}). Researching...`);
+      this.logger.info(`Principles need improvement (confidence: ${confidence.overallConfidence.toFixed(3)}). Researching...`);`
       return await this.researchPrinciplesWithConfidence(config);
     }
 
@@ -429,69 +429,69 @@ export class CodingPrinciplesResearcher {
     // Get comprehensive research areas based on role and domain
     const researchAreas = this.getComprehensiveResearchAreas(role, domain);
 
-    return `Research and compile comprehensive coding principles for ${language} development.
+    return `Research and compile comprehensive coding principles for ${language} development.`
 
 Context:
 - Language: ${language}
-- Domain: ${domain || 'general'}
-- Role: ${role || 'general-developer'}
-- Depth: ${depth || 'intermediate'}
-- Include Performance: ${includePerformance ? 'Yes' : 'No'}
-- Include Security: ${includeSecurity ? 'Yes' : 'No'}
-- Include Testing: ${includeTesting ? 'Yes' : 'No'}
+- Domain: ${domain || 'general'}'
+- Role: ${role || 'general-developer'}'
+- Depth: ${depth || 'intermediate'}'
+- Include Performance: ${includePerformance ? 'Yes' : 'No'}'
+- Include Security: ${includeSecurity ? 'Yes' : 'No'}'
+- Include Testing: ${includeTesting ? 'Yes' : 'No'}'
 
 Research the following comprehensive areas and provide specific, actionable guidelines:
 
 1. CORE STANDARDS:
-   - Repository structure and organization for ${domain || 'general'} projects
-   - File naming conventions specific to ${language} and ${role || 'general-developer'} workflows
-   - Folder organization patterns for ${domain || 'general'} applications
-   - Function complexity guidelines appropriate for ${role || 'developer'} responsibilities
+   - Repository structure and organization for ${domain || 'general'} projects'
+   - File naming conventions specific to ${language} and ${role || 'general-developer'} workflows'
+   - Folder organization patterns for ${domain || 'general'} applications'
+   - Function complexity guidelines appropriate for ${role || 'developer'} responsibilities'
    - Code organization patterns that scale with team size
-   - Error handling best practices for ${domain || 'general'} environments
-   - Documentation standards for ${role || 'developer'} deliverables
+   - Error handling best practices for ${domain || 'general'} environments'
+   - Documentation standards for ${role || 'developer'} deliverables'
    - Code quality metrics and enforcement strategies
-   - Testing strategy for ${language} in ${domain || 'general'} context
+   - Testing strategy for ${language} in ${domain || 'general'} context'
 
 2. LANGUAGE-SPECIFIC:
-   - ${language} type system best practices for ${role || 'developer'} work
+   - ${language} type system best practices for ${role || 'developer'} work'
    - Memory management patterns (if applicable to ${language})
-   - Concurrency and async patterns for ${domain || 'general'} applications
+   - Concurrency and async patterns for ${domain || 'general'} applications'
    - Package/module management strategies
    - Build tools and CI/CD pipeline recommendations for ${language}
 
 ${
   researchAreas.domainSpecific.length > 0
-    ? `
-3. DOMAIN-SPECIFIC (${domain || 'general'}):
-${researchAreas.domainSpecific.map((area) => `   - ${area}`).join('\n')}
-`
-    : ''}
+    ? ``
+3. DOMAIN-SPECIFIC (${domain || 'general'}):'
+${researchAreas.domainSpecific.map((area) => `   - ${area}`).join('\n')}'
+``
+    : ''}'
 
 ${
   researchAreas.roleSpecific.length > 0
-    ? `
-4. ROLE-SPECIFIC (${role || 'general-developer'}):
-${researchAreas.roleSpecific.map((area) => `   - ${area}`).join('\n')}
-`
-    : ''}
+    ? ``
+4. ROLE-SPECIFIC (${role || 'general-developer'}):'
+${researchAreas.roleSpecific.map((area) => `   - ${area}`).join('\n')}'
+``
+    : ''}'
 
 5. QUALITY METRICS & STANDARDS:
    - Measurable complexity thresholds for ${language}
-   - Code coverage expectations for ${domain || 'general'} projects
+   - Code coverage expectations for ${domain || 'general'} projects'
    - Maintainability indices and technical debt management
-   - Performance benchmarks relevant to ${role || 'developer'} work
-   - Security validation requirements for ${domain || 'general'} applications
+   - Performance benchmarks relevant to ${role || 'developer'} work'
+   - Security validation requirements for ${domain || 'general'} applications'
 
 6. ADVANCED PRACTICES:
-${researchAreas.advanced.map((area) => `   - ${area}`).join('\n')}
+${researchAreas.advanced.map((area) => `   - ${area}`).join('\n')}'
 
-Provide specific, actionable guidelines that a ${role || 'developer'} can immediately apply in ${language} development.
-Focus on current industry best practices and emerging patterns for ${domain || 'general'} domain.
+Provide specific, actionable guidelines that a ${role || 'developer'} can immediately apply in ${language} development.'
+Focus on current industry best practices and emerging patterns for ${domain || 'general'} domain.'
 Include specific examples and anti-patterns to avoid.
-Consider the unique challenges and responsibilities of ${role || 'developer'} role.
+Consider the unique challenges and responsibilities of ${role || 'developer'} role.'
 
-Respond in JSON format with structured guidelines that cover all research areas comprehensively.`;
+Respond in JSON format with structured guidelines that cover all research areas comprehensively.`;`
   }
 
   /**
@@ -517,7 +517,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
    */
   private getDomainSpecificResearchAreas(domain?: TaskDomain): string[] {
     const domainAreas: Record<TaskDomain, string[]> = {
-      'rest-api': [
+      'rest-api': ['
         'RESTful API design principles and OpenAPI specification',
         'Authentication and authorization patterns (JWT, OAuth2, API keys)',
         'Rate limiting and API versioning strategies',
@@ -526,7 +526,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'API documentation and testing strategies',
         'Microservices communication patterns',
       ],
-      'web-app': [
+      'web-app': ['
         'Component-based architecture and state management',
         'Client-side routing and navigation patterns',
         'Performance optimization (lazy loading, code splitting)',
@@ -535,7 +535,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Browser compatibility and polyfill strategies',
         'SEO optimization and meta tag management',
       ],
-      'mobile-app': [
+      'mobile-app': ['
         'Mobile-first design principles and responsive layouts',
         'Touch interaction patterns and gesture handling',
         'Device-specific optimization (iOS/Android guidelines)',
@@ -544,7 +544,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'App store deployment and versioning',
         'Performance optimization for mobile devices',
       ],
-      'desktop-app': [
+      'desktop-app': ['
         'Native desktop UI patterns and platform guidelines',
         'File system integration and local data management',
         'Cross-platform compatibility strategies',
@@ -562,7 +562,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Container orchestration and deployment strategies',
         'Data consistency and eventual consistency patterns',
       ],
-      'data-pipeline': [
+      'data-pipeline': ['
         'ETL/ELT pipeline design and data flow optimization',
         'Data validation and quality assurance',
         'Stream processing and batch processing patterns',
@@ -571,7 +571,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Monitoring and alerting for data pipelines',
         'Scalability and partitioning strategies',
       ],
-      'ml-model': [
+      'ml-model': ['
         'Model training pipeline and experiment tracking',
         'Feature engineering and data preprocessing',
         'Model validation and performance metrics',
@@ -589,7 +589,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Token economics and governance patterns',
         'Security auditing and formal verification',
       ],
-      'game-dev': [
+      'game-dev': ['
         'Game loop architecture and frame timing',
         'Asset management and resource optimization',
         'Physics simulation and collision detection',
@@ -616,7 +616,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
    * Get role-specific research areas
    */
   private getRoleSpecificResearchAreas(role?: DevelopmentRole): string[] {
-    const roleAreas: Record<DevelopmentRole, string[]> = {'backend-developer': [
+    const roleAreas: Record<DevelopmentRole, string[]> = {'backend-developer': ['
         'Database design and query optimization',
         'Server architecture and scalability patterns',
         'Caching strategies and session management',
@@ -625,7 +625,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Configuration management and environment handling',
         'Third-party service integration patterns',
       ],
-      'frontend-developer': [
+      'frontend-developer': ['
         'Component lifecycle and state management',
         'Browser performance optimization and rendering',
         'CSS architecture and maintainable styling',
@@ -634,7 +634,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'User experience (UX) implementation patterns',
         'Internationalization (i18n) and localization',
       ],
-      'fullstack-developer': [
+      'fullstack-developer': ['
         'Full-stack architecture and layer separation',
         'Frontend-backend communication patterns',
         'End-to-end testing strategies',
@@ -643,7 +643,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Technology stack selection and integration',
         'DevOps practices for full-stack applications',
       ],
-      'mobile-developer': [
+      'mobile-developer': ['
         'Platform-specific development guidelines (iOS/Android)',
         'Mobile UI/UX patterns and native components',
         'Device capability integration (camera, GPS, sensors)',
@@ -652,7 +652,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'App store guidelines and submission processes',
         'Cross-platform development strategies',
       ],
-      'devops-engineer': [
+      'devops-engineer': ['
         'Infrastructure as Code (IaC) and configuration management',
         'CI/CD pipeline design and automation',
         'Container orchestration and service mesh',
@@ -661,7 +661,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Disaster recovery and backup strategies',
         'Cost optimization and resource management',
       ],
-      'ml-engineer': [
+      'ml-engineer': ['
         'Machine learning pipeline design and automation',
         'Model versioning and experiment tracking',
         'Feature stores and data pipeline integration',
@@ -679,7 +679,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Team coordination and technical leadership',
         'Documentation and architectural decision records (ADRs)',
       ],
-      'tech-lead': [
+      'tech-lead': ['
         'Code review processes and quality standards',
         'Team mentoring and knowledge sharing',
         'Technical decision making and consensus building',
@@ -718,14 +718,14 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Performance engineering and capacity planning',
         'Security architecture and threat modeling',
       ],
-      'tech-lead': [
+      'tech-lead': ['
         'Team scaling and knowledge transfer strategies',
         'Technical roadmap planning and prioritization',
         'Cross-team collaboration and dependency management',
         'Innovation management and technology adoption',
         'Performance management and career development',
       ],
-      'devops-engineer': [
+      'devops-engineer': ['
         'Site reliability engineering (SRE) practices',
         'Chaos engineering and fault tolerance',
         'Cloud-native architecture and serverless patterns',
@@ -743,7 +743,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
         'Circuit breaker and bulkhead patterns',
         'Service decomposition strategies',
       ],
-      'ml-model': [
+      'ml-model': ['
         'Advanced model architectures and hyperparameter tuning',
         'Distributed training and model parallelization',
         'Model interpretation and explainability',
@@ -775,7 +775,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
     try {
       // Allow event loop processing for parsing
       await new Promise(resolve => setTimeout(resolve, 0));
-      const parsed = typeof result === 'string'? JSON.parse(result) : result;
+      const parsed = typeof result === 'string'? JSON.parse(result) : result;'
 
       const principles: CodingPrinciples = {
         language: config.language,
@@ -880,7 +880,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
 
       return principles;
     } catch (error) {
-      this.logger.warn('Failed to parse research result:', error);
+      this.logger.warn('Failed to parse research result:', error);'
       return this.getFallbackPrinciples(config);
     }
   }
@@ -889,22 +889,22 @@ Respond in JSON format with structured guidelines that cover all research areas 
    * Generate human-reviewable template
    */
   private generateReviewableTemplate(principles: CodingPrinciples): string {
-    return `# ${principles.language.toUpperCase()} Coding Principles
-${principles.domain ? `## Domain: ${principles.domain}` : ''}
-${principles.role ? `## Role: ${principles.role}` : ''}
+    return `# ${principles.language.toUpperCase()} Coding Principles`
+${principles.domain ? `## Domain: ${principles.domain}` : ''}'
+${principles.role ? `## Role: ${principles.role}` : ''}'
 
 ## 📁 File Naming & Organization
-${principles.coreStandards.fileNaming.map((item) => `- ${item}`).join('\n')}
+${principles.coreStandards.fileNaming.map((item) => `- ${item}`).join('\n')}'
 
 ## ⚡ Function Guidelines  
-${principles.coreStandards.functionComplexity.map((item) => `- ${item}`).join('\n')}
+${principles.coreStandards.functionComplexity.map((item) => `- ${item}`).join('\n')}'
 
 ## 🔧 ${principles.language.charAt(0).toUpperCase() + principles.language.slice(1)}-Specific
 ### Type System
-${principles.languageSpecific.typeSystem.map((item) => `- ${item}`).join('\n')}
+${principles.languageSpecific.typeSystem.map((item) => `- ${item}`).join('\n')}'
 
 ### Package Management
-${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join('\n')}
+${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join('\n')}'
 
 ## 📊 Quality Metrics
 - **Complexity**: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}
@@ -914,135 +914,135 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
 ---
 **Research Date**: ${principles.researchMetadata.researchedAt.toISOString()}
 **Confidence**: ${(principles.researchMetadata.confidence * 100).toFixed(1)}%
-**Human Reviewed**: ${principles.researchMetadata.humanReviewed ? 'Yes' : 'No'}
+**Human Reviewed**: ${principles.researchMetadata.humanReviewed ? 'Yes' : 'No'}'
 
 > This template is AI-generated and should be reviewed by human experts.
-> Please provide feedback to improve future research.`;
+> Please provide feedback to improve future research.`;`
   }
 
   // Helper methods for language-specific defaults
   private getDefaultTypeSystem(language: ProgrammingLanguage): string[] {
     switch (language) {
-      case 'typescript':
+      case 'typescript':'
         return [
           'Use explicit types',
           'Avoid any',
           'Define interfaces',
           'Use union types',
         ];
-      case 'python':
+      case 'python':'
         return [
           'Use type hints',
           'Import from typing',
           'Use Protocol for interfaces',
         ];
-      case 'rust':
+      case 'rust':'
         return [
           'Leverage ownership system',
           'Use appropriate lifetimes',
           'Prefer Result over panic',
         ];
       default:
-        return ['Follow language type conventions'];
+        return ['Follow language type conventions'];'
     }
   }
 
   private getDefaultMemoryManagement(language: ProgrammingLanguage): string[] {
     switch (language) {
-      case 'rust':
+      case 'rust':'
         return [
           'Understand ownership',
           'Use smart pointers appropriately',
           'Avoid memory leaks',
         ];
-      case 'go':
+      case 'go':'
         return [
           'Let GC handle memory',
           'Avoid goroutine leaks',
           'Use sync.Pool for object reuse',
         ];
       default:
-        return ['Follow language memory best practices'];
+        return ['Follow language memory best practices'];'
     }
   }
 
   private getDefaultConcurrency(language: ProgrammingLanguage): string[] {
     switch (language) {
-      case 'go':
+      case 'go':'
         return [
           'Use goroutines and channels',
           'Avoid race conditions',
           'Use context for cancellation',
         ];
-      case 'rust':
+      case 'rust':'
         return [
           'Use async/await',
           'Leverage Send/Sync traits',
           'Use Arc/Mutex for shared state',
         ];
-      case 'javascript':
-      case 'typescript':
+      case 'javascript':'
+      case 'typescript':'
         return [
           'Use async/await',
           'Handle Promise rejections',
           'Avoid blocking operations',
         ];
       default:
-        return ['Follow language concurrency patterns'];
+        return ['Follow language concurrency patterns'];'
     }
   }
 
   private getDefaultPackageManagement(language: ProgrammingLanguage): string[] {
     switch (language) {
-      case 'typescript':
-      case 'javascript':
+      case 'typescript':'
+      case 'javascript':'
         return [
           'Use npm/yarn/pnpm',
           'Lock dependency versions',
           'Audit for vulnerabilities',
         ];
-      case 'rust':
+      case 'rust':'
         return [
           'Use Cargo.toml',
           'Specify feature flags',
           'Use workspace for multi-crate projects',
         ];
-      case 'python':
+      case 'python':'
         return [
           'Use pip/poetry',
           'Create requirements.txt',
           'Use virtual environments',
         ];
       default:
-        return ['Follow language package conventions'];
+        return ['Follow language package conventions'];'
     }
   }
 
   private getDefaultBuildTools(language: ProgrammingLanguage): string[] {
     switch (language) {
-      case 'typescript':
+      case 'typescript':'
         return [
           'Use TypeScript compiler',
           'Configure tsconfig.json',
           'Use bundler like Vite/Webpack',
         ];
-      case 'rust':
+      case 'rust':'
         return [
           'Use cargo build',
           'Configure Cargo.toml',
           'Use cargo clippy for linting',
         ];
       default:
-        return ['Use standard language build tools'];
+        return ['Use standard language build tools'];'
     }
   }
 
   private generateTemplate(parsed: any): string {
-    return parsed.template || 'AI-generated coding principles template';
+    return parsed.template || 'AI-generated coding principles template;
   }
 
   private generateCacheKey(config: PrinciplesResearchConfig): string {
-    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
+    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;`
   }
 
   private isCacheValid(principles: CodingPrinciples): boolean {
@@ -1113,7 +1113,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
     // Use feedback to improve future research prompts and caching
     // This would integrate with the behavioral intelligence system
     await new Promise(resolve => setTimeout(resolve, 0));
-    this.logger.info('Incorporating human feedback for principles improvement:', {
+    this.logger.info('Incorporating human feedback for principles improvement:', {'
       principlesId: feedback.principlesId
     });
   }
@@ -1131,7 +1131,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
     );
 
     // Analyze patterns to enhance principles
-    if (patterns && typeof patterns === 'object') {
+    if (patterns && typeof patterns === 'object') {'
       try {
         // Extract successful patterns from the data
         const patternKeys = Object.keys(patterns);
@@ -1153,7 +1153,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
 
           // Add pattern insights to research metadata
           principles.researchMetadata.sources.push(
-            `pattern-analysis-${patternKeys.length}-patterns`
+            `pattern-analysis-${patternKeys.length}-patterns``
           );
         }
       } catch (error) {
@@ -1176,7 +1176,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
           (p: any) => p.success === true || p.successful === true
         ).length;
         return patterns.length > 0 ? successCount / patterns.length : 0;
-      } else if (typeof patterns ==='object') {
+      } else if (typeof patterns ==='object') {'
         // If patterns has success metrics
         if (patterns.successRate) return patterns.successRate;
         if (patterns.success !== undefined && patterns.total !== undefined) {
@@ -1188,7 +1188,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
       }
       return 0.5; // Default moderate success rate
     } catch (error) {
-      this.logger.warn('Error calculating pattern success rate:', error);
+      this.logger.warn('Error calculating pattern success rate:', error);'
       return 0.5;
     }
   }
@@ -1206,7 +1206,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         principles.bestPractices.push(
           ...patterns.commonPatterns.filter(
             (p: string) =>
-              typeof p === 'string' &&
+              typeof p === 'string' &&'
               p.length > 10 &&
               !principles.bestPractices.includes(p)
           )
@@ -1217,7 +1217,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         principles.antiPatterns.push(
           ...(patterns.recommendations.avoid?.filter(
             (p: string) =>
-              typeof p === 'string'&&
+              typeof p === 'string'&&'
               p.length > 10 &&
               !principles.antiPatterns.includes(p)
           ) || [])
@@ -1233,7 +1233,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         );
       }
     } catch (error) {
-      this.logger.warn('Error extracting best practices from patterns:', error);
+      this.logger.warn('Error extracting best practices from patterns:', error);'
     }
   }
 
@@ -1375,9 +1375,9 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         feedbacks.reduce(
           (sum, f) =>
             sum +
-            (f.context.taskComplexity ==='simple'
+            (f.context.taskComplexity ==='simple''
               ? 1
-              : f.context.taskComplexity === 'moderate'
+              : f.context.taskComplexity === 'moderate''
                 ? 2
                 : 3),
           0
@@ -1389,16 +1389,16 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
 
       // Enable additional areas based on feedback
       if (
-        commonMissing.some((area) => area.toLowerCase().includes('performance'))
+        commonMissing.some((area) => area.toLowerCase().includes('performance'))'
       ) {
         enhancedConfig.includePerformance = true;
       }
       if (
-        commonMissing.some((area) => area.toLowerCase().includes('security'))
+        commonMissing.some((area) => area.toLowerCase().includes('security'))'
       ) {
         enhancedConfig.includeSecurity = true;
       }
-      if (commonMissing.some((area) => area.toLowerCase().includes('test'))) {
+      if (commonMissing.some((area) => area.toLowerCase().includes('test'))) {'
         enhancedConfig.includeTesting = true;
       }
     }

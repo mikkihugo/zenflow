@@ -21,7 +21,7 @@ import type {
   AnalyzedContext,
 } from '../types/index.js';
 
-const logger = getLogger('file-aware-ai:engine');
+const logger = getLogger('file-aware-ai:engine');'
 
 export class FileAwareAIEngine {
   private analyzer: CodebaseAnalyzer;
@@ -38,11 +38,11 @@ export class FileAwareAIEngine {
    * Initialize the file-aware AI engine
    */
   async initialize(): Promise<void> {
-    logger.info('Initializing file-aware AI engine', {
+    logger.info('Initializing file-aware AI engine', {'
       rootPath: this.rootPath,
     });
     await this.analyzer.initialize();
-    logger.info('File-aware AI engine ready');
+    logger.info('File-aware AI engine ready');'
   }
 
   /**
@@ -50,7 +50,7 @@ export class FileAwareAIEngine {
    */
   async processRequest(request: FileAwareRequest): Promise<FileAwareResponse> {
     const startTime = Date.now();
-    logger.info('Processing file-aware request', {
+    logger.info('Processing file-aware request', {'
       task: request.task,
       files: request.files?.length||0,
       dryRun: request.options?.dryRun,
@@ -64,7 +64,7 @@ export class FileAwareAIEngine {
         request.context?.maxFiles||this.config.context.maxContextSize
       );
 
-      logger.debug('Context analyzed', {
+      logger.debug('Context analyzed', {'
         relevantFiles: context.relevantFiles.length,
         dependencies: context.dependencies.length,
         complexity: context.complexity,
@@ -72,7 +72,7 @@ export class FileAwareAIEngine {
 
       // 2. Select optimal LLM provider
       const provider = this.selectProvider(request, context);
-      logger.debug('Selected LLM provider', { provider: provider.name });
+      logger.debug('Selected LLM provider', { provider: provider.name });'
 
       // 3. Prepare context for AI
       const aiContext = await this.prepareAIContext(context, request);
@@ -86,7 +86,7 @@ export class FileAwareAIEngine {
         appliedChanges = await this.applyChanges(changes, request.options);
       } else {
         appliedChanges = changes;
-        logger.info('Dry run - changes not applied');
+        logger.info('Dry run - changes not applied');'
       }
 
       const executionTime = Date.now() - startTime;
@@ -104,7 +104,7 @@ export class FileAwareAIEngine {
         },
       };
     } catch (error) {
-      logger.error('Error processing file-aware request', {
+      logger.error('Error processing file-aware request', {'
         error: (error as Error).message,
         task: request.task,
       });
@@ -147,11 +147,11 @@ export class FileAwareAIEngine {
       taskType: 'generation',
     });
 
-    const providerName = providerNames[0]||'copilot';
+    const providerName = providerNames[0]||'copilot;
     const provider = LLM_PROVIDER_CONFIG[providerName];
 
     if (!provider) {
-      throw new Error(`Provider ${providerName} not found`);
+      throw new Error(`Provider ${providerName} not found`);`
     }
 
     return provider;
@@ -164,46 +164,46 @@ export class FileAwareAIEngine {
     context: AnalyzedContext,
     request: FileAwareRequest
   ): Promise<string> {
-    let aiContext = `# Task\n${request.task}\n\n`;
+    let aiContext = `# Task\n${request.task}\n\n`;`
 
-    aiContext += `# Codebase Context\n${context.summary}\n\n`;
+    aiContext += `# Codebase Context\n${context.summary}\n\n`;`
 
-    aiContext += `# Relevant Files\n`;
+    aiContext += `# Relevant Files\n`;`
     for (const filePath of context.relevantFiles) {
       try {
         const fullPath = join(this.rootPath, filePath);
-        const content = await fs.readFile(fullPath, 'utf8');
+        const content = await fs.readFile(fullPath, 'utf8');'
 
-        aiContext += `## ${filePath}\n`;
+        aiContext += `## ${filePath}\n`;`
         aiContext += '```' + this.getFileLanguage(filePath) + '\n';
         aiContext += content;
         aiContext += '\n```\n\n';
       } catch (error) {
-        logger.warn('Could not read file for context', { filePath });
+        logger.warn('Could not read file for context', { filePath });'
       }
     }
 
     if (context.dependencies.length > 0) {
-      aiContext += `# Dependencies\n`;
+      aiContext += `# Dependencies\n`;`
       for (const dep of context.dependencies) {
-        aiContext += `- ${dep.from} → ${dep.to} (${dep.type})\n`;
+        aiContext += `- ${dep.from} → ${dep.to} (${dep.type})\n`;`
       }
       aiContext += '\n';
     }
 
-    aiContext += `# Instructions\n`;
-    aiContext += `Please analyze the codebase and implement the requested changes.\n`;
-    aiContext += `Return a JSON response with the following structure:\n`;
-    aiContext += `{\n`;
-    aiContext += `  "changes": [\n`;
-    aiContext += `    {\n`;
-    aiContext += `      "path": "relative/file/path.ts",\n`;
-    aiContext += `      "type": "modify"|"create"|"delete"|"rename",\n`;
-    aiContext += `      "newContent": "full file content after changes",\n`;
-    aiContext += `      "reasoning": "explanation of why this change was made"\n`;
-    aiContext += `    }\n`;
-    aiContext += `  ]\n`;
-    aiContext += `}\n`;
+    aiContext += `# Instructions\n`;`
+    aiContext += `Please analyze the codebase and implement the requested changes.\n`;`
+    aiContext += `Return a JSON response with the following structure:\n`;`
+    aiContext += `{\n`;`
+    aiContext += `  "changes": [\n`;`
+    aiContext += `    {\n`;`
+    aiContext += `      "path": "relative/file/path.ts",\n`;`
+    aiContext += `      "type": "modify"|"create"|"delete"|"rename",\n`;`
+    aiContext += `      "newContent": "full file content after changes",\n`;`
+    aiContext += `      "reasoning": "explanation of why this change was made"\n`;`
+    aiContext += `    }\n`;`
+    aiContext += `  ]\n`;`
+    aiContext += `}\n`;`
 
     return aiContext;
   }
@@ -218,7 +218,7 @@ export class FileAwareAIEngine {
   ): Promise<FileChange[]> {
     // TODO: Implement actual AI call using the LLM routing system
     // For now, return a mock response
-    logger.debug('Generating changes with AI', {
+    logger.debug('Generating changes with AI', {'
       provider: provider.name,
       contextLength: aiContext.length,
     });
@@ -243,11 +243,11 @@ export class FileAwareAIEngine {
    */
   private async applyChanges(
     changes: FileChange[],
-    options?: FileAwareRequest['options']
+    options?: FileAwareRequest['options']'
   ): Promise<FileChange[]> {
     const appliedChanges: FileChange[] = [];
 
-    logger.info('Applying changes', { count: changes.length });
+    logger.info('Applying changes', { count: changes.length });'
 
     // Create backup if requested
     if (options?.createBackup) {
@@ -259,48 +259,48 @@ export class FileAwareAIEngine {
         const fullPath = join(this.rootPath, change.path);
 
         switch (change.type) {
-          case 'create':
-          case 'modify':
+          case 'create':'
+          case 'modify':'
             // Ensure directory exists
             await fs.mkdir(dirname(fullPath), { recursive: true });
 
             // Read old content if file exists
             let oldContent = '';
             try {
-              oldContent = await fs.readFile(fullPath, 'utf8');
+              oldContent = await fs.readFile(fullPath, 'utf8');'
             } catch {
-              // File doesn't exist - that's ok for create operations
+              // File doesn't exist - that's ok for create operations'
             }
 
             // Write new content
             if (change.newContent !== undefined) {
-              await fs.writeFile(fullPath, change.newContent, 'utf8');
+              await fs.writeFile(fullPath, change.newContent, 'utf8');'
 
               appliedChanges.push({
                 ...change,
                 oldContent,
               });
 
-              logger.debug('Applied change', {
+              logger.debug('Applied change', {'
                 type: change.type,
                 path: change.path,
               });
             }
             break;
 
-          case 'delete':
+          case 'delete':'
             await fs.unlink(fullPath);
             appliedChanges.push(change);
-            logger.debug('Deleted file', { path: change.path });
+            logger.debug('Deleted file', { path: change.path });'
             break;
 
-          case 'rename':
+          case 'rename':'
             // TODO: Implement rename logic
-            logger.warn('Rename operation not implemented yet');
+            logger.warn('Rename operation not implemented yet');'
             break;
         }
       } catch (error) {
-        logger.error('Error applying change', {
+        logger.error('Error applying change', {'
           change: change.path,
           error: (error as Error).message,
         });
@@ -312,7 +312,7 @@ export class FileAwareAIEngine {
       await this.autoCommit(appliedChanges, options.branchName);
     }
 
-    logger.info('Changes applied', { applied: appliedChanges.length });
+    logger.info('Changes applied', { applied: appliedChanges.length });'
     return appliedChanges;
   }
 
@@ -328,7 +328,7 @@ export class FileAwareAIEngine {
     await fs.mkdir(backupDir, { recursive: true });
 
     for (const change of changes) {
-      if (change.type === 'modify'||change.type ==='delete') {
+      if (change.type === 'modify'||change.type ==='delete') {'
         try {
           const sourcePath = join(this.rootPath, change.path);
           const backupPath = join(backupDir, change.path);
@@ -336,12 +336,12 @@ export class FileAwareAIEngine {
           await fs.mkdir(dirname(backupPath), { recursive: true });
           await fs.copyFile(sourcePath, backupPath);
 
-          logger.debug('Created backup', {
+          logger.debug('Created backup', {'
             file: change.path,
             backup: backupPath,
           });
         } catch (error) {
-          logger.warn('Could not create backup', {
+          logger.warn('Could not create backup', {'
             file: change.path,
             error: (error as Error).message,
           });
@@ -358,7 +358,7 @@ export class FileAwareAIEngine {
     branchName?: string
   ): Promise<void> {
     // TODO: Implement git integration
-    logger.debug('Auto-commit not implemented yet', {
+    logger.debug('Auto-commit not implemented yet', {'
       changes: changes.length,
       branchName,
     });
@@ -368,7 +368,7 @@ export class FileAwareAIEngine {
    * Get programming language for a file path
    */
   private getFileLanguage(filePath: string): string {
-    const ext = filePath.split('.').pop()?.toLowerCase();
+    const ext = filePath.split('.').pop()?.toLowerCase();'
     const languageMap: Record<string, string> = {
       ts: 'typescript',
       tsx: 'typescript',
@@ -395,7 +395,7 @@ export class FileAwareAIEngine {
       sass: 'sass',
     };
 
-    return languageMap[ext||']|||text';
+    return languageMap[ext||']|||text;
   }
 
   /**

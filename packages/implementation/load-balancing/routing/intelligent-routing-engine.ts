@@ -116,7 +116,7 @@ export class IntelligentRoutingEngine
       const availableAgents = this.getAvailableAgents();
 
       if (availableAgents.length === 0) {
-        throw new Error('No available agents for routing');
+        throw new Error('No available agents for routing');'
       }
 
       // Find candidate agents using task-agent matching
@@ -127,7 +127,7 @@ export class IntelligentRoutingEngine
       );
 
       if (candidates.length === 0) {
-        throw new Error('No suitable candidates found for task');
+        throw new Error('No suitable candidates found for task');'
       }
 
       // Make routing decision
@@ -141,7 +141,7 @@ export class IntelligentRoutingEngine
       return {
         selectedAgent: decision.selectedAgent,
         confidence: decision.confidence,
-        reasoning: `Intelligent routing: ${decision.routingPath.join(' -> ')} (${decision.estimatedLatency}ms)`,
+        reasoning: `Intelligent routing: ${decision.routingPath.join(' -> ')} (${decision.estimatedLatency}ms)`,`
         alternativeAgents: decision.fallbackOptions,
         estimatedLatency: decision.estimatedLatency,
         expectedQuality: this.calculateExpectedQuality(decision),
@@ -242,13 +242,13 @@ export class IntelligentRoutingEngine
       // Create agent object from routing table entry
       agents.push({
         id: agentId,
-        name: `Agent-${agentId}`,
+        name: `Agent-${agentId}`,`
         capabilities: [], // Would be populated from actual agent data
         status:
           routingEntry.reliability > 0.8
             ? AgentStatus.HEALTHY
             : AgentStatus.DEGRADED,
-        endpoint: `http://agent-${agentId}:8080`,
+        endpoint: `http://agent-${agentId}:8080`,`
         lastHealthCheck: routingEntry.lastUpdate,
         metadata: {
           reliability: routingEntry.reliability,
@@ -320,7 +320,7 @@ export class IntelligentRoutingEngine
     if (!agentLocation) return routes;
 
     // Find optimal path using network topology
-    const optimalPath = await this.networkOptimizer.selectOptimalPath('source', // Would be actual source location
+    const optimalPath = await this.networkOptimizer.selectOptimalPath('source', // Would be actual source location'
       agent.id
     );
 
@@ -448,7 +448,7 @@ export class IntelligentRoutingEngine
    */
   private selectBestRoute(routingEntry: RoutingTable, task: Task): RouteEntry {
     if (routingEntry.routes.length === 0) {
-      throw new Error('No routes available');
+      throw new Error('No routes available');'
     }
 
     // Score each route based on task requirements
@@ -535,7 +535,7 @@ export class IntelligentRoutingEngine
     for (const agentId of affectedRoutes) {
       // Trigger route recalculation for affected agent
       await this.updateAgentRoute({ id: agentId } as Agent);
-      this.emit('route:recalculated', { agentId, timestamp: Date.now() });
+      this.emit('route:recalculated', { agentId, timestamp: Date.now() });'
     }
   }
 

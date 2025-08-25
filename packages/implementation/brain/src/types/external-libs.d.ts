@@ -2,14 +2,14 @@
  * Type declarations for external libraries without TypeScript definitions
  */
 
-declare module 'moving-averages' {
+declare module 'moving-averages' {'
   export function sma(data: number[], window: number): number[];
   export function ema(data: number[], window: number): number[];
   export function wma(data: number[], window: number): number[];
   export function mma(data: number[], window: number): number[];
 }
 
-declare module 'regression' {
+declare module 'regression' {'
   export interface DataPoint {
     0: number;
     1: number;
@@ -33,7 +33,7 @@ declare module 'regression' {
   ): RegressionResult;
 }
 
-declare module 'density-clustering' {
+declare module 'density-clustering' {'
   export class DBSCAN {
     constructor(eps?: number, minPts?: number);
     run(dataset: number[][]): number[][];
@@ -46,20 +46,20 @@ declare module 'density-clustering' {
 }
 
 // TensorFlow.js declarations
-declare module '@tensorflow/tfjs-node' {
+declare module '@tensorflow/tfjs-node' {'
   export * from '@tensorflow/tfjs';
   export function loadLayersModel(path: string): Promise<any>;
   export function sequential(config?: any): any;
 }
 
-declare module '@tensorflow/tfjs-node-gpu' {
+declare module '@tensorflow/tfjs-node-gpu' {'
   export * from '@tensorflow/tfjs';
   export function loadLayersModel(path: string): Promise<any>;
   export function sequential(config?: any): any;
 }
 
 // GPU.js declarations
-declare module 'gpu.js' {
+declare module 'gpu.js' {'
   export class GPU {
     constructor(settings?: any);
     createKernel(func: Function, settings?: any): any;
@@ -68,7 +68,7 @@ declare module 'gpu.js' {
 }
 
 // Xenova Transformers declarations
-declare module '@xenova/transformers' {
+declare module '@xenova/transformers' {'
   export class AutoTokenizer {
     static from_pretrained(model: string): Promise<AutoTokenizer>;
     encode(text: string): number[];

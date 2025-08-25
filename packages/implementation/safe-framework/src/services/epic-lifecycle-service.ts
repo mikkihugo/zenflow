@@ -110,10 +110,10 @@ export class EpicLifecycleService {
   ): Promise<EpicProgressionResult> {
     const epic = this.epics.get(epicId);
     if (!epic) {
-      throw new Error(`Epic not found: ${epicId}`);
+      throw new Error(`Epic not found: ${epicId}`);`
     }
 
-    this.logger.info('Progressing epic state', {
+    this.logger.info('Progressing epic state', {'
       epicId,
       currentState: epic.status,
       targetState,
@@ -166,7 +166,7 @@ export class EpicLifecycleService {
     stages.push(newStage);
     this.lifecycleStages.set(epicId, stages);
 
-    this.logger.info('Epic state progressed successfully', {
+    this.logger.info('Epic state progressed successfully', {'
       epicId,
       newState: targetState,
       duration: newStage.duration,
@@ -178,7 +178,7 @@ export class EpicLifecycleService {
       previousState: epic.status as PortfolioKanbanState,
       blockers: [],
       unmetCriteria: [],
-      recommendations: [`Epic successfully moved to ${targetState}`],
+      recommendations: [`Epic successfully moved to ${targetState}`],`
       nextActions: this.getNextActions(targetState),
     };
   }
@@ -196,7 +196,7 @@ export class EpicLifecycleService {
     scoredBy: string;
     confidence: number;
   }): Promise<WSJFCalculationResult> {
-    this.logger.info('Calculating WSJF score', { epicId: input.epicId });
+    this.logger.info('Calculating WSJF score', { epicId: input.epicId });'
 
     const previousScore = this.wsjfScores.get(input.epicId);
 
@@ -229,7 +229,7 @@ export class EpicLifecycleService {
     const sortedByScore = orderBy(
       allScores,
       ([, score]) => score.wsjfScore,
-      'desc'
+      'desc''
     );
     const currentRank =
       sortedByScore.findIndex(([id]) => id === input.epicId) + 1;
@@ -240,7 +240,7 @@ export class EpicLifecycleService {
         allScores,
         ([id, score]) =>
           id === input.epicId ? previousScore.wsjfScore : score.wsjfScore,
-        'desc'
+        'desc''
       );
       previousRank =
         previousSorted.findIndex(([id]) => id === input.epicId) + 1;
@@ -253,7 +253,7 @@ export class EpicLifecycleService {
       previousScore
     );
 
-    this.logger.info('WSJF score calculated', {
+    this.logger.info('WSJF score calculated', {'
       epicId: input.epicId,
       score: wsjfScore,
       rank: currentRank,
@@ -275,19 +275,19 @@ export class EpicLifecycleService {
    */
   async addEpicBlocker(
     epicId: string,
-    blockerData: Omit<EpicBlocker, 'id|identifiedAt'>
+    blockerData: Omit<EpicBlocker, 'id|identifiedAt'>'
   ): Promise<string> {
     const blocker: EpicBlocker = {
-      id: `blocker-${nanoid(8)}`,
+      id: `blocker-${nanoid(8)}`,`
       identifiedAt: new Date(),
       ...blockerData,
     };
 
-    const existingBlockers = this.blockers.get(epicId)|'|[];
+    const existingBlockers = this.blockers.get(epicId)|'|[];'
     existingBlockers.push(blocker);
     this.blockers.set(epicId, existingBlockers);
 
-    this.logger.warn('Epic blocker added', {
+    this.logger.warn('Epic blocker added', {'
       epicId,
       blockerId: blocker.id,
       severity: blocker.severity,
@@ -304,7 +304,7 @@ export class EpicLifecycleService {
     const blockerIndex = blockers.findIndex((b) => b.id === blockerId);
 
     if (blockerIndex === -1) {
-      throw new Error(`Blocker not found: ${blockerId}`);
+      throw new Error(`Blocker not found: ${blockerId}`);`
     }
 
     blockers[blockerIndex] = {
@@ -314,7 +314,7 @@ export class EpicLifecycleService {
 
     this.blockers.set(epicId, blockers);
 
-    this.logger.info('Epic blocker resolved', { epicId, blockerId });
+    this.logger.info('Epic blocker resolved', { epicId, blockerId });'
   }
 
   /**
@@ -327,7 +327,7 @@ export class EpicLifecycleService {
     const allScores = Array.from(this.wsjfScores.values())();
 
     // State distribution
-    const stateDistribution = countBy(allEpics, 'status') as Record<
+    const stateDistribution = countBy(allEpics, 'status') as Record<'
       PortfolioKanbanState,
       number
     >;
@@ -391,9 +391,9 @@ export class EpicLifecycleService {
     ];
     const valueAddedTime = sumBy(
       filter(allStages, (s) => valueAddedStates.includes(s.stage)),
-      'duration'
+      'duration''
     );
-    const totalTime = sumBy(allStages, 'duration');
+    const totalTime = sumBy(allStages, 'duration');'
     const flowEfficiency =
       totalTime > 0 ? (valueAddedTime / totalTime) * 100 : 0;
 
@@ -427,7 +427,7 @@ export class EpicLifecycleService {
       .filter((item) => item.epic);
 
     // Sort by WSJF score and assign ranks
-    const sorted = orderBy(epicScores, 'wsjfScore.wsjfScore', 'desc');
+    const sorted = orderBy(epicScores, 'wsjfScore.wsjfScore', 'desc');'
     return sorted.map((item, index) => ({
       ...item,
       rank: index + 1,
@@ -464,7 +464,7 @@ export class EpicLifecycleService {
 
     for (const criterion of gateCriteria) {
       const hasEvidence = evidence && evidence[criterion.criterion]?.length > 0;
-      const isCompleted = hasEvidence||criterion.status ==='completed';
+      const isCompleted = hasEvidence||criterion.status ==='completed;
 
       if (isCompleted) {
         passedCriteria.push({
@@ -480,10 +480,10 @@ export class EpicLifecycleService {
 
     const canProgress = unmetCriteria.length === 0;
     const recommendations = canProgress
-      ? [`Epic meets all criteria for ${targetState}`]
-      : [`${unmetCriteria.length} criteria still need to be met`];
+      ? [`Epic meets all criteria for ${targetState}`]`
+      : [`${unmetCriteria.length} criteria still need to be met`];`
 
-    const nextActions = unmetCriteria.map((c) => `Complete: ${c.criterion}`);
+    const nextActions = unmetCriteria.map((c) => `Complete: ${c.criterion}`);`
 
     return {
       canProgress,
@@ -690,18 +690,18 @@ export class EpicLifecycleService {
    */
   private mapKanbanStateToEpicStatus(
     kanbanState: PortfolioKanbanState
-  ):'analyzing|implementing|done|backlog' {
+  ):'analyzing|implementing|done|backlog' {'
     switch (kanbanState) {
       case PortfolioKanbanState.ANALYZING:
-        return 'analyzing';
+        return 'analyzing;
       case PortfolioKanbanState.IMPLEMENTING:
-        return 'implementing';
+        return 'implementing;
       case PortfolioKanbanState.DONE:
-        return 'done';
+        return 'done;
       case PortfolioKanbanState.PORTFOLIO_BACKLOG:
       case PortfolioKanbanState.FUNNEL:
       default:
-        return 'backlog';
+        return 'backlog;
     }
   }
 
@@ -715,22 +715,22 @@ export class EpicLifecycleService {
     const recommendations: string[] = [];
 
     if (current.wsjfScore > 15) {
-      recommendations.push('High WSJF score - prioritize for implementation');
+      recommendations.push('High WSJF score - prioritize for implementation');'
     } else if (current.wsjfScore < 5) {
-      recommendations.push('Low WSJF score - consider deferring or cancelling');
+      recommendations.push('Low WSJF score - consider deferring or cancelling');'
     }
 
     if (current.confidence < 70) {
-      recommendations.push('Low confidence in WSJF scoring - gather more data');
+      recommendations.push('Low confidence in WSJF scoring - gather more data');'
     }
 
     if (previous && current.wsjfScore < previous.wsjfScore) {
-      recommendations.push('WSJF score decreased - review assumptions');
+      recommendations.push('WSJF score decreased - review assumptions');'
     }
 
     if (current.size > 15) {
       recommendations.push(
-        'Large epic size - consider splitting into smaller epics'
+        'Large epic size - consider splitting into smaller epics''
       );
     }
 

@@ -65,10 +65,10 @@ export class MigratedEventRegistry
 
   constructor() {
     super();
-    this.container = createServiceContainer('event-registry', {
+    this.container = createServiceContainer('event-registry', {'
       healthCheckFrequency: 30000, // 30 seconds
     });
-    this.logger = getLogger('MigratedEventRegistry');
+    this.logger = getLogger('MigratedEventRegistry');'
 
     // Initialize default configurations
     this.healthMonitoring = {
@@ -129,9 +129,9 @@ export class MigratedEventRegistry
 
       this.initialized = true;
       this.logger.info(
-        '✅ MigratedEventRegistry initialized with ServiceContainer'
+        '✅ MigratedEventRegistry initialized with ServiceContainer''
       );
-      this.emit('initialized', {});
+      this.emit('initialized', {});'
     } catch (error) {
       this.logger.error(
         '❌ Failed to initialize MigratedEventRegistry:',
@@ -151,7 +151,7 @@ export class MigratedEventRegistry
     try {
       // Register factory with ServiceContainer for enhanced capabilities
       const registrationResult = this.container.registerInstance(
-        `factory:${type}`,
+        `factory:${type}`,`
         factory,
         {
           capabilities: ['event-manager-factory', type],
@@ -168,7 +168,7 @@ export class MigratedEventRegistry
 
       if (registrationResult.isErr()) {
         throw new Error(
-          `Failed to register factory ${type}: ${registrationResult.error.message}`
+          `Failed to register factory ${type}: ${registrationResult.error.message}``
         );
       }
 
@@ -192,10 +192,10 @@ export class MigratedEventRegistry
         },
       };
 
-      this.logger.debug(`📋 Registered event manager factory: ${type}`);
-      this.emit('factory-registered', type, factory);
+      this.logger.debug(`📋 Registered event manager factory: ${type}`);`
+      this.emit('factory-registered', type, factory);'
     } catch (error) {
-      this.logger.error(`❌ Failed to register factory ${type}:`, error);
+      this.logger.error(`❌ Failed to register factory ${type}:`, error);`
       throw error;
     }
   }
@@ -209,7 +209,7 @@ export class MigratedEventRegistry
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<EventManagerFactory<T>>(
-        `factory:${type}`
+        `factory:${type}``
       );
 
       if (result.isOk()) {
@@ -224,7 +224,7 @@ export class MigratedEventRegistry
       return this.factories.get(type) as EventManagerFactory<T>;
     } catch (error) {
       this.logger.warn(
-        `⚠️ Failed to resolve factory ${type}, falling back to legacy:`,
+        `⚠️ Failed to resolve factory ${type}, falling back to legacy:`,`
         error
       );
       return this.factories.get(type) as EventManagerFactory<T>;
@@ -237,8 +237,8 @@ export class MigratedEventRegistry
   listFactoryTypes(): EventManagerType[] {
     const containerTypes = this.container
       .getServiceNames()
-      .filter((name) => name.startsWith('factory:'))
-      .map((name) => name.replace('factory:', '') as EventManagerType);
+      .filter((name) => name.startsWith('factory:'))'
+      .map((name) => name.replace('factory:', '') as EventManagerType);'
 
     const legacyTypes = Array.from(this.factories.keys())();
 
@@ -277,7 +277,7 @@ export class MigratedEventRegistry
 
       if (registrationResult.isErr()) {
         throw new Error(
-          `Failed to register manager ${name}: ${registrationResult.error.message}`
+          `Failed to register manager ${name}: ${registrationResult.error.message}``
         );
       }
 
@@ -289,10 +289,10 @@ export class MigratedEventRegistry
         this.factoryRegistry[config.type].usage.managersCreated++;
       }
 
-      this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);
-      this.emit('manager-registered', { name, manager, factory, config });
+      this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);`
+      this.emit('manager-registered', { name, manager, factory, config });'
     } catch (error) {
-      this.logger.error(`❌ Failed to register manager ${name}:`, error);
+      this.logger.error(`❌ Failed to register manager ${name}:`, error);`
       throw error;
     }
   }
@@ -312,7 +312,7 @@ export class MigratedEventRegistry
       // Fallback to legacy storage
       return this.eventManagers.get(name);
     } catch (error) {
-      this.logger.warn(`⚠️ Failed to resolve event manager ${name}:`, error);
+      this.logger.warn(`⚠️ Failed to resolve event manager ${name}:`, error);`
       return this.eventManagers.get(name);
     }
   }
@@ -325,7 +325,7 @@ export class MigratedEventRegistry
 
     // Collect from ServiceContainer
     for (const serviceName of this.container.getServiceNames()) {
-      if (!serviceName.startsWith('factory:')) {
+      if (!serviceName.startsWith('factory:')) {'
         const result = this.container.resolve<EventManager>(serviceName);
         if (result.isOk()) {
           allManagers.set(serviceName, result.value);
@@ -369,7 +369,7 @@ export class MigratedEventRegistry
     for (const [name, manager] of allManagers) {
       // Get service info to check status
       const serviceInfo = this.container.getServiceInfo(name);
-      if (serviceInfo && serviceInfo.enabled && status === 'healthy') {
+      if (serviceInfo && serviceInfo.enabled && status === 'healthy') {'
         managers.push(manager);
       }
     }
@@ -393,7 +393,7 @@ export class MigratedEventRegistry
     try {
       // Register with ServiceContainer
       const registrationResult = this.container.registerInstance(
-        `eventType:${eventType}`,
+        `eventType:${eventType}`,`
         config,
         {
           capabilities: ['event-type', config.category, ...config.managerTypes],
@@ -409,7 +409,7 @@ export class MigratedEventRegistry
 
       if (registrationResult.isErr()) {
         throw new Error(
-          `Failed to register event type ${eventType}: ${registrationResult.error.message}`
+          `Failed to register event type ${eventType}: ${registrationResult.error.message}``
         );
       }
 
@@ -418,8 +418,8 @@ export class MigratedEventRegistry
         type: eventType,
         category: config.category,
         priority:
-          config.priority||(typeof EventPriorityMap['medium'] === 'number'
-            ? EventPriorityMap['medium']
+          config.priority||(typeof EventPriorityMap['medium'] === 'number''
+            ? EventPriorityMap['medium']'
             : 2),
         schema: config.schema,
         managerTypes: config.managerTypes,
@@ -432,11 +432,11 @@ export class MigratedEventRegistry
         },
       };
 
-      this.logger.debug(`🏷️ Registered event type: ${eventType}`);
-      this.emit('event-type-registered', { eventType, config });
+      this.logger.debug(`🏷️ Registered event type: ${eventType}`);`
+      this.emit('event-type-registered', { eventType, config });'
     } catch (error) {
       this.logger.error(
-        `❌ Failed to register event type ${eventType}:`,
+        `❌ Failed to register event type ${eventType}:`,`
         error
       );
       throw error;
@@ -449,8 +449,8 @@ export class MigratedEventRegistry
   getEventTypes(): string[] {
     const containerTypes = this.container
       .getServiceNames()
-      .filter((name) => name.startsWith('eventType:'))
-      .map((name) => name.replace('eventType:', '));
+      .filter((name) => name.startsWith('eventType:'))'
+      .map((name) => name.replace('eventType:', '));'
 
     const legacyTypes = Object.keys(this.eventTypes);
 
@@ -462,9 +462,9 @@ export class MigratedEventRegistry
   /**
    * Get event type configuration (compatible with existing EventRegistry interface)
    */
-  getEventTypeConfig(eventType: string): any|'undefined {
+  getEventTypeConfig(eventType: string): any|'undefined {'
     try {
-      const result = this.container.resolve<any>(`eventType:${eventType}`);
+      const result = this.container.resolve<any>(`eventType:${eventType}`);`
       if (result.isOk()) {
         return result.value;
       }
@@ -472,7 +472,7 @@ export class MigratedEventRegistry
       // Fallback to legacy storage
       return this.eventTypes[eventType];
     } catch (error) {
-      this.logger.warn(`⚠️ Failed to resolve event type ${eventType}:`, error);
+      this.logger.warn(`⚠️ Failed to resolve event type ${eventType}:`, error);`
       return this.eventTypes[eventType];
     }
   }
@@ -503,7 +503,7 @@ export class MigratedEventRegistry
           results.set(name, status);
         })
         .catch((error) => {
-          this.logger.error(`❌ Health check failed for ${name}:`, error);
+          this.logger.error(`❌ Health check failed for ${name}:`, error);`
           const errorStatus: EventManagerStatus = {
             name: manager.name,
             type: manager.type,
@@ -591,7 +591,7 @@ export class MigratedEventRegistry
       const serviceInfo = this.container.getServiceInfo(name);
       if (serviceInfo && serviceInfo.enabled) {
         const broadcastPromise = manager.emit(event).catch((error) => {
-          this.logger.error(`❌ Broadcast failed for ${name}:`, error);
+          this.logger.error(`❌ Broadcast failed for ${name}:`, error);`
         });
 
         broadcastPromises.push(broadcastPromise);
@@ -612,7 +612,7 @@ export class MigratedEventRegistry
     const broadcastPromises = managers.map((manager) =>
       manager.emit(event).catch((error) => {
         this.logger.error(
-          `❌ Type broadcast failed for ${manager.name}:`,
+          `❌ Type broadcast failed for ${manager.name}:`,`
           error
         );
       })
@@ -625,7 +625,7 @@ export class MigratedEventRegistry
    * Shutdown all event managers (compatible with existing EventRegistry interface)
    */
   async shutdownAll(): Promise<void> {
-    this.logger.info('🔄 Shutting down all event managers...');
+    this.logger.info('🔄 Shutting down all event managers...');'
 
     try {
       // Stop health monitoring
@@ -638,7 +638,7 @@ export class MigratedEventRegistry
           try {
             await manager.destroy();
           } catch (error) {
-            this.logger.error(`❌ Failed to shutdown ${manager.name}:`, error);
+            this.logger.error(`❌ Failed to shutdown ${manager.name}:`, error);`
           }
         }
       );
@@ -655,10 +655,10 @@ export class MigratedEventRegistry
       this.factoryRegistry = {};
       this.initialized = false;
 
-      this.logger.info('✅ All event managers shut down');
-      this.emit('shutdown', {});
+      this.logger.info('✅ All event managers shut down');'
+      this.emit('shutdown', {});'
     } catch (error) {
-      this.logger.error('❌ Error during registry shutdown:', error);
+      this.logger.error('❌ Error during registry shutdown:', error);'
       throw error;
     }
   }
@@ -775,9 +775,9 @@ export class MigratedEventRegistry
 
     if (result.isOk()) {
       this.logger.debug(
-        `${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} manager: ${name}`
+        `${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} manager: ${name}``
       );
-      this.emit('manager-status-changed', { name, enabled });
+      this.emit('manager-status-changed', { name, enabled });'
     }
 
     return result.isOk();
@@ -792,12 +792,12 @@ export class MigratedEventRegistry
     const capabilities: string[] = [];
 
     if (manager.type) capabilities.push(manager.type);
-    if (manager.name) capabilities.push(`name:${manager.name}`);
-    if (config.type) capabilities.push(`config-type:${config.type}`);
+    if (manager.name) capabilities.push(`name:${manager.name}`);`
+    if (config.type) capabilities.push(`config-type:${config.type}`);`
 
     // Extract capabilities from manager properties
-    if (typeof manager === 'object') {
-      if ('capabilities' in manager && Array.isArray(manager.capabilities)) {
+    if (typeof manager === 'object') {'
+      if ('capabilities' in manager && Array.isArray(manager.capabilities)) {'
         capabilities.push(...manager.capabilities);
       }
     }
@@ -808,11 +808,11 @@ export class MigratedEventRegistry
   private performFactoryHealthCheck(factory: EventManagerFactory): boolean {
     try {
       // Basic health check - more sophisticated checks can be added
-      if (typeof factory === 'object' && factory !== null) {
+      if (typeof factory === 'object' && factory !== null) {'
         // Check if factory has health check method
         if (
-          'healthCheck' in factory &&
-          typeof factory.healthCheck === 'function'
+          'healthCheck' in factory &&'
+          typeof factory.healthCheck === 'function''
         ) {
           return factory.healthCheck();
         }
@@ -823,7 +823,7 @@ export class MigratedEventRegistry
 
       return false;
     } catch (error) {
-      this.logger.warn(`⚠️ Factory health check failed:`, error);
+      this.logger.warn(`⚠️ Factory health check failed:`, error);`
       return false;
     }
   }
@@ -833,11 +833,11 @@ export class MigratedEventRegistry
   ): Promise<boolean> {
     try {
       // Basic health check - more sophisticated checks can be added
-      if (typeof manager === 'object' && manager !== null) {
+      if (typeof manager === 'object' && manager !== null) {'
         // Check if manager has health check method
         if (
-          'healthCheck' in manager &&
-          typeof manager.healthCheck === 'function'
+          'healthCheck' in manager &&'
+          typeof manager.healthCheck === 'function''
         ) {
           const result = await manager.healthCheck();
           return result && result.status === 'healthy';
@@ -849,7 +849,7 @@ export class MigratedEventRegistry
 
       return false;
     } catch (error) {
-      this.logger.warn(`⚠️ Manager health check failed:`, error);
+      this.logger.warn(`⚠️ Manager health check failed:`, error);`
       return false;
     }
   }
@@ -863,12 +863,12 @@ export class MigratedEventRegistry
       try {
         await this.healthCheckAll();
       } catch (error) {
-        this.logger.error('❌ Health monitoring cycle failed:', error);
+        this.logger.error('❌ Health monitoring cycle failed:', error);'
       }
     }, this.healthMonitoring.checkInterval);
 
     this.logger.debug(
-      `💓 Health monitoring started (interval: ${this.healthMonitoring.checkInterval}ms)`
+      `💓 Health monitoring started (interval: ${this.healthMonitoring.checkInterval}ms)``
     );
   }
 
@@ -878,7 +878,7 @@ export class MigratedEventRegistry
       this.healthCheckInterval = undefined;
     }
 
-    this.logger.debug('💓 Health monitoring stopped');
+    this.logger.debug('💓 Health monitoring stopped');'
   }
 
   private async registerDefaultEventTypes(): Promise<void> {
@@ -948,7 +948,7 @@ export class MigratedEventRegistry
     }
 
     this.logger.debug(
-      `🏷️ Registered ${defaultEventTypes.length} default event types`
+      `🏷️ Registered ${defaultEventTypes.length} default event types``
     );
   }
 
@@ -956,9 +956,9 @@ export class MigratedEventRegistry
     try {
       // Event discovery implementation would scan specified paths
       // and automatically register discovered event types
-      this.logger.debug('🔍 Event discovery completed');
+      this.logger.debug('🔍 Event discovery completed');'
     } catch (error) {
-      this.logger.warn('⚠️ Event discovery failed:', error);
+      this.logger.warn('⚠️ Event discovery failed:', error);'
     }
   }
 }
@@ -976,7 +976,7 @@ export function getMigratedEventRegistry(): MigratedEventRegistry {
     migratedEventRegistryInstance = new MigratedEventRegistry();
     // Auto-initialize for convenience
     migratedEventRegistryInstance.initialize().catch((error) => {
-      console.error('Failed to initialize MigratedEventRegistry:', error);
+      console.error('Failed to initialize MigratedEventRegistry:', error);'
     });
   }
   return migratedEventRegistryInstance;

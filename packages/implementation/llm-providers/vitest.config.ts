@@ -36,7 +36,7 @@ export default defineConfig({
     exclude: [
       'node_modules/**',
       'dist/**',
-      'tests/integration/**', // Skip integration tests by default
+      'tests/integration/**', // Skip integration tests by default'
     ],
     testTimeout: 5000,
     hookTimeout: 5000,

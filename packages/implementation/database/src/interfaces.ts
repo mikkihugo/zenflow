@@ -75,7 +75,7 @@ export interface QueryOptions {
 
 export interface SortCriteria {
   field: string;
-  direction: 'asc' | 'desc';
+  direction: 'asc' | 'desc;
 }
 
 export interface CustomQuery {
@@ -95,7 +95,7 @@ export interface DatabaseMetadata {
 }
 
 export interface TransactionOperation {
-  type: 'query|execute|create|update|delete|custom';
+  type: 'query|execute|create|update|delete|custom;
   sql?: string;
   cypher?: string;
   params?: any[];
@@ -115,7 +115,7 @@ export interface Repository<T> {
   findAll(options?: QueryOptions): Promise<T[]>;
 
   /** Create a new entity */
-  create(entity: Omit<T,'id'>): Promise<T>;
+  create(entity: Omit<T,'id'>): Promise<T>;'
 
   /** Update an existing entity */
   update(id: string|number, updates: Partial<T>): Promise<T>;
@@ -361,12 +361,12 @@ export enum DatabaseTypes {
  * @example
  */
 export interface DatabaseQuery {
-  type: 'select|insert|update|delete|aggregate';
+  type: 'select|insert|update|delete|aggregate;
   table?: string;
   columns?: string[];
   conditions?: Record<string, unknown>;
   joins?: Array<{
-    type: 'inner|left|right|full';
+    type: 'inner|left|right|full;
     table: string;
     on: string;
   }>;
@@ -449,7 +449,7 @@ export interface QueryOptions {
  */
 export interface SortCriteria {
   field: string;
-  direction: 'asc' | 'desc';
+  direction: 'asc' | 'desc;
 }
 
 /**
@@ -459,7 +459,7 @@ export interface SortCriteria {
  */
 export interface CustomQuery {
   /** Query type identifier */
-  type: 'sql|cypher|vector|memory|coordination';
+  type: 'sql|cypher|vector|memory|coordination;
 
   /** The actual query string or object */
   query: string|object;
@@ -478,7 +478,7 @@ export interface CustomQuery {
  */
 export interface TransactionOperation {
   /** Operation type */
-  type:'query|execute|create|update|delete|custom';
+  type:'query|execute|create|update|delete|custom;
 
   /** Entity type */
   entityType?: string;
@@ -497,7 +497,7 @@ export interface TransactionOperation {
  */
 export interface DatabaseMetadata {
   /** Database type */
-  type: 'sqlite' | 'lancedb' | 'kuzu';
+  type: 'sqlite' | 'lancedb' | 'kuzu;
 
   /** Database version */
   version: string;
@@ -595,7 +595,7 @@ export interface VectorDocument<T> {
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  metric?:'cosine|euclidean|dot';
+  metric?:'cosine' | 'euclidean' | 'dot';
   filter?: Record<string, unknown>;
 }
 
@@ -614,7 +614,7 @@ export interface VectorInsertResult {
 export interface VectorIndexConfig {
   name: string;
   dimension: number;
-  metric:'cosine|euclidean|dot';
+  metric:'cosine' | 'euclidean' | 'dot';
   type?: string;
   parameters?: Record<string, unknown>;
 }
@@ -627,7 +627,7 @@ export interface VectorStats {
 }
 
 export interface ClusteringOptions {
-  algorithm?: 'kmeans|dbscan|hierarchical';
+  algorithm?: 'kmeans' | 'dbscan' | 'hierarchical';
   numClusters?: number;
   epsilon?: number;
   minSamples?: number;
@@ -673,7 +673,7 @@ export interface CoordinationLock {
 }
 
 export interface CoordinationChange<T> {
-  type:'create|update|delete';
+  type:'create' | 'update' | 'delete';
   entityId: string | number;
   entity?: T;
   timestamp: Date;

@@ -14,13 +14,13 @@ export interface AgentId {
 }
 
 export type AgentType =
-  | 'researcher'
-  | 'coder'
-  | 'analyst'
-  | 'optimizer'
-  | 'coordinator'
-  | 'tester'
-  | 'architect';
+  | 'researcher''
+  | 'coder''
+  | 'analyst''
+  | 'optimizer''
+  | 'coordinator''
+  | 'tester''
+  | 'architect;
 
 // Agent Metrics and Performance
 export interface AgentMetrics {
@@ -44,7 +44,7 @@ export interface ResourceUsage {
 // Health Monitoring
 export interface HealthStatus {
   agentId: string;
-  status: 'healthy|warning|critical|offline';
+  status: 'healthy|warning|critical|offline;
   lastSeen: number;
   issues: string[];
   recommendations: string[];
@@ -69,7 +69,7 @@ export interface PerformanceHistory {
   agentId: string;
   entries: PerformanceEntry[];
   averageSuccessRate: number;
-  trend: 'improving|declining|stable';
+  trend: 'improving' | 'stable' | 'declining';
 }
 
 export interface PerformanceEntry {
@@ -137,7 +137,7 @@ export interface IntelligenceMetrics {
 
 export interface EmergentBehavior {
   id: string;
-  type: 'coordination|optimization|adaptation|learning';
+  type: 'coordination|optimization|adaptation|learning;
   description: string;
   strength: number;
   participants: AgentId[];
@@ -215,11 +215,11 @@ export interface MonitoringConfig {
 
 // Event Types
 export interface MonitoringEvent {
-  type: 'health|performance|learning|prediction|emergency';
+  type: 'health|performance|learning|prediction|emergency;
   agentId?: string;
   timestamp: number;
   data: Record<string, unknown>;
-  severity: 'info|warning|critical';
+  severity: 'info' | 'warning' | 'critical';
 }
 
 // Additional missing types from the codebase
@@ -350,7 +350,7 @@ export interface AgentLearningState {
 
 export interface AgentHealth {
   agentId: string;
-  status:'healthy|warning|critical|offline';
+  status:'healthy|warning|critical|offline;
   overallHealth?: number;
   overallScore: number;
   subsystemHealth?: {
@@ -377,6 +377,6 @@ export interface AgentHealth {
 }
 
 // Export convenience type unions
-export type MonitoringEventType = MonitoringEvent['type'];
-export type HealthStatusType = HealthStatus['status'];
-export type TrendType = PerformanceHistory['trend'];
+export type MonitoringEventType = MonitoringEvent['type'];'
+export type HealthStatusType = HealthStatus['status'];'
+export type TrendType = PerformanceHistory['trend'];'

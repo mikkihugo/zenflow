@@ -9,7 +9,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 interface SwarmSession {
   sessionId: string;
   swarmId: string;
-  type:|'dev-swarm|ops-swarm'||coordination-swarm|hybrid-swarm'||sparc-swarm';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||sparc-swarm;
   startTime: number;
   endTime: number;
   participants: Array<{
@@ -20,7 +20,7 @@ interface SwarmSession {
   decisions: Array<{
     decisionId: string;
     context: string;
-    outcome: 'success|failure|partial';
+    outcome: 'success' | 'failure' | 'partial';
     metrics: Record<string, number>;
   }>;
   collaborationPatterns: Array<{
@@ -29,7 +29,7 @@ interface SwarmSession {
     frequency: number;
   }>;
   artifacts: Array<{
-    type: 'code|documentation|decision|analysis';
+    type: 'code|documentation|decision|analysis;
     content: string;
     quality: number;
   }>;

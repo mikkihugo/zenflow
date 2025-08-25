@@ -61,7 +61,7 @@ import type {
   ApprovalGateRequirement,
 } from '../types/index.js';
 
-const logger = getLogger('InspectAdaptCoordination');
+const logger = getLogger('InspectAdaptCoordination');'
 
 // ============================================================================
 // INSPECT & ADAPT TYPES AND INTERFACES
@@ -121,7 +121,7 @@ export interface InspectAdaptConfig {
       enabled: boolean;
       duration: number; // hours
       maxProblemsToAddress: number;
-      techniques: (|'fishbone|5_whys|root_cause_analysis|solution_brainstorming'
+      techniques: (|'fishbone|5_whys|root_cause_analysis|solution_brainstorming''
       )[];
     };
   };
@@ -205,7 +205,7 @@ export interface PIMetrics {
   quality: {
     defectRate: number;
     escapedDefects: number;
-    technicalDebtTrend: 'improving|stable|degrading';
+    technicalDebtTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
     testCoverage: number;
     automationCoverage: number;
   };
@@ -262,9 +262,9 @@ export interface IASystemProblem {
   description: string;
 
   // Problem categorization
-  category:|'process|technical|organizational|tooling|communication|quality';
-  scope: 'team|cross_team|art|portfolio|enterprise';
-  severity: 'low|medium|high|critical';
+  category:|'process|technical|organizational|tooling|communication|quality;
+  scope: 'team|cross_team|art|portfolio|enterprise;
+  severity: 'low|medium|high|critical;
 
   // Impact assessment
   impact: {
@@ -272,7 +272,7 @@ export interface IASystemProblem {
     affectedObjectives: string[];
     businessImpact: string;
     estimatedCost: string; // opportunity cost
-    frequencyOfOccurrence: 'rare|occasional|frequent|constant';
+    frequencyOfOccurrence: 'rare|occasional|frequent|constant;
   };
 
   // Problem context
@@ -304,7 +304,7 @@ export interface IASystemProblem {
  */
 export interface RootCauseAnalysis {
   problemId: string;
-  technique: 'fishbone|5_whys|root_cause_analysis';
+  technique: 'fishbone|5_whys|root_cause_analysis;
 
   // Analysis process
   process: {
@@ -377,10 +377,10 @@ export interface ProposedSolution {
 
   // Feasibility
   feasibility: {
-    technicalFeasibility: 'low|medium|high';
-    organizationalFeasibility: 'low|medium|high';
-    costFeasibility: 'low|medium|high';
-    timelineFeasibility: 'low|medium|high';
+    technicalFeasibility: 'low' | 'medium' | 'high';
+    organizationalFeasibility: 'low' | 'medium' | 'high';
+    costFeasibility: 'low' | 'medium' | 'high';
+    timelineFeasibility: 'low' | 'medium' | 'high';
   };
 
   // Workshop evaluation
@@ -423,7 +423,7 @@ export interface ImprovementBacklogItem {
     acceptanceCriteria: string[];
     businessValue: number; // 1-10
     effortEstimate: number; // story points or days
-    priority: 'low|medium|high|critical';
+    priority: 'low|medium|high|critical;
   };
 
   // Implementation planning
@@ -447,7 +447,7 @@ export interface ImprovementBacklogItem {
 
   // Tracking
   tracking: {
-    status:|'backlog|planned|in_progress|completed|deferred|cancelled';
+    status:|'backlog|planned|in_progress|completed|deferred|cancelled;
     progressUpdates: Array<{
       date: Date;
       update: string;
@@ -469,7 +469,7 @@ export interface InspectAdaptOutcomes {
     completed: boolean;
     actualDuration: number; // hours
     participantCount: number;
-    partsCompleted: ('pi_demo|measurement_review|problem_solving')[];
+    partsCompleted: ('pi_demo|measurement_review|problem_solving')[];'
   };
 
   // Problems addressed
@@ -535,7 +535,7 @@ export interface QualityMetrics {
 
   technicalDebt: {
     technicalDebtItems: number;
-    technicalDebtTrend: 'improving|stable|degrading';
+    technicalDebtTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
     refactoringEffort: number; // story points
   };
 }
@@ -574,7 +574,7 @@ export interface TeamQualityMetrics {
  * improvement backlog management, and integration with TaskMaster approval workflows.
  */
 export class InspectAdaptCoordination {
-  private readonly logger = getLogger('InspectAdaptCoordination');
+  private readonly logger = getLogger('InspectAdaptCoordination');'
 
   // Core services
   private approvalGateManager: ApprovalGateManager;
@@ -605,11 +605,11 @@ export class InspectAdaptCoordination {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing Inspect & Adapt Coordination...');
+      this.logger.info('Initializing Inspect & Adapt Coordination...');'
 
       // Initialize infrastructure
       const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');
+      this.database = dbSystem.createProvider('sql');'
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -628,7 +628,7 @@ export class InspectAdaptCoordination {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('Inspect & Adapt Coordination initialized successfully');
+      this.logger.info('Inspect & Adapt Coordination initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Inspect & Adapt Coordination',
@@ -651,9 +651,9 @@ export class InspectAdaptCoordination {
     coordinationTraceabilityId: string;
   }> {
     const workshopId = config.id;
-    const coordinationTraceabilityId = `inspect-adapt-${workshopId}-${Date.now()}`;
+    const coordinationTraceabilityId = `inspect-adapt-${workshopId}-${Date.now()}`;`
 
-    this.logger.info('Scheduling Inspect & Adapt Workshop', {
+    this.logger.info('Scheduling Inspect & Adapt Workshop', {'
       workshopId,
       artName: config.artName,
       piNumber: config.piNumber,
@@ -710,10 +710,10 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);
+      throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
-    this.logger.info('Executing PI System Demo Review', {
+    this.logger.info('Executing PI System Demo Review', {'
       workshopId,
       piNumber: config.piNumber,
       demoCompleted: demoResults.completed,
@@ -765,10 +765,10 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);
+      throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
-    this.logger.info('Executing Measurement Review', {
+    this.logger.info('Executing Measurement Review', {'
       workshopId,
       piNumber: config.piNumber,
     });
@@ -837,10 +837,10 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);
+      throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
-    this.logger.info('Executing Problem-Solving Workshop', {
+    this.logger.info('Executing Problem-Solving Workshop', {'
       workshopId,
       maxProblems: config.structure.problemSolvingWorkshop.maxProblemsToAddress,
       additionalProblems: additionalProblems.length,
@@ -930,10 +930,10 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);
+      throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
-    this.logger.info('Completing Inspect & Adapt Workshop', {
+    this.logger.info('Completing Inspect & Adapt Workshop', {'
       workshopId,
       actualDuration: executionSummary.actualDuration,
       overallSatisfaction: executionSummary.overallSatisfaction,
@@ -983,7 +983,7 @@ export class InspectAdaptCoordination {
    */
   async getInspectAdaptStatus(workshopId: string): Promise<{
     workshopStatus: {
-      phase:|'preparation|pi_demo|measurement_review|problem_solving|completed';
+      phase:|'preparation|pi_demo|measurement_review|problem_solving|completed;
       progress: number; // percentage
       currentActivity: string;
       nextSteps: string[];
@@ -1009,7 +1009,7 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);
+      throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
     // Load current workshop status
@@ -1051,87 +1051,87 @@ export class InspectAdaptCoordination {
     // Create tables for I&A coordination
     await this.database.schema.createTableIfNotExists('ia_workshops',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('workshop_id').notNullable().unique();
-        table.string('art_name').notNullable();
-        table.integer('pi_number').notNullable();
-        table.timestamp('workshop_date').notNullable();
-        table.json('config').notNullable();
-        table.json('outcomes').nullable();
-        table.string('status').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.timestamp('completed_at').nullable();
-        table.index(['art_name', 'pi_number']);
+        table.uuid('id').primary();'
+        table.string('workshop_id').notNullable().unique();'
+        table.string('art_name').notNullable();'
+        table.integer('pi_number').notNullable();'
+        table.timestamp('workshop_date').notNullable();'
+        table.json('config').notNullable();'
+        table.json('outcomes').nullable();'
+        table.string('status').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.timestamp('completed_at').nullable();'
+        table.index(['art_name', 'pi_number']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'ia_system_problems',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('problem_id').notNullable().unique();
-        table.string('workshop_id').notNullable();
-        table.string('category').notNullable();
-        table.string('scope').notNullable();
-        table.string('severity').notNullable();
-        table.json('impact').notNullable();
-        table.json('context').notNullable();
-        table.json('workshop_processing').notNullable();
-        table.boolean('requires_approval').notNullable();
-        table.string('approval_gate_id').nullable();
-        table.timestamp('created_at').notNullable();
-        table.index(['workshop_id', 'severity', 'scope']);
+        table.uuid('id').primary();'
+        table.string('problem_id').notNullable().unique();'
+        table.string('workshop_id').notNullable();'
+        table.string('category').notNullable();'
+        table.string('scope').notNullable();'
+        table.string('severity').notNullable();'
+        table.json('impact').notNullable();'
+        table.json('context').notNullable();'
+        table.json('workshop_processing').notNullable();'
+        table.boolean('requires_approval').notNullable();'
+        table.string('approval_gate_id').nullable();'
+        table.timestamp('created_at').notNullable();'
+        table.index(['workshop_id', 'severity', 'scope']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'ia_root_cause_analyses',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('problem_id').notNullable();
-        table.string('workshop_id').notNullable();
-        table.string('technique').notNullable();
-        table.json('process_data').notNullable();
-        table.json('analysis_results').notNullable();
-        table.json('root_causes').notNullable();
-        table.json('validation').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.index(['workshop_id', 'problem_id']);
+        table.uuid('id').primary();'
+        table.string('problem_id').notNullable();'
+        table.string('workshop_id').notNullable();'
+        table.string('technique').notNullable();'
+        table.json('process_data').notNullable();'
+        table.json('analysis_results').notNullable();'
+        table.json('root_causes').notNullable();'
+        table.json('validation').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.index(['workshop_id', 'problem_id']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'ia_improvement_backlog',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('item_id').notNullable().unique();
-        table.string('workshop_id').notNullable();
-        table.string('problem_id').notNullable();
-        table.string('solution_id').notNullable();
-        table.json('source_info').notNullable();
-        table.json('details').notNullable();
-        table.json('planning').notNullable();
-        table.json('approval').notNullable();
-        table.json('tracking').notNullable();
-        table.string('status').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.timestamp('completed_at').nullable();
-        table.index(['workshop_id', 'status', 'planning']);
+        table.uuid('id').primary();'
+        table.string('item_id').notNullable().unique();'
+        table.string('workshop_id').notNullable();'
+        table.string('problem_id').notNullable();'
+        table.string('solution_id').notNullable();'
+        table.json('source_info').notNullable();'
+        table.json('details').notNullable();'
+        table.json('planning').notNullable();'
+        table.json('approval').notNullable();'
+        table.json('tracking').notNullable();'
+        table.string('status').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.timestamp('completed_at').nullable();'
+        table.index(['workshop_id', 'status', 'planning']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'ia_traceability',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('workshop_id').notNullable();
-        table.string('activity_type').notNullable();
-        table.json('activity_data').notNullable();
-        table.json('participant_engagement').notNullable();
-        table.json('outcomes').notNullable();
-        table.json('learning_data').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.index(['workshop_id', 'activity_type']);
+        table.uuid('id').primary();'
+        table.string('workshop_id').notNullable();'
+        table.string('activity_type').notNullable();'
+        table.json('activity_data').notNullable();'
+        table.json('participant_engagement').notNullable();'
+        table.json('outcomes').notNullable();'
+        table.json('learning_data').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.index(['workshop_id', 'activity_type']);'
       }
     );
   }
@@ -1220,12 +1220,12 @@ export class InspectAdaptCoordination {
     config: InspectAdaptConfig,
     traceabilityId: string
   ): Promise<ApprovalGateId> {
-    const gateId = `ia-readiness-${config.id}` as ApprovalGateId;
+    const gateId = `ia-readiness-${config.id}` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `I&A Workshop Readiness - PI ${config.piNumber}`,
-      description: `Approve readiness for Inspect & Adapt workshop for ${config.artName}`,
+      name: `I&A Workshop Readiness - PI ${config.piNumber}`,`
+      description: `Approve readiness for Inspect & Adapt workshop for ${config.artName}`,`
       requiredApprovers: [
         config.facilitators.rte,
         ...config.participants.businessOwners.slice(0, 2),
@@ -1255,12 +1255,12 @@ export class InspectAdaptCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `ia-workshop-${config.id}` as TaskId
+      `ia-workshop-${config.id}` as TaskId`
     );
 
     if (!result.success) {
       throw new Error(
-        `Failed to create workshop readiness gate: ${result.error?.message}`
+        `Failed to create workshop readiness gate: ${result.error?.message}``
       );
     }
 
@@ -1271,16 +1271,16 @@ export class InspectAdaptCoordination {
     config: InspectAdaptConfig,
     traceabilityId: string
   ): Promise<ApprovalGateId> {
-    const gateId = `ia-data-prep-${config.id}` as ApprovalGateId;
+    const gateId = `ia-data-prep-${config.id}` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `I&A Data Preparation Approval`,
-      description: `Approve data preparation and metrics collection for I&A workshop`,
+      name: `I&A Data Preparation Approval`,`
+      description: `Approve data preparation and metrics collection for I&A workshop`,`
       requiredApprovers: [
         config.facilitators.rte,
-        'metrics-lead', // Would be resolved from ART structure
-        'data-analyst', // Would be resolved from ART structure
+        'metrics-lead', // Would be resolved from ART structure'
+        'data-analyst', // Would be resolved from ART structure'
       ],
       minimumApprovals: 2,
       isRequired: true,
@@ -1301,12 +1301,12 @@ export class InspectAdaptCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `ia-data-${config.id}` as TaskId
+      `ia-data-${config.id}` as TaskId`
     );
 
     if (!result.success) {
       throw new Error(
-        `Failed to create data preparation gate: ${result.error?.message}`
+        `Failed to create data preparation gate: ${result.error?.message}``
       );
     }
 
@@ -1317,12 +1317,12 @@ export class InspectAdaptCoordination {
     config: InspectAdaptConfig,
     traceabilityId: string
   ): Promise<ApprovalGateId> {
-    const gateId = `ia-facilitation-${config.id}` as ApprovalGateId;
+    const gateId = `ia-facilitation-${config.id}` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `I&A Facilitation Readiness Approval`,
-      description: `Approve facilitation preparation and workshop structure`,
+      name: `I&A Facilitation Readiness Approval`,`
+      description: `Approve facilitation preparation and workshop structure`,`
       requiredApprovers: [
         config.facilitators.rte,
         ...(config.facilitators.externalFacilitator
@@ -1351,12 +1351,12 @@ export class InspectAdaptCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `ia-facilitation-${config.id}` as TaskId
+      `ia-facilitation-${config.id}` as TaskId`
     );
 
     if (!result.success) {
       throw new Error(
-        `Failed to create facilitation readiness gate: ${result.error?.message}`
+        `Failed to create facilitation readiness gate: ${result.error?.message}``
       );
     }
 
@@ -1452,18 +1452,18 @@ export class InspectAdaptCoordination {
   private selectRootCauseTechnique(
     problem: IASystemProblem,
     config: InspectAdaptConfig
-  ):'fishbone|5_whys|root_cause_analysis' {
+  ):'fishbone|5_whys|root_cause_analysis' {'
     // Choose technique based on problem characteristics
     if (
-      problem.category === 'process'||problem.category ==='organizational'
+      problem.category === 'process'||problem.category ==='organizational''
     ) {
-      return 'fishbone'; // Good for complex multi-factor problems
+      return 'fishbone'; // Good for complex multi-factor problems'
     } else if (
-      problem.severity === 'critical'||problem.scope ==='enterprise'
+      problem.severity === 'critical'||problem.scope ==='enterprise''
     ) {
-      return 'root_cause_analysis'; // Comprehensive for critical issues
+      return 'root_cause_analysis'; // Comprehensive for critical issues'
     } else {
-      return '5_whys'; // Simple and effective for most issues
+      return '5_whys'; // Simple and effective for most issues'
     }
   }
 
@@ -1495,12 +1495,12 @@ export class InspectAdaptCoordination {
     };
 
     // Execute specific technique
-    if (technique === 'fishbone') {
+    if (technique === 'fishbone') {'
       analysis.fishboneCategories = await this.executeFishboneAnalysis(problem);
       analysis.rootCauses = this.extractRootCausesFromFishbone(
         analysis.fishboneCategories
       );
-    } else if (technique === '5_whys') {
+    } else if (technique === '5_whys') {'
       analysis.fiveWhysChain = await this.executeFiveWhysAnalysis(problem);
       analysis.rootCauses = this.extractRootCausesFromFiveWhys(
         analysis.fiveWhysChain
@@ -1530,9 +1530,9 @@ export class InspectAdaptCoordination {
     });
 
     // Add domain experts based on problem category
-    if (problem.category === 'technical') {
+    if (problem.category === 'technical') {'
       participants.push(...config.participants.systemArchitects);
-    } else if (problem.category === 'process') {
+    } else if (problem.category === 'process') {'
       participants.push(...config.facilitators.coaches);
     }
 
@@ -1543,7 +1543,7 @@ export class InspectAdaptCoordination {
   private async handleProblemIdentified(
     problem: IASystemProblem
   ): Promise<void> {
-    this.logger.info('Problem identified for I&A', {
+    this.logger.info('Problem identified for I&A', {'
       problemId: problem.id,
       severity: problem.severity,
       scope: problem.scope,
@@ -1553,7 +1553,7 @@ export class InspectAdaptCoordination {
   private async handleRootCauseFound(
     analysis: RootCauseAnalysis
   ): Promise<void> {
-    this.logger.info('Root cause analysis completed', {
+    this.logger.info('Root cause analysis completed', {'
       problemId: analysis.problemId,
       technique: analysis.technique,
       confidenceLevel: analysis.validation.confidenceLevel,
@@ -1563,7 +1563,7 @@ export class InspectAdaptCoordination {
   private async handleSolutionSelected(
     solution: ProposedSolution
   ): Promise<void> {
-    this.logger.info('Solution selected for implementation', {
+    this.logger.info('Solution selected for implementation', {'
       solutionId: solution.id,
       problemId: solution.problemId,
       votes: solution.evaluation.votes,
@@ -1573,7 +1573,7 @@ export class InspectAdaptCoordination {
   private async handleImprovementCreated(
     item: ImprovementBacklogItem
   ): Promise<void> {
-    this.logger.info('Improvement backlog item created', {
+    this.logger.info('Improvement backlog item created', {'
       itemId: item.id,
       priority: item.details.priority,
       targetPI: item.planning.targetPI,
@@ -1592,7 +1592,7 @@ export class InspectAdaptCoordination {
     config: InspectAdaptConfig,
     traceabilityId: string
   ): Promise<void> {
-    await this.database('ia_traceability').insert({
+    await this.database('ia_traceability').insert({'
       id: traceabilityId,
       workshop_id: config.id,
       activity_type: 'workshop_preparation',
@@ -1636,17 +1636,17 @@ export class InspectAdaptCoordination {
     };
   }
 
-  private async analyzeFlowMetrics(flow: PIMetrics['flow']): Promise<any> {
+  private async analyzeFlowMetrics(flow: PIMetrics['flow']): Promise<any> {'
     return {
       efficiency: 75, // percentage
     };
   }
 
   private async analyzeQualityTrends(
-    quality: PIMetrics['quality']
+    quality: PIMetrics['quality']'
   ): Promise<any> {
     return {
-      trend: 'improving',
+      trend: 'improving' | 'stable' | 'declining'',
     };
   }
 
@@ -1815,7 +1815,7 @@ export class InspectAdaptCoordination {
     return {
       itemsCreated: items.length,
       itemsAwaitingApproval: items.filter(
-        (i) => i.approval.requiresApproval && i.tracking.status === 'backlog'
+        (i) => i.approval.requiresApproval && i.tracking.status === 'backlog''
       ).length,
       itemsReadyForNextPI: items.filter(
         (i) => i.planning.targetPI === i.source.piNumber + 1
@@ -1833,7 +1833,7 @@ export class InspectAdaptCoordination {
 
   private async executeFishboneAnalysis(
     problem: IASystemProblem
-  ): Promise<RootCauseAnalysis['fishboneCategories']> {
+  ): Promise<RootCauseAnalysis['fishboneCategories']> {'
     return {
       people: ['Team coordination issues', 'Skill gaps'],
       process: ['Workflow bottlenecks', 'Communication gaps'],
@@ -1845,8 +1845,8 @@ export class InspectAdaptCoordination {
   }
 
   private extractRootCausesFromFishbone(
-    categories: NonNullable<RootCauseAnalysis['fishboneCategories']>
-  ): RootCauseAnalysis['rootCauses'] {
+    categories: NonNullable<RootCauseAnalysis['fishboneCategories']>'
+  ): RootCauseAnalysis['rootCauses'] {'
     return {
       primary: 'Process workflow bottlenecks',
       secondary: ['Team coordination issues', 'Tool limitations'],
@@ -1856,7 +1856,7 @@ export class InspectAdaptCoordination {
 
   private async executeFiveWhysAnalysis(
     problem: IASystemProblem
-  ): Promise<RootCauseAnalysis['fiveWhysChain']> {
+  ): Promise<RootCauseAnalysis['fiveWhysChain']> {'
     return {
       why1: {
         question: 'Why did this problem occur?',
@@ -1882,8 +1882,8 @@ export class InspectAdaptCoordination {
   }
 
   private extractRootCausesFromFiveWhys(
-    chain: NonNullable<RootCauseAnalysis['fiveWhysChain']>
-  ): RootCauseAnalysis['rootCauses'] {
+    chain: NonNullable<RootCauseAnalysis['fiveWhysChain']>'
+  ): RootCauseAnalysis['rootCauses'] {'
     return {
       primary: 'Focus on feature delivery over process improvement',
       secondary: ['Lack of process improvement prioritization'],
@@ -1896,7 +1896,7 @@ export class InspectAdaptCoordination {
 
   private async executeComprehensiveRootCauseAnalysis(
     problem: IASystemProblem
-  ): Promise<RootCauseAnalysis['rootCauses']> {
+  ): Promise<RootCauseAnalysis['rootCauses']> {'
     return {
       primary: 'Comprehensive analysis pending',
       secondary: [],

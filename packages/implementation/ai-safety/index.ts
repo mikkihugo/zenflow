@@ -27,7 +27,7 @@
  * - Graceful degradation during safety incidents
  *
  * @example Basic Safety Guard Setup
- * ```typescript
+ * ```typescript`
  * import { SafetyGuard } from '@claude-zen/ai-safety';
  *
  * const safety = new SafetyGuard({
@@ -37,7 +37,7 @@
  *   alerting: {
  *     webhook: 'https://alerts.company.com/ai-safety',
  *     email: ['security@company.com'],
- *     slack: '#ai-safety-alerts'
+ *     slack: '#ai-safety-alerts''
  *   }
  * });
  *
@@ -49,17 +49,17 @@
  *   prompt: 'Design a secure authentication system',
  *   response: 'Here is a secure authentication approach...',
  *   timestamp: new Date(),
- *   metadata: { task: 'security-design', criticality: 'high' }
+ *   metadata: { task: 'security-design', criticality: 'high' }'
  * });
  *
  * if (result.alert) {
- *   console.log('Safety alert detected:', result.alert);
+ *   console.log('Safety alert detected:', result.alert);'
  *   // Automatic intervention already triggered
  * }
- * ```
+ * ````
  *
  * @example Advanced Multi-Agent Safety Coordination
- * ```typescript
+ * ```typescript`
  * import {
  *   SafetyGuard,
  *   NeuralDeceptionDetector,
@@ -71,7 +71,7 @@
  * const safetySystem = await initializeAISafetySystem({
  *   detectors: [
  *     new NeuralDeceptionDetector({ model: 'advanced', threshold: 0.8 }),
- *     new LogBasedDeceptionDetector({ patterns: 'enterprise' })
+ *     new LogBasedDeceptionDetector({ patterns: 'enterprise' })'
  *   ],
  *   intervention: {
  *     autoTerminate: true,
@@ -86,19 +86,19 @@
  * });
  *
  * // Monitor multiple agents simultaneously
- * const agents = ['researcher', 'coder', 'analyst', 'reviewer'];
+ * const agents = ['researcher', 'coder', 'analyst', 'reviewer'];'
  *
  * for (const agentId of agents) {
  *   await safetySystem.registerAgent(agentId, {
  *     riskProfile: 'standard',
  *     allowedOperations: ['read', 'analyze', 'generate'],
- *     restrictedDomains: ['financial', 'medical', 'legal']
+ *     restrictedDomains: ['financial', 'medical', 'legal']'
  *   });
  * }
  *
  * // Real-time safety monitoring with automatic coordination
- * safetySystem.on('deceptionDetected', async (event) => {
- *   console.log(`Deception detected in agent ${event.agentId}`);
+ * safetySystem.on('deceptionDetected', async (event) => {'
+ *   console.log(`Deception detected in agent ${event.agentId}`);`
  *
  *   // Automatic cross-agent coordination
  *   await safetySystem.coordinateResponse({
@@ -108,10 +108,10 @@
  *     preserveContext: true
  *   });
  * });
- * ```
+ * ````
  *
  * @example Emergency Safety Protocols
- * ```typescript
+ * ```typescript`
  * import {
  *   emergencySafetyShutdown,
  *   runSafetyMode,
@@ -121,15 +121,15 @@
  * // Emergency shutdown with graceful degradation
  * const emergencyResult = await emergencySafetyShutdown({
  *   reason: 'Critical deception pattern detected',
- *   scope: 'all-agents', // or specific agent IDs
+ *   scope: 'all-agents', // or specific agent IDs'
  *   preserveWork: true,
  *   notifyStakeholders: true,
  *   generateReport: true
  * });
  *
- * console.log(`Emergency shutdown completed in ${emergencyResult.duration}ms`);
- * console.log(`Preserved work: ${emergencyResult.workPreserved}`);
- * console.log(`Report saved: ${emergencyResult.reportPath}`);
+ * console.log(`Emergency shutdown completed in ${emergencyResult.duration}ms`);`
+ * console.log(`Preserved work: ${emergencyResult.workPreserved}`);`
+ * console.log(`Report saved: ${emergencyResult.reportPath}`);`
  *
  * // Run in safety mode with restricted capabilities
  * const safetyMode = await runSafetyMode({
@@ -145,10 +145,10 @@
  *     behavioralAnalysis: true
  *   }
  * });
- * ```
+ * ````
  *
  * @example Custom Detection & Intervention Policies
- * ```typescript
+ * ```typescript`
  * import { SafetyGuard, AIDeceptionDetector } from '@claude-zen/ai-safety';
  *
  * // Create custom detector with domain-specific rules
@@ -158,13 +158,13 @@
  *       name: 'financial-fraud-detection',
  *       pattern: /(?:transfer''||'send'||'payment).*(?:bitcoin'||'crypto'||''wire)/i,
  *       severity:'critical',
- *       action: 'immediate-termination'
+ *       action: 'immediate-termination''
  *     },
  *     {
  *       name: 'data-exfiltration-attempt',
  *       pattern: /(?:download''||'export'||'backup).*(?:database'||'credentials'||''secrets)/i,
  *       severity:'high',
- *       action: 'pause-and-review'
+ *       action: 'pause-and-review''
  *     }
  *   ],
  *   behavioral: {
@@ -177,13 +177,13 @@
  * const safety = new SafetyGuard({
  *   customDetectors: [customDetector],
  *   policies: {
- *     'critical': {
+ *     'critical': {'
  *       immediate: true,
  *       terminate: true,
  *       alert: ['security-team', 'management'],
  *       audit: true
  *     },
- *     'high': {
+ *     'high': {'
  *       pause: true,
  *       requireApproval: true,
  *       alert: ['security-team'],
@@ -191,10 +191,10 @@
  *     }
  *   }
  * });
- * ```
+ * ````
  *
  * @example Integration with Monitoring & Alerting
- * ```typescript
+ * ```typescript`
  * import { SafetyGuard, getSafetyMetrics } from '@claude-zen/ai-safety';
  *
  * const safety = new SafetyGuard({
@@ -211,10 +211,10 @@
  *     prometheus: {
  *       enabled: true,
  *       port: 9090,
- *       metrics: ['detection_rate', 'intervention_count', 'system_health']
+ *       metrics: ['detection_rate', 'intervention_count', 'system_health']'
  *     },
  *     grafana: {
- *       dashboards: ['safety-overview', 'agent-behavior', 'threat-analysis']
+ *       dashboards: ['safety-overview', 'agent-behavior', 'threat-analysis']'
  *     },
  *     siem: {
  *       endpoint: 'https://siem.company.com/ai-safety',
@@ -231,7 +231,7 @@
  *   includeBreakdown: true
  * });
  *
- * console.log('Safety Metrics:', {
+ * console.log('Safety Metrics:', {'
  *   totalInteractions: metrics.totalInteractions,
  *   deceptionDetected: metrics.deceptionDetected,
  *   interventionsTriggered: metrics.interventionsTriggered,
@@ -239,7 +239,7 @@
  *   averageResponseTime: metrics.averageResponseTime,
  *   systemHealth: metrics.systemHealth
  * });
- * ```
+ * ````
  *
  * **Performance Characteristics:**
  * - **Detection Latency**: <100ms for heuristic detection, <500ms for neural detection
@@ -265,8 +265,8 @@
 // ✅ MAIN ENTRY POINT - Use this for everything!
 export { AISafetyOrchestrator as SafetyGuard } from './src/safety-orchestrator';
 export { AISafetyOrchestrator as default } from './src/safety-orchestrator';
-export { AISafetyOrchestrator } from './src/safety-orchestrator'; // Direct export for existing imports
-export { AIDeceptionDetector } from './src/ai-deception-detector'; // Direct export for existing imports
+export { AISafetyOrchestrator } from './src/safety-orchestrator'; // Direct export for existing imports'
+export { AIDeceptionDetector } from './src/ai-deception-detector'; // Direct export for existing imports'
 
 // Core detection types
 export type {
@@ -308,7 +308,7 @@ export {
  * Professional AI Safety System Access - Matches storage/telemetry patterns
  *
  * These functions provide professional enterprise naming patterns for AI safety system access
- * so strategic facades don't need to translate function names.
+ * so strategic facades don't need to translate function names.'
  */
 
 // Core safety system access with lazy loading
@@ -316,7 +316,7 @@ let safetySystemInstance: any = null;
 
 export async function getSafetySystemAccess(): Promise<any> {
   if (!safetySystemInstance) {
-    const { AISafetyOrchestrator } = await import('./src/safety-orchestrator');
+    const { AISafetyOrchestrator } = await import('./src/safety-orchestrator');'
     safetySystemInstance = new AISafetyOrchestrator({
       riskThreshold: 0.7,
       enableNeuralDetection: true,
@@ -333,20 +333,20 @@ export async function getSafetyOrchestrator(config?: any): Promise<any> {
 }
 
 export async function getDeceptionDetector(config?: any): Promise<any> {
-  const { AIDeceptionDetector } = await import('./src/ai-deception-detector');
+  const { AIDeceptionDetector } = await import('./src/ai-deception-detector');'
   return new AIDeceptionDetector(config);
 }
 
 export async function getNeuralDeceptionDetector(config?: any): Promise<any> {
   const { NeuralDeceptionDetector } = await import(
-    './src/neural-deception-detector'
+    './src/neural-deception-detector''
   );
   return new NeuralDeceptionDetector(config);
 }
 
 export async function getLogBasedDetector(config?: any): Promise<any> {
   const { LogBasedDeceptionDetector } = await import(
-    './src/log-based-deception-detector'
+    './src/log-based-deception-detector''
   );
   return new LogBasedDeceptionDetector(config);
 }
@@ -370,7 +370,7 @@ export const aiSafetySystem = {
 export interface AISafetySystemConfig {
   riskThreshold?: number;
   enableNeuralDetection?: boolean;
-  interventionMode?: 'manual'''||''automatic''||'''advisory';
+  interventionMode?: 'manual' | 'automatic' | 'advisory';
   monitoring?: {
     realTimeMetrics?: boolean;
     healthChecks?: boolean;

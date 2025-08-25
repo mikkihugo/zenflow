@@ -20,22 +20,22 @@ export type { SystemLifecycleEvent } from '../types';
 /**
  * Event processing strategies.
  */
-export type EventProcessingStrategy =|'immediate|queued|batched|throttled';
+export type EventProcessingStrategy =|'immediate|queued|batched|throttled;
 
 /**
  * Event filtering criteria for selective event processing.
  *
  * @interface EventFilter
  * @example
- * ```typescript
+ * ```typescript`
  * const filter: EventFilter = {
  *   types: ['system:lifecycle', 'coordination:swarm'],
  *   sources: ['agent-manager', 'swarm-coordinator'],
  *   priorities: ['critical', 'high'],
  *   metadata: { component: 'core' },
- *   customFilter: (event) => event.timestamp > new Date('2024-01-01')
+ *   customFilter: (event) => event.timestamp > new Date('2024-01-01')'
  * };
- * ```
+ * ````
  */
 export interface EventFilter {
   /** Array of event types to include in filtering */
@@ -55,16 +55,16 @@ export interface EventFilter {
  *
  * @interface EventTransform
  * @example
- * ```typescript
+ * ```typescript`
  * const transform: EventTransform = {
  *   mapper: (event) => ({ ...event, processedAt: new Date() }),
  *   enricher: async (event) => ({
  *     ...event,
  *     metadata: { ...event.metadata, enriched: true }
  *   }),
- *   validator: (event) => event.type.startsWith('system:')
+ *   validator: (event) => event.type.startsWith('system:')'
  * };
- * ```
+ * ````
  */
 export interface EventTransform {
   /** Synchronous event transformation function */
@@ -80,7 +80,7 @@ export interface EventTransform {
  *
  * @interface EventRetryConfig
  * @example
- * ```typescript
+ * ```typescript`
  * const retryConfig: EventRetryConfig = {
  *   attempts: 3,
  *   delay: 1000,
@@ -90,7 +90,7 @@ export interface EventTransform {
  *     return error.code !== 'VALIDATION_ERROR' && event.priority !== 'low';
  *   }
  * };
- * ```
+ * ````
  */
 export interface EventRetryConfig {
   /** Maximum number of retry attempts */
@@ -98,7 +98,7 @@ export interface EventRetryConfig {
   /** Initial delay between retries in milliseconds */
   delay: number;
   /** Backoff strategy for increasing delay between retries */
-  backoff: 'linear|exponential|fixed';
+  backoff: 'linear' | 'exponential' | 'fixed';
   /** Maximum delay between retries in milliseconds */
   maxDelay?: number;
   /** Function to determine if an error/event combination should be retried */
@@ -160,7 +160,7 @@ export interface EventManagerConfig {
  *
  * @interface SystemEvent
  * @example
- * ```typescript
+ * ```typescript`
  * const systemEvent: SystemEvent = {
  *   id: 'evt_12345',
  *   timestamp: new Date(),
@@ -172,7 +172,7 @@ export interface EventManagerConfig {
  *   parentEventId: 'evt_11111',
  *   sequence: 1
  * };
- * ```
+ * ````
  */
 export interface SystemEvent {
   /** Unique identifier for the event */
@@ -204,18 +204,18 @@ export interface SystemEvent {
  * @param event - The event to handle.
  * @returns Void or Promise<void> for async handlers.
  * @example
- * ```typescript
+ * ```typescript`
  * // Synchronous listener
  * const syncListener: EventListener = (event) => {
- *   console.log('Received event:', event.type);
+ *   console.log('Received event:', event.type);'
  * };
  *
  * // Asynchronous listener
  * const asyncListener: EventListener = async (event) => {
  *   await processEvent(event);
- *   console.log('Processed event:', event.id);
+ *   console.log('Processed event:', event.id);'
  * };
- * ```
+ * ````
  */
 export type EventListener<T extends SystemEvent = SystemEvent> = (
   event: T
@@ -227,7 +227,7 @@ export type EventListener<T extends SystemEvent = SystemEvent> = (
  * @template T - Event type extending SystemEvent.
  * @interface EventSubscription
  * @example
- * ```typescript
+ * ```typescript`
  * const subscription: EventSubscription = {
  *   id:'sub_12345',
  *   eventTypes: ['system:lifecycle', 'coordination:swarm'],
@@ -237,9 +237,9 @@ export type EventListener<T extends SystemEvent = SystemEvent> = (
  *   priority: 'high',
  *   created: new Date(),
  *   active: true,
- *   metadata: { component: 'event-processor' }
+ *   metadata: { component: 'event-processor' }'
  * };
- * ```
+ * ````
  */
 export interface EventSubscription<T extends SystemEvent = SystemEvent> {
   /** Unique identifier for the subscription */
@@ -270,7 +270,7 @@ export interface EventSubscription<T extends SystemEvent = SystemEvent> {
 export interface EventManagerStatus {
   name: string;
   type: EventManagerType;
-  status: 'healthy|degraded|unhealthy|stopped';
+  status: 'healthy|degraded|unhealthy|stopped;
   lastCheck: Date;
   subscriptions: number;
   queueSize: number;
@@ -336,8 +336,8 @@ export interface EventQueryOptions {
   filter?: EventFilter;
   limit?: number;
   offset?: number;
-  sortBy?: 'timestamp|priority|type|source';
-  sortOrder?: 'asc|desc'';
+  sortBy?: 'timestamp|priority|type|source;
+  sortOrder?: 'asc|desc';
   includeMetadata?: boolean;
 }
 
@@ -346,7 +346,7 @@ export interface EventQueryOptions {
  *
  * @interface EventManager
  * @example
- * ```typescript
+ * ```typescript`
  * class MyEventManager implements EventManager {
  *   async start(): Promise<void> {
  *     // Initialize event processing
@@ -361,10 +361,10 @@ export interface EventQueryOptions {
  *     listener: EventListener<T>
  *   ): string {
  *     // Register event listener and return subscription ID
- *     return 'sub_12345';
+ *     return 'sub_12345;
  *   }
  * }
- * ```
+ * ````
  */
 export interface EventManager {
   // Configuration
@@ -602,7 +602,7 @@ export interface EventManager {
  * @template TConfig - Configuration type extending EventManagerConfig.
  * @interface EventManagerFactory
  * @example
- * ```typescript
+ * ```typescript`
  * class SystemEventManagerFactory implements EventManagerFactory {
  *   async create(config: EventManagerConfig): Promise<EventManager> {
  *     return new SystemEventManager(config);
@@ -612,7 +612,7 @@ export interface EventManager {
  *     return Promise.all(configs.map(config => this.create(config)));
  *   }
  * }
- * ```
+ * ````
  */
 export interface EventManagerFactory<
   TConfig extends EventManagerConfig = EventManagerConfig,
@@ -731,7 +731,7 @@ export interface EventManagerFactory<
  *
  * @interface EventManagerRegistry
  * @example
- * ```typescript
+ * ```typescript`
  * // Register factories for different event manager types
  * registry.registerFactory(EventManagerTypes.SYSTEM, systemFactory);
  * registry.registerFactory(EventManagerTypes.COORDINATION, coordFactory);
@@ -741,11 +741,11 @@ export interface EventManagerFactory<
  *   id:'global-shutdown',
  *   timestamp: new Date(),
  *   source: 'system',
- *   type: 'system:shutdown'* });
+ *   type: 'system:shutdown'* });'
  *
  * // Get metrics across all managers
  * const metrics = await registry.getGlobalMetrics();
- * ```
+ * ````
  */
 export interface EventManagerRegistry {
   // Factory registration
@@ -859,7 +859,7 @@ export interface EventManagerRegistry {
 /**
  * Event manager types for different categories.
  */
-export type EventManagerType =|'system'// Core system lifecycle events|'coordination'// Swarm coordination and agent management|'communication'// WebSocket, MCP, protocol communication|'monitoring'// Metrics, health checks, performance|'interface'// CLI, web, terminal interface events|'neural'// Neural network and AI operations|'database'// Database operations and queries|'memory'// Memory operations and caching|'workflow'// Workflow execution and orchestration|'custom'; // Custom event types
+export type EventManagerType =|'system'// Core system lifecycle events|'coordination'// Swarm coordination and agent management|'communication'// WebSocket, MCP, protocol communication|'monitoring'// Metrics, health checks, performance|'interface'// CLI, web, terminal interface events|'neural'// Neural network and AI operations|'database'// Database operations and queries|'memory'// Memory operations and caching|'workflow'// Workflow execution and orchestration|'custom'; // Custom event types'
 
 /**
  * Event manager type mappings for convenience.
@@ -883,7 +883,7 @@ export const EventManagerTypes = {
  * @class EventError
  * @augments Error
  * @example
- * ```typescript
+ * ```typescript`
  * throw new EventError(
  *   'Failed to process event',
  *   'PROCESSING_ERROR',
@@ -891,7 +891,7 @@ export const EventManagerTypes = {
  *   'evt_12345',
  *   originalError
  * );
- * ```
+ * ````
  */
 export class EventError extends Error {
   /**
@@ -921,9 +921,9 @@ export class EventError extends Error {
  * @class EventSubscriptionError
  * @augments EventError
  * @example
- * ```typescript
- * throw new EventSubscriptionError('system-manager', 'sub_12345', originalError);
- * ```
+ * ```typescript`
+ * throw new EventSubscriptionError('system-manager', 'sub_12345', originalError);'
+ * ````
  */
 export class EventSubscriptionError extends EventError {
   /**
@@ -935,7 +935,7 @@ export class EventSubscriptionError extends EventError {
    */
   constructor(manager: string, subscriptionId: string, cause?: Error) {
     super(
-      `Event subscription failed for manager: ${manager}`,
+      `Event subscription failed for manager: ${manager}`,`
       'SUBSCRIPTION_ERROR',
       manager,
       subscriptionId,
@@ -948,7 +948,7 @@ export class EventSubscriptionError extends EventError {
 export class EventEmissionError extends EventError {
   constructor(manager: string, eventId: string, cause?: Error) {
     super(
-      `Event emission failed for manager: ${manager}`,
+      `Event emission failed for manager: ${manager}`,`
       'EMISSION_ERROR',
       manager,
       eventId,
@@ -961,7 +961,7 @@ export class EventEmissionError extends EventError {
 export class EventFilterError extends EventError {
   constructor(manager: string, filterId: string, cause?: Error) {
     super(
-      `Event filter error for manager: ${manager}`,
+      `Event filter error for manager: ${manager}`,`
       'FILTER_ERROR',
       manager,
       filterId,
@@ -979,7 +979,7 @@ export class EventTimeoutError extends EventError {
     cause?: Error
   ) {
     super(
-      `Event timeout (${timeout}ms) for manager: ${manager}`,
+      `Event timeout (${timeout}ms) for manager: ${manager}`,`
       'TIMEOUT_ERROR',
       manager,
       eventId,
@@ -997,7 +997,7 @@ export class EventRetryExhaustedError extends EventError {
     cause?: Error
   ) {
     super(
-      `Event retry exhausted (${attempts} attempts) for manager: ${manager}`,
+      `Event retry exhausted (${attempts} attempts) for manager: ${manager}`,`
       'RETRY_EXHAUSTED',
       manager,
       eventId,
@@ -1088,7 +1088,7 @@ export const EventManagerPresets = {
  *
  * @namespace EventTypeGuards
  * @example
- * ```typescript
+ * ```typescript`
  * // Validate event manager type
  * if (EventTypeGuards.isEventManagerType(userInput)) {
  *   // userInput is now typed as EventManagerType
@@ -1100,7 +1100,7 @@ export const EventManagerPresets = {
  *   // data is now typed as SystemEvent
  *   await eventManager.emit(data);
  * }
- * ```
+ * ````
  */
 export const EventTypeGuards = {
   /**
@@ -1111,7 +1111,7 @@ export const EventTypeGuards = {
    */
   isEventManagerType: (value: unknown): value is EventManagerType => {
     return (
-      typeof value === 'string' &&
+      typeof value === 'string' &&'
       Object.values(EventManagerTypes).includes(value as EventManagerType)
     );
   },
@@ -1124,8 +1124,8 @@ export const EventTypeGuards = {
    */
   isEventPriority: (value: unknown): value is EventPriority => {
     return (
-      typeof value === 'string' &&
-      ['critical', 'high', 'medium', 'low'].includes(value)
+      typeof value === 'string' &&'
+      ['critical', 'high', 'medium', 'low'].includes(value)'
     );
   },
 
@@ -1139,8 +1139,8 @@ export const EventTypeGuards = {
     value: unknown
   ): value is EventProcessingStrategy => {
     return (
-      typeof value === 'string' &&
-      ['immediate', 'queued', 'batched', 'throttled'].includes(value)
+      typeof value === 'string' &&'
+      ['immediate', 'queued', 'batched', 'throttled'].includes(value)'
     );
   },
 
@@ -1153,12 +1153,12 @@ export const EventTypeGuards = {
   isSystemEvent: (value: unknown): value is SystemEvent => {
     return (
       value !== null &&
-      typeof value === 'object' &&
-      typeof (value as any).id === 'string' &&
+      typeof value === 'object' &&'
+      typeof (value as any).id === 'string' &&'
       (value as any).timestamp instanceof Date &&
-      typeof (value as any).source === 'string' &&
-      typeof (value as any).type === 'string' &&
-      typeof (value as any).payload === 'object'
+      typeof (value as any).source === 'string' &&'
+      typeof (value as any).type === 'string' &&'
+      typeof (value as any).payload === 'object''
     );
   },
 
@@ -1171,11 +1171,11 @@ export const EventTypeGuards = {
   isEventManagerConfig: (value: unknown): value is EventManagerConfig => {
     return (
       value !== null &&
-      typeof value === 'object' &&
-      typeof (value as any).name === 'string' &&
+      typeof value === 'object' &&'
+      typeof (value as any).name === 'string' &&'
       EventTypeGuards.isEventManagerType((value as any).type) &&
       (value as any).processing &&
-      typeof (value as any).processing === 'object' &&
+      typeof (value as any).processing === 'object' &&'
       EventTypeGuards.isEventProcessingStrategy(
         (value as any).processing.strategy
       )

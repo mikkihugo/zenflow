@@ -31,7 +31,7 @@ export declare class MemoryCoordinationSystem extends TypedEventBase {
     options?: {
       weight?: number;
       priority?: number;
-      tier?: 'hot|warm|cold';
+      tier?: 'hot' | 'warm' | 'cold';
     }
   ): Promise<void>;
   removeNode(id: string): Promise<void>;
@@ -40,8 +40,8 @@ export declare class MemoryCoordinationSystem extends TypedEventBase {
     value: JSONValue,
     namespace?: string,
     options?: {
-      consistency?: 'strong|eventual'';
-      tier?: 'hot|warm|cold';
+      consistency?: 'strong|eventual';
+      tier?: 'hot' | 'warm' | 'cold';
       replicate?: boolean;
     }
   ): Promise<MemoryOperationResult>;
@@ -49,7 +49,7 @@ export declare class MemoryCoordinationSystem extends TypedEventBase {
     key: string,
     namespace?: string,
     options?: {
-      consistency?: 'strong|eventual'';
+      consistency?: 'strong|eventual';
       timeout?: number;
     }
   ): Promise<MemoryOperationResult<T>>;
@@ -57,7 +57,7 @@ export declare class MemoryCoordinationSystem extends TypedEventBase {
     key: string,
     namespace?: string,
     options?: {
-      consistency?: 'strong|eventual'';
+      consistency?: 'strong|eventual';
     }
   ): Promise<MemoryOperationResult<boolean>>;
   list(

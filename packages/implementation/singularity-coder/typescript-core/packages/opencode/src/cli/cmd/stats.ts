@@ -34,7 +34,7 @@ export function displayStats(stats: SessionStats) {
     const availableWidth = width - 1
     const paddingNeeded = availableWidth - label.length - value.length
     const padding = Math.max(0, paddingNeeded)
-    return `│${label}${" ".repeat(padding)}${value} │`
+    return `│${label}${" ".repeat(padding)}${value} │``
   }
 
   // Overview section
@@ -53,8 +53,8 @@ export function displayStats(stats: SessionStats) {
   console.log("├────────────────────────────────────────────────────────┤")
   const cost = isNaN(stats.totalCost) ? 0 : stats.totalCost
   const costPerDay = isNaN(stats.costPerDay) ? 0 : stats.costPerDay
-  console.log(renderRow("Total Cost", `$${cost.toFixed(2)}`))
-  console.log(renderRow("Cost/Day", `$${costPerDay.toFixed(2)}`))
+  console.log(renderRow("Total Cost", `$${cost.toFixed(2)}`))`
+  console.log(renderRow("Cost/Day", `$${costPerDay.toFixed(2)}`))`
   console.log(renderRow("Input", formatNumber(stats.totalTokens.input)))
   console.log(renderRow("Output", formatNumber(stats.totalTokens.output)))
   console.log(renderRow("Cache Read", formatNumber(stats.totalTokens.cache.read)))
@@ -80,9 +80,9 @@ export function displayStats(stats: SessionStats) {
       const bar = "█".repeat(barLength)
       const percentage = ((count / totalToolUsage) * 100).toFixed(1)
 
-      const content = ` ${tool.padEnd(10)} ${bar.padEnd(20)} ${count.toString().padStart(3)} (${percentage.padStart(4)}%)`
+      const content = ` ${tool.padEnd(10)} ${bar.padEnd(20)} ${count.toString().padStart(3)} (${percentage.padStart(4)}%)``
       const padding = Math.max(0, width - content.length)
-      console.log(`│${content}${" ".repeat(padding)} │`)
+      console.log(`│${content}${" ".repeat(padding)} │`)`
     }
     console.log("└────────────────────────────────────────────────────────┘")
   }

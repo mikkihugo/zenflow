@@ -17,7 +17,7 @@ export declare class ImmutableOps {
    */
   static update<T>(state: T, updater: (draft: Draft<T>) => void): T;
   /**
-   * Deep clone using Immer's produce
+   * Deep clone using Immer's produce'
    */
   static clone<T>(state: T): T;
   /**

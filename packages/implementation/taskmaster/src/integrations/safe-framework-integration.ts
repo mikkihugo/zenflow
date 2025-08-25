@@ -1,7 +1,7 @@
 /**
  * @fileoverview SAFe 6.0 Framework Integration - TaskMaster as Universal Approval Gate Orchestrator
  *
- * Integrates TaskMaster's approval gate system with ALL SAFe 6.0 framework gates:
+ * Integrates TaskMaster's approval gate system with ALL SAFe 6.0 framework gates:'
  * - Epic Management Gates (Portfolio Kanban states)
  * - Continuous Delivery Gates (Quality, Security, Performance)
  * - ART Gates (Agile Release Train coordination)
@@ -112,7 +112,7 @@ export interface SafeIntegrationConfig {
     enableContinuousLearning: boolean;
     trackDecisionPatterns: boolean;
     adaptPrompts: boolean;
-    auditCompliance: 'basic|soc2|comprehensive';
+    auditCompliance: 'basic|soc2|comprehensive;
   };
 }
 
@@ -122,7 +122,7 @@ export interface SafeIntegrationConfig {
 export interface SafeGateContext {
   category: SafeGateCategory;
   safeEntity: {
-    type: 'epic|feature|story|capability|solution';
+    type: 'epic|feature|story|capability|solution;
     id: string;
     metadata: Record<string, unknown>;
   };
@@ -139,7 +139,7 @@ export interface SafeGateContext {
   compliance: {
     required: boolean;
     frameworks: string[];
-    auditLevel: 'basic|enhanced|comprehensive';
+    auditLevel: 'basic' | 'enhanced' | 'comprehensive';
   };
 }
 
@@ -163,7 +163,7 @@ export interface SafeGateTraceabilityRecord {
 
   humanDecision?: {
     approver: string;
-    decision: 'approved|rejected|escalated';
+    decision: 'approved' | 'rejected' | 'escalated';
     reasoning: string;
     timestamp: Date;
     reviewTime: number;
@@ -208,7 +208,7 @@ export interface SafeGateTraceabilityRecord {
  * Provides complete traceability, learning, and SOC2 compliance.
  */
 export class SafeFrameworkIntegration {
-  private readonly logger = getLogger('SafeFrameworkIntegration');
+  private readonly logger = getLogger('SafeFrameworkIntegration');'
 
   // Core services
   private approvalGateManager: ApprovalGateManager;
@@ -241,11 +241,11 @@ export class SafeFrameworkIntegration {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing SAFE Framework Integration...');
+      this.logger.info('Initializing SAFE Framework Integration...');'
 
       // Initialize infrastructure
       const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');
+      this.database = dbSystem.createProvider('sql');'
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -272,7 +272,7 @@ export class SafeFrameworkIntegration {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('SAFE Framework Integration initialized successfully');
+      this.logger.info('SAFE Framework Integration initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize SAFE Framework Integration',
@@ -296,10 +296,10 @@ export class SafeFrameworkIntegration {
     }
   ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
     const gateId =
-      `epic-${epicId}-${fromState}-to-${toState}` as ApprovalGateId;
-    const traceabilityId = `trace-${gateId}-${Date.now()}`;
+      `epic-${epicId}-${fromState}-to-${toState}` as ApprovalGateId;`
+    const traceabilityId = `trace-${gateId}-${Date.now()}`;`
 
-    this.logger.info('Creating Epic Portfolio Gate', {
+    this.logger.info('Creating Epic Portfolio Gate', {'
       epicId,
       fromState,
       toState,
@@ -359,7 +359,7 @@ export class SafeFrameworkIntegration {
         confidence: 0,
       },
       auditTrail: {
-        sessionId: `session-${Date.now()}`,
+        sessionId: `session-${Date.now()}`,`
         ipAddress: 'system',
         userAgent: 'TaskMaster-SafeIntegration',
         correlationId: traceabilityId,
@@ -386,7 +386,7 @@ export class SafeFrameworkIntegration {
 
       if (llmResult.autoApproved) {
         // Auto-approved by LLM
-        this.logger.info('Epic gate auto-approved by LLM', {
+        this.logger.info('Epic gate auto-approved by LLM', {'
           gateId,
           confidence: llmResult.decision.confidence,
           reasoning: llmResult.decision.reasoning,
@@ -404,12 +404,12 @@ export class SafeFrameworkIntegration {
     // Create approval gate for human review
     const result = await this.approvalGateManager.createApprovalGate(
       approvalRequirement,
-      `task-${epicId}` as TaskId
+      `task-${epicId}` as TaskId`
     );
 
     if (!result.success) {
       throw new Error(
-        `Failed to create epic approval gate: ${result.error?.message}`
+        `Failed to create epic approval gate: ${result.error?.message}``
       );
     }
 
@@ -431,9 +431,9 @@ export class SafeFrameworkIntegration {
     }
   ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
     const gateId = qualityGateConfig.gateId as ApprovalGateId;
-    const traceabilityId = `trace-${gateId}-${Date.now()}`;
+    const traceabilityId = `trace-${gateId}-${Date.now()}`;`
 
-    this.logger.info('Creating Quality Gate', {
+    this.logger.info('Creating Quality Gate', {'
       gateId,
       pipelineId: qualityGateConfig.pipelineId,
       stageId: qualityGateConfig.stageId,
@@ -483,7 +483,7 @@ export class SafeFrameworkIntegration {
         confidence: 0,
       },
       auditTrail: {
-        sessionId: `session-${Date.now()}`,
+        sessionId: `session-${Date.now()}`,`
         ipAddress: 'system',
         userAgent: 'TaskMaster-QualityGate',
         correlationId: traceabilityId,
@@ -500,7 +500,7 @@ export class SafeFrameworkIntegration {
 
     this.traceabilityRecords.set(traceabilityId, traceabilityRecord);
 
-    // Use SAFE framework's quality gate service with LLM enhancement
+    // Use SAFE framework's quality gate service with LLM enhancement'
     if (this.config.qualityGates.llmAutoApproval) {
       const llmResult = await this.processLLMQualityApproval(
         qualityGateConfig,
@@ -509,7 +509,7 @@ export class SafeFrameworkIntegration {
       );
 
       if (llmResult.autoApproved) {
-        this.logger.info('Quality gate auto-approved by LLM', {
+        this.logger.info('Quality gate auto-approved by LLM', {'
           gateId,
           confidence: llmResult.decision.confidence,
         });
@@ -532,12 +532,12 @@ export class SafeFrameworkIntegration {
 
     const result = await this.approvalGateManager.createApprovalGate(
       approvalRequirement,
-      `task-quality-${context.projectId}` as TaskId
+      `task-quality-${context.projectId}` as TaskId`
     );
 
     if (!result.success) {
       throw new Error(
-        `Failed to create quality approval gate: ${result.error?.message}`
+        `Failed to create quality approval gate: ${result.error?.message}``
       );
     }
 
@@ -565,7 +565,7 @@ export class SafeFrameworkIntegration {
   /**
    * Get learning insights from all gate decisions
    */
-  async getLearningInsights(timeframe: string ='30d'): Promise<{
+  async getLearningInsights(timeframe: string ='30d'): Promise<{'
     decisionPatterns: Array<{
       pattern: string;
       frequency: number;
@@ -621,31 +621,31 @@ export class SafeFrameworkIntegration {
     await this.database.schema.createTableIfNotExists(
       'safe_gate_traceability',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('gate_id').notNullable();
-        table.string('category').notNullable();
-        table.json('context').notNullable();
-        table.json('ai_decision').nullable();
-        table.json('human_decision').nullable();
-        table.json('learning_extracted').notNullable();
-        table.json('audit_trail').notNullable();
-        table.json('metrics').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.timestamp('completed_at').nullable();
-        table.index(['gate_id', 'category', 'created_at']);
+        table.uuid('id').primary();'
+        table.string('gate_id').notNullable();'
+        table.string('category').notNullable();'
+        table.json('context').notNullable();'
+        table.json('ai_decision').nullable();'
+        table.json('human_decision').nullable();'
+        table.json('learning_extracted').notNullable();'
+        table.json('audit_trail').notNullable();'
+        table.json('metrics').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.timestamp('completed_at').nullable();'
+        table.index(['gate_id', 'category', 'created_at']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'safe_gate_learning',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('pattern').notNullable();
-        table.integer('frequency').notNullable();
-        table.float('accuracy').notNullable();
-        table.text('improvement').notNullable();
-        table.timestamp('last_updated').notNullable();
-        table.index(['pattern', 'accuracy']);
+        table.uuid('id').primary();'
+        table.string('pattern').notNullable();'
+        table.integer('frequency').notNullable();'
+        table.float('accuracy').notNullable();'
+        table.text('improvement').notNullable();'
+        table.timestamp('last_updated').notNullable();'
+        table.index(['pattern', 'accuracy']);'
       }
     );
   }
@@ -674,7 +674,7 @@ export class SafeFrameworkIntegration {
     const context = this.activeGates.get(gateId);
     if (!context) return;
 
-    this.logger.info('SAFE gate approved', { gateId, taskId, approverId });
+    this.logger.info('SAFE gate approved', { gateId, taskId, approverId });'
 
     // Find and update traceability record
     const record = Array.from(this.traceabilityRecords.values()).find(
@@ -696,7 +696,7 @@ export class SafeFrameworkIntegration {
     }
 
     // Trigger SAFE framework state transition
-    await this.triggerSafeStateTransition(context, 'approved');
+    await this.triggerSafeStateTransition(context, 'approved');'
   }
 
   private async handleApprovalRejected(
@@ -708,7 +708,7 @@ export class SafeFrameworkIntegration {
     const context = this.activeGates.get(gateId);
     if (!context) return;
 
-    this.logger.info('SAFE gate rejected', {
+    this.logger.info('SAFE gate rejected', {'
       gateId,
       taskId,
       approverId,
@@ -735,7 +735,7 @@ export class SafeFrameworkIntegration {
     }
 
     // Trigger SAFE framework rejection handling
-    await this.triggerSafeStateTransition(context, 'rejected');
+    await this.triggerSafeStateTransition(context, 'rejected');'
   }
 
   private async handleApprovalTimeout(
@@ -745,7 +745,7 @@ export class SafeFrameworkIntegration {
     const context = this.activeGates.get(gateId);
     if (!context) return;
 
-    this.logger.warn('SAFE gate timed out', { gateId, taskId });
+    this.logger.warn('SAFE gate timed out', { gateId, taskId });'
 
     // Find and update traceability record
     const record = Array.from(this.traceabilityRecords.values()).find(
@@ -758,7 +758,7 @@ export class SafeFrameworkIntegration {
     }
 
     // Trigger escalation in SAFE framework
-    await this.triggerSafeEscalation(context, 'timeout');
+    await this.triggerSafeEscalation(context, 'timeout');'
   }
 
   private buildEpicApprovalRequirement(
@@ -772,15 +772,15 @@ export class SafeFrameworkIntegration {
 
     return {
       id: gateId,
-      name: `Epic ${fromState} → ${toState} Approval`,
-      description: `Approval required for epic transition from ${fromState} to ${toState}`,
+      name: `Epic ${fromState} → ${toState} Approval`,`
+      description: `Approval required for epic transition from ${fromState} to ${toState}`,`
       requiredApprovers: context.stakeholders,
       minimumApprovals,
       isRequired: true,
       timeoutHours,
       metadata: {
         category: SafeGateCategory.EPIC_PORTFOLIO,
-        transition: `${fromState}->${toState}`,
+        transition: `${fromState}->${toState}`,`
         complianceRequired: context.complianceRequired,
       },
     };
@@ -793,10 +793,10 @@ export class SafeFrameworkIntegration {
   ): ApprovalGateRequirement {
     return {
       id: gateId,
-      name: `Quality Gate - ${qualityConfig.stageId}`,
-      description: `Quality approval required for ${qualityConfig.pipelineId}`,
+      name: `Quality Gate - ${qualityConfig.stageId}`,`
+      description: `Quality approval required for ${qualityConfig.pipelineId}`,`
       requiredApprovers: context.stakeholders.filter((s: string) =>
-        s.includes('quality')
+        s.includes('quality')'
       ),
       minimumApprovals: 2,
       isRequired: true,
@@ -837,8 +837,8 @@ export class SafeFrameworkIntegration {
     const llmContext: LLMApprovalContext = {
       task: {
         id: context.safeEntity.id,
-        title: `${context.category} Gate Approval`,
-        description: `SAFE framework gate approval for ${context.safeEntity.type}`,
+        title: `${context.category} Gate Approval`,`
+        description: `SAFE framework gate approval for ${context.safeEntity.type}`,`
         type: context.category,
         complexity: this.assessComplexity(context),
         priority: this.assessPriority(context),
@@ -847,7 +847,7 @@ export class SafeFrameworkIntegration {
         customData: context.safeEntity.metadata,
       },
       workflow: {
-        id: `workflow-${context.safeEntity.id}`,
+        id: `workflow-${context.safeEntity.id}`,`
         name: 'SAFE Framework Workflow',
         currentState: context.workflow.currentState,
         previousStates: context.workflow.previousStates,
@@ -899,7 +899,7 @@ export class SafeFrameworkIntegration {
     context: SafeGateContext,
     traceabilityRecord: SafeGateTraceabilityRecord
   ): Promise<LLMApprovalResult> {
-    // Use SAFE framework's quality gate service
+    // Use SAFE framework's quality gate service'
     const qualityGateService = this.safeFramework.getQualityGateService();
 
     // Execute quality gate with AI enhancement
@@ -924,11 +924,11 @@ export class SafeFrameworkIntegration {
         },
       },
       autoApproved:
-        qualityResult.status === 'pass' &&
+        qualityResult.status === 'pass' &&'
         qualityResult.score / 100 >=
           this.config.qualityGates.humanFallbackThreshold,
       escalatedToHuman:
-        qualityResult.status !== 'pass'||qualityResult.score / 100 <
+        qualityResult.status !== 'pass'||qualityResult.score / 100 <'
           this.config.qualityGates.humanFallbackThreshold,
       processingTime: qualityResult.executionTime,
       timestamp: qualityResult.timestamp,
@@ -953,10 +953,10 @@ export class SafeFrameworkIntegration {
   ): Promise<void> {
     // Create AGUI task for human visibility and approval
     await this.taskApprovalSystem.createApprovalTask({
-      id: `agui-${gateId}`,
+      id: `agui-${gateId}`,`
       taskType: context.category,
-      title: `SAFE ${context.category} Gate Approval`,
-      description: `Review and approve ${context.safeEntity.type} transition in SAFE framework`,
+      title: `SAFE ${context.category} Gate Approval`,`
+      description: `Review and approve ${context.safeEntity.type} transition in SAFE framework`,`
       context: {
         gateId,
         safeContext: context,
@@ -1023,10 +1023,10 @@ export class SafeFrameworkIntegration {
       const humanApproved = record.humanDecision.decision === 'approved';
 
       if (aiApproved === humanApproved) {
-        patterns.push('ai_human_alignment');
+        patterns.push('ai_human_alignment');'
       } else {
-        patterns.push('ai_human_mismatch');
-        improvements.push('Review approval criteria and thresholds');
+        patterns.push('ai_human_mismatch');'
+        improvements.push('Review approval criteria and thresholds');'
       }
     }
 
@@ -1034,7 +1034,7 @@ export class SafeFrameworkIntegration {
     switch (record.category) {
       case SafeGateCategory.EPIC_PORTFOLIO:
         if (record.context.safeEntity.metadata.businessCase) {
-          patterns.push('business_case_provided');
+          patterns.push('business_case_provided');'
         }
         break;
 
@@ -1043,7 +1043,7 @@ export class SafeFrameworkIntegration {
           record.aiDecision?.confidence &&
           record.aiDecision.confidence > 0.9
         ) {
-          patterns.push('high_quality_confidence');
+          patterns.push('high_quality_confidence');'
         }
         break;
     }
@@ -1062,7 +1062,7 @@ export class SafeFrameworkIntegration {
 
     // Update LLM approval service with human feedback
     const humanOverride = {
-      id: `override-${record.id}`,
+      id: `override-${record.id}`,`
       userId: record.humanDecision.approver,
       action: record.humanDecision.decision as'approve|reject'',
       reason: record.humanDecision.reasoning,
@@ -1106,7 +1106,7 @@ export class SafeFrameworkIntegration {
   private async persistTraceabilityRecord(
     record: SafeGateTraceabilityRecord
   ): Promise<void> {
-    await this.database('safe_gate_traceability')
+    await this.database('safe_gate_traceability')'
       .insert({
         id: record.id,
         gate_id: record.gateId,
@@ -1124,15 +1124,15 @@ export class SafeFrameworkIntegration {
         created_at: record.createdAt,
         completed_at: record.completedAt,
       })
-      .onConflict('id')
+      .onConflict('id')'
       .merge();
   }
 
   private async loadTraceabilityRecord(
     traceabilityId: string
   ): Promise<SafeGateTraceabilityRecord|null> {
-    const row = await this.database('safe_gate_traceability')
-      .where('id', traceabilityId)
+    const row = await this.database('safe_gate_traceability')'
+      .where('id', traceabilityId)'
       .first();
 
     if (!row) return null;
@@ -1167,7 +1167,7 @@ export class SafeFrameworkIntegration {
       [PortfolioKanbanState.DONE]: 'completion',
     };
 
-    return transitions[toState]||'unknown';
+    return transitions[toState]||'unknown;
   }
 
   private getRequiredApprovalCount(
@@ -1191,26 +1191,26 @@ export class SafeFrameworkIntegration {
 
   private assessComplexity(context: SafeGateContext): string {
     // Assess based on gate category and entity metadata
-    if (context.category === SafeGateCategory.EPIC_PORTFOLIO) return 'complex';
+    if (context.category === SafeGateCategory.EPIC_PORTFOLIO) return 'complex;
     if (context.category === SafeGateCategory.QUALITY_ASSURANCE)
-      return 'moderate';
-    return 'simple';
+      return 'moderate;
+    return 'simple;
   }
 
   private assessPriority(context: SafeGateContext): string {
     // Assess based on compliance requirements and stakeholders
-    if (context.compliance.required) return 'high';
-    if (context.stakeholders.owners.length > 2) return 'medium';
-    return 'low';
+    if (context.compliance.required) return 'high;
+    if (context.stakeholders.owners.length > 2) return 'medium;
+    return 'low;
   }
 
   private assessRiskLevel(
     context: SafeGateContext
-  ): 'low|medium|high|critical' {
+  ): 'low|medium|high|critical' {'
     // Assess based on compliance and entity type
     if (context.compliance.auditLevel === 'comprehensive') return 'high';
     if (context.safeEntity.type === 'epic') return 'medium';
-    return 'low';
+    return 'low;
   }
 
   private async getLLMConfig(
@@ -1220,7 +1220,7 @@ export class SafeFrameworkIntegration {
     const baseConfig: LLMApprovalConfig = {
       enabled: true,
       model: 'claude-3-5-sonnet',
-      prompt: `Evaluate ${category} gate for SAFE framework compliance and business value`,
+      prompt: `Evaluate ${category} gate for SAFE framework compliance and business value`,`
       criteria: [
         'business_value',
         'compliance',
@@ -1240,7 +1240,7 @@ export class SafeFrameworkIntegration {
     decision: string
   ): Promise<void> {
     // Trigger appropriate SAFE framework state transition
-    this.logger.info('Triggering SAFE state transition', {
+    this.logger.info('Triggering SAFE state transition', {'
       entityType: context.safeEntity.type,
       entityId: context.safeEntity.id,
       fromState: context.workflow.currentState,
@@ -1256,7 +1256,7 @@ export class SafeFrameworkIntegration {
     reason: string
   ): Promise<void> {
     // Trigger SAFE framework escalation procedures
-    this.logger.warn('Triggering SAFE escalation', {
+    this.logger.warn('Triggering SAFE escalation', {'
       entityType: context.safeEntity.type,
       entityId: context.safeEntity.id,
       reason,

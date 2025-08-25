@@ -5,7 +5,7 @@ import {
   cleanupGlobalInstances,
 } from '../../src/claude/claude-sdk';
 
-describe('Claude SDK - Integration Tests (Real API)', () => {
+describe('Claude SDK - Integration Tests (Real API)', () => {'
   const runIntegration = process.env.RUN_INTEGRATION === 'true';
   const itIntegration = runIntegration ? it : it.skip;
 
@@ -19,7 +19,7 @@ describe('Claude SDK - Integration Tests (Real API)', () => {
   itIntegration(
     'should run a single task without memory leaks',
     async () => {
-      const messages = await executeClaudeTask('Hello', {
+      const messages = await executeClaudeTask('Hello', {'
         maxTurns: 1,
         allowedTools: [],
         timeoutMs: 60000, // Increased timeout

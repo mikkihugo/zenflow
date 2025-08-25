@@ -67,7 +67,7 @@ export class FileAwareAIEngine {
           relevantFiles: [],
           dependencies: [],
           symbols: [],
-          summary: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          summary: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,`
           complexity: 'low',
         },
         metadata: {
@@ -100,10 +100,10 @@ export class FileAwareAIEngine {
           type: 'modify',
           path: targetFile,
           reasoning:
-            `Suggested modification for file ${targetFile} based on task: ${request.task}. ` +
-            `This is a fallback response - actual AI processing would analyze the code structure ` +
-            `and generate specific improvements based on the ${context.complexity} complexity context ` +
-            `with ${context.dependencies.length} dependencies and ${context.symbols.length} symbols.`,
+            `Suggested modification for file ${targetFile} based on task: ${request.task}. ` +`
+            `This is a fallback response - actual AI processing would analyze the code structure ` +`
+            `and generate specific improvements based on the ${context.complexity} complexity context ` +`
+            `with ${context.dependencies.length} dependencies and ${context.symbols.length} symbols.`,`
         });
       }
     } else {
@@ -111,11 +111,11 @@ export class FileAwareAIEngine {
         type: 'create',
         path: 'ANALYSIS.md',
         content:
-          `# Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +
-          `## Files Analyzed\n${context.relevantFiles.length} files\n\n` +
-          `## Dependencies\n${context.dependencies.length} dependencies found\n\n` +
-          `## Symbols\n${context.symbols.length} symbols identified\n\n` +
-          `## Complexity\nAssessed as: ${context.complexity}`,
+          `# Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +`
+          `## Files Analyzed\n${context.relevantFiles.length} files\n\n` +`
+          `## Dependencies\n${context.dependencies.length} dependencies found\n\n` +`
+          `## Symbols\n${context.symbols.length} symbols identified\n\n` +`
+          `## Complexity\nAssessed as: ${context.complexity}`,`
         reasoning:
           'Created analysis file since no existing files were found to modify',
       });
@@ -129,6 +129,6 @@ export class FileAwareAIEngine {
    */
   async getSession(): Promise<string | null> {
     // Fallback implementation - would integrate with actual session management
-    return `fallback-session-${Date.now()}`;
+    return `fallback-session-${Date.now()}`;`
   }
 }

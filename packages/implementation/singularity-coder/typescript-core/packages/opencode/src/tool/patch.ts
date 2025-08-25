@@ -160,7 +160,7 @@ function patchToCommit(operations: PatchOperation[], currentFiles: Record<string
       for (const hunk of op.hunks) {
         const contextIndex = lines.findIndex((line) => line.includes(hunk.contextLine))
         if (contextIndex === -1) {
-          throw new Error(`Context line not found: ${hunk.contextLine}`)
+          throw new Error(`Context line not found: ${hunk.contextLine}`)`
         }
 
         let currentIndex = contextIndex
@@ -193,7 +193,7 @@ function generateDiff(oldContent: string, newContent: string, filePath: string):
   const lines2 = newContent.split("\n")
   const additions = Math.max(0, lines2.length - lines1.length)
   const removals = Math.max(0, lines1.length - lines2.length)
-  return [`--- ${filePath}\n+++ ${filePath}\n`, additions, removals]
+  return [`--- ${filePath}\n+++ ${filePath}\n`, additions, removals]`
 }
 
 async function applyCommit(
@@ -215,7 +215,7 @@ export const PatchTool = Tool.define({
   description: DESCRIPTION,
   parameters: PatchParams,
   execute: async (params, ctx) => {
-    // Identify all files needed for the patch and verify they've been read
+    // Identify all files needed for the patch and verify they've been read'
     const filesToRead = identifyFilesNeeded(params.patchText)
     for (const filePath of filesToRead) {
       let absPath = filePath
@@ -228,17 +228,17 @@ export const PatchTool = Tool.define({
       try {
         const stats = await fs.stat(absPath)
         if (stats.isDirectory()) {
-          throw new Error(`path is a directory, not a file: ${absPath}`)
+          throw new Error(`path is a directory, not a file: ${absPath}`)`
         }
       } catch (error: any) {
         if (error.code === "ENOENT") {
-          throw new Error(`file not found: ${absPath}`)
+          throw new Error(`file not found: ${absPath}`)`
         }
-        throw new Error(`failed to access file: ${error.message}`)
+        throw new Error(`failed to access file: ${error.message}`)`
       }
     }
 
-    // Check for new files to ensure they don't already exist
+    // Check for new files to ensure they don't already exist'
     const filesToAdd = identifyFilesAdded(params.patchText)
     for (const filePath of filesToAdd) {
       let absPath = filePath
@@ -248,10 +248,10 @@ export const PatchTool = Tool.define({
 
       try {
         await fs.stat(absPath)
-        throw new Error(`file already exists and cannot be added: ${absPath}`)
+        throw new Error(`file already exists and cannot be added: ${absPath}`)`
       } catch (error: any) {
         if (error.code !== "ENOENT") {
-          throw new Error(`failed to check file: ${error.message}`)
+          throw new Error(`failed to check file: ${error.message}`)`
         }
       }
     }
@@ -268,14 +268,14 @@ export const PatchTool = Tool.define({
         const content = await fs.readFile(absPath, "utf-8")
         currentFiles[filePath] = content
       } catch (error: any) {
-        throw new Error(`failed to read file ${absPath}: ${error.message}`)
+        throw new Error(`failed to read file ${absPath}: ${error.message}`)`
       }
     }
 
     // Process the patch
     const [patch, fuzz] = textToPatch(params.patchText, currentFiles)
     if (fuzz > 3) {
-      throw new Error(`patch contains fuzzy matches (fuzz level: ${fuzz}). Please make your context lines more precise`)
+      throw new Error(`patch contains fuzzy matches (fuzz level: ${fuzz}). Please make your context lines more precise`)`
     }
 
     // Convert patch to commit
@@ -327,11 +327,11 @@ export const PatchTool = Tool.define({
       FileTime.read(ctx.sessionID, absPath)
     }
 
-    const result = `Patch applied successfully. ${changedFiles.length} files changed, ${totalAdditions} additions, ${totalRemovals} removals`
+    const result = `Patch applied successfully. ${changedFiles.length} files changed, ${totalAdditions} additions, ${totalRemovals} removals``
     const output = result
 
     return {
-      title: `${filesToRead.length} files`,
+      title: `${filesToRead.length} files`,`
       metadata: {
         changed: changedFiles,
         additions: totalAdditions,

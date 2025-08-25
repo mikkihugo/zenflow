@@ -10,10 +10,10 @@ import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('sqlite-adapter');
+const logger = getLogger('sqlite-adapter');'
 
 export interface SQLiteConfig {
-  type: 'sqlite';
+  type: 'sqlite;
   database: string;
   options?: {
     readonly?: boolean;
@@ -63,10 +63,10 @@ export class SQLiteAdapter implements DatabaseAdapter {
       this.connected = true;
 
       logger.info(
-        `✅ Connected to real SQLite database: ${this.config.database}`,
+        `✅ Connected to real SQLite database: ${this.config.database}`,`
       );
     } catch (error) {
-      logger.error(`❌ Failed to connect to SQLite database: ${error}`);
+      logger.error(`❌ Failed to connect to SQLite database: ${error}`);`
       throw error;
     }
   }
@@ -87,10 +87,10 @@ export class SQLiteAdapter implements DatabaseAdapter {
       await this.connect();
     }
     if (!this.db) {
-      throw new Error('Database not connected');
+      throw new Error('Database not connected');'
     }
 
-    logger.debug(`Executing SQL query: ${sql}`, { params });
+    logger.debug(`Executing SQL query: ${sql}`, { params });`
 
     try {
       const stmt = this.db.prepare(sql);
@@ -107,7 +107,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         fields: [],
       };
     } catch (error) {
-      logger.error(`Query failed: ${error}`);
+      logger.error(`Query failed: ${error}`);`
       throw error;
     }
   }
@@ -117,10 +117,10 @@ export class SQLiteAdapter implements DatabaseAdapter {
       await this.connect();
     }
     if (!this.db) {
-      throw new Error('Database not connected');
+      throw new Error('Database not connected');'
     }
 
-    logger.debug(`Executing SQL command: ${sql}`, { params });
+    logger.debug(`Executing SQL command: ${sql}`, { params });`
 
     try {
       const stmt = this.db.prepare(sql);
@@ -132,7 +132,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         executionTime: 1,
       };
     } catch (error) {
-      logger.error(`Execute failed: ${error}`);
+      logger.error(`Execute failed: ${error}`);`
       throw error;
     }
   }
@@ -142,7 +142,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       await this.connect();
     }
     if (!this.db) {
-      throw new Error('Database not connected');
+      throw new Error('Database not connected');'
     }
 
     const transaction = this.db.transaction((callback: any) => {
@@ -157,7 +157,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
     try {
       return await transaction(() => fn(tx));
     } catch (error) {
-      logger.error('Transaction failed:', error);
+      logger.error('Transaction failed:', error);'
       throw error;
     }
   }
@@ -179,7 +179,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         };
       }
 
-      this.db.prepare('SELECT 1').get();
+      this.db.prepare('SELECT 1').get();'
       return {
         healthy: true,
         isHealthy: true,
@@ -209,10 +209,10 @@ export class SQLiteAdapter implements DatabaseAdapter {
     try {
       const tables = this.db
         .prepare(
-          `
+          ``
         SELECT name FROM sqlite_master 
-        WHERE type='table' AND name NOT LIKE 'sqlite_%'
-      `,
+        WHERE type='table' AND name NOT LIKE 'sqlite_%''
+      `,`
         )
         .all();
 
@@ -221,7 +221,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         views: [],
       };
     } catch (error) {
-      logger.error('Failed to get schema:', error);
+      logger.error('Failed to get schema:', error);'
       return { tables: [], views: [] };
     }
   }
@@ -246,11 +246,11 @@ export class SQLiteAdapter implements DatabaseAdapter {
     this.createWorkflowStatesTable();
     this.runMigrations();
 
-    logger.info('✅ SQLite tables initialized');
+    logger.info('✅ SQLite tables initialized');'
   }
 
   private createDocumentsTable(): void {
-    this.db!.exec(`
+    this.db!.exec(``
       CREATE TABLE IF NOT EXISTS documents (
         id TEXT PRIMARY KEY,
         type TEXT NOT NULL,
@@ -281,11 +281,11 @@ export class SQLiteAdapter implements DatabaseAdapter {
         phase TEXT,
         sparc_integration TEXT
       )
-    `);
+    `);`
   }
 
   private createDocumentRelationshipsTable(): void {
-    this.db!.exec(`
+    this.db!.exec(``
       CREATE TABLE IF NOT EXISTS document_relationships (
         id TEXT PRIMARY KEY,
         source_document_id TEXT NOT NULL,
@@ -297,11 +297,11 @@ export class SQLiteAdapter implements DatabaseAdapter {
         FOREIGN KEY (source_document_id) REFERENCES documents(id),
         FOREIGN KEY (target_document_id) REFERENCES documents(id)
       )
-    `);
+    `);`
   }
 
   private createProjectsTable(): void {
-    this.db!.exec(`
+    this.db!.exec(``
       CREATE TABLE IF NOT EXISTS projects (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -312,11 +312,11 @@ export class SQLiteAdapter implements DatabaseAdapter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
-    `);
+    `);`
   }
 
   private createWorkflowStatesTable(): void {
-    this.db!.exec(`
+    this.db!.exec(``
       CREATE TABLE IF NOT EXISTS document_workflow_states (
         id TEXT PRIMARY KEY,
         document_id TEXT NOT NULL,
@@ -327,7 +327,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (document_id) REFERENCES documents(id)
       )
-    `);
+    `);`
   }
 
   /**
@@ -340,7 +340,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
     try {
       // Check if searchable_content column exists
-      const tableInfo = this.db.prepare('PRAGMA table_info(documents)').all();
+      const tableInfo = this.db.prepare('PRAGMA table_info(documents)').all();'
       const hasSearchableContent = tableInfo.some(
         (col: any) => col.name === 'searchable_content',
       );
@@ -350,7 +350,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
           'Adding missing searchable_content column to documents table',
         );
         this.db
-          .prepare('ALTER TABLE documents ADD COLUMN searchable_content TEXT')
+          .prepare('ALTER TABLE documents ADD COLUMN searchable_content TEXT')'
           .run();
       }
 
@@ -381,17 +381,17 @@ export class SQLiteAdapter implements DatabaseAdapter {
         );
         if (!hasColumn) {
           logger.info(
-            `Adding missing ${column.name} column to documents table`,
+            `Adding missing ${column.name} column to documents table`,`
           );
           this.db
             .prepare(
-              `ALTER TABLE documents ADD COLUMN ${column.name} ${column.type}`,
+              `ALTER TABLE documents ADD COLUMN ${column.name} ${column.type}`,`
             )
             .run();
         }
       }
     } catch (error) {
-      logger.warn(`Migration warning (non-critical): ${error}`);
+      logger.warn(`Migration warning (non-critical): ${error}`);`
     }
   }
 }

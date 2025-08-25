@@ -255,7 +255,7 @@ class LoggingConfigurationManager {
       const response = await globalThis
         .fetch(`${endpoint}/health`, {
           method: 'GET',
-          headers: { Accept: 'application/json' },
+          headers: { accept: 'application/json' },
         })
         .catch(() => null);
       
@@ -375,7 +375,7 @@ class LoggingConfigurationManager {
   private createInternalCollectorSink(collectorEndpoint: string) {
     return async (record: UnknownRecord) => {
       try {
-        const timestamp = record['timestamp'];
+        const { timestamp } = record;
         const level = String(record['level']||'info');
         const category = Array.isArray(record['category'])
           ? record['category']
@@ -408,9 +408,9 @@ class LoggingConfigurationManager {
             ],
           },
           attributes: {
-            'log.logger': category.join('.'),
-            'log.level': level.toLowerCase(),
-            'service.name': 'claude-zen-foundation',
+            logLogger: category.join('.'),
+            logLevel: level.toLowerCase(),
+            serviceName: 'claude-zen-foundation',
             ...properties,
           },
         };
@@ -420,7 +420,7 @@ class LoggingConfigurationManager {
           .fetch(`${collectorEndpoint}/ingest`, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'content-type': 'application/json',
             },
             body: JSON.stringify(telemetryData),
           })
@@ -663,5 +663,5 @@ export default {
   getLoggingConfig,
   updateLoggingConfig,
   validateLoggingEnvironment,
-  LoggingLevel,
+  loggingLevel: LoggingLevel,
 };

@@ -39,7 +39,7 @@ export class InterfaceModeDetector {
 
     // Environment analysis
     const isCI = !!(
-      process.env['CI']||process.env['GITHUB_ACTIONS']||process.env['TRAVIS']||process.env['JENKINS']||process.env['GITLAB_CI']
+      process.env['CI']||process.env['GITHUB_ACTIONS']||process.env['TRAVIS']||process.env['JENKINS']||process.env['GITLAB_CI']'
     );
 
     const hasTerminal = !!process.stdin?.isTTY;
@@ -47,9 +47,9 @@ export class InterfaceModeDetector {
 
     // Command line argument analysis
     const args = process.argv.slice(2);
-    const hasCliFlag = args.includes('--cli');
-    const hasWebFlag = args.includes('--web')||args.includes('--daemon');
-    const hasTuiFlag = args.includes('--tui')||args.includes('--interactive');
+    const hasCliFlag = args.includes('--cli');'
+    const hasWebFlag = args.includes('--web')||args.includes('--daemon');'
+    const hasTuiFlag = args.includes('--tui')||args.includes('--interactive');'
 
     let mode: InterfaceMode;
     let reason: string;
@@ -57,25 +57,25 @@ export class InterfaceModeDetector {
     // Force mode if specified
     if (forceMode) {
       mode = forceMode;
-      reason = `Forced mode: ${forceMode}`;
+      reason = `Forced mode: ${forceMode}`;`
     }
     // Explicit CLI flag or non-interactive environment
     else if (hasCliFlag||isCI||!hasTerminal) {
-      mode ='cli';
+      mode ='cli;
       reason = hasCliFlag
-        ? 'Explicit --cli flag provided'
+        ? 'Explicit --cli flag provided''
         : isCI
-          ? 'CI/CD environment detected'
-          : 'Non-interactive terminal detected';
+          ? 'CI/CD environment detected''
+          : 'Non-interactive terminal detected;
     }
     // Explicit web flag or daemon mode
     else if (hasWebFlag||daemon||webPort) {
-      mode ='web';
+      mode ='web;
       reason = hasWebFlag
-        ? 'Explicit --web or --daemon flag provided'
+        ? 'Explicit --web or --daemon flag provided''
         : webPort
-          ? `Web port ${webPort} specified`
-          : 'Daemon mode enabled';
+          ? `Web port ${webPort} specified``
+          : 'Daemon mode enabled;
     }
     // Explicit TUI flag
     else if (hasTuiFlag) {
@@ -84,10 +84,10 @@ export class InterfaceModeDetector {
     }
     // Interactive terminal - prefer TUI or CLI based on preference
     else if (interactive) {
-      mode = preferTui ? 'tui' : 'cli';
+      mode = preferTui ? 'tui' : 'cli;
       reason = preferTui
-        ? 'Interactive terminal detected, preferring TUI mode'
-        : 'Interactive terminal detected, preferring CLI mode';
+        ? 'Interactive terminal detected, preferring TUI mode''
+        : 'Interactive terminal detected, preferring CLI mode;
     }
     // Fallback to CLI
     else {
@@ -96,10 +96,10 @@ export class InterfaceModeDetector {
     }
 
     // Build config object with proper optional property handling
-    const port = webPort||(mode ==='web'? 3456 : undefined);
-    const daemonMode = daemon||mode ==='web';
+    const port = webPort||(mode ==='web'? 3456 : undefined);'
+    const daemonMode = daemon||mode ==='web;
 
-    const config: ModeDetectionResult['config'] = {
+    const config: ModeDetectionResult['config'] = {'
       interactive,
       hasTerminal,
       isCI,
@@ -154,10 +154,10 @@ export class InterfaceModeDetector {
     reason?: string;
   } {
     switch (mode) {
-      case 'cli':
+      case 'cli':'
         return { valid: true };
 
-      case 'tui':
+      case 'tui':'
         if (!(process.stdin && process.stdin.isTTY)) {
           return {
             valid: false,
@@ -166,14 +166,14 @@ export class InterfaceModeDetector {
         }
         return { valid: true };
 
-      case 'web':
+      case 'web':'
         // Web mode should work in any environment
         return { valid: true };
 
       default:
         return {
           valid: false,
-          reason: `Unknown interface mode: ${mode}`,
+          reason: `Unknown interface mode: ${mode}`,`
         };
     }
   }
@@ -190,23 +190,23 @@ export class InterfaceModeDetector {
     const alternatives: InterfaceMode[] = [];
 
     // Always include CLI as it works everywhere
-    if (detection.mode !== 'cli') {
-      alternatives.push('cli');
+    if (detection.mode !== 'cli') {'
+      alternatives.push('cli');'
     }
 
     // Add TUI if terminal is interactive
-    if (detection.config.interactive && detection.mode !== 'tui') {
-      alternatives.push('tui');
+    if (detection.config.interactive && detection.mode !== 'tui') {'
+      alternatives.push('tui');'
     }
 
     // Add web as it works everywhere
-    if (detection.mode !== 'web') {
-      alternatives.push('web');
+    if (detection.mode !== 'web') {'
+      alternatives.push('web');'
     }
 
-    let explanation = `Primary mode: ${detection.mode} (${detection.reason}).`;
+    let explanation = `Primary mode: ${detection.mode} (${detection.reason}).`;`
     if (alternatives.length > 0) {
-      explanation += ` Alternatives: ${alternatives.join(', ')}.`;
+      explanation += ` Alternatives: ${alternatives.join(', ')}.`;`
     }
 
     return {

@@ -17,7 +17,7 @@
  * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
- * ```typescript
+ * ```typescript`
  * import { createInitializedAISafetyOrchestrator } from '@claude-zen/ai-safety';
  *
  * const result = await createInitializedAISafetyOrchestrator();
@@ -25,13 +25,13 @@
  *   const orchestrator = result.value;
  *   await orchestrator.startSafetyMonitoring();
  * }
- * ```
+ * ````
  *
  * @example Tree-shakable imports
- * ```typescript
+ * ```typescript`
  * import { AISafetyOrchestrator, SafetyError } from '@claude-zen/ai-safety';
  * import { AIDeceptionDetector } from '@claude-zen/ai-safety';
- * ```
+ * ````
  */
 
 // =============================================================================
@@ -72,19 +72,19 @@ export {
  *
  * @returns Promise resolving to Result with configured safety orchestrator
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await initializeAISafety();
  * if (result.success) {
  *   const safetySystem = result.value;
- *   console.log('Enterprise AI Safety initialized successfully');
+ *   console.log('Enterprise AI Safety initialized successfully');'
  * } else {
- *   console.error('Failed to initialize AI Safety:', result.error);
+ *   console.error('Failed to initialize AI Safety:', result.error);'
  * }
- * ```
+ * ````
  */
 export async function initializeAISafety() {
   const { createInitializedAISafetyOrchestrator } = await import(
-    './safety-orchestrator'
+    './safety-orchestrator''
   );
 
   const orchestratorResult = await createInitializedAISafetyOrchestrator();
@@ -108,39 +108,39 @@ export async function initializeAISafety() {
  *
  * @returns Promise resolving to Result indicating success or failure
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await emergencySafetyShutdown();
  * if (result.success) {
- *   console.log('Emergency shutdown completed successfully');
+ *   console.log('Emergency shutdown completed successfully');'
  * } else {
- *   console.error('Emergency shutdown failed:', result.error);
+ *   console.error('Emergency shutdown failed:', result.error);'
  * }
- * ```
+ * ````
  */
 export async function emergencySafetyShutdown() {
   try {
-    const { SafetyError, ok, err } = await import('@claude-zen/foundation');
+    const { SafetyError, ok, err } = await import('@claude-zen/foundation');'
 
-    console.log('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
+    console.log('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');'
 
     // Enhanced safety logging with error handling capabilities
-    const safetyResult = ok('Safety shutdown initiated');
-    console.log('Safety result:', safetyResult);
+    const safetyResult = ok('Safety shutdown initiated');'
+    console.log('Safety result:', safetyResult);'
     
     // Error scenario demonstration (expanded functionality)
-    if (process.env.NODE_ENV === 'test') {
-      const testError = new SafetyError('Test safety error for validation', 'TEST_ERROR');
-      console.log('Test error created:', testError.message);
+    if (process.env.NODE_ENV === 'test') {'
+      const testError = new SafetyError('Test safety error for validation', 'TEST_ERROR');'
+      console.log('Test error created:', testError.message);'
     }
 
     // This would coordinate with all safety systems
     // For now, return success - full implementation would coordinate shutdown
 
-    console.log('🚨 Emergency safety protocols activated');
+    console.log('🚨 Emergency safety protocols activated');'
     return ok();
   } catch (error) {
     const { SafetyError, err, ensureError } = await import(
-      '@claude-zen/foundation'
+      '@claude-zen/foundation''
     );
     return err(
       new SafetyError(
@@ -179,22 +179,22 @@ export interface SafetyConfig {
 
 /** Safety event interface */
 export interface SafetyEvent {
-  type: 'alert|intervention|escalation|shutdown';
+  type: 'alert|intervention|escalation|shutdown;
   timestamp: number;
   agentId?: string;
-  severity: 'low|medium|high|critical';
+  severity: 'low|medium|high|critical;
   data: Record<string, any>;
 }
 
 /** Risk level enum */
-export type RiskLevel =|'minimal|low|medium|high|critical|extreme';
+export type RiskLevel =|'minimal|low|medium|high|critical|extreme;
 
 /** Safety status enum */
-export type SafetyStatus =|'safe|monitoring|warning|alert|intervention|emergency';
+export type SafetyStatus =|'safe|monitoring|warning|alert|intervention|emergency;
 
 /** Intervention action interface */
 export interface InterventionAction {
-  type: 'pause|restrict|terminate|escalate';
+  type: 'pause|restrict|terminate|escalate;
   target: string;
   reason: string;
   timestamp: number;
@@ -211,7 +211,7 @@ export async function getAISafetySystemAccess(
   const orchestrator = await createInitializedAISafetyOrchestrator();
   if (!orchestrator.success) {
     throw new Error(
-      `Failed to initialize AI Safety system: ${orchestrator.error?.message}`
+      `Failed to initialize AI Safety system: ${orchestrator.error?.message}``
     );
   }
   const safetySystem = orchestrator.value;
@@ -237,7 +237,7 @@ export async function getSafetyOrchestrator(
   const result = await createInitializedAISafetyOrchestrator();
   if (!result.success) {
     throw new Error(
-      `Failed to create safety orchestrator: ${result.error?.message}`
+      `Failed to create safety orchestrator: ${result.error?.message}``
     );
   }
   return result.value;
@@ -271,7 +271,7 @@ export async function getSafetyIntervention(
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      console.log(`Intervention requested: ${action.type} on ${action.target}`);
+      console.log(`Intervention requested: ${action.type} on ${action.target}`);`
       return Promise.resolve({ success: true, action });
     },
     escalate: (alert: any) => system.escalate(alert),

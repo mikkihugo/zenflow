@@ -9,7 +9,7 @@ export interface StoreOptions {
   readonly ttl?: number;
   readonly compress?: boolean;
   readonly encrypt?: boolean;
-  readonly priority?: 'low|medium|high';
+  readonly priority?: 'low' | 'medium' | 'high';
   readonly metadata?: Record<string, unknown>;
   readonly namespace?: string;
   readonly tags?: string[];
@@ -38,7 +38,7 @@ export interface MemoryStats {
   modified?: number;
 }
 export interface MemoryConfig {
-  readonly type:'sqlite|json|lancedb|memory';
+  readonly type:'sqlite|json|lancedb|memory;
   readonly path?: string;
   readonly maxSize?: number;
   readonly ttl?: number;
@@ -59,7 +59,7 @@ export interface SessionState {
     accessed: number;
     size: number;
     tags?: string[];
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
     ttl?: number;
   };
   vectors?: Map<string, number[]>;
@@ -85,7 +85,7 @@ export interface CacheEntry {
 export interface CacheOptions {
   readonly ttl?: number;
   readonly maxSize?: number;
-  readonly evictionPolicy?: 'lru|lfu|fifo|ttl';
+  readonly evictionPolicy?: 'lru|lfu|fifo|ttl;
   readonly compress?: boolean;
   readonly metadata?: Record<string, unknown>;
 }
@@ -136,7 +136,7 @@ export interface VectorSearchResult {
   readonly vector?: readonly number[];
 }
 export interface MemoryOperation {
-  readonly type: 'store|retrieve|delete|clear';
+  readonly type: 'store|retrieve|delete|clear;
   readonly key: string;
   readonly value?: unknown;
   readonly options?: StoreOptions;
@@ -164,7 +164,7 @@ export interface BatchOperationResult {
   readonly totalDuration: number;
 }
 export interface MemoryProviderConfig {
-  readonly type: MemoryConfig['type'];
+  readonly type: MemoryConfig['type'];'
   readonly config: MemoryConfig;
   readonly logger?: unknown;
 }
@@ -198,17 +198,17 @@ export interface MemoryResponse<T = unknown> {
 }
 export interface MemoryBatchRequest {
   readonly operations: readonly {
-    readonly type: 'store|retrieve|delete';
+    readonly type: 'store' | 'retrieve' | 'delete';
     readonly key: string;
     readonly value?: unknown;
-    readonly options?: MemoryRequest['options'];
+    readonly options?: MemoryRequest['options'];'
   }[];
   readonly continueOnError?: boolean;
 }
 export interface MemoryStatusResponse {
   readonly success: boolean;
   readonly data: {
-    readonly status: 'healthy|degraded|unhealthy';
+    readonly status: 'healthy' | 'degraded' | 'unhealthy';
     readonly totalKeys: number;
     readonly backend: string;
     readonly uptime: number;
@@ -238,12 +238,12 @@ export interface MemoryAnalyticsResponse {
       readonly utilizationPercent: number;
     };
     readonly health: {
-      readonly status: 'healthy|degraded|unhealthy';
+      readonly status: 'healthy' | 'degraded' | 'unhealthy';
       readonly uptime: number;
       readonly lastHealthCheck: number;
     };
   };
-  readonly metadata: MemoryResponse['metadata'];
+  readonly metadata: MemoryResponse['metadata'];'
 }
 export interface MemoryMetrics {
   readonly operations: {
@@ -271,7 +271,7 @@ export interface MemoryMetrics {
   readonly cache?: CacheStats;
 }
 export interface MemoryHealthCheck {
-  readonly status: 'healthy|degraded|unhealthy';
+  readonly status: 'healthy' | 'degraded' | 'unhealthy';
   readonly checks: {
     readonly connection: boolean;
     readonly latency: number;
@@ -316,7 +316,7 @@ export declare class MemoryCapacityError extends MemoryError {
     context?: Record<string, any>
   );
 }
-export type MemoryBackendType = MemoryConfig['type'];
+export type MemoryBackendType = MemoryConfig['type'];'
 export interface MemoryBackendFactory {
   create(type: MemoryBackendType, config: MemoryConfig): MemoryBackend;
   isSupported(type: MemoryBackendType): boolean;
@@ -337,7 +337,7 @@ export interface SessionMemoryStore extends MemoryStore {
   getSession(sessionId: string): Promise<SessionState|null>;
   updateSession(
     sessionId: string,
-    updates: Partial<SessionState['data']>
+    updates: Partial<SessionState['data']>'
   ): Promise<void>;
   deleteSession(sessionId: string): Promise<boolean>;
   listSessions(options?: {
@@ -355,7 +355,7 @@ export interface VectorMemoryStore {
   getVector(id: string): Promise<VectorData|null>;
 }
 export interface MemoryEvent {
-  readonly type:'stored|retrieved|deleted|cleared|error';
+  readonly type:'stored|retrieved|deleted|cleared|error;
   readonly key?: string;
   readonly backend: string;
   readonly timestamp: number;

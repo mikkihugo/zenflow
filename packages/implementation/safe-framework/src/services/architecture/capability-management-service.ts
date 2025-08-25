@@ -49,12 +49,12 @@ export interface ArchitectureCapability {
 /**
  * Capability categories for organization
  */
-export type CapabilityCategory =|business_capability|technology_capability|process_capability|data_capability|security_capability|integration_capability|platform_capability|infrastructure_capability|governance_capability|'innovation_capability';
+export type CapabilityCategory =|business_capability|technology_capability|process_capability|data_capability|security_capability|integration_capability|platform_capability|infrastructure_capability|governance_capability|'innovation_capability;
 
 /**
  * Capability status enumeration
  */
-export type CapabilityStatus =|planning|developing|active|optimizing|retiring|deprecated|'suspended';
+export type CapabilityStatus =|planning|developing|active|optimizing|retiring|deprecated|'suspended;
 
 /**
  * Capability KPI with enhanced tracking
@@ -78,12 +78,12 @@ export interface CapabilityKPI {
 /**
  * KPI trend analysis
  */
-export type KPITrend =|improving|stable|declining|volatile|'unknown';
+export type KPITrend =|improving|'improving' | 'stable' | 'declining'|declining|volatile|'unknown;
 
 /**
  * Measurement frequency options
  */
-export type MeasurementFrequency =|real_time|hourly|daily|weekly|monthly|quarterly|'annually';
+export type MeasurementFrequency =|real_time|hourly|daily|weekly|monthly|quarterly|'annually;
 
 /**
  * Performance threshold configuration
@@ -93,7 +93,7 @@ export interface PerformanceThreshold {
   readonly good: number; // Acceptable performance
   readonly warning: number; // Warning threshold
   readonly critical: number; // Critical threshold
-  readonly direction: 'higher_is_better|lower_is_better';
+  readonly direction: 'higher_is_better|lower_is_better;
 }
 
 /**
@@ -113,7 +113,7 @@ export interface HistoricalDataPoint {
 export interface DataSource {
   readonly sourceId: string;
   readonly name: string;
-  readonly type: 'database|api|file|manual|stream';
+  readonly type: 'database|api|file|manual|stream;
   readonly endpoint?: string;
   readonly refreshRate: number; // minutes
   readonly reliability: number; // 0-1 scale
@@ -204,8 +204,8 @@ export interface InvestmentMilestone {
 export interface TimelineDependency {
   readonly dependencyId: string;
   readonly description: string;
-  readonly type: 'capability|resource|approval|external';
-  readonly criticality: 'low|medium|high|critical';
+  readonly type: 'capability|resource|approval|external;
+  readonly criticality: 'low|medium|high|critical;
   readonly mitigation: string;
 }
 
@@ -213,7 +213,7 @@ export interface TimelineDependency {
  * ROI projection for investments
  */
 export interface ROIProjection {
-  readonly method:|net_present_value|internal_rate_of_return|payback_period|'benefit_cost_ratio';
+  readonly method:|net_present_value|internal_rate_of_return|payback_period|'benefit_cost_ratio;
   readonly timeHorizon: number; // years
   readonly discountRate: number; // percentage
   readonly expectedROI: number; // percentage
@@ -239,7 +239,7 @@ export interface InvestmentRiskAssessment {
 export interface InvestmentRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly category:|technical|financial|market|operational|'regulatory';
+  readonly category:|technical|financial|market|operational|'regulatory;
   readonly probability: number; // 0-1 scale
   readonly impact: number; // 0-10 scale
   readonly riskScore: number; // probability * impact
@@ -254,7 +254,7 @@ export interface InvestmentRisk {
 export interface ApprovalStatus {
   readonly approvalId: string;
   readonly approver: string;
-  readonly status: 'pending|approved|rejected|conditional';
+  readonly status: 'pending|approved|rejected|conditional;
   readonly conditions?: string[];
   readonly comments?: string;
   readonly timestamp: Date;
@@ -286,7 +286,7 @@ export interface CapabilityInitiative {
   readonly expectedBenefits: string[];
   readonly deliverables: string[];
   readonly owner: string;
-  readonly status: 'planned|active|completed|cancelled';
+  readonly status: 'planned|active|completed|cancelled;
 }
 
 /**
@@ -296,9 +296,9 @@ export interface RoadmapDependency {
   readonly dependencyId: string;
   readonly fromInitiative: string;
   readonly toInitiative: string;
-  readonly type: 'finish_to_start|start_to_start|finish_to_finish';
+  readonly type: 'finish_to_start' | 'start_to_start' | 'finish_to_finish';
   readonly lag: number; // days
-  readonly criticality: 'low|medium|high|critical';
+  readonly criticality: 'low|medium|high|critical;
 }
 
 /**
@@ -321,7 +321,7 @@ export interface CapabilityMetric {
   readonly metricId: string;
   readonly name: string;
   readonly description: string;
-  readonly type:|performance|efficiency|quality|adoption|'value';
+  readonly type:|performance|efficiency|quality|adoption|'value;
   readonly currentValue: number;
   readonly targetValue: number;
   readonly unit: string;
@@ -338,7 +338,7 @@ export interface CapabilityConfig {
   readonly enableAutomatedAssessment: boolean;
   readonly enableRoadmapPlanning: boolean;
   readonly enableInvestmentOptimization: boolean;
-  readonly maturityAssessmentFrequency: 'monthly|quarterly|annually';
+  readonly maturityAssessmentFrequency: 'monthly' | 'quarterly' | 'annually';
   readonly maxCapabilities: number;
   readonly minBusinessValueThreshold: number;
   readonly maxComplexityThreshold: number;
@@ -371,7 +371,7 @@ export interface InvestmentAllocation {
   readonly allocation: number;
   readonly percentage: number;
   readonly roi: number;
-  readonly riskLevel: 'low|medium|high|critical';
+  readonly riskLevel: 'low|medium|high|critical;
 }
 
 /**
@@ -382,7 +382,7 @@ export interface MaturityTrend {
   readonly averageMaturity: number;
   readonly improvementRate: number;
   readonly investmentEfficiency: number;
-  readonly trend: 'accelerating|stable|decelerating';
+  readonly trend: 'accelerating|'improving' | 'stable' | 'declining'|decelerating;
 }
 
 /**
@@ -446,7 +446,7 @@ export class CapabilityManagementService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent capability analysis
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      const { BrainCoordinator } = await import('@claude-zen/brain');'
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -458,7 +458,7 @@ export class CapabilityManagementService {
 
       // Lazy load @claude-zen/foundation for performance tracking
       const { PerformanceTracker, TelemetryManager } = await import(
-        '@claude-zen/foundation'
+        '@claude-zen/foundation''
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -469,7 +469,7 @@ export class CapabilityManagementService {
       await this.telemetryManager.initialize();
 
       // Lazy load @claude-zen/workflows for capability development workflows
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      const { WorkflowEngine } = await import('@claude-zen/workflows');'
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
         enableVisualization: true,
@@ -477,7 +477,7 @@ export class CapabilityManagementService {
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for investment approval workflows
-      const { AGUISystem } = await import('@claude-zen/agui');
+      const { AGUISystem } = await import('@claude-zen/agui');'
       const aguiResult = await AGUISystem({
         aguiType: 'terminal',
         taskApprovalConfig: {
@@ -489,7 +489,7 @@ export class CapabilityManagementService {
       this.aguiService = aguiResult.agui;
 
       // Lazy load @claude-zen/brain for LoadBalancer - resource optimization
-      const { LoadBalancer } = await import('@claude-zen/brain');
+      const { LoadBalancer } = await import('@claude-zen/brain');'
       this.loadBalancer = new LoadBalancer({
         strategy: 'intelligent_distribution',
         enablePredictiveScaling: true,
@@ -498,7 +498,7 @@ export class CapabilityManagementService {
 
       this.initialized = true;
       this.logger.info(
-        'Capability Management Service initialized successfully'
+        'Capability Management Service initialized successfully''
       );
     } catch (error) {
       this.logger.error(
@@ -514,15 +514,15 @@ export class CapabilityManagementService {
    */
   async addCapability(
     capability: Omit<
-      ArchitectureCapability,|id|createdAt|updatedAt|businessValue|technicalComplexity|investmentPlan|roadmap|'metrics'
+      ArchitectureCapability,|id|createdAt|updatedAt|businessValue|technicalComplexity|investmentPlan|roadmap|'metrics''
     >
   ): Promise<ArchitectureCapability> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('add_capability');
+    const timer = this.performanceTracker.startTimer('add_capability');'
 
     try {
-      this.logger.info('Adding architecture capability with AI analysis', {
+      this.logger.info('Adding architecture capability with AI analysis', {'
         name: capability.name,
       });
 
@@ -570,7 +570,7 @@ export class CapabilityManagementService {
 
       // Create capability with AI-enhanced data
       const newCapability: ArchitectureCapability = {
-        id: `capability-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `capability-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
         businessValue,
         technicalComplexity,
         investmentPlan,
@@ -587,7 +587,7 @@ export class CapabilityManagementService {
         const approval = await this.requestInvestmentApproval(newCapability);
         if (!approval.approved) {
           throw new Error(
-            `Capability investment approval rejected: ${approval.reason}`
+            `Capability investment approval rejected: ${approval.reason}``
           );
         }
       }
@@ -596,10 +596,10 @@ export class CapabilityManagementService {
       this.capabilities.set(newCapability.id, newCapability);
       this.roadmaps.set(roadmap.roadmapId, roadmap);
 
-      this.performanceTracker.endTimer('add_capability');
-      this.telemetryManager.recordCounter('capabilities_added', 1);
+      this.performanceTracker.endTimer('add_capability');'
+      this.telemetryManager.recordCounter('capabilities_added', 1);'
 
-      this.logger.info('Architecture capability added successfully', {
+      this.logger.info('Architecture capability added successfully', {'
         capabilityId: newCapability.id,
         name: newCapability.name,
         category: newCapability.category,
@@ -609,8 +609,8 @@ export class CapabilityManagementService {
 
       return newCapability;
     } catch (error) {
-      this.performanceTracker.endTimer('add_capability');
-      this.logger.error('Failed to add architecture capability:', error);
+      this.performanceTracker.endTimer('add_capability');'
+      this.logger.error('Failed to add architecture capability:', error);'
       throw error;
     }
   }
@@ -626,13 +626,13 @@ export class CapabilityManagementService {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer(
-      'update_capability_status'
+      'update_capability_status''
     );
 
     try {
       const capability = this.capabilities.get(capabilityId);
       if (!capability) {
-        throw new Error(`Architecture capability not found: ${capabilityId}`);
+        throw new Error(`Architecture capability not found: ${capabilityId}`);`
       }
 
       // Use workflow engine for status transition validation
@@ -645,7 +645,7 @@ export class CapabilityManagementService {
 
       if (!statusTransition.isValid) {
         throw new Error(
-          `Invalid status transition: ${statusTransition.reason}`
+          `Invalid status transition: ${statusTransition.reason}``
         );
       }
 
@@ -658,10 +658,10 @@ export class CapabilityManagementService {
 
       this.capabilities.set(capabilityId, updatedCapability);
 
-      this.performanceTracker.endTimer('update_capability_status');
-      this.telemetryManager.recordCounter('capability_status_updates', 1);
+      this.performanceTracker.endTimer('update_capability_status');'
+      this.telemetryManager.recordCounter('capability_status_updates', 1);'
 
-      this.logger.info('Capability status updated', {
+      this.logger.info('Capability status updated', {'
         capabilityId,
         oldStatus: capability.status,
         newStatus,
@@ -670,8 +670,8 @@ export class CapabilityManagementService {
 
       return updatedCapability;
     } catch (error) {
-      this.performanceTracker.endTimer('update_capability_status');
-      this.logger.error('Failed to update capability status:', error);
+      this.performanceTracker.endTimer('update_capability_status');'
+      this.logger.error('Failed to update capability status:', error);'
       throw error;
     }
   }
@@ -683,7 +683,7 @@ export class CapabilityManagementService {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer(
-      'generate_capability_dashboard');
+      'generate_capability_dashboard');'
 
     try {
       const allCapabilities = Array.from(this.capabilities.values())();
@@ -716,9 +716,9 @@ export class CapabilityManagementService {
         riskExposure: dashboardInsights.riskExposure || [],
       };
 
-      this.performanceTracker.endTimer('generate_capability_dashboard');
+      this.performanceTracker.endTimer('generate_capability_dashboard');'
 
-      this.logger.info('Capability dashboard generated', {
+      this.logger.info('Capability dashboard generated', {'
         totalCapabilities: dashboard.totalCapabilities,
         averageMaturity: dashboard.averageMaturityLevel,
         portfolioROI: dashboard.portfolioROI,
@@ -726,8 +726,8 @@ export class CapabilityManagementService {
 
       return dashboard;
     } catch (error) {
-      this.performanceTracker.endTimer('generate_capability_dashboard');
-      this.logger.error('Failed to generate capability dashboard:', error);
+      this.performanceTracker.endTimer('generate_capability_dashboard');'
+      this.logger.error('Failed to generate capability dashboard:', error);'
       throw error;
     }
   }
@@ -766,7 +766,7 @@ export class CapabilityManagementService {
       await this.telemetryManager.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Capability Management Service shutdown complete');
+    this.logger.info('Capability Management Service shutdown complete');'
   }
 
   // ============================================================================
@@ -779,7 +779,7 @@ export class CapabilityManagementService {
     try {
       const approval = await this.aguiService.createApprovalTask({
         taskType: 'capability_investment_approval',
-        description: `High-value capability investment requires approval: ${capability.name}`,
+        description: `High-value capability investment requires approval: ${capability.name}`,`
         context: { capability },
         approvers: ['enterprise-architect', 'cto', 'finance-director'],
         timeout: 3600000, // 60 minutes
@@ -791,7 +791,7 @@ export class CapabilityManagementService {
         'Capability investment approval request failed:',
         error
       );
-      return { approved: false, reason: 'approval_system_error'};
+      return { approved: false, reason: 'approval_system_error'};'
     }
   }
 
@@ -985,7 +985,7 @@ export class CapabilityManagementService {
     };
 
     return {
-      planId: `investment-plan-${Date.now()}`,
+      planId: `investment-plan-${Date.now()}`,`
       phases,
       totalInvestment,
       timeline,
@@ -1020,7 +1020,7 @@ export class CapabilityManagementService {
     ];
 
     return {
-      roadmapId: `roadmap-${Date.now()}`,
+      roadmapId: `roadmap-${Date.now()}`,`
       timeHorizon: this.config.defaultInvestmentHorizon,
       initiatives,
       dependencies: [],
@@ -1064,7 +1064,7 @@ export class CapabilityManagementService {
     ];
 
     // Add category-specific metrics
-    if (capability.category === 'technology_capability') {
+    if (capability.category === 'technology_capability') {'
       baseMetrics.push({
         metricId: 'availability',
         name: 'System Availability',
@@ -1102,43 +1102,43 @@ export class CapabilityManagementService {
 
   private assessRevenueImpact(capability: any): number {
     // Revenue impact based on category
-    return capability.category ==='business_capability'
+    return capability.category ==='business_capability''
       ? 8
-      : capability.category === 'innovation_capability'
+      : capability.category === 'innovation_capability''
         ? 7
         : 4;
   }
 
   private assessCostReduction(capability: any): number {
     // Cost reduction potential
-    return capability.category === 'process_capability'
+    return capability.category === 'process_capability''
       ? 8
-      : capability.category === 'technology_capability'
+      : capability.category === 'technology_capability''
         ? 6
         : 3;
   }
 
   private assessRiskMitigation(capability: any): number {
     // Risk mitigation value
-    return capability.category === 'security_capability'
+    return capability.category === 'security_capability''
       ? 9
-      : capability.category === 'governance_capability'
+      : capability.category === 'governance_capability''
         ? 7
         : 4;
   }
 
   private assessMarketAdvantage(capability: any): number {
     // Market advantage potential
-    return capability.category === 'innovation_capability'
+    return capability.category === 'innovation_capability''
       ? 9
-      : capability.category === 'business_capability'
+      : capability.category === 'business_capability''
         ? 7
         : 3;
   }
 
   private assessCustomerSatisfaction(capability: any): number {
     // Customer satisfaction impact
-    return capability.category === 'business_capability'? 8 : 5;
+    return capability.category === 'business_capability'? 8 : 5;'
   }
 
   private assessArchitecturalComplexity(capability: any): number {
@@ -1149,23 +1149,23 @@ export class CapabilityManagementService {
   }
 
   private assessIntegrationComplexity(capability: any): number {
-    return capability.category ==='integration_capability' ? 8 : 4;
+    return capability.category ==='integration_capability' ? 8 : 4;'
   }
 
   private assessDataComplexity(capability: any): number {
-    return capability.category === 'data_capability' ? 7 : 3;
+    return capability.category === 'data_capability' ? 7 : 3;'
   }
 
   private assessSecurityComplexity(capability: any): number {
-    return capability.category === 'security_capability' ? 8 : 4;
+    return capability.category === 'security_capability' ? 8 : 4;'
   }
 
   private assessScalabilityRequirements(capability: any): number {
-    return capability.category === 'platform_capability' ? 8 : 5;
+    return capability.category === 'platform_capability' ? 8 : 5;'
   }
 
   private assessMaintenanceOverhead(capability: any): number {
-    return capability.category === 'infrastructure_capability' ? 7 : 4;
+    return capability.category === 'infrastructure_capability' ? 7 : 4;'
   }
 
   // Analytics helper methods

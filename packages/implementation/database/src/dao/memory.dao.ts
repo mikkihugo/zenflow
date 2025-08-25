@@ -74,13 +74,13 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    * @param ttlSeconds
    */
   async setTTL(id: string|number, ttlSeconds: number): Promise<void> {
-    this.logger.debug(`Setting TTL for entity ${id}: ${ttlSeconds} seconds`);
+    this.logger.debug(`Setting TTL for entity ${id}: ${ttlSeconds} seconds`);`
 
     const key = this.getEntityKey(id);
     const entry = this.memoryStore.get(key);
 
     if (!entry) {
-      throw new Error(`Entity with ID ${id} not found in memory`);
+      throw new Error(`Entity with ID ${id} not found in memory`);`
     }
 
     const oldTimer = this.ttlTimers.get(key);
@@ -98,7 +98,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
 
     this.ttlTimers.set(key, timer);
     this.logger.debug(
-      `TTL set for entity ${id}, expires at: ${entry.expiresAt}`
+      `TTL set for entity ${id}, expires at: ${entry.expiresAt}``
     );
   }
 
@@ -127,7 +127,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    * @param ttlSeconds
    */
   async cache(key: string, value: T, ttlSeconds?: number): Promise<void> {
-    this.logger.debug(`Caching value with key: ${key}`, { ttlSeconds });
+    this.logger.debug(`Caching value with key: ${key}`, { ttlSeconds });`
 
     // Check if we need to evict entries to make space
     await this.ensureSpace();
@@ -153,7 +153,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       this.ttlTimers.set(key, timer);
     }
 
-    this.logger.debug(`Cached value with key: ${key}`);
+    this.logger.debug(`Cached value with key: ${key}`);`
   }
 
   /**
@@ -182,7 +182,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     entry.accessedAt = new Date();
     this.hitCount++;
 
-    this.logger.debug(`Cache hit for key: ${key}`);
+    this.logger.debug(`Cache hit for key: ${key}`);`
     return entry.value;
   }
 
@@ -216,7 +216,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       }
 
       this.logger.debug(
-        `Cleared cache with pattern'${pattern}': ${clearedCount} entries`
+        `Cleared cache with pattern'${pattern}': ${clearedCount} entries``
       );
     } else {
       // Clear all cache entries
@@ -229,7 +229,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       }
       this.ttlTimers.clear();
 
-      this.logger.debug(`Cleared entire cache: ${clearedCount} entries`);
+      this.logger.debug(`Cleared entire cache: ${clearedCount} entries`);`
     }
 
     return clearedCount;
@@ -290,11 +290,11 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     entry.accessedAt = new Date();
     this.hitCount++;
 
-    this.logger.debug(`Memory hit for entity: ${id}`);
+    this.logger.debug(`Memory hit for entity: ${id}`);`
     return entry.value;
   }
 
-  override async create(entity: Omit<T,'id'>): Promise<T> {
+  override async create(entity: Omit<T,'id'>): Promise<T> {'
     // Create in underlying storage first
     const created = await super.create(entity);
 
@@ -349,20 +349,20 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
   override async executeCustomQuery<R = any>(
     customQuery: CustomQuery
   ): Promise<R> {
-    if (customQuery.type ==='memory') {
+    if (customQuery.type ==='memory') {'
       const query = customQuery.query as any;
 
-      if (query.operation === 'get_stats') {
+      if (query.operation === 'get_stats') {'
         const stats = await this.getMemoryStats();
         return stats as R;
       }
 
-      if (query.operation === 'clear_cache') {
+      if (query.operation === 'clear_cache') {'
         const cleared = await this.clearCache(query.pattern);
         return { cleared } as R;
       }
 
-      if (query.operation === 'set_ttl') {
+      if (query.operation === 'set_ttl') {'
         await this.setTTL(query.id, query.ttl);
         return { success: true } as R;
       }
@@ -376,7 +376,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    */
 
   private getEntityKey(id: string|number): string {
-    return `entity:${this.tableName}:${id}`;
+    return `entity:${this.tableName}:${id}`;`
   }
 
   private async storeInMemory(
@@ -420,16 +420,16 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     const allEntries: Array<{
       key: string;
       entry: CacheEntry<any>;
-      store: 'memory' | 'key';
+      store: 'memory' | 'key;
     }> = [];
 
     // Collect all entries with their access times
     for (const [key, entry] of this.memoryStore.entries()) {
-      allEntries.push({ key, entry, store: 'memory' });
+      allEntries.push({ key, entry, store: 'memory' });'
     }
 
     for (const [key, entry] of this.keyStore.entries()) {
-      allEntries.push({ key, entry, store: 'key' });
+      allEntries.push({ key, entry, store: 'key' });'
     }
 
     // Sort by access time (oldest first)
@@ -445,7 +445,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       if (!entry) continue;
       const { key, store } = entry;
 
-      if (store === 'memory') {
+      if (store === 'memory') {'
         this.memoryStore.delete(key);
       } else {
         this.keyStore.delete(key);
@@ -460,7 +460,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       this.evictionCount++;
     }
 
-    this.logger.debug(`Evicted ${evictCount} LRU entries`);
+    this.logger.debug(`Evicted ${evictCount} LRU entries`);`
   }
 
   private expireEntity(key: string): void {
@@ -470,7 +470,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       clearTimeout(timer);
       this.ttlTimers.delete(key);
     }
-    this.logger.debug(`Expired entity: ${key}`);
+    this.logger.debug(`Expired entity: ${key}`);`
   }
 
   private expireKey(key: string): void {
@@ -480,7 +480,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       clearTimeout(timer);
       this.ttlTimers.delete(key);
     }
-    this.logger.debug(`Expired cache key: ${key}`);
+    this.logger.debug(`Expired cache key: ${key}`);`
   }
 
   private startCleanupTimer(): void {
@@ -520,7 +520,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     }
 
     if (expiredKeys.length > 0) {
-      this.logger.debug(`Cleaned up ${expiredKeys.length} expired entries`);
+      this.logger.debug(`Cleaned up ${expiredKeys.length} expired entries`);`
     }
   }
 
@@ -558,6 +558,6 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     this.keyStore.clear();
     this.ttlTimers.clear();
 
-    this.logger.debug('Memory repository shutdown completed');
+    this.logger.debug('Memory repository shutdown completed');'
   }
 }

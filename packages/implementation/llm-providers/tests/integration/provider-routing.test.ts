@@ -14,13 +14,13 @@ import {
   createMockError,
 } from '../mocks/llm-mocks';
 
-describe('Provider Routing Integration', () => {
+describe('Provider Routing Integration', () => {'
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('Provider Discovery and Registration', () => {
-    it('should discover all available providers', () => {
+  describe('Provider Discovery and Registration', () => {'
+    it('should discover all available providers', () => {'
       const providers = listLLMProviders();
 
       expect(Array.isArray(providers)).toBe(true);
@@ -28,55 +28,55 @@ describe('Provider Routing Integration', () => {
 
       // Should include core providers
       const providerIds = providers.map((p) => p.id);
-      expect(providerIds).toContain('claude-code');
+      expect(providerIds).toContain('claude-code');'
 
       // Verify provider structure
       providers.forEach((provider) => {
-        expect(provider).toHaveProperty('id');
-        expect(provider).toHaveProperty('name');
-        expect(provider).toHaveProperty('type');
-        expect(provider).toHaveProperty('category');
-        expect(provider).toHaveProperty('available');
-        expect(['cli', 'api']).toContain(provider.type);
+        expect(provider).toHaveProperty('id');'
+        expect(provider).toHaveProperty('name');'
+        expect(provider).toHaveProperty('type');'
+        expect(provider).toHaveProperty('category');'
+        expect(provider).toHaveProperty('available');'
+        expect(['cli', 'api']).toContain(provider.type);'
       });
     });
 
-    it('should categorize providers correctly', () => {
+    it('should categorize providers correctly', () => {'
       const providers = listLLMProviders();
 
-      const cliProviders = providers.filter((p) => p.type === 'cli');
-      const apiProviders = providers.filter((p) => p.type === 'api');
+      const cliProviders = providers.filter((p) => p.type === 'cli');'
+      const apiProviders = providers.filter((p) => p.type === 'api');'
 
       expect(cliProviders.length).toBeGreaterThan(0);
 
       // CLI providers should support file operations
       cliProviders.forEach((provider) => {
-        expect(['file-operations', 'agentic-dev']).toContain(provider.category);
+        expect(['file-operations', 'agentic-dev']).toContain(provider.category);'
       });
     });
 
-    it('should indicate provider availability status', () => {
+    it('should indicate provider availability status', () => {'
       const providers = listLLMProviders();
 
       providers.forEach((provider) => {
-        expect(typeof provider.available).toBe('boolean');
+        expect(typeof provider.available).toBe('boolean');'
       });
 
       // Claude Code should always be available
-      const claudeProvider = providers.find((p) => p.id === 'claude-code');
+      const claudeProvider = providers.find((p) => p.id === 'claude-code');'
       expect(claudeProvider?.available).toBe(true);
     });
   });
 
-  describe('Capability-Based Routing', () => {
-    it('should route to appropriate provider for file operations', () => {
-      const provider = getLLMProviderByCapability('file-operations');
+  describe('Capability-Based Routing', () => {'
+    it('should route to appropriate provider for file operations', () => {'
+      const provider = getLLMProviderByCapability('file-operations');'
 
       expect(provider).toBeInstanceOf(LLMProvider);
-      expect(provider.getProviderId()).toBe('claude-code');
+      expect(provider.getProviderId()).toBe('claude-code');'
     });
 
-    it('should route to appropriate provider for different capabilities', () => {
+    it('should route to appropriate provider for different capabilities', () => {'
       const capabilities = [
         'file-operations',
         'agentic-development',
@@ -96,26 +96,26 @@ describe('Provider Routing Integration', () => {
       });
     });
 
-    it('should provide fallback for unknown capabilities', () => {
-      const provider = getLLMProviderByCapability('unknown-capability' as any);
+    it('should provide fallback for unknown capabilities', () => {'
+      const provider = getLLMProviderByCapability('unknown-capability' as any);'
 
       expect(provider).toBeInstanceOf(LLMProvider);
-      expect(provider.getProviderId()).toBe('claude-code'); // Should default to Claude Code
+      expect(provider.getProviderId()).toBe('claude-code'); // Should default to Claude Code'
     });
 
-    it('should respect provider preferences for capabilities', () => {
+    it('should respect provider preferences for capabilities', () => {'
       // Test that file operations always go to Claude Code
-      const fileOpsProvider = getLLMProviderByCapability('file-operations');
-      expect(fileOpsProvider.getProviderId()).toBe('claude-code');
+      const fileOpsProvider = getLLMProviderByCapability('file-operations');'
+      expect(fileOpsProvider.getProviderId()).toBe('claude-code');'
 
       // Test that inference can go to multiple providers
-      const inferenceProvider = getLLMProviderByCapability('inference');
+      const inferenceProvider = getLLMProviderByCapability('inference');'
       expect(inferenceProvider).toBeInstanceOf(LLMProvider);
     });
   });
 
-  describe('Provider Factory Functions', () => {
-    it('should create providers with factory function', () => {
+  describe('Provider Factory Functions', () => {'
+    it('should create providers with factory function', () => {'
       const providers = [
         'claude-code',
         'github-models-api',
@@ -131,25 +131,25 @@ describe('Provider Routing Integration', () => {
       });
     });
 
-    it('should create default provider when no ID specified', () => {
+    it('should create default provider when no ID specified', () => {'
       const provider = createLLMProvider();
 
       expect(provider).toBeInstanceOf(LLMProvider);
-      expect(provider.getProviderId()).toBe('claude-code');
+      expect(provider.getProviderId()).toBe('claude-code');'
     });
 
-    it('should handle unknown provider IDs gracefully', () => {
-      const provider = createLLMProvider('unknown-provider' as any);
+    it('should handle unknown provider IDs gracefully', () => {'
+      const provider = createLLMProvider('unknown-provider' as any);'
 
       expect(provider).toBeInstanceOf(LLMProvider);
-      expect(provider.getProviderId()).toBe('unknown-provider');
+      expect(provider.getProviderId()).toBe('unknown-provider');'
     });
   });
 
-  describe('Global Provider Management', () => {
-    it('should manage global provider instance', () => {
-      const provider1 = createLLMProvider('claude-code');
-      const provider2 = createLLMProvider('github-models-api');
+  describe('Global Provider Management', () => {'
+    it('should manage global provider instance', () => {'
+      const provider1 = createLLMProvider('claude-code');'
+      const provider2 = createLLMProvider('github-models-api');'
 
       // Set global provider
       setGlobalLLM(provider1);
@@ -164,31 +164,31 @@ describe('Provider Routing Integration', () => {
       expect(getGlobalLLM()).toBeNull();
     });
 
-    it('should isolate global provider from local instances', () => {
-      const globalProvider = createLLMProvider('claude-code');
-      const localProvider = createLLMProvider('github-models-api');
+    it('should isolate global provider from local instances', () => {'
+      const globalProvider = createLLMProvider('claude-code');'
+      const localProvider = createLLMProvider('github-models-api');'
 
       setGlobalLLM(globalProvider);
 
       expect(getGlobalLLM()).toBe(globalProvider);
       expect(localProvider).not.toBe(globalProvider);
-      expect(localProvider.getProviderId()).toBe('github-models-api');
+      expect(localProvider.getProviderId()).toBe('github-models-api');'
     });
   });
 
-  describe('Multi-Provider Coordination', () => {
-    it('should coordinate tasks across multiple providers', async () => {
-      const claudeProvider = createLLMProvider('claude-code');
-      const githubProvider = createLLMProvider('github-models-api');
+  describe('Multi-Provider Coordination', () => {'
+    it('should coordinate tasks across multiple providers', async () => {'
+      const claudeProvider = createLLMProvider('claude-code');'
+      const githubProvider = createLLMProvider('github-models-api');'
 
       // Mock provider responses
-      vi.spyOn(claudeProvider as any, 'executeTask').mockResolvedValue({
+      vi.spyOn(claudeProvider as any, 'executeTask').mockResolvedValue({'
         success: true,
         result: 'File operations completed',
         provider: 'claude-code',
       });
 
-      vi.spyOn(githubProvider as any, 'executeTask').mockResolvedValue({
+      vi.spyOn(githubProvider as any, 'executeTask').mockResolvedValue({'
         success: true,
         result: 'Inference completed',
         provider: 'github-models-api',
@@ -196,44 +196,44 @@ describe('Provider Routing Integration', () => {
 
       // Execute tasks on different providers
       const fileTask = await claudeProvider.executeTask(
-        'Read and analyze file'
+        'Read and analyze file''
       );
       const inferenceTask =
-        await githubProvider.executeTask('Generate summary');
+        await githubProvider.executeTask('Generate summary');'
 
       expect(fileTask.success).toBe(true);
-      expect(fileTask.provider).toBe('claude-code');
+      expect(fileTask.provider).toBe('claude-code');'
       expect(inferenceTask.success).toBe(true);
-      expect(inferenceTask.provider).toBe('github-models-api');
+      expect(inferenceTask.provider).toBe('github-models-api');'
     });
 
-    it('should handle provider failover scenarios', async () => {
-      const primaryProvider = createLLMProvider('claude-code');
-      const fallbackProvider = createLLMProvider('github-models-api');
+    it('should handle provider failover scenarios', async () => {'
+      const primaryProvider = createLLMProvider('claude-code');'
+      const fallbackProvider = createLLMProvider('github-models-api');'
 
       // Mock primary provider failure
-      vi.spyOn(primaryProvider as any, 'executeTask').mockRejectedValue(
-        createMockError('Primary provider unavailable', 'PROVIDER_ERROR')
+      vi.spyOn(primaryProvider as any, 'executeTask').mockRejectedValue('
+        createMockError('Primary provider unavailable', 'PROVIDER_ERROR')'
       );
 
       // Mock fallback provider success
-      vi.spyOn(fallbackProvider as any, 'executeTask').mockResolvedValue({
+      vi.spyOn(fallbackProvider as any, 'executeTask').mockResolvedValue({'
         success: true,
         result: 'Completed via fallback',
         provider: 'github-models-api',
       });
 
       try {
-        await primaryProvider.executeTask('test task');
+        await primaryProvider.executeTask('test task');'
       } catch (error) {
         // Fallback to secondary provider
-        const result = await fallbackProvider.executeTask('test task');
+        const result = await fallbackProvider.executeTask('test task');'
         expect(result.success).toBe(true);
-        expect(result.provider).toBe('github-models-api');
+        expect(result.provider).toBe('github-models-api');'
       }
     });
 
-    it('should load balance across multiple providers', async () => {
+    it('should load balance across multiple providers', async () => {'
       const providers = [
         createLLMProvider('claude-code'),
         createLLMProvider('github-models-api'),
@@ -241,19 +241,19 @@ describe('Provider Routing Integration', () => {
 
       // Mock provider responses with different latencies
       providers.forEach((provider, index) => {
-        vi.spyOn(provider as any, 'executeTask').mockImplementation(
+        vi.spyOn(provider as any, 'executeTask').mockImplementation('
           async () => {
             await new Promise((resolve) => setTimeout(resolve, index * 100));
             return {
               success: true,
-              result: `Result from provider ${index}`,
+              result: `Result from provider ${index}`,`
               latency: index * 100,
             };
           }
         );
       });
 
-      const tasks = Array.from({ length: 10 }, (_, i) => `Task ${i + 1}`);
+      const tasks = Array.from({ length: 10 }, (_, i) => `Task ${i + 1}`);`
 
       // Simple round-robin load balancing
       const results = await Promise.all(
@@ -268,8 +268,8 @@ describe('Provider Routing Integration', () => {
     });
   });
 
-  describe('Provider Health and Monitoring', () => {
-    it('should monitor provider health across all providers', async () => {
+  describe('Provider Health and Monitoring', () => {'
+    it('should monitor provider health across all providers', async () => {'
       const providers = [
         createLLMProvider('claude-code'),
         createLLMProvider('github-models-api'),
@@ -277,7 +277,7 @@ describe('Provider Routing Integration', () => {
 
       // Mock health responses
       providers.forEach((provider, index) => {
-        vi.spyOn(provider as any, 'health').mockResolvedValue({
+        vi.spyOn(provider as any, 'health').mockResolvedValue({'
           status: index === 0 ? 'healthy' : 'degraded',
           latency: (index + 1) * 100,
           lastCheck: Date.now(),
@@ -289,11 +289,11 @@ describe('Provider Routing Integration', () => {
       );
 
       expect(healthChecks).toHaveLength(2);
-      expect(healthChecks[0].status).toBe('healthy');
-      expect(healthChecks[1].status).toBe('degraded');
+      expect(healthChecks[0].status).toBe('healthy');'
+      expect(healthChecks[1].status).toBe('degraded');'
     });
 
-    it('should aggregate provider statistics', async () => {
+    it('should aggregate provider statistics', async () => {'
       const providers = [
         createLLMProvider('claude-code'),
         createLLMProvider('github-models-api'),
@@ -301,7 +301,7 @@ describe('Provider Routing Integration', () => {
 
       // Mock stats responses
       providers.forEach((provider, index) => {
-        vi.spyOn(provider as any, 'getStats').mockResolvedValue({
+        vi.spyOn(provider as any, 'getStats').mockResolvedValue({'
           totalRequests: (index + 1) * 100,
           successfulRequests: (index + 1) * 95,
           failedRequests: (index + 1) * 5,
@@ -331,42 +331,42 @@ describe('Provider Routing Integration', () => {
     });
   });
 
-  describe('Error Handling and Resilience', () => {
-    it('should handle provider initialization failures', () => {
-      expect(() => createLLMProvider('claude-code')).not.toThrow();
-      expect(() => createLLMProvider('unknown-provider' as any)).not.toThrow();
+  describe('Error Handling and Resilience', () => {'
+    it('should handle provider initialization failures', () => {'
+      expect(() => createLLMProvider('claude-code')).not.toThrow();'
+      expect(() => createLLMProvider('unknown-provider' as any)).not.toThrow();'
     });
 
-    it('should handle capability resolution failures', () => {
-      expect(() => getLLMProviderByCapability('file-operations')).not.toThrow();
-      expect(() => getLLMProviderByCapability('unknown' as any)).not.toThrow();
+    it('should handle capability resolution failures', () => {'
+      expect(() => getLLMProviderByCapability('file-operations')).not.toThrow();'
+      expect(() => getLLMProviderByCapability('unknown' as any)).not.toThrow();'
     });
 
-    it('should handle provider listing failures gracefully', () => {
+    it('should handle provider listing failures gracefully', () => {'
       expect(() => listLLMProviders()).not.toThrow();
 
       const providers = listLLMProviders();
       expect(Array.isArray(providers)).toBe(true);
     });
 
-    it('should handle global provider state corruption', () => {
+    it('should handle global provider state corruption', () => {'
       // Set invalid global provider
       setGlobalLLM(null as any);
       expect(getGlobalLLM()).toBeNull();
 
       // Set valid provider after null
-      const validProvider = createLLMProvider('claude-code');
+      const validProvider = createLLMProvider('claude-code');'
       setGlobalLLM(validProvider);
       expect(getGlobalLLM()).toBe(validProvider);
     });
   });
 
-  describe('Performance and Scalability', () => {
-    it('should handle rapid provider creation', () => {
+  describe('Performance and Scalability', () => {'
+    it('should handle rapid provider creation', () => {'
       const startTime = Date.now();
 
       const providers = Array.from({ length: 100 }, () =>
-        createLLMProvider('claude-code')
+        createLLMProvider('claude-code')'
       );
 
       const endTime = Date.now();
@@ -375,14 +375,14 @@ describe('Provider Routing Integration', () => {
       expect(endTime - startTime).toBeLessThan(1000); // Should complete within 1 second
     });
 
-    it('should handle concurrent provider operations', async () => {
+    it('should handle concurrent provider operations', async () => {'
       const providers = Array.from({ length: 10 }, () =>
-        createLLMProvider('claude-code')
+        createLLMProvider('claude-code')'
       );
 
       // Mock concurrent operations
       providers.forEach((provider) => {
-        vi.spyOn(provider as any, 'health').mockResolvedValue({
+        vi.spyOn(provider as any, 'health').mockResolvedValue({'
           status: 'healthy',
           latency: Math.random() * 200,
         });
@@ -398,7 +398,7 @@ describe('Provider Routing Integration', () => {
       expect(endTime - startTime).toBeLessThan(2000); // Should complete within 2 seconds
     });
 
-    it('should efficiently route capability requests', () => {
+    it('should efficiently route capability requests', () => {'
       const capabilities = [
         'file-operations',
         'agentic-development',

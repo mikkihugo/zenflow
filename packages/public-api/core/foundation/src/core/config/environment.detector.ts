@@ -43,7 +43,7 @@ import { promisify } from 'node:util';
 
 import { getLogger, type Logger } from '../logging';
 import { WorkspaceDetector, DetectedWorkspace } from '../../utilities/system';
-import { EventEmitter, type ServiceEvents } from '../../events';
+import { TypedEventBase, type ServiceEvents } from '@claude-zen/foundation';
 
 const execAsync = promisify(exec);
 
@@ -185,7 +185,7 @@ export class EnvironmentDetectionError extends Error {
  * Provides auto-detection of tools, project context, system capabilities, and Nix integration.
  *
  * @class EnvironmentDetector
- * @extends EventEmitter<ServiceEvents>
+ * @extends TypedEventBase<ServiceEvents>
  *
  * @example Basic Usage
  * ```typescript
@@ -202,7 +202,7 @@ export class EnvironmentDetectionError extends Error {
  * });
  * ```
  */
-export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
+export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   private snapshot: EnvironmentSnapshot|null = null;
   private detectionInterval: NodeJS.Timeout|null = null;
   private isDetecting = false;
@@ -559,7 +559,7 @@ export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
    */
   private async detectSystemCapabilities(): Promise<SystemCapabilities> {
     const os = process.platform;
-    const {arch} = process;
+    const {arch, version} = process;
 
     // Check for containerization
     const dockerAvailable = await this.checkCommandExists('docker');
@@ -571,7 +571,7 @@ export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
     return {
       operatingSystem: os,
       architecture: arch,
-      nodeVersion: process.version,
+      nodeVersion: version,
       containers: {
         docker: dockerAvailable,
         podman: podmanAvailable,

@@ -177,11 +177,11 @@ export class WorkflowContextUtils {
    */
   static getSystemHealthCategory(
     health: number
-  ):'excellent|good|warning|critical' {
-    if (health >= 0.9) return 'excellent';
-    if (health >= 0.7) return 'good';
-    if (health >= 0.3) return 'warning';
-    return 'critical';
+  ):'excellent|good|warning|critical' {'
+    if (health >= 0.9) return 'excellent;
+    if (health >= 0.7) return 'good;
+    if (health >= 0.3) return 'warning;
+    return 'critical;
   }
 
   /**

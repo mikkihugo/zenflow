@@ -24,7 +24,7 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
     protected config: any,
     logger?: Logger
   ) {
-    this.logger = logger||getLogger('DatabaseAdapter');
+    this.logger = logger||getLogger('DatabaseAdapter');'
   }
 
   abstract connect(): Promise<void>;
@@ -60,7 +60,7 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
       }
 
       // Try a simple query to test connectivity
-      await this.query('SELECT 1');
+      await this.query('SELECT 1');'
       return {
         healthy: true,
         isHealthy: true,
@@ -70,7 +70,7 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
         lastCheck: new Date(),
       };
     } catch (error) {
-      this.logger.error('Health check failed:', error);
+      this.logger.error('Health check failed:', error);'
       return {
         healthy: false,
         isHealthy: false,
@@ -88,7 +88,7 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
     params?: any[],
     executionTime?: number
   ): void {
-    this.logger.debug('Query executed', {
+    this.logger.debug('Query executed', {'
       sql: sql.slice(0, 200) + (sql.length > 200 ? '...' : ''),
       params: params?.slice(0, 5),
       executionTime,
@@ -96,8 +96,8 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
   }
 
   protected handleError(error: any, context: string): never {
-    this.logger.error(`Database error in ${context}:`, error);
-    throw new DatabaseError(`${context} failed: ${error.message}`, error);
+    this.logger.error(`Database error in ${context}:`, error);`
+    throw new DatabaseError(`${context} failed: ${error.message}`, error);`
   }
 }
 
@@ -156,7 +156,7 @@ export class QueryBuilder {
   private offsetValue?: number;
 
   select(fields: string | string[]): this {
-    if (typeof fields ==='string') {
+    if (typeof fields ==='string') {'
       this.selectFields.push(fields);
     } else {
       this.selectFields.push(...fields);
@@ -174,8 +174,8 @@ export class QueryBuilder {
     return this;
   }
 
-  orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
-    this.orderByFields.push(`${field} ${direction}`);
+  orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): this {'
+    this.orderByFields.push(`${field} ${direction}`);`
     return this;
   }
 
@@ -191,23 +191,23 @@ export class QueryBuilder {
 
   toSQL(): string {
     let sql = 'SELECT ';
-    sql += this.selectFields.length > 0 ? this.selectFields.join(', ') : '*';
-    sql += ` FROM ${this.fromTable}`;
+    sql += this.selectFields.length > 0 ? this.selectFields.join(', ') : '*;
+    sql += ` FROM ${this.fromTable}`;`
 
     if (this.whereConditions.length > 0) {
-      sql += ` WHERE ${this.whereConditions.join(' AND ')}`;
+      sql += ` WHERE ${this.whereConditions.join(' AND ')}`;`
     }
 
     if (this.orderByFields.length > 0) {
-      sql += ` ORDER BY ${this.orderByFields.join(', ')}`;
+      sql += ` ORDER BY ${this.orderByFields.join(', ')}`;`
     }
 
     if (this.limitValue !== undefined) {
-      sql += ` LIMIT ${this.limitValue}`;
+      sql += ` LIMIT ${this.limitValue}`;`
     }
 
     if (this.offsetValue !== undefined) {
-      sql += ` OFFSET ${this.offsetValue}`;
+      sql += ` OFFSET ${this.offsetValue}`;`
     }
 
     return sql;

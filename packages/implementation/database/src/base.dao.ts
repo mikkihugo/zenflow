@@ -43,10 +43,10 @@ import type { DatabaseAdapter } from './interfaces.js';
  *
  * @template T The entity type this DAO manages.
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * class UserDao extends BaseDao<User> {
  *   constructor(adapter: DatabaseAdapter, logger: Logger) {
- *     super(adapter, 'users', logger);
+ *     super(adapter, 'users', logger);'
  *   }
  *
  *   protected mapEntityToRow(entity: Partial<User>) {
@@ -60,8 +60,8 @@ import type { DatabaseAdapter } from './interfaces.js';
  *
  * // Usage
  * const userDao = new UserDao(sqliteAdapter, logger);
- * const users = await userDao.findBy({ status: 'active'}, { limit: 10 });
- * ```
+ * const users = await userDao.findBy({ status: 'active'}, { limit: 10 });'
+ * ````
  * @example
  */
 export abstract class BaseDao<T> implements Repository<T> {
@@ -85,7 +85,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param row Raw database row object
    * @returns Typed entity object
    * @example
-   * ```typescript
+   * ```typescript`
    * protected mapRowToEntity(row: any): User {
    *   return {
    *     id: row.id,
@@ -94,7 +94,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    *     createdAt: new Date(row.created_at) // Handle date conversion
    *   };
    * }
-   * ```
+   * ````
    */
   protected abstract mapRowToEntity(row: unknown): T;
 
@@ -104,7 +104,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param entity Partial entity object (for updates/inserts)
    * @returns Database row object with proper field names
    * @example
-   * ```typescript
+   * ```typescript`
    * protected mapEntityToRow(entity: Partial<User>) {
    *   return {
    *     first_name: entity.firstName, // Handle camelCase → snake_case
@@ -112,7 +112,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    *     created_at: entity.createdAt?.toISOString() // Handle date conversion
    *   };
    * }
-   * ```
+   * ````
    */
   protected abstract mapEntityToRow(
     entity: Partial<T>
@@ -125,7 +125,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   async findById(id: string|number): Promise<T|null> {
     this.logger.debug(
-      `Finding entity by ID: ${id} in table: ${this.tableName}`,
+      `Finding entity by ID: ${id} in table: ${this.tableName}`,`
     );
 
     try {
@@ -138,9 +138,9 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       return this.mapRowToEntity(result?.rows?.[0]);
     } catch (error) {
-      this.logger.error(`Failed to find entity by ID: ${error}`);
+      this.logger.error(`Failed to find entity by ID: ${error}`);`
       throw new Error(
-        `Find by ID failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Find by ID failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -153,7 +153,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   async findBy(criteria: Partial<T>, options?: QueryOptions): Promise<T[]> {
     this.logger.debug(
-      `Finding entities by criteria in table: ${this.tableName}`,
+      `Finding entities by criteria in table: ${this.tableName}`,`
       {
         criteria,
         options,
@@ -166,9 +166,9 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       return result?.rows.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
-      this.logger.error(`Failed to find entities by criteria: ${error}`);
+      this.logger.error(`Failed to find entities by criteria: ${error}`);`
       throw new Error(
-        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -179,7 +179,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param options
    */
   async findAll(options?: QueryOptions): Promise<T[]> {
-    this.logger.debug(`Finding all entities in table: ${this.tableName}`, {
+    this.logger.debug(`Finding all entities in table: ${this.tableName}`, {`
       options,
     });
 
@@ -189,9 +189,9 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       return result?.rows.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
-      this.logger.error(`Failed to find all entities: ${error}`);
+      this.logger.error(`Failed to find all entities: ${error}`);`
       throw new Error(
-        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -201,8 +201,8 @@ export abstract class BaseDao<T> implements Repository<T> {
    *
    * @param entity
    */
-  async create(entity: Omit<T, 'id'>): Promise<T> {
-    this.logger.debug(`Creating new entity in table: ${this.tableName}`, {
+  async create(entity: Omit<T, 'id'>): Promise<T> {'
+    this.logger.debug(`Creating new entity in table: ${this.tableName}`, {`
       entity,
     });
 
@@ -225,11 +225,11 @@ export abstract class BaseDao<T> implements Repository<T> {
         }
       }
 
-      throw new Error('Failed to retrieve created entity');
+      throw new Error('Failed to retrieve created entity');'
     } catch (error) {
-      this.logger.error(`Failed to create entity: ${error}`);
+      this.logger.error(`Failed to create entity: ${error}`);`
       throw new Error(
-        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -241,7 +241,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param updates
    */
   async update(id: string|number, updates: Partial<T>): Promise<T> {
-    this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, {
+    this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, {`
       updates,
     });
 
@@ -252,14 +252,14 @@ export abstract class BaseDao<T> implements Repository<T> {
       // Fetch the updated entity
       const updated = await this.findById(id);
       if (!updated) {
-        throw new Error('Entity not found after update');
+        throw new Error('Entity not found after update');'
       }
 
       return updated;
     } catch (error) {
-      this.logger.error(`Failed to update entity: ${error}`);
+      this.logger.error(`Failed to update entity: ${error}`);`
       throw new Error(
-        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -270,7 +270,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param id
    */
   async delete(id: string|number): Promise<boolean> {
-    this.logger.debug(`Deleting entity ${id} from table: ${this.tableName}`);
+    this.logger.debug(`Deleting entity ${id} from table: ${this.tableName}`);`
 
     try {
       const query = this.buildDeleteQuery(id);
@@ -278,9 +278,9 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       return result?.rowCount > 0;
     } catch (error) {
-      this.logger.error(`Failed to delete entity: ${error}`);
+      this.logger.error(`Failed to delete entity: ${error}`);`
       throw new Error(
-        `Delete failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Delete failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -291,7 +291,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param criteria
    */
   async count(criteria?: Partial<T>): Promise<number> {
-    this.logger.debug(`Counting entities in table: ${this.tableName}`, {
+    this.logger.debug(`Counting entities in table: ${this.tableName}`, {`
       criteria,
     });
 
@@ -301,9 +301,9 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       return (result as any)?.rows?.[0]?.count||0;
     } catch (error) {
-      this.logger.error(`Failed to count entities: ${error}`);
+      this.logger.error(`Failed to count entities: ${error}`);`
       throw new Error(
-        `Count failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Count failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -315,14 +315,14 @@ export abstract class BaseDao<T> implements Repository<T> {
    */
   async exists(id: string|number): Promise<boolean> {
     this.logger.debug(
-      `Checking if entity ${id} exists in table: ${this.tableName}`,
+      `Checking if entity ${id} exists in table: ${this.tableName}`,`
     );
 
     try {
       const entity = await this.findById(id);
       return entity !== null;
     } catch (error) {
-      this.logger.error(`Failed to check entity existence: ${error}`);
+      this.logger.error(`Failed to check entity existence: ${error}`);`
       return false;
     }
   }
@@ -333,13 +333,13 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param query
    */
   async executeCustomQuery<R = any>(query: CustomQuery): Promise<R> {
-    this.logger.debug(`Executing custom query: ${query.type}`);
+    this.logger.debug(`Executing custom query: ${query.type}`);`
 
     try {
       let sql: string;
       let params: unknown[] = [];
 
-      if (typeof query.query ==='string') {
+      if (typeof query.query ==='string') {'
         sql = query.query;
         params = Object.values(query.parameters||{});
       } else {
@@ -351,9 +351,9 @@ export abstract class BaseDao<T> implements Repository<T> {
       const result = await this.adapter.query(sql, params);
       return result as R;
     } catch (error) {
-      this.logger.error(`Custom query failed: ${error}`);
+      this.logger.error(`Custom query failed: ${error}`);`
       throw new Error(
-        `Custom query failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Custom query failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -368,7 +368,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     params: unknown[];
   } {
     return {
-      sql: `SELECT * FROM ${this.tableName} WHERE id = ?`,
+      sql: `SELECT * FROM ${this.tableName} WHERE id = ?`,`
       params: [id],
     };
   }
@@ -384,22 +384,22 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @returns Object with SQL string and parameter array
    *
    * @example Generated SQL
-   * ```sql
+   * ```sql`
    * SELECT * FROM users
    * WHERE status = ? AND age > ?
    * ORDER BY created_at DESC
    * LIMIT 10 OFFSET 0
-   * ```
+   * ````
    *
    * @example Usage
-   * ```typescript
+   * ```typescript`
    * const query = this.buildFindByQuery(
    *   { status:'active', age: 18 },
-   *   { sort: [{ field: 'createdAt', direction: 'desc' }], limit: 10 }
+   *   { sort: [{ field: 'createdAt', direction: 'desc' }], limit: 10 }'
    * );
    * // query.sql = "SELECT * FROM users WHERE status = ? AND age = ? ORDER BY created_at DESC LIMIT 10"
-   * // query.params = ['active', 18]
-   * ```
+   * // query.params = ['active', 18]'
+   * ````
    */
   protected buildFindByQuery(
     criteria: Partial<T>,
@@ -407,14 +407,14 @@ export abstract class BaseDao<T> implements Repository<T> {
   ): { sql: string; params: unknown[] } {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
-    const orderClause = this.buildOrderClause(options?.['sort']);
+    const orderClause = this.buildOrderClause(options?.['sort']);'
     const limitClause = this.buildLimitClause(
       options?.['limit'],
       options?.['offset'],
     );
 
     const sql =
-      `SELECT * FROM ${this.tableName} ${whereClause} ${orderClause} ${limitClause}`.trim();
+      `SELECT * FROM ${this.tableName} ${whereClause} ${orderClause} ${limitClause}`.trim();`
     const params = Object.values(mappedCriteria);
 
     return { sql, params };
@@ -424,14 +424,14 @@ export abstract class BaseDao<T> implements Repository<T> {
     sql: string;
     params: unknown[];
   } {
-    const orderClause = this.buildOrderClause(options?.['sort']);
+    const orderClause = this.buildOrderClause(options?.['sort']);'
     const limitClause = this.buildLimitClause(
       options?.['limit'],
       options?.['offset'],
     );
 
     const sql =
-      `SELECT * FROM ${this.tableName} ${orderClause} ${limitClause}`.trim();
+      `SELECT * FROM ${this.tableName} ${orderClause} ${limitClause}`.trim();`
 
     return { sql, params: [] };
   }
@@ -446,28 +446,28 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @returns Object with INSERT SQL and parameter array
    *
    * @example Generated SQL
-   * ```sql
+   * ```sql`
    * INSERT NTO users (first_name, email, status) VALUES (?, ?, ?)
-   * ```
+   * ````
    *
    * @example Usage
-   * ```typescript
-   * const query = this.buildCreateQuery({ firstName: 'John', email: 'john@example.com' });
+   * ```typescript`
+   * const query = this.buildCreateQuery({ firstName: 'John', email: 'john@example.com' });'
    * // query.sql = "INSERT NTO users (first_name, email) VALUES (?, ?)"
-   * // query.params = ['John', 'john@example.com']
-   * ```
+   * // query.params = ['John', 'john@example.com']'
+   * ````
    */
-  protected buildCreateQuery(entity: Omit<T, 'id'>): {
+  protected buildCreateQuery(entity: Omit<T, 'id'>): {'
     sql: string;
     params: unknown[];
   } {
     const mappedEntity = this.mapEntityToRow(entity as Partial<T>);
-    const columns = Object.keys(mappedEntity).join(', ');
+    const columns = Object.keys(mappedEntity).join(', ');'
     const placeholders = Object.keys(mappedEntity)
-      .map(() => '?')
-      .join(', ');
+      .map(() => '?')'
+      .join(', ');'
 
-    const sql = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;
+    const sql = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;`
     const params = Object.values(mappedEntity);
 
     return { sql, params };
@@ -484,16 +484,16 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @returns Object with UPDATE SQL and parameter array
    *
    * @example Generated SQL
-   * ```sql
+   * ```sql`
    * UPDATE users SET first_name = ?, email = ? WHERE id = ?
-   * ```
+   * ````
    *
    * @example Usage
-   * ```typescript
-   * const query = this.buildUpdateQuery('123', { firstName: 'Jane' });
+   * ```typescript`
+   * const query = this.buildUpdateQuery('123', { firstName: 'Jane' });'
    * // query.sql = "UPDATE users SET first_name = ? WHERE id = ?"
-   * // query.params = ['Jane', '123']
-   * ```
+   * // query.params = ['Jane', '123']'
+   * ````
    */
   protected buildUpdateQuery(
     id: string|number,
@@ -501,10 +501,10 @@ export abstract class BaseDao<T> implements Repository<T> {
   ): { sql: string; params: unknown[] } {
     const mappedUpdates = this.mapEntityToRow(updates);
     const setClause = Object.keys(mappedUpdates)
-      .map((column) => `${column} = ?`)
-      .join(', ');
+      .map((column) => `${column} = ?`)`
+      .join(', ');'
 
-    const sql = `UPDATE ${this.tableName} SET ${setClause} WHERE id = ?`;
+    const sql = `UPDATE ${this.tableName} SET ${setClause} WHERE id = ?`;`
     const params = [...Object.values(mappedUpdates), id];
 
     return { sql, params };
@@ -515,7 +515,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     params: unknown[];
   } {
     return {
-      sql: `DELETE FROM ${this.tableName} WHERE id = ?`,
+      sql: `DELETE FROM ${this.tableName} WHERE id = ?`,`
       params: [id],
     };
   }
@@ -526,7 +526,7 @@ export abstract class BaseDao<T> implements Repository<T> {
   } {
     if (!criteria||Object.keys(criteria).length === 0) {
       return {
-        sql: `SELECT COUNT(*) as count FROM ${this.tableName}`,
+        sql: `SELECT COUNT(*) as count FROM ${this.tableName}`,`
         params: [],
       };
     }
@@ -534,7 +534,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
 
-    const sql = `SELECT COUNT(*) as count FROM ${this.tableName} ${whereClause}`;
+    const sql = `SELECT COUNT(*) as count FROM ${this.tableName} ${whereClause}`;`
     const params = Object.values(mappedCriteria);
 
     return { sql, params };
@@ -550,21 +550,21 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @returns WHERE clause string or empty string if no criteria
    *
    * @example
-   * ```typescript
-   * buildWhereClause({ status:'active', age: 25 })
+   * ```typescript`
+   * buildWhereClause({ status:'active', age: 25 })'
    * // Returns: "WHERE status = ? AND age = ?"
    *
    * buildWhereClause({})
    * // Returns: ""
-   * ```
+   * ````
    */
   protected buildWhereClause(criteria: Record<string, unknown>): string {
     if (Object.keys(criteria).length === 0) {
-      return '';
+      return ';
     }
 
-    const conditions = Object.keys(criteria).map((column) => `${column} = ?`);
-    return `WHERE ${conditions.join(' AND ')}`;
+    const conditions = Object.keys(criteria).map((column) => `${column} = ?`);`
+    return `WHERE ${conditions.join(' AND ')}`;`
   }
 
   /**
@@ -577,24 +577,24 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @returns ORDER BY clause string or empty string if no sorting
    *
    * @example
-   * ```typescript
-   * buildOrderClause([{ field: 'created_at', direction: 'desc' }, { field: 'name', direction: 'asc'}])
+   * ```typescript`
+   * buildOrderClause([{ field: 'created_at', direction: 'desc' }, { field: 'name', direction: 'asc'}])'
    * // Returns: "ORDER BY created_at DESC, name ASC"
    *
    * buildOrderClause([])
    * // Returns: ""
-   * ```
+   * ````
    */
   protected buildOrderClause(sortCriteria?: SortCriteria[]): string {
     if (!sortCriteria||sortCriteria.length === 0) {
-      return'';
+      return';
     }
 
     const orderBy = sortCriteria
-      .map((sort) => `${sort.field} ${sort.direction.toUpperCase()}`)
-      .join(', ');
+      .map((sort) => `${sort.field} ${sort.direction.toUpperCase()}`)`
+      .join(', ');'
 
-    return `ORDER BY ${orderBy}`;
+    return `ORDER BY ${orderBy}`;`
   }
 
   /**
@@ -608,7 +608,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @returns LIMIT clause string or empty string if no limit
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * buildLimitClause(10, 20)
    * // Returns: "LIMIT 10 OFFSET 20" (page 3 of 10 items per page)
    *
@@ -617,18 +617,18 @@ export abstract class BaseDao<T> implements Repository<T> {
    *
    * buildLimitClause()
    * // Returns: "" (no limit)
-   * ```
+   * ````
    */
   protected buildLimitClause(limit?: number, offset?: number): string {
     if (!limit) {
-      return '';
+      return ';
     }
 
     if (offset) {
-      return `LIMIT ${limit} OFFSET ${offset}`;
+      return `LIMIT ${limit} OFFSET ${offset}`;`
     }
 
-    return `LIMIT ${limit}`;
+    return `LIMIT ${limit}`;`
   }
 }
 
@@ -659,32 +659,32 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
    */
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(
-      `Executing transaction with ${operations.length} operations`,
+      `Executing transaction with ${operations.length} operations`,`
     );
 
     try {
       return await this.adapter.transaction(async (tx) => {
-        this.logger.debug('Transaction context initialized', { transactionId: tx });
+        this.logger.debug('Transaction context initialized', { transactionId: tx });'
         const results: unknown[] = [];
 
         for (const operation of operations) {
           let result: unknown;
 
           switch (operation.type) {
-          case 'create':
+          case 'create':'
             if ((operation as any).data && (operation as any).entityType) {
               result = await this.repository.create((operation as any).data);
             }
             break;
 
-          case 'update':
+          case 'update':'
             if ((operation as any).data?.id && (operation as any).data) {
               const { id, ...updates } = (operation as any).data;
               result = await this.repository.update(id, updates);
             }
             break;
 
-          case 'delete':
+          case 'delete':'
             if ((operation as any).data?.id) {
               result = await this.repository.delete(
                 (operation as any).data.id,
@@ -692,7 +692,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
             }
             break;
 
-          case 'custom':
+          case 'custom':'
             if (operation.customQuery) {
               result = await this.repository.executeCustomQuery(
                 operation.customQuery,
@@ -701,7 +701,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
             break;
 
           default:
-            throw new Error(`Unsupported operation type: ${operation.type}`);
+            throw new Error(`Unsupported operation type: ${operation.type}`);`
           }
 
           results.push(result);
@@ -710,9 +710,9 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
         return results as R;
       });
     } catch (error) {
-      this.logger.error(`Transaction failed: ${error}`);
+      this.logger.error(`Transaction failed: ${error}`);`
       throw new Error(
-        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -721,7 +721,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
    * Get database-specific metadata.
    */
   async getMetadata(): Promise<DatabaseMetadata> {
-    this.logger.debug('Getting database metadata');
+    this.logger.debug('Getting database metadata');'
 
     try {
       const schema = this.adapter.getSchema
@@ -736,9 +736,9 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
         config: this.getConfiguration(),
       };
     } catch (error) {
-      this.logger.error(`Failed to get database metadata: ${error}`);
+      this.logger.error(`Failed to get database metadata: ${error}`);`
       throw new Error(
-        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -747,7 +747,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
    * Perform health check.
    */
   async healthCheck(): Promise<HealthStatus> {
-    this.logger.debug('Performing health check');
+    this.logger.debug('Performing health check');'
 
     try {
       // Basic health check - try to count entities
@@ -765,7 +765,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
         lastCheck: new Date(),
       };
     } catch (error) {
-      this.logger.error(`Health check failed: ${error}`);
+      this.logger.error(`Health check failed: ${error}`);`
 
       return {
         healthy: false,
@@ -786,7 +786,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
    * Get performance metrics.
    */
   async getMetrics(): Promise<PerformanceMetrics> {
-    this.logger.debug('Getting performance metrics');
+    this.logger.debug('Getting performance metrics');'
 
     try {
       return {
@@ -808,9 +808,9 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
         },
       };
     } catch (error) {
-      this.logger.error(`Failed to get performance metrics: ${error}`);
+      this.logger.error(`Failed to get performance metrics: ${error}`);`
       throw new Error(
-        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -818,7 +818,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
   /**
    * Abstract methods for subclasses to implement.
    */
-  protected abstract getDatabaseType(): DatabaseMetadata['type'];
+  protected abstract getDatabaseType(): DatabaseMetadata['type'];'
   protected abstract getSupportedFeatures(): string[];
   protected abstract getConfiguration(): Record<string, unknown>;
 }

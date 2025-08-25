@@ -18,7 +18,7 @@ export interface WorkflowStep {
   retries?: number;
   timeout?: number;
   output?: string;
-  onError?: 'stop|continue|skip';
+  onError?: 'stop' | 'continue' | 'skip';
 }
 export interface WorkflowDefinition {
   name: string;
@@ -52,7 +52,7 @@ export interface WorkflowData {
 export interface WorkflowState {
   id: string;
   definition: WorkflowDefinition;
-  status:|'pending|running|paused|completed|failed|cancelled';
+  status:|'pending|running|paused|completed|failed|cancelled;
   context: WorkflowContext;
   currentStep: number;
   steps: WorkflowStep[];

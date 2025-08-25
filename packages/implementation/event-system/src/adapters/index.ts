@@ -40,7 +40,7 @@ import {
   SystemEventAdapterConfig,
   SystemEventHelpers,
 } from './system-event-adapter';
-// Import factory classes first to ensure they're available
+// Import factory classes first to ensure they're available'
 import { SystemEventManagerFactory } from './system-event-factory';
 
 // Type exports for convenience

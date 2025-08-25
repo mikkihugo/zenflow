@@ -11,5 +11,5 @@ import {
 export type { Logger } from '@claude-zen/foundation';
 
 export function getLogger(name: string): Logger {
-  return getFoundationLogger(`database:${name}`);
+  return getFoundationLogger(`database:${name}`);`
 }

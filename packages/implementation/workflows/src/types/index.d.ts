@@ -89,7 +89,7 @@ export declare enum WorkflowCategory {
 /**
  * Core workflow definition
  */
-export interface WorkflowDefinition extends Omit<Entity, 'version'> {
+export interface WorkflowDefinition extends Omit<Entity, 'version'> {'
   name: string;
   description: string;
   category: WorkflowCategory;
@@ -161,10 +161,10 @@ export interface StepAction {
  * Step execution condition
  */
 export interface StepCondition {
-  type: 'skip|execute|retry|fail';
+  type: 'skip|execute|retry|fail;
   expression: string;
   variables: string[];
-  operator: 'and|or|not';
+  operator: 'and' | 'or' | 'not';
 }
 /**
  * Workflow execution instance
@@ -228,7 +228,7 @@ export interface StepExecution extends Entity {
 export interface StepError {
   code: string;
   message: string;
-  type: 'validation|execution|timeout|resource|permission';
+  type: 'validation|execution|timeout|resource|permission;
   stack?: string;
   context?: Record<string, unknown>;
   recoverable: boolean;
@@ -480,7 +480,7 @@ export interface StepLog {
   level: LogLevel;
   message: string;
   data?: Record<string, unknown>;
-  phase: 'start|execute|complete|error|retry';
+  phase: 'start|execute|complete|error|retry;
 }
 /**
  * Log levels
@@ -510,7 +510,7 @@ export interface WorkflowArtifact extends Entity {
  */
 export interface StepArtifact extends WorkflowArtifact {
   stepId: UUID;
-  phase: 'input|output|temporary|log';
+  phase: 'input|output|temporary|log;
 }
 /**
  * Artifact types
@@ -546,7 +546,7 @@ export interface AccessPolicy {
 /**
  * Workflow template for reusable workflows
  */
-export interface WorkflowTemplate extends Omit<Entity, 'version'> {
+export interface WorkflowTemplate extends Omit<Entity, 'version'> {'
   name: string;
   description: string;
   category: WorkflowCategory;
@@ -625,7 +625,7 @@ export interface WorkflowPermissions {
  * Permission specification
  */
 export interface Permission {
-  type: 'user|role|group|service';
+  type: 'user|role|group|service;
   principal: string;
   conditions?: PermissionCondition[];
   expiry?: Timestamp;
@@ -778,10 +778,10 @@ export declare enum LockType {
   WRITE = 'write',
   EXCLUSIVE = 'exclusive',
 }
-export type WorkflowId = Branded<UUID, 'WorkflowId'>;
-export type ExecutionId = Branded<UUID, 'ExecutionId'>;
-export type StepId = Branded<UUID, 'StepId'>;
-export type WorkflowEventType =|'workflow.created|workflow.started'||workflow.completed|workflow.failed'||workflow.cancelled|step.started'||step.completed|step.failed'||step.retried';
+export type WorkflowId = Branded<UUID, 'WorkflowId'>;'
+export type ExecutionId = Branded<UUID, 'ExecutionId'>;'
+export type StepId = Branded<UUID, 'StepId'>;'
+export type WorkflowEventType =|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||workflow.cancelled|step.started'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
 export interface WorkflowMetadata {
   tags: string[];
   author: string;
@@ -962,9 +962,9 @@ export type StepResult = Result<StepExecution, StepExecutionError>;
 /**
  * Workflow-specific error types
  */
-export interface WorkflowError extends Omit<ValidationError, 'type'> {
-  type: 'WorkflowError';
-  category:|'definition|execution|validation|permission|resource';
+export interface WorkflowError extends Omit<ValidationError, 'type'> {'
+  type: 'WorkflowError;
+  category:|'definition|execution|validation|permission|resource;
   workflowId?: UUID;
   executionId?: UUID;
 }
@@ -972,7 +972,7 @@ export interface WorkflowError extends Omit<ValidationError, 'type'> {
  * Execution-specific error types
  */
 export interface ExecutionError extends WorkflowError {
-  category: 'execution';
+  category: 'execution;
   stepId?: UUID;
   retryable: boolean;
   failurePoint: string;
@@ -981,9 +981,9 @@ export interface ExecutionError extends WorkflowError {
  * Step execution error types
  */
 export interface StepExecutionError extends WorkflowError {
-  category: 'execution';
+  category: 'execution;
   stepId: UUID;
-  phase: 'validation|execution|output|cleanup';
+  phase: 'validation|execution|output|cleanup;
   recoverable: boolean;
 }
 declare const _default: {

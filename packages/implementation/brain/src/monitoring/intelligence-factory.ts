@@ -9,7 +9,7 @@ import { getLogger } from '@claude-zen/foundation';
 import { CompleteIntelligenceSystem } from './intelligence-system';
 import type { IntelligenceSystemConfig } from './types';
 
-const logger = getLogger('agent-monitoring-intelligence-factory');
+const logger = getLogger('agent-monitoring-intelligence-factory');'
 
 /**
  * Create a basic intelligence system with minimal features
@@ -37,7 +37,7 @@ export function createBasicIntelligenceSystem(): CompleteIntelligenceSystem {
     },
   };
 
-  logger.info('Creating basic intelligence system');
+  logger.info('Creating basic intelligence system');'
   return new CompleteIntelligenceSystem(config);
 }
 
@@ -82,7 +82,7 @@ export function createProductionIntelligenceSystem(): CompleteIntelligenceSystem
     },
   };
 
-  logger.info('Creating production intelligence system');
+  logger.info('Creating production intelligence system');'
   return new CompleteIntelligenceSystem(config);
 }
 
@@ -92,6 +92,6 @@ export function createProductionIntelligenceSystem(): CompleteIntelligenceSystem
 export function createIntelligenceSystem(
   config: IntelligenceSystemConfig
 ): CompleteIntelligenceSystem {
-  logger.info('Creating custom intelligence system', { config });
+  logger.info('Creating custom intelligence system', { config });'
   return new CompleteIntelligenceSystem(config);
 }

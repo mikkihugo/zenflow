@@ -17,7 +17,7 @@ import type {
   LLMAnalytics,
 } from '../types/index';
 
-const logger = getLogger('llm-routing-stats');
+const logger = getLogger('llm-routing-stats');'
 
 export class LLMStatsService {
   private callHistory: LLMCallRecord[] = [];
@@ -25,7 +25,7 @@ export class LLMStatsService {
   private readonly startTime = new Date();
 
   constructor() {
-    logger.info('LLM Statistics Service initialized');
+    logger.info('LLM Statistics Service initialized');'
   }
 
   /**
@@ -40,7 +40,7 @@ export class LLMStatsService {
       routingReason: string;
     },
     metadata?: {
-      requestType?: 'analyze|analyzeSmart|analyzeArchitectureAB';
+      requestType?: 'analyze' | 'analyzeSmart' | 'analyzeArchitectureAB';
       tokenUsage?: { inputTokens?: number; outputTokens?: number };
       sessionId?: string;
     },
@@ -92,11 +92,11 @@ export class LLMStatsService {
 
     if (result.success) {
       logger.debug(
-        `LLM call recorded: ${result.provider} → ${request.task} (${result.executionTime}ms)`,
+        `LLM call recorded: ${result.provider} → ${request.task} (${result.executionTime}ms)`,`
       );
     } else {
       logger.warn(
-        `Failed LLM call recorded: ${result.provider} → ${request.task} (${result.error})`,
+        `Failed LLM call recorded: ${result.provider} → ${request.task} (${result.error})`,`
       );
     }
   }
@@ -213,8 +213,8 @@ export class LLMStatsService {
   /**
    * Exports statistics data for external analysis
    */
-  exportStats(format: 'json'|'csv'): string {
-    if (format === 'csv') {
+  exportStats(format: 'json'|'csv'): string {'
+    if (format === 'csv') {'
       return this.exportToCsv();
     }
 
@@ -242,13 +242,13 @@ export class LLMStatsService {
   clearHistory(): void {
     const recordCount = this.callHistory.length;
     this.callHistory = [];
-    logger.info(`Cleared ${recordCount} LLM call records`);
+    logger.info(`Cleared ${recordCount} LLM call records`);`
   }
 
   // Private helper methods
 
   private generateCallId(): string {
-    return `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private addCallRecord(record: LLMCallRecord): void {
@@ -262,21 +262,21 @@ export class LLMStatsService {
 
   private getProviderModel(providerId: string): string {
     const config = LLM_PROVIDER_CONFIG[providerId];
-    return config?.defaultModel||'unknown';
+    return config?.defaultModel||'unknown;
   }
 
   private assessTaskComplexity(
     request: AnalysisRequest,
-  ): 'low|medium|high'{
-    const contextLength = (request.prompt||'').length;
+  ): 'low|medium|high'{'
+    const contextLength = (request.prompt||'').length;'
 
-    if (request.task === 'domain-analysis'||contextLength > 10000) {
-      return'high';
+    if (request.task === 'domain-analysis'||contextLength > 10000) {'
+      return'high;
     }
-    if (request.task === 'typescript-error-analysis'||contextLength > 5000) {
-      return'medium';
+    if (request.task === 'typescript-error-analysis'||contextLength > 5000) {'
+      return'medium;
     }
-    return 'low';
+    return 'low;
   }
 
   private calculateThroughputScore(providerId: string): number {
@@ -307,12 +307,12 @@ export class LLMStatsService {
 
   private calculateCostEfficiency(providerId: string): number {
     // Cost efficiency based on provider characteristics
-    const costScores: Record<string, number> = { 'github-models': 100, // Free
+    const costScores: Record<string, number> = { 'github-models': 100, // Free'
       gemini: 80, // Generous free tier
-      'claude-code': 70, // Local CLI, uses API credits
-      'gemini-direct': 60, // Direct API usage
+      'claude-code': 70, // Local CLI, uses API credits'
+      'gemini-direct': 60, // Direct API usage'
       copilot: 40, // Enterprise subscription
-      'gemini-pro': 30, // Premium model
+      'gemini-pro': 30, // Premium model'
     };
 
     return costScores[providerId]||50;
@@ -394,7 +394,7 @@ export class LLMStatsService {
 
     calls.forEach((call) => {
       const pattern = [call.routingDecision.originalPreference, call.provider];
-      const key = pattern.join('→');
+      const key = pattern.join('→');'
       const existing = patterns.get(key)||{ count: 0, successes: 0 };
       patterns.set(key, {
         count: existing.count + 1,
@@ -452,7 +452,7 @@ export class LLMStatsService {
     healthScore -= Math.min(averageLatency / 100, 30); // High latency reduces health
     healthScore = Math.max(0, Math.min(100, healthScore));
 
-    let overallHealth: LLMSystemHealth['overallHealth'];
+    let overallHealth: LLMSystemHealth['overallHealth'];'
     if (healthScore >= 90) {
       overallHealth = 'excellent';
     } else if (healthScore >= 75) {
@@ -465,12 +465,12 @@ export class LLMStatsService {
       overallHealth = 'critical';
     }
 
-    const alerts: LLMSystemHealth['alerts'] = [];
+    const alerts: LLMSystemHealth['alerts'] = [];'
 
     if (errorRate > 0.1) {
       alerts.push({
         level: 'warning',
-        message: `High error rate detected: ${Math.round(errorRate * 100)}%`,
+        message: `High error rate detected: ${Math.round(errorRate * 100)}%`,`
         timestamp: new Date(),
       });
     }
@@ -478,7 +478,7 @@ export class LLMStatsService {
     if (averageLatency > 5000) {
       alerts.push({
         level: 'error',
-        message: `High latency detected: ${Math.round(averageLatency)}ms average`,
+        message: `High latency detected: ${Math.round(averageLatency)}ms average`,`
         timestamp: new Date(),
       });
     }
@@ -504,7 +504,7 @@ export class LLMStatsService {
   private calculateTrends(
     calls: LLMCallRecord[],
     range: { start: Date; end: Date },
-  ): LLMAnalytics['trends'] {
+  ): LLMAnalytics['trends'] {'
     // Calculate time intervals based on range
     const duration = range.end.getTime() - range.start.getTime();
     const intervalMs = Math.max(60000, duration / 24); // At least 1 minute intervals, max 24 points
@@ -559,7 +559,7 @@ export class LLMStatsService {
   private generateInsights(
     providerStats: LLMProviderStats[],
     routingStats: LLMRoutingStats,
-  ): LLMAnalytics['insights'] {
+  ): LLMAnalytics['insights'] {'
     const sortedByReliability = [...providerStats].sort(
       (a, b) => b.reliability - a.reliability,
     );
@@ -586,13 +586,13 @@ export class LLMStatsService {
   private getProviderStatus(
     providerId: string,
     calls: LLMCallRecord[],
-  ): LLMProviderStats['currentStatus'] {
+  ): LLMProviderStats['currentStatus'] {'
     const recentCalls = calls.filter(
       (c) => Date.now() - c.timestamp.getTime() < 60 * 60 * 1000, // Last hour
     );
 
     if (recentCalls.length === 0) {
-      return 'disabled';
+      return 'disabled;
     }
 
     const recentErrors = recentCalls.filter((c) => !c.success);
@@ -601,13 +601,13 @@ export class LLMStatsService {
     );
 
     if (rateLimitErrors.length > 0) {
-      return 'cooldown';
+      return 'cooldown;
     }
     if (recentErrors.length / recentCalls.length > 0.5) {
-      return 'error';
+      return 'error;
     }
 
-    return 'active';
+    return 'active;
   }
 
   private getPreferredTasks(
@@ -629,7 +629,7 @@ export class LLMStatsService {
 
   private calculatePerformanceTrend(
     calls: LLMCallRecord[],
-  ):'improving|stable|declining' {
+  ):'improving' | 'stable' | 'declining' {'
     if (calls.length < 10) {
       return 'stable';
     }
@@ -645,10 +645,10 @@ export class LLMStatsService {
     const improvement = (earlierAvg - recentAvg) / earlierAvg;
 
     if (improvement > 0.1) {
-      return 'improving';
+      return 'improving' | 'stable' | 'declining';
     }
     if (improvement < -0.1) {
-      return 'declining';
+      return 'declining;
     }
     return 'stable';
   }
@@ -757,10 +757,10 @@ export class LLMStatsService {
 
     providerStats.forEach((provider) => {
       if (provider.successRate < 0.8) {
-        bottlenecks.push(`${provider.displayName} has low success rate`);
+        bottlenecks.push(`${provider.displayName} has low success rate`);`
       }
       if (provider.averageResponseTime > 5000) {
-        bottlenecks.push(`${provider.displayName} has high latency`);
+        bottlenecks.push(`${provider.displayName} has high latency`);`
       }
     });
 
@@ -784,7 +784,7 @@ export class LLMStatsService {
     );
     if (underutilized.length > 0) {
       optimizations.push(
-        `Consider using underutilized high-performing providers: ${underutilized.map((p) => p.displayName).join(', ')}`,
+        `Consider using underutilized high-performing providers: ${underutilized.map((p) => p.displayName).join(', ')}`,`
       );
     }
 
@@ -817,7 +817,7 @@ export class LLMStatsService {
       'contextLength',
       'fallbackCount',
       'routingReason',
-    ].join(',');
+    ].join(',');'
 
     const rows = this.callHistory.map((record) =>
       [
@@ -828,11 +828,11 @@ export class LLMStatsService {
         record.executionTime,
         record.contextLength,
         record.routingDecision.fallbackCount,
-        `"${record.routingDecision.routingReason}"`,
+        `"${record.routingDecision.routingReason}"`,`
       ].join(','),
     );
 
-    return [headers, ...rows].join('\n');
+    return [headers, ...rows].join('\n');'
   }
 }
 

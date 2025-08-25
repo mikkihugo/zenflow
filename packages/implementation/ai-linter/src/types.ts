@@ -3,7 +3,7 @@
  * @module ai-linter/types
  */
 
-// Basic Result type for now (will use foundation when it's fixed)
+// Basic Result type for now (will use foundation when it's fixed)'
 export type Result<T, E> = 
   | { success: true; data: T }
   | { success: false; error: E };

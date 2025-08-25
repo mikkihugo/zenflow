@@ -12,14 +12,14 @@ export interface GPUCapabilities {
   hasTensorFlowGPU: boolean;
   hasGPUJS: boolean;
   hasONNXGPU: boolean;
-  recommendedBackend: 'webgpu|tensorflow-gpu'||gpu.js|onnx'||cpu';
+  recommendedBackend: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||cpu;
 }
 /**
  * GPU acceleration options
  */
 export interface GPUOptions {
   preferGPU?: boolean;
-  backend?: 'webgpu|tensorflow-gpu'||gpu.js|onnx | auto'|cpu';
+  backend?: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'|cpu;
   memoryFraction?: number;
 }
 /**

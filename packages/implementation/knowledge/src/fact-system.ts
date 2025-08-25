@@ -6,7 +6,7 @@
  * the knowledge domain, using the core fact engine.
  *
  * This system is PRIVATE to the knowledge package and should only be accessed
- * through the knowledge package's public API.
+ * through the knowledge package's public API.'
  */
 
 import { getLogger, getDatabaseAccess } from '@claude-zen/foundation';
@@ -70,7 +70,7 @@ async function createSQLiteFactClient(): Promise<FactClient> {
   };
 }
 
-const logger = getLogger('KnowledgeFactSystem');
+const logger = getLogger('KnowledgeFactSystem');'
 
 /**
  * Coordination-specific fact entry structure (simplified for coordination layer)
@@ -98,7 +98,7 @@ export interface CoordinationFactQuery {
 
 /**
  * Private fact system implementation within the knowledge package.
- * This class should NOT be exported from the knowledge package's main API.
+ * This class should NOT be exported from the knowledge package's main API.'
  */
 class KnowledgeFactSystem {
   private factClient: FactClient|null = null;
@@ -109,10 +109,10 @@ class KnowledgeFactSystem {
 
   constructor() {
     // Initialize high-performance Rust FactBridge with production configuration
-    // Uses foundation package's database access for SQL, KV, Vector, and Graph storage
+    // Uses foundation package's database access for SQL, KV, Vector, and Graph storage'
     this.factBridge = new FactBridge({
       useRustEngine: true, // Enable Rust for maximum performance
-      database: getDatabaseAccess(), // Use foundation's database access
+      database: getDatabaseAccess(), // Use foundation's database access'
     });
   }
 
@@ -127,7 +127,7 @@ class KnowledgeFactSystem {
     try {
       // Initialize the high-performance Rust fact bridge
       await this.factBridge.initialize();
-      logger.info('✅ Rust fact bridge initialized successfully');
+      logger.info('✅ Rust fact bridge initialized successfully');'
 
       // Initialize TypeScript fallback client for when Rust bridge fails
       this.factClient = await createSQLiteFactClient();
@@ -135,10 +135,10 @@ class KnowledgeFactSystem {
 
       this.initialized = true;
       logger.info(
-        '✅ Knowledge fact system initialized with Rust engine + TypeScript fallback'
+        '✅ Knowledge fact system initialized with Rust engine + TypeScript fallback''
       );
     } catch (error) {
-      logger.error('Failed to initialize knowledge fact system:', error);
+      logger.error('Failed to initialize knowledge fact system:', error);'
       throw error;
     }
   }
@@ -147,12 +147,12 @@ class KnowledgeFactSystem {
    * Store a coordination-specific fact
    */
   async storeFact(
-    fact: Omit<CoordinationFact, 'id|timestamp''>
+    fact: Omit<CoordinationFact, 'id|timestamp''>'
   ): Promise<string> {
     await this.ensureInitialized();
 
     const factEntry: CoordinationFact = {
-      id: `coord-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `coord-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
       timestamp: new Date(),
       ...fact,
     };
@@ -174,7 +174,7 @@ class KnowledgeFactSystem {
           },
         });
       } catch (error) {
-        logger.warn('Failed to store fact in foundation system:', error);
+        logger.warn('Failed to store fact in foundation system:', error);'
       }
     }
 
@@ -256,14 +256,14 @@ class KnowledgeFactSystem {
     }
 
     // Simple text search in fact data and tags
-    const searchTerms = query.toLowerCase().split(' ');
+    const searchTerms = query.toLowerCase().split(' ');'
     results = results.filter((fact) => {
       const searchableText = [
         JSON.stringify(fact.data).toLowerCase(),
         fact.type.toLowerCase(),
         fact.source.toLowerCase(),
         ...fact.tags.map((tag) => tag.toLowerCase()),
-      ].join(' ');
+      ].join(' ');'
 
       return searchTerms.some((term) => searchableText.includes(term));
     });
@@ -278,14 +278,14 @@ class KnowledgeFactSystem {
     // Limit results
     results = results.slice(0, limit);
 
-    // If we don't have enough local results, try external search via Rust bridge
+    // If we don't have enough local results, try external search via Rust bridge'
     if (results.length < limit / 2) {
       try {
         // Use high-performance Rust fact bridge for external search
         const searchQuery = {
           query,
           factTypes: type
-            ? [type as 'npm-package|github-repo'||security-advisory']
+            ? [type as 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin']'
             : undefined,
           limit: limit - results.length,
         };
@@ -294,7 +294,7 @@ class KnowledgeFactSystem {
         // Convert external results to CoordinationFact format
         for (const extResult of externalResults) {
           results.push({
-            id: `ext-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            id: `ext-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
             type: type||extResult.factType||'external-knowledge',
             data: extResult.metadata||extResult,
             timestamp: new Date(),
@@ -318,7 +318,7 @@ class KnowledgeFactSystem {
           );
           for (const extResult of fallbackResults) {
             results.push({
-              id: `ext-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              id: `ext-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
               type: type||'external-knowledge',
               data: extResult,
               timestamp: new Date(),
@@ -328,7 +328,7 @@ class KnowledgeFactSystem {
             });
           }
         } catch (fallbackError) {
-          logger.warn('Foundation fallback also failed:', fallbackError);
+          logger.warn('Foundation fallback also failed:', fallbackError);'
         }
       }
     }
@@ -347,7 +347,7 @@ class KnowledgeFactSystem {
     await this.ensureInitialized();
 
     if (!this.factClient) {
-      logger.warn('Foundation fact client not available for external search');
+      logger.warn('Foundation fact client not available for external search');'
       return [];
     }
 
@@ -360,7 +360,7 @@ class KnowledgeFactSystem {
 
       return await this.factClient.search(searchQuery);
     } catch (error) {
-      logger.error('Failed to search external facts:', error);
+      logger.error('Failed to search external facts:', error);'
       return [];
     }
   }
@@ -380,7 +380,7 @@ class KnowledgeFactSystem {
    */
   async clear(): Promise<void> {
     this.coordinationFacts.clear();
-    logger.info('Cleared coordination facts');
+    logger.info('Cleared coordination facts');'
   }
 
   /**
@@ -400,12 +400,12 @@ class KnowledgeFactSystem {
       // First try Rust fact bridge for maximum performance
       const npmResult = await this.factBridge.getNPMFacts(packageName, version);
       logger.info(
-        `✅ NPM package info retrieved via Rust bridge: ${packageName}`
+        `✅ NPM package info retrieved via Rust bridge: ${packageName}``
       );
       return npmResult;
     } catch (error) {
       logger.warn(
-        `Rust bridge NPM lookup failed for ${packageName}, trying foundation fallback:`,
+        `Rust bridge NPM lookup failed for ${packageName}, trying foundation fallback:`,`
         error
       );
 
@@ -415,12 +415,12 @@ class KnowledgeFactSystem {
           return await this.factClient.getNPMPackage?.(packageName, version);
         } catch (fallbackError) {
           logger.error(
-            `Foundation NPM lookup also failed for ${packageName}:`,
+            `Foundation NPM lookup also failed for ${packageName}:`,`
             fallbackError
           );
         }
       } else {
-        logger.warn('Foundation fact client not available for NPM lookup');
+        logger.warn('Foundation fact client not available for NPM lookup');'
       }
 
       return null;
@@ -437,12 +437,12 @@ class KnowledgeFactSystem {
       // First try Rust fact bridge for maximum performance
       const githubResult = await this.factBridge.getGitHubFacts(owner, repo);
       logger.info(
-        `✅ GitHub repo info retrieved via Rust bridge: ${owner}/${repo}`
+        `✅ GitHub repo info retrieved via Rust bridge: ${owner}/${repo}``
       );
       return githubResult;
     } catch (error) {
       logger.warn(
-        `Rust bridge GitHub lookup failed for ${owner}/${repo}, trying foundation fallback:`,
+        `Rust bridge GitHub lookup failed for ${owner}/${repo}, trying foundation fallback:`,`
         error
       );
 
@@ -452,12 +452,12 @@ class KnowledgeFactSystem {
           return await this.factClient.getGitHubRepository?.(owner, repo);
         } catch (fallbackError) {
           logger.error(
-            `Foundation GitHub lookup also failed for ${owner}/${repo}:`,
+            `Foundation GitHub lookup also failed for ${owner}/${repo}:`,`
             fallbackError
           );
         }
       } else {
-        logger.warn('Foundation fact client not available for GitHub lookup');
+        logger.warn('Foundation fact client not available for GitHub lookup');'
       }
 
       return null;
@@ -513,7 +513,7 @@ class KnowledgeFactSystem {
       try {
         listener(fact);
       } catch (error) {
-        logger.error('Error notifying fact listener:', error);
+        logger.error('Error notifying fact listener:', error);'
       }
     }
   }

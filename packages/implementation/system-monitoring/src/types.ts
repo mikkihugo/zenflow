@@ -58,7 +58,7 @@ export interface PerformanceMetrics {
       p99?: number;
       stdDev?: number;
       throughput?: number;
-      trend?: 'improving | stable|degrading';
+      trend?: 'improving' | 'stable' | 'declining' | stable|degrading;
     }
   >;
   /** System performance */
@@ -76,12 +76,12 @@ export interface PerformanceMetrics {
  */
 export interface HealthStatus {
   /** Overall health status */
-  status: 'healthy | degraded|unhealthy';
+  status: 'healthy | degraded|unhealthy;
   /** Individual check results */
   checks: Record<
     string,
     {
-      status: 'ok | warning|error';
+      status: 'ok | warning|error;
       message?: string;
       value?: number;
       threshold?: number;

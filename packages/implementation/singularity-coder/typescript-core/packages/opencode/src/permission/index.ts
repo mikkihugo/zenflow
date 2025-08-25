@@ -130,7 +130,7 @@ export namespace Permission {
       public readonly sessionID: string,
       public readonly permissionID: string,
     ) {
-      super(`The user rejected permission to use this functionality`)
+      super(`The user rejected permission to use this functionality`)`
     }
   }
 }

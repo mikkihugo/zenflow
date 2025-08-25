@@ -19,7 +19,7 @@
  * - Learns from usage patterns to optimize decisions
  *
  * ENHANCEMENT: 434 → 600+ lines with comprehensive enterprise features
- * PATTERN: Matches memory package's comprehensive foundation integration
+ * PATTERN: Matches memory package's comprehensive foundation integration'
  */
 
 // ARCHITECTURAL CLEANUP: Foundation only - core utilities
@@ -67,7 +67,7 @@ type UUID = string;
 type Timestamp = number;
 
 // Global logger for utility functions
-const logger = getLogger('brain');
+const logger = getLogger('brain');'
 
 /**
  * Brain coordinator configuration
@@ -82,7 +82,7 @@ export class BrainError extends ContextError {
     context?: Record<string, unknown>,
     code?: string
   ) {
-    super(message, { ...context, domain: 'brain' }, code);
+    super(message, { ...context, domain: 'brain' }, code);'
     this.name = 'BrainError';
   }
 }
@@ -138,7 +138,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       },
     };
 
-    this.logger = getLogger('foundation-brain-coordinator');
+    this.logger = getLogger('foundation-brain-coordinator');'
     // Performance tracking initialization - lazy loaded via operations facade
 
     // Circuit breaker would be initialized from operations package
@@ -161,7 +161,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
 
     try {
       this.logger.info(
-        '🧠 Initializing foundation brain coordinator with neural orchestration...'
+        '🧠 Initializing foundation brain coordinator with neural orchestration...''
       );
 
       // Initialize telemetry
@@ -184,7 +184,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         {
           sessionId: this.brainConfig.sessionId,
           enableLearning: this.brainConfig.enableLearning,
-          duration: `${duration}ms`,
+          duration: `${duration}ms`,`
         }
       );
 
@@ -197,7 +197,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
           config: this.brainConfig,
           error: error instanceof Error ? error.message : String(error),
         },
-        'BRAIN_INITIALIZATION_ERROR'
+        'BRAIN_INITIALIZATION_ERROR''
       );
       this.errorAggregator.addError(brainError);
       return err(brainError);
@@ -207,9 +207,9 @@ export class FoundationBrainCoordinator extends TypedEventBase {
   async shutdown(): Promise<void> {
     if (!this.initialized) return;
 
-    logger.info('🧠 Shutting down brain coordinator...');
+    logger.info('🧠 Shutting down brain coordinator...');'
     this.initialized = false;
-    logger.info('✅ Brain coordinator shutdown complete');
+    logger.info('✅ Brain coordinator shutdown complete');'
   }
 
   isInitialized(): boolean {
@@ -220,7 +220,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
     timeLimit?: number;
     qualityRequirement?: number;
   }): Promise<{
@@ -231,10 +231,10 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     expectedPerformance: number;
   }> {
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized');'
     }
 
-    logger.debug(`Optimizing prompt for task: ${request.task}`);
+    logger.debug(`Optimizing prompt for task: ${request.task}`);`
 
     // Create cache key for this optimization request
     const cacheKey = this.createOptimizationCacheKey(request);
@@ -242,7 +242,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     // Check cache first
     const cached = this.getCachedOptimization(cacheKey);
     if (cached) {
-      this.logger.debug('Using cached optimization decision', {
+      this.logger.debug('Using cached optimization decision', {'
         strategy: cached.strategy,
       });
       return cached.result;
@@ -255,14 +255,14 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     try {
       // Import Rust automatic optimization selection with proper type guard (conditionally)
       const rustModule: any = null;
-      // Note: '../rust/core/optimization_selector' module is not yet implemented
+      // Note: '../rust/core/optimization_selector' module is not yet implemented'
       this.logger.warn(
-        'Rust optimization module not available, using fallback strategy'
+        'Rust optimization module not available, using fallback strategy''
       );
 
       // Type guard for Rust module
       if (!this.isValidRustModule(rustModule)) {
-        throw new Error('Invalid Rust optimization module structure');
+        throw new Error('Invalid Rust optimization module structure');'
       }
 
       const { auto_select_strategy, record_optimization_performance } =
@@ -276,8 +276,8 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       let expectedPerformance: number;
 
       switch (strategy) {
-        case 'DSPy':
-          logger.debug('🎯 Using DSPy optimization for complex task');
+        case 'DSPy':'
+          logger.debug('🎯 Using DSPy optimization for complex task');'
           optimizedPrompt = await this.optimizeWithDSPy(
             request.basePrompt,
             request.context
@@ -286,8 +286,8 @@ export class FoundationBrainCoordinator extends TypedEventBase {
           expectedPerformance = 0.85;
           break;
 
-        case 'DSPyConstrained':
-          logger.debug('⚡ Using constrained DSPy optimization');
+        case 'DSPyConstrained':'
+          logger.debug('⚡ Using constrained DSPy optimization');'
           optimizedPrompt = await this.optimizeWithConstrainedDSPy(
             request.basePrompt,
             request.context
@@ -296,9 +296,9 @@ export class FoundationBrainCoordinator extends TypedEventBase {
           expectedPerformance = 0.75;
           break;
 
-        case 'Basic':
+        case 'Basic':'
         default:
-          logger.debug('🚀 Using basic optimization for simple task');
+          logger.debug('🚀 Using basic optimization for simple task');'
           optimizedPrompt = await this.optimizeBasic(
             request.basePrompt,
             request.context
@@ -314,10 +314,10 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       // Record performance for learning (conditionally if Rust module available)
       if (
         rustModule &&
-        typeof rustModule.record_optimization_performance === 'function'
+        typeof rustModule.record_optimization_performance === 'function''
       ) {
         // Emit optimization performance event (TypedEventBase requires 2 args)
-        this.emit('optimization_performance', {
+        this.emit('optimization_performance', {'
           taskMetrics,
           strategy,
           executionTime: Math.round(executionTime),
@@ -326,7 +326,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         });
       } else {
         // Fallback logging for learning data
-        this.logger.info('Recording optimization performance', {
+        this.logger.info('Recording optimization performance', {'
           strategy,
           executionTime: Math.round(executionTime),
           accuracy: actualAccuracy,
@@ -358,13 +358,13 @@ export class FoundationBrainCoordinator extends TypedEventBase {
 
       // Fallback to simple heuristics
       const complexity = this.estimateComplexity(request);
-      const strategy = complexity > 0.7 ? 'dspy' : 'basic';
+      const strategy = complexity > 0.7 ? 'dspy' : 'basic;
 
       const fallbackResult = {
         strategy,
-        prompt: `Optimized (${strategy}): ${request.basePrompt}`,
+        prompt: `Optimized (${strategy}): ${request.basePrompt}`,`
         confidence: 0.75,
-        reasoning: `Heuristic selection based on complexity: ${complexity.toFixed(2)}`,
+        reasoning: `Heuristic selection based on complexity: ${complexity.toFixed(2)}`,`
         expectedPerformance: complexity > 0.7 ? 0.8 : 0.65,
       };
 
@@ -380,11 +380,11 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   async processNeuralTask(task: NeuralTask): Promise<NeuralResult> {
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized');'
     }
 
     logger.debug(
-      `🎯 Brain routing neural task: ${task.id} (type: ${task.type})`
+      `🎯 Brain routing neural task: ${task.id} (type: ${task.type})``
     );
     return await this.orchestrator.processNeuralTask(task);
   }
@@ -394,17 +394,17 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   async storeNeuralData(data: NeuralData): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized');'
     }
 
-    logger.debug(`💾 Brain orchestrating storage for: ${data.id}`);
+    logger.debug(`💾 Brain orchestrating storage for: ${data.id}`);`
     return await this.orchestrator.storeNeuralData(data);
   }
 
   /**
    * Predict task complexity without processing
    */
-  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity {
+  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity {'
     return this.orchestrator.predictTaskComplexity(task);
   }
 
@@ -420,10 +420,10 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   async predict(
     input: number[],
-    type: 'prediction' | 'classification' = 'prediction'
+    type: 'prediction' | 'classification' = 'prediction''
   ): Promise<number[]> {
     const task: NeuralTask = {
-      id: `simple-${Date.now()}`,
+      id: `simple-${Date.now()}`,`
       type,
       data: { input },
     };
@@ -440,7 +440,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     horizon: number = 10
   ): Promise<number[]> {
     const task: NeuralTask = {
-      id: `forecast-${Date.now()}`,
+      id: `forecast-${Date.now()}`,`
       type: 'forecasting',
       data: {
         input: timeSeries,
@@ -466,7 +466,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     featureId?: string;
     solutionTrainId?: string;
     flowState?: string;
-    neuralTaskType: 'optimization|prediction|analysis|learning';
+    neuralTaskType: 'optimization|prediction|analysis|learning;
     context?: Record<string, unknown>;
   }): Promise<{
     recommendation: string;
@@ -477,7 +477,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     const startTime = Date.now(); // Track processing time
 
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized');'
     }
 
     this.logger.info(
@@ -515,7 +515,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
 
       // Create neural task for SAFe coordination
       const neuralTask: NeuralTask = {
-        id: `safe6-coordination-${Date.now()}`,
+        id: `safe6-coordination-${Date.now()}`,`
         type: this.mapToValidNeuralTaskType(request.neuralTaskType),
         data: {
           input: [1, 2, 3], // Required neural input
@@ -553,7 +553,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         try {
           // Check if the method exists before calling it
           if (
-            typeof this.safe6DevelopmentManager.updateWithNeuralInsights ==='function') {
+            typeof this.safe6DevelopmentManager.updateWithNeuralInsights ==='function') {'
             await this.safe6DevelopmentManager.updateWithNeuralInsights({
               entityId: request.epicId||request.featureId,
               insights: {
@@ -566,7 +566,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
               },
             });
           } else {
-            this.logger.debug('updateWithNeuralInsights method not available on SAFe 6.0 Development Manager'
+            this.logger.debug('updateWithNeuralInsights method not available on SAFe 6.0 Development Manager''
             );
           }
         } catch (error) {
@@ -584,7 +584,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         nextActions,
       };
     } catch (error) {
-      this.logger.error('SAFe 6.0 coordination failed', {
+      this.logger.error('SAFe 6.0 coordination failed', {'
         error: error instanceof Error ? error.message : String(error),
         request,
       });
@@ -620,7 +620,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     try {
       return await this.safe6DevelopmentManager.getFlowMetrics(entityId);
     } catch (error) {
-      this.logger.warn('Failed to get SAFe 6.0 flow insights', {
+      this.logger.warn('Failed to get SAFe 6.0 flow insights', {'
         entityId,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -635,7 +635,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
   private async initializeTelemetry(): Promise<void> {
     // Telemetry would be initialized from operations package
     this.logger.debug(
-      'Telemetry initialization skipped - operations package would handle this'
+      'Telemetry initialization skipped - operations package would handle this''
     );
   }
 
@@ -645,13 +645,13 @@ export class FoundationBrainCoordinator extends TypedEventBase {
   private async initializeSafe6Integration(): Promise<void> {
     try {
       this.logger.debug(
-        '🔗 Initializing SAFe 6.0 Development Manager integration...'
+        '🔗 Initializing SAFe 6.0 Development Manager integration...''
       );
 
       // Get SAFe 6.0 Development Manager via development facade (optional)
       try {
         const { getSafe6DevelopmentManager } = await import(
-          '@claude-zen/development'
+          '@claude-zen/development''
         );
         const Safe6DevelopmentManagerClass = await getSafe6DevelopmentManager();
         this.safe6DevelopmentManager = new Safe6DevelopmentManagerClass({
@@ -662,7 +662,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         });
       } catch (error) {
         this.logger.warn(
-          'Development facade not available, continuing without SAFe 6.0 integration'
+          'Development facade not available, continuing without SAFe 6.0 integration''
         );
         this.safe6DevelopmentManager = null;
       }
@@ -674,7 +674,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         // Create solution train manager for enterprise coordination
         try {
           // Conditionally import development facade if available
-          const devModule = await import('@claude-zen/development');
+          const devModule = await import('@claude-zen/development');'
           const createSafe6SolutionTrainManager =
             devModule.createSafe6SolutionTrainManager;
           if (createSafe6SolutionTrainManager) {
@@ -684,18 +684,18 @@ export class FoundationBrainCoordinator extends TypedEventBase {
             });
           } else {
             this.logger.warn(
-              'createSafe6SolutionTrainManager not available in development facade'
+              'createSafe6SolutionTrainManager not available in development facade''
             );
             this.solutionTrainManager = null;
           }
         } catch (error) {
-          this.logger.warn('Solution train manager not available');
+          this.logger.warn('Solution train manager not available');'
           this.solutionTrainManager = null;
         }
       }
 
       this.logger.info(
-        '✅ SAFe 6.0 Development Manager integration initialized successfully'
+        '✅ SAFe 6.0 Development Manager integration initialized successfully''
       );
     } catch (error) {
       this.logger.warn(
@@ -716,34 +716,34 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     flowMetrics: any
   ): string {
     const baseRecommendation =
-      (neuralResult as any).recommendation||'Proceed with current approach';
+      (neuralResult as any).recommendation||'Proceed with current approach;
 
     if (!flowMetrics) {
-      return `Neural Analysis: ${baseRecommendation}`;
+      return `Neural Analysis: ${baseRecommendation}`;`
     }
 
     const flowContext = [];
 
     // Analyze flow efficiency
     if (flowMetrics.flowEfficiency < 0.7) {
-      flowContext.push('improve flow efficiency through reduced wait times');
+      flowContext.push('improve flow efficiency through reduced wait times');'
     }
 
     // Analyze flow velocity
     if (flowMetrics.flowVelocity < 0.8) {
-      flowContext.push('increase flow velocity by optimizing bottlenecks');
+      flowContext.push('increase flow velocity by optimizing bottlenecks');'
     }
 
     // Analyze predictability
     if (flowMetrics.predictability < 0.75) {
-      flowContext.push('enhance flow predictability through better planning');
+      flowContext.push('enhance flow predictability through better planning');'
     }
 
     if (flowContext.length > 0) {
-      return `${baseRecommendation}. SAFe 6.0 Flow Optimization: ${flowContext.join(', ')}.`;
+      return `${baseRecommendation}. SAFe 6.0 Flow Optimization: ${flowContext.join(', ')}.`;`
     }
 
-    return `${baseRecommendation}. Flow metrics are optimal - continue current SAFe 6.0 practices.`;
+    return `${baseRecommendation}. Flow metrics are optimal - continue current SAFe 6.0 practices.`;`
   }
 
   /**
@@ -757,30 +757,30 @@ export class FoundationBrainCoordinator extends TypedEventBase {
 
     // Base neural actions
     if ((neuralResult as any).confidence > 0.8) {
-      actions.push('Implement neural recommendations with high confidence');
+      actions.push('Implement neural recommendations with high confidence');'
     } else {
-      actions.push('Gather additional data to improve neural confidence');
+      actions.push('Gather additional data to improve neural confidence');'
     }
 
     // SAFe-specific actions based on context
     if (request.epicId) {
-      actions.push('Update Epic progress in Portfolio Kanban');
-      actions.push('Review Epic business case with neural insights');
+      actions.push('Update Epic progress in Portfolio Kanban');'
+      actions.push('Review Epic business case with neural insights');'
     }
 
     if (request.featureId) {
-      actions.push('Update Feature development status');
-      actions.push('Assess Feature completion criteria');
+      actions.push('Update Feature development status');'
+      actions.push('Assess Feature completion criteria');'
     }
 
     if (request.solutionTrainId) {
-      actions.push('Coordinate with Solution Train planning');
-      actions.push('Update ART (Agile Release Train) roadmap');
+      actions.push('Coordinate with Solution Train planning');'
+      actions.push('Update ART (Agile Release Train) roadmap');'
     }
 
     // Flow-based actions
-    actions.push('Monitor flow metrics for continuous improvement');
-    actions.push('Apply neural learning to future SAFe 6.0 decisions');
+    actions.push('Monitor flow metrics for continuous improvement');'
+    actions.push('Apply neural learning to future SAFe 6.0 decisions');'
 
     return actions;
   }
@@ -790,12 +790,12 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     ...args: any[]
   ): Promise<any> {
     switch (operation) {
-      case 'processNeuralTask':
+      case 'processNeuralTask':'
         return this.orchestrator.processNeuralTask(args[0]);
-      case 'storeNeuralData':
+      case 'storeNeuralData':'
         return this.orchestrator.storeNeuralData(args[0]);
       default:
-        throw new Error(`Unknown neural operation: ${operation}`);
+        throw new Error(`Unknown neural operation: ${operation}`);`
     }
   }
 
@@ -806,7 +806,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
     timeLimit?: number;
     qualityRequirement?: number;
   }) {
@@ -833,9 +833,9 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   private mapToValidNeuralTaskType(
     requestType: string
-  ):|'prediction|classification|clustering|forecasting|optimization|pattern_recognition'{
+  ):|'prediction|classification|clustering|forecasting|optimization|pattern_recognition'{'
     const typeMap: Record<
-      string,|'prediction|classification|clustering|forecasting|optimization|pattern_recognition'
+      string,|'prediction|classification|clustering|forecasting|optimization|pattern_recognition''
     > = {
       analysis: 'pattern_recognition',
       processing: 'classification',
@@ -848,7 +848,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       pattern_recognition: 'pattern_recognition',
     };
 
-    return typeMap[requestType]||'pattern_recognition';
+    return typeMap[requestType]||'pattern_recognition;
   }
 
   private async getCurrentResourceState() {
@@ -876,15 +876,15 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     resourceState: any
   ): string {
     switch (strategy) {
-      case 'DSPy':
-        return `Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory: ${(resourceState.memory_usage * 100).toFixed(1)}%, CPU: ${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ${taskMetrics.token_count} tokens.`;
+      case 'DSPy':'
+        return `Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory: ${(resourceState.memory_usage * 100).toFixed(1)}%, CPU: ${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ${taskMetrics.token_count} tokens.`;`
 
-      case 'DSPyConstrained':
-        return `Selected constrained DSPy optimization balancing complexity (${taskMetrics.complexity.toFixed(2)}) with resource constraints (Memory: ${(resourceState.memory_usage * 100).toFixed(1)}%, Load: ${resourceState.system_load.toFixed(2)}). Optimized for ${taskMetrics.priority} priority task.`;
+      case 'DSPyConstrained':'
+        return `Selected constrained DSPy optimization balancing complexity (${taskMetrics.complexity.toFixed(2)}) with resource constraints (Memory: ${(resourceState.memory_usage * 100).toFixed(1)}%, Load: ${resourceState.system_load.toFixed(2)}). Optimized for ${taskMetrics.priority} priority task.`;`
 
-      case 'Basic':
+      case 'Basic':'
       default:
-        return `Selected basic optimization for simple task (complexity: ${taskMetrics.complexity.toFixed(2)}) to minimize resource usage (Memory: ${(resourceState.memory_usage * 100).toFixed(1)}%, ${taskMetrics.token_count} tokens). Fast execution prioritized.`;
+        return `Selected basic optimization for simple task (complexity: ${taskMetrics.complexity.toFixed(2)}) to minimize resource usage (Memory: ${(resourceState.memory_usage * 100).toFixed(1)}%, ${taskMetrics.token_count} tokens). Fast execution prioritized.`;`
     }
   }
 
@@ -895,7 +895,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
   }): number {
     let complexity = 0.5; // Base complexity
 
@@ -906,13 +906,13 @@ export class FoundationBrainCoordinator extends TypedEventBase {
 
     // Factor in task type indicators
     const taskLower = request.task.toLowerCase();
-    if (taskLower.includes('reasoning')||taskLower.includes('analysis'))
+    if (taskLower.includes('reasoning')||taskLower.includes('analysis'))'
       complexity += 0.15;
-    if (taskLower.includes('creative')||taskLower.includes('generate'))
+    if (taskLower.includes('creative')||taskLower.includes('generate'))'
       complexity += 0.1;
-    if (taskLower.includes('complex')||taskLower.includes('advanced'))
+    if (taskLower.includes('complex')||taskLower.includes('advanced'))'
       complexity += 0.2;
-    if (taskLower.includes('simple')||taskLower.includes('basic'))
+    if (taskLower.includes('simple')||taskLower.includes('basic'))'
       complexity -= 0.1;
 
     // Factor in context size
@@ -923,8 +923,8 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     else if (contextSize > 5) complexity += 0.1;
 
     // Factor in priority
-    if (request.priority === 'high') complexity += 0.1;
-    else if (request.priority === 'low') complexity -= 0.1;
+    if (request.priority === 'high') complexity += 0.1;'
+    else if (request.priority === 'low') complexity -= 0.1;'
 
     // Clamp between 0 and 1
     return Math.max(0, Math.min(1, complexity));
@@ -936,21 +936,21 @@ export class FoundationBrainCoordinator extends TypedEventBase {
   private inferTaskType(task: string): string {
     const taskLower = task.toLowerCase();
 
-    if (taskLower.includes('reason')||taskLower.includes('analysis'))
-      return 'reasoning';
-    if (taskLower.includes('creative')||taskLower.includes('generate'))
-      return 'creative';
-    if (taskLower.includes('classify')||taskLower.includes('categorize'))
-      return 'classification';
-    if (taskLower.includes('summarize')||taskLower.includes('summary'))
-      return 'summarization';
-    if (taskLower.includes('translate')) return 'translation';
-    if (taskLower.includes('code')||taskLower.includes('programming'))
-      return 'coding';
-    if (taskLower.includes('math')||taskLower.includes('calculate'))
-      return 'mathematical';
+    if (taskLower.includes('reason')||taskLower.includes('analysis'))'
+      return 'reasoning;
+    if (taskLower.includes('creative')||taskLower.includes('generate'))'
+      return 'creative;
+    if (taskLower.includes('classify')||taskLower.includes('categorize'))'
+      return 'classification;
+    if (taskLower.includes('summarize')||taskLower.includes('summary'))'
+      return 'summarization;
+    if (taskLower.includes('translate')) return 'translation;
+    if (taskLower.includes('code')||taskLower.includes('programming'))'
+      return 'coding;
+    if (taskLower.includes('math')||taskLower.includes('calculate'))'
+      return 'mathematical;
 
-    return 'general';
+    return 'general;
   }
 
   /**
@@ -965,16 +965,16 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       let dspyModule: any = null;
       try {
         // Use string literal to avoid TypeScript compile-time resolution
-        dspyModule = await import('@claude-zen' + '/dspy');
+        dspyModule = await import('@claude-zen' + '/dspy');'
       } catch (error) {
         // DSPy is private and optional - fallback to basic optimization
-        this.logger.info('DSPy module not available, using basic optimization');
+        this.logger.info('DSPy module not available, using basic optimization');'
         return this.optimizeBasic(prompt, context);
       }
 
       // Type guard for DSPy module
       if (!this.isValidDSPyModule(dspyModule)) {
-        throw new Error('Invalid DSPy module structure');
+        throw new Error('Invalid DSPy module structure');'
       }
 
       const { dspySystem } = dspyModule;
@@ -988,16 +988,16 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       // Create examples for few-shot optimization (simplified)
       const examples = [{ inputs: { prompt }, outputs: { optimized: prompt } }];
 
-      // Use DSPy's few-shot optimization
+      // Use DSPy's few-shot optimization'
       const optimized = await dspyOptimization.fewShot(module, examples, 3);
 
       // Return optimized prompt with DSPy enhancement
-      return `[DSPy Optimized] ${prompt}\n\nContext: ${JSON.stringify(context||{})}`;
+      return `[DSPy Optimized] ${prompt}\n\nContext: ${JSON.stringify(context||{})}`;`
     } catch (error) {
-      this.logger.warn('DSPy optimization failed, using enhanced prompt', {
+      this.logger.warn('DSPy optimization failed, using enhanced prompt', {'
         error: String(error),
       });
-      return `[Enhanced] ${prompt}\n\nOptimization Context: ${JSON.stringify(context||{})}`;
+      return `[Enhanced] ${prompt}\n\nOptimization Context: ${JSON.stringify(context||{})}`;`
     }
   }
 
@@ -1013,16 +1013,16 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       let dspyModule: any = null;
       try {
         // Use string literal to avoid TypeScript compile-time resolution
-        dspyModule = await import('@claude-zen' + '/dspy');
+        dspyModule = await import('@claude-zen' + '/dspy');'
       } catch (error) {
         // DSPy is private and optional - fallback to basic optimization
-        this.logger.info('DSPy module not available, using basic optimization');
+        this.logger.info('DSPy module not available, using basic optimization');'
         return this.optimizeBasic(prompt, context);
       }
 
       // Type guard for DSPy module
       if (!this.isValidDSPyModule(dspyModule)) {
-        throw new Error('Invalid DSPy module structure');
+        throw new Error('Invalid DSPy module structure');'
       }
 
       const { dspySystem } = dspyModule;
@@ -1037,12 +1037,12 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       const optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
 
       // Return constrained optimization
-      return `[DSPy Constrained] ${prompt}\n\nEfficient Context: ${JSON.stringify(context||{})}`;
+      return `[DSPy Constrained] ${prompt}\n\nEfficient Context: ${JSON.stringify(context||{})}`;`
     } catch (error) {
       this.logger.warn('Constrained DSPy optimization failed, using basic enhancement',
         { error: String(error) }
       );
-      return `[Efficient] ${prompt}`;
+      return `[Efficient] ${prompt}`;`
     }
   }
 
@@ -1057,7 +1057,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     const hasContext = context && Object.keys(context).length > 0;
 
     if (hasContext) {
-      return `${prompt}\n\nAdditional context: ${JSON.stringify(context, null, 2)}`;
+      return `${prompt}\n\nAdditional context: ${JSON.stringify(context, null, 2)}`;`
     }
 
     return prompt;
@@ -1075,8 +1075,8 @@ export class FoundationBrainCoordinator extends TypedEventBase {
   } {
     return (
       module &&
-      typeof module.auto_select_strategy === 'function' &&
-      typeof module.record_optimization_performance === 'function'
+      typeof module.auto_select_strategy === 'function' &&'
+      typeof module.record_optimization_performance === 'function''
     );
   }
 
@@ -1092,8 +1092,8 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     return (
       module &&
       module.dspySystem &&
-      typeof module.dspySystem.getOptimization === 'function' &&
-      typeof module.dspySystem.createEngine === 'function'
+      typeof module.dspySystem.getOptimization === 'function' &&'
+      typeof module.dspySystem.createEngine === 'function''
     );
   }
 
@@ -1104,14 +1104,14 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
     timeLimit?: number;
     qualityRequirement?: number;
   }): string {
     // Create a hash-like key based on request properties
-    const contextStr = request.context ? JSON.stringify(request.context) : '';
-    const key = `${request.task}-${request.basePrompt.substring(0, 50)}-${request.priority || 'medium'}-${request.qualityRequirement || 0.8}-${contextStr}`;
-    return Buffer.from(key).toString('base64').substring(0, 32);
+    const contextStr = request.context ? JSON.stringify(request.context) : ';
+    const key = `${request.task}-${request.basePrompt.substring(0, 50)}-${request.priority || 'medium'}-${request.qualityRequirement || 0.8}-${contextStr}`;`
+    return Buffer.from(key).toString('base64').substring(0, 32);'
   }
 
   /**
@@ -1172,14 +1172,14 @@ export class NeuralBridge {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    logger.info('🔗 Initializing neural bridge...');
+    logger.info('🔗 Initializing neural bridge...');'
     this.initialized = true;
-    logger.info('✅ Neural bridge initialized');
+    logger.info('✅ Neural bridge initialized');'
   }
 
   async predict(input: number[]): Promise<number[]> {
     if (!this.initialized) {
-      throw new Error('Neural bridge not initialized');
+      throw new Error('Neural bridge not initialized');'
     }
 
     // Simple prediction simulation
@@ -1190,10 +1190,10 @@ export class NeuralBridge {
     data: Array<{ input: number[]; output: number[] }>
   ): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Neural bridge not initialized');
+      throw new Error('Neural bridge not initialized');'
     }
 
-    logger.debug(`Training with ${data.length} samples`);
+    logger.debug(`Training with ${data.length} samples`);`
     // Training simulation
   }
 }
@@ -1207,9 +1207,9 @@ export class BehavioralIntelligence {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    logger.info('🎯 Initializing behavioral intelligence...');
+    logger.info('🎯 Initializing behavioral intelligence...');'
     this.initialized = true;
-    logger.info('✅ Behavioral intelligence initialized');
+    logger.info('✅ Behavioral intelligence initialized');'
   }
 
   async analyzePattern(data: unknown[]): Promise<{
@@ -1217,10 +1217,10 @@ export class BehavioralIntelligence {
     confidence: number;
   }> {
     if (!this.initialized) {
-      throw new Error('Behavioral intelligence not initialized');
+      throw new Error('Behavioral intelligence not initialized');'
     }
 
-    logger.debug(`Analyzing pattern for ${data.length} data points`);
+    logger.debug(`Analyzing pattern for ${data.length} data points`);`
 
     return {
       pattern: data.length > 10 ? 'complex' : 'simple',
@@ -1233,7 +1233,7 @@ export class BehavioralIntelligence {
     probability: number;
   }> {
     if (!this.initialized) {
-      throw new Error('Behavioral intelligence not initialized');
+      throw new Error('Behavioral intelligence not initialized');'
     }
 
     const complexity = Object.keys(context).length;
@@ -1256,10 +1256,10 @@ export class BehavioralIntelligence {
     context: Record<string, unknown>;
   }): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Behavioral intelligence not initialized');
+      throw new Error('Behavioral intelligence not initialized');'
     }
 
-    logger.debug(`Learning from execution: ${data.agentId} - ${data.taskType}`);
+    logger.debug(`Learning from execution: ${data.agentId} - ${data.taskType}`);`
     // Store learning data for behavioral analysis
   }
 
@@ -1272,10 +1272,10 @@ export class BehavioralIntelligence {
     metadata?: Record<string, unknown>;
   }): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Behavioral intelligence not initialized');
+      throw new Error('Behavioral intelligence not initialized');'
     }
 
-    logger.debug(`Recording behavior: ${data.agentId} - ${data.behaviorType}`);
+    logger.debug(`Recording behavior: ${data.agentId} - ${data.behaviorType}`);`
     // Store behavior data for pattern analysis
   }
 
@@ -1286,10 +1286,10 @@ export class BehavioralIntelligence {
     maxMemorySize?: number;
   }): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Behavioral intelligence not initialized');
+      throw new Error('Behavioral intelligence not initialized');'
     }
 
-    logger.debug('Enabling continuous learning with config:', config);
+    logger.debug('Enabling continuous learning with config:', config);'
     // Enable continuous learning features
   }
 }
@@ -1298,9 +1298,9 @@ export class BehavioralIntelligence {
 export function createNeuralNetwork(
   config?: Record<string, unknown>
 ): Promise<{ id: string; config: Record<string, unknown> }> {
-  logger.debug('Creating neural network', config);
+  logger.debug('Creating neural network', config);'
   return Promise.resolve({
-    id: `network-${Date.now()}`,
+    id: `network-${Date.now()}`,`
     config: config||{},
   });
 }
@@ -1309,7 +1309,7 @@ export function trainNeuralNetwork(
   network: { id: string },
   options?: Record<string, unknown>
 ): Promise<{ success: boolean; duration: number }> {
-  logger.debug(`Training network ${network.id}`, options);
+  logger.debug(`Training network ${network.id}`, options);`
   return Promise.resolve({
     success: true,
     duration: 1000,
@@ -1320,7 +1320,7 @@ export function predictWithNetwork(
   network: { id: string },
   input: number[]
 ): Promise<number[]> {
-  logger.debug(`Predicting with network ${network.id}`, {
+  logger.debug(`Predicting with network ${network.id}`, {`
     inputSize: input.length,
   });
   return Promise.resolve(input.map((x) => Math.tanh(x)));
@@ -1332,7 +1332,7 @@ export async function detectGPUCapabilities(): Promise<{
   type?: string;
   memory?: number;
 }> {
-  logger.debug('Detecting GPU capabilities...');
+  logger.debug('Detecting GPU capabilities...');'
   return {
     available: false,
     type: 'none',
@@ -1346,7 +1346,7 @@ export async function initializeGPUAcceleration(
   success: boolean;
   device?: string;
 }> {
-  logger.debug('Initializing GPU acceleration...', config);
+  logger.debug('Initializing GPU acceleration...', config);'
   return {
     success: false,
     device: 'cpu',
@@ -1373,11 +1373,11 @@ export async function demoBehavioralIntelligence(config?: {
     ...config,
   };
 
-  logger.debug('Running behavioral intelligence demo with config:', defaults);
+  logger.debug('Running behavioral intelligence demo with config:', defaults);'
 
   // Simulate behavioral intelligence capabilities
   const agents = Array.from({ length: defaults.agentCount }, (_, i) => ({
-    id: `agent-${i}`,
+    id: `agent-${i}`,`
     type: defaults.taskTypes[i % defaults.taskTypes.length],
     performance: 0.7 + Math.random() * 0.3,
     learningProgress: defaults.learningEnabled ? Math.random() * 0.5 : 0,

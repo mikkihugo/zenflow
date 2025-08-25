@@ -22,7 +22,7 @@ import type {
  * Implementation of conversation orchestrator for multi-agent coordination
  */
 export class ConversationOrchestratorImpl implements ConversationOrchestrator {
-  private logger = getLogger('ConversationOrchestrator');
+  private logger = getLogger('ConversationOrchestrator');'
   private activeSessions = new Map<string, ConversationSession>();
   private patternRegistry = new Map<string, any>();
 
@@ -32,15 +32,15 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   private initializePatterns(): void {
     // Register known conversation patterns
-    this.patternRegistry.set('code-review', {
+    this.patternRegistry.set('code-review', {'
       name: 'Code Review',
       description: 'Structured code review workflow',
     });
-    this.patternRegistry.set('problem-solving', {
+    this.patternRegistry.set('problem-solving', {'
       name: 'Problem Solving',
       description: 'Collaborative problem solving',
     });
-    this.patternRegistry.set('planning', {
+    this.patternRegistry.set('planning', {'
       name: 'Planning',
       description: 'Sprint or project planning',
     });
@@ -49,19 +49,19 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async createConversation(
     config: ConversationConfig
   ): Promise<ConversationSession> {
-    this.logger.info('Creating conversation', {
+    this.logger.info('Creating conversation', {'
       title: config.title,
       pattern: config.pattern,
     });
 
     // Validate pattern
     if (!this.patternRegistry.has(config.pattern)) {
-      throw new Error(`Unknown conversation pattern: ${config.pattern}`);
+      throw new Error(`Unknown conversation pattern: ${config.pattern}`);`
     }
 
     // Create conversation session
     const session: ConversationSession = {
-      id: `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
@@ -75,7 +75,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       orchestrator: config.orchestrator,
       startTime: new Date(),
       endTime: undefined,
-      status: 'active', // Start immediately
+      status: 'active', // Start immediately'
       context: { ...config.context },
       messages: [],
       outcomes: [],
@@ -98,24 +98,24 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     this.activeSessions.set(session.id, session);
 
     // Update status to active
-    await this.memory.updateConversation(session.id, { status: 'active' });
+    await this.memory.updateConversation(session.id, { status: 'active' });'
 
-    this.logger.info('Conversation created successfully', { id: session.id });
+    this.logger.info('Conversation created successfully', { id: session.id });'
     return session;
   }
 
   async startConversation(
     conversationId: string
   ): Promise<ConversationSession> {
-    this.logger.info('Starting conversation', { conversationId });
+    this.logger.info('Starting conversation', { conversationId });'
 
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     // Update session status to active if not already
-    if (session.status !== 'active') {
+    if (session.status !== 'active') {'
       session.status = 'active';
       session.startTime = new Date();
       await this.memory.updateConversation(conversationId, {
@@ -124,7 +124,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       });
     }
 
-    this.logger.info('Conversation started successfully', {
+    this.logger.info('Conversation started successfully', {'
       id: conversationId,
     });
     return session;
@@ -136,7 +136,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     // Add agent to participants
@@ -150,7 +150,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         metrics: session.metrics,
       });
 
-      this.logger.info('Agent joined conversation', {
+      this.logger.info('Agent joined conversation', {'
         conversationId,
         agentId: agent.id,
       });
@@ -163,7 +163,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     // Remove agent from participants
@@ -178,7 +178,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       metrics: session.metrics,
     });
 
-    this.logger.info('Agent left conversation', {
+    this.logger.info('Agent left conversation', {'
       conversationId,
       agentId: agent.id,
     });
@@ -187,7 +187,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async sendMessage(message: ConversationMessage): Promise<void> {
     const session = this.activeSessions.get(message.conversationId);
     if (!session) {
-      throw new Error(`Conversation ${message.conversationId} not found`);
+      throw new Error(`Conversation ${message.conversationId} not found`);`
     }
 
     // Validate sender is participant
@@ -196,14 +196,14 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     );
     if (!isParticipant) {
       throw new Error(
-        `Agent ${message.fromAgent.id} is not a participant in this conversation`
+        `Agent ${message.fromAgent.id} is not a participant in this conversation``
       );
     }
 
     // Add message to session
     const messageWithId = {
       ...message,
-      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
     };
 
     session.messages.push(messageWithId);
@@ -217,7 +217,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       metrics: session.metrics,
     });
 
-    this.logger.debug('Message sent', {
+    this.logger.debug('Message sent', {'
       conversationId: message.conversationId,
       messageId: messageWithId.id,
       fromAgent: message.fromAgent.id,
@@ -230,10 +230,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
-    this.logger.info('Moderating conversation', {
+    this.logger.info('Moderating conversation', {'
       conversationId,
       action: action.type,
       target: action.target.id,
@@ -241,13 +241,13 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Apply moderation action
     switch (action.type) {
-      case 'pause':
+      case 'pause':'
         session.status = 'paused';
         break;
-      case 'resume':
+      case 'resume':'
         session.status = 'active';
         break;
-      case 'remove':
+      case 'remove':'
         await this.leaveConversation(conversationId, action.target);
         break;
       // Other moderation actions can be implemented as needed
@@ -279,7 +279,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     // Generate outcomes from conversation
@@ -287,7 +287,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Create outcomes from messages with decisions
     for (const message of session.messages) {
-      if (message.messageType ==='decision') {
+      if (message.messageType ==='decision') {'
         outcomes.push({
           type: 'decision',
           content: message.content,
@@ -320,7 +320,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Remove from active sessions
     this.activeSessions.delete(conversationId);
 
-    this.logger.info('Conversation terminated', {
+    this.logger.info('Conversation terminated', {'
       conversationId,
       reason,
       outcomesCount: outcomes.length,

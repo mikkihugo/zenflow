@@ -66,7 +66,7 @@ export declare class DataLifecycleManager extends TypedEventBase {
   private performPeriodicCleanup;
   getStageStats(): Record<LifecycleStage, StageStats>;
   private getStageUtilization;
-  getMetrics(): StrategyMetrics['lifecycle'];
+  getMetrics(): StrategyMetrics['lifecycle'];'
   getEntryInfo(key: string): LifecycleEntry | null;
   listKeys(stage?: LifecycleStage): string[];
   forceMigration(

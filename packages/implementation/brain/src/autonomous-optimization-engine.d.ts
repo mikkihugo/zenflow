@@ -20,7 +20,7 @@ export interface OptimizationContext {
   readonly task: string;
   readonly basePrompt: string;
   readonly agentRole?: string;
-  readonly priority?: 'low|medium|high';
+  readonly priority?: 'low' | 'medium' | 'high';
   readonly context?: Record<string, any>;
   readonly expectedComplexity?: number;
   readonly timeConstraint?: number;
@@ -28,7 +28,7 @@ export interface OptimizationContext {
 export interface OptimizationResult {
   readonly optimizedPrompt: string;
   readonly confidence: number;
-  readonly method: 'dspy|ml|hybrid|fallback';
+  readonly method: 'dspy|ml|hybrid|fallback;
   readonly processingTime: number;
   readonly improvementScore: number;
   readonly reasoning: string[];

@@ -26,7 +26,7 @@ export interface ExportResult {
 }
 
 export interface ExportConfig {
-  format: 'json|csv|yaml|xml|markdown';
+  format: 'json|csv|yaml|xml|markdown;
   outputPath?: string;
   fileName?: string;
   options?: Record<string, unknown>;
@@ -42,7 +42,7 @@ export class ExportSystem {
 
   private setupExporters(): void {
     // JSON exporter
-    this.exporters.set('json', {
+    this.exporters.set('json', {'
       name: 'JSON Exporter',
       extension: '.json',
       mimeType: 'application/json',
@@ -50,7 +50,7 @@ export class ExportSystem {
     });
 
     // CSV exporter
-    this.exporters.set('csv', {
+    this.exporters.set('csv', {'
       name: 'CSV Exporter',
       extension: '.csv',
       mimeType: 'text/csv',
@@ -58,7 +58,7 @@ export class ExportSystem {
     });
 
     // YAML exporter
-    this.exporters.set('yaml', {
+    this.exporters.set('yaml', {'
       name: 'YAML Exporter',
       extension: '.yaml',
       mimeType: 'application/x-yaml',
@@ -66,7 +66,7 @@ export class ExportSystem {
     });
 
     // XML exporter
-    this.exporters.set('xml', {
+    this.exporters.set('xml', {'
       name: 'XML Exporter',
       extension: '.xml',
       mimeType: 'application/xml',
@@ -74,7 +74,7 @@ export class ExportSystem {
     });
 
     // Markdown exporter
-    this.exporters.set('markdown', {
+    this.exporters.set('markdown', {'
       name: 'Markdown Exporter',
       extension: '.md',
       mimeType: 'text/markdown',
@@ -86,24 +86,24 @@ export class ExportSystem {
     const timestamp = Date.now();
 
     try {
-      const exporter = this.exporters.get(config?.['format']);
+      const exporter = this.exporters.get(config?.['format']);'
       if (!exporter) {
-        throw new Error(`Unsupported export format: ${config?.['format']}`);
+        throw new Error(`Unsupported export format: ${config?.['format']}`);`
       }
 
       const exportedData = exporter.export(data);
 
-      if (config?.['outputPath'] && config?.['fileName']) {
+      if (config?.['outputPath'] && config?.['fileName']) {'
         const filePath = path.join(
           config?.['outputPath'],
-          config?.['fileName'] + exporter.extension
+          config?.['fileName'] + exporter.extension'
         );
 
         // Ensure directory exists
         await mkdir(path.dirname(filePath), { recursive: true });
 
         // Write file
-        await writeFile(filePath, exportedData, 'utf8');
+        await writeFile(filePath, exportedData, 'utf8');'
 
         const result: ExportResult = {
           success: true,
@@ -136,46 +136,46 @@ export class ExportSystem {
 
   public convertToCSV(data: unknown[]): string {
     if (!Array.isArray(data)||data.length === 0) {
-      return'';
+      return';
     }
 
     const headers = Object.keys(data[0]);
-    const csvRows = [headers.join(',')];
+    const csvRows = [headers.join(',')];'
 
     for (const row of data) {
       const values = headers.map((header) => {
         const value = row[header];
         // Escape commas and quotes
         if (
-          typeof value === 'string' &&
-          (value.includes(',')||value.includes('"'))
+          typeof value === 'string' &&'
+          (value.includes(',')||value.includes('"'))'
         ) {
-          return `"${value.replace(/"/g, '""')}"`;
+          return `"${value.replace(/"/g, '""')}"`;`
         }
-        return value?.toString()||'';
+        return value?.toString()||';
       });
-      csvRows.push(values.join(','));
+      csvRows.push(values.join(','));'
     }
 
-    return csvRows.join('\n');
+    return csvRows.join('\n');'
   }
 
   public convertToYAML(data: unknown): string {
     // Simple YAML conversion - in production, use a proper YAML library
     const yamlify = (obj: unknown, indent = 0): string => {
-      const spaces = '  '.repeat(indent);
+      const spaces = '  '.repeat(indent);'
 
       if (obj === null||obj === undefined) {
-        return'null';
+        return'null;
       }
 
-      if (typeof obj === 'string') {
-        return obj.includes('\n')
-          ? `|\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}`
+      if (typeof obj === 'string') {'
+        return obj.includes('\n')'
+          ? `|\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}``
           : obj;
       }
 
-      if (typeof obj === 'number'||typeof obj ==='boolean') {
+      if (typeof obj === 'number'||typeof obj ==='boolean') {'
         return obj.toString();
       }
 
@@ -183,18 +183,18 @@ export class ExportSystem {
         return obj
           .map(
             (item) =>
-              `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`
+              `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}``
           )
-          .join('\n');
+          .join('\n');'
       }
 
-      if (typeof obj === 'object') {
+      if (typeof obj === 'object') {'
         return Object.entries(obj)
           .map(
             ([key, value]) =>
-              `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`
+              `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}``
           )
-          .join('\n');
+          .join('\n');'
       }
 
       return obj.toString();
@@ -204,77 +204,77 @@ export class ExportSystem {
   }
 
   public convertToXML(data: unknown): string {
-    const xmlify = (obj: unknown, name = 'root'): string => {
+    const xmlify = (obj: unknown, name = 'root'): string => {'
       if (obj === null||obj === undefined) {
-        return `<${name}></${name}>`;
+        return `<${name}></${name}>`;`
       }
 
       if (
-        typeof obj ==='string'||typeof obj ==='number'||typeof obj ==='boolean'
+        typeof obj ==='string'||typeof obj ==='number'||typeof obj ==='boolean''
       ) {
-        return `<${name}>${obj}</${name}>`;
+        return `<${name}>${obj}</${name}>`;`
       }
 
       if (Array.isArray(obj)) {
-        return `<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</${name}>`;
+        return `<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</${name}>`;`
       }
 
-      if (typeof obj === 'object') {
+      if (typeof obj === 'object') {'
         const content = Object.entries(obj)
           .map(([key, value]) => xmlify(value, key))
-          .join('');
-        return `<${name}>${content}</${name}>`;
+          .join('');'
+        return `<${name}>${content}</${name}>`;`
       }
 
-      return `<${name}>${obj}</${name}>`;
+      return `<${name}>${obj}</${name}>`;`
     };
 
-    return `<?xml version="1.0" encoding="UTF-8"?>
-      ${xmlify(data)}`;
+    return `<?xml version="1.0" encoding="UTF-8"?>`
+      ${xmlify(data)}`;`
   }
 
   public convertToMarkdown(data: unknown): string {
     const mdify = (obj: unknown, level = 1): string => {
       if (obj === null || obj === undefined) {
-        return '';
+        return ';
       }
 
-      if (typeof obj === 'string') {
+      if (typeof obj === 'string') {'
         return obj;
       }
 
-      if (typeof obj === 'number'||typeof obj ==='boolean') {
+      if (typeof obj === 'number'||typeof obj ==='boolean') {'
         return obj.toString();
       }
 
       if (Array.isArray(obj)) {
         if (
           obj.length > 0 &&
-          typeof obj[0] === 'object'&&
+          typeof obj[0] === 'object'&&'
           !Array.isArray(obj[0])
         ) {
           // Convert array of objects to table
           const headers = Object.keys(obj[0]);
-          const headerRow = `|${headers.join('|')}|`;
-          const separatorRow = `|${headers.map(() => '---').join('|')}|`;
+          const headerRow = `|${headers.join('|')}|`;`
+          const separatorRow = `|${headers.map(() => '---').join('|')}|`;`
           const dataRows = obj.map(
             (item) =>
-              `|${headers.map((header) => item?.[header]?.toString() || '').join('|')}|`
+              `|${headers.map((header) => item?.[header]?.toString() || '').join('|')}|``
           );
-          return [headerRow, separatorRow, ...dataRows].join('\n');
+          return [headerRow, separatorRow, ...dataRows].join('\n');'
         }
         // Convert to list
-        return obj.map((item) => `- ${mdify(item, level + 1)}`).join('\n');
+        return obj.map((item) => `- ${mdify(item, level + 1)}`).join('\n');'
       }
 
-      if (typeof obj === 'object') {
+      if (typeof obj === 'object') {'
         return Object.entries(obj)
           .map(([key, value]) => {
-            const heading = '#'.repeat(level);
-            return `${heading} ${key}
-      \n${mdify(value, level + 1)}`;
+            const heading = '#'.repeat(level);'
+            return `${heading} ${key}`
+      \n${mdify(value, level + 1)}`;`
           })
-          .join('\n');
+          .join('\n');'
       }
 
       return obj.toString();

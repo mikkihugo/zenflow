@@ -33,7 +33,7 @@ export namespace Identifier {
     }
 
     if (!given.startsWith(prefixes[prefix])) {
-      throw new Error(`ID ${given} does not start with ${prefixes[prefix]}`)
+      throw new Error(`ID ${given} does not start with ${prefixes[prefix]}`)`
     }
     return given
   }

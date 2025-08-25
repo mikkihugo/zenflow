@@ -5,8 +5,8 @@ import { BaseMemoryBackend, type BackendCapabilities } from './base-backend';
 import type { MemoryConfig } from '../providers/memory-providers';
 import type { JSONValue } from '../core/memory-system';
 interface FoundationMemoryConfig extends MemoryConfig {
-  storageType: 'kv | database|hybrid';
-  databaseType?: 'sqlite | lancedb|kuzu';
+  storageType: 'kv | database|hybrid;
+  databaseType?: 'sqlite | lancedb|kuzu;
 }
 export declare class FoundationMemoryBackend extends BaseMemoryBackend {
   private logger;

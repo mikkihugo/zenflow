@@ -38,7 +38,7 @@ import type { Logger } from '../types';
  * Market analysis configuration
  */
 export interface MarketAnalysisConfig {
-  readonly analysisDepth: 'basic|standard|comprehensive';
+  readonly analysisDepth: 'basic' | 'standard' | 'comprehensive';
   readonly competitorTrackingCount: number;
   readonly trendAnalysisHorizon: number; // months
   readonly marketDataRefreshDays: number;
@@ -67,8 +67,8 @@ export interface CompetitiveLandscape {
   readonly niche: CompetitorAnalysis[];
   readonly emerging: CompetitorAnalysis[];
   readonly marketConcentration: number; // HHI index
-  readonly competitiveIntensity: 'low|medium|high|extreme';
-  readonly barrierToEntry: 'low|medium|high';
+  readonly competitiveIntensity: 'low|medium|high|extreme;
+  readonly barrierToEntry: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -135,7 +135,7 @@ export class MarketAnalysisService {
     pricingModel: PricingStrategy;
     assumptions: string[];
   }): Promise<MarketSizing> {
-    this.logger.info('Performing market sizing analysis', {
+    this.logger.info('Performing market sizing analysis', {'
       category: input.marketCategory,
       scope: input.geographicScope.length,
     });
@@ -169,7 +169,7 @@ export class MarketAnalysisService {
       confidenceLevel,
     };
 
-    this.logger.info('Market sizing completed', {
+    this.logger.info('Market sizing completed', {'
       tam: tam,
       sam: sam,
       som: som,
@@ -185,7 +185,7 @@ export class MarketAnalysisService {
   async analyzeCompetitiveLandscape(
     competitors: CompetitorAnalysis[]
   ): Promise<CompetitiveLandscape> {
-    this.logger.info('Analyzing competitive landscape', {
+    this.logger.info('Analyzing competitive landscape', {'
       competitorCount: competitors.length,
     });
 
@@ -221,7 +221,7 @@ export class MarketAnalysisService {
    * Perform comprehensive trend analysis
    */
   async analyzeTrends(trends: MarketTrend[]): Promise<TrendAnalysis> {
-    this.logger.info('Analyzing market trends', { trendCount: trends.length });
+    this.logger.info('Analyzing market trends', { trendCount: trends.length });'
 
     // Store trends
     trends.forEach((trend) => {
@@ -231,13 +231,13 @@ export class MarketAnalysisService {
     // Categorize trends by trajectory
     const emergingTrends = filter(
       trends,
-      (t) => t.confidence > 70 && t.impact === 'positive'
+      (t) => t.confidence > 70 && t.impact === 'positive''
     );
     const decliningTrends = filter(
       trends,
-      (t) => t.confidence > 60 && t.impact === 'negative'
+      (t) => t.confidence > 60 && t.impact === 'negative''
     );
-    const stableTrends = filter(trends, (t) => t.impact === 'neutral');
+    const stableTrends = filter(trends, (t) => t.impact === 'neutral');'
 
     // Create trend impact matrix
     const trendImpactMatrix = map(trends, (trend) =>
@@ -265,7 +265,7 @@ export class MarketAnalysisService {
     competitivePosition: number,
     investmentCapacity: number
   ): Promise<OpportunityAssessment> {
-    this.logger.info('Assessing market opportunity');
+    this.logger.info('Assessing market opportunity');'
 
     const marketAttractiveness = this.calculateMarketAttractiveness(marketData);
     const entryComplexity = this.assessEntryComplexity(marketData);
@@ -340,9 +340,9 @@ export class MarketAnalysisService {
   private calculateSOM(sam: number, pricingModel: PricingStrategy): number {
     // SOM is typically 10-25% of SAM based on competitive reality
     const pricingMultiplier =
-      pricingModel.model === 'premium'
+      pricingModel.model === 'premium''
         ? 0.15
-        : pricingModel.model === 'competitive'
+        : pricingModel.model === 'competitive''
           ? 0.2
           : 0.25;
 
@@ -389,7 +389,7 @@ export class MarketAnalysisService {
     niche: CompetitorAnalysis[];
     emerging: CompetitorAnalysis[];
   } {
-    const sorted = orderBy(competitors, 'marketShare', 'desc');
+    const sorted = orderBy(competitors, 'marketShare', 'desc');'
 
     return {
       leaders: sorted.slice(0, 3),
@@ -406,7 +406,7 @@ export class MarketAnalysisService {
    * Calculate Herfindahl-Hirschman Index for market concentration
    */
   private calculateHHI(competitors: CompetitorAnalysis[]): number {
-    const totalShare = sumBy(competitors, 'marketShare');
+    const totalShare = sumBy(competitors, 'marketShare');'
     return sumBy(competitors, (c) =>
       Math.pow((c.marketShare / totalShare) * 100, 2)
     );
@@ -417,13 +417,13 @@ export class MarketAnalysisService {
    */
   private assessCompetitiveIntensity(
     competitors: CompetitorAnalysis[]
-  ): 'low|medium|high|extreme' {
+  ): 'low|medium|high|extreme' {'
     const hhi = this.calculateHHI(competitors);
 
-    if (hhi > 2500) return 'low'; // Highly concentrated
-    if (hhi > 1500) return 'medium'; // Moderately concentrated
-    if (hhi > 1000) return 'high'; // Competitive
-    return 'extreme'; // Very competitive
+    if (hhi > 2500) return 'low'; // Highly concentrated'
+    if (hhi > 1500) return 'medium'; // Moderately concentrated'
+    if (hhi > 1000) return 'high'; // Competitive'
+    return 'extreme'; // Very competitive'
   }
 
   /**
@@ -431,14 +431,14 @@ export class MarketAnalysisService {
    */
   private evaluateBarrierToEntry(
     competitors: CompetitorAnalysis[]
-  ): 'low|medium|high' {
-    const avgMarketShare = meanBy(competitors, 'marketShare');
+  ): 'low|medium|high' {'
+    const avgMarketShare = meanBy(competitors, 'marketShare');'
     const topCompetitorShare =
-      maxBy(competitors, 'marketShare')?.marketShare||0;
+      maxBy(competitors, 'marketShare')?.marketShare||0;'
 
-    if (topCompetitorShare > 40) return'high';
-    if (avgMarketShare > 15) return 'medium';
-    return 'low';
+    if (topCompetitorShare > 40) return'high;
+    if (avgMarketShare > 15) return 'medium;
+    return 'low;
   }
 
   /**
@@ -447,7 +447,7 @@ export class MarketAnalysisService {
   private assessTrendImpact(trend: MarketTrend): TrendImpact {
     const timeToImpact = this.parseTimeframe(trend.timeframe);
     const impactScore =
-      trend.impact === 'positive' ? 75 : trend.impact === 'negative' ? -50 : 0;
+      trend.impact === 'positive' ? 75 : trend.impact === 'negative' ? -50 : 0;'
 
     return {
       trend,
@@ -455,7 +455,7 @@ export class MarketAnalysisService {
       probabilityOfOccurrence: trend.confidence,
       potentialImpact: impactScore,
       preparednessLevel: 40, // Mock preparedness level
-      requiredActions: [`Monitor ${trend.trend}`, `Assess implications`],
+      requiredActions: [`Monitor ${trend.trend}`, `Assess implications`],`
     };
   }
 
@@ -463,9 +463,9 @@ export class MarketAnalysisService {
    * Parse timeframe string to months
    */
   private parseTimeframe(timeframe: string): number {
-    if (timeframe.includes('year')) return parseInt(timeframe) * 12||24;
-    if (timeframe.includes('month')) return parseInt(timeframe)||12;
-    if (timeframe.includes('quarter')) return parseInt(timeframe) * 3||6;
+    if (timeframe.includes('year')) return parseInt(timeframe) * 12||24;'
+    if (timeframe.includes('month')) return parseInt(timeframe)||12;'
+    if (timeframe.includes('quarter')) return parseInt(timeframe) * 3||6;'
     return 12; // Default 1 year
   }
 
@@ -480,13 +480,13 @@ export class MarketAnalysisService {
       (t) => Math.abs(t.potentialImpact) > 60
     );
     if (highImpactTrends.length > 0) {
-      implications.push('High-impact trends require strategic response');
+      implications.push('High-impact trends require strategic response');'
     }
 
     const nearTermTrends = filter(trendImpacts, (t) => t.timeToImpact <= 12);
     if (nearTermTrends.length > 2) {
       implications.push(
-        'Multiple near-term trends require immediate attention'
+        'Multiple near-term trends require immediate attention''
       );
     }
 
@@ -569,10 +569,10 @@ export class MarketAnalysisService {
   ): string[] {
     const risks: string[] = [];
 
-    if (complexity > 70) risks.push('High market entry complexity');
+    if (complexity > 70) risks.push('High market entry complexity');'
     if (marketData.competitiveLandscape.length > 10)
-      risks.push('Intense competition');
-    if (marketData.marketGrowthRate < 5) risks.push('Slow market growth');
+      risks.push('Intense competition');'
+    if (marketData.marketGrowthRate < 5) risks.push('Slow market growth');'
 
     return risks;
   }
@@ -586,10 +586,10 @@ export class MarketAnalysisService {
   ): string[] {
     const factors: string[] = [];
 
-    if (competitivePosition > 70) factors.push('Strong competitive position');
-    if (marketData.marketGrowthRate > 15) factors.push('High market growth');
+    if (competitivePosition > 70) factors.push('Strong competitive position');'
+    if (marketData.marketGrowthRate > 15) factors.push('High market growth');'
     if (marketData.opportunities.length > 3)
-      factors.push('Multiple market opportunities');
+      factors.push('Multiple market opportunities');'
 
     return factors;
   }

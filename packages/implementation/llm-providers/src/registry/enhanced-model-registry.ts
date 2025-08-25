@@ -24,15 +24,15 @@ import {
   type ProviderDatabaseRegistryEvents 
 } from './provider-database-registry';
 
-const logger = getLogger('EnhancedModelRegistry');
+const logger = getLogger('EnhancedModelRegistry');'
 
 /**
  * Enhanced Model Registry Events
  */
 export interface EnhancedModelRegistryEvents extends ProviderDatabaseRegistryEvents {
-  'models:indexed': { totalModels: number; providers: string[] };
-  'model:recommended': { modelId: string; task: string; confidence: number };
-  'comparison:generated': { models: string[]; bestMatch: string };
+  'models:indexed': { totalModels: number; providers: string[] };'
+  'model:recommended': { modelId: string; task: string; confidence: number };'
+  'comparison:generated': { models: string[]; bestMatch: string };'
 }
 
 /**
@@ -40,14 +40,14 @@ export interface EnhancedModelRegistryEvents extends ProviderDatabaseRegistryEve
  */
 export interface TaskRequirements {
   // Task type
-  task: 'coding' | 'vision' | 'reasoning' | 'writing' | 'analysis' | 'chat';
+  task: 'coding' | 'vision' | 'reasoning' | 'writing' | 'analysis' | 'chat;
   
   // Context requirements
-  contextSize?: 'small' | 'medium' | 'large' | 'xlarge';
+  contextSize?: 'small' | 'medium' | 'large' | 'xlarge;
   minContextTokens?: number;
   
   // Quality vs speed tradeoff
-  priority: 'speed' | 'quality' | 'balanced' | 'cost';
+  priority: 'speed' | 'quality' | 'balanced' | 'cost;
   
   // Feature requirements
   needsVision?: boolean;
@@ -82,17 +82,17 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    * Forward provider database registry events
    */
   private setupRegistryForwarding(): void {
-    providerDatabaseRegistry.on('database:registered', (data) => {
-      this.emit('database:registered', data);
+    providerDatabaseRegistry.on('database:registered', (data) => {'
+      this.emit('database:registered', data);'
     });
     
-    providerDatabaseRegistry.on('database:updated', (data) => {
-      this.emit('database:updated', data);
+    providerDatabaseRegistry.on('database:updated', (data) => {'
+      this.emit('database:updated', data);'
       this.indexed = false; // Force re-indexing
     });
     
-    providerDatabaseRegistry.on('models:changed', (data) => {
-      this.emit('models:changed', data);
+    providerDatabaseRegistry.on('models:changed', (data) => {'
+      this.emit('models:changed', data);'
       this.indexed = false; // Force re-indexing
     });
   }
@@ -101,7 +101,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    * Initialize the enhanced registry
    */
   async initialize(): Promise<void> {
-    logger.info('🚀 Initializing Enhanced Model Registry...');
+    logger.info('🚀 Initializing Enhanced Model Registry...');'
     
     // Update all provider databases
     await providerDatabaseRegistry.updateAllDatabases();
@@ -109,7 +109,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
     // Index all models
     await this.indexModels();
     
-    logger.info('✅ Enhanced Model Registry initialized successfully');
+    logger.info('✅ Enhanced Model Registry initialized successfully');'
   }
 
   /**
@@ -122,12 +122,12 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
     this.indexed = true;
     this.indexedAt = new Date();
     
-    this.emit('models:indexed', { 
+    this.emit('models:indexed', { '
       totalModels: allModels.length, 
       providers 
     });
     
-    logger.info(`📊 Indexed ${allModels.length} models from ${providers.length} providers`);
+    logger.info(`📊 Indexed ${allModels.length} models from ${providers.length} providers`);`
   }
 
   /**
@@ -209,7 +209,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    * Get GitHub Copilot specific metadata (type-safe)
    */
   getCopilotMetadata(modelId: string): GitHubCopilotModelMetadata | undefined {
-    const metadata = this.getProviderMetadata<'github-copilot'>(modelId);
+    const metadata = this.getProviderMetadata<'github-copilot'>(modelId);'
     return metadata as GitHubCopilotModelMetadata | undefined;
   }
 
@@ -217,7 +217,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    * Get GitHub Models specific metadata (type-safe)
    */
   getGitHubModelsMetadata(modelId: string): GitHubModelMetadata | undefined {
-    const metadata = this.getProviderMetadata<'github-models'>(modelId);
+    const metadata = this.getProviderMetadata<'github-models'>(modelId);'
     return metadata as GitHubModelMetadata | undefined;
   }
 
@@ -251,7 +251,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
     });
 
     if (candidates.length === 0) {
-      logger.warn('No models found matching requirements');
+      logger.warn('No models found matching requirements');'
       return undefined;
     }
 
@@ -278,7 +278,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
       alternatives,
     };
 
-    this.emit('model:recommended', {
+    this.emit('model:recommended', {'
       modelId: recommendation.modelId,
       task: requirements.task,
       confidence: recommendation.confidence,
@@ -328,7 +328,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
       },
     };
 
-    this.emit('comparison:generated', {
+    this.emit('comparison:generated', {'
       models: modelIds,
       bestMatch: comparison.bestForTask.coding,
     });
@@ -344,29 +344,29 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
 
     // Task-specific scoring
     switch (requirements.task) {
-      case 'coding':
+      case 'coding':'
         if (model.supportsToolCalls) score += 20;
-        if (model.family?.toLowerCase().includes('gpt')) score += 15;
+        if (model.family?.toLowerCase().includes('gpt')) score += 15;'
         break;
-      case 'vision':
+      case 'vision':'
         if (model.supportsVision) score += 30;
         else score -= 50; // Heavy penalty for no vision
         break;
-      case 'reasoning':
+      case 'reasoning':'
         if (model.contextWindow > 100000) score += 20;
-        if (model.family?.toLowerCase().includes('gpt-4')) score += 15;
+        if (model.family?.toLowerCase().includes('gpt-4')) score += 15;'
         break;
     }
 
     // Priority-based scoring
     switch (requirements.priority) {
-      case 'speed':
-        if (model.family?.toLowerCase().includes('mini')) score += 15;
+      case 'speed':'
+        if (model.family?.toLowerCase().includes('mini')) score += 15;'
         break;
-      case 'quality':
-        if (model.family?.toLowerCase().includes('gpt-4')) score += 20;
+      case 'quality':'
+        if (model.family?.toLowerCase().includes('gpt-4')) score += 20;'
         break;
-      case 'cost':
+      case 'cost':'
         const cost = model.pricing?.inputTokens || 1;
         score += Math.max(0, 20 - cost * 10);
         break;
@@ -386,10 +386,10 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    */
   private getContextScore(contextWindow: number, requirement: string): number {
     switch (requirement) {
-      case 'small': return contextWindow >= 4000 ? 10 : -10;
-      case 'medium': return contextWindow >= 16000 ? 15 : -5;
-      case 'large': return contextWindow >= 100000 ? 20 : -10;
-      case 'xlarge': return contextWindow >= 1000000 ? 25 : -20;
+      case 'small': return contextWindow >= 4000 ? 10 : -10;'
+      case 'medium': return contextWindow >= 16000 ? 15 : -5;'
+      case 'large': return contextWindow >= 100000 ? 20 : -10;'
+      case 'xlarge': return contextWindow >= 1000000 ? 25 : -20;'
       default: return 0;
     }
   }
@@ -400,22 +400,22 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
   private generateReasoning(model: RichModelInfo, requirements: TaskRequirements): string[] {
     const reasons: string[] = [];
     
-    reasons.push(`Selected ${model.name} from ${model.provider}`);
+    reasons.push(`Selected ${model.name} from ${model.provider}`);`
     
     if (requirements.needsVision && model.supportsVision) {
-      reasons.push('Supports vision processing as required');
+      reasons.push('Supports vision processing as required');'
     }
     
     if (requirements.needsToolCalls && model.supportsToolCalls) {
-      reasons.push('Has tool calling capabilities');
+      reasons.push('Has tool calling capabilities');'
     }
     
     if (model.contextWindow > 100000) {
-      reasons.push(`Large context window (${model.contextWindow.toLocaleString()} tokens)`);
+      reasons.push(`Large context window (${model.contextWindow.toLocaleString()} tokens)`);`
     }
     
-    if (requirements.priority === 'quality' && model.family?.includes('gpt-4')) {
-      reasons.push('High-quality model optimized for complex tasks');
+    if (requirements.priority === 'quality' && model.family?.includes('gpt-4')) {'
+      reasons.push('High-quality model optimized for complex tasks');'
     }
     
     return reasons;
@@ -426,28 +426,28 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    */
   private findBestForTask(models: RichModelInfo[], task: string): string {
     // Simple heuristic - in production, this would be more sophisticated
-    return models[0]?.id || '';
+    return models[0]?.id || ';
   }
 
   private findBestForContextWindow(models: RichModelInfo[]): string {
-    return models.sort((a, b) => b.contextWindow - a.contextWindow)[0]?.id || '';
+    return models.sort((a, b) => b.contextWindow - a.contextWindow)[0]?.id || ';
   }
 
   private findMostCostEffective(models: RichModelInfo[]): string {
     return models.sort((a, b) => 
       (a.pricing?.inputTokens || 0) - (b.pricing?.inputTokens || 0)
-    )[0]?.id || '';
+    )[0]?.id || ';
   }
 
   private getAlternativeReason(model: RichModelInfo, requirements: TaskRequirements): string {
-    return `Alternative with ${model.contextWindow.toLocaleString()} token context`;
+    return `Alternative with ${model.contextWindow.toLocaleString()} token context`;`
   }
 
   private getTradeoffAnalysis(best: RichModelInfo, alternative: RichModelInfo): string {
     if (best.contextWindow > alternative.contextWindow) {
-      return 'Smaller context window but potentially faster';
+      return 'Smaller context window but potentially faster;
     }
-    return 'Different capabilities and performance characteristics';
+    return 'Different capabilities and performance characteristics;
   }
 }
 

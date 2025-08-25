@@ -15,7 +15,7 @@ import type {
 } from '../types/index.js';
 
 export class DomainAnalyzer {
-  private logger = getLogger('DomainAnalyzer');
+  private logger = getLogger('DomainAnalyzer');'
 
   /**
    * Analyze repository domains
@@ -25,7 +25,7 @@ export class DomainAnalyzer {
     files: string[],
     options?: AnalysisOptions
   ): Promise<Domain[]> {
-    this.logger.info(`Analyzing domains for ${files.length} files`);
+    this.logger.info(`Analyzing domains for ${files.length} files`);`
 
     try {
       // Group files by directory structure
@@ -37,7 +37,7 @@ export class DomainAnalyzer {
 
       for (const [dirPath, dirFiles] of directoryGroups) {
         const domain = await this.analyzeDomain(
-          `domain-${domainId++}`,
+          `domain-${domainId++}`,`
           dirPath,
           dirFiles,
           rootPath,
@@ -57,7 +57,7 @@ export class DomainAnalyzer {
 
       return domains.sort((a, b) => b.complexity - a.complexity);
     } catch (error) {
-      this.logger.warn('Domain analysis failed:', error);
+      this.logger.warn('Domain analysis failed:', error);'
       return [];
     }
   }
@@ -122,11 +122,11 @@ export class DomainAnalyzer {
     const groups = new Map<string, string[]>();
 
     for (const file of files) {
-      const pathParts = file.split('/');
+      const pathParts = file.split('/');'
 
       // Try different grouping levels
       for (let level = 1; level <= Math.min(3, pathParts.length - 1); level++) {
-        const dirPath = pathParts.slice(0, -level).join('/');
+        const dirPath = pathParts.slice(0, -level).join('/');'
 
         if (!groups.has(dirPath)) {
           groups.set(dirPath, []);
@@ -141,8 +141,8 @@ export class DomainAnalyzer {
 
     // Sort by depth (deeper first)
     const sortedPaths = Array.from(groups.keys()).sort((a, b) => {
-      const depthA = a.split('/').length;
-      const depthB = b.split('/').length;
+      const depthA = a.split('/').length;'
+      const depthB = b.split('/').length;'
       return depthB - depthA;
     });
 
@@ -164,23 +164,23 @@ export class DomainAnalyzer {
    * Infer domain name from path
    */
   private inferDomainName(path: string): string {
-    const segments = path.split('/').filter(Boolean);
-    const lastSegment = segments[segments.length - 1]||'root';
+    const segments = path.split('/').filter(Boolean);'
+    const lastSegment = segments[segments.length - 1]||'root;
 
     // Clean up common prefixes/suffixes
     return lastSegment
-      .replace(/^(src|lib|app|components|modules|packages)$/,'core')
-      .replace(/[-_]/g, ' ')
-      .split(' ')
+      .replace(/^(src|lib|app|components|modules|packages)$/,'core')'
+      .replace(/[-_]/g, ' ')'
+      .split(' ')'
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+      .join(' ');'
   }
 
   /**
    * Generate domain description
    */
   private generateDomainDescription(path: string, files: string[]): string {
-    const segments = path.split('/').filter(Boolean);
+    const segments = path.split('/').filter(Boolean);'
     const fileTypes = this.analyzeFileTypes(files);
     const primaryType = Object.keys(fileTypes).reduce((a, b) =>
       fileTypes[a] > fileTypes[b] ? a : b
@@ -207,10 +207,10 @@ export class DomainAnalyzer {
     );
 
     if (detectedContext) {
-      return `${detectedContext.charAt(0).toUpperCase() + detectedContext.slice(1)} domain containing ${primaryType} files`;
+      return `${detectedContext.charAt(0).toUpperCase() + detectedContext.slice(1)} domain containing ${primaryType} files`;`
     }
 
-    return `Domain containing ${files.length} ${primaryType} files`;
+    return `Domain containing ${files.length} ${primaryType} files`;`
   }
 
   /**
@@ -222,66 +222,66 @@ export class DomainAnalyzer {
 
     // Infrastructure patterns
     if (
-      pathLower.includes('config')||pathLower.includes('infrastructure')||pathLower.includes('database')||pathLower.includes('migration')
+      pathLower.includes('config')||pathLower.includes('infrastructure')||pathLower.includes('database')||pathLower.includes('migration')'
     ) {
-      return 'infrastructure';
+      return 'infrastructure;
     }
 
     // API patterns
     if (
-      pathLower.includes('api')||pathLower.includes('route')||pathLower.includes('endpoint')||pathLower.includes('controller')
+      pathLower.includes('api')||pathLower.includes('route')||pathLower.includes('endpoint')||pathLower.includes('controller')'
     ) {
-      return 'api';
+      return 'api;
     }
 
     // UI patterns
     if (
-      pathLower.includes('component')||pathLower.includes('view')||pathLower.includes('ui')||pathLower.includes('frontend')
+      pathLower.includes('component')||pathLower.includes('view')||pathLower.includes('ui')||pathLower.includes('frontend')'
     ) {
-      return 'ui';
+      return 'ui;
     }
 
     // Utility patterns
     if (
-      pathLower.includes('util')||pathLower.includes('helper')||pathLower.includes('tool')||pathLower.includes('lib')
+      pathLower.includes('util')||pathLower.includes('helper')||pathLower.includes('tool')||pathLower.includes('lib')'
     ) {
-      return 'utility';
+      return 'utility;
     }
 
     // Test patterns
     if (
-      pathLower.includes('test')||pathLower.includes('spec')||Object.keys(fileTypes).some((type) => type.includes('test'))
+      pathLower.includes('test')||pathLower.includes('spec')||Object.keys(fileTypes).some((type) => type.includes('test'))'
     ) {
-      return 'test';
+      return 'test;
     }
 
     // Data patterns
     if (
-      pathLower.includes('model')||pathLower.includes('entity')||pathLower.includes('data')||pathLower.includes('repository')
+      pathLower.includes('model')||pathLower.includes('entity')||pathLower.includes('data')||pathLower.includes('repository')'
     ) {
-      return 'data';
+      return 'data;
     }
 
     // Core business logic
     if (
-      pathLower.includes('core')||pathLower.includes('business')||pathLower.includes('domain')||pathLower.includes('service')
+      pathLower.includes('core')||pathLower.includes('business')||pathLower.includes('domain')||pathLower.includes('service')'
     ) {
-      return 'core';
+      return 'core;
     }
 
     // Feature-specific
-    if (pathLower.includes('feature')||pathLower.includes('module')) {
-      return 'feature';
+    if (pathLower.includes('feature')||pathLower.includes('module')) {'
+      return 'feature;
     }
 
-    return 'feature'; // Default
+    return 'feature'; // Default'
   }
 
   /**
    * Calculate domain size metrics
    */
   private async calculateDomainSize(files: string[]): Promise<DomainSize> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
     let totalLines = 0;
     let functions = 0;
     let classes = 0;
@@ -289,8 +289,8 @@ export class DomainAnalyzer {
 
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
-        const lines = content.split('\n').length;
+        const content = await fs.readFile(file, 'utf-8');'
+        const lines = content.split('\n').length;'
         totalLines += lines;
 
         // Simple pattern matching
@@ -300,7 +300,7 @@ export class DomainAnalyzer {
         classes += (content.match(/class\s+\w+/gm)||[]).length;
         interfaces += (content.match(/interface\s+\w+/gm)||[]).length;
       } catch {
-        // Skip files that can't be read
+        // Skip files that can't be read'
       }
     }
 
@@ -336,7 +336,7 @@ export class DomainAnalyzer {
    */
   private calculateDomainCohesion(files: string[]): number {
     // Simple cohesion heuristic based on file naming patterns
-    const fileNames = files.map((f) => f.split('/').pop()||'');
+    const fileNames = files.map((f) => f.split('/').pop()||'');'
     const commonPrefixes = this.findCommonPrefixes(fileNames);
     const commonSuffixes = this.findCommonSuffixes(fileNames);
 
@@ -356,13 +356,13 @@ export class DomainAnalyzer {
     files: string[],
     rootPath: string
   ): Promise<number> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
     let totalImports = 0;
     let externalImports = 0;
 
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
+        const content = await fs.readFile(file, 'utf-8');'
         const imports = this.extractImports(content);
         totalImports += imports.length;
 
@@ -372,7 +372,7 @@ export class DomainAnalyzer {
           }
         }
       } catch {
-        // Skip files that can't be read
+        // Skip files that can't be read'
       }
     }
 
@@ -397,27 +397,27 @@ export class DomainAnalyzer {
     // High complexity suggests splitting
     if (complexity > 0.7) {
       score += 3;
-      reasons.push('High complexity indicates the domain is doing too much');
+      reasons.push('High complexity indicates the domain is doing too much');'
     }
 
     // Low cohesion suggests splitting
     if (cohesion < 0.4) {
       score += 2;
       reasons.push(
-        'Low cohesion suggests unrelated functionality grouped together'
+        'Low cohesion suggests unrelated functionality grouped together''
       );
     }
 
     // High coupling suggests splitting
     if (coupling > 0.6) {
       score += 2;
-      reasons.push('High external coupling indicates tight dependencies');
+      reasons.push('High external coupling indicates tight dependencies');'
     }
 
     // Large size suggests splitting
     if (size.files > 20||size.lines > 2000) {
       score += 1;
-      reasons.push('Large size makes the domain hard to understand and maintain'
+      reasons.push('Large size makes the domain hard to understand and maintain''
       );
     }
 
@@ -505,7 +505,7 @@ export class DomainAnalyzer {
         suggestions.push({
           newDomainName: purpose,
           files: groupFiles,
-          rationale: `Separate ${purpose} files into dedicated domain`,
+          rationale: `Separate ${purpose} files into dedicated domain`,`
           complexity: groupFiles.length / files.length,
           dependencies: [],
         });
@@ -532,7 +532,7 @@ export class DomainAnalyzer {
     const types: Record<string, number> = {};
 
     for (const file of files) {
-      const ext = file.split('.').pop()?.toLowerCase()||'unknown';
+      const ext = file.split('.').pop()?.toLowerCase()||'unknown;
       types[ext] = (types[ext]||0) + 1;
     }
 
@@ -552,11 +552,11 @@ export class DomainAnalyzer {
 
     for (const file of files) {
       const fileName = file.toLowerCase();
-      if (fileName.includes('react')) frameworks.add('React');
-      if (fileName.includes('vue')) frameworks.add('Vue');
-      if (fileName.includes('angular')) frameworks.add('Angular');
-      if (fileName.includes('express')) frameworks.add('Express');
-      if (fileName.includes('next')) frameworks.add('Next.js');
+      if (fileName.includes('react')) frameworks.add('React');'
+      if (fileName.includes('vue')) frameworks.add('Vue');'
+      if (fileName.includes('angular')) frameworks.add('Angular');'
+      if (fileName.includes('express')) frameworks.add('Express');'
+      if (fileName.includes('next')) frameworks.add('Next.js');'
     }
 
     return Array.from(frameworks);
@@ -617,7 +617,7 @@ export class DomainAnalyzer {
   }
 
   private calculateExtensionConsistency(files: string[]): number {
-    const extensions = files.map((f) => f.split('.').pop()||'');
+    const extensions = files.map((f) => f.split('.').pop()||'');'
     const uniqueExtensions = new Set(extensions);
     return 1 - (uniqueExtensions.size - 1) / Math.max(1, extensions.length - 1);
   }
@@ -627,14 +627,14 @@ export class DomainAnalyzer {
 
     // ES6 imports
     const importRegex =
-      /import\s+(?:[\w*{}\s,]+\s+from\s+)?['"]([@\w.-/]+)['"]/g;
+      /import\s+(?:[\w*{}\s,]+\s+from\s+)?['"]([@\w.-/]+)['"]/g;'
     let match;
     while ((match = importRegex.exec(content)) !== null) {
       imports.push(match[1]);
     }
 
     // CommonJS requires
-    const requireRegex = /require\s*\(\s*['"]([@\w.-/]+)['"]\s*\)/g;
+    const requireRegex = /require\s*\(\s*['"]([@\w.-/]+)['"]\s*\)/g;'
     while ((match = requireRegex.exec(content)) !== null) {
       imports.push(match[1]);
     }
@@ -647,16 +647,16 @@ export class DomainAnalyzer {
     currentFile: string,
     domainFiles: string[]
   ): boolean {
-    if (importPath.startsWith('.')) {
+    if (importPath.startsWith('.')) {'
       // Relative import - check if target is in domain
-      const currentDir = currentFile.split('/').slice(0, -1).join('/');
-      const path = require('path');
+      const currentDir = currentFile.split('/').slice(0, -1).join('/');'
+      const path = require('path');'
       const resolvedPath = path.resolve(currentDir, importPath);
       return !domainFiles.some((f) => f.startsWith(resolvedPath));
     }
 
     // External package import
-    return !importPath.startsWith('/') && !importPath.startsWith('.');
+    return !importPath.startsWith('/') && !importPath.startsWith('.');'
   }
 
   private groupFilesByPurpose(files: string[]): Map<string, string[]> {
@@ -691,10 +691,10 @@ export class DomainAnalyzer {
       }
 
       if (!assigned) {
-        if (!groups.has('other')) {
-          groups.set('other', []);
+        if (!groups.has('other')) {'
+          groups.set('other', []);'
         }
-        groups.get('other')!.push(file);
+        groups.get('other')!.push(file);'
       }
     }
 
@@ -703,7 +703,7 @@ export class DomainAnalyzer {
 
   private detectSharedDomains(domains: Domain[]): void {
     // Identify cross-cutting concerns
-    const sharedPatterns = ['util', 'helper', 'common', 'shared', 'lib'];
+    const sharedPatterns = ['util', 'helper', 'common', 'shared', 'lib'];'
 
     for (const domain of domains) {
       const domainName = domain.name.toLowerCase();

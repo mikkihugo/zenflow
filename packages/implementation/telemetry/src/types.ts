@@ -42,7 +42,7 @@ export interface MetricDefinition {
 /**
  * Metric types
  */
-export type MetricType ='counter|histogram|gauge|up_down_counter';
+export type MetricType ='counter|histogram|gauge|up_down_counter;
 
 /**
  * Telemetry event
@@ -51,7 +51,7 @@ export interface TelemetryEvent {
   name: string;
   timestamp?: number;
   attributes?: Attributes;
-  severity?: 'debug|info|warn|error';
+  severity?: 'debug|info|warn|error;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface TelemetryEvent {
  */
 export interface SpanOptions {
   attributes?: Attributes;
-  kind?: import('@opentelemetry/api').SpanKind;
+  kind?: import('@opentelemetry/api').SpanKind;'
   parent?: OTelSpan;
 }
 
@@ -76,4 +76,4 @@ export type Attributes = Record<
  */
 export type Span = OTelSpan;
 export type Tracer = OTelTracer;
-export type { Meter } from'@opentelemetry/api';
+export type { Meter } from'@opentelemetry/api;

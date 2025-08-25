@@ -61,7 +61,7 @@ export class ExpressWebInterface
 
       // JSON parsing
       this.app.use(
-        express.json({ limit: this.config.maxRequestSize || '10mb'})
+        express.json({ limit: this.config.maxRequestSize || '10mb'})'
       );
       this.app.use(
         express.urlencoded({
@@ -78,35 +78,35 @@ export class ExpressWebInterface
       // Default routes
       this.setupDefaultRoutes();
 
-      this.emit('initialized', {});
+      this.emit('initialized', {});'
     } catch (error) {
-      console.error('Failed to initialize web interface:', error);
+      console.error('Failed to initialize web interface:', error);'
       throw error;
     }
   }
 
   async start(): Promise<void> {
     if (!this.app) {
-      throw new Error('Web interface not initialized');
+      throw new Error('Web interface not initialized');'
     }
 
     return new Promise((resolve, reject) => {
       this.server = this.app.listen(this.config.port, this.config.host, () => {
         this.startTime = Date.now();
         console.log(
-          `Web interface listening on http://${this.config.host}:${this.config.port}`
+          `Web interface listening on http://${this.config.host}:${this.config.port}``
         );
-        this.emit('started', {});
+        this.emit('started', {});'
         resolve();
       });
 
-      this.server.on('error', (error: any) => {
-        console.error('Web server error:', error);
-        this.emit('error', error);
+      this.server.on('error', (error: any) => {'
+        console.error('Web server error:', error);'
+        this.emit('error', error);'
         reject(error);
       });
 
-      this.server.on('connection', () => {
+      this.server.on('connection', () => {'
         this.connections++;
       });
     });
@@ -120,11 +120,11 @@ export class ExpressWebInterface
     return new Promise((resolve, reject) => {
       this.server.close((error: any) => {
         if (error) {
-          this.emit('error', error);
+          this.emit('error', error);'
           reject(error);
         } else {
           this.server = null;
-          this.emit('stopped', {});
+          this.emit('stopped', {});'
           resolve();
         }
       });
@@ -142,27 +142,27 @@ export class ExpressWebInterface
 
   registerRoute(method: string, path: string, handler: Function): void {
     if (!this.app) {
-      throw new Error('Web interface not initialized');
+      throw new Error('Web interface not initialized');'
     }
 
     const normalizedMethod = method.toLowerCase();
-    if (typeof this.app[normalizedMethod] === 'function') {
+    if (typeof this.app[normalizedMethod] === 'function') {'
       this.app[normalizedMethod](path, handler);
     } else {
-      throw new Error(`HTTP method ${method} not supported`);
+      throw new Error(`HTTP method ${method} not supported`);`
     }
   }
 
   registerMiddleware(middleware: Function): void {
     if (!this.app) {
-      throw new Error('Web interface not initialized');
+      throw new Error('Web interface not initialized');'
     }
     this.app.use(middleware);
   }
 
   private setupDefaultRoutes(): void {
     // Health check endpoint
-    this.registerRoute('GET', '/health', (_req: any, res: any) => {
+    this.registerRoute('GET', '/health', (_req: any, res: any) => {'
       res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -172,21 +172,21 @@ export class ExpressWebInterface
     });
 
     // Status endpoint
-    this.registerRoute('GET', '/status', (_req: any, res: any) => {
+    this.registerRoute('GET', '/status', (_req: any, res: any) => {'
       res.json(this.getStatus())();
     });
   }
 
   private async loadExpress() {
     try {
-      return await import('express');
+      return await import('express');'
     } catch (error) {
       // Fallback for when express is not available
       return {
         default: () => ({
           use: () => {},
           listen: (port: number, host: string, callback: Function) => {
-            console.log(`Fallback server listening on http://${host}:${port}`);
+            console.log(`Fallback server listening on http://${host}:${port}`);`
             callback();
             return {
               on: () => {},
@@ -207,7 +207,7 @@ export class ExpressWebInterface
 
   private async loadCors() {
     try {
-      const corsModule = await import('cors');
+      const corsModule = await import('cors');'
       return corsModule.default || corsModule;
     } catch (error) {
       return () => (_req: any, _res: any, next: Function) => next();
@@ -216,7 +216,7 @@ export class ExpressWebInterface
 
   private async loadCompression() {
     try {
-      const compressionModule = await import('compression');
+      const compressionModule = await import('compression');'
       return compressionModule.default || compressionModule;
     } catch (error) {
       return () => (_req: any, _res: any, next: Function) => next();

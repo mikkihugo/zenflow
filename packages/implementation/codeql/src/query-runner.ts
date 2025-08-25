@@ -40,7 +40,7 @@ export class QueryRunner {
 
   constructor(config: CodeQLConfig, logger: Logger) {
     this.config = config;
-    this.logger = logger.child({ component: 'QueryRunner' });
+    this.logger = logger.child({ component: 'QueryRunner' });'
     this.resultParser = new ResultParser(this.logger);
   }
 
@@ -52,14 +52,14 @@ export class QueryRunner {
     queryPacks: QueryPack[],
     options: QueryExecutionOptions
   ): Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[] }> {
-    this.logger.info('Executing CodeQL queries', {
+    this.logger.info('Executing CodeQL queries', {'
       databaseId: database.id,
       queryPackCount: queryPacks.length,
       format: options.format,
     });
 
     if (!database.isReady) {
-      throw this.createError('database', 'Database is not ready for analysis');
+      throw this.createError('database', 'Database is not ready for analysis');'
     }
 
     const results: { sarifResults: SARIFResult; findings: CodeQLFinding[] } = {
@@ -83,7 +83,7 @@ export class QueryRunner {
         );
         results.findings.push(...packResult.findings);
       } catch (error) {
-        this.logger.error('Query pack execution failed', {
+        this.logger.error('Query pack execution failed', {'
           queryPack: queryPack.name,
           databaseId: database.id,
           error,
@@ -94,7 +94,7 @@ export class QueryRunner {
       }
     }
 
-    this.logger.info('Query execution completed', {
+    this.logger.info('Query execution completed', {'
       databaseId: database.id,
       totalFindings: results.findings.length,
     });
@@ -110,7 +110,7 @@ export class QueryRunner {
     queryPack: QueryPack,
     options: QueryExecutionOptions
   ): Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[] }> {
-    this.logger.debug('Executing query pack', {
+    this.logger.debug('Executing query pack', {'
       queryPack: queryPack.name,
       databaseId: database.id,
     });
@@ -119,7 +119,7 @@ export class QueryRunner {
     const outputFile =
       options.outputPath||path.join(
         this.config.tempDir!,
-        `results_${database.id}_${queryPack.name}_${Date.now()}.sarif`
+        `results_${database.id}_${queryPack.name}_${Date.now()}.sarif``
       );
 
     // Build command arguments
@@ -135,15 +135,15 @@ export class QueryRunner {
 
     // Add optional arguments
     if (options.maxResults) {
-      args.push('--max-results', options.maxResults.toString())();
+      args.push('--max-results', options.maxResults.toString())();'
     }
 
     if (this.config.threads && this.config.threads > 1) {
-      args.push('--threads', this.config.threads.toString())();
+      args.push('--threads', this.config.threads.toString())();'
     }
 
     if (this.config.verbose) {
-      args.push('--verbose');
+      args.push('--verbose');'
     }
 
     if (options.additionalArgs && options.additionalArgs.length > 0) {
@@ -157,7 +157,7 @@ export class QueryRunner {
       });
 
       // Read and parse results
-      const sarifContent = await fs.readFile(outputFile,'utf-8');
+      const sarifContent = await fs.readFile(outputFile,'utf-8');'
       const sarifResults = JSON.parse(sarifContent) as SARIFResult;
 
       // Parse findings from SARIF
@@ -171,7 +171,7 @@ export class QueryRunner {
         // Ignore cleanup errors
       }
 
-      this.logger.debug('Query pack executed successfully', {
+      this.logger.debug('Query pack executed successfully', {'
         queryPack: queryPack.name,
         findingCount: findings.length,
       });
@@ -198,9 +198,9 @@ export class QueryRunner {
     options: Partial<QueryExecutionOptions> = {}
   ): Promise<QueryExecutionResult> {
     return await safeAsync(async (): Promise<CodeQLAnalysisResult> => {
-      const queryName = path.basename(queryPath, '.ql');
+      const queryName = path.basename(queryPath, '.ql');'
 
-      this.logger.info('Executing single query', {
+      this.logger.info('Executing single query', {'
         queryName,
         queryPath,
         databaseId: database.id,
@@ -230,7 +230,7 @@ export class QueryRunner {
 
       // Create analysis result
       const analysisResult: CodeQLAnalysisResult = {
-        id: `single_query_${Date.now()}`,
+        id: `single_query_${Date.now()}`,`
         database,
         queryPacks: [queryPack],
         sarifResults: results.sarifResults,
@@ -238,7 +238,7 @@ export class QueryRunner {
         metadata: {
           startTime: new Date(),
           endTime: new Date(),
-          codeqlVersion: 'unknown', // Would need to query
+          codeqlVersion: 'unknown', // Would need to query'
           queryPackVersions: { [queryName]: 'local'},
           configuration: executionOptions,
         },
@@ -301,7 +301,7 @@ export class QueryRunner {
     return new Promise((resolve, reject) => {
       const timeout = options.timeout||this.config.timeout||60000;
 
-      this.logger.debug('Executing CodeQL command', {
+      this.logger.debug('Executing CodeQL command', {'
         command: this.config.codeqlPath,
         args,
         timeout,
@@ -313,35 +313,35 @@ export class QueryRunner {
         env: options.env||process.env,
       });
 
-      let stdout =';
-      let stderr = ';
+      let stdout = '';
+      let stderr = '';
 
-      child.stdout.on('data', (data) => {
+      child.stdout.on('data', (data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {
+      child.stderr.on('data', (data) => {'
         stderr += data.toString();
       });
 
       const timeoutId = setTimeout(() => {
-        child.kill('SIGTERM');
+        child.kill('SIGTERM');'
         reject(
-          this.createError('system', 'Query execution timeout', {
+          this.createError('system', 'Query execution timeout', {'
             timeout,
             command: args.join(' '),
           })
         );
       }, timeout);
 
-      child.on('close', (exitCode) => {
+      child.on('close', (exitCode) => {'
         clearTimeout(timeoutId);
 
         if (exitCode === 0) {
           resolve({ stdout, stderr, exitCode });
         } else {
           reject(
-            this.createError('query', 'Query execution failed', {
+            this.createError('query', 'Query execution failed', {'
               exitCode,
               stderr,
               stdout,
@@ -351,10 +351,10 @@ export class QueryRunner {
         }
       });
 
-      child.on('error', (error) => {
+      child.on('error', (error) => {'
         clearTimeout(timeoutId);
         reject(
-          this.createError('system', 'Failed to execute query', {
+          this.createError('system', 'Failed to execute query', {'
             originalError: error.message,
             command: args.join(' '),
           })
@@ -378,7 +378,7 @@ export class QueryRunner {
    * Clean up resources
    */
   async cleanup(): Promise<void> {
-    this.logger.info('Cleaning up query runner resources');
+    this.logger.info('Cleaning up query runner resources');'
     // No specific cleanup needed for query runner
   }
 }

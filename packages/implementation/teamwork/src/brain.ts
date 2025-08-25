@@ -47,7 +47,7 @@ let createNeuralNetwork: any;
 let _trainNeuralNetwork: any;
 
 try {
-  const brainModule = await import('@claude-zen/brain');
+  const brainModule = await import('@claude-zen/brain');'
 
   // High-level AI coordination systems
   BrainCoordinator = brainModule.BrainCoordinator;
@@ -62,12 +62,12 @@ try {
   _trainNeuralNetwork = brainModule.trainNeuralNetwork;
 
   console.log(
-    '🧠✨ REAL Neural Brain System Loaded - Rust/WASM + AI Coordination'
+    '🧠✨ REAL Neural Brain System Loaded - Rust/WASM + AI Coordination''
   );
 } catch (error) {
   // Brain package not available - use fallback implementations
   console.warn(
-    '🧠 Real neural brain package not available for meeting intelligence, using fallback implementations'
+    '🧠 Real neural brain package not available for meeting intelligence, using fallback implementations''
   );
 }
 
@@ -80,13 +80,13 @@ export interface MeetingIssue {
   title: string;
   description: string;
   domains: string[];
-  severity: 'low|medium|high|critical';
+  severity: 'low|medium|high|critical;
   context?: Record<string, any>;
   stakeholders?: string[];
   requiredExpertise?: string[];
   deadline?: Date;
   impact?: {
-    scope: 'local|system|enterprise';
+    scope: 'local' | 'system' | 'enterprise';
     domains: string[];
     urgency: number;
   };
@@ -97,12 +97,12 @@ export interface MeetingIssue {
  */
 export interface BrainMeetingParticipant {
   id: string;
-  role: 'queen' | 'commander' | 'matron' | 'specialist' | 'coordinator' | 'analyst' | 'researcher';
+  role: 'queen' | 'commander' | 'matron' | 'specialist' | 'coordinator' | 'analyst' | 'researcher;
   domain: string;
   expertise: string[];
   availability: number; // 0-1 availability score
   effectiveness: number; // Historical effectiveness score
-  collaborationStyle: 'leader|facilitator|analyst|implementer';
+  collaborationStyle: 'leader|facilitator|analyst|implementer;
   neuralProfile?: {
     decisionSpeed: number;
     consensusBuilding: number;
@@ -146,7 +146,7 @@ export interface BrainMeetingOutcome {
   };
   consensus: {
     level: number;
-    participants: Record<string, 'support|oppose|abstain'>;
+    participants: Record<string, 'support|oppose|abstain'>;'
     rationale: string[];
   };
   brainInsights: {
@@ -170,7 +170,7 @@ export interface BrainMeetingOutcome {
  * **BRAIN-ENHANCED MEETING INTELLIGENCE**
  *
  * Enhances the existing teamwork BrainCoordinator with specialized meeting
- * intelligence capabilities. Integrates seamlessly with ConversationOrchestrator's
+ * intelligence capabilities. Integrates seamlessly with ConversationOrchestrator's'
  * brain coordination for neural-powered meeting optimization.
  */
 export class BrainMeetingIntelligence {
@@ -201,7 +201,7 @@ export class BrainMeetingIntelligence {
   private brainLearningData: any[] = [];
 
   constructor(conversationOrchestrator?: ConversationOrchestratorImpl) {
-    this.logger = getLogger('brain-meeting-intelligence');
+    this.logger = getLogger('brain-meeting-intelligence');'
     this.conversationOrchestrator =
       conversationOrchestrator||new ConversationOrchestratorImpl();
 
@@ -217,7 +217,7 @@ export class BrainMeetingIntelligence {
    */
   private async initializeBrainIntelligence(): Promise<void> {
     this.logger.info(
-      '🧠 Initializing Brain Meeting Intelligence with Teamwork Integration'
+      '🧠 Initializing Brain Meeting Intelligence with Teamwork Integration''
     );
 
     try {
@@ -275,7 +275,7 @@ export class BrainMeetingIntelligence {
         // ===== REAL NEURAL NETWORKS - Rust/WASM =====
         if (NeuralBridge && createNeuralNetwork) {
           this.logger.info(
-            '🚀 Initializing REAL Rust/WASM Neural Networks for meeting intelligence'
+            '🚀 Initializing REAL Rust/WASM Neural Networks for meeting intelligence''
           );
 
           try {
@@ -305,10 +305,10 @@ export class BrainMeetingIntelligence {
               architecture: {
                 type: 'feedforward',
                 layers: [
-                  { type: 'input', neurons: 20 }, // Participant features, meeting context
+                  { type: 'input', neurons: 20 }, // Participant features, meeting context'
                   { type: 'hidden', neurons: 32, activation: 'relu' },
                   { type: 'hidden', neurons: 16, activation: 'relu' },
-                  { type: 'output', neurons: 1, activation: 'sigmoid' }, // Consensus probability
+                  { type: 'output', neurons: 1, activation: 'sigmoid' }, // Consensus probability'
                 ],
                 optimization: {
                   algorithm: 'adam',
@@ -329,10 +329,10 @@ export class BrainMeetingIntelligence {
               architecture: {
                 type: 'feedforward',
                 layers: [
-                  { type: 'input', neurons: 15 }, // Issue complexity, domain, requirements
+                  { type: 'input', neurons: 15 }, // Issue complexity, domain, requirements'
                   { type: 'hidden', neurons: 24, activation: 'relu' },
                   { type: 'hidden', neurons: 12, activation: 'relu' },
-                  { type: 'output', neurons: 8, activation: 'softmax' }, // Participant role probabilities
+                  { type: 'output', neurons: 8, activation: 'softmax' }, // Participant role probabilities'
                 ],
                 optimization: {
                   algorithm: 'adam',
@@ -348,7 +348,7 @@ export class BrainMeetingIntelligence {
             });
 
             this.logger.info(
-              '✅ REAL Neural Networks initialized - Rust/WASM powered consensus prediction & participant selection'
+              '✅ REAL Neural Networks initialized - Rust/WASM powered consensus prediction & participant selection''
             );
           } catch (neuralError) {
             this.logger.warn(
@@ -361,11 +361,11 @@ export class BrainMeetingIntelligence {
         }
 
         this.logger.info(
-          '✅ Brain Meeting Intelligence fully initialized with REAL Neural Brain AI + Rust/WASM'
+          '✅ Brain Meeting Intelligence fully initialized with REAL Neural Brain AI + Rust/WASM''
         );
       } else {
         this.logger.info(
-          '⚡ Brain Meeting Intelligence initialized with fallback intelligence'
+          '⚡ Brain Meeting Intelligence initialized with fallback intelligence''
         );
       }
     } catch (error) {
@@ -394,7 +394,7 @@ export class BrainMeetingIntelligence {
       // 1. **BRAIN COMPLEXITY ANALYSIS** - Let AI assess the issue
       const complexityAnalysis = await this.analyzeMeetingComplexity(issue);
 
-      this.logger.info('🎯 Brain complexity analysis:', {
+      this.logger.info('🎯 Brain complexity analysis:', {'
         score: complexityAnalysis.score,
         factors: complexityAnalysis.factors,
       });
@@ -437,7 +437,7 @@ export class BrainMeetingIntelligence {
       this.meetingHistory.set(issue.id, outcome);
       this.activeMeetings.delete(issue.id);
 
-      this.logger.info('✅ Brain meeting orchestration completed:', {
+      this.logger.info('✅ Brain meeting orchestration completed:', {'
         issueId: issue.id,
         consensusLevel: outcome.consensus.level,
         participantCount: Object.keys(
@@ -447,9 +447,9 @@ export class BrainMeetingIntelligence {
 
       return outcome;
     } catch (error) {
-      this.logger.error('❌ Brain meeting orchestration failed:', error);
+      this.logger.error('❌ Brain meeting orchestration failed:', error);'
       throw new Error(
-        `Brain meeting orchestration failed: ${error instanceof Error ? error.message : String(error)}`
+        `Brain meeting orchestration failed: ${error instanceof Error ? error.message : String(error)}``
       );
     }
   }
@@ -457,20 +457,20 @@ export class BrainMeetingIntelligence {
   /**
    * **FACILITATE BRAIN-ENHANCED MEETING WITH TEAMWORK INTEGRATION**
    *
-   * Use teamwork's conversation orchestrator enhanced with brain intelligence.
+   * Use teamwork's conversation orchestrator enhanced with brain intelligence.'
    */
   private async facilitateBrainMeeting(
     config: BrainMeetingConfig
   ): Promise<BrainMeetingOutcome> {
     this.logger.info(
-      '🎭 Facilitating brain-enhanced meeting with Teamwork integration'
+      '🎭 Facilitating brain-enhanced meeting with Teamwork integration''
     );
 
     // Create teamwork conversation configuration
     const conversationConfig: ConversationConfig = {
       title: config.issue.title,
       description: config.issue.description,
-      pattern: 'brain-collaborative-decision', // Enhanced pattern
+      pattern: 'brain-collaborative-decision', // Enhanced pattern'
       context: this.createBrainConversationContext(config),
       initialParticipants: this.convertToAgentIds(config.participants),
       timeout: config.structure.estimatedDuration * 60 * 1000, // Convert to milliseconds
@@ -489,7 +489,7 @@ export class BrainMeetingIntelligence {
     // Terminate conversation and get outcomes
     const outcomes = await this.conversationOrchestrator.terminateConversation(
       conversationSession.id,
-      'Brain-enhanced meeting completed'
+      'Brain-enhanced meeting completed''
     );
 
     // Transform to brain meeting outcome
@@ -517,7 +517,7 @@ export class BrainMeetingIntelligence {
     config: BrainMeetingConfig
   ): Promise<void> {
     for (const phase of config.structure.phases) {
-      this.logger.info(`📋 Running brain-enhanced phase: ${phase}`);
+      this.logger.info(`📋 Running brain-enhanced phase: ${phase}`);`
 
       // Brain-enhanced phase execution
       await this.executePhaseWithBrainIntelligence(session, phase, config);
@@ -527,7 +527,7 @@ export class BrainMeetingIntelligence {
         const consensusPrediction =
           await this.predictBrainConsensusProgress(session);
         this.logger.info(
-          `🔮 Brain consensus prediction for ${phase}: ${consensusPrediction.toFixed(2)}`
+          `🔮 Brain consensus prediction for ${phase}: ${consensusPrediction.toFixed(2)}``
         );
       }
     }
@@ -609,7 +609,7 @@ export class BrainMeetingIntelligence {
     if (this.participantSelectorNetwork && this.neuralBridge) {
       try {
         this.logger.debug(
-          '🧠👥 Using REAL Rust/WASM neural network for participant selection'
+          '🧠👥 Using REAL Rust/WASM neural network for participant selection''
         );
 
         // Prepare neural network input features (15 dimensions)
@@ -650,7 +650,7 @@ export class BrainMeetingIntelligence {
 
         sortedRoles.forEach((roleData, index) => {
           selectedParticipants.push({
-            id: `neural-${roleData.role}-${nanoid(6)}`,
+            id: `neural-${roleData.role}-${nanoid(6)}`,`
             role: roleData.role as BrainMeetingParticipant['role'],
             domain: issue.domains[index % issue.domains.length]||'general',
             expertise: [
@@ -672,7 +672,7 @@ export class BrainMeetingIntelligence {
         });
 
         this.logger.info(
-          `🎯 REAL Neural participant selection: ${selectedParticipants.length} optimal participants selected`
+          `🎯 REAL Neural participant selection: ${selectedParticipants.length} optimal participants selected``
         );
         return selectedParticipants;
       } catch (neuralError) {
@@ -738,11 +738,11 @@ export class BrainMeetingIntelligence {
     features[0] = complexity.score||0.5; // Complexity score
     features[1] = issue.domains.length / 5.0; // Normalized domain count
     features[2] =
-      issue.severity ==='critical'
+      issue.severity ==='critical''
         ? 1.0
-        : issue.severity === 'high'
+        : issue.severity === 'high''
           ? 0.75
-          : issue.severity === 'medium'? 0.5
+          : issue.severity === 'medium'? 0.5'
             : 0.25; // Severity mapping
     features[3] = (issue.requiredExpertise?.length||0) / 10.0; // Expertise requirements
     features[4] = issue.impact?.urgency||0.5; // Urgency level
@@ -759,9 +759,9 @@ export class BrainMeetingIntelligence {
     });
 
     // Feature 10-14: Issue type and context
-    features[10] = issue.type === 'architectural-decision' ? 1.0 : 0.0;
-    features[11] = issue.type === 'performance-optimization' ? 1.0 : 0.0;
-    features[12] = issue.type === 'security-review'? 1.0 : 0.0;
+    features[10] = issue.type === 'architectural-decision' ? 1.0 : 0.0;'
+    features[11] = issue.type === 'performance-optimization' ? 1.0 : 0.0;'
+    features[12] = issue.type === 'security-review'? 1.0 : 0.0;'
     features[13] = (issue.stakeholders?.length||0) / 8.0; // Normalized stakeholder count
     features[14] = issue.deadline
       ? Math.min(
@@ -783,7 +783,7 @@ export class BrainMeetingIntelligence {
       if (index < 4) {
         // Limit to 4 participants
         participants.push({
-          id: `brain-participant-${domain}-${nanoid(6)}`,
+          id: `brain-participant-${domain}-${nanoid(6)}`,`
           role: index === 0 ?'coordinator' : 'specialist',
           domain,
           expertise: [domain, 'collaboration', 'brain-enhanced'],
@@ -849,45 +849,45 @@ export class BrainMeetingIntelligence {
     const messages = [];
 
     switch (phase) {
-      case 'brain-analysis':
+      case 'brain-analysis':'
         messages.push({
           from: participants[0]
             ? this.convertToAgentId(participants[0])
             : this.createDefaultBrainAgent(),
-          content: `🧠 Brain-enhanced analysis of ${config.issue.title}: ${config.issue.description}`,
+          content: `🧠 Brain-enhanced analysis of ${config.issue.title}: ${config.issue.description}`,`
           type: 'question',
         });
         break;
 
-      case 'intelligent-brainstorming':
+      case 'intelligent-brainstorming':'
         participants.forEach((participant, index) => {
           if (index < 3) {
             // Limit messages
             messages.push({
               from: this.convertToAgentId(participant),
-              content: `💡 AI-optimized suggestion for ${config.issue.type}: Brain analysis suggests ${participant.domain} approach with ${participant.expertise.join(', ')}`,
+              content: `💡 AI-optimized suggestion for ${config.issue.type}: Brain analysis suggests ${participant.domain} approach with ${participant.expertise.join(', ')}`,`
               type: 'suggestion',
             });
           }
         });
         break;
 
-      case 'ai-evaluation':
+      case 'ai-evaluation':'
         messages.push({
           from: participants[1]
             ? this.convertToAgentId(participants[1])
             : this.createDefaultBrainAgent(),
-          content: `⚖️ Brain-powered evaluation of proposed solutions for ${config.issue.title}`,
+          content: `⚖️ Brain-powered evaluation of proposed solutions for ${config.issue.title}`,`
           type: 'critique',
         });
         break;
 
-      case 'neural-consensus':
+      case 'neural-consensus':'
         messages.push({
           from: participants[0]
             ? this.convertToAgentId(participants[0])
             : this.createDefaultBrainAgent(),
-          content: `🤝 Building neural consensus on ${config.issue.title} resolution with brain assistance`,
+          content: `🤝 Building neural consensus on ${config.issue.title} resolution with brain assistance`,`
           type: 'agreement',
         });
         break;
@@ -897,7 +897,7 @@ export class BrainMeetingIntelligence {
           from: participants[0]
             ? this.convertToAgentId(participants[0])
             : this.createDefaultBrainAgent(),
-          content: `📋 Executing brain-enhanced ${phase} phase for ${config.issue.title}`,
+          content: `📋 Executing brain-enhanced ${phase} phase for ${config.issue.title}`,`
           type: 'summary',
         });
     }
@@ -910,10 +910,10 @@ export class BrainMeetingIntelligence {
   ): ConversationContext {
     return {
       task: config.issue,
-      goal: `Brain-enhanced resolution of ${config.issue.title}`,
+      goal: `Brain-enhanced resolution of ${config.issue.title}`,`
       constraints: [
-        `Severity: ${config.issue.severity}`,
-        `Domains: ${config.issue.domains.join(', ')}`,
+        `Severity: ${config.issue.severity}`,`
+        `Domains: ${config.issue.domains.join(', ')}`,`
         'Brain-assisted decision making',
       ],
       resources: [
@@ -947,15 +947,15 @@ export class BrainMeetingIntelligence {
 
   private createDefaultBrainAgent(): AgentId {
     return {
-      id: `brain-agent-${nanoid(6)}`,
+      id: `brain-agent-${nanoid(6)}`,`
       swarmId: 'brain-meeting',
       type: 'coordinator',
       instance: 0,
     };
   }
 
-  private mapBrainRole(role: string): BrainMeetingParticipant['role'] {
-    const roleMap: Record<string, BrainMeetingParticipant['role']> = {
+  private mapBrainRole(role: string): BrainMeetingParticipant['role'] {'
+    const roleMap: Record<string, BrainMeetingParticipant['role']> = {'
       leader: 'queen',
       tactical: 'commander',
       domain: 'matron',
@@ -964,11 +964,11 @@ export class BrainMeetingIntelligence {
       analyst: 'analyst',
       researcher: 'researcher',
     };
-    return roleMap[role]||'specialist';
+    return roleMap[role]||'specialist;
   }
 
-  private mapAgentType(role: BrainMeetingParticipant['role']): any {
-    const typeMap: Record<BrainMeetingParticipant['role'], any> = {
+  private mapAgentType(role: BrainMeetingParticipant['role']): any {'
+    const typeMap: Record<BrainMeetingParticipant['role'], any> = {'
       queen: 'coordinator',
       commander: 'coordinator',
       matron: 'analyst',
@@ -977,22 +977,22 @@ export class BrainMeetingIntelligence {
       analyst: 'analyst',
       researcher: 'researcher',
     };
-    return typeMap[role]||'researcher';
+    return typeMap[role]||'researcher;
   }
 
   private extractBrainDecisionFromOutcomes(
     outcomes: ConversationOutcome[]
   ): any {
-    const decisionOutcomes = outcomes.filter((o) => o.type === 'decision');
+    const decisionOutcomes = outcomes.filter((o) => o.type === 'decision');'
 
     return {
       summary:
         decisionOutcomes.length > 0
-          ? `Brain-assisted decision reached with ${decisionOutcomes.length} key decisions`
+          ? `Brain-assisted decision reached with ${decisionOutcomes.length} key decisions``
           : 'Brain-enhanced collaborative discussion completed',
       actions: outcomes.map(
         (o) =>
-          `Brain action from ${o.type}: ${String(o.content).substring(0, 100)}`
+          `Brain action from ${o.type}: ${String(o.content).substring(0, 100)}``
       ),
       assignments: {},
       timeline: {},
@@ -1080,7 +1080,7 @@ export class BrainMeetingIntelligence {
     if (this.consensusPredictorNetwork && this.neuralBridge) {
       try {
         this.logger.debug(
-          '🧠🔮 Using REAL Rust/WASM neural network for consensus prediction'
+          '🧠🔮 Using REAL Rust/WASM neural network for consensus prediction''
         );
 
         // Prepare neural network input features (20 dimensions)
@@ -1094,7 +1094,7 @@ export class BrainMeetingIntelligence {
 
         const consensusScore = neuralPrediction.output[0]; // Sigmoid output (0-1)
         this.logger.debug(
-          `🎯 REAL Neural consensus prediction: ${consensusScore.toFixed(3)}`
+          `🎯 REAL Neural consensus prediction: ${consensusScore.toFixed(3)}``
         );
 
         return Math.max(0.1, Math.min(0.98, consensusScore));
@@ -1171,17 +1171,17 @@ export class BrainMeetingIntelligence {
     // Feature 15-19: Temporal patterns
     features[15] =
       session.messages.length > 0
-        ? session.messages.filter((m) => m.messageType ==='agreement').length /
+        ? session.messages.filter((m) => m.messageType ==='agreement').length /'
           session.messages.length
         : 0;
     features[16] =
       session.messages.length > 0
-        ? session.messages.filter((m) => m.messageType === 'disagreement')
+        ? session.messages.filter((m) => m.messageType === 'disagreement')'
             .length / session.messages.length
         : 0;
     features[17] = Math.min(1.0, session.messages.length / 20.0); // Message density
     features[18] = Math.min(1.0, session.participants.length / 8.0); // Participant density
-    features[19] = session.context?.domain === 'architecture' ? 1.0 : 0.0; // Domain indicator
+    features[19] = session.context?.domain === 'architecture' ? 1.0 : 0.0; // Domain indicator'
 
     return features;
   }
@@ -1189,7 +1189,7 @@ export class BrainMeetingIntelligence {
   private async learnFromBrainMeetingOutcome(
     outcome: BrainMeetingOutcome
   ): Promise<void> {
-    this.logger.info('🧠 Brain learning from meeting outcome');
+    this.logger.info('🧠 Brain learning from meeting outcome');'
 
     try {
       if (this.behavioralIntelligence) {
@@ -1220,7 +1220,7 @@ export class BrainMeetingIntelligence {
         },
       });
     } catch (error) {
-      this.logger.error('❌ Brain learning failed:', error);
+      this.logger.error('❌ Brain learning failed:', error);'
     }
   }
 
@@ -1266,7 +1266,7 @@ export class BrainMeetingIntelligence {
   }
 
   async optimizeBrainParameters(): Promise<void> {
-    this.logger.info('🔧 Optimizing brain parameters based on learning data');
+    this.logger.info('🔧 Optimizing brain parameters based on learning data');'
 
     if (this.autonomousOptimizer) {
       await this.autonomousOptimizer.optimizeSystemPerformance({

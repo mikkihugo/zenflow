@@ -12,16 +12,16 @@ export class FailoverManager {
   public async activateFailover(failedAgentId: string): Promise<void> {
     // Implement failover logic
     const strategy =
-      this.failoverStrategies.get(failedAgentId) || 'redistribute';
+      this.failoverStrategies.get(failedAgentId) || 'redistribute;
 
     switch (strategy) {
-      case 'redistribute':
+      case 'redistribute':'
         await this.redistributeLoad(failedAgentId);
         break;
-      case 'standby':
+      case 'standby':'
         await this.activateStandbyAgent(failedAgentId);
         break;
-      case 'graceful_degradation':
+      case 'graceful_degradation':'
         await this.gracefulDegradation(failedAgentId);
         break;
       default:

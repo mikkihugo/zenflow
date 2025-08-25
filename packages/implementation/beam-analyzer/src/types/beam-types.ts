@@ -52,7 +52,7 @@ export interface BeamApplication {
   /** Application name */
   name: string;
   /** Application type */
-  type: 'application|library|release';
+  type: 'application' | 'library' | 'release';
   /** Entry point module */
   entryPoint?: string;
   /** Supervision tree root */
@@ -69,7 +69,7 @@ export interface BeamDependency {
   /** Version specification */
   version: string;
   /** Dependency source */
-  source: 'hex|git|path|unknown';
+  source: 'hex|git|path|unknown;
   /** Security vulnerabilities */
   vulnerabilities?: BeamVulnerability[];
 }
@@ -204,7 +204,7 @@ export interface SobelowFinding {
   /** Security category */
   category: SobelowCategory;
   /** Confidence level */
-  confidence: 'high|medium|low';
+  confidence: 'high' | 'medium' | 'low';
   /** Details */
   details: string;
   /** Location */
@@ -228,7 +228,7 @@ export interface PhoenixSecurityIssue {
   mitigation: string;
 }
 
-export type PhoenixIssueType =|'unsafe_params|missing_csrf|weak_session|insecure_headers|unsafe_redirect|mass_assignment|weak_crypto';
+export type PhoenixIssueType =|'unsafe_params|missing_csrf|weak_session|insecure_headers|unsafe_redirect|mass_assignment|weak_crypto;
 
 export interface ConfigSecurityIssue {
   /** Configuration file */
@@ -267,7 +267,7 @@ export interface CustomAnalysisResult {
   /** Rule name */
   rule: string;
   /** Analysis type */
-  type: 'pattern|security|performance|otp';
+  type: 'pattern|security|performance|otp;
   /** Findings */
   findings: BeamFinding[];
   /** Execution time */
@@ -294,7 +294,7 @@ export interface BeamAnalysisRule {
 
 export interface BeamPattern {
   /** Pattern type */
-  type: 'ast|regex|function_call|module_attribute';
+  type: 'ast|regex|function_call|module_attribute;
   /** Pattern expression */
   expression: string;
   /** Additional constraints */
@@ -380,7 +380,7 @@ export interface BeamAnalysisError {
   originalError?: Error;
 }
 
-export type BeamErrorCode =|'TOOL_NOT_FOUND|COMPILATION_FAILED|TIMEOUT|INVALID_PROJECT|PERMISSION_DENIED|NETWORK_ERROR|CONFIGURATION_ERROR|ANALYSIS_FAILED';
+export type BeamErrorCode =|'TOOL_NOT_FOUND|COMPILATION_FAILED|TIMEOUT|INVALID_PROJECT|PERMISSION_DENIED|NETWORK_ERROR|CONFIGURATION_ERROR|ANALYSIS_FAILED;
 
 // Result Wrapper Types
 export type BeamAnalysisExecutionResult = Result<

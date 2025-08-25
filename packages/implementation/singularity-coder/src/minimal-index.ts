@@ -54,7 +54,7 @@ export async function createFileAwareAI(config: FileAwareConfig): Promise<{
           {
             type: 'analysis',
             path: 'README.md',
-            reasoning: `File-aware AI analysis complete for task: ${request.task}`,
+            reasoning: `File-aware AI analysis complete for task: ${request.task}`,`
           },
         ],
         metadata: {
@@ -67,12 +67,12 @@ export async function createFileAwareAI(config: FileAwareConfig): Promise<{
     },
 
     async getSession(): Promise<string|null> {
-      return `session-${Date.now()}`;
+      return `session-${Date.now()}`;`
     },
   };
 }
 
-export const VERSION ='1.0.0';
+export const VERSION ='1.0.0;
 export const FEATURES = {
   RUST_CORE: false,
   TYPESCRIPT_CORE: true,

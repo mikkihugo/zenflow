@@ -22,7 +22,7 @@ import type {
 } from './types/index.js';
 
 export class RepositoryAnalyzer {
-  private logger = getLogger('RepositoryAnalyzer');
+  private logger = getLogger('RepositoryAnalyzer');'
   private complexityAnalyzer: ComplexityAnalyzer;
   private dependencyAnalyzer: DependencyAnalyzer;
   private workspaceAnalyzer: WorkspaceAnalyzer;
@@ -46,7 +46,7 @@ export class RepositoryAnalyzer {
    */
   async analyze(options: AnalysisOptions = {}): Promise<AnalysisResult> {
     this.logger.info(
-      `Starting comprehensive analysis of repository: ${this.repositoryPath}`
+      `Starting comprehensive analysis of repository: ${this.repositoryPath}``
     );
 
     const startTime = Date.now();
@@ -76,7 +76,7 @@ export class RepositoryAnalyzer {
 
       // Get all source files
       const sourceFiles = await this.getSourceFiles(analysisOptions);
-      this.logger.info(`Found ${sourceFiles.length} source files to analyze`);
+      this.logger.info(`Found ${sourceFiles.length} source files to analyze`);`
 
       // Run all analyses in parallel for maximum performance
       const [workspaceInfo, complexity, dependencies, gitMetrics, domains] =
@@ -118,7 +118,7 @@ export class RepositoryAnalyzer {
       const summary = this.generateSummary(repositoryMetrics, recommendations);
 
       const analysisTime = Date.now() - startTime;
-      this.logger.info(`Repository analysis completed in ${analysisTime}ms`);
+      this.logger.info(`Repository analysis completed in ${analysisTime}ms`);`
 
       return {
         repository: repositoryMetrics,
@@ -137,7 +137,7 @@ export class RepositoryAnalyzer {
         ],
       };
     } catch (error) {
-      this.logger.error('Repository analysis failed:', error);
+      this.logger.error('Repository analysis failed:', error);'
       throw error;
     }
   }
@@ -180,7 +180,7 @@ export class RepositoryAnalyzer {
           : 0.8,
       },
       criticalIssues: result.recommendations
-        .filter((r) => r.priority === 'urgent')
+        .filter((r) => r.priority === 'urgent')'
         .map((r) => r.title),
     };
   }
@@ -197,7 +197,7 @@ export class RepositoryAnalyzer {
         options
       );
     } catch (error) {
-      this.logger.warn('Workspace analysis failed:', error);
+      this.logger.warn('Workspace analysis failed:', error);'
       return null;
     }
   }
@@ -214,7 +214,7 @@ export class RepositoryAnalyzer {
     try {
       return await this.complexityAnalyzer.analyzeRepository(files, options);
     } catch (error) {
-      this.logger.warn('Complexity analysis failed:', error);
+      this.logger.warn('Complexity analysis failed:', error);'
       return this.getEmptyComplexity();
     }
   }
@@ -231,7 +231,7 @@ export class RepositoryAnalyzer {
         options
       );
     } catch (error) {
-      this.logger.warn('Dependency analysis failed:', error);
+      this.logger.warn('Dependency analysis failed:', error);'
       return this.getEmptyDependencies();
     }
   }
@@ -245,7 +245,7 @@ export class RepositoryAnalyzer {
     try {
       return await this.gitAnalyzer.analyzeRepository(options);
     } catch (error) {
-      this.logger.warn('Git analysis failed:', error);
+      this.logger.warn('Git analysis failed:', error);'
       return undefined;
     }
   }
@@ -266,7 +266,7 @@ export class RepositoryAnalyzer {
         options
       );
     } catch (error) {
-      this.logger.warn('Domain analysis failed:', error);
+      this.logger.warn('Domain analysis failed:', error);'
       return [];
     }
   }
@@ -300,7 +300,7 @@ export class RepositoryAnalyzer {
 
     // Filter by file size if specified
     if (options.maxFileSize) {
-      const fs = await import('fs/promises');
+      const fs = await import('fs/promises');'
       const filteredFiles: string[] = [];
 
       for (const file of files) {
@@ -310,7 +310,7 @@ export class RepositoryAnalyzer {
             filteredFiles.push(file);
           }
         } catch {
-          // Skip files that can't be accessed
+          // Skip files that can't be accessed'
         }
       }
 
@@ -324,16 +324,16 @@ export class RepositoryAnalyzer {
    * Count total lines of code
    */
   private async countTotalLines(files: string[]): Promise<number> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
     let totalLines = 0;
 
     await Promise.all(
       files.map(async (file) => {
         try {
-          const content = await fs.readFile(file, 'utf-8');
-          totalLines += content.split('\n').length;
+          const content = await fs.readFile(file, 'utf-8');'
+          totalLines += content.split('\n').length;'
         } catch {
-          // Skip files that can't be read
+          // Skip files that can't be read'
         }
       })
     );
@@ -347,58 +347,58 @@ export class RepositoryAnalyzer {
   private async detectLanguages(
     files: string[]
   ): Promise<Record<string, number>> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
     const languages: Record<string, number> = {};
 
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
-        const lines = content.split('\n').length;
-        const ext = file.split('.').pop()?.toLowerCase();
+        const content = await fs.readFile(file, 'utf-8');'
+        const lines = content.split('\n').length;'
+        const ext = file.split('.').pop()?.toLowerCase();'
 
         let language = 'unknown';
         switch (ext) {
-          case 'ts':
-          case 'tsx':
-          case 'mts':
-          case 'cts':
+          case 'ts':'
+          case 'tsx':'
+          case 'mts':'
+          case 'cts':'
             language = 'typescript';
             break;
-          case 'js':
-          case 'jsx':
-          case 'mjs':
-          case 'cjs':
+          case 'js':'
+          case 'jsx':'
+          case 'mjs':'
+          case 'cjs':'
             language = 'javascript';
             break;
-          case 'py':
+          case 'py':'
             language = 'python';
             break;
-          case 'go':
+          case 'go':'
             language = 'go';
             break;
-          case 'rs':
+          case 'rs':'
             language = 'rust';
             break;
-          case 'java':
+          case 'java':'
             language = 'java';
             break;
-          case 'cpp':
-          case 'cc':
-          case 'cxx':
+          case 'cpp':'
+          case 'cc':'
+          case 'cxx':'
             language = 'cpp';
             break;
-          case 'c':
+          case 'c':'
             language = 'c';
             break;
-          case 'h':
-          case 'hpp':
+          case 'h':'
+          case 'hpp':'
             language = 'header';
             break;
         }
 
         languages[language] = (languages[language]||0) + lines;
       } catch {
-        // Skip files that can't be read
+        // Skip files that can't be read'
       }
     }
 
@@ -436,10 +436,10 @@ export class RepositoryAnalyzer {
       (complexityScore + dependencyScore + maintainabilityScore + gitScore) / 4;
 
     const criticalIssues = recommendations.filter(
-      (r) => r.priority === 'urgent'
+      (r) => r.priority === 'urgent''
     ).length;
     const highPriorityRecommendations = recommendations.filter(
-      (r) => r.priority === 'high'
+      (r) => r.priority === 'high''
     ).length;
     const estimatedImprovementEffort = recommendations.reduce(
       (sum, r) => sum + r.effort.hours,
@@ -449,18 +449,18 @@ export class RepositoryAnalyzer {
     const strengths: string[] = [];
     const weaknesses: string[] = [];
 
-    if (complexityScore > 0.8) strengths.push('Low code complexity');
-    else if (complexityScore < 0.5) weaknesses.push('High code complexity');
+    if (complexityScore > 0.8) strengths.push('Low code complexity');'
+    else if (complexityScore < 0.5) weaknesses.push('High code complexity');'
 
-    if (dependencyScore > 0.8) strengths.push('Well-managed dependencies');
+    if (dependencyScore > 0.8) strengths.push('Well-managed dependencies');'
     else if (dependencyScore < 0.5)
-      weaknesses.push('Dependency management issues');
+      weaknesses.push('Dependency management issues');'
 
-    if (maintainabilityScore > 0.8) strengths.push('High maintainability');
-    else if (maintainabilityScore < 0.5) weaknesses.push('Low maintainability');
+    if (maintainabilityScore > 0.8) strengths.push('High maintainability');'
+    else if (maintainabilityScore < 0.5) weaknesses.push('Low maintainability');'
 
-    if (gitScore > 0.8) strengths.push('Healthy git practices');
-    else if (gitScore < 0.5) weaknesses.push('Git workflow issues');
+    if (gitScore > 0.8) strengths.push('Healthy git practices');'
+    else if (gitScore < 0.5) weaknesses.push('Git workflow issues');'
 
     return {
       overallScore,
@@ -475,7 +475,7 @@ export class RepositoryAnalyzer {
         maintainabilityRisk: maintainabilityScore < 0.5 ? 'high' : 'medium',
         scalabilityRisk:
           repository.dependencies.circularDependencies.length > 5
-            ? 'high'
+            ? 'high''
             : 'low',
         teamVelocityRisk: criticalIssues > 10 ? 'high' : 'medium',
       },
@@ -526,18 +526,18 @@ export class RepositoryAnalyzer {
 
   // Helper methods
   private generateRepositoryId(): string {
-    return `repo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `repo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private getRepositoryName(): string {
-    return this.repositoryPath.split('/').pop()||'unknown';
+    return this.repositoryPath.split('/').pop()||'unknown;
   }
 
   private getSettledValue<T>(
     result: PromiseSettledResult<T>,
     defaultValue: T
   ): T {
-    return result.status === 'fulfilled' ? result.value : defaultValue;
+    return result.status === 'fulfilled' ? result.value : defaultValue;'
   }
 
   private getEmptyComplexity(): any {

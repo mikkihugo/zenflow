@@ -60,7 +60,7 @@ import type { AGUIInterface, ValidationQuestion } from './interfaces';
  * @since 1.0.0
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const document: BaseDocumentEntity = {
  *   id: 'doc-123',
  *   type: 'task',
@@ -70,7 +70,7 @@ import type { AGUIInterface, ValidationQuestion } from './interfaces';
  *   created_at: new Date(),
  *   updated_at: new Date()
  * };
- * ```
+ * ````
  */
 export interface BaseDocumentEntity {
   /** Unique identifier for the document */
@@ -101,7 +101,7 @@ export interface BaseDocumentEntity {
  * @since 1.0.0
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const task: TaskDocumentEntity = {
  *   id: 'task-456',
  *   type: 'task',
@@ -113,18 +113,18 @@ export interface BaseDocumentEntity {
  *   acceptanceCriteria: [
  *     'Users can login after password reset',
  *     'All existing auth tests pass',
- *     'No regression in normal login flow'
+ *     'No regression in normal login flow''
  *   ],
  *   created_at: new Date(),
  *   updated_at: new Date()
  * };
- * ```
+ * ````
  */
 export interface TaskDocumentEntity extends BaseDocumentEntity {
-  /** Type discriminator, always 'task' for task documents */
-  type: 'task';
+  /** Type discriminator, always 'task' for task documents */'
+  type: 'task;
   /** Task priority level affecting swarm assignment and execution order */
-  priority: 'low|medium|high|critical';
+  priority: 'low|medium|high|critical;
   /** Estimated hours required to complete the task */
   estimatedHours: number;
   /** List of criteria that must be met for task completion */
@@ -143,7 +143,7 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
  * @since 1.0.0
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const feature: FeatureDocumentEntity = {
  *   id: 'feature-789',
  *   type: 'feature',
@@ -154,16 +154,16 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
  *   requirements: [
  *     'Users can edit personal information',
  *     'Profile changes are validated',
- *     'Avatar upload functionality'
+ *     'Avatar upload functionality''
  *   ],
  *   created_at: new Date(),
  *   updated_at: new Date()
  * };
- * ```
+ * ````
  */
 export interface FeatureDocumentEntity extends BaseDocumentEntity {
-  /** Type discriminator, always 'feature' for feature documents */
-  type: 'feature';
+  /** Type discriminator, always 'feature' for feature documents */'
+  type: 'feature;
   /** Optional reference to parent epic containing this feature */
   epic_id?: string;
   /** List of functional requirements for the feature */
@@ -182,7 +182,7 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
  * @since 1.0.0
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const epic: EpicDocumentEntity = {
  *   id: 'epic-123',
  *   type: 'epic',
@@ -193,16 +193,16 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
  *   objectives: [
  *     'Improve system security',
  *     'Reduce authentication complexity',
- *     'Enable SSO integration'
+ *     'Enable SSO integration''
  *   ],
  *   created_at: new Date(),
  *   updated_at: new Date()
  * };
- * ```
+ * ````
  */
 export interface EpicDocumentEntity extends BaseDocumentEntity {
-  /** Type discriminator, always 'epic' for epic documents */
-  type: 'epic';
+  /** Type discriminator, always 'epic' for epic documents */'
+  type: 'epic;
   /** Array of feature IDs that belong to this epic */
   features: string[];
   /** Strategic objectives and business goals for the epic */
@@ -220,16 +220,16 @@ export interface EpicDocumentEntity extends BaseDocumentEntity {
  * @since 1.0.0
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const analysis: CodeAnalysisResult = {
  *   filePath: 'src/auth/login.ts',
  *   lineNumber: 42,
  *   type: 'security_vulnerability',
  *   severity: 'high',
  *   codeSnippet: 'const token = req.headers.authorization;',
- *   tags: ['security', 'authentication', 'jwt']
+ *   tags: ['security', 'authentication', 'jwt']'
  * };
- * ```
+ * ````
  */
 export interface CodeAnalysisResult {
   /** File path where the issue was detected */
@@ -239,7 +239,7 @@ export interface CodeAnalysisResult {
   /** Type or category of the analysis result */
   type: string;
   /** Severity level of the detected issue */
-  severity: 'low|medium|high|critical';
+  severity: 'low|medium|high|critical;
   /** Code snippet showing the problematic code (if applicable) */
   codeSnippet?: string;
   /** Categorization tags for filtering and organization */
@@ -261,7 +261,7 @@ export interface CodeAnalysisResult {
  * @see {@link TaskApprovalDecision} - Approval workflow for this task
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const swarmTask: GeneratedSwarmTask = {
  *   id: 'task-456',
  *   title: 'Fix SQL injection vulnerability',
@@ -274,11 +274,11 @@ export interface CodeAnalysisResult {
  *   acceptanceCriteria: [
  *     'SQL query uses parameterized statements',
  *     'Security tests pass',
- *     'No functionality regression'
+ *     'No functionality regression''
  *   ],
- *   sourceAnalysis: { filePath: 'src/db/query.ts', severity: 'critical', ... }
+ *   sourceAnalysis: { filePath: 'src/db/query.ts', severity: 'critical', ... }'
  * };
- * ```
+ * ````
  */
 export interface GeneratedSwarmTask {
   /** Unique identifier for the task */
@@ -288,9 +288,9 @@ export interface GeneratedSwarmTask {
   /** Detailed task description and context */
   description: string;
   /** Task classification for routing and prioritization */
-  type: 'task|feature|epic|bug|improvement';
+  type: 'task|feature|epic|bug|improvement;
   /** Priority level affecting execution order */
-  priority: 'low|medium|high|critical';
+  priority: 'low|medium|high|critical;
   /** Estimated hours required for completion */
   estimatedHours: number;
   /** Recommended swarm type for optimal task execution */
@@ -317,7 +317,7 @@ export interface GeneratedSwarmTask {
  * @see {@link GeneratedSwarmTask} - Individual tasks generated from scan
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const scanResults: ScanResults = {
  *   scannedFiles: 127,
  *   totalIssues: 45,
@@ -326,7 +326,7 @@ export interface GeneratedSwarmTask {
  *   severityCounts: { critical: 2, high: 8, medium: 20, low: 15 },
  *   patternCounts: { security: 10, performance: 15, maintainability: 20 }
  * };
- * ```
+ * ````
  */
 export interface ScanResults {
   /** Total number of files processed during the scan */
@@ -358,14 +358,14 @@ export interface ScanResults {
  * @see {@link TaskApprovalDecision} - Response to this approval request
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const approvalRequest: ApprovalRequest = {
  *   taskId: 'task-456',
  *   task: generatedSwarmTask,
  *   requestedBy: 'code-analysis-system',
  *   timestamp: new Date()
  * };
- * ```
+ * ````
  */
 export interface ApprovalRequest {
   /** Unique identifier matching the task being approved */
@@ -391,13 +391,13 @@ export interface ApprovalRequest {
  * @see {@link TaskApprovalConfig} - Extended configuration for the approval system
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workflowConfig: ApprovalWorkflowConfig = {
  *   enableBatchApproval: true,
  *   autoApproveThreshold: 0.8,
  *   requireExplicitRejection: false
  * };
- * ```
+ * ````
  */
 export interface ApprovalWorkflowConfig {
   /** Whether to allow processing multiple tasks simultaneously */
@@ -408,7 +408,7 @@ export interface ApprovalWorkflowConfig {
   requireExplicitRejection: boolean;
 }
 
-const logger = getLogger('TaskApprovalSystem');
+const logger = getLogger('TaskApprovalSystem');'
 
 /**
  * Approval decision for a generated task
@@ -416,11 +416,11 @@ const logger = getLogger('TaskApprovalSystem');
 export interface TaskApprovalDecision {
   taskId: string;
   approved: boolean;
-  decision: 'approve|reject|modify|defer';
+  decision: 'approve|reject|modify|defer;
   modifications?: {
     title?: string;
     description?: string;
-    priority?: 'low|medium|high|critical';
+    priority?: 'low|medium|high|critical;
     estimatedHours?: number;
     requiredAgentTypes?: string[];
     acceptanceCriteria?: string[];
@@ -514,7 +514,7 @@ export class TaskApprovalSystem extends TypedEventBase {
     super();
 
     this.agui = agui;
-    this.logger = getLogger('TaskApprovalSystem');
+    this.logger = getLogger('TaskApprovalSystem');'
 
     // 🏥 Initialize Foundation monitoring systems
     this.systemMonitor = createSystemMonitor({ intervalMs: 5000 });
@@ -539,7 +539,7 @@ export class TaskApprovalSystem extends TypedEventBase {
     };
 
     // 📊 Record initialization metrics
-    recordEvent('task_approval_system_initializing', {
+    recordEvent('task_approval_system_initializing', {'
       config: JSON.stringify(this.config),
       timestamp: Date.now(),
     });
@@ -558,8 +558,8 @@ export class TaskApprovalSystem extends TypedEventBase {
 
     // 🎯 Mark as initialized and record metrics
     this.isInitialized = true;
-    recordMetric('task_approval_system_initialized', 1);
-    recordEvent('task_approval_system_ready', {
+    recordMetric('task_approval_system_initialized', 1);'
+    recordEvent('task_approval_system_ready', {'
       config: JSON.stringify(this.config),
       timestamp: Date.now(),
     });
@@ -569,7 +569,7 @@ export class TaskApprovalSystem extends TypedEventBase {
    * Initialize storage for approval history persistence
    */
   private async initializeStorage(): Promise<void> {
-    return withAsyncTrace('task-approval-storage-init', async (span) => {
+    return withAsyncTrace('task-approval-storage-init', async (span) => {'
       const storageInitStartTime = Date.now();
 
       try {
@@ -578,7 +578,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           'storage.initialization': 'starting',
         });
 
-        recordEvent('task_approval_storage_initialization_started', {
+        recordEvent('task_approval_storage_initialization_started', {'
           storageType: 'memory-only',
           timestamp: Date.now(),
         });
@@ -591,20 +591,20 @@ export class TaskApprovalSystem extends TypedEventBase {
 
           // 📊 Record successful storage initialization
           const initDuration = Date.now() - storageInitStartTime;
-          recordHistogram('task_approval_storage_init_duration', initDuration);
-          recordMetric('task_approval_storage_initialized', 1);
+          recordHistogram('task_approval_storage_init_duration', initDuration);'
+          recordMetric('task_approval_storage_initialized', 1);'
 
           setTraceAttributes({
             'storage.initialization': 'completed',
             'storage.init_duration_ms': initDuration,
           });
 
-          this.logger.debug('Task approval system using memory-only storage', {
+          this.logger.debug('Task approval system using memory-only storage', {'
             initDuration,
             storageType: 'memory-only',
           });
 
-          recordEvent('task_approval_storage_initialization_completed', {
+          recordEvent('task_approval_storage_initialization_completed', {'
             storageType: 'memory-only',
             duration: initDuration,
             success: true,
@@ -612,7 +612,7 @@ export class TaskApprovalSystem extends TypedEventBase {
         });
       } catch (error) {
         const initDuration = Date.now() - storageInitStartTime;
-        recordMetric('task_approval_storage_init_failed', 1);
+        recordMetric('task_approval_storage_init_failed', 1);'
         recordHistogram(
           'task_approval_storage_init_error_duration',
           initDuration
@@ -620,7 +620,7 @@ export class TaskApprovalSystem extends TypedEventBase {
 
         setTraceAttributes({
           'storage.initialization': 'failed',
-          'storage.error':
+          'storage.error':'
             error instanceof Error ? error.message : String(error),
           'storage.init_duration_ms': initDuration,
         });
@@ -633,7 +633,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           }
         );
 
-        recordEvent('task_approval_storage_initialization_failed', {
+        recordEvent('task_approval_storage_initialization_failed', {'
           error: error instanceof Error ? error.message : String(error),
           duration: initDuration,
           fallbackMode: 'memory-only',
@@ -650,7 +650,7 @@ export class TaskApprovalSystem extends TypedEventBase {
   async reviewGeneratedTasks(
     scanResults: ScanResults
   ): Promise<BatchApprovalResults> {
-    return withAsyncTrace('task-approval-review-process', async (span) => {
+    return withAsyncTrace('task-approval-review-process', async (span) => {'
       const startTime = Date.now();
 
       setTraceAttributes({
@@ -660,7 +660,7 @@ export class TaskApprovalSystem extends TypedEventBase {
         'tasks.scan_duration': scanResults.scanDuration,
       });
 
-      recordEvent('task_approval_review_started', {
+      recordEvent('task_approval_review_started', {'
         totalTasks: scanResults.generatedTasks.length,
         batchMode: this.config.enableBatchMode,
         batchSize: this.config.batchSize,
@@ -668,7 +668,7 @@ export class TaskApprovalSystem extends TypedEventBase {
       });
 
       this.logger.info(
-        `Starting task approval process for ${scanResults.generatedTasks.length} tasks`,
+        `Starting task approval process for ${scanResults.generatedTasks.length} tasks`,`
         {
           totalTasks: scanResults.generatedTasks.length,
           batchMode: this.config.enableBatchMode,
@@ -694,7 +694,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             const totalBatches = Math.ceil(
               scanResults.generatedTasks.length / this.config.batchSize
             );
-            recordGauge('task_approval_batch_count', totalBatches);
+            recordGauge('task_approval_batch_count', totalBatches);'
 
             for (
               let i = 0;
@@ -707,7 +707,7 @@ export class TaskApprovalSystem extends TypedEventBase {
                 i + this.config.batchSize
               );
 
-              recordEvent('task_approval_batch_processing_started', {
+              recordEvent('task_approval_batch_processing_started', {'
                 batchIndex,
                 batchSize: batch.length,
                 totalBatches,
@@ -744,7 +744,7 @@ export class TaskApprovalSystem extends TypedEventBase {
                 }
               }
 
-              recordEvent('task_approval_batch_processing_completed', {
+              recordEvent('task_approval_batch_processing_completed', {'
                 batchIndex,
                 batchSize: batch.length,
                 approved: batchApprovedCount,
@@ -753,7 +753,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             }
           } else {
             // 🔄 Process individually with comprehensive telemetry
-            recordEvent('task_approval_individual_processing_started', {
+            recordEvent('task_approval_individual_processing_started', {'
               totalTasks: scanResults.generatedTasks.length,
             });
 
@@ -784,7 +784,7 @@ export class TaskApprovalSystem extends TypedEventBase {
                 approvedTasks.push(this.applyModifications(task, decision));
               }
 
-              recordEvent('task_approval_individual_task_processed', {
+              recordEvent('task_approval_individual_task_processed', {'
                 taskId: task.id,
                 taskType: task.type,
                 approved: decision.approved,
@@ -807,11 +807,11 @@ export class TaskApprovalSystem extends TypedEventBase {
           };
 
           // 📈 Record comprehensive metrics
-          recordGauge('task_approval_total_processed', results.totalTasks);
-          recordGauge('task_approval_approved_count', results.approved);
-          recordGauge('task_approval_rejected_count', results.rejected);
-          recordGauge('task_approval_modified_count', results.modified);
-          recordGauge('task_approval_deferred_count', results.deferred);
+          recordGauge('task_approval_total_processed', results.totalTasks);'
+          recordGauge('task_approval_approved_count', results.approved);'
+          recordGauge('task_approval_rejected_count', results.rejected);'
+          recordGauge('task_approval_modified_count', results.modified);'
+          recordGauge('task_approval_deferred_count', results.deferred);'
           recordHistogram(
             'task_approval_total_processing_duration',
             results.processingTime
@@ -819,7 +819,7 @@ export class TaskApprovalSystem extends TypedEventBase {
 
           const approvalRate =
             results.totalTasks > 0 ? results.approved / results.totalTasks : 0;
-          recordGauge('task_approval_approval_rate', approvalRate);
+          recordGauge('task_approval_approval_rate', approvalRate);'
 
           setTraceAttributes({
             'tasks.results.total': results.totalTasks,
@@ -840,7 +840,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           // Show final summary
           await this.showApprovalSummary(results);
 
-          this.logger.info('Task approval process completed successfully', {
+          this.logger.info('Task approval process completed successfully', {'
             totalTasks: results.totalTasks,
             approved: results.approved,
             rejected: results.rejected,
@@ -850,7 +850,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             processingTime: results.processingTime,
           });
 
-          recordEvent('task_approval_review_completed', {
+          recordEvent('task_approval_review_completed', {'
             totalTasks: results.totalTasks,
             approved: results.approved,
             rejected: results.rejected,
@@ -861,12 +861,12 @@ export class TaskApprovalSystem extends TypedEventBase {
             success: true,
           });
 
-          this.emit('approval:completed', results);
+          this.emit('approval:completed', results);'
           return results;
         });
       } catch (error) {
         const processingDuration = Date.now() - startTime;
-        recordMetric('task_approval_review_failed', 1);
+        recordMetric('task_approval_review_failed', 1);'
         recordHistogram(
           'task_approval_review_error_duration',
           processingDuration
@@ -874,24 +874,24 @@ export class TaskApprovalSystem extends TypedEventBase {
 
         setTraceAttributes({
           'tasks.processing.failed': true,
-          'tasks.processing.error':
+          'tasks.processing.error':'
             error instanceof Error ? error.message : String(error),
           'tasks.processing.duration_ms': processingDuration,
         });
 
-        this.logger.error('Task approval process failed', {
+        this.logger.error('Task approval process failed', {'
           error: error instanceof Error ? error.message : String(error),
           totalTasks: scanResults.generatedTasks.length,
           duration: processingDuration,
         });
 
-        recordEvent('task_approval_review_failed', {
+        recordEvent('task_approval_review_failed', {'
           error: error instanceof Error ? error.message : String(error),
           totalTasks: scanResults.generatedTasks.length,
           duration: processingDuration,
         });
 
-        throw new EnhancedError('Task approval process failed', {
+        throw new EnhancedError('Task approval process failed', {'
           cause: error,
           totalTasks: scanResults.generatedTasks.length,
           duration: processingDuration,
@@ -906,9 +906,9 @@ export class TaskApprovalSystem extends TypedEventBase {
   async reviewSingleTask(
     task: GeneratedSwarmTask
   ): Promise<TaskApprovalDecision> {
-    return withAsyncTrace('single-task-review', async (span) => {
+    return withAsyncTrace('single-task-review', async (span) => {'
       const startTime = Date.now();
-      const correlationId = `task-approval-${task.id}-${Date.now()}`;
+      const correlationId = `task-approval-${task.id}-${Date.now()}`;`
 
       setTraceAttributes({
         'task.id': task.id,
@@ -919,7 +919,7 @@ export class TaskApprovalSystem extends TypedEventBase {
         'task.correlation_id': correlationId,
       });
 
-      recordEvent('single_task_review_started', {
+      recordEvent('single_task_review_started', {'
         taskId: task.id,
         taskType: task.type,
         priority: task.priority,
@@ -933,16 +933,16 @@ export class TaskApprovalSystem extends TypedEventBase {
           // Auto-approve low severity tasks if configured
           if (
             this.config.autoApproveLowSeverity &&
-            task.sourceAnalysis.severity === 'low' &&
-            task.priority === 'low'
+            task.sourceAnalysis.severity === 'low' &&'
+            task.priority === 'low''
           ) {
-            recordEvent('task_auto_approved', {
+            recordEvent('task_auto_approved', {'
               taskId: task.id,
               reason: 'low-severity-auto-approval',
               correlationId,
             });
 
-            this.logger.debug(`Auto-approving low severity task: ${task.id}`, {
+            this.logger.debug(`Auto-approving low severity task: ${task.id}`, {`
               taskType: task.type,
               priority: task.priority,
               severity: task.sourceAnalysis.severity,
@@ -959,7 +959,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             };
 
             const reviewDuration = Date.now() - startTime;
-            recordHistogram('single_task_review_duration', reviewDuration, {
+            recordHistogram('single_task_review_duration', reviewDuration, {'
               approval_type: 'auto-approved',
               task_type: task.type,
               priority: task.priority,
@@ -990,8 +990,8 @@ export class TaskApprovalSystem extends TypedEventBase {
             await this.displayTaskDetails(task);
             const displayDuration = Date.now() - displayStartTime;
 
-            recordHistogram('task_details_display_duration', displayDuration);
-            recordEvent('task_details_displayed', {
+            recordHistogram('task_details_display_duration', displayDuration);'
+            recordEvent('task_details_displayed', {'
               taskId: task.id,
               displayDuration,
               correlationId,
@@ -1003,8 +1003,8 @@ export class TaskApprovalSystem extends TypedEventBase {
           const response = await this.agui.askQuestion(question);
           const aguiDuration = Date.now() - aguiStartTime;
 
-          recordHistogram('agui_question_response_duration', aguiDuration);
-          recordEvent('agui_response_received', {
+          recordHistogram('agui_question_response_duration', aguiDuration);'
+          recordEvent('agui_response_received', {'
             taskId: task.id,
             responseLength: response.length,
             aguiDuration,
@@ -1016,20 +1016,20 @@ export class TaskApprovalSystem extends TypedEventBase {
           const decision = this.parseApprovalResponse(response);
           const parseDuration = Date.now() - parseStartTime;
 
-          recordHistogram('decision_parsing_duration', parseDuration);
+          recordHistogram('decision_parsing_duration', parseDuration);'
 
           // 📝 Get rationale if required
           let rationale = this.extractRationale(response);
           if (
             !rationale &&
-            (this.config.requireRationale||decision.decision ==='reject')
+            (this.config.requireRationale||decision.decision ==='reject')'
           ) {
             const rationaleStartTime = Date.now();
             rationale = await this.askForRationale(decision.decision);
             const rationaleDuration = Date.now() - rationaleStartTime;
 
-            recordHistogram('rationale_collection_duration', rationaleDuration);
-            recordEvent('rationale_collected', {
+            recordHistogram('rationale_collection_duration', rationaleDuration);'
+            recordEvent('rationale_collected', {'
               taskId: task.id,
               decision: decision.decision,
               rationaleLength: rationale.length,
@@ -1041,7 +1041,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           // 🔧 Get modifications if needed
           let modifications;
           if (
-            decision.decision === 'modify' &&
+            decision.decision === 'modify' &&'
             this.config.enableModification
           ) {
             const modStartTime = Date.now();
@@ -1052,7 +1052,7 @@ export class TaskApprovalSystem extends TypedEventBase {
               'task_modifications_collection_duration',
               modDuration
             );
-            recordEvent('task_modifications_collected', {
+            recordEvent('task_modifications_collected', {'
               taskId: task.id,
               modificationsCount: modifications
                 ? Object.keys(modifications).length
@@ -1069,14 +1069,14 @@ export class TaskApprovalSystem extends TypedEventBase {
             decision: decision.decision,
             ...(modifications !== undefined && { modifications }),
             rationale: rationale||'No rationale provided',
-            decisionMaker: 'user', // In production, this would be actual user ID
+            decisionMaker: 'user', // In production, this would be actual user ID'
             timestamp: new Date(),
             correlationId,
           };
 
           // 📊 Record comprehensive completion metrics
           const totalReviewDuration = Date.now() - startTime;
-          recordHistogram('single_task_review_duration', totalReviewDuration, {
+          recordHistogram('single_task_review_duration', totalReviewDuration, {'
             approval_type: 'manual',
             task_type: task.type,
             priority: task.priority,
@@ -1084,8 +1084,8 @@ export class TaskApprovalSystem extends TypedEventBase {
             severity: task.sourceAnalysis.severity,
           });
 
-          recordMetric(`task_${decision.decision}_count`, 1);
-          recordGauge('task_review_completion_rate', 1.0);
+          recordMetric(`task_${decision.decision}_count`, 1);`
+          recordGauge('task_review_completion_rate', 1.0);'
 
           setTraceAttributes({
             'task.manual_review': true,
@@ -1096,7 +1096,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             'task.rationale_provided': !!rationale,
           });
 
-          recordEvent('single_task_review_completed', {
+          recordEvent('single_task_review_completed', {'
             taskId: task.id,
             decision: decision.decision,
             approved: decision.approved,
@@ -1107,9 +1107,9 @@ export class TaskApprovalSystem extends TypedEventBase {
             success: true,
           });
 
-          this.emit('task:reviewed', { task, decision: approvalDecision });
+          this.emit('task:reviewed', { task, decision: approvalDecision });'
 
-          this.logger.info('Single task review completed successfully', {
+          this.logger.info('Single task review completed successfully', {'
             taskId: task.id,
             decision: decision.decision,
             approved: decision.approved,
@@ -1121,8 +1121,8 @@ export class TaskApprovalSystem extends TypedEventBase {
         });
       } catch (error) {
         const reviewDuration = Date.now() - startTime;
-        recordMetric('single_task_review_failed', 1);
-        recordHistogram('single_task_review_error_duration', reviewDuration);
+        recordMetric('single_task_review_failed', 1);'
+        recordHistogram('single_task_review_error_duration', reviewDuration);'
 
         setTraceAttributes({
           'task.review_failed': true,
@@ -1130,21 +1130,21 @@ export class TaskApprovalSystem extends TypedEventBase {
           'task.review_duration_ms': reviewDuration,
         });
 
-        this.logger.error('Single task review failed', {
+        this.logger.error('Single task review failed', {'
           taskId: task.id,
           error: error instanceof Error ? error.message : String(error),
           duration: reviewDuration,
           correlationId,
         });
 
-        recordEvent('single_task_review_failed', {
+        recordEvent('single_task_review_failed', {'
           taskId: task.id,
           error: error instanceof Error ? error.message : String(error),
           duration: reviewDuration,
           correlationId,
         });
 
-        throw new EnhancedError('Single task review failed', {
+        throw new EnhancedError('Single task review failed', {'
           cause: error,
           taskId: task.id,
           duration: reviewDuration,
@@ -1160,7 +1160,7 @@ export class TaskApprovalSystem extends TypedEventBase {
   private async processBatch(
     tasks: GeneratedSwarmTask[]
   ): Promise<TaskApprovalDecision[]> {
-    return withAsyncTrace('batch-processing', async (span) => {
+    return withAsyncTrace('batch-processing', async (span) => {'
       const startTime = Date.now();
 
       setTraceAttributes({
@@ -1168,7 +1168,7 @@ export class TaskApprovalSystem extends TypedEventBase {
         'batch.processing_mode': 'batch',
       });
 
-      recordEvent('batch_processing_started', {
+      recordEvent('batch_processing_started', {'
         batchSize: tasks.length,
         timestamp: Date.now(),
       });
@@ -1177,8 +1177,8 @@ export class TaskApprovalSystem extends TypedEventBase {
         // 🛡️ Use circuit breaker protection for AGUI operations
         return await this.aguiCircuitBreaker.execute(async () => {
           await this.agui.showMessage(
-            `\n📋 Reviewing batch of ${tasks.length} tasks`,
-            'info'
+            `\n📋 Reviewing batch of ${tasks.length} tasks`,`
+            'info''
           );
 
           // Show batch summary with telemetry
@@ -1186,11 +1186,11 @@ export class TaskApprovalSystem extends TypedEventBase {
           await this.showBatchSummary(tasks);
           const summaryDuration = Date.now() - summaryStartTime;
 
-          recordHistogram('batch_summary_display_duration', summaryDuration);
+          recordHistogram('batch_summary_display_duration', summaryDuration);'
 
           // Ask for batch decision with telemetry
           const batchQuestion: ValidationQuestion = {
-            id: `batch-review-${Date.now()}`,
+            id: `batch-review-${Date.now()}`,`
             type: 'review',
             question: 'How would you like to process this batch?',
             context: { taskCount: tasks.length },
@@ -1208,8 +1208,8 @@ export class TaskApprovalSystem extends TypedEventBase {
           const batchResponse = await this.agui.askQuestion(batchQuestion);
           const questionDuration = Date.now() - questionStartTime;
 
-          recordHistogram('batch_decision_response_duration', questionDuration);
-          recordEvent('batch_decision_received', {
+          recordHistogram('batch_decision_response_duration', questionDuration);'
+          recordEvent('batch_decision_received', {'
             batchSize: tasks.length,
             decision: batchResponse,
             questionDuration,
@@ -1219,42 +1219,42 @@ export class TaskApprovalSystem extends TypedEventBase {
           const processingStartTime = Date.now();
 
           switch (batchResponse) {
-            case 'Approve all tasks':
-            case '1':
-              recordEvent('batch_bulk_approval_started', {
+            case 'Approve all tasks':'
+            case '1':'
+              recordEvent('batch_bulk_approval_started', {'
                 batchSize: tasks.length,
               });
               result = this.approveAllTasks(
                 tasks,
-                'Bulk approval of entire batch'
+                'Bulk approval of entire batch''
               );
-              recordMetric('batch_bulk_approvals', 1);
+              recordMetric('batch_bulk_approvals', 1);'
               break;
 
-            case 'Reject entire batch':
-            case '3':
-              recordEvent('batch_bulk_rejection_started', {
+            case 'Reject entire batch':'
+            case '3':'
+              recordEvent('batch_bulk_rejection_started', {'
                 batchSize: tasks.length,
               });
               result = this.rejectAllTasks(
                 tasks,
-                'Bulk rejection of entire batch'
+                'Bulk rejection of entire batch''
               );
-              recordMetric('batch_bulk_rejections', 1);
+              recordMetric('batch_bulk_rejections', 1);'
               break;
 
-            case 'Apply bulk modifications':
-            case '4':
-              recordEvent('batch_bulk_modifications_started', {
+            case 'Apply bulk modifications':'
+            case '4':'
+              recordEvent('batch_bulk_modifications_started', {'
                 batchSize: tasks.length,
               });
               result = await this.applyBulkModifications(tasks);
-              recordMetric('batch_bulk_modifications', 1);
+              recordMetric('batch_bulk_modifications', 1);'
               break;
 
             default:
               // Review individually with comprehensive telemetry
-              recordEvent('batch_individual_review_started', {
+              recordEvent('batch_individual_review_started', {'
                 batchSize: tasks.length,
               });
               const decisions: TaskApprovalDecision[] = [];
@@ -1279,7 +1279,7 @@ export class TaskApprovalSystem extends TypedEventBase {
                 decisions.push(decision);
               }
 
-              recordMetric('batch_individual_reviews', 1);
+              recordMetric('batch_individual_reviews', 1);'
               result = decisions;
               break;
           }
@@ -1287,7 +1287,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           const processingDuration = Date.now() - processingStartTime;
           const totalDuration = Date.now() - startTime;
 
-          recordHistogram('batch_processing_duration', totalDuration, {
+          recordHistogram('batch_processing_duration', totalDuration, {'
             batch_size: tasks.length.toString(),
             decision_type: batchResponse,
           });
@@ -1299,7 +1299,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             'batch.decisions_count': result.length,
           });
 
-          recordEvent('batch_processing_completed', {
+          recordEvent('batch_processing_completed', {'
             batchSize: tasks.length,
             decisionType: batchResponse,
             decisionsCount: result.length,
@@ -1308,7 +1308,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             success: true,
           });
 
-          this.logger.info('Batch processing completed successfully', {
+          this.logger.info('Batch processing completed successfully', {'
             batchSize: tasks.length,
             decisionType: batchResponse,
             decisionsCount: result.length,
@@ -1319,8 +1319,8 @@ export class TaskApprovalSystem extends TypedEventBase {
         });
       } catch (error) {
         const duration = Date.now() - startTime;
-        recordMetric('batch_processing_failed', 1);
-        recordHistogram('batch_processing_error_duration', duration);
+        recordMetric('batch_processing_failed', 1);'
+        recordHistogram('batch_processing_error_duration', duration);'
 
         setTraceAttributes({
           'batch.failed': true,
@@ -1328,19 +1328,19 @@ export class TaskApprovalSystem extends TypedEventBase {
           'batch.duration_ms': duration,
         });
 
-        this.logger.error('Batch processing failed', {
+        this.logger.error('Batch processing failed', {'
           batchSize: tasks.length,
           error: error instanceof Error ? error.message : String(error),
           duration,
         });
 
-        recordEvent('batch_processing_failed', {
+        recordEvent('batch_processing_failed', {'
           batchSize: tasks.length,
           error: error instanceof Error ? error.message : String(error),
           duration,
         });
 
-        throw new EnhancedError('Batch processing failed', {
+        throw new EnhancedError('Batch processing failed', {'
           cause: error,
           batchSize: tasks.length,
           duration,
@@ -1353,7 +1353,7 @@ export class TaskApprovalSystem extends TypedEventBase {
    * Show scan summary to user
    */
   private async showScanSummary(scanResults: ScanResults): Promise<void> {
-    const summary = `
+    const summary = ``
 🔍 Document Scan Results Summary
 ================================
 📁 Files Scanned: ${scanResults.scannedFiles}
@@ -1363,64 +1363,64 @@ export class TaskApprovalSystem extends TypedEventBase {
 
 📊 Issue Severity Breakdown:
 ${Object.entries(scanResults.severityCounts)
-  .map(([severity, count]) => `   ${severity}: ${count}`)
-  .join('\n')}
+  .map(([severity, count]) => `   ${severity}: ${count}`)`
+  .join('\n')}'
 
 📈 Issue Pattern Breakdown:
 ${Object.entries(scanResults.patternCounts)
-  .map(([pattern, count]) => `   ${pattern}: ${count}`)
-  .join('\n')}
-`;
+  .map(([pattern, count]) => `   ${pattern}: ${count}`)`
+  .join('\n')}'
+`;`
 
-    await this.agui.showMessage(summary, 'info');
+    await this.agui.showMessage(summary, 'info');'
   }
 
   /**
    * Display detailed task information
    */
   private async displayTaskDetails(task: GeneratedSwarmTask): Promise<void> {
-    const details = `
+    const details = ``
 🎯 Task Review: ${task.title}
-${'='.repeat(60)}
+${'='.repeat(60)}'
 📝 Description: ${task.description}
 🏷️  Type: ${task.type}
 ⚡ Priority: ${task.priority} 
 ⏱️  Estimated Hours: ${task.estimatedHours}
 🤖 Suggested Swarm: ${task.suggestedSwarmType}
-👥 Required Agents: ${task.requiredAgentTypes.join(', ')}
+👥 Required Agents: ${task.requiredAgentTypes.join(', ')}'
 
 📊 Source Analysis:
    • File: ${task.sourceAnalysis.filePath}
-   • Line: ${task.sourceAnalysis.lineNumber||'N/A'}
+   • Line: ${task.sourceAnalysis.lineNumber||'N/A'}'
    • Type: ${task.sourceAnalysis.type}
    • Severity: ${task.sourceAnalysis.severity}
-   • Code: ${task.sourceAnalysis.codeSnippet||'N/A'}
+   • Code: ${task.sourceAnalysis.codeSnippet||'N/A'}'
 
 ✅ Acceptance Criteria:
-${task.acceptanceCriteria.map((criterion) => `   • ${criterion}`).join('\n')}
+${task.acceptanceCriteria.map((criterion) => `   • ${criterion}`).join('\n')}'
 
-🏷️  Tags: ${task.sourceAnalysis.tags.join(', ')}
-`;
+🏷️  Tags: ${task.sourceAnalysis.tags.join(', ')}'
+`;`
 
-    await this.agui.showMessage(details, 'info');
+    await this.agui.showMessage(details, 'info');'
   }
 
   /**
    * Show batch summary
    */
   private async showBatchSummary(tasks: GeneratedSwarmTask[]): Promise<void> {
-    const summary = `
+    const summary = ``
 📦 Batch Summary (${tasks.length} tasks)
-${'='.repeat(40)}
+${'='.repeat(40)}'
 ${tasks
   .map(
     (task, index) =>
-      `${index + 1}. ${task.title} [${task.priority}] (${task.estimatedHours}h)`
+      `${index + 1}. ${task.title} [${task.priority}] (${task.estimatedHours}h)``
   )
-  .join('\n')}
-`;
+  .join('\n')}'
+`;`
 
-    await this.agui.showMessage(summary, 'info');
+    await this.agui.showMessage(summary, 'info');'
   }
 
   /**
@@ -1429,7 +1429,7 @@ ${tasks
   private async showApprovalSummary(
     results: BatchApprovalResults
   ): Promise<void> {
-    const summary = `
+    const summary = ``
 ✅ Task Approval Summary
 ========================
 📋 Total Tasks: ${results.totalTasks}
@@ -1441,12 +1441,12 @@ ${tasks
 
 ${
   results.approved > 0
-    ? `\n🚀 ${results.approved} tasks approved and ready for swarm execution!`
-    : '\n⚠️  No tasks were approved for execution.'
+    ? `\n🚀 ${results.approved} tasks approved and ready for swarm execution!``
+    : '\n⚠️  No tasks were approved for execution.''
 }
-`;
+`;`
 
-    await this.agui.showMessage(summary, 'success');
+    await this.agui.showMessage(summary, 'success');'
   }
 
   /**
@@ -1457,9 +1457,9 @@ ${
     correlationId: string
   ): ValidationQuestion {
     return {
-      id: `task-review-${task.id}`,
+      id: `task-review-${task.id}`,`
       type: 'review',
-      question: `Do you want to approve this ${task.type}? "${task.title}"`,
+      question: `Do you want to approve this ${task.type}? "${task.title}"`,`
       context: {
         task,
         analysis: task.sourceAnalysis,
@@ -1474,7 +1474,7 @@ ${
       allowCustom: true,
       confidence: 0.9,
       priority: task.priority as any,
-      validationReason: `Task generated from ${task.sourceAnalysis.type} analysis`,
+      validationReason: `Task generated from ${task.sourceAnalysis.type} analysis`,`
     };
   }
 
@@ -1482,31 +1482,31 @@ ${
    * Parse user response to approval question
    */
   private parseApprovalResponse(response: string): {
-    decision: TaskApprovalDecision['decision'];
+    decision: TaskApprovalDecision['decision'];'
     approved: boolean;
   } {
     const lowerResponse = response.toLowerCase();
 
-    if (lowerResponse.includes('approve')||lowerResponse ==='1') {
-      return { decision: 'approve', approved: true };
+    if (lowerResponse.includes('approve')||lowerResponse ==='1') {'
+      return { decision: 'approve', approved: true };'
     }
-    if (lowerResponse.includes('modify')||lowerResponse ==='2') {
-      return { decision: 'modify', approved: true };
+    if (lowerResponse.includes('modify')||lowerResponse ==='2') {'
+      return { decision: 'modify', approved: true };'
     }
-    if (lowerResponse.includes('reject')||lowerResponse ==='3') {
-      return { decision: 'reject', approved: false };
+    if (lowerResponse.includes('reject')||lowerResponse ==='3') {'
+      return { decision: 'reject', approved: false };'
     }
-    if (lowerResponse.includes('defer')||lowerResponse ==='4') {
-      return { decision: 'defer', approved: false };
+    if (lowerResponse.includes('defer')||lowerResponse ==='4') {'
+      return { decision: 'defer', approved: false };'
     }
 
     // Default to approval for positive responses
-    const positiveKeywords = ['yes', 'ok', 'sure', 'good', 'fine'];
+    const positiveKeywords = ['yes', 'ok', 'sure', 'good', 'fine'];'
     if (positiveKeywords.some((keyword) => lowerResponse.includes(keyword))) {
-      return { decision: 'approve', approved: true };
+      return { decision: 'approve', approved: true };'
     }
 
-    return { decision: 'reject', approved: false };
+    return { decision: 'reject', approved: false };'
   }
 
   /**
@@ -1528,7 +1528,7 @@ ${
     }
 
     // If response is longer than a simple yes/no, treat it as rationale
-    if (response.length > 10 && !['1', '2', '3', '4'].includes(response)) {
+    if (response.length > 10 && !['1', '2', '3', '4'].includes(response)) {'
       return response;
     }
 
@@ -1540,9 +1540,9 @@ ${
    */
   private async askForRationale(decision: string): Promise<string> {
     const rationaleQuestion: ValidationQuestion = {
-      id: `rationale-${Date.now()}`,
+      id: `rationale-${Date.now()}`,`
       type: 'review',
-      question: `Please provide a rationale for your ${decision} decision:`,
+      question: `Please provide a rationale for your ${decision} decision:`,`
       context: { decision },
       confidence: 1.0,
       priority: 'medium',
@@ -1556,12 +1556,12 @@ ${
    */
   private async getTaskModifications(
     task: GeneratedSwarmTask
-  ): Promise<TaskApprovalDecision['modifications']> {
-    const modifications: TaskApprovalDecision['modifications'] = {};
+  ): Promise<TaskApprovalDecision['modifications']> {'
+    const modifications: TaskApprovalDecision['modifications'] = {};'
 
     // Ask what to modify
     const modifyQuestion: ValidationQuestion = {
-      id: `modify-${task.id}`,
+      id: `modify-${task.id}`,`
       type: 'review',
       question: 'What would you like to modify?',
       context: { task },
@@ -1580,18 +1580,18 @@ ${
     const modifyResponse = await this.agui.askQuestion(modifyQuestion);
 
     // Handle specific modifications based on response
-    if (modifyResponse.includes('Title')||modifyResponse ==='1') {
-      modifications.title = await this.askForNewValue('title', task.title);
+    if (modifyResponse.includes('Title')||modifyResponse ==='1') {'
+      modifications.title = await this.askForNewValue('title', task.title);'
     }
-    if (modifyResponse.includes('Description')||modifyResponse ==='2') {
+    if (modifyResponse.includes('Description')||modifyResponse ==='2') {'
       modifications.description = await this.askForNewValue(
         'description',
         task.description
       );
     }
-    if (modifyResponse.includes('Priority')||modifyResponse ==='3') {
+    if (modifyResponse.includes('Priority')||modifyResponse ==='3') {'
       const priorityQuestion: ValidationQuestion = {
-        id: `priority-${task.id}`,
+        id: `priority-${task.id}`,`
         type: 'review',
         question: 'Select new priority:',
         options: ['low', 'medium', 'high', 'critical'],
@@ -1601,7 +1601,7 @@ ${
       const newPriority = await this.agui.askQuestion(priorityQuestion);
       modifications.priority = newPriority as any;
     }
-    if (modifyResponse.includes('Hours')||modifyResponse ==='4') {
+    if (modifyResponse.includes('Hours')||modifyResponse ==='4') {'
       const hoursStr = await this.askForNewValue(
         'estimated hours',
         task.estimatedHours.toString()
@@ -1621,9 +1621,9 @@ ${
     currentValue: string
   ): Promise<string> {
     const question: ValidationQuestion = {
-      id: `new-${fieldName}-${Date.now()}`,
+      id: `new-${fieldName}-${Date.now()}`,`
       type:'review',
-      question: `Enter new ${fieldName} (current: "${currentValue}"):`,
+      question: `Enter new ${fieldName} (current: "${currentValue}"):`,`
       context: { fieldName, currentValue },
       confidence: 1.0,
     };
@@ -1670,7 +1670,7 @@ ${
       rationale,
       decisionMaker: 'user',
       timestamp: new Date(),
-      correlationId: `batch-approve-${Date.now()}`,
+      correlationId: `batch-approve-${Date.now()}`,`
     }));
   }
 
@@ -1688,7 +1688,7 @@ ${
       rationale,
       decisionMaker: 'user',
       timestamp: new Date(),
-      correlationId: `batch-reject-${Date.now()}`,
+      correlationId: `batch-reject-${Date.now()}`,`
     }));
   }
 
@@ -1711,7 +1711,7 @@ ${
       rationale: 'Bulk modifications applied to entire batch',
       decisionMaker: 'user',
       timestamp: new Date(),
-      correlationId: `batch-modify-${Date.now()}`,
+      correlationId: `batch-modify-${Date.now()}`,`
     }));
   }
 
@@ -1719,10 +1719,10 @@ ${
    * Get bulk modifications for batch processing
    */
   private async getBulkModifications(): Promise<
-    TaskApprovalDecision['modifications']
+    TaskApprovalDecision['modifications']'
   > {
     const question: ValidationQuestion = {
-      id: `bulk-modify-${Date.now()}`,
+      id: `bulk-modify-${Date.now()}`,`
       type: 'review',
       question: 'What bulk modifications would you like to apply?',
       options: [
@@ -1739,11 +1739,11 @@ ${
 
     // Process bulk modification choice
     switch (response) {
-      case '1':
-      case 'Lower all priorities':
-        return { priority: 'low' };
-      case '2':
-      case 'Increase estimated hours by 50%':
+      case '1':'
+      case 'Lower all priorities':'
+        return { priority: 'low' };'
+      case '2':'
+      case 'Increase estimated hours by 50%':'
         return {}; // Would need to calculate per-task
       default:
         return {};
@@ -1757,7 +1757,7 @@ ${
     decisions: TaskApprovalDecision[],
     processingTime: number
   ): void {
-    withTrace('update-statistics', (span) => {
+    withTrace('update-statistics', (span) => {'
       const startTime = Date.now();
 
       // Track previous statistics for comparison
@@ -1766,9 +1766,9 @@ ${
       this.statistics.totalTasksProcessed += decisions.length;
 
       const approved = decisions.filter((d) => d.approved).length;
-      const rejected = decisions.filter((d) => d.decision === 'reject').length;
-      const modified = decisions.filter((d) => d.decision === 'modify').length;
-      const deferred = decisions.filter((d) => d.decision === 'defer').length;
+      const rejected = decisions.filter((d) => d.decision === 'reject').length;'
+      const modified = decisions.filter((d) => d.decision === 'modify').length;'
+      const deferred = decisions.filter((d) => d.decision === 'defer').length;'
 
       this.statistics.approvalRate =
         this.statistics.totalTasksProcessed > 0
@@ -1799,7 +1799,7 @@ ${
       // Track rejection reasons with telemetry
       let newRejectionReasons = 0;
       for (const decision of decisions) {
-        if (decision.decision === 'reject') {
+        if (decision.decision === 'reject') {'
           const existingReason = this.statistics.topRejectionReasons.find(
             (r) => r.reason === decision.rationale
           );
@@ -1818,8 +1818,8 @@ ${
         if (decision.approved) {
           const taskType = decisions.find((d) => d.taskId === decision.taskId)
             ?.taskId
-            ? 'unknown'
-            : 'task';
+            ? 'unknown''
+            : 'task;
           this.statistics.approvalsByType[taskType] =
             (this.statistics.approvalsByType[taskType]||0) + 1;
         }
@@ -1832,7 +1832,7 @@ ${
       recordGauge('task_approval_total_processed',
         this.statistics.totalTasksProcessed
       );
-      recordGauge('task_approval_approval_rate', this.statistics.approvalRate);
+      recordGauge('task_approval_approval_rate', this.statistics.approvalRate);'
       recordGauge(
         'task_approval_rejection_rate',
         this.statistics.rejectionRate
@@ -1846,8 +1846,8 @@ ${
         this.statistics.averageProcessingTime
       );
 
-      recordMetric('statistics_updated', 1);
-      recordMetric('decisions_processed_in_update', decisions.length);
+      recordMetric('statistics_updated', 1);'
+      recordMetric('decisions_processed_in_update', decisions.length);'
 
       setTraceAttributes({
         'statistics.decisions_processed': decisions.length,
@@ -1862,9 +1862,9 @@ ${
       });
 
       const updateDuration = Date.now() - startTime;
-      recordHistogram('statistics_update_duration', updateDuration);
+      recordHistogram('statistics_update_duration', updateDuration);'
 
-      recordEvent('statistics_updated', {
+      recordEvent('statistics_updated', {'
         decisionsProcessed: decisions.length,
         approved,
         rejected,
@@ -1879,7 +1879,7 @@ ${
         updateDuration,
       });
 
-      this.logger.debug('Approval statistics updated successfully', {
+      this.logger.debug('Approval statistics updated successfully', {'
         decisionsProcessed: decisions.length,
         approved,
         rejected,
@@ -1896,8 +1896,8 @@ ${
    * Get approval statistics with Foundation telemetry
    */
   getStatistics(): ApprovalStatistics {
-    return withTrace('get-approval-statistics', (span) => {
-      recordEvent('approval_statistics_accessed', {
+    return withTrace('get-approval-statistics', (span) => {'
+      recordEvent('approval_statistics_accessed', {'
         totalProcessed: this.statistics.totalTasksProcessed,
         approvalRate: this.statistics.approvalRate,
         timestamp: Date.now(),
@@ -1910,7 +1910,7 @@ ${
         'statistics.modification_rate': this.statistics.modificationRate,
       });
 
-      recordMetric('approval_statistics_accessed', 1);
+      recordMetric('approval_statistics_accessed', 1);'
 
       return { ...this.statistics };
     });
@@ -1920,8 +1920,8 @@ ${
    * Get approval history with Foundation telemetry
    */
   getApprovalHistory(): TaskApprovalDecision[] {
-    return withTrace('get-approval-history', (span) => {
-      recordEvent('approval_history_accessed', {
+    return withTrace('get-approval-history', (span) => {'
+      recordEvent('approval_history_accessed', {'
         historyLength: this.approvalHistory.length,
         timestamp: Date.now(),
       });
@@ -1931,8 +1931,8 @@ ${
         'history.accessed': true,
       });
 
-      recordMetric('approval_history_accessed', 1);
-      recordGauge('approval_history_size', this.approvalHistory.length);
+      recordMetric('approval_history_accessed', 1);'
+      recordGauge('approval_history_size', this.approvalHistory.length);'
 
       return [...this.approvalHistory];
     });
@@ -1941,8 +1941,8 @@ ${
   /**
    * Export approval decisions for audit with Foundation telemetry
    */
-  exportDecisions(format: 'json' | 'csv' = 'json'): string {
-    return withTrace('export-approval-decisions', (span) => {
+  exportDecisions(format: 'json' | 'csv' = 'json'): string {'
+    return withTrace('export-approval-decisions', (span) => {'
       const startTime = Date.now();
 
       setTraceAttributes({
@@ -1950,7 +1950,7 @@ ${
         'export.decisions_count': this.approvalHistory.length,
       });
 
-      recordEvent('approval_decisions_export_started', {
+      recordEvent('approval_decisions_export_started', {'
         format,
         decisionsCount: this.approvalHistory.length,
         timestamp: Date.now(),
@@ -1959,7 +1959,7 @@ ${
       try {
         let result: string;
 
-        if (format === 'csv') {
+        if (format === 'csv') {'
           const headers = [
             'Task ID',
             'Decision',
@@ -1978,14 +1978,14 @@ ${
           ]);
 
           result = [headers, ...rows]
-            .map((row) => row.map((cell) => `"${cell}"`).join(','))
-            .join('\n');
+            .map((row) => row.map((cell) => `"${cell}"`).join(','))'
+            .join('\n');'
         } else {
           result = JSON.stringify(this.approvalHistory, null, 2);
         }
 
         const exportDuration = Date.now() - startTime;
-        recordHistogram('approval_decisions_export_duration', exportDuration, {
+        recordHistogram('approval_decisions_export_duration', exportDuration, {'
           format,
           decisions_count: this.approvalHistory.length.toString(),
         });
@@ -1996,7 +1996,7 @@ ${
           'export.size_bytes': result.length,
         });
 
-        recordEvent('approval_decisions_export_completed', {
+        recordEvent('approval_decisions_export_completed', {'
           format,
           decisionsCount: this.approvalHistory.length,
           exportSize: result.length,
@@ -2004,9 +2004,9 @@ ${
           success: true,
         });
 
-        recordMetric('approval_decisions_exported', 1);
+        recordMetric('approval_decisions_exported', 1);'
 
-        this.logger.info('Approval decisions exported successfully', {
+        this.logger.info('Approval decisions exported successfully', {'
           format,
           decisionsCount: this.approvalHistory.length,
           exportSize: result.length,
@@ -2016,7 +2016,7 @@ ${
         return result;
       } catch (error) {
         const exportDuration = Date.now() - startTime;
-        recordMetric('approval_decisions_export_failed', 1);
+        recordMetric('approval_decisions_export_failed', 1);'
         recordHistogram(
           'approval_decisions_export_error_duration',
           exportDuration
@@ -2024,24 +2024,24 @@ ${
 
         setTraceAttributes({
           'export.failed': true,
-          'export.error':
+          'export.error':'
             error instanceof Error ? error.message : String(error),
           'export.duration_ms': exportDuration,
         });
 
-        this.logger.error('Approval decisions export failed', {
+        this.logger.error('Approval decisions export failed', {'
           format,
           error: error instanceof Error ? error.message : String(error),
           duration: exportDuration,
         });
 
-        recordEvent('approval_decisions_export_failed', {
+        recordEvent('approval_decisions_export_failed', {'
           format,
           error: error instanceof Error ? error.message : String(error),
           duration: exportDuration,
         });
 
-        throw new EnhancedError('Failed to export approval decisions', {
+        throw new EnhancedError('Failed to export approval decisions', {'
           cause: error,
           format,
           decisionsCount: this.approvalHistory.length,
@@ -2055,20 +2055,20 @@ ${
    * Graceful shutdown with Foundation cleanup
    */
   async shutdown(): Promise<void> {
-    return withAsyncTrace('task-approval-shutdown', async (span) => {
+    return withAsyncTrace('task-approval-shutdown', async (span) => {'
       if (this.shutdownInProgress) {
-        this.logger.warn('Shutdown already in progress');
+        this.logger.warn('Shutdown already in progress');'
         return;
       }
 
       this.shutdownInProgress = true;
       const shutdownStartTime = Date.now();
 
-      recordEvent('task_approval_system_shutdown_started', {
+      recordEvent('task_approval_system_shutdown_started', {'
         timestamp: Date.now(),
       });
 
-      this.logger.info('Initiating TaskApprovalSystem shutdown...');
+      this.logger.info('Initiating TaskApprovalSystem shutdown...');'
 
       try {
         // 🛑 Stop accepting new operations
@@ -2082,7 +2082,7 @@ ${
         if (this.storage) {
           await this.storageCircuitBreaker.execute(async () => {
             // Save approval history if storage is available
-            this.logger.debug('Saving approval history during shutdown');
+            this.logger.debug('Saving approval history during shutdown');'
           });
         }
 
@@ -2101,7 +2101,7 @@ ${
         );
 
         // 🧹 Clean up monitoring systems
-        // Foundation monitoring systems don't need explicit cleanup
+        // Foundation monitoring systems don't need explicit cleanup'
 
         // 🔌 Clear event listeners
         this.removeAllListeners();
@@ -2121,23 +2121,23 @@ ${
           'shutdown.clean': true,
         });
 
-        recordEvent('task_approval_system_shutdown_completed', {
+        recordEvent('task_approval_system_shutdown_completed', {'
           totalDecisions: this.approvalHistory.length,
           totalProcessed: this.statistics.totalTasksProcessed,
           shutdownDuration,
           success: true,
         });
 
-        this.logger.info('TaskApprovalSystem shutdown completed successfully', {
+        this.logger.info('TaskApprovalSystem shutdown completed successfully', {'
           totalDecisions: this.approvalHistory.length,
           totalProcessed: this.statistics.totalTasksProcessed,
           shutdownDuration,
         });
 
-        recordMetric('task_approval_system_shutdown_completed', 1);
+        recordMetric('task_approval_system_shutdown_completed', 1);'
       } catch (error) {
         const shutdownDuration = Date.now() - shutdownStartTime;
-        recordMetric('task_approval_system_shutdown_failed', 1);
+        recordMetric('task_approval_system_shutdown_failed', 1);'
         recordHistogram(
           'task_approval_system_shutdown_error_duration',
           shutdownDuration
@@ -2145,22 +2145,22 @@ ${
 
         setTraceAttributes({
           'shutdown.failed': true,
-          'shutdown.error':
+          'shutdown.error':'
             error instanceof Error ? error.message : String(error),
           'shutdown.duration_ms': shutdownDuration,
         });
 
-        this.logger.error('TaskApprovalSystem shutdown failed', {
+        this.logger.error('TaskApprovalSystem shutdown failed', {'
           error: error instanceof Error ? error.message : String(error),
           duration: shutdownDuration,
         });
 
-        recordEvent('task_approval_system_shutdown_failed', {
+        recordEvent('task_approval_system_shutdown_failed', {'
           error: error instanceof Error ? error.message : String(error),
           duration: shutdownDuration,
         });
 
-        throw new EnhancedError('TaskApprovalSystem shutdown failed', {
+        throw new EnhancedError('TaskApprovalSystem shutdown failed', {'
           cause: error,
           duration: shutdownDuration,
         });

@@ -27,7 +27,7 @@
  * - Type-safe workflow orchestration
  *
  * @example Basic workflow engine usage
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -37,20 +37,20 @@
  *
  * await engine.initialize();
  * const result = await engine.startWorkflow(workflowDefinition);
- * ```
+ * ````
  *
  * @example Advanced scheduling and state management
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine();
  *
  * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');
+ * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
  *
  * // Generate Mermaid visualization
  * const diagram = engine.generateWorkflowVisualization(workflow);
- * ```
+ * ````
  */
 
 // =============================================================================

@@ -34,7 +34,7 @@ export * from './utils';
 export * from './permission-handler';
 export * from './message-processor';
 
-const logger = getLogger('claude-sdk');
+const logger = getLogger('claude-sdk');'
 
 // =============================================================================
 // Global State Management (Simplified)
@@ -75,8 +75,8 @@ export async function executeClaudeTask(
   }, config.timeout);
 
   try {
-    logger.info(`Executing Claude task with model: ${config.model}`);
-    logger.debug(`Working directory: ${workingDirectory}`);
+    logger.info(`Executing Claude task with model: ${config.model}`);`
+    logger.debug(`Working directory: ${workingDirectory}`);`
 
     // Prepare SDK options
     const sdkOptions = {
@@ -92,7 +92,7 @@ export async function executeClaudeTask(
       dangerouslySkipPermissions: config.dangerouslySkipPermissions,
     };
 
-    // Execute with retry logic using foundation's withRetry
+    // Execute with retry logic using foundation's withRetry'
     const retryOptions = {
       attempts: config.retries,
       delay: config.retryDelay,
@@ -101,11 +101,11 @@ export async function executeClaudeTask(
       shouldRetry: (error: Error) => {
         const message = error.message.toLowerCase();
         return (
-          message.includes('timeout') ||
-          message.includes('network') ||
-          message.includes('connection') ||
-          message.includes('econnreset') ||
-          message.includes('rate limit')
+          message.includes('timeout') ||'
+          message.includes('network') ||'
+          message.includes('connection') ||'
+          message.includes('econnreset') ||'
+          message.includes('rate limit')'
         );
       },
     };
@@ -117,35 +117,35 @@ export async function executeClaudeTask(
         retryOptions
       );
 
-    // Use foundation's timeout protection
+    // Use foundation's timeout protection'
     const retryResult = await executeWithRetry();
     if (
       retryResult &&
-      typeof retryResult === 'object' &&
-      'isErr' in retryResult &&
+      typeof retryResult === 'object' &&'
+      'isErr' in retryResult &&'
       retryResult.isErr()
     ) {
       throw retryResult.error;
     }
 
     const resultValue =
-      retryResult && typeof retryResult === 'object' && 'value' in retryResult
+      retryResult && typeof retryResult === 'object' && 'value' in retryResult'
         ? retryResult.value
         : retryResult;
     const result = await withTimeout(
       () => Promise.resolve(resultValue),
       config.timeout,
-      `Claude SDK request timed out after ${config.timeout}ms`
+      `Claude SDK request timed out after ${config.timeout}ms``
     );
 
     // Extract actual result if wrapped in Result type - handle neverthrow Result type
     let actualResult: unknown;
-    if (result && typeof result === 'object' && 'isOk' in result) {
+    if (result && typeof result === 'object' && 'isOk' in result) {'
       // This is a Result type from neverthrow
       if (result.isOk()) {
         actualResult = result.value;
       } else {
-        throw new Error(`Claude SDK error: ${result.error}`);
+        throw new Error(`Claude SDK error: ${result.error}`);`
       }
     } else {
       actualResult = result;
@@ -163,17 +163,17 @@ export async function executeClaudeTask(
     const validMessages = processedMessages.filter(validateProcessedMessage);
 
     if (validMessages.length === 0) {
-      throw new Error('No valid messages returned from Claude SDK');
+      throw new Error('No valid messages returned from Claude SDK');'
     }
 
     logger.info(
-      `Task completed successfully, returned ${validMessages.length} messages`
+      `Task completed successfully, returned ${validMessages.length} messages``
     );
     return validMessages;
   } catch (error) {
-    logger.error('Claude task execution failed:', error);
+    logger.error('Claude task execution failed:', error);'
     throw new Error(
-      `Claude task failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `Claude task failed: ${error instanceof Error ? error.message : 'Unknown error'}``
     );
   } finally {
     clearTimeout(timeoutId);
@@ -187,13 +187,13 @@ export function executeSwarmCoordinationTask(
   prompt: string,
   options: ClaudeSDKOptions = {}
 ): Promise<ClaudeMessage[]> {
-  logger.info('Executing swarm coordination task');
+  logger.info('Executing swarm coordination task');'
 
   // Add swarm-specific system prompt
   const swarmOptions = {
     ...options,
     systemPrompt:
-      `${options.systemPrompt || ''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),
+      `${options.systemPrompt || ''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),`
   };
 
   return executeClaudeTask(prompt, swarmOptions);
@@ -207,14 +207,14 @@ export async function streamClaudeTask(
   options: ClaudeSDKOptions = {},
   onMessage?: (message: ClaudeMessage) => void
 ): Promise<ClaudeMessage[]> {
-  logger.info('Starting Claude task streaming');
+  logger.info('Starting Claude task streaming');'
 
   const streamOptions = {
     ...options,
     stream: true,
   };
 
-  // For foundation, we'll simulate streaming by executing normally
+  // For foundation, we'll simulate streaming by executing normally'
   // and calling onMessage for each result
   const messages = await executeClaudeTask(prompt, streamOptions);
 
@@ -234,29 +234,29 @@ export async function executeParallelClaudeTasks(
   tasks: Array<{ prompt: string; options?: ClaudeSDKOptions }>,
   globalOptions: ClaudeSDKOptions = {}
 ): Promise<ClaudeMessage[][]> {
-  logger.info(`Executing ${tasks.length} Claude tasks in parallel`);
+  logger.info(`Executing ${tasks.length} Claude tasks in parallel`);`
 
   if (tasks.length === 0) {
     return [];
   }
 
   if (tasks.length > 10) {
-    logger.warn('Executing many tasks in parallel, consider batching');
+    logger.warn('Executing many tasks in parallel, consider batching');'
   }
 
   const taskPromises = tasks.map(async (task, index) => {
     const taskOptions = { ...globalOptions, ...task.options };
-    logger.debug(`Starting parallel task ${index + 1}/${tasks.length}`);
+    logger.debug(`Starting parallel task ${index + 1}/${tasks.length}`);`
 
     try {
       return await executeClaudeTask(task.prompt, taskOptions);
     } catch (error) {
-      logger.error(`Parallel task ${index + 1} failed:`, error);
+      logger.error(`Parallel task ${index + 1} failed:`, error);`
       // Return error message instead of throwing
       return [
         {
           type: 'system' as const,
-          content: `Task failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          content: `Task failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
           timestamp: Date.now(),
           metadata: {
             level: 'error' as const,
@@ -269,7 +269,7 @@ export async function executeParallelClaudeTasks(
   });
 
   const results = await Promise.all(taskPromises);
-  logger.info(`Completed ${results.length} parallel tasks`);
+  logger.info(`Completed ${results.length} parallel tasks`);`
 
   return results;
 }
@@ -284,7 +284,7 @@ export class ClaudeTaskManager {
 
   constructor(options: ClaudeSDKOptions = {}) {
     this.sessionId = options.sessionId||generateSessionId();
-    logger.debug(`Created task manager with session: ${this.sessionId}`);
+    logger.debug(`Created task manager with session: ${this.sessionId}`);`
   }
 
   async executeTask(
@@ -311,7 +311,7 @@ export class ClaudeTaskManager {
 
   clearHistory(): void {
     this.history = [];
-    logger.debug(`Cleared history for session: ${this.sessionId}`);
+    logger.debug(`Cleared history for session: ${this.sessionId}`);`
   }
 
   getSessionId(): string {
@@ -325,7 +325,7 @@ export class ClaudeTaskManager {
 export function getGlobalClaudeTaskManager(): ClaudeTaskManager {
   if (!globalTaskManager) {
     globalTaskManager = new ClaudeTaskManager();
-    logger.debug('Created global Claude task manager');
+    logger.debug('Created global Claude task manager');'
   }
   return globalTaskManager;
 }
@@ -342,7 +342,7 @@ export function filterMessagesForClaudeCode(
 ): ClaudeMessage[] {
   return messages.filter((msg) => {
     // Filter out system messages that might confuse Claude Code
-    if (msg.type === 'system' && msg.metadata?.source === 'internal') {
+    if (msg.type === 'system' && msg.metadata?.source === 'internal') {'
       return false;
     }
 
@@ -358,7 +358,7 @@ export function cleanupGlobalInstances(): void {
   if (globalTaskManager) {
     globalTaskManager.clearHistory();
     globalTaskManager = null;
-    logger.debug('Cleaned up global Claude task manager');
+    logger.debug('Cleaned up global Claude task manager');'
   }
 }
 
@@ -367,6 +367,6 @@ export function cleanupGlobalInstances(): void {
 // =============================================================================
 
 // Cleanup on process exit
-process.on('exit', cleanupGlobalInstances);
-process.on('SIGINT', cleanupGlobalInstances);
-process.on('SIGTERM', cleanupGlobalInstances);
+process.on('exit', cleanupGlobalInstances);'
+process.on('SIGINT', cleanupGlobalInstances);'
+process.on('SIGTERM', cleanupGlobalInstances);'

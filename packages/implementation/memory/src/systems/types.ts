@@ -9,7 +9,7 @@ import type { MemoryCoordinationConfig } from '../coordinators/types';
 export interface MemorySystemConfig {
   enabled: boolean;
   name: string;
-  mode: 'standalone|distributed|adaptive|cluster';
+  mode: 'standalone|distributed|adaptive|cluster;
   coordination: MemoryCoordinationConfig;
   clustering?: ClusterConfig;
   adaptive?: AdaptiveConfig;
@@ -25,7 +25,7 @@ export interface MemorySystemConfig {
 export interface MemorySystemStatus {
   name: string;
   mode: string;
-  status: 'initializing|healthy|degraded|unhealthy|offline';
+  status: 'initializing|healthy|degraded|unhealthy|offline;
   uptime: number;
   nodes: {
     total: number;
@@ -60,18 +60,18 @@ export interface ClusterConfig {
   enabled: boolean;
   nodeId: string;
   discovery: {
-    method: 'static|dns|consul|etcd';
+    method: 'static|dns|consul|etcd;
     endpoints: string[];
     interval: number;
   };
   replication: {
     factor: number;
-    strategy: 'sync|async|quorum';
-    consistency: 'strong|eventual|weak';
+    strategy: 'sync' | 'async' | 'quorum';
+    consistency: 'strong' | 'eventual' | 'weak';
   };
   partitioning: {
     enabled: boolean;
-    strategy: 'hash|range|directory';
+    strategy: 'hash' | 'range' | 'directory';
     partitions: number;
     rebalancing: boolean;
   };
@@ -83,7 +83,7 @@ export interface ClusterConfig {
   };
   networking: {
     port: number;
-    protocol: 'tcp|udp|http';
+    protocol: 'tcp' | 'udp' | 'http';
     encryption: boolean;
     compression: boolean;
   };
@@ -93,8 +93,8 @@ export interface ClusterNode {
   id: string;
   address: string;
   port: number;
-  role: 'leader|follower|candidate';
-  status: 'active|inactive|suspected|failed';
+  role: 'leader' | 'follower' | 'candidate';
+  status: 'active|inactive|suspected|failed;
   lastSeen: number;
   load: number;
   capacity: number;
@@ -106,7 +106,7 @@ export interface AdaptiveConfig {
   enabled: boolean;
   learning: {
     enabled: boolean;
-    algorithm: 'gradient|genetic|reinforcement|ensemble';
+    algorithm: 'gradient|genetic|reinforcement|ensemble;
     learningRate: number;
     exploration: number;
     memorySize: number;

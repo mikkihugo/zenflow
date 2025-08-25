@@ -19,7 +19,7 @@ import { NeuralBridge } from '../../neural-bridge';
 import type { BrainConfig } from '../../brain-coordinator';
 
 // Mock external dependencies for testing
-vi.mock('@xenova/transformers', () => ({
+vi.mock('@xenova/transformers', () => ({'
   pipeline: vi.fn().mockResolvedValue({
     generate: vi.fn().mockResolvedValue([0.1, 0.2, 0.3, 0.4, 0.5]),
   }),
@@ -29,7 +29,7 @@ vi.mock('@xenova/transformers', () => ({
   },
 }));
 
-vi.mock('onnxruntime-node', () => ({
+vi.mock('onnxruntime-node', () => ({'
   InferenceSession: {
     create: vi.fn().mockResolvedValue({
       run: vi.fn().mockResolvedValue({
@@ -39,7 +39,7 @@ vi.mock('onnxruntime-node', () => ({
   },
 }));
 
-describe('Smart Neural Integration Tests', () => {
+describe('Smart Neural Integration Tests', () => {'
   let brainCoordinator: BrainCoordinator;
   let smartNeuralCoordinator: SmartNeuralCoordinator;
   let neuralBridge: NeuralBridge;
@@ -98,14 +98,14 @@ describe('Smart Neural Integration Tests', () => {
     vi.clearAllMocks();
   });
 
-  describe('Initialization Integration', () => {
-    it('should initialize BrainCoordinator with SmartNeuralCoordinator', async () => {
+  describe('Initialization Integration', () => {'
+    it('should initialize BrainCoordinator with SmartNeuralCoordinator', async () => {'
       expect(brainCoordinator).toBeDefined();
       expect(smartNeuralCoordinator).toBeDefined();
       expect(smartNeuralCoordinator).toBeInstanceOf(SmartNeuralCoordinator);
     });
 
-    it('should initialize NeuralBridge with smart neural backend', async () => {
+    it('should initialize NeuralBridge with smart neural backend', async () => {'
       expect(neuralBridge).toBeDefined();
       expect(neuralBridge).toBeInstanceOf(NeuralBridge);
 
@@ -114,16 +114,16 @@ describe('Smart Neural Integration Tests', () => {
       expect(smartNeuralStats.stats).toBeDefined();
     });
 
-    it('should have correct configuration propagated', () => {
+    it('should have correct configuration propagated', () => {'
       const stats = smartNeuralCoordinator.getCoordinatorStats();
-      expect(stats.configuration.primaryModel).toBe('all-mpnet-base-v2');
+      expect(stats.configuration.primaryModel).toBe('all-mpnet-base-v2');'
       expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.configuration.enableCaching).toBe(true);
     });
   });
 
-  describe('Neural Embedding Generation', () => {
-    it('should generate embeddings through BrainCoordinator API', async () => {
+  describe('Neural Embedding Generation', () => {'
+    it('should generate embeddings through BrainCoordinator API', async () => {'
       const text = 'This is a test sentence for neural embedding generation';
 
       const result = await brainCoordinator.generateEmbedding(text, {
@@ -142,7 +142,7 @@ describe('Smart Neural Integration Tests', () => {
       expect(result.metadata.processingTime).toBeGreaterThan(0);
     });
 
-    it('should generate embeddings through NeuralBridge API', async () => {
+    it('should generate embeddings through NeuralBridge API', async () => {'
       const text = 'Neural bridge integration test sentence';
 
       const result = await neuralBridge.generateEmbedding(text, {
@@ -154,13 +154,13 @@ describe('Smart Neural Integration Tests', () => {
       expect(result).toBeDefined();
       expect(result.success).toBe(true);
       expect(result.embedding).toBeDefined();
-      expect(result.metadata.qualityLevel).toBe('premium');
+      expect(result.metadata.qualityLevel).toBe('premium');'
     });
 
-    it('should handle different priority levels correctly', async () => {
+    it('should handle different priority levels correctly', async () => {'
       const testCases: Array<{
         text: string;
-        priority: 'low|medium|high';
+        priority: 'low' | 'medium' | 'high';
       }> = [
         { text: 'Low priority test', priority: 'low' },
         { text: 'Medium priority test', priority: 'medium' },
@@ -183,8 +183,8 @@ describe('Smart Neural Integration Tests', () => {
     });
   });
 
-  describe('Caching Integration', () => {
-    it('should cache embeddings and retrieve from cache', async () => {
+  describe('Caching Integration', () => {'
+    it('should cache embeddings and retrieve from cache', async () => {'
       const text = 'This sentence should be cached';
 
       // First call - should generate and cache
@@ -201,7 +201,7 @@ describe('Smart Neural Integration Tests', () => {
       expect(result1.embedding).toEqual(result2.embedding);
     });
 
-    it('should clear cache when requested', async () => {
+    it('should clear cache when requested', async () => {'
       const text = 'Cache clearing test sentence';
 
       // Generate and cache
@@ -220,18 +220,18 @@ describe('Smart Neural Integration Tests', () => {
     });
   });
 
-  describe('Error Handling Integration', () => {
-    it('should handle embedding generation errors gracefully', async () => {
+  describe('Error Handling Integration', () => {'
+    it('should handle embedding generation errors gracefully', async () => {'
       // Mock a failure in the transformers pipeline
       const mockPipeline = vi
         .fn()
-        .mockRejectedValue(new Error('Model loading failed'));
-      vi.doMock('@xenova/transformers', () => ({
+        .mockRejectedValue(new Error('Model loading failed'));'
+      vi.doMock('@xenova/transformers', () => ({'
         pipeline: mockPipeline,
       }));
 
       try {
-        const result = await brainCoordinator.generateEmbedding('test text');
+        const result = await brainCoordinator.generateEmbedding('test text');'
 
         // Should still return a result with fallback
         expect(result).toBeDefined();
@@ -242,14 +242,14 @@ describe('Smart Neural Integration Tests', () => {
       }
     });
 
-    it('should handle invalid input gracefully', async () => {
+    it('should handle invalid input gracefully', async () => {'
       try {
         // Test with empty string
-        const result1 = await brainCoordinator.generateEmbedding('');
+        const result1 = await brainCoordinator.generateEmbedding('');'
         expect(result1.success).toBe(false);
 
         // Test with very long string
-        const longText = 'a'.repeat(10000);
+        const longText = 'a'.repeat(10000);'
         const result2 = await brainCoordinator.generateEmbedding(longText);
         expect(result2).toBeDefined(); // Should handle but may truncate
       } catch (error) {
@@ -258,8 +258,8 @@ describe('Smart Neural Integration Tests', () => {
     });
   });
 
-  describe('Performance Integration', () => {
-    it('should track performance metrics correctly', async () => {
+  describe('Performance Integration', () => {'
+    it('should track performance metrics correctly', async () => {'
       const text = 'Performance testing sentence';
 
       const result = await brainCoordinator.generateEmbedding(text);
@@ -273,7 +273,7 @@ describe('Smart Neural Integration Tests', () => {
       expect(stats.stats.performance.averageLatency).toBeGreaterThan(0);
     });
 
-    it('should handle concurrent requests efficiently', async () => {
+    it('should handle concurrent requests efficiently', async () => {'
       const texts = [
         'Concurrent request 1',
         'Concurrent request 2',
@@ -303,8 +303,8 @@ describe('Smart Neural Integration Tests', () => {
     });
   });
 
-  describe('Fallback System Integration', () => {
-    it('should use fallback systems when primary model fails', async () => {
+  describe('Fallback System Integration', () => {'
+    it('should use fallback systems when primary model fails', async () => {'
       // This test would require more complex mocking to simulate model failures
       // For now, we verify the fallback configuration is in place
       const stats = smartNeuralCoordinator.getCoordinatorStats();
@@ -314,11 +314,11 @@ describe('Smart Neural Integration Tests', () => {
     });
   });
 
-  describe('System Statistics Integration', () => {
-    it('should provide comprehensive system statistics', async () => {
+  describe('System Statistics Integration', () => {'
+    it('should provide comprehensive system statistics', async () => {'
       // Generate some activity
-      await brainCoordinator.generateEmbedding('Statistics test 1');
-      await brainCoordinator.generateEmbedding('Statistics test 2');
+      await brainCoordinator.generateEmbedding('Statistics test 1');'
+      await brainCoordinator.generateEmbedding('Statistics test 2');'
 
       const brainStats = brainCoordinator.getSmartNeuralStats();
       const bridgeStats = neuralBridge.getSmartNeuralStats();
@@ -338,8 +338,8 @@ describe('Smart Neural Integration Tests', () => {
     });
   });
 
-  describe('Lifecycle Integration', () => {
-    it('should handle shutdown gracefully', async () => {
+  describe('Lifecycle Integration', () => {'
+    it('should handle shutdown gracefully', async () => {'
       // This test verifies that all components can be shut down cleanly
       const testBrainCoordinator = new BrainCoordinator(testConfig);
       await testBrainCoordinator.initialize();
@@ -348,7 +348,7 @@ describe('Smart Neural Integration Tests', () => {
       expect(testBrainCoordinator).toBeDefined();
 
       // Generate some activity
-      await testBrainCoordinator.generateEmbedding('Lifecycle test');
+      await testBrainCoordinator.generateEmbedding('Lifecycle test');'
 
       // Shutdown should complete without errors
       await expect(testBrainCoordinator.shutdown()).resolves.not.toThrow();

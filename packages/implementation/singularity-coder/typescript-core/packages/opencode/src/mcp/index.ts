@@ -44,7 +44,7 @@ export namespace MCP {
               error: {
                 name: "UnknownError",
                 data: {
-                  message: `MCP server ${key} failed to start`,
+                  message: `MCP server ${key} failed to start`,`
                 },
               },
             })
@@ -73,7 +73,7 @@ export namespace MCP {
               error: {
                 name: "UnknownError",
                 data: {
-                  message: `MCP server ${key} failed to start`,
+                  message: `MCP server ${key} failed to start`,`
                 },
               },
             })

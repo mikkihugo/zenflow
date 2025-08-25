@@ -18,7 +18,7 @@ import type { Logger } from '@claude-zen/foundation';
  */
 export interface ProjectCoordinationConfig {
   projectId: string;
-  mode: 'safe'; // SAFe LPM (Lean Portfolio Management)
+  mode: 'safe'; // SAFe LPM (Lean Portfolio Management)'
   enableAI?: boolean;
   features: {
     valueStreams?: boolean;
@@ -54,7 +54,7 @@ export class ProjectCoordinator extends EventEmitter {
 
   constructor() {
     super();
-    this.logger = getLogger('ProjectCoordinator');
+    this.logger = getLogger('ProjectCoordinator');'
   }
 
   /**
@@ -63,7 +63,7 @@ export class ProjectCoordinator extends EventEmitter {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    this.logger.info('Initializing project coordinator for SAFe LPM');
+    this.logger.info('Initializing project coordinator for SAFe LPM');'
     
     // Perform async initialization tasks
     await this.setupPortfolioIntegration();
@@ -71,7 +71,7 @@ export class ProjectCoordinator extends EventEmitter {
     
     this.initialized = true;
 
-    this.emit('coordinator:initialized', {});
+    this.emit('coordinator:initialized', {});'
   }
 
   /**
@@ -83,9 +83,9 @@ export class ProjectCoordinator extends EventEmitter {
     this.projects.set(config.projectId, config);
 
     this.logger.info(
-      `Project registered: ${config.projectId} (${config.mode})`
+      `Project registered: ${config.projectId} (${config.mode})``
     );
-    this.emit('project:registered', { projectId: config.projectId, config });
+    this.emit('project:registered', { projectId: config.projectId, config });'
   }
 
   /**
@@ -97,7 +97,7 @@ export class ProjectCoordinator extends EventEmitter {
   ): Promise<void> {
     const existing = this.projects.get(projectId);
     if (!existing) {
-      throw new Error(`Project not found: ${projectId}`);
+      throw new Error(`Project not found: ${projectId}`);`
     }
 
     // Perform async validation of updates
@@ -106,8 +106,8 @@ export class ProjectCoordinator extends EventEmitter {
     const updated = { ...existing, ...updates };
     this.projects.set(projectId, updated);
 
-    this.logger.info(`Project updated: ${projectId}`);
-    this.emit('project:updated', { projectId, config: updated });
+    this.logger.info(`Project updated: ${projectId}`);`
+    this.emit('project:updated', { projectId, config: updated });'
   }
 
   /**
@@ -141,24 +141,24 @@ export class ProjectCoordinator extends EventEmitter {
     const config = this.projects.get(projectId);
     if (!config) return;
 
-    this.logger.debug(`Portfolio event: ${eventType} for project ${projectId}`);
+    this.logger.debug(`Portfolio event: ${eventType} for project ${projectId}`);`
     
     // Perform async event processing
     await this.processPortfolioEventAsync(projectId, eventType, data);
 
     // Direct event handling - no complex routing
     switch (eventType) {
-      case'epic:created':
-        this.emit('epic:created', { projectId, epic: data });
+      case'epic:created':'
+        this.emit('epic:created', { projectId, epic: data });'
         break;
-      case 'valueStream:updated':
-        this.emit('valueStream:updated', { projectId, valueStream: data });
+      case 'valueStream:updated':'
+        this.emit('valueStream:updated', { projectId, valueStream: data });'
         break;
-      case 'theme:aligned':
-        this.emit('theme:aligned', { projectId, theme: data });
+      case 'theme:aligned':'
+        this.emit('theme:aligned', { projectId, theme: data });'
         break;
       default:
-        this.logger.debug(`Unknown portfolio event: ${eventType}`);
+        this.logger.debug(`Unknown portfolio event: ${eventType}`);`
     }
   }
 
@@ -178,8 +178,8 @@ export class ProjectCoordinator extends EventEmitter {
     
     const removed = this.projects.delete(projectId);
     if (removed) {
-      this.logger.info(`Project unregistered: ${projectId}`);
-      this.emit('project:unregistered', { projectId });
+      this.logger.info(`Project unregistered: ${projectId}`);`
+      this.emit('project:unregistered', { projectId });'
     }
   }
 
@@ -187,7 +187,7 @@ export class ProjectCoordinator extends EventEmitter {
    * Shutdown coordinator
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down project coordinator');
+    this.logger.info('Shutting down project coordinator');'
     
     // Perform async cleanup for all projects
     const projectIds = Array.from(this.projects.keys());
@@ -203,7 +203,7 @@ export class ProjectCoordinator extends EventEmitter {
    */
   private async setupPortfolioIntegration(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    this.logger.debug('Portfolio integration setup completed');
+    this.logger.debug('Portfolio integration setup completed');'
   }
 
   /**
@@ -211,7 +211,7 @@ export class ProjectCoordinator extends EventEmitter {
    */
   private async initializeValueStreamMapping(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    this.logger.debug('Value stream mapping initialized');
+    this.logger.debug('Value stream mapping initialized');'
   }
 
   /**
@@ -219,7 +219,7 @@ export class ProjectCoordinator extends EventEmitter {
    */
   private async validateProjectUpdates(projectId: string, updates: Partial<ProjectCoordinationConfig>): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 25));
-    this.logger.debug(`Project updates validated for ${projectId}`, updates);
+    this.logger.debug(`Project updates validated for ${projectId}`, updates);`
   }
 
   /**
@@ -227,7 +227,7 @@ export class ProjectCoordinator extends EventEmitter {
    */
   private async processPortfolioEventAsync(projectId: string, eventType: string, data: any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 25));
-    this.logger.debug(`Portfolio event processed: ${eventType} for ${projectId}`, data);
+    this.logger.debug(`Portfolio event processed: ${eventType} for ${projectId}`, data);`
   }
 
   /**
@@ -235,7 +235,7 @@ export class ProjectCoordinator extends EventEmitter {
    */
   private async cleanupProjectResources(projectId: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    this.logger.debug(`Resources cleaned up for project ${projectId}`);
+    this.logger.debug(`Resources cleaned up for project ${projectId}`);`
   }
 }
 
@@ -257,8 +257,8 @@ export function getProjectCoordinator(): ProjectCoordinator {
  */
 export function createProjectConfig(
   projectId: string,
-  mode:'safe' = 'safe', // SAFe LPM default
-  features: Partial<ProjectCoordinationConfig['features']> = {}
+  mode:'safe' = 'safe', // SAFe LPM default'
+  features: Partial<ProjectCoordinationConfig['features']> = {}'
 ): ProjectCoordinationConfig {
   return {
     projectId,

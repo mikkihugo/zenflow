@@ -37,9 +37,9 @@ export interface ApprovalGateEvent extends SystemEvent {
  * Approval request submitted to gate
  */
 export interface ApprovalRequestedEvent extends ApprovalGateEvent {
-  type: 'approval:requested';
-  operation: 'request';
-  status: 'pending';
+  type: 'approval:requested;
+  operation: 'request;
+  status: 'pending;
   details: {
     request: ApprovalRequest;
     queuePosition: number;
@@ -51,9 +51,9 @@ export interface ApprovalRequestedEvent extends ApprovalGateEvent {
  * Auto-approval processed
  */
 export interface ApprovalAutoProcessedEvent extends ApprovalGateEvent {
-  type: 'approval:auto-processed';
-  operation: 'auto-approve|auto-reject';
-  status: 'success';
+  type: 'approval:auto-processed;
+  operation: 'auto-approve|auto-reject;
+  status: 'success;
   details: {
     request: ApprovalRequest;
     decision: ApprovalDecision;
@@ -66,9 +66,9 @@ export interface ApprovalAutoProcessedEvent extends ApprovalGateEvent {
  * Human approval requested
  */
 export interface ApprovalHumanRequestedEvent extends ApprovalGateEvent {
-  type: 'approval:human-requested';
-  operation: 'human-review';
-  status: 'pending';
+  type: 'approval:human-requested;
+  operation: 'human-review;
+  status: 'pending;
   details: {
     request: ApprovalRequest;
     question: string;
@@ -81,9 +81,9 @@ export interface ApprovalHumanRequestedEvent extends ApprovalGateEvent {
  * Human decision received
  */
 export interface ApprovalHumanDecisionEvent extends ApprovalGateEvent {
-  type: 'approval:human-decision';
-  operation: 'human-approve|human-reject';
-  status: 'success';
+  type: 'approval:human-decision;
+  operation: 'human-approve|human-reject;
+  status: 'success;
   details: {
     request: ApprovalRequest;
     decision: ApprovalDecision;
@@ -96,9 +96,9 @@ export interface ApprovalHumanDecisionEvent extends ApprovalGateEvent {
  * Gate queue overflow
  */
 export interface ApprovalQueueOverflowEvent extends ApprovalGateEvent {
-  type: 'approval:queue-overflow';
-  operation: 'overflow-handling';
-  status: 'warning|critical';
+  type: 'approval:queue-overflow;
+  operation: 'overflow-handling;
+  status: 'warning|critical;
   details: {
     queueDepth: number;
     maxDepth: number;
@@ -111,9 +111,9 @@ export interface ApprovalQueueOverflowEvent extends ApprovalGateEvent {
  * Gate configuration updated
  */
 export interface ApprovalConfigUpdatedEvent extends ApprovalGateEvent {
-  type: 'approval:config-updated';
-  operation: 'configure';
-  status: 'success';
+  type: 'approval:config-updated;
+  operation: 'configure;
+  status: 'success;
   details: {
     previousConfig: any;
     newConfig: any;
@@ -125,9 +125,9 @@ export interface ApprovalConfigUpdatedEvent extends ApprovalGateEvent {
  * Gate bottleneck detected
  */
 export interface ApprovalBottleneckEvent extends ApprovalGateEvent {
-  type: 'approval:bottleneck';
-  operation: 'bottleneck-detection';
-  status: 'warning';
+  type: 'approval:bottleneck;
+  operation: 'bottleneck-detection;
+  status: 'warning;
   details: {
     queueDepth: number;
     avgWaitTime: number;
@@ -140,9 +140,9 @@ export interface ApprovalBottleneckEvent extends ApprovalGateEvent {
  * Gate capacity alert
  */
 export interface ApprovalCapacityAlertEvent extends ApprovalGateEvent {
-  type: 'approval:capacity-alert';
-  operation: 'capacity-monitoring';
-  status: 'warning|critical';
+  type: 'approval:capacity-alert;
+  operation: 'capacity-monitoring;
+  status: 'warning|critical;
   details: {
     utilizationPercent: number;
     capacityThreshold: number;

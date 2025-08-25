@@ -80,7 +80,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
   ) {
     super();
 
-    this.logger = options?.logger||getLogger('UELEnhancedEventBus');
+    this.logger = options?.logger||getLogger('UELEnhancedEventBus');'
 
     if (options?.enableUEL && options?.uelIntegration?.eventManager) {
       this.initializeUELIntegration({
@@ -120,10 +120,10 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
       this.uelEnabled = true;
       this.logger?.info(
-        '✅ UEL integration initialized for Enhanced Event Bus'
+        '✅ UEL integration initialized for Enhanced Event Bus''
       );
     } catch (error) {
-      this.logger?.error('❌ Failed to initialize UEL integration:', error);
+      this.logger?.error('❌ Failed to initialize UEL integration:', error);'
     }
   }
 
@@ -140,9 +140,9 @@ export class UELEnhancedEventBus extends TypedEventBase {
     const result = super.emit(eventName, ...args);
 
     // UEL integration if enabled
-    if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {
+    if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {'
       this.emitToUEL(eventName, args, startTime).catch((error) => {
-        this.logger?.warn(`UEL emit failed for ${eventName}:`, error);
+        this.logger?.warn(`UEL emit failed for ${eventName}:`, error);`
       });
     }
 
@@ -162,10 +162,10 @@ export class UELEnhancedEventBus extends TypedEventBase {
     const result = super.on(eventName, listener);
 
     // Track UEL subscriptions if enabled
-    if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {
+    if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {'
       this.trackUELSubscription(eventName, listener).catch((error) => {
         this.logger?.debug(
-          `UEL subscription tracking failed for ${eventName}:`,
+          `UEL subscription tracking failed for ${eventName}:`,`
           error
         );
       });
@@ -227,7 +227,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
    */
   mapEventToUEL(eventEmitterEvent: string, uelEventType: string): void {
     this.eventMappings.set(eventEmitterEvent, uelEventType);
-    this.logger?.debug(`Mapped event: ${eventEmitterEvent} -> ${uelEventType}`);
+    this.logger?.debug(`Mapped event: ${eventEmitterEvent} -> ${uelEventType}`);`
   }
 
   /**
@@ -248,7 +248,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
     }
   ): Promise<void> {
     if (this.uelEnabled) {
-      this.logger?.warn('UEL already enabled for this event bus');
+      this.logger?.warn('UEL already enabled for this event bus');'
       return;
     }
 
@@ -276,10 +276,10 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
     try {
       const uelEventType =
-        this.eventMappings.get(eventName)||`eventbus:${eventName}`;
+        this.eventMappings.get(eventName)||`eventbus:${eventName}`;`
 
       const uelEvent: SystemLifecycleEvent = {
-        id: `bus-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+        id: `bus-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,`
         timestamp: new Date(),
         source:'enhanced-event-bus',
         type: uelEventType as any,
@@ -299,7 +299,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
       await this.uelManager.emit(uelEvent);
     } catch (error) {
-      this.logger?.debug(`UEL emit failed for ${eventName}:`, error);
+      this.logger?.debug(`UEL emit failed for ${eventName}:`, error);`
     }
   }
 
@@ -311,7 +311,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
     try {
       const uelEventType =
-        this.eventMappings.get(eventName)||`eventbus:${eventName}`;
+        this.eventMappings.get(eventName)||`eventbus:${eventName}`;`
 
       // Create UEL-compatible listener wrapper
       const uelListener = (event: SystemEvent) => {
@@ -323,7 +323,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
             ? new Array(eventDetails.details.args).fill(undefined)
             : [event];
 
-        // Don't call the original listener here - it's already called by EventEmitter
+        // Don't call the original listener here - it's already called by EventEmitter'
         // This is just for UEL subscription tracking
       };
 
@@ -332,11 +332,11 @@ export class UELEnhancedEventBus extends TypedEventBase {
         uelListener
       );
       this.logger?.debug(
-        `UEL subscription tracked: ${subscriptionId} for ${eventName}`
+        `UEL subscription tracked: ${subscriptionId} for ${eventName}``
       );
     } catch (error) {
       this.logger?.debug(
-        `UEL subscription tracking failed for ${eventName}:`,
+        `UEL subscription tracking failed for ${eventName}:`,`
         error
       );
     }
@@ -347,14 +347,14 @@ export class UELEnhancedEventBus extends TypedEventBase {
     let migratedCount = 0;
 
     for (const eventName of eventNames) {
-      if (typeof eventName === 'string') {
+      if (typeof eventName === 'string') {'
         await this.trackUELSubscription(eventName, () => {});
         migratedCount++;
       }
     }
 
     this.logger?.info(
-      `Migrated ${migratedCount} existing listeners to UEL tracking`
+      `Migrated ${migratedCount} existing listeners to UEL tracking``
     );
   }
 }
@@ -392,7 +392,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
     super();
 
     this.logger =
-      options?.logger||getLogger('UELEnhancedApplicationCoordinator');
+      options?.logger||getLogger('UELEnhancedApplicationCoordinator');'
 
     if (options?.enableUEL) {
       this.initializeUEL(options?.uelConfig);
@@ -417,7 +417,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       // UEL instance will be set via setUELSystem method
       if (!this.uelSystem) {
         throw new Error(
-          'UEL system not initialized. Call setUELSystem() first.'
+          'UEL system not initialized. Call setUELSystem() first.''
         );
       }
 
@@ -447,7 +447,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       await this.createSystemManagers();
 
       this.logger.info(
-        '✅ UEL integration initialized for Application Coordinator'
+        '✅ UEL integration initialized for Application Coordinator''
       );
     } catch (error) {
       this.logger.error(
@@ -478,7 +478,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       this.eventBus.mapEventToUEL(eventName, uelType);
     }
 
-    this.logger.debug(`Configured ${mappings.length} event mappings`);
+    this.logger.debug(`Configured ${mappings.length} event mappings`);`
   }
 
   /**
@@ -496,7 +496,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
           retryAttempts: 3,
         } as any
       );
-      this.systemManagers.set('system', systemManager);
+      this.systemManagers.set('system', systemManager);'
 
       // Coordination events manager for workflows
       const coordinationManager =
@@ -506,7 +506,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
             maxListeners: 30,
           } as any
         );
-      this.systemManagers.set('coordination', coordinationManager);
+      this.systemManagers.set('coordination', coordinationManager);'
 
       // Interface events manager
       const interfaceManager = await this.uelSystem.createInterfaceEventManager(
@@ -515,13 +515,13 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
           maxListeners: 20,
         }
       );
-      this.systemManagers.set('interface', interfaceManager);
+      this.systemManagers.set('interface', interfaceManager);'
 
       this.logger.info(
-        `Created ${this.systemManagers.size} system event managers`
+        `Created ${this.systemManagers.size} system event managers``
       );
     } catch (error) {
-      this.logger.error('Failed to create system managers:', error);
+      this.logger.error('Failed to create system managers:', error);'
     }
   }
 
@@ -536,7 +536,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
     const result = super.emit(eventName, ...args);
 
     // Route to enhanced event bus if available
-    if (this.eventBus && typeof eventName ==='string') {
+    if (this.eventBus && typeof eventName ==='string') {'
       this.eventBus.emit(eventName, ...args);
     }
 
@@ -557,7 +557,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       systemStatus?: unknown;
       managersCreated: number;
     };
-    eventBus?: ReturnType<UELEnhancedEventBus['getStatus']>;
+    eventBus?: ReturnType<UELEnhancedEventBus['getStatus']>;'
   }> {
     const eventNames = this.eventNames();
     const listenerCount = eventNames.reduce(
@@ -583,7 +583,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       try {
         status.uel.systemStatus = await this.uelSystem.getSystemStatus();
       } catch (error) {
-        this.logger.warn('Failed to get UEL system status:', error);
+        this.logger.warn('Failed to get UEL system status:', error);'
       }
     }
 
@@ -603,27 +603,27 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
     config?: Partial<EventManagerConfig>
   ): Promise<EventManagerInterface|null> {
     if (!this.uelSystem) {
-      this.logger.warn('UEL not enabled - cannot create component manager');
+      this.logger.warn('UEL not enabled - cannot create component manager');'
       return null;
     }
 
     try {
-      // Direct creation since we can't use createEventManager on the base EventManager
+      // Direct creation since we can't use createEventManager on the base EventManager'
       const eventManager = this.uelSystem.getEventManager() as any;
       const manager = await eventManager.createEventManager?.({
         type,
-        name: `app-${componentName}`,
+        name: `app-${componentName}`,`
         config: config||{},
         autoStart: true,
       });
 
       this.systemManagers.set(componentName, manager);
-      this.logger.info(`Created event manager for component: ${componentName}`);
+      this.logger.info(`Created event manager for component: ${componentName}`);`
 
       return manager;
     } catch (error) {
       this.logger.error(
-        `Failed to create manager for ${componentName}:`,
+        `Failed to create manager for ${componentName}:`,`
         error
       );
       return null;
@@ -648,31 +648,31 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       try {
         const uelStatus = await this.uelSystem.getSystemStatus();
         if (!uelStatus.initialized) {
-          issues.push('UEL system not properly initialized');
+          issues.push('UEL system not properly initialized');'
           score -= 20;
         }
 
         const healthPercentage = uelStatus.healthPercentage||100;
         if (healthPercentage < 80) {
-          issues.push(`UEL system health degraded: ${healthPercentage}%`);
+          issues.push(`UEL system health degraded: ${healthPercentage}%`);`
           score -= 15;
         }
       } catch (_error) {
-        issues.push('Failed to check UEL system status');
+        issues.push('Failed to check UEL system status');'
         score -= 10;
       }
     } else {
-      issues.push('UEL system not initialized');
+      issues.push('UEL system not initialized');'
       score -= 30;
       recommendations.push(
-        'Enable UEL integration for enhanced event handling'
+        'Enable UEL integration for enhanced event handling''
       );
     }
 
     // Check event bus integration
     if (!this.eventBus) {
       recommendations.push(
-        'Consider enabling enhanced event bus for better integration'
+        'Consider enabling enhanced event bus for better integration''
       );
       score -= 10;
     }
@@ -680,7 +680,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
     // Check system managers
     if (this.systemManagers.size === 0) {
       recommendations.push(
-        'Create system-specific event managers for better organization'
+        'Create system-specific event managers for better organization''
       );
       score -= 5;
     }
@@ -704,7 +704,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
           await manager.stop();
           await manager.destroy();
         } catch (error) {
-          this.logger.warn(`Failed to shutdown manager ${name}:`, error);
+          this.logger.warn(`Failed to shutdown manager ${name}:`, error);`
         }
       }
       this.systemManagers.clear();
@@ -716,7 +716,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       }
 
       this.eventBus = undefined as any;
-      this.logger.info('✅ Application Coordinator UEL integration shut down');
+      this.logger.info('✅ Application Coordinator UEL integration shut down');'
     } catch (error) {
       this.logger.error(
         '❌ Failed to shutdown Application Coordinator UEL integration:',
@@ -746,7 +746,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
   ) {
     super();
 
-    this.logger = options?.logger||getLogger('UELEnhancedObserverSystem');
+    this.logger = options?.logger||getLogger('UELEnhancedObserverSystem');'
 
     if (options?.enableUEL && options?.eventManager) {
       this.initializeUELIntegration(options?.eventManager);
@@ -764,12 +764,12 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
     try {
       this.uelEventManager = await (
         eventManager as any
-      ).createMonitoringEventManager?.('observer-system', {
+      ).createMonitoringEventManager?.('observer-system', {'
         maxListeners: 100,
         retryAttempts: 2,
       });
 
-      this.logger?.info('✅ UEL integration initialized for Observer System');
+      this.logger?.info('✅ UEL integration initialized for Observer System');'
     } catch (error) {
       this.logger?.error(
         '❌ Failed to initialize UEL for Observer System:',
@@ -784,7 +784,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
    * @param name
    * @param type
    */
-  createObserver(name: string, type: string = 'custom'): EventEmitter {
+  createObserver(name: string, type: string = 'custom'): EventEmitter {'
     const observer = new EventEmitter();
 
     // Wrap with UEL integration if available
@@ -793,9 +793,9 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
     }
 
     this.observers.set(name, observer);
-    this.emit('observer:created', { name, type });
+    this.emit('observer:created', { name, type });'
 
-    this.logger?.debug(`Created observer: ${name} (${type})`);
+    this.logger?.debug(`Created observer: ${name} (${type})`);`
     return observer;
   }
 
@@ -820,12 +820,12 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
       const result = originalEmit(eventName, ...args);
 
       // Emit to UEL system
-      if (this.uelEventManager && typeof eventName ==='string') {
+      if (this.uelEventManager && typeof eventName ==='string') {'
         const uelEvent: MonitoringEvent = {
-          id: `obs-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+          id: `obs-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,`
           timestamp: new Date(),
-          source: `observer-${name}`,
-          type: `monitoring:observer` as any,
+          source: `observer-${name}`,`
+          type: `monitoring:observer` as any,`
           operation: 'observe' as any,
           component: type,
           payload: {
@@ -841,7 +841,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
         };
 
         this.uelEventManager.emit(uelEvent).catch((error) => {
-          this.logger?.debug(`UEL observer event failed for ${name}:`, error);
+          this.logger?.debug(`UEL observer event failed for ${name}:`, error);`
         });
       }
 
@@ -884,8 +884,8 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
     if (observer) {
       observer.removeAllListeners();
       this.observers.delete(name);
-      this.emit('observer:removed', { name });
-      this.logger?.debug(`Removed observer: ${name}`);
+      this.emit('observer:removed', { name });'
+      this.logger?.debug(`Removed observer: ${name}`);`
       return true;
     }
     return false;
@@ -920,7 +920,7 @@ export class SystemIntegrationFactory {
   private logger: Logger;
 
   private constructor() {
-    this.logger = getLogger('SystemIntegrationFactory');
+    this.logger = getLogger('SystemIntegrationFactory');'
   }
 
   static getInstance(): SystemIntegrationFactory {
@@ -1085,11 +1085,11 @@ export function analyzeSystemEventEmitterUsage(
   totalSystems: number;
   systemAnalyses: {
     [key: string]: ReturnType<
-      EventEmitterMigrationHelper['analyzeEventEmitter']
+      EventEmitterMigrationHelper['analyzeEventEmitter']'
     >;
   };
   migrationRecommendations: string[];
-  overallComplexity: 'low|medium|high';
+  overallComplexity: 'low' | 'medium' | 'high';
 } {
   const migrationHelper = new TypedEventBaseMigrationHelper(
     null as any,
@@ -1101,7 +1101,7 @@ export function analyzeSystemEventEmitterUsage(
       listenerCounts: Record<string, number>;
       maxListeners: number;
       recommendations: string[];
-      migrationComplexity: 'high|medium|low';
+      migrationComplexity: 'high' | 'medium' | 'low';
     };
   } = {};
   const migrationRecommendations: string[] = [];
@@ -1121,24 +1121,24 @@ export function analyzeSystemEventEmitterUsage(
       );
       totalEventTypes += analysis.eventTypes.length;
 
-      if (analysis.migrationComplexity === 'high') {
+      if (analysis.migrationComplexity === 'high') {'
         highComplexitySystems++;
       }
 
       // Add system-specific recommendations
-      if (analysis.migrationComplexity === 'high') {
+      if (analysis.migrationComplexity === 'high') {'
         migrationRecommendations.push(
-          `${systemName}: High complexity - plan careful migration`
+          `${systemName}: High complexity - plan careful migration``
         );
       }
 
       if (Object.values(analysis.listenerCounts).some((count) => count > 10)) {
         migrationRecommendations.push(
-          `${systemName}: High listener count - UEL would improve performance`
+          `${systemName}: High listener count - UEL would improve performance``
         );
       }
     } catch (error) {
-      logger?.warn(`Failed to analyze system ${systemName}:`, error);
+      logger?.warn(`Failed to analyze system ${systemName}:`, error);`
     }
   }
 
@@ -1147,23 +1147,23 @@ export function analyzeSystemEventEmitterUsage(
   let overallComplexity: 'low|medium|high' = 'low';
 
   if (highComplexitySystems > systemCount * 0.3||totalListeners > 100) {
-    overallComplexity ='high';
+    overallComplexity ='high;
   } else if (
     highComplexitySystems > 0||totalListeners > 50||totalEventTypes > 50
   ) {
-    overallComplexity ='medium';
+    overallComplexity ='medium;
   }
 
   // Add global recommendations
   if (totalListeners > 100) {
     migrationRecommendations.push(
-      'System-wide: High listener count - UEL integration recommended'
+      'System-wide: High listener count - UEL integration recommended''
     );
   }
 
   if (totalEventTypes > 50) {
     migrationRecommendations.push(
-      'System-wide: Many event types - UEL categorization would help'
+      'System-wide: Many event types - UEL categorization would help''
     );
   }
 

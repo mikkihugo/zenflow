@@ -133,7 +133,7 @@ export interface QualityGate {
  */
 export interface QualityGateCriterion {
   readonly metric: string;
-  readonly operator: 'gt|gte|lt|lte|eq|neq';
+  readonly operator: 'gt|gte|lt|lte|eq|neq;
   readonly threshold: number;
   readonly weight: number;
   readonly critical: boolean;
@@ -158,7 +158,7 @@ export interface StageAutomation {
  * Automation trigger
  */
 export interface AutomationTrigger {
-  readonly event:|stage_start|stage_complete|gate_pass|gate_fail|'manual';
+  readonly event:|stage_start|stage_complete|gate_pass|gate_fail|'manual;
   readonly conditions: string[];
   readonly delay: number;
 }
@@ -167,7 +167,7 @@ export interface AutomationTrigger {
  * Automation action
  */
 export interface AutomationAction {
-  readonly type:|command|api_call|notification|gate_check|'deployment';
+  readonly type:|command|api_call|notification|gate_check|'deployment;
   readonly configuration: unknown;
   readonly timeout: number;
   readonly retryOnFailure: boolean;
@@ -183,8 +183,8 @@ export interface PipelineExecutionContext {
   readonly valueStreamId: string;
   readonly sparcProjectId: string;
   readonly initiator: string;
-  readonly priority: 'low|medium|high|critical';
-  readonly environment: 'development|staging|production';
+  readonly priority: 'low|medium|high|critical;
+  readonly environment: 'development' | 'staging' | 'production';
   readonly metadata: Record<string, unknown>;
   readonly startTime: Date;
   readonly timeoutAt: Date;
@@ -228,7 +228,7 @@ export interface StageExecution {
 export interface RetryPolicy {
   readonly enabled: boolean;
   readonly maxAttempts: number;
-  readonly backoffStrategy: 'linear|exponential|fixed';
+  readonly backoffStrategy: 'linear' | 'exponential' | 'fixed';
   readonly baseDelay: number;
   readonly maxDelay: number;
 }
@@ -262,7 +262,7 @@ export interface AutomationCondition {
 
 export interface AutomationResult {
   readonly automationId: string;
-  readonly status: 'success|failure|skipped';
+  readonly status: 'success' | 'failure' | 'skipped';
   readonly startTime: Date;
   readonly endTime: Date;
   readonly output: string;
@@ -271,7 +271,7 @@ export interface AutomationResult {
 
 export interface QualityGateResult {
   readonly gateId: string;
-  readonly status: 'pass|fail|warning|pending';
+  readonly status: 'pass|fail|warning|pending;
   readonly score: number;
   readonly criterionResults: CriterionResult[];
   readonly executionTime: number;
@@ -292,7 +292,7 @@ export interface CriterionResult {
 export interface PipelineArtifact {
   readonly id: string;
   readonly name: string;
-  readonly type:|binary|report|log|configuration|'documentation';
+  readonly type:|binary|report|log|configuration|'documentation;
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -324,15 +324,15 @@ export interface PipelineBottleneck {
 
 export interface MetricTrend {
   readonly metric: string;
-  readonly direction: 'improving|stable|degrading';
+  readonly direction: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
   readonly change: number;
   readonly period: string;
-  readonly significance: 'low|medium|high';
+  readonly significance: 'low' | 'medium' | 'high';
 }
 
 export interface PipelineError {
   readonly stage: string;
-  readonly type: 'validation|execution|timeout|system';
+  readonly type: 'validation|execution|timeout|system;
   readonly message: string;
   readonly details: unknown;
   readonly timestamp: Date;
@@ -368,7 +368,7 @@ export class SPARCCDMappingService {
 
     try {
       // Lazy load @claude-zen/workflows for pipeline orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      const { WorkflowEngine } = await import('@claude-zen/workflows');'
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 50,
         stepTimeout: 7200000, // 2 hours
@@ -377,7 +377,7 @@ export class SPARCCDMappingService {
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      const { BrainCoordinator } = await import('@claude-zen/brain');'
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -388,11 +388,11 @@ export class SPARCCDMappingService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');
+      const { PerformanceTracker } = await import('@claude-zen/foundation');'
       this.performanceTracker = new PerformanceTracker();
 
       this.initialized = true;
-      this.logger.info('SPARC-CD Mapping Service initialized successfully');
+      this.logger.info('SPARC-CD Mapping Service initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize SPARC-CD Mapping Service:',
@@ -408,11 +408,11 @@ export class SPARCCDMappingService {
   async mapSPARCToPipelineStages(): Promise<Map<string, CDPipelineStage[]>> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('sparc_cd_mapping');
+    const timer = this.performanceTracker.startTimer('sparc_cd_mapping');'
 
     try {
       this.logger.info(
-        'Mapping SPARC phases to CD pipeline stages with intelligent optimization'
+        'Mapping SPARC phases to CD pipeline stages with intelligent optimization''
       );
 
       const pipelineTemplates = new Map<string, CDPipelineStage[]>();
@@ -431,24 +431,24 @@ export class SPARCCDMappingService {
       // Create standard pipeline template with intelligent mapping
       const standardPipeline =
         await this.createStandardPipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('standard', standardPipeline);
+      pipelineTemplates.set('standard', standardPipeline);'
 
       // Create microservice pipeline template
       const microservicePipeline =
         await this.createMicroservicePipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('microservice', microservicePipeline);
+      pipelineTemplates.set('microservice', microservicePipeline);'
 
       // Create library pipeline template
       const libraryPipeline =
         await this.createLibraryPipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('library', libraryPipeline);
+      pipelineTemplates.set('library', libraryPipeline);'
 
       // Create enterprise pipeline template for complex systems
       const enterprisePipeline =
         await this.createEnterprisePipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('enterprise', enterprisePipeline);
+      pipelineTemplates.set('enterprise', enterprisePipeline);'
 
-      this.performanceTracker.endTimer('sparc_cd_mapping');
+      this.performanceTracker.endTimer('sparc_cd_mapping');'
 
       this.logger.info(
         'SPARC to CD pipeline mapping completed with intelligent optimization',
@@ -461,8 +461,8 @@ export class SPARCCDMappingService {
 
       return pipelineTemplates;
     } catch (error) {
-      this.performanceTracker.endTimer('sparc_cd_mapping');
-      this.logger.error('SPARC to CD mapping failed:', error);
+      this.performanceTracker.endTimer('sparc_cd_mapping');'
+      this.logger.error('SPARC to CD mapping failed:', error);'
       throw error;
     }
   }
@@ -474,12 +474,12 @@ export class SPARCCDMappingService {
     sparcProjectId: string,
     featureId: string,
     valueStreamId: string,
-    pipelineType: string = 'standard'
+    pipelineType: string = 'standard''
   ): Promise<string> {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer(
-      'sparc_pipeline_execution'
+      'sparc_pipeline_execution''
     );
 
     try {
@@ -494,7 +494,7 @@ export class SPARCCDMappingService {
 
       // Create execution context
       const context: PipelineExecutionContext = {
-        pipelineId: `pipeline-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        pipelineId: `pipeline-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
         featureId,
         valueStreamId,
         sparcProjectId,
@@ -525,9 +525,9 @@ export class SPARCCDMappingService {
         workflowId
       );
 
-      this.performanceTracker.endTimer('sparc_pipeline_execution');
+      this.performanceTracker.endTimer('sparc_pipeline_execution');'
 
-      this.logger.info('CD pipeline started with workflow orchestration', {
+      this.logger.info('CD pipeline started with workflow orchestration', {'
         pipelineId: context.pipelineId,
         workflowId,
         stageCount: execution.stages.length,
@@ -535,8 +535,8 @@ export class SPARCCDMappingService {
 
       return context.pipelineId;
     } catch (error) {
-      this.performanceTracker.endTimer('sparc_pipeline_execution');
-      this.logger.error('SPARC pipeline execution failed:', error);
+      this.performanceTracker.endTimer('sparc_pipeline_execution');'
+      this.logger.error('SPARC pipeline execution failed:', error);'
       throw error;
     }
   }
@@ -555,7 +555,7 @@ export class SPARCCDMappingService {
       });
 
     if (templateRecommendation.template) {
-      this.logger.info('Using brain-recommended pipeline template', {
+      this.logger.info('Using brain-recommended pipeline template', {'
         pipelineType,
         recommendedTemplate: templateRecommendation.template,
         confidence: templateRecommendation.confidence,
@@ -564,7 +564,7 @@ export class SPARCCDMappingService {
     }
 
     // Fallback to standard template generation
-    const mappingStrategy = { strategy: 'standard', confidence: 0.5 };
+    const mappingStrategy = { strategy: 'standard', confidence: 0.5 };'
     return await this.createStandardPipelineFromSPARC(mappingStrategy);
   }
 
@@ -577,7 +577,7 @@ export class SPARCCDMappingService {
   ): Promise<CDPipelineStage[]> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('pipeline_optimization');
+    const timer = this.performanceTracker.startTimer('pipeline_optimization');'
 
     try {
       // Use brain coordinator for intelligent optimization
@@ -591,9 +591,9 @@ export class SPARCCDMappingService {
         ],
       });
 
-      this.performanceTracker.endTimer('pipeline_optimization');
+      this.performanceTracker.endTimer('pipeline_optimization');'
 
-      this.logger.info('Pipeline stages optimized with brain coordination', {
+      this.logger.info('Pipeline stages optimized with brain coordination', {'
         pipelineType,
         executionHistoryCount: executionHistory.length,
         optimizationScore: optimizationResult.score,
@@ -604,8 +604,8 @@ export class SPARCCDMappingService {
         optimizationResult.optimizedStages || (await this.getPipelineTemplate(pipelineType))
       );
     } catch (error) {
-      this.performanceTracker.endTimer('pipeline_optimization');
-      this.logger.error('Pipeline optimization failed:', error);
+      this.performanceTracker.endTimer('pipeline_optimization');'
+      this.logger.error('Pipeline optimization failed:', error);'
       throw error;
     }
   }
@@ -621,7 +621,7 @@ export class SPARCCDMappingService {
       await this.brainCoordinator.shutdown();
     }
     this.initialized = false;
-    this.logger.info('SPARC-CD Mapping Service shutdown complete');
+    this.logger.info('SPARC-CD Mapping Service shutdown complete');'
   }
 
   // ============================================================================
@@ -1191,7 +1191,7 @@ export interface CDPipelineConfig {
   readonly pipelineId: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'standard|microservice|library|enterprise';
+  readonly type: 'standard|microservice|library|enterprise;
   readonly stages: CDPipelineStage[];
   readonly triggers: PipelineTrigger[];
   readonly variables: Record<string, string>;
@@ -1209,7 +1209,7 @@ export interface CDPipelineConfig {
  */
 export interface PipelineTrigger {
   readonly id: string;
-  readonly type: 'webhook|schedule|manual|dependency';
+  readonly type: 'webhook|schedule|manual|dependency;
   readonly enabled: boolean;
   readonly configuration: Record<string, unknown>;
   readonly conditions: TriggerCondition[];
@@ -1220,7 +1220,7 @@ export interface PipelineTrigger {
  */
 export interface TriggerCondition {
   readonly field: string;
-  readonly operator:|equals|contains|matches|greater_than|'less_than';
+  readonly operator:|equals|contains|matches|greater_than|'less_than;
   readonly value: string;
   readonly caseSensitive: boolean;
 }
@@ -1230,7 +1230,7 @@ export interface TriggerCondition {
  */
 export interface NotificationConfig {
   readonly id: string;
-  readonly channel: 'email|slack|teams|webhook';
+  readonly channel: 'email|slack|teams|webhook;
   readonly recipients: string[];
   readonly events: NotificationEvent[];
   readonly template: string;
@@ -1240,7 +1240,7 @@ export interface NotificationConfig {
 /**
  * Notification event
  */
-export type NotificationEvent =|pipeline_started|pipeline_completed|pipeline_failed|stage_completed|stage_failed|quality_gate_failed|'security_check_failed';
+export type NotificationEvent =|pipeline_started|pipeline_completed|pipeline_failed|stage_completed|stage_failed|quality_gate_failed|'security_check_failed;
 
 /**
  * Security check configuration
@@ -1248,7 +1248,7 @@ export type NotificationEvent =|pipeline_started|pipeline_completed|pipeline_fai
 export interface SecurityCheck {
   readonly id: string;
   readonly name: string;
-  readonly type:|vulnerability_scan|dependency_check|secrets_scan|'compliance_check';
+  readonly type:|vulnerability_scan|dependency_check|secrets_scan|'compliance_check;
   readonly tool: string;
   readonly configuration: Record<string, unknown>;
   readonly enabled: boolean;
@@ -1291,7 +1291,7 @@ export interface CDPipelineState {
   readonly status: PipelineStatus;
   readonly progress: number;
   readonly estimatedCompletion?: Date;
-  readonly health: 'healthy|degraded|unhealthy';
+  readonly health: 'healthy' | 'degraded' | 'unhealthy';
 }
 
 /**
@@ -1301,7 +1301,7 @@ export interface SwarmExecutionOrchestrator {
   readonly id: string;
   readonly name: string;
   readonly pipelines: string[];
-  readonly coordination: 'sequential|parallel|adaptive';
+  readonly coordination: 'sequential' | 'parallel' | 'adaptive';
   readonly loadBalancing: boolean;
   readonly monitoring: boolean;
 }

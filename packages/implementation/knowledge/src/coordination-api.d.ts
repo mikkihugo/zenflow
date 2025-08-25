@@ -2,7 +2,7 @@
  * @file Coordination API - Public Interface for Coordination Layer
  *
  * This file provides the public API for coordination layer to interact with
- * the knowledge package's fact system. The actual implementation remains
+ * the knowledge package's fact system. The actual implementation remains'
  * private within the knowledge package.
  *
  * This maintains the same interface as the old shared-fact-system to ensure
@@ -36,7 +36,7 @@ export declare function initializeCoordinationFactSystem(): Promise<void>;
  * Store a coordination-specific fact
  */
 export declare function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id|timestamp''>
+  fact: Omit<CoordinationFact, 'id|timestamp''>'
 ): Promise<string>;
 /**
  * Query coordination facts based on criteria

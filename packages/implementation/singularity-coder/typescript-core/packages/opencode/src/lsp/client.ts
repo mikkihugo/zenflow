@@ -131,7 +131,7 @@ export namespace LSPClient {
             diagnostics.delete(input.path)
             await connection.sendNotification("textDocument/didClose", {
               textDocument: {
-                uri: `file://` + input.path,
+                uri: `file://` + input.path,`
               },
             })
           }
@@ -141,7 +141,7 @@ export namespace LSPClient {
           const languageId = LANGUAGE_EXTENSIONS[extension] ?? "plaintext"
           await connection.sendNotification("textDocument/didOpen", {
             textDocument: {
-              uri: `file://` + input.path,
+              uri: `file://` + input.path,`
               languageId,
               version: 0,
               text,

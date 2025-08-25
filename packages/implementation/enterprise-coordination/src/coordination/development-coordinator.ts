@@ -32,12 +32,12 @@ export interface DevelopmentCoordinationConfig {
   autoProgressPhases: boolean;
 
   // Git settings
-  branchStrategy: 'feature'|'gitflow'|'github-flow';
+  branchStrategy: 'feature'|'gitflow'|'github-flow;
   autoCommitMessages: boolean;
 
   // Swarm settings
   maxSwarmSize: number;
-  swarmStrategy: 'collaborative|specialized|mixed';
+  swarmStrategy: 'collaborative' | 'specialized' | 'mixed';
 }
 
 /**
@@ -49,7 +49,7 @@ export interface DevelopmentTask {
   sparcPhase: SPARCPhase;
   gitBranch?: string;
   assignedAgents: string[];
-  status: 'pending|in_progress|review|completed';
+  status: 'pending|in_progress|review|completed;
   dependencies: string[];
 }
 
@@ -72,7 +72,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
   constructor() {
     super();
-    this.logger = getLogger('DevelopmentCoordinator');
+    this.logger = getLogger('DevelopmentCoordinator');'
   }
 
   /**
@@ -83,7 +83,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
     this.config = config;
     this.logger.info(
-      `Initializing development coordination for project ${config.projectId}`
+      `Initializing development coordination for project ${config.projectId}``
     );
 
     // Initialize SPARC workflow
@@ -102,23 +102,23 @@ export class DevelopmentCoordinator extends TypedEventBase {
     }
 
     this.initialized = true;
-    this.emit('development:initialized', { projectId: config.projectId });
+    this.emit('development:initialized', { projectId: config.projectId });'
   }
 
   /**
    * Start SPARC workflow for a task
    */
   async startSPARCWorkflow(
-    task: Omit<DevelopmentTask, 'id'|'status'>
+    task: Omit<DevelopmentTask, 'id'|'status'>'
   ): Promise<string> {
     if (!this.config?.sparcEnabled) {
-      throw new Error('SPARC workflow not enabled');
+      throw new Error('SPARC workflow not enabled');'
     }
 
     // Perform async initialization of SPARC workflow
     await this.initializeSPARCWorkflowAsync(task);
 
-    const taskId = `task_${Date.now()}`;
+    const taskId = `task_${Date.now()}`;`
     const sparcTask: DevelopmentTask = {
       ...task,
       id: taskId,
@@ -128,8 +128,8 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
     this.activeTasks.set(taskId, sparcTask);
 
-    this.logger.info(`Started SPARC workflow: ${task.title} (${taskId})`);
-    this.emit('sparc:workflow_started', { taskId, task: sparcTask });
+    this.logger.info(`Started SPARC workflow: ${task.title} (${taskId})`);`
+    this.emit('sparc:workflow_started', { taskId, task: sparcTask });'
 
     return taskId;
   }
@@ -140,7 +140,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
   async progressSPARCPhase(taskId: string): Promise<void> {
     const task = this.activeTasks.get(taskId);
     if (!task) {
-      throw new Error(`Task not found: ${taskId}`);
+      throw new Error(`Task not found: ${taskId}`);`
     }
 
     // Perform async phase validation
@@ -159,11 +159,11 @@ export class DevelopmentCoordinator extends TypedEventBase {
       const nextPhase = phaseOrder[currentIndex + 1];
       task.sparcPhase = nextPhase;
 
-      this.logger.info(`Task ${taskId} progressed to ${nextPhase} phase`);
-      this.emit('sparc:phase_changed', { taskId, phase: nextPhase });
+      this.logger.info(`Task ${taskId} progressed to ${nextPhase} phase`);`
+      this.emit('sparc:phase_changed', { taskId, phase: nextPhase });'
     } else {
       task.status = 'completed';
-      this.emit('sparc:workflow_completed', { taskId });
+      this.emit('sparc:workflow_completed', { taskId });'
     }
   }
 
@@ -172,12 +172,12 @@ export class DevelopmentCoordinator extends TypedEventBase {
    */
   async createTaskBranch(taskId: string, branchName: string): Promise<void> {
     if (!this.config?.gitControlEnabled) {
-      throw new Error('Git control not enabled');
+      throw new Error('Git control not enabled');'
     }
 
     const task = this.activeTasks.get(taskId);
     if (!task) {
-      throw new Error(`Task not found: ${taskId}`);
+      throw new Error(`Task not found: ${taskId}`);`
     }
 
     // Perform async Git branch creation
@@ -185,8 +185,8 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
     task.gitBranch = branchName;
 
-    this.logger.info(`Created branch ${branchName} for task ${taskId}`);
-    this.emit('git:branch_created', { taskId, branchName });
+    this.logger.info(`Created branch ${branchName} for task ${taskId}`);`
+    this.emit('git:branch_created', { taskId, branchName });'
   }
 
   /**
@@ -194,12 +194,12 @@ export class DevelopmentCoordinator extends TypedEventBase {
    */
   async assignSwarmAgents(taskId: string, agentIds: string[]): Promise<void> {
     if (!this.config?.swarmCoordination) {
-      throw new Error('Swarm coordination not enabled');
+      throw new Error('Swarm coordination not enabled');'
     }
 
     const task = this.activeTasks.get(taskId);
     if (!task) {
-      throw new Error(`Task not found: ${taskId}`);
+      throw new Error(`Task not found: ${taskId}`);`
     }
 
     // Perform async agent assignment
@@ -207,14 +207,14 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
     if (agentIds.length > this.config.maxSwarmSize) {
       throw new Error(
-        `Swarm size exceeds limit: ${agentIds.length} > ${this.config.maxSwarmSize}`
+        `Swarm size exceeds limit: ${agentIds.length} > ${this.config.maxSwarmSize}``
       );
     }
 
     task.assignedAgents = agentIds;
 
-    this.logger.info(`Assigned ${agentIds.length} agents to task ${taskId}`);
-    this.emit('swarm:agents_assigned', { taskId, agentIds });
+    this.logger.info(`Assigned ${agentIds.length} agents to task ${taskId}`);`
+    this.emit('swarm:agents_assigned', { taskId, agentIds });'
   }
 
   /**
@@ -235,11 +235,11 @@ export class DevelopmentCoordinator extends TypedEventBase {
    * Private initialization methods
    */
   private async initializeSPARC(): Promise<void> {
-    this.logger.info('SPARC methodology initialized via enterprise facade');
+    this.logger.info('SPARC methodology initialized via enterprise facade');'
 
     try {
       // Use enterprise facade for SPARC functionality
-      const { createSPARCWorkflow } = await import('@claude-zen/enterprise');
+      const { createSPARCWorkflow } = await import('@claude-zen/enterprise');'
       const sparcWorkflow = createSPARCWorkflow({
         enableAI: false, // Keep it simple for now
         phases: [
@@ -254,7 +254,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
       // Store the workflow for use in coordination
       this.sparcWorkflowInstance = sparcWorkflow;
 
-      this.logger.info('SPARC workflow configured via enterprise facade');
+      this.logger.info('SPARC workflow configured via enterprise facade');'
     } catch (error) {
       this.logger.warn(
         'Enterprise facade SPARC not available, using fallback',
@@ -266,7 +266,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
   private async initializeGitControl(): Promise<void> {
     this.logger.info(
-      `Git control initialized with ${this.config?.branchStrategy} strategy`
+      `Git control initialized with ${this.config?.branchStrategy} strategy``
     );
     // Perform async Git setup
     await this.setupGitConfiguration();
@@ -276,7 +276,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
     // Perform async swarm setup
     await this.setupSwarmConfiguration();
     this.logger.info(
-      `Swarm coordination initialized (max size: ${this.config?.maxSwarmSize})`
+      `Swarm coordination initialized (max size: ${this.config?.maxSwarmSize})``
     );
     // Swarm coordination setup
   }
@@ -285,7 +285,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
    * Shutdown coordinator
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down development coordinator');
+    this.logger.info('Shutting down development coordinator');'
     
     // Perform async cleanup
     await this.cleanupActiveResources();

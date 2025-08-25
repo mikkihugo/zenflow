@@ -60,8 +60,8 @@ export const EditTool = Tool.define({
 
       const file = Bun.file(filepath)
       const stats = await file.stat().catch(() => {})
-      if (!stats) throw new Error(`File ${filepath} not found`)
-      if (stats.isDirectory()) throw new Error(`Path is a directory, not a file: ${filepath}`)
+      if (!stats) throw new Error(`File ${filepath} not found`)`
+      if (stats.isDirectory()) throw new Error(`Path is a directory, not a file: ${filepath}`)`
       await FileTime.assert(ctx.sessionID, filepath)
       contentOld = await file.text()
 
@@ -83,10 +83,10 @@ export const EditTool = Tool.define({
     for (const [file, issues] of Object.entries(diagnostics)) {
       if (issues.length === 0) continue
       if (file === filepath) {
-        output += `\nThis file has errors, please fix\n<file_diagnostics>\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</file_diagnostics>\n`
+        output += `\nThis file has errors, please fix\n<file_diagnostics>\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</file_diagnostics>\n``
         continue
       }
-      output += `\n<project_diagnostics>\n${file}\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</project_diagnostics>\n`
+      output += `\n<project_diagnostics>\n${file}\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</project_diagnostics>\n``
     }
 
     return {
@@ -94,7 +94,7 @@ export const EditTool = Tool.define({
         diagnostics,
         diff,
       },
-      title: `${path.relative(app.path.root, filepath)}`,
+      title: `${path.relative(app.path.root, filepath)}`,`
       output,
     }
   },
@@ -262,7 +262,7 @@ export const IndentationFlexibleReplacer: Replacer = function* (content, find) {
 
 export const EscapeNormalizedReplacer: Replacer = function* (content, find) {
   const unescapeString = (str: string): string => {
-    return str.replace(/\\(n|t|r|'|"|`|\\|\n|\$)/g, (match, capturedChar) => {
+    return str.replace(/\\(n|t|r|'|"|`|\\|\n|\$)/g, (match, capturedChar) => {`
       switch (capturedChar) {
         case "n":
           return "\n"
@@ -270,12 +270,12 @@ export const EscapeNormalizedReplacer: Replacer = function* (content, find) {
           return "\t"
         case "r":
           return "\r"
-        case "'":
-          return "'"
-        case '"':
-          return '"'
-        case "`":
-          return "`"
+        case "'":'
+          return "'"'
+        case '"':'
+          return '"''
+        case "`":`
+          return "`"`
         case "\\":
           return "\\"
         case "\n":

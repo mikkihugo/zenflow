@@ -66,7 +66,7 @@ export interface DevSecOpsManagerConfig {
   readonly enableIncidentResponse: boolean;
   readonly enableSecurityTraining: boolean;
   readonly enablePenetrationTesting: boolean;
-  readonly securityScanFrequency: 'every-commit|daily'||weekly';
+  readonly securityScanFrequency: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
   readonly complianceReportingInterval: number; // milliseconds
   readonly vulnerabilityAssessmentInterval: number; // milliseconds
   readonly securityTrainingInterval: number; // milliseconds
@@ -86,7 +86,7 @@ export interface ComplianceConfig {
   readonly enableAutomatedScanning: boolean;
   readonly enableComplianceReporting: boolean;
   readonly enableAuditTrail: boolean;
-  readonly reportingFormat: 'json|xml|pdf|html';
+  readonly reportingFormat: 'json|xml|pdf|html;
   readonly auditRetentionDays: number;
   readonly complianceThreshold: number; // percentage
 }
@@ -123,7 +123,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low|medium|high|critical';
+  readonly priority: 'low|medium|high|critical;
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -136,7 +136,7 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated|manual|hybrid';
+  readonly ruleType: 'automated' | 'manual' | 'hybrid';
 }
 
 /**
@@ -144,7 +144,7 @@ export interface ValidationRule {
  */
 export interface EvidenceRequirement {
   readonly id: string;
-  readonly type: 'document|log|configuration|assessment';
+  readonly type: 'document|log|configuration|assessment;
   readonly source: string;
   readonly description: string;
 }
@@ -167,7 +167,7 @@ export interface SecurityControl {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly implementation: 'manual|automated|hybrid';
+  readonly implementation: 'manual' | 'automated' | 'hybrid';
 }
 
 /**
@@ -183,7 +183,7 @@ export interface SecurityTool {
   readonly configuration: Record<string, any>;
 }
 
-export type SecurityToolType =|'static_analysis|dynamic_analysis|dependency_scanner|secrets_scanner|container_scanner|infrastructure_scanner|vulnerability_scanner';
+export type SecurityToolType =|'static_analysis|dynamic_analysis|dependency_scanner|secrets_scanner|container_scanner|infrastructure_scanner|vulnerability_scanner;
 
 /**
  * Security assessment
@@ -197,7 +197,7 @@ export interface SecurityAssessment {
   readonly summary: AssessmentSummary;
 }
 
-export type SecurityAssessmentType =|''vulnerability_scan|penetration_test|code_review|compliance_audit';
+export type SecurityAssessmentType =|''vulnerability_scan|penetration_test|code_review|compliance_audit;
 
 /**
  * Assessment scope
@@ -208,7 +208,7 @@ export interface AssessmentScope {
     readonly start: Date;
     readonly end: Date;
   };
-  readonly depth: 'surface|standard|deep';
+  readonly depth: 'surface' | 'standard' | 'deep';
 }
 
 /**
@@ -229,13 +229,13 @@ export interface SecurityFinding {
   readonly toolId?: string;
   readonly discoveredDate: Date;
   readonly lastSeenDate: Date;
-  readonly status: 'open|in_progress|resolved|false_positive';
+  readonly status: 'open|in_progress|resolved|false_positive;
   readonly falsePositive: boolean;
 }
 
-export type SecuritySeverity =|'critical|high|medium|low|informational';
+export type SecuritySeverity =|'critical|high|medium|low|informational;
 
-export type SecurityCategory =|'injection|authentication|authorization|sensitive_data|xml_entities|access_control|security_config | cross_site_scripting'|insecure_deserialization|vulnerable_components|logging_monitoring';
+export type SecurityCategory =|'injection|authentication|authorization|sensitive_data|xml_entities|access_control|security_config | cross_site_scripting'|insecure_deserialization|vulnerable_components|logging_monitoring;
 
 /**
  * CVSS score
@@ -262,9 +262,9 @@ export interface FindingLocation {
  * Security impact
  */
 export interface SecurityImpact {
-  readonly confidentiality: 'none|low|medium|high';
-  readonly integrity: 'none|low|medium|high';
-  readonly availability: 'none|low|medium|high';
+  readonly confidentiality: 'none|low|medium|high;
+  readonly integrity: 'none|low|medium|high;
+  readonly availability: 'none|low|medium|high;
   readonly businessImpact: string;
 }
 
@@ -308,7 +308,7 @@ export class DevSecOpsManager extends TypedEventBase {
   constructor(config: DevSecOpsManagerConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('DevSecOpsManager');
+    this.logger = getLogger('DevSecOpsManager');'
   }
 
   /**
@@ -318,17 +318,17 @@ export class DevSecOpsManager extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      this.logger.info('Initializing DevSecOps Manager...');
+      this.logger.info('Initializing DevSecOps Manager...');'
 
       // Delegate to Security Scanning Service
       const { SecurityScanningService } = await import(
-        '../services/devsecops/security-scanning-service'
+        '../services/devsecops/security-scanning-service''
       );
       this.securityScanningService = new SecurityScanningService(this.logger);
 
       // Delegate to Compliance Monitoring Service
       const { ComplianceMonitoringService } = await import(
-        '../services/devsecops/compliance-monitoring-service'
+        '../services/devsecops/compliance-monitoring-service''
       );
       this.complianceMonitoringService = new ComplianceMonitoringService(
         this.logger
@@ -336,7 +336,7 @@ export class DevSecOpsManager extends TypedEventBase {
 
       // Delegate to Security Incident Response Service
       const { SecurityIncidentResponseService } = await import(
-        '../services/devsecops/security-incident-response-service'
+        '../services/devsecops/security-incident-response-service''
       );
       this.incidentResponseService = new SecurityIncidentResponseService(
         this.logger
@@ -346,9 +346,9 @@ export class DevSecOpsManager extends TypedEventBase {
       await this.configureServices();
 
       this.initialized = true;
-      this.logger.info('DevSecOps Manager initialized successfully');
+      this.logger.info('DevSecOps Manager initialized successfully');'
     } catch (error) {
-      this.logger.error('Failed to initialize DevSecOps Manager:', error);
+      this.logger.error('Failed to initialize DevSecOps Manager:', error);'
       throw error;
     }
   }
@@ -363,21 +363,21 @@ export class DevSecOpsManager extends TypedEventBase {
   }): Promise<SecurityAssessment> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Performing security assessment', {
+    this.logger.info('Performing security assessment', {'
       type: assessmentConfig.assessmentType,
     });
 
     try {
       // Configure scan based on assessment type
       const scanConfig = {
-        scanId: `scan-${Date.now()}`,
+        scanId: `scan-${Date.now()}`,`
         scanType: this.mapAssessmentToScanType(assessmentConfig.assessmentType),
         tools: assessmentConfig.tools||this.getDefaultTools(),
         targets: this.convertScopeToTargets(assessmentConfig.scope),
         standards: this.configuration.security.securityStandards,
         schedule: {
           frequency: this.configuration.securityScanFrequency,
-          timeWindow:'0 2 * * *', // 2 AM daily
+          timeWindow:'0 2 * * *', // 2 AM daily'
           maxDuration: 120,
           parallelScans: 3,
         },
@@ -416,7 +416,7 @@ export class DevSecOpsManager extends TypedEventBase {
         },
       };
 
-      this.emit('security-assessment-completed', {
+      this.emit('security-assessment-completed', {'
         assessmentId: assessment.assessmentId,
         type: assessmentConfig.assessmentType,
         totalFindings: assessment.summary.totalFindings,
@@ -425,7 +425,7 @@ export class DevSecOpsManager extends TypedEventBase {
 
       return assessment;
     } catch (error) {
-      this.logger.error('Security assessment failed:', error);
+      this.logger.error('Security assessment failed:', error);'
       throw error;
     }
   }
@@ -436,7 +436,7 @@ export class DevSecOpsManager extends TypedEventBase {
   async getComplianceStatus(frameworkId?: string): Promise<ComplianceStatus[]> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Getting compliance status', { frameworkId });
+    this.logger.info('Getting compliance status', { frameworkId });'
 
     try {
       const statuses: ComplianceStatus[] = [];
@@ -464,7 +464,7 @@ export class DevSecOpsManager extends TypedEventBase {
 
       return statuses;
     } catch (error) {
-      this.logger.error('Failed to get compliance status:', error);
+      this.logger.error('Failed to get compliance status:', error);'
       throw error;
     }
   }
@@ -482,7 +482,7 @@ export class DevSecOpsManager extends TypedEventBase {
   }): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Creating security incident', {
+    this.logger.info('Creating security incident', {'
       title: incidentData.title,
       severity: incidentData.severity,
       category: incidentData.category,
@@ -492,7 +492,7 @@ export class DevSecOpsManager extends TypedEventBase {
       const incident =
         await this.incidentResponseService.createIncident(incidentData);
 
-      this.emit('security-incident-created', {
+      this.emit('security-incident-created', {'
         incidentId: incident.incidentId,
         severity: incident.severity,
         category: incident.category,
@@ -501,7 +501,7 @@ export class DevSecOpsManager extends TypedEventBase {
 
       return incident;
     } catch (error) {
-      this.logger.error('Failed to create security incident:', error);
+      this.logger.error('Failed to create security incident:', error);'
       throw error;
     }
   }
@@ -525,7 +525,7 @@ export class DevSecOpsManager extends TypedEventBase {
         notes
       );
 
-      this.emit('security-incident-updated', {
+      this.emit('security-incident-updated', {'
         incidentId,
         status,
         updatedBy,
@@ -533,7 +533,7 @@ export class DevSecOpsManager extends TypedEventBase {
 
       return incident;
     } catch (error) {
-      this.logger.error('Failed to update incident status:', error);
+      this.logger.error('Failed to update incident status:', error);'
       throw error;
     }
   }
@@ -552,7 +552,7 @@ export class DevSecOpsManager extends TypedEventBase {
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Generating compliance report', {
+    this.logger.info('Generating compliance report', {'
       reportType,
       frameworks: frameworkIds.length,
     });
@@ -565,7 +565,7 @@ export class DevSecOpsManager extends TypedEventBase {
           period
         );
 
-      this.emit('compliance-report-generated', {
+      this.emit('compliance-report-generated', {'
         reportId: report.reportId,
         reportType,
         overallCompliance: report.overallCompliance,
@@ -573,7 +573,7 @@ export class DevSecOpsManager extends TypedEventBase {
 
       return report;
     } catch (error) {
-      this.logger.error('Failed to generate compliance report:', error);
+      this.logger.error('Failed to generate compliance report:', error);'
       throw error;
     }
   }
@@ -588,7 +588,7 @@ export class DevSecOpsManager extends TypedEventBase {
       this.securityScanningService
     ) {
       // Configuration would be passed to service
-      this.logger.info('Security scanning configured');
+      this.logger.info('Security scanning configured');'
     }
 
     // Configure compliance monitoring if enabled
@@ -631,7 +631,7 @@ export class DevSecOpsManager extends TypedEventBase {
       this.configuration.enableIncidentResponse &&
       this.incidentResponseService
     ) {
-      this.logger.info('Incident response configured');
+      this.logger.info('Incident response configured');'
     }
   }
 
@@ -642,16 +642,16 @@ export class DevSecOpsManager extends TypedEventBase {
     assessmentType: SecurityAssessmentType
   ): string {
     switch (assessmentType) {
-      case 'vulnerability_scan':
-        return 'static';
-      case 'penetration_test':
-        return 'dynamic';
-      case 'code_review':
-        return 'static';
-      case 'compliance_audit':
-        return 'infrastructure';
+      case 'vulnerability_scan':'
+        return 'static;
+      case 'penetration_test':'
+        return 'dynamic;
+      case 'code_review':'
+        return 'static;
+      case 'compliance_audit':'
+        return 'infrastructure;
       default:
-        return 'static';
+        return 'static;
     }
   }
 
@@ -707,7 +707,7 @@ export class DevSecOpsManager extends TypedEventBase {
    * Shutdown DevSecOps Manager
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down DevSecOps Manager...');
+    this.logger.info('Shutting down DevSecOps Manager...');'
 
     // Cleanup services in production
     try {
@@ -717,11 +717,11 @@ export class DevSecOpsManager extends TypedEventBase {
         this.incidentResponseService?.shutdown?.(),
       ]);
     } catch (error) {
-      this.logger.warn('Some services failed to shutdown cleanly:', error);
+      this.logger.warn('Some services failed to shutdown cleanly:', error);'
     }
 
     this.initialized = false;
-    this.logger.info('DevSecOps Manager shutdown complete');
+    this.logger.info('DevSecOps Manager shutdown complete');'
   }
 }
 

@@ -16,7 +16,7 @@
  * @version 1.0.0
  *
  * @example
- * ```typescript
+ * ```typescript`
  * import { LoadBalancer, LoadBalancingConfig } from '@claude-zen/load-balancing';
  *
  * const loadBalancer = new LoadBalancer({
@@ -36,9 +36,9 @@
  * const assignment = await loadBalancer.routeTask({
  *   type: 'neural-training',
  *   priority: 'high',
- *   requirements: ['gpu', 'high-memory']
+ *   requirements: ['gpu', 'high-memory']'
  * });
- * ```
+ * ````
  */
 
 // Export main load balancing manager and types

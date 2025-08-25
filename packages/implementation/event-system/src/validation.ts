@@ -43,7 +43,7 @@ export interface ValidationResult {
   metrics: {
     validationTime: number;
     checkCount: number;
-    complexity: 'low|medium|high';
+    complexity: 'low' | 'medium' | 'high';
   };
 
   /** Validation metadata */
@@ -68,10 +68,10 @@ export interface ValidationError {
   message: string;
 
   /** Error severity */
-  severity: 'critical|high|medium|low';
+  severity: 'critical|high|medium|low;
 
   /** Error category */
-  category: 'type|config|integration|performance|compatibility';
+  category: 'type|config|integration|performance|compatibility;
 
   /** Error location */
   location?: {
@@ -100,10 +100,10 @@ export interface ValidationWarning {
   message: string;
 
   /** Warning category */
-  category: 'optimization|deprecation'||best-practice|maintenance'';
+  category: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin';
 
   /** Warning impact */
-  impact: 'low|medium|high';
+  impact: 'low' | 'medium' | 'high';
 
   /** Warning context */
   context?: Record<string, unknown>;
@@ -116,7 +116,7 @@ export interface ValidationWarning {
  */
 export interface ValidationRecommendation {
   /** Recommendation type */
-  type: 'optimization|refactoring|feature|security|performance';
+  type: 'optimization|refactoring|feature|security|performance;
 
   /** Recommendation message */
   message: string;
@@ -125,10 +125,10 @@ export interface ValidationRecommendation {
   benefit: string;
 
   /** Implementation effort */
-  effort: 'low|medium|high';
+  effort: 'low' | 'medium' | 'high';
 
   /** Priority */
-  priority: 'low|medium|high|critical';
+  priority: 'low|medium|high|critical;
 
   /** Implementation steps */
   steps?: string[];
@@ -150,7 +150,7 @@ export interface EventTypeSchema {
   properties: Record<
     string,
     {
-      type: 'string|number|boolean|object|array';
+      type: 'string|number|boolean|object|array;
       format?: string;
       enum?: unknown[];
       minimum?: number;
@@ -284,10 +284,10 @@ export class UELValidationFramework {
           if (!(required in event)) {
             errors.push({
               code:'MISSING_REQUIRED_PROPERTY',
-              message: `Required property '${required}' is missing`,
+              message: `Required property '${required}' is missing`,`
               severity: 'high',
               category: 'type',
-              suggestion: `Add property '${required}' to the event object`,
+              suggestion: `Add property '${required}' to the event object`,`
               context: { property: required, eventType: event.type },
             });
           }
@@ -307,10 +307,10 @@ export class UELValidationFramework {
             if (!isValidType) {
               errors.push({
                 code: 'INVALID_PROPERTY_TYPE',
-                message: `Property '${property}' has invalid type. Expected ${definition.type}`,
+                message: `Property '${property}' has invalid type. Expected ${definition.type}`,`
                 severity: 'medium',
                 category: 'type',
-                suggestion: `Ensure property '${property}' is of type ${definition.type}`,
+                suggestion: `Ensure property '${property}' is of type ${definition.type}`,`
                 context: {
                   property,
                   expectedType: definition.type,
@@ -323,10 +323,10 @@ export class UELValidationFramework {
             if (definition.enum && !definition.enum.includes(value)) {
               errors.push({
                 code: 'INVALID_ENUM_VALUE',
-                message: `Property '${property}' has invalid enum value: ${value}`,
+                message: `Property '${property}' has invalid enum value: ${value}`,`
                 severity: 'medium',
                 category: 'type',
-                suggestion: `Use one of: ${definition.enum.join(', ')}`,
+                suggestion: `Use one of: ${definition.enum.join(', ')}`,`
                 context: { property, value, allowedValues: definition.enum },
               });
             }
@@ -343,7 +343,7 @@ export class UELValidationFramework {
             if (!allowedProperties.has(property)) {
               warnings.push({
                 code: 'UNEXPECTED_PROPERTY',
-                message: `Unexpected property '${property}' found`,
+                message: `Unexpected property '${property}' found`,`
                 category: 'best-practice',
                 impact: 'low',
                 context: { property, eventType: event.type },
@@ -354,7 +354,7 @@ export class UELValidationFramework {
       } else {
         warnings.push({
           code: 'SCHEMA_NOT_FOUND',
-          message: `No validation schema found for event type: ${event.type}`,
+          message: `No validation schema found for event type: ${event.type}`,`
           category: 'best-practice',
           impact: 'medium',
           context: { eventType: event.type },
@@ -375,7 +375,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical'||e.severity ==='high'
+            (e) => e.severity === 'critical'||e.severity ==='high''
           ).length === 0,
         score,
         errors,
@@ -400,7 +400,7 @@ export class UELValidationFramework {
         errors: [
           {
             code: 'VALIDATION_ERROR',
-            message: `Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            message: `Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
             severity: 'critical',
             category: 'type',
             context: { error: String(error) },
@@ -435,7 +435,7 @@ export class UELValidationFramework {
     const recommendations: ValidationRecommendation[] = [];
 
     // Validate required fields
-    if (!config?.name||typeof config?.name !=='string') {
+    if (!config?.name||typeof config?.name !=='string') {'
       errors.push({
         code: 'INVALID_MANAGER_NAME',
         message: 'Event manager name is required and must be a string',
@@ -448,10 +448,10 @@ export class UELValidationFramework {
     if (!EventTypeGuards.isEventManagerType(config?.type)) {
       errors.push({
         code: 'INVALID_MANAGER_TYPE',
-        message: `Invalid event manager type: ${config?.type}`,
+        message: `Invalid event manager type: ${config?.type}`,`
         severity: 'critical',
         category: 'config',
-        suggestion: `Use one of: ${Object.values(EventManagerTypes).join(', ')}`,
+        suggestion: `Use one of: ${Object.values(EventManagerTypes).join(', ')}`,`
         context: { type: config?.type },
       });
     }
@@ -463,7 +463,7 @@ export class UELValidationFramework {
     ) {
       warnings.push({
         code:'UNUSUAL_MAX_LISTENERS',
-        message: `Unusual maxListeners value: ${config?.maxListeners}`,
+        message: `Unusual maxListeners value: ${config?.maxListeners}`,`
         category: 'optimization',
         impact: 'medium',
         context: { maxListeners: config?.maxListeners },
@@ -476,7 +476,7 @@ export class UELValidationFramework {
     ) {
       warnings.push({
         code: 'LARGE_QUEUE_SIZE',
-        message: `Large queue size may impact memory usage: ${config?.processing?.queueSize}`,
+        message: `Large queue size may impact memory usage: ${config?.processing?.queueSize}`,`
         category: 'optimization',
         impact: 'high',
         context: { queueSize: config?.processing?.queueSize },
@@ -501,7 +501,7 @@ export class UELValidationFramework {
 
     return {
       valid:
-        errors.filter((e) => e.severity === 'critical'||e.severity ==='high')
+        errors.filter((e) => e.severity === 'critical'||e.severity ==='high')'
           .length === 0,
       score,
       errors,
@@ -553,7 +553,7 @@ export class UELValidationFramework {
       if (systemStatus.healthPercentage < 50) {
         errors.push({
           code: 'LOW_SYSTEM_HEALTH',
-          message: `System health is critical: ${systemStatus.healthPercentage}%`,
+          message: `System health is critical: ${systemStatus.healthPercentage}%`,`
           severity: 'critical',
           category: 'performance',
           suggestion: 'Investigate unhealthy event managers and resolve issues',
@@ -561,7 +561,7 @@ export class UELValidationFramework {
       } else if (systemStatus.healthPercentage < 80) {
         warnings.push({
           code: 'DEGRADED_SYSTEM_HEALTH',
-          message: `System health is degraded: ${systemStatus.healthPercentage}%`,
+          message: `System health is degraded: ${systemStatus.healthPercentage}%`,`
           category: 'maintenance',
           impact: 'medium',
         });
@@ -588,7 +588,7 @@ export class UELValidationFramework {
       ) {
         errors.push({
           code: 'HIGH_ERROR_RATE',
-          message: `Error rate exceeds threshold: ${(globalMetrics.registry.errorRate * 100).toFixed(2)}%`,
+          message: `Error rate exceeds threshold: ${(globalMetrics.registry.errorRate * 100).toFixed(2)}%`,`
           severity: 'high',
           category: 'performance',
           suggestion:
@@ -602,7 +602,7 @@ export class UELValidationFramework {
       ) {
         warnings.push({
           code: 'HIGH_LATENCY',
-          message: `Average latency is high: ${globalMetrics.registry.averageLatency}ms`,
+          message: `Average latency is high: ${globalMetrics.registry.averageLatency}ms`,`
           category: 'optimization',
           impact: 'medium',
         });
@@ -627,7 +627,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical'||e.severity ==='high'
+            (e) => e.severity === 'critical'||e.severity ==='high''
           ).length === 0,
         score,
         errors,
@@ -656,7 +656,7 @@ export class UELValidationFramework {
         errors: [
           {
             code: 'HEALTH_CHECK_FAILED',
-            message: `Health validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            message: `Health validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
             severity: 'critical',
             category: 'performance',
             context: { error: String(error) },
@@ -705,10 +705,10 @@ export class UELValidationFramework {
         if (registryStats.managersByType[requiredType] === 0) {
           errors.push({
             code: 'MISSING_REQUIRED_MANAGER_TYPE',
-            message: `Required manager type not found: ${requiredType}`,
+            message: `Required manager type not found: ${requiredType}`,`
             severity: 'high',
             category: 'integration',
-            suggestion: `Create at least one event manager of type: ${requiredType}`,
+            suggestion: `Create at least one event manager of type: ${requiredType}`,`
             context: { managerType: requiredType },
           });
         }
@@ -721,7 +721,7 @@ export class UELValidationFramework {
         if (!eventTypes.includes(requiredEventType)) {
           warnings.push({
             code: 'MISSING_RECOMMENDED_EVENT_TYPE',
-            message: `Recommended event type not registered: ${requiredEventType}`,
+            message: `Recommended event type not registered: ${requiredEventType}`,`
             category: 'best-practice',
             impact: 'medium',
             context: { eventType: requiredEventType },
@@ -738,7 +738,7 @@ export class UELValidationFramework {
       if (missingFactories.length > 0) {
         recommendations.push({
           type: 'feature',
-          message: `Consider implementing factories for: ${missingFactories.join(', ')}`,
+          message: `Consider implementing factories for: ${missingFactories.join(', ')}`,`
           benefit: 'Complete UEL coverage for all event manager types',
           effort: 'medium',
           priority: 'low',
@@ -759,7 +759,7 @@ export class UELValidationFramework {
       ) {
         warnings.push({
           code: 'PERFORMANCE_BELOW_BENCHMARK',
-          message: `Latency exceeds benchmark: ${globalMetrics.registry.averageLatency}ms > ${performanceBenchmarks.maxLatency}ms`,
+          message: `Latency exceeds benchmark: ${globalMetrics.registry.averageLatency}ms > ${performanceBenchmarks.maxLatency}ms`,`
           category: 'optimization',
           impact: 'medium',
         });
@@ -771,7 +771,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical'||e.severity ==='high'
+            (e) => e.severity === 'critical'||e.severity ==='high''
           ).length === 0,
         score,
         errors,
@@ -800,7 +800,7 @@ export class UELValidationFramework {
         errors: [
           {
             code: 'INTEGRATION_VALIDATION_FAILED',
-            message: `Integration validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            message: `Integration validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
             severity: 'critical',
             category: 'integration',
             context: { error: String(error) },
@@ -855,13 +855,13 @@ export class UELValidationFramework {
     ]);
 
     const health =
-      healthResult?.status === 'fulfilled'
+      healthResult?.status === 'fulfilled''
         ? healthResult?.value
-        : this.createErrorResult('Health validation failed');
+        : this.createErrorResult('Health validation failed');'
     const integration =
-      integrationResult?.status === 'fulfilled'
+      integrationResult?.status === 'fulfilled''
         ? integrationResult?.value
-        : this.createErrorResult('Integration validation failed');
+        : this.createErrorResult('Integration validation failed');'
 
     // Validate sample events if provided
     const events: ValidationResult[] = [];
@@ -947,7 +947,7 @@ export class UELValidationFramework {
   registerEventTypeSchema(eventType: string, schema: EventTypeSchema): void {
     this.eventTypeSchemas.set(eventType, schema);
     this.logger.debug(
-      `📋 Registered validation schema for event type: ${eventType}`
+      `📋 Registered validation schema for event type: ${eventType}``
     );
   }
 
@@ -1036,17 +1036,17 @@ export class UELValidationFramework {
 
   private validatePropertyType(value: unknown, expectedType: string): boolean {
     switch (expectedType) {
-      case'string':
+      case'string':'
         return typeof value === 'string';
-      case 'number':
-        return typeof value === 'number' && !Number.isNaN(value);
-      case 'boolean':
+      case 'number':'
+        return typeof value === 'number' && !Number.isNaN(value);'
+      case 'boolean':'
         return typeof value === 'boolean';
-      case 'object':
+      case 'object':'
         return (
-          typeof value === 'object' && value !== null && !Array.isArray(value)
+          typeof value === 'object' && value !== null && !Array.isArray(value)'
         );
-      case 'array':
+      case 'array':'
         return Array.isArray(value);
       default:
         return true;
@@ -1112,7 +1112,7 @@ export class UELValidationFramework {
     if (eventSize > 10000) {
       warnings.push({
         code: 'LARGE_EVENT_SIZE',
-        message: `Event size is large: ${eventSize} bytes`,
+        message: `Event size is large: ${eventSize} bytes`,`
         category: 'optimization',
         impact: 'medium',
         context: { size: eventSize },
@@ -1137,16 +1137,16 @@ export class UELValidationFramework {
     // Deduct points for errors based on severity
     errors.forEach((error) => {
       switch (error.severity) {
-        case 'critical':
+        case 'critical':'
           score -= 30;
           break;
-        case 'high':
+        case 'high':'
           score -= 20;
           break;
-        case 'medium':
+        case 'medium':'
           score -= 10;
           break;
-        case 'low':
+        case 'low':'
           score -= 5;
           break;
       }
@@ -1155,13 +1155,13 @@ export class UELValidationFramework {
     // Deduct points for warnings based on impact
     warnings.forEach((warning) => {
       switch (warning.impact) {
-        case 'high':
+        case 'high':'
           score -= 5;
           break;
-        case 'medium':
+        case 'medium':'
           score -= 3;
           break;
-        case 'low':
+        case 'low':'
           score -= 1;
           break;
       }
@@ -1170,13 +1170,13 @@ export class UELValidationFramework {
     return Math.max(0, Math.min(100, score));
   }
 
-  private determineComplexity(event: SystemEvent): 'low|medium|high'{
+  private determineComplexity(event: SystemEvent): 'low|medium|high'{'
     const eventSize = JSON.stringify(event).length;
     const propertyCount = Object.keys(event).length;
 
-    if (eventSize > 5000||propertyCount > 15) return'high';
-    if (eventSize > 1000||propertyCount > 8) return'medium';
-    return 'low';
+    if (eventSize > 5000||propertyCount > 15) return'high;
+    if (eventSize > 1000||propertyCount > 8) return'medium;
+    return 'low;
   }
 
   private createErrorResult(message: string): ValidationResult {
@@ -1209,7 +1209,7 @@ export class UELValidationFramework {
 
   private initializeDefaultSchemas(): void {
     // System lifecycle event schema
-    this.registerEventTypeSchema('system:lifecycle', {
+    this.registerEventTypeSchema('system:lifecycle', {'
       type: 'object',
       required: ['id', 'timestamp', 'source', 'type', 'operation', 'status'],
       properties: {
@@ -1231,7 +1231,7 @@ export class UELValidationFramework {
     });
 
     // Coordination event schema
-    this.registerEventTypeSchema('coordination:swarm', {
+    this.registerEventTypeSchema('coordination:swarm', {'
       type: 'object',
       required: ['id', 'timestamp', 'source', 'type', 'operation', 'targetId'],
       properties: {
@@ -1249,7 +1249,7 @@ export class UELValidationFramework {
       additionalProperties: true,
     });
 
-    this.logger.debug('📋 Initialized default validation schemas');
+    this.logger.debug('📋 Initialized default validation schemas');'
   }
 }
 

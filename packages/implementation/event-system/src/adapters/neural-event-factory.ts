@@ -15,14 +15,14 @@
  *
  * ## Event Types Handled
  *
- * - `neural:training` - Model training and optimization events
- * - `neural:inference` - Prediction and inference request events
- * - `neural:model` - Model lifecycle and management events
- * - `neural:performance` - Performance metrics and monitoring events
- * - `neural:resource` - Compute resource allocation and usage events
+ * - `neural:training` - Model training and optimization events`
+ * - `neural:inference` - Prediction and inference request events`
+ * - `neural:model` - Model lifecycle and management events`
+ * - `neural:performance` - Performance metrics and monitoring events`
+ * - `neural:resource` - Compute resource allocation and usage events`
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const factory = new NeuralEventManagerFactory(logger, config);
  * const manager = await factory.create({
  *   name: 'ai-neural',
@@ -36,7 +36,7 @@
  *
  * // Subscribe to training events
  * manager.subscribeTrainingEvents((event) => {
- *   console.log(`Training progress: ${event.details.epoch}/${event.details.totalEpochs}`);
+ *   console.log(`Training progress: ${event.details.epoch}/${event.details.totalEpochs}`);`
  * });
  *
  * // Emit neural event
@@ -54,7 +54,7 @@
  *     accuracy: 0.876
  *   }
  * });
- * ```
+ * ````
  *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
@@ -132,7 +132,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
   }
 
   /** Override type property to be neural type */
-  public readonly type: EventManagerType = 'neural'as EventManagerType;
+  public readonly type: EventManagerType = 'neural'as EventManagerType;'
 
   /**
    * Emit neural-specific event with ML context.
@@ -161,11 +161,11 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
       await this.routeNeuralEvent(enrichedEvent);
 
       this.logger.debug(
-        `Neural event emitted: ${event.operation} for model ${event.modelId}`
+        `Neural event emitted: ${event.operation} for model ${event.modelId}``
       );
     } catch (error) {
       this.neuralMetrics.errorCount++;
-      this.logger.error('Failed to emit neural event:', error);
+      this.logger.error('Failed to emit neural event:', error);'
       throw error;
     }
   }
@@ -177,7 +177,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.training.set(subscriptionId, listener);
 
-    this.logger.debug(`Training event subscription created: ${subscriptionId}`);
+    this.logger.debug(`Training event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -189,7 +189,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     this.subscriptions.inference.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Inference event subscription created: ${subscriptionId}`
+      `Inference event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -201,7 +201,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.model.set(subscriptionId, listener);
 
-    this.logger.debug(`Model event subscription created: ${subscriptionId}`);
+    this.logger.debug(`Model event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -213,7 +213,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}`
+      `Performance event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -225,7 +225,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.resource.set(subscriptionId, listener);
 
-    this.logger.debug(`Resource event subscription created: ${subscriptionId}`);
+    this.logger.debug(`Resource event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -297,7 +297,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     const highResourceUsage = neuralMetrics.resourceUtilization.gpu > 0.95; // 95% GPU usage
 
     const isHealthy =
-      baseStatus.status === 'healthy' &&
+      baseStatus.status === 'healthy' &&'
       !highErrorRate &&
       !lowAccuracy &&
       !highResourceUsage;
@@ -322,7 +322,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
    */
 
   private initializeNeuralHandlers(): void {
-    this.logger.debug('Initializing neural event handlers');
+    this.logger.debug('Initializing neural event handlers');'
 
     // Set up event type routing
     this.subscribe(
@@ -343,47 +343,47 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
 
     try {
       // Route based on operation type
-      const operationType = neuralEvent.type.split(':')[1];
+      const operationType = neuralEvent.type.split(':')[1];'
 
       switch (operationType) {
-        case 'training':
+        case 'training':'
           await this.notifyNeuralSubscribers(
             this.subscriptions.training,
             neuralEvent
           );
           break;
-        case 'inference':
+        case 'inference':'
           await this.notifyNeuralSubscribers(
             this.subscriptions.inference,
             neuralEvent
           );
           break;
-        case 'optimization':
+        case 'optimization':'
           await this.notifyNeuralSubscribers(
             this.subscriptions.model,
             neuralEvent
           );
           break;
-        case 'evaluation':
+        case 'evaluation':'
           await this.notifyNeuralSubscribers(
             this.subscriptions.performance,
             neuralEvent
           );
           break;
         default:
-          this.logger.warn(`Unknown neural operation type: ${operationType}`);
+          this.logger.warn(`Unknown neural operation type: ${operationType}`);`
       }
 
       // Track processing time
       const processingTime = Date.now() - startTime;
-      if (operationType === 'training') {
+      if (operationType === 'training') {'
         this.neuralMetrics.totalTrainingTime += processingTime;
-      } else if (operationType === 'inference') {
+      } else if (operationType === 'inference') {'
         this.neuralMetrics.totalInferenceTime += processingTime;
       }
     } catch (error) {
       this.neuralMetrics.errorCount++;
-      this.logger.error('Neural event handling failed:', error);
+      this.logger.error('Neural event handling failed:', error);'
       throw error;
     }
   }
@@ -396,44 +396,44 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
 
     // Handle special neural operations
     switch (event.operation) {
-      case 'train':
-        this.logger.info(`Training started for model: ${event.modelId}`);
+      case 'train':'
+        this.logger.info(`Training started for model: ${event.modelId}`);`
         if (event.details?.accuracy !== undefined) {
           this.updateAverageAccuracy(event.details.accuracy);
         }
         break;
-      case 'evaluate':
-        this.logger.info(`Evaluation completed for model: ${event.modelId}`);
+      case 'evaluate':'
+        this.logger.info(`Evaluation completed for model: ${event.modelId}`);`
         break;
-      case 'load':
+      case 'load':'
         this.neuralMetrics.modelsLoaded++;
         this.loadedModels.add(event.modelId);
-        this.logger.info(`Model loaded: ${event.modelId}`);
+        this.logger.info(`Model loaded: ${event.modelId}`);`
         break;
-      case 'save':
-        this.logger.info(`Model saved: ${event.modelId}`);
+      case 'save':'
+        this.logger.info(`Model saved: ${event.modelId}`);`
         break;
-      case 'predict':
-        this.logger.debug(`Inference completed for model: ${event.modelId}`);
+      case 'predict':'
+        this.logger.debug(`Inference completed for model: ${event.modelId}`);`
         this.processingStats.batchesProcessed += event.details?.batchSize||1;
         break;
-      case'optimize':
-        this.logger.info(`Optimization completed for model: ${event.modelId}`);
+      case'optimize':'
+        this.logger.info(`Optimization completed for model: ${event.modelId}`);`
         break;
-      case 'export':
-        this.logger.info(`Model exported: ${event.modelId}`);
+      case 'export':'
+        this.logger.info(`Model exported: ${event.modelId}`);`
         break;
     }
   }
 
   private updateNeuralMetrics(event: NeuralEvent): void {
-    const operationType = event.type.split(':')[1];
+    const operationType = event.type.split(':')[1];'
 
     switch (operationType) {
-      case 'training':
+      case 'training':'
         this.neuralMetrics.trainingJobs++;
         break;
-      case 'inference':
+      case 'inference':'
         this.neuralMetrics.inferenceRequests++;
         break;
     }
@@ -468,7 +468,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
         try {
           await listener(event);
         } catch (error) {
-          this.logger.error('Neural event listener failed:', error);
+          this.logger.error('Neural event listener failed:', error);'
         }
       }
     );
@@ -477,7 +477,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
   }
 
   protected generateSubscriptionId(): string {
-    return `neural-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `neural-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 }
 
@@ -496,7 +496,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
  * - **Error Recovery**: Robust handling of ML operation failures
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const factory = new NeuralEventManagerFactory(logger, config);
  *
  * const trainingManager = await factory.create({
@@ -518,7 +518,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
  *     timeout: 1000
  *   }
  * });
- * ```
+ * ````
  */
 export class NeuralEventManagerFactory
   implements Partial<EventManagerFactory<EventManagerConfig>>
@@ -527,7 +527,7 @@ export class NeuralEventManagerFactory
     private logger: Logger,
     private config: Config
   ) {
-    this.logger.debug('NeuralEventManagerFactory initialized');
+    this.logger.debug('NeuralEventManagerFactory initialized');'
   }
 
   /**
@@ -537,7 +537,7 @@ export class NeuralEventManagerFactory
    * @returns Promise resolving to configured manager instance
    */
   async create(config: EventManagerConfig): Promise<NeuralEventManager> {
-    this.logger.info(`Creating neural event manager: ${config.name}`);
+    this.logger.info(`Creating neural event manager: ${config.name}`);`
 
     // Validate neural-specific configuration
     this.validateConfig(config);
@@ -552,7 +552,7 @@ export class NeuralEventManagerFactory
     await this.configureNeuralManager(manager, optimizedConfig);
 
     this.logger.info(
-      `Neural event manager created successfully: ${config.name}`
+      `Neural event manager created successfully: ${config.name}``
     );
     return manager;
   }
@@ -562,11 +562,11 @@ export class NeuralEventManagerFactory
    */
   private validateConfig(config: EventManagerConfig): void {
     if (!config.name) {
-      throw new Error('Neural event manager name is required');
+      throw new Error('Neural event manager name is required');'
     }
 
-    if (config.type !== 'neural') {
-      throw new Error('Manager type must be "neural"');
+    if (config.type !== 'neural') {'
+      throw new Error('Manager type must be "neural"');'
     }
 
     // Validate neural-specific settings
@@ -574,7 +574,7 @@ export class NeuralEventManagerFactory
 
     if (config.maxListeners && config.maxListeners < 50) {
       this.logger.warn(
-        'Neural managers should support at least 50 listeners for ML workflows');
+        'Neural managers should support at least 50 listeners for ML workflows');'
     }
   }
 
@@ -588,7 +588,7 @@ export class NeuralEventManagerFactory
       processing: {
         batchSize: 50, // Efficient batch processing
         ...config.processing,
-        strategy:'queued', // ML operations benefit from queuing (override)
+        strategy:'queued', // ML operations benefit from queuing (override)'
       } as any, // Type assertion for neural-specific properties
       // persistence configuration removed - not part of base interface
       monitoring: {
@@ -610,7 +610,7 @@ export class NeuralEventManagerFactory
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Neural event manager monitoring started: ${config.name}`
+        `Neural event manager monitoring started: ${config.name}``
       );
     }
 
@@ -619,15 +619,15 @@ export class NeuralEventManagerFactory
       setInterval(async () => {
         try {
           const status = await manager.healthCheck();
-          if (status.status !== 'healthy') {
+          if (status.status !== 'healthy') {'
             this.logger.warn(
-              `Neural manager health degraded: ${config.name}`,
+              `Neural manager health degraded: ${config.name}`,`
               status.metadata
             );
           }
         } catch (error) {
           this.logger.error(
-            `Neural manager health check failed: ${config.name}`,
+            `Neural manager health check failed: ${config.name}`,`
             error
           );
         }

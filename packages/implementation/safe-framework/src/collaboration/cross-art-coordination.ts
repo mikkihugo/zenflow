@@ -70,7 +70,7 @@ export class CrossARTCoordinator {
     conversationId: string;
     participants: ConversationParticipant[];
   }> {
-    this.logger.info('Starting Solution Train sync coordination', {
+    this.logger.info('Starting Solution Train sync coordination', {'
       solutionId: params.solutionId,
       artCount: params.artIds.length,
     });
@@ -78,8 +78,8 @@ export class CrossARTCoordinator {
     // Create ART participants
     const participants: ConversationParticipant[] = params.artIds.map(
       (artId) => ({
-        id: `rte-${artId}`,
-        name: `RTE ${artId}`,
+        id: `rte-${artId}`,`
+        name: `RTE ${artId}`,`
         role: 'release-train-engineer',
         status: 'active' as const,
         capabilities: ['speak', 'share-metrics', 'coordinate-dependencies'],
@@ -102,12 +102,12 @@ export class CrossARTCoordinator {
 
     // Use @claude-zen/teamwork conversation orchestrator
     const conversationConfig: ConversationConfig = {
-      title: `Solution Train Sync - ${params.solutionId}`,
+      title: `Solution Train Sync - ${params.solutionId}`,`
       pattern: 'planning',
       initialParticipants: [], // Convert participants to AgentId later
       timeout: (params.duration||90) * 60 * 1000, // Convert to milliseconds
       context: {
-        task: `Solution Train Sync for ${params.solutionId}`,
+        task: `Solution Train Sync for ${params.solutionId}`,`
         goal:'Coordinate dependencies and align on solution objectives',
         constraints: [],
         resources: [],
@@ -125,7 +125,7 @@ export class CrossARTCoordinator {
     const conversationId = conversation.id;
 
     // Emit coordination started event
-    this.eventBus.emit('cross-art:coordination-started', {
+    this.eventBus.emit('cross-art:coordination-started', {'
       solutionId: params.solutionId,
       conversationId,
       participantCount: participants.length,
@@ -143,7 +143,7 @@ export class CrossARTCoordinator {
     sharedObjectives: string[];
     dependencies: Array<{ from: string; to: string; type: string }>;
   }): Promise<string> {
-    this.logger.info('Coordinating PI Planning sync', {
+    this.logger.info('Coordinating PI Planning sync', {'
       piId: params.piId,
       artCount: params.artIds.length,
       dependencyCount: params.dependencies.length,
@@ -151,7 +151,7 @@ export class CrossARTCoordinator {
 
     // Create PI Planning coordination workflow using @claude-zen/workflows
     const workflowDefinition: WorkflowDefinition = {
-      name: `PI Planning Sync - ${params.piId}`,
+      name: `PI Planning Sync - ${params.piId}`,`
       description: 'Multi-ART PI Planning coordination workflow',
       steps: [
         {
@@ -202,7 +202,7 @@ export class CrossARTCoordinator {
     });
 
     if (!result.success||!result.workflowId) {
-      throw new Error(`Failed to start PI Planning workflow: ${result.error}`);
+      throw new Error(`Failed to start PI Planning workflow: ${result.error}`);`
     }
 
     return result.workflowId;
@@ -215,13 +215,13 @@ export class CrossARTCoordinator {
     impedimentId: string;
     affectedARTs: string[];
     description: string;
-    severity:'low|medium|high|critical';
+    severity:'low|medium|high|critical;
     owner: string;
   }): Promise<{
     resolutionConversationId: string;
     escalationRequired: boolean;
   }> {
-    this.logger.warn('Cross-ART impediment requires resolution', {
+    this.logger.warn('Cross-ART impediment requires resolution', {'
       impedimentId: params.impedimentId,
       severity: params.severity,
       affectedARTs: params.affectedARTs,
@@ -237,8 +237,8 @@ export class CrossARTCoordinator {
         capabilities: ['facilitate', 'provide-context', 'track-resolution'],
       },
       ...params.affectedARTs.map((artId) => ({
-        id: `rte-${artId}`,
-        name: `RTE ${artId}`,
+        id: `rte-${artId}`,`
+        name: `RTE ${artId}`,`
         role: 'release-train-engineer',
         status: 'active' as const,
         capabilities: [
@@ -266,12 +266,12 @@ export class CrossARTCoordinator {
     }
 
     const conversationConfig: ConversationConfig = {
-      title: `Cross-ART Impediment Resolution: ${params.impedimentId}`,
+      title: `Cross-ART Impediment Resolution: ${params.impedimentId}`,`
       pattern: 'decision',
       initialParticipants: [], // Convert participants to AgentId later
-      timeout: (params.severity === 'critical' ? 120 : 60) * 60 * 1000, // Convert to milliseconds
+      timeout: (params.severity === 'critical' ? 120 : 60) * 60 * 1000, // Convert to milliseconds'
       context: {
-        task: `Resolve cross-ART impediment ${params.impedimentId}`,
+        task: `Resolve cross-ART impediment ${params.impedimentId}`,`
         goal: 'Identify resolution path and assign ownership',
         constraints: [],
         resources: [],
@@ -289,7 +289,7 @@ export class CrossARTCoordinator {
     const conversationId = conversation.id;
 
     // Emit impediment resolution event
-    this.eventBus.emit('cross-art:impediment-resolution-started', {
+    this.eventBus.emit('cross-art:impediment-resolution-started', {'
       impedimentId: params.impedimentId,
       conversationId,
       severity: params.severity,

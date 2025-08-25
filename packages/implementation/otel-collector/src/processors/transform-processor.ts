@@ -15,7 +15,7 @@ import type { TelemetryData, ProcessorConfig } from '../types.js';
  * Transform operation interface
  */
 interface TransformOperation {
-  type: 'add|modify|remove|rename|map';
+  type: 'add|modify|remove|rename|map;
   field: string;
   value?: any;
   newField?: string;
@@ -42,7 +42,7 @@ export class TransformProcessor implements BaseProcessor {
 
   constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`TransformProcessor:${config.name}`);
+    this.logger = getLogger(`TransformProcessor:${config.name}`);`
 
     // Parse configuration
     this.addAttributes = config.config?.addAttributes||{};
@@ -52,7 +52,7 @@ export class TransformProcessor implements BaseProcessor {
   }
 
   async initialize(): Promise<void> {
-    this.logger.info('Transform processor initialized', {
+    this.logger.info('Transform processor initialized', {'
       addAttributes: Object.keys(this.addAttributes).length,
       removeFields: this.removeFields.length,
       fieldMappings: Object.keys(this.fieldMappings).length,
@@ -75,7 +75,7 @@ export class TransformProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Transform processing failed', error);
+      this.logger.error('Transform processing failed', error);'
 
       // Return original data on error
       return data;
@@ -101,7 +101,7 @@ export class TransformProcessor implements BaseProcessor {
 
       if (actuallyTransformed > 0) {
         this.logger.debug(
-          `Transformed ${actuallyTransformed} out of ${dataItems.length} items`
+          `Transformed ${actuallyTransformed} out of ${dataItems.length} items``
         );
       }
 
@@ -109,7 +109,7 @@ export class TransformProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Transform batch processing failed', error);
+      this.logger.error('Transform batch processing failed', error);'
 
       // Return original data on error
       return dataItems;
@@ -117,19 +117,19 @@ export class TransformProcessor implements BaseProcessor {
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Transform processor shut down', {
+    this.logger.info('Transform processor shut down', {'
       totalProcessed: this.processedCount,
       totalTransformed: this.transformedCount,
       transformRate:
         this.processedCount > 0
           ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +
-            '%'
+            '%''
           : '0%',
     });
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
@@ -150,8 +150,8 @@ export class TransformProcessor implements BaseProcessor {
   } {
     const transformRate =
       this.processedCount > 0
-        ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +'%'
-        : '0%';
+        ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +'%''
+        : '0%;
 
     return {
       processed: this.processedCount,
@@ -170,7 +170,7 @@ export class TransformProcessor implements BaseProcessor {
     try {
       transformedData = JSON.parse(JSON.stringify(data));
     } catch (error) {
-      this.logger.warn('Failed to clone data for transformation', error);
+      this.logger.warn('Failed to clone data for transformation', error);'
       return data;
     }
 
@@ -244,7 +244,7 @@ export class TransformProcessor implements BaseProcessor {
     }
 
     switch (operation.type) {
-      case 'add': {
+      case 'add': {'
         if (!data.attributes) {
           data.attributes = {};
         }
@@ -256,7 +256,7 @@ export class TransformProcessor implements BaseProcessor {
         break;
       }
 
-      case 'modify': {
+      case 'modify': {'
         const currentValue = this.getFieldValue(data, operation.field);
         if (currentValue !== undefined) {
           const newValue = this.resolveValue(
@@ -270,10 +270,10 @@ export class TransformProcessor implements BaseProcessor {
         break;
       }
 
-      case 'remove':
+      case 'remove':'
         return this.removeFieldValue(data, operation.field);
 
-      case 'rename':
+      case 'rename':'
         if (operation.newField) {
           const value = this.getFieldValue(data, operation.field);
           if (value !== undefined) {
@@ -284,7 +284,7 @@ export class TransformProcessor implements BaseProcessor {
         }
         break;
 
-      case 'map':
+      case 'map':'
         if (operation.mapping) {
           const currentValue = this.getFieldValue(data, operation.field);
           if (
@@ -309,7 +309,7 @@ export class TransformProcessor implements BaseProcessor {
    * Get field value using dot notation
    */
   private getFieldValue(data: any, fieldPath: string): any {
-    const parts = fieldPath.split('.');
+    const parts = fieldPath.split('.');'
     let value = data;
 
     for (const part of parts) {
@@ -326,12 +326,12 @@ export class TransformProcessor implements BaseProcessor {
    * Set field value using dot notation
    */
   private setFieldValue(data: any, fieldPath: string, value: any): void {
-    const parts = fieldPath.split('.');
+    const parts = fieldPath.split('.');'
     let current = data;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part]||typeof current[part] !=='object') {
+      if (!current[part]||typeof current[part] !=='object') {'
         current[part] = {};
       }
       current = current[part];
@@ -344,7 +344,7 @@ export class TransformProcessor implements BaseProcessor {
    * Remove field value using dot notation
    */
   private removeFieldValue(data: any, fieldPath: string): boolean {
-    const parts = fieldPath.split('.');
+    const parts = fieldPath.split('.');'
     let current = data;
 
     for (let i = 0; i < parts.length - 1; i++) {
@@ -372,7 +372,7 @@ export class TransformProcessor implements BaseProcessor {
     data: TelemetryData,
     currentValue?: any
   ): any {
-    if (typeof value === 'string') {
+    if (typeof value === 'string') {'
       // Template substitution
       return value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
         const resolved = this.getFieldValue(data, path.trim())();
@@ -380,11 +380,11 @@ export class TransformProcessor implements BaseProcessor {
       });
     }
 
-    if (typeof value === 'function') {
+    if (typeof value === 'function') {'
       try {
         return value(data, currentValue);
       } catch (error) {
-        this.logger.warn('Error in transform function', error);
+        this.logger.warn('Error in transform function', error);'
         return currentValue;
       }
     }
@@ -398,25 +398,25 @@ export class TransformProcessor implements BaseProcessor {
   private evaluateCondition(data: TelemetryData, condition: string): boolean {
     try {
       // Very simple condition evaluation
-      // In production, you'd want a proper expression evaluator
-      const parts = condition.split(' ');
+      // In production, you'd want a proper expression evaluator'
+      const parts = condition.split(' ');'
       if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==':
+          case '==':'
             return actualValue == expectedValue;
-          case '!=':
+          case '!=':'
             return actualValue != expectedValue;
-          case 'contains':
+          case 'contains':'
             return String(actualValue).includes(expectedValue);
-          case 'exists':
+          case 'exists':'
             return actualValue !== undefined;
         }
       }
     } catch (error) {
-      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
+      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);`
     }
 
     return true; // Default to true on condition evaluation error

@@ -31,12 +31,12 @@ global.console = {
 };
 
 // Global error handler for unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on('unhandledRejection', (reason, promise) => {'
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);'
 });
 
 // Mock external dependencies that might not be available in test environment
-vi.mock('@anthropic-ai/claude-code', () => ({
+vi.mock('@anthropic-ai/claude-code', () => ({'
   ClaudeCodeSDK: vi.fn(() => ({
     sendMessage: vi.fn(),
     createSession: vi.fn(),
@@ -47,7 +47,7 @@ vi.mock('@anthropic-ai/claude-code', () => ({
 }));
 
 // Mock Claude Code SDK query function
-vi.mock('@anthropic-ai/claude-code/sdk.mjs', () => ({
+vi.mock('@anthropic-ai/claude-code/sdk.mjs', () => ({'
   query: vi.fn().mockResolvedValue({
     choices: [{ message: { content: 'Mocked response', role: 'assistant' } }],
     usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 },
@@ -55,7 +55,7 @@ vi.mock('@anthropic-ai/claude-code/sdk.mjs', () => ({
 }));
 
 // Mock foundation dependencies including Zod
-vi.mock('@claude-zen/foundation', () => ({
+vi.mock('@claude-zen/foundation', () => ({'
   getLogger: vi.fn(() => ({
     info: vi.fn(),
     warn: vi.fn(),
@@ -184,7 +184,7 @@ vi.mock('@claude-zen/foundation', () => ({
 }));
 
 // Mock infrastructure dependencies
-vi.mock('@claude-zen/infrastructure', () => ({
+vi.mock('@claude-zen/infrastructure', () => ({'
   getDatabaseAccess: vi.fn(() => ({
     query: vi.fn(),
     execute: vi.fn(),

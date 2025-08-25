@@ -144,7 +144,7 @@ export interface DeliveryPredictionResult {
   };
   riskFactors: Array<{
     factor: string;
-    impact: 'low|medium|high';
+    impact: 'low' | 'medium' | 'high';
     mitigation: string[];
   }>;
 }
@@ -209,19 +209,19 @@ export interface WorkflowDefinition {
 export interface WorkflowStep {
   id: string;
   name: string;
-  type: 'action|condition|parallel|sequence';
+  type: 'action|condition|parallel|sequence;
   config: Record<string, any>;
   dependencies?: string[];
 }
 
 export interface WorkflowTrigger {
-  type: 'event|schedule|manual';
+  type: 'event' | 'schedule' | 'manual';
   config: Record<string, any>;
 }
 
 export interface WorkflowStatus {
   id: string;
-  status: 'pending|running|completed|failed|cancelled';
+  status: 'pending|running|completed|failed|cancelled;
   progress: number;
   currentStep?: string;
   startTime?: Date;
@@ -246,8 +246,8 @@ export interface ILoadBalancer {
  * Note: AGUI (Advanced GUI) interfaces removed from AI enhancements.
  * UI interactions should use event-driven architecture, not dependency injection.
  *
- * For approval workflows, emit events like 'approval-required' and listen for
- * 'approval-received' events. This maintains clean separation between business
+ * For approval workflows, emit events like 'approval-required' and listen for'
+ * 'approval-received' events. This maintains clean separation between business'
  * logic and presentation layer.
  */
 
@@ -273,7 +273,7 @@ export interface IConversationOrchestrator {
 
 export interface ConversationConfig {
   topic: string;
-  type: 'planning|retrospective|decision|review';
+  type: 'planning|retrospective|decision|review;
   participants: ConversationParticipant[];
   duration?: number;
   context?: Record<string, any>;
@@ -290,7 +290,7 @@ export interface ConversationMessage {
   id: string;
   senderId: string;
   content: string;
-  type: 'text|decision|action|question';
+  type: 'text|decision|action|question;
   timestamp: Date;
   metadata?: Record<string, any>;
 }

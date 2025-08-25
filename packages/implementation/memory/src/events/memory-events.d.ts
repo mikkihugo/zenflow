@@ -17,18 +17,18 @@ export interface MemoryEvent {
  * Memory system synchronization event
  */
 export interface MemorySystemSyncEvent extends MemoryEvent {
-  readonly type: 'memory:system:sync_initiated';
+  readonly type: 'memory:system:sync_initiated;
   readonly systemId: string;
-  readonly syncType: 'full|incremental|delta';
+  readonly syncType: 'full' | 'incremental' | 'delta';
   readonly dataSize: number;
 }
 /**
  * Cache coordination event
  */
 export interface CacheCoordinationEvent extends MemoryEvent {
-  readonly type: 'memory:cache:coordination_updated';
+  readonly type: 'memory:cache:coordination_updated;
   readonly cacheId: string;
-  readonly operation: 'populate|invalidate|refresh|migrate';
+  readonly operation: 'populate|invalidate|refresh|migrate;
   readonly keyPattern: string;
 }
 /**

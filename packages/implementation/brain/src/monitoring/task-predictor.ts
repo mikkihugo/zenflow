@@ -9,7 +9,7 @@ import { getLogger } from '@claude-zen/foundation';
 
 import type { AgentId } from './types';
 
-const logger = getLogger('agent-monitoring-task-predictor');
+const logger = getLogger('agent-monitoring-task-predictor');'
 
 /**
  * Basic task prediction result
@@ -24,7 +24,7 @@ export interface TaskPrediction {
   metadata?: {
     sampleSize: number;
     algorithm: string;
-    trendDirection: 'improving|stable|declining';
+    trendDirection: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   };
 }
 
@@ -109,7 +109,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
 
   constructor(config?: Partial<TaskPredictorConfig>) {
     this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config };
-    logger.info('SimpleTaskPredictor initialized', { config: this.config });
+    logger.info('SimpleTaskPredictor initialized', { config: this.config });'
   }
 
   /**
@@ -122,7 +122,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     success: boolean,
     metadata?: Record<string, unknown>
   ): void {
-    const key = `${agentId.id}-${taskType}`;
+    const key = `${agentId.id}-${taskType}`;`
 
     const record: TaskCompletionRecord = {
       agentId,
@@ -149,7 +149,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       history.shift();
     }
 
-    logger.debug('Task completion recorded', {
+    logger.debug('Task completion recorded', {'
       agentId: agentId.id,
       taskType,
       duration,
@@ -165,7 +165,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     taskType: string,
     contextFactors?: Record<string, unknown>
   ): TaskPrediction {
-    const key = `${agentId.id}-${taskType}`;
+    const key = `${agentId.id}-${taskType}`;`
     const history = this.taskHistory.get(key)||[];
 
     if (history.length < this.config.minSamplesRequired) {
@@ -189,7 +189,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         name:'Complexity Factor',
         impact: complexityFactor,
         confidence: 0.8,
-        description: `Task complexity adjustment: ${complexityFactor}x`,
+        description: `Task complexity adjustment: ${complexityFactor}x`,`
       });
     }
 
@@ -200,7 +200,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         name: 'Urgency Factor',
         impact: urgencyFactor,
         confidence: 0.7,
-        description: `Urgency-based time pressure: ${urgencyFactor}x`,
+        description: `Urgency-based time pressure: ${urgencyFactor}x`,`
       });
     }
 
@@ -211,7 +211,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         name: 'Resource Load Factor',
         impact: resourceFactor,
         confidence: 0.6,
-        description: `Resource contention impact: ${resourceFactor}x`,
+        description: `Resource contention impact: ${resourceFactor}x`,`
       });
     }
 
@@ -231,7 +231,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
           name: 'Historical Average',
           impact: 1.0,
           confidence: confidence,
-          description: `Based on ${recentHistory.length} recent completions`,
+          description: `Based on ${recentHistory.length} recent completions`,`
         },
         ...contextAdjustmentFactors,
       ],
@@ -240,13 +240,13 @@ export class SimpleTaskPredictor implements TaskPredictor {
         sampleSize: recentHistory.length,
         algorithm:
           contextAdjustmentFactors.length > 0
-            ? 'context_adjusted_average'
+            ? 'context_adjusted_average''
             : 'simple_average',
         trendDirection: this.calculateTrendDirection(durations),
       },
     };
 
-    logger.debug('Task duration predicted', {
+    logger.debug('Task duration predicted', {'
       agentId: agentId.id,
       taskType,
       predictedDuration: prediction.predictedDuration,
@@ -276,7 +276,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       this.taskHistory.clear();
     }
 
-    logger.info('Prediction cache cleared', { olderThanMs });
+    logger.info('Prediction cache cleared', { olderThanMs });'
   }
 
   /**
@@ -313,7 +313,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
    */
   private calculateTrendDirection(
     durations: number[]
-  ): 'improving|stable|declining' {
+  ): 'improving' | 'stable' | 'declining' {'
     if (durations.length < 3) return 'stable';
 
     const firstHalf = durations.slice(0, Math.floor(durations.length / 2));
@@ -324,8 +324,8 @@ export class SimpleTaskPredictor implements TaskPredictor {
 
     const improvement = (firstAvg - secondAvg) / firstAvg;
 
-    if (improvement > 0.1) return 'improving'; // Times getting shorter = improving
-    if (improvement < -0.1) return 'declining'; // Times getting longer = declining
+    if (improvement > 0.1) return 'improving'; // Times getting shorter = improving'
+    if (improvement < -0.1) return 'declining'; // Times getting longer = 'improving' | 'stable' | 'declining'
     return 'stable';
   }
 
@@ -373,5 +373,5 @@ export function isHighConfidencePrediction(
 export function getPredictionSummary(prediction: TaskPrediction): string {
   const duration = (prediction.predictedDuration / 1000).toFixed(1);
   const confidence = (prediction.confidence * 100).toFixed(0);
-  return `${duration}s (${confidence}% confidence)`;
+  return `${duration}s (${confidence}% confidence)`;`
 }

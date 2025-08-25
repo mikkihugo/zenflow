@@ -21,7 +21,7 @@ import type {
 
 import { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk';
 
-const logger = getLogger('claude-provider');
+const logger = getLogger('claude-provider');'
 
 export const CLAUDE_SWARM_AGENT_ROLES: Record<string, SwarmAgentRole> = {
   assistant: {
@@ -114,13 +114,13 @@ export class ClaudeProvider implements CLIProvider {
 
   constructor() {
     // Set assistant as default role with safe permissions
-    this.setRole('assistant');
+    this.setRole('assistant');'
   }
 
   getCapabilities(): CLIProviderCapabilities {
     return {
       models: ['sonnet', 'opus'],
-      maxTokens: 200000, // Claude's large context
+      maxTokens: 200000, // Claude's large context'
       contextWindow: 200000,
       features: {
         fileOperations: true, // Can read/write files directly
@@ -150,7 +150,7 @@ export class ClaudeProvider implements CLIProvider {
     if (!(roleName in CLAUDE_SWARM_AGENT_ROLES)) {
       return err({
         code: CLI_ERROR_CODES.ROLE_ERROR,
-        message: `Invalid role: ${roleName}`,
+        message: `Invalid role: ${roleName}`,`
         details: {
           providerId: this.id,
           availableRoles: Object.keys(CLAUDE_SWARM_AGENT_ROLES),
@@ -159,7 +159,7 @@ export class ClaudeProvider implements CLIProvider {
     }
 
     this.currentRole = CLAUDE_SWARM_AGENT_ROLES[roleName];
-    logger.debug('Role set successfully', {
+    logger.debug('Role set successfully', {'
       providerId: this.id,
       role: roleName,
     });
@@ -178,7 +178,7 @@ export class ClaudeProvider implements CLIProvider {
 
     // Add role system prompt if set
     const messages = [...request.messages];
-    if (this.currentRole && messages[0]?.role !=='system') {
+    if (this.currentRole && messages[0]?.role !=='system') {'
       messages.unshift({
         role: 'system',
         content: this.currentRole.systemPrompt,
@@ -191,7 +191,7 @@ export class ClaudeProvider implements CLIProvider {
     } catch (error) {
       const cliError: CLIError = {
         code: CLI_ERROR_CODES.UNKNOWN_ERROR,
-        message: `Claude CLI request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `Claude CLI request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
         details: {
           providerId: this.id,
           requestCount: this.requestCount,
@@ -203,24 +203,24 @@ export class ClaudeProvider implements CLIProvider {
       // Determine specific error type
       if (error instanceof Error) {
         const message = error.message.toLowerCase();
-        if (message.includes('timeout')) {
+        if (message.includes('timeout')) {'
           cliError.code = CLI_ERROR_CODES.TIMEOUT_ERROR;
         } else if (
-          message.includes('network')||message.includes('connection')
+          message.includes('network')||message.includes('connection')'
         ) {
           cliError.code = CLI_ERROR_CODES.NETWORK_ERROR;
         } else if (
-          message.includes('auth')||message.includes('unauthorized')
+          message.includes('auth')||message.includes('unauthorized')'
         ) {
           cliError.code = CLI_ERROR_CODES.AUTH_ERROR;
-        } else if (message.includes('rate limit')) {
+        } else if (message.includes('rate limit')) {'
           cliError.code = CLI_ERROR_CODES.RATE_LIMIT_ERROR;
-        } else if (message.includes('model')) {
+        } else if (message.includes('model')) {'
           cliError.code = CLI_ERROR_CODES.MODEL_ERROR;
         }
       }
 
-      logger.error('Claude Code CLI call failed', { error: cliError });
+      logger.error('Claude Code CLI call failed', { error: cliError });'
       return err(cliError);
     }
   }
@@ -230,7 +230,7 @@ export class ClaudeProvider implements CLIProvider {
     prompt: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('assistant');
+    const roleResult = this.setRole('assistant');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
@@ -242,14 +242,14 @@ export class ClaudeProvider implements CLIProvider {
     context?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('coder');
+    const roleResult = this.setRole('coder');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = context
-      ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:`
-      : `Coding task: ${task}`;
+      ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:``
+      : `Coding task: ${task}`;`
     return this.complete(prompt, options);
   }
 
@@ -258,12 +258,12 @@ export class ClaudeProvider implements CLIProvider {
     analysisType: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('analyst');
+    const roleResult = this.setRole('analyst');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
-    const prompt = `Analysis type: ${analysisType}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;
+    const prompt = `Analysis type: ${analysisType}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;`
     return this.complete(prompt, options);
   }
 
@@ -272,14 +272,14 @@ export class ClaudeProvider implements CLIProvider {
     scope?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('researcher');
+    const roleResult = this.setRole('researcher');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = scope
-      ? `Research topic: ${topic}\nScope: ${scope}\n\nPlease provide comprehensive research:`
-      : `Research topic: ${topic}\n\nPlease provide comprehensive research:`;
+      ? `Research topic: ${topic}\nScope: ${scope}\n\nPlease provide comprehensive research:``
+      : `Research topic: ${topic}\n\nPlease provide comprehensive research:`;`
     return this.complete(prompt, options);
   }
 
@@ -288,14 +288,14 @@ export class ClaudeProvider implements CLIProvider {
     teamContext?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('coordinator');
+    const roleResult = this.setRole('coordinator');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = teamContext
-      ? `Coordination task: ${task}\nTeam context: ${teamContext}\n\nPlease provide coordination plan:`
-      : `Coordination task: ${task}\n\nPlease provide coordination plan:`;
+      ? `Coordination task: ${task}\nTeam context: ${teamContext}\n\nPlease provide coordination plan:``
+      : `Coordination task: ${task}\n\nPlease provide coordination plan:`;`
     return this.complete(prompt, options);
   }
 
@@ -304,14 +304,14 @@ export class ClaudeProvider implements CLIProvider {
     requirements?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('tester');
+    const roleResult = this.setRole('tester');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = requirements
-      ? `Feature to test: ${feature}\nRequirements: ${requirements}\n\nPlease provide test plan and cases:`
-      : `Feature to test: ${feature}\n\nPlease provide test plan and cases:`;
+      ? `Feature to test: ${feature}\nRequirements: ${requirements}\n\nPlease provide test plan and cases:``
+      : `Feature to test: ${feature}\n\nPlease provide test plan and cases:`;`
     return this.complete(prompt, options);
   }
 
@@ -320,14 +320,14 @@ export class ClaudeProvider implements CLIProvider {
     requirements?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('architect');
+    const roleResult = this.setRole('architect');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = requirements
-      ? `System to architect: ${system}\nRequirements: ${requirements}\n\nPlease provide architectural design:`
-      : `System to architect: ${system}\n\nPlease provide architectural design:`;
+      ? `System to architect: ${system}\nRequirements: ${requirements}\n\nPlease provide architectural design:``
+      : `System to architect: ${system}\n\nPlease provide architectural design:`;`
     return this.complete(prompt, options);
   }
 
@@ -370,7 +370,7 @@ export class ClaudeProvider implements CLIProvider {
     } catch (error) {
       const cliError: CLIError = {
         code: CLI_ERROR_CODES.UNKNOWN_ERROR,
-        message: `Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
         details: {
           providerId: this.id,
           currentRole: this.currentRole?.role,
@@ -378,7 +378,7 @@ export class ClaudeProvider implements CLIProvider {
         cause: error instanceof Error ? error : undefined,
       };
 
-      logger.error('Task execution failed', { error: cliError });
+      logger.error('Task execution failed', { error: cliError });'
       return err(cliError);
     }
   }
@@ -409,12 +409,12 @@ export class ClaudeProvider implements CLIProvider {
     // Use actual Claude Code SDK integration
     const prompt = request.messages
       .map((m) => {
-        if (m.role === 'system') {
+        if (m.role === 'system') {'
           return m.content;
         }
-        return `${m.role}: ${m.content}`;
+        return `${m.role}: ${m.content}`;`
       })
-      .join('\n\n');
+      .join('\n\n');'
 
     // Always default to sonnet unless opus explicitly requested
     const model = request.model === 'opus' ? 'opus' : 'sonnet';
@@ -443,7 +443,7 @@ export class ClaudeProvider implements CLIProvider {
         content,
         metadata: {
           provider: 'claude-code-cli',
-          model: `claude-3-${model}-20240229`,
+          model: `claude-3-${model}-20240229`,`
           timestamp: Date.now(),
           usage: {
             promptTokens: Math.floor(prompt.length / 4), // Rough estimate
@@ -455,17 +455,17 @@ export class ClaudeProvider implements CLIProvider {
 
       // Add optional metadata only if they have values
       if (this.currentRole?.role) {
-        response.metadata!['role'] = this.currentRole.role;
+        response.metadata!['role'] = this.currentRole.role;'
       }
       if (this.currentRole?.capabilities) {
-        response.metadata!['capabilities'] = this.currentRole.capabilities;
+        response.metadata!['capabilities'] = this.currentRole.capabilities;'
       }
 
       return response;
     } catch (error) {
-      const logger = getLogger('ClaudeProvider');
-      logger.error('Claude Code SDK call failed:', error);
-      throw new Error(`Claude Code SDK request failed: ${error}`);
+      const logger = getLogger('ClaudeProvider');'
+      logger.error('Claude Code SDK call failed:', error);'
+      throw new Error(`Claude Code SDK request failed: ${error}`);`
     }
   }
 }

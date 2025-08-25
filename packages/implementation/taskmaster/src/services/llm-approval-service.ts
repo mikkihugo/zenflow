@@ -18,13 +18,13 @@ import {
 } from '../types/llm-approval.js';
 
 export class LLMApprovalService {
-  private readonly logger = getLogger('LLMApprovalService');
+  private readonly logger = getLogger('LLMApprovalService');'
   private brainSystem: any;
   private learningData: ApprovalLearning[] = [];
 
   async initialize(): Promise<void> {
     this.brainSystem = await getBrainSystem();
-    this.logger.info('LLM Approval Service initialized');
+    this.logger.info('LLM Approval Service initialized');'
   }
 
   /**
@@ -36,10 +36,10 @@ export class LLMApprovalService {
     rules: AutoApprovalRule[]
   ): Promise<LLMApprovalResult> {
     const startTime = Date.now();
-    const gateId = `gate_${context.task.id}_${Date.now()}`;
+    const gateId = `gate_${context.task.id}_${Date.now()}`;`
 
     try {
-      this.logger.info('Starting LLM approval evaluation', {
+      this.logger.info('Starting LLM approval evaluation', {'
         taskId: context.task.id,
         gateId,
         model: config.model,
@@ -54,7 +54,7 @@ export class LLMApprovalService {
           decision: {
             approved: true,
             confidence: 1.0,
-            reasoning: `Auto-approved by rule: ${ruleResult.rule!.name}`,
+            reasoning: `Auto-approved by rule: ${ruleResult.rule!.name}`,`
             concerns: [],
             suggestedActions: [],
             metadata: {
@@ -83,13 +83,13 @@ export class LLMApprovalService {
       const escalatedToHuman = !autoApproved||llmDecision.concerns.length > 0;
 
       if (autoApproved) {
-        this.logger.info('LLM auto-approved task', {
+        this.logger.info('LLM auto-approved task', {'
           taskId: context.task.id,
           confidence: llmDecision.confidence,
           reasoning: llmDecision.reasoning,
         });
       } else {
-        this.logger.info('LLM escalated task to human review', {
+        this.logger.info('LLM escalated task to human review', {'
           taskId: context.task.id,
           confidence: llmDecision.confidence,
           concerns: llmDecision.concerns,
@@ -106,7 +106,7 @@ export class LLMApprovalService {
         timestamp: new Date(),
       };
     } catch (error) {
-      this.logger.error('LLM approval evaluation failed', error, {
+      this.logger.error('LLM approval evaluation failed', error, {'
         taskId: context.task.id,
         gateId,
       });
@@ -169,46 +169,46 @@ export class LLMApprovalService {
   ): string {
     const { task, workflow, history, security, codeAnalysis } = context;
 
-    return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.
+    return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.`
 
 TASK DETAILS:
 - ID: ${task.id}
 - Title: ${task.title}
-- Description: ${task.description||'None'}
+- Description: ${task.description||'None'}'
 - Type: ${task.type}
 - Complexity: ${task.complexity}
 - Priority: ${task.priority}
-- Tags: ${task.tags.join(', ')}
+- Tags: ${task.tags.join(', ')}'
 - Dependencies: ${task.dependencies.length} dependencies
 
 WORKFLOW CONTEXT:
 - Workflow: ${workflow.name}
 - Current State: ${workflow.currentState}
-- Previous States: ${workflow.previousStates.join(' → ')}
+- Previous States: ${workflow.previousStates.join(' → ')}'
 
 SECURITY ANALYSIS:
 - Has Secrets: ${security.hasSecrets}
 - Risk Level: ${security.riskLevel}
-- Affected Systems: ${security.affectedSystems.join(', ')}
-- Compliance Flags: ${security.complianceFlags.join(', ')}
+- Affected Systems: ${security.affectedSystems.join(', ')}'
+- Compliance Flags: ${security.complianceFlags.join(', ')}'
 
 ${
   codeAnalysis
-    ? `
+    ? ``
 CODE ANALYSIS:
 - Files Changed: ${codeAnalysis.changedFiles.length}
 - Lines Added: ${codeAnalysis.linesAdded}
 - Lines Deleted: ${codeAnalysis.linesDeleted}
 - Test Coverage: ${codeAnalysis.testCoverage}%
-`
-    : ''
+``
+    : '''
 }
 
 APPROVAL CRITERIA:
-${config.criteria.map((criterion) => `- ${criterion}`).join('\n')}
+${config.criteria.map((criterion) => `- ${criterion}`).join('\n')}'
 
 HISTORICAL CONTEXT:
-Similar tasks: ${history.similarTasks.length} (${history.similarTasks.filter((t) => t.decision === 'approved').length} approved)
+Similar tasks: ${history.similarTasks.length} (${history.similarTasks.filter((t) => t.decision === 'approved').length} approved)'
 
 INSTRUCTIONS:
 1. Analyze the task against the approval criteria
@@ -233,7 +233,7 @@ Base your decision on:
 - Historical approval patterns
 - Workflow stage appropriateness
 
-Be conservative: when in doubt, escalate to human review.`;
+Be conservative: when in doubt, escalate to human review.`;`
   }
 
   /**
@@ -245,7 +245,7 @@ Be conservative: when in doubt, escalate to human review.`;
   ): LLMApprovalDecision {
     try {
       const parsed =
-        typeof response === 'string'? JSON.parse(response) : response;
+        typeof response === 'string'? JSON.parse(response) : response;'
 
       return {
         approved: Boolean(parsed.approved),
@@ -263,7 +263,7 @@ Be conservative: when in doubt, escalate to human review.`;
         },
       };
     } catch (error) {
-      this.logger.error('Failed to parse LLM response', error);
+      this.logger.error('Failed to parse LLM response', error);'
 
       // Return safe default
       return {
@@ -309,15 +309,15 @@ Be conservative: when in doubt, escalate to human review.`;
             // Create a safe evaluation context
             const evalFunc = new Function(
               'context',
-              `
+              ``
               const { task, workflow, security, codeAnalysis } = context;
               return ${condition};
-            `
+            ``
             );
 
             return evalFunc(ruleContext);
           } catch (error) {
-            this.logger.warn('Rule condition evaluation failed', {
+            this.logger.warn('Rule condition evaluation failed', {'
               rule: rule.name,
               condition,
               error,
@@ -327,7 +327,7 @@ Be conservative: when in doubt, escalate to human review.`;
         });
 
         if (allConditionsMet) {
-          this.logger.info('Auto-approval rule matched', {
+          this.logger.info('Auto-approval rule matched', {'
             taskId: context.task.id,
             rule: rule.name,
           });
@@ -335,7 +335,7 @@ Be conservative: when in doubt, escalate to human review.`;
           return { autoApprove: true, rule };
         }
       } catch (error) {
-        this.logger.error('Rule evaluation error', error, { rule: rule.name });
+        this.logger.error('Rule evaluation error', error, { rule: rule.name });'
       }
     }
 
@@ -365,7 +365,7 @@ Be conservative: when in doubt, escalate to human review.`;
 
     this.learningData.push(learning);
 
-    this.logger.info('Learning from human feedback', {
+    this.logger.info('Learning from human feedback', {'
       taskId,
       feedback: learning.feedback,
       patterns: learning.patterns,
@@ -398,14 +398,14 @@ Be conservative: when in doubt, escalate to human review.`;
   private determineFeedbackType(
     llmDecision: LLMApprovalDecision,
     humanOverride: HumanOverride
-  ): 'correct|incorrect|partially_correct' {
+  ): 'correct|incorrect|partially_correct' {'
     const llmApproved = llmDecision.approved;
     const humanApproved = humanOverride.action === 'approve';
 
     if (llmApproved === humanApproved) {
-      return llmDecision.confidence > 0.8 ? 'correct' : 'partially_correct';
+      return llmDecision.confidence > 0.8 ? 'correct' : 'partially_correct;
     } else {
-      return 'incorrect';
+      return 'incorrect;
     }
   }
 
@@ -423,7 +423,7 @@ Be conservative: when in doubt, escalate to human review.`;
     // Extract patterns from reasoning differences
     if (llmDecision.reasoning && humanOverride.reason) {
       // TODO: Implement pattern extraction logic
-      patterns.push('reasoning_mismatch');
+      patterns.push('reasoning_mismatch');'
     }
 
     return patterns;
@@ -431,7 +431,7 @@ Be conservative: when in doubt, escalate to human review.`;
 
   private async updateLearningModel(learning: ApprovalLearning): Promise<void> {
     // TODO: Implement model update logic
-    // This would update the LLM's understanding based on human feedback
-    this.logger.debug('Updated learning model', { taskId: learning.taskId });
+    // This would update the LLM's understanding based on human feedback'
+    this.logger.debug('Updated learning model', { taskId: learning.taskId });'
   }
 }

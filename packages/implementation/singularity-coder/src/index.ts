@@ -1,7 +1,7 @@
 /**
  * @fileoverview File-Aware AI Integration for claude-code-zen
  *
- * Combines CodeMesh's Rust/TypeScript hybrid architecture with claude-code-zen's
+ * Combines CodeMesh's Rust/TypeScript hybrid architecture with claude-code-zen's'
  * LLM routing system for enterprise-grade file-aware AI capabilities.
  */
 

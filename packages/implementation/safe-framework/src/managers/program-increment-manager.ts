@@ -167,7 +167,7 @@ export class ProgramIncrementManager extends TypedEventBase {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    this.logger.info('Initializing Program Increment Manager', {
+    this.logger.info('Initializing Program Increment Manager', {'
       config: this.config,
     });
 
@@ -187,10 +187,10 @@ export class ProgramIncrementManager extends TypedEventBase {
       this.registerEventHandlers();
 
       this.initialized = true;
-      this.logger.info('Program Increment Manager initialized successfully');
-      this.emit('initialized', {});
+      this.logger.info('Program Increment Manager initialized successfully');'
+      this.emit('initialized', {});'
     } catch (error) {
-      this.logger.error('Failed to initialize PI Manager', { error });
+      this.logger.error('Failed to initialize PI Manager', { error });'
       throw error;
     }
   }
@@ -199,7 +199,7 @@ export class ProgramIncrementManager extends TypedEventBase {
    * Shutdown the PI Manager and all services
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Program Increment Manager');
+    this.logger.info('Shutting down Program Increment Manager');'
 
     if (this.trackingTimer) {
       clearInterval(this.trackingTimer);
@@ -217,7 +217,7 @@ export class ProgramIncrementManager extends TypedEventBase {
     this.removeAllListeners();
     this.initialized = false;
 
-    this.logger.info('Program Increment Manager shutdown complete');
+    this.logger.info('Program Increment Manager shutdown complete');'
   }
 
   // ============================================================================
@@ -235,9 +235,9 @@ export class ProgramIncrementManager extends TypedEventBase {
   ): Promise<ProgramIncrement> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Starting comprehensive PI Planning', { artId });
+    this.logger.info('Starting comprehensive PI Planning', { artId });'
 
-    const timer = this.startTimer('pi_planning');
+    const timer = this.startTimer('pi_planning');'
 
     try {
       // Delegate to PI Planning Service for event orchestration
@@ -313,9 +313,9 @@ export class ProgramIncrementManager extends TypedEventBase {
       // Store in state
       this.state.activePIs.set(completePIPlan.id, completePIPlan);
 
-      this.endTimer('pi_planning');
+      this.endTimer('pi_planning');'
 
-      this.logger.info('PI Planning completed successfully', {
+      this.logger.info('PI Planning completed successfully', {'
         piId: completePIPlan.id,
         objectiveCount: piObjectives.length,
         featureCount: features.length,
@@ -323,11 +323,11 @@ export class ProgramIncrementManager extends TypedEventBase {
           capacityResult.allocatedCapacity / capacityResult.totalCapacity,
       });
 
-      this.emit('pi-planned', completePIPlan);
+      this.emit('pi-planned', completePIPlan);'
       return completePIPlan;
     } catch (error) {
-      this.endTimer('pi_planning');
-      this.logger.error('PI Planning failed:', error);
+      this.endTimer('pi_planning');'
+      this.logger.error('PI Planning failed:', error);'
       throw error;
     }
   }
@@ -385,24 +385,24 @@ export class ProgramIncrementManager extends TypedEventBase {
 
     const pi = this.state.activePIs.get(piId);
     if (!pi) {
-      throw new Error(`PI not found: ${piId}`);
+      throw new Error(`PI not found: ${piId}`);`
     }
 
-    this.logger.info('Starting PI execution', { piId });
+    this.logger.info('Starting PI execution', { piId });'
 
     // Update PI status
     (pi as any).status = PIStatus.ACTIVE;
 
     // Initialize PI execution tracking
-    this.logger.info('PI execution initialized', { piId, status: pi.status });
+    this.logger.info('PI execution initialized', { piId, status: pi.status });'
 
     // Initialize metrics tracking
     const initialMetrics =
       await this.getPIExecutionService().trackPIProgress(piId);
     this.state.piMetrics.set(piId, initialMetrics);
 
-    this.logger.info('PI execution started successfully', { piId });
-    this.emit('pi-execution-started', pi);
+    this.logger.info('PI execution started successfully', { piId });'
+    this.emit('pi-execution-started', pi);'
   }
 
   /**
@@ -413,7 +413,7 @@ export class ProgramIncrementManager extends TypedEventBase {
 
     const pi = this.state.activePIs.get(piId);
     if (!pi) {
-      throw new Error(`PI not found: ${piId}`);
+      throw new Error(`PI not found: ${piId}`);`
     }
 
     // Delegate to Execution Service for comprehensive tracking
@@ -423,14 +423,14 @@ export class ProgramIncrementManager extends TypedEventBase {
     // Store updated metrics
     this.state.piMetrics.set(piId, currentMetrics);
 
-    this.logger.debug('PI progress updated', {
+    this.logger.debug('PI progress updated', {'
       piId,
       progress: currentMetrics.progressPercentage,
       predictability:
         currentMetrics.predictabilityMetrics?.overallPredictability||0,
     });
 
-    this.emit('pi-progress-updated', { piId, metrics: currentMetrics });
+    this.emit('pi-progress-updated', { piId, metrics: currentMetrics });'
     return currentMetrics;
   }
 
@@ -446,10 +446,10 @@ export class ProgramIncrementManager extends TypedEventBase {
 
     const pi = this.state.activePIs.get(piId);
     if (!pi) {
-      throw new Error(`PI not found: ${piId}`);
+      throw new Error(`PI not found: ${piId}`);`
     }
 
-    this.logger.info('Completing Program Increment', { piId });
+    this.logger.info('Completing Program Increment', { piId });'
 
     // Get final metrics
     const finalMetrics = await this.trackPIProgress(piId);
@@ -483,13 +483,13 @@ export class ProgramIncrementManager extends TypedEventBase {
     // Update PI status
     (pi as any).status = PIStatus.COMPLETED;
 
-    this.logger.info('Program Increment completed successfully', {
+    this.logger.info('Program Increment completed successfully', {'
       piId,
       objectivesAchieved: completionReport.objectivesAchieved,
       overallSuccess: completionReport.overallSuccessRate,
     });
 
-    this.emit('pi-completed', { pi, completionReport });
+    this.emit('pi-completed', { pi, completionReport });'
     return completionReport;
   }
 
@@ -555,12 +555,12 @@ export class ProgramIncrementManager extends TypedEventBase {
 
   private initializeServices(): void {
     // Services are initialized lazily when first accessed
-    this.logger.debug('PI Manager services configured for lazy loading');
+    this.logger.debug('PI Manager services configured for lazy loading');'
   }
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('pi-manager:state');
+      const persistedState = await this.memory.retrieve('pi-manager:state');'
       if (persistedState) {
         const state = persistedState as any;
         this.state = {
@@ -573,10 +573,10 @@ export class ProgramIncrementManager extends TypedEventBase {
           dependencyMatrix: new Map(state.dependencyMatrix||[]),
           riskRegister: new Map(state.riskRegister||[]),
         };
-        this.logger.info('PI Manager state loaded');
+        this.logger.info('PI Manager state loaded');'
       }
     } catch (error) {
-      this.logger.warn('Failed to load persisted state', { error });
+      this.logger.warn('Failed to load persisted state', { error });'
     }
   }
 
@@ -592,9 +592,9 @@ export class ProgramIncrementManager extends TypedEventBase {
         riskRegister: Array.from(this.state.riskRegister.entries()),
       };
 
-      await this.memory.store('pi-manager:state', stateToSerialize);
+      await this.memory.store('pi-manager:state', stateToSerialize);'
     } catch (error) {
-      this.logger.error('Failed to persist state', { error });
+      this.logger.error('Failed to persist state', { error });'
     }
   }
 
@@ -603,17 +603,17 @@ export class ProgramIncrementManager extends TypedEventBase {
       try {
         await this.updateAllPIMetrics();
       } catch (error) {
-        this.logger.error('PI tracking update failed', { error });
+        this.logger.error('PI tracking update failed', { error });'
       }
     }, this.configuration.trackingUpdateInterval);
   }
 
   private registerEventHandlers(): void {
-    this.eventBus.registerHandler('feature-completed', async (event) => {
+    this.eventBus.registerHandler('feature-completed', async (event) => {'
       await this.handleFeatureCompletion(event.payload.featureId);
     });
 
-    this.eventBus.registerHandler('risk-identified', async (event) => {
+    this.eventBus.registerHandler('risk-identified', async (event) => {'
       await this.handleRiskIdentification(event.payload.risk);
     });
   }
@@ -627,7 +627,7 @@ export class ProgramIncrementManager extends TypedEventBase {
   }
 
   private endTimer(name: string): void {
-    this.logger.debug(`Timer ${name} completed`);
+    this.logger.debug(`Timer ${name} completed`);`
   }
 
   private createProgramIncrement(
@@ -636,8 +636,8 @@ export class ProgramIncrementManager extends TypedEventBase {
     teamCapacities: TeamCapacity[]
   ): ProgramIncrement {
     return {
-      id: `pi-${artId}-${Date.now()}`,
-      name: `Program Increment for ART ${artId}`,
+      id: `pi-${artId}-${Date.now()}`,`
+      name: `Program Increment for ART ${artId}`,`
       startDate: new Date(),
       endDate: new Date(
         Date.now() +
@@ -659,7 +659,7 @@ export class ProgramIncrementManager extends TypedEventBase {
     // Simplified objective generation
     return [
       {
-        id: `obj-${piId}-1`,
+        id: `obj-${piId}-1`,`
         description: 'Main objective for this PI',
         businessValue: 20,
         confidence: 8,
@@ -676,7 +676,7 @@ export class ProgramIncrementManager extends TypedEventBase {
     // Simplified feature allocation
     return [
       {
-        id: `feature-${piId}-1`,
+        id: `feature-${piId}-1`,`
         name: 'Core Feature',
         description: 'Main feature for this PI',
         piId,
@@ -715,17 +715,17 @@ export class ProgramIncrementManager extends TypedEventBase {
       try {
         await this.trackPIProgress(piId);
       } catch (error) {
-        this.logger.error(`Failed to update metrics for PI ${piId}`, { error });
+        this.logger.error(`Failed to update metrics for PI ${piId}`, { error });`
       }
     }
   }
 
   private handleFeatureCompletion(featureId: string): void {
-    this.logger.info('Feature completed', { featureId });
+    this.logger.info('Feature completed', { featureId });'
   }
 
   private handleRiskIdentification(risk: Risk): void {
-    this.logger.info('Risk identified', { riskId: risk.id });
+    this.logger.info('Risk identified', { riskId: risk.id });'
   }
 }
 

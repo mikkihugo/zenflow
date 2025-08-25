@@ -51,12 +51,12 @@ export class UEL {
     }
 
     // Dynamic imports to avoid circular dependencies
-    const { UELFactory, UELRegistry } = await import('../factories');
-    const { EventManager } = await import('../manager');
-    const { EventRegistry } = await import('../registry');
-    const { UELValidationFramework } = await import('../validation');
-    const { CompatibilityFactory } = await import('../compatibility');
-    const { DIContainer } = await import('@claude-zen/foundation');
+    const { UELFactory, UELRegistry } = await import('../factories');'
+    const { EventManager } = await import('../manager');'
+    const { EventRegistry } = await import('../registry');'
+    const { UELValidationFramework } = await import('../validation');'
+    const { CompatibilityFactory } = await import('../compatibility');'
+    const { DIContainer } = await import('@claude-zen/foundation');'
 
     const container = new DIContainer();
 
@@ -107,7 +107,7 @@ export class UEL {
       // Basic initialization - some factories may not have initialize method
       try {
         if (
-          this.compatibilityFactory &&'initialize' in this.compatibilityFactory
+          this.compatibilityFactory &&'initialize' in this.compatibilityFactory'
         ) {
           await (this.compatibilityFactory as any).initialize(
             this.eventManager,
@@ -115,7 +115,7 @@ export class UEL {
           );
         }
       } catch (error) {
-        logger.warn('Failed to initialize compatibility factory:', error);
+        logger.warn('Failed to initialize compatibility factory:', error);'
       }
     }
 
@@ -133,7 +133,7 @@ export class UEL {
     );
 
     this.initialized = true;
-    logger.info('🚀 UEL System fully initialized');
+    logger.info('🚀 UEL System fully initialized');'
   }
 
   isInitialized(): boolean {
@@ -142,7 +142,7 @@ export class UEL {
 
   getEventManager(): EventManager {
     if (!this.eventManager) {
-      throw new Error('UEL not initialized. Call initialize() first.');
+      throw new Error('UEL not initialized. Call initialize() first.');'
     }
     return this.eventManager;
   }
@@ -173,7 +173,7 @@ export class UEL {
 
   getEventRegistry(): EventRegistry {
     if (!this.eventRegistry) {
-      throw new Error('UEL not initialized. Call initialize() first.');
+      throw new Error('UEL not initialized. Call initialize() first.');'
     }
     return this.eventRegistry;
   }
@@ -288,7 +288,7 @@ export class UEL {
       return null;
     }
     // Basic migration implementation - wrap the EventEmitter
-    const { UELCompatibleEventEmitter } = await import('../compatibility');
+    const { UELCompatibleEventEmitter } = await import('../compatibility');'
     const compatibleEmitter = new UELCompatibleEventEmitter({
       enableUEL: true,
       uelManager: this.eventManager as any,
@@ -298,7 +298,7 @@ export class UEL {
     // Copy existing listeners
     const eventNames = emitter.listeners ? Object.keys(emitter) : [];
     eventNames.forEach((eventName) => {
-      if (typeof emitter[eventName as keyof typeof emitter] === 'function') {
+      if (typeof emitter[eventName as keyof typeof emitter] === 'function') {'
         compatibleEmitter.on(
           eventName,
           emitter[eventName as keyof typeof emitter] as any
@@ -313,7 +313,7 @@ export class UEL {
     enableUEL?: boolean;
     managerName?: string;
   }): Promise<unknown> {
-    const { UELEnhancedEventBus } = await import('../system-integrations');
+    const { UELEnhancedEventBus } = await import('../system-integrations');'
     return new UELEnhancedEventBus(config);
   }
 
@@ -327,7 +327,7 @@ export class UEL {
     };
   }): Promise<unknown> {
     const { UELEnhancedApplicationCoordinator } = await import(
-      '../system-integrations'
+      '../system-integrations''
     );
     return new UELEnhancedApplicationCoordinator(config);
   }
@@ -336,7 +336,7 @@ export class UEL {
     enableUEL?: boolean;
   }): Promise<unknown> {
     const { UELEnhancedObserverSystem } = await import(
-      '../system-integrations'
+      '../system-integrations''
     );
     return new UELEnhancedObserverSystem(config);
   }
@@ -351,7 +351,7 @@ export class UEL {
     const recommendations: string[] = [];
     Object.keys(systems).forEach((name) => {
       recommendations.push(
-        `Consider migrating ${name} to UEL for better event management`
+        `Consider migrating ${name} to UEL for better event management``
       );
     });
     return { migrationRecommendations: recommendations };

@@ -15,7 +15,7 @@ export interface AgentId {
   instance: number;
 }
 export type AgentType =
-  | 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator' | 'tester' | 'architect';
+  | 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator' | 'tester' | 'architect;
 
 export interface Tool {
   name: string;
@@ -49,7 +49,7 @@ export interface MessageContent {
 }
 
 export interface MessageMetadata {
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority: 'low' | 'medium' | 'high' | 'urgent;
   requiresResponse: boolean;
   context: ConversationContext;
   tags: string[];
@@ -57,7 +57,7 @@ export interface MessageMetadata {
 }
 
 export interface ConversationAttachment {
-  type: 'file' | 'image' | 'data' | 'code' | 'link';
+  type: 'file' | 'image' | 'data' | 'code' | 'link;
   content: unknown;
   metadata: Record<string, unknown> | undefined;
 }
@@ -83,7 +83,7 @@ export interface ConversationSession {
   metrics: ConversationMetrics;
 }
 
-export type ConversationStatus =|'initializing|active|paused|completed|terminated|error';
+export type ConversationStatus =|'initializing|active|paused|completed|terminated|error;
 
 export interface ConversationContext {
   task: unknown|undefined;
@@ -98,7 +98,7 @@ export interface ConversationContext {
 }
 
 export interface ConversationOutcome {
-  type:|'decision|solution|plan|code|analysis|recommendation';
+  type:|'decision|solution|plan|code|analysis|recommendation;
   content: unknown;
   confidence: number;
   contributors: AgentId[];
@@ -136,8 +136,8 @@ export interface ConversationRole {
 }
 
 export interface RolePermission {
-  action: 'read|write|moderate|terminate|invite';
-  scope: 'all|own|direct|group';
+  action: 'read|write|moderate|terminate|invite;
+  scope: 'all|own|direct|group;
 }
 
 export interface ConversationStep {
@@ -152,18 +152,18 @@ export interface ConversationStep {
 }
 
 export interface StepTrigger {
-  type: 'time|message|consensus|external|manual';
+  type: 'time|message|consensus|external|manual;
   condition: unknown;
 }
 
 export interface StepAction {
-  type:|'send_message|request_input|make_decision|summarize|escalate';
+  type:|'send_message|request_input|make_decision|summarize|escalate;
   params: unknown;
   agent?: string; // role name
 }
 
 export interface PatternConstraint {
-  type:|'time_limit|message_limit|participant_limit|quality_threshold';
+  type:|'time_limit|message_limit|participant_limit|quality_threshold;
   value: unknown;
 }
 
@@ -205,7 +205,7 @@ export interface ConversationConfig {
 }
 
 export interface ModerationAction {
-  type: 'mute' | 'unmute' | 'warn' | 'remove' | 'change_role' | 'pause' | 'resume';
+  type: 'mute' | 'unmute' | 'warn' | 'remove' | 'change_role' | 'pause' | 'resume;
   target: AgentId;
   reason: string;
   duration?: number;
@@ -225,7 +225,7 @@ export interface ConversationLearning {
 }
 
 export interface LearningInsight {
-  type: 'efficiency|quality|participation|outcome';
+  type: 'efficiency|quality|participation|outcome;
   description: string;
   confidence: number;
   evidence: unknown[];
@@ -233,7 +233,7 @@ export interface LearningInsight {
 }
 
 export interface PatternImprovement {
-  target: 'workflow|roles|constraints|triggers';
+  target: 'workflow|roles|constraints|triggers;
   change: unknown;
   rationale: string;
   expectedImpact: number;
@@ -289,7 +289,7 @@ export interface ConversationParticipant {
   id: string;
   name: string;
   role: string;
-  status:'active|inactive|busy';
+  status:'active' | 'inactive' | 'busy';
   capabilities: string[];
 }
 

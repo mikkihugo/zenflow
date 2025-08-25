@@ -21,7 +21,7 @@ interface PermissionAuditEntry {
 
 class PermissionAuditor {
   private auditLog: PermissionAuditEntry[] = [];
-  private logger = getLogger('permission-auditor');
+  private logger = getLogger('permission-auditor');'
   private maxEntries = 1000;
 
   logPermissionCheck(
@@ -49,14 +49,14 @@ class PermissionAuditor {
 
     // Log security events
     if (!result.allowed) {
-      this.logger.warn('Permission denied', {
+      this.logger.warn('Permission denied', {'
         toolName,
         reason: result.reason,
         sessionId,
         timestamp: entry.timestamp,
       });
     } else if (this.isHighRiskTool(toolName)) {
-      this.logger.info('High-risk tool allowed', {
+      this.logger.info('High-risk tool allowed', {'
         toolName,
         sessionId,
         timestamp: entry.timestamp,
@@ -69,7 +69,7 @@ class PermissionAuditor {
   ): Record<string, unknown> {
     // Remove sensitive data from audit logs
     const sanitized = { ...params };
-    const sensitiveKeys = ['password', 'token', 'key', 'secret', 'auth'];
+    const sensitiveKeys = ['password', 'token', 'key', 'secret', 'auth'];'
 
     for (const key of Object.keys(sanitized)) {
       if (
@@ -100,7 +100,7 @@ class PermissionAuditor {
 
   clearAuditLog(): void {
     this.auditLog = [];
-    this.logger.info('Audit log cleared');
+    this.logger.info('Audit log cleared');'
   }
 
   getSecuritySummary(): {
@@ -143,7 +143,7 @@ const globalAuditor = new PermissionAuditor();
 // Export for external access and monitoring
 export { globalAuditor };
 
-const logger = getLogger('claude-permission-handler');
+const logger = getLogger('claude-permission-handler');'
 
 // =============================================================================
 // Permission Handler Implementation
@@ -156,29 +156,29 @@ export async function createPermissionHandler(
   mode: PermissionMode,
   customHandler?: CanUseTool
 ): Promise<CanUseTool> {
-  logger.debug(`Creating permission handler with mode: ${mode}`);
+  logger.debug(`Creating permission handler with mode: ${mode}`);`
 
   switch (mode) {
-    case 'allow-all':
+    case 'allow-all':'
       return createAllowAllHandler();
 
-    case 'deny-all':
+    case 'deny-all':'
       return createDenyAllHandler();
 
-    case 'interactive':
+    case 'interactive':'
       return createInteractiveHandler();
 
-    case 'custom':
+    case 'custom':'
       if (!customHandler) {
         throw new Error(
-          'Custom permission handler is required when using "custom" mode'
+          'Custom permission handler is required when using "custom" mode''
         );
       }
       return createCustomHandlerWrapper(customHandler);
 
     default:
       logger.warn(
-        `Unknown permission mode: ${mode}, defaulting to interactive`
+        `Unknown permission mode: ${mode}, defaulting to interactive``
       );
       return createInteractiveHandler();
   }
@@ -192,13 +192,13 @@ export async function createPermissionHandler(
  * Allow all tools - USE WITH CAUTION
  */
 function createAllowAllHandler(): CanUseTool {
-  logger.warn('Using allow-all permission handler - this may be unsafe');
+  logger.warn('Using allow-all permission handler - this may be unsafe');'
 
   return async (
     toolName: string,
     params: Record<string, unknown>
   ): Promise<PermissionResult> => {
-    logger.debug(`Allowing tool: ${toolName}`, {
+    logger.debug(`Allowing tool: ${toolName}`, {`
       toolName,
       paramCount: Object.keys(params).length,
       hasParams: Object.keys(params).length > 0,
@@ -210,7 +210,7 @@ function createAllowAllHandler(): CanUseTool {
       params,
       result,
       'system',
-      'allow-all-handler'
+      'allow-all-handler''
     );
 
     return result;
@@ -221,13 +221,13 @@ function createAllowAllHandler(): CanUseTool {
  * Deny all tools - Very restrictive
  */
 function createDenyAllHandler(): CanUseTool {
-  logger.info('Using deny-all permission handler - all tools will be blocked');
+  logger.info('Using deny-all permission handler - all tools will be blocked');'
 
   return async (
     toolName: string,
     params: Record<string, unknown>
   ): Promise<PermissionResult> => {
-    logger.debug(`Denying tool: ${toolName}`, {
+    logger.debug(`Denying tool: ${toolName}`, {`
       toolName,
       paramCount: Object.keys(params).length,
       securityPolicy: 'deny-all',
@@ -243,7 +243,7 @@ function createDenyAllHandler(): CanUseTool {
       params,
       result,
       'system',
-      'deny-all-handler'
+      'deny-all-handler''
     );
 
     return result;
@@ -254,14 +254,14 @@ function createDenyAllHandler(): CanUseTool {
  * Interactive handler - Prompts for permission (simplified for foundation)
  */
 function createInteractiveHandler(): CanUseTool {
-  logger.info('Using interactive permission handler');
+  logger.info('Using interactive permission handler');'
 
   return async (
     toolName: string,
     params: Record<string, unknown>
   ): Promise<PermissionResult> => {
     // In a real implementation, this would prompt the user
-    // For foundation, we'll use a safe default policy
+    // For foundation, we'll use a safe default policy'
     const safeFunctions = [
       'read_file',
       'list_directory',
@@ -281,15 +281,15 @@ function createInteractiveHandler(): CanUseTool {
     const paramKeys = Object.keys(params);
     const hasFileParams = paramKeys.some(
       (key) =>
-        key.toLowerCase().includes('file')||key.toLowerCase().includes('path')
+        key.toLowerCase().includes('file')||key.toLowerCase().includes('path')'
     );
     const hasNetworkParams = paramKeys.some(
       (key) =>
-        key.toLowerCase().includes('url')||key.toLowerCase().includes('host')
+        key.toLowerCase().includes('url')||key.toLowerCase().includes('host')'
     );
 
     if (safeFunctions.includes(toolName)) {
-      logger.debug(`Auto-allowing safe tool: ${toolName}`, {
+      logger.debug(`Auto-allowing safe tool: ${toolName}`, {`
         toolName,
         paramCount: paramKeys.length,
         hasFileParams,
@@ -302,14 +302,14 @@ function createInteractiveHandler(): CanUseTool {
         params,
         result,
         'system',
-        'interactive-handler'
+        'interactive-handler''
       );
 
       return result;
     }
 
     if (riskyFunctions.includes(toolName)) {
-      logger.warn(`Auto-denying risky tool: ${toolName}`, {
+      logger.warn(`Auto-denying risky tool: ${toolName}`, {`
         toolName,
         paramCount: paramKeys.length,
         hasFileParams,
@@ -320,7 +320,7 @@ function createInteractiveHandler(): CanUseTool {
 
       const result = {
         allowed: false,
-        reason: `Tool ${toolName} requires explicit permission`,
+        reason: `Tool ${toolName} requires explicit permission`,`
       };
 
       globalAuditor.logPermissionCheck(
@@ -328,14 +328,14 @@ function createInteractiveHandler(): CanUseTool {
         params,
         result,
         'system',
-        'interactive-handler'
+        'interactive-handler''
       );
 
       return result;
     }
 
     // Unknown tools - err on the side of caution
-    logger.warn(`Denying unknown tool: ${toolName}`, {
+    logger.warn(`Denying unknown tool: ${toolName}`, {`
       toolName,
       paramCount: paramKeys.length,
       hasFileParams,
@@ -345,7 +345,7 @@ function createInteractiveHandler(): CanUseTool {
 
     const result = {
       allowed: false,
-      reason: `Unknown tool ${toolName} not in safe list`,
+      reason: `Unknown tool ${toolName} not in safe list`,`
     };
 
     globalAuditor.logPermissionCheck(
@@ -353,7 +353,7 @@ function createInteractiveHandler(): CanUseTool {
       params,
       result,
       'system',
-      'interactive-handler'
+      'interactive-handler''
     );
 
     return result;
@@ -364,7 +364,7 @@ function createInteractiveHandler(): CanUseTool {
  * Custom handler wrapper with validation
  */
 function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
-  logger.info('Using custom permission handler with validation wrapper');
+  logger.info('Using custom permission handler with validation wrapper');'
 
   return async (
     toolName: string,
@@ -372,16 +372,16 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
   ): Promise<PermissionResult> => {
     try {
       // Validate inputs
-      if (!toolName||typeof toolName !=='string') {
-        logger.error('Invalid tool name provided to permission handler');
+      if (!toolName||typeof toolName !=='string') {'
+        logger.error('Invalid tool name provided to permission handler');'
         return {
           allowed: false,
           reason: 'Invalid tool name',
         };
       }
 
-      if (!params||typeof params !=='object') {
-        logger.error('Invalid parameters provided to permission handler');
+      if (!params||typeof params !=='object') {'
+        logger.error('Invalid parameters provided to permission handler');'
         return {
           allowed: false,
           reason: 'Invalid parameters',
@@ -402,9 +402,9 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
 
       // Validate result
       if (
-        !result||typeof result !=='object'||typeof result.allowed !=='boolean'
+        !result||typeof result !=='object'||typeof result.allowed !=='boolean''
       ) {
-        logger.error('Custom permission handler returned invalid result');
+        logger.error('Custom permission handler returned invalid result');'
         return {
           allowed: false,
           reason: 'Invalid handler response',
@@ -412,7 +412,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
       }
 
       if (!result.allowed && !result.reason) {
-        logger.warn('Permission denied but no reason provided');
+        logger.warn('Permission denied but no reason provided');'
         return {
           ...result,
           reason: result.reason||'Permission denied by custom handler',
@@ -420,7 +420,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
       }
 
       logger.debug(
-        `Custom handler result for ${toolName}: ${result.allowed ? 'allowed' : 'denied'}`
+        `Custom handler result for ${toolName}: ${result.allowed ? 'allowed' : 'denied'}``
       );
 
       globalAuditor.logPermissionCheck(
@@ -428,16 +428,16 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
         params,
         result,
         'custom',
-        'custom-handler'
+        'custom-handler''
       );
 
       return result;
     } catch (error) {
-      logger.error('Error in custom permission handler:', error);
+      logger.error('Error in custom permission handler:', error);'
 
       const result = {
         allowed: false,
-        reason: `Permission handler error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        reason: `Permission handler error: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       };
 
       globalAuditor.logPermissionCheck(
@@ -445,7 +445,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
         params,
         result,
         'custom',
-        'custom-handler-error');
+        'custom-handler-error');'
 
       return result;
     }
@@ -462,17 +462,17 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
 export function validatePermissionResult(
   result: unknown
 ): result is PermissionResult {
-  if (!result||typeof result !=='object') {
+  if (!result||typeof result !=='object') {'
     return false;
   }
 
   const r = result as Record<string, unknown>;
 
-  if (typeof r['allowed'] !== 'boolean') {
+  if (typeof r['allowed'] !== 'boolean') {'
     return false;
   }
 
-  if (!r['allowed'] && typeof r['reason'] !== 'string') {
+  if (!r['allowed'] && typeof r['reason'] !== 'string') {'
     return false;
   }
 

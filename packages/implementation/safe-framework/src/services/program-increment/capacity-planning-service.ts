@@ -47,17 +47,17 @@ export interface TeamCapacity {
 export interface TeamMember {
   readonly memberId: string;
   readonly name: string;
-  readonly role:|developer|tester|architect|analyst|designer|'devops';
+  readonly role:|developer|tester|architect|analyst|designer|'devops;
   readonly capacity: number; // individual capacity
   readonly skills: string[];
-  readonly experience: 'junior|mid|senior|expert';
+  readonly experience: 'junior|mid|senior|expert;
   readonly availability: number; // 0-1, percentage availability for PI
   readonly crossTrainingAreas: string[];
 }
 
 export interface TeamSkill {
   readonly skillName: string;
-  readonly proficiency: 'basic|intermediate|advanced|expert';
+  readonly proficiency: 'basic|intermediate|advanced|expert;
   readonly memberCount: number; // number of team members with this skill
   readonly capacity: number; // capacity available for this skill
   readonly critical: boolean; // is this a critical bottleneck skill
@@ -70,7 +70,7 @@ export interface FeatureAllocationRequest {
   readonly businessValue: number; // 1-100 scale
   readonly complexity: number; // story points or similar
   readonly requiredSkills: string[];
-  readonly priority: 'critical|high|medium|low';
+  readonly priority: 'critical|high|medium|low;
   readonly dependencies: string[];
   readonly acceptanceCriteria: string[];
   readonly estimatedDuration: number; // in iterations
@@ -93,17 +93,17 @@ export interface TeamAllocation {
 export interface SkillMatch {
   readonly skill: string;
   readonly required: boolean;
-  readonly proficiencyRequired:|basic|intermediate|advanced|'expert';
-  readonly proficiencyAvailable:|basic|intermediate|advanced|'expert';
+  readonly proficiencyRequired:|basic|intermediate|advanced|'expert;
+  readonly proficiencyAvailable:|basic|intermediate|advanced|'expert;
   readonly memberCount: number;
-  readonly matchQuality: 'perfect|good|adequate|poor';
+  readonly matchQuality: 'perfect|good|adequate|poor;
 }
 
 export interface AllocationRisk {
-  readonly riskType:|capacity|skill|dependency|timeline|'quality';
+  readonly riskType:|capacity|skill|dependency|timeline|'quality;
   readonly description: string;
   readonly probability: number; // 0-1
-  readonly impact: 'low|medium|high|critical';
+  readonly impact: 'low|medium|high|critical;
   readonly mitigation: string;
   readonly owner: string;
 }
@@ -123,11 +123,11 @@ export interface CapacityPlanningResult {
 
 export interface CapacityRisk {
   readonly riskId: string;
-  readonly type:|overallocation|underutilization|skill_gap|dependency|'timeline';
+  readonly type:|overallocation|underutilization|skill_gap|dependency|'timeline;
   readonly description: string;
   readonly impact: string;
   readonly mitigation: string;
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low|medium|high|critical;
   readonly affectedTeams: string[];
   readonly affectedFeatures: string[];
   readonly dueDate: Date;
@@ -135,13 +135,13 @@ export interface CapacityRisk {
 
 export interface CapacityRecommendation {
   readonly recommendationId: string;
-  readonly type:|rebalancing|skill_development|scope_adjustment|'timeline_adjustment';
+  readonly type:|rebalancing|skill_development|scope_adjustment|'timeline_adjustment;
   readonly title: string;
   readonly description: string;
   readonly benefits: string[];
-  readonly effort: 'low|medium|high';
+  readonly effort: 'low' | 'medium' | 'high';
   readonly timeline: string;
-  readonly priority: 'critical|high|medium|low';
+  readonly priority: 'critical|high|medium|low;
   readonly implementation: RecommendationImplementation;
 }
 
@@ -256,7 +256,7 @@ export class CapacityPlanningService extends TypedEventBase {
       this.factSystem = this.createFactSystemFallback();
 
       this.initialized = true;
-      this.logger.info('Capacity Planning Service initialized successfully');
+      this.logger.info('Capacity Planning Service initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Capacity Planning Service:',
@@ -272,11 +272,11 @@ export class CapacityPlanningService extends TypedEventBase {
   async calculateTeamCapacities(teams: any[]): Promise<TeamCapacity[]> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Calculating team capacities', {
+    this.logger.info('Calculating team capacities', {'
       teamCount: teams.length,
     });
 
-    const timer = this.performanceTracker.startTimer('capacity_calculation');
+    const timer = this.performanceTracker.startTimer('capacity_calculation');'
 
     try {
       const capacities: TeamCapacity[] = [];
@@ -326,9 +326,9 @@ export class CapacityPlanningService extends TypedEventBase {
         this.teamCapacities.set(team.id, teamCapacity);
       }
 
-      this.performanceTracker.endTimer('capacity_calculation');
+      this.performanceTracker.endTimer('capacity_calculation');'
 
-      this.emit('team-capacities-calculated', {
+      this.emit('team-capacities-calculated', {'
         teamCount: capacities.length,
         totalCapacity: capacities.reduce((sum, c) => sum + c.totalCapacity, 0),
         averageVelocity:
@@ -336,15 +336,15 @@ export class CapacityPlanningService extends TypedEventBase {
           capacities.length,
       });
 
-      this.logger.info('Team capacities calculated successfully', {
+      this.logger.info('Team capacities calculated successfully', {'
         teamCount: capacities.length,
         totalCapacity: capacities.reduce((sum, c) => sum + c.totalCapacity, 0),
       });
 
       return capacities;
     } catch (error) {
-      this.performanceTracker.endTimer('capacity_calculation');
-      this.logger.error('Team capacity calculation failed:', error);
+      this.performanceTracker.endTimer('capacity_calculation');'
+      this.logger.error('Team capacity calculation failed:', error);'
       throw error;
     }
   }
@@ -358,12 +358,12 @@ export class CapacityPlanningService extends TypedEventBase {
   ): Promise<CapacityPlanningResult> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Implementing capacity planning', {
+    this.logger.info('Implementing capacity planning', {'
       teamCount: teamCapacities.length,
       featureCount: features.length,
     });
 
-    const timer = this.performanceTracker.startTimer('capacity_planning');
+    const timer = this.performanceTracker.startTimer('capacity_planning');'
 
     try {
       // Initialize planning result
@@ -444,7 +444,7 @@ export class CapacityPlanningService extends TypedEventBase {
           });
         } else {
           planningResult.unallocatedFeatures.push(feature);
-          this.logger.warn('Feature allocation failed', {
+          this.logger.warn('Feature allocation failed', {'
             featureId: feature.featureId,
             featureName: feature.featureName,
             complexity: feature.complexity,
@@ -482,9 +482,9 @@ export class CapacityPlanningService extends TypedEventBase {
         planningResult
       );
 
-      this.performanceTracker.endTimer('capacity_planning');
+      this.performanceTracker.endTimer('capacity_planning');'
 
-      this.emit('capacity-planning-completed', {
+      this.emit('capacity-planning-completed', {'
         allocatedFeatures: planningResult.teamAllocations.length,
         unallocatedFeatures: planningResult.unallocatedFeatures.length,
         utilizationRate: planningResult.utilizationRate,
@@ -492,15 +492,15 @@ export class CapacityPlanningService extends TypedEventBase {
         recommendationCount: planningResult.recommendations.length,
       });
 
-      this.logger.info('Capacity planning completed successfully', {
+      this.logger.info('Capacity planning completed successfully', {'
         allocatedFeatures: planningResult.teamAllocations.length,
         utilizationRate: Math.round(planningResult.utilizationRate * 100),
       });
 
       return planningResult;
     } catch (error) {
-      this.performanceTracker.endTimer('capacity_planning');
-      this.logger.error('Capacity planning implementation failed:', error);
+      this.performanceTracker.endTimer('capacity_planning');'
+      this.logger.error('Capacity planning implementation failed:', error);'
       throw error;
     }
   }
@@ -546,7 +546,7 @@ export class CapacityPlanningService extends TypedEventBase {
    * Shutdown the service
    */
   shutdown(): void {
-    this.logger.info('Shutting down Capacity Planning Service');
+    this.logger.info('Shutting down Capacity Planning Service');'
     this.removeAllListeners();
     this.teamCapacities.clear();
     this.allocations.clear();
@@ -652,7 +652,7 @@ export class CapacityPlanningService extends TypedEventBase {
         const skillInfo = skillMap.get(skill.name)!;
         skillInfo.count++;
         skillInfo.capacity += member.hoursPerWeek * member.availability || 40;
-        skillInfo.proficiencies.push(skill.proficiency || 'intermediate');
+        skillInfo.proficiencies.push(skill.proficiency || 'intermediate');'
       }
     }
 
@@ -680,7 +680,7 @@ export class CapacityPlanningService extends TypedEventBase {
    */
   private calculateAverageProficiency(
     proficiencies: string[]
-  ): 'basic|intermediate|advanced|expert'{
+  ): 'basic|intermediate|advanced|expert'{'
     const proficiencyValues = {
       basic: 1,
       intermediate: 2,
@@ -695,10 +695,10 @@ export class CapacityPlanningService extends TypedEventBase {
         );
       }, 0) / proficiencies.length;
 
-    if (avgValue >= 3.5) return'expert';
-    if (avgValue >= 2.5) return 'advanced';
-    if (avgValue >= 1.5) return 'intermediate';
-    return 'basic';
+    if (avgValue >= 3.5) return'expert;
+    if (avgValue >= 2.5) return 'advanced;
+    if (avgValue >= 1.5) return 'intermediate;
+    return 'basic;
   }
 
   /**
@@ -765,7 +765,7 @@ export class CapacityPlanningService extends TypedEventBase {
     allocationStrategy: any,
     existingAllocations: TeamAllocation[]
   ): Promise<TeamAllocation | null> {
-    this.logger.debug('Allocating feature to team', {
+    this.logger.debug('Allocating feature to team', {'
       featureId: feature.featureId,
       complexity: feature.complexity,
       requiredSkills: feature.requiredSkills,
@@ -791,7 +791,7 @@ export class CapacityPlanningService extends TypedEventBase {
     }
 
     const team = teamMatch.team;
-    const allocationId = `alloc-${feature.featureId}-${team.teamId}-${Date.now()}`;
+    const allocationId = `alloc-${feature.featureId}-${team.teamId}-${Date.now()}`;`
 
     // Calculate skill matches
     const skillMatches = this.calculateSkillMatches(
@@ -818,7 +818,7 @@ export class CapacityPlanningService extends TypedEventBase {
       dependencies: feature.dependencies,
     };
 
-    this.logger.debug('Feature allocated successfully', {
+    this.logger.debug('Feature allocated successfully', {'
       featureId: feature.featureId,
       teamId: team.teamId,
       confidence: allocation.confidence,
@@ -846,7 +846,7 @@ export class CapacityPlanningService extends TypedEventBase {
         const match: SkillMatch = {
           skill: requiredSkill,
           required: true,
-          proficiencyRequired: 'intermediate', // Default requirement
+          proficiencyRequired: 'intermediate', // Default requirement'
           proficiencyAvailable: teamSkill.proficiency,
           memberCount: teamSkill.memberCount,
           matchQuality: this.evaluateSkillMatchQuality(
@@ -862,7 +862,7 @@ export class CapacityPlanningService extends TypedEventBase {
           skill: requiredSkill,
           required: true,
           proficiencyRequired: 'intermediate',
-          proficiencyAvailable: 'basic', // Assume basic if not present
+          proficiencyAvailable: 'basic', // Assume basic if not present'
           memberCount: 0,
           matchQuality: 'poor',
         };
@@ -880,7 +880,7 @@ export class CapacityPlanningService extends TypedEventBase {
     required: string,
     available: string,
     memberCount: number
-  ): 'perfect|good|adequate|poor'{
+  ): 'perfect|good|adequate|poor'{'
     const proficiencyLevels = {
       basic: 1,
       intermediate: 2,
@@ -892,12 +892,12 @@ export class CapacityPlanningService extends TypedEventBase {
     const availableLevel =
       proficiencyLevels[available as keyof typeof proficiencyLevels] || 1;
 
-    if (memberCount === 0) return'poor';
-    if (availableLevel >= requiredLevel + 1) return 'perfect';
+    if (memberCount === 0) return'poor;
+    if (availableLevel >= requiredLevel + 1) return 'perfect;
     if (availableLevel >= requiredLevel)
-      return memberCount >= 2 ? 'good' : 'adequate';
-    if (availableLevel >= requiredLevel - 1) return 'adequate';
-    return 'poor';
+      return memberCount >= 2 ? 'good' : 'adequate;
+    if (availableLevel >= requiredLevel - 1) return 'adequate;
+    return 'poor;
   }
 
   /**
@@ -912,16 +912,16 @@ export class CapacityPlanningService extends TypedEventBase {
 
     // Skill gap risks
     const poorSkillMatches = skillMatches.filter(
-      (sm) => sm.matchQuality === 'poor'
+      (sm) => sm.matchQuality === 'poor''
     );
     if (poorSkillMatches.length > 0) {
       risks.push({
         riskType: 'skill',
-        description: `Skill gaps identified: ${poorSkillMatches.map((sm) => sm.skill).join(', ')}`,
+        description: `Skill gaps identified: ${poorSkillMatches.map((sm) => sm.skill).join(', ')}`,`
         probability: 0.8,
         impact: 'high',
         mitigation: 'Cross-training or external expertise required',
-        owner: `team-lead-${team.teamId}`,
+        owner: `team-lead-${team.teamId}`,`
       });
     }
 
@@ -933,7 +933,7 @@ export class CapacityPlanningService extends TypedEventBase {
         probability: 0.7,
         impact: 'medium',
         mitigation: 'Consider feature decomposition or timeline extension',
-        owner: `team-lead-${team.teamId}`,
+        owner: `team-lead-${team.teamId}`,`
       });
     }
 
@@ -941,11 +941,11 @@ export class CapacityPlanningService extends TypedEventBase {
     if (feature.dependencies.length > 0) {
       risks.push({
         riskType: 'dependency',
-        description: `Feature has ${feature.dependencies.length} dependencies`,
+        description: `Feature has ${feature.dependencies.length} dependencies`,`
         probability: 0.6,
         impact: feature.dependencies.length > 2 ? 'high' : 'medium',
         mitigation: 'Coordinate dependency resolution early in the PI',
-        owner: `dependency-manager`,
+        owner: `dependency-manager`,`
       });
     }
 
@@ -976,9 +976,9 @@ export class CapacityPlanningService extends TypedEventBase {
 
     if (overallocatedTeams.length > 0) {
       risks.push({
-        riskId: `overallocation-${Date.now()}`,
+        riskId: `overallocation-${Date.now()}`,`
         type: 'overallocation',
-        description: `${overallocatedTeams.length} teams are overallocated`,
+        description: `${overallocatedTeams.length} teams are overallocated`,`
         impact: 'High risk of delayed delivery and team burnout',
         mitigation: 'Rebalance workload or adjust scope',
         severity: 'high',
@@ -1002,9 +1002,9 @@ export class CapacityPlanningService extends TypedEventBase {
 
     if (underutilizedTeams.length > 0) {
       risks.push({
-        riskId: `underutilization-${Date.now()}`,
+        riskId: `underutilization-${Date.now()}`,`
         type: 'underutilization',
-        description: `${underutilizedTeams.length} teams are underutilized`,
+        description: `${underutilizedTeams.length} teams are underutilized`,`
         impact:
           'Inefficient resource utilization and reduced delivery capacity',
         mitigation: 'Assign additional features or cross-train for other teams',
@@ -1018,14 +1018,14 @@ export class CapacityPlanningService extends TypedEventBase {
     // Unallocated features risk
     if (unallocatedFeatures.length > 0) {
       const criticalUnallocated = unallocatedFeatures.filter(
-        (f) => f.priority === 'critical' || f.priority ==='high'
+        (f) => f.priority === 'critical' || f.priority ==='high''
       );
 
       if (criticalUnallocated.length > 0) {
         risks.push({
-          riskId: `unallocated-critical-${Date.now()}`,
+          riskId: `unallocated-critical-${Date.now()}`,`
           type: 'timeline',
-          description: `${criticalUnallocated.length} critical/high priority features unallocated`,
+          description: `${criticalUnallocated.length} critical/high priority features unallocated`,`
           impact: 'Business objectives may not be met',
           mitigation:
             'Increase capacity, reduce scope, or defer lower priority work',
@@ -1188,7 +1188,7 @@ export class CapacityPlanningService extends TypedEventBase {
       balanceRecommendations:
         outliers.length > 0
           ? [
-              `Rebalance workload for ${outliers.length} teams with significant deviation`,
+              `Rebalance workload for ${outliers.length} teams with significant deviation`,`
             ]
           : ['Work distribution is well balanced'],
     };
@@ -1298,11 +1298,11 @@ export class CapacityPlanningService extends TypedEventBase {
   private createLoadBalancerFallback() {
     return {
       createAllocationStrategy: (config: any) => {
-        this.logger.debug('Allocation strategy created (fallback)');
-        return { strategy: 'simple_priority' };
+        this.logger.debug('Allocation strategy created (fallback)');'
+        return { strategy: 'simple_priority' };'
       },
       findBestMatch: (config: any) => {
-        this.logger.debug('Best match found (fallback)', {
+        this.logger.debug('Best match found (fallback)', {'
           workloadId: config.workload.featureId,
         });
         return {
@@ -1319,7 +1319,7 @@ export class CapacityPlanningService extends TypedEventBase {
   private createBrainCoordinatorFallback() {
     return {
       analyzeCapacity: (config: any) => {
-        this.logger.debug('Capacity analyzed (fallback)', {
+        this.logger.debug('Capacity analyzed (fallback)', {'
           teamId: config.team.id,
         });
         return {
@@ -1330,13 +1330,13 @@ export class CapacityPlanningService extends TypedEventBase {
         };
       },
       prioritizeFeatures: (config: any) => {
-        this.logger.debug('Features prioritized (fallback)', {
+        this.logger.debug('Features prioritized (fallback)', {'
           featureCount: config.features.length,
         });
         return { orderedFeatures: config.features };
       },
       generateRecommendations: (config: any) => {
-        this.logger.debug('Recommendations generated (fallback)');
+        this.logger.debug('Recommendations generated (fallback)');'
         return { recommendations: [] };
       },
     };
@@ -1348,7 +1348,7 @@ export class CapacityPlanningService extends TypedEventBase {
         return { name, startTime: Date.now() };
       },
       endTimer: (name: string) => {
-        this.logger.debug('Timer ended (fallback)', { name });
+        this.logger.debug('Timer ended (fallback)', { name });'
       },
     };
   }
@@ -1356,10 +1356,10 @@ export class CapacityPlanningService extends TypedEventBase {
   private createFactSystemFallback() {
     return {
       storeFact: (fact: any) => {
-        this.logger.debug('Fact stored (fallback)', { type: fact.type });
+        this.logger.debug('Fact stored (fallback)', { type: fact.type });'
       },
       getTeamHistory: (teamId: string) => {
-        this.logger.debug('Team history retrieved (fallback)', { teamId });
+        this.logger.debug('Team history retrieved (fallback)', { teamId });'
         return { velocity: [], capacity: [], reliability: [] };
       },
     };

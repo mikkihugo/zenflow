@@ -48,9 +48,9 @@ export { RepositoryAnalyzer } from './repository-analyzer.js';
  */
 export async function analyzeRepository(
   repositoryPath: string,
-  options?: import('./types/index.js').AnalysisOptions
-): Promise<import('./types/index.js').AnalysisResult> {
-  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
+  options?: import('./types/index.js').AnalysisOptions'
+): Promise<import('./types/index.js').AnalysisResult> {'
+  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');'
   const analyzer = new RepositoryAnalyzer(repositoryPath);
   return analyzer.analyze(options);
 }
@@ -60,13 +60,13 @@ export async function analyzeRepository(
  */
 export async function getRepositoryHealthScore(
   repositoryPath: string,
-  options?: import('./types/index.js').AnalysisOptions
+  options?: import('./types/index.js').AnalysisOptions'
 ): Promise<{
   score: number;
   breakdown: Record<string, number>;
   criticalIssues: string[];
 }> {
-  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
+  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');'
   const analyzer = new RepositoryAnalyzer(repositoryPath);
   return analyzer.getHealthScore(options);
 }
@@ -76,8 +76,8 @@ export async function getRepositoryHealthScore(
  */
 export async function createRepositoryAnalyzer(
   repositoryPath: string
-): Promise<import('./repository-analyzer.js').RepositoryAnalyzer> {
-  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
+): Promise<import('./repository-analyzer.js').RepositoryAnalyzer> {'
+  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');'
   return new RepositoryAnalyzer(repositoryPath);
 }
 
@@ -89,7 +89,7 @@ export const VERSION = '1.0.0';
 /**
  * Default analysis options
  */
-export const DEFAULT_ANALYSIS_OPTIONS: import('./types/index.js').AnalysisOptions =
+export const DEFAULT_ANALYSIS_OPTIONS: import('./types/index.js').AnalysisOptions ='
   {
     includeTests: false,
     includeNodeModules: false,

@@ -20,13 +20,13 @@ import { getLogger } from '@claude-zen/foundation';
 interface Agent {
   id: string;
   capabilities: string[];
-  status: 'idle' | 'busy';
+  status: 'idle' | 'busy;
 }
 
 interface Task {
   id: string;
   description: string;
-  strategy: 'parallel|sequential|adaptive|consensus';
+  strategy: 'parallel|sequential|adaptive|consensus;
   dependencies: string[];
   requiredCapabilities: string[];
   maxAgents: number;
@@ -47,7 +47,7 @@ interface WorkflowDefinition {
  * Schema definition for runtime type validation
  */
 export interface TypeSchema<T = any> {
-  type:|'string|number|boolean|object|array|null|undefined|function';
+  type:|'string|number|boolean|object|array|null|undefined|function;
   required?: boolean;
   properties?: { [K in keyof T]?: TypeSchema<T[K]> };
   items?: TypeSchema;
@@ -116,7 +116,7 @@ export interface DomainOperation {
   id: string;
   sourceDomain: Domain;
   targetDomain: Domain;
-  operationType: 'read|write|execute|transform|validate';
+  operationType: 'read|write|execute|transform|validate;
   inputSchema: TypeSchema;
   outputSchema: TypeSchema;
   contractValidation: ContractRule[];
@@ -136,7 +136,7 @@ export interface ContractRule {
   name: string;
   description: string;
   validator: (input: unknown, context: DomainContext) => Promise<boolean>;
-  severity: 'error|warning|info';
+  severity: 'error' | 'warning' | 'info';
   errorMessage: string;
 }
 
@@ -156,7 +156,7 @@ export interface DomainContext {
  */
 export interface RetryPolicy {
   maxAttempts: number;
-  backoffStrategy: 'linear' | 'exponential';
+  backoffStrategy: 'linear' | 'exponential;
   baseDelay: number;
   maxDelay: number;
 }
@@ -217,7 +217,7 @@ export class DomainValidationError extends Error {
     this.operation = operation;
     this.validationPath = validationPath;
     this.actualValue = actualValue;
-    this.expectedType = expectedType||'unknown';
+    this.expectedType = expectedType||'unknown;
     this.timestamp = new Date();
   }
 }
@@ -229,7 +229,7 @@ export class ContractViolationError extends Error {
   public readonly contractRule: string;
   public readonly domain: Domain;
   public readonly operation: string;
-  public readonly severity: 'error|warning|info';
+  public readonly severity: 'error' | 'warning' | 'info';
   public readonly timestamp: Date;
 
   constructor(
@@ -237,7 +237,7 @@ export class ContractViolationError extends Error {
     contractRule: string,
     domain: Domain,
     operation: string,
-    severity: 'error|warning|info' = 'error'
+    severity: 'error|warning|info' = 'error''
   ) {
     super(message);
     this.name = 'ContractViolationError';
@@ -275,12 +275,12 @@ export class DomainBoundaryValidator implements DomainBoundary {
       maxCrossingLogSize?: number;
     } = {}
   ) {
-    this.logger = getLogger(`domain-boundary-${domain}`);
+    this.logger = getLogger(`domain-boundary-${domain}`);`
     this.cacheEnabled = options.cacheEnabled ?? true;
     this.maxCacheSize = options.maxCacheSize ?? 1000;
     this.maxCrossingLogSize = options.maxCrossingLogSize ?? 10000;
 
-    this.logger.info(`Initialized domain boundary validator for ${domain}`, {
+    this.logger.info(`Initialized domain boundary validator for ${domain}`, {`
       cacheEnabled: this.cacheEnabled,
       maxCacheSize: this.maxCacheSize,
     });
@@ -295,7 +295,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
 
     // Check cache first for performance
     if (this.cacheEnabled && this.validationCache.has(cacheKey)) {
-      this.logger.debug('Cache hit for validation', { cacheKey });
+      this.logger.debug('Cache hit for validation', { cacheKey });'
       return this.validationCache.get(cacheKey);
     }
 
@@ -309,7 +309,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
       }
 
       // Track performance metrics
-      this.updatePerformanceMetrics(schema.description||'unknown', {
+      this.updatePerformanceMetrics(schema.description||'unknown', {'
         validationTimeMs: validationTime,
         schemaComplexity: this.calculateSchemaComplexity(schema),
         dataSize: this.estimateDataSize(data),
@@ -317,7 +317,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
         errorCount: 0,
       });
 
-      this.logger.debug('Validation successful', {
+      this.logger.debug('Validation successful', {'
         domain: this.domain,
         validationTime,
         schemaType: schema.type,
@@ -328,7 +328,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
       const validationTime = Date.now() - startTime;
 
       // Track failed validation metrics
-      this.updatePerformanceMetrics(schema.description||'unknown', {
+      this.updatePerformanceMetrics(schema.description||'unknown', {'
         validationTimeMs: validationTime,
         schemaComplexity: this.calculateSchemaComplexity(schema),
         dataSize: this.estimateDataSize(data),
@@ -336,7 +336,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
         errorCount: 1,
       });
 
-      this.logger.error('Validation failed', {
+      this.logger.error('Validation failed', {'
         domain: this.domain,
         error: error instanceof Error ? error.message : String(error),
         validationTime,
@@ -354,7 +354,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
     const startTime = Date.now();
     const crossingId = this.generateCrossingId();
 
-    this.logger.info('Enforcing contract', {
+    this.logger.info('Enforcing contract', {'
       operationId: operation.id,
       sourceDomain: operation.sourceDomain,
       targetDomain: operation.targetDomain,
@@ -388,7 +388,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
             );
             violations.push(violation);
 
-            this.logger.warn('Contract rule violation', {
+            this.logger.warn('Contract rule violation', {'
               rule: rule.name,
               severity: rule.severity,
               operation: operation.id,
@@ -396,18 +396,18 @@ export class DomainBoundaryValidator implements DomainBoundary {
           }
         } catch (error) {
           const violation = new ContractViolationError(
-            `Contract rule execution failed: ${error instanceof Error ? error.message : String(error)}`,
+            `Contract rule execution failed: ${error instanceof Error ? error.message : String(error)}`,`
             rule.name,
             operation.sourceDomain,
             operation.id,
-            'error'
+            'error''
           );
           violations.push(violation);
         }
       }
 
       // Check for blocking errors
-      const errorViolations = violations.filter((v) => v.severity === 'error');
+      const errorViolations = violations.filter((v) => v.severity === 'error');'
 
       if (errorViolations.length > 0) {
         return {
@@ -431,9 +431,9 @@ export class DomainBoundaryValidator implements DomainBoundary {
       }
 
       // Log warnings for non-blocking violations
-      const warnings = violations.filter((v) => v.severity === 'warning');
+      const warnings = violations.filter((v) => v.severity === 'warning');'
       if (warnings.length > 0) {
-        this.logger.warn('Contract warnings detected', {
+        this.logger.warn('Contract warnings detected', {'
           warningCount: warnings.length,
           operation: operation.id,
         });
@@ -458,7 +458,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
         },
       };
     } catch (error) {
-      this.logger.error('Contract enforcement failed', {
+      this.logger.error('Contract enforcement failed', {'
         operationId: operation.id,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -501,7 +501,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
       );
     }
 
-    this.logger.debug('Domain crossing tracked', {
+    this.logger.debug('Domain crossing tracked', {'
       crossingId: crossing.id,
       from,
       to,
@@ -539,7 +539,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
     this.validationCache.clear();
     this.crossingLog.length = 0;
     this.performanceMetrics.clear();
-    this.logger.info('Domain boundary validator reset', {
+    this.logger.info('Domain boundary validator reset', {'
       domain: this.domain,
     });
   }
@@ -586,14 +586,14 @@ export class DomainBoundaryValidator implements DomainBoundary {
   ): T {
     // Handle null/undefined values
     if (data === null||data === undefined) {
-      if (schema.type ==='null'||schema.type ==='undefined') {
+      if (schema.type ==='null'||schema.type ==='undefined') {'
         return data as T;
       }
       if (!schema.required) {
         return data as T;
       }
       throw new DomainValidationError(
-        `Required value is ${data}`,
+        `Required value is ${data}`,`
         'REQUIRED_VALUE_MISSING',
         this.domain,
         'validation',
@@ -605,56 +605,56 @@ export class DomainBoundaryValidator implements DomainBoundary {
 
     // Type-specific validation
     switch (schema.type) {
-      case 'string':
-        if (typeof data !== 'string') {
+      case 'string':'
+        if (typeof data !== 'string') {'
           throw new DomainValidationError(
-            `Expected string, got ${typeof data}`,
+            `Expected string, got ${typeof data}`,`
             'TYPE_MISMATCH',
             this.domain,
             'validation',
             path,
             data,
-            'string'
+            'string''
           );
         }
         break;
 
-      case 'number':
-        if (typeof data !== 'number'||isNaN(data)) {
+      case 'number':'
+        if (typeof data !== 'number'||isNaN(data)) {'
           throw new DomainValidationError(
             `Expected number, got ${typeof data}`,'TYPE_MISMATCH',
             this.domain,
             'validation',
             path,
             data,
-            'number'
+            'number''
           );
         }
         break;
 
-      case 'boolean':
-        if (typeof data !== 'boolean') {
+      case 'boolean':'
+        if (typeof data !== 'boolean') {'
           throw new DomainValidationError(
-            `Expected boolean, got ${typeof data}`,
+            `Expected boolean, got ${typeof data}`,`
             'TYPE_MISMATCH',
             this.domain,
             'validation',
             path,
             data,
-            'boolean'
+            'boolean''
           );
         }
         break;
 
-      case 'object':
-        if (typeof data !== 'object'||Array.isArray(data)) {
+      case 'object':'
+        if (typeof data !== 'object'||Array.isArray(data)) {'
           throw new DomainValidationError(
             `Expected object, got ${typeof data}`,'TYPE_MISMATCH',
             this.domain,
             'validation',
             path,
             data,
-            'object'
+            'object''
           );
         }
 
@@ -669,16 +669,16 @@ export class DomainBoundaryValidator implements DomainBoundary {
         }
         break;
 
-      case 'array':
+      case 'array':'
         if (!Array.isArray(data)) {
           throw new DomainValidationError(
-            `Expected array, got ${typeof data}`,
+            `Expected array, got ${typeof data}`,`
             'TYPE_MISMATCH',
             this.domain,
             'validation',
             path,
             data,
-            'array'
+            'array''
           );
         }
 
@@ -693,16 +693,16 @@ export class DomainBoundaryValidator implements DomainBoundary {
         }
         break;
 
-      case 'function':
-        if (typeof data !== 'function') {
+      case 'function':'
+        if (typeof data !== 'function') {'
           throw new DomainValidationError(
-            `Expected function, got ${typeof data}`,
+            `Expected function, got ${typeof data}`,`
             'TYPE_MISMATCH',
             this.domain,
             'validation',
             path,
             data,
-            'function'
+            'function''
           );
         }
         break;
@@ -711,26 +711,26 @@ export class DomainBoundaryValidator implements DomainBoundary {
     // Enum validation
     if (schema.enum && !schema.enum.includes(data as T)) {
       throw new DomainValidationError(
-        `Value not in allowed enum values`,
+        `Value not in allowed enum values`,`
         'ENUM_VIOLATION',
         this.domain,
         'validation',
         path,
         data,
-        `enum: ${schema.enum.join(', ')}`
+        `enum: ${schema.enum.join(', ')}``
       );
     }
 
     // Custom validator
     if (schema.validator && !schema.validator(data)) {
       throw new DomainValidationError(
-        `Custom validation failed`,
+        `Custom validation failed`,`
         'CUSTOM_VALIDATION_FAILED',
         this.domain,
         'validation',
         path,
         data,
-        'custom validator');
+        'custom validator');'
     }
 
     // Transform data if transformer provided
@@ -747,15 +747,15 @@ export class DomainBoundaryValidator implements DomainBoundary {
     const schemaStr = this.safeStringify(schema);
     const dataHash = this.simpleHash(dataStr);
     const schemaHash = this.simpleHash(schemaStr);
-    return `${dataHash}-${schemaHash}`;
+    return `${dataHash}-${schemaHash}`;`
   }
 
   private generateCrossingId(): string {
-    return `crossing-${this.domain}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `crossing-${this.domain}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private simpleHash(str: string): string {
-    if (!str||str.length === 0) return'0';
+    if (!str||str.length === 0) return'0;
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
@@ -767,18 +767,18 @@ export class DomainBoundaryValidator implements DomainBoundary {
 
   private safeStringify(obj: unknown): string {
     try {
-      return JSON.stringify(obj, this.getCircularReplacer())||'null';
+      return JSON.stringify(obj, this.getCircularReplacer())||'null;
     } catch {
-      return 'stringify-error';
+      return 'stringify-error;
     }
   }
 
   private getCircularReplacer() {
     const seen = new WeakSet();
     return (key: string, value: unknown) => {
-      if (typeof value === 'object' && value !== null) {
+      if (typeof value === 'object' && value !== null) {'
         if (seen.has(value)) {
-          return '[Circular]';
+          return '[Circular];
         }
         seen.add(value);
       }
@@ -892,7 +892,7 @@ export interface ValidationStatistics {
 class DomainBoundaryValidatorRegistry {
   private static instance: DomainBoundaryValidatorRegistry;
   private readonly validators = new Map<Domain, DomainBoundaryValidator>();
-  private readonly logger = getLogger('domain-boundary-registry');
+  private readonly logger = getLogger('domain-boundary-registry');'
 
   private constructor() {}
 
@@ -911,7 +911,7 @@ class DomainBoundaryValidatorRegistry {
     if (!this.validators.has(domain)) {
       const validator = new DomainBoundaryValidator(domain);
       this.validators.set(domain, validator);
-      this.logger.info('Created new domain validator', { domain });
+      this.logger.info('Created new domain validator', { domain });'
     }
     return this.validators.get(domain)!;
   }
@@ -930,7 +930,7 @@ class DomainBoundaryValidatorRegistry {
     for (const validator of this.validators.values()) {
       validator.reset();
     }
-    this.logger.info('Reset all domain validators');
+    this.logger.info('Reset all domain validators');'
   }
 
   /**

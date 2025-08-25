@@ -6,7 +6,7 @@
 import { ConversationOrchestratorImpl } from '../src/main';
 import type { AgentId, ConversationConfig } from '../src/types';
 
-describe('Teamwork Basic Integration - Hybrid Brain', () => {
+describe('Teamwork Basic Integration - Hybrid Brain', () => {'
   let orchestrator: ConversationOrchestratorImpl;
 
   const sampleAgents: AgentId[] = [
@@ -18,16 +18,16 @@ describe('Teamwork Basic Integration - Hybrid Brain', () => {
     orchestrator = new ConversationOrchestratorImpl();
   });
 
-  describe('🎯 Core Functionality', () => {
-    it('should create orchestrator with brain coordination', () => {
+  describe('🎯 Core Functionality', () => {'
+    it('should create orchestrator with brain coordination', () => {'
       expect(orchestrator).toBeDefined();
-      expect(typeof orchestrator.createConversation).toBe('function');
-      expect(typeof orchestrator.joinConversation).toBe('function');
-      expect(typeof orchestrator.sendMessage).toBe('function');
-      expect(typeof orchestrator.terminateConversation).toBe('function');
+      expect(typeof orchestrator.createConversation).toBe('function');'
+      expect(typeof orchestrator.joinConversation).toBe('function');'
+      expect(typeof orchestrator.sendMessage).toBe('function');'
+      expect(typeof orchestrator.terminateConversation).toBe('function');'
     });
 
-    it('should create a conversation successfully', async () => {
+    it('should create a conversation successfully', async () => {'
       const config: ConversationConfig = {
         title: 'Test Conversation',
         pattern: 'problem-solving',
@@ -45,24 +45,24 @@ describe('Teamwork Basic Integration - Hybrid Brain', () => {
 
       expect(session).toBeDefined();
       expect(session.id).toBeDefined();
-      expect(session.title).toBe('Test Conversation');
+      expect(session.title).toBe('Test Conversation');'
       expect(session.participants).toHaveLength(2);
-      expect(session.status).toBe('active');
-      expect(session.participants[0]?.id).toBe('agent-1');
-      expect(session.participants[1]?.id).toBe('agent-2');
+      expect(session.status).toBe('active');'
+      expect(session.participants[0]?.id).toBe('agent-1');'
+      expect(session.participants[1]?.id).toBe('agent-2');'
     });
 
-    it('should handle brain coordination initialization without errors', () => {
+    it('should handle brain coordination initialization without errors', () => {'
       // Test that the brain coordinator is initialized properly
-      // This verifies our hybrid brain system doesn't break the orchestrator
+      // This verifies our hybrid brain system doesn't break the orchestrator'
       const sessions = orchestrator.getActiveSessions();
       expect(Array.isArray(sessions)).toBe(true);
       expect(sessions).toHaveLength(0); // No sessions initially
     });
   });
 
-  describe('🧠 Hybrid Brain Integration', () => {
-    it('should maintain hybrid brain functionality during conversation lifecycle', async () => {
+  describe('🧠 Hybrid Brain Integration', () => {'
+    it('should maintain hybrid brain functionality during conversation lifecycle', async () => {'
       const config: ConversationConfig = {
         title: 'Brain Test Conversation',
         pattern: 'code-review',
@@ -78,7 +78,7 @@ describe('Teamwork Basic Integration - Hybrid Brain', () => {
 
       // Create conversation with brain coordination
       const session = await orchestrator.createConversation(config);
-      expect(session.status).toBe('active');
+      expect(session.status).toBe('active');'
 
       // Join additional agent
       const newAgent: AgentId = {
@@ -95,7 +95,7 @@ describe('Teamwork Basic Integration - Hybrid Brain', () => {
       // Terminate conversation
       const outcomes = await orchestrator.terminateConversation(
         session.id,
-        'Test completed'
+        'Test completed''
       );
       expect(Array.isArray(outcomes)).toBe(true);
 

@@ -19,10 +19,10 @@ export type CanUseTool = (
 ) => Promise<PermissionResult>;
 
 export type PermissionMode =
-  | 'allow-all'
-  | 'deny-all'
-  | 'interactive'
-  | 'custom';
+  | 'allow-all''
+  | 'deny-all''
+  | 'interactive''
+  | 'custom;
 
 // =============================================================================
 // MCP Server Configuration
@@ -59,8 +59,8 @@ export interface ClaudeSDKOptions extends BaseClaudeCodeOptions {
   retryDelay?: number;
   enableCancellation?: boolean;
   mcpServers?: McpServerConfig[];
-  logLevel?: 'debug' | 'info' | 'warn' | 'error';
-  outputFormat?: 'json' | 'text' | 'streaming';
+  logLevel?: 'debug' | 'info' | 'warn' | 'error;
+  outputFormat?: 'json' | 'text' | 'streaming;
   includeMetadata?: boolean;
   preserveHistory?: boolean;
   sessionId?: string;
@@ -72,7 +72,7 @@ export interface ClaudeSDKOptions extends BaseClaudeCodeOptions {
 // =============================================================================
 
 export interface ClaudeAssistantMessage {
-  type: 'assistant';
+  type: 'assistant;
   content: string;
   timestamp?: number;
   metadata?: {
@@ -86,12 +86,12 @@ export interface ClaudeAssistantMessage {
 }
 
 export interface ClaudeUserMessage {
-  type: 'user';
+  type: 'user;
   content: string;
   timestamp?: number;
   metadata?: {
     source?: string;
-    priority?: 'low' | 'medium' | 'high';
+    priority?: 'low' | 'medium' | 'high;
     context?: Record<string, unknown>;
     attachments?: string[];
     sessionId?: string;
@@ -100,7 +100,7 @@ export interface ClaudeUserMessage {
 }
 
 export interface ClaudeResultMessage {
-  type: 'result';
+  type: 'result;
   content: string;
   success: boolean;
   timestamp?: number;
@@ -116,11 +116,11 @@ export interface ClaudeResultMessage {
 }
 
 export interface ClaudeSystemMessage {
-  type: 'system';
+  type: 'system;
   content: string;
   timestamp?: number;
   metadata?: {
-    level?: 'info' | 'warn' | 'error';
+    level?: 'info' | 'warn' | 'error;
     source?: string;
     category?: string;
     sessionId?: string;
@@ -149,7 +149,7 @@ export const DEFAULT_TIMEOUTS = {
 } as const;
 
 export const DEFAULT_SDK_OPTIONS: Omit<
-  Required<ClaudeSDKOptions>,'customPermissionHandler'
+  Required<ClaudeSDKOptions>,'customPermissionHandler''
 > & { customPermissionHandler?: CanUseTool } = {
   model: 'claude-3-sonnet',
   maxTokens: 4096,

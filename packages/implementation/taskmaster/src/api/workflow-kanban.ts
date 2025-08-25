@@ -37,13 +37,13 @@ interface Logger {
 // Logger implementation following Google TS standards
 const getLogger = (name: string): Logger => ({
   info: (message: string, ...args: any[]): void =>
-    console.log(`[INFO] ${name}:`, message, ...args),
+    console.log(`[INFO] ${name}:`, message, ...args),`
   warn: (message: string, ...args: any[]): void =>
-    console.warn(`[WARN] ${name}:`, message, ...args),
+    console.warn(`[WARN] ${name}:`, message, ...args),`
   error: (message: string, ...args: any[]): void =>
-    console.error(`[ERROR] ${name}:`, message, ...args),
+    console.error(`[ERROR] ${name}:`, message, ...args),`
   debug: (message: string, ...args: any[]): void =>
-    console.debug(`[DEBUG] ${name}:`, message, ...args),
+    console.debug(`[DEBUG] ${name}:`, message, ...args),`
 });
 
 // Event system types (standalone, following Google TS standards)
@@ -103,20 +103,20 @@ import { validateTaskCreation, validateWIPLimits } from '../utils/validation';
  */
 export interface WorkflowKanbanEvents {
   // Task events
-  'task:created': [task: WorkflowTask];
-  'task:moved': [taskId: string, fromState: TaskState, toState: TaskState];
-  'task:blocked': [taskId: string, reason: string];
-  'task:completed': [taskId: string, duration: number];
+  'task:created': [task: WorkflowTask];'
+  'task:moved': [taskId: string, fromState: TaskState, toState: TaskState];'
+  'task:blocked': [taskId: string, reason: string];'
+  'task:completed': [taskId: string, duration: number];'
 
   // Flow events
-  'wip:exceeded': [state: TaskState, count: number, limit: number];
-  'bottleneck:detected': [bottleneck: WorkflowBottleneck];
-  'bottleneck:resolved': [bottleneckId: string];
+  'wip:exceeded': [state: TaskState, count: number, limit: number];'
+  'bottleneck:detected': [bottleneck: WorkflowBottleneck];'
+  'bottleneck:resolved': [bottleneckId: string];'
 
   // System events
-  'optimization:triggered': [strategy: string];
-  'health:critical': [health: number];
-  'metrics:updated': [metrics: FlowMetrics];
+  'optimization:triggered': [strategy: string];'
+  'health:critical': [health: number];'
+  'metrics:updated': [metrics: FlowMetrics];'
 
   // Error events
   error: [error: Error, context: string];
@@ -142,7 +142,7 @@ export interface WorkflowKanbanEvents {
  * - Professional error handling and logging
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * const kanban = new WorkflowKanban({
  *   enableIntelligentWIP: true,
  *   enableBottleneckDetection: true,
@@ -159,12 +159,12 @@ export interface WorkflowKanbanEvents {
  * });
  *
  * // Move through workflow
- * await kanban.moveTask(task.id, 'development');
+ * await kanban.moveTask(task.id, 'development');'
  *
  * // Monitor flow health
  * const metrics = await kanban.getFlowMetrics();
  * const bottlenecks = await kanban.detectBottlenecks();
- * ```
+ * ````
  */
 export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   private readonly logger: Logger;
@@ -189,12 +189,12 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   ) {
     super();
 
-    this.logger = getLogger('WorkflowKanban');
+    this.logger = getLogger('WorkflowKanban');'
     this.config = { ...createDefaultWorkflowConfig(), ...config };
     this.eventBus = eventBus;
     this.machine = createWorkflowMachine(this.config);
 
-    this.logger.info('WorkflowKanban initialized with config:', {
+    this.logger.info('WorkflowKanban initialized with config:', {'
       enableIntelligentWIP: this.config.enableIntelligentWIP,
       enableBottleneckDetection: this.config.enableBottleneckDetection,
       enableFlowOptimization: this.config.enableFlowOptimization,
@@ -213,7 +213,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
-      this.logger.warn('WorkflowKanban already initialized');
+      this.logger.warn('WorkflowKanban already initialized');'
       return;
     }
 
@@ -235,16 +235,16 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       }
 
       this.initialized = true;
-      this.logger.info('WorkflowKanban initialized successfully');
+      this.logger.info('WorkflowKanban initialized successfully');'
 
       // Emit initialization event
-      this.emitCoordinationEvent('workflow:initialized', {
+      this.emitCoordinationEvent('workflow:initialized', {'
         timestamp: new Date(),
         config: this.config,
       });
     } catch (error) {
-      this.logger.error('Failed to initialize WorkflowKanban:', error);
-      this.emit('error', error as Error, 'initialization');
+      this.logger.error('Failed to initialize WorkflowKanban:', error);'
+      this.emit('error', error as Error, 'initialization');'
       throw error;
     }
   }
@@ -266,9 +266,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       this.taskIndex.clear();
 
       this.initialized = false;
-      this.logger.info('WorkflowKanban shutdown complete');
+      this.logger.info('WorkflowKanban shutdown complete');'
     } catch (error) {
-      this.logger.error('Error during WorkflowKanban shutdown:', error);
+      this.logger.error('Error during WorkflowKanban shutdown:', error);'
       throw error;
     }
   }
@@ -283,7 +283,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   async createTask(taskData: {
     title: string;
     description?: string;
-    priority: 'critical|high|medium|low';
+    priority: 'critical|high|medium|low;
     estimatedEffort: number;
     assignedAgent?: string;
     dependencies?: string[];
@@ -298,7 +298,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       const validationResult = validateTaskCreation(taskData);
       if (!validationResult.success) {
         throw new Error(
-          `Invalid task data: ${validationResult.error.issues.map((i) => i.message).join(', ')}`
+          `Invalid task data: ${validationResult.error.issues.map((i) => i.message).join(', ')}``
         );
       }
 
@@ -329,11 +329,11 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       });
 
       // Emit events
-      this.emit('task:created', task);
-      this.emitCoordinationEvent('task:created', { task });
+      this.emit('task:created', task);'
+      this.emitCoordinationEvent('task:created', { task });'
 
       this.updatePerformanceMetrics(startTime);
-      this.logger.info(`Task created: ${task.id} - ${task.title}`);
+      this.logger.info(`Task created: ${task.id} - ${task.title}`);`
 
       return {
         success: true,
@@ -341,7 +341,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
         timestamp: new Date(),
       };
     } catch (error) {
-      this.logger.error('Failed to create task:', error);
+      this.logger.error('Failed to create task:', error);'
 
       return {
         success: false,
@@ -366,7 +366,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     try {
       const task = this.taskIndex.get(taskId);
       if (!task) {
-        throw new Error(`Task not found: ${taskId}`);
+        throw new Error(`Task not found: ${taskId}`);`
       }
 
       const fromState = task.state;
@@ -375,7 +375,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       const wipCheck = await this.checkWIPLimits(toState);
       if (!wipCheck.allowed) {
         this.logger.warn(
-          `WIP limit exceeded for ${toState}: ${wipCheck.currentCount}/${wipCheck.limit}`
+          `WIP limit exceeded for ${toState}: ${wipCheck.currentCount}/${wipCheck.limit}``
         );
 
         this.emit(
@@ -387,7 +387,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
         return {
           success: false,
-          error: `WIP limit exceeded for ${toState} (${wipCheck.currentCount}/${wipCheck.limit})`,
+          error: `WIP limit exceeded for ${toState} (${wipCheck.currentCount}/${wipCheck.limit})`,`
           timestamp: new Date(),
         };
       }
@@ -408,13 +408,13 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
           draft.state = toState;
           draft.updatedAt = new Date();
 
-          if (toState === 'development' && !draft.startedAt) {
+          if (toState === 'development' && !draft.startedAt) {'
             draft.startedAt = new Date();
           }
-          if (toState === 'done') {
+          if (toState === 'done') {'
             draft.completedAt = new Date();
           }
-          if (toState === 'blocked') {
+          if (toState === 'blocked') {'
             draft.blockedAt = new Date();
             draft.blockingReason = reason;
           }
@@ -425,17 +425,17 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
       // Calculate duration if completing
       const duration =
-        toState === 'done' && task.startedAt
+        toState === 'done' && task.startedAt'
           ? Date.now() - task.startedAt.getTime()
           : undefined;
 
       // Emit events
-      this.emit('task:moved', taskId, fromState, toState);
-      if (toState === 'blocked') {
-        this.emit('task:blocked', taskId, reason||'Unknown reason');
+      this.emit('task:moved', taskId, fromState, toState);'
+      if (toState === 'blocked') {'
+        this.emit('task:blocked', taskId, reason||'Unknown reason');'
       }
-      if (toState === 'done' && duration) {
-        this.emit('task:completed', taskId, duration);
+      if (toState === 'done' && duration) {'
+        this.emit('task:completed', taskId, duration);'
       }
 
       const result: TaskMovementResult = {
@@ -446,10 +446,10 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
         timestamp: new Date(),
       };
 
-      this.emitCoordinationEvent('task:moved', result);
+      this.emitCoordinationEvent('task:moved', result);'
 
       this.updatePerformanceMetrics(startTime);
-      this.logger.info(`Task moved: ${taskId} from ${fromState} to ${toState}`);
+      this.logger.info(`Task moved: ${taskId} from ${fromState} to ${toState}`);`
 
       return {
         success: true,
@@ -457,7 +457,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
         timestamp: new Date(),
       };
     } catch (error) {
-      this.logger.error('Failed to move task:', error);
+      this.logger.error('Failed to move task:', error);'
 
       return {
         success: false,
@@ -542,7 +542,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     const validation = validateWIPLimits(updatedLimits);
     if (!validation.success) {
       throw new Error(
-        `Invalid WIP limits: ${validation.error.issues.map((i) => i.message).join(', ')}`
+        `Invalid WIP limits: ${validation.error.issues.map((i) => i.message).join(', ')}``
       );
     }
 
@@ -554,8 +554,8 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       },
     });
 
-    this.logger.info('WIP limits updated:', validation.data);
-    this.emitCoordinationEvent('wip:updated', { limits: validation.data });
+    this.logger.info('WIP limits updated:', validation.data);'
+    this.emitCoordinationEvent('wip:updated', { limits: validation.data });'
   }
 
   // =============================================================================
@@ -570,8 +570,8 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
     // Get current tasks and calculate metrics using Immer utilities
     const allTasks = Array.from(this.taskIndex.values())();
-    const completedTasks = allTasks.filter((t) => t.state ==='done');
-    const blockedTasks = allTasks.filter((t) => t.state === 'blocked');
+    const completedTasks = allTasks.filter((t) => t.state ==='done');'
+    const blockedTasks = allTasks.filter((t) => t.state === 'blocked');'
 
     if (completedTasks.length === 0) return null;
 
@@ -587,7 +587,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       }
     );
 
-    this.emit('metrics:updated', metrics);
+    this.emit('metrics:updated', metrics);'
     return metrics;
   }
 
@@ -609,8 +609,8 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       (t) => t.createdAt >= range.start && t.createdAt <= range.end
     );
 
-    const completedTasks = tasksInRange.filter((t) => t.state ==='done');
-    const blockedTasks = tasksInRange.filter((t) => t.state === 'blocked');
+    const completedTasks = tasksInRange.filter((t) => t.state ==='done');'
+    const blockedTasks = tasksInRange.filter((t) => t.state === 'blocked');'
 
     // Calculate averages
     const cycleTimes = completedTasks
@@ -682,7 +682,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       // WIP capacity bottleneck
       if (wipCheck.utilization > 0.9) {
         bottlenecks.push({
-          id: `wip-${state}-${Date.now()}`,
+          id: `wip-${state}-${Date.now()}`,`
           state,
           type: 'capacity',
           severity: wipCheck.utilization > 0.95 ? 'critical' : 'high',
@@ -690,7 +690,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
           detectedAt: timestamp,
           affectedTasks: tasks.map((t) => t.id),
           estimatedDelay: (tasks.length - wipCheck.limit) * 2, // Rough estimate
-          recommendedResolution: `Increase WIP limit for ${state} or optimize task flow`,
+          recommendedResolution: `Increase WIP limit for ${state} or optimize task flow`,`
           metadata: {
             currentCount: wipCheck.currentCount,
             limit: wipCheck.limit,
@@ -708,7 +708,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
       if (oldTasks.length > 0) {
         bottlenecks.push({
-          id: `dwelling-${state}-${Date.now()}`,
+          id: `dwelling-${state}-${Date.now()}`,`
           state,
           type: 'process',
           severity: oldTasks.length > 3 ? 'high' : 'medium',
@@ -716,7 +716,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
           detectedAt: timestamp,
           affectedTasks: oldTasks.map((t) => t.id),
           estimatedDelay: 24 * oldTasks.length,
-          recommendedResolution: `Review long-dwelling tasks in ${state} for process improvements`,
+          recommendedResolution: `Review long-dwelling tasks in ${state} for process improvements`,`
           metadata: {
             oldTaskCount: oldTasks.length,
             totalTasks: tasks.length,
@@ -734,7 +734,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
     // Emit bottleneck events
     for (const bottleneck of bottlenecks) {
-      this.emit('bottleneck:detected', bottleneck);
+      this.emit('bottleneck:detected', bottleneck);'
 
       // Send to XState machine
       this.workflowMachine?.send({
@@ -744,7 +744,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     }
 
     const report: BottleneckReport = {
-      reportId: `report-${timestamp.getTime()}`,
+      reportId: `report-${timestamp.getTime()}`,`
       generatedAt: timestamp,
       timeRange: {
         start: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
@@ -765,7 +765,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     };
 
     this.logger.info(
-      `Bottleneck detection complete: ${bottlenecks.length} bottlenecks found`
+      `Bottleneck detection complete: ${bottlenecks.length} bottlenecks found``
     );
 
     return report;
@@ -797,7 +797,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
     // Check for critical health
     if (overallHealth < 0.3) {
-      this.emit('health:critical', overallHealth);
+      this.emit('health:critical', overallHealth);'
     }
 
     return {
@@ -812,11 +812,11 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       activeIssues: bottleneckReport.bottlenecks,
       recommendations: [
         ...(overallHealth < 0.5
-          ? ['System health is degraded - consider immediate optimization']
+          ? ['System health is degraded - consider immediate optimization']'
           : []),
         ...(wipHealth < 0.7 ? ['WIP limits may need adjustment'] : []),
         ...(bottleneckHealth < 0.7
-          ? ['Active bottlenecks require attention']
+          ? ['Active bottlenecks require attention']'
           : []),
         ...(flowHealth < 0.7 ? ['Flow efficiency is below optimal'] : []),
       ],
@@ -830,13 +830,13 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   private ensureInitialized(): void {
     if (!this.initialized) {
       throw new Error(
-        'WorkflowKanban not initialized - call initialize() first'
+        'WorkflowKanban not initialized - call initialize() first''
       );
     }
   }
 
   private generateTaskId(): string {
-    return `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private updatePerformanceMetrics(startTime: number): void {
@@ -902,7 +902,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     // Simple quality metric based on tasks not being blocked
     const totalTasks = completedTasks.length;
     const blockedTasks = Array.from(this.taskIndex.values()).filter(
-      (t) => t.state ==='blocked'
+      (t) => t.state ==='blocked''
     ).length;
 
     return totalTasks > 0
@@ -912,11 +912,11 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
   private calculateSystemHealth(bottlenecks: WorkflowBottleneck[]): number {
     const criticalCount = bottlenecks.filter(
-      (b) => b.severity === 'critical'
+      (b) => b.severity === 'critical''
     ).length;
-    const highCount = bottlenecks.filter((b) => b.severity === 'high').length;
+    const highCount = bottlenecks.filter((b) => b.severity === 'high').length;'
     const mediumCount = bottlenecks.filter(
-      (b) => b.severity === 'medium'
+      (b) => b.severity === 'medium''
     ).length;
 
     const healthImpact =
@@ -950,20 +950,20 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
   private getOptimizationStrategy(bottleneck: WorkflowBottleneck): any {
     switch (bottleneck.type) {
-      case 'capacity':
-        return 'wip_reduction';
-      case 'process':
-        return 'bottleneck_removal';
-      case 'dependency':
-        return 'parallel_processing';
+      case 'capacity':'
+        return 'wip_reduction;
+      case 'process':'
+        return 'bottleneck_removal;
+      case 'dependency':'
+        return 'parallel_processing;
       default:
-        return 'cycle_time_reduction';
+        return 'cycle_time_reduction;
     }
   }
 
   private handleMachineStateChange(state: any): void {
     // Handle XState machine state changes
-    this.logger.debug('Machine state changed:', state.value);
+    this.logger.debug('Machine state changed:', state.value);'
 
     // Extract relevant data from machine context
     if (state.context) {
@@ -972,7 +972,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       // Sync local state with machine state
       if (context.errors.length > 0) {
         const latestError = context.errors[context.errors.length - 1];
-        this.logger.error('Machine error:', latestError);
+        this.logger.error('Machine error:', latestError);'
       }
     }
   }
@@ -983,10 +983,10 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       try {
         const metrics = await this.getFlowMetrics();
         if (metrics) {
-          this.emit('metrics:updated', metrics);
+          this.emit('metrics:updated', metrics);'
         }
       } catch (error) {
-        this.logger.error('Real-time monitoring error:', error);
+        this.logger.error('Real-time monitoring error:', error);'
       }
     }, this.config.wipCalculationInterval);
   }
@@ -1000,7 +1000,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       });
 
       this.eventBus.emit(event).catch((error) => {
-        this.logger.error('Failed to emit coordination event:', error);
+        this.logger.error('Failed to emit coordination event:', error);'
       });
     }
   }

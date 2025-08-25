@@ -8,7 +8,7 @@ export namespace AuthAnthropic {
     const pkce = await generatePKCE()
 
     const url = new URL(
-      `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize`,
+      `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize`,`
       import.meta.url,
     )
     url.searchParams.set("code", "true")

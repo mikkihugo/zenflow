@@ -46,7 +46,7 @@ interface PIPlanningConfig {
   confidenceThreshold: number;
 }
 
-const logger = getLogger('PIPlanningMachine');
+const logger = getLogger('PIPlanningMachine');'
 
 // ============================================================================
 // STATE MACHINE CONTEXT
@@ -68,7 +68,7 @@ export interface PIPlanningContext {
   readonly dependencies: Dependency[];
   readonly risks: Risk[];
   readonly confidenceVote?: number; // 1-5 scale
-  readonly commitmentLevel: 'uncommitted|partial|committed';
+  readonly commitmentLevel: 'uncommitted' | 'partial' | 'committed';
   readonly blockers: string[];
   readonly facilitatorNotes: string[];
   readonly errorMessage?: string;
@@ -77,12 +77,12 @@ export interface PIPlanningContext {
 /**
  * PI Planning state machine events
  */
-export type PIPlanningEvent =|{ type:'START_PLANNING'; startTime: Date }|{ type:'BUSINESS_CONTEXT_COMPLETE'}|{ type:'ARCHITECTURE_VISION_COMPLETE'}|{ type:'PLANNING_CONTEXT_COMPLETE'}|{ type:'BEGIN_DAY1_PLANNING'}|{
-      type:'TEAM_PLANNING_COMPLETE';
+export type PIPlanningEvent =|{ type:'START_PLANNING'; startTime: Date }|{ type:'BUSINESS_CONTEXT_COMPLETE'}|{ type:'ARCHITECTURE_VISION_COMPLETE'}|{ type:'PLANNING_CONTEXT_COMPLETE'}|{ type:'BEGIN_DAY1_PLANNING'}|{'
+      type:'TEAM_PLANNING_COMPLETE;
       artId: string;
       capacity: TeamCapacity;
       features: Feature[];
-    }|{ type:'DAY1_COMPLETE'; dependencies: Dependency[]; risks: Risk[] }|{ type:'BEGIN_DAY2_PLANNING'}|{ type:'DEPENDENCY_RESOLVED'; dependencyId: string }|{ type:'RISK_ADDRESSED'; riskId: string }|{ type:'OBJECTIVE_DEFINED'; objective: PIObjective }|{ type:'DAY2_COMPLETE'; objectives: PIObjective[] }|{ type:'CONFIDENCE_VOTE'; vote: number }|{ type:'PLANNING_ADJUSTMENTS_NEEDED'; adjustments: string[] }|{ type:'ADJUSTMENTS_COMPLETE'}|{ type:'COMMIT_TO_PI'}|{ type:'ABORT_PLANNING'; reason: string }|{ type:'RESTART_PLANNING' };
+    }|{ type:'DAY1_COMPLETE'; dependencies: Dependency[]; risks: Risk[] }|{ type:'BEGIN_DAY2_PLANNING'}|{ type:'DEPENDENCY_RESOLVED'; dependencyId: string }|{ type:'RISK_ADDRESSED'; riskId: string }|{ type:'OBJECTIVE_DEFINED'; objective: PIObjective }|{ type:'DAY2_COMPLETE'; objectives: PIObjective[] }|{ type:'CONFIDENCE_VOTE'; vote: number }|{ type:'PLANNING_ADJUSTMENTS_NEEDED'; adjustments: string[] }|{ type:'ADJUSTMENTS_COMPLETE'}|{ type:'COMMIT_TO_PI'}|{ type:'ABORT_PLANNING'; reason: string }|{ type:'RESTART_PLANNING' };'
 
 // ============================================================================
 // GUARDS (BUSINESS RULES)
@@ -114,7 +114,7 @@ const piPlanningGuards = {
    */
   dependenciesManageable: ({ context }: { context: PIPlanningContext }) => {
     const criticalDependencies = context.dependencies.filter(
-      (d) => (d as any).criticality === 'high'||(d as any).type ==='blocking'
+      (d) => (d as any).criticality === 'high'||(d as any).type ==='blocking''
     ).length;
     return criticalDependencies <= 5;
   },
@@ -123,7 +123,7 @@ const piPlanningGuards = {
    * Check if high risks are addressed with mitigation plans
    */
   risksAddressed: ({ context }: { context: PIPlanningContext }) => {
-    const highRisks = context.risks.filter((r) => r.impact === 'high');
+    const highRisks = context.risks.filter((r) => r.impact === 'high');'
     return highRisks.every((r) => r.mitigation);
   },
 
@@ -186,7 +186,7 @@ const piPlanningActions = {
     planningStartTime: ({
       event,
     }: {
-      event: Extract<PIPlanningEvent, { type:'START_PLANNING' }>;
+      event: Extract<PIPlanningEvent, { type:'START_PLANNING' }>;'
     }) => event.startTime,
     commitmentLevel: () => 'uncommitted' as const,
     blockers: () => [],
@@ -201,14 +201,14 @@ const piPlanningActions = {
     totalCapacity: ({ context, event }) => {
       const teamEvent = event as Extract<
         PIPlanningEvent,
-        { type: 'TEAM_PLANNING_COMPLETE' }
+        { type: 'TEAM_PLANNING_COMPLETE' }'
       >;
       return [...context.totalCapacity, teamEvent.capacity];
     },
     plannedFeatures: ({ context, event }) => {
       const teamEvent = event as Extract<
         PIPlanningEvent,
-        { type: 'TEAM_PLANNING_COMPLETE' }
+        { type: 'TEAM_PLANNING_COMPLETE' }'
       >;
       return [...context.plannedFeatures, ...teamEvent.features];
     },
@@ -222,12 +222,12 @@ const piPlanningActions = {
     dependencies: ({
       event,
     }: {
-      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;
+      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;'
     }) => event.dependencies,
     risks: ({
       event,
     }: {
-      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;
+      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;'
     }) => event.risks,
   }),
 
@@ -238,7 +238,7 @@ const piPlanningActions = {
     piObjectives: ({
       event,
     }: {
-      event: Extract<PIPlanningEvent, { type: 'DAY2_COMPLETE' }>;
+      event: Extract<PIPlanningEvent, { type: 'DAY2_COMPLETE' }>;'
     }) => event.objectives,
     day2CompletionTime: () => new Date(),
   }),
@@ -250,7 +250,7 @@ const piPlanningActions = {
     confidenceVote: ({
       event,
     }: {
-      event: Extract<PIPlanningEvent, { type: 'CONFIDENCE_VOTE' }>;
+      event: Extract<PIPlanningEvent, { type: 'CONFIDENCE_VOTE' }>;'
     }) => event.vote,
   }),
 
@@ -261,7 +261,7 @@ const piPlanningActions = {
     blockers: ({
       event,
     }: {
-      event: Extract<PIPlanningEvent, { type: 'PLANNING_ADJUSTMENTS_NEEDED' }>;
+      event: Extract<PIPlanningEvent, { type: 'PLANNING_ADJUSTMENTS_NEEDED' }>;'
     }) => event.adjustments,
   }),
 
@@ -289,7 +289,7 @@ const piPlanningActions = {
     context: PIPlanningContext;
     event: PIPlanningEvent;
   }) => {
-    logger.info(`PI ${context.pi.id} Planning: ${event.type}`, {
+    logger.info(`PI ${context.pi.id} Planning: ${event.type}`, {`
       piId: context.pi.id,
       event: event.type,
       timestamp: new Date(),
@@ -417,7 +417,7 @@ export const piPlanningMachine = createMachine(
             on: {
               OBJECTIVE_DEFINED: {
                 target: 'objectiveSetting',
-                // Store individual objectives as they're defined
+                // Store individual objectives as they're defined'
               },
               DAY2_COMPLETE: {
                 target: '#piPlanning.confidenceVote',
@@ -510,7 +510,7 @@ export const piPlanningMachine = createMachine(
           // Coordinate planning across multiple ARTs
           // This would integrate with actual planning tools
           logger.info(
-            `Orchestrating PI planning for ${input.arts.length} ARTs`
+            `Orchestrating PI planning for ${input.arts.length} ARTs``
           );
 
           // Mock coordination process
@@ -570,7 +570,7 @@ export function createPIPlanningMachine(
             // Coordinate planning across multiple ARTs
             // This would integrate with actual planning tools
             logger.info(
-              `Orchestrating PI planning for ${input.arts.length} ARTs`
+              `Orchestrating PI planning for ${input.arts.length} ARTs``
             );
 
             // Mock coordination process

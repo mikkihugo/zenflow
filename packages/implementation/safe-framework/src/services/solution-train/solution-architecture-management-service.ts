@@ -350,7 +350,7 @@ export enum DecisionType {
  * Approval threshold
  */
 export interface ApprovalThreshold {
-  readonly type: 'unanimous|majority|single';
+  readonly type: 'unanimous' | 'majority' | 'single';
   readonly percentage?: number;
   readonly minimumCount?: number;
 }
@@ -585,7 +585,7 @@ export class SolutionArchitectureManagementService {
   async configureArchitecture(
     config: SolutionArchitectureConfig
   ): Promise<void> {
-    this.logger.info('Configuring solution architecture management', {
+    this.logger.info('Configuring solution architecture management', {'
       configId: config.configId,
       solutionId: config.solutionId,
       standardsCount: config.technologyStandards.length,
@@ -602,7 +602,7 @@ export class SolutionArchitectureManagementService {
       this.runwayComponents.set(component.componentId, component);
     }
 
-    this.logger.info('Solution architecture management configured', {
+    this.logger.info('Solution architecture management configured', {'
       configId: config.configId,
     });
   }
@@ -618,9 +618,9 @@ export class SolutionArchitectureManagementService {
     stakeholders: string[];
     urgency: DecisionUrgency;
   }): Promise<ArchitecturalDecision> {
-    const decisionId = `decision-${nanoid(12)}`;
+    const decisionId = `decision-${nanoid(12)}`;`
 
-    this.logger.info('Making architectural decision', {
+    this.logger.info('Making architectural decision', {'
       decisionId,
       title: decision.title,
       alternativeCount: decision.alternatives.length,
@@ -642,7 +642,7 @@ export class SolutionArchitectureManagementService {
       alternatives: decision.alternatives,
       criteria: decision.criteria,
       selectedAlternative,
-      rationale: `Selected based on evaluation criteria: ${selectedAlternative.name}`,
+      rationale: `Selected based on evaluation criteria: ${selectedAlternative.name}`,`
       consequences: selectedAlternative.consequences,
       stakeholders: decision.stakeholders,
       status: DecisionStatus.APPROVED,
@@ -653,7 +653,7 @@ export class SolutionArchitectureManagementService {
 
     this.architecturalDecisions.set(decisionId, architecturalDecision);
 
-    this.logger.info('Architectural decision made', {
+    this.logger.info('Architectural decision made', {'
       decisionId,
       selectedAlternative: selectedAlternative.name,
       status: architecturalDecision.status,
@@ -670,12 +670,12 @@ export class SolutionArchitectureManagementService {
   ): Promise<ArchitecturalComplianceReport> {
     const config = this.configurations.get(configId);
     if (!config) {
-      throw new Error(`Configuration not found: ${configId}`);
+      throw new Error(`Configuration not found: ${configId}`);`
     }
 
-    this.logger.info('Assessing architectural compliance', { configId });
+    this.logger.info('Assessing architectural compliance', { configId });'
 
-    const reportId = `compliance-${nanoid(12)}`;
+    const reportId = `compliance-${nanoid(12)}`;`
 
     // Assess technology standards compliance
     const standardsCompliance = await this.assessStandardsCompliance(
@@ -718,7 +718,7 @@ export class SolutionArchitectureManagementService {
 
     this.complianceReports.set(reportId, report);
 
-    this.logger.info('Compliance assessment completed', {
+    this.logger.info('Compliance assessment completed', {'
       reportId,
       overallCompliance: Math.round(overallCompliance),
       violationCount: report.violations.length,
@@ -737,10 +737,10 @@ export class SolutionArchitectureManagementService {
   ): Promise<RunwayComponent> {
     const component = this.runwayComponents.get(componentId);
     if (!component) {
-      throw new Error(`Runway component not found: ${componentId}`);
+      throw new Error(`Runway component not found: ${componentId}`);`
     }
 
-    this.logger.info('Managing runway component', {
+    this.logger.info('Managing runway component', {'
       componentId,
       operation,
       currentStatus: component.status,
@@ -786,12 +786,12 @@ export class SolutionArchitectureManagementService {
         break;
 
       default:
-        throw new Error(`Unknown component operation: ${operation}`);
+        throw new Error(`Unknown component operation: ${operation}`);`
     }
 
     this.runwayComponents.set(componentId, updatedComponent);
 
-    this.logger.info('Runway component updated', {
+    this.logger.info('Runway component updated', {'
       componentId,
       newStatus: updatedComponent.status,
     });
@@ -803,12 +803,12 @@ export class SolutionArchitectureManagementService {
    * Private helper methods
    */
   private validateArchitectureConfig(config: SolutionArchitectureConfig): void {
-    if (!config.configId || config.configId.trim() ==='') {
-      throw new Error('Configuration ID is required');
+    if (!config.configId || config.configId.trim() ==='') {'
+      throw new Error('Configuration ID is required');'
     }
 
-    if (!config.solutionId || config.solutionId.trim() ==='') {
-      throw new Error('Solution ID is required');
+    if (!config.solutionId || config.solutionId.trim() ==='') {'
+      throw new Error('Solution ID is required');'
     }
   }
 
@@ -848,7 +848,7 @@ export class SolutionArchitectureManagementService {
   private selectBestAlternative(
     evaluations: AlternativeEvaluation[]
   ): Alternative {
-    return orderBy(evaluations, 'totalScore', 'desc')[0].alternative;
+    return orderBy(evaluations, 'totalScore', 'desc')[0].alternative;'
   }
 
   private async assessStandardsCompliance(
@@ -889,7 +889,7 @@ export class SolutionArchitectureManagementService {
 
     if (standards < 80) {
       violations.push({
-        violationId: `violation-${nanoid(8)}`,
+        violationId: `violation-${nanoid(8)}`,`
         type: 'standards',
         severity: 'medium',
         description: 'Technology standards compliance below threshold',
@@ -899,7 +899,7 @@ export class SolutionArchitectureManagementService {
 
     if (principles < 75) {
       violations.push({
-        violationId: `violation-${nanoid(8)}`,
+        violationId: `violation-${nanoid(8)}`,`
         type: 'principles',
         severity: 'high',
         description: 'Architectural principles adherence below threshold',
@@ -914,12 +914,12 @@ export class SolutionArchitectureManagementService {
     const recommendations: string[] = [];
 
     if (compliance < 80) {
-      recommendations.push('Implement architectural governance processes');
-      recommendations.push('Increase compliance monitoring frequency');
+      recommendations.push('Implement architectural governance processes');'
+      recommendations.push('Increase compliance monitoring frequency');'
     }
 
-    recommendations.push('Regular architecture review sessions');
-    recommendations.push('Automated compliance checking in CI/CD');
+    recommendations.push('Regular architecture review sessions');'
+    recommendations.push('Automated compliance checking in CI/CD');'
 
     return recommendations;
   }
@@ -1048,7 +1048,7 @@ interface ArchitecturalComplianceReport {
 interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low|medium|high|critical;
   readonly description: string;
   readonly recommendation: string;
 }
@@ -1096,8 +1096,8 @@ interface RunwayTimebox {
 interface RunwayRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly probability: 'low|medium|high';
-  readonly impact: 'low|medium|high';
+  readonly probability: 'low' | 'medium' | 'high';
+  readonly impact: 'low' | 'medium' | 'high';
   readonly mitigation: string;
 }
 

@@ -8,7 +8,7 @@ const file = process.argv[2]
 
 const result = zodToJsonSchema(Config.Info, {
   /**
-   * We'll use the `default` values of the field as the only value in `examples`.
+   * We'll use the `default` values of the field as the only value in `examples`.`
    * This will ensure no docs are needed to be read, as the configuration is
    * self-documenting.
    *
@@ -23,7 +23,7 @@ const result = zodToJsonSchema(Config.Info, {
         schema.examples = [schema.default]
       }
 
-      schema.description = [schema.description || "", `default: \`${schema.default}\``]
+      schema.description = [schema.description || "", `default: \`${schema.default}\``]`
         .filter(Boolean)
         .join("\n\n")
         .trim()

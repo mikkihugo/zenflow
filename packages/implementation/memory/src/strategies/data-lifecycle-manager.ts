@@ -21,7 +21,7 @@ import type {
 } from './types';
 
 interface LifecycleAction {
-  type: 'promote|demote|migrate|cleanup|archive';
+  type: 'promote|demote|migrate|cleanup|archive;
   key: string;
   fromStage: LifecycleStage;
   toStage: LifecycleStage;
@@ -46,13 +46,13 @@ export class DataLifecycleManager extends TypedEventBase {
   private stageData = new Map<LifecycleStage, Map<string, unknown>>();
   private migrationTimer?: NodeJS.Timeout;
   private cleanupTimer?: NodeJS.Timeout;
-  private metrics: StrategyMetrics['lifecycle'];
+  private metrics: StrategyMetrics['lifecycle'];'
   private initialized = false;
 
   constructor(config: LifecycleConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('DataLifecycleManager');
+    this.logger = getLogger('DataLifecycleManager');'
     this.telemetry = new TelemetryManager({
       serviceName: 'data-lifecycle',
       enableTracing: true,
@@ -66,7 +66,7 @@ export class DataLifecycleManager extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      await withTrace('data-lifecycle-init', async () => {
+      await withTrace('data-lifecycle-init', async () => {'
         await this.telemetry.initialize();
 
         // Start periodic migration and cleanup
@@ -76,14 +76,14 @@ export class DataLifecycleManager extends TypedEventBase {
         }
 
         this.initialized = true;
-        this.logger.info('Data lifecycle manager initialized', {
+        this.logger.info('Data lifecycle manager initialized', {'
           stages: Object.keys(this.configuration.stages),
           enabled: this.configuration.enabled,
         });
-        recordMetric('data_lifecycle_initialized', 1);
+        recordMetric('data_lifecycle_initialized', 1);'
       });
     } catch (error) {
-      this.logger.error('Failed to initialize data lifecycle manager:', error);
+      this.logger.error('Failed to initialize data lifecycle manager:', error);'
       throw error;
     }
   }
@@ -104,7 +104,7 @@ export class DataLifecycleManager extends TypedEventBase {
     }
 
     const now = Date.now();
-    const stage = options.stage||'hot';
+    const stage = options.stage||'hot;
     const size = options.size||this.estimateSize(value);
 
     // Check stage capacity
@@ -133,10 +133,10 @@ export class DataLifecycleManager extends TypedEventBase {
     this.stageData.get(stage)?.set(key, value);
     this.entries.set(key, entry);
 
-    this.emit('dataStored', { key, stage, entry });
-    recordMetric('data_lifecycle_stored', 1, { stage });
+    this.emit('dataStored', { key, stage, entry });'
+    recordMetric('data_lifecycle_stored', 1, { stage });'
 
-    this.logger.debug(`Data stored in ${stage} stage: ${key}`);
+    this.logger.debug(`Data stored in ${stage} stage: ${key}`);`
   }
 
   retrieve(key: string): { value: unknown; entry: LifecycleEntry }|null {
@@ -167,7 +167,7 @@ export class DataLifecycleManager extends TypedEventBase {
       this.considerPromotion(entry);
     }
 
-    recordMetric('data_lifecycle_retrieved', 1, { stage: entry.stage });
+    recordMetric('data_lifecycle_retrieved', 1, { stage: entry.stage });'
     return { value, entry };
   }
 
@@ -185,8 +185,8 @@ export class DataLifecycleManager extends TypedEventBase {
     this.stageData.get(entry.stage)?.delete(key);
     this.entries.delete(key);
 
-    this.emit('dataDeleted', { key, stage: entry.stage });
-    recordMetric('data_lifecycle_deleted', 1, { stage: entry.stage });
+    this.emit('dataDeleted', { key, stage: entry.stage });'
+    recordMetric('data_lifecycle_deleted', 1, { stage: entry.stage });'
 
     return true;
   }
@@ -201,15 +201,15 @@ export class DataLifecycleManager extends TypedEventBase {
   }
 
   private initializeStages(): void {
-    this.stageData.set('hot', new Map())();
-    this.stageData.set('warm', new Map())();
-    this.stageData.set('cold', new Map())();
-    this.stageData.set('archive', new Map())();
-    this.stageData.set('expired', new Map())();
+    this.stageData.set('hot', new Map())();'
+    this.stageData.set('warm', new Map())();'
+    this.stageData.set('cold', new Map())();'
+    this.stageData.set('archive', new Map())();'
+    this.stageData.set('expired', new Map())();'
   }
 
   private canAccommodateInStage(stage: LifecycleStage, size: number): boolean {
-    if (stage === 'expired') return true;
+    if (stage === 'expired') return true;'
 
     const stageConfig =
       this.configuration.stages[
@@ -259,21 +259,21 @@ export class DataLifecycleManager extends TypedEventBase {
     const now = Date.now();
 
     // Promotion rules based on access patterns
-    if (entry.stage === 'warm'||entry.stage ==='cold') {
+    if (entry.stage === 'warm'||entry.stage ==='cold') {'
       const timeSinceLastAccess = now - entry.lastAccessed;
       const hotThreshold = this.configuration.stages.hot.accessThreshold;
 
       if (entry.accessFrequency > hotThreshold && timeSinceLastAccess < 60000) {
         // Less than 1 minute
-        this.migrate(entry.key, 'hot', 'High access frequency');
+        this.migrate(entry.key, 'hot', 'High access frequency');'
       }
     }
 
-    if (entry.stage === 'cold') {
+    if (entry.stage === 'cold') {'
       const warmThreshold = this.configuration.stages.warm.accessThreshold;
 
       if (entry.accessFrequency > warmThreshold) {
-        this.migrate(entry.key, 'warm', 'Moderate access frequency');
+        this.migrate(entry.key, 'warm', 'Moderate access frequency');'
       }
     }
   }
@@ -294,7 +294,7 @@ export class DataLifecycleManager extends TypedEventBase {
     if (!this.configuration.enabled) return;
 
     try {
-      await withTrace('data-lifecycle-migration', async () => {
+      await withTrace('data-lifecycle-migration', async () => {'
         const now = Date.now();
         const entries = Array.from(this.entries.values())();
         let migrated = 0;
@@ -308,7 +308,7 @@ export class DataLifecycleManager extends TypedEventBase {
           if (migrationNeeded) {
             const targetStage = this.determineTargetStage(entry, now);
             if (targetStage !== entry.stage) {
-              this.migrate(entry.key, targetStage, 'Periodic migration');
+              this.migrate(entry.key, targetStage, 'Periodic migration');'
               migrated++;
             }
           }
@@ -316,13 +316,13 @@ export class DataLifecycleManager extends TypedEventBase {
 
         if (migrated > 0) {
           this.logger.debug(
-            `Periodic migration completed: ${migrated} entries migrated`
+            `Periodic migration completed: ${migrated} entries migrated``
           );
-          recordMetric('data_lifecycle_periodic_migration', migrated);
+          recordMetric('data_lifecycle_periodic_migration', migrated);'
         }
       });
     } catch (error) {
-      this.logger.error('Periodic migration failed:', error);
+      this.logger.error('Periodic migration failed:', error);'
     }
   }
 
@@ -369,43 +369,43 @@ export class DataLifecycleManager extends TypedEventBase {
 
       if (entry.accessFrequency > hotThreshold && timeSinceAccess < 300000) {
         // 5 minutes
-        return'hot';
+        return'hot;
       }
 
       if (entry.accessFrequency > warmThreshold && timeSinceAccess < 3600000) {
         // 1 hour
-        return 'warm';
+        return 'warm;
       }
     }
 
     // Demotion logic
-    if (entry.stage === 'hot') {
+    if (entry.stage === 'hot') {'
       const hotDuration = this.configuration.stages.hot.duration;
       if (timeSinceAccess > hotDuration||age > hotDuration * 2) {
-        return'warm';
+        return'warm;
       }
     }
 
-    if (entry.stage === 'warm') {
+    if (entry.stage === 'warm') {'
       const warmDuration = this.configuration.stages.warm.duration;
       if (timeSinceAccess > warmDuration||age > warmDuration * 2) {
-        return'cold';
+        return'cold;
       }
     }
 
-    if (entry.stage === 'cold') {
+    if (entry.stage === 'cold') {'
       const coldDuration = this.configuration.stages.cold.duration;
       if (timeSinceAccess > coldDuration||age > coldDuration * 2) {
         return this.configuration.stages.archive.enabled
-          ?'archive'
-          : 'expired';
+          ?'archive''
+          : 'expired;
       }
     }
 
-    if (entry.stage === 'archive') {
+    if (entry.stage === 'archive') {'
       const archiveDuration = this.configuration.stages.archive.duration;
       if (age > archiveDuration) {
-        return 'expired';
+        return 'expired;
       }
     }
 
@@ -441,7 +441,7 @@ export class DataLifecycleManager extends TypedEventBase {
     // Handle archival compression
     let finalValue = currentValue;
     if (
-      targetStage === 'archive' &&
+      targetStage === 'archive' &&'
       this.configuration.stages.archive.enabled
     ) {
       finalValue = this.compressValue(currentValue);
@@ -466,7 +466,7 @@ export class DataLifecycleManager extends TypedEventBase {
     }
     this.metrics.migrations++;
 
-    this.emit('dataMigrated', {
+    this.emit('dataMigrated', {'
       key,
       fromStage: currentStage,
       toStage: targetStage,
@@ -474,20 +474,20 @@ export class DataLifecycleManager extends TypedEventBase {
       entry,
     });
 
-    recordMetric('data_lifecycle_migrated', 1, {
+    recordMetric('data_lifecycle_migrated', 1, {'
       fromStage: currentStage,
       toStage: targetStage,
       reason,
     });
 
     this.logger.debug(
-      `Data migrated: ${key} from ${currentStage} to ${targetStage} (${reason})`
+      `Data migrated: ${key} from ${currentStage} to ${targetStage} (${reason})``
     );
     return true;
   }
 
   private isPromotion(from: LifecycleStage, to: LifecycleStage): boolean {
-    const stageOrder: LifecycleStage[] = ['cold', 'warm', 'hot'];
+    const stageOrder: LifecycleStage[] = ['cold', 'warm', 'hot'];'
     return stageOrder.indexOf(to) > stageOrder.indexOf(from);
   }
 
@@ -504,7 +504,7 @@ export class DataLifecycleManager extends TypedEventBase {
 
   private compressValue(value: unknown): unknown {
     // Mock compression - in real implementation, would use actual compression
-    if (typeof value === 'string') {
+    if (typeof value === 'string') {'
       return { compressed: true, data: value };
     }
     return { compressed: true, data: JSON.stringify(value) };
@@ -529,7 +529,7 @@ export class DataLifecycleManager extends TypedEventBase {
       if (entry) {
         const nextStage = this.determineTargetStage(entry, Date.now())();
         if (nextStage !== entry.stage) {
-          this.migrate(entry.key, nextStage, 'Stage cleanup');
+          this.migrate(entry.key, nextStage, 'Stage cleanup');'
         }
       }
     }
@@ -539,12 +539,12 @@ export class DataLifecycleManager extends TypedEventBase {
     if (!this.configuration.enabled) return;
 
     try {
-      await withTrace('data-lifecycle-cleanup', async () => {
+      await withTrace('data-lifecycle-cleanup', async () => {'
         const now = Date.now();
         let cleaned = 0;
 
         // Clean expired data
-        const expiredMap = this.stageData.get('expired');
+        const expiredMap = this.stageData.get('expired');'
         if (expiredMap) {
           const expiredKeys = Array.from(expiredMap.keys())();
           for (const key of expiredKeys) {
@@ -570,13 +570,13 @@ export class DataLifecycleManager extends TypedEventBase {
 
         if (cleaned > 0) {
           this.logger.debug(
-            `Periodic cleanup completed: ${cleaned} entries removed`
+            `Periodic cleanup completed: ${cleaned} entries removed``
           );
-          recordMetric('data_lifecycle_periodic_cleanup', cleaned);
+          recordMetric('data_lifecycle_periodic_cleanup', cleaned);'
         }
       });
     } catch (error) {
-      this.logger.error('Periodic cleanup failed:', error);
+      this.logger.error('Periodic cleanup failed:', error);'
     }
   }
 
@@ -618,7 +618,7 @@ export class DataLifecycleManager extends TypedEventBase {
   }
 
   private getStageUtilization(stage: LifecycleStage): number {
-    if (stage === 'expired') return 0;
+    if (stage === 'expired') return 0;'
 
     const stageConfig =
       this.configuration.stages[
@@ -630,7 +630,7 @@ export class DataLifecycleManager extends TypedEventBase {
     return currentSize / stageConfig.maxSize;
   }
 
-  getMetrics(): StrategyMetrics['lifecycle'] {
+  getMetrics(): StrategyMetrics['lifecycle'] {'
     return { ...this.metrics };
   }
 
@@ -650,7 +650,7 @@ export class DataLifecycleManager extends TypedEventBase {
   forceMigration(
     key: string,
     targetStage: LifecycleStage,
-    reason ='Manual migration'
+    reason ='Manual migration''
   ): boolean {
     return this.migrate(key, targetStage, reason);
   }
@@ -677,7 +677,7 @@ export class DataLifecycleManager extends TypedEventBase {
       }
     }
 
-    this.logger.info('Data lifecycle configuration updated', newConfig);
+    this.logger.info('Data lifecycle configuration updated', newConfig);'
   }
 
   async shutdown(): Promise<void> {
@@ -694,6 +694,6 @@ export class DataLifecycleManager extends TypedEventBase {
     this.initializeStages();
 
     this.initialized = false;
-    this.logger.info('Data lifecycle manager shut down');
+    this.logger.info('Data lifecycle manager shut down');'
   }
 }

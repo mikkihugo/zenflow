@@ -29,11 +29,11 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
       if (
         schema.type &&
         typeof data !== schema.type &&
-        schema.type !== 'object'
+        schema.type !== 'object''
       ) {
         return {
           success: false,
-          error: new Error(`Expected type ${schema.type}, got ${typeof data}`),
+          error: new Error(`Expected type ${schema.type}, got ${typeof data}`),`
         };
       }
 
@@ -76,7 +76,7 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
   ): void {
     // Track cross-domain operations for audit and monitoring
     console.debug(
-      `Cross-domain operation: ${operation} from ${fromDomain} to ${toDomain}`
+      `Cross-domain operation: ${operation} from ${fromDomain} to ${toDomain}``
     );
   }
 

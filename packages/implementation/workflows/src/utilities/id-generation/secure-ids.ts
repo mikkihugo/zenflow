@@ -25,21 +25,21 @@ export class SecureIdGenerator {
    * Generate workflow-specific ID
    */
   static generateWorkflowId(): string {
-    return `workflow-${nanoid(12)}`;
+    return `workflow-${nanoid(12)}`;`
   }
 
   /**
    * Generate step-specific ID
    */
   static generateStepId(): string {
-    return `step-${nanoid(10)}`;
+    return `step-${nanoid(10)}`;`
   }
 
   /**
    * Generate execution ID
    */
   static generateExecutionId(): string {
-    return `exec-${nanoid(8)}`;
+    return `exec-${nanoid(8)}`;`
   }
 
   /**
@@ -47,7 +47,7 @@ export class SecureIdGenerator {
    */
   static generateUrlSafe(size: number = 21): string {
     const urlSafeAlphabet =
-      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_;
     return customAlphabet(urlSafeAlphabet, size)();
   }
 
@@ -55,6 +55,6 @@ export class SecureIdGenerator {
    * Generate numeric-only ID
    */
   static generateNumeric(size: number = 12): string {
-    return customAlphabet('0123456789', size)();
+    return customAlphabet('0123456789', size)();'
   }
 }

@@ -233,7 +233,7 @@ export class ImmutableContextUtils {
       draft.errors.push({
         ...error,
         timestamp: new Date(),
-        id: `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
       });
     });
   }

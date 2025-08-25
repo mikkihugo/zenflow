@@ -49,7 +49,7 @@ interface EpicOwnerManagerConfig {
   epicTimeboxWeeks: number;
 }
 
-const logger = getLogger('EpicKanbanMachine');
+const logger = getLogger('EpicKanbanMachine');'
 
 // ============================================================================
 // STATE MACHINE CONTEXT
@@ -75,7 +75,7 @@ export interface EpicKanbanContext {
 /**
  * Epic Kanban state machine events
  */
-export type EpicKanbanEvent =|{ type:'SUBMIT_FOR_ANALYSIS'; businessCase: BusinessCase }|{ type:'ANALYSIS_COMPLETE'; wsjfPriority: WSJFPriority }|{ type:'ANALYSIS_REJECTED'; reason: string }|{ type:'APPROVE_FOR_IMPLEMENTATION'}|{ type:'CAPACITY_AVAILABLE'}|{ type:'CAPACITY_FULL'}|{ type:'IMPLEMENTATION_STARTED'; startTime: Date }|{ type:'IMPLEMENTATION_BLOCKED'; blockers: string[] }|{ type:'UNBLOCK_IMPLEMENTATION'}|{ type:'IMPLEMENTATION_COMPLETE'}|{ type:'SPLIT_EPIC'; splitEpics: PortfolioEpic[] }|{ type:'CANCEL_EPIC'; reason: string }|{ type:'RETRY' };
+export type EpicKanbanEvent =|{ type:'SUBMIT_FOR_ANALYSIS'; businessCase: BusinessCase }|{ type:'ANALYSIS_COMPLETE'; wsjfPriority: WSJFPriority }|{ type:'ANALYSIS_REJECTED'; reason: string }|{ type:'APPROVE_FOR_IMPLEMENTATION'}|{ type:'CAPACITY_AVAILABLE'}|{ type:'CAPACITY_FULL'}|{ type:'IMPLEMENTATION_STARTED'; startTime: Date }|{ type:'IMPLEMENTATION_BLOCKED'; blockers: string[] }|{ type:'UNBLOCK_IMPLEMENTATION'}|{ type:'IMPLEMENTATION_COMPLETE'}|{ type:'SPLIT_EPIC'; splitEpics: PortfolioEpic[] }|{ type:'CANCEL_EPIC'; reason: string }|{ type:'RETRY' };'
 
 // ============================================================================
 // GUARDS (BUSINESS RULES)
@@ -154,7 +154,7 @@ const epicKanbanActions = {
     businessCase: ({
       event,
     }: {
-      event: Extract<EpicKanbanEvent, { type: 'SUBMIT_FOR_ANALYSIS' }>;
+      event: Extract<EpicKanbanEvent, { type: 'SUBMIT_FOR_ANALYSIS' }>;'
     }) => event.businessCase,
     analysisStartTime: () => new Date(),
     errorMessage: () => undefined,
@@ -167,7 +167,7 @@ const epicKanbanActions = {
     wsjfPriority: ({
       event,
     }: {
-      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_COMPLETE' }>;
+      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_COMPLETE' }>;'
     }) => event.wsjfPriority,
   }),
 
@@ -178,7 +178,7 @@ const epicKanbanActions = {
     errorMessage: ({
       event,
     }: {
-      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_REJECTED' }>;
+      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_REJECTED' }>;'
     }) => event.reason,
   }),
 
@@ -189,7 +189,7 @@ const epicKanbanActions = {
     implementationStartTime: ({
       event,
     }: {
-      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_STARTED' }>;
+      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_STARTED' }>;'
     }) => event.startTime,
     currentCapacityUsage: ({ context }) => context.currentCapacityUsage + 1,
   }),
@@ -201,7 +201,7 @@ const epicKanbanActions = {
     blockers: ({
       event,
     }: {
-      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_BLOCKED' }>;
+      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_BLOCKED' }>;'
     }) => event.blockers,
   }),
 
@@ -232,7 +232,7 @@ const epicKanbanActions = {
     event: EpicKanbanEvent;
   }) => {
     // Log epic state transition for audit trail
-    logger.info(`Epic ${context.epic.id}: ${event.type}`, {
+    logger.info(`Epic ${context.epic.id}: ${event.type}`, {`
       epicId: context.epic.id,
       event: event.type,
       timestamp: new Date(),
@@ -315,8 +315,8 @@ export const epicKanbanMachine = createMachine(
             guard: 'capacityAvailable',
             actions: 'startImplementation',
           },
-          CAPACITY_FULL: 'portfolio_backlog', // Stay in backlog
-          SPLIT_EPIC: 'funnel', // Return to funnel for re-evaluation
+          CAPACITY_FULL: 'portfolio_backlog', // Stay in backlog'
+          SPLIT_EPIC: 'funnel', // Return to funnel for re-evaluation'
         },
       },
 

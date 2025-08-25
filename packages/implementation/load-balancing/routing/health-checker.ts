@@ -16,11 +16,11 @@ const logger = {
   debug: (message: string, meta?: unknown) =>
     console.log(`[DEBUG] ${message}`, meta||'),
   info: (message: string, meta?: unknown) =>
-    console.log(`[INFO] ${message}`, meta|||),
+    console.log(`[INFO] ${message}`, meta|||),`
   warn: (message: string, meta?: unknown) =>
-    console.warn(`[WARN] ${message}`, meta|||),
+    console.warn(`[WARN] ${message}`, meta|||),`
   error: (message: string, meta?: unknown) =>
-    console.error(`[ERROR] ${message}`, meta|||),
+    console.error(`[ERROR] ${message}`, meta|||),`
 };
 
 interface HealthStatus {
@@ -50,7 +50,7 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
       const isHealthy = Math.random() > 0.1; // 90% success rate
       const responseTime = Date.now() - startTime;
 
-      const status = this.healthStatuses.get(agent.id)|'|{
+      const status = this.healthStatuses.get(agent.id)|'|{'
         healthy: true,
         lastCheck: new Date(),
         consecutiveFailures: 0,
@@ -59,14 +59,14 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
       if (isHealthy) {
         status.healthy = true;
         status.consecutiveFailures = 0;
-        status.details ='Agent responding normally';
+        status.details ='Agent responding normally;
       } else {
         status.healthy = false;
         status.consecutiveFailures++;
         status.details = 'Agent not responding';
 
         if (status.consecutiveFailures >= 3) {
-          this.emit('agent:unhealthy', agent.id);
+          this.emit('agent:unhealthy', agent.id);'
         }
       }
 
@@ -84,13 +84,13 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
 
       status.healthy = false;
       status.consecutiveFailures++;
-      status.details = `Health check failed: ${error}`;
+      status.details = `Health check failed: ${error}`;`
       status.lastCheck = new Date();
 
       this.healthStatuses.set(agent.id, status);
 
       if (status.consecutiveFailures >= 3) {
-        this.emit('agent:unhealthy', agent.id);
+        this.emit('agent:unhealthy', agent.id);'
       }
 
       return false;
@@ -135,7 +135,7 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
   private async performHealthChecks(): Promise<void> {
     const healthCheckPromises = this.activeAgents.map((agent) =>
       this.checkHealth(agent).catch((error) => {
-        logger.error(`Health check failed for agent ${agent.id}:`, error);
+        logger.error(`Health check failed for agent ${agent.id}:`, error);`
         return false;
       })
     );

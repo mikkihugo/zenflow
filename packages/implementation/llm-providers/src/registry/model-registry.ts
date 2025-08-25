@@ -17,7 +17,7 @@ import type {
   CLIProviderCapabilities,
 } from '../types/cli-providers';
 
-const logger = getLogger('ModelRegistry');
+const logger = getLogger('ModelRegistry');'
 
 /**
  * Model information interface
@@ -67,7 +67,7 @@ export class ModelRegistry extends TypedEventBase {
       ...config,
     };
 
-    logger.info('🏭 ModelRegistry initialized with DI pattern');
+    logger.info('🏭 ModelRegistry initialized with DI pattern');'
 
     if (this.registryConfig.autoDiscovery) {
       this.startAutoDiscovery();
@@ -78,19 +78,19 @@ export class ModelRegistry extends TypedEventBase {
    * Register a provider with the registry
    */
   registerProvider(provider: CLIProvider|APIProvider): void {
-    logger.info(`📝 Registering provider: ${provider.name} (${provider.id})`);
+    logger.info(`📝 Registering provider: ${provider.name} (${provider.id})`);`
 
     this.providers.set(provider.id, provider);
     this.loadProviderModels(provider);
 
-    this.emit('provider:registered', { providerId: provider.id, provider });
+    this.emit('provider:registered', { providerId: provider.id, provider });'
   }
 
   /**
    * Unregister a provider
    */
   unregisterProvider(providerId: string): void {
-    logger.info(`🗑️ Unregistering provider: ${providerId}`);
+    logger.info(`🗑️ Unregistering provider: ${providerId}`);`
 
     const provider = this.providers.get(providerId);
     if (provider) {
@@ -102,7 +102,7 @@ export class ModelRegistry extends TypedEventBase {
       }
 
       this.providers.delete(providerId);
-      this.emit('provider:unregistered', { providerId, provider });
+      this.emit('provider:unregistered', { providerId, provider });'
     }
   }
 
@@ -202,7 +202,7 @@ export class ModelRegistry extends TypedEventBase {
   }
 
   /**
-   * Load models from a provider's capabilities
+   * Load models from a provider's capabilities'
    */
   private loadProviderModels(provider: CLIProvider | APIProvider): void {
     try {
@@ -210,7 +210,7 @@ export class ModelRegistry extends TypedEventBase {
 
       for (const modelId of capabilities.models) {
         const modelInfo: ModelInfo = {
-          id: `${provider.id}:${modelId}`,
+          id: `${provider.id}:${modelId}`,`
           name: modelId,
           provider: provider.id,
           capabilities: this.extractCapabilities(capabilities),
@@ -222,17 +222,17 @@ export class ModelRegistry extends TypedEventBase {
 
         this.models.set(modelInfo.id, modelInfo);
         logger.info(
-          `📊 Registered model: ${modelInfo.name} from ${provider.name}`
+          `📊 Registered model: ${modelInfo.name} from ${provider.name}``
         );
       }
 
-      this.emit('models:loaded', {
+      this.emit('models:loaded', {'
         providerId: provider.id,
         modelCount: capabilities.models.length,
       });
     } catch (error) {
       logger.error(
-        `Failed to load models from provider ${provider.id}:`,
+        `Failed to load models from provider ${provider.id}:`,`
         error
       );
     }
@@ -270,14 +270,14 @@ export class ModelRegistry extends TypedEventBase {
    * Refresh model availability
    */
   private async refreshAvailability(): Promise<void> {
-    logger.debug('🔄 Refreshing model availability...');
+    logger.debug('🔄 Refreshing model availability...');'
 
     for (const [providerId, provider] of this.providers.entries()) {
       try {
         // Check if provider has healthCheck method
         if (
-          'healthCheck' in provider &&
-          typeof provider.healthCheck === 'function'
+          'healthCheck' in provider &&'
+          typeof provider.healthCheck === 'function''
         ) {
           const isHealthy = await provider.healthCheck();
 
@@ -288,7 +288,7 @@ export class ModelRegistry extends TypedEventBase {
               model.available = isHealthy;
 
               if (wasAvailable !== isHealthy) {
-                this.emit('model:availability-changed', {
+                this.emit('model:availability-changed', {'
                   modelId,
                   available: isHealthy,
                 });
@@ -297,7 +297,7 @@ export class ModelRegistry extends TypedEventBase {
           }
         }
       } catch (error) {
-        logger.warn(`Health check failed for provider ${providerId}:`, error);
+        logger.warn(`Health check failed for provider ${providerId}:`, error);`
       }
     }
   }
@@ -362,14 +362,14 @@ export class ModelRegistryService {
    * Initialize the service by registering all providers
    */
   initialize(): void {
-    logger.info('🚀 Initializing ModelRegistryService...');
+    logger.info('🚀 Initializing ModelRegistryService...');'
 
     for (const provider of this.providers) {
       this.registry.registerProvider(provider);
     }
 
     logger.info(
-      `✅ ModelRegistryService initialized with ${this.providers.length} providers`
+      `✅ ModelRegistryService initialized with ${this.providers.length} providers``
     );
   }
 

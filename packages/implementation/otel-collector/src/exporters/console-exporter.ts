@@ -23,11 +23,11 @@ export class ConsoleExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger(`ConsoleExporter:${config.name}`);
+    this.logger = getLogger(`ConsoleExporter:${config.name}`);`
   }
 
   async initialize(): Promise<void> {
-    this.logger.info('Console exporter initialized', {
+    this.logger.info('Console exporter initialized', {'
       name: this.config.name,
       signals: this.config.signals||['traces', 'metrics', 'logs'],
     });
@@ -50,7 +50,7 @@ export class ConsoleExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Console export failed', error);
+      this.logger.error('Console export failed', error);'
 
       return {
         success: false,
@@ -65,7 +65,7 @@ export class ConsoleExporter implements BaseExporter {
   async exportBatch(dataItems: TelemetryData[]): Promise<ExportResult> {
     try {
       this.logger.info(
-        `📦 Batch Export (${dataItems.length} items) - ${this.config.name}`
+        `📦 Batch Export (${dataItems.length} items) - ${this.config.name}``
       );
 
       for (const data of dataItems) {
@@ -85,7 +85,7 @@ export class ConsoleExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Console batch export failed', error);
+      this.logger.error('Console batch export failed', error);'
 
       return {
         success: false,
@@ -98,7 +98,7 @@ export class ConsoleExporter implements BaseExporter {
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Console exporter shut down', {
+    this.logger.info('Console exporter shut down', {'
       totalExported: this.exportCount,
     });
   }
@@ -108,7 +108,7 @@ export class ConsoleExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
@@ -124,50 +124,50 @@ export class ConsoleExporter implements BaseExporter {
    */
   private formatAndLog(data: TelemetryData): void {
     const timestamp = new Date(data.timestamp).toISOString();
-    const service = `${data.service.name}${data.service.version ? `@${data.service.version}` :''}`;
+    const service = `${data.service.name}${data.service.version ? `@${data.service.version}` :''}`;`
 
     let emoji = '📊';
     let color = '';
 
     switch (data.type) {
-      case 'traces':
+      case 'traces':'
         emoji = '🔍';
-        color = '\x1b[36m'; // Cyan
+        color = '\x1b[36m'; // Cyan'
         break;
-      case 'metrics':
+      case 'metrics':'
         emoji = '📊';
-        color = '\x1b[32m'; // Green
+        color = '\x1b[32m'; // Green'
         break;
-      case 'logs':
+      case 'logs':'
         emoji = '📝';
-        color = '\x1b[33m'; // Yellow
+        color = '\x1b[33m'; // Yellow'
         break;
     }
 
     const reset = '\x1b[0m';
 
     console.log(
-      `${color}${emoji} [${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`
+      `${color}${emoji} [${timestamp}] ${data.type.toUpperCase()} ${service}${reset}``
     );
 
     // Format the data payload
-    if (data.type === 'traces') {
+    if (data.type === 'traces') {'
       this.logTraceData(data);
-    } else if (data.type === 'metrics') {
+    } else if (data.type === 'metrics') {'
       this.logMetricData(data);
-    } else if (data.type === 'logs') {
+    } else if (data.type === 'logs') {'
       this.logLogData(data);
     }
 
     // Log attributes if present
     if (data.attributes && Object.keys(data.attributes).length > 0) {
       console.log(
-        `   ${color}Attributes:${reset}`,
+        `   ${color}Attributes:${reset}`,`
         JSON.stringify(data.attributes, null, 2)
       );
     }
 
-    console.log(''); // Empty line for readability
+    console.log(''); // Empty line for readability'
   }
 
   /**
@@ -176,21 +176,21 @@ export class ConsoleExporter implements BaseExporter {
   private logTraceData(data: TelemetryData): void {
     try {
       if (data.data && data.data.spans) {
-        console.log(`   🔗 Spans: ${data.data.spans.length}`);
+        console.log(`   🔗 Spans: ${data.data.spans.length}`);`
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
           console.log(
-            `     ├─ ${span.name || 'unnamed'} (${span.duration || 'unknown'}ms)`
+            `     ├─ ${span.name || 'unnamed'} (${span.duration || 'unknown'}ms)``
           );
         }
         if (data.data.spans.length > 3) {
-          console.log(`     └─ ... and ${data.data.spans.length - 3} more`);
+          console.log(`     └─ ... and ${data.data.spans.length - 3} more`);`
         }
       } else {
-        console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));
+        console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));`
       }
     } catch (error) {
-      console.log(`   ❌ Invalid trace data:`, data.data);
+      console.log(`   ❌ Invalid trace data:`, data.data);`
     }
   }
 
@@ -200,20 +200,20 @@ export class ConsoleExporter implements BaseExporter {
   private logMetricData(data: TelemetryData): void {
     try {
       if (data.data && data.data.metrics) {
-        console.log(`   📈 Metrics: ${data.data.metrics.length}`);
+        console.log(`   📈 Metrics: ${data.data.metrics.length}`);`
         for (const metric of data.data.metrics.slice(0, 5)) {
           // Show first 5 metrics
-          const value = metric.value||metric.count||metric.sum||'N/A';
-          console.log(`     ├─ ${metric.name}: ${value} ${metric.unit||'}`);
+          const value = metric.value||metric.count||metric.sum||'N/A;
+          console.log(`     ├─ ${metric.name}: ${value} ${metric.unit||'}`);`
         }
         if (data.data.metrics.length > 5) {
-          console.log(`     └─ ... and ${data.data.metrics.length - 5} more`);
+          console.log(`     └─ ... and ${data.data.metrics.length - 5} more`);`
         }
       } else {
-        console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));
+        console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));`
       }
     } catch (error) {
-      console.log(`   ❌ Invalid metric data:`, data.data);
+      console.log(`   ❌ Invalid metric data:`, data.data);`
     }
   }
 
@@ -223,30 +223,30 @@ export class ConsoleExporter implements BaseExporter {
   private logLogData(data: TelemetryData): void {
     try {
       if (data.data && data.data.logs) {
-        console.log(`   📄 Logs: ${data.data.logs.length}`);
+        console.log(`   📄 Logs: ${data.data.logs.length}`);`
         for (const log of data.data.logs.slice(0, 3)) {
           // Show first 3 logs
-          const level = log.level|||INFO';
-          const message = (log.message||log.body||'no message').substring(
+          const level = log.level|||INFO;
+          const message = (log.message||log.body||'no message').substring('
             0,
             100
           );
           console.log(
-            `     ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`
+            `     ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}``
           );
         }
         if (data.data.logs.length > 3) {
-          console.log(`     └─ ... and ${data.data.logs.length - 3} more`);
+          console.log(`     └─ ... and ${data.data.logs.length - 3} more`);`
         }
-      } else if (typeof data.data === 'string') {
+      } else if (typeof data.data === 'string') {'
         console.log(
-          `   📝 Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`
+          `   📝 Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}``
         );
       } else {
-        console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));
+        console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));`
       }
     } catch (error) {
-      console.log(`   ❌ Invalid log data:`, data.data);
+      console.log(`   ❌ Invalid log data:`, data.data);`
     }
   }
 }

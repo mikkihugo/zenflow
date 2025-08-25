@@ -30,14 +30,14 @@ export class PrometheusExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger(`PrometheusExporter:${config.name}`);
+    this.logger = getLogger(`PrometheusExporter:${config.name}`);`
   }
 
   async initialize(): Promise<void> {
     try {
       // Clear default metrics and create a new registry if needed
       if (this.config.config?.useCustomRegistry) {
-        const { Registry } = await import('prom-client');
+        const { Registry } = await import('prom-client');'
         this.metricsRegistry = new Registry();
       } else {
         // Use default registry but clear it first
@@ -47,20 +47,20 @@ export class PrometheusExporter implements BaseExporter {
       // Start HTTP server to serve metrics
       await this.startMetricsServer();
 
-      this.logger.info('Prometheus exporter initialized', {
+      this.logger.info('Prometheus exporter initialized', {'
         endpoint: this.getMetricsEndpoint(),
         port: this.getPort(),
         customRegistry: !!this.config.config?.useCustomRegistry,
       });
     } catch (error) {
-      this.logger.error('Failed to initialize Prometheus exporter', error);
+      this.logger.error('Failed to initialize Prometheus exporter', error);'
       throw error;
     }
   }
 
   async export(data: TelemetryData): Promise<ExportResult> {
     try {
-      if (data.type === 'metrics') {
+      if (data.type === 'metrics') {'
         await this.processMetricData(data);
         this.exportCount++;
         this.lastExportTime = Date.now();
@@ -84,7 +84,7 @@ export class PrometheusExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Prometheus export failed', error);
+      this.logger.error('Prometheus export failed', error);'
 
       return {
         success: false,
@@ -102,7 +102,7 @@ export class PrometheusExporter implements BaseExporter {
       let processedCount = 0;
 
       // Filter and process metric data
-      const metricItems = dataItems.filter((item) => item.type === 'metrics');
+      const metricItems = dataItems.filter((item) => item.type === 'metrics');'
 
       for (const data of metricItems) {
         await this.processMetricData(data);
@@ -122,7 +122,7 @@ export class PrometheusExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Prometheus batch export failed', error);
+      this.logger.error('Prometheus batch export failed', error);'
 
       return {
         success: false,
@@ -149,17 +149,17 @@ export class PrometheusExporter implements BaseExporter {
       this.metricsRegistry.clear();
     }
 
-    this.logger.info('Prometheus exporter shut down', {
+    this.logger.info('Prometheus exporter shut down', {'
       totalExported: this.exportCount,
     });
   }
 
   getQueueSize(): number {
-    return 0; // Prometheus exporter doesn't queue, it updates metrics in real-time
+    return 0; // Prometheus exporter doesn't queue, it updates metrics in real-time'
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
@@ -178,33 +178,33 @@ export class PrometheusExporter implements BaseExporter {
     const port = this.getPort();
 
     // Health endpoint
-    app.get('/health', (req, res) => {
-      res.status(200).json({ status: 'healthy' });
+    app.get('/health', (req, res) => {'
+      res.status(200).json({ status: 'healthy' });'
     });
 
     // Metrics endpoint
-    app.get('/metrics', async (req, res) => {
+    app.get('/metrics', async (req, res) => {'
       try {
-        res.set('Content-Type', this.metricsRegistry.contentType);
+        res.set('Content-Type', this.metricsRegistry.contentType);'
         const metrics = await this.metricsRegistry.metrics();
         res.end(metrics);
       } catch (error) {
-        this.logger.error('Failed to serve metrics', error);
-        res.status(500).send('Internal server error');
+        this.logger.error('Failed to serve metrics', error);'
+        res.status(500).send('Internal server error');'
       }
     });
 
     // Custom metrics endpoint (if configured)
-    const customPath = this.config.config?.metricsPath||'/metrics';
-    if (customPath !== '/metrics') {
+    const customPath = this.config.config?.metricsPath||'/metrics;
+    if (customPath !== '/metrics') {'
       app.get(customPath, async (req, res) => {
         try {
-          res.set('Content-Type', this.metricsRegistry.contentType);
+          res.set('Content-Type', this.metricsRegistry.contentType);'
           const metrics = await this.metricsRegistry.metrics();
           res.end(metrics);
         } catch (error) {
-          this.logger.error('Failed to serve custom metrics', error);
-          res.status(500).send('Internal server error');
+          this.logger.error('Failed to serve custom metrics', error);'
+          res.status(500).send('Internal server error');'
         }
       });
     }
@@ -214,11 +214,11 @@ export class PrometheusExporter implements BaseExporter {
 
     await new Promise<void>((resolve, reject) => {
       this.httpServer!.listen(port, () => {
-        this.logger.info(`Prometheus metrics server listening on port ${port}`);
+        this.logger.info(`Prometheus metrics server listening on port ${port}`);`
         resolve();
       });
 
-      this.httpServer!.on('error', reject);
+      this.httpServer!.on('error', reject);'
     });
   }
 
@@ -236,7 +236,7 @@ export class PrometheusExporter implements BaseExporter {
         metricsData = data.data;
       } else if (data.data.metrics && Array.isArray(data.data.metrics)) {
         metricsData = data.data.metrics;
-      } else if (typeof data.data === 'object') {
+      } else if (typeof data.data === 'object') {'
         // Single metric object
         metricsData = [data.data];
       }
@@ -246,7 +246,7 @@ export class PrometheusExporter implements BaseExporter {
         await this.updatePrometheusMetric(metricData, data);
       }
     } catch (error) {
-      this.logger.error('Failed to process metric data', error);
+      this.logger.error('Failed to process metric data', error);'
       throw error;
     }
   }
@@ -258,9 +258,9 @@ export class PrometheusExporter implements BaseExporter {
     metricData: any,
     telemetryData: TelemetryData
   ): Promise<void> {
-    const name = this.sanitizeMetricName(metricData.name||'unnamed_metric');
+    const name = this.sanitizeMetricName(metricData.name||'unnamed_metric');'
     const help =
-      metricData.description||`Metric ${name} from ${telemetryData.service.name}`;
+      metricData.description||`Metric ${name} from ${telemetryData.service.name}`;`
     const value = metricData.value||metricData.count||metricData.sum||0;
     const labels = {
       ...metricData.labels,
@@ -283,7 +283,7 @@ export class PrometheusExporter implements BaseExporter {
       if (!metric) {
         // Create new metric
         switch (metricType) {
-          case'counter':
+          case'counter':'
             metric = new Counter({
               name,
               help,
@@ -291,7 +291,7 @@ export class PrometheusExporter implements BaseExporter {
               registers: [this.metricsRegistry],
             });
             break;
-          case 'histogram':
+          case 'histogram':'
             metric = new Histogram({
               name,
               help,
@@ -300,7 +300,7 @@ export class PrometheusExporter implements BaseExporter {
               registers: [this.metricsRegistry],
             });
             break;
-          case'gauge':
+          case'gauge':'
           default:
             metric = new Gauge({
               name,
@@ -323,7 +323,7 @@ export class PrometheusExporter implements BaseExporter {
         (metric as Gauge).set(labels, value);
       }
     } catch (error) {
-      this.logger.error(`Failed to update Prometheus metric ${name}`, error);
+      this.logger.error(`Failed to update Prometheus metric ${name}`, error);`
       throw error;
     }
   }
@@ -333,8 +333,8 @@ export class PrometheusExporter implements BaseExporter {
    */
   private sanitizeMetricName(name: string): string {
     return name
-      .replace(/[^a-zA-Z0-9_:]/g, '_')
-      .replace(/^[^a-zA-Z_:]/, '_')
+      .replace(/[^a-zA-Z0-9_:]/g, '_')'
+      .replace(/^[^a-zA-Z_:]/, '_')'
       .toLowerCase();
   }
 
@@ -343,11 +343,11 @@ export class PrometheusExporter implements BaseExporter {
    */
   private inferMetricType(metricData: any): string {
     if (metricData.buckets||metricData.histogram) {
-      return'histogram';
+      return'histogram;
     } else if (metricData.monotonic||metricData.counter) {
-      return'counter';
+      return'counter;
     } else {
-      return 'gauge';
+      return 'gauge;
     }
   }
 
@@ -363,7 +363,7 @@ export class PrometheusExporter implements BaseExporter {
    */
   private getMetricsEndpoint(): string {
     const port = this.getPort();
-    const path = this.config.config?.metricsPath||'/metrics';
-    return `http://localhost:${port}${path}`;
+    const path = this.config.config?.metricsPath||'/metrics;
+    return `http://localhost:${port}${path}`;`
   }
 }

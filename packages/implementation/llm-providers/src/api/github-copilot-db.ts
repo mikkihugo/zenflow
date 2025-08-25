@@ -12,7 +12,7 @@ import * as path from 'path';
 import { Result, ok, err } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
 
-const logger = getLogger('GitHubCopilotDB');
+const logger = getLogger('GitHubCopilotDB');'
 
 export interface GitHubCopilotModelMetadata {
   id: string;
@@ -23,7 +23,7 @@ export interface GitHubCopilotModelMetadata {
   contextWindow: number;
   maxOutputTokens: number;
   maxPromptTokens: number;
-  category: 'versatile' | 'lightweight' | 'powerful';
+  category: 'versatile' | 'lightweight' | 'powerful;
   supportsVision: boolean;
   supportsToolCalls: boolean;
   supportsStreaming: boolean;
@@ -32,7 +32,7 @@ export interface GitHubCopilotModelMetadata {
   modelPickerEnabled: boolean;
   preview: boolean;
   tokenizer: string;
-  type: 'chat' | 'embeddings';
+  type: 'chat' | 'embeddings;
   visionLimits?: {
     maxImageSize: number;
     maxImages: number;
@@ -53,17 +53,17 @@ function loadCopilotToken(): string {
     const configPath = path.join(
       os.homedir(),
       '.claude-zen',
-      'copilot-token.json'
+      'copilot-token.json''
     );
     if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));'
       return config.access_token;
     }
   } catch (error) {
-    logger.warn('Failed to load Copilot OAuth token from config:', error);
+    logger.warn('Failed to load Copilot OAuth token from config:', error);'
   }
 
-  return process.env.GITHUB_COPILOT_TOKEN || '';
+  return process.env.GITHUB_COPILOT_TOKEN || ';
 }
 
 class GitHubCopilotDatabase {
@@ -80,11 +80,11 @@ class GitHubCopilotDatabase {
    * Initialize the database and start hourly updates
    */
   async initialize(): Promise<void> {
-    logger.info('🚀 Initializing GitHub Copilot Models Database');
+    logger.info('🚀 Initializing GitHub Copilot Models Database');'
 
     if (!this.token) {
       logger.warn(
-        '⚠️ No GitHub Copilot token available, skipping model updates'
+        '⚠️ No GitHub Copilot token available, skipping model updates''
       );
       return;
     }
@@ -96,14 +96,14 @@ class GitHubCopilotDatabase {
     this.updateInterval = setInterval(
       () => {
         this.updateModels().catch((error) => {
-          logger.error('❌ Failed to update Copilot models:', error);
+          logger.error('❌ Failed to update Copilot models:', error);'
         });
       },
       60 * 60 * 1000
     ); // 1 hour
 
     logger.info(
-      `✅ GitHub Copilot Models Database initialized with ${this.models.size} models`
+      `✅ GitHub Copilot Models Database initialized with ${this.models.size} models``
     );
   }
 
@@ -113,14 +113,14 @@ class GitHubCopilotDatabase {
   async updateModels(): Promise<Result<void, Error>> {
     try {
       if (!this.token) {
-        return err(new Error('No GitHub Copilot token available'));
+        return err(new Error('No GitHub Copilot token available'));'
       }
 
-      logger.info('🔄 Updating GitHub Copilot Models from API...');
+      logger.info('🔄 Updating GitHub Copilot Models from API...');'
 
-      const response = await fetch('https://api.githubcopilot.com/models', {
+      const response = await fetch('https://api.githubcopilot.com/models', {'
         headers: {
-          Authorization: `Bearer ${this.token}`,
+          Authorization: `Bearer ${this.token}`,`
           'Copilot-Integration-Id': 'vscode-chat',
         },
       });
@@ -128,7 +128,7 @@ class GitHubCopilotDatabase {
       if (!response.ok) {
         return err(
           new Error(
-            `API request failed: ${response.status} ${response.statusText}`
+            `API request failed: ${response.status} ${response.statusText}``
           )
         );
       }
@@ -184,19 +184,19 @@ class GitHubCopilotDatabase {
       this.models = updatedModels;
       this.lastUpdate = new Date();
 
-      logger.info(`✅ Updated ${this.models.size} GitHub Copilot Models`);
-      logger.info(`📊 Models by vendor: ${this.getVendorStats()}`);
+      logger.info(`✅ Updated ${this.models.size} GitHub Copilot Models`);`
+      logger.info(`📊 Models by vendor: ${this.getVendorStats()}`);`
       logger.info(
-        `🎯 Primary models: ${this.getPrimaryModels()
+        `🎯 Primary models: ${this.getPrimaryModels()`
           .map((m) => m.id)
-          .join(', ')}`
+          .join(', ')}``
       );
 
       return ok(void 0);
     } catch (error) {
-      logger.error('❌ Failed to update GitHub Copilot Models:', error);
+      logger.error('❌ Failed to update GitHub Copilot Models:', error);'
       return err(
-        error instanceof Error ? error : new Error('Failed to update models')
+        error instanceof Error ? error : new Error('Failed to update models')'
       );
     }
   }
@@ -228,7 +228,7 @@ class GitHubCopilotDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category: 'versatile' | 'lightweight' | 'powerful'
+    category: 'versatile' | 'lightweight' | 'powerful''
   ): GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model.category === category
@@ -258,7 +258,7 @@ class GitHubCopilotDatabase {
    */
   getChatModels(): GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
-      (model) => model.type === 'chat'
+      (model) => model.type === 'chat''
     );
   }
 
@@ -267,7 +267,7 @@ class GitHubCopilotDatabase {
    */
   getEmbeddingModels(): GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
-      (model) => model.type === 'embeddings');
+      (model) => model.type === 'embeddings');'
   }
 
   /**
@@ -279,8 +279,8 @@ class GitHubCopilotDatabase {
       stats.set(model.vendor, (stats.get(model.vendor)||0) + 1);
     }
     return Array.from(stats.entries())
-      .map(([vendor, count]) => `${vendor}:${count}`)
-      .join(', ');
+      .map(([vendor, count]) => `${vendor}:${count}`)`
+      .join(', ');'
   }
 
   /**
@@ -289,7 +289,7 @@ class GitHubCopilotDatabase {
   getContextAnalysis() {
     const analysis = new Map<number, number>();
     for (const model of this.models.values()) {
-      if (model.type === 'chat') {
+      if (model.type === 'chat') {'
         analysis.set(
           model.contextWindow,
           (analysis.get(model.contextWindow)||0) + 1

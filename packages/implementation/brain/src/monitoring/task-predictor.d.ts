@@ -18,7 +18,7 @@ export interface TaskPrediction {
   metadata?: {
     sampleSize: number;
     algorithm: string;
-    trendDirection: 'improving | stable|declining';
+    trendDirection: 'improving' | 'stable' | 'declining' | stable | declining;
   };
 }
 /**

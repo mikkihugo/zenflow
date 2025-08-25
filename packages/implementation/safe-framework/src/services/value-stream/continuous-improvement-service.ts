@@ -248,7 +248,7 @@ export interface DataConnection {
  * Authentication configuration
  */
 export interface AuthenticationConfig {
-  readonly type: 'none|basic|token|oauth|certificate';
+  readonly type: 'none|basic|token|oauth|certificate;
   readonly credentials: Record<string, any>;
 }
 
@@ -321,7 +321,7 @@ export interface ActionTrigger {
  * Trigger condition
  */
 export interface TriggerCondition {
-  readonly type: 'threshold|pattern|anomaly|change|time';
+  readonly type: 'threshold|pattern|anomaly|change|time;
   readonly parameters: Record<string, any>;
   readonly evaluation: ConditionEvaluation;
 }
@@ -330,7 +330,7 @@ export interface TriggerCondition {
  * Condition evaluation
  */
 export interface ConditionEvaluation {
-  readonly operator: 'gt|lt|eq|ne|between|contains';
+  readonly operator: 'gt|lt|eq|ne|between|contains;
   readonly value: any;
   readonly duration: number; // minutes
   readonly confidence: number; // 0-100
@@ -363,7 +363,7 @@ export enum ActionType {
 export interface ActionParameters {
   readonly [key: string]: any;
   readonly description?: string;
-  readonly urgency?: 'low|medium|high|critical';
+  readonly urgency?: 'low|medium|high|critical;
   readonly category?: string;
 }
 
@@ -392,9 +392,9 @@ export interface ClosureCondition {
  * Closure criteria
  */
 export interface ClosureCriteria {
-  readonly type: 'metric|time|approval|combination';
+  readonly type: 'metric|time|approval|combination;
   readonly requirements: CriteriaRequirement[];
-  readonly operator: 'and|or';
+  readonly operator: 'and|or;
 }
 
 /**
@@ -412,7 +412,7 @@ export interface CriteriaRequirement {
  * Validation method
  */
 export interface ValidationMethod {
-  readonly method: 'automated|manual|hybrid';
+  readonly method: 'automated' | 'manual' | 'hybrid';
   readonly validator: string;
   readonly evidence: EvidenceRequirement[];
 }
@@ -421,7 +421,7 @@ export interface ValidationMethod {
  * Evidence requirement
  */
 export interface EvidenceRequirement {
-  readonly evidenceType: 'data|document|observation|test';
+  readonly evidenceType: 'data|document|observation|test;
   readonly description: string;
   readonly required: boolean;
 }
@@ -432,7 +432,7 @@ export interface EvidenceRequirement {
 export interface ApprovalRequirement {
   readonly required: boolean;
   readonly approvers: string[];
-  readonly threshold: 'any|majority|all';
+  readonly threshold: 'any' | 'majority' | 'all';
   readonly timeout: number; // hours
 }
 
@@ -632,9 +632,9 @@ export interface ReportingAudience {
  */
 export interface InformationNeed {
   readonly needId: string;
-  readonly category: 'strategic|tactical|operational';
+  readonly category: 'strategic' | 'tactical' | 'operational';
   readonly description: string;
-  readonly urgency: 'low|medium|high';
+  readonly urgency: 'low' | 'medium' | 'high';
   readonly frequency: string;
 }
 
@@ -644,7 +644,7 @@ export interface InformationNeed {
 export interface AudiencePreferences {
   readonly format: ReportFormat[];
   readonly frequency: ReportingFrequency;
-  readonly detail: 'summary|detailed|comprehensive';
+  readonly detail: 'summary' | 'detailed' | 'comprehensive';
   readonly delivery: DeliveryMethod[];
 }
 
@@ -791,7 +791,7 @@ export interface ValidationRule {
   readonly ruleId: string;
   readonly description: string;
   readonly condition: string;
-  readonly severity: 'warning|error';
+  readonly severity: 'warning|error;
   readonly action: string;
 }
 
@@ -821,7 +821,7 @@ export interface MonitoringRequirement {
 export interface AlertingConfig {
   readonly enabled: boolean;
   readonly channels: string[];
-  readonly severity: 'info|warning|error|critical';
+  readonly severity: 'info|warning|error|critical;
   readonly escalation: EscalationRule[];
 }
 
@@ -893,7 +893,7 @@ export interface EstimatedEffort {
  * Resource requirement
  */
 export interface ResourceRequirement {
-  readonly resourceType: 'people|technology|budget|time';
+  readonly resourceType: 'people|technology|budget|time;
   readonly quantity: number;
   readonly duration: number; // days
   readonly skills: string[];
@@ -1107,9 +1107,9 @@ export class ContinuousImprovementService {
     config: ContinuousImprovementConfig,
     currentMetrics: any
   ): Promise<AutomatedKaizenCycle> {
-    const cycleId = `kaizen-${nanoid(12)}`;
+    const cycleId = `kaizen-${nanoid(12)}`;`
 
-    this.logger.info('Executing automated kaizen cycle', {
+    this.logger.info('Executing automated kaizen cycle', {'
       cycleId,
       valueStreamId: config.valueStreamId,
       automationLevel: config.automationLevel,
@@ -1166,7 +1166,7 @@ export class ContinuousImprovementService {
 
       this.kaizenCycles.set(cycleId, cycle);
 
-      this.logger.info('Automated kaizen cycle completed', {
+      this.logger.info('Automated kaizen cycle completed', {'
         cycleId,
         improvementsIdentified: improvementsIdentified.length,
         improvementsImplemented: implementedImprovements.length,
@@ -1176,7 +1176,7 @@ export class ContinuousImprovementService {
 
       return cycle;
     } catch (error) {
-      this.logger.error('Failed to execute automated kaizen cycle', {
+      this.logger.error('Failed to execute automated kaizen cycle', {'
         cycleId,
         error,
       });
@@ -1191,7 +1191,7 @@ export class ContinuousImprovementService {
     valueStreamId: string,
     config: ContinuousImprovementConfig
   ): Promise<void> {
-    this.logger.info('Executing continuous improvement loop', {
+    this.logger.info('Executing continuous improvement loop', {'
       valueStreamId,
     });
 
@@ -1235,7 +1235,7 @@ export class ContinuousImprovementService {
       currentMetrics.cycleTime.variance > currentMetrics.cycleTime.average * 0.3
     ) {
       opportunities.push({
-        itemId: `improvement-${nanoid(8)}`,
+        itemId: `improvement-${nanoid(8)}`,`
         title:'Reduce cycle time variance',
         description:
           'High variance in cycle time indicates process inconsistency',
@@ -1277,7 +1277,7 @@ export class ContinuousImprovementService {
     // Add more opportunity identification logic based on metrics
     if (currentMetrics.queueLength && currentMetrics.queueLength.average > 10) {
       opportunities.push({
-        itemId: `improvement-${nanoid(8)}`,
+        itemId: `improvement-${nanoid(8)}`,`
         title: 'Reduce queue length',
         description:
           'Long queues indicate capacity constraints or inefficient resource allocation',
@@ -1319,7 +1319,7 @@ export class ContinuousImprovementService {
     return orderBy(
       opportunities,
       ['priority', 'supportLevel'],
-      ['desc', 'desc']
+      ['desc', 'desc']'
     );
   }
 
@@ -1333,7 +1333,7 @@ export class ContinuousImprovementService {
       score: this.scoreImprovement(improvement, objectives),
     }));
 
-    return orderBy(scoredImprovements, 'score', 'desc');
+    return orderBy(scoredImprovements, 'score', 'desc');'
   }
 
   private scoreImprovement(
@@ -1370,7 +1370,7 @@ export class ContinuousImprovementService {
     for (const improvement of improvements.slice(0, 5)) {
       // Top 5 improvements
       const implementation: ImprovementImplementation = {
-        implementationId: `impl-${nanoid(8)}`,
+        implementationId: `impl-${nanoid(8)}`,`
         improvementId: improvement.itemId,
         status: ImplementationStatus.PLANNED,
         progress: 0,
@@ -1466,7 +1466,7 @@ export class ContinuousImprovementService {
   ): Promise<CycleLearning[]> {
     return [
       {
-        learningId: `learning-${nanoid(6)}`,
+        learningId: `learning-${nanoid(6)}`,`
         category: LearningCategory.PROCESS,
         description: 'Automated identification increases opportunity discovery',
         application: 'Use AI analysis for future cycles',
@@ -1474,7 +1474,7 @@ export class ContinuousImprovementService {
         source: 'Cycle Analysis',
       },
       {
-        learningId: `learning-${nanoid(6)}`,
+        learningId: `learning-${nanoid(6)}`,`
         category: LearningCategory.IMPLEMENTATION,
         description: 'Quick wins build momentum',
         application: 'Prioritize quick wins in early cycles',
@@ -1488,7 +1488,7 @@ export class ContinuousImprovementService {
     config: FeedbackLoopConfig
   ): Promise<void> {
     this.feedbackLoops.set(config.loopId, config);
-    this.logger.info('Feedback loop initialized', {
+    this.logger.info('Feedback loop initialized', {'
       loopId: config.loopId,
       type: config.type,
       frequency: config.frequency,
@@ -1499,7 +1499,7 @@ export class ContinuousImprovementService {
     config: ContinuousImprovementConfig
   ): Promise<void> {
     // Start monitoring improvement progress and triggering actions
-    this.logger.info('Started improvement monitoring', {
+    this.logger.info('Started improvement monitoring', {'
       valueStreamId: config.valueStreamId,
       feedbackLoops: config.feedbackLoops.length,
     });

@@ -34,7 +34,7 @@ import type {
 } from '@claude-zen/teamwork';
 import type { ApprovalWorkflow, ApprovalGate } from '../core/approval-gates';
 
-const logger = getLogger('TeamworkWorkflowIntegration');
+const logger = getLogger('TeamworkWorkflowIntegration');'
 
 // ============================================================================
 // INTEGRATION TYPES
@@ -51,11 +51,11 @@ export interface ConversationTriggeredWorkflow {
 }
 
 export interface ConversationWorkflowTrigger {
-  triggerType:|'decision_reached|consensus_achieved|escalation_needed|completion';
+  triggerType:|'decision_reached|consensus_achieved|escalation_needed|completion;
   conditions: {
     decisionType?: string;
     participantConsensus?: number; // 0-1
-    urgencyLevel?: 'low|medium|high|critical';
+    urgencyLevel?: 'low|medium|high|critical;
     conversationDuration?: number; // minutes
   };
   autoTrigger: boolean;
@@ -65,7 +65,7 @@ export interface ConversationWorkflowTrigger {
 export interface WorkflowConversationUpdate {
   workflowId: string;
   conversationId: string;
-  updateType: 'progress|completion|approval_needed|error';
+  updateType: 'progress|completion|approval_needed|error;
   data: any;
   requiresHumanInput: boolean;
 }
@@ -98,7 +98,7 @@ export class TeamworkWorkflowIntegration {
     // Register SAFe-specific workflow patterns
     await this.registerSAFeWorkflowPatterns();
 
-    logger.info('TeamworkWorkflowIntegration initialized with SAFe patterns');
+    logger.info('TeamworkWorkflowIntegration initialized with SAFe patterns');'
   }
 
   /**
@@ -110,7 +110,7 @@ export class TeamworkWorkflowIntegration {
     this.activeIntegrations.set(conversationWorkflow.id, conversationWorkflow);
 
     logger.info(
-      `Registered conversation workflow: ${conversationWorkflow.name}`,
+      `Registered conversation workflow: ${conversationWorkflow.name}`,`
       {
         conversationType: conversationWorkflow.conversationType,
         autoTrigger: conversationWorkflow.trigger.autoTrigger,
@@ -180,7 +180,7 @@ export class TeamworkWorkflowIntegration {
           existingWorkflows
         );
       } catch (error) {
-        logger.error(`Failed to process workflow ${workflowDef.name}`, error);
+        logger.error(`Failed to process workflow ${workflowDef.name}`, error);`
       }
     }
 
@@ -211,7 +211,7 @@ export class TeamworkWorkflowIntegration {
     });
 
     logger.info(
-      `Updated conversation ${update.conversationId} with workflow progress`,
+      `Updated conversation ${update.conversationId} with workflow progress`,`
       {
         workflowId: update.workflowId,
         updateType: update.updateType,
@@ -302,7 +302,7 @@ export class TeamworkWorkflowIntegration {
       realTimeUpdates: true,
     });
 
-    logger.info('Registered SAFe-specific workflow patterns');
+    logger.info('Registered SAFe-specific workflow patterns');'
   }
 
   /**
@@ -586,7 +586,7 @@ export class TeamworkWorkflowIntegration {
     context: WorkflowContext
   ): Promise<string> {
     if (!this.workflowEngine) {
-      throw new Error('Workflow engine not initialized');
+      throw new Error('Workflow engine not initialized');'
     }
 
     const workflowId = await this.workflowEngine.startWorkflow(
@@ -594,7 +594,7 @@ export class TeamworkWorkflowIntegration {
       context
     );
 
-    logger.info(`Started workflow ${workflowDef.name}`, {
+    logger.info(`Started workflow ${workflowDef.name}`, {`
       workflowId,
       conversationId: context.conversationId,
     });
@@ -607,9 +607,9 @@ export class TeamworkWorkflowIntegration {
     context: WorkflowContext
   ): Promise<ApprovalGate> {
     return {
-      id: `workflow-trigger-${workflowDef.id}-${Date.now()}`,
-      name: `Trigger Workflow: ${workflowDef.name}`,
-      description: `Approve starting workflow based on conversation outcome`,
+      id: `workflow-trigger-${workflowDef.id}-${Date.now()}`,`
+      name: `Trigger Workflow: ${workflowDef.name}`,`
+      description: `Approve starting workflow based on conversation outcome`,`
       criteria: [
         {
           id: 'workflow-needed',
@@ -685,7 +685,7 @@ export class TeamworkWorkflowIntegration {
       'system-demo-feedback': 'SYSTEM_DEMO',
       'inspect-adapt-workshop': 'INSPECT_ADAPT',
     };
-    return typeMap[conversationType]||'UNKNOWN';
+    return typeMap[conversationType]||'UNKNOWN;
   }
 
   private determineWorkflowApprovers(
@@ -700,7 +700,7 @@ export class TeamworkWorkflowIntegration {
       'inspect-adapt-improvement': ['rte', 'process_owner'],
     };
 
-    return approverMap[workflowDef.id]||['system_admin'];
+    return approverMap[workflowDef.id]||['system_admin'];'
   }
 
   private generateWorkflowUpdateMessage(
@@ -708,19 +708,19 @@ export class TeamworkWorkflowIntegration {
   ): any {
     const messageMap: Record<string, any> = {
       progress: {
-        content: `Workflow progress update: ${update.data.stepName} completed (${update.data.progress}%)`,
+        content: `Workflow progress update: ${update.data.stepName} completed (${update.data.progress}%)`,`
         type: 'workflow_progress',
       },
       completion: {
-        content: `Workflow completed successfully. Results: ${update.data.summary}`,
+        content: `Workflow completed successfully. Results: ${update.data.summary}`,`
         type: 'workflow_complete',
       },
       approval_needed: {
-        content: `Workflow requires approval for: ${update.data.approvalReason}`,
+        content: `Workflow requires approval for: ${update.data.approvalReason}`,`
         type: 'workflow_approval_request',
       },
       error: {
-        content: `Workflow encountered an error: ${update.data.error}. Manual intervention may be required.`,
+        content: `Workflow encountered an error: ${update.data.error}. Manual intervention may be required.`,`
         type: 'workflow_error',
       },
     };
@@ -736,7 +736,7 @@ export class TeamworkWorkflowIntegration {
   private setupEventListeners(): void {
     // Set up event listeners for workflow and conversation events
     // This would integrate with the event system when available
-    logger.info('Event listeners setup for teamwork-workflow integration');
+    logger.info('Event listeners setup for teamwork-workflow integration');'
   }
 }
 

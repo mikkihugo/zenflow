@@ -80,12 +80,12 @@ export class ProductManagementManager extends TypedEventBase {
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
-      this.logger.warn('Product Management Manager already initialized');
+      this.logger.warn('Product Management Manager already initialized');'
       return;
     }
 
     try {
-      this.logger.info('Initializing Product Management Manager...');
+      this.logger.info('Initializing Product Management Manager...');'
 
       // Delegate to ProductVisionService for vision management
       if (this.config.enableProductVisionManagement) {
@@ -133,9 +133,9 @@ export class ProductManagementManager extends TypedEventBase {
       await this.restoreState();
 
       this.initialized = true;
-      this.logger.info('Product Management Manager initialized successfully');
+      this.logger.info('Product Management Manager initialized successfully');'
 
-      this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });
+      this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Product Management Manager:',
@@ -160,7 +160,7 @@ export class ProductManagementManager extends TypedEventBase {
   }): Promise<ProductVision> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Creating product vision', { productId: input.productId });
+    this.logger.info('Creating product vision', { productId: input.productId });'
 
     const vision = await this.visionService.createProductVision({
       ...input,
@@ -181,7 +181,7 @@ export class ProductManagementManager extends TypedEventBase {
     };
 
     await this.persistState();
-    this.emit('vision-created', {
+    this.emit('vision-created', {'
       vision,
       timestamp: SafeDateUtils.formatISOString(),
     });
@@ -195,7 +195,7 @@ export class ProductManagementManager extends TypedEventBase {
   async analyzeCustomerSegments(productId: string): Promise<CustomerSegment[]> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Analyzing customer segments', { productId });
+    this.logger.info('Analyzing customer segments', { productId });'
 
     const analysis = await this.researchService.performResearchAnalysis();
     // Filter segments by urgency level (immediate, short_term, medium_term are high priority)
@@ -203,7 +203,7 @@ export class ProductManagementManager extends TypedEventBase {
       .map((si) => si.segment)
       .filter(
         (segment) =>
-          segment.urgency === 'immediate'||segment.urgency ==='short_term'||segment.urgency ==='medium_term'
+          segment.urgency === 'immediate'||segment.urgency ==='short_term'||segment.urgency ==='medium_term''
       );
 
     // Update state
@@ -230,7 +230,7 @@ export class ProductManagementManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Performing market analysis', {
+    this.logger.info('Performing market analysis', {'
       category: input.marketCategory,
     });
 
@@ -272,7 +272,7 @@ export class ProductManagementManager extends TypedEventBase {
     };
 
     await this.persistState();
-    this.emit('market-analysis-complete', {
+    this.emit('market-analysis-complete', {'
       sizing,
       competitive,
       opportunities,
@@ -288,7 +288,7 @@ export class ProductManagementManager extends TypedEventBase {
   async prioritizeFeatures(features: Feature[]): Promise<Feature[]> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Prioritizing features using WSJF', {
+    this.logger.info('Prioritizing features using WSJF', {'
       featureCount: features.length,
     });
 
@@ -304,7 +304,7 @@ export class ProductManagementManager extends TypedEventBase {
     const prioritizedFeatures =
       SafeCollectionUtils.prioritizeByWSJF(featuresWithWSJF);
 
-    this.logger.info('Feature prioritization completed', {
+    this.logger.info('Feature prioritization completed', {'
       topFeature: prioritizedFeatures[0]?.name,
     });
 
@@ -324,7 +324,7 @@ export class ProductManagementManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Generating product roadmap', {
+    this.logger.info('Generating product roadmap', {'
       productId,
       horizonMonths,
     });
@@ -332,22 +332,22 @@ export class ProductManagementManager extends TypedEventBase {
     const roadmapHorizon = SafeDateUtils.calculateRoadmapHorizon(horizonMonths);
     const milestones = roadmapHorizon.quarters.map((quarter) => ({
       date: quarter.start,
-      title: `${quarter.label} Planning`,
-      description: `Quarterly planning and review for ${quarter.label}`,
+      title: `${quarter.label} Planning`,`
+      description: `Quarterly planning and review for ${quarter.label}`,`
     }));
 
     const roadmap = {
-      roadmapId: `roadmap-${productId}-${Date.now()}`,
+      roadmapId: `roadmap-${productId}-${Date.now()}`,`
       timeline: roadmapHorizon,
       milestones,
     };
 
-    this.logger.info('Product roadmap generated', {
+    this.logger.info('Product roadmap generated', {'
       roadmapId: roadmap.roadmapId,
       milestoneCount: milestones.length,
     });
 
-    this.emit('roadmap-generated', {
+    this.emit('roadmap-generated', {'
       roadmap,
       timestamp: SafeDateUtils.formatISOString(),
     });
@@ -363,7 +363,7 @@ export class ProductManagementManager extends TypedEventBase {
     errors: string[];
     warnings: string[];
   } {
-    this.logger.info('Validating product data');
+    this.logger.info('Validating product data');'
 
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -428,14 +428,14 @@ export class ProductManagementManager extends TypedEventBase {
    * Setup event handlers for coordination
    */
   private setupEventHandlers(): void {
-    this.eventBus.on('product-vision-updated', (data) => {
-      this.logger.info('Product vision updated', data);
-      this.emit('vision-updated', data);
+    this.eventBus.on('product-vision-updated', (data) => {'
+      this.logger.info('Product vision updated', data);'
+      this.emit('vision-updated', data);'
     });
 
-    this.eventBus.on('market-data-refreshed', (data) => {
-      this.logger.info('Market data refreshed', data);
-      this.emit('market-data-updated', data);
+    this.eventBus.on('market-data-refreshed', (data) => {'
+      this.logger.info('Market data refreshed', data);'
+      this.emit('market-data-updated', data);'
     });
   }
 
@@ -445,14 +445,14 @@ export class ProductManagementManager extends TypedEventBase {
   private async restoreState(): Promise<void> {
     try {
       const savedState = await this.memorySystem.retrieve(
-        'product-manager-state'
+        'product-manager-state''
       );
       if (savedState) {
         this.state = { ...this.state, ...savedState };
-        this.logger.info('Product manager state restored from memory');
+        this.logger.info('Product manager state restored from memory');'
       }
     } catch (error) {
-      this.logger.warn('Failed to restore state from memory:', error);
+      this.logger.warn('Failed to restore state from memory:', error);'
     }
   }
 
@@ -461,13 +461,13 @@ export class ProductManagementManager extends TypedEventBase {
    */
   private async persistState(): Promise<void> {
     try {
-      await this.memorySystem.store('product-manager-state', {
+      await this.memorySystem.store('product-manager-state', {'
         visionCount: this.state.visionCount,
         lastMarketAnalysis: this.state.lastMarketAnalysis,
         customerSegmentCount: this.state.customerSegmentCount,
       });
     } catch (error) {
-      this.logger.warn('Failed to persist state to memory:', error);
+      this.logger.warn('Failed to persist state to memory:', error);'
     }
   }
 }

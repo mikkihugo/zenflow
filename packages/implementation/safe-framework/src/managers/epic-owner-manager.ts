@@ -137,7 +137,7 @@ export class EpicOwnerManager extends TypedEventBase {
   ) {
     super();
     this.config = config;
-    this.logger = getLogger('EpicOwnerManager');
+    this.logger = getLogger('EpicOwnerManager');'
     this.memorySystem = memorySystem;
     // this.eventBus = eventBus;
     this.state = this.initializeState();
@@ -166,12 +166,12 @@ export class EpicOwnerManager extends TypedEventBase {
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
-      this.logger.warn('Epic Owner Manager already initialized');
+      this.logger.warn('Epic Owner Manager already initialized');'
       return;
     }
 
     try {
-      this.logger.info('Initializing Epic Owner Manager...');
+      this.logger.info('Initializing Epic Owner Manager...');'
 
       // Delegate to EpicLifecycleService for Portfolio Kanban management
       if (this.config.enablePortfolioKanban) {
@@ -206,11 +206,11 @@ export class EpicOwnerManager extends TypedEventBase {
       await this.restoreState();
 
       this.initialized = true;
-      this.logger.info('Epic Owner Manager initialized successfully');
+      this.logger.info('Epic Owner Manager initialized successfully');'
 
-      this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });
+      this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });'
     } catch (error) {
-      this.logger.error('Failed to initialize Epic Owner Manager:', error);
+      this.logger.error('Failed to initialize Epic Owner Manager:', error);'
       throw error;
     }
   }
@@ -230,13 +230,13 @@ export class EpicOwnerManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Progressing epic through Portfolio Kanban', {
+    this.logger.info('Progressing epic through Portfolio Kanban', {'
       epicId,
       targetState,
     });
 
     if (!this.lifecycleService) {
-      throw new Error('Lifecycle service not initialized');
+      throw new Error('Lifecycle service not initialized');'
     }
 
     const result = await this.lifecycleService.progressEpicState(
@@ -254,7 +254,7 @@ export class EpicOwnerManager extends TypedEventBase {
       await this.persistState();
     }
 
-    this.emit('epic-progressed', {
+    this.emit('epic-progressed', {'
       epicId,
       newState: result.newState,
       success: result.success,
@@ -288,13 +288,13 @@ export class EpicOwnerManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('calculate_wsjf');
+    const timer = this.performanceTracker.startTimer('calculate_wsjf');'
 
     try {
-      this.logger.info('Calculating WSJF score', { epicId: input.epicId });
+      this.logger.info('Calculating WSJF score', { epicId: input.epicId });'
 
       if (!this.lifecycleService) {
-        throw new Error('Lifecycle service not initialized');
+        throw new Error('Lifecycle service not initialized');'
       }
 
       // Standard SAFe WSJF calculation via lifecycle service
@@ -330,7 +330,7 @@ export class EpicOwnerManager extends TypedEventBase {
             ...aiAnalysis.recommendations,
           ];
 
-          this.logger.debug('WSJF enhanced with AI analysis', {
+          this.logger.debug('WSJF enhanced with AI analysis', {'
             epicId: input.epicId,
             confidenceLevel: aiAnalysis.confidenceLevel,
           });
@@ -349,20 +349,20 @@ export class EpicOwnerManager extends TypedEventBase {
       };
       await this.persistState();
 
-      this.emit('wsjf-calculated', {
+      this.emit('wsjf-calculated', {'
         epicId: input.epicId,
         score: enhancedResult.wsjfScore,
         rank: enhancedResult.rankChange,
         timestamp: SafeDateUtils.formatISOString(),
       });
 
-      this.performanceTracker.endTimer('calculate_wsjf');
-      this.telemetryManager.recordCounter('wsjf_calculations', 1);
+      this.performanceTracker.endTimer('calculate_wsjf');'
+      this.telemetryManager.recordCounter('wsjf_calculations', 1);'
 
       return enhancedResult;
     } catch (error) {
-      this.performanceTracker.endTimer('calculate_wsjf');
-      this.logger.error('WSJF calculation failed:', error);
+      this.performanceTracker.endTimer('calculate_wsjf');'
+      this.logger.error('WSJF calculation failed:', error);'
       throw error;
     }
   }
@@ -386,7 +386,7 @@ export class EpicOwnerManager extends TypedEventBase {
     };
     risks: Array<{
       description: string;
-      category:|'technical|market|financial|regulatory|operational';
+      category:|'technical|market|financial|regulatory|operational;
       probability: number;
       impact: number;
       owner: string;
@@ -394,20 +394,20 @@ export class EpicOwnerManager extends TypedEventBase {
     assumptions: string[];
   }): Promise<{
     businessCaseId: string;
-    recommendation: 'proceed|defer|pivot|stop';
+    recommendation: 'proceed|defer|pivot|stop;
     financialViability: boolean;
     roi: number;
     paybackPeriod: number;
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('create_business_case');
+    const timer = this.performanceTracker.startTimer('create_business_case');'
 
     try {
-      this.logger.info('Creating epic business case', { epicId: input.epicId });
+      this.logger.info('Creating epic business case', { epicId: input.epicId });'
 
       if (!this.businessCaseService) {
-        throw new Error('Business case service not initialized');
+        throw new Error('Business case service not initialized');'
       }
 
       // Standard SAFe business case creation
@@ -464,9 +464,9 @@ export class EpicOwnerManager extends TypedEventBase {
               financialViability: analysis.financialViability.isViable,
             }
           );
-          this.logger.info('Business case approval workflow initiated');
+          this.logger.info('Business case approval workflow initiated');'
         } catch (error) {
-          this.logger.warn('Workflow automation failed:', error);
+          this.logger.warn('Workflow automation failed:', error);'
         }
       }
 
@@ -477,15 +477,15 @@ export class EpicOwnerManager extends TypedEventBase {
       };
       await this.persistState();
 
-      this.emit('business-case-created', {
+      this.emit('business-case-created', {'
         businessCaseId: businessCase.id,
         epicId: input.epicId,
         recommendation: analysis.recommendation.recommendation,
         timestamp: SafeDateUtils.formatISOString(),
       });
 
-      this.performanceTracker.endTimer('create_business_case');
-      this.telemetryManager.recordCounter('business_cases_created', 1);
+      this.performanceTracker.endTimer('create_business_case');'
+      this.telemetryManager.recordCounter('business_cases_created', 1);'
 
       return {
         businessCaseId: businessCase.id,
@@ -495,8 +495,8 @@ export class EpicOwnerManager extends TypedEventBase {
         paybackPeriod: analysis.financialViability.paybackPeriod,
       };
     } catch (error) {
-      this.performanceTracker.endTimer('create_business_case');
-      this.logger.error('Business case creation failed:', error);
+      this.performanceTracker.endTimer('create_business_case');'
+      this.logger.error('Business case creation failed:', error);'
       throw error;
     }
   }
@@ -514,10 +514,10 @@ export class EpicOwnerManager extends TypedEventBase {
   > {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Retrieving prioritized epic portfolio');
+    this.logger.info('Retrieving prioritized epic portfolio');'
 
     if (!this.lifecycleService) {
-      throw new Error('Lifecycle service not initialized');
+      throw new Error('Lifecycle service not initialized');'
     }
 
     const backlog = await this.lifecycleService.getPrioritizedBacklog();
@@ -536,15 +536,15 @@ export class EpicOwnerManager extends TypedEventBase {
         ...p.epic,
         priority:
           p.epic.priority > 80
-            ? 'critical'
+            ? 'critical''
             : p.epic.priority > 60
-              ? 'high'
+              ? 'high''
               : 'medium',
       })),
-      ['critical', 'high', 'medium']
+      ['critical', 'high', 'medium']'
     );
 
-    this.logger.info('Portfolio retrieved', { epicCount: portfolio.length });
+    this.logger.info('Portfolio retrieved', { epicCount: portfolio.length });'
 
     return portfolio;
   }
@@ -556,8 +556,8 @@ export class EpicOwnerManager extends TypedEventBase {
     epicId: string,
     blockerData: {
       description: string;
-      category:|'technical|business|resource|external|regulatory';
-      severity: 'low|medium|high|critical';
+      category:|'technical|business|resource|external|regulatory;
+      severity: 'low|medium|high|critical;
       owner: string;
       resolutionPlan: string[];
       impact: string;
@@ -565,13 +565,13 @@ export class EpicOwnerManager extends TypedEventBase {
   ): Promise<string> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.warn('Adding epic blocker', {
+    this.logger.warn('Adding epic blocker', {'
       epicId,
       severity: blockerData.severity,
     });
 
     if (!this.lifecycleService) {
-      throw new Error('Lifecycle service not initialized');
+      throw new Error('Lifecycle service not initialized');'
     }
 
     const blockerId = await this.lifecycleService.addEpicBlocker(epicId, {
@@ -579,7 +579,7 @@ export class EpicOwnerManager extends TypedEventBase {
       dependencies: [],
     });
 
-    this.emit('blocker-added', {
+    this.emit('blocker-added', {'
       epicId,
       blockerId,
       severity: blockerData.severity,
@@ -595,15 +595,15 @@ export class EpicOwnerManager extends TypedEventBase {
   async resolveEpicBlocker(epicId: string, blockerId: string): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Resolving epic blocker', { epicId, blockerId });
+    this.logger.info('Resolving epic blocker', { epicId, blockerId });'
 
     if (!this.lifecycleService) {
-      throw new Error('Lifecycle service not initialized');
+      throw new Error('Lifecycle service not initialized');'
     }
 
     await this.lifecycleService.resolveEpicBlocker(epicId, blockerId);
 
-    this.emit('blocker-resolved', {
+    this.emit('blocker-resolved', {'
       epicId,
       blockerId,
       timestamp: SafeDateUtils.formatISOString(),
@@ -629,7 +629,7 @@ export class EpicOwnerManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Generating epic timeline', { epicId, estimatedMonths });
+    this.logger.info('Generating epic timeline', { epicId, estimatedMonths });'
 
     const timeline = SafeDateUtils.generateEpicTimeline(
       new Date(),
@@ -642,12 +642,12 @@ export class EpicOwnerManager extends TypedEventBase {
     }));
 
     const result = {
-      timelineId: `timeline-${epicId}-${Date.now()}`,
+      timelineId: `timeline-${epicId}-${Date.now()}`,`
       phases: enhancedPhases,
       criticalPath: ['Epic Hypothesis', 'Development', 'Validation'],
     };
 
-    this.emit('timeline-generated', {
+    this.emit('timeline-generated', {'
       epicId,
       timelineId: result.timelineId,
       duration: estimatedMonths,
@@ -663,10 +663,10 @@ export class EpicOwnerManager extends TypedEventBase {
   async getPortfolioMetrics(): Promise<EpicPerformanceMetrics> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Retrieving portfolio metrics');
+    this.logger.info('Retrieving portfolio metrics');'
 
     if (!this.lifecycleService) {
-      throw new Error('Lifecycle service not initialized');
+      throw new Error('Lifecycle service not initialized');'
     }
 
     const kanbanMetrics =
@@ -697,7 +697,7 @@ export class EpicOwnerManager extends TypedEventBase {
     errors: string[];
     warnings: string[];
   } {
-    this.logger.info('Validating epic data');
+    this.logger.info('Validating epic data');'
 
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -710,11 +710,11 @@ export class EpicOwnerManager extends TypedEventBase {
 
     // Additional epic-specific validation
     if (epicData.wsjfScore && epicData.wsjfScore < 5) {
-      warnings.push('Low WSJF score may indicate low priority');
+      warnings.push('Low WSJF score may indicate low priority');'
     }
 
     if (epicData.businessCase && !epicData.businessCase.financialProjection) {
-      errors.push('Business case missing financial projection');
+      errors.push('Business case missing financial projection');'
     }
 
     return {
@@ -738,12 +738,12 @@ export class EpicOwnerManager extends TypedEventBase {
     }
   ): Promise<{
     requestId: string;
-    status: 'pending|auto-approved'';
+    status: 'pending|auto-approved';
     message: string;
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('epic_approval');
+    const timer = this.performanceTracker.startTimer('epic_approval');'
 
     try {
       // Auto-approve if conditions are met (business logic)
@@ -753,16 +753,16 @@ export class EpicOwnerManager extends TypedEventBase {
       );
 
       if (shouldAutoApprove) {
-        this.logger.info('Epic auto-approved', {
+        this.logger.info('Epic auto-approved', {'
           epicId,
           wsjfScore: approvalContext.wsjfScore,
         });
 
         // Emit approval completed event
-        this.emit('approval-received', {
+        this.emit('approval-received', {'
           type: 'APPROVAL_RECEIVED',
           data: {
-            requestId: `auto-${epicId}`,
+            requestId: `auto-${epicId}`,`
             approved: true,
             approvedBy: 'system',
             timestamp: new Date(),
@@ -771,7 +771,7 @@ export class EpicOwnerManager extends TypedEventBase {
         });
 
         return {
-          requestId: `auto-${epicId}`,
+          requestId: `auto-${epicId}`,`
           status: 'auto-approved',
           message: 'Epic meets auto-approval criteria',
         };
@@ -780,8 +780,8 @@ export class EpicOwnerManager extends TypedEventBase {
       // Create approval request for human review (event-driven)
       const approvalRequest = createApprovalRequest({
         type: 'epic',
-        title: `Epic Approval: ${epicId}`,
-        description: `Business case: ${approvalContext.businessCase.id}, WSJF: ${approvalContext.wsjfScore}`,
+        title: `Epic Approval: ${epicId}`,`
+        description: `Business case: ${approvalContext.businessCase.id}, WSJF: ${approvalContext.wsjfScore}`,`
         priority: approvalContext.wsjfScore > 20 ? 'high' : 'medium',
         requestedBy: 'epic-owner-manager',
         approvers: approvalContext.stakeholders,
@@ -797,19 +797,19 @@ export class EpicOwnerManager extends TypedEventBase {
       this.approvalWorkflow.trackApprovalRequest(approvalRequest);
 
       // Emit approval request event (UI layer will handle presentation)
-      this.emit('request-approval', {
+      this.emit('request-approval', {'
         type: 'REQUEST_APPROVAL',
         data: approvalRequest,
         priority: approvalRequest.priority === 'high' ? 'high' : 'medium',
       });
 
-      this.logger.info('Epic approval requested via event system', {
+      this.logger.info('Epic approval requested via event system', {'
         epicId,
         requestId: approvalRequest.requestId,
       });
 
-      this.performanceTracker.endTimer('epic_approval');
-      this.telemetryManager.recordCounter('epic_approvals_requested', 1);
+      this.performanceTracker.endTimer('epic_approval');'
+      this.telemetryManager.recordCounter('epic_approvals_requested', 1);'
 
       return {
         requestId: approvalRequest.requestId,
@@ -817,8 +817,8 @@ export class EpicOwnerManager extends TypedEventBase {
         message: 'Approval request sent to stakeholders',
       };
     } catch (error) {
-      this.performanceTracker.endTimer('epic_approval');
-      this.logger.error('Epic approval failed:', error);
+      this.performanceTracker.endTimer('epic_approval');'
+      this.logger.error('Epic approval failed:', error);'
       throw error;
     }
   }
@@ -881,17 +881,17 @@ export class EpicOwnerManager extends TypedEventBase {
    */
   private setupEventHandlers(): void {
     // Event handlers temporarily disabled due to event system resolution
-    // this.eventBus.on('epic-state-changed', (data) => {
-    //   this.logger.info('Epic state changed', data);
-    //   this.emit('epic-updated', data);
+    // this.eventBus.on('epic-state-changed', (data) => {'
+    //   this.logger.info('Epic state changed', data);'
+    //   this.emit('epic-updated', data);'
     // });
-    // this.eventBus.on('wsjf-scores-updated', (data) => {
-    //   this.logger.info('WSJF scores updated', data);
-    //   this.emit('portfolio-rebalanced', data);
+    // this.eventBus.on('wsjf-scores-updated', (data) => {'
+    //   this.logger.info('WSJF scores updated', data);'
+    //   this.emit('portfolio-rebalanced', data);'
     // });
-    // this.eventBus.on('business-case-approved', (data) => {
-    //   this.logger.info('Business case approved', data);
-    //   this.emit('investment-approved', data);
+    // this.eventBus.on('business-case-approved', (data) => {'
+    //   this.logger.info('Business case approved', data);'
+    //   this.emit('investment-approved', data);'
     // });
   }
 
@@ -901,13 +901,13 @@ export class EpicOwnerManager extends TypedEventBase {
   private async restoreState(): Promise<void> {
     try {
       const savedState = (await this.memorySystem.retrieve(
-        'epic-owner-state')) as Partial<EpicOwnerState>|null;
-      if (savedState && typeof savedState ==='object') {
+        'epic-owner-state')) as Partial<EpicOwnerState>|null;'
+      if (savedState && typeof savedState ==='object') {'
         this.state = { ...this.state, ...savedState };
-        this.logger.info('Epic owner state restored from memory');
+        this.logger.info('Epic owner state restored from memory');'
       }
     } catch (error) {
-      this.logger.warn('Failed to restore state from memory:', error);
+      this.logger.warn('Failed to restore state from memory:', error);'
     }
   }
 
@@ -916,14 +916,14 @@ export class EpicOwnerManager extends TypedEventBase {
    */
   private async persistState(): Promise<void> {
     try {
-      await this.memorySystem.store('epic-owner-state', {
+      await this.memorySystem.store('epic-owner-state', {'
         activeEpicsCount: this.state.activeEpicsCount,
         portfolioValue: this.state.portfolioValue,
         lastWSJFUpdate: this.state.lastWSJFUpdate,
         businessCasesCount: this.state.businessCasesCount,
       });
     } catch (error) {
-      this.logger.warn('Failed to persist state to memory:', error);
+      this.logger.warn('Failed to persist state to memory:', error);'
     }
   }
 }

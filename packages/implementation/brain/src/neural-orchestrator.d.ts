@@ -11,19 +11,19 @@
  * Neural task complexity levels
  */
 export declare enum TaskComplexity {
-  SIMPLE = 'simple', // brain.js internal processing
-  MODERATE = 'moderate', // Enhanced brain.js with some ML
-  COMPLEX = 'complex', // Requires neural-ml lightweight models
+  SIMPLE = 'simple', // brain.js internal processing'
+  MODERATE = 'moderate', // Enhanced brain.js with some ML'
+  COMPLEX = 'complex', // Requires neural-ml lightweight models'
   HEAVY = 'heavy',
 }
 /**
  * Storage strategy types
  */
 export declare enum StorageStrategy {
-  MEMORY = 'memory', // Fast access in brain package memory
-  DATABASE = 'database', // Persistent via foundation SQLite
-  VECTOR = 'vector', // High-dimensional via foundation LanceDB
-  GRAPH = 'graph', // Relationship via foundation Kuzu
+  MEMORY = 'memory', // Fast access in brain package memory'
+  DATABASE = 'database', // Persistent via foundation SQLite'
+  VECTOR = 'vector', // High-dimensional via foundation LanceDB'
+  GRAPH = 'graph', // Relationship via foundation Kuzu'
   HYBRID = 'hybrid',
 }
 /**
@@ -31,7 +31,7 @@ export declare enum StorageStrategy {
  */
 export interface NeuralTask {
   id: string;
-  type:|'prediction|classification|clustering|forecasting|optimization|pattern_recognition';
+  type:|'prediction|classification|clustering|forecasting|optimization|pattern_recognition;
   data: {
     input: number[]|number[][];
     context?: Record<string, unknown>;
@@ -57,7 +57,7 @@ export interface NeuralResult {
   result: number[]|number[][]|Record<string, unknown>;
   metadata: {
     complexity: TaskComplexity;
-    processor:'brain-js|neural-ml-light'||neural-ml-heavy';
+    processor:'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
     duration: number;
     confidence?: number;
     storageStrategy: StorageStrategy;
@@ -69,13 +69,13 @@ export interface NeuralResult {
  */
 export interface NeuralData {
   id: string;
-  type: 'weights|training|patterns|predictions|models';
+  type: 'weights|training|patterns|predictions|models;
   data: unknown;
   characteristics: {
     size: number;
     dimensions?: number;
-    accessFrequency: 'rare|occasional|frequent|realtime';
-    persistenceLevel: 'temporary|session|permanent';
+    accessFrequency: 'rare|occasional|frequent|realtime;
+    persistenceLevel: 'temporary' | 'session' | 'permanent';
     relationships?: string[];
   };
 }
@@ -161,7 +161,7 @@ export declare class NeuralOrchestrator {
   /**
    * Get task complexity prediction
    */
-  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity;
+  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity;'
   /**
    * Get numeric complexity level for comparison
    */

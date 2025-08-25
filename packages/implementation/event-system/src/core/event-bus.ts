@@ -20,7 +20,7 @@ import { EventEmitter } from '@claude-zen/foundation';
  * - Professional logging and metrics
  *
  * @example Basic event bus usage
- * ```typescript
+ * ```typescript`
  * import { EventBus } from '@claude-zen/event-system';
  *
  * const eventBus = new EventBus({
@@ -29,12 +29,12 @@ import { EventEmitter } from '@claude-zen/foundation';
  * });
  *
  * // Type-safe event handling
- * eventBus.on('userAction', (payload) => {
- *   console.log('User action:', payload);
+ * eventBus.on('userAction', (payload) => {'
+ *   console.log('User action:', payload);'
  * });
  *
- * eventBus.emit('userAction', { action: 'click', target: 'button' });
- * ```
+ * eventBus.emit('userAction', { action: 'click', target: 'button' });'
+ * ````
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
@@ -55,7 +55,7 @@ import {
   metered,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('EventBus');
+const logger = getLogger('EventBus');'
 
 export interface EventBusConfig {
   maxListeners: number;
@@ -98,12 +98,12 @@ export type EventMiddleware = (
  * Uses eventemitter3 for 2x performance improvement over Node.js EventEmitter.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const eventBus = new EventBus({
  *   maxListeners: 100,
  *   enableMetrics: true
  * });
- * ```
+ * ````
  */
 @injectable()
 @singleton()
@@ -153,7 +153,7 @@ export class EventBus extends TypedEventBase {
    */
   async initialize(): Promise<Result<void, Error>> {
     return safeAsync(async () => {
-      logger.info('[EventBus] Initialized successfully', {
+      logger.info('[EventBus] Initialized successfully', {'
         config: this.config,
         metrics: this.metrics,
       });
@@ -168,16 +168,16 @@ export class EventBus extends TypedEventBase {
    * @param payload - Event payload
    * @returns Result<boolean, Error> - Success or error result
    */
-  @traced('event.emit')
-  @metered('event_bus_emit')
+  @traced('event.emit')'
+  @metered('event_bus_emit')'
   async emitSafe(event: string, payload: any): Promise<Result<boolean, Error>> {
-    return withTrace('event.emit', async (span) => {
+    return withTrace('event.emit', async (span) => {'
       return safeAsync(async () => {
         const startTime = Date.now();
 
         // Record telemetry metrics
         if (this.config.enableTelemetry) {
-          recordMetric('event_bus.events_total', 1, { event_type: event });
+          recordMetric('event_bus.events_total', 1, { event_type: event });'
           recordMetric(
             'event_bus.active_listeners',
             this.listenerCount(event),
@@ -197,10 +197,10 @@ export class EventBus extends TypedEventBase {
 
         // Log if enabled
         if (this.config.enableLogging) {
-          logger.info(`[EventBus] Emitting event: ${event}`, { payload });
+          logger.info(`[EventBus] Emitting event: ${event}`, { payload });`
         }
 
-        // Use eventemitter3's emit (faster than Node.js EventEmitter)
+        // Use eventemitter3's emit (faster than Node.js EventEmitter)'
         const result = super.emit(event, payload);
 
         // Update processing time metrics and telemetry
@@ -208,7 +208,7 @@ export class EventBus extends TypedEventBase {
         this.updateProcessingTimeMetrics(processingTime);
 
         if (this.config.enableTelemetry) {
-          recordHistogram('event_bus.processing_duration', processingTime, {
+          recordHistogram('event_bus.processing_duration', processingTime, {'
             event_type: event,
           });
           span?.setAttributes({
@@ -247,7 +247,7 @@ export class EventBus extends TypedEventBase {
         this.runMiddleware(String(event), payload).catch((error) => {
           this.metrics.errorCount++;
           logger.error(
-            `[EventBus] Middleware error in sync emit for'${String(event)}':`,
+            `[EventBus] Middleware error in sync emit for'${String(event)}':`,`
             error
           );
         });
@@ -255,10 +255,10 @@ export class EventBus extends TypedEventBase {
 
       // Log if enabled
       if (this.config.enableLogging) {
-        logger.info(`[EventBus] Emitting event: ${String(event)}`, { payload });
+        logger.info(`[EventBus] Emitting event: ${String(event)}`, { payload });`
       }
 
-      // Use eventemitter3's emit (faster than Node.js EventEmitter)
+      // Use eventemitter3's emit (faster than Node.js EventEmitter)'
       const result = super.emit(event, payload);
 
       // Update processing time metrics
@@ -268,7 +268,7 @@ export class EventBus extends TypedEventBase {
       return result;
     } catch (error) {
       this.metrics.errorCount++;
-      logger.error(`[EventBus] Error in event '${String(event)}':`, error);
+      logger.error(`[EventBus] Error in event '${String(event)}':`, error);`
       return false;
     }
   }
@@ -282,10 +282,10 @@ export class EventBus extends TypedEventBase {
 
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('event_bus.listeners_registered', 1, {
+      recordMetric('event_bus.listeners_registered', 1, {'
         event_type: String(event),
       });
-      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);
+      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);'
     }
 
     return this;
@@ -309,10 +309,10 @@ export class EventBus extends TypedEventBase {
 
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('event_bus.listeners_removed', 1, {
+      recordMetric('event_bus.listeners_removed', 1, {'
         event_type: String(event),
       });
-      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);
+      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);'
     }
 
     return this;
@@ -326,8 +326,8 @@ export class EventBus extends TypedEventBase {
 
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('event_bus.middleware_added', 1);
-      recordMetric('event_bus.middleware_count', this.middleware.length);
+      recordMetric('event_bus.middleware_added', 1);'
+      recordMetric('event_bus.middleware_count', this.middleware.length);'
     }
   }
 
@@ -388,10 +388,10 @@ export class EventBus extends TypedEventBase {
 
       // Record telemetry for middleware errors
       if (this.config.enableTelemetry) {
-        recordMetric('event_bus.middleware_errors', 1, { event_type: event });
+        recordMetric('event_bus.middleware_errors', 1, { event_type: event });'
       }
 
-      logger.error(`[EventBus] Middleware error for event '${event}':`, error);
+      logger.error(`[EventBus] Middleware error for event '${event}':`, error);`
       throw error; // Re-throw to let caller handle
     }
   }

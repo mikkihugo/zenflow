@@ -49,12 +49,12 @@ export interface SystemEvent extends Entity {
 /**
  * Event processing strategies
  */
-export type ProcessingStrategy =|'immediate|queued|batched|throttled|scheduled|async';
+export type ProcessingStrategy =|'immediate|queued|batched|throttled|scheduled|async;
 
 /**
  * Event backoff strategies for retry logic
  */
-export type BackoffStrategy =|'exponential|linear|fixed|fibonacci|custom';
+export type BackoffStrategy =|'exponential|linear|fixed|fibonacci|custom;
 
 /**
  * Event reliability levels
@@ -136,9 +136,9 @@ export interface MonitoringConfig {
  * System lifecycle events - Core system operations
  */
 export interface SystemLifecycleEvent extends SystemEvent {
-  type:|'system:startup|system:shutdown'||system:restart|system:error'||system:health';
-  operation: 'start|stop|restart|status|healthcheck';
-  status: 'success|warning|error|critical';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||system:health;
+  operation: 'start|stop|restart|status|healthcheck;
+  status: 'success|warning|error|critical;
   details?: {
     component?: string;
     version?: string;
@@ -157,12 +157,12 @@ export interface SystemLifecycleEvent extends SystemEvent {
  * Coordination events - Multi-agent and swarm coordination
  */
 export interface CoordinationEvent extends SystemEvent {
-  type:|'coordination:swarm|coordination:agent'||coordination:task|coordination:topology';
-  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail'';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
+  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail';
   targetId: string; // swarmId, agentId, taskId, etc.
   details?: {
     agentCount?: number;
-    topology?: 'mesh|hierarchical|ring|star';
+    topology?: 'mesh|hierarchical|ring|star;
     taskType?: string;
     assignedTo?: string[];
     progress?: number;
@@ -200,9 +200,9 @@ export enum CoordinationTopology {
  * Communication events - Network, protocol, and messaging operations
  */
 export interface CommunicationEvent extends SystemEvent {
-  type:|'communication:websocket|communication:http'||communication:protocol|communication:message'||communication:stream';
-  operation:|'connect|disconnect|send|receive|error|timeout|retry';
-  protocol:|''http|https|ws|wss|stdio|tcp|udp | grpc'|custom';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||communication:stream;
+  operation:|'connect|disconnect|send|receive|error|timeout|retry;
+  protocol:|''http|https|ws|wss|stdio|tcp|udp | grpc'|custom;
   endpoint?: string;
   details?: {
     requestId?: string;
@@ -222,8 +222,8 @@ export interface CommunicationEvent extends SystemEvent {
  * Communication protocol configuration
  */
 export interface CommunicationProtocol {
-  type:|'message_passing|shared_memory|event_driven|rpc|streaming';
-  format: 'json|binary|protobuf|avro|custom';
+  type:|'message_passing|shared_memory|event_driven|rpc|streaming;
+  format: 'json|binary|protobuf|avro|custom;
   encryption: boolean;
   compression: boolean;
   reliability: ReliabilityLevel;
@@ -239,14 +239,14 @@ export interface CommunicationProtocol {
  * Monitoring events - Metrics, health checks, and performance monitoring
  */
 export interface MonitoringEvent extends SystemEvent {
-  type:|'monitoring:metrics|monitoring:health'||monitoring:performance|monitoring:alert'||monitoring:trace';
-  operation:|'collect|report|alert|recover|threshold|anomaly|trace'';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||monitoring:trace;
+  operation:|'collect|report|alert|recover|threshold|anomaly|trace';
   component: string;
   details?: {
     metricName?: string;
     metricValue?: number;
     threshold?: number;
-    severity?: 'info|warning|error|critical';
+    severity?: 'info|warning|error|critical;
     alertId?: string;
     healthScore?: number;
     traceId?: string;
@@ -271,9 +271,9 @@ export interface MonitoringEvent extends SystemEvent {
  * Interface events - User interface and API interactions
  */
 export interface InterfaceEvent extends SystemEvent {
-  type:|'interface:cli|interface:web'||interface:tui|interface:api'||interface:mobile|interface:desktop';
-  operation:|''start|stop|command|request|response|interaction|render'';
-  interface: 'cli|web|tui|api|mobile|desktop';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||interface:mobile|interface:desktop;
+  operation:|''start|stop|command|request|response|interaction|render';
+  interface: 'cli|web|tui|api|mobile|desktop;
   details?: {
     command?: string;
     args?: string[];
@@ -284,7 +284,7 @@ export interface InterfaceEvent extends SystemEvent {
     userId?: string;
     sessionId?: string;
     deviceId?: string;
-    interactionType?: 'click|key|scroll|focus|input|swipe';
+    interactionType?: 'click|key|scroll|focus|input|swipe;
     renderTime?: number;
     bundleSize?: number;
   };
@@ -298,8 +298,8 @@ export interface InterfaceEvent extends SystemEvent {
  * Neural events - AI and machine learning operations
  */
 export interface NeuralEvent extends SystemEvent {
-  type:|'neural:training|neural:inference'||neural:optimization|neural:evaluation'||neural:deployment';
-  operation:|'train|predict|evaluate|optimize|load|save|export|deploy';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||neural:deployment;
+  operation:|'train|predict|evaluate|optimize|load|save|export|deploy;
   modelId: string;
   details?: {
     modelType?: string;
@@ -329,12 +329,12 @@ export interface NeuralEvent extends SystemEvent {
  * Database events - Data persistence and query operations
  */
 export interface DatabaseEvent extends SystemEvent {
-  type:|'database:query|database:transaction'||database:migration|database:backup'||database:replication';
-  operation:|'select|insert|update|delete|create|drop|index | backup'|restore|replicate'';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||database:replication;
+  operation:|'select|insert|update|delete|create|drop|index | backup'|restore|replicate';
   details?: {
     tableName?: string;
     databaseName?: string;
-    queryType?: 'read|write|ddl|dcl|dml';
+    queryType?: 'read|write|ddl|dcl|dml;
     recordCount?: number;
     queryTime?: number;
     cacheHit?: boolean;
@@ -355,8 +355,8 @@ export interface DatabaseEvent extends SystemEvent {
  * Memory events - Memory management and caching operations
  */
 export interface MemoryEvent extends SystemEvent {
-  type:|'memory:cache|memory:store'||memory:gc|memory:pool'||memory:vector|memory:graph';
-  operation:|''get|set|delete|clear|expire|cleanup|allocate | deallocate'|search|index'';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||memory:vector|memory:graph;
+  operation:|''get|set|delete|clear|expire|cleanup|allocate | deallocate'|search|index';
   details?: {
     key?: string;
     keyPattern?: string;
@@ -367,7 +367,7 @@ export interface MemoryEvent extends SystemEvent {
     memoryUsage?: number;
     poolSize?: number;
     gcDuration?: number;
-    gcType?: 'minor|major|full|incremental';
+    gcType?: 'minor|major|full|incremental;
     objectCount?: number;
     vectorDimensions?: number;
     similarityScore?: number;
@@ -382,8 +382,8 @@ export interface MemoryEvent extends SystemEvent {
  * Workflow events - Process orchestration and execution
  */
 export interface WorkflowEvent extends SystemEvent {
-  type:|'workflow:execution|workflow:task'||workflow:condition|workflow:trigger'||workflow:orchestration|workflow:schedule';
-  operation:|''start|complete|fail|retry|skip|branch|merge | loop'|create|pause | resume'|cancel|schedule';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||workflow:orchestration|workflow:schedule;
+  operation:|''start|complete|fail|retry|skip|branch|merge | loop'|create|pause | resume'|cancel|schedule;
   workflowId: string;
   taskId?: string;
   details?: {
@@ -412,9 +412,9 @@ export interface WorkflowEvent extends SystemEvent {
  * Multi-level orchestration events - Enterprise-scale coordination
  */
 export interface OrchestrationEvent extends SystemEvent {
-  type:|''orchestration:portfolio|orchestration:program'||orchestration:execution|orchestration:flow'||orchestration:bottleneck';
-  operation:|'plan|execute|monitor|optimize|escalate|delegate|coordinate|sync';
-  level: 'portfolio|program|execution';
+  type:|''javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||orchestration:bottleneck;
+  operation:|'plan|execute|monitor|optimize|escalate|delegate|coordinate|sync;
+  level: 'portfolio' | 'program' | 'execution';
   details?: {
     orchestrationId?: string;
     parentId?: string;
@@ -440,16 +440,16 @@ export interface OrchestrationEvent extends SystemEvent {
  * SAFe (Scaled Agile Framework) events for enterprise agile coordination
  */
 export interface SafeEvent extends SystemEvent {
-  type:|'safe:portfolio|safe:pi'||safe:value_stream|safe:planning'||safe:execution';
-  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set'';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||safe:execution;
+  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set';
   details?: {
     epicId?: string;
     piId?: string;
     valueStreamId?: string;
     businessValue?: number;
     confidence?: number;
-    phase?: 'preparation|day1|day2|finalization';
-    investmentHorizon?: 'near|mid|long';
+    phase?: 'preparation|day1|day2|finalization;
+    investmentHorizon?: 'near' | 'mid' | 'long';
     budgetAllocation?: number;
     piObjectives?: Array<{
       id: string;
@@ -468,16 +468,16 @@ export interface SafeEvent extends SystemEvent {
  * Advanced memory orchestration events for cross-system coordination
  */
 export interface MemoryOrchestrationEvent extends SystemEvent {
-  type:|'memory_orchestration:sync|memory_orchestration:coordination'||memory_orchestration:cache|memory_orchestration:consistency'||memory_orchestration:optimization';
-  operation:|'sync_initiated|sync_completed|coordination_updated|cache_populated|cache_invalidated|cache_refreshed|cache_migrated | consistency_check'|optimization_applied';
+  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||memory_orchestration:optimization;
+  operation:|'sync_initiated|sync_completed|coordination_updated|cache_populated|cache_invalidated|cache_refreshed|cache_migrated | consistency_check'|optimization_applied;
   details?: {
     systemId?: string;
     cacheId?: string;
-    syncType?: 'full|incremental|delta';
+    syncType?: 'full' | 'incremental' | 'delta';
     dataSize?: number;
     keyPattern?: string;
-    consistencyLevel?: 'eventual|strong|weak';
-    optimizationStrategy?: 'lru|lfu|ttl|adaptive';
+    consistencyLevel?: 'eventual' | 'strong' | 'weak';
+    optimizationStrategy?: 'lru|lfu|ttl|adaptive;
     memoryPools?: string[];
     crossSystemSync?: boolean;
   };
@@ -688,57 +688,57 @@ export const UELTypeGuards = {
   isSystemLifecycleEvent: (
     event: SystemEvent
   ): event is SystemLifecycleEvent => {
-    return event.type.startsWith('system:');
+    return event.type.startsWith('system:');'
   },
 
   isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => {
-    return event.type.startsWith('coordination:');
+    return event.type.startsWith('coordination:');'
   },
 
   isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => {
-    return event.type.startsWith('communication:');
+    return event.type.startsWith('communication:');'
   },
 
   isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => {
-    return event.type.startsWith('monitoring:');
+    return event.type.startsWith('monitoring:');'
   },
 
   isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => {
-    return event.type.startsWith('interface:');
+    return event.type.startsWith('interface:');'
   },
 
   isNeuralEvent: (event: SystemEvent): event is NeuralEvent => {
-    return event.type.startsWith('neural:');
+    return event.type.startsWith('neural:');'
   },
 
   isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => {
-    return event.type.startsWith('database:');
+    return event.type.startsWith('database:');'
   },
 
   isMemoryEvent: (event: SystemEvent): event is MemoryEvent => {
-    return event.type.startsWith('memory:');
+    return event.type.startsWith('memory:');'
   },
 
   isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
-    return event.type.startsWith('workflow:');
+    return event.type.startsWith('workflow:');'
   },
 
   isOrchestrationEvent: (event: SystemEvent): event is OrchestrationEvent => {
-    return event.type.startsWith('orchestration:');
+    return event.type.startsWith('orchestration:');'
   },
 
   isSafeEvent: (event: SystemEvent): event is SafeEvent => {
-    return event.type.startsWith('safe:');
+    return event.type.startsWith('safe:');'
   },
 
   isMemoryOrchestrationEvent: (
     event: SystemEvent
   ): event is MemoryOrchestrationEvent => {
-    return event.type.startsWith('memory_orchestration:');
+    return event.type.startsWith('memory_orchestration:');'
   },
 
   isUELEvent: (event: SystemEvent): event is UELEvent => {
-    const category = event.type.split(':')[0];
+    const category = event.type.split(':')[0];'
     return Object.values(EventCategories).includes(category as any);
   },
 } as const;
@@ -781,8 +781,8 @@ export interface SubscriptionInfo {
  * Event-specific error types
  */
 export interface EventError extends ValidationError {
-  type: 'EventError';
-  category: 'processing|subscription|emission|configuration';
+  type: 'EventError;
+  category: 'processing|subscription|emission|configuration;
   eventId?: UUID;
   eventType?: string;
 }
@@ -791,7 +791,7 @@ export interface EventError extends ValidationError {
  * Processing-specific error types
  */
 export interface ProcessingError extends EventError {
-  category: 'processing';
+  category: 'processing;
   batchId?: UUID;
   queueSize?: number;
   retryCount?: number;
@@ -801,7 +801,7 @@ export interface ProcessingError extends EventError {
  * Subscription-specific error types
  */
 export interface SubscriptionError extends EventError {
-  category: 'subscription';
+  category: 'subscription;
   subscriptionId?: UUID;
   listenerCount?: number;
 }

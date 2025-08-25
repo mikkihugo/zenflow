@@ -19,7 +19,7 @@ import type {
 } from '../types/index';
 import type { PIPlanningCoordination } from '../events/pi-planning-coordination';
 
-const logger = getLogger('TaskMasterFacade');
+const logger = getLogger('TaskMasterFacade');'
 
 // ============================================================================
 // TASKMASTER FACADE INTERFACE
@@ -30,7 +30,7 @@ export interface TaskMasterSystem {
   createTask(taskData: {
     title: string;
     description?: string;
-    priority: 'critical' | 'high' | 'medium' | 'low';
+    priority: 'critical' | 'high' | 'medium' | 'low;
     estimatedEffort: number;
     assignedAgent?: string;
   }): Promise<WorkflowTask>;
@@ -63,7 +63,7 @@ export interface TaskMasterSystem {
     minimumApprovals: number;
   }, taskId: string): Promise<ApprovalGateInstance>;
 
-  processApproval(gateId: string, approverId: string, decision: 'approved' | 'rejected'): Promise<boolean>;
+  processApproval(gateId: string, approverId: string, decision: 'approved' | 'rejected'): Promise<boolean>;'
 
   // System lifecycle
   initialize(): Promise<void>;
@@ -84,7 +84,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     if (this.initialized) return;
 
     try {
-      logger.info('Initializing TaskMaster system...');
+      logger.info('Initializing TaskMaster system...');'
 
       // Initialize database integration
       await this.databaseIntegration.initialize();
@@ -125,10 +125,10 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
       await this.approvalGateManager.initialize();
 
       this.initialized = true;
-      logger.info('TaskMaster system initialized successfully');
+      logger.info('TaskMaster system initialized successfully');'
 
     } catch (error) {
-      logger.error('Failed to initialize TaskMaster system', error);
+      logger.error('Failed to initialize TaskMaster system', error);'
       throw error;
     }
   }
@@ -137,7 +137,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     if (!this.initialized) return;
 
     try {
-      logger.info('Shutting down TaskMaster system...');
+      logger.info('Shutting down TaskMaster system...');'
 
       if (this.workflowKanban) {
         await this.workflowKanban.shutdown();
@@ -148,10 +148,10 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
       }
 
       this.initialized = false;
-      logger.info('TaskMaster system shutdown complete');
+      logger.info('TaskMaster system shutdown complete');'
 
     } catch (error) {
-      logger.error('Error during TaskMaster shutdown', error);
+      logger.error('Error during TaskMaster shutdown', error);'
       throw error;
     }
   }
@@ -159,7 +159,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
   async createTask(taskData: {
     title: string;
     description?: string;
-    priority: 'critical' | 'high' | 'medium' | 'low';
+    priority: 'critical' | 'high' | 'medium' | 'low;
     estimatedEffort: number;
     assignedAgent?: string;
   }): Promise<WorkflowTask> {
@@ -174,7 +174,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     });
 
     if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to create task');
+      throw new Error(result.error || 'Failed to create task');'
     }
 
     // Save to database
@@ -274,7 +274,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     
     // Use existing PI Planning coordination implementation
     const piEvent: PIPlanningEvent = {
-      id: `pi-${eventData.planningIntervalNumber}-${eventData.artId}`,
+      id: `pi-${eventData.planningIntervalNumber}-${eventData.artId}`,`
       planningIntervalNumber: eventData.planningIntervalNumber,
       artId: eventData.artId,
       startDate: eventData.startDate,
@@ -285,7 +285,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
       teams: []
     } as PIPlanningEvent;
 
-    logger.info('PI Planning event created', { eventId: piEvent.id });
+    logger.info('PI Planning event created', { eventId: piEvent.id });'
     return piEvent;
   }
 
@@ -297,7 +297,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     this.ensureInitialized();
 
     const gateRequirement = {
-      id: `gate-${Date.now()}`,
+      id: `gate-${Date.now()}`,`
       name: requirement.name,
       requiredApprovers: requirement.requiredApprovers,
       minimumApprovals: requirement.minimumApprovals
@@ -309,13 +309,13 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     );
 
     if (!result.success || !result.data) {
-      throw new Error(result.error?.message || 'Failed to create approval gate');
+      throw new Error(result.error?.message || 'Failed to create approval gate');'
     }
 
     return result.data;
   }
 
-  async processApproval(gateId: string, approverId: string, decision: 'approved' | 'rejected'): Promise<boolean> {
+  async processApproval(gateId: string, approverId: string, decision: 'approved' | 'rejected'): Promise<boolean> {'
     this.ensureInitialized();
 
     const result = await this.approvalGateManager!.processApproval(
@@ -329,7 +329,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
 
   private ensureInitialized(): void {
     if (!this.initialized) {
-      throw new Error('TaskMaster system not initialized - call initialize() first');
+      throw new Error('TaskMaster system not initialized - call initialize() first');'
     }
   }
 }

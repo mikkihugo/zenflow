@@ -7,7 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('GPUSupport');
+const logger = getLogger('GPUSupport');'
 
 /**
  * GPU acceleration capabilities
@@ -17,7 +17,7 @@ export interface GPUCapabilities {
   hasTensorFlowGPU: boolean;
   hasGPUJS: boolean;
   hasONNXGPU: boolean;
-  recommendedBackend: 'webgpu' | 'tensorflow-gpu' | 'gpu.js' | 'onnx' | 'cpu';
+  recommendedBackend: 'webgpu' | 'tensorflow-gpu' | 'gpu.js' | 'onnx' | 'cpu;
 }
 
 /**
@@ -25,7 +25,7 @@ export interface GPUCapabilities {
  */
 export interface GPUOptions {
   preferGPU?: boolean;
-  backend?: 'webgpu' | 'tensorflow-gpu' | 'gpu.js' | 'onnx' | 'auto' | 'cpu';
+  backend?: 'webgpu' | 'tensorflow-gpu' | 'gpu.js' | 'onnx' | 'auto' | 'cpu;
   memoryFraction?: number;
 }
 
@@ -43,53 +43,53 @@ export async function detectGPUCapabilities(): Promise<GPUCapabilities> {
 
   // Check WebGPU availability
   try {
-    if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
+    if (typeof navigator !== 'undefined' && 'gpu' in navigator) {'
       const adapter = await (navigator as any).gpu?.requestAdapter();
       capabilities.hasWebGPU = !!adapter;
       if (capabilities.hasWebGPU) {
-        logger.info('WebGPU detected and available');
+        logger.info('WebGPU detected and available');'
       }
     }
   } catch (error) {
-    logger.debug('WebGPU not available:', error);
+    logger.debug('WebGPU not available:', error);'
   }
 
   // Check TensorFlow GPU support
   try {
-    const tf = await import('@tensorflow/tfjs-node-gpu').catch(() => null);
+    const tf = await import('@tensorflow/tfjs-node-gpu').catch(() => null);'
     if (tf) {
       capabilities.hasTensorFlowGPU = true;
-      logger.info('TensorFlow GPU support detected');
+      logger.info('TensorFlow GPU support detected');'
     }
   } catch (error) {
-    logger.debug('TensorFlow GPU not available:', error);
+    logger.debug('TensorFlow GPU not available:', error);'
   }
 
   // Check GPU.js availability
   try {
-    const { GPU } = await import('gpu.js').catch(() => ({ GPU: null }));
+    const { GPU } = await import('gpu.js').catch(() => ({ GPU: null }));'
     if (GPU) {
       const gpu = new GPU();
       capabilities.hasGPUJS = !!(gpu as any).context;
       if (capabilities.hasGPUJS) {
-        logger.info('GPU.js acceleration detected');
+        logger.info('GPU.js acceleration detected');'
       }
     }
   } catch (error) {
-    logger.debug('GPU.js not available:', error);
+    logger.debug('GPU.js not available:', error);'
   }
 
   // Check ONNX Runtime GPU support (optional dependency)
   try {
     // Note: onnxruntime-node is optional - commented out to fix compilation
-    // const ort = await import('onnxruntime-node').catch(() => null);
+    // const ort = await import('onnxruntime-node').catch(() => null);'
     // if (ort) {
     //   capabilities.hasONNXGPU = true;
-    //   logger.info('ONNX Runtime GPU support detected');
+    //   logger.info('ONNX Runtime GPU support detected');'
     // }
     capabilities.hasONNXGPU = false; // Default to false when dependency not available
   } catch (error) {
-    logger.debug('ONNX Runtime GPU not available:', error);
+    logger.debug('ONNX Runtime GPU not available:', error);'
   }
 
   // Determine recommended backend
@@ -103,7 +103,7 @@ export async function detectGPUCapabilities(): Promise<GPUCapabilities> {
     capabilities.recommendedBackend = 'gpu.js';
   }
 
-  logger.info('GPU capabilities detected:', capabilities);
+  logger.info('GPU capabilities detected:', capabilities);'
   return capabilities;
 }
 
@@ -117,26 +117,26 @@ export async function initializeGPUAcceleration(
   accelerated: boolean;
   device?: string;
 }> {
-  const { preferGPU = true, backend = 'auto', memoryFraction = 0.9 } = options;
+  const { preferGPU = true, backend = 'auto', memoryFraction = 0.9 } = options;'
 
-  if (!preferGPU||backend ==='cpu') {
-    logger.info('GPU acceleration disabled, using CPU');
-    return { backend: 'cpu', accelerated: false };
+  if (!preferGPU||backend ==='cpu') {'
+    logger.info('GPU acceleration disabled, using CPU');'
+    return { backend: 'cpu', accelerated: false };'
   }
 
   const capabilities = await detectGPUCapabilities();
   const selectedBackend =
-    backend === 'auto' ? capabilities.recommendedBackend : backend;
+    backend === 'auto' ? capabilities.recommendedBackend : backend;'
 
   // Try to initialize the selected backend
   try {
     switch (selectedBackend) {
-      case 'tensorflow-gpu':
+      case 'tensorflow-gpu':'
         if (capabilities.hasTensorFlowGPU) {
-          const tf = await import('@tensorflow/tfjs-node-gpu');
+          const tf = await import('@tensorflow/tfjs-node-gpu');'
 
           // Use tf to configure GPU memory settings
-          logger.debug('TensorFlow GPU module loaded', {
+          logger.debug('TensorFlow GPU module loaded', {'
             version: (tf.version as any)?.['tfjs-core']||'unknown',
             backend: selectedBackend,
           });
@@ -144,7 +144,7 @@ export async function initializeGPUAcceleration(
           // Configure memory growth to avoid GPU memory issues
           if (memoryFraction < 1.0) {
             logger.info(
-              `TensorFlow GPU initialized with ${memoryFraction * 100}% memory limit`
+              `TensorFlow GPU initialized with ${memoryFraction * 100}% memory limit``
             );
           }
           return {
@@ -155,18 +155,18 @@ export async function initializeGPUAcceleration(
         }
         break;
 
-      case 'webgpu':
+      case 'webgpu':'
         if (capabilities.hasWebGPU) {
-          logger.info('WebGPU acceleration enabled');
-          return { backend: 'webgpu', accelerated: true, device: 'WebGPU' };
+          logger.info('WebGPU acceleration enabled');'
+          return { backend: 'webgpu', accelerated: true, device: 'WebGPU' };'
         }
         break;
 
-      case 'gpu.js':
+      case 'gpu.js':'
         if (capabilities.hasGPUJS) {
-          const { GPU } = await import('gpu.js');
+          const { GPU } = await import('gpu.js');'
           const gpu = new GPU();
-          logger.info('GPU.js acceleration enabled');
+          logger.info('GPU.js acceleration enabled');'
           return {
             backend: 'gpu.js',
             accelerated: true,
@@ -175,20 +175,20 @@ export async function initializeGPUAcceleration(
         }
         break;
 
-      case 'onnx':
+      case 'onnx':'
         if (capabilities.hasONNXGPU) {
-          logger.info('ONNX Runtime GPU acceleration enabled');
-          return { backend: 'onnx', accelerated: true, device: 'GPU' };
+          logger.info('ONNX Runtime GPU acceleration enabled');'
+          return { backend: 'onnx', accelerated: true, device: 'GPU' };'
         }
         break;
     }
   } catch (error) {
-    logger.warn(`Failed to initialize ${selectedBackend} acceleration:`, error);
+    logger.warn(`Failed to initialize ${selectedBackend} acceleration:`, error);`
   }
 
   // Fallback to CPU
-  logger.info('GPU acceleration not available, falling back to CPU');
-  return { backend: 'cpu', accelerated: false };
+  logger.info('GPU acceleration not available, falling back to CPU');'
+  return { backend: 'cpu', accelerated: false };'
 }
 
 /**
@@ -206,28 +206,28 @@ export async function createAcceleratedNeuralNetwork(
 
   let network: any;
 
-  if (acceleration.accelerated && acceleration.backend === 'tensorflow-gpu') {
+  if (acceleration.accelerated && acceleration.backend === 'tensorflow-gpu') {'
     try {
-      const tf = await import('@tensorflow/tfjs-node-gpu');
+      const tf = await import('@tensorflow/tfjs-node-gpu');'
       // Create TensorFlow model with GPU acceleration
       network = tf.sequential(architecture);
-      logger.info('Neural network created with TensorFlow GPU acceleration');
+      logger.info('Neural network created with TensorFlow GPU acceleration');'
     } catch (error) {
       logger.warn(
         'Failed to create TensorFlow GPU network, falling back to CPU:',
         error
       );
-      const tf = await import('@tensorflow/tfjs-node');
+      const tf = await import('@tensorflow/tfjs-node');'
       network = tf.sequential(architecture);
     }
   } else {
     // Fallback to regular TensorFlow or Brain.js
     try {
-      const tf = await import('@tensorflow/tfjs-node');
+      const tf = await import('@tensorflow/tfjs-node');'
       network = tf.sequential(architecture);
     } catch (error) {
-      logger.warn('TensorFlow not available, falling back to Brain.js:', error);
-      const { NeuralNetwork } = await import('brain.js');
+      logger.warn('TensorFlow not available, falling back to Brain.js:', error);'
+      const { NeuralNetwork } = await import('brain.js');'
       network = new NeuralNetwork(architecture);
     }
   }
@@ -252,11 +252,11 @@ export class GPUMatrix {
 
   private async initializeGPU() {
     try {
-      const { GPU } = await import('gpu.js');
+      const { GPU } = await import('gpu.js');'
       this.gpu = new GPU();
-      logger.info('GPU.js matrix operations initialized');
+      logger.info('GPU.js matrix operations initialized');'
     } catch (error) {
-      logger.warn('GPU.js not available for matrix operations:', error);
+      logger.warn('GPU.js not available for matrix operations:', error);'
     }
   }
 
@@ -270,7 +270,7 @@ export class GPUMatrix {
     }
 
     try {
-      if (!this.kernels.has('multiply')) {
+      if (!this.kernels.has('multiply')) {'
         const kernel = this.gpu
           .createKernel(function (
             this: any,
@@ -286,10 +286,10 @@ export class GPUMatrix {
           })
           .setOutput([b[0].length, a.length]);
 
-        this.kernels.set('multiply', kernel);
+        this.kernels.set('multiply', kernel);'
       }
 
-      const kernel = this.kernels.get('multiply');
+      const kernel = this.kernels.get('multiply');'
       const result = kernel(a, b, a[0].length) as number[][];
       return Promise.resolve(result);
     } catch (error) {

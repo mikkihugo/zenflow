@@ -14,7 +14,7 @@ import type {
 } from '../types/index';
 
 export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
-  'github-models': {
+  'github-models': {'
     name: 'github-models',
     displayName: 'GitHub Models (GPT-5)',
     models: ['openai/gpt-5', 'openai/gpt-4o', 'mistralai/codestral'],
@@ -89,12 +89,12 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
     },
   },
 
-  'claude-code': {
+  'claude-code': {'
     name: 'claude-code',
     displayName: 'Claude Code CLI',
     models: ['sonnet', 'haiku'],
     defaultModel: 'sonnet',
-    maxContextTokens: 200000, // Claude's large context
+    maxContextTokens: 200000, // Claude's large context'
     maxOutputTokens: 8000,
     features: {
       structuredOutput: true,
@@ -136,11 +136,11 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
     },
   },
 
-  'gemini-direct': {
+  'gemini-direct': {'
     name: 'gemini-direct',
     displayName: 'Gemini 2.5 Flash (Main)',
     models: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-pro'],
-    defaultModel: 'gemini-2.5-flash', // Main workhorse model
+    defaultModel: 'gemini-2.5-flash', // Main workhorse model'
     maxContextTokens: 1000000, // 1M context window
     maxOutputTokens: 8192,
     rateLimits: {
@@ -162,11 +162,11 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
     },
   },
 
-  'gemini-pro': {
+  'gemini-pro': {'
     name: 'gemini-pro',
     displayName: 'Gemini 2.5 Pro (Complex)',
     models: ['gemini-2.5-pro', 'gemini-1.5-pro'],
-    defaultModel: 'gemini-2.5-pro', // High complexity only
+    defaultModel: 'gemini-2.5-pro', // High complexity only'
     maxContextTokens: 1000000, // 1M context window
     maxOutputTokens: 8192,
     rateLimits: {
@@ -182,7 +182,7 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
     },
     routing: {
       priority: 4, // Lower priority - special use only
-      useForSmallContext: false, // Don't use for regular tasks
+      useForSmallContext: false, // Don't use for regular tasks'
       useForLargeContext: false, // Only for high complexity
       fallbackOrder: 4, // Special use, not in regular rotation
     },
@@ -305,7 +305,7 @@ export function getOptimalProvider(context: ProviderRoutingContext): string[] {
 
   // Special routing for very large contexts
   if (estimatedTokens > 150000) {
-    return ['gemini', 'claude-code'];
+    return ['gemini', 'claude-code'];'
   }
 
   // Determine context size category

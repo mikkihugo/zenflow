@@ -27,7 +27,7 @@ export interface RetrainingTrigger {
   timestamp: Date;
   reason: string;
   metrics: Record<string, number>;
-  strategy: 'performance|manual|scheduled';
+  strategy: 'performance' | 'manual' | 'scheduled';
 }
 
 export interface RetrainingResult {
@@ -45,7 +45,7 @@ export interface MonitoringMetrics {
   currentCoordinationSuccessRate: number;
   lastRetrainingTimestamp?: number;
   retrainingFrequency: number;
-  cooldownStatus: 'active|inactive';
+  cooldownStatus: 'active|inactive;
   dailyLimitStatus: {
     used: number;
     limit: number;
@@ -66,9 +66,9 @@ export class RetrainingMonitor {
   private logger: Logger;
 
   constructor(private config: RetrainingConfig) {
-    this.logger = getLogger('retraining-monitor');
+    this.logger = getLogger('retraining-monitor');'
     this.logger.info(
-      'RetrainingMonitor initialized with foundation infrastructure'
+      'RetrainingMonitor initialized with foundation infrastructure''
     );
   }
 
@@ -77,23 +77,23 @@ export class RetrainingMonitor {
    */
   public async startMonitoring(): Promise<void> {
     if (this.isMonitoring) {
-      this.logger.warn('Retraining monitor is already running');
+      this.logger.warn('Retraining monitor is already running');'
       return;
     }
 
     // Check if metrics are enabled via operations facade
     try {
-      const { getPerformanceTracker } = await import('@claude-zen/operations');
+      const { getPerformanceTracker } = await import('@claude-zen/operations');'
       const performanceTracker = await getPerformanceTracker();
       if (!performanceTracker) {
         this.logger.info(
-          'Performance tracking not available, retraining monitor will not start'
+          'Performance tracking not available, retraining monitor will not start''
         );
         return;
       }
     } catch (error) {
       this.logger.info(
-        'Operations facade not available, retraining monitor will not start'
+        'Operations facade not available, retraining monitor will not start''
       );
       return;
     }
@@ -105,14 +105,14 @@ export class RetrainingMonitor {
       const retrainingConfig = this.getRetrainingConfig();
 
       if (!retrainingConfig.enableAutoRetraining) {
-        this.logger.info('Auto-retraining is disabled in configuration');
+        this.logger.info('Auto-retraining is disabled in configuration');'
         return;
       }
 
       this.intervalId = setInterval(
         () =>
           this.checkAndTriggerRetraining().catch((error) =>
-            this.logger.error('Error in retraining check cycle:', error)
+            this.logger.error('Error in retraining check cycle:', error)'
           ),
         retrainingConfig.checkIntervalMs
       );
@@ -120,10 +120,10 @@ export class RetrainingMonitor {
       this.isMonitoring = true;
 
       this.logger.info(
-        `Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ${retrainingConfig.minCoordinationSuccessRateThreshold}`
+        `Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ${retrainingConfig.minCoordinationSuccessRateThreshold}``
       );
     } catch (error) {
-      this.logger.error('Failed to start retraining monitor:', error);
+      this.logger.error('Failed to start retraining monitor:', error);'
       throw error;
     }
   }
@@ -136,7 +136,7 @@ export class RetrainingMonitor {
       clearInterval(this.intervalId);
       this.intervalId = null;
       this.isMonitoring = false;
-      this.logger.info('Retraining monitor stopped');
+      this.logger.info('Retraining monitor stopped');'
     }
   }
 
@@ -147,7 +147,7 @@ export class RetrainingMonitor {
     reason: string,
     additionalMetrics: Record<string, number> = {}
   ): Promise<RetrainingResult> {
-    this.logger.info(`Manual retraining triggered: ${reason}`);
+    this.logger.info(`Manual retraining triggered: ${reason}`);`
 
     const trigger: RetrainingTrigger = {
       timestamp: new Date(),
@@ -178,15 +178,15 @@ export class RetrainingMonitor {
   private async checkAndTriggerRetraining(): Promise<void> {
     try {
       if (!this.dbAccess) {
-        this.logger.warn('Database access not available for metrics retrieval');
+        this.logger.warn('Database access not available for metrics retrieval');'
         return;
       }
 
       const config = this.getRetrainingConfig();
 
-      // Check if we're in cooldown period
+      // Check if we're in cooldown period'
       if (await this.isInCooldownPeriod(config.cooldownHours)) {
-        this.logger.debug('Retraining is in cooldown period, skipping check');
+        this.logger.debug('Retraining is in cooldown period, skipping check');'
         return;
       }
 
@@ -194,7 +194,7 @@ export class RetrainingMonitor {
       if (
         await this.hasExceededDailyLimit(config.maxRetrainingAttemptsPerDay)
       ) {
-        this.logger.warn('Daily retraining limit exceeded, skipping check');
+        this.logger.warn('Daily retraining limit exceeded, skipping check');'
         return;
       }
 
@@ -204,19 +204,19 @@ export class RetrainingMonitor {
         currentMetrics.coordinationSuccessRate||0;
 
       this.logger.debug(
-        `Current coordination success rate: ${coordinationSuccessRate} (threshold: ${config.minCoordinationSuccessRateThreshold})`
+        `Current coordination success rate: ${coordinationSuccessRate} (threshold: ${config.minCoordinationSuccessRateThreshold})``
       );
 
       if (
         coordinationSuccessRate < config.minCoordinationSuccessRateThreshold
       ) {
         this.logger.warn(
-          `Coordination success rate (${coordinationSuccessRate}) below threshold (${config.minCoordinationSuccessRateThreshold}). Triggering retraining.`
+          `Coordination success rate (${coordinationSuccessRate}) below threshold (${config.minCoordinationSuccessRateThreshold}). Triggering retraining.``
         );
 
         const trigger: RetrainingTrigger = {
           timestamp: new Date(),
-          reason: `Coordination success rate (${coordinationSuccessRate}) below threshold (${config.minCoordinationSuccessRateThreshold})`,
+          reason: `Coordination success rate (${coordinationSuccessRate}) below threshold (${config.minCoordinationSuccessRateThreshold})`,`
           metrics: currentMetrics,
           strategy:'performance',
         };
@@ -224,11 +224,11 @@ export class RetrainingMonitor {
         await this.executeRetrainingWorkflow(trigger);
       } else {
         this.logger.debug(
-          `Coordination success rate (${coordinationSuccessRate}) is healthy`
+          `Coordination success rate (${coordinationSuccessRate}) is healthy``
         );
       }
     } catch (error) {
-      this.logger.error('Error during retraining check:', error);
+      this.logger.error('Error during retraining check:', error);'
     }
   }
 
@@ -241,22 +241,22 @@ export class RetrainingMonitor {
     const startTime = Date.now();
 
     try {
-      this.logger.info('Initiating retraining workflow...', {
+      this.logger.info('Initiating retraining workflow...', {'
         reason: trigger.reason,
         strategy: trigger.strategy,
       });
 
       // Store the retraining trigger in database
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('brain');
+        const kv = await this.dbAccess.getKV('brain');'
         await kv.set(
-          `retraining:trigger:${trigger.timestamp.getTime()}`,
+          `retraining:trigger:${trigger.timestamp.getTime()}`,`
           JSON.stringify(trigger)
         );
       }
 
       // Use LLMProvider for retraining strategy generation (no file tools needed)
-      const retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:
+      const retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
 
 Trigger Reason: ${trigger.reason}
 Current Metrics: ${JSON.stringify(trigger.metrics, null, 2)}
@@ -268,13 +268,13 @@ Please provide:
 3. Success criteria for the retraining
 4. Risk mitigation strategies
 
-Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
+Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
 
       // Use operations facade for LLM access
       let retrainingPlan =
-        'Automatic retraining plan: Default optimization strategy with learning rate adjustment';
+        'Automatic retraining plan: Default optimization strategy with learning rate adjustment;
       try {
-        const { getLLMProvider } = await import('@claude-zen/operations');
+        const { getLLMProvider } = await import('@claude-zen/operations');'
         const llm = await getLLMProvider();
         if (llm && llm.complete) {
           retrainingPlan = await llm.complete(retrainingPrompt, {
@@ -284,11 +284,11 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
         }
       } catch (error) {
         this.logger.warn(
-          'LLM provider not available via operations facade, using default plan'
+          'LLM provider not available via operations facade, using default plan''
         );
       }
 
-      this.logger.info('Retraining plan generated by LLM:', retrainingPlan);
+      this.logger.info('Retraining plan generated by LLM:', retrainingPlan);'
 
       // Parse the retraining plan
       let parsedPlan: any = {};
@@ -299,7 +299,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
           'Failed to parse retraining plan JSON, using defaults:',
           error
         );
-        parsedPlan = { approach: 'default', epochs: 100, batchSize: 32 };
+        parsedPlan = { approach: 'default', epochs: 100, batchSize: 32 };'
       }
 
       // TODO: Implement actual neural network retraining based on the plan
@@ -320,15 +320,15 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
 
       // Store retraining result
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('brain');
+        const kv = await this.dbAccess.getKV('brain');'
         await kv.set(
-          `retraining:result:${trigger.timestamp.getTime()}`,
+          `retraining:result:${trigger.timestamp.getTime()}`,`
           JSON.stringify(result)
         );
       }
 
       this.logger.info(
-        `Retraining workflow completed successfully in ${duration}ms`,
+        `Retraining workflow completed successfully in ${duration}ms`,`
         result
       );
 
@@ -345,13 +345,13 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
         error: errorMessage,
       };
 
-      this.logger.error('Retraining workflow failed:', error);
+      this.logger.error('Retraining workflow failed:', error);'
 
       // Store failed result
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('brain');
+        const kv = await this.dbAccess.getKV('brain');'
         await kv.set(
-          `retraining:result:${trigger.timestamp.getTime()}`,
+          `retraining:result:${trigger.timestamp.getTime()}`,`
           JSON.stringify(result)
         );
       }
@@ -365,14 +365,14 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
    */
   private async getCurrentMetrics(): Promise<Record<string, number>> {
     if (!this.dbAccess) {
-      this.logger.warn('Database access not available for metrics retrieval');
+      this.logger.warn('Database access not available for metrics retrieval');'
       return {};
     }
 
     try {
       // Get the latest coordination success rate from database
-      const kv = await this.dbAccess.getKV('coordination');
-      const metricsData = await kv.get('metrics:latest');
+      const kv = await this.dbAccess.getKV('coordination');'
+      const metricsData = await kv.get('metrics:latest');'
       if (metricsData) {
         return JSON.parse(metricsData);
       }
@@ -384,20 +384,20 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
         averageResponseTime: 1000,
       };
     } catch (error) {
-      this.logger.error('Failed to retrieve current metrics:', error);
+      this.logger.error('Failed to retrieve current metrics:', error);'
       return {};
     }
   }
 
   /**
-   * Check if we're currently in a cooldown period from the last retraining.
+   * Check if we're currently in a cooldown period from the last retraining.'
    */
   private async isInCooldownPeriod(cooldownHours: number): Promise<boolean> {
     if (!this.dbAccess) return false;
 
     try {
-      const kv = await this.dbAccess.getKV('brain');
-      const lastRetrainingData = await kv.get('retraining:last');
+      const kv = await this.dbAccess.getKV('brain');'
+      const lastRetrainingData = await kv.get('retraining:last');'
       if (!lastRetrainingData) return false;
 
       const lastRetraining = JSON.parse(lastRetrainingData);
@@ -406,28 +406,28 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
 
       return Date.now() - lastTime.getTime() < cooldownMs;
     } catch (error) {
-      this.logger.error('Failed to check cooldown period:', error);
+      this.logger.error('Failed to check cooldown period:', error);'
       return false;
     }
   }
 
   /**
-   * Check if we've exceeded the daily retraining limit.
+   * Check if we've exceeded the daily retraining limit.'
    */
   private async hasExceededDailyLimit(maxAttempts: number): Promise<boolean> {
     if (!this.dbAccess) return false;
 
     try {
-      const today = new Date().toISOString().split('T')[0];
-      const kv = await this.dbAccess.getKV('brain');
-      const attemptsData = await kv.get(`retraining:attempts:${today}`);
+      const today = new Date().toISOString().split('T')[0];'
+      const kv = await this.dbAccess.getKV('brain');'
+      const attemptsData = await kv.get(`retraining:attempts:${today}`);`
 
       if (!attemptsData) return false;
 
       const attempts = JSON.parse(attemptsData);
       return attempts.count >= maxAttempts;
     } catch (error) {
-      this.logger.error('Failed to check daily retraining limit:', error);
+      this.logger.error('Failed to check daily retraining limit:', error);'
       return false;
     }
   }
@@ -439,7 +439,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
     limit: number = 10
   ): Promise<Array<RetrainingTrigger & RetrainingResult>> {
     if (!this.dbAccess) {
-      this.logger.warn('Database access not available for history retrieval');
+      this.logger.warn('Database access not available for history retrieval');'
       return [];
     }
 
@@ -447,10 +447,10 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
       // This would retrieve and combine retraining triggers and results
       // Implementation depends on the specific database structure
 
-      this.logger.info(`Retrieved retraining history (limit: ${limit})`);
+      this.logger.info(`Retrieved retraining history (limit: ${limit})`);`
       return []; // Placeholder
     } catch (error) {
-      this.logger.error('Failed to retrieve retraining history:', error);
+      this.logger.error('Failed to retrieve retraining history:', error);'
       return [];
     }
   }
@@ -461,19 +461,19 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
    */
   public async initialize(config?: Partial<RetrainingConfig>): Promise<void> {
     try {
-      this.logger.info('Initializing RetrainingMonitor with configuration');
+      this.logger.info('Initializing RetrainingMonitor with configuration');'
 
       // Initialize database access
       this.dbAccess = await getDatabaseAccess();
 
       // Apply configuration if provided
       if (config) {
-        this.logger.debug('Applying custom configuration', config);
+        this.logger.debug('Applying custom configuration', config);'
       }
 
-      this.logger.info('RetrainingMonitor initialization completed');
+      this.logger.info('RetrainingMonitor initialization completed');'
     } catch (error) {
-      this.logger.error('Failed to initialize RetrainingMonitor:', error);
+      this.logger.error('Failed to initialize RetrainingMonitor:', error);'
       throw error;
     }
   }
@@ -494,11 +494,11 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
     }
   ): Promise<void> {
     try {
-      this.logger.debug(`Recording prompt feedback for ${promptId}`, feedback);
+      this.logger.debug(`Recording prompt feedback for ${promptId}`, feedback);`
 
       if (!this.dbAccess) {
         this.logger.warn(
-          'Database access not available, feedback not recorded'
+          'Database access not available, feedback not recorded''
         );
         return;
       }
@@ -512,7 +512,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
       };
 
       // Log feedback record details for monitoring
-      this.logger.info(`Prompt feedback recorded for ${promptId}`, {
+      this.logger.info(`Prompt feedback recorded for ${promptId}`, {`
         promptId: feedbackRecord.promptId,
         success: feedbackRecord.success,
         accuracy: feedbackRecord.accuracy,
@@ -523,12 +523,12 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
       // Check if feedback pattern indicates need for retraining
       if (!feedback.success && feedback.accuracy && feedback.accuracy < 0.7) {
         this.logger.warn(
-          `Poor accuracy (${feedback.accuracy}) detected for prompt ${promptId}, may trigger retraining`
+          `Poor accuracy (${feedback.accuracy}) detected for prompt ${promptId}, may trigger retraining``
         );
       }
     } catch (error) {
       this.logger.error(
-        `Failed to record prompt feedback for ${promptId}:`,
+        `Failed to record prompt feedback for ${promptId}:`,`
         error
       );
     }

@@ -11,15 +11,15 @@
  * 5. Stores directly in database (not file system)
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workflow = new IntelligentDocImport({
  *   swarmConfig: { maxAgents: 5, topology: 'mesh' },
- *   databaseConfig: { type: 'postgresql' }
+ *   databaseConfig: { type: 'postgresql' }'
  * });
  *
- * const result = await workflow.importAndAnalyze('/path/to/repo');
+ * const result = await workflow.importAndAnalyze('/path/to/repo');'
  * // Returns: { suggestions: [...], approvalRequired: true }
- * ```
+ * ````
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
@@ -29,8 +29,8 @@ import { getLogger } from '@claude-zen/foundation';
 // Define WorkflowGateRequest interface locally since we moved from workflows
 interface WorkflowGateRequest {
   id: string;
-  type: 'approval|decision|input|confirmation';
-  gateType: 'approval|decision|input|confirmation';
+  type: 'approval|decision|input|confirmation;
+  gateType: 'approval|decision|input|confirmation;
   workflowContext: {
     workflowId: string;
     stepName: string;
@@ -46,16 +46,16 @@ interface WorkflowGateRequest {
 class DocumentManager {
   async saveDocument(doc: any): Promise<void> {
     // Mock implementation
-    console.log('Saving document:', doc.id);
+    console.log('Saving document:', doc.id);'
   }
 
   async getDocument(id: string): Promise<any> {
     // Mock implementation
-    return { id, content: 'Mock content' };
+    return { id, content: 'Mock content' };'
   }
 }
 
-const logger = getLogger('IntelligentDocImport');
+const logger = getLogger('IntelligentDocImport');'
 
 /**
  * Configuration for intelligent document import workflow.
@@ -67,13 +67,13 @@ export interface IntelligentDocImportConfig {
   /** Swarm configuration for analysis */
   swarmConfig: {
     maxAgents: number;
-    topology: 'mesh|hierarchical|star';
+    topology: 'mesh' | 'hierarchical' | 'star';
     enableUltraThink: boolean;
   };
 
   /** Database configuration */
   databaseConfig: {
-    type: 'postgresql|sqlite|mysql';
+    type: 'postgresql' | 'sqlite' | 'mysql';
     connectionString?: string;
   };
 
@@ -95,10 +95,10 @@ export interface IntelligentDocImportConfig {
  */
 export interface FileAnalysisResult {
   filePath: string;
-  fileType: 'document|code|config|other';
+  fileType: 'document|code|config|other;
 
   /** Document classification (if document) */
-  documentType?:|'vision|adr|prd|epic|feature|task|spec'';
+  documentType?:|'vision|adr|prd|epic|feature|task|spec';
 
   /** Documentation completeness (if code) */
   documentationScore?: {
@@ -120,7 +120,7 @@ export interface FileAnalysisResult {
 
   /** Recommended actions */
   recommendations: {
-    action: 'import|improve|reject|manual_review';
+    action: 'import|improve|reject|manual_review;
     reasoning: string;
     improvements?: string[];
     confidence: number;
@@ -151,7 +151,7 @@ export interface ImportWorkflowResult {
     summary: string;
     keyFindings: string[];
     suggestedActions: string[];
-    estimatedEffort: 'low|medium|high';
+    estimatedEffort: 'low' | 'medium' | 'high';
   };
 
   /** Approval gates created */
@@ -171,7 +171,7 @@ export interface ImportWorkflowResult {
  * and code with human-in-the-loop approval workflows.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workflow = new IntelligentDocImport({
  *   repositoryPath: '/path/to/repo',
  *   swarmConfig: { maxAgents: 5, topology: 'mesh' },
@@ -180,7 +180,7 @@ export interface ImportWorkflowResult {
  * });
  *
  * const result = await workflow.importAndAnalyze();
- * ```
+ * ````
  */
 export class IntelligentDocImport extends TypedEventBase {
   private config: IntelligentDocImportConfig;
@@ -200,10 +200,10 @@ export class IntelligentDocImport extends TypedEventBase {
     this.documentManager = {
       async saveDocument(doc: any): Promise<void> {
         // Simple implementation - in real use this would use a database
-        logger.info('Saving document', { docType: doc.type, title: doc.title });
+        logger.info('Saving document', { docType: doc.type, title: doc.title });'
       },
       async getDocument(id: string): Promise<any> {
-        logger.info('Getting document', { id });
+        logger.info('Getting document', { id });'
         return null;
       },
     };
@@ -226,43 +226,43 @@ export class IntelligentDocImport extends TypedEventBase {
    * @throws Error if workflow fails at any phase
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const result = await workflow.importAndAnalyze();
-   * console.log(`Found ${result.totalFiles} files`);
-   * console.log(`Ready for import: ${result.readyForImport.length}`);
-   * ```
+   * console.log(`Found ${result.totalFiles} files`);`
+   * console.log(`Ready for import: ${result.readyForImport.length}`);`
+   * ````
    */
   async importAndAnalyze(): Promise<ImportWorkflowResult> {
-    logger.info('🚀 Starting intelligent document import workflow');
-    logger.info(`Repository: ${this.config.repositoryPath}`);
+    logger.info('🚀 Starting intelligent document import workflow');'
+    logger.info(`Repository: ${this.config.repositoryPath}`);`
 
     try {
       // Phase 1: Repository Discovery
-      this.emit('phase', 'discovery');
+      this.emit('phase', 'discovery');'
       const discoveredFiles = await this.discoverFiles();
-      logger.info(`📁 Discovered ${discoveredFiles.length} files`);
+      logger.info(`📁 Discovered ${discoveredFiles.length} files`);`
 
       // Phase 2: Swarm Analysis
-      this.emit('phase', 'analysis');
+      this.emit('phase', 'analysis');'
       const analyses = await this.performSwarmAnalysis(discoveredFiles);
       logger.info(
-        `🧠 Analyzed ${analyses.length} files with swarm intelligence`
+        `🧠 Analyzed ${analyses.length} files with swarm intelligence``
       );
 
       // Phase 3: Classification & Recommendations
-      this.emit('phase', 'classification');
+      this.emit('phase', 'classification');'
       const classified = await this.classifyAndRecommend(analyses);
       logger.info(
-        `📋 Classified files: ${classified.readyForImport.length} ready, ${classified.requiresApproval.length} need approval`
+        `📋 Classified files: ${classified.readyForImport.length} ready, ${classified.requiresApproval.length} need approval``
       );
 
       // Phase 4: Create Approval Workflows
-      this.emit('phase', 'approval_gates');
+      this.emit('phase', 'approval_gates');'
       const approvalGates = await this.createApprovalGates(classified);
-      logger.info(`🔒 Created ${approvalGates.length} approval gates`);
+      logger.info(`🔒 Created ${approvalGates.length} approval gates`);`
 
       // Phase 5: Generate Overall Recommendations
-      this.emit('phase', 'recommendations');
+      this.emit('phase', 'recommendations');'
       const overallRecommendations =
         await this.generateOverallRecommendations(classified);
 
@@ -276,13 +276,13 @@ export class IntelligentDocImport extends TypedEventBase {
         approvalGates,
       };
 
-      this.emit('completed', result);
-      logger.info('✅ Intelligent import workflow completed');
+      this.emit('completed', result);'
+      logger.info('✅ Intelligent import workflow completed');'
 
       return result;
     } catch (error) {
-      logger.error('❌ Workflow failed:', error);
-      this.emit('error', error);
+      logger.error('❌ Workflow failed:', error);'
+      this.emit('error', error);'
       throw error;
     }
   }
@@ -317,11 +317,11 @@ export class IntelligentDocImport extends TypedEventBase {
         if (entry.isDirectory()) {
           // Skip common ignore patterns
           if (
-            !entry.name.startsWith('.') &&
-            !entry.name.includes('node_modules') &&
-            !entry.name.includes('target') &&
-            !entry.name.includes('dist') &&
-            !entry.name.includes('build')
+            !entry.name.startsWith('.') &&'
+            !entry.name.includes('node_modules') &&'
+            !entry.name.includes('target') &&'
+            !entry.name.includes('dist') &&'
+            !entry.name.includes('build')'
           ) {
             await scanDirectory(fullPath);
           }
@@ -354,7 +354,7 @@ export class IntelligentDocImport extends TypedEventBase {
     const ext = extname(filename).toLowerCase();
 
     // Documentation files
-    if (ext === '.md'||ext ==='.rst'||ext ==='.txt') return true;
+    if (ext === '.md'||ext ==='.rst'||ext ==='.txt') return true;'
 
     // Code files that should have documentation
     if (
@@ -376,7 +376,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Configuration files
     if (
-      filename.toLowerCase().includes('readme')||filename.toLowerCase().includes('changelog')||filename.toLowerCase().includes('todo')
+      filename.toLowerCase().includes('readme')||filename.toLowerCase().includes('changelog')||filename.toLowerCase().includes('todo')'
     ) {
       return true;
     }
@@ -405,7 +405,7 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Promise<FileAnalysisResult[]> {
     const results: FileAnalysisResult[] = [];
 
-    logger.info('🐝 Initializing analysis swarm...');
+    logger.info('🐝 Initializing analysis swarm...');'
 
     // Process files in batches for efficiency
     const batchSize = 10;
@@ -419,7 +419,7 @@ export class IntelligentDocImport extends TypedEventBase {
       results.push(...batchResults);
 
       // Emit progress
-      this.emit('progress', {
+      this.emit('progress', {'
         phase: 'analysis',
         completed: i + batch.length,
         total: files.length,
@@ -449,9 +449,9 @@ export class IntelligentDocImport extends TypedEventBase {
   private async analyzeFile(filePath: string): Promise<FileAnalysisResult> {
     const relativePath = relative(this.config.repositoryPath, filePath);
     const ext = extname(filePath).toLowerCase();
-    const content = await readFile(filePath, 'utf8');
+    const content = await readFile(filePath, 'utf8');'
 
-    logger.debug(`🔍 Analyzing: ${relativePath}`);
+    logger.debug(`🔍 Analyzing: ${relativePath}`);`
 
     // Determine file type
     const fileType = this.determineFileType(filePath, content);
@@ -467,7 +467,7 @@ export class IntelligentDocImport extends TypedEventBase {
     };
 
     // Document analysis
-    if (fileType === 'document') {
+    if (fileType === 'document') {'
       result.documentType = this.classifyDocument(filePath, content);
 
       if (this.config.analysisConfig.analyzeDocuments) {
@@ -479,7 +479,7 @@ export class IntelligentDocImport extends TypedEventBase {
     }
 
     // Code documentation analysis
-    if (fileType === 'code' && this.config.analysisConfig.checkDocumentation) {
+    if (fileType === 'code' && this.config.analysisConfig.checkDocumentation) {'
       result.documentationScore = await this.analyzeDocumentationCompleteness(
         content,
         ext
@@ -512,7 +512,7 @@ export class IntelligentDocImport extends TypedEventBase {
   private determineFileType(
     filePath: string,
     _content: string
-  ): 'document|code|config|other' {
+  ): 'document|code|config|other' {'
     const ext = extname(filePath).toLowerCase();
     const filename = filePath.toLowerCase();
 
@@ -534,17 +534,17 @@ export class IntelligentDocImport extends TypedEventBase {
         '.hpp',
       ].includes(ext)
     ) {
-      return 'code';
+      return 'code;
     }
 
     // Configuration
     if (
-      ['.json', '.yaml', '.yml', '.toml', '.ini'].includes(ext)||filename.includes('package.json')||filename.includes('tsconfig')||filename.includes('config')
+      ['.json', '.yaml', '.yml', '.toml', '.ini'].includes(ext)||filename.includes('package.json')||filename.includes('tsconfig')||filename.includes('config')'
     ) {
-      return 'config';
+      return 'config;
     }
 
-    return 'other';
+    return 'other;
   }
 
   /**
@@ -571,48 +571,48 @@ export class IntelligentDocImport extends TypedEventBase {
   private classifyDocument(
     filePath: string,
     content: string
-  ): 'vision|adr|prd|epic|feature|task|spec'' {
+  ): 'vision|adr|prd|epic|feature|task|spec'' {'
     const filename = filePath.toLowerCase();
     const contentLower = content.toLowerCase();
 
     // Filename patterns
-    if (filename.includes('readme')||filename.includes('vision'))
-      return 'vision';
-    if (filename.includes('adr-')||filename.includes('decision'))
-      return 'adr';
-    if (filename.includes('prd')||filename.includes('requirements'))
-      return 'prd';
-    if (filename.includes('epic')) return 'epic';
-    if (filename.includes('feature')) return 'feature';
-    if (filename.includes('todo')||filename.includes('task')) return 'task';
-    if (filename.includes('spec')||filename.includes('specification'))
-      return 'spec';
+    if (filename.includes('readme')||filename.includes('vision'))'
+      return 'vision;
+    if (filename.includes('adr-')||filename.includes('decision'))'
+      return 'adr;
+    if (filename.includes('prd')||filename.includes('requirements'))'
+      return 'prd;
+    if (filename.includes('epic')) return 'epic;
+    if (filename.includes('feature')) return 'feature;
+    if (filename.includes('todo')||filename.includes('task')) return 'task;
+    if (filename.includes('spec')||filename.includes('specification'))'
+      return 'spec;
 
     // Content analysis
     if (
-      contentLower.includes('# vision')||contentLower.includes('product vision')
+      contentLower.includes('# vision')||contentLower.includes('product vision')'
     )
-      return 'vision';
+      return 'vision;
     if (
-      contentLower.includes('architectural decision')||contentLower.includes('# adr')
+      contentLower.includes('architectural decision')||contentLower.includes('# adr')'
     )
-      return 'adr';
+      return 'adr;
     if (
-      contentLower.includes('product requirements')||contentLower.includes('# prd')
+      contentLower.includes('product requirements')||contentLower.includes('# prd')'
     )
-      return 'prd';
-    if (contentLower.includes('# epic')||contentLower.includes('user story'))
-      return 'epic';
-    if (contentLower.includes('# feature')||contentLower.includes('feature:'))
-      return 'feature';
-    if (contentLower.includes('# todo')||contentLower.includes('- [ ]'))
-      return 'task';
+      return 'prd;
+    if (contentLower.includes('# epic')||contentLower.includes('user story'))'
+      return 'epic;
+    if (contentLower.includes('# feature')||contentLower.includes('feature:'))'
+      return 'feature;
+    if (contentLower.includes('# todo')||contentLower.includes('- [ ]'))'
+      return 'task;
     if (
-      contentLower.includes('specification')||contentLower.includes('# spec')
+      contentLower.includes('specification')||contentLower.includes('# spec')'
     )
-      return 'spec';
+      return 'spec;
 
-    return 'task'; // default
+    return 'task'; // default'
   }
 
   /**
@@ -663,19 +663,19 @@ export class IntelligentDocImport extends TypedEventBase {
       completenessScore: content.length > 1000 ? 0.8 : content.length / 1250,
       suggestions: [
         ...(qualityScore < 0.7
-          ? ['Improve document structure with clear headings']
+          ? ['Improve document structure with clear headings']'
           : []),
         ...(content.length < 500 ? ['Add more comprehensive content'] : []),
-        ...(!content.includes('```')
-          ? ['Add code examples or usage samples']
+        ...(!content.includes('```')'
+          ? ['Add code examples or usage samples']'
           : []),
       ],
       riskFactors: [
         ...(content.length < 200
-          ? ['Document too short for comprehensive understanding']
+          ? ['Document too short for comprehensive understanding']'
           : []),
         ...(qualityScore < 0.5
-          ? ['Poor document structure may confuse readers']
+          ? ['Poor document structure may confuse readers']'
           : []),
       ],
       confidence: 0.8,
@@ -729,13 +729,13 @@ export class IntelligentDocImport extends TypedEventBase {
     const missing = [
       ...functions
         .filter((f) => !f.hasDocumentation)
-        .map((f) => `Function: ${f.name}`),
+        .map((f) => `Function: ${f.name}`),`
       ...classes
         .filter((c) => !c.hasDocumentation)
-        .map((c) => `Class: ${c.name}`),
+        .map((c) => `Class: ${c.name}`),`
       ...interfaces
         .filter((i) => !i.hasDocumentation)
-        .map((i) => `Interface: ${i.name}`),
+        .map((i) => `Interface: ${i.name}`),`
     ];
 
     return {
@@ -769,22 +769,22 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const functions: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === ''||fileExt ===') {
+    if (fileExt === ''||fileExt ===') {'
       // TypeScript/JavaScript function patterns
       const functionRegex =
-        /(?:export\s+)?(?:async\s+)?function\s+(\w+)|'(\w+)\s*=\s*(?:async\s+)?\(/g;
-      const lines = content.split('\n');
+        /(?:export\s+)?(?:async\s+)?function\s+(\w+)|'(\w+)\s*=\s*(?:async\s+)?\(/g;'
+      const lines = content.split('\n');'
 
       let match;
       while ((match = functionRegex.exec(content)) !== null) {
         const functionName = match[1]||match[2];
         const lineIndex =
-          content.substring(0, match.index).split('\n').length - 1;
+          content.substring(0, match.index).split('\n').length - 1;'
 
         // Check for JSDoc/TSDoc comment above
         const hasDocumentation =
           lineIndex > 0 &&
-          (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 1]?.trim().startsWith('//')||lines[lineIndex - 2]?.trim().includes('/**'));
+          (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 1]?.trim().startsWith('//')||lines[lineIndex - 2]?.trim().includes('/**'));'
 
         functions.push({
           name: functionName||'unknown',
@@ -817,19 +817,19 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const classes: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt ===''||fileExt ==='') {
+    if (fileExt ===''||fileExt ==='') {'
       const classRegex = /(?:export\s+)?class\s+(\w+)/g;
-      const lines = content.split('\n');
+      const lines = content.split('\n');'
 
       let match;
       while ((match = classRegex.exec(content)) !== null) {
         const className = match[1];
         const lineIndex =
-          content.substring(0, match.index).split('\n').length - 1;
+          content.substring(0, match.index).split('\n').length - 1;'
 
         const hasDocumentation =
           lineIndex > 0 &&
-          (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 2]?.trim().includes('/**'));
+          (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 2]?.trim().includes('/**'));'
 
         classes.push({
           name: className||'unknown',
@@ -862,19 +862,19 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const interfaces: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt ==='') {
+    if (fileExt ==='') {'
       const interfaceRegex = /(?:export\s+)?interface\s+(\w+)/g;
-      const lines = content.split('\n');
+      const lines = content.split('\n');'
 
       let match;
       while ((match = interfaceRegex.exec(content)) !== null) {
         const interfaceName = match[1];
         const lineIndex =
-          content.substring(0, match.index).split('\n').length - 1;
+          content.substring(0, match.index).split('\n').length - 1;'
 
         const hasDocumentation =
           lineIndex > 0 &&
-          (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 2]?.trim().includes('/**'));
+          (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 2]?.trim().includes('/**'));'
 
         interfaces.push({
           name: interfaceName||'unknown',
@@ -903,19 +903,19 @@ export class IntelligentDocImport extends TypedEventBase {
    * @private
    */
   private async generateRecommendations(analysis: FileAnalysisResult): Promise<{
-    action:'import|improve|reject|manual_review';
+    action:'import|improve|reject|manual_review;
     reasoning: string;
     improvements?: string[];
     confidence: number;
   }> {
     let confidence = 0.5;
-    let action: 'import|improve|reject|manual_review' =
-      'manual_review';
+    let action: 'import|improve|reject|manual_review' ='
+      'manual_review;
     let reasoning = 'Requires manual review';
     const improvements: string[] = [];
 
     // Document recommendations
-    if (analysis.fileType === 'document' && analysis.llmAnalysis) {
+    if (analysis.fileType === 'document' && analysis.llmAnalysis) {'
       const llmAnalysis = analysis.llmAnalysis as {
         qualityScore: number;
         completenessScore: number;
@@ -941,7 +941,7 @@ export class IntelligentDocImport extends TypedEventBase {
     }
 
     // Code documentation recommendations
-    if (analysis.fileType === 'code' && analysis.documentationScore) {
+    if (analysis.fileType === 'code' && analysis.documentationScore) {'
       const docScore = analysis.documentationScore as {
         overall: number;
         missing: string[];
@@ -957,7 +957,7 @@ export class IntelligentDocImport extends TypedEventBase {
         reasoning = 'Code partially documented, improvements recommended';
         confidence = 0.7;
         improvements.push(
-          `Add documentation for ${docScore.missing.length} missing items`
+          `Add documentation for ${docScore.missing.length} missing items``
         );
       } else {
         action = 'manual_review';
@@ -968,7 +968,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Auto-approval check
     if (confidence >= this.config.analysisConfig.autoApprovalThreshold) {
-      if (action === 'manual_review') {
+      if (action === 'manual_review') {'
         action = 'import';
         reasoning += ' (auto-approved due to high confidence)';
       }
@@ -1004,14 +1004,14 @@ export class IntelligentDocImport extends TypedEventBase {
     needsImprovement: FileAnalysisResult[];
   }> {
     const readyForImport = analyses.filter(
-      (a) => a.recommendations.action === 'import'
+      (a) => a.recommendations.action === 'import''
     );
     const needsImprovement = analyses.filter(
-      (a) => a.recommendations.action === 'improve'
+      (a) => a.recommendations.action === 'improve''
     );
     const requiresApproval = analyses.filter(
       (a) =>
-        a.recommendations.action === 'manual_review'||a.recommendations.confidence <
+        a.recommendations.action === 'manual_review'||a.recommendations.confidence <'
           this.config.analysisConfig.autoApprovalThreshold
     );
 
@@ -1044,7 +1044,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Create gates for files requiring approval
     for (const analysis of classified.requiresApproval) {
-      const gateId = `doc-approval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const gateId = `doc-approval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
       const gate: WorkflowGateRequest = {
         // ValidationQuestion base properties
         id: gateId,
@@ -1054,7 +1054,7 @@ export class IntelligentDocImport extends TypedEventBase {
           workflowId: 'intelligent-doc-import',
           stepName: 'approval',
         },
-        question: `Should we import "${analysis.filePath}" as a ${analysis.documentType||analysis.fileType}?`,
+        question: `Should we import "${analysis.filePath}" as a ${analysis.documentType||analysis.fileType}?`,`
         context: {
           fileAnalysis: analysis,
           recommendations: analysis.recommendations,
@@ -1077,7 +1077,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Create improvement review gates
     for (const analysis of classified.needsImprovement) {
-      const gateId = `doc-improve-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const gateId = `doc-improve-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
       const gate: WorkflowGateRequest = {
         // ValidationQuestion base properties
         id: gateId,
@@ -1087,7 +1087,7 @@ export class IntelligentDocImport extends TypedEventBase {
           workflowId: 'intelligent-doc-import',
           stepName: 'improvement',
         },
-        question: `Apply suggested improvements to "${analysis.filePath}"?`,
+        question: `Apply suggested improvements to "${analysis.filePath}"?`,`
         context: {
           fileAnalysis: analysis,
           improvements: analysis.recommendations.improvements,
@@ -1108,7 +1108,7 @@ export class IntelligentDocImport extends TypedEventBase {
       this.workflowGates.push(gate);
     }
 
-    logger.info(`🔒 Created ${gates.length} approval gates`);
+    logger.info(`🔒 Created ${gates.length} approval gates`);`
     return gates;
   }
 
@@ -1136,7 +1136,7 @@ export class IntelligentDocImport extends TypedEventBase {
     summary: string;
     keyFindings: string[];
     suggestedActions: string[];
-    estimatedEffort: 'low|medium|high';
+    estimatedEffort: 'low' | 'medium' | 'high';
   }> {
     const total =
       classified.readyForImport.length +
@@ -1144,12 +1144,12 @@ export class IntelligentDocImport extends TypedEventBase {
       classified.needsImprovement.length;
     const readyPercent = (classified.readyForImport.length / total) * 100;
 
-    const summary = `Repository analysis complete. ${readyPercent.toFixed(0)}% of files ready for immediate import.`;
+    const summary = `Repository analysis complete. ${readyPercent.toFixed(0)}% of files ready for immediate import.`;`
 
     const keyFindings = [
-      `${classified.readyForImport.length} files ready for automatic import`,
-      `${classified.requiresApproval.length} files require manual approval`,
-      `${classified.needsImprovement.length} files would benefit from improvements`,
+      `${classified.readyForImport.length} files ready for automatic import`,`
+      `${classified.requiresApproval.length} files require manual approval`,`
+      `${classified.needsImprovement.length} files would benefit from improvements`,`
     ];
 
     const suggestedActions = [
@@ -1188,23 +1188,23 @@ export class IntelligentDocImport extends TypedEventBase {
    * @returns Promise that resolves when all files are stored
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const approvedFiles = result.readyForImport;
    * await workflow.executeApprovedImports(approvedFiles);
-   * console.log(`Imported ${approvedFiles.length} files`);
-   * ```
+   * console.log(`Imported ${approvedFiles.length} files`);`
+   * ````
    */
   async executeApprovedImports(
     approvedFiles: FileAnalysisResult[]
   ): Promise<void> {
     logger.info(
-      `💾 Storing ${approvedFiles.length} approved files in database`
+      `💾 Storing ${approvedFiles.length} approved files in database``
     );
 
     for (const analysis of approvedFiles) {
       try {
         const fullPath = join(this.config.repositoryPath, analysis.filePath);
-        const content = await readFile(fullPath, 'utf8');
+        const content = await readFile(fullPath, 'utf8');'
 
         // Store in database using DocumentManager
         await this.documentManager.saveDocument({
@@ -1219,13 +1219,13 @@ export class IntelligentDocImport extends TypedEventBase {
           },
         });
 
-        logger.debug(`✅ Stored: ${analysis.filePath}`);
+        logger.debug(`✅ Stored: ${analysis.filePath}`);`
       } catch (error) {
-        logger.error(`❌ Failed to store ${analysis.filePath}:`, error);
+        logger.error(`❌ Failed to store ${analysis.filePath}:`, error);`
       }
     }
 
-    logger.info('💾 Database import completed');
+    logger.info('💾 Database import completed');'
   }
 
   /**
@@ -1241,11 +1241,11 @@ export class IntelligentDocImport extends TypedEventBase {
    * @returns Array of approval gate status objects
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const status = workflow.getApprovalStatus();
-   * const pending = status.filter(s => s.status === 'pending');
-   * console.log(`${pending.length} gates awaiting approval`);
-   * ```
+   * const pending = status.filter(s => s.status === 'pending');'
+   * console.log(`${pending.length} gates awaiting approval`);`
+   * ````
    */
   getApprovalStatus(): Array<{
     gateId: string;

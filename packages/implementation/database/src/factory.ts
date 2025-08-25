@@ -11,7 +11,7 @@
  * @version 2.0.0
  * @since 1.0.0
  * @example Basic Factory Usage
- * ```typescript
+ * ```typescript`
  * import { DALFactory } from './database/factory';
  * import { DIContainer } from '../di/container/di-container';
  *
@@ -31,19 +31,19 @@
  *   entityType: 'User',
  *   databaseConfig: pgConfig
  * });
- * ```
+ * ````
  * @example Multi-Database Factory Setup
- * ```typescript
+ * ```typescript`
  * const multiDAO = await factory.createMultiDatabaseDAO<Document>(
  *   'Document',
- *   { databaseType: 'postgresql', entityType: 'Document' }, // Primary
- *   [{ databaseType: 'lancedb', entityType: 'Document' }]   // Vector search secondary
+ *   { databaseType: 'postgresql', entityType: 'Document' }, // Primary'
+ *   [{ databaseType: 'lancedb', entityType: 'Document' }]   // Vector search secondary'
  * );
  *
  * // Writes go to PostgreSQL, vector searches to LanceDB
- * const doc = await multiDAO.create({ title: 'Test', content: 'Content' });
+ * const doc = await multiDAO.create({ title: 'Test', content: 'Content' });'
  * const similar = await multiDAO.vectorSearch(embedding, 10);
- * ```
+ * ````
  */
 
 // Foundation interfaces for DI
@@ -105,7 +105,7 @@ interface DatabaseProviderFactory {
  * @interface RepositoryConfig
  * @since 1.0.0
  * @example PostgreSQL Repository Config
- * ```typescript
+ * ```typescript`
  * const config: RepositoryConfig = {
  *   databaseType: 'postgresql',
  *   entityType: 'User',
@@ -114,7 +114,7 @@ interface DatabaseProviderFactory {
  *     id: { type: 'uuid', primaryKey: true },
  *     name: { type: 'string', required: true },
  *     email: { type: 'string', unique: true },
- *     createdAt: { type: 'datetime', default: 'now' }
+ *     createdAt: { type: 'datetime', default: 'now' }'
  *   },
  *   databaseConfig: {
  *     type: 'postgresql',
@@ -123,26 +123,26 @@ interface DatabaseProviderFactory {
  *     pool: { min: 2, max: 20 }
  *   }
  * };
- * ```
+ * ````
  * @example Vector Database Config
- * ```typescript
+ * ```typescript`
  * const vectorConfig: RepositoryConfig = {
  *   databaseType: 'lancedb',
  *   entityType: 'Embedding',
  *   options: {
  *     vectorSize: 1536,
  *     metricType: 'cosine',
- *     indexType: 'HNSW'
+ *     indexType: 'HNSW''
  *   },
  *   databaseConfig: {
  *     type: 'lancedb',
- *     database: './vectors.lance'*   }
+ *     database: './vectors.lance'*   }'
  * };
- * ```
+ * ````
  */
 export interface RepositoryConfig {
   /** Database type to use */
-  databaseType: 'postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination';
+  databaseType: 'postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination;
 
   /** Entity type name */
   entityType: string;
@@ -173,21 +173,21 @@ export interface RepositoryConfig {
  * @template T The entity type the repository manages.
  * @since 1.0.0
  * @example Type Usage in Factory Methods
- * ```typescript
+ * ```typescript`
  * async function createSpecializedRepo<T>(
  *   config: RepositoryConfig
  * ): Promise<RepositoryType<T>> {
  *   const repo = await factory.createRepository<T>(config);
  *
  *   // Type narrowing based on database type
- *   if (config.databaseType === 'lancedb') {
+ *   if (config.databaseType === 'lancedb') {'
  *     const vectorRepo = repo as VectorRepository<T>;
- *     await vectorRepo.createIndex({ name: 'idx', dimension: 384 });
+ *     await vectorRepo.createIndex({ name: 'idx', dimension: 384 });'
  *   }
  *
  *   return repo;
  * }
- * ```
+ * ````
  */
 export type RepositoryType<T> =|Repository<T>|GraphRepository<T>|VectorRepository<T>|MemoryRepository<T>|CoordinationRepository<T>;
 
@@ -201,7 +201,7 @@ export type RepositoryType<T> =|Repository<T>|GraphRepository<T>|VectorRepositor
  * @interface EntityTypeRegistry
  * @since 1.0.0
  * @example Entity Registration
- * ```typescript
+ * ```typescript`
  * const registry: EntityTypeRegistry = {
  *   User: {
  *     schema: {
@@ -210,34 +210,34 @@ export type RepositoryType<T> =|Repository<T>|GraphRepository<T>|VectorRepositor
  *       email: { type: 'string', unique: true },
  *       profile: { type: 'json' },
  *       createdAt: { type: 'datetime', default: 'now' },
- *       updatedAt: { type: 'datetime', default: 'now', onUpdate: 'now' }
+ *       updatedAt: { type: 'datetime', default: 'now', onUpdate: 'now' }'
  *     },
  *     primaryKey: 'id',
  *     tableName: 'users',
  *     databaseType: 'postgresql',
  *     indexes: [
  *       { name: 'users_email_idx', fields: ['email'], unique: true },
- *       { name: 'users_created_idx', fields: ['createdAt'], unique: false }
+ *       { name: 'users_created_idx', fields: ['createdAt'], unique: false }'
  *     ]
  *   }
  * };
- * ```
+ * ````
  * @example Vector Entity Registration
- * ```typescript
+ * ```typescript`
  * registry.VectorDocument = {
  *   schema: {
  *     id: { type: 'string', primaryKey: true },
  *     vector: { type: 'vector', dimension: 1536, required: true },
  *     metadata: { type: 'json' },
- *     timestamp: { type: 'datetime', default: 'now' }
+ *     timestamp: { type: 'datetime', default: 'now' }'
  *   },
  *   primaryKey: 'id',
  *   databaseType: 'lancedb',
  *   indexes: [
- *     { name: 'vector_similarity_idx', fields: ['vector'], unique: false }
+ *     { name: 'vector_similarity_idx', fields: ['vector'], unique: false }'
  *   ]
  * };
- * ```
+ * ````
  */
 export interface EntityTypeRegistry {
   [entityType: string]: {
@@ -271,7 +271,7 @@ export interface EntityTypeRegistry {
  * @class DALFactory
  * @since 1.0.0
  * @example Basic Factory Setup
- * ```typescript
+ * ```typescript`
  * import { DALFactory } from './factory';
  * import { DIContainer } from '../di/container/di-container';
  * import { TOKENS } from '../di/tokens/core-tokens';
@@ -283,19 +283,19 @@ export interface EntityTypeRegistry {
  * const factory = container.resolve(DALFactory);
  *
  * // Register custom entity types
- * factory.registerEntityType('Product', {
+ * factory.registerEntityType('Product', {'
  *   schema: { id: { type: 'uuid' }, name: { type: 'string' } },
  *   primaryKey: 'id',
- *   tableName: 'products'
+ *   tableName: 'products''
  * });
  *
  * const productDAO = await factory.createDAO<Product>({
  *   databaseType: 'postgresql',
- *   entityType: 'Product'
+ *   entityType: 'Product''
  * });
- * ```
+ * ````
  * @example Specialized Database Factories
- * ```typescript
+ * ```typescript`
  * // Create vector database repository
  * const vectorRepo = await factory.createLanceDBVectorRepository<Embedding>(
  *   'Embedding',
@@ -303,11 +303,11 @@ export interface EntityTypeRegistry {
  * );
  *
  * // Create graph database repository
- * const graphRepo = await factory.createKuzuGraphRepository<Node>('Node');
+ * const graphRepo = await factory.createKuzuGraphRepository<Node>('Node');'
  *
  * // Create coordination repository
- * const coordRepo = await factory.createCoordinationRepository<Lock>('Lock');
- * ```
+ * const coordRepo = await factory.createCoordinationRepository<Lock>('Lock');'
+ * ````
  */
 export class DALFactory {
   private repositoryCache = new Map<string, any>();
@@ -337,7 +337,7 @@ export class DALFactory {
    * @throws {Error} When database connection cannot be established.
    * @throws {Error} When entity schema validation fails.
    * @example PostgreSQL Repository Creation
-   * ```typescript
+   * ```typescript`
    * const userRepository = await factory.createRepository<User>({
    *   databaseType: 'postgresql',
    *   entityType: 'User',
@@ -345,39 +345,39 @@ export class DALFactory {
    *   schema: {
    *     id: { type: 'uuid', primaryKey: true },
    *     name: { type: 'string', required: true },
-   *     email: { type: 'string', unique: true }
+   *     email: { type: 'string', unique: true }'
    *   },
    *   databaseConfig: {
    *     type: 'postgresql',
    *     host: 'localhost',
-   *     database: 'production'
+   *     database: 'production''
    *   }
    * });
    *
    * // Repository provides basic CRUD operations
    * const users = await userRepository.findAll({ limit: 10 });
-   * const user = await userRepository.create({ name: 'John', email: 'john@example.com' });
-   * await userRepository.update(user.id, { name: 'John Doe' });
-   * ```
+   * const user = await userRepository.create({ name: 'John', email: 'john@example.com' });'
+   * await userRepository.update(user.id, { name: 'John Doe' });'
+   * ````
    * @example Vector Repository with Custom Schema
-   * ```typescript
+   * ```typescript`
    * const vectorRepo = await factory.createRepository<VectorDoc>({
    *   databaseType: 'lancedb',
    *   entityType: 'VectorDocument',
    *   options: {
    *     vectorSize: 1536,
-   *     metricType: 'cosine'
+   *     metricType: 'cosine''
    *   },
    *   schema: {
    *     id: { type: 'string', primaryKey: true },
    *     vector: { type: 'vector', dimension: 1536 },
-   *     metadata: { type: 'json' }
+   *     metadata: { type: 'json' }'
    *   }
    * });
    *
    * // Vector-specific operations
    * const similar = await vectorRepo.vectorSearch(queryVector, 10);
-   * ```
+   * ````
    */
   async createRepository<T>(
     config: RepositoryConfig,
@@ -385,12 +385,12 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config);
 
     if (this.repositoryCache.has(cacheKey)) {
-      this['_logger']?.debug(`Returning cached repository: ${cacheKey}`);
+      this['_logger']?.debug(`Returning cached repository: ${cacheKey}`);`
       return this.repositoryCache.get(cacheKey);
     }
 
-    this['_logger']?.info(
-      `Creating new repository: ${config?.['entityType']} (${config?.['databaseType']})`,
+    this['_logger']?.info('
+      `Creating new repository: ${config?.['entityType']} (${config?.['databaseType']})`,`
     );
 
     try {
@@ -416,9 +416,9 @@ export class DALFactory {
 
       return repository;
     } catch (error) {
-      this['_logger']?.error(`Failed to create repository: ${error}`);
+      this['_logger']?.error(`Failed to create repository: ${error}`);`
       throw new Error(
-        `Repository creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Repository creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -437,7 +437,7 @@ export class DALFactory {
    * @throws {Error} When business logic validation fails.
    * @throws {Error} When transaction setup fails.
    * @example User DAO with Validation
-   * ```typescript
+   * ```typescript`
    * const userDAO = await factory.createDAO<User>({
    *   databaseType: 'postgresql',
    *   entityType: 'User',
@@ -452,47 +452,47 @@ export class DALFactory {
    * try {
    *   const user = await userDAO.create({
    *     name: 'John',
-   *     email: 'john@example.com'
+   *     email: 'john@example.com''
    *   }); // Validates email format, checks uniqueness
    *
    *   // Transaction support
    *   await userDAO.executeTransaction([
    *     { operation: 'create', data: user1 },
-   *     { operation: 'update', id: 'user-2', data: updates }
+   *     { operation: 'update', id: 'user-2', data: updates }'
    *   ]);
    * } catch (error) {
-   *   console.error('DAO operation failed:', error.message);
+   *   console.error('DAO operation failed:', error.message);'
    * }
-   * ```
+   * ````
    * @example Vector DAO with Similarity Search
-   * ```typescript
+   * ```typescript`
    * const vectorDAO = await factory.createDAO<VectorDocument>({
    *   databaseType: 'lancedb',
-   *   entityType: 'VectorDocument'
+   *   entityType: 'VectorDocument''
    * });
    *
    * // DAO provides specialized vector operations
    * const results = await vectorDAO.bulkVectorOperations([
    *   { operation: 'upsert', id: 'doc-1', vector: embedding1 },
-   *   { operation: 'upsert', id: 'doc-2', vector: embedding2 }
-   * ], 'batch');
+   *   { operation: 'upsert', id: 'doc-2', vector: embedding2 }'
+   * ], 'batch');'
    *
    * const similar = await vectorDAO.similaritySearch(queryVector, {
    *   limit: 10,
    *   threshold: 0.8
    * });
-   * ```
+   * ````
    */
   async createDAO<T>(config: RepositoryConfig): Promise<DataAccessObject<T>> {
-    const cacheKey = this.generateCacheKey(config, 'dao');
+    const cacheKey = this.generateCacheKey(config, 'dao');'
 
     if (this.daoCache.has(cacheKey)) {
-      this['_logger']?.debug(`Returning cached DAO: ${cacheKey}`);
+      this['_logger']?.debug(`Returning cached DAO: ${cacheKey}`);`
       return this.daoCache.get(cacheKey);
     }
 
-    this['_logger']?.info(
-      `Creating new DAO: ${config?.['entityType']} (${config?.['databaseType']})`,
+    this['_logger']?.info('
+      `Creating new DAO: ${config?.['entityType']} (${config?.['databaseType']})`,`
     );
 
     try {
@@ -522,9 +522,9 @@ export class DALFactory {
 
       return dao;
     } catch (error) {
-      this['_logger']?.error(`Failed to create DAO: ${error}`);
+      this['_logger']?.error(`Failed to create DAO: ${error}`);`
       throw new Error(
-        `DAO creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `DAO creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -547,13 +547,13 @@ export class DALFactory {
    * @throws {Error} When schema validation fails.
    * @throws {Error} When primary key is not defined in schema.
    * @example User Entity Registration
-   * ```typescript
-   * factory.registerEntityType('User', {
+   * ```typescript`
+   * factory.registerEntityType('User', {'
    *   schema: {
    *     id: {
    *       type: 'uuid',
    *       primaryKey: true,
-   *       default: 'uuid_generate_v4()'
+   *       default: 'uuid_generate_v4()''
    *     },
    *     name: {
    *       type: 'string',
@@ -568,7 +568,7 @@ export class DALFactory {
    *     },
    *     profile: { type: 'json' },
    *     createdAt: { type: 'datetime', default: 'now' },
-   *     updatedAt: { type: 'datetime', default: 'now', onUpdate: 'now' }
+   *     updatedAt: { type: 'datetime', default: 'now', onUpdate: 'now' }'
    *   },
    *   primaryKey: 'id',
    *   tableName: 'app_users',
@@ -576,13 +576,13 @@ export class DALFactory {
    *   indexes: [
    *     { name: 'users_email_idx', fields: ['email'], unique: true },
    *     { name: 'users_created_idx', fields: ['createdAt'], unique: false },
-   *     { name: 'users_name_search_idx', fields: ['name'], unique: false }
+   *     { name: 'users_name_search_idx', fields: ['name'], unique: false }'
    *   ]
    * });
-   * ```
+   * ````
    * @example Vector Document Registration
-   * ```typescript
-   * factory.registerEntityType('EmbeddingDocument', {
+   * ```typescript`
+   * factory.registerEntityType('EmbeddingDocument', {'
    *   schema: {
    *     id: { type: 'string', primaryKey: true },
    *     vector: {
@@ -593,18 +593,18 @@ export class DALFactory {
    *     content: { type: 'text', required: true },
    *     metadata: {
    *       type: 'json',
-   *       validate: (value) => typeof value === 'object'
+   *       validate: (value) => typeof value === 'object''
    *     },
-   *     timestamp: { type: 'datetime', default: 'now' }
+   *     timestamp: { type: 'datetime', default: 'now' }'
    *   },
    *   primaryKey: 'id',
    *   tableName: 'document_embeddings',
    *   databaseType: 'lancedb',
    *   indexes: [
-   *     { name: 'embedding_vector_idx', fields: ['vector'], unique: false }
+   *     { name: 'embedding_vector_idx', fields: ['vector'], unique: false }'
    *   ]
    * });
-   * ```
+   * ````
    */
   registerEntityType(
     entityType: string,
@@ -620,7 +620,7 @@ export class DALFactory {
       }>;
     },
   ): void {
-    this['_logger']?.debug(`Registering entity type: ${entityType}`);
+    this['_logger']?.debug(`Registering entity type: ${entityType}`);`
     this.entityRegistry[entityType] = config;
   }
 
@@ -634,22 +634,22 @@ export class DALFactory {
    * @param {string} entityType - The entity type name to look up.
    * @returns {EntityTypeRegistry[string]|undefined} Entity configuration or undefined.
    * @example Getting Entity Configuration
-   * ```typescript
-   * const userConfig = factory.getEntityConfig('User');
+   * ```typescript`
+   * const userConfig = factory.getEntityConfig('User');'
    * if (userConfig) {
-   *   console.log('Primary key:', userConfig.primaryKey);
-   *   console.log('Table name:', userConfig.tableName);
-   *   console.log('Schema fields:', Object.keys(userConfig.schema));
-   *   console.log('Indexes:', userConfig.indexes);
+   *   console.log('Primary key:', userConfig.primaryKey);'
+   *   console.log('Table name:', userConfig.tableName);'
+   *   console.log('Schema fields:', Object.keys(userConfig.schema));'
+   *   console.log('Indexes:', userConfig.indexes);'
    * }
-   * ```
+   * ````
    * @example Validating Entity Before Creation
-   * ```typescript
+   * ```typescript`
    * const entityType = 'Product';
    * const config = factory.getEntityConfig(entityType);
    *
    * if (!config) {
-   *   throw new Error(`Entity type ${entityType} is not registered`);
+   *   throw new Error(`Entity type ${entityType} is not registered`);`
    * }
    *
    * // Use configuration for DAO creation
@@ -659,7 +659,7 @@ export class DALFactory {
    *   tableName: config.tableName,
    *   schema: config.schema
    * });
-   * ```
+   * ````
    */
   getEntityConfig(entityType: string): EntityTypeRegistry[string]|undefined {
     return this.entityRegistry[entityType];
@@ -680,7 +680,7 @@ export class DALFactory {
    * @throws {Error} When graph repository creation fails.
    * @throws {Error} When database connection cannot be established.
    * @example Social Network Graph Repository
-   * ```typescript
+   * ```typescript`
    * interface Person {
    *   id: string;
    *   name: string;
@@ -689,14 +689,14 @@ export class DALFactory {
    *
    * const personRepo = await factory.createKuzuGraphRepository<Person>(
    *'Person',
-   *   'social_network_nodes'
+   *   'social_network_nodes''
    * );
    *
    * // Create nodes
    * await personRepo.createNode({
    *   id: 'person-1',
    *   labels: ['Person', 'Employee'],
-   *   properties: { name: 'Alice', age: 30, department: 'Engineering' }
+   *   properties: { name: 'Alice', age: 30, department: 'Engineering' }'
    * });
    *
    * // Create relationships
@@ -704,37 +704,37 @@ export class DALFactory {
    *   type: 'KNOWS',
    *   startNodeId: 'person-1',
    *   endNodeId: 'person-2',
-   *   properties: { since: '2020-01-01', strength: 0.8 }
+   *   properties: { since: '2020-01-01', strength: 0.8 }'
    * });
    *
    * // Graph traversal queries
-   * const friends = await personRepo.findNeighbors('person-1', {
+   * const friends = await personRepo.findNeighbors('person-1', {'
    *   relationshipType: 'KNOWS',
    *   maxDepth: 2
    * });
    *
    * // Shortest path algorithm
-   * const path = await personRepo.findShortestPath('person-1', 'person-5');
-   * ```
+   * const path = await personRepo.findShortestPath('person-1', 'person-5');'
+   * ````
    * @example Knowledge Graph Repository
-   * ```typescript
+   * ```typescript`
    * interface Concept {
    *   id: string;
-   *   type: 'concept|entity|relationship';
+   *   type: 'concept' | 'entity' | 'relationship';
    *   properties: Record<string, unknown>;
    * }
    *
    * const knowledgeRepo = await factory.createKuzuGraphRepository<Concept>(
    *   'Concept',
-   *   'knowledge_graph'
+   *   'knowledge_graph''
    * );
    *
    * // Complex graph queries
    * const relatedConcepts = await knowledgeRepo.query(
    *   'MATCH (c:Concept)-[r:RELATED_TO*1..3]->(related:Concept) WHERE c.id = $id RETURN related',
-   *   { id: 'ai-machine-learning' }
+   *   { id: 'ai-machine-learning' }'
    * );
-   * ```
+   * ````
    */
   async createKuzuGraphRepository<T>(
     entityType: string,
@@ -765,7 +765,7 @@ export class DALFactory {
    * @throws {Error} When vector dimension is invalid (must be > 0).
    * @throws {Error} When database connection fails.
    * @example Document Embedding Repository
-   * ```typescript
+   * ```typescript`
    * interface DocumentEmbedding {
    *   id: string;
    *   vector: number[];
@@ -801,9 +801,9 @@ export class DALFactory {
    *   threshold: 0.8,
    *   includeMetadata: true
    * });
-   * ```
+   * ````
    * @example Image Feature Repository
-   * ```typescript
+   * ```typescript`
    * interface ImageFeature {
    *   id: string;
    *   vector: number[];
@@ -829,11 +829,11 @@ export class DALFactory {
    *   queryImageFeature,
    *   {
    *     limit: 5,
-   *     metricType: 'euclidean', // Override default cosine similarity
-   *     filters: { tags: { $in: ['nature', 'landscape'] } }
+   *     metricType: 'euclidean', // Override default cosine similarity'
+   *     filters: { tags: { $in: ['nature', 'landscape'] } }'
    *   }
    * );
-   * ```
+   * ````
    */
   async createLanceDBVectorRepository<T>(
     entityType: string,
@@ -863,7 +863,7 @@ export class DALFactory {
    * @throws {Error} When distributed locking initialization fails.
    * @throws {Error} When coordination schema creation fails.
    * @example Distributed Lock Repository
-   * ```typescript
+   * ```typescript`
    * interface DistributedLock {
    *   id: string;
    *   resourceId: string;
@@ -877,7 +877,7 @@ export class DALFactory {
    * }
    *
    * const lockRepo = await factory.createCoordinationRepository<DistributedLock>(
-   *   'DistributedLock'
+   *   'DistributedLock''
    * );
    *
    * // Acquire distributed lock
@@ -899,13 +899,13 @@ export class DALFactory {
    *   // Release lock
    *   await lockRepo.releaseLock(lock.id);
    * }
-   * ```
+   * ````
    * @example Task Queue Coordination
-   * ```typescript
+   * ```typescript`
    * interface CoordinationTask {
    *   id: string;
-   *   type: 'processing|cleanup|migration';
-   *   status: 'pending|processing|completed|failed';
+   *   type: 'processing' | 'cleanup' | 'migration';
+   *   status: 'pending|processing|completed|failed;
    *   assignedTo?: string;
    *   priority: number;
    *   payload: Record<string, unknown>;
@@ -914,7 +914,7 @@ export class DALFactory {
    * }
    *
    * const taskRepo = await factory.createCoordinationRepository<CoordinationTask>(
-   *   'CoordinationTask'
+   *   'CoordinationTask''
    * );
    *
    * // Worker claims next task
@@ -925,11 +925,11 @@ export class DALFactory {
    * });
    *
    * // Update task progress
-   * await taskRepo.updateTaskStatus(task.id, 'processing', {
+   * await taskRepo.updateTaskStatus(task.id, 'processing', {'
    *   progress: 0.5,
-   *   message: 'Processing 50% complete'
+   *   message: 'Processing 50% complete''
    * });
-   * ```
+   * ````
    */
   async createCoordinationRepository<T>(
     entityType: string,
@@ -939,15 +939,15 @@ export class DALFactory {
       entityType,
       tableName: entityType,
       databaseConfig: {
-        type: 'sqlite', // Use SQLite for coordination by default
+        type: 'sqlite', // Use SQLite for coordination by default'
         /**
          * Coordination database storage location following Claude Zen architecture.
          * 
-         * **Storage Path**: `./.claude-zen/data/coordination.db`
-         * - **Project-local**: Always uses project's `.claude-zen/data/` directory
+         * **Storage Path**: `./.claude-zen/data/coordination.db``
+         * - **Project-local**: Always uses project's `.claude-zen/data/` directory`
          * - **Purpose**: Central coordination state for agents, tasks, and workflows
          * - **Database**: SQLite for ACID transactions and reliability
-         * - **Consistent naming**: `coordination.db` follows component-purpose pattern
+         * - **Consistent naming**: `coordination.db` follows component-purpose pattern`
          * 
          * This database stores:
          * - Agent coordination states and hierarchies
@@ -971,7 +971,7 @@ export class DALFactory {
    * Create Memory Repository for Caching and Session Management.
    *
    * Creates a specialized in-memory repository optimized for caching, session storage,
-   * and temporary data management. Uses SQLite's in-memory mode with configurable
+   * and temporary data management. Uses SQLite's in-memory mode with configurable'
    * TTL (Time To Live) and size limits for memory management.
    *
    * @template T The entity type for memory-stored objects.
@@ -981,7 +981,7 @@ export class DALFactory {
    * @throws {Error} When memory limits configuration is invalid.
    * @throws {Error} When TTL configuration is invalid.
    * @example Session Cache Repository
-   * ```typescript
+   * ```typescript`
    * interface UserSession {
    *   id: string;
    *   userId: string;
@@ -996,7 +996,7 @@ export class DALFactory {
    * }
    *
    * const sessionRepo = await factory.createMemoryRepository<UserSession>(
-   *   'UserSession'
+   *   'UserSession''
    * );
    *
    * // Store session with automatic TTL
@@ -1014,13 +1014,13 @@ export class DALFactory {
    * }, { ttl: 3600 }); // TTL in seconds
    *
    * // Retrieve active sessions
-   * const activeSessions = await sessionRepo.findByUserId('user-456');
+   * const activeSessions = await sessionRepo.findByUserId('user-456');'
    *
    * // Clean up expired sessions automatically
    * await sessionRepo.cleanupExpired();
-   * ```
+   * ````
    * @example Application Cache Repository
-   * ```typescript
+   * ```typescript`
    * interface CacheEntry {
    *   id: string;
    *   key: string;
@@ -1031,28 +1031,28 @@ export class DALFactory {
    * }
    *
    * const cacheRepo = await factory.createMemoryRepository<CacheEntry>(
-   *   'CacheEntry'
+   *   'CacheEntry''
    * );
    *
    * // Cache API responses
-   * await cacheRepo.set('api:users:list:page1', {
+   * await cacheRepo.set('api:users:list:page1', {'
    *   users: userListData,
    *   totalCount: 1500,
    *   page: 1
    * }, {
    *   ttl: 300, // 5 minutes
-   *   tags: ['api-cache', 'users']
+   *   tags: ['api-cache', 'users']'
    * });
    *
    * // Retrieve with hit tracking
-   * const cached = await cacheRepo.get('api:users:list:page1');
+   * const cached = await cacheRepo.get('api:users:list:page1');'
    * if (cached) {
-   *   console.log('Cache hit, access count:', cached.accessCount);
+   *   console.log('Cache hit, access count:', cached.accessCount);'
    * }
    *
    * // Invalidate by tags
-   * await cacheRepo.invalidateByTags(['users']);
-   * ```
+   * await cacheRepo.invalidateByTags(['users']);'
+   * ````
    */
   async createMemoryRepository<T>(
     entityType: string,
@@ -1087,7 +1087,7 @@ export class DALFactory {
    * @throws {Error} When any secondary database setup fails.
    * @throws {Error} When multi-database coordination setup fails.
    * @example Primary PostgreSQL with Vector Search Secondary
-   * ```typescript
+   * ```typescript`
    * interface Product {
    *   id: string;
    *   name: string;
@@ -1125,7 +1125,7 @@ export class DALFactory {
    *   name: 'Smart Phone',
    *   description: 'Latest smartphone with AI features',
    *   price: 799.99,
-   *   category: 'electronics'
+   *   category: 'electronics''
    * });
    *
    * // Vector similarity search uses secondary LanceDB
@@ -1136,23 +1136,23 @@ export class DALFactory {
    *
    * // Health check across all databases
    * const health = await productDAO.healthCheck();
-   * console.log('Primary healthy:', health.primary.healthy);
-   * console.log('Secondaries healthy:', health.secondaries.map(s => s.healthy));
-   * ```
+   * console.log('Primary healthy:', health.primary.healthy);'
+   * console.log('Secondaries healthy:', health.secondaries.map(s => s.healthy));'
+   * ````
    * @example Multi-Region Setup with Replication
-   * ```typescript
+   * ```typescript`
    * const userDAO = await factory.createMultiDatabaseDAO<User>(
    *   'User',
    *   {
    *     databaseType: 'postgresql',
    *     entityType: 'User',
-   *     databaseConfig: { host: 'primary-db.us-east.com' }
+   *     databaseConfig: { host: 'primary-db.us-east.com' }'
    *   },
    *   [
    *     {
    *       databaseType: 'postgresql',
    *       entityType: 'User',
-   *       databaseConfig: { host: 'replica-db.us-west.com' }
+   *       databaseConfig: { host: 'replica-db.us-west.com' }'
    *     },
    *     {
    *       databaseType: 'memory',
@@ -1165,21 +1165,21 @@ export class DALFactory {
    * // Writes replicated to secondaries asynchronously
    * await userDAO.executeTransaction([
    *   { operation: 'create', data: newUser },
-   *   { operation: 'update', id: 'user-123', data: { status: 'active' } }
+   *   { operation: 'update', id: 'user-123', data: { status: 'active' } }'
    * ]);
    *
    * // Read performance metrics across all databases
    * const metrics = await userDAO.getMetrics();
-   * console.log('Primary metrics:', metrics.primary);
-   * console.log('Secondary metrics:', metrics.secondaries);
-   * ```
+   * console.log('Primary metrics:', metrics.primary);'
+   * console.log('Secondary metrics:', metrics.secondaries);'
+   * ````
    */
   async createMultiDatabaseDAO<T>(
     entityType: string,
     primaryConfig: RepositoryConfig,
     secondaryConfigs?: RepositoryConfig[],
   ): Promise<MultiDatabaseDAO<T>> {
-    this['_logger']?.info(`Creating multi-database DAO for: ${entityType}`);
+    this['_logger']?.info(`Creating multi-database DAO for: ${entityType}`);`
 
     const primaryDAO = await this.createDAO<T>(primaryConfig);
     const secondaryDAOs: DataAccessObject<T>[] = [];
@@ -1191,14 +1191,14 @@ export class DALFactory {
       }
     }
 
-    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this['_logger']);
+    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this['_logger']);'
   }
 
   /**
    * Clear all caches.
    */
   clearCaches(): void {
-    this['_logger']?.info('Clearing DAL factory caches');
+    this['_logger']?.info('Clearing DAL factory caches');'
     this.repositoryCache.clear();
     this.daoCache.clear();
     this.adapterCache.clear();
@@ -1226,8 +1226,8 @@ export class DALFactory {
   private async getOrCreateAdapter(
     config: RepositoryConfig,
   ): Promise<DatabaseAdapter> {
-    if (config?.['existingAdapter']) {
-      return config?.['existingAdapter'];
+    if (config?.['existingAdapter']) {'
+      return config?.['existingAdapter'];'
     }
 
     const adapterCacheKey = this.generateAdapterCacheKey(config);
@@ -1236,7 +1236,7 @@ export class DALFactory {
       return this.adapterCache.get(adapterCacheKey)!;
     }
 
-    if (!config?.['databaseConfig']) {
+    if (!config?.['databaseConfig']) {'
       throw new Error(
         'Database configuration required when creating new adapter',
       );
@@ -1255,19 +1255,19 @@ export class DALFactory {
     adapter: DatabaseAdapter,
   ): Promise<RepositoryType<T>> {
     // Use DAOs as repository implementations since they extend BaseDao which implements Repository
-    // Canonical DAO implementations (lowercase 'Dao')
-    const { RelationalDao } = await import('./dao/relational.dao');
-    const { GraphDao } = await import('./dao/graph.dao');
-    const { VectorDao } = await import('./dao/vector.dao');
-    const { MemoryDao } = await import('./dao/memory.dao');
-    const { CoordinationDao } = await import('./dao/coordination.dao');
+    // Canonical DAO implementations (lowercase 'Dao')'
+    const { RelationalDao } = await import('./dao/relational.dao');'
+    const { GraphDao } = await import('./dao/graph.dao');'
+    const { VectorDao } = await import('./dao/vector.dao');'
+    const { MemoryDao } = await import('./dao/memory.dao');'
+    const { CoordinationDao } = await import('./dao/coordination.dao');'
 
-    const tableName = config?.['tableName']||config?.['entityType'];
+    const tableName = config?.['tableName']||config?.['entityType'];'
     const entitySchema =
-      config?.['schema']||this.entityRegistry[config?.['entityType']]?.schema;
+      config?.['schema']||this.entityRegistry[config?.['entityType']]?.schema;'
 
-    switch (config?.['databaseType']) {
-    case 'kuzu':
+    switch (config?.['databaseType']) {'
+    case 'kuzu':'
       return new GraphDao<T>(
         adapter,
         this['_logger'],
@@ -1275,7 +1275,7 @@ export class DALFactory {
         entitySchema,
       ) as any as RepositoryType<T>;
 
-    case 'lancedb':
+    case 'lancedb':'
       return new VectorDao<T>(
         adapter,
         this['_logger'],
@@ -1283,7 +1283,7 @@ export class DALFactory {
         entitySchema,
       ) as any as RepositoryType<T>;
 
-    case 'memory':
+    case 'memory':'
       return new MemoryDao<T>(
         adapter,
         this['_logger'],
@@ -1291,7 +1291,7 @@ export class DALFactory {
         entitySchema,
       ) as any as RepositoryType<T>;
 
-    case 'coordination':
+    case 'coordination':'
       return new CoordinationDao<T>(
         adapter,
         this['_logger'],
@@ -1314,18 +1314,18 @@ export class DALFactory {
     repository: RepositoryType<T>,
     adapter: DatabaseAdapter,
   ): Promise<DataAccessObject<T>> {
-    const { RelationalDao } = await import('./dao/relational.dao');
-    const { GraphDao } = await import('./dao/graph.dao');
-    const { VectorDao } = await import('./dao/vector.dao');
-    const { MemoryDao } = await import('./dao/memory.dao');
-    const { CoordinationDao } = await import('./dao/coordination.dao');
+    const { RelationalDao } = await import('./dao/relational.dao');'
+    const { GraphDao } = await import('./dao/graph.dao');'
+    const { VectorDao } = await import('./dao/vector.dao');'
+    const { MemoryDao } = await import('./dao/memory.dao');'
+    const { CoordinationDao } = await import('./dao/coordination.dao');'
 
-    const tableName = config?.['tableName']||config?.['entityType'];
+    const tableName = config?.['tableName']||config?.['entityType'];'
     const entitySchema =
-      config?.['schema']||this.entityRegistry[config?.['entityType']]?.schema;
+      config?.['schema']||this.entityRegistry[config?.['entityType']]?.schema;'
 
-    switch (config?.['databaseType']) {
-    case 'kuzu':
+    switch (config?.['databaseType']) {'
+    case 'kuzu':'
       return new GraphDao<T>(
         adapter,
         this['_logger'],
@@ -1333,7 +1333,7 @@ export class DALFactory {
         entitySchema,
       );
 
-    case 'lancedb':
+    case 'lancedb':'
       return new VectorDao<T>(
         adapter,
         this['_logger'],
@@ -1341,7 +1341,7 @@ export class DALFactory {
         entitySchema,
       );
 
-    case 'memory':
+    case 'memory':'
       return new MemoryDao<T>(
         adapter,
         this['_logger'],
@@ -1349,7 +1349,7 @@ export class DALFactory {
         entitySchema,
       ) as any;
 
-    case 'coordination':
+    case 'coordination':'
       return new CoordinationDao<T>(
         adapter,
         this['_logger'],
@@ -1377,12 +1377,12 @@ export class DALFactory {
       config?.['tableName']||config?.['entityType'],
       JSON.stringify(config?.['options']||{}),
     ];
-    return parts.join(':');
+    return parts.join(':');'
   }
 
   private generateAdapterCacheKey(config: RepositoryConfig): string {
-    if (config?.['existingAdapter']) {
-      return `existing:${Date.now()}`;
+    if (config?.['existingAdapter']) {'
+      return `existing:${Date.now()}`;`
     }
 
     return [
@@ -1390,7 +1390,7 @@ export class DALFactory {
       config?.['databaseConfig']?.host||'localhost',
       config?.['databaseConfig']?.database||'default',
       config?.['databaseConfig']?.port||'default',
-    ].join(':');
+    ].join(':');'
   }
 
   /**
@@ -1400,19 +1400,19 @@ export class DALFactory {
    * storage pattern. KuzuDB is used for graph database operations including entity
    * relationships, dependency graphs, and complex querying scenarios.
    * 
-   * **Storage Location**: `./.claude-zen/data/kuzu-graph.db`
-   * - **Project-local**: Uses project's `.claude-zen/data/` directory
-   * - **Consistent naming**: `kuzu-graph.db` follows component-purpose pattern
+   * **Storage Location**: `./.claude-zen/data/kuzu-graph.db``
+   * - **Project-local**: Uses project's `.claude-zen/data/` directory`
+   * - **Consistent naming**: `kuzu-graph.db` follows component-purpose pattern`
    * - **Performance tuned**: 1GB buffer pool with 4-thread processing
    * 
    * @returns {DatabaseConfig} Complete KuzuDB configuration object
    * 
    * @example
-   * ```typescript  
+   * ```typescript  `
    * const kuzuConfig = this.getDefaultKuzuConfig();
    * // Results in: "./.claude-zen/data/kuzu-graph.db"
    * const graphDb = await this.createRepository(kuzuConfig);
-   * ```
+   * ````
    * 
    * @see {@link DatabaseConfig} for configuration interface
    * @see {@link createGraphRepository} for usage in graph operations
@@ -1436,20 +1436,20 @@ export class DALFactory {
    * storage pattern. LanceDB is used for vector storage operations including semantic
    * search, embeddings storage, and AI-powered similarity matching.
    * 
-   * **Storage Location**: `./.claude-zen/data/lancedb-vectors.db`
-   * - **Project-local**: Uses project's `.claude-zen/data/` directory  
-   * - **Consistent naming**: `lancedb-vectors.db` follows component-purpose pattern
+   * **Storage Location**: `./.claude-zen/data/lancedb-vectors.db``
+   * - **Project-local**: Uses project's `.claude-zen/data/` directory  `
+   * - **Consistent naming**: `lancedb-vectors.db` follows component-purpose pattern`
    * - **Vector optimized**: Cosine similarity with IVF_PQ indexing for performance
    * 
    * @param {number} vectorDimension The dimensionality of vectors to be stored
    * @returns {DatabaseConfig} Complete LanceDB configuration object
    * 
    * @example
-   * ```typescript
+   * ```typescript`
    * const lanceConfig = this.getDefaultLanceDBConfig(1536); // OpenAI embedding size
    * // Results in: "./.claude-zen/data/lancedb-vectors.db"
    * const vectorDb = await this.createRepository(lanceConfig);
-   * ```
+   * ````
    * 
    * @see {@link DatabaseConfig} for configuration interface  
    * @see {@link createVectorRepository} for usage in vector operations
@@ -1469,7 +1469,7 @@ export class DALFactory {
 
   private initializeEntityRegistry(): void {
     // Initialize with common entity types
-    this.registerEntityType('SwarmAgent', {
+    this.registerEntityType('SwarmAgent', {'
       schema: {
         id: { type: 'string', primaryKey: true },
         name: { type: 'string', required: true },
@@ -1484,7 +1484,7 @@ export class DALFactory {
       databaseType: 'coordination',
     });
 
-    this.registerEntityType('MemoryEntry', {
+    this.registerEntityType('MemoryEntry', {'
       schema: {
         id: { type: 'string', primaryKey: true },
         key: { type: 'string', required: true, unique: true },
@@ -1498,7 +1498,7 @@ export class DALFactory {
       databaseType: 'memory',
     });
 
-    this.registerEntityType('VectorDocument', {
+    this.registerEntityType('VectorDocument', {'
       schema: {
         id: { type: 'string', primaryKey: true },
         vector: { type: 'vector', required: true },
@@ -1510,7 +1510,7 @@ export class DALFactory {
       databaseType: 'lancedb',
     });
 
-    this.registerEntityType('GraphNode', {
+    this.registerEntityType('GraphNode', {'
       schema: {
         id: { type: 'string', primaryKey: true },
         labels: { type: 'array' },
@@ -1547,7 +1547,7 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
 
     // Replicate to secondaries (fire and forget for performance)
     this.replicateToSecondaries(operations).catch((error) => {
-      this.logger.warn(`Secondary replication failed: ${error}`);
+      this.logger.warn(`Secondary replication failed: ${error}`);`
     });
 
     return primaryResult;
@@ -1567,7 +1567,7 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       config: {
         primary,
         secondaries: secondaries.map((result) =>
-          result?.status === 'fulfilled'
+          result?.status === 'fulfilled''
             ? result?.value
             : { error: result?.reason },
         ),
@@ -1582,7 +1582,7 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
     );
 
     const isHealthy =
-      primary.healthy && secondaries.some((s) => s.status === 'fulfilled');
+      primary.healthy && secondaries.some((s) => s.status === 'fulfilled');'
     return {
       healthy: isHealthy,
       isHealthy,
@@ -1591,7 +1591,7 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       details: {
         primary,
         secondaries: secondaries.map((result) =>
-          result?.status === 'fulfilled'
+          result?.status === 'fulfilled''
             ? result?.value
             : { healthy: false, error: result?.reason },
         ),
@@ -1614,7 +1614,7 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       custom: {
         primary,
         secondaries: secondaries.map((result) =>
-          result?.status === 'fulfilled'
+          result?.status === 'fulfilled''
             ? result?.value
             : { error: result?.reason },
         ),

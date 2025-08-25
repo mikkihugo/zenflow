@@ -54,7 +54,7 @@ export class VectorDao<T>
     options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]> {
     this.logger.debug(
-      `Performing similarity search with ${queryVector.length}D vector`,
+      `Performing similarity search with ${queryVector.length}D vector`,`
       {
         options,
       },
@@ -89,13 +89,13 @@ export class VectorDao<T>
           }))||[];
 
       this.logger.debug(
-        `Similarity search completed: ${results.length} results`,
+        `Similarity search completed: ${results.length} results`,`
       );
       return results;
     } catch (error) {
-      this.logger.error(`Similarity search failed: ${error}`);
+      this.logger.error(`Similarity search failed: ${error}`);`
       throw new Error(
-        `Similarity search failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Similarity search failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -110,7 +110,7 @@ export class VectorDao<T>
       return { inserted: 0, errors: [] };
     }
 
-    this.logger.debug(`Adding ${vectors.length} vectors to ${this.tableName}`);
+    this.logger.debug(`Adding ${vectors.length} vectors to ${this.tableName}`);`
 
     try {
       // Validate all vectors
@@ -128,16 +128,16 @@ export class VectorDao<T>
       // Use vector adapter to insert vectors
       await this.vectorAdapter.addVectors(adapterVectors as any);
 
-      // Return success result (LanceDB doesn't provide detailed error info in current adapter)
+      // Return success result (LanceDB doesn't provide detailed error info in current adapter)'
       const result: VectorInsertResult = {
         inserted: vectors.length,
         errors: [],
       };
 
-      this.logger.debug(`Successfully added ${result?.inserted} vectors`);
+      this.logger.debug(`Successfully added ${result?.inserted} vectors`);`
       return result;
     } catch (error) {
-      this.logger.error(`Add vectors failed: ${error}`);
+      this.logger.error(`Add vectors failed: ${error}`);`
 
       // Return error result
       return {
@@ -156,15 +156,15 @@ export class VectorDao<T>
    * @param config
    */
   async createIndex(config: VectorIndexConfig): Promise<void> {
-    this.logger.debug(`Creating vector index: ${config?.name}`, { config });
+    this.logger.debug(`Creating vector index: ${config?.name}`, { config });`
 
     try {
       await this.vectorAdapter.createIndex(config);
-      this.logger.debug(`Successfully created vector index: ${config?.name}`);
+      this.logger.debug(`Successfully created vector index: ${config?.name}`);`
     } catch (error) {
-      this.logger.error(`Create index failed: ${error}`);
+      this.logger.error(`Create index failed: ${error}`);`
       throw new Error(
-        `Create index failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Create index failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -173,7 +173,7 @@ export class VectorDao<T>
    * Get vector statistics.
    */
   async getVectorStats(): Promise<VectorStats> {
-    this.logger.debug(`Getting vector statistics for ${this.tableName}`);
+    this.logger.debug(`Getting vector statistics for ${this.tableName}`);`
 
     try {
       // This would need to be implemented based on actual LanceDB capabilities
@@ -189,9 +189,9 @@ export class VectorDao<T>
 
       return stats;
     } catch (error) {
-      this.logger.error(`Get vector stats failed: ${error}`);
+      this.logger.error(`Get vector stats failed: ${error}`);`
       throw new Error(
-        `Get vector stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Get vector stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -202,7 +202,7 @@ export class VectorDao<T>
    * @param options
    */
   async cluster(options?: ClusteringOptions): Promise<ClusterResult> {
-    this.logger.debug('Performing vector clustering', { options });
+    this.logger.debug('Performing vector clustering', { options });'
 
     try {
       const clusterOptions = {
@@ -235,13 +235,13 @@ export class VectorDao<T>
       };
 
       this.logger.debug(
-        `Clustering completed: ${result?.clusters.length} clusters`,
+        `Clustering completed: ${result?.clusters.length} clusters`,`
       );
       return result;
     } catch (error) {
-      this.logger.error(`Clustering failed: ${error}`);
+      this.logger.error(`Clustering failed: ${error}`);`
       throw new Error(
-        `Clustering failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Clustering failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -260,27 +260,27 @@ export class VectorDao<T>
     entityId: string|number,
     options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]> {
-    this.logger.debug(`Finding entities similar to: ${entityId}`);
+    this.logger.debug(`Finding entities similar to: ${entityId}`);`
 
     try {
       // Get the entity and its vector
       const entity = await this.findById(entityId);
       if (!entity) {
-        throw new Error(`Entity with ID ${entityId} not found`);
+        throw new Error(`Entity with ID ${entityId} not found`);`
       }
 
       const vector = this.extractVectorFromEntity(entity);
       if (!vector) {
-        throw new Error(`No vector found for entity ${entityId}`);
+        throw new Error(`No vector found for entity ${entityId}`);`
       }
 
       // Perform similarity search excluding the original entity
       const results = await this.similaritySearch(vector, options);
       return results?.filter((result) => result?.id !== entityId);
     } catch (error) {
-      this.logger.error(`Find similar to entity failed: ${error}`);
+      this.logger.error(`Find similar to entity failed: ${error}`);`
       throw new Error(
-        `Find similar to entity failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Find similar to entity failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -295,7 +295,7 @@ export class VectorDao<T>
     entityId: string|number,
     newVector: number[],
   ): Promise<T> {
-    this.logger.debug(`Updating vector for entity: ${entityId}`);
+    this.logger.debug(`Updating vector for entity: ${entityId}`);`
 
     try {
       this.validateVector(newVector);
@@ -303,7 +303,7 @@ export class VectorDao<T>
       // Get existing entity
       const existingEntity = await this.findById(entityId);
       if (!existingEntity) {
-        throw new Error(`Entity with ID ${entityId} not found`);
+        throw new Error(`Entity with ID ${entityId} not found`);`
       }
 
       // Update the entity with new vector
@@ -313,9 +313,9 @@ export class VectorDao<T>
 
       return updatedEntity;
     } catch (error) {
-      this.logger.error(`Update vector failed: ${error}`);
+      this.logger.error(`Update vector failed: ${error}`);`
       throw new Error(
-        `Update vector failed: ${error instanceof Error ? error.message :'Unknown error'}`,
+        `Update vector failed: ${error instanceof Error ? error.message :'Unknown error'}`,`
       );
     }
   }
@@ -331,7 +331,7 @@ export class VectorDao<T>
     options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[][]> {
     this.logger.debug(
-      `Performing batch similarity search with ${queryVectors.length} query vectors`,
+      `Performing batch similarity search with ${queryVectors.length} query vectors`,`
     );
 
     try {
@@ -346,13 +346,13 @@ export class VectorDao<T>
       results?.push(...batchResults);
 
       this.logger.debug(
-        `Batch similarity search completed: ${results.length} result sets`,
+        `Batch similarity search completed: ${results.length} result sets`,`
       );
       return results;
     } catch (error) {
-      this.logger.error(`Batch similarity search failed: ${error}`);
+      this.logger.error(`Batch similarity search failed: ${error}`);`
       throw new Error(
-        `Batch similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Batch similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -364,11 +364,11 @@ export class VectorDao<T>
   protected mapRowToEntity(row: unknown): T {
     // For vector databases, ensure vector field is properly handled
     const rowData = row as any;
-    if (rowData.vector && typeof rowData.vector === 'string') {
+    if (rowData.vector && typeof rowData.vector === 'string') {'
       try {
         rowData.vector = JSON.parse(rowData.vector);
       } catch {
-        // If parsing fails, assume it's already an array
+        // If parsing fails, assume it's already an array'
       }
     }
 
@@ -399,11 +399,11 @@ export class VectorDao<T>
   override async executeCustomQuery<R = any>(
     customQuery: CustomQuery,
   ): Promise<R> {
-    if (customQuery.type === 'vector') {
+    if (customQuery.type === 'vector') {'
       // Handle vector-specific queries
       const query = customQuery.query as any;
 
-      if (query.operation === 'similarity_search') {
+      if (query.operation === 'similarity_search') {'
         const results = await this.similaritySearch(
           query.vector,
           query.options,
@@ -411,7 +411,7 @@ export class VectorDao<T>
         return results as R;
       }
 
-      if (query.operation === 'cluster') {
+      if (query.operation === 'cluster') {'
         const results = await this.cluster(query.options);
         return results as R;
       }
@@ -426,21 +426,21 @@ export class VectorDao<T>
 
   private validateVector(vector: number[]): void {
     if (!Array.isArray(vector)) {
-      throw new Error('Vector must be an array of numbers');
+      throw new Error('Vector must be an array of numbers');'
     }
 
     if (vector.length === 0) {
-      throw new Error('Vector cannot be empty');
+      throw new Error('Vector cannot be empty');'
     }
 
-    if (!vector.every((v) => typeof v === 'number' && !Number.isNaN(v))) {
-      throw new Error('Vector must contain only valid numbers');
+    if (!vector.every((v) => typeof v === 'number' && !Number.isNaN(v))) {'
+      throw new Error('Vector must contain only valid numbers');'
     }
 
     const expectedDimension = this.getVectorDimension();
     if (expectedDimension && vector.length !== expectedDimension) {
       throw new Error(
-        `Vector dimension mismatch: expected ${expectedDimension}, got ${vector.length}`,
+        `Vector dimension mismatch: expected ${expectedDimension}, got ${vector.length}`,`
       );
     }
   }
@@ -498,7 +498,7 @@ export class VectorDao<T>
     return this.adapter.transaction(async () => {
       const results: unknown[] = [];
       for (const operation of operations) {
-        if (operation.type ==='create' && operation.data) {
+        if (operation.type ==='create' && operation.data) {'
           results.push(await this.create((operation as any).data));
         }
         // Add other operation types as needed

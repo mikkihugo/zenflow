@@ -18,12 +18,12 @@ import { extname, join, relative } from 'node:path';
 import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('EnhancedDocumentScanner');
+const logger = getLogger('EnhancedDocumentScanner');'
 
 /**
  * Types of analysis patterns we can detect in code and documents
  */
-export type AnalysisPattern =|'todo|fixme|hack|deprecated|missing_implementation|empty_function|code_quality | documentation_gap'|test_missing|performance_issue | security_concern'|refactor_needed';
+export type AnalysisPattern =|'todo|fixme|hack|deprecated|missing_implementation|empty_function|code_quality | documentation_gap'|test_missing|performance_issue | security_concern'|refactor_needed;
 
 /**
  * Detected code issue or improvement opportunity
@@ -31,14 +31,14 @@ export type AnalysisPattern =|'todo|fixme|hack|deprecated|missing_implementation
 export interface CodeAnalysisResult {
   id: string;
   type: AnalysisPattern;
-  severity: 'low|medium|high|critical';
+  severity: 'low|medium|high|critical;
   title: string;
   description: string;
   filePath: string;
   lineNumber?: number;
   codeSnippet?: string;
   suggestedAction: string;
-  estimatedEffort: 'small|medium|large';
+  estimatedEffort: 'small' | 'medium' | 'large';
   tags: string[];
   relatedFiles?: string[];
 }
@@ -50,11 +50,11 @@ export interface GeneratedSwarmTask {
   id: string;
   title: string;
   description: string;
-  type: 'task|feature|epic';
-  priority: 'low|medium|high|critical';
+  type: 'task' | 'feature' | 'epic';
+  priority: 'low|medium|high|critical;
   estimatedHours: number;
   sourceAnalysis: CodeAnalysisResult;
-  suggestedSwarmType:|'single_agent|collaborative|research|implementation';
+  suggestedSwarmType:|'single_agent|collaborative|research|implementation;
   requiredAgentTypes: string[];
   dependencies: string[];
   acceptanceCriteria: string[];
@@ -138,43 +138,43 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     const patterns = new Map<AnalysisPattern, RegExp[]>();
 
     // TODO pattern detection
-    patterns.set('todo', [
+    patterns.set('todo', ['
       /(?:\/\/|#|<!--)\s*todo[\s:](.*?)(?:-->|$)/gi,
       /(?:\/\*|\*)\s*todo[\s:](.*?)(?:\*\/|$)/gi,
       /\b(?:todo|to-do|@todo)[\s:](.*?)(?:\n|$)/gi,
     ]);
 
     // FIXME pattern detection
-    patterns.set('fixme', [
+    patterns.set('fixme', ['
       /(?:\/\/|#|<!--)\s*fixme[\s:](.*?)(?:-->|$)/gi,
       /(?:\/\*|\*)\s*fixme[\s:](.*?)(?:\*\/|$)/gi,
       /\b(?:fixme|fix|@fixme)[\s:](.*?)(?:\n|$)/gi,
     ]);
 
     // HACK pattern detection
-    patterns.set('hack', [
+    patterns.set('hack', ['
       /(?:\/\/|#|<!--)\s*hack[\s:](.*?)(?:-->|$)/gi,
       /(?:\/\*|\*)\s*hack[\s:](.*?)(?:\*\/|$)/gi,
       /\b(?:hack|hacky|@hack)[\s:](.*?)(?:\n|$)/gi,
     ]);
 
     // Deprecated pattern detection
-    patterns.set('deprecated', [
+    patterns.set('deprecated', ['
       /@deprecated[\s:](.*?)(?:\n|$)/gi,
       /\b(?:deprecated|@deprecated)[\s:](.*?)(?:\n|$)/gi,
       /(?:\/\/|#)\s*deprecated[\s:](.*?)(?:\n|$)/gi,
     ]);
 
     // Missing implementation patterns
-    patterns.set('missing_implementation', [
-      /throw new error\(["'`]not implemented["'`]\)/gi,
+    patterns.set('missing_implementation', ['
+      /throw new error\(["'`]not implemented["'`]\)/gi,`
       /throw new notimplementederror/gi,
       /\/\/ todo[\s:]*implement/gi,
       /\/\* todo[\s:]*implement/gi,
     ]);
 
     // Empty function patterns
-    patterns.set('empty_function', [
+    patterns.set('empty_function', ['
       /function\s+\w+\s*\([^)]*\)\s*{\s*}/gi,
       /\w+\s*=\s*\([^)]*\)\s*=>\s*{\s*}/gi,
       /async\s+function\s+\w+\s*\([^)]*\)\s*{\s*}/gi,
@@ -188,7 +188,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
    */
   async scanAndGenerateTasks(): Promise<ScanResults> {
     if (this.isScanning) {
-      throw new Error('Scanner is already running');
+      throw new Error('Scanner is already running');'
     }
 
     this.isScanning = true;
@@ -196,7 +196,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
 
     try {
       logger.info(
-        `🔍 Starting enhanced document scan in ${this.config.rootPath}`
+        `🔍 Starting enhanced document scan in ${this.config.rootPath}``
       );
 
       const analysisResults: CodeAnalysisResult[] = [];
@@ -221,10 +221,10 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       };
 
       logger.info(
-        `✅ Scan complete: ${scannedFiles} files, ${analysisResults.length} issues, ${generatedTasks.length} tasks generated (${scanDuration}ms)`
+        `✅ Scan complete: ${scannedFiles} files, ${analysisResults.length} issues, ${generatedTasks.length} tasks generated (${scanDuration}ms)``
       );
 
-      this.emit('scan:completed', results);
+      this.emit('scan:completed', results);'
       return results;
     } finally {
       this.isScanning = false;
@@ -271,7 +271,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.warn(`Failed to scan directory ${dirPath}:`, error);
+      logger.warn(`Failed to scan directory ${dirPath}:`, error);`
     }
 
     return scannedFiles;
@@ -285,8 +285,8 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     results: CodeAnalysisResult[]
   ): Promise<void> {
     try {
-      const content = await readFile(filePath, 'utf8');
-      const lines = content.split('\n');
+      const content = await readFile(filePath, 'utf8');'
+      const lines = content.split('\n');'
       const fileExt = extname(filePath);
 
       // Analyze each enabled pattern
@@ -315,17 +315,17 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       // Deep analysis for TypeScript/JavaScript files
       if (
         this.config.deepAnalysis &&
-        ['', '.tsx', '', '.jsx'].includes(fileExt)
+        ['', '.tsx', '', '.jsx'].includes(fileExt)'
       ) {
         await this.performDeepAnalysis(filePath, content, lines, results);
       }
 
       // Markdown-specific analysis
-      if (fileExt === '.md') {
+      if (fileExt === '.md') {'
         await this.analyzeMarkdownDocument(filePath, content, results);
       }
     } catch (error) {
-      logger.warn(`Failed to analyze file ${filePath}:`, error);
+      logger.warn(`Failed to analyze file ${filePath}:`, error);`
     }
   }
 
@@ -352,12 +352,12 @@ export class EnhancedDocumentScanner extends TypedEventBase {
           id: this.generateId(),
           type:'empty_function',
           severity: 'medium',
-          title: `Empty function: ${functionName}`,
-          description: `Function '${functionName}' appears to be empty and may need implementation`,
+          title: `Empty function: ${functionName}`,`
+          description: `Function '${functionName}' appears to be empty and may need implementation`,`
           filePath,
           lineNumber,
           codeSnippet: lines[lineNumber - 1],
-          suggestedAction: `Implement the ${functionName} function or add documentation explaining why it's empty`,
+          suggestedAction: `Implement the ${functionName} function or add documentation explaining why it's empty`,`
           estimatedEffort: 'small',
           tags: ['implementation', 'code-quality'],
         });
@@ -374,8 +374,8 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         );
         if (
           functionText &&
-          !functionText.includes('try') &&
-          !functionText.includes('catch')
+          !functionText.includes('try') &&'
+          !functionText.includes('catch')'
         ) {
           const lineNumber = this.getLineNumber(content, match.index||0);
           results.push({
@@ -394,7 +394,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.debug(`Deep analysis failed for ${filePath}:`, error);
+      logger.debug(`Deep analysis failed for ${filePath}:`, error);`
     }
   }
 
@@ -406,7 +406,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     content: string,
     results: CodeAnalysisResult[]
   ): Promise<void> {
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     // Check for incomplete sections
     const incompleteSections = content.matchAll(
@@ -420,12 +420,12 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         id: this.generateId(),
         type:'documentation_gap',
         severity: 'low',
-        title: `Empty documentation section: ${sectionName}`,
-        description: `Section "${sectionName}" appears to be empty and needs content`,
+        title: `Empty documentation section: ${sectionName}`,`
+        description: `Section "${sectionName}" appears to be empty and needs content`,`
         filePath,
         lineNumber,
         codeSnippet: lines[lineNumber - 1],
-        suggestedAction: `Add content to the "${sectionName}" section`,
+        suggestedAction: `Add content to the "${sectionName}" section`,`
         estimatedEffort: 'medium',
         tags: ['documentation', 'content'],
       });
@@ -442,12 +442,12 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         id: this.generateId(),
         type:'documentation_gap',
         severity: 'low',
-        title: `Verify internal link: ${linkText}`,
-        description: `Internal link to "${linkPath}.md" should be verified`,
+        title: `Verify internal link: ${linkText}`,`
+        description: `Internal link to "${linkPath}.md" should be verified`,`
         filePath,
         lineNumber,
         codeSnippet: lines[lineNumber - 1],
-        suggestedAction: `Verify that "${linkPath}.md" exists and the link is correct`,
+        suggestedAction: `Verify that "${linkPath}.md" exists and the link is correct`,`
         estimatedEffort: 'small',
         tags: ['documentation', 'links'],
       });
@@ -486,8 +486,8 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     for (const result of results) {
       // Group by pattern type and directory
       const dirPath = relative(this.config.rootPath, result.filePath).split(
-        '/')[0];
-      const groupKey = `${result.type}-${dirPath}`;
+        '/')[0];'
+      const groupKey = `${result.type}-${dirPath}`;`
 
       if (!groups.has(groupKey)) {
         groups.set(groupKey, []);
@@ -507,38 +507,38 @@ export class EnhancedDocumentScanner extends TypedEventBase {
   ): GeneratedSwarmTask|null {
     if (results.length === 0) return null;
 
-    const [patternType, directory] = groupKey.split('-');
+    const [patternType, directory] = groupKey.split('-');'
     const pattern = patternType as AnalysisPattern;
     const primaryResult = results[0];
     const maxSeverity = this.getMaxSeverity(results);
 
     const taskTemplates = {
       todo: {
-        title: `Complete TODO items in ${directory}/`,
+        title: `Complete TODO items in ${directory}/`,`
         type: 'task' as const,
         swarmType: 'implementation' as const,
         agents: ['coder', 'reviewer'],
       },
       fixme: {
-        title: `Fix identified issues in ${directory}/`,
+        title: `Fix identified issues in ${directory}/`,`
         type: 'task' as const,
         swarmType: 'collaborative' as const,
         agents: ['coder', 'debugger', 'tester'],
       },
       empty_function: {
-        title: `Implement empty functions in ${directory}/`,
+        title: `Implement empty functions in ${directory}/`,`
         type: 'feature' as const,
         swarmType: 'implementation' as const,
         agents: ['architect', 'coder', 'documenter'],
       },
       documentation_gap: {
-        title: `Improve documentation in ${directory}/`,
+        title: `Improve documentation in ${directory}/`,`
         type: 'task' as const,
         swarmType: 'single_agent' as const,
         agents: ['documenter'],
       },
       code_quality: {
-        title: `Improve code quality in ${directory}/`,
+        title: `Improve code quality in ${directory}/`,`
         type: 'task' as const,
         swarmType: 'collaborative' as const,
         agents: ['architect', 'coder', 'reviewer'],
@@ -546,7 +546,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     };
 
     const template = taskTemplates[pattern]||{
-      title: `Address ${pattern} issues in ${directory}/`,
+      title: `Address ${pattern} issues in ${directory}/`,`
       type:'task' as const,
       swarmType: 'collaborative' as const,
       agents: ['coder', 'reviewer'],
@@ -575,17 +575,17 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     const fileCount = new Set(results.map((r) => r.filePath)).size;
     const issueCount = results.length;
 
-    let description = `Address ${issueCount} ${pattern} issue${issueCount > 1 ? 's' : ''} across ${fileCount} file${fileCount > 1 ? 's' : ''}.\n\n`;
+    let description = `Address ${issueCount} ${pattern} issue${issueCount > 1 ? 's' : ''} across ${fileCount} file${fileCount > 1 ? 's' : ''}.\n\n`;`
 
     description += '**Issues to address:**\n';
     for (const result of results.slice(0, 5)) {
       // Show first 5 issues
       const fileName = relative(this.config.rootPath, result.filePath);
-      description += `- ${fileName}:${result.lineNumber||'?'} - ${result.description}\n`;
+      description += `- ${fileName}:${result.lineNumber||'?'} - ${result.description}\n`;`
     }
 
     if (results.length > 5) {
-      description += `- ... and ${results.length - 5} more issues\n`;
+      description += `- ... and ${results.length - 5} more issues\n`;`
     }
 
     return description;
@@ -599,30 +599,30 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     const pattern = results[0].type;
 
     switch (pattern) {
-      case 'todo':
+      case 'todo':'
         criteria.push(
-          'All TODO items are either implemented or converted to proper issues'
+          'All TODO items are either implemented or converted to proper issues''
         );
         criteria.push(
-          'Code is fully functional with no temporary placeholders'
+          'Code is fully functional with no temporary placeholders''
         );
         break;
-      case 'fixme':
-        criteria.push('All FIXME issues are resolved and tested');
-        criteria.push('Code passes all existing tests');
+      case 'fixme':'
+        criteria.push('All FIXME issues are resolved and tested');'
+        criteria.push('Code passes all existing tests');'
         break;
-      case 'empty_function':
-        criteria.push('All empty functions are implemented with proper logic');
-        criteria.push('Functions have appropriate documentation');
-        criteria.push('Unit tests are added for new implementations');
+      case 'empty_function':'
+        criteria.push('All empty functions are implemented with proper logic');'
+        criteria.push('Functions have appropriate documentation');'
+        criteria.push('Unit tests are added for new implementations');'
         break;
-      case 'documentation_gap':
-        criteria.push('All documentation sections are complete and accurate');
-        criteria.push('Links are verified and functional');
+      case 'documentation_gap':'
+        criteria.push('All documentation sections are complete and accurate');'
+        criteria.push('Links are verified and functional');'
         break;
       default:
-        criteria.push(`All ${pattern} issues are resolved`);
-        criteria.push('Code quality standards are maintained');
+        criteria.push(`All ${pattern} issues are resolved`);`
+        criteria.push('Code quality standards are maintained');'
     }
 
     return criteria;
@@ -661,14 +661,14 @@ export class EnhancedDocumentScanner extends TypedEventBase {
   private matchesPattern(path: string, pattern: string): boolean {
     // Simple glob pattern matching
     const regexPattern = pattern
-      .replace(/\*\*/g, '.*')
-      .replace(/\*/g, '[^/]*')
-      .replace(/\?/g, '[^/]');
-    return new RegExp(`^${regexPattern}$`).test(path);
+      .replace(/\*\*/g, '.*')'
+      .replace(/\*/g, '[^/]*')'
+      .replace(/\?/g, '[^/]');'
+    return new RegExp(`^${regexPattern}$`).test(path);`
   }
 
   private getLineNumber(content: string, index: number): number {
-    return content.substring(0, index).split('\n').length;
+    return content.substring(0, index).split('\n').length;'
   }
 
   private createAnalysisResult(
@@ -684,7 +684,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       id: this.generateId(),
       type: pattern,
       severity: this.getPatternSeverity(pattern),
-      title: `${pattern.toUpperCase()}: ${description.substring(0, 50)}...`,
+      title: `${pattern.toUpperCase()}: ${description.substring(0, 50)}...`,`
       description,
       filePath,
       lineNumber,
@@ -697,8 +697,8 @@ export class EnhancedDocumentScanner extends TypedEventBase {
 
   private getPatternSeverity(
     pattern: AnalysisPattern
-  ): CodeAnalysisResult['severity'] {
-    const severityMap: Record<AnalysisPattern, CodeAnalysisResult['severity']> =
+  ): CodeAnalysisResult['severity'] {'
+    const severityMap: Record<AnalysisPattern, CodeAnalysisResult['severity']> ='
       {
         todo: 'low',
         fixme: 'medium',
@@ -713,15 +713,15 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         security_concern: 'critical',
         refactor_needed: 'medium',
       };
-    return severityMap[pattern]||'medium';
+    return severityMap[pattern]||'medium;
   }
 
   private getPatternEffort(
     pattern: AnalysisPattern
-  ): CodeAnalysisResult['estimatedEffort'] {
+  ): CodeAnalysisResult['estimatedEffort'] {'
     const effortMap: Record<
       AnalysisPattern,
-      CodeAnalysisResult['estimatedEffort']
+      CodeAnalysisResult['estimatedEffort']'
     > = {
       todo: 'small',
       fixme: 'medium',
@@ -736,7 +736,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       security_concern: 'large',
       refactor_needed: 'large',
     };
-    return effortMap[pattern]||'medium';
+    return effortMap[pattern]||'medium;
   }
 
   private getPatternTags(pattern: AnalysisPattern): string[] {
@@ -754,7 +754,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       security_concern: ['security', 'critical'],
       refactor_needed: ['refactor', 'architecture'],
     };
-    return tagMap[pattern]||['general'];
+    return tagMap[pattern]||['general'];'
   }
 
   private getSuggestedAction(
@@ -762,20 +762,20 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     description: string
   ): string {
     const actionMap: Record<AnalysisPattern, string> = {
-      todo: `Implement the TODO: ${description}`,
-      fixme: `Fix the identified issue: ${description}`,
-      hack: `Refactor the hack into proper implementation: ${description}`,
-      deprecated: `Update deprecated code: ${description}`,
-      missing_implementation: `Implement missing functionality: ${description}`,
-      empty_function: `Add implementation to empty function`,
-      code_quality: `Improve code quality: ${description}`,
-      documentation_gap: `Add missing documentation: ${description}`,
-      test_missing: `Add test coverage: ${description}`,
-      performance_issue: `Optimize performance: ${description}`,
-      security_concern: `Address security concern: ${description}`,
-      refactor_needed: `Refactor code: ${description}`,
+      todo: `Implement the TODO: ${description}`,`
+      fixme: `Fix the identified issue: ${description}`,`
+      hack: `Refactor the hack into proper implementation: ${description}`,`
+      deprecated: `Update deprecated code: ${description}`,`
+      missing_implementation: `Implement missing functionality: ${description}`,`
+      empty_function: `Add implementation to empty function`,`
+      code_quality: `Improve code quality: ${description}`,`
+      documentation_gap: `Add missing documentation: ${description}`,`
+      test_missing: `Add test coverage: ${description}`,`
+      performance_issue: `Optimize performance: ${description}`,`
+      security_concern: `Address security concern: ${description}`,`
+      refactor_needed: `Refactor code: ${description}`,`
     };
-    return actionMap[pattern]||`Address ${pattern}: ${description}`;
+    return actionMap[pattern]||`Address ${pattern}: ${description}`;`
   }
 
   private extractFunctionBody(
@@ -785,12 +785,12 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     // Simple function body extraction - would be more sophisticated with proper AST parsing
     let braceCount = 0;
     let inFunction = false;
-    let body ='';
+    let body =';
 
     for (let i = startIndex; i < content.length; i++) {
       const char = content[i];
 
-      if (char === '{') {
+      if (char === '{') {'
         inFunction = true;
         braceCount++;
       }
@@ -799,7 +799,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
         body += char;
       }
 
-      if (char === '}') {
+      if (char === '}') {'
         braceCount--;
         if (braceCount === 0 && inFunction) {
           break;
@@ -812,8 +812,8 @@ export class EnhancedDocumentScanner extends TypedEventBase {
 
   private getMaxSeverity(
     results: CodeAnalysisResult[]
-  ): CodeAnalysisResult['severity'] {
-    const severityOrder = ['low', 'medium', 'high', 'critical'];
+  ): CodeAnalysisResult['severity'] {'
+    const severityOrder = ['low', 'medium', 'high', 'critical'];'
     return results.reduce(
       (max, result) => {
         return severityOrder.indexOf(result.severity) >
@@ -821,16 +821,16 @@ export class EnhancedDocumentScanner extends TypedEventBase {
           ? result.severity
           : max;
       },
-      'low' as CodeAnalysisResult['severity']
+      'low' as CodeAnalysisResult['severity']'
     );
   }
 
   private severityToPriority(
-    severity: CodeAnalysisResult['severity']
-  ): GeneratedSwarmTask['priority'] {
+    severity: CodeAnalysisResult['severity']'
+  ): GeneratedSwarmTask['priority'] {'
     const mapping: Record<
       CodeAnalysisResult['severity'],
-      GeneratedSwarmTask['priority']
+      GeneratedSwarmTask['priority']'
     > = {
       low: 'low',
       medium: 'medium',
@@ -869,6 +869,6 @@ export class EnhancedDocumentScanner extends TypedEventBase {
   }
 
   private generateId(): string {
-    return `analysis-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `analysis-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 }

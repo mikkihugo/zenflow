@@ -1,7 +1,7 @@
 /**
  * @file Context Manager - Replaces Hook System Context Loading
  *
- * Manages agent and swarm context, replacing the removed hook system's
+ * Manages agent and swarm context, replacing the removed hook system's'
  * context loading functionality with integrated memory management.
  */
 import { TypedEventBase } from '@claude-zen/foundation';
@@ -97,7 +97,7 @@ export declare const DEFAULT_CONTEXT_CONFIG: ContextManagerConfig;
 /**
  * Context Manager - Handles context loading and management
  *
- * Replaces the removed hook system's context loading with memory-backed
+ * Replaces the removed hook system's context loading with memory-backed'
  * context management for agents, swarms, and sessions.
  */
 export declare class ContextManager extends TypedEventBase {
@@ -113,7 +113,7 @@ export declare class ContextManager extends TypedEventBase {
    * Load context for any entity (replaces hook system context loading)
    */
   loadContext(context: {
-    type: 'agent|swarm|session|global';
+    type: 'agent|swarm|session|global;
     id: string;
     options?: {
       includeHistory?: boolean;
@@ -146,7 +146,7 @@ export declare class ContextManager extends TypedEventBase {
    */
   updateAgentMetrics(
     agentId: string,
-    metrics: Partial<AgentContext['metrics']>
+    metrics: Partial<AgentContext['metrics']>'
   ): Promise<boolean>;
   /**
    * Add task to agent history

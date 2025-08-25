@@ -7,16 +7,16 @@
  * AVAILABLE NOW: https://docs.github.com/en/github-models
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * const github = new GitHubModelsAPI({
  *   token: process.env.GITHUB_TOKEN,
- *   model: 'gpt-4o'  // GitHub hosts multiple models
+ *   model: 'gpt-4o'  // GitHub hosts multiple models'
  * });
  *
  * const response = await github.execute({
- *   messages: [{ role: 'user', content: 'Create a React authentication system' }]
+ *   messages: [{ role: 'user', content: 'Create a React authentication system' }]'
  * });
- * ```
+ * ````
  */
 
 import { ok, err } from '@claude-zen/foundation';
@@ -32,19 +32,19 @@ import type {
 
 import { githubModelsDB, initializeGitHubModelsDB } from './github-models-db';
 
-const logger = getLogger('GitHubModelsAPI');
+const logger = getLogger('GitHubModelsAPI');'
 
 export interface GitHubModelsOptions {
   token: string;
   model?: 
-    | 'openai/gpt-4.1'
-    | 'openai/gpt-4o'
-    | 'openai/gpt-5'
-    | 'openai/o1'
-    | 'meta/llama-3.3-70b-instruct'
-    | 'mistral-ai/mistral-large-2411'
-    | 'deepseek/deepseek-r1'
-    | 'xai/grok-3';
+    | 'openai/gpt-4.1''
+    | 'openai/gpt-4o''
+    | 'openai/gpt-5''
+    | 'openai/o1''
+    | 'meta/llama-3.3-70b-instruct''
+    | 'mistral-ai/mistral-large-2411''
+    | 'deepseek/deepseek-r1''
+    | 'xai/grok-3;
   baseURL?: string;
   maxTokens?: number;
   temperature?: number;
@@ -53,13 +53,13 @@ export interface GitHubModelsOptions {
 /**
  * GitHub Models API Provider - Real agentic development
  *
- * Uses GitHub's hosted AI models for development tasks.
+ * Uses GitHub's hosted AI models for development tasks.'
  * Perfect for code generation, architecture design, and development planning.
  */
 export class GitHubModelsAPI implements APIProvider {
   readonly id = 'github-models-api';
   readonly name = 'GitHub Models API';
-  readonly type = 'api' as const;
+  readonly type = 'api' as const;'
 
   private options: Required<GitHubModelsOptions>;
 
@@ -80,7 +80,7 @@ export class GitHubModelsAPI implements APIProvider {
     try {
       await initializeGitHubModelsDB();
     } catch (error) {
-      logger.warn('Failed to initialize GitHub Models database:', error);
+      logger.warn('Failed to initialize GitHub Models database:', error);'
     }
   }
 
@@ -90,16 +90,16 @@ export class GitHubModelsAPI implements APIProvider {
   async execute(request: APIRequest): Promise<APIResult> {
     try {
       logger.info(
-        `Executing GitHub Models API request with model: ${this.options.model}`
+        `Executing GitHub Models API request with model: ${this.options.model}``
       );
 
       const response = await fetch(
-        `${this.options.baseURL}/inference/chat/completions`,
+        `${this.options.baseURL}/inference/chat/completions`,`
         {
           method: 'POST',
           headers: {
             Accept: 'application/vnd.github+json',
-            Authorization: `Bearer ${this.options.token}`,
+            Authorization: `Bearer ${this.options.token}`,`
             'X-GitHub-Api-Version': '2022-11-28',
             'Content-Type': 'application/json',
           },
@@ -114,12 +114,12 @@ export class GitHubModelsAPI implements APIProvider {
 
       if (!response.ok) {
         throw new Error(
-          `GitHub Models API error: ${response.status} ${response.statusText}`
+          `GitHub Models API error: ${response.status} ${response.statusText}``
         );
       }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content||'';
+      const content = data.choices?.[0]?.message?.content||';
 
       return ok({
         content,
@@ -131,7 +131,7 @@ export class GitHubModelsAPI implements APIProvider {
         },
       });
     } catch (error) {
-      logger.error('GitHub Models API execution failed:', error);
+      logger.error('GitHub Models API execution failed:', error);'
       return err({
         code: API_ERROR_CODES.NETWORK_ERROR,
         message: error instanceof Error ? error.message : 'Unknown error',
@@ -188,11 +188,11 @@ export class GitHubModelsAPI implements APIProvider {
    */
   async listModels(): Promise<string[]> {
     try {
-      // Get models from database (updated hourly from 'gh models list')
+      // Get models from database (updated hourly from 'gh models list')'
       const models = githubModelsDB.getAllModels();
 
       if (models.length === 0) {
-        logger.warn('📋 No models in database, forcing update...');
+        logger.warn('📋 No models in database, forcing update...');'
         await githubModelsDB.updateModels();
         const updatedModels = githubModelsDB.getAllModels();
         return updatedModels.map((m) => m.id);
@@ -201,31 +201,31 @@ export class GitHubModelsAPI implements APIProvider {
       const modelIds = models.map((m) => m.id);
       const stats = githubModelsDB.getStats();
 
-      logger.info(`📋 GitHub Models from database: ${modelIds.length} models`);
+      logger.info(`📋 GitHub Models from database: ${modelIds.length} models`);`
       logger.info(
-        `📊 Categories: low:${stats.byCategory.low}, medium:${stats.byCategory.medium}, high:${stats.byCategory.high}`
+        `📊 Categories: low:${stats.byCategory.low}, medium:${stats.byCategory.medium}, high:${stats.byCategory.high}``
       );
-      logger.info(`🖼️ Multimodal models: ${stats.multimodal}`);
-      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);
+      logger.info(`🖼️ Multimodal models: ${stats.multimodal}`);`
+      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);`
 
       return modelIds;
     } catch (error) {
-      logger.error('Failed to list GitHub Models from database:', error);
+      logger.error('Failed to list GitHub Models from database:', error);'
 
       // Emergency fallback with context sizes noted
       const emergencyModels = [
-        'openai/gpt-4.1', // 8k context, 4k output
-        'openai/gpt-4o', // 8k context, 4k output, multimodal
-        'openai/gpt-5', // 8k context, 4k output
-        'openai/o1', // 8k context, 4k output
-        'meta/llama-3.3-70b-instruct', // 8k context, 4k output
-        'mistral-ai/mistral-large-2411', // 8k context, 4k output
-        'deepseek/deepseek-r1', // 8k context, 4k output
-        'xai/grok-3', // 8k context, 4k output
+        'openai/gpt-4.1', // 8k context, 4k output'
+        'openai/gpt-4o', // 8k context, 4k output, multimodal'
+        'openai/gpt-5', // 8k context, 4k output'
+        'openai/o1', // 8k context, 4k output'
+        'meta/llama-3.3-70b-instruct', // 8k context, 4k output'
+        'mistral-ai/mistral-large-2411', // 8k context, 4k output'
+        'deepseek/deepseek-r1', // 8k context, 4k output'
+        'xai/grok-3', // 8k context, 4k output'
       ];
 
       logger.info(
-        `📋 Using emergency fallback: ${emergencyModels.length} models (all 8k/4k limits)`
+        `📋 Using emergency fallback: ${emergencyModels.length} models (all 8k/4k limits)``
       );
       return emergencyModels;
     }
@@ -236,8 +236,8 @@ export class GitHubModelsAPI implements APIProvider {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      // Health check doesn't need auth for GitHub Models
-      const response = await fetch(`${this.options.baseURL}/models`, {
+      // Health check doesn't need auth for GitHub Models'
+      const response = await fetch(`${this.options.baseURL}/models`, {`
         method: 'GET',
       });
       return response.ok;
@@ -269,7 +269,7 @@ export async function executeGitHubModelsTask(
   });
 
   if (response.isErr()) {
-    throw new Error(`GitHub Models task failed: ${response.error.message}`);
+    throw new Error(`GitHub Models task failed: ${response.error.message}`);`
   }
 
   return response.value.content;

@@ -66,7 +66,7 @@ export async function analyzeBeamProject(
   const bridge = createBeamBridge(options.config);
 
   return await bridge.analyzeProject(projectPath, {
-    languages: options.languages||['erlang', 'elixir'],
+    languages: options.languages || ['erlang', 'elixir'],
     ...options.config,
   });
 }
@@ -77,7 +77,7 @@ export async function analyzeBeamProject(
 export async function analyzeElixirSecurity(
   projectPath: string,
   options: {
-    confidence?: 'high'|'medium'|'low';
+    confidence?: 'high' | 'medium' | 'low';
     skipFiles?: string[];
     config?: Partial<import('./types/beam-types').BeamAnalysisConfig>;
   } = {}
@@ -113,7 +113,7 @@ export async function analyzeBeamTypes(
 ): Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge({
     ...options.config,
-    languages: options.languages||['erlang', 'elixir'],
+    languages: options.languages || ['erlang', 'elixir'],
     useDialyzer: true,
     useSobelow: false,
     useElvis: false,
@@ -138,11 +138,11 @@ export async function analyzeBeamPatterns(
 ): Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge({
     ...options.config,
-    languages: options.languages||['erlang', 'elixir'],
+    languages: options.languages || ['erlang', 'elixir'],
     useDialyzer: false,
     useSobelow: false,
     useElvis: false,
-    customRules: options.customRules||[],
+    customRules: options.customRules || [],
   });
 
   return await bridge.analyzeProject(projectPath, {
@@ -164,7 +164,7 @@ export async function analyzeBeamComprehensive(
   const config = {
     ...DEFAULT_BEAM_CONFIG,
     ...options.config,
-    languages: options.languages||['erlang', 'elixir'],
+    languages: options.languages || ['erlang', 'elixir'],
   };
 
   const bridge = createBeamBridge(config);
@@ -175,7 +175,7 @@ export async function analyzeBeamComprehensive(
  * Get analysis configuration for different project types
  */
 export function getBeamConfigForProject(
-  projectType: 'library'|'application'|'phoenix'|'nerves'|'umbrella'
+  projectType: 'library' | 'application' | 'phoenix' | 'nerves' | 'umbrella'
 ): Partial<import('./types/beam-types').BeamAnalysisConfig> {
   const baseConfig = { ...DEFAULT_BEAM_CONFIG };
 
@@ -239,7 +239,7 @@ export function getBeamConfigForProject(
  */
 export function detectBeamLanguage(
   filePath: string
-): import('./types/beam-types').BeamLanguage|null {
+): import('./types/beam-types').BeamLanguage | null {
   const ext = require('path').extname(filePath).toLowerCase();
 
   const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
@@ -252,7 +252,7 @@ export function detectBeamLanguage(
       '.lfe': 'lfe',
     };
 
-  return languageMap[ext]||null;
+  return languageMap[ext] || null;
 }
 
 /**

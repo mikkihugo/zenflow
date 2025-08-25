@@ -5,13 +5,12 @@
 ```bash
 # Make executable
 chmod +x bin/pkg/claude-zen-linux
-chmod +x bin/mcp/claude-zen-mcp-linux
 
 # Run main application
 ./bin/pkg/claude-zen-linux
 
-# Run MCP server
-./bin/mcp/claude-zen-mcp-linux
+# Run with custom port
+./bin/pkg/claude-zen-linux --port 3001
 ```
 
 ## Windows:
@@ -19,7 +18,8 @@ chmod +x bin/mcp/claude-zen-mcp-linux
 # Run main application
 bin\pkg\claude-zen-win.exe
 
-# Run MCP server (need to build Windows version)
+# Run with custom port
+bin\pkg\claude-zen-win.exe --port 3001
 ```
 
 ## NCC Bundle (requires Node.js):
@@ -30,8 +30,9 @@ node bin/ncc/index.js
 ## Features:
 - ✅ Self-contained executables (no Node.js required for PKG binaries)
 - ✅ Neural WASM modules included
-- ✅ MCP server capabilities
+- ✅ GitHub Copilot authentication
 - ✅ Cross-platform support
+- ✅ Port configuration support
 - ✅ Optimized performance
 
 ## File Sizes:
@@ -39,5 +40,5 @@ node bin/ncc/index.js
 - macOS Binary: Not found
 - Windows Binary: Not found
 - NCC Bundle: 3296275 bytes
-- MCP Server Binary: Not found
+- Auth CLI: Integrated into main launcher
 - Neural WASM Module: 4827582 bytes

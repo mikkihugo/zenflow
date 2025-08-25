@@ -78,7 +78,7 @@ export class CoordinationDao<T>
   ) {
     super(adapter, logger, tableName, entitySchema);
 
-    // eventemitter3 doesn't have setMaxListeners - no limit needed
+    // eventemitter3 doesn't have setMaxListeners - no limit needed'
   }
 
   /**
@@ -92,7 +92,7 @@ export class CoordinationDao<T>
     lockTimeout = 30000,
   ): Promise<CoordinationLock> {
     this.logger.debug(
-      `Acquiring lock for resource: ${resourceId}, timeout: ${lockTimeout}ms`,
+      `Acquiring lock for resource: ${resourceId}, timeout: ${lockTimeout}ms`,`
     );
 
     const lockId = this.generateLockId(resourceId);
@@ -101,7 +101,7 @@ export class CoordinationDao<T>
     // Check if resource is already locked
     if (existingLock && existingLock.expiresAt > new Date()) {
       throw new Error(
-        `Resource ${resourceId} is already locked by ${existingLock.owner}`,
+        `Resource ${resourceId} is already locked by ${existingLock.owner}`,`
       );
     }
 
@@ -117,7 +117,7 @@ export class CoordinationDao<T>
     // Set up automatic release timer
     const timer = setTimeout(() => {
       this.releaseLock(lockId).catch((error) => {
-        this.logger.warn(`Failed to auto-release lock ${lockId}: ${error}`);
+        this.logger.warn(`Failed to auto-release lock ${lockId}: ${error}`);`
       });
     }, lockTimeout);
 
@@ -132,10 +132,10 @@ export class CoordinationDao<T>
     try {
       await this.persistLock(lockInfo);
     } catch (error) {
-      this.logger.warn(`Failed to persist lock to database: ${error}`);
+      this.logger.warn(`Failed to persist lock to database: ${error}`);`
     }
 
-    this.logger.debug(`Lock acquired: ${lockId} for resource: ${resourceId}`);
+    this.logger.debug(`Lock acquired: ${lockId} for resource: ${resourceId}`);`
     return lock;
   }
 
@@ -145,7 +145,7 @@ export class CoordinationDao<T>
    * @param lockId
    */
   async releaseLock(lockId: string): Promise<void> {
-    this.logger.debug(`Releasing lock: ${lockId}`);
+    this.logger.debug(`Releasing lock: ${lockId}`);`
 
     // Find lock by ID
     let resourceId: string|null = null;
@@ -160,7 +160,7 @@ export class CoordinationDao<T>
     }
 
     if (!(lockInfo && resourceId)) {
-      throw new Error(`Lock ${lockId} not found`);
+      throw new Error(`Lock ${lockId} not found`);`
     }
 
     // Clear timer
@@ -175,10 +175,10 @@ export class CoordinationDao<T>
     try {
       await this.removeLockFromDatabase(lockId);
     } catch (error) {
-      this.logger.warn(`Failed to remove lock from database: ${error}`);
+      this.logger.warn(`Failed to remove lock from database: ${error}`);`
     }
 
-    this.logger.debug(`Lock released: ${lockId}`);
+    this.logger.debug(`Lock released: ${lockId}`);`
   }
 
   /**
@@ -194,7 +194,7 @@ export class CoordinationDao<T>
     const subscriptionId = this.generateSubscriptionId();
 
     this.logger.debug(
-      `Creating subscription: ${subscriptionId} for pattern: ${pattern}`,
+      `Creating subscription: ${subscriptionId} for pattern: ${pattern}`,`
     );
 
     const subscription: Subscription = {
@@ -208,7 +208,7 @@ export class CoordinationDao<T>
     this.subscriptions.set(subscriptionId, subscription);
 
     // Set up event listener
-    this.eventEmitter.on('change', (change: CoordinationChange<T>) => {
+    this.eventEmitter.on('change', (change: CoordinationChange<T>) => {'
       if (this.matchesPattern(change, pattern)) {
         subscription.lastTriggered = new Date();
         subscription.triggerCount++;
@@ -217,13 +217,13 @@ export class CoordinationDao<T>
           callback(change);
         } catch (error) {
           this.logger.error(
-            `Error in subscription callback ${subscriptionId}: ${error}`,
+            `Error in subscription callback ${subscriptionId}: ${error}`,`
           );
         }
       }
     });
 
-    this.logger.debug(`Subscription created: ${subscriptionId}`);
+    this.logger.debug(`Subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -233,19 +233,19 @@ export class CoordinationDao<T>
    * @param subscriptionId
    */
   async unsubscribe(subscriptionId: string): Promise<void> {
-    this.logger.debug(`Unsubscribing: ${subscriptionId}`);
+    this.logger.debug(`Unsubscribing: ${subscriptionId}`);`
 
     const subscription = this.subscriptions.get(subscriptionId);
     if (!subscription) {
-      throw new Error(`Subscription ${subscriptionId} not found`);
+      throw new Error(`Subscription ${subscriptionId} not found`);`
     }
 
     this.subscriptions.delete(subscriptionId);
 
-    // Remove event listeners (EventEmitter doesn't provide easy way to remove specific listeners)
-    // In a production implementation, you'd want a more sophisticated event handling system
+    // Remove event listeners (EventEmitter doesn't provide easy way to remove specific listeners)'
+    // In a production implementation, you'd want a more sophisticated event handling system'
 
-    this.logger.debug(`Unsubscribed: ${subscriptionId}`);
+    this.logger.debug(`Unsubscribed: ${subscriptionId}`);`
   }
 
   /**
@@ -255,21 +255,21 @@ export class CoordinationDao<T>
    * @param event
    */
   async publish(channel: string, event: CoordinationEvent<T>): Promise<void> {
-    this.logger.debug(`Publishing event to channel: ${channel}`, { event });
+    this.logger.debug(`Publishing event to channel: ${channel}`, { event });`
 
     try {
       // Emit to local subscribers
-      this.eventEmitter.emit('event', { channel, event });
+      this.eventEmitter.emit('event', { channel, event });'
 
       // Persist event for distributed coordination
       await this.persistEvent(channel, event);
 
       this.publishedMessages++;
-      this.logger.debug(`Event published to channel: ${channel}`);
+      this.logger.debug(`Event published to channel: ${channel}`);`
     } catch (error) {
-      this.logger.error(`Failed to publish event: ${error}`);
+      this.logger.error(`Failed to publish event: ${error}`);`
       throw new Error(
-        `Publish failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Publish failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
       );
     }
   }
@@ -304,7 +304,7 @@ export class CoordinationDao<T>
         insertId: (result as any).insertId as number,
       };
     } catch (error) {
-      this.logger.error('Execute query failed:', error);
+      this.logger.error('Execute query failed:', error);'
       throw error;
     }
   }
@@ -320,7 +320,7 @@ export class CoordinationDao<T>
       const result = await this.adapter.query(sql, params);
       return result.rows;
     } catch (error) {
-      this.logger.error('Query failed:', error);
+      this.logger.error('Query failed:', error);'
       throw error;
     }
   }
@@ -329,11 +329,11 @@ export class CoordinationDao<T>
    * Override base repository methods to add coordination events.
    */
 
-  override async create(entity: Omit<T, 'id'>): Promise<T> {
+  override async create(entity: Omit<T, 'id'>): Promise<T> {'
     const created = await super.create(entity);
 
     // Emit change notification
-    await this.emitChange('create', (created as any).id, created);
+    await this.emitChange('create', (created as any).id, created);'
 
     return created;
   }
@@ -342,7 +342,7 @@ export class CoordinationDao<T>
     const updated = await super.update(id, updates);
 
     // Emit change notification
-    await this.emitChange('update', id, updated);
+    await this.emitChange('update', id, updated);'
 
     return updated;
   }
@@ -352,7 +352,7 @@ export class CoordinationDao<T>
 
     if (deleted) {
       // Emit change notification
-      await this.emitChange('delete', id);
+      await this.emitChange('delete', id);'
     }
 
     return deleted;
@@ -374,25 +374,25 @@ export class CoordinationDao<T>
   override async executeCustomQuery<R = any>(
     customQuery: CustomQuery,
   ): Promise<R> {
-    if (customQuery.type === 'coordination') {
+    if (customQuery.type === 'coordination') {'
       const query = customQuery.query as any;
 
-      if (query.operation === 'acquire_lock') {
+      if (query.operation === 'acquire_lock') {'
         const lock = await this.acquireLock(query.resourceId, query.timeout);
         return lock as R;
       }
 
-      if (query.operation === 'release_lock') {
+      if (query.operation === 'release_lock') {'
         await this.releaseLock(query.lockId);
         return { success: true } as R;
       }
 
-      if (query.operation === 'publish') {
+      if (query.operation === 'publish') {'
         await this.publish(query.channel, query.event);
         return { success: true } as R;
       }
 
-      if (query.operation === 'get_stats') {
+      if (query.operation === 'get_stats') {'
         const stats = await this.getCoordinationStats();
         return stats as R;
       }
@@ -420,7 +420,7 @@ export class CoordinationDao<T>
     lockTimeout = 30000,
   ): Promise<CoordinationLock|null> {
     this.logger.debug(
-      `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`,
+      `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`,`
     );
 
     for (let attempt = 0 as number; attempt <= maxRetries; attempt++) {
@@ -429,13 +429,13 @@ export class CoordinationDao<T>
       } catch (error) {
         if (attempt === maxRetries) {
           this.logger.warn(
-            `Failed to acquire lock after ${maxRetries} attempts: ${error}`,
+            `Failed to acquire lock after ${maxRetries} attempts: ${error}`,`
           );
           return null;
         }
 
         this.logger.debug(
-          `Lock acquisition attempt ${attempt + 1} failed, retrying in ${retryDelay}ms`,
+          `Lock acquisition attempt ${attempt + 1} failed, retrying in ${retryDelay}ms`,`
         );
         await this.sleep(retryDelay);
       }
@@ -457,7 +457,7 @@ export class CoordinationDao<T>
     lockTimeout = 30000,
   ): Promise<R> {
     this.logger.debug(
-      `Executing operation with lock for resource: ${resourceId}`,
+      `Executing operation with lock for resource: ${resourceId}`,`
     );
 
     const lock = await this.acquireLock(resourceId, lockTimeout);
@@ -476,7 +476,7 @@ export class CoordinationDao<T>
    * @param event
    */
   async broadcast(event: CoordinationEvent<T>): Promise<void> {
-    const broadcastChannel ='broadcast';
+    const broadcastChannel ='broadcast;
     await this.publish(broadcastChannel, event);
   }
 
@@ -543,7 +543,7 @@ export class CoordinationDao<T>
       },
     };
 
-    this.eventEmitter.emit('change', change);
+    this.eventEmitter.emit('change', change);'
   }
 
   private matchesPattern(
@@ -551,31 +551,31 @@ export class CoordinationDao<T>
     pattern: string,
   ): boolean {
     // Simple pattern matching - can be enhanced with more sophisticated matching
-    if (pattern === '*') {
+    if (pattern === '*') {'
       return true;
     }
 
-    const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+    const regex = new RegExp(pattern.replace(/\*/g, '.*'));'
     return (
       regex.test(change.type)||regex.test(change.entityId.toString())||regex.test(this.tableName)
     );
   }
 
   private generateLockId(resourceId: string): string {
-    return `lock_${resourceId}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    return `lock_${resourceId}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateSubscriptionId(): string {
-    return `sub_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    return `sub_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateOwnerIdentifier(): string {
-    return `process_${process.pid}_${Date.now()}`;
+    return `process_${process.pid}_${Date.now()}`;`
   }
 
   private async persistLock(lock: LockInfo): Promise<void> {
     // In a real implementation, this would persist to the database
-    // For now, we'll use a simple table structure
+    // For now, we'll use a simple table structure'
     try {
       const lockData = {
         lock_id: lock.id,
@@ -587,13 +587,13 @@ export class CoordinationDao<T>
       };
 
       await this.adapter.execute(
-        `INSERT OR REPLACE INTO coordination_locks (lock_id, resource_id, owner, acquired_at, expires_at, created_at) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT OR REPLACE INTO coordination_locks (lock_id, resource_id, owner, acquired_at, expires_at, created_at) `
+         VALUES (?, ?, ?, ?, ?, ?)`,`
         Object.values(lockData),
       );
     } catch (error) {
       // Table might not exist, which is fine for this implementation
-      this.logger.debug(`Could not persist lock to database: ${error}`);
+      this.logger.debug(`Could not persist lock to database: ${error}`);`
     }
   }
 
@@ -605,7 +605,7 @@ export class CoordinationDao<T>
       );
     } catch (error) {
       // Table might not exist, which is fine for this implementation
-      this.logger.debug(`Could not remove lock from database: ${error}`);
+      this.logger.debug(`Could not remove lock from database: ${error}`);`
     }
   }
 
@@ -624,13 +624,13 @@ export class CoordinationDao<T>
       };
 
       await this.adapter.execute(
-        `INSERT INTO coordination_events (channel, event_type, event_data, source, timestamp, metadata) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO coordination_events (channel, event_type, event_data, source, timestamp, metadata) `
+         VALUES (?, ?, ?, ?, ?, ?)`,`
         Object.values(eventData),
       );
     } catch (error) {
       // Table might not exist, which is fine for this implementation
-      this.logger.debug(`Could not persist event to database: ${error}`);
+      this.logger.debug(`Could not persist event to database: ${error}`);`
     }
   }
 
@@ -642,7 +642,7 @@ export class CoordinationDao<T>
    * Cleanup method to be called on shutdown.
    */
   async shutdown(): Promise<void> {
-    this.logger.debug('Shutting down coordination repository');
+    this.logger.debug('Shutting down coordination repository');'
 
     // Release all active locks
     const activeLocks = Array.from(this.locks.keys())();
@@ -652,7 +652,7 @@ export class CoordinationDao<T>
         try {
           await this.releaseLock(lock.id);
         } catch (error) {
-          this.logger.warn(`Failed to release lock during shutdown: ${error}`);
+          this.logger.warn(`Failed to release lock during shutdown: ${error}`);`
         }
       }
     }
@@ -663,7 +663,7 @@ export class CoordinationDao<T>
     // Remove all event listeners
     this.eventEmitter.removeAllListeners();
 
-    this.logger.debug('Coordination repository shutdown completed');
+    this.logger.debug('Coordination repository shutdown completed');'
   }
 
   // DataAccessObject implementation
@@ -675,7 +675,7 @@ export class CoordinationDao<T>
     return this.adapter.transaction(async () => {
       const results: unknown[] = [];
       for (const operation of operations) {
-        if (operation.type === 'create' && operation.data) {
+        if (operation.type === 'create' && operation.data) {'
           results.push(await this.create((operation as any).data));
         }
         // Add other operation types as needed

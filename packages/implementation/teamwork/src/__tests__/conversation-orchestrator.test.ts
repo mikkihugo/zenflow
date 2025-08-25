@@ -18,7 +18,7 @@ import type {
   AgentId,
 } from '../types';
 
-describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
+describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {'
   let orchestrator: ConversationOrchestratorImpl;
   let mockMemory: jest.Mocked<ConversationMemory>;
 
@@ -41,8 +41,8 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
     orchestrator = new ConversationOrchestratorImpl(mockMemory);
   });
 
-  describe('🎯 Create Conversation', () => {
-    it('should create conversation and store in memory', async () => {
+  describe('🎯 Create Conversation', () => {'
+    it('should create conversation and store in memory', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test Code Review',
@@ -72,16 +72,16 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
           title: config.title,
-          status: 'active', // Changed from 'initializing' since workflow starts immediately
+          status: 'active', // Changed from 'initializing' since workflow starts immediately'
         })
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         session.id,
-        expect.objectContaining({ status: 'active' })
+        expect.objectContaining({ status: 'active' })'
       );
     });
 
-    it('should reject unknown conversation patterns', async () => {
+    it('should reject unknown conversation patterns', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test',
@@ -98,14 +98,14 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
 
       // Act & Assert
       await expect(orchestrator.createConversation(config)).rejects.toThrow(
-        'Unknown conversation pattern: unknown-pattern'
+        'Unknown conversation pattern: unknown-pattern''
       );
       expect(mockMemory.storeConversation).not.toHaveBeenCalled();
     });
   });
 
-  describe('🤝 Join Conversation', () => {
-    it('should add agent to conversation and update memory', async () => {
+  describe('🤝 Join Conversation', () => {'
+    it('should add agent to conversation and update memory', async () => {'
       // Arrange
       const conversationId = 'conv-123';
       const newAgent: AgentId = {
@@ -161,7 +161,7 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       );
     });
 
-    it('should reject joining non-existent conversation', async () => {
+    it('should reject joining non-existent conversation', async () => {'
       // Arrange
       const conversationId = 'non-existent';
       const newAgent: AgentId = {
@@ -174,13 +174,13 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       // Act & Assert
       await expect(
         orchestrator.joinConversation(conversationId, newAgent)
-      ).rejects.toThrow('Conversation non-existent not found');
+      ).rejects.toThrow('Conversation non-existent not found');'
       expect(mockMemory.updateConversation).not.toHaveBeenCalled();
     });
   });
 
-  describe('💬 Send Message', () => {
-    it('should validate sender and store message', async () => {
+  describe('💬 Send Message', () => {'
+    it('should validate sender and store message', async () => {'
       // Arrange
       const conversationId = 'conv-123';
       const existingSession: ConversationSession = {
@@ -232,7 +232,7 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       // Assert
       expect(existingSession.messages).toHaveLength(1);
       expect(existingSession.metrics.messageCount).toBe(1);
-      expect(existingSession.metrics.participationByAgent['agent-1']).toBe(1);
+      expect(existingSession.metrics.participationByAgent['agent-1']).toBe(1);'
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         conversationId,
         expect.objectContaining({
@@ -244,7 +244,7 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       );
     });
 
-    it('should reject messages from non-participants', async () => {
+    it('should reject messages from non-participants', async () => {'
       // Arrange
       const conversationId = 'conv-123';
       const nonParticipant: AgentId = {
@@ -298,14 +298,14 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
 
       // Act & Assert
       await expect(orchestrator.sendMessage(message)).rejects.toThrow(
-        'Agent outsider is not a participant in this conversation'
+        'Agent outsider is not a participant in this conversation''
       );
       expect(mockMemory.updateConversation).not.toHaveBeenCalled();
     });
   });
 
-  describe('🔚 Terminate Conversation', () => {
-    it('should finalize conversation and generate outcomes', async () => {
+  describe('🔚 Terminate Conversation', () => {'
+    it('should finalize conversation and generate outcomes', async () => {'
       // Arrange
       const conversationId = 'conv-123';
       const existingSession: ConversationSession = {
@@ -354,7 +354,7 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       // Act
       const outcomes = await orchestrator.terminateConversation(
         conversationId,
-        'Review complete'
+        'Review complete''
       );
 
       // Assert
@@ -363,7 +363,7 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
         type: 'decision',
         content: { text: 'Code looks good' },
       });
-      expect(existingSession.status).toBe('completed');
+      expect(existingSession.status).toBe('completed');'
       expect(existingSession.endTime).toBeDefined();
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         conversationId,
@@ -378,8 +378,8 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
     });
   });
 
-  describe('🔍 Get Conversation History', () => {
-    it('should retrieve messages from active session', async () => {
+  describe('🔍 Get Conversation History', () => {'
+    it('should retrieve messages from active session', async () => {'
       // Arrange
       const conversationId = 'conv-123';
       const messages: ConversationMessage[] = [
@@ -434,7 +434,7 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       expect(mockMemory.getConversation).not.toHaveBeenCalled(); // Should use active session
     });
 
-    it('should fallback to memory for non-active conversations', async () => {
+    it('should fallback to memory for non-active conversations', async () => {'
       // Arrange
       const conversationId = 'conv-archived';
       const messages: ConversationMessage[] = [
@@ -491,8 +491,8 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
     });
   });
 
-  describe('🚨 London School Patterns - Interaction Testing', () => {
-    it('should demonstrate orchestrator interactions with memory', async () => {
+  describe('🚨 London School Patterns - Interaction Testing', () => {'
+    it('should demonstrate orchestrator interactions with memory', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Integration Test',
@@ -517,12 +517,12 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
           title: config.title,
-          status: 'active', // Changed from 'initializing' since workflow starts immediately
+          status: 'active', // Changed from 'initializing' since workflow starts immediately'
         })
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         session.id,
-        expect.objectContaining({ status: 'active' })
+        expect.objectContaining({ status: 'active' })'
       );
 
       // Verify orchestrator state

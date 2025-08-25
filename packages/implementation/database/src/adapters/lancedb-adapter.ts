@@ -16,14 +16,14 @@ import type {
   HealthStatus,
 } from '../interfaces.js';
 
-const logger = getLogger('lancedb-adapter');
+const logger = getLogger('lancedb-adapter');'
 
 export interface LanceDBConfig {
-  type: 'lancedb';
+  type: 'lancedb;
   database: string;
   options?: {
     vectorSize?: number;
-    metricType?: 'cosine|l2|dot';
+    metricType?: 'cosine|l2|dot;
     createIfNotExists?: boolean;
     uri?: string;
   };
@@ -75,9 +75,9 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
       this.connected = true;
 
-      logger.info(`✅ Connected to real LanceDB: ${uri}`);
+      logger.info(`✅ Connected to real LanceDB: ${uri}`);`
     } catch (error) {
-      logger.error(`❌ Failed to connect to LanceDB: ${error}`);
+      logger.error(`❌ Failed to connect to LanceDB: ${error}`);`
       throw error;
     }
   }
@@ -88,7 +88,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       this.connection = null;
       this.tables.clear();
       this.connected = false;
-      logger.info('✅ Disconnected from LanceDB');
+      logger.info('✅ Disconnected from LanceDB');'
     }
   }
 
@@ -97,7 +97,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       await this.connect();
     }
     if (!this.connection) {
-      throw new Error('Database not connected');
+      throw new Error('Database not connected');'
     }
 
     try {
@@ -108,9 +108,9 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
       this.tables.set(name, table);
 
-      logger.info(`✅ Created LanceDB table: ${name}`);
+      logger.info(`✅ Created LanceDB table: ${name}`);`
     } catch (error) {
-      logger.error(`❌ Failed to create table ${name}:`, error);
+      logger.error(`❌ Failed to create table ${name}:`, error);`
       throw error;
     }
   }
@@ -120,7 +120,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       await this.connect();
     }
     if (!this.connection) {
-      throw new Error('Database not connected');
+      throw new Error('Database not connected');'
     }
 
     // Return cached table if available
@@ -134,8 +134,8 @@ export class LanceDBAdapter implements DatabaseAdapter {
       this.tables.set(name, table);
       return table;
     } catch (error) {
-      // Table doesn't exist, create default vector documents table
-      logger.warn(`Table ${name} not found, creating with default schema`, { error });
+      // Table doesn't exist, create default vector documents table'
+      logger.warn(`Table ${name} not found, creating with default schema`, { error });`
 
       const defaultSchema: VectorDocument[] = [
         {
@@ -169,9 +169,9 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
       await table.add(documentsWithTimestamps);
 
-      logger.debug(`✅ Inserted ${documents.length} vectors into ${tableName}`);
+      logger.debug(`✅ Inserted ${documents.length} vectors into ${tableName}`);`
     } catch (error) {
-      logger.error(`❌ Failed to insert vectors into ${tableName}:`, error);
+      logger.error(`❌ Failed to insert vectors into ${tableName}:`, error);`
       throw error;
     }
   }
@@ -193,16 +193,16 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
       // Apply distance threshold
       if (options.threshold) {
-        query = query.where(`_distance < ${options.threshold}`);
+        query = query.where(`_distance < ${options.threshold}`);`
       }
 
       // Apply metadata filters
       if (options.filter) {
         Object.entries(options.filter).forEach(([key, value]) => {
-          if (typeof value ==='string') {
-            query = query.where(`${key} = '${value}'`);
+          if (typeof value ==='string') {'
+            query = query.where(`${key} = '${value}'`);`
           } else {
-            query = query.where(`${key} = ${value}`);
+            query = query.where(`${key} = ${value}`);`
           }
         });
       }
@@ -210,12 +210,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
       const results = await query.toArray();
 
       logger.debug(
-        `✅ Found ${results.length} similar vectors in ${tableName}`,
+        `✅ Found ${results.length} similar vectors in ${tableName}`,`
       );
 
       return results;
     } catch (error) {
-      logger.error(`❌ Vector search failed in ${tableName}:`, error);
+      logger.error(`❌ Vector search failed in ${tableName}:`, error);`
       throw error;
     }
   }
@@ -228,16 +228,16 @@ export class LanceDBAdapter implements DatabaseAdapter {
     const table = await this.getTable(tableName);
 
     try {
-      // LanceDB doesn't have direct update - need to delete and re-insert
+      // LanceDB doesn't have direct update - need to delete and re-insert'
       // This is a simplified implementation
       const existing = await table
         .search([])
-        .where(`id = '${id}'`)
+        .where(`id = '${id}'`)`
         .limit(1)
         .toArray();
 
       if (existing.length === 0) {
-        throw new Error(`Vector with id ${id} not found`);
+        throw new Error(`Vector with id ${id} not found`);`
       }
 
       const updated = {
@@ -247,14 +247,14 @@ export class LanceDBAdapter implements DatabaseAdapter {
       };
 
       // Delete old record
-      await table.delete(`id = '${id}'`);
+      await table.delete(`id = '${id}'`);`
 
       // Insert updated record
       await table.add([updated]);
 
-      logger.debug(`✅ Updated vector ${id} in ${tableName}`);
+      logger.debug(`✅ Updated vector ${id} in ${tableName}`);`
     } catch (error) {
-      logger.error(`❌ Failed to update vector ${id} in ${tableName}:`, error);
+      logger.error(`❌ Failed to update vector ${id} in ${tableName}:`, error);`
       throw error;
     }
   }
@@ -263,12 +263,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
     const table = await this.getTable(tableName);
 
     try {
-      await table.delete(`id = '${id}'`);
+      await table.delete(`id = '${id}'`);`
 
-      logger.debug(`✅ Deleted vector ${id} from ${tableName}`);
+      logger.debug(`✅ Deleted vector ${id} from ${tableName}`);`
     } catch (error) {
       logger.error(
-        `❌ Failed to delete vector ${id} from ${tableName}:`,
+        `❌ Failed to delete vector ${id} from ${tableName}:`,`
         error,
       );
       throw error;
@@ -282,7 +282,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       const count = await table.countRows();
       return count;
     } catch (error) {
-      logger.error(`❌ Failed to count vectors in ${tableName}:`, error);
+      logger.error(`❌ Failed to count vectors in ${tableName}:`, error);`
       return 0;
     }
   }
@@ -292,14 +292,14 @@ export class LanceDBAdapter implements DatabaseAdapter {
       await this.connect();
     }
     if (!this.connection) {
-      throw new Error('Database not connected');
+      throw new Error('Database not connected');'
     }
 
     try {
       const tableNames = await this.connection.tableNames();
       return tableNames;
     } catch (error) {
-      logger.error('❌ Failed to list tables:', error);
+      logger.error('❌ Failed to list tables:', error);'
       return [];
     }
   }
@@ -313,13 +313,13 @@ export class LanceDBAdapter implements DatabaseAdapter {
     sql: string,
     params?: QueryParams,
   ): Promise<QueryResult<T>> {
-    // LanceDB doesn't use SQL, so we interpret common queries
-    logger.debug('Executing query', { sql, params });
+    // LanceDB doesn't use SQL, so we interpret common queries'
+    logger.debug('Executing query', { sql, params });'
     try {
-      if (sql.includes('SELECT') && sql.includes('FROM')) {
+      if (sql.includes('SELECT') && sql.includes('FROM')) {'
         // Parse table name from SQL (simplified)
         const tableMatch = sql.match(/FROM\s+(\w+)/i);
-        const tableName = tableMatch ? tableMatch[1] : 'documents';
+        const tableName = tableMatch ? tableMatch[1] : 'documents;
 
         const table = await this.getTable(tableName);
         const results = await table.search([]).limit(100).toArray();
@@ -337,16 +337,16 @@ export class LanceDBAdapter implements DatabaseAdapter {
         fields: [],
       };
     } catch (error) {
-      logger.error(`Query failed: ${error}`);
+      logger.error(`Query failed: ${error}`);`
       throw error;
     }
   }
 
   async execute(sql: string, params: unknown[] = []): Promise<unknown> {
-    // LanceDB doesn't use SQL, so we interpret common operations
-    logger.debug('Executing command', { sql, params });
+    // LanceDB doesn't use SQL, so we interpret common operations'
+    logger.debug('Executing command', { sql, params });'
     try {
-      if (sql.includes('INSERT INTO')) {
+      if (sql.includes('INSERT INTO')) {'
         // Mock insert operation
         return {
           affectedRows: 1,
@@ -361,13 +361,13 @@ export class LanceDBAdapter implements DatabaseAdapter {
         executionTime: 1,
       };
     } catch (error) {
-      logger.error(`Execute failed: ${error}`);
+      logger.error(`Execute failed: ${error}`);`
       throw error;
     }
   }
 
   async transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T> {
-    // LanceDB doesn't support transactions in the traditional sense
+    // LanceDB doesn't support transactions in the traditional sense'
     // Execute the function directly
     const tx = {
       query: this.query.bind(this),
@@ -377,7 +377,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
     try {
       return await fn(tx);
     } catch (error) {
-      logger.error('Transaction failed:', error);
+      logger.error('Transaction failed:', error);'
       throw error;
     }
   }
@@ -426,7 +426,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
         views: [],
       };
     } catch (error) {
-      logger.error('Failed to get schema:', error);
+      logger.error('Failed to get schema:', error);'
       return { tables: [], views: [] };
     }
   }
@@ -464,7 +464,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
         })),
       };
     } catch (error) {
-      logger.error(`❌ Vector search failed: ${error}`);
+      logger.error(`❌ Vector search failed: ${error}`);`
       return {
         rows: [],
         rowCount: 0,
@@ -477,7 +477,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   // LanceDB specific utility methods
   async createEmbeddingIndex(
     tableName: string,
-    columnName ='vector'): Promise<void> {
+    columnName ='vector'): Promise<void> {'
     const table = await this.getTable(tableName);
 
     try {
@@ -486,9 +486,9 @@ export class LanceDBAdapter implements DatabaseAdapter {
         // Note: metric configuration may vary by LanceDB version
       } as any);
 
-      logger.info(`✅ Created embedding index on ${tableName}.${columnName}`);
+      logger.info(`✅ Created embedding index on ${tableName}.${columnName}`);`
     } catch (error) {
-      logger.error('❌ Failed to create embedding index:', error);
+      logger.error('❌ Failed to create embedding index:', error);'
       throw error;
     }
   }
@@ -505,12 +505,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
         row_count: count,
         schema: schema,
         vector_columns: schema.fields.filter((field: unknown) => {
-          const fieldName = (field as { name?: string })?.name||'';
-          return fieldName === 'vector'||fieldName.includes('embedding');
+          const fieldName = (field as { name?: string })?.name||';
+          return fieldName === 'vector'||fieldName.includes('embedding');'
         }),
       };
     } catch (error) {
-      logger.error(`❌ Failed to get table info for ${tableName}:`, error);
+      logger.error(`❌ Failed to get table info for ${tableName}:`, error);`
       throw error;
     }
   }

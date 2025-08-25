@@ -15,14 +15,14 @@
  *
  * ## Event Types Handled
  *
- * - `workflow:execution` - Workflow execution and lifecycle events
- * - `workflow:task` - Individual task management and execution events
- * - `workflow:orchestration` - Process coordination and scheduling events
- * - `workflow:performance` - Performance metrics and monitoring events
- * - `workflow:dependency` - Dependency resolution and management events
+ * - `workflow:execution` - Workflow execution and lifecycle events`
+ * - `workflow:task` - Individual task management and execution events`
+ * - `workflow:orchestration` - Process coordination and scheduling events`
+ * - `workflow:performance` - Performance metrics and monitoring events`
+ * - `workflow:dependency` - Dependency resolution and management events`
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const factory = new WorkflowEventManagerFactory(logger, config);
  * const manager = await factory.create({
  *   name: 'main-workflow',
@@ -36,7 +36,7 @@
  *
  * // Subscribe to execution events
  * manager.subscribeExecutionEvents((event) => {
- *   console.log(`Workflow ${event.workflowId}: ${event.operation} (${event.data.status})`);
+ *   console.log(`Workflow ${event.workflowId}: ${event.operation} (${event.data.status})`);`
  * });
  *
  * // Emit workflow event
@@ -54,7 +54,7 @@
  *     estimatedDuration: 300000
  *   }
  * });
- * ```
+ * ````
  *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
@@ -99,7 +99,7 @@ class WorkflowEventManagerImpl
   implements EventManager
 {
   /** Override type property to be workflow type */
-  public readonly type = 'workflow' as const;
+  public readonly type = 'workflow' as const;'
 
   private workflowMetrics = {
     totalWorkflows: 0,
@@ -176,11 +176,11 @@ class WorkflowEventManagerImpl
       await this.routeWorkflowEvent(enrichedEvent);
 
       this.logger.debug(
-        `Workflow event emitted: ${event.operation} for ${event.workflowId}`
+        `Workflow event emitted: ${event.operation} for ${event.workflowId}``
       );
     } catch (error) {
       this.workflowMetrics.failedWorkflows++;
-      this.logger.error('Failed to emit workflow event:', error);
+      this.logger.error('Failed to emit workflow event:', error);'
       throw error;
     }
   }
@@ -193,7 +193,7 @@ class WorkflowEventManagerImpl
     this.subscriptions.execution.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Execution event subscription created: ${subscriptionId}`
+      `Execution event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -205,7 +205,7 @@ class WorkflowEventManagerImpl
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.task.set(subscriptionId, listener);
 
-    this.logger.debug(`Task event subscription created: ${subscriptionId}`);
+    this.logger.debug(`Task event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -219,7 +219,7 @@ class WorkflowEventManagerImpl
     this.subscriptions.orchestration.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Orchestration event subscription created: ${subscriptionId}`
+      `Orchestration event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -232,7 +232,7 @@ class WorkflowEventManagerImpl
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}`
+      `Performance event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -245,7 +245,7 @@ class WorkflowEventManagerImpl
     this.subscriptions.dependency.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Dependency event subscription created: ${subscriptionId}`
+      `Dependency event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -353,7 +353,7 @@ class WorkflowEventManagerImpl
       workflowMetrics.performance.averageExecutionTime > 60000; // 1 minute
 
     const isHealthy =
-      baseStatus.status === 'healthy' &&
+      baseStatus.status === 'healthy' &&'
       !highFailureRate &&
       !manyActiveWorkflows &&
       !lowSuccessRate &&
@@ -380,7 +380,7 @@ class WorkflowEventManagerImpl
    */
 
   private initializeWorkflowHandlers(): void {
-    this.logger.debug('Initializing workflow event handlers');
+    this.logger.debug('Initializing workflow event handlers');'
 
     // Set up event type routing
     this.subscribe(
@@ -398,41 +398,41 @@ class WorkflowEventManagerImpl
   private async handleWorkflowEvent(event: WorkflowEvent): Promise<void> {
     try {
       // Route based on operation type
-      const operationType = event.type.split(':')[1];
+      const operationType = event.type.split(':')[1];'
 
       switch (operationType) {
-        case 'execution':
+        case 'execution':'
           await this.notifyWorkflowSubscribers(
             this.subscriptions.execution,
             event
           );
           break;
-        case 'task':
+        case 'task':'
           await this.notifyWorkflowSubscribers(this.subscriptions.task, event);
           break;
-        case 'orchestration':
+        case 'orchestration':'
           await this.notifyWorkflowSubscribers(
             this.subscriptions.orchestration,
             event
           );
           break;
-        case 'performance':
+        case 'performance':'
           await this.notifyWorkflowSubscribers(
             this.subscriptions.performance,
             event
           );
           break;
-        case 'dependency':
+        case 'dependency':'
           await this.notifyWorkflowSubscribers(
             this.subscriptions.dependency,
             event
           );
           break;
         default:
-          this.logger.warn(`Unknown workflow operation type: ${operationType}`);
+          this.logger.warn(`Unknown workflow operation type: ${operationType}`);`
       }
     } catch (error) {
-      this.logger.error('Workflow event handling failed:', error);
+      this.logger.error('Workflow event handling failed:', error);'
       throw error;
     }
   }
@@ -445,9 +445,9 @@ class WorkflowEventManagerImpl
 
     // Handle special workflow operations
     switch (event.operation) {
-      case 'start':
+      case 'start':'
         this.workflowMetrics.activeWorkflows++;
-        this.logger.info(`Workflow started: ${event.workflowId}`);
+        this.logger.info(`Workflow started: ${event.workflowId}`);`
         if (event.workflowId) {
           this.activeWorkflows.set(event.workflowId, {
             id: event.workflowId,
@@ -459,13 +459,13 @@ class WorkflowEventManagerImpl
           });
         }
         break;
-      case'complete':
+      case'complete':'
         this.workflowMetrics.activeWorkflows = Math.max(
           0,
           this.workflowMetrics.activeWorkflows - 1
         );
         this.workflowMetrics.completedWorkflows++;
-        this.logger.info(`Workflow completed: ${event.workflowId}`);
+        this.logger.info(`Workflow completed: ${event.workflowId}`);`
         if (event.workflowId && this.activeWorkflows.has(event.workflowId)) {
           const workflow = this.activeWorkflows.get(event.workflowId)!;
           const duration = Date.now() - workflow.startTime;
@@ -476,32 +476,32 @@ class WorkflowEventManagerImpl
           this.activeWorkflows.delete(event.workflowId);
         }
         break;
-      case 'fail':
+      case 'fail':'
         this.workflowMetrics.activeWorkflows = Math.max(
           0,
           this.workflowMetrics.activeWorkflows - 1
         );
         this.workflowMetrics.failedWorkflows++;
         this.logger.error(
-          `Workflow failed: ${event.workflowId} - ${event.details?.error}`
+          `Workflow failed: ${event.workflowId} - ${event.details?.error}``
         );
         if (event.workflowId) {
           this.activeWorkflows.delete(event.workflowId);
         }
         break;
-      case 'retry':
+      case 'retry':'
         this.workflowMetrics.retryCount++;
         this.logger.warn(
-          `Workflow retry: ${event.workflowId} (attempt ${event.details?.attempt})`
+          `Workflow retry: ${event.workflowId} (attempt ${event.details?.attempt})``
         );
         break;
-      case 'task-complete':
+      case 'task-complete':'
         this.workflowMetrics.completedTasks++;
         if (event.workflowId && this.activeWorkflows.has(event.workflowId)) {
           this.activeWorkflows.get(event.workflowId)!.completedTasks++;
         }
         break;
-      case 'task-fail':
+      case 'task-fail':'
         this.workflowMetrics.failedTasks++;
         if (event.workflowId && this.activeWorkflows.has(event.workflowId)) {
           this.activeWorkflows.get(event.workflowId)!.failedTasks++;
@@ -518,36 +518,36 @@ class WorkflowEventManagerImpl
           );
         }
         break;
-      case 'dependency-resolved':
+      case 'dependency-resolved':'
         this.workflowMetrics.dependencyResolutions++;
         this.logger.debug(
-          `Dependency resolved: ${event.details?.dependency} for ${event.workflowId}`
+          `Dependency resolved: ${event.details?.dependency} for ${event.workflowId}``
         );
         break;
-      case 'orchestrate':
+      case 'orchestrate':'
         this.workflowMetrics.orchestrationEvents++;
         this.logger.debug(
-          `Orchestration event: ${event.details?.action} for ${event.workflowId}`
+          `Orchestration event: ${event.details?.action} for ${event.workflowId}``
         );
         break;
     }
   }
 
   private updateWorkflowMetrics(event: WorkflowEvent): void {
-    const operationType = event.type.split(':')[1];
+    const operationType = event.type.split(':')[1];'
 
     switch (operationType) {
-      case 'execution':
-        if (event.operation === 'start') {
+      case 'execution':'
+        if (event.operation === 'start') {'
           this.workflowMetrics.totalWorkflows++;
         }
         break;
-      case 'task':
-        if (event.operation === 'create'||event.operation ==='start') {
+      case 'task':'
+        if (event.operation === 'create'||event.operation ==='start') {'
           this.workflowMetrics.totalTasks++;
         }
         break;
-      case 'orchestration':
+      case 'orchestration':'
         this.workflowMetrics.orchestrationEvents++;
         break;
     }
@@ -559,16 +559,16 @@ class WorkflowEventManagerImpl
     const workflow = this.activeWorkflows.get(event.workflowId);
     if (workflow) {
       switch (event.operation) {
-        case 'pause':
+        case 'pause':'
           workflow.status = 'paused';
           break;
-        case 'resume':
+        case 'resume':'
           workflow.status = 'running';
           break;
-        case 'task-complete':
+        case 'task-complete':'
           workflow.completedTasks++;
           break;
-        case 'task-fail':
+        case 'task-fail':'
           workflow.failedTasks++;
           break;
       }
@@ -605,7 +605,7 @@ class WorkflowEventManagerImpl
         try {
           await listener(event);
         } catch (error) {
-          this.logger.error('Workflow event listener failed:', error);
+          this.logger.error('Workflow event listener failed:', error);'
         }
       }
     );
@@ -614,7 +614,7 @@ class WorkflowEventManagerImpl
   }
 
   protected generateSubscriptionId(): string {
-    return `workflow-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `workflow-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 }
 
@@ -633,7 +633,7 @@ class WorkflowEventManagerImpl
  * - **Dependency Management**: Complex workflow dependency resolution
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const factory = new WorkflowEventManagerFactory(logger, config);
  *
  * const orchestrationManager = await factory.create({
@@ -646,7 +646,7 @@ class WorkflowEventManagerImpl
  *     timeout: 60000
  *   }
  * });
- * ```
+ * ````
  */
 export class WorkflowEventManagerFactory
   implements EventManagerFactory<EventManagerConfig>
@@ -655,14 +655,14 @@ export class WorkflowEventManagerFactory
     private logger: Logger,
     private config: Config
   ) {
-    this.logger.debug('WorkflowEventManagerFactory initialized');
+    this.logger.debug('WorkflowEventManagerFactory initialized');'
   }
 
   /**
    * Create a new WorkflowEventManager instance.
    */
   async create(config: EventManagerConfig): Promise<EventManager> {
-    this.logger.info(`Creating workflow event manager: ${config.name}`);
+    this.logger.info(`Creating workflow event manager: ${config.name}`);`
 
     this.validateConfig(config);
     const optimizedConfig = this.applyWorkflowDefaults(config);
@@ -673,18 +673,18 @@ export class WorkflowEventManagerFactory
     this.managers.set(config.name, manager);
 
     this.logger.info(
-      `Workflow event manager created successfully: ${config.name}`
+      `Workflow event manager created successfully: ${config.name}``
     );
     return manager;
   }
 
   private validateConfig(config: EventManagerConfig): void {
     if (!config.name) {
-      throw new Error('Workflow event manager name is required');
+      throw new Error('Workflow event manager name is required');'
     }
 
-    if (config.type !== 'workflow') {
-      throw new Error('Manager type must be "workflow"');
+    if (config.type !== 'workflow') {'
+      throw new Error('Manager type must be "workflow"');'
     }
 
     if (
@@ -692,7 +692,7 @@ export class WorkflowEventManagerFactory
       (config.processing as any).timeout < 5000
     ) {
       this.logger.warn(
-        'Workflow processing timeout < 5000ms may be too short for complex workflows');
+        'Workflow processing timeout < 5000ms may be too short for complex workflows');'
     }
   }
 
@@ -705,7 +705,7 @@ export class WorkflowEventManagerFactory
       processing: {
         batchSize: 25, // Moderate batch size for workflows
         ...config.processing,
-        strategy:'queued', // Workflows need reliable processing (override)
+        strategy:'queued', // Workflows need reliable processing (override)'
       } as any, // Type assertion for workflow-specific properties
       monitoring: {
         enabled: true,
@@ -726,7 +726,7 @@ export class WorkflowEventManagerFactory
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Workflow event manager monitoring started: ${config.name}`
+        `Workflow event manager monitoring started: ${config.name}``
       );
     }
 
@@ -735,15 +735,15 @@ export class WorkflowEventManagerFactory
         async () => {
           try {
             const status = await manager.healthCheck();
-            if (status.status !== 'healthy') {
+            if (status.status !== 'healthy') {'
               this.logger.warn(
-                `Workflow manager health degraded: ${config.name}`,
+                `Workflow manager health degraded: ${config.name}`,`
                 status.metadata
               );
             }
           } catch (error) {
             this.logger.error(
-              `Workflow manager health check failed: ${config.name}`,
+              `Workflow manager health check failed: ${config.name}`,`
               error
             );
           }
@@ -812,7 +812,7 @@ export class WorkflowEventManagerFactory
         const metrics = await manager.getMetrics();
         results.set(name, metrics);
       } catch (error) {
-        this.logger.error(`Failed to get metrics for manager ${name}:`, error);
+        this.logger.error(`Failed to get metrics for manager ${name}:`, error);`
       }
     }
     return results;

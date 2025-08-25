@@ -19,7 +19,7 @@
  * - Learns from usage patterns to optimize decisions
  *
  * ENHANCEMENT: 434 → 600+ lines with comprehensive enterprise features
- * PATTERN: Matches memory package's comprehensive foundation integration
+ * PATTERN: Matches memory package's comprehensive foundation integration'
  */
 import { ContextError } from '@claude-zen/foundation';
 import { Result } from '@claude-zen/foundation';
@@ -69,7 +69,7 @@ export declare class FoundationBrainCoordinator {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low|medium|high';
+    priority?: 'low' | 'medium' | 'high';
     timeLimit?: number;
     qualityRequirement?: number;
   }): Promise<{
@@ -90,17 +90,17 @@ export declare class FoundationBrainCoordinator {
   /**
    * Predict task complexity without processing
    */
-  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity;
+  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity;'
   /**
    * Get neural orchestration metrics
    */
-  getOrchestrationMetrics(): import('./neural-orchestrator').OrchestrationMetrics;
+  getOrchestrationMetrics(): import('./neural-orchestrator').OrchestrationMetrics;'
   /**
    * Convenience method for simple neural predictions
    */
   predict(
     input: number[],
-    type?: 'prediction|classification''
+    type?: 'prediction|classification'''
   ): Promise<number[]>;
   /**
    * Convenience method for complex forecasting

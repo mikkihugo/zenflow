@@ -102,14 +102,14 @@ export interface PlanningHorizon {
   readonly currentPI: number;
   readonly planningWindow: number; // number of PIs to plan
   readonly lookaheadPeriod: number; // number of PIs for lookahead
-  readonly planningCadence: 'quarterly|continuous';
+  readonly planningCadence: 'quarterly|continuous;
 }
 
 /**
  * Coordination strategy
  */
 export interface CoordinationStrategy {
-  readonly approach: 'centralized|federated|hybrid';
+  readonly approach: 'centralized' | 'federated' | 'hybrid';
   readonly coordinationEvents: CoordinationEvent[];
   readonly communicationProtocols: CommunicationProtocol[];
   readonly decisionMaking: DecisionMakingProcess;
@@ -198,17 +198,17 @@ export interface CommunicationProtocol {
  * Communication channel
  */
 export interface CommunicationChannel {
-  readonly channelType: 'email|slack|dashboard|meeting|wiki';
+  readonly channelType: 'email|slack|dashboard|meeting|wiki;
   readonly address: string;
   readonly purpose: string;
-  readonly urgency: 'high|medium|low';
+  readonly urgency: 'high' | 'medium' | 'low';
 }
 
 /**
  * Decision making process
  */
 export interface DecisionMakingProcess {
-  readonly framework:|consensus|consultation|delegation|'autocratic';
+  readonly framework:|consensus|consultation|delegation|'autocratic;
   readonly escalationPath: EscalationLevel[];
   readonly timeboxes: Record<string, number>; // minutes
   readonly votingMechanism?: VotingMechanism;
@@ -228,7 +228,7 @@ export interface EscalationLevel {
  * Voting mechanism
  */
 export interface VotingMechanism {
-  readonly type: 'majority|consensus|weighted|veto';
+  readonly type: 'majority|consensus|weighted|veto;
   readonly threshold: number; // percentage or count
   readonly anonymity: boolean;
 }
@@ -276,9 +276,9 @@ export enum InterestLevel {
  * Communication preference
  */
 export interface CommunicationPreference {
-  readonly channel: CommunicationChannel['channelType'];
-  readonly frequency: 'real_time|daily|weekly|on_demand';
-  readonly detail: 'summary|detailed|executive';
+  readonly channel: CommunicationChannel['channelType'];'
+  readonly frequency: 'real_time|daily|weekly|on_demand;
+  readonly detail: 'summary' | 'detailed' | 'executive';
 }
 
 /**
@@ -446,7 +446,7 @@ export interface NextStep {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high|medium|low';
+  readonly priority: 'high' | 'medium' | 'low';
   readonly dependencies: string[];
 }
 
@@ -468,7 +468,7 @@ export class SolutionPlanningService {
    * Configure solution planning
    */
   async configurePlanning(config: SolutionPlanningConfig): Promise<void> {
-    this.logger.info('Configuring solution planning', {
+    this.logger.info('Configuring solution planning', {'
       planningId: config.planningId,
       solutionId: config.solutionId,
       artCount: config.participatingARTs.length,
@@ -483,7 +483,7 @@ export class SolutionPlanningService {
     // Initialize stakeholder communication
     await this.initializeStakeholderCommunication(config.stakeholders);
 
-    this.logger.info('Solution planning configured successfully', {
+    this.logger.info('Solution planning configured successfully', {'
       planningId: config.planningId,
     });
   }
@@ -497,17 +497,17 @@ export class SolutionPlanningService {
   ): Promise<SolutionPlanningResult> {
     const config = this.planningConfigs.get(planningId);
     if (!config) {
-      throw new Error(`Planning configuration not found: ${planningId}`);
+      throw new Error(`Planning configuration not found: ${planningId}`);`
     }
 
-    this.logger.info('Executing solution planning', {
+    this.logger.info('Executing solution planning', {'
       planningId,
       planningType,
       artCount: config.participatingARTs.length,
     });
 
     const startTime = Date.now();
-    const resultId = `planning-${nanoid(12)}`;
+    const resultId = `planning-${nanoid(12)}`;`
 
     try {
       // Execute planning activities
@@ -559,7 +559,7 @@ export class SolutionPlanningService {
         this.risks.set(risk.riskId, risk);
       }
 
-      this.logger.info('Solution planning completed', {
+      this.logger.info('Solution planning completed', {'
         planningId,
         resultId,
         duration: Date.now() - startTime,
@@ -570,7 +570,7 @@ export class SolutionPlanningService {
 
       return result;
     } catch (error) {
-      this.logger.error('Solution planning failed', {
+      this.logger.error('Solution planning failed', {'
         planningId,
         error,
       });
@@ -584,7 +584,7 @@ export class SolutionPlanningService {
   async trackCommitment(commitmentId: string): Promise<CommitmentProgress> {
     const commitment = this.commitments.get(commitmentId);
     if (!commitment) {
-      throw new Error(`Commitment not found: ${commitmentId}`);
+      throw new Error(`Commitment not found: ${commitmentId}`);`
     }
 
     // Simulate progress tracking
@@ -611,7 +611,7 @@ export class SolutionPlanningService {
   ): Promise<PlanningRisk> {
     const risk = this.risks.get(riskId);
     if (!risk) {
-      throw new Error(`Risk not found: ${riskId}`);
+      throw new Error(`Risk not found: ${riskId}`);`
     }
 
     const updatedRisk: PlanningRisk = {
@@ -621,7 +621,7 @@ export class SolutionPlanningService {
 
     this.risks.set(riskId, updatedRisk);
 
-    this.logger.info('Risk status updated', {
+    this.logger.info('Risk status updated', {'
       riskId,
       oldStatus: risk.status,
       newStatus: status,
@@ -635,13 +635,13 @@ export class SolutionPlanningService {
    * Private helper methods
    */
   private validatePlanningConfig(config: SolutionPlanningConfig): void {
-    if (!config.planningId || config.planningId.trim() ==='') {
-      throw new Error('Planning ID is required');
+    if (!config.planningId || config.planningId.trim() ==='') {'
+      throw new Error('Planning ID is required');'
     }
 
     if (config.participatingARTs.length < 2) {
       throw new Error(
-        'At least two ARTs must participate in solution planning'
+        'At least two ARTs must participate in solution planning''
       );
     }
   }
@@ -649,7 +649,7 @@ export class SolutionPlanningService {
   private async initializeStakeholderCommunication(
     stakeholders: SolutionStakeholder[]
   ): Promise<void> {
-    this.logger.info('Initializing stakeholder communication', {
+    this.logger.info('Initializing stakeholder communication', {'
       stakeholderCount: stakeholders.length,
     });
     // Implementation would set up communication channels
@@ -665,9 +665,9 @@ export class SolutionPlanningService {
     for (const event of config.coordinationStrategy.coordinationEvents) {
       if (this.isEventRelevant(event, planningType)) {
         outcomes.push({
-          outcomeId: `outcome-${nanoid(8)}`,
+          outcomeId: `outcome-${nanoid(8)}`,`
           category: OutcomeCategory.COMMITMENT,
-          description: `${event.eventType} completed successfully`,
+          description: `${event.eventType} completed successfully`,`
           deliverables: [`${event.eventType} artifacts`, 'Meeting notes'],
           success: Math.random() > 0.2, // 80% success rate
           participants: event.participants.map((p) => p.participantId),
@@ -701,10 +701,10 @@ export class SolutionPlanningService {
 
       for (let i = 0; i < commitmentCount; i++) {
         commitments.push({
-          commitmentId: `commit-${nanoid(8)}`,
+          commitmentId: `commit-${nanoid(8)}`,`
           artId: art.artId,
-          objectiveId: `objective-${nanoid(6)}`,
-          description: `ART ${art.artName} commitment ${i + 1}`,
+          objectiveId: `objective-${nanoid(6)}`,`
+          description: `ART ${art.artName} commitment ${i + 1}`,`
           confidence: this.getRandomConfidence(),
           dependencies: [],
           risks: [],
@@ -732,7 +732,7 @@ export class SolutionPlanningService {
     );
     if (highCommitmentARTs.length > config.participatingARTs.length * 0.7) {
       risks.push({
-        riskId: `risk-${nanoid(8)}`,
+        riskId: `risk-${nanoid(8)}`,`
         category: RiskCategory.RESOURCE,
         description:'High commitment levels across ARTs may lead to resource constraints',
         probability: RiskProbability.MEDIUM,
@@ -747,7 +747,7 @@ export class SolutionPlanningService {
     // Identify integration risks
     if (commitments.length > 15) {
       risks.push({
-        riskId: `risk-${nanoid(8)}`,
+        riskId: `risk-${nanoid(8)}`,`
         category: RiskCategory.INTEGRATION,
         description:
           'High number of commitments increases integration complexity',
@@ -773,10 +773,10 @@ export class SolutionPlanningService {
         if (Math.random() > 0.7) {
           // 30% chance of dependency
           dependencies.push({
-            dependencyId: `dep-${nanoid(8)}`,
+            dependencyId: `dep-${nanoid(8)}`,`
             fromART: arts[i].artId,
             toART: arts[j].artId,
-            description: `Integration dependency between ${arts[i].domain} and ${arts[j].domain}`,
+            description: `Integration dependency between ${arts[i].domain} and ${arts[j].domain}`,`
             type: DependencyType.SERVICE,
             status: DependencyStatus.PLANNED,
             plannedDate: addWeeks(
@@ -805,8 +805,8 @@ export class SolutionPlanningService {
         risk.impact === RiskImpact.HIGH || risk.probability === RiskProbability.HIGH
       ) {
         nextSteps.push({
-          stepId: `step-${nanoid(8)}`,
-          description: `Address high-priority risk: ${risk.description}`,
+          stepId: `step-${nanoid(8)}`,`
+          description: `Address high-priority risk: ${risk.description}`,`
           owner: risk.owner,
           dueDate: addDays(new Date(), 7),
           priority:'high',
@@ -822,8 +822,8 @@ export class SolutionPlanningService {
     );
     for (const dep of criticalDeps) {
       nextSteps.push({
-        stepId: `step-${nanoid(8)}`,
-        description: `Coordinate critical dependency: ${dep.description}`,
+        stepId: `step-${nanoid(8)}`,`
+        description: `Coordinate critical dependency: ${dep.description}`,`
         owner: 'Solution Train Engineer',
         dueDate: addDays(new Date(), 3),
         priority: 'high',

@@ -13,7 +13,7 @@ import type {
   ConversationSession,
 } from '../src/types';
 
-describe('ConversationOrchestratorImpl - Classical TDD', () => {
+describe('ConversationOrchestratorImpl - Classical TDD', () => {'
   let orchestrator: ConversationOrchestratorImpl;
 
   const sampleAgents: AgentId[] = [
@@ -25,8 +25,8 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
     orchestrator = new ConversationOrchestratorImpl();
   });
 
-  describe('🎯 Create Conversation', () => {
-    it('should create conversation and store in memory', async () => {
+  describe('🎯 Create Conversation', () => {'
+    it('should create conversation and store in memory', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test Code Review',
@@ -55,7 +55,7 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       expect(session.participants).toHaveLength(2);
     });
 
-    it('should create conversation with proper initial state', async () => {
+    it('should create conversation with proper initial state', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Problem Solving Session',
@@ -74,7 +74,7 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       const session = await orchestrator.createConversation(config);
 
       // Assert
-      expect(session.status).toBe('active');
+      expect(session.status).toBe('active');'
       expect(session.messages).toHaveLength(0);
       expect(session.outcomes).toHaveLength(0);
       expect(session.metrics.messageCount).toBe(0);
@@ -85,8 +85,8 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
     });
   });
 
-  describe('🤝 Join Conversation', () => {
-    it('should add agent to conversation', async () => {
+  describe('🤝 Join Conversation', () => {'
+    it('should add agent to conversation', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test',
@@ -122,7 +122,7 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       );
     });
 
-    it('should reject joining non-existent conversation', async () => {
+    it('should reject joining non-existent conversation', async () => {'
       // Arrange
       const newAgent: AgentId = {
         id: 'agent-3',
@@ -133,13 +133,13 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 
       // Act & Assert
       await expect(
-        orchestrator.joinConversation('non-existent', newAgent)
-      ).rejects.toThrow('Conversation non-existent not found');
+        orchestrator.joinConversation('non-existent', newAgent)'
+      ).rejects.toThrow('Conversation non-existent not found');'
     });
   });
 
-  describe('💬 Send Message', () => {
-    it('should validate sender and store message', async () => {
+  describe('💬 Send Message', () => {'
+    it('should validate sender and store message', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test',
@@ -184,10 +184,10 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       const updatedSession = orchestrator.getSession(session.id);
       expect(updatedSession?.messages).toHaveLength(1);
       expect(updatedSession?.metrics.messageCount).toBe(1);
-      expect(updatedSession?.metrics.participationByAgent['agent-1']).toBe(1);
+      expect(updatedSession?.metrics.participationByAgent['agent-1']).toBe(1);'
     });
 
-    it('should reject messages from non-participants', async () => {
+    it('should reject messages from non-participants', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test',
@@ -234,13 +234,13 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.sendMessage(message)).rejects.toThrow(
-        'Agent outsider is not a participant'
+        'Agent outsider is not a participant''
       );
     });
   });
 
-  describe('🔚 Terminate Conversation', () => {
-    it('should finalize conversation and generate outcomes', async () => {
+  describe('🔚 Terminate Conversation', () => {'
+    it('should finalize conversation and generate outcomes', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Code Review Complete',
@@ -285,7 +285,7 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       // Act
       const outcomes = await orchestrator.terminateConversation(
         session.id,
-        'Review complete'
+        'Review complete''
       );
 
       // Assert
@@ -301,8 +301,8 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
     });
   });
 
-  describe('🔍 Get Conversation History', () => {
-    it('should retrieve messages from active session', async () => {
+  describe('🔍 Get Conversation History', () => {'
+    it('should retrieve messages from active session', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Test',
@@ -347,12 +347,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 
       // Assert
       expect(history).toHaveLength(1);
-      expect(history[0]?.content.text).toBe('First message');
+      expect(history[0]?.content.text).toBe('First message');'
     });
   });
 
-  describe('📊 Session Management', () => {
-    it('should track active sessions correctly', async () => {
+  describe('📊 Session Management', () => {'
+    it('should track active sessions correctly', async () => {'
       // Arrange
       const config: ConversationConfig = {
         title: 'Session Test',
@@ -380,15 +380,15 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       // Assert
       const activeSessions = orchestrator.getActiveSessions();
       expect(activeSessions).toHaveLength(2);
-      expect(activeSessions.map((s) => s.title)).toContain('Session 1');
-      expect(activeSessions.map((s) => s.title)).toContain('Session 2');
+      expect(activeSessions.map((s) => s.title)).toContain('Session 1');'
+      expect(activeSessions.map((s) => s.title)).toContain('Session 2');'
 
       // Terminate one session
-      await orchestrator.terminateConversation(session1.id, 'Test complete');
+      await orchestrator.terminateConversation(session1.id, 'Test complete');'
 
       const remainingSessions = orchestrator.getActiveSessions();
       expect(remainingSessions).toHaveLength(1);
-      expect(remainingSessions[0]?.title).toBe('Session 2');
+      expect(remainingSessions[0]?.title).toBe('Session 2');'
     });
   });
 });

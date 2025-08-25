@@ -47,11 +47,11 @@ export interface ArchitectureRunwayItem {
   id: string;
   title: string;
   description: string;
-  type: 'infrastructure|platform|enabler|technical-debt';
-  priority: 'critical|high|medium|low';
+  type: 'infrastructure|platform|enabler|technical-debt;
+  priority: 'critical|high|medium|low;
   effort: number; // story points or hours
   dependencies: string[];
-  status: 'backlog|planned'||in-progress|completed'||blocked';
+  status: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||blocked;
   assignedTo?: string;
   targetPI?: string;
   createdAt: Date;
@@ -65,11 +65,11 @@ export interface TechnicalDebtItem {
   id: string;
   title: string;
   description: string;
-  severity: 'critical|high|medium|low';
+  severity: 'critical|high|medium|low;
   impact: string;
   effort: number;
   component: string;
-  status: 'identified|approved|planned|in-progress||resolved';
+  status: 'identified|approved|planned|in-progress||resolved;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -80,7 +80,7 @@ export interface TechnicalDebtItem {
 export interface ArchitectureDecisionRecord {
   id: string;
   title: string;
-  status: 'proposed|accepted|deprecated|superseded';
+  status: 'proposed|accepted|deprecated|superseded;
   context: string;
   decision: string;
   consequences: string[];
@@ -98,9 +98,9 @@ export interface ArchitectureCapability {
   id: string;
   name: string;
   description: string;
-  category: 'business|technology|process';
+  category: 'business' | 'technology' | 'process';
   maturityLevel: number; // 1-5 scale
-  status: 'developing|active|retiring|deprecated';
+  status: 'developing|active|retiring|deprecated;
   enablers: string[]; // References to runway items
   dependencies: string[];
   kpis: CapabilityKPI[];
@@ -119,7 +119,7 @@ export interface CapabilityKPI {
   target: number;
   current: number;
   unit: string;
-  trend: 'improving|stable|declining';
+  trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
 }
 
 /**
@@ -129,7 +129,7 @@ export interface CapabilityKPI {
  * technical debt tracking, architecture decisions, and capability management.
  *
  * @example Basic usage
- * ```typescript
+ * ```typescript`
  * const runwayManager = new ArchitectureRunwayManager(memory, eventBus, config);
  * await runwayManager.initialize();
  *
@@ -139,7 +139,7 @@ export interface CapabilityKPI {
  *   priority: 'high',
  *   effort: 13
  * });
- * ```
+ * ````
  */
 export class ArchitectureRunwayManager extends TypedEventBase {
   private logger: Logger;
@@ -160,7 +160,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
     config: Partial<ArchitectureRunwayConfig> = {}
   ) {
     super();
-    this.logger = getLogger('ArchitectureRunwayManager');
+    this.logger = getLogger('ArchitectureRunwayManager');'
     this.memory = memory;
     this.eventBus = eventBus;
 
@@ -186,18 +186,18 @@ export class ArchitectureRunwayManager extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      this.logger.info('Initializing Architecture Runway Manager');
+      this.logger.info('Initializing Architecture Runway Manager');'
 
       // Delegate to RunwayItemManagementService
       const { RunwayItemManagementService } = await import(
-        '../services/architecture/runway-item-management-service'
+        '../services/architecture/runway-item-management-service''
       );
       this.runwayItemService = new RunwayItemManagementService(this.logger);
       await this.runwayItemService.initialize();
 
       // Delegate to TechnicalDebtManagementService
       const { TechnicalDebtManagementService } = await import(
-        '../services/architecture/technical-debt-management-service'
+        '../services/architecture/technical-debt-management-service''
       );
       this.technicalDebtService = new TechnicalDebtManagementService(
         this.logger
@@ -206,7 +206,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       // Delegate to ArchitectureDecisionManagementService
       const { ArchitectureDecisionManagementService } = await import(
-        '../services/architecture/architecture-decision-management-service'
+        '../services/architecture/architecture-decision-management-service''
       );
       this.architectureDecisionService =
         new ArchitectureDecisionManagementService(this.logger);
@@ -214,7 +214,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       // Delegate to CapabilityManagementService
       const { CapabilityManagementService } = await import(
-        '../services/architecture/capability-management-service'
+        '../services/architecture/capability-management-service''
       );
       this.capabilityService = new CapabilityManagementService(this.logger);
       await this.capabilityService.initialize();
@@ -230,7 +230,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       );
 
       this.initialized = true;
-      this.logger.info('Architecture Runway Manager initialized successfully');
+      this.logger.info('Architecture Runway Manager initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Architecture Runway Manager:',
@@ -246,7 +246,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
   async addRunwayItem(
     item: Omit<
       ArchitectureRunwayItem,
-      'id|createdAt|updatedAt|status'
+      'id|createdAt|updatedAt|status''
     >
   ): Promise<ArchitectureRunwayItem> {
     if (!this.initialized) await this.initialize();
@@ -256,10 +256,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       const runwayItem = await this.runwayItemService.addRunwayItem(item);
 
       // Emit local events for backward compatibility
-      this.emit('runway-item:added', { item: runwayItem });
+      this.emit('runway-item:added', { item: runwayItem });'
       this.eventBus.emit(
         'architecture-runway:item:added',
-        createEvent('architecture-runway:item:added', {
+        createEvent('architecture-runway:item:added', {'
           itemId: runwayItem.id,
           type: runwayItem.type,
           priority: runwayItem.priority,
@@ -268,7 +268,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       return runwayItem;
     } catch (error) {
-      this.logger.error('Failed to add runway item:', error);
+      this.logger.error('Failed to add runway item:', error);'
       throw error;
     }
   }
@@ -293,13 +293,13 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       if (updatedItem) {
         // Emit local events for backward compatibility
-        this.emit('runway-item:status-updated', {
+        this.emit('runway-item:status-updated', {'
           item: updatedItem,
           oldStatus: status,
         });
         this.eventBus.emit(
           'architecture-runway:item:status-updated',
-          createEvent('architecture-runway:item:status-updated', {
+          createEvent('architecture-runway:item:status-updated', {'
             itemId,
             oldStatus: status,
             newStatus: updatedItem.status,
@@ -309,7 +309,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       return updatedItem;
     } catch (error) {
-      this.logger.error('Failed to update runway item status:', error);
+      this.logger.error('Failed to update runway item status:', error);'
       throw error;
     }
   }
@@ -318,11 +318,11 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    * Add Technical Debt Item - Delegates to TechnicalDebtManagementService
    */
   async addTechnicalDebtItem(
-    item: Omit<TechnicalDebtItem, 'id|createdAt|updatedAt|status'>
+    item: Omit<TechnicalDebtItem, 'id|createdAt|updatedAt|status'>'
   ): Promise<TechnicalDebtItem> {
     if (!this.initialized) await this.initialize();
     if (!this.config.enableTechnicalDebtManagement) {
-      throw new Error('Technical debt management is not enabled');
+      throw new Error('Technical debt management is not enabled');'
     }
 
     try {
@@ -331,10 +331,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
         await this.technicalDebtService.addTechnicalDebtItem(item);
 
       // Emit local events for backward compatibility
-      this.emit('technical-debt:added', { item: debtItem });
+      this.emit('technical-debt:added', { item: debtItem });'
       this.eventBus.emit(
         'architecture-runway:debt:added',
-        createEvent('architecture-runway:debt:added', {
+        createEvent('architecture-runway:debt:added', {'
           itemId: debtItem.id,
           severity: debtItem.severity,
           component: debtItem.component,
@@ -343,7 +343,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       return debtItem;
     } catch (error) {
-      this.logger.error('Failed to add technical debt item:', error);
+      this.logger.error('Failed to add technical debt item:', error);'
       throw error;
     }
   }
@@ -354,7 +354,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
   async createArchitectureDecisionRecord(
     decision: Omit<
       ArchitectureDecisionRecord,
-      'id|createdAt|updatedAt|status'
+      'id|createdAt|updatedAt|status''
     >
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
@@ -367,10 +367,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
         );
 
       // Emit local events for backward compatibility
-      this.emit('architecture-decision:created', { adr });
+      this.emit('architecture-decision:created', { adr });'
       this.eventBus.emit(
         'architecture-runway:adr:created',
-        createEvent('architecture-runway:adr:created', {
+        createEvent('architecture-runway:adr:created', {'
           adrId: adr.id,
           title: adr.title,
           author: adr.author,
@@ -391,11 +391,11 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    * Add Architecture Capability - Delegates to CapabilityManagementService
    */
   async addCapability(
-    capability: Omit<ArchitectureCapability, 'id|createdAt|updatedAt'>
+    capability: Omit<ArchitectureCapability, 'id|createdAt|updatedAt'>'
   ): Promise<ArchitectureCapability> {
     if (!this.initialized) await this.initialize();
     if (!this.config.enableCapabilityTracking) {
-      throw new Error('Capability tracking is not enabled');
+      throw new Error('Capability tracking is not enabled');'
     }
 
     try {
@@ -403,10 +403,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       const cap = await this.capabilityService.addCapability(capability);
 
       // Emit local events for backward compatibility
-      this.emit('capability:added', { capability: cap });
+      this.emit('capability:added', { capability: cap });'
       this.eventBus.emit(
         'architecture-runway:capability:added',
-        createEvent('architecture-runway:capability:added', {
+        createEvent('architecture-runway:capability:added', {'
           capabilityId: cap.id,
           name: cap.name,
           category: cap.category,
@@ -415,7 +415,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       return cap;
     } catch (error) {
-      this.logger.error('Failed to add capability:', error);
+      this.logger.error('Failed to add capability:', error);'
       throw error;
     }
   }
@@ -467,7 +467,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
         lastUpdated: new Date(),
       };
     } catch (error) {
-      this.logger.error('Failed to get runway planning dashboard:', error);
+      this.logger.error('Failed to get runway planning dashboard:', error);'
       throw error;
     }
   }
@@ -484,7 +484,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       pros: string[];
       cons: string[];
     }>;
-    impact: 'low|medium|high|critical';
+    impact: 'low|medium|high|critical;
     deadline?: Date;
   }): Promise<{
     approved: boolean;
@@ -498,7 +498,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       const decisionRequest = {
         title: decision.title,
         description: decision.description,
-        context: `Architecture decision requested with ${decision.options.length} options`,
+        context: `Architecture decision requested with ${decision.options.length} options`,`
         options: decision.options.map((opt) => ({
           title: opt.title,
           description: opt.description,
@@ -507,15 +507,15 @@ export class ArchitectureRunwayManager extends TypedEventBase {
           estimatedCost: 1000, // Default cost
           estimatedEffort: 40, // Default effort
           riskLevel:
-            decision.impact === 'critical'
-              ? 'high'
+            decision.impact === 'critical''
+              ? 'high''
               : ('medium' as 'low|medium|high'),
         })),
         requester: 'architecture-runway-manager',
         stakeholders: ['architect', 'tech-lead'],
         deadline: decision.deadline,
         priority: decision.impact as 'low|medium|high|critical',
-        businessJustification: `Architecture decision with ${decision.impact} impact`,
+        businessJustification: `Architecture decision with ${decision.impact} impact`,`
       };
 
       // Delegate to specialized service
@@ -527,7 +527,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       // Emit event for decision tracking
       this.eventBus.emit(
         'architecture-runway:decision:requested',
-        createEvent('architecture-runway:decision:requested', {
+        createEvent('architecture-runway:decision:requested', {'
           title: decision.title,
           impact: decision.impact,
           optionsCount: decision.options.length,
@@ -540,7 +540,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
         comments: result.comments,
       };
     } catch (error) {
-      this.logger.error('Failed to request architecture decision:', error);
+      this.logger.error('Failed to request architecture decision:', error);'
       throw error;
     }
   }
@@ -587,7 +587,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
         },
       };
     } catch (error) {
-      this.logger.error('Failed to get analytics:', error);
+      this.logger.error('Failed to get analytics:', error);'
       throw error;
     }
   }
@@ -674,7 +674,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    * Cleanup resources - Delegates shutdown to specialized services
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Architecture Runway Manager');
+    this.logger.info('Shutting down Architecture Runway Manager');'
 
     try {
       // Shutdown all specialized services
@@ -695,10 +695,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       this.eventBus.emit(
         'architecture-runway:shutdown',
-        createEvent('architecture-runway:shutdown', { timestamp: Date.now() })
+        createEvent('architecture-runway:shutdown', { timestamp: Date.now() })'
       );
 
-      this.logger.info('Architecture Runway Manager shutdown complete');
+      this.logger.info('Architecture Runway Manager shutdown complete');'
     } catch (error) {
       this.logger.error(
         'Error during Architecture Runway Manager shutdown:',

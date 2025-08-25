@@ -57,7 +57,7 @@ export function createEnterpriseGitManager(
   };
 
   return new GitOperationsManager(
-    `enterprise-git-${Date.now()}`,
+    `enterprise-git-${Date.now()}`,`
     config,
     branchStrategy
   );
@@ -80,5 +80,5 @@ export function createSAFEGitManager(artId: string): GitOperationsManager {
     defaultMergeStrategy: 'rebase' as const,
   };
 
-  return new GitOperationsManager(`safe-git-${artId}`, config, branchStrategy);
+  return new GitOperationsManager(`safe-git-${artId}`, config, branchStrategy);`
 }

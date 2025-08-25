@@ -14,24 +14,24 @@
  * - Foundation integration with Result patterns
  *
  * @example Basic event validation
- * ```typescript
+ * ```typescript`
  * import { createEventValidator, EventSchemas } from '@claude-zen/event-system/validation';
  *
  * const validator = createEventValidator(EventSchemas.UserAction);
  * const result = validator.validate(eventData);
  *
  * if (result.success) {
- *   console.log('Valid event:', result.data);
+ *   console.log('Valid event:', result.data);'
  * } else {
- *   console.error('Validation errors:', result.error.issues);
+ *   console.error('Validation errors:', result.error.issues);'
  * }
- * ```
+ * ````
  */
 
 import { z } from 'zod';
 import { getLogger, Result, ok, err, safeAsync } from '@claude-zen/foundation';
 
-const logger = getLogger('EventValidation');
+const logger = getLogger('EventValidation');'
 
 // =============================================================================
 // ZOD EVENT SCHEMAS - Type-safe runtime validation
@@ -70,7 +70,7 @@ export const BaseEventSchema = z.object({
       sessionId: z.string().optional(),
       traceId: z.string().optional(),
       priority: z
-        .enum(['LOW', 'NORMAL', 'HIGH', 'CRITICAL', 'URGENT'])
+        .enum(['LOW', 'NORMAL', 'HIGH', 'CRITICAL', 'URGENT'])'
         .optional(),
       tags: z.array(z.string()).optional(),
       customData: z.record(z.string(), z.unknown()).optional(),
@@ -223,7 +223,7 @@ export const EventSchemas = {
 export class EventValidator<T = unknown> {
   constructor(
     private readonly schema: z.ZodSchema<T>,
-    private readonly name: string = 'Unknown'
+    private readonly name: string = 'Unknown''
   ) {}
 
   /**
@@ -237,13 +237,13 @@ export class EventValidator<T = unknown> {
       const result = this.schema.safeParse(data);
 
       if (result.success) {
-        logger.debug(`[EventValidator] Validation succeeded for ${this.name}`, {
+        logger.debug(`[EventValidator] Validation succeeded for ${this.name}`, {`
           schema: this.name,
           dataKeys: Object.keys(data as Record<string, unknown>),
         });
         return ok(result.data);
       } else {
-        logger.warn(`[EventValidator] Validation failed for ${this.name}`, {
+        logger.warn(`[EventValidator] Validation failed for ${this.name}`, {`
           schema: this.name,
           errors: result.error.issues.map((issue) => ({
             path: issue.path.join('.'),
@@ -251,11 +251,11 @@ export class EventValidator<T = unknown> {
             code: issue.code,
           })),
         });
-        return err(new Error(`Validation failed: ${result.error.message}`));
+        return err(new Error(`Validation failed: ${result.error.message}`));`
       }
     } catch (error) {
       logger.error(
-        `[EventValidator] Validation error for ${this.name}:`,
+        `[EventValidator] Validation error for ${this.name}:`,`
         error
       );
       return err(error instanceof Error ? error : new Error(String(error)));
@@ -295,7 +295,7 @@ export class EventValidator<T = unknown> {
    * Get schema description for debugging
    */
   getSchemaDescription(): string {
-    return this.schema.description||`Schema for ${this.name}`;
+    return this.schema.description||`Schema for ${this.name}`;`
   }
 }
 
@@ -417,7 +417,7 @@ export function createTypedEventValidator<K extends keyof typeof EventSchemas>(
 export function validateBaseEvent(
   data: unknown
 ): Result<z.infer<typeof BaseEventSchema>, Error> {
-  const validator = new EventValidator(BaseEventSchema,'BaseEvent');
+  const validator = new EventValidator(BaseEventSchema,'BaseEvent');'
   return validator.validate(data);
 }
 

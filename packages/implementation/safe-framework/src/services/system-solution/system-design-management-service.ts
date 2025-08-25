@@ -118,7 +118,7 @@ export class SystemDesignManagementService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent design analysis
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      const { BrainCoordinator } = await import('@claude-zen/brain');'
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -130,7 +130,7 @@ export class SystemDesignManagementService {
 
       // Lazy load @claude-zen/foundation for performance tracking
       const { PerformanceTracker, TelemetryManager } = await import(
-        '@claude-zen/foundation'
+        '@claude-zen/foundation''
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -141,13 +141,13 @@ export class SystemDesignManagementService {
       await this.telemetryManager.initialize();
 
       // Lazy load knowledge for design pattern knowledge (using package import)
-      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');'
       this.knowledgeManager = new BasicKnowledgeManager();
-      // BasicKnowledgeManager doesn't have initialize method
-      this.logger.info('Knowledge manager loaded successfully');
+      // BasicKnowledgeManager doesn't have initialize method'
+      this.logger.info('Knowledge manager loaded successfully');'
 
       // Lazy load @claude-zen/workflows for design workflow orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      const { WorkflowEngine } = await import('@claude-zen/workflows');'
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
         enableVisualization: true,
@@ -156,7 +156,7 @@ export class SystemDesignManagementService {
 
       this.initialized = true;
       this.logger.info(
-        'System Design Management Service initialized successfully'
+        'System Design Management Service initialized successfully''
       );
     } catch (error) {
       this.logger.error(
@@ -178,10 +178,10 @@ export class SystemDesignManagementService {
   ): Promise<SystemDesign> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('create_system_design');
+    const timer = this.performanceTracker.startTimer('create_system_design');'
 
     try {
-      this.logger.info('Creating system design with AI analysis', {
+      this.logger.info('Creating system design with AI analysis', {'
         name,
         type,
         pattern,
@@ -205,7 +205,7 @@ export class SystemDesignManagementService {
 
       // Create system design with AI-enhanced data
       const systemDesign: SystemDesign = {
-        id: `system-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `system-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
         name,
         version: '1.0.0',
         type,
@@ -244,13 +244,13 @@ export class SystemDesignManagementService {
         },
       });
 
-      this.performanceTracker.endTimer('create_system_design');
-      this.telemetryManager.recordCounter('system_designs_created', 1, {
+      this.performanceTracker.endTimer('create_system_design');'
+      this.telemetryManager.recordCounter('system_designs_created', 1, {'
         type,
         pattern,
       });
 
-      this.logger.info('System design created successfully', {
+      this.logger.info('System design created successfully', {'
         designId: systemDesign.id,
         name: systemDesign.name,
         complexityScore: designAnalysis.complexityScore,
@@ -258,8 +258,8 @@ export class SystemDesignManagementService {
 
       return systemDesign;
     } catch (error) {
-      this.performanceTracker.endTimer('create_system_design');
-      this.logger.error('Failed to create system design:', error);
+      this.performanceTracker.endTimer('create_system_design');'
+      this.logger.error('Failed to create system design:', error);'
       throw error;
     }
   }
@@ -274,12 +274,12 @@ export class SystemDesignManagementService {
   ): Promise<SystemDesign> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('update_design_status');
+    const timer = this.performanceTracker.startTimer('update_design_status');'
 
     try {
       const design = this.systemDesigns.get(designId);
       if (!design) {
-        throw new Error(`System design not found: ${designId}`);
+        throw new Error(`System design not found: ${designId}`);`
       }
 
       // Use workflow engine for status transition validation
@@ -292,7 +292,7 @@ export class SystemDesignManagementService {
 
       if (!statusTransition.isValid) {
         throw new Error(
-          `Invalid status transition: ${statusTransition.reason}`
+          `Invalid status transition: ${statusTransition.reason}``
         );
       }
 
@@ -305,10 +305,10 @@ export class SystemDesignManagementService {
 
       this.systemDesigns.set(designId, updatedDesign);
 
-      this.performanceTracker.endTimer('update_design_status');
-      this.telemetryManager.recordCounter('design_status_updates', 1);
+      this.performanceTracker.endTimer('update_design_status');'
+      this.telemetryManager.recordCounter('design_status_updates', 1);'
 
-      this.logger.info('System design status updated', {
+      this.logger.info('System design status updated', {'
         designId,
         oldStatus: design.status,
         newStatus,
@@ -317,8 +317,8 @@ export class SystemDesignManagementService {
 
       return updatedDesign;
     } catch (error) {
-      this.performanceTracker.endTimer('update_design_status');
-      this.logger.error('Failed to update system design status:', error);
+      this.performanceTracker.endTimer('update_design_status');'
+      this.logger.error('Failed to update system design status:', error);'
       throw error;
     }
   }
@@ -330,7 +330,7 @@ export class SystemDesignManagementService {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer(
-      'generate_design_dashboard');
+      'generate_design_dashboard');'
 
     try {
       const allDesigns = Array.from(this.systemDesigns.values())();
@@ -355,17 +355,17 @@ export class SystemDesignManagementService {
         popularPatterns: dashboardInsights.popularPatterns || [],
       };
 
-      this.performanceTracker.endTimer('generate_design_dashboard');
+      this.performanceTracker.endTimer('generate_design_dashboard');'
 
-      this.logger.info('System design dashboard generated', {
+      this.logger.info('System design dashboard generated', {'
         totalDesigns: dashboard.totalDesigns,
         qualityScore: dashboard.designQualityScore,
       });
 
       return dashboard;
     } catch (error) {
-      this.performanceTracker.endTimer('generate_design_dashboard');
-      this.logger.error('Failed to generate system design dashboard:', error);
+      this.performanceTracker.endTimer('generate_design_dashboard');'
+      this.logger.error('Failed to generate system design dashboard:', error);'
       throw error;
     }
   }
@@ -401,7 +401,7 @@ export class SystemDesignManagementService {
       await this.telemetryManager.shutdown();
     }
     this.initialized = false;
-    this.logger.info('System Design Management Service shutdown complete');
+    this.logger.info('System Design Management Service shutdown complete');'
   }
 
   // ============================================================================

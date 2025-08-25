@@ -92,10 +92,10 @@ export enum IncidentStatus {
  * Incident priority levels
  */
 export enum IncidentPriority {
-  P1 = 'p1', // Critical - immediate response
-  P2 = 'p2', // High - response within 2 hours
-  P3 = 'p3', // Medium - response within 8 hours
-  P4 = 'p4', // Low - response within 24 hours
+  P1 = 'p1', // Critical - immediate response'
+  P2 = 'p2', // High - response within 2 hours'
+  P3 = 'p3', // Medium - response within 8 hours'
+  P4 = 'p4', // Low - response within 24 hours'
 }
 
 /**
@@ -153,7 +153,7 @@ export interface IncidentTimelineEntry {
   readonly action: string;
   readonly description: string;
   readonly performer: string;
-  readonly category:|detection|analysis|containment|eradication|recovery|'communication';
+  readonly category:|detection|analysis|containment|eradication|recovery|'communication;
   readonly evidence?: string;
 }
 
@@ -191,7 +191,7 @@ export enum EvidenceType {
  */
 export interface ChainOfCustodyEntry {
   readonly timestamp: Date;
-  readonly action: 'collected|transferred|analyzed|stored';
+  readonly action: 'collected|transferred|analyzed|stored;
   readonly person: string;
   readonly location: string;
   readonly notes: string;
@@ -319,7 +319,7 @@ export interface PostIncidentReview {
  */
 export interface ReviewFinding {
   readonly findingId: string;
-  readonly category: 'process|technology|people|communication';
+  readonly category: 'process|technology|people|communication;
   readonly description: string;
   readonly impact: ImpactLevel;
   readonly recommendation: string;
@@ -332,7 +332,7 @@ export interface ImprovementRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: 'high|medium|low';
+  readonly priority: 'high' | 'medium' | 'low';
   readonly estimatedCost: number;
   readonly timeframe: string;
   readonly owner: string;
@@ -397,10 +397,10 @@ export interface CommunicationPlan {
  */
 export interface CommunicationChannel {
   readonly channelId: string;
-  readonly type: 'email|phone|slack|sms|dashboard';
+  readonly type: 'email|phone|slack|sms|dashboard;
   readonly recipients: string[];
   readonly purpose: string;
-  readonly urgency: 'immediate|high|normal|low';
+  readonly urgency: 'immediate|high|normal|low;
 }
 
 /**
@@ -410,7 +410,7 @@ export interface StakeholderMapping {
   readonly severityLevel: IncidentSeverity;
   readonly stakeholders: string[];
   readonly notificationTiming: string;
-  readonly informationLevel: 'detailed|summary|minimal';
+  readonly informationLevel: 'detailed' | 'summary' | 'minimal';
 }
 
 /**
@@ -460,9 +460,9 @@ export class SecurityIncidentResponseService {
     reportedBy: string;
     initialEvidence?: Partial<IncidentEvidence>[];
   }): SecurityIncident {
-    const incidentId = `incident-${nanoid(12)}`;
+    const incidentId = `incident-${nanoid(12)}`;`
 
-    this.logger.info('Creating security incident', {
+    this.logger.info('Creating security incident', {'
       incidentId,
       severity: incidentData.severity,
       category: incidentData.category,
@@ -497,10 +497,10 @@ export class SecurityIncidentResponseService {
       responseTeam,
       timeline: [
         {
-          entryId: `timeline-${nanoid(8)}`,
+          entryId: `timeline-${nanoid(8)}`,`
           timestamp: new Date(),
           action: 'incident_created',
-          description: `Incident created: ${incidentData.title}`,
+          description: `Incident created: ${incidentData.title}`,`
           performer: incidentData.reportedBy,
           category: 'detection',
         },
@@ -540,7 +540,7 @@ export class SecurityIncidentResponseService {
     // Start escalation timer
     this.startEscalationTimer(incident);
 
-    this.logger.info('Security incident created', {
+    this.logger.info('Security incident created', {'
       incidentId,
       priority,
       responseTeamSize: responseTeam.length,
@@ -560,10 +560,10 @@ export class SecurityIncidentResponseService {
   ): SecurityIncident {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
-      throw new Error(`Incident not found: ${incidentId}`);
+      throw new Error(`Incident not found: ${incidentId}`);`
     }
 
-    this.logger.info('Updating incident status', {
+    this.logger.info('Updating incident status', {'
       incidentId,
       oldStatus: incident.status,
       newStatus: status,
@@ -572,10 +572,10 @@ export class SecurityIncidentResponseService {
 
     // Add timeline entry
     const timelineEntry: IncidentTimelineEntry = {
-      entryId: `timeline-${nanoid(8)}`,
+      entryId: `timeline-${nanoid(8)}`,`
       timestamp: new Date(),
       action: 'status_updated',
-      description: `Status changed from ${incident.status} to ${status}${notes ? `: ${notes}` : ''}`,
+      description: `Status changed from ${incident.status} to ${status}${notes ? `: ${notes}` : ''}`,`
       performer: updatedBy,
       category: this.getTimelineCategory(status),
     };
@@ -602,16 +602,16 @@ export class SecurityIncidentResponseService {
     incidentId: string,
     evidence: Omit<
       IncidentEvidence,
-      'evidenceId|collectedDate|chainOfCustody'
+      'evidenceId|collectedDate|chainOfCustody''
     >
   ): void {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
-      throw new Error(`Incident not found: ${incidentId}`);
+      throw new Error(`Incident not found: ${incidentId}`);`
     }
 
     const newEvidence: IncidentEvidence = {
-      evidenceId: `evidence-${nanoid(8)}`,
+      evidenceId: `evidence-${nanoid(8)}`,`
       collectedDate: new Date(),
       chainOfCustody: [
         {
@@ -631,10 +631,10 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${nanoid(8)}`,
+          entryId: `timeline-${nanoid(8)}`,`
           timestamp: new Date(),
           action: 'evidence_added',
-          description: `Evidence added: ${evidence.description}`,
+          description: `Evidence added: ${evidence.description}`,`
           performer: evidence.collectedBy,
           category: 'analysis',
           evidence: newEvidence.evidenceId,
@@ -644,7 +644,7 @@ export class SecurityIncidentResponseService {
 
     this.incidents.set(incidentId, updatedIncident);
 
-    this.logger.info('Evidence added to incident', {
+    this.logger.info('Evidence added to incident', {'
       incidentId,
       evidenceId: newEvidence.evidenceId,
       evidenceType: evidence.type,
@@ -657,21 +657,21 @@ export class SecurityIncidentResponseService {
   async initiateContainment(
     incidentId: string,
     strategy: ContainmentStrategy,
-    actions: Omit<ContainmentAction, 'actionId|status|startTime'>[]
+    actions: Omit<ContainmentAction, 'actionId|status|startTime'>[]'
   ): Promise<void> {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
-      throw new Error(`Incident not found: ${incidentId}`);
+      throw new Error(`Incident not found: ${incidentId}`);`
     }
 
-    this.logger.info('Initiating containment actions', {
+    this.logger.info('Initiating containment actions', {'
       incidentId,
       strategy,
       actionCount: actions.length,
     });
 
     const containmentActions: ContainmentAction[] = actions.map((action) => ({
-      actionId: `action-${nanoid(8)}`,
+      actionId: `action-${nanoid(8)}`,`
       status: ActionStatus.PLANNED,
       startTime: new Date(),
       ...action,
@@ -688,10 +688,10 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${nanoid(8)}`,
+          entryId: `timeline-${nanoid(8)}`,`
           timestamp: new Date(),
           action: 'containment_initiated',
-          description: `Containment strategy initiated: ${strategy}`,
+          description: `Containment strategy initiated: ${strategy}`,`
           performer: 'system',
           category: 'containment',
         },
@@ -711,16 +711,16 @@ export class SecurityIncidentResponseService {
     incidentId: string,
     resolution: Omit<
       IncidentResolution,
-      'resolutionDate|totalResponseTime'
+      'resolutionDate|totalResponseTime''
     >,
     resolvedBy: string
   ): SecurityIncident {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
-      throw new Error(`Incident not found: ${incidentId}`);
+      throw new Error(`Incident not found: ${incidentId}`);`
     }
 
-    this.logger.info('Resolving incident', { incidentId, resolvedBy });
+    this.logger.info('Resolving incident', { incidentId, resolvedBy });'
 
     const resolutionDate = new Date();
     const totalResponseTime = Math.floor(
@@ -738,10 +738,10 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${nanoid(8)}`,
+          entryId: `timeline-${nanoid(8)}`,`
           timestamp: resolutionDate,
           action: 'incident_resolved',
-          description: `Incident resolved: ${resolution.resolutionSummary}`,
+          description: `Incident resolved: ${resolution.resolutionSummary}`,`
           performer: resolvedBy,
           category: 'recovery',
         },
@@ -753,7 +753,7 @@ export class SecurityIncidentResponseService {
     // Schedule post-incident review
     this.schedulePostIncidentReview(incidentId);
 
-    this.logger.info('Incident resolved', {
+    this.logger.info('Incident resolved', {'
       incidentId,
       totalResponseTime,
       rootCause: resolution.rootCause,
@@ -870,7 +870,7 @@ export class SecurityIncidentResponseService {
     partialEvidence: Partial<IncidentEvidence>[]
   ): IncidentEvidence[] {
     return partialEvidence.map((evidence) => ({
-      evidenceId: `evidence-${nanoid(8)}`,
+      evidenceId: `evidence-${nanoid(8)}`,`
       collectedDate: new Date(),
       chainOfCustody: [],
       type: EvidenceType.OTHER,
@@ -883,7 +883,7 @@ export class SecurityIncidentResponseService {
   }
 
   private sendIncidentNotifications(incident: SecurityIncident): void {
-    this.logger.info('Sending incident notifications', {
+    this.logger.info('Sending incident notifications', {'
       incidentId: incident.incidentId,
       severity: incident.severity,
     });
@@ -908,7 +908,7 @@ export class SecurityIncidentResponseService {
   }
 
   private escalateIncident(incidentId: string, rule: EscalationRule): void {
-    this.logger.info('Escalating incident', {
+    this.logger.info('Escalating incident', {'
       incidentId,
       rule: rule.severity,
     });
@@ -917,20 +917,20 @@ export class SecurityIncidentResponseService {
 
   private getTimelineCategory(
     status: IncidentStatus
-  ): IncidentTimelineEntry['category'] {
+  ): IncidentTimelineEntry['category'] {'
     switch (status) {
       case IncidentStatus.DETECTED:
-        return 'detection';
+        return 'detection;
       case IncidentStatus.ANALYZING:
-        return 'analysis';
+        return 'analysis;
       case IncidentStatus.CONTAINED:
-        return 'containment';
+        return 'containment;
       case IncidentStatus.ERADICATING:
-        return 'eradication';
+        return 'eradication;
       case IncidentStatus.RECOVERING:
-        return 'recovery';
+        return 'recovery;
       default:
-        return 'communication';
+        return 'communication;
     }
   }
 
@@ -940,10 +940,10 @@ export class SecurityIncidentResponseService {
   ): void {
     switch (status) {
       case IncidentStatus.CONTAINED:
-        this.sendStatusNotification(incident, 'Incident has been contained');
+        this.sendStatusNotification(incident, 'Incident has been contained');'
         break;
       case IncidentStatus.RESOLVED:
-        this.sendStatusNotification(incident, 'Incident has been resolved');
+        this.sendStatusNotification(incident, 'Incident has been resolved');'
         break;
     }
   }
@@ -952,7 +952,7 @@ export class SecurityIncidentResponseService {
     incident: SecurityIncident,
     message: string
   ): void {
-    this.logger.info('Sending status notification', {
+    this.logger.info('Sending status notification', {'
       incidentId: incident.incidentId,
       message,
     });
@@ -971,9 +971,9 @@ export class SecurityIncidentResponseService {
         // Note: Would update action status to COMPLETED
         // action.status = ActionStatus.COMPLETED;
         // action.endTime = new Date();
-        // action.result = `Action ${action.description} completed successfully`;
+        // action.result = `Action ${action.description} completed successfully`;`
 
-        this.logger.info('Containment action completed', {
+        this.logger.info('Containment action completed', {'
           incidentId,
           actionId: action.actionId,
           description: action.description,
@@ -981,9 +981,9 @@ export class SecurityIncidentResponseService {
       } catch (error) {
         // Note: Would update action status to FAILED
         // action.status = ActionStatus.FAILED;
-        // action.result = `Action failed: ${error}`;
+        // action.result = `Action failed: ${error}`;`
 
-        this.logger.error('Containment action failed', {
+        this.logger.error('Containment action failed', {'
           incidentId,
           actionId: action.actionId,
           error,
@@ -993,7 +993,7 @@ export class SecurityIncidentResponseService {
   }
 
   private schedulePostIncidentReview(incidentId: string): void {
-    this.logger.info('Scheduling post-incident review', { incidentId });
+    this.logger.info('Scheduling post-incident review', { incidentId });'
     // Implementation would schedule PIR
   }
 

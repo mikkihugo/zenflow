@@ -18,7 +18,7 @@
  * Designed to be used by Infrastructure facade only.
  *
  * @example Infrastructure Usage
- * ```typescript
+ * ```typescript`
  * import { SystemMonitor, PerformanceTracker, getSystemMonitoring } from '@claude-zen/system-monitoring';
  *
  * // System monitoring
@@ -28,10 +28,10 @@
  *
  * // Performance tracking
  * const tracker = new PerformanceTracker();
- * const timer = tracker.startTimer('database_query');
+ * const timer = tracker.startTimer('database_query');'
  * // ... operation
  * timer();
- * ```
+ * ````
  *
  * @author Claude Code Zen Team
  * @version 1.0.0

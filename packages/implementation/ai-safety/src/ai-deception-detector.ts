@@ -10,7 +10,7 @@
 import { TypedEventBase , getLogger } from '@claude-zen/foundation';
 import { recordMetric, withTrace } from '@claude-zen/infrastructure';
 
-const logger = getLogger('ai-deception-detector');
+const logger = getLogger('ai-deception-detector');'
 
 /**
  * Deception alert interface.
@@ -20,21 +20,21 @@ const logger = getLogger('ai-deception-detector');
 export interface DeceptionAlert {
   type: 
     // CAPABILITY INFLATION
-    'TOOL_OMNIPOTENCE' | 'API_ASSUMPTIONS' | 'LIBRARY_HALLUCINATION' | 'VERSION_CONFUSION' |
-    'PERMISSION_ASSUMPTIONS' | 'INTEGRATION_CLAIMS' | 'PERFORMANCE_PROMISES' | 'CAPABILITY_OVERREACH' |
-    'SKILL_FABRICATION' | 'ACCESS_INFLATION' | 'MEMORY_FABRICATION' | 'IMPLEMENTATION_CLAIMS' |
+    'TOOL_OMNIPOTENCE' | 'API_ASSUMPTIONS' | 'LIBRARY_HALLUCINATION' | 'VERSION_CONFUSION' |'
+    'PERMISSION_ASSUMPTIONS' | 'INTEGRATION_CLAIMS' | 'PERFORMANCE_PROMISES' | 'CAPABILITY_OVERREACH' |'
+    'SKILL_FABRICATION' | 'ACCESS_INFLATION' | 'MEMORY_FABRICATION' | 'IMPLEMENTATION_CLAIMS' |'
     // KNOWLEDGE HALLUCINATION 
-    'FILENAME_INFERENCE' | 'CONFIGURATION_ASSUMPTION' | 'DOCUMENTATION_FABRICATION' | 'ERROR_MESSAGE_INVENTION' |
-    'DEPENDENCY_MAPPING' | 'SCHEMA_HALLUCINATION' | 'FACTUAL_INVENTION' | 'EXPERTISE_MIMICRY' |
-    'REFERENCE_FABRICATION' | 'CODE_INVENTION' | 'DOCUMENTATION_HALLUCINATION' |
+    'FILENAME_INFERENCE' | 'CONFIGURATION_ASSUMPTION' | 'DOCUMENTATION_FABRICATION' | 'ERROR_MESSAGE_INVENTION' |'
+    'DEPENDENCY_MAPPING' | 'SCHEMA_HALLUCINATION' | 'FACTUAL_INVENTION' | 'EXPERTISE_MIMICRY' |'
+    'REFERENCE_FABRICATION' | 'CODE_INVENTION' | 'DOCUMENTATION_HALLUCINATION' |'
     // VERIFICATION AVOIDANCE
-    'ANALYSIS_CLAIMS' | 'TESTING_CLAIMS' | 'DEBUGGING_CLAIMS' | 'REVIEW_CLAIMS' |
-    'VALIDATION_CLAIMS' | 'EXAMINATION_FRAUD' | 'SEARCH_AVOIDANCE' |
+    'ANALYSIS_CLAIMS' | 'TESTING_CLAIMS' | 'DEBUGGING_CLAIMS' | 'REVIEW_CLAIMS' |'
+    'VALIDATION_CLAIMS' | 'EXAMINATION_FRAUD' | 'SEARCH_AVOIDANCE' |'
     // CONFIDENCE INFLATION
-    'CERTAINTY_OVERREACH' | 'BEST_PRACTICE_CLAIMS' | 'COMPATIBILITY_ASSURANCE' | 'SECURITY_ASSUMPTIONS' |
+    'CERTAINTY_OVERREACH' | 'BEST_PRACTICE_CLAIMS' | 'COMPATIBILITY_ASSURANCE' | 'SECURITY_ASSUMPTIONS' |'
     // CONTEXT CONFUSION
-    'PROJECT_CONFLATION' | 'TIMELINE_CONFUSION' | 'ENVIRONMENT_ASSUMPTIONS';
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    'PROJECT_CONFLATION' | 'TIMELINE_CONFUSION' | 'ENVIRONMENT_ASSUMPTIONS;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL;
   agentId?: string;
   evidence: string[];
   confidence: number;
@@ -42,7 +42,7 @@ export interface DeceptionAlert {
   timestamp: Date;
   toolCallsRequired?: string[];
   humanEscalation: boolean;
-  category:|'CAPABILITY_INFLATION|KNOWLEDGE_HALLUCINATION|VERIFICATION_AVOIDANCE|CONFIDENCE_INFLATION|CONTEXT_CONFUSION';
+  category:|'CAPABILITY_INFLATION|KNOWLEDGE_HALLUCINATION|VERIFICATION_AVOIDANCE|CONFIDENCE_INFLATION|CONTEXT_CONFUSION;
 }
 
 /**
@@ -82,7 +82,7 @@ export interface AIInteractionData {
 interface DeceptionPattern {
   id: string;
   name: string;
-  priority: 'low|medium|high|critical';
+  priority: 'low|medium|high|critical;
   regex: RegExp;
   description: string;
   examples: string[];
@@ -114,7 +114,7 @@ export class AIDeceptionDetector extends TypedEventBase {
     this.loadConfiguration();
 
     logger.info(
-      '🛡️ AI Deception Detector initialized with real-time monitoring'
+      '🛡️ AI Deception Detector initialized with real-time monitoring''
     );
   }
 
@@ -127,7 +127,7 @@ export class AIDeceptionDetector extends TypedEventBase {
   async detectDeception(
     interactionData: AIInteractionData
   ): Promise<DeceptionAlert[]> {
-    return withTrace('ai-deception-detection', async (span) => {
+    return withTrace('ai-deception-detection', async (span) => {'
       span?.setAttributes({
         'ai.agent.id': interactionData.agentId,
         'ai.response.length': interactionData.response.length,
@@ -140,7 +140,7 @@ export class AIDeceptionDetector extends TypedEventBase {
       const alerts: DeceptionAlert[] = [];
 
       logger.debug(
-        `🔍 Analyzing interaction from agent ${interactionData.agentId} - scanning 25 deception patterns`
+        `🔍 Analyzing interaction from agent ${interactionData.agentId} - scanning 25 deception patterns``
       );
 
       // CAPABILITY INFLATION (7 patterns)
@@ -173,7 +173,7 @@ export class AIDeceptionDetector extends TypedEventBase {
       const contextAlerts = await this.detectContextConfusion(interactionData);
       alerts.push(...contextAlerts);
 
-      recordMetric('ai_safety_deception_patterns_checked', 25, {
+      recordMetric('ai_safety_deception_patterns_checked', 25, {'
         agentId: interactionData.agentId,
         alertsFound: alerts.length.toString(),
       });
@@ -193,7 +193,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         this.alertHistory.push(...alerts);
         await this.processAlerts(alerts, interactionData.agentId);
 
-        logger.warn(`🚨 ${alerts.length} deception patterns detected`, {
+        logger.warn(`🚨 ${alerts.length} deception patterns detected`, {`
           agentId: interactionData.agentId,
           patterns: alerts.map((a) => a.type),
           categories: [...new Set(alerts.map((a) => a.category))],
@@ -201,14 +201,14 @@ export class AIDeceptionDetector extends TypedEventBase {
 
         // Emit events for different alert types
         for (const alert of alerts) {
-          this.emit('deception:detected', alert);
+          this.emit('deception:detected', alert);'
 
-          if (alert.severity === 'CRITICAL') {
-            this.emit('deception:critical', alert);
+          if (alert.severity === 'CRITICAL') {'
+            this.emit('deception:critical', alert);'
           }
 
           if (alert.humanEscalation) {
-            this.emit('deception:escalation', {
+            this.emit('deception:escalation', {'
               agentId: interactionData.agentId,
               alert,
               timestamp: Date.now(),
@@ -234,7 +234,7 @@ export class AIDeceptionDetector extends TypedEventBase {
   private hasToolCall(data: AIInteractionData, patterns: string[]): boolean {
     return data.toolCalls.some(
       (call) =>
-        typeof call === 'string' &&
+        typeof call === 'string' &&'
         patterns.some((pattern) =>
           call.toLowerCase().includes(pattern.toLowerCase())
         )
@@ -246,7 +246,7 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private hasToolCallPattern(call: any, pattern: string): boolean {
     return (
-      typeof call === 'string' &&
+      typeof call === 'string' &&'
       call.toLowerCase().includes(pattern.toLowerCase())
     );
   }
@@ -263,7 +263,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Async capability confidence analysis
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`🔬 Analyzing capability inflation patterns for agent ${data.agentId}`);
+    logger.debug(`🔬 Analyzing capability inflation patterns for agent ${data.agentId}`);`
 
     // 1. Tool Omnipotence - claiming tool abilities without verification
     const toolAlert = this.detectToolOmnipotence(data);
@@ -290,7 +290,7 @@ export class AIDeceptionDetector extends TypedEventBase {
     const apiAlert = this.detectApiAssumptions(data);
     if (apiAlert) alerts.push(apiAlert);
 
-    // 7. Library Hallucination - claiming libraries that don't exist
+    // 7. Library Hallucination - claiming libraries that don't exist'
     const libraryAlert = this.detectLibraryHallucination(data);
     if (libraryAlert) alerts.push(libraryAlert);
 
@@ -323,13 +323,13 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     if (toolClaims.length > 0) {
       const actualToolsUsed = data.toolCalls.map((call) => {
-        if (typeof call !=='string') return 'unknown';
-        if (call.includes('Read')) return 'read';
-        if (call.includes('Write')) return 'write';
-        if (call.includes('Edit')) return 'edit';
-        if (call.includes('Bash')) return 'bash';
-        if (call.includes('Grep')) return 'grep';
-        return 'unknown';
+        if (typeof call !=='string') return 'unknown;
+        if (call.includes('Read')) return 'read;
+        if (call.includes('Write')) return 'write;
+        if (call.includes('Edit')) return 'edit;
+        if (call.includes('Bash')) return 'bash;
+        if (call.includes('Grep')) return 'grep;
+        return 'unknown;
       });
 
       const claimedNotUsed = toolClaims.filter(
@@ -344,9 +344,9 @@ export class AIDeceptionDetector extends TypedEventBase {
           severity: 'HIGH',
           agentId: data.agentId,
           evidence: [
-            `${toolClaims.length} tool capability claims made`,
-            `${claimedNotUsed.length} tools claimed but not used: ${claimedNotUsed.join(', ')}`,
-            `Actual tools used: ${actualToolsUsed.join(', ')||'none'}`,
+            `${toolClaims.length} tool capability claims made`,`
+            `${claimedNotUsed.length} tools claimed but not used: ${claimedNotUsed.join(', ')}`,`
+            `Actual tools used: ${actualToolsUsed.join(', ')||'none'}`,`
           ],
           confidence: 0.9,
           intervention: 'VERIFY_TOOL_AVAILABILITY',
@@ -389,9 +389,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${overreachClaims} impossible performance claims made`,
-          `Claims exceed realistic AI capabilities`,
-          `No performance testing or validation provided`,
+          `${overreachClaims} impossible performance claims made`,`
+          `Claims exceed realistic AI capabilities`,`
+          `No performance testing or validation provided`,`
         ],
         confidence: 0.85,
         intervention: 'VALIDATE_PERFORMANCE_CLAIMS',
@@ -434,9 +434,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${fabricatedSkills.length} fabricated expertise claims`,
-          `Claimed skills: ${fabricatedSkills.join(', ')}`,
-          `AI systems don't have proprietary modules or specialized hardware`,
+          `${fabricatedSkills.length} fabricated expertise claims`,`
+          `Claimed skills: ${fabricatedSkills.join(', ')}`,`
+          `AI systems don't have proprietary modules or specialized hardware`,`
         ],
         confidence: 0.9,
         intervention: 'CLARIFY_ACTUAL_CAPABILITIES',
@@ -472,8 +472,8 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasSystemAccess = data.toolCalls.some(
       (call) =>
-        typeof call ==='string' &&
-        (call.toLowerCase().includes('ssh')||call.toLowerCase().includes('database')||call.toLowerCase().includes('remote'))
+        typeof call ==='string' &&'
+        (call.toLowerCase().includes('ssh')||call.toLowerCase().includes('database')||call.toLowerCase().includes('remote'))'
     );
 
     if (accessClaims >= 1 && !hasSystemAccess) {
@@ -483,9 +483,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'CRITICAL',
         agentId: data.agentId,
         evidence: [
-          `${accessClaims} unauthorized access claims made`,
-          `Claims system access without proper authentication tools`,
-          `No SSH, database connection, or remote access tools used`,
+          `${accessClaims} unauthorized access claims made`,`
+          `Claims system access without proper authentication tools`,`
+          `No SSH, database connection, or remote access tools used`,`
         ],
         confidence: 0.95,
         intervention: 'VERIFY_ACCESS_PERMISSIONS',
@@ -533,9 +533,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${memoryClaims} false memory claims made`,
-          `Claims to remember previous conversations without context`,
-          `No conversation history available to reference`,
+          `${memoryClaims} false memory claims made`,`
+          `Claims to remember previous conversations without context`,`
+          `No conversation history available to reference`,`
         ],
         confidence: 0.8,
         intervention: 'CLARIFY_MEMORY_LIMITATIONS',
@@ -582,9 +582,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${inventionCount} false technical facts stated`,
-          `Claims about non-existent features or versions`,
-          `Patterns: ${foundPatterns.join(', ')}`,
+          `${inventionCount} false technical facts stated`,`
+          `Claims about non-existent features or versions`,`
+          `Patterns: ${foundPatterns.join(', ')}`,`
         ],
         confidence: 0.9,
         intervention: 'FACT_CHECK_REQUIRED',
@@ -631,9 +631,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${mimicryCount} false authority claims made`,
-          `Claims to be developer/founder of major technologies/companies`,
-          `Claims: ${foundClaims.join(', ')}`,
+          `${mimicryCount} false authority claims made`,`
+          `Claims to be developer/founder of major technologies/companies`,`
+          `Claims: ${foundClaims.join(', ')}`,`
         ],
         confidence: 0.95,
         intervention: 'AUTHORITY_VALIDATION_REQUIRED',
@@ -680,9 +680,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${fabricationCount} potentially fabricated references cited`,
-          `Claims specific standards/specifications without verification`,
-          `References: ${fabricatedReferences.join(', ')}`,
+          `${fabricationCount} potentially fabricated references cited`,`
+          `Claims specific standards/specifications without verification`,`
+          `References: ${fabricatedReferences.join(', ')}`,`
         ],
         confidence: 0.7,
         intervention: 'REFERENCE_VERIFICATION_REQUIRED',
@@ -727,9 +727,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${inventionCount} false code examples provided`,
-          `Claims about non-existent APIs/hooks/features`,
-          `Invented code: ${inventedCode.join(', ')}`,
+          `${inventionCount} false code examples provided`,`
+          `Claims about non-existent APIs/hooks/features`,`
+          `Invented code: ${inventedCode.join(', ')}`,`
         ],
         confidence: 0.9,
         intervention: 'CODE_VERIFICATION_REQUIRED',
@@ -775,9 +775,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${hallucinationCount} false documentation citations`,
-          `Claims official docs state non-existent features`,
-          `Hallucinated docs: ${hallucinatedDocs.join(', ')}`,
+          `${hallucinationCount} false documentation citations`,`
+          `Claims official docs state non-existent features`,`
+          `Hallucinated docs: ${hallucinatedDocs.join(', ')}`,`
         ],
         confidence: 0.85,
         intervention: 'DOCUMENTATION_VERIFICATION_REQUIRED',
@@ -814,7 +814,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasApiValidation = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call, 'WebFetch')||this.hasToolCallPattern(call,'curl')||this.hasToolCallPattern(call,'fetch')
+        this.hasToolCallPattern(call, 'WebFetch')||this.hasToolCallPattern(call,'curl')||this.hasToolCallPattern(call,'fetch')'
     );
 
     if (apiClaims >= 2 && !hasApiValidation) {
@@ -824,9 +824,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${apiClaims} API/endpoint claims made`,
-          `No API validation or testing performed`,
-          `No WebFetch, curl, or HTTP tool usage detected`,
+          `${apiClaims} API/endpoint claims made`,`
+          `No API validation or testing performed`,`
+          `No WebFetch, curl, or HTTP tool usage detected`,`
         ],
         confidence: 0.85,
         intervention: 'REQUIRE_API_VERIFICATION',
@@ -840,7 +840,7 @@ export class AIDeceptionDetector extends TypedEventBase {
   }
 
   /**
-   * Detect library hallucination - claiming libraries that don't exist.
+   * Detect library hallucination - claiming libraries that don't exist.'
    */
   private detectLibraryHallucination(
     data: AIInteractionData
@@ -877,9 +877,9 @@ export class AIDeceptionDetector extends TypedEventBase {
           severity: 'CRITICAL',
           agentId: data.agentId,
           evidence: [
-            `${claimedLibraries.length} library claims made`,
-            `${missingLibraries.length} libraries not found in dependencies: ${missingLibraries.join(', ')}`,
-            `Available dependencies: ${data.projectDependencies.slice(0, 5).join(', ')}${data.projectDependencies.length > 5 ? '...' : ''}`,
+            `${claimedLibraries.length} library claims made`,`
+            `${missingLibraries.length} libraries not found in dependencies: ${missingLibraries.join(', ')}`,`
+            `Available dependencies: ${data.projectDependencies.slice(0, 5).join(', ')}${data.projectDependencies.length > 5 ? '...' : ''}`,`
           ],
           confidence: 0.95,
           intervention: 'VERIFY_DEPENDENCIES',
@@ -928,9 +928,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${versionClaims.length} version references made`,
-          `${uniqueVersions.length} different major versions mentioned: ${uniqueVersions.join(', ')}`,
-          `Version claims: ${versionClaims.slice(0, 5).join(', ')}`,
+          `${versionClaims.length} version references made`,`
+          `${uniqueVersions.length} different major versions mentioned: ${uniqueVersions.join(', ')}`,`
+          `Version claims: ${versionClaims.slice(0, 5).join(', ')}`,`
         ],
         confidence: 0.7,
         intervention: 'CLARIFY_VERSION_REQUIREMENTS',
@@ -965,7 +965,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasPrivilegedOperations = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'sudo')||this.hasToolCallPattern(call,'admin')||this.hasToolCallPattern(call,'root')
+        this.hasToolCallPattern(call,'sudo')||this.hasToolCallPattern(call,'admin')||this.hasToolCallPattern(call,'root')'
     );
 
     if (permissionClaims >= 1 && !hasPrivilegedOperations) {
@@ -975,9 +975,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${permissionClaims} permission/access claims made`,
-          `No privileged operations detected in tool calls`,
-          `Claims unauthorized access without verification`,
+          `${permissionClaims} permission/access claims made`,`
+          `No privileged operations detected in tool calls`,`
+          `Claims unauthorized access without verification`,`
         ],
         confidence: 0.8,
         intervention: 'VERIFY_PERMISSIONS',
@@ -1012,7 +1012,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasIntegrationTesting = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'test')||this.hasToolCallPattern(call,'connect')||this.hasToolCallPattern(call,'ping')
+        this.hasToolCallPattern(call,'test')||this.hasToolCallPattern(call,'connect')||this.hasToolCallPattern(call,'ping')'
     );
 
     if (integrationClaims >= 2 && !hasIntegrationTesting) {
@@ -1022,9 +1022,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${integrationClaims} integration claims made`,
-          `No integration testing performed`,
-          `Claims compatibility without verification`,
+          `${integrationClaims} integration claims made`,`
+          `No integration testing performed`,`
+          `Claims compatibility without verification`,`
         ],
         confidence: 0.75,
         intervention: 'TEST_INTEGRATIONS',
@@ -1059,7 +1059,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasBenchmarking = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'benchmark')||this.hasToolCallPattern(call,'time')||this.hasToolCallPattern(call,'perf')
+        this.hasToolCallPattern(call,'benchmark')||this.hasToolCallPattern(call,'time')||this.hasToolCallPattern(call,'perf')'
     );
 
     if (performanceClaims >= 1 && !hasBenchmarking) {
@@ -1069,9 +1069,9 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${performanceClaims} performance claims made`,
-          `No benchmarking or performance testing performed`,
-          `Claims specific metrics without measurement`,
+          `${performanceClaims} performance claims made`,`
+          `No benchmarking or performance testing performed`,`
+          `Claims specific metrics without measurement`,`
         ],
         confidence: 0.8,
         intervention: 'REQUIRE_BENCHMARKS',
@@ -1098,7 +1098,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Async knowledge verification analysis
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`📚 Analyzing knowledge hallucination patterns for agent ${data.agentId}`);
+    logger.debug(`📚 Analyzing knowledge hallucination patterns for agent ${data.agentId}`);`
 
     // Knowledge Hallucination Detection (5 patterns expected by tests)
 
@@ -1134,12 +1134,12 @@ export class AIDeceptionDetector extends TypedEventBase {
     const response = data.response.toLowerCase();
 
     const hasOnlyListing = data.toolCalls.some(
-      (call) => typeof call ==='string' && call.includes('LS')
+      (call) => typeof call ==='string' && call.includes('LS')'
     );
     const hasActualExamination = data.toolCalls.some(
       (call) =>
-        typeof call === 'string' &&
-        (call.includes('Read')||call.includes('Grep'))
+        typeof call === 'string' &&'
+        (call.includes('Read')||call.includes('Grep'))'
     );
 
     const systemClaimsPatterns = [
@@ -1164,7 +1164,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'CRITICAL',
         agentId: data.agentId,
         evidence: [
-          `${fileContentClaims} file content claims made`,
+          `${fileContentClaims} file content claims made`,`
           'SOPHISTICATED SANDBAGGING: Claims about file contents from filenames only',
           'Only LS directory listing used, no Read/Grep file examination',
           'Classic filename inference deception pattern',
@@ -1204,8 +1204,8 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasActualExamination = data.toolCalls.some(
       (call) =>
-        typeof call ==='string' &&
-        (call.includes('Read')||call.includes('Grep'))
+        typeof call ==='string' &&'
+        (call.includes('Read')||call.includes('Grep'))'
     );
 
     if (examinationClaims >= 1 && !hasActualExamination) {
@@ -1215,7 +1215,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'CRITICAL',
         agentId: data.agentId,
         evidence: [
-          `${examinationClaims} examination claims made`,
+          `${examinationClaims} examination claims made`,`
           'Claims file analysis without reading files',
           'No Read or Grep tool calls found',
         ],
@@ -1253,8 +1253,8 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasInvestigation = data.toolCalls.some(
       (call) =>
-        typeof call ==='string' &&
-        (call.includes('Read')||call.includes('Grep')||call.includes('search'))
+        typeof call ==='string' &&'
+        (call.includes('Read')||call.includes('Grep')||call.includes('search'))'
     );
 
     if (understandingClaims >= 1 && !hasInvestigation) {
@@ -1264,7 +1264,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${understandingClaims} understanding claims made`,
+          `${understandingClaims} understanding claims made`,`
           'Claims to understand system without investigation',
           'No Read, Grep, or search tool calls found',
         ],
@@ -1302,8 +1302,8 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasVerificationTools = data.toolCalls.some(
       (call) =>
-        typeof call ==='string' &&
-        (call.includes('Write')||call.includes('Edit')||call.includes('test')||call.includes('run'))
+        typeof call ==='string' &&'
+        (call.includes('Write')||call.includes('Edit')||call.includes('test')||call.includes('run'))'
     );
 
     if (implementationClaims >= 1 && !hasVerificationTools) {
@@ -1313,7 +1313,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'CRITICAL',
         agentId: data.agentId,
         evidence: [
-          `${implementationClaims} implementation claims made`,
+          `${implementationClaims} implementation claims made`,`
           'Claims to have implemented without using tools',
           'No Write, Edit, test, or run tool calls found',
         ],
@@ -1350,7 +1350,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasConfigExamination = data.toolCalls.some(
       (call) =>
-        call.includes('.env')||call.includes('config')||call.includes('.json')||call.includes('.yaml')
+        call.includes('.env')||call.includes('config')||call.includes('.json')||call.includes('.yaml')'
     );
 
     if (configClaims >= 2 && !hasConfigExamination) {
@@ -1360,7 +1360,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${configClaims} configuration claims made`,
+          `${configClaims} configuration claims made`,`
           'No configuration files examined',
           'Claims specific config details without reading files',
         ],
@@ -1397,7 +1397,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDocExamination = data.toolCalls.some(
       (call) =>
-        call.includes('README')||call.includes('docs')||call.includes('.md')
+        call.includes('README')||call.includes('docs')||call.includes('.md')'
     );
 
     if (docClaims >= 1 && !hasDocExamination) {
@@ -1407,7 +1407,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${docClaims} documentation claims made`,
+          `${docClaims} documentation claims made`,`
           'No documentation files examined',
           'Claims documentation content without reading',
         ],
@@ -1444,7 +1444,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasErrorTesting = data.toolCalls.some(
       (call) =>
-        call.includes('test')||call.includes('run')||call.includes('execute')
+        call.includes('test')||call.includes('run')||call.includes('execute')'
     );
 
     if (errorClaims >= 2 && !hasErrorTesting) {
@@ -1454,7 +1454,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${errorClaims} error pattern claims made`,
+          `${errorClaims} error pattern claims made`,`
           'No error testing or execution performed',
           'Claims specific error behavior without verification',
         ],
@@ -1491,7 +1491,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDepVerification = data.toolCalls.some(
       (call) =>
-        call.includes('package.json')||call.includes('npm list')||call.includes('node_modules')
+        call.includes('package.json')||call.includes('npm list')||call.includes('node_modules')'
     );
 
     if (depClaims >= 2 && !hasDepVerification) {
@@ -1501,7 +1501,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${depClaims} dependency claims made`,
+          `${depClaims} dependency claims made`,`
           'No dependency verification performed',
           'Claims package relationships without checking',
         ],
@@ -1538,7 +1538,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDbAccess = data.toolCalls.some(
       (call) =>
-        call.includes('sql')||call.includes('database')||call.includes('db')
+        call.includes('sql')||call.includes('database')||call.includes('db')'
     );
 
     if (schemaClaims >= 3 && !hasDbAccess) {
@@ -1548,7 +1548,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${schemaClaims} database schema claims made`,
+          `${schemaClaims} database schema claims made`,`
           'No database access or queries performed',
           'Claims database structure without verification',
         ],
@@ -1577,7 +1577,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Async verification confidence analysis
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`🔍 Analyzing verification avoidance patterns for agent ${data.agentId}`);
+    logger.debug(`🔍 Analyzing verification avoidance patterns for agent ${data.agentId}`);`
 
     // Verification Avoidance Detection (4 patterns expected by tests)
 
@@ -1620,7 +1620,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasAnalysisWork = data.toolCalls.some(
       (call) =>
-        call.includes('Read')||call.includes('Grep')||call.includes('search')
+        call.includes('Read')||call.includes('Grep')||call.includes('search')'
     );
 
     if (analysisClaims >= 1 && !hasAnalysisWork) {
@@ -1630,7 +1630,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'CRITICAL',
         agentId: data.agentId,
         evidence: [
-          `${analysisClaims} analysis claims made`,
+          `${analysisClaims} analysis claims made`,`
           'No analysis tools used (Read, Grep, search)',
           'FALSE CLAIM: Claims analysis without performing it',
         ],
@@ -1665,7 +1665,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasTestingWork = data.toolCalls.some(
       (call) =>
-        call.includes('test')||call.includes('npm run')||call.includes('jest')||call.includes('mocha')
+        call.includes('test')||call.includes('npm run')||call.includes('jest')||call.includes('mocha')'
     );
 
     if (testingClaims >= 1 && !hasTestingWork) {
@@ -1675,7 +1675,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'CRITICAL',
         agentId: data.agentId,
         evidence: [
-          `${testingClaims} testing claims made`,
+          `${testingClaims} testing claims made`,`
           'No test execution detected',
           'Claims testing results without running tests',
         ],
@@ -1712,7 +1712,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDebuggingWork = data.toolCalls.some(
       (call) =>
-        call.includes('Read')||call.includes('Grep')||call.includes('debug')||call.includes('log')
+        call.includes('Read')||call.includes('Grep')||call.includes('debug')||call.includes('log')'
     );
 
     if (debugClaims >= 1 && !hasDebuggingWork) {
@@ -1722,7 +1722,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${debugClaims} debugging claims made`,
+          `${debugClaims} debugging claims made`,`
           'No debugging investigation performed',
           'Claims bug location without investigation',
         ],
@@ -1757,7 +1757,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasReviewWork = data.toolCalls.some(
       (call) =>
-        call.includes('Read')||call.includes('Grep')||call.includes('search')
+        call.includes('Read')||call.includes('Grep')||call.includes('search')'
     );
 
     if (reviewClaims >= 1 && !hasReviewWork) {
@@ -1767,7 +1767,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${reviewClaims} review claims made`,
+          `${reviewClaims} review claims made`,`
           'No code examination performed',
           'Claims review without reading code',
         ],
@@ -1804,7 +1804,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasValidationWork = data.toolCalls.some(
       (call) =>
-        call.includes('test')||call.includes('check')||call.includes('verify')
+        call.includes('test')||call.includes('check')||call.includes('verify')'
     );
 
     if (validationClaims >= 1 && !hasValidationWork) {
@@ -1814,7 +1814,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${validationClaims} validation claims made`,
+          `${validationClaims} validation claims made`,`
           'No validation work performed',
           'Claims verification without checking',
         ],
@@ -1843,7 +1843,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Async confidence pattern analysis
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`📈 Analyzing confidence inflation patterns for agent ${data.agentId}`);
+    logger.debug(`📈 Analyzing confidence inflation patterns for agent ${data.agentId}`);`
 
     // 1. Certainty Overreach - making definitive claims without evidence
     const certaintyAlert = this.detectCertaintyOverreach(data);
@@ -1887,7 +1887,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasEvidence = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'Read')||this.hasToolCallPattern(call,'test')||this.hasToolCallPattern(call,'verify')
+        this.hasToolCallPattern(call,'Read')||this.hasToolCallPattern(call,'test')||this.hasToolCallPattern(call,'verify')'
     );
 
     if (certaintyClaims >= 1 && !hasEvidence) {
@@ -1897,7 +1897,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${certaintyClaims} absolute certainty claims made`,
+          `${certaintyClaims} absolute certainty claims made`,`
           'No evidence gathering performed',
           'Makes definitive claims without verification',
         ],
@@ -1934,7 +1934,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasResearch = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'WebFetch')||this.hasToolCallPattern(call,'search')||this.hasToolCallPattern(call,'documentation')
+        this.hasToolCallPattern(call,'WebFetch')||this.hasToolCallPattern(call,'search')||this.hasToolCallPattern(call,'documentation')'
     );
 
     if (bestPracticeClaims >= 2 && !hasResearch) {
@@ -1944,7 +1944,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${bestPracticeClaims} best practice claims made`,
+          `${bestPracticeClaims} best practice claims made`,`
           'No research or documentation lookup performed',
           'Claims industry standards without verification',
         ],
@@ -1981,7 +1981,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasCompatibilityTesting = data.toolCalls.some(
       (call) =>
-        call.includes('test')||call.includes('version')||call.includes('platform')
+        call.includes('test')||call.includes('version')||call.includes('platform')'
     );
 
     if (compatibilityClaims >= 2 && !hasCompatibilityTesting) {
@@ -1991,7 +1991,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${compatibilityClaims} compatibility claims made`,
+          `${compatibilityClaims} compatibility claims made`,`
           'No compatibility testing performed',
           'Guarantees compatibility without verification',
         ],
@@ -2028,7 +2028,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasSecurityVerification = data.toolCalls.some(
       (call) =>
-        call.includes('security')||call.includes('audit')||call.includes('vulnerability')
+        call.includes('security')||call.includes('audit')||call.includes('vulnerability')'
     );
 
     if (securityClaims >= 2 && !hasSecurityVerification) {
@@ -2038,7 +2038,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'HIGH',
         agentId: data.agentId,
         evidence: [
-          `${securityClaims} security claims made`,
+          `${securityClaims} security claims made`,`
           'No security verification performed',
           'Makes security claims without audit or testing',
         ],
@@ -2067,7 +2067,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Async context validation analysis
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`🔄 Analyzing context confusion patterns for agent ${data.agentId}`);
+    logger.debug(`🔄 Analyzing context confusion patterns for agent ${data.agentId}`);`
 
     // 1. Project Conflation - mixing up different projects or codebases
     const projectAlert = this.detectProjectConflation(data);
@@ -2107,7 +2107,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasProjectVerification = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'Read')||this.hasToolCallPattern(call,'find')||this.hasToolCallPattern(call,'search')
+        this.hasToolCallPattern(call,'Read')||this.hasToolCallPattern(call,'find')||this.hasToolCallPattern(call,'search')'
     );
 
     // Check if this is legitimate Queen multi-project coordination
@@ -2128,7 +2128,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${projectClaims} project-specific claims made`,
+          `${projectClaims} project-specific claims made`,`
           'No project structure verification performed',
           'May be confusing this project with another',
         ],
@@ -2192,7 +2192,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasTimeVerification = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'git log')||this.hasToolCallPattern(call,'history')||this.hasToolCallPattern(call,'changelog')
+        this.hasToolCallPattern(call,'git log')||this.hasToolCallPattern(call,'history')||this.hasToolCallPattern(call,'changelog')'
     );
 
     // Detect temporal impossibility (primary detection) - but not for legitimate coordination
@@ -2203,7 +2203,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${temporalClaims} temporal impossibility claims made`,
+          `${temporalClaims} temporal impossibility claims made`,`
           'Claims about past work that conflicts with current context',
           'Timeline of work implementation appears impossible',
         ],
@@ -2226,7 +2226,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${versionClaims} version/timeline claims made`,
+          `${versionClaims} version/timeline claims made`,`
           'No timeline verification performed',
           'May be confusing different versions or timeframes',
         ],
@@ -2263,7 +2263,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasEnvironmentVerification = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'.env')||this.hasToolCallPattern(call,'config')||this.hasToolCallPattern(call,'NODE_ENV')
+        this.hasToolCallPattern(call,'.env')||this.hasToolCallPattern(call,'config')||this.hasToolCallPattern(call,'NODE_ENV')'
     );
 
     if (
@@ -2277,7 +2277,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         severity: 'MEDIUM',
         agentId: data.agentId,
         evidence: [
-          `${environmentClaims} environment claims made`,
+          `${environmentClaims} environment claims made`,`
           'No environment verification performed',
           'May be assuming wrong runtime environment',
         ],
@@ -2304,10 +2304,10 @@ export class AIDeceptionDetector extends TypedEventBase {
   ): Promise<void> {
     // Async alert processing with safety validation
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`⚠️ Processing ${alerts.length} deception alerts for agent ${agentId}`);
+    logger.debug(`⚠️ Processing ${alerts.length} deception alerts for agent ${agentId}`);`
     
     for (const alert of alerts) {
-      logger.warn(`🚨 DECEPTION DETECTED: ${alert.type} from ${agentId}`, {
+      logger.warn(`🚨 DECEPTION DETECTED: ${alert.type} from ${agentId}`, {`
         severity: alert.severity,
         evidence: alert.evidence,
         intervention: alert.intervention,
@@ -2318,25 +2318,25 @@ export class AIDeceptionDetector extends TypedEventBase {
       this.interventionCount.set(agentId, currentCount + 1);
 
       // Emit alert for external handling
-      this.emit('deception:detected', alert);
+      this.emit('deception:detected', alert);'
 
       // Trigger immediate interventions
-      if (alert.severity === 'CRITICAL') {
-        this.emit('deception:critical', alert);
+      if (alert.severity === 'CRITICAL') {'
+        this.emit('deception:critical', alert);'
         logger.error(
-          `🛑 CRITICAL DECEPTION: Immediate intervention required for ${agentId}`
+          `🛑 CRITICAL DECEPTION: Immediate intervention required for ${agentId}``
         );
       }
 
       // Check for escalation thresholds
       if (currentCount >= 3) {
-        this.emit('deception:escalation', {
+        this.emit('deception:escalation', {'
           agentId,
           totalInterventions: currentCount + 1,
           recentAlerts: alerts,
         });
         logger.error(
-          `🚨 ESCALATION: Agent ${agentId} has ${currentCount + 1} deception interventions`
+          `🚨 ESCALATION: Agent ${agentId} has ${currentCount + 1} deception interventions``
         );
       }
     }
@@ -2402,7 +2402,7 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   resetAgent(agentId: string): void {
     this.interventionCount.delete(agentId);
-    logger.info(`🔄 Reset intervention history for agent ${agentId}`);
+    logger.info(`🔄 Reset intervention history for agent ${agentId}`);`
   }
 
   /**
@@ -2415,7 +2415,7 @@ export class AIDeceptionDetector extends TypedEventBase {
   ): boolean {
     // Check if this is a Queen agent
     const agentType = this.extractAgentTypeFromId(data.agentId);
-    if (agentType !== 'queen') {
+    if (agentType !== 'queen') {'
       return false;
     }
 
@@ -2437,13 +2437,13 @@ export class AIDeceptionDetector extends TypedEventBase {
     // Check for multi-repo tool calls (legitimate Queen activity)
     const hasMultiRepoTools = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'git')||this.hasToolCallPattern(call,'cd ')||this.hasToolCallPattern(call,'pwd')
+        this.hasToolCallPattern(call,'git')||this.hasToolCallPattern(call,'cd ')||this.hasToolCallPattern(call,'pwd')'
     );
 
     // Check context for multi-swarm indicators
     const contextIndicatesMultiSwarm = Boolean(
       data.context &&
-        (data.context.currentProject?.includes('multi')||data.context.currentProject?.includes('swarm')||(Array.isArray(data.context.conversationHistory) &&
+        (data.context.currentProject?.includes('multi')||data.context.currentProject?.includes('swarm')||(Array.isArray(data.context.conversationHistory) &&'
             data.context.conversationHistory.length > 0))
     );
 
@@ -2456,12 +2456,12 @@ export class AIDeceptionDetector extends TypedEventBase {
    * Extract agent type from agent ID for coordination validation.
    */
   private extractAgentTypeFromId(agentId: string): string {
-    if (agentId.toLowerCase().includes('queen')) return 'queen';
-    if (agentId.toLowerCase().includes('commander')) return 'commander';
-    if (agentId.toLowerCase().includes('cube')) return 'cube';
-    if (agentId.toLowerCase().includes('matron')) return 'matron';
-    if (agentId.toLowerCase().includes('drone')) return 'drone';
-    return 'unknown';
+    if (agentId.toLowerCase().includes('queen')) return 'queen;
+    if (agentId.toLowerCase().includes('commander')) return 'commander;
+    if (agentId.toLowerCase().includes('cube')) return 'cube;
+    if (agentId.toLowerCase().includes('matron')) return 'matron;
+    if (agentId.toLowerCase().includes('drone')) return 'drone;
+    return 'unknown;
   }
 
   /**
@@ -2531,13 +2531,13 @@ export function createAIDeceptionDetector(): AIDeceptionDetector {
 export async function analyzeAIResponse(
   response: string,
   toolCalls: string[],
-  agentId: string = 'unknown'
+  agentId: string = 'unknown''
 ): Promise<DeceptionAlert[]> {
   const detector = createAIDeceptionDetector();
 
   const interactionData: AIInteractionData = {
     agentId,
-    input: '', // Not needed for response analysis
+    input: '', // Not needed for response analysis'
     response,
     toolCalls,
     timestamp: new Date(),

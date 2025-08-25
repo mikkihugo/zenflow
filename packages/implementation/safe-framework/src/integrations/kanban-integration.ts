@@ -32,14 +32,14 @@ import {
   type WorkflowBottleneck,
 } from '@claude-zen/taskmaster';
 
-// Define constants since they're expected by SAFe integration
+// Define constants since they're expected by SAFe integration'
 const ALL_WORKFLOW_STATES: TaskState[] = [
   'backlog',
-  'analysis', 
+  'analysis', '
   'development',
   'testing',
   'deployment',
-  'done'
+  'done''
 ];
 
 const DEFAULT_WORKFLOW_STATES: TaskState[] = ALL_WORKFLOW_STATES;
@@ -48,7 +48,7 @@ import type { Logger } from '@claude-zen/foundation';
 // Use Node.js EventEmitter until event-system is implemented
 import { EventEmitter } from 'node:events';
 
-// Define WSJFPriority type locally since it's not exported yet
+// Define WSJFPriority type locally since it's not exported yet'
 interface WSJFPriority {
   businessValue: number;
   urgency: number;
@@ -75,22 +75,22 @@ import type {
 /**
  * Portfolio Kanban states for Epic lifecycle (SAFe-specific)
  */
-export type SafePortfolioKanbanState =|'funnel'// Ideas and opportunities|'analyzing'// Business case analysis and WSJF|'portfolio_backlog'// Prioritized and approved epics|'implementing'// Active development across ARTs|'done'; // Epic completed and value delivered
+export type SafePortfolioKanbanState =|'funnel'// Ideas and opportunities|'analyzing'// Business case analysis and WSJF|'portfolio_backlog'// Prioritized and approved epics|'implementing'// Active development across ARTs|'done'; // Epic completed and value delivered'
 
 /**
  * Program Kanban states for Feature flow (SAFe-specific)
  */
-export type SafeProgramKanbanState =|'backlog'// Feature backlog|'analysis'// Feature analysis and acceptance criteria|'development'// Implementation across teams|'testing'// Integration and system testing|'review'// Demo and stakeholder review|'deployment'// Production deployment|'done'; // Feature delivered
+export type SafeProgramKanbanState =|'backlog'// Feature backlog|'analysis'// Feature analysis and acceptance criteria|'development'// Implementation across teams|'testing'// Integration and system testing|'review'// Demo and stakeholder review|'deployment'// Production deployment|'done'; // Feature delivered'
 
 /**
  * Team Kanban states for Story and Task flow (SAFe-specific)
  */
-export type SafeTeamKanbanState =|'backlog'// Product backlog|'analysis'// Story analysis and task breakdown|'development'// Implementation|'testing'// Unit and integration testing|'review'// Code review and acceptance|'deployment'// Deployment and verification|'done'; // Story complete
+export type SafeTeamKanbanState =|'backlog'// Product backlog|'analysis'// Story analysis and task breakdown|'development'// Implementation|'testing'// Unit and integration testing|'review'// Code review and acceptance|'deployment'// Deployment and verification|'done'; // Story complete'
 
 /**
  * Solution Kanban states for large solution coordination (SAFe-specific)
  */
-export type SafeSolutionKanbanState =|'vision'// Solution vision and architecture|'analysis'// Solution analysis and capability mapping|'development'// Cross-ART development coordination|'integration'// Solution integration and testing|'validation'// Solution validation and demo|'deployment'// Solution deployment|'done'; // Solution capability delivered
+export type SafeSolutionKanbanState =|'vision'// Solution vision and architecture|'analysis'// Solution analysis and capability mapping|'development'// Cross-ART development coordination|'integration'// Solution integration and testing|'validation'// Solution validation and demo|'deployment'// Solution deployment|'done'; // Solution capability delivered'
 
 // ============================================================================
 // SAFE WORKFLOW CONFIGURATIONS
@@ -105,7 +105,7 @@ export function createSafePortfolioKanbanConfig(
   return {
     // Portfolio-specific workflow states (maps to Epic lifecycle)
     workflowStates: [
-      'funnel', // → analyzing → portfolio_backlog → implementing → done
+      'funnel', // → analyzing → portfolio_backlog → implementing → done'
       'analyzing',
       'portfolio_backlog',
       'implementing',
@@ -150,9 +150,9 @@ export function createSafePortfolioKanbanConfig(
     flowOptimizationConfig: {
       enabled: true,
       strategies: [
-        'wip_reduction', // Reduce WIP to improve flow
-        'bottleneck_removal', // Remove portfolio bottlenecks
-        'parallel_processing', // Parallelize epic analysis
+        'wip_reduction', // Reduce WIP to improve flow'
+        'bottleneck_removal', // Remove portfolio bottlenecks'
+        'parallel_processing', // Parallelize epic analysis'
       ],
       optimizationInterval: 7 * 24 * 60 * 60 * 1000, // Weekly optimization
     },
@@ -291,7 +291,7 @@ export async function createSafePortfolioKanban(
   const kanban = createWorkflowKanban(config);
 
   // Initialize with logging
-  logger.info('Creating SAFe Portfolio Kanban', {
+  logger.info('Creating SAFe Portfolio Kanban', {'
     wipLimits: config.defaultWIPLimits,
     states: config.workflowStates,
   });
@@ -314,7 +314,7 @@ export async function createSafeProgramKanban(
   const config = createSafeProgramKanbanConfig(eventBus);
   const kanban = createWorkflowKanban(config);
 
-  logger.info('Creating SAFe Program Kanban', {
+  logger.info('Creating SAFe Program Kanban', {'
     wipLimits: config.defaultWIPLimits,
     states: config.workflowStates,
   });
@@ -335,7 +335,7 @@ export async function createSafeTeamKanban(
   const config = createSafeTeamKanbanConfig(eventBus);
   const kanban = createWorkflowKanban(config);
 
-  logger.info('Creating SAFe Team Kanban', {
+  logger.info('Creating SAFe Team Kanban', {'
     wipLimits: config.defaultWIPLimits,
     states: config.workflowStates,
   });
@@ -358,8 +358,8 @@ function configureSafePortfolioEvents(
   logger: Logger
 ): void {
   // Epic business case validation events
-  kanban.on('task:created', (task) => {
-    logger.info('Portfolio Epic created', {
+  kanban.on('task:created', (task) => {'
+    logger.info('Portfolio Epic created', {'
       epicId: task.id,
       title: task.title,
       priority: task.priority,
@@ -367,14 +367,14 @@ function configureSafePortfolioEvents(
   });
 
   // WSJF calculation events
-  kanban.on('task:moved', (task, fromState, toState) => {
-    if (toState === 'analyzing') {
-      logger.info('Epic entered analysis', {
+  kanban.on('task:moved', (task, fromState, toState) => {'
+    if (toState === 'analyzing') {'
+      logger.info('Epic entered analysis', {'
         epicId: task.id,
         wsjfCalculationNeeded: true,
       });
-    } else if (toState === 'portfolio_backlog') {
-      logger.info('Epic approved for portfolio backlog', {
+    } else if (toState === 'portfolio_backlog') {'
+      logger.info('Epic approved for portfolio backlog', {'
         epicId: task.id,
         wsjfScore: task.metadata?.wsjfScore,
       });
@@ -382,8 +382,8 @@ function configureSafePortfolioEvents(
   });
 
   // Portfolio bottleneck alerts
-  kanban.on('bottleneck:detected', (bottleneck) => {
-    logger.warn('Portfolio bottleneck detected', {
+  kanban.on('bottleneck:detected', (bottleneck) => {'
+    logger.warn('Portfolio bottleneck detected', {'
       state: bottleneck.state,
       severity: bottleneck.severity,
       recommendedAction: bottleneck.recommendations[0],
@@ -391,8 +391,8 @@ function configureSafePortfolioEvents(
   });
 
   // WIP limit enforcement at portfolio level
-  kanban.on('wip:exceeded', (state, count, limit) => {
-    logger.warn('Portfolio WIP limit exceeded', {
+  kanban.on('wip:exceeded', (state, count, limit) => {'
+    logger.warn('Portfolio WIP limit exceeded', {'
       state,
       currentCount: count,
       limit,
@@ -408,24 +408,24 @@ function configureSafeProgramEvents(
   kanban: WorkflowKanban,
   logger: Logger
 ): void {
-  kanban.on('task:created', (task) => {
-    logger.info('Program Feature created', {
+  kanban.on('task:created', (task) => {'
+    logger.info('Program Feature created', {'
       featureId: task.id,
       title: task.title,
       pi: task.metadata?.programIncrement,
     });
   });
 
-  kanban.on('bottleneck:detected', (bottleneck) => {
-    logger.warn('Program bottleneck detected', {
+  kanban.on('bottleneck:detected', (bottleneck) => {'
+    logger.warn('Program bottleneck detected', {'
       state: bottleneck.state,
       impact: 'May affect PI objectives',
       severity: bottleneck.severity,
     });
   });
 
-  kanban.on('wip:exceeded', (state, count, limit) => {
-    logger.warn('Program WIP limit exceeded', {
+  kanban.on('wip:exceeded', (state, count, limit) => {'
+    logger.warn('Program WIP limit exceeded', {'
       state,
       currentCount: count,
       limit,
@@ -438,24 +438,24 @@ function configureSafeProgramEvents(
  * Configure Team Kanban events for Story/Task flow
  */
 function configureSafeTeamEvents(kanban: WorkflowKanban, logger: Logger): void {
-  kanban.on('task:created', (task) => {
-    logger.info('Team Story created', {
+  kanban.on('task:created', (task) => {'
+    logger.info('Team Story created', {'
       storyId: task.id,
       title: task.title,
       storyPoints: task.metadata?.storyPoints,
     });
   });
 
-  kanban.on('bottleneck:detected', (bottleneck) => {
-    logger.warn('Team bottleneck detected', {
+  kanban.on('bottleneck:detected', (bottleneck) => {'
+    logger.warn('Team bottleneck detected', {'
       state: bottleneck.state,
       impact: 'Sprint commitment at risk',
       severity: bottleneck.severity,
     });
   });
 
-  kanban.on('wip:exceeded', (state, count, limit) => {
-    logger.warn('Team WIP limit exceeded', {
+  kanban.on('wip:exceeded', (state, count, limit) => {'
+    logger.warn('Team WIP limit exceeded', {'
       state,
       currentCount: count,
       limit,
@@ -486,7 +486,7 @@ export function portfolioEpicToKanbanTask(
     createdAt: (epic as any).createdAt||new Date(),
     updatedAt: (epic as any).lastModified||new Date(),
     completedAt:
-      ((epic as any).state||epic.status) ==='done'? (epic as any).lastModified
+      ((epic as any).state||epic.status) ==='done'? (epic as any).lastModified'
         : undefined,
     dependencies: (epic as any).dependencies?.map((d: any) => d.id)||[],
     tags: [(epic as any).category||'epic', ...((epic as any).themes||[])],
@@ -571,17 +571,17 @@ function mapPortfolioStateToKanbanState(portfolioState: string): TaskState {
     done: 'done',
   };
 
-  return stateMap[portfolioState]||'backlog';
+  return stateMap[portfolioState]||'backlog;
 }
 
 /**
  * Map epic priority ranking to kanban task priority
  */
 function mapEpicPriorityToKanbanPriority(ranking: number): TaskPriority {
-  if (ranking === 1) return 'critical';
-  if (ranking <= 3) return 'high';
-  if (ranking <= 7) return 'medium';
-  return 'low';
+  if (ranking === 1) return 'critical;
+  if (ranking <= 3) return 'high;
+  if (ranking <= 7) return 'medium;
+  return 'low;
 }
 
 // ============================================================================

@@ -25,7 +25,7 @@ export interface VectorDocument {
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  metric?: 'cosine|l2|dot';
+  metric?: 'cosine|l2|dot;
 }
 
 // Graph database types
@@ -51,7 +51,7 @@ export interface GraphPath {
 
 // Health and performance types
 export interface HealthStatus {
-  status: 'healthy|unhealthy|degraded';
+  status: 'healthy' | 'unhealthy' | 'degraded';
   uptime?: number;
   lastCheck?: Date;
   details?: Record<string, any>;
@@ -67,7 +67,7 @@ export interface PerformanceMetrics {
 
 // Re-export database configuration types
 export interface DatabaseConfig {
-  readonly type: 'sqlite|postgresql|mysql';
+  readonly type: 'sqlite' | 'postgresql' | 'mysql';
   readonly host?: string;
   readonly port?: number;
   readonly database: string;
@@ -118,8 +118,8 @@ export interface DocumentSearchOptions {
   readonly tags?: readonly string[];
   readonly limit?: number;
   readonly offset?: number;
-  readonly sortBy?: 'created_at|updated_at|title|type';
-  readonly sortOrder?: 'asc|desc';
+  readonly sortBy?: 'created_at|updated_at|title|type;
+  readonly sortOrder?: 'asc|desc;
 }
 
 export interface DocumentSearchResult<T = BaseEntity> {
@@ -150,7 +150,7 @@ export interface BulkOperationResult<T = unknown> {
 
 // Database health and monitoring
 export interface DatabaseHealthStatus {
-  readonly status: 'healthy|degraded|unhealthy';
+  readonly status: 'healthy' | 'degraded' | 'unhealthy';
   readonly connection: boolean;
   readonly latency: number;
   readonly activeConnections: number;
@@ -208,13 +208,13 @@ export interface QueryCondition {
 export interface QueryOptions {
   readonly select?: readonly string[];
   readonly where?: readonly QueryCondition[];
-  readonly orderBy?: readonly { field: string; direction: 'ASC' | 'DESC' }[];
+  readonly orderBy?: readonly { field: string; direction: 'ASC' | 'DESC' }[];'
   readonly limit?: number;
   readonly offset?: number;
   readonly joins?: readonly {
     table: string;
     on: string;
-    type?: 'NNER|LEFT|RIGHT|FULL';
+    type?: 'NNER|LEFT|RIGHT|FULL;
   }[];
 }
 
@@ -222,7 +222,7 @@ export interface QueryOptions {
 export interface TransactionContext {
   readonly id: string;
   readonly startTime: string;
-  readonly isolation:|'READ_UNCOMMITTED|READ_COMMITTED|REPEATABLE_READ|SERIALIZABLE';
+  readonly isolation:|'READ_UNCOMMITTED|READ_COMMITTED|REPEATABLE_READ|SERIALIZABLE;
   commit(): Promise<void>;
   rollback(): Promise<void>;
 }
@@ -244,7 +244,7 @@ export class MigrationError extends DatabaseError {
     message: string,
     public readonly migrationVersion?: string,
   ) {
-    super(message, 'MIGRATION_ERROR');
+    super(message, 'MIGRATION_ERROR');'
     this.name = 'MigrationError';
   }
 }
@@ -254,7 +254,7 @@ export class ConnectionError extends DatabaseError {
     message: string,
     public readonly connectionConfig?: Partial<DatabaseConfig>,
   ) {
-    super(message, 'CONNECTION_ERROR');
+    super(message, 'CONNECTION_ERROR');'
     this.name = 'ConnectionError';
   }
 }
@@ -265,7 +265,7 @@ export class QueryError extends DatabaseError {
     public readonly query?: string,
     public readonly parameters?: unknown[],
   ) {
-    super(message, 'QUERY_ERROR');
+    super(message, 'QUERY_ERROR');'
     this.name = 'QueryError';
   }
 }
@@ -279,7 +279,7 @@ export type EntityPriority = 'low' | 'medium' | 'high' | 'critical';
 
 // Event types for database operations
 export interface DatabaseEvent {
-  readonly type: 'created' | 'updated' | 'deleted' | 'migrated' | 'connected' | 'disconnected';
+  readonly type: 'created' | 'updated' | 'deleted' | 'migrated' | 'connected' | 'disconnected;
   readonly entityType?: EntityType;
   readonly entityId?: string;
   readonly timestamp: string;
@@ -291,7 +291,7 @@ export interface BackupOptions {
   readonly path: string;
   readonly includeData?: boolean;
   readonly includeSchema?: boolean;
-  readonly compression?: 'none|gzip|lz4';
+  readonly compression?: 'none|gzip|lz4;
   readonly encryption?: boolean;
   readonly metadata?: Record<string, unknown>;
 }

@@ -20,15 +20,15 @@ import type {
 import { githubCopilotDB } from '../api/github-copilot-db';
 import { githubModelsDB } from '../api/github-models-db';
 
-const logger = getLogger('ProviderDatabaseRegistry');
+const logger = getLogger('ProviderDatabaseRegistry');'
 
 /**
  * Provider Database Registry Events
  */
 export interface ProviderDatabaseRegistryEvents {
-  'database:registered': { providerId: string; modelCount: number };
-  'database:updated': { providerId: string; modelCount: number };
-  'models:changed': { providerId: string; added: number; removed: number };
+  'database:registered': { providerId: string; modelCount: number };'
+  'database:updated': { providerId: string; modelCount: number };'
+  'models:changed': { providerId: string; added: number; removed: number };'
 }
 
 /**
@@ -49,7 +49,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
    */
   private initializeBuiltinDatabases(): void {
     // Register GitHub Copilot DB
-    this.registerDatabase('github-copilot', {
+    this.registerDatabase('github-copilot', {'
       getAllModels: () => githubCopilotDB.getAllModels(),
       getModel: (id: string) => githubCopilotDB.getModel(id),
       getModelsByCategory: (category: string) => 
@@ -95,7 +95,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
     });
 
     // Register GitHub Models DB
-    this.registerDatabase('github-models', {
+    this.registerDatabase('github-models', {'
       getAllModels: () => githubModelsDB.getAllModels(),
       getModel: (id: string) => githubModelsDB.getModel(id),
       getModelsByCategory: (category: string) => 
@@ -114,7 +114,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
         maxTokens: model.maxOutputTokens,
         supportsStreaming: true, // GitHub Models API supports streaming
         supportsVision: model.supportsVision,
-        supportsToolCalls: false, // GitHub Models API doesn't support tools
+        supportsToolCalls: false, // GitHub Models API doesn't support tools'
         available: true,
         lastUpdated: model.lastUpdated,
         
@@ -138,7 +138,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
       }),
     });
 
-    logger.info(`✅ Initialized ${this.databases.size} provider databases`);
+    logger.info(`✅ Initialized ${this.databases.size} provider databases`);`
   }
 
   /**
@@ -148,8 +148,8 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
     this.databases.set(providerId, database);
     const modelCount = database.getAllModels().length;
     
-    this.emit('database:registered', { providerId, modelCount });
-    logger.info(`📊 Registered ${providerId} database with ${modelCount} models`);
+    this.emit('database:registered', { providerId, modelCount });'
+    logger.info(`📊 Registered ${providerId} database with ${modelCount} models`);`
   }
 
   /**
@@ -196,8 +196,8 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
     }
 
     // Parse provider from model ID (format: provider:model)
-    const [providerId, id] = modelId.includes(':') 
-      ? modelId.split(':', 2) 
+    const [providerId, id] = modelId.includes(':') '
+      ? modelId.split(':', 2) '
       : [this.guessProvider(modelId), modelId];
 
     const db = this.databases.get(providerId);
@@ -257,15 +257,15 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
         let bVal: number;
         
         switch (query.sortBy) {
-          case 'contextWindow':
+          case 'contextWindow':'
             aVal = a.contextWindow;
             bVal = b.contextWindow;
             break;
-          case 'cost':
+          case 'cost':'
             aVal = a.pricing?.inputTokens || 0;
             bVal = b.pricing?.inputTokens || 0;
             break;
-          case 'updated':
+          case 'updated':'
             aVal = a.lastUpdated.getTime();
             bVal = b.lastUpdated.getTime();
             break;
@@ -273,7 +273,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
             return 0;
         }
         
-        return query.sortOrder === 'desc' ? bVal - aVal : aVal - bVal;
+        return query.sortOrder === 'desc' ? bVal - aVal : aVal - bVal;'
       });
     }
 
@@ -306,10 +306,10 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
           this.lastRefresh.set(providerId, new Date());
           const modelCount = db.getAllModels().length;
           
-          this.emit('database:updated', { providerId, modelCount });
-          logger.info(`🔄 Updated ${providerId} database (${modelCount} models)`);
+          this.emit('database:updated', { providerId, modelCount });'
+          logger.info(`🔄 Updated ${providerId} database (${modelCount} models)`);`
         } catch (error) {
-          logger.error(`Failed to update ${providerId} database:`, error);
+          logger.error(`Failed to update ${providerId} database:`, error);`
         }
       }
     );
@@ -322,13 +322,13 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
    * Guess provider from model ID patterns
    */
   private guessProvider(modelId: string): string {
-    if (modelId.startsWith('gpt-') || modelId.includes('openai')) {
-      return 'github-copilot'; // Copilot has OpenAI models
+    if (modelId.startsWith('gpt-') || modelId.includes('openai')) {'
+      return 'github-copilot'; // Copilot has OpenAI models'
     }
-    if (modelId.includes('llama') || modelId.includes('mistral')) {
-      return 'github-models'; // Models API has these
+    if (modelId.includes('llama') || modelId.includes('mistral')) {'
+      return 'github-models'; // Models API has these'
     }
-    return 'github-copilot'; // Default fallback
+    return 'github-copilot'; // Default fallback'
   }
 }
 

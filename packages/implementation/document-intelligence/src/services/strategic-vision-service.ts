@@ -12,7 +12,7 @@ import { getLogger } from '@claude-zen/foundation';
 let DocumentManager: any;
 try {
   DocumentManager =
-    require('./../services/document/document-service').DocumentManager;
+    require('./../services/document/document-service').DocumentManager;'
 } catch {
   DocumentManager = class DocumentManagerStub {
     async searchDocuments() {
@@ -42,7 +42,7 @@ type BaseDocumentEntity = {
   related_documents?: string[];
 };
 
-const logger = getLogger('coordination-services-strategic-vision');
+const logger = getLogger('coordination-services-strategic-vision');'
 
 export interface StrategicVisionAnalysis {
   projectId: string;
@@ -84,7 +84,7 @@ export class StrategicVisionService {
     projectId: string
   ): Promise<StrategicVisionAnalysis> {
     try {
-      logger.info(`Analyzing strategic vision for project: ${projectId}`);
+      logger.info(`Analyzing strategic vision for project: ${projectId}`);`
 
       // Search for structured vision documents in database
       const visionQuery = await this.documentManager.searchDocuments({
@@ -98,13 +98,13 @@ export class StrategicVisionService {
 
       if (!(visionQuery.success && visionQuery.data?.documents?.length)) {
         logger.warn(
-          `No vision documents found for project ${projectId}, returning default analysis`
+          `No vision documents found for project ${projectId}, returning default analysis``
         );
         return this.createDefaultVisionAnalysis(projectId);
       }
 
       const documents = visionQuery.data.documents;
-      logger.info(`Found ${documents.length} vision documents for analysis`);
+      logger.info(`Found ${documents.length} vision documents for analysis`);`
 
       // Analyze structured vision documents
       const analysis = await this.analyzeStructuredDocuments(
@@ -116,11 +116,11 @@ export class StrategicVisionService {
       await this.enhanceWithRelationships(analysis, documents);
 
       logger.info(
-        `Strategic vision analysis completed for ${projectId} with confidence ${analysis.confidenceScore}`
+        `Strategic vision analysis completed for ${projectId} with confidence ${analysis.confidenceScore}``
       );
       return analysis;
     } catch (error) {
-      logger.error(`Error analyzing project vision for ${projectId}:`, error);
+      logger.error(`Error analyzing project vision for ${projectId}:`, error);`
       return this.createErrorVisionAnalysis(projectId, error);
     }
   }
@@ -136,7 +136,7 @@ export class StrategicVisionService {
   }> {
     try {
       logger.info(
-        `Importing strategic documents for project: ${options.projectId}`
+        `Importing strategic documents for project: ${options.projectId}``
       );
 
       const results = { imported: 0, skipped: 0, errors: [] };
@@ -157,7 +157,7 @@ export class StrategicVisionService {
           : []
       );
 
-      // Import from files if requested and documents don't exist
+      // Import from files if requested and documents don't exist'
       if (options.importFromFiles && options.projectPath) {
         const fileImportResults = await this.importFromFiles(
           options.projectId,
@@ -174,7 +174,7 @@ export class StrategicVisionService {
       // Import from code comments (TODOs, STRATEGY, VISION annotations)
       const codeImportResults = await this.importFromCodeAnnotations(
         options.projectId,
-        options.projectPath||`/home/mhugo/code/${options.projectId}`,
+        options.projectPath||`/home/mhugo/code/${options.projectId}`,`
         existingTypes
       );
 
@@ -183,11 +183,11 @@ export class StrategicVisionService {
       results.errors.push(...codeImportResults.errors);
 
       logger.info(
-        `Import completed: ${results.imported} imported, ${results.skipped} skipped, ${results.errors.length} errors`
+        `Import completed: ${results.imported} imported, ${results.skipped} skipped, ${results.errors.length} errors``
       );
       return results;
     } catch (error) {
-      logger.error(`Error importing strategic documents:`, error);
+      logger.error(`Error importing strategic documents:`, error);`
       return { imported: 0, skipped: 0, errors: [error.message] };
     }
   }
@@ -217,7 +217,7 @@ export class StrategicVisionService {
     error?: string;
   }> {
     try {
-      logger.info(`Creating ${type} document for project ${projectId}`);
+      logger.info(`Creating ${type} document for project ${projectId}`);`
 
       // Create structured document in database
       const docData = {
@@ -261,12 +261,12 @@ export class StrategicVisionService {
 
       // Optionally save to repo (only for specific document types)
       let repoPath: string|undefined;
-      if (saveToRepo && ['vision', 'strategy'].includes(type)) {
+      if (saveToRepo && ['vision', 'strategy'].includes(type)) {'
         repoPath = await this.saveToRepository(projectId, type, content);
       }
 
       logger.info(
-        `${type} document created successfully with ID ${documentId}${repoPath ? ` and saved to ${repoPath}` : ''}`
+        `${type} document created successfully with ID ${documentId}${repoPath ? ` and saved to ${repoPath}` : ''}``
       );
 
       return {
@@ -275,7 +275,7 @@ export class StrategicVisionService {
         repoPath,
       };
     } catch (error) {
-      logger.error(`Error creating ${type} document:`, error);
+      logger.error(`Error creating ${type} document:`, error);`
       return { success: false, error: error.message };
     }
   }
@@ -307,13 +307,13 @@ export class StrategicVisionService {
     projectId: string,
     documents: BaseDocumentEntity[]
   ): Promise<StrategicVisionAnalysis> {
-    const visionDoc = documents.find((doc) => doc.type === 'vision') as|any|undefined;
-    const prdDoc = documents.find((doc) => doc.type ==='prd') as|any|undefined;
-    const epicDocs = documents.filter((doc) => doc.type ==='epic') as any[];
+    const visionDoc = documents.find((doc) => doc.type === 'vision') as|any|undefined;'
+    const prdDoc = documents.find((doc) => doc.type ==='prd') as|any|undefined;'
+    const epicDocs = documents.filter((doc) => doc.type ==='epic') as any[];'
 
     // Extract strategic information from structured documents
     const missionStatement =
-      visionDoc?.content?.split('\n')[0]||prdDoc?.summary||'Mission extracted from structured documents';
+      visionDoc?.content?.split('\n')[0]||prdDoc?.summary||'Mission extracted from structured documents;
 
     const strategicGoals = [
       ...(visionDoc?.keywords||[]),
@@ -373,7 +373,7 @@ export class StrategicVisionService {
       if (doc.related_documents?.length > 0) {
         // Could fetch related documents and extract additional insights
         logger.debug(
-          `Document ${doc.id} has ${doc.related_documents.length} related documents`
+          `Document ${doc.id} has ${doc.related_documents.length} related documents``
         );
       }
     }
@@ -388,8 +388,8 @@ export class StrategicVisionService {
     const results = { imported: 0, skipped: 0, errors: [] };
 
     try {
-      const { access, readFile, readdir } = await import('node:fs/promises');
-      const { join, extname } = await import('node:path');
+      const { access, readFile, readdir } = await import('node:fs/promises');'
+      const { join, extname } = await import('node:path');'
 
       // Discover all markdown and text files instead of hardcoded list
       const potentialDocFiles: string[] = [];
@@ -398,32 +398,32 @@ export class StrategicVisionService {
         const rootFiles = await readdir(projectPath);
         for (const file of rootFiles) {
           const ext = extname(file)?.toLowerCase();
-          if (['.md', '.txt', '.rst', '.adoc'].includes(ext)) {
+          if (['.md', '.txt', '.rst', '.adoc'].includes(ext)) {'
             potentialDocFiles.push(file);
           }
         }
 
         // Also check docs directory
-        const docsPath = join(projectPath, 'docs');
+        const docsPath = join(projectPath, 'docs');'
         try {
           await access(docsPath);
           const docsFiles = await readdir(docsPath);
           for (const file of docsFiles) {
             const ext = extname(file)?.toLowerCase();
-            if (['.md', '.txt', '.rst', '.adoc'].includes(ext)) {
-              potentialDocFiles.push(join('docs', file));
+            if (['.md', '.txt', '.rst', '.adoc'].includes(ext)) {'
+              potentialDocFiles.push(join('docs', file));'
             }
           }
         } catch {
-          // docs directory doesn't exist
+          // docs directory doesn't exist'
         }
       } catch (error) {
-        results.errors.push(`Error reading directory: ${error.message}`);
+        results.errors.push(`Error reading directory: ${error.message}`);`
         return results;
       }
 
       logger.info(
-        `Found ${potentialDocFiles.length} potential document files for LLM classification`
+        `Found ${potentialDocFiles.length} potential document files for LLM classification``
       );
 
       // Classify each file using LLM content analysis
@@ -431,7 +431,7 @@ export class StrategicVisionService {
         try {
           const filePath = join(projectPath, file);
           await access(filePath);
-          const content = await readFile(filePath, 'utf8');
+          const content = await readFile(filePath, 'utf8');'
 
           // Skip empty files
           if (content?.trim().length === 0) {
@@ -447,7 +447,7 @@ export class StrategicVisionService {
           if (skipExisting && existingTypes.has(classification.documentType)) {
             results.skipped++;
             logger.info(
-              `Skipping ${file} - type ${classification.documentType} already exists`
+              `Skipping ${file} - type ${classification.documentType} already exists``
             );
             continue;
           }
@@ -488,27 +488,27 @@ export class StrategicVisionService {
           if (createResult.success) {
             results.imported++;
             logger.info(
-              `Successfully imported and classified: ${file} as ${classification.documentType} (confidence: ${classification.confidence})`
+              `Successfully imported and classified: ${file} as ${classification.documentType} (confidence: ${classification.confidence})``
             );
 
             // Log human-actionable suggestions
             if (classification.suggestedActions.length > 0) {
               logger.info(
-                `LLM suggestions for ${file}: ${classification.suggestedActions.join(', ')}`
+                `LLM suggestions for ${file}: ${classification.suggestedActions.join(', ')}``
               );
             }
           } else {
             results.errors.push(
-              `Failed to import ${file}: ${createResult.error?.message}`
+              `Failed to import ${file}: ${createResult.error?.message}``
             );
           }
         } catch (fileError) {
-          logger.warn(`Could not process file ${file}:`, fileError);
+          logger.warn(`Could not process file ${file}:`, fileError);`
           // Continue with other files
         }
       }
     } catch (error) {
-      results.errors.push(`Error importing files: ${error.message}`);
+      results.errors.push(`Error importing files: ${error.message}`);`
     }
 
     return results;
@@ -527,10 +527,10 @@ export class StrategicVisionService {
     confidence: number;
     extractedKeywords: string[];
     suggestedTags: string[];
-    suggestedPriority: 'low|medium|high';
+    suggestedPriority: 'low' | 'medium' | 'high';
     suggestedActions: string[];
     contentThemes: string[];
-    documentMaturity: 'draft|partial|complete|outdated';
+    documentMaturity: 'draft|partial|complete|outdated;
     strategicRelevance: number; // 0-1 score
     suggestedDependencies: string[];
   }> {
@@ -538,12 +538,12 @@ export class StrategicVisionService {
       // Analyze content patterns and themes
       const contentLower = content?.toLowerCase();
       const lines = content
-        .split('\n')
+        .split('\n')'
         .filter((line) => line?.trim().length > 0);
-      const firstFewLines = lines.slice(0, 10).join('\n');
+      const firstFewLines = lines.slice(0, 10).join('\n');'
 
       // Content-based classification logic (simplified LLM simulation)
-      let documentType = 'document'; // default
+      let documentType = 'document'; // default'
       let confidence = 0.5;
       const keywords: string[] = [];
       const themes: string[] = [];
@@ -553,45 +553,45 @@ export class StrategicVisionService {
       if (this.containsVisionKeywords(contentLower)) {
         documentType = 'vision';
         confidence = 0.9;
-        themes.push('strategic-planning', 'future-state', 'objectives');
-        actions.push('Review strategic alignment with current goals');
-        actions.push('Identify measurable outcomes and metrics');
+        themes.push('strategic-planning', 'future-state', 'objectives');'
+        actions.push('Review strategic alignment with current goals');'
+        actions.push('Identify measurable outcomes and metrics');'
       }
 
       // PRD/Requirements detection
       else if (this.containsRequirementsKeywords(contentLower)) {
         documentType = 'prd';
         confidence = 0.85;
-        themes.push('requirements', 'specifications', 'user-needs');
-        actions.push('Validate requirements with stakeholders');
-        actions.push('Create technical specifications from requirements');
+        themes.push('requirements', 'specifications', 'user-needs');'
+        actions.push('Validate requirements with stakeholders');'
+        actions.push('Create technical specifications from requirements');'
       }
 
       // Epic/Task detection
       else if (this.containsTaskKeywords(contentLower)) {
         documentType = 'epic';
         confidence = 0.8;
-        themes.push('tasks, implementation', 'deliverables');
-        actions.push('Break down epics into actionable tasks');
-        actions.push('Assign priorities and effort estimates');
+        themes.push('tasks, implementation', 'deliverables');'
+        actions.push('Break down epics into actionable tasks');'
+        actions.push('Assign priorities and effort estimates');'
       }
 
       // Architecture/Technical detection
       else if (this.containsArchitectureKeywords(contentLower)) {
         documentType = 'adr';
         confidence = 0.85;
-        themes.push('technical-decisions, architecture', 'system-design');
-        actions.push('Document decision rationale and alternatives');
-        actions.push('Update architecture diagrams and dependencies');
+        themes.push('technical-decisions, architecture', 'system-design');'
+        actions.push('Document decision rationale and alternatives');'
+        actions.push('Update architecture diagrams and dependencies');'
       }
 
       // Feature/Enhancement detection
       else if (this.containsFeatureKeywords(contentLower)) {
         documentType = 'feature';
         confidence = 0.75;
-        themes.push('feature-development, user-experience', 'functionality');
-        actions.push('Define user acceptance criteria');
-        actions.push('Plan implementation phases and rollout');
+        themes.push('feature-development, user-experience', 'functionality');'
+        actions.push('Define user acceptance criteria');'
+        actions.push('Plan implementation phases and rollout');'
       }
 
       // Default classification based on content structure
@@ -600,15 +600,15 @@ export class StrategicVisionService {
         if (lines.length < 5) {
           documentType = 'note';
           confidence = 0.6;
-          actions.push('Expand content with more detailed information');
+          actions.push('Expand content with more detailed information');'
         } else if (this.hasStructuredFormat(content)) {
           documentType = 'specification';
           confidence = 0.7;
-          actions.push('Review and validate technical specifications');
+          actions.push('Review and validate technical specifications');'
         } else {
           documentType = 'documentation';
           confidence = 0.6;
-          actions.push('Organize content with clear structure and headings');
+          actions.push('Organize content with clear structure and headings');'
         }
       }
 
@@ -637,17 +637,17 @@ export class StrategicVisionService {
       // Determine priority based on type and relevance
       const suggestedPriority =
         strategicRelevance > 0.7
-          ? 'high'
+          ? 'high''
           : strategicRelevance > 0.4
-            ? 'medium'
-            : 'low';
+            ? 'medium''
+            : 'low;
 
       // Add maturity-based actions
-      if (documentMaturity === 'draft'||documentMaturity ==='partial') {
-        actions.push('Complete missing sections and add more detail');
-      } else if (documentMaturity === 'outdated') {
+      if (documentMaturity === 'draft'||documentMaturity ==='partial') {'
+        actions.push('Complete missing sections and add more detail');'
+      } else if (documentMaturity === 'outdated') {'
         actions.push(
-          'Update content to reflect current state and requirements'
+          'Update content to reflect current state and requirements''
         );
       }
 
@@ -666,7 +666,7 @@ export class StrategicVisionService {
         suggestedDependencies: [],
       };
     } catch (error) {
-      logger.error('Error in LLM classification:', error);
+      logger.error('Error in LLM classification:', error);'
 
       // Fallback classification
       return {
@@ -766,7 +766,7 @@ export class StrategicVisionService {
     const hasHeaders = /^#{1,6}\s/.test(content);
     const hasBullets = /^\s*[*+-]\s/.test(content);
     const hasNumbering = /^\s*\d+\.\s/.test(content);
-    const hasCode = /```/.test(content)||/`[^`]+`/.test(content);
+    const hasCode = /```/.test(content)||/`[^`]+`/.test(content);`
 
     return hasHeaders||hasBullets||hasNumbering||hasCode;
   }
@@ -775,7 +775,7 @@ export class StrategicVisionService {
     // Simple keyword extraction (could be enhanced with NLP)
     const words = content
       ?.toLowerCase()
-      .replace(/[^\s\w]/g,' ')
+      .replace(/[^\s\w]/g,' ')'
       .split(/\s+/)
       .filter((word) => word.length > 3)
       .filter(
@@ -816,20 +816,20 @@ export class StrategicVisionService {
 
   private assessDocumentMaturity(
     content: string
-  ):'draft|partial|complete|outdated' {
-    const lines = content.split('\n').filter((line) => line?.trim().length > 0);
+  ):'draft|partial|complete|outdated' {'
+    const lines = content.split('\n').filter((line) => line?.trim().length > 0);'
     const totalLength = content.length;
 
     // Check for draft indicators
     if (
-      content?.toLowerCase().includes('draft')||content?.toLowerCase().includes('todo')||content?.toLowerCase().includes('wip')
+      content?.toLowerCase().includes('draft')||content?.toLowerCase().includes('todo')||content?.toLowerCase().includes('wip')'
     ) {
-      return 'draft';
+      return 'draft;
     }
 
     // Check for completeness indicators
     if (totalLength < 500||lines.length < 10) {
-      return'partial';
+      return'partial;
     }
 
     // Check for outdated indicators
@@ -840,11 +840,11 @@ export class StrategicVisionService {
       const oldestYear = Math.min(...years);
       const currentYear = new Date().getFullYear();
       if (currentYear - oldestYear > 2) {
-        return 'outdated';
+        return 'outdated;
       }
     }
 
-    return 'complete';
+    return 'complete;
   }
 
   private calculateStrategicRelevance(
@@ -896,23 +896,23 @@ export class StrategicVisionService {
     }
 
     // Generate from filename and type
-    const baseName = filename.replace(/\.(md|txt|rst|adoc)$/i,'');
+    const baseName = filename.replace(/\.(md|txt|rst|adoc)$/i,'');'
     const typePrefix =
-      documentType === 'vision'
-        ? 'Vision:'
-        : documentType === 'prd'
-          ? 'Requirements:'
-          : documentType === 'adr'
-            ? 'Architecture:'
-            : '';
+      documentType === 'vision''
+        ? 'Vision:''
+        : documentType === 'prd''
+          ? 'Requirements:''
+          : documentType === 'adr''
+            ? 'Architecture:''
+            : ';
 
-    return typePrefix ? `${typePrefix} ${baseName}` : baseName;
+    return typePrefix ? `${typePrefix} ${baseName}` : baseName;`
   }
 
   private generateContentSummary(content: string, themes: string[]): string {
-    const firstSentence = content.split('.')[0]?.trim();
-    const themesText = themes.length > 0 ? ` Covers: ${themes.join(', ')}` : ';
-    return `${firstSentence|||Content summary'}.${themesText}`;
+    const firstSentence = content.split('.')[0]?.trim();'
+    const themesText = themes.length > 0 ? ` Covers: ${themes.join(', ')}` : ;
+    return `${firstSentence|||Content summary'}.${themesText}`;`
   }
 
   // .gitignore support helpers
@@ -920,48 +920,48 @@ export class StrategicVisionService {
     projectPath: string
   ): Promise<Set<string>> {
     try {
-      const { readFile } = await import('node:fs/promises');
-      const { join } = await import('node:path');
+      const { readFile } = await import('node:fs/promises');'
+      const { join } = await import('node:path');'
 
       const gitignorePatterns = new Set<string>();
 
       // Add default ignore patterns
-      gitignorePatterns.add('.git');
-      gitignorePatterns.add('node_modules');
-      gitignorePatterns.add('.DS_Store');
-      gitignorePatterns.add('*.log');
-      gitignorePatterns.add('dist');
-      gitignorePatterns.add('build');
-      gitignorePatterns.add('coverage');
-      gitignorePatterns.add('.next');
-      gitignorePatterns.add('.cache');
+      gitignorePatterns.add('.git');'
+      gitignorePatterns.add('node_modules');'
+      gitignorePatterns.add('.DS_Store');'
+      gitignorePatterns.add('*.log');'
+      gitignorePatterns.add('dist');'
+      gitignorePatterns.add('build');'
+      gitignorePatterns.add('coverage');'
+      gitignorePatterns.add('.next');'
+      gitignorePatterns.add('.cache');'
 
       // Load .gitignore file if it exists
       try {
-        const gitignorePath = join(projectPath, '.gitignore');
-        const gitignoreContent = await readFile(gitignorePath, 'utf8');
+        const gitignorePath = join(projectPath, '.gitignore');'
+        const gitignoreContent = await readFile(gitignorePath, 'utf8');'
 
         gitignoreContent
-          .split('\n')
+          .split('\n')'
           .map((line) => line?.trim())
-          .filter((line) => line && !line.startsWith('#'))
+          .filter((line) => line && !line.startsWith('#'))'
           .forEach((pattern) => {
             gitignorePatterns.add(pattern);
           });
 
         logger.info(
-          `Loaded ${gitignorePatterns.size} .gitignore patterns for ${projectPath}`
+          `Loaded ${gitignorePatterns.size} .gitignore patterns for ${projectPath}``
         );
       } catch {
-        // .gitignore doesn't exist, use defaults
+        // .gitignore doesn't exist, use defaults'
         logger.info(
-          `No .gitignore found, using default patterns for ${projectPath}`
+          `No .gitignore found, using default patterns for ${projectPath}``
         );
       }
 
       return gitignorePatterns;
     } catch (error) {
-      logger.error('Error loading .gitignore patterns:', error);
+      logger.error('Error loading .gitignore patterns:', error);'
       return new Set([
         '.git',
         'node_modules',
@@ -979,27 +979,27 @@ export class StrategicVisionService {
     projectPath: string
   ): boolean {
     try {
-      const { relative } = require('node:path');
+      const { relative } = require('node:path');'
       const relativePath = relative(projectPath, filePath);
 
       const patternArray = Array.from(patterns);
       for (const pattern of patternArray) {
         // Simple pattern matching (handles most common .gitignore patterns)
-        if (pattern.endsWith('*')) {
+        if (pattern.endsWith('*')) {'
           const prefix = pattern.slice(0, -1);
           if (relativePath.startsWith(prefix)) return true;
-        } else if (pattern.startsWith('*.')) {
+        } else if (pattern.startsWith('*.')) {'
           const extension = pattern.slice(1);
           if (filePath.endsWith(extension)) return true;
-        } else if (pattern.endsWith('/')) {
+        } else if (pattern.endsWith('/')) {'
           // Directory pattern
           const dirPattern = pattern.slice(0, -1);
           if (
-            relativePath.startsWith(dirPattern + '/')||relativePath === dirPattern
+            relativePath.startsWith(dirPattern + '/')||relativePath === dirPattern'
           )
             return true;
         } else if (
-          relativePath === pattern||relativePath.startsWith(pattern +'/')
+          relativePath === pattern||relativePath.startsWith(pattern +'/')'
         ) {
           return true;
         }
@@ -1019,10 +1019,10 @@ export class StrategicVisionService {
     const results = { imported: 0, skipped: 0, errors: [] };
 
     try {
-      const { access, readdir, readFile } = await import('node:fs/promises');
-      const { join, extname } = await import('node:path');
+      const { access, readdir, readFile } = await import('node:fs/promises');'
+      const { join, extname } = await import('node:path');'
 
-      const srcPath = join(projectPath, 'src');
+      const srcPath = join(projectPath, 'src');'
       await access(srcPath);
       const codeFiles = await readdir(srcPath, { recursive: true });
 
@@ -1033,12 +1033,12 @@ export class StrategicVisionService {
       for (const file of codeFiles.slice(0, 100)) {
         // Limit for performance
         if (
-          typeof file === 'string' &&
-          ['.ts', '.tsx', '.js', '.jsx'].includes(extname(file))
+          typeof file === 'string' &&'
+          ['.ts', '.tsx', '.js', '.jsx'].includes(extname(file))'
         ) {
           try {
             const filePath = join(srcPath, file);
-            const content = await readFile(filePath, 'utf8');
+            const content = await readFile(filePath, 'utf8');'
 
             // Extract different types of strategic annotations
             const todoMatches =
@@ -1055,16 +1055,16 @@ export class StrategicVisionService {
               )||[];
 
             todoAnnotations.push(
-              ...todoMatches.map((match) => `${file}: ${match?.trim()}`)
+              ...todoMatches.map((match) => `${file}: ${match?.trim()}`)`
             );
             strategyAnnotations.push(
-              ...strategyMatches.map((match) => `${file}: ${match?.trim()}`)
+              ...strategyMatches.map((match) => `${file}: ${match?.trim()}`)`
             );
             visionAnnotations.push(
-              ...visionMatches.map((match) => `${file}: ${match?.trim()}`)
+              ...visionMatches.map((match) => `${file}: ${match?.trim()}`)`
             );
           } catch {
-            // Skip files we can't read
+            // Skip files we can't read'
           }
         }
       }
@@ -1095,8 +1095,8 @@ export class StrategicVisionService {
         ) {
           const docData = {
             type: annotationDoc.type,
-            title: `${annotationDoc.title} - ${projectId}`,
-            summary: `Extracted from code annotations: ${annotationDoc.content.length} items`,
+            title: `${annotationDoc.title} - ${projectId}`,`
+            summary: `Extracted from code annotations: ${annotationDoc.content.length} items`,`
             content: annotationDoc.content.join('\n'),
             author: 'code-annotation-service',
             project_id: projectId,
@@ -1120,16 +1120,16 @@ export class StrategicVisionService {
             results.imported++;
           } else {
             results.errors.push(
-              `Failed to import ${annotationDoc.type} annotations: ${createResult.error?.message}`
+              `Failed to import ${annotationDoc.type} annotations: ${createResult.error?.message}``
             );
           }
         }
       }
     } catch (error) {
-      if (error.code !== 'ENOENT') {
-        // Don't error if src directory doesn't exist
+      if (error.code !== 'ENOENT') {'
+        // Don't error if src directory doesn't exist'
         results.errors.push(
-          `Error importing code annotations: ${error.message}`
+          `Error importing code annotations: ${error.message}``
         );
       }
     }
@@ -1143,25 +1143,25 @@ export class StrategicVisionService {
     content: any
   ): Promise<string|undefined> {
     // Only save specific document types back to repo
-    if (!['vision', 'strategy'].includes(type)) {
+    if (!['vision', 'strategy'].includes(type)) {'
       return undefined;
     }
 
     try {
-      const { writeFile } = await import('node:fs/promises');
-      const { join } = await import('node:path');
+      const { writeFile } = await import('node:fs/promises');'
+      const { join } = await import('node:path');'
 
       const filename = type === 'vision' ? 'VISION.md' : 'STRATEGY.md';
-      const projectPath = `/home/mhugo/code/${projectId}`;
+      const projectPath = `/home/mhugo/code/${projectId}`;`
       const filePath = join(projectPath, filename);
 
-      const fileContent = `# ${content.title}\n\n${content.summary}\n\n${content.content}`;
-      await writeFile(filePath, fileContent, 'utf8');
+      const fileContent = `# ${content.title}\n\n${content.summary}\n\n${content.content}`;`
+      await writeFile(filePath, fileContent, 'utf8');'
 
-      logger.info(`Saved ${type} document to repository: ${filePath}`);
+      logger.info(`Saved ${type} document to repository: ${filePath}`);`
       return filePath;
     } catch (error) {
-      logger.error(`Error saving to repository:`, error);
+      logger.error(`Error saving to repository:`, error);`
       return undefined;
     }
   }
@@ -1173,9 +1173,9 @@ export class StrategicVisionService {
     score += Math.min(0.3, documents.length * 0.1);
 
     // Bonus for structured documents
-    if (documents.some((doc) => doc.type === 'vision')) score += 0.3;
-    if (documents.some((doc) => doc.type === 'prd')) score += 0.2;
-    if (documents.some((doc) => doc.type === 'epic')) score += 0.1;
+    if (documents.some((doc) => doc.type === 'vision')) score += 0.3;'
+    if (documents.some((doc) => doc.type === 'prd')) score += 0.2;'
+    if (documents.some((doc) => doc.type === 'epic')) score += 0.1;'
 
     // Bonus for complete metadata
     const hasMetadata = documents.some(

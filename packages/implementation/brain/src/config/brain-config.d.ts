@@ -20,7 +20,7 @@ export interface BrainSpecificConfig {
     customPresets?: Record<string, any>;
   };
   dspy: {
-    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble';
+    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;
     maxTokens: number;
     optimizationSteps: number;
     coordinationFeedback: boolean;

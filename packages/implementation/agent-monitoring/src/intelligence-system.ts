@@ -68,7 +68,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     };
   }
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState|null {
+  getAgentLearningState(agentId: AgentId): AgentLearningState | null {
     return null;
   }
 
@@ -80,7 +80,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     logger.debug('Agent performance updated', { agentId: agentId.id, success });
   }
 
-  getAgentHealth(agentId: AgentId): AgentHealth|null {
+  getAgentHealth(agentId: AgentId): AgentHealth | null {
     return null;
   }
 
@@ -89,7 +89,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     horizon?: ForecastHorizon
   ): Promise<PerformanceOptimizationForecast> {
     return {
-      agentId: { id:'agent-1', swarmId, type: 'coordinator', instance: 1 },
+      agentId: { id: 'agent-1', swarmId, type: 'coordinator', instance: 1 },
       currentPerformance: 0.8,
       predictedPerformance: 0.9,
       optimizationStrategies: [],

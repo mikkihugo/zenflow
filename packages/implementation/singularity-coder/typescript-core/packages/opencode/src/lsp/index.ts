@@ -130,7 +130,7 @@ export namespace LSP {
     return run((client) => {
       return client.connection.sendRequest("textDocument/hover", {
         textDocument: {
-          uri: `file://${input.file}`,
+          uri: `file://${input.file}`,`
         },
         position: {
           line: input.line,
@@ -225,7 +225,7 @@ export namespace LSP {
       const line = diagnostic.range.start.line + 1
       const col = diagnostic.range.start.character + 1
 
-      return `${severity} [${line}:${col}] ${diagnostic.message}`
+      return `${severity} [${line}:${col}] ${diagnostic.message}``
     }
   }
 }

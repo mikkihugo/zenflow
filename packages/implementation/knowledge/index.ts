@@ -11,7 +11,7 @@
  * **⚠️ RECOMMENDED USAGE: Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access knowledge
- * functionality through `@claude-zen/foundation` which provides integrated knowledge
+ * functionality through `@claude-zen/foundation` which provides integrated knowledge`
  * management with telemetry, logging, and configuration management.
  *
  * **CORE COLLECTIVE INTELLIGENCE CAPABILITIES:**
@@ -47,7 +47,7 @@
  * - Knowledge backup, recovery, and disaster recovery capabilities
  *
  * @example Basic Collective Intelligence Setup
- * ```typescript
+ * ```typescript`
  * import { IntelligenceHub } from '@claude-zen/knowledge';
  *
  * const coordinator = new IntelligenceHub({
@@ -77,10 +77,10 @@
  *   context: { requirements, constraints },
  *   timeoutMs: 300000
  * });
- * ```
+ * ````
  *
  * @example Cross-Domain Knowledge Transfer
- * ```typescript
+ * ```typescript`
  * import { CrossAgentKnowledgeIntegration } from '@claude-zen/knowledge';
  *
  * const integration = new CrossAgentKnowledgeIntegration({
@@ -100,12 +100,12 @@
  *   }
  * });
  *
- * console.log(`Transfer efficiency: ${transferResult.efficiency}%`);
- * console.log(`Applicable patterns: ${transferResult.applicablePatterns.length}`);
- * ```
+ * console.log(`Transfer efficiency: ${transferResult.efficiency}%`);`
+ * console.log(`Applicable patterns: ${transferResult.applicablePatterns.length}`);`
+ * ````
  *
  * @example Distributed Learning Network
- * ```typescript
+ * ```typescript`
  * import { DistributedLearningSystem } from '@claude-zen/knowledge';
  *
  * const learningSystem = new DistributedLearningSystem({
@@ -121,19 +121,19 @@
  *   participants: [
  *     { agentId: 'agent-1', dataSize: 1000, contribution: 0.3 },
  *     { agentId: 'agent-2', dataSize: 1500, contribution: 0.45 },
- *     { agentId: 'agent-3', dataSize: 800, contribution: 0.25 }
+ *     { agentId: 'agent-3', dataSize: 800, contribution: 0.25 }'
  *   ],
  *   convergenceCriteria: { minAccuracy: 0.95, maxIterations: 100 }
  * });
  *
  * // Execute federated learning
  * const result = await session.execute();
- * console.log(`Final accuracy: ${result.accuracy}`);
- * console.log(`Convergence iterations: ${result.iterations}`);
- * ```
+ * console.log(`Final accuracy: ${result.accuracy}`);`
+ * console.log(`Convergence iterations: ${result.iterations}`);`
+ * ````
  *
  * @example Knowledge Quality Management
- * ```typescript
+ * ```typescript`
  * import { KnowledgeValidator } from '@claude-zen/knowledge';
  *
  * const qualityManager = new KnowledgeValidator({
@@ -154,10 +154,10 @@
  * } else {
  *   await qualityManager.flagForReview(incomingKnowledge, assessment.issues);
  * }
- * ```
+ * ````
  *
  * @example Enterprise Knowledge Management System
- * ```typescript
+ * ```typescript`
  * import {
  *   IntelligenceHub,
  *   KnowledgeValidator,
@@ -178,12 +178,12 @@
  *   security: {
  *     encryption: 'AES-256-GCM',
  *     auditTrail: 'comprehensive',
- *     accessControl: 'rbac'
+ *     accessControl: 'rbac''
  *   },
  *   performance: {
  *     caching: 'intelligent',
  *     prefetching: true,
- *     compression: 'lz4'
+ *     compression: 'lz4''
  *   }
  * });
  *
@@ -204,7 +204,7 @@
  *   expertiseDiscovery: 'automatic',
  *   specializationEmergence: true,
  *   crossDomainTransfer: true,
- *   loadBalancing: 'weighted-round-robin'
+ *   loadBalancing: 'weighted-round-robin''
  * });
  *
  * // Performance optimization layer
@@ -228,18 +228,18 @@
  *   requirements: {
  *     compliance: ['SOX', 'GDPR', 'PCI-DSS'],
  *     security: 'classified',
- *     auditLevel: 'comprehensive'
+ *     auditLevel: 'comprehensive''
  *   },
  *   performance: {
  *     latencyTarget: '100ms',
  *     throughputTarget: '10000/min',
- *     availabilityTarget: '99.99%'
+ *     availabilityTarget: '99.99%''
  *   }
  * });
- * ```
+ * ````
  *
  * @example Real-Time Knowledge Synchronization
- * ```typescript
+ * ```typescript`
  * import {
  *   DistributedLearningSystem,
  *   KnowledgeSwarm,
@@ -259,7 +259,7 @@
  *   realTimeSync: {
  *     enabled: true,
  *     syncInterval: 1000, // 1 second
- *     conflictResolution: 'expertise-weighted'
+ *     conflictResolution: 'expertise-weighted''
  *   }
  * });
  *
@@ -271,12 +271,12 @@
  *     'computer-vision',
  *     'reinforcement-learning',
  *     'knowledge-graphs',
- *     'semantic-reasoning'
+ *     'semantic-reasoning''
  *   ],
  *   coordination: {
  *     consensusAlgorithm: 'practical-byzantine-fault-tolerance',
  *     leaderElection: 'expertise-based',
- *     taskDistribution: 'capability-aware'
+ *     taskDistribution: 'capability-aware''
  *   }
  * });
  *
@@ -311,7 +311,7 @@
  *   constraints: {
  *     privacyBudget: 0.05,
  *     computeBudget: '100 GPU-hours',
- *     networkBandwidth: '1Gbps'
+ *     networkBandwidth: '1Gbps''
  *   }
  * });
  *
@@ -322,16 +322,16 @@
  *   earlyStoppingEnabled: true
  * });
  *
- * console.log('Continuous Learning Results:', {
+ * console.log('Continuous Learning Results:', {'
  *   finalAccuracy: result.accuracy,
  *   convergenceTime: result.convergenceTime,
  *   knowledgeTransferred: result.transferredBytes,
  *   participantContributions: result.contributions
  * });
- * ```
+ * ````
  *
  * @example Advanced Knowledge Analytics and Insights
- * ```typescript
+ * ```typescript`
  * import {
  *   KnowledgeValidator,
  *   PerformanceOptimizer,
@@ -342,7 +342,7 @@
  * const analytics = new KnowledgeValidator({
  *   validationRules: [
  *     'consistency', 'accuracy', 'relevance', 'freshness',
- *     'completeness', 'trustworthiness', 'citations'
+ *     'completeness', 'trustworthiness', 'citations''
  *   ],
  *   qualityThreshold: 0.9,
  *   automaticPruning: true,
@@ -423,7 +423,7 @@
  *   }
  * });
  *
- * console.log('Knowledge System Insights:', {
+ * console.log('Knowledge System Insights:', {'
  *   overallQualityScore: insights.quality.overall,
  *   knowledgeGaps: insights.gaps.length,
  *   expertiseDistribution: insights.expertise.distribution,
@@ -435,10 +435,10 @@
  *   recommendations: insights.recommendations,
  *   emergingTrends: insights.trends.emerging
  * });
- * ```
+ * ````
  *
  * @example Knowledge Graph Construction and Reasoning
- * ```typescript
+ * ```typescript`
  * import {
  *   KnowledgeSwarm,
  *   ProjectContextAnalyzer,
@@ -453,12 +453,12 @@
  *     'relation-discovery',
  *     'semantic-linking',
  *     'ontology-alignment',
- *     'knowledge-validation'
+ *     'knowledge-validation''
  *   ],
  *   graphConstruction: {
  *     strategy: 'incremental-distributed',
  *     consistencyLevel: 'eventual',
- *     conflictResolution: 'consensus-based'
+ *     conflictResolution: 'consensus-based''
  *   },
  *   reasoning: {
  *     inferenceEngine: 'probabilistic-logic',
@@ -489,7 +489,7 @@
  *     'inductive-reasoning',
  *     'abductive-reasoning',
  *     'analogical-reasoning',
- *     'causal-reasoning'
+ *     'causal-reasoning''
  *   ],
  *   collaboration: {
  *     consensusThreshold: 0.85,
@@ -510,23 +510,23 @@
  *     'technical-documentation',
  *     'code-repositories',
  *     'expert-interviews',
- *     'structured-databases'
+ *     'structured-databases''
  *   ],
  *   domain: 'artificial-intelligence',
  *   scope: {
  *     temporalRange: '2020-2024',
  *     geographicalScope: 'global',
- *     languageScope: ['en', 'zh', 'es', 'fr', 'de']
+ *     languageScope: ['en', 'zh', 'es', 'fr', 'de']'
  *   },
  *   construction: {
  *     entityExtraction: {
  *       precision: 0.95,
  *       recall: 0.90,
- *       supportedTypes: ['person', 'organization', 'concept', 'method', 'tool']
+ *       supportedTypes: ['person', 'organization', 'concept', 'method', 'tool']'
  *     },
  *     relationExtraction: {
  *       confidenceThreshold: 0.8,
- *       supportedRelations: ['influences', 'derives-from', 'applies-to', 'contradicts']
+ *       supportedRelations: ['influences', 'derives-from', 'applies-to', 'contradicts']'
  *     }
  *   }
  * });
@@ -539,7 +539,7 @@
  *     constraints: {
  *       computeResources: 'limited',
  *       networkBandwidth: 'high-latency',
- *       dataPrivacy: 'required'
+ *       dataPrivacy: 'required''
  *     }
  *   },
  *   collaboration: {
@@ -549,7 +549,7 @@
  *   }
  * });
  *
- * console.log('Knowledge Graph Reasoning Results:', {
+ * console.log('Knowledge Graph Reasoning Results:', {'
  *   graphStatistics: {
  *     nodes: knowledgeGraph.nodeCount,
  *     edges: knowledgeGraph.edgeCount,
@@ -566,7 +566,7 @@
  *     recommendations: reasoningResult.recommendations
  *   }
  * });
- * ```
+ * ````
  *
  * @author Claude Code Zen Team
  * @since 1.0.0
@@ -730,7 +730,7 @@ export async function createKnowledgeSharingSystem(
   eventBus?: unknown
 ): Promise<unknown> {
   const { CrossAgentKnowledgeIntegration, getDefaultConfig } = await import(
-    './cross-agent-knowledge-integration');
+    './cross-agent-knowledge-integration');'
 
   // Use provided config or create default
   const finalConfig = config
@@ -738,9 +738,9 @@ export async function createKnowledgeSharingSystem(
     : getDefaultConfig();
 
   // Create logger and event bus if not provided
-  const finalLogger = logger''||''''||'console;
+  const finalLogger = logger''||''''||'console;'
   const finalEventBus =
-    eventBus'||''''||''new (await import('node:events')).EventEmitter();
+    eventBus'||''''||''new (await import('node:events')).EventEmitter();'
 
   const system = new CrossAgentKnowledgeIntegration(
     finalConfig,
@@ -760,7 +760,7 @@ export async function createKnowledgeSharingSystem(
  * @example
  */
 export async function createKnowledgeSwarm(config?: unknown): Promise<unknown> {
-  const { initializeFACTSwarm } = await import('./knowledge-swarm');
+  const { initializeFACTSwarm } = await import('./knowledge-swarm');'
   return initializeFACTSwarm(config);
 }
 
@@ -784,7 +784,7 @@ export function validateKnowledgeConfig(config: unknown): {
 
   // Validate collective intelligence config
   if (!config?.collectiveIntelligence) {
-    errors.push('Missing collectiveIntelligence configuration');
+    errors.push('Missing collectiveIntelligence configuration');'
   }
 
   // Validate integration config
@@ -794,7 +794,7 @@ export function validateKnowledgeConfig(config: unknown): {
       !config?.integration?.factIntegration?.knowledgeSwarmIntegration
     ) {
       warnings.push(
-        'FACT integration enabled but knowledge swarm integration disabled'
+        'FACT integration enabled but knowledge swarm integration disabled''
       );
     }
 
@@ -803,18 +803,18 @@ export function validateKnowledgeConfig(config: unknown): {
       !config?.integration?.ragIntegration?.vectorStoreIntegration
     ) {
       warnings.push(
-        'RAG integration enabled but vector store integration disabled'
+        'RAG integration enabled but vector store integration disabled''
       );
     }
   } else {
-    errors.push('Missing integration configuration');
+    errors.push('Missing integration configuration');'
   }
 
   // Validate distributed learning config
   if (config?.distributedLearning?.federatedConfig) {
     const fedConfig = config?.distributedLearning?.federatedConfig;
-    if (fedConfig?.clientFraction > 1.0''||''''||''fedConfig?.clientFraction <= 0) {
-      errors.push('federatedConfig.clientFraction must be between 0 and 1');
+    if (fedConfig?.clientFraction > 1.0''||''''||''fedConfig?.clientFraction <= 0) {'
+      errors.push('federatedConfig.clientFraction must be between 0 and 1');'
     }
   }
 
@@ -895,15 +895,15 @@ export async function ensureStorageDirectory(
   knowledgeDir: string;
   cacheDir: string;
 }> {
-  const path = await import('node:path');
-  const fs = await import('node:fs/promises');
+  const path = await import('node:path');'
+  const fs = await import('node:fs/promises');'
 
-  const swarmDir = path.join(basePath, '.swarm');
-  const hiveMindDir = path.join(basePath, '.hive-mind');
-  const knowledgeDir = path.join(basePath, '.knowledge');
-  const cacheDir = path.join(basePath, '.cache', 'knowledge');
+  const swarmDir = path.join(basePath, '.swarm');'
+  const hiveMindDir = path.join(basePath, '.hive-mind');'
+  const knowledgeDir = path.join(basePath, '.knowledge');'
+  const cacheDir = path.join(basePath, '.cache', 'knowledge');'
 
-  // Create directories if they don't exist
+  // Create directories if they don't exist'
   await fs.mkdir(swarmDir, { recursive: true });
   await fs.mkdir(hiveMindDir, { recursive: true });
   await fs.mkdir(knowledgeDir, { recursive: true });
@@ -931,7 +931,7 @@ export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
   quality: string;
   performance: string;
 } {
-  const path = require('node:path');
+  const path = require('node:path');'
 
   return {
     collective: path.join(basePath, '.hive-mind', 'collective-intelligence'),
@@ -956,7 +956,7 @@ export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
  * Professional Knowledge System Access - Matches storage/telemetry patterns
  *
  * These functions provide professional enterprise naming patterns for knowledge system access
- * so strategic facades don't need to translate function names.
+ * so strategic facades don't need to translate function names.'
  */
 
 // Core knowledge system access with lazy loading
@@ -965,7 +965,7 @@ let knowledgeSystemInstance: any = null;
 export async function getKnowledgeSystemAccess(): Promise<any> {
   if (!knowledgeSystemInstance) {
     const { CollectiveIntelligenceCoordinator } = await import(
-      './src/collective-intelligence-coordinator'
+      './src/collective-intelligence-coordinator''
     );
     knowledgeSystemInstance = new CollectiveIntelligenceCoordinator({
       maxAgents: 10,
@@ -986,7 +986,7 @@ export async function getCollectiveIntelligenceCoordinator(
   config?: any
 ): Promise<any> {
   const { CollectiveIntelligenceCoordinator } = await import(
-    './src/collective-intelligence-coordinator'
+    './src/collective-intelligence-coordinator''
   );
   return new CollectiveIntelligenceCoordinator(config);
 }
@@ -995,40 +995,40 @@ export async function getCrossAgentKnowledgeIntegration(
   config?: any
 ): Promise<any> {
   const { CrossAgentKnowledgeIntegration } = await import(
-    './src/cross-agent-knowledge-integration'
+    './src/cross-agent-knowledge-integration''
   );
   return new CrossAgentKnowledgeIntegration(config);
 }
 
 export async function getDistributedLearningSystem(config?: any): Promise<any> {
   const { DistributedLearningSystem } = await import(
-    './src/distributed-learning-system'
+    './src/distributed-learning-system''
   );
   return new DistributedLearningSystem(config);
 }
 
 export async function getKnowledgeValidator(config?: any): Promise<any> {
   const { KnowledgeQualityManagementSystem } = await import(
-    './src/knowledge-quality-management'
+    './src/knowledge-quality-management''
   );
   return new KnowledgeQualityManagementSystem(config);
 }
 
 export async function getPerformanceOptimizer(config?: any): Promise<any> {
   const { PerformanceOptimizationSystem } = await import(
-    './src/performance-optimization-system'
+    './src/performance-optimization-system''
   );
   return new PerformanceOptimizationSystem(config);
 }
 
 export async function getKnowledgeSwarm(config?: any): Promise<any> {
-  const { KnowledgeSwarm } = await import('./src/knowledge-swarm');
+  const { KnowledgeSwarm } = await import('./src/knowledge-swarm');'
   return new KnowledgeSwarm(config);
 }
 
 export async function getReasoningEngine(config?: any): Promise<any> {
   const { CollaborativeReasoningEngine } = await import(
-    './src/collaborative-reasoning-engine'
+    './src/collaborative-reasoning-engine''
   );
   return new CollaborativeReasoningEngine(config);
 }
@@ -1053,6 +1053,6 @@ export interface KnowledgeSystemConfig {
   enableDistributedLearning?: boolean;
   multiTenant?: {
     enabled?: boolean;
-    isolation?: 'strict'''||''moderate''||'''minimal';
+    isolation?: 'strict'''||''moderate''||'''minimal;
   };
 }

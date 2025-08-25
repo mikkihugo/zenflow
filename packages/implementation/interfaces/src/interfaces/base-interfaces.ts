@@ -178,7 +178,7 @@ export interface StoreOptions {
   /** Tags for categorization */
   tags?: string[];
   /** Priority level */
-  priority?:'low|medium|high';
+  priority?:'low' | 'medium' | 'high';
   /** Vector data for similarity search */
   vector?: number[];
 }

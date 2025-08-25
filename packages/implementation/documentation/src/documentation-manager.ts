@@ -5,15 +5,15 @@
  * Without bloated "unified" architecture..
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const docManager = new DocumentationManager(memorySystem, {
  *   autoLink: true,
- *   scanPaths: ['./docs', './src']
+ *   scanPaths: ['./docs', './src']'
  * });
  *
  * await docManager.initialize();
  * await docManager.indexDocument(document);
- * ```
+ * ````
  */
 /**
  * @file Documentation management system.
@@ -26,7 +26,7 @@ interface BrainCoordinator {
   store(key: string, data: any, category?: string): Promise<void>;
 }
 
-const logger = getLogger('DocumentationManager');
+const logger = getLogger('DocumentationManager');'
 
 /**
  * Documentation manager configuration.
@@ -88,7 +88,7 @@ export class DocumentationManager extends TypedEventBase {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    logger.info('Initializing documentation manager');
+    logger.info('Initializing documentation manager');'
 
     // Perform initial scan if auto-link is enabled
     if (this.config.autoLink) {
@@ -96,15 +96,15 @@ export class DocumentationManager extends TypedEventBase {
     }
 
     this.initialized = true;
-    this.emit('initialized', {});
-    logger.info('Documentation manager ready');
+    this.emit('initialized', {});'
+    logger.info('Documentation manager ready');'
   }
 
   async indexDocument(document: any): Promise<void> {
     await this.ensureInitialized();
 
     // Index the document
-    const docId = `doc-${Date.now()}`;
+    const docId = `doc-${Date.now()}`;`
     await this.memory.store(
       docId,
       {
@@ -114,21 +114,21 @@ export class DocumentationManager extends TypedEventBase {
         type: document.type,
         indexedAt: new Date().toISOString(),
       },
-      'documentation');
+      'documentation');'
 
     this.stats.indexedDocuments++;
-    logger.debug(`Indexed document: ${document.title||document.path}`);
+    logger.debug(`Indexed document: ${document.title||document.path}`);`
   }
 
   async scanDocumentation(): Promise<void> {
-    logger.info('Scanning documentation paths...');
+    logger.info('Scanning documentation paths...');'
 
     // Mock implementation - would scan actual paths
     for (const path of this.config.scanPaths) {
-      logger.debug(`Scanning: ${path}`);
+      logger.debug(`Scanning: ${path}`);`
     }
 
-    logger.info('Documentation scan complete');
+    logger.info('Documentation scan complete');'
   }
 
   getDocumentationIndex(): Map<string, any> {
@@ -139,18 +139,18 @@ export class DocumentationManager extends TypedEventBase {
   async generateDocumentationReport(): Promise<string> {
     const report = [
       '# Documentation Report',
-      `Generated: ${new Date().toISOString()}`,
+      `Generated: ${new Date().toISOString()}`,`
       '',
       '## Statistics',
-      `- Indexed Documents: ${this.stats.indexedDocuments}`,
-      `- Total Links: ${this.stats.totalLinks}`,
-      `- Broken Links: ${this.stats.brokenLinks}`,
+      `- Indexed Documents: ${this.stats.indexedDocuments}`,`
+      `- Total Links: ${this.stats.totalLinks}`,`
+      `- Broken Links: ${this.stats.brokenLinks}`,`
       '',
       '## Scan Paths',
-      ...this.config.scanPaths.map((path) => `- ${path}`),
+      ...this.config.scanPaths.map((path) => `- ${path}`),`
     ];
 
-    return report.join('\n');
+    return report.join('\n');'
   }
 
   async getStats(): Promise<DocumentationStats> {
@@ -158,9 +158,9 @@ export class DocumentationManager extends TypedEventBase {
   }
 
   async shutdown(): Promise<void> {
-    logger.info('Shutting down documentation manager...');
+    logger.info('Shutting down documentation manager...');'
     this.removeAllListeners();
-    logger.info('Documentation manager shutdown complete');
+    logger.info('Documentation manager shutdown complete');'
   }
 
   private async ensureInitialized(): Promise<void> {

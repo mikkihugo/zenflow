@@ -14,7 +14,7 @@ export interface WebConfig {
   corsOrigins?: string[];
   enableCompression?: boolean;
   enableLogging?: boolean;
-  logLevel?: 'error|warn|info|debug';
+  logLevel?: 'error|warn|info|debug;
   maxRequestSize?: string;
   timeout?: number;
   ssl?: {

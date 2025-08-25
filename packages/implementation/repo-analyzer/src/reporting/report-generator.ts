@@ -8,7 +8,7 @@ import { getLogger } from '@claude-zen/foundation';
 import type { AnalysisResult, ExportFormat } from '../types/index.js';
 
 export class ReportGenerator {
-  private logger = getLogger('ReportGenerator');
+  private logger = getLogger('ReportGenerator');'
 
   /**
    * Generate report in specified format
@@ -18,31 +18,31 @@ export class ReportGenerator {
     format: ExportFormat,
     outputPath?: string
   ): Promise<string> {
-    this.logger.info(`Generating ${format.toUpperCase()} report`);
+    this.logger.info(`Generating ${format.toUpperCase()} report`);`
 
-    const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[.:]/g, '-');'
     const defaultPath =
-      outputPath||`./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;
+      outputPath||`./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;`
 
     switch (format) {
-      case'json':
+      case'json':'
         return this.generateJsonReport(result, defaultPath);
-      case 'yaml':
+      case 'yaml':'
         return this.generateYamlReport(result, defaultPath);
-      case 'csv':
+      case 'csv':'
         return this.generateCsvReport(result, defaultPath);
-      case 'html':
+      case 'html':'
         return this.generateHtmlReport(result, defaultPath);
-      case 'markdown':
+      case 'markdown':'
         return this.generateMarkdownReport(result, defaultPath);
-      case 'pdf':
+      case 'pdf':'
         return this.generatePdfReport(result, defaultPath);
-      case 'graphml':
+      case 'graphml':'
         return this.generateGraphmlReport(result, defaultPath);
-      case 'dot':
+      case 'dot':'
         return this.generateDotReport(result, defaultPath);
       default:
-        throw new Error(`Unsupported format: ${format}`);
+        throw new Error(`Unsupported format: ${format}`);`
     }
   }
 
@@ -53,9 +53,9 @@ export class ReportGenerator {
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
     const jsonContent = JSON.stringify(result, null, 2);
-    await fs.writeFile(outputPath, jsonContent, 'utf-8');
+    await fs.writeFile(outputPath, jsonContent, 'utf-8');'
     return outputPath;
   }
 
@@ -66,10 +66,10 @@ export class ReportGenerator {
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
-    const yaml = await import('yaml');
+    const fs = await import('fs/promises');'
+    const yaml = await import('yaml');'
     const yamlContent = yaml.stringify(result);
-    await fs.writeFile(outputPath, yamlContent, 'utf-8');
+    await fs.writeFile(outputPath, yamlContent, 'utf-8');'
     return outputPath;
   }
 
@@ -80,7 +80,7 @@ export class ReportGenerator {
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
 
     // Create CSV for recommendations
     const csvRows = [
@@ -91,17 +91,17 @@ export class ReportGenerator {
       const row = [
         rec.type,
         rec.priority,
-        `"${rec.title.replace(/"/g, '""')}"`,
-        `"${rec.description.replace(/"/g, '""')}"`,
+        `"${rec.title.replace(/"/g, '""')}"`,`
+        `"${rec.description.replace(/"/g, '""')}"`,`
         rec.effort.hours.toString(),
-        `"${rec.benefits.join('; ').replace(/"/g, '""')}"`,
-        `"${rec.risks.join('; ').replace(/"/g, '""')}"`,
-      ].join(',');
+        `"${rec.benefits.join('; ').replace(/"/g, '""')}"`,`
+        `"${rec.risks.join('; ').replace(/"/g, '""')}"`,`
+      ].join(',');'
       csvRows.push(row);
     }
 
-    const csvContent = csvRows.join('\n');
-    await fs.writeFile(outputPath, csvContent, 'utf-8');
+    const csvContent = csvRows.join('\n');'
+    await fs.writeFile(outputPath, csvContent, 'utf-8');'
     return outputPath;
   }
 
@@ -112,9 +112,9 @@ export class ReportGenerator {
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
 
-    const html = `
+    const html = ``
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -200,12 +200,12 @@ export class ReportGenerator {
             
             <h3>Strengths</h3>
             <ul>
-                ${result.summary.strengths.map((strength) => `<li>${strength}</li>`).join(')}
+                ${result.summary.strengths.map((strength) => `<li>${strength}</li>`).join(')}'
             </ul>
             
             <h3>Areas for Improvement</h3>
             <ul>
-                ${result.summary.weaknesses.map((weakness) => `<li>${weakness}</li>`).join(')}
+                ${result.summary.weaknesses.map((weakness) => `<li>${weakness}</li>`).join(')}'
             </ul>
 
             <h3>Risk Assessment</h3>
@@ -230,36 +230,36 @@ export class ReportGenerator {
             ${result.recommendations
               .slice(0, 20)
               .map(
-                (rec) => `
+                (rec) => ``
                 <div class="recommendation priority-${rec.priority}">
                     <h3>${rec.title} <span style="color: #666; font-size: 14px;">[${rec.priority.toUpperCase()}]</span></h3>
                     <p>${rec.description}</p>
                     <p><strong>Effort:</strong> ${rec.effort.hours} hours (${rec.effort.difficulty})</p>
                     <p><strong>Benefits:</strong></p>
                     <ul>
-                        ${rec.benefits.map((benefit) => `<li>${benefit}</li>`).join(')}
+                        ${rec.benefits.map((benefit) => `<li>${benefit}</li>`).join(')}'
                     </ul>
                     ${
                       rec.risks.length > 0
-                        ? `
+                        ? ``
                         <p><strong>Risks:</strong></p>
                         <ul>
-                            ${rec.risks.map((risk) => `<li>${risk}</li>`).join(')}
+                            ${rec.risks.map((risk) => `<li>${risk}</li>`).join(')}'
                         </ul>
-                    `
-                        : '
+                    ``
+                        : ''
                     }
                 </div>
-            `
+            ``
               )
-              .join(')}
+              .join(')}'
         </div>
 
         <div class="section">
             <h2>Domains (${result.domains.length})</h2>
             ${result.domains
               .map(
-                (domain) => `
+                (domain) => ``
                 <div class="domain">
                     <h3>${domain.name} <span style="color: #666; font-size: 14px;">[${domain.type}]</span></h3>
                     <p>${domain.description}</p>
@@ -279,16 +279,16 @@ export class ReportGenerator {
                     </div>
                     ${
                       domain.splitRecommendation
-                        ? `
-                        <p><strong>Split Recommendation:</strong> ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} 
+                        ? ``
+                        <p><strong>Split Recommendation:</strong> ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} '
                         (Confidence: ${(domain.splitRecommendation.confidence * 100).toFixed(1)}%)</p>
-                    `
-                        : '
+                    ``
+                        : ''
                     }
                 </div>
-            `
+            ``
               )
-              .join(')}
+              .join(')}'
         </div>
 
         <div class="section">
@@ -296,20 +296,20 @@ export class ReportGenerator {
             <div class="stats-grid">
                 ${Object.entries(result.repository.languages)
                   .map(
-                    ([lang, lines]) => `
+                    ([lang, lines]) => ``
                     <div class="stat-card">
                         <div class="metric-value">${lines.toLocaleString()}</div>
                         <div class="metric-label">${lang.toUpperCase()}</div>
                     </div>
-                `
+                ``
                   )
-                  .join(')}
+                  .join(')}'
             </div>
         </div>
 
         ${
           result.repository.gitMetrics
-            ? `
+            ? ``
             <div class="section">
                 <h2>Git Metrics</h2>
                 <div class="stats-grid">
@@ -331,8 +331,8 @@ export class ReportGenerator {
                     </div>
                 </div>
             </div>
-        `
-            : '
+        ``
+            : ''
         }
 
         <div class="section">
@@ -357,9 +357,9 @@ export class ReportGenerator {
         </div>
     </div>
 </body>
-</html>`;
+</html>`;`
 
-    await fs.writeFile(outputPath, html, 'utf-8');
+    await fs.writeFile(outputPath, html, 'utf-8');'
     return outputPath;
   }
 
@@ -370,9 +370,9 @@ export class ReportGenerator {
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
 
-    const markdown = `# Repository Analysis Report
+    const markdown = `# Repository Analysis Report`
 
 **Repository:** ${result.repository.name}  
 **Analysis Date:** ${result.repository.analysisTimestamp.toLocaleDateString()}  
@@ -381,10 +381,10 @@ export class ReportGenerator {
 ## Overall Health Score: ${(result.summary.overallScore * 100).toFixed(1)}%
 
 ## Summary|Metric|Value||--------|-------||Total Files|${result.repository.totalFiles}||Total Lines|${result.repository.totalLines.toLocaleString()}||Cyclomatic Complexity|${result.repository.complexity.cyclomatic}||Maintainability Index|${result.repository.complexity.maintainabilityIndex.toFixed(1)}||Total Dependencies|${result.repository.dependencies.totalDependencies}||Domains|${result.domains.length}|### Strengths
-${result.summary.strengths.map((s) => `- ${s}`).join('\n')}
+${result.summary.strengths.map((s) => `- ${s}`).join('\n')}'
 
 ### Areas for Improvement
-${result.summary.weaknesses.map((w) => `- ${w}`).join('\n')}
+${result.summary.weaknesses.map((w) => `- ${w}`).join('\n')}'
 
 ### Risk Assessment
 - **Technical Debt Risk:** ${result.summary.riskAssessment.technicalDebtRisk.toUpperCase()}
@@ -397,7 +397,7 @@ ${result.summary.weaknesses.map((w) => `- ${w}`).join('\n')}
 ${result.recommendations
   .slice(0, 10)
   .map(
-    (rec, index) => `
+    (rec, index) => ``
 ### ${index + 1}. ${rec.title} [${rec.priority.toUpperCase()}]
 
 ${rec.description}
@@ -405,18 +405,18 @@ ${rec.description}
 **Effort:** ${rec.effort.hours} hours (${rec.effort.difficulty})
 
 **Benefits:**
-${rec.benefits.map((b) => `- ${b}`).join('\n')}
+${rec.benefits.map((b) => `- ${b}`).join('\n')}'
 
-${rec.risks.length > 0 ? `**Risks:**\n${rec.risks.map((r) => `- ${r}`).join('\n')}` : ''}
-`
+${rec.risks.length > 0 ? `**Risks:**\n${rec.risks.map((r) => `- ${r}`).join('\n')}` : ''}'
+``
   )
-  .join('\n')}
+  .join('\n')}'
 
 ## Domains
 
 ${result.domains
   .map(
-    (domain) => `
+    (domain) => ``
 ### ${domain.name} [${domain.type}]
 
 ${domain.description}
@@ -426,31 +426,31 @@ ${domain.description}
 - **Cohesion:** ${(domain.cohesion * 100).toFixed(1)}%
 - **Coupling:** ${(domain.coupling * 100).toFixed(1)}%
 
-${domain.splitRecommendation ? `**Split Recommendation:** ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} (${(domain.splitRecommendation.confidence * 100).toFixed(1)}% confidence)` : ''}
-`
+${domain.splitRecommendation ? `**Split Recommendation:** ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} (${(domain.splitRecommendation.confidence * 100).toFixed(1)}% confidence)` : ''}'
+``
   )
-  .join('\n')}
+  .join('\n')}'
 
 ## Language Distribution
 
 ${Object.entries(result.repository.languages)
   .map(
     ([lang, lines]) =>
-      `- **${lang.toUpperCase()}:** ${lines.toLocaleString()} lines`
+      `- **${lang.toUpperCase()}:** ${lines.toLocaleString()} lines``
   )
-  .join('\n')}
+  .join('\n')}'
 
 ${
   result.repository.gitMetrics
-    ? `
+    ? ``
 ## Git Metrics
 
 - **Total Commits:** ${result.repository.gitMetrics.totalCommits}
 - **Contributors:** ${result.repository.gitMetrics.contributors}
 - **Average Commits/Day:** ${result.repository.gitMetrics.averageCommitsPerDay.toFixed(1)}
 - **Hot Files:** ${result.repository.gitMetrics.hotFiles.length}
-`
-    : ''
+``
+    : '''
 }
 
 ## Technical Details
@@ -471,9 +471,9 @@ ${
 
 ---
 *Generated by @claude-zen/repo-analyzer*
-`;
+`;`
 
-    await fs.writeFile(outputPath, markdown, 'utf-8');
+    await fs.writeFile(outputPath, markdown, 'utf-8');'
     return outputPath;
   }
 
@@ -484,16 +484,16 @@ ${
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    // For PDF generation, we'd need puppeteer or similar
+    // For PDF generation, we'd need puppeteer or similar'
     // For now, generate HTML and suggest conversion
-    const htmlPath = outputPath.replace('.pdf', '.html');
+    const htmlPath = outputPath.replace('.pdf', '.html');'
     await this.generateHtmlReport(result, htmlPath);
 
     this.logger.info(
-      `PDF generation requires additional dependencies. HTML report generated at ${htmlPath}`
+      `PDF generation requires additional dependencies. HTML report generated at ${htmlPath}``
     );
     this.logger.info(
-      'To convert to PDF, use: npx puppeteer pdf ' + htmlPath + ' ' + outputPath
+      'To convert to PDF, use: npx puppeteer pdf ' + htmlPath + ' ' + outputPath'
     );
 
     return htmlPath;
@@ -506,9 +506,9 @@ ${
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
 
-    const graphml = `<?xml version="1.0" encoding="UTF-8"?>
+    const graphml = `<?xml version="1.0" encoding="UTF-8"?>`
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
@@ -522,27 +522,27 @@ ${
   <graph id="DependencyGraph" edgedefault="directed">
     ${result.repository.dependencies.dependencyGraph.nodes
       .map(
-        (node) => `
+        (node) => ``
     <node id="${node.id}">
       <data key="name">${node.file}</data>
       <data key="type">${node.type}</data>
       <data key="complexity">${node.complexity}</data>
-    </node>`
+    </node>``
       )
-      .join(')}
+      .join(')}'
     
     ${result.repository.dependencies.dependencyGraph.edges
       .map(
-        (edge, index) => `
+        (edge, index) => ``
     <edge id="e${index}" source="${edge.from}" target="${edge.to}">
       <data key="weight">${edge.weight}</data>
-    </edge>`
+    </edge>``
       )
-      .join(')}
+      .join(')}'
   </graph>
-</graphml>`;
+</graphml>`;`
 
-    await fs.writeFile(outputPath, graphml, 'utf-8');
+    await fs.writeFile(outputPath, graphml, 'utf-8');'
     return outputPath;
   }
 
@@ -553,9 +553,9 @@ ${
     result: AnalysisResult,
     outputPath: string
   ): Promise<string> {
-    const fs = await import('fs/promises');
+    const fs = await import('fs/promises');'
 
-    const dot = `digraph RepositoryDependencies {
+    const dot = `digraph RepositoryDependencies {`
   rankdir=TB;
   node [shape=box, style=filled];
   
@@ -563,20 +563,20 @@ ${
 ${result.repository.dependencies.dependencyGraph.nodes
   .map(
     (node) =>
-      `  "${node.id}" [label="${node.file}\n${node.type}", fillcolor="${this.getNodeColor(node.type)}"];`
+      `  "${node.id}" [label="${node.file}\n${node.type}", fillcolor="${this.getNodeColor(node.type)}"];``
   )
-  .join('\n')}
+  .join('\n')}'
   
   // Edges
 ${result.repository.dependencies.dependencyGraph.edges
   .map(
     (edge) =>
-      `  "${edge.from}" -> "${edge.to}" [label="${edge.weight}", weight="${edge.weight}"];`
+      `  "${edge.from}" -> "${edge.to}" [label="${edge.weight}", weight="${edge.weight}"];``
   )
-  .join('\n')}
-}`;
+  .join('\n')}'
+}`;`
 
-    await fs.writeFile(outputPath, dot, 'utf-8');
+    await fs.writeFile(outputPath, dot, 'utf-8');'
     return outputPath;
   }
 
@@ -596,10 +596,10 @@ ${result.repository.dependencies.dependencyGraph.edges
   }
 
   private getScoreColor(score: number): string {
-    if (score >= 0.8) return '#4caf50';
-    if (score >= 0.6) return '#ff9800';
-    if (score >= 0.4) return '#f44336';
-    return '#9c27b0';
+    if (score >= 0.8) return '#4caf50;
+    if (score >= 0.6) return '#ff9800;
+    if (score >= 0.4) return '#f44336;
+    return '#9c27b0;
   }
 
   private getNodeColor(type: string): string {
@@ -610,7 +610,7 @@ ${result.repository.dependencies.dependencyGraph.edges
       utility: 'lightgray',
       test: 'lightpink',
     };
-    return colors[type]||'white';
+    return colors[type]||'white;
   }
 
   /**
@@ -629,7 +629,7 @@ ${result.repository.dependencies.dependencyGraph.edges
     return {
       generatedAt: new Date().toISOString(),
       format: format.toUpperCase(),
-      analysisScope: `${result.repository.totalFiles} files, ${result.repository.totalLines} lines`,
+      analysisScope: `${result.repository.totalFiles} files, ${result.repository.totalLines} lines`,`
       totalMetrics: {
         files: result.repository.totalFiles,
         lines: result.repository.totalLines,

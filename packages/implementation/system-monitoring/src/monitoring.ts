@@ -35,7 +35,7 @@ import type {
  */
 export class SystemMonitor {
   private config: Required<InfrastructureConfig>;
-  private logger = getLogger('SystemMonitor');
+  private logger = getLogger('SystemMonitor');'
   private monitoringInterval: NodeJS.Timeout|null = null;
   private initialized = false;
 
@@ -63,7 +63,7 @@ export class SystemMonitor {
       // Ensure telemetry is initialized
       const telemetry = getTelemetry();
       if (!telemetry.isInitialized()) {
-        await initializeTelemetry({ serviceName:'system-monitoring' });
+        await initializeTelemetry({ serviceName:'system-monitoring' });'
       }
 
       if (this.config.enableSystemMetrics) {
@@ -71,9 +71,9 @@ export class SystemMonitor {
       }
 
       this.initialized = true;
-      this.logger.info('System monitor initialized', { config: this.config });
+      this.logger.info('System monitor initialized', { config: this.config });'
     } catch (error) {
-      this.logger.error('Failed to initialize system monitor', error);
+      this.logger.error('Failed to initialize system monitor', error);'
       throw error;
     }
   }
@@ -84,14 +84,14 @@ export class SystemMonitor {
       this.monitoringInterval = null;
     }
     this.initialized = false;
-    this.logger.info('System monitor shut down');
+    this.logger.info('System monitor shut down');'
   }
 
   /**
    * Get current system metrics
    */
   async getMetrics(): Promise<SystemMetrics> {
-    return await withAsyncTrace('system.get_metrics', async () => {
+    return await withAsyncTrace('system.get_metrics', async () => {'
       const [cpu, memory, disk, network, uptime] = await Promise.all([
         si.currentLoad(),
         si.mem(),
@@ -131,10 +131,10 @@ export class SystemMonitor {
       };
 
       // Record metrics via telemetry
-      recordGauge('system.cpu.usage', metrics.cpu.usage);
-      recordGauge('system.memory.usage', metrics.memory.usage);
-      recordGauge('system.disk.usage', metrics.disk.usage);
-      recordGauge('system.uptime', metrics.uptime);
+      recordGauge('system.cpu.usage', metrics.cpu.usage);'
+      recordGauge('system.memory.usage', metrics.memory.usage);'
+      recordGauge('system.disk.usage', metrics.disk.usage);'
+      recordGauge('system.uptime', metrics.uptime);'
 
       return metrics;
     });
@@ -144,7 +144,7 @@ export class SystemMonitor {
    * Get process-specific metrics using pidusage
    */
   async getProcessMetrics(pid?: number): Promise<any> {
-    return await withAsyncTrace('system.get_process_metrics', async () => {
+    return await withAsyncTrace('system.get_process_metrics', async () => {'
       try {
         const processId = pid||process.pid;
         const stats = await pidusage(processId);
@@ -160,13 +160,13 @@ export class SystemMonitor {
         };
 
         // Record process metrics via telemetry
-        recordGauge('process.cpu.usage', processMetrics.cpu);
-        recordGauge('process.memory.usage', processMetrics.memory);
-        recordGauge('process.elapsed.time', processMetrics.elapsed);
+        recordGauge('process.cpu.usage', processMetrics.cpu);'
+        recordGauge('process.memory.usage', processMetrics.memory);'
+        recordGauge('process.elapsed.time', processMetrics.elapsed);'
 
         return processMetrics;
       } catch (error) {
-        this.logger.warn('Failed to get process metrics', { pid, error });
+        this.logger.warn('Failed to get process metrics', { pid, error });'
         return {
           pid: pid||process.pid,
           cpu: 0,
@@ -185,7 +185,7 @@ export class SystemMonitor {
    * Get all running processes metrics
    */
   async getAllProcessesMetrics(): Promise<any[]> {
-    return await withAsyncTrace('system.get_all_processes', async () => {
+    return await withAsyncTrace('system.get_all_processes', async () => {'
       try {
         const processes = await si.processes();
         const topProcesses = processes.list
@@ -228,11 +228,11 @@ export class SystemMonitor {
         return processMetrics
           .filter(
             (result): result is PromiseFulfilledResult<any> =>
-              result.status === 'fulfilled'
+              result.status === 'fulfilled''
           )
           .map((result) => result.value);
       } catch (error) {
-        this.logger.warn('Failed to get all processes metrics', error);
+        this.logger.warn('Failed to get all processes metrics', error);'
         return [];
       }
     });
@@ -242,65 +242,65 @@ export class SystemMonitor {
    * Get system health status
    */
   async getHealthStatus(): Promise<HealthStatus> {
-    return await withAsyncTrace('system.health_check', async () => {
+    return await withAsyncTrace('system.health_check', async () => {'
       const [metrics, processMetrics] = await Promise.all([
         this.getMetrics(),
         this.getProcessMetrics(),
       ]);
 
-      const checks: HealthStatus['checks'] = {
+      const checks: HealthStatus['checks'] = {'
         cpu: {
           status:
             metrics.cpu.usage > this.config.cpuErrorThreshold
-              ? 'error'
+              ? 'error''
               : metrics.cpu.usage > this.config.cpuWarningThreshold
-                ? 'warning'
+                ? 'warning''
                 : 'ok',
           value: metrics.cpu.usage,
           threshold: this.config.cpuWarningThreshold,
-          message: `System CPU usage: ${metrics.cpu.usage}%`,
+          message: `System CPU usage: ${metrics.cpu.usage}%`,`
         },
         memory: {
           status:
             metrics.memory.usage > this.config.memoryErrorThreshold
-              ? 'error'
+              ? 'error''
               : metrics.memory.usage > this.config.memoryWarningThreshold
-                ? 'warning'
+                ? 'warning''
                 : 'ok',
           value: metrics.memory.usage,
           threshold: this.config.memoryWarningThreshold,
-          message: `System memory usage: ${metrics.memory.usage}%`,
+          message: `System memory usage: ${metrics.memory.usage}%`,`
         },
         disk: {
           status:
             metrics.disk.usage > this.config.diskErrorThreshold
-              ? 'error'
+              ? 'error''
               : metrics.disk.usage > this.config.diskWarningThreshold
-                ? 'warning'
+                ? 'warning''
                 : 'ok',
           value: metrics.disk.usage,
           threshold: this.config.diskWarningThreshold,
-          message: `Disk usage: ${metrics.disk.usage}%`,
+          message: `Disk usage: ${metrics.disk.usage}%`,`
         },
         process: {
           status: processMetrics.cpu > 80 ? 'warning' : 'ok',
           value: processMetrics.cpu,
           threshold: 80,
-          message: `Process CPU usage: ${processMetrics.cpu}%`,
+          message: `Process CPU usage: ${processMetrics.cpu}%`,`
         },
         uptime: {
           status: 'ok',
           value: metrics.uptime,
           threshold: 0,
-          message: `System uptime: ${Math.round(metrics.uptime / 3600)} hours`,
+          message: `System uptime: ${Math.round(metrics.uptime / 3600)} hours`,`
         },
       };
 
       const hasError = Object.values(checks).some(
-        (check) => check.status === 'error'
+        (check) => check.status === 'error''
       );
       const hasWarning = Object.values(checks).some(
-        (check) => check.status === 'warning'
+        (check) => check.status === 'warning''
       );
 
       const status: HealthStatus = {
@@ -324,16 +324,16 @@ export class SystemMonitor {
       // Record health status with detailed metrics
       recordMetric(
         'system.health.overall',
-        status.status === 'healthy' ? 1 : 0
+        status.status === 'healthy' ? 1 : 0'
       );
-      recordMetric('system.health.checks.total', Object.keys(checks).length);
+      recordMetric('system.health.checks.total', Object.keys(checks).length);'
       recordMetric(
         'system.health.checks.errors',
-        Object.values(checks).filter((c) => c.status === 'error').length
+        Object.values(checks).filter((c) => c.status === 'error').length'
       );
       recordMetric(
         'system.health.checks.warnings',
-        Object.values(checks).filter((c) => c.status === 'warning').length
+        Object.values(checks).filter((c) => c.status === 'warning').length'
       );
 
       return status;
@@ -353,14 +353,14 @@ export class SystemMonitor {
         ]);
 
         // Record collection success
-        recordMetric('system.metrics.collection.success', 1);
+        recordMetric('system.metrics.collection.success', 1);'
       } catch (error) {
-        this.logger.error('Error collecting system metrics', error);
-        recordMetric('system.metrics.collection.error', 1);
+        this.logger.error('Error collecting system metrics', error);'
+        recordMetric('system.metrics.collection.error', 1);'
       }
     }, this.config.systemMetricsInterval);
 
-    this.logger.info('Started system metrics collection', {
+    this.logger.info('Started system metrics collection', {'
       interval: this.config.systemMetricsInterval,
       enableHealthChecks: this.config.enableHealthChecks,
     });
@@ -376,7 +376,7 @@ export class SystemMonitor {
  */
 export class PerformanceTracker {
   private operations = new Map<string, number[]>();
-  private logger = getLogger('PerformanceTracker');
+  private logger = getLogger('PerformanceTracker');'
 
   /**
    * Start timing an operation with high precision
@@ -400,11 +400,11 @@ export class PerformanceTracker {
     try {
       const result = await operation();
       timer();
-      recordMetric(`operation.${name}.success`, 1);
+      recordMetric(`operation.${name}.success`, 1);`
       return result;
     } catch (error) {
       timer();
-      recordMetric(`operation.${name}.error`, 1);
+      recordMetric(`operation.${name}.error`, 1);`
       throw error;
     }
   }
@@ -417,11 +417,11 @@ export class PerformanceTracker {
     try {
       const result = operation();
       timer();
-      recordMetric(`operation.${name}.success`, 1);
+      recordMetric(`operation.${name}.success`, 1);`
       return result;
     } catch (error) {
       timer();
-      recordMetric(`operation.${name}.error`, 1);
+      recordMetric(`operation.${name}.error`, 1);`
       throw error;
     }
   }
@@ -443,15 +443,15 @@ export class PerformanceTracker {
     }
 
     // Record to telemetry
-    recordHistogram(`operation.${name}.duration`, duration);
-    recordMetric(`operation.${name}.count`, 1);
+    recordHistogram(`operation.${name}.duration`, duration);`
+    recordMetric(`operation.${name}.count`, 1);`
   }
 
   /**
    * Get performance metrics with statistical analysis
    */
   getMetrics(): PerformanceMetrics {
-    const operations: PerformanceMetrics['operations'] = {};
+    const operations: PerformanceMetrics['operations'] = {};'
 
     for (const [name, durations] of this.operations.entries()) {
       if (durations.length === 0) continue;
@@ -516,7 +516,7 @@ export class PerformanceTracker {
    */
   private calculateTrend(
     durations: number[]
-  ):'improving|stable|degrading' {
+  ):'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading' {'
     if (durations.length < 10) return 'stable';
 
     const recent = durations.slice(-10);
@@ -529,8 +529,8 @@ export class PerformanceTracker {
 
     const change = (recentAvg - earlierAvg) / earlierAvg;
 
-    if (change < -0.05) return 'improving'; // 5% improvement
-    if (change > 0.05) return 'degrading'; // 5% degradation
+    if (change < -0.05) return 'improving'; // 5% improvement'
+    if (change > 0.05) return 'degrading'; // 5% degradation'
     return 'stable';
   }
 
@@ -539,7 +539,7 @@ export class PerformanceTracker {
    */
   reset(): void {
     this.operations.clear();
-    this.logger.info('Performance tracker reset');
+    this.logger.info('Performance tracker reset');'
   }
 }
 
@@ -589,8 +589,8 @@ export class InfrastructureMetrics {
     duration: number,
     success: boolean
   ): void {
-    recordHistogram(`infrastructure.${operation}.duration`, duration);
-    recordMetric(`infrastructure.${operation}.calls`, 1, {
+    recordHistogram(`infrastructure.${operation}.duration`, duration);`
+    recordMetric(`infrastructure.${operation}.calls`, 1, {`
       status: success ? 'success' : 'error',
     });
   }
@@ -599,14 +599,14 @@ export class InfrastructureMetrics {
    * Track resource utilization
    */
   trackResourceUtilization(resource: string, utilization: number): void {
-    recordGauge(`infrastructure.resource.${resource}`, utilization);
+    recordGauge(`infrastructure.resource.${resource}`, utilization);`
   }
 
   /**
    * Track infrastructure event
    */
   trackEvent(event: string, attributes: Record<string, any> = {}): void {
-    recordMetric(`infrastructure.event.${event}`, 1, attributes);
+    recordMetric(`infrastructure.event.${event}`, 1, attributes);`
   }
 }
 

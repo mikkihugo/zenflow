@@ -25,7 +25,7 @@
  * - Database: Uses existing tasks table and approval gate schemas
  *
  * @example SAFe 6.0 Workflow Management
- * ```typescript
+ * ```typescript`
  * import { getTaskMaster } from '@claude-zen/taskmaster';
  *
  * // Get TaskMaster system for SAFe workflow
@@ -40,10 +40,10 @@
  * });
  *
  * // Move through SAFe workflow states
- * await taskMaster.moveTask(story.id, 'analysis');    // Backlog refinement
- * await taskMaster.moveTask(story.id, 'development'); // Sprint execution
- * await taskMaster.moveTask(story.id, 'testing');     // QA validation
- * await taskMaster.moveTask(story.id, 'done');        // Definition of done
+ * await taskMaster.moveTask(story.id, 'analysis');    // Backlog refinement'
+ * await taskMaster.moveTask(story.id, 'development'); // Sprint execution'
+ * await taskMaster.moveTask(story.id, 'testing');     // QA validation'
+ * await taskMaster.moveTask(story.id, 'done');        // Definition of done'
  *
  * // Create PI Planning event
  * const piEvent = await taskMaster.createPIPlanningEvent({
@@ -51,16 +51,16 @@
  *   artId: 'platform-train',
  *   startDate: new Date(),
  *   endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
- *   facilitator: 'rte-user-id'
+ *   facilitator: 'rte-user-id''
  * });
  *
  * // Monitor SAFe flow health
  * const metrics = await taskMaster.getFlowMetrics();
  * const health = await taskMaster.getSystemHealth();
- * ```
+ * ````
  *
  * @example High-Throughput Configuration
- * ```typescript
+ * ```typescript`
  * import { createTaskFlowController } from '@claude-zen/taskmaster';
  *
  * const kanban = createHighThroughputWorkflowKanban(eventBus);
@@ -68,28 +68,28 @@
  *
  * // Optimized for high-volume workflow coordination
  * // with reduced monitoring intervals and increased limits
- * ```
+ * ````
  *
  * @example Event-Driven Integration
- * ```typescript
+ * ```typescript`
  * import { WorkflowKanban } from '@claude-zen/taskmaster';
  * import type { TypeSafeEventBus } from '@claude-zen/event-system';
  *
  * const kanban = new WorkflowKanban(config, eventBus);
  *
  * // Listen to workflow events
- * kanban.on('task:created', (task) => {
- *   console.log('New task created:', task.title);
+ * kanban.on('task:created', (task) => {'
+ *   console.log('New task created:', task.title);'
  * });
  *
- * kanban.on('bottleneck:detected', (bottleneck) => {
- *   console.log('Bottleneck detected:', bottleneck.state);
+ * kanban.on('bottleneck:detected', (bottleneck) => {'
+ *   console.log('Bottleneck detected:', bottleneck.state);'
  * });
  *
- * kanban.on('wip:exceeded', (state, count, limit) => {
- *   console.log(`WIP exceeded in ${state}: ${count}/${limit}`);
+ * kanban.on('wip:exceeded', (state, count, limit) => {'
+ *   console.log(`WIP exceeded in ${state}: ${count}/${limit}`);`
  * });
- * ```
+ * ````
  *
  * @author Claude-Zen Team
  * @since 1.0.0
@@ -221,7 +221,7 @@ export const DEFAULT_WORKFLOW_STATES: TaskState[] = [
 /**
  * Blocked and expedite states (special handling)
  */
-export const SPECIAL_WORKFLOW_STATES: TaskState[] = ['blocked', 'expedite'];
+export const SPECIAL_WORKFLOW_STATES: TaskState[] = ['blocked', 'expedite'];'
 
 /**
  * All supported workflow states

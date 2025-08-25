@@ -28,7 +28,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('SafeConfiguration');
+const logger = getLogger('SafeConfiguration');'
 
 // ============================================================================
 // SAFe CONFIGURATION TYPES
@@ -38,10 +38,10 @@ const logger = getLogger('SafeConfiguration');
  * SAFe 6.0 configuration levels with feature toggles
  */
 export enum SafeConfigurationLevel {
-  ESSENTIAL = 'essential', // Step 1: ART-focused, minimal viable SAFe
-  LARGE_SOLUTION = 'large_solution', // Step 2: Adds solution coordination
-  PORTFOLIO = 'portfolio', // Step 3: Adds portfolio management
-  FULL = 'full', // Step 4: Complete enterprise transformation
+  ESSENTIAL = 'essential', // Step 1: ART-focused, minimal viable SAFe'
+  LARGE_SOLUTION = 'large_solution', // Step 2: Adds solution coordination'
+  PORTFOLIO = 'portfolio', // Step 3: Adds portfolio management'
+  FULL = 'full', // Step 4: Complete enterprise transformation'
 }
 
 /**
@@ -98,10 +98,10 @@ export interface SafeConfiguration {
   level: SafeConfigurationLevel;
   features: SafeFeatureToggles;
   customizations: {
-    organizationSize: 'small|medium|large|enterprise';
+    organizationSize: 'small|medium|large|enterprise;
     industry: string;
     complianceRequirements: string[];
-    aiIntegrationLevel: 'basic|advanced|full';
+    aiIntegrationLevel: 'basic' | 'advanced' | 'full';
   };
   metadata: {
     version: string;
@@ -166,10 +166,10 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
   },
 
   customizations: {
-    organizationSize: 'medium', // Typical Essential SAFe target
+    organizationSize: 'medium', // Typical Essential SAFe target'
     industry: 'software',
     complianceRequirements: ['basic'],
-    aiIntegrationLevel: 'advanced', // Our AI strength
+    aiIntegrationLevel: 'advanced', // Our AI strength'
   },
 
   metadata: {
@@ -193,7 +193,7 @@ export class SafeConfigurationManager {
 
   constructor(config: SafeConfiguration = ESSENTIAL_SAFE_6_0_CONFIG) {
     this.currentConfig = config;
-    logger.info('SafeConfigurationManager initialized', {
+    logger.info('SafeConfigurationManager initialized', {'
       level: config.level,
       enabledFeatures: this.getEnabledFeatureCount(),
     });
@@ -224,7 +224,7 @@ export class SafeConfigurationManager {
    * Enable specific SAFe configuration level
    */
   enableConfigurationLevel(level: SafeConfigurationLevel): void {
-    logger.info(`Enabling SAFe configuration level: ${level}`);
+    logger.info(`Enabling SAFe configuration level: ${level}`);`
 
     switch (level) {
       case SafeConfigurationLevel.ESSENTIAL:
@@ -356,7 +356,7 @@ export class SafeConfigurationManager {
       ([categoryName, category]) => {
         Object.entries(category).forEach(([featureName, enabled]) => {
           if (!enabled) {
-            missing.push(`${categoryName}.${featureName}`);
+            missing.push(`${categoryName}.${featureName}`);`
           }
         });
       }

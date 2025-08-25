@@ -3,7 +3,7 @@
  * @module ai-linter
  */
 
-// Basic implementations for now (will use foundation when it's fixed)
+// Basic implementations for now (will use foundation when it's fixed)'
 const getLogger = (name: string) => ({
   info: (msg: string, data?: any) => console.log(`[${name}] INFO:`, msg, data || ''),
   error: (msg: string, data?: any) => console.error(`[${name}] ERROR:`, msg, data || ''),
@@ -27,7 +27,7 @@ import type {
   FileDiscoveryOptions 
 } from './types.js';
 
-const logger = getLogger('ai-linter');
+const logger = getLogger('ai-linter');'
 
 /**
  * AI-powered TypeScript/JavaScript linter
@@ -45,7 +45,7 @@ export class AILinter {
   constructor(config?: Partial<AILinterConfig>) {
     this.config = {
       aiMode: 'gpt-4.1',
-      scopeMode: 'app-only', 
+      scopeMode: 'app-only', '
       processingMode: 'sequential',
       temperature: 0.0,
       maxRetries: 3,
@@ -54,7 +54,7 @@ export class AILinter {
       ...config
     };
 
-    logger.info('AI Linter initialized', { config: this.config });
+    logger.info('AI Linter initialized', { config: this.config });'
   }
 
   /**
@@ -62,7 +62,7 @@ export class AILinter {
    */
   async processFile(filePath: string): Promise<Result<ProcessingResult, string>> {
     try {
-      logger.info('Processing file', { filePath, aiMode: this.config.aiMode });
+      logger.info('Processing file', { filePath, aiMode: this.config.aiMode });'
       
       // TODO: Implement file processing logic from intelligent-linter.mjs
       // This will include:
@@ -84,7 +84,7 @@ export class AILinter {
       return ok(result);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error('Failed to process file', { filePath, error: errorMessage });
+      logger.error('Failed to process file', { filePath, error: errorMessage });'
       return err(errorMessage);
     }
   }
@@ -94,7 +94,7 @@ export class AILinter {
    */
   async processBatch(filePaths: string[]): Promise<Result<BatchResult, string>> {
     try {
-      logger.info('Starting batch processing', { 
+      logger.info('Starting batch processing', { '
         fileCount: filePaths.length, 
         mode: this.config.processingMode 
       });
@@ -102,7 +102,7 @@ export class AILinter {
       const results: ProcessingResult[] = [];
       const startTime = Date.now();
 
-      if (this.config.processingMode === 'sequential') {
+      if (this.config.processingMode === 'sequential') {'
         for (const filePath of filePaths) {
           const result = await this.processFile(filePath);
           if (result.success) {
@@ -126,7 +126,7 @@ export class AILinter {
         
         for (let i = 0; i < settled.length; i++) {
           const result = settled[i];
-          if (result.status === 'fulfilled' && result.value.success) {
+          if (result.status === 'fulfilled' && result.value.success) {'
             results.push(result.value.data);
           } else {
             results.push({
@@ -136,7 +136,7 @@ export class AILinter {
               fixedErrors: 0,
               timeTaken: 0,
               aiModel: this.config.aiMode,
-              error: result.status === 'rejected' ? result.reason : (result.value.success ? undefined : result.value.error)
+              error: result.status === 'rejected' ? result.reason : (result.value.success ? undefined : result.value.error)'
             });
           }
         }
@@ -153,11 +153,11 @@ export class AILinter {
         results
       };
 
-      logger.info('Batch processing completed', batchResult);
+      logger.info('Batch processing completed', batchResult);'
       return ok(batchResult);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error('Batch processing failed', { error: errorMessage });
+      logger.error('Batch processing failed', { error: errorMessage });'
       return err(errorMessage);
     }
   }
@@ -175,7 +175,7 @@ export class AILinter {
         ...options
       };
 
-      logger.info('Discovering files', opts);
+      logger.info('Discovering files', opts);'
 
       // TODO: Implement file discovery logic
       // This will include:
@@ -187,7 +187,7 @@ export class AILinter {
       return ok(files);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error('File discovery failed', { error: errorMessage });
+      logger.error('File discovery failed', { error: errorMessage });'
       return err(errorMessage);
     }
   }
@@ -197,7 +197,7 @@ export class AILinter {
    */
   updateConfig(config: Partial<AILinterConfig>): void {
     this.config = { ...this.config, ...config };
-    logger.info('Configuration updated', { config: this.config });
+    logger.info('Configuration updated', { config: this.config });'
   }
 
   /**

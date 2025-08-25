@@ -33,7 +33,7 @@ export class ResultParser {
   private readonly logger: Logger;
 
   constructor(logger: Logger) {
-    this.logger = logger.child({ component: 'ResultParser' });
+    this.logger = logger.child({ component: 'ResultParser' });'
   }
 
   /**
@@ -54,7 +54,7 @@ export class ResultParser {
             findings.push(finding);
           }
         } catch (error) {
-          this.logger.warn('Failed to parse analysis result', {
+          this.logger.warn('Failed to parse analysis result', {'
             ruleId: result.ruleId,
             error,
           });
@@ -62,7 +62,7 @@ export class ResultParser {
       }
     }
 
-    this.logger.debug('Parsed SARIF results', {
+    this.logger.debug('Parsed SARIF results', {'
       totalRuns: sarifResult.runs.length,
       totalFindings: findings.length,
     });
@@ -112,7 +112,7 @@ export class ResultParser {
     );
 
     const finding: CodeQLFinding = {
-      id: `finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,`
       ruleId: result.ruleId,
       ruleName,
       severity: this.mapSeverity(result.level||'warning'),
@@ -192,9 +192,9 @@ export class ResultParser {
 
       steps.push({
         location,
-        description: flowLocation.location.message?.text||`Step ${i + 1}`,
+        description: flowLocation.location.message?.text||`Step ${i + 1}`,`
         stepNumber: i + 1,
-        isSanitizer: flowLocation.importance ==='unimportant', // Heuristic
+        isSanitizer: flowLocation.importance ==='unimportant', // Heuristic'
       });
     }
 
@@ -206,7 +206,7 @@ export class ResultParser {
       steps,
       source,
       sink,
-      type:'taint', // Default to taint flow
+      type:'taint', // Default to taint flow'
     };
   }
 
@@ -229,35 +229,35 @@ export class ResultParser {
     rule: any
   ): SecurityClassification|undefined {
     // Map common CodeQL security rules to classifications
-    const securityMappings: Record<string, Partial<SecurityClassification>> = {'js/sql-injection': {
+    const securityMappings: Record<string, Partial<SecurityClassification>> = {'js/sql-injection': {'
         cweId: 89,
         owaspCategory: 'A03:2021 – Injection',
         securitySeverity: 'high',
         attackVector: 'network',
         exploitability: 0.8,
       },
-      'js/xss': {
+      'js/xss': {'
         cweId: 79,
         owaspCategory: 'A03:2021 – Injection',
         securitySeverity: 'high',
         attackVector: 'network',
         exploitability: 0.9,
       },
-      'js/path-injection': {
+      'js/path-injection': {'
         cweId: 22,
         owaspCategory: 'A01:2021 – Broken Access Control',
         securitySeverity: 'high',
         attackVector: 'network',
         exploitability: 0.7,
       },
-      'js/unsafe-deserialization': {
+      'js/unsafe-deserialization': {'
         cweId: 502,
         owaspCategory: 'A08:2021 – Software and Data Integrity Failures',
         securitySeverity: 'critical',
         attackVector: 'network',
         exploitability: 0.6,
       },
-      'js/code-injection': {
+      'js/code-injection': {'
         cweId: 94,
         owaspCategory: 'A03:2021 – Injection',
         securitySeverity: 'critical',
@@ -270,7 +270,7 @@ export class ResultParser {
     if (!mapping) {
       // Check if rule appears to be security-related
       const isSecurityRule =
-        ruleId.includes('security')||ruleId.includes('injection')||ruleId.includes('xss')||ruleId.includes('csrf')||ruleId.includes('auth');
+        ruleId.includes('security')||ruleId.includes('injection')||ruleId.includes('xss')||ruleId.includes('csrf')||ruleId.includes('auth');'
 
       if (!isSecurityRule) {
         return undefined;
@@ -303,13 +303,13 @@ export class ResultParser {
 
     // Common fix patterns based on rule types
     const fixPatterns: Record<string, string> = {
-      'js/sql-injection':
+      'js/sql-injection':'
         'Use parameterized queries instead of string concatenation',
       'js/xss': 'Sanitize user input before rendering in HTML',
       'js/path-injection': 'Validate and sanitize file paths',
-      'js/unsafe-deserialization':
+      'js/unsafe-deserialization':'
         'Use safe deserialization methods or validate input',
-      'js/hardcoded-credentials':
+      'js/hardcoded-credentials':'
         'Move credentials to environment variables or secure storage',
     };
 
@@ -333,8 +333,8 @@ export class ResultParser {
     location: SourceLocation
   ): Promise<string|undefined> {
     try {
-      const content = await fs.readFile(location.filePath,'utf-8');
-      const lines = content.split('\n');
+      const content = await fs.readFile(location.filePath,'utf-8');'
+      const lines = content.split('\n');'
 
       const startLine = Math.max(0, location.startLine - 1);
       const endLine = Math.min(
@@ -342,7 +342,7 @@ export class ResultParser {
         location.endLine||location.startLine
       );
 
-      return lines.slice(startLine, endLine).join('\n');
+      return lines.slice(startLine, endLine).join('\n');'
     } catch {
       return undefined;
     }
@@ -353,18 +353,18 @@ export class ResultParser {
    */
   private mapSeverity(
     sarifLevel: string
-  ): 'error|warning|note|info' {
+  ): 'error|warning|note|info' {'
     switch (sarifLevel.toLowerCase()) {
-      case 'error':
-        return 'error';
-      case 'warning':
-        return 'warning';
-      case 'note':
-        return 'note';
-      case 'info':
-        return 'info';
+      case 'error':'
+        return 'error;
+      case 'warning':'
+        return 'warning;
+      case 'note':'
+        return 'note;
+      case 'info':'
+        return 'info;
       default:
-        return 'warning';
+        return 'warning;
     }
   }
 

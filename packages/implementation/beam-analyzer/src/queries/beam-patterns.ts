@@ -19,7 +19,7 @@ import type {
 } from '../types/beam-types';
 
 export class BeamPatternAnalyzer {
-  private logger = getLogger('BeamPatternAnalyzer');
+  private logger = getLogger('BeamPatternAnalyzer');'
 
   /**
    * Analyze BEAM project for common patterns and anti-patterns
@@ -30,12 +30,12 @@ export class BeamPatternAnalyzer {
   ): Promise<Result<BeamFinding[], BeamAnalysisError>> {
     try {
       this.logger.info(
-        `Analyzing BEAM patterns for ${project.language} project`
+        `Analyzing BEAM patterns for ${project.language} project``
       );
 
       const findings: BeamFinding[] = [];
 
-      // Get default rules for the project's languages
+      // Get default rules for the project's languages'
       const defaultRules = this.getDefaultRules([
         project.language,
         ...(project.additionalLanguages||[]),
@@ -58,14 +58,14 @@ export class BeamPatternAnalyzer {
       }
 
       this.logger.info(
-        `Pattern analysis completed: ${findings.length} findings`
+        `Pattern analysis completed: ${findings.length} findings``
       );
       return ok(findings);
     } catch (error) {
-      this.logger.error('Pattern analysis failed:', error);
+      this.logger.error('Pattern analysis failed:', error);'
       return err({
         code: 'ANALYSIS_FAILED',
-        message: `Pattern analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        message: `Pattern analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
         originalError: error instanceof Error ? error : undefined,
       });
     }
@@ -89,13 +89,13 @@ export class BeamPatternAnalyzer {
    */
   private getRulesForLanguage(language: BeamLanguage): BeamAnalysisRule[] {
     switch (language) {
-      case 'erlang':
+      case 'erlang':'
         return this.getErlangRules();
-      case 'elixir':
+      case 'elixir':'
         return this.getElixirRules();
-      case 'gleam':
+      case 'gleam':'
         return this.getGleamRules();
-      case 'lfe':
+      case 'lfe':'
         return this.getLfeRules();
       default:
         return [];
@@ -329,8 +329,8 @@ export class BeamPatternAnalyzer {
     const findings: BeamFinding[] = [];
 
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
-      const lines = content.split('\n');
+      const content = await fs.readFile(filePath, 'utf-8');'
+      const lines = content.split('\n');'
 
       for (const rule of rules) {
         if (!this.isRuleApplicable(filePath, rule)) {
@@ -346,7 +346,7 @@ export class BeamPatternAnalyzer {
         findings.push(...ruleFindings);
       }
     } catch (error) {
-      this.logger.warn(`Failed to analyze file ${filePath}:`, error);
+      this.logger.warn(`Failed to analyze file ${filePath}:`, error);`
     }
 
     return findings;
@@ -385,8 +385,8 @@ export class BeamPatternAnalyzer {
   ): Promise<BeamFinding[]> {
     const findings: BeamFinding[] = [];
 
-    if (rule.pattern.type === 'regex') {
-      const regex = new RegExp(rule.pattern.expression, 'gm');
+    if (rule.pattern.type === 'regex') {'
+      const regex = new RegExp(rule.pattern.expression, 'gm');'
       let match;
 
       while ((match = regex.exec(content)) !== null) {
@@ -401,7 +401,7 @@ export class BeamPatternAnalyzer {
         }
 
         const finding: BeamFinding = {
-          id: `${rule.name}-${filePath}-${location.line}`,
+          id: `${rule.name}-${filePath}-${location.line}`,`
           severity: rule.severity,
           category: this.getCategoryFromRule(rule),
           message: rule.messageTemplate,
@@ -437,11 +437,11 @@ export class BeamPatternAnalyzer {
   ): BeamLocation {
     const beforeMatch = match.input!.substring(0, match.index);
     const lineCount = (beforeMatch.match(/\n/g)||[]).length;
-    const lineStart = beforeMatch.lastIndexOf('\n') + 1;
+    const lineStart = beforeMatch.lastIndexOf('\n') + 1;'
     const column = match.index! - lineStart + 1;
 
     return {
-      file: '', // Will be set by caller
+      file: '', // Will be set by caller'
       line: lineCount + 1,
       column,
       context: lines[lineCount]?.trim(),
@@ -457,12 +457,12 @@ export class BeamPatternAnalyzer {
     constraints: Record<string, unknown>
   ): boolean {
     // This is a simplified constraint checker
-    // In a real implementation, you'd have more sophisticated constraint checking
+    // In a real implementation, you'd have more sophisticated constraint checking'
 
-    if (constraints.context === 'case_expression') {
+    if (constraints.context === 'case_expression') {'
       // Check if match is inside a case expression
       const beforeMatch = content.substring(0, match.index);
-      return beforeMatch.includes('case') && !beforeMatch.includes('end');
+      return beforeMatch.includes('case') && !beforeMatch.includes('end');'
     }
 
     if (constraints.not_followed_by) {
@@ -481,23 +481,23 @@ export class BeamPatternAnalyzer {
    * Map rule to finding category
    */
   private getCategoryFromRule(rule: BeamAnalysisRule): BeamFindingCategory {
-    if (rule.name.includes('leak')||rule.name.includes('monitor')) {
-      return 'reliability';
+    if (rule.name.includes('leak')||rule.name.includes('monitor')) {'
+      return 'reliability;
     }
-    if (rule.name.includes('performance')||rule.name.includes('enum')) {
-      return 'performance';
+    if (rule.name.includes('performance')||rule.name.includes('enum')) {'
+      return 'performance;
     }
-    if (rule.name.includes('supervisor')||rule.name.includes('genserver')) {
-      return 'otp-patterns';
+    if (rule.name.includes('supervisor')||rule.name.includes('genserver')) {'
+      return 'otp-patterns;
     }
-    if (rule.name.includes('async')||rule.name.includes('task')) {
-      return 'concurrency';
+    if (rule.name.includes('async')||rule.name.includes('task')) {'
+      return 'concurrency;
     }
-    if (rule.name.includes('restart')||rule.name.includes('exit')) {
-      return 'fault-tolerance';
+    if (rule.name.includes('restart')||rule.name.includes('exit')) {'
+      return 'fault-tolerance;
     }
 
-    return 'maintainability';
+    return 'maintainability;
   }
 
   /**
@@ -521,7 +521,7 @@ export class BeamPatternAnalyzer {
     try {
       await this.scanDirectory(sourceDir, targetExtensions, files);
     } catch (error) {
-      this.logger.warn(`Failed to scan directory ${sourceDir}:`, error);
+      this.logger.warn(`Failed to scan directory ${sourceDir}:`, error);`
     }
 
     return files;
@@ -552,7 +552,7 @@ export class BeamPatternAnalyzer {
       }
     } catch (error) {
       // Directory might not exist or be accessible
-      this.logger.debug(`Directory scan failed: ${error}`);
+      this.logger.debug(`Directory scan failed: ${error}`);`
     }
   }
 }

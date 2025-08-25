@@ -7,7 +7,7 @@
 export interface ImportSpecifier {
   name: string;
   alias?: string;
-  kind: 'named|default|namespace';
+  kind: 'named' | 'default' | 'namespace;
 }
 
 export interface TypeProperty {
@@ -21,13 +21,13 @@ export interface TypeMethod {
   name: string;
   parameters: TypeProperty[];
   returnType: string;
-  accessibility: 'public|private|protected';
+  accessibility: 'public' | 'private' | 'protected;
 }
 
 // Control flow types
 export interface ControlFlowNode {
   id: string;
-  type: 'entry|exit|statement|condition|loop';
+  type: 'entry' | 'exit' | 'statement' | 'condition' | 'loop;
   statement?: string;
   location: CodeLocation;
 }
@@ -43,7 +43,7 @@ export interface ControlFlowEdge {
 export interface DataFlowNode {
   id: string;
   variable: string;
-  type: 'definition|use|kill';
+  type: 'definition' | 'use' | 'kill;
   location: CodeLocation;
 }
 
@@ -51,7 +51,7 @@ export interface DataFlowEdge {
   from: string;
   to: string;
   variable: string;
-  flowType: 'def-use|use-def'||def-def';
+  flowType: 'def-use' | 'use-def' | 'def-def;
 }
 
 export interface Definition {
@@ -71,7 +71,7 @@ export interface Use {
 export interface CallGraphNode {
   id: string;
   name: string;
-  type: 'function|method|constructor|external';
+  type: 'function' | 'method' | 'constructor' | 'external;
   location?: CodeLocation;
   signature?: string;
 }
@@ -79,7 +79,7 @@ export interface CallGraphNode {
 export interface CallGraphEdge {
   from: string;
   to: string;
-  callType: 'direct|indirect|virtual|dynamic';
+  callType: 'direct' | 'indirect' | 'virtual' | 'dynamic;
   location: CodeLocation;
 }
 
@@ -91,25 +91,25 @@ export interface RecursiveCall {
 
 // AI Analysis types
 export interface ComplexityFactor {
-  type: 'cyclomatic|cognitive|nesting|coupling|cohesion';
+  type: 'cyclomatic' | 'cognitive' | 'nesting' | 'coupling' | 'cohesion;
   value: number;
-  impact: 'low|medium|high|critical';
+  impact: 'low' | 'medium' | 'high' | 'critical;
   description: string;
 }
 
 export interface ComplexityReduction {
-  type:|'extract-method|extract-class'||simplify-condition|reduce-nesting'';
-  effort: 'low|medium|high';
-  impact: 'low|medium|high';
+  type: 'extract-method' | 'extract-class' | 'simplify-condition' | 'reduce-nesting;
+  effort: 'low' | 'medium' | 'high;
+  impact: 'low' | 'medium' | 'high;
   description: string;
 }
 
 export interface RefactoringStep {
   id: string;
-  type: 'extract|inline|move|rename|simplify';
+  type: 'extract' | 'inline' | 'move' | 'rename' | 'simplify;
   description: string;
   effort: number;
-  risk: 'low|medium|high';
+  risk: 'low' | 'medium' | 'high;
   benefits: string[];
   prerequisites: string[];
 }
@@ -121,7 +121,7 @@ export interface BusinessRule {
   description: string;
   conditions: string[];
   actions: string[];
-  priority: 'low|medium|high|critical';
+  priority: 'low' | 'medium' | 'high' | 'critical;
 }
 
 export interface Workflow {
@@ -135,7 +135,7 @@ export interface Workflow {
 export interface WorkflowStep {
   id: string;
   name: string;
-  type: 'process|decision|data|external';
+  type: 'process' | 'decision' | 'data' | 'external;
   description: string;
 }
 
@@ -162,13 +162,13 @@ export interface EntityAttribute {
 
 export interface EntityOperation {
   name: string;
-  type: 'create|read|update|delete|business';
+  type: 'create' | 'read' | 'update' | 'delete' | 'business;
   parameters: EntityAttribute[];
   returns: string;
 }
 
 export interface BusinessRelationship {
-  type: 'one-to-one|one-to-many'||many-to-many';
+  type: 'one-to-one' | 'one-to-many' | 'many-to-many;
   target: string;
   description: string;
   constraints: string[];
@@ -183,7 +183,7 @@ export interface BusinessComplexity {
 export interface PatternViolation {
   pattern: string;
   violation: string;
-  severity: 'info|warning|error|critical';
+  severity: 'info' | 'warning' | 'error' | 'critical;
   location: CodeLocation;
   suggestion: string;
 }
@@ -192,23 +192,23 @@ export interface PatternViolation {
 export interface TechnicalDebtHotspot {
   file: string;
   debt: number;
-  category: 'maintainability|reliability|security|performance';
+  category: 'maintainability' | 'reliability' | 'security' | 'performance;
   issues: string[];
-  priority: 'low|medium|high|critical';
+  priority: 'low' | 'medium' | 'high' | 'critical;
 }
 
 export interface PayoffStrategy {
   name: string;
   effort: number;
   payoff: number;
-  risk: 'low|medium|high';
+  risk: 'low' | 'medium' | 'high;
   timeline: string;
   steps: string[];
 }
 
 // Bug prediction types
 export interface RiskFactor {
-  type:|'complexity|change-frequency'||developer-experience|test-coverage'';
+  type: 'complexity' | 'change-frequency' | 'developer-experience' | 'test-coverage;
   value: number;
   weight: number;
   description: string;
@@ -223,21 +223,21 @@ export interface HistoricalBugData {
 export interface BugPattern {
   pattern: string;
   frequency: number;
-  severity: 'low|medium|high|critical';
+  severity: 'low' | 'medium' | 'high' | 'critical;
   locations: CodeLocation[];
 }
 
 export interface BugTrend {
   period: string;
   count: number;
-  severity: 'low|medium|high|critical';
+  severity: 'low' | 'medium' | 'high' | 'critical;
 }
 
 export interface BugPreventionRecommendation {
-  type: 'testing|review|refactoring|monitoring';
+  type: 'testing' | 'review' | 'refactoring' | 'monitoring;
   description: string;
-  effort: 'low|medium|high';
-  impact: 'low|medium|high';
+  effort: 'low' | 'medium' | 'high;
+  impact: 'low' | 'medium' | 'high;
 }
 
 // Performance types
@@ -258,7 +258,7 @@ export interface ChangeFrequency {
   daily: number;
   weekly: number;
   monthly: number;
-  trend: 'increasing|stable|decreasing';
+  trend: 'increasing' |'improving' | 'stable' | 'declining'| 'decreasing;
 }
 
 export interface EvolutionaryHotspot {
@@ -270,9 +270,9 @@ export interface EvolutionaryHotspot {
 }
 
 export interface PerformanceBottleneck {
-  type: 'cpu|memory|io|network|algorithm';
+  type: 'cpu' | 'memory' | 'io' | 'network' | 'algorithm;
   location: CodeLocation;
-  impact: 'low|medium|high|critical';
+  impact: 'low' | 'medium' | 'high' | 'critical;
   description: string;
   suggestions: string[];
 }
@@ -284,41 +284,41 @@ export interface ScalabilityAssessment {
 }
 
 export interface ScalabilityConcern {
-  type: 'throughput|latency|memory|storage|concurrency';
-  severity: 'low|medium|high|critical';
+  type: 'throughput' | 'latency' | 'memory' | 'storage' | 'concurrency;
+  severity: 'low' | 'medium' | 'high' | 'critical;
   description: string;
   impact: string;
 }
 
 export interface OptimizationOpportunity {
-  type:|'algorithm|data-structure'||caching|parallel'||lazy-loading';
+  type: 'algorithm' | 'data-structure' | 'caching' | 'parallel' | 'lazy-loading;
   location: CodeLocation;
-  effort: 'low|medium|high';
-  impact: 'low|medium|high';
+  effort: 'low' | 'medium' | 'high;
+  impact: 'low' | 'medium' | 'high;
   description: string;
 }
 
 // Skill analysis types
 export interface Skill {
   name: string;
-  category: 'language|framework|tool|pattern|domain';
-  level: 'beginner|intermediate|advanced|expert';
+  category: 'language' | 'framework' | 'tool' | 'pattern' | 'domain;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert;
   confidence: number;
 }
 
 export interface SkillGap {
   skill: string;
-  required: 'beginner|intermediate|advanced|expert';
-  current: 'beginner|intermediate|advanced|expert|none';
-  priority: 'low|medium|high|critical';
+  required: 'beginner' | 'intermediate' | 'advanced' | 'expert;
+  current: 'beginner' | 'intermediate' | 'advanced' | 'expert' | 'none;
+  priority: 'low' | 'medium' | 'high' | 'critical;
 }
 
 // Learning types
 export interface LearningResource {
-  type: 'documentation|tutorial|course|book|practice';
+  type: 'documentation' | 'tutorial' | 'course' | 'book' | 'practice;
   title: string;
   url?: string;
-  difficulty: 'beginner|intermediate|advanced';
+  difficulty: 'beginner' | 'intermediate' | 'advanced;
   estimatedTime: string;
   skills: string[];
 }

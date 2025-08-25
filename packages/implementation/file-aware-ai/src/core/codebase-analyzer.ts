@@ -21,7 +21,7 @@ import type {
   AnalyzedContext,
 } from '../types/index.js';
 
-const logger = getLogger('file-aware-ai:codebase-analyzer');
+const logger = getLogger('file-aware-ai:codebase-analyzer');'
 
 export class CodebaseAnalyzer {
   private index: CodebaseIndex|null = null;
@@ -38,7 +38,7 @@ export class CodebaseAnalyzer {
    * Initialize the analyzer by creating the codebase index
    */
   async initialize(): Promise<void> {
-    logger.info('Initializing codebase analyzer', { rootPath: this.rootPath });
+    logger.info('Initializing codebase analyzer', { rootPath: this.rootPath });'
 
     // Load .gitignore if it exists
     await this.loadGitignore();
@@ -51,7 +51,7 @@ export class CodebaseAnalyzer {
       await this.setupFileWatcher();
     }
 
-    logger.info('Codebase analyzer initialized', {
+    logger.info('Codebase analyzer initialized', {'
       filesIndexed: this.index?.files.length||0,
       symbolsIndexed: this.index?.symbols.size||0,
     });
@@ -66,10 +66,10 @@ export class CodebaseAnalyzer {
     maxFiles: number = 10
   ): Promise<AnalyzedContext> {
     if (!this.index) {
-      throw new Error('Codebase analyzer not initialized');
+      throw new Error('Codebase analyzer not initialized');'
     }
 
-    logger.debug('Getting relevant context', { task, focusFiles, maxFiles });
+    logger.debug('Getting relevant context', { task, focusFiles, maxFiles });'
 
     let relevantFiles: string[] = [];
     let dependencies: FileDependency[] = [];
@@ -136,7 +136,7 @@ export class CodebaseAnalyzer {
 
     // Find all relevant files
     const patterns = this.config.indexing.supportedLanguages.map(
-      (lang) => `**/*.${lang}`
+      (lang) => `**/*.${lang}``
     );
     const foundFiles = await glob(patterns, {
       cwd: this.rootPath,
@@ -144,14 +144,14 @@ export class CodebaseAnalyzer {
       absolute: true,
     });
 
-    logger.debug('Found files for indexing', { count: foundFiles.length });
+    logger.debug('Found files for indexing', { count: foundFiles.length });'
 
     for (const filePath of foundFiles) {
       try {
         // Skip if file is too large
         const stats = await fs.stat(filePath);
         if (stats.size > this.config.indexing.maxFileSize) {
-          logger.debug('Skipping large file', { filePath, size: stats.size });
+          logger.debug('Skipping large file', { filePath, size: stats.size });'
           continue;
         }
 
@@ -167,13 +167,13 @@ export class CodebaseAnalyzer {
 
           // Extract symbols and dependencies for TypeScript files
           if (
-            fileInfo.language === 'ts'||fileInfo.language ==='tsx'||fileInfo.language ==='js'||fileInfo.language ==='jsx'
+            fileInfo.language === 'ts'||fileInfo.language ==='tsx'||fileInfo.language ==='js'||fileInfo.language ==='jsx''
           ) {
             const analysis = await this.analyzeTypeScriptFile(filePath);
 
             // Add symbols to index
             for (const symbol of analysis.symbols) {
-              symbols.set(`${symbol.file}:${symbol.name}`, symbol);
+              symbols.set(`${symbol.file}:${symbol.name}`, symbol);`
             }
 
             // Add dependencies
@@ -181,7 +181,7 @@ export class CodebaseAnalyzer {
           }
         }
       } catch (error) {
-        logger.warn('Error analyzing file', {
+        logger.warn('Error analyzing file', {'
           filePath,
           error: (error as Error).message,
         });
@@ -196,7 +196,7 @@ export class CodebaseAnalyzer {
       version: '1.0.0',
     };
 
-    logger.info('Codebase index built', {
+    logger.info('Codebase index built', {'
       files: files.length,
       symbols: symbols.size,
       dependencies: dependencies.length,
@@ -209,12 +209,12 @@ export class CodebaseAnalyzer {
   private async analyzeFile(filePath: string): Promise<FileInfo|null> {
     try {
       const stats = await fs.stat(filePath);
-      const content = await fs.readFile(filePath,'utf8');
+      const content = await fs.readFile(filePath,'utf8');'
       const relativePath = relative(this.rootPath, filePath);
       const ext = extname(filePath).slice(1);
 
       // Create checksum
-      const checksum = createHash('md5').update(content).digest('hex');
+      const checksum = createHash('md5').update(content).digest('hex');'
 
       return {
         path: relativePath,
@@ -229,7 +229,7 @@ export class CodebaseAnalyzer {
         interfaces: [],
       };
     } catch (error) {
-      logger.error('Error analyzing file', {
+      logger.error('Error analyzing file', {'
         filePath,
         error: (error as Error).message,
       });
@@ -249,7 +249,7 @@ export class CodebaseAnalyzer {
     const relativePath = relative(this.rootPath, filePath);
 
     try {
-      const content = await fs.readFile(filePath, 'utf8');
+      const content = await fs.readFile(filePath, 'utf8');'
       const sourceFile = ts.createSourceFile(
         filePath,
         content,
@@ -345,7 +345,7 @@ export class CodebaseAnalyzer {
 
       visit(sourceFile);
     } catch (error) {
-      logger.warn('Error analyzing TypeScript file', {
+      logger.warn('Error analyzing TypeScript file', {'
         filePath,
         error: (error as Error).message,
       });
@@ -429,10 +429,10 @@ export class CodebaseAnalyzer {
     const languages = [...new Set(files.map((f) => extname(f).slice(1)))];
 
     return (
-      `Task: ${task}\n` +
-      `Relevant files: ${fileCount}\n` +
-      `Languages: ${languages.join(', ')}\n` +
-      `Files: ${files.map((f) => basename(f)).join(', ')}`
+      `Task: ${task}\n` +`
+      `Relevant files: ${fileCount}\n` +`
+      `Languages: ${languages.join(', ')}\n` +`
+      `Files: ${files.map((f) => basename(f)).join(', ')}``
     );
   }
 
@@ -442,10 +442,10 @@ export class CodebaseAnalyzer {
   private assessComplexity(
     files: string[],
     dependencies: FileDependency[]
-  ): 'low|medium|high' {
-    if (files.length <= 3 && dependencies.length <= 5) return 'low';
-    if (files.length <= 10 && dependencies.length <= 20) return 'medium';
-    return 'high';
+  ): 'low|medium|high' {'
+    if (files.length <= 3 && dependencies.length <= 5) return 'low;
+    if (files.length <= 10 && dependencies.length <= 20) return 'medium;
+    return 'high;
   }
 
   /**
@@ -453,13 +453,13 @@ export class CodebaseAnalyzer {
    */
   private async loadGitignore(): Promise<void> {
     try {
-      const gitignorePath = join(this.rootPath, '.gitignore');
-      const content = await fs.readFile(gitignorePath, 'utf8');
+      const gitignorePath = join(this.rootPath, '.gitignore');'
+      const content = await fs.readFile(gitignorePath, 'utf8');'
       this.gitignore = ignore().add(content);
-      logger.debug('Loaded .gitignore');
+      logger.debug('Loaded .gitignore');'
     } catch (error) {
-      // .gitignore doesn't exist or can't be read - that's ok
-      logger.debug('No .gitignore found or error reading it');
+      // .gitignore doesn't exist or can't be read - that's ok'
+      logger.debug('No .gitignore found or error reading it');'
     }
   }
 
@@ -469,6 +469,6 @@ export class CodebaseAnalyzer {
   private async setupFileWatcher(): Promise<void> {
     // TODO: Implement file watching with chokidar
     // This would update the index when files change
-    logger.debug('File watching not implemented yet');
+    logger.debug('File watching not implemented yet');'
   }
 }

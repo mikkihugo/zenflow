@@ -14,22 +14,22 @@
  * @access public
  *
  * @example Enhanced Usage
- * ```typescript
+ * ```typescript`
  * // IN @claude-zen/intelligence facade:
  * import { LLMProvider, executeClaudeTask } from '@claude-zen/llm-providers';
  *
  * export async function getLLMProvider(type?: string) {
  *   // CLI tools for file operations + agentic development
- *   if (type === 'claude-cli') return new LLMProvider('claude-code');
- *   if (type === 'copilot-cli') return new LLMProvider('github-copilot-cli');
+ *   if (type === 'claude-cli') return new LLMProvider('claude-code');'
+ *   if (type === 'copilot-cli') return new LLMProvider('github-copilot-cli');'
  *
  *   // Direct APIs for pure inference + conversational AI
- *   if (type === 'anthropic-api') return new LLMProvider('anthropic-direct');
- *   if (type === 'copilot-api') return new LLMProvider('github-copilot-api');
+ *   if (type === 'anthropic-api') return new LLMProvider('anthropic-direct');'
+ *   if (type === 'copilot-api') return new LLMProvider('github-copilot-api');'
  *
- *   return new LLMProvider('claude-code'); // default
+ *   return new LLMProvider('claude-code'); // default'
  * }
- * ```
+ * ````
  */
 
 // =============================================================================
@@ -78,8 +78,8 @@ export type {
 
 // GitHub Copilot integrations (future - NO CLI, only APIs)
 // export { GitHubCopilotChatAPI } from './api/github-copilot-chat';
-// export { GitHubModelsAPI } from './api/github-models';           // ✅ Available now
-// export { VSCodeCopilotBridge } from './vscode/copilot-bridge';   // ✅ Promising
+// export { GitHubModelsAPI } from './api/github-models';           // ✅ Available now'
+// export { VSCodeCopilotBridge } from './vscode/copilot-bridge';   // ✅ Promising'
 // export type { GitHubCopilotOptions, GitHubModelsOptions } from './github/types';
 
 // =============================================================================
@@ -161,7 +161,7 @@ export {
  * Supports CLI tools only (file ops, agentic development)
  */
 export function createLLMProvider(
-  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
+  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code''
 ): LLMProvider {
   return new LLMProvider(providerId);
 }
@@ -173,8 +173,8 @@ export function createLLMProvider(
 export function listLLMProviders(): Array<{
   id: string;
   name: string;
-  type: 'cli' | 'api';
-  category: 'file-operations' | 'agentic-dev' | 'inference' | 'conversational';
+  type: 'cli' | 'api;
+  category: 'file-operations' | 'agentic-dev' | 'inference' | 'conversational;
   available: boolean;
 }> {
   const cliProviders = [
@@ -229,24 +229,24 @@ export function listLLMProviders(): Array<{
  */
 export function getLLMProviderByCapability(
   capability: 
-    | 'file-operations'
-    | 'agentic-development'
-    | 'code-completion'
-    | 'chat'
-    | 'inference'
+    | 'file-operations''
+    | 'agentic-development''
+    | 'code-completion''
+    | 'chat''
+    | 'inference''
 ): LLMProvider {
   switch (capability) {
-    case 'file-operations':
-      return new LLMProvider('claude-code'); // Best for file ops
-    case 'agentic-development':
-      return new LLMProvider('github-copilot-api'); // Future: Real agentic development
-    case 'code-completion':
-      return new LLMProvider('github-copilot-api'); // Future: Best for autocomplete
-    case 'chat':
-      return new LLMProvider('github-copilot-api'); // Future: Conversational
-    case 'inference':
+    case 'file-operations':'
+      return new LLMProvider('claude-code'); // Best for file ops'
+    case 'agentic-development':'
+      return new LLMProvider('github-copilot-api'); // Future: Real agentic development'
+    case 'code-completion':'
+      return new LLMProvider('github-copilot-api'); // Future: Best for autocomplete'
+    case 'chat':'
+      return new LLMProvider('github-copilot-api'); // Future: Conversational'
+    case 'inference':'
     default:
-      return new LLMProvider('github-copilot-api'); // Copilot should be default for inference
+      return new LLMProvider('github-copilot-api'); // Copilot should be default for inference'
   }
 }
 
@@ -308,13 +308,13 @@ export type * from './claude/types';
  * - Advanced querying capabilities
  * 
  * @example
- * ```typescript
+ * ```typescript`
  * import { createInfrastructureAwareModelRegistry } from '@claude-zen/llm-providers';
  * 
  * const registry = await createInfrastructureAwareModelRegistry();
  * 
  * // Rich metadata access
- * const richModel = registry.getRichModel('github-copilot:gpt-4');
+ * const richModel = registry.getRichModel('github-copilot:gpt-4');'
  * const copilotFeatures = richModel?.providerMetadata;
  * 
  * // Intelligent recommendations
@@ -323,6 +323,6 @@ export type * from './claude/types';
  *   needsToolCalls: true,
  *   priority: 'quality',
  * });
- * ```
+ * ````
  */
 // Future: export type * from './api/types';

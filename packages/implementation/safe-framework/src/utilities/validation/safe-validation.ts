@@ -21,7 +21,7 @@ import { z } from 'zod';
 /**
  * SAFe priority levels schema
  */
-export const SafePrioritySchema = z.enum(['critical', 'high', 'medium', 'low']);
+export const SafePrioritySchema = z.enum(['critical', 'high', 'medium', 'low']);'
 
 /**
  * SAFe epic status schema
@@ -258,7 +258,7 @@ export class SafeValidationUtils {
       // Check if dependencies exist
       epic.dependencies.forEach((depId) => {
         if (!epicIds.has(depId)) {
-          errors.push(`Epic ${epic.id} depends on non-existent epic ${depId}`);
+          errors.push(`Epic ${epic.id} depends on non-existent epic ${depId}`);`
         }
       });
 

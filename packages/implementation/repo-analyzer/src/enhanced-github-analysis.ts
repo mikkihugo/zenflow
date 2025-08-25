@@ -1,8 +1,8 @@
 /**
  * Enhanced GitHub Repository Analysis
- * Integrates DeepCode's sophisticated repository intelligence and quality assessment
+ * Integrates DeepCode's sophisticated repository intelligence and quality assessment'
  * 
- * Adds advanced capabilities from DeepCode's Reference Intelligence Agent:
+ * Adds advanced capabilities from DeepCode's Reference Intelligence Agent:'
  * - Repository structure understanding
  * - Code quality assessment and metrics  
  * - Solution pattern discovery
@@ -13,7 +13,7 @@
 import { getLogger } from '@claude-zen/foundation';
 import type { RepositoryMetrics, AnalysisResult } from './types/index.js';
 
-const logger = getLogger('EnhancedGitHubAnalysis');
+const logger = getLogger('EnhancedGitHubAnalysis');'
 
 /**
  * Enhanced repository analysis result with DeepCode capabilities
@@ -86,22 +86,22 @@ export interface RelevanceScoring {
 
 /**
  * Enhanced GitHub Repository Analyzer
- * Integrates DeepCode's repository intelligence capabilities
+ * Integrates DeepCode's repository intelligence capabilities'
  */
 export class EnhancedGitHubAnalyzer {
-  private logger = getLogger('EnhancedGitHubAnalyzer');
+  private logger = getLogger('EnhancedGitHubAnalyzer');'
   
   constructor(private githubToken?: string) {
     if (githubToken) {
-      this.logger.info('GitHub token provided - enhanced API access enabled');
+      this.logger.info('GitHub token provided - enhanced API access enabled');'
     } else {
-      this.logger.warn('No GitHub token - using public API with rate limits');
+      this.logger.warn('No GitHub token - using public API with rate limits');'
     }
   }
 
   /**
    * Discover relevant repositories based on search criteria
-   * Implements DeepCode's intelligent repository discovery
+   * Implements DeepCode's intelligent repository discovery'
    */
   async discoverRelevantRepositories(options: GitHubDiscoveryOptions): Promise<{
     repositories: Array<{
@@ -119,7 +119,7 @@ export class EnhancedGitHubAnalyzer {
     };
   }> {
     const startTime = performance.now();
-    this.logger.info(`Starting repository discovery for query: "${options.query}"`);
+    this.logger.info(`Starting repository discovery for query: "${options.query}"`);`
 
     try {
       // GitHub API search with enhanced filters
@@ -155,21 +155,21 @@ export class EnhancedGitHubAnalyzer {
         searchTime: endTime - startTime
       };
 
-      this.logger.info(`Repository discovery completed: ${sortedRepos.length} relevant repos found`);
+      this.logger.info(`Repository discovery completed: ${sortedRepos.length} relevant repos found`);`
       return { repositories: sortedRepos, discoveryMetrics };
 
     } catch (error) {
-      this.logger.error('Repository discovery failed:', error);
-      throw new Error(`GitHub repository discovery failed: ${error}`);
+      this.logger.error('Repository discovery failed:', error);'
+      throw new Error(`GitHub repository discovery failed: ${error}`);`
     }
   }
 
   /**
    * Perform comprehensive analysis of a GitHub repository
-   * Implements DeepCode's deep repository intelligence
+   * Implements DeepCode's deep repository intelligence'
    */
   async analyzeRepository(repositoryUrl: string): Promise<EnhancedRepositoryAnalysis> {
-    this.logger.info(`Starting comprehensive analysis of repository: ${repositoryUrl}`);
+    this.logger.info(`Starting comprehensive analysis of repository: ${repositoryUrl}`);`
     const startTime = performance.now();
 
     try {
@@ -246,19 +246,19 @@ export class EnhancedGitHubAnalyzer {
       };
 
       const analysisTime = performance.now() - startTime;
-      this.logger.info(`Repository analysis completed in ${analysisTime.toFixed(2)}ms`);
+      this.logger.info(`Repository analysis completed in ${analysisTime.toFixed(2)}ms`);`
       
       return analysis;
 
     } catch (error) {
-      this.logger.error('Repository analysis failed:', error);
-      throw new Error(`GitHub repository analysis failed: ${error}`);
+      this.logger.error('Repository analysis failed:', error);'
+      throw new Error(`GitHub repository analysis failed: ${error}`);`
     }
   }
 
   /**
    * Find similar repositories based on code patterns and architecture
-   * Implements DeepCode's solution pattern matching
+   * Implements DeepCode's solution pattern matching'
    */
   async findSimilarRepositories(targetRepo: string, options: {
     similarityThreshold?: number;
@@ -271,7 +271,7 @@ export class EnhancedGitHubAnalyzer {
     differenceHighlights: string[];
     useCaseAlignment: number;
   }>> {
-    this.logger.info(`Finding repositories similar to: ${targetRepo}`);
+    this.logger.info(`Finding repositories similar to: ${targetRepo}`);`
     
     try {
       // Analyze target repository
@@ -314,12 +314,12 @@ export class EnhancedGitHubAnalyzer {
         .sort((a, b) => b.similarityScore - a.similarityScore)
         .slice(0, options.maxResults || 10);
 
-      this.logger.info(`Found ${validResults.length} similar repositories`);
+      this.logger.info(`Found ${validResults.length} similar repositories`);`
       return validResults;
 
     } catch (error) {
-      this.logger.error('Similar repository search failed:', error);
-      throw new Error(`Similar repository search failed: ${error}`);
+      this.logger.error('Similar repository search failed:', error);'
+      throw new Error(`Similar repository search failed: ${error}`);`
     }
   }
 
@@ -364,7 +364,7 @@ export class EnhancedGitHubAnalyzer {
 
   private parseGitHubUrl(url: string): { owner: string; repo: string } {
     const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-    if (!match) throw new Error(`Invalid GitHub URL: ${url}`);
+    if (!match) throw new Error(`Invalid GitHub URL: ${url}`);`
     return { owner: match[1], repo: match[2] };
   }
 
@@ -455,7 +455,7 @@ export class EnhancedGitHubAnalyzer {
     // TODO: Extract key characteristics for similarity matching
     return {
       primaryDomain: 'general',
-      primaryLanguage: 'typescript'
+      primaryLanguage: 'typescript''
     };
   }
 

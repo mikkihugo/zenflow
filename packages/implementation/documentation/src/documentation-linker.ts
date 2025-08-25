@@ -14,13 +14,13 @@ import { extname, join, relative } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
 import { TypedEventBase } from '@claude-zen/foundation';
 
-const logger = getLogger('UnifiedDocLinker');
+const logger = getLogger('UnifiedDocLinker');'
 
 export interface DocumentationIndex {
   id: string;
   title: string;
   path: string;
-  type:|'vision|adr|prd|epic|feature|task|spec | readme'|api|guide'';
+  type:|'vision|adr|prd|epic|feature|task|spec | readme'|api|guide';
   keywords: string[];
   sections: Array<{
     title: string;
@@ -34,7 +34,7 @@ export interface DocumentationIndex {
     language?: string;
   };
   links: Array<{
-    type: 'internal|external|code';
+    type: 'internal' | 'external' | 'code';
     target: string;
     text: string;
   }>;
@@ -44,7 +44,7 @@ export interface CodeReference {
   file: string;
   line: number;
   column?: number;
-  type: 'todo|comment|function|class|method|import';
+  type: 'todo|comment|function|class|method|import;
   text: string;
   context: string;
   suggestedLinks: Array<{
@@ -59,17 +59,17 @@ export interface CodeReference {
 export interface CrossReference {
   sourceDocument: string;
   targetDocument: string;
-  linkType:|'references|implements|extends|validates|supersedes';
+  linkType:|'references|implements|extends|validates|supersedes;
   confidence: number;
   context: string;
 }
 
 export interface LinkSuggestion {
-  type: 'missing_doc|broken_link|enhancement|cross_reference';
+  type: 'missing_doc|broken_link|enhancement|cross_reference;
   source: string;
   target?: string;
   description: string;
-  priority: 'low|medium|high';
+  priority: 'low' | 'medium' | 'high';
   autoFixable: boolean;
 }
 
@@ -108,7 +108,7 @@ export class DocumentationLinker extends TypedEventBase {
   }
 
   async initialize(): Promise<void> {
-    logger.info('Initializing unified documentation linker');
+    logger.info('Initializing unified documentation linker');'
 
     try {
       // Index all documentation
@@ -120,15 +120,15 @@ export class DocumentationLinker extends TypedEventBase {
       // Generate cross-references
       await this.generateCrossReferences();
 
-      this.emit('initialized', {
+      this.emit('initialized', {'
         documentsIndexed: this.documentationIndex.size,
         codeReferences: this.codeReferences.length,
         crossReferences: this.crossReferences.length,
       });
 
-      logger.info('Documentation linker ready');
+      logger.info('Documentation linker ready');'
     } catch (error) {
-      logger.error('Failed to initialize documentation linker:', error);
+      logger.error('Failed to initialize documentation linker:', error);'
       throw error;
     }
   }
@@ -143,7 +143,7 @@ export class DocumentationLinker extends TypedEventBase {
       }
     }
 
-    logger.info(`Indexed ${this.documentationIndex.size} documentation files`);
+    logger.info(`Indexed ${this.documentationIndex.size} documentation files`);`
   }
 
   private async indexDirectory(directoryPath: string): Promise<void> {
@@ -169,13 +169,13 @@ export class DocumentationLinker extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.warn(`Failed to index directory ${directoryPath}:`, error);
+      logger.warn(`Failed to index directory ${directoryPath}:`, error);`
     }
   }
 
   private async indexDocument(filePath: string): Promise<void> {
     try {
-      const content = await readFile(filePath, 'utf8');
+      const content = await readFile(filePath, 'utf8');'
       const stats = await stat(filePath);
 
       const documentIndex: DocumentationIndex = {
@@ -194,9 +194,9 @@ export class DocumentationLinker extends TypedEventBase {
       };
 
       this.documentationIndex.set(documentIndex.id, documentIndex);
-      this.emit('document:indexed', documentIndex);
+      this.emit('document:indexed', documentIndex);'
     } catch (error) {
-      logger.warn(`Failed to index document ${filePath}:`, error);
+      logger.warn(`Failed to index document ${filePath}:`, error);`
     }
   }
 
@@ -210,7 +210,7 @@ export class DocumentationLinker extends TypedEventBase {
       }
     }
 
-    logger.info(`Found ${this.codeReferences.length} code references`);
+    logger.info(`Found ${this.codeReferences.length} code references`);`
   }
 
   private async analyzeCodeDirectory(directoryPath: string): Promise<void> {
@@ -236,14 +236,14 @@ export class DocumentationLinker extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.warn(`Failed to analyze code directory ${directoryPath}:`, error);
+      logger.warn(`Failed to analyze code directory ${directoryPath}:`, error);`
     }
   }
 
   private async analyzeCodeFile(filePath: string): Promise<void> {
     try {
-      const content = await readFile(filePath, 'utf8');
-      const lines = content.split('\n');
+      const content = await readFile(filePath, 'utf8');'
+      const lines = content.split('\n');'
 
       for (let i = 0 as number; i < lines.length; i++) {
         const line = lines[i];
@@ -271,7 +271,7 @@ export class DocumentationLinker extends TypedEventBase {
           if (
             docCommentMatch &&
             docCommentMatch?.[1] &&
-            !line.includes('TODO')
+            !line.includes('TODO')'
           ) {
             await this.addCodeReference({
               file: filePath,
@@ -290,19 +290,19 @@ export class DocumentationLinker extends TypedEventBase {
           );
           if (functionMatch) {
             const precedingComment =
-              i > 0 && lines[i - 1] ? lines[i - 1]?.trim() :'';
+              i > 0 && lines[i - 1] ? lines[i - 1]?.trim() :';
             if (
               precedingComment &&
-              !precedingComment.startsWith('//') &&
-              !precedingComment.startsWith('*')
+              !precedingComment.startsWith('//') &&'
+              !precedingComment.startsWith('*')'
             ) {
               await this.addCodeReference({
                 file: filePath,
                 line: lineNumber,
-                type: functionMatch?.[0]?.includes('class')
-                  ? 'class'
+                type: functionMatch?.[0]?.includes('class')'
+                  ? 'class''
                   : 'function',
-                text: `${functionMatch?.[0]} needs documentation`,
+                text: `${functionMatch?.[0]} needs documentation`,`
                 context: this.getContextLines(lines, i, 3),
               });
             }
@@ -310,12 +310,12 @@ export class DocumentationLinker extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.warn(`Failed to analyze code file ${filePath}:`, error);
+      logger.warn(`Failed to analyze code file ${filePath}:`, error);`
     }
   }
 
   private async addCodeReference(
-    reference: Omit<CodeReference, 'suggestedLinks|confidence'>
+    reference: Omit<CodeReference, 'suggestedLinks|confidence'>'
   ): Promise<void> {
     const suggestedLinks = this.findRelatedDocumentation(reference.text);
     const confidence = this.calculateLinkConfidence(
@@ -324,7 +324,7 @@ export class DocumentationLinker extends TypedEventBase {
     );
 
     if (
-      confidence >= this.config.confidenceThreshold|'|suggestedLinks.length > 0
+      confidence >= this.config.confidenceThreshold|'|suggestedLinks.length > 0'
     ) {
       this.codeReferences.push({
         ...reference,
@@ -332,7 +332,7 @@ export class DocumentationLinker extends TypedEventBase {
         confidence,
       });
 
-      this.emit('code:reference:found', {
+      this.emit('code:reference:found', {'
         ...reference,
         suggestedLinks,
         confidence,
@@ -359,7 +359,7 @@ export class DocumentationLinker extends TypedEventBase {
       }
     }
 
-    logger.info(`Generated ${this.crossReferences.length} cross-references`);
+    logger.info(`Generated ${this.crossReferences.length} cross-references`);`
   }
 
   /**
@@ -370,11 +370,11 @@ export class DocumentationLinker extends TypedEventBase {
 
     // Missing documentation suggestions
     for (const codeRef of this.codeReferences) {
-      if (codeRef.suggestedLinks.length === 0 && codeRef.type === 'todo') {
+      if (codeRef.suggestedLinks.length === 0 && codeRef.type === 'todo') {'
         suggestions.push({
           type: 'missing_doc',
-          source: `${codeRef.file}:${codeRef.line}`,
-          description: `Consider creating documentation for: ${codeRef.text}`,
+          source: `${codeRef.file}:${codeRef.line}`,`
+          description: `Consider creating documentation for: ${codeRef.text}`,`
           priority: 'medium',
           autoFixable: false,
         });
@@ -391,7 +391,7 @@ export class DocumentationLinker extends TypedEventBase {
         suggestions.push({
           type: 'enhancement',
           source: doc.path,
-          description: `Add links to ${relatedCode.length} related code references`,
+          description: `Add links to ${relatedCode.length} related code references`,`
           priority: 'low',
           autoFixable: true,
         });
@@ -405,7 +405,7 @@ export class DocumentationLinker extends TypedEventBase {
           type: 'cross_reference',
           source: crossRef.sourceDocument,
           target: crossRef.targetDocument,
-          description: `Strong relationship detected: ${crossRef.linkType}`,
+          description: `Strong relationship detected: ${crossRef.linkType}`,`
           priority: 'high',
           autoFixable: true,
         });
@@ -424,55 +424,55 @@ export class DocumentationLinker extends TypedEventBase {
   async generateDocumentationReport(): Promise<string> {
     const report: string[] = [];
 
-    report.push('# Documentation Linker Report');
-    report.push(`Generated: ${new Date().toISOString()}`);
-    report.push('');
+    report.push('# Documentation Linker Report');'
+    report.push(`Generated: ${new Date().toISOString()}`);`
+    report.push('');'
 
     // Summary
-    report.push('## Summary');
-    report.push(`- **Documents Indexed**: ${this.documentationIndex.size}`);
-    report.push(`- **Code References**: ${this.codeReferences.length}`);
-    report.push(`- **Cross References**: ${this.crossReferences.length}`);
-    report.push(');
+    report.push('## Summary');'
+    report.push(`- **Documents Indexed**: ${this.documentationIndex.size}`);`
+    report.push(`- **Code References**: ${this.codeReferences.length}`);`
+    report.push(`- **Cross References**: ${this.crossReferences.length}`);`
+    report.push(');'
 
     // Document Types
     const typeBreakdown = new Map<string, number>();
     for (const doc of this.documentationIndex.values()) {
-      typeBreakdown.set(doc.type, (typeBreakdown.get(doc.type)|'|0) + 1);
+      typeBreakdown.set(doc.type, (typeBreakdown.get(doc.type)|'|0) + 1);'
     }
 
-    report.push('## Document Types');
+    report.push('## Document Types');'
     for (const [type, count] of typeBreakdown) {
-      report.push(`- **${type}**: ${count}`);
+      report.push(`- **${type}**: ${count}`);`
     }
-    report.push('');
+    report.push('');'
 
     // High-confidence code references
     const highConfidenceRefs = this.codeReferences.filter(
       (ref) => ref.confidence > 0.8
     );
     if (highConfidenceRefs.length > 0) {
-      report.push('## High-Confidence Code References');
+      report.push('## High-Confidence Code References');'
       for (const ref of highConfidenceRefs.slice(0, 10)) {
-        report.push(`### ${relative(process.cwd(), ref.file)}:${ref.line}`);
-        report.push(`**Type**: ${ref.type}`);
-        report.push(`**Text**: ${ref.text}`);
-        report.push(`**Confidence**: ${Math.round(ref.confidence * 100)}%`);
+        report.push(`### ${relative(process.cwd(), ref.file)}:${ref.line}`);`
+        report.push(`**Type**: ${ref.type}`);`
+        report.push(`**Text**: ${ref.text}`);`
+        report.push(`**Confidence**: ${Math.round(ref.confidence * 100)}%`);`
         if (ref.suggestedLinks.length > 0) {
-          report.push('**Suggested Links**:');
+          report.push('**Suggested Links**:');'
           for (const link of ref.suggestedLinks.slice(0, 3)) {
             report.push(
-              `- ${link.title} (${Math.round(link.relevance * 100)}%)`
+              `- ${link.title} (${Math.round(link.relevance * 100)}%)``
             );
           }
         }
-        report.push('');
+        report.push('');'
       }
     }
 
     // Cross-references
     if (this.crossReferences.length > 0) {
-      report.push('## Document Cross-References');
+      report.push('## Document Cross-References');'
       const sortedCrossRefs = this.crossReferences
         .sort((a, b) => b.confidence - a.confidence)
         .slice(0, 10);
@@ -482,13 +482,13 @@ export class DocumentationLinker extends TypedEventBase {
         const targetDoc = this.documentationIndex.get(crossRef.targetDocument);
 
         if (sourceDoc && targetDoc) {
-          report.push(`### ${sourceDoc.title} → ${targetDoc?.title}`);
-          report.push(`**Relationship**: ${crossRef.linkType}`);
+          report.push(`### ${sourceDoc.title} → ${targetDoc?.title}`);`
+          report.push(`**Relationship**: ${crossRef.linkType}`);`
           report.push(
-            `**Confidence**: ${Math.round(crossRef.confidence * 100)}%`
+            `**Confidence**: ${Math.round(crossRef.confidence * 100)}%``
           );
-          report.push(`**Context**: ${crossRef.context}`);
-          report.push('');
+          report.push(`**Context**: ${crossRef.context}`);`
+          report.push('');'
         }
       }
     }
@@ -496,21 +496,21 @@ export class DocumentationLinker extends TypedEventBase {
     // Suggestions
     const suggestions = await this.generateLinkSuggestions();
     if (suggestions.length > 0) {
-      report.push('## Improvement Suggestions');
+      report.push('## Improvement Suggestions');'
       for (const suggestion of suggestions.slice(0, 15)) {
-        report.push(`### ${suggestion.type.replace('_', ' ').toUpperCase()}`);
-        report.push(`**Source**: ${suggestion.source}`);
-        if (suggestion.target) report.push(`**Target**: ${suggestion.target}`);
-        report.push(`**Description**: ${suggestion.description}`);
-        report.push(`**Priority**: ${suggestion.priority}`);
+        report.push(`### ${suggestion.type.replace('_', ' ').toUpperCase()}`);`
+        report.push(`**Source**: ${suggestion.source}`);`
+        if (suggestion.target) report.push(`**Target**: ${suggestion.target}`);`
+        report.push(`**Description**: ${suggestion.description}`);`
+        report.push(`**Priority**: ${suggestion.priority}`);`
         report.push(
-          `**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}`
+          `**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}``
         );
-        report.push('');
+        report.push('');'
       }
     }
 
-    return report.join('\n');
+    return report.join('\n');'
   }
 
   /**
@@ -542,7 +542,7 @@ export class DocumentationLinker extends TypedEventBase {
       for (const keyword of doc.keywords) {
         if (lowerText.includes(keyword.toLowerCase())) {
           score += 3;
-          reasons.push(`keyword: ${keyword}`);
+          reasons.push(`keyword: ${keyword}`);`
         }
       }
 
@@ -555,7 +555,7 @@ export class DocumentationLinker extends TypedEventBase {
           )
         ) {
           score += 2;
-          reasons.push(`title similarity: ${word}`);
+          reasons.push(`title similarity: ${word}`);`
         }
       }
 
@@ -565,7 +565,7 @@ export class DocumentationLinker extends TypedEventBase {
         for (const word of words) {
           if (sectionTitle.includes(word)) {
             score += 1;
-            reasons.push(`section: ${section.title}`);
+            reasons.push(`section: ${section.title}`);`
           }
         }
       }
@@ -615,13 +615,13 @@ export class DocumentationLinker extends TypedEventBase {
         Math.max(doc1.keywords.length, doc2.keywords.length);
 
       // Determine relationship type based on document types
-      if (doc1.type === 'vision' && doc2.type === 'prd')
+      if (doc1.type === 'vision' && doc2.type === 'prd')'
         linkType = 'implements';
-      else if (doc1.type === 'prd' && doc2.type === 'epic')
+      else if (doc1.type === 'prd' && doc2.type === 'epic')'
         linkType = 'extends';
-      else if (doc1.type === 'epic' && doc2.type === 'feature')
+      else if (doc1.type === 'epic' && doc2.type === 'feature')'
         linkType = 'extends';
-      else if (doc1.type === 'feature' && doc2.type === 'task')
+      else if (doc1.type === 'feature' && doc2.type === 'task')'
         linkType = 'extends';
 
       if (confidence > 0.3) {
@@ -630,7 +630,7 @@ export class DocumentationLinker extends TypedEventBase {
           targetDocument: doc2.id,
           linkType,
           confidence,
-          context: `Common keywords: ${commonKeywords.join(', ')}`,
+          context: `Common keywords: ${commonKeywords.join(', ')}`,`
         };
       }
     }
@@ -661,8 +661,8 @@ export class DocumentationLinker extends TypedEventBase {
 
   private generateDocumentId(filePath: string): string {
     return Buffer.from(filePath)
-      .toString('base64')
-      .replace(/[+/=]/g, ')
+      .toString('base64')'
+      .replace(/[+/=]/g, ')'
       .substring(0, 16);
   }
 
@@ -674,28 +674,28 @@ export class DocumentationLinker extends TypedEventBase {
     // Try to extract from filename
     const filename = relative(process.cwd(), filePath).replace(
       extname(filePath),
-      '
+      ''
     );
-    return filename.split('/').pop()?.replace(/[_-]/g, ' ')||'Untitled';
+    return filename.split('/').pop()?.replace(/[_-]/g, ' ')||'Untitled;
   }
 
   private determineDocumentType(
     filePath: string,
     content: string
-  ): DocumentationIndex['type'] {
+  ): DocumentationIndex['type'] {'
     const path = filePath.toLowerCase();
 
-    if (path.includes('/vision/')) return 'vision';
-    if (path.includes('/adr')) return 'adr';
-    if (path.includes('/prd')) return 'prd';
-    if (path.includes('/epic')) return 'epic';
-    if (path.includes('/feature')) return 'feature';
-    if (path.includes('/task')) return 'task';
-    if (path.includes('/spec')) return 'spec';
-    if (path.includes('readme')) return 'readme';
-    if (content.includes('API')||content.includes('api')) return 'api';
+    if (path.includes('/vision/')) return 'vision;
+    if (path.includes('/adr')) return 'adr;
+    if (path.includes('/prd')) return 'prd;
+    if (path.includes('/epic')) return 'epic;
+    if (path.includes('/feature')) return 'feature;
+    if (path.includes('/task')) return 'task;
+    if (path.includes('/spec')) return 'spec;
+    if (path.includes('readme')) return 'readme;
+    if (content.includes('API')||content.includes('api')) return 'api;
 
-    return 'guide';
+    return 'guide;
   }
 
   private extractKeywords(content: string): string[] {
@@ -705,7 +705,7 @@ export class DocumentationLinker extends TypedEventBase {
     const headings = content.match(/^#+\s+(.+)$/gm)||[];
     for (const heading of headings) {
       const words = heading
-        .replace(/^#+\s+/,')
+        .replace(/^#+\s+/,')'
         .toLowerCase()
         .split(/\s+/);
       words.forEach((word) => {
@@ -714,9 +714,9 @@ export class DocumentationLinker extends TypedEventBase {
     }
 
     // Extract important terms (simple approach)
-    const importantTerms = content.match(/\*\*([^*]+)\*\*/g)|'|[];
+    const importantTerms = content.match(/\*\*([^*]+)\*\*/g)|'|[];'
     for (const term of importantTerms) {
-      const word = term.replace(/\*\*/g,'').toLowerCase();
+      const word = term.replace(/\*\*/g,'').toLowerCase();'
       if (word.length > 3) keywords.add(word);
     }
 
@@ -728,7 +728,7 @@ export class DocumentationLinker extends TypedEventBase {
   ): Array<{ title: string; level: number; content: string }> {
     const sections: Array<{ title: string; level: number; content: string }> =
       [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     let currentSection: {
       title: string;
@@ -754,7 +754,7 @@ export class DocumentationLinker extends TypedEventBase {
           };
         }
       } else if (currentSection && currentSection) {
-        currentSection.content += `${line}\n`;
+        currentSection.content += `${line}\n`;`
       }
     }
 
@@ -767,12 +767,12 @@ export class DocumentationLinker extends TypedEventBase {
   }
 
   private extractLinks(content: string): Array<{
-    type: 'internal|external|code';
+    type: 'internal' | 'external' | 'code';
     target: string;
     text: string;
   }> {
     const links: Array<{
-      type: 'internal|external|code';
+      type: 'internal' | 'external' | 'code';
       target: string;
       text: string;
     }> = [];
@@ -784,7 +784,7 @@ export class DocumentationLinker extends TypedEventBase {
       if (match && match?.[1] && match?.[2]) {
         const text = match?.[1];
         const target = match?.[2];
-        const type = target.startsWith('http') ? 'external' : 'internal';
+        const type = target.startsWith('http') ? 'external' : 'internal;
         links.push({ type, target, text });
       }
     }
@@ -799,7 +799,7 @@ export class DocumentationLinker extends TypedEventBase {
   ): string {
     const start = Math.max(0, lineIndex - contextSize);
     const end = Math.min(lines.length, lineIndex + contextSize + 1);
-    return lines.slice(start, end).join('\n');
+    return lines.slice(start, end).join('\n');'
   }
 
   /**
@@ -819,7 +819,7 @@ export class DocumentationLinker extends TypedEventBase {
 
   async saveReportToFile(outputPath: string): Promise<void> {
     const report = await this.generateDocumentationReport();
-    await writeFile(outputPath, report, 'utf8');
-    logger.info(`Documentation report saved to: ${outputPath}`);
+    await writeFile(outputPath, report, 'utf8');'
+    logger.info(`Documentation report saved to: ${outputPath}`);`
   }
 }

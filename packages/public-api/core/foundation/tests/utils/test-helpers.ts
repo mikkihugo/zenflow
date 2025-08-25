@@ -5,6 +5,7 @@
  */
 
 import { vi } from 'vitest';
+import { performance } from 'node:perf_hooks';
 import type { Logger } from '../../src/core/logging';
 
 // Mock implementations
@@ -52,7 +53,7 @@ export const asyncUtils = {
   },
 
   timeout: (ms: number) =>
-    new Promise<never>((_, reject) =>
+    new Promise<never>((resolve, reject) =>
       setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
     ),
 };
@@ -121,7 +122,7 @@ export const createMock = {
 
   error: (message = 'Mock error', code?: string) => {
     const error = new Error(message);
-    if (code) (error as any).code = code;
+    if (code) (error as Error & {code: string}).code = code;
     return error;
   },
 

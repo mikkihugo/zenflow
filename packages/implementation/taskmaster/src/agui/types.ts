@@ -18,7 +18,7 @@ export type MessageType = 'info|warning|error|success|debug';
 /**
  * Question types for different interaction patterns
  */
-export type QuestionType =|'approval'// Yes/No approval questions|'choice'// Multiple choice selection|'input'// Free text input|'confirmation'// Confirmation dialogs|'review'// Review and feedback|'validation'// Data validation|'checkpoint'// Workflow checkpoints|'emergency'// Emergency escalation|'custom'// Custom question types|'relevance'// Relevance validation|'boundary'// Boundary validation|'relationship'// Relationship validation|'naming'// Naming validation|'priority'; // Priority validation
+export type QuestionType =|'approval'// Yes/No approval questions|'choice'// Multiple choice selection|'input'// Free text input|'confirmation'// Confirmation dialogs|'review'// Review and feedback|'validation'// Data validation|'checkpoint'// Workflow checkpoints|'emergency'// Emergency escalation|'custom'// Custom question types|'relevance'// Relevance validation|'boundary'// Boundary validation|'relationship'// Relationship validation|'naming'// Naming validation|'priority'; // Priority validation'
 
 /**
  * AGUI adapter types
@@ -39,7 +39,7 @@ export interface QuestionContext {
   source?: string;
 
   /** Business impact level */
-  businessImpact?: 'low|medium|high|critical';
+  businessImpact?: 'low|medium|high|critical;
 
   /** Stakeholders involved */
   stakeholders?: string[];
@@ -135,7 +135,7 @@ export interface ProgressInfo {
  * Response from AGUI interactions
  */
 export interface AGUIResponse {
-  /** The user's response */
+  /** The user's response */'
   response: string;
 
   /** Response timestamp */
@@ -145,7 +145,7 @@ export interface AGUIResponse {
   responseTime: number;
 
   /** Source of the response */
-  source: 'user|system|timeout|default';
+  source: 'user|system|timeout|default;
 
   /** Additional metadata */
   metadata?: Record<string, unknown>;
@@ -298,7 +298,7 @@ export class AGUIError extends Error {
     public readonly context?: Record<string, unknown>
   ) {
     super(message);
-    this.name ='AGUIError';
+    this.name ='AGUIError;
   }
 }
 
@@ -310,7 +310,7 @@ export class AGUIError extends Error {
  * with timeout-specific information.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * try {
  *   const response = await agui.askQuestion({
  *     id: 'approval',
@@ -321,10 +321,10 @@ export class AGUIError extends Error {
  *   });
  * } catch (error) {
  *   if (error instanceof AGUITimeoutError) {
- *     console.log(`Operation timed out after ${error.timeoutMs}ms`);
+ *     console.log(`Operation timed out after ${error.timeoutMs}ms`);`
  *   }
  * }
- * ```
+ * ````
  *
  * @public
  * @extends AGUIError
@@ -335,7 +335,7 @@ export class AGUITimeoutError extends AGUIError {
     public readonly timeoutMs: number,
     context?: Record<string, unknown>
   ) {
-    super(message, 'TIMEOUT', context);
+    super(message, 'TIMEOUT', context);'
     this.name = 'AGUITimeoutError';
   }
 }
@@ -344,19 +344,19 @@ export class AGUITimeoutError extends AGUIError {
  * Specialized error class for input validation failures in AGUI operations.
  *
  * This error is thrown when user input fails validation checks, such as when
- * the input doesn't match expected patterns, contains invalid characters, or
+ * the input doesn't match expected patterns, contains invalid characters, or'
  * fails custom validation logic. It extends the base AGUIError with validation-specific
  * information, including the invalid input that caused the error.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const emailValidator = (input: string) => {
  *   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  *   if (!emailRegex.test(input)) {
  *     throw new AGUIValidationError(
  *       'Invalid email format',
  *       input,
- *       { expectedFormat: 'email' }
+ *       { expectedFormat: 'email' }'
  *     );
  *   }
  *   return true;
@@ -372,10 +372,10 @@ export class AGUITimeoutError extends AGUIError {
  *   });
  * } catch (error) {
  *   if (error instanceof AGUIValidationError) {
- *     console.log(`Invalid input: ${error.input}`);
+ *     console.log(`Invalid input: ${error.input}`);`
  *   }
  * }
- * ```
+ * ````
  *
  * @public
  * @extends AGUIError
@@ -386,7 +386,7 @@ export class AGUIValidationError extends AGUIError {
     public readonly input: string,
     context?: Record<string, unknown>
   ) {
-    super(message, 'VALIDATION', context);
+    super(message, 'VALIDATION', context);'
     this.name = 'AGUIValidationError';
   }
 }

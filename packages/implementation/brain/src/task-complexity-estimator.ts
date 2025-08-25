@@ -20,7 +20,7 @@ import { getLogger } from '@claude-zen/foundation';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
 
-const logger = getLogger('TaskComplexityEstimator');
+const logger = getLogger('TaskComplexityEstimator');'
 
 export interface TaskComplexityData {
   readonly task: string;
@@ -37,9 +37,9 @@ export interface ComplexityEstimate {
   readonly estimatedComplexity: number; // 0-1 scale
   readonly confidence: number;
   readonly reasoning: string[];
-  readonly suggestedMethod: 'dspy|ml|hybrid';
+  readonly suggestedMethod: 'dspy' | 'ml' | 'hybrid';
   readonly estimatedDuration: number; // milliseconds
-  readonly difficultyLevel: 'trivial|easy|medium|hard|expert';
+  readonly difficultyLevel: 'trivial|easy|medium|hard|expert;
   readonly keyFactors: string[];
 }
 
@@ -70,7 +70,7 @@ export class TaskComplexityEstimator {
   private keywordWeights: Map<string, number> = new Map();
 
   constructor() {
-    logger.info('🎯 Task Complexity Estimator created');
+    logger.info('🎯 Task Complexity Estimator created');'
   }
 
   /**
@@ -80,7 +80,7 @@ export class TaskComplexityEstimator {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Task Complexity Estimation System...');
+      logger.info('🚀 Initializing Task Complexity Estimation System...');'
 
       // Initialize complexity patterns based on domain knowledge
       await this.initializeComplexityPatterns();
@@ -89,9 +89,9 @@ export class TaskComplexityEstimator {
       await this.initializeKeywordWeights();
 
       this.initialized = true;
-      logger.info('✅ Task Complexity Estimator initialized successfully');
+      logger.info('✅ Task Complexity Estimator initialized successfully');'
     } catch (error) {
-      logger.error('❌ Failed to initialize Task Complexity Estimator:', error);
+      logger.error('❌ Failed to initialize Task Complexity Estimator:', error);'
       throw error;
     }
   }
@@ -117,12 +117,12 @@ export class TaskComplexityEstimator {
       // 1. Analyze prompt content complexity
       const promptComplexity = this.analyzePromptComplexity(prompt);
       totalComplexity += promptComplexity.score * 0.4;
-      reasoning.push(`Prompt analysis: ${promptComplexity.reasoning}`);
+      reasoning.push(`Prompt analysis: ${promptComplexity.reasoning}`);`
 
       // 2. Analyze context complexity
       const contextComplexity = this.analyzeContextComplexity(context);
       totalComplexity += contextComplexity.score * 0.3;
-      reasoning.push(`Context analysis: ${contextComplexity.reasoning}`);
+      reasoning.push(`Context analysis: ${contextComplexity.reasoning}`);`
 
       // 3. Pattern matching against historical data
       const patternComplexity = await this.matchComplexityPatterns(
@@ -131,12 +131,12 @@ export class TaskComplexityEstimator {
         context
       );
       totalComplexity += patternComplexity.score * 0.2;
-      reasoning.push(`Pattern matching: ${patternComplexity.reasoning}`);
+      reasoning.push(`Pattern matching: ${patternComplexity.reasoning}`);`
 
       // 4. Agent role complexity adjustment
       const roleComplexity = this.analyzeRoleComplexity(agentRole);
       totalComplexity += roleComplexity.score * 0.1;
-      reasoning.push(`Role analysis: ${roleComplexity.reasoning}`);
+      reasoning.push(`Role analysis: ${roleComplexity.reasoning}`);`
 
       // Normalize complexity to 0-1 range
       const finalComplexity = Math.max(0, Math.min(1, totalComplexity));
@@ -179,12 +179,12 @@ export class TaskComplexityEstimator {
       };
 
       logger.info(
-        `🎯 Complexity estimated: ${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested`
+        `🎯 Complexity estimated: ${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested``
       );
 
       return estimate;
     } catch (error) {
-      logger.error('❌ Complexity estimation failed:', error);
+      logger.error('❌ Complexity estimation failed:', error);'
 
       // Return safe default estimate
       return {
@@ -244,10 +244,10 @@ export class TaskComplexityEstimator {
       await this.updateKeywordWeights(prompt, actualComplexity);
 
       logger.debug(
-        `📚 Learned from task outcome: ${task} (complexity: ${actualComplexity.toFixed(2)})`
+        `📚 Learned from task outcome: ${task} (complexity: ${actualComplexity.toFixed(2)})``
       );
     } catch (error) {
-      logger.error('❌ Failed to learn from outcome:', error);
+      logger.error('❌ Failed to learn from outcome:', error);'
     }
   }
 
@@ -312,10 +312,10 @@ export class TaskComplexityEstimator {
     const length = prompt.length;
     if (length > 500) {
       complexity += 0.3;
-      factors.push('long prompt');
+      factors.push('long prompt');'
     } else if (length > 200) {
       complexity += 0.15;
-      factors.push('medium length');
+      factors.push('medium length');'
     }
 
     // Technical complexity keywords
@@ -345,22 +345,22 @@ export class TaskComplexityEstimator {
 
     complexity += Math.min(technicalMatches * 0.1, 0.4);
     if (technicalMatches > 0) {
-      factors.push(`${technicalMatches} technical terms`);
+      factors.push(`${technicalMatches} technical terms`);`
     }
 
     // Question complexity
     const questionMarks = (prompt.match(/\?/g)||[]).length;
     if (questionMarks > 3) {
       complexity += 0.2;
-      factors.push('multiple questions');
+      factors.push('multiple questions');'
     }
 
     // Code-related complexity
     if (
-      prompt.includes('```')||prompt.includes('function')||prompt.includes('class')
+      prompt.includes('```')||prompt.includes('function')||prompt.includes('class')'
     ) {
       complexity += 0.2;
-      factors.push('code involved');
+      factors.push('code involved');'
     }
 
     // Multi-step indicators
@@ -378,7 +378,7 @@ export class TaskComplexityEstimator {
 
     if (stepMatches > 2) {
       complexity += 0.15;
-      factors.push('multi-step process');
+      factors.push('multi-step process');'
     }
 
     return {
@@ -398,27 +398,27 @@ export class TaskComplexityEstimator {
     const contextSize = Object.keys(context).length;
     complexity += Math.min(contextSize * 0.05, 0.3);
     if (contextSize > 5) {
-      factors.push(`${contextSize} context fields`);
+      factors.push(`${contextSize} context fields`);`
     }
 
     // Data size indicators
-    if (context.dataSize && typeof context.dataSize === 'number') {
+    if (context.dataSize && typeof context.dataSize === 'number') {'
       const dataComplexity = Math.min(context.dataSize / 1000000, 0.3);
       complexity += dataComplexity;
-      factors.push('large data');
+      factors.push('large data');'
     }
 
     // Dependencies
     if (context.dependencies && Array.isArray(context.dependencies)) {
       const depComplexity = Math.min(context.dependencies.length * 0.05, 0.2);
       complexity += depComplexity;
-      factors.push(`${context.dependencies.length} dependencies`);
+      factors.push(`${context.dependencies.length} dependencies`);`
     }
 
     // Time constraints
     if (context.timeConstraint && context.timeConstraint < 2000) {
       complexity += 0.2;
-      factors.push('time constrained');
+      factors.push('time constrained');'
     }
 
     // Complexity hints in context values
@@ -436,7 +436,7 @@ export class TaskComplexityEstimator {
 
     complexity += Math.min(complexityHints * 0.1, 0.2);
     if (complexityHints > 0) {
-      factors.push('complexity indicators');
+      factors.push('complexity indicators');'
     }
 
     return {
@@ -485,14 +485,14 @@ export class TaskComplexityEstimator {
 
       if (matchScore > bestMatch) {
         bestMatch = matchScore;
-        bestPattern = pattern.keywords.join(', ');
+        bestPattern = pattern.keywords.join(', ');'
       }
     }
 
     const patternComplexity =
       bestMatch > 0.5
         ? this.complexityPatterns.find(
-            (p) => p.keywords.join(', ') === bestPattern
+            (p) => p.keywords.join(', ') === bestPattern'
           )?.complexity||0.5
         : 0.5;
 
@@ -500,7 +500,7 @@ export class TaskComplexityEstimator {
       score: patternComplexity * bestMatch,
       reasoning:
         bestMatch > 0.5
-          ? `matched pattern: ${bestPattern}`
+          ? `matched pattern: ${bestPattern}``
           :'no strong pattern match',
     };
   }
@@ -510,7 +510,7 @@ export class TaskComplexityEstimator {
     reasoning: string;
   } {
     if (!agentRole) {
-      return { score: 0, reasoning: 'no role specified'};
+      return { score: 0, reasoning: 'no role specified'};'
     }
 
     const roleComplexities = {
@@ -532,31 +532,31 @@ export class TaskComplexityEstimator {
 
     return {
       score: complexity * 0.3, // Scale down role impact
-      reasoning: `${agentRole} role (${(complexity * 100).toFixed(0)}% complexity)`,
+      reasoning: `${agentRole} role (${(complexity * 100).toFixed(0)}% complexity)`,`
     };
   }
 
   private suggestOptimizationMethod(
     complexity: number,
     context: Record<string, any>
-  ):'dspy|ml|hybrid' {
-    // High complexity tasks benefit from DSPy's sophisticated optimization
+  ):'dspy|ml|hybrid' {'
+    // High complexity tasks benefit from DSPy's sophisticated optimization'
     if (complexity > 0.7) {
-      return 'dspy';
+      return 'dspy;
     }
 
     // Time-constrained tasks favor fast ML optimization
     if (context.timeConstraint && context.timeConstraint < 3000) {
-      return 'ml';
+      return 'ml;
     }
 
     // Medium complexity benefits from hybrid approach
     if (complexity > 0.4) {
-      return 'hybrid';
+      return 'hybrid;
     }
 
     // Simple tasks can use efficient ML
-    return 'ml';
+    return 'ml;
   }
 
   private estimateDurationFromComplexity(
@@ -589,12 +589,12 @@ export class TaskComplexityEstimator {
 
   private mapComplexityToDifficulty(
     complexity: number
-  ):'trivial|easy|medium|hard|expert' {
-    if (complexity < 0.1) return 'trivial';
-    if (complexity < 0.3) return 'easy';
-    if (complexity < 0.6) return 'medium';
-    if (complexity < 0.8) return 'hard';
-    return 'expert';
+  ):'trivial|easy|medium|hard|expert' {'
+    if (complexity < 0.1) return 'trivial;
+    if (complexity < 0.3) return 'easy;
+    if (complexity < 0.6) return 'medium;
+    if (complexity < 0.8) return 'hard;
+    return 'expert;
   }
 
   private extractKeyFactors(
@@ -617,11 +617,11 @@ export class TaskComplexityEstimator {
 
     // Context complexity factors
     if (Object.keys(context).length > 5) {
-      factors.push('complex-context');
+      factors.push('complex-context');'
     }
 
     if (complexity > 0.8) {
-      factors.push('high-complexity');
+      factors.push('high-complexity');'
     }
 
     return factors.slice(0, 5); // Limit to top 5 factors
@@ -672,7 +672,7 @@ export class TaskComplexityEstimator {
     ];
 
     logger.debug(
-      `📋 Initialized ${this.complexityPatterns.length} complexity patterns`
+      `📋 Initialized ${this.complexityPatterns.length} complexity patterns``
     );
   }
 
@@ -696,7 +696,7 @@ export class TaskComplexityEstimator {
     ]);
 
     this.keywordWeights = initialWeights;
-    logger.debug(`🏷️ Initialized ${this.keywordWeights.size} keyword weights`);
+    logger.debug(`🏷️ Initialized ${this.keywordWeights.size} keyword weights`);`
   }
 
   private updateComplexityModels(): void {
@@ -721,10 +721,10 @@ export class TaskComplexityEstimator {
         );
 
         this.complexityRegressor = regression.linear(points);
-        logger.debug('📈 Updated complexity regression model');
+        logger.debug('📈 Updated complexity regression model');'
       }
     } catch (error) {
-      logger.debug('Model update failed:', error);
+      logger.debug('Model update failed:', error);'
     }
   }
 

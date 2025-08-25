@@ -62,7 +62,7 @@ import type {
  * - **Throttled**: Rate-limit event processing to prevent overload
  *
  * @example
- * ```typescript
+ * ```typescript`
  * class CustomEventManager extends BaseEventManager {
  *   constructor(config: EventManagerConfig, logger: Logger) {
  *     super(config, logger);
@@ -77,16 +77,16 @@ import type {
  * const manager = new CustomEventManager(config, logger);
  * await manager.start();
  *
- * const subscriptionId = manager.subscribe(['custom:event'], (event) => {
- *   console.log('Event received:', event);
+ * const subscriptionId = manager.subscribe(['custom:event'], (event) => {'
+ *   console.log('Event received:', event);'
  * });
  *
  * await manager.emit({
  *   id: 'custom-001',
  *   type: 'custom:event',
  *   timestamp: new Date(),
- *   source: 'test'* });
- * ```
+ *   source: 'test'* });'
+ * ````
  */
 export abstract class BaseEventManager implements EventManager {
   public readonly name: string;
@@ -150,10 +150,10 @@ export abstract class BaseEventManager implements EventManager {
     this.logger = logger;
     this.name = config.name;
     this.type = config.type as EventManagerType;
-    this.processingStrategy = config.processing?.strategy||'immediate';
+    this.processingStrategy = config.processing?.strategy||'immediate;
 
     this.logger.debug(
-      `BaseEventManager initialized: ${this.name} (${this.type})`
+      `BaseEventManager initialized: ${this.name} (${this.type})``
     );
   }
 
@@ -162,7 +162,7 @@ export abstract class BaseEventManager implements EventManager {
    */
   async start(): Promise<void> {
     if (this._isRunning) {
-      this.logger.warn(`Event manager already running: ${this.name}`);
+      this.logger.warn(`Event manager already running: ${this.name}`);`
       return;
     }
 
@@ -171,7 +171,7 @@ export abstract class BaseEventManager implements EventManager {
 
     // Start processing based on strategy
     if (
-      this.processingStrategy === 'queued'||this.processingStrategy ==='batched') {
+      this.processingStrategy === 'queued'||this.processingStrategy ==='batched') {'
       this.startQueueProcessing();
     }
 
@@ -180,11 +180,11 @@ export abstract class BaseEventManager implements EventManager {
       this.startHealthMonitoring();
     }
 
-    this.logger.info(`Event manager started: ${this.name}`);
+    this.logger.info(`Event manager started: ${this.name}`);`
     
     // Emit lifecycle event
     if (this.lifecycleEmitter) {
-      this.lifecycleEmitter.emit('start', {
+      this.lifecycleEmitter.emit('start', {'
         managerName: this.name,
         managerType: this.type,
         processingStrategy: this.processingStrategy,
@@ -219,11 +219,11 @@ export abstract class BaseEventManager implements EventManager {
       await this.processEventQueue();
     }
 
-    this.logger.info(`Event manager stopped: ${this.name}`);
+    this.logger.info(`Event manager stopped: ${this.name}`);`
     
     // Emit lifecycle event
     if (this.lifecycleEmitter) {
-      this.lifecycleEmitter.emit('stop', {
+      this.lifecycleEmitter.emit('stop', {'
         managerName: this.name,
         managerType: this.type,
         uptime: Date.now() - this.metrics.startTime.getTime(),
@@ -247,7 +247,7 @@ export abstract class BaseEventManager implements EventManager {
     this.eventQueue.length = 0;
     this.processingBatch.length = 0;
 
-    this.logger.info(`Event manager destroyed: ${this.name}`);
+    this.logger.info(`Event manager destroyed: ${this.name}`);`
   }
 
   /**
@@ -262,7 +262,7 @@ export abstract class BaseEventManager implements EventManager {
     }
   ): Promise<void> {
     if (!this._isRunning) {
-      this.logger.warn(`Event manager not running, queuing event: ${event.id}`);
+      this.logger.warn(`Event manager not running, queuing event: ${event.id}`);`
       this.eventQueue.push(event);
       return;
     }
@@ -285,13 +285,13 @@ export abstract class BaseEventManager implements EventManager {
 
       // Process based on strategy
       switch (this.processingStrategy) {
-        case 'immediate':
+        case 'immediate':'
           await this.processEventImmediate(enrichedEvent);
           break;
-        case 'queued':
+        case 'queued':'
           this.eventQueue.push(enrichedEvent);
           break;
-        case 'batched':
+        case 'batched':'
           this.processingBatch.push(enrichedEvent);
           if (
             this.processingBatch.length >=
@@ -300,7 +300,7 @@ export abstract class BaseEventManager implements EventManager {
             await this.processBatch();
           }
           break;
-        case'throttled':
+        case'throttled':'
           await this.processEventThrottled(enrichedEvent);
           break;
         default:
@@ -327,22 +327,22 @@ export abstract class BaseEventManager implements EventManager {
 
       // Emit lifecycle event
       if (this.lifecycleEmitter) {
-        this.lifecycleEmitter.emit('emission', {
+        this.lifecycleEmitter.emit('emission', {'
           event: enrichedEvent,
           processingTime,
           strategy: this.processingStrategy,
         });
       }
 
-      this.logger.debug(`Event emitted: ${event.type} (${processingTime}ms)`);
+      this.logger.debug(`Event emitted: ${event.type} (${processingTime}ms)`);`
     } catch (error) {
       this.metrics.eventsFailed++;
       this.metrics.errorCount++;
-      this.logger.error(`Event emission failed: ${event.id}`, error);
+      this.logger.error(`Event emission failed: ${event.id}`, error);`
 
       // Emit error lifecycle event
       if (this.lifecycleEmitter) {
-        this.lifecycleEmitter.emit('error', {
+        this.lifecycleEmitter.emit('error', {'
           type: 'emission_failed',
           event: enrichedEvent,
           error: error instanceof Error ? error.message : String(error),
@@ -392,7 +392,7 @@ export abstract class BaseEventManager implements EventManager {
     
     // Emit lifecycle event
     if (this.lifecycleEmitter) {
-      this.lifecycleEmitter.emit('subscription', {
+      this.lifecycleEmitter.emit('subscription', {'
         action: 'added',
         subscriptionId,
         eventTypes: types,
@@ -403,7 +403,7 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     this.logger.debug(
-      `Subscription created: ${subscriptionId} for types ${types.join(', ')}`
+      `Subscription created: ${subscriptionId} for types ${types.join(', ')}``
     );
     return subscriptionId;
   }
@@ -418,14 +418,14 @@ export abstract class BaseEventManager implements EventManager {
       
       // Emit lifecycle event
       if (this.lifecycleEmitter) {
-        this.lifecycleEmitter.emit('subscription', {
+        this.lifecycleEmitter.emit('subscription', {'
           action: 'removed',
           subscriptionId,
           managerName: this.name,
         });
       }
       
-      this.logger.debug(`Subscription removed: ${subscriptionId}`);
+      this.logger.debug(`Subscription removed: ${subscriptionId}`);`
     }
     return removed;
   }
@@ -504,7 +504,7 @@ export abstract class BaseEventManager implements EventManager {
       eventTypes: subscription.eventTypes,
       listener: subscription.listener,
       filter: subscription.filter,
-      priority:'medium' as EventPriority, // Default priority
+      priority:'medium' as EventPriority, // Default priority'
       created: subscription.subscriptionTime,
       active: true, // All stored subscriptions are active
       metadata: { eventCount: subscription.eventCount },
@@ -524,14 +524,14 @@ export abstract class BaseEventManager implements EventManager {
   clearSubscriptions(): void {
     this.subscribers.clear();
     this.metrics.subscriptionCount = 0;
-    this.logger.debug(`All subscriptions cleared for manager: ${this.name}`);
+    this.logger.debug(`All subscriptions cleared for manager: ${this.name}`);`
   }
 
   /**
    * Restart the event manager (stop then start).
    */
   async restart(): Promise<void> {
-    this.logger.info(`Restarting event manager: ${this.name}`);
+    this.logger.info(`Restarting event manager: ${this.name}`);`
     await this.stop();
     await this.start();
   }
@@ -549,7 +549,7 @@ export abstract class BaseEventManager implements EventManager {
     },
     options?: { priority?: EventPriority; timeout?: number; retries?: number }
   ): Promise<void> {
-    this.logger.debug(`Emitting batch of ${batch.events.length} events`);
+    this.logger.debug(`Emitting batch of ${batch.events.length} events`);`
 
     // Process all events in the batch
     const promises = batch.events.map((event) => this.emit(event, options));
@@ -593,7 +593,7 @@ export abstract class BaseEventManager implements EventManager {
 
     this.metrics.subscriptionCount -= removedCount;
     this.logger.debug(
-      `Unsubscribed ${removedCount} listeners${eventType ? ` for event type: ${eventType}` : ''}`
+      `Unsubscribed ${removedCount} listeners${eventType ? ` for event type: ${eventType}` : ''}``
     );
     return removedCount;
   }
@@ -602,11 +602,11 @@ export abstract class BaseEventManager implements EventManager {
    * Add a global event filter with comprehensive validation and storage.
    */
   addFilter(filter: EventFilter): string {
-    const filterId = `filter-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    const filterId = `filter-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
     // Validate filter structure
-    if (!filter || typeof filter !== 'object') {
-      throw new EnhancedError('Invalid filter provided', {
+    if (!filter || typeof filter !== 'object') {'
+      throw new EnhancedError('Invalid filter provided', {'
         context: { filterId, filter },
         severity: 'high',
       });
@@ -629,7 +629,7 @@ export abstract class BaseEventManager implements EventManager {
       },
     });
 
-    this.logger.info(`Global event filter added: ${filterId}`, {
+    this.logger.info(`Global event filter added: ${filterId}`, {`
       filterId,
       filterTypes: filter.types,
       filterSources: filter.sources,
@@ -644,7 +644,7 @@ export abstract class BaseEventManager implements EventManager {
    */
   removeFilter(filterId: string): boolean {
     if (!this.globalFilters || !this.globalFilters.has(filterId)) {
-      this.logger.warn(`Filter not found for removal: ${filterId}`);
+      this.logger.warn(`Filter not found for removal: ${filterId}`);`
       return false;
     }
 
@@ -652,7 +652,7 @@ export abstract class BaseEventManager implements EventManager {
     const success = this.globalFilters.delete(filterId);
     
     if (success) {
-      this.logger.info(`Global event filter removed: ${filterId}`, {
+      this.logger.info(`Global event filter removed: ${filterId}`, {`
         filterId,
         filterTypes: removedFilter?.types,
         filterSources: removedFilter?.sources,
@@ -670,18 +670,18 @@ export abstract class BaseEventManager implements EventManager {
     enricher?: (event: SystemEvent) => Promise<SystemEvent>;
     validator?: (event: SystemEvent) => boolean;
   }): string {
-    const transformId = `transform-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    const transformId = `transform-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
     // Validate transform structure
-    if (!transform || typeof transform !== 'object') {
-      throw new EnhancedError('Invalid transform provided', {
+    if (!transform || typeof transform !== 'object') {'
+      throw new EnhancedError('Invalid transform provided', {'
         context: { transformId, transform },
         severity: 'high',
       });
     }
 
     if (!transform.mapper && !transform.enricher && !transform.validator) {
-      throw new EnhancedError('Transform must have at least one processing function', {
+      throw new EnhancedError('Transform must have at least one processing function', {'
         context: { transformId },
         severity: 'high',
       });
@@ -716,7 +716,7 @@ export abstract class BaseEventManager implements EventManager {
       },
     });
 
-    this.logger.info(`Global event transform added: ${transformId}`, {
+    this.logger.info(`Global event transform added: ${transformId}`, {`
       transformId,
       hasMapper: !!transform.mapper,
       hasEnricher: !!transform.enricher,
@@ -731,7 +731,7 @@ export abstract class BaseEventManager implements EventManager {
    */
   removeTransform(transformId: string): boolean {
     if (!this.globalTransforms || !this.globalTransforms.has(transformId)) {
-      this.logger.warn(`Transform not found for removal: ${transformId}`);
+      this.logger.warn(`Transform not found for removal: ${transformId}`);`
       return false;
     }
 
@@ -739,7 +739,7 @@ export abstract class BaseEventManager implements EventManager {
     const success = this.globalTransforms.delete(transformId);
     
     if (success) {
-      this.logger.info(`Global event transform removed: ${transformId}`, {
+      this.logger.info(`Global event transform removed: ${transformId}`, {`
         transformId,
         executionCount: removedTransform?.metadata.executionCount,
         lastExecuted: removedTransform?.metadata.lastExecuted,
@@ -756,14 +756,14 @@ export abstract class BaseEventManager implements EventManager {
     filter?: EventFilter;
     limit?: number;
     offset?: number;
-    sortBy?: 'timestamp' | 'priority' | 'type' | 'source';
-    sortOrder?: 'asc' | 'desc';
+    sortBy?: 'timestamp' | 'priority' | 'type' | 'source;
+    sortOrder?: 'asc' | 'desc;
     includeMetadata?: boolean;
   }): Promise<T[]> {
     const startTime = Date.now();
-    const queryId = `query-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    const queryId = `query-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
-    this.logger.debug(`Starting historical event query: ${queryId}`, options);
+    this.logger.debug(`Starting historical event query: ${queryId}`, options);`
 
     try {
       // Initialize event history storage if not exists
@@ -779,27 +779,27 @@ export abstract class BaseEventManager implements EventManager {
       }
 
       // Apply sorting
-      const sortBy = options.sortBy || 'timestamp';
-      const sortOrder = options.sortOrder || 'desc';
+      const sortBy = options.sortBy || 'timestamp;
+      const sortOrder = options.sortOrder || 'desc;
       
       results.sort((a, b) => {
         let valueA: any, valueB: any;
         
         switch (sortBy) {
-          case 'timestamp':
+          case 'timestamp':'
             valueA = new Date(a.timestamp).getTime();
             valueB = new Date(b.timestamp).getTime();
             break;
-          case 'priority':
+          case 'priority':'
             const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 };
             valueA = priorityOrder[a.priority as keyof typeof priorityOrder] || 2;
             valueB = priorityOrder[b.priority as keyof typeof priorityOrder] || 2;
             break;
-          case 'type':
+          case 'type':'
             valueA = a.type;
             valueB = b.type;
             break;
-          case 'source':
+          case 'source':'
             valueA = a.source;
             valueB = b.source;
             break;
@@ -809,7 +809,7 @@ export abstract class BaseEventManager implements EventManager {
         }
         
         const comparison = valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
-        return sortOrder === 'asc' ? comparison : -comparison;
+        return sortOrder === 'asc' ? comparison : -comparison;'
       });
 
       // Apply pagination
@@ -827,7 +827,7 @@ export abstract class BaseEventManager implements EventManager {
 
       const queryTime = Date.now() - startTime;
       
-      this.logger.info(`Historical event query completed: ${queryId}`, {
+      this.logger.info(`Historical event query completed: ${queryId}`, {`
         queryId,
         resultCount: results.length,
         queryTimeMs: queryTime,
@@ -843,14 +843,14 @@ export abstract class BaseEventManager implements EventManager {
     } catch (error) {
       const queryTime = Date.now() - startTime;
       
-      this.logger.error(`Historical event query failed: ${queryId}`, {
+      this.logger.error(`Historical event query failed: ${queryId}`, {`
         queryId,
         error: error instanceof Error ? error.message : String(error),
         queryTimeMs: queryTime,
         options,
       });
       
-      throw new EnhancedError('Failed to query historical events', {
+      throw new EnhancedError('Failed to query historical events', {'
         context: { queryId, options, queryTime },
         cause: error instanceof Error ? error : new Error(String(error)),
         severity: 'high',
@@ -866,17 +866,17 @@ export abstract class BaseEventManager implements EventManager {
     limit?: number
   ): Promise<SystemEvent[]> {
     const startTime = Date.now();
-    const historyId = `history-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    const historyId = `history-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
-    this.logger.debug(`Getting event history: ${historyId}`, {
+    this.logger.debug(`Getting event history: ${historyId}`, {`
       eventType,
       limit,
     });
 
     try {
       // Validate event type
-      if (!eventType || typeof eventType !== 'string') {
-        throw new EnhancedError('Invalid event type provided', {
+      if (!eventType || typeof eventType !== 'string') {'
+        throw new EnhancedError('Invalid event type provided', {'
           context: { eventType, historyId },
           severity: 'medium',
         });
@@ -895,7 +895,7 @@ export abstract class BaseEventManager implements EventManager {
 
       const queryTime = Date.now() - startTime;
       
-      this.logger.info(`Event history retrieved: ${historyId}`, {
+      this.logger.info(`Event history retrieved: ${historyId}`, {`
         historyId,
         eventType,
         resultCount: results.length,
@@ -908,7 +908,7 @@ export abstract class BaseEventManager implements EventManager {
     } catch (error) {
       const queryTime = Date.now() - startTime;
       
-      this.logger.error(`Event history retrieval failed: ${historyId}`, {
+      this.logger.error(`Event history retrieval failed: ${historyId}`, {`
         historyId,
         eventType,
         error: error instanceof Error ? error.message : String(error),
@@ -916,7 +916,7 @@ export abstract class BaseEventManager implements EventManager {
         limit,
       });
       
-      throw new EnhancedError('Failed to get event history', {
+      throw new EnhancedError('Failed to get event history', {'
         context: { historyId, eventType, limit, queryTime },
         cause: error instanceof Error ? error : new Error(String(error)),
         severity: 'high',
@@ -936,7 +936,7 @@ export abstract class BaseEventManager implements EventManager {
       this.processingStrategy = config.processing.strategy;
     }
 
-    this.logger.debug(`Configuration updated for manager: ${this.name}`);
+    this.logger.debug(`Configuration updated for manager: ${this.name}`);`
   }
 
   /**
@@ -952,15 +952,15 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     // Validate event and handler
-    if (!event || typeof event !== 'string') {
-      throw new EnhancedError('Invalid event name provided', {
+    if (!event || typeof event !== 'string') {'
+      throw new EnhancedError('Invalid event name provided', {'
         context: { event, managerName: this.name },
         severity: 'medium',
       });
     }
 
-    if (!handler || typeof handler !== 'function') {
-      throw new EnhancedError('Invalid handler function provided', {
+    if (!handler || typeof handler !== 'function') {'
+      throw new EnhancedError('Invalid handler function provided', {'
         context: { event, managerName: this.name },
         severity: 'medium',
       });
@@ -968,7 +968,7 @@ export abstract class BaseEventManager implements EventManager {
 
     this.lifecycleEmitter.on(event, handler);
     
-    this.logger.debug(`Lifecycle listener added for event: ${event}`, {
+    this.logger.debug(`Lifecycle listener added for event: ${event}`, {`
       event,
       managerName: this.name,
       listenerCount: this.lifecycleEmitter.listenerCount(event),
@@ -980,22 +980,22 @@ export abstract class BaseEventManager implements EventManager {
    */
   off(event: string, handler?: (...args: unknown[]) => void): void {
     if (!this.lifecycleEmitter) {
-      this.logger.warn(`No lifecycle emitter exists for manager: ${this.name}`);
+      this.logger.warn(`No lifecycle emitter exists for manager: ${this.name}`);`
       return;
     }
 
-    if (!event || typeof event !== 'string') {
-      this.logger.warn('Invalid event name provided for removal', { event });
+    if (!event || typeof event !== 'string') {'
+      this.logger.warn('Invalid event name provided for removal', { event });'
       return;
     }
 
-    if (handler && typeof handler === 'function') {
+    if (handler && typeof handler === 'function') {'
       this.lifecycleEmitter.off(event, handler);
     } else {
       this.lifecycleEmitter.removeAllListeners(event);
     }
     
-    this.logger.debug(`Lifecycle listener(s) removed for event: ${event}`, {
+    this.logger.debug(`Lifecycle listener(s) removed for event: ${event}`, {`
       event,
       managerName: this.name,
       removedSpecificHandler: !!handler,
@@ -1013,15 +1013,15 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     // Validate event and handler
-    if (!event || typeof event !== 'string') {
-      throw new EnhancedError('Invalid event name provided', {
+    if (!event || typeof event !== 'string') {'
+      throw new EnhancedError('Invalid event name provided', {'
         context: { event, managerName: this.name },
         severity: 'medium',
       });
     }
 
-    if (!handler || typeof handler !== 'function') {
-      throw new EnhancedError('Invalid handler function provided', {
+    if (!handler || typeof handler !== 'function') {'
+      throw new EnhancedError('Invalid handler function provided', {'
         context: { event, managerName: this.name },
         severity: 'medium',
       });
@@ -1029,7 +1029,7 @@ export abstract class BaseEventManager implements EventManager {
 
     this.lifecycleEmitter.once(event, handler);
     
-    this.logger.debug(`One-time lifecycle listener added for event: ${event}`, {
+    this.logger.debug(`One-time lifecycle listener added for event: ${event}`, {`
       event,
       managerName: this.name,
       totalListenerCount: this.lifecycleEmitter.listenerCount(event),
@@ -1067,7 +1067,7 @@ export abstract class BaseEventManager implements EventManager {
         batch.map((event) => this.notifySubscribers(event))
       );
     } catch (error) {
-      this.logger.error('Batch processing failed:', error);
+      this.logger.error('Batch processing failed:', error);'
     } finally {
       this.isProcessing = false;
     }
@@ -1087,7 +1087,7 @@ export abstract class BaseEventManager implements EventManager {
         await this.processEventImmediate(event);
       }
     } catch (error) {
-      this.logger.error('Queue processing failed:', error);
+      this.logger.error('Queue processing failed:', error);'
       this.metrics.errorCount++;
     } finally {
       this.isProcessing = false;
@@ -1107,7 +1107,7 @@ export abstract class BaseEventManager implements EventManager {
         subscription.eventCount++;
         await subscription.listener(event);
       } catch (error) {
-        this.logger.error(`Subscriber notification failed: ${error}`);
+        this.logger.error(`Subscriber notification failed: ${error}`);`
         this.metrics.errorCount++;
       }
     });
@@ -1159,9 +1159,9 @@ export abstract class BaseEventManager implements EventManager {
     subscriptionType: string
   ): boolean {
     // Support wildcard matching
-    if (subscriptionType.includes('*')) {
-      const pattern = subscriptionType.replace(/\*/g, '.*');
-      return new RegExp(`^${pattern}$`).test(eventType);
+    if (subscriptionType.includes('*')) {'
+      const pattern = subscriptionType.replace(/\*/g, '.*');'
+      return new RegExp(`^${pattern}$`).test(eventType);`
     }
 
     return eventType === subscriptionType;
@@ -1208,7 +1208,7 @@ export abstract class BaseEventManager implements EventManager {
   }
 
   protected generateSubscriptionId(): string {
-    return `${this.name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `${this.name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   protected wrapOnceListener(
@@ -1232,7 +1232,7 @@ export abstract class BaseEventManager implements EventManager {
       }
       if (
         this.processingBatch.length > 0 &&
-        this.processingStrategy ==='batched') {
+        this.processingStrategy ==='batched') {'
         await this.processBatch();
       }
     }, interval);
@@ -1244,15 +1244,15 @@ export abstract class BaseEventManager implements EventManager {
     this.healthCheckInterval = setInterval(async () => {
       try {
         const status = await this.healthCheck();
-        if (status.status !=='healthy') {
+        if (status.status !=='healthy') {'
           this.logger.warn(
-            `Event manager health check failed: ${this.name}`,
+            `Event manager health check failed: ${this.name}`,`
             status
           );
         }
       } catch (error) {
         this.logger.error(
-          `Health check error for manager ${this.name}:`,
+          `Health check error for manager ${this.name}:`,`
           error
         );
       }

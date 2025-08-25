@@ -30,9 +30,9 @@ export declare class SimpleMemoryFactory {
    * Create a basic memory manager.
    */
   static createBasicMemory(config?: {
-    type?: 'sqlite|memory'';
+    type?: 'sqlite|memory';
     path?: string;
-  }): Promise<import('./memory').MemoryManager>;
+  }): Promise<import('./memory').MemoryManager>;'
 }
 export declare function getMemorySystemAccess(
   config?: MemoryConfig

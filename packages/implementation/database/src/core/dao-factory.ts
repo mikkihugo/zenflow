@@ -20,19 +20,19 @@ import type {
 export interface MultiDatabaseDao<T> {
   primary: Dao<T>;
   fallbacks: Dao<T>[];
-  readPreference: 'primary|fallback|balanced';
-  writePolicy: 'primary-only|replicated';
+  readPreference: 'primary' | 'fallback' | 'balanced';
+  writePolicy: 'primary-only|replicated;
   failoverTimeout: number;
   findById(id: string): Promise<T | null>;
   findAll(): Promise<T[]>;
-  create(entity: Omit<T,'id'>): Promise<T>;
+  create(entity: Omit<T,'id'>): Promise<T>;'
   update(id: string, updates: Partial<T>): Promise<T|null>;
   delete(id: string): Promise<boolean>;
   findBy(filter: Partial<T>): Promise<T[]>;
   count(filter?: Partial<T>): Promise<number>;
 }
 
-import { BaseDao } from'../base.dao';
+import { BaseDao } from'../base.dao;
 import { CoordinationDao } from '../dao/coordination.dao';
 import { GraphDao } from '../dao/graph.dao';
 import { MemoryDao } from '../dao/memory.dao';
@@ -104,7 +104,7 @@ export interface DatabaseConfig {
  * @param options - Optional settings for DAO creation.
  * @returns Promise resolving to configured DAO instance.
  * @example Basic DAO Creation
- * ```typescript
+ * ```typescript`
  * const userDao = await createDao<User>(
  *   EntityTypes.User,
  *   DatabaseTypes.PostgreSQL,
@@ -113,9 +113,9 @@ export interface DatabaseConfig {
  *     port: 5432,
  *     database: 'myapp',
  *     username: 'user',
- *     password: 'pass'*   }
+ *     password: 'pass'*   }'
  * );
- * ```
+ * ````
  */
 export async function createDao<T>(
   entityType: EntityType,
@@ -131,7 +131,7 @@ export async function createDao<T>(
 ): Promise<Dao<T>> {
   // Set defaults based on entity type
   const tableName = options?.tableName||getDefaultTableName(entityType);
-  const primaryKey = options?.primaryKey||'id';
+  const primaryKey = options?.primaryKey||'id;
   const logger = options?.logger||console;
 
   // Create a mock adapter for now - in real implementation this would connect to actual database
@@ -170,16 +170,16 @@ export async function createDao<T>(
   // Create specialized DAOs based on entity type
   switch (entityType) {
   case EntityTypeValues.Memory:
-  case'memory':
+  case'memory':'
     return createMemoryDao<T>(adapter, iLogger, tableName);
 
   case EntityTypeValues.Product: // Use available enum value instead of Coordination
-  case 'coordination':
+  case 'coordination':'
     return createCoordinationDao<T>(adapter, iLogger, tableName);
 
   case EntityTypeValues.Vector: // Use Vector instead of Graph for GraphDao
-  case 'node':
-  case 'edge':
+  case 'node':'
+  case 'edge':'
     return createGraphDao<T>(adapter, iLogger, tableName);
 
   default:
@@ -227,13 +227,13 @@ class ConcreteDao<T> extends BaseDao<T> {
  * @param options - Optional settings for multi-database setup.
  * @returns Promise resolving to multi-database DAO instance.
  * @example Multi-Database Setup
- * ```typescript
+ * ```typescript`
  * const multiDao = await createMultiDatabaseSetup<User>(
  *   EntityTypes.User,
  *   { databaseType: 'postgresql', config: pgConfig },
- *   [{ databaseType: 'memory', config: cacheConfig }]
+ *   [{ databaseType: 'memory', config: cacheConfig }]'
  * );
- * ```
+ * ````
  */
 export async function createMultiDatabaseSetup<T>(
   entityType: EntityType,
@@ -243,8 +243,8 @@ export async function createMultiDatabaseSetup<T>(
     config: DatabaseConfig;
   }> = [],
   options: {
-    readPreference?: 'primary|fallback|balanced';
-    writePolicy?: 'primary-only|replicated';
+    readPreference?: 'primary' | 'fallback' | 'balanced';
+    writePolicy?: 'primary-only|replicated;
     failoverTimeout?: number;
     logger?:|Console|{ debug: Function; info: Function; warn: Function; error: Function };
   } = {},
@@ -291,12 +291,12 @@ export async function createMultiDatabaseSetup<T>(
 
     async findAll(): Promise<T[]> {
       const dao =
-        this.readPreference ==='fallback' && fallbackDaos.length > 0
+        this.readPreference ==='fallback' && fallbackDaos.length > 0'
           ? fallbackDaos[0]
           : primaryDao;
 
       if (!dao) {
-        throw new Error('No DAO available');
+        throw new Error('No DAO available');'
       }
 
       try {
@@ -309,15 +309,15 @@ export async function createMultiDatabaseSetup<T>(
       }
     },
 
-    async create(entity: Omit<T, 'id'>): Promise<T> {
+    async create(entity: Omit<T, 'id'>): Promise<T> {'
       const created = await primaryDao.create(entity);
 
-      if (this.writePolicy === 'replicated') {
+      if (this.writePolicy === 'replicated') {'
         // Fire-and-forget replication to fallbacks
         fallbackDaos.forEach((dao) => {
           dao.create(entity).catch(() => {
-            // Log but don't fail the operation
-            options?.logger?.warn('Fallback replication failed');
+            // Log but don't fail the operation'
+            options?.logger?.warn('Fallback replication failed');'
           });
         });
       }
@@ -328,10 +328,10 @@ export async function createMultiDatabaseSetup<T>(
     async update(id: string, updates: Partial<T>): Promise<T|null> {
       const updated = await primaryDao.update(id, updates);
 
-      if (this.writePolicy ==='replicated') {
+      if (this.writePolicy ==='replicated') {'
         fallbackDaos.forEach((dao) => {
           dao.update(id, updates).catch(() => {
-            options?.logger?.warn('Fallback update failed');
+            options?.logger?.warn('Fallback update failed');'
           });
         });
       }
@@ -342,10 +342,10 @@ export async function createMultiDatabaseSetup<T>(
     async delete(id: string): Promise<boolean> {
       const deleted = await primaryDao.delete(id);
 
-      if (this.writePolicy === 'replicated') {
+      if (this.writePolicy === 'replicated') {'
         fallbackDaos.forEach((dao) => {
           dao.delete(id).catch(() => {
-            options?.logger?.warn('Fallback deletion failed');
+            options?.logger?.warn('Fallback deletion failed');'
           });
         });
       }
@@ -355,12 +355,12 @@ export async function createMultiDatabaseSetup<T>(
 
     async findBy(filter: Partial<T>): Promise<T[]> {
       const dao =
-        this.readPreference === 'fallback' && fallbackDaos.length > 0
+        this.readPreference === 'fallback' && fallbackDaos.length > 0'
           ? fallbackDaos[0]
           : primaryDao;
 
       if (!dao) {
-        throw new Error('No DAO available');
+        throw new Error('No DAO available');'
       }
 
       try {
@@ -424,7 +424,7 @@ function getDefaultTableName(entityType: EntityType): string {
     [EntityTypeValues.WorkflowState]: 'workflow_states',
   };
 
-  return entityMap[entityType] || `${entityType}s`;
+  return entityMap[entityType] || `${entityType}s`;`
 }
 
 /**

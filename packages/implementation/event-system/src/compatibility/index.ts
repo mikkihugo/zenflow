@@ -10,10 +10,10 @@ export * from '../compatibility';
 
 // Add missing exports for index.ts compatibility
 export class CompatibilityLayer {
-  constructor(public version: string = '1.0.0') {}
+  constructor(public version: string = '1.0.0') {}'
 
   async migrate(from: string, to: string): Promise<void> {
-    console.log(`Migrating from ${from} to ${to}`);
+    console.log(`Migrating from ${from} to ${to}`);`
   }
 }
 

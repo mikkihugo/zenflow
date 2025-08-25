@@ -2,7 +2,7 @@
  * @fileoverview CLI Provider Types
  *
  * Generic interfaces for integrating with various CLI tools (Claude Code, Gemini CLI, etc.)
- * Refactored to use foundation's Result pattern and proper error handling.
+ * Refactored to use foundation's Result pattern and proper error handling.'
  */
 
 import type { Result } from '@claude-zen/foundation';
@@ -13,19 +13,19 @@ import type {
 } from '@claude-zen/foundation/types';
 
 export interface CLIMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: 'system' | 'user' | 'assistant;
   content: string;
 }
 
 export interface CLIRequest {
   messages: CLIMessage[];
-  model?: LiteralUnion<'claude-3-5-sonnet' | 'gpt-4' | 'gemini-pro', string>;
+  model?: LiteralUnion<'claude-3-5-sonnet' | 'gpt-4' | 'gemini-pro', string>;'
   temperature?: number;
   maxTokens?: number;
   metadata?: Record<string, unknown>;
 }
 
-// Modern Result-based response using foundation's Result pattern
+// Modern Result-based response using foundation's Result pattern'
 export interface CLIResponse {
   content: string;
   metadata?: Record<string, unknown>;
@@ -44,12 +44,12 @@ export type CLIResult = Result<CLIResponse, CLIError>;
 // Specialized CLI roles for swarm agents
 export interface SwarmAgentRole {
   role: LiteralUnion<
-    | 'assistant'
-    | 'coder'
-    | 'analyst'
-    | 'researcher'
-    | 'coordinator'
-    | 'tester'
+    | 'assistant''
+    | 'coder''
+    | 'analyst''
+    | 'researcher''
+    | 'coordinator''
+    | 'tester''
     | 'architect',
     string
   >;
@@ -81,7 +81,7 @@ export interface CLIProviderCapabilities {
   };
 }
 
-// Configuration options using foundation's validated configuration
+// Configuration options using foundation's validated configuration'
 export interface CLIProviderConfig {
   timeout?: number;
   retries?: number;
@@ -126,7 +126,7 @@ export interface CLIProviderRegistry {
   get(providerId: string): CLIProvider|undefined;
   list(): CLIProvider[];
   getByCapability(
-    capability: keyof CLIProviderCapabilities['features']
+    capability: keyof CLIProviderCapabilities['features']'
   ): CLIProvider[];
 }
 
@@ -142,18 +142,18 @@ export interface CLIProviderFactory {
 // Type utilities for CLI providers with Result pattern support
 export type OptionalCLIRequest = SetOptional<
   CLIRequest,
-  'model' | 'temperature' | 'maxTokens' | 'metadata'
+  'model' | 'temperature' | 'maxTokens' | 'metadata''
 >;
 export type MinimalCLIProvider = SetOptional<
   CLIProvider,
-  'setRole' | 'getRole'
+  'setRole' | 'getRole''
 >;
 export type CLIProviderWithDefaults = Merge<
   CLIProvider,
   { getCapabilities(): Required<CLIProviderCapabilities> }
 >;
 
-// Validation schemas using foundation's Zod integration
+// Validation schemas using foundation's Zod integration'
 export interface CLIValidationSchema {
   request: (request: unknown) => Result<CLIRequest, CLIError>;
   config: (config: unknown) => Result<CLIProviderConfig, CLIError>;

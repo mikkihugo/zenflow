@@ -52,8 +52,8 @@ export interface EpicBlockedEvent {
   readonly epicId: string;
   readonly currentState: PortfolioKanbanState;
   readonly blockerId: string;
-  readonly blockerType:|'technical|business|resource|external|regulatory';
-  readonly severity: 'low|medium|high|critical';
+  readonly blockerType:|'technical|business|resource|external|regulatory;
+  readonly severity: 'low|medium|high|critical;
   readonly description: string;
   readonly owner: string;
   readonly timestamp: Date;
@@ -123,8 +123,8 @@ export function createEpicStateTransition(params: {
 export function createEpicBlocked(params: {
   epicId: string;
   currentState: PortfolioKanbanState;
-  blockerType: EpicBlockedEvent['blockerType'];
-  severity: EpicBlockedEvent['severity'];
+  blockerType: EpicBlockedEvent['blockerType'];'
+  severity: EpicBlockedEvent['severity'];'
   description: string;
   owner: string;
 }): EpicBlockedEvent {
@@ -328,7 +328,7 @@ export class PortfolioKanbanWorkflow {
       return {
         success: false,
         newState: currentState,
-        message: `Invalid transition from ${currentState} to ${params.targetState}`,
+        message: `Invalid transition from ${currentState} to ${params.targetState}`,`
       };
     }
 
@@ -346,7 +346,7 @@ export class PortfolioKanbanWorkflow {
       return {
         success: false,
         newState: currentState,
-        message: `Requirements not met: ${validationResult.missingRequirements.join(', ')}`,
+        message: `Requirements not met: ${validationResult.missingRequirements.join(', ')}`,`
       };
     }
 
@@ -374,7 +374,7 @@ export class PortfolioKanbanWorkflow {
     return {
       success: true,
       newState: params.targetState,
-      message: `Epic successfully transitioned to ${params.targetState}`,
+      message: `Epic successfully transitioned to ${params.targetState}`,`
     };
   }
 
@@ -383,8 +383,8 @@ export class PortfolioKanbanWorkflow {
    */
   blockEpic(params: {
     epicId: string;
-    blockerType: EpicBlockedEvent['blockerType'];
-    severity: EpicBlockedEvent['severity'];
+    blockerType: EpicBlockedEvent['blockerType'];'
+    severity: EpicBlockedEvent['severity'];'
     description: string;
     owner: string;
   }): string {
@@ -411,7 +411,7 @@ export class PortfolioKanbanWorkflow {
         type: PORTFOLIO_KANBAN_EVENTS.EPIC_BLOCKED,
         data: blockedEvent,
         priority:
-          blockedEvent.severity ==='critical'
+          blockedEvent.severity ==='critical''
             ? EventPriority.CRITICAL
             : EventPriority.HIGH,
       })
@@ -449,7 +449,7 @@ export class PortfolioKanbanWorkflow {
     // Check gates (would integrate with external gate validation)
     for (const gate of requirements.gates) {
       // Simplified gate validation - in real implementation would check external systems
-      if (!evidence || !evidence[`gate-${gate}`]) {
+      if (!evidence || !evidence[`gate-${gate}`]) {`
         pendingGates.push(gate);
       }
     }

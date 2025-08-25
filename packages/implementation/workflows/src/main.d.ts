@@ -21,7 +21,7 @@
  * - Type-safe workflow orchestration
  *
  * @example Basic workflow engine usage
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -31,20 +31,20 @@
  *
  * await engine.initialize();
  * const result = await engine.startWorkflow(workflowDefinition);
- * ```
+ * ````
  *
  * @example Advanced scheduling and state management
- * ```typescript
+ * ```typescript`
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine();
  *
  * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');
+ * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
  *
  * // Generate Mermaid visualization
  * const diagram = engine.generateWorkflowVisualization(workflow);
- * ```
+ * ````
  */
 export { WorkflowEngine as default, WorkflowEngine } from './engine';
 export type {
@@ -81,9 +81,9 @@ export declare const workflowSystem: {
   createEngine: (config?: WorkflowEngineConfig) => any;
 };
 export declare const WORKFLOWS_INFO: {
-  readonly version: '1.0.0';
-  readonly name: '@claude-zen/workflows';
-  readonly description: 'Production-ready workflow engine with battle-tested npm dependencies';
+  readonly version: '1.0.0;
+  readonly name: '@claude-zen/workflows;
+  readonly description: 'Production-ready workflow engine with battle-tested npm dependencies;
   readonly battleTestedDependencies: readonly [
     'expr-eval: Safe expression evaluation',
     'async: Professional async utilities',

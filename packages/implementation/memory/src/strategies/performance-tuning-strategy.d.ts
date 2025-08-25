@@ -77,7 +77,7 @@ export declare class PerformanceTuningStrategy extends TypedEventBase {
   private calculateImprovement;
   private updateMetrics;
   private startPerformanceMonitoring;
-  getMetrics(): StrategyMetrics['performance'];
+  getMetrics(): StrategyMetrics['performance'];'
   getTuningHistory(limit?: number): TuningResult[];
   getPerformanceSnapshots(limit?: number): PerformanceSnapshot[];
   getTuningParameters(): Map<string, TuningParameter>;

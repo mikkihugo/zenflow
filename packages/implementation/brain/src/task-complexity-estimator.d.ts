@@ -29,9 +29,9 @@ export interface ComplexityEstimate {
   readonly estimatedComplexity: number;
   readonly confidence: number;
   readonly reasoning: string[];
-  readonly suggestedMethod: 'dspy | ml|hybrid';
+  readonly suggestedMethod: 'dspy | ml|hybrid;
   readonly estimatedDuration: number;
-  readonly difficultyLevel: 'trivial | easy|medium|hard|expert';
+  readonly difficultyLevel: 'trivial | easy|medium|hard|expert;
   readonly keyFactors: string[];
 }
 export interface ComplexityPattern {

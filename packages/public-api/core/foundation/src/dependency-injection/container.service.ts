@@ -160,9 +160,9 @@ export const createContainer = (): Container => new ContainerImpl();
 
 // Service tokens for common services
 export const TOKENS = {
-  Logger: 'logger',
-  Config: 'config',
-  Database: 'database',
+  logger: 'logger',
+  config: 'config',
+  database: 'database',
 };
 
 // STRATEGIC FORCING EXPORTS - Guide developers to industry-standard patterns

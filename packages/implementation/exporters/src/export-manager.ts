@@ -13,7 +13,7 @@ import { dirname, join } from 'node:path';
 
 import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('UnifiedExport');
+const logger = getLogger('UnifiedExport');'
 
 export interface ExportResult {
   id: string;
@@ -31,7 +31,7 @@ export interface ExportOptions {
   outputPath?: string;
   pretty?: boolean;
   compression?: boolean;
-  encoding?: 'utf8|base64';
+  encoding?: 'utf8|base64;
   metadata?: Record<string, unknown>;
 }
 
@@ -61,15 +61,15 @@ export class ExportSystem extends TypedEventBase {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    logger.info('Initializing unified export system');
+    logger.info('Initializing unified export system');'
     
     // Initialize async resources
     await this.setupDefaultExporters();
     await this.validateSystemCapabilities();
     
     this.initialized = true;
-    this.emit('initialized', {});
-    logger.info('Unified export system ready');
+    this.emit('initialized', {});'
+    logger.info('Unified export system ready');'
   }
 
   private async setupDefaultExporters(): Promise<void> {
@@ -87,7 +87,7 @@ export class ExportSystem extends TypedEventBase {
    */
   private registerBuiltInExporters(): void {
     // JSON Exporter
-    this.registerExporter('json', {
+    this.registerExporter('json', {'
       name: 'JSON Exporter',
       extension: '.json',
       mimeType: 'application/json',
@@ -108,7 +108,7 @@ export class ExportSystem extends TypedEventBase {
     });
 
     // YAML Exporter
-    this.registerExporter('yaml', {
+    this.registerExporter('yaml', {'
       name: 'YAML Exporter',
       extension: '.yaml',
       mimeType: 'text/yaml',
@@ -120,7 +120,7 @@ export class ExportSystem extends TypedEventBase {
     });
 
     // CSV Exporter
-    this.registerExporter('csv', {
+    this.registerExporter('csv', {'
       name: 'CSV Exporter',
       extension: '.csv',
       mimeType: 'text/csv',
@@ -133,22 +133,22 @@ export class ExportSystem extends TypedEventBase {
     });
 
     // XML Exporter
-    this.registerExporter('xml', {
+    this.registerExporter('xml', {'
       name: 'XML Exporter',
       extension: '.xml',
       mimeType: 'application/xml',
       description: 'Export data as XML format',
       export: (data: unknown, _options?: ExportOptions) => {
-        return `<?xml version="1.0" encoding="UTF-8"?>
+        return `<?xml version="1.0" encoding="UTF-8"?>`
       <root>
       ${this.convertToXML(data, 1)}
-      </root>`;
+      </root>`;`
       },
       validate: (data: unknown) => data !== undefined && data !== null,
     });
 
     // Markdown Exporter (for documents)
-    this.registerExporter('markdown', {
+    this.registerExporter('markdown', {'
       name: 'Markdown Exporter',
       extension: '.md',
       mimeType: 'text/markdown',
@@ -160,21 +160,21 @@ export class ExportSystem extends TypedEventBase {
     });
 
     // Plain Text Exporter
-    this.registerExporter('txt', {
+    this.registerExporter('txt', {'
       name: 'Text Exporter',
       extension: '.txt',
       mimeType: 'text/plain',
       description: 'Export data as plain text format',
       export: (data: unknown, _options?: ExportOptions) => {
-        if (typeof data === 'string') return data;
-        if (typeof data === 'object') return JSON.stringify(data, null, 2);
+        if (typeof data === 'string') return data;'
+        if (typeof data === 'object') return JSON.stringify(data, null, 2);'
         return String(data);
       },
       validate: () => true,
     });
 
     // HTML Exporter (for reports)
-    this.registerExporter('html', {
+    this.registerExporter('html', {'
       name: 'HTML Exporter',
       extension: '.html',
       mimeType: 'text/html',
@@ -185,7 +185,7 @@ export class ExportSystem extends TypedEventBase {
       validate: (data: unknown) => data !== undefined && data !== null,
     });
 
-    logger.info(`Registered ${this.exporters.size} built-in exporters`);
+    logger.info(`Registered ${this.exporters.size} built-in exporters`);`
   }
 
   /**
@@ -196,8 +196,8 @@ export class ExportSystem extends TypedEventBase {
    */
   registerExporter(format: string, definition: ExporterDefinition): void {
     this.exporters.set(format.toLowerCase(), definition);
-    logger.info(`Registered custom exporter: ${format}`);
-    this.emit('exporter:registered', { format, definition });
+    logger.info(`Registered custom exporter: ${format}`);`
+    this.emit('exporter:registered', { format, definition });'
   }
 
   /**
@@ -215,7 +215,7 @@ export class ExportSystem extends TypedEventBase {
     const exporter = this.exporters.get(format.toLowerCase())();
 
     if (!exporter) {
-      throw new Error(`Unsupported export format: ${format}`);
+      throw new Error(`Unsupported export format: ${format}`);`
     }
 
     const exportId = this.generateId();
@@ -224,22 +224,22 @@ export class ExportSystem extends TypedEventBase {
     try {
       // Validate data if validator exists
       if (exporter.validate && !exporter.validate(data)) {
-        throw new Error(`Data validation failed for ${format} format`);
+        throw new Error(`Data validation failed for ${format} format`);`
       }
 
       // Export data
       const exportedData = await exporter.export(data, options);
-      const size = Buffer.byteLength(exportedData, 'utf8');
+      const size = Buffer.byteLength(exportedData, 'utf8');'
 
       // Generate filename if not provided
       const filename =
-        options?.filename||`export_${timestamp}${exporter.extension}`;
+        options?.filename||`export_${timestamp}${exporter.extension}`;`
 
       // Save to file if output path provided
       if (options?.outputPath) {
         const filePath = join(options?.outputPath, filename);
         await mkdir(dirname(filePath), { recursive: true });
-        await writeFile(filePath, exportedData, options?.encoding||'utf8');
+        await writeFile(filePath, exportedData, options?.encoding||'utf8');'
       }
 
       const result: ExportResult = {
@@ -258,9 +258,9 @@ export class ExportSystem extends TypedEventBase {
       };
 
       this.exportHistory.push(result);
-      this.emit('export:success', result);
+      this.emit('export:success', result);'
       logger.info(
-        `Successfully exported data as ${format.toUpperCase()}: ${filename}`
+        `Successfully exported data as ${format.toUpperCase()}: ${filename}``
       );
 
       return result;
@@ -268,7 +268,7 @@ export class ExportSystem extends TypedEventBase {
       const result: ExportResult = {
         id: exportId,
         format,
-        filename: options?.filename||`failed_export_${timestamp}`,
+        filename: options?.filename||`failed_export_${timestamp}`,`
         size: 0,
         timestamp,
         success: false,
@@ -276,8 +276,8 @@ export class ExportSystem extends TypedEventBase {
       };
 
       this.exportHistory.push(result);
-      this.emit('export:error', result);
-      logger.error(`Export failed for format ${format}:`, error);
+      this.emit('export:error', result);'
+      logger.error(`Export failed for format ${format}:`, error);`
       throw error;
     }
   }
@@ -301,17 +301,17 @@ export class ExportSystem extends TypedEventBase {
         const result = await this.exportData(data, format, {
           ...options,
           ...(options?.filename && {
-            filename: `${options?.filename?.replace(/\.[^./]+$/, '')}.${format}`,
+            filename: `${options?.filename?.replace(/\.[^./]+$/, '')}.${format}`,`
           }),
         });
         results.push(result);
       } catch (error) {
-        logger.error(`Batch export failed for format ${format}:`, error);
+        logger.error(`Batch export failed for format ${format}:`, error);`
         // Continue with other formats
       }
     }
 
-    this.emit('export:batch', {
+    this.emit('export:batch', {'
       total: formats.length,
       successful: results.length,
     });
@@ -357,7 +357,7 @@ export class ExportSystem extends TypedEventBase {
 
     return this.exportData(documentData, format, {
       ...options,
-      filename: options?.filename||`workflow_export_${Date.now()}.${format}`,
+      filename: options?.filename||`workflow_export_${Date.now()}.${format}`,`
       metadata: {
         ...options?.metadata,
         type:'workflow_export',
@@ -386,7 +386,7 @@ export class ExportSystem extends TypedEventBase {
 
     return this.exportData(systemExport, format, {
       ...options,
-      filename: options?.filename||`system_status_${Date.now()}.${format}`,
+      filename: options?.filename||`system_status_${Date.now()}.${format}`,`
       metadata: {
         ...options?.metadata,
         type:'system_status',
@@ -401,12 +401,12 @@ export class ExportSystem extends TypedEventBase {
    */
   private convertToCSV(data: Record<string, unknown>[]): string {
     if (!Array.isArray(data) || data.length === 0) {
-      return '';
+      return ';
     }
 
     // Get headers from first object
     const headers = Object.keys(data[0] || {});
-    const csvRows = [headers.join(',')];
+    const csvRows = [headers.join(',')];'
 
     // Convert each row
     for (const row of data) {
@@ -414,136 +414,136 @@ export class ExportSystem extends TypedEventBase {
         const value = row[header];
         // Escape values that contain commas or quotes
         if (
-          typeof value === 'string' &&
-          (value.includes(',')||value.includes('"'))
+          typeof value === 'string' &&'
+          (value.includes(',')||value.includes('"'))'
         ) {
-          return `"${value.replace(/"/g, '""')}"`;
+          return `"${value.replace(/"/g, '""')}"`;`
         }
         return value;
       });
-      csvRows.push(values.join(','));
+      csvRows.push(values.join(','));'
     }
 
-    return csvRows.join('\n');
+    return csvRows.join('\n');'
   }
 
   private convertToYAML(obj: unknown, indent: number): string {
-    const spaces = '  '.repeat(indent);
+    const spaces = '  '.repeat(indent);'
 
-    if (obj === null) return 'null';
-    if (typeof obj === 'boolean') return obj.toString();
-    if (typeof obj === 'number') return obj.toString();
-    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')}"`;
+    if (obj === null) return 'null;
+    if (typeof obj === 'boolean') return obj.toString();'
+    if (typeof obj === 'number') return obj.toString();'
+    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')}"`;`
 
     if (Array.isArray(obj)) {
-      if (obj.length === 0) return '[]';
+      if (obj.length === 0) return '[];
       return obj
-        .map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`)
-        .join('\n');
+        .map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`)`
+        .join('\n');'
     }
 
-    if (typeof obj === 'object') {
+    if (typeof obj === 'object') {'
       const entries = Object.entries(obj);
-      if (entries.length === 0) return '{}';
+      if (entries.length === 0) return '{};
 
       return entries
         .map(
           ([key, value]) =>
-            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`
+            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}``
         )
-        .join('\n');
+        .join('\n');'
     }
 
     return String(obj);
   }
 
   private convertToXML(obj: unknown, indent: number): string {
-    const spaces = '  '.repeat(indent);
+    const spaces = '  '.repeat(indent);'
 
     if (
-      typeof obj === 'string'||typeof obj ==='number'||typeof obj ==='boolean'
+      typeof obj === 'string'||typeof obj ==='number'||typeof obj ==='boolean''
     ) {
-      return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
+      return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;`
     }
 
     if (Array.isArray(obj)) {
       return obj
         .map(
           (item, index) =>
-            `${spaces}<item index="${index}">
+            `${spaces}<item index="${index}">`
       ${this.convertToXML(item, indent + 1)}
-      ${spaces}</item>`
+      ${spaces}</item>``
         )
-        .join('\n');
+        .join('\n');'
     }
 
-    if (typeof obj === 'object' && obj !== null) {
+    if (typeof obj === 'object' && obj !== null) {'
       return Object.entries(obj)
         .map(
           ([key, value]) =>
-            `${spaces}<${this.sanitizeXMLTag(key)}>
+            `${spaces}<${this.sanitizeXMLTag(key)}>`
       ${this.convertToXML(value, indent + 1)}
-      ${spaces}</${this.sanitizeXMLTag(key)}>`
+      ${spaces}</${this.sanitizeXMLTag(key)}>``
         )
-        .join('\n');
+        .join('\n');'
     }
 
-    return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
+    return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;`
   }
 
   private convertToMarkdown(data: unknown): string {
     let markdown = '';
 
-    if (typeof data === 'object' && data !== null) {
+    if (typeof data === 'object' && data !== null) {'
       // Handle document-like objects
       const dataObj = data as Record<string, unknown>;
-      if (dataObj['title']) {
-        markdown += `# ${dataObj['title']}
-      \n`;
+      if (dataObj['title']) {'
+        markdown += `# ${dataObj['title']}'
+      \n`;`
       }
 
-      if (dataObj['description']) {
-        markdown += `${dataObj['description']}
-      \n`;
+      if (dataObj['description']) {'
+        markdown += `${dataObj['description']}'
+      \n`;`
       }
 
-      if (dataObj['metadata']) {
+      if (dataObj['metadata']) {'
         markdown += '## Metadata\n';
         for (const [key, value] of Object.entries(
-          dataObj['metadata'] as Record<string, unknown>
+          dataObj['metadata'] as Record<string, unknown>'
         )) {
-          markdown += `- **${key}**: ${value}\n`;
+          markdown += `- **${key}**: ${value}\n`;`
         }
         markdown += '\n';
       }
 
-      if (dataObj['content']) {
+      if (dataObj['content']) {'
         markdown += '## Content\n';
-        markdown += `${dataObj['content']}\n`;
+        markdown += `${dataObj['content']}\n`;`
       }
 
       // Handle arrays of items
       for (const [key, value] of Object.entries(dataObj)) {
-        if (Array.isArray(value) && key !== 'metadata') {
-          markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}
-      \n`;
+        if (Array.isArray(value) && key !== 'metadata') {'
+          markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}`
+      \n`;`
           for (const item of value) {
-            if (typeof item === 'object' && item !== null) {
+            if (typeof item === 'object' && item !== null) {'
               const itemObj = item as Record<string, unknown>;
-              if (itemObj['title']) {
-                markdown += `### ${itemObj['title']}
-      \n`;
-                if (itemObj['description'])
-                  markdown += `${itemObj['description']}
-      \n`;
-                if (itemObj['content'])
-                  markdown += `${itemObj['content']}
-      \n`;
+              if (itemObj['title']) {'
+                markdown += `### ${itemObj['title']}'
+      \n`;`
+                if (itemObj['description'])'
+                  markdown += `${itemObj['description']}'
+      \n`;`
+                if (itemObj['content'])'
+                  markdown += `${itemObj['content']}'
+      \n`;`
               } else {
-                markdown += `- ${JSON.stringify(item)}\n`;
+                markdown += `- ${JSON.stringify(item)}\n`;`
               }
             } else {
-              markdown += `- ${typeof item === 'string' ? item : JSON.stringify(item)}\n`;
+              markdown += `- ${typeof item === 'string' ? item : JSON.stringify(item)}\n`;`
             }
           }
           markdown += '\n';
@@ -558,16 +558,16 @@ export class ExportSystem extends TypedEventBase {
 
   private convertToHTML(data: unknown, _options?: ExportOptions): string {
     const title =
-      (data as Record<string, unknown>)['title']||'Claude Code Zen Export';
+      (data as Record<string, unknown>)['title']||'Claude Code Zen Export;
 
-    let html = `<!DOCTYPE html>
+    let html = `<!DOCTYPE html>`
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${this.escapeHTML(String(title))}</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }'
         h1 { color: #0969da; border-bottom: 2px solid #0969da; padding-bottom: 10px; }
         h2 { color: #656d76; border-bottom: 1px solid #d0d7de; padding-bottom: 5px; }
         table { border-collapse: collapse; width: 100%; margin: 20px 0; }
@@ -579,20 +579,20 @@ export class ExportSystem extends TypedEventBase {
         .array-item { margin: 10px 0; padding: 10px; border-left: 3px solid #0969da; background-color: #f6f8fa; }
     </style>
 </head>
-<body>`;
+<body>`;`
 
-    html += `<h1>${this.escapeHTML(String(title))}</h1>`;
+    html += `<h1>${this.escapeHTML(String(title))}</h1>`;`
 
     const dataObj = data as Record<string, unknown>;
-    if (dataObj['timestamp']||dataObj['exportedAt']) {
-      html += `<p class="timestamp">Exported: ${new Date((dataObj['timestamp'] as string)||(dataObj['exportedAt'] as string)).toLocaleString()}</p>`;
+    if (dataObj['timestamp']||dataObj['exportedAt']) {'
+      html += `<p class="timestamp">Exported: ${new Date((dataObj['timestamp'] as string)||(dataObj['exportedAt'] as string)).toLocaleString()}</p>`;`
     }
 
     html += this.objectToHTML(data);
 
-    html += `
+    html += ``
 </body>
-</html>`;
+</html>`;`
 
     return html;
   }
@@ -600,37 +600,37 @@ export class ExportSystem extends TypedEventBase {
   private objectToHTML(obj: unknown, level: number = 2): string {
     let html = '';
 
-    if (typeof obj === 'object' && obj !== null) {
+    if (typeof obj === 'object' && obj !== null) {'
       for (const [key, value] of Object.entries(obj)) {
-        if (key === 'title'||key ==='timestamp'||key ==='exportedAt')
+        if (key === 'title'||key ==='timestamp'||key ==='exportedAt')'
           continue;
 
-        html += `<h${Math.min(level, 6)}>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h${Math.min(level, 6)}>`;
+        html += `<h${Math.min(level, 6)}>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h${Math.min(level, 6)}>`;`
 
         if (Array.isArray(value)) {
           for (const item of value) {
             html += '<div class="array-item">';
-            if (typeof item === 'object' && item !== null) {
+            if (typeof item === 'object' && item !== null) {'
               const itemObj = item as Record<string, unknown>;
-              if (itemObj['title']) {
-                html += `<strong>${this.escapeHTML(String(itemObj['title']))}</strong><br>`;
+              if (itemObj['title']) {'
+                html += `<strong>${this.escapeHTML(String(itemObj['title']))}</strong><br>`;`
               }
             }
             html += this.objectToHTML(item, level + 1);
             html += '</div>';
           }
-        } else if (typeof value === 'object') {
+        } else if (typeof value === 'object') {'
           html += '<div class="metadata">';
           html += this.objectToHTML(value, level + 1);
           html += '</div>';
-        } else if (typeof value === 'string' && value.length > 100) {
-          html += `<pre>${this.escapeHTML(value)}</pre>`;
+        } else if (typeof value === 'string' && value.length > 100) {'
+          html += `<pre>${this.escapeHTML(value)}</pre>`;`
         } else {
-          html += `<p>${this.escapeHTML(String(value))}</p>`;
+          html += `<p>${this.escapeHTML(String(value))}</p>`;`
         }
       }
     } else {
-      html += `<p>${this.escapeHTML(String(obj))}</p>`;
+      html += `<p>${this.escapeHTML(String(obj))}</p>`;`
     }
 
     return html;
@@ -643,28 +643,28 @@ export class ExportSystem extends TypedEventBase {
    */
   private escapeXML(str: string): string {
     return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
+      .replace(/&/g, '&amp;')'
+      .replace(/</g, '&lt;')'
+      .replace(/>/g, '&gt;')'
+      .replace(/"/g, '&quot;')'
+      .replace(/'/g, '&apos;');'
   }
 
   private escapeHTML(str: string): string {
     return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/&/g, '&amp;')'
+      .replace(/</g, '&lt;')'
+      .replace(/>/g, '&gt;')'
+      .replace(/"/g, '&quot;')'
+      .replace(/'/g, '&#39;');'
   }
 
   private sanitizeXMLTag(tag: string): string {
-    return tag.replace(/[^\w-]/g, '_');
+    return tag.replace(/[^\w-]/g, '_');'
   }
 
   private generateId(): string {
-    return `export-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `export-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   /**
@@ -730,7 +730,7 @@ export class ExportSystem extends TypedEventBase {
 
   clearHistory(): void {
     this.exportHistory = [];
-    this.emit('history:cleared', {});
+    this.emit('history:cleared', {});'
   }
 
   /**
@@ -751,10 +751,10 @@ export class ExportSystem extends TypedEventBase {
    * Shutdown the export system gracefully.
    */
   async shutdown(): Promise<void> {
-    logger.info('Shutting down unified export system...');
+    logger.info('Shutting down unified export system...');'
     this.removeAllListeners();
     this.initialized = false;
-    this.emit('shutdown', {});
-    logger.info('Unified export system shutdown complete');
+    this.emit('shutdown', {});'
+    logger.info('Unified export system shutdown complete');'
   }
 }

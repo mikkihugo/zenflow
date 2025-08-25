@@ -7,7 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('simple-safe6-test');
+const logger = getLogger('simple-safe6-test');'
 
 async function testSafe6Core(): Promise<{
   success: boolean;
@@ -18,13 +18,13 @@ async function testSafe6Core(): Promise<{
   const errors: string[] = [];
 
   try {
-    logger.info('🧪 Starting simple SAFe 6.0 core integration test...');
+    logger.info('🧪 Starting simple SAFe 6.0 core integration test...');'
 
     // Test 1: Basic SPARC SAFe 6.0 Development Manager
-    logger.info('🎯 Testing SPARC SAFe 6.0 Development Manager...');
+    logger.info('🎯 Testing SPARC SAFe 6.0 Development Manager...');'
     try {
       const { Safe6DevelopmentManager } = await import(
-        './safe6-development-manager'
+        './safe6-development-manager''
       );
 
       const manager = new Safe6DevelopmentManager({
@@ -94,14 +94,14 @@ async function testSafe6Core(): Promise<{
       await manager.initialize();
 
       // Test flow metrics
-      const flowMetrics = await manager.getFlowMetrics('test-epic-123');
+      const flowMetrics = await manager.getFlowMetrics('test-epic-123');'
 
       // Test business agility assessment
       const businessAgility = await manager.assessBusinessAgility();
 
       // Test solution train coordination
       const solutionTrainStatus = await manager.getSolutionTrainStatus(
-        'test-solution-train'
+        'test-solution-train''
       );
 
       results.safe6Manager = {
@@ -111,18 +111,18 @@ async function testSafe6Core(): Promise<{
         businessAgility: !!businessAgility,
         solutionTrainStatus: !!solutionTrainStatus,
       };
-      logger.info('✅ SPARC SAFe 6.0 Development Manager working correctly');
+      logger.info('✅ SPARC SAFe 6.0 Development Manager working correctly');'
     } catch (error) {
-      const errorMsg = `SPARC SAFe 6.0 test failed: ${error}`;
+      const errorMsg = `SPARC SAFe 6.0 test failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.safe6Manager = { status: 'failed', error: String(error) };
+      results.safe6Manager = { status: 'failed', error: String(error) };'
     }
 
     // Test 2: SAFe-SPARC Workflow Integration
-    logger.info('🔄 Testing SAFe-SPARC workflow integration...');
+    logger.info('🔄 Testing SAFe-SPARC workflow integration...');'
     try {
-      const { SafeSparcWorkflow } = await import('./core/safe-sparc-workflow');
+      const { SafeSparcWorkflow } = await import('./core/safe-sparc-workflow');'
 
       const workflow = new SafeSparcWorkflow({
         workflowId: 'test-workflow-123',
@@ -150,18 +150,18 @@ async function testSafe6Core(): Promise<{
         status: 'success',
         workflow: !!workflow,
       };
-      logger.info('✅ SAFe-SPARC workflow integration working');
+      logger.info('✅ SAFe-SPARC workflow integration working');'
     } catch (error) {
-      const errorMsg = `SAFe-SPARC workflow test failed: ${error}`;
+      const errorMsg = `SAFe-SPARC workflow test failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.safeSparcWorkflow = { status: 'failed', error: String(error) };
+      results.safeSparcWorkflow = { status: 'failed', error: String(error) };'
     }
 
     // Test 3: Index Exports
-    logger.info('📦 Testing SPARC package exports...');
+    logger.info('📦 Testing SPARC package exports...');'
     try {
-      const sparcExports = await import('./index');
+      const sparcExports = await import('./index');'
 
       const hasRequired = !!(
         sparcExports.Safe6DevelopmentManager &&
@@ -184,37 +184,37 @@ async function testSafe6Core(): Promise<{
       };
 
       if (hasRequired) {
-        logger.info('✅ SPARC package exports working correctly');
+        logger.info('✅ SPARC package exports working correctly');'
       } else {
-        logger.warn('⚠️ Some SPARC exports missing or failed');
+        logger.warn('⚠️ Some SPARC exports missing or failed');'
       }
     } catch (error) {
-      const errorMsg = `SPARC exports test failed: ${error}`;
+      const errorMsg = `SPARC exports test failed: ${error}`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
-      results.sparcExports = { status: 'failed', error: String(error) };
+      results.sparcExports = { status: 'failed', error: String(error) };'
     }
 
     // Summary
     const successCount = Object.values(results).filter(
-      (r) => r.status === 'success'
+      (r) => r.status === 'success''
     ).length;
     const totalTests = Object.keys(results).length;
     const success = errors.length === 0 && successCount === totalTests;
 
     logger.info(
-      `🎯 Integration test complete: ${successCount}/${totalTests} tests passed`
+      `🎯 Integration test complete: ${successCount}/${totalTests} tests passed``
     );
 
     if (success) {
-      logger.info('🎉 All SPARC SAFe 6.0 integrations working correctly!');
+      logger.info('🎉 All SPARC SAFe 6.0 integrations working correctly!');'
     } else {
-      logger.warn(`⚠️ Some integration issues found: ${errors.length} errors`);
+      logger.warn(`⚠️ Some integration issues found: ${errors.length} errors`);`
     }
 
     return { success, results, errors };
   } catch (error) {
-    const errorMsg = `Integration test failed: ${error}`;
+    const errorMsg = `Integration test failed: ${error}`;`
     errors.push(errorMsg);
     logger.error(errorMsg);
 
@@ -233,19 +233,19 @@ export { testSafe6Core };
 if (require.main === module) {
   testSafe6Core()
     .then((result) => {
-      console.log('\n📊 Simple Integration Test Results:');
-      console.log('Success:', result.success);
-      console.log('Results:', JSON.stringify(result.results, null, 2));
+      console.log('\n📊 Simple Integration Test Results:');'
+      console.log('Success:', result.success);'
+      console.log('Results:', JSON.stringify(result.results, null, 2));'
 
       if (result.errors.length > 0) {
-        console.log('\n❌ Errors:');
-        result.errors.forEach((error) => console.log(`  - ${error}`));
+        console.log('\n❌ Errors:');'
+        result.errors.forEach((error) => console.log(`  - ${error}`));`
       }
 
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('Simple integration test failed:', error);
+      console.error('Simple integration test failed:', error);'
       process.exit(1);
     });
 }

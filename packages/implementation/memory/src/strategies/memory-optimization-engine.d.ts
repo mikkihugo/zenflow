@@ -17,7 +17,7 @@ interface OptimizationSample {
 }
 interface OptimizationAction {
   id: string;
-  type: 'memory|cache|performance|configuration';
+  type: 'memory|cache|performance|configuration;
   action: string;
   parameters: Record<string, unknown>;
   expectedImpact: number;

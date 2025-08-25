@@ -11,7 +11,7 @@ export interface AgentId {
   instance: number;
 }
 export type AgentType =
-  || 'researcher|coder|analyst|optimizer|coordinator|tester|architect'';
+  || 'researcher|coder|analyst|optimizer|coordinator|tester|architect';
 export interface AgentMetrics {
   agentId: string;
   timestamp: number;
@@ -30,7 +30,7 @@ export interface ResourceUsage {
 }
 export interface HealthStatus {
   agentId: string;
-  status: 'healthy|warning|critical|offline';
+  status: 'healthy|warning|critical|offline;
   lastSeen: number;
   issues: string[];
   recommendations: string[];
@@ -51,7 +51,7 @@ export interface PerformanceHistory {
   agentId: string;
   entries: PerformanceEntry[];
   averageSuccessRate: number;
-  trend: 'improving|declining|stable';
+  trend: 'improving' | 'stable' | 'declining';
 }
 export interface PerformanceEntry {
   timestamp: number;
@@ -108,7 +108,7 @@ export interface IntelligenceMetrics {
 }
 export interface EmergentBehavior {
   id: string;
-  type: 'coordination|optimization|adaptation|learning';
+  type: 'coordination|optimization|adaptation|learning;
   description: string;
   strength: number;
   participants: AgentId[];
@@ -173,11 +173,11 @@ export interface MonitoringConfig {
   };
 }
 export interface MonitoringEvent {
-  type: 'health|performance|learning|prediction|emergency';
+  type: 'health|performance|learning|prediction|emergency;
   agentId?: string;
   timestamp: number;
   data: Record<string, unknown>;
-  severity: 'info|warning|critical';
+  severity: 'info' | 'warning' | 'critical';
 }
 export interface AgentCapabilities {
   skills: string[];
@@ -298,7 +298,7 @@ export interface AgentLearningState {
 }
 export interface AgentHealth {
   agentId: string;
-  status:'healthy|warning|critical|offline';
+  status:'healthy|warning|critical|offline;
   overallHealth?: number;
   overallScore: number;
   subsystemHealth?: {
@@ -323,7 +323,7 @@ export interface AgentHealth {
   issues: string[];
   lastCheck?: Date;
 }
-export type MonitoringEventType = MonitoringEvent['type'];
-export type HealthStatusType = HealthStatus['status'];
-export type TrendType = PerformanceHistory['trend'];
+export type MonitoringEventType = MonitoringEvent['type'];'
+export type HealthStatusType = HealthStatus['status'];'
+export type TrendType = PerformanceHistory['trend'];'
 //# sourceMappingURL=types.d.ts.map

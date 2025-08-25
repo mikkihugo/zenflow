@@ -14,7 +14,7 @@
  * - Structured validation and type safety
  *
  * REDUCTION: 80 → 500+ lines with comprehensive enterprise features
- * PATTERN: Matches memory package's comprehensive foundation integration
+ * PATTERN: Matches memory package's comprehensive foundation integration'
  */
 
 import { EventEmitter } from 'node:events';
@@ -58,7 +58,7 @@ import {
 export interface KnowledgeItem {
   id: UUID;
   content: string;
-  type: 'fact|rule|pattern|insight|procedure|concept';
+  type: 'fact|rule|pattern|insight|procedure|concept;
   confidence: number;
   timestamp: Timestamp;
   source?: string;
@@ -77,7 +77,7 @@ export interface KnowledgeItemOptions {
 }
 
 export interface KnowledgeQuery {
-  type?: KnowledgeItem['type'];
+  type?: KnowledgeItem['type'];'
   tags?: string[];
   confidenceMin?: number;
   contentSearch?: string;
@@ -87,10 +87,10 @@ export interface KnowledgeQuery {
 
 export interface KnowledgeStats {
   totalItems: number;
-  itemsByType: Record<KnowledgeItem['type'], number>;
+  itemsByType: Record<KnowledgeItem['type'], number>;'
   averageConfidence: number;
   lastUpdated: Timestamp;
-  storageHealth: 'healthy|degraded|unhealthy';
+  storageHealth: 'healthy' | 'degraded' | 'unhealthy';
 }
 
 export class KnowledgeError extends ContextError {
@@ -99,7 +99,7 @@ export class KnowledgeError extends ContextError {
     context?: Record<string, unknown>,
     cause?: Error
   ) {
-    super(message, { ...context, domain: 'knowledge' }, cause);
+    super(message, { ...context, domain: 'knowledge' }, cause);'
     this.name = 'KnowledgeError';
   }
 }
@@ -120,7 +120,7 @@ export interface KnowledgeStore {
   ): Promise<Result<KnowledgeItem[], KnowledgeError>>;
   search(
     text: string,
-    options?: { limit?: number; type?: KnowledgeItem['type'] }
+    options?: { limit?: number; type?: KnowledgeItem['type'] }'
   ): Promise<Result<KnowledgeItem[], KnowledgeError>>;
   clear(): Promise<Result<void, KnowledgeError>>;
   getStats(): Promise<Result<KnowledgeStats, KnowledgeError>>;
@@ -148,7 +148,7 @@ export class FoundationKnowledgeStore
 
   constructor() {
     super();
-    this.logger = getLogger('knowledge-store');
+    this.logger = getLogger('knowledge-store');'
     this.performanceTracker = new PerformanceTracker();
 
     // Initialize circuit breaker for storage operations
@@ -159,7 +159,7 @@ export class FoundationKnowledgeStore
         errorThresholdPercentage: 50,
         resetTimeout: 30000,
       },
-      'knowledge-storage-circuit-breaker'
+      'knowledge-storage-circuit-breaker''
     );
   }
 
@@ -170,7 +170,7 @@ export class FoundationKnowledgeStore
     if (this.initialized) return ok(undefined);
 
     const timer = this.performanceTracker.startTimer(
-      'knowledge_store_initialize'
+      'knowledge_store_initialize''
     );
 
     try {
@@ -181,7 +181,7 @@ export class FoundationKnowledgeStore
       const storageResult = await safeAsync(async () => {
         const storage = new Storage();
         await storage.initialize();
-        return storage.createKeyValueStore('knowledge-items');
+        return storage.createKeyValueStore('knowledge-items');'
       })();
 
       if (!storageResult.success) {
@@ -191,7 +191,7 @@ export class FoundationKnowledgeStore
           storageResult.error
         );
         this.errorAggregator.addError(error);
-        recordMetric('knowledge_store_initialization_failure', 1);
+        recordMetric('knowledge_store_initialization_failure', 1);'
         return err(error);
       }
 
@@ -207,10 +207,10 @@ export class FoundationKnowledgeStore
       }
 
       this.initialized = true;
-      this.performanceTracker.endTimer('knowledge_store_initialize');
-      recordMetric('knowledge_store_initialized', 1);
+      this.performanceTracker.endTimer('knowledge_store_initialize');'
+      recordMetric('knowledge_store_initialized', 1);'
 
-      this.logger.info('Knowledge store initialized successfully', {
+      this.logger.info('Knowledge store initialized successfully', {'
         itemCount: this.items.size,
         storageConnected: !!this.storage,
       });
@@ -223,8 +223,8 @@ export class FoundationKnowledgeStore
         ensureError(error)
       );
       this.errorAggregator.addError(knowledgeError);
-      this.performanceTracker.endTimer('knowledge_store_initialize');
-      recordMetric('knowledge_store_initialization_error', 1);
+      this.performanceTracker.endTimer('knowledge_store_initialize');'
+      recordMetric('knowledge_store_initialization_error', 1);'
       return err(knowledgeError);
     }
   }
@@ -241,8 +241,8 @@ export class FoundationKnowledgeStore
       if (!initResult.success) return err(initResult.error);
     }
 
-    return withTrace('knowledge_store_add', async () => {
-      const timer = this.performanceTracker.startTimer('knowledge_store_add');
+    return withTrace('knowledge_store_add', async () => {'
+      const timer = this.performanceTracker.startTimer('knowledge_store_add');'
 
       try {
         // Validate input
@@ -264,7 +264,7 @@ export class FoundationKnowledgeStore
         });
 
         if (!validation.success) {
-          const error = new KnowledgeError('Invalid knowledge item data', {
+          const error = new KnowledgeError('Invalid knowledge item data', {'
             validation: validation.errors,
           });
           this.errorAggregator.addError(error);
@@ -293,7 +293,7 @@ export class FoundationKnowledgeStore
           () =>
             this.circuitBreaker.execute(
               'set',
-              `knowledge:${id}`,
+              `knowledge:${id}`,`
               JSON.stringify(knowledgeItem)
             ),
           { maxAttempts: 3, baseDelay: 100 }
@@ -311,14 +311,14 @@ export class FoundationKnowledgeStore
           return err(error);
         }
 
-        this.performanceTracker.endTimer('knowledge_store_add');
-        recordMetric('knowledge_store_items_added', 1);
-        recordHistogram('knowledge_item_confidence', knowledgeItem.confidence);
+        this.performanceTracker.endTimer('knowledge_store_add');'
+        recordMetric('knowledge_store_items_added', 1);'
+        recordHistogram('knowledge_item_confidence', knowledgeItem.confidence);'
 
         // Emit event for coordination
-        this.emit('itemAdded', { id, item: knowledgeItem });
+        this.emit('itemAdded', { id, item: knowledgeItem });'
 
-        this.logger.debug('Knowledge item added successfully', {
+        this.logger.debug('Knowledge item added successfully', {'
           id,
           type: knowledgeItem.type,
           confidence: knowledgeItem.confidence,
@@ -332,8 +332,8 @@ export class FoundationKnowledgeStore
           ensureError(error)
         );
         this.errorAggregator.addError(knowledgeError);
-        this.performanceTracker.endTimer('knowledge_store_add');
-        recordMetric('knowledge_store_add_error', 1);
+        this.performanceTracker.endTimer('knowledge_store_add');'
+        recordMetric('knowledge_store_add_error', 1);'
         return err(knowledgeError);
       }
     });
@@ -348,12 +348,12 @@ export class FoundationKnowledgeStore
       if (!initResult.success) return err(initResult.error);
     }
 
-    return withTrace('knowledge_store_get', async () => {
-      const timer = this.performanceTracker.startTimer('knowledge_store_get');
+    return withTrace('knowledge_store_get', async () => {'
+      const timer = this.performanceTracker.startTimer('knowledge_store_get');'
 
       try {
         if (!isUUID(id)) {
-          const error = new KnowledgeError('Invalid UUID format', {
+          const error = new KnowledgeError('Invalid UUID format', {'
             id,
             operation: 'get',
           });
@@ -364,27 +364,27 @@ export class FoundationKnowledgeStore
         const item = this.items.get(id);
 
         if (item) {
-          this.performanceTracker.endTimer('knowledge_store_get');
-          recordMetric('knowledge_store_cache_hit', 1);
+          this.performanceTracker.endTimer('knowledge_store_get');'
+          recordMetric('knowledge_store_cache_hit', 1);'
           return ok(item);
         }
 
         // Try loading from storage
         const storageResult = await withTimeout(
-          this.circuitBreaker.execute('get', `knowledge:${id}`),
+          this.circuitBreaker.execute('get', `knowledge:${id}`),`
           3000
         );
 
         if (storageResult.success && storageResult.data) {
           const item = JSON.parse(storageResult.data) as KnowledgeItem;
           this.items.set(id, item);
-          recordMetric('knowledge_store_storage_hit', 1);
-          this.performanceTracker.endTimer('knowledge_store_get');
+          recordMetric('knowledge_store_storage_hit', 1);'
+          this.performanceTracker.endTimer('knowledge_store_get');'
           return ok(item);
         }
 
-        this.performanceTracker.endTimer('knowledge_store_get');
-        recordMetric('knowledge_store_miss', 1);
+        this.performanceTracker.endTimer('knowledge_store_get');'
+        recordMetric('knowledge_store_miss', 1);'
         return ok(null);
       } catch (error) {
         const knowledgeError = new KnowledgeError(
@@ -393,8 +393,8 @@ export class FoundationKnowledgeStore
           ensureError(error)
         );
         this.errorAggregator.addError(knowledgeError);
-        this.performanceTracker.endTimer('knowledge_store_get');
-        recordMetric('knowledge_store_get_error', 1);
+        this.performanceTracker.endTimer('knowledge_store_get');'
+        recordMetric('knowledge_store_get_error', 1);'
         return err(knowledgeError);
       }
     });
@@ -406,11 +406,11 @@ export class FoundationKnowledgeStore
     updates: Partial<KnowledgeItem>
   ): Promise<Result<KnowledgeItem, KnowledgeError>> {
     // Implementation follows memory package pattern
-    return err(new KnowledgeError('Not implemented yet'));
+    return err(new KnowledgeError('Not implemented yet'));'
   }
 
   async delete(id: UUID): Promise<Result<boolean, KnowledgeError>> {
-    return err(new KnowledgeError('Not implemented yet'));
+    return err(new KnowledgeError('Not implemented yet'));'
   }
 
   async query(
@@ -421,7 +421,7 @@ export class FoundationKnowledgeStore
       if (!initResult.success) return err(initResult.error);
     }
 
-    return withTrace('knowledge_store_query', async () => {
+    return withTrace('knowledge_store_query', async () => {'
       try {
         let results = Array.from(this.items.values()).filter(
           (item) => item.isActive
@@ -460,8 +460,8 @@ export class FoundationKnowledgeStore
         const limit = query?.limit||results.length;
         results = results.slice(offset, offset + limit);
 
-        recordMetric('knowledge_store_queries', 1);
-        recordHistogram('knowledge_query_results', results.length);
+        recordMetric('knowledge_store_queries', 1);'
+        recordHistogram('knowledge_query_results', results.length);'
 
         return ok(results);
       } catch (error) {
@@ -478,7 +478,7 @@ export class FoundationKnowledgeStore
 
   async search(
     text: string,
-    options?: { limit?: number; type?: KnowledgeItem['type'] }
+    options?: { limit?: number; type?: KnowledgeItem['type'] }'
   ): Promise<Result<KnowledgeItem[], KnowledgeError>> {
     return this.query({
       contentSearch: text,
@@ -496,8 +496,8 @@ export class FoundationKnowledgeStore
         await this.storage.clear();
       }
 
-      recordMetric('knowledge_store_cleared', 1);
-      this.emit('storeCleared', { itemsCleared: itemCount });
+      recordMetric('knowledge_store_cleared', 1);'
+      this.emit('storeCleared', { itemsCleared: itemCount });'
 
       return ok(undefined);
     } catch (error) {
@@ -518,7 +518,7 @@ export class FoundationKnowledgeStore
       );
       const totalItems = activeItems.length;
 
-      const itemsByType: Record<KnowledgeItem['type'], number> = {
+      const itemsByType: Record<KnowledgeItem['type'], number> = {'
         fact: 0,
         rule: 0,
         pattern: 0,
@@ -572,7 +572,7 @@ export class FoundationKnowledgeStore
       this.removeAllListeners();
       this.initialized = false;
 
-      recordMetric('knowledge_store_shutdown', 1);
+      recordMetric('knowledge_store_shutdown', 1);'
 
       return ok(undefined);
     } catch (error) {
@@ -605,7 +605,7 @@ export class FoundationKnowledgeStore
       await this.telemetryManager.initialize();
       this.telemetryInitialized = true;
     } catch (error) {
-      this.logger.warn('Failed to initialize telemetry:', error);
+      this.logger.warn('Failed to initialize telemetry:', error);'
     }
   }
 
@@ -614,18 +614,18 @@ export class FoundationKnowledgeStore
     ...args: any[]
   ): Promise<any> {
     if (!this.storage) {
-      throw new StorageError('Storage not initialized');
+      throw new StorageError('Storage not initialized');'
     }
 
     switch (operation) {
-      case 'get':
+      case 'get':'
         return this.storage.get(args[0]);
-      case 'set':
+      case 'set':'
         return this.storage.set(args[0], args[1]);
-      case 'delete':
+      case 'delete':'
         return this.storage.delete(args[0]);
       default:
-        throw new Error(`Unknown storage operation: ${operation}`);
+        throw new Error(`Unknown storage operation: ${operation}`);`
     }
   }
 
@@ -634,17 +634,17 @@ export class FoundationKnowledgeStore
 
     try {
       const keys = await this.storage.keys();
-      const knowledgeKeys = keys.filter((key) => key.startsWith('knowledge:'));
+      const knowledgeKeys = keys.filter((key) => key.startsWith('knowledge:'));'
 
       for (const key of knowledgeKeys) {
         const result = await this.storage.get(key);
-        if (result && typeof result === 'string') {
+        if (result && typeof result === 'string') {'
           const item = JSON.parse(result) as KnowledgeItem;
           this.items.set(item.id, item);
         }
       }
 
-      this.logger.debug('Loaded knowledge items from storage', {
+      this.logger.debug('Loaded knowledge items from storage', {'
         count: knowledgeKeys.length,
       });
       return ok(undefined);
@@ -677,7 +677,7 @@ export interface KnowledgeManager {
   ): Promise<Result<KnowledgeItem[], KnowledgeError>>;
   searchKnowledge(
     text: string,
-    options?: { limit?: number; type?: KnowledgeItem['type'] }
+    options?: { limit?: number; type?: KnowledgeItem['type'] }'
   ): Promise<Result<KnowledgeItem[], KnowledgeError>>;
   getStats(): Promise<Result<KnowledgeStats, KnowledgeError>>;
   shutdown(): Promise<Result<void, KnowledgeError>>;
@@ -690,7 +690,7 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
 
   constructor(store?: KnowledgeStore) {
     this.store = store||new FoundationKnowledgeStore();
-    this.logger = getLogger('knowledge-manager');
+    this.logger = getLogger('knowledge-manager');'
   }
 
   async addKnowledge(
@@ -700,7 +700,7 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
   ): Promise<Result<UUID, KnowledgeError>> {
     const confidence = options.confidence ?? 0.8;
 
-    return withContext({ operation: 'addKnowledge', type, confidence }, () =>
+    return withContext({ operation: 'addKnowledge', type, confidence }, () =>'
       this.store.add(
         { content, type, confidence },
         { source: options.source, tags: options.tags }
@@ -711,7 +711,7 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
   async getKnowledge(
     id: UUID
   ): Promise<Result<KnowledgeItem|null, KnowledgeError>> {
-    return withContext({ operation:'getKnowledge', id }, () =>
+    return withContext({ operation:'getKnowledge', id }, () =>'
       this.store.get(id)
     );
   }
@@ -719,16 +719,16 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
   async queryKnowledge(
     query?: KnowledgeQuery
   ): Promise<Result<KnowledgeItem[], KnowledgeError>> {
-    return withContext({ operation: 'queryKnowledge', query }, () =>
+    return withContext({ operation: 'queryKnowledge', query }, () =>'
       this.store.query(query)
     );
   }
 
   async searchKnowledge(
     text: string,
-    options?: { limit?: number; type?: KnowledgeItem['type'] }
+    options?: { limit?: number; type?: KnowledgeItem['type'] }'
   ): Promise<Result<KnowledgeItem[], KnowledgeError>> {
-    return withContext({ operation: 'searchKnowledge', text, options }, () =>
+    return withContext({ operation: 'searchKnowledge', text, options }, () =>'
       this.store.search(text, options)
     );
   }
@@ -754,12 +754,12 @@ export async function getKnowledgeSystemAccess(
   // Initialize fact-system integration for knowledge gathering
   let factSystem: any = null;
   try {
-    const { factSystem: fs } = await import('@claude-zen/fact-system');
+    const { factSystem: fs } = await import('@claude-zen/fact-system');'
     factSystem = await fs.getAccess();
   } catch (error) {
     // Fact system optional - knowledge can work standalone
     console.warn(
-      'Fact system not available, knowledge will work in standalone mode'
+      'Fact system not available, knowledge will work in standalone mode''
     );
   }
 
@@ -779,12 +779,12 @@ export async function getKnowledgeSystemAccess(
     // Enhanced with fact-system integration
     gatherKnowledgeFromFacts: async (sources: string[], options?: any) => {
       if (!factSystem) {
-        throw new Error('Fact system not available for knowledge gathering');
+        throw new Error('Fact system not available for knowledge gathering');'
       }
       const factResults = await factSystem.gatherFacts(sources, options);
       // Convert fact results to knowledge items
       const knowledgePromises = factResults.map((fact: any) =>
-        manager.addKnowledge(fact.content||fact.summary,'fact', {
+        manager.addKnowledge(fact.content||fact.summary,'fact', {'
           confidence: fact.confidence||0.8,
           source: fact.source,
           tags: [fact.source,'auto-gathered'],
@@ -821,7 +821,7 @@ export async function getKnowledgeManager(
   store?: KnowledgeStore
 ): Promise<EnterpriseKnowledgeManager> {
   const manager = new EnterpriseKnowledgeManager(store);
-  if (store && typeof store.initialize ==='function') {
+  if (store && typeof store.initialize ==='function') {'
     await store.initialize();
   }
   return manager;
@@ -848,7 +848,7 @@ export async function getKnowledgeStorage(config?: any): Promise<any> {
 export async function getKnowledgeManagement(config?: any): Promise<any> {
   const system = await getKnowledgeSystemAccess(config);
   return {
-    manage: (content: string, type: KnowledgeItem['type']) =>
+    manage: (content: string, type: KnowledgeItem['type']) =>'
       system.addKnowledge(content, type, { confidence: 0.8 }),
     retrieve: (id: UUID) => system.getKnowledge(id),
     discover: (text: string) => system.searchFromFacts(text, { limit: 20 }),
@@ -872,9 +872,9 @@ export async function getKnowledgeManagement(config?: any): Promise<any> {
         // Convert top facts to knowledge items
         const topFacts = searchResults.facts.slice(0, 5);
         const knowledgePromises = topFacts.map((fact: any) =>
-          system.addKnowledge(fact.content||fact.summary,'insight', {
+          system.addKnowledge(fact.content||fact.summary,'insight', {'
             confidence: fact.confidence||0.7,
-            source: `fact-derived-${fact.source}`,
+            source: `fact-derived-${fact.source}`,`
             tags: ['fact-derived', fact.source],
           })
         );

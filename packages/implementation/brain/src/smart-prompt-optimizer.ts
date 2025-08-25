@@ -19,7 +19,7 @@ import { sma, ema } from 'moving-averages';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
 
-const logger = getLogger('SmartPromptOptimizer');
+const logger = getLogger('SmartPromptOptimizer');'
 
 export interface PromptAnalysisData {
   readonly originalPrompt: string;
@@ -41,7 +41,7 @@ export interface PromptAnalysisData {
 }
 
 export interface OptimizationPattern {
-  readonly patternType:|'length_optimization|structure_enhancement|context_addition|clarity_improvement';
+  readonly patternType:|'length_optimization|structure_enhancement|context_addition|clarity_improvement;
   readonly confidence: number;
   readonly improvement: number;
   readonly applicableContexts: string[];
@@ -69,7 +69,7 @@ export class SmartPromptOptimizer {
   private initialized = false;
 
   constructor() {
-    logger.info('🧠 Smart Prompt Optimizer created');
+    logger.info('🧠 Smart Prompt Optimizer created');'
   }
 
   /**
@@ -79,15 +79,15 @@ export class SmartPromptOptimizer {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Smart Prompt Optimization System...');
+      logger.info('🚀 Initializing Smart Prompt Optimization System...');'
 
       // Initialize with some baseline optimization patterns
       await this.initializeBaselinePatterns();
 
       this.initialized = true;
-      logger.info('✅ Smart Prompt Optimizer initialized successfully');
+      logger.info('✅ Smart Prompt Optimizer initialized successfully');'
     } catch (error) {
-      logger.error('❌ Failed to initialize Smart Prompt Optimizer:', error);
+      logger.error('❌ Failed to initialize Smart Prompt Optimizer:', error);'
       throw error;
     }
   }
@@ -110,7 +110,7 @@ export class SmartPromptOptimizer {
 
     try {
       logger.info(
-        `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
+        `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."``
       );
 
       // Analyze prompt characteristics
@@ -165,12 +165,12 @@ export class SmartPromptOptimizer {
       };
 
       logger.info(
-        `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
+        `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x``
       );
 
       return result;
     } catch (error) {
-      logger.error('❌ Prompt optimization failed:', error);
+      logger.error('❌ Prompt optimization failed:', error);'
       throw error;
     }
   }
@@ -181,7 +181,7 @@ export class SmartPromptOptimizer {
   async learnFromPerformance(analysisData: PromptAnalysisData): Promise<void> {
     try {
       logger.debug(
-        `📊 Learning from prompt performance: success rate ${analysisData.successRate.toFixed(2)}`
+        `📊 Learning from prompt performance: success rate ${analysisData.successRate.toFixed(2)}``
       );
 
       // Add to performance history
@@ -202,11 +202,11 @@ export class SmartPromptOptimizer {
         const trend = sma(successRates, 3);
 
         logger.debug(
-          `📈 Performance trend: ${trend[trend.length - 1]?.toFixed(2)||'N/A'}`
+          `📈 Performance trend: ${trend[trend.length - 1]?.toFixed(2)||'N/A'}``
         );
       }
     } catch (error) {
-      logger.error('❌ Failed to learn from performance:', error);
+      logger.error('❌ Failed to learn from performance:', error);'
     }
   }
 
@@ -285,11 +285,11 @@ export class SmartPromptOptimizer {
     ];
 
     patterns.forEach((pattern, index) => {
-      this.optimizationPatterns.set(`baseline_${index}`, pattern);
+      this.optimizationPatterns.set(`baseline_${index}`, pattern);`
     });
 
     logger.debug(
-      `📋 Initialized ${patterns.length} baseline optimization patterns`
+      `📋 Initialized ${patterns.length} baseline optimization patterns``
     );
   }
 
@@ -386,7 +386,7 @@ export class SmartPromptOptimizer {
         equation: result.equation,
       };
     } catch (error) {
-      logger.debug('Regression analysis failed, using defaults:', error);
+      logger.debug('Regression analysis failed, using defaults:', error);'
       return { slope: 0, intercept: 0.5, r2: 0 };
     }
   }
@@ -449,22 +449,22 @@ export class SmartPromptOptimizer {
 
     for (const pattern of patterns) {
       switch (pattern.patternType) {
-        case 'clarity_improvement':
+        case 'clarity_improvement':'
           optimizedPrompt +=
-            '\n\nPlease be specific and provide detailed explanations.';
+            '\n\nPlease be specific and provide detailed explanations.;
           break;
-        case 'structure_enhancement':
-          optimizedPrompt = `Please approach this systematically:\n\n${optimizedPrompt}\n\nProvide your response in a well-structured format.`;
+        case 'structure_enhancement':'
+          optimizedPrompt = `Please approach this systematically:\n\n${optimizedPrompt}\n\nProvide your response in a well-structured format.`;`
           break;
-        case 'context_addition':
+        case 'context_addition':'
           optimizedPrompt +=
-            '\n\nConsider the specific context and requirements when responding.';
+            '\n\nConsider the specific context and requirements when responding.;
           break;
-        case 'length_optimization':
-          // For length optimization, we'd typically compress the prompt
+        case 'length_optimization':'
+          // For length optimization, we'd typically compress the prompt'
           // For now, just add a note about conciseness
           optimizedPrompt +=
-            '\n\nPlease provide a concise but complete response.';
+            '\n\nPlease provide a concise but complete response.;
           break;
       }
     }
@@ -499,18 +499,18 @@ export class SmartPromptOptimizer {
     const reasoning: string[] = [];
 
     reasoning.push(
-      `Applied ${patterns.length} optimization pattern(s) based on historical analysis`
+      `Applied ${patterns.length} optimization pattern(s) based on historical analysis``
     );
 
     if (regressionInsights.r2 > 0.5) {
       reasoning.push(
-        `Strong correlation (R² = ${regressionInsights.r2.toFixed(2)}) found in similar prompts`
+        `Strong correlation (R² = ${regressionInsights.r2.toFixed(2)}) found in similar prompts``
       );
     }
 
     patterns.forEach((pattern) => {
       reasoning.push(
-        `${pattern.patternType.replace('_', ' ')} applied with ${(pattern.confidence * 100).toFixed(0)}% confidence`
+        `${pattern.patternType.replace('_', ' ')} applied with ${(pattern.confidence * 100).toFixed(0)}% confidence``
       );
     });
 
@@ -580,10 +580,10 @@ export class SmartPromptOptimizer {
       }
     }
 
-    logger.debug('Updated optimization patterns based on performance feedback');
+    logger.debug('Updated optimization patterns based on performance feedback');'
     // For now, just log the learning event
     logger.debug(
-      `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
+      `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received``
     );
   }
 

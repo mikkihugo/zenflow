@@ -31,13 +31,13 @@ export function calculateActualSafeCoverage(): {
 } {
   // Count Essential SAFe components by status
   const completeComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
-    (c) => c.taskMasterSupport === 'complete'
+    (c) => c.taskMasterSupport === 'complete''
   );
   const partialComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
-    (c) => c.taskMasterSupport === 'partial'
+    (c) => c.taskMasterSupport === 'partial''
   );
   const missingComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
-    (c) => c.taskMasterSupport === 'missing'
+    (c) => c.taskMasterSupport === 'missing''
   );
 
   // Calculate Essential SAFe coverage (weighted: complete=1.0, partial=0.5, missing=0.0)
@@ -85,13 +85,13 @@ function generateRecommendation(
   overallCoverage: number
 ): string {
   if (essentialCoverage >= 80) {
-    return 'Strong foundation - focus on completing Essential SAFe before expanding';
+    return 'Strong foundation - focus on completing Essential SAFe before expanding;
   } else if (essentialCoverage >= 60) {
-    return 'Good progress - complete remaining Essential SAFe components';
+    return 'Good progress - complete remaining Essential SAFe components;
   } else if (essentialCoverage >= 40) {
-    return 'Solid foundation - systematic approach to complete Essential SAFe';
+    return 'Solid foundation - systematic approach to complete Essential SAFe;
   } else {
-    return 'Early stage - focus on core Essential SAFe implementation';
+    return 'Early stage - focus on core Essential SAFe implementation;
   }
 }
 
@@ -101,7 +101,7 @@ function generateRecommendation(
 export function generateHonestAssessmentReport(): string {
   const coverage = calculateActualSafeCoverage();
 
-  return `
+  return ``
 # TaskMaster SAFe Implementation - Honest Assessment
 
 ## Executive Summary
@@ -115,10 +115,10 @@ export function generateHonestAssessmentReport(): string {
 - ❌ **Missing**: ${coverage.breakdown.missing} components
 
 ## TaskMaster Strengths
-${coverage.strengths.map((s) => `- ${s}`).join('\n')}
+${coverage.strengths.map((s) => `- ${s}`).join('\n')}'
 
 ## Critical Gaps
-${coverage.gaps.map((g) => `- ${g}`).join('\n')}
+${coverage.gaps.map((g) => `- ${g}`).join('\n')}'
 
 ## Next Steps
 1. Complete partial implementations (4-6 weeks)
@@ -127,7 +127,7 @@ ${coverage.gaps.map((g) => `- ${g}`).join('\n')}
 
 **Total Time to Essential SAFe**: 12-17 weeks
 **Total Time to Meaningful SAFe Coverage**: 6-12 months
-`;
+`;`
 }
 
 export default calculateActualSafeCoverage;

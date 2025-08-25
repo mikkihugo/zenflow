@@ -14,7 +14,7 @@
  * consistency across all system components and prevents interface conflicts.
  * All standardized interfaces should be exported through this registry.
  * @example
- * ```typescript
+ * ```typescript`
  * // Import multiple interfaces from central registry
  * import {
  *   AgentConfig,
@@ -27,9 +27,9 @@
  * const agent: AgentConfig = {
  *   id: 'agent-123',
  *   type: 'researcher',
- *   capabilities: ['search', 'analyze']
+ *   capabilities: ['search', 'analyze']'
  * };
- * ```
+ * ````
  */
 
 // Neural interfaces handled by @claude-zen/intelligence package
@@ -132,7 +132,7 @@ export {
  *
  * @interface BackendConfig
  * @example
- * ```typescript
+ * ```typescript`
  * const config: BackendConfig = {
  *   backend: 'lancedb',
  *   path: './data/vectors.lance',
@@ -140,14 +140,14 @@ export {
  *   compression: true,
  *   backendConfig: {
  *     vectorDimension: 384,
- *     metricType: 'cosine'
+ *     metricType: 'cosine''
  *   }
  * };
- * ```
+ * ````
  */
 export interface BackendConfig {
   /** Storage backend type. */
-  backend: 'lancedb | sqlite|json';
+  backend: 'lancedb | sqlite|json;
   /** File system path for the storage backend. */
   path: string;
   /** Maximum number of entries/records (optional). */

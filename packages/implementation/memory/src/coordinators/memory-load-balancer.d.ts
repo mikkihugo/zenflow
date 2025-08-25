@@ -8,7 +8,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryNode, MemoryLoadMetrics } from './types';
 interface LoadBalancingConfig {
   enabled: boolean;
-  algorithm:|'round-robin|least-connections'||weighted|resource-aware'';
+  algorithm:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin';
   weights?: Record<string, number>;
   thresholds?: {
     maxLatency: number;
@@ -46,9 +46,9 @@ export declare class MemoryLoadBalancer extends TypedEventBase {
   getStats(): LoadBalancingStats;
   getNodeDistribution(): Record<string, number>;
   reset(): void;
-  setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void;
+  setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void;'
   setWeights(weights: Record<string, number>): void;
-  setThresholds(thresholds: LoadBalancingConfig['thresholds']): void;
+  setThresholds(thresholds: LoadBalancingConfig['thresholds']): void;'
 }
 export {};
 //# sourceMappingURL=memory-load-balancer.d.ts.map

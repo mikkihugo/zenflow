@@ -23,7 +23,7 @@ import type {
   ForecastHorizon,
 } from './types';
 
-const logger = getLogger('agent-monitoring-intelligence-system');
+const logger = getLogger('agent-monitoring-intelligence-system');'
 
 /**
  * Complete Intelligence System - Main implementation
@@ -34,7 +34,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   constructor(config: IntelligenceSystemConfig) {
     this.config = config;
-    logger.info('CompleteIntelligenceSystem initialized', { config });
+    logger.info('CompleteIntelligenceSystem initialized', { config });'
   }
 
   async predictTaskDuration(
@@ -50,7 +50,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     // Adjust duration based on context factors
     const adjustedDuration = baseDuration * contextComplexity * contextUrgency;
 
-    logger.debug('Task duration predicted with context', {
+    logger.debug('Task duration predicted with context', {'
       agentId: agentId.id,
       taskType,
       contextComplexity,
@@ -69,14 +69,14 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
           influence: 0.6,
           impact: contextComplexity,
           confidence: 0.7,
-          description: `Complexity factor from context: ${contextComplexity}`,
+          description: `Complexity factor from context: ${contextComplexity}`,`
         },
         {
           name: 'Context Urgency',
           influence: 0.4,
           impact: contextUrgency,
           confidence: 0.7,
-          description: `Urgency factor from context: ${contextUrgency}`,
+          description: `Urgency factor from context: ${contextUrgency}`,`
         },
       ],
       lastUpdated: new Date(),
@@ -98,7 +98,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     const longDuration =
       2000 * contextComplexity * Math.pow(contextVolatility, 1.5);
 
-    logger.debug('Multi-horizon prediction with context', {
+    logger.debug('Multi-horizon prediction with context', {'
       agentId: agentId.id,
       taskType,
       contextComplexity,
@@ -129,7 +129,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   getAgentLearningState(agentId: AgentId): AgentLearningState|null {
     // Implement agent-specific learning state retrieval
-    logger.debug('Retrieving agent learning state', {
+    logger.debug('Retrieving agent learning state', {'
       agentId: agentId.id,
       swarmId: agentId.swarmId,
       agentType: agentId.type,
@@ -139,26 +139,26 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     // Create mock learning state based on agent characteristics
     const learningState: AgentLearningState = {
       agentId: agentId.id,
-      learningRate: agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster
+      learningRate: agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster'
       adaptationStrategy:
-        agentId.type === 'researcher'
-          ? 'exploration-focused'
+        agentId.type === 'researcher''
+          ? 'exploration-focused''
           : 'exploitation-focused',
       performanceHistory: [], // Would be populated from historical data
       knowledgeBase: {
         domains:
-          agentId.type === 'researcher'
-            ? ['research', 'analysis']
+          agentId.type === 'researcher''
+            ? ['research', 'analysis']'
             : ['coordination', 'execution'],
         expertise: agentId.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
         lastUpdated: Date.now(),
       },
       adaptabilityScore: Math.min(0.9, 0.5 + agentId.instance * 0.1), // More experienced agents adapt better
-      currentFocus: `${agentId.type}-optimization`,
+      currentFocus: `${agentId.type}-optimization`,`
       lastLearningUpdate: Date.now(),
     };
 
-    logger.debug('Agent learning state retrieved', {
+    logger.debug('Agent learning state retrieved', {'
       agentId: agentId.id,
       learningRate: learningState.learningRate,
       adaptationStrategy: learningState.adaptationStrategy,
@@ -181,11 +181,11 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     };
 
     // Log comprehensive performance update with metadata
-    logger.debug('Agent performance updated with metadata', performanceData);
+    logger.debug('Agent performance updated with metadata', performanceData);'
 
     // Store metadata for pattern analysis and optimization
     if (metadata) {
-      logger.debug('Performance metadata analyzed', {
+      logger.debug('Performance metadata analyzed', {'
         agentId: agentId.id,
         metadataKeys: Object.keys(metadata),
         duration: metadata.duration||'unknown',
@@ -195,7 +195,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
       // Use metadata for predictive intelligence
       if (metadata.errorType) {
-        logger.warn('Performance failure with error context', {
+        logger.warn('Performance failure with error context', {'
           agentId: agentId.id,
           errorType: metadata.errorType,
           errorCategory: metadata.errorCategory,
@@ -203,7 +203,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       }
 
       if (metadata.resourceUsage) {
-        logger.debug('Resource usage tracked', {
+        logger.debug('Resource usage tracked', {'
           agentId: agentId.id,
           resourceUsage: metadata.resourceUsage,
         });
@@ -213,7 +213,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   getAgentHealth(agentId: AgentId): AgentHealth|null {
     // Implement comprehensive agent health assessment
-    logger.debug('Assessing agent health status', {
+    logger.debug('Assessing agent health status', {'
       agentId: agentId.id,
       swarmId: agentId.swarmId,
       agentType: agentId.type,
@@ -223,9 +223,9 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     // Calculate health metrics based on agent characteristics
     const baseHealth = 0.85;
     const typeMultiplier =
-      agentId.type === 'coordinator'
+      agentId.type === 'coordinator''
         ? 0.95 // Coordinators are more stable
-        : agentId.type === 'optimizer'
+        : agentId.type === 'optimizer''
           ? 0.9 // Optimizers work harder
           : 0.88; // Other types
 
@@ -236,14 +236,14 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     );
 
     // Determine status based on health score
-    const status: 'healthy|warning|critical|offline' =
+    const status: 'healthy|warning|critical|offline' ='
       overallHealth >= 0.85
-        ? 'healthy'
+        ? 'healthy''
         : overallHealth >= 0.7
-          ? 'warning'
+          ? 'warning''
           : overallHealth >= 0.4
-            ? 'critical'
-            : 'offline';
+            ? 'critical''
+            : 'offline;
 
     const agentHealth: AgentHealth = {
       agentId: agentId.id,
@@ -257,18 +257,18 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       },
       metrics: {
         uptime: 86400 * (agentId.instance + 1), // Simulate uptime based on instance
-        responseTime: agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond faster
+        responseTime: agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond faster'
         errorRate: Math.max(0.001, 0.05 - agentId.instance * 0.01), // Experienced agents have lower error rates
-        throughput: agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput
+        throughput: agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput'
       },
       lastChecked: Date.now(),
       issues:
-        status !== 'healthy'
-          ? [`${agentId.type} agent showing reduced performance`]
+        status !== 'healthy''
+          ? [`${agentId.type} agent showing reduced performance`]`
           : [],
     };
 
-    logger.debug('Agent health assessment completed', {
+    logger.debug('Agent health assessment completed', {'
       agentId: agentId.id,
       status,
       overallScore: overallHealth,
@@ -284,7 +284,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     horizon?: ForecastHorizon
   ): Promise<PerformanceOptimizationForecast> {
     // Convert horizon string to days for analysis
-    const horizonDays = this.convertHorizonToDays(horizon||'7d');
+    const horizonDays = this.convertHorizonToDays(horizon||'7d');'
 
     // Adjust prediction confidence based on horizon
     let predictedPerformance = 0.9;
@@ -294,7 +294,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     if (horizonDays > 30) {
       predictedPerformance *= 0.85; // Reduce confidence for long-term forecasts
       implementationComplexity *= 1.3; // Higher complexity for long-term optimizations
-      logger.debug('Long-term forecast requested', {
+      logger.debug('Long-term forecast requested', {'
         swarmId: swarmId,
         horizonDays: horizonDays,
         adjustedPerformance: predictedPerformance,
@@ -302,7 +302,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     } else if (horizonDays < 3) {
       predictedPerformance *= 1.1; // Higher confidence for short-term forecasts
       implementationComplexity *= 0.8; // Lower complexity for short-term optimizations
-      logger.debug('Short-term forecast requested', {
+      logger.debug('Short-term forecast requested', {'
         swarmId: swarmId,
         horizonDays: horizonDays,
         adjustedPerformance: predictedPerformance,
@@ -313,7 +313,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     const horizonConfidence =
       horizonDays <= 1 ? 0.9 : horizonDays <= 7 ? 0.8 : 0.6;
     if (horizonConfidence < 0.7) {
-      logger.warn('Low confidence horizon specified', {
+      logger.warn('Low confidence horizon specified', {'
         swarmId: swarmId,
         horizonDays: horizonDays,
         confidence: horizonConfidence,
@@ -325,8 +325,8 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       currentPerformance: 0.8,
       predictedPerformance: Math.min(predictedPerformance, 1.0),
       optimizationStrategies: [
-        `Optimize for ${horizonDays}-day horizon`,
-        `Target confidence: ${(horizonConfidence * 100).toFixed(1)}%`,
+        `Optimize for ${horizonDays}-day horizon`,`
+        `Target confidence: ${(horizonConfidence * 100).toFixed(1)}%`,`
       ],
       implementationComplexity: Math.min(implementationComplexity, 1.0),
     };
@@ -353,7 +353,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       baseBenefit + patternCount * 0.03 - patternComplexity * 0.05
     );
 
-    logger.debug('Knowledge transfer prediction with patterns', {
+    logger.debug('Knowledge transfer prediction with patterns', {'
       sourceSwarm,
       targetSwarm,
       patternCount,
@@ -375,7 +375,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
         type: 'coder',
         instance: 1,
       },
-      knowledge: `patterns-${patternCount}-items`,
+      knowledge: `patterns-${patternCount}-items`,`
       transferProbability: adjustedProbability,
       expectedBenefit: adjustedBenefit,
     };
@@ -385,7 +385,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     // Simple complexity analysis based on pattern structure
     let totalComplexity = 0;
     for (const pattern of patterns) {
-      if (typeof pattern === 'object' && pattern !== null) {
+      if (typeof pattern === 'object' && pattern !== null) {'
         const objectPattern = pattern as Record<string, unknown>;
         const keyCount = Object.keys(objectPattern).length;
         totalComplexity += Math.min(1, keyCount / 10); // Normalize complexity
@@ -438,15 +438,15 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
    */
   private convertHorizonToDays(horizon: ForecastHorizon): number {
     switch (horizon) {
-      case '1h':
+      case '1h':'
         return 1 / 24;
-      case '6h':
+      case '6h':'
         return 6 / 24;
-      case '24h':
+      case '24h':'
         return 1;
-      case '7d':
+      case '7d':'
         return 7;
-      case '30d':
+      case '30d':'
         return 30;
       default:
         return 7; // default to 7 days
@@ -454,7 +454,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
   }
 
   async shutdown(): Promise<void> {
-    logger.info('CompleteIntelligenceSystem shutting down');
+    logger.info('CompleteIntelligenceSystem shutting down');'
     this.initialized = false;
   }
 }

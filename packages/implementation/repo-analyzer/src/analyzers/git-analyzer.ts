@@ -15,7 +15,7 @@ import type {
 } from '../types/index.js';
 
 export class GitAnalyzer {
-  private logger = getLogger('GitAnalyzer');
+  private logger = getLogger('GitAnalyzer');'
   private git: SimpleGit;
 
   constructor(repoPath: string) {
@@ -26,7 +26,7 @@ export class GitAnalyzer {
    * Analyze complete git repository metrics
    */
   async analyzeRepository(options?: AnalysisOptions): Promise<GitMetrics> {
-    this.logger.info('Starting Git repository analysis');
+    this.logger.info('Starting Git repository analysis');'
 
     const [
       logResult,
@@ -85,7 +85,7 @@ export class GitAnalyzer {
       };
 
       // Get commits from the last year for performance
-      if (options?.performanceMode !== 'thorough') {
+      if (options?.performanceMode !== 'thorough') {'
         const oneYearAgo = new Date();
         oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
         logOptions.since = oneYearAgo.toISOString();
@@ -94,7 +94,7 @@ export class GitAnalyzer {
       const log: LogResult = await this.git.log(logOptions);
       return [...log.all]; // Convert readonly array to mutable array
     } catch (error) {
-      this.logger.warn('Failed to get commit history:', error);
+      this.logger.warn('Failed to get commit history:', error);'
       return [];
     }
   }
@@ -106,7 +106,7 @@ export class GitAnalyzer {
     try {
       return await this.git.status();
     } catch (error) {
-      this.logger.warn('Failed to get repository status:', error);
+      this.logger.warn('Failed to get repository status:', error);'
       return null;
     }
   }
@@ -116,7 +116,7 @@ export class GitAnalyzer {
    */
   private async analyzeBranches(): Promise<BranchMetrics> {
     try {
-      const branches = await this.git.branch(['--all']);
+      const branches = await this.git.branch(['--all']);'
       const localBranches = await this.git.branchLocal();
 
       const totalBranches = branches.all.length;
@@ -131,7 +131,7 @@ export class GitAnalyzer {
         mergeConflictRate,
       };
     } catch (error) {
-      this.logger.warn('Failed to analyze branches:', error);
+      this.logger.warn('Failed to analyze branches:', error);'
       return this.getEmptyBranchMetrics();
     }
   }
@@ -176,7 +176,7 @@ export class GitAnalyzer {
           stats.linesDeleted += commitStats.linesDeleted;
           stats.filesModified += commitStats.filesModified;
         } catch {
-          // Skip if commit stats can't be retrieved
+          // Skip if commit stats can't be retrieved'
         }
       }
 
@@ -184,7 +184,7 @@ export class GitAnalyzer {
         (a, b) => b.commits - a.commits
       );
     } catch (error) {
-      this.logger.warn('Failed to analyze contributors:', error);
+      this.logger.warn('Failed to analyze contributors:', error);'
       return [];
     }
   }
@@ -230,7 +230,7 @@ export class GitAnalyzer {
             }
           }
         } catch {
-          // Skip commits where file list can't be retrieved
+          // Skip commits where file list can't be retrieved'
         }
       }
 
@@ -255,7 +255,7 @@ export class GitAnalyzer {
 
       return hotFiles.sort((a, b) => b.riskScore - a.riskScore).slice(0, 50); // Top 50 hot files
     } catch (error) {
-      this.logger.warn('Failed to identify hot files:', error);
+      this.logger.warn('Failed to identify hot files:', error);'
       return [];
     }
   }
@@ -269,8 +269,8 @@ export class GitAnalyzer {
     filesModified: number;
   }> {
     try {
-      const diff = await this.git.show(['--stat', '--format=', commitHash]);
-      const lines = diff.split('\n');
+      const diff = await this.git.show(['--stat', '--format=', commitHash]);'
+      const lines = diff.split('\n');'
 
       let linesAdded = 0;
       let linesDeleted = 0;
@@ -310,7 +310,7 @@ export class GitAnalyzer {
         '--format=',
         commitHash,
       ]);
-      return diff.split('\n').filter((file) => file.trim() !== ');
+      return diff.split('\n').filter((file) => file.trim() !== ');'
     } catch (error) {
       return [];
     }
@@ -351,7 +351,7 @@ export class GitAnalyzer {
   private countActiveBranches(localBranches: any): number {
     // Consider branches active if they have commits in the last 30 days
     // This would require checking last commit date for each branch
-    return localBranches.all?.length|'|0;
+    return localBranches.all?.length|'|0;'
   }
 
   /**
@@ -363,7 +363,7 @@ export class GitAnalyzer {
       const branchAnalysis = await this.performBranchLifetimeAnalysis();
       return branchAnalysis;
     } catch (analysisError) {
-      this.logger.debug('Branch lifetime analysis failed:', analysisError);
+      this.logger.debug('Branch lifetime analysis failed:', analysisError);'
       return 7; // Default: 7 days
     }
   }
@@ -377,7 +377,7 @@ export class GitAnalyzer {
       const conflictAnalysis = await this.performMergeConflictAnalysis();
       return conflictAnalysis;
     } catch (analysisError) {
-      this.logger.debug('Merge conflict analysis failed:', analysisError);
+      this.logger.debug('Merge conflict analysis failed:', analysisError);'
       return 0.1; // Default: 10% conflict rate
     }
   }
@@ -387,11 +387,11 @@ export class GitAnalyzer {
    */
   private async estimateFileComplexity(filePath: string): Promise<number> {
     try {
-      const fs = await import('fs/promises');
-      const content = await fs.readFile(filePath, 'utf-8');
+      const fs = await import('fs/promises');'
+      const content = await fs.readFile(filePath, 'utf-8');'
 
       // Simple complexity estimation
-      const lines = content.split('\n').length;
+      const lines = content.split('\n').length;'
       const functions = (
         content.match(/function\s+\w+|=>\s*{|^\s*\w+\s*:/gm)||[]
       ).length;
@@ -454,7 +454,7 @@ export class GitAnalyzer {
         const author = commit.author_name;
         churnByAuthor[author] = (churnByAuthor[author]||0) + churn;
 
-        const date = new Date(commit.date).toISOString().split('T')[0];
+        const date = new Date(commit.date).toISOString().split('T')[0];'
         const existingEntry = churnTrend.find((entry) => entry.date === date);
         if (existingEntry) {
           existingEntry.churn += churn;
@@ -470,7 +470,7 @@ export class GitAnalyzer {
         churnTrend: churnTrend.sort((a, b) => a.date.localeCompare(b.date)),
       };
     } catch (error) {
-      this.logger.warn('Failed to analyze code churn:', error);
+      this.logger.warn('Failed to analyze code churn:', error);'
       return {
         totalChurn: 0,
         churnByFile: {},
@@ -497,8 +497,8 @@ export class GitAnalyzer {
       for (const commit of commits) {
         const date = new Date(commit.date);
         const hour = date.getHours();
-        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-        const month = date.toLocaleDateString('en-US', {
+        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });'
+        const month = date.toLocaleDateString('en-US', {'
           month: 'long',
           year: 'numeric',
         });
@@ -514,7 +514,7 @@ export class GitAnalyzer {
         monthlyDistribution,
       };
     } catch (error) {
-      this.logger.warn('Failed to analyze commit patterns:', error);
+      this.logger.warn('Failed to analyze commit patterns:', error);'
       return {
         hourlyDistribution: {},
         dailyDistribution: {},
@@ -547,19 +547,19 @@ export class GitAnalyzer {
       const reasons: string[] = [];
 
       if (hotFile.changeCount > 50) {
-        reasons.push('High change frequency indicates instability');
+        reasons.push('High change frequency indicates instability');'
       }
 
       if (hotFile.complexity > 75) {
-        reasons.push('High complexity makes maintenance difficult');
+        reasons.push('High complexity makes maintenance difficult');'
       }
 
       if (hotFile.contributors > 8) {
-        reasons.push('Too many contributors suggest unclear ownership');
+        reasons.push('Too many contributors suggest unclear ownership');'
       }
 
       if (hotFile.riskScore > 0.7) {
-        reasons.push('High risk score indicates potential issues');
+        reasons.push('High risk score indicates potential issues');'
       }
 
       if (reasons.length > 0) {
@@ -585,7 +585,7 @@ export class GitAnalyzer {
     result: PromiseSettledResult<T>,
     defaultValue: T
   ): T {
-    return result.status === 'fulfilled' ? result.value : defaultValue;
+    return result.status === 'fulfilled' ? result.value : defaultValue;'
   }
 
   private getEmptyBranchMetrics(): BranchMetrics {
@@ -610,7 +610,7 @@ export class GitAnalyzer {
       for (const branch of branches.all.slice(0, 10)) {
         // Sample first 10 branches
         try {
-          const branchLog = await this.git.log([branch, '--max-count=1']);
+          const branchLog = await this.git.log([branch, '--max-count=1']);'
           const firstCommit = branchLog.latest;
           if (firstCommit) {
             const age =
@@ -619,7 +619,7 @@ export class GitAnalyzer {
             lifetimes.push(age);
           }
         } catch {
-          // Skip branches that can't be analyzed
+          // Skip branches that can't be analyzed'
         }
       }
 
@@ -640,7 +640,7 @@ export class GitAnalyzer {
       const commits = await this.getCommitHistory({ maxCount: 100 });
       const mergeCommits = commits.filter(
         (commit) =>
-          commit.message.includes('Merge')||commit.parents.length > 1
+          commit.message.includes('Merge')||commit.parents.length > 1'
       );
 
       if (mergeCommits.length === 0) return 0.1;
@@ -648,7 +648,7 @@ export class GitAnalyzer {
       // Estimate conflict rate based on merge commit patterns
       const conflictIndicators = mergeCommits.filter(
         (commit) =>
-          commit.message.includes('conflict')||commit.message.includes('resolve')||commit.message.includes('fix merge')
+          commit.message.includes('conflict')||commit.message.includes('resolve')||commit.message.includes('fix merge')'
       );
 
       return conflictIndicators.length / mergeCommits.length;

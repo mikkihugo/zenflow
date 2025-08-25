@@ -22,86 +22,86 @@ export class SafeIdUtils {
    * Generate epic identifier
    */
   static generateEpicId(): string {
-    return `epic-${nanoid(12)}`;
+    return `epic-${nanoid(12)}`;`
   }
 
   /**
    * Generate feature identifier
    */
   static generateFeatureId(): string {
-    return `feature-${nanoid(10)}`;
+    return `feature-${nanoid(10)}`;`
   }
 
   /**
    * Generate Program Increment identifier
    */
   static generatePIId(quarter: string, year: number): string {
-    return `PI-${year}${quarter}-${nanoid(8)}`;
+    return `PI-${year}${quarter}-${nanoid(8)}`;`
   }
 
   /**
    * Generate ART identifier
    */
   static generateARTId(valueStreamPrefix: string): string {
-    return `${valueStreamPrefix}-ART-${nanoid(8)}`;
+    return `${valueStreamPrefix}-ART-${nanoid(8)}`;`
   }
 
   /**
    * Generate value stream identifier
    */
   static generateValueStreamId(): string {
-    return `vs-${nanoid(10)}`;
+    return `vs-${nanoid(10)}`;`
   }
 
   /**
    * Generate milestone identifier
    */
   static generateMilestoneId(): string {
-    return `milestone-${nanoid(8)}`;
+    return `milestone-${nanoid(8)}`;`
   }
 
   /**
    * Generate session identifier for PI planning
    */
   static generateSessionId(): string {
-    return `session-${nanoid(16)}`;
+    return `session-${nanoid(16)}`;`
   }
 
   /**
    * Generate human-readable PI identifier
    */
   static generateReadablePIId(year: number, increment: number): string {
-    const alphabet = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6);
-    return `PI${year}${increment.toString().padStart(2, '0')}-${alphabet()}`;
+    const alphabet = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6);'
+    return `PI${year}${increment.toString().padStart(2, '0')}-${alphabet()}`;`
   }
 
   /**
    * Generate team identifier within ART
    */
   static generateTeamId(artId: string, teamName: string): string {
-    const sanitizedName = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return `${artId}-${sanitizedName}-${nanoid(6)}`;
+    const sanitizedName = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');'
+    return `${artId}-${sanitizedName}-${nanoid(6)}`;`
   }
 
   /**
    * Generate dependency tracking identifier
    */
   static generateDependencyId(): string {
-    return `dep-${nanoid(10)}`;
+    return `dep-${nanoid(10)}`;`
   }
 
   /**
    * Generate risk identifier
    */
   static generateRiskId(): string {
-    return `risk-${nanoid(8)}`;
+    return `risk-${nanoid(8)}`;`
   }
 
   /**
    * Generate objective identifier for PI
    */
   static generateObjectiveId(): string {
-    return `obj-${nanoid(8)}`;
+    return `obj-${nanoid(8)}`;`
   }
 }
 
@@ -173,7 +173,7 @@ export class SafeIdValidator {
    * Extract prefix from any SAFe ID
    */
   static extractIdPrefix(id: string): string {
-    const hyphenIndex = id.indexOf('-');
+    const hyphenIndex = id.indexOf('-');'
     return hyphenIndex > 0 ? id.substring(0, hyphenIndex) : id;
   }
 

@@ -23,7 +23,7 @@ export interface TaskPrediction {
   metadata?: {
     sampleSize: number;
     algorithm: string;
-    trendDirection: 'improving|stable|declining';
+    trendDirection: 'improving' | 'stable' | 'declining';
   };
 }
 
@@ -190,7 +190,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       confidence,
       factors: [
         {
-          name:'Historical Average',
+          name: 'Historical Average',
           impact: 1.0,
           confidence: confidence,
           description: `Based on ${recentHistory.length} recent completions`,
@@ -271,7 +271,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
    */
   private calculateTrendDirection(
     durations: number[]
-  ): 'improving|stable|declining' {
+  ): 'improving' | 'stable' | 'declining' {
     if (durations.length < 3) return 'stable';
 
     const firstHalf = durations.slice(0, Math.floor(durations.length / 2));
@@ -282,8 +282,8 @@ export class SimpleTaskPredictor implements TaskPredictor {
 
     const improvement = (firstAvg - secondAvg) / firstAvg;
 
-    if (improvement > 0.1) return 'improving'; // Times getting shorter = improving
-    if (improvement < -0.1) return 'declining'; // Times getting longer = declining
+    if (improvement > 0.1) return 'improving'; // Times getting shorter = improving'
+    if (improvement < -0.1) return 'declining'; // Times getting longer = 'improving' | 'stable' | 'declining'
     return 'stable';
   }
 

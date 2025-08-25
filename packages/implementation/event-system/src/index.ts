@@ -179,7 +179,7 @@ export function createEventSystem(config?: any) {
 /**
  * Package information
  */
-export const VERSION ='1.0.1';
+export const VERSION ='1.0.1;
 export const DESCRIPTION = 'Type-safe event system with neural intelligence';
 
 export default createEventSystem;

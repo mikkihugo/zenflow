@@ -35,7 +35,7 @@ export class OTLPExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger(`OTLPExporter:${config.name}`);
+    this.logger = getLogger(`OTLPExporter:${config.name}`);`
 
     this.maxQueueSize = config.config?.maxQueueSize||1000;
     this.batchTimeout = config.config?.batchTimeout||5000;
@@ -51,33 +51,33 @@ export class OTLPExporter implements BaseExporter {
       };
 
       // Initialize exporters based on supported signals
-      const signals = this.config.signals||['traces', 'metrics', 'logs'];
+      const signals = this.config.signals||['traces', 'metrics', 'logs'];'
 
-      if (signals.includes('traces')) {
+      if (signals.includes('traces')) {'
         this.traceExporter = new OTLPTraceExporter({
           ...baseConfig,
-          url: `${baseConfig.url}/v1/traces`,
+          url: `${baseConfig.url}/v1/traces`,`
         });
       }
 
-      if (signals.includes('metrics')) {
+      if (signals.includes('metrics')) {'
         this.metricExporter = new OTLPMetricExporter({
           ...baseConfig,
-          url: `${baseConfig.url}/v1/metrics`,
+          url: `${baseConfig.url}/v1/metrics`,`
         });
       }
 
       // Start batch processing
       this.startBatchTimer();
 
-      this.logger.info('OTLP exporter initialized', {
+      this.logger.info('OTLP exporter initialized', {'
         endpoint: this.config.endpoint,
         type: this.config.type,
         signals,
         maxQueueSize: this.maxQueueSize,
       });
     } catch (error) {
-      this.logger.error('Failed to initialize OTLP exporter', error);
+      this.logger.error('Failed to initialize OTLP exporter', error);'
       throw error;
     }
   }
@@ -97,7 +97,7 @@ export class OTLPExporter implements BaseExporter {
       // Add to queue for batch processing
       if (this.queue.length >= this.maxQueueSize) {
         this.queue.shift(); // Remove oldest
-        this.logger.warn('Queue full, dropping oldest item');
+        this.logger.warn('Queue full, dropping oldest item');'
       }
 
       this.queue.push(data);
@@ -116,7 +116,7 @@ export class OTLPExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('OTLP export failed', error);
+      this.logger.error('OTLP export failed', error);'
 
       return {
         success: false,
@@ -144,9 +144,9 @@ export class OTLPExporter implements BaseExporter {
       let totalExported = 0;
 
       // Group by signal type
-      const traceItems = dataItems.filter((item) => item.type === 'traces');
-      const metricItems = dataItems.filter((item) => item.type === 'metrics');
-      const logItems = dataItems.filter((item) => item.type === 'logs');
+      const traceItems = dataItems.filter((item) => item.type === 'traces');'
+      const metricItems = dataItems.filter((item) => item.type === 'metrics');'
+      const logItems = dataItems.filter((item) => item.type === 'logs');'
 
       // Export traces
       if (traceItems.length > 0 && this.traceExporter) {
@@ -179,7 +179,7 @@ export class OTLPExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('OTLP batch export failed', error);
+      this.logger.error('OTLP batch export failed', error);'
 
       return {
         success: false,
@@ -203,7 +203,7 @@ export class OTLPExporter implements BaseExporter {
     // Process remaining queue
     if (this.queue.length > 0) {
       this.logger.info(
-        `Processing ${this.queue.length} remaining items before shutdown`
+        `Processing ${this.queue.length} remaining items before shutdown``
       );
       await this.processBatch();
     }
@@ -217,10 +217,10 @@ export class OTLPExporter implements BaseExporter {
         await this.metricExporter.shutdown();
       }
     } catch (error) {
-      this.logger.error('Error shutting down OTLP exporters', error);
+      this.logger.error('Error shutting down OTLP exporters', error);'
     }
 
-    this.logger.info('OTLP exporter shut down', {
+    this.logger.info('OTLP exporter shut down', {'
       totalExported: this.exportCount,
     });
   }
@@ -230,7 +230,7 @@ export class OTLPExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
@@ -275,7 +275,7 @@ export class OTLPExporter implements BaseExporter {
     try {
       await this.exportBatch(items);
     } catch (error) {
-      this.logger.error('Batch processing failed', error);
+      this.logger.error('Batch processing failed', error);'
     }
   }
 
@@ -295,7 +295,7 @@ export class OTLPExporter implements BaseExporter {
         } else {
           reject(
             new Error(
-              `OTLP trace export failed: ${result.error||'Unknown error'}`
+              `OTLP trace export failed: ${result.error||'Unknown error'}``
             )
           );
         }
@@ -319,7 +319,7 @@ export class OTLPExporter implements BaseExporter {
         } else {
           reject(
             new Error(
-              `OTLP metric export failed: ${result.error||'Unknown error'}`
+              `OTLP metric export failed: ${result.error||'Unknown error'}``
             )
           );
         }
@@ -334,7 +334,7 @@ export class OTLPExporter implements BaseExporter {
     // For now, convert logs to metrics or traces
     // Full OTLP log export would require additional OTLP log exporter
     this.logger.debug(
-      `Skipping ${dataItems.length} log items (OTLP log export not yet implemented)`
+      `Skipping ${dataItems.length} log items (OTLP log export not yet implemented)``
     );
     return 0;
   }
@@ -347,7 +347,7 @@ export class OTLPExporter implements BaseExporter {
 
     for (const data of dataItems) {
       try {
-        if (data.type === 'traces' && data.data) {
+        if (data.type === 'traces' && data.data) {'
           if (Array.isArray(data.data)) {
             spans.push(...data.data);
           } else if (data.data.spans) {
@@ -357,7 +357,7 @@ export class OTLPExporter implements BaseExporter {
           }
         }
       } catch (error) {
-        this.logger.warn('Failed to convert trace data', error);
+        this.logger.warn('Failed to convert trace data', error);'
       }
     }
 
@@ -372,7 +372,7 @@ export class OTLPExporter implements BaseExporter {
 
     for (const data of dataItems) {
       try {
-        if (data.type === 'metrics' && data.data) {
+        if (data.type === 'metrics' && data.data) {'
           if (Array.isArray(data.data)) {
             metrics.push(...data.data);
           } else if (data.data.metrics) {
@@ -382,7 +382,7 @@ export class OTLPExporter implements BaseExporter {
           }
         }
       } catch (error) {
-        this.logger.warn('Failed to convert metric data', error);
+        this.logger.warn('Failed to convert metric data', error);'
       }
     }
 

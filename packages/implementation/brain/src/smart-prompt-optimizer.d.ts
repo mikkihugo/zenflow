@@ -33,7 +33,7 @@ export interface PromptAnalysisData {
 }
 export interface OptimizationPattern {
   readonly patternType:
-    || 'length_optimization|structure_enhancement|context_addition|clarity_improvement';
+    || 'length_optimization|structure_enhancement|context_addition|clarity_improvement;
   readonly confidence: number;
   readonly improvement: number;
   readonly applicableContexts: string[];

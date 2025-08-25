@@ -16,7 +16,7 @@ export class ConversationManager {
   createSession(id: string, participants: AgentId[]): ConversationSession {
     return {
       id,
-      title: `Conversation ${id}`,
+      title: `Conversation ${id}`,`
       description: undefined,
       participants,
       initiator:

@@ -11,16 +11,16 @@
  * - Type-only exports clearly separated
  *
  * @example Importing specific components
- * ```typescript
+ * ```typescript`
  * import { AGUISystem, TerminalAGUI } from '@claude-zen/agui';
  * import { TaskApprovalSystem } from '@claude-zen/agui';
- * ```
+ * ````
  *
  * @example Using separate entry points (more optimal)
- * ```typescript
+ * ```typescript`
  * import { TerminalAGUI } from '@claude-zen/agui/terminal';
  * import { TaskApprovalSystem } from '@claude-zen/agui/approval';
- * ```
+ * ````
  */
 
 // =============================================================================
@@ -35,33 +35,33 @@
  * terminal-based and mock interfaces for development and testing.
  *
  * @param config - Optional configuration object for AGUI system setup
- * @param config.aguiType - Type of AGUI interface to create ('terminal|mock''). Defaults to 'terminal'
+ * @param config.aguiType - Type of AGUI interface to create ('terminal|mock''). Defaults to 'terminal''
  * @param config.taskApprovalConfig - Partial configuration for the task approval system
  *
  * @returns Promise resolving to an object containing both the AGUI interface and task approval system
  *
  * @example Basic AGUI system creation
- * ```typescript
+ * ```typescript`
  * import { createAGUI } from '@claude-zen/agui';
  *
  * const { agui, taskApproval } = await createAGUI();
  *
  * // Use AGUI for human interaction
- * const userResponse = await agui.askQuestion('Proceed with deployment?', {
+ * const userResponse = await agui.askQuestion('Proceed with deployment?', {'
  *   type: 'boolean',
- *   priority: 'high'
+ *   priority: 'high''
  * });
  *
  * // Use task approval for workflow gates
  * const approved = await taskApproval.requestApproval({
  *   taskType: 'deployment',
  *   description: 'Deploy to production',
- *   context: { environment: 'prod' }
+ *   context: { environment: 'prod' }'
  * });
- * ```
+ * ````
  *
  * @example AGUI system with custom configuration
- * ```typescript
+ * ```typescript`
  * import { createAGUI } from '@claude-zen/agui';
  *
  * const { agui, taskApproval } = await createAGUI({
@@ -69,25 +69,25 @@
  *   taskApprovalConfig: {
  *     autoApprove: false,
  *     timeoutMs: 30000,
- *     defaultDecision: 'reject'
+ *     defaultDecision: 'reject''
  *   }
  * });
- * ```
+ * ````
  *
  * @example Mock AGUI for testing
- * ```typescript
+ * ```typescript`
  * import { createAGUI } from '@claude-zen/agui';
  *
  * const { agui, taskApproval } = await createAGUI({
- *   aguiType: 'mock'
+ *   aguiType: 'mock''
  * });
  *
  * // Mock AGUI automatically approves for testing
- * const result = await agui.askQuestion('Test question?', {
- *   type: 'boolean'
+ * const result = await agui.askQuestion('Test question?', {'
+ *   type: 'boolean''
  * });
  * // result.answer will be true (default mock response)
- * ```
+ * ````
  *
  * @throws {AGUIError} When AGUI system initialization fails
  * @throws {AGUIValidationError} When configuration validation fails
@@ -176,51 +176,51 @@ export {
  * This constant provides comprehensive information about the AGUI package including
  * version details, capabilities, and feature set. Useful for runtime introspection,
  * debugging, feature detection, and integration with other systems that need to
- * understand AGUI's capabilities.
+ * understand AGUI's capabilities.'
  *
  * @example Checking AGUI capabilities
- * ```typescript
+ * ```typescript`
  * import { AGUI_INFO } from '@claude-zen/agui';
  *
- * console.log(`Using AGUI v${AGUI_INFO.version}`);
+ * console.log(`Using AGUI v${AGUI_INFO.version}`);`
  *
  * // Feature detection
  * const hasWorkflowSupport = AGUI_INFO.capabilities.includes(
- *   'Task approval workflows'
+ *   'Task approval workflows''
  * );
  *
  * if (hasWorkflowSupport) {
  *   // Enable workflow-specific features
  * }
- * ```
+ * ````
  *
  * @example Integration with monitoring systems
- * ```typescript
+ * ```typescript`
  * import { AGUI_INFO } from '@claude-zen/agui';
  *
  * // Send package info to monitoring/telemetry
- * telemetry.track('agui_initialized', {
+ * telemetry.track('agui_initialized', {'
  *   version: AGUI_INFO.version,
  *   capabilities: AGUI_INFO.capabilities,
  *   package: AGUI_INFO.name
  * });
- * ```
+ * ````
  *
  * @example Runtime capability checking
- * ```typescript
+ * ```typescript`
  * import { AGUI_INFO } from '@claude-zen/agui';
  *
  * function checkAGUICompatibility(): boolean {
  *   const requiredCapabilities = [
  *     'Human-in-the-loop interactions',
- *     'Terminal and web interfaces'
+ *     'Terminal and web interfaces''
  *   ];
  *
  *   return requiredCapabilities.every(capability =>
  *     AGUI_INFO.capabilities.includes(capability)
  *   );
  * }
- * ```
+ * ````
  *
  * @since 1.0.0
  * @public

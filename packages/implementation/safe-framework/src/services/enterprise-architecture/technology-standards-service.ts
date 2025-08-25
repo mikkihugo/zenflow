@@ -34,9 +34,9 @@ export interface TechnologyStandard {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly category:|platform|framework|tool|protocol|security|data|'integration';
-  readonly type:|mandatory|recommended|approved|deprecated|'prohibited';
-  readonly status:|active|draft|under_review|deprecated|'retired';
+  readonly category:|platform|framework|tool|protocol|security|data|'integration;
+  readonly type:|mandatory|recommended|approved|deprecated|'prohibited;
+  readonly status:|active|draft|under_review|deprecated|'retired;
   readonly mandatory: boolean;
   readonly applicability: ApplicabilityScope;
   readonly implementation: ImplementationGuidance;
@@ -64,7 +64,7 @@ export interface ApplicabilityScope {
 }
 
 export interface ScopeExclusion {
-  readonly type: 'domain|project|team|environment';
+  readonly type: 'domain|project|team|environment;
   readonly value: string;
   readonly reason: string;
   readonly expiryDate?: Date;
@@ -88,7 +88,7 @@ export interface ImplementationGuidance {
 export interface Requirement {
   readonly id: string;
   readonly description: string;
-  readonly priority: 'mandatory|recommended|optional';
+  readonly priority: 'mandatory' | 'recommended' | 'optional';
   readonly verification: string;
   readonly examples: string[];
   readonly dependencies: string[];
@@ -104,7 +104,7 @@ export interface BestPractice {
 }
 
 export interface Resource {
-  readonly type: 'documentation|tool|template|training|support';
+  readonly type: 'documentation|tool|template|training|support;
   readonly name: string;
   readonly url: string;
   readonly description: string;
@@ -115,7 +115,7 @@ export interface MigrationGuidance {
   readonly fromStandards: string[];
   readonly migrationPath: MigrationStep[];
   readonly timeline: string;
-  readonly effort: 'low|medium|high';
+  readonly effort: 'low' | 'medium' | 'high';
   readonly risks: string[];
   readonly checkpoints: Checkpoint[];
 }
@@ -138,7 +138,7 @@ export interface Checkpoint {
 }
 
 export interface SupportChannel {
-  readonly type: 'documentation|forum|chat|email|training';
+  readonly type: 'documentation|forum|chat|email|training;
   readonly name: string;
   readonly contact: string;
   readonly availability: string;
@@ -155,7 +155,7 @@ export interface AutomatedVerification {
   readonly toolId: string;
   readonly toolName: string;
   readonly verificationRule: string;
-  readonly frequency: 'continuous|daily|weekly|monthly';
+  readonly frequency: 'continuous|daily|weekly|monthly;
   readonly threshold: VerificationThreshold;
   readonly remediation: string;
 }
@@ -164,7 +164,7 @@ export interface ManualVerification {
   readonly checklistId: string;
   readonly name: string;
   readonly description: string;
-  readonly frequency: 'per_project|monthly|quarterly|annually';
+  readonly frequency: 'per_project|monthly|quarterly|annually;
   readonly owner: string;
   readonly checklist: ChecklistItem[];
 }
@@ -179,15 +179,15 @@ export interface ChecklistItem {
 
 export interface VerificationThreshold {
   readonly metric: string;
-  readonly operator: 'gt|lt|eq|gte|lte';
+  readonly operator: 'gt|lt|eq|gte|lte;
   readonly value: number;
   readonly unit: string;
 }
 
 export interface VerificationReporting {
-  readonly frequency: 'daily|weekly|monthly|quarterly';
+  readonly frequency: 'daily|weekly|monthly|quarterly;
   readonly recipients: string[];
-  readonly format: 'dashboard|email|api|report';
+  readonly format: 'dashboard|email|api|report;
   readonly includeRecommendations: boolean;
   readonly escalationRules: EscalationRule[];
 }
@@ -196,7 +196,7 @@ export interface EscalationRule {
   readonly trigger: string;
   readonly threshold: number;
   readonly escalateTo: string[];
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low|medium|high|critical;
   readonly action: string;
 }
 
@@ -221,11 +221,11 @@ export interface ExceptionScope {
 }
 
 export interface ExceptionRiskAssessment {
-  readonly riskLevel: 'low|medium|high|critical';
+  readonly riskLevel: 'low|medium|high|critical;
   readonly riskFactors: string[];
   readonly mitigations: string[];
-  readonly residualRisk: 'low|medium|high|critical';
-  readonly reviewFrequency: 'monthly|quarterly|annually';
+  readonly residualRisk: 'low|medium|high|critical;
+  readonly reviewFrequency: 'monthly' | 'quarterly' | 'annually';
 }
 
 export interface StandardComplianceMetrics {
@@ -233,16 +233,16 @@ export interface StandardComplianceMetrics {
   readonly violationCount: number;
   readonly lastComplianceCheck: Date;
   readonly criticalViolations: ComplianceViolation[];
-  readonly trend: 'improving|stable|declining';
-  readonly riskLevel: 'low|medium|high|critical';
+  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly riskLevel: 'low|medium|high|critical;
   readonly exceptionCount: number;
 }
 
 export interface ComplianceViolation {
   readonly id: string;
   readonly standardId: string;
-  readonly violationType:|configuration|usage|version|security|'process';
-  readonly severity: 'critical|high|medium|low';
+  readonly violationType:|configuration|usage|version|security|'process;
+  readonly severity: 'critical|high|medium|low;
   readonly description: string;
   readonly projectId: string;
   readonly teamId: string;
@@ -251,12 +251,12 @@ export interface ComplianceViolation {
   readonly remediation: string;
   readonly assignee?: string;
   readonly dueDate?: Date;
-  readonly status: 'open|in_progress|resolved|waived';
+  readonly status: 'open|in_progress|resolved|waived;
 }
 
 export interface StandardDependency {
   readonly dependentStandardId: string;
-  readonly dependencyType:|requires|conflicts_with|enhances|'replaces';
+  readonly dependencyType:|requires|conflicts_with|enhances|'replaces;
   readonly description: string;
   readonly mandatory: boolean;
 }
@@ -266,14 +266,14 @@ export interface AlternativeStandard {
   readonly name: string;
   readonly useCase: string;
   readonly comparison: string;
-  readonly migrationEffort: 'low|medium|high';
+  readonly migrationEffort: 'low' | 'medium' | 'high';
 }
 
 export interface StandardCreationRequest {
   readonly name: string;
   readonly description: string;
-  readonly category: TechnologyStandard['category'];
-  readonly type: TechnologyStandard['type'];
+  readonly category: TechnologyStandard['category'];'
+  readonly type: TechnologyStandard['type'];'
   readonly mandatory: boolean;
   readonly applicability: ApplicabilityScope;
   readonly implementation: ImplementationGuidance;
@@ -310,37 +310,37 @@ export interface ComplianceScope {
 
 export interface ComplianceRecommendation {
   readonly id: string;
-  readonly priority: 'critical|high|medium|low';
-  readonly category: 'immediate|planned|strategic';
+  readonly priority: 'critical|high|medium|low;
+  readonly category: 'immediate' | 'planned' | 'strategic';
   readonly description: string;
   readonly implementation: string;
   readonly expectedImpact: string;
-  readonly effort: 'low|medium|high';
+  readonly effort: 'low' | 'medium' | 'high';
   readonly timeline: string;
   readonly dependencies: string[];
   readonly owner: string;
 }
 
 export interface ComplianceRiskAssessment {
-  readonly overallRisk: 'low|medium|high|critical';
+  readonly overallRisk: 'low|medium|high|critical;
   readonly riskFactors: ComplianceRiskFactor[];
   readonly mitigationStrategies: ComplianceMitigationStrategy[];
-  readonly residualRisk: 'low|medium|high|critical';
+  readonly residualRisk: 'low|medium|high|critical;
 }
 
 export interface ComplianceRiskFactor {
   readonly factor: string;
-  readonly impact: 'low|medium|high|critical';
+  readonly impact: 'low|medium|high|critical;
   readonly probability: number;
   readonly description: string;
-  readonly category: 'technical|operational|security|compliance';
+  readonly category: 'technical|operational|security|compliance;
 }
 
 export interface ComplianceMitigationStrategy {
   readonly strategy: string;
   readonly description: string;
   readonly effectiveness: number;
-  readonly cost: 'low|medium|high';
+  readonly cost: 'low' | 'medium' | 'high';
   readonly timeline: string;
   readonly owner: string;
 }
@@ -380,7 +380,7 @@ export class TechnologyStandardsService extends TypedEventBase {
       this.monitoringSystem = this.createMonitoringSystemFallback();
 
       this.initialized = true;
-      this.logger.info('Technology Standards Service initialized successfully');
+      this.logger.info('Technology Standards Service initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Technology Standards Service:',
@@ -398,7 +398,7 @@ export class TechnologyStandardsService extends TypedEventBase {
   ): Promise<TechnologyStandard> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Creating technology standard', {
+    this.logger.info('Creating technology standard', {'
       name: request.name,
       category: request.category,
       type: request.type,
@@ -412,12 +412,12 @@ export class TechnologyStandardsService extends TypedEventBase {
 
       if (existingStandard) {
         throw new Error(
-          `Technology standard with name "${request.name}" already exists`
+          `Technology standard with name "${request.name}" already exists``
         );
       }
 
       const standard: TechnologyStandard = {
-        id: `tech-standard-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        id: `tech-standard-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
         name: request.name,
         description: request.description,
         category: request.category,
@@ -486,7 +486,7 @@ export class TechnologyStandardsService extends TypedEventBase {
       // Set up monitoring for automated verification
       await this.setupStandardMonitoring(standard);
 
-      this.emit('standard-created', {
+      this.emit('standard-created', {'
         standardId: standard.id,
         name: standard.name,
         category: standard.category,
@@ -494,17 +494,17 @@ export class TechnologyStandardsService extends TypedEventBase {
         mandatory: standard.mandatory,
       });
 
-      this.logger.info('Technology standard created successfully', {
+      this.logger.info('Technology standard created successfully', {'
         standardId: standard.id,
         name: standard.name,
       });
 
       return standard;
     } catch (error) {
-      this.logger.error('Failed to create technology standard:', error);
+      this.logger.error('Failed to create technology standard:', error);'
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      this.emit('standard-creation-failed', {
+        error instanceof Error ? error.message : 'Unknown error occurred;
+      this.emit('standard-creation-failed', {'
         name: request.name,
         error: errorMessage,
       });
@@ -521,7 +521,7 @@ export class TechnologyStandardsService extends TypedEventBase {
   ): Promise<StandardComplianceResult> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Monitoring standard compliance', {
+    this.logger.info('Monitoring standard compliance', {'
       standardId,
       projectCount: scope.projects.length,
       teamCount: scope.teams.length,
@@ -530,7 +530,7 @@ export class TechnologyStandardsService extends TypedEventBase {
     try {
       const standard = this.standards.get(standardId);
       if (!standard) {
-        throw new Error(`Technology standard ${standardId} not found`);
+        throw new Error(`Technology standard ${standardId} not found`);`
       }
 
       // Gather compliance facts from monitoring system
@@ -578,7 +578,7 @@ export class TechnologyStandardsService extends TypedEventBase {
       );
 
       const result: StandardComplianceResult = {
-        complianceId: `compliance-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        complianceId: `compliance-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
         standardId,
         timestamp: new Date(),
         scope,
@@ -605,7 +605,7 @@ export class TechnologyStandardsService extends TypedEventBase {
         },
       });
 
-      this.emit('standard-compliance-monitored', {
+      this.emit('standard-compliance-monitored', {'
         standardId,
         complianceId: result.complianceId,
         complianceRate,
@@ -613,7 +613,7 @@ export class TechnologyStandardsService extends TypedEventBase {
         riskLevel: riskAssessment.overallRisk,
       });
 
-      this.logger.info('Standard compliance monitoring completed', {
+      this.logger.info('Standard compliance monitoring completed', {'
         standardId,
         complianceRate,
         violationCount: violations.length,
@@ -621,10 +621,10 @@ export class TechnologyStandardsService extends TypedEventBase {
 
       return result;
     } catch (error) {
-      this.logger.error('Standard compliance monitoring failed:', error);
+      this.logger.error('Standard compliance monitoring failed:', error);'
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      this.emit('standard-compliance-failed', {
+        error instanceof Error ? error.message : 'Unknown error occurred;
+      this.emit('standard-compliance-failed', {'
         standardId,
         error: errorMessage,
       });
@@ -650,7 +650,7 @@ export class TechnologyStandardsService extends TypedEventBase {
    * Get standards by category
    */
   getStandardsByCategory(
-    category: TechnologyStandard['category']
+    category: TechnologyStandard['category']'
   ): TechnologyStandard[] {
     return Array.from(this.standards.values()).filter(
       (s) => s.category === category
@@ -662,7 +662,7 @@ export class TechnologyStandardsService extends TypedEventBase {
    */
   getMandatoryStandards(): TechnologyStandard[] {
     return Array.from(this.standards.values()).filter(
-      (s) => s.mandatory && s.status === 'active'
+      (s) => s.mandatory && s.status === 'active''
     );
   }
 
@@ -671,11 +671,11 @@ export class TechnologyStandardsService extends TypedEventBase {
    */
   async updateStandardStatus(
     standardId: string,
-    status: TechnologyStandard['status']
+    status: TechnologyStandard['status']'
   ): Promise<void> {
     const standard = this.standards.get(standardId);
     if (!standard) {
-      throw new Error(`Technology standard ${standardId} not found`);
+      throw new Error(`Technology standard ${standardId} not found`);`
     }
 
     const updatedStandard = {
@@ -691,7 +691,7 @@ export class TechnologyStandardsService extends TypedEventBase {
       lastUpdated: updatedStandard.lastUpdated.toISOString(),
     });
 
-    this.emit('standard-status-updated', {
+    this.emit('standard-status-updated', {'
       standardId,
       oldStatus: standard.status,
       newStatus: status,
@@ -702,7 +702,7 @@ export class TechnologyStandardsService extends TypedEventBase {
    * Shutdown the service
    */
   shutdown(): void {
-    this.logger.info('Shutting down Technology Standards Service');
+    this.logger.info('Shutting down Technology Standards Service');'
     this.removeAllListeners();
     this.standards.clear();
     this.initialized = false;
@@ -737,7 +737,7 @@ export class TechnologyStandardsService extends TypedEventBase {
   ): Promise<void> {
     for (const verification of standard.verification.automated) {
       await this.monitoringSystem.addMonitor({
-        monitorId: `${standard.id}-${verification.toolId}`,
+        monitorId: `${standard.id}-${verification.toolId}`,`
         standardId: standard.id,
         verificationConfig: verification,
         frequency: verification.frequency,
@@ -762,13 +762,13 @@ export class TechnologyStandardsService extends TypedEventBase {
       if (Math.random() < 0.15) {
         // 15% violation rate
         violations.push({
-          id: `violation-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+          id: `violation-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
           standardId: standard.id,
           violationType: 'configuration',
           severity: 'medium',
-          description: `${standard.name} compliance violation detected`,
+          description: `${standard.name} compliance violation detected`,`
           projectId: project,
-          teamId: `team-${project}`,
+          teamId: `team-${project}`,`
           detectedAt: new Date(),
           source: verification.toolName,
           remediation: verification.remediation,
@@ -818,14 +818,14 @@ export class TechnologyStandardsService extends TypedEventBase {
       violationsByType
     )) {
       recommendations.push({
-        id: `rec-${violationType}-${Date.now()}`,
-        priority: typeViolations.some((v) => v.severity === 'critical')
-          ? 'critical'
+        id: `rec-${violationType}-${Date.now()}`,`
+        priority: typeViolations.some((v) => v.severity === 'critical')'
+          ? 'critical''
           : 'high',
         category: 'immediate',
-        description: `Address ${typeViolations.length} ${violationType} violations for ${standard.name}`,
-        implementation: `Systematic remediation of ${violationType} violations`,
-        expectedImpact: `Improved compliance for ${standard.name} standard`,
+        description: `Address ${typeViolations.length} ${violationType} violations for ${standard.name}`,`
+        implementation: `Systematic remediation of ${violationType} violations`,`
+        expectedImpact: `Improved compliance for ${standard.name} standard`,`
         effort: typeViolations.length > 10 ? 'high' : 'medium',
         timeline: typeViolations.length > 10 ? '4-6 weeks' : '2-3 weeks',
         dependencies: [],
@@ -845,18 +845,18 @@ export class TechnologyStandardsService extends TypedEventBase {
     complianceRate: number
   ): ComplianceRiskAssessment {
     const criticalCount = violations.filter(
-      (v) => v.severity === 'critical'
+      (v) => v.severity === 'critical''
     ).length;
-    const highCount = violations.filter((v) => v.severity === 'high').length;
+    const highCount = violations.filter((v) => v.severity === 'high').length;'
 
     let overallRisk: ComplianceRiskAssessment['overallRisk'] = 'low';
 
     if (criticalCount > 0 || (standard.mandatory && complianceRate < 80)) {
-      overallRisk ='critical';
+      overallRisk ='critical;
     } else if (highCount > 10 || complianceRate < 85) {
-      overallRisk ='high';
+      overallRisk ='high;
     } else if (violations.length > 20 || complianceRate < 90) {
-      overallRisk ='medium';
+      overallRisk ='medium;
     }
 
     const riskFactors: ComplianceRiskFactor[] = [
@@ -864,14 +864,14 @@ export class TechnologyStandardsService extends TypedEventBase {
         factor: 'Critical violations present',
         impact: 'critical',
         probability: criticalCount > 0 ? 1.0 : 0.0,
-        description: `${criticalCount} critical violations detected`,
+        description: `${criticalCount} critical violations detected`,`
         category: 'compliance',
       },
       {
         factor: 'Mandatory standard non-compliance',
         impact: 'high',
         probability: standard.mandatory && complianceRate < 85 ? 0.9 : 0.1,
-        description: `Mandatory standard compliance at ${complianceRate.toFixed(1)}%`,
+        description: `Mandatory standard compliance at ${complianceRate.toFixed(1)}%`,`
         category: 'compliance',
       },
     ];
@@ -917,9 +917,9 @@ export class TechnologyStandardsService extends TypedEventBase {
         violationCount: complianceResult.violations.length,
         lastComplianceCheck: complianceResult.timestamp,
         criticalViolations: complianceResult.violations.filter(
-          (v) => v.severity === 'critical'
+          (v) => v.severity === 'critical''
         ),
-        trend: 'stable' as const, // Would calculate based on historical data
+        trend:'improving' | 'stable' | 'declining'as const, // Would calculate based on historical data'
         riskLevel: complianceResult.riskAssessment.overallRisk,
         exceptionCount: standard.exceptions.length,
       },
@@ -935,7 +935,7 @@ export class TechnologyStandardsService extends TypedEventBase {
   private createKnowledgeManagerFallback() {
     return {
       store: async (data: any) => {
-        this.logger.debug('Knowledge stored (fallback)', { type: data.type });
+        this.logger.debug('Knowledge stored (fallback)', { type: data.type });'
       },
     };
   }
@@ -943,14 +943,14 @@ export class TechnologyStandardsService extends TypedEventBase {
   private createFactSystemFallback() {
     return {
       storeFact: async (fact: any) => {
-        this.logger.debug('Fact stored (fallback)', { type: fact.type });
+        this.logger.debug('Fact stored (fallback)', { type: fact.type });'
       },
       queryFacts: async (query: any) => {
-        this.logger.debug('Facts queried (fallback)', { query });
+        this.logger.debug('Facts queried (fallback)', { query });'
         return [];
       },
       updateFact: async (entityId: string, updates: any) => {
-        this.logger.debug('Fact updated (fallback)', { entityId });
+        this.logger.debug('Fact updated (fallback)', { entityId });'
       },
     };
   }
@@ -958,10 +958,10 @@ export class TechnologyStandardsService extends TypedEventBase {
   private createWorkflowEngineFallback() {
     return {
       startWorkflow: async (workflow: any) => {
-        this.logger.debug('Workflow started (fallback)', {
+        this.logger.debug('Workflow started (fallback)', {'
           type: workflow.workflowType,
         });
-        return `workflow-${Date.now()}`;
+        return `workflow-${Date.now()}`;`
       },
     };
   }
@@ -969,7 +969,7 @@ export class TechnologyStandardsService extends TypedEventBase {
   private createMonitoringSystemFallback() {
     return {
       addMonitor: async (config: any) => {
-        this.logger.debug('Monitor added (fallback)', {
+        this.logger.debug('Monitor added (fallback)', {'
           monitorId: config.monitorId,
         });
       },

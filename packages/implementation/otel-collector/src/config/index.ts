@@ -24,7 +24,7 @@ export class ConfigManager {
   private config: CollectorConfig|null = null;
 
   constructor() {
-    this.logger = getLogger('ConfigManager');
+    this.logger = getLogger('ConfigManager');'
   }
 
   /**
@@ -56,7 +56,7 @@ export class ConfigManager {
           if (path && existsSync(path)) {
             const fileConfig = this.loadConfigFromFile(path);
             config = this.mergeConfigs(config, fileConfig);
-            this.logger.info(`Loaded configuration from ${path}`);
+            this.logger.info(`Loaded configuration from ${path}`);`
             break;
           }
         }
@@ -69,7 +69,7 @@ export class ConfigManager {
       this.validateConfig(config);
 
       this.config = config;
-      this.logger.info('Configuration loaded successfully', {
+      this.logger.info('Configuration loaded successfully', {'
         exporters: config.exporters.length,
         processors: config.processors.length,
         httpPort: config.http.port,
@@ -77,7 +77,7 @@ export class ConfigManager {
 
       return config;
     } catch (error) {
-      this.logger.error('Failed to load configuration', error);
+      this.logger.error('Failed to load configuration', error);'
       throw error;
     }
   }
@@ -87,7 +87,7 @@ export class ConfigManager {
    */
   getConfig(): CollectorConfig {
     if (!this.config) {
-      throw new Error('Configuration not loaded. Call loadConfig() first.');
+      throw new Error('Configuration not loaded. Call loadConfig() first.');'
     }
     return this.config;
   }
@@ -212,24 +212,24 @@ export class ConfigManager {
     const resolvedPath = resolve(configPath);
 
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Configuration file not found: ${resolvedPath}`);
+      throw new Error(`Configuration file not found: ${resolvedPath}`);`
     }
 
     try {
-      if (configPath.endsWith('.json')) {
-        const content = readFileSync(resolvedPath, 'utf-8');
+      if (configPath.endsWith('.json')) {'
+        const content = readFileSync(resolvedPath, 'utf-8');'
         return JSON.parse(content);
-      } else if (configPath.endsWith('.js')||configPath.endsWith('.mjs')) {
+      } else if (configPath.endsWith('.js')||configPath.endsWith('.mjs')) {'
         // Dynamic import for JS config files
         delete require.cache[resolvedPath];
         const config = require(resolvedPath);
         return config.default||config;
       } else {
-        throw new Error(`Unsupported configuration file format: ${configPath}`);
+        throw new Error(`Unsupported configuration file format: ${configPath}`);`
       }
     } catch (error) {
       this.logger.error(
-        `Failed to parse configuration file: ${configPath}`,
+        `Failed to parse configuration file: ${configPath}`,`
         error
       );
       throw error;
@@ -250,7 +250,7 @@ export class ConfigManager {
         continue;
       }
 
-      merged[key] = typeof value === 'object' && !Array.isArray(value) 
+      merged[key] = typeof value === 'object' && !Array.isArray(value) '
         ? { ...merged[key], ...value } 
         : value;
     }
@@ -361,30 +361,30 @@ export class ConfigManager {
   private validateConfig(config: CollectorConfig): void {
     // Validate basic structure
     if (!config.service?.name) {
-      throw new Error('Configuration missing service.name');
+      throw new Error('Configuration missing service.name');'
     }
 
     if (
       !config.http?.port||config.http.port < 1||config.http.port > 65535
     ) {
-      throw new Error('Configuration invalid http.port');
+      throw new Error('Configuration invalid http.port');'
     }
 
     // Validate exporters
     if (!Array.isArray(config.exporters)||config.exporters.length === 0) {
-      throw new Error('Configuration must have at least one exporter');
+      throw new Error('Configuration must have at least one exporter');'
     }
 
     const enabledExporters = config.exporters.filter((e) => e.enabled);
     if (enabledExporters.length === 0) {
-      throw new Error('Configuration must have at least one enabled exporter');
+      throw new Error('Configuration must have at least one enabled exporter');'
     }
 
     // Validate exporter names are unique
     const exporterNames = config.exporters.map((e) => e.name);
     const uniqueNames = new Set(exporterNames);
     if (exporterNames.length !== uniqueNames.size) {
-      throw new Error('Configuration exporter names must be unique');
+      throw new Error('Configuration exporter names must be unique');'
     }
 
     // Validate processors
@@ -392,16 +392,16 @@ export class ConfigManager {
       const processorNames = config.processors.map((p) => p.name);
       const uniqueProcessorNames = new Set(processorNames);
       if (processorNames.length !== uniqueProcessorNames.size) {
-        throw new Error('Configuration processor names must be unique');
+        throw new Error('Configuration processor names must be unique');'
       }
     }
 
     // Validate queue settings
     if (config.queue?.maxSize && config.queue.maxSize < 1) {
-      throw new Error('Configuration queue.maxSize must be positive');
+      throw new Error('Configuration queue.maxSize must be positive');'
     }
 
-    this.logger.debug('Configuration validation passed', {
+    this.logger.debug('Configuration validation passed', {'
       exporters: enabledExporters.length,
       processors: config.processors?.length||0,
     });
@@ -425,22 +425,22 @@ export function loadDefaultConfig(): CollectorConfig {
  */
 export function createDevelopmentConfig(): CollectorConfig {
   const config = new ConfigManager();
-  const devConfig = config['getDefaultConfig']();
+  const devConfig = config['getDefaultConfig']();'
 
   // Enable console exporter for development
-  const consoleExporter = devConfig.exporters.find((e) => e.name === 'console');
+  const consoleExporter = devConfig.exporters.find((e) => e.name === 'console');'
   if (consoleExporter) {
     consoleExporter.enabled = true;
   }
 
   // Disable file exporter for development
-  const fileExporter = devConfig.exporters.find((e) => e.name === 'file');
+  const fileExporter = devConfig.exporters.find((e) => e.name === 'file');'
   if (fileExporter) {
     fileExporter.enabled = false;
   }
 
   // Reduce batch sizes for faster feedback
-  const batchProcessor = devConfig.processors.find((p) => p.name === 'batch');
+  const batchProcessor = devConfig.processors.find((p) => p.name === 'batch');'
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 10;
     batchProcessor.config.batchTimeout = 1000;
@@ -454,24 +454,24 @@ export function createDevelopmentConfig(): CollectorConfig {
  */
 export function createProductionConfig(): CollectorConfig {
   const config = new ConfigManager();
-  const prodConfig = config['getDefaultConfig']();
+  const prodConfig = config['getDefaultConfig']();'
 
   // Disable console exporter for production
   const consoleExporter = prodConfig.exporters.find(
-    (e) => e.name === 'console'
+    (e) => e.name === 'console''
   );
   if (consoleExporter) {
     consoleExporter.enabled = false;
   }
 
   // Enable file exporter for production
-  const fileExporter = prodConfig.exporters.find((e) => e.name === 'file');
+  const fileExporter = prodConfig.exporters.find((e) => e.name === 'file');'
   if (fileExporter) {
     fileExporter.enabled = true;
   }
 
   // Increase batch sizes for efficiency
-  const batchProcessor = prodConfig.processors.find((p) => p.name === 'batch');
+  const batchProcessor = prodConfig.processors.find((p) => p.name === 'batch');'
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 500;
     batchProcessor.config.batchTimeout = 10000;

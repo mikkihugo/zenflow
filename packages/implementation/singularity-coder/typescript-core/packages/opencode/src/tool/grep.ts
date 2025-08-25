@@ -46,7 +46,7 @@ export const GrepTool = Tool.define({
     }
 
     if (exitCode !== 0) {
-      throw new Error(`ripgrep failed: ${errorOutput}`)
+      throw new Error(`ripgrep failed: ${errorOutput}`)`
     }
 
     const lines = output.trim().split("\n")
@@ -88,7 +88,7 @@ export const GrepTool = Tool.define({
       }
     }
 
-    const outputLines = [`Found ${finalMatches.length} matches`]
+    const outputLines = [`Found ${finalMatches.length} matches`]`
 
     let currentFile = ""
     for (const match of finalMatches) {
@@ -97,9 +97,9 @@ export const GrepTool = Tool.define({
           outputLines.push("")
         }
         currentFile = match.path
-        outputLines.push(`${match.path}:`)
+        outputLines.push(`${match.path}:`)`
       }
-      outputLines.push(`  Line ${match.lineNum}: ${match.lineText}`)
+      outputLines.push(`  Line ${match.lineNum}: ${match.lineText}`)`
     }
 
     if (truncated) {

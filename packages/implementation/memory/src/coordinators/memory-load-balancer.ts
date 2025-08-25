@@ -12,7 +12,7 @@ import type { MemoryNode, MemoryLoadMetrics } from './types';
 
 interface LoadBalancingConfig {
   enabled: boolean;
-  algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware';
+  algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware;
   weights?: Record<string, number>;
   thresholds?: {
     maxLatency: number;
@@ -40,7 +40,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
   constructor(config: LoadBalancingConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('MemoryLoadBalancer');
+    this.logger = getLogger('MemoryLoadBalancer');'
     this.stats = {
       totalRequests: 0,
       nodeDistribution: {},
@@ -53,7 +53,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
   addNode(node: MemoryNode): void {
     this.nodes.set(node.id, node);
     this.stats.nodeDistribution[node.id] = 0;
-    this.logger.debug(`Added node to load balancer: ${node.id}`);
+    this.logger.debug(`Added node to load balancer: ${node.id}`);`
   }
 
   removeNode(nodeId: string): void {
@@ -62,12 +62,12 @@ export class MemoryLoadBalancer extends TypedEventBase {
     this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
       (id) => id !== nodeId
     );
-    this.logger.debug(`Removed node from load balancer: ${nodeId}`);
+    this.logger.debug(`Removed node from load balancer: ${nodeId}`);`
   }
 
   selectNode(availableNodes: MemoryNode[]): MemoryNode {
     if (!this.config.enabled||availableNodes.length === 0) {
-      throw new Error('No nodes available for load balancing');
+      throw new Error('No nodes available for load balancing');'
     }
 
     if (availableNodes.length === 1) {
@@ -77,19 +77,19 @@ export class MemoryLoadBalancer extends TypedEventBase {
     let selectedNode: MemoryNode;
 
     switch (this.config.algorithm) {
-      case 'round-robin':
+      case 'round-robin':'
         selectedNode = this.selectRoundRobin(availableNodes);
         break;
 
-      case 'least-connections':
+      case 'least-connections':'
         selectedNode = this.selectLeastConnections(availableNodes);
         break;
 
-      case 'weighted':
+      case 'weighted':'
         selectedNode = this.selectWeighted(availableNodes);
         break;
 
-      case 'resource-aware':
+      case 'resource-aware':'
         selectedNode = this.selectResourceAware(availableNodes);
         break;
 
@@ -104,7 +104,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
     // Check for overloaded nodes
     this.checkNodeOverload(selectedNode);
 
-    recordMetric('memory_load_balancer_request', 1, {
+    recordMetric('memory_load_balancer_request', 1, {'
       algorithm: this.config.algorithm,
       nodeId: selectedNode.id,
     });
@@ -227,23 +227,23 @@ export class MemoryLoadBalancer extends TypedEventBase {
 
     if (isOverloaded && !wasOverloaded) {
       this.stats.overloadedNodes.push(node.id);
-      this.emit('overloaded', node.id);
-      this.logger.warn(`Node overloaded: ${node.id}`, {
+      this.emit('overloaded', node.id);'
+      this.logger.warn(`Node overloaded: ${node.id}`, {`
         latency: node.metrics.averageResponseTime,
         errorRate: node.status.errorRate,
         connections: node.metrics.connections,
         memoryUsage: node.metrics.memoryUsage,
       });
 
-      recordMetric('memory_load_balancer_overload', 1, { nodeId: node.id });
+      recordMetric('memory_load_balancer_overload', 1, { nodeId: node.id });'
     } else if (!isOverloaded && wasOverloaded) {
       this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
         (id) => id !== node.id
       );
-      this.emit('recovered', node.id);
-      this.logger.info(`Node recovered from overload: ${node.id}`);
+      this.emit('recovered', node.id);'
+      this.logger.info(`Node recovered from overload: ${node.id}`);`
 
-      recordMetric('memory_load_balancer_recovery', 1, { nodeId: node.id });
+      recordMetric('memory_load_balancer_recovery', 1, { nodeId: node.id });'
     }
   }
 
@@ -334,24 +334,24 @@ export class MemoryLoadBalancer extends TypedEventBase {
     }
 
     this.roundRobinIndex = 0;
-    this.logger.info('Load balancer statistics reset');
+    this.logger.info('Load balancer statistics reset');'
   }
 
-  setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void {
+  setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void {'
     this.config.algorithm = algorithm;
     this.stats.algorithm = algorithm;
-    this.logger.info(`Load balancing algorithm changed to: ${algorithm}`);
+    this.logger.info(`Load balancing algorithm changed to: ${algorithm}`);`
 
-    recordMetric('memory_load_balancer_algorithm_change', 1, { algorithm });
+    recordMetric('memory_load_balancer_algorithm_change', 1, { algorithm });'
   }
 
   setWeights(weights: Record<string, number>): void {
     this.config.weights = weights;
-    this.logger.info('Load balancing weights updated', weights);
+    this.logger.info('Load balancing weights updated', weights);'
   }
 
-  setThresholds(thresholds: LoadBalancingConfig['thresholds']): void {
+  setThresholds(thresholds: LoadBalancingConfig['thresholds']): void {'
     this.config.thresholds = { ...this.config.thresholds, ...thresholds };
-    this.logger.info('Load balancing thresholds updated', thresholds);
+    this.logger.info('Load balancing thresholds updated', thresholds);'
   }
 }

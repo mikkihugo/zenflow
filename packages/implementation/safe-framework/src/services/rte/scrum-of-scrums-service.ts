@@ -32,7 +32,7 @@ import type { ARTTeam, Dependency, Risk, Logger } from '../../types';
 export interface ScrumOfScrumsConfig {
   readonly id: string;
   readonly artId: string;
-  readonly frequency: 'daily|twice-weekly|weekly';
+  readonly frequency: 'daily|twice-weekly|weekly;
   readonly duration: number; // minutes
   readonly participants: ScrumOfScrumsParticipant[];
   readonly agenda: ScrumOfScrumsAgenda;
@@ -48,7 +48,7 @@ export interface ScrumOfScrumsParticipant {
   readonly teamId: string;
   readonly teamName: string;
   readonly representative: string;
-  readonly role: 'scrum-master|product-owner|team-lead';
+  readonly role: 'scrum-master|product-owner|team-lead;
   readonly backupRepresentative?: string;
   readonly participationHistory: ParticipationRecord[];
 }
@@ -85,7 +85,7 @@ export interface ScrumOfScrumsQuestion {
   readonly question: string;
   readonly purpose: string;
   readonly timeAllocation: number; // minutes
-  readonly facilitation: 'round-robin|open-discussion|focused';
+  readonly facilitation: 'round-robin|open-discussion|focused;
 }
 
 /**
@@ -95,7 +95,7 @@ export interface AgendaCustomItem {
   readonly item: string;
   readonly owner: string;
   readonly duration: number;
-  readonly frequency: 'weekly|bi-weekly|monthly';
+  readonly frequency: 'weekly|bi-weekly|monthly;
 }
 
 /**
@@ -197,7 +197,7 @@ export interface AttendanceRecord {
   readonly attended: boolean;
   readonly late: boolean;
   readonly earlyLeave: boolean;
-  readonly contributionLevel: 'high|medium|low';
+  readonly contributionLevel: 'high' | 'medium' | 'low';
 }
 
 /**
@@ -208,8 +208,8 @@ export interface ScrumActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high|medium|low';
-  readonly status: 'open|in_progress|completed';
+  readonly priority: 'high' | 'medium' | 'low';
+  readonly status: 'open' | 'in_progress' | 'completed';
   readonly relatedImpediment?: string;
 }
 
@@ -244,12 +244,12 @@ export class ScrumOfScrumsService {
   async configureScrumsOfScrums(
     artId: string,
     config: {
-      frequency: 'daily|twice-weekly|weekly';
+      frequency: 'daily|twice-weekly|weekly;
       duration: number;
       teams: ARTTeam[];
     }
   ): Promise<ScrumOfScrumsConfig> {
-    this.logger.info('Configuring Scrum of Scrums', {
+    this.logger.info('Configuring Scrum of Scrums', {'
       artId,
       frequency: config.frequency,
     });
@@ -258,7 +258,7 @@ export class ScrumOfScrumsService {
     const agenda = this.generateStandardAgenda();
 
     const scrumConfig: ScrumOfScrumsConfig = {
-      id: `sos-${nanoid(12)}`,
+      id: `sos-${nanoid(12)}`,`
       artId,
       frequency: config.frequency,
       duration: config.duration,
@@ -271,7 +271,7 @@ export class ScrumOfScrumsService {
 
     this.configurations.set(artId, scrumConfig);
 
-    this.logger.info('Scrum of Scrums configured', {
+    this.logger.info('Scrum of Scrums configured', {'
       configId: scrumConfig.id,
       participantCount: participants.length,
     });
@@ -285,12 +285,12 @@ export class ScrumOfScrumsService {
   async conductMeeting(artId: string): Promise<ScrumOfScrumsResult> {
     const config = this.configurations.get(artId);
     if (!config) {
-      throw new Error(`Scrum of Scrums not configured for ART: ${artId}`);
+      throw new Error(`Scrum of Scrums not configured for ART: ${artId}`);`
     }
 
-    this.logger.info('Conducting Scrum of Scrums meeting', { artId });
+    this.logger.info('Conducting Scrum of Scrums meeting', { artId });'
 
-    const meetingId = `sos-meeting-${nanoid(12)}`;
+    const meetingId = `sos-meeting-${nanoid(12)}`;`
     const attendance = this.generateAttendance(config.participants);
 
     const result: ScrumOfScrumsResult = {
@@ -311,7 +311,7 @@ export class ScrumOfScrumsService {
 
     this.meetingResults.set(meetingId, result);
 
-    this.logger.info('Scrum of Scrums meeting completed', {
+    this.logger.info('Scrum of Scrums meeting completed', {'
       meetingId,
       impedimentsDiscussed: result.impedimentsDiscussed.length,
       effectiveness: result.meetingEffectiveness.overallEffectiveness,
@@ -332,7 +332,7 @@ export class ScrumOfScrumsService {
     affectedTeams: string[];
     impact: string;
   }): Promise<ProgramImpediment> {
-    const impedimentId = `imp-${nanoid(12)}`;
+    const impedimentId = `imp-${nanoid(12)}`;`
 
     const programImpediment: ProgramImpediment = {
       id: impedimentId,
@@ -350,7 +350,7 @@ export class ScrumOfScrumsService {
 
     this.impediments.set(impedimentId, programImpediment);
 
-    this.logger.info('Program impediment tracked', {
+    this.logger.info('Program impediment tracked', {'
       impedimentId,
       severity: impediment.severity,
       affectedTeams: impediment.affectedTeams.length,
@@ -368,7 +368,7 @@ export class ScrumOfScrumsService {
   ): Promise<void> {
     const impediment = this.impediments.get(impedimentId);
     if (!impediment) {
-      throw new Error(`Impediment not found: ${impedimentId}`);
+      throw new Error(`Impediment not found: ${impedimentId}`);`
     }
 
     const escalatedImpediment = {
@@ -379,7 +379,7 @@ export class ScrumOfScrumsService {
 
     this.impediments.set(impedimentId, escalatedImpediment);
 
-    this.logger.info('Impediment escalated', {
+    this.logger.info('Impediment escalated', {'
       impedimentId,
       newLevel: escalationLevel,
       severity: impediment.severity,
@@ -395,7 +395,7 @@ export class ScrumOfScrumsService {
   ): Promise<void> {
     const impediment = this.impediments.get(impedimentId);
     if (!impediment) {
-      throw new Error(`Impediment not found: ${impedimentId}`);
+      throw new Error(`Impediment not found: ${impedimentId}`);`
     }
 
     const resolvedImpediment = {
@@ -407,7 +407,7 @@ export class ScrumOfScrumsService {
 
     this.impediments.set(impedimentId, resolvedImpediment);
 
-    this.logger.info('Impediment resolved', {
+    this.logger.info('Impediment resolved', {'
       impedimentId,
       resolutionDate: resolution.resolutionDate,
       resolvedBy: resolution.resolvedBy,
@@ -421,7 +421,7 @@ export class ScrumOfScrumsService {
     return map(teams, (team) => ({
       teamId: team.id,
       teamName: team.name,
-      representative: 'Scrum Master', // Simplified
+      representative: 'Scrum Master', // Simplified'
       role: 'scrum-master' as const,
       participationHistory: [],
     }));
@@ -486,7 +486,7 @@ export class ScrumOfScrumsService {
   private generateActionItems(): ScrumActionItem[] {
     return [
       {
-        id: `action-${nanoid(8)}`,
+        id: `action-${nanoid(8)}`,`
         description:'Follow up on team dependencies',
         owner: 'RTE',
         dueDate: addDays(new Date(), 2),
@@ -505,9 +505,9 @@ export class ScrumOfScrumsService {
     const attendanceRate =
       (filter(attendance, (a) => a.attended).length / attendance.length) * 100;
     const participationLevel = meanBy(attendance, (a) =>
-      a.contributionLevel === 'high'
+      a.contributionLevel === 'high''
         ? 100
-        : a.contributionLevel === 'medium'
+        : a.contributionLevel === 'medium''
           ? 60
           : 30
     );

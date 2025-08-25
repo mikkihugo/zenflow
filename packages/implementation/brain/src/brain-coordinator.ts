@@ -109,8 +109,8 @@ export class BrainCoordinator {
       },
     };
 
-    this.logger = getLogger('brain-coordinator');
-    this.logger.info('🧠 Brain Coordinator created - initialization pending');
+    this.logger = getLogger('brain-coordinator');'
+    this.logger.info('🧠 Brain Coordinator created - initialization pending');'
   }
 
   /**
@@ -118,7 +118,7 @@ export class BrainCoordinator {
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
-      this.logger.debug('Brain Coordinator already initialized');
+      this.logger.debug('Brain Coordinator already initialized');'
       return;
     }
 
@@ -126,7 +126,7 @@ export class BrainCoordinator {
 
     try {
       this.logger.info(
-        '🧠 Initializing Brain Coordinator with operations facade...'
+        '🧠 Initializing Brain Coordinator with operations facade...''
       );
 
       // Initialize monitoring components through operations facade
@@ -144,8 +144,8 @@ export class BrainCoordinator {
       this.initialized = true;
       const duration = Date.now() - initStartTime;
 
-      this.logger.info('✅ Brain Coordinator initialized successfully', {
-        duration: `${duration}ms`,
+      this.logger.info('✅ Brain Coordinator initialized successfully', {'
+        duration: `${duration}ms`,`
         monitoring: 'operations-facade',
         performanceTracker: !!this.performanceTracker,
         agentMonitor: !!this.agentMonitor,
@@ -153,9 +153,9 @@ export class BrainCoordinator {
       });
     } catch (error) {
       const duration = Date.now() - initStartTime;
-      this.logger.error('❌ Brain Coordinator initialization failed', {
+      this.logger.error('❌ Brain Coordinator initialization failed', {'
         error: error instanceof Error ? error.message : String(error),
-        duration: `${duration}ms`,
+        duration: `${duration}ms`,`
       });
       throw error;
     }
@@ -167,7 +167,7 @@ export class BrainCoordinator {
   async shutdown(): Promise<void> {
     if (!this.initialized) return;
 
-    this.logger.info('🧠 Shutting down Brain Coordinator...');
+    this.logger.info('🧠 Shutting down Brain Coordinator...');'
     this.initialized = false;
     this.performanceTracker = null;
     this.agentMonitor = null;
@@ -175,7 +175,7 @@ export class BrainCoordinator {
     // Allow event loop to process cleanup
     await new Promise(resolve => setTimeout(resolve, 0));
     
-    this.logger.info('✅ Brain Coordinator shutdown complete');
+    this.logger.info('✅ Brain Coordinator shutdown complete');'
   }
 
   /**
@@ -200,7 +200,7 @@ export class BrainCoordinator {
       );
     }
 
-    this.logger.debug(`Optimizing prompt for task: ${request.task}`);
+    this.logger.debug(`Optimizing prompt for task: ${request.task}`);`
 
     // Allow event loop to process the optimization request
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -209,7 +209,7 @@ export class BrainCoordinator {
     // In a real implementation, this would use DSPy coordination
     return {
       strategy: 'autonomous',
-      prompt: `Optimized: ${request.basePrompt}`,
+      prompt: `Optimized: ${request.basePrompt}`,`
       confidence: 0.85,
     };
   }

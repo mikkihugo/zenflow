@@ -41,7 +41,7 @@ export class JaegerExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger(`JaegerExporter:${config.name}`);
+    this.logger = getLogger(`JaegerExporter:${config.name}`);`
 
     // Extract configuration values
     this.maxQueueSize = config.config?.maxQueueSize||1000;
@@ -62,14 +62,14 @@ export class JaegerExporter implements BaseExporter {
       // Start batch processing timer
       this.startBatchTimer();
 
-      this.logger.info('Jaeger exporter initialized', {
+      this.logger.info('Jaeger exporter initialized', {'
         endpoint: this.config.endpoint,
         maxQueueSize: this.maxQueueSize,
         batchTimeout: this.batchTimeout,
         maxBatchSize: this.maxBatchSize,
       });
     } catch (error) {
-      this.logger.error('Failed to initialize Jaeger exporter', error);
+      this.logger.error('Failed to initialize Jaeger exporter', error);'
       throw error;
     }
   }
@@ -90,7 +90,7 @@ export class JaegerExporter implements BaseExporter {
       if (this.queue.length >= this.maxQueueSize) {
         // Remove oldest item to make room
         this.queue.shift();
-        this.logger.warn('Queue full, dropping oldest item');
+        this.logger.warn('Queue full, dropping oldest item');'
       }
 
       this.queue.push({
@@ -112,7 +112,7 @@ export class JaegerExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Jaeger export failed', error);
+      this.logger.error('Jaeger export failed', error);'
 
       return {
         success: false,
@@ -139,7 +139,7 @@ export class JaegerExporter implements BaseExporter {
       const startTime = Date.now();
 
       // Filter for trace data (Jaeger primarily handles traces)
-      const traceItems = dataItems.filter((item) => item.type === 'traces');
+      const traceItems = dataItems.filter((item) => item.type === 'traces');'
 
       if (traceItems.length === 0) {
         return {
@@ -166,7 +166,7 @@ export class JaegerExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Jaeger batch export failed', error);
+      this.logger.error('Jaeger batch export failed', error);'
 
       return {
         success: false,
@@ -190,7 +190,7 @@ export class JaegerExporter implements BaseExporter {
     // Process remaining items in queue
     if (this.queue.length > 0) {
       this.logger.info(
-        `Processing ${this.queue.length} remaining items before shutdown`
+        `Processing ${this.queue.length} remaining items before shutdown``
       );
       await this.processBatch();
     }
@@ -200,11 +200,11 @@ export class JaegerExporter implements BaseExporter {
       try {
         await this.jaegerExporter.shutdown();
       } catch (error) {
-        this.logger.error('Error shutting down Jaeger exporter', error);
+        this.logger.error('Error shutting down Jaeger exporter', error);'
       }
     }
 
-    this.logger.info('Jaeger exporter shut down', {
+    this.logger.info('Jaeger exporter shut down', {'
       totalExported: this.exportCount,
     });
   }
@@ -214,7 +214,7 @@ export class JaegerExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
@@ -262,8 +262,8 @@ export class JaegerExporter implements BaseExporter {
     try {
       await this.exportBatch(dataItems);
     } catch (error) {
-      this.logger.error('Batch processing failed', error);
-      // Items are already removed from queue, so they're lost
+      this.logger.error('Batch processing failed', error);'
+      // Items are already removed from queue, so they're lost'
       // This is intentional to prevent infinite retry loops
     }
   }
@@ -273,7 +273,7 @@ export class JaegerExporter implements BaseExporter {
    */
   private async exportToJaeger(dataItems: TelemetryData[]): Promise<void> {
     if (!this.jaegerExporter) {
-      throw new Error('Jaeger exporter not initialized');
+      throw new Error('Jaeger exporter not initialized');'
     }
 
     // Convert telemetry data to OpenTelemetry format
@@ -292,7 +292,7 @@ export class JaegerExporter implements BaseExporter {
         } else {
           reject(
             new Error(
-              `Jaeger export failed: ${result.error||'Unknown error'}`
+              `Jaeger export failed: ${result.error||'Unknown error'}``
             )
           );
         }
@@ -308,7 +308,7 @@ export class JaegerExporter implements BaseExporter {
 
     for (const data of dataItems) {
       try {
-        if (data.type === 'traces' && data.data) {
+        if (data.type === 'traces' && data.data) {'
           // Handle different trace data formats
           if (Array.isArray(data.data)) {
             spans.push(...data.data);
@@ -331,7 +331,7 @@ export class JaegerExporter implements BaseExporter {
           }
         }
       } catch (error) {
-        this.logger.warn('Failed to convert data item to span', {
+        this.logger.warn('Failed to convert data item to span', {'
           error,
           dataType: data.type,
         });

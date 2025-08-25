@@ -9,10 +9,10 @@ import { getLogger, type Logger } from '@claude-zen/foundation';
 // Database access via infrastructure facade
 
 // Simple fallback implementations
-const logger = getLogger('dspy-llm-bridge-fallback');
+const logger = getLogger('dspy-llm-bridge-fallback');'
 
 // Use logger for initialization tracking
-logger.info('DSPy LLM Bridge fallback implementation loaded', {
+logger.info('DSPy LLM Bridge fallback implementation loaded', {'
   mode: 'fallback',
   timestamp: new Date().toISOString(),
 });
@@ -20,7 +20,7 @@ logger.info('DSPy LLM Bridge fallback implementation loaded', {
 export interface DSPyCoordinationTask {
   id: string;
   type: string;
-  complexity?: 'simple|moderate|complex|heavy';
+  complexity?: 'simple|moderate|complex|heavy;
   data?: any;
   requirements?: any;
   // Additional flexible properties
@@ -31,7 +31,7 @@ export interface DSPyCoordinationTask {
 }
 
 export interface DSPyOptimizationConfig {
-  teleprompter?:|'BootstrapFewShot|COPRO|MIPRO|Ensemble|MIPROv2';
+  teleprompter?:|'BootstrapFewShot|COPRO|MIPRO|Ensemble|MIPROv2;
   optimizationSteps?: number;
   maxTokens?: number;
   temperature?: number;
@@ -78,18 +78,18 @@ export class DSPyLLMBridge {
     configOrDatabaseAccess: any, // Can be config object or database access
     neuralBridge?: any // Optional neural bridge parameter
   ) {
-    this.logger = getLogger('DSPyLLMBridge');
+    this.logger = getLogger('DSPyLLMBridge');'
 
     // Handle different constructor signatures
     if (
       configOrDatabaseAccess &&
-      typeof configOrDatabaseAccess === 'object' &&
-      'query' in configOrDatabaseAccess
+      typeof configOrDatabaseAccess === 'object' &&'
+      'query' in configOrDatabaseAccess'
     ) {
-      // It's a DatabaseAccess object
+      // It's a DatabaseAccess object'
       this.databaseAccess = configOrDatabaseAccess;
     } else {
-      // It's a config object, create a fallback database access
+      // It's a config object, create a fallback database access'
       this.databaseAccess = {
         query: async () => ({ rows: [] }),
         execute: async () => ({ changes: 0 }),
@@ -112,7 +112,7 @@ export class DSPyLLMBridge {
     task: DSPyCoordinationTask,
     config: DSPyOptimizationConfig = {}
   ): Promise<CoordinationResult> {
-    this.logger.info('Executing coordination task (fallback mode)', {
+    this.logger.info('Executing coordination task (fallback mode)', {'
       task: task.id,
       type: task.type,
     });
@@ -120,9 +120,9 @@ export class DSPyLLMBridge {
     // Use config to enhance fallback behavior
     const optimizationSteps = config.optimizationSteps||1;
     const maxTokens = config.maxTokens||1000;
-    const teleprompter = config.teleprompter||'BootstrapFewShot';
+    const teleprompter = config.teleprompter||'BootstrapFewShot;
 
-    this.logger.debug('Config applied to coordination task', {
+    this.logger.debug('Config applied to coordination task', {'
       optimizationSteps,
       maxTokens,
       teleprompter,
@@ -160,7 +160,7 @@ export class DSPyLLMBridge {
     result: any,
     feedback: { success: boolean; improvements?: string[] }
   ): Promise<void> {
-    this.logger.info('Learning from coordination feedback (fallback mode)', {
+    this.logger.info('Learning from coordination feedback (fallback mode)', {'
       task: task.id,
       success: feedback.success,
     });
@@ -184,7 +184,7 @@ export class DSPyLLMBridge {
    * Initialize DSPy systems (fallback)
    */
   async initialize(): Promise<void> {
-    this.logger.info('Initializing DSPy LLM Bridge (fallback mode)');
+    this.logger.info('Initializing DSPy LLM Bridge (fallback mode)');'
     // Fallback initialization - no actual DSPy setup
   }
 
@@ -192,7 +192,7 @@ export class DSPyLLMBridge {
    * Shutdown DSPy systems (fallback)
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down DSPy LLM Bridge (fallback mode)');
+    this.logger.info('Shutting down DSPy LLM Bridge (fallback mode)');'
     // Fallback shutdown
   }
 }

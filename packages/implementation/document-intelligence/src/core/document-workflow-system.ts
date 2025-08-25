@@ -20,7 +20,7 @@ interface DocumentManager {
   store(key: string, data: any, category?: string): Promise<void>;
 }
 
-const logger = getLogger('DocumentWorkflowSystem');
+const logger = getLogger('DocumentWorkflowSystem');'
 
 // ProductWorkflowEngine interface - using fallback type if not available
 interface ProductWorkflowEngine {
@@ -55,13 +55,13 @@ export class DocumentWorkflowSystem extends TypedEventBase {
   }
 
   async initialize(): Promise<void> {
-    logger.info('Initializing Document Workflow System');
+    logger.info('Initializing Document Workflow System');'
 
     await this.workflowEngine.initialize();
     await this.documentService.initialize();
 
-    this.emit('initialized', {});
-    logger.info('Document Workflow System ready');
+    this.emit('initialized', {});'
+    logger.info('Document Workflow System ready');'
   }
 
   /**
@@ -74,7 +74,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
     workspaceId: string,
     docPath: string
   ): Promise<void> {
-    logger.info(`🚀 Processing visionary document: ${docPath}`);
+    logger.info(`🚀 Processing visionary document: ${docPath}`);`
 
     try {
       // Start complete Product Flow workflow
@@ -87,15 +87,15 @@ export class DocumentWorkflowSystem extends TypedEventBase {
       );
 
       if (result?.success && result?.workflowId) {
-        logger.info(`✅ Product Flow workflow started: ${result?.workflowId}`);
-        this.emit('product-flow:started', {
+        logger.info(`✅ Product Flow workflow started: ${result?.workflowId}`);`
+        this.emit('product-flow:started', {'
           workflowId: result?.workflowId,
           docPath,
         });
       }
     } catch (error) {
       logger.error(
-        `❌ Failed to process visionary document ${docPath}:`,
+        `❌ Failed to process visionary document ${docPath}:`,`
         error
       );
       throw error;
@@ -112,7 +112,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
     logger.info(
-      `📁 Loaded Product Flow workspace: ${workspaceId} at ${workspacePath}`
+      `📁 Loaded Product Flow workspace: ${workspaceId} at ${workspacePath}``
     );
     return workspaceId;
   }

@@ -51,11 +51,11 @@ export type HealthGrade = 'A|B|C|D|F';
 
 export interface HealthDimension {
   readonly name: string;
-  readonly category: 'technical|operational|strategic|compliance';
+  readonly category: 'technical|operational|strategic|compliance;
   readonly score: number; // 0-100
   readonly weight: number; // 0-1
-  readonly status: 'excellent|good|fair|poor|critical';
-  readonly trend: 'improving|stable|declining';
+  readonly status: 'excellent|good|fair|poor|critical;
+  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   readonly metrics: DimensionMetric[];
   readonly issues: HealthIssue[];
   readonly recommendations: string[];
@@ -68,7 +68,7 @@ export interface DimensionMetric {
   readonly unit: string;
   readonly target: number;
   readonly threshold: MetricThreshold;
-  readonly importance: 'critical|high|medium|low';
+  readonly importance: 'critical|high|medium|low;
   readonly dataSource: string;
   readonly lastUpdated: Date;
   readonly trend: MetricTrend;
@@ -83,7 +83,7 @@ export interface MetricThreshold {
 }
 
 export interface MetricTrend {
-  readonly direction: 'up|down|stable';
+  readonly direction: 'up' | 'down' | 'stable';
   readonly velocity: number;
   readonly confidence: number; // 0-1
   readonly projection: TrendProjection;
@@ -100,8 +100,8 @@ export interface HealthIssue {
   readonly issueId: string;
   readonly title: string;
   readonly description: string;
-  readonly category:|architecture|design|implementation|operations|'governance';
-  readonly severity: 'critical|high|medium|low';
+  readonly category:|architecture|design|implementation|operations|'governance;
+  readonly severity: 'critical|high|medium|low;
   readonly impact: IssueImpact;
   readonly rootCause: string[];
   readonly affectedComponents: string[];
@@ -109,16 +109,16 @@ export interface HealthIssue {
   readonly estimatedResolution: string;
   readonly cost: IssueCost;
   readonly dependencies: string[];
-  readonly status: 'open|in_progress|resolved|accepted';
+  readonly status: 'open|in_progress|resolved|accepted;
 }
 
 export interface IssueImpact {
-  readonly performance: 'high|medium|low|none';
-  readonly security: 'high|medium|low|none';
-  readonly maintainability: 'high|medium|low|none';
-  readonly scalability: 'high|medium|low|none';
-  readonly compliance: 'high|medium|low|none';
-  readonly business: 'high|medium|low|none';
+  readonly performance: 'high|medium|low|none;
+  readonly security: 'high|medium|low|none;
+  readonly maintainability: 'high|medium|low|none;
+  readonly scalability: 'high|medium|low|none;
+  readonly compliance: 'high|medium|low|none;
+  readonly business: 'high|medium|low|none;
 }
 
 export interface IssueCost {
@@ -130,17 +130,17 @@ export interface IssueCost {
 }
 
 export interface ResourceRequirement {
-  readonly type: 'developer|architect|ops|security|budget';
+  readonly type: 'developer|architect|ops|security|budget;
   readonly quantity: number;
   readonly duration: string;
-  readonly skillLevel: 'junior|mid|senior|expert';
+  readonly skillLevel: 'junior|mid|senior|expert;
   readonly availability: string;
 }
 
 export interface HealthTrend {
   readonly dimension: string;
   readonly period: string;
-  readonly direction: 'improving|stable|declining';
+  readonly direction: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   readonly velocity: number;
   readonly significance: number; // 0-1
   readonly confidence: number; // 0-1
@@ -153,13 +153,13 @@ export interface TrendFactor {
   readonly impact: number; // -1 to 1
   readonly confidence: number; // 0-1
   readonly description: string;
-  readonly category: 'internal|external|organizational|technical';
+  readonly category: 'internal|external|organizational|technical;
 }
 
 export interface HealthAlert {
   readonly alertId: string;
-  readonly type:|threshold_breach|trend_deterioration|anomaly_detected|'prediction_warning';
-  readonly severity: 'critical|high|medium|low';
+  readonly type:|threshold_breach|trend_deterioration|anomaly_detected|'prediction_warning;
+  readonly severity: 'critical|high|medium|low;
   readonly title: string;
   readonly message: string;
   readonly dimension: string;
@@ -172,13 +172,13 @@ export interface HealthAlert {
   readonly escalation: EscalationRule;
   readonly createdAt: Date;
   readonly acknowledgedBy?: string;
-  readonly status: 'active|acknowledged|resolved|suppressed';
+  readonly status: 'active|acknowledged|resolved|suppressed;
 }
 
 export interface AlertImpact {
-  readonly immediate: 'high|medium|low';
-  readonly shortTerm: 'high|medium|low';
-  readonly longTerm: 'high|medium|low';
+  readonly immediate: 'high' | 'medium' | 'low';
+  readonly shortTerm: 'high' | 'medium' | 'low';
+  readonly longTerm: 'high' | 'medium' | 'low';
   readonly affectedSystems: string[];
   readonly affectedTeams: string[];
   readonly businessImpact: string;
@@ -194,8 +194,8 @@ export interface EscalationRule {
 
 export interface HealthRecommendation {
   readonly recommendationId: string;
-  readonly priority: 'critical|high|medium|low';
-  readonly category: 'immediate|short_term|long_term|strategic';
+  readonly priority: 'critical|high|medium|low;
+  readonly category: 'immediate|short_term|long_term|strategic;
   readonly title: string;
   readonly description: string;
   readonly rationale: string;
@@ -217,27 +217,27 @@ export interface RecommendationImpact {
 }
 
 export interface BusinessImpact {
-  readonly revenue: 'positive|negative|neutral';
-  readonly cost: 'decrease|increase|neutral';
-  readonly risk: 'decrease|increase|neutral';
-  readonly agility: 'increase|decrease|neutral';
-  readonly innovation: 'increase|decrease|neutral';
+  readonly revenue: 'positive' | 'negative' | 'neutral';
+  readonly cost: 'decrease' | 'increase' | 'neutral';
+  readonly risk: 'decrease' | 'increase' | 'neutral';
+  readonly agility: 'increase' | 'decrease' | 'neutral';
+  readonly innovation: 'increase' | 'decrease' | 'neutral';
 }
 
 export interface TechnicalImpact {
-  readonly performance: 'improve|degrade|neutral';
-  readonly scalability: 'improve|degrade|neutral';
-  readonly maintainability: 'improve|degrade|neutral';
-  readonly security: 'improve|degrade|neutral';
-  readonly reliability: 'improve|degrade|neutral';
+  readonly performance: 'improve' | 'degrade' | 'neutral';
+  readonly scalability: 'improve' | 'degrade' | 'neutral';
+  readonly maintainability: 'improve' | 'degrade' | 'neutral';
+  readonly security: 'improve' | 'degrade' | 'neutral';
+  readonly reliability: 'improve' | 'degrade' | 'neutral';
 }
 
 export interface OperationalImpact {
-  readonly deployability: 'improve|degrade|neutral';
-  readonly monitoring: 'improve|degrade|neutral';
-  readonly troubleshooting: 'improve|degrade|neutral';
-  readonly automation: 'increase|decrease|neutral';
-  readonly complexity: 'decrease|increase|neutral';
+  readonly deployability: 'improve' | 'degrade' | 'neutral';
+  readonly monitoring: 'improve' | 'degrade' | 'neutral';
+  readonly troubleshooting: 'improve' | 'degrade' | 'neutral';
+  readonly automation: 'increase' | 'decrease' | 'neutral';
+  readonly complexity: 'decrease' | 'increase' | 'neutral';
 }
 
 export interface ImplementationGuide {
@@ -254,7 +254,7 @@ export interface ImplementationPhase {
   readonly name: string;
   readonly description: string;
   readonly duration: string;
-  readonly effort: 'low|medium|high';
+  readonly effort: 'low' | 'medium' | 'high';
   readonly parallelizable: boolean;
   readonly deliverables: string[];
   readonly acceptance: string[];
@@ -265,8 +265,8 @@ export interface TrainingRequirement {
   readonly audience: string;
   readonly topic: string;
   readonly duration: string;
-  readonly format: 'classroom|online|hands_on|mentoring';
-  readonly priority: 'required|recommended|optional';
+  readonly format: 'classroom|online|hands_on|mentoring;
+  readonly priority: 'required' | 'recommended' | 'optional';
 }
 
 export interface RecommendationCost {
@@ -314,7 +314,7 @@ export interface HistoricalHealthData {
 
 export interface HealthEvent {
   readonly eventId: string;
-  readonly type:|improvement|degradation|incident|change|'milestone';
+  readonly type:|improvement|degradation|incident|change|'milestone;
   readonly description: string;
   readonly impact: number;
   readonly duration: string;
@@ -338,11 +338,11 @@ export interface ArchitecturalDebt {
 }
 
 export interface DebtCategory {
-  readonly category:|technical|design|documentation|testing|'security';
+  readonly category:|technical|design|documentation|testing|'security;
   readonly amount: number;
   readonly percentage: number;
   readonly items: DebtItem[];
-  readonly trend: 'increasing|decreasing|stable';
+  readonly trend: 'increasing' | 'decreasing' | 'stable';
 }
 
 export interface DebtItem {
@@ -351,7 +351,7 @@ export interface DebtItem {
   readonly description: string;
   readonly cost: number;
   readonly interest: number; // ongoing cost
-  readonly severity: 'critical|high|medium|low';
+  readonly severity: 'critical|high|medium|low;
   readonly components: string[];
   readonly introduced: Date;
   readonly lastUpdated: Date;
@@ -366,7 +366,7 @@ export interface DebtTimeline {
 }
 
 export interface TimelineRecommendation {
-  readonly period: 'immediate|short_term|medium_term|long_term';
+  readonly period: 'immediate|short_term|medium_term|long_term;
   readonly items: string[];
   readonly rationale: string;
   readonly impact: string;
@@ -381,7 +381,7 @@ export interface DebtPriority {
 }
 
 export interface DebtTrend {
-  readonly direction: 'increasing|decreasing|stable';
+  readonly direction: 'increasing' | 'decreasing' | 'stable';
   readonly velocity: number;
   readonly projectedDebt: number;
   readonly timeframe: string;
@@ -394,7 +394,7 @@ export interface ComplianceHealth {
   readonly standards: StandardCompliance[];
   readonly policies: PolicyCompliance[];
   readonly violations: ComplianceViolation[];
-  readonly riskLevel: 'low|medium|high|critical';
+  readonly riskLevel: 'low|medium|high|critical;
 }
 
 export interface RegulationCompliance {
@@ -407,7 +407,7 @@ export interface RegulationCompliance {
 
 export interface RequirementCompliance {
   readonly requirement: string;
-  readonly status: 'compliant|non_compliant|partially_compliant';
+  readonly status: 'compliant' | 'non_compliant' | 'partially_compliant';
   readonly evidence: string[];
   readonly lastVerified: Date;
 }
@@ -415,7 +415,7 @@ export interface RequirementCompliance {
 export interface ComplianceGap {
   readonly gapId: string;
   readonly description: string;
-  readonly impact: 'high|medium|low';
+  readonly impact: 'high' | 'medium' | 'low';
   readonly remediation: string;
   readonly timeline: string;
   readonly owner: string;
@@ -439,10 +439,10 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
   readonly description: string;
-  readonly severity: 'critical|high|medium|low';
+  readonly severity: 'critical|high|medium|low;
   readonly component: string;
   readonly detectedAt: Date;
-  readonly status: 'open|in_progress|resolved';
+  readonly status: 'open' | 'in_progress' | 'resolved';
 }
 
 export interface PerformanceHealth {
@@ -459,7 +459,7 @@ export interface ThroughputMetrics {
   readonly target: number;
   readonly peak: number;
   readonly unit: string;
-  readonly trend: 'improving|stable|declining';
+  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
 }
 
 export interface LatencyMetrics {
@@ -468,7 +468,7 @@ export interface LatencyMetrics {
   readonly p99: number;
   readonly target: number;
   readonly unit: string;
-  readonly trend: 'improving|stable|declining';
+  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
 }
 
 export interface AvailabilityMetrics {
@@ -490,7 +490,7 @@ export interface ScalabilityMetrics {
 export interface PerformanceBottleneck {
   readonly bottleneckId: string;
   readonly component: string;
-  readonly type:|cpu|memory|disk|network|database|'application';
+  readonly type:|cpu|memory|disk|network|database|'application;
   readonly impact: number;
   readonly frequency: number;
   readonly resolution: string;
@@ -502,16 +502,16 @@ export interface SecurityHealth {
   readonly threats: SecurityThreat[];
   readonly controls: SecurityControl[];
   readonly incidents: SecurityIncident[];
-  readonly riskLevel: 'low|medium|high|critical';
+  readonly riskLevel: 'low|medium|high|critical;
 }
 
 export interface SecurityVulnerability {
   readonly cveId?: string;
-  readonly severity: 'critical|high|medium|low';
+  readonly severity: 'critical|high|medium|low;
   readonly component: string;
   readonly description: string;
   readonly discovered: Date;
-  readonly status: 'open|patched|mitigated|accepted';
+  readonly status: 'open|patched|mitigated|accepted;
 }
 
 export interface SecurityThreat {
@@ -525,16 +525,16 @@ export interface SecurityThreat {
 
 export interface SecurityControl {
   readonly controlId: string;
-  readonly type: 'preventive|detective|corrective';
+  readonly type: 'preventive' | 'detective' | 'corrective';
   readonly effectiveness: number;
   readonly coverage: number;
-  readonly status: 'active|inactive|partial';
+  readonly status: 'active' | 'inactive' | 'partial';
 }
 
 export interface SecurityIncident {
   readonly incidentId: string;
   readonly type: string;
-  readonly severity: 'critical|high|medium|low';
+  readonly severity: 'critical|high|medium|low;
   readonly occurred: Date;
   readonly resolved?: Date;
   readonly impact: string;
@@ -609,7 +609,7 @@ export interface ElasticityMetrics {
 }
 
 export interface ScalabilityConstraint {
-  readonly type:|resource|architectural|data|network|'operational';
+  readonly type:|resource|architectural|data|network|'operational;
   readonly description: string;
   readonly impact: number;
   readonly remediation: string;
@@ -634,9 +634,9 @@ export interface AlertThreshold {
 }
 
 export interface ReportingSchedule {
-  readonly frequency: 'hourly|daily|weekly|monthly|quarterly';
+  readonly frequency: 'hourly|daily|weekly|monthly|quarterly;
   readonly recipients: string[];
-  readonly format: 'dashboard|email|slack|api';
+  readonly format: 'dashboard|email|slack|api;
   readonly includeRecommendations: boolean;
 }
 
@@ -700,7 +700,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       }
 
       this.initialized = true;
-      this.logger.info('Architecture Health Service initialized successfully');
+      this.logger.info('Architecture Health Service initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Architecture Health Service:',
@@ -716,7 +716,7 @@ export class ArchitectureHealthService extends TypedEventBase {
   async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Calculating architecture health metrics');
+    this.logger.info('Calculating architecture health metrics');'
 
     try {
       // Gather health data from various sources
@@ -784,7 +784,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         await this.processHealthAlerts(alerts);
       }
 
-      this.emit('health-metrics-calculated', {
+      this.emit('health-metrics-calculated', {'
         overallHealth,
         healthGrade,
         dimensionCount: dimensions.length,
@@ -792,7 +792,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         recommendationCount: recommendations.length,
       });
 
-      this.logger.info('Architecture health metrics calculated successfully', {
+      this.logger.info('Architecture health metrics calculated successfully', {'
         overallHealth,
         healthGrade,
         alertCount: alerts.length,
@@ -801,12 +801,12 @@ export class ArchitectureHealthService extends TypedEventBase {
       return metrics;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
+        error instanceof Error ? error.message : 'Unknown error occurred;
       this.logger.error(
         'Failed to calculate architecture health metrics:',
         error
       );
-      this.emit('health-calculation-failed', {
+      this.emit('health-calculation-failed', {'
         error: errorMessage,
       });
       throw error;
@@ -823,11 +823,11 @@ export class ArchitectureHealthService extends TypedEventBase {
       try {
         await this.calculateArchitectureHealthMetrics();
       } catch (error) {
-        this.logger.error('Health monitoring cycle failed:', error);
+        this.logger.error('Health monitoring cycle failed:', error);'
       }
     }, this.config.monitoringInterval * 1000);
 
-    this.logger.info('Architecture health monitoring started', {
+    this.logger.info('Architecture health monitoring started', {'
       interval: this.config.monitoringInterval,
     });
   }
@@ -839,7 +839,7 @@ export class ArchitectureHealthService extends TypedEventBase {
     if (this.monitoringTimer) {
       clearInterval(this.monitoringTimer);
       this.monitoringTimer = undefined;
-      this.logger.info('Architecture health monitoring stopped');
+      this.logger.info('Architecture health monitoring stopped');'
     }
   }
 
@@ -847,7 +847,7 @@ export class ArchitectureHealthService extends TypedEventBase {
    * Shutdown the service
    */
   shutdown(): void {
-    this.logger.info('Shutting down Architecture Health Service');
+    this.logger.info('Shutting down Architecture Health Service');'
     this.stopHealthMonitoring();
     this.removeAllListeners();
     this.initialized = false;
@@ -892,7 +892,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         p99: 500,
         target: 100,
         unit: 'ms',
-        trend: 'improving',
+        trend: 'improving' | 'stable' | 'declining'',
       },
       availability: {
         uptime: 99.9,
@@ -1075,7 +1075,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         score: data.performance.overallPerformance,
         weight: 0.25,
         status: this.getHealthStatus(data.performance.overallPerformance),
-        trend: 'improving',
+        trend: 'improving' | 'stable' | 'declining'',
         metrics: [],
         issues: [],
         recommendations: [],
@@ -1099,7 +1099,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         status: this.getHealthStatus(
           data.maintainability.overallMaintainability
         ),
-        trend: 'declining',
+        trend: ''improving' | 'stable' | 'declining',
         metrics: [],
         issues: [],
         recommendations: [],
@@ -1139,22 +1139,22 @@ export class ArchitectureHealthService extends TypedEventBase {
    * Calculate health grade
    */
   private calculateHealthGrade(score: number): HealthGrade {
-    if (score >= 90) return 'A';
-    if (score >= 80) return 'B';
-    if (score >= 70) return 'C';
-    if (score >= 60) return 'D';
-    return 'F';
+    if (score >= 90) return 'A;
+    if (score >= 80) return 'B;
+    if (score >= 70) return 'C;
+    if (score >= 60) return 'D;
+    return 'F;
   }
 
   /**
    * Get health status from score
    */
-  private getHealthStatus(score: number): HealthDimension['status'] {
-    if (score >= 90) return 'excellent';
-    if (score >= 80) return 'good';
-    if (score >= 70) return 'fair';
-    if (score >= 60) return 'poor';
-    return 'critical';
+  private getHealthStatus(score: number): HealthDimension['status'] {'
+    if (score >= 90) return 'excellent;
+    if (score >= 80) return 'good;
+    if (score >= 70) return 'fair;
+    if (score >= 60) return 'poor;
+    return 'critical;
   }
 
   /**
@@ -1186,13 +1186,13 @@ export class ArchitectureHealthService extends TypedEventBase {
     const alerts: HealthAlert[] = [];
 
     for (const dimension of dimensions) {
-      if (dimension.status === 'critical' || dimension.status ==='poor') {
+      if (dimension.status === 'critical' || dimension.status ==='poor') {'
         alerts.push({
-          alertId: `alert-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+          alertId: `alert-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
           type: 'threshold_breach',
           severity: dimension.status === 'critical' ? 'critical' : 'high',
-          title: `${dimension.name} Health Critical`,
-          message: `${dimension.name} health has dropped to ${dimension.score}`,
+          title: `${dimension.name} Health Critical`,`
+          message: `${dimension.name} health has dropped to ${dimension.score}`,`
           dimension: dimension.name,
           currentValue: dimension.score,
           expectedValue: 80,
@@ -1203,14 +1203,14 @@ export class ArchitectureHealthService extends TypedEventBase {
             longTerm: 'high',
             affectedSystems: [],
             affectedTeams: [],
-            businessImpact: `${dimension.name} degradation may impact business operations`,
+            businessImpact: `${dimension.name} degradation may impact business operations`,`
           },
-          recommendations: [`Investigate ${dimension.name} issues immediately`],
+          recommendations: [`Investigate ${dimension.name} issues immediately`],`
           escalation: {
             autoEscalate: true,
             escalationDelay: '30 minutes',
             escalateToRoles: ['Architecture Lead', 'CTO'],
-            escalationMessage: `Critical ${dimension.name} health requires immediate attention`,
+            escalationMessage: `Critical ${dimension.name} health requires immediate attention`,`
             maxEscalations: 3,
           },
           createdAt: new Date(),
@@ -1236,12 +1236,12 @@ export class ArchitectureHealthService extends TypedEventBase {
     for (const dimension of dimensions) {
       if (dimension.score < 80) {
         recommendations.push({
-          recommendationId: `rec-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+          recommendationId: `rec-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
           priority: dimension.score < 60 ? 'critical' : 'high',
           category: dimension.score < 60 ? 'immediate' : 'short_term',
-          title: `Improve ${dimension.name} Health`,
-          description: `Address ${dimension.name} issues to improve overall architecture health`,
-          rationale: `${dimension.name} score of ${dimension.score} is below target of 80`,
+          title: `Improve ${dimension.name} Health`,`
+          description: `Address ${dimension.name} issues to improve overall architecture health`,`
+          rationale: `${dimension.name} score of ${dimension.score} is below target of 80`,`
           expectedImpact: {
             healthImprovement: 15,
             affectedDimensions: [dimension.name],
@@ -1288,10 +1288,10 @@ export class ArchitectureHealthService extends TypedEventBase {
           timeline: '3 months',
           dependencies: [],
           risks: [
-            `Implementation may temporarily impact ${dimension.name} performance`,
+            `Implementation may temporarily impact ${dimension.name} performance`,`
           ],
           success: {
-            objectives: [`Improve ${dimension.name} score to above 80`],
+            objectives: [`Improve ${dimension.name} score to above 80`],`
             kpis: [],
             milestones: [],
             reviewFrequency: 'weekly',
@@ -1339,7 +1339,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       if (alert.escalation.autoEscalate) {
         // Schedule escalation if configured
         setTimeout(async () => {
-          if (alert.status === 'active') {
+          if (alert.status === 'active') {'
             await this.monitoringSystem.escalateAlert(alert);
           }
         }, this.parseEscalationDelay(alert.escalation.escalationDelay));
@@ -1357,11 +1357,11 @@ export class ArchitectureHealthService extends TypedEventBase {
       const value = parseInt(match[1]);
       const unit = match[2];
       switch (unit) {
-        case'minutes':
+        case'minutes':'
           return value * 60 * 1000;
-        case 'hours':
+        case 'hours':'
           return value * 60 * 60 * 1000;
-        case 'days':
+        case 'days':'
           return value * 24 * 60 * 60 * 1000;
       }
     }
@@ -1374,10 +1374,10 @@ export class ArchitectureHealthService extends TypedEventBase {
   private createMonitoringSystemFallback() {
     return {
       sendAlert: (alert: HealthAlert) => {
-        this.logger.debug('Alert sent (fallback)', { alertId: alert.alertId });
+        this.logger.debug('Alert sent (fallback)', { alertId: alert.alertId });'
       },
       escalateAlert: (alert: HealthAlert) => {
-        this.logger.debug('Alert escalated (fallback)', {
+        this.logger.debug('Alert escalated (fallback)', {'
           alertId: alert.alertId,
         });
       },
@@ -1387,7 +1387,7 @@ export class ArchitectureHealthService extends TypedEventBase {
   private createFactSystemFallback() {
     return {
       queryFacts: (query: any) => {
-        this.logger.debug('Facts queried (fallback)', { query });
+        this.logger.debug('Facts queried (fallback)', { query });'
         return [];
       },
     };
@@ -1396,7 +1396,7 @@ export class ArchitectureHealthService extends TypedEventBase {
   private createKnowledgeManagerFallback() {
     return {
       store: (data: any) => {
-        this.logger.debug('Knowledge stored (fallback)', { type: data.type });
+        this.logger.debug('Knowledge stored (fallback)', { type: data.type });'
       },
     };
   }
@@ -1404,7 +1404,7 @@ export class ArchitectureHealthService extends TypedEventBase {
   private createBrainSystemFallback() {
     return {
       analyze: (data: any) => {
-        this.logger.debug('Brain analysis (fallback)', { type: data.type });
+        this.logger.debug('Brain analysis (fallback)', { type: data.type });'
         return {};
       },
     };

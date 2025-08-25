@@ -15,14 +15,14 @@
  *
  * ## Event Types Handled
  *
- * - `memory:cache` - Cache operations and performance events
- * - `memory:gc` - Garbage collection and memory cleanup events
- * - `memory:storage` - Persistent storage and serialization events
- * - `memory:performance` - Memory performance and optimization events
- * - `memory:lifecycle` - Memory lifecycle and management events
+ * - `memory:cache` - Cache operations and performance events`
+ * - `memory:gc` - Garbage collection and memory cleanup events`
+ * - `memory:storage` - Persistent storage and serialization events`
+ * - `memory:performance` - Memory performance and optimization events`
+ * - `memory:lifecycle` - Memory lifecycle and management events`
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const factory = new MemoryEventManagerFactory(logger, config);
  * const manager = await factory.create({
  *   name: 'cache-memory',
@@ -36,7 +36,7 @@
  *
  * // Subscribe to cache events
  * manager.subscribeCacheEvents((event) => {
- *   console.log(`Cache ${event.operation}: ${event.data.key} (${event.data.hitRatio})`);
+ *   console.log(`Cache ${event.operation}: ${event.data.key} (${event.data.hitRatio})`);`
  * });
  *
  * // Emit memory event
@@ -54,7 +54,7 @@
  *     hitRatio: 0.85
  *   }
  * });
- * ```
+ * ````
  *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
@@ -158,10 +158,10 @@ class MemoryEventManagerImpl
       await this.routeMemoryEvent(enrichedEvent);
 
       this.logger.debug(
-        `Memory event emitted: ${event.operation} for ${event.details?.key||'system'}`
+        `Memory event emitted: ${event.operation} for ${event.details?.key||'system'}``
       );
     } catch (error) {
-      this.logger.error('Failed to emit memory event:', error);
+      this.logger.error('Failed to emit memory event:', error);'
       throw error;
     }
   }
@@ -173,7 +173,7 @@ class MemoryEventManagerImpl
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.cache.set(subscriptionId, listener);
 
-    this.logger.debug(`Cache event subscription created: ${subscriptionId}`);
+    this.logger.debug(`Cache event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -184,7 +184,7 @@ class MemoryEventManagerImpl
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.gc.set(subscriptionId, listener);
 
-    this.logger.debug(`GC event subscription created: ${subscriptionId}`);
+    this.logger.debug(`GC event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -195,7 +195,7 @@ class MemoryEventManagerImpl
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.storage.set(subscriptionId, listener);
 
-    this.logger.debug(`Storage event subscription created: ${subscriptionId}`);
+    this.logger.debug(`Storage event subscription created: ${subscriptionId}`);`
     return subscriptionId;
   }
 
@@ -207,7 +207,7 @@ class MemoryEventManagerImpl
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}`
+      `Performance event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -220,7 +220,7 @@ class MemoryEventManagerImpl
     this.subscriptions.lifecycle.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Lifecycle event subscription created: ${subscriptionId}`
+      `Lifecycle event subscription created: ${subscriptionId}``
     );
     return subscriptionId;
   }
@@ -324,7 +324,7 @@ class MemoryEventManagerImpl
     const poorEfficiency = memoryMetrics.performance.memoryEfficiency < 0.7; // 70% efficiency
 
     const isHealthy =
-      baseStatus.status === 'healthy' &&
+      baseStatus.status === 'healthy' &&'
       !lowHitRate &&
       !highMemoryUsage &&
       !frequentGC &&
@@ -350,12 +350,12 @@ class MemoryEventManagerImpl
    * Required by MemoryEventManager interface.
    */
   async storeMemoryEvent(key: string, data: unknown): Promise<void> {
-    this.logger.debug(`Storing memory event: ${key}`);
+    this.logger.debug(`Storing memory event: ${key}`);`
 
     try {
       // Emit memory storage event
       await this.emitMemoryEvent({
-        id: `memory-store-${key}-${Date.now()}`,
+        id: `memory-store-${key}-${Date.now()}`,`
         timestamp: new Date(),
         source: 'memory-event-store',
         type: 'memory:store',
@@ -366,7 +366,7 @@ class MemoryEventManagerImpl
           memoryUsage: process.memoryUsage?.()?.heapUsed||0,
         },
         payload:
-          typeof data ==='object' && data !== null
+          typeof data ==='object' && data !== null'
             ? (data as Record<string, unknown>)
             : { data },
         metadata: {
@@ -375,9 +375,9 @@ class MemoryEventManagerImpl
         },
       });
 
-      this.logger.info(`Memory event stored successfully: ${key}`);
+      this.logger.info(`Memory event stored successfully: ${key}`);`
     } catch (error) {
-      this.logger.error(`Failed to store memory event ${key}:`, error);
+      this.logger.error(`Failed to store memory event ${key}:`, error);`
       throw error;
     }
   }
@@ -387,12 +387,12 @@ class MemoryEventManagerImpl
    * Required by MemoryEventManager interface.
    */
   async retrieveMemoryEvent(key: string): Promise<unknown> {
-    this.logger.debug(`Retrieving memory event: ${key}`);
+    this.logger.debug(`Retrieving memory event: ${key}`);`
 
     try {
       // Emit memory retrieval event
       await this.emitMemoryEvent({
-        id: `memory-retrieve-${key}-${Date.now()}`,
+        id: `memory-retrieve-${key}-${Date.now()}`,`
         timestamp: new Date(),
         source: 'memory-event-retrieval',
         type: 'memory:cache',
@@ -412,10 +412,10 @@ class MemoryEventManagerImpl
       // For demonstration, return a simple success indication
       // In a real implementation, this would retrieve actual data
       const result = { key, retrieved: true, timestamp: new Date() };
-      this.logger.info(`Memory event retrieved successfully: ${key}`);
+      this.logger.info(`Memory event retrieved successfully: ${key}`);`
       return result;
     } catch (error) {
-      this.logger.error(`Failed to retrieve memory event ${key}:`, error);
+      this.logger.error(`Failed to retrieve memory event ${key}:`, error);`
       throw error;
     }
   }
@@ -425,12 +425,12 @@ class MemoryEventManagerImpl
    * Required by MemoryEventManager interface.
    */
   async clearMemoryCache(): Promise<void> {
-    this.logger.debug('Clearing memory cache');
+    this.logger.debug('Clearing memory cache');'
 
     try {
       // Emit memory cache clear event
       await this.emitMemoryEvent({
-        id: `memory-clear-${Date.now()}`,
+        id: `memory-clear-${Date.now()}`,`
         timestamp: new Date(),
         source: 'memory-event-cache',
         type: 'memory:cache',
@@ -446,9 +446,9 @@ class MemoryEventManagerImpl
 
       // Clear internal metrics
       this.memoryMetrics.accessPatterns.clear();
-      this.logger.info('Memory cache cleared successfully');
+      this.logger.info('Memory cache cleared successfully');'
     } catch (error) {
-      this.logger.error('Failed to clear memory cache:', error);
+      this.logger.error('Failed to clear memory cache:', error);'
       throw error;
     }
   }
@@ -458,7 +458,7 @@ class MemoryEventManagerImpl
    */
 
   private initializeMemoryHandlers(): void {
-    this.logger.debug('Initializing memory event handlers');
+    this.logger.debug('Initializing memory event handlers');'
 
     // Set up event type routing
     this.subscribe(
@@ -472,26 +472,26 @@ class MemoryEventManagerImpl
 
     try {
       // Route based on operation type
-      const operationType = event.type.split(':')[1];
+      const operationType = event.type.split(':')[1];'
 
       switch (operationType) {
-        case 'cache':
+        case 'cache':'
           await this.notifyMemorySubscribers(this.subscriptions.cache, event);
           break;
-        case 'store':
+        case 'store':'
           await this.notifyMemorySubscribers(this.subscriptions.storage, event);
           break;
-        case 'gc':
+        case 'gc':'
           await this.notifyMemorySubscribers(this.subscriptions.gc, event);
           break;
-        case 'pool':
+        case 'pool':'
           await this.notifyMemorySubscribers(
             this.subscriptions.performance,
             event
           );
           break;
         default:
-          this.logger.warn(`Unknown memory operation type: ${operationType}`);
+          this.logger.warn(`Unknown memory operation type: ${operationType}`);`
       }
 
       // Track access patterns
@@ -504,7 +504,7 @@ class MemoryEventManagerImpl
         );
       }
     } catch (error) {
-      this.logger.error('Memory event handling failed:', error);
+      this.logger.error('Memory event handling failed:', error);'
       throw error;
     }
   }
@@ -512,36 +512,36 @@ class MemoryEventManagerImpl
   private async routeMemoryEvent(event: MemoryEvent): Promise<void> {
     // Handle special memory operations
     switch (event.operation) {
-      case 'get':
+      case 'get':'
         if (event.details?.cacheHit) {
-          this.logger.debug(`Cache hit: ${event.details?.key}`);
+          this.logger.debug(`Cache hit: ${event.details?.key}`);`
         } else {
-          this.logger.debug(`Cache miss: ${event.details?.key}`);
+          this.logger.debug(`Cache miss: ${event.details?.key}`);`
         }
         break;
-      case 'set':
-        this.logger.debug(`Cache set: ${event.details?.key}`);
+      case 'set':'
+        this.logger.debug(`Cache set: ${event.details?.key}`);`
         break;
-      case 'delete':
-        this.logger.debug(`Cache delete: ${event.details?.key}`);
+      case 'delete':'
+        this.logger.debug(`Cache delete: ${event.details?.key}`);`
         break;
-      case 'clear':
-        this.logger.debug('Cache cleared');
+      case 'clear':'
+        this.logger.debug('Cache cleared');'
         break;
-      case 'expire':
-        this.logger.debug(`Cache item expired: ${event.details?.key}`);
+      case 'expire':'
+        this.logger.debug(`Cache item expired: ${event.details?.key}`);`
         break;
-      case 'cleanup':
-        this.logger.debug('Memory cleanup performed');
+      case 'cleanup':'
+        this.logger.debug('Memory cleanup performed');'
         if (event.details?.gcDuration) {
           this.memoryMetrics.gcTime += event.details.gcDuration;
         }
         break;
-      case 'allocate':
-        this.logger.debug(`Memory allocated: ${event.details?.size} bytes`);
+      case 'allocate':'
+        this.logger.debug(`Memory allocated: ${event.details?.size} bytes`);`
         break;
-      case 'deallocate':
-        this.logger.debug(`Memory deallocated: ${event.details?.size} bytes`);
+      case 'deallocate':'
+        this.logger.debug(`Memory deallocated: ${event.details?.size} bytes`);`
         break;
     }
 
@@ -555,24 +555,24 @@ class MemoryEventManagerImpl
   }
 
   private updateMemoryMetrics(event: MemoryEvent): void {
-    const operationType = event.type.split(':')[1];
+    const operationType = event.type.split(':')[1];'
 
     switch (operationType) {
-      case 'cache':
-        if (event.operation === 'get' && event.details?.cacheHit) {
+      case 'cache':'
+        if (event.operation === 'get' && event.details?.cacheHit) {'
           this.memoryMetrics.cacheHits++;
-        } else if (event.operation === 'get' && !event.details?.cacheHit) {
+        } else if (event.operation === 'get' && !event.details?.cacheHit) {'
           this.memoryMetrics.cacheMisses++;
-        } else if (event.operation === 'delete') {
+        } else if (event.operation === 'delete') {'
           this.memoryMetrics.cacheEvictions++;
         }
         break;
-      case 'gc':
-        if (event.operation === 'cleanup') {
+      case 'gc':'
+        if (event.operation === 'cleanup') {'
           this.memoryMetrics.gcCollections++;
         }
         break;
-      case 'store':
+      case 'store':'
         this.memoryMetrics.storageOperations++;
         break;
     }
@@ -603,7 +603,7 @@ class MemoryEventManagerImpl
         try {
           await listener(event);
         } catch (error) {
-          this.logger.error('Memory event listener failed:', error);
+          this.logger.error('Memory event listener failed:', error);'
         }
       }
     );
@@ -612,7 +612,7 @@ class MemoryEventManagerImpl
   }
 
   protected generateSubscriptionId(): string {
-    return `memory-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `memory-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 }
 
@@ -631,7 +631,7 @@ class MemoryEventManagerImpl
  * - **Lifecycle Management**: TTL tracking, eviction policies, cleanup
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const factory = new MemoryEventManagerFactory(logger, config);
  *
  * const cacheManager = await factory.create({
@@ -643,7 +643,7 @@ class MemoryEventManagerImpl
  *     batchSize: 100
  *   }
  * });
- * ```
+ * ````
  */
 export class MemoryEventManagerFactory
   implements EventManagerFactory<EventManagerConfig>
@@ -654,14 +654,14 @@ export class MemoryEventManagerFactory
     private logger: Logger,
     private config: Config
   ) {
-    this.logger.debug('MemoryEventManagerFactory initialized');
+    this.logger.debug('MemoryEventManagerFactory initialized');'
   }
 
   /**
    * Create a new MemoryEventManager instance.
    */
   async create(config: EventManagerConfig): Promise<EventManager> {
-    this.logger.info(`Creating memory event manager: ${config.name}`);
+    this.logger.info(`Creating memory event manager: ${config.name}`);`
 
     this.validateConfig(config);
     const optimizedConfig = this.applyMemoryDefaults(config);
@@ -672,7 +672,7 @@ export class MemoryEventManagerFactory
     this.managers.set(config.name, manager as unknown as EventManager);
 
     this.logger.info(
-      `Memory event manager created successfully: ${config.name}`
+      `Memory event manager created successfully: ${config.name}``
     );
     return manager as unknown as EventManager;
   }
@@ -681,7 +681,7 @@ export class MemoryEventManagerFactory
    * Create multiple event managers in batch.
    */
   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]> {
-    this.logger.info(`Creating ${configs.length} memory event managers`);
+    this.logger.info(`Creating ${configs.length} memory event managers`);`
 
     const results = await Promise.allSettled(
       configs.map((config) => this.create(config))
@@ -691,21 +691,21 @@ export class MemoryEventManagerFactory
     const errors: Error[] = [];
 
     results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
+      if (result.status === 'fulfilled') {'
         managers.push(result.value);
       } else {
         errors.push(
           new Error(
-            `Failed to create manager ${configs[index]?.name}: ${result.reason}`
+            `Failed to create manager ${configs[index]?.name}: ${result.reason}``
           )
         );
       }
     });
 
     if (errors.length > 0) {
-      this.logger.error(`${errors.length} managers failed to create:`, errors);
+      this.logger.error(`${errors.length} managers failed to create:`, errors);`
       throw new Error(
-        `Failed to create ${errors.length} out of ${configs.length} managers`
+        `Failed to create ${errors.length} out of ${configs.length} managers``
       );
     }
 
@@ -745,11 +745,11 @@ export class MemoryEventManagerFactory
     try {
       await manager.destroy();
       this.managers.delete(name);
-      this.logger.info(`Memory event manager removed: ${name}`);
+      this.logger.info(`Memory event manager removed: ${name}`);`
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to remove memory event manager ${name}:`,
+        `Failed to remove memory event manager ${name}:`,`
         error
       );
       throw error;
@@ -768,7 +768,7 @@ export class MemoryEventManagerFactory
           const status = await manager.healthCheck();
           results.set(name, status);
         } catch (error) {
-          this.logger.error(`Health check failed for manager ${name}:`, error);
+          this.logger.error(`Health check failed for manager ${name}:`, error);`
           results.set(name, {
             name,
             type:'memory',
@@ -801,7 +801,7 @@ export class MemoryEventManagerFactory
           results.set(name, metrics);
         } catch (error) {
           this.logger.error(
-            `Failed to get metrics for manager ${name}:`,
+            `Failed to get metrics for manager ${name}:`,`
             error
           );
         }
@@ -820,20 +820,20 @@ export class MemoryEventManagerFactory
       async ([name, manager]) => {
         try {
           await manager.start();
-          this.logger.debug(`Started memory event manager: ${name}`);
+          this.logger.debug(`Started memory event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to start manager ${name}:`, error);
+          this.logger.error(`Failed to start manager ${name}:`, error);`
           throw error;
         }
       }
     );
 
     const results = await Promise.allSettled(startRequests);
-    const failures = results.filter((result) => result.status === 'rejected');
+    const failures = results.filter((result) => result.status === 'rejected');'
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to start ${failures.length} out of ${results.length} managers`
+        `Failed to start ${failures.length} out of ${results.length} managers``
       );
     }
   }
@@ -846,20 +846,20 @@ export class MemoryEventManagerFactory
       async ([name, manager]) => {
         try {
           await manager.stop();
-          this.logger.debug(`Stopped memory event manager: ${name}`);
+          this.logger.debug(`Stopped memory event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to stop manager ${name}:`, error);
+          this.logger.error(`Failed to stop manager ${name}:`, error);`
           throw error;
         }
       }
     );
 
     const results = await Promise.allSettled(stopRequests);
-    const failures = results.filter((result) => result.status === 'rejected');
+    const failures = results.filter((result) => result.status === 'rejected');'
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to stop ${failures.length} out of ${results.length} managers`
+        `Failed to stop ${failures.length} out of ${results.length} managers``
       );
     }
   }
@@ -868,7 +868,7 @@ export class MemoryEventManagerFactory
    * Shutdown the factory and all managed event managers.
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down memory event manager factory');
+    this.logger.info('Shutting down memory event manager factory');'
 
     try {
       await this.stopAll();
@@ -879,7 +879,7 @@ export class MemoryEventManagerFactory
           try {
             await manager.destroy();
           } catch (error) {
-            this.logger.error(`Failed to destroy manager ${name}:`, error);
+            this.logger.error(`Failed to destroy manager ${name}:`, error);`
           }
         }
       );
@@ -887,9 +887,9 @@ export class MemoryEventManagerFactory
       await Promise.allSettled(destroyRequests);
       this.managers.clear();
 
-      this.logger.info('Memory event manager factory shutdown complete');
+      this.logger.info('Memory event manager factory shutdown complete');'
     } catch (error) {
-      this.logger.error('Error during factory shutdown:', error);
+      this.logger.error('Error during factory shutdown:', error);'
       throw error;
     }
   }
@@ -926,16 +926,16 @@ export class MemoryEventManagerFactory
 
   private validateConfig(config: EventManagerConfig): void {
     if (!config.name) {
-      throw new Error('Memory event manager name is required');
+      throw new Error('Memory event manager name is required');'
     }
 
-    if (config.type !== 'memory') {
-      throw new Error('Manager type must be "memory"');
+    if (config.type !== 'memory') {'
+      throw new Error('Manager type must be "memory"');'
     }
 
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Memory managers should support at least 100 listeners for high-frequency operations');
+        'Memory managers should support at least 100 listeners for high-frequency operations');'
     }
   }
 
@@ -946,7 +946,7 @@ export class MemoryEventManagerFactory
       processing: {
         batchSize: 200, // High batch size for memory events
         ...config.processing,
-        strategy:'immediate', // Memory operations need immediate processing
+        strategy:'immediate', // Memory operations need immediate processing'
       },
       monitoring: {
         enabled: true,
@@ -967,7 +967,7 @@ export class MemoryEventManagerFactory
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Memory event manager monitoring started: ${config.name}`
+        `Memory event manager monitoring started: ${config.name}``
       );
     }
 
@@ -976,15 +976,15 @@ export class MemoryEventManagerFactory
     setInterval(async () => {
       try {
         const status = await manager.healthCheck();
-        if (status.status !== 'healthy') {
+        if (status.status !== 'healthy') {'
           this.logger.warn(
-            `Memory manager health degraded: ${config.name}`,
+            `Memory manager health degraded: ${config.name}`,`
             status.metadata
           );
         }
       } catch (error) {
         this.logger.error(
-          `Memory manager health check failed: ${config.name}`,
+          `Memory manager health check failed: ${config.name}`,`
           error
         );
       }

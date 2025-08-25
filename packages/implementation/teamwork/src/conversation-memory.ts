@@ -71,7 +71,7 @@ export class InMemoryConversationMemory implements ConversationMemory {
   ): Promise<void> {
     const existing = this.conversations.get(id);
     if (!existing) {
-      throw new Error(`Conversation ${id} not found`);
+      throw new Error(`Conversation ${id} not found`);`
     }
 
     const updated = { ...existing, ...updates };

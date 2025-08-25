@@ -2,7 +2,7 @@
  * @fileoverview Processor Management System
  *
  * Manages telemetry data processors that transform, filter, and enrich
- * telemetry data before it's sent to exporters.
+ * telemetry data before it's sent to exporters.'
  */
 
 import { EventEmitter } from 'node:events';
@@ -39,7 +39,7 @@ export interface BaseProcessor {
    * Get processor health status
    */
   getHealthStatus(): Promise<{
-    status:'healthy|degraded|unhealthy';
+    status:'healthy' | 'degraded' | 'unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }>;
@@ -59,7 +59,7 @@ export class ProcessorManager extends TypedEventBase {
 
   constructor() {
     super();
-    this.logger = getLogger('ProcessorManager');
+    this.logger = getLogger('ProcessorManager');'
   }
 
   /**
@@ -74,13 +74,13 @@ export class ProcessorManager extends TypedEventBase {
       }
 
       this.initialized = true;
-      this.logger.info('Processor manager initialized', {
+      this.logger.info('Processor manager initialized', {'
         processorCount: this.processors.size,
       });
 
-      this.emit('initialized', { processorCount: this.processors.size });
+      this.emit('initialized', { processorCount: this.processors.size });'
     } catch (error) {
-      this.logger.error('Failed to initialize processor manager', error);
+      this.logger.error('Failed to initialize processor manager', error);'
       throw error;
     }
   }
@@ -90,16 +90,16 @@ export class ProcessorManager extends TypedEventBase {
    */
   async addProcessor(config: ProcessorConfig): Promise<void> {
     if (this.processors.has(config.name)) {
-      throw new Error(`Processor ${config.name} already exists`);
+      throw new Error(`Processor ${config.name} already exists`);`
     }
 
     const processor = await this.createProcessor(config);
     await processor.initialize();
 
     this.processors.set(config.name, processor);
-    this.logger.info(`Added processor: ${config.name}`);
+    this.logger.info(`Added processor: ${config.name}`);`
 
-    this.emit('processorAdded', { name: config.name, type: config.type });
+    this.emit('processorAdded', { name: config.name, type: config.type });'
   }
 
   /**
@@ -120,7 +120,7 @@ export class ProcessorManager extends TypedEventBase {
         processedData = await processor.process(processedData);
 
         if (processedData === null) {
-          this.logger.debug(`Data filtered out by processor: ${name}`);
+          this.logger.debug(`Data filtered out by processor: ${name}`);`
           break;
         }
       }
@@ -133,9 +133,9 @@ export class ProcessorManager extends TypedEventBase {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Processing failed', error);
+      this.logger.error('Processing failed', error);'
 
-      this.emit('processingError', { error: errorMessage, data });
+      this.emit('processingError', { error: errorMessage, data });'
       return data; // Return original data on error
     }
   }
@@ -158,7 +158,7 @@ export class ProcessorManager extends TypedEventBase {
         processedItems = await processor.processBatch(processedItems);
 
         if (processedItems.length === 0) {
-          this.logger.debug(`All data filtered out by processor: ${name}`);
+          this.logger.debug(`All data filtered out by processor: ${name}`);`
           break;
         }
       }
@@ -171,9 +171,9 @@ export class ProcessorManager extends TypedEventBase {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Batch processing failed', error);
+      this.logger.error('Batch processing failed', error);'
 
-      this.emit('processingError', { error: errorMessage, batch: dataItems });
+      this.emit('processingError', { error: errorMessage, batch: dataItems });'
       return dataItems; // Return original data on error
     }
   }
@@ -202,12 +202,12 @@ export class ProcessorManager extends TypedEventBase {
     try {
       await processor.shutdown();
       this.processors.delete(name);
-      this.logger.info(`Removed processor: ${name}`);
+      this.logger.info(`Removed processor: ${name}`);`
 
-      this.emit('processorRemoved', { name });
+      this.emit('processorRemoved', { name });'
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove processor ${name}`, error);
+      this.logger.error(`Failed to remove processor ${name}`, error);`
       return false;
     }
   }
@@ -216,13 +216,13 @@ export class ProcessorManager extends TypedEventBase {
    * Get processor manager health status
    */
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     processorCount: number;
     lastProcessed?: number;
     lastError?: string;
     processors: Array<{
       name: string;
-      status: 'healthy|degraded|unhealthy';
+      status: 'healthy' | 'degraded' | 'unhealthy';
     }>;
   }> {
     const processorStatuses = [];
@@ -234,23 +234,23 @@ export class ProcessorManager extends TypedEventBase {
         const health = await processor.getHealthStatus();
         processorStatuses.push({ name, status: health.status });
 
-        if (health.status === 'unhealthy') {
+        if (health.status === 'unhealthy') {'
           overallStatus = 'unhealthy';
         } else if (
-          health.status === 'degraded' &&
-          overallStatus === 'healthy'
+          health.status === 'degraded' &&'
+          overallStatus === 'healthy''
         ) {
           overallStatus = 'degraded';
         }
       } catch (error) {
-        processorStatuses.push({ name, status: 'unhealthy' });
+        processorStatuses.push({ name, status: 'unhealthy' });'
         overallStatus = 'unhealthy';
       }
     }
 
     // Check if there are any recent errors
     if (this.lastError) {
-      overallStatus = overallStatus === 'healthy' ? 'degraded': overallStatus;
+      overallStatus = overallStatus === 'healthy' ? 'degraded': overallStatus;'
     }
 
     return {
@@ -273,9 +273,9 @@ export class ProcessorManager extends TypedEventBase {
       async ([name, processor]) => {
         try {
           await processor.shutdown();
-          this.logger.debug(`Shut down processor: ${name}`);
+          this.logger.debug(`Shut down processor: ${name}`);`
         } catch (error) {
-          this.logger.error(`Error shutting down processor ${name}`, error);
+          this.logger.error(`Error shutting down processor ${name}`, error);`
         }
       }
     );
@@ -285,11 +285,11 @@ export class ProcessorManager extends TypedEventBase {
     this.processors.clear();
     this.initialized = false;
 
-    this.logger.info('Processor manager shut down', {
+    this.logger.info('Processor manager shut down', {'
       totalProcessed: this.processedCount,
     });
 
-    this.emit('shutdown', { totalProcessed: this.processedCount });
+    this.emit('shutdown', { totalProcessed: this.processedCount });'
   }
 
   /**
@@ -299,24 +299,24 @@ export class ProcessorManager extends TypedEventBase {
     config: ProcessorConfig
   ): Promise<BaseProcessor> {
     switch (config.type) {
-      case 'batch':
-        const { BatchProcessor } = await import('./batch-processor.js');
+      case 'batch':'
+        const { BatchProcessor } = await import('./batch-processor.js');'
         return new BatchProcessor(config);
 
-      case 'filter':
-        const { FilterProcessor } = await import('./filter-processor.js');
+      case 'filter':'
+        const { FilterProcessor } = await import('./filter-processor.js');'
         return new FilterProcessor(config);
 
-      case 'transform':
-        const { TransformProcessor } = await import('./transform-processor.js');
+      case 'transform':'
+        const { TransformProcessor } = await import('./transform-processor.js');'
         return new TransformProcessor(config);
 
-      case 'sampler':
-        const { SamplerProcessor } = await import('./sampler-processor.js');
+      case 'sampler':'
+        const { SamplerProcessor } = await import('./sampler-processor.js');'
         return new SamplerProcessor(config);
 
       default:
-        throw new Error(`Unknown processor type: ${config.type}`);
+        throw new Error(`Unknown processor type: ${config.type}`);`
     }
   }
 }

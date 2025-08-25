@@ -21,10 +21,10 @@ import type {
   GraphRelationship,
 } from '../types.js';
 
-const logger = getLogger('database-providers');
+const logger = getLogger('database-providers');'
 
 export interface DatabaseConfig {
-  type: 'sqlite | lancedb|kuzu|postgresql|mysql';
+  type: 'sqlite | lancedb|kuzu|postgresql|mysql;
   database: string;
   options?: any;
   [key: string]: any;
@@ -65,21 +65,21 @@ export class DatabaseProviderFactory {
 
   async createAdapter(config: DatabaseConfig): Promise<DatabaseAdapter> {
     this.logger.info(
-      `Creating REAL ${config.type} adapter for: ${config.database}`,
+      `Creating REAL ${config.type} adapter for: ${config.database}`,`
     );
 
     switch (config.type) {
-    case 'sqlite':
+    case 'sqlite':'
       return new SQLiteAdapter(config as SQLiteConfig);
 
-    case 'lancedb':
+    case 'lancedb':'
       return new LanceDBAdapter(config as LanceDBConfig);
 
-    case 'kuzu':
+    case 'kuzu':'
       return new KuzuAdapter(config as KuzuConfig);
 
     default:
-      throw new Error(`Unsupported database type: ${config.type}`);
+      throw new Error(`Unsupported database type: ${config.type}`);`
     }
   }
 }

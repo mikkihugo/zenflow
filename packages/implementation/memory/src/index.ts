@@ -61,11 +61,11 @@ export class SimpleMemoryFactory {
    */
   static async createBasicMemory(
     config: {
-      type?: 'sqlite' | 'memory';
+      type?: 'sqlite' | 'memory;
       path?: string;
     } = {}
   ) {
-    const { MemoryManager } = await import('./memory');
+    const { MemoryManager } = await import('./memory');'
 
     const manager = new MemoryManager({
       backendConfig: {
@@ -111,7 +111,7 @@ export async function getMemorySystemAccess(
 export async function getMemoryManager(
   config?: MemoryConfig
 ): Promise<MemoryManager> {
-  const { MemoryManager } = await import('./memory');
+  const { MemoryManager } = await import('./memory');'
   const manager = new MemoryManager(
     config||{
       backendConfig: { type:'sqlite', path: './memory.db' },
@@ -144,7 +144,7 @@ export async function getSessionMemory(
   config?: MemoryConfig
 ): Promise<any> {
   const system = await getMemorySystemAccess(config);
-  const sessionStore = await system.createStore(`session:${sessionId}`);
+  const sessionStore = await system.createStore(`session:${sessionId}`);`
   return {
     save: (key: string, value: any) => sessionStore.store(key, value),
     load: (key: string) => sessionStore.retrieve(key),
@@ -163,12 +163,12 @@ export async function getMemoryCoordination(
     coordinate: (storeId: string) => system.getStore(storeId),
     orchestrate: (operation: string, ...args: any[]) => {
       switch (operation) {
-        case 'createStore':
+        case 'createStore':'
           return system.createStore(args[0], args[1]);
-        case 'removeStore':
+        case 'removeStore':'
           return system.removeStore(args[0]);
         default:
-          throw new Error(`Unknown operation: ${operation}`);
+          throw new Error(`Unknown operation: ${operation}`);`
       }
     },
     monitor: () => system.getGlobalStats(),

@@ -350,9 +350,9 @@ export async function withRetry<T>(
   const retryPolicy = createRetryPolicy(handleAll, { maxAttempts, backoff });
 
   // Add event listeners for monitoring
-  const retryListener = retryPolicy.onRetry((data: any) => {
-    const { delay, attempt } = data;
-    const error = 'error' in data ? data.error : new Error(String(data.reason || data));
+  const retryListener = retryPolicy.onRetry((data: {delay: number; attempt: number; error?: Error; reason?: unknown}) => {
+    const { delay, attempt, error: dataError, reason } = data;
+    const error = dataError || new Error(String(reason || data));
     logger.warn(`Attempt ${attempt} failed (retrying in ${delay}ms):`, error);
 
     // Custom abort logic - called via onFailedAttempt if provided
@@ -375,7 +375,7 @@ export async function withRetry<T>(
     return Promise.resolve();
   });
 
-  const giveUpListener = retryPolicy.onGiveUp((data: any) => {
+  const giveUpListener = retryPolicy.onGiveUp((data: {error?: Error; reason?: unknown}) => {
     const error = 'error' in data ? data.error : new Error(String(data.reason || data));
     logger.error('Retry failed permanently:', error);
   });
@@ -446,7 +446,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
       logger.info(`Circuit breaker ${this.name} half-opened`);
     });
 
-    this.policy.onFailure((data: any) => {
+    this.policy.onFailure((data: {reason?: unknown}) => {
       const reason = data.reason || data;
       logger.debug(`Circuit breaker ${this.name} recorded failure:`, reason);
     });
@@ -539,7 +539,7 @@ export async function withTimeout<T>(
     logger.warn(`Operation timed out after ${timeoutMs}ms`);
   });
 
-  const failureListener = timeoutPolicy.onFailure((data: any) => {
+  const failureListener = timeoutPolicy.onFailure((data: {reason?: unknown}) => {
     const reason = data.reason || data;
     if (reason instanceof TaskCancelledError) {
       logger.debug('Timeout policy cancelled operation');

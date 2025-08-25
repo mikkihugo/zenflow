@@ -19,10 +19,10 @@ import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
  */
 export interface ApprovalRequestEvent {
   readonly requestId: string;
-  readonly type: 'epic|feature|architecture|business-case||resource|process'';
+  readonly type: 'epic|feature|architecture|business-case||resource|process';
   readonly title: string;
   readonly description: string;
-  readonly priority: 'low|medium|high|critical';
+  readonly priority: 'low|medium|high|critical;
   readonly requestedBy: string;
   readonly approvers: string[];
   readonly deadline?: Date;
@@ -66,10 +66,10 @@ export const APPROVAL_EVENTS = {
  * Create an approval request event
  */
 export function createApprovalRequest(params: {
-  type: ApprovalRequestEvent['type'];
+  type: ApprovalRequestEvent['type'];'
   title: string;
   description: string;
-  priority?: ApprovalRequestEvent['priority'];
+  priority?: ApprovalRequestEvent['priority'];'
   requestedBy: string;
   approvers: string[];
   deadline?: Date;

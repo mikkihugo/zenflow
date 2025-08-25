@@ -19,14 +19,14 @@ export declare const WorkflowStepSchema: z.ZodObject<
     retries: z.ZodDefault<z.ZodNumber>;
     timeout: z.ZodOptional<z.ZodNumber>;
     output: z.ZodOptional<z.ZodString>;
-    onError: z.ZodDefault<z.ZodEnum<['stop', 'continue', 'skip']>>;
+    onError: z.ZodDefault<z.ZodEnum<['stop', 'continue', 'skip']>>;'
   },
   'strip',
   z.ZodTypeAny,
   {
     type: string;
     retries: number;
-    onError: 'stop|continue|skip';
+    onError: 'stop' | 'continue' | 'skip';
     params?: Record<string, unknown>|undefined;
     name?: string|undefined;
     timeout?: number|undefined;
@@ -39,7 +39,7 @@ export declare const WorkflowStepSchema: z.ZodObject<
     retries?: number | undefined;
     timeout?: number | undefined;
     output?: string | undefined;
-    onError?:'stop|continue|skip'|undefined;
+    onError?:'stop|continue|skip'|undefined;'
   }
 >;
 /**
@@ -57,14 +57,14 @@ export declare const WorkflowDefinitionSchema: z.ZodObject<
           retries: z.ZodDefault<z.ZodNumber>;
           timeout: z.ZodOptional<z.ZodNumber>;
           output: z.ZodOptional<z.ZodString>;
-          onError: z.ZodDefault<z.ZodEnum<['stop', 'continue', 'skip']>>;
+          onError: z.ZodDefault<z.ZodEnum<['stop', 'continue', 'skip']>>;'
         },
         'strip',
         z.ZodTypeAny,
         {
           type: string;
           retries: number;
-          onError: 'stop|continue|skip';
+          onError: 'stop' | 'continue' | 'skip';
           params?: Record<string, unknown>|undefined;
           name?: string|undefined;
           timeout?: number|undefined;
@@ -77,13 +77,13 @@ export declare const WorkflowDefinitionSchema: z.ZodObject<
           retries?: number | undefined;
           timeout?: number | undefined;
           output?: string | undefined;
-          onError?:'stop|continue|skip'|undefined;
+          onError?:'stop|continue|skip'|undefined;'
         }
-      >,'many'
+      >,'many''
     >;
     description: z.ZodOptional<z.ZodString>;
     version: z.ZodOptional<z.ZodString>;
-    tags: z.ZodOptional<z.ZodArray<z.ZodString, 'many'>>;
+    tags: z.ZodOptional<z.ZodArray<z.ZodString, 'many'>>;'
     timeout: z.ZodOptional<z.ZodNumber>;
     maxConcurrency: z.ZodDefault<z.ZodNumber>;
   },
@@ -94,7 +94,7 @@ export declare const WorkflowDefinitionSchema: z.ZodObject<
     steps: {
       type: string;
       retries: number;
-      onError: 'stop|continue|skip';
+      onError: 'stop' | 'continue' | 'skip';
       params?: Record<string, unknown>|undefined;
       name?: string|undefined;
       timeout?: number|undefined;
@@ -115,7 +115,7 @@ export declare const WorkflowDefinitionSchema: z.ZodObject<
       retries?: number | undefined;
       timeout?: number | undefined;
       output?: string | undefined;
-      onError?:'stop|continue|skip'|undefined;
+      onError?:'stop|continue|skip'|undefined;'
     }[];
     description?: string|undefined;
     timeout?: number|undefined;
@@ -166,7 +166,7 @@ export declare const WorkflowExecutionResultSchema: z.ZodObject<
             duration?: number | undefined;
             output?: unknown;
           }
-        >,'many'
+        >,'many''
       >
     >;
     context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;

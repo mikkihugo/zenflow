@@ -29,27 +29,27 @@ export interface SafeLogger extends Logger {
 export function getLogger(componentName: string): SafeLogger {
   return {
     info: (message: string, ...args: any[]) => {
-      console.info(`[${componentName}] ${message}`, ...args);
+      console.info(`[${componentName}] ${message}`, ...args);`
     },
     warn: (message: string, ...args: any[]) => {
-      console.warn(`[${componentName}] ${message}`, ...args);
+      console.warn(`[${componentName}] ${message}`, ...args);`
     },
     error: (message: string, error?: any, ...args: any[]) => {
       if (error instanceof Error) {
         console.error(
-          `[${componentName}] ${message}`,
+          `[${componentName}] ${message}`,`
           error.message,
           error.stack,
           ...args
         );
       } else if (error) {
-        console.error(`[${componentName}] ${message}`, error, ...args);
+        console.error(`[${componentName}] ${message}`, error, ...args);`
       } else {
-        console.error(`[${componentName}] ${message}`, ...args);
+        console.error(`[${componentName}] ${message}`, ...args);`
       }
     },
     debug: (message: string, ...args: any[]) => {
-      console.debug(`[${componentName}] ${message}`, ...args);
+      console.debug(`[${componentName}] ${message}`, ...args);`
     },
   };
 }

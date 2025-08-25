@@ -115,7 +115,7 @@ export enum CompleteSafeGateCategory {
   EPIC_APPROVAL = 'epic_approval',
 
   // ART Level Gates (Agile Release Train) - SAFe 6.0
-  PLANNING_INTERVAL_PLANNING = 'planning_interval_planning', // Was PI_PLANNING
+  PLANNING_INTERVAL_PLANNING = 'planning_interval_planning', // Was PI_PLANNING'
   FEATURE_APPROVAL = 'feature_approval',
   CAPABILITY_APPROVAL = 'capability_approval',
   ENABLER_APPROVAL = 'enabler_approval',
@@ -150,10 +150,10 @@ export enum CompleteSafeGateCategory {
   STAKEHOLDER_SIGNOFF = 'stakeholder_signoff',
 
   // NEW SAFe Competencies Gates (July 2025)
-  INVESTMENT_VALIDATION = 'investment_validation', // Validating Investment Opportunities
-  VALUE_STREAM_ORGANIZATION = 'value_stream_organization', // Organizing Around Value for Large Solutions
-  BUSINESS_TEAM_LAUNCH = 'business_team_launch', // Launching Agile Business Teams and Trains
-  CONTINUOUS_VALUE_DELIVERY = 'continuous_value_delivery', // Continuously Delivering Value
+  INVESTMENT_VALIDATION = 'investment_validation', // Validating Investment Opportunities'
+  VALUE_STREAM_ORGANIZATION = 'value_stream_organization', // Organizing Around Value for Large Solutions'
+  BUSINESS_TEAM_LAUNCH = 'business_team_launch', // Launching Agile Business Teams and Trains'
+  CONTINUOUS_VALUE_DELIVERY = 'continuous_value_delivery', // Continuously Delivering Value'
 }
 
 /**
@@ -166,9 +166,9 @@ export enum SafeFlowStage {
   EPIC_DEVELOPMENT = 'epic_development',
 
   // ART Flow (Agile Release Train) - SAFe 6.0
-  PLANNING_INTERVAL_PLANNING_STAGE = 'planning_interval_planning_stage', // Was PI_PLANNING_STAGE
-  PLANNING_INTERVAL_EXECUTION = 'planning_interval_execution', // Was PI_EXECUTION
-  PLANNING_INTERVAL_COMPLETION = 'planning_interval_completion', // Was PI_COMPLETION
+  PLANNING_INTERVAL_PLANNING_STAGE = 'planning_interval_planning_stage', // Was PI_PLANNING_STAGE'
+  PLANNING_INTERVAL_EXECUTION = 'planning_interval_execution', // Was PI_EXECUTION'
+  PLANNING_INTERVAL_COMPLETION = 'planning_interval_completion', // Was PI_COMPLETION'
 
   // Team Flow
   SPRINT_PLANNING = 'sprint_planning',
@@ -190,18 +190,18 @@ export enum SafeFlowStage {
  * Complete SAFE entity types that flow through gates
  */
 export interface SafeEntity {
-  type:|'strategic_theme|epic|capability|feature|story|task|enabler | solution'|release';
+  type:|'strategic_theme|epic|capability|feature|story|task|enabler | solution'|release;
   id: string;
   title: string;
   description?: string;
 
   // Hierarchy context
   parent?: {
-    type: SafeEntity['type'];
+    type: SafeEntity['type'];'
     id: string;
   };
   children?: Array<{
-    type: SafeEntity['type'];
+    type: SafeEntity['type'];'
     id: string;
   }>;
 
@@ -211,8 +211,8 @@ export interface SafeEntity {
 
   // Business context
   businessValue: number;
-  priority: 'low|medium|high|critical';
-  complexity: 'simple|moderate|complex|very_complex';
+  priority: 'low|medium|high|critical;
+  complexity: 'simple|moderate|complex|very_complex;
 
   // Stakeholders
   owner: string;
@@ -289,7 +289,7 @@ export interface CompleteSafeFlowConfig {
     enableFullTraceability: boolean;
     enableLearning: boolean;
     enablePatternRecognition: boolean;
-    auditLevel: 'basic|soc2|comprehensive';
+    auditLevel: 'basic|soc2|comprehensive;
     retentionDays: number;
   };
 }
@@ -305,7 +305,7 @@ export interface CompleteSafeFlowConfig {
  * Provides end-to-end traceability, learning, and AGUI visibility.
  */
 export class CompleteSafeFlowIntegration {
-  private readonly logger = getLogger('CompleteSafeFlowIntegration');
+  private readonly logger = getLogger('CompleteSafeFlowIntegration');'
 
   // Base integration
   private baseIntegration: SafeFrameworkIntegration;
@@ -347,14 +347,14 @@ export class CompleteSafeFlowIntegration {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing Complete SAFE Flow Integration...');
+      this.logger.info('Initializing Complete SAFE Flow Integration...');'
 
       // Initialize base integration first
       await this.baseIntegration.initialize();
 
       // Initialize infrastructure
       const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');
+      this.database = dbSystem.createProvider('sql');'
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -423,10 +423,10 @@ export class CompleteSafeFlowIntegration {
     }>;
     flowTraceabilityId: string;
   }> {
-    const flowId = `strategic-flow-${strategicTheme.id}-${Date.now()}`;
-    const flowTraceabilityId = `flow-trace-${flowId}`;
+    const flowId = `strategic-flow-${strategicTheme.id}-${Date.now()}`;`
+    const flowTraceabilityId = `flow-trace-${flowId}`;`
 
-    this.logger.info('Starting Strategic Theme Flow', {
+    this.logger.info('Starting Strategic Theme Flow', {'
       flowId,
       strategicTheme: strategicTheme.title,
       businessValue: strategicTheme.businessValue,
@@ -443,15 +443,15 @@ export class CompleteSafeFlowIntegration {
       businessValue: strategicTheme.businessValue,
       priority:
         strategicTheme.businessValue > 80
-          ? 'critical'
+          ? 'critical''
           : strategicTheme.businessValue > 60
-            ? 'high'
+            ? 'high''
             : 'medium',
-      complexity: 'very_complex', // Strategic themes are inherently complex
+      complexity: 'very_complex', // Strategic themes are inherently complex'
       owner: strategicTheme.stakeholders[0],
       stakeholders: strategicTheme.stakeholders,
       approvers: strategicTheme.stakeholders.filter((s) =>
-        s.includes('business-leader')
+        s.includes('business-leader')'
       ), // Business Leaders - SAFe 6.0
       metadata: {
         investmentHorizon: strategicTheme.investmentHorizon,
@@ -537,9 +537,9 @@ export class CompleteSafeFlowIntegration {
     }>;
     piTraceabilityId: string;
   }> {
-    const piTraceabilityId = `pi-trace-${programIncrement.id}-${Date.now()}`;
+    const piTraceabilityId = `pi-trace-${programIncrement.id}-${Date.now()}`;`
 
-    this.logger.info('Continuing to ART Flow', {
+    this.logger.info('Continuing to ART Flow', {'
       flowId,
       piNumber: programIncrement.number,
       theme: programIncrement.theme,
@@ -548,15 +548,15 @@ export class CompleteSafeFlowIntegration {
     // Get existing flow
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);
+      throw new Error(`Flow ${flowId} not found`);`
     }
 
     // Create PI entity
     const piEntity: SafeEntity = {
-      type: 'epic', // PI contains epics
+      type: 'epic', // PI contains epics'
       id: programIncrement.id,
-      title: `PI ${programIncrement.number} - ${programIncrement.theme}`,
-      description: `Program Increment ${programIncrement.number}`,
+      title: `PI ${programIncrement.number} - ${programIncrement.theme}`,`
+      description: `Program Increment ${programIncrement.number}`,`
       parent: {
         type: 'strategic_theme',
         id: flow[0].id,
@@ -568,7 +568,7 @@ export class CompleteSafeFlowIntegration {
       complexity: 'complex',
       owner: programIncrement.artTeams[0],
       stakeholders: [...flow[0].stakeholders, ...programIncrement.artTeams],
-      approvers: programIncrement.artTeams.filter((t) => t.includes('rte')), // RTE (Release Train Engineer) - SAFe 6.0
+      approvers: programIncrement.artTeams.filter((t) => t.includes('rte')), // RTE (Release Train Engineer) - SAFe 6.0'
       metadata: {
         piNumber: programIncrement.number,
         objectives: programIncrement.objectives,
@@ -661,9 +661,9 @@ export class CompleteSafeFlowIntegration {
     }>;
     sprintTraceabilityId: string;
   }> {
-    const sprintTraceabilityId = `sprint-trace-${sprint.id}-${Date.now()}`;
+    const sprintTraceabilityId = `sprint-trace-${sprint.id}-${Date.now()}`;`
 
-    this.logger.info('Continuing to Team Flow', {
+    this.logger.info('Continuing to Team Flow', {'
       flowId,
       sprintNumber: sprint.number,
       storiesCount: sprint.stories.length,
@@ -671,7 +671,7 @@ export class CompleteSafeFlowIntegration {
 
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);
+      throw new Error(`Flow ${flowId} not found`);`
     }
 
     const gates: Array<{
@@ -699,7 +699,7 @@ export class CompleteSafeFlowIntegration {
         owner: story.assignee||sprint.teamMembers[0].id,
         stakeholders: sprint.teamMembers.map((m) => m.id),
         approvers: sprint.teamMembers
-          .filter((m) => m.role ==='product_owner')
+          .filter((m) => m.role ==='product_owner')'
           .map((m) => m.id), // Product Owner - SAFe 6.0
         metadata: {
           sprintId: sprint.id,
@@ -739,10 +739,10 @@ export class CompleteSafeFlowIntegration {
 
     // 4. Sprint Review Gate
     const sprintEntity: SafeEntity = {
-      type:'epic', // Sprint is a container
+      type:'epic', // Sprint is a container'
       id: sprint.id,
-      title: `Sprint ${sprint.number}`,
-      description: `Sprint ${sprint.number} for PI Objective ${sprint.piObjectiveId}`,
+      title: `Sprint ${sprint.number}`,`
+      description: `Sprint ${sprint.number} for PI Objective ${sprint.piObjectiveId}`,`
       currentStage: SafeFlowStage.SPRINT_EXECUTION,
       targetStage: SafeFlowStage.SPRINT_REVIEW_STAGE,
       businessValue: sprint.stories.reduce(
@@ -752,10 +752,10 @@ export class CompleteSafeFlowIntegration {
       priority:'high',
       complexity: 'moderate',
       owner:
-        sprint.teamMembers.find((m) => m.role === 'scrum_master')?.id||sprint.teamMembers[0].id, // Scrum Master role maintained
+        sprint.teamMembers.find((m) => m.role === 'scrum_master')?.id||sprint.teamMembers[0].id, // Scrum Master role maintained'
       stakeholders: sprint.teamMembers.map((m) => m.id),
       approvers: sprint.teamMembers
-        .filter((m) => m.role ==='product_owner')
+        .filter((m) => m.role ==='product_owner')'
         .map((m) => m.id),
       metadata: {
         sprintNumber: sprint.number,
@@ -786,7 +786,7 @@ export class CompleteSafeFlowIntegration {
     flowId: string,
     deployment: {
       id: string;
-      environment: 'development|staging|production';
+      environment: 'development' | 'staging' | 'production';
       artifacts: any[];
       pipeline: string;
       targetVersion: string;
@@ -799,9 +799,9 @@ export class CompleteSafeFlowIntegration {
     }>;
     cdTraceabilityId: string;
   }> {
-    const cdTraceabilityId = `cd-trace-${deployment.id}-${Date.now()}`;
+    const cdTraceabilityId = `cd-trace-${deployment.id}-${Date.now()}`;`
 
-    this.logger.info('Continuing to Continuous Delivery Flow', {
+    this.logger.info('Continuing to Continuous Delivery Flow', {'
       flowId,
       environment: deployment.environment,
       pipeline: deployment.pipeline,
@@ -809,14 +809,14 @@ export class CompleteSafeFlowIntegration {
 
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);
+      throw new Error(`Flow ${flowId} not found`);`
     }
 
     const deploymentEntity: SafeEntity = {
       type: 'release',
       id: deployment.id,
-      title: `Deployment to ${deployment.environment}`,
-      description: `Continuous delivery deployment ${deployment.targetVersion}`,
+      title: `Deployment to ${deployment.environment}`,`
+      description: `Continuous delivery deployment ${deployment.targetVersion}`,`
       currentStage: SafeFlowStage.CONTINUOUS_INTEGRATION,
       targetStage: SafeFlowStage.CONTINUOUS_DEPLOYMENT,
       businessValue: flow[flow.length - 1].businessValue,
@@ -826,9 +826,9 @@ export class CompleteSafeFlowIntegration {
       owner: 'devops-team',
       stakeholders: ['dev-team', 'qa-team', 'security-team', 'ops-team'],
       approvers:
-        deployment.environment === 'production'
-          ? ['business-leader', 'system-solution-architect', 'rte'] // SAFe 6.0 roles for production
-          : ['product-owner', 'scrum-master'], // SAFe 6.0 roles for non-production
+        deployment.environment === 'production''
+          ? ['business-leader', 'system-solution-architect', 'rte'] // SAFe 6.0 roles for production'
+          : ['product-owner', 'scrum-master'], // SAFe 6.0 roles for non-production'
       metadata: {
         environment: deployment.environment,
         artifacts: deployment.artifacts,
@@ -875,7 +875,7 @@ export class CompleteSafeFlowIntegration {
     gates.push(performanceGate);
 
     // 5. Release Gate (for production only)
-    if (deployment.environment === 'production') {
+    if (deployment.environment === 'production') {'
       const releaseGate = await this.createReleaseGate(
         deploymentEntity,
         cdTraceabilityId
@@ -903,11 +903,11 @@ export class CompleteSafeFlowIntegration {
       pendingGates: number;
     };
     traceabilityChain: Array<{
-      level: 'portfolio|art|team|solution|cd';
+      level: 'portfolio|art|team|solution|cd;
       entity: SafeEntity;
       gates: Array<{
         category: CompleteSafeGateCategory;
-        status: 'pending|approved|rejected|escalated';
+        status: 'pending|approved|rejected|escalated;
         traceabilityRecord: any;
       }>;
     }>;
@@ -921,7 +921,7 @@ export class CompleteSafeFlowIntegration {
   }> {
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);
+      throw new Error(`Flow ${flowId} not found`);`
     }
 
     // Load complete traceability data
@@ -957,12 +957,12 @@ export class CompleteSafeFlowIntegration {
     traceabilityId: string;
   }> {
     // Implementation similar to base integration but for strategic themes
-    const gateId = `strategic-${entity.id}` as ApprovalGateId;
+    const gateId = `strategic-${entity.id}` as ApprovalGateId;`
     // Create gate with strategic theme specific criteria
     return {
       gateId,
       category: CompleteSafeGateCategory.STRATEGIC_THEME,
-      traceabilityId: `${flowTraceabilityId}-strategic`,
+      traceabilityId: `${flowTraceabilityId}-strategic`,`
     };
   }
 
@@ -974,11 +974,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `funding-${entity.id}` as ApprovalGateId;
+    const gateId = `funding-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.INVESTMENT_FUNDING,
-      traceabilityId: `${flowTraceabilityId}-funding`,
+      traceabilityId: `${flowTraceabilityId}-funding`,`
     };
   }
 
@@ -990,11 +990,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `valuestream-${entity.id}` as ApprovalGateId;
+    const gateId = `valuestream-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.VALUE_STREAM,
-      traceabilityId: `${flowTraceabilityId}-valuestream`,
+      traceabilityId: `${flowTraceabilityId}-valuestream`,`
     };
   }
 
@@ -1006,11 +1006,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `planning-interval-planning-${entity.id}` as ApprovalGateId;
+    const gateId = `planning-interval-planning-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.PLANNING_INTERVAL_PLANNING,
-      traceabilityId: `${flowTraceabilityId}-planning-interval-planning`,
+      traceabilityId: `${flowTraceabilityId}-planning-interval-planning`,`
     };
   }
 
@@ -1023,11 +1023,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `feature-${objective.id}` as ApprovalGateId;
+    const gateId = `feature-${objective.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.FEATURE_APPROVAL,
-      traceabilityId: `${flowTraceabilityId}-feature-${objective.id}`,
+      traceabilityId: `${flowTraceabilityId}-feature-${objective.id}`,`
     };
   }
 
@@ -1039,11 +1039,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `system-demo-${entity.id}` as ApprovalGateId;
+    const gateId = `system-demo-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.SYSTEM_DEMO,
-      traceabilityId: `${flowTraceabilityId}-system-demo`,
+      traceabilityId: `${flowTraceabilityId}-system-demo`,`
     };
   }
 
@@ -1055,11 +1055,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `inspect-adapt-${entity.id}` as ApprovalGateId;
+    const gateId = `inspect-adapt-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.INSPECT_ADAPT,
-      traceabilityId: `${flowTraceabilityId}-inspect-adapt`,
+      traceabilityId: `${flowTraceabilityId}-inspect-adapt`,`
     };
   }
 
@@ -1071,11 +1071,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `story-${entity.id}` as ApprovalGateId;
+    const gateId = `story-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.STORY_APPROVAL,
-      traceabilityId: `${flowTraceabilityId}-story-${entity.id}`,
+      traceabilityId: `${flowTraceabilityId}-story-${entity.id}`,`
     };
   }
 
@@ -1088,11 +1088,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `code-review-${task.id}` as ApprovalGateId;
+    const gateId = `code-review-${task.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.CODE_REVIEW,
-      traceabilityId: `${flowTraceabilityId}-code-review-${task.id}`,
+      traceabilityId: `${flowTraceabilityId}-code-review-${task.id}`,`
     };
   }
 
@@ -1104,11 +1104,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `dod-${entity.id}` as ApprovalGateId;
+    const gateId = `dod-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.DEFINITION_OF_DONE,
-      traceabilityId: `${flowTraceabilityId}-dod-${entity.id}`,
+      traceabilityId: `${flowTraceabilityId}-dod-${entity.id}`,`
     };
   }
 
@@ -1120,11 +1120,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `sprint-review-${entity.id}` as ApprovalGateId;
+    const gateId = `sprint-review-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.SPRINT_REVIEW,
-      traceabilityId: `${flowTraceabilityId}-sprint-review`,
+      traceabilityId: `${flowTraceabilityId}-sprint-review`,`
     };
   }
 
@@ -1136,11 +1136,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `build-${entity.id}` as ApprovalGateId;
+    const gateId = `build-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.BUILD_GATE,
-      traceabilityId: `${flowTraceabilityId}-build`,
+      traceabilityId: `${flowTraceabilityId}-build`,`
     };
   }
 
@@ -1152,11 +1152,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `test-${entity.id}` as ApprovalGateId;
+    const gateId = `test-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.TEST_GATE,
-      traceabilityId: `${flowTraceabilityId}-test`,
+      traceabilityId: `${flowTraceabilityId}-test`,`
     };
   }
 
@@ -1168,11 +1168,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `security-${entity.id}` as ApprovalGateId;
+    const gateId = `security-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.SECURITY_GATE,
-      traceabilityId: `${flowTraceabilityId}-security`,
+      traceabilityId: `${flowTraceabilityId}-security`,`
     };
   }
 
@@ -1184,11 +1184,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `performance-${entity.id}` as ApprovalGateId;
+    const gateId = `performance-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.PERFORMANCE_GATE,
-      traceabilityId: `${flowTraceabilityId}-performance`,
+      traceabilityId: `${flowTraceabilityId}-performance`,`
     };
   }
 
@@ -1200,11 +1200,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `release-${entity.id}` as ApprovalGateId;
+    const gateId = `release-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.RELEASE_GATE,
-      traceabilityId: `${flowTraceabilityId}-release`,
+      traceabilityId: `${flowTraceabilityId}-release`,`
     };
   }
 
@@ -1249,30 +1249,30 @@ export class CompleteSafeFlowIntegration {
     await this.database.schema.createTableIfNotExists(
       'complete_safe_flows',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('flow_id').notNullable().unique();
-        table.json('entities').notNullable();
-        table.json('orchestration').notNullable();
-        table.timestamp('started_at').notNullable();
-        table.timestamp('completed_at').nullable();
-        table.string('current_stage').notNullable();
-        table.json('metadata').notNullable();
-        table.index(['flow_id', 'current_stage']);
+        table.uuid('id').primary();'
+        table.string('flow_id').notNullable().unique();'
+        table.json('entities').notNullable();'
+        table.json('orchestration').notNullable();'
+        table.timestamp('started_at').notNullable();'
+        table.timestamp('completed_at').nullable();'
+        table.string('current_stage').notNullable();'
+        table.json('metadata').notNullable();'
+        table.index(['flow_id', 'current_stage']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'flow_traceability_records',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('flow_id').notNullable();
-        table.string('level').notNullable(); // portfolio, art, team, solution, cd
-        table.json('entity').notNullable();
-        table.json('gates').notNullable();
-        table.json('decisions').notNullable();
-        table.json('learning_data').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.index(['flow_id', 'level']);
+        table.uuid('id').primary();'
+        table.string('flow_id').notNullable();'
+        table.string('level').notNullable(); // portfolio, art, team, solution, cd'
+        table.json('entity').notNullable();'
+        table.json('gates').notNullable();'
+        table.json('decisions').notNullable();'
+        table.json('learning_data').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.index(['flow_id', 'level']);'
       }
     );
   }
@@ -1295,14 +1295,14 @@ export class CompleteSafeFlowIntegration {
 
   private initializeFlowOrchestration(): void {
     // Initialize flow orchestration patterns
-    this.logger.info('Initializing SAFE flow orchestration patterns');
+    this.logger.info('Initializing SAFE flow orchestration patterns');'
   }
 
   private async handleStageCompleted(
     flowId: string,
     stage: SafeFlowStage
   ): Promise<void> {
-    this.logger.info('SAFE flow stage completed', { flowId, stage });
+    this.logger.info('SAFE flow stage completed', { flowId, stage });'
   }
 
   private async handleFlowGateApproved(
@@ -1310,24 +1310,24 @@ export class CompleteSafeFlowIntegration {
     gateId: ApprovalGateId,
     category: CompleteSafeGateCategory
   ): Promise<void> {
-    this.logger.info('SAFE flow gate approved', { flowId, gateId, category });
+    this.logger.info('SAFE flow gate approved', { flowId, gateId, category });'
   }
 
   private async handleFlowEscalation(
     flowId: string,
     reason: string
   ): Promise<void> {
-    this.logger.warn('SAFE flow escalation triggered', { flowId, reason });
+    this.logger.warn('SAFE flow escalation triggered', { flowId, reason });'
   }
 
   private assessStoryComplexity(
     story: Story
-  ): 'simple|moderate|complex|very_complex'{
+  ): 'simple|moderate|complex|very_complex'{'
     const points = story.storyPoints||0;
-    if (points <= 2) return'simple';
-    if (points <= 5) return 'moderate';
-    if (points <= 8) return 'complex';
-    return 'very_complex';
+    if (points <= 2) return'simple;
+    if (points <= 5) return 'moderate;
+    if (points <= 8) return 'complex;
+    return 'very_complex;
   }
 
   private async createFlowTraceabilityRecord(
@@ -1337,10 +1337,10 @@ export class CompleteSafeFlowIntegration {
     flowTraceabilityId: string
   ): Promise<void> {
     // Create comprehensive flow traceability record
-    await this.database('flow_traceability_records').insert({
+    await this.database('flow_traceability_records').insert({'
       id: flowTraceabilityId,
       flow_id: flowId,
-      level: 'portfolio', // Initial level
+      level: 'portfolio', // Initial level'
       entity: JSON.stringify(entity),
       gates: JSON.stringify(gates),
       decisions: JSON.stringify([]),
@@ -1351,9 +1351,9 @@ export class CompleteSafeFlowIntegration {
 
   private async loadCompleteFlowTraceability(flowId: string): Promise<any> {
     // Load complete flow traceability data
-    const records = await this.database('flow_traceability_records')
-      .where('flow_id', flowId)
-      .orderBy('created_at');
+    const records = await this.database('flow_traceability_records')'
+      .where('flow_id', flowId)'
+      .orderBy('created_at');'
 
     return {
       totalGates: records.length * 3, // Estimate
@@ -1398,7 +1398,7 @@ export class CompleteSafeFlowIntegration {
     learnings: string[];
     recommendations: string[];
   }> {
-    this.logger.info('Implementing Investment Validation competency', {
+    this.logger.info('Implementing Investment Validation competency', {'
       flowId,
       themeId: investment.themeId,
       hypothesis: investment.hypothesis,
@@ -1453,7 +1453,7 @@ export class CompleteSafeFlowIntegration {
     reducedHandoffs: number;
     improvedFlow: boolean;
   }> {
-    this.logger.info('Implementing Value Stream Organization competency', {
+    this.logger.info('Implementing Value Stream Organization competency', {'
       flowId,
       operationalStreams: valueStreams.operational.length,
       developmentStreams: valueStreams.development.length,
@@ -1495,7 +1495,7 @@ export class CompleteSafeFlowIntegration {
     crossFunctionalCapability: number;
     customerResponseTime: number;
   }> {
-    this.logger.info('Implementing Business Team Launch competency', {
+    this.logger.info('Implementing Business Team Launch competency', {'
       flowId,
       teamsCount: businessTeams.crossFunctionalTeams.length,
       trainsCount: businessTeams.businessTrains.length,
@@ -1529,7 +1529,7 @@ export class CompleteSafeFlowIntegration {
    */
   async implementContinuousValueDelivery(
     deliveryConfiguration: {
-      automationLevel: 'basic|advanced|full';
+      automationLevel: 'basic' | 'advanced' | 'full';
       feedbackLoops: any[];
       cicdPipelines: any[];
       valueStreamMetrics: any[];
@@ -1540,7 +1540,7 @@ export class CompleteSafeFlowIntegration {
     cycleTimeReduction: number;
     feedbackSpeed: number;
   }> {
-    this.logger.info('Implementing Continuous Value Delivery competency', {
+    this.logger.info('Implementing Continuous Value Delivery competency', {'
       flowId,
       automationLevel: deliveryConfiguration.automationLevel,
       pipelinesCount: deliveryConfiguration.cicdPipelines.length,
@@ -1578,7 +1578,7 @@ export class CompleteSafeFlowIntegration {
     flowId: string
   ): Promise<any> {
     return {
-      gateId: `investment-validation-${investment.themeId}`,
+      gateId: `investment-validation-${investment.themeId}`,`
       category: CompleteSafeGateCategory.INVESTMENT_VALIDATION,
     };
   }
@@ -1588,7 +1588,7 @@ export class CompleteSafeFlowIntegration {
     flowId: string
   ): Promise<any> {
     return {
-      gateId: `value-stream-org-${flowId}`,
+      gateId: `value-stream-org-${flowId}`,`
       category: CompleteSafeGateCategory.VALUE_STREAM_ORGANIZATION,
     };
   }
@@ -1598,7 +1598,7 @@ export class CompleteSafeFlowIntegration {
     flowId: string
   ): Promise<any> {
     return {
-      gateId: `business-team-launch-${flowId}`,
+      gateId: `business-team-launch-${flowId}`,`
       category: CompleteSafeGateCategory.BUSINESS_TEAM_LAUNCH,
     };
   }
@@ -1608,7 +1608,7 @@ export class CompleteSafeFlowIntegration {
     flowId: string
   ): Promise<any> {
     return {
-      gateId: `continuous-delivery-${flowId}`,
+      gateId: `continuous-delivery-${flowId}`,`
       category: CompleteSafeGateCategory.CONTINUOUS_VALUE_DELIVERY,
     };
   }
@@ -1626,13 +1626,13 @@ export class CompleteSafeFlowIntegration {
   private async orchestrateMeasurePhase(
     metrics: string[]
   ): Promise<{ success: boolean; learnings: string[] }> {
-    return { success: true, learnings: ['Metrics collected and analyzed'] };
+    return { success: true, learnings: ['Metrics collected and analyzed'] };'
   }
 
   private async orchestrateLearnPhase(
     objectives: string[]
   ): Promise<{ success: boolean; learnings: string[] }> {
-    return { success: true, learnings: ['Learning objectives achieved'] };
+    return { success: true, learnings: ['Learning objectives achieved'] };'
   }
 
   private generateInvestmentRecommendations(

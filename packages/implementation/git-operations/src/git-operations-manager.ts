@@ -53,8 +53,8 @@ class SimpleGitSandbox {
 
   async execute(command: string, options: any = {}): Promise<any> {
     // Execute git command safely in sandbox
-    const { exec } = await import('child_process');
-    const { promisify } = await import('util');
+    const { exec } = await import('child_process');'
+    const { promisify } = await import('util');'
     const execAsync = promisify(exec);
 
     try {
@@ -75,13 +75,13 @@ class SimpleGitSandbox {
   async initialize(): Promise<void> {
     // Create sandbox root directory
     await fs.mkdir(this.config.sandboxRoot, { recursive: true });
-    logger.info('Git sandbox initialized', {
+    logger.info('Git sandbox initialized', {'
       sandboxRoot: this.config.sandboxRoot,
     });
   }
 
   async createSandbox(projectId: string): Promise<SandboxEnvironment> {
-    const sandboxId = `${projectId}-${Date.now()}`;
+    const sandboxId = `${projectId}-${Date.now()}`;`
     const sandboxPath = path.join(this.config.sandboxRoot, sandboxId);
 
     await fs.mkdir(sandboxPath, { recursive: true });
@@ -95,7 +95,7 @@ class SimpleGitSandbox {
     };
 
     this.activeSandboxes.set(sandboxId, sandbox);
-    logger.debug('Created git sandbox', { sandboxId, sandboxPath, projectId });
+    logger.debug('Created git sandbox', { sandboxId, sandboxPath, projectId });'
 
     return sandbox;
   }
@@ -105,24 +105,24 @@ class SimpleGitSandbox {
     gitOp: (git: SimpleGit) => Promise<void>
   ): Promise<any> {
     const sandboxEnv =
-      typeof sandbox ==='string'? this.activeSandboxes.get(sandbox)||(await this.createSandbox(sandbox))
+      typeof sandbox ==='string'? this.activeSandboxes.get(sandbox)||(await this.createSandbox(sandbox))'
         : sandbox;
 
     if (!sandboxEnv) {
-      throw new Error('Invalid sandbox environment');
+      throw new Error('Invalid sandbox environment');'
     }
 
     // Update last access
     sandboxEnv.lastAccess = new Date();
 
     try {
-      const { simpleGit } = await import('simple-git');
+      const { simpleGit } = await import('simple-git');'
       const git = simpleGit(sandboxEnv.path);
       await gitOp(git);
 
       return { success: true, sandboxId: sandboxEnv.id, path: sandboxEnv.path };
     } catch (error) {
-      logger.error('Git operation failed in sandbox', {
+      logger.error('Git operation failed in sandbox', {'
         sandboxId: sandboxEnv.id,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
@@ -136,7 +136,7 @@ class SimpleGitSandbox {
       if (sandbox) {
         await fs.rm(sandbox.path, { recursive: true, force: true });
         this.activeSandboxes.delete(sandboxId);
-        logger.debug('Cleaned up sandbox', { sandboxId });
+        logger.debug('Cleaned up sandbox', { sandboxId });'
       }
     } else {
       // Cleanup stale sandboxes
@@ -146,7 +146,7 @@ class SimpleGitSandbox {
         if (sandbox.lastAccess.getTime() < staleThreshold) {
           await fs.rm(sandbox.path, { recursive: true, force: true });
           this.activeSandboxes.delete(id);
-          logger.debug('Cleaned up stale sandbox', { sandboxId: id });
+          logger.debug('Cleaned up stale sandbox', { sandboxId: id });'
         }
       }
     }
@@ -157,14 +157,14 @@ class SimpleGitSandbox {
     for (const [id] of this.activeSandboxes.entries()) {
       await this.cleanupSandbox(id);
     }
-    logger.info('Git sandbox shutdown complete');
+    logger.info('Git sandbox shutdown complete');'
   }
 
   private getSafeEnvironment(): Record<string, string> {
     const env: Record<string, string> = {};
 
     // Include only safe environment variables
-    const safeVars = ['PATH', 'HOME', 'USER', 'SHELL'];
+    const safeVars = ['PATH', 'HOME', 'USER', 'SHELL'];'
     for (const varName of safeVars) {
       if (
         process.env[varName] &&
@@ -211,7 +211,7 @@ interface SandboxEnvironment {
 class Commander {
   protected commanderId: string;
 
-  constructor(commanderId = 'commander') {
+  constructor(commanderId = 'commander') {'
     this.commanderId = commanderId;
   }
 
@@ -226,7 +226,7 @@ interface Claude {
   messages?: any;
 }
 
-const logger = getLogger('git-commander');
+const logger = getLogger('git-commander');'
 
 export interface GitOperationConfig {
   /** Enable AI-powered conflict resolution */
@@ -247,7 +247,7 @@ export interface RemoteConfig {
   name: string;
   url: string;
   credentials?: {
-    type: 'token|ssh|basic';
+    type: 'token' | 'ssh' | 'basic';
     token?: string;
     username?: string;
     password?: string;
@@ -257,7 +257,7 @@ export interface RemoteConfig {
 
 export interface BranchStrategy {
   /** Branch naming convention */
-  namingPattern: 'feature/{name}' | 'hotfix/{name}' | 'release/{name}' | 'custom';
+  namingPattern: 'feature/{name}' | 'hotfix/{name}' | 'release/{name}' | 'custom;
   /** Custom naming pattern */
   customPattern?: string;
   /** Auto-cleanup old branches */
@@ -265,20 +265,20 @@ export interface BranchStrategy {
   /** Branch protection rules */
   protectedBranches: string[];
   /** Merge strategy preference */
-  defaultMergeStrategy: 'merge|rebase|squash';
+  defaultMergeStrategy: 'merge' | 'rebase' | 'squash';
 }
 
 export interface ConflictResolution {
   /** Conflict type */
-  type: 'merge' | 'rebase' | 'cherry-pick';
+  type: 'merge' | 'rebase' | 'cherry-pick;
   /** Files with conflicts */
   conflictFiles: string[];
   /** AI resolution suggestions */
   aiSuggestions: ConflictSuggestion[];
   /** Resolution strategy */
-  strategy: 'auto' | 'manual' | 'ai-assisted';
+  strategy: 'auto' | 'manual' | 'ai-assisted;
   /** Resolution result */
-  result?: 'resolved' | 'requires-manual' | 'failed';
+  result?: 'resolved' | 'requires-manual' | 'failed;
 }
 
 export interface ConflictSuggestion {
@@ -313,10 +313,10 @@ export interface GitTreeStatus {
 
 export interface GitOperation {
   id: string;
-  type:|'clone|pull|push|merge|rebase|branch|commit|fetch';
+  type:|'clone|pull|push|merge|rebase|branch|commit|fetch;
   projectId: string;
   sandboxId: string;
-  status:|'pending|running|completed|failed||requires-resolution';
+  status:|'pending|running|completed|failed||requires-resolution;
   startedAt: Date;
   completedAt?: Date;
   result?: any;
@@ -326,7 +326,7 @@ export interface GitOperation {
 
 export interface MaintenanceTask {
   id: string;
-  type: 'cleanup-stale' | 'compress-trees' | 'update-remotes' | 'verify-integrity';
+  type: 'cleanup-stale' | 'compress-trees' | 'update-remotes' | 'verify-integrity;
   schedule: string; // cron expression
   lastRun?: Date;
   nextRun: Date;
@@ -437,7 +437,7 @@ export class GitOperationsManager extends Commander {
 
     this.initializeMaintenanceTasks();
 
-    logger.info('🚀 GitCommander initialized', {
+    logger.info('🚀 GitCommander initialized', {'
       commanderId: this.commanderId,
       aiConflictResolution: this.config.aiConflictResolution,
       intelligentBranching: this.config.intelligentBranching,
@@ -451,7 +451,7 @@ export class GitOperationsManager extends Commander {
    * Get methodology name for base class
    */
   protected getMethodologyName(): string {
-    return 'GIT';
+    return 'GIT;
   }
 
   /**
@@ -461,7 +461,7 @@ export class GitOperationsManager extends Commander {
     const startTime = Date.now();
 
     try {
-      logger.info('🚀 Starting GitCommander coordination', {
+      logger.info('🚀 Starting GitCommander coordination', {'
         commanderId: this.commanderId,
         projectId: project.id,
         projectName: project.name,
@@ -505,10 +505,10 @@ export class GitOperationsManager extends Commander {
 
       // Update base class metrics and track coordination
       this.updateTreeMetrics(project.id);
-      this.coordinationContext.metadata['completedAt'] =
+      this.coordinationContext.metadata['completedAt'] ='
         new Date().toISOString();
 
-      logger.info('✅ GitCommander coordination completed', {
+      logger.info('✅ GitCommander coordination completed', {'
         commanderId: this.commanderId,
         projectId: project.id,
         success: true,
@@ -522,7 +522,7 @@ export class GitOperationsManager extends Commander {
     } catch (error) {
       const duration = Date.now() - startTime;
 
-      logger.error('❌ GitCommander coordination failed', {
+      logger.error('❌ GitCommander coordination failed', {'
         commanderId: this.commanderId,
         projectId: project.id,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -558,14 +558,14 @@ export class GitOperationsManager extends Commander {
         this.startMaintenanceScheduler();
       }
 
-      logger.info('✅ GitCommander ready', {
+      logger.info('✅ GitCommander ready', {'
         commanderId: this.commanderId,
         maxConcurrentOps: this.config.maxConcurrentOps,
         maintenanceTasks: this.maintenanceTasks.length,
         aiEnabled: !!this.claude,
       });
     } catch (error) {
-      logger.error('❌ Failed to initialize GitCommander', {
+      logger.error('❌ Failed to initialize GitCommander', {'
         commanderId: this.commanderId,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
@@ -592,7 +592,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'clone',
       projectId,
-      'clone-' + projectId
+      'clone-' + projectId'
     );
 
     try {
@@ -602,21 +602,21 @@ export class GitOperationsManager extends Commander {
         const cloneOptions: string[] = [];
 
         if (options.branch) {
-          cloneOptions.push('--branch', options.branch);
+          cloneOptions.push('--branch', options.branch);'
         }
         if (options.depth) {
-          cloneOptions.push('--depth', options.depth.toString())();
+          cloneOptions.push('--depth', options.depth.toString())();'
         }
         if (options.recursive) {
-          cloneOptions.push('--recursive');
+          cloneOptions.push('--recursive');'
         }
 
-        await git.clone(repoUrl, '.', cloneOptions);
+        await git.clone(repoUrl, '.', cloneOptions);'
       });
 
       this.completeOperation(operation, { sandbox: sandbox.id });
 
-      logger.info('✅ Repository cloned successfully', {
+      logger.info('✅ Repository cloned successfully', {'
         commanderId: this.commanderId,
         projectId,
         repoUrl,
@@ -645,7 +645,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'branch',
       projectId,
-      'branch-' + branchName
+      'branch-' + branchName'
     );
 
     try {
@@ -660,13 +660,13 @@ export class GitOperationsManager extends Commander {
 
         // Push to remote if requested
         if (options.push) {
-          await git.push('origin', formattedName, ['--set-upstream']);
+          await git.push('origin', formattedName, ['--set-upstream']);'
         }
       });
 
       this.completeOperation(operation, { branchName: formattedName });
 
-      logger.info('✅ Branch created successfully', {
+      logger.info('✅ Branch created successfully', {'
         commanderId: this.commanderId,
         projectId,
         branchName: formattedName,
@@ -693,31 +693,31 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'branch',
       projectId,
-      'delete-' + branchName
+      'delete-' + branchName'
     );
 
     try {
-      // Safety check: don't delete protected branches
+      // Safety check: don't delete protected branches'
       if (this.branchStrategy.protectedBranches.includes(branchName)) {
-        throw new Error(`Cannot delete protected branch: ${branchName}`);
+        throw new Error(`Cannot delete protected branch: ${branchName}`);`
       }
 
       const sandbox = await this.getSandboxForProject(projectId);
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
         // Delete local branch
-        const deleteFlag = options.force ? '-D' : '-d';
-        await git.raw(['branch', deleteFlag, branchName]);
+        const deleteFlag = options.force ? '-D' : '-d;
+        await git.raw(['branch', deleteFlag, branchName]);'
 
         // Delete remote branch if requested
         if (options.deleteRemote) {
-          await git.push(['origin', '--delete', branchName]);
+          await git.push(['origin', '--delete', branchName]);'
         }
       });
 
       this.completeOperation(operation, { deleted: true });
 
-      logger.info('✅ Branch deleted successfully', {
+      logger.info('✅ Branch deleted successfully', {'
         commanderId: this.commanderId,
         projectId,
         branchName,
@@ -738,14 +738,14 @@ export class GitOperationsManager extends Commander {
     sourceBranch: string,
     targetBranch: string,
     options: {
-      strategy?: 'merge|squash|rebase';
+      strategy?: 'merge' | 'squash' | 'rebase';
       message?: string;
       autoResolveConflicts?: boolean;
     } = {}
   ): Promise<ConflictResolution|null> {
     const operation = this.createOperation('merge',
       projectId,
-      `merge-${sourceBranch}-${targetBranch}`
+      `merge-${sourceBranch}-${targetBranch}``
     );
 
     try {
@@ -762,13 +762,13 @@ export class GitOperationsManager extends Commander {
             options.strategy||this.branchStrategy.defaultMergeStrategy;
 
           switch (strategy) {
-            case'merge':
+            case'merge':'
               await git.merge([sourceBranch]);
               break;
-            case 'squash':
-              await git.merge([sourceBranch, '--squash']);
+            case 'squash':'
+              await git.merge([sourceBranch, '--squash']);'
               break;
-            case 'rebase':
+            case 'rebase':'
               await git.rebase([sourceBranch]);
               break;
           }
@@ -779,7 +779,7 @@ export class GitOperationsManager extends Commander {
             options.autoResolveConflicts !== false
           ) {
             const sandboxEnv =
-              typeof sandbox === 'string' ? { path: sandbox } : sandbox;
+              typeof sandbox === 'string' ? { path: sandbox } : sandbox;'
             conflictResolution = await this.resolveConflictsWithAI(
               git,
               'merge',
@@ -796,7 +796,7 @@ export class GitOperationsManager extends Commander {
         conflictResolution,
       });
 
-      logger.info('✅ Branch merged successfully', {
+      logger.info('✅ Branch merged successfully', {'
         commanderId: this.commanderId,
         projectId,
         sourceBranch,
@@ -826,7 +826,7 @@ export class GitOperationsManager extends Commander {
   ): Promise<ConflictResolution|null> {
     const operation = this.createOperation('rebase',
       projectId,
-      `rebase-${targetBranch}`
+      `rebase-${targetBranch}``
     );
 
     try {
@@ -838,10 +838,10 @@ export class GitOperationsManager extends Commander {
           const rebaseOptions: string[] = [targetBranch];
 
           if (options.interactive) {
-            rebaseOptions.push('--interactive');
+            rebaseOptions.push('--interactive');'
           }
           if (options.preserveMerges) {
-            rebaseOptions.push('--preserve-merges');
+            rebaseOptions.push('--preserve-merges');'
           }
 
           await git.rebase(rebaseOptions);
@@ -852,7 +852,7 @@ export class GitOperationsManager extends Commander {
             options.autoResolveConflicts !== false
           ) {
             const sandboxEnv =
-              typeof sandbox === 'string' ? { path: sandbox } : sandbox;
+              typeof sandbox === 'string' ? { path: sandbox } : sandbox;'
             conflictResolution = await this.resolveConflictsWithAI(
               git,
               'rebase',
@@ -869,7 +869,7 @@ export class GitOperationsManager extends Commander {
         conflictResolution,
       });
 
-      logger.info('✅ Branch rebased successfully', {
+      logger.info('✅ Branch rebased successfully', {'
         commanderId: this.commanderId,
         projectId,
         targetBranch,
@@ -899,7 +899,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'push',
       projectId,
-      'push-'+ (options.branch||'current')
+      'push-'+ (options.branch||'current')'
     );
 
     try {
@@ -909,13 +909,13 @@ export class GitOperationsManager extends Commander {
         const pushOptions: string[] = [];
 
         if (options.force) {
-          pushOptions.push('--force');
+          pushOptions.push('--force');'
         }
         if (options.setUpstream) {
-          pushOptions.push('--set-upstream');
+          pushOptions.push('--set-upstream');'
         }
 
-        const remote = options.remote||'origin';
+        const remote = options.remote||'origin;
         const branch = options.branch||(await this.getCurrentBranch(git));
 
         await git.push(remote, branch, pushOptions);
@@ -923,7 +923,7 @@ export class GitOperationsManager extends Commander {
 
       this.completeOperation(operation, { pushed: true });
 
-      logger.info('✅ Changes pushed successfully', {
+      logger.info('✅ Changes pushed successfully', {'
         commanderId: this.commanderId,
         projectId,
         remote: options.remote||'origin',
@@ -950,7 +950,7 @@ export class GitOperationsManager extends Commander {
   ): Promise<ConflictResolution|null> {
     const operation = this.createOperation('pull',
       projectId,
-      'pull-'+ (options.branch||'current')
+      'pull-'+ (options.branch||'current')'
     );
 
     try {
@@ -962,10 +962,10 @@ export class GitOperationsManager extends Commander {
           const pullOptions: string[] = [];
 
           if (options.rebase) {
-            pullOptions.push('--rebase');
+            pullOptions.push('--rebase');'
           }
 
-          const remote = options.remote||'origin';
+          const remote = options.remote||'origin;
           const branch = options.branch||(await this.getCurrentBranch(git));
 
           await git.pull(remote, branch, pullOptions);
@@ -975,9 +975,9 @@ export class GitOperationsManager extends Commander {
             this.config.aiConflictResolution &&
             options.autoResolveConflicts !== false
           ) {
-            const conflictType = options.rebase ?'rebase' : 'merge';
+            const conflictType = options.rebase ?'rebase' : 'merge;
             const sandboxEnv =
-              typeof sandbox === 'string' ? { path: sandbox } : sandbox;
+              typeof sandbox === 'string' ? { path: sandbox } : sandbox;'
             conflictResolution = await this.resolveConflictsWithAI(
               git,
               conflictType,
@@ -994,7 +994,7 @@ export class GitOperationsManager extends Commander {
         conflictResolution,
       });
 
-      logger.info('✅ Changes pulled successfully', {
+      logger.info('✅ Changes pulled successfully', {'
         commanderId: this.commanderId,
         projectId,
         remote: options.remote||'origin',
@@ -1022,7 +1022,7 @@ export class GitOperationsManager extends Commander {
     conflictType: 'merge' | 'rebase' | 'cherry-pick',
     workingDir: string
   ): Promise<ConflictResolution> {
-    logger.info('🤖 Starting AI conflict resolution', {
+    logger.info('🤖 Starting AI conflict resolution', {'
       commanderId: this.commanderId,
       conflictType,
       workingDir,
@@ -1048,7 +1048,7 @@ export class GitOperationsManager extends Commander {
       // Process each conflicted file
       for (const file of conflictFiles) {
         const filePath = path.join(workingDir, file);
-        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const fileContent = await fs.readFile(filePath, 'utf-8');'
 
         if (this.claude && this.config.aiConflictResolution) {
           const suggestion = await this.getAIConflictSuggestion(
@@ -1080,14 +1080,14 @@ export class GitOperationsManager extends Commander {
 
       // Complete the merge/rebase if all conflicts resolved
       if (remainingConflicts.length === 0) {
-        if (conflictType === 'merge') {
-          await git.commit('AI-resolved merge conflicts');
-        } else if (conflictType === 'rebase') {
-          await git.raw(['rebase', '--continue']);
+        if (conflictType === 'merge') {'
+          await git.commit('AI-resolved merge conflicts');'
+        } else if (conflictType === 'rebase') {'
+          await git.raw(['rebase', '--continue']);'
         }
       }
 
-      logger.info('🤖 AI conflict resolution completed', {
+      logger.info('🤖 AI conflict resolution completed', {'
         commanderId: this.commanderId,
         conflictType,
         originalConflicts: conflictFiles.length,
@@ -1097,7 +1097,7 @@ export class GitOperationsManager extends Commander {
 
       return result;
     } catch (error) {
-      logger.error('❌ AI conflict resolution failed', {
+      logger.error('❌ AI conflict resolution failed', {'
         commanderId: this.commanderId,
         conflictType,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -1121,11 +1121,11 @@ export class GitOperationsManager extends Commander {
     fileContent: string
   ): Promise<ConflictSuggestion> {
     if (!this.claude?.messages) {
-      throw new Error('Claude AI not available for conflict resolution');
+      throw new Error('Claude AI not available for conflict resolution');'
     }
 
     const conflictMarkers = this.parseConflictMarkers(fileContent);
-    const suggestions: ConflictSuggestion['conflicts'] = [];
+    const suggestions: ConflictSuggestion['conflicts'] = [];'
 
     for (const conflict of conflictMarkers) {
       try {
@@ -1135,25 +1135,25 @@ export class GitOperationsManager extends Commander {
           messages: [
             {
               role: 'user',
-              content: `
+              content: ``
 # Git Merge Conflict Resolution
 
 **File**: ${fileName}
 
 **Conflict Section**:
-\`\`\`
+\`\`\``
 ${conflict.section}
-\`\`\`
+\`\`\``
 
 **Our Version**:
-\`\`\`
+\`\`\``
 ${conflict.ourVersion}
-\`\`\`
+\`\`\``
 
 **Their Version**:
-\`\`\`
+\`\`\``
 ${conflict.theirVersion}
-\`\`\`
+\`\`\``
 
 Please analyze this merge conflict and provide:
 1. **Recommended Resolution**: The best way to combine both changes
@@ -1161,21 +1161,21 @@ Please analyze this merge conflict and provide:
 3. **Reasoning**: Why this resolution is best
 
 Respond in JSON format:
-\`\`\`json
+\`\`\`json`
 {
   "resolution": "recommended code here",
   "confidence": 85,
   "reasoning": "explanation of why this resolution is best"
 }
-\`\`\`
-`,
+\`\`\``
+`,`
             },
           ],
         });
 
         const content = response.content[0];
-        if (content.type === 'text') {
-          const jsonMatch = content.text.match(/```json\n([\S\s]*?)\n```/);
+        if (content.type === 'text') {'
+          const jsonMatch = content.text.match(/```json\n([\S\s]*?)\n```/);`
           if (jsonMatch) {
             const aiResponse = JSON.parse(jsonMatch[1]);
 
@@ -1190,7 +1190,7 @@ Respond in JSON format:
           }
         }
       } catch (error) {
-        logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
+        logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {`
           commanderId: this.commanderId,
           error: error instanceof Error ? error.message : 'Unknown error',
         });
@@ -1227,12 +1227,12 @@ Respond in JSON format:
       theirVersion: string;
     }> = [];
 
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
     let i = 0;
 
     while (i < lines.length) {
       const currentLine = lines[i];
-      if (currentLine && currentLine.startsWith('<<<<<<<')) {
+      if (currentLine && currentLine.startsWith('<<<<<<<')) {'
         const startIndex = i;
         const ourLines: string[] = [];
         const theirLines: string[] = [];
@@ -1242,7 +1242,7 @@ Respond in JSON format:
         // Read "our" version
         while (i < lines.length) {
           const line = lines[i];
-          if (!line||line.startsWith('=======')) {
+          if (!line||line.startsWith('=======')) {'
             break;
           }
           ourLines.push(line);
@@ -1254,7 +1254,7 @@ Respond in JSON format:
         // Read "their" version
         while (i < lines.length) {
           const line = lines[i];
-          if (!line||line.startsWith('>>>>>>>')) {
+          if (!line||line.startsWith('>>>>>>>')) {'
             break;
           }
           theirLines.push(line);
@@ -1263,7 +1263,7 @@ Respond in JSON format:
 
         if (i < lines.length) {
           const endIndex = i;
-          const section = lines.slice(startIndex, endIndex + 1).join('\n');
+          const section = lines.slice(startIndex, endIndex + 1).join('\n');'
 
           conflicts.push({
             section,
@@ -1285,14 +1285,14 @@ Respond in JSON format:
     filePath: string,
     suggestion: ConflictSuggestion
   ): Promise<void> {
-    let content = await fs.readFile(filePath, 'utf-8');
+    let content = await fs.readFile(filePath, 'utf-8');'
 
     // Replace each conflict section with AI recommendation
     for (const conflict of suggestion.conflicts) {
       content = content.replace(conflict.section, conflict.aiRecommendation);
     }
 
-    await fs.writeFile(filePath, content, 'utf-8');
+    await fs.writeFile(filePath, content, 'utf-8');'
   }
 
   // ====================================================================
@@ -1307,28 +1307,28 @@ Respond in JSON format:
       {
         id: 'cleanup-stale-trees',
         type: 'cleanup-stale',
-        schedule: '0 2 * * *', // Daily at 2 AM
+        schedule: '0 2 * * *', // Daily at 2 AM'
         nextRun: new Date(),
         enabled: true,
       },
       {
         id: 'compress-git-objects',
         type: 'compress-trees',
-        schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM
+        schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM'
         nextRun: new Date(),
         enabled: true,
       },
       {
         id: 'update-remote-refs',
         type: 'update-remotes',
-        schedule: '0 1 * * *', // Daily at 1 AM
+        schedule: '0 1 * * *', // Daily at 1 AM'
         nextRun: new Date(),
         enabled: true,
       },
       {
         id: 'verify-repository-integrity',
         type: 'verify-integrity',
-        schedule: '0 4 * * 1', // Weekly on Monday at 4 AM
+        schedule: '0 4 * * 1', // Weekly on Monday at 4 AM'
         nextRun: new Date(),
         enabled: true,
       },
@@ -1352,7 +1352,7 @@ Respond in JSON format:
           }
         );
 
-        logger.info(`📅 Scheduled maintenance task: ${task.type}`, {
+        logger.info(`📅 Scheduled maintenance task: ${task.type}`, {`
           commanderId: this.commanderId,
           schedule: task.schedule,
           nextRun: task.nextRun,
@@ -1365,36 +1365,36 @@ Respond in JSON format:
    * Run individual maintenance task
    */
   private async runMaintenanceTask(task: MaintenanceTask): Promise<void> {
-    logger.info(`🔧 Running maintenance task: ${task.type}`, {
+    logger.info(`🔧 Running maintenance task: ${task.type}`, {`
       commanderId: this.commanderId,
       taskId: task.id,
     });
 
     try {
       switch (task.type) {
-        case 'cleanup-stale':
+        case 'cleanup-stale':'
           await this.cleanupStaleTrees();
           break;
-        case 'compress-trees':
+        case 'compress-trees':'
           await this.compressGitTrees();
           break;
-        case 'update-remotes':
+        case 'update-remotes':'
           await this.updateRemoteReferences();
           break;
-        case 'verify-integrity':
+        case 'verify-integrity':'
           await this.verifyRepositoryIntegrity();
           break;
       }
 
       task.lastRun = new Date();
 
-      logger.info(`✅ Maintenance task completed: ${task.type}`, {
+      logger.info(`✅ Maintenance task completed: ${task.type}`, {`
         commanderId: this.commanderId,
         taskId: task.id,
         completedAt: task.lastRun,
       });
     } catch (error) {
-      logger.error(`❌ Maintenance task failed: ${task.type}`, {
+      logger.error(`❌ Maintenance task failed: ${task.type}`, {`
         commanderId: this.commanderId,
         taskId: task.id,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -1417,13 +1417,13 @@ Respond in JSON format:
           this.treeMetrics.delete(projectId);
           cleanedCount++;
 
-          logger.debug(`🧹 Cleaned up stale tree: ${projectId}`, {
+          logger.debug(`🧹 Cleaned up stale tree: ${projectId}`, {`
             commanderId: this.commanderId,
             lastAccess: metrics.lastAccess,
             operationCount: metrics.operationCount,
           });
         } catch (error) {
-          logger.warn(`Failed to cleanup stale tree: ${projectId}`, {
+          logger.warn(`Failed to cleanup stale tree: ${projectId}`, {`
             commanderId: this.commanderId,
             error: error instanceof Error ? error.message : 'Unknown error',
           });
@@ -1431,7 +1431,7 @@ Respond in JSON format:
       }
     }
 
-    logger.info('🧹 Stale tree cleanup completed', {
+    logger.info('🧹 Stale tree cleanup completed', {'
       commanderId: this.commanderId,
       treesCleanedUp: cleanedCount,
       remainingTrees: this.treeMetrics.size,
@@ -1450,26 +1450,26 @@ Respond in JSON format:
 
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
           // Run git garbage collection
-          await git.raw(['gc', '--aggressive', '--prune=now']);
+          await git.raw(['gc', '--aggressive', '--prune=now']);'
 
           // Compress loose objects
-          await git.raw(['repack', '-ad']);
+          await git.raw(['repack', '-ad']);'
         });
 
         compressedCount++;
 
-        logger.debug(`🗜️ Compressed git tree: ${projectId}`, {
+        logger.debug(`🗜️ Compressed git tree: ${projectId}`, {`
           commanderId: this.commanderId,
         });
       } catch (error) {
-        logger.warn(`Failed to compress git tree: ${projectId}`, {
+        logger.warn(`Failed to compress git tree: ${projectId}`, {`
           commanderId: this.commanderId,
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
 
-    logger.info('🗜️ Git tree compression completed', {
+    logger.info('🗜️ Git tree compression completed', {'
       commanderId: this.commanderId,
       treesCompressed: compressedCount,
     });
@@ -1487,26 +1487,26 @@ Respond in JSON format:
 
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
           // Fetch all remotes
-          await git.fetch(['--all', '--prune']);
+          await git.fetch(['--all', '--prune']);'
 
           // Update remote tracking branches
-          await git.raw(['remote', 'update']);
+          await git.raw(['remote', 'update']);'
         });
 
         updatedCount++;
 
-        logger.debug(`🔄 Updated remote refs: ${projectId}`, {
+        logger.debug(`🔄 Updated remote refs: ${projectId}`, {`
           commanderId: this.commanderId,
         });
       } catch (error) {
-        logger.warn(`Failed to update remote refs: ${projectId}`, {
+        logger.warn(`Failed to update remote refs: ${projectId}`, {`
           commanderId: this.commanderId,
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
 
-    logger.info('🔄 Remote reference update completed', {
+    logger.info('🔄 Remote reference update completed', {'
       commanderId: this.commanderId,
       treesUpdated: updatedCount,
     });
@@ -1525,29 +1525,29 @@ Respond in JSON format:
 
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
           // Verify repository integrity
-          await git.raw(['fsck', '--full']);
+          await git.raw(['fsck', '--full']);'
 
           // Check for corrupted objects
-          await git.raw(['cat-file', '--batch-check', '--batch-all-objects']);
+          await git.raw(['cat-file', '--batch-check', '--batch-all-objects']);'
         });
 
         verifiedCount++;
 
-        logger.debug(`✅ Verified repository integrity: ${projectId}`, {
+        logger.debug(`✅ Verified repository integrity: ${projectId}`, {`
           commanderId: this.commanderId,
         });
       } catch (error) {
-        const issue = `Repository integrity issue in ${projectId}: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        const issue = `Repository integrity issue in ${projectId}: ${error instanceof Error ? error.message : 'Unknown error'}`;`
         issues.push(issue);
 
-        logger.warn(`Repository integrity issue: ${projectId}`, {
+        logger.warn(`Repository integrity issue: ${projectId}`, {`
           commanderId: this.commanderId,
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
 
-    logger.info('🔍 Repository integrity verification completed', {
+    logger.info('🔍 Repository integrity verification completed', {'
       commanderId: this.commanderId,
       treesVerified: verifiedCount,
       issuesFound: issues.length,
@@ -1570,7 +1570,7 @@ Respond in JSON format:
     // Track project metrics
     this.updateTreeMetrics(project.id);
 
-    logger.info('🏗️ Initialized git environment for project', {
+    logger.info('🏗️ Initialized git environment for project', {'
       commanderId: this.commanderId,
       projectId: project.id,
       sandboxId: sandbox.id,
@@ -1590,18 +1590,18 @@ Respond in JSON format:
     const operations: GitOperation[] = [];
 
     // Example: Create project-specific branches
-    if (project.techStack?.includes('git')) {
+    if (project.techStack?.includes('git')) {'
       const operation = this.createOperation(
         'branch',
         project.id,
-        'setup-' + project.id
+        'setup-' + project.id'
       );
 
       try {
         // Setup project branches based on methodology
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
-          await git.checkoutLocalBranch('development');
-          await git.checkoutLocalBranch(`feature/${project.name}`);
+          await git.checkoutLocalBranch('development');'
+          await git.checkoutLocalBranch(`feature/${project.name}`);`
         });
 
         this.completeOperation(operation, { branchesCreated: 2 });
@@ -1626,7 +1626,7 @@ Respond in JSON format:
     for (const operation of operations) {
       if (
         operation.conflictResolution &&
-        operation.conflictResolution.result === 'resolved') {
+        operation.conflictResolution.result === 'resolved') {'
         conflictsResolved++;
       }
     }
@@ -1645,7 +1645,7 @@ Respond in JSON format:
 
     // Update coordination context
     this.coordinationContext.projectId = project.id;
-    this.coordinationContext.phase = project.currentPhase||'unknown';
+    this.coordinationContext.phase = project.currentPhase||'unknown;
 
     try {
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
@@ -1653,19 +1653,19 @@ Respond in JSON format:
         this.activeBranches.set(project.id, branches);
 
         // Intelligent branch management based on project phase
-        if (project.currentPhase === 'architecture') {
-          // Create architecture branches if they don't exist
-          const archBranches = ['arch/design', 'arch/review'];
+        if (project.currentPhase === 'architecture') {'
+          // Create architecture branches if they don't exist'
+          const archBranches = ['arch/design', 'arch/review'];'
           for (const branchName of archBranches) {
             if (!branches.branches[branchName]) {
               await git.checkoutLocalBranch(branchName);
               branchesManaged++;
             }
           }
-        } else if (project.currentPhase === 'implementation') {
+        } else if (project.currentPhase === 'implementation') {'
           // Create feature branches based on tech stack
           const featureBranches =
-            project.techStack?.map((tech) => `feature/${tech}`)||[];
+            project.techStack?.map((tech) => `feature/${tech}`)||[];`
           for (const branchName of featureBranches.slice(0, 3)) {
             // Limit to 3
             if (!branches.branches[branchName]) {
@@ -1676,7 +1676,7 @@ Respond in JSON format:
         }
       });
     } catch (error) {
-      logger.warn('Failed to manage branches', {
+      logger.warn('Failed to manage branches', {'
         projectId: project.id,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
@@ -1711,7 +1711,7 @@ Respond in JSON format:
    */
   private async getCurrentBranch(git: SimpleGit): Promise<string> {
     const status = await git.status();
-    return status.current||'main';
+    return status.current||'main;
   }
 
   /**
@@ -1723,12 +1723,12 @@ Respond in JSON format:
       const sandbox = await this.sandbox.createSandbox(projectId);
       return sandbox.id;
     } catch (error) {
-      logger.warn(`Creating new sandbox for project: ${projectId}`, {
+      logger.warn(`Creating new sandbox for project: ${projectId}`, {`
         commanderId: this.commanderId,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       const sandbox = await this.sandbox.createSandbox(
-        projectId + '-' + Date.now()
+        projectId + '-' + Date.now()'
       );
       return sandbox.id;
     }
@@ -1740,11 +1740,11 @@ Respond in JSON format:
   private formatBranchName(baseName: string): string {
     const { namingPattern, customPattern } = this.branchStrategy;
 
-    if (namingPattern === 'custom' && customPattern) {
-      return customPattern.replace('{name}', baseName);
+    if (namingPattern === 'custom' && customPattern) {'
+      return customPattern.replace('{name}', baseName);'
     }
 
-    return namingPattern.replace('{name}', baseName);
+    return namingPattern.replace('{name}', baseName);'
   }
 
   /**
@@ -1791,7 +1791,7 @@ Respond in JSON format:
   private failOperation(operation: GitOperation, error: any): void {
     operation.status = 'failed';
     operation.completedAt = new Date();
-    operation.error = error instanceof Error ? error.message : 'Unknown error';
+    operation.error = error instanceof Error ? error.message : 'Unknown error;
 
     this.activeOperations.delete(operation.id);
     this.operationHistory.push(operation);
@@ -1826,7 +1826,7 @@ Respond in JSON format:
   getGitSystemStatus(): {
     activeOperations: number;
     totalTrees: number;
-    systemHealth: 'healthy|warning|critical';
+    systemHealth: 'healthy' | 'warning' | 'critical';
     treeStatus: GitTreeStatus;
     recentOperations: GitOperation[];
     maintenanceStatus: {
@@ -1866,10 +1866,10 @@ Respond in JSON format:
 
     const systemHealth =
       maintenanceRequired > 10
-        ? 'critical'
+        ? 'critical''
         : maintenanceRequired > 5
-          ? 'warning'
-          : 'healthy';
+          ? 'warning''
+          : 'healthy;
 
     return {
       activeOperations: this.activeOperations.size,
@@ -1912,7 +1912,7 @@ Respond in JSON format:
     try {
       // Complete any pending operations
       for (const operation of this.activeOperations.values()) {
-        operation.status ='failed';
+        operation.status ='failed;
         operation.error = 'System shutdown';
         operation.completedAt = new Date();
       }
@@ -1920,13 +1920,13 @@ Respond in JSON format:
       // Shutdown sandbox
       await this.sandbox.shutdown();
 
-      logger.info('🚀 GitCommander shutdown complete', {
+      logger.info('🚀 GitCommander shutdown complete', {'
         commanderId: this.commanderId,
         operationsCompleted: this.operationHistory.length,
         treesManaged: this.treeMetrics.size,
       });
     } catch (error) {
-      logger.error('❌ Error during GitCommander shutdown', {
+      logger.error('❌ Error during GitCommander shutdown', {'
         commanderId: this.commanderId,
         error: error instanceof Error ? error.message : 'Unknown error',
       });

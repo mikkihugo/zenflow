@@ -39,7 +39,7 @@ export class MonitoringEventFactory {
     config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     if (MonitoringEventFactory.instances.has(name)) {
-      throw new Error(`Monitoring event adapter '${name}'already exists`);
+      throw new Error(`Monitoring event adapter '${name}'already exists`);`
     }
 
     const defaultConfig = MonitoringEventFactory.defaultConfigs.get(name)||{};
@@ -588,7 +588,7 @@ export class MonitoringEventRegistry {
   ): Promise<void> {
     if (MonitoringEventRegistry.adapters.has(name)) {
       throw new Error(
-        `Monitoring event adapter '${name}' is already registered`
+        `Monitoring event adapter '${name}' is already registered``
       );
     }
 
@@ -599,21 +599,21 @@ export class MonitoringEventRegistry {
     }
 
     // Set up event listeners for lifecycle management
-    adapter.on('start', async () => {
+    adapter.on('start', async () => {'
       const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onStart;
       if (hook) {
         await hook(adapter);
       }
     });
 
-    adapter.on('stop', async () => {
+    adapter.on('stop', async () => {'
       const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onStop;
       if (hook) {
         await hook(adapter);
       }
     });
 
-    adapter.on('error', async (...args: unknown[]) => {
+    adapter.on('error', async (...args: unknown[]) => {'
       const error = args[0] as Error;
       const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onError;
       if (hook) {
@@ -744,7 +744,7 @@ export class MonitoringEventManager {
     config: MonitoringEventAdapterConfig
   ): Promise<MonitoringEventAdapter> {
     if (MonitoringEventManager.instance) {
-      throw new Error('Monitoring event manager is already initialized');
+      throw new Error('Monitoring event manager is already initialized');'
     }
 
     MonitoringEventManager.instance = createMonitoringEventAdapter(config);
@@ -760,7 +760,7 @@ export class MonitoringEventManager {
   static getInstance(): MonitoringEventAdapter {
     if (!MonitoringEventManager.instance) {
       throw new Error(
-        'Monitoring event manager is not initialized. Call initialize() first.');
+        'Monitoring event manager is not initialized. Call initialize() first.');'
     }
     return MonitoringEventManager.instance;
   }
@@ -796,7 +796,7 @@ export {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   MonitoringEventAdapter,
-} from'./monitoring-event-adapter';
+} from'./monitoring-event-adapter;
 export type { MonitoringEventAdapterConfig } from './monitoring-event-adapter';
 
 export default MonitoringEventFactory;

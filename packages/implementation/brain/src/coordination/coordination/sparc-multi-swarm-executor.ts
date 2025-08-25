@@ -32,15 +32,15 @@ import {
  */
 export interface SPARCStrategy extends ABTestStrategy {
   sparcConfig: {
-    methodology: 'full-sparc' | 'rapid-sparc' | 'quality-sparc' | 'performance-sparc';
+    methodology: 'full-sparc' | 'rapid-sparc' | 'quality-sparc' | 'performance-sparc;
     phaseOptimization: {
-      specification: 'detailed|concise|user-driven';
-      pseudocode: 'algorithmic|high-level|step-by-step';
-      architecture: 'microservices|monolithic|layered|event-driven';
-      refinement: 'performance|quality|maintainability';
-      completion: 'mvp|production-ready|enterprise-grade';
+      specification: 'detailed|concise|user-driven;
+      pseudocode: 'algorithmic|high-level|step-by-step;
+      architecture: 'microservices|monolithic|layered|event-driven;
+      refinement: 'performance' | 'quality' | 'maintainability';
+      completion: 'mvp|production-ready|enterprise-grade;
     };
-    gitTreeStrategy: 'isolated|shared|hybrid';
+    gitTreeStrategy: 'isolated' | 'shared' | 'hybrid';
     intelligentSystems: {
       usePromptGeneration: boolean;
       useBehavioralIntelligence: boolean;
@@ -98,13 +98,13 @@ export interface SPARCMultiSwarmResult {
   comparison: {
     winner: SPARCStrategy;
     confidence: number;
-    significance: 'high|medium|low|none';
+    significance: 'high|medium|low|none;
     sparcPerformanceDelta: Record<string, number>;
     qualityDelta: Record<string, number>;
   };
   recommendations: {
     bestMethodology: string;
-    optimalConfiguration: SPARCStrategy['sparcConfig'];
+    optimalConfiguration: SPARCStrategy['sparcConfig'];'
     reasoning: string[];
   };
   metadata: {
@@ -161,13 +161,13 @@ export class SPARCMultiSwarmExecutor {
       cleanupWorktrees?: boolean;
     } = {}
   ): Promise<SPARCMultiSwarmResult> {
-    const testId = `sparc-multiswarm-${nanoid()}`;
+    const testId = `sparc-multiswarm-${nanoid()}`;`
     const startTime = new Date();
 
-    console.log(`🧪 Starting SPARC Multi-Swarm A/B test: ${testId}`);
-    console.log(`📋 Task: ${taskDescription}`);
+    console.log(`🧪 Starting SPARC Multi-Swarm A/B test: ${testId}`);`
+    console.log(`📋 Task: ${taskDescription}`);`
     console.log(
-      `🔬 Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
+      `🔬 Testing ${sparcStrategies.length} SPARC strategies with git tree isolation``
     );
 
     try {
@@ -227,15 +227,15 @@ export class SPARCMultiSwarmExecutor {
         },
       };
 
-      console.log(`✅ SPARC Multi-Swarm test completed: ${testId}`);
+      console.log(`✅ SPARC Multi-Swarm test completed: ${testId}`);`
       console.log(
-        `🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(2)} confidence)`
+        `🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(2)} confidence)``
       );
-      console.log(`🌳 Git trees created: ${totalWorktreesCreated}`);
+      console.log(`🌳 Git trees created: ${totalWorktreesCreated}`);`
 
       return multiSwarmResult;
     } catch (error) {
-      console.error(`❌ SPARC Multi-Swarm test failed: ${testId}`, error);
+      console.error(`❌ SPARC Multi-Swarm test failed: ${testId}`, error);`
       throw error;
     }
   }
@@ -244,10 +244,10 @@ export class SPARCMultiSwarmExecutor {
    * Create predefined SPARC strategy sets for common scenarios
    */
   createSPARCStrategySet(
-    scenario: 'rapid-development' | 'quality-focused' | 'enterprise-grade' | 'comprehensive'
+    scenario: 'rapid-development' | 'quality-focused' | 'enterprise-grade' | 'comprehensive''
   ): SPARCStrategy[] {
     switch (scenario) {
-      case 'rapid-development':
+      case 'rapid-development':'
         return [
           {
             id: 'rapid-sparc-claude',
@@ -315,7 +315,7 @@ export class SPARCMultiSwarmExecutor {
           },
         ];
 
-      case 'quality-focused':
+      case 'quality-focused':'
         return [
           {
             id: 'quality-sparc-opus',
@@ -383,7 +383,7 @@ export class SPARCMultiSwarmExecutor {
           },
         ];
 
-      case 'enterprise-grade':
+      case 'enterprise-grade':'
         return [
           {
             id: 'enterprise-sparc-opus',
@@ -419,7 +419,7 @@ export class SPARCMultiSwarmExecutor {
           },
         ];
 
-      case 'comprehensive':
+      case 'comprehensive':'
         return [
           ...this.createSPARCStrategySet('rapid-development'),
           ...this.createSPARCStrategySet('quality-focused'),
@@ -427,7 +427,7 @@ export class SPARCMultiSwarmExecutor {
         ];
 
       default:
-        throw new Error(`Unknown SPARC strategy scenario: ${scenario}`);
+        throw new Error(`Unknown SPARC strategy scenario: ${scenario}`);`
     }
   }
 
@@ -441,7 +441,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     console.log(
-      `⚡ Executing ${strategies.length} SPARC strategies in parallel with git trees...`
+      `⚡ Executing ${strategies.length} SPARC strategies in parallel with git trees...``
     );
 
     const promises = strategies.map((strategy) =>
@@ -466,7 +466,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     console.log(
-      `⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...`
+      `⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...``
     );
 
     const results: SPARCExecutionResult[] = [];
@@ -496,7 +496,7 @@ export class SPARCMultiSwarmExecutor {
     const startTime = Date.now();
 
     console.log(
-      `🚀 Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})`
+      `🚀 Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})``
     );
 
     try {
@@ -510,7 +510,7 @@ export class SPARCMultiSwarmExecutor {
       const duration = Date.now() - startTime;
 
       console.log(
-        `✅ SPARC strategy completed: ${strategy.name} (${duration}ms)`
+        `✅ SPARC strategy completed: ${strategy.name} (${duration}ms)``
       );
 
       return {
@@ -525,7 +525,7 @@ export class SPARCMultiSwarmExecutor {
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      console.error(`❌ SPARC strategy failed: ${strategy.name}`, error);
+      console.error(`❌ SPARC strategy failed: ${strategy.name}`, error);`
 
       return {
         strategy,
@@ -571,10 +571,10 @@ export class SPARCMultiSwarmExecutor {
     strategy: SPARCStrategy,
     gitConfig: GitTreeConfig
   ): Promise<{
-    sparcMetrics: SPARCExecutionResult['sparcMetrics'];
-    qualityMetrics: SPARCExecutionResult['qualityMetrics'];
-    deliverables: SPARCExecutionResult['deliverables'];
-    gitTreeInfo: SPARCExecutionResult['gitTreeInfo'];
+    sparcMetrics: SPARCExecutionResult['sparcMetrics'];'
+    qualityMetrics: SPARCExecutionResult['qualityMetrics'];'
+    deliverables: SPARCExecutionResult['deliverables'];'
+    gitTreeInfo: SPARCExecutionResult['gitTreeInfo'];'
     insights: string[];
   }> {
     // Calculate base quality based on model and configuration
@@ -598,10 +598,10 @@ export class SPARCMultiSwarmExecutor {
     await new Promise((resolve) => setTimeout(resolve, executionDelay));
 
     // Generate git tree info
-    const worktreePath = `/tmp/sparc-worktrees/sparc-${strategy.id}-${nanoid(6)}`;
-    const branchName = `sparc-${strategy.id}-${Date.now()}`;
+    const worktreePath = `/tmp/sparc-worktrees/sparc-${strategy.id}-${nanoid(6)}`;`
+    const branchName = `sparc-${strategy.id}-${Date.now()}`;`
     const commitsCreated =
-      strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;
+      strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;'
 
     return {
       sparcMetrics: {
@@ -638,10 +638,10 @@ export class SPARCMultiSwarmExecutor {
         mergedToMain: overallScore > 75, // Only merge successful executions
       },
       insights: [
-        `SPARC ${strategy.sparcConfig.methodology} methodology completed`,
-        `Git tree isolation: ${worktreePath}`,
-        `Created ${commitsCreated} commits in isolated branch`,
-        `Overall SPARC quality score: ${overallScore.toFixed(1)}`,
+        `SPARC ${strategy.sparcConfig.methodology} methodology completed`,`
+        `Git tree isolation: ${worktreePath}`,`
+        `Created ${commitsCreated} commits in isolated branch`,`
+        `Overall SPARC quality score: ${overallScore.toFixed(1)}`,`
       ],
     };
   }
@@ -653,25 +653,25 @@ export class SPARCMultiSwarmExecutor {
     // Base quality from model
     let quality = 0;
     switch (strategy.modelBackend) {
-      case 'claude-opus':
+      case 'claude-opus':'
         quality = 92;
         break;
-      case 'claude-sonnet':
+      case 'claude-sonnet':'
         quality = 88;
         break;
-      case 'claude-haiku':
+      case 'claude-haiku':'
         quality = 82;
         break;
-      case 'gpt-4':
+      case 'gpt-4':'
         quality = 90;
         break;
-      case 'gpt-4-turbo':
+      case 'gpt-4-turbo':'
         quality = 89;
         break;
-      case 'gemini-pro':
+      case 'gemini-pro':'
         quality = 86;
         break;
-      case 'gemini-flash':
+      case 'gemini-flash':'
         quality = 81;
         break;
       default:
@@ -681,9 +681,9 @@ export class SPARCMultiSwarmExecutor {
 
     // Adjust for swarm configuration
     const topologyBonus =
-      strategy.swarmConfig.topology === 'mesh'
+      strategy.swarmConfig.topology === 'mesh''
         ? 5
-        : strategy.swarmConfig.topology === 'hierarchical'
+        : strategy.swarmConfig.topology === 'hierarchical''
           ? 3
           : 0;
 
@@ -694,16 +694,16 @@ export class SPARCMultiSwarmExecutor {
    * Get methodology multiplier for SPARC approach
    */
   private getMethodologyMultiplier(
-    methodology: SPARCStrategy['sparcConfig']['methodology']
+    methodology: SPARCStrategy['sparcConfig']['methodology']'
   ): number {
     switch (methodology) {
-      case 'full-sparc':
+      case 'full-sparc':'
         return 1.1;
-      case 'quality-sparc':
+      case 'quality-sparc':'
         return 1.05;
-      case 'performance-sparc':
+      case 'performance-sparc':'
         return 1.0;
-      case 'rapid-sparc':
+      case 'rapid-sparc':'
         return 0.95;
       default:
         return 1.0;
@@ -714,7 +714,7 @@ export class SPARCMultiSwarmExecutor {
    * Get intelligence systems bonus
    */
   private getIntelligenceBonus(
-    systems: SPARCStrategy['sparcConfig']['intelligentSystems']
+    systems: SPARCStrategy['sparcConfig']['intelligentSystems']'
   ): number {
     let bonus = 0;
     if (systems.usePromptGeneration) bonus += 3;
@@ -728,16 +728,16 @@ export class SPARCMultiSwarmExecutor {
    * Get execution delay based on methodology
    */
   private getExecutionDelay(
-    methodology: SPARCStrategy['sparcConfig']['methodology']
+    methodology: SPARCStrategy['sparcConfig']['methodology']'
   ): number {
     switch (methodology) {
-      case 'rapid-sparc':
+      case 'rapid-sparc':'
         return 1000 + Math.random() * 1000; // 1-2 seconds
-      case 'performance-sparc':
+      case 'performance-sparc':'
         return 2000 + Math.random() * 2000; // 2-4 seconds
-      case 'quality-sparc':
+      case 'quality-sparc':'
         return 3000 + Math.random() * 3000; // 3-6 seconds
-      case 'full-sparc':
+      case 'full-sparc':'
         return 4000 + Math.random() * 4000; // 4-8 seconds
       default:
         return 2000 + Math.random() * 2000;
@@ -749,11 +749,11 @@ export class SPARCMultiSwarmExecutor {
    */
   private analyzeSPARCResults(
     results: SPARCExecutionResult[]
-  ): SPARCMultiSwarmResult['comparison'] {
+  ): SPARCMultiSwarmResult['comparison'] {'
     const successfulResults = results.filter((r) => r.success);
 
     if (successfulResults.length === 0) {
-      throw new Error('No successful SPARC strategy executions to compare');
+      throw new Error('No successful SPARC strategy executions to compare');'
     }
 
     // Find winner based on overall SPARC score
@@ -776,12 +776,12 @@ export class SPARCMultiSwarmExecutor {
     // Determine statistical significance
     const significance =
       confidence > 0.7
-        ? 'high'
+        ? 'high''
         : confidence > 0.4
-          ? 'medium'
+          ? 'medium''
           : confidence > 0.1
-            ? 'low'
-            : 'none';
+            ? 'low''
+            : 'none;
 
     // Calculate performance deltas
     const sparcPerformanceDelta: Record<string, number> = {};
@@ -809,11 +809,11 @@ export class SPARCMultiSwarmExecutor {
    */
   private generateSPARCRecommendations(
     results: SPARCExecutionResult[],
-    comparison: SPARCMultiSwarmResult['comparison']
-  ): SPARCMultiSwarmResult['recommendations'] {
+    comparison: SPARCMultiSwarmResult['comparison']'
+  ): SPARCMultiSwarmResult['recommendations'] {'
     const winner = results.find((r) => r.strategy.id === comparison.winner.id);
     if (!winner) {
-      throw new Error('Winner strategy not found in results');
+      throw new Error('Winner strategy not found in results');'
     }
 
     const reasoning: string[] = [];
@@ -839,7 +839,7 @@ export class SPARCMultiSwarmExecutor {
       .sort((a, b) => b.avgScore - a.avgScore)[0];
 
     reasoning.push(
-      `Best methodology: ${bestMethodology.methodology} (${bestMethodology.avgScore.toFixed(1)} avg score)`
+      `Best methodology: ${bestMethodology.methodology} (${bestMethodology.avgScore.toFixed(1)} avg score)``
     );
 
     // Analyze git tree usage
@@ -849,7 +849,7 @@ export class SPARCMultiSwarmExecutor {
         (r) => r.gitTreeInfo.mergedToMain
       ).length;
       reasoning.push(
-        `Git tree isolation: ${gitTreeResults.length} worktrees created, ${successfulMerges} successfully merged`
+        `Git tree isolation: ${gitTreeResults.length} worktrees created, ${successfulMerges} successfully merged``
       );
     }
 
@@ -879,7 +879,7 @@ export class SPARCMultiSwarmExecutor {
         ) / withoutIntelligence.length;
 
       reasoning.push(
-        `Intelligent systems impact: ${(avgWithIntelligence - avgWithoutIntelligence).toFixed(1)} point improvement`
+        `Intelligent systems impact: ${(avgWithIntelligence - avgWithoutIntelligence).toFixed(1)} point improvement``
       );
     }
 

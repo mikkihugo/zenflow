@@ -33,7 +33,7 @@ export interface MemoryQueryOptions {
   limit?: number;
   offset?: number;
   orderBy?: string;
-  orderDirection?: 'asc|desc';
+  orderDirection?: 'asc|desc;
 }
 export interface MemorySearchResult {
   key: string;
@@ -67,7 +67,7 @@ export declare abstract class BaseMemoryBackend extends TypedEventBase {
   abstract clear(): Promise<void>;
   abstract close(): Promise<void>;
   abstract getCapabilities(): BackendCapabilities;
-  abstract get<T = unknown>(key: string): Promise<T|'null>;
+  abstract get<T = unknown>(key: string): Promise<T|'null>;'
   abstract set(key: string, value: unknown): Promise<void>;
   abstract listNamespaces(): Promise<string[]>;
   protected ensureInitialized(): Promise<void>;

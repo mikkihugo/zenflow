@@ -48,7 +48,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
-      throw new Error('No available agents');
+      throw new Error('No available agents');'
     }
 
     if (availableAgents.length === 1) {
@@ -82,7 +82,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity: ${scoredAgents[0]?.capacity})`,
+      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity: ${scoredAgents[0]?.capacity})`,`
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),

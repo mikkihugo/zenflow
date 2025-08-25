@@ -22,7 +22,7 @@ export interface AgentInstance {
   templateId: string;
   name: string;
   type: string;
-  status: 'active|inactive|error|disposed';
+  status: 'active' | 'inactive' | 'error' | 'disposed';
   config: Record<string, unknown>;
   capabilities: string[];
   metadata: Record<string, unknown>;

@@ -97,8 +97,8 @@ export interface EventHandlerConfig {
   readonly priority?: number;
   readonly timeout?: number;
   readonly retries?: number;
-  readonly backoffStrategy?: 'linear|exponential'';
-  readonly errorHandling?: 'ignore|retry|failfast';
+  readonly backoffStrategy?: 'linear|exponential';
+  readonly errorHandling?: 'ignore' | 'retry' | 'failfast';
   readonly validatePayload?: boolean;
   readonly trackMetrics?: boolean;
 }
@@ -145,25 +145,25 @@ export interface CoordinationEvent extends BaseEvent {
 }
 
 export interface AgentCreatedEvent extends CoordinationEvent {
-  readonly type: 'agent.created';
+  readonly type: 'agent.created;
   readonly payload: {
     readonly agent: Agent;
     readonly capabilities: string[];
-    readonly initialStatus: 'idle|busy'';
+    readonly initialStatus: 'idle|busy';
   };
 }
 
 export interface AgentDestroyedEvent extends CoordinationEvent {
-  readonly type: 'agent.destroyed';
+  readonly type: 'agent.destroyed;
   readonly payload: {
     readonly agentId: string;
     readonly reason: string;
-    readonly finalStatus: 'idle|busy'';
+    readonly finalStatus: 'idle|busy';
   };
 }
 
 export interface TaskAssignedEvent extends CoordinationEvent {
-  readonly type: 'task.assigned';
+  readonly type: 'task.assigned;
   readonly payload: {
     readonly task: Task;
     readonly agentId: string;
@@ -172,7 +172,7 @@ export interface TaskAssignedEvent extends CoordinationEvent {
 }
 
 export interface TaskCompletedEvent extends CoordinationEvent {
-  readonly type: 'task.completed';
+  readonly type: 'task.completed;
   readonly payload: {
     readonly taskId: string;
     readonly agentId: string;
@@ -183,7 +183,7 @@ export interface TaskCompletedEvent extends CoordinationEvent {
 }
 
 export interface SwarmStateChangedEvent extends CoordinationEvent {
-  readonly type: 'swarm.state.changed';
+  readonly type: 'swarm.state.changed;
   readonly payload: {
     readonly swarmId: string;
     readonly previousState: string;
@@ -201,7 +201,7 @@ export interface WorkflowDomainEvent extends BaseEvent {
 }
 
 export interface WorkflowStartedEvent extends WorkflowDomainEvent {
-  readonly type: 'workflow.started';
+  readonly type: 'workflow.started;
   readonly payload: {
     readonly workflowId: string;
     readonly definition: WorkflowDefinition;
@@ -211,7 +211,7 @@ export interface WorkflowStartedEvent extends WorkflowDomainEvent {
 }
 
 export interface WorkflowCompletedEvent extends WorkflowDomainEvent {
-  readonly type: 'workflow.completed';
+  readonly type: 'workflow.completed;
   readonly payload: {
     readonly workflowId: string;
     readonly result: unknown;
@@ -221,7 +221,7 @@ export interface WorkflowCompletedEvent extends WorkflowDomainEvent {
 }
 
 export interface WorkflowFailedEvent extends WorkflowDomainEvent {
-  readonly type: 'workflow.failed';
+  readonly type: 'workflow.failed;
   readonly payload: {
     readonly workflowId: string;
     readonly error: Error;
@@ -231,7 +231,7 @@ export interface WorkflowFailedEvent extends WorkflowDomainEvent {
 }
 
 export interface WorkflowStepCompletedEvent extends WorkflowDomainEvent {
-  readonly type: 'workflow.step.completed';
+  readonly type: 'workflow.step.completed;
   readonly payload: {
     readonly workflowId: string;
     readonly stepIndex: number;
@@ -248,7 +248,7 @@ export interface NeuralEvent extends BaseEvent {
 }
 
 export interface NetworkTrainingStartedEvent extends NeuralEvent {
-  readonly type: 'network.training.started';
+  readonly type: 'network.training.started;
   readonly payload: {
     readonly networkId: string;
     readonly architecture: number[];
@@ -258,7 +258,7 @@ export interface NetworkTrainingStartedEvent extends NeuralEvent {
 }
 
 export interface NetworkTrainingCompletedEvent extends NeuralEvent {
-  readonly type: 'network.training.completed';
+  readonly type: 'network.training.completed;
   readonly payload: {
     readonly networkId: string;
     readonly finalAccuracy: number;
@@ -268,7 +268,7 @@ export interface NetworkTrainingCompletedEvent extends NeuralEvent {
 }
 
 export interface NetworkPredictionEvent extends NeuralEvent {
-  readonly type: 'network.prediction';
+  readonly type: 'network.prediction;
   readonly payload: {
     readonly networkId: string;
     readonly input: number[];
@@ -286,7 +286,7 @@ export interface DatabaseEvent extends BaseEvent {
 }
 
 export interface QueryExecutedEvent extends DatabaseEvent {
-  readonly type: 'query.executed';
+  readonly type: 'query.executed;
   readonly payload: {
     readonly queryId: string;
     readonly query: string;
@@ -298,7 +298,7 @@ export interface QueryExecutedEvent extends DatabaseEvent {
 }
 
 export interface TransactionCompletedEvent extends DatabaseEvent {
-  readonly type: 'transaction.completed';
+  readonly type: 'transaction.completed;
   readonly payload: {
     readonly transactionId: string;
     readonly operations: string[];
@@ -315,7 +315,7 @@ export interface MemoryEvent extends BaseEvent {
 }
 
 export interface MemoryStoredEvent extends MemoryEvent {
-  readonly type: 'memory.stored';
+  readonly type: 'memory.stored;
   readonly payload: {
     readonly key: string;
     readonly size: number;
@@ -325,7 +325,7 @@ export interface MemoryStoredEvent extends MemoryEvent {
 }
 
 export interface MemoryRetrievedEvent extends MemoryEvent {
-  readonly type: 'memory.retrieved';
+  readonly type: 'memory.retrieved;
   readonly payload: {
     readonly key: string;
     readonly found: boolean;
@@ -335,10 +335,10 @@ export interface MemoryRetrievedEvent extends MemoryEvent {
 }
 
 export interface MemoryEvictedEvent extends MemoryEvent {
-  readonly type: 'memory.evicted';
+  readonly type: 'memory.evicted;
   readonly payload: {
     readonly key: string;
-    readonly reason: 'ttl|capacity|manual';
+    readonly reason: 'ttl' | 'capacity' | 'manual';
     readonly size: number;
   };
 }
@@ -351,17 +351,17 @@ export interface KnowledgeEvent extends BaseEvent {
 }
 
 export interface KnowledgeUpdatedEvent extends KnowledgeEvent {
-  readonly type: 'knowledge.updated';
+  readonly type: 'knowledge.updated;
   readonly payload: {
     readonly entityId: string;
     readonly entityType: string;
-    readonly updateType: 'create|update|delete';
+    readonly updateType: 'create' | 'update' | 'delete';
     readonly version: number;
   };
 }
 
 export interface KnowledgeQueryEvent extends KnowledgeEvent {
-  readonly type: 'knowledge.query';
+  readonly type: 'knowledge.query;
   readonly payload: {
     readonly queryId: string;
     readonly query: string;
@@ -378,10 +378,10 @@ export interface InterfaceEvent extends BaseEvent {
 }
 
 export interface HumanValidationRequestedEvent extends InterfaceEvent {
-  readonly type: 'human.validation.requested';
+  readonly type: 'human.validation.requested;
   readonly payload: {
     readonly requestId: string;
-    readonly validationType: 'approval|selection|input|review';
+    readonly validationType: 'approval|selection|input|review;
     readonly context: unknown;
     readonly priority: EventPriority;
     readonly timeout?: number;
@@ -389,7 +389,7 @@ export interface HumanValidationRequestedEvent extends InterfaceEvent {
 }
 
 export interface HumanValidationCompletedEvent extends InterfaceEvent {
-  readonly type: 'human.validation.completed';
+  readonly type: 'human.validation.completed;
   readonly payload: {
     readonly requestId: string;
     readonly approved: boolean;
@@ -400,7 +400,7 @@ export interface HumanValidationCompletedEvent extends InterfaceEvent {
 }
 
 export interface AGUIGateOpenedEvent extends InterfaceEvent {
-  readonly type: 'agui.gate.opened';
+  readonly type: 'agui.gate.opened;
   readonly payload: {
     readonly gateId: string;
     readonly gateType: string;
@@ -410,7 +410,7 @@ export interface AGUIGateOpenedEvent extends InterfaceEvent {
 }
 
 export interface AGUIGateClosedEvent extends InterfaceEvent {
-  readonly type: 'agui.gate.closed';
+  readonly type: 'agui.gate.closed;
   readonly payload: {
     readonly gateId: string;
     readonly approved: boolean;
@@ -427,7 +427,7 @@ export interface CoreEvent extends BaseEvent {
 }
 
 export interface SystemStartedEvent extends CoreEvent {
-  readonly type: 'system.started';
+  readonly type: 'system.started;
   readonly payload: {
     readonly version: string;
     readonly startTime: Date;
@@ -436,7 +436,7 @@ export interface SystemStartedEvent extends CoreEvent {
 }
 
 export interface SystemShutdownEvent extends CoreEvent {
-  readonly type: 'system.shutdown';
+  readonly type: 'system.shutdown;
   readonly payload: {
     readonly reason: string;
     readonly graceful: boolean;
@@ -445,11 +445,11 @@ export interface SystemShutdownEvent extends CoreEvent {
 }
 
 export interface ErrorOccurredEvent extends CoreEvent {
-  readonly type: 'error.occurred';
+  readonly type: 'error.occurred;
   readonly payload: {
     readonly error: Error;
     readonly context: unknown;
-    readonly severity: 'low|medium|high|critical';
+    readonly severity: 'low|medium|high|critical;
     readonly recoverable: boolean;
   };
 }
@@ -581,7 +581,7 @@ export const EventSchemas = {
             type: 'number',
             required: true,
             enum: Object.values(EventPriority).filter(
-              (v) => typeof v === 'number'
+              (v) => typeof v === 'number''
             ),
           },
           timeout: { type: 'number', required: false },
@@ -700,7 +700,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       domainValidation: config.domainValidation ?? true,
     };
 
-    this.logger = getLogger('type-safe-event-bus');
+    this.logger = getLogger('type-safe-event-bus');'
 
     // Initialize domain validators if domain validation is enabled
     if (this.config.domainValidation) {
@@ -709,7 +709,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       }
     }
 
-    this.logger.info('TypeSafeEventBus initialized', {
+    this.logger.info('TypeSafeEventBus initialized', {'
       config: this.config,
       domainValidationEnabled: this.config.domainValidation,
     });
@@ -759,7 +759,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
           await this.validateEventAtDomainBoundary(enhancedEvent);
         if (!validationResult.success) {
           throw new DomainValidationError(
-            `Event validation failed: ${validationResult.error?.message}`,
+            `Event validation failed: ${validationResult.error?.message}`,`
             event.domain
           );
         }
@@ -780,14 +780,14 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
 
       // Emit on Node.js EventEmitter for compatibility
       this.emit(event.type, enhancedEvent);
-      this.emit('*', enhancedEvent); // Wildcard listener support
+      this.emit('*', enhancedEvent); // Wildcard listener support'
 
       // Track metrics
       if (this.config.enableMetrics) {
         this.trackEventMetrics(event.type, Date.now() - startTime, true);
       }
 
-      this.logger.debug('Event emitted successfully', {
+      this.logger.debug('Event emitted successfully', {'
         eventId,
         eventType: event.type,
         domain: event.domain,
@@ -821,7 +821,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         this.trackEventMetrics(event.type, processingTime, false);
       }
 
-      this.logger.error('Event emission failed', {
+      this.logger.error('Event emission failed', {'
         eventId,
         eventType: event.type,
         domain: event.domain,
@@ -862,7 +862,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     const startTime = Date.now();
     const maxConcurrency = options.maxConcurrency ?? this.config.maxConcurrency;
 
-    this.logger.info('Processing event batch', {
+    this.logger.info('Processing event batch', {'
       eventCount: events.length,
       maxConcurrency,
     });
@@ -880,7 +880,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       const batchResults = await Promise.allSettled(batchPromises);
 
       for (const result of batchResults) {
-        if (result.status === 'fulfilled') {
+        if (result.status === 'fulfilled') {'
           results.push(result.value);
         } else {
           results.push({
@@ -906,7 +906,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       }
     }
 
-    this.logger.info('Event batch processing completed', {
+    this.logger.info('Event batch processing completed', {'
       totalEvents: events.length,
       successCount: results.filter((r) => r.success).length,
       failureCount: results.filter((r) => !r.success).length,
@@ -960,7 +960,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       (a, b) => (b.config.priority ?? 0) - (a.config.priority ?? 0)
     );
 
-    this.logger.debug('Event handler registered', {
+    this.logger.debug('Event handler registered', {'
       handlerId,
       eventType,
       priority: config.priority,
@@ -994,7 +994,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     handler: EventHandler<TEvent>,
     config: EventHandlerConfig = {}
   ): string {
-    return this.registerHandler(`domain:${domain}`, handler, config);
+    return this.registerHandler(`domain:${domain}`, handler, config);`
   }
 
   /**
@@ -1004,7 +1004,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     handler: EventHandler<BaseEvent>,
     config: EventHandlerConfig = {}
   ): string {
-    return this.registerHandler('*', handler, config);
+    return this.registerHandler('*', handler, config);'
   }
 
   /**
@@ -1020,7 +1020,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
           this.eventHandlers.delete(eventType);
         }
 
-        this.logger.debug('Event handler unregistered', {
+        this.logger.debug('Event handler unregistered', {'
           handlerId,
           eventType,
           remainingHandlers: handlers.length,
@@ -1070,7 +1070,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
           validator.trackCrossings(
             fromDomain,
             toDomain,
-            `event_routing:${operation}`
+            `event_routing:${operation}``
           );
         }
 
@@ -1087,7 +1087,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
             metadata: {
               domainFrom: fromDomain,
               domainTo: toDomain,
-              operation: `cross_domain_event:${operation}`,
+              operation: `cross_domain_event:${operation}`,`
               timestamp: new Date(),
               validationTime: Date.now() - startTime,
               crossingId: this.generateCrossingId(),
@@ -1101,7 +1101,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         ...event,
         metadata: {
           ...event.metadata,
-          source: `cross_domain:${fromDomain}`,
+          source: `cross_domain:${fromDomain}`,`
           causationId: event.id,
           customData: {
             ...event.metadata?.customData,
@@ -1122,14 +1122,14 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         metadata: {
           domainFrom: fromDomain,
           domainTo: toDomain,
-          operation: `cross_domain_event:${operation}`,
+          operation: `cross_domain_event:${operation}`,`
           timestamp: new Date(),
           validationTime: Date.now() - startTime,
           crossingId: this.generateCrossingId(),
         },
       };
     } catch (error) {
-      this.logger.error('Cross-domain event routing failed', {
+      this.logger.error('Cross-domain event routing failed', {'
         fromDomain,
         toDomain,
         operation,
@@ -1143,7 +1143,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         metadata: {
           domainFrom: fromDomain,
           domainTo: toDomain,
-          operation: `cross_domain_event:${operation}`,
+          operation: `cross_domain_event:${operation}`,`
           timestamp: new Date(),
           validationTime: Date.now() - startTime,
           crossingId: this.generateCrossingId(),
@@ -1239,7 +1239,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
   public clearEventHistory(): void {
     this.eventHistory.length = 0;
     this.eventCache.clear();
-    this.logger.info('Event history cleared');
+    this.logger.info('Event history cleared');'
   }
 
   // ============================================================================
@@ -1348,7 +1348,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     this.processingStats.clear();
     this.eventCounter = 0;
     this.startTime = Date.now();
-    this.logger.info('Performance metrics reset');
+    this.logger.info('Performance metrics reset');'
   }
 
   // ============================================================================
@@ -1359,7 +1359,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
    * Initialize the event system
    */
   public async initialize(): Promise<void> {
-    this.logger.info('Initializing TypeSafeEventBus', {
+    this.logger.info('Initializing TypeSafeEventBus', {'
       config: this.config,
     });
 
@@ -1368,9 +1368,9 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       for (const [domain, validator] of this.domainValidators.entries()) {
         try {
           // Validators are already initialized via getDomainValidator
-          this.logger.debug('Domain validator ready', { domain });
+          this.logger.debug('Domain validator ready', { domain });'
         } catch (error) {
-          this.logger.error('Failed to initialize domain validator', {
+          this.logger.error('Failed to initialize domain validator', {'
             domain,
             error: error instanceof Error ? error.message : String(error),
           });
@@ -1382,14 +1382,14 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     // Register system event handlers
     this.registerSystemEventHandlers();
 
-    this.logger.info('TypeSafeEventBus initialized successfully');
+    this.logger.info('TypeSafeEventBus initialized successfully');'
   }
 
   /**
    * Shutdown the event system gracefully
    */
   public async shutdown(): Promise<void> {
-    this.logger.info('Shutting down TypeSafeEventBus');
+    this.logger.info('Shutting down TypeSafeEventBus');'
 
     // Emit system shutdown event
     try {
@@ -1406,7 +1406,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         },
       } as SystemShutdownEvent);
     } catch (error) {
-      this.logger.warn('Failed to emit shutdown event', {
+      this.logger.warn('Failed to emit shutdown event', {'
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -1421,7 +1421,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     // Remove all listeners
     this.removeAllListeners();
 
-    this.logger.info('TypeSafeEventBus shutdown complete');
+    this.logger.info('TypeSafeEventBus shutdown complete');'
   }
 
   // ============================================================================
@@ -1453,10 +1453,10 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     const specificHandlers = this.getHandlers(event.type);
 
     // Get domain handlers
-    const domainHandlers = this.getHandlers(`domain:${event.domain}`);
+    const domainHandlers = this.getHandlers(`domain:${event.domain}`);`
 
     // Get wildcard handlers
-    const wildcardHandlers = this.getHandlers('*');
+    const wildcardHandlers = this.getHandlers('*');'
 
     // Combine and deduplicate handlers
     const allHandlers = [
@@ -1522,7 +1522,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       } catch (error) {
         const processingTime = Date.now() - handlerStartTime;
 
-        this.logger.error('Event handler failed', {
+        this.logger.error('Event handler failed', {'
           handlerId: handler.id,
           eventType: event.type,
           eventId: event.id,
@@ -1542,7 +1542,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     const results = await Promise.allSettled(handlerPromises);
 
     for (const result of results) {
-      if (result.status === 'fulfilled') {
+      if (result.status === 'fulfilled') {'
         handlerResults.push(result.value);
       } else {
         handlerResults.push({
@@ -1658,9 +1658,9 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
 
     // Look up in predefined schemas
     const schemaKey = eventType
-      .split('.')
+      .split('.')'
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('');
+      .join('');'
 
     const schema = (EventSchemas as any)[schemaKey];
     if (schema) {
@@ -1706,7 +1706,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     this.registerHandler(
       'error.occurred',
       async (event: ErrorOccurredEvent) => {
-        this.logger.error('System error occurred', {
+        this.logger.error('System error occurred', {'
           error: event.payload.error.message,
           severity: event.payload.severity,
           recoverable: event.payload.recoverable,
@@ -1719,7 +1719,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     this.registerHandler(
       'system.started',
       async (event: SystemStartedEvent) => {
-        this.logger.info('System started', {
+        this.logger.info('System started', {'
           version: event.payload.version,
           startTime: event.payload.startTime,
         });
@@ -1728,19 +1728,19 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
   }
 
   private generateEventId(): string {
-    return `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private generateHandlerId(): string {
-    return `handler-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `handler-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private generateCorrelationId(): string {
-    return `corr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `corr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private generateCrossingId(): string {
-    return `crossing-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `crossing-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private estimateMemoryUsage(): number {
@@ -1754,7 +1754,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
 
   private calculateCacheHitRate(): number {
     // Simple cache hit rate calculation
-    // In a production system, you'd track actual cache hits vs misses
+    // In a production system, you'd track actual cache hits vs misses'
     return this.config.enableCaching && this.eventCache.size > 0 ? 0.85 : 0;
   }
 
@@ -1771,14 +1771,14 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
 
     // If this is a typed event, also process it through our type-safe system
     if (
-      typeof eventName ==='string' &&
+      typeof eventName ==='string' &&'
       args.length > 0 &&
       args[0] &&
-      typeof args[0] === 'object'
+      typeof args[0] === 'object''
     ) {
       const event = args[0] as BaseEvent;
       if (event.type && event.domain && event.timestamp) {
-        // This is already processed by emitEvent, so we don't need to process it again
+        // This is already processed by emitEvent, so we don't need to process it again'
         // This is just for compatibility
       }
     }
@@ -1830,7 +1830,7 @@ export function createEvent<TEvent extends BaseEvent>(
   metadata?: Partial<EventMetadata>
 ): TEvent {
   return {
-    id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
     type,
     domain,
     timestamp: new Date(),
@@ -1844,22 +1844,22 @@ export function createEvent<TEvent extends BaseEvent>(
  * Create a correlation ID for event tracking
  */
 export function createCorrelationId(): string {
-  return `corr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `corr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
 }
 
 /**
  * Type guard to check if an object is a valid base event
  */
 export function isBaseEvent(obj: unknown): obj is BaseEvent {
-  if (!obj||typeof obj !=='object') return false;
+  if (!obj||typeof obj !=='object') return false;'
 
   const event = obj as any;
   return (
-    typeof event.id === 'string' &&
-    typeof event.type === 'string' &&
-    typeof event.domain === 'string' &&
+    typeof event.id === 'string' &&'
+    typeof event.type === 'string' &&'
+    typeof event.domain === 'string' &&'
     event.timestamp instanceof Date &&
-    typeof event.version === 'string' &&
+    typeof event.version === 'string' &&'
     Object.values(Domain).includes(event.domain)
   );
 }
@@ -1882,7 +1882,7 @@ export function getEventType<TEvent extends BaseEvent>(
 ): string {
   // This would require reflection or a different approach in TypeScript
   // For now, events should define their own type property
-  return 'unknown';
+  return 'unknown;
 }
 
 // ============================================================================

@@ -6,15 +6,15 @@
  * ADRs are independent architectural governance documents that constrain and guide implementation..
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const processor = new DocumentProcessor(memorySystem, workflowEngine, {
  *   autoWatch: true,
  *   enableWorkflows: true
  * });
  *
  * await processor.initialize();
- * await processor.processDocument('./docs/vision/product-vision.md');
- * ```
+ * await processor.processDocument('./docs/vision/product-vision.md');'
+ * ````
  */
 /**
  * @file Document-processor implementation.
@@ -28,12 +28,12 @@ import type { WorkflowEngine } from '@claude-zen/intelligence';
 import type { BrainCoordinator } from '@claude-zen/intelligence';
 import { TypedEventBase } from '@claude-zen/foundation';
 
-const logger = getLogger('DocumentProcessor');
+const logger = getLogger('DocumentProcessor');'
 
 /**
  * Document types in the processing workflow.
  */
-export type DocumentType =|'vision|architecture_runway|business_epic|program_epic|feature|task|story|spec';
+export type DocumentType =|'vision|architecture_runway|business_epic|program_epic|feature|task|story|spec;
 
 /**
  * Document processing configuration.
@@ -78,7 +78,7 @@ export interface DocumentMetadata {
   /** Document tags */
   tags?: string[];
   /** Document priority */
-  priority?: 'low|medium|high';
+  priority?: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -136,7 +136,7 @@ export interface ProcessingContext {
   /** Active documents */
   activeDocuments: Map<string, Document>;
   /** Current processing phase */
-  phase?: 'requirements|design|planning|execution|validation';
+  phase?: 'requirements|design|planning|execution|validation;
   /** Enable background processing */
   backgroundProcessing: boolean;
 }
@@ -216,7 +216,7 @@ export class DocumentProcessor extends TypedEventBase {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    logger.info('Initializing document processor');
+    logger.info('Initializing document processor');'
 
     // Initialize default workspace if workspace root exists
     if (existsSync(this.config.workspaceRoot)) {
@@ -224,8 +224,8 @@ export class DocumentProcessor extends TypedEventBase {
     }
 
     this.initialized = true;
-    this.emit('initialized', {});
-    logger.info('Document processor ready');
+    this.emit('initialized', {});'
+    logger.info('Document processor ready');'
   }
 
   /**
@@ -235,7 +235,7 @@ export class DocumentProcessor extends TypedEventBase {
    * @returns Workspace ID.
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
-    const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
 
     // Create workspace structure
     const workspace: DocumentWorkspace = {
@@ -259,7 +259,7 @@ export class DocumentProcessor extends TypedEventBase {
 
     this.workspaces.set(workspaceId, context);
 
-    // Create directories if they don't exist
+    // Create directories if they don't exist'
     await this.ensureDirectories(workspace);
 
     // Load existing documents
@@ -271,9 +271,9 @@ export class DocumentProcessor extends TypedEventBase {
     }
 
     logger.info(
-      `Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)`
+      `Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)``
     );
-    this.emit('workspace:loaded', {
+    this.emit('workspace:loaded', {'
       workspaceId,
       path: workspacePath,
       documentCount: context.activeDocuments.size,
@@ -304,15 +304,15 @@ export class DocumentProcessor extends TypedEventBase {
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found: ${workspaceId}`);
+      throw new Error(`Workspace not found: ${workspaceId}`);`
     }
 
     try {
       const docType = this.getDocumentType(documentPath);
-      const content = await readFile(documentPath, 'utf8');
+      const content = await readFile(documentPath, 'utf8');'
       const metadata = await this.extractMetadata(content);
 
-      logger.info(`Processing ${docType} document: ${documentPath}`);
+      logger.info(`Processing ${docType} document: ${documentPath}`);`
 
       const document: Document = {
         type: docType,
@@ -343,18 +343,18 @@ export class DocumentProcessor extends TypedEventBase {
             context: { workspaceId },
           });
         } catch (error) {
-          logger.warn('Workflow processing failed:', error);
+          logger.warn('Workflow processing failed:', error);'
         }
       }
 
-      this.emit('document:processed', {
+      this.emit('document:processed', {'
         workspaceId,
         document,
         suggestedNextSteps: this.getSuggestedNextSteps(docType),
       });
     } catch (error) {
       this.stats.errors++;
-      logger.error(`Failed to process document ${documentPath}:`, error);
+      logger.error(`Failed to process document ${documentPath}:`, error);`
       throw error;
     }
   }
@@ -379,35 +379,35 @@ export class DocumentProcessor extends TypedEventBase {
     if (!workspaceId) {
       workspaceId = Array.from(this.workspaces.keys())[0];
       if (!workspaceId) {
-        throw new Error('No workspace available. Load a workspace first.');
+        throw new Error('No workspace available. Load a workspace first.');'
       }
     }
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found: ${workspaceId}`);
+      throw new Error(`Workspace not found: ${workspaceId}`);`
     }
 
     // Generate file path
     const dirPath = this.getDocumentDirectory(context.workspace, type);
-    const fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;
+    const fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
     const filePath = join(dirPath, fileName);
 
     // Create document content with metadata
     const documentContent = this.generateDocumentContent(title, content, type);
 
     // Write file
-    await writeFile(filePath, documentContent, 'utf8');
+    await writeFile(filePath, documentContent, 'utf8');'
 
     // Process the created document
     await this.processDocument(filePath, workspaceId);
 
     const document = context.activeDocuments.get(filePath);
     if (!document) {
-      throw new Error('Failed to create document');
+      throw new Error('Failed to create document');'
     }
 
-    logger.info(`Created ${type} document: ${title}`);
+    logger.info(`Created ${type} document: ${title}`);`
     return document;
   }
 
@@ -444,11 +444,11 @@ export class DocumentProcessor extends TypedEventBase {
    * Shutdown the document processor.
    */
   async shutdown(): Promise<void> {
-    logger.info('Shutting down document processor...');
+    logger.info('Shutting down document processor...');'
 
     // Stop all file watchers
     for (const [_id, watcher] of this.documentWatchers) {
-      if (watcher && typeof watcher.close === 'function') {
+      if (watcher && typeof watcher.close === 'function') {'
         watcher.close();
       }
     }
@@ -458,7 +458,7 @@ export class DocumentProcessor extends TypedEventBase {
     this.workspaces.clear();
 
     this.removeAllListeners();
-    logger.info('Document processor shutdown complete');
+    logger.info('Document processor shutdown complete');'
   }
 
   // ==================== PRIVATE METHODS ====================
@@ -467,9 +467,9 @@ export class DocumentProcessor extends TypedEventBase {
    * Setup event handlers.
    */
   private setupEventHandlers(): void {
-    this.on('document:created', this.handleDocumentCreated.bind(this));
-    this.on('document:updated', this.handleDocumentUpdated.bind(this));
-    this.on('document:deleted', this.handleDocumentDeleted.bind(this));
+    this.on('document:created', this.handleDocumentCreated.bind(this));'
+    this.on('document:updated', this.handleDocumentUpdated.bind(this));'
+    this.on('document:deleted', this.handleDocumentDeleted.bind(this));'
   }
 
   /**
@@ -485,31 +485,31 @@ export class DocumentProcessor extends TypedEventBase {
     const context = this.workspaces.get(workspaceId)!;
 
     switch (document.type) {
-      case 'vision':
+      case 'vision':'
         context.phase = 'requirements';
-        logger.info('🔮 Processing Vision document');
+        logger.info('🔮 Processing Vision document');'
         break;
-      case 'adr':
-        logger.info('📐 Processing ADR document');
+      case 'adr':'
+        logger.info('📐 Processing ADR document');'
         break;
-      case 'prd':
+      case 'prd':'
         context.phase = 'design';
-        logger.info('📋 Processing PRD document');
+        logger.info('📋 Processing PRD document');'
         break;
-      case 'epic':
+      case 'epic':'
         context.phase = 'planning';
-        logger.info('🏔️ Processing Epic document');
+        logger.info('🏔️ Processing Epic document');'
         break;
-      case 'feature':
+      case 'feature':'
         context.phase = 'planning';
-        logger.info('⭐ Processing Feature document');
+        logger.info('⭐ Processing Feature document');'
         break;
-      case 'task':
+      case 'task':'
         context.phase = 'execution';
-        logger.info('✅ Processing Task document');
+        logger.info('✅ Processing Task document');'
         break;
-      case 'spec':
-        logger.info('📄 Processing Spec document');
+      case 'spec':'
+        logger.info('📄 Processing Spec document');'
         break;
     }
   }
@@ -527,16 +527,16 @@ export class DocumentProcessor extends TypedEventBase {
       if (
         dirPath &&
         existsSync(dirPath) &&
-        type !== 'root' &&
-        type !== 'implementation'
+        type !== 'root' &&'
+        type !== 'implementation''
       ) {
         try {
           const files = await readdir(dirPath);
           for (const file of files) {
-            if (file.endsWith('.md')) {
+            if (file.endsWith('.md')) {'
               const fullPath = join(dirPath, file);
               const docType = this.getDocumentType(fullPath);
-              const content = await readFile(fullPath, 'utf8');
+              const content = await readFile(fullPath, 'utf8');'
               const metadata = await this.extractMetadata(content);
 
               const document: Document = {
@@ -553,12 +553,12 @@ export class DocumentProcessor extends TypedEventBase {
             }
           }
         } catch (error) {
-          logger.warn(`Failed to scan directory ${dirPath}:`, error);
+          logger.warn(`Failed to scan directory ${dirPath}:`, error);`
         }
       }
     }
 
-    logger.info(`📚 Loaded ${context.activeDocuments.size} documents`);
+    logger.info(`📚 Loaded ${context.activeDocuments.size} documents`);`
   }
 
   /**
@@ -567,16 +567,16 @@ export class DocumentProcessor extends TypedEventBase {
    * @param path
    */
   private getDocumentType(path: string): DocumentType {
-    if (path.includes('/01-vision/')||path.includes('/vision/'))
-      return 'vision';
-    if (path.includes('/02-adrs/')||path.includes('/adrs/')) return 'adr';
-    if (path.includes('/03-prds/')||path.includes('/prds/')) return 'prd';
-    if (path.includes('/04-epics/')||path.includes('/epics/')) return 'epic';
-    if (path.includes('/05-features/')||path.includes('/features/'))
-      return 'feature';
-    if (path.includes('/06-tasks/')||path.includes('/tasks/')) return 'task';
-    if (path.includes('/07-specs/')||path.includes('/specs/')) return 'spec';
-    return 'task'; // default
+    if (path.includes('/01-vision/')||path.includes('/vision/'))'
+      return 'vision;
+    if (path.includes('/02-adrs/')||path.includes('/adrs/')) return 'adr;
+    if (path.includes('/03-prds/')||path.includes('/prds/')) return 'prd;
+    if (path.includes('/04-epics/')||path.includes('/epics/')) return 'epic;
+    if (path.includes('/05-features/')||path.includes('/features/'))'
+      return 'feature;
+    if (path.includes('/06-tasks/')||path.includes('/tasks/')) return 'task;
+    if (path.includes('/07-specs/')||path.includes('/specs/')) return 'spec;
+    return 'task'; // default'
   }
 
   /**
@@ -590,19 +590,19 @@ export class DocumentProcessor extends TypedEventBase {
     type: DocumentType
   ): string {
     switch (type) {
-      case 'vision':
+      case 'vision':'
         return workspace.vision!;
-      case 'adr':
+      case 'adr':'
         return workspace.adrs!;
-      case 'prd':
+      case 'prd':'
         return workspace.prds!;
-      case 'epic':
+      case 'epic':'
         return workspace.epics!;
-      case 'feature':
+      case 'feature':'
         return workspace.features!;
-      case 'task':
+      case 'task':'
         return workspace.tasks!;
-      case 'spec':
+      case 'spec':'
         return workspace.specs!;
       default:
         return workspace.tasks!;
@@ -618,40 +618,40 @@ export class DocumentProcessor extends TypedEventBase {
     const metadata: DocumentMetadata = {};
 
     // Parse frontmatter or inline metadata
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
     for (const line of lines.slice(0, 15)) {
       // Check first 15 lines
       const trimmedLine = line.trim();
 
       if (
-        trimmedLine.startsWith('- **Author:**')||trimmedLine.startsWith('Author:')
+        trimmedLine.startsWith('- **Author:**')||trimmedLine.startsWith('Author:')'
       ) {
-        const author = trimmedLine.split(':')[1]?.trim();
+        const author = trimmedLine.split(':')[1]?.trim();'
         if (author) metadata.author = author;
       }
       if (
-        trimmedLine.startsWith('- **Created:**')||trimmedLine.startsWith('Created:')
+        trimmedLine.startsWith('- **Created:**')||trimmedLine.startsWith('Created:')'
       ) {
-        const dateStr = trimmedLine.split(':')[1]?.trim();
+        const dateStr = trimmedLine.split(':')[1]?.trim();'
         if (dateStr) metadata.created = new Date(dateStr);
       }
       if (
-        trimmedLine.startsWith('- **Status:**')||trimmedLine.startsWith('Status:')
+        trimmedLine.startsWith('- **Status:**')||trimmedLine.startsWith('Status:')'
       ) {
-        const status = trimmedLine.split(':')[1]?.trim();
+        const status = trimmedLine.split(':')[1]?.trim();'
         if (status) metadata.status = status;
       }
       if (
-        trimmedLine.startsWith('- **Priority:**')||trimmedLine.startsWith('Priority:')
+        trimmedLine.startsWith('- **Priority:**')||trimmedLine.startsWith('Priority:')'
       ) {
-        metadata.priority = trimmedLine.split(':')[1]?.trim() as any;
+        metadata.priority = trimmedLine.split(':')[1]?.trim() as any;'
       }
       if (
-        trimmedLine.startsWith('- **Tags:**')||trimmedLine.startsWith('Tags:')
+        trimmedLine.startsWith('- **Tags:**')||trimmedLine.startsWith('Tags:')'
       ) {
-        const tagsStr = trimmedLine.split(':')[1]?.trim();
+        const tagsStr = trimmedLine.split(':')[1]?.trim();'
         if (tagsStr) {
-          metadata.tags = tagsStr.split(',').map((tag) => tag.trim())();
+          metadata.tags = tagsStr.split(',').map((tag) => tag.trim())();'
         }
       }
     }
@@ -666,9 +666,9 @@ export class DocumentProcessor extends TypedEventBase {
    * @param path
    */
   private generateDocumentId(type: DocumentType, path: string): string {
-    const filename = basename(path, '.md');
+    const filename = basename(path, '.md');'
     const timestamp = Date.now().toString(36);
-    return `${type}-${filename}-${timestamp}`;
+    return `${type}-${filename}-${timestamp}`;`
   }
 
   /**
@@ -685,7 +685,7 @@ export class DocumentProcessor extends TypedEventBase {
   ): string {
     const now = new Date().toISOString();
 
-    return `# ${title}
+    return `# ${title}`
 
 - **Type:** ${type}
 - **Created:** ${now}
@@ -695,7 +695,7 @@ export class DocumentProcessor extends TypedEventBase {
 ${content}
 
 ---
-*Generated by Document Processor*`;
+*Generated by Document Processor*`;`
   }
 
   /**
@@ -746,7 +746,7 @@ ${content}
     this.stats.byType[document.type] =
       (this.stats.byType[document.type]||0) + 1;
 
-    const status = document.metadata?.status||'unknown';
+    const status = document.metadata?.status||'unknown;
     this.stats.byStatus[status] = (this.stats.byStatus[status]||0) + 1;
   }
 
@@ -772,7 +772,7 @@ ${content}
         try {
           await mkdir(dir, { recursive: true });
         } catch (_error) {
-          // Directory might already exist, that's ok
+          // Directory might already exist, that's ok'
         }
       }
     }
@@ -785,9 +785,9 @@ ${content}
    */
   private setupDocumentWatchers(workspaceId: string): void {
     // Note: In a real implementation, this would use fs.watch or chokidar
-    // For now, we'll just log that watchers would be set up
+    // For now, we'll just log that watchers would be set up'
     logger.debug(
-      `Document watchers would be set up for workspace: ${workspaceId}`
+      `Document watchers would be set up for workspace: ${workspaceId}``
     );
   }
 
@@ -803,17 +803,17 @@ ${content}
   // ==================== EVENT HANDLERS ====================
 
   private async handleDocumentCreated(event: any): Promise<void> {
-    logger.debug(`Document created: ${event.document.path}`);
+    logger.debug(`Document created: ${event.document.path}`);`
   }
 
   private async handleDocumentUpdated(event: any): Promise<void> {
-    logger.debug(`Document updated: ${event.document.path}`);
+    logger.debug(`Document updated: ${event.document.path}`);`
     // Re-process the document
     await this.processDocument(event.document.path, event.workspaceId);
   }
 
   private async handleDocumentDeleted(event: any): Promise<void> {
-    logger.debug(`Document deleted: ${event.path}`);
+    logger.debug(`Document deleted: ${event.path}`);`
     const context = this.workspaces.get(event.workspaceId);
     if (context) {
       context.activeDocuments.delete(event.path);

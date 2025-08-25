@@ -31,7 +31,7 @@ export class BatchProcessor implements BaseProcessor {
 
   constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`BatchProcessor:${config.name}`);
+    this.logger = getLogger(`BatchProcessor:${config.name}`);`
 
     // Extract configuration
     this.maxBatchSize = config.config?.maxBatchSize||100;
@@ -43,7 +43,7 @@ export class BatchProcessor implements BaseProcessor {
     // Start batch timer
     this.startBatchTimer();
 
-    this.logger.info('Batch processor initialized', {
+    this.logger.info('Batch processor initialized', {'
       maxBatchSize: this.maxBatchSize,
       batchTimeout: this.batchTimeout,
       flushOnShutdown: this.flushOnShutdown,
@@ -73,7 +73,7 @@ export class BatchProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Batch processing failed', error);
+      this.logger.error('Batch processing failed', error);'
 
       // Return original data on error
       return data;
@@ -103,7 +103,7 @@ export class BatchProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Batch processing failed', error);
+      this.logger.error('Batch processing failed', error);'
 
       // Return original data on error
       return dataItems;
@@ -122,19 +122,19 @@ export class BatchProcessor implements BaseProcessor {
     // Flush remaining batch if configured to do so
     if (this.flushOnShutdown && this.batch.length > 0) {
       this.logger.info(
-        `Flushing ${this.batch.length} remaining items before shutdown`
+        `Flushing ${this.batch.length} remaining items before shutdown``
       );
       await this.flushBatch();
     }
 
-    this.logger.info('Batch processor shut down', {
+    this.logger.info('Batch processor shut down', {'
       totalProcessed: this.processedCount,
       remainingInBatch: this.batch.length,
     });
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
@@ -193,12 +193,12 @@ export class BatchProcessor implements BaseProcessor {
     try {
       // In a real implementation, this would trigger the next stage
       // For now, we just log the batch flush
-      this.logger.debug(`Flushing batch of ${batchToFlush.length} items`);
+      this.logger.debug(`Flushing batch of ${batchToFlush.length} items`);`
 
       // Emit batch ready event (would be caught by collector)
-      // this.emit('batchReady', batchToFlush);
+      // this.emit('batchReady', batchToFlush);'
     } catch (error) {
-      this.logger.error('Failed to flush batch', error);
+      this.logger.error('Failed to flush batch', error);'
 
       // Re-add items to batch on failure
       this.batch.unshift(...batchToFlush);

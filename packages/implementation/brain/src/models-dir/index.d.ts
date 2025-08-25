@@ -61,8 +61,8 @@ export declare class VAEModel {
   predict(input: any): Promise<any>;
 }
 declare const _default: {
-  NEURAL_PRESETS: import('./presets').NeuralPresetMap;
-  NeuralModelPresets: import('./presets').NeuralPresetMap;
+  NEURAL_PRESETS: import('./presets').NeuralPresetMap;'
+  NeuralModelPresets: import('./presets').NeuralPresetMap;'
   AutoencoderPreset: {
     id: string;
     name: string;

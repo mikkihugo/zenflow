@@ -19,10 +19,10 @@ export interface LogAnalysisResult {
 }
 
 interface DeceptionMatch {
-  type: 'VERIFICATION_FRAUD|SANDBAGGING|WORK_AVOIDANCE';
+  type: 'VERIFICATION_FRAUD' | 'SANDBAGGING' | 'WORK_AVOIDANCE';
   claim: string;
   evidence: string[];
-  severity: 'LOW|MEDIUM|HIGH|CRITICAL';
+  severity: 'LOW|MEDIUM|HIGH|CRITICAL;
 }
 
 /**
@@ -31,7 +31,7 @@ interface DeceptionMatch {
  * @example
  */
 export class LogBasedDeceptionDetector {
-  private logger = getLogger('deception-detector');
+  private logger = getLogger('deception-detector');'
   private logDir = 'logs';
 
   /**
@@ -51,9 +51,9 @@ export class LogBasedDeceptionDetector {
     };
 
     // Read actual log files
-    const activityLog = await this.readLogFile('claude-zen-activity.log');
-    const aiFixingLog = await this.readLogFile('ai-fixing-detailed.log');
-    const httpLog = await this.readLogFile('http-requests.log');
+    const activityLog = await this.readLogFile('claude-zen-activity.log');'
+    const aiFixingLog = await this.readLogFile('ai-fixing-detailed.log');'
+    const httpLog = await this.readLogFile('http-requests.log');'
 
     // Extract actual tool usage from logs
     result.toolCallsFound = this.extractToolCalls(
@@ -67,7 +67,7 @@ export class LogBasedDeceptionDetector {
     // Detect deception patterns
     result.deceptionPatterns = this.detectDeceptionPatterns(result);
 
-    this.logger.info('Log analysis complete', {
+    this.logger.info('Log analysis complete', {'
       toolCalls: result.toolCallsFound.length,
       fileOps: result.fileOperations.length,
       bashCmds: result.bashCommands.length,
@@ -88,19 +88,19 @@ export class LogBasedDeceptionDetector {
     const result = await safeAsync(async () => {
       try {
         await fs.access(filepath);
-        const content = await fs.readFile(filepath, 'utf8');
+        const content = await fs.readFile(filepath, 'utf8');'
         // Read last 1000 lines (recent activity)
-        return content.split('\n').slice(-1000).join('\n');
+        return content.split('\n').slice(-1000).join('\n');'
       } catch {
-        return '';
+        return ';
       }
     });
 
     if (result.isErr()) {
-      this.logger.warn(`Failed to read log file ${filename}`, {
+      this.logger.warn(`Failed to read log file ${filename}`, {`
         error: result.error.message,
       });
-      return '';
+      return ';
     }
 
     return result.value;
@@ -230,9 +230,9 @@ export class LogBasedDeceptionDetector {
             type:'VERIFICATION_FRAUD',
             claim,
             evidence: [
-              `Claimed examination but zero tool calls found`,
-              `No file operations logged`,
-              `No Read/Grep tool usage detected`,
+              `Claimed examination but zero tool calls found`,`
+              `No file operations logged`,`
+              `No Read/Grep tool usage detected`,`
             ],
             severity: 'CRITICAL',
           });
@@ -250,9 +250,9 @@ export class LogBasedDeceptionDetector {
             type:'SANDBAGGING',
             claim,
             evidence: [
-              `Capability claims made without implementation tools`,
-              `No Write/Edit/Bash commands logged`,
-              `Zero actual development actions found`,
+              `Capability claims made without implementation tools`,`
+              `No Write/Edit/Bash commands logged`,`
+              `Zero actual development actions found`,`
             ],
             severity: 'HIGH',
           });
@@ -266,9 +266,9 @@ export class LogBasedDeceptionDetector {
             type:'WORK_AVOIDANCE',
             claim,
             evidence: [
-              `Claims work completion but no tool usage logged`,
-              `No file modifications detected`,
-              `No implementation evidence in logs`,
+              `Claims work completion but no tool usage logged`,`
+              `No file modifications detected`,`
+              `No implementation evidence in logs`,`
             ],
             severity: 'CRITICAL',
           });
@@ -288,28 +288,28 @@ export class LogBasedDeceptionDetector {
     let report = '🕵️ AI DECEPTION DETECTION REPORT\n';
     report += '================================\n\n';
 
-    report += `📊 ACTIVITY SUMMARY:\n`;
-    report += `- AI Claims Made: ${analysis.aiClaims.length}\n`;
-    report += `- Tool Calls Logged: ${analysis.toolCallsFound.length}\n`;
-    report += `- File Operations: ${analysis.fileOperations.length}\n`;
-    report += `- Bash Commands: ${analysis.bashCommands.length}\n\n`;
+    report += `📊 ACTIVITY SUMMARY:\n`;`
+    report += `- AI Claims Made: ${analysis.aiClaims.length}\n`;`
+    report += `- Tool Calls Logged: ${analysis.toolCallsFound.length}\n`;`
+    report += `- File Operations: ${analysis.fileOperations.length}\n`;`
+    report += `- Bash Commands: ${analysis.bashCommands.length}\n\n`;`
 
     if (analysis.deceptionPatterns.length > 0) {
-      report += `🚨 DECEPTION PATTERNS DETECTED: ${analysis.deceptionPatterns.length}\n`;
-      report += `======================================\n\n`;
+      report += `🚨 DECEPTION PATTERNS DETECTED: ${analysis.deceptionPatterns.length}\n`;`
+      report += `======================================\n\n`;`
 
       for (const pattern of analysis.deceptionPatterns) {
-        report += `🔍 ${pattern.type} (${pattern.severity})\n`;
-        report += `Claim: "${pattern.claim}"\n`;
-        report += `Evidence:\n`;
+        report += `🔍 ${pattern.type} (${pattern.severity})\n`;`
+        report += `Claim: "${pattern.claim}"\n`;`
+        report += `Evidence:\n`;`
         for (const evidence of pattern.evidence) {
-          report += `  - ${evidence}\n`;
+          report += `  - ${evidence}\n`;`
         }
         report += '\n';
       }
     } else {
-      report += `✅ NO DECEPTION DETECTED\n`;
-      report += `Claims match logged tool usage\n`;
+      report += `✅ NO DECEPTION DETECTED\n`;`
+      report += `Claims match logged tool usage\n`;`
     }
 
     return report;

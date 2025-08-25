@@ -3,7 +3,7 @@
  *
  * **CRITICAL GAP FILLED: CORE COMPETENCY PRACTICE FRAMEWORKS**
  *
- * This implements comprehensive practice frameworks for Essential SAFe 6.0's
+ * This implements comprehensive practice frameworks for Essential SAFe 6.0's'
  * core competencies: Team and Technical Agility, and Agile Product Delivery.
  *
  * **TEAM AND TECHNICAL AGILITY (TTA) COMPETENCY:**
@@ -56,7 +56,7 @@ import type {
   ApprovalGateRequirement,
 } from '../types/index.js';
 
-const logger = getLogger('CoreCompetencyFrameworks');
+const logger = getLogger('CoreCompetencyFrameworks');'
 
 // ============================================================================
 // CORE COMPETENCY TYPES AND INTERFACES
@@ -68,18 +68,18 @@ const logger = getLogger('CoreCompetencyFrameworks');
 export enum CoreCompetencyType {
   TEAM_AND_TECHNICAL_AGILITY = 'team_and_technical_agility',
   AGILE_PRODUCT_DELIVERY = 'agile_product_delivery',
-  CONTINUOUS_LEARNING_CULTURE = 'continuous_learning_culture', // Foundation competency
+  CONTINUOUS_LEARNING_CULTURE = 'continuous_learning_culture', // Foundation competency'
 }
 
 /**
  * Practice maturity levels
  */
 export enum PracticeMaturityLevel {
-  INITIAL = 'initial', // Ad-hoc, inconsistent
-  DEVELOPING = 'developing', // Some practices in place
-  DEFINED = 'defined', // Standardized practices
-  MANAGED = 'managed', // Measured and controlled
-  OPTIMIZING = 'optimizing', // Continuously improving
+  INITIAL = 'initial', // Ad-hoc, inconsistent'
+  DEVELOPING = 'developing', // Some practices in place'
+  DEFINED = 'defined', // Standardized practices'
+  MANAGED = 'managed', // Measured and controlled'
+  OPTIMIZING = 'optimizing', // Continuously improving'
 }
 
 /**
@@ -111,7 +111,7 @@ export interface CompetencyAssessmentConfig {
 
   // Assessment methodology
   methodology: {
-    assessmentType:|'self_assessment|peer_assessment|expert_assessment|comprehensive';
+    assessmentType:|'self_assessment|peer_assessment|expert_assessment|comprehensive;
     evidenceRequired: boolean;
     practiceDemonstration: boolean;
     metricsValidation: boolean;
@@ -305,7 +305,7 @@ export interface PracticeMetric {
   currentValue: number;
   targetValue: number;
   unit: string;
-  trend: 'improving|stable|declining';
+  trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   measurementPeriod: {
     startDate: Date;
     endDate: Date;
@@ -322,8 +322,8 @@ export interface PracticeImprovementAction {
 
   // Action details
   practiceArea: string;
-  improvementType:|'process|training|tooling|culture|measurement';
-  priority: 'low|medium|high|critical';
+  improvementType:|'process|training|tooling|culture|measurement;
+  priority: 'low|medium|high|critical;
 
   // Implementation planning
   assignedTo: string;
@@ -343,7 +343,7 @@ export interface PracticeImprovementAction {
   approvalGateId?: ApprovalGateId;
 
   // Tracking
-  status: 'planned|in_progress|completed|blocked|cancelled';
+  status: 'planned|in_progress|completed|blocked|cancelled;
   progressUpdates: Array<{
     date: Date;
     update: string;
@@ -398,7 +398,7 @@ export interface TTATeamFormationPractice {
   id: string;
   name: string;
   description: string;
-  category:|'team_structure|role_definition|skill_development|team_dynamics';
+  category:|'team_structure|role_definition|skill_development|team_dynamics;
 
   // Practice details
   practiceElements: string[];
@@ -426,7 +426,7 @@ export interface TTATeamPerformancePractice {
   id: string;
   name: string;
   description: string;
-  category:|'velocity_management|quality_metrics|predictability|flow_efficiency';
+  category:|'velocity_management|quality_metrics|predictability|flow_efficiency;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -443,7 +443,7 @@ export interface TTACollaborationPractice {
   id: string;
   name: string;
   description: string;
-  category:|'communication|knowledge_sharing|pair_programming|collective_ownership';
+  category:|'communication|knowledge_sharing|pair_programming|collective_ownership;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -460,7 +460,7 @@ export interface TTAARTCoordinationPractice {
   id: string;
   name: string;
   description: string;
-  category: 'pi_planning|art_sync|system_demo|inspect_adapt';
+  category: 'pi_planning|art_sync|system_demo|inspect_adapt;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -477,7 +477,7 @@ export interface TTACrossTeamPractice {
   id: string;
   name: string;
   description: string;
-  category:|'dependency_coordination|knowledge_transfer|shared_services|community_practice';
+  category:|'dependency_coordination|knowledge_transfer|shared_services|community_practice;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -494,7 +494,7 @@ export interface TTADependencyPractice {
   id: string;
   name: string;
   description: string;
-  category:|'dependency_identification|dependency_resolution|dependency_tracking|dependency_prevention';
+  category:|'dependency_identification|dependency_resolution|dependency_tracking|dependency_prevention;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -511,7 +511,7 @@ export interface TTATechnicalPractice {
   id: string;
   name: string;
   description: string;
-  category:|'test_driven_development|continuous_integration|refactoring|pair_programming|code_review';
+  category:|'test_driven_development|continuous_integration|refactoring|pair_programming|code_review;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -530,7 +530,7 @@ export interface TTAQualityPractice {
   id: string;
   name: string;
   description: string;
-  category:|'automated_testing|quality_gates|defect_prevention|quality_metrics';
+  category:|'automated_testing|quality_gates|defect_prevention|quality_metrics;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -549,7 +549,7 @@ export interface TTADevOpsPractice {
   id: string;
   name: string;
   description: string;
-  category:|'culture_collaboration|automation|monitoring|feedback_loops';
+  category:|'culture_collaboration|automation|monitoring|feedback_loops;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -572,7 +572,7 @@ export interface APDDesignThinkingPractice {
   id: string;
   name: string;
   description: string;
-  category: 'empathy|define|ideate|prototype|test';
+  category: 'empathy|define|ideate|prototype|test;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -591,7 +591,7 @@ export interface APDCustomerResearchPractice {
   id: string;
   name: string;
   description: string;
-  category:|'customer_interviews|market_research|analytics|feedback_collection';
+  category:|'customer_interviews|market_research|analytics|feedback_collection;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -610,7 +610,7 @@ export interface APDUserExperiencePractice {
   id: string;
   name: string;
   description: string;
-  category:|'user_journey_mapping|usability_testing|accessibility|interaction_design';
+  category:|'user_journey_mapping|usability_testing|accessibility|interaction_design;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -629,7 +629,7 @@ export interface APDProductManagementPractice {
   id: string;
   name: string;
   description: string;
-  category:|'product_strategy|backlog_management|stakeholder_management|value_prioritization';
+  category:|'product_strategy|backlog_management|stakeholder_management|value_prioritization;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -648,7 +648,7 @@ export interface APDRoadmapPractice {
   id: string;
   name: string;
   description: string;
-  category:|'strategic_planning|feature_planning|dependency_planning|capacity_planning';
+  category:|'strategic_planning|feature_planning|dependency_planning|capacity_planning;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -667,7 +667,7 @@ export interface APDIterativePractice {
   id: string;
   name: string;
   description: string;
-  category:|'iteration_planning|increment_delivery|feedback_integration|adaptive_planning';
+  category:|'iteration_planning|increment_delivery|feedback_integration|adaptive_planning;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -686,7 +686,7 @@ export interface APDContinuousDeliveryPractice {
   id: string;
   name: string;
   description: string;
-  category:|'pipeline_automation|testing_automation|deployment_automation|monitoring_observability';
+  category:|'pipeline_automation|testing_automation|deployment_automation|monitoring_observability;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -705,7 +705,7 @@ export interface APDDeploymentPractice {
   id: string;
   name: string;
   description: string;
-  category:|'deployment_patterns|rollback_strategy|environment_management|risk_mitigation';
+  category:|'deployment_patterns|rollback_strategy|environment_management|risk_mitigation;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -724,7 +724,7 @@ export interface APDReleasePractice {
   id: string;
   name: string;
   description: string;
-  category:|'release_planning|feature_toggles|canary_releases|market_timing';
+  category:|'release_planning|feature_toggles|canary_releases|market_timing;
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -816,8 +816,8 @@ export interface CompetencyImprovementPlan {
   // Risk management
   risks: Array<{
     risk: string;
-    probability: 'low|medium|high';
-    impact: 'low|medium|high';
+    probability: 'low' | 'medium' | 'high';
+    impact: 'low' | 'medium' | 'high';
     mitigation: string;
   }>;
 
@@ -842,7 +842,7 @@ export interface CompetencyImprovementPlan {
  * and practice framework implementation with integrated approval workflows.
  */
 export class CoreCompetencyFrameworks {
-  private readonly logger = getLogger('CoreCompetencyFrameworks');
+  private readonly logger = getLogger('CoreCompetencyFrameworks');'
 
   // Core services
   private approvalGateManager: ApprovalGateManager;
@@ -876,11 +876,11 @@ export class CoreCompetencyFrameworks {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing Core Competency Frameworks...');
+      this.logger.info('Initializing Core Competency Frameworks...');'
 
       // Initialize infrastructure
       const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');
+      this.database = dbSystem.createProvider('sql');'
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -905,7 +905,7 @@ export class CoreCompetencyFrameworks {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('Core Competency Frameworks initialized successfully');
+      this.logger.info('Core Competency Frameworks initialized successfully');'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Core Competency Frameworks',
@@ -927,9 +927,9 @@ export class CoreCompetencyFrameworks {
     coordinationTraceabilityId: string;
   }> {
     const assessmentId = config.id;
-    const coordinationTraceabilityId = `competency-assessment-${assessmentId}-${Date.now()}`;
+    const coordinationTraceabilityId = `competency-assessment-${assessmentId}-${Date.now()}`;`
 
-    this.logger.info('Executing Competency Assessment', {
+    this.logger.info('Executing Competency Assessment', {'
       assessmentId,
       competencyType: config.competencyType,
       artName: config.artName,
@@ -952,7 +952,7 @@ export class CoreCompetencyFrameworks {
       framework = await this.initializeAPDAssessment(config);
     } else {
       throw new Error(
-        `Competency type ${config.competencyType} not yet implemented`
+        `Competency type ${config.competencyType} not yet implemented``
       );
     }
 
@@ -986,7 +986,7 @@ export class CoreCompetencyFrameworks {
   async generateImprovementPlan(
     assessmentId: string,
     targetMaturity: PracticeMaturityLevel = PracticeMaturityLevel.MANAGED,
-    timeframe: string ='12 months'
+    timeframe: string ='12 months''
   ): Promise<{
     improvementPlan: CompetencyImprovementPlan;
     approvalWorkflows: Array<{ phase: string; gateId: ApprovalGateId }>;
@@ -995,10 +995,10 @@ export class CoreCompetencyFrameworks {
   }> {
     const config = this.activeAssessments.get(assessmentId);
     if (!config) {
-      throw new Error(`Assessment ${assessmentId} not found`);
+      throw new Error(`Assessment ${assessmentId} not found`);`
     }
 
-    this.logger.info('Generating Competency Improvement Plan', {
+    this.logger.info('Generating Competency Improvement Plan', {'
       assessmentId,
       competencyType: config.competencyType,
       targetMaturity,
@@ -1065,11 +1065,11 @@ export class CoreCompetencyFrameworks {
     const improvementPlan = this.improvementPlans.get(assessmentId);
     if (!improvementPlan) {
       throw new Error(
-        `Improvement plan for assessment ${assessmentId} not found`
+        `Improvement plan for assessment ${assessmentId} not found``
       );
     }
 
-    this.logger.info('Executing Improvement Plan Implementation', {
+    this.logger.info('Executing Improvement Plan Implementation', {'
       assessmentId,
       competencyType: improvementPlan.competencyType,
       targetPhase: phaseNumber,
@@ -1104,7 +1104,7 @@ export class CoreCompetencyFrameworks {
    */
   async getCompetencyAssessmentStatus(assessmentId: string): Promise<{
     assessmentProgress: {
-      phase:|'preparation|execution|analysis|planning|implementation|completed';
+      phase:|'preparation|execution|analysis|planning|implementation|completed;
       progress: number; // percentage
       currentActivity: string;
       nextSteps: string[];
@@ -1133,7 +1133,7 @@ export class CoreCompetencyFrameworks {
   }> {
     const config = this.activeAssessments.get(assessmentId);
     if (!config) {
-      throw new Error(`Assessment ${assessmentId} not found`);
+      throw new Error(`Assessment ${assessmentId} not found`);`
     }
 
     // Load assessment progress
@@ -1178,88 +1178,88 @@ export class CoreCompetencyFrameworks {
     await this.database.schema.createTableIfNotExists(
       'competency_assessments',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('assessment_id').notNullable().unique();
-        table.string('art_name').notNullable();
-        table.string('competency_type').notNullable();
-        table.timestamp('assessment_date').notNullable();
-        table.json('config').notNullable();
-        table.json('framework_data').nullable();
-        table.json('overall_assessment').nullable();
-        table.string('status').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.timestamp('completed_at').nullable();
-        table.index(['art_name', 'competency_type', 'assessment_date']);
+        table.uuid('id').primary();'
+        table.string('assessment_id').notNullable().unique();'
+        table.string('art_name').notNullable();'
+        table.string('competency_type').notNullable();'
+        table.timestamp('assessment_date').notNullable();'
+        table.json('config').notNullable();'
+        table.json('framework_data').nullable();'
+        table.json('overall_assessment').nullable();'
+        table.string('status').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.timestamp('completed_at').nullable();'
+        table.index(['art_name', 'competency_type', 'assessment_date']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'practice_assessments',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('assessment_id').notNullable();
-        table.string('practice_id').notNullable();
-        table.string('practice_area').notNullable();
-        table.string('current_maturity').notNullable();
-        table.string('target_maturity').notNullable();
-        table.json('assessment_data').notNullable();
-        table.json('evidence').notNullable();
-        table.json('action_items').notNullable();
-        table.boolean('requires_approval').notNullable();
-        table.string('approval_gate_id').nullable();
-        table.timestamp('assessed_at').notNullable();
-        table.index(['assessment_id', 'practice_area']);
+        table.uuid('id').primary();'
+        table.string('assessment_id').notNullable();'
+        table.string('practice_id').notNullable();'
+        table.string('practice_area').notNullable();'
+        table.string('current_maturity').notNullable();'
+        table.string('target_maturity').notNullable();'
+        table.json('assessment_data').notNullable();'
+        table.json('evidence').notNullable();'
+        table.json('action_items').notNullable();'
+        table.boolean('requires_approval').notNullable();'
+        table.string('approval_gate_id').nullable();'
+        table.timestamp('assessed_at').notNullable();'
+        table.index(['assessment_id', 'practice_area']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'improvement_plans',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('plan_id').notNullable().unique();
-        table.string('assessment_id').notNullable();
-        table.string('competency_type').notNullable();
-        table.json('plan_data').notNullable();
-        table.json('phases').notNullable();
-        table.json('resources').notNullable();
-        table.json('risks').notNullable();
-        table.json('approval_workflow').notNullable();
-        table.string('status').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.timestamp('target_completion').notNullable();
-        table.index(['assessment_id', 'competency_type']);
+        table.uuid('id').primary();'
+        table.string('plan_id').notNullable().unique();'
+        table.string('assessment_id').notNullable();'
+        table.string('competency_type').notNullable();'
+        table.json('plan_data').notNullable();'
+        table.json('phases').notNullable();'
+        table.json('resources').notNullable();'
+        table.json('risks').notNullable();'
+        table.json('approval_workflow').notNullable();'
+        table.string('status').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.timestamp('target_completion').notNullable();'
+        table.index(['assessment_id', 'competency_type']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'practice_library',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('practice_id').notNullable().unique();
-        table.string('competency_type').notNullable();
-        table.string('practice_area').notNullable();
-        table.string('category').notNullable();
-        table.json('practice_data').notNullable();
-        table.json('maturity_indicators').notNullable();
-        table.json('implementation_guidance').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.timestamp('updated_at').notNullable();
-        table.index(['competency_type', 'practice_area', 'category']);
+        table.uuid('id').primary();'
+        table.string('practice_id').notNullable().unique();'
+        table.string('competency_type').notNullable();'
+        table.string('practice_area').notNullable();'
+        table.string('category').notNullable();'
+        table.json('practice_data').notNullable();'
+        table.json('maturity_indicators').notNullable();'
+        table.json('implementation_guidance').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.timestamp('updated_at').notNullable();'
+        table.index(['competency_type', 'practice_area', 'category']);'
       }
     );
 
     await this.database.schema.createTableIfNotExists(
       'competency_traceability',
       (table: any) => {
-        table.uuid('id').primary();
-        table.string('assessment_id').notNullable();
-        table.string('activity_type').notNullable();
-        table.json('activity_data').notNullable();
-        table.json('participants').notNullable();
-        table.json('outcomes').notNullable();
-        table.json('learning_data').notNullable();
-        table.timestamp('created_at').notNullable();
-        table.index(['assessment_id', 'activity_type']);
+        table.uuid('id').primary();'
+        table.string('assessment_id').notNullable();'
+        table.string('activity_type').notNullable();'
+        table.json('activity_data').notNullable();'
+        table.json('participants').notNullable();'
+        table.json('outcomes').notNullable();'
+        table.json('learning_data').notNullable();'
+        table.timestamp('created_at').notNullable();'
+        table.index(['assessment_id', 'activity_type']);'
       }
     );
   }
@@ -1422,7 +1422,7 @@ export class CoreCompetencyFrameworks {
     config: CompetencyAssessmentConfig
   ): Promise<TeamTechnicalAgilityFramework> {
     if (!this.ttaFramework) {
-      throw new Error('TTA Framework not initialized');
+      throw new Error('TTA Framework not initialized');'
     }
 
     // Clone framework for this assessment
@@ -1433,7 +1433,7 @@ export class CoreCompetencyFrameworks {
     config: CompetencyAssessmentConfig
   ): Promise<AgileProductDeliveryFramework> {
     if (!this.apdFramework) {
-      throw new Error('APD Framework not initialized');
+      throw new Error('APD Framework not initialized');'
     }
 
     // Clone framework for this assessment
@@ -1458,14 +1458,14 @@ export class CoreCompetencyFrameworks {
         config,
         traceabilityId
       );
-      gates.push({ area: 'built_in_quality', gateId: builtInQualityGate });
+      gates.push({ area: 'built_in_quality', gateId: builtInQualityGate });'
 
       const artCoordinationGate = await this.createPracticeAssessmentGate(
         'art_coordination',
         config,
         traceabilityId
       );
-      gates.push({ area: 'art_coordination', gateId: artCoordinationGate });
+      gates.push({ area: 'art_coordination', gateId: artCoordinationGate });'
     } else if (
       config.competencyType === CoreCompetencyType.AGILE_PRODUCT_DELIVERY
     ) {
@@ -1487,7 +1487,7 @@ export class CoreCompetencyFrameworks {
         config,
         traceabilityId
       );
-      gates.push({ area: 'release_on_demand', gateId: releaseOnDemandGate });
+      gates.push({ area: 'release_on_demand', gateId: releaseOnDemandGate });'
     }
 
     return gates;
@@ -1499,12 +1499,12 @@ export class CoreCompetencyFrameworks {
     traceabilityId: string
   ): Promise<ApprovalGateId> {
     const gateId =
-      `practice-assessment-${practiceArea}-${config.id}` as ApprovalGateId;
+      `practice-assessment-${practiceArea}-${config.id}` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `${practiceArea.replace('_', ' ').toUpperCase()} Practice Assessment Approval`,
-      description: `Approve practice assessment results and improvement recommendations for ${practiceArea}`,
+      name: `${practiceArea.replace('_', ' ').toUpperCase()} Practice Assessment Approval`,`
+      description: `Approve practice assessment results and improvement recommendations for ${practiceArea}`,`
       requiredApprovers: [
         ...config.participants.assessors,
         ...config.participants.stakeholders.slice(0, 2), // Include key stakeholders
@@ -1524,12 +1524,12 @@ export class CoreCompetencyFrameworks {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `competency-assessment-${config.id}` as TaskId
+      `competency-assessment-${config.id}` as TaskId`
     );
 
     if (!result.success) {
       throw new Error(
-        `Failed to create practice assessment gate: ${result.error?.message}`
+        `Failed to create practice assessment gate: ${result.error?.message}``
       );
     }
 
@@ -1541,7 +1541,7 @@ export class CoreCompetencyFrameworks {
     assessmentId: string,
     results: any
   ): Promise<void> {
-    this.logger.info('Competency assessment completed', {
+    this.logger.info('Competency assessment completed', {'
       assessmentId,
       overallMaturity: results.overallMaturity,
     });
@@ -1551,7 +1551,7 @@ export class CoreCompetencyFrameworks {
     practiceId: string,
     improvement: any
   ): Promise<void> {
-    this.logger.info('Practice improvement implemented', {
+    this.logger.info('Practice improvement implemented', {'
       practiceId,
       improvementType: improvement.type,
     });
@@ -1561,14 +1561,14 @@ export class CoreCompetencyFrameworks {
     planId: string,
     approver: string
   ): Promise<void> {
-    this.logger.info('Improvement plan approved', { planId, approver });
+    this.logger.info('Improvement plan approved', { planId, approver });'
   }
 
   private async handleActionCompleted(
     actionId: string,
     results: any
   ): Promise<void> {
-    this.logger.info('Improvement action completed', {
+    this.logger.info('Improvement action completed', {'
       actionId,
       successMeasures: results.successMeasures,
     });
@@ -1782,7 +1782,7 @@ export class CoreCompetencyFrameworks {
     timeframe: string
   ): Promise<CompetencyImprovementPlan> {
     return {
-      planId: `plan-${config.id}`,
+      planId: `plan-${config.id}`,`
       competencyType: config.competencyType,
       overview: {
         currentMaturity: PracticeMaturityLevel.INITIAL,

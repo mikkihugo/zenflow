@@ -17,17 +17,17 @@ import type { EventManagerConfig } from './core/interfaces';
  *
  * @interface UELEnhancedEventBus
  * @example
- * ```typescript
+ * ```typescript`
  * const eventBus: UELEnhancedEventBus = await createUELEventBus();
  *
  * // Emit events with data
- * await eventBus.emit('user:action', { userId: '123', action: 'login' });
+ * await eventBus.emit('user:action', { userId: '123', action: 'login' });'
  *
  * // Listen for events
- * eventBus.on('user:action', (data) => {
- *   console.log('User action:', data);
+ * eventBus.on('user:action', (data) => {'
+ *   console.log('User action:', data);'
  * });
- * ```
+ * ````
  */
 export interface UELEnhancedEventBus {
   /**
@@ -95,7 +95,7 @@ export interface UELEnhancedEventBus {
  *
  * @interface UELSystemIntegration
  * @example
- * ```typescript
+ * ```typescript`
  * const integration: UELSystemIntegration = createUELIntegration();
  *
  * // Initialize the UEL system
@@ -103,8 +103,8 @@ export interface UELEnhancedEventBus {
  *
  * // Check system status
  * const status = await integration.getStatus();
- * console.log('UEL Status:', status);
- * ```
+ * console.log('UEL Status:', status);'
+ * ````
  */
 export interface UELSystemIntegration {
   /**
@@ -126,7 +126,7 @@ export interface UELSystemIntegration {
   /**
    * Get the current status of the UEL system.
    *
-   * @returns Promise resolving to system status ('initializing', 'running', 'stopping', 'stopped', 'error')
+   * @returns Promise resolving to system status ('initializing', 'running', 'stopping', 'stopped', 'error')'
    * @throws {Error} If status retrieval fails
    */
   getStatus(): Promise<string>;
@@ -149,7 +149,7 @@ export interface UELSystemIntegration {
  *
  * @constant UEL_CONFIG
  * @example
- * ```typescript
+ * ```typescript`
  * // Use default timeout
  * const timeout = UEL_CONFIG.DEFAULT_TIMEOUT; // 5000ms
  *
@@ -158,7 +158,7 @@ export interface UELSystemIntegration {
  *   timeout: UEL_CONFIG.DEFAULT_TIMEOUT * 2,
  *   retries: UEL_CONFIG.MAX_RETRIES + 1
  * };
- * ```
+ * ````
  */
 export const UEL_CONFIG = {
   /** Default timeout for UEL operations in milliseconds */
@@ -178,18 +178,18 @@ export const UEL_CONFIG = {
  *
  * @constant UEL_EVENTS
  * @example
- * ```typescript
+ * ```typescript`
  * // Listen for UEL initialization
  * eventBus.on(UEL_EVENTS.INITIALIZED, (data) => {
- *   console.log('UEL system initialized:', data);
+ *   console.log('UEL system initialized:', data);'
  * });
  *
  * // Emit system error
  * await eventBus.emit(UEL_EVENTS.ERROR, {
  *   error: 'Connection failed',
- *   component: 'event-manager'
+ *   component: 'event-manager''
  * });
- * ```
+ * ````
  */
 export const UEL_EVENTS = {
   /** Emitted when UEL system initialization is complete */
@@ -212,7 +212,7 @@ export const UEL_EVENTS = {
  * @returns Complete EventManagerConfig with merged settings
  * @throws {Error} If configuration validation fails
  * @example
- * ```typescript
+ * ```typescript`
  * // Use default configuration
  * const defaultConfig = createUELConfig();
  *
@@ -221,7 +221,7 @@ export const UEL_EVENTS = {
  *   timeout: 10000,
  *   retries: 5
  * });
- * ```
+ * ````
  */
 export function createUELConfig(
   partial?: Partial<EventManagerConfig>
@@ -242,15 +242,15 @@ export function createUELConfig(
  * @param event - Event string to validate
  * @returns True if the event is a valid UEL system event, false otherwise
  * @example
- * ```typescript
+ * ```typescript`
  * // Valid UEL events
- * console.log(isValidUELEvent('uel:initialized')); // true
- * console.log(isValidUELEvent('uel:error')); // true
+ * console.log(isValidUELEvent('uel:initialized')); // true'
+ * console.log(isValidUELEvent('uel:error')); // true'
  *
  * // Invalid events
- * console.log(isValidUELEvent('custom:event')); // false
- * console.log(isValidUELEvent('')); // false
- * ```
+ * console.log(isValidUELEvent('custom:event')); // false'
+ * console.log(isValidUELEvent('')); // false'
+ * ````
  */
 export function isValidUELEvent(event: string): boolean {
   return Object.values(UEL_EVENTS).includes(event as any);

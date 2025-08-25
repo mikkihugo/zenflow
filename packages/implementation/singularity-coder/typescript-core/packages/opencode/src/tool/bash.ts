@@ -43,7 +43,7 @@ export const BashTool = Tool.define({
         exit: process.exitCode,
         description: params.description,
       },
-      output: [`<stdout>`, stdout ?? "", `</stdout>`, `<stderr>`, stderr ?? "", `</stderr>`].join("\n"),
+      output: [`<stdout>`, stdout ?? "", `</stdout>`, `<stderr>`, stderr ?? "", `</stderr>`].join("\n"),`
     }
   },
 })

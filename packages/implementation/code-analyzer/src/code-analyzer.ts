@@ -32,7 +32,7 @@ let getEventSystem: any;
 
 // Try to import strategic facades, with enhanced fallbacks if not available
 try {
-  const intelligence = require('@claude-zen/intelligence');
+  const intelligence = require('@claude-zen/intelligence');'
   getBrainSystem = intelligence.getBrainSystem;
 } catch {
   getBrainSystem = async () => ({
@@ -43,7 +43,7 @@ try {
       }),
     }),
     storeEmbedding: async (collection: string, id: string, data: any) => {
-      logger.debug('Brain system fallback: storing embedding', {
+      logger.debug('Brain system fallback: storing embedding', {'
         collection,
         id,
         data,
@@ -53,7 +53,7 @@ try {
 }
 
 try {
-  const operations = require('@claude-zen/operations');
+  const operations = require('@claude-zen/operations');'
   getPerformanceTracker = operations.getPerformanceTracker;
 } catch {
   getPerformanceTracker = async () => ({
@@ -66,24 +66,24 @@ try {
 }
 
 try {
-  const infrastructure = require('@claude-zen/infrastructure');
+  const infrastructure = require('@claude-zen/infrastructure');'
   getDatabaseSystem = infrastructure.getDatabaseSystem;
   getEventSystem = infrastructure.getEventSystem;
 } catch {
   getDatabaseSystem = async () => ({
     store: async (collection: string, id: string, data: any) => {
-      logger.debug('Database fallback: storing', { collection, id, data });
+      logger.debug('Database fallback: storing', { collection, id, data });'
     },
     storeGraph: async (nodeType: string, id: string, data: any) => {
-      logger.debug('Graph fallback: storing node', { nodeType, id, data });
+      logger.debug('Graph fallback: storing node', { nodeType, id, data });'
     },
   });
   getEventSystem = async () => ({
     emit: async (event: string, data: any) => {
-      logger.debug('Event fallback', { event, data });
+      logger.debug('Event fallback', { event, data });'
     },
     on: (event: string, callback: Function) => {
-      logger.debug('Event listener fallback', { event });
+      logger.debug('Event listener fallback', { event });'
       if (callback) {
         callback();
       }
@@ -135,7 +135,7 @@ type EnhancedAnalysisOptions = Merge<
   Partial<CodeAnalysisOptions>
 >;
 
-const logger = getLogger('CodeAnalyzer');
+const logger = getLogger('CodeAnalyzer');'
 
 // Initialize foundation systems using refactored DI
 const diContainer = getGlobalContainer();
@@ -201,13 +201,13 @@ export class CodeAnalyzer {
       useInMemoryFileSystem: false,
     });
 
-    logger.info('CodeAnalyzer initialized', {
+    logger.info('CodeAnalyzer initialized', {'
       repositoryPath: this.repositoryPath,
       hasProject: !!this._project,
     });
 
     // Code analyzer initialized successfully
-    logger.debug('Code analyzer registered successfully');
+    logger.debug('Code analyzer registered successfully');'
   }
 
   /**
@@ -227,9 +227,9 @@ export class CodeAnalyzer {
       this.databaseSystem = database;
       this.eventSystem = events;
 
-      logger.info('All strategic facades initialized successfully');
+      logger.info('All strategic facades initialized successfully');'
     } catch (error) {
-      logger.error('Failed to initialize strategic facades', { error });
+      logger.error('Failed to initialize strategic facades', { error });'
       throw error;
     }
   }
@@ -281,7 +281,7 @@ export class CodeAnalyzer {
 
         // Store session via infrastructure database system
         if (this.databaseSystem) {
-          await this.databaseSystem.store('analysis_sessions', sessionId, {
+          await this.databaseSystem.store('analysis_sessions', sessionId, {'
             repositoryPath: this.repositoryPath,
             startTime: startTime.toISOString(),
             options: session.options,
@@ -290,7 +290,7 @@ export class CodeAnalyzer {
           });
 
           // Store in graph database for relationship analysis
-          await this.databaseSystem.storeGraph('AnalysisSession', sessionId, {
+          await this.databaseSystem.storeGraph('AnalysisSession', sessionId, {'
             repositoryPath: this.repositoryPath,
             startTime: startTime.toISOString(),
             type: 'live_analysis',
@@ -302,7 +302,7 @@ export class CodeAnalyzer {
               'session_analysis',
               sessionId,
               {
-                content: `Repository: ${this.repositoryPath}`,
+                content: `Repository: ${this.repositoryPath}`,`
                 metadata: {
                   options: session.options,
                   timestamp: startTime.toISOString(),
@@ -314,13 +314,13 @@ export class CodeAnalyzer {
 
         // Emit session started event
         if (this.eventSystem) {
-          await this.eventSystem.emit('analysis-session-started', {
+          await this.eventSystem.emit('analysis-session-started', {'
             sessionId,
             options,
           });
         }
 
-        logger.info('Live analysis session started', { sessionId, options });
+        logger.info('Live analysis session started', { sessionId, options });'
         return session;
       },
       { retries: 3, minTimeout: 1000 },
@@ -347,11 +347,11 @@ export class CodeAnalyzer {
       // Detect language
       const language = this.detectLanguage(absolutePath);
       if (!language) {
-        throw new Error(`Unsupported file type: ${filePath}`);
+        throw new Error(`Unsupported file type: ${filePath}`);`
       }
 
       // Read file content
-      const content = await fs.readFile(absolutePath, 'utf-8');
+      const content = await fs.readFile(absolutePath, 'utf-8');'
 
       // Create analysis ID
       const analysisId = this.generateSessionId();
@@ -383,18 +383,18 @@ export class CodeAnalyzer {
         language,
         timestamp: new Date(),
         ast:
-          ast.status ==='fulfilled'
+          ast.status ==='fulfilled''
             ? ast.value
             : this.createEmptyASTAnalysis(),
         syntaxErrors: [],
         parseSuccess: ast.status === 'fulfilled',
         semantics:
-          semantics.status === 'fulfilled'
+          semantics.status === 'fulfilled''
             ? semantics.value
             : this.createEmptySemanticAnalysis(),
         typeErrors: [],
         quality:
-          quality.status === 'fulfilled'
+          quality.status === 'fulfilled''
             ? quality.value
             : this.createEmptyQualityMetrics(),
         suggestions: [],
@@ -413,7 +413,7 @@ export class CodeAnalyzer {
 
       // Store analysis result via infrastructure database system
       if (this.databaseSystem) {
-        await this.databaseSystem.store('code_analysis_results', analysisId, {
+        await this.databaseSystem.store('code_analysis_results', analysisId, {'
           filePath: absolutePath,
           language: language,
           timestamp: result.timestamp.toISOString(),
@@ -425,7 +425,7 @@ export class CodeAnalyzer {
         });
 
         // Store file relationships in graph database
-        await this.databaseSystem.storeGraph('CodeFile', analysisId, {
+        await this.databaseSystem.storeGraph('CodeFile', analysisId, {'
           filePath: absolutePath,
           language: language,
           complexity: result.ast.complexity,
@@ -435,7 +435,7 @@ export class CodeAnalyzer {
 
         // Brain system handles embeddings automatically
         if (this.brainSystem) {
-          await this.brainSystem.storeEmbedding('code_analysis', analysisId, {
+          await this.brainSystem.storeEmbedding('code_analysis', analysisId, {'
             content: content,
             metadata: {
               filePath: absolutePath,
@@ -447,7 +447,7 @@ export class CodeAnalyzer {
         }
       }
 
-      logger.debug('File analysis completed', {
+      logger.debug('File analysis completed', {'
         filePath: absolutePath,
         language,
         analysisTime: result.analysisTime,
@@ -467,12 +467,12 @@ export class CodeAnalyzer {
   ): Promise<Result<AICodeInsights, Error>> {
     try {
       if (!this.brainSystem) {
-        return err(new Error('Brain system not available'));
+        return err(new Error('Brain system not available'));'
       }
 
       const coordinator = this.brainSystem.createCoordinator();
 
-      const prompt = `Analyze this ${language} code for insights:
+      const prompt = `Analyze this ${language} code for insights:`
 ${content.substring(0, 2000)}...
 
 Provide:
@@ -480,7 +480,7 @@ Provide:
 2. Potential improvements
 3. Security considerations
 4. Performance optimizations
-5. Maintainability recommendations`;
+5. Maintainability recommendations`;`
 
       await coordinator.optimizePrompt({
         task: 'Code analysis and insights',
@@ -548,14 +548,14 @@ Provide:
 
       return ok(insights);
     } catch (error) {
-      logger.warn('AI insights generation failed', { error });
+      logger.warn('AI insights generation failed', { error });'
       return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
 
   // Helper methods
   private generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
   }
 
   private createInitialMetrics(): SessionMetrics {
@@ -580,7 +580,7 @@ Provide:
 
     for (const configPath of possiblePaths) {
       try {
-        if (require('fs').existsSync(configPath)) {
+        if (require('fs').existsSync(configPath)) {'
           return configPath;
         }
       } catch {
@@ -593,26 +593,26 @@ Provide:
   private detectLanguage(filePath: string): SupportedLanguage | null {
     const ext = path.extname(filePath).toLowerCase();
     switch (ext) {
-    case '.ts':
-      return 'typescript';
-    case '.tsx':
-      return 'tsx';
-    case '.js':
-      return 'javascript';
-      case '.jsx':
-        return 'jsx';
-      case '.py':
-        return 'python';
-      case '.go':
-        return 'go';
-      case '.rs':
-        return 'rust';
-      case '.java':
-        return 'java';
-      case '.cpp':
-      case '.cc':
-      case '.cxx':
-        return 'cpp';
+    case '.ts':'
+      return 'typescript;
+    case '.tsx':'
+      return 'tsx;
+    case '.js':'
+      return 'javascript;
+      case '.jsx':'
+        return 'jsx;
+      case '.py':'
+        return 'python;
+      case '.go':'
+        return 'go;
+      case '.rs':'
+        return 'rust;
+      case '.java':'
+        return 'java;
+      case '.cpp':'
+      case '.cc':'
+      case '.cxx':'
+        return 'cpp;
       default:
         return null;
     }
@@ -624,7 +624,7 @@ Provide:
     filePath: string
   ): Promise<ASTAnalysis> {
     // Real AST analysis implementation
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
     const basicMetrics = {
       nodeCount: lines.length,
       depth: Math.max(1, Math.ceil(Math.log2(lines.length))),
@@ -636,7 +636,7 @@ Provide:
       references: this.extractReferences(content, filePath),
     };
 
-    logger.debug('AST analysis completed', { filePath, metrics: basicMetrics });
+    logger.debug('AST analysis completed', { filePath, metrics: basicMetrics });'
     return basicMetrics;
   }
 
@@ -655,7 +655,7 @@ Provide:
       callGraph: this.buildCallGraph(content, language),
     };
 
-    logger.debug('Semantic analysis completed', {
+    logger.debug('Semantic analysis completed', {'
       filePath,
       scopeCount: analysis.scopes.length,
     });
@@ -668,7 +668,7 @@ Provide:
     filePath: string
   ): Promise<CodeQualityMetrics> {
     // Real quality analysis implementation
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
     const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
 
     const metrics = {
@@ -701,7 +701,7 @@ Provide:
       vulnerabilities: [],
     };
 
-    logger.debug('Quality analysis completed', {
+    logger.debug('Quality analysis completed', {'
       filePath,
       linesOfCode: metrics.linesOfCode,
     });
@@ -811,14 +811,14 @@ Provide:
   private async performInitialAnalysis(
     session: LiveAnalysisSession
   ): Promise<void> {
-    logger.info('Performing initial repository analysis');
+    logger.info('Performing initial repository analysis');'
     // Implement initial repository scan
     session.startTime = new Date();
     session.status = 'analyzing';
   }
 
   private async setupFileWatching(session: LiveAnalysisSession): Promise<void> {
-    logger.info('Setting up file watching');
+    logger.info('Setting up file watching');'
     // Implement file watching setup
     session.isWatching = true;
   }
@@ -869,15 +869,15 @@ Provide:
     language: SupportedLanguage
   ): any[] {
     const patterns = [];
-    if (language === 'typescript' || language === 'javascript') {
-      if (content.includes('class ')) {
-        patterns.push({ name: 'class-definition', line: 0 });
+    if (language === 'typescript' || language === 'javascript') {'
+      if (content.includes('class ')) {'
+        patterns.push({ name: 'class-definition', line: 0 });'
       }
-      if (content.includes('function ')) {
-        patterns.push({ name: 'function-definition', line: 0 });
+      if (content.includes('function ')) {'
+        patterns.push({ name: 'function-definition', line: 0 });'
       }
-      if (content.includes('interface ')) {
-        patterns.push({ name: 'interface-definition', line: 0 });
+      if (content.includes('interface ')) {'
+        patterns.push({ name: 'interface-definition', line: 0 });'
       }
     }
     return patterns;
@@ -885,9 +885,9 @@ Provide:
 
   private extractImports(content: string, language: SupportedLanguage): any[] {
     const imports = [];
-    if (language === 'typescript'||language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {'
       const importMatches =
-        content.match(/import.*from.*['"]([^'"]*)['"]/g)|| [];
+        content.match(/import.*from.*['"]([^'"]*)['"]/g)|| [];'
       imports.push(
         ...importMatches.map((imp) => ({ statement: imp, module: imp }))
       );
@@ -897,7 +897,7 @@ Provide:
 
   private extractExports(content: string, language: SupportedLanguage): any[] {
     const exports = [];
-    if (language === 'typescript' || language === 'javascript') {
+    if (language === 'typescript' || language === 'javascript') {'
       const exportMatches = content.match(/export.*[{};]/g)|| [];
       exports.push(
         ...exportMatches.map((exp) => ({ statement: exp, name: exp }))
@@ -911,14 +911,14 @@ Provide:
     language: SupportedLanguage
   ): any[] {
     const declarations = [];
-    if (language === 'typescript' || language === 'javascript') {
+    if (language === 'typescript' || language === 'javascript') {'
       const funcMatches = content.match(/function\s+(\w+)/g)|| [];
       const classMatches = content.match(/class\s+(\w+)/g)|| [];
       declarations.push(
-        ...funcMatches.map((f) => ({ type:'function', name: f }))
+        ...funcMatches.map((f) => ({ type:'function', name: f }))'
       );
       declarations.push(
-        ...classMatches.map((c) => ({ type: 'class', name: c }))
+        ...classMatches.map((c) => ({ type: 'class', name: c }))'
       );
     }
     return declarations;
@@ -939,16 +939,16 @@ Provide:
   private analyzeScopes(content: string, language: SupportedLanguage): any[] {
     // Basic scope analysis - could be enhanced with proper parsing
     const scopes = [];
-    if (language === 'typescript' || language === 'javascript') {
+    if (language === 'typescript' || language === 'javascript') {'
       const functionScopes = (content.match(/function\s+\w+\s*\(/g)|| [])
         .length;
       const blockScopes = (content.match(/\{/g)|| []).length;
-      scopes.push({ type:'global', depth: 0 });
+      scopes.push({ type:'global', depth: 0 });'
       for (let i = 0; i < functionScopes; i++) {
-        scopes.push({ type: 'function', depth: 1 });
+        scopes.push({ type: 'function', depth: 1 });'
       }
       for (let i = 0; i < blockScopes; i++) {
-        scopes.push({ type: 'block', depth: 2 });
+        scopes.push({ type: 'block', depth: 2 });'
       }
     }
     return scopes;
@@ -957,13 +957,13 @@ Provide:
   private analyzeBindings(content: string, language: SupportedLanguage): any[] {
     // Basic binding analysis
     const bindings = [];
-    if (language === 'typescript'||language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {'
       const letBindings = (content.match(/\blet\s+(\w+)/g)|| []).map((m) => ({
         type: 'let',
         name: m,
       }));
       const constBindings = (content.match(/\bconst\s+(\w+)/g)|| []).map(
-        (m) => ({ type:'const', name: m })
+        (m) => ({ type:'const', name: m })'
       );
       const varBindings = (content.match(/\bvar\s+(\w+)/g)|| []).map((m) => ({
         type: 'var',
@@ -977,9 +977,9 @@ Provide:
   private extractTypeInfo(content: string, language: SupportedLanguage): any[] {
     // Basic type information extraction
     const typeInfo = [];
-    if (language === 'typescript') {
+    if (language === 'typescript') {'
       const interfaces = (content.match(/interface\s+(\w+)/g)|| []).map(
-        (m) => ({ type:'interface', name: m })
+        (m) => ({ type:'interface', name: m })'
       );
       const types = (content.match(/type\s+(\w+)/g)|| []).map((m) => ({
         type: 'type',
@@ -994,7 +994,7 @@ Provide:
     // Basic control flow analysis
     const nodes = [];
     const edges = [];
-    if (language === 'typescript'||language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {'
       const controlStatements =
         content.match(/\b(if|for|while|switch|return)\b/g)|| [];
       controlStatements.forEach((stmt, index) => {
@@ -1014,11 +1014,11 @@ Provide:
     const definitions = [];
     const uses = [];
 
-    if (language === 'typescript' || language === 'javascript') {
+    if (language === 'typescript' || language === 'javascript') {'
       const assignments = content.match(/(\w+)\s*=/g)|| [];
       assignments.forEach((assign, index) => {
         definitions.push({ variable: assign, location: index });
-        nodes.push({ id: index, type:'definition' });
+        nodes.push({ id: index, type:'definition' });'
       });
     }
 
@@ -1032,7 +1032,7 @@ Provide:
     const entryPoints = [];
     const recursiveCalls = [];
 
-    if (language === 'typescript'||language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {'
       const functionCalls = content.match(/(\w+)\s*\(/g)|| [];
       functionCalls.forEach((call, index) => {
         nodes.push({ id: index, name: call });
@@ -1052,17 +1052,17 @@ Provide:
     // Basic code smell detection
     const smells = [];
 
-    if (language === 'typescript' || language === 'javascript') {
+    if (language === 'typescript' || language === 'javascript') {'
       // Long method detection
-      const lines = content.split('\n');
+      const lines = content.split('\n');'
       if (lines.length > 50) {
-        smells.push({ type: 'long-method', severity: 'medium', line: 1 });
+        smells.push({ type: 'long-method', severity: 'medium', line: 1 });'
       }
 
       // Magic number detection
       const magicNumbers = content.match(/\b\d{2,}\b/g)|| [];
       if (magicNumbers.length > 5) {
-        smells.push({ type:'magic-numbers', severity: 'low', line: 0 });
+        smells.push({ type:'magic-numbers', severity: 'low', line: 0 });'
       }
 
       // Deep nesting detection
@@ -1070,7 +1070,7 @@ Provide:
         (content.match(/\{/g)|| []).length -
         (content.match(/\}/g)|| []).length;
       if (Math.abs(nestingLevel) > 4) {
-        smells.push({ type:'deep-nesting', severity: 'high', line: 0 });
+        smells.push({ type:'deep-nesting', severity: 'high', line: 0 });'
       }
     }
 
@@ -1090,7 +1090,7 @@ Provide:
 export interface DependencyNode {
   id: string;
   name: string;
-  type: 'module|class|function|interface|type|variable|namespace';
+  type: 'module|class|function|interface|type|variable|namespace;
   filePath: string;
   location: {
     line: number;
@@ -1101,7 +1101,7 @@ export interface DependencyNode {
   metadata: {
     isExported: boolean;
     isDefault: boolean;
-    visibility: 'public|private|protected|internal';
+    visibility: 'public|private|protected|internal;
     complexity: number;
     size: number;
     lastModified: Date;
@@ -1112,13 +1112,13 @@ export interface DependencyEdge {
   id: string;
   from: string;
   to: string;
-  type: 'import|call|inheritance|composition|implementation|reference';
+  type: 'import|call|inheritance|composition|implementation|reference;
   weight: number;
   metadata: {
-    importType?: 'named|default|namespace|side-effect';
+    importType?: 'named|default|namespace|side-effect;
     isCircular: boolean;
     distance: number;
-    criticality: 'low|medium|high|critical';
+    criticality: 'low|medium|high|critical;
   };
 }
 
@@ -1134,8 +1134,8 @@ export interface DependencyCluster {
 }
 
 export interface ArchitecturalViolation {
-  type: 'circular-dependency|layer-violation|coupling-violation|cohesion-violation';
-  severity: 'low|medium|high|critical';
+  type: 'circular-dependency|layer-violation|coupling-violation|cohesion-violation;
+  severity: 'low|medium|high|critical;
   description: string;
   affectedNodes: string[];
   suggestedFix: string;
@@ -1164,7 +1164,7 @@ export interface DependencyAnalysis {
 
 export interface DependencyHotspot {
   nodeId: string;
-  type: 'high-coupling|high-complexity|frequent-changes|bottleneck';
+  type: 'high-coupling|high-complexity|frequent-changes|bottleneck;
   score: number;
   impact: string;
   recommendation: string;
@@ -1172,25 +1172,25 @@ export interface DependencyHotspot {
 
 export interface DependencyAntipattern {
   name: string;
-  type: 'god-class|feature-envy|inappropriate-intimacy|shotgun-surgery';
-  severity: 'low|medium|high|critical';
+  type: 'god-class|feature-envy|inappropriate-intimacy|shotgun-surgery;
+  severity: 'low|medium|high|critical;
   affectedNodes: string[];
   description: string;
   refactoringStrategy: string;
 }
 
 export interface RefactoringOpportunity {
-  type: 'extract-module|merge-modules|break-cycle|reduce-coupling';
+  type: 'extract-module|merge-modules|break-cycle|reduce-coupling;
   priority: number;
-  effort: 'low|medium|high';
-  benefit: 'low|medium|high';
+  effort: 'low' | 'medium' | 'high';
+  benefit: 'low' | 'medium' | 'high';
   description: string;
   steps: string[];
   affectedFiles: string[];
 }
 
 export interface EvolutionPrediction {
-  stabilityTrend: 'improving|stable|degrading';
+  stabilityTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
   changePronenessScore: number;
   maintenanceEffort: {
     current: number;
@@ -1227,17 +1227,17 @@ export interface DependencyRelationshipMap {
 
 /**
  * Advanced Dependency Relationship Mapper
- * Inspired by DeepCode's comprehensive dependency analysis capabilities
+ * Inspired by DeepCode's comprehensive dependency analysis capabilities'
  */
 export class DependencyRelationshipMapper {
-  private readonly logger = getLogger('DependencyRelationshipMapper');
+  private readonly logger = getLogger('DependencyRelationshipMapper');'
   private readonly repositoryPath: string;
   private nodeIdCounter = 0;
   private edgeIdCounter = 0;
 
   constructor(repositoryPath: string) {
     this.repositoryPath = path.resolve(repositoryPath);
-    this.logger.info('DependencyRelationshipMapper initialized', {
+    this.logger.info('DependencyRelationshipMapper initialized', {'
       repositoryPath: this.repositoryPath,
     });
   }
@@ -1249,36 +1249,36 @@ export class DependencyRelationshipMapper {
     includeTests?: boolean;
     includeNodeModules?: boolean;
     maxDepth?: number;
-    analysisType?: 'full|incremental|focused';
+    analysisType?: 'full' | 'incremental' | 'focused';
   } = {}): Promise<Result<DependencyRelationshipMap, Error>> {
     const startTime = performance.now();
     
     return await safeAsync(async (): Promise<DependencyRelationshipMap> => {
-      this.logger.info('Building comprehensive dependency relationship map', options);
+      this.logger.info('Building comprehensive dependency relationship map', options);'
 
       // Phase 1: Discovery - Find all analyzable files
       const files = await this.discoverFiles(options);
-      this.logger.debug(`Discovered ${files.length} files for analysis`);
+      this.logger.debug(`Discovered ${files.length} files for analysis`);`
 
       // Phase 2: Node Extraction - Extract all dependency nodes
       const nodes = await this.extractNodes(files);
-      this.logger.debug(`Extracted ${nodes.length} dependency nodes`);
+      this.logger.debug(`Extracted ${nodes.length} dependency nodes`);`
 
       // Phase 3: Edge Analysis - Analyze relationships between nodes
       const edges = await this.analyzeRelationships(nodes, files);
-      this.logger.debug(`Analyzed ${edges.length} dependency relationships`);
+      this.logger.debug(`Analyzed ${edges.length} dependency relationships`);`
 
       // Phase 4: Cluster Analysis - Group related nodes
       const clusters = await this.performClusterAnalysis(nodes, edges);
-      this.logger.debug(`Identified ${clusters.length} dependency clusters`);
+      this.logger.debug(`Identified ${clusters.length} dependency clusters`);`
 
       // Phase 5: Metrics Calculation - Calculate comprehensive metrics
       const metrics = await this.calculateDependencyMetrics(nodes, edges, clusters);
-      this.logger.debug('Calculated dependency metrics', metrics);
+      this.logger.debug('Calculated dependency metrics', metrics);'
 
       // Phase 6: Advanced Analysis - Architectural insights and recommendations
       const analysis = await this.performAdvancedAnalysis(nodes, edges, clusters, metrics);
-      this.logger.debug('Completed advanced dependency analysis');
+      this.logger.debug('Completed advanced dependency analysis');'
 
       const endTime = performance.now();
       const analysisTime = endTime - startTime;
@@ -1298,7 +1298,7 @@ export class DependencyRelationshipMapper {
         },
       };
 
-      this.logger.info(`Dependency relationship map completed in ${analysisTime.toFixed(2)}ms`, {
+      this.logger.info(`Dependency relationship map completed in ${analysisTime.toFixed(2)}ms`, {`
         nodes: nodes.length,
         edges: edges.length,
         clusters: clusters.length,
@@ -1315,7 +1315,7 @@ export class DependencyRelationshipMapper {
   async detectCircularDependencies(
     nodes: DependencyNode[],
     edges: DependencyEdge[]
-  ): Promise<Array<{ cycle: string[]; severity: 'low|medium|high|critical' }>> {
+  ): Promise<Array<{ cycle: string[]; severity: 'low|medium|high|critical' }>> {'
     const circles = [];
     const adjacencyList = this.buildAdjacencyList(edges);
     const visited = new Set<string>();
@@ -1375,11 +1375,11 @@ export class DependencyRelationshipMapper {
     // Detect circular dependency violations
     const circularDeps = await this.detectCircularDependencies(nodes, edges);
     for (const circular of circularDeps) {
-      if (circular.severity === 'high' || circular.severity === 'critical') {
+      if (circular.severity === 'high' || circular.severity === 'critical') {'
         violations.push({
           type: 'circular-dependency',
           severity: circular.severity,
-          description: `Circular dependency detected: ${circular.cycle.join(' -> ')}`,
+          description: `Circular dependency detected: ${circular.cycle.join(' -> ')}`,`
           affectedNodes: circular.cycle,
           suggestedFix: 'Consider breaking the cycle by introducing an interface or moving shared code to a common module',
           impact: circular.cycle.length * 10,
@@ -1394,7 +1394,7 @@ export class DependencyRelationshipMapper {
 
   private async discoverFiles(options: any): Promise<string[]> {
     const files: string[] = [];
-    const extensions = ['.ts', '.tsx', '.js', '.jsx'];
+    const extensions = ['.ts', '.tsx', '.js', '.jsx'];'
     
     const walkDir = async (dir: string): Promise<void> => {
       try {
@@ -1405,9 +1405,9 @@ export class DependencyRelationshipMapper {
           
           if (entry.isDirectory()) {
             // Skip node_modules unless explicitly included
-            if (entry.name === 'node_modules' && !options.includeNodeModules) continue;
+            if (entry.name === 'node_modules' && !options.includeNodeModules) continue;'
             // Skip test directories unless explicitly included
-            if ((entry.name === '__tests__' || entry.name === 'test' || entry.name === 'tests') && !options.includeTests) continue;
+            if ((entry.name === '__tests__' || entry.name === 'test' || entry.name === 'tests') && !options.includeTests) continue;'
             
             await walkDir(fullPath);
           } else if (entry.isFile()) {
@@ -1418,7 +1418,7 @@ export class DependencyRelationshipMapper {
           }
         }
       } catch (error) {
-        this.logger.warn(`Failed to read directory: ${dir}`, { error });
+        this.logger.warn(`Failed to read directory: ${dir}`, { error });`
       }
     };
 
@@ -1431,11 +1431,11 @@ export class DependencyRelationshipMapper {
     
     for (const filePath of files) {
       try {
-        const content = await fs.readFile(filePath, 'utf-8');
+        const content = await fs.readFile(filePath, 'utf-8');'
         const fileNodes = await this.extractNodesFromFile(filePath, content);
         nodes.push(...fileNodes);
       } catch (error) {
-        this.logger.warn(`Failed to extract nodes from file: ${filePath}`, { error });
+        this.logger.warn(`Failed to extract nodes from file: ${filePath}`, { error });`
       }
     }
     
@@ -1444,7 +1444,7 @@ export class DependencyRelationshipMapper {
 
   private async extractNodesFromFile(filePath: string, content: string): Promise<DependencyNode[]> {
     const nodes: DependencyNode[] = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
     
     // Extract different types of nodes using regex patterns
     const patterns = {
@@ -1461,9 +1461,9 @@ export class DependencyRelationshipMapper {
       while ((match = pattern.exec(content)) !== null) {
         const name = match[1] || match[2];
         if (name) {
-          const lineIndex = content.substring(0, match.index).split('\n').length - 1;
+          const lineIndex = content.substring(0, match.index).split('\n').length - 1;'
           const line = lines[lineIndex];
-          const column = match.index - content.lastIndexOf('\n', match.index) - 1;
+          const column = match.index - content.lastIndexOf('\n', match.index) - 1;'
           
           nodes.push({
             id: this.generateNodeId(),
@@ -1477,8 +1477,8 @@ export class DependencyRelationshipMapper {
               endColumn: column + name.length,
             },
             metadata: {
-              isExported: content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),
-              isDefault: content.includes(`export default ${name}`),
+              isExported: content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),`
+              isDefault: content.includes(`export default ${name}`),`
               visibility: 'public',
               complexity: this.calculateNodeComplexity(content, name),
               size: name.length,
@@ -1498,11 +1498,11 @@ export class DependencyRelationshipMapper {
     
     for (const filePath of files) {
       try {
-        const content = await fs.readFile(filePath, 'utf-8');
+        const content = await fs.readFile(filePath, 'utf-8');'
         const fileEdges = await this.extractEdgesFromFile(filePath, content, nodeMap);
         edges.push(...fileEdges);
       } catch (error) {
-        this.logger.warn(`Failed to analyze relationships in file: ${filePath}`, { error });
+        this.logger.warn(`Failed to analyze relationships in file: ${filePath}`, { error });`
       }
     }
     
@@ -1517,7 +1517,7 @@ export class DependencyRelationshipMapper {
     const edges: DependencyEdge[] = [];
     
     // Extract import relationships
-    const importPattern = /import\s+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(\*\s+as\s+[A-Za-z_$][A-Za-z0-9_$]*))\s+from\s+['"`]([^'"`]+)['"`]/g;
+    const importPattern = /import\s+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(\*\s+as\s+[A-Za-z_$][A-Za-z0-9_$]*))\s+from\s+['"`]([^'"`]+)['"`]/g;`
     let match;
     
     while ((match = importPattern.exec(content)) !== null) {
@@ -1525,11 +1525,11 @@ export class DependencyRelationshipMapper {
       
       // Handle different import types
       if (namedImports) {
-        const imports = namedImports.replace(/[{}]/g, '').split(',').map(i => i.trim());
+        const imports = namedImports.replace(/[{}]/g, '').split(',').map(i => i.trim());'
         for (const importName of imports) {
           const targetNode = nodeMap.get(importName);
           if (targetNode) {
-            edges.push(this.createEdge('import', filePath, targetNode.id, 'named'));
+            edges.push(this.createEdge('import', filePath, targetNode.id, 'named'));'
           }
         }
       }
@@ -1537,7 +1537,7 @@ export class DependencyRelationshipMapper {
       if (defaultImport) {
         const targetNode = nodeMap.get(defaultImport);
         if (targetNode) {
-          edges.push(this.createEdge('import', filePath, targetNode.id, 'default'));
+          edges.push(this.createEdge('import', filePath, targetNode.id, 'default'));'
         }
       }
     }
@@ -1548,7 +1548,7 @@ export class DependencyRelationshipMapper {
       const functionName = match[1];
       const targetNode = nodeMap.get(functionName);
       if (targetNode && targetNode.filePath !== filePath) {
-        edges.push(this.createEdge('call', filePath, targetNode.id));
+        edges.push(this.createEdge('call', filePath, targetNode.id));'
       }
     }
     
@@ -1575,7 +1575,7 @@ export class DependencyRelationshipMapper {
       const stability = this.calculateStability(dirNodes, edges);
       
       clusters.push({
-        id: `cluster_${clusterIndex++}`,
+        id: `cluster_${clusterIndex++}`,`
         name: path.basename(dirPath),
         nodes: dirNodes.map(n => n.id),
         cohesion,
@@ -1626,11 +1626,11 @@ export class DependencyRelationshipMapper {
 
   // Additional helper methods (simplified implementations for brevity)
   private generateNodeId(): string {
-    return `node_${++this.nodeIdCounter}`;
+    return `node_${++this.nodeIdCounter}`;`
   }
 
   private generateEdgeId(): string {
-    return `edge_${++this.edgeIdCounter}`;
+    return `edge_${++this.edgeIdCounter}`;`
   }
 
   private createEdge(type: string, from: string, to: string, importType?: string): DependencyEdge {
@@ -1651,7 +1651,7 @@ export class DependencyRelationshipMapper {
 
   private calculateNodeComplexity(content: string, nodeName: string): number {
     // Simple complexity calculation based on occurrence and context
-    const occurrences = (content.match(new RegExp(nodeName, 'g')) || []).length;
+    const occurrences = (content.match(new RegExp(nodeName, 'g')) || []).length;'
     return Math.min(occurrences, 10);
   }
 
@@ -1668,11 +1668,11 @@ export class DependencyRelationshipMapper {
     return adjacencyList;
   }
 
-  private assessCircularDependencySeverity(cycle: string[], edges: DependencyEdge[]): 'low|medium|high|critical' {
-    if (cycle.length <= 2) return 'low';
-    if (cycle.length <= 4) return 'medium';
-    if (cycle.length <= 6) return 'high';
-    return 'critical';
+  private assessCircularDependencySeverity(cycle: string[], edges: DependencyEdge[]): 'low|medium|high|critical' {'
+    if (cycle.length <= 2) return 'low;
+    if (cycle.length <= 4) return 'medium;
+    if (cycle.length <= 6) return 'high;
+    return 'critical;
   }
 
   private detectLayerViolations(nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] {
@@ -1706,8 +1706,8 @@ export class DependencyRelationshipMapper {
   }
 
   private inferResponsibility(nodes: DependencyNode[]): string {
-    const dir = path.dirname(nodes[0]?.filePath || '');
-    return path.basename(dir) || 'unknown';
+    const dir = path.dirname(nodes[0]?.filePath || '');'
+    return path.basename(dir) || 'unknown;
   }
 
   private calculateMaxDependencyDepth(nodes: DependencyNode[], edges: DependencyEdge[]): number {
@@ -1726,7 +1726,7 @@ export class DependencyRelationshipMapper {
 
   private calculateCouplingDistribution(clusters: DependencyCluster[]): { [key: string]: number } {
     return clusters.reduce((acc, cluster, index) => {
-      acc[`cluster_${index}`] = cluster.coupling;
+      acc[`cluster_${index}`] = cluster.coupling;`
       return acc;
     }, {} as { [key: string]: number });
   }

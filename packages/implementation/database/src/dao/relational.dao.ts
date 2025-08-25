@@ -16,7 +16,7 @@
  * @version 2.0.0
  * @since 1.0.0
  * @example Basic Relational DAO Usage
- * ```typescript
+ * ```typescript`
  * import { RelationalDao } from './dao/relational.dao';
  *
  * interface User {
@@ -38,7 +38,7 @@
  *     email: { type: 'string', unique: true },
  *     profile: { type: 'json' },
  *     createdAt: { type: 'datetime', default: 'now' },
- *     active: { type: 'boolean', default: true }
+ *     active: { type: 'boolean', default: true }'
  *   }
  * );
  *
@@ -50,8 +50,8 @@
  *   active: true
  * });
  *
- * const users = await userDao.findAll({ limit: 10, sort: [{ field: 'createdAt', direction: 'desc' }] });
- * ```
+ * const users = await userDao.findAll({ limit: 10, sort: [{ field: 'createdAt', direction: 'desc' }] });'
+ * ````
  */
 
 // Using Awilix DI - no reflect-metadata needed
@@ -79,7 +79,7 @@ import type {
  * @implements Dao<T>
  * @since 1.0.0
  * @example PostgreSQL User DAO
- * ```typescript
+ * ```typescript`
  * interface User {
  *   id: string;
  *   username: string;
@@ -101,7 +101,7 @@ import type {
  *     profile: { type: 'json' },
  *     createdAt: { type: 'datetime', default: 'now' },
  *     updatedAt: { type: 'datetime', default: 'now', onUpdate: 'now' },
- *     isActive: { type: 'boolean', default: true }
+ *     isActive: { type: 'boolean', default: true }'
  *   }
  * );
  *
@@ -110,11 +110,11 @@ import type {
  *   'createdAt',
  *   new Date('2024-01-01'),
  *   new Date('2024-12-31'),
- *   { sort: [{ field: 'username', direction: 'asc' }] }
+ *   { sort: [{ field: 'username', direction: 'asc' }] }'
  * );
  *
- * const userCount = await userDao.aggregate('COUNT', '*', { isActive: true });
- * ```
+ * const userCount = await userDao.aggregate('COUNT', '*', { isActive: true });'
+ * ````
  */
 export class RelationalDao<T>
   extends BaseDao<T>
@@ -135,16 +135,16 @@ export class RelationalDao<T>
    * @throws {Error} When JSON parsing fails for JSON columns.
    * @throws {Error} When date conversion fails for date columns.
    * @example Row to Entity Mapping
-   * ```typescript
+   * ```typescript`
    * // Database row (raw data)
    * const dbRow = {
    *   id: 'user-123',
    *   name: 'John Doe',
    *   email: 'john@example.com',
-   *   profile: '{"age": 30, "location": "NYC"}', // JSON string
-   *   created_at: '2024-01-15T10:30:00Z',       // SO string
+   *   profile: '{"age": 30, "location": "NYC"}', // JSON string'
+   *   created_at: '2024-01-15T10:30:00Z',       // SO string'
    *   is_active: 1,                             // SQLite boolean as integer
-   *   login_count: '42'                         // String number
+   *   login_count: '42'                         // String number'
    * };
    *
    * // Mapped entity (typed object)
@@ -154,16 +154,16 @@ export class RelationalDao<T>
    * //   id: 'user-123',
    * //   name: 'John Doe',
    * //   email: 'john@example.com',
-   * //   profile: { age: 30, location: 'NYC' },  // Parsed JSON object
-   * //   createdAt: Date('2024-01-15T10:30:00Z'), // Date object
+   * //   profile: { age: 30, location: 'NYC' },  // Parsed JSON object'
+   * //   createdAt: Date('2024-01-15T10:30:00Z'), // Date object'
    * //   isActive: true,                          // Boolean
    * //   loginCount: 42                           // Number
    * // }
-   * ```
+   * ````
    */
   protected mapRowToEntity(row: unknown): T {
     if (!row) {
-      throw new Error('Cannot map null/undefined row to entity');
+      throw new Error('Cannot map null/undefined row to entity');'
     }
 
     const entity = {} as Record<string, unknown>;
@@ -176,7 +176,7 @@ export class RelationalDao<T>
       }
 
       // Handle JSON columns
-      if (typeof value ==='string' && this.isJsonColumn(key)) {
+      if (typeof value ==='string' && this.isJsonColumn(key)) {'
         try {
           entity[key] = JSON.parse(value);
         } catch {
@@ -195,7 +195,7 @@ export class RelationalDao<T>
       if (this.isDateColumn(key)) {
         if (value instanceof Date) {
           entity[key] = value;
-        } else if (typeof value === 'string'||typeof value ==='number') {
+        } else if (typeof value === 'string'||typeof value ==='number') {'
           entity[key] = new Date(value);
         } else {
           entity[key] = value;
@@ -204,7 +204,7 @@ export class RelationalDao<T>
       }
 
       // Handle number columns
-      if (this.isNumberColumn(key) && typeof value === 'string') {
+      if (this.isNumberColumn(key) && typeof value === 'string') {'
         const numValue = Number(value);
         entity[key] = Number.isNaN(numValue) ? value : numValue;
         continue;
@@ -228,15 +228,15 @@ export class RelationalDao<T>
    * @param {Partial<T>} entity - Entity object to convert.
    * @returns {Record<string, unknown>} Database row object ready for SQL operations.
    * @example Entity to Row Mapping
-   * ```typescript
+   * ```typescript`
    * // Entity object (typed)
    * const user: User = {
    *   id: 'user-123',
    *   name: 'John Doe',
-   *   profile: { age: 30, location: 'NYC' },    // Object
-   *   createdAt: new Date('2024-01-15'),        // Date object
+   *   profile: { age: 30, location: 'NYC' },    // Object'
+   *   createdAt: new Date('2024-01-15'),        // Date object'
    *   isActive: true,                           // Boolean
-   *   tags: ['developer', 'manager']            // Array
+   *   tags: ['developer', 'manager']            // Array'
    * };
    *
    * // Mapped row (database format)
@@ -245,12 +245,12 @@ export class RelationalDao<T>
    * // {
    * //   id: 'user-123',
    * //   name: 'John Doe',
-   * //   profile: '{"age":30,"location":"NYC"}', // JSON string
-   * //   created_at: '2024-01-15T00:00:00.000Z',  // SO string
+   * //   profile: '{"age":30,"location":"NYC"}', // JSON string'
+   * //   created_at: '2024-01-15T00:00:00.000Z',  // SO string'
    * //   is_active: true,                          // Boolean (or 1 for SQLite)
-   * //   tags: '["developer","manager"]'// JSON array string
+   * //   tags: '["developer","manager"]'// JSON array string'
    * // }
-   * ```
+   * ````
    */
   protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
     if (!entity) {
@@ -268,7 +268,7 @@ export class RelationalDao<T>
       // Handle JSON columns - serialize objects/arrays
       if (
         this.isJsonColumn(key) &&
-        (typeof value ==='object'||Array.isArray(value))
+        (typeof value ==='object'||Array.isArray(value))'
       ) {
         row[key] = JSON.stringify(value);
         continue;
@@ -278,7 +278,7 @@ export class RelationalDao<T>
       if (this.isDateColumn(key)) {
         if (value instanceof Date) {
           row[key] = value.toISOString();
-        } else if (typeof value ==='string'||typeof value ==='number') {
+        } else if (typeof value ==='string'||typeof value ==='number') {'
           row[key] = new Date(value).toISOString();
         } else {
           row[key] = value;
@@ -313,7 +313,7 @@ export class RelationalDao<T>
    * Supports NNER JOINs with custom join conditions and optional filtering criteria.
    *
    * @param {string} joinTable - Name of the table to join with.
-   * @param {string} joinCondition - SQL join condition (e.g., 'users.id = profiles.user_id').
+   * @param {string} joinCondition - SQL join condition (e.g., 'users.id = profiles.user_id').'
    * @param {Partial<T>} [criteria] - Optional filtering criteria for the main table.
    * @param {any} [options] - Optional query options (sort, limit, offset).
    * @returns {Promise<T[]>} Array of entities with joined data.
@@ -321,7 +321,7 @@ export class RelationalDao<T>
    * @throws {Error} When SQL execution fails.
    * @throws {Error} When join condition is invalid.
    * @example User Profile JOIN Query
-   * ```typescript
+   * ```typescript`
    * // Find users with their profile information
    * const usersWithProfiles = await userDao.findWithJoin(
    *   'user_profiles',
@@ -340,9 +340,9 @@ export class RelationalDao<T>
    * // WHERE users.is_active = $1
    * // ORDER BY users.created_at DESC
    * // LIMIT 50
-   * ```
+   * ````
    * @example Order Items JOIN Query
-   * ```typescript
+   * ```typescript`
    * interface OrderItem {
    *   id: string;
    *   productId: string;
@@ -356,10 +356,10 @@ export class RelationalDao<T>
    *   'order_items.product_id = products.id',
    *   { quantity: { $gte: 2 } }, // Quantity >= 2
    *   {
-   *     sort: [{ field: 'products.name', direction: 'asc' }]
+   *     sort: [{ field: 'products.name', direction: 'asc' }]'
    *   }
    * );
-   * ```
+   * ````
    */
   async findWithJoin(
     joinTable: string,
@@ -368,27 +368,27 @@ export class RelationalDao<T>
     options?: unknown
   ): Promise<T[]> {
     this.logger.debug(
-      `Finding entities with JOIN: ${this.tableName} JOIN ${joinTable}`
+      `Finding entities with JOIN: ${this.tableName} JOIN ${joinTable}``
     );
 
     try {
       const whereClause = criteria
         ? this.buildWhereClause(this.mapEntityToRow(criteria))
-        : '';
+        : ';
       const orderClause = this.buildOrderClause((options as any)?.sort);
       const limitClause = this.buildLimitClause(
         (options as any)?.limit,
         (options as any)?.offset
       );
 
-      const sql = `
+      const sql = ``
         SELECT ${this.tableName}.* 
         FROM ${this.tableName} 
         JOIN ${joinTable} ON ${joinCondition} 
         ${whereClause} 
         ${orderClause} 
         ${limitClause}
-      `.trim();
+      `.trim();`
 
       const params = criteria
         ? Object.values(this.mapEntityToRow(criteria))
@@ -397,9 +397,9 @@ export class RelationalDao<T>
 
       return result?.rows?.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
-      this.logger.error(`JOIN query failed: ${error}`);
+      this.logger.error(`JOIN query failed: ${error}`);`
       throw new Error(
-        `JOIN query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `JOIN query failed: ${error instanceof Error ? error.message : 'Unknown error'}``
       );
     }
   }
@@ -411,15 +411,15 @@ export class RelationalDao<T>
    * On specified columns with optional filtering criteria. Returns numeric results for
    * statistical analysis and reporting..
    *
-   * @param {('COUNT | SUM | AVG | MIN | MAX')} aggregateFunction - SQL aggregate function to execute.
-   * @param {string} [column='*'] - Column name to aggregate (default: '*' for COUNT).
+   * @param {('COUNT | SUM | AVG | MIN | MAX')} aggregateFunction - SQL aggregate function to execute.'
+   * @param {string} [column='*'] - Column name to aggregate (default: '*' for COUNT).'
    * @param {Partial<T>} [criteria] - Optional filtering criteria.
    * @returns {Promise<number>} Numeric result of the aggregate function.
    * @throws {Error} When aggregate function is invalid.
    * @throws {Error} When column does not exist.
    * @throws {Error} When SQL execution fails.
    * @example User Statistics
-   * ```typescript
+   * ```typescript`
    * // Count total active users
    * const activeUserCount = await userDao.aggregate(
    *   'COUNT',
@@ -437,17 +437,17 @@ export class RelationalDao<T>
    * // Find oldest user
    * const maxAge = await userDao.aggregate(
    *   'MAX',
-   *   'age'
+   *   'age''
    * );
    *
-   * console.log(`${activeUserCount} active users, average age: ${averageAge}, oldest: ${maxAge}`);
-   * ```
+   * console.log(`${activeUserCount} active users, average age: ${averageAge}, oldest: ${maxAge}`);`
+   * ````
    * @example Sales Analytics
-   * ```typescript
+   * ```typescript`
    * interface Order {
    *   id: string;
    *   total: number;
-   *   status: 'pending|completed|cancelled';
+   *   status: 'pending' | 'completed' | 'cancelled';
    *   createdAt: Date;
    * }
    *
@@ -455,20 +455,20 @@ export class RelationalDao<T>
    * const totalRevenue = await orderDao.aggregate(
    *   'SUM',
    *   'total',
-   *   { status: 'completed' }
+   *   { status: 'completed' }'
    * );
    *
    * // Number of pending orders
    * const pendingCount = await orderDao.aggregate(
    *   'COUNT',
    *   '*',
-   *   { status: 'pending' }
+   *   { status: 'pending' }'
    * );
    *
    * // Minimum and maximum order values
-   * const minOrder = await orderDao.aggregate('MIN', 'total', { status: 'completed' });
-   * const maxOrder = await orderDao.aggregate('MAX', 'total', { status: 'completed' });
-   * ```
+   * const minOrder = await orderDao.aggregate('MIN', 'total', { status: 'completed' });'
+   * const maxOrder = await orderDao.aggregate('MAX', 'total', { status: 'completed' });'
+   * ````
    */
   async aggregate(
     aggregateFunction: 'COUNT|SUM|AVG|MIN|MAX',
@@ -476,14 +476,14 @@ export class RelationalDao<T>
     criteria?: Partial<T>
   ): Promise<number> {
     this.logger.debug(
-      `Executing aggregate ${aggregateFunction}(${column}) on ${this.tableName}`
+      `Executing aggregate ${aggregateFunction}(${column}) on ${this.tableName}``
     );
 
     try {
       const whereClause = criteria
         ? this.buildWhereClause(this.mapEntityToRow(criteria))
-        : '';
-      const sql = `SELECT ${aggregateFunction}(${column}) as result FROM ${this.tableName} ${whereClause}`;
+        : ';
+      const sql = `SELECT ${aggregateFunction}(${column}) as result FROM ${this.tableName} ${whereClause}`;`
       const params = criteria
         ? Object.values(this.mapEntityToRow(criteria))
         : [];
@@ -491,9 +491,9 @@ export class RelationalDao<T>
       const result = await this.adapter.query(sql, params);
       return Number((result?.rows?.[0] as any)?.result || 0);
     } catch (error) {
-      this.logger.error(`Aggregate query failed: ${error}`);
+      this.logger.error(`Aggregate query failed: ${error}`);`
       throw new Error(
-        `Aggregate query failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Aggregate query failed: ${error instanceof Error ? error.message :'Unknown error'}``
       );
     }
   }
@@ -505,13 +505,13 @@ export class RelationalDao<T>
    * Uses parameterized queries to prevent SQL injection and optimize database performance.
    * By reducing round-trips to the database server..
    *
-   * @param {Omit<T, 'id'>[]} entities - Array of entities to insert (without ID field).
+   * @param {Omit<T, 'id'>[]} entities - Array of entities to insert (without ID field).'
    * @returns {Promise<T[]>} Array of created entities with generated Ds.
    * @throws {Error} When entities array is empty.
    * @throws {Error} When batch insert SQL execution fails.
    * @throws {Error} When entity validation fails.
    * @example Batch User Creation
-   * ```typescript
+   * ```typescript`
    * const newUsers = [
    *   {
    *     name: 'Alice Johnson',
@@ -536,13 +536,13 @@ export class RelationalDao<T>
    * // Insert all users in a single database operation
    * const createdUsers = await userDao.batchInsert(newUsers);
    *
-   * console.log(`Successfully created ${createdUsers.length} users`);
+   * console.log(`Successfully created ${createdUsers.length} users`);`
    * createdUsers.forEach(user => {
-   *   console.log(`Created user: ${user.name} (D: ${user.id})`);
+   *   console.log(`Created user: ${user.name} (D: ${user.id})`);`
    * });
-   * ```
+   * ````
    * @example Batch Product Import
-   * ```typescript
+   * ```typescript`
    * interface Product {
    *   id: string;
    *   sku: string;
@@ -558,20 +558,20 @@ export class RelationalDao<T>
    *     name: 'Gaming Laptop',
    *     price: 1299.99,
    *     categoryId: 'cat-electronics',
-   *     metadata: { weight: 2.5, dimensions: '15.6x10.2x0.8 inches' }
+   *     metadata: { weight: 2.5, dimensions: '15.6x10.2x0.8 inches' }'
    *   }
    *   // ... more products
    * ];
    *
    * // Efficient batch insertion
    * const insertedProducts = await productDao.batchInsert(importProducts);
-   * ```
+   * ````
    */
-  async batchInsert(entities: Omit<T, 'id'>[]): Promise<T[]> {
+  async batchInsert(entities: Omit<T, 'id'>[]): Promise<T[]> {'
     if (entities.length === 0) return [];
 
     this.logger.debug(
-      `Batch inserting ${entities.length} entities into ${this.tableName}`
+      `Batch inserting ${entities.length} entities into ${this.tableName}``
     );
 
     try {
@@ -580,33 +580,33 @@ export class RelationalDao<T>
       );
 
       if (mappedEntities.length === 0||!mappedEntities[0]) {
-        throw new Error('No valid entities to insert');
+        throw new Error('No valid entities to insert');'
       }
 
       const columns = Object.keys(mappedEntities[0]);
-      const columnsList = columns.join(', ');
+      const columnsList = columns.join(', ');'
 
       // Build VALUES clause with placeholders
       const valuesPlaceholders = mappedEntities
-        .map(() => `(${columns.map(() => '?').join(', ')})`)
-        .join(', ');
+        .map(() => `(${columns.map(() => '?').join(', ')})`)`
+        .join(', ');'
 
-      const sql = `INSERT NTO ${this.tableName} (${columnsList}) VALUES ${valuesPlaceholders}`;
+      const sql = `INSERT NTO ${this.tableName} (${columnsList}) VALUES ${valuesPlaceholders}`;`
 
       // Flatten all parameters
       const params = mappedEntities.flatMap((entity) => Object.values(entity));
 
       await this.adapter.query(sql, params);
 
-      // Return the created entities (approximation since we can't get all Ds easily)
+      // Return the created entities (approximation since we can't get all Ds easily)'
       return entities.map((entity, index) => ({
         ...entity,
-        id: `batch_${Date.now()}_${index}`,
+        id: `batch_${Date.now()}_${index}`,`
       })) as T[];
     } catch (error) {
-      this.logger.error(`Batch insert failed: ${error}`);
+      this.logger.error(`Batch insert failed: ${error}`);`
       throw new Error(
-        `Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error'}``
       );
     }
   }
@@ -625,20 +625,20 @@ export class RelationalDao<T>
    * @throws {Error} When update SQL execution fails.
    * @throws {Error} When field validation fails.
    * @example Bulk User Status Update
-   * ```typescript
+   * ```typescript`
    * // Deactivate all users from a specific department
    * const updatedCount = await userDao.updateMany(
-   *   { 'profile.department': 'Sales' }, // Criteria: users in Sales dept
+   *   { 'profile.department': 'Sales' }, // Criteria: users in Sales dept'
    *   {
    *     isActive: false,                  // Update: set inactive
    *     updatedAt: new Date()            // Update timestamp
    *   }
    * );
    *
-   * console.log(`Deactivated ${updatedCount} users from Sales department`);
-   * ```
+   * console.log(`Deactivated ${updatedCount} users from Sales department`);`
+   * ````
    * @example Price Adjustment
-   * ```typescript
+   * ```typescript`
    * interface Product {
    *   id: string;
    *   categoryId: string;
@@ -656,25 +656,25 @@ export class RelationalDao<T>
    *   }
    * );
    *
-   * console.log(`Applied discount to ${affectedProducts} electronics products`);
-   * ```
+   * console.log(`Applied discount to ${affectedProducts} electronics products`);`
+   * ````
    * @example User Notification Settings
-   * ```typescript
+   * ```typescript`
    * // Enable email notifications for all active premium users
    * const notificationUpdates = await userDao.updateMany(
    *   {
    *     isActive: true,
-   *     subscriptionTier: 'premium'
+   *     subscriptionTier: 'premium''
    *   },
    *   {
    *     'settings.emailNotifications': true,
-   *     'settings.updatedAt': new Date()
+   *     'settings.updatedAt': new Date()'
    *   }
    * );
-   * ```
+   * ````
    */
   async updateMany(criteria: Partial<T>, updates: Partial<T>): Promise<number> {
-    this.logger.debug(`Updating multiple entities in ${this.tableName}`, {
+    this.logger.debug(`Updating multiple entities in ${this.tableName}`, {`
       criteria,
       updates,
     });
@@ -684,11 +684,11 @@ export class RelationalDao<T>
       const mappedUpdates = this.mapEntityToRow(updates);
 
       const setClause = Object.keys(mappedUpdates)
-        .map((column) => `${column} = ?`)
-        .join(', ');
+        .map((column) => `${column} = ?`)`
+        .join(', ');'
       const whereClause = this.buildWhereClause(mappedCriteria);
 
-      const sql = `UPDATE ${this.tableName} SET ${setClause} ${whereClause}`;
+      const sql = `UPDATE ${this.tableName} SET ${setClause} ${whereClause}`;`
       const params = [
         ...Object.values(mappedUpdates),
         ...Object.values(mappedCriteria),
@@ -697,9 +697,9 @@ export class RelationalDao<T>
       const result = await this.adapter.query(sql, params);
       return result?.rowCount||0;
     } catch (error) {
-      this.logger.error(`Update many failed: ${error}`);
+      this.logger.error(`Update many failed: ${error}`);`
       throw new Error(
-        `Update many failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Update many failed: ${error instanceof Error ? error.message :'Unknown error'}``
       );
     }
   }
@@ -716,7 +716,7 @@ export class RelationalDao<T>
    * @throws {Error} When delete SQL execution fails.
    * @throws {Error} When foreign key constraints are violated.
    * @example Delete Inactive Users
-   * ```typescript
+   * ```typescript`
    * // Remove all inactive users older than 1 year
    * const oneYearAgo = new Date();
    * oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
@@ -726,20 +726,20 @@ export class RelationalDao<T>
    *   lastLoginAt: { $lt: oneYearAgo } // Custom query operator
    * });
    *
-   * console.log(`Deleted ${deletedCount} inactive users`);
-   * ```
+   * console.log(`Deleted ${deletedCount} inactive users`);`
+   * ````
    * @example Clean Up Test Data
-   * ```typescript
+   * ```typescript`
    * // Remove all test orders created during development
    * const testOrdersDeleted = await orderDao.deleteMany({
    *   status: 'test',
-   *   createdBy: 'test-user'
+   *   createdBy: 'test-user''
    * });
    *
-   * console.log(`Cleaned up ${testOrdersDeleted} test orders`);
-   * ```
+   * console.log(`Cleaned up ${testOrdersDeleted} test orders`);`
+   * ````
    * @example Archive Old Sessions
-   * ```typescript
+   * ```typescript`
    * interface UserSession {
    *   id: string;
    *   userId: string;
@@ -753,11 +753,11 @@ export class RelationalDao<T>
    *   expiresAt: { $lt: new Date() } // Sessions that have expired
    * });
    *
-   * console.log(`Deleted ${expiredSessionsDeleted} expired sessions`);
-   * ```
+   * console.log(`Deleted ${expiredSessionsDeleted} expired sessions`);`
+   * ````
    */
   async deleteMany(criteria: Partial<T>): Promise<number> {
-    this.logger.debug(`Deleting multiple entities from ${this.tableName}`, {
+    this.logger.debug(`Deleting multiple entities from ${this.tableName}`, {`
       criteria,
     });
 
@@ -767,18 +767,18 @@ export class RelationalDao<T>
 
       if (!whereClause) {
         throw new Error(
-          'DELETE without WHERE clause is not allowed for safety');
+          'DELETE without WHERE clause is not allowed for safety');'
       }
 
-      const sql = `DELETE FROM ${this.tableName} ${whereClause}`;
+      const sql = `DELETE FROM ${this.tableName} ${whereClause}`;`
       const params = Object.values(mappedCriteria);
 
       const result = await this.adapter.query(sql, params);
       return result?.rowCount||0;
     } catch (error) {
-      this.logger.error(`Delete many failed: ${error}`);
+      this.logger.error(`Delete many failed: ${error}`);`
       throw new Error(
-        `Delete many failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Delete many failed: ${error instanceof Error ? error.message :'Unknown error'}``
       );
     }
   }
@@ -797,21 +797,21 @@ export class RelationalDao<T>
    * @throws {Error} When field name is invalid.
    * @throws {Error} When search SQL execution fails.
    * @example User Name Search
-   * ```typescript
-   * // Find all users with names containing 'john'
-   * const johnUsers = await userDao.search('name', 'john');
+   * ```typescript`
+   * // Find all users with names containing 'john''
+   * const johnUsers = await userDao.search('name', 'john');'
    *
-   * // Case-insensitive search for emails containing 'gmail'
-   * const gmailUsers = await userDao.search('email', 'gmail', {
+   * // Case-insensitive search for emails containing 'gmail''
+   * const gmailUsers = await userDao.search('email', 'gmail', {'
    *   limit: 20,
-   *   sort: [{ field: 'name', direction: 'asc' }]
+   *   sort: [{ field: 'name', direction: 'asc' }]'
    * });
    *
-   * console.log(`Found ${johnUsers.length} users named John`);
-   * console.log(`Found ${gmailUsers.length} Gmail users`);
-   * ```
+   * console.log(`Found ${johnUsers.length} users named John`);`
+   * console.log(`Found ${gmailUsers.length} Gmail users`);`
+   * ````
    * @example Product Search
-   * ```typescript
+   * ```typescript`
    * interface Product {
    *   id: string;
    *   name: string;
@@ -821,23 +821,23 @@ export class RelationalDao<T>
    * }
    *
    * // Search products by name
-   * const laptopProducts = await productDao.search('name', 'laptop', {
+   * const laptopProducts = await productDao.search('name', 'laptop', {'
    *   limit: 10
    * });
    *
    * // Search by description
-   * const gamingProducts = await productDao.search('description', 'gaming');
+   * const gamingProducts = await productDao.search('description', 'gaming');'
    *
    * // Search by SKU partial match
-   * const electronicsSkus = await productDao.search('sku', 'ELEC-');
-   * ```
+   * const electronicsSkus = await productDao.search('sku', 'ELEC-');'
+   * ````
    * @example Content Search with Ranking
-   * ```typescript
+   * ```typescript`
    * // Search articles by title and description
-   * const searchResults = await articleDao.search('title', searchQuery, {
+   * const searchResults = await articleDao.search('title', searchQuery, {'
    *   sort: [
    *     { field: 'publishedAt', direction: 'desc' },
-   *     { field: 'viewCount', direction: 'desc' }
+   *     { field: 'viewCount', direction: 'desc' }'
    *   ],
    *   limit: 50
    * });
@@ -845,12 +845,12 @@ export class RelationalDao<T>
    * // Multiple field search (would require custom implementation)
    * const contentResults = await Promise.all([
    *   articleDao.search('title', searchQuery),
-   *   articleDao.search('content', searchQuery)
+   *   articleDao.search('content', searchQuery)'
    * ]).then(results => {
    *   // Combine and deduplicate results
    *   return [...new Set([...results[0], ...results[1]])];
    * });
-   * ```
+   * ````
    */
   async search(
     field: string,
@@ -858,19 +858,19 @@ export class RelationalDao<T>
     _options?: unknown
   ): Promise<T[]> {
     this.logger.debug(
-      `Searching in ${this.tableName}.${field} for: ${searchTerm}`
+      `Searching in ${this.tableName}.${field} for: ${searchTerm}``
     );
 
     try {
-      const sql = `SELECT * FROM ${this.tableName} WHERE ${field} LIKE ?`;
-      const params = [`%${searchTerm}%`];
+      const sql = `SELECT * FROM ${this.tableName} WHERE ${field} LIKE ?`;`
+      const params = [`%${searchTerm}%`];`
 
       const result = await this.adapter.query(sql, params);
       return result?.rows?.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
-      this.logger.error(`Search failed: ${error}`);
+      this.logger.error(`Search failed: ${error}`);`
       throw new Error(
-        `Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Search failed: ${error instanceof Error ? error.message : 'Unknown error'}``
       );
     }
   }
@@ -891,7 +891,7 @@ export class RelationalDao<T>
    * @throws {Error} When start date is after end date.
    * @throws {Error} When date range query execution fails.
    * @example Monthly User Registrations
-   * ```typescript
+   * ```typescript`
    * // Get all users registered in January 2024
    * const januaryUsers = await userDao.findByDateRange(
    *   'createdAt',
@@ -903,10 +903,10 @@ export class RelationalDao<T>
    *   }
    * );
    *
-   * console.log(`${januaryUsers.length} users registered in January 2024`);
-   * ```
+   * console.log(`${januaryUsers.length} users registered in January 2024`);`
+   * ````
    * @example Sales Report Date Range
-   * ```typescript
+   * ```typescript`
    * interface Order {
    *   id: string;
    *   customerId: string;
@@ -917,23 +917,23 @@ export class RelationalDao<T>
    * }
    *
    * // Get completed orders from last quarter
-   * const lastQuarterStart = new Date('2024-10-01');
-   * const lastQuarterEnd = new Date('2024-12-31');
+   * const lastQuarterStart = new Date('2024-10-01');'
+   * const lastQuarterEnd = new Date('2024-12-31');'
    *
    * const quarterlyOrders = await orderDao.findByDateRange(
    *   'completedAt',
    *   lastQuarterStart,
    *   lastQuarterEnd,
    *   {
-   *     sort: [{ field: 'total', direction: 'desc' }]
+   *     sort: [{ field: 'total', direction: 'desc' }]'
    *   }
    * );
    *
    * const totalRevenue = quarterlyOrders.reduce((sum, order) => sum + order.total, 0);
-   * console.log(`Q4 2024 Revenue: $${totalRevenue.toFixed(2)} from ${quarterlyOrders.length} orders`);
-   * ```
+   * console.log(`Q4 2024 Revenue: $${totalRevenue.toFixed(2)} from ${quarterlyOrders.length} orders`);`
+   * ````
    * @example Activity Log Analysis
-   * ```typescript
+   * ```typescript`
    * // Get user activity logs from the past 7 days
    * const sevenDaysAgo = new Date();
    * sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -950,11 +950,11 @@ export class RelationalDao<T>
    *
    * // Group by day for trending analysis
    * const activityByDay = recentActivity.reduce((acc, log) => {
-   *   const day = log.timestamp.toISOString().split('T')[0];
+   *   const day = log.timestamp.toISOString().split('T')[0];'
    *   acc[day] = (acc[day]||0) + 1;
    *   return acc;
    * }, {} as Record<string, number>);
-   * ```
+   * ````
    */
   async findByDateRange(
     dateField: string,
@@ -963,7 +963,7 @@ export class RelationalDao<T>
     options?: unknown
   ): Promise<T[]> {
     this.logger.debug(
-      `Finding entities by date range: ${dateField} between ${startDate} and ${endDate}`
+      `Finding entities by date range: ${dateField} between ${startDate} and ${endDate}``
     );
 
     try {
@@ -973,21 +973,21 @@ export class RelationalDao<T>
         (options as any)?.offset
       );
 
-      const sql = `
+      const sql = ``
         SELECT * FROM ${this.tableName} 
         WHERE ${dateField} >= ? AND ${dateField} <= ? 
         ${orderClause} 
         ${limitClause}
-      `.trim();
+      `.trim();`
 
       const params = [startDate.toISOString(), endDate.toISOString()];
       const result = await this.adapter.query(sql, params);
 
       return result?.rows?.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
-      this.logger.error(`Date range query failed: ${error}`);
+      this.logger.error(`Date range query failed: ${error}`);`
       throw new Error(
-        `Date range query failed: ${error instanceof Error ? error.message :'Unknown error'}`
+        `Date range query failed: ${error instanceof Error ? error.message :'Unknown error'}``
       );
     }
   }
@@ -997,25 +997,25 @@ export class RelationalDao<T>
    */
   private isJsonColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'json'||columnName.endsWith('_json')||columnName ==='metadata'||columnName ==='properties'||columnName ==='data'
+      (this.entitySchema as any)?.[columnName]?.type === 'json'||columnName.endsWith('_json')||columnName ==='metadata'||columnName ==='properties'||columnName ==='data''
     );
   }
 
   private isBooleanColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'boolean'||columnName.startsWith('is_')||columnName.startsWith('has_')||columnName.endsWith('_flag')||['active', 'enabled', 'visible', 'deleted'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'boolean'||columnName.startsWith('is_')||columnName.startsWith('has_')||columnName.endsWith('_flag')||['active', 'enabled', 'visible', 'deleted'].includes(columnName)'
     );
   }
 
   private isDateColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'date'||(this.entitySchema as any)?.[columnName]?.type ==='datetime'||columnName.endsWith('_at')||columnName.endsWith('_date')||columnName.endsWith('_time')||['created', 'updated', 'deleted', 'timestamp'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'date'||(this.entitySchema as any)?.[columnName]?.type ==='datetime'||columnName.endsWith('_at')||columnName.endsWith('_date')||columnName.endsWith('_time')||['created', 'updated', 'deleted', 'timestamp'].includes(columnName)'
     );
   }
 
   private isNumberColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'number'||(this.entitySchema as any)?.[columnName]?.type ==='integer'||(this.entitySchema as any)?.[columnName]?.type ==='float'||columnName.endsWith('_id')||columnName.endsWith('_count')||columnName.endsWith('_size')||['id', 'count', 'size', 'length', 'duration'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'number'||(this.entitySchema as any)?.[columnName]?.type ==='integer'||(this.entitySchema as any)?.[columnName]?.type ==='float'||columnName.endsWith('_id')||columnName.endsWith('_count')||columnName.endsWith('_size')||['id', 'count', 'size', 'length', 'duration'].includes(columnName)'
     );
   }
 
@@ -1028,7 +1028,7 @@ export class RelationalDao<T>
     return this.adapter.transaction(async () => {
       const results: unknown[] = [];
       for (const operation of operations) {
-        if (operation.type === 'create' && operation.data) {
+        if (operation.type === 'create' && operation.data) {'
           results.push(await this.create((operation as any).data));
         }
         // Add other operation types as needed

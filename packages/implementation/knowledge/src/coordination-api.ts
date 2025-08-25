@@ -2,7 +2,7 @@
  * @file Coordination API - Public Interface for Coordination Layer
  *
  * This file provides the public API for coordination layer to interact with
- * the knowledge package's fact system. The actual implementation remains
+ * the knowledge package's fact system. The actual implementation remains'
  * private within the knowledge package.
  *
  * This maintains the same interface as the old shared-fact-system to ensure
@@ -44,7 +44,7 @@ export async function initializeCoordinationFactSystem(): Promise<void> {
  * Store a coordination-specific fact
  */
 export async function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id|timestamp''>
+  fact: Omit<CoordinationFact, 'id|timestamp''>'
 ): Promise<string> {
   return await knowledgeFactSystem.storeFact(fact);
 }
@@ -115,7 +115,7 @@ export async function storeAgentFact(
   return await knowledgeFactSystem.storeFact({
     type,
     data,
-    source: `agent:${agentId}`,
+    source: `agent:${agentId}`,`
     confidence,
     tags: ['agent', ...tags],
   });
@@ -129,7 +129,7 @@ export async function queryAgentFacts(
   const query: CoordinationFactQuery = { limit };
 
   if (agentId) {
-    query.source = `agent:${agentId}`;
+    query.source = `agent:${agentId}`;`
   }
 
   if (type) {
@@ -157,7 +157,7 @@ export async function getNPMPackageInfo(packageName: string, version?: string) {
   try {
     return await knowledgeFactSystem.getNPMPackageInfo(packageName, version);
   } catch (error) {
-    console.error(`Failed to get NPM package info for ${packageName}:`, error);
+    console.error(`Failed to get NPM package info for ${packageName}:`, error);`
     return null;
   }
 }
@@ -170,7 +170,7 @@ export async function getGitHubRepoInfo(owner: string, repo: string) {
     return await knowledgeFactSystem.getGitHubRepoInfo(owner, repo);
   } catch (error) {
     console.error(
-      `Failed to get GitHub repo info for ${owner}/${repo}:`,
+      `Failed to get GitHub repo info for ${owner}/${repo}:`,`
       error
     );
     return null;

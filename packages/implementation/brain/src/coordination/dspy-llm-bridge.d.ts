@@ -7,7 +7,7 @@
 export interface DSPyCoordinationTask {
   id: string;
   type: string;
-  complexity?: 'simple|moderate|complex|heavy';
+  complexity?: 'simple|moderate|complex|heavy;
   data?: any;
   requirements?: any;
   input?: string;
@@ -16,7 +16,7 @@ export interface DSPyCoordinationTask {
   [key: string]: any;
 }
 export interface DSPyOptimizationConfig {
-  teleprompter?:|'BootstrapFewShot|COPRO|MIPRO|Ensemble|MIPROv2';
+  teleprompter?:|'BootstrapFewShot|COPRO|MIPRO|Ensemble|MIPROv2;
   optimizationSteps?: number;
   maxTokens?: number;
   temperature?: number;

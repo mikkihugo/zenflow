@@ -289,8 +289,8 @@ export namespace Session {
         await remove(child.id, false)
       }
       await unshare(sessionID).catch(() => {})
-      await Storage.remove(`session/info/${sessionID}`).catch(() => {})
-      await Storage.removeDir(`session/message/${sessionID}/`).catch(() => {})
+      await Storage.remove(`session/info/${sessionID}`).catch(() => {})`
+      await Storage.removeDir(`session/message/${sessionID}/`).catch(() => {})`
       state().sessions.delete(sessionID)
       state().messages.delete(sessionID)
       if (emitEvent) {
@@ -399,7 +399,7 @@ export namespace Session {
           switch (url.protocol) {
             case "file:":
               // have to normalize, symbol search returns absolute paths
-              // Decode the pathname since URL constructor doesn't automatically decode it
+              // Decode the pathname since URL constructor doesn't automatically decode it'
               const pathname = decodeURIComponent(url.pathname)
               const relativePath = pathname.replace(app.path.cwd, ".")
               const filePath = path.join(app.path.cwd, relativePath)
@@ -415,8 +415,8 @@ export namespace Session {
                   const filePath = part.url.split("?")[0]
                   let start = parseInt(range.start)
                   let end = range.end ? parseInt(range.end) : undefined
-                  // some LSP servers (eg, gopls) don't give full range in
-                  // workspace/symbol searches, so we'll try to find the
+                  // some LSP servers (eg, gopls) don't give full range in'
+                  // workspace/symbol searches, so we'll try to find the'
                   // symbol in the document to get the full range
                   if (start === end) {
                     const symbols = await LSP.documentSymbol(filePath)
@@ -453,7 +453,7 @@ export namespace Session {
                     sessionID: input.sessionID,
                     type: "text",
                     synthetic: true,
-                    text: `Called the Read tool with the following input: ${JSON.stringify(args)}`,
+                    text: `Called the Read tool with the following input: ${JSON.stringify(args)}`,`
                   },
                   {
                     id: Identifier.ascending("part"),
@@ -474,7 +474,7 @@ export namespace Session {
                   messageID: userMsg.id,
                   sessionID: input.sessionID,
                   type: "text",
-                  text: `Called the Read tool with the following input: {\"filePath\":\"${pathname}\"}`,
+                  text: `Called the Read tool with the following input: {\"filePath\":\"${pathname}\"}`,`
                   synthetic: true,
                 },
                 {
@@ -482,7 +482,7 @@ export namespace Session {
                   messageID: userMsg.id,
                   sessionID: input.sessionID,
                   type: "file",
-                  url: `data:${part.mime};base64,` + Buffer.from(await file.bytes()).toString("base64"),
+                  url: `data:${part.mime};base64,` + Buffer.from(await file.bytes()).toString("base64"),`
                   mime: part.mime,
                   filename: part.filename!,
                 },
@@ -1083,7 +1083,7 @@ export namespace Session {
 
   export class BusyError extends Error {
     constructor(public readonly sessionID: string) {
-      super(`Session ${sessionID} is busy`)
+      super(`Session ${sessionID} is busy`)`
     }
   }
 

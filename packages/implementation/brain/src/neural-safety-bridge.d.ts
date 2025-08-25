@@ -1,7 +1,7 @@
 /**
  * @file Neural Safety Bridge - Brain Package Integration with AI Safety
  *
- * Integrates the 25-pattern AI deception detection system with the brain package's
+ * Integrates the 25-pattern AI deception detection system with the brain package's'
  * neural networks, behavioral intelligence, and cognitive patterns for enhanced
  * safety monitoring and real-time intervention.
  */
@@ -23,7 +23,7 @@ export interface EnhancedDeceptionResult {
   };
   behavioralAnalysis: {
     anomalyScore: number;
-    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
+    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
     recommendation: string;
   };
   combinedVerdict: {
@@ -64,11 +64,11 @@ export declare class NeuralSafetyBridge extends TypedEventBase {
    */
   private extractBehavioralFeatures;
   /**
-   * Analyze behavioral patterns using brain's behavioral intelligence.
+   * Analyze behavioral patterns using brain's behavioral intelligence.'
    */
   private analyzeBehavioralPatterns;
   /**
-   * Process neural patterns using brain's neural network.
+   * Process neural patterns using brain's neural network.'
    */
   private processNeuralPatterns;
   /**

@@ -10,10 +10,10 @@
 
 export interface GateCoordinationConfig {
   enabled: boolean;
-  coordinationType: 'sequential|parallel|conditional|consensus';
+  coordinationType: 'sequential|parallel|conditional|consensus;
   gateIds: string[];
   coordinationRules: CoordinationRule[];
-  timeoutStrategy: 'fail|escalate|partial_approval';
+  timeoutStrategy: 'fail' | 'escalate' | 'partial_approval';
   requiredConsensus?: number; // For consensus type
 }
 
@@ -21,7 +21,7 @@ export interface CoordinationRule {
   id: string;
   name: string;
   condition: string; // JavaScript expression
-  action: 'block|proceed|escalate|consult_ai_team';
+  action: 'block|proceed|escalate|consult_ai_team;
   priority: number;
   metadata: Record<string, unknown>;
 }
@@ -46,16 +46,16 @@ export interface AITeamConsultation {
   };
 
   // Consultation process
-  consultationType: 'advisory|blocking|informational';
+  consultationType: 'advisory' | 'blocking' | 'informational';
   consensus: {
     required: boolean;
     threshold: number; // 0.0 - 1.0
-    strategy: 'majority|unanimous|weighted';
+    strategy: 'majority' | 'unanimous' | 'weighted';
   };
 
   // Results
   recommendations: AIRecommendation[];
-  finalDecision?: 'approve|reject|escalate|modify';
+  finalDecision?: 'approve|reject|escalate|modify;
   confidence: number;
 
   // Audit
@@ -65,7 +65,7 @@ export interface AITeamConsultation {
 }
 
 export interface AISpecialist {
-  role: 'architect|security|compliance|reviewer|custom';
+  role: 'architect|security|compliance|reviewer|custom;
   name: string;
   model: string;
   prompt: string;
@@ -77,13 +77,13 @@ export interface AISpecialist {
 
 export interface AIRecommendation {
   specialistRole: string;
-  decision: 'approve|reject|needs_changes';
+  decision: 'approve' | 'reject' | 'needs_changes';
   confidence: number;
   reasoning: string;
   concerns: string[];
   suggestions: string[];
   riskAssessment: {
-    level: 'low|medium|high|critical';
+    level: 'low|medium|high|critical;
     factors: string[];
   };
   metadata: Record<string, unknown>;
@@ -97,7 +97,7 @@ export interface GateDependency {
   id: string;
   sourceGateId: string;
   targetGateId: string;
-  dependencyType: 'blocks|triggers|informs|modifies';
+  dependencyType: 'blocks|triggers|informs|modifies;
   condition?: string; // When dependency applies
   weight: number; // Influence strength
   metadata: Record<string, unknown>;
@@ -133,7 +133,7 @@ export interface RuleAdjustment {
   newRule: string;
   reason: string;
   confidence: number;
-  triggeredBy: 'ai_learning|human_override|performance_analysis';
+  triggeredBy: 'ai_learning' | 'human_override' | 'performance_analysis';
 }
 
 /**
@@ -144,7 +144,7 @@ export interface ApprovalPattern {
   id: string;
   name: string;
   description: string;
-  pattern:|'dual_control|segregation_of_duties|escalation_matrix|risk_based|consensus_building';
+  pattern:|'dual_control|segregation_of_duties|escalation_matrix|risk_based|consensus_building;
 
   configuration: {
     roles: string[];
@@ -200,14 +200,14 @@ export interface ClaudeZenIntegration {
   teamwork: {
     enabled: boolean;
     coordinatorId?: string;
-    teamTopology: 'hierarchical|flat|matrix';
+    teamTopology: 'hierarchical' | 'flat' | 'matrix';
     communicationChannels: string[];
   };
 
   // SAFE framework integration
   safe: {
     enabled: boolean;
-    complianceLevel: 'basic|enhanced|strict';
+    complianceLevel: 'basic' | 'enhanced' | 'strict';
     auditRequirements: string[];
   };
 
@@ -240,14 +240,14 @@ export interface ExtensionHooks {
   // External system integrations
   externalSystems: Array<{
     name: string;
-    type: 'jira|github|slack|custom';
+    type: 'jira|github|slack|custom;
     webhookUrl?: string;
     apiConfig?: Record<string, unknown>;
   }>;
 
   // Workflow engine hooks
   workflowHooks: Array<{
-    event:|'before_approval|after_approval|on_timeout|on_escalation';
+    event:|'before_approval|after_approval|on_timeout|on_escalation;
     handler: string;
     async: boolean;
   }>;
@@ -255,7 +255,7 @@ export interface ExtensionHooks {
   // ML model integration
   mlModels: Array<{
     name: string;
-    type: 'classification|regression|reinforcement';
+    type: 'classification' | 'regression' | 'reinforcement';
     endpoint?: string;
     config: Record<string, unknown>;
   }>;

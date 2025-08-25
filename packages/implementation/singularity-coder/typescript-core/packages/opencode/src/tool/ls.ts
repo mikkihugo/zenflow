@@ -78,7 +78,7 @@ export const ListTool = Tool.define({
       let output = ""
 
       if (depth > 0) {
-        output += `${indent}${path.basename(dirPath)}/\n`
+        output += `${indent}${path.basename(dirPath)}/\n``
       }
 
       const childIndent = "  ".repeat(depth + 1)
@@ -94,13 +94,13 @@ export const ListTool = Tool.define({
       // Render files
       const files = filesByDir.get(dirPath) || []
       for (const file of files.sort()) {
-        output += `${childIndent}${file}\n`
+        output += `${childIndent}${file}\n``
       }
 
       return output
     }
 
-    const output = `${searchPath}/\n` + renderDir(".", 0)
+    const output = `${searchPath}/\n` + renderDir(".", 0)`
 
     return {
       title: path.relative(app.path.root, searchPath),

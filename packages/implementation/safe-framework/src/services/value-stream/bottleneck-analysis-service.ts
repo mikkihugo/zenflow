@@ -34,7 +34,7 @@ import type { Logger } from '../../types';
 export interface BottleneckAnalysisConfig {
   readonly analysisId: string;
   readonly valueStreamId: string;
-  readonly analysisDepth: 'shallow|deep|comprehensive';
+  readonly analysisDepth: 'shallow' | 'deep' | 'comprehensive';
   readonly timeWindow: TimeWindow;
   readonly analysisScope: AnalysisScope;
   readonly detectionThresholds: DetectionThresholds;
@@ -47,7 +47,7 @@ export interface BottleneckAnalysisConfig {
 export interface TimeWindow {
   readonly startDate: Date;
   readonly endDate: Date;
-  readonly granularity: 'hourly|daily|weekly';
+  readonly granularity: 'hourly' | 'daily' | 'weekly';
   readonly includeSeasonality: boolean;
 }
 
@@ -251,7 +251,7 @@ export class BottleneckAnalysisService {
     config: BottleneckAnalysisConfig,
     flowData: any
   ): Promise<AdvancedBottleneckAnalysis> {
-    this.logger.info('Performing advanced bottleneck analysis', {
+    this.logger.info('Performing advanced bottleneck analysis', {'
       analysisId: config.analysisId,
       valueStreamId: config.valueStreamId,
       depth: config.analysisDepth,
@@ -309,7 +309,7 @@ export class BottleneckAnalysisService {
     this.analysisResults.set(config.analysisId, analysis);
     this.rootCauseCache.set(config.analysisId, rootCauseAnalysis);
 
-    this.logger.info('Bottleneck analysis completed', {
+    this.logger.info('Bottleneck analysis completed', {'
       analysisId: config.analysisId,
       bottleneckCount: detectedBottlenecks.length,
       confidence: Math.round(confidence),
@@ -345,7 +345,7 @@ export class BottleneckAnalysisService {
     const bottlenecks: DetectedBottleneck[] = [];
 
     // Analyze cycle times by stage
-    const stageAnalysis = groupBy(flowData.stages,'name');
+    const stageAnalysis = groupBy(flowData.stages,'name');'
 
     for (const [stageName, stageData] of Object.entries(stageAnalysis)) {
       const cycleTimeMetrics = this.calculateCycleTimeMetrics(
@@ -367,7 +367,7 @@ export class BottleneckAnalysisService {
         )
       ) {
         bottlenecks.push({
-          bottleneckId: `bottleneck-${nanoid(8)}`,
+          bottleneckId: `bottleneck-${nanoid(8)}`,`
           stage: stageName,
           type: this.determineBottleneckType(
             cycleTimeMetrics,
@@ -389,7 +389,7 @@ export class BottleneckAnalysisService {
       }
     }
 
-    return orderBy(bottlenecks, 'severity', 'desc');
+    return orderBy(bottlenecks, 'severity', 'desc');'
   }
 
   private async performRootCauseAnalysis(
@@ -420,20 +420,20 @@ export class BottleneckAnalysisService {
     // Build causal chain
     const causalChain = this.buildCausalChain(evaluatedCauses);
 
-    const primaryCause = maxBy(evaluatedCauses, 'confidence')!;
+    const primaryCause = maxBy(evaluatedCauses, 'confidence')!;'
     const secondaryCauses = filter(
       evaluatedCauses,
       (cause) => cause.causeId !== primaryCause.causeId
     );
 
     return {
-      analysisId: `root-cause-${nanoid(12)}`,
+      analysisId: `root-cause-${nanoid(12)}`,`
       primaryCause,
       secondaryCauses,
       causalChain,
       confidence: meanBy(evaluatedCauses, 'confidence'),
       analysisMethod: config.rootCauseAnalysis.enableAutomated
-        ? 'automated'
+        ? 'automated''
         : 'manual',
     };
   }
@@ -449,7 +449,7 @@ export class BottleneckAnalysisService {
     );
 
     return {
-      assessmentId: `impact-${nanoid(8)}`,
+      assessmentId: `impact-${nanoid(8)}`,`
       financialImpact: {
         delayedRevenue: totalCycleTime * 1000, // Simplified calculation
         additionalCosts: totalQueueLength * 500,
@@ -493,8 +493,8 @@ export class BottleneckAnalysisService {
       // Resource constraint factors
       if (bottleneck.utilizationMetrics.utilization > 90) {
         factors.push({
-          factorId: `factor-${nanoid(8)}`,
-          description: `High utilization in ${bottleneck.stage}`,
+          factorId: `factor-${nanoid(8)}`,`
+          description: `High utilization in ${bottleneck.stage}`,`
           type: FactorType.RESOURCE_CONSTRAINT,
           weight: 85,
           correlation: 0.8,
@@ -511,8 +511,8 @@ export class BottleneckAnalysisService {
       // Process inefficiency factors
       if (bottleneck.cycleTime.variance > bottleneck.cycleTime.average * 0.5) {
         factors.push({
-          factorId: `factor-${nanoid(8)}`,
-          description: `High cycle time variance in ${bottleneck.stage}`,
+          factorId: `factor-${nanoid(8)}`,`
+          description: `High cycle time variance in ${bottleneck.stage}`,`
           type: FactorType.PROCESS_INEFFICIENCY,
           weight: 70,
           correlation: 0.6,
@@ -523,7 +523,7 @@ export class BottleneckAnalysisService {
       }
     }
 
-    return orderBy(factors, 'weight', 'desc');
+    return orderBy(factors, 'weight', 'desc');'
   }
 
   private async generateBottleneckRecommendations(
@@ -537,8 +537,8 @@ export class BottleneckAnalysisService {
       switch (bottleneck.type) {
         case BottleneckType.CAPACITY:
           recommendations.push({
-            recommendationId: `rec-${nanoid(8)}`,
-            title: `Increase capacity in ${bottleneck.stage}`,
+            recommendationId: `rec-${nanoid(8)}`,`
+            title: `Increase capacity in ${bottleneck.stage}`,`
             description:
               'Add additional resources or optimize resource allocation',
             priority: this.mapSeverityToPriority(bottleneck.severity),
@@ -554,8 +554,8 @@ export class BottleneckAnalysisService {
 
         case BottleneckType.PROCESS:
           recommendations.push({
-            recommendationId: `rec-${nanoid(8)}`,
-            title: `Optimize process in ${bottleneck.stage}`,
+            recommendationId: `rec-${nanoid(8)}`,`
+            title: `Optimize process in ${bottleneck.stage}`,`
             description: 'Streamline and standardize the current process',
             priority: this.mapSeverityToPriority(bottleneck.severity),
             estimatedEffort: 'low',
@@ -570,8 +570,8 @@ export class BottleneckAnalysisService {
 
         case BottleneckType.DEPENDENCY:
           recommendations.push({
-            recommendationId: `rec-${nanoid(8)}`,
-            title: `Resolve dependencies for ${bottleneck.stage}`,
+            recommendationId: `rec-${nanoid(8)}`,`
+            title: `Resolve dependencies for ${bottleneck.stage}`,`
             description:
               'Address external dependencies and coordination issues',
             priority: this.mapSeverityToPriority(bottleneck.severity),
@@ -592,7 +592,7 @@ export class BottleneckAnalysisService {
 
   // Additional helper methods...
   private calculateCycleTimeMetrics(stageData: any[]): CycleTimeMetrics {
-    const cycleTimes = map(stageData, 'cycleTime').filter((ct) => ct != null);
+    const cycleTimes = map(stageData, 'cycleTime').filter((ct) => ct != null);'
 
     return {
       average: meanBy(cycleTimes, Number) || 0,
@@ -605,7 +605,7 @@ export class BottleneckAnalysisService {
   }
 
   private calculateQueueMetrics(stageData: any[]): QueueMetrics {
-    const queueLengths = map(stageData,'queueLength').filter(
+    const queueLengths = map(stageData,'queueLength').filter('
       (ql) => ql != null
     );
 
@@ -683,7 +683,7 @@ export class BottleneckAnalysisService {
   private analyzeSeasonality(stageData: any[]): SeasonalityPattern[] {
     return [
       {
-        patternId: `pattern-${nanoid(6)}`,
+        patternId: `pattern-${nanoid(6)}`,`
         type: 'weekly',
         strength: 0.3,
         phase: 'monday',
@@ -732,9 +732,9 @@ export class BottleneckAnalysisService {
   // Stub implementations for remaining private methods
   private createEmptyRootCauseAnalysis(): RootCauseAnalysis {
     return {
-      analysisId: `empty-${nanoid(8)}`,
+      analysisId: `empty-${nanoid(8)}`,`
       primaryCause: {
-        causeId: `cause-${nanoid(8)}`,
+        causeId: `cause-${nanoid(8)}`,`
         description:'No significant root cause identified',
         category: CauseCategory.PROCESS,
         evidence: [],
@@ -799,11 +799,11 @@ export class BottleneckAnalysisService {
     bottleneck: DetectedBottleneck
   ): FactorFrequency {
     // Simple classification based on bottleneck severity
-    if (bottleneck.severity === 'critical') {
+    if (bottleneck.severity === 'critical') {'
       return FactorFrequency.CONSTANT;
-    } else if (bottleneck.severity === 'high') {
+    } else if (bottleneck.severity === 'high') {'
       return FactorFrequency.FREQUENT;
-    } else if (bottleneck.severity === 'medium') {
+    } else if (bottleneck.severity === 'medium') {'
       return FactorFrequency.OCCASIONAL;
     } else {
       return FactorFrequency.RARE;
@@ -822,18 +822,18 @@ export class BottleneckAnalysisService {
 
   private mapSeverityToPriority(
     severity: BottleneckSeverity
-  ): 'critical|high|medium|low' {
+  ): 'critical|high|medium|low' {'
     switch (severity) {
       case BottleneckSeverity.CRITICAL:
-        return 'critical';
+        return 'critical;
       case BottleneckSeverity.HIGH:
-        return 'high';
+        return 'high;
       case BottleneckSeverity.MEDIUM:
-        return 'medium';
+        return 'medium;
       case BottleneckSeverity.LOW:
-        return 'low';
+        return 'low;
       default:
-        return 'medium';
+        return 'medium;
     }
   }
 }
@@ -869,7 +869,7 @@ interface ErrorMetrics {
 }
 
 interface TrendAnalysis {
-  readonly direction: 'increasing|decreasing|stable';
+  readonly direction: 'increasing' | 'decreasing' | 'stable';
   readonly magnitude: number;
   readonly confidence: number;
   readonly seasonality: boolean;
@@ -877,7 +877,7 @@ interface TrendAnalysis {
 
 interface SeasonalityPattern {
   readonly patternId: string;
-  readonly type: 'daily|weekly|monthly|quarterly';
+  readonly type: 'daily|weekly|monthly|quarterly;
   readonly strength: number;
   readonly phase: string;
   readonly description: string;
@@ -885,28 +885,28 @@ interface SeasonalityPattern {
 
 interface Evidence {
   readonly evidenceId: string;
-  readonly type: 'statistical|observational|historical';
+  readonly type: 'statistical' | 'observational' | 'historical';
   readonly description: string;
   readonly confidence: number;
   readonly source: string;
 }
 
 interface CauseImpact {
-  readonly severity: 'low|medium|high|critical';
-  readonly scope: 'limited|moderate|widespread';
-  readonly timeframe: 'short|medium|long';
+  readonly severity: 'low|medium|high|critical;
+  readonly scope: 'limited' | 'moderate' | 'widespread';
+  readonly timeframe: 'short' | 'medium' | 'long';
 }
 
 interface Addressability {
-  readonly difficulty: 'easy|medium|hard|very_hard';
-  readonly cost: 'low|medium|high|very_high';
-  readonly timeline: 'short|medium|long|very_long';
+  readonly difficulty: 'easy|medium|hard|very_hard;
+  readonly cost: 'low|medium|high|very_high;
+  readonly timeline: 'short|medium|long|very_long;
 }
 
 interface CausalLink {
   readonly fromCause: string;
   readonly toCause: string;
-  readonly relationship: 'direct|indirect|contributory';
+  readonly relationship: 'direct' | 'indirect' | 'contributory';
   readonly strength: number;
 }
 
@@ -925,13 +925,13 @@ interface QualityImpact {
 interface CustomerImpact {
   readonly affectedCustomers: number;
   readonly satisfactionScore: number;
-  readonly churnRisk: 'low|medium|high';
+  readonly churnRisk: 'low' | 'medium' | 'high';
 }
 
 interface TeamImpact {
   readonly moralImpact: number;
-  readonly stressLevel: 'low|medium|high';
-  readonly burnoutRisk: 'low|medium|high';
+  readonly stressLevel: 'low' | 'medium' | 'high';
+  readonly burnoutRisk: 'low' | 'medium' | 'high';
 }
 
 enum ImpactSeverity {
@@ -949,9 +949,9 @@ enum FactorFrequency {
 }
 
 interface FactorImpact {
-  readonly magnitude: 'low|medium|high|critical';
-  readonly scope: 'local|regional|global';
-  readonly duration: 'temporary|persistent|permanent';
+  readonly magnitude: 'low|medium|high|critical;
+  readonly scope: 'local' | 'regional' | 'global';
+  readonly duration: 'temporary' | 'persistent' | 'permanent';
   readonly cascading: boolean;
 }
 
@@ -959,8 +959,8 @@ interface BottleneckRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: 'low|medium|high|critical';
-  readonly estimatedEffort: 'low|medium|high';
-  readonly estimatedImpact: 'low|medium|high';
+  readonly priority: 'low|medium|high|critical;
+  readonly estimatedEffort: 'low' | 'medium' | 'high';
+  readonly estimatedImpact: 'low' | 'medium' | 'high';
   readonly implementation: string[];
 }

@@ -6,21 +6,21 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-// import { glob } from 'fast-glob'; // Temporarily disabled for compilation
+// import { glob } from 'fast-glob'; // Temporarily disabled for compilation'
 import ignore from 'ignore';
 
 // Fallback glob function for compilation
 async function glob(pattern: string, options: any): Promise<string[]> {
   // Simple fallback - in production this would use fast-glob
-  console.log('Using fallback glob for pattern:', pattern); // Use pattern parameter
+  console.log('Using fallback glob for pattern:', pattern); // Use pattern parameter'
   try {
-    const fs = require('fs');
-    const path = require('path');
+    const fs = require('fs');'
+    const path = require('path');'
 
     function walkDir(dir: string, fileList: string[] = []): string[] {
       // Validate that dir is actually a string
-      if (typeof dir !== 'string') {
-        console.warn('Invalid directory path type:', typeof dir, dir);
+      if (typeof dir !== 'string') {'
+        console.warn('Invalid directory path type:', typeof dir, dir);'
         return fileList;
       }
 
@@ -35,8 +35,8 @@ async function glob(pattern: string, options: any): Promise<string[]> {
 
             if (
               stat.isDirectory() &&
-              !file.startsWith('.') &&
-              file !== 'node_modules') {
+              !file.startsWith('.') &&'
+              file !== 'node_modules') {'
               walkDir(fullPath, fileList);
             } else if (stat.isFile() && options.onlyFiles) {
               const relativePath = path.relative(
@@ -46,7 +46,7 @@ async function glob(pattern: string, options: any): Promise<string[]> {
               fileList.push(relativePath);
             }
           } catch (statError) {
-            // Skip files that can't be stat'd (e.g., broken symlinks)
+            // Skip files that can't be stat'd (e.g., broken symlinks)'
             console.warn(
               'Cannot stat file:',
               fullPath,
@@ -71,14 +71,14 @@ async function glob(pattern: string, options: any): Promise<string[]> {
     const baseDir = options.cwd||process.cwd();
 
     // Validate baseDir is a string
-    if (typeof baseDir !=='string') {
-      console.warn('Invalid baseDir type:', typeof baseDir, baseDir);
+    if (typeof baseDir !=='string') {'
+      console.warn('Invalid baseDir type:', typeof baseDir, baseDir);'
       return [];
     }
 
     return walkDir(baseDir).slice(0, 100); // Limit for safety
   } catch (error) {
-    console.warn('Fallback glob failed:', error);
+    console.warn('Fallback glob failed:', error);'
     return [];
   }
 }
@@ -214,15 +214,15 @@ export class CodebaseAnalyzer {
    */
   private extractImports(content: string, filePath: string): FileDependency[] {
     const dependencies: FileDependency[] = [];
-    const importRegex = /(?:import|require|from)\s+['"](.*?)['"];?/g;
+    const importRegex = /(?:import|require|from)\s+['"](.*?)['"];?/g;'
     let match;
 
     while ((match = importRegex.exec(content)) !== null) {
       const importPath = match[1];
       if (
         importPath &&
-        !importPath.startsWith('.') &&
-        !importPath.includes('node_modules')
+        !importPath.startsWith('.') &&'
+        !importPath.includes('node_modules')'
       ) {
         dependencies.push({
           from: filePath,
@@ -243,7 +243,7 @@ export class CodebaseAnalyzer {
     filePath: string
   ): SymbolReference[] {
     const symbols: SymbolReference[] = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
@@ -288,9 +288,9 @@ export class CodebaseAnalyzer {
     const mainLanguages = Object.keys(fileTypes).slice(0, 3);
 
     return (
-      `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. ` +
-      `Primary languages: ${mainLanguages.join(', ')}. ` +
-      `Structure includes ${fileTypes['ts']||0} TypeScript, ${fileTypes['js']||0} JavaScript, ${fileTypes['json']||0} config files.`
+      `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. ` +`
+      `Primary languages: ${mainLanguages.join(', ')}. ` +`
+      `Structure includes ${fileTypes['ts']||0} TypeScript, ${fileTypes['js']||0} JavaScript, ${fileTypes['json']||0} config files.``
     );
   }
 
@@ -301,17 +301,17 @@ export class CodebaseAnalyzer {
     files: string[],
     dependencies: FileDependency[],
     symbols: SymbolReference[]
-  ):'low|medium|high' {
+  ):'low|medium|high' {'
     const fileCount = files.length;
     const dependencyCount = dependencies.length;
     const symbolCount = symbols.length;
 
     if (fileCount < 10 && dependencyCount < 20 && symbolCount < 50) {
-      return 'low';
+      return 'low;
     } else if (fileCount < 50 && dependencyCount < 100 && symbolCount < 200) {
-      return 'medium';
+      return 'medium;
     } else {
-      return 'high';
+      return 'high;
     }
   }
 
@@ -322,7 +322,7 @@ export class CodebaseAnalyzer {
     const categories: Record<string, number> = {};
 
     files.forEach((file) => {
-      const ext = path.extname(file).slice(1)||'unknown';
+      const ext = path.extname(file).slice(1)||'unknown;
       categories[ext] = (categories[ext]||0) + 1;
     });
 
@@ -337,7 +337,7 @@ export class CodebaseAnalyzer {
     limit: number
   ): Promise<string[]> {
     try {
-      const pattern = path.join(dir,'**/*').replace(/\\/g, '/');
+      const pattern = path.join(dir,'**/*').replace(/\\/g, '/');'
       const files = await glob(pattern, {
         cwd: this.rootPath,
         ignore: this.excludePatterns,
@@ -351,7 +351,7 @@ export class CodebaseAnalyzer {
       );
       return filteredFiles.slice(0, limit);
     } catch (error) {
-      console.warn(`Error scanning directory ${dir}:`, error);
+      console.warn(`Error scanning directory ${dir}:`, error);`
       return [];
     }
   }
@@ -361,7 +361,7 @@ export class CodebaseAnalyzer {
    */
   private async scanProject(limit: number): Promise<string[]> {
     try {
-      const files = await glob('**/*', {
+      const files = await glob('**/*', {'
         cwd: this.rootPath,
         ignore: this.excludePatterns,
         onlyFiles: true,
@@ -377,7 +377,7 @@ export class CodebaseAnalyzer {
 
       return prioritized.slice(0, limit);
     } catch (error) {
-      console.warn('Error scanning project:', error);
+      console.warn('Error scanning project:', error);'
       return [];
     }
   }
@@ -418,18 +418,18 @@ export class CodebaseAnalyzer {
   private async readFile(filePath: string): Promise<string|null> {
     try {
       // Validate that filePath is actually a string
-      if (typeof filePath !=='string') {
-        console.warn(`Invalid filePath type: ${typeof filePath}`, filePath);
+      if (typeof filePath !=='string') {'
+        console.warn(`Invalid filePath type: ${typeof filePath}`, filePath);`
         return null;
       }
 
       const fullPath = path.isAbsolute(filePath)
         ? filePath
         : path.join(this.rootPath, filePath);
-      const content = await fs.promises.readFile(fullPath, 'utf-8');
+      const content = await fs.promises.readFile(fullPath, 'utf-8');'
       return content;
     } catch (error) {
-      console.warn(`Error reading file ${filePath}:`, error);
+      console.warn(`Error reading file ${filePath}:`, error);`
       return null;
     }
   }

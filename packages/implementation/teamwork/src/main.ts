@@ -21,7 +21,7 @@ import type {
 // Import BrainCoordinator from @claude-zen/brain package (optional fallback)
 let BrainCoordinator: any;
 try {
-  BrainCoordinator = require('@claude-zen/brain').BrainCoordinator;
+  BrainCoordinator = require('@claude-zen/brain').BrainCoordinator;'
 } catch (error) {
   // Fallback if brain package is not available
   BrainCoordinator = class {
@@ -32,7 +32,7 @@ try {
   };
 }
 
-const logger = getLogger('teamwork-orchestrator');
+const logger = getLogger('teamwork-orchestrator');'
 
 /**
  * Conversation orchestrator with shared storage persistence.
@@ -54,7 +54,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       cacheOptimizations: true,
     });
 
-    logger.info('🧠 Team coordination initialized with Brain');
+    logger.info('🧠 Team coordination initialized with Brain');'
   }
 
   /**
@@ -63,7 +63,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async createConversation(
     config: ConversationConfig
   ): Promise<ConversationSession> {
-    logger.info('Creating conversation:', config.title);
+    logger.info('Creating conversation:', config.title);'
 
     const session: ConversationSession = {
       id: nanoid(),
@@ -102,7 +102,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Persist to storage
     await this.storage.storeSession(session);
 
-    logger.info('Conversation created:', session.id);
+    logger.info('Conversation created:', session.id);'
 
     return session;
   }
@@ -113,15 +113,15 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async startConversation(
     conversationId: string
   ): Promise<ConversationSession> {
-    logger.info('Starting conversation:', conversationId);
+    logger.info('Starting conversation:', conversationId);'
 
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     // Update session status to active if not already
-    if (session.status !== 'active') {
+    if (session.status !== 'active') {'
       session.status = 'active';
       session.startTime = new Date();
       await this.storage.updateSession(conversationId, {
@@ -130,7 +130,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       });
     }
 
-    logger.info('Conversation started successfully:', conversationId);
+    logger.info('Conversation started successfully:', conversationId);'
     return session;
   }
 
@@ -143,7 +143,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     if (!session.participants.find((p) => p.id === agent.id)) {
@@ -156,7 +156,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         metrics: session.metrics,
       });
 
-      logger.info('Agent joined conversation', {
+      logger.info('Agent joined conversation', {'
         agentId: agent.id,
         conversationId,
       });
@@ -172,7 +172,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     session.participants = session.participants.filter(
@@ -184,7 +184,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       participants: session.participants,
     });
 
-    logger.info('Agent left conversation', {
+    logger.info('Agent left conversation', {'
       agentId: agent.id,
       conversationId,
     });
@@ -196,18 +196,18 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async sendMessage(message: ConversationMessage): Promise<void> {
     const session = this.activeSessions.get(message.conversationId);
     if (!session) {
-      throw new Error(`Conversation ${message.conversationId} not found`);
+      throw new Error(`Conversation ${message.conversationId} not found`);`
     }
 
-    if (session.status !== 'active') {
+    if (session.status !== 'active') {'
       throw new Error(
-        `Cannot send message to conversation in status: ${session.status}`
+        `Cannot send message to conversation in status: ${session.status}``
       );
     }
 
     // Validate sender is participant
     if (!session.participants.find((p) => p.id === message.fromAgent.id)) {
-      throw new Error(`Agent ${message.fromAgent.id} is not a participant`);
+      throw new Error(`Agent ${message.fromAgent.id} is not a participant`);`
     }
 
     // Add timestamp and ID if not set
@@ -227,13 +227,13 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Update storage
     await this.storage.addMessage(message.conversationId, message);
 
-    logger.debug('Message sent', {
+    logger.debug('Message sent', {'
       messageId: message.id,
       messageType: message.messageType,
     });
 
     // Emit message event
-    await this.emit('message', { session, message });
+    await this.emit('message', { session, message });'
   }
 
   /**
@@ -245,19 +245,19 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     switch (action.type) {
-      case 'pause':
+      case 'pause':'
         session.status = 'paused';
         break;
-      case 'resume':
-        if (session.status === 'paused') {
+      case 'resume':'
+        if (session.status === 'paused') {'
           session.status = 'active';
         }
         break;
-      case 'remove':
+      case 'remove':'
         await this.leaveConversation(conversationId, action.target);
         break;
     }
@@ -267,7 +267,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       status: session.status,
     });
 
-    logger.info('Moderation action applied', {
+    logger.info('Moderation action applied', {'
       actionType: action.type,
       conversationId,
     });
@@ -291,7 +291,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     return [...session.messages]; // Return copy
@@ -306,7 +306,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);
+      throw new Error(`Conversation ${conversationId} not found`);`
     }
 
     session.status = 'completed';
@@ -322,19 +322,19 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Use AI coordination for learning from conversation outcomes
     try {
       // Log coordination context for future AI learning
-      logger.debug('Brain coordinator session context:', {
+      logger.debug('Brain coordinator session context:', {'
         sessionId: session.id,
         outcomes: session.outcomes.length,
         coordinator: this.brainCoordinator ? 'active' : 'inactive',
       });
 
-      logger.debug('Pattern engine analysis context:', {
+      logger.debug('Pattern engine analysis context:', {'
         sessionId: session.id,
         messageCount: session.messages.length,
         engine: 'brain-only',
       });
     } catch (error) {
-      logger.warn('AI coordination processing failed:', error);
+      logger.warn('AI coordination processing failed:', error);'
     }
 
     // Update storage with final state
@@ -348,7 +348,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Remove from active sessions
     this.activeSessions.delete(conversationId);
 
-    logger.info('Conversation terminated', { conversationId, reason });
+    logger.info('Conversation terminated', { conversationId, reason });'
 
     return outcomes;
   }
@@ -363,10 +363,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Simple outcome based on message types
     const decisionMessages = session.messages.filter(
-      (m) => m.messageType === 'decision'
+      (m) => m.messageType === 'decision''
     );
     const solutionMessages = session.messages.filter(
-      (m) => m.messageType === 'answer'
+      (m) => m.messageType === 'answer''
     );
 
     decisionMessages.forEach((msg) => {
@@ -403,10 +403,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Simple consensus score
     const agreements = session.messages.filter(
-      (m) => m.messageType === 'agreement'
+      (m) => m.messageType === 'agreement''
     ).length;
     const disagreements = session.messages.filter(
-      (m) => m.messageType === 'disagreement'
+      (m) => m.messageType === 'disagreement''
     ).length;
     const total = agreements + disagreements;
     session.metrics.consensusScore = total > 0 ? agreements / total : 0.5;
@@ -417,7 +417,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Simple average response time
     const messages = session.messages.filter(
-      (m) => m.messageType !== 'system_notification');
+      (m) => m.messageType !== 'system_notification');'
     if (messages.length > 1) {
       let totalTime = 0;
       for (let i = 1; i < messages.length; i++) {

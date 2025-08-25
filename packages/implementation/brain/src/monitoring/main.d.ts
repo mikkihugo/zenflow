@@ -11,10 +11,10 @@
  * - Foundation dependencies for logging and storage
  *
  * @example Importing core components
- * ```typescript
+ * ```typescript`
  * import { CompleteIntelligenceSystem, ITaskPredictor } from '@claude-zen/agent-monitoring';
  * import { SimpleTaskPredictor } from '@claude-zen/agent-monitoring';
- * ```
+ * ````
  *
  * @author Claude Code Zen Team - Intelligence Integration
  * @since 1.0.0-alpha.43
@@ -94,9 +94,9 @@ export type {
  * Package metadata and version information
  */
 export declare const PACKAGE_INFO: {
-  readonly name: '@claude-zen/agent-monitoring';
-  readonly version: '1.0.0';
-  readonly description: 'Core agent monitoring primitives for Claude Code Zen';
+  readonly name: '@claude-zen/agent-monitoring;
+  readonly version: '1.0.0;
+  readonly description: 'Core agent monitoring primitives for Claude Code Zen;
   readonly features: readonly [
     'Basic task prediction interfaces',
     'Simple intelligence system implementations',

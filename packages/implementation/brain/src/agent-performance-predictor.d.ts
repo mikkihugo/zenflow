@@ -33,7 +33,12 @@ export interface PerformancePrediction {
   readonly confidence: number;
   readonly loadForecast: number;
   readonly recommendedTaskCount: number;
-  readonly performanceTrend: 'improving | stable|declining';
+  readonly performanceTrend:
+    | 'improving'
+    | 'stable'
+    | 'declining'
+    | stable
+    | declining;
   readonly riskFactors: string[];
 }
 export interface PerformanceInsights {

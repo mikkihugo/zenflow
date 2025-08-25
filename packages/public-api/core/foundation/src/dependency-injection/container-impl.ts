@@ -4,6 +4,8 @@
 
 import type { Container, ServiceInfo, ContainerStats, ServiceDiscoveryOptions } from './container.types';
 
+const ASYNC_FACTORY_TYPE = 'async-factory';
+
 export class ContainerImpl implements Container {
   private services = new Map<string, unknown>();
   private serviceMetadata = new Map<string, ServiceInfo>();
@@ -120,13 +122,13 @@ export class ContainerImpl implements Container {
     this.services.set(token, factory);
     this.serviceMetadata.set(token, {
       name: token,
-      type: 'async-factory',
+      type: ASYNC_FACTORY_TYPE,
       capabilities: options.capabilities || [],
       tags: options.tags || [],
       singleton: true,
       registeredAt: Date.now(),
     });
-    this.emit('serviceRegistered', { token, type: 'async-factory' });
+    this.emit('serviceRegistered', { token, type: ASYNC_FACTORY_TYPE });
   }
 
   async resolveAsync<T>(token: string): Promise<T> {
@@ -139,7 +141,7 @@ export class ContainerImpl implements Container {
       return this.singletonCache.get(token) as T;
     }
 
-    if (metadata.type === 'async-factory') {
+    if (metadata.type === ASYNC_FACTORY_TYPE) {
       const factory = this.services.get(token) as () => Promise<T>;
       const instance = await factory();
       
@@ -179,8 +181,8 @@ export class ContainerImpl implements Container {
     try {
       switch (metadata.type) {
         case 'class': {
-          const ServiceClass = serviceDefinition as new (...args: unknown[]) => T;
-          return new ServiceClass();
+          const serviceClass = serviceDefinition as new (...args: unknown[]) => T;
+          return new serviceClass();
         }
         case 'function':
         case 'factory': {

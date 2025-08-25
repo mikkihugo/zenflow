@@ -93,7 +93,7 @@ export const createSAFeError = {
     cause?: Error
   ) =>
     new EpicLifecycleError(
-      `Epic ${operation} failed`,
+      `Epic ${operation} failed`,`
       epicId,
       currentState,
       cause
@@ -101,7 +101,7 @@ export const createSAFeError = {
 
   businessCase: (businessCaseId: string, reason: string, cause?: Error) =>
     new BusinessCaseError(
-      `Business case validation failed: ${reason}`,
+      `Business case validation failed: ${reason}`,`
       businessCaseId,
       cause
     ),
@@ -114,7 +114,7 @@ export const createSAFeError = {
     cause?: Error
   ) =>
     new KanbanTransitionError(
-      `Invalid transition for epic ${epicId}: ${reason}`,
+      `Invalid transition for epic ${epicId}: ${reason}`,`
       fromState,
       toState,
       cause

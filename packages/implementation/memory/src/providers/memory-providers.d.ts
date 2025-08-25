@@ -34,7 +34,7 @@ export interface MemoryBackend {
  */
 export interface MemoryConfig {
   /** Type of memory backend to use */
-  type:'sqlite|lancedb|json|memory';
+  type:'sqlite|lancedb|json|memory;
   /** Optional path for file-based backends */
   path?: string;
   /** Maximum size limit */

@@ -29,7 +29,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('safe6-development-manager');
+const logger = getLogger('safe6-development-manager');'
 
 // SAFe 6.0 Flow-Based Enterprise interfaces
 // Core Manager Configuration
@@ -37,7 +37,7 @@ export interface Safe6ManagerCore {
   /** Manager identifier */
   managerId: string;
   /** Development management mode aligned with SAFe 6.0 */
-  mode:|'solution-train|agile-release-train'||flow-system|business-agility';
+  mode:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
   /** Assigned Solution Train */
   assignedSolutionTrain?: string;
   /** Assigned Agile Release Train */
@@ -82,12 +82,12 @@ export class Safe6ConfigValidator {
   static validateManagerCore(core: Safe6ManagerCore): string[] {
     const errors: string[] = [];
 
-    if (!core.managerId|'|core.managerId.trim() ==='') {
-      errors.push('Manager ID is required and cannot be empty');
+    if (!core.managerId|'|core.managerId.trim() ==='') {'
+      errors.push('Manager ID is required and cannot be empty');'
     }
 
     if (!core.mode) {
-      errors.push('Mode is required');
+      errors.push('Mode is required');'
     }
 
     const validModes = [
@@ -97,7 +97,7 @@ export class Safe6ConfigValidator {
       'business-agility',
     ];
     if (core.mode && !validModes.includes(core.mode)) {
-      errors.push(`Mode must be one of: ${validModes.join(', ')}`);
+      errors.push(`Mode must be one of: ${validModes.join(', ')}`);`
     }
 
     return errors;
@@ -122,9 +122,9 @@ export class Safe6ConfigValidator {
       const value = (metrics as any)[field];
       if (
         value !== undefined &&
-        (typeof value !== 'number'||value < 0||value > 1)
+        (typeof value !== 'number'||value < 0||value > 1)'
       ) {
-        errors.push(`${field} must be a number between 0 and 1`);
+        errors.push(`${field} must be a number between 0 and 1`);`
       }
     }
 
@@ -141,15 +141,15 @@ export class Safe6ConfigValidator {
     }
 
     if (!Array.isArray(config.flowSystems)) {
-      errors.push('flowSystems must be an array');
+      errors.push('flowSystems must be an array');'
     }
 
     if (!Array.isArray(config.solutionTrains)) {
-      errors.push('solutionTrains must be an array');
+      errors.push('solutionTrains must be an array');'
     }
 
     if (!Array.isArray(config.teams)) {
-      errors.push('teams must be an array');
+      errors.push('teams must be an array');'
     }
 
     return errors;
@@ -225,7 +225,7 @@ export interface FlowSystem {
   name: string;
   description: string;
   businessValue: number;
-  flowState:|'planning|analyzing|implementing|validating|deploying|released';
+  flowState:|'planning|analyzing|implementing|validating|deploying|released;
   capabilities: Capability[];
   flowMetrics: FlowMetrics;
   metrics: FlowMetrics; // Add this for compatibility
@@ -276,7 +276,7 @@ export interface Capability {
   name: string;
   description: string;
   businessValue: number;
-  status:|'funnel|analyzing'||portfolio-backlog|implementing'||done';
+  status:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||done;
   enablers: Enabler[];
   features: Feature[];
   dependencies: string[];
@@ -286,10 +286,10 @@ export interface Capability {
 export interface Enabler {
   id: string;
   name: string;
-  type: 'architectural|infrastructure|compliance|exploration';
+  type: 'architectural|infrastructure|compliance|exploration;
   description: string;
-  priority: 'critical|high|medium|low';
-  status: 'identified|analyzed|implementing|done';
+  priority: 'critical|high|medium|low;
+  status: 'identified|analyzed|implementing|done;
 }
 
 export interface Feature {
@@ -297,7 +297,7 @@ export interface Feature {
   name: string;
   description: string;
   assignedTeam: string;
-  status: 'planned|in-progress'||completed|blocked'';
+  status: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin';
   estimatedStoryPoints: number;
   actualStoryPoints?: number;
   flowMetrics?: Partial<FlowMetrics>;
@@ -306,7 +306,7 @@ export interface Feature {
 export interface Safe6DevelopmentTeam {
   id: string;
   name: string;
-  type: 'stream-aligned|platform'||enabling|complicated-subsystem';
+  type: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
   members: TeamMember[];
   capacity: number;
   currentSprint?: {
@@ -327,7 +327,7 @@ export interface Safe6DevelopmentTeam {
 export interface TeamMember {
   id: string;
   name: string;
-  role:|''developer|tester|architect|product-owner||scrum-master|solution-architect'||solution-manager';
+  role:|''javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
   capacity: number;
   skills: string[];
   flowContribution: number;
@@ -359,9 +359,9 @@ export interface Safe6DevelopmentCoordinationResult {
   };
   teamPerformance: {
     averageFlowVelocity: number;
-    flowEfficiencyTrend: 'improving|stable|declining';
-    businessAgilityTrend: 'improving|stable|declining';
-    employeeEngagementTrend: 'improving|stable|declining';
+    flowEfficiencyTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+    businessAgilityTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+    employeeEngagementTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   };
   recommendations: string[];
   nextActions: string[];
@@ -378,12 +378,12 @@ export class Safe6DevelopmentManager {
   private managerId: string;
 
   // Solution Train and ART tracking
-  private currentPI?: Safe6DevelopmentManagerConfig['programIncrement'];
+  private currentPI?: Safe6DevelopmentManagerConfig['programIncrement'];'
   private solutionTrainSynchronization = new Map<
     string,
     {
       lastSync: Date;
-      status: 'flowing|blocked|optimizing';
+      status: 'flowing' | 'blocked' | 'optimizing';
       flowIssues: string[];
       businessImpact: number;
     }
@@ -408,7 +408,7 @@ export class Safe6DevelopmentManager {
     const validationErrors = Safe6ConfigValidator.validateComplete(config);
     if (validationErrors.length > 0) {
       throw new Error(
-        `SAFe 6.0 Configuration validation failed: ${validationErrors.join(', ')}`
+        `SAFe 6.0 Configuration validation failed: ${validationErrors.join(', ')}``
       );
     }
 
@@ -426,7 +426,7 @@ export class Safe6DevelopmentManager {
     this.initializeSolutionTrains();
     this.initializeTeamFlowTracking();
 
-    logger.info(`🚀 SAFe 6.0 DevelopmentManager initialized`, {
+    logger.info(`🚀 SAFe 6.0 DevelopmentManager initialized`, {`
       managerId: this.managerId,
       mode: config.mode,
       solutionTrain: config.assignedSolutionTrain,
@@ -443,12 +443,12 @@ export class Safe6DevelopmentManager {
    */
   async initialize(): Promise<void> {
     logger.info(
-      `🔧 Initializing SAFe 6.0 Development Manager: ${this.managerId}`
+      `🔧 Initializing SAFe 6.0 Development Manager: ${this.managerId}``
     );
 
     // Validate configuration
     if (!this.managerId) {
-      throw new Error('Manager ID is required for SAFe 6.0 Development Manager');
+      throw new Error('Manager ID is required for SAFe 6.0 Development Manager');'
     }
 
     // Initialize flow systems if not already done
@@ -472,7 +472,7 @@ export class Safe6DevelopmentManager {
       this.initializeTeamFlowTracking();
     }
 
-    logger.info(`✅ SAFe 6.0 Development Manager initialized successfully`, {
+    logger.info(`✅ SAFe 6.0 Development Manager initialized successfully`, {`
       managerId: this.managerId,
       flowSystems: this.flowSystemMetrics.size,
       solutionTrains: this.solutionTrainSynchronization.size,
@@ -484,7 +484,7 @@ export class Safe6DevelopmentManager {
    * Get flow metrics for a specific entity (Epic, Feature, etc.)
    */
   async getFlowMetrics(entityId: string): Promise<FlowMetrics> {
-    logger.debug(`🔍 Getting flow metrics for entity: ${entityId}`);
+    logger.debug(`🔍 Getting flow metrics for entity: ${entityId}`);`
 
     // Check if we have specific metrics for this entity
     const existingMetrics = this.flowSystemMetrics.get(entityId);
@@ -517,7 +517,7 @@ export class Safe6DevelopmentManager {
       }
     }
 
-    logger.debug(`📊 Generated flow metrics for ${entityId}:`, defaultMetrics);
+    logger.debug(`📊 Generated flow metrics for ${entityId}:`, defaultMetrics);`
     return defaultMetrics;
   }
 
@@ -525,7 +525,7 @@ export class Safe6DevelopmentManager {
    * Assess business agility across the organization
    */
   async assessBusinessAgility(): Promise<BusinessAgilityMetrics> {
-    logger.debug('📈 Assessing business agility across SAFe 6.0 framework');
+    logger.debug('📈 Assessing business agility across SAFe 6.0 framework');'
 
     // Get configurable default business agility metrics
     const defaultMetrics = Safe6DefaultMetrics.getDefaultBusinessAgility(
@@ -563,7 +563,7 @@ export class Safe6DevelopmentManager {
       timeToMarket,
     };
 
-    logger.debug('📊 Business agility assessment complete:', metrics);
+    logger.debug('📊 Business agility assessment complete:', metrics);'
     return metrics;
   }
 
@@ -572,12 +572,12 @@ export class Safe6DevelopmentManager {
    */
   async getSolutionTrainStatus(solutionTrainId: string): Promise<{
     id: string;
-    status: 'flowing|blocked|optimizing';
+    status: 'flowing' | 'blocked' | 'optimizing';
     lastSync: Date;
     flowIssues: string[];
     businessImpact: number;
   }|null> {
-    logger.debug(`🚄 Getting solution train status: ${solutionTrainId}`);
+    logger.debug(`🚄 Getting solution train status: ${solutionTrainId}`);`
 
     const trainStatus = this.solutionTrainSynchronization.get(solutionTrainId);
     if (trainStatus) {
@@ -597,7 +597,7 @@ export class Safe6DevelopmentManager {
     };
 
     logger.debug(
-      `📊 Solution train status for ${solutionTrainId}:`,
+      `📊 Solution train status for ${solutionTrainId}:`,`
       defaultStatus
     );
     return defaultStatus;
@@ -610,7 +610,7 @@ export class Safe6DevelopmentManager {
     const startTime = Date.now();
 
     try {
-      logger.info(`🚀 Starting SAFe 6.0 flow-based development coordination`, {
+      logger.info(`🚀 Starting SAFe 6.0 flow-based development coordination`, {`
         managerId: this.managerId,
         mode: this.config.mode,
         solutionTrain: this.config.assignedSolutionTrain,
@@ -652,7 +652,7 @@ export class Safe6DevelopmentManager {
         nextActions,
       };
 
-      logger.info(`✅ SAFe 6.0 flow-based development coordination completed`, {
+      logger.info(`✅ SAFe 6.0 flow-based development coordination completed`, {`
         managerId: this.managerId,
         success: true,
         duration,
@@ -665,7 +665,7 @@ export class Safe6DevelopmentManager {
     } catch (error) {
       const duration = Date.now() - startTime;
 
-      logger.error(`❌ SAFe 6.0 flow-based development coordination failed`, {
+      logger.error(`❌ SAFe 6.0 flow-based development coordination failed`, {`
         managerId: this.managerId,
         error: error instanceof Error ? error.message : 'Unknown error',
         duration,
@@ -697,9 +697,9 @@ export class Safe6DevelopmentManager {
         },
         teamPerformance: {
           averageFlowVelocity: 0,
-          flowEfficiencyTrend: 'declining',
-          businessAgilityTrend: 'declining',
-          employeeEngagementTrend: 'declining',
+          flowEfficiencyTrend: ''improving' | 'stable' | 'declining',
+          businessAgilityTrend: ''improving' | 'stable' | 'declining',
+          employeeEngagementTrend: ''improving' | 'stable' | 'declining',
         },
         recommendations: [
           'SAFe 6.0 flow coordination failed - requires manual intervention',
@@ -716,7 +716,7 @@ export class Safe6DevelopmentManager {
    * Coordinate Solution Trains (SAFe 6.0)
    */
   private async coordinateSolutionTrains(): Promise<
-    Safe6DevelopmentCoordinationResult['solutionTrainStatus']
+    Safe6DevelopmentCoordinationResult['solutionTrainStatus']'
   > {
     let flowEfficiency = 0;
     let trainsCoordinated = 0;
@@ -728,7 +728,7 @@ export class Safe6DevelopmentManager {
       // Coordinate flow across Solution Train
       const trainSync = this.solutionTrainSynchronization.get(solutionTrain.id);
 
-      if (trainSync?.status === 'flowing') {
+      if (trainSync?.status === 'flowing') {'
         trainsCoordinated++;
         flowEfficiency += solutionTrain.flowMetrics.flowEfficiency;
       } else {
@@ -742,7 +742,7 @@ export class Safe6DevelopmentManager {
       // Optimize filter operation by counting directly
       let deliveredCount = 0;
       for (let i = 0; i < solutionTrain.capabilities.length; i++) {
-        if (solutionTrain.capabilities[i].status === 'done') {
+        if (solutionTrain.capabilities[i].status === 'done') {'
           deliveredCount++;
         }
       }
@@ -781,7 +781,7 @@ export class Safe6DevelopmentManager {
    * Coordinate Agile Release Train (ART) with SAFe 6.0 flow principles
    */
   private async coordinateART(): Promise<
-    Safe6DevelopmentCoordinationResult['artStatus']
+    Safe6DevelopmentCoordinationResult['artStatus']'
   > {
     let teamsSynchronized = 0;
     let dependenciesResolved = 0;
@@ -826,7 +826,7 @@ export class Safe6DevelopmentManager {
     // Count completed deliveries
     for (const flowSystem of this.config.flowSystems) {
       for (const capability of flowSystem.capabilities) {
-        if (capability.status === 'done') {
+        if (capability.status === 'done') {'
           deliveriesCompleted++;
         }
       }
@@ -851,7 +851,7 @@ export class Safe6DevelopmentManager {
    * Manage Flow Systems with SAFe 6.0 principles
    */
   private async manageFlowSystems(): Promise<
-    Safe6DevelopmentCoordinationResult['flowSystemMetrics']
+    Safe6DevelopmentCoordinationResult['flowSystemMetrics']'
   > {
     let totalBusinessValue = 0;
     let completedCapabilities = 0;
@@ -868,7 +868,7 @@ export class Safe6DevelopmentManager {
       // Optimize filter operations by counting directly
       let completedCount = 0;
       for (let i = 0; i < flowSystem.capabilities.length; i++) {
-        if (flowSystem.capabilities[i].status === 'done') {
+        if (flowSystem.capabilities[i].status === 'done') {'
           completedCount++;
         }
       }
@@ -879,7 +879,7 @@ export class Safe6DevelopmentManager {
         for (let j = 0; j < capability.features.length; j++) {
           const feature = capability.features[j];
           if (
-            feature.status === 'in-progress'||feature.status ==='planned'
+            feature.status === 'in-progress'||feature.status ==='planned''
           ) {
             activeFeatures++;
           }
@@ -893,19 +893,19 @@ export class Safe6DevelopmentManager {
       // Identify flow risks and mitigation strategies
       if (flowSystem.flowMetrics.flowTime > 30) {
         riskMitigation.push(
-          `High flow time in ${flowSystem.name} - consider flow optimization`
+          `High flow time in ${flowSystem.name} - consider flow optimization``
         );
       }
 
       if (flowSystem.flowMetrics.flowEfficiency < 0.6) {
         riskMitigation.push(
-          `Low flow efficiency in ${flowSystem.name} - implement flow-based practices`
+          `Low flow efficiency in ${flowSystem.name} - implement flow-based practices``
         );
       }
 
       if (flowSystem.flowMetrics.flowLoad > 0.8) {
         riskMitigation.push(
-          `High flow load in ${flowSystem.name} - reduce work in progress`
+          `High flow load in ${flowSystem.name} - reduce work in progress``
         );
       }
     }
@@ -931,7 +931,7 @@ export class Safe6DevelopmentManager {
    * Assess team flow performance with SAFe 6.0 business agility metrics
    */
   private async assessTeamFlowPerformance(): Promise<
-    Safe6DevelopmentCoordinationResult['teamPerformance']
+    Safe6DevelopmentCoordinationResult['teamPerformance']'
   > {
     const flowVelocities: number[] = [];
     const flowEfficiencies: number[] = [];
@@ -993,71 +993,71 @@ export class Safe6DevelopmentManager {
     solutionTrainStatus: Safe6DevelopmentCoordinationResult['solutionTrainStatus'],
     artStatus: Safe6DevelopmentCoordinationResult['artStatus'],
     flowSystemMetrics: Safe6DevelopmentCoordinationResult['flowSystemMetrics'],
-    teamPerformance: Safe6DevelopmentCoordinationResult['teamPerformance']
+    teamPerformance: Safe6DevelopmentCoordinationResult['teamPerformance']'
   ): Promise<string[]> {
     const recommendations: string[] = [];
 
     // Solution Train recommendations
     if (solutionTrainStatus.flowEfficiency < 0.7) {
       recommendations.push(
-        'Optimize Solution Train flow through value stream mapping and flow metrics'
+        'Optimize Solution Train flow through value stream mapping and flow metrics''
       );
     }
 
     if (solutionTrainStatus.enterpriseAgilityScore < 0.8) {
       recommendations.push(
-        'Improve enterprise agility through business agility transformation'
+        'Improve enterprise agility through business agility transformation''
       );
     }
 
     // ART flow recommendations
     if (artStatus.flowOptimization < 0.7) {
       recommendations.push(
-        'Implement flow-based ART coordination and continuous flow delivery'
+        'Implement flow-based ART coordination and continuous flow delivery''
       );
     }
 
     if (artStatus.dependenciesResolved < 5) {
       recommendations.push(
-        'Implement flow dependency mapping and cross-train coordination'
+        'Implement flow dependency mapping and cross-train coordination''
       );
     }
 
     // Flow system recommendations
     if (flowSystemMetrics.flowEfficiencyAverage < 0.6) {
       recommendations.push(
-        'Focus on flow system optimization and eliminate flow blockers'
+        'Focus on flow system optimization and eliminate flow blockers''
       );
     }
 
     if (flowSystemMetrics.flowPredictabilityScore < 0.7) {
       recommendations.push(
-        'Improve flow predictability through consistent flow practices'
+        'Improve flow predictability through consistent flow practices''
       );
     }
 
     // Team flow performance recommendations
     if (teamPerformance.averageFlowVelocity < 20) {
       recommendations.push(
-        'Investigate team flow capacity and remove flow impediments'
+        'Investigate team flow capacity and remove flow impediments''
       );
     }
 
-    if (teamPerformance.flowEfficiencyTrend === 'declining') {
+    if (teamPerformance.flowEfficiencyTrend === ''improving' | 'stable' | 'declining') {'
       recommendations.push(
-        'Implement flow efficiency practices and flow-based retrospectives'
+        'Implement flow efficiency practices and flow-based retrospectives''
       );
     }
 
-    if (teamPerformance.businessAgilityTrend === 'declining') {
+    if (teamPerformance.businessAgilityTrend === ''improving' | 'stable' | 'declining') {'
       recommendations.push(
-        'Address business agility through customer-centric flow optimization'
+        'Address business agility through customer-centric flow optimization''
       );
     }
 
-    if (teamPerformance.employeeEngagementTrend === 'declining') {
+    if (teamPerformance.employeeEngagementTrend === ''improving' | 'stable' | 'declining') {'
       recommendations.push(
-        'Improve employee engagement through flow-based team empowerment'
+        'Improve employee engagement through flow-based team empowerment''
       );
     }
 
@@ -1077,24 +1077,24 @@ export class Safe6DevelopmentManager {
       );
 
       if (daysUntilEnd <= 14) {
-        actions.push('Prepare for next PI planning with flow metrics analysis');
-        actions.push('Conduct PI retrospective focusing on flow improvements');
+        actions.push('Prepare for next PI planning with flow metrics analysis');'
+        actions.push('Conduct PI retrospective focusing on flow improvements');'
       }
     }
 
     // Flow system actions
     for (const flowSystem of this.config.flowSystems) {
-      if (flowSystem.flowState === 'planning') {
-        actions.push(`Finalize flow planning for system: ${flowSystem.name}`);
+      if (flowSystem.flowState === 'planning') {'
+        actions.push(`Finalize flow planning for system: ${flowSystem.name}`);`
       }
 
       if (flowSystem.flowMetrics.flowTime > 30) {
-        actions.push(`Conduct flow optimization for: ${flowSystem.name}`);
+        actions.push(`Conduct flow optimization for: ${flowSystem.name}`);`
       }
 
       if (flowSystem.flowMetrics.flowEfficiency < 0.6) {
         actions.push(
-          `Implement flow efficiency improvements for: ${flowSystem.name}`
+          `Implement flow efficiency improvements for: ${flowSystem.name}``
         );
       }
     }
@@ -1102,7 +1102,7 @@ export class Safe6DevelopmentManager {
     // Solution Train flow actions
     for (const solutionTrain of this.config.solutionTrains) {
       if (solutionTrain.flowMetrics.flowEfficiency < 0.7) {
-        actions.push(`Optimize Solution Train flow for: ${solutionTrain.name}`);
+        actions.push(`Optimize Solution Train flow for: ${solutionTrain.name}`);`
       }
     }
 
@@ -1110,18 +1110,18 @@ export class Safe6DevelopmentManager {
     for (const team of this.config.teams) {
       if (team.flowMetrics.flowVelocity < 15) {
         actions.push(
-          `Support team ${team.name} with flow capacity optimization`
+          `Support team ${team.name} with flow capacity optimization``
         );
       }
 
       if (team.businessAgilityMetrics.employeeEngagement < 0.7) {
         actions.push(
-          `Conduct flow-based team engagement assessment for ${team.name}`
+          `Conduct flow-based team engagement assessment for ${team.name}``
         );
       }
 
       if (team.flowMetrics.flowEfficiency < 0.6) {
-        actions.push(`Implement flow efficiency training for ${team.name}`);
+        actions.push(`Implement flow efficiency training for ${team.name}`);`
       }
     }
 
@@ -1232,7 +1232,7 @@ export class Safe6DevelopmentManager {
 
   private calculateTrend(
     values: number[]
-  ): 'improving|stable|declining' {
+  ): 'improving' | 'stable' | 'declining' {'
     if (values.length < 2) return 'stable';
 
     const recent = values.slice(-3);
@@ -1255,8 +1255,8 @@ export class Safe6DevelopmentManager {
 
     const change = recentAvg - earlierAvg;
 
-    if (change > 0.1) return 'improving';
-    if (change < -0.1) return 'declining';
+    if (change > 0.1) return 'improving' | 'stable' | 'declining';
+    if (change < -0.1) return 'declining;
     return 'stable';
   }
 
@@ -1295,14 +1295,14 @@ export class Safe6DevelopmentManager {
    */
   async shutdown(): Promise<void> {
     try {
-      logger.info(`🚀 SAFe 6.0 DevelopmentManager shutdown complete`, {
+      logger.info(`🚀 SAFe 6.0 DevelopmentManager shutdown complete`, {`
         managerId: this.managerId,
         teamsManaged: this.config.teams.length,
         flowSystemsManaged: this.config.flowSystems.length,
         solutionTrainsManaged: this.config.solutionTrains.length,
       });
     } catch (error) {
-      logger.error(`❌ Error during SAFe 6.0 DevelopmentManager shutdown`, {
+      logger.error(`❌ Error during SAFe 6.0 DevelopmentManager shutdown`, {`
         managerId: this.managerId,
         error: error instanceof Error ? error.message : 'Unknown error',
       });

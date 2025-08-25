@@ -6,9 +6,9 @@
 import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('AGUIAdapter');
+const logger = getLogger('AGUIAdapter');'
 
-// Define our own interface since we're adapting @ag-ui/core
+// Define our own interface since we're adapting @ag-ui/core'
 
 /**
  * Represents a validation question for human-in-the-loop interactions.
@@ -22,7 +22,7 @@ const logger = getLogger('AGUIAdapter');
  * @see {@link AGUIInterface.askQuestion} for usage in AGUI implementations
  * @see {@link AGUIInterface.askBatchQuestions} for batch processing
  * @example
- * ```typescript
+ * ```typescript`
  * const question: ValidationQuestion = {
  *   id: 'task-approval-001',
  *   type: 'checkpoint',
@@ -33,17 +33,17 @@ const logger = getLogger('AGUIAdapter');
  *   options: ['Proceed', 'Cancel', 'Review Details'],
  *   allowCustom: true
  * };
- * ```
+ * ````
  */
 export interface ValidationQuestion {
   id: string;
-  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review';
+  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review;
   question: string;
   context: unknown;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
-  priority?: 'critical|high|medium|low';
+  priority?: 'critical|high|medium|low;
   validationReason?: string;
   expectedImpact?: number;
 }
@@ -64,7 +64,7 @@ export interface ValidationQuestion {
  * @see {@link ValidationQuestion} for question structure definitions
  * @see {@link EventHandlerConfig} for event handling configuration
  * @example
- * ```typescript
+ * ```typescript`
  * import { AGUIInterface, ValidationQuestion } from '@claude-zen/agui';
  *
  * class TerminalAGUI implements AGUIInterface {
@@ -74,11 +74,11 @@ export interface ValidationQuestion {
  *     return await getUserInput();
  *   }
  *
- *   async showMessage(message: string, type = 'info'): Promise<void> {
- *     console.log(`[${type.toUpperCase()}] ${message}`);
+ *   async showMessage(message: string, type = 'info'): Promise<void> {'
+ *     console.log(`[${type.toUpperCase()}] ${message}`);`
  *   }
  * }
- * ```
+ * ````
  */
 export interface AGUIInterface {
   askQuestion(question: ValidationQuestion): Promise<string>;
@@ -86,7 +86,7 @@ export interface AGUIInterface {
   showProgress(progress: unknown): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info|warning|error|success'
+    type?: 'info|warning|error|success''
   ): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear?(): Promise<void>;
@@ -108,17 +108,17 @@ export interface AGUIInterface {
  * @since 1.0.0
  * @see {@link AGUIInterface} for the main AGUI contract
  * @example
- * ```typescript
+ * ```typescript`
  * const eventConfig: EventHandlerConfig = {
  *   'user-input': (data: string) => console.log('User entered:', data),
- *   'validation-complete': (result: boolean, context: any) => {
+ *   'validation-complete': (result: boolean, context: any) => {'
  *     if (result) {
- *       console.log('Validation passed for:', context);
+ *       console.log('Validation passed for:', context);'
  *     }
  *   },
- *   'error': (error: Error) => console.error('AGUI Error:', error.message)
+ *   'error': (error: Error) => console.error('AGUI Error:', error.message)'
  * };
- * ```
+ * ````
  */
 export interface EventHandlerConfig {
   [key: string]: (...args: any[]) => void;
@@ -132,7 +132,7 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
 
   constructor(containerSelector?: string) {
     super();
-    if (typeof window !=='undefined') {
+    if (typeof window !=='undefined') {'
       this.container = containerSelector
         ? document.querySelector(containerSelector)
         : document.body;
@@ -143,41 +143,41 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
     return new Promise((resolve) => {
       if (!this.container) {
         logger.warn(
-          'WebAGUI: No container available, returning default response'
+          'WebAGUI: No container available, returning default response''
         );
-        resolve('Yes');
+        resolve('Yes');'
         return;
       }
 
       // Create question modal
-      const modal = document.createElement('div');
+      const modal = document.createElement('div');'
       modal.className = 'agui-modal';
-      modal.innerHTML = `
+      modal.innerHTML = ``
         <div class="agui-modal-content">
           <h3>${question.type.toUpperCase()} Question</h3>
           <p>${question.question}</p>
           ${
             question.options
-              ? `
+              ? ``
             <div class="agui-options">
               ${question.options
                 .map(
                   (opt, idx) =>
-                    `<button class="agui-option" data-value="${opt}">${opt}</button>`
+                    `<button class="agui-option" data-value="${opt}">${opt}</button>``
                 )
-                .join('')}
+                .join('')}'
             </div>
-          `
-              : `
+          ``
+              : ``
             <input type="text" class="agui-input" placeholder="Enter your response">
-          `
+          ``
           }
           <div class="agui-actions">
             <button class="agui-submit">Submit</button>
             <button class="agui-cancel">Cancel</button>
           </div>
         </div>
-      `;
+      `;`
 
       this.container.appendChild(modal);
 
@@ -188,23 +188,23 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
       };
 
       // Option buttons
-      modal.querySelectorAll('.agui-option').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const value = (btn as HTMLElement).dataset.value||'';
+      modal.querySelectorAll('.agui-option').forEach((btn) => {'
+        btn.addEventListener('click', () => {'
+          const value = (btn as HTMLElement).dataset.value||';
           handleResponse(value);
         });
       });
 
       // Submit button
-      modal.querySelector('.agui-submit')?.addEventListener('click', () => {
-        const input = modal.querySelector('.agui-input') as HTMLInputElement;
-        const value = input ? input.value : 'Yes';
+      modal.querySelector('.agui-submit')?.addEventListener('click', () => {'
+        const input = modal.querySelector('.agui-input') as HTMLInputElement;'
+        const value = input ? input.value : 'Yes;
         handleResponse(value);
       });
 
       // Cancel button
-      modal.querySelector('.agui-cancel')?.addEventListener('click', () => {
-        handleResponse('Cancel');
+      modal.querySelector('.agui-cancel')?.addEventListener('click', () => {'
+        handleResponse('Cancel');'
       });
     });
   }
@@ -221,39 +221,39 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
   async showProgress(progress: unknown): Promise<void> {
     if (!this.container) return;
 
-    let progressElement = this.container.querySelector('.agui-progress');
+    let progressElement = this.container.querySelector('.agui-progress');'
     if (!progressElement) {
-      progressElement = document.createElement('div');
+      progressElement = document.createElement('div');'
       progressElement.className = 'agui-progress';
       this.container.appendChild(progressElement);
     }
 
-    if (typeof progress === 'object' && progress !== null) {
+    if (typeof progress === 'object' && progress !== null) {'
       const prog = progress as any;
       if (prog.current !== undefined && prog.total !== undefined) {
         const percentage = Math.round((prog.current / prog.total) * 100);
-        progressElement.innerHTML = `
+        progressElement.innerHTML = ``
           <div class="progress-bar">
             <div class="progress-fill" style="width: ${percentage}%"></div>
           </div>
           <div class="progress-text">${prog.current}/${prog.total} (${percentage}%)</div>
-          ${prog.description ? `<div class="progress-description">${prog.description}</div>` : ''}
-        `;
+          ${prog.description ? `<div class="progress-description">${prog.description}</div>` : ''}'
+        `;`
       }
     }
   }
 
   async showMessage(
     message: string,
-    type: 'info|warning|error|success' = 'info'
+    type: 'info|warning|error|success' = 'info''
   ): Promise<void> {
     if (!this.container) {
-      console.log(`[${type.toUpperCase()}] ${message}`);
+      console.log(`[${type.toUpperCase()}] ${message}`);`
       return;
     }
 
-    const messageElement = document.createElement('div');
-    messageElement.className = `agui-message agui-message-${type}`;
+    const messageElement = document.createElement('div');'
+    messageElement.className = `agui-message agui-message-${type}`;`
     messageElement.textContent = message;
 
     this.container.appendChild(messageElement);
@@ -269,12 +269,12 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
   async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
     if (!this.container) return;
 
-    const infoElement = document.createElement('div');
+    const infoElement = document.createElement('div');'
     infoElement.className = 'agui-info';
-    infoElement.innerHTML = `
+    infoElement.innerHTML = ``
       <h3>${title}</h3>
       <pre>${JSON.stringify(data, null, 2)}</pre>
-    `;
+    `;`
 
     this.container.appendChild(infoElement);
   }
@@ -308,38 +308,38 @@ export class HeadlessAGUI implements AGUIInterface {
   }
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
-    logger.debug('Headless AGUI Question:', question);
+    logger.debug('Headless AGUI Question:', question);'
     const response = this.responses.get(question.id)||this.defaultResponse;
     return response;
   }
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
-    logger.debug(`Headless AGUI Batch: ${questions.length} questions`);
+    logger.debug(`Headless AGUI Batch: ${questions.length} questions`);`
     return questions.map(
       (q) => this.responses.get(q.id)||this.defaultResponse
     );
   }
 
   async showProgress(progress: unknown): Promise<void> {
-    logger.debug('Headless AGUI Progress:', progress);
+    logger.debug('Headless AGUI Progress:', progress);'
   }
 
   async showMessage(
     message: string,
-    type?: 'info|warning|error|success'): Promise<void> {
-    logger.debug(`Headless AGUI Message [${type||'info'}]:`, message);
+    type?: 'info|warning|error|success'): Promise<void> {'
+    logger.debug(`Headless AGUI Message [${type||'info'}]:`, message);`
   }
 
   async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
-    logger.debug(`Headless AGUI Info [${title}]:`, data);
+    logger.debug(`Headless AGUI Info [${title}]:`, data);`
   }
 
   async clear(): Promise<void> {
-    logger.debug('Headless AGUI: Clear called');
+    logger.debug('Headless AGUI: Clear called');'
   }
 
   async close(): Promise<void> {
-    logger.debug('Headless AGUI: Close called');
+    logger.debug('Headless AGUI: Close called');'
   }
 }
 
@@ -351,7 +351,7 @@ export function createAGUI(
   containerSelector?: string
 ): AGUIInterface {
   switch (type) {
-    case 'headless':
+    case 'headless':'
       return new HeadlessAGUI();
     default:
       return new WebAGUI(containerSelector);

@@ -7,7 +7,7 @@
 export interface KnowledgeItem {
   id: string;
   content: string;
-  type: 'fact|rule|pattern|insight';
+  type: 'fact|rule|pattern|insight;
   confidence: number;
   timestamp: number;
 }

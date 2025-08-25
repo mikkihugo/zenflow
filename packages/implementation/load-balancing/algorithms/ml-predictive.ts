@@ -21,10 +21,10 @@ import type {
 import { taskPriorityToNumber } from '../types';
 
 // Direct brain.js import for practical neural networks
-const brain = require('brain.js');
+const brain = require('brain.js');'
 
 // Foundation-optimized logging
-const logger = getLogger('MLPredictiveAlgorithm');
+const logger = getLogger('MLPredictiveAlgorithm');'
 
 interface MLFeatures {
   agentId: string;
@@ -120,7 +120,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
-      throw new Error('No available agents');
+      throw new Error('No available agents');'
     }
 
     // Extract features for prediction
@@ -162,7 +162,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence: bestPrediction.confidenceScore,
-      reasoning: `ML prediction: ${bestPrediction.predictedLatency.toFixed(0)}ms latency, ${(bestPrediction.predictedSuccessRate * 100).toFixed(1)}% success rate`,
+      reasoning: `ML prediction: ${bestPrediction.predictedLatency.toFixed(0)}ms latency, ${(bestPrediction.predictedSuccessRate * 100).toFixed(1)}% success rate`,`
       alternativeAgents: alternatives,
       estimatedLatency: bestPrediction.predictedLatency,
       expectedQuality: bestPrediction.predictedSuccessRate,
@@ -314,7 +314,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     try {
       if (!brain) {
         logger.warn(
-          'brain.js not available, skipping neural network initialization'
+          'brain.js not available, skipping neural network initialization''
         );
         return;
       }
@@ -332,9 +332,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       });
 
       this.brainJsConfig.initialized = true;
-      logger.info('Brain.js neural networks initialized successfully');
+      logger.info('Brain.js neural networks initialized successfully');'
     } catch (error) {
-      logger.error('Error initializing brain.js models:', error);
+      logger.error('Error initializing brain.js models:', error);'
     }
   }
 
@@ -417,7 +417,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     // Get brain.js predictions if available
     const brainJsPrediction = await this.getBrainJsPrediction(features);
     if (brainJsPrediction) {
-      predictions.set('brainjs', brainJsPrediction);
+      predictions.set('brainjs', brainJsPrediction);'
     }
 
     // Get predictions from traditional models
@@ -428,7 +428,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         );
         predictions.set(modelType, prediction);
       } catch (error) {
-        logger.warn(`Model ${modelType} prediction failed:`, error);
+        logger.warn(`Model ${modelType} prediction failed:`, error);`
       }
     }
 
@@ -445,8 +445,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     for (const [modelType, prediction] of predictions) {
       let weight = weights[modelType as keyof typeof weights]||0;
 
-      // Give brain.js higher weight if it's available and confident
-      if (modelType === 'brainjs'&& prediction.confidence > 0.7) {
+      // Give brain.js higher weight if it's available and confident'
+      if (modelType === 'brainjs'&& prediction.confidence > 0.7) {'
         weight = 0.6; // Higher weight for confident brain.js predictions
       }
 
@@ -533,7 +533,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         };
       }
     } catch (error) {
-      logger.warn('Brain.js prediction failed:', error);
+      logger.warn('Brain.js prediction failed:', error);'
     }
 
     return null;
@@ -586,7 +586,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         // Evaluate model performance
         await this.evaluateModel(modelType, trainingData);
       } catch (error) {
-        logger.error(`Failed to retrain model ${modelType}:`, error);
+        logger.error(`Failed to retrain model ${modelType}:`, error);`
       }
     }
 
@@ -609,7 +609,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       if (
         brainJsData.latencyData.length === 0||brainJsData.successData.length === 0
       ) {
-        logger.warn('Insufficient data for brain.js retraining');
+        logger.warn('Insufficient data for brain.js retraining');'
         return;
       }
 
@@ -634,13 +634,13 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       );
 
       this.brainJsConfig.lastTrainingSize = this.historicalData.length;
-      logger.info('Brain.js models retrained successfully', {
+      logger.info('Brain.js models retrained successfully', {'
         latencyStats,
         successStats,
         dataSize: this.historicalData.length,
       });
     } catch (error) {
-      logger.error('Error retraining brain.js models:', error);
+      logger.error('Error retraining brain.js models:', error);'
     }
   }
 
@@ -920,7 +920,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     _reliable: boolean
   ): Promise<void> {
     // Update agent reliability in the model
-    // This would adjust the agent's reliability score in the training data
+    // This would adjust the agent's reliability score in the training data'
   }
 
   private extractFeaturesFromHistorical(
@@ -956,9 +956,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private generateModelVersion(currentVersion: string): string {
-    const parts = currentVersion?.split('.');
+    const parts = currentVersion?.split('.');'
     const patch = (Number.parseInt(parts[2]) + 1) as any;
-    return `${parts[0]}.${parts[1]}.${patch}`;
+    return `${parts[0]}.${parts[1]}.${patch}`;`
   }
 
   private async calculateCacheHitRate(): Promise<number> {

@@ -2,7 +2,7 @@
  * @file AI Safety Integration with Main System.
  *
  * Integrates the AI deception detection system with the main Claude Code application.
- * Adds 'safety' mode to main.ts and provides integration hooks.
+ * Adds 'safety' mode to main.ts and provides integration hooks.'
  */
 
 import type {
@@ -30,33 +30,33 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
     return globalSafetyOrchestrator;
   }
 
-  console.log('🛡️ Initializing AI Safety System...');
+  console.log('🛡️ Initializing AI Safety System...');'
 
   globalSafetyOrchestrator = createAISafetyOrchestrator();
 
   // Set up event handlers for the global instance
-  globalSafetyOrchestrator.on('safety:alert', (alert: DeceptionAlert) => {
-    console.warn(`🚨 Safety Alert: ${alert.type} from agent ${alert.agentId}`);
+  globalSafetyOrchestrator.on('safety:alert', (alert: DeceptionAlert) => {'
+    console.warn(`🚨 Safety Alert: ${alert.type} from agent ${alert.agentId}`);`
   });
 
-  globalSafetyOrchestrator.on('safety:critical', (alert: DeceptionAlert) => {
-    console.error(`🛑 CRITICAL Safety Alert: ${alert.type}`);
-    console.error(`   Agent: ${alert.agentId}`);
-    console.error(`   Evidence: ${alert.evidence.join(', ')}`);
-    console.error(`   Intervention: ${alert.intervention}`);
+  globalSafetyOrchestrator.on('safety:critical', (alert: DeceptionAlert) => {'
+    console.error(`🛑 CRITICAL Safety Alert: ${alert.type}`);`
+    console.error(`   Agent: ${alert.agentId}`);`
+    console.error(`   Evidence: ${alert.evidence.join(', ')}`);`
+    console.error(`   Intervention: ${alert.intervention}`);`
   });
 
-  globalSafetyOrchestrator.on('safety:emergency-pause', () => {
-    console.error('⏸️ EMERGENCY: All agent sessions paused');
+  globalSafetyOrchestrator.on('safety:emergency-pause', () => {'
+    console.error('⏸️ EMERGENCY: All agent sessions paused');'
   });
 
-  globalSafetyOrchestrator.on('safety:human-notification', (notification) => {
-    console.error('📢 HUMAN ESCALATION:', notification);
+  globalSafetyOrchestrator.on('safety:human-notification', (notification) => {'
+    console.error('📢 HUMAN ESCALATION:', notification);'
   });
 
   await globalSafetyOrchestrator.startSafetyMonitoring();
 
-  console.log('✅ AI Safety System initialized and monitoring active');
+  console.log('✅ AI Safety System initialized and monitoring active');'
 
   return globalSafetyOrchestrator;
 }
@@ -73,7 +73,7 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
 export async function monitorAIInteraction(
   response: string,
   toolCalls: string[],
-  agentId: string = 'unknown'
+  agentId: string = 'unknown''
 ): Promise<DeceptionAlert[]> {
   if (!globalSafetyOrchestrator) {
     await initializeAISafetySystem();
@@ -110,11 +110,11 @@ export function getSafetyMetrics(): SafetyMetrics | null {
  * @example
  */
 export async function emergencySafetyShutdown(): Promise<void> {
-  console.error('🛑 EMERGENCY SAFETY SHUTDOWN NITIATED');
+  console.error('🛑 EMERGENCY SAFETY SHUTDOWN NITIATED');'
 
   if (globalSafetyOrchestrator) {
     await globalSafetyOrchestrator.stopSafetyMonitoring();
-    console.error('🛑 Safety monitoring stopped');
+    console.error('🛑 Safety monitoring stopped');'
   }
 
   // In a real implementation, this would:
@@ -130,19 +130,19 @@ export async function emergencySafetyShutdown(): Promise<void> {
  * @example
  */
 export async function runSafetyMode(): Promise<void> {
-  console.log('🛡️ Starting Claude Code Zen in SAFETY mode');
-  console.log('🔍 Real-time AI deception detection and monitoring active');
+  console.log('🛡️ Starting Claude Code Zen in SAFETY mode');'
+  console.log('🔍 Real-time AI deception detection and monitoring active');'
 
   const orchestrator = await initializeAISafetySystem();
 
   // Keep the process running
-  console.log('💻 Safety monitoring dashboard active');
-  console.log('Press Ctrl+C to stop monitoring');
+  console.log('💻 Safety monitoring dashboard active');'
+  console.log('Press Ctrl+C to stop monitoring');'
 
   // Display live metrics every 10 seconds
   const metricsInterval = setInterval(() => {
     const metrics = orchestrator.getSafetyMetrics();
-    console.log('📊 Safety Metrics:', {
+    console.log('📊 Safety Metrics:', {'
       totalInteractions: metrics.totalInteractions,
       deceptionDetected: metrics.deceptionDetected,
       humanEscalations: metrics.humanEscalations,
@@ -152,8 +152,8 @@ export async function runSafetyMode(): Promise<void> {
   }, 10000);
 
   // Handle graceful shutdown
-  process.on('SIGINT', async () => {
-    console.log('\n🛑 Shutting down safety monitoring...');
+  process.on('SIGINT', async () => {'
+    console.log('\n🛑 Shutting down safety monitoring...');'
     clearInterval(metricsInterval);
     await emergencySafetyShutdown();
     process.exit(0);

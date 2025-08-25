@@ -104,13 +104,13 @@ export const RunCommand = cmd({
       UI.empty()
 
       const { providerID, modelID } = args.model ? Provider.parseModel(args.model) : await Provider.defaultModel()
-      UI.println(UI.Style.TEXT_NORMAL_BOLD + "@ ", UI.Style.TEXT_NORMAL + `${providerID}/${modelID}`)
+      UI.println(UI.Style.TEXT_NORMAL_BOLD + "@ ", UI.Style.TEXT_NORMAL + `${providerID}/${modelID}`)`
       UI.empty()
 
       function printEvent(color: string, type: string, title: string) {
         UI.println(
-          color + `|`,
-          UI.Style.TEXT_NORMAL + UI.Style.TEXT_DIM + ` ${type.padEnd(7, " ")}`,
+          color + `|`,`
+          UI.Style.TEXT_NORMAL + UI.Style.TEXT_DIM + ` ${type.padEnd(7, " ")}`,`
           "",
           UI.Style.TEXT_NORMAL + title,
         )

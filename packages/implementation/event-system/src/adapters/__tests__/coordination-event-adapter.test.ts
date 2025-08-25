@@ -26,12 +26,12 @@ import {
   createDefaultCoordinationEventAdapterConfig,
 } from '../coordination-event-adapter';
 
-describe('CoordinationEventAdapter', () => {
+describe('CoordinationEventAdapter', () => {'
   let adapter: CoordinationEventAdapter;
   let config: CoordinationEventAdapterConfig;
 
   beforeEach(() => {
-    config = createDefaultCoordinationEventAdapterConfig('test-coordination');
+    config = createDefaultCoordinationEventAdapterConfig('test-coordination');'
     adapter = new CoordinationEventAdapter(config);
   });
 
@@ -44,32 +44,32 @@ describe('CoordinationEventAdapter', () => {
     }
   });
 
-  describe('Initialization and Configuration', () => {
+  describe('Initialization and Configuration', () => {'
     // London TDD: Test configuration setup and initialization
-    it('should initialize with correct configuration', () => {
-      expect(adapter.name).toBe('test-coordination');
+    it('should initialize with correct configuration', () => {'
+      expect(adapter.name).toBe('test-coordination');'
       expect(adapter.type).toBe(EventManagerTypes.COORDINATION);
-      expect(adapter.config.name).toBe('test-coordination');
+      expect(adapter.config.name).toBe('test-coordination');'
       expect(adapter.config.type).toBe(EventManagerTypes.COORDINATION);
     });
 
-    it('should have default coordination configuration', () => {
+    it('should have default coordination configuration', () => {'
       expect(adapter.config.swarmCoordination?.enabled).toBe(true);
       expect(adapter.config.agentManagement?.enabled).toBe(true);
       expect(adapter.config.taskOrchestration?.enabled).toBe(true);
       expect(adapter.config.coordination?.enabled).toBe(true);
     });
 
-    it('should initialize as not running', () => {
+    it('should initialize as not running', () => {'
       expect(adapter.isRunning()).toBe(false);
     });
   });
 
-  describe('Lifecycle Management (London TDD)', () => {
+  describe('Lifecycle Management (London TDD)', () => {'
     // London TDD: Mock internal dependencies and verify interactions
-    it('should start successfully and emit start event', async () => {
+    it('should start successfully and emit start event', async () => {'
       const startHandler = vi.fn();
-      adapter.on('start', startHandler);
+      adapter.on('start', startHandler);'
 
       await adapter.start();
 
@@ -77,9 +77,9 @@ describe('CoordinationEventAdapter', () => {
       expect(startHandler).toHaveBeenCalled();
     });
 
-    it('should stop successfully and emit stop event', async () => {
+    it('should stop successfully and emit stop event', async () => {'
       const stopHandler = vi.fn();
-      adapter.on('stop', stopHandler);
+      adapter.on('stop', stopHandler);'
 
       await adapter.start();
       await adapter.stop();
@@ -88,12 +88,12 @@ describe('CoordinationEventAdapter', () => {
       expect(stopHandler).toHaveBeenCalled();
     });
 
-    it('should restart successfully', async () => {
+    it('should restart successfully', async () => {'
       const startHandler = vi.fn();
       const stopHandler = vi.fn();
 
-      adapter.on('start', startHandler);
-      adapter.on('stop', stopHandler);
+      adapter.on('start', startHandler);'
+      adapter.on('stop', stopHandler);'
 
       await adapter.start();
       await adapter.restart();
@@ -103,7 +103,7 @@ describe('CoordinationEventAdapter', () => {
       expect(startHandler).toHaveBeenCalledTimes(2); // Once for start, once for restart
     });
 
-    it('should handle start when already running', async () => {
+    it('should handle start when already running', async () => {'
       await adapter.start();
 
       // Should not throw and remain running
@@ -111,20 +111,20 @@ describe('CoordinationEventAdapter', () => {
       expect(adapter.isRunning()).toBe(true);
     });
 
-    it('should handle stop when not running', async () => {
+    it('should handle stop when not running', async () => {'
       // Should not throw
       await adapter.stop();
       expect(adapter.isRunning()).toBe(false);
     });
   });
 
-  describe('Event Subscription Management (London TDD)', () => {
+  describe('Event Subscription Management (London TDD)', () => {'
     // London TDD: Test subscription interactions and listener calls
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should subscribe to coordination events', () => {
+    it('should subscribe to coordination events', () => {'
       const listener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['coordination:swarm'],
@@ -135,7 +135,7 @@ describe('CoordinationEventAdapter', () => {
       expect(adapter.getSubscriptions()).toHaveLength(1);
     });
 
-    it('should unsubscribe from coordination events', () => {
+    it('should unsubscribe from coordination events', () => {'
       const listener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['coordination:swarm'],
@@ -148,23 +148,23 @@ describe('CoordinationEventAdapter', () => {
       expect(adapter.getSubscriptions()).toHaveLength(0);
     });
 
-    it('should unsubscribe all listeners for event type', () => {
+    it('should unsubscribe all listeners for event type', () => {'
       const listener1 = vi.fn();
       const listener2 = vi.fn();
 
-      adapter.subscribe(['coordination:swarm'], listener1);
-      adapter.subscribe(['coordination:swarm'], listener2);
-      adapter.subscribe(['coordination:agent'], listener1);
+      adapter.subscribe(['coordination:swarm'], listener1);'
+      adapter.subscribe(['coordination:swarm'], listener2);'
+      adapter.subscribe(['coordination:agent'], listener1);'
 
-      const removedCount = adapter.unsubscribeAll('coordination:swarm');
+      const removedCount = adapter.unsubscribeAll('coordination:swarm');'
 
       expect(removedCount).toBe(2);
       expect(adapter.getSubscriptions()).toHaveLength(1);
     });
 
-    it('should call subscribed listeners when events are emitted', async () => {
+    it('should call subscribed listeners when events are emitted', async () => {'
       const listener = vi.fn();
-      adapter.subscribe(['coordination:swarm'], listener);
+      adapter.subscribe(['coordination:swarm'], listener);'
 
       const event: CoordinationEvent = {
         id: 'test-event',
@@ -182,14 +182,14 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Event Emission and Processing (London TDD)', () => {
+  describe('Event Emission and Processing (London TDD)', () => {'
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should emit coordination events with proper validation', async () => {
+    it('should emit coordination events with proper validation', async () => {'
       const emissionHandler = vi.fn();
-      adapter.on('emission', emissionHandler);
+      adapter.on('emission', emissionHandler);'
 
       const event: CoordinationEvent = {
         id: 'test-event',
@@ -216,9 +216,9 @@ describe('CoordinationEventAdapter', () => {
       );
     });
 
-    it('should emit coordination events immediately', async () => {
+    it('should emit coordination events immediately', async () => {'
       const listener = vi.fn();
-      adapter.subscribe(['coordination:agent'], listener);
+      adapter.subscribe(['coordination:agent'], listener);'
 
       const event: CoordinationEvent = {
         id: 'test-immediate',
@@ -235,9 +235,9 @@ describe('CoordinationEventAdapter', () => {
       expect(listener).toHaveBeenCalledWith(event);
     });
 
-    it('should process event batches correctly', async () => {
+    it('should process event batches correctly', async () => {'
       const listener = vi.fn();
-      adapter.subscribe(['coordination:task'], listener);
+      adapter.subscribe(['coordination:task'], listener);'
 
       const events: CoordinationEvent[] = [
         {
@@ -273,14 +273,14 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Event Filtering and Transformation (London TDD)', () => {
+  describe('Event Filtering and Transformation (London TDD)', () => {'
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should add and apply event filters', async () => {
+    it('should add and apply event filters', async () => {'
       const listener = vi.fn();
-      adapter.subscribe(['coordination:swarm'], listener);
+      adapter.subscribe(['coordination:swarm'], listener);'
 
       // Add filter that only allows events from specific source
       const filterId = adapter.addFilter({
@@ -316,9 +316,9 @@ describe('CoordinationEventAdapter', () => {
       expect(adapter.removeFilter(filterId)).toBe(true);
     });
 
-    it('should add and apply event transforms', async () => {
+    it('should add and apply event transforms', async () => {'
       const listener = vi.fn();
-      adapter.subscribe(['coordination:agent'], listener);
+      adapter.subscribe(['coordination:agent'], listener);'
 
       // Add transform that enriches events
       const transformId = adapter.addTransform({
@@ -351,13 +351,13 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Health Monitoring and Status (Classical TDD)', () => {
+  describe('Health Monitoring and Status (Classical TDD)', () => {'
     // Classical TDD: Test actual health calculation results
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should provide health status with correct structure', async () => {
+    it('should provide health status with correct structure', async () => {'
       const status = await adapter.healthCheck();
 
       expect(status).toMatchObject({
@@ -373,7 +373,7 @@ describe('CoordinationEventAdapter', () => {
       });
     });
 
-    it('should calculate error rate correctly', async () => {
+    it('should calculate error rate correctly', async () => {'
       // Emit successful events
       const successEvent: CoordinationEvent = {
         id: 'success-1',
@@ -394,7 +394,7 @@ describe('CoordinationEventAdapter', () => {
       // Create a failing event scenario
       try {
         await adapter.emit({
-          id: '', // Invalid event to trigger error
+          id: '', // Invalid event to trigger error'
           timestamp: new Date(),
           source: '',
           type: 'coordination:swarm',
@@ -410,7 +410,7 @@ describe('CoordinationEventAdapter', () => {
       expect(finalStatus.errorRate).toBeGreaterThan(0);
     });
 
-    it('should calculate uptime correctly', async () => {
+    it('should calculate uptime correctly', async () => {'
       const _startTime = Date.now();
       await new Promise((resolve) => setTimeout(resolve, 100)); // Wait 100ms
 
@@ -422,13 +422,13 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Performance Metrics (Classical TDD)', () => {
+  describe('Performance Metrics (Classical TDD)', () => {'
     // Classical TDD: Test actual performance calculations
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should track events processed correctly', async () => {
+    it('should track events processed correctly', async () => {'
       const event: CoordinationEvent = {
         id: 'metrics-test',
         timestamp: new Date(),
@@ -449,7 +449,7 @@ describe('CoordinationEventAdapter', () => {
       expect(metrics.eventsFailed).toBe(0);
     });
 
-    it('should calculate average latency', async () => {
+    it('should calculate average latency', async () => {'
       const event: CoordinationEvent = {
         id: 'latency-test',
         timestamp: new Date(),
@@ -468,14 +468,14 @@ describe('CoordinationEventAdapter', () => {
       expect(metrics.averageLatency).toBeLessThan(1000); // Should be reasonable
     });
 
-    it('should track throughput over time', async () => {
+    it('should track throughput over time', async () => {'
       const events = Array.from({ length: 5 }, (_, i) => ({
-        id: `throughput-${i}`,
+        id: `throughput-${i}`,`
         timestamp: new Date(),
         source: 'test-source',
         type: 'coordination:swarm' as const,
         operation: 'init' as const,
-        targetId: `test-swarm-${i}`,
+        targetId: `test-swarm-${i}`,`
         payload: {},
       }));
 
@@ -489,12 +489,12 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Event History and Querying (Classical TDD)', () => {
+  describe('Event History and Querying (Classical TDD)', () => {'
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should maintain event history', async () => {
+    it('should maintain event history', async () => {'
       const events: CoordinationEvent[] = [
         {
           id: 'history-1',
@@ -520,12 +520,12 @@ describe('CoordinationEventAdapter', () => {
         await adapter.emit(event);
       }
 
-      const history = await adapter.getEventHistory('coordination:swarm');
+      const history = await adapter.getEventHistory('coordination:swarm');'
       expect(history).toHaveLength(1);
-      expect(history[0]?.id).toBe('history-1');
+      expect(history[0]?.id).toBe('history-1');'
     });
 
-    it('should query events with filters', async () => {
+    it('should query events with filters', async () => {'
       const events: CoordinationEvent[] = [
         {
           id: 'query-1',
@@ -560,17 +560,17 @@ describe('CoordinationEventAdapter', () => {
       });
 
       expect(highPriorityEvents).toHaveLength(1);
-      expect(highPriorityEvents[0]?.id).toBe('query-1');
+      expect(highPriorityEvents[0]?.id).toBe('query-1');'
     });
 
-    it('should sort and paginate query results', async () => {
+    it('should sort and paginate query results', async () => {'
       const events: CoordinationEvent[] = Array.from({ length: 5 }, (_, i) => ({
-        id: `sort-${i}`,
+        id: `sort-${i}`,`
         timestamp: new Date(Date.now() - i * 1000), // Spread timestamps
         source: 'test-source',
         type: 'coordination:swarm' as const,
         operation: 'init' as const,
-        targetId: `swarm-${i}`,
+        targetId: `swarm-${i}`,`
         payload: {},
       }));
 
@@ -593,14 +593,14 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Coordination-Specific Methods (London TDD)', () => {
+  describe('Coordination-Specific Methods (London TDD)', () => {'
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should emit swarm coordination events', async () => {
+    it('should emit swarm coordination events', async () => {'
       const listener = vi.fn();
-      adapter.subscribe(['coordination:swarm'], listener);
+      adapter.subscribe(['coordination:swarm'], listener);'
 
       await adapter.emitSwarmCoordinationEvent({
         source: 'swarm-coordinator',
@@ -625,44 +625,44 @@ describe('CoordinationEventAdapter', () => {
       );
     });
 
-    it('should subscribe to swarm lifecycle events', () => {
+    it('should subscribe to swarm lifecycle events', () => {'
       const listener = vi.fn();
       const subscriptionId = adapter.subscribeSwarmLifecycleEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()).toHaveLength(1);
       expect(adapter.getSubscriptions()[0]?.eventTypes).toContain(
-        'coordination:swarm'
+        'coordination:swarm''
       );
     });
 
-    it('should subscribe to agent management events', () => {
+    it('should subscribe to agent management events', () => {'
       const listener = vi.fn();
       const subscriptionId = adapter.subscribeAgentManagementEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()[0]?.eventTypes).toContain(
-        'coordination:agent'
+        'coordination:agent''
       );
     });
 
-    it('should subscribe to task orchestration events', () => {
+    it('should subscribe to task orchestration events', () => {'
       const listener = vi.fn();
       const subscriptionId = adapter.subscribeTaskOrchestrationEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()[0]?.eventTypes).toContain(
-        'coordination:task'
+        'coordination:task''
       );
     });
   });
 
-  describe('Configuration Updates (London TDD)', () => {
+  describe('Configuration Updates (London TDD)', () => {'
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should update configuration', () => {
+    it('should update configuration', () => {'
       const newConfig = {
         swarmOptimization: {
           enabled: false,
@@ -686,14 +686,14 @@ describe('CoordinationEventAdapter', () => {
     });
   });
 
-  describe('Error Handling (London TDD)', () => {
+  describe('Error Handling (London TDD)', () => {'
     beforeEach(async () => {
       await adapter.start();
     });
 
-    it('should handle invalid events gracefully', async () => {
+    it('should handle invalid events gracefully', async () => {'
       const errorHandler = vi.fn();
-      adapter.on('error', errorHandler);
+      adapter.on('error', errorHandler);'
 
       try {
         await adapter.emit({
@@ -710,14 +710,14 @@ describe('CoordinationEventAdapter', () => {
       }
     });
 
-    it('should handle subscription errors gracefully', async () => {
+    it('should handle subscription errors gracefully', async () => {'
       const faultyListener = vi
         .fn()
-        .mockRejectedValue(new Error('Listener error'));
+        .mockRejectedValue(new Error('Listener error'));'
       const subscriptionErrorHandler = vi.fn();
 
-      adapter.on('error', subscriptionErrorHandler);
-      adapter.subscribe(['coordination:swarm'], faultyListener);
+      adapter.on('error', subscriptionErrorHandler);'
+      adapter.subscribe(['coordination:swarm'], faultyListener);'
 
       const event: CoordinationEvent = {
         id: 'error-test',
@@ -736,9 +736,9 @@ describe('CoordinationEventAdapter', () => {
   });
 });
 
-describe('CoordinationEventAdapter Factory Functions', () => {
-  describe('createCoordinationEventAdapter', () => {
-    it('should create adapter with custom configuration', () => {
+describe('CoordinationEventAdapter Factory Functions', () => {'
+  describe('createCoordinationEventAdapter', () => {'
+    it('should create adapter with custom configuration', () => {'
       const config = createDefaultCoordinationEventAdapterConfig(
         'factory-test',
         {
@@ -758,13 +758,13 @@ describe('CoordinationEventAdapter Factory Functions', () => {
 
       const adapter = createCoordinationEventAdapter(config);
 
-      expect(adapter.name).toBe('factory-test');
+      expect(adapter.name).toBe('factory-test');'
       expect(adapter.config.swarmOptimization?.enabled).toBe(false);
     });
   });
 
-  describe('createDefaultCoordinationEventAdapterConfig', () => {
-    it('should create default configuration with overrides', () => {
+  describe('createDefaultCoordinationEventAdapterConfig', () => {'
+    it('should create default configuration with overrides', () => {'
       const config = createDefaultCoordinationEventAdapterConfig(
         'default-test',
         {
@@ -780,17 +780,17 @@ describe('CoordinationEventAdapter Factory Functions', () => {
         }
       );
 
-      expect(config?.name).toBe('default-test');
+      expect(config?.name).toBe('default-test');'
       expect(config?.type).toBe(EventManagerTypes.COORDINATION);
       expect(config?.coordination?.enabled).toBe(false);
-      expect(config?.coordination?.strategy).toBe('agent');
+      expect(config?.coordination?.strategy).toBe('agent');'
     });
   });
 });
 
-describe('CoordinationEventHelpers', () => {
-  describe('createSwarmInitEvent', () => {
-    it('should create swarm initialization event', () => {
+describe('CoordinationEventHelpers', () => {'
+  describe('createSwarmInitEvent', () => {'
+    it('should create swarm initialization event', () => {'
       const event = CoordinationEventHelpers.createSwarmInitEvent(
         'test-swarm',
         'mesh',
@@ -814,8 +814,8 @@ describe('CoordinationEventHelpers', () => {
     });
   });
 
-  describe('createAgentSpawnEvent', () => {
-    it('should create agent spawn event', () => {
+  describe('createAgentSpawnEvent', () => {'
+    it('should create agent spawn event', () => {'
       const event = CoordinationEventHelpers.createAgentSpawnEvent(
         'test-agent',
         'test-swarm',
@@ -839,12 +839,12 @@ describe('CoordinationEventHelpers', () => {
     });
   });
 
-  describe('createTaskDistributionEvent', () => {
-    it('should create task distribution event', () => {
+  describe('createTaskDistributionEvent', () => {'
+    it('should create task distribution event', () => {'
       const event = CoordinationEventHelpers.createTaskDistributionEvent(
         'test-task',
         ['agent-1', 'agent-2'],
-        { taskType: 'analysis' }
+        { taskType: 'analysis' }'
       );
 
       expect(event).toMatchObject({
@@ -862,8 +862,8 @@ describe('CoordinationEventHelpers', () => {
     });
   });
 
-  describe('createTopologyChangeEvent', () => {
-    it('should create topology change event', () => {
+  describe('createTopologyChangeEvent', () => {'
+    it('should create topology change event', () => {'
       const event = CoordinationEventHelpers.createTopologyChangeEvent(
         'test-swarm',
         'hierarchical',
@@ -885,14 +885,14 @@ describe('CoordinationEventHelpers', () => {
     });
   });
 
-  describe('createCoordinationErrorEvent', () => {
-    it('should create coordination error event', () => {
-      const error = new Error('Test coordination error');
+  describe('createCoordinationErrorEvent', () => {'
+    it('should create coordination error event', () => {'
+      const error = new Error('Test coordination error');'
       const event = CoordinationEventHelpers.createCoordinationErrorEvent(
         'swarm-coordinator',
         'test-swarm',
         error,
-        { context: 'initialization' }
+        { context: 'initialization' }'
       );
 
       expect(event).toMatchObject({

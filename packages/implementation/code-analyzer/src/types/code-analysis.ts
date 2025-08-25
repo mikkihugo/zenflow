@@ -12,7 +12,7 @@ export interface CodeAnalysisOptions {
   excludePatterns?: string[];
 
   // Analysis depth
-  analysisMode?: 'syntax|semantic|intelligent|comprehensive';
+  analysisMode?: 'syntax' | 'semantic' | 'intelligent' | 'comprehensive;
   realTimeAnalysis?: boolean;
   enableWatching?: boolean;
 
@@ -39,7 +39,7 @@ export interface CodeAnalysisOptions {
   enableCIIntegration?: boolean;
 }
 
-export type SupportedLanguage =|'typescript|javascript|tsx|jsx|vue|svelte|python | go'|rust|java | cpp'|csharp';
+export type SupportedLanguage = 'typescript' | 'javascript' | 'tsx' | 'jsx' | 'vue' | 'svelte' | 'python' | 'go' | 'rust' | 'java' | 'cpp' | 'csharp';
 
 export interface CodeAnalysisResult {
   id: string;
@@ -113,7 +113,7 @@ export interface CodeQualityMetrics {
 export interface CodeSuggestion {
   id: string;
   type: SuggestionType;
-  severity: 'info|warning|error|critical';
+  severity: 'info' | 'warning' | 'error' | 'critical;
   title: string;
   description: string;
 
@@ -133,7 +133,7 @@ export interface CodeSuggestion {
   learnMoreUrl?: string;
 }
 
-export type SuggestionType =|'syntax-error|type-error'||code-smell|performance | security'|accessibility|best-practice'||refactoring|modernization|optimization';
+export type SuggestionType = 'syntax-error' | 'type-error' | 'code-smell' | 'performance' | 'security' | 'accessibility' | 'best-practice' | 'refactoring' | 'modernization' | 'optimization';
 
 export interface AICodeInsights {
   // AI-powered analysis
@@ -167,7 +167,7 @@ export interface LiveAnalysisSession {
   watchedDirectories: string[];
 
   // Session state
-  status: 'active|paused|stopped|error';
+  status: 'active' | 'paused' | 'stopped' | 'error;
   filesAnalyzed: number;
   errorsFound: number;
   suggestionsGenerated: number;
@@ -185,11 +185,11 @@ export interface LiveAnalysisSession {
 export interface AnalysisQueueItem {
   id: string;
   filePath: string;
-  priority: 'low|normal|high|urgent';
+  priority: 'low' | 'normal' | 'high' | 'urgent;
   queuedAt: Date;
   startedAt?: Date;
   completedAt?: Date;
-  status: 'queued|processing|completed|failed';
+  status: 'queued' | 'processing' | 'completed' | 'failed;
   error?: Error;
   result?: CodeAnalysisResult;
 }
@@ -214,26 +214,26 @@ export interface DetectedPattern {
 export interface ImportSpecifier {
   name: string;
   alias?: string;
-  kind: 'named|default|namespace';
+  kind: 'named' | 'default' | 'namespace;
 }
 
 export interface ImportDeclaration {
   source: string;
   specifiers: ImportSpecifier[];
-  kind: 'import|require'||dynamic-import';
+  kind: 'import' | 'require' | 'dynamic-import;
   location: SourceRange;
 }
 
 export interface ExportDeclaration {
   name: string;
-  kind: 'named|default|namespace';
+  kind: 'named' | 'default' | 'namespace;
   source?: string;
   location: SourceRange;
 }
 
 export interface Declaration {
   name: string;
-  kind: 'variable|function|class|interface|type|enum';
+  kind: 'variable' | 'function' | 'class' | 'interface' | 'type' | 'enum;
   scope: string;
   location: SourceRange;
   typeAnnotation?: TypeInfo;
@@ -241,14 +241,14 @@ export interface Declaration {
 
 export interface Reference {
   name: string;
-  kind: 'read|write|call';
+  kind: 'read' | 'write' | 'call;
   declaration?: Declaration;
   location: SourceRange;
 }
 
 export interface Scope {
   id: string;
-  kind: 'global|module|function|block|class';
+  kind: 'global' | 'module' | 'function' | 'block' | 'class;
   parent?: string;
   bindings: string[];
   references: string[];
@@ -257,7 +257,7 @@ export interface Scope {
 
 export interface Binding {
   name: string;
-  kind: 'var|let|const|function|class|parameter';
+  kind: 'var' | 'let' | 'const' | 'function' | 'class' | 'parameter;
   scope: string;
   references: Reference[];
   typeInfo?: TypeInfo;
@@ -285,12 +285,12 @@ export interface TypeMethod {
   name: string;
   parameters: TypeProperty[];
   returnType: string;
-  accessibility: 'public|private|protected';
+  accessibility: 'public' | 'private' | 'protected;
 }
 
 export interface ControlFlowNode {
   id: string;
-  type: 'entry|exit|statement|condition|loop';
+  type: 'entry' | 'exit' | 'statement' | 'condition' | 'loop;
   statement?: string;
   location: SourceRange;
 }
@@ -312,7 +312,7 @@ export interface ControlFlowGraph {
 export interface DataFlowNode {
   id: string;
   variable: string;
-  type: 'definition|use|kill';
+  type: 'definition' | 'use' | 'kill;
   location: SourceRange;
 }
 
@@ -320,7 +320,7 @@ export interface DataFlowEdge {
   from: string;
   to: string;
   variable: string;
-  flowType: 'def-use|use-def'||def-def';
+  flowType: 'def-use' | 'use-def' | 'def-def;
 }
 
 export interface Definition {
@@ -346,7 +346,7 @@ export interface DataFlowGraph {
 export interface CallGraphNode {
   id: string;
   name: string;
-  type: 'function|method|constructor|external';
+  type: 'function' | 'method' | 'constructor' | 'external;
   location?: SourceRange;
   signature?: string;
 }
@@ -354,7 +354,7 @@ export interface CallGraphNode {
 export interface CallGraphEdge {
   from: string;
   to: string;
-  callType: 'direct|indirect|virtual|dynamic';
+  callType: 'direct' | 'indirect' | 'virtual' | 'dynamic;
   location: SourceRange;
 }
 
@@ -398,18 +398,18 @@ export interface CohesionMetrics {
 
 export interface CodeSmell {
   type: CodeSmellType;
-  severity: 'minor|major|critical';
+  severity: 'minor' | 'major' | 'critical;
   description: string;
   location: SourceRange;
   suggestion: string;
   autoFixable: boolean;
 }
 
-export type CodeSmellType =|'long-method|large-class'||duplicate-code|dead-code'||god-class|feature-envy'||data-clumps|primitive-obsession'||switch-statements|lazy-class'||speculative-generality|temporary-field'||message-chains|middle-man'||inappropriate-intimacy|alternative-classes-with-different-interfaces'||refused-bequest|comments'';
+export type CodeSmellType = 'long-method' | 'large-class' | 'duplicate-code' | 'dead-code' | 'god-class' | 'feature-envy' | 'data-clumps' | 'primitive-obsession' | 'switch-statements' | 'lazy-class' | 'speculative-generality' | 'temporary-field' | 'message-chains' | 'middle-man' | 'inappropriate-intimacy' | 'alternative-classes-with-different-interfaces' | 'refused-bequest' | 'comments';
 
 export interface AntiPattern {
   name: string;
-  category: 'architectural|design|implementation|organizational';
+  category: 'architectural' | 'design' | 'implementation' | 'organizational;
   description: string;
   consequences: string[];
   refactoringApproach: string[];
@@ -419,7 +419,7 @@ export interface AntiPattern {
 
 export interface DesignPattern {
   name: string;
-  category: 'creational|structural|behavioral';
+  category: 'creational' | 'structural' | 'behavioral;
   description: string;
   participants: string[];
   location: SourceRange;
@@ -430,7 +430,7 @@ export interface DesignPattern {
 
 export interface SecurityIssue {
   type: SecurityIssueType;
-  severity: 'low|medium|high|critical';
+  severity: 'low' | 'medium' | 'high' | 'critical;
   title: string;
   description: string;
   location: SourceRange;
@@ -440,12 +440,12 @@ export interface SecurityIssue {
   falsePositive: boolean;
 }
 
-export type SecurityIssueType =|'injection|authentication|authorization|data-exposure||xml-entities|broken-access-control'||security-misconfiguration|xss'||insecure-deserialization|vulnerable-components'||insufficient-logging';
+export type SecurityIssueType = 'injection' | 'authentication' | 'authorization' | 'data-exposure' | 'xml-entities' | 'broken-access-control' | 'security-misconfiguration' | 'xss' | 'insecure-deserialization' | 'vulnerable-components' | 'insufficient-logging';
 
 export interface Vulnerability {
   id: string;
-  type: 'dependency|code|configuration';
-  severity: 'low|medium|high|critical';
+  type: 'dependency' | 'code' | 'configuration;
+  severity: 'low' | 'medium' | 'high' | 'critical;
   package?: string;
   version?: string;
   fixedVersion?: string;
@@ -479,18 +479,18 @@ export interface TextEdit {
 }
 
 export interface ImportEdit {
-  action: 'add|remove|modify';
+  action: 'add' | 'remove' | 'modify;
   source: string;
   specifiers: string[];
   location?: SourceRange;
 }
 
 export interface ImpactAssessment {
-  scope: 'file|module|project|codebase';
+  scope: 'file' | 'module' | 'project' | 'codebase;
   breakingChange: boolean;
   testingRequired: boolean;
-  performanceImpact: 'positive|neutral|negative';
-  maintainabilityImpact: 'positive|neutral|negative';
+  performanceImpact: 'positive' | 'neutral' | 'negative;
+  maintainabilityImpact: 'positive' | 'neutral' | 'negative;
   estimatedEffort: number; // in minutes
 }
 
@@ -504,7 +504,7 @@ export interface IntentAnalysis {
 }
 
 export interface ComplexityAssessment {
-  overallComplexity: 'low|medium|high|very-high';
+  overallComplexity: 'low' | 'medium' | 'high' | 'very-high;
   complexityFactors: ComplexityFactor[];
   reductionOpportunities: ComplexityReduction[];
   cognitiveLoad: number;
@@ -520,7 +520,7 @@ export interface RefactoringOpportunity {
   prerequisites: string[];
 }
 
-export type RefactoringType =|'extract-method|extract-class'||move-method|rename'||introduce-parameter|inline-method'||replace-conditional|decompose-conditional'||consolidate-conditional|replace-nested-conditional'||introduce-null-object|replace-type-code'||replace-subclass|extract-interface'||collapse-hierarchy|form-template-method'||substitute-algorithm';
+export type RefactoringType = 'extract-method' | 'extract-class' | 'move-method' | 'rename' | 'introduce-parameter' | 'inline-method' | 'replace-conditional' | 'decompose-conditional' | 'consolidate-conditional' | 'replace-nested-conditional' | 'introduce-null-object' | 'replace-type-code' | 'replace-subclass' | 'extract-interface' | 'collapse-hierarchy' | 'form-template-method' | 'substitute-algorithm';
 
 export interface BusinessLogicAnalysis {
   businessRules: BusinessRule[];
@@ -543,7 +543,7 @@ export interface TechnicalDebtAssessment {
   totalDebt: number; // in hours
   debtByCategory: Record<string, number>;
   hotspots: TechnicalDebtHotspot[];
-  trend: 'improving|stable|worsening';
+  trend: 'improving' | 'stable' | 'declining'' |'improving' | 'stable' | 'declining'| 'worsening;
   payoffStrategies: PayoffStrategy[];
 }
 
@@ -577,30 +577,30 @@ export interface SkillGapAnalysis {
 
 export interface Skill {
   name: string;
-  category: 'language|framework|tool|pattern|domain';
-  level: 'beginner|intermediate|advanced|expert';
+  category: 'language' | 'framework' | 'tool' | 'pattern' | 'domain;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert;
   confidence: number;
 }
 
 export interface SkillGap {
   skill: string;
-  required: 'beginner|intermediate|advanced|expert';
-  current: 'beginner|intermediate|advanced|expert|none';
-  priority: 'low|medium|high|critical';
+  required: 'beginner' | 'intermediate' | 'advanced' | 'expert;
+  current: 'beginner' | 'intermediate' | 'advanced' | 'expert' | 'none;
+  priority: 'low' | 'medium' | 'high' | 'critical;
 }
 
 export interface LearningResource {
-  type: 'documentation|tutorial|course|book|practice';
+  type: 'documentation|tutorial|course|book|practice;
   title: string;
   url?: string;
-  difficulty: 'beginner|intermediate|advanced';
+  difficulty: 'beginner' | 'intermediate' | 'advanced;
   estimatedTime: string;
   skills: string[];
 }
 
 export interface LearningRecommendation {
   skill: string;
-  priority: 'low|medium|high';
+  priority: 'low' | 'medium' | 'high;
   resources: LearningResource[];
   estimatedTime: number;
   prerequisites: string[];
@@ -612,11 +612,11 @@ export interface EventHandler {
   handler: (data: any) => void;
 }
 
-export type AnalysisEvent =|'analysis-started|analysis-completed'||analysis-failed|file-changed'||suggestion-generated|error-detected'||performance-threshold-exceeded';
+export type AnalysisEvent = 'analysis-started' | 'analysis-completed' | 'analysis-failed' | 'file-changed' | 'suggestion-generated' | 'error-detected' | 'performance-threshold-exceeded';
 
 export interface Notification {
   id: string;
-  type: 'info|warning|error|success';
+  type: 'info' | 'warning' | 'error' | 'success;
   title: string;
   message: string;
   timestamp: Date;

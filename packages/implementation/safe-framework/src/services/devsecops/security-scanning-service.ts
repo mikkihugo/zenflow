@@ -27,17 +27,17 @@ import {
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
-// Define security types locally as they're not being resolved from types module
+// Define security types locally as they're not being resolved from types module'
 export interface SecurityAssessment {
   readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly assessmentType: SecurityAssessmentType;
   readonly findings: SecurityFinding[];
-  readonly overallRisk: 'low|medium|high|critical';
+  readonly overallRisk: 'low|medium|high|critical;
 }
 
-export type SecurityAssessmentType =|vulnerability_scan|penetration_test|code_review|compliance_audit|'risk_assessment';
+export type SecurityAssessmentType =|vulnerability_scan|penetration_test|code_review|compliance_audit|'risk_assessment;
 
 export interface SecurityFinding {
   readonly id: string;
@@ -45,7 +45,7 @@ export interface SecurityFinding {
   readonly description: string;
   readonly severity: SecuritySeverity;
   readonly category: string;
-  readonly status: 'open|in_progress|resolved|false_positive';
+  readonly status: 'open|in_progress|resolved|false_positive;
   readonly cwe?: string;
   readonly cvssScore?: CVSSScore;
   readonly location?: {
@@ -71,7 +71,7 @@ export interface SecurityFinding {
 export interface SecurityTool {
   readonly id: string;
   readonly name: string;
-  readonly type: 'static|dynamic|interactive|manual';
+  readonly type: 'static|dynamic|interactive|manual;
   readonly capabilities: string[];
 }
 
@@ -82,10 +82,10 @@ export interface SecurityStandard {
   readonly requirements: string[];
 }
 
-export type SecuritySeverity =|low|medium|high|critical|'informational';
+export type SecuritySeverity =|low|medium|high|critical|'informational;
 
 export interface CVSSScore {
-  readonly version: '2.0|3.0|3.1';
+  readonly version: '2.0|3.0|3.1;
   readonly baseScore: number;
   readonly temporalScore?: number;
   readonly environmentalScore?: number;
@@ -97,7 +97,7 @@ export interface CVSSScore {
  */
 export interface SecurityScanConfig {
   readonly scanId: string;
-  readonly scanType:|static|dynamic|dependency|container|'infrastructure';
+  readonly scanType:|static|dynamic|dependency|container|'infrastructure;
   readonly tools: SecurityTool[];
   readonly targets: ScanTarget[];
   readonly standards: SecurityStandard[];
@@ -109,18 +109,18 @@ export interface SecurityScanConfig {
  * Scan target configuration
  */
 export interface ScanTarget {
-  readonly type: 'code|container|infrastructure|api';
+  readonly type: 'code|container|infrastructure|api;
   readonly path: string;
   readonly inclusions: string[];
   readonly exclusions: string[];
-  readonly priority: 'critical|high|medium|low';
+  readonly priority: 'critical|high|medium|low;
 }
 
 /**
  * Scan scheduling configuration
  */
 export interface ScanSchedule {
-  readonly frequency: 'every-commit|daily|weekly|monthly';
+  readonly frequency: 'every-commit|daily|weekly|monthly;
   readonly timeWindow: string; // cron expression
   readonly maxDuration: number; // minutes
   readonly parallelScans: number;
@@ -130,7 +130,7 @@ export interface ScanSchedule {
  * Scan reporting configuration
  */
 export interface ScanReporting {
-  readonly format: 'json|xml|sarif|html';
+  readonly format: 'json|xml|sarif|html;
   readonly destinations: string[];
   readonly includeRawResults: boolean;
   readonly aggregateResults: boolean;
@@ -143,7 +143,7 @@ export interface SecurityScanResult {
   readonly scanId: string;
   readonly timestamp: Date;
   readonly duration: number; // milliseconds
-  readonly status: 'completed|failed|cancelled|timeout';
+  readonly status: 'completed|failed|cancelled|timeout;
   readonly findings: SecurityFinding[];
   readonly metrics: ScanMetrics;
   readonly toolResults: ToolScanResult[];
@@ -156,7 +156,7 @@ export interface SecurityScanResult {
 export interface ToolScanResult {
   readonly toolId: string;
   readonly toolName: string;
-  readonly status: 'success|failure|timeout|error';
+  readonly status: 'success|failure|timeout|error;
   readonly duration: number;
   readonly findings: SecurityFinding[];
   readonly rawOutput: string;
@@ -207,7 +207,7 @@ export class SecurityScanningService {
    * Configure security scanning for a target
    */
   configureScan(config: SecurityScanConfig): void {
-    this.logger.info('Configuring security scan', {
+    this.logger.info('Configuring security scan', {'
       scanId: config.scanId,
       scanType: config.scanType,
     });
@@ -219,11 +219,11 @@ export class SecurityScanningService {
     this.scanConfigurations.set(config.scanId, config);
 
     // Schedule recurring scans if needed
-    if (config.schedule.frequency !== 'every-commit') {
+    if (config.schedule.frequency !== 'every-commit') {'
       this.scheduleScan(config);
     }
 
-    this.logger.info('Security scan configured successfully', {
+    this.logger.info('Security scan configured successfully', {'
       scanId: config.scanId,
     });
   }
@@ -234,16 +234,16 @@ export class SecurityScanningService {
   async executeScan(scanId: string): Promise<SecurityScanResult> {
     const config = this.scanConfigurations.get(scanId);
     if (!config) {
-      throw new Error(`Scan configuration not found: ${scanId}`);
+      throw new Error(`Scan configuration not found: ${scanId}`);`
     }
 
-    this.logger.info('Executing security scan', {
+    this.logger.info('Executing security scan', {'
       scanId,
       scanType: config.scanType,
     });
 
     const startTime = Date.now();
-    const resultId = `result-${nanoid(12)}`;
+    const resultId = `result-${nanoid(12)}`;`
 
     try {
       // Execute all configured tools in parallel
@@ -273,7 +273,7 @@ export class SecurityScanningService {
 
       this.scanResults.set(resultId, result);
 
-      this.logger.info('Security scan completed', {
+      this.logger.info('Security scan completed', {'
         scanId,
         resultId,
         duration: result.duration,
@@ -283,7 +283,7 @@ export class SecurityScanningService {
 
       return result;
     } catch (error) {
-      this.logger.error('Security scan failed', { scanId, error });
+      this.logger.error('Security scan failed', { scanId, error });'
 
       const failedResult: SecurityScanResult = {
         scanId: resultId,
@@ -310,7 +310,7 @@ export class SecurityScanningService {
   ): Promise<ToolScanResult> {
     const startTime = Date.now();
 
-    this.logger.info('Executing security tool', {
+    this.logger.info('Executing security tool', {'
       toolId: tool.id,
       toolName: tool.name,
     });
@@ -325,10 +325,10 @@ export class SecurityScanningService {
         status: 'success',
         duration: Date.now() - startTime,
         findings,
-        rawOutput: `Tool ${tool.name} completed successfully`,
+        rawOutput: `Tool ${tool.name} completed successfully`,`
       };
 
-      this.logger.info('Security tool completed', {
+      this.logger.info('Security tool completed', {'
         toolId: tool.id,
         findings: findings.length,
         duration: result.duration,
@@ -336,7 +336,7 @@ export class SecurityScanningService {
 
       return result;
     } catch (error) {
-      this.logger.error('Security tool execution failed', {
+      this.logger.error('Security tool execution failed', {'
         toolId: tool.id,
         error,
       });
@@ -371,16 +371,16 @@ export class SecurityScanningService {
     for (const target of targets) {
       // Simulate finding generation based on target priority
       const findingCount =
-        target.priority === 'critical' ? 3 : target.priority === 'high' ? 2 : 1;
+        target.priority === 'critical' ? 3 : target.priority === 'high' ? 2 : 1;'
 
       for (let i = 0; i < findingCount; i++) {
         findings.push({
-          id: `finding-${nanoid(8)}`,
-          title: `${tool.name} finding in ${target.path}`,
-          description: `Security issue detected by ${tool.name}`,
+          id: `finding-${nanoid(8)}`,`
+          title: `${tool.name} finding in ${target.path}`,`
+          description: `Security issue detected by ${tool.name}`,`
           severity: this.getRandomSeverity(),
           category: this.getCategoryForTool(tool),
-          cwe: `CWE-${Math.floor(Math.random() * 1000) + 1}`,
+          cwe: `CWE-${Math.floor(Math.random() * 1000) + 1}`,`
           cvssScore: this.generateCVSSScore(),
           location: {
             filePath: target.path,
@@ -396,7 +396,7 @@ export class SecurityScanningService {
           },
           remediation: 'Apply security patch or update configuration',
           references: [
-            `https://cwe.mitre.org/data/definitions/${Math.floor(Math.random() * 1000) + 1}.html`,
+            `https://cwe.mitre.org/data/definitions/${Math.floor(Math.random() * 1000) + 1}.html`,`
           ],
           toolId: tool.id,
           discoveredDate: new Date(),
@@ -432,7 +432,7 @@ export class SecurityScanningService {
     const uniqueFindings: SecurityFinding[] = [];
 
     for (const finding of findings) {
-      const fingerprint = `${finding.title}-${finding.location?.filePath || 'unknown'}-${finding.location?.lineNumber || 0}`;
+      const fingerprint = `${finding.title}-${finding.location?.filePath || 'unknown'}-${finding.location?.lineNumber || 0}`;`
 
       if (!seen.has(fingerprint)) {
         seen.add(fingerprint);
@@ -450,11 +450,11 @@ export class SecurityScanningService {
     findings: SecurityFinding[],
     targets: ScanTarget[]
   ): ScanMetrics {
-    const findingsBySeverity = countBy(findings,'severity') as Record<
+    const findingsBySeverity = countBy(findings,'severity') as Record<'
       SecuritySeverity,
       number
     >;
-    const findingsByCategory = countBy(findings, 'category');
+    const findingsByCategory = countBy(findings, 'category');'
 
     return {
       totalFindings: findings.length,
@@ -473,7 +473,7 @@ export class SecurityScanningService {
    * Generate scan summary
    */
   private generateScanSummary(findings: SecurityFinding[]): ScanSummary {
-    const severityCounts = countBy(findings, 'severity');
+    const severityCounts = countBy(findings, 'severity');'
     const riskScore = this.calculateRiskScore(findings);
 
     return {
@@ -513,26 +513,26 @@ export class SecurityScanningService {
    */
   private generateRecommendations(findings: SecurityFinding[]): string[] {
     const recommendations: string[] = [];
-    const severityCounts = countBy(findings,'severity');
+    const severityCounts = countBy(findings,'severity');'
 
     if (severityCounts.critical > 0) {
       recommendations.push(
-        'Address critical security vulnerabilities immediately'
+        'Address critical security vulnerabilities immediately''
       );
     }
 
     if (severityCounts.high > 5) {
-      recommendations.push('Implement security training for development team');
+      recommendations.push('Implement security training for development team');'
     }
 
     if (findings.length > 20) {
       recommendations.push(
-        'Consider implementing automated security testing in CI/CD pipeline'
+        'Consider implementing automated security testing in CI/CD pipeline''
       );
     }
 
-    recommendations.push('Regularly update security tools and signatures');
-    recommendations.push('Establish security review process for code changes');
+    recommendations.push('Regularly update security tools and signatures');'
+    recommendations.push('Establish security review process for code changes');'
 
     return recommendations;
   }
@@ -541,16 +541,16 @@ export class SecurityScanningService {
    * Validate scan configuration
    */
   private validateScanConfiguration(config: SecurityScanConfig): void {
-    if (!config.scanId || config.scanId.trim() ==='') {
-      throw new Error('Scan ID is required');
+    if (!config.scanId || config.scanId.trim() ==='') {'
+      throw new Error('Scan ID is required');'
     }
 
     if (config.tools.length === 0) {
-      throw new Error('At least one security tool must be configured');
+      throw new Error('At least one security tool must be configured');'
     }
 
     if (config.targets.length === 0) {
-      throw new Error('At least one scan target must be specified');
+      throw new Error('At least one scan target must be specified');'
     }
   }
 
@@ -559,7 +559,7 @@ export class SecurityScanningService {
    */
   private scheduleScan(config: SecurityScanConfig): void {
     // Implementation would integrate with job scheduler
-    this.logger.info('Scheduling recurring scan', {
+    this.logger.info('Scheduling recurring scan', {'
       scanId: config.scanId,
       frequency: config.schedule.frequency,
     });

@@ -55,23 +55,23 @@ export namespace Installation {
     const checks = [
       {
         name: "npm" as const,
-        command: () => $`npm list -g --depth=0`.throws(false).text(),
+        command: () => $`npm list -g --depth=0`.throws(false).text(),`
       },
       {
         name: "yarn" as const,
-        command: () => $`yarn global list`.throws(false).text(),
+        command: () => $`yarn global list`.throws(false).text(),`
       },
       {
         name: "pnpm" as const,
-        command: () => $`pnpm list -g --depth=0`.throws(false).text(),
+        command: () => $`pnpm list -g --depth=0`.throws(false).text(),`
       },
       {
         name: "bun" as const,
-        command: () => $`bun pm ls -g`.throws(false).text(),
+        command: () => $`bun pm ls -g`.throws(false).text(),`
       },
       {
         name: "brew" as const,
-        command: () => $`brew list --formula opencode-ai`.throws(false).text(),
+        command: () => $`brew list --formula opencode-ai`.throws(false).text(),`
       },
     ]
 
@@ -104,22 +104,22 @@ export namespace Installation {
     const cmd = (() => {
       switch (method) {
         case "curl":
-          return $`curl -fsSL https://opencode.ai/install | bash`.env({
+          return $`curl -fsSL https://opencode.ai/install | bash`.env({`
             ...process.env,
             VERSION: target,
           })
         case "npm":
-          return $`npm install -g opencode-ai@${target}`
+          return $`npm install -g opencode-ai@${target}``
         case "pnpm":
-          return $`pnpm install -g opencode-ai@${target}`
+          return $`pnpm install -g opencode-ai@${target}``
         case "bun":
-          return $`bun install -g opencode-ai@${target}`
+          return $`bun install -g opencode-ai@${target}``
         case "brew":
-          return $`brew install sst/tap/opencode`.env({
+          return $`brew install sst/tap/opencode`.env({`
             HOMEBREW_NO_AUTO_UPDATE: "1",
           })
         default:
-          throw new Error(`Unknown method: ${method}`)
+          throw new Error(`Unknown method: ${method}`)`
       }
     })()
     const result = await cmd.quiet().throws(false)

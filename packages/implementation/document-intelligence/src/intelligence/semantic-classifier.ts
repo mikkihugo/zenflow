@@ -2,12 +2,12 @@
  * Semantic Classifier - DeepCode-style document content analysis
  * 
  * Provides vision-like pattern recognition for documents using weighted semantic
- * indicators, confidence scoring, and multi-pattern analysis inspired by DeepCode's approach.
+ * indicators, confidence scoring, and multi-pattern analysis inspired by DeepCode's approach.'
  */
 
 import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('SemanticClassifier');
+const logger = getLogger('SemanticClassifier');'
 
 /**
  * Semantic indicators with weighted importance levels
@@ -33,7 +33,7 @@ export interface SemanticPatterns {
  * Document classification result with confidence scoring
  */
 export interface DocumentClassification {
-  documentType: 'research|technical|algorithm|implementation|strategic';
+  documentType: 'research|technical|algorithm|implementation|strategic;
   confidence: number; // 0-1 confidence score
   algorithmDensity: number; // 0-1 algorithm content density
   conceptComplexity: number; // 0-1 concept complexity score
@@ -43,7 +43,7 @@ export interface DocumentClassification {
     confidence: Record<string, number>;
     weights: Record<string, number>;
   };
-  recommendedStrategy: 'semantic_research_focused|algorithm_preserve_integrity|concept_implementation_hybrid|strategic_vision_analysis';
+  recommendedStrategy: 'semantic_research_focused|algorithm_preserve_integrity|concept_implementation_hybrid|strategic_vision_analysis;
 }
 
 /**
@@ -53,7 +53,7 @@ export interface ClassifierConfig {
   confidenceThreshold: number;
   enableDeepAnalysis: boolean;
   customPatterns?: Partial<SemanticPatterns>;
-  weightingStrategy: 'balanced|algorithm_focused|concept_focused';
+  weightingStrategy: 'balanced' | 'algorithm_focused' | 'concept_focused';
 }
 
 /**
@@ -84,27 +84,27 @@ export class SemanticClassifier extends TypedEventBase {
       algorithm: {
         high: ['algorithm', 'procedure', 'method', 'approach', 'solution', 'implementation'],
         medium: ['step', 'process', 'workflow', 'sequence', 'iteration', 'recursive'],
-        low: ['example', 'illustration', 'demo', 'sample', 'basic']
+        low: ['example', 'illustration', 'demo', 'sample', 'basic']'
       },
       technical: {
         high: ['formula', 'equation', 'theorem', 'lemma', 'proof', 'specification'],
         medium: ['parameter', 'variable', 'function', 'model', 'schema', 'interface'],
-        low: ['notation', 'symbol', 'term', 'definition', 'concept']
+        low: ['notation', 'symbol', 'term', 'definition', 'concept']'
       },
       implementation: {
         high: ['code', 'implementation', 'development', 'programming', 'software', 'system'],
         medium: ['module', 'component', 'service', 'api', 'framework', 'library'],
-        low: ['utility', 'helper', 'tool', 'script', 'config', 'setup']
+        low: ['utility', 'helper', 'tool', 'script', 'config', 'setup']'
       },
       research: {
         high: ['research', 'study', 'analysis', 'investigation', 'experiment', 'hypothesis'],
         medium: ['methodology', 'approach', 'framework', 'model', 'theory', 'evaluation'],
-        low: ['background', 'related work', 'literature', 'survey', 'overview']
+        low: ['background', 'related work', 'literature', 'survey', 'overview']'
       },
       strategic: {
         high: ['vision', 'strategy', 'goal', 'objective', 'mission', 'roadmap'],
         medium: ['requirement', 'feature', 'epic', 'milestone', 'deliverable', 'outcome'],
-        low: ['task', 'story', 'item', 'todo', 'action', 'next step']
+        low: ['task', 'story', 'item', 'todo', 'action', 'next step']'
       }
     };
 
@@ -126,7 +126,7 @@ export class SemanticClassifier extends TypedEventBase {
    * Classify document content using semantic analysis
    */
   async classifyDocument(content: string): Promise<DocumentClassification> {
-    logger.info('Starting semantic document classification');
+    logger.info('Starting semantic document classification');'
 
     try {
       // Calculate weighted scores for each category
@@ -164,13 +164,13 @@ export class SemanticClassifier extends TypedEventBase {
         recommendedStrategy
       };
 
-      this.emit('classification_complete', classification);
-      logger.info(`Document classified as: ${documentType} (confidence: ${confidence.toFixed(2)})`);
+      this.emit('classification_complete', classification);'
+      logger.info(`Document classified as: ${documentType} (confidence: ${confidence.toFixed(2)})`);`
 
       return classification;
     } catch (error) {
-      logger.error('Error during document classification:', error);
-      throw new Error(`Semantic classification failed: ${error}`);
+      logger.error('Error during document classification:', error);'
+      throw new Error(`Semantic classification failed: ${error}`);`
     }
   }
 
@@ -203,7 +203,7 @@ export class SemanticClassifier extends TypedEventBase {
         maxPossibleScore += weight;
         
         // Count occurrences with context awareness
-        const regex = new RegExp(`\\b${term}\\b`, 'gi');
+        const regex = new RegExp(`\\b${term}\\b`, 'gi');'
         const matches = content.match(regex);
         const count = matches ? matches.length : 0;
         
@@ -221,7 +221,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Determine document type based on category scores
    */
-  private determineDocumentType(categoryScores: Record<string, number>): DocumentClassification['documentType'] {
+  private determineDocumentType(categoryScores: Record<string, number>): DocumentClassification['documentType'] {'
     const sortedCategories = Object.entries(categoryScores)
       .sort(([, a], [, b]) => b - a);
 
@@ -229,18 +229,18 @@ export class SemanticClassifier extends TypedEventBase {
     
     // Apply confidence threshold
     if (topScore < this.config.confidenceThreshold) {
-      logger.warn(`Low confidence classification: ${topCategory} (${topScore.toFixed(2)})`);
+      logger.warn(`Low confidence classification: ${topCategory} (${topScore.toFixed(2)})`);`
     }
 
     // Map categories to document types
-    const categoryMap: Record<string, DocumentClassification['documentType']> = {
+    const categoryMap: Record<string, DocumentClassification['documentType']> = {'
       algorithm: 'algorithm',
-      technical: 'technical', 
+      technical: 'technical', '
       implementation: 'implementation',
       research: 'research',
-      strategic: 'strategic'};
+      strategic: 'strategic'};'
 
-    return categoryMap[topCategory]||'technical';
+    return categoryMap[topCategory]||'technical;
   }
 
   /**
@@ -321,7 +321,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Detect patterns and generate confidence scores
    */
-  private detectPatterns(content: string): DocumentClassification['patterns'] {
+  private detectPatterns(content: string): DocumentClassification['patterns'] {'
     const detected: string[] = [];
     const confidence: Record<string, number> = {};
     const weights: Record<string, number> = {};
@@ -359,7 +359,7 @@ export class SemanticClassifier extends TypedEventBase {
    */
   private calculateOverallConfidence(
     categoryScores: Record<string, number>,
-    patterns: DocumentClassification['patterns']
+    patterns: DocumentClassification['patterns']'
   ): number {
     const maxCategoryScore = Math.max(...Object.values(categoryScores));
     const patternConfidence = patterns.detected.length > 0 
@@ -378,25 +378,25 @@ export class SemanticClassifier extends TypedEventBase {
     algorithmDensity: number,
     conceptComplexity: number,
     technicalDepth: number
-  ): DocumentClassification['recommendedStrategy'] {
+  ): DocumentClassification['recommendedStrategy'] {'
     // DeepCode-style strategy selection logic
-    if (documentType === 'research' && algorithmDensity > 0.3) {
-      return 'semantic_research_focused';
+    if (documentType === 'research' && algorithmDensity > 0.3) {'
+      return 'semantic_research_focused;
     }
     
-    if (documentType === 'algorithm'||algorithmDensity > 0.5) {
-      return'algorithm_preserve_integrity';
+    if (documentType === 'algorithm'||algorithmDensity > 0.5) {'
+      return'algorithm_preserve_integrity;
     }
     
     if (conceptComplexity > 0.4 && technicalDepth > 0.3) {
-      return 'concept_implementation_hybrid';
+      return 'concept_implementation_hybrid;
     }
     
-    if (documentType === 'strategic') {
-      return 'strategic_vision_analysis';
+    if (documentType === 'strategic') {'
+      return 'strategic_vision_analysis;
     }
 
-    return 'concept_implementation_hybrid';
+    return 'concept_implementation_hybrid;
   }
 
   /**
@@ -411,6 +411,6 @@ export class SemanticClassifier extends TypedEventBase {
    */
   public updateConfig(newConfig: Partial<ClassifierConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('Semantic classifier configuration updated');
+    logger.info('Semantic classifier configuration updated');'
   }
 }

@@ -11,7 +11,7 @@
  * - Smart event filtering and prioritization
  *
  * @example Neural event classification
- * ```typescript
+ * ```typescript`
  * import { NeuralEventProcessor } from '@claude-zen/event-system/neural';
  *
  * const processor = new NeuralEventProcessor({
@@ -22,12 +22,12 @@
  * // Neural classification of events
  * const classification = await processor.classifyEvent({
  *   type: 'user.action',
- *   payload: { action: 'click', target: 'button' }
+ *   payload: { action: 'click', target: 'button' }'
  * });
  *
  * // Smart routing based on neural patterns
  * const route = await processor.predictOptimalRoute(event);
- * ```
+ * ````
  */
 
 import { z } from 'zod';
@@ -49,7 +49,7 @@ import {
 } from '@claude-zen/brain/coordinator';
 import type { BaseEvent } from './validation/zod-validation';
 
-const logger = getLogger('NeuralEventProcessor');
+const logger = getLogger('NeuralEventProcessor');'
 
 // =============================================================================
 // NEURAL EVENT PROCESSING CONFIGURATION
@@ -158,12 +158,12 @@ export class NeuralEventProcessor {
    * Classify event using neural network pattern recognition.
    * Analyzes event structure and content to determine category and priority.
    */
-  // @traced('neural_event.classify') - temporarily disabled
-  // @metered('neural_event_classification') - temporarily disabled
+  // @traced('neural_event.classify') - temporarily disabled'
+  // @metered('neural_event_classification') - temporarily disabled'
   async classifyEvent(
     event: BaseEvent
   ): Promise<Result<EventClassification, Error>> {
-    return withTrace('neural_event.classify', async (span) => {
+    return withTrace('neural_event.classify', async (span) => {'
       return safeAsync(async () => {
         if (!this.config.classificationEnabled) {
           return this.createBasicClassification(event);
@@ -175,10 +175,10 @@ export class NeuralEventProcessor {
         // Get neural prediction if network is trained
         let neuralClassification: EventClassification;
         if (this.isInitialized && this.trainingData.length > 0) {
-          // Use BrainCoordinator's optimizePrompt for neural processing
+          // Use BrainCoordinator's optimizePrompt for neural processing'
           const optimizationResult = await this.brainBridge.optimizePrompt({
             task: 'event-classification',
-            basePrompt: `Classify event: ${event.type}`,
+            basePrompt: `Classify event: ${event.type}`,`
             context: { features, event },
           });
           neuralClassification = this.interpretOptimizationResult(
@@ -195,7 +195,7 @@ export class NeuralEventProcessor {
         }
 
         // Record telemetry
-        recordMetric('neural_event.classifications_total', 1, {
+        recordMetric('neural_event.classifications_total', 1, {'
           category: neuralClassification.category,
           priority: neuralClassification.priority,
           confidence: neuralClassification.confidence.toString(),
@@ -215,11 +215,11 @@ export class NeuralEventProcessor {
   /**
    * Predict optimal routing for event based on learned patterns.
    */
-  // @traced('neural_event.predict_route') - temporarily disabled
+  // @traced('neural_event.predict_route') - temporarily disabled'
   async predictOptimalRoute(
     event: BaseEvent
   ): Promise<Result<string[], Error>> {
-    return withTrace('neural_event.predict_route', async () => {
+    return withTrace('neural_event.predict_route', async () => {'
       return safeAsync(async () => {
         if (!this.config.smartRoutingEnabled||!this.isInitialized) {
           return this.getDefaultRoutes(event);
@@ -228,7 +228,7 @@ export class NeuralEventProcessor {
         const features = this.extractEventFeatures(event);
         const optimizationResult = await this.brainBridge.optimizePrompt({
           task:'route-prediction',
-          basePrompt: `Predict optimal route for event: ${event.type}`,
+          basePrompt: `Predict optimal route for event: ${event.type}`,`
           context: { features, event },
         });
 
@@ -238,7 +238,7 @@ export class NeuralEventProcessor {
           event
         );
 
-        recordMetric('neural_event.route_predictions_total', 1, {
+        recordMetric('neural_event.route_predictions_total', 1, {'
           event_type: event.type,
           route_count: routes.length.toString(),
         });
@@ -251,12 +251,12 @@ export class NeuralEventProcessor {
   /**
    * Predict future event flow based on current event.
    */
-  // @traced('neural_event.predict_flow') - temporarily disabled
+  // @traced('neural_event.predict_flow') - temporarily disabled'
   async predictEventFlow(
     event: BaseEvent,
     timeHorizon: number = 300000
   ): Promise<Result<BaseEvent[], Error>> {
-    return withTrace('neural_event.predict_flow', async () => {
+    return withTrace('neural_event.predict_flow', async () => {'
       return safeAsync(async () => {
         if (!this.config.predictionEnabled||!this.isInitialized) {
           return [];
@@ -265,7 +265,7 @@ export class NeuralEventProcessor {
         const features = this.extractEventFeatures(event);
         const optimizationResult = await this.brainBridge.optimizePrompt({
           task:'flow-prediction',
-          basePrompt: `Predict event flow from: ${event.type}`,
+          basePrompt: `Predict event flow from: ${event.type}`,`
           context: { features, event, timeHorizon },
         });
 
@@ -276,7 +276,7 @@ export class NeuralEventProcessor {
           timeHorizon
         );
 
-        recordMetric('neural_event.flow_predictions_total', 1, {
+        recordMetric('neural_event.flow_predictions_total', 1, {'
           event_type: event.type,
           predicted_count: predictedEvents.length.toString(),
         });
@@ -293,12 +293,12 @@ export class NeuralEventProcessor {
   /**
    * Train neural network on accumulated event patterns.
    */
-  // @traced('neural_event.train') - temporarily disabled
+  // @traced('neural_event.train') - temporarily disabled'
   async trainOnEventPatterns(): Promise<Result<void, Error>> {
-    return withTrace('neural_event.train', async () => {
+    return withTrace('neural_event.train', async () => {'
       return safeAsync(async () => {
         if (!this.config.enableLearning||this.trainingData.length < 10) {
-          logger.warn('[NeuralEventProcessor] Insufficient training data', {
+          logger.warn('[NeuralEventProcessor] Insufficient training data', {'
             dataSize: this.trainingData.length,
             minRequired: 10,
           });
@@ -329,7 +329,7 @@ export class NeuralEventProcessor {
 
         const trainingTime = Date.now() - startTime;
 
-        recordMetric('neural_event.training_completed', 1, {
+        recordMetric('neural_event.training_completed', 1, {'
           training_time_ms: trainingTime.toString(),
           data_size: this.trainingData.length.toString(),
         });
@@ -382,8 +382,8 @@ export class NeuralEventProcessor {
     features.push(Math.min(payloadSize / 1000, 1)); // Normalize to 0-1
 
     // Version features
-    const version = event.version||'1.0.0';
-    const versionParts = version.split('.').map(Number);
+    const version = event.version||'1.0.0;
+    const versionParts = version.split('.').map(Number);'
     features.push((versionParts[0]||1) / 10); // Major version
     features.push((versionParts[1]||0) / 10); // Minor version
 
@@ -415,7 +415,7 @@ export class NeuralEventProcessor {
     event: BaseEvent
   ): EventClassification {
     // Convert prediction output to classification
-    // This is simplified - in practice, you'd have trained outputs for each class
+    // This is simplified - in practice, you'd have trained outputs for each class'
 
     const confidence = Math.max(...Object.values(prediction.output || {}));
 
@@ -438,20 +438,20 @@ export class NeuralEventProcessor {
     const routes: string[] = [];
 
     // Add domain-specific routes
-    routes.push(`${event.domain.toLowerCase()}-handler`);
+    routes.push(`${event.domain.toLowerCase()}-handler`);`
 
     // Add type-specific routes
-    if (event.type.includes('.')) {
-      const [category] = event.type.split('.');
-      routes.push(`${category}-processor`);
+    if (event.type.includes('.')) {'
+      const [category] = event.type.split('.');'
+      routes.push(`${category}-processor`);`
     }
 
     // Add priority-based routes
     const confidence = Math.max(...Object.values(prediction.output||{}));
     if (confidence > 0.8) {
-      routes.push('priority-queue');
+      routes.push('priority-queue');'
     } else {
-      routes.push('standard-queue');
+      routes.push('standard-queue');'
     }
 
     return routes;
@@ -478,7 +478,7 @@ export class NeuralEventProcessor {
    * Get default routes for event without neural processing.
    */
   private getDefaultRoutes(event: BaseEvent): string[] {
-    return [`${event.domain.toLowerCase()}-handler`, 'default-processor'];
+    return [`${event.domain.toLowerCase()}-handler`, 'default-processor'];'
   }
 
   /**
@@ -488,19 +488,19 @@ export class NeuralEventProcessor {
     const patterns: string[] = [];
 
     // Type patterns
-    if (event.type.includes('.')) {
-      patterns.push('hierarchical-type');
+    if (event.type.includes('.')) {'
+      patterns.push('hierarchical-type');'
     }
 
     // Domain patterns
-    patterns.push(`domain-${event.domain.toLowerCase()}`);
+    patterns.push(`domain-${event.domain.toLowerCase()}`);`
 
     // Temporal patterns
     const hour = new Date(event.timestamp).getHours();
     if (hour >= 9 && hour <= 17) {
-      patterns.push('business-hours');
+      patterns.push('business-hours');'
     } else {
-      patterns.push('off-hours');
+      patterns.push('off-hours');'
     }
 
     return patterns;
@@ -535,20 +535,20 @@ export class NeuralEventProcessor {
     const routes: string[] = [];
 
     // Add domain-specific routes
-    routes.push(`${event.domain.toLowerCase()}-handler`);
+    routes.push(`${event.domain.toLowerCase()}-handler`);`
 
     // Add type-specific routes
-    if (event.type.includes('.')) {
-      const [category] = event.type.split('.');
-      routes.push(`${category}-processor`);
+    if (event.type.includes('.')) {'
+      const [category] = event.type.split('.');'
+      routes.push(`${category}-processor`);`
     }
 
     // Add priority-based routes based on optimization confidence
     const confidence = result.confidence||0.5;
     if (confidence > 0.8) {
-      routes.push('priority-queue');
+      routes.push('priority-queue');'
     } else {
-      routes.push('standard-queue');
+      routes.push('standard-queue');'
     }
 
     return routes;
@@ -570,8 +570,8 @@ export class NeuralEventProcessor {
     if (confidence > 0.7) {
       // Predict likely follow-up events
       const followUpEvent: BaseEvent = {
-        id: `predicted-${Date.now()}`,
-        type: `${currentEvent.type}.followup`,
+        id: `predicted-${Date.now()}`,`
+        type: `${currentEvent.type}.followup`,`
         domain: currentEvent.domain,
         timestamp: new Date(Date.now() + timeHorizon / 2),
         version: currentEvent.version,
@@ -608,14 +608,14 @@ export class NeuralEventProcessor {
       input: features,
       output: this.classificationToTrainingOutput(classification),
       success: classification.confidence > this.config.confidenceThreshold,
-      feedback: `Classification: ${classification.category}, Priority: ${classification.priority}`,
+      feedback: `Classification: ${classification.category}, Priority: ${classification.priority}`,`
       context: {
         eventType: event.type,
         domain: event.domain,
         classification,
       },
       optimizationResult: {
-        optimizedPrompt: `Event classification for ${event.type}`,
+        optimizedPrompt: `Event classification for ${event.type}`,`
         confidence: classification.confidence,
         method:'neural-classification',
         fromCache: false,

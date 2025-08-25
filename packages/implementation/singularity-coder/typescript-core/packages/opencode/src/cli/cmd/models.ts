@@ -11,7 +11,7 @@ export const ModelsCommand = cmd({
 
       for (const [providerID, provider] of Object.entries(providers)) {
         for (const modelID of Object.keys(provider.info.models)) {
-          console.log(`${providerID}/${modelID}`)
+          console.log(`${providerID}/${modelID}`)`
         }
       }
     })

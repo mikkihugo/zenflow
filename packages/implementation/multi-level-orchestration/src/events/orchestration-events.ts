@@ -27,7 +27,7 @@ export interface OrchestrationEvent {
  * Stream status change event
  */
 export interface StreamStatusChangedEvent extends OrchestrationEvent {
-  readonly type: 'orchestration:stream:status_changed';
+  readonly type: 'orchestration:stream:status_changed;
   readonly streamId: string;
   readonly oldStatus: string;
   readonly newStatus: string;
@@ -38,7 +38,7 @@ export interface StreamStatusChangedEvent extends OrchestrationEvent {
  * WIP limit exceeded event
  */
 export interface WIPLimitExceededEvent extends OrchestrationEvent {
-  readonly type: 'orchestration:wip:limit_exceeded';
+  readonly type: 'orchestration:wip:limit_exceeded;
   readonly streamId: string;
   readonly currentWip: number;
   readonly wipLimit: number;
@@ -65,6 +65,6 @@ export function isStreamEvent(
   event: OrchestrationEventType
 ): event is StreamStatusChangedEvent|WIPLimitExceededEvent {
   return (
-    event.type.startsWith('orchestration:stream:')||event.type.startsWith('orchestration:wip:')
+    event.type.startsWith('orchestration:stream:')||event.type.startsWith('orchestration:wip:')'
   );
 }

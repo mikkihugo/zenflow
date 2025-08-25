@@ -114,7 +114,7 @@ export interface SeasonalityPeriod {
   readonly name: string;
   readonly length: number; // days
   readonly strength: number; // 0-1
-  readonly pattern: 'additive|multiplicative';
+  readonly pattern: 'additive|multiplicative;
 }
 
 /**
@@ -122,7 +122,7 @@ export interface SeasonalityPeriod {
  */
 export interface TrendConfig {
   readonly enabled: boolean;
-  readonly method: 'linear|exponential|logarithmic|polynomial';
+  readonly method: 'linear|exponential|logarithmic|polynomial;
   readonly strength: number; // 0-1
   readonly changepoints: ChangepointConfig;
 }
@@ -162,12 +162,12 @@ export enum ValidationMethod {
  * Validation metric
  */
 export enum ValidationMetric {
-  MAE = 'mae', // Mean Absolute Error
-  MAPE = 'mape', // Mean Absolute Percentage Error
-  RMSE = 'rmse', // Root Mean Squared Error
+  MAE = 'mae', // Mean Absolute Error'
+  MAPE = 'mape', // Mean Absolute Percentage Error'
+  RMSE = 'rmse', // Root Mean Squared Error'
   R_SQUARED = 'r_squared',
-  AIC = 'aic', // Akaike Information Criterion
-  BIC = 'bic', // Bayesian Information Criterion
+  AIC = 'aic', // Akaike Information Criterion'
+  BIC = 'bic', // Bayesian Information Criterion'
 }
 
 /**
@@ -257,7 +257,7 @@ export enum FeatureType {
 export interface DataSource {
   readonly sourceId: string;
   readonly name: string;
-  readonly type: 'database|api|file|stream';
+  readonly type: 'database|api|file|stream;
   readonly connection: ConnectionConfig;
   readonly refresh: RefreshConfig;
 }
@@ -276,7 +276,7 @@ export interface ConnectionConfig {
  * Authentication configuration
  */
 export interface AuthConfig {
-  readonly type: 'none|basic|token|oauth';
+  readonly type: 'none|basic|token|oauth;
   readonly credentials: Record<string, string>;
 }
 
@@ -358,8 +358,8 @@ export interface PreprocessingConfig {
  * Missing value handling
  */
 export interface MissingValueHandling {
-  readonly strategy: 'remove|impute|interpolate';
-  readonly method?:|mean|median|mode|forward_fill|'backward_fill';
+  readonly strategy: 'remove' | 'impute' | 'interpolate';
+  readonly method?:|mean|median|mode|forward_fill|'backward_fill;
   readonly threshold: number; // percentage
 }
 
@@ -417,7 +417,7 @@ export enum ScalingMethod {
  */
 export interface EncodingMethod {
   readonly feature: string;
-  readonly type: 'one_hot|label|target|binary';
+  readonly type: 'one_hot|label|target|binary;
   readonly parameters: Record<string, any>;
 }
 
@@ -576,7 +576,7 @@ export interface PredictionFactor {
  * Factor impact
  */
 export interface FactorImpact {
-  readonly direction: 'positive|negative|neutral';
+  readonly direction: 'positive' | 'negative' | 'neutral';
   readonly magnitude: number; // 0-100
   readonly unit: string;
 }
@@ -585,7 +585,7 @@ export interface FactorImpact {
  * Factor trend
  */
 export interface FactorTrend {
-  readonly direction: 'increasing|decreasing|stable';
+  readonly direction: 'increasing' | 'decreasing' | 'stable';
   readonly rate: number; // percentage per day
   readonly stability: number; // 0-100
 }
@@ -659,7 +659,7 @@ export interface ValidationResult {
  */
 export interface AccuracyTracking {
   readonly currentAccuracy: number; // 0-100
-  readonly trend: 'improving|stable|declining';
+  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   readonly recentPredictions: RecentPrediction[];
   readonly alertThreshold: number; // 0-100
 }
@@ -740,7 +740,7 @@ export interface ScenarioAssumption {
 export interface ScenarioImpact {
   readonly deliveryTimeChange: number; // percentage
   readonly confidenceChange: number; // percentage
-  readonly riskLevel: 'low|medium|high|critical';
+  readonly riskLevel: 'low|medium|high|critical;
   readonly mitigationStrategies: string[];
 }
 
@@ -766,7 +766,7 @@ export class PredictiveAnalyticsService {
     historicalData: any[],
     currentContext: any
   ): Promise<ValueDeliveryPrediction> {
-    this.logger.info('Predicting value delivery times', {
+    this.logger.info('Predicting value delivery times', {'
       analyticsId: config.analyticsId,
       valueStreamId: config.valueStreamId,
       horizon: config.predictionHorizon,
@@ -822,7 +822,7 @@ export class PredictiveAnalyticsService {
         timestamp: new Date(),
         horizon: config.predictionHorizon,
         modelInfo: {
-          modelId: `model-${nanoid(8)}`,
+          modelId: `model-${nanoid(8)}`,`
           algorithm: config.modelConfig.algorithm,
           version: '1.0.0',
           trainedOn: new Date(),
@@ -846,7 +846,7 @@ export class PredictiveAnalyticsService {
       this.predictions.set(config.analyticsId, result);
       this.historicalData.set(config.valueStreamId, processedData);
 
-      this.logger.info('Value delivery prediction completed', {
+      this.logger.info('Value delivery prediction completed', {'
         predictionId: config.analyticsId,
         predictionsGenerated: predictions.length,
         overallConfidence: Math.round(confidence.overall),
@@ -856,7 +856,7 @@ export class PredictiveAnalyticsService {
 
       return result;
     } catch (error) {
-      this.logger.error('Failed to predict value delivery times', {
+      this.logger.error('Failed to predict value delivery times', {'
         analyticsId: config.analyticsId,
         error,
       });
@@ -881,7 +881,7 @@ export class PredictiveAnalyticsService {
   ): Promise<void> {
     const prediction = this.predictions.get(predictionId);
     if (!prediction) {
-      throw new Error(`Prediction not found: ${predictionId}`);
+      throw new Error(`Prediction not found: ${predictionId}`);`
     }
 
     // Update historical data
@@ -895,7 +895,7 @@ export class PredictiveAnalyticsService {
       await this.retrainModel(predictionId, updatedData, actualResults);
     }
 
-    this.logger.info('Model updated with new data', {
+    this.logger.info('Model updated with new data', {'
       predictionId,
       newDataPoints: newData.length,
       actualResults: actualResults?.length || 0,
@@ -907,21 +907,21 @@ export class PredictiveAnalyticsService {
    */
   private initializePredictiveModels(): void {
     // Initialize different predictive models
-    this.models.set('arima', {
+    this.models.set('arima', {'
       type: PredictionAlgorithm.ARIMA,
       accuracy: 0.78,
       trainingTime: 180,
       suitable: ['time_series', 'seasonal'],
     });
 
-    this.models.set('lstm', {
+    this.models.set('lstm', {'
       type: PredictionAlgorithm.LSTM,
       accuracy: 0.85,
       trainingTime: 600,
       suitable: ['complex_patterns', 'non_linear'],
     });
 
-    this.models.set('random_forest', {
+    this.models.set('random_forest', {'
       type: PredictionAlgorithm.RANDOM_FOREST,
       accuracy: 0.82,
       trainingTime: 120,
@@ -936,7 +936,7 @@ export class PredictiveAnalyticsService {
     let processedData = [...rawData];
 
     // Handle missing values
-    if (config.preprocessing.missingValues.strategy === 'impute') {
+    if (config.preprocessing.missingValues.strategy === 'impute') {'
       processedData = this.imputeMissingValues(
         processedData,
         config.preprocessing.missingValues
@@ -965,7 +965,7 @@ export class PredictiveAnalyticsService {
   ): Promise<any> {
     const modelTemplate = this.models.get(config.algorithm);
     if (!modelTemplate) {
-      throw new Error(`Unknown algorithm: ${config.algorithm}`);
+      throw new Error(`Unknown algorithm: ${config.algorithm}`);`
     }
 
     // Simulate model training
@@ -1028,7 +1028,7 @@ export class PredictiveAnalyticsService {
     if (deliveryTimes.length > 10) {
       const trend = this.calculateTrend(deliveryTimes);
       trends.push({
-        trendId: `trend-${nanoid(6)}`,
+        trendId: `trend-${nanoid(6)}`,`
         metric: 'Delivery Time',
         direction: trend.direction,
         strength: trend.strength,
@@ -1047,7 +1047,7 @@ export class PredictiveAnalyticsService {
     if (throughputData.length > 5) {
       const throughputTrend = this.calculateTrend(throughputData);
       trends.push({
-        trendId: `trend-${nanoid(6)}`,
+        trendId: `trend-${nanoid(6)}`,`
         metric: 'Throughput',
         direction: throughputTrend.direction,
         strength: throughputTrend.strength,
@@ -1071,13 +1071,13 @@ export class PredictiveAnalyticsService {
   ): Promise<ScenarioPrediction[]> {
     return [
       {
-        scenarioId: `scenario-${nanoid(8)}`,
+        scenarioId: `scenario-${nanoid(8)}`,`
         name: 'Optimistic Scenario',
         description: 'Best case with all factors favorable',
         probability: 0.2,
         assumptions: [
           {
-            assumptionId: `assumption-${nanoid(6)}`,
+            assumptionId: `assumption-${nanoid(6)}`,`
             description: 'Team capacity increases by 20%',
             parameter: 'team_capacity',
             value: 1.2,
@@ -1100,13 +1100,13 @@ export class PredictiveAnalyticsService {
         },
       },
       {
-        scenarioId: `scenario-${nanoid(8)}`,
+        scenarioId: `scenario-${nanoid(8)}`,`
         name: 'Pessimistic Scenario',
         description: 'Worst case with challenges and delays',
         probability: 0.15,
         assumptions: [
           {
-            assumptionId: `assumption-${nanoid(6)}`,
+            assumptionId: `assumption-${nanoid(6)}`,`
             description: 'Major technical issues arise',
             parameter: 'technical_issues',
             value: true,
@@ -1181,7 +1181,7 @@ export class PredictiveAnalyticsService {
       ],
       validation: [
         {
-          validationId: `val-${nanoid(6)}`,
+          validationId: `val-${nanoid(6)}`,`
           method: ValidationMethod.TRAIN_TEST_SPLIT,
           metric: ValidationMetric.MAE,
           score: 2.1,
@@ -1204,7 +1204,7 @@ export class PredictiveAnalyticsService {
   ): Promise<ValidationResult[]> {
     return [
       {
-        validationId: `val-${nanoid(8)}`,
+        validationId: `val-${nanoid(8)}`,`
         method: config.method,
         metric: ValidationMetric.MAE,
         score: 2.1,
@@ -1212,7 +1212,7 @@ export class PredictiveAnalyticsService {
         passed: true,
       },
       {
-        validationId: `val-${nanoid(8)}`,
+        validationId: `val-${nanoid(8)}`,`
         method: config.method,
         metric: ValidationMetric.R_SQUARED,
         score: 0.82,
@@ -1228,7 +1228,7 @@ export class PredictiveAnalyticsService {
     actualResults: RecentPrediction[]
   ): Promise<void> {
     // Simulate model retraining with new data
-    this.logger.info('Retraining model', {
+    this.logger.info('Retraining model', {'
       predictionId,
       dataPoints: data.length,
       actualResults: actualResults.length,
@@ -1357,7 +1357,7 @@ export class PredictiveAnalyticsService {
     const weeklyData = groupBy(data, (item) => {
       const date = new Date(item.timestamp || Date.now())();
       const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
-      return format(weekStart,'yyyy-MM-dd');
+      return format(weekStart,'yyyy-MM-dd');'
     });
 
     return Object.values(weeklyData).map((weekData) =>
@@ -1368,7 +1368,7 @@ export class PredictiveAnalyticsService {
   private calculateDataQuality(data: any[]): number {
     if (data.length === 0) return 0;
 
-    const fields = ['deliveryTime', 'timestamp', 'stage', 'type'];
+    const fields = ['deliveryTime', 'timestamp', 'stage', 'type'];'
     let totalScore = 0;
 
     for (const field of fields) {

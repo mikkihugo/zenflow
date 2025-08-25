@@ -17,16 +17,16 @@
  * This package is intended to be used by monitoring packages, not directly by facades.
  *
  * @example Internal Usage by Monitoring Packages
- * ```typescript
+ * ```typescript`
  * import { TelemetryManager, recordMetric, startTrace } from '@claude-zen/telemetry';
  *
  * // In system-monitoring package
- * const telemetry = new TelemetryManager({ serviceName: 'system-monitoring' });
- * recordMetric('system.cpu.usage', 45.2);
+ * const telemetry = new TelemetryManager({ serviceName: 'system-monitoring' });'
+ * recordMetric('system.cpu.usage', 45.2);'
  *
  * // In agent-monitoring package
- * const span = startTrace('agent.coordination', { agentId: 'agent-001' });
- * ```
+ * const span = startTrace('agent.coordination', { agentId: 'agent-001' });'
+ * ````
  *
  * @author Claude Code Zen Team
  * @version 1.0.0

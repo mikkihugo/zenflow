@@ -25,7 +25,7 @@ export class ImmutableOps {
   }
 
   /**
-   * Deep clone using Immer's produce
+   * Deep clone using Immer's produce'
    */
   static clone<T>(state: T): T {
     return produce(state, () => {});

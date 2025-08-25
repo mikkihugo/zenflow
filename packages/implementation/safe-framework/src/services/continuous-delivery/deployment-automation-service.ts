@@ -47,7 +47,7 @@ export enum DeploymentStrategy {
 export interface DeploymentEnvironment {
   readonly id: string;
   readonly name: string;
-  readonly type: 'development|staging|production';
+  readonly type: 'development' | 'staging' | 'production';
   readonly region: string;
   readonly infrastructure: InfrastructureConfig;
   readonly securityConfig: SecurityConfig;
@@ -61,7 +61,7 @@ export interface DeploymentEnvironment {
  * Infrastructure configuration
  */
 export interface InfrastructureConfig {
-  readonly provider: 'aws|gcp|azure|kubernetes|docker';
+  readonly provider: 'aws|gcp|azure|kubernetes|docker;
   readonly region: string;
   readonly availabilityZones: string[];
   readonly instanceTypes: string[];
@@ -141,7 +141,7 @@ export interface DeploymentArtifact {
   readonly id: string;
   readonly name: string;
   readonly version: string;
-  readonly type:|application|configuration|database|'infrastructure';
+  readonly type:|application|configuration|database|'infrastructure;
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -156,7 +156,7 @@ export interface DeploymentPhase {
   readonly id: string;
   readonly name: string;
   readonly order: number;
-  readonly type:|pre-deployment|deployment|post-deployment|'validation';
+  readonly type:|pre-deployment|deployment|post-deployment|'validation;
   readonly actions: DeploymentAction[];
   readonly conditions: DeploymentCondition[];
   readonly timeout: number;
@@ -169,7 +169,7 @@ export interface DeploymentPhase {
  */
 export interface DeploymentAction {
   readonly id: string;
-  readonly type:|script|api_call|infrastructure|configuration|'validation';
+  readonly type:|script|api_call|infrastructure|configuration|'validation;
   readonly name: string;
   readonly command?: string;
   readonly parameters: Record<string, unknown>;
@@ -183,7 +183,7 @@ export interface DeploymentAction {
  */
 export interface DeploymentCondition {
   readonly id: string;
-  readonly type:|health_check|metric_threshold|manual_approval|'time_gate';
+  readonly type:|health_check|metric_threshold|manual_approval|'time_gate;
   readonly description: string;
   readonly parameters: Record<string, unknown>;
   readonly timeout: number;
@@ -249,7 +249,7 @@ export interface ActionExecution {
  */
 export interface ConditionExecution {
   readonly conditionId: string;
-  readonly status: 'met|not_met|timeout';
+  readonly status: 'met' | 'not_met' | 'timeout';
   readonly result: unknown;
   readonly message: string;
   readonly evaluatedAt: Date;
@@ -308,7 +308,7 @@ export interface RollbackPlan {
  */
 export interface RollbackTrigger {
   readonly id: string;
-  readonly type:|health_check_failure|metric_threshold|error_rate|'manual';
+  readonly type:|health_check_failure|metric_threshold|error_rate|'manual;
   readonly description: string;
   readonly conditions: Record<string, unknown>;
   readonly delay: number;
@@ -331,7 +331,7 @@ export interface ValidationPlan {
 export interface HealthCheck {
   readonly id: string;
   readonly name: string;
-  readonly type: 'http|tcp|database|custom';
+  readonly type: 'http|tcp|database|custom;
   readonly endpoint: string;
   readonly expectedResponse: unknown;
   readonly timeout: number;
@@ -345,7 +345,7 @@ export interface HealthCheck {
 export interface PerformanceTest {
   readonly id: string;
   readonly name: string;
-  readonly type: 'load|stress|spike|volume';
+  readonly type: 'load|stress|spike|volume;
   readonly configuration: Record<string, unknown>;
   readonly thresholds: PerformanceThreshold[];
   readonly duration: number;
@@ -356,7 +356,7 @@ export interface PerformanceTest {
  */
 export interface PerformanceThreshold {
   readonly metric: string;
-  readonly operator: 'lt|lte|gt|gte';
+  readonly operator: 'lt|lte|gt|gte;
   readonly value: number;
   readonly percentile?: number;
 }
@@ -367,9 +367,9 @@ export interface PerformanceThreshold {
 export interface SecurityTest {
   readonly id: string;
   readonly name: string;
-  readonly type: 'vulnerability_scan|penetration_test|compliance_check';
+  readonly type: 'vulnerability_scan' | 'penetration_test' | 'compliance_check';
   readonly configuration: Record<string, unknown>;
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low|medium|high|critical;
 }
 
 /**
@@ -378,7 +378,7 @@ export interface SecurityTest {
 export interface BusinessValidation {
   readonly id: string;
   readonly name: string;
-  readonly type:|feature_toggle|a_b_test|canary_metrics|'user_acceptance';
+  readonly type:|feature_toggle|a_b_test|canary_metrics|'user_acceptance;
   readonly criteria: BusinessCriteria[];
   readonly timeout: number;
 }
@@ -397,7 +397,7 @@ export interface BusinessCriteria {
  * Rollout validation
  */
 export interface RolloutValidation {
-  readonly strategy: 'immediate|gradual|scheduled';
+  readonly strategy: 'immediate' | 'gradual' | 'scheduled';
   readonly phases: RolloutPhase[];
   readonly approvals: ApprovalGate[];
   readonly monitoringPeriod: number;
@@ -419,7 +419,7 @@ export interface RolloutPhase {
 export interface RolloutCriteria {
   readonly metric: string;
   readonly threshold: number;
-  readonly operator: 'lt|lte|gt|gte';
+  readonly operator: 'lt|lte|gt|gte;
   readonly required: boolean;
 }
 
@@ -439,35 +439,35 @@ export interface ApprovalGate {
  * Supporting interfaces
  */
 export interface StorageConfig {
-  readonly type: 'ebs|efs|gcs|azure_disk';
+  readonly type: 'ebs|efs|gcs|azure_disk;
   readonly size: number;
   readonly iops?: number;
   readonly encrypted: boolean;
 }
 
 export interface LoadBalancerConfig {
-  readonly type: 'application|network|classic';
-  readonly scheme: 'internet-facing|internal';
+  readonly type: 'application' | 'network' | 'classic';
+  readonly scheme: 'internet-facing|internal;
   readonly targetGroups: TargetGroup[];
 }
 
 export interface TargetGroup {
   readonly name: string;
   readonly port: number;
-  readonly protocol: 'HTTP|HTTPS|TCP|TLS';
+  readonly protocol: 'HTTP|HTTPS|TCP|TLS;
   readonly healthCheck: HealthCheck;
 }
 
 export interface IngressRule {
   readonly port: number;
-  readonly protocol: 'tcp|udp|icmp';
+  readonly protocol: 'tcp' | 'udp' | 'icmp';
   readonly source: string;
   readonly description?: string;
 }
 
 export interface EgressRule {
   readonly port: number;
-  readonly protocol: 'tcp|udp|icmp';
+  readonly protocol: 'tcp' | 'udp' | 'icmp';
   readonly destination: string;
   readonly description?: string;
 }
@@ -478,8 +478,8 @@ export interface NetworkPolicy {
 }
 
 export interface PolicyRule {
-  readonly action: 'allow|deny';
-  readonly protocol: 'tcp|udp|icmp';
+  readonly action: 'allow|deny;
+  readonly protocol: 'tcp' | 'udp' | 'icmp';
   readonly port?: number;
   readonly source?: string;
   readonly destination?: string;
@@ -492,13 +492,13 @@ export interface NotificationPlan {
 }
 
 export interface NotificationChannel {
-  readonly type: 'email|slack|teams|webhook';
+  readonly type: 'email|slack|teams|webhook;
   readonly configuration: Record<string, unknown>;
   readonly recipients: string[];
 }
 
 export interface NotificationTrigger {
-  readonly event:|deployment_start|deployment_success|deployment_failure|'rollback';
+  readonly event:|deployment_start|deployment_success|deployment_failure|'rollback;
   readonly channels: string[];
   readonly conditions?: Record<string, unknown>;
 }
@@ -508,12 +508,12 @@ export interface NotificationTemplate {
   readonly name: string;
   readonly subject: string;
   readonly body: string;
-  readonly format: 'text|html|markdown';
+  readonly format: 'text' | 'html' | 'markdown';
 }
 
 export interface DeploymentLog {
   readonly timestamp: Date;
-  readonly level: 'debug|info|warn|error';
+  readonly level: 'debug|info|warn|error;
   readonly message: string;
   readonly source: string;
   readonly metadata?: Record<string, unknown>;
@@ -523,7 +523,7 @@ export interface DeploymentError {
   readonly timestamp: Date;
   readonly phase: string;
   readonly action?: string;
-  readonly type: 'validation|execution|timeout|system';
+  readonly type: 'validation|execution|timeout|system;
   readonly message: string;
   readonly details: unknown;
   readonly recoverable: boolean;
@@ -575,7 +575,7 @@ export class DeploymentAutomationService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - deployment strategies
-      const { LoadBalancer } = await import('@claude-zen/brain');
+      const { LoadBalancer } = await import('@claude-zen/brain');'
       this.loadBalancer = new LoadBalancer({
         strategy: 'intelligent',
         enableHealthChecks: true,
@@ -585,7 +585,7 @@ export class DeploymentAutomationService {
       await this.loadBalancer.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent deployment decisions
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      const { BrainCoordinator } = await import('@claude-zen/brain');'
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -596,11 +596,11 @@ export class DeploymentAutomationService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');
+      const { PerformanceTracker } = await import('@claude-zen/foundation');'
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/agui for deployment approvals
-      const { AGUISystem } = await import('@claude-zen/agui');
+      const { AGUISystem } = await import('@claude-zen/agui');'
       const aguiResult = await AGUISystem({
         aguiType: 'terminal',
         taskApprovalConfig: {
@@ -619,7 +619,7 @@ export class DeploymentAutomationService {
 
       this.initialized = true;
       this.logger.info(
-        'Deployment Automation Service initialized successfully'
+        'Deployment Automation Service initialized successfully''
       );
     } catch (error) {
       this.logger.error(
@@ -640,7 +640,7 @@ export class DeploymentAutomationService {
   ): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('deployment_execution');
+    const timer = this.performanceTracker.startTimer('deployment_execution');'
 
     try {
       this.logger.info(
@@ -654,7 +654,7 @@ export class DeploymentAutomationService {
 
       const deploymentEnv = this.environments.get(environment);
       if (!deploymentEnv) {
-        throw new Error(`Deployment environment not found: ${environment}`);
+        throw new Error(`Deployment environment not found: ${environment}`);`
       }
 
       // Use brain coordinator for intelligent strategy selection
@@ -693,9 +693,9 @@ export class DeploymentAutomationService {
       // Update deployment history for learning
       this.updateDeploymentHistory(environment, execution);
 
-      this.performanceTracker.endTimer('deployment_execution');
+      this.performanceTracker.endTimer('deployment_execution');'
 
-      this.logger.info('Deployment automation completed successfully', {
+      this.logger.info('Deployment automation completed successfully', {'
         pipelineId,
         environment,
         strategy,
@@ -703,8 +703,8 @@ export class DeploymentAutomationService {
         healthScore: execution.metrics.healthScore,
       });
     } catch (error) {
-      this.performanceTracker.endTimer('deployment_execution');
-      this.logger.error('Deployment automation failed:', error);
+      this.performanceTracker.endTimer('deployment_execution');'
+      this.logger.error('Deployment automation failed:', error);'
       throw error;
     }
   }
@@ -715,10 +715,10 @@ export class DeploymentAutomationService {
   async validateDeploymentReadiness(plan: DeploymentPlan): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('deployment_validation');
+    const timer = this.performanceTracker.startTimer('deployment_validation');'
 
     try {
-      this.logger.info('Validating deployment readiness with AI analysis', {
+      this.logger.info('Validating deployment readiness with AI analysis', {'
         planId: plan.id,
         environment: plan.environment.name,
       });
@@ -746,19 +746,19 @@ export class DeploymentAutomationService {
 
       if (!readinessAssessment.ready) {
         throw new Error(
-          `Deployment not ready: ${readinessAssessment.reasons.join(', ')}`
+          `Deployment not ready: ${readinessAssessment.reasons.join(', ')}``
         );
       }
 
-      this.performanceTracker.endTimer('deployment_validation');
+      this.performanceTracker.endTimer('deployment_validation');'
 
-      this.logger.info('Deployment readiness validation completed', {
+      this.logger.info('Deployment readiness validation completed', {'
         planId: plan.id,
         readinessScore: readinessAssessment.score || 1.0,
       });
     } catch (error) {
-      this.performanceTracker.endTimer('deployment_validation');
-      this.logger.error('Deployment readiness validation failed:', error);
+      this.performanceTracker.endTimer('deployment_validation');'
+      this.logger.error('Deployment readiness validation failed:', error);'
       throw error;
     }
   }
@@ -769,15 +769,15 @@ export class DeploymentAutomationService {
   async executeRollback(executionId: string, reason: string): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('deployment_rollback');
+    const timer = this.performanceTracker.startTimer('deployment_rollback');'
 
     try {
       const execution = this.activeDeployments.get(executionId);
       if (!execution) {
-        throw new Error(`Deployment execution not found: ${executionId}`);
+        throw new Error(`Deployment execution not found: ${executionId}`);`
       }
 
-      this.logger.info('Executing intelligent rollback strategy', {
+      this.logger.info('Executing intelligent rollback strategy', {'
         executionId,
         reason,
       });
@@ -804,15 +804,15 @@ export class DeploymentAutomationService {
       };
       this.activeDeployments.set(executionId, updatedExecution);
 
-      this.performanceTracker.endTimer('deployment_rollback');
+      this.performanceTracker.endTimer('deployment_rollback');'
 
-      this.logger.info('Rollback completed successfully', {
+      this.logger.info('Rollback completed successfully', {'
         executionId,
         rollbackTime: rollbackStrategy.estimatedTime || 0,
       });
     } catch (error) {
-      this.performanceTracker.endTimer('deployment_rollback');
-      this.logger.error('Rollback execution failed:', error);
+      this.performanceTracker.endTimer('deployment_rollback');'
+      this.logger.error('Rollback execution failed:', error);'
       throw error;
     }
   }
@@ -830,7 +830,7 @@ export class DeploymentAutomationService {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('deployment_insights');
+    const timer = this.performanceTracker.startTimer('deployment_insights');'
 
     try {
       const history = this.deploymentHistory.get(environment) || [];
@@ -853,9 +853,9 @@ export class DeploymentAutomationService {
         trendsAnalysis: insights.trends || {},
       };
 
-      this.performanceTracker.endTimer('deployment_insights');
+      this.performanceTracker.endTimer('deployment_insights');'
 
-      this.logger.info('Deployment insights generated', {
+      this.logger.info('Deployment insights generated', {'
         environment,
         successRate: result.successRate,
         historyCount: history.length,
@@ -863,8 +863,8 @@ export class DeploymentAutomationService {
 
       return result;
     } catch (error) {
-      this.performanceTracker.endTimer('deployment_insights');
-      this.logger.error('Failed to generate deployment insights:', error);
+      this.performanceTracker.endTimer('deployment_insights');'
+      this.logger.error('Failed to generate deployment insights:', error);'
       throw error;
     }
   }
@@ -883,7 +883,7 @@ export class DeploymentAutomationService {
       await this.aguiService.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Deployment Automation Service shutdown complete');
+    this.logger.info('Deployment Automation Service shutdown complete');'
   }
 
   // ============================================================================
@@ -929,7 +929,7 @@ export class DeploymentAutomationService {
       rollbackEnabled: true,
     };
 
-    this.environments.set('development', developmentEnv);
+    this.environments.set('development', developmentEnv);'
   }
 
   private createDeploymentPlan(
@@ -944,7 +944,7 @@ export class DeploymentAutomationService {
       (artifact) => ({
         id: artifact.id,
         name: artifact.name,
-        version: '1.0.0', // Default version
+        version: '1.0.0', // Default version'
         type: 'application' as const,
         location: artifact.location,
         size: artifact.size,
@@ -955,7 +955,7 @@ export class DeploymentAutomationService {
     );
 
     const plan: DeploymentPlan = {
-      id: `deploy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `deploy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
       pipelineId,
       strategy,
       environment,
@@ -1128,7 +1128,7 @@ export class DeploymentAutomationService {
 
   private monitorDeploymentExecution(execution: DeploymentExecution): void {
     // Monitor deployment progress with load balancer integration
-    this.logger.info('Monitoring deployment execution', {
+    this.logger.info('Monitoring deployment execution', {'
       planId: execution.planId,
     });
   }
@@ -1138,21 +1138,21 @@ export class DeploymentAutomationService {
     plan: DeploymentPlan
   ): void {
     // Perform comprehensive post-deployment validation
-    this.logger.info('Performing post-deployment validation', {
+    this.logger.info('Performing post-deployment validation', {'
       planId: plan.id,
     });
   }
 
   private validateArtifacts(artifacts: DeploymentArtifact[]): void {
     // Validate deployment artifacts
-    this.logger.debug('Validating deployment artifacts', {
+    this.logger.debug('Validating deployment artifacts', {'
       count: artifacts.length,
     });
   }
 
   private validateEnvironmentHealth(environment: DeploymentEnvironment): void {
     // Validate environment health
-    this.logger.debug('Validating environment health', {
+    this.logger.debug('Validating environment health', {'
       environment: environment.name,
     });
   }
@@ -1162,7 +1162,7 @@ export class DeploymentAutomationService {
     artifacts: DeploymentArtifact[]
   ): void {
     // Validate infrastructure capacity
-    this.logger.debug('Validating infrastructure capacity');
+    this.logger.debug('Validating infrastructure capacity');'
   }
 
   private validateSecurityCompliance(
@@ -1170,7 +1170,7 @@ export class DeploymentAutomationService {
     artifacts: DeploymentArtifact[]
   ): void {
     // Validate security compliance
-    this.logger.debug('Validating security compliance');
+    this.logger.debug('Validating security compliance');'
   }
 
   private executeRollbackPhases(
@@ -1178,12 +1178,12 @@ export class DeploymentAutomationService {
     strategy: any
   ): void {
     // Execute rollback phases
-    this.logger.info('Executing rollback phases', { planId: execution.planId });
+    this.logger.info('Executing rollback phases', { planId: execution.planId });'
   }
 
   private verifyRollbackSuccess(execution: DeploymentExecution): void {
     // Verify rollback success
-    this.logger.info('Verifying rollback success', {
+    this.logger.info('Verifying rollback success', {'
       planId: execution.planId,
     });
   }

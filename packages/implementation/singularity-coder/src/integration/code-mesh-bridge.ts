@@ -1,8 +1,8 @@
 /**
  * @fileoverview CodeMesh Integration Bridge
  *
- * Bridges CodeMesh's Rust/TypeScript file-aware AI capabilities with
- * claude-code-zen's LLM routing system for seamless integration.
+ * Bridges CodeMesh's Rust/TypeScript file-aware AI capabilities with'
+ * claude-code-zen's LLM routing system for seamless integration.'
  */
 
 // LLM routing integration - fallback if not available
@@ -10,12 +10,12 @@ let getOptimalProvider: any = null;
 let llmRoutingAvailable = false;
 
 try {
-  const llmRouting = require('@claude-zen/llm-routing');
+  const llmRouting = require('@claude-zen/llm-routing');'
   getOptimalProvider = llmRouting.getOptimalProvider;
   // Note: LLM_PROVIDER_CONFIG available if needed
   llmRoutingAvailable = true;
 } catch (error) {
-  console.warn('LLM routing not available, using fallback');
+  console.warn('LLM routing not available, using fallback');'
   llmRoutingAvailable = false;
 }
 
@@ -33,7 +33,7 @@ interface CodeMeshProvider {
 }
 
 interface CodeMeshSession {
-  addMessage(role: 'user|assistant', content: string): void;
+  addMessage(role: 'user|assistant', content: string): void;'
   getMessages(): any[];
   save(): Promise<string>;
   load(sessionId: string): Promise<void>;
@@ -51,7 +51,7 @@ interface CodeMeshToolRegistry {
 export class CodeMeshBridge {
   private provider: CodeMeshProvider|null = null;
   private session: CodeMeshSession|null = null;
-  private tools: CodeMeshToolRegistry|'null = null;
+  private tools: CodeMeshToolRegistry|'null = null;'
   private rootPath: string;
 
   constructor(rootPath: string) {
@@ -65,7 +65,7 @@ export class CodeMeshBridge {
     // Try to load the actual CodeMesh WASM module
     try {
       // Import the built WASM module
-      const wasmModule = require('../../rust-core/code-mesh-wasm/pkg/code_mesh_wasm.js');
+      const wasmModule = require('../../rust-core/code-mesh-wasm/pkg/code_mesh_wasm.js');'
 
       // Initialize the WASM module
       const codeMesh = new wasmModule.CodeMesh();
@@ -78,7 +78,7 @@ export class CodeMeshBridge {
       this.provider = {
         generateCompletion: async (messages: any[]) => {
           return {
-            content: `Generated response for: ${messages[0]?.content||'unknown'}`,
+            content: `Generated response for: ${messages[0]?.content||'unknown'}`,`
             model: 'code-mesh-wasm',
           };
         },
@@ -88,12 +88,12 @@ export class CodeMeshBridge {
 
       this.session = {
         addMessage: (role: string, content: string) => {
-          console.log(`Session: ${role}: ${content.substring(0, 100)}...`);
+          console.log(`Session: ${role}: ${content.substring(0, 100)}...`);`
         },
         getMessages: () => [],
-        save: async () => `session_${Date.now()}`,
+        save: async () => `session_${Date.now()}`,`
         load: async (sessionId: string) => {
-          console.log(`Loading session: ${sessionId}`);
+          console.log(`Loading session: ${sessionId}`);`
         },
       };
 
@@ -111,7 +111,7 @@ export class CodeMeshBridge {
       };
 
       console.log(
-        'CodeMesh WASM bridge initialized successfully with real tools!'
+        'CodeMesh WASM bridge initialized successfully with real tools!''
       );
     } catch (error) {
       console.warn(
@@ -127,7 +127,7 @@ export class CodeMeshBridge {
    */
   private async initializeFallback(): Promise<void> {
     // Use existing LLM routing as fallback
-    console.log('Using claude-code-zen LLM routing as fallback');
+    console.log('Using claude-code-zen LLM routing as fallback');'
   }
 
   /**
@@ -173,11 +173,11 @@ export class CodeMeshBridge {
   ): Promise<FileAwareResponse> {
     const startTime = Date.now();
     if (!this.provider||!this.session||!this.tools) {
-      throw new Error('CodeMesh not properly initialized');
+      throw new Error('CodeMesh not properly initialized');'
     }
 
     // Add user message to session
-    this.session.addMessage('user', request.task);
+    this.session.addMessage('user', request.task);'
 
     // Use CodeMesh tools for file analysis
     const fileContext = await this.analyzeFiles(request.files||[]);
@@ -221,7 +221,7 @@ export class CodeMeshBridge {
     request: FileAwareRequest
   ): Promise<FileAwareResponse> {
     // Use existing file-aware AI engine as fallback
-    const { FileAwareAIEngine } = await import('../core/file-aware-ai-engine');
+    const { FileAwareAIEngine } = await import('../core/file-aware-ai-engine');'
 
     const engine = new FileAwareAIEngine(this.rootPath);
 
@@ -258,7 +258,7 @@ export class CodeMeshBridge {
         relevantFiles.push(file);
 
         // Extract symbols from content
-        if (typeof content === 'string') {
+        if (typeof content === 'string') {'
           const fileSymbols = this.extractSymbolsFromContent(content, file);
           symbols.push(...fileSymbols);
         }
@@ -275,7 +275,7 @@ export class CodeMeshBridge {
 
         dependencies.push(...deps);
       } catch (error) {
-        console.warn(`Failed to analyze file ${file}:`, error);
+        console.warn(`Failed to analyze file ${file}:`, error);`
       }
     }
 
@@ -283,12 +283,12 @@ export class CodeMeshBridge {
       relevantFiles,
       dependencies,
       symbols,
-      summary: `Analyzed ${relevantFiles.length} files with ${dependencies.length} dependencies`,
+      summary: `Analyzed ${relevantFiles.length} files with ${dependencies.length} dependencies`,`
       complexity:
         relevantFiles.length > 10
-          ? 'high'
+          ? 'high''
           : relevantFiles.length > 5
-            ? 'medium'
+            ? 'medium''
             : 'low',
     };
   }
@@ -298,7 +298,7 @@ export class CodeMeshBridge {
    */
   private extractSymbolsFromContent(content: string, filePath: string): any[] {
     const symbols: any[] = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
@@ -338,18 +338,18 @@ export class CodeMeshBridge {
     request: FileAwareRequest,
     context: any
   ): string {
-    let prompt = `# Task\n${request.task}\n\n`;
+    let prompt = `# Task\n${request.task}\n\n`;`
 
-    prompt += `# Context\n${context.summary}\n\n`;
+    prompt += `# Context\n${context.summary}\n\n`;`
 
-    prompt += `# Files\n`;
+    prompt += `# Files\n`;`
     for (const file of context.relevantFiles) {
-      prompt += `- ${file}\n`;
+      prompt += `- ${file}\n`;`
     }
 
-    prompt += `\n# Instructions\n`;
-    prompt += `Please analyze the codebase and implement the requested changes.\n`;
-    prompt += `Return your response as a JSON object with file changes.\n`;
+    prompt += `\n# Instructions\n`;`
+    prompt += `Please analyze the codebase and implement the requested changes.\n`;`
+    prompt += `Return your response as a JSON object with file changes.\n`;`
 
     return prompt;
   }
@@ -360,7 +360,7 @@ export class CodeMeshBridge {
   private async parseFileChanges(aiResponse: any): Promise<FileChange[]> {
     // This would parse the AI response and extract file changes
     // For now, return a mock response
-    console.log('Parsing AI response:', aiResponse); // Use the aiResponse parameter
+    console.log('Parsing AI response:', aiResponse); // Use the aiResponse parameter'
     return [
       {
         path: 'example.ts',
@@ -384,7 +384,7 @@ export class CodeMeshBridge {
 
     for (const change of changes) {
       try {
-        if (change.type === 'modify'||change.type ==='create') {
+        if (change.type === 'modify'||change.type ==='create') {'
           await this.tools.execute(
             'write',
             {
@@ -395,12 +395,12 @@ export class CodeMeshBridge {
           );
 
           appliedChanges.push(change);
-        } else if (change.type === 'delete') {
+        } else if (change.type === 'delete') {'
           // Use bash tool to delete file
           await this.tools.execute(
             'bash',
             {
-              command: `rm "${change.path}"`,
+              command: `rm "${change.path}"`,`
             },
             context
           );
@@ -408,7 +408,7 @@ export class CodeMeshBridge {
           appliedChanges.push(change);
         }
       } catch (error) {
-        console.error(`Failed to apply change to ${change.path}:`, error);
+        console.error(`Failed to apply change to ${change.path}:`, error);`
       }
     }
 
@@ -431,11 +431,11 @@ export class CodeMeshBridge {
           requiresStructuredOutput: true,
           taskType:'generation',
         })
-      : ['copilot'];
+      : ['copilot'];'
 
     // Prefer CodeMesh-enabled providers
     const codeMeshProviders = providers.filter(
-      (p: string) => p.includes('copilot')||p.includes('code-mesh')
+      (p: string) => p.includes('copilot')||p.includes('code-mesh')'
     );
 
     return codeMeshProviders.length > 0 ? codeMeshProviders[0] : providers[0];
@@ -465,7 +465,7 @@ export async function createCodeMeshBridge(
   config: string|{ rootPath: string; provider?: string; model?: string }
 ): Promise<CodeMeshBridge> {
   // Handle both string and object parameters
-  const rootPath = typeof config ==='string' ? config : config.rootPath;
+  const rootPath = typeof config ==='string' ? config : config.rootPath;'
 
   const bridge = new CodeMeshBridge(rootPath);
   await bridge.initialize();

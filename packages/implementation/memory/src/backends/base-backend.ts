@@ -39,7 +39,7 @@ export interface MemoryQueryOptions {
   limit?: number;
   offset?: number;
   orderBy?: string;
-  orderDirection?: 'asc|desc';
+  orderDirection?: 'asc|desc;
 }
 
 export interface MemorySearchResult {
@@ -102,7 +102,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     if (!this.isInitialized) {
       await this.initialize();
       this.isInitialized = true;
-      this.emit('initialized', { timestamp: new Date() });
+      this.emit('initialized', { timestamp: new Date() });'
     }
   }
 
@@ -142,17 +142,17 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     this.stats.lastAccessed = Date.now();
     this.stats.modified = Date.now();
 
-    if (operation === 'write') {
+    if (operation === 'write') {'
       this.stats.totalEntries++;
       if (size) {
         this.stats.totalSize += size;
       }
-    } else if (operation === 'delete') {
+    } else if (operation === 'delete') {'
       this.stats.totalEntries = Math.max(0, this.stats.totalEntries - 1);
       if (size) {
         this.stats.totalSize = Math.max(0, this.stats.totalSize - size);
       }
-    } else if (operation === 'read') {
+    } else if (operation === 'read') {'
       this.stats.cacheHits++;
     }
   }
@@ -181,19 +181,19 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   }
 
   protected detectType(value: unknown): string {
-    if (value === null) return'null';
-    if (Array.isArray(value)) return 'array';
-    if (value instanceof Date) return 'date';
-    if (value instanceof Buffer) return 'buffer';
+    if (value === null) return'null;
+    if (Array.isArray(value)) return 'array;
+    if (value instanceof Date) return 'date;
+    if (value instanceof Buffer) return 'buffer;
     return typeof value;
   }
 
   protected validateKey(key: string): void {
-    if (!key||typeof key !=='string') {
-      throw new Error('Key must be a non-empty string');
+    if (!key||typeof key !=='string') {'
+      throw new Error('Key must be a non-empty string');'
     }
     if (key.length > 255) {
-      throw new Error('Key cannot exceed 255 characters');
+      throw new Error('Key cannot exceed 255 characters');'
     }
   }
 
@@ -203,16 +203,16 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     // Simple glob pattern matching
     const regex = new RegExp(
       pattern
-        .replace(/\*/g, '.*')
-        .replace(/\?/g, '.')
-        .replace(/\[([^\]]*)\]/g, '[$1]')
+        .replace(/\*/g, '.*')'
+        .replace(/\?/g, '.')'
+        .replace(/\[([^\]]*)\]/g, '[$1]')'
     );
 
     return regex.test(key);
   }
 
   protected emitError(error: Error, operation: string): void {
-    this.emit('error', {
+    this.emit('error', {'
       error,
       operation,
       timestamp: Date.now(),
@@ -225,7 +225,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     key: string,
     success: boolean
   ): void {
-    this.emit('operation', {
+    this.emit('operation', {'
       operation,
       key,
       success,
@@ -247,7 +247,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     try {
       await this.ensureInitialized();
       // Test basic operations
-      const testKey = `__health_check_${Date.now()}`;
+      const testKey = `__health_check_${Date.now()}`;`
       await this.store(testKey, { test: true });
       const retrieved = await this.retrieve(testKey);
       await this.delete(testKey);
@@ -255,7 +255,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       healthy = retrieved !== null && (retrieved as any)?.test === true;
     } catch (error) {
       healthy = false;
-      this.emitError(error as Error, 'healthCheck');
+      this.emitError(error as Error, 'healthCheck');'
     }
 
     return {
@@ -302,7 +302,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     try {
       return JSON.stringify(value);
     } catch (error) {
-      throw new Error(`Failed to serialize value: ${(error as Error).message}`);
+      throw new Error(`Failed to serialize value: ${(error as Error).message}`);`
     }
   }
 
@@ -312,7 +312,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       return JSON.parse(value) as T;
     } catch (error) {
       throw new Error(
-        `Failed to deserialize value: ${(error as Error).message}`
+        `Failed to deserialize value: ${(error as Error).message}``
       );
     }
   }
@@ -347,7 +347,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     await new Promise(resolve => setTimeout(resolve, 1));
     
     // Update stats before returning size
-    await this.updateStats('size_check', 0);
+    await this.updateStats('size_check', 0);'
     return this.stats.totalEntries;
   }
 
@@ -358,7 +358,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       return healthStatus.healthy;
     } catch (error) {
       this.emitError(
-        error instanceof Error ? error : new Error(String(error)),'health'
+        error instanceof Error ? error : new Error(String(error)),'health''
       );
       return false;
     }
@@ -370,7 +370,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     await new Promise(resolve => setTimeout(resolve, 1));
     
     // Perform async cleanup tasks
-    await this.updateStats('cleanup', 0);
+    await this.updateStats('cleanup', 0);'
     
     // Override in subclasses for specific cleanup logic
     this.removeAllListeners();

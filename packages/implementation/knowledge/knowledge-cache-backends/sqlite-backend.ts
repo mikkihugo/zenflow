@@ -105,7 +105,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       maxAge: config.maxAge || 86400000, // 24 hours default
     };
     
-    this.logger = getLogger('sqlite-backend');
+    this.logger = getLogger('sqlite-backend');'
     
     this.stats = {
       totalEntries: 0,
@@ -127,7 +127,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       }
     );
 
-    this.logger.info('SQLite backend initialized', {
+    this.logger.info('SQLite backend initialized', {'
       maxSize: this.config.maxSize,
       maxAge: this.config.maxAge,
       path: this.config.path || ':memory:',
@@ -139,16 +139,16 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
-      this.logger.debug('SQLite backend already initialized');
+      this.logger.debug('SQLite backend already initialized');'
       return;
     }
 
     try {
       await this.circuitBreaker.execute(async () => {
-        this.logger.info('Initializing SQLite database and connection pool');
+        this.logger.info('Initializing SQLite database and connection pool');'
         
         // In a real implementation, this would use better-sqlite3
-        // For now, we'll create a mock implementation that demonstrates the structure
+        // For now, we'll create a mock implementation that demonstrates the structure'
         await this.initializeDatabase();
         await this.createTables();
         await this.createIndexes();
@@ -156,15 +156,15 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         await this.initializeConnectionPool();
 
         // Enable WAL mode for better concurrency
-        this.db!.pragma('journal_mode', 'WAL');
-        this.db!.pragma('synchronous', 'NORMAL');
-        this.db!.pragma('cache_size', -64000); // 64MB cache
-        this.db!.pragma('temp_store', 'MEMORY');
+        this.db!.pragma('journal_mode', 'WAL');'
+        this.db!.pragma('synchronous', 'NORMAL');'
+        this.db!.pragma('cache_size', -64000); // 64MB cache'
+        this.db!.pragma('temp_store', 'MEMORY');'
 
         this.isInitialized = true;
-        this.emit('initialized', { backend: 'sqlite' });
+        this.emit('initialized', { backend: 'sqlite' });'
         
-        this.logger.info('SQLite backend initialized successfully', {
+        this.logger.info('SQLite backend initialized successfully', {'
           tables: ['knowledge_entries', 'knowledge_fts'],
           indexes: ['idx_timestamp', 'idx_source', 'idx_type'],
           connectionPool: this.maxConnections,
@@ -182,7 +182,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('SQLite backend initialization failed', enhancedError);
+      this.logger.error('SQLite backend initialization failed', enhancedError);'
       throw enhancedError;
     }
   }
@@ -192,7 +192,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
    */
   private async initializeDatabase(): Promise<void> {
     // Mock SQLite database initialization
-    // In real implementation: this.db = new Database(this.config.path || ':memory:');
+    // In real implementation: this.db = new Database(this.config.path || ':memory:');'
     this.db = {
       prepare: (sql: string) => ({
         run: (...params: any[]) => ({ changes: 1, lastInsertRowid: 1 }),
@@ -206,14 +206,14 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       pragma: (pragma: string, value?: any) => {},
     } as SQLiteDatabase;
 
-    this.logger.debug('SQLite database connection established');
+    this.logger.debug('SQLite database connection established');'
   }
 
   /**
    * Create required database tables.
    */
   private async createTables(): Promise<void> {
-    const createKnowledgeEntriesTable = `
+    const createKnowledgeEntriesTable = ``
       CREATE TABLE IF NOT EXISTS knowledge_entries (
         id TEXT PRIMARY KEY,
         content TEXT NOT NULL,
@@ -228,29 +228,29 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         access_count INTEGER DEFAULT 0,
         size_bytes INTEGER
       )
-    `;
+    `;`
 
-    const createFTSTable = `
+    const createFTSTable = ``
       CREATE VIRTUAL TABLE IF NOT EXISTS knowledge_fts USING fts5(
         content,
         content='knowledge_entries',
-        content_rowid='rowid'
+        content_rowid='rowid''
       )
-    `;
+    `;`
 
-    const createMetricsTable = `
+    const createMetricsTable = ``
       CREATE TABLE IF NOT EXISTS storage_metrics (
         metric_name TEXT PRIMARY KEY,
         metric_value TEXT,
         timestamp INTEGER DEFAULT (unixepoch())
       )
-    `;
+    `;`
 
     this.db!.exec(createKnowledgeEntriesTable);
     this.db!.exec(createFTSTable);
     this.db!.exec(createMetricsTable);
 
-    this.logger.debug('Database tables created successfully');
+    this.logger.debug('Database tables created successfully');'
   }
 
   /**
@@ -269,7 +269,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       this.db!.exec(indexSql);
     }
 
-    this.logger.debug('Database indexes created successfully');
+    this.logger.debug('Database indexes created successfully');'
   }
 
   /**
@@ -277,43 +277,43 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
    */
   private async prepareStatements(): Promise<void> {
     this.statements = {
-      insert: this.db!.prepare(`
+      insert: this.db!.prepare(``
         INSERT OR REPLACE INTO knowledge_entries
         (id, content, metadata, embedding, timestamp, source, type, tags, size_bytes)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `),
+      `),`
       
-      select: this.db!.prepare(`
+      select: this.db!.prepare(``
         SELECT * FROM knowledge_entries WHERE id = ?
-      `),
+      `),`
       
-      delete: this.db!.prepare(`
+      delete: this.db!.prepare(``
         DELETE FROM knowledge_entries WHERE id = ?
-      `),
+      `),`
       
-      search: this.db!.prepare(`
+      search: this.db!.prepare(``
         SELECT ke.* FROM knowledge_entries ke
         JOIN knowledge_fts fts ON ke.rowid = fts.rowid
         WHERE fts MATCH ?
         ORDER BY rank
         LIMIT ?
-      `),
+      `),`
       
-      count: this.db!.prepare(`
+      count: this.db!.prepare(``
         SELECT COUNT(*) as count FROM knowledge_entries
-      `),
+      `),`
       
-      cleanup: this.db!.prepare(`
+      cleanup: this.db!.prepare(``
         DELETE FROM knowledge_entries
         WHERE timestamp < ?
-      `),
+      `),`
       
-      clear: this.db!.prepare(`
+      clear: this.db!.prepare(``
         DELETE FROM knowledge_entries
-      `),
+      `),`
     };
 
-    this.logger.debug('SQL statements prepared successfully');
+    this.logger.debug('SQL statements prepared successfully');'
   }
 
   /**
@@ -326,7 +326,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       this.connectionPool.push(this.db!);
     }
     
-    this.logger.debug('Connection pool initialized', {
+    this.logger.debug('Connection pool initialized', {'
       maxConnections: this.maxConnections,
     });
   }
@@ -343,7 +343,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       await this.circuitBreaker.execute(async () => {
         const result = await withRetry(
           async () => {
-            const sizeBytes = Buffer.byteLength(entry.content, 'utf8');
+            const sizeBytes = Buffer.byteLength(entry.content, 'utf8');'
             
             const insertResult = this.statements.insert!.run(
               entry.id,
@@ -359,10 +359,10 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
 
             // Update FTS index
             if (insertResult.changes > 0) {
-              this.db!.exec(`
+              this.db!.exec(``
                 INSERT OR REPLACE INTO knowledge_fts(rowid, content)
-                SELECT rowid, content FROM knowledge_entries WHERE id = '${entry.id}'
-              `);
+                SELECT rowid, content FROM knowledge_entries WHERE id = '${entry.id}''
+              `);`
             }
 
             return ok(insertResult);
@@ -374,15 +374,15 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
           throw result.error;
         }
 
-        this.updateStats('write', Buffer.byteLength(entry.content, 'utf8'));
+        this.updateStats('write', Buffer.byteLength(entry.content, 'utf8'));'
         this.performanceMetrics.totalInserts++;
         
         const duration = Date.now() - startTime;
-        this.updatePerformanceMetrics('insert', duration);
+        this.updatePerformanceMetrics('insert', duration);'
         
-        this.emit('entry:stored', { id: entry.id, size: Buffer.byteLength(entry.content, 'utf8') });
+        this.emit('entry:stored', { id: entry.id, size: Buffer.byteLength(entry.content, 'utf8') });'
         
-        this.logger.debug('Entry stored successfully', {
+        this.logger.debug('Entry stored successfully', {'
           id: entry.id,
           size: Buffer.byteLength(entry.content, 'utf8'),
           duration,
@@ -392,7 +392,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       this.performanceMetrics.errorCount++;
       
       const enhancedError = new EnhancedError(
-        `Failed to store entry ${entry.id}`,
+        `Failed to store entry ${entry.id}`,`
         {
           context: {
             entryId: entry.id,
@@ -403,7 +403,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to store entry', enhancedError);
+      this.logger.error('Failed to store entry', enhancedError);'
       throw enhancedError;
     }
   }
@@ -426,16 +426,16 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
 
         // Update access tracking
-        this.db!.exec(`
+        this.db!.exec(``
           UPDATE knowledge_entries 
           SET access_count = access_count + 1,
               updated_at = unixepoch()
-          WHERE id = '${id}'
-        `);
+          WHERE id = '${id}''
+        `);`
 
         this.stats.cacheHits++;
         const duration = Date.now() - startTime;
-        this.updatePerformanceMetrics('get', duration);
+        this.updatePerformanceMetrics('get', duration);'
 
         const entry: FACTKnowledgeEntry = {
           id: row.id,
@@ -448,9 +448,9 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
           tags: row.tags ? JSON.parse(row.tags) : [],
         };
 
-        this.emit('entry:retrieved', { id, found: true, duration });
+        this.emit('entry:retrieved', { id, found: true, duration });'
         
-        this.logger.debug('Entry retrieved successfully', {
+        this.logger.debug('Entry retrieved successfully', {'
           id,
           size: Buffer.byteLength(entry.content, 'utf8'),
           duration,
@@ -465,7 +465,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       this.performanceMetrics.errorCount++;
       
       const enhancedError = new EnhancedError(
-        `Failed to retrieve entry ${id}`,
+        `Failed to retrieve entry ${id}`,`
         {
           context: {
             entryId: id,
@@ -475,7 +475,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to retrieve entry', enhancedError);
+      this.logger.error('Failed to retrieve entry', enhancedError);'
       throw enhancedError;
     }
   }
@@ -495,9 +495,9 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         if (query.text) {
           // Full-text search using FTS5
           const ftsQuery = query.text
-            .split(' ')
-            .map(term => `"${term}"`)
-            .join(' OR ');
+            .split(' ')'
+            .map(term => `"${term}"`)`
+            .join(' OR ');'
             
           searchResults = this.statements.search!.all(
             ftsQuery,
@@ -510,11 +510,11 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
           const params: any[] = [];
           
           for (const [key, value] of Object.entries(query.metadata)) {
-            conditions.push(`JSON_EXTRACT(metadata, '$.${key}') = ?`);
+            conditions.push(`JSON_EXTRACT(metadata, '$.${key}') = ?`);`
             params.push(value);
           }
           
-          sql += conditions.join(' AND ');
+          sql += conditions.join(' AND ');'
           if (query.limit) {
             sql += ' LIMIT ?';
             params.push(query.limit);
@@ -524,11 +524,11 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
           searchResults = stmt.all(...params);
         } else {
           // General search - return recent entries
-          const stmt = this.db!.prepare(`
+          const stmt = this.db!.prepare(``
             SELECT * FROM knowledge_entries 
             ORDER BY timestamp DESC 
             LIMIT ?
-          `);
+          `);`
           searchResults = stmt.all(query.limit || 100);
         }
 
@@ -544,16 +544,16 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }));
 
         const duration = Date.now() - startTime;
-        this.updatePerformanceMetrics('search', duration);
+        this.updatePerformanceMetrics('search', duration);'
         this.performanceMetrics.totalQueries++;
 
-        this.emit('entries:searched', {
+        this.emit('entries:searched', {'
           query,
           resultCount: entries.length,
           duration,
         });
 
-        this.logger.debug('Search completed successfully', {
+        this.logger.debug('Search completed successfully', {'
           queryType: query.text ? 'fulltext' : query.metadata ? 'metadata' : 'general',
           resultCount: entries.length,
           duration,
@@ -577,7 +577,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to search entries', enhancedError);
+      this.logger.error('Failed to search entries', enhancedError);'
       throw enhancedError;
     }
   }
@@ -596,19 +596,19 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         
         if (deleteResult.changes > 0) {
           // Remove from FTS index
-          this.db!.exec(`DELETE FROM knowledge_fts WHERE rowid = (
-            SELECT rowid FROM knowledge_entries WHERE id = '${id}'
-          )`);
+          this.db!.exec(`DELETE FROM knowledge_fts WHERE rowid = (`
+            SELECT rowid FROM knowledge_entries WHERE id = '${id}''
+          )`);`
           
-          this.updateStats('delete', 0);
+          this.updateStats('delete', 0);'
           this.performanceMetrics.totalDeletes++;
           
           const duration = Date.now() - startTime;
-          this.updatePerformanceMetrics('delete', duration);
+          this.updatePerformanceMetrics('delete', duration);'
           
-          this.emit('entry:deleted', { id, duration });
+          this.emit('entry:deleted', { id, duration });'
           
-          this.logger.debug('Entry deleted successfully', { id, duration });
+          this.logger.debug('Entry deleted successfully', { id, duration });'
           
           return true;
         }
@@ -621,7 +621,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       this.performanceMetrics.errorCount++;
       
       const enhancedError = new EnhancedError(
-        `Failed to delete entry ${id}`,
+        `Failed to delete entry ${id}`,`
         {
           context: {
             entryId: id,
@@ -631,7 +631,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to delete entry', enhancedError);
+      this.logger.error('Failed to delete entry', enhancedError);'
       throw enhancedError;
     }
   }
@@ -645,8 +645,8 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
     try {
       const result = await this.circuitBreaker.execute(async () => {
         // Get actual database statistics
-        const countStmt = this.db!.prepare('SELECT COUNT(*) as count FROM knowledge_entries');
-        const sizeStmt = this.db!.prepare('SELECT SUM(size_bytes) as size FROM knowledge_entries');
+        const countStmt = this.db!.prepare('SELECT COUNT(*) as count FROM knowledge_entries');'
+        const sizeStmt = this.db!.prepare('SELECT SUM(size_bytes) as size FROM knowledge_entries');'
         
         const countResult = countStmt.get();
         const sizeResult = sizeStmt.get();
@@ -694,7 +694,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to get stats', enhancedError);
+      this.logger.error('Failed to get stats', enhancedError);'
       throw enhancedError;
     }
   }
@@ -714,20 +714,20 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         
         if (cleanupResult.changes > 0) {
           // Clean up FTS index
-          this.db!.exec(`
+          this.db!.exec(``
             DELETE FROM knowledge_fts 
             WHERE rowid NOT IN (SELECT rowid FROM knowledge_entries)
-          `);
+          `);`
           
           const duration = Date.now() - startTime;
           
-          this.emit('entries:cleaned', {
+          this.emit('entries:cleaned', {'
             removedCount: cleanupResult.changes,
             maxAge,
             duration,
           });
           
-          this.logger.info('Cleanup completed successfully', {
+          this.logger.info('Cleanup completed successfully', {'
             removedEntries: cleanupResult.changes,
             maxAge,
             duration,
@@ -747,7 +747,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to cleanup entries', enhancedError);
+      this.logger.error('Failed to cleanup entries', enhancedError);'
       throw enhancedError;
     }
   }
@@ -763,7 +763,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         // Use transaction for atomic operation
         this.db!.transaction(() => {
           this.statements.clear!.run();
-          this.db!.exec('DELETE FROM knowledge_fts');
+          this.db!.exec('DELETE FROM knowledge_fts');'
         })();
 
         // Reset statistics
@@ -782,9 +782,9 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
           cacheHitRate: 0,
         };
 
-        this.emit('storage:cleared', { backend: 'sqlite' });
+        this.emit('storage:cleared', { backend: 'sqlite' });'
         
-        this.logger.info('All entries cleared successfully');
+        this.logger.info('All entries cleared successfully');'
       });
     } catch (error) {
       const enhancedError = new EnhancedError(
@@ -795,7 +795,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to clear database', enhancedError);
+      this.logger.error('Failed to clear database', enhancedError);'
       throw enhancedError;
     }
   }
@@ -816,9 +816,9 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         this.activeConnections = 0;
         this.isInitialized = false;
         
-        this.emit('shutdown', { backend: 'sqlite' });
+        this.emit('shutdown', { backend: 'sqlite' });'
         
-        this.logger.info('SQLite backend shutdown successfully');
+        this.logger.info('SQLite backend shutdown successfully');'
       }
     } catch (error) {
       const enhancedError = new EnhancedError(
@@ -829,7 +829,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
         }
       );
       
-      this.logger.error('Failed to shutdown database', enhancedError);
+      this.logger.error('Failed to shutdown database', enhancedError);'
       throw enhancedError;
     }
   }
@@ -863,21 +863,21 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
       }
       
       // Simple health check query
-      const result = this.db.prepare('SELECT 1 as health').get();
+      const result = this.db.prepare('SELECT 1 as health').get();'
       const isHealthy = result?.health === 1;
       
       this.lastHealthCheck = new Date();
       
       if (isHealthy) {
-        this.emit('health:ok', { backend: 'sqlite' });
+        this.emit('health:ok', { backend: 'sqlite' });'
       } else {
-        this.emit('health:error', { backend: 'sqlite', error: 'Health check failed' });
+        this.emit('health:error', { backend: 'sqlite', error: 'Health check failed' });'
       }
       
       return isHealthy;
     } catch (error) {
-      this.logger.warn('Health check failed', { error });
-      this.emit('health:error', { backend: 'sqlite', error });
+      this.logger.warn('Health check failed', { error });'
+      this.emit('health:error', { backend: 'sqlite', error });'
       return false;
     }
   }
@@ -890,14 +890,14 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
     }
   }
 
-  private updateStats(operation: 'read' | 'write' | 'delete', size: number): void {
+  private updateStats(operation: 'read' | 'write' | 'delete', size: number): void {'
     this.stats.lastAccessed = Date.now();
     this.stats.modified = Date.now();
 
-    if (operation === 'write') {
+    if (operation === 'write') {'
       this.stats.totalEntries++;
       this.stats.totalSize += size;
-    } else if (operation === 'delete') {
+    } else if (operation === 'delete') {'
       this.stats.totalEntries = Math.max(0, this.stats.totalEntries - 1);
     }
   }

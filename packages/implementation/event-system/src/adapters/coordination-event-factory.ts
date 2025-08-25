@@ -38,8 +38,8 @@ export class CoordinationEventManagerFactory
   private instances = new Map<string, CoordinationEventAdapter>();
 
   constructor(logger?: Logger) {
-    this.logger = logger||getLogger('CoordinationEventManagerFactory');
-    this.logger.debug('CoordinationEventManagerFactory initialized');
+    this.logger = logger||getLogger('CoordinationEventManagerFactory');'
+    this.logger.debug('CoordinationEventManagerFactory initialized');'
   }
 
   /**
@@ -48,7 +48,7 @@ export class CoordinationEventManagerFactory
    * @param config
    */
   async create(config: CoordinationEventAdapterConfig): Promise<EventManager> {
-    this.logger.info(`Creating coordination event manager: ${config?.name}`);
+    this.logger.info(`Creating coordination event manager: ${config?.name}`);`
 
     try {
       // Validate configuration
@@ -61,12 +61,12 @@ export class CoordinationEventManagerFactory
       this.instances.set(config?.name, adapter);
 
       this.logger.info(
-        `Coordination event manager created successfully: ${config?.name}`
+        `Coordination event manager created successfully: ${config?.name}``
       );
       return adapter as EventManager;
     } catch (error) {
       this.logger.error(
-        `Failed to create coordination event manager ${config?.name}:`,
+        `Failed to create coordination event manager ${config?.name}:`,`
         error
       );
       throw error;
@@ -81,7 +81,7 @@ export class CoordinationEventManagerFactory
   async createMultiple(
     configs: CoordinationEventAdapterConfig[]
   ): Promise<EventManager[]> {
-    this.logger.info(`Creating ${configs.length} coordination event managers`);
+    this.logger.info(`Creating ${configs.length} coordination event managers`);`
 
     const createPromises = configs.map((config) => this.create(config));
     const results = await Promise.allSettled(createPromises);
@@ -90,12 +90,12 @@ export class CoordinationEventManagerFactory
     const errors: Error[] = [];
 
     results?.forEach((result, index) => {
-      if (result?.status === 'fulfilled') {
+      if (result?.status === 'fulfilled') {'
         managers.push(result?.value);
       } else {
         errors.push(
           new Error(
-            `Failed to create coordination manager ${configs?.[index]?.name}: ${result?.reason}`
+            `Failed to create coordination manager ${configs?.[index]?.name}: ${result?.reason}``
           )
         );
       }
@@ -103,11 +103,11 @@ export class CoordinationEventManagerFactory
 
     if (errors.length > 0) {
       this.logger.warn(
-        `Created ${managers.length}/${configs.length} coordination event managers, ${errors.length} failed`
+        `Created ${managers.length}/${configs.length} coordination event managers, ${errors.length} failed``
       );
     } else {
       this.logger.info(
-        `Successfully created ${managers.length} coordination event managers`
+        `Successfully created ${managers.length} coordination event managers``
       );
     }
 
@@ -160,11 +160,11 @@ export class CoordinationEventManagerFactory
       // Remove from instances
       this.instances.delete(name);
 
-      this.logger.info(`Coordination event manager removed: ${name}`);
+      this.logger.info(`Coordination event manager removed: ${name}`);`
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to remove coordination event manager ${name}:`,
+        `Failed to remove coordination event manager ${name}:`,`
         error
       );
       return false;
@@ -217,7 +217,7 @@ export class CoordinationEventManagerFactory
           results?.set(name, metrics);
         } catch (error) {
           this.logger.warn(
-            `Failed to get metrics for coordination event manager ${name}:`,
+            `Failed to get metrics for coordination event manager ${name}:`,`
             error
           );
         }
@@ -233,7 +233,7 @@ export class CoordinationEventManagerFactory
    */
   async startAll(): Promise<void> {
     this.logger.info(
-      `Starting ${this.instances.size} coordination event managers`
+      `Starting ${this.instances.size} coordination event managers``
     );
 
     const startPromises = Array.from(this.instances.values()).map(
@@ -244,7 +244,7 @@ export class CoordinationEventManagerFactory
           }
         } catch (error) {
           this.logger.error(
-            `Failed to start coordination event manager ${manager.name}:`,
+            `Failed to start coordination event manager ${manager.name}:`,`
             error
           );
         }
@@ -253,7 +253,7 @@ export class CoordinationEventManagerFactory
 
     await Promise.allSettled(startPromises);
     this.logger.info(
-      'All coordination event managers start operation completed'
+      'All coordination event managers start operation completed''
     );
   }
 
@@ -262,7 +262,7 @@ export class CoordinationEventManagerFactory
    */
   async stopAll(): Promise<void> {
     this.logger.info(
-      `Stopping ${this.instances.size} coordination event managers`
+      `Stopping ${this.instances.size} coordination event managers``
     );
 
     const stopPromises = Array.from(this.instances.values()).map(
@@ -273,7 +273,7 @@ export class CoordinationEventManagerFactory
           }
         } catch (error) {
           this.logger.error(
-            `Failed to stop coordination event manager ${manager.name}:`,
+            `Failed to stop coordination event manager ${manager.name}:`,`
             error
           );
         }
@@ -282,7 +282,7 @@ export class CoordinationEventManagerFactory
 
     await Promise.allSettled(stopPromises);
     this.logger.info(
-      'All coordination event managers stop operation completed'
+      'All coordination event managers stop operation completed''
     );
   }
 
@@ -290,7 +290,7 @@ export class CoordinationEventManagerFactory
    * Shutdown the factory and all managed instances.
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down CoordinationEventManagerFactory');
+    this.logger.info('Shutting down CoordinationEventManagerFactory');'
 
     // Stop all managers
     await this.stopAll();
@@ -302,7 +302,7 @@ export class CoordinationEventManagerFactory
           await manager.destroy();
         } catch (error) {
           this.logger.error(
-            `Failed to destroy coordination event manager ${manager.name}:`,
+            `Failed to destroy coordination event manager ${manager.name}:`,`
             error
           );
         }
@@ -314,7 +314,7 @@ export class CoordinationEventManagerFactory
     // Clear instances
     this.instances.clear();
 
-    this.logger.info('CoordinationEventManagerFactory shutdown completed');
+    this.logger.info('CoordinationEventManagerFactory shutdown completed');'
   }
 
   /**
@@ -346,15 +346,15 @@ export class CoordinationEventManagerFactory
    * @param config
    */
   private validateConfig(config: CoordinationEventAdapterConfig): void {
-    if (!config?.name||typeof config?.name !=='string') {
+    if (!config?.name||typeof config?.name !=='string') {'
       throw new Error(
-        'Coordination event manager configuration must have a valid name'
+        'Coordination event manager configuration must have a valid name''
       );
     }
 
     if (config?.type !== EventManagerTypes.COORDINATION) {
       throw new Error(
-        `Coordination event manager must have type '${EventManagerTypes.COORDINATION}'`
+        `Coordination event manager must have type '${EventManagerTypes.COORDINATION}'``
       );
     }
 
@@ -371,7 +371,7 @@ export class CoordinationEventManagerFactory
       !config?.coordination?.correlationTTL
     ) {
       throw new Error(
-        'Coordination correlation TTL must be specified when correlation is enabled'
+        'Coordination correlation TTL must be specified when correlation is enabled''
       );
     }
 
@@ -380,7 +380,7 @@ export class CoordinationEventManagerFactory
       !config?.agentHealthMonitoring?.healthCheckInterval
     ) {
       throw new Error(
-        'Health check interval must be specified when agent health monitoring is enabled'
+        'Health check interval must be specified when agent health monitoring is enabled''
       );
     }
 
@@ -389,7 +389,7 @@ export class CoordinationEventManagerFactory
       !config?.swarmOptimization?.performanceThresholds
     ) {
       throw new Error(
-        'Performance thresholds must be specified when swarm optimization is enabled'
+        'Performance thresholds must be specified when swarm optimization is enabled''
       );
     }
 
@@ -398,7 +398,7 @@ export class CoordinationEventManagerFactory
       config?.swarmCoordination?.coordinators &&
       !Array.isArray(config?.swarmCoordination?.coordinators)
     ) {
-      throw new Error('Swarm coordinators must be an array');
+      throw new Error('Swarm coordinators must be an array');'
     }
   }
 }
@@ -431,7 +431,7 @@ export async function createCoordinationEventManager(
  * @example
  */
 export async function createSwarmCoordinationEventManager(
-  name: string = 'swarm-coordination-events'
+  name: string = 'swarm-coordination-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -481,7 +481,7 @@ export async function createSwarmCoordinationEventManager(
  * @example
  */
 export async function createAgentManagementEventManager(
-  name: string = 'agent-management-events'
+  name: string = 'agent-management-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -527,7 +527,7 @@ export async function createAgentManagementEventManager(
  * @example
  */
 export async function createTaskOrchestrationEventManager(
-  name: string = 'task-orchestration-events'
+  name: string = 'task-orchestration-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -573,7 +573,7 @@ export async function createTaskOrchestrationEventManager(
  * @example
  */
 export async function createProtocolManagementEventManager(
-  name: string = 'protocol-management-events'
+  name: string = 'protocol-management-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -611,7 +611,7 @@ export async function createProtocolManagementEventManager(
  * @example
  */
 export async function createComprehensiveCoordinationEventManager(
-  name: string = 'comprehensive-coordination-events'
+  name: string = 'comprehensive-coordination-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -677,7 +677,7 @@ export async function createComprehensiveCoordinationEventManager(
         'protocol-manager': 0.9,
       },
       swarmHealthThresholds: {
-        'coordination-latency': 75, // ms
+        'coordination-latency': 75, // ms'
         throughput: 150, // ops/sec
         reliability: 0.97,
         'agent-availability': 0.95,
@@ -713,7 +713,7 @@ export async function createComprehensiveCoordinationEventManager(
  * @example
  */
 export async function createHighPerformanceCoordinationEventManager(
-  name: string = 'high-performance-coordination-events'
+  name: string = 'high-performance-coordination-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -722,7 +722,7 @@ export async function createHighPerformanceCoordinationEventManager(
       wrapPerformanceEvents: true,
       wrapTopologyEvents: false, // Disable to reduce overhead
       wrapHealthEvents: true,
-      coordinators: ['default', 'sparc'], // Limited set for performance
+      coordinators: ['default', 'sparc'], // Limited set for performance'
     },
     agentManagement: {
       enabled: true,
@@ -762,7 +762,7 @@ export async function createHighPerformanceCoordinationEventManager(
         orchestrator: 0.85,
       },
       swarmHealthThresholds: {
-        'coordination-latency': 50, // ms - tighter for performance
+        'coordination-latency': 50, // ms - tighter for performance'
         throughput: 500, // ops/sec - higher for performance
         reliability: 0.98,
       },
@@ -788,7 +788,7 @@ export async function createHighPerformanceCoordinationEventManager(
       enablePerformanceTracking: true,
     },
     processing: {
-      strategy: 'immediate', // Immediate processing for performance
+      strategy: 'immediate', // Immediate processing for performance'
       queueSize: 5000, // Large queue for high throughput
     },
   });
@@ -801,7 +801,7 @@ export async function createHighPerformanceCoordinationEventManager(
  * @example
  */
 export async function createDevelopmentCoordinationEventManager(
-  name: string = 'development-coordination-events'
+  name: string = 'development-coordination-events''
 ): Promise<CoordinationEventAdapter> {
   return await createCoordinationEventManager(name, {
     swarmCoordination: {
@@ -852,7 +852,7 @@ export async function createDevelopmentCoordinationEventManager(
       enabled: true,
       healthCheckInterval: 10000, // 10 seconds - frequent for debugging
       agentHealthThresholds: {
-        'swarm-coordinator': 0.8, // More lenient for development
+        'swarm-coordinator': 0.8, // More lenient for development'
         'agent-manager': 0.7,
         orchestrator: 0.7,
         'task-distributor': 0.8,
@@ -860,7 +860,7 @@ export async function createDevelopmentCoordinationEventManager(
         'protocol-manager': 0.7,
       },
       swarmHealthThresholds: {
-        'coordination-latency': 200, // ms - more lenient
+        'coordination-latency': 200, // ms - more lenient'
         throughput: 50, // ops/sec - lower for development
         reliability: 0.8,
         'agent-availability': 0.7,

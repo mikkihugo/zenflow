@@ -30,13 +30,13 @@ import {
   type ComplexityEstimate,
 } from './task-complexity-estimator';
 
-const logger = getLogger('AutonomousOptimizationEngine');
+const logger = getLogger('AutonomousOptimizationEngine');'
 
 export interface OptimizationContext {
   readonly task: string;
   readonly basePrompt: string;
   readonly agentRole?: string;
-  readonly priority?: 'low|medium|high';
+  readonly priority?: 'low' | 'medium' | 'high';
   readonly context?: Record<string, any>;
   readonly expectedComplexity?: number; // 0-1 scale
   readonly timeConstraint?: number; // milliseconds
@@ -45,7 +45,7 @@ export interface OptimizationContext {
 export interface OptimizationResult {
   readonly optimizedPrompt: string;
   readonly confidence: number;
-  readonly method: 'dspy|ml|hybrid|fallback';
+  readonly method: 'dspy|ml|hybrid|fallback;
   readonly processingTime: number;
   readonly improvementScore: number; // Estimated improvement over original
   readonly reasoning: string[];
@@ -98,7 +98,7 @@ export class AutonomousOptimizationEngine {
   private readonly minDataPoints = 5; // Minimum data before making autonomous decisions
 
   constructor() {
-    logger.info('🤖 Autonomous Optimization Engine created');
+    logger.info('🤖 Autonomous Optimization Engine created');'
   }
 
   /**
@@ -108,7 +108,7 @@ export class AutonomousOptimizationEngine {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Autonomous Optimization Engine...');
+      logger.info('🚀 Initializing Autonomous Optimization Engine...');'
 
       this.dspyBridge = dspyBridge||null;
 
@@ -124,7 +124,7 @@ export class AutonomousOptimizationEngine {
       this.initializeMethodPerformance();
 
       this.initialized = true;
-      logger.info('✅ Autonomous Optimization Engine initialized successfully');
+      logger.info('✅ Autonomous Optimization Engine initialized successfully');'
     } catch (error) {
       logger.error(
         '❌ Failed to initialize Autonomous Optimization Engine:',
@@ -141,13 +141,13 @@ export class AutonomousOptimizationEngine {
     context: OptimizationContext
   ): Promise<OptimizationResult> {
     if (!this.initialized) {
-      throw new Error('Autonomous Optimization Engine not initialized');
+      throw new Error('Autonomous Optimization Engine not initialized');'
     }
 
     const startTime = Date.now();
 
     try {
-      logger.info(`🤖 Autonomous optimization for: "${context.task}"`);
+      logger.info(`🤖 Autonomous optimization for: "${context.task}"`);`
 
       // 1. Estimate task complexity automatically
       let complexityEstimate: ComplexityEstimate|null = null;
@@ -168,10 +168,10 @@ export class AutonomousOptimizationEngine {
           };
 
           logger.info(
-            `🎯 Task complexity estimated: ${(complexityEstimate.estimatedComplexity * 100).toFixed(1)}% (${complexityEstimate.difficultyLevel})`
+            `🎯 Task complexity estimated: ${(complexityEstimate.estimatedComplexity * 100).toFixed(1)}% (${complexityEstimate.difficultyLevel})``
           );
         } catch (error) {
-          logger.debug('Complexity estimation failed:', error);
+          logger.debug('Complexity estimation failed:', error);'
         }
       }
 
@@ -180,7 +180,7 @@ export class AutonomousOptimizationEngine {
         context,
         complexityEstimate
       );
-      logger.info(`🎯 Autonomous decision: Using ${selectedMethod} method`);
+      logger.info(`🎯 Autonomous decision: Using ${selectedMethod} method`);`
 
       // 3. Execute optimization using selected method
       const result = await this.executeOptimization(context, selectedMethod);
@@ -206,17 +206,17 @@ export class AutonomousOptimizationEngine {
             context.agentRole
           );
         } catch (error) {
-          logger.debug('Complexity learning failed:', error);
+          logger.debug('Complexity learning failed:', error);'
         }
       }
 
       logger.info(
-        `✅ Autonomous optimization complete: ${selectedMethod} method, confidence ${result.confidence.toFixed(2)}`
+        `✅ Autonomous optimization complete: ${selectedMethod} method, confidence ${result.confidence.toFixed(2)}``
       );
 
       return result;
     } catch (error) {
-      logger.error('❌ Autonomous optimization failed:', error);
+      logger.error('❌ Autonomous optimization failed:', error);'
 
       // Fallback to simple optimization
       return {
@@ -240,7 +240,7 @@ export class AutonomousOptimizationEngine {
   ): Promise<void> {
     try {
       logger.debug(
-        `📚 Learning from feedback: ${result.method} method, success rate ${feedback.actualSuccessRate.toFixed(2)}`
+        `📚 Learning from feedback: ${result.method} method, success rate ${feedback.actualSuccessRate.toFixed(2)}``
       );
 
       // Find the optimization record
@@ -261,9 +261,9 @@ export class AutonomousOptimizationEngine {
       // Analyze if we should adjust our method selection strategy
       await this.adaptSelectionStrategy();
 
-      logger.debug(`🎯 Method performance updated for ${result.method}`);
+      logger.debug(`🎯 Method performance updated for ${result.method}`);`
     } catch (error) {
-      logger.error('❌ Failed to learn from feedback:', error);
+      logger.error('❌ Failed to learn from feedback:', error);'
     }
   }
 
@@ -278,7 +278,7 @@ export class AutonomousOptimizationEngine {
     feedback?: string;
   }): Promise<void> {
     try {
-      logger.debug(`📊 Recording optimization result for continuous learning`);
+      logger.debug(`📊 Recording optimization result for continuous learning`);`
 
       // Convert to feedback format and learn from it
       const feedback: OptimizationFeedback = {
@@ -304,9 +304,9 @@ export class AutonomousOptimizationEngine {
         );
       }
 
-      logger.debug(`✅ Optimization result recorded and learned from`);
+      logger.debug(`✅ Optimization result recorded and learned from`);`
     } catch (error) {
-      logger.error('❌ Failed to record optimization result:', error);
+      logger.error('❌ Failed to record optimization result:', error);'
     }
   }
 
@@ -320,7 +320,7 @@ export class AutonomousOptimizationEngine {
     autoTuning?: boolean;
   }): Promise<void> {
     try {
-      logger.info(`🔄 Enabling continuous optimization with config:`, config);
+      logger.info(`🔄 Enabling continuous optimization with config:`, config);`
 
       // Async initialization of optimization subsystems
       await this.initializeOptimizationInfrastructure(config);
@@ -328,8 +328,8 @@ export class AutonomousOptimizationEngine {
 
       // Update learning parameters
       if (config.learningRate) {
-        // Store in private field (we'll need to make learningRate mutable)
-        Object.defineProperty(this, 'learningRate', {
+        // Store in private field (we'll need to make learningRate mutable)'
+        Object.defineProperty(this, 'learningRate', {'
           value: config.learningRate,
           writable: true,
         });
@@ -337,7 +337,7 @@ export class AutonomousOptimizationEngine {
       }
 
       if (config.adaptationThreshold) {
-        Object.defineProperty(this, 'adaptationThreshold', {
+        Object.defineProperty(this, 'adaptationThreshold', {'
           value: config.adaptationThreshold,
           writable: true,
         });
@@ -352,7 +352,7 @@ export class AutonomousOptimizationEngine {
         setInterval(async () => {
           try {
             await this.adaptSelectionStrategy();
-            logger.debug('🔄 Continuous optimization evaluation completed');
+            logger.debug('🔄 Continuous optimization evaluation completed');'
           } catch (error) {
             logger.error(
               '❌ Continuous optimization evaluation failed:',
@@ -362,9 +362,9 @@ export class AutonomousOptimizationEngine {
         }, config.evaluationInterval);
       }
 
-      logger.info('✅ Continuous optimization enabled successfully');
+      logger.info('✅ Continuous optimization enabled successfully');'
     } catch (error) {
-      logger.error('❌ Failed to enable continuous optimization:', error);
+      logger.error('❌ Failed to enable continuous optimization:', error);'
       throw error;
     }
   }
@@ -392,9 +392,9 @@ export class AutonomousOptimizationEngine {
 
         const trend =
           perf.recentTrend > 0.05
-            ? 'improving'
+            ? 'improving' | 'stable' | 'declining'''
             : perf.recentTrend < -0.05
-              ? 'declining'
+              ? ''improving' | 'stable' | 'declining''
               : 'stable';
 
         return { method, score, trend };
@@ -402,7 +402,7 @@ export class AutonomousOptimizationEngine {
       .sort((a, b) => b.score - a.score);
 
     const bestMethod =
-      methodScores.length > 0 ? methodScores[0].method : 'hybrid';
+      methodScores.length > 0 ? methodScores[0].method : 'hybrid;
 
     // Calculate adaptation rate (how often we switch methods)
     const recentOptimizations = this.optimizationHistory.slice(-20);
@@ -446,35 +446,35 @@ export class AutonomousOptimizationEngine {
   private async selectOptimalMethod(
     context: OptimizationContext,
     complexityEstimate?: ComplexityEstimate|null
-  ): Promise<'dspy|ml|hybrid'> {
+  ): Promise<'dspy|ml|hybrid'> {'
     // Async method selection analysis
     const selectionStrategy = await this.analyzeSelectionStrategy(context, complexityEstimate);
     const methodPerformanceHistory = await this.getMethodPerformanceHistory();
 
-    // If we don't have enough data, use complexity estimate guidance
+    // If we don't have enough data, use complexity estimate guidance'
     if (this.optimizationHistory.length < this.minDataPoints) {
       if (complexityEstimate?.suggestedMethod) {
         logger.debug(
-          `🎯 Using complexity-based method suggestion: ${complexityEstimate.suggestedMethod}`
+          `🎯 Using complexity-based method suggestion: ${complexityEstimate.suggestedMethod}``
         );
         return complexityEstimate.suggestedMethod;
       }
       logger.debug(
-        '🎯 Insufficient data for autonomous decision, using hybrid approach'
+        '🎯 Insufficient data for autonomous decision, using hybrid approach''
       );
-      return 'hybrid';
+      return 'hybrid;
     }
 
     // Async ML-enhanced method scoring
     const enhancedScores = await this.calculateEnhancedMethodScores(context, methodPerformanceHistory);
 
     // Calculate method scores based on context
-    const dspyScore = this.calculateMethodScore('dspy', context) + enhancedScores.dspyBoost;
-    const mlScore = this.calculateMethodScore('ml', context) + enhancedScores.mlBoost;
-    const hybridScore = this.calculateMethodScore('hybrid', context) + enhancedScores.hybridBoost;
+    const dspyScore = this.calculateMethodScore('dspy', context) + enhancedScores.dspyBoost;'
+    const mlScore = this.calculateMethodScore('ml', context) + enhancedScores.mlBoost;'
+    const hybridScore = this.calculateMethodScore('hybrid', context) + enhancedScores.hybridBoost;'
 
     logger.debug(
-      `📊 Enhanced method scores - DSPy: ${dspyScore.toFixed(2)}, ML: ${mlScore.toFixed(2)}, Hybrid: ${hybridScore.toFixed(2)}`
+      `📊 Enhanced method scores - DSPy: ${dspyScore.toFixed(2)}, ML: ${mlScore.toFixed(2)}, Hybrid: ${hybridScore.toFixed(2)}``
     );
 
     // Apply selection strategy insights
@@ -482,11 +482,11 @@ export class AutonomousOptimizationEngine {
 
     // Select method with highest score
     if (hybridScore >= dspyScore && hybridScore >= mlScore) {
-      return 'hybrid';
+      return 'hybrid;
     } else if (dspyScore >= mlScore) {
-      return 'dspy';
+      return 'dspy;
     } else {
-      return 'ml';
+      return 'ml;
     }
   }
 
@@ -508,20 +508,20 @@ export class AutonomousOptimizationEngine {
     score += Math.max(0, performance.recentTrend) * 0.1; // Bonus for improving trend
 
     // Context-specific adjustments
-    if (context.priority ==='high' && performance.averageTime < 3000) {
+    if (context.priority ==='high' && performance.averageTime < 3000) {'
       score += 0.1; // Bonus for fast methods in high priority tasks
     }
 
     if (context.expectedComplexity && context.expectedComplexity > 0.7) {
       // Complex tasks might benefit from DSPy
-      if (method === 'dspy') score += 0.15;
-      if (method === 'hybrid') score += 0.1;
+      if (method === 'dspy') score += 0.15;'
+      if (method === 'hybrid') score += 0.1;'
     }
 
     if (context.timeConstraint && context.timeConstraint < 2000) {
       // Time-constrained tasks favor ML
-      if (method === 'ml') score += 0.2;
-      if (method === 'hybrid') score += 0.1;
+      if (method === 'ml') score += 0.2;'
+      if (method === 'hybrid') score += 0.1;'
     }
 
     return Math.max(0, Math.min(1, score));
@@ -529,22 +529,22 @@ export class AutonomousOptimizationEngine {
 
   private async executeOptimization(
     context: OptimizationContext,
-    method: 'dspy|ml|hybrid'
+    method: 'dspy|ml|hybrid''
   ): Promise<OptimizationResult> {
     const startTime = Date.now();
 
     switch (method) {
-      case 'dspy':
+      case 'dspy':'
         return await this.executeDSPyOptimization(context, startTime);
 
-      case 'ml':
+      case 'ml':'
         return await this.executeMLOptimization(context, startTime);
 
-      case 'hybrid':
+      case 'hybrid':'
         return await this.executeHybridOptimization(context, startTime);
 
       default:
-        throw new Error(`Unknown optimization method: ${method}`);
+        throw new Error(`Unknown optimization method: ${method}`);`
     }
   }
 
@@ -553,13 +553,13 @@ export class AutonomousOptimizationEngine {
     startTime: number
   ): Promise<OptimizationResult> {
     if (!this.dspyBridge) {
-      throw new Error('DSPy bridge not available');
+      throw new Error('DSPy bridge not available');'
     }
 
     const coordinationTask: CoordinationTask = {
-      id: `auto-dspy-${Date.now()}`,
+      id: `auto-dspy-${Date.now()}`,`
       type: 'generation',
-      input: `Optimize this prompt: ${context.basePrompt}`,
+      input: `Optimize this prompt: ${context.basePrompt}`,`
       context: {
         ...context.context,
         originalPrompt: context.basePrompt,
@@ -585,8 +585,8 @@ export class AutonomousOptimizationEngine {
       processingTime: Date.now() - startTime,
       improvementScore: result.confidence * 1.2, // DSPy typically provides good improvements
       reasoning: [
-        `DSPy optimization with ${coordinationTask.priority} priority`,
-        `Confidence: ${result.confidence.toFixed(2)}`,
+        `DSPy optimization with ${coordinationTask.priority} priority`,`
+        `Confidence: ${result.confidence.toFixed(2)}`,`
       ],
     };
   }
@@ -596,7 +596,7 @@ export class AutonomousOptimizationEngine {
     startTime: number
   ): Promise<OptimizationResult> {
     if (!this.smartOptimizer) {
-      throw new Error('Smart ML optimizer not available');
+      throw new Error('Smart ML optimizer not available');'
     }
 
     const result = await this.smartOptimizer.optimizePrompt(
@@ -616,7 +616,7 @@ export class AutonomousOptimizationEngine {
       processingTime: Date.now() - startTime,
       improvementScore: result.improvementFactor,
       reasoning: [
-        `ML optimization applied ${result.appliedPatterns.length} patterns`,
+        `ML optimization applied ${result.appliedPatterns.length} patterns`,`
         ...result.reasoning,
       ],
     };
@@ -663,11 +663,11 @@ export class AutonomousOptimizationEngine {
           ],
         };
       } catch (error) {
-        logger.debug('DSPy enhancement failed, using ML result:', error);
+        logger.debug('DSPy enhancement failed, using ML result:', error);'
       }
     }
 
-    // Return ML result if DSPy enhancement wasn't needed or failed
+    // Return ML result if DSPy enhancement wasn't needed or failed'
     return {
       ...mlResult,
       method: 'hybrid',
@@ -680,7 +680,7 @@ export class AutonomousOptimizationEngine {
 
   private initializeMethodPerformance(): void {
     // Initialize with baseline performance estimates
-    const methods = ['dspy', 'ml', 'hybrid'];
+    const methods = ['dspy', 'ml', 'hybrid'];'
 
     methods.forEach((method) => {
       this.methodPerformance.set(method, {
@@ -694,7 +694,7 @@ export class AutonomousOptimizationEngine {
     });
 
     logger.debug(
-      '📊 Initialized baseline performance for 3 optimization methods'
+      '📊 Initialized baseline performance for 3 optimization methods''
     );
   }
 
@@ -835,11 +835,11 @@ export class AutonomousOptimizationEngine {
 
     if (performanceSpread > this.adaptationThreshold * 2) {
       logger.info(
-        '🎯 High performance spread detected - increasing adaptation sensitivity'
+        '🎯 High performance spread detected - increasing adaptation sensitivity''
       );
     }
 
-    logger.debug('🧠 Adaptation strategy analysis complete');
+    logger.debug('🧠 Adaptation strategy analysis complete');'
   }
 
   /**
@@ -865,7 +865,7 @@ export class AutonomousOptimizationEngine {
 
     // Method used indicates complexity
     const methodComplexity =
-      result.method === 'dspy' ? 0.2 : result.method === 'hybrid' ? 0.15 : 0.1;
+      result.method === 'dspy' ? 0.2 : result.method === 'hybrid' ? 0.15 : 0.1;'
     complexity += methodComplexity;
 
     // Improvement score (low improvement suggests high baseline complexity)
@@ -912,7 +912,7 @@ export class AutonomousOptimizationEngine {
     }
 
     // Priority suggests urgency which can indicate complexity
-    if (context.priority === 'high') {
+    if (context.priority === 'high') {'
       contextComplexity += 0.1;
     }
 
@@ -932,7 +932,7 @@ export class AutonomousOptimizationEngine {
    */
   private async initializeOptimizationInfrastructure(_config: any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug('🏗️ Optimization infrastructure initialized');
+    logger.debug('🏗️ Optimization infrastructure initialized');'
   }
 
   /**
@@ -944,7 +944,7 @@ export class AutonomousOptimizationEngine {
       profileType: 'adaptive',
       learningCapacity: config.learningRate || 0.1,
       adaptationLevel: config.adaptationThreshold || 0.15,
-      optimizationFocus: ['performance', 'accuracy', 'efficiency']
+      optimizationFocus: ['performance', 'accuracy', 'efficiency']'
     };
   }
 
@@ -954,7 +954,7 @@ export class AutonomousOptimizationEngine {
   private async validateLearningRate(rate: number): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
     if (rate < 0.01 || rate > 0.5) {
-      logger.warn(`Learning rate ${rate} is outside optimal range [0.01, 0.5]`);
+      logger.warn(`Learning rate ${rate} is outside optimal range [0.01, 0.5]`);`
     }
   }
 
@@ -963,7 +963,7 @@ export class AutonomousOptimizationEngine {
    */
   private async calibrateAdaptationThreshold(threshold: number): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 75));
-    logger.debug(`Adaptation threshold calibrated to ${threshold}`);
+    logger.debug(`Adaptation threshold calibrated to ${threshold}`);`
   }
 
   /**
@@ -971,7 +971,7 @@ export class AutonomousOptimizationEngine {
    */
   private async setupOptimizationStrategy(profile: any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 125));
-    logger.debug(`Optimization strategy configured: ${profile.profileType}`);
+    logger.debug(`Optimization strategy configured: ${profile.profileType}`);`
   }
 
   /**
@@ -982,7 +982,7 @@ export class AutonomousOptimizationEngine {
     return {
       strategy: 'contextual_selection',
       confidence: 0.84,
-      recommendations: ['prioritize_accuracy', 'consider_resource_constraints']
+      recommendations: ['prioritize_accuracy', 'consider_resource_constraints']'
     };
   }
 
@@ -992,9 +992,9 @@ export class AutonomousOptimizationEngine {
   private async getMethodPerformanceHistory(): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return {
-      dspy: { averageScore: 0.82, trendDirection: 'improving' },
-      ml: { averageScore: 0.76, trendDirection: 'stable' },
-      hybrid: { averageScore: 0.88, trendDirection: 'excellent' }
+      dspy: { averageScore: 0.82, trendDirection: 'improving' | 'stable' | 'declining'' },
+      ml: { averageScore: 0.76, trendDirection:'improving' | 'stable' | 'declining'},
+      hybrid: { averageScore: 0.88, trendDirection: 'excellent' }'
     };
   }
 
@@ -1015,7 +1015,7 @@ export class AutonomousOptimizationEngine {
    */
   private async applySelectionInsights(strategy: any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    logger.debug(`Applied selection insights from ${strategy.strategy}`);
+    logger.debug(`Applied selection insights from ${strategy.strategy}`);`
   }
 
   /**
@@ -1091,7 +1091,7 @@ export class AutonomousOptimizationEngine {
     return {
       feedbackQuality: 0.89,
       patternConsistency: 0.76,
-      learningOpportunities: ['accuracy_improvement', 'speed_optimization']
+      learningOpportunities: ['accuracy_improvement', 'speed_optimization']'
     };
   }
 
@@ -1103,7 +1103,7 @@ export class AutonomousOptimizationEngine {
     return {
       rateAdjustment: 0.02,
       focusAreas: patterns.learningOpportunities,
-      priorityLevel: 'medium'
+      priorityLevel: 'medium''
     };
   }
 
@@ -1145,7 +1145,7 @@ export class AutonomousOptimizationEngine {
     return {
       currentStrategy: 'adaptive_selection',
       effectiveness: 0.81,
-      improvementAreas: ['resource_efficiency', 'accuracy_optimization']
+      improvementAreas: ['resource_efficiency', 'accuracy_optimization']'
     };
   }
 
@@ -1158,10 +1158,10 @@ export class AutonomousOptimizationEngine {
       recommendations: [
         'increase_hybrid_preference',
         'optimize_resource_allocation',
-        'enhance_learning_rate'
+        'enhance_learning_rate''
       ],
       confidence: 0.87,
-      priority: 'high'
+      priority: 'high''
     };
   }
 
@@ -1173,7 +1173,7 @@ export class AutonomousOptimizationEngine {
     return {
       dominantPattern: 'accuracy_trend',
       patternStrength: 0.79,
-      insights: ['hybrid_outperforms_others', 'dspy_good_for_complex_tasks']
+      insights: ['hybrid_outperforms_others', 'dspy_good_for_complex_tasks']'
     };
   }
 
@@ -1182,7 +1182,7 @@ export class AutonomousOptimizationEngine {
    */
   private async applyStrategyAdaptations(patterns: any, _recommendations: any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug(`Applied strategy adaptations based on ${patterns.dominantPattern}`);
+    logger.debug(`Applied strategy adaptations based on ${patterns.dominantPattern}`);`
   }
 }
 

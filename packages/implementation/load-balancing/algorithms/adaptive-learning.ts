@@ -95,7 +95,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
-      throw new Error('No available agents');
+      throw new Error('No available agents');'
     }
 
     // Extract current context
@@ -166,7 +166,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const mostUsedStrategy = strategies.reduce(
       (best, current) =>
         current?.usageCount > best.usageCount ? current : best,
-      strategies[0]||{ name:'none', usageCount: 0 }
+      strategies[0]||{ name:'none', usageCount: 0 }'
     );
 
     return {
@@ -350,11 +350,11 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     // Strategy selection based on method
     switch (this.config.strategySelectionMethod) {
-      case'epsilon_greedy':
+      case'epsilon_greedy':'
         return this.epsilonGreedySelection();
-      case 'ucb':
+      case 'ucb':'
         return this.upperConfidenceBoundSelection();
-      case 'thompson_sampling':
+      case 'thompson_sampling':'
         return this.thompsonSamplingSelection();
       default:
         return this.epsilonGreedySelection();
@@ -371,7 +371,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       return strategies[Math.floor(Math.random() * strategies.length)];
     }
     // Exploit: select best strategy
-    let bestStrategy = ';
+    let bestStrategy = ;
     let bestScore = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -382,7 +382,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy|'|Array.from(this.strategies.keys())[0];
+    return bestStrategy|'|Array.from(this.strategies.keys())[0];'
   }
 
   /**
@@ -394,7 +394,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       0
     );
 
-    let bestStrategy =';
+    let bestStrategy =;
     let bestUCB = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -415,14 +415,14 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy|'|Array.from(this.strategies.keys())[0];
+    return bestStrategy|'|Array.from(this.strategies.keys())[0];'
   }
 
   /**
    * Thompson sampling strategy selection.
    */
   private thompsonSamplingSelection(): string {
-    let bestStrategy =';
+    let bestStrategy =;
     let bestSample = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -439,7 +439,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy|'|Array.from(this.strategies.keys())[0];
+    return bestStrategy|'|Array.from(this.strategies.keys())[0];'
   }
 
   /**
@@ -463,12 +463,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     let reasoning: string;
 
     switch (strategyName) {
-      case'least_connections':
+      case'least_connections':'
         selectedAgent = this.selectByLeastConnections(availableAgents, metrics);
         reasoning = 'Selected agent with least active connections';
         break;
 
-      case 'weighted_round_robin':
+      case 'weighted_round_robin':'
         selectedAgent = this.selectByWeightedRoundRobin(
           availableAgents,
           metrics
@@ -476,7 +476,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         reasoning = 'Selected using weighted round robin based on performance';
         break;
 
-      case 'resource_aware':
+      case 'resource_aware':'
         selectedAgent = this.selectByResourceAwareness(
           availableAgents,
           metrics,
@@ -485,12 +485,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         reasoning = 'Selected based on resource availability and requirements';
         break;
 
-      case 'response_time_based':
+      case 'response_time_based':'
         selectedAgent = this.selectByResponseTime(availableAgents, metrics);
         reasoning = 'Selected agent with best average response time';
         break;
 
-      case 'capability_matching':
+      case 'capability_matching':'
         selectedAgent = this.selectByCapabilityMatch(availableAgents, task);
         reasoning = 'Selected agent with best capability match';
         break;
@@ -501,7 +501,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
           task
         );
         reasoning =
-          'Selected using hybrid heuristic combining multiple factors';
+          'Selected using hybrid heuristic combining multiple factors;
         break;
     }
 
@@ -512,7 +512,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence: this.strategies.get(strategyName)?.confidence||0.5,
-      reasoning: `${reasoning} (strategy: ${strategyName})`,
+      reasoning: `${reasoning} (strategy: ${strategyName})`,`
       alternativeAgents: alternatives,
       estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime||1000,
       expectedQuality: this.strategies.get(strategyName)?.successRate||0.8,
@@ -802,7 +802,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   private sampleBeta(_alpha: number, _beta: number): number {
     // Simplified beta distribution sampling
-    // In practice, you'd use a proper statistical library
+    // In practice, you'd use a proper statistical library'
     return Math.random(); // Placeholder
   }
 
@@ -811,7 +811,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const timeSlot = Math.floor(context.timeOfDay / 4); // 4-hour slots
     const loadLevel = Math.floor(context.systemLoad / 2); // Load buckets
 
-    return `${timeSlot}_${context.dayOfWeek}_${loadLevel}_${context.taskType}_${context.agentCount}`;
+    return `${timeSlot}_${context.dayOfWeek}_${loadLevel}_${context.taskType}_${context.agentCount}`;`
   }
 
   private findSimilarPattern(
@@ -890,7 +890,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private encodeState(features: Record<string, number>): string {
     // Encode state features into a string for Q-learning
     return Object.entries(features)
-      .map(([key, value]) => `${key}:${Math.floor(value * 10)}`)
+      .map(([key, value]) => `${key}:${Math.floor(value * 10)}`)`
       .join(|);
   }
 
@@ -903,7 +903,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       timeOfDay: decision.features.timeOfDay,
       dayOfWeek: new Date(decision.timestamp).getDay(),
       systemLoad: decision.features.systemLoad,
-      taskType: decision.taskId.split('_')[0], // Extract task type from ID
+      taskType: decision.taskId.split('_')[0], // Extract task type from ID'
       agentCount: decision.features.agentCount,
     } as PatternContext;
 

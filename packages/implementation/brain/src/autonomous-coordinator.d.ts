@@ -30,7 +30,7 @@ export interface SystemMetrics {
   readonly timestamp: number;
 }
 export interface AutonomousDecision {
-  readonly type: 'resource_allocation|agent_routing|performance_tuning|scaling|optimization';
+  readonly type: 'resource_allocation|agent_routing|performance_tuning|scaling|optimization;
   readonly action: string;
   readonly reasoning: string[];
   readonly confidence: number;
@@ -39,11 +39,11 @@ export interface AutonomousDecision {
   readonly parameters: Record<string, any>;
 }
 export interface ScalingDecision {
-  readonly action: 'scale_up|scale_down|maintain|optimize';
+  readonly action: 'scale_up|scale_down|maintain|optimize;
   readonly targetAgents: number;
   readonly confidence: number;
   readonly reasoning: string;
-  readonly urgency: 'low|medium|high|critical';
+  readonly urgency: 'low|medium|high|critical;
 }
 /**
  * Autonomous Coordinator - Self-Governing Brain System
@@ -105,7 +105,7 @@ export declare class AutonomousCoordinator {
     decisionsByType: Record<string, number>;
     averageConfidence: number;
     recentTrends: string[];
-    systemHealth: 'excellent|good|fair|poor';
+    systemHealth: 'excellent|good|fair|poor;
     autonomyLevel: number;
   };
   private calculatePressureLevel;

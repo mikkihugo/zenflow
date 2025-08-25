@@ -169,8 +169,8 @@ export interface PerformanceConfig {
   enableQueryPlan: boolean;
   cacheSize: number;
   walMode?: boolean; // SQLite WAL mode
-  synchronous?: 'off|normal|full'; // SQLite synchronous mode
-  journalMode?: 'delete|truncate|persist|memory|wal';
+  synchronous?: 'off|normal|full'; // SQLite synchronous mode'
+  journalMode?: 'delete|truncate|persist|memory|wal;
 }
 
 /**
@@ -441,7 +441,7 @@ export interface ExecutionMetadata {
 export interface Warning {
   code: string;
   message: string;
-  severity: 'info|warning|error';
+  severity: 'info' | 'warning' | 'error';
   sqlState?: string;
 }
 
@@ -527,7 +527,7 @@ export interface SchemaInfo {
 export interface TableInfo {
   name: string;
   schema?: string;
-  type: 'table|view|materialized_view|temporary';
+  type: 'table|view|materialized_view|temporary;
   columns: ColumnInfo[];
   constraints: ConstraintInfo[];
   indexes: string[];
@@ -606,7 +606,7 @@ export enum IndexType {
 export interface IndexColumn {
   name: string;
   position: number;
-  direction: 'asc|desc';
+  direction: 'asc|desc;
   nullsFirst?: boolean;
   expression?: string;
 }
@@ -810,7 +810,7 @@ export interface VectorSearchOptions {
  */
 export interface VectorFilter {
   conditions: VectorCondition[];
-  operator:'and|or';
+  operator:'and|or;
 }
 
 /**
@@ -818,7 +818,7 @@ export interface VectorFilter {
  */
 export interface VectorCondition {
   field: string;
-  operator: 'eq'|'ne'|'gt'|'gte'|'lt'|'lte'|'in'|'nin'|'contains';
+  operator: 'eq'|'ne'|'gt'|'gte'|'lt'|'lte'|'in'|'nin'|'contains;
   value: QueryValue|QueryValue[];
 }
 
@@ -864,7 +864,7 @@ export interface GraphRelationship extends Entity {
   fromNode: UUID;
   toNode: UUID;
   properties?: Record<string, QueryValue>;
-  direction:'incoming|outgoing|both';
+  direction:'incoming' | 'outgoing' | 'both';
 }
 
 /**
@@ -872,7 +872,7 @@ export interface GraphRelationship extends Entity {
  */
 export interface GraphQueryOptions {
   maxDepth?: number;
-  direction?: 'in|out|both';
+  direction?: 'in' | 'out' | 'both';
   nodeLabels?: string[];
   relationshipTypes?: string[];
   properties?: Record<string, QueryValue>;
@@ -1021,12 +1021,12 @@ export interface LockStats {
  * Replication statistics
  */
 export interface ReplicationStats {
-  role: 'primary|secondary|standby';
+  role: 'primary' | 'secondary' | 'standby';
   lag: number;
   lastSyncTime: Timestamp;
   replicatedTransactions: number;
   failedReplications: number;
-  syncStatus: 'syncing|in_sync|delayed|error';
+  syncStatus: 'syncing|in_sync|delayed|error;
 }
 
 // =============================================================================
@@ -1122,7 +1122,7 @@ export interface AnalyzeResult {
  * Analyze improvement recommendations
  */
 export interface AnalyzeImprovement {
-  type: 'index|query|schema|configuration';
+  type: 'index|query|schema|configuration;
   priority: Priority;
   description: string;
   estimatedImpact: number;
@@ -1137,8 +1137,8 @@ export interface AnalyzeImprovement {
  * Database-specific error types
  */
 export interface DatabaseError extends ValidationError {
-  type: 'DatabaseError';
-  category: 'connection|query|transaction|schema|constraint';
+  type: 'DatabaseError;
+  category: 'connection|query|transaction|schema|constraint;
   sqlState?: string;
   errorCode?: string|number;
   databaseType: DatabaseType;
@@ -1149,7 +1149,7 @@ export interface DatabaseError extends ValidationError {
  * Connection-specific error types
  */
 export interface ConnectionError extends DatabaseError {
-  category:'connection';
+  category:'connection;
   host?: string;
   port?: number;
   database?: string;
@@ -1160,7 +1160,7 @@ export interface ConnectionError extends DatabaseError {
  * Query-specific error types
  */
 export interface QueryError extends DatabaseError {
-  category: 'query';
+  category: 'query;
   query?: string;
   parameters?: QueryParams;
   line?: number;
@@ -1172,7 +1172,7 @@ export interface QueryError extends DatabaseError {
  * Transaction-specific error types
  */
 export interface TransactionError extends DatabaseError {
-  category: 'transaction';
+  category: 'transaction;
   transactionId?: UUID;
   isolationLevel?: IsolationLevel;
   deadlockDetected?: boolean;
@@ -1182,8 +1182,8 @@ export interface TransactionError extends DatabaseError {
  * Schema-specific error types
  */
 export interface SchemaError extends DatabaseError {
-  category: 'schema';
-  objectType?: 'table|column|index|constraint';
+  category: 'schema;
+  objectType?: 'table|column|index|constraint;
   objectName?: string;
 }
 
@@ -1191,7 +1191,7 @@ export interface SchemaError extends DatabaseError {
  * Constraint violation error types
  */
 export interface ConstraintError extends DatabaseError {
-  category: 'constraint';
+  category: 'constraint;
   constraintType: ConstraintType;
   constraintName?: string;
   tableName?: string;
@@ -1215,7 +1215,7 @@ export type SchemaOperationResult = Result<void, SchemaError>;
  * Database health status
  */
 export interface HealthStatus {
-  status: 'healthy|degraded|critical|offline';
+  status: 'healthy|degraded|critical|offline;
   score: number; // 0.0 - 1.0
   checks: HealthCheck[];
   lastCheck: Timestamp;
@@ -1228,7 +1228,7 @@ export interface HealthStatus {
  */
 export interface HealthCheck {
   name: string;
-  status: 'pass|warn|fail';
+  status: 'pass' | 'warn' | 'fail';
   duration: number;
   output?: string;
   observedValue?: number;
@@ -1258,7 +1258,7 @@ export interface MigrationInfo {
  * Table alteration operations
  */
 export interface TableAlteration {
-  type:|'add_column|drop_column|modify_column|rename_column|add_constraint|drop_constraint';
+  type:|'add_column|drop_column|modify_column|rename_column|add_constraint|drop_constraint;
   columnName?: string;
   newColumnName?: string;
   columnDefinition?: ColumnDefinition;
@@ -1299,8 +1299,8 @@ export interface TriggerInfo {
   name: string;
   table: string;
   schema?: string;
-  event: 'INSERT' | 'UPDATE' | 'DELETE';
-  timing: 'BEFORE' | 'AFTER' | 'INSTEAD OF';
+  event: 'INSERT' | 'UPDATE' | 'DELETE;
+  timing: 'BEFORE' | 'AFTER' | 'INSTEAD OF;
   definition: string;
   enabled: boolean;
   comment?: string;
@@ -1327,7 +1327,7 @@ export interface ConstraintInfo {
 export interface ProcedureParameter {
   name: string;
   dataType: DataType;
-  mode: 'IN|OUT|INOUT';
+  mode: 'IN' | 'OUT' | 'INOUT';
   defaultValue?: QueryValue;
 }
 
@@ -1344,7 +1344,7 @@ export interface FunctionParameter {
  * Partitioning options
  */
 export interface PartitioningOptions {
-  type: 'range|list|hash|key';
+  type: 'range|list|hash|key;
   column: string;
   partitions: PartitionDefinition[];
 }
@@ -1505,51 +1505,51 @@ export const DefaultDatabaseConfigs: Record<
 export const DatabaseTypeGuards = {
   isDatabaseConfig: (obj: unknown): obj is DatabaseConfig => {
     return (
-      typeof obj === 'object' &&
+      typeof obj === 'object' &&'
       obj !== null &&
-      'type' in obj &&
-      'database' in obj &&
+      'type' in obj &&'
+      'database' in obj &&'
       Object.values(DatabaseType).includes((obj as any).type)
     );
   },
 
   isQueryResult: (obj: unknown): obj is QueryResult => {
     return (
-      typeof obj === 'object' &&
+      typeof obj === 'object' &&'
       obj !== null &&
-      'rows' in obj &&
-      'fields' in obj &&
-      'rowCount' in obj &&
-      'executionTime' in obj
+      'rows' in obj &&'
+      'fields' in obj &&'
+      'rowCount' in obj &&'
+      'executionTime' in obj'
     );
   },
 
   isVectorDocument: (obj: unknown): obj is VectorDocument => {
     return (
-      typeof obj === 'object' &&
+      typeof obj === 'object' &&'
       obj !== null &&
-      'vector'in obj &&
+      'vector'in obj &&'
       (Array.isArray((obj as any).vector)||(obj as any).vector instanceof Float32Array)
     );
   },
 
   isGraphNode: (obj: unknown): obj is GraphNode => {
     return (
-      typeof obj ==='object' &&
+      typeof obj ==='object' &&'
       obj !== null &&
-      'label' in obj &&
-      'properties' in obj &&
-      typeof (obj as any).label === 'string'
+      'label' in obj &&'
+      'properties' in obj &&'
+      typeof (obj as any).label === 'string''
     );
   },
 
   isDatabaseError: (obj: unknown): obj is DatabaseError => {
     return (
-      typeof obj === 'object' &&
+      typeof obj === 'object' &&'
       obj !== null &&
-      'type' in obj &&
-      (obj as any).type === 'DatabaseError' &&
-      'category' in obj
+      'type' in obj &&'
+      (obj as any).type === 'DatabaseError' &&'
+      'category' in obj'
     );
   },
 } as const;

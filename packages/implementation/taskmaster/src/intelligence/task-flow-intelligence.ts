@@ -76,7 +76,7 @@ export class TaskFlowIntelligence {
   private isLearningEnabled: boolean = true;
 
   constructor() {
-    this.logger = getLogger('TaskFlowIntelligence');
+    this.logger = getLogger('TaskFlowIntelligence');'
     this.initializeBrain();
   }
 
@@ -85,8 +85,8 @@ export class TaskFlowIntelligence {
    */
   private async initializeBrain(): Promise<void> {
     try {
-      // Try to load lightweight WASM predictor from your brain's WASM module
-      const wasmModule = await import('../wasm/task-flow-predictor.wasm');
+      // Try to load lightweight WASM predictor from your brain's WASM module'
+      const wasmModule = await import('../wasm/task-flow-predictor.wasm');'
 
       this.brainPredictor = {
         predictBottleneck: async (history) => {
@@ -128,7 +128,7 @@ export class TaskFlowIntelligence {
         },
       };
 
-      this.logger.info('TaskFlow intelligence initialized with WASM predictor');
+      this.logger.info('TaskFlow intelligence initialized with WASM predictor');'
     } catch (error) {
       this.logger.info(
         'WASM predictor not available - using statistical methods',
@@ -243,7 +243,7 @@ export class TaskFlowIntelligence {
           optimization.recommendedThreshold !== optimization.currentThreshold
         ) {
           recommendations.push(
-            `Adjust ${state} threshold from ${optimization.currentThreshold} to ${optimization.recommendedThreshold} (${optimization.reasoning})`
+            `Adjust ${state} threshold from ${optimization.currentThreshold} to ${optimization.recommendedThreshold} (${optimization.reasoning})``
           );
         }
       }
@@ -252,7 +252,7 @@ export class TaskFlowIntelligence {
     // Capacity recommendations
     if (currentStatus.systemCapacity.utilizationPercent > 80) {
       recommendations.push(
-        'System approaching capacity - consider pausing low-priority task intake'
+        'System approaching capacity - consider pausing low-priority task intake''
       );
     }
 
@@ -265,7 +265,7 @@ export class TaskFlowIntelligence {
   async forecastCapacity(hoursAhead: number = 24): Promise<{
     expectedLoad: number;
     requiredCapacity: number;
-    riskLevel: 'low|medium|high';
+    riskLevel: 'low' | 'medium' | 'high';
     recommendations: string[];
   }> {
     const recentMetrics = this.flowHistory.slice(-100); // Last 100 data points
@@ -293,11 +293,11 @@ export class TaskFlowIntelligence {
     else if (requiredCapacity > 0.6) riskLevel = 'medium';
 
     const recommendations: string[] = [];
-    if (riskLevel === 'high') {
+    if (riskLevel === 'high') {'
       recommendations.push(
-        'High capacity risk - consider increasing reviewer availability'
+        'High capacity risk - consider increasing reviewer availability''
       );
-      recommendations.push('Enable emergency auto-approval for low-risk tasks');
+      recommendations.push('Enable emergency auto-approval for low-risk tasks');'
     }
 
     return { expectedLoad, requiredCapacity, riskLevel, recommendations };
@@ -313,7 +313,7 @@ export class TaskFlowIntelligence {
         timestamp: Date.now(),
         state: state as TaskFlowState,
         wipUsage: usage.utilization,
-        queueDepth: status.approvalQueues[`${state}-gate`]?.pending||0,
+        queueDepth: status.approvalQueues[`${state}-gate`]?.pending||0,`
         throughput: this.calculateThroughput(state as TaskFlowState),
       });
     }
@@ -340,9 +340,9 @@ export class TaskFlowIntelligence {
           probability: Math.min(usage.utilization, 0.95),
           timeToBottleneck: (1 - usage.utilization) * 60 * 60 * 1000, // Hours to bottleneck
           recommendedActions: [
-            `Increase WIP limit for ${state}`,
-            `Review ${state} capacity allocation`,
-            `Consider spillover routing for ${state}`,
+            `Increase WIP limit for ${state}`,`
+            `Review ${state} capacity allocation`,`
+            `Consider spillover routing for ${state}`,`
           ],
         });
       }
@@ -384,7 +384,7 @@ export class TaskFlowIntelligence {
       currentThreshold: 0.8,
       recommendedThreshold: Math.max(0.5, Math.min(0.95, optimalThreshold)),
       confidence: 0.7,
-      reasoning: `Based on ${history.length} approval decisions, humans approve ${Math.round(avgConfidenceApproved * 100)}% confident tasks and reject ${Math.round(avgConfidenceRejected * 100)}% confident tasks`,
+      reasoning: `Based on ${history.length} approval decisions, humans approve ${Math.round(avgConfidenceApproved * 100)}% confident tasks and reject ${Math.round(avgConfidenceRejected * 100)}% confident tasks`,`
     };
   }
 

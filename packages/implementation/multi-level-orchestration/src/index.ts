@@ -82,9 +82,9 @@ export class MultiLevelOrchestrator {
   public readonly id: string;
 
   constructor(config: { wipLimits: WIPLimits }) {
-    this.id = `orchestrator-${Date.now()}`;
+    this.id = `orchestrator-${Date.now()}`;`
     console.warn(
-      'MultiLevelOrchestrator is deprecated. Use MultiLevelOrchestrationManager instead.'
+      'MultiLevelOrchestrator is deprecated. Use MultiLevelOrchestrationManager instead.''
     );
   }
 
@@ -108,7 +108,7 @@ export function createMultiLevelOrchestration(config: {
   // Import locally to avoid circular dependency
   const {
     MultiLevelOrchestrationManager,
-  } = require('./core/multi-level-orchestration-manager');
+  } = require('./core/multi-level-orchestration-manager');'
   return new MultiLevelOrchestrationManager(config);
 }
 

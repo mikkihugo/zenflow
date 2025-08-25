@@ -21,7 +21,7 @@ export interface WorkflowGateRequest {
   workflowId: string;
   stepId: string;
   context: Record<string, unknown>;
-  priority: 'low|medium|high|urgent';
+  priority: 'low|medium|high|urgent;
   timestamp: number;
   metadata?: Record<string, unknown>;
 }
@@ -32,7 +32,7 @@ export interface WorkflowGateResponse {
   gateId: string;
   workflowId: string;
   stepId: string;
-  status: 'approved|rejected|pending|error';
+  status: 'approved|rejected|pending|error;
   result?: unknown;
   message?: string;
   timestamp: number;
@@ -44,10 +44,10 @@ export interface WorkflowGateConfig {
   id: string;
   name: string;
   description?: string;
-  type: 'validation|approval|condition|transform';
+  type: 'validation|approval|condition|transform;
   rules: Array<{
     condition: string;
-    action: 'allow|deny|require_approval';
+    action: 'allow' | 'deny' | 'require_approval';
     message?: string;
   }>;
   timeout?: number;
@@ -75,7 +75,7 @@ export declare function createWorkflowGateRequest(
   workflowId: string,
   stepId: string,
   context: Record<string, unknown>,
-  options?: Partial<Pick<WorkflowGateRequest, 'priority|metadata''>>
+  options?: Partial<Pick<WorkflowGateRequest, 'priority|metadata''>>'
 ): WorkflowGateRequest;
 /**
  * Factory function for creating workflow gate responses.
@@ -83,6 +83,6 @@ export declare function createWorkflowGateRequest(
 export declare function createWorkflowGateResponse(
   request: WorkflowGateRequest,
   status: WorkflowGateResponse['status'],
-  options?: Partial<Pick<WorkflowGateResponse, 'result|message''>>
+  options?: Partial<Pick<WorkflowGateResponse, 'result|message''>>'
 ): WorkflowGateResponse;
 //# sourceMappingURL=workflow-coordination-types.d.ts.map

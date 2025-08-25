@@ -20,7 +20,7 @@
  * @version 1.0.0
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * import { AgentRegistry, createAgentRegistry } from '@claude-zen/agent-registry';
  *
  * const registry = createAgentRegistry();
@@ -35,8 +35,8 @@
  * });
  *
  * // Query agents by capability
- * const coders = registry.findAgentsByCapability('code-generation');
- * ```
+ * const coders = registry.findAgentsByCapability('code-generation');'
+ * ````
  */
 
 // Core agent registry implementation

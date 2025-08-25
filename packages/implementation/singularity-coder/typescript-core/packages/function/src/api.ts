@@ -43,14 +43,14 @@ export class SyncServer extends DurableObject<Env> {
   async publish(key: string, content: any) {
     const sessionID = await this.getSessionID()
     if (
-      !key.startsWith(`session/info/${sessionID}`) &&
-      !key.startsWith(`session/message/${sessionID}/`) &&
-      !key.startsWith(`session/part/${sessionID}/`)
+      !key.startsWith(`session/info/${sessionID}`) &&`
+      !key.startsWith(`session/message/${sessionID}/`) &&`
+      !key.startsWith(`session/part/${sessionID}/`)`
     )
       return new Response("Error: Invalid key", { status: 400 })
 
     // store message
-    await this.env.Bucket.put(`share/${key}.json`, JSON.stringify(content), {
+    await this.env.Bucket.put(`share/${key}.json`, JSON.stringify(content), {`
       httpMetadata: {
         contentType: "application/json",
       },
@@ -96,13 +96,13 @@ export class SyncServer extends DurableObject<Env> {
   async clear() {
     const sessionID = await this.getSessionID()
     const list = await this.env.Bucket.list({
-      prefix: `session/message/${sessionID}/`,
+      prefix: `session/message/${sessionID}/`,`
       limit: 1000,
     })
     for (const item of list.objects) {
       await this.env.Bucket.delete(item.key)
     }
-    await this.env.Bucket.delete(`session/info/${sessionID}`)
+    await this.env.Bucket.delete(`session/info/${sessionID}`)`
     await this.ctx.storage.deleteAll()
   }
 
@@ -133,7 +133,7 @@ export default {
       return new Response(
         JSON.stringify({
           secret,
-          url: `https://${env.WEB_DOMAIN}/s/${short}`,
+          url: `https://${env.WEB_DOMAIN}/s/${short}`,`
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -238,7 +238,7 @@ export default {
     if (request.method === "POST" && method === "exchange_github_app_token") {
       const EXPECTED_AUDIENCE = "opencode-github-action"
       const GITHUB_ISSUER = "https://token.actions.githubusercontent.com"
-      const JWKS_URL = `${GITHUB_ISSUER}/.well-known/jwks`
+      const JWKS_URL = `${GITHUB_ISSUER}/.well-known/jwks``
 
       // get Authorization header
       const authHeader = request.headers.get("Authorization")
@@ -257,7 +257,7 @@ export default {
           issuer: GITHUB_ISSUER,
           audience: EXPECTED_AUDIENCE,
         })
-        const sub = payload.sub // e.g. 'repo:my-org/my-repo:ref:refs/heads/main'
+        const sub = payload.sub // e.g. 'repo:my-org/my-repo:ref:refs/heads/main''
         const parts = sub.split(":")[1].split("/")
         owner = parts[0]
         repo = parts[1]

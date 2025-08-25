@@ -93,7 +93,7 @@ export namespace LSPServer {
           return
         }
         bin = path.join(Global.Path.bin, "gopls" + (process.platform === "win32" ? ".exe" : ""))
-        log.info(`installed gopls`, {
+        log.info(`installed gopls`, {`
           bin,
         })
       }
@@ -133,7 +133,7 @@ export namespace LSPServer {
           return
         }
         bin = path.join(Global.Path.bin, "ruby-lsp" + (process.platform === "win32" ? ".exe" : ""))
-        log.info(`installed ruby-lsp`, {
+        log.info(`installed ruby-lsp`, {`
           bin,
         })
       }
@@ -192,19 +192,19 @@ export namespace LSPServer {
           const zipPath = path.join(Global.Path.bin, "elixir-ls.zip")
           await Bun.file(zipPath).write(response)
 
-          await $`unzip -o -q ${zipPath}`.cwd(Global.Path.bin).nothrow()
+          await $`unzip -o -q ${zipPath}`.cwd(Global.Path.bin).nothrow()`
 
           await fs.rm(zipPath, {
             force: true,
             recursive: true,
           })
 
-          await $`mix deps.get && mix compile && mix elixir_ls.release2 -o release`
+          await $`mix deps.get && mix compile && mix elixir_ls.release2 -o release``
             .quiet()
             .cwd(path.join(Global.Path.bin, "elixir-ls-master"))
             .env({ MIX_ENV: "prod", ...process.env })
 
-          log.info(`installed elixir-ls`, {
+          log.info(`installed elixir-ls`, {`
             path: elixirLsPath,
           })
         }
@@ -259,7 +259,7 @@ export namespace LSPServer {
 
         const ext = platform === "win32" ? "zip" : "tar.xz"
 
-        assetName = `zls-${zlsArch}-${zlsPlatform}.${ext}`
+        assetName = `zls-${zlsArch}-${zlsPlatform}.${ext}``
 
         const supportedCombos = [
           "zls-x86_64-linux.tar.xz",
@@ -273,13 +273,13 @@ export namespace LSPServer {
         ]
 
         if (!supportedCombos.includes(assetName)) {
-          log.error(`Platform ${platform} and architecture ${arch} is not supported by zls`)
+          log.error(`Platform ${platform} and architecture ${arch} is not supported by zls`)`
           return
         }
 
         const asset = release.assets.find((a: any) => a.name === assetName)
         if (!asset) {
-          log.error(`Could not find asset ${assetName} in latest zls release`)
+          log.error(`Could not find asset ${assetName} in latest zls release`)`
           return
         }
 
@@ -294,9 +294,9 @@ export namespace LSPServer {
         await Bun.file(tempPath).write(downloadResponse)
 
         if (ext === "zip") {
-          await $`unzip -o -q ${tempPath}`.cwd(Global.Path.bin).nothrow()
+          await $`unzip -o -q ${tempPath}`.cwd(Global.Path.bin).nothrow()`
         } else {
-          await $`tar -xf ${tempPath}`.cwd(Global.Path.bin).nothrow()
+          await $`tar -xf ${tempPath}`.cwd(Global.Path.bin).nothrow()`
         }
 
         await fs.rm(tempPath, { force: true })
@@ -309,10 +309,10 @@ export namespace LSPServer {
         }
 
         if (platform !== "win32") {
-          await $`chmod +x ${bin}`.nothrow()
+          await $`chmod +x ${bin}`.nothrow()`
         }
 
-        log.info(`installed zls`, { bin })
+        log.info(`installed zls`, { bin })`
       }
 
       return {

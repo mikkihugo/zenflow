@@ -16,7 +16,7 @@ import {
   TypedEventBase,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('LanceDBBackend');
+const logger = getLogger('LanceDBBackend');'
 
 /**
  * Configuration for LanceDB vector store
@@ -24,11 +24,11 @@ const logger = getLogger('LanceDBBackend');
 export interface VectorStoreConfig {
   path: string;
   vectorDimension: number;
-  indexType?: 'IVF_PQ' | 'HNSW' | 'IVF_FLAT';
+  indexType?: 'IVF_PQ' | 'HNSW' | 'IVF_FLAT;
   numPartitions?: number;
   maxConnections?: number;
   enableCompression?: boolean;
-  metricType?: 'cosine' | 'euclidean' | 'manhattan';
+  metricType?: 'cosine' | 'euclidean' | 'manhattan;
 }
 
 /**
@@ -98,12 +98,12 @@ export class VectorStore extends TypedEventBase {
   constructor(config: VectorStoreConfig) {
     super();
     this.config = { ...config };
-    this.logger = getLogger(`LanceDBBackend:${config.path}`);
+    this.logger = getLogger(`LanceDBBackend:${config.path}`);`
     
     // Validate configuration
     this.validateConfig();
     
-    this.logger.info('LanceDB VectorStore created', {
+    this.logger.info('LanceDB VectorStore created', {'
       path: config.path,
       dimensions: config.vectorDimension,
       indexType: config.indexType || 'IVF_PQ',
@@ -112,14 +112,14 @@ export class VectorStore extends TypedEventBase {
 
   private validateConfig(): void {
     if (!this.config.path) {
-      throw new EnhancedError('VectorStore path is required', {
+      throw new EnhancedError('VectorStore path is required', {'
         category: 'Configuration',
         config: this.config,
       });
     }
 
     if (!this.config.vectorDimension || this.config.vectorDimension <= 0) {
-      throw new EnhancedError('Valid vector dimension is required', {
+      throw new EnhancedError('Valid vector dimension is required', {'
         category: 'Configuration',
         dimension: this.config.vectorDimension,
       });
@@ -131,12 +131,12 @@ export class VectorStore extends TypedEventBase {
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
-      this.logger.warn('VectorStore already initialized');
+      this.logger.warn('VectorStore already initialized');'
       return;
     }
 
     try {
-      this.logger.info('Initializing LanceDB vector store', { config: this.config });
+      this.logger.info('Initializing LanceDB vector store', { config: this.config });'
 
       // Create connection pool
       await this.createConnectionPool();
@@ -148,21 +148,21 @@ export class VectorStore extends TypedEventBase {
       this.setupMonitoring();
       
       this.isInitialized = true;
-      this.emit('initialized', { 
+      this.emit('initialized', { '
         timestamp: Date.now(),
         config: this.config,
       });
       
-      this.logger.info('LanceDB vector store initialized successfully');
+      this.logger.info('LanceDB vector store initialized successfully');'
     } catch (error) {
-      const enhancedError = new EnhancedError('Failed to initialize VectorStore', {
+      const enhancedError = new EnhancedError('Failed to initialize VectorStore', {'
         category: 'Initialization',
         originalError: error,
         config: this.config,
       });
       
-      this.logger.error('VectorStore initialization failed', enhancedError);
-      this.emit('error', enhancedError);
+      this.logger.error('VectorStore initialization failed', enhancedError);'
+      this.emit('error', enhancedError);'
       throw enhancedError;
     }
   }
@@ -173,20 +173,20 @@ export class VectorStore extends TypedEventBase {
     for (let i = 0; i < maxConnections; i++) {
       // In a real implementation, create actual LanceDB connections
       const connection = {
-        id: `conn_${i}`,
+        id: `conn_${i}`,`
         created: Date.now(),
         active: true,
       };
       this.connectionPool.push(connection);
     }
     
-    this.logger.debug('Connection pool created', { 
+    this.logger.debug('Connection pool created', { '
       connections: maxConnections 
     });
   }
 
   private async initializeIndexes(): Promise<void> {
-    const indexType = this.config.indexType || 'IVF_PQ';
+    const indexType = this.config.indexType || 'IVF_PQ;
     const numPartitions = this.config.numPartitions || 256;
     
     // Create index configuration
@@ -198,15 +198,15 @@ export class VectorStore extends TypedEventBase {
     };
     
     // Cache index configuration
-    this.indexCache.set('primary', indexConfig);
+    this.indexCache.set('primary', indexConfig);'
     
-    this.logger.info('Index initialized', indexConfig);
+    this.logger.info('Index initialized', indexConfig);'
   }
 
   private setupMonitoring(): void {
     // Set up health monitoring
     setInterval(() => {
-      this.emit('healthCheck', {
+      this.emit('healthCheck', {'
         timestamp: Date.now(),
         connections: this.connectionPool.length,
         indexes: this.indexCache.size,
@@ -220,14 +220,14 @@ export class VectorStore extends TypedEventBase {
    */
   async insert(data: VectorInsertData): Promise<VectorInsertResult> {
     if (!this.isInitialized) {
-      throw new EnhancedError('VectorStore not initialized', {
+      throw new EnhancedError('VectorStore not initialized', {'
         category: 'Operation',
         operation: 'insert',
       });
     }
 
     return await withRetry(async () => {
-      this.logger.debug('Inserting vector', {
+      this.logger.debug('Inserting vector', {'
         hasVector: !!data.vector,
         vectorDimensions: data.vector?.length || 0,
         hasMetadata: Object.keys(data.metadata || {}).length > 0,
@@ -235,7 +235,7 @@ export class VectorStore extends TypedEventBase {
 
       // Validate vector dimensions
       if (data.vector.length !== this.config.vectorDimension) {
-        throw new EnhancedError('Vector dimension mismatch', {
+        throw new EnhancedError('Vector dimension mismatch', {'
           category: 'Validation',
           expected: this.config.vectorDimension,
           actual: data.vector.length,
@@ -243,13 +243,13 @@ export class VectorStore extends TypedEventBase {
       }
 
       // Generate ID if not provided
-      const id = data.id || `vec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = data.id || `vec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
       
       // Process the insertion (in real implementation, use actual LanceDB)
       const processedAt = new Date().toISOString();
       
       // Emit success event
-      this.emit('vectorInserted', {
+      this.emit('vectorInserted', {'
         id,
         vectorSize: data.vector.length,
         timestamp: Date.now(),
@@ -274,7 +274,7 @@ export class VectorStore extends TypedEventBase {
    */
   async batchInsert(dataArray: VectorInsertData[]): Promise<VectorInsertResult> {
     if (!this.isInitialized) {
-      throw new EnhancedError('VectorStore not initialized', {
+      throw new EnhancedError('VectorStore not initialized', {'
         category: 'Operation',
         operation: 'batchInsert',
       });
@@ -285,7 +285,7 @@ export class VectorStore extends TypedEventBase {
     let failureCount = 0;
     const errors: string[] = [];
 
-    this.logger.info('Starting batch insert', { 
+    this.logger.info('Starting batch insert', { '
       batchSize: dataArray.length 
     });
 
@@ -297,13 +297,13 @@ export class VectorStore extends TypedEventBase {
         failureCount++;
         const errorMessage = error instanceof Error ? error.message : String(error);
         errors.push(errorMessage);
-        this.logger.warn('Batch insert item failed', { error: errorMessage });
+        this.logger.warn('Batch insert item failed', { error: errorMessage });'
       }
     }
 
     const duration = Date.now() - startTime;
     
-    this.emit('batchInsertCompleted', {
+    this.emit('batchInsertCompleted', {'
       totalItems: dataArray.length,
       successCount,
       failureCount,
@@ -311,7 +311,7 @@ export class VectorStore extends TypedEventBase {
       timestamp: Date.now(),
     });
 
-    this.logger.info('Batch insert completed', {
+    this.logger.info('Batch insert completed', {'
       total: dataArray.length,
       success: successCount,
       failed: failureCount,
@@ -331,14 +331,14 @@ export class VectorStore extends TypedEventBase {
    */
   async similaritySearch(options: VectorSearchOptions): Promise<VectorSearchResult[]> {
     if (!this.isInitialized) {
-      throw new EnhancedError('VectorStore not initialized', {
+      throw new EnhancedError('VectorStore not initialized', {'
         category: 'Operation',
         operation: 'similaritySearch',
       });
     }
 
     return await withRetry(async () => {
-      this.logger.debug('Performing similarity search', {
+      this.logger.debug('Performing similarity search', {'
         vectorDimension: options.vector.length,
         k: options.k,
         hasFilter: !!options.filter,
@@ -347,7 +347,7 @@ export class VectorStore extends TypedEventBase {
 
       // Validate search vector
       if (options.vector.length !== this.config.vectorDimension) {
-        throw new EnhancedError('Search vector dimension mismatch', {
+        throw new EnhancedError('Search vector dimension mismatch', {'
           category: 'Validation',
           expected: this.config.vectorDimension,
           actual: options.vector.length,
@@ -363,10 +363,10 @@ export class VectorStore extends TypedEventBase {
         
         if (!options.threshold || similarity >= options.threshold) {
           results.push({
-            id: `result_${i}_${Date.now()}`,
+            id: `result_${i}_${Date.now()}`,`
             similarity,
             metadata: {
-              category: `category_${i}`,
+              category: `category_${i}`,`
               timestamp: Date.now() - Math.random() * 86400000, // Last 24 hours
               source: 'similarity_search',
             },
@@ -377,7 +377,7 @@ export class VectorStore extends TypedEventBase {
         }
       }
 
-      this.emit('searchCompleted', {
+      this.emit('searchCompleted', {'
         resultsCount: results.length,
         searchK: options.k,
         actualReturned: results.length,
@@ -399,7 +399,7 @@ export class VectorStore extends TypedEventBase {
     radius: number;
     maxResults: number;
   }): Promise<VectorSearchResult[]> {
-    this.logger.debug('Performing range search', {
+    this.logger.debug('Performing range search', {'
       radius: options.radius,
       maxResults: options.maxResults,
     });
@@ -422,7 +422,7 @@ export class VectorStore extends TypedEventBase {
       return null;
     }
 
-    this.logger.debug('Getting vector by ID', { id });
+    this.logger.debug('Getting vector by ID', { id });'
     
     // In real implementation, query LanceDB by ID
     // For now, return null (not found)
@@ -434,13 +434,13 @@ export class VectorStore extends TypedEventBase {
    */
   async update(id: string, data: VectorInsertData): Promise<VectorInsertResult> {
     if (!this.isInitialized) {
-      throw new EnhancedError('VectorStore not initialized', {
+      throw new EnhancedError('VectorStore not initialized', {'
         category: 'Operation',
         operation: 'update',
       });
     }
 
-    this.logger.debug('Updating vector', { id });
+    this.logger.debug('Updating vector', { id });'
 
     // In real implementation, update the vector in LanceDB
     return {
@@ -455,7 +455,7 @@ export class VectorStore extends TypedEventBase {
    * Build or rebuild indexes for performance optimization
    */
   async buildIndexes(config?: Partial<VectorStoreConfig>): Promise<void> {
-    this.logger.info('Building vector indexes', config);
+    this.logger.info('Building vector indexes', config);'
     
     // Update index configuration if provided
     if (config) {
@@ -464,7 +464,7 @@ export class VectorStore extends TypedEventBase {
     
     await this.initializeIndexes();
     
-    this.emit('indexesRebuilt', {
+    this.emit('indexesRebuilt', {'
       timestamp: Date.now(),
       config: this.config,
     });
@@ -479,7 +479,7 @@ export class VectorStore extends TypedEventBase {
     averageInterClusterDistance: number;
     recommendations: string[];
   }> {
-    this.logger.info('Analyzing data distribution');
+    this.logger.info('Analyzing data distribution');'
 
     // In real implementation, perform actual clustering analysis
     const analysis = {
@@ -493,7 +493,7 @@ export class VectorStore extends TypedEventBase {
       ],
     };
 
-    this.emit('analysisCompleted', {
+    this.emit('analysisCompleted', {'
       ...analysis,
       timestamp: Date.now(),
     });
@@ -506,16 +506,16 @@ export class VectorStore extends TypedEventBase {
    */
   async optimizeIndex(config?: {
     dataDistribution?: { clusters: number };
-    performanceTarget?: 'speed' | 'memory' | 'balanced';
+    performanceTarget?: 'speed' | 'memory' | 'balanced;
   }): Promise<{
     parameters: Record<string, unknown>;
     estimatedSearchTime: number;
     estimatedMemoryUsage: number;
   }> {
-    this.logger.info('Optimizing indexes', config);
+    this.logger.info('Optimizing indexes', config);'
 
     const clusters = config?.dataDistribution?.clusters || 8;
-    const target = config?.performanceTarget || 'balanced';
+    const target = config?.performanceTarget || 'balanced;
 
     const optimization = {
       parameters: {
@@ -528,7 +528,7 @@ export class VectorStore extends TypedEventBase {
       estimatedMemoryUsage: target === 'memory' ? 30 * 1024 * 1024 : 50 * 1024 * 1024,
     };
 
-    this.emit('indexOptimized', {
+    this.emit('indexOptimized', {'
       ...optimization,
       timestamp: Date.now(),
     });
@@ -552,7 +552,7 @@ export class VectorStore extends TypedEventBase {
       compressionRatio: this.config.enableCompression ? 0.6 + Math.random() * 0.3 : undefined,
     };
 
-    this.logger.debug('Storage info retrieved', info);
+    this.logger.debug('Storage info retrieved', info);'
     return info;
   }
 
@@ -560,17 +560,17 @@ export class VectorStore extends TypedEventBase {
    * Compress vectors to reduce storage
    */
   async compressVectors(config?: {
-    compressionType?: 'pq' | 'sq' | 'none';
+    compressionType?: 'pq' | 'sq' | 'none;
     qualityTarget?: number;
   }): Promise<{
     accuracyRetention: number;
     compressionRatio: number;
     spaceSaved: number;
   }> {
-    const compressionType = config?.compressionType || 'pq';
+    const compressionType = config?.compressionType || 'pq;
     const qualityTarget = config?.qualityTarget || 0.95;
 
-    this.logger.info('Compressing vectors', {
+    this.logger.info('Compressing vectors', {'
       type: compressionType,
       target: qualityTarget,
     });
@@ -581,7 +581,7 @@ export class VectorStore extends TypedEventBase {
       spaceSaved: Math.floor(Math.random() * 50 + 25), // 25-75% space saved
     };
 
-    this.emit('vectorsCompressed', {
+    this.emit('vectorsCompressed', {'
       ...result,
       timestamp: Date.now(),
     });
@@ -597,7 +597,7 @@ export class VectorStore extends TypedEventBase {
       return;
     }
 
-    this.logger.info('Closing LanceDB vector store');
+    this.logger.info('Closing LanceDB vector store');'
 
     try {
       // Close connections
@@ -608,17 +608,17 @@ export class VectorStore extends TypedEventBase {
       
       this.isInitialized = false;
       
-      this.emit('closed', {
+      this.emit('closed', {'
         timestamp: Date.now(),
       });
       
       // Remove all listeners
       this.removeAllListeners();
       
-      this.logger.info('LanceDB vector store closed successfully');
+      this.logger.info('LanceDB vector store closed successfully');'
     } catch (error) {
-      this.logger.error('Error closing vector store', error);
-      throw new EnhancedError('Failed to close VectorStore', {
+      this.logger.error('Error closing vector store', error);'
+      throw new EnhancedError('Failed to close VectorStore', {'
         category: 'Cleanup',
         originalError: error,
       });
@@ -629,7 +629,7 @@ export class VectorStore extends TypedEventBase {
    * Health check for monitoring
    */
   async healthCheck(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy;
     details: Record<string, unknown>;
   }> {
     const health = {

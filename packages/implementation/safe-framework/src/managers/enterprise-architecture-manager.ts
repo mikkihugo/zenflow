@@ -180,7 +180,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
   constructor(config: Partial<EnterpriseArchConfig> = {}) {
     super();
-    this.logger = getLogger('EnterpriseArchitectureManager');
+    this.logger = getLogger('EnterpriseArchitectureManager');'
 
     this.config = {
       enablePrincipleValidation: true,
@@ -208,7 +208,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
     try {
       // Delegate to Architecture Principle Service for principle management
       const { ArchitecturePrincipleService } = await import(
-        '../services/enterprise-architecture/architecture-principle-service'
+        '../services/enterprise-architecture/architecture-principle-service''
       );
       this.architecturePrincipleService = new ArchitecturePrincipleService(
         this.logger
@@ -217,7 +217,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       // Delegate to Technology Standards Service for standard management
       const { TechnologyStandardsService } = await import(
-        '../services/enterprise-architecture/technology-standards-service'
+        '../services/enterprise-architecture/technology-standards-service''
       );
       this.technologyStandardsService = new TechnologyStandardsService(
         this.logger
@@ -226,7 +226,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       // Delegate to Governance Decision Service for decision workflows
       const { GovernanceDecisionService } = await import(
-        '../services/enterprise-architecture/governance-decision-service'
+        '../services/enterprise-architecture/governance-decision-service''
       );
       this.governanceDecisionService = new GovernanceDecisionService(
         this.logger
@@ -235,7 +235,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       // Delegate to Architecture Health Service for health monitoring
       const { ArchitectureHealthService } = await import(
-        '../services/enterprise-architecture/architecture-health-service'
+        '../services/enterprise-architecture/architecture-health-service''
       );
       this.architectureHealthService = new ArchitectureHealthService(
         this.logger,
@@ -254,9 +254,9 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info(
-        'Enterprise Architecture Manager initialized successfully with service delegation'
+        'Enterprise Architecture Manager initialized successfully with service delegation''
       );
-      this.emit('initialized', {});
+      this.emit('initialized', {});'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Enterprise Architecture Manager:',
@@ -279,7 +279,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   ): Promise<ArchitecturePrinciple> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Creating architecture principle', {
+    this.logger.info('Creating architecture principle', {'
       name,
       category,
       priority,
@@ -303,13 +303,13 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
           request
         );
 
-      this.emit('architecture-principle-created', {
+      this.emit('architecture-principle-created', {'
         principleId: principle.id,
         name: principle.name,
         category: principle.category,
       });
 
-      this.logger.info('Architecture principle created successfully', {
+      this.logger.info('Architecture principle created successfully', {'
         principleId: principle.id,
         name: principle.name,
       });
@@ -322,7 +322,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         'Failed to create architecture principle:',
         errorMessage
       );
-      this.emit('architecture-principle-failed', { name, error: errorMessage });
+      this.emit('architecture-principle-failed', { name, error: errorMessage });'
       throw error;
     }
   }
@@ -337,7 +337,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Validating principle compliance', {
+    this.logger.info('Validating principle compliance', {'
       principleId,
       rulesCount: complianceRules.length,
     });
@@ -394,14 +394,14 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
           config
         );
 
-      this.emit('principle-compliance-validated', {
+      this.emit('principle-compliance-validated', {'
         principleId,
         validationId: result.validationId,
         complianceRate: result.overallCompliance,
         violationCount: result.violations.length,
       });
 
-      this.logger.info('Principle compliance validation completed', {
+      this.logger.info('Principle compliance validation completed', {'
         principleId,
         complianceRate: result.overallCompliance,
       });
@@ -414,7 +414,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         'Principle compliance validation failed:',
         errorMessage
       );
-      this.emit('principle-validation-failed', {
+      this.emit('principle-validation-failed', {'
         principleId,
         error: errorMessage,
       });
@@ -434,11 +434,11 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
     applicability: string[] = [],
     implementation: string = ',
     verification: string = ',
-    owner: string = 'technology-board'
+    owner: string = 'technology-board''
   ): Promise<TechnologyStandard> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Creating technology standard', {
+    this.logger.info('Creating technology standard', {'
       name,
       category,
       type,
@@ -521,24 +521,24 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       const standard =
         await this.technologyStandardsService.createTechnologyStandard(request);
 
-      this.emit('technology-standard-created', {
+      this.emit('technology-standard-created', {'
         standardId: standard.id,
         name: standard.name,
         category: standard.category,
         mandatory: standard.mandatory,
       });
 
-      this.logger.info('Technology standard created successfully', {
+      this.logger.info('Technology standard created successfully', {'
         standardId: standard.id,
         name: standard.name,
       });
 
       return standard;
     } catch (error) {
-      this.logger.error('Failed to create technology standard:', error);
+      this.logger.error('Failed to create technology standard:', error);'
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.emit('technology-standard-failed', { name, error: errorMessage });
+      this.emit('technology-standard-failed', { name, error: errorMessage });'
       throw error;
     }
   }
@@ -562,7 +562,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   ): Promise<GovernanceDecision> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Initiating governance decision', {
+    this.logger.info('Initiating governance decision', {'
       type,
       title,
       priority,
@@ -705,24 +705,24 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
           request
         );
 
-      this.emit('governance-decision-initiated', {
+      this.emit('governance-decision-initiated', {'
         decisionId: decision.id,
         type: decision.type,
         priority: decision.priority,
         workflowId: decision.workflow.workflowId,
       });
 
-      this.logger.info('Governance decision initiated successfully', {
+      this.logger.info('Governance decision initiated successfully', {'
         decisionId: decision.id,
         type: decision.type,
       });
 
       return decision;
     } catch (error) {
-      this.logger.error('Failed to initiate governance decision:', error);
+      this.logger.error('Failed to initiate governance decision:', error);'
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.emit('governance-decision-failed', {
+      this.emit('governance-decision-failed', {'
         type,
         title,
         error: errorMessage,
@@ -737,20 +737,20 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Calculating architecture health metrics');
+    this.logger.info('Calculating architecture health metrics');'
 
     try {
       const metrics =
         await this.architectureHealthService.calculateArchitectureHealthMetrics();
 
-      this.emit('architecture-health-calculated', {
+      this.emit('architecture-health-calculated', {'
         overallHealth: metrics.overallHealth,
         healthGrade: metrics.healthGrade,
         alertCount: metrics.alerts.length,
         recommendationCount: metrics.recommendations.length,
       });
 
-      this.logger.info('Architecture health metrics calculated successfully', {
+      this.logger.info('Architecture health metrics calculated successfully', {'
         overallHealth: metrics.overallHealth,
         healthGrade: metrics.healthGrade,
       });
@@ -763,7 +763,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       );
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.emit('architecture-health-failed', { error: errorMessage });
+      this.emit('architecture-health-failed', { error: errorMessage });'
       throw error;
     }
   }
@@ -829,12 +829,12 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
    * Shutdown enterprise architecture manager
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Enterprise Architecture Manager');
+    this.logger.info('Shutting down Enterprise Architecture Manager');'
 
     // Clear monitoring timers
     for (const [name, timer] of this.monitoringTimers) {
       clearInterval(timer);
-      this.logger.debug('Stopped monitoring timer', { timer: name });
+      this.logger.debug('Stopped monitoring timer', { timer: name });'
     }
     this.monitoringTimers.clear();
 
@@ -855,7 +855,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
     this.removeAllListeners();
     this.initialized = false;
 
-    this.logger.info('Enterprise Architecture Manager shutdown complete');
+    this.logger.info('Enterprise Architecture Manager shutdown complete');'
   }
 
   // ============================================================================
@@ -868,26 +868,26 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   private setupServiceEventForwarding(): void {
     // Forward events from Architecture Principle Service
     if (this.architecturePrincipleService) {
-      this.architecturePrincipleService.on('principle-created', (data: any) => {
-        this.emit('architecture-principle-created', data);
+      this.architecturePrincipleService.on('principle-created', (data: any) => {'
+        this.emit('architecture-principle-created', data);'
       });
       this.architecturePrincipleService.on(
         'principle-validated',
         (data: any) => {
-          this.emit('principle-compliance-validated', data);
+          this.emit('principle-compliance-validated', data);'
         }
       );
     }
 
     // Forward events from Technology Standards Service
     if (this.technologyStandardsService) {
-      this.technologyStandardsService.on('standard-created', (data: any) => {
-        this.emit('technology-standard-created', data);
+      this.technologyStandardsService.on('standard-created', (data: any) => {'
+        this.emit('technology-standard-created', data);'
       });
       this.technologyStandardsService.on(
         'standard-compliance-monitored',
         (data: any) => {
-          this.emit('technology-compliance-monitored', data);
+          this.emit('technology-compliance-monitored', data);'
         }
       );
     }
@@ -897,13 +897,13 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       this.governanceDecisionService.on(
         'governance-decision-initiated',
         (data: any) => {
-          this.emit('governance-decision-initiated', data);
+          this.emit('governance-decision-initiated', data);'
         }
       );
       this.governanceDecisionService.on(
         'decision-status-updated',
         (data: any) => {
-          this.emit('governance-decision-updated', data);
+          this.emit('governance-decision-updated', data);'
         }
       );
     }
@@ -913,7 +913,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       this.architectureHealthService.on(
         'health-metrics-calculated',
         (data: any) => {
-          this.emit('architecture-health-calculated', data);
+          this.emit('architecture-health-calculated', data);'
         }
       );
     }
@@ -927,31 +927,31 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       const principlesTimer = setInterval(async () => {
         await this.reviewArchitecturePrinciples();
       }, this.configuration.principlesReviewInterval);
-      this.monitoringTimers.set('principles-review', principlesTimer);
+      this.monitoringTimers.set('principles-review', principlesTimer);'
     }
 
     if (this.configuration.enableTechnologyStandardCompliance) {
       const complianceTimer = setInterval(async () => {
         await this.performComplianceChecks();
       }, this.configuration.complianceCheckInterval);
-      this.monitoringTimers.set('compliance-check', complianceTimer);
+      this.monitoringTimers.set('compliance-check', complianceTimer);'
     }
 
     if (this.configuration.enableArchitectureGovernance) {
       const governanceTimer = setInterval(async () => {
         await this.reviewGovernanceDecisions();
       }, this.configuration.governanceReviewInterval);
-      this.monitoringTimers.set('governance-review', governanceTimer);
+      this.monitoringTimers.set('governance-review', governanceTimer);'
     }
 
     if (this.configuration.enableHealthMetrics) {
       const healthTimer = setInterval(async () => {
         await this.calculateArchitectureHealthMetrics();
       }, this.configuration.healthMetricsInterval);
-      this.monitoringTimers.set('health-metrics', healthTimer);
+      this.monitoringTimers.set('health-metrics', healthTimer);'
     }
 
-    this.logger.info('Monitoring intervals started', {
+    this.logger.info('Monitoring intervals started', {'
       principlesReview: this.configuration.enablePrincipleValidation,
       complianceCheck: this.configuration.enableTechnologyStandardCompliance,
       governanceReview: this.configuration.enableArchitectureGovernance,
@@ -969,13 +969,13 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       for (const principle of principles) {
         if (principle.reviewDate <= now) {
-          this.logger.info('Architecture principle due for review', {
+          this.logger.info('Architecture principle due for review', {'
             principleId: principle.id,
             name: principle.name,
             reviewDate: principle.reviewDate,
           });
 
-          this.emit('architecture-principle-review-due', {
+          this.emit('architecture-principle-review-due', {'
             principleId: principle.id,
             name: principle.name,
             reviewDate: principle.reviewDate,
@@ -983,7 +983,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         }
       }
     } catch (error) {
-      this.logger.error('Failed to review architecture principles:', error);
+      this.logger.error('Failed to review architecture principles:', error);'
     }
   }
 
@@ -996,7 +996,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       for (const standard of standards) {
         if (standard.mandatory) {
-          this.logger.debug('Checking compliance for mandatory standard', {
+          this.logger.debug('Checking compliance for mandatory standard', {'
             standardId: standard.id,
             name: standard.name,
           });
@@ -1019,7 +1019,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         }
       }
     } catch (error) {
-      this.logger.error('Failed to perform compliance checks:', error);
+      this.logger.error('Failed to perform compliance checks:', error);'
     }
   }
 
@@ -1033,16 +1033,16 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
       for (const decision of decisions) {
         if (
-          decision.status === 'pending_approval' &&
+          decision.status === 'pending_approval' &&'
           decision.approvalDeadline <= now
         ) {
-          this.logger.warn('Governance decision approval overdue', {
+          this.logger.warn('Governance decision approval overdue', {'
             decisionId: decision.id,
             title: decision.title,
             approvalDeadline: decision.approvalDeadline,
           });
 
-          this.emit('governance-decision-overdue', {
+          this.emit('governance-decision-overdue', {'
             decisionId: decision.id,
             title: decision.title,
             approvalDeadline: decision.approvalDeadline,
@@ -1050,7 +1050,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         }
       }
     } catch (error) {
-      this.logger.error('Failed to review governance decisions:', error);
+      this.logger.error('Failed to review governance decisions:', error);'
     }
   }
 }

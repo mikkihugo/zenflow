@@ -57,7 +57,7 @@ export class SafetyError extends ContextError {
     context?: Record<string, unknown>,
     cause?: Error
   ) {
-    super(message, { ...context, domain: 'ai-safety' }, cause);
+    super(message, { ...context, domain: 'ai-safety' }, cause);'
     this.name = 'SafetyError';
   }
 }
@@ -113,7 +113,7 @@ export interface HumanEscalationResult {
   sessionPaused: boolean;
   timeMs: number;
   timestamp: Timestamp;
-  escalationLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
+  escalationLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
 }
 
 /**
@@ -175,7 +175,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
   constructor() {
     super();
-    this.logger = getLogger('ai-safety-orchestrator');
+    this.logger = getLogger('ai-safety-orchestrator');'
     this.performanceTracker = new PerformanceTracker();
     this.deceptionDetector = new AIDeceptionDetector();
     this.isMonitoring = false;
@@ -187,7 +187,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     this.setupCircuitBreakers();
 
     this.logger.info(
-      '🛡️ Enterprise AI Safety Orchestrator initialized with comprehensive foundation integration'
+      '🛡️ Enterprise AI Safety Orchestrator initialized with comprehensive foundation integration''
     );
   }
 
@@ -198,7 +198,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     if (this.initialized) return ok();
 
     const timer = this.performanceTracker.startTimer(
-      'safety_orchestrator_initialize'
+      'safety_orchestrator_initialize''
     );
 
     try {
@@ -209,7 +209,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
       const storageResult = await safeAsync(async () => {
         const storage = new Storage();
         await storage.initialize();
-        return storage.createKeyValueStore('safety-metrics');
+        return storage.createKeyValueStore('safety-metrics');'
       })();
 
       if (!storageResult.success) {
@@ -219,7 +219,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
           storageResult.error
         );
         this.errorAggregator.addError(error);
-        recordMetric('safety_orchestrator_initialization_failure', 1);
+        recordMetric('safety_orchestrator_initialization_failure', 1);'
         return err(error);
       }
 
@@ -235,10 +235,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
       }
 
       this.initialized = true;
-      this.performanceTracker.endTimer('safety_orchestrator_initialize');
-      recordMetric('safety_orchestrator_initialized', 1);
+      this.performanceTracker.endTimer('safety_orchestrator_initialize');'
+      recordMetric('safety_orchestrator_initialized', 1);'
 
-      this.logger.info('Safety orchestrator initialized successfully', {
+      this.logger.info('Safety orchestrator initialized successfully', {'
         storageConnected: !!this.storage,
         metricsLoaded: !!loadResult.success,
       });
@@ -251,8 +251,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
         ensureError(error)
       );
       this.errorAggregator.addError(safetyError);
-      this.performanceTracker.endTimer('safety_orchestrator_initialize');
-      recordMetric('safety_orchestrator_initialization_error', 1);
+      this.performanceTracker.endTimer('safety_orchestrator_initialize');'
+      recordMetric('safety_orchestrator_initialization_error', 1);'
       return err(safetyError);
     }
   }
@@ -271,7 +271,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         errorThresholdPercentage: 20,
         resetTimeout: 30000,
       },
-      'safety-deception-detection'
+      'safety-deception-detection''
     );
 
     // Session management circuit breaker
@@ -282,11 +282,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
         errorThresholdPercentage: 30,
         resetTimeout: 20000,
       },
-      'safety-session-management'
+      'safety-session-management''
     );
 
     this.logger.info(
-      '🔌 Circuit breakers configured for comprehensive safety operations'
+      '🔌 Circuit breakers configured for comprehensive safety operations''
     );
   }
 
@@ -295,28 +295,28 @@ export class AISafetyOrchestrator extends TypedEventBase {
    */
   async startSafetyMonitoring(): Promise<void> {
     if (this.isMonitoring) {
-      logger.warn('Safety monitoring already active');
+      logger.warn('Safety monitoring already active');'
       return;
     }
 
     this.isMonitoring = true;
     logger.info(
-      '🚨 AI Safety monitoring ACTIVE - 3-phase coordination protocol engaged'
+      '🚨 AI Safety monitoring ACTIVE - 3-phase coordination protocol engaged''
     );
 
     // Apply the proven coordination protocol
     await this.orchestrateSafetyMonitoring();
 
-    this.emit('safety:monitoring-started', {});
+    this.emit('safety:monitoring-started', {});'
   }
 
   /**
    * Stop safety monitoring with comprehensive state management.
    */
   async stopSafetyMonitoring(): Promise<Result<void, SafetyError>> {
-    return withTrace('safety_monitoring_stop', async () => {
+    return withTrace('safety_monitoring_stop', async () => {'
       const timer = this.performanceTracker.startTimer(
-        'safety_monitoring_stop'
+        'safety_monitoring_stop''
       );
 
       try {
@@ -334,11 +334,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
           );
         }
 
-        this.performanceTracker.endTimer('safety_monitoring_stop');
-        recordMetric('safety_monitoring_stopped', 1);
+        this.performanceTracker.endTimer('safety_monitoring_stop');'
+        recordMetric('safety_monitoring_stopped', 1);'
 
-        this.logger.info('🛑 Enterprise AI Safety monitoring STOPPED');
-        this.emit('safety:monitoring-stopped', {});
+        this.logger.info('🛑 Enterprise AI Safety monitoring STOPPED');'
+        this.emit('safety:monitoring-stopped', {});'
 
         return ok();
       } catch (error) {
@@ -348,8 +348,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
           ensureError(error)
         );
         this.errorAggregator.addError(safetyError);
-        this.performanceTracker.endTimer('safety_monitoring_stop');
-        recordMetric('safety_monitoring_stop_error', 1);
+        this.performanceTracker.endTimer('safety_monitoring_stop');'
+        recordMetric('safety_monitoring_stop_error', 1);'
         return err(safetyError);
       }
     });
@@ -363,7 +363,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     const startTime = Date.now();
     let totalInterventions = 0;
 
-    logger.info('🔄 Starting 3-phase safety orchestration');
+    logger.info('🔄 Starting 3-phase safety orchestration');'
 
     // Phase 1: Automated Real-time Detection (like phase1_automated)
     const phase1 = await this.runAutomatedDetection();
@@ -389,8 +389,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
       interventionsTriggered: totalInterventions,
     };
 
-    logger.info('✅ Safety orchestration cycle complete', {
-      totalTime: `${totalTime}ms`,
+    logger.info('✅ Safety orchestration cycle complete', {'
+      totalTime: `${totalTime}ms`,`
       interventions: totalInterventions,
       humanEscalation: !!phase3,
     });
@@ -407,7 +407,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     const startTime = Date.now();
 
     logger.info(
-      '⚡ Phase 1: Automated detection - scanning for immediate threats'
+      '⚡ Phase 1: Automated detection - scanning for immediate threats''
     );
 
     // Use existing coordination protocol proven effective
@@ -424,11 +424,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
     detectionResult.timeMs = Date.now() - startTime;
 
-    logger.info('✅ Phase 1 complete', {
+    logger.info('✅ Phase 1 complete', {'
       speed: detectionResult.detectionSpeed,
       alerts: detectionResult.alertsGenerated,
       interventions: detectionResult.immediateInterventions,
-      time: `${detectionResult.timeMs}ms`,
+      time: `${detectionResult.timeMs}ms`,`
     });
 
     return detectionResult;
@@ -446,7 +446,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     const startTime = Date.now();
 
     logger.info(
-      '🧠 Phase 2: Behavioral analysis - analyzing patterns and trends'
+      '🧠 Phase 2: Behavioral analysis - analyzing patterns and trends''
     );
 
     const analysisResult = {
@@ -461,11 +461,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
     analysisResult.timeMs = Date.now() - startTime;
 
-    logger.info('✅ Phase 2 complete', {
+    logger.info('✅ Phase 2 complete', {'
       patterns: analysisResult.patternsAnalyzed,
       deviations: analysisResult.behavioralDeviations,
       interventions: analysisResult.guidedInterventions,
-      time: `${analysisResult.timeMs}ms`,
+      time: `${analysisResult.timeMs}ms`,`
     });
 
     return analysisResult;
@@ -485,7 +485,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     const startTime = Date.now();
 
     logger.error(
-      '🚨 Phase 3: Human escalation TRIGGERED - critical safety event'
+      '🚨 Phase 3: Human escalation TRIGGERED - critical safety event''
     );
 
     const escalationResult = {
@@ -513,13 +513,13 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
       escalationResult.timeMs = Date.now() - startTime;
 
-      logger.error('🛑 HUMAN ESCALATION COMPLETE', {
+      logger.error('🛑 HUMAN ESCALATION COMPLETE', {'
         sessionPaused: escalationResult.sessionPaused,
         humanNotified: escalationResult.humanNotified,
-        time: `${escalationResult.timeMs}ms`,
+        time: `${escalationResult.timeMs}ms`,`
       });
     } catch (error) {
-      logger.error('❌ Escalation failed:', error);
+      logger.error('❌ Escalation failed:', error);'
       escalationResult.timeMs = Date.now() - startTime;
     }
 
@@ -534,7 +534,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
   async analyzeInteraction(
     interactionData: AIInteractionData
   ): Promise<DeceptionAlert[]> {
-    return withTrace('ai-safety-analysis', async (span) => {
+    return withTrace('ai-safety-analysis', async (span) => {'
       span?.setAttributes({
         'agent.id': interactionData.agentId,
         'interaction.toolCalls': interactionData.toolCalls.length,
@@ -549,11 +549,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
       });
 
       if (result.isErr()) {
-        logger.error('Deception detection failed', {
+        logger.error('Deception detection failed', {'
           error: result.error.message,
           agentId: interactionData.agentId,
         });
-        recordMetric('ai_safety_detection_errors', 1, {
+        recordMetric('ai_safety_detection_errors', 1, {'
           agentId: interactionData.agentId,
           error: result.error.message,
         });
@@ -574,14 +574,14 @@ export class AISafetyOrchestrator extends TypedEventBase {
         ]);
 
         // Record metrics
-        recordMetric('ai_safety_alerts_generated', alerts.length, {
+        recordMetric('ai_safety_alerts_generated', alerts.length, {'
           agentId: interactionData.agentId,
         });
 
         // Trigger immediate orchestration if critical
-        const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');
+        const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');'
         if (criticalAlerts.length > 0) {
-          recordMetric('ai_safety_critical_alerts', criticalAlerts.length, {
+          recordMetric('ai_safety_critical_alerts', criticalAlerts.length, {'
             agentId: interactionData.agentId,
           });
           await this.orchestrateSafetyMonitoring();
@@ -601,10 +601,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Emergency session pause.
    */
   private async pauseAllAgentSessions(): Promise<boolean> {
-    logger.warn('⏸️ EMERGENCY: Pausing all agent sessions');
+    logger.warn('⏸️ EMERGENCY: Pausing all agent sessions');'
 
     // This would integrate with agent management system
-    this.emit('safety:emergency-pause', {});
+    this.emit('safety:emergency-pause', {});'
 
     return true;
   }
@@ -615,10 +615,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * @param notification
    */
   private async notifyHumanOperators(notification: unknown): Promise<boolean> {
-    logger.error('📢 HUMAN NOTIFICATION:', notification);
+    logger.error('📢 HUMAN NOTIFICATION:', notification);'
 
     // This would integrate with alerting system
-    this.emit('safety:human-notification', notification);
+    this.emit('safety:human-notification', notification);'
 
     return true;
   }
@@ -627,10 +627,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Activate safety protocols.
    */
   private async activateSafetyProtocols(): Promise<void> {
-    logger.error('🛡️ SAFETY PROTOCOLS ACTIVATED');
+    logger.error('🛡️ SAFETY PROTOCOLS ACTIVATED');'
 
     // Lock down systems, enable enhanced monitoring
-    this.emit('safety:protocols-active', {});
+    this.emit('safety:protocols-active', {});'
   }
 
   /**
@@ -672,15 +672,15 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Setup event handlers.
    */
   private setupEventHandlers(): void {
-    this.deceptionDetector.on('deception:detected', (alert: DeceptionAlert) => {
+    this.deceptionDetector.on('deception:detected', (alert: DeceptionAlert) => {'
       this.handleDeceptionAlert(alert);
     });
 
-    this.deceptionDetector.on('deception:critical', (alert: DeceptionAlert) => {
+    this.deceptionDetector.on('deception:critical', (alert: DeceptionAlert) => {'
       this.handleCriticalDeception(alert);
     });
 
-    this.deceptionDetector.on('deception:escalation', (data: unknown) => {
+    this.deceptionDetector.on('deception:escalation', (data: unknown) => {'
       // Type-safe escalation data with defaults
       const escalationData = {
         agentId: (data as any)?.agentId||'unknown',
@@ -697,12 +697,12 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * @param alert
    */
   private async handleDeceptionAlert(alert: DeceptionAlert): Promise<void> {
-    logger.warn(`🚨 Deception alert: ${alert.type}`, {
+    logger.warn(`🚨 Deception alert: ${alert.type}`, {`
       severity: alert.severity,
       agentId: alert.agentId,
     });
 
-    this.emit('safety:alert', alert);
+    this.emit('safety:alert', alert);'
   }
 
   /**
@@ -711,7 +711,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * @param alert
    */
   private async handleCriticalDeception(alert: DeceptionAlert): Promise<void> {
-    logger.error(`🛑 CRITICAL deception: ${alert.type}`, {
+    logger.error(`🛑 CRITICAL deception: ${alert.type}`, {`
       agentId: alert.agentId,
       evidence: alert.evidence,
     });
@@ -721,7 +721,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
       await this.pauseAgentSession(alert.agentId);
     }
 
-    this.emit('safety:critical', alert);
+    this.emit('safety:critical', alert);'
   }
 
   /**
@@ -734,7 +734,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     totalInterventions: number;
     recentAlerts: any[];
   }): Promise<void> {
-    logger.error(`🚨 ESCALATION for agent ${data.agentId}:`, {
+    logger.error(`🚨 ESCALATION for agent ${data.agentId}:`, {`
       totalInterventions: data.totalInterventions,
       recentAlerts: data.recentAlerts.length,
     });
@@ -756,7 +756,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
       }
     );
 
-    this.emit('safety:escalation', data);
+    this.emit('safety:escalation', data);'
   }
 
   /**
@@ -765,8 +765,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * @param agentId
    */
   private async pauseAgentSession(agentId: string): Promise<void> {
-    logger.warn(`⏸️ Pausing session for agent ${agentId}`);
-    this.emit('safety:agent-paused', { agentId });
+    logger.warn(`⏸️ Pausing session for agent ${agentId}`);`
+    this.emit('safety:agent-paused', { agentId });'
   }
 
   /**
@@ -808,7 +808,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
   resetMetrics(): void {
     this.metrics = this.initializeMetrics();
     this.interventionHistory.clear();
-    logger.info('🔄 Safety metrics reset');
+    logger.info('🔄 Safety metrics reset');'
   }
 
   /**
@@ -824,12 +824,12 @@ export class AISafetyOrchestrator extends TypedEventBase {
     environment?: string;
   }): Promise<{
     safe: boolean;
-    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
+    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
     warnings: string[];
     recommendations: string[];
     blocked?: boolean;
   }> {
-    return withTrace('safety-validation', async (span) => {
+    return withTrace('safety-validation', async (span) => {'
       span?.setAttributes({
         command: context.command||'unknown',
         agentId: context.agentId||'unknown',
@@ -855,10 +855,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
         for (const pattern of dangerousPatterns) {
           if (pattern.test(context.command)) {
             warnings.push(
-              `Potentially dangerous command detected: ${context.command}`
+              `Potentially dangerous command detected: ${context.command}``
             );
-            riskLevel ='HIGH';
-            recommendations.push('Review command before execution');
+            riskLevel ='HIGH;
+            recommendations.push('Review command before execution');'
             blocked = true;
             break;
           }
@@ -869,8 +869,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
       if (context.toolCalls) {
         for (const toolCall of context.toolCalls) {
           if (
-            toolCall.tool === 'Bash' &&
-            typeof toolCall.parameters === 'object') {
+            toolCall.tool === 'Bash' &&'
+            typeof toolCall.parameters === 'object') {'
             const params = toolCall.parameters as any;
             if (params?.command) {
               const subValidation = await this.validateSafety({
@@ -898,25 +898,25 @@ export class AISafetyOrchestrator extends TypedEventBase {
       };
 
       // Record metrics
-      recordMetric('safety_validations_total', 1, {
+      recordMetric('safety_validations_total', 1, {'
         agentId: context.agentId||'unknown',
         riskLevel,
         blocked: blocked ? 'true' : 'false',
       });
 
       if (blocked) {
-        recordMetric('safety_validations_blocked', 1, {
+        recordMetric('safety_validations_blocked', 1, {'
           agentId: context.agentId||'unknown',
           reason: warnings[0]||'unknown',
         });
-        logger.warn('🛡️ Safety validation BLOCKED command', {
+        logger.warn('🛡️ Safety validation BLOCKED command', {'
           command: context.command,
           agentId: context.agentId,
           riskLevel,
           warnings: warnings.length,
         });
       } else {
-        logger.debug('✅ Safety validation PASSED', {
+        logger.debug('✅ Safety validation PASSED', {'
           agentId: context.agentId,
           riskLevel,
           warnings: warnings.length,
@@ -949,9 +949,9 @@ export class AISafetyOrchestrator extends TypedEventBase {
       await this.telemetryManager.initialize();
       this.telemetryInitialized = true;
 
-      this.logger.debug('Telemetry initialized successfully');
+      this.logger.debug('Telemetry initialized successfully');'
     } catch (error) {
-      this.logger.warn('Failed to initialize telemetry:', error);
+      this.logger.warn('Failed to initialize telemetry:', error);'
     }
   }
 
@@ -963,14 +963,14 @@ export class AISafetyOrchestrator extends TypedEventBase {
     ...args: any[]
   ): Promise<any> {
     switch (operation) {
-      case 'pause':
+      case 'pause':'
         return this.pauseAllAgentSessions();
-      case 'notify':
+      case 'notify':'
         return this.notifyHumanOperators(args[0]);
-      case 'activate':
+      case 'activate':'
         return this.activateSafetyProtocols();
       default:
-        throw new Error(`Unknown session operation: ${operation}`);
+        throw new Error(`Unknown session operation: ${operation}`);`
     }
   }
 
@@ -981,8 +981,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
     if (!this.storage) return ok();
 
     try {
-      const metricsData = await this.storage.get('safety-metrics');
-      if (metricsData && typeof metricsData === 'string') {
+      const metricsData = await this.storage.get('safety-metrics');'
+      if (metricsData && typeof metricsData === 'string') {'
         const storedMetrics = JSON.parse(metricsData) as SafetyMetrics;
 
         // Validate stored metrics
@@ -994,12 +994,12 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
         if (validation.success) {
           this.metrics = storedMetrics;
-          this.logger.debug('Loaded safety metrics from storage', {
+          this.logger.debug('Loaded safety metrics from storage', {'
             metricsId: storedMetrics.id,
             totalInteractions: storedMetrics.totalInteractions,
           });
         } else {
-          this.logger.warn('Invalid stored metrics format, using defaults');
+          this.logger.warn('Invalid stored metrics format, using defaults');'
         }
       }
 
@@ -1043,7 +1043,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Enhanced shutdown with comprehensive cleanup
    */
   async shutdown(): Promise<Result<void, SafetyError>> {
-    return withTrace('safety_orchestrator_shutdown', async () => {
+    return withTrace('safety_orchestrator_shutdown', async () => {'
       try {
         // Stop monitoring if active
         if (this.isMonitoring) {
@@ -1083,9 +1083,9 @@ export class AISafetyOrchestrator extends TypedEventBase {
         this.initialized = false;
         this.telemetryInitialized = false;
 
-        recordMetric('safety_orchestrator_shutdown', 1);
+        recordMetric('safety_orchestrator_shutdown', 1);'
         this.logger.info(
-          '🚨 Enterprise AI Safety Orchestrator shut down successfully'
+          '🚨 Enterprise AI Safety Orchestrator shut down successfully''
         );
 
         return ok();

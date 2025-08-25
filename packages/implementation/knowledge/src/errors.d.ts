@@ -21,7 +21,7 @@ export interface KnowledgeErrorContext {
  * Base error class for knowledge domain operations
  */
 export declare abstract class BaseKnowledgeError extends EnhancedError {
-  readonly severity: 'low|medium|high|critical';
+  readonly severity: 'low|medium|high|critical;
   readonly category: string;
   readonly recoverable: boolean;
   constructor(
@@ -38,13 +38,13 @@ export declare abstract class BaseKnowledgeError extends EnhancedError {
  * Base error class for FACT (Flexible AI Context Transfer) system failures.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * throw new FACTError(
  *   'Failed to process FACT data',
  *   'high',
- *   { operation: 'dataProcessing', metadata: { factId: 'fact-123' } }
+ *   { operation: 'dataProcessing', metadata: { factId: 'fact-123' } }'
  * );
- * ```
+ * ````
  */
 export declare class FACTError extends BaseKnowledgeError {
   constructor(
@@ -63,7 +63,7 @@ export declare class FACTStorageError extends FACTError {
     message: string,
     backend: string,
     operation: string,
-    severity?: 'low|medium|high|critical'
+    severity?: 'low|medium|high|critical''
   );
 }
 /**
@@ -76,7 +76,7 @@ export declare class FACTGatheringError extends FACTError {
     message: string,
     query: string,
     sources: string[],
-    severity?: 'low|medium|high|critical');
+    severity?: 'low' | 'medium' | 'high' | 'critical;
 }
 /**
  * Error for FACT data processing operations.
@@ -88,20 +88,20 @@ export declare class FACTProcessingError extends FACTError {
     message: string,
     processType: string,
     dataId?: string|undefined,
-    severity?:'low|medium|high|critical'
+    severity?:'low|medium|high|critical''
   );
 }
 /**
  * Base error class for RAG (Retrieval Augmented Generation) system failures.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * throw new RAGError(
  *   'RAG processing failed',
  *   'high',
- *   { operation: 'retrieval', metadata: { queryId: 'query-456' } }
+ *   { operation: 'retrieval', metadata: { queryId: 'query-456' } }'
  * );
- * ```
+ * ````
  */
 export declare class RAGError extends BaseKnowledgeError {
   constructor(
@@ -114,13 +114,13 @@ export declare class RAGError extends BaseKnowledgeError {
  * Error for RAG vector operations.
  */
 export declare class RAGVectorError extends RAGError {
-  readonly operation: 'embed|search|index|delete';
+  readonly operation: 'embed|search|index|delete;
   readonly vectorDimension?: number|undefined;
   constructor(
     message: string,
     operation:'embed|search|index|delete',
     vectorDimension?: number|undefined,
-    severity?:'low|medium|high|critical');
+    severity?:'low' | 'medium' | 'high' | 'critical;
 }
 /**
  * Error for RAG embedding operations.
@@ -132,7 +132,7 @@ export declare class RAGEmbeddingError extends RAGError {
     message: string,
     modelName: string,
     textLength?: number|undefined,
-    severity?:'low|medium|high|critical');
+    severity?:'low' | 'medium' | 'high' | 'critical;
 }
 /**
  * Error for RAG retrieval operations.
@@ -144,7 +144,7 @@ export declare class RAGRetrievalError extends RAGError {
     message: string,
     query: string,
     similarityThreshold?: number|undefined,
-    severity?:'low|medium|high|critical'
+    severity?:'low|medium|high|critical''
   );
 }
 /**
@@ -156,7 +156,7 @@ export declare function isRecoverableKnowledgeError(error: Error): boolean;
  */
 export declare function getKnowledgeErrorSeverity(
   error: Error
-): 'low|medium|high|critical';
+): 'low|medium|high|critical;
 /**
  * Creates a knowledge error with proper context wrapping.
  */
@@ -164,6 +164,6 @@ export declare function createKnowledgeError(
   message: string,
   category: 'FACT|RAG'',
   context?: Partial<KnowledgeErrorContext>,
-  severity?: 'low|medium|high|critical'
+  severity?: 'low|medium|high|critical''
 ): BaseKnowledgeError;
 //# sourceMappingURL=errors.d.ts.map

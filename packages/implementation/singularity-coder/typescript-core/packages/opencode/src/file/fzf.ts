@@ -57,8 +57,8 @@ export namespace Fzf {
 
       const version = VERSION
       const platformName = process.platform === "win32" ? "windows" : process.platform
-      const filename = `fzf-${version}-${platformName}_${arch}.${config.extension}`
-      const url = `https://github.com/junegunn/fzf/releases/download/v${version}/${filename}`
+      const filename = `fzf-${version}-${platformName}_${arch}.${config.extension}``
+      const url = `https://github.com/junegunn/fzf/releases/download/v${version}/${filename}``
 
       const response = await fetch(url)
       if (!response.ok) throw new DownloadFailedError({ url, status: response.status })

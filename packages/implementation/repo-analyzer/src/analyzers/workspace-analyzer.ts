@@ -33,7 +33,7 @@ export interface WorkspaceProject {
 export interface WorkspaceDependency {
   name: string;
   version: string;
-  type: 'dependency|devDependency|peerDependency';
+  type: 'dependency' | 'devDependency' | 'peerDependency';
   workspace?: string;
   external: boolean;
 }
@@ -51,7 +51,7 @@ export interface BuildTarget {
 }
 
 export interface WorkspaceMetadata {
-  packageManager: 'npm|yarn|pnpm|bun';
+  packageManager: 'npm|yarn|pnpm|bun;
   nodeVersion?: string;
   lockFile?: string;
   totalProjects: number;
@@ -75,7 +75,7 @@ export interface ProjectNode {
 export interface ProjectEdge {
   source: string;
   target: string;
-  type: 'static|dynamic|implicit';
+  type: 'static' | 'dynamic' | 'implicit';
 }
 
 export interface TaskGraph {
@@ -93,16 +93,16 @@ export interface TaskNode {
 export interface TaskDependency {
   source: string;
   target: string;
-  type: 'depends|parallel';
+  type: 'depends|parallel;
 }
 
-export type WorkspaceTool =|''nx|bazel|moon|turbo|rush|lerna|yarn-workspaces'||pnpm-workspaces|npm-workspaces'||nix|unknown';
+export type WorkspaceTool =|''javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||nix|unknown;
 
-export type ProjectType =|''application|library|tool|package|service|unknown';
+export type ProjectType =|''application|library|tool|package|service|unknown;
 
 export class WorkspaceAnalyzer {
-  private logger = getLogger('WorkspaceAnalyzer');
-  private fs = import('fs/promises');
+  private logger = getLogger('WorkspaceAnalyzer');'
+  private fs = import('fs/promises');'
 
   /**
    * Detect and analyze workspace configuration
@@ -111,39 +111,39 @@ export class WorkspaceAnalyzer {
     rootPath: string,
     options?: AnalysisOptions
   ): Promise<WorkspaceInfo> {
-    this.logger.info(`Analyzing workspace at ${rootPath}`);
+    this.logger.info(`Analyzing workspace at ${rootPath}`);`
 
     // Detect workspace tool
     const tool = await this.detectWorkspaceTool(rootPath);
-    this.logger.info(`Detected workspace tool: ${tool}`);
+    this.logger.info(`Detected workspace tool: ${tool}`);`
 
     // Get configuration files
     const configFiles = await this.findConfigFiles(rootPath, tool);
 
     // Analyze based on detected tool
     switch (tool) {
-      case 'nx':
+      case 'nx':'
         return this.analyzeNxWorkspace(rootPath, configFiles, options);
-      case 'bazel':
+      case 'bazel':'
         return this.analyzeBazelWorkspace(rootPath, configFiles, options);
-      case 'moon':
+      case 'moon':'
         return this.analyzeMoonWorkspace(rootPath, configFiles, options);
-      case 'turbo':
+      case 'turbo':'
         return this.analyzeTurboWorkspace(rootPath, configFiles, options);
-      case 'rush':
+      case 'rush':'
         return this.analyzeRushWorkspace(rootPath, configFiles, options);
-      case 'lerna':
+      case 'lerna':'
         return this.analyzeLernaWorkspace(rootPath, configFiles, options);
-      case 'yarn-workspaces':
-      case 'pnpm-workspaces':
-      case 'npm-workspaces':
+      case 'yarn-workspaces':'
+      case 'pnpm-workspaces':'
+      case 'npm-workspaces':'
         return this.analyzePackageManagerWorkspace(
           rootPath,
           configFiles,
           tool,
           options
         );
-      case 'nix':
+      case 'nix':'
         return this.analyzeNixWorkspace(rootPath, configFiles, options);
       default:
         return this.analyzeGenericWorkspace(rootPath, options);
@@ -179,7 +179,7 @@ export class WorkspaceAnalyzer {
     for (const check of checks) {
       for (const file of check.files) {
         try {
-          await fs.access(`${rootPath}/${file}`);
+          await fs.access(`${rootPath}/${file}`);`
           return check.tool;
         } catch {}
       }
@@ -187,27 +187,27 @@ export class WorkspaceAnalyzer {
 
     // Check package.json for workspace configuration
     try {
-      const packageJsonPath = `${rootPath}/package.json`;
-      const content = await fs.readFile(packageJsonPath, 'utf-8');
+      const packageJsonPath = `${rootPath}/package.json`;`
+      const content = await fs.readFile(packageJsonPath, 'utf-8');'
       const packageJson = JSON.parse(content);
 
       if (packageJson.workspaces) {
         // Detect package manager
         try {
-          await fs.access(`${rootPath}/yarn.lock`);
-          return 'yarn-workspaces';
+          await fs.access(`${rootPath}/yarn.lock`);`
+          return 'yarn-workspaces;
         } catch {}
 
         try {
-          await fs.access(`${rootPath}/pnpm-lock.yaml`);
-          return 'pnpm-workspaces';
+          await fs.access(`${rootPath}/pnpm-lock.yaml`);`
+          return 'pnpm-workspaces;
         } catch {}
 
-        return 'npm-workspaces';
+        return 'npm-workspaces;
       }
     } catch {}
 
-    return 'unknown';
+    return 'unknown;
   }
 
   /**
@@ -236,20 +236,20 @@ export class WorkspaceAnalyzer {
       turbo: ['turbo.json', '**/turbo.json'],
       rush: ['rush.json', 'common/config/**/*.json'],
       lerna: ['lerna.json', 'nx.json'],
-      'yarn-workspaces': [
+      'yarn-workspaces': ['
         'package.json',
         '**/package.json',
         'yarn.lock',
         '.yarnrc*',
       ],
-      'pnpm-workspaces': [
+      'pnpm-workspaces': ['
         'package.json',
         '**/package.json',
         'pnpm-lock.yaml',
         'pnpm-workspace.yaml',
         '.npmrc',
       ],
-      'npm-workspaces': [
+      'npm-workspaces': ['
         'package.json',
         '**/package.json',
         'package-lock.json',
@@ -283,20 +283,20 @@ export class WorkspaceAnalyzer {
 
     // Read nx.json
     try {
-      const nxJsonPath = `${rootPath}/nx.json`;
-      const content = await fs.readFile(nxJsonPath, 'utf-8');
+      const nxJsonPath = `${rootPath}/nx.json`;`
+      const content = await fs.readFile(nxJsonPath, 'utf-8');'
       nxConfig = JSON.parse(content);
     } catch {}
 
     // Find all project.json files
-    const projectFiles = configFiles.filter((f) => f.endsWith('project.json'));
+    const projectFiles = configFiles.filter((f) => f.endsWith('project.json'));'
 
     for (const projectFile of projectFiles) {
       try {
-        const content = await fs.readFile(projectFile, 'utf-8');
+        const content = await fs.readFile(projectFile, 'utf-8');'
         const projectConfig = JSON.parse(content);
-        const projectPath = projectFile.replace('/project.json', ');
-        const projectName = projectConfig.name|'|projectPath.split('/').pop();
+        const projectPath = projectFile.replace('/project.json', ');'
+        const projectName = projectConfig.name|'|projectPath.split('/').pop();'
 
         const project: WorkspaceProject = {
           name: projectName,
@@ -320,7 +320,7 @@ export class WorkspaceAnalyzer {
         projects.push(project);
       } catch (error) {
         this.logger.debug(
-          `Failed to parse project file ${projectFile}:`,
+          `Failed to parse project file ${projectFile}:`,`
           error
         );
       }
@@ -358,24 +358,24 @@ export class WorkspaceAnalyzer {
     const projects: WorkspaceProject[] = [];
 
     // Parse WORKSPACE file
-    const workspaceFile = configFiles.find((f) => f.includes('WORKSPACE'));
+    const workspaceFile = configFiles.find((f) => f.includes('WORKSPACE'));'
     let workspaceConfig = '';
 
     if (workspaceFile) {
       try {
-        workspaceConfig = await fs.readFile(workspaceFile, 'utf-8');
+        workspaceConfig = await fs.readFile(workspaceFile, 'utf-8');'
       } catch {}
     }
 
     // Find all BUILD files
-    const buildFiles = configFiles.filter((f) => f.includes('BUILD'));
+    const buildFiles = configFiles.filter((f) => f.includes('BUILD'));'
 
     for (const buildFile of buildFiles) {
       try {
-        const content = await fs.readFile(buildFile, 'utf-8');
+        const content = await fs.readFile(buildFile, 'utf-8');'
         const targets = this.parseBazelBuildFile(content);
-        const projectPath = buildFile.replace(/\/BUILD.*$/, '');
-        const projectName = projectPath.split('/').pop()||'root';
+        const projectPath = buildFile.replace(/\/BUILD.*$/, '');'
+        const projectName = projectPath.split('/').pop()||'root;
 
         const project: WorkspaceProject = {
           name: projectName,
@@ -395,7 +395,7 @@ export class WorkspaceAnalyzer {
 
         projects.push(project);
       } catch (error) {
-        this.logger.debug(`Failed to parse BUILD file ${buildFile}:`, error);
+        this.logger.debug(`Failed to parse BUILD file ${buildFile}:`, error);`
       }
     }
 
@@ -407,7 +407,7 @@ export class WorkspaceAnalyzer {
       dependencies: await this.extractBazelDependencies(workspaceConfig),
       buildTargets: this.extractAllBuildTargets(projects),
       metadata: {
-        packageManager: 'npm', // Default assumption
+        packageManager: 'npm', // Default assumption'
         totalProjects: projects.length,
         totalDependencies: 0,
         buildGraph: await this.buildProjectGraph(projects),
@@ -428,30 +428,30 @@ export class WorkspaceAnalyzer {
     const projects: WorkspaceProject[] = [];
 
     // Parse .moon/workspace.yml
-    const workspaceYml = configFiles.find((f) => f.includes('workspace.yml'));
+    const workspaceYml = configFiles.find((f) => f.includes('workspace.yml'));'
     let workspaceConfig: any = {};
 
     if (workspaceYml) {
       try {
-        const yaml = await import('yaml');
-        const content = await fs.readFile(workspaceYml, 'utf-8');
+        const yaml = await import('yaml');'
+        const content = await fs.readFile(workspaceYml, 'utf-8');'
         workspaceConfig = yaml.parse(content);
       } catch {}
     }
 
     // Find project configurations
     const projectConfigs = configFiles.filter(
-      (f) => f.endsWith('moon.yml') && !f.includes('.moon/workspace.yml')
+      (f) => f.endsWith('moon.yml') && !f.includes('.moon/workspace.yml')'
     );
 
     for (const configFile of projectConfigs) {
       try {
-        const yaml = await import('yaml');
-        const content = await fs.readFile(configFile, 'utf-8');
+        const yaml = await import('yaml');'
+        const content = await fs.readFile(configFile, 'utf-8');'
         const config = yaml.parse(content);
-        const projectPath = configFile.replace('/moon.yml', ');
+        const projectPath = configFile.replace('/moon.yml', ');'
         const projectName =
-          config.project?.name|'|projectPath.split('/').pop();
+          config.project?.name|'|projectPath.split('/').pop();'
 
         const project: WorkspaceProject = {
           name: projectName,
@@ -468,7 +468,7 @@ export class WorkspaceAnalyzer {
 
         projects.push(project);
       } catch (error) {
-        this.logger.debug(`Failed to parse Moon config ${configFile}:`, error);
+        this.logger.debug(`Failed to parse Moon config ${configFile}:`, error);`
       }
     }
 
@@ -500,11 +500,11 @@ export class WorkspaceAnalyzer {
     const fs = await this.fs;
 
     // Parse turbo.json
-    const turboJsonPath = `${rootPath}/turbo.json`;
+    const turboJsonPath = `${rootPath}/turbo.json`;`
     let turboConfig: any = {};
 
     try {
-      const content = await fs.readFile(turboJsonPath, 'utf-8');
+      const content = await fs.readFile(turboJsonPath, 'utf-8');'
       turboConfig = JSON.parse(content);
     } catch {}
 
@@ -554,25 +554,25 @@ export class WorkspaceAnalyzer {
     const projects: WorkspaceProject[] = [];
 
     // Parse flake.nix if it exists
-    const flakeNix = configFiles.find((f) => f.endsWith('flake.nix'));
+    const flakeNix = configFiles.find((f) => f.endsWith('flake.nix'));'
     let flakeConfig = '';
 
     if (flakeNix) {
       try {
-        flakeConfig = await fs.readFile(flakeNix, 'utf-8');
+        flakeConfig = await fs.readFile(flakeNix, 'utf-8');'
       } catch {}
     }
 
     // Find all .nix files
-    const nixFiles = configFiles.filter((f) => f.endsWith('.nix'));
+    const nixFiles = configFiles.filter((f) => f.endsWith('.nix'));'
 
     for (const nixFile of nixFiles) {
       try {
-        const content = await fs.readFile(nixFile, 'utf-8');
+        const content = await fs.readFile(nixFile, 'utf-8');'
         const derivations = this.parseNixDerivations(content);
-        const projectPath = nixFile.replace(/\/[^/]+\.nix$/, '');
+        const projectPath = nixFile.replace(/\/[^/]+\.nix$/, '');'
         const projectName =
-          nixFile.split('/').pop()?.replace('.nix', ')|||default';
+          nixFile.split('/').pop()?.replace('.nix', ')|||default;
 
         if (derivations.length > 0) {
           const project: WorkspaceProject = {
@@ -595,7 +595,7 @@ export class WorkspaceAnalyzer {
           projects.push(project);
         }
       } catch (error) {
-        this.logger.debug(`Failed to parse Nix file ${nixFile}:`, error);
+        this.logger.debug(`Failed to parse Nix file ${nixFile}:`, error);`
       }
     }
 
@@ -710,7 +710,7 @@ export class WorkspaceAnalyzer {
     rootPath: string
   ): Promise<Array<{ name: string; path: string; config: any }>> {
     const fs = await this.fs;
-    const packageFiles = await fastGlob('**/package.json', {
+    const packageFiles = await fastGlob('**/package.json', {'
       cwd: rootPath,
       absolute: true,
       ignore: ['**/node_modules/**'],
@@ -719,9 +719,9 @@ export class WorkspaceAnalyzer {
     const projects: WorkspaceProject[] = [];
     for (const packageFile of packageFiles) {
       try {
-        const content = await fs.readFile(packageFile, 'utf-8');
+        const content = await fs.readFile(packageFile, 'utf-8');'
         const config = JSON.parse(content);
-        const path = packageFile.replace('/package.json', ');
+        const path = packageFile.replace('/package.json', ');'
 
         projects.push({
           name: config.name|'|path.split('/').pop()||'unknown',
@@ -736,71 +736,71 @@ export class WorkspaceAnalyzer {
 
   private async detectPackageManager(
     rootPath: string
-  ): Promise<'npm|yarn|pnpm|bun'> {
+  ): Promise<'npm|yarn|pnpm|bun'> {'
     const fs = await this.fs;
 
     try {
-      await fs.access(`${rootPath}/bun.lockb`);
-      return 'bun';
+      await fs.access(`${rootPath}/bun.lockb`);`
+      return 'bun;
     } catch {}
 
     try {
-      await fs.access(`${rootPath}/pnpm-lock.yaml`);
-      return 'pnpm';
+      await fs.access(`${rootPath}/pnpm-lock.yaml`);`
+      return 'pnpm;
     } catch {}
 
     try {
-      await fs.access(`${rootPath}/yarn.lock`);
-      return 'yarn';
+      await fs.access(`${rootPath}/yarn.lock`);`
+      return 'yarn;
     } catch {}
 
-    return 'npm';
+    return 'npm;
   }
 
   private inferProjectType(config: any, path: string): ProjectType {
-    if (config.main||config.exports) return'library';
-    if (config.bin) return 'tool';
-    if (path.includes('app')||path.includes('application'))
-      return 'application';
-    if (path.includes('service')) return 'service';
-    if (path.includes('lib')||path.includes('package')) return 'library';
-    return 'unknown';
+    if (config.main||config.exports) return'library;
+    if (config.bin) return 'tool;
+    if (path.includes('app')||path.includes('application'))'
+      return 'application;
+    if (path.includes('service')) return 'service;
+    if (path.includes('lib')||path.includes('package')) return 'library;
+    return 'unknown;
   }
 
   private detectLanguages(projectPath: string): string[] {
     // This would be enhanced with actual file scanning
     const languages: string[] = [];
 
-    if (projectPath.includes('ts')||projectPath.includes('typescript')) {
-      languages.push('typescript');
+    if (projectPath.includes('ts')||projectPath.includes('typescript')) {'
+      languages.push('typescript');'
     }
-    if (projectPath.includes('js')||projectPath.includes('javascript')) {
-      languages.push('javascript');
+    if (projectPath.includes('js')||projectPath.includes('javascript')) {'
+      languages.push('javascript');'
     }
-    if (projectPath.includes('py')||projectPath.includes('python')) {
-      languages.push('python');
+    if (projectPath.includes('py')||projectPath.includes('python')) {'
+      languages.push('python');'
     }
-    if (projectPath.includes('go')) {
-      languages.push('go');
+    if (projectPath.includes('go')) {'
+      languages.push('go');'
     }
-    if (projectPath.includes('rust')||projectPath.includes('rs')) {
-      languages.push('rust');
+    if (projectPath.includes('rust')||projectPath.includes('rs')) {'
+      languages.push('rust');'
     }
 
-    return languages.length > 0 ? languages : ['javascript'];
+    return languages.length > 0 ? languages : ['javascript'];'
   }
 
   private detectFramework(config: any, path: string): string|undefined {
     const deps = { ...config.dependencies, ...config.devDependencies };
 
-    if (deps.react) return'react';
-    if (deps.vue) return 'vue';
-    if (deps['@angular/core']) return 'angular';
-    if (deps.svelte) return 'svelte';
-    if (deps.next) return 'nextjs';
-    if (deps.nuxt) return 'nuxt';
-    if (deps.express) return 'express';
-    if (deps.fastify) return 'fastify';
+    if (deps.react) return'react;
+    if (deps.vue) return 'vue;
+    if (deps['@angular/core']) return 'angular;
+    if (deps.svelte) return 'svelte;
+    if (deps.next) return 'nextjs;
+    if (deps.nuxt) return 'nuxt;
+    if (deps.express) return 'express;
+    if (deps.fastify) return 'fastify;
 
     return undefined;
   }
@@ -944,7 +944,7 @@ export class WorkspaceAnalyzer {
 
     for (const project of projects) {
       for (const target of project.targets) {
-        const taskId = `${project.name}:${target.name}`;
+        const taskId = `${project.name}:${target.name}`;`
 
         tasks.push({
           id: taskId,
@@ -954,8 +954,8 @@ export class WorkspaceAnalyzer {
         });
 
         // Add dependencies
-        for (const dep of target.dependsOn|'|[]) {
-          const depTaskId = dep.includes(':') ? dep : `${project.name}:${dep}`;
+        for (const dep of target.dependsOn|'|[]) {'
+          const depTaskId = dep.includes(':') ? dep : `${project.name}:${dep}`;`
           dependencies.push({
             source: taskId,
             target: depTaskId,
@@ -972,7 +972,7 @@ export class WorkspaceAnalyzer {
   private parseBazelBuildFile(content: string): any[] {
     // Simple Bazel BUILD file parser
     const targets: any[] = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     for (const line of lines) {
       const match = line.match(/^(\w+)\s*\(\s*name\s*=\s*"([^"]+)"/);
@@ -1017,29 +1017,29 @@ export class WorkspaceAnalyzer {
   }
 
   private inferBazelProjectType(targets: any[]): ProjectType {
-    if (targets.some((t) => t.rule === 'cc_binary'||t.rule ==='java_binary'))
-      return 'application';
+    if (targets.some((t) => t.rule === 'cc_binary'||t.rule ==='java_binary'))'
+      return 'application;
     if (
-      targets.some((t) => t.rule === 'cc_library'||t.rule ==='java_library')
+      targets.some((t) => t.rule === 'cc_library'||t.rule ==='java_library')'
     )
-      return 'library';
-    return 'unknown';
+      return 'library;
+    return 'unknown;
   }
 
   private inferNixProjectType(derivations: any[]): ProjectType {
     // Simple heuristic for Nix project types
-    return 'package';
+    return 'package;
   }
 
   private detectLanguagesFromBazel(targets: any[]): string[] {
     const languages = new Set<string>();
 
     for (const target of targets) {
-      if (target.rule.startsWith('cc_')) languages.add('cpp');
-      if (target.rule.startsWith('java_')) languages.add('java');
-      if (target.rule.startsWith('py_')) languages.add('python');
-      if (target.rule.startsWith('go_')) languages.add('go');
-      if (target.rule.startsWith('rust_')) languages.add('rust');
+      if (target.rule.startsWith('cc_')) languages.add('cpp');'
+      if (target.rule.startsWith('java_')) languages.add('java');'
+      if (target.rule.startsWith('py_')) languages.add('python');'
+      if (target.rule.startsWith('go_')) languages.add('go');'
+      if (target.rule.startsWith('rust_')) languages.add('rust');'
     }
 
     return Array.from(languages);
@@ -1047,7 +1047,7 @@ export class WorkspaceAnalyzer {
 
   private detectLanguagesFromNix(derivations: any[]): string[] {
     // Detect languages from Nix derivations
-    return ['nix'];
+    return ['nix'];'
   }
 
   private async extractBazelDependencies(

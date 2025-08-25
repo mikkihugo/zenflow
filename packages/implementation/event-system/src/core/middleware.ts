@@ -14,7 +14,7 @@
  * - Foundation integration with logging and error handling
  *
  * @example Basic middleware usage
- * ```typescript
+ * ```typescript`
  * import { createLoggingMiddleware, createTimingMiddleware } from '@claude-zen/event-system/core';
  *
  * const eventBus = new EventBus();
@@ -23,13 +23,13 @@
  * eventBus.use(createLoggingMiddleware())();
  * eventBus.use(createTimingMiddleware())();
  * eventBus.use(createValidationMiddleware())();
- * ```
+ * ````
  */
 
 import { getLogger, Result, ok, err, safeAsync } from '@claude-zen/foundation';
 import type { EventMiddleware, EventContext } from './event-bus';
 
-const logger = getLogger('EventMiddleware');
+const logger = getLogger('EventMiddleware');'
 
 // =============================================================================
 // BUILT-IN MIDDLEWARE FACTORIES - Common patterns
@@ -41,7 +41,7 @@ const logger = getLogger('EventMiddleware');
  */
 export function createLoggingMiddleware(
   options: {
-    logLevel?: 'debug|info|warn|error';
+    logLevel?: 'debug|info|warn|error;
     includePayload?: boolean;
     loggerName?: string;
   } = {}
@@ -63,12 +63,12 @@ export function createLoggingMiddleware(
     };
 
     middlewareLogger[logLevel](
-      `[EventMiddleware] Processing event: ${String(event)}`,
+      `[EventMiddleware] Processing event: ${String(event)}`,`
       logData
     );
 
     // Add to processed chain
-    context.processedBy.push('logging-middleware');
+    context.processedBy.push('logging-middleware');'
 
     await next();
   };
@@ -99,7 +99,7 @@ export function createTimingMiddleware(
       (context as any).timing = { startTime };
     }
 
-    context.processedBy.push('timing-middleware');
+    context.processedBy.push('timing-middleware');'
 
     try {
       await next();
@@ -112,7 +112,7 @@ export function createTimingMiddleware(
 
       if (logSlowEvents && duration > slowThresholdMs) {
         logger.warn(
-          `[EventMiddleware] Slow event detected: ${String(context.event)}`,
+          `[EventMiddleware] Slow event detected: ${String(context.event)}`,`
           {
             event: String(context.event),
             duration,
@@ -143,14 +143,14 @@ export function createValidationMiddleware<T>(
     if (validationResult.isOk()) {
       // Update context with validated payload
       context.payload = validationResult.value;
-      context.processedBy.push('validation-middleware');
+      context.processedBy.push('validation-middleware');'
       await next();
     } else {
       const error = validationResult.error;
 
       if (logErrors) {
         logger.error(
-          `[EventMiddleware] Validation failed for event: ${String(context.event)}`,
+          `[EventMiddleware] Validation failed for event: ${String(context.event)}`,`
           {
             event: String(context.event),
             error: error.message,
@@ -163,7 +163,7 @@ export function createValidationMiddleware<T>(
         throw error;
       } else {
         // Skip to next middleware but mark as failed validation
-        context.processedBy.push('validation-middleware-failed');
+        context.processedBy.push('validation-middleware-failed');'
         await next();
       }
     }
@@ -185,14 +185,14 @@ export function createErrorHandlingMiddleware(
 
   return async (context: EventContext, next: () => Promise<void>) => {
     try {
-      context.processedBy.push('error-handling-middleware');
+      context.processedBy.push('error-handling-middleware');'
       await next();
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
 
       if (logErrors) {
         logger.error(
-          `[EventMiddleware] Error in middleware chain: ${String(context.event)}`,
+          `[EventMiddleware] Error in middleware chain: ${String(context.event)}`,`
           {
             event: String(context.event),
             error: err.message,
@@ -246,7 +246,7 @@ export function createRateLimitingMiddleware(
     // Check rate limit
     if (current.count >= maxEventsPerSecond) {
       logger.warn(
-        `[EventMiddleware] Rate limit exceeded for event: ${eventKey}`,
+        `[EventMiddleware] Rate limit exceeded for event: ${eventKey}`,`
         {
           event: eventKey,
           count: current.count,
@@ -256,17 +256,17 @@ export function createRateLimitingMiddleware(
       );
 
       if (skipOnLimit) {
-        context.processedBy.push('rate-limiting-middleware-skipped');
+        context.processedBy.push('rate-limiting-middleware-skipped');'
         return; // Skip processing
       } else {
-        throw new Error(`Rate limit exceeded for event: ${eventKey}`);
+        throw new Error(`Rate limit exceeded for event: ${eventKey}`);`
       }
     }
 
     // Increment count and process
     current.count++;
     eventCounts.set(eventKey, current);
-    context.processedBy.push('rate-limiting-middleware');
+    context.processedBy.push('rate-limiting-middleware');'
 
     await next();
   };
@@ -320,7 +320,7 @@ export function createAsyncMiddleware(
   const { timeout, onTimeout } = options;
 
   return async (context: EventContext, next: () => Promise<void>) => {
-    context.processedBy.push('async-middleware');
+    context.processedBy.push('async-middleware');'
 
     if (timeout) {
       const timeoutPromise = new Promise<void>((_, reject) => {
@@ -330,7 +330,7 @@ export function createAsyncMiddleware(
           }
           reject(
             new Error(
-              `Middleware timeout after ${timeout}ms for event: ${String(context.event)}`
+              `Middleware timeout after ${timeout}ms for event: ${String(context.event)}``
             )
           );
         }, timeout);

@@ -18,7 +18,7 @@
  * @version 1.0.0
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * import type {
  *   AgentInstance,
  *   AgentRegistrationConfig,
@@ -33,7 +33,7 @@
  *   status: 'ready',
  *   // ... other properties
  * };
- * ```
+ * ````
  */
 
 import type { ChildProcess } from 'node:child_process';
@@ -62,17 +62,17 @@ interface Timestamped {
  * Error States: failed, degraded, unhealthy (can transition from any active state)
  */
 export type AgentStatus =
-  | 'spawning'        // Agent process is being created
-  | 'initializing'    // Agent is setting up and loading configuration
-  | 'ready'           // Agent is ready to accept tasks
-  | 'active'          // Agent is actively processing tasks
-  | 'idle'            // Agent is running but not processing tasks
-  | 'busy'            // Agent is at capacity and cannot accept new tasks
-  | 'degraded'        // Agent is running but with reduced performance
-  | 'unhealthy'       // Agent is experiencing issues but still operational
-  | 'terminating'     // Agent is shutting down gracefully
-  | 'terminated'      // Agent has stopped
-  | 'failed';         // Agent encountered a fatal error
+  | 'spawning'        // Agent process is being created'
+  | 'initializing'    // Agent is setting up and loading configuration'
+  | 'ready'           // Agent is ready to accept tasks'
+  | 'active'          // Agent is actively processing tasks'
+  | 'idle'            // Agent is running but not processing tasks'
+  | 'busy'            // Agent is at capacity and cannot accept new tasks'
+  | 'degraded'        // Agent is running but with reduced performance'
+  | 'unhealthy'       // Agent is experiencing issues but still operational'
+  | 'terminating'     // Agent is shutting down gracefully'
+  | 'terminated'      // Agent has stopped'
+  | 'failed';         // Agent encountered a fatal error'
 
 /**
  * Health status for comprehensive agent monitoring.
@@ -100,8 +100,8 @@ export interface HealthStatus {
   /** Timestamp of last health check */
   lastCheck: Timestamp;
 
-  /** Health trend over time ('improving|stable|degrading') */
-  trend: 'improving' | 'stable' | 'degrading';
+  /** Health trend over time ('improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading') */'
+  trend: 'improving' | 'stable' | 'declining'' |'improving' | 'stable' | 'declining'| 'degrading;
 }
 
 // =============================================================================
@@ -208,10 +208,10 @@ export interface TaskAssignment extends Timestamped, Identifiable<UUID> {
   taskType: string;
 
   /** Priority level of the task */
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: 'low' | 'medium' | 'high' | 'critical;
 
   /** Current status of the task */
-  status: 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+  status: 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled;
 
   /** Task-specific parameters */
   parameters: Record<string, unknown>;
@@ -244,7 +244,7 @@ export interface AgentError extends Timestamped {
   message: string;
 
   /** Error severity level */
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: 'low' | 'medium' | 'high' | 'critical;
 
   /** Stack trace (if available) */
   stack?: string;
@@ -276,7 +276,7 @@ export interface AgentInstance extends Timestamped, Identifiable<UUID> {
   /** Human-readable name for the agent */
   name: string;
 
-  /** Agent type/category (e.g., 'worker', 'coordinator', 'specialist') */
+  /** Agent type/category (e.g., 'worker', 'coordinator', 'specialist') */'
   type: string;
 
   /** Current operational status */
@@ -349,7 +349,7 @@ export interface AgentRegistrationConfig {
   tags?: string[];
 
   /** Priority level for resource allocation */
-  priority?: 'low' | 'medium' | 'high' | 'critical';
+  priority?: 'low' | 'medium' | 'high' | 'critical;
 
   /** Auto-start the agent after registration */
   autoStart?: boolean;
@@ -445,7 +445,7 @@ export interface AgentQuery {
   /** Sort order */
   sort?: {
     field: keyof AgentInstance;
-    direction: 'asc' | 'desc';
+    direction: 'asc' | 'desc;
   };
 }
 

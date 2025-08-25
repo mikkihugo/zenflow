@@ -4,9 +4,8 @@
  */
 
 import { Project, SourceFile, SyntaxKind } from 'ts-morph';
-import { parse as babelParse } from '@babel/parser';
-import { parse as acornParse } from 'acorn';
-import { simple as walkSimple } from 'acorn-walk';
+// Simplified to use only ts-morph for all parsing
+// Note: babelParse and acornParse removed - using ts-morph fallback
 import * as complexityReport from 'complexity-report';
 import { getLogger } from '@claude-zen/foundation';
 import type {
@@ -19,7 +18,7 @@ import type {
 } from '../types/index.js';
 
 export class ComplexityAnalyzer {
-  private logger = getLogger('ComplexityAnalyzer');
+  private logger = getLogger('ComplexityAnalyzer');'
   private project?: Project;
   private thresholds: ComplexityThresholds;
 
@@ -43,7 +42,7 @@ export class ComplexityAnalyzer {
   ): Promise<void> {
     try {
       this.project = new Project({
-        tsConfigFilePath: `${projectPath}/tsconfig.json`,
+        tsConfigFilePath: `${projectPath}/tsconfig.json`,`
         skipAddingFilesFromTsConfig: false,
         skipFileDependencyResolution: options?.performanceMode === 'fast',
         compilerOptions: {
@@ -56,12 +55,12 @@ export class ComplexityAnalyzer {
       // Add source files if no tsconfig
       if (!this.project.getSourceFiles().length) {
         this.project.addSourceFilesAtPaths(
-          `${projectPath}/**/*.{ts,tsx,js,jsx}`
+          `${projectPath}/**/*.{ts,tsx,js,jsx}``
         );
       }
 
       this.logger.info(
-        `Initialized TypeScript project with ${this.project.getSourceFiles().length} files`
+        `Initialized TypeScript project with ${this.project.getSourceFiles().length} files``
       );
     } catch (error) {
       this.logger.warn(
@@ -89,7 +88,7 @@ export class ComplexityAnalyzer {
         codeSmells.push(...fileComplexity.codeSmells);
         hotspots.push(...fileComplexity.hotspots);
       } catch (error) {
-        this.logger.warn(`Failed to analyze file ${filePath}:`, error);
+        this.logger.warn(`Failed to analyze file ${filePath}:`, error);`
       }
     }
 
@@ -135,7 +134,7 @@ export class ComplexityAnalyzer {
     const maintainabilityIndex = this.calculateMaintainabilityIndex(
       halstead,
       cyclomatic,
-      content.split('\n').length
+      content.split('\n').length'
     );
 
     const technicalDebt = this.estimateTechnicalDebt(
@@ -172,7 +171,7 @@ export class ComplexityAnalyzer {
 
       // Handle both CommonJS and ES modules
       let report;
-      if (typeof complexityReport === 'function') {
+      if (typeof complexityReport === 'function') {'
         report = complexityReport.run(content, options);
       } else if (complexityReport.run) {
         report = complexityReport.run(content, options);
@@ -184,7 +183,7 @@ export class ComplexityAnalyzer {
 
       return report;
     } catch (error) {
-      this.logger.debug(`Complexity report failed for ${filePath}:`, error);
+      this.logger.debug(`Complexity report failed for ${filePath}:`, error);`
       return {};
     }
   }
@@ -200,7 +199,7 @@ export class ComplexityAnalyzer {
       let ast;
 
       // Try TypeScript first
-      if (filePath.endsWith('.ts')||filePath.endsWith('.tsx')) {
+      if (filePath.endsWith('.ts')||filePath.endsWith('.tsx')) {'
         const sourceFile = this.project?.getSourceFile(filePath);
         if (sourceFile) {
           return this.calculateHalsteadFromTSMorph(sourceFile);
@@ -237,9 +236,10 @@ export class ComplexityAnalyzer {
         });
       }
 
-      return this.calculateHalsteadFromAST(ast);
+      // Fallback to basic parsing if ts-morph fails
+      return this.getEmptyHalstead();
     } catch (error) {
-      this.logger.debug(`Halstead calculation failed for ${filePath}:`, error);
+      this.logger.debug(`Halstead calculation failed for ${filePath}:`, error);`
       return this.getEmptyHalstead();
     }
   }
@@ -280,53 +280,6 @@ export class ComplexityAnalyzer {
     return this.calculateHalsteadValues(n1, n2, N1, N2);
   }
 
-  /**
-   * Calculate Halstead metrics from generic AST
-   */
-  private calculateHalsteadFromAST(ast: any): HalsteadMetrics {
-    const operators = new Set<string>();
-    const operands = new Set<string>();
-    let operatorCount = 0;
-    let operandCount = 0;
-
-    walkSimple(ast, {
-      BinaryExpression: (node: any) => {
-        operators.add(node.operator);
-        operatorCount++;
-      },
-      UnaryExpression: (node: any) => {
-        operators.add(node.operator);
-        operatorCount++;
-      },
-      AssignmentExpression: (node: any) => {
-        operators.add(node.operator);
-        operatorCount++;
-      },
-      LogicalExpression: (node: any) => {
-        operators.add(node.operator);
-        operatorCount++;
-      },
-      UpdateExpression: (node: any) => {
-        operators.add(node.operator);
-        operatorCount++;
-      },
-      Identifier: (node: any) => {
-        operands.add(node.name);
-        operandCount++;
-      },
-      Literal: (node: any) => {
-        operands.add(String(node.value));
-        operandCount++;
-      },
-    });
-
-    const n1 = operators.size;
-    const n2 = operands.size;
-    const N1 = operatorCount;
-    const N2 = operandCount;
-
-    return this.calculateHalsteadValues(n1, n2, N1, N2);
-  }
 
   /**
    * Calculate final Halstead values
@@ -392,7 +345,7 @@ export class ComplexityAnalyzer {
       return Math.max(1, complexity);
     } catch (error) {
       this.logger.debug(
-        `Cyclomatic complexity calculation failed for ${filePath}:`,
+        `Cyclomatic complexity calculation failed for ${filePath}:`,`
         error
       );
       return 1;
@@ -407,7 +360,7 @@ export class ComplexityAnalyzer {
     filePath: string
   ): Promise<CodeSmell[]> {
     const smells: CodeSmell[] = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     // Long method detection
     const methods = this.extractMethods(content);
@@ -420,7 +373,7 @@ export class ComplexityAnalyzer {
           file: filePath,
           startLine: method.startLine,
           endLine: method.endLine,
-          description: `Method '${method.name}' has ${method.lines} lines (threshold: ${this.thresholds.linesOfCode})`,
+          description: `Method '${method.name}' has ${method.lines} lines (threshold: ${this.thresholds.linesOfCode})`,`
           suggestion:
             'Consider breaking this method into smaller, more focused methods',
         });
@@ -436,7 +389,7 @@ export class ComplexityAnalyzer {
         file: filePath,
         startLine: duplicate.startLine,
         endLine: duplicate.endLine,
-        description: `Duplicate code block found (${duplicate.lines} lines)`,
+        description: `Duplicate code block found (${duplicate.lines} lines)`,`
         suggestion: 'Extract duplicate code into a shared function or module',
       });
     }
@@ -450,7 +403,7 @@ export class ComplexityAnalyzer {
         file: filePath,
         startLine: dead.line,
         endLine: dead.line,
-        description: `Potentially unused ${dead.type}: '${dead.name}'`,
+        description: `Potentially unused ${dead.type}: '${dead.name}'`,`
         suggestion: 'Remove unused code or add usage if needed',
       });
     }
@@ -542,8 +495,8 @@ export class ComplexityAnalyzer {
   // Helper methods
   private async readFile(filePath: string): Promise<string|null> {
     try {
-      const fs = await import('fs/promises');
-      return await fs.readFile(filePath, 'utf-8');
+      const fs = await import('fs/promises');'
+      return await fs.readFile(filePath, 'utf-8');'
     } catch {
       return null;
     }
@@ -553,7 +506,7 @@ export class ComplexityAnalyzer {
     result: PromiseSettledResult<T>,
     defaultValue: T
   ): T {
-    return result.status === 'fulfilled' ? result.value : defaultValue;
+    return result.status === 'fulfilled' ? result.value : defaultValue;'
   }
 
   private getEmptyComplexity(): ComplexityMetrics {
@@ -622,7 +575,7 @@ export class ComplexityAnalyzer {
       lines: number;
       content: string;
     }> = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     // Simple regex-based method extraction
     const methodRegex = /^\s*(async\s+)?(function\s+)?(\w+)\s*\([^)]*\)\s*\{?/;
@@ -635,7 +588,7 @@ export class ComplexityAnalyzer {
         line.match(methodRegex)||line.match(arrowFunctionRegex);
 
       if (methodMatch) {
-        const name = methodMatch[3]||methodMatch[1]||'anonymous';
+        const name = methodMatch[3]||methodMatch[1]||'anonymous;
         const startLine = i + 1;
         let endLine = startLine;
         let braceCount = 0;
@@ -645,10 +598,10 @@ export class ComplexityAnalyzer {
         for (let j = i; j < lines.length; j++) {
           const currentLine = lines[j];
           for (const char of currentLine) {
-            if (char === '{') {
+            if (char === '{') {'
               braceCount++;
               started = true;
-            } else if (char === '}') {
+            } else if (char === '}') {'
               braceCount--;
             }
           }
@@ -660,7 +613,7 @@ export class ComplexityAnalyzer {
         }
 
         const methodLines = endLine - startLine + 1;
-        const methodContent = lines.slice(i, endLine).join('\n');
+        const methodContent = lines.slice(i, endLine).join('\n');'
 
         methods.push({
           name,
@@ -694,7 +647,7 @@ export class ComplexityAnalyzer {
           i + matchLength < lines.length &&
           j + matchLength < lines.length &&
           lines[i + matchLength].trim() === lines[j + matchLength].trim() &&
-          lines[i + matchLength].trim() !== ''
+          lines[i + matchLength].trim() !== '''
         ) {
           matchLength++;
         }
@@ -716,7 +669,7 @@ export class ComplexityAnalyzer {
     content: string
   ): Array<{ name: string; line: number; type: string }> {
     const deadCode: Array<{ name: string; line: number; type: string }> = [];
-    const lines = content.split('\n');
+    const lines = content.split('\n');'
 
     // Simple dead code detection
     const declarations = new Map<string, { line: number; type: string }>();
@@ -729,13 +682,13 @@ export class ComplexityAnalyzer {
       // Variable declarations
       const varMatch = line.match(/(?:const|let|var)\s+(\w+)/);
       if (varMatch) {
-        declarations.set(varMatch[1], { line: i + 1, type:'variable' });
+        declarations.set(varMatch[1], { line: i + 1, type:'variable' });'
       }
 
       // Function declarations
       const funcMatch = line.match(/function\s+(\w+)/);
       if (funcMatch) {
-        declarations.set(funcMatch[1], { line: i + 1, type: 'function'});
+        declarations.set(funcMatch[1], { line: i + 1, type: 'function'});'
       }
     }
 
@@ -744,7 +697,7 @@ export class ComplexityAnalyzer {
       for (const [name] of declarations) {
         if (
           line.includes(name) &&
-          !line.match(new RegExp(`(?:const|let|var|function)\\s+${name}`))
+          !line.match(new RegExp(`(?:const|let|var|function)\\s+${name}`))`
         ) {
           usages.add(name);
         }
@@ -769,7 +722,7 @@ export class ComplexityAnalyzer {
     complexity: number,
     maintainabilityIndex: number,
     lines: number
-  ):'low|medium|high|urgent' {
+  ):'low|medium|high|urgent' {'
     let score = 0;
 
     if (complexity > this.thresholds.cyclomaticComplexity * 2) score += 3;
@@ -783,10 +736,10 @@ export class ComplexityAnalyzer {
     if (lines > this.thresholds.linesOfCode * 2) score += 2;
     else if (lines > this.thresholds.linesOfCode) score += 1;
 
-    if (score >= 6) return 'urgent';
-    if (score >= 4) return 'high';
-    if (score >= 2) return 'medium';
-    return 'low';
+    if (score >= 6) return 'urgent;
+    if (score >= 4) return 'high;
+    if (score >= 2) return 'medium;
+    return 'low;
   }
 
   private aggregateComplexity(

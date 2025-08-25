@@ -16,7 +16,7 @@ export interface PortfolioEpic {
   readonly title: string;
   readonly description: string;
   readonly businessValue: number;
-  readonly status: 'backlog|analyzing|implementing|done';
+  readonly status: 'backlog|analyzing|implementing|done;
   readonly priority: number;
 }
 
@@ -33,7 +33,7 @@ export interface ValueStream {
   readonly name: string;
   readonly description: string;
   readonly budget: number;
-  readonly type?: 'operational|development'';
+  readonly type?: 'operational|development';
   readonly customers?: Customer[];
   readonly valueFlowSteps?: ValueFlowStep[];
   readonly steps?: ValueStreamStep[];
@@ -48,7 +48,7 @@ export interface ValueStreamStep {
   readonly name: string;
   readonly description?: string;
   readonly duration: number;
-  readonly type: 'process|wait|decision|handoff';
+  readonly type: 'process|wait|decision|handoff;
   readonly owner?: string;
   readonly metrics?: StepMetrics;
 }
@@ -69,7 +69,7 @@ export interface StepMetrics {
 export interface Customer {
   readonly id: string;
   readonly name: string;
-  readonly type: 'internal|external'';
+  readonly type: 'internal|external';
   readonly needs: string[];
   readonly satisfaction: number; // 0-10
 }
@@ -204,7 +204,7 @@ export function createEvent(
  * Re-export Logger interface and getLogger function from foundation
  * This provides structured logging via LogTape with proper production configuration
  */
-export type { Logger } from'@claude-zen/foundation';
+export type { Logger } from'@claude-zen/foundation;
 export { getLogger } from '@claude-zen/foundation';
 
 /**
@@ -303,7 +303,7 @@ export interface ARTTeam {
   readonly id: string;
   readonly name: string;
   readonly artId: string;
-  readonly type: 'feature|component'||shared-service';
+  readonly type: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
   readonly mission: string;
   readonly members: TeamMember[];
   readonly capacity: TeamCapacity;
@@ -386,7 +386,7 @@ export interface Task {
   readonly name: string;
   readonly storyId: string;
   readonly hours: number;
-  readonly status: 'todo|in_progress|done';
+  readonly status: 'todo' | 'in_progress' | 'done';
   readonly assignee: string;
 }
 
@@ -397,8 +397,8 @@ export interface Enabler {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'architectural|infrastructure|compliance|exploration';
-  readonly level: 'portfolio|solution|program|team';
+  readonly type: 'architectural|infrastructure|compliance|exploration;
+  readonly level: 'portfolio|solution|program|team;
   readonly parentId: string;
   readonly acceptanceCriteria: string[];
   readonly effort: number;
@@ -420,11 +420,11 @@ export enum EnablerStatus {
 export interface Risk {
   readonly id: string;
   readonly description: string;
-  readonly impact: 'low|medium|high';
-  readonly probability: 'low|medium|high';
+  readonly impact: 'low' | 'medium' | 'high';
+  readonly probability: 'low' | 'medium' | 'high';
   readonly mitigation: string;
   readonly owner: string;
-  readonly status: 'open|mitigated|closed';
+  readonly status: 'open' | 'mitigated' | 'closed';
 }
 
 /**
@@ -434,8 +434,8 @@ export interface Dependency {
   readonly id: string;
   readonly fromItem: string;
   readonly toItem: string;
-  readonly type: 'blocks|enables|relates';
-  readonly status: 'open|resolved'';
+  readonly type: 'blocks' | 'enables' | 'relates';
+  readonly status: 'open|resolved';
   readonly description: string;
 }
 
@@ -458,7 +458,7 @@ export interface DemoFeedback {
   readonly source: string;
   readonly feedback: string;
   readonly actionItem?: string;
-  readonly priority: 'low|medium|high';
+  readonly priority: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -478,11 +478,11 @@ export interface InspectAndAdapt {
 export interface Improvement {
   readonly id: string;
   readonly description: string;
-  readonly category: 'process|technical|organizational';
-  readonly effort: 'small|medium|large';
-  readonly impact: 'low|medium|high';
+  readonly category: 'process' | 'technical' | 'organizational';
+  readonly effort: 'small' | 'medium' | 'large';
+  readonly impact: 'low' | 'medium' | 'high';
   readonly owner: string;
-  readonly status: 'proposed|approved|in_progress|done';
+  readonly status: 'proposed|approved|in_progress|done;
 }
 
 /**
@@ -740,8 +740,8 @@ export interface Stakeholder {
   readonly name: string;
   readonly role: string;
   readonly concerns: string[];
-  readonly influence: 'high|medium|low';
-  readonly involvement: 'active|consulted|informed';
+  readonly influence: 'high' | 'medium' | 'low';
+  readonly involvement: 'active' | 'consulted' | 'informed';
 }
 
 /**
@@ -749,10 +749,10 @@ export interface Stakeholder {
  */
 export interface ArchitecturalDriver {
   readonly id: string;
-  readonly type: 'functional|quality|constraint';
+  readonly type: 'functional' | 'quality' | 'constraint';
   readonly description: string;
   readonly rationale: string;
-  readonly priority: 'critical|high|medium|low';
+  readonly priority: 'critical|high|medium|low;
   readonly source: string;
   readonly impactedComponents: string[];
 }
@@ -811,7 +811,7 @@ export interface ArchitecturalTactic {
  */
 export interface ArchitecturalConstraint {
   readonly id: string;
-  readonly type: 'technical|business|regulatory|organizational';
+  readonly type: 'technical|business|regulatory|organizational;
   readonly description: string;
   readonly rationale: string;
   readonly implications: string[];
@@ -840,7 +840,7 @@ export interface SystemComponent {
 export interface ComponentInterface {
   readonly id: string;
   readonly name: string;
-  readonly type: 'synchronous|asynchronous|batch';
+  readonly type: 'synchronous' | 'asynchronous' | 'batch';
   readonly protocol: string;
   readonly producer: string;
   readonly consumer: string;
@@ -869,7 +869,7 @@ export interface ComplianceRequirement {
   readonly description: string;
   readonly controls: ControlRequirement[];
   readonly evidence: string[];
-  readonly status: 'compliant|non_compliant|partial|not_assessed';
+  readonly status: 'compliant|non_compliant|partial|not_assessed;
 }
 
 /**
@@ -891,8 +891,8 @@ export interface ControlRequirement {
 export interface ArchitectureReview {
   readonly id: string;
   readonly reviewerId: string;
-  readonly reviewType: 'peer|formal|compliance|security';
-  readonly status:|'pending|in_progress|approved|rejected|conditionally_approved';
+  readonly reviewType: 'peer|formal|compliance|security;
+  readonly status:|'pending|in_progress|approved|rejected|conditionally_approved;
   readonly findings: ReviewFinding[];
   readonly recommendations: string[];
   readonly decision: string;
@@ -905,8 +905,8 @@ export interface ArchitectureReview {
  */
 export interface ReviewFinding {
   readonly id: string;
-  readonly category: 'compliance|design|quality|risk';
-  readonly severity: 'critical|high|medium|low|info';
+  readonly category: 'compliance|design|quality|risk;
+  readonly severity: 'critical|high|medium|low|info;
   readonly description: string;
   readonly recommendation: string;
   readonly impactedComponents: string[];

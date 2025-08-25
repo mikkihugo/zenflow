@@ -4,7 +4,7 @@
 
 import { getLogger } from '../../config/logging-config';
 
-const logger = getLogger('knowledge-storage-backends-sqlite-backend');
+const logger = getLogger('knowledge-storage-backends-sqlite-backend');'
 
 /**
  * SQLite Backend for FACT Storage using Unified DAL.
@@ -103,14 +103,14 @@ export class SQLiteBackend implements FACTStorageBackend {
 
   async store(entry: FACTKnowledgeEntry): Promise<void> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       await this.dalAdapter.execute(
-        `INSERT OR REPLACE NTO ${this.config.tableName}
+        `INSERT OR REPLACE NTO ${this.config.tableName}`
          (id, query, response, metadata, timestamp, ttl, access_count, last_accessed, expires_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,`
         [
           entry.id,
           entry.query,
@@ -127,8 +127,8 @@ export class SQLiteBackend implements FACTStorageBackend {
       // Insert into FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `INSERT OR REPLACE NTO ${this.config.tableName}_fts (id, query, response, domains, type)
-           VALUES (?, ?, ?, ?, ?)`,
+          `INSERT OR REPLACE NTO ${this.config.tableName}_fts (id, query, response, domains, type)`
+           VALUES (?, ?, ?, ?, ?)`,`
           [
             entry.id,
             entry.query,
@@ -139,19 +139,19 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
     } catch (error) {
-      logger.error('Failed to store FACT entry:', error);
+      logger.error('Failed to store FACT entry:', error);'
       throw error;
     }
   }
 
   async get(id: string): Promise<FACTKnowledgeEntry|null> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const result = await this.dalAdapter.query(
-        `SELECT * FROM ${this.config.tableName} WHERE id = ?`,
+        `SELECT * FROM ${this.config.tableName} WHERE id = ?`,`
         [id]
       );
       const row = result?.rows?.[0];
@@ -177,14 +177,14 @@ export class SQLiteBackend implements FACTStorageBackend {
         lastAccessed: row.last_accessed,
       };
     } catch (error) {
-      logger.error('Failed to get FACT entry:', error);
+      logger.error('Failed to get FACT entry:', error);'
       return null;
     }
   }
 
   async search(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
@@ -193,26 +193,26 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       if (query.query && this.config.enableFullTextSearch) {
         // Use full-text search
-        sql = `
+        sql = ``
           SELECT f.* FROM ${this.config.tableName} f
           JOIN ${this.config.tableName}_fts fts ON f.id = fts.id
           WHERE fts.${this.config.tableName}_fts MATCH ?
           AND f.expires_at > ?
-        `;
+        `;`
         params = [query.query, Date.now()];
       } else {
         // Use regular search
-        const conditions = ['expires_at > ?'];
+        const conditions = ['expires_at > ?'];'
         params = [Date.now()];
 
         if (query.query) {
-          conditions.push('(query LIKE ? OR response LIKE ?)');
-          const searchTerm = `%${query.query}%`;
+          conditions.push('(query LIKE ? OR response LIKE ?)');'
+          const searchTerm = `%${query.query}%`;`
           params?.push(searchTerm, searchTerm);
         }
 
         if (query.type) {
-          conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?`);
+          conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?`);`
           params?.push(query.type);
         }
 
@@ -220,29 +220,29 @@ export class SQLiteBackend implements FACTStorageBackend {
           const domainConditions = query.domains
             .map(
               () =>
-                `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)`
+                `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)``
             )
-            .join(' OR ');
-          conditions.push(`(${domainConditions})`);
+            .join(' OR ');'
+          conditions.push(`(${domainConditions})`);`
           params?.push(...query.domains);
         }
 
         if (query.minConfidence !== undefined) {
-          conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?`);
+          conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?`);`
           params?.push(query.minConfidence);
         }
 
         if (query.maxAge !== undefined) {
-          conditions.push(`timestamp >= ?`);
+          conditions.push(`timestamp >= ?`);`
           params?.push(Date.now() - query.maxAge);
         }
 
-        sql = `
+        sql = ``
           SELECT * FROM ${this.config.tableName}
-          WHERE ${conditions.join(' AND ')}
+          WHERE ${conditions.join(' AND ')}'
           ORDER BY timestamp DESC, access_count DESC
           LIMIT ?
-        `;
+        `;`
         params?.push(query.limit||50);
       }
 
@@ -260,76 +260,76 @@ export class SQLiteBackend implements FACTStorageBackend {
         lastAccessed: row.last_accessed,
       }));
     } catch (error) {
-      logger.error('Failed to search FACT entries:', error);
+      logger.error('Failed to search FACT entries:', error);'
       return [];
     }
   }
 
   async delete(id: string): Promise<boolean> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const result = await this.dalAdapter.execute(
-        `DELETE FROM ${this.config.tableName} WHERE id = ?`,
+        `DELETE FROM ${this.config.tableName} WHERE id = ?`,`
         [id]
       );
 
       // Delete from FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts WHERE id = ?`,
+          `DELETE FROM ${this.config.tableName}_fts WHERE id = ?`,`
           [id]
         );
       }
 
       return (result?.rowsAffected||0) > 0;
     } catch (error) {
-      logger.error('Failed to delete FACT entry:', error);
+      logger.error('Failed to delete FACT entry:', error);'
       return false;
     }
   }
 
   async cleanup(maxAge: number): Promise<number> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const cutoffTime = Date.now() - maxAge;
       const result = await this.dalAdapter.execute(
-        `DELETE FROM ${this.config.tableName} WHERE expires_at < ?`,
+        `DELETE FROM ${this.config.tableName} WHERE expires_at < ?`,`
         [cutoffTime]
       );
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT N (SELECT id FROM ${this.config.tableName})`
+          `DELETE FROM ${this.config.tableName}_fts `
+           WHERE id NOT N (SELECT id FROM ${this.config.tableName})``
         );
       }
 
       return result?.rowsAffected||0;
     } catch (error) {
-      logger.error('Failed to cleanup FACT entries:', error);
+      logger.error('Failed to cleanup FACT entries:', error);'
       return 0;
     }
   }
 
   async getStats(): Promise<Partial<FACTStorageStats>> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const result = await this.dalAdapter.query(
-        `SELECT 
+        `SELECT `
          COUNT(*) as total_count,
          MIN(timestamp) as oldest_timestamp,
          MAX(timestamp) as newest_timestamp
-         FROM ${this.config.tableName}`
+         FROM ${this.config.tableName}``
       );
       const stats = result?.rows?.[0];
 
@@ -339,32 +339,32 @@ export class SQLiteBackend implements FACTStorageBackend {
         newestEntry: stats.newest_timestamp,
       };
     } catch (error) {
-      logger.error('Failed to get FACT storage stats:', error);
+      logger.error('Failed to get FACT storage stats:', error);'
       return {};
     }
   }
 
   async clear(): Promise<void> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
-      await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}`);
+      await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}`);`
 
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts`
+          `DELETE FROM ${this.config.tableName}_fts``
         );
       }
 
       // Reset auto-increment
       await this.dalAdapter.execute(
-        `DELETE FROM sqlite_sequence WHERE name = ?`,
+        `DELETE FROM sqlite_sequence WHERE name = ?`,`
         [this.config.tableName]
       );
     } catch (error) {
-      logger.error('Failed to clear FACT storage:', error);
+      logger.error('Failed to clear FACT storage:', error);'
       throw error;
     }
   }
@@ -379,157 +379,157 @@ export class SQLiteBackend implements FACTStorageBackend {
 
   async clearByQuality(minQuality: number): Promise<number> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const result = await this.dalAdapter.execute(
-        `DELETE FROM ${this.config.tableName} WHERE JSON_EXTRACT(metadata, '$.confidence') < ?`,
+        `DELETE FROM ${this.config.tableName} WHERE JSON_EXTRACT(metadata, '$.confidence') < ?`,`
         [minQuality]
       );
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT N (SELECT id FROM ${this.config.tableName})`
+          `DELETE FROM ${this.config.tableName}_fts `
+           WHERE id NOT N (SELECT id FROM ${this.config.tableName})``
         );
       }
 
       return result?.rowsAffected||0;
     } catch (error) {
-      logger.error('Failed to clear entries by quality:', error);
+      logger.error('Failed to clear entries by quality:', error);'
       return 0;
     }
   }
 
   async clearByAge(maxAgeMs: number): Promise<number> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const cutoffTime = Date.now() - maxAgeMs;
       const result = await this.dalAdapter.execute(
-        `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,
+        `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,`
         [cutoffTime]
       );
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT N (SELECT id FROM ${this.config.tableName})`
+          `DELETE FROM ${this.config.tableName}_fts `
+           WHERE id NOT N (SELECT id FROM ${this.config.tableName})``
         );
       }
 
       return result?.rowsAffected||0;
     } catch (error) {
-      logger.error('Failed to clear entries by age:', error);
+      logger.error('Failed to clear entries by age:', error);'
       return 0;
     }
   }
 
   async clearMemoryCache(): Promise<number> {
-    // SQLite backend doesn't have a separate memory cache
+    // SQLite backend doesn't have a separate memory cache'
     // This is a no-op for SQLite backend
     return 0;
   }
 
   async clearAll(): Promise<number> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const countResult = await this.dalAdapter.query(
-        `SELECT COUNT(*) as count FROM ${this.config.tableName}`
+        `SELECT COUNT(*) as count FROM ${this.config.tableName}``
       );
       const totalEntries = countResult?.rows?.[0]?.count||0;
 
       await this.clear();
       return totalEntries;
     } catch (error) {
-      logger.error('Failed to clear all entries:', error);
+      logger.error('Failed to clear all entries:', error);'
       return 0;
     }
   }
 
   async optimize(
-    strategy: 'aggressive|balanced|conservative' = 'balanced'
+    strategy: 'aggressive|balanced|conservative' = 'balanced''
   ): Promise<{ optimized: boolean; details: string }> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       const operations = [];
 
       // Always vacuum the database
-      await this.dalAdapter.execute('VACUUM');
-      operations.push('VACUUM completed');
+      await this.dalAdapter.execute('VACUUM');'
+      operations.push('VACUUM completed');'
 
       // Reindex based on strategy
-      if (strategy === 'aggressive'||strategy ==='balanced') {
-        await this.dalAdapter.execute('REINDEX');
-        operations.push('REINDEX completed');
+      if (strategy === 'aggressive'||strategy ==='balanced') {'
+        await this.dalAdapter.execute('REINDEX');'
+        operations.push('REINDEX completed');'
       }
 
       // Analyze statistics for query optimization
-      if (strategy === 'aggressive') {
-        await this.dalAdapter.execute('ANALYZE');
-        operations.push('ANALYZE completed');
+      if (strategy === 'aggressive') {'
+        await this.dalAdapter.execute('ANALYZE');'
+        operations.push('ANALYZE completed');'
       }
 
       // Clean up expired entries
       const cleaned = await this.cleanup(0); // Clean all expired
       if (cleaned > 0) {
-        operations.push(`Cleaned ${cleaned} expired entries`);
+        operations.push(`Cleaned ${cleaned} expired entries`);`
       }
 
       return {
         optimized: true,
-        details: `Optimization complete: ${operations.join(', ')}`,
+        details: `Optimization complete: ${operations.join(', ')}`,`
       };
     } catch (error) {
-      logger.error('Failed to optimize storage:', error);
+      logger.error('Failed to optimize storage:', error);'
       return {
         optimized: false,
-        details: `Optimization failed: ${(error as Error).message}`,
+        details: `Optimization failed: ${(error as Error).message}`,`
       };
     }
   }
 
   async getStorageStats(): Promise<FACTStorageStats> {
     if (!this.dalAdapter) {
-      throw new Error('SQLite backend not initialized');
+      throw new Error('SQLite backend not initialized');'
     }
 
     try {
       // Get basic counts and timestamps
       const basicStatsResult = await this.dalAdapter.query(
-        `SELECT 
+        `SELECT `
          COUNT(*) as total_count,
          MIN(timestamp) as oldest_timestamp,
          MAX(timestamp) as newest_timestamp,
          AVG(access_count) as avg_access_count
-         FROM ${this.config.tableName}`
+         FROM ${this.config.tableName}``
       );
       const basicStats = basicStatsResult?.rows?.[0];
 
       // Get top domains
       const domainsResult = await this.dalAdapter.query(
-        `SELECT JSON_EXTRACT(metadata, '$.domains') as domains, COUNT(*) as count
+        `SELECT JSON_EXTRACT(metadata, '$.domains') as domains, COUNT(*) as count'
          FROM ${this.config.tableName}
-         GROUP BY JSON_EXTRACT(metadata, '$.domains')
+         GROUP BY JSON_EXTRACT(metadata, '$.domains')'
          ORDER BY count DESC
-         LIMIT 10`
+         LIMIT 10``
       );
       const topDomains =
         domainsResult?.rows
           ?.flatMap((row: unknown) => {
             try {
-              const domains = JSON.parse(row.domains||'[]');
+              const domains = JSON.parse(row.domains||'[]');'
               return Array.isArray(domains) ? domains : [];
             } catch {
               return [];
@@ -543,7 +543,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       const avgAccessCount = basicStats?.avg_access_count||0;
 
       if (totalEntries > 10000 && avgAccessCount < 2) {
-        storageHealth ='fair';
+        storageHealth ='fair;
       } else if (totalEntries > 50000) {
         storageHealth = 'good';
       } else if (totalEntries < 100) {
@@ -551,9 +551,9 @@ export class SQLiteBackend implements FACTStorageBackend {
       }
 
       return {
-        memoryEntries: 0, // SQLite backend doesn't use memory cache
+        memoryEntries: 0, // SQLite backend doesn't use memory cache'
         persistentEntries: totalEntries,
-        totalMemorySize: 0, // SQLite backend doesn't use memory cache
+        totalMemorySize: 0, // SQLite backend doesn't use memory cache'
         cacheHitRate: 0, // Not applicable for persistent-only storage
         oldestEntry: basicStats?.oldest_timestamp||0,
         newestEntry: basicStats?.newest_timestamp||0,
@@ -561,7 +561,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         storageHealth,
       };
     } catch (error) {
-      logger.error('Failed to get storage stats:', error);
+      logger.error('Failed to get storage stats:', error);'
       return {
         memoryEntries: 0,
         persistentEntries: 0,
@@ -579,7 +579,7 @@ export class SQLiteBackend implements FACTStorageBackend {
     if (!this.dalAdapter) return;
 
     // Main table
-    await this.dalAdapter.execute(`
+    await this.dalAdapter.execute(``
       CREATE TABLE F NOT EXISTS ${this.config.tableName} (
         id TEXT PRIMARY KEY,
         query TEXT NOT NULL,
@@ -591,11 +591,11 @@ export class SQLiteBackend implements FACTStorageBackend {
         last_accessed NTEGER NOT NULL,
         expires_at NTEGER NOT NULL
       )
-    `);
+    `);`
 
     // Full-text search table
     if (this.config.enableFullTextSearch) {
-      await this.dalAdapter.execute(`
+      await this.dalAdapter.execute(``
         CREATE VIRTUAL TABLE F NOT EXISTS ${this.config.tableName}_fts USING fts5(
           id UNINDEXED,
           query,
@@ -604,7 +604,7 @@ export class SQLiteBackend implements FACTStorageBackend {
           type,
           content=${this.config.tableName}
         )
-      `);
+      `);`
     }
   }
 
@@ -612,18 +612,18 @@ export class SQLiteBackend implements FACTStorageBackend {
     if (!this.dalAdapter) return;
 
     const indexes = [
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_timestamp ON ${this.config.tableName}(timestamp)`,
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_expires_at ON ${this.config.tableName}(expires_at)`,
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_type ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.type'))`,
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_access_count ON ${this.config.tableName}(access_count)`,
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_timestamp ON ${this.config.tableName}(timestamp)`,`
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_expires_at ON ${this.config.tableName}(expires_at)`,`
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_type ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.type'))`,`
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,`
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_access_count ON ${this.config.tableName}(access_count)`,`
     ];
 
     for (const indexSQL of indexes) {
       try {
         await this.dalAdapter.execute(indexSQL);
       } catch (error) {
-        logger.warn('Failed to create index:', indexSQL, error);
+        logger.warn('Failed to create index:', indexSQL, error);'
       }
     }
   }

@@ -29,11 +29,11 @@ export interface TechnicalDebtItem {
   id: string;
   title: string;
   description: string;
-  severity: 'critical|high|medium|low';
+  severity: 'critical|high|medium|low;
   impact: string;
   effort: number;
   component: string;
-  status: 'identified|approved|planned|in-progress|resolved';
+  status: 'identified|approved|planned|in-progress|resolved;
   category: TechnicalDebtCategory;
   priority: number; // AI-calculated priority score
   businessImpact: BusinessImpactLevel;
@@ -46,13 +46,13 @@ export interface TechnicalDebtItem {
 /**
  * Technical debt categories
  */
-export type TechnicalDebtCategory =|code_quality|security_vulnerability|performance_issue|maintainability|scalability|architecture_drift|deprecated_technology|test_debt|documentation_gap|'infrastructure_debt';
+export type TechnicalDebtCategory =|code_quality|security_vulnerability|performance_issue|maintainability|scalability|architecture_drift|deprecated_technology|test_debt|documentation_gap|'infrastructure_debt;
 
 /**
  * Business impact levels for technical debt
  */
 export type BusinessImpactLevel = {
-  readonly level: 'low|medium|high|critical';
+  readonly level: 'low|medium|high|critical;
   readonly customerImpact: number; // 0-10 scale
   readonly revenueImpact: number; // 0-10 scale
   readonly operationalImpact: number; // 0-10 scale
@@ -63,7 +63,7 @@ export type BusinessImpactLevel = {
  * Technical risk levels
  */
 export type TechnicalRiskLevel = {
-  readonly level: 'low|medium|high|critical';
+  readonly level: 'low|medium|high|critical;
   readonly securityRisk: number; // 0-10 scale
   readonly performanceRisk: number; // 0-10 scale
   readonly maintainabilityRisk: number; // 0-10 scale
@@ -75,7 +75,7 @@ export type TechnicalRiskLevel = {
  */
 export interface RemediationPlan {
   readonly planId: string;
-  readonly approachType: 'incremental|big_bang|parallel|hybrid';
+  readonly approachType: 'incremental|big_bang|parallel|hybrid;
   readonly phases: RemediationPhase[];
   readonly timeline: {
     readonly startDate: Date;
@@ -105,10 +105,10 @@ export interface RemediationPhase {
  * Resource requirement for remediation
  */
 export interface ResourceRequirement {
-  readonly resourceType:|developer|architect|qa|devops|'security';
-  readonly skillLevel: 'junior|mid|senior|expert';
+  readonly resourceType:|developer|architect|qa|devops|'security;
+  readonly skillLevel: 'junior|mid|senior|expert;
   readonly hoursRequired: number;
-  readonly timeframe: 'immediate|short_term|medium_term|long_term';
+  readonly timeframe: 'immediate|short_term|medium_term|long_term;
 }
 
 /**
@@ -132,7 +132,7 @@ export interface SuccessMetric {
   readonly description: string;
   readonly targetValue: number;
   readonly measurementMethod: string;
-  readonly validationFrequency: 'daily|weekly|monthly';
+  readonly validationFrequency: 'daily' | 'weekly' | 'monthly';
 }
 
 /**
@@ -155,8 +155,8 @@ export interface TechnicalDebtConfig {
   readonly criticalSeverityThreshold: number;
   readonly autoApprovalThreshold: number;
   readonly remediationPlanningThreshold: number;
-  readonly prioritizationStrategy:|severity_based|impact_based|ai_optimized|'business_value';
-  readonly trackingGranularity:|component|module|system|'enterprise';
+  readonly prioritizationStrategy:|severity_based|impact_based|ai_optimized|'business_value;
+  readonly trackingGranularity:|component|module|system|'enterprise;
 }
 
 /**
@@ -195,7 +195,7 @@ export interface QualityMetric {
   readonly metricName: string;
   readonly currentValue: number;
   readonly targetValue: number;
-  readonly trend: 'improving|stable|declining';
+  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
   readonly measurement: string;
 }
 
@@ -207,7 +207,7 @@ export interface TrendData {
   readonly debtIntroduced: number;
   readonly debtResolved: number;
   readonly netDebtChange: number;
-  readonly velocityTrend: 'accelerating|stable|decelerating';
+  readonly velocityTrend: 'accelerating|'improving' | 'stable' | 'declining'|decelerating;
 }
 
 // ============================================================================
@@ -256,7 +256,7 @@ export class TechnicalDebtManagementService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      const { BrainCoordinator } = await import('@claude-zen/brain');'
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -268,7 +268,7 @@ export class TechnicalDebtManagementService {
 
       // Lazy load @claude-zen/foundation for performance tracking
       const { PerformanceTracker, TelemetryManager } = await import(
-        '@claude-zen/foundation'
+        '@claude-zen/foundation''
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -279,7 +279,7 @@ export class TechnicalDebtManagementService {
       await this.telemetryManager.initialize();
 
       // Lazy load @claude-zen/workflows for remediation workflows
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      const { WorkflowEngine } = await import('@claude-zen/workflows');'
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
         enableVisualization: true,
@@ -287,7 +287,7 @@ export class TechnicalDebtManagementService {
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUISystem } = await import('@claude-zen/agui');
+      const { AGUISystem } = await import('@claude-zen/agui');'
       const aguiResult = await AGUISystem({
         aguiType: 'terminal',
         taskApprovalConfig: {
@@ -299,7 +299,7 @@ export class TechnicalDebtManagementService {
       this.aguiService = aguiResult.agui;
 
       // Lazy load @claude-zen/brain for LoadBalancer - resource optimization (LoadBalancer integrated)
-      const { LoadBalancer } = await import('@claude-zen/brain');
+      const { LoadBalancer } = await import('@claude-zen/brain');'
       this.loadBalancer = new LoadBalancer({
         strategy: 'intelligent_distribution',
         enablePredictiveScaling: true,
@@ -308,7 +308,7 @@ export class TechnicalDebtManagementService {
 
       this.initialized = true;
       this.logger.info(
-        'Technical Debt Management Service initialized successfully'
+        'Technical Debt Management Service initialized successfully''
       );
     } catch (error) {
       this.logger.error(
@@ -324,15 +324,15 @@ export class TechnicalDebtManagementService {
    */
   async addTechnicalDebtItem(
     item: Omit<
-      TechnicalDebtItem,|id|createdAt|updatedAt|status|priority|businessImpact|'technicalRisk'
+      TechnicalDebtItem,|id|createdAt|updatedAt|status|priority|businessImpact|'technicalRisk''
     >
   ): Promise<TechnicalDebtItem> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('add_technical_debt_item');
+    const timer = this.performanceTracker.startTimer('add_technical_debt_item');'
 
     try {
-      this.logger.info('Adding technical debt item with AI analysis', {
+      this.logger.info('Adding technical debt item with AI analysis', {'
         title: item.title,
       });
 
@@ -358,7 +358,7 @@ export class TechnicalDebtManagementService {
 
       // Create technical debt item with AI-enhanced data
       const debtItem: TechnicalDebtItem = {
-        id: `debt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `debt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
         status: 'identified',
         priority:
           prioritizationAnalysis.priorityScore || this.calculateFallbackPriority(item),
@@ -374,7 +374,7 @@ export class TechnicalDebtManagementService {
         const approval = await this.requestDebtApproval(debtItem);
         if (!approval.approved) {
           throw new Error(
-            `Technical debt item approval rejected: ${approval.reason}`
+            `Technical debt item approval rejected: ${approval.reason}``
           );
         }
       }
@@ -389,10 +389,10 @@ export class TechnicalDebtManagementService {
         debtItem.remediationPlan = remediationPlan;
       }
 
-      this.performanceTracker.endTimer('add_technical_debt_item');
-      this.telemetryManager.recordCounter('technical_debt_items_added', 1);
+      this.performanceTracker.endTimer('add_technical_debt_item');'
+      this.telemetryManager.recordCounter('technical_debt_items_added', 1);'
 
-      this.logger.info('Technical debt item added successfully', {
+      this.logger.info('Technical debt item added successfully', {'
         itemId: debtItem.id,
         priority: debtItem.priority,
         severity: debtItem.severity,
@@ -401,8 +401,8 @@ export class TechnicalDebtManagementService {
 
       return debtItem;
     } catch (error) {
-      this.performanceTracker.endTimer('add_technical_debt_item');
-      this.logger.error('Failed to add technical debt item:', error);
+      this.performanceTracker.endTimer('add_technical_debt_item');'
+      this.logger.error('Failed to add technical debt item:', error);'
       throw error;
     }
   }
@@ -417,12 +417,12 @@ export class TechnicalDebtManagementService {
   ): Promise<TechnicalDebtItem> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('update_debt_item_status');
+    const timer = this.performanceTracker.startTimer('update_debt_item_status');'
 
     try {
       const item = this.debtItems.get(itemId);
       if (!item) {
-        throw new Error(`Technical debt item not found: ${itemId}`);
+        throw new Error(`Technical debt item not found: ${itemId}`);`
       }
 
       // Use workflow engine for status transition validation
@@ -435,7 +435,7 @@ export class TechnicalDebtManagementService {
 
       if (!statusTransition.isValid) {
         throw new Error(
-          `Invalid status transition: ${statusTransition.reason}`
+          `Invalid status transition: ${statusTransition.reason}``
         );
       }
 
@@ -448,10 +448,10 @@ export class TechnicalDebtManagementService {
 
       this.debtItems.set(itemId, updatedItem);
 
-      this.performanceTracker.endTimer('update_debt_item_status');
-      this.telemetryManager.recordCounter('debt_status_updates', 1);
+      this.performanceTracker.endTimer('update_debt_item_status');'
+      this.telemetryManager.recordCounter('debt_status_updates', 1);'
 
-      this.logger.info('Technical debt item status updated', {
+      this.logger.info('Technical debt item status updated', {'
         itemId,
         oldStatus: item.status,
         newStatus,
@@ -460,8 +460,8 @@ export class TechnicalDebtManagementService {
 
       return updatedItem;
     } catch (error) {
-      this.performanceTracker.endTimer('update_debt_item_status');
-      this.logger.error('Failed to update technical debt item status:', error);
+      this.performanceTracker.endTimer('update_debt_item_status');'
+      this.logger.error('Failed to update technical debt item status:', error);'
       throw error;
     }
   }
@@ -472,7 +472,7 @@ export class TechnicalDebtManagementService {
   async getTechnicalDebtDashboard(): Promise<TechnicalDebtDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('generate_debt_dashboard');
+    const timer = this.performanceTracker.startTimer('generate_debt_dashboard');'
 
     try {
       const allDebtItems = Array.from(this.debtItems.values())();
@@ -500,17 +500,17 @@ export class TechnicalDebtManagementService {
           .slice(0, 10),
       };
 
-      this.performanceTracker.endTimer('generate_debt_dashboard');
+      this.performanceTracker.endTimer('generate_debt_dashboard');'
 
-      this.logger.info('Technical debt dashboard generated', {
+      this.logger.info('Technical debt dashboard generated', {'
         totalItems: dashboard.totalDebtItems,
         highSeverityItems: dashboard.debtBySeverity['high'] || 0,
       });
 
       return dashboard;
     } catch (error) {
-      this.performanceTracker.endTimer('generate_debt_dashboard');
-      this.logger.error('Failed to generate technical debt dashboard:', error);
+      this.performanceTracker.endTimer('generate_debt_dashboard');'
+      this.logger.error('Failed to generate technical debt dashboard:', error);'
       throw error;
     }
   }
@@ -536,7 +536,7 @@ export class TechnicalDebtManagementService {
         });
 
       const remediationPlan: RemediationPlan = {
-        planId: `remediation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        planId: `remediation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
         approachType: planningAnalysis.recommendedApproach || 'incremental',
         phases: planningAnalysis.phases || this.generateDefaultPhases(debtItem),
         timeline:
@@ -550,7 +550,7 @@ export class TechnicalDebtManagementService {
 
       return remediationPlan;
     } catch (error) {
-      this.logger.error('Failed to generate remediation plan:', error);
+      this.logger.error('Failed to generate remediation plan:', error);'
       throw error;
     }
   }
@@ -589,7 +589,7 @@ export class TechnicalDebtManagementService {
       await this.telemetryManager.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Technical Debt Management Service shutdown complete');
+    this.logger.info('Technical Debt Management Service shutdown complete');'
   }
 
   // ============================================================================
@@ -600,7 +600,7 @@ export class TechnicalDebtManagementService {
     try {
       const approval = await this.aguiService.createApprovalTask({
         taskType: 'technical_debt_approval',
-        description: `High-effort technical debt item requires approval: ${item.title}`,
+        description: `High-effort technical debt item requires approval: ${item.title}`,`
         context: { item },
         approvers: ['tech-lead', 'architect'],
         timeout: 1800000,
@@ -608,8 +608,8 @@ export class TechnicalDebtManagementService {
 
       return approval;
     } catch (error) {
-      this.logger.error('Technical debt approval request failed:', error);
-      return { approved: false, reason: 'approval_system_error'};
+      this.logger.error('Technical debt approval request failed:', error);'
+      return { approved: false, reason: 'approval_system_error'};'
     }
   }
 
@@ -633,11 +633,11 @@ export class TechnicalDebtManagementService {
     return {
       level:
         avgImpact >= 8
-          ?'critical'
+          ?'critical''
           : avgImpact >= 6
-            ? 'high'
+            ? 'high''
             : avgImpact >= 3
-              ? 'medium'
+              ? 'medium''
               : 'low',
       customerImpact,
       revenueImpact,
@@ -664,11 +664,11 @@ export class TechnicalDebtManagementService {
     return {
       level:
         avgRisk >= 8
-          ?'critical'
+          ?'critical''
           : avgRisk >= 6
-            ? 'high'
+            ? 'high''
             : avgRisk >= 3
-              ? 'medium'
+              ? 'medium''
               : 'low',
       securityRisk,
       performanceRisk,
@@ -680,11 +680,11 @@ export class TechnicalDebtManagementService {
   private calculateFallbackPriority(item: any): number {
     // Fallback priority calculation if AI analysis fails
     const severityWeight =
-      item.severity === 'critical'
+      item.severity === 'critical''
         ? 10
-        : item.severity === 'high'
+        : item.severity === 'high''
           ? 7
-          : item.severity === 'medium'? 5
+          : item.severity === 'medium'? 5'
             : 2;
     const effortWeight = Math.max(1, 10 - item.effort / 100); // Inverse relationship with effort
     const categoryWeight = this.getCategoryWeight(item.category);
@@ -710,47 +710,47 @@ export class TechnicalDebtManagementService {
 
   private calculateCustomerImpact(item: any): number {
     // Simple heuristic - can be enhanced with AI
-    return item.category ==='performance_issue'
+    return item.category ==='performance_issue''
       ? 8
-      : item.category === 'security_vulnerability'
+      : item.category === 'security_vulnerability''
         ? 7
         : 3;
   }
 
   private calculateRevenueImpact(item: any): number {
-    return item.severity === 'critical' ? 8 : item.severity === 'high' ? 5 : 2;
+    return item.severity === 'critical' ? 8 : item.severity === 'high' ? 5 : 2;'
   }
 
   private calculateOperationalImpact(item: any): number {
-    return item.category === 'maintainability'
+    return item.category === 'maintainability''
       ? 7
-      : item.category === 'scalability'
+      : item.category === 'scalability''
         ? 6
         : 3;
   }
 
   private calculateComplianceRisk(item: any): number {
-    return item.category === 'security_vulnerability' ? 9 : 2;
+    return item.category === 'security_vulnerability' ? 9 : 2;'
   }
 
   private calculateSecurityRisk(item: any): number {
-    return item.category === 'security_vulnerability' ? 9 : 2;
+    return item.category === 'security_vulnerability' ? 9 : 2;'
   }
 
   private calculatePerformanceRisk(item: any): number {
-    return item.category === 'performance_issue' ? 8 : 3;
+    return item.category === 'performance_issue' ? 8 : 3;'
   }
 
   private calculateMaintainabilityRisk(item: any): number {
-    return item.category === 'maintainability'
+    return item.category === 'maintainability''
       ? 7
-      : item.category === 'code_quality'
+      : item.category === 'code_quality''
         ? 6
         : 3;
   }
 
   private calculateScalabilityRisk(item: any): number {
-    return item.category === 'scalability' ? 8 : 3;
+    return item.category === 'scalability' ? 8 : 3;'
   }
 
   private generateDefaultPhases(
@@ -792,7 +792,7 @@ export class TechnicalDebtManagementService {
 
   private generateDefaultTimeline(
     debtItem: TechnicalDebtItem
-  ): RemediationPlan['timeline'] {
+  ): RemediationPlan['timeline'] {'
     const startDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // Start in 1 week
     const endDate = new Date(startDate.getTime() + 21 * 24 * 60 * 60 * 1000); // 3 weeks duration
 

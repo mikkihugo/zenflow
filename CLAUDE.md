@@ -39,25 +39,39 @@
 - **Svelte Dashboard** - Real-time monitoring and visualization interface
 
 
-## 🛠️ Tool Usage in Enterprise Context
+## 🛠️ Current Build System
 
-### Natural Tool Flow:
-Claude Code operates within the larger orchestration system:
-1. **Event System coordinates** overall workflow and task assignment
-2. **Claude Code gets invoked** for specific code-related tasks
-3. **Tools used naturally** - Read files to understand, Write/Edit to implement
-4. **Results flow back** through event system for further coordination
+### Single Unified Build:
+```bash
+pnpm build          # Builds everything: all packages + binaries
+```
 
-### Integration Pattern:
-- Use tools as needed without artificial constraints
-- Batch operations when it makes logical sense
-- Trust the orchestration system to coordinate overall workflow
-- Focus on implementation quality rather than coordination complexity
+**Build Process:**
+1. **📦 Builds ALL packages** (foundation, facades, implementation, enterprise, private-core)
+2. **🏗️ Builds apps** (server + web dashboard)  
+3. **🧠 Includes WASM** (neural modules)
+4. **📱 Creates entry point** (claude-zen.js with auth + server)
+5. **🔄 Bundles with NCC** (single executable file)
+6. **⚡ Creates PKG binaries** (Linux, macOS, Windows)
+7. **📋 Smart launchers** (auto-detect best binary)
 
-## 🌐 External Site
-**Production Dashboard**: https://fra-d1.in.centralcloud.net/
-- External deployment of the web dashboard
-- Used for production monitoring and testing
+**Output in `dist/bundle/`:**
+- ✅ `claude-zen-linux` (self-contained Linux binary)
+- ✅ `claude-zen-macos` (self-contained macOS binary) 
+- ✅ `claude-zen-win.exe` (self-contained Windows binary)
+- ✅ `final/index.js` (Node.js bundle fallback)
+- ✅ Smart launchers with auto-detection
+
+### Current Working CLI:
+```bash
+# Authentication (works now)
+claude-zen auth copilot
+claude-zen auth status
+
+# Server with port support (works now)  
+claude-zen --port 3001
+claude-zen
+```
 
 ## 🚀 System Architecture
 

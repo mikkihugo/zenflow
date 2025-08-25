@@ -13,7 +13,7 @@ import type {
 } from '../types/index.js';
 
 export class RecommendationEngine {
-  private logger = getLogger('RecommendationEngine');
+  private logger = getLogger('RecommendationEngine');'
 
   /**
    * Generate comprehensive recommendations
@@ -22,7 +22,7 @@ export class RecommendationEngine {
     repository: RepositoryMetrics,
     options?: AnalysisOptions
   ): Promise<AnalysisRecommendation[]> {
-    this.logger.info('Generating repository improvement recommendations');
+    this.logger.info('Generating repository improvement recommendations');'
 
     const recommendations: AnalysisRecommendation[] = [];
 
@@ -86,13 +86,13 @@ export class RecommendationEngine {
         type: 'refactor-hotspot',
         priority: 'high',
         title: 'Reduce Cyclomatic Complexity',
-        description: `Repository has high cyclomatic complexity (${complexity.cyclomatic}). This makes code harder to understand, test, and maintain.`,
+        description: `Repository has high cyclomatic complexity (${complexity.cyclomatic}). This makes code harder to understand, test, and maintain.`,`
         rationale:
           'High cyclomatic complexity indicates complex decision logic that should be simplified through refactoring.',
         effort: this.estimateEffort(
           16,
           'medium',
-          'Refactoring complex functions requires careful analysis and testing'
+          'Refactoring complex functions requires careful analysis and testing''
         ),
         benefits: [
           'Improved code readability and maintainability',
@@ -133,13 +133,13 @@ export class RecommendationEngine {
         type: 'improve-cohesion',
         priority: 'high',
         title: 'Improve Code Maintainability',
-        description: `Maintainability index is ${complexity.maintainabilityIndex.toFixed(1)} (threshold: 30). Code requires significant effort to maintain.`,
+        description: `Maintainability index is ${complexity.maintainabilityIndex.toFixed(1)} (threshold: 30). Code requires significant effort to maintain.`,`
         rationale:
           'Low maintainability index indicates code that is difficult to understand, modify, and extend.',
         effort: this.estimateEffort(
           24,
           'high',
-          'Improving maintainability requires systematic refactoring'
+          'Improving maintainability requires systematic refactoring''
         ),
         benefits: [
           'Faster development velocity',
@@ -180,13 +180,13 @@ export class RecommendationEngine {
         type: 'refactor-hotspot',
         priority: 'medium',
         title: 'Address Technical Debt',
-        description: `Estimated technical debt: ${complexity.technicalDebt.toFixed(1)} hours. This represents accumulated shortcuts and suboptimal code.`,
+        description: `Estimated technical debt: ${complexity.technicalDebt.toFixed(1)} hours. This represents accumulated shortcuts and suboptimal code.`,`
         rationale:
           'High technical debt slows down development and increases maintenance costs over time.',
         effort: this.estimateEffort(
           complexity.technicalDebt * 0.5,
           'medium',
-          'Technical debt requires gradual, systematic cleanup'
+          'Technical debt requires gradual, systematic cleanup''
         ),
         benefits: [
           'Improved development velocity',
@@ -224,7 +224,7 @@ export class RecommendationEngine {
     // Code smells
     if (complexity.codeSmells.length > 10) {
       const criticalSmells = complexity.codeSmells.filter(
-        (s) => s.severity === 'high'||s.severity ==='critical'
+        (s) => s.severity === 'high'||s.severity ==='critical''
       );
 
       if (criticalSmells.length > 0) {
@@ -232,13 +232,13 @@ export class RecommendationEngine {
           type: 'refactor-hotspot',
           priority: 'high',
           title: 'Fix Critical Code Smells',
-          description: `Found ${criticalSmells.length} critical code smells that need immediate attention.`,
+          description: `Found ${criticalSmells.length} critical code smells that need immediate attention.`,`
           rationale:
             'Critical code smells indicate fundamental design or implementation issues that impact code quality.',
           effort: this.estimateEffort(
             criticalSmells.length * 2,
             'medium',
-            'Each code smell requires analysis and targeted refactoring'
+            'Each code smell requires analysis and targeted refactoring''
           ),
           benefits: [
             'Improved code quality and readability',
@@ -251,7 +251,7 @@ export class RecommendationEngine {
             'Testing needed to ensure no regressions',
           ],
           actionItems: criticalSmells.slice(0, 5).map((smell) => ({
-            description: `Fix ${smell.type} in ${smell.file}:${smell.startLine}`,
+            description: `Fix ${smell.type} in ${smell.file}:${smell.startLine}`,`
             type: 'code-change' as const,
             estimatedHours: 2,
             dependencies: [],
@@ -275,20 +275,20 @@ export class RecommendationEngine {
     // Circular dependencies
     if (dependencies.circularDependencies.length > 0) {
       const criticalCycles = dependencies.circularDependencies.filter(
-        (c) => c.severity === 'error'
+        (c) => c.severity === 'error''
       );
 
       recommendations.push({
         type: 'reduce-coupling',
         priority: criticalCycles.length > 0 ? 'urgent' : 'high',
         title: 'Break Circular Dependencies',
-        description: `Found ${dependencies.circularDependencies.length} circular dependencies (${criticalCycles.length} critical). These create tight coupling and make code harder to test and maintain.`,
+        description: `Found ${dependencies.circularDependencies.length} circular dependencies (${criticalCycles.length} critical). These create tight coupling and make code harder to test and maintain.`,`
         rationale:
           'Circular dependencies prevent proper modularization and can cause build issues, infinite loops, and testing difficulties.',
         effort: this.estimateEffort(
           dependencies.circularDependencies.length * 4,
           'high',
-          'Breaking circular dependencies requires architectural changes'
+          'Breaking circular dependencies requires architectural changes''
         ),
         benefits: [
           'Improved modularity and testability',
@@ -304,13 +304,13 @@ export class RecommendationEngine {
         actionItems: dependencies.circularDependencies
           .slice(0, 5)
           .map((cycle, index) => ({
-            description: `Break circular dependency: ${cycle.cycle.join(' → ')}`,
+            description: `Break circular dependency: ${cycle.cycle.join(' → ')}`,`
             type: 'architecture-change' as const,
             estimatedHours: 4,
             dependencies:
               index > 0
                 ? [
-                    `Break circular dependency: ${dependencies.circularDependencies[index - 1].cycle.join(' → ')}`,
+                    `Break circular dependency: ${dependencies.circularDependencies[index - 1].cycle.join(' → ')}`,`
                   ]
                 : [],
           })),
@@ -323,13 +323,13 @@ export class RecommendationEngine {
         type: 'reduce-coupling',
         priority: 'medium',
         title: 'Reduce System Instability',
-        description: `System instability is ${(dependencies.coupling.instability * 100).toFixed(1)}% (threshold: 80%). High instability makes the system more prone to changes and bugs.`,
+        description: `System instability is ${(dependencies.coupling.instability * 100).toFixed(1)}% (threshold: 80%). High instability makes the system more prone to changes and bugs.`,`
         rationale:
           'High instability indicates that many modules depend on external dependencies, making the system fragile to changes.',
         effort: this.estimateEffort(
           20,
           'high',
-          'Reducing instability requires architectural restructuring'
+          'Reducing instability requires architectural restructuring''
         ),
         benefits: [
           'More stable and predictable system behavior',
@@ -370,13 +370,13 @@ export class RecommendationEngine {
         type: 'improve-cohesion',
         priority: 'medium',
         title: 'Improve Module Cohesion',
-        description: `Module cohesion is low (LCOM: ${(dependencies.cohesion.lcom * 100).toFixed(1)}%). Modules contain unrelated functionality.`,
+        description: `Module cohesion is low (LCOM: ${(dependencies.cohesion.lcom * 100).toFixed(1)}%). Modules contain unrelated functionality.`,`
         rationale:
           'Low cohesion indicates that modules are doing too many unrelated things, making them harder to understand and maintain.',
         effort: this.estimateEffort(
           16,
           'medium',
-          'Improving cohesion requires careful module reorganization'
+          'Improving cohesion requires careful module reorganization''
         ),
         benefits: [
           'Better organized and understandable code',
@@ -423,13 +423,13 @@ export class RecommendationEngine {
         recommendations.push({
           type: 'split-domain',
           priority: split.confidence > 0.8 ? 'high' : 'medium',
-          title: `Split ${domain.name} Domain`,
-          description: `Domain "${domain.name}" should be split (confidence: ${(split.confidence * 100).toFixed(1)}%). ${split.reasons.join('; ')}.`,
-          rationale: `Domain analysis indicates that splitting would improve maintainability and team productivity.`,
+          title: `Split ${domain.name} Domain`,`
+          description: `Domain "${domain.name}" should be split (confidence: ${(split.confidence * 100).toFixed(1)}%). ${split.reasons.join('; ')}.`,`
+          rationale: `Domain analysis indicates that splitting would improve maintainability and team productivity.`,`
           effort: split.estimatedEffort,
           benefits: Object.entries(split.benefits).map(
             ([key, value]) =>
-              `${key.replace(/([A-Z])/g, ' $1').toLowerCase()}: ${value}% improvement`
+              `${key.replace(/([A-Z])/g, ' $1').toLowerCase()}: ${value}% improvement``
           ),
           risks: split.risks.map((risk) => risk.description),
           actionItems: split.estimatedEffort.phases.map((phase) => ({
@@ -462,13 +462,13 @@ export class RecommendationEngine {
         type: 'refactor-hotspot',
         priority: 'high',
         title: 'Address Hot Files',
-        description: `Found ${git.hotFiles.length} frequently changed files (${criticalHotFiles.length} high-risk). These files are change-prone and may need refactoring.`,
+        description: `Found ${git.hotFiles.length} frequently changed files (${criticalHotFiles.length} high-risk). These files are change-prone and may need refactoring.`,`
         rationale:
           'Hot files indicate unstable code that changes frequently, often due to poor design or multiple responsibilities.',
         effort: this.estimateEffort(
           criticalHotFiles.length * 6,
           'medium',
-          'Each hot file needs analysis and potential refactoring'
+          'Each hot file needs analysis and potential refactoring''
         ),
         benefits: [
           'Reduced change frequency and conflicts',
@@ -481,7 +481,7 @@ export class RecommendationEngine {
           'Refactoring may require extensive testing',
         ],
         actionItems: criticalHotFiles.slice(0, 5).map((file) => ({
-          description: `Refactor high-risk file: ${file.file}`,
+          description: `Refactor high-risk file: ${file.file}`,`
           type: 'code-change' as const,
           estimatedHours: 6,
           dependencies: [],
@@ -495,13 +495,13 @@ export class RecommendationEngine {
         type: 'improve-cohesion',
         priority: 'medium',
         title: 'Increase Team Collaboration',
-        description: `Only ${git.contributors} contributors found. Low contributor diversity may indicate knowledge silos or team structure issues.`,
+        description: `Only ${git.contributors} contributors found. Low contributor diversity may indicate knowledge silos or team structure issues.`,`
         rationale:
           'Having few contributors creates bus factor risk and may indicate that knowledge is concentrated in too few people.',
         effort: this.estimateEffort(
           8,
           'low',
-          'Improving collaboration requires process and cultural changes'
+          'Improving collaboration requires process and cultural changes''
         ),
         benefits: [
           'Reduced bus factor risk',
@@ -553,13 +553,13 @@ export class RecommendationEngine {
         type: 'split-domain',
         priority: 'medium',
         title: 'Consider Repository Splitting',
-        description: `Repository has ${repository.totalFiles} files. Large repositories can impact development velocity and team coordination.`,
+        description: `Repository has ${repository.totalFiles} files. Large repositories can impact development velocity and team coordination.`,`
         rationale:
           'Large repositories become harder to navigate, build times increase, and team coordination becomes more complex.',
         effort: this.estimateEffort(
           40,
           'very-high',
-          'Repository splitting is a major architectural change'
+          'Repository splitting is a major architectural change''
         ),
         benefits: [
           'Improved build and CI/CD performance',
@@ -613,13 +613,13 @@ export class RecommendationEngine {
         type: 'refactor-hotspot',
         priority: 'medium',
         title: 'Reduce Large File Sizes',
-        description: `Average file size is ${avgFileSize.toFixed(0)} lines. Large files are harder to understand and maintain.`,
+        description: `Average file size is ${avgFileSize.toFixed(0)} lines. Large files are harder to understand and maintain.`,`
         rationale:
           'Large files often violate the Single Responsibility Principle and are harder to review, test, and maintain.',
         effort: this.estimateEffort(
           12,
           'medium',
-          'File splitting requires careful analysis of responsibilities'
+          'File splitting requires careful analysis of responsibilities''
         ),
         benefits: [
           'Improved code readability',
@@ -665,13 +665,13 @@ export class RecommendationEngine {
         type: 'reduce-coupling',
         priority: 'medium',
         title: 'Audit External Dependencies',
-        description: `Repository has ${repository.dependencies.totalDependencies} external dependencies. This increases security attack surface.`,
+        description: `Repository has ${repository.dependencies.totalDependencies} external dependencies. This increases security attack surface.`,`
         rationale:
           'Many external dependencies increase security risks, maintenance burden, and potential for supply chain attacks.',
         effort: this.estimateEffort(
           8,
           'low',
-          'Dependency audit is primarily analysis work'
+          'Dependency audit is primarily analysis work''
         ),
         benefits: [
           'Reduced security attack surface',
@@ -730,7 +730,7 @@ export class RecommendationEngine {
         effort: this.estimateEffort(
           6,
           'low',
-          'Setting up quality gates is primarily configuration work'
+          'Setting up quality gates is primarily configuration work''
         ),
         benefits: [
           'Consistent code quality standards',
@@ -807,7 +807,7 @@ export class RecommendationEngine {
   }
 
   private getPriorityWeight(
-    priority: AnalysisRecommendation['priority']
+    priority: AnalysisRecommendation['priority']'
   ): number {
     const weights = {
       urgent: 4,
@@ -826,8 +826,8 @@ export class RecommendationEngine {
     options?: AnalysisOptions
   ): Promise<{
     focusAreas: string[];
-    depth: 'shallow|moderate|deep';
-    performanceMode: 'fast|balanced|thorough';
+    depth: 'shallow' | 'moderate' | 'deep';
+    performanceMode: 'fast' | 'balanced' | 'thorough';
     customThresholds: Record<string, number>;
   }> {
     const defaultContext = {
@@ -856,12 +856,12 @@ export class RecommendationEngine {
 
     // Adjust focus areas based on enabled analysis types
     context.focusAreas = [];
-    if (options.enableComplexityAnalysis) context.focusAreas.push('complexity');
+    if (options.enableComplexityAnalysis) context.focusAreas.push('complexity');'
     if (options.enableDependencyAnalysis)
-      context.focusAreas.push('dependencies');
-    if (options.enableGitAnalysis) context.focusAreas.push('git-history');
+      context.focusAreas.push('dependencies');'
+    if (options.enableGitAnalysis) context.focusAreas.push('git-history');'
     if (options.enableDomainAnalysis)
-      context.focusAreas.push('domain-structure');
+      context.focusAreas.push('domain-structure');'
 
     return context;
   }

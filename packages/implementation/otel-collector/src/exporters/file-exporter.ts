@@ -31,7 +31,7 @@ export class FileExporter implements BaseExporter {
 
   // Configuration
   private readonly baseFilePath: string;
-  private readonly format:'json|jsonl';
+  private readonly format:'json|jsonl;
   private readonly maxFileSize: number;
   private readonly rotationInterval: number;
   private readonly compression: boolean;
@@ -39,11 +39,11 @@ export class FileExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger(`FileExporter:${config.name}`);
+    this.logger = getLogger(`FileExporter:${config.name}`);`
 
     // Extract configuration
-    this.baseFilePath = config.config?.filePath || './telemetry-data';
-    this.format = config.config?.format||'jsonl';
+    this.baseFilePath = config.config?.filePath || './telemetry-data;
+    this.format = config.config?.format||'jsonl;
     this.maxFileSize = config.config?.maxFileSize||50 * 1024 * 1024; // 50MB
     this.rotationInterval = config.config?.rotationInterval||3600000; // 1 hour
     this.compression = config.config?.compression !== false; // Default true
@@ -62,7 +62,7 @@ export class FileExporter implements BaseExporter {
       // Start rotation timer
       this.startRotationTimer();
 
-      this.logger.info('File exporter initialized', {
+      this.logger.info('File exporter initialized', {'
         baseFilePath: this.baseFilePath,
         format: this.format,
         maxFileSize: this.maxFileSize,
@@ -70,7 +70,7 @@ export class FileExporter implements BaseExporter {
         maxFiles: this.maxFiles,
       });
     } catch (error) {
-      this.logger.error('Failed to initialize file exporter', error);
+      this.logger.error('Failed to initialize file exporter', error);'
       throw error;
     }
   }
@@ -92,7 +92,7 @@ export class FileExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('File export failed', error);
+      this.logger.error('File export failed', error);'
 
       return {
         success: false,
@@ -125,7 +125,7 @@ export class FileExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('File batch export failed', error);
+      this.logger.error('File batch export failed', error);'
 
       return {
         success: false,
@@ -152,7 +152,7 @@ export class FileExporter implements BaseExporter {
       this.writeStream = null;
     }
 
-    this.logger.info('File exporter shut down', {
+    this.logger.info('File exporter shut down', {'
       totalExported: this.exportCount,
       currentFile: this.currentFilePath,
     });
@@ -163,7 +163,7 @@ export class FileExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy|degraded|unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
@@ -173,7 +173,7 @@ export class FileExporter implements BaseExporter {
     if (this.lastError) {
       status = 'unhealthy';
     } else if (!this.writeStream||this.writeStream.destroyed) {
-      status ='degraded';
+      status ='degraded;
     }
 
     return {
@@ -198,12 +198,12 @@ export class FileExporter implements BaseExporter {
 
     // Format data based on configured format
     let output: string;
-    if (this.format ==='jsonl') {
+    if (this.format ==='jsonl') {'
       // JSON Lines format - one JSON object per line
-      output = JSON.stringify(data) + '\n';
+      output = JSON.stringify(data) + '\n;
     } else {
       // JSON format - array of objects (requires more complex handling)
-      output = JSON.stringify(data, null, 2) + '\n';
+      output = JSON.stringify(data, null, 2) + '\n;
     }
 
     // Write to file
@@ -230,13 +230,13 @@ export class FileExporter implements BaseExporter {
     }
 
     // Generate new file path
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');'
     const extension = this.format === 'jsonl' ? 'jsonl' : 'json';
-    this.currentFilePath = `${this.baseFilePath}-${timestamp}.${extension}`;
+    this.currentFilePath = `${this.baseFilePath}-${timestamp}.${extension}`;`
 
     // Create new write stream
     if (this.compression) {
-      const fileStream = createWriteStream(this.currentFilePath + '.gz');
+      const fileStream = createWriteStream(this.currentFilePath + '.gz');'
       const gzipStream = createGzip();
       gzipStream.pipe(fileStream);
       this.writeStream = gzipStream as any;
@@ -245,12 +245,12 @@ export class FileExporter implements BaseExporter {
     }
 
     // Handle stream errors
-    this.writeStream.on('error', (error) => {
-      this.logger.error('File write stream error', error);
+    this.writeStream.on('error', (error) => {'
+      this.logger.error('File write stream error', error);'
       this.lastError = String(error);
     });
 
-    this.logger.info('Rotated to new file', {
+    this.logger.info('Rotated to new file', {'
       filePath: this.currentFilePath,
       compressed: this.compression,
     });
@@ -267,7 +267,7 @@ export class FileExporter implements BaseExporter {
       try {
         await this.rotateFile();
       } catch (error) {
-        this.logger.error('Automatic file rotation failed', error);
+        this.logger.error('Automatic file rotation failed', error);'
       }
     }, this.rotationInterval);
   }
@@ -278,7 +278,7 @@ export class FileExporter implements BaseExporter {
   private async cleanupOldFiles(): Promise<void> {
     try {
       const dir = dirname(this.baseFilePath);
-      const baseName = this.baseFilePath.split('/').pop()||'telemetry-data';
+      const baseName = this.baseFilePath.split('/').pop()||'telemetry-data;
 
       const files = await fs.readdir(dir);
       const telemetryFiles = files
@@ -294,7 +294,7 @@ export class FileExporter implements BaseExporter {
         try {
           file.stat = await fs.stat(file.path);
         } catch (error) {
-          // Skip files that can't be accessed
+          // Skip files that can't be accessed'
         }
       }
 
@@ -310,11 +310,11 @@ export class FileExporter implements BaseExporter {
         for (const file of filesToDelete) {
           try {
             await fs.unlink(file.path);
-            this.logger.info('Deleted old telemetry file', {
+            this.logger.info('Deleted old telemetry file', {'
               filePath: file.path,
             });
           } catch (error) {
-            this.logger.warn('Failed to delete old telemetry file', {
+            this.logger.warn('Failed to delete old telemetry file', {'
               filePath: file.path,
               error: String(error),
             });
@@ -322,7 +322,7 @@ export class FileExporter implements BaseExporter {
         }
       }
     } catch (error) {
-      this.logger.error('Failed to cleanup old files', error);
+      this.logger.error('Failed to cleanup old files', error);'
     }
   }
 }
