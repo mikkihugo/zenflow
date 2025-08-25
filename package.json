@@ -18,12 +18,12 @@
   "scripts": {
     "start": "pnpm --filter @claude-zen/server start",
     "dev": "concurrently \"pnpm --filter @claude-zen/server dev\" \"pnpm --filter @claude-zen/web-dashboard dev\"",
-    "build": "echo 'Building foundation packages first...' && pnpm --filter @claude-zen/foundation build && echo 'Building applications...' && pnpm --filter @claude-zen/server build && pnpm --filter @claude-zen/web-dashboard build",
+    "build": "echo 'Building foundation...' && cd packages/public-api/core/foundation && pnpm build && cd - && echo 'Building server...' && cd apps/claude-code-zen-server && pnpm build && cd - && echo 'Building web dashboard...' && cd apps/web-dashboard && pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" && find . -name '*.rs' -not -path '*/target/*' -not -path '*/node_modules/*' | head -20 | xargs -r rustfmt --edition=2024",
-    "type-check": "tsc --noEmit --skipLibCheck",
+    "lint": "NODE_OPTIONS=\"--max-old-space-size=8192\" eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" && find . -name '*.rs' -not -path '*/target/*' -not -path '*/node_modules/*' | head -20 | xargs -r rustfmt --edition=2024",
+    "type-check": "NODE_OPTIONS=\"--max-old-space-size=8192\" tsc --noEmit --skipLibCheck",
     "clean": "rm -rf dist/ node_modules/.cache/ target/ && pnpm --filter @claude-zen/server clean && pnpm --filter @claude-zen/web-dashboard clean"
   },
   "files": [
