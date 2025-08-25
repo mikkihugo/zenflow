@@ -119,8 +119,8 @@ export class WebProcessManager {
     // Handle unhandled promise rejections
     process.on(
       'unhandledRejection',
-      (reason, _promise) => {
-        this.logger.error('Unhandled promise rejection:', reason);
+      (reason, promise) => {
+        this.logger.error('Unhandled promise rejection:', { reason, promise: promise.toString() });
         this.gracefulShutdown('unhandledRejection');
       }
     );
@@ -205,17 +205,11 @@ export class WebProcessManager {
       // This doesn't actually send a signal but checks if the process exists
       process.kill(pid, 0);
       return true;
-    } catch (error: any) {
-      if (error.code === 'ESRCH') {
-        // Process doesn't exist
-        return false;
-      }
-      if (error.code === 'EPERM') {
-        // Process exists but we don't have permission to signal it
-        return true;
-      }
-      // Other errors - assume process doesn't exist
-      return false;
+    } catch (error: unknown) {
+      const nodeError = error as NodeJS.ErrnoException;
+      // Process exists if we get EPERM (permission denied)
+      // Process doesn't exist if we get ESRCH or other errors
+      return nodeError.code === 'EPERM';
     }
   }
 

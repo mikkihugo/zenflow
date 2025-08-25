@@ -15,8 +15,9 @@ import path from 'path';
 import {
   getConsoleReplacementLogger,
   EventEmitter,
+  type LoggerInterface,
+  getLogger
 } from '@claude-zen/foundation';
-import type { LoggerInterface } from '@claude-zen/foundation';
 
 // Import existing coordination infrastructure (will be dynamically imported)
 // import('/coordination/swarm/core/swarm-coordinator)';
@@ -148,7 +149,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
 
     try {
       // 1. Discover all violations
-      const violations = await this.discoverViolations();
+      const violations = this.discoverViolations();
       this.logger.info(
         `📊 Discovered ${  violations.length  } files with violations`
       );
@@ -160,7 +161,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       await this.coordinateParallelFixes(categorizedViolations);
 
       // 4. Verify results
-      await this.verifyFixResults();
+      this.verifyFixResults();
 
       this.logger.info('✅ ESLint Swarm Coordination completed successfully');
     } catch (error) {
@@ -172,7 +173,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
   /**
    * Discover all ESLint violations in the project
    */
-  private async discoverViolations(): Promise<ESLintViolation[]> {
+  private discoverViolations(): ESLintViolation[] {
     this.logger.info('🔍 Discovering ESLint violations...');
 
     const eslintCmd = [
@@ -194,9 +195,9 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       });
 
       return JSON.parse(output) as ESLintViolation[];
-    } catch (error: any) {
+    } catch (error: unknown) {
       // ESLint returns non-zero exit code when violations are found
-      if (error.stdout) {
+      if (error && typeof error === 'object' && 'stdout' in error && typeof error.stdout === 'string') {
         try {
           return JSON.parse(error.stdout) as ESLintViolation[];
         } catch (parseError) {
@@ -373,11 +374,11 @@ export class ESLintSwarmCoordinator extends EventEmitter {
   /**
    * Verify the results of the fixing process
    */
-  private async verifyFixResults(): Promise<void> {
+  private verifyFixResults(): void {
     this.logger.info('🔍 Verifying fix results...');
 
     try {
-      const remainingViolations = await this.discoverViolations();
+      const remainingViolations = this.discoverViolations();
       const remainingCount = remainingViolations.reduce(
         (sum, v) => sum + v.messages.length,
         0
@@ -427,7 +428,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
   /**
    * Gracefully shutdown all active processes
    */
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     this.logger.info('🛑 Shutting down ESLint Swarm Coordinator...');
 
     // Kill all active processes
@@ -480,15 +481,15 @@ async function main(): Promise<void> {
     await coordinator.startCoordination();
     process.exit(0);
   } catch (error) {
-    console.error('ESLint Swarm Coordination failed:', error);
+    getLogger('eslint-swarm-main').error('ESLint Swarm Coordination failed:', error);
     process.exit(1);
   }
 }
 
-// Run if called directly
-if (require.main === module) {
+// Run if called directly  
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error('Fatal error:', error);
+    getLogger('eslint-swarm-main').error('Fatal error:', error);
     process.exit(1);
   });
 }

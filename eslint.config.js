@@ -107,6 +107,106 @@ export default [
       // Import Organization - AI should organize imports properly  
       'no-duplicate-imports': 'error', // Use native ESLint rule instead
       
+      // Foundation Exports Enforcement - Use centralized utilities
+      'no-restricted-imports': [
+        'error',
+        {
+          'patterns': [
+            {
+              'group': ['lodash', 'lodash/*'],
+              'message': 'Use foundation exports: import { _, lodash } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['nanoid', 'nanoid/*'],
+              'message': 'Use foundation exports: import { generateNanoId, customAlphabet } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['uuid', 'uuid/*'],
+              'message': 'Use foundation exports: import { generateUUID } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['date-fns', 'date-fns/*'],
+              'message': 'Use foundation exports: import { dateFns, format, addDays } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['commander', 'commander/*'],
+              'message': 'Use foundation exports: import { Command, program } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['zod', 'zod/*'],
+              'message': 'Use foundation exports: import { z, validateInput } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['winston', 'winston/*'],
+              'message': 'Use foundation logging: import { getLogger } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['pino', 'pino/*'],
+              'message': 'Use foundation logging: import { getLogger } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['ajv', 'ajv/*'],
+              'message': 'Use foundation validation: import { z, validateInput } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['type-fest', 'type-fest/*'],
+              'message': 'Use foundation types: import { /* type utilities */ } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['inversify', 'inversify/*', 'tsyringe', 'tsyringe/*', 'awilix', 'awilix/*'],
+              'message': 'Use foundation DI: import { createServiceContainer, inject, TOKENS } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['eventemitter3', 'eventemitter3/*', 'events', 'mitt', 'mitt/*'],
+              'message': 'Use foundation events: import { TypedEventBase, createTypedEventBase } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['axios', 'axios/*', 'node-fetch', 'cross-fetch', 'isomorphic-fetch'],
+              'message': 'Use native fetch or foundation HTTP utilities'
+            },
+            {
+              'group': ['chalk', 'chalk/*', 'kleur', 'kleur/*', 'colors', 'colors/*'],
+              'message': 'Use foundation logging with structured output instead of console colors'
+            },
+            {
+              'group': ['p-timeout', 'p-retry', 'p-queue', 'p-limit'],
+              'message': 'Use foundation async utilities: import { withTimeout, withRetry, safeAsync } from "@claude-zen/foundation"'
+            },
+            // Error Handling - ALL error utilities through foundation
+            {
+              'group': ['neverthrow', 'neverthrow/*'],
+              'message': 'Use foundation error handling: import { Result, ok, err } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['fp-ts/Either', 'fp-ts/TaskEither', 'fp-ts/*'],
+              'message': 'Use foundation error handling: import { Result, ok, err, safeAsync } from "@claude-zen/foundation"'
+            },
+            {
+              'group': ['rxjs', 'rxjs/*'],
+              'message': 'Use foundation events: import { TypedEventBase } from "@claude-zen/foundation" or native Promise patterns'
+            },
+            // Config utilities - foundation provides better environment handling
+            {
+              'group': ['dotenv', 'dotenv/*', 'cross-env', 'cross-env/*', 'env-var', 'env-var/*'],
+              'message': 'Use foundation config: import { getConfig, str, num, bool, port } from "@claude-zen/foundation"'
+            },
+            // Allow native Node.js APIs - only restrict problematic duplicates
+            // NOTE: We intentionally DON'T restrict native Node.js modules:
+            // - fs, fs/promises (keep native file system access)
+            // - crypto (keep native crypto)
+            // - child_process (keep native process spawning)  
+            // - path (keep native path utilities)
+            // - http, https (keep native HTTP servers)
+            
+            // Only restrict when foundation provides CLEAR benefits:
+            {
+              'group': ['axios', 'axios/*'],
+              'message': 'Consider native fetch API (Node 18+) for HTTP requests'
+            }
+          ]
+        }
+      ],
+      
       // Unicorn - Modern JavaScript Excellence
       'unicorn/better-regex': 'error',
       'unicorn/catch-error-name': 'error',

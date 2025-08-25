@@ -476,8 +476,8 @@ export async function detectWorkspace(startPath?: string): Promise<DetectedWorks
  * console.log(`Available packages: ${capabilities.availablePackages}/${capabilities.totalPackages}`);
  * ```
  */
-export async function getSystemCapabilities(): Promise<SystemCapabilityData> {
-  return getSystemCapabilityData();
+export function getSystemCapabilities(): Promise<SystemCapabilityData> {
+  return Promise.resolve(getSystemCapabilityData());
 }
 
 /**

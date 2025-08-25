@@ -271,7 +271,9 @@ export class DaemonProcessManager {
       // Sending signal 0 checks if process exists without actually sending a signal
       process.kill(pid, 0);
       return true;
-    } catch (_error) {
+    } catch (error) {
+      // Process doesn't exist or permission denied
+      this.logger.debug('Process check failed:', error);
       return false;
     }
   }

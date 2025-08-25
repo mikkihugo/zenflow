@@ -83,7 +83,7 @@ serde_json = "1.0"
 serde-wasm-bindgen = "0.6"
 console_error_panic_hook = { version = "0.1", optional = true }
 wasm-logger = "0.2"
-wee_alloc = { version = "0.4", optional = true }
+# wee_alloc = { version = "0.4", optional = true } # Removed: unmaintained crate with memory leaks
 # futures = "0.3"
 # tokio = { version = "1.0", features = ["macros"], default-features = false }
 base64 = "0.22"
@@ -105,6 +105,6 @@ wasm-opt = false
 default = ["console_error_panic_hook"]
 browser = ["web-sys/Storage"]
 node = []
-performance = ["wee_alloc"]
+performance = [] # wee_alloc removed - using default allocator
 webworker = ["web-sys/Worker", "web-sys/ServiceWorker"]
 offline = ["web-sys/ServiceWorker", "web-sys/ServiceWorkerContainer"]

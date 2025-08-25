@@ -5,6 +5,8 @@
  * This adapter wraps it to provide the interface expected by our discovery system.
  */
 
+/* eslint-disable no-console */
+
 import * as readline from 'node:readline';
 
 import { getLogger, EventEmitter } from '@claude-zen/foundation';
@@ -23,7 +25,7 @@ export interface ValidationQuestion {
     | 'checkpoint'
     | 'review';
   question: string;
-  context: any;
+  context: Record<string, unknown>;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
@@ -35,7 +37,7 @@ export interface ValidationQuestion {
 export interface AGUIInterface {
   askQuestion(question: ValidationQuestion): Promise<string>;
   askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-  showProgress(progress: any): Promise<void>;
+  showProgress(progress: Record<string, unknown>): Promise<void>;
   showMessage(
     message: string,
     type?: 'info' | 'warning' | 'error' | 'success'
@@ -63,7 +65,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
     return this.rl;
   }
 
-  async askQuestion(question: ValidationQuestion): Promise<string> {
+  askQuestion(question: ValidationQuestion): Promise<string> {
     const rl = this.getReadline();
 
     // Display formatted question
@@ -156,9 +158,14 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
     return answers;
   }
 
-  async showProgress(progress: any): Promise<void> {
+  async showProgress(progress: Record<string, unknown>): Promise<void> {
     if (typeof progress === 'object' && progress !== null) {
-      const prog = progress as any;
+      const prog = progress as Record<string, unknown> & {
+        current?: number;
+        total?: number;
+        description?: string;
+        estimatedRemaining?: number;
+      };
       if (prog.current !== undefined && prog.total !== undefined) {
         const percentage = Math.round((prog.current / prog.total) * 100);
         const progressBar = this.createProgressBar(percentage);
@@ -272,7 +279,7 @@ export class MockAGUI implements AGUIInterface {
     );
   }
 
-  async showProgress(progress: any): Promise<void> {
+  async showProgress(progress: Record<string, unknown>): Promise<void> {
     logger.debug('Mock AGUI Progress:', progress);
   }
 

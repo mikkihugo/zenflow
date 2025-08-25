@@ -9,7 +9,7 @@
 
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
-import fetch from 'node-fetch';
+// Using native fetch (Node 18+)
 import { homedir } from 'os';
 import { join } from 'path';
 import { createInterface } from 'readline';

@@ -330,7 +330,16 @@ export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
    * Detect available development tools
    */
   private async detectTools(): Promise<EnvironmentTool[]> {
-    const toolsToDetect = [
+    const toolsToDetect = this.getToolDefinitions();
+    const results = await this.detectToolsParallel(toolsToDetect);
+    return this.processToolResults(results, toolsToDetect);
+  }
+
+  /**
+   * Get predefined tool definitions
+   */
+  private getToolDefinitions() {
+    return [
       // Package Managers
       {
         name: 'npm',
@@ -416,8 +425,13 @@ export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
         command: 'nix-shell --version',
       },
     ];
+  }
 
-    const results = await Promise.allSettled(
+  /**
+   * Detect tools in parallel
+   */
+  private async detectToolsParallel(toolsToDetect: Array<{name: string; type: string; command: string}>) {
+    return await Promise.allSettled(
       toolsToDetect.map(async (tool) => {
         try {
           const { stdout } = await execAsync(tool.command, { timeout: 5000 });
@@ -431,12 +445,7 @@ export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
             capabilities: await this.detectToolCapabilities(tool.name),
           };
         } catch (error) {
-          // Security audit: tracking tool detection failures for security analysis
-          this.logger.debug('Tool detection failed - security audit', {
-            toolName: tool.name,
-            toolType: tool.type,
-            error: error instanceof Error ? error.message : String(error),
-          });
+          this.logToolDetectionFailure(tool, error);
           return {
             name: tool.name,
             type: tool.type,
@@ -445,12 +454,28 @@ export class EnvironmentDetector extends EventEmitter<ServiceEvents> {
         }
       }),
     );
+  }
 
+  /**
+   * Log tool detection failure for security audit
+   */
+  private logToolDetectionFailure(tool: {name: string; type: string}, error: unknown) {
+    this.logger.debug('Tool detection failed - security audit', {
+      toolName: tool.name,
+      toolType: tool.type,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  /**
+   * Process tool detection results
+   */
+  private processToolResults(results: PromiseSettledResult<EnvironmentTool>[], toolsToDetect: Array<{name: string; type: string}>) {
     return results.map((result, index) =>
-      result.status === 'fulfilled'? result.value
+      result.status === 'fulfilled' ? result.value
         : {
-          name: toolsToDetect[index]?.name||'unknown',
-          type: toolsToDetect[index]?.type||'cli-tool',
+          name: toolsToDetect[index]?.name || 'unknown',
+          type: toolsToDetect[index]?.type || 'cli-tool',
           available: false,
         },
     );

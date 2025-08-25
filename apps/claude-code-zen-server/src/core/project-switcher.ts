@@ -108,7 +108,7 @@ export class ProjectSwitcher extends EventEmitter {
       this.emit('switchStarted', request);
 
       // Step 1: Validate and resolve project information
-      const projectInfo = await this.resolveProjectInfo(request);
+      const projectInfo = this.resolveProjectInfo(request);
 
       // Step 2: Get current project for comparison
       const currentProject = getCurrentProject();
@@ -145,7 +145,7 @@ export class ProjectSwitcher extends EventEmitter {
         to: projectInfo.path,
       });
 
-      await this.switchProjectContext(projectInfo.path);
+      this.switchProjectContext(projectInfo.path);
       this.emit('contextSwitched', {
         from: currentProject.path,
         to: projectInfo.path,
@@ -263,7 +263,7 @@ export class ProjectSwitcher extends EventEmitter {
   /**
    * Cancel current switch operation (if possible)
    */
-  async cancelSwitch(): Promise<void> {
+  cancelSwitch(): void {
     if (!this.isSwitching) {
       throw new Error('No switch operation in progress');
     }
@@ -282,11 +282,11 @@ export class ProjectSwitcher extends EventEmitter {
   /**
    * Resolve project information from request
    */
-  private async resolveProjectInfo(request: ProjectSwitchRequest): Promise<{
+  private resolveProjectInfo(request: ProjectSwitchRequest): {
     id: string;
     name: string;
     path: string;
-  }> {
+  } {
     if (request.projectId) {
       // Look up project by ID in registry
       const projects = getRegisteredProjects();
@@ -335,7 +335,7 @@ export class ProjectSwitcher extends EventEmitter {
     const shutdownPromise = shutdownClaudeZen();
 
     // Create timeout promise
-    const timeoutPromise = new Promise<never>((_, reject) => {
+    const timeoutPromise = new Promise<never>((unusedResolve, reject) => {
       setTimeout(() => {
         reject(new Error(`Shutdown timeout after ${  timeout  }ms`));
       }, timeout);
@@ -350,8 +350,8 @@ export class ProjectSwitcher extends EventEmitter {
         logger.warn('Graceful shutdown timed out, forcing shutdown');
 
         // Force cleanup of global references
-        delete (global as any).swarmCoordinator;
-        delete (global as any).memorySystem;
+        delete (global as Record<string, unknown>).swarmCoordinator;
+        delete (global as Record<string, unknown>).memorySystem;
       } else {
         throw error;
       }
@@ -361,7 +361,7 @@ export class ProjectSwitcher extends EventEmitter {
   /**
    * Switch project context (working directory)
    */
-  private async switchProjectContext(projectPath: string): Promise<void> {
+  private switchProjectContext(projectPath: string): void {
     const absolutePath = path.resolve(projectPath);
 
     try {

@@ -5,7 +5,7 @@
  * For the web dashboard interface.
  */
 
-const { getLogger } = (global as any).foundation;
+const { getLogger } = (global as Record<string, unknown>).foundation as { getLogger: Function };
 import type { Server as SocketIOServer } from 'socket.io';
 
 export interface WebSession {
@@ -105,7 +105,7 @@ export class WebSocketCoordinator {
   /**
    * Broadcast message to all connected clients.
    */
-  broadcast(event: string, data: any): void {
+  broadcast(event: string, data: unknown): void {
     if (!this.config.realTime) return;
 
     this.io.emit(event, {
@@ -119,7 +119,7 @@ export class WebSocketCoordinator {
   /**
    * Send message to specific session.
    */
-  sendToSession(sessionId: string, event: string, data: any): boolean {
+  sendToSession(sessionId: string, event: string, data: unknown): boolean {
     const socket = this.io.sockets.sockets.get(sessionId);
     if (!socket) {
       this.logger.warn(`Session not found: ${sessionId}`);

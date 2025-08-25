@@ -5,9 +5,9 @@
 import { getLogger } from '@claude-zen/foundation';
 
 // Removed missing coordination types - using basic types instead
-type ServerInstance = any;
+type ServerInstance = unknown;
 type BaseError = Error;
-const hasErrorCode = (error: any): boolean => 'code' in error;
+const hasErrorCode = (error: unknown): boolean => error !== null && typeof error === 'object' && 'code' in error;
 
 const logger = getLogger('claude-zen-integrated');
 
@@ -232,7 +232,7 @@ Options:
 
       expressServer.on('error', (err: BaseError) => {
         logger.error('Server error:', err);
-        if (hasErrorCode(err) && err.code === 'EADDRINUSE') {
+        if (hasErrorCode(err) && (err as { code: string }).code === 'EADDRINUSE') {
           logger.error(`Port ${  this.options.port  } is already in use`);
         }
         throw err;

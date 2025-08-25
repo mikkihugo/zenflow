@@ -74,8 +74,8 @@ export class System extends EventEmitter {
   private initialized = false;
 
   // Component placeholders - using facade types
-  private brainSystem?: any;
-  private enterpriseSystem?: any; 
+  private brainSystem?: unknown;
+  private enterpriseSystem?: unknown; 
   private taskMasterService?: TaskMasterService;
 
   constructor(config: SystemConfig = {}) {

@@ -61,9 +61,9 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     try {
       // Internally coordinate with strategic facades
       const brainHealth = await this.getBrainHealth();
-      const memoryHealth = await this.getMemoryHealth();
+      const memoryHealth = this.getMemoryHealth();
       const dbHealth = await this.getDatabaseHealth();
-      const coordHealth = await this.getCoordinationHealth();
+      const coordHealth = this.getCoordinationHealth();
 
       const health: SystemHealth = {
         overall: this.assessOverallHealth([brainHealth, memoryHealth, dbHealth, coordHealth]),
@@ -73,7 +73,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
           database: dbHealth,
           coordination: coordHealth,
         },
-        alerts: await this.getSystemAlerts(),
+        alerts: this.getSystemAlerts(),
       };
 
       return ok(health);
@@ -83,14 +83,14 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     }
   }
 
-  async getSystemMetrics(): Promise<Result<SystemMetrics, Error>> {
+  getSystemMetrics(): Result<SystemMetrics, Error> {
     try {
       const metrics: SystemMetrics = {
         uptime: process.uptime() * 1000,
         memoryUsage: process.memoryUsage().heapUsed,
-        cpuUsage: await this.getCpuUsage(),
-        activeConnections: await this.getActiveConnections(),
-        performance: await this.getPerformanceMetrics(),
+        cpuUsage: this.getCpuUsage(),
+        activeConnections: this.getActiveConnections(),
+        performance: this.getPerformanceMetrics(),
       };
 
       return ok(metrics);
@@ -156,7 +156,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     }
   }
 
-  private async getMemoryHealth(): Promise<'healthy' | 'warning' | 'critical'> {
+  private getMemoryHealth(): 'healthy' | 'warning' | 'critical' {
     const usage = process.memoryUsage().heapUsed / 1024 / 1024; // MB
     if (usage > 1000) return 'critical';
     if (usage > 500) return 'warning';
@@ -175,7 +175,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     }
   }
 
-  private async getCoordinationHealth(): Promise<'healthy' | 'warning' | 'critical'> {
+  private getCoordinationHealth(): 'healthy' | 'warning' | 'critical' {
     // Check coordination system health
     return 'healthy'; // Simplified for now
   }
@@ -186,20 +186,20 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     return 'healthy';
   }
 
-  private async getSystemAlerts(): Promise<SystemHealth['alerts']> {
+  private getSystemAlerts(): SystemHealth['alerts'] {
     return []; // Simplified for now
   }
 
-  private async getCpuUsage(): Promise<number> {
+  private getCpuUsage(): number {
     const usage = process.cpuUsage();
     return (usage.user + usage.system) / 1000000; // Convert to seconds
   }
 
-  private async getActiveConnections(): Promise<number> {
+  private getActiveConnections(): number {
     return 0; // Simplified for now
   }
 
-  private async getPerformanceMetrics(): Promise<SystemMetrics['performance']> {
+  private getPerformanceMetrics(): SystemMetrics['performance'] {
     return {
       averageLatency: 100,
       errorRate: 0.01,
@@ -243,7 +243,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
 /**
  * Get system coordinator instance (Strategic Facade)
  */
-export async function getSystemCoordinator(): Promise<SystemCoordinator> {
+export function getSystemCoordinator(): SystemCoordinator {
   return new SystemCoordinatorImpl();
 }
 

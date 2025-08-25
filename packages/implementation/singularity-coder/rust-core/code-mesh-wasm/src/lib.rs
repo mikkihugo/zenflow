@@ -2,10 +2,7 @@ use wasm_bindgen::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+// Using default Rust allocator for wasm32 targets (wee_alloc removed due to maintenance issues)
 
 #[wasm_bindgen]
 extern "C" {

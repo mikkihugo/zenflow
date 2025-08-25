@@ -337,7 +337,35 @@ export class ProjectManager {
     const gitignorePath = path.join(this.configDir, '.gitignore');
 
     if (!fs.existsSync(gitignorePath)) {
-      const gitignoreContent = `# ============================================================================
+      const gitignoreContent = this.createGitignoreContent();
+      fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
+      logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
+    }
+  }
+
+  /**
+   * Create comprehensive .gitignore content for Claude Zen protection
+   */
+  private createGitignoreContent(): string {
+    const sections = [
+      this.createGitignoreHeader(),
+      this.createDefaultIgnoreSection(),
+      this.createDatabaseProtectionSection(),
+      this.createMemoryCacheSection(),
+      this.createAuthSecuritySection(),
+      this.createProjectWorkspaceSection(),
+      this.createLogsArtifactsSection(),
+      this.createSystemOsSection(),
+      this.createIdeEditorSection(),
+      this.createDevBuildSection(),
+      this.createGitignoreFooter(),
+    ];
+    
+    return sections.join('\n');
+  }
+
+  private createGitignoreHeader(): string {
+    return `# ============================================================================
 # CLAUDE ZEN STORAGE PROTECTION - IGNORE EVERYTHING
 # ============================================================================
 #
@@ -352,9 +380,11 @@ export class ProjectManager {
 # - Project-specific configuration
 # - User preferences and session data
 # - Logs and temporary processing files
-#
+#`;
+  }
 
-# =============================================================================
+  private createDefaultIgnoreSection(): string {
+    return `# =============================================================================
 # IGNORE EVERYTHING BY DEFAULT - MAXIMUM PROTECTION
 # =============================================================================
 
@@ -363,9 +393,11 @@ export class ProjectManager {
 */
 
 # Ignore all file types
-*.*
+*.*`;
+  }
 
-# =============================================================================
+  private createDatabaseProtectionSection(): string {
+    return `# =============================================================================
 # DATABASE STORAGE PROTECTION
 # =============================================================================
 
@@ -384,9 +416,11 @@ storage/
 # Specific database files from Claude Zen architecture
 coordination.db
 kuzu-graph.db
-lancedb-vectors.db
+lancedb-vectors.db`;
+  }
 
-# =============================================================================
+  private createMemoryCacheSection(): string {
+    return `# =============================================================================
 # MEMORY AND CACHE PROTECTION  
 # =============================================================================
 
@@ -401,9 +435,11 @@ temp/
 # Memory-specific files
 debug.json
 memory.json
-cache.json
+cache.json`;
+  }
 
-# =============================================================================
+  private createAuthSecuritySection(): string {
+    return `# =============================================================================
 # AUTHENTICATION AND SECURITY PROTECTION
 # =============================================================================
 
@@ -421,9 +457,11 @@ config.json
 *.p12
 *.pfx
 *.crt
-*.cert
+*.cert`;
+  }
 
-# =============================================================================
+  private createProjectWorkspaceSection(): string {
+    return `# =============================================================================
 # PROJECT AND WORKSPACE PROTECTION
 # =============================================================================
 
@@ -436,9 +474,11 @@ proj-*/
 workspace.db
 project.json
 workspace.json
-settings.json
+settings.json`;
+  }
 
-# =============================================================================
+  private createLogsArtifactsSection(): string {
+    return `# =============================================================================
 # LOGS AND DEVELOPMENT ARTIFACTS
 # =============================================================================
 
@@ -456,9 +496,11 @@ logs/
 *.cache
 *.swap
 *.swp
-*.swo
+*.swo`;
+  }
 
-# =============================================================================
+  private createSystemOsSection(): string {
+    return `# =============================================================================
 # SYSTEM AND OS FILES
 # =============================================================================
 
@@ -476,9 +518,11 @@ ehthumbs.db
 Desktop.ini
 
 # Linux
-.directory
+.directory`;
+  }
 
-# =============================================================================
+  private createIdeEditorSection(): string {
+    return `# =============================================================================
 # IDE AND EDITOR FILES
 # =============================================================================
 
@@ -504,9 +548,11 @@ Desktop.ini
 
 # Sublime Text
 *.sublime-workspace
-*.sublime-project
+*.sublime-project`;
+  }
 
-# =============================================================================
+  private createDevBuildSection(): string {
+    return `# =============================================================================
 # DEVELOPMENT AND BUILD ARTIFACTS
 # =============================================================================
 
@@ -523,9 +569,11 @@ __pycache__/
 *.egg-info/
 
 # Rust
-target/
+target/`;
+  }
 
-# =============================================================================
+  private createGitignoreFooter(): string {
+    return `# =============================================================================
 # END OF CLAUDE ZEN PROTECTION
 # =============================================================================
 #
@@ -533,12 +581,7 @@ target/
 # commits of sensitive Claude Zen data. If you need to commit something from
 # this directory (which should be rare), you'll need to explicitly force it
 # with 'git add -f filename' after careful consideration.
-#
-`;
-
-      fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
-      logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
-    }
+#`;
   }
 
   /**
@@ -558,206 +601,7 @@ target/
     try {
       await fsAsync.access(gitignorePath);
     } catch {
-      // Reuse the same comprehensive content from the sync version
-      const gitignoreContent = `# ============================================================================
-# CLAUDE ZEN STORAGE PROTECTION - IGNORE EVERYTHING
-# ============================================================================
-#
-# This .gitignore ensures that NOTHING in the .claude-zen directory is ever
-# committed to version control. This directory contains sensitive data that
-# should remain local to each user/environment.
-#
-# Protected content includes:
-# - Database files (SQLite, KuzuDB, LanceDB, etc.)
-# - Authentication tokens and API keys  
-# - Memory storage and cache data
-# - Project-specific configuration
-# - User preferences and session data
-# - Logs and temporary processing files
-#
-
-# =============================================================================
-# IGNORE EVERYTHING BY DEFAULT - MAXIMUM PROTECTION
-# =============================================================================
-
-# Ignore all files and directories
-*
-*/
-
-# Ignore all file types
-*.*
-
-# =============================================================================
-# DATABASE STORAGE PROTECTION
-# =============================================================================
-
-# Core database files
-*.db
-*.sqlite
-*.sqlite3
-*.kuzu
-*.lancedb
-
-# Database directories
-data/
-databases/
-storage/
-
-# Specific database files from Claude Zen architecture
-coordination.db
-kuzu-graph.db
-lancedb-vectors.db
-
-# =============================================================================
-# MEMORY AND CACHE PROTECTION  
-# =============================================================================
-
-# Memory storage
-memory/
-sessions/
-vectors/
-cache/
-.tmp/
-temp/
-
-# Memory-specific files
-debug.json
-memory.json
-cache.json
-
-# =============================================================================
-# AUTHENTICATION AND SECURITY PROTECTION
-# =============================================================================
-
-# Authentication tokens
-*.json
-copilot-token.json
-auth-token.json
-api-keys.json
-credentials.json
-config.json
-
-# Security-related files
-*.key
-*.pem
-*.p12
-*.pfx
-*.crt
-*.cert
-
-# =============================================================================
-# PROJECT AND WORKSPACE PROTECTION
-# =============================================================================
-
-# Project directories
-projects/
-workspaces/
-proj-*/
-
-# Project-specific files
-workspace.db
-project.json
-workspace.json
-settings.json
-
-# =============================================================================
-# LOGS AND DEVELOPMENT ARTIFACTS
-# =============================================================================
-
-# Log files
-*.log
-*.out
-*.err
-logs/
-
-# Development artifacts
-*.bak
-*.backup
-*.tmp
-*.temp
-*.cache
-*.swap
-*.swp
-*.swo
-
-# =============================================================================
-# SYSTEM AND OS FILES
-# =============================================================================
-
-# macOS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-
-# Windows  
-Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-Desktop.ini
-
-# Linux
-.directory
-
-# =============================================================================
-# IDE AND EDITOR FILES
-# =============================================================================
-
-# Visual Studio Code
-.vscode/
-
-# JetBrains IDEs
-.idea/
-*.iml
-*.iws
-
-# Vim
-*.swp
-*.swo
-*~
-
-# Emacs
-*~
-#*#
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-
-# Sublime Text
-*.sublime-workspace
-*.sublime-project
-
-# =============================================================================
-# DEVELOPMENT AND BUILD ARTIFACTS
-# =============================================================================
-
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-
-# Rust
-target/
-
-# =============================================================================
-# END OF CLAUDE ZEN PROTECTION
-# =============================================================================
-#
-# This comprehensive .gitignore ensures maximum protection against accidental
-# commits of sensitive Claude Zen data. If you need to commit something from
-# this directory (which should be rare), you'll need to explicitly force it
-# with 'git add -f filename' after careful consideration.
-#
-`;
-
+      const gitignoreContent = this.createGitignoreContent();
       await fsAsync.writeFile(gitignorePath, gitignoreContent, 'utf8');
       logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
     }
@@ -1055,8 +899,32 @@ target/
    * Supports advanced monorepo patterns including Bazel, complex structures, services/domains
    */
   private detectWorkspaceInfo(projectPath: string): ProjectInfo['workspace'] {
-    // Extended workspace file detection including Bazel and other build systems
-    const workspaceFiles = [
+    // Check for dedicated workspace files
+    const workspaceResult = this.checkWorkspaceFiles(projectPath);
+    if (workspaceResult) {
+      return workspaceResult;
+    }
+
+    // Check for package.json with workspaces
+    const packageJsonResult = this.checkPackageJsonWorkspace(projectPath);
+    if (packageJsonResult) {
+      return packageJsonResult;
+    }
+
+    // Check if this is part of a larger monorepo
+    const monorepoResult = this.checkForParentMonorepo(projectPath);
+    if (monorepoResult) {
+      return monorepoResult;
+    }
+
+    return { type: 'single' };
+  }
+
+  /**
+   * Get workspace file definitions for detection
+   */
+  private getWorkspaceFileDefinitions() {
+    return [
       {
         file: 'pnpm-workspace.yaml',
         type: 'monorepo' as const,
@@ -1105,74 +973,107 @@ target/
       {
         file: 'pom.xml',
         type: 'monorepo' as const,
-        buildSystem: 'maven'as const,
+        buildSystem: 'maven' as const,
       },
     ];
+  }
 
-    // Check for workspace files
+  /**
+   * Check for dedicated workspace files
+   */
+  private checkWorkspaceFiles(projectPath: string): ProjectInfo['workspace'] | null {
+    const workspaceFiles = this.getWorkspaceFileDefinitions();
+
     for (const { file, type, buildSystem } of workspaceFiles) {
       const filePath = path.join(projectPath, file);
       if (fs.existsSync(filePath)) {
-        const structure = this.analyzeProjectStructure(projectPath);
-        const subProjects = this.detectSubProjects(projectPath, buildSystem);
-
-        // Determine if this is a complex monorepo based on structure
-        const isComplex =
-          structure?.hasServices||structure?.hasDomains||(subProjects && subProjects.length > 10)||buildSystem ==='bazel';
-
-        return {
-          type: isComplex ? 'complex' : type,
-          workspaceFile: file,
-          buildSystem,
-          structure,
-          subProjects,
-        };
+        return this.createWorkspaceInfo(projectPath, file, type, buildSystem);
       }
     }
 
-    // Check for package.json with workspaces at current level
+    return null;
+  }
+
+  /**
+   * Check for package.json with workspaces configuration
+   */
+  private checkPackageJsonWorkspace(projectPath: string): ProjectInfo['workspace'] | null {
     const packageJsonPath = path.join(projectPath, PACKAGE_JSON_FILENAME);
-    if (fs.existsSync(packageJsonPath)) {
-      try {
-        const packageJson = JSON.parse(
-          fs.readFileSync(packageJsonPath, 'utf8'),
-        );
-        if (packageJson.workspaces) {
-          const structure = this.analyzeProjectStructure(projectPath);
-          const subProjects = this.detectSubProjects(projectPath, 'pnpm');
+    if (!fs.existsSync(packageJsonPath)) {
+      return null;
+    }
 
-          return {
-            type:
-              structure?.hasServices||structure?.hasDomains
-                ?'complex'
-                : 'monorepo',
-            workspaceFile: PACKAGE_JSON_FILENAME,
-            buildSystem: 'pnpm',
-            structure,
-            subProjects,
-          };
-        }
-      } catch (error) {
-        logger.warn('Failed to parse package.json:', error);
+    try {
+      const packageJson = JSON.parse(
+        fs.readFileSync(packageJsonPath, 'utf8'),
+      );
+      
+      if (packageJson.workspaces) {
+        return this.createWorkspaceInfo(projectPath, PACKAGE_JSON_FILENAME, 'monorepo', 'pnpm');
       }
+    } catch (error) {
+      logger.warn('Failed to parse package.json:', error);
     }
 
-    // Check if this is part of a larger monorepo by walking up
+    return null;
+  }
+
+  /**
+   * Check if this is part of a larger monorepo by walking up
+   */
+  private checkForParentMonorepo(projectPath: string): ProjectInfo['workspace'] | null {
     const monorepoRoot = this.findMonorepoRoot(projectPath);
-    if (monorepoRoot && monorepoRoot !== projectPath) {
-      // This is a package within a monorepo
-      const rootWorkspaceInfo = this.detectWorkspaceInfo(monorepoRoot);
-      return {
-        type: 'multi',
-        workspaceFile: rootWorkspaceInfo?.workspaceFile,
-        buildSystem: rootWorkspaceInfo?.buildSystem,
-        monorepoRoot,
-        structure: rootWorkspaceInfo?.structure,
-        subProjects: rootWorkspaceInfo?.subProjects,
-      };
+    if (!monorepoRoot || monorepoRoot === projectPath) {
+      return null;
     }
 
-    return { type: 'single' };
+    // This is a package within a monorepo
+    const rootWorkspaceInfo = this.detectWorkspaceInfo(monorepoRoot);
+    return {
+      type: 'multi',
+      workspaceFile: rootWorkspaceInfo?.workspaceFile,
+      buildSystem: rootWorkspaceInfo?.buildSystem,
+      monorepoRoot,
+      structure: rootWorkspaceInfo?.structure,
+      subProjects: rootWorkspaceInfo?.subProjects,
+    };
+  }
+
+  /**
+   * Create workspace info with structure analysis
+   */
+  private createWorkspaceInfo(
+    projectPath: string,
+    workspaceFile: string,
+    type: 'monorepo' | 'bazel',
+    buildSystem: string
+  ): ProjectInfo['workspace'] {
+    const structure = this.analyzeProjectStructure(projectPath);
+    const subProjects = this.detectSubProjects(projectPath, buildSystem);
+    const isComplex = this.isComplexWorkspace(structure, subProjects, buildSystem);
+
+    return {
+      type: isComplex ? 'complex' : type,
+      workspaceFile,
+      buildSystem,
+      structure,
+      subProjects,
+    };
+  }
+
+  /**
+   * Determine if workspace is complex based on structure
+   */
+  private isComplexWorkspace(
+    structure: ReturnType<typeof this.analyzeProjectStructure>,
+    subProjects: ReturnType<typeof this.detectSubProjects>,
+    buildSystem: string
+  ): boolean {
+    return !!
+      (structure?.hasServices ||
+      structure?.hasDomains ||
+      (subProjects && subProjects.length > 10) ||
+      buildSystem === 'bazel');
   }
 
   /**

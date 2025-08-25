@@ -44,10 +44,10 @@ const LOGGER_NAME = 'claude-zen-core';
  */
 export class ClaudeZenCore {
   private container: ReturnType<typeof createContainer> | null = null;
-  private enterprise?: any;
-  private brain?: any;
-  private teamwork?: any;
-  private agentCoordinator?: any;
+  private enterprise?: unknown;
+  private brain?: unknown;
+  private teamwork?: unknown;
+  private agentCoordinator?: unknown;
   private logger = getLogger(LOGGER_NAME);
 
   constructor() {
@@ -129,16 +129,16 @@ export class ClaudeZenCore {
       }
 
       // Resolve all coordinators through DI
-      this.enterprise = await this.container!.resolve<Promise<any>>(
+      this.enterprise = await this.container!.resolve<Promise<unknown>>(
         TOKENS.enterprise
       );
-      this.brain = await this.container!.resolve<Promise<any>>(
+      this.brain = await this.container!.resolve<Promise<unknown>>(
         TOKENS.brain
       );
-      this.teamwork = await this.container!.resolve<Promise<any>>(
+      this.teamwork = await this.container!.resolve<Promise<unknown>>(
         TOKENS.teamwork
       );
-      this.agentCoordinator = await this.container!.resolve<Promise<any>>(
+      this.agentCoordinator = await this.container!.resolve<Promise<unknown>>(
         TOKENS.agentCoordinator
       );
 
@@ -283,7 +283,7 @@ async function main() {
 }
 
 // Start the application if this file is run directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
     const logger = getLogger(LOGGER_NAME);
     logger.error('Failed to start application:', error);

@@ -5,14 +5,14 @@
  * and client event management for the web dashboard.
  */
 
-const { getLogger } = (global as any).foundation;
+const { getLogger } = (global as Record<string, unknown>).foundation as { getLogger: Function };
 import type { Server as SocketIOServer } from 'socket.io';
 
-const { getVersion } = (global as any).foundation || { getVersion: () => '1.0.0' };
+const { getVersion } = (global as Record<string, unknown>).foundation as { getVersion: () => string } || { getVersion: () => '1.0.0' };
 
 export interface BroadcastData {
   event: string;
-  data: any;
+  data: unknown;
   timestamp: string;
 }
 
@@ -21,10 +21,10 @@ export interface WebConfig {
 }
 
 export interface WebDataService {
-  getSystemStatus(): Promise<any>;
-  getSwarms(): Promise<any>;
-  getTasks(): Promise<any>;
-  getServiceStats(): any;
+  getSystemStatus(): Promise<Record<string, unknown>>;
+  getSwarms(): Promise<unknown[]>;
+  getTasks(): Promise<unknown[]>;
+  getServiceStats(): Record<string, unknown>;
 }
 
 export class WebSocketManager {
@@ -102,7 +102,7 @@ export class WebSocketManager {
   /**
    * Send initial data for a specific channel.
    */
-  private async sendChannelData(socket: any, channel: string): Promise<void> {
+  private async sendChannelData(socket: Record<string, unknown>, channel: string): Promise<void> {
     try {
       switch (channel) {
         case 'system': {
@@ -139,7 +139,7 @@ export class WebSocketManager {
               timestamp: new Date().toISOString()
             });
           } catch (error) {
-            this.logger.debug('Log entries not available');
+            this.logger.debug('Log entries not available:', error);
           }
           break;
         }
@@ -214,7 +214,7 @@ export class WebSocketManager {
   /**
    * Broadcast message to all connected clients.
    */
-  broadcast(event: string, data: any): void {
+  broadcast(event: string, data: unknown): void {
     if (!this.config.realTime) return;
 
     const broadcastData: BroadcastData = {
@@ -230,7 +230,7 @@ export class WebSocketManager {
   /**
    * Broadcast to specific room/channel.
    */
-  broadcastToRoom(room: string, event: string, data: any): void {
+  broadcastToRoom(room: string, event: string, data: unknown): void {
     if (!this.config.realTime) return;
 
     const broadcastData: BroadcastData = {
@@ -251,9 +251,9 @@ export class WebSocketManager {
     connectedClients: string[];
     rooms: string[];
   } {
-    const {sockets} = this.io.sockets;
+    const { sockets, adapter } = this.io.sockets;
     const connectedClients = Array.from(sockets.keys());
-    const rooms = Array.from(this.io.sockets.adapter.rooms.keys()).filter(
+    const rooms = Array.from(adapter.rooms.keys()).filter(
       (room) => !connectedClients.includes(room)
     ); // Filter out client IDs
 
@@ -282,7 +282,7 @@ export class WebSocketManager {
       import('@claude-zen/foundation')
         .then(({ setLogBroadcaster }) => {
           if (setLogBroadcaster) {
-            setLogBroadcaster((event: string, data: any) => {
+            setLogBroadcaster((event: string, data: unknown) => {
               // Broadcast to the logs room specifically
               this.broadcastToRoom('logs', event, data);
             });

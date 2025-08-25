@@ -8,6 +8,11 @@ import type { NextFunction, Request, Response } from 'express';
 
 const logger = getLogger('auth-middleware');
 
+// Constants
+const BEARER_PREFIX = 'Bearer ';
+const ANONYMOUS_USER_ID = 'anonymous';
+const ANONYMOUS_USER_NAME = 'Anonymous User';
+
 /**
  * User information interface (for future use)
  * Following Google Identity standards structure.
@@ -45,8 +50,8 @@ export const authMiddleware = (
   // Create anonymous user context
   const authContext: AuthContext = {
     user: {
-      id: 'anonymous',
-      name: 'Anonymous User',
+      id: ANONYMOUS_USER_ID,
+      name: ANONYMOUS_USER_NAME,
       roles: ['public'],
       permissions: ['read', 'write'],
       // Allow all operations for now
@@ -91,14 +96,14 @@ export const optionalAuthMiddleware = (
     // Some auth provided - could be validated here in future
     authContext = {
       user: {
-        id: 'anonymous',
-        name: 'Anonymous User',
+        id: ANONYMOUS_USER_ID,
+        name: ANONYMOUS_USER_NAME,
         roles: ['public'],
         permissions: ['read', 'write'],
         isAuthenticated: false,
         // Still false since we're not actually validating
       },
-      token: authHeader?.replace('Bearer ', '') || apiKey,
+      token: authHeader?.replace(BEARER_PREFIX, '') || apiKey,
       tokenType: authHeader ? 'bearer' : 'api_key',
       isAuthenticated: false,
     };
@@ -114,8 +119,8 @@ export const optionalAuthMiddleware = (
     // No auth provided
     authContext = {
       user: {
-        id: 'anonymous',
-        name: 'Anonymous User',
+        id: ANONYMOUS_USER_ID,
+        name: ANONYMOUS_USER_NAME,
         roles: ['public'],
         permissions: ['read', 'write'],
         isAuthenticated: false,
@@ -178,7 +183,7 @@ export const hasRole = (
  * Utility function to check if current user is admin.
  * Currently always returns true since no auth is required.
  */
-export const isAdmin = (req: Request): boolean => 
+export const isAdmin = (/* req: Request */): boolean => 
    true // Allow all admin operations since no auth required
 ;
 

@@ -148,7 +148,7 @@ export class ProjectModeManager extends EventEmitter {
   /**
    * Simple initialization - no external packages needed for now
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) return;
 
     // Just mark as initialized - no external dependencies
@@ -263,7 +263,7 @@ export class ProjectModeManager extends EventEmitter {
    * Get available modes for a project
    * Currently only Kanban is supported
    */
-  getAvailableModes(currentMode: ProjectMode): ProjectMode[] {
+  getAvailableModes(/* currentMode: ProjectMode */): ProjectMode[] {
     return [ProjectMode.KANBAN];
   }
 
@@ -271,7 +271,7 @@ export class ProjectModeManager extends EventEmitter {
    * Check if mode upgrade is possible
    * Currently no upgrades available since only Kanban exists
    */
-  canUpgradeMode(fromMode: ProjectMode, toMode: ProjectMode): boolean {
+  canUpgradeMode(/* fromMode: ProjectMode, toMode: ProjectMode */): boolean {
     return false; // No other modes available yet
   }
 
@@ -293,20 +293,20 @@ export class ProjectModeManager extends EventEmitter {
   /**
    * TODO: Upgrade project mode - will be implemented when multiple modes exist
    */
-  async upgradeProjectMode(
-    projectId: string,
+  upgradeProjectMode(
+    /* projectId: string,
     fromMode: ProjectMode,
     toMode: ProjectMode,
     options: {
       preserveData?: boolean;
       backupBeforeMigration?: boolean;
       validateAfterMigration?: boolean;
-    } = {}
-  ): Promise<{
+    } = {} */
+  ): {
     success: boolean;
     migrationLog: string[];
     warnings: string[];
-  }> {
+  } {
     // Currently no upgrades available - only Kanban mode exists
     return {
       success: false,

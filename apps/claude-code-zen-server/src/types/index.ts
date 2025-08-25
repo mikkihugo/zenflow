@@ -127,6 +127,10 @@ export type {
 // ============================================================================
 // Legacy Compatibility (Temporary)
 // ============================================================================
+// Import the types we need for aliases
+import type { SwarmAgent, SwarmConfig } from './coordination';
+import type { SystemHealth } from './core';
+
 // These aliases maintain backward compatibility during migration
 export type Agent = SwarmAgent;
 export type SwarmConfiguration = SwarmConfig;

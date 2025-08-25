@@ -182,27 +182,26 @@ export abstract class BaseClaudeZenError extends Error {
    * Creates a new BaseClaudeZenError instance.
    *
    * @param message - Error message.
-   * @param category - Error category for classification.
-   * @param severity - Error severity level (defaults to 'medium').
-   * @param context - Additional error context (optional).
-   * @param recoverable - Whether the error is recoverable (defaults to true).
+   * @param options - Error configuration options.
    */
   constructor(
     message: string,
-    category: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {},
-    recoverable = true,
+    options: {
+      category: string;
+      severity?: 'low' | 'medium' | 'high' | 'critical';
+      context?: Partial<ErrorContext>;
+      recoverable?: boolean;
+    }
   ) {
     super(message);
-    this.category = category;
-    this.severity = severity;
-    this.recoverable = recoverable;
+    this.category = options.category;
+    this.severity = options.severity ?? 'medium';
+    this.recoverable = options.recoverable ?? true;
     this.context = {
       timestamp: Date.now(),
-      component: category,
+      component: this.category,
       stackTrace: this.stack || '',
-      ...context,
+      ...(options.context ?? {}),
     };
 
     // Log error immediately
@@ -297,7 +296,11 @@ export class SwarmError extends BaseClaudeZenError {
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
     context: Partial<ErrorContext> = {},
   ) {
-    super(message, 'Swarm', severity, { ...context, metadata: { swarmId } });
+    super(message, {
+      category: 'Swarm',
+      severity,
+      context: { ...context, metadata: { swarmId } }
+    });
     this.name = 'SwarmError';
   }
 }
@@ -332,23 +335,36 @@ export class AgentError extends BaseClaudeZenError {
     public readonly agentType?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
-    super(message, 'Agent', severity, { metadata: { agentId, agentType } });
+    super(message, {
+      category: 'Agent',
+      severity,
+      context: { metadata: { agentId, agentType } }
+    });
     this.name = 'AgentError';
   }
 }
 
 export class SwarmCommunicationError extends SwarmError {
+  public readonly fromAgent: string;
+  public readonly toAgent: string;
+  public readonly messageType?: string;
+
   constructor(
     message: string,
-    public readonly fromAgent: string,
-    public readonly toAgent: string,
-    public readonly messageType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
+    options: {
+      fromAgent: string;
+      toAgent: string;
+      messageType?: string;
+      severity?: 'low' | 'medium' | 'high' | 'critical';
+    }
   ) {
-    super(message, undefined, severity, {
-      metadata: { fromAgent, toAgent, messageType },
+    super(message, undefined, options.severity ?? 'high', {
+      metadata: { fromAgent: options.fromAgent, toAgent: options.toAgent, messageType: options.messageType },
     });
     this.name = 'SwarmCommunicationError';
+    this.fromAgent = options.fromAgent;
+    this.toAgent = options.toAgent;
+    this.messageType = options.messageType;
   }
 }
 
@@ -384,7 +400,11 @@ export class TaskError extends BaseClaudeZenError {
     public readonly taskType?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
-    super(message, 'Task', severity, { metadata: { taskId, taskType } });
+    super(message, {
+      category: 'Task',
+      severity,
+      context: { metadata: { taskId, taskType } }
+    });
     this.name = 'TaskError';
   }
 }
@@ -398,8 +418,10 @@ export class NotFoundError extends BaseClaudeZenError {
     public readonly resource?: string,
     public readonly resourceId?: string,
   ) {
-    super(message, 'NotFound', 'medium', {
-      metadata: { resource, resourceId },
+    super(message, {
+      category: 'NotFound',
+      severity: 'medium',
+      context: { metadata: { resource, resourceId } }
     });
     this.name = 'NotFoundError';
   }
@@ -515,19 +537,12 @@ export function shouldRetry(
   attempt: number,
   maxRetries = 3,
 ): boolean {
-  if (attempt >= maxRetries) {
-    return false;
-  }
-  if (!isRecoverableError(error)) {
-    return false;
-  }
-
-  // Don't retry validation or configuration errors
-  if (error instanceof ValidationError || error instanceof ConfigurationError) {
-    return false;
-  }
-
-  return true;
+  return !(
+    attempt >= maxRetries ||
+    !isRecoverableError(error) ||
+    error instanceof ValidationError ||
+    error instanceof ConfigurationError
+  );
 }
 
 // ===============================

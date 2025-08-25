@@ -207,90 +207,119 @@ export class EventEmitter<
     data: TEvents[K],
   ): boolean {
     try {
-      // Validate event data if enabled
       if (this.config.enableValidation) {
         this.validateEvent(eventName, data);
       }
 
-      // Get listeners for this event
       const key = String(eventName);
-      const eventListeners = this.eventListeners.get(key);
-      const onceEventListeners = this.onceListeners.get(key);
-
-      // If no listeners exist, return false early
-      if ((!eventListeners || eventListeners.size === 0) && (!onceEventListeners || onceEventListeners.size === 0)) {
+      const listeners = this.getEventListeners(key);
+      
+      if (!this.hasListeners(listeners)) {
         return false;
       }
 
-      // Create event metadata
-      const metadata: EventMetadata = {
-        timestamp: new Date(),
-        source: this.constructor.name,
-        correlationId: this.generateCorrelationId(),
-      };
+      const metadata = this.createEventMetadata();
+      const totalListenerCount = this.getTotalListenerCount(listeners);
 
-      const totalListenerCount = (eventListeners?.size || 0) + (onceEventListeners?.size || 0);
-
-      // Store in history if enabled
-      if (this.config.enableHistory) {
-        this.addToHistory(
-          String(eventName),
-          data as UnknownRecord,
-          metadata,
-          totalListenerCount,
-        );
-      }
-
-      // Update metrics if enabled
-      if (this.config.enableMetrics) {
-        this.updateMetrics(
-          String(eventName),
-          totalListenerCount,
-        );
-      }
-
-      // Call regular listeners
-      if (eventListeners) {
-        for (const listener of eventListeners) {
-          try {
-            listener(data);
-          } catch (error) {
-            logger.error(
-              `Error in event listener for ${String(eventName)}:`,
-              error,
-            );
-            if (this.config.enableMetrics) {
-              this.metrics.errorRate++;
-            }
-          }
-        }
-      }
-
-      // Call once listeners and remove them
-      if (onceEventListeners) {
-        for (const listener of onceEventListeners) {
-          try {
-            listener(data);
-          } catch (error) {
-            logger.error(
-              `Error in once event listener for ${String(eventName)}:`,
-              error,
-            );
-            if (this.config.enableMetrics) {
-              this.metrics.errorRate++;
-            }
-          }
-        }
-      }
-
-      // Clear once listeners
-      this.onceListeners.delete(String(eventName));
+      this.recordEventIfEnabled(key, data, metadata, totalListenerCount);
+      this.callEventListeners(listeners, data, eventName);
+      this.cleanupOnceListeners(key);
 
       return totalListenerCount > 0;
     } catch (error) {
       logger.error(`Error emitting event ${String(eventName)}:`, error);
       return false;
     }
+  }
+
+  private getEventListeners(key: string) {
+    return {
+      regular: this.eventListeners.get(key),
+      once: this.onceListeners.get(key),
+    };
+  }
+
+  private hasListeners(listeners: { regular?: Set<EventListener<unknown>>; once?: Set<EventListener<unknown>> }) {
+    return (listeners.regular?.size || 0) > 0 || (listeners.once?.size || 0) > 0;
+  }
+
+  private createEventMetadata(): EventMetadata {
+    return {
+      timestamp: new Date(),
+      source: this.constructor.name,
+      correlationId: this.generateCorrelationId(),
+    };
+  }
+
+  private getTotalListenerCount(listeners: { regular?: Set<EventListener<unknown>>; once?: Set<EventListener<unknown>> }) {
+    return (listeners.regular?.size || 0) + (listeners.once?.size || 0);
+  }
+
+  private recordEventIfEnabled<K extends keyof TEvents>(
+    key: string,
+    data: TEvents[K],
+    metadata: EventMetadata,
+    totalListenerCount: number,
+  ) {
+    if (this.config.enableHistory) {
+      this.addToHistory(key, data as UnknownRecord, metadata, totalListenerCount);
+    }
+
+    if (this.config.enableMetrics) {
+      this.updateMetrics(key, totalListenerCount);
+    }
+  }
+
+  private callEventListeners<K extends keyof TEvents>(
+    listeners: { regular?: Set<EventListener<unknown>>; once?: Set<EventListener<unknown>> },
+    data: TEvents[K],
+    eventName: K,
+  ) {
+    this.callRegularListeners(listeners.regular, data, eventName);
+    this.callOnceListeners(listeners.once, data, eventName);
+  }
+
+  private callRegularListeners<K extends keyof TEvents>(
+    eventListeners: Set<EventListener<unknown>> | undefined,
+    data: TEvents[K],
+    eventName: K,
+  ) {
+    if (!eventListeners) return;
+
+    for (const listener of eventListeners) {
+      this.safeCallListener(listener, data, eventName);
+    }
+  }
+
+  private callOnceListeners<K extends keyof TEvents>(
+    onceEventListeners: Set<EventListener<unknown>> | undefined,
+    data: TEvents[K],
+    eventName: K,
+  ) {
+    if (!onceEventListeners) return;
+
+    for (const listener of onceEventListeners) {
+      this.safeCallListener(listener, data, eventName);
+    }
+  }
+
+  private safeCallListener<K extends keyof TEvents>(
+    listener: EventListener<unknown>,
+    data: TEvents[K],
+    eventName: K,
+  ) {
+    try {
+      listener(data);
+    } catch (error) {
+      logger.error(`Error in event listener for ${String(eventName)}:`, error);
+      if (this.config.enableMetrics) {
+        this.metrics.errorRate++;
+      }
+    }
+  }
+
+  private cleanupOnceListeners(key: string) {
+    this.onceListeners.delete(key);
   }
 
   /**

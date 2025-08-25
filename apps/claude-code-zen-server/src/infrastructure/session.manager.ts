@@ -40,7 +40,7 @@ export class WebSessionManager {
   middleware() {
     return (
       req: Request,
-      _res: Response,
+      unusedRes: Response,
       next: NextFunction
     ) => {
       const sessionId = (req.headers['x-session-id'] as string) || this.generateSessionId();

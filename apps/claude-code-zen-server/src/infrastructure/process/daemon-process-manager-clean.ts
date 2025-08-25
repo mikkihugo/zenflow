@@ -271,7 +271,7 @@ export class DaemonProcessManager {
       // Sending signal 0 checks if process exists without actually sending a signal
       process.kill(pid, 0);
       return true;
-    } catch (_error) {
+    } catch {
       return false;
     }
   }

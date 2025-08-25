@@ -192,147 +192,181 @@ class LoggingConfigurationManager {
       return;
     }
 
-    // Check if internal OTEL collector should be used
-    let internalCollectorSink = null;
-    let useInternalCollector = false;
-
-    try {
-      // Load OTEL settings directly from environment variables to avoid circular dependency
-      const useInternalOtelCollector =
-        process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== 'false';
-      const zenOtelEnabled = process.env['ZEN_OTEL_ENABLED'] === 'true';
-      const internalCollectorEndpoint =
-        process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT']||'http://localhost:4318';
-
-      if (useInternalOtelCollector && zenOtelEnabled) {
-        // Check if OTEL endpoint is reachable (foundation should not depend on other packages)
-        try {
-          // Simple HTTP check for internal collector availability
-          const response = await globalThis
-            .fetch(`${internalCollectorEndpoint}/health`, {
-              method: 'GET',
-              headers: { Accept: 'application/json' },
-            })
-            .catch(() => null);
-
-          if (response?.ok) {
-            // Create a custom sink that sends to internal collector
-            internalCollectorSink = this.createInternalCollectorSink(
-              internalCollectorEndpoint,
-            );
-            useInternalCollector = true;
-
-            // Enhanced initialization success logging
-            console.log('[LogTape] System initialized successfully:', {
-              collector: 'Internal OTEL collector',
-              endpoint: internalCollectorEndpoint,
-              status: 'active',
-              timestamp: new Date().toISOString(),
-            });
-            console.log(
-              `   Internal Collector: ${internalCollectorEndpoint}/ingest`,
-            );
-            console.log('   Service: claude-zen-foundation');
-          } else {
-            throw new Error('Internal OTEL collector not reachable');
-          }
-        } catch {
-          console.log(
-            '⚠️  Internal OTEL collector unavailable, trying external OTEL...',
-          );
-
-          // Fallback to external OTEL if internal collector fails
-          const otelLogsExporter = process.env['OTEL_LOGS_EXPORTER'];
-
-          if (otelLogsExporter === 'otlp'||zenOtelEnabled) {
-            // OTEL integration moved to @claude-zen/infrastructure package
-            console.log('⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.',
-            );
-            console.log('   Foundation logging will use console-only mode.');
-          }
-        }
-      }
-    } catch {
-      console.log(
-        '📝 Foundation LogTape using console-only (OTEL unavailable)',
-      );
-      useInternalCollector = false;
-    }
-
-    // Configure LogTape with OTEL if available
+    const collectorConfig = await this.setupInternalCollector();
     const { configure } = await import('@logtape/logtape');
-
-    const sinkConfig: Record<string, (record: UnknownRecord) => void> = {
-      // Console sink for local visibility
-      console: (record: UnknownRecord) => {
-        if (!this.config.enableConsole) {
-          return;
-        }
-
-        const timestamp = this.config.timestamp
-          ? `[${new Date(record['timestamp'] as string|number|Date).toISOString()}] `
-          :'';
-        const level = String(record['level']).toUpperCase().padStart(5);
-        const category = Array.isArray(record['category'])
-          ? record['category'].join('.')
-          : String(record['category']||'unknown');
-        const message = Array.isArray(record['message'])
-          ? record['message'].join('')
-          : String(record['message']||'');
-        const properties = (record['properties']||{}) as UnknownRecord;
-        const props =
-          Object.keys(properties).length > 0
-            ? ` ${JSON.stringify(properties)}`
-            :'';
-
-        console.log(`${timestamp}${level} [${category}] ${message}${props}`);
-      },
-    };
-
-    // Add internal collector sink if available
-    if (useInternalCollector && internalCollectorSink) {
-      sinkConfig['collector'] = internalCollectorSink as (
-        record: UnknownRecord
-      ) => void;
-    }
+    const sinkConfig = this.createSinkConfiguration(collectorConfig);
+    const loggerConfig = this.createLoggerConfiguration(collectorConfig.useInternalCollector);
 
     await configure({
-      sinks: sinkConfig as Record<string, any>,
-      loggers: [
-        // Foundation components with internal collector if available
-        {
-          category: ['foundation'],
-          sinks: useInternalCollector ? ['console', 'collector'] : ['console'],
-          lowestLevel: this.config.level,
-        },
-        {
-          category: ['claude-code-sdk-integration'],
-          sinks: useInternalCollector ? ['console', 'collector'] : ['console'],
-          lowestLevel: this.config.level,
-        },
-        {
-          category: ['SyslogBridge'],
-          sinks: useInternalCollector ? ['console', 'collector'] : ['console'],
-          lowestLevel: this.config.level,
-        },
-
-        // LogTape meta logs to console only
-        {
-          category: ['logtape', 'meta'],
-          sinks: ['console'],
-          lowestLevel: 'warning',
-        },
-
-        // Everything else
-        {
-          category: [],
-          sinks: useInternalCollector ? ['console', 'collector'] : ['console'],
-          lowestLevel: 'info',
-        },
-      ],
+      sinks: sinkConfig as Record<string, (record: UnknownRecord) => void>,
+      loggers: loggerConfig,
     });
 
     this.initialized = true;
+  }
+
+  /**
+   * Setup internal OTEL collector configuration
+   */
+  private async setupInternalCollector() {
+    const config = {
+      internalCollectorSink: null as ((record: UnknownRecord) => void) | null,
+      useInternalCollector: false
+    };
+
+    try {
+      const otelConfig = this.loadOtelEnvironmentConfig();
+      
+      if (otelConfig.useInternalOtelCollector && otelConfig.zenOtelEnabled) {
+        const isCollectorReachable = await this.checkCollectorAvailability(otelConfig.internalCollectorEndpoint);
+        
+        if (isCollectorReachable) {
+          config.internalCollectorSink = this.createInternalCollectorSink(otelConfig.internalCollectorEndpoint);
+          config.useInternalCollector = true;
+          this.logCollectorSuccess(otelConfig.internalCollectorEndpoint);
+        } else {
+          this.handleCollectorFallback(otelConfig);
+        }
+      }
+    } catch {
+      console.log('📝 Foundation LogTape using console-only (OTEL unavailable)');
+    }
+
+    return config;
+  }
+
+  /**
+   * Load OTEL configuration from environment variables
+   */
+  private loadOtelEnvironmentConfig() {
+    return {
+      useInternalOtelCollector: process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== 'false',
+      zenOtelEnabled: process.env['ZEN_OTEL_ENABLED'] === 'true',
+      internalCollectorEndpoint: process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || 'http://localhost:4318',
+      otelLogsExporter: process.env['OTEL_LOGS_EXPORTER']
+    };
+  }
+
+  /**
+   * Check if OTEL collector is available
+   */
+  private async checkCollectorAvailability(endpoint: string): Promise<boolean> {
+    try {
+      const response = await globalThis
+        .fetch(`${endpoint}/health`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        })
+        .catch(() => null);
+      
+      return response?.ok === true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Handle collector fallback scenarios
+   */
+  private handleCollectorFallback(otelConfig: {otelLogsExporter?: string; zenOtelEnabled: boolean}) {
+    console.log('⚠️  Internal OTEL collector unavailable, trying external OTEL...');
+    
+    if (otelConfig.otelLogsExporter === 'otlp' || otelConfig.zenOtelEnabled) {
+      console.log('⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.');
+      console.log('   Foundation logging will use console-only mode.');
+    }
+  }
+
+  /**
+   * Log successful collector initialization
+   */
+  private logCollectorSuccess(endpoint: string) {
+    console.log('[LogTape] System initialized successfully:', {
+      collector: 'Internal OTEL collector',
+      endpoint,
+      status: 'active',
+      timestamp: new Date().toISOString(),
+    });
+    console.log(`   Internal Collector: ${endpoint}/ingest`);
+    console.log('   Service: claude-zen-foundation');
+  }
+
+  /**
+   * Create sink configuration
+   */
+  private createSinkConfiguration(collectorConfig: {internalCollectorSink: ((record: UnknownRecord) => void) | null; useInternalCollector: boolean}) {
+    const sinkConfig: Record<string, (record: UnknownRecord) => void> = {
+      console: this.createConsoleSink(),
+    };
+
+    if (collectorConfig.useInternalCollector && collectorConfig.internalCollectorSink) {
+      sinkConfig['collector'] = collectorConfig.internalCollectorSink;
+    }
+
+    return sinkConfig;
+  }
+
+  /**
+   * Create console sink handler
+   */
+  private createConsoleSink() {
+    return (record: UnknownRecord) => {
+      if (!this.config.enableConsole) {
+        return;
+      }
+
+      const timestamp = this.config.timestamp
+        ? `[${new Date(record['timestamp'] as string|number|Date).toISOString()}] `
+        : '';
+      const level = String(record['level']).toUpperCase().padStart(5);
+      const category = Array.isArray(record['category'])
+        ? record['category'].join('.')
+        : String(record['category'] || 'unknown');
+      const message = Array.isArray(record['message'])
+        ? record['message'].join('')
+        : String(record['message'] || '');
+      const properties = (record['properties'] || {}) as UnknownRecord;
+      const props = Object.keys(properties).length > 0
+        ? ` ${JSON.stringify(properties)}`
+        : '';
+
+      console.log(`${timestamp}${level} [${category}] ${message}${props}`);
+    };
+  }
+
+  /**
+   * Create logger configuration
+   */
+  private createLoggerConfiguration(useInternalCollector: boolean) {
+    const sinks = useInternalCollector ? ['console', 'collector'] : ['console'];
+    
+    return [
+      {
+        category: ['foundation'],
+        sinks,
+        lowestLevel: this.config.level,
+      },
+      {
+        category: ['claude-code-sdk-integration'],
+        sinks,
+        lowestLevel: this.config.level,
+      },
+      {
+        category: ['SyslogBridge'],
+        sinks,
+        lowestLevel: this.config.level,
+      },
+      {
+        category: ['logtape', 'meta'],
+        sinks: ['console'],
+        lowestLevel: 'warning',
+      },
+      {
+        category: [],
+        sinks,
+        lowestLevel: 'info',
+      },
+    ];
   }
 
   /**

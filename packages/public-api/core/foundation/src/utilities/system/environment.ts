@@ -151,13 +151,15 @@ export function getWorkspaceDetector() {
  * System monitoring
  */
 export function startMonitoring() {
+  const logger = require('../../core/logging').getLogger('system:monitoring');
+  
   return {
     start: () => {
       // Basic system monitoring implementation
-      console.log('System monitoring started');
+      logger.info('System monitoring started');
     },
     stop: () => {
-      console.log('System monitoring stopped');
+      logger.info('System monitoring stopped');
     }
   };
 }

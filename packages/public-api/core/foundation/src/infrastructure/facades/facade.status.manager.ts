@@ -318,93 +318,145 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
     packageName: string,
     serviceName?: string,
   ): Promise<PackageInfo> {
-    const cached = this.packageCache.get(packageName);
-    const expiry = this.packageCacheExpiry.get(packageName);
-
-    // Return cached result if not expired
-    if (cached && expiry && Date.now() < expiry) {
+    const cached = this.getCachedPackage(packageName);
+    if (cached) {
       return cached;
     }
 
     const startTime = Date.now();
-    const packageInfo: PackageInfo = {
+    const packageInfo = this.createInitialPackageInfo(packageName, serviceName);
+
+    try {
+      const module = await import(packageName);
+      this.processSuccessfulImport(packageInfo, module, packageName, startTime);
+    } catch (error) {
+      this.processFailedImport(packageInfo, error, packageName);
+    }
+
+    this.cacheAndEmitResult(packageName, packageInfo);
+    return packageInfo;
+  }
+
+  /**
+   * Get cached package if not expired
+   */
+  private getCachedPackage(packageName: string): PackageInfo | null {
+    const cached = this.packageCache.get(packageName);
+    const expiry = this.packageCacheExpiry.get(packageName);
+    
+    if (cached && expiry && Date.now() < expiry) {
+      return cached;
+    }
+    
+    return null;
+  }
+
+  /**
+   * Create initial package info
+   */
+  private createInitialPackageInfo(packageName: string, serviceName?: string): PackageInfo {
+    return {
       name: packageName,
       status: PackageStatus.LOADING,
       lastChecked: Date.now(),
       capabilities: [],
       awilixRegistered: false,
-      serviceName: serviceName||packageName.replace('@claude-zen/', ''),
+      serviceName: serviceName || packageName.replace('@claude-zen/', ''),
     };
+  }
 
+  /**
+   * Process successful package import
+   */
+  private processSuccessfulImport(
+    packageInfo: PackageInfo,
+    module: Record<string, unknown>,
+    packageName: string,
+    startTime: number
+  ): void {
+    packageInfo.status = PackageStatus.AVAILABLE;
+    packageInfo.loadTime = Date.now() - startTime;
+    packageInfo.capabilities = Object.keys(module);
+
+    this.registerModuleInAwilix(packageInfo, module, packageName);
+    logger.debug(`Package ${packageName} is available`, packageInfo);
+  }
+
+  /**
+   * Process failed package import
+   */
+  private processFailedImport(packageInfo: PackageInfo, error: unknown, packageName: string): void {
+    packageInfo.status = PackageStatus.UNAVAILABLE;
+    packageInfo.error = error instanceof Error ? error.message : 'Unknown error';
+    
+    logger.debug(`Package ${packageName} is unavailable`, {
+      error: packageInfo.error,
+    });
+  }
+
+  /**
+   * Register module in Awilix container
+   */
+  private registerModuleInAwilix(
+    packageInfo: PackageInfo,
+    module: Record<string, unknown>,
+    packageName: string
+  ): void {
     try {
-      // Try to dynamically import the package
-      const module = await import(packageName);
+      const registrations = this.createRegistrations(module, packageInfo);
+      
+      if (Object.keys(registrations).length > 0) {
+        this.container.register(registrations);
+        packageInfo.awilixRegistered = true;
+        packageInfo.status = PackageStatus.REGISTERED;
 
-      packageInfo.status = PackageStatus.AVAILABLE;
-      packageInfo.loadTime = Date.now() - startTime;
-
-      // Extract capabilities from exports
-      packageInfo.capabilities = Object.keys(module);
-
-      // Try to register main exports in Awilix container
-      try {
-        const registrations: JsonObject = {};
-
-        // Register factory functions
-        for (const [exportName, exportValue] of Object.entries(module)) {
-          if (
-            typeof exportValue === 'function' &&
-            exportName.startsWith('create')
-          ) {
-            const serviceName = exportName.replace('create', '').toLowerCase();
-            registrations[serviceName] = asFunction(
-              exportValue as unknown as JsonValue,
-              { lifetime: Lifetime.SINGLETON },
-            );
-          }
-          if (
-            typeof exportValue === 'function' &&
-            exportName.startsWith('get')
-          ) {
-            const serviceName = exportName.replace('get', '').toLowerCase();
-            registrations[serviceName] = asFunction(
-              exportValue as unknown as JsonValue,
-              { lifetime: Lifetime.SINGLETON },
-            );
-          }
-        }
-
-        // Register the entire module as a service
-        if (packageInfo.serviceName) {
-          registrations[packageInfo.serviceName] = asValue(module);
-        }
-
-        if (Object.keys(registrations).length > 0) {
-          this.container.register(registrations);
-          packageInfo.awilixRegistered = true;
-          packageInfo.status = PackageStatus.REGISTERED;
-
-          logger.info(`Package ${packageName} registered in Awilix`, {
-            services: Object.keys(registrations),
-            serviceName: packageInfo.serviceName,
-          });
-        }
-      } catch (regError) {
-        logger.warn(`Failed to register ${packageName} in Awilix`, regError);
-        packageInfo.awilixRegistered = false;
+        logger.info(`Package ${packageName} registered in Awilix`, {
+          services: Object.keys(registrations),
+          serviceName: packageInfo.serviceName,
+        });
       }
+    } catch (regError) {
+      logger.warn(`Failed to register ${packageName} in Awilix`, regError);
+      packageInfo.awilixRegistered = false;
+    }
+  }
 
-      logger.debug(`Package ${packageName} is available`, packageInfo);
-    } catch (error) {
-      packageInfo.status = PackageStatus.UNAVAILABLE;
-      packageInfo.error =
-        error instanceof Error ? error.message : 'Unknown error';
+  /**
+   * Create Awilix registrations for module exports
+   */
+  private createRegistrations(module: Record<string, unknown>, packageInfo: PackageInfo): JsonObject {
+    const registrations: JsonObject = {};
 
-      logger.debug(`Package ${packageName} is unavailable`, {
-        error: packageInfo.error,
-      });
+    // Register factory functions
+    for (const [exportName, exportValue] of Object.entries(module)) {
+      if (typeof exportValue === 'function' && exportName.startsWith('create')) {
+        const serviceName = exportName.replace('create', '').toLowerCase();
+        registrations[serviceName] = asFunction(
+          exportValue as unknown as JsonValue,
+          { lifetime: Lifetime.SINGLETON },
+        );
+      }
+      if (typeof exportValue === 'function' && exportName.startsWith('get')) {
+        const serviceName = exportName.replace('get', '').toLowerCase();
+        registrations[serviceName] = asFunction(
+          exportValue as unknown as JsonValue,
+          { lifetime: Lifetime.SINGLETON },
+        );
+      }
     }
 
+    // Register the entire module as a service
+    if (packageInfo.serviceName) {
+      registrations[packageInfo.serviceName] = asValue(module);
+    }
+
+    return registrations;
+  }
+
+  /**
+   * Cache result and emit event
+   */
+  private cacheAndEmitResult(packageName: string, packageInfo: PackageInfo): void {
     // Cache the result
     this.packageCache.set(packageName, packageInfo);
     this.packageCacheExpiry.set(packageName, Date.now() + this.CACHE_DURATION);
@@ -415,8 +467,6 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
       version: packageInfo.version,
       timestamp: new Date(),
     });
-
-    return packageInfo;
   }
 
   /**

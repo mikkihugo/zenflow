@@ -13,8 +13,7 @@
  * - Production-grade performance and audit trail
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
 import type { ValidationQuestion } from './agui-adapter';
 import { TerminalAGUI } from './agui-adapter';
