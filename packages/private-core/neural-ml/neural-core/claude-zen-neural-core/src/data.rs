@@ -22,10 +22,10 @@ use crate::{
   error::{ErrorBuilder, NeuroDivergentResult},
 };
 
-/// Main data structure for time series data, equivalent to pandas DataFrame
+/// Main data structure for time series data, equivalent to pandas `DataFrame`
 #[derive(Debug, Clone)]
 pub struct TimeSeriesDataFrame<T: Float> {
-  /// The underlying Polars DataFrame
+  /// The underlying Polars `DataFrame`
   pub data: DataFrame,
   /// Schema definition for the time series
   pub schema: TimeSeriesSchema,
@@ -196,7 +196,7 @@ pub struct PreprocessingConfig<T: Float> {
 pub struct ScalingConfig<T: Float> {
   /// Scaling method
   pub method: ScalingMethod,
-  /// Feature range for MinMax scaling
+  /// Feature range for `MinMax` scaling
   pub feature_range: Option<(T, T)>,
   /// Whether to scale per series individually
   pub per_series: bool,
@@ -388,33 +388,36 @@ impl TimeSeriesSchema {
   }
 
   /// Add static feature columns
+  #[must_use]
   pub fn with_static_features(mut self, features: Vec<String>) -> Self {
     self.static_features = features;
     self
   }
 
   /// Add historical exogenous feature columns
+  #[must_use]
   pub fn with_historical_exogenous(mut self, features: Vec<String>) -> Self {
     self.historical_exogenous = features;
     self
   }
 
   /// Add future exogenous feature columns
+  #[must_use]
   pub fn with_future_exogenous(mut self, features: Vec<String>) -> Self {
     self.future_exogenous = features;
     self
   }
 
-  /// Validate schema against a DataFrame
+  /// Validate schema against a `DataFrame`
   ///
   /// # Errors
   ///
-  /// Returns an error if required columns are missing from the DataFrame or if column types don't match.
+  /// Returns an error if required columns are missing from the `DataFrame` or if column types don't match.
   pub fn validate_dataframe(&self, df: &DataFrame) -> NeuroDivergentResult<()> {
     let columns: Vec<String> = df
       .get_column_names()
       .into_iter()
-      .map(|s| s.to_string())
+      .map(polars::prelude::PlSmallStr::to_string)
       .collect();
 
     // Check required columns
@@ -474,6 +477,7 @@ impl TimeSeriesSchema {
   }
 
   /// Get all column names defined in this schema
+  #[must_use]
   pub fn all_columns(&self) -> Vec<String> {
     let mut columns = vec![
       self.unique_id_col.clone(),
@@ -488,11 +492,11 @@ impl TimeSeriesSchema {
 }
 
 impl<T: Float> TimeSeriesDataFrame<T> {
-  /// Create from Polars DataFrame with schema
+  /// Create from Polars `DataFrame` with schema
   ///
   /// # Errors
   ///
-  /// Returns an error if the DataFrame schema validation fails or if required columns are missing.
+  /// Returns an error if the `DataFrame` schema validation fails or if required columns are missing.
   pub fn from_polars(
     df: DataFrame,
     schema: TimeSeriesSchema,
@@ -566,13 +570,12 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       .str()
       .map_err(|e| {
         ErrorBuilder::data(format!(
-          "Unique ID column is not string type: {}",
-          e
+          "Unique ID column is not string type: {e}"
         ))
         .build()
       })?
       .into_iter()
-      .filter_map(|opt| opt.map(|s| s.to_string()))
+      .filter_map(|opt| opt.map(std::string::ToString::to_string))
       .collect();
 
     Ok(ids)
@@ -655,7 +658,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       }
     }
 
-    let metadata = self.compute_metadata(&series_data)?;
+    let metadata = self.compute_metadata(&series_data);
 
     Ok(TimeSeriesDataset {
       unique_ids,
@@ -686,8 +689,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       .datetime()
       .map_err(|e| {
         ErrorBuilder::data(format!(
-          "Timestamp column is not datetime type: {}",
-          e
+          "Timestamp column is not datetime type: {e}"
         ))
         .build()
       })?
@@ -751,8 +753,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     for feature_name in &self.schema.static_features {
       let column = df.column(feature_name).map_err(|e| {
         ErrorBuilder::data(format!(
-          "Failed to get static feature column '{}': {}",
-          feature_name, e
+          "Failed to get static feature column '{feature_name}': {e}"
         ))
         .build()
       })?;
@@ -799,7 +800,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   fn compute_metadata(
     &self,
     series_data: &HashMap<String, SeriesData<T>>,
-  ) -> NeuroDivergentResult<DatasetMetadata> {
+  ) -> DatasetMetadata {
     let n_series = series_data.len();
     let mut total_observations = 0;
     let mut min_length = usize::MAX;
@@ -821,7 +822,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     }
 
     let avg_series_length = if n_series > 0 {
-      total_observations as f64 / n_series as f64
+      #[allow(clippy::cast_precision_loss)]
+      {
+        total_observations as f64 / n_series as f64
+      }
     } else {
       0.0
     };
@@ -834,7 +838,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       series_with_missing: Vec::new(),
     };
 
-    Ok(DatasetMetadata {
+    DatasetMetadata {
       n_series,
       n_observations: total_observations,
       avg_series_length,
@@ -848,7 +852,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       time_range: (min_time, max_time),
       missing_stats,
       created_at: Utc::now(),
-    })
+    }
   }
 
   /// Validate data integrity
@@ -993,18 +997,21 @@ impl<T: Float> TimeSeriesDatasetBuilder<T> {
   }
 
   /// Add static feature columns
+  #[must_use]
   pub fn with_static_features(mut self, features: Vec<String>) -> Self {
     self.static_features = features;
     self
   }
 
   /// Add historical exogenous feature columns
+  #[must_use]
   pub fn with_historical_exogenous(mut self, features: Vec<String>) -> Self {
     self.historical_exogenous = features;
     self
   }
 
   /// Add future exogenous feature columns
+  #[must_use]
   pub fn with_future_exogenous(mut self, features: Vec<String>) -> Self {
     self.future_exogenous = features;
     self

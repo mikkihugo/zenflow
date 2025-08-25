@@ -1064,7 +1064,7 @@ export class LoadBalancer extends TypedEventBase {
         inputFeatures.dispose();
         prediction.dispose();
       } catch (error) {
-        this.logger.warn('ML prediction failed for agent', {'
+        this.logger.warn('ML prediction failed for agent', {
           agentId: agent.id,
           error,
         });
@@ -1421,10 +1421,10 @@ export class LoadBalancer extends TypedEventBase {
     if (healthyPercentage < 0.3) {
       await this.emergencyHandler.handleEmergency(
         'low_availability',
-        'critical''
+        'critical'
       );
     } else if (healthyPercentage < 0.5) {
-      await this.emergencyHandler.handleEmergency('low_availability', 'high');'
+      await this.emergencyHandler.handleEmergency('low_availability', 'high');
     }
   }
 
@@ -1669,7 +1669,7 @@ export class LoadBalancer extends TypedEventBase {
    * Helper to extract duration from timer result
    */
   private getDuration(timerResult: any): number {
-    return typeof timerResult ==='object' && timerResult.duration'
+    return typeof timerResult === 'object' && timerResult.duration
       ? timerResult.duration
       : timerResult;
   }

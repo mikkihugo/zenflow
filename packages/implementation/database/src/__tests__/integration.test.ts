@@ -73,14 +73,15 @@ function cleanupTestFiles(paths: string[]): void {
 const testDbPath = './test.db';
 const testVectorPath = './test_vectors';
 const testGraphPath = './test_graph';
+const perfTestDbPath = './perf_test.db';
 
 // Test setup and teardown
 beforeAll(() => {
-  cleanupTestFiles([testDbPath, testVectorPath, testGraphPath]);
+  cleanupTestFiles([testDbPath, testVectorPath, testGraphPath, perfTestDbPath]);
 });
 
 afterAll(() => {
-  cleanupTestFiles([testDbPath, testVectorPath, testGraphPath]);
+  cleanupTestFiles([testDbPath, testVectorPath, testGraphPath, perfTestDbPath]);
 });
 
 describe('Database Package Integration Tests - SQLite Adapter', () => {
@@ -310,8 +311,8 @@ describe('Database Package Integration Tests - Performance', () => {
     function createPerformanceAdapter(): SQLiteAdapter {
       const config: DatabaseConfig = {
         type: 'sqlite',
-        database: ':memory:',
-        pool: { min: 3, max: 10 },
+        database: perfTestDbPath,
+        pool: { min: 1, max: 1 }, // Single connection to avoid table visibility issues
       };
       return new SQLiteAdapter(config);
     }
@@ -337,6 +338,9 @@ describe('Database Package Integration Tests - Performance', () => {
         await adapter.execute(
           'CREATE TABLE perf_test (id INTEGER PRIMARY KEY, data TEXT)'
         );
+        
+        // Ensure table creation is committed across all connections
+        await adapter.query('SELECT COUNT(*) FROM perf_test');
 
         await performBulkInserts(adapter, operations);
 

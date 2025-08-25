@@ -72,7 +72,7 @@ export class EmergencyProtocolHandler
     // 2. Reject or queue them
     // 3. Reduce processing capacity temporarily
 
-    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`);`
+    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`);
   }
 
   public async activateFailover(): Promise<void> {
@@ -90,7 +90,7 @@ export class EmergencyProtocolHandler
     // 2. Queue excess requests
     // 3. Apply backpressure
 
-    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);`
+    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);
   }
 
   public async sendAlert(
@@ -102,12 +102,12 @@ export class EmergencyProtocolHandler
     // 2. Escalate based on severity
     // 3. Track alert delivery
 
-    this.recordEmergency('alert', 'low', `alert_sent_to_${recipients.length}`);`
+    this.recordEmergency('alert', 'low', `alert_sent_to_${recipients.length}`);
   }
 
   private initializeProtocols(): void {
     // Low availability protocol
-    this.activeProtocols.set('low_availability', {'
+    this.activeProtocols.set('low_availability', {
       name: 'Low Availability Response',
       severity: 'high',
       triggers: ['agent_failure_rate_high', 'availability_below_threshold'],
@@ -134,7 +134,7 @@ export class EmergencyProtocolHandler
     });
 
     // High load protocol
-    this.activeProtocols.set('high_load', {'
+    this.activeProtocols.set('high_load', {
       name: 'High Load Response',
       severity: 'medium',
       triggers: ['cpu_usage_high', 'response_time_high', 'queue_length_high'],
@@ -158,7 +158,7 @@ export class EmergencyProtocolHandler
     });
 
     // Resource exhaustion protocol
-    this.activeProtocols.set('resource_exhaustion', {'
+    this.activeProtocols.set('resource_exhaustion', {
       name: 'Resource Exhaustion Response',
       severity: 'critical',
       triggers: ['memory_critical', 'disk_full', 'connection_limit'],
@@ -189,7 +189,7 @@ export class EmergencyProtocolHandler
     const actionPromises = protocol.actions.map((action) =>
       this.executeAction(action).catch((error) => {
         logger.error(
-          `Failed to execute emergency action ${action.type}:`,`
+          `Failed to execute emergency action ${action.type}:`,
           error
         );
       })
@@ -200,49 +200,49 @@ export class EmergencyProtocolHandler
 
   private async executeAction(action: EmergencyAction): Promise<void> {
     switch (action.type) {
-      case 'load_shed':'
+      case 'load_shed':
         await this.shedLoad(action.parameters.percentage as number);
         break;
-      case 'scale_up':'
+      case 'scale_up':
         break;
-      case 'failover':'
+      case 'failover':
         await this.activateFailover();
         break;
-      case 'throttle':'
+      case 'throttle':
         await this.throttleRequests(action.parameters.rate as number);
         break;
-      case 'alert':'
+      case 'alert':
         await this.sendAlert(
           action.parameters.message as string,
           action.parameters.recipients as string[]
         );
         break;
       default:
-        logger.warn(`Unknown emergency action type: ${action.type}`);`
+        logger.warn(`Unknown emergency action type: ${action.type}`);
     }
   }
 
   private async executeDefaultEmergencyResponse(
     type: string,
-    severity: 'low|medium|high|critical''
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     switch (severity) {
-      case 'critical':'
+      case 'critical':
         await this.shedLoad(30);
         await this.activateFailover();
-        await this.sendAlert(`Critical emergency: ${type}`, [`
+        await this.sendAlert(`Critical emergency: ${type}`, [
           'ops-team',
           'on-call',
         ]);
         break;
-      case 'high':'
+      case 'high':
         await this.throttleRequests(50);
-        await this.sendAlert(`High severity emergency: ${type}`, ['ops-team']);'
+        await this.sendAlert(`High severity emergency: ${type}`, ['ops-team']);
         break;
-      case 'medium':'
+      case 'medium':
         await this.throttleRequests(80);
         break;
-      case 'low':'
+      case 'low':
         break;
     }
   }

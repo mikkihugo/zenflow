@@ -61,7 +61,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     const bandwidthMap = new Map<string, number>();
 
     // Simulate bandwidth measurements for different connections
-    const connections = ['agent-1', 'agent-2', 'gateway-1', 'gateway-2'];'
+    const connections = ['agent-1', 'agent-2', 'gateway-1', 'gateway-2'];
 
     for (const connection of connections) {
       const bandwidth = 1000 + Math.random() * 4000; // 1-5 Mbps
@@ -93,7 +93,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
 
   private getHopLatency(from: string, to: string): number {
     // Mock hop latency based on connection type
-    const connectionKey = `${from}-${to}`;`
+    const connectionKey = `${from}-${to}`;
 
     // Check if we have cached latency for this connection
     const cachedLatency = this.connectionLatencies.get(connectionKey);

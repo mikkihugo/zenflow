@@ -70,7 +70,7 @@ pub struct ModelConfigBuilder<T: Float + Send + Sync + 'static> {
 }
 
 /// System-wide configuration for neuro-divergent
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct SystemConfig {
   /// Logging configuration
   pub logging: LoggingConfig,
@@ -321,7 +321,7 @@ pub enum DebugVerbosity {
 }
 
 /// Feature flags for experimental features
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[allow(clippy::struct_excessive_bools)]
 pub struct FeatureFlags {
   /// Enable experimental GPU kernels
@@ -926,7 +926,7 @@ impl ConfigManager {
     };
 
     if let Some(config) = &self.current_config {
-      self.validate_system_config(config, &mut result);
+      Self::validate_system_config(config, &mut result);
     } else {
       result.is_valid = false;
       result.errors.push(ValidationError {
@@ -947,19 +947,6 @@ impl ConfigManager {
   }
 }
 
-impl Default for SystemConfig {
-  fn default() -> Self {
-    Self {
-      logging: LoggingConfig::default(),
-      performance: PerformanceConfig::default(),
-      memory: MemoryConfig::default(),
-      parallel: ParallelConfig::default(),
-      io: IoConfig::default(),
-      debug: DebugConfig::default(),
-      features: FeatureFlags::default(),
-    }
-  }
-}
 
 impl Default for LoggingConfig {
   fn default() -> Self {
@@ -1066,19 +1053,6 @@ impl Default for DebugConfig {
   }
 }
 
-impl Default for FeatureFlags {
-  fn default() -> Self {
-    Self {
-      experimental_gpu_kernels: false,
-      experimental_optimizations: false,
-      experimental_models: false,
-      experimental_data_formats: false,
-      auto_hyperparameter_tuning: false,
-      auto_model_selection: false,
-      distributed_training: false,
-    }
-  }
-}
 
 impl Default for ConfigMetadata {
   fn default() -> Self {
@@ -1101,10 +1075,10 @@ impl<T: Float + Send + Sync + 'static> Default for ModelConfigBuilder<T> {
 impl fmt::Display for LogFormat {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      LogFormat::Text => write!(f, "text"),
-      LogFormat::Json => write!(f, "json"),
-      LogFormat::Compact => write!(f, "compact"),
-      LogFormat::Pretty => write!(f, "pretty"),
+      Self::Text => write!(f, "text"),
+      Self::Json => write!(f, "json"),
+      Self::Compact => write!(f, "compact"),
+      Self::Pretty => write!(f, "pretty"),
     }
   }
 }
@@ -1112,12 +1086,12 @@ impl fmt::Display for LogFormat {
 impl fmt::Display for DataFormat {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      DataFormat::Json => write!(f, "json"),
-      DataFormat::Bson => write!(f, "bson"),
-      DataFormat::MessagePack => write!(f, "msgpack"),
-      DataFormat::Binary => write!(f, "binary"),
-      DataFormat::Parquet => write!(f, "parquet"),
-      DataFormat::Csv => write!(f, "csv"),
+      Self::Json => write!(f, "json"),
+      Self::Bson => write!(f, "bson"),
+      Self::MessagePack => write!(f, "msgpack"),
+      Self::Binary => write!(f, "binary"),
+      Self::Parquet => write!(f, "parquet"),
+      Self::Csv => write!(f, "csv"),
     }
   }
 }

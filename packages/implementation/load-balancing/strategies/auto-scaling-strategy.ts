@@ -17,7 +17,7 @@ interface ScalingDecision {
   targetCount: number;
   confidence: number;
   reasoning: string;
-  urgency: 'low|medium|high|critical;
+  urgency: 'low' | 'medium' | 'high' | 'critical';
 }
 
 interface ScalingHistory {
@@ -64,10 +64,10 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
       const agentId = `auto-agent-${Date.now()}-${i}`;`
       newAgents.push({
         id: agentId,
-        name: `Auto-scaled Agent ${agentId}`,`
+        name: `Auto-scaled Agent ${agentId}`,
         capabilities: ['general', 'auto-scaled'],
         status: AgentStatus.HEALTHY,
-        endpoint: `http://auto-agent-${agentId}:8080`,`
+        endpoint: `http://auto-agent-${agentId}:8080`,
         lastHealthCheck: new Date(),
         metadata: {
           autoScaled: true,
@@ -78,10 +78,10 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
 
     this.recordScalingAction(
       'scale_up',
-      `Added ${count} agents due to high load`,`
+      `Added ${count} agents due to high load`,
       count
     );
-    this.emit('scale:up', count);'
+    this.emit('scale:up', count);
 
     return newAgents;
   }
@@ -91,15 +91,15 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
     const agentsToRemove: string[] = [];
 
     for (let i = 0; i < count; i++) {
-      agentsToRemove.push(`auto-agent-candidate-${i}`);`
+      agentsToRemove.push(`auto-agent-candidate-${i}`);
     }
 
     this.recordScalingAction(
       'scale_down',
-      `Removed ${count} agents due to low load`,`
+      `Removed ${count} agents due to low load`,
       -count
     );
-    this.emit('scale:down', agentsToRemove);'
+    this.emit('scale:down', agentsToRemove);
 
     return agentsToRemove;
   }
@@ -140,10 +140,10 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
       );
 
       return {
-        action:'scale_up',
+        action: 'scale_up',
         targetCount,
         confidence: this.calculateScalingConfidence(systemLoad),
-        reasoning: `High utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,`
+        reasoning: `High utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,
         urgency: maxUtilization > 0.95 ? 'critical' : 'high',
       };
     }
@@ -163,7 +163,7 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
         action: 'scale_down',
         targetCount,
         confidence: this.calculateScalingConfidence(systemLoad),
-        reasoning: `Low utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,`
+        reasoning: `Low utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,
         urgency: 'low',
       };
     }
@@ -192,7 +192,7 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
       };
     }
 
-    const metricsArray = Array.from(metrics.values())();
+    const metricsArray = Array.from(metrics.values());
 
     // Calculate CPU-based utilization
     const cpuUtilizations = metricsArray.map((m) => m.cpuUsage);
