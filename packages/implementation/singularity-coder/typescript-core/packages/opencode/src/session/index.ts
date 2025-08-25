@@ -1,6 +1,6 @@
 import path from "path"
 import { Decimal } from "decimal.js"
-import { z, ZodSchema } from "zod"
+import { z, ZodSchema } from "@claude-zen/foundation"
 import {
   generateText,
   LoadAPIKeyError,

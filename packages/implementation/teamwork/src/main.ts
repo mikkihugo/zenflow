@@ -5,7 +5,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 
 import { getTeamworkStorage } from './storage';
 import type {
@@ -66,7 +66,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     logger.info('Creating conversation:', config.title);'
 
     const session: ConversationSession = {
-      id: nanoid(),
+      id: generateNanoId(),
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
@@ -212,7 +212,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Add timestamp and ID if not set
     if (!message.id) {
-      message.id = nanoid();
+      message.id = generateNanoId();
     }
     if (!message.timestamp) {
       message.timestamp = new Date();

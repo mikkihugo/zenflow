@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { EOL } from "os"
 import { NamedError } from "../util/error"
 

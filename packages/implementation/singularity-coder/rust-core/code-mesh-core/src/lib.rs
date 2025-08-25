@@ -207,14 +207,14 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 
 /// Runtime compatibility layer
-#[cfg(feature = "native")]
+#[cfg(not(target_arch = "wasm32"))]
 pub mod runtime {
     pub use tokio::*;
     pub type Runtime = tokio::runtime::Runtime;
     pub type Handle = tokio::runtime::Handle;
 }
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 pub mod runtime {
     pub use wasm_bindgen_futures::*;
     // WASM doesn't have a runtime concept like tokio

@@ -34,25 +34,18 @@ export { getLogger, LoggingLevel as LogLevel } from './core/logging';
 export type { Logger } from './core/logging';
 
 // Core configuration and environment
-export { 
-  getConfig, 
-  EnvironmentDetector 
-} from './core/config';
+export { getConfig, EnvironmentDetector } from './core/config';
 export type { Config } from './core/config';
 
 // Process lifecycle management
-export { 
-  ProcessLifecycleManager, 
-  setupProcessLifecycle 
+export {
+  ProcessLifecycleManager,
+  setupProcessLifecycle,
 } from './core/lifecycle';
 
 // DEPENDENCY INJECTION - Service container and patterns
 // =============================================================================
-export { 
-  createContainer, 
-  inject, 
-  TOKENS 
-} from './dependency-injection';
+export { createContainer, inject, TOKENS } from './dependency-injection';
 
 // EVENT SYSTEM - Type-safe event management
 // =============================================================================
@@ -60,26 +53,28 @@ export { default as EventEmitter } from './events/typed.event.base';
 
 // ERROR HANDLING AND RESILIENCE - Comprehensive error management
 // =============================================================================
-export { 
-  Result, ok, err, 
-  safeAsync, 
-  withRetry, 
-  withTimeout, 
+export {
+  Result,
+  ok,
+  err,
+  safeAsync,
+  withRetry,
+  withTimeout,
   createCircuitBreaker,
   ValidationError,
   NetworkError,
   ResourceError,
   ConfigurationError,
   TimeoutError,
-  isError
+  isError,
 } from './error-handling';
 
 // TYPE SYSTEM - All types and type utilities
 // =============================================================================
-export type { 
-  UUID, 
-  JsonValue, 
-  JsonObject, 
+export type {
+  UUID,
+  JsonValue,
+  JsonObject,
   JsonArray,
   JsonPrimitive,
   UnknownRecord,
@@ -98,13 +93,13 @@ export type {
   Identifiable,
   Timestamped,
   Paginated,
-  PaginationOptions
+  PaginationOptions,
 } from './types';
 
 // Type utilities and advanced types
 export type {
   DeepPartial,
-  DeepRequired, 
+  DeepRequired,
   DeepReadonly,
   MarkOptional,
   MarkRequired,
@@ -113,15 +108,15 @@ export type {
   Dictionary,
   AnyFunction,
   AsyncOrSync,
-  Primitive
+  Primitive,
 } from './types';
 
 // UTILITIES - Comprehensive utility functions
 // =============================================================================
 
 // Validation and schema utilities
-export { 
-  validateInput, 
+export {
+  validateInput,
   createValidator,
   z,
   isEmail,
@@ -138,22 +133,21 @@ export {
   NonEmptyStringSchema,
   PositiveNumberSchema,
   hasValidationError,
-  getValidationErrors
+  getValidationErrors,
 } from './utilities';
 
-
 // Async utilities and patterns
-export { 
+export {
   pTimeout,
   withRetry as retryAsync,
   concurrent,
-  withTimeout as timeoutPromise
+  withTimeout as timeoutPromise,
 } from './utilities/async';
 
 // System detection and information
 export {
   isDevelopment,
-  isProduction, 
+  isProduction,
   isTest,
   getEnvironment,
   getSystemInfo,
@@ -168,17 +162,17 @@ export {
   isWSL,
   getWorkspaceDetector,
   createSystemSummary,
-  checkSystemRequirements
+  checkSystemRequirements,
 } from './utilities/system';
 
 // ID generation utilities
-export { 
-  generateUUID, 
+export {
+  generateUUID,
   generateShortId,
   generateCustomId,
   generateTimestampId,
   generateSessionId,
-  generateApiKey
+  generateApiKey,
 } from './utilities/ids';
 
 // Time utilities
@@ -188,7 +182,7 @@ export {
   dateFromTimestamp,
   isoStringFromTimestamp,
   formatTimestamp,
-  parseISO
+  parseISO,
 } from './utilities/time';
 
 // Common utilities (lodash-style functions)
@@ -199,16 +193,16 @@ export {
   format,
   addDays,
   nanoid,
-  customAlphabet
+  customAlphabet,
 } from './utilities/common';
 
 // INFRASTRUCTURE - Facade system and infrastructure utilities
 // =============================================================================
-export { 
-  registerFacade, 
+export {
+  registerFacade,
   hasService,
   getSystemStatus,
-  FacadeStatusManager
+  FacadeStatusManager,
 } from './infrastructure/facades';
 
 // RESILIENCE PATTERNS - Advanced resilience utilities (using cockatiel)
@@ -244,14 +238,11 @@ export {
   CircuitState,
   TimeoutStrategy,
   Event,
-  usePolicy
+  usePolicy,
 } from './resilience';
 
 // Export resilience types
-export type {
-  RetryOptions,
-  CircuitBreakerOptions
-} from './resilience';
+export type { RetryOptions, CircuitBreakerOptions } from './resilience';
 
 // =============================================================================
 // TREE-SHAKING GUIDANCE COMMENTS

@@ -29,7 +29,7 @@ export const generators = {
   mockConfig: () => ({
     debug: false,
     metrics: { enabled: false },
-    storage: { type: 'memory'as const },
+    storage: { type: 'memory' as const },
     neural: { enabled: false },
     telemetry: { enabled: false },
   }),
@@ -41,7 +41,7 @@ export const asyncUtils = {
     new Promise<void>((resolve) => setTimeout(resolve, ms)),
 
   waitForCondition: async (
-    condition: () => boolean|Promise<boolean>,
+    condition: () => boolean | Promise<boolean>,
     timeout = 5000
   ) => {
     const start = Date.now();
@@ -53,7 +53,7 @@ export const asyncUtils = {
   },
 
   timeout: (ms: number) =>
-    new Promise<never>((resolve, reject) =>
+    new Promise<never>((_resolve, reject) =>
       setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
     ),
 };
@@ -122,7 +122,7 @@ export const createMock = {
 
   error: (message = 'Mock error', code?: string) => {
     const error = new Error(message);
-    if (code) (error as Error & {code: string}).code = code;
+    if (code) (error as Error & { code: string }).code = code;
     return error;
   },
 

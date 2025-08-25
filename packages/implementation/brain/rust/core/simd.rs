@@ -91,8 +91,8 @@ impl SimdAccelerator {
                 // Use AVX2 for f32 if available
                 let result = unsafe {
                     Self::avx2_dot_product_f32(
-                        std::mem::transmute(a),
-                        std::mem::transmute(b)
+                        std::mem::transmute::<&[T], &[f32]>(a),
+                        std::mem::transmute::<&[T], &[f32]>(b)
                     )
                 };
                 return T::from(result).unwrap_or_else(|| T::zero());
@@ -100,8 +100,8 @@ impl SimdAccelerator {
                 // Use SSE2 for f32
                 let result = unsafe {
                     Self::sse2_dot_product_f32(
-                        std::mem::transmute(a),
-                        std::mem::transmute(b)
+                        std::mem::transmute::<&[T], &[f32]>(a),
+                        std::mem::transmute::<&[T], &[f32]>(b)
                     )
                 };
                 return T::from(result).unwrap_or_else(|| T::zero());
@@ -120,8 +120,8 @@ impl SimdAccelerator {
             if is_x86_feature_detected!("avx2") && std::mem::size_of::<T>() == 4 {
                 let result_f32 = unsafe {
                     Self::avx2_vector_add_f32(
-                        std::mem::transmute(a),
-                        std::mem::transmute(b)
+                        std::mem::transmute::<&[T], &[f32]>(a),
+                        std::mem::transmute::<&[T], &[f32]>(b)
                     )
                 };
                 return result_f32.into_iter()

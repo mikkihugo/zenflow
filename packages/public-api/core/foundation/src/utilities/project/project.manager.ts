@@ -41,7 +41,18 @@ const PACKAGE_JSON_FILENAME = 'package.json';
  *
  * @type ProjectType
  */
-type ProjectType = 'service' | 'domain' | 'app' | 'lib' | 'package' | 'tool' | 'example' | 'test' | 'benchmark' | 'crate' | 'doc';
+type ProjectType =
+  | 'service'
+  | 'domain'
+  | 'app'
+  | 'lib'
+  | 'package'
+  | 'tool'
+  | 'example'
+  | 'test'
+  | 'benchmark'
+  | 'crate'
+  | 'doc';
 // Note: WorkspaceType and BuildSystem types removed as unused
 
 /**
@@ -78,7 +89,15 @@ export interface ProjectInfo {
     type: 'monorepo' | 'single' | 'multi' | 'bazel' | 'complex';
     workspaceFile?: string; // pnpm-workspace.yaml, lerna.json, WORKSPACE, etc.
     monorepoRoot?: string; // Path to monorepo root (only for type: 'multi')
-    buildSystem?: 'pnpm' | 'lerna' | 'nx' | 'rush' | 'bazel' | 'gradle' | 'maven' | 'custom';
+    buildSystem?:
+      | 'pnpm'
+      | 'lerna'
+      | 'nx'
+      | 'rush'
+      | 'bazel'
+      | 'gradle'
+      | 'maven'
+      | 'custom';
     structure?: {
       hasServices?: boolean; // services/ directory
       hasDomains?: boolean; // domains/ directory
@@ -91,7 +110,18 @@ export interface ProjectInfo {
     subProjects?: Array<{
       path: string;
       name: string;
-      type: 'service' | 'domain' | 'app' | 'lib' | 'package' | 'tool' | 'example' | 'test' | 'benchmark' | 'crate' | 'doc';
+      type:
+        | 'service'
+        | 'domain'
+        | 'app'
+        | 'lib'
+        | 'package'
+        | 'tool'
+        | 'example'
+        | 'test'
+        | 'benchmark'
+        | 'crate'
+        | 'doc';
     }>;
   };
   metadata?: UnknownRecord;
@@ -149,46 +179,46 @@ export interface ProjectRegistry {
  */
 export class ProjectManager {
   private static instance: ProjectManager;
-  
+
   /**
    * Root configuration directory path following Claude Zen storage architecture.
-   * 
+   *
    * @description Absolute path to the Claude Zen configuration directory, resolved
    * based on the `storeInUserHome` configuration setting. This path serves as the
    * root for all project management storage operations.
-   * 
+   *
    * **Possible Values**:
    * - User-global: `/home/user/.claude-zen/` or `C:\Users\user\.claude-zen\`
    * - Project-local: `/path/to/project/.claude-zen/`
-   * 
+   *
    * @see {@link constructor} for initialization logic
    */
   private configDir: string;
-  
+
   /**
    * Path to the main project registry file.
-   * 
+   *
    * @description Absolute path to `projects.json` file that contains the registry
    * of all managed projects. Located within the configDir following the standard
    * Claude Zen storage structure.
-   * 
+   *
    * **Example Paths**:
    * - User-global: `~/.claude-zen/projects.json`
    * - Project-local: `./.claude-zen/projects.json`
    */
   private projectsFile: string;
-  
+
   /**
    * Path to the projects storage directory.
-   * 
+   *
    * @description Absolute path to the `projects/` directory containing individual
    * project databases and storage. Each project gets its own subdirectory with
    * isolated storage following the `proj-{id}/` naming pattern.
-   * 
+   *
    * **Example Paths**:
    * - User-global: `~/.claude-zen/projects/`
    * - Project-local: `./.claude-zen/projects/`
-   * 
+   *
    * **Directory Structure**:
    * ```
    * projects/
@@ -202,33 +232,33 @@ export class ProjectManager {
    * ```
    */
   private projectsDir: string;
-  
-  private registry: ProjectRegistry|null = null;
+
+  private registry: ProjectRegistry | null = null;
 
   private constructor() {
     const config = getConfig();
 
     /**
      * Initialize Claude Zen configuration directory path based on storage preference.
-     * 
+     *
      * **Storage Resolution Logic**:
      * 1. Check `config.project.storeInUserHome` setting
      * 2. If `true` → Use user home directory (`~/.claude-zen/`)
      * 3. If `false` → Use project directory (`./.claude-zen/`)
      * 4. Resolve to absolute path for consistent access
-     * 
+     *
      * **Use Cases**:
      * - **User Home**: Personal development, cross-project settings, single-user
      * - **Project Local**: Team development, CI/CD, containerized environments
      */
     this.configDir = config.project.storeInUserHome
       ? // User home mode: Multi-repo support with central project registry
-      path.resolve(path.join(os.homedir(), config.project.configDir))
+        path.resolve(path.join(os.homedir(), config.project.configDir))
       : // Project root mode: Single repo mode, store in current project root
-      path.resolve(config.project.configDir);
+        path.resolve(config.project.configDir);
 
     // Initialize storage paths within the resolved configuration directory
-    this.projectsFile = path.join(this.configDir,'projects.json');
+    this.projectsFile = path.join(this.configDir, 'projects.json');
     this.projectsDir = path.join(this.configDir, 'projects');
 
     this.ensureDirectoriesExist();
@@ -316,12 +346,12 @@ export class ProjectManager {
    */
   /**
    * Ensures comprehensive .gitignore protection within .claude-zen directory.
-   * 
+   *
    * @description Creates a complete .gitignore file inside the .claude-zen directory
    * to ensure that NOTHING within this directory ever gets committed to version control.
    * This provides defense-in-depth protection against accidental commits of sensitive
    * data, databases, authentication tokens, and cache files.
-   * 
+   *
    * **Protection Coverage**:
    * - All database files (SQLite, KuzuDB, LanceDB)
    * - Authentication tokens and credentials
@@ -329,7 +359,7 @@ export class ProjectManager {
    * - Project-specific configuration and data
    * - Logs, temporary files, and system artifacts
    * - IDE and OS generated files
-   * 
+   *
    * @private
    * @see {@link ensureGitignoreAsync} for async version
    */
@@ -339,7 +369,9 @@ export class ProjectManager {
     if (!fs.existsSync(gitignorePath)) {
       const gitignoreContent = this.createGitignoreContent();
       fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
-      logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
+      logger.info(
+        `Created comprehensive .gitignore protection: ${gitignorePath}`
+      );
     }
   }
 
@@ -360,7 +392,7 @@ export class ProjectManager {
       this.createDevBuildSection(),
       this.createGitignoreFooter(),
     ];
-    
+
     return sections.join('\n');
   }
 
@@ -586,11 +618,11 @@ target/`;
 
   /**
    * Ensures comprehensive .gitignore protection within .claude-zen directory (async version).
-   * 
-   * @description Asynchronous version of {@link ensureGitignore}. Creates a complete 
-   * .gitignore file inside the .claude-zen directory to ensure that NOTHING within 
+   *
+   * @description Asynchronous version of {@link ensureGitignore}. Creates a complete
+   * .gitignore file inside the .claude-zen directory to ensure that NOTHING within
    * this directory ever gets committed to version control.
-   * 
+   *
    * @private
    * @returns Promise that resolves when .gitignore is created or verified to exist
    * @see {@link ensureGitignore} for sync version and detailed documentation
@@ -603,7 +635,9 @@ target/`;
     } catch {
       const gitignoreContent = this.createGitignoreContent();
       await fsAsync.writeFile(gitignorePath, gitignoreContent, 'utf8');
-      logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
+      logger.info(
+        `Created comprehensive .gitignore protection: ${gitignorePath}`
+      );
     }
   }
 
@@ -627,12 +661,12 @@ target/`;
         const content = fs.readFileSync(this.projectsFile, 'utf8');
         this.registry = JSON.parse(content);
         logger.debug(
-          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`,
+          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`
         );
       } catch (error) {
         logger.error(
           'Failed to load project registry, creating new one:',
-          error,
+          error
         );
         this.registry = {
           version: '1.0.0',
@@ -662,12 +696,12 @@ target/`;
         const content = await fsAsync.readFile(this.projectsFile, 'utf8');
         this.registry = JSON.parse(content);
         logger.debug(
-          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`,
+          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`
         );
       } catch (error) {
         logger.error(
           'Failed to load project registry, creating new one:',
-          error,
+          error
         );
         this.registry = {
           version: '1.0.0',
@@ -704,7 +738,7 @@ target/`;
       fs.writeFileSync(
         this.projectsFile,
         JSON.stringify(this.registry, null, 2),
-        'utf8',
+        'utf8'
       );
       logger.debug('Saved project registry');
     } catch (error) {
@@ -727,7 +761,7 @@ target/`;
       await fsAsync.writeFile(
         this.projectsFile,
         JSON.stringify(this.registry, null, 2),
-        'utf8',
+        'utf8'
       );
       logger.debug('Saved project registry');
     } catch (error) {
@@ -754,18 +788,18 @@ target/`;
       framework?: string;
       language?: string;
       metadata?: UnknownRecord;
-    } = {},
+    } = {}
   ): string {
     const registry = this.loadRegistry();
     const resolvedPath = path.resolve(projectPath);
 
     // Check if project already exists
     const existingProject = Object.values(registry.projects).find(
-      (p) => p.path === resolvedPath,
+      (p) => p.path === resolvedPath
     );
     if (existingProject) {
       logger.info(
-        `Project already registered: ${existingProject.name} (${existingProject.id})`,
+        `Project already registered: ${existingProject.name} (${existingProject.id})`
       );
       return existingProject.id;
     }
@@ -773,7 +807,7 @@ target/`;
     const projectId = this.generateProjectId();
     const projectInfo: ProjectInfo = {
       id: projectId,
-      name: options.name||path.basename(resolvedPath),
+      name: options.name || path.basename(resolvedPath),
       path: resolvedPath,
       description: options.description,
       createdAt: new Date().toISOString(),
@@ -796,7 +830,7 @@ target/`;
     this.createProjectDirectories(projectId);
 
     logger.info(
-      `Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`,
+      `Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`
     );
     return projectId;
   }
@@ -812,16 +846,18 @@ target/`;
       framework?: string;
       language?: string;
       metadata?: UnknownRecord;
-    } = {},
+    } = {}
   ): Promise<string> {
     // Delegate to sync version for consistency and to avoid code duplication
-    return await Promise.resolve(this.registerProjectSync(projectPath, options));
+    return await Promise.resolve(
+      this.registerProjectSync(projectPath, options)
+    );
   }
 
   /**
    * Get project by ID or path
    */
-  getProject(idOrPath: string): ProjectInfo|null {
+  getProject(idOrPath: string): ProjectInfo | null {
     const registry = this.loadRegistry();
 
     // Try by ID first
@@ -835,7 +871,7 @@ target/`;
     // Try by path
     const resolvedPath = path.resolve(idOrPath);
     const project = Object.values(registry.projects).find(
-      (p) => p.path === resolvedPath,
+      (p) => p.path === resolvedPath
     );
     if (project) {
       project.lastAccessedAt = new Date().toISOString();
@@ -858,7 +894,7 @@ target/`;
    * Get project database path
    */
   getProjectDatabasePath(projectId: string): string {
-    return path.join(this.projectsDir, projectId,'workspace.db');
+    return path.join(this.projectsDir, projectId, 'workspace.db');
   }
 
   /**
@@ -981,7 +1017,9 @@ target/`;
   /**
    * Check for dedicated workspace files
    */
-  private checkWorkspaceFiles(projectPath: string): ProjectInfo['workspace'] | null {
+  private checkWorkspaceFiles(
+    projectPath: string
+  ): ProjectInfo['workspace'] | null {
     const workspaceFiles = this.getWorkspaceFileDefinitions();
 
     for (const { file, type, buildSystem } of workspaceFiles) {
@@ -997,19 +1035,24 @@ target/`;
   /**
    * Check for package.json with workspaces configuration
    */
-  private checkPackageJsonWorkspace(projectPath: string): ProjectInfo['workspace'] | null {
+  private checkPackageJsonWorkspace(
+    projectPath: string
+  ): ProjectInfo['workspace'] | null {
     const packageJsonPath = path.join(projectPath, PACKAGE_JSON_FILENAME);
     if (!fs.existsSync(packageJsonPath)) {
       return null;
     }
 
     try {
-      const packageJson = JSON.parse(
-        fs.readFileSync(packageJsonPath, 'utf8'),
-      );
-      
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
       if (packageJson.workspaces) {
-        return this.createWorkspaceInfo(projectPath, PACKAGE_JSON_FILENAME, 'monorepo', 'pnpm');
+        return this.createWorkspaceInfo(
+          projectPath,
+          PACKAGE_JSON_FILENAME,
+          'monorepo',
+          'pnpm'
+        );
       }
     } catch (error) {
       logger.warn('Failed to parse package.json:', error);
@@ -1021,7 +1064,9 @@ target/`;
   /**
    * Check if this is part of a larger monorepo by walking up
    */
-  private checkForParentMonorepo(projectPath: string): ProjectInfo['workspace'] | null {
+  private checkForParentMonorepo(
+    projectPath: string
+  ): ProjectInfo['workspace'] | null {
     const monorepoRoot = this.findMonorepoRoot(projectPath);
     if (!monorepoRoot || monorepoRoot === projectPath) {
       return null;
@@ -1050,7 +1095,11 @@ target/`;
   ): ProjectInfo['workspace'] {
     const structure = this.analyzeProjectStructure(projectPath);
     const subProjects = this.detectSubProjects(projectPath, buildSystem);
-    const isComplex = this.isComplexWorkspace(structure, subProjects, buildSystem);
+    const isComplex = this.isComplexWorkspace(
+      structure,
+      subProjects,
+      buildSystem
+    );
 
     return {
       type: isComplex ? 'complex' : type,
@@ -1069,18 +1118,19 @@ target/`;
     subProjects: ReturnType<typeof this.detectSubProjects>,
     buildSystem: string
   ): boolean {
-    return !!
-      (structure?.hasServices ||
+    return !!(
+      structure?.hasServices ||
       structure?.hasDomains ||
       (subProjects && subProjects.length > 10) ||
-      buildSystem === 'bazel');
+      buildSystem === 'bazel'
+    );
   }
 
   /**
    * Analyze project structure to detect services/domains/apps/packages
    */
   private analyzeProjectStructure(
-    projectPath: string,
+    projectPath: string
   ): NonNullable<ProjectInfo['workspace']>['structure'] {
     const structure = {
       hasServices: false,
@@ -1108,28 +1158,28 @@ target/`;
       const dirPath = path.join(projectPath, dir);
       if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
         switch (dir) {
-        case 'services':
-          structure.hasServices = true;
-          break;
-        case 'domains':
-          structure.hasDomains = true;
-          break;
-        case 'monolib':
-        case 'shared':
-        case 'common':
-          structure.hasMonolib = true;
-          break;
-        case 'apps':
-          structure.hasApps = true;
-          break;
-        case 'packages':
-          structure.hasPackages = true;
-          break;
-        case 'libs':
-          structure.hasLibs = true;
-          break;
-        default:
-          structure.customDirs?.push(dir);
+          case 'services':
+            structure.hasServices = true;
+            break;
+          case 'domains':
+            structure.hasDomains = true;
+            break;
+          case 'monolib':
+          case 'shared':
+          case 'common':
+            structure.hasMonolib = true;
+            break;
+          case 'apps':
+            structure.hasApps = true;
+            break;
+          case 'packages':
+            structure.hasPackages = true;
+            break;
+          case 'libs':
+            structure.hasLibs = true;
+            break;
+          default:
+            structure.customDirs?.push(dir);
         }
       }
     }
@@ -1142,7 +1192,7 @@ target/`;
    */
   private detectSubProjects(
     projectPath: string,
-    buildSystem: NonNullable<ProjectInfo['workspace']>['buildSystem'],
+    buildSystem: NonNullable<ProjectInfo['workspace']>['buildSystem']
   ): NonNullable<ProjectInfo['workspace']>['subProjects'] {
     const subProjects: NonNullable<ProjectInfo['workspace']>['subProjects'] =
       [];
@@ -1170,7 +1220,7 @@ target/`;
    */
   private scanBazelTargets(
     projectPath: string,
-    subProjects: NonNullable<ProjectInfo['workspace']>['subProjects'],
+    subProjects: NonNullable<ProjectInfo['workspace']>['subProjects']
   ): void {
     const dirs = ['services', 'domains', 'apps', 'libs', 'tools'];
 
@@ -1179,11 +1229,12 @@ target/`;
       if (fs.existsSync(dirPath)) {
         this.walkDirectory(dirPath, (filePath) => {
           if (
-            path.basename(filePath) === 'BUILD'||path.basename(filePath) ==='BUILD.bazel'
+            path.basename(filePath) === 'BUILD' ||
+            path.basename(filePath) === 'BUILD.bazel'
           ) {
             const relativePath = path.relative(
               projectPath,
-              path.dirname(filePath),
+              path.dirname(filePath)
             );
             const name = path.basename(path.dirname(filePath));
             subProjects?.push({
@@ -1202,7 +1253,7 @@ target/`;
    */
   private scanNxProjects(
     projectPath: string,
-    subProjects: NonNullable<ProjectInfo['workspace']>['subProjects'],
+    subProjects: NonNullable<ProjectInfo['workspace']>['subProjects']
   ): void {
     const dirs = ['apps', 'libs', 'packages'];
 
@@ -1213,7 +1264,7 @@ target/`;
           if (path.basename(filePath) === 'project.json') {
             const relativePath = path.relative(
               projectPath,
-              path.dirname(filePath),
+              path.dirname(filePath)
             );
             const name = path.basename(path.dirname(filePath));
             subProjects?.push({
@@ -1232,7 +1283,7 @@ target/`;
    */
   private scanStandardProjects(
     projectPath: string,
-    subProjects: NonNullable<ProjectInfo['workspace']>['subProjects'],
+    subProjects: NonNullable<ProjectInfo['workspace']>['subProjects']
   ): void {
     const dirs = [
       'apps',
@@ -1279,7 +1330,7 @@ target/`;
             if (projectFiles.includes(fileName)) {
               const relativePath = path.relative(
                 projectPath,
-                path.dirname(filePath),
+                path.dirname(filePath)
               );
               const name = path.basename(path.dirname(filePath));
               subProjects?.push({
@@ -1289,7 +1340,7 @@ target/`;
               });
             }
           },
-          2,
+          2
         ); // Limit depth to avoid going too deep
       }
     }
@@ -1302,7 +1353,7 @@ target/`;
     dirPath: string,
     callback: (filePath: string) => void,
     maxDepth = 3,
-    currentDepth = 0,
+    currentDepth = 0
   ): void {
     if (currentDepth >= maxDepth) {
       return;
@@ -1335,7 +1386,7 @@ target/`;
    */
   private inferProjectType(
     relativePath: string,
-    parentDir: string,
+    parentDir: string
   ): ProjectType {
     // Direct parent directory mapping using Map for reduced complexity
     const parentDirMap = new Map<string, ProjectType>([
@@ -1373,7 +1424,7 @@ target/`;
 
   private inferTypeFromPackageName(
     packageName: string,
-    relativePath: string,
+    relativePath: string
   ): ProjectType {
     // Check package name patterns
     const typePatterns = [
@@ -1385,9 +1436,14 @@ target/`;
     ];
 
     for (const { type, patterns } of typePatterns) {
-      if (patterns.some(pattern =>
-        packageName.endsWith(pattern)||packageName.includes(pattern)||relativePath.includes(pattern),
-      )) {
+      if (
+        patterns.some(
+          (pattern) =>
+            packageName.endsWith(pattern) ||
+            packageName.includes(pattern) ||
+            relativePath.includes(pattern)
+        )
+      ) {
         return type;
       }
     }
@@ -1399,11 +1455,12 @@ target/`;
    * Find the monorepo root by walking up from a given path
    * Enhanced to support Bazel and other build systems
    */
-  private findMonorepoRoot(startPath: string): string|null {
+  private findMonorepoRoot(startPath: string): string | null {
     let currentPath = path.resolve(startPath);
 
     while (currentPath !== path.dirname(currentPath)) {
-      const workspaceFiles = ['pnpm-workspace.yaml',
+      const workspaceFiles = [
+        'pnpm-workspace.yaml',
         'lerna.json',
         'rush.json',
         'nx.json',
@@ -1427,7 +1484,7 @@ target/`;
       if (fs.existsSync(packageJsonPath)) {
         try {
           const packageJson = JSON.parse(
-            fs.readFileSync(packageJsonPath, 'utf8'),
+            fs.readFileSync(packageJsonPath, 'utf8')
           );
           if (packageJson.workspaces) {
             return currentPath;
@@ -1446,9 +1503,9 @@ target/`;
   /**
    * Detect git remote URL
    */
-  private detectGitRemote(projectPath: string): string|undefined {
+  private detectGitRemote(projectPath: string): string | undefined {
     try {
-      const gitConfigPath = path.join(projectPath,'.git', 'config');
+      const gitConfigPath = path.join(projectPath, '.git', 'config');
       if (fs.existsSync(gitConfigPath)) {
         const gitConfig = fs.readFileSync(gitConfigPath, 'utf8');
         const remoteMatch = gitConfig.match(/\[remote "origin"]\s*url = (.+)/);
@@ -1466,8 +1523,8 @@ target/`;
    * Find project root for current working directory with intelligent monorepo detection
    */
   findProjectRoot(
-    startPath: string = process.cwd(),
-  ): { projectId: string; projectPath: string; configPath: string }|null {
+    startPath: string = process.cwd()
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     // First check if we have a registered project for this path or any parent path
     let currentPath = path.resolve(startPath);
 
@@ -1491,8 +1548,8 @@ target/`;
    * Smart project discovery that handles both monorepo and package-level projects
    */
   private smartProjectDiscovery(
-    startPath: string,
-  ): { projectId: string; projectPath: string; configPath: string }|null {
+    startPath: string
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     const resolvedStartPath = path.resolve(startPath);
 
     // Step 1: Find if we're in a monorepo
@@ -1503,7 +1560,7 @@ target/`;
       const monorepoProject = this.getProject(monorepoRoot);
       if (monorepoProject) {
         logger.debug(
-          `Found existing monorepo project: ${monorepoProject.name} (${monorepoProject.id})`,
+          `Found existing monorepo project: ${monorepoProject.name} (${monorepoProject.id})`
         );
         return {
           projectId: monorepoProject.id,
@@ -1527,7 +1584,7 @@ target/`;
             this.registerMonorepoProject(monorepoRoot);
           if (monorepoProjectResult) {
             logger.info(
-              `Registered monorepo root, but working in package: ${path.relative(monorepoRoot, resolvedStartPath)}`,
+              `Registered monorepo root, but working in package: ${path.relative(monorepoRoot, resolvedStartPath)}`
             );
             return monorepoProjectResult;
           }
@@ -1546,8 +1603,8 @@ target/`;
    * Register a monorepo project
    */
   private registerMonorepoProject(
-    monorepoRoot: string,
-  ): { projectId: string; projectPath: string; configPath: string }|null {
+    monorepoRoot: string
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     try {
       // Use synchronous registration for immediate return
       const projectId = this.registerProjectSync(monorepoRoot, {
@@ -1556,7 +1613,7 @@ target/`;
       });
 
       logger.info(
-        `Registered monorepo project: ${path.basename(monorepoRoot)} (${projectId})`,
+        `Registered monorepo project: ${path.basename(monorepoRoot)} (${projectId})`
       );
 
       return {
@@ -1589,13 +1646,16 @@ target/`;
       // 4. Is a published package
       const hasSignificantScripts =
         packageJson.scripts &&
-        (packageJson.scripts.build||packageJson.scripts.test||packageJson.scripts.dev||packageJson.scripts.start);
+        (packageJson.scripts.build ||
+          packageJson.scripts.test ||
+          packageJson.scripts.dev ||
+          packageJson.scripts.start);
 
       const hasDependencies =
-        packageJson.dependencies||packageJson.devDependencies;
-      const isPublishable = !packageJson.private||packageJson.publishConfig;
+        packageJson.dependencies || packageJson.devDependencies;
+      const isPublishable = !packageJson.private || packageJson.publishConfig;
 
-      return !!(hasSignificantScripts||hasDependencies||isPublishable);
+      return !!(hasSignificantScripts || hasDependencies || isPublishable);
     } catch {
       return false;
     }
@@ -1605,12 +1665,13 @@ target/`;
    * Traditional project discovery for non-monorepo projects
    */
   private traditionalProjectDiscovery(
-    startPath: string,
-  ): { projectId: string; projectPath: string; configPath: string }|null {
+    startPath: string
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     let currentPath = startPath;
 
     while (currentPath !== path.dirname(currentPath)) {
-      const indicators = ['.git',
+      const indicators = [
+        '.git',
         PACKAGE_JSON_FILENAME, // Node.js/TypeScript/React Native
         'CLAUDE.md',
         '.claude',
@@ -1625,7 +1686,7 @@ target/`;
       ];
 
       const hasIndicator = indicators.some((indicator) =>
-        fs.existsSync(path.join(currentPath, indicator)),
+        fs.existsSync(path.join(currentPath, indicator))
       );
 
       if (hasIndicator) {
@@ -1656,7 +1717,7 @@ target/`;
    */
   async removeProject(
     idOrPath: string,
-    options: { deleteDatabase?: boolean } = {},
+    options: { deleteDatabase?: boolean } = {}
   ): Promise<boolean> {
     const registry = this.loadRegistry();
     const project = this.getProject(idOrPath);
@@ -1676,7 +1737,9 @@ target/`;
         logger.info(`Deleted project database directory: ${projectDir}`);
       } catch {
         // Directory doesn't exist or can't be deleted, that's okay
-        logger.debug(`Project directory not found or couldn't be deleted: ${projectDir}`);
+        logger.debug(
+          `Project directory not found or couldn't be deleted: ${projectDir}`
+        );
       }
     }
 
@@ -1689,7 +1752,7 @@ target/`;
    */
   async updateProject(
     idOrPath: string,
-    updates: Partial<Omit<ProjectInfo, 'id' | 'createdAt'>>,
+    updates: Partial<Omit<ProjectInfo, 'id' | 'createdAt'>>
   ): Promise<boolean> {
     const registry = this.loadRegistry();
     const project = this.getProject(idOrPath);

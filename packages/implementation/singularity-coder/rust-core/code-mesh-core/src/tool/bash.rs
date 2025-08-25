@@ -338,6 +338,17 @@ impl BashTool {
         environment: &Option<HashMap<String, String>>,
         ctx: &ToolContext,
     ) -> Result<CommandExecutionResult, ToolError> {
+        #[cfg(target_arch = "wasm32")]
+        {
+            // WASM doesn't support command execution
+            let _ = (command, working_dir, timeout_ms, environment, ctx);
+            return Err(ToolError::ExecutionFailed(
+                "Command execution not supported in WASM environment".to_string()
+            ));
+        }
+        
+        #[cfg(not(target_arch = "wasm32"))]
+        {
         let start_time = std::time::Instant::now();
         
         // Build command based on platform
@@ -422,6 +433,7 @@ impl BashTool {
             truncated,
             execution_time_ms: execution_time,
         })
+        } // End of not(target_arch = "wasm32") block
     }
     
     /// Create platform-appropriate command
@@ -474,25 +486,6 @@ impl RiskLevel {
     }
 }
 
-#[cfg(feature = "wasm")]
-mod wasm_impl {
-    use super::*;
-    
-    impl BashTool {
-        async fn execute_command(
-            &self,
-            _command: &str,
-            _working_dir: &Path,
-            _timeout_ms: u64,
-            _environment: &Option<HashMap<String, String>>,
-            _ctx: &ToolContext,
-        ) -> Result<CommandExecutionResult, ToolError> {
-            Err(ToolError::ExecutionFailed(
-                "Command execution not supported in WASM environment".to_string()
-            ))
-        }
-    }
-}
 
 #[cfg(test)]
 mod tests {

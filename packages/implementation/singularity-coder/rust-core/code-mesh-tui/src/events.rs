@@ -40,6 +40,12 @@ pub struct EventHandler {
     _event_tx: mpsc::UnboundedSender<AppEvent>,
 }
 
+impl Default for EventHandler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EventHandler {
     /// Create a new event handler
     pub fn new() -> Self {

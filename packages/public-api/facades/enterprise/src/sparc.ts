@@ -25,9 +25,26 @@ const logger = getLogger('sparc-facade');
 // ============================================================================
 
 // Core SPARC types - Export from real package when available
-export type SPARCPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
-export type ProjectComplexity = 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
-export type ProjectDomain = 'swarm-coordination' | 'neural-networks' | 'wasm-integration' | 'rest-api' | 'memory-systems' | 'interfaces' | 'general';
+export type SPARCPhase =
+  | 'specification'
+  | 'pseudocode'
+  | 'architecture'
+  | 'refinement'
+  | 'completion';
+export type ProjectComplexity =
+  | 'simple'
+  | 'moderate'
+  | 'high'
+  | 'complex'
+  | 'enterprise';
+export type ProjectDomain =
+  | 'swarm-coordination'
+  | 'neural-networks'
+  | 'wasm-integration'
+  | 'rest-api'
+  | 'memory-systems'
+  | 'interfaces'
+  | 'general';
 
 // Re-export all SPARC types from implementation package
 export type {
@@ -36,7 +53,7 @@ export type {
   SPARCPhaseResult,
   ProjectScope,
   ArchitecturalDecision,
-  QualityMetrics
+  QualityMetrics,
 } from '@claude-zen/sparc';
 
 // =============================================================================
@@ -53,7 +70,9 @@ export const createSPARCMethodology = async (config?: any) => {
     return new SPARCMethodology(config);
   } catch (error) {
     logger.error('SPARC package not available:', error);
-    throw new Error('SPARC methodology not available - @claude-zen/sparc package required');
+    throw new Error(
+      'SPARC methodology not available - @claude-zen/sparc package required'
+    );
   }
 };
 
@@ -67,7 +86,9 @@ export const getSPARCEngine = async (config?: any) => {
     return createSPARCEngine(config);
   } catch (error) {
     logger.error('SPARC package not available:', error);
-    throw new Error('SPARC engine not available - @claude-zen/sparc package required');
+    throw new Error(
+      'SPARC engine not available - @claude-zen/sparc package required'
+    );
   }
 };
 
@@ -81,7 +102,9 @@ export const createSPARCProject = async (projectConfig: any) => {
     return createProject(projectConfig);
   } catch (error) {
     logger.error('SPARC package not available:', error);
-    throw new Error('SPARC project creation not available - @claude-zen/sparc package required');
+    throw new Error(
+      'SPARC project creation not available - @claude-zen/sparc package required'
+    );
   }
 };
 
@@ -94,7 +117,9 @@ export const analyzeSPARCComplexity = async (requirements: string) => {
     const { analyzeComplexity } = await import('@claude-zen/sparc');
     return analyzeComplexity(requirements);
   } catch (error) {
-    throw new Error('SPARC complexity analysis not available - @claude-zen/sparc package required');
+    throw new Error(
+      'SPARC complexity analysis not available - @claude-zen/sparc package required'
+    );
   }
 };
 
@@ -103,7 +128,9 @@ export const generateSPARCPhases = async (projectScope: any) => {
     const { generatePhases } = await import('@claude-zen/sparc');
     return generatePhases(projectScope);
   } catch (error) {
-    throw new Error('SPARC phase generation not available - @claude-zen/sparc package required');
+    throw new Error(
+      'SPARC phase generation not available - @claude-zen/sparc package required'
+    );
   }
 };
 
@@ -114,6 +141,8 @@ export const generateSPARCPhases = async (projectScope: any) => {
 // Legacy SPARCMethodology class removed - use createSPARCMethodology() function
 export const SPARCMethodology = class {
   constructor() {
-    throw new Error('SPARCMethodology class removed - use createSPARCMethodology() function');
+    throw new Error(
+      'SPARCMethodology class removed - use createSPARCMethodology() function'
+    );
   }
 };

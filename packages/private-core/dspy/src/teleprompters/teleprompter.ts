@@ -19,7 +19,7 @@ export interface CompileOptions {
   /** Validation dataset (optional) */
   valset?: Example[];
   /** Teacher program (optional) */
-  teacher?: DSPyModule|DSPyModule[];
+  teacher?: DSPyModule | DSPyModule[];
   /** Additional compilation parameters */
   [key: string]: any;
 }
@@ -83,7 +83,7 @@ export abstract class Teleprompter {
     config: {
       trainset: Example[];
       teacher?: DSPyModule | null;
-      valset?: Example[]|null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule>;
@@ -96,7 +96,7 @@ export abstract class Teleprompter {
     // Return all enumerable properties (matches Python __dict__)
     const params: Record<string, any> = {};
     for (const key in this) {
-      if (this.hasOwnProperty(key) && typeof this[key] !=='function') {
+      if (this.hasOwnProperty(key) && typeof this[key] !== 'function') {
         params[key] = this[key];
       }
     }

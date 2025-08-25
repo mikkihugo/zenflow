@@ -7,24 +7,24 @@ use crate::{Error, Result};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-#[cfg(feature = "native")]
+#[cfg(not(target_arch = "wasm32"))]
 use tokio::sync::{Mutex as TokioMutex, RwLock as TokioRwLock};
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 use parking_lot::{Mutex as ParkingMutex, RwLock as ParkingRwLock};
 
 /// Cross-platform async mutex
-#[cfg(feature = "native")]
+#[cfg(not(target_arch = "wasm32"))]
 pub type AsyncMutex<T> = TokioMutex<T>;
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 pub type AsyncMutex<T> = ParkingMutex<T>;
 
 /// Cross-platform async read-write lock
-#[cfg(feature = "native")]
+#[cfg(not(target_arch = "wasm32"))]
 pub type AsyncRwLock<T> = TokioRwLock<T>;
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 pub type AsyncRwLock<T> = ParkingRwLock<T>;
 
 /// Debouncer for rate-limiting operations
@@ -43,7 +43,7 @@ impl Debouncer {
     }
 
     /// Execute a function with debouncing
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn execute<F, Fut, T>(&self, f: F) -> Result<Option<T>>
     where
         F: FnOnce() -> Fut,
@@ -65,7 +65,7 @@ impl Debouncer {
     }
 
     /// Execute a function with debouncing (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn execute<F, Fut, T>(&self, f: F) -> Result<Option<T>>
     where
         F: FnOnce() -> Fut,
@@ -87,7 +87,7 @@ impl Debouncer {
     }
 
     /// Check if enough time has passed since the last execution
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn should_execute(&self) -> bool {
         let now = Instant::now();
         let last_exec = self.last_execution.lock().await;
@@ -100,7 +100,7 @@ impl Debouncer {
     }
 
     /// Check if enough time has passed since the last execution (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn should_execute(&self) -> bool {
         let now = Instant::now();
         let last_exec = self.last_execution.lock();
@@ -133,7 +133,7 @@ impl RateLimiter {
     }
 
     /// Try to acquire a token (non-blocking)
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn try_acquire(&self, tokens: f64) -> bool {
         self.refill_tokens().await;
         
@@ -147,7 +147,7 @@ impl RateLimiter {
     }
 
     /// Try to acquire a token (non-blocking, WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn try_acquire(&self, tokens: f64) -> bool {
         self.refill_tokens().await;
         
@@ -161,7 +161,7 @@ impl RateLimiter {
     }
 
     /// Acquire a token (blocking until available)
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn acquire(&self, tokens: f64) -> Result<()> {
         loop {
             if self.try_acquire(tokens).await {
@@ -175,7 +175,7 @@ impl RateLimiter {
     }
 
     /// Acquire a token (blocking until available, WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn acquire(&self, tokens: f64) -> Result<()> {
         loop {
             if self.try_acquire(tokens).await {
@@ -190,7 +190,7 @@ impl RateLimiter {
     }
 
     /// Refill tokens based on elapsed time
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     async fn refill_tokens(&self) {
         let now = Instant::now();
         let mut last_refill = self.last_refill.lock().await;
@@ -205,7 +205,7 @@ impl RateLimiter {
     }
 
     /// Refill tokens based on elapsed time (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     async fn refill_tokens(&self) {
         let now = Instant::now();
         let mut last_refill = self.last_refill.lock();
@@ -220,14 +220,14 @@ impl RateLimiter {
     }
 
     /// Get current token count
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn tokens(&self) -> f64 {
         self.refill_tokens().await;
         *self.tokens.lock().await
     }
 
     /// Get current token count (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn tokens(&self) -> f64 {
         self.refill_tokens().await;
         *self.tokens.lock()
@@ -267,7 +267,7 @@ impl CircuitBreaker {
     }
 
     /// Execute a function with circuit breaker protection
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn execute<F, Fut, T>(&self, f: F) -> Result<T>
     where
         F: FnOnce() -> Fut,
@@ -310,7 +310,7 @@ impl CircuitBreaker {
     }
 
     /// Execute a function with circuit breaker protection (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn execute<F, Fut, T>(&self, f: F) -> Result<T>
     where
         F: FnOnce() -> Fut,
@@ -353,7 +353,7 @@ impl CircuitBreaker {
     }
 
     /// Handle successful execution
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     async fn on_success(&self) {
         let state = *self.state.lock().await;
         match state {
@@ -373,7 +373,7 @@ impl CircuitBreaker {
     }
 
     /// Handle successful execution (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     async fn on_success(&self) {
         let state = *self.state.lock();
         match state {
@@ -393,7 +393,7 @@ impl CircuitBreaker {
     }
 
     /// Handle failed execution
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     async fn on_failure(&self) {
         let mut failure_count = self.failure_count.lock().await;
         *failure_count += 1;
@@ -405,7 +405,7 @@ impl CircuitBreaker {
     }
 
     /// Handle failed execution (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     async fn on_failure(&self) {
         let mut failure_count = self.failure_count.lock();
         *failure_count += 1;
@@ -417,13 +417,13 @@ impl CircuitBreaker {
     }
 
     /// Get current circuit state
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn state(&self) -> CircuitState {
         *self.state.lock().await
     }
 
     /// Get current circuit state (WASM version)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn state(&self) -> CircuitState {
         *self.state.lock()
     }
@@ -441,7 +441,7 @@ impl TimeoutWrapper {
     }
 
     /// Execute a function with timeout
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn execute<F, Fut, T>(&self, f: F) -> Result<T>
     where
         F: FnOnce() -> Fut,
@@ -454,7 +454,7 @@ impl TimeoutWrapper {
     }
 
     /// Execute a function with timeout (WASM version - simplified)
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn execute<F, Fut, T>(&self, f: F) -> Result<T>
     where
         F: FnOnce() -> Fut,
@@ -469,7 +469,7 @@ impl TimeoutWrapper {
 mod tests {
     use super::*;
 
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     #[tokio::test]
     async fn test_debouncer() {
         let debouncer = Debouncer::new(Duration::from_millis(100));
@@ -500,7 +500,7 @@ mod tests {
         assert_eq!(result, Some(2));
     }
 
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     #[tokio::test]
     async fn test_rate_limiter() {
         let limiter = RateLimiter::new(2.0, 1.0); // 2 tokens, refill 1 per second
@@ -519,7 +519,7 @@ mod tests {
         assert!(limiter.try_acquire(1.0).await);
     }
 
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     #[tokio::test]
     async fn test_circuit_breaker() {
         let breaker = CircuitBreaker::new(2, 1, Duration::from_millis(100));

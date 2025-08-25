@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from "@claude-zen/foundation"
 import { App } from "../app/app"
 import { Config } from "../config/config"
 import { mergeDeep, sortBy } from "remeda"

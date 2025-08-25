@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Configuration for the TUI application
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Config {
     /// Theme configuration
     pub theme: ThemeConfig,
@@ -16,17 +16,6 @@ pub struct Config {
     pub diff: DiffConfig,
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            theme: ThemeConfig::default(),
-            keybinds: KeybindConfig::default(),
-            file_viewer: FileViewerConfig::default(),
-            chat: ChatConfig::default(),
-            diff: DiffConfig::default(),
-        }
-    }
-}
 
 /// Theme configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -107,6 +96,8 @@ pub struct FileViewerConfig {
     pub show_line_numbers: bool,
     /// Word wrapping
     pub word_wrap: bool,
+    /// Default style for diff viewer
+    pub default_style: DiffStyle,
 }
 
 impl Default for FileViewerConfig {
@@ -116,6 +107,7 @@ impl Default for FileViewerConfig {
             syntax_highlighting: true,
             show_line_numbers: true,
             word_wrap: false,
+            default_style: DiffStyle::Unified,
         }
     }
 }

@@ -63,7 +63,12 @@ export interface PluginContext {
 /**
  * DSPy teleprompter types and configurations
  */
-export type TeleprompterType = 'BootstrapFewShot' | 'COPRO' | 'MIPRO' | 'Ensemble' | 'MIPROv2';
+export type TeleprompterType =
+  | 'BootstrapFewShot'
+  | 'COPRO'
+  | 'MIPRO'
+  | 'Ensemble'
+  | 'MIPROv2';
 
 /**
  * DSPy optimization configuration

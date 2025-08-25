@@ -1,5 +1,5 @@
 use anyhow::Result;
-use code_mesh_tui::{App, Config};
+use code_mesh_tui::{MinimalApp, Config};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -10,7 +10,7 @@ async fn main() -> Result<()> {
     let config = Config::load_or_default();
     
     // Create and run the application
-    let mut app = App::new(config).await?;
+    let mut app = MinimalApp::new(&config).await?;
     app.run().await?;
     
     Ok(())

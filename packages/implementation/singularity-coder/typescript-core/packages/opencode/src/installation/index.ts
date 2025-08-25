@@ -1,6 +1,6 @@
 import path from "path"
 import { $ } from "bun"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { NamedError } from "../util/error"
 import { Bus } from "../bus"
 import { Log } from "../util/log"

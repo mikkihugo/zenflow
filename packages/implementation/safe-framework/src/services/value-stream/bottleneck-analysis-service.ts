@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, subDays, differenceInHours } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, subDays, differenceInHours } = dateFns;
 import {
   groupBy,
   map,
@@ -367,7 +366,7 @@ export class BottleneckAnalysisService {
         )
       ) {
         bottlenecks.push({
-          bottleneckId: `bottleneck-${nanoid(8)}`,`
+          bottleneckId: `bottleneck-${generateNanoId(8)}`,`
           stage: stageName,
           type: this.determineBottleneckType(
             cycleTimeMetrics,
@@ -427,7 +426,7 @@ export class BottleneckAnalysisService {
     );
 
     return {
-      analysisId: `root-cause-${nanoid(12)}`,`
+      analysisId: `root-cause-${generateNanoId(12)}`,`
       primaryCause,
       secondaryCauses,
       causalChain,
@@ -449,7 +448,7 @@ export class BottleneckAnalysisService {
     );
 
     return {
-      assessmentId: `impact-${nanoid(8)}`,`
+      assessmentId: `impact-${generateNanoId(8)}`,`
       financialImpact: {
         delayedRevenue: totalCycleTime * 1000, // Simplified calculation
         additionalCosts: totalQueueLength * 500,
@@ -493,7 +492,7 @@ export class BottleneckAnalysisService {
       // Resource constraint factors
       if (bottleneck.utilizationMetrics.utilization > 90) {
         factors.push({
-          factorId: `factor-${nanoid(8)}`,`
+          factorId: `factor-${generateNanoId(8)}`,`
           description: `High utilization in ${bottleneck.stage}`,`
           type: FactorType.RESOURCE_CONSTRAINT,
           weight: 85,
@@ -511,7 +510,7 @@ export class BottleneckAnalysisService {
       // Process inefficiency factors
       if (bottleneck.cycleTime.variance > bottleneck.cycleTime.average * 0.5) {
         factors.push({
-          factorId: `factor-${nanoid(8)}`,`
+          factorId: `factor-${generateNanoId(8)}`,`
           description: `High cycle time variance in ${bottleneck.stage}`,`
           type: FactorType.PROCESS_INEFFICIENCY,
           weight: 70,
@@ -537,7 +536,7 @@ export class BottleneckAnalysisService {
       switch (bottleneck.type) {
         case BottleneckType.CAPACITY:
           recommendations.push({
-            recommendationId: `rec-${nanoid(8)}`,`
+            recommendationId: `rec-${generateNanoId(8)}`,`
             title: `Increase capacity in ${bottleneck.stage}`,`
             description:
               'Add additional resources or optimize resource allocation',
@@ -554,7 +553,7 @@ export class BottleneckAnalysisService {
 
         case BottleneckType.PROCESS:
           recommendations.push({
-            recommendationId: `rec-${nanoid(8)}`,`
+            recommendationId: `rec-${generateNanoId(8)}`,`
             title: `Optimize process in ${bottleneck.stage}`,`
             description: 'Streamline and standardize the current process',
             priority: this.mapSeverityToPriority(bottleneck.severity),
@@ -570,7 +569,7 @@ export class BottleneckAnalysisService {
 
         case BottleneckType.DEPENDENCY:
           recommendations.push({
-            recommendationId: `rec-${nanoid(8)}`,`
+            recommendationId: `rec-${generateNanoId(8)}`,`
             title: `Resolve dependencies for ${bottleneck.stage}`,`
             description:
               'Address external dependencies and coordination issues',
@@ -683,7 +682,7 @@ export class BottleneckAnalysisService {
   private analyzeSeasonality(stageData: any[]): SeasonalityPattern[] {
     return [
       {
-        patternId: `pattern-${nanoid(6)}`,`
+        patternId: `pattern-${generateNanoId(6)}`,`
         type: 'weekly',
         strength: 0.3,
         phase: 'monday',
@@ -732,9 +731,9 @@ export class BottleneckAnalysisService {
   // Stub implementations for remaining private methods
   private createEmptyRootCauseAnalysis(): RootCauseAnalysis {
     return {
-      analysisId: `empty-${nanoid(8)}`,`
+      analysisId: `empty-${generateNanoId(8)}`,`
       primaryCause: {
-        causeId: `cause-${nanoid(8)}`,`
+        causeId: `cause-${generateNanoId(8)}`,`
         description:'No significant root cause identified',
         category: CauseCategory.PROCESS,
         evidence: [],

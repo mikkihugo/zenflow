@@ -9,5 +9,4 @@ describe('System Utilities', () => {
     const system = await import('../../src/utilities/system');
     expect(system).toBeDefined();
   });
-
 });

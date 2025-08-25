@@ -74,7 +74,7 @@ export interface ExecuteResult {
   /** Number of affected rows */
   affectedRows: number;
   /** Last inserted ID (if applicable) */
-  insertId?: string|number;
+  insertId?: string | number;
   /** Execution time in milliseconds */
   executionTime: number;
 }
@@ -178,7 +178,7 @@ export interface StoreOptions {
   /** Tags for categorization */
   tags?: string[];
   /** Priority level */
-  priority?:'low' | 'medium' | 'high';
+  priority?: 'low' | 'medium' | 'high';
   /** Vector data for similarity search */
   vector?: number[];
 }

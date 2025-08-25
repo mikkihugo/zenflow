@@ -18,8 +18,8 @@
     "prepublishOnly": "pnpm run clean && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "NODE_OPTIONS='--max_old_space_size=12288' eslint . --ext .ts",
+    "lint:fix": "NODE_OPTIONS='--max_old_space_size=12288' eslint . --ext .ts --fix",
     "format": "eslint . --ext .ts --fix",
     "type-check": "tsc --noEmit",
     "docs:check": "node scripts/check-tsdoc.mjs",
@@ -41,14 +41,14 @@
     "@claude-zen/foundation": "workspace:*",
     "@lancedb/lancedb": "^0.21.3",
     "better-sqlite3": "^12.2.0",
-    "kuzu": "^0.11.1"
+    "kuzu": "^0.11.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "22.17.1",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

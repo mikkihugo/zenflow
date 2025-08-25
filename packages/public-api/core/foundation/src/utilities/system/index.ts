@@ -5,15 +5,12 @@
  */
 
 // Specific exports to avoid conflicts
-export { 
+export {
   WorkspaceDetector,
-  getWorkspaceDetector as getWorkspaceDetectorFromMonorepo
+  getWorkspaceDetector as getWorkspaceDetectorFromMonorepo,
 } from './monorepo.detector';
 
-export type {
-  DetectedProject,
-  DetectedWorkspace
-} from './monorepo.detector';
+export type { DetectedProject, DetectedWorkspace } from './monorepo.detector';
 
 export * from './capability.provider';
 
@@ -35,5 +32,5 @@ export {
   getWorkspaceDetector,
   startMonitoring,
   createSystemSummary,
-  checkSystemRequirements
+  checkSystemRequirements,
 } from './environment';

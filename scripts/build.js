@@ -6,7 +6,14 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync, writeFileSync, copyFileSync, readdirSync, statSync } from 'fs';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  copyFileSync,
+  readdirSync,
+  statSync,
+} from 'fs';
 import path from 'path';
 
 console.log('🚀 Building Complete Claude Code Zen Distribution...\n');
@@ -23,26 +30,45 @@ console.log('📦 Step 1: Building ALL packages...');
 try {
   // Build all packages in order
   console.log('   🔧 Building foundation...');
-  execSync('cd packages/public-api/core/foundation && pnpm build --if-present', { stdio: 'inherit' });
-  
+  execSync(
+    'cd packages/public-api/core/foundation && pnpm build --if-present',
+    { stdio: 'inherit' }
+  );
+
   console.log('   🔧 Building facades...');
-  execSync('find packages/public-api/facades -name package.json -execdir pnpm build --if-present \\;', { stdio: 'inherit' });
-  
+  execSync(
+    'find packages/public-api/facades -name package.json -execdir pnpm build --if-present \\;',
+    { stdio: 'inherit' }
+  );
+
   console.log('   🔧 Building implementation packages...');
-  execSync('find packages/implementation -name package.json -execdir pnpm build --if-present \\;', { stdio: 'inherit' });
-  
+  execSync(
+    'find packages/implementation -name package.json -execdir pnpm build --if-present \\;',
+    { stdio: 'inherit' }
+  );
+
   console.log('   🔧 Building enterprise packages...');
-  execSync('find packages/enterprise -name package.json -execdir pnpm build --if-present \\;', { stdio: 'inherit' });
-  
+  execSync(
+    'find packages/enterprise -name package.json -execdir pnpm build --if-present \\;',
+    { stdio: 'inherit' }
+  );
+
   console.log('   🔧 Building private core packages...');
-  execSync('find packages/private-core -name package.json -execdir pnpm build --if-present \\;', { stdio: 'inherit' });
-  
+  execSync(
+    'find packages/private-core -name package.json -execdir pnpm build --if-present \\;',
+    { stdio: 'inherit' }
+  );
+
   console.log('   🔧 Building server...');
-  execSync('cd apps/claude-code-zen-server && pnpm build --if-present', { stdio: 'inherit' });
-  
-  console.log('   🔧 Building web dashboard...');  
-  execSync('cd apps/web-dashboard && pnpm build --if-present', { stdio: 'inherit' });
-  
+  execSync('cd apps/claude-code-zen-server && pnpm build --if-present', {
+    stdio: 'inherit',
+  });
+
+  console.log('   🔧 Building web dashboard...');
+  execSync('cd apps/web-dashboard && pnpm build --if-present', {
+    stdio: 'inherit',
+  });
+
   console.log('   ✅ ALL packages built successfully');
 } catch (error) {
   console.log('   ⚠️ Some builds failed, continuing with available code...');
@@ -112,9 +138,12 @@ if (existsSync('build-wasm.sh')) {
 console.log('📦 Step 4: Creating single executable bundle...');
 // Use NCC to bundle everything into one file
 try {
-  execSync(`npx ncc build ${mainEntry} -o ${bundleDir}/final --minify --no-source-map-register`, {
-    stdio: 'inherit'
-  });
+  execSync(
+    `npx ncc build ${mainEntry} -o ${bundleDir}/final --minify --no-source-map-register`,
+    {
+      stdio: 'inherit',
+    }
+  );
   console.log('   ✅ Complete bundle created');
 } catch (error) {
   console.log('   ❌ NCC bundle failed:', error.message);
@@ -125,9 +154,12 @@ console.log('📦 Step 5: Creating cross-platform binaries...');
 const bundledEntry = `${bundleDir}/final/index.js`;
 if (existsSync(bundledEntry)) {
   try {
-    execSync(`npx @yao-pkg/pkg ${bundledEntry} --targets node22-linux-x64,node22-macos-x64,node22-win-x64 --output ${bundleDir}/claude-zen`, {
-      stdio: 'inherit'
-    });
+    execSync(
+      `npx @yao-pkg/pkg ${bundledEntry} --targets node22-linux-x64,node22-macos-x64,node22-win-x64 --output ${bundleDir}/claude-zen`,
+      {
+        stdio: 'inherit',
+      }
+    );
     console.log('   ✅ PKG binaries created');
   } catch (error) {
     console.log('   ❌ PKG failed:', error.message);
@@ -279,7 +311,9 @@ writeFileSync(`${bundleDir}/README.md`, readme);
 console.log('\n🎉 All-in-One Claude Code Zen build complete!');
 console.log(`📁 Distribution ready in: ${bundleDir}/`);
 console.log('\n📊 What you get:');
-console.log('   ✅ Self-contained binaries (claude-zen-linux, claude-zen-macos, claude-zen-win.exe)');
+console.log(
+  '   ✅ Self-contained binaries (claude-zen-linux, claude-zen-macos, claude-zen-win.exe)'
+);
 console.log('   ✅ Node.js fallback bundle (final/index.js)');
 console.log('   ✅ Smart launchers (claude-zen, claude-zen.cmd)');
 console.log('   ✅ Complete functionality: Auth + Server + Web + WASM');
@@ -287,9 +321,14 @@ console.log('   ✅ All packages bundled in one executable');
 
 // Show file sizes
 try {
-  const files = ['claude-zen-linux', 'claude-zen-macos', 'claude-zen-win.exe', 'final/index.js'];
+  const files = [
+    'claude-zen-linux',
+    'claude-zen-macos',
+    'claude-zen-win.exe',
+    'final/index.js',
+  ];
   console.log('\n📏 File sizes:');
-  files.forEach(file => {
+  files.forEach((file) => {
     const fullPath = `${bundleDir}/${file}`;
     if (existsSync(fullPath)) {
       const stats = statSync(fullPath);

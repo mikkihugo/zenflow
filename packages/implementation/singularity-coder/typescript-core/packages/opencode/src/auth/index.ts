@@ -1,7 +1,7 @@
 import path from "path"
 import { Global } from "../global"
 import fs from "fs/promises"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 
 export namespace Auth {
   export const Oauth = z.object({

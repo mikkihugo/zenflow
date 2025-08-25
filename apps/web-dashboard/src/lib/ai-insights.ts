@@ -18,7 +18,7 @@ export interface AIInsight {
   recommendation: string;
   confidence: number; // 0-100
   timestamp: string;
-  data?: any;
+  data?: unknown;
   actionable: boolean;
   tags: string[];
 }
@@ -45,14 +45,14 @@ export class AIInsightsEngine {
   /**
    * Analyze current system state and generate insights
    */
-  async analyzeSystemState(data: {
-    health?: any;
-    performance?: any;
-    agents?: any[];
-    tasks?: any[];
-    usage?: any;
-  }): Promise<AIAnalysisResult> {
-    const insights = await this.generateInsights(data);
+  analyzeSystemState(data: {
+    health?: Record<string, unknown>;
+    performance?: Record<string, unknown>;
+    agents?: Array<Record<string, unknown>>;
+    tasks?: Array<Record<string, unknown>>;
+    usage?: Record<string, unknown>;
+  }): AIAnalysisResult {
+    const insights = this.generateInsights(data);
     const analysis = this.synthesizeAnalysis(insights, data);
 
     // Store in history
@@ -68,7 +68,7 @@ export class AIInsightsEngine {
   /**
    * Generate AI insights from system data
    */
-  private async generateInsights(data: any): Promise<AIInsight[]> {
+  private generateInsights(data: Record<string, unknown>): AIInsight[] {
     const insights: AIInsight[] = [];
     const timestamp = new Date().toISOString();
 
@@ -106,7 +106,10 @@ export class AIInsightsEngine {
   /**
    * Analyze system performance metrics
    */
-  private analyzePerformance(performance: any, timestamp: string): AIInsight[] {
+  private analyzePerformance(
+    performance: Record<string, unknown>,
+    timestamp: string
+  ): AIInsight[] {
     const insights: AIInsight[] = [];
 
     // CPU Analysis
@@ -184,10 +187,13 @@ export class AIInsightsEngine {
   /**
    * Analyze agent performance and patterns
    */
-  private analyzeAgents(agents: any[], timestamp: string): AIInsight[] {
+  private analyzeAgents(
+    agents: Array<Record<string, unknown>>,
+    timestamp: string
+  ): AIInsight[] {
     const insights: AIInsight[] = [];
     const activeAgents = agents.filter((a) => a.status === 'active');
-    const idleAgents = agents.filter((a) => a.status === 'idle');
+    // const idleAgents = agents.filter((a) => a.status === 'idle'); // Currently unused
     const errorAgents = agents.filter((a) => a.status === 'error');
 
     // Agent Distribution Analysis
@@ -258,11 +264,14 @@ export class AIInsightsEngine {
   /**
    * Analyze task completion patterns
    */
-  private analyzeTasks(tasks: any[], timestamp: string): AIInsight[] {
+  private analyzeTasks(
+    tasks: Array<Record<string, unknown>>,
+    timestamp: string
+  ): AIInsight[] {
     const insights: AIInsight[] = [];
     const completedTasks = tasks.filter((t) => t.status === 'completed');
     const pendingTasks = tasks.filter((t) => t.status === 'pending');
-    const inProgressTasks = tasks.filter((t) => t.status === 'in-progress');
+    // const inProgressTasks = tasks.filter((t) => t.status === 'in-progress'); // Currently unused
 
     // Task Backlog Analysis
     const backlogRatio = pendingTasks.length / tasks.length;
@@ -313,7 +322,10 @@ export class AIInsightsEngine {
   /**
    * Analyze system health indicators
    */
-  private analyzeSystemHealth(health: any, timestamp: string): AIInsight[] {
+  private analyzeSystemHealth(
+    health: Record<string, unknown>,
+    timestamp: string
+  ): AIInsight[] {
     const insights: AIInsight[] = [];
 
     // Uptime Analysis
@@ -362,7 +374,10 @@ export class AIInsightsEngine {
   /**
    * Analyze usage patterns for optimization opportunities
    */
-  private analyzeUsagePatterns(usage: any, timestamp: string): AIInsight[] {
+  private analyzeUsagePatterns(
+    usage: Record<string, unknown>,
+    timestamp: string
+  ): AIInsight[] {
     const insights: AIInsight[] = [];
 
     // Request rate analysis
@@ -406,14 +421,18 @@ export class AIInsightsEngine {
   /**
    * Cross-correlation analysis between different metrics
    */
-  private analyzeCrossCorrelations(data: any, timestamp: string): AIInsight[] {
+  private analyzeCrossCorrelations(
+    data: Record<string, unknown>,
+    timestamp: string
+  ): AIInsight[] {
     const insights: AIInsight[] = [];
 
     // Performance vs Agent correlation
     if (data.performance && data.agents) {
       const activeAgentRatio =
-        data.agents.filter((a: any) => a.status === 'active').length /
-        data.agents.length;
+        data.agents.filter(
+          (a: Record<string, unknown>) => (a.status as string) === 'active'
+        ).length / data.agents.length;
 
       if (data.performance.cpu > 70 && activeAgentRatio > 0.8) {
         insights.push({
@@ -440,8 +459,9 @@ export class AIInsightsEngine {
     // Memory vs Task correlation
     if (data.performance && data.tasks) {
       const inProgressRatio =
-        data.tasks.filter((t: any) => t.status === 'in-progress').length /
-        data.tasks.length;
+        data.tasks.filter(
+          (t: Record<string, unknown>) => (t.status as string) === 'in-progress'
+        ).length / data.tasks.length;
 
       if (data.performance.memory > 80 && inProgressRatio > 0.3) {
         insights.push({
@@ -473,7 +493,7 @@ export class AIInsightsEngine {
    */
   private synthesizeAnalysis(
     insights: AIInsight[],
-    data: any
+    data: Record<string, unknown>
   ): AIAnalysisResult {
     const criticalInsights = insights.filter((i) => i.severity === 'critical');
     const highInsights = insights.filter((i) => i.severity === 'high');
@@ -532,7 +552,7 @@ export class AIInsightsEngine {
   /**
    * Analyze trends (simplified implementation)
    */
-  private analyzeTrends(data: any): {
+  private analyzeTrends(data: Record<string, unknown>): {
     performance: 'improving' | 'stable' | 'declining';
     usage: 'increasing' | 'stable' | 'decreasing';
     efficiency: 'optimized' | 'normal' | 'needs-attention';

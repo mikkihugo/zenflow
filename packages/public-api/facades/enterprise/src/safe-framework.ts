@@ -84,7 +84,7 @@ export class DatabaseSPARCBridge {
 
     try {
       logger.info(
-        'Initializing DatabaseSPARCBridge with real SAFe framework package',
+        'Initializing DatabaseSPARCBridge with real SAFe framework package'
       );
 
       // Try to load real SAFe framework package
@@ -97,11 +97,11 @@ export class DatabaseSPARCBridge {
       this.initialized = true;
 
       logger.info(
-        'DatabaseSPARCBridge initialized successfully with real package',
+        'DatabaseSPARCBridge initialized successfully with real package'
       );
     } catch {
       logger.warn(
-        'Real SAFe framework package not available, using fallback implementation',
+        'Real SAFe framework package not available, using fallback implementation'
       );
       this.realBridge = this.createFallbackBridge();
       this.initialized = true;
@@ -110,7 +110,7 @@ export class DatabaseSPARCBridge {
 
   async assignWork(
     storyId: string,
-    featureContext: any,
+    featureContext: any
   ): Promise<WorkAssignment> {
     if (!this.initialized) {
       await this.initialize();
@@ -124,7 +124,7 @@ export class DatabaseSPARCBridge {
     return {
       id: `work-${Date.now()}`,
       storyId,
-      featureId: featureContext.featureId||'unknown',
+      featureId: featureContext.featureId || 'unknown',
       assignedTo: 'fallback-agent',
       priority: 'medium',
       status: 'pending',
@@ -135,7 +135,7 @@ export class DatabaseSPARCBridge {
 
   async recordImplementation(
     workId: string,
-    result: Partial<ImplementationResult>,
+    result: Partial<ImplementationResult>
   ): Promise<ImplementationResult> {
     if (!this.initialized) {
       await this.initialize();
@@ -143,7 +143,8 @@ export class DatabaseSPARCBridge {
 
     if (
       this.realBridge &&
-      typeof this.realBridge.recordImplementation === 'function') {
+      typeof this.realBridge.recordImplementation === 'function'
+    ) {
       return await this.realBridge.recordImplementation(workId, result);
     }
 
@@ -151,8 +152,8 @@ export class DatabaseSPARCBridge {
     return {
       workAssignmentId: workId,
       success: true,
-      deliverables: result.deliverables||['fallback-deliverable'],
-      qualityMetrics: result.qualityMetrics||{ quality: 0.8 },
+      deliverables: result.deliverables || ['fallback-deliverable'],
+      qualityMetrics: result.qualityMetrics || { quality: 0.8 },
       completedAt: new Date(),
       sparcMetrics: {
         phaseCompletionRate: 0.9,
@@ -183,13 +184,13 @@ export class SafePortfolioManager {
 
   // Method to access the real manager (ensures realManager is used)
   getRealManager() {
-    return this.realManager||{ status:'fallback' };
+    return this.realManager || { status: 'fallback' };
   }
 
   private async initializeManager(config: any) {
     try {
       const safeModule = await import('@claude-zen/safe-framework');
-      const {SafePortfolioManager} = (safeModule as any);
+      const { SafePortfolioManager } = safeModule as any;
       if (SafePortfolioManager) {
         this.realManager = new SafePortfolioManager(config);
       } else {
@@ -225,7 +226,7 @@ export class SafeProgramIncrementManager {
         {} as any,
         {} as any,
         {} as any,
-        config,
+        config
       );
       this.initialized = true;
       logger.debug('ProgramIncrementManager initialized with real package');
@@ -294,7 +295,7 @@ export class SafeValueStreamMapper {
         {} as any,
         {} as any,
         {} as any,
-        config,
+        config
       );
       this.initialized = true;
       logger.debug('ValueStreamMapper initialized with real package');
@@ -367,7 +368,7 @@ export class SafeArchitectureRunwayManager {
       this.realManager = new ArchitectureRunwayManager(
         {} as any,
         {} as any,
-        config,
+        config
       );
       this.initialized = true;
       logger.debug('ArchitectureRunwayManager initialized with real package');

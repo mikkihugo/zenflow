@@ -196,7 +196,6 @@ describe('Logging System - 100% Coverage', () => {
       expect(() => logger.error(new Error('test error'))).not.toThrow();
     });
 
-
     it('should handle various data types', () => {
       expect(() => logger.info('string')).not.toThrow();
       expect(() => logger.info(123)).not.toThrow();

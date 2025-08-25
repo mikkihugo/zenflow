@@ -12,7 +12,7 @@
  * @version 1.0.0
  */
 
-import { z } from 'zod';
+import { z } from '@claude-zen/foundation';
 
 // =============================================================================
 // CORE SAFE DOMAIN SCHEMAS

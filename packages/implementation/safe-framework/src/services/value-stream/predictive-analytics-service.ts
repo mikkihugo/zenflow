@@ -12,16 +12,15 @@
  * @version 1.0.0
  */
 
-import {
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const {
   format,
   addDays,
   addWeeks,
   addMonths,
   differenceInDays,
   subDays,
-} from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+} = dateFns;
 import {
   groupBy,
   map,
@@ -822,7 +821,7 @@ export class PredictiveAnalyticsService {
         timestamp: new Date(),
         horizon: config.predictionHorizon,
         modelInfo: {
-          modelId: `model-${nanoid(8)}`,`
+          modelId: `model-${generateNanoId(8)}`,`
           algorithm: config.modelConfig.algorithm,
           version: '1.0.0',
           trainedOn: new Date(),
@@ -1028,7 +1027,7 @@ export class PredictiveAnalyticsService {
     if (deliveryTimes.length > 10) {
       const trend = this.calculateTrend(deliveryTimes);
       trends.push({
-        trendId: `trend-${nanoid(6)}`,`
+        trendId: `trend-${generateNanoId(6)}`,`
         metric: 'Delivery Time',
         direction: trend.direction,
         strength: trend.strength,
@@ -1047,7 +1046,7 @@ export class PredictiveAnalyticsService {
     if (throughputData.length > 5) {
       const throughputTrend = this.calculateTrend(throughputData);
       trends.push({
-        trendId: `trend-${nanoid(6)}`,`
+        trendId: `trend-${generateNanoId(6)}`,`
         metric: 'Throughput',
         direction: throughputTrend.direction,
         strength: throughputTrend.strength,
@@ -1071,13 +1070,13 @@ export class PredictiveAnalyticsService {
   ): Promise<ScenarioPrediction[]> {
     return [
       {
-        scenarioId: `scenario-${nanoid(8)}`,`
+        scenarioId: `scenario-${generateNanoId(8)}`,`
         name: 'Optimistic Scenario',
         description: 'Best case with all factors favorable',
         probability: 0.2,
         assumptions: [
           {
-            assumptionId: `assumption-${nanoid(6)}`,`
+            assumptionId: `assumption-${generateNanoId(6)}`,`
             description: 'Team capacity increases by 20%',
             parameter: 'team_capacity',
             value: 1.2,
@@ -1100,13 +1099,13 @@ export class PredictiveAnalyticsService {
         },
       },
       {
-        scenarioId: `scenario-${nanoid(8)}`,`
+        scenarioId: `scenario-${generateNanoId(8)}`,`
         name: 'Pessimistic Scenario',
         description: 'Worst case with challenges and delays',
         probability: 0.15,
         assumptions: [
           {
-            assumptionId: `assumption-${nanoid(6)}`,`
+            assumptionId: `assumption-${generateNanoId(6)}`,`
             description: 'Major technical issues arise',
             parameter: 'technical_issues',
             value: true,
@@ -1181,7 +1180,7 @@ export class PredictiveAnalyticsService {
       ],
       validation: [
         {
-          validationId: `val-${nanoid(6)}`,`
+          validationId: `val-${generateNanoId(6)}`,`
           method: ValidationMethod.TRAIN_TEST_SPLIT,
           metric: ValidationMetric.MAE,
           score: 2.1,
@@ -1204,7 +1203,7 @@ export class PredictiveAnalyticsService {
   ): Promise<ValidationResult[]> {
     return [
       {
-        validationId: `val-${nanoid(8)}`,`
+        validationId: `val-${generateNanoId(8)}`,`
         method: config.method,
         metric: ValidationMetric.MAE,
         score: 2.1,
@@ -1212,7 +1211,7 @@ export class PredictiveAnalyticsService {
         passed: true,
       },
       {
-        validationId: `val-${nanoid(8)}`,`
+        validationId: `val-${generateNanoId(8)}`,`
         method: config.method,
         metric: ValidationMetric.R_SQUARED,
         score: 0.82,

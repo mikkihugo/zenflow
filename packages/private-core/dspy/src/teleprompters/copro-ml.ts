@@ -53,12 +53,12 @@ export interface COPROMLConfig {
   useFeedbackAnalysis: boolean;
 
   // Bayesian optimization settings
-  acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement|entropy_search';
+  acquisitionFunction: 'expected_improvement|upper_confidence_bound|probability_improvement|entropy_search';
   initialExplorationBudget: number;
   exploitationThreshold: number;
 
   // Online learning settings
-  onlineLearningAlgorithm:|'perceptron|passive_aggressive|sgd_classifier';
+  onlineLearningAlgorithm: 'perceptron|passive_aggressive|sgd_classifier';
   adaptiveLearningRate: boolean;
   forgettingFactor: number;
 
@@ -69,7 +69,7 @@ export interface COPROMLConfig {
 
   // Feedback analysis
   feedbackWindowSize: number;
-  feedbackAggregationMethod:|'exponential_smoothing|sliding_window|weighted_average';
+  feedbackAggregationMethod: 'exponential_smoothing|sliding_window|weighted_average';
   qualityGates: {
     minAccuracy: number;
     maxLatency: number;
@@ -313,8 +313,8 @@ export class COPROML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule|null;
-      valset?: any[]|null;
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -341,7 +341,8 @@ export class COPROML extends Teleprompter {
     this.adaptationEvents = 0;
 
     try {
-      this.logger.info('Starting COPROML compilation with online learning and drift detection...'
+      this.logger.info(
+        'Starting COPROML compilation with online learning and drift detection...'
       );
 
       // Step 1: Initialize with Bayesian exploration
@@ -466,7 +467,8 @@ export class COPROML extends Teleprompter {
     options: any
   ): Promise<void> {
     this.logger.info(
-      'Starting online learning optimization with drift detection...');
+      'Starting online learning optimization with drift detection...'
+    );
 
     let iterationsWithoutImprovement = 0;
     const maxStagnantIterations = 20;
@@ -546,7 +548,7 @@ export class COPROML extends Teleprompter {
    * Analyze feedback patterns using clustering and temporal analysis
    */
   private async analyzeFeedbackPatterns(): Promise<Pattern[]> {
-    if (!this.config.useFeedbackAnalysis||this.feedbackBuffer.length < 20) {
+    if (!this.config.useFeedbackAnalysis || this.feedbackBuffer.length < 20) {
       return [];
     }
 
@@ -579,7 +581,7 @@ export class COPROML extends Teleprompter {
       await this.patternLearner!.trainPatterns(trainingExamples);
     const patterns = Array.isArray(patternResult)
       ? patternResult
-      : patternResult.patterns||[];
+      : patternResult.patterns || [];
 
     this.logger.info(`Detected ${patterns.length} feedback patterns`);
 
@@ -596,7 +598,8 @@ export class COPROML extends Teleprompter {
       return tests;
     }
 
-    this.logger.info('Validating learning effectiveness with statistical tests...'
+    this.logger.info(
+      'Validating learning effectiveness with statistical tests...'
     );
 
     const accuracyValues = this.optimizationHistory.map(
@@ -725,14 +728,14 @@ export class COPROML extends Teleprompter {
     // Get current best configuration from optimization history
     const bestPoint = this.optimizationHistory.reduce(
       (best, current) => (current.accuracy > best.accuracy ? current : best),
-      this.optimizationHistory[0]||{ accuracy: 0 }
+      this.optimizationHistory[0] || { accuracy: 0 }
     );
 
     return {
       prefix_strength: 0.8, // Mock value
       learning_rate: this.currentLearningRate,
       regularization: 0.01,
-      confidence_threshold: bestPoint?.confidence||0.7,
+      confidence_threshold: bestPoint?.confidence || 0.7,
     };
   }
 
@@ -789,7 +792,7 @@ export class COPROML extends Teleprompter {
   private async processFeedbackBuffer(): Promise<void> {
     // Aggregate feedback using configured method
     switch (this.config.feedbackAggregationMethod) {
-      case'exponential_smoothing':
+      case 'exponential_smoothing':
         await this.processExponentialSmoothing();
         break;
       case 'sliding_window':
@@ -807,7 +810,7 @@ export class COPROML extends Teleprompter {
   private async processExponentialSmoothing(): Promise<void> {
     // Apply exponential smoothing to feedback
     const alpha = 0.3;
-    let smoothedAccuracy = this.feedbackBuffer[0]?.accuracy||0;
+    let smoothedAccuracy = this.feedbackBuffer[0]?.accuracy || 0;
 
     for (let i = 1; i < this.feedbackBuffer.length; i++) {
       smoothedAccuracy =
@@ -852,7 +855,9 @@ export class COPROML extends Teleprompter {
   }
 
   private async triggerQualityGateResponse(): Promise<void> {
-    this.logger.warn('Quality gate violation detected - triggering adaptive response');
+    this.logger.warn(
+      'Quality gate violation detected - triggering adaptive response'
+    );
 
     // Increase exploration
     this.explorationBudget += 5;
@@ -917,7 +922,7 @@ export class COPROML extends Teleprompter {
       convergence: this.getBestAccuracy() > 0.8,
       success: this.getBestAccuracy() > 0.6,
       performance: {
-        duration_ms: Date.now() - (this.startTime?.getTime()||Date.now()),
+        duration_ms: Date.now() - (this.startTime?.getTime() || Date.now()),
         memory_used: 512,
         iterations: this.currentIteration,
       },
@@ -930,7 +935,7 @@ export class COPROML extends Teleprompter {
     }
 
     const avgConfidence =
-      this.feedbackBuffer.reduce((sum, fb) => sum + (fb.prediction||0.5), 0) /
+      this.feedbackBuffer.reduce((sum, fb) => sum + (fb.prediction || 0.5), 0) /
       this.feedbackBuffer.length;
     const avgLatency =
       this.feedbackBuffer.reduce(
@@ -957,7 +962,8 @@ export class COPROML extends Teleprompter {
     }
 
     if (this.currentLearningRate > 0.05) {
-      recommendations.push('Learning rate remains high - system is still adapting, consider extended training'
+      recommendations.push(
+        'Learning rate remains high - system is still adapting, consider extended training'
       );
     }
 

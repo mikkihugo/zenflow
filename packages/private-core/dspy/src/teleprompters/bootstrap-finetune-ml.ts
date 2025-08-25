@@ -54,7 +54,7 @@ export interface BootstrapFinetuneMLConfig {
 
   // Bayesian optimization parameters
   bayesianConfig: {
-    acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement';
+    acquisitionFunction: 'expected_improvement|upper_confidence_bound|probability_improvement';
     kernelType: 'rbf|matern|linear';
     explorationRate: number;
     noiseLevel: number;
@@ -64,7 +64,7 @@ export interface BootstrapFinetuneMLConfig {
   // Multi-objective optimization parameters
   multiObjectiveConfig: {
     objectives: Array<'accuracy|speed|memory|robustness'>;
-    scalarizationMethod:|'weighted_sum|tchebycheff|augmented_tchebycheff';
+    scalarizationMethod: 'weighted_sum|tchebycheff|augmented_tchebycheff';
     weights: number[];
     paretoFrontSize: number;
   };
@@ -197,11 +197,11 @@ export class BootstrapFinetuneML extends Teleprompter {
   private config: BootstrapFinetuneMLConfig;
   private logger: Logger;
   private eventEmitter: EventEmitter = new TypedEventBase();
-  private mlEngine: MLEngine|null = null;
-  private bayesianOptimizer: BayesianOptimizer|null = null;
-  private multiObjectiveOptimizer: MultiObjectiveOptimizer|null = null;
-  private gradientOptimizer: GradientOptimizer|null = null;
-  private statisticalAnalyzer: StatisticalAnalyzer|null = null;
+  private mlEngine: MLEngine | null = null;
+  private bayesianOptimizer: BayesianOptimizer | null = null;
+  private multiObjectiveOptimizer: MultiObjectiveOptimizer | null = null;
+  private gradientOptimizer: GradientOptimizer | null = null;
+  private statisticalAnalyzer: StatisticalAnalyzer | null = null;
 
   private optimizationHistory: Array<{
     iteration: number;
@@ -237,7 +237,7 @@ export class BootstrapFinetuneML extends Teleprompter {
 
       // Bayesian optimization defaults
       bayesianConfig: {
-        acquisitionFunction:'expected_improvement',
+        acquisitionFunction: 'expected_improvement',
         kernelType: 'rbf',
         explorationRate: 0.1,
         noiseLevel: 0.01,
@@ -342,7 +342,9 @@ export class BootstrapFinetuneML extends Teleprompter {
         this.bayesianOptimizer = createBayesianOptimizer(
           this.getHyperparameterBounds()
         );
-        await this.bayesianOptimizer.initialize(this.getHyperparameterBounds())();
+        await this.bayesianOptimizer.initialize(
+          this.getHyperparameterBounds()
+        )();
       }
 
       // Initialize multi-objective optimizer
@@ -400,16 +402,16 @@ export class BootstrapFinetuneML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule|null;
-      valset?: any[]|null;
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const result = await this.compileML(
       student,
-      config.teacher||undefined,
+      config.teacher || undefined,
       config.trainset,
-      config.valset||undefined
+      config.valset || undefined
     );
     return result.optimizedModule;
   }
@@ -436,7 +438,7 @@ export class BootstrapFinetuneML extends Teleprompter {
       });
 
       let bestModule = student;
-      let paretoFront: ParetoFront|undefined;
+      let paretoFront: ParetoFront | undefined;
 
       // Phase 1: Architecture search (if enabled)
       if (this.config.useArchitectureSearch) {
@@ -738,7 +740,7 @@ export class BootstrapFinetuneML extends Teleprompter {
   }
 
   private convertVectorToHyperparameters(
-    vector: number[]|Float32Array
+    vector: number[] | Float32Array
   ): Record<string, any> {
     const arr = Array.isArray(vector) ? vector : Array.from(vector);
     return {
@@ -806,7 +808,7 @@ export class BootstrapFinetuneML extends Teleprompter {
   ): Promise<number[]> {
     const objectives = await this.calculateObjectives(module, valset);
     return this.config.multiObjectiveConfig.objectives.map(
-      (obj) => objectives[obj]||0
+      (obj) => objectives[obj] || 0
     );
   }
 
@@ -832,7 +834,7 @@ export class BootstrapFinetuneML extends Teleprompter {
     const config = this.config.adaptiveLearningConfig;
 
     switch (config.decayStrategy) {
-      case'exponential':
+      case 'exponential':
         return (
           config.initialLearningRate * Math.pow(config.decayRate, iteration)
         );
@@ -893,7 +895,8 @@ export class BootstrapFinetuneML extends Teleprompter {
       if (score > bestScore) {
         bestScore = score;
         bestIndex =
-          (solution as any).solutionIndex||paretoFront.solutions.indexOf(solution);
+          (solution as any).solutionIndex ||
+          paretoFront.solutions.indexOf(solution);
       }
     }
 
@@ -966,11 +969,11 @@ export class BootstrapFinetuneML extends Teleprompter {
             solutions: paretoFront.solutions.map((sol) => ({
               hyperparameters: {},
               objectives: {},
-              dominanceRank: (sol as any).rank||sol.dominationRank,
+              dominanceRank: (sol as any).rank || sol.dominationRank,
             })),
             hypervolume: paretoFront.hypervolume,
-            spacing: (paretoFront as any).spacing||0.1,
-            spread: (paretoFront as any).spread||0.8,
+            spacing: (paretoFront as any).spacing || 0.1,
+            spread: (paretoFront as any).spread || 0.8,
           }
         : undefined,
 
@@ -985,7 +988,8 @@ export class BootstrapFinetuneML extends Teleprompter {
       architectureAnalysis: {
         bestArchitecture: this.bestConfiguration,
         architectureRanking: [],
-        designPrinciples: ['adaptive_depth',
+        designPrinciples: [
+          'adaptive_depth',
           'residual_connections',
           'attention_mechanism',
         ],

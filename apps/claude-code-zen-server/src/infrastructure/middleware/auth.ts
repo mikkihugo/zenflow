@@ -183,9 +183,7 @@ export const hasRole = (
  * Utility function to check if current user is admin.
  * Currently always returns true since no auth is required.
  */
-export const isAdmin = (/* req: Request */): boolean => 
-   true // Allow all admin operations since no auth required
-;
+export const isAdmin = (/* req: Request */): boolean => true; // Allow all admin operations since no auth required
 
 /**
  * Get Current User Helper.

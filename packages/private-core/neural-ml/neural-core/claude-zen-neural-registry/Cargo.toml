@@ -1,5 +1,5 @@
 [package]
-name = "neuro-divergent-registry"
+name = "claude-zen-neural-registry"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -57,8 +57,9 @@ flate2 = "1.0"
 tar = "0.4"
 
 [features]
-default = ["std"]
+default = ["std", "auto-optimization"]
 std = []
+auto-optimization = []
 async = ["tokio", "futures"]
 benchmarks = ["criterion"]
 plugin-system = ["libloading"]
@@ -70,7 +71,7 @@ env_logger = "0.11"
 
 
 [lib]
-name = "neuro_divergent_registry"
+name = "claude_zen_neural_registry"
 path = "src/lib.rs"
 
 [package.metadata.docs.rs]

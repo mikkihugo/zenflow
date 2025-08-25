@@ -1,7 +1,7 @@
 import { mergeDeep } from "remeda"
 import { App } from "../app/app"
 import { Config } from "../config/config"
-import z from "zod"
+import { z } from "@claude-zen/foundation"
 
 export namespace Mode {
   export const Info = z

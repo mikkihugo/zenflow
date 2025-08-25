@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, addHours } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, addHours } = dateFns;
 import {
   groupBy,
   map,
@@ -190,7 +189,7 @@ export class PIPlanningFacilitationService {
       artId: input.artId,
     });
 
-    const eventId = `pi-planning-${nanoid(12)}`;`
+    const eventId = `pi-planning-${generateNanoId(12)}`;`
 
     const participants = this.generateParticipants(input.artId);
     const agenda = this.generateAgenda(input.duration);
@@ -270,7 +269,7 @@ export class PIPlanningFacilitationService {
     // Simplified participant generation
     return [
       {
-        id: `pm-${nanoid(8)}`,`
+        id: `pm-${generateNanoId(8)}`,`
         name: 'Product Manager',
         role: 'product-manager',
         responsibilities: ['Product vision', 'Feature prioritization'],
@@ -278,7 +277,7 @@ export class PIPlanningFacilitationService {
         remote: false,
       },
       {
-        id: `sa-${nanoid(8)}`,`
+        id: `sa-${generateNanoId(8)}`,`
         name: 'System Architect',
         role: 'system-architect',
         responsibilities: ['Architecture guidance', 'Technical decisions'],
@@ -294,7 +293,7 @@ export class PIPlanningFacilitationService {
   private generateAgenda(duration: number): PlanningAgenda {
     const day1Items: AgendaItem[] = [
       {
-        id: `agenda-${nanoid(8)}`,`
+        id: `agenda-${generateNanoId(8)}`,`
         title: 'Business Context & Vision',
         duration: 60,
         facilitator: 'Product Manager',
@@ -303,7 +302,7 @@ export class PIPlanningFacilitationService {
         deliverables: ['Shared understanding'],
       },
       {
-        id: `agenda-${nanoid(8)}`,`
+        id: `agenda-${generateNanoId(8)}`,`
         title: 'Team Breakouts & Planning',
         duration: 240,
         facilitator: 'Team Leads',
@@ -315,7 +314,7 @@ export class PIPlanningFacilitationService {
 
     const day2Items: AgendaItem[] = [
       {
-        id: `agenda-${nanoid(8)}`,`
+        id: `agenda-${generateNanoId(8)}`,`
         title: 'Draft Plan Review',
         duration: 120,
         facilitator: 'RTE',
@@ -324,7 +323,7 @@ export class PIPlanningFacilitationService {
         deliverables: ['Plan adjustments'],
       },
       {
-        id: `agenda-${nanoid(8)}`,`
+        id: `agenda-${generateNanoId(8)}`,`
         title: 'Final Plan & Commitment',
         duration: 90,
         facilitator: 'RTE',
@@ -427,7 +426,7 @@ export class PIPlanningFacilitationService {
   private generateActionItems(event: PIPlanningEventConfig): ActionItem[] {
     return [
       {
-        id: `action-${nanoid(8)}`,`
+        id: `action-${generateNanoId(8)}`,`
         description: 'Finalize dependency agreements',
         owner: 'RTE',
         dueDate: addDays(new Date(), 7),

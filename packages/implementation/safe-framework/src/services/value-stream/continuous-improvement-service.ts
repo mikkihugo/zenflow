@@ -12,15 +12,14 @@
  * @version 1.0.0
  */
 
-import {
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const {
   format,
   addDays,
   addWeeks,
   addMonths,
   differenceInDays,
-} from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+} = dateFns;
 import {
   groupBy,
   map,
@@ -1107,7 +1106,7 @@ export class ContinuousImprovementService {
     config: ContinuousImprovementConfig,
     currentMetrics: any
   ): Promise<AutomatedKaizenCycle> {
-    const cycleId = `kaizen-${nanoid(12)}`;`
+    const cycleId = `kaizen-${generateNanoId(12)}`;`
 
     this.logger.info('Executing automated kaizen cycle', {'
       cycleId,
@@ -1235,7 +1234,7 @@ export class ContinuousImprovementService {
       currentMetrics.cycleTime.variance > currentMetrics.cycleTime.average * 0.3
     ) {
       opportunities.push({
-        itemId: `improvement-${nanoid(8)}`,`
+        itemId: `improvement-${generateNanoId(8)}`,`
         title:'Reduce cycle time variance',
         description:
           'High variance in cycle time indicates process inconsistency',
@@ -1277,7 +1276,7 @@ export class ContinuousImprovementService {
     // Add more opportunity identification logic based on metrics
     if (currentMetrics.queueLength && currentMetrics.queueLength.average > 10) {
       opportunities.push({
-        itemId: `improvement-${nanoid(8)}`,`
+        itemId: `improvement-${generateNanoId(8)}`,`
         title: 'Reduce queue length',
         description:
           'Long queues indicate capacity constraints or inefficient resource allocation',
@@ -1370,7 +1369,7 @@ export class ContinuousImprovementService {
     for (const improvement of improvements.slice(0, 5)) {
       // Top 5 improvements
       const implementation: ImprovementImplementation = {
-        implementationId: `impl-${nanoid(8)}`,`
+        implementationId: `impl-${generateNanoId(8)}`,`
         improvementId: improvement.itemId,
         status: ImplementationStatus.PLANNED,
         progress: 0,
@@ -1466,7 +1465,7 @@ export class ContinuousImprovementService {
   ): Promise<CycleLearning[]> {
     return [
       {
-        learningId: `learning-${nanoid(6)}`,`
+        learningId: `learning-${generateNanoId(6)}`,`
         category: LearningCategory.PROCESS,
         description: 'Automated identification increases opportunity discovery',
         application: 'Use AI analysis for future cycles',
@@ -1474,7 +1473,7 @@ export class ContinuousImprovementService {
         source: 'Cycle Analysis',
       },
       {
-        learningId: `learning-${nanoid(6)}`,`
+        learningId: `learning-${generateNanoId(6)}`,`
         category: LearningCategory.IMPLEMENTATION,
         description: 'Quick wins build momentum',
         application: 'Prioritize quick wins in early cycles',

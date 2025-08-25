@@ -6,10 +6,13 @@
 import { io, type Socket } from 'socket.io-client';
 import { writable, type Writable } from 'svelte/store';
 import { toast } from '@zerodevx/svelte-toast';
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('websocket');
 
 interface WebSocketData {
   event: string;
-  data: any;
+  data: unknown;
   timestamp: string;
 }
 
@@ -17,50 +20,50 @@ interface ConnectionState {
   connected: boolean;
   connecting: boolean;
   reconnecting: boolean;
-  error: string|null;
+  error: string | null;
 }
 
 export class WebSocketManager {
-  private socket: Socket|null = null;
+  private socket: Socket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
   private subscriptions = new Set<string>();
-  
+
   // Reactive stores for component binding
   public connectionState: Writable<ConnectionState> = writable({
     connected: false,
     connecting: false,
     reconnecting: false,
-    error: null
+    error: null,
   });
-  
+
   // Data stores for different channels
-  public systemStatus = writable<any>(null);
-  public agents = writable<any[]>([]);
-  public tasks = writable<any[]>([]);
-  public performance = writable<any>(null);
-  public logs = writable<any[]>([]);
-  
+  public systemStatus = writable<Record<string, unknown> | null>(null);
+  public agents = writable<Array<Record<string, unknown>>>([]);
+  public tasks = writable<Array<Record<string, unknown>>>([]);
+  public performance = writable<Record<string, unknown> | null>(null);
+  public logs = writable<Array<Record<string, unknown>>>([]);
+
   // SAFe 6.0 Essential artifact stores
-  public stories = writable<any[]>([]);
-  public epics = writable<any[]>([]);
-  public features = writable<any[]>([]);
-  public teams = writable<any[]>([]);
-  public safeMetrics = writable<any>(null);
-  
-  constructor(private serverUrl: string ='http://localhost:3000') {}
+  public stories = writable<Array<Record<string, unknown>>>([]);
+  public epics = writable<Array<Record<string, unknown>>>([]);
+  public features = writable<Array<Record<string, unknown>>>([]);
+  public teams = writable<Array<Record<string, unknown>>>([]);
+  public safeMetrics = writable<Record<string, unknown> | null>(null);
+
+  constructor(private serverUrl: string = 'http://localhost:3000') {}
 
   /**
    * Connect to WebSocket server
    */
-  async connect(): Promise<void> {
+  connect(): void {
     if (this.socket?.connected) return;
 
-    this.connectionState.update(state => ({ 
-      ...state, 
-      connecting: true, 
-      error: null 
+    this.connectionState.update((state) => ({
+      ...state,
+      connecting: true,
+      error: null,
     }));
 
     try {
@@ -73,13 +76,12 @@ export class WebSocketManager {
       });
 
       this.setupEventHandlers();
-      
     } catch (error) {
-      console.error('Failed to connect to WebSocket:', error);
-      this.connectionState.update(state => ({
+      logger.error('Failed to connect to WebSocket', { error });
+      this.connectionState.update((state) => ({
         ...state,
         connecting: false,
-        error: error instanceof Error ? error.message : 'Connection failed'
+        error: error instanceof Error ? error.message : 'Connection failed',
       }));
     }
   }
@@ -91,110 +93,39 @@ export class WebSocketManager {
     if (!this.socket) return;
 
     // Connection events
-    this.socket.on('connect', () => {
-      console.log('🔌 WebSocket connected');
-      this.reconnectAttempts = 0;
-      this.connectionState.update(state => ({
-        ...state,
-        connected: true,
-        connecting: false,
-        reconnecting: false,
-        error: null
-      }));
-      
-      // Resubscribe to channels after reconnection
-      for (const channel of this.subscriptions) {
-        this.socket?.emit('subscribe', channel);
-      }
+    this.socket.on('connect', () => this.handleConnect());
+    this.socket.on('disconnect', (reason) => this.handleDisconnect(reason));
+    this.socket.on('connect_error', (error) => this.handleConnectError(error));
+    this.socket.on('reconnect', () => this.handleReconnect());
+    this.socket.on('reconnect_error', () => this.handleReconnectError());
+    this.socket.on('reconnect_failed', () => this.handleReconnectFailed());
 
-      toast.push('📡 Real-time updates connected', {
-        theme: {
-          '--toastBackground': '#48cc6c',
-          '--toastColor': 'white',
-        }
-      });
+    // Data events
+    this.setupDataEventHandlers();
+  }
+
+  private handleConnect(): void {
+    logger.info('WebSocket connected');
+    this.reconnectAttempts = 0;
+    this.connectionState.update((state) => ({
+      ...state,
+      connected: true,
+      connecting: false,
+      reconnecting: false,
+      error: null,
+    }));
+
+    // Resubscribe to channels after reconnection
+    for (const channel of this.subscriptions) {
+      this.socket?.emit('subscribe', channel);
+    }
+
+    toast.push('📡 Real-time updates connected', {
+      theme: {
+        '--toastBackground': '#48cc6c',
+        '--toastColor': 'white',
+      },
     });
-
-    this.socket.on('disconnect', (reason) => {
-      console.log('🔌 WebSocket disconnected:', reason);
-      this.connectionState.update(state => ({
-        ...state,
-        connected: false,
-        connecting: false
-      }));
-
-      if (reason !== 'io client disconnect') {
-        toast.push('📡 Real-time connection lost', {
-          theme: {
-            '--toastBackground': '#f56565',
-            '--toastColor': 'white',
-          }
-        });
-      }
-    });
-
-    this.socket.on('connect_error', (error) => {
-      console.error('🔌 WebSocket connection error:', error);
-      this.connectionState.update(state => ({
-        ...state,
-        connecting: false,
-        error: error.message
-      }));
-      
-      toast.push(`📡 Connection error: ${error.message}`, {
-        theme: {
-          '--toastBackground': '#f56565',
-          '--toastColor': 'white',
-        }
-      });
-    });
-
-    this.socket.on('reconnect_attempt', (attempt) => {
-      console.log(`🔌 Reconnection attempt ${attempt}`);
-      this.connectionState.update(state => ({
-        ...state,
-        reconnecting: true,
-        connecting: false
-      }));
-    });
-
-    this.socket.on('reconnect', (attempt) => {
-      console.log(`🔌 Reconnected after ${attempt} attempts`);
-      toast.push('📡 Real-time connection restored', {
-        theme: {
-          '--toastBackground': '#48cc6c',
-          '--toastColor': 'white',
-        }
-      });
-    });
-
-    this.socket.on('reconnect_failed', () => {
-      console.error('🔌 Failed to reconnect');
-      this.connectionState.update(state => ({
-        ...state,
-        reconnecting: false,
-        error: 'Failed to reconnect to server'
-      }));
-      
-      toast.push('📡 Failed to reconnect to server', {
-        theme: {
-          '--toastBackground': '#f56565',
-          '--toastColor': 'white',
-        }
-      });
-    });
-
-    // Server response events
-    this.socket.on('connected', (data) => {
-      console.log('🎯 Server connection confirmed:', data);
-    });
-
-    this.socket.on('pong', (data) => {
-      console.log('🏓 Pong received:', data);
-    });
-
-    // Data channel events
-    this.setupDataChannelHandlers();
   }
 
   /**
@@ -203,109 +134,154 @@ export class WebSocketManager {
   private setupDataChannelHandlers(): void {
     if (!this.socket) return;
 
-    // System status updates
-    this.socket.on('system:initial', (data: WebSocketData) => {
-      console.log('📊 System initial data:', data.data);
-      this.systemStatus.set(data.data);
-    });
+    // Setup standard data channel handlers using mapping
+    this.setupStandardDataHandlers();
+    this.setupSafeArtifactHandlers();
+    this.setupSpecialLogHandlers();
+  }
 
-    this.socket.on('system:status', (data: WebSocketData) => {
-      console.log('📊 System status update:', data.data);
-      this.systemStatus.set(data.data);
-    });
+  private setupStandardDataHandlers(): void {
+    const dataChannels = [
+      {
+        event: 'system:initial',
+        store: this.systemStatus,
+        icon: '📊',
+        name: 'System initial',
+      },
+      {
+        event: 'system:status',
+        store: this.systemStatus,
+        icon: '📊',
+        name: 'System status',
+      },
+      {
+        event: 'agents:initial',
+        store: this.agents,
+        icon: '🤖',
+        name: 'Agents initial',
+      },
+      {
+        event: 'agents:update',
+        store: this.agents,
+        icon: '🤖',
+        name: 'Agents',
+      },
+      {
+        event: 'tasks:initial',
+        store: this.tasks,
+        icon: '✅',
+        name: 'Tasks initial',
+      },
+      { event: 'tasks:update', store: this.tasks, icon: '✅', name: 'Tasks' },
+      {
+        event: 'performance:update',
+        store: this.performance,
+        icon: '📈',
+        name: 'Performance',
+      },
+    ];
 
-    // Agent updates
-    this.socket.on('agents:initial', (data: WebSocketData) => {
-      console.log('🤖 Agents initial data:', data.data);
-      this.agents.set(data.data);
-    });
+    for (const { event, store, name } of dataChannels) {
+      this.socket?.on(event, (data: WebSocketData) => {
+        logger.debug(`${name} data received`, { data: data.data });
+        store.set(data.data);
+      });
+    }
+  }
 
-    this.socket.on('agents:update', (data: WebSocketData) => {
-      console.log('🤖 Agents update:', data.data);
-      this.agents.set(data.data);
-    });
+  private setupSafeArtifactHandlers(): void {
+    const safeChannels = [
+      {
+        event: 'stories:initial',
+        store: this.stories,
+        icon: '📖',
+        name: 'User Stories initial',
+        key: 'stories',
+      },
+      {
+        event: 'stories:update',
+        store: this.stories,
+        icon: '📖',
+        name: 'User Stories',
+        key: 'stories',
+      },
+      {
+        event: 'epics:initial',
+        store: this.epics,
+        icon: '🏔️',
+        name: 'Epics initial',
+        key: 'epics',
+      },
+      {
+        event: 'epics:update',
+        store: this.epics,
+        icon: '🏔️',
+        name: 'Epics',
+        key: 'epics',
+      },
+      {
+        event: 'features:initial',
+        store: this.features,
+        icon: '🎯',
+        name: 'Features initial',
+        key: 'features',
+      },
+      {
+        event: 'features:update',
+        store: this.features,
+        icon: '🎯',
+        name: 'Features',
+        key: 'features',
+      },
+      {
+        event: 'teams:initial',
+        store: this.teams,
+        icon: '👥',
+        name: 'Teams initial',
+        key: 'teams',
+      },
+      {
+        event: 'teams:update',
+        store: this.teams,
+        icon: '👥',
+        name: 'Teams',
+        key: 'teams',
+      },
+    ];
 
-    // Task updates
-    this.socket.on('tasks:initial', (data: WebSocketData) => {
-      console.log('✅ Tasks initial data:', data.data);
-      this.tasks.set(data.data);
-    });
+    for (const { event, store, name, key } of safeChannels) {
+      this.socket?.on(event, (data: WebSocketData) => {
+        logger.debug(`${name} data received`, { data: data.data });
+        store.set(data.data?.[key] || []);
+      });
+    }
+  }
 
-    this.socket.on('tasks:update', (data: WebSocketData) => {
-      console.log('✅ Tasks update:', data.data);
-      this.tasks.set(data.data);
-    });
-
-    // Performance metrics
-    this.socket.on('performance:update', (data: WebSocketData) => {
-      console.log('📈 Performance update:', data.data);
-      this.performance.set(data.data);
-    });
-
-    // Log updates  
-    this.socket.on('logs:initial', (data: WebSocketData) => {
-      console.log('📋 Logs initial data:', data.data);
+  private setupSpecialLogHandlers(): void {
+    this.socket?.on('logs:initial', (data: WebSocketData) => {
+      logger.debug('Logs initial data received', { data: data.data });
       this.logs.set(data.data);
     });
 
-    this.socket.on('logs:bulk', (data: WebSocketData) => {
-      console.log('📋 Logs bulk update:', data.data);
+    this.socket?.on('logs:bulk', (data: WebSocketData) => {
+      logger.debug('Logs bulk update received', { data: data.data });
       this.logs.set(data.data);
     });
 
-    this.socket.on('logs:new', (data: WebSocketData) => {
-      console.log('📋 New log entry:', data.data);
-      this.logs.update(logs => [data.data, ...logs.slice(0, 99)]); // Keep last 100
-    });
-
-    // SAFe 6.0 Essential artifact updates
-    this.socket.on('stories:initial', (data: WebSocketData) => {
-      console.log('📖 User Stories initial data:', data.data);
-      this.stories.set(data.data?.stories || []);
-    });
-
-    this.socket.on('stories:update', (data: WebSocketData) => {
-      console.log('📖 User Stories update:', data.data);
-      this.stories.set(data.data?.stories || []);
-    });
-
-    this.socket.on('epics:initial', (data: WebSocketData) => {
-      console.log('🏔️ Epics initial data:', data.data);
-      this.epics.set(data.data?.epics || []);
-    });
-
-    this.socket.on('epics:update', (data: WebSocketData) => {
-      console.log('🏔️ Epics update:', data.data);
-      this.epics.set(data.data?.epics || []);
-    });
-
-    this.socket.on('features:initial', (data: WebSocketData) => {
-      console.log('🎯 Features initial data:', data.data);
-      this.features.set(data.data?.features || []);
-    });
-
-    this.socket.on('features:update', (data: WebSocketData) => {
-      console.log('🎯 Features update:', data.data);
-      this.features.set(data.data?.features || []);
-    });
-
-    this.socket.on('teams:initial', (data: WebSocketData) => {
-      console.log('👥 Teams (ART) initial data:', data.data);
-      this.teams.set(data.data?.teams || []);
-    });
-
-    this.socket.on('teams:update', (data: WebSocketData) => {
-      console.log('👥 Teams (ART) update:', data.data);
-      this.teams.set(data.data?.teams || []);
+    this.socket?.on('logs:new', (data: WebSocketData) => {
+      logger.debug('New log entry received', { data: data.data });
+      this.logs.update((logs) => [data.data, ...logs.slice(0, 99)]); // Keep last 100
     });
 
     this.socket.on('safe-metrics:initial', (data: WebSocketData) => {
-      console.log('📊 SAFe LPM metrics initial data:', data.data);
+      logger.debug('SAFe LPM metrics initial data received', {
+        data: data.data,
+      });
       this.safeMetrics.set(data.data);
     });
 
     this.socket.on('safe-metrics:update', (data: WebSocketData) => {
-      console.log('📊 SAFe LPM metrics update:', data.data);
+      logger.debug('SAFe LPM metrics update received', { data: data.data });
       this.safeMetrics.set(data.data);
     });
   }
@@ -315,13 +291,13 @@ export class WebSocketManager {
    */
   subscribe(channel: string): void {
     if (!this.socket) {
-      console.warn('Cannot subscribe: WebSocket not connected');
+      logger.warn('Cannot subscribe: WebSocket not connected');
       return;
     }
 
     this.subscriptions.add(channel);
     this.socket.emit('subscribe', channel);
-    console.log(`📡 Subscribed to channel: ${channel}`);
+    logger.info('Subscribed to channel', { channel });
   }
 
   /**
@@ -332,7 +308,7 @@ export class WebSocketManager {
 
     this.subscriptions.delete(channel);
     this.socket.emit('unsubscribe', channel);
-    console.log(`📡 Unsubscribed from channel: ${channel}`);
+    logger.info('Unsubscribed from channel', { channel });
   }
 
   /**
@@ -351,13 +327,13 @@ export class WebSocketManager {
       this.socket.disconnect();
       this.socket = null;
     }
-    
+
     this.subscriptions.clear();
-    this.connectionState.update(state => ({
+    this.connectionState.update((state) => ({
       ...state,
       connected: false,
       connecting: false,
-      reconnecting: false
+      reconnecting: false,
     }));
   }
 
@@ -365,14 +341,25 @@ export class WebSocketManager {
    * Get current connection status
    */
   isConnected(): boolean {
-    return this.socket?.connected||false;
+    return this.socket?.connected || false;
   }
 
   /**
    * Subscribe to multiple channels at once
    */
   subscribeToAll(): void {
-    const channels = ['system', 'agents', 'tasks', 'performance', 'logs', 'stories', 'epics', 'features', 'teams', 'safe-metrics'];
+    const channels = [
+      'system',
+      'agents',
+      'tasks',
+      'performance',
+      'logs',
+      'stories',
+      'epics',
+      'features',
+      'teams',
+      'safe-metrics',
+    ];
     for (const channel of channels) this.subscribe(channel);
   }
 
@@ -385,6 +372,86 @@ export class WebSocketManager {
         this.ping();
       }
     }, interval);
+  }
+
+  private handleDisconnect(reason: string): void {
+    logger.info('WebSocket disconnected', { reason });
+    this.connectionState.update((state) => ({
+      ...state,
+      connected: false,
+      connecting: false,
+    }));
+
+    if (reason !== 'io client disconnect') {
+      toast.push('📡 Real-time connection lost', {
+        theme: {
+          '--toastBackground': '#f56565',
+          '--toastColor': 'white',
+        },
+      });
+    }
+  }
+
+  private handleConnectError(error: Error): void {
+    logger.error('WebSocket connection error', { error });
+    this.connectionState.update((state) => ({
+      ...state,
+      connecting: false,
+      error: error.message,
+    }));
+
+    toast.push(`📡 Connection error: ${error.message}`, {
+      theme: {
+        '--toastBackground': '#f56565',
+        '--toastColor': 'white',
+      },
+    });
+  }
+
+  private handleReconnect(): void {
+    logger.info('WebSocket reconnected');
+    toast.push('📡 Real-time connection restored', {
+      theme: {
+        '--toastBackground': '#48cc6c',
+        '--toastColor': 'white',
+      },
+    });
+  }
+
+  private handleReconnectError(): void {
+    this.reconnectAttempts++;
+  }
+
+  private handleReconnectFailed(): void {
+    logger.error('Failed to reconnect to WebSocket');
+    this.connectionState.update((state) => ({
+      ...state,
+      reconnecting: false,
+      error: 'Failed to reconnect to server',
+    }));
+
+    toast.push('📡 Failed to reconnect to server', {
+      theme: {
+        '--toastBackground': '#f56565',
+        '--toastColor': 'white',
+      },
+    });
+  }
+
+  private setupDataEventHandlers(): void {
+    if (!this.socket) return;
+
+    // Server response events
+    this.socket.on('connected', (data) => {
+      logger.info('Server connection confirmed', { data });
+    });
+
+    this.socket.on('pong', (data) => {
+      logger.debug('Pong received', { data });
+    });
+
+    // Call the data channel handlers
+    this.setupDataChannelHandlers();
   }
 }
 

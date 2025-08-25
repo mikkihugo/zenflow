@@ -1,6 +1,6 @@
 //! FACT CLI - Fast Augmented Context Tools Command Line Interface
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 #[cfg(feature = "github")]
 use fact_tools::github::{GitHubAnalyzer, RepoAnalysis};
@@ -621,10 +621,12 @@ async fn auto_command(
   use fact_tools::auto_orchestrator::{AutoConfig, AutoFactOrchestrator};
   use std::path::PathBuf;
 
-  let mut config = AutoConfig::default();
-  config.update_interval_hours = interval;
-  config.max_concurrent = concurrent;
-  config.auto_github = github_enabled;
+  let mut config = AutoConfig {
+    update_interval_hours: interval,
+    max_concurrent: concurrent,
+    auto_github: github_enabled,
+    ..Default::default()
+  };
 
   if let Some(dirs) = directories {
     config.scan_directories =
@@ -680,12 +682,12 @@ async fn auto_command(
     println!("💡 Run with --start to begin automatic orchestration");
   } else {
     println!("🤖 Automatic FACT Orchestration");
-    println!("");
+    println!();
     println!("Available commands:");
     println!("  --start     Start automatic orchestration");
     println!("  --stop      Stop automatic orchestration");
     println!("  --status    Show current status");
-    println!("");
+    println!();
     println!("Configuration:");
     println!("  --interval <hours>       Update interval (default: 24)");
     println!(
@@ -695,7 +697,7 @@ async fn auto_command(
     println!(
       "  --github <true|false>    Enable GitHub integration (default: true)"
     );
-    println!("");
+    println!();
     println!("Examples:");
     println!("  fact-tools auto --start");
     println!("  fact-tools auto --start --interval 12 --concurrent 8");

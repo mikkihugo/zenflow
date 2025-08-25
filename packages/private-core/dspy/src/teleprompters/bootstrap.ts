@@ -46,8 +46,8 @@ export class LabeledFewShot extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule|null;
-      valset?: Example[]|null;
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -114,13 +114,13 @@ export class LabeledFewShot extends Teleprompter {
  * ```
  */
 export class BootstrapFewShot extends Teleprompter {
-  private metric?: MetricFunction|null;
-  private metric_threshold?: number|null;
+  private metric?: MetricFunction | null;
+  private metric_threshold?: number | null;
   private teacher_settings: Record<string, any>;
   private max_bootstrapped_demos: number;
   private max_labeled_demos: number;
   private max_rounds: number;
-  private max_errors?: number|null;
+  private max_errors?: number | null;
   private error_count: number = 0;
 
   // Internal state matching Stanford implementation
@@ -134,9 +134,9 @@ export class BootstrapFewShot extends Teleprompter {
 
   constructor(
     config: {
-      metric?: MetricFunction|null;
-      metric_threshold?: number|null;
-      teacher_settings?: Record<string, any>|null;
+      metric?: MetricFunction | null;
+      metric_threshold?: number | null;
+      teacher_settings?: Record<string, any> | null;
       max_bootstrapped_demos?: number;
       max_labeled_demos?: number;
       max_rounds?: number;
@@ -162,7 +162,7 @@ export class BootstrapFewShot extends Teleprompter {
     config: {
       trainset: Example[];
       teacher?: DSPyModule | null;
-      valset?: Example[]|null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {

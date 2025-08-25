@@ -108,7 +108,10 @@ async function startServer() {
 
 // Start the server
 startServer().catch((error) => {
-  getLogger('server-startup').error('Unhandled error during server startup:', error);
+  getLogger('server-startup').error(
+    'Unhandled error during server startup:',
+    error
+  );
   process.exit(1);
 });
 

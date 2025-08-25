@@ -14,13 +14,13 @@ categories = ["development-tools", "web-programming", "concurrency", "algorithms
 
 [dependencies]
 # Workspace dependencies
-tokio = { version = "1.0", features = ["full"] }
+tokio = { version = "1.0", features = ["full"], optional = true }
 futures = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
 anyhow = "1.0"
-reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "stream"] }
 tracing = "0.1"
 uuid = { version = "1.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
@@ -101,17 +101,19 @@ memchr = "2.7"
 # Cross-platform support
 cfg-if = "1.0"
 
-# Storage
-rusqlite = { version = "0.31", features = ["bundled"], optional = true }
+# Storage - use workspace version to fix conflicts
+rusqlite = { workspace = true, features = ["bundled"], optional = true }
 
 [features]
-default = ["native", "web"]
-native = ["rusqlite", "reqwest/native-tls"]
+default = ["std", "auto-optimization", "native", "web"]
+std = []
+auto-optimization = []
+native = ["rusqlite", "reqwest/native-tls", "tokio"]
 wasm = ["dep:web-sys", "dep:js-sys", "dep:wasm-bindgen", "dep:wasm-bindgen-futures"]
 openai = ["async-openai"]
 anthropic = []
 mistral = []
-web = ["html5ever", "markup5ever_rcdom", "html2md", "scraper", "cookie", "http"]
+web = ["html5ever", "markup5ever_rcdom", "html2md", "scraper", "dep:cookie", "dep:http"]
 
 [dev-dependencies]
 mockall = { workspace = true }

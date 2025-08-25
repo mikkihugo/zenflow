@@ -404,7 +404,7 @@ fn clean_html_for_markdown(html: &str) -> String {
     let mut cleaned = html.to_string();
     
     // Remove script and style tags
-    let re = regex::Regex::new(r"(?s)<(script|style|noscript)[^>]*>.*?</\1>").unwrap();
+    let re = regex::Regex::new(r"(?s)<(script|style|noscript)[^>]*>.*?</(script|style|noscript)>").unwrap();
     cleaned = re.replace_all(&cleaned, "").to_string();
     
     // Remove comments

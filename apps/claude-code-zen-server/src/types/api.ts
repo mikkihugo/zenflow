@@ -1,6 +1,6 @@
 /**
  * API Types
- * 
+ *
  * Types for REST API, HTTP clients, and web interfaces.
  * Consolidated from: api-types.ts, api-response.ts, client-types.ts, express-api-types.ts
  */
@@ -9,7 +9,7 @@
 // API Response Types
 // ============================================================================
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: ApiError;
@@ -20,7 +20,7 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   stack?: string;
 }
 
@@ -54,8 +54,8 @@ export interface ApiRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   url: string;
   headers?: Record<string, string>;
-  params?: Record<string, any>;
-  body?: any;
+  params?: Record<string, unknown>;
+  body?: unknown;
   timeout?: number;
 }
 
@@ -68,7 +68,7 @@ export interface PaginationParams {
 
 export interface FilterParams {
   search?: string;
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   dateFrom?: Date;
   dateTo?: Date;
 }
@@ -80,11 +80,14 @@ export interface QueryParams extends PaginationParams, FilterParams {}
 // ============================================================================
 
 export interface HttpClient {
-  get<T>(url: string, params?: Record<string, any>): Promise<ApiResponse<T>>;
-  post<T>(url: string, data?: any): Promise<ApiResponse<T>>;
-  put<T>(url: string, data?: any): Promise<ApiResponse<T>>;
+  get<T>(
+    url: string,
+    params?: Record<string, unknown>
+  ): Promise<ApiResponse<T>>;
+  post<T>(url: string, data?: unknown): Promise<ApiResponse<T>>;
+  put<T>(url: string, data?: unknown): Promise<ApiResponse<T>>;
   delete<T>(url: string): Promise<ApiResponse<T>>;
-  patch<T>(url: string, data?: any): Promise<ApiResponse<T>>;
+  patch<T>(url: string, data?: unknown): Promise<ApiResponse<T>>;
 }
 
 export interface ClientConfig {
@@ -113,7 +116,7 @@ export interface RetryConfig {
 // WebSocket Types
 // ============================================================================
 
-export interface WebSocketMessage<T = any> {
+export interface WebSocketMessage<T = unknown> {
   type: string;
   payload: T;
   id?: string;
@@ -141,7 +144,7 @@ export interface WebSocketClient {
 // ============================================================================
 
 export interface RouteHandler {
-  (req: any, res: any, next?: any): void | Promise<void>;
+  (req: unknown, res: unknown, next?: unknown): void | Promise<void>;
 }
 
 export interface RouteDefinition {
@@ -157,7 +160,7 @@ export interface RateLimitConfig {
   windowMs: number;
   max: number;
   message?: string;
-  skip?: (req: any) => boolean;
+  skip?: (req: unknown) => boolean;
 }
 
 // ============================================================================
@@ -190,7 +193,7 @@ export interface DashboardWidget {
   id: string;
   type: 'chart' | 'table' | 'metric' | 'log';
   title: string;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   position: {
     x: number;
     y: number;
@@ -203,20 +206,22 @@ export interface DashboardWidget {
 // Type Guards
 // ============================================================================
 
-export function isApiResponse<T>(obj: any): obj is ApiResponse<T> {
-  return obj && 
-    typeof obj.success === 'boolean' &&
-    obj.timestamp instanceof Date;
+export function isApiResponse<T>(obj: unknown): obj is ApiResponse<T> {
+  return (
+    obj && typeof obj.success === 'boolean' && obj.timestamp instanceof Date
+  );
 }
 
-export function isApiError(obj: any): obj is ApiError {
-  return obj && 
-    typeof obj.code === 'string' &&
-    typeof obj.message === 'string';
+export function isApiError(obj: unknown): obj is ApiError {
+  return obj && typeof obj.code === 'string' && typeof obj.message === 'string';
 }
 
-export function isPaginatedResponse<T>(obj: any): obj is PaginatedResponse<T> {
-  return isApiResponse(obj) && 
+export function isPaginatedResponse<T>(
+  obj: unknown
+): obj is PaginatedResponse<T> {
+  return (
+    isApiResponse(obj) &&
     obj.meta?.pagination &&
-    typeof obj.meta.pagination.total === 'number';
+    typeof obj.meta.pagination.total === 'number'
+  );
 }

@@ -293,8 +293,7 @@ export class ProjectModeManager extends EventEmitter {
   /**
    * TODO: Upgrade project mode - will be implemented when multiple modes exist
    */
-  upgradeProjectMode(
-    /* projectId: string,
+  upgradeProjectMode() /* projectId: string,
     fromMode: ProjectMode,
     toMode: ProjectMode,
     options: {
@@ -302,7 +301,7 @@ export class ProjectModeManager extends EventEmitter {
       backupBeforeMigration?: boolean;
       validateAfterMigration?: boolean;
     } = {} */
-  ): {
+  : {
     success: boolean;
     migrationLog: string[];
     warnings: string[];

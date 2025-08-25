@@ -18,7 +18,7 @@ async function loadAgentManagerModule() {
       agentManagerModuleCache = await import('@claude-zen/agent-manager');
     } catch {
       console.warn(
-        'Agent manager package not available, providing compatibility layer',
+        'Agent manager package not available, providing compatibility layer'
       );
       agentManagerModuleCache = {
         AgentManager: class CompatibilityAgentManager extends EventEmitter {

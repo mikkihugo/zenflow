@@ -9,12 +9,21 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 
 import { getLogger } from '@claude-zen/foundation';
-import type {
-  Express,
-  Request,
-  Response
-} from 'express';
+import type { Express, Request, Response } from 'express';
+
+// Constants to avoid string duplication
+const WORKSPACE_ERROR_MESSAGES = {
+  accessDenied: 'Access denied',
+  fileNotFound: 'File not found',
+  operationFailed: 'Operation failed',
+  filePathRequired: WORKSPACE_ERROR_MESSAGES.filePathRequired,
+} as const;
+
 import * as fs from 'fs-extra';
+
+const WORKSPACE_PATHS = {
+  basePath: '/workspace',
+} as const;
 
 export class WorkspaceApiRoutes {
   private logger = getLogger('WorkspaceAPI');
@@ -28,7 +37,7 @@ export class WorkspaceApiRoutes {
    * Setup workspace API routes
    */
   setupRoutes(app: Express): void {
-    const prefix = '/api/workspace';
+    const prefix = `/api${WORKSPACE_PATHS.basePath}`;
 
     // File system operations
     app.get(`${prefix}/files`, this.listFiles.bind(this));
@@ -43,7 +52,10 @@ export class WorkspaceApiRoutes {
 
     // Project operations
     app.get(`${prefix}/project/info`, this.getProjectInfo.bind(this));
-    app.post(`${prefix}/project/commands`, this.executeProjectCommand.bind(this));
+    app.post(
+      `${prefix}/project/commands`,
+      this.executeProjectCommand.bind(this)
+    );
 
     // Search operations
     app.get(`${prefix}/search/files`, this.searchFiles.bind(this));
@@ -69,7 +81,7 @@ export class WorkspaceApiRoutes {
 
       // Security check - ensure path is within workspace
       if (!fullPath.startsWith(this.workspaceRoot)) {
-        res.status(403).json({ error: 'Access denied' });
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
       }
 
       const stats = await fs.stat(fullPath);
@@ -89,7 +101,7 @@ export class WorkspaceApiRoutes {
               size: itemStats.size,
               modified: itemStats.mtime,
               extension: path.extname(item).slice(1),
-              isHidden: item.startsWith('.')
+              isHidden: item.startsWith('.'),
             };
           })
         );
@@ -97,7 +109,7 @@ export class WorkspaceApiRoutes {
         const filteredFiles = fileList.filter(Boolean);
         res.json({
           files: filteredFiles,
-          currentPath: requestedPath
+          currentPath: requestedPath,
         });
       } else {
         // Single file info
@@ -107,7 +119,7 @@ export class WorkspaceApiRoutes {
           type: 'file',
           size: stats.size,
           modified: stats.mtime,
-          extension: path.extname(fullPath).slice(1)
+          extension: path.extname(fullPath).slice(1),
         });
       }
     } catch (error) {
@@ -123,14 +135,16 @@ export class WorkspaceApiRoutes {
     try {
       const filePath = req.query.path as string;
       if (!filePath) {
-        res.status(400).json({ error: 'File path required' });
+        res
+          .status(400)
+          .json({ error: WORKSPACE_ERROR_MESSAGES.filePathRequired });
       }
 
       const fullPath = path.resolve(this.workspaceRoot, filePath);
 
       // Security check
       if (!fullPath.startsWith(this.workspaceRoot)) {
-        res.status(403).json({ error: 'Access denied' });
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
       }
 
       const content = await fs.readFile(fullPath, 'utf-8');
@@ -141,7 +155,7 @@ export class WorkspaceApiRoutes {
         path: filePath,
         size: stats.size,
         modified: stats.mtime,
-        encoding: 'utf-8'
+        encoding: 'utf-8',
       });
     } catch (error) {
       this.logger.error('Failed to get file content:', error);
@@ -156,14 +170,16 @@ export class WorkspaceApiRoutes {
     try {
       const { path: filePath, content = '' } = req.body;
       if (!filePath) {
-        res.status(400).json({ error: 'File path required' });
+        res
+          .status(400)
+          .json({ error: WORKSPACE_ERROR_MESSAGES.filePathRequired });
       }
 
       const fullPath = path.resolve(this.workspaceRoot, filePath);
 
       // Security check
       if (!fullPath.startsWith(this.workspaceRoot)) {
-        res.status(403).json({ error: 'Access denied' });
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
       }
 
       // Ensure directory exists
@@ -175,7 +191,7 @@ export class WorkspaceApiRoutes {
         path: filePath,
         size: stats.size,
         modified: stats.mtime,
-        created: true
+        created: true,
       });
     } catch (error) {
       this.logger.error('Failed to create file:', error);
@@ -197,7 +213,7 @@ export class WorkspaceApiRoutes {
 
       // Security check
       if (!fullPath.startsWith(this.workspaceRoot)) {
-        res.status(403).json({ error: 'Access denied' });
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
       }
 
       await fs.writeFile(fullPath, content, 'utf-8');
@@ -207,7 +223,7 @@ export class WorkspaceApiRoutes {
         path: filePath,
         size: stats.size,
         modified: stats.mtime,
-        updated: true
+        updated: true,
       });
     } catch (error) {
       this.logger.error('Failed to update file:', error);
@@ -222,14 +238,16 @@ export class WorkspaceApiRoutes {
     try {
       const filePath = req.query.path as string;
       if (!filePath) {
-        res.status(400).json({ error: 'File path required' });
+        res
+          .status(400)
+          .json({ error: WORKSPACE_ERROR_MESSAGES.filePathRequired });
       }
 
       const fullPath = path.resolve(this.workspaceRoot, filePath);
 
       // Security check
       if (!fullPath.startsWith(this.workspaceRoot)) {
-        res.status(403).json({ error: 'Access denied' });
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
       }
 
       await fs.remove(fullPath);
@@ -254,7 +272,7 @@ export class WorkspaceApiRoutes {
 
       // Security check
       if (!fullPath.startsWith(this.workspaceRoot)) {
-        res.status(403).json({ error: 'Access denied' });
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
       }
 
       await fs.ensureDir(fullPath);
@@ -285,7 +303,7 @@ export class WorkspaceApiRoutes {
         version: packageInfo?.version || '0.0.0',
         description: packageInfo?.description || '',
         root: this.workspaceRoot,
-        hasPackageJson: Boolean(packageInfo)
+        hasPackageJson: Boolean(packageInfo),
       });
     } catch (error) {
       this.logger.error('Failed to get project info:', error);
@@ -296,7 +314,7 @@ export class WorkspaceApiRoutes {
   /**
    * Execute project command
    */
-  private async executeProjectCommand(req: Request, res: Response): Promise<void> {
+  private executeProjectCommand(req: Request, res: Response): void {
     try {
       const { command, args = [] } = req.body;
       if (!command) {
@@ -305,7 +323,7 @@ export class WorkspaceApiRoutes {
 
       const child = spawn(command, args, {
         cwd: this.workspaceRoot,
-        stdio: 'pipe'
+        stdio: 'pipe',
       });
 
       let output = '';
@@ -323,7 +341,7 @@ export class WorkspaceApiRoutes {
         res.json({
           exitCode: code,
           stdout: output,
-          stderr: error
+          stderr: error,
         });
       });
 
@@ -349,27 +367,27 @@ export class WorkspaceApiRoutes {
       }
 
       // Simple file search implementation
-      const results: any[] = [];
-      
+      const results: Array<{ name: string; path: string; type: string }> = [];
+
       const searchDir = async (dir: string, depth = 0): Promise<void> => {
         if (depth > 5) return; // Limit search depth
-        
+
         const items = await fs.readdir(dir).catch(() => []);
         for (const item of items) {
           if (item.startsWith('.')) continue; // Skip hidden files
-          
+
           const itemPath = path.join(dir, item);
           const stats = await fs.stat(itemPath).catch(() => null);
           if (!stats) continue;
-          
+
           if (item.toLowerCase().includes(query.toLowerCase())) {
             results.push({
               name: item,
               path: path.relative(this.workspaceRoot, itemPath),
-              type: stats.isDirectory() ? 'directory' : 'file'
+              type: stats.isDirectory() ? 'directory' : 'file',
             });
           }
-          
+
           if (stats.isDirectory() && results.length < 100) {
             await searchDir(itemPath, depth + 1);
           }
@@ -387,7 +405,7 @@ export class WorkspaceApiRoutes {
   /**
    * Search file content
    */
-  private async searchContent(req: Request, res: Response): Promise<void> {
+  private searchContent(req: Request, res: Response): void {
     try {
       const query = req.query.q as string;
       if (!query) {
@@ -405,11 +423,11 @@ export class WorkspaceApiRoutes {
   /**
    * Get Git status
    */
-  private async getGitStatus(req: Request, res: Response): Promise<void> {
+  private getGitStatus(req: Request, res: Response): void {
     try {
       const child = spawn('git', ['status', '--porcelain'], {
         cwd: this.workspaceRoot,
-        stdio: 'pipe'
+        stdio: 'pipe',
       });
 
       let output = '';
@@ -421,16 +439,18 @@ export class WorkspaceApiRoutes {
         if (code === 0) {
           const files = output
             .split('\n')
-            .filter(line => line.trim())
-            .map(line => {
+            .filter((line) => line.trim())
+            .map((line) => {
               const status = line.substring(0, 2);
               const filename = line.substring(3);
               return { status, filename };
             });
-          
+
           res.json({ files });
         } else {
-          res.status(500).json({ error: 'Git not available or not a git repository' });
+          res
+            .status(500)
+            .json({ error: 'Git not available or not a git repository' });
         }
       });
     } catch (error) {
@@ -442,7 +462,7 @@ export class WorkspaceApiRoutes {
   /**
    * Execute Git command
    */
-  private async executeGitCommand(req: Request, res: Response): Promise<void> {
+  private executeGitCommand(req: Request, res: Response): void {
     try {
       const { args = [] } = req.body;
       if (!Array.isArray(args) || args.length === 0) {
@@ -451,7 +471,7 @@ export class WorkspaceApiRoutes {
 
       const child = spawn('git', args, {
         cwd: this.workspaceRoot,
-        stdio: 'pipe'
+        stdio: 'pipe',
       });
 
       let output = '';
@@ -469,7 +489,7 @@ export class WorkspaceApiRoutes {
         res.json({
           exitCode: code,
           stdout: output,
-          stderr: error
+          stderr: error,
         });
       });
     } catch (error) {
@@ -481,7 +501,7 @@ export class WorkspaceApiRoutes {
   /**
    * Get recent files
    */
-  private async getRecentFiles(req: Request, res: Response): Promise<void> {
+  private getRecentFiles(req: Request, res: Response): void {
     try {
       // Simple implementation - could be enhanced with actual recent file tracking
       res.json({ files: [] });

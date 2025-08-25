@@ -53,9 +53,10 @@ impl LogTransform {
                   }
                 })
               })
-              .with_name(col_name);
+              .with_name(col_name.clone());
 
-            result = result.with_columns([transformed.into()])?;
+            let column = transformed.into_column();
+            result = result.hstack(&[column])?;
           }
           _ => {
             // Skip non-numeric columns
@@ -90,9 +91,10 @@ impl LogTransform {
                   }
                 })
               })
-              .with_name(col_name);
+              .with_name(col_name.clone());
 
-            result = result.with_columns([transformed.into()])?;
+            let column = transformed.into_column();
+            result = result.hstack(&[column])?;
           }
           _ => {
             // Skip non-numeric columns
@@ -138,9 +140,10 @@ impl DifferenceTransform {
 
             if len <= self.periods {
               // Not enough data for differencing, return NaN values
-              let nan_values = vec![None; len];
-              let transformed = Series::new(col_name, nan_values);
-              result = result.with_columns([transformed])?;
+              let nan_values: Vec<Option<f64>> = vec![None; len];
+              let transformed = Series::new(col_name.clone(), nan_values);
+              let column = transformed.into_column();
+              result = result.hstack(&[column])?;
               continue;
             }
 
@@ -163,8 +166,9 @@ impl DifferenceTransform {
               }
             }
 
-            let transformed = Series::new(col_name, diff_values);
-            result = result.with_columns([transformed])?;
+            let transformed = Series::new(col_name.clone(), diff_values);
+            let column = transformed.into_column();
+            result = result.hstack(&[column])?;
           }
           _ => {
             // Skip non-numeric columns
@@ -218,8 +222,9 @@ impl DifferenceTransform {
               }
             }
 
-            let transformed = Series::new(col_name, original_values);
-            result = result.with_columns([transformed])?;
+            let transformed = Series::new(col_name.clone(), original_values);
+            let column = transformed.into_column();
+            result = result.hstack(&[column])?;
           }
           _ => {
             // Skip non-numeric columns

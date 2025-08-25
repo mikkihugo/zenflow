@@ -18,15 +18,12 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     // Test file patterns - focused on unit tests
-    include: [
-      'tests/unit/**/*.test.ts',
-      'tests/basic.test.ts'
-    ],
+    include: ['tests/unit/**/*.test.ts', 'tests/basic.test.ts'],
     exclude: [
       'node_modules/**',
       'dist/**',
       'tests/integration/**',
-      'tests/e2e/**'
+      'tests/e2e/**',
     ],
 
     // Environment setup

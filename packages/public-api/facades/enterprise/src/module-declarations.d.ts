@@ -36,7 +36,6 @@ declare module '@claude-zen/agent-manager' {
   }
 }
 
-
 declare module '@claude-zen/multi-level-orchestration' {
   export class MultiLevelOrchestrationManager {
     initialize(): Promise<this>;

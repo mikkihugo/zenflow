@@ -80,6 +80,17 @@ pub mod results;
 pub mod utils;
 pub mod optimization;
 pub mod error;
+pub mod runtime_detection;
+
+// Export runtime detection for Node.js/browser usage
+pub use runtime_detection::{
+    get_runtime_hardware, 
+    get_optimal_features, 
+    RuntimeHardware, 
+    Platform, 
+    Architecture, 
+    OptimizationLevel
+};
 
 // Core abstractions
 // Re-export from external crates (commented out - standalone package)

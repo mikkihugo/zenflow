@@ -49,7 +49,7 @@ export class LogTapeSyslogBridge {
     } catch (error) {
       // Use direct error logging to avoid circular dependency with syslog bridge
       process.stderr.write(
-        `[SyslogBridge] Failed to initialize syslog bridge: ${error}\n`,
+        `[SyslogBridge] Failed to initialize syslog bridge: ${error}\n`
       );
       this.isEnabled = false;
     }
@@ -111,12 +111,13 @@ export class LogTapeSyslogBridge {
       const syslogPriority = this.mapLogLevel(level);
 
       // Use logger command to send to syslog
-      const loggerProcess = spawn('logger',
+      const loggerProcess = spawn(
+        'logger',
         ['-t', this.componentName, '-p', syslogPriority, message],
         {
           stdio: 'ignore',
           detached: true,
-        },
+        }
       );
 
       loggerProcess.unref();
@@ -124,10 +125,10 @@ export class LogTapeSyslogBridge {
       // Fallback to direct stdout if logger command fails (avoid circular logging)
       const errorMsg = error instanceof Error ? error.message : String(error);
       process.stdout.write(
-        `SYSLOG[${level.toUpperCase()}] ${this.componentName}: ${message}\n`,
+        `SYSLOG[${level.toUpperCase()}] ${this.componentName}: ${message}\n`
       );
       process.stderr.write(
-        `SYSLOG_ERROR: Failed to write to syslog: ${errorMsg}\n`,
+        `SYSLOG_ERROR: Failed to write to syslog: ${errorMsg}\n`
       );
     }
   }
@@ -137,17 +138,17 @@ export class LogTapeSyslogBridge {
    */
   private mapLogLevel(level: string): string {
     switch (level.toLowerCase()) {
-    case 'fatal':
-    case 'error':
-      return 'user.err';
-    case 'warn':
-      return 'user.warning';
-    case 'info':
-      return 'user.info';
-    case 'debug':
-      return 'user.debug';
-    default:
-      return 'user.info';
+      case 'fatal':
+      case 'error':
+        return 'user.err';
+      case 'warn':
+        return 'user.warning';
+      case 'info':
+        return 'user.info';
+      case 'debug':
+        return 'user.debug';
+      default:
+        return 'user.info';
     }
   }
 
@@ -157,8 +158,9 @@ export class LogTapeSyslogBridge {
   private logViaLogTape(entry: SyslogEntry): void {
     // Map to LogTape methods (no 'fatal' method)
     const logMethod =
-      entry.level === 'fatal'? this.logger.error
-        : this.logger[entry.level]||this.logger.info;
+      entry.level === 'fatal'
+        ? this.logger.error
+        : this.logger[entry.level] || this.logger.info;
     logMethod.call(this.logger, entry.message, {
       component: entry.component,
       metadata: entry.metadata,
@@ -174,11 +176,11 @@ export class LogTapeSyslogBridge {
   public info(
     component: string,
     message: string,
-    metadata?: UnknownRecord,
+    metadata?: UnknownRecord
   ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
-      level:'info',
+      level: 'info',
       component,
       message,
       metadata,
@@ -188,7 +190,7 @@ export class LogTapeSyslogBridge {
   public warn(
     component: string,
     message: string,
-    metadata?: UnknownRecord,
+    metadata?: UnknownRecord
   ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
@@ -202,7 +204,7 @@ export class LogTapeSyslogBridge {
   public error(
     component: string,
     message: string,
-    metadata?: UnknownRecord,
+    metadata?: UnknownRecord
   ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
@@ -216,7 +218,7 @@ export class LogTapeSyslogBridge {
   public debug(
     component: string,
     message: string,
-    metadata?: UnknownRecord,
+    metadata?: UnknownRecord
   ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
@@ -252,7 +254,7 @@ export class LogTapeSyslogBridge {
       this.info('test', 'Syslog integration test message');
 
       // Allow time for syslog message to be processed
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       return true;
     } catch (error) {

@@ -15,7 +15,7 @@ export async function pTimeout<T>(
   message?: string
 ): Promise<T> {
   let timeoutHandle: NodeJS.Timeout | undefined;
-  
+
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutHandle = setTimeout(() => {
       reject(new Error(message || `Promise timed out after ${ms}ms`));
@@ -41,21 +41,21 @@ export async function withRetry<T>(
   baseDelay: number = 1000
 ): Promise<Result<T, Error>> {
   let lastError: Error = new Error('Unknown error');
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const result = await fn();
       return ok(result);
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      
+
       if (attempt < maxRetries) {
         const delay = baseDelay * Math.pow(2, attempt);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
-  
+
   return err(lastError);
 }
 
@@ -67,7 +67,7 @@ export async function concurrent<T>(
   limit: number = 3
 ): Promise<Result<T[], Error>[]> {
   const results: Result<T[], Error>[] = [];
-  
+
   for (let i = 0; i < tasks.length; i += limit) {
     const batch = tasks.slice(i, i + limit);
     const batchPromises = batch.map(async (task) => {
@@ -78,11 +78,11 @@ export async function concurrent<T>(
         return err(error instanceof Error ? error : new Error(String(error)));
       }
     });
-    
+
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
   }
-  
+
   return results;
 }
 

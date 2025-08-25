@@ -73,7 +73,7 @@ const DANGEROUS_PATTERNS = [
   {
     pattern:
       /\b[a-z]:[/\\]\S+\.(ts|js|tsx|jsx|py|java|cpp|c|h|cs|php|rb|go|rs|swift|kt|scala|clj|hs|ml|fs|dart|lua|pl|r|m|sh|bat|ps1)\b/gi,
-    type:'parsing' as const,
+    type: 'parsing' as const,
     severity: 'warning' as const,
     message: 'Contains specific file paths that may cause parsing confusion',
     suggestion: 'Use relative paths or generic file references',
@@ -88,7 +88,7 @@ const DANGEROUS_PATTERNS = [
   },
   {
     pattern: /\b(rm\s+-rf|del\s+\/[qs]|format\s+c:|sudo\s+rm)/gi,
-    type:'safety' as const,
+    type: 'safety' as const,
     severity: 'critical' as const,
     message: 'Contains potentially destructive system commands',
     suggestion: 'Remove destructive system commands from prompts',
@@ -96,7 +96,7 @@ const DANGEROUS_PATTERNS = [
   // Command injection patterns
   {
     pattern: /[$&();[\]`{|}]/g,
-    type:'safety' as const,
+    type: 'safety' as const,
     severity: 'warning' as const,
     message:
       'Contains shell metacharacters that could enable command injection',
@@ -106,7 +106,7 @@ const DANGEROUS_PATTERNS = [
   {
     pattern:
       /\b(password|token|key|secret|api[_-]?key|auth[_-]?token)\s*[:=]\s*\S+/gi,
-    type:'safety' as const,
+    type: 'safety' as const,
     severity: 'critical' as const,
     message: 'Contains potential credentials or secrets',
     suggestion: 'Remove credentials and use secure configuration instead',
@@ -117,14 +117,14 @@ const DANGEROUS_PATTERNS = [
 const QUALITY_PATTERNS = [
   {
     pattern: /\b(please|help|assist|can you|could you)\b/gi,
-    type:'quality' as const,
+    type: 'quality' as const,
     severity: 'info' as const,
     message: 'Uses polite language - good practice',
     suggestion: null,
   },
   {
     pattern: /\b(step by step|systematic|detailed|comprehensive|thorough)\b/gi,
-    type:'quality' as const,
+    type: 'quality' as const,
     severity: 'info' as const,
     message: 'Requests systematic approach - good practice',
     suggestion: null,
@@ -134,8 +134,10 @@ const QUALITY_PATTERNS = [
 /**
  * Basic validation for prompt input
  */
-function validateBasicPromptInput(prompt: string): PromptValidationResult | null {
-  if (!prompt||typeof prompt !=='string') {
+function validateBasicPromptInput(
+  prompt: string
+): PromptValidationResult | null {
+  if (!prompt || typeof prompt !== 'string') {
     return {
       isValid: false,
       issues: [
@@ -154,7 +156,10 @@ function validateBasicPromptInput(prompt: string): PromptValidationResult | null
 /**
  * Validate prompt length and complexity
  */
-function validatePromptLength(prompt: string, issues: PromptIssue[]): 'low' | 'medium' | 'high' | 'critical' {
+function validatePromptLength(
+  prompt: string,
+  issues: PromptIssue[]
+): 'low' | 'medium' | 'high' | 'critical' {
   let risk: 'low' | 'medium' | 'high' | 'critical' = 'low';
 
   if (prompt.length > PROMPT_VALIDATION_CONFIG.MAX_PROMPT_LENGTH) {
@@ -193,7 +198,10 @@ function validatePromptLength(prompt: string, issues: PromptIssue[]): 'low' | 'm
 /**
  * Update risk level based on severity
  */
-function updateRiskLevel(severity: 'critical' | 'error' | 'warning' | 'info', currentRisk: 'low' | 'medium' | 'high' | 'critical'): 'low' | 'medium' | 'high' | 'critical' {
+function updateRiskLevel(
+  severity: 'critical' | 'error' | 'warning' | 'info',
+  currentRisk: 'low' | 'medium' | 'high' | 'critical'
+): 'low' | 'medium' | 'high' | 'critical' {
   if (severity === 'critical') {
     return 'critical';
   }
@@ -209,7 +217,11 @@ function updateRiskLevel(severity: 'critical' | 'error' | 'warning' | 'info', cu
 /**
  * Check for dangerous patterns in prompt
  */
-function checkDangerousPatterns(prompt: string, issues: PromptIssue[], currentRisk: 'low' | 'medium' | 'high' | 'critical'): { risk: 'low' | 'medium' | 'high' | 'critical', filteredPrompt: string } {
+function checkDangerousPatterns(
+  prompt: string,
+  issues: PromptIssue[],
+  currentRisk: 'low' | 'medium' | 'high' | 'critical'
+): { risk: 'low' | 'medium' | 'high' | 'critical'; filteredPrompt: string } {
   let risk = currentRisk;
   let filteredPrompt = prompt;
 
@@ -233,7 +245,7 @@ function checkDangerousPatterns(prompt: string, issues: PromptIssue[], currentRi
       ) {
         filteredPrompt = filteredPrompt.replace(
           dangerousPattern.pattern,
-          '[FILTERED_CONTENT]',
+          '[FILTERED_CONTENT]'
         );
         logger.debug('🧹 Filtered parsing interference pattern from prompt');
       }
@@ -269,17 +281,17 @@ function generateRecommendations(issues: PromptIssue[]): string[] {
 
   if (criticalIssues.length > 0) {
     recommendations.push(
-      '🚨 Address critical security issues before proceeding',
+      '🚨 Address critical security issues before proceeding'
     );
     recommendations.push(
-      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean),
+      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
     );
   }
 
   if (errorIssues.length > 0) {
     recommendations.push('⚠️  Fix error-level issues for better reliability');
     recommendations.push(
-      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean),
+      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
     );
   }
 
@@ -289,10 +301,14 @@ function generateRecommendations(issues: PromptIssue[]): string[] {
 /**
  * Log validation results if configured
  */
-function logValidationResults(isValid: boolean, risk: 'low' | 'medium' | 'high' | 'critical', issues: PromptIssue[]): void {
+function logValidationResults(
+  isValid: boolean,
+  risk: 'low' | 'medium' | 'high' | 'critical',
+  issues: PromptIssue[]
+): void {
   if (
     PROMPT_VALIDATION_CONFIG.LOG_VALIDATION_FAILURES &&
-    (!isValid||issues.length > 0)
+    (!isValid || issues.length > 0)
   ) {
     const criticalIssues = issues.filter((i) => i.severity === 'critical');
     const errorIssues = issues.filter((i) => i.severity === 'error');
@@ -320,14 +336,18 @@ export function validatePrompt(prompt: string): PromptValidationResult {
   const issues: PromptIssue[] = [];
   let risk = validatePromptLength(prompt, issues);
 
-  const { risk: updatedRisk, filteredPrompt } = checkDangerousPatterns(prompt, issues, risk);
+  const { risk: updatedRisk, filteredPrompt } = checkDangerousPatterns(
+    prompt,
+    issues,
+    risk
+  );
   risk = updatedRisk;
 
   checkQualityPatterns(prompt, issues);
 
   const recommendations = generateRecommendations(issues);
   const criticalIssues = issues.filter((i) => i.severity === 'critical');
-  const isValid = risk !== 'critical'&& criticalIssues.length === 0;
+  const isValid = risk !== 'critical' && criticalIssues.length === 0;
 
   logValidationResults(isValid, risk, issues);
 
@@ -345,7 +365,7 @@ export function validatePrompt(prompt: string): PromptValidationResult {
  */
 export function filterClaudeOutput(
   output: string,
-  context: 'stderr' | 'stdout' = 'stdout',
+  context: 'stderr' | 'stdout' = 'stdout'
 ): {
   cleanOutput: string;
   filteredLines: string[];
@@ -384,7 +404,7 @@ export function filterClaudeOutput(
     ].some((pattern) => pattern.test(trimmedLine));
 
     // Special handling for stderr - be more conservative
-    if (context ==='stderr') {
+    if (context === 'stderr') {
       // Only include lines that look like actual error output from tools
       // TypeScript errors: path(line,col): error TSnnnn: message
       const isActualError =
@@ -393,7 +413,7 @@ export function filterClaudeOutput(
       if (isDescriptivePattern && !isActualError) {
         filteredLines.push(line);
         parsingWarnings.push(
-          `Filtered descriptive pattern from stderr: ${trimmedLine.substring(0, 80)}...`,
+          `Filtered descriptive pattern from stderr: ${trimmedLine.substring(0, 80)}...`
         );
         continue;
       }
@@ -403,7 +423,7 @@ export function filterClaudeOutput(
     if (isDescriptivePattern) {
       filteredLines.push(line);
       parsingWarnings.push(
-        `Filtered descriptive pattern: ${trimmedLine.substring(0, 80)}...`,
+        `Filtered descriptive pattern: ${trimmedLine.substring(0, 80)}...`
       );
       continue;
     }
@@ -426,18 +446,18 @@ export function validateAndRejectPrompt(prompt: string): string {
 
   if (!validation.isValid) {
     const criticalIssues = validation.issues.filter(
-      (i) => i.severity === 'critical',
+      (i) => i.severity === 'critical'
     );
 
     throw new Error(
       `Prompt validation failed with ${criticalIssues.length} critical issue(s): ${criticalIssues
         .map((i) => i.message)
-        .join('; ')}`,
+        .join('; ')}`
     );
   }
 
   // Return filtered prompt if available, otherwise original
-  return validation.filteredPrompt||prompt;
+  return validation.filteredPrompt || prompt;
 }
 
 /**
@@ -449,7 +469,7 @@ export function createSafePrompt(
     enableFiltering?: boolean;
     strictValidation?: boolean;
     logValidation?: boolean;
-  } = {},
+  } = {}
 ): string {
   const config = {
     enableFiltering:
@@ -466,7 +486,7 @@ export function createSafePrompt(
 
   if (config.logValidation && validation.issues.length > 0) {
     logger.info(
-      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level: ${validation.risk}`,
+      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level: ${validation.risk}`
     );
   }
 
@@ -474,9 +494,9 @@ export function createSafePrompt(
   if (config.strictValidation && !validation.isValid) {
     throw new Error(
       `Prompt rejected due to safety concerns: ${validation.issues
-        .filter((i) => i.severity ==='critical')
+        .filter((i) => i.severity === 'critical')
         .map((i) => i.message)
-        .join('; ')}`,
+        .join('; ')}`
     );
   }
 

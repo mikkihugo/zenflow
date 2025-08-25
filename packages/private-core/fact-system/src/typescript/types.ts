@@ -57,7 +57,19 @@ export interface FactSearchQuery {
   query: string;
 
   /** Fact types to search within */
-  factTypes?: ('npm-package' | 'github-repo' | 'security-advisory' | 'hex-package' | 'api-docs' | 'rust-crate' | 'go-module' | 'perl-package' | 'java-package' | 'gitlab-repo' | 'bitbucket-repo')[];
+  factTypes?: (
+    | 'npm-package'
+    | 'github-repo'
+    | 'security-advisory'
+    | 'hex-package'
+    | 'api-docs'
+    | 'rust-crate'
+    | 'go-module'
+    | 'perl-package'
+    | 'java-package'
+    | 'gitlab-repo'
+    | 'bitbucket-repo'
+  )[];
 
   /** Data sources to search within */
   sources?: string[];
@@ -74,7 +86,18 @@ export interface FactSearchQuery {
  */
 export interface FactQuery {
   /** Fact type to query (npm-package, github-repo, security-advisory, hex-package, rust-crate, go-module, perl-package, java-package, gitlab-repo, bitbucket-repo) */
-  factType: 'npm-package' | 'github-repo' | 'security-advisory' | 'hex-package' | 'api-docs' | 'rust-crate' | 'go-module' | 'perl-package' | 'java-package' | 'gitlab-repo' | 'bitbucket-repo';
+  factType:
+    | 'npm-package'
+    | 'github-repo'
+    | 'security-advisory'
+    | 'hex-package'
+    | 'api-docs'
+    | 'rust-crate'
+    | 'go-module'
+    | 'perl-package'
+    | 'java-package'
+    | 'gitlab-repo'
+    | 'bitbucket-repo';
 
   /** Specific identifier (package name, repo name, CVE ID, etc.) */
   identifier: string;
@@ -98,7 +121,18 @@ export interface FactQuery {
  */
 export interface FactSearchResult {
   /** Type of resource this points to */
-  factType: 'npm-package' | 'github-repo' | 'security-advisory' | 'hex-package' | 'api-docs' | 'rust-crate' | 'go-module' | 'perl-package' | 'java-package' | 'gitlab-repo' | 'bitbucket-repo';
+  factType:
+    | 'npm-package'
+    | 'github-repo'
+    | 'security-advisory'
+    | 'hex-package'
+    | 'api-docs'
+    | 'rust-crate'
+    | 'go-module'
+    | 'perl-package'
+    | 'java-package'
+    | 'gitlab-repo'
+    | 'bitbucket-repo';
 
   /** Resource identifier (package name, repo owner/name, CVE ID) */
   identifier: string;
@@ -138,7 +172,18 @@ export interface FactResult {
   identifier: string;
 
   /** Structured fact data */
-  data: NPMFactResult | GitHubFactResult | SecurityFactResult | HexFactResult | APIDocumentationFactResult | RustCrateFactResult | GoModuleFactResult | PerlPackageFactResult | JavaPackageFactResult | GitLabRepoFactResult | BitbucketRepoFactResult;
+  data:
+    | NPMFactResult
+    | GitHubFactResult
+    | SecurityFactResult
+    | HexFactResult
+    | APIDocumentationFactResult
+    | RustCrateFactResult
+    | GoModuleFactResult
+    | PerlPackageFactResult
+    | JavaPackageFactResult
+    | GitLabRepoFactResult
+    | BitbucketRepoFactResult;
 
   /** Data freshness indicator */
   isCached: boolean;
@@ -920,7 +965,13 @@ export interface BitbucketRepoFactResult {
 // MISSING TYPES - Add placeholder types for missing exports
 // =============================================================================
 
-export type FactSourceType = 'npm' | 'github' | 'rust' | 'go' | 'api' | 'security';
+export type FactSourceType =
+  | 'npm'
+  | 'github'
+  | 'rust'
+  | 'go'
+  | 'api'
+  | 'security';
 
 export interface FactProcessingOptions {
   parallel?: boolean;

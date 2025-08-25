@@ -21,9 +21,9 @@ import { SeededRNG } from '../primitives/seeded-rng';
  */
 export interface EnsembleConfig {
   /** Reduce function to combine outputs (e.g., dspy.majority) */
-  reduce_fn?: ((outputs: Prediction[]) => Prediction)|null;
+  reduce_fn?: ((outputs: Prediction[]) => Prediction) | null;
   /** Number of programs to sample for ensemble (null = use all) */
-  size?: number|null;
+  size?: number | null;
   /** Whether to use deterministic sampling (not implemented yet) */
   deterministic?: boolean;
 }
@@ -34,13 +34,13 @@ export interface EnsembleConfig {
  */
 class EnsembledProgram extends DSPyModule {
   private programs: DSPyModule[];
-  private reduceFunction?: ((outputs: Prediction[]) => Prediction)|null;
-  private size?: number|null;
+  private reduceFunction?: ((outputs: Prediction[]) => Prediction) | null;
+  private size?: number | null;
   private rng: SeededRNG;
 
   constructor(
     programs: DSPyModule[],
-    reduceFunction?: ((outputs: Prediction[]) => Prediction)|null,
+    reduceFunction?: ((outputs: Prediction[]) => Prediction) | null,
     size?: number | null
   ) {
     super();
@@ -80,7 +80,7 @@ class EnsembledProgram extends DSPyModule {
       data: { outputs },
       reasoning: `Ensemble of ${outputs.length} programs`,
       confidence:
-        outputs.reduce((sum, output) => sum + (output.confidence||0), 0) /
+        outputs.reduce((sum, output) => sum + (output.confidence || 0), 0) /
         outputs.length,
     };
   }
@@ -91,7 +91,7 @@ class EnsembledProgram extends DSPyModule {
   predictors(): any[] {
     const allPredictors: any[] = [];
     for (const program of this.programs) {
-      if (typeof program.predictors ==='function') {
+      if (typeof program.predictors === 'function') {
         allPredictors.push(...program.predictors())();
       }
     }
@@ -269,13 +269,14 @@ export class Ensemble {
     // Validate deterministic parameter (not implemented yet)
     if (config.deterministic === true) {
       throw new Error(
-        'TODO: Implement example hashing for deterministic ensemble.');
+        'TODO: Implement example hashing for deterministic ensemble.'
+      );
     }
 
     this.config = {
-      reduce_fn: config.reduce_fn||null,
-      size: config.size||null,
-      deterministic: config.deterministic||false,
+      reduce_fn: config.reduce_fn || null,
+      size: config.size || null,
+      deterministic: config.deterministic || false,
     };
   }
 
@@ -287,7 +288,7 @@ export class Ensemble {
    * @returns EnsembledProgram that combines all input programs
    */
   compile(programs: DSPyModule[]): EnsembledProgram {
-    if (!Array.isArray(programs)||programs.length === 0) {
+    if (!Array.isArray(programs) || programs.length === 0) {
       throw new Error('Programs must be a non-empty array of DSPy modules');
     }
 

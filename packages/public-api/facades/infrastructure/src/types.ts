@@ -51,7 +51,7 @@ export interface ConfigHelpers {
 
 export interface TelemetrySpan {
   readonly setAttributes: (
-    attributes: Record<string, string|number|boolean>
+    attributes: Record<string, string | number | boolean>
   ) => void;
   readonly end: () => void;
 }
@@ -101,7 +101,7 @@ export interface DatabaseTransaction {
 
 export interface KeyValueStore {
   readonly set: (key: string, value: string) => Promise<void>;
-  readonly get: (key: string) => Promise<string|null>;
+  readonly get: (key: string) => Promise<string | null>;
   readonly delete: (key: string) => Promise<void>;
   readonly exists: (key: string) => Promise<boolean>;
   readonly keys: (pattern?: string) => Promise<readonly string[]>;
@@ -124,7 +124,7 @@ export interface DatabaseSystemAccess {
 // EVENT SYSTEM TYPES
 // =============================================================================
 
-export type EventHandler<T = unknown> = (data: T) => void|Promise<void>;
+export type EventHandler<T = unknown> = (data: T) => void | Promise<void>;
 
 export interface EventBus {
   readonly emit: <T = unknown>(event: string, data: T) => Promise<void>;
@@ -146,7 +146,7 @@ export interface EventBus {
 export interface LoadBalancerRequest {
   readonly id: string;
   readonly payload: unknown;
-  readonly priority?:'low|medium|high';
+  readonly priority?: 'low|medium|high';
   readonly timeout?: number;
 }
 
@@ -168,7 +168,11 @@ export interface LoadBalancerStats {
 }
 
 export interface LoadBalancerConfig {
-  readonly strategy: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware';
+  readonly strategy:
+    | 'round-robin'
+    | 'least-connections'
+    | 'weighted'
+    | 'resource-aware';
   readonly maxRetries: number;
   readonly timeoutMs: number;
   readonly healthCheckInterval?: number;
@@ -306,7 +310,7 @@ export interface ValidationResult<T = unknown> {
 // UTILITY TYPES
 // =============================================================================
 
-export type MaybePromise<T> = T|Promise<T>;
+export type MaybePromise<T> = T | Promise<T>;
 
 export interface ServiceHealth {
   readonly healthy: boolean;
@@ -316,7 +320,7 @@ export interface ServiceHealth {
 
 export interface FacadeStatus {
   readonly name: string;
-  readonly packages: Record<string,'available|partial|unavailable'>;
+  readonly packages: Record<string, 'available|partial|unavailable'>;
   readonly capability: 'full|partial|degraded|unavailable';
   readonly healthScore: number;
 }

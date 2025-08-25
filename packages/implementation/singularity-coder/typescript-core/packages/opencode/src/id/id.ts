@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { randomBytes } from "crypto"
 
 export namespace Identifier {

@@ -179,60 +179,68 @@ impl Theme for DraculaTheme {
 }
 
 /// Theme manager for handling multiple themes
-#[derive(Debug, Clone)]
 pub struct ThemeManager {
-    current_theme: Box<dyn Theme + Send + Sync>,
-    available_themes: HashMap<String, Box<dyn Theme + Send + Sync>>,
+    current_theme_name: String,
+    available_themes: HashMap<String, String>, // Store theme names instead of trait objects
 }
 
 impl Default for ThemeManager {
     fn default() -> Self {
-        let mut manager = Self {
-            current_theme: Box::new(DefaultTheme),
-            available_themes: HashMap::new(),
-        };
+        let mut available_themes = HashMap::new();
+        available_themes.insert("default".to_string(), "default".to_string());
+        available_themes.insert("gruvbox".to_string(), "gruvbox".to_string());
+        available_themes.insert("dracula".to_string(), "dracula".to_string());
         
-        // Register built-in themes
-        manager.register_theme(Box::new(DefaultTheme));
-        manager.register_theme(Box::new(GruvboxTheme));
-        manager.register_theme(Box::new(DraculaTheme));
-        
-        manager
+        Self {
+            current_theme_name: "default".to_string(),
+            available_themes,
+        }
     }
 }
 
 impl ThemeManager {
     /// Register a new theme
-    pub fn register_theme(&mut self, theme: Box<dyn Theme + Send + Sync>) {
-        let name = theme.name().to_string();
-        self.available_themes.insert(name, theme);
+    pub fn register_theme(&mut self, name: String) {
+        self.available_themes.insert(name.clone(), name);
     }
     
     /// Set the current theme by name
     pub fn set_theme(&mut self, name: &str) -> anyhow::Result<()> {
-        if let Some(theme) = self.available_themes.get(name) {
-            // Clone the theme (this requires implementing Clone for the theme)
-            // For now, we'll recreate the theme based on name
+        if let Some(_theme) = self.available_themes.get(name) {
             match name {
-                "default" => self.current_theme = Box::new(DefaultTheme),
-                "gruvbox" => self.current_theme = Box::new(GruvboxTheme),
-                "dracula" => self.current_theme = Box::new(DraculaTheme),
-                _ => return Err(anyhow::anyhow!("Unknown theme: {}", name)),
+                "default" | "gruvbox" | "dracula" => {
+                    self.current_theme_name = name.to_string();
+                    Ok(())
+                }
+                _ => Err(anyhow::anyhow!("Unknown theme: {}", name)),
             }
-            Ok(())
         } else {
             Err(anyhow::anyhow!("Theme not found: {}", name))
         }
     }
     
     /// Get the current theme
-    pub fn current_theme(&self) -> &dyn Theme {
-        self.current_theme.as_ref()
+    pub fn current_theme(&self) -> Box<dyn Theme + Send + Sync> {
+        match self.current_theme_name.as_str() {
+            "gruvbox" => Box::new(GruvboxTheme),
+            "dracula" => Box::new(DraculaTheme),
+            _ => Box::new(DefaultTheme),
+        }
+    }
+    
+    /// Clone the current theme
+    pub fn clone_current_theme(&self) -> Box<dyn Theme + Send + Sync> {
+        self.current_theme()
     }
     
     /// Get list of available theme names
     pub fn available_themes(&self) -> Vec<String> {
         self.available_themes.keys().cloned().collect()
+    }
+    
+    /// Get current theme name
+    pub fn current_theme_name(&self) -> &str {
+        &self.current_theme_name
     }
 }
 

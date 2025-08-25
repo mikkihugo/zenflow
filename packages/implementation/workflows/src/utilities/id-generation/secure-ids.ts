@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { nanoid, customAlphabet } from 'nanoid';
+import { generateNanoId, customAlphabet } from '@claude-zen/foundation';
 
 /**
  * Professional secure ID generation utilities
@@ -18,28 +18,28 @@ export class SecureIdGenerator {
    * Generate secure random ID
    */
   static generate(size: number = 21): string {
-    return nanoid(size);
+    return generateNanoId(size);
   }
 
   /**
    * Generate workflow-specific ID
    */
   static generateWorkflowId(): string {
-    return `workflow-${nanoid(12)}`;`
+    return `workflow-${generateNanoId(12)}`;`
   }
 
   /**
    * Generate step-specific ID
    */
   static generateStepId(): string {
-    return `step-${nanoid(10)}`;`
+    return `step-${generateNanoId(10)}`;`
   }
 
   /**
    * Generate execution ID
    */
   static generateExecutionId(): string {
-    return `exec-${nanoid(8)}`;`
+    return `exec-${generateNanoId(8)}`;`
   }
 
   /**

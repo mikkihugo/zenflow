@@ -14,20 +14,20 @@ export class ResourceMonitor implements ResourceMonitor {
   private thresholds: Map<string, Record<string, number>> = new Map();
   private monitoringIntervals: Map<string, NodeJS.Timeout> = new Map();
 
-  public async startMonitoring(agentId: string): Promise<void> {
+  public startMonitoring(agentId: string): void {
     if (this.monitoringAgents.has(agentId)) return;
 
     this.monitoringAgents.add(agentId);
 
     // Start periodic monitoring
-    const interval = setInterval(async () => {
-      await this.collectMetrics(agentId);
+    const interval = setInterval(() => {
+      this.collectMetrics(agentId);
     }, 5000); // Collect every 5 seconds
 
     this.monitoringIntervals.set(agentId, interval);
   }
 
-  public async stopMonitoring(agentId: string): Promise<void> {
+  public stopMonitoring(agentId: string): void {
     this.monitoringAgents.delete(agentId);
 
     const interval = this.monitoringIntervals.get(agentId);
@@ -39,27 +39,27 @@ export class ResourceMonitor implements ResourceMonitor {
     this.metricsCache.delete(agentId);
   }
 
-  public async getCurrentMetrics(agentId: string): Promise<LoadMetrics | null> {
+  public getCurrentMetrics(agentId: string): LoadMetrics | null {
     return this.metricsCache.get(agentId) || null;
   }
 
-  public async getHistoricalMetrics(
+  public getHistoricalMetrics(
     agentId: string,
-    _timeRange: { start: Date; end: Date }
-  ): Promise<LoadMetrics[]> {
+    timeRange: { start: Date; end: Date }
+  ): LoadMetrics[] {
     // In a real implementation, this would query a time-series database
     const current = this.metricsCache.get(agentId);
     return current ? [current] : [];
   }
 
-  public async setThresholds(
+  public setThresholds(
     agentId: string,
     thresholds: Record<string, number>
-  ): Promise<void> {
+  ): void {
     this.thresholds.set(agentId, thresholds);
   }
 
-  private async collectMetrics(agentId: string): Promise<void> {
+  private collectMetrics(agentId: string): void {
     // Mock metrics collection - in practice this would query actual agent metrics
     const metrics: LoadMetrics = {
       timestamp: new Date(),

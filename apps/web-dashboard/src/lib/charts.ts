@@ -3,18 +3,18 @@
  * Provides reusable chart configurations and components
  */
 
-import { 
-  Chart as ChartJS, 
-  CategoryScale, 
-  LinearScale, 
-  PointElement, 
-  LineElement, 
-  BarElement, 
-  Title, 
-  Tooltip, 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
   Legend,
   type ChartOptions,
-  type ChartData
+  type ChartData,
 } from 'chart.js';
 
 // Register Chart.js components
@@ -48,7 +48,7 @@ export const chartTheme = {
     success: ['#10b981', '#059669'],
     warning: ['#f59e0b', '#d97706'],
     error: ['#ef4444', '#dc2626'],
-  }
+  },
 };
 
 /**
@@ -62,8 +62,8 @@ export const baseChartOptions: Partial<ChartOptions> = {
       position: 'top',
       labels: {
         color: '#e2e8f0',
-        font: { family: 'Inter, system-ui, sans-serif' }
-      }
+        font: { family: 'Inter, system-ui, sans-serif' },
+      },
     },
     tooltip: {
       backgroundColor: '#1e293b',
@@ -71,18 +71,18 @@ export const baseChartOptions: Partial<ChartOptions> = {
       bodyColor: '#e2e8f0',
       borderColor: '#475569',
       borderWidth: 1,
-    }
+    },
   },
   scales: {
     x: {
       ticks: { color: '#94a3b8' },
-      grid: { color: '#334155' }
+      grid: { color: '#334155' },
     },
     y: {
       ticks: { color: '#94a3b8' },
-      grid: { color: '#334155' }
-    }
-  }
+      grid: { color: '#334155' },
+    },
+  },
 };
 
 /**
@@ -101,7 +101,7 @@ export function createPerformanceChart(data: {
           label: 'CPU Usage (%)',
           data: data.cpu,
           borderColor: chartTheme.colors.primary,
-          backgroundColor: `${chartTheme.colors.primary  }20`,
+          backgroundColor: `${chartTheme.colors.primary}20`,
           tension: 0.4,
           fill: false,
         },
@@ -109,11 +109,11 @@ export function createPerformanceChart(data: {
           label: 'Memory Usage (%)',
           data: data.memory,
           borderColor: chartTheme.colors.secondary,
-          backgroundColor: `${chartTheme.colors.secondary  }20`,
+          backgroundColor: `${chartTheme.colors.secondary}20`,
           tension: 0.4,
           fill: false,
-        }
-      ]
+        },
+      ],
     },
     options: {
       ...baseChartOptions,
@@ -126,10 +126,10 @@ export function createPerformanceChart(data: {
           ticks: {
             ...baseChartOptions.scales?.y?.ticks,
             callback(value) {
-              return `${value  }%`;
-            }
-          }
-        }
+              return `${value}%`;
+            },
+          },
+        },
       },
       plugins: {
         ...baseChartOptions.plugins,
@@ -137,10 +137,10 @@ export function createPerformanceChart(data: {
           display: true,
           text: 'System Performance',
           color: '#f8fafc',
-          font: { size: 16, weight: 'bold' }
-        }
-      }
-    } as ChartOptions<'line'>
+          font: { size: 16, weight: 'bold' },
+        },
+      },
+    } as ChartOptions<'line'>,
   };
 }
 
@@ -170,8 +170,8 @@ export function createAgentStatusChart(data: {
             chartTheme.colors.error,
           ],
           borderWidth: 1,
-        }
-      ]
+        },
+      ],
     },
     options: {
       ...baseChartOptions,
@@ -181,13 +181,13 @@ export function createAgentStatusChart(data: {
           display: true,
           text: 'Agent Status Distribution',
           color: '#f8fafc',
-          font: { size: 16, weight: 'bold' }
+          font: { size: 16, weight: 'bold' },
         },
         legend: {
-          display: false
-        }
-      }
-    } as ChartOptions<'bar'>
+          display: false,
+        },
+      },
+    } as ChartOptions<'bar'>,
   };
 }
 
@@ -208,7 +208,7 @@ export function createTaskTrendChart(data: {
           label: 'Completed',
           data: data.completed,
           borderColor: chartTheme.colors.success,
-          backgroundColor: `${chartTheme.colors.success  }10`,
+          backgroundColor: `${chartTheme.colors.success}10`,
           fill: 'origin',
           tension: 0.4,
         },
@@ -216,7 +216,7 @@ export function createTaskTrendChart(data: {
           label: 'In Progress',
           data: data.inProgress,
           borderColor: chartTheme.colors.info,
-          backgroundColor: `${chartTheme.colors.info  }10`,
+          backgroundColor: `${chartTheme.colors.info}10`,
           fill: '-1',
           tension: 0.4,
         },
@@ -224,11 +224,11 @@ export function createTaskTrendChart(data: {
           label: 'Pending',
           data: data.pending,
           borderColor: chartTheme.colors.warning,
-          backgroundColor: `${chartTheme.colors.warning  }10`,
+          backgroundColor: `${chartTheme.colors.warning}10`,
           fill: '-1',
           tension: 0.4,
-        }
-      ]
+        },
+      ],
     },
     options: {
       ...baseChartOptions,
@@ -238,7 +238,7 @@ export function createTaskTrendChart(data: {
           ...baseChartOptions.scales?.y,
           stacked: true,
           min: 0,
-        }
+        },
       },
       plugins: {
         ...baseChartOptions.plugins,
@@ -246,47 +246,42 @@ export function createTaskTrendChart(data: {
           display: true,
           text: 'Task Completion Trends',
           color: '#f8fafc',
-          font: { size: 16, weight: 'bold' }
-        }
-      }
-    } as ChartOptions<'line'>
+          font: { size: 16, weight: 'bold' },
+        },
+      },
+    } as ChartOptions<'line'>,
   };
 }
 
 /**
- * Create real-time metrics chart (updates automatically)
+ * Create default real-time chart datasets
  */
-export function createRealTimeChart(
-  maxDataPoints: number = 50
-): {
-  data: ChartData<'line'>;
-  options: ChartOptions<'line'>;
-  addDataPoint: (label: string, ...values: number[]) => void;
-  updateDataset: (datasetIndex: number, data: number[]) => void;
-} {
-  const chartData: ChartData<'line'> = {
-    labels: [],
-    datasets: [
-      {
-        label: 'CPU Usage',
-        data: [],
-        borderColor: chartTheme.colors.primary,
-        backgroundColor: `${chartTheme.colors.primary  }10`,
-        tension: 0.4,
-        fill: false,
-      },
-      {
-        label: 'Memory Usage',
-        data: [],
-        borderColor: chartTheme.colors.secondary,
-        backgroundColor: `${chartTheme.colors.secondary  }10`,
-        tension: 0.4,
-        fill: false,
-      }
-    ]
-  };
+function createDefaultRealTimeDatasets() {
+  return [
+    {
+      label: 'CPU Usage',
+      data: [],
+      borderColor: chartTheme.colors.primary,
+      backgroundColor: `${chartTheme.colors.primary}10`,
+      tension: 0.4,
+      fill: false,
+    },
+    {
+      label: 'Memory Usage',
+      data: [],
+      borderColor: chartTheme.colors.secondary,
+      backgroundColor: `${chartTheme.colors.secondary}10`,
+      tension: 0.4,
+      fill: false,
+    },
+  ];
+}
 
-  const options: ChartOptions<'line'> = {
+/**
+ * Create real-time chart options
+ */
+function createRealTimeChartOptions(): ChartOptions<'line'> {
+  return {
     ...baseChartOptions,
     interaction: {
       intersect: false,
@@ -303,7 +298,7 @@ export function createRealTimeChart(
         ...baseChartOptions.scales?.y,
         min: 0,
         max: 100,
-      }
+      },
     },
     plugins: {
       ...baseChartOptions.plugins,
@@ -311,19 +306,27 @@ export function createRealTimeChart(
         display: true,
         text: 'Real-time System Metrics',
         color: '#f8fafc',
-        font: { size: 16, weight: 'bold'}
-      }
+        font: { size: 16, weight: 'bold' },
+      },
     },
     elements: {
       point: {
         radius: 0, // Hide points for cleaner real-time look
-      }
-    }
+      },
+    },
   };
+}
 
+/**
+ * Create data point management functions for real-time chart
+ */
+function createRealTimeDataManagers(
+  chartData: ChartData<'line'>,
+  maxDataPoints: number
+) {
   const addDataPoint = (label: string, ...values: number[]) => {
     // Add new label
-    chartData.labels = chartData.labels||[];
+    chartData.labels = chartData.labels || [];
     chartData.labels.push(label);
 
     // Add data points to each dataset
@@ -348,18 +351,41 @@ export function createRealTimeChart(
     }
   };
 
+  return { addDataPoint, updateDataset };
+}
+
+/**
+ * Create real-time metrics chart (updates automatically)
+ */
+export function createRealTimeChart(maxDataPoints: number = 50): {
+  data: ChartData<'line'>;
+  options: ChartOptions<'line'>;
+  addDataPoint: (label: string, ...values: number[]) => void;
+  updateDataset: (datasetIndex: number, data: number[]) => void;
+} {
+  const chartData: ChartData<'line'> = {
+    labels: [],
+    datasets: createDefaultRealTimeDatasets(),
+  };
+
+  const options = createRealTimeChartOptions();
+  const { addDataPoint, updateDataset } = createRealTimeDataManagers(
+    chartData,
+    maxDataPoints
+  );
+
   return { data: chartData, options, addDataPoint, updateDataset };
 }
 
 /**
  * Format timestamp for chart labels
  */
-export function formatChartTimestamp(timestamp: string|Date): string {
+export function formatChartTimestamp(timestamp: string | Date): string {
   const date = new Date(timestamp);
   return date.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
   });
 }
 
@@ -369,18 +395,20 @@ export function formatChartTimestamp(timestamp: string|Date): string {
 export function generateChartColors(count: number): string[] {
   const colors = Object.values(chartTheme.colors);
   const result: string[] = [];
-  
+
   for (let i = 0; i < count; i++) {
     result.push(colors[i % colors.length]);
   }
-  
+
   return result;
 }
 
 /**
  * Chart configuration for responsive design
  */
-export function getResponsiveChartConfig(isMobile: boolean): Partial<ChartOptions> {
+export function getResponsiveChartConfig(
+  isMobile: boolean
+): Partial<ChartOptions> {
   return {
     ...baseChartOptions,
     plugins: {
@@ -392,8 +420,8 @@ export function getResponsiveChartConfig(isMobile: boolean): Partial<ChartOption
           ...baseChartOptions.plugins?.legend?.labels,
           boxWidth: isMobile ? 12 : 15,
           padding: isMobile ? 10 : 15,
-        }
-      }
+        },
+      },
     },
     scales: {
       ...baseChartOptions.scales,
@@ -403,19 +431,19 @@ export function getResponsiveChartConfig(isMobile: boolean): Partial<ChartOption
           ...baseChartOptions.scales?.x?.ticks,
           maxTicksLimit: isMobile ? 5 : 10,
           font: {
-            size: isMobile ? 10 : 12
-          }
-        }
+            size: isMobile ? 10 : 12,
+          },
+        },
       },
       y: {
         ...baseChartOptions.scales?.y,
         ticks: {
           ...baseChartOptions.scales?.y?.ticks,
           font: {
-            size: isMobile ? 10 : 12
-          }
-        }
-      }
-    }
+            size: isMobile ? 10 : 12,
+          },
+        },
+      },
+    },
   };
 }

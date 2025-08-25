@@ -31,7 +31,11 @@ const swarmService = new SwarmService();
  * Validation middleware for JSON schemas
  */
 function validateSchema(schema: unknown) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  return (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
     try {
       // Basic validation (in production, use ajv or similar)
       const data = req.body;
@@ -40,7 +44,7 @@ function validateSchema(schema: unknown) {
         for (const field of schema.required) {
           if (!(field in data)) {
             return res.status(400).json({
-              error: `Missing required field: ${  field}`,
+              error: `Missing required field: ${field}`,
               code: 'VALIDATION_ERROR',
             });
           }
@@ -139,7 +143,7 @@ router.post(
       data: result,
       metadata: {
         timestamp: new Date().toISOString(),
-        endpoint: `/api/v1/swarm/${  swarmId  }/agents`,
+        endpoint: `/api/v1/swarm/${swarmId}/agents`,
       },
     });
   })
@@ -162,7 +166,7 @@ router.post(
     logger.info('API: Orchestrating task', {
       config: {
         ...config,
-        task: `${config.task.substring(0, 10)  }...`,
+        task: `${config.task.substring(0, 10)}...`,
       },
     });
     const result = await swarmService.orchestrateTask(config);
@@ -209,7 +213,7 @@ router.get(
       data: result,
       metadata: {
         timestamp: new Date().toISOString(),
-        endpoint: `/api/v1/swarm/${  swarmId  }/status`,
+        endpoint: `/api/v1/swarm/${swarmId}/status`,
       },
     });
   })
@@ -247,7 +251,7 @@ router.get(
       data: result,
       metadata: {
         timestamp: new Date().toISOString(),
-        endpoint: `/api/v1/swarm/tasks/${  taskId}`,
+        endpoint: `/api/v1/swarm/tasks/${taskId}`,
       },
     });
   })
@@ -261,7 +265,7 @@ router.get(
   '/stats',
   handleErrors(async (req: express.Request, res: express.Response) => {
     logger.debug('API: Getting service stats');
-    const result = swarmService.getStats();
+    const result = await swarmService.getStats();
     res.json({
       success: true,
       data: result,

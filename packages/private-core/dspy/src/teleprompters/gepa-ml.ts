@@ -185,17 +185,17 @@ export class GEPAML extends Teleprompter {
   private eventEmitter: EventEmitter = new TypedEventBase();
   private config: GEPAMLConfig;
   private logger: Logger;
-  private mlEngine: MLEngine|null = null;
-  private bayesianOptimizer: BayesianOptimizer|null = null;
-  private multiObjectiveOptimizer: MultiObjectiveOptimizer|null = null;
-  private statisticalAnalyzer: StatisticalAnalyzer|null = null;
-  private patternLearner: PatternLearner|null = null;
+  private mlEngine: MLEngine | null = null;
+  private bayesianOptimizer: BayesianOptimizer | null = null;
+  private multiObjectiveOptimizer: MultiObjectiveOptimizer | null = null;
+  private statisticalAnalyzer: StatisticalAnalyzer | null = null;
+  private patternLearner: PatternLearner | null = null;
 
   // Evolution state
   private populations: Individual[][] = [];
   private currentGeneration: number = 0;
   private evolutionHistory: PopulationStats[] = [];
-  private bestIndividualOverall: Individual|null = null;
+  private bestIndividualOverall: Individual | null = null;
   private evaluationCount: number = 0;
   private fitnessCache: Map<string, number> = new Map();
 
@@ -225,7 +225,7 @@ export class GEPAML extends Teleprompter {
       crossoverRate: 0.8,
       mutationRate: 0.1,
       adaptiveRates: true,
-      selectionMethod:'tournament',
+      selectionMethod: 'tournament',
 
       // Multi-population defaults
       useMultiPopulation: true,
@@ -340,16 +340,16 @@ export class GEPAML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule|null;
-      valset?: any[]|null;
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const result = await this.compileML(
       student,
-      config.teacher||undefined,
+      config.teacher || undefined,
       config.trainset,
-      config.valset||undefined
+      config.valset || undefined
     );
     return result.optimizedModule;
   }
@@ -399,7 +399,7 @@ export class GEPAML extends Teleprompter {
       const result: GEPAMLResult = {
         optimizedModule,
         bestIndividual: this.bestIndividualOverall!,
-        finalPopulation: this.populations[0]||[],
+        finalPopulation: this.populations[0] || [],
         totalGenerations: this.currentGeneration,
 
         evolutionHistory: this.evolutionHistory,
@@ -503,7 +503,8 @@ export class GEPAML extends Teleprompter {
 
       // Update global best
       if (
-        !this.bestIndividualOverall||population[0].fitness > this.bestIndividualOverall.fitness
+        !this.bestIndividualOverall ||
+        population[0].fitness > this.bestIndividualOverall.fitness
       ) {
         this.bestIndividualOverall = { ...population[0] };
       }
@@ -557,7 +558,7 @@ export class GEPAML extends Teleprompter {
       const currentBest = Math.max(
         ...this.populations.flat().map((ind) => ind.fitness)
       );
-      if (currentBest > (this.bestIndividualOverall?.fitness||-Infinity)) {
+      if (currentBest > (this.bestIndividualOverall?.fitness || -Infinity)) {
         const bestIndividual = this.populations
           .flat()
           .find((ind) => ind.fitness === currentBest)!;
@@ -731,7 +732,7 @@ export class GEPAML extends Teleprompter {
     const parameterImpact = Object.values(parameters).reduce(
       (sum: number, value: any) => {
         const numValue =
-          typeof value === 'number'? value : parseFloat(value)||0;
+          typeof value === 'number' ? value : parseFloat(value) || 0;
         return sum + (numValue - 0.5) * 0.1;
       },
       0
@@ -743,7 +744,7 @@ export class GEPAML extends Teleprompter {
 
   private async selectParent(population: Individual[]): Promise<Individual> {
     switch (this.config.selectionMethod) {
-      case'tournament':
+      case 'tournament':
         return this.tournamentSelection(population);
       case 'roulette':
         return this.rouletteWheelSelection(population);
@@ -874,7 +875,7 @@ export class GEPAML extends Teleprompter {
   private calculateAdaptiveMutationStrength(individual: Individual): number {
     // Adapt mutation strength based on fitness and population diversity
     const baseMutation = 0.1;
-    const fitnessFactor = 1.0 - (individual.fitness||0); // Higher mutation for lower fitness
+    const fitnessFactor = 1.0 - (individual.fitness || 0); // Higher mutation for lower fitness
     const diversityFactor = this.getCurrentDiversity();
 
     return baseMutation * (1 + fitnessFactor) * (1 + diversityFactor);

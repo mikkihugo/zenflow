@@ -147,8 +147,7 @@ export interface LearningUpdate {
 
 // Pattern Recognition Types
 export interface PatternConfig {
-  pattern_types: (|'sequential|temporal|frequency|structural|behavioral|optimization'
-  )[];
+  pattern_types: 'sequential|temporal|frequency|structural|behavioral|optimization'[];
   min_support: number;
   min_confidence: number;
   max_pattern_length: number;

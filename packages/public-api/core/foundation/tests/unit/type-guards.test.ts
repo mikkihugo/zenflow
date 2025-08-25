@@ -18,7 +18,9 @@ describe('Type Guards', () => {
 
   it('should have advanced type guards', async () => {
     try {
-      const advanced = await import('../../src/types/guards/advanced.type.guards');
+      const advanced = await import(
+        '../../src/types/guards/advanced.type.guards'
+      );
       expect(advanced).toBeDefined();
     } catch (error) {
       // File might not exist, that's OK

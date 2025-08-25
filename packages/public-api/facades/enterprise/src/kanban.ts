@@ -18,7 +18,7 @@ async function loadKanbanModule() {
       kanbanModuleCache = await import('@claude-zen/taskmaster');
     } catch {
       console.warn(
-        'TaskMaster package not available, providing compatibility layer',
+        'TaskMaster package not available, providing compatibility layer'
       );
       kanbanModuleCache = {
         WorkflowKanban: class CompatibilityWorkflowKanban extends EventEmitter {
@@ -128,11 +128,11 @@ export type {
 // Define additional compatibility types and constants
 export const DEFAULT_WORKFLOW_STATES: TaskFlowState[] = [
   'backlog',
-  'analysis', 
+  'analysis',
   'development',
   'testing',
   'deployment',
-  'done'
+  'done',
 ];
 
 export const TASK_PRIORITIES = ['critical', 'high', 'medium', 'low'] as const;
@@ -142,13 +142,13 @@ export function isValidWorkflowState(state: string): state is TaskFlowState {
 }
 
 export function isValidTaskPriority(priority: string): boolean {
-  return TASK_PRIORITIES.includes(priority as typeof TASK_PRIORITIES[number]);
+  return TASK_PRIORITIES.includes(priority as (typeof TASK_PRIORITIES)[number]);
 }
 
 export function getNextWorkflowState(currentState: string): string | null {
   const index = DEFAULT_WORKFLOW_STATES.indexOf(currentState as TaskFlowState);
-  return index >= 0 && index < DEFAULT_WORKFLOW_STATES.length - 1 
-    ? DEFAULT_WORKFLOW_STATES[index + 1] 
+  return index >= 0 && index < DEFAULT_WORKFLOW_STATES.length - 1
+    ? DEFAULT_WORKFLOW_STATES[index + 1]
     : null;
 }
 

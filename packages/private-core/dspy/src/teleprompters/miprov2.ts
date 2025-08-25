@@ -41,23 +41,23 @@ export interface MIPROv2Config {
   /** Metric function for evaluation */
   metric: MetricFunction;
   /** Model for prompt generation (defaults to dspy.settings.lm) */
-  prompt_model?: LMInterface|null;
+  prompt_model?: LMInterface | null;
   /** Model for task execution (defaults to dspy.settings.lm) */
-  task_model?: LMInterface|null;
+  task_model?: LMInterface | null;
   /** Teacher settings for bootstrapping */
-  teacher_settings?: Record<string, any>|null;
+  teacher_settings?: Record<string, any> | null;
   /** Maximum bootstrapped demonstrations */
   max_bootstrapped_demos?: number;
   /** Maximum labeled demonstrations */
   max_labeled_demos?: number;
   /** Auto configuration mode */
-  auto?:'light|medium|heavy'|null;
+  auto?: 'light|medium|heavy' | null;
   /** Number of candidates (overridden by auto) */
-  num_candidates?: number|null;
+  num_candidates?: number | null;
   /** Number of threads for evaluation */
-  num_threads?: number|null;
+  num_threads?: number | null;
   /** Maximum errors allowed */
-  max_errors?: number|null;
+  max_errors?: number | null;
   /** Random seed */
   seed?: number;
   /** Initial temperature for instruction generation */
@@ -67,9 +67,9 @@ export interface MIPROv2Config {
   /** Track statistics */
   track_stats?: boolean;
   /** Log directory for saving candidates */
-  log_dir?: string|null;
+  log_dir?: string | null;
   /** Metric threshold for filtering */
-  metric_threshold?: number|null;
+  metric_threshold?: number | null;
 }
 
 /**
@@ -195,7 +195,7 @@ export class MIPROv2 extends Teleprompter {
 
     // Validate auto parameter
     const allowedModes = new Set([null, 'light', 'medium', 'heavy']);
-    if (!allowedModes.has(config.auto||null)) {
+    if (!allowedModes.has(config.auto || null)) {
       throw new Error(
         `Invalid value for auto: ${config.auto}. Must be one of ${Array.from(allowedModes)}.`
       );
@@ -203,21 +203,21 @@ export class MIPROv2 extends Teleprompter {
 
     this.config = {
       metric: config.metric,
-      prompt_model: config.prompt_model||null,
-      task_model: config.task_model||null,
-      teacher_settings: config.teacher_settings||{},
+      prompt_model: config.prompt_model || null,
+      task_model: config.task_model || null,
+      teacher_settings: config.teacher_settings || {},
       max_bootstrapped_demos: config.max_bootstrapped_demos ?? 4,
       max_labeled_demos: config.max_labeled_demos ?? 4,
-      auto:'auto' in config ? config.auto : 'light', // Respect explicit null, default to 'light'only if not specified
-      num_candidates: config.num_candidates||null,
-      num_threads: config.num_threads||null,
-      max_errors: config.max_errors||null,
+      auto: 'auto' in config ? config.auto : 'light', // Respect explicit null, default to 'light'only if not specified
+      num_candidates: config.num_candidates || null,
+      num_threads: config.num_threads || null,
+      max_errors: config.max_errors || null,
       seed: config.seed ?? 9,
       init_temperature: config.init_temperature ?? 0.5,
       verbose: config.verbose ?? false,
       track_stats: config.track_stats ?? true,
-      log_dir: config.log_dir||null,
-      metric_threshold: config.metric_threshold||null,
+      log_dir: config.log_dir || null,
+      metric_threshold: config.metric_threshold || null,
     };
 
     this.rng = new SeededRNG(this.config.seed);
@@ -233,12 +233,12 @@ export class MIPROv2 extends Teleprompter {
     student: DSPyModule,
     options: {
       trainset: Example[];
-      teacher?: DSPyModule|DSPyModule[]|null;
-      valset?: Example[]|null;
-      num_trials?: number|null;
-      max_bootstrapped_demos?: number|null;
-      max_labeled_demos?: number|null;
-      seed?: number|null;
+      teacher?: DSPyModule | DSPyModule[] | null;
+      valset?: Example[] | null;
+      num_trials?: number | null;
+      max_bootstrapped_demos?: number | null;
+      max_labeled_demos?: number | null;
+      seed?: number | null;
       minibatch?: boolean;
       minibatch_size?: number;
       minibatch_full_eval_steps?: number;
@@ -248,7 +248,7 @@ export class MIPROv2 extends Teleprompter {
       tip_aware_proposer?: boolean;
       fewshot_aware_proposer?: boolean;
       requires_permission_to_run?: boolean;
-      provide_traceback?: boolean|null;
+      provide_traceback?: boolean | null;
       strict_minibatch_validation?: boolean;
     }
   ): Promise<DSPyModule> {
@@ -274,7 +274,7 @@ export class MIPROv2 extends Teleprompter {
     } = options;
 
     // Set random seeds
-    const effectiveSeed = seed||this.config.seed;
+    const effectiveSeed = seed || this.config.seed;
     this.setRandomSeeds(effectiveSeed);
 
     // Update max demos if specified
@@ -310,9 +310,10 @@ export class MIPROv2 extends Teleprompter {
 
     if (
       this.config.auto !== null &&
-      (this.config.num_candidates !== null||num_trials !== null)
+      (this.config.num_candidates !== null || num_trials !== null)
     ) {
-      throw new Error('If auto is not None, num_candidates and num_trials cannot be set, since they would be overridden by the auto settings. Please either set auto to None, or do not specify num_candidates and num_trials.'
+      throw new Error(
+        'If auto is not None, num_candidates and num_trials cannot be set, since they would be overridden by the auto settings. Please either set auto to None, or do not specify num_candidates and num_trials.'
       );
     }
 
@@ -373,9 +374,9 @@ export class MIPROv2 extends Teleprompter {
    */
   private setAndValidateDatasets(
     trainset: Example[],
-    valset: Example[]|null
+    valset: Example[] | null
   ): { trainset: Example[]; valset: Example[] } {
-    if (!trainset||trainset.length === 0) {
+    if (!trainset || trainset.length === 0) {
       throw new Error('Trainset cannot be empty.');
     }
 

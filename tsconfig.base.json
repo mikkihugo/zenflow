@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "declaration": true,
     "declarationMap": true,
-    
+
     /* Strict Type Checking - Best Practices */
     "strict": true,
     "noImplicitAny": true,
@@ -21,7 +21,7 @@
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
     "useDefineForClassFields": true,
-    
+
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2022", "DOM"],

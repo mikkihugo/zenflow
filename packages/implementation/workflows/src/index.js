@@ -59,57 +59,66 @@ export { WorkflowEngine as default, WorkflowEngine } from './main';
 // =============================================================================
 // PROFESSIONAL UTILITIES - Library Integrations
 // =============================================================================
-export { 
-// Date utilities
-DateFormatter, DateCalculator, 
-// Collection utilities  
-ArrayProcessor, ObjectProcessor, 
-// ID generation utilities
-SecureIdGenerator, 
-// Validation utilities
-SchemaValidator, WorkflowStepSchema, WorkflowDefinitionSchema, WorkflowContextSchema, WorkflowExecutionResultSchema, 
-// Reactive utilities
-ObservableUtils, AsyncUtils, 
-// State management utilities
-ImmutableOps } from './utilities/index';
+export {
+  // Date utilities
+  DateFormatter,
+  DateCalculator,
+  // Collection utilities
+  ArrayProcessor,
+  ObjectProcessor,
+  // ID generation utilities
+  SecureIdGenerator,
+  // Validation utilities
+  SchemaValidator,
+  WorkflowStepSchema,
+  WorkflowDefinitionSchema,
+  WorkflowContextSchema,
+  WorkflowExecutionResultSchema,
+  // Reactive utilities
+  ObservableUtils,
+  AsyncUtils,
+  // State management utilities
+  ImmutableOps,
+} from './utilities/index';
 // =============================================================================
 // METADATA - Package information with battle-tested features
 // =============================================================================
 export const WORKFLOWS_INFO = {
-    version: '1.0.0',
-    name: '@claude-zen/workflows',
-    description: 'Production-ready workflow engine with battle-tested npm dependencies',
-    battleTestedDependencies: [
-        'expr-eval: Safe expression evaluation',
-        'async: Professional async utilities',
-        'p-limit: Controlled concurrency',
-        'eventemitter3: High-performance events',
-        'xstate: Robust state management',
-        'mermaid: Professional visualization',
-        'node-cron: Production scheduling',
-        'foundation: Battle-tested storage'
-    ],
-    capabilities: [
-        'Secure workflow orchestration (no arbitrary code execution)',
-        'Foundation storage integration',
-        'XState-powered state management',
-        'Professional async utilities',
-        'Controlled concurrency with p-limit',
-        'High-performance eventemitter3 events',
-        'Mermaid workflow visualization',
-        'Production cron scheduling',
-        'Battle-tested persistence layer',
-        'Professional data manipulation (lodash-es)',
-        'Secure ID generation (nanoid)',
-        'Advanced date/time handling (date-fns)',
-        'Runtime validation (zod)',
-        'Reactive programming (rxjs)',
-        'Immutable state management (immer)'
-    ],
-    security: {
-        safeExpressionEvaluation: true,
-        noArbitraryCodeExecution: true,
-        foundationStorageIntegration: true,
-        productionReady: true
-    }
+  version: '1.0.0',
+  name: '@claude-zen/workflows',
+  description:
+    'Production-ready workflow engine with battle-tested npm dependencies',
+  battleTestedDependencies: [
+    'expr-eval: Safe expression evaluation',
+    'async: Professional async utilities',
+    'p-limit: Controlled concurrency',
+    'eventemitter3: High-performance events',
+    'xstate: Robust state management',
+    'mermaid: Professional visualization',
+    'node-cron: Production scheduling',
+    'foundation: Battle-tested storage',
+  ],
+  capabilities: [
+    'Secure workflow orchestration (no arbitrary code execution)',
+    'Foundation storage integration',
+    'XState-powered state management',
+    'Professional async utilities',
+    'Controlled concurrency with p-limit',
+    'High-performance eventemitter3 events',
+    'Mermaid workflow visualization',
+    'Production cron scheduling',
+    'Battle-tested persistence layer',
+    'Professional data manipulation (lodash-es)',
+    'Secure ID generation (nanoid)',
+    'Advanced date/time handling (date-fns)',
+    'Runtime validation (zod)',
+    'Reactive programming (rxjs)',
+    'Immutable state management (immer)',
+  ],
+  security: {
+    safeExpressionEvaluation: true,
+    noArbitraryCodeExecution: true,
+    foundationStorageIntegration: true,
+    productionReady: true,
+  },
 };

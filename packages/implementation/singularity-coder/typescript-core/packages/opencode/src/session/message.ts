@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from "@claude-zen/foundation"
 import { NamedError } from "../util/error"
 
 export namespace Message {

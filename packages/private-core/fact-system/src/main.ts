@@ -8,61 +8,92 @@
 // =============================================================================
 // CORE FACT SYSTEM - Primary components (STUB IMPLEMENTATIONS)
 // =============================================================================
-import type { 
-  FactSystemConfig, 
-  FactSearchQuery, 
+import type {
+  FactSystemConfig,
+  FactSearchQuery,
   FactSearchResult,
-  FactSourceType, 
-  FactProcessingOptions 
+  FactSourceType,
+  FactProcessingOptions,
 } from './typescript/types';
 
 export class FactClient {
   private config: FactSystemConfig | undefined;
-  
+
   constructor(config?: FactSystemConfig) {
     this.config = config;
   }
-  
-  async search(query: any): Promise<any> { 
+
+  async search(query: any): Promise<any> {
     console.log('Searching facts with query:', query);
-    return []; 
+    return [];
   }
-  
-  async gatherFromSources(sources: any[], options?: any): Promise<any> { 
-    console.log('Gathering facts from sources:', sources, 'with options:', options);
-    return []; 
+
+  async gatherFromSources(sources: any[], options?: any): Promise<any> {
+    console.log(
+      'Gathering facts from sources:',
+      sources,
+      'with options:',
+      options
+    );
+    return [];
   }
-  
-  getStats(): any { 
+
+  getStats(): any {
     return {
       cacheSize: 0,
       totalQueries: 0,
       cacheHitRate: 0,
-      rustEngineActive: this.config?.useRustEngine || false
+      rustEngineActive: this.config?.useRustEngine || false,
     };
   }
-  
+
   shutdown?(): void {
     console.log('Shutting down fact client');
   }
 }
 
-export function createFactClient(config?: FactSystemConfig): Promise<FactClient> {
+export function createFactClient(
+  config?: FactSystemConfig
+): Promise<FactClient> {
   return Promise.resolve(new FactClient(config));
 }
 export function createSQLiteFactClient(path?: string): Promise<FactClient> {
   console.log('Creating SQLite fact client at path:', path || 'default');
-  return Promise.resolve(new FactClient({ database: { query: async () => [], execute: async () => 0, close: async () => {} } }));
+  return Promise.resolve(
+    new FactClient({
+      database: {
+        query: async () => [],
+        execute: async () => 0,
+        close: async () => {},
+      },
+    })
+  );
 }
 
 export function createLanceDBFactClient(path?: string): Promise<FactClient> {
   console.log('Creating LanceDB fact client at path:', path || 'default');
-  return Promise.resolve(new FactClient({ database: { query: async () => [], execute: async () => 0, close: async () => {} } }));
+  return Promise.resolve(
+    new FactClient({
+      database: {
+        query: async () => [],
+        execute: async () => 0,
+        close: async () => {},
+      },
+    })
+  );
 }
 
 export function createKuzuFactClient(path?: string): Promise<FactClient> {
   console.log('Creating Kuzu fact client at path:', path || 'default');
-  return Promise.resolve(new FactClient({ database: { query: async () => [], execute: async () => 0, close: async () => {} } }));
+  return Promise.resolve(
+    new FactClient({
+      database: {
+        query: async () => [],
+        execute: async () => 0,
+        close: async () => {},
+      },
+    })
+  );
 }
 
 // =============================================================================
@@ -73,23 +104,23 @@ export class FactBridge {
 }
 export class IntelligentCache {
   private cache = new Map<string, any>();
-  
+
   constructor() {
     console.log('Initializing intelligent cache system');
   }
-  
+
   clear(): void {
     this.cache.clear();
     console.log('Cache cleared');
   }
-  
+
   set(key: string, value: any): void {
     this.cache.set(key, value);
     console.log('Cached fact:', key);
   }
-  
-  get(key: string): any { 
-    return this.cache.get(key) || null; 
+
+  get(key: string): any {
+    return this.cache.get(key) || null;
   }
 }
 
@@ -97,10 +128,10 @@ export class NaturalLanguageQuery {
   constructor() {
     console.log('Initializing natural language query processor');
   }
-  
-  async processQuery(query: string): Promise<any> { 
+
+  async processQuery(query: string): Promise<any> {
     console.log('Processing natural language query:', query);
-    return []; 
+    return [];
   }
 }
 
@@ -111,7 +142,7 @@ export class LiveAPIConnector {
   constructor() {
     console.log('Initializing live API connector');
   }
-  
+
   fetchData(source: string): Promise<any> {
     console.log('Fetching data from source:', source);
     return Promise.resolve({});
@@ -125,10 +156,10 @@ export class DocumentationProcessor {
   constructor() {
     console.log('Initializing documentation processor');
   }
-  
-  process(content: string): any { 
+
+  process(content: string): any {
     console.log('Processing documentation content, length:', content.length);
-    return {}; 
+    return {};
   }
 }
 
@@ -238,14 +269,16 @@ export async function getFactProcessing(
         sourceBreakdown: facts.reduce(
           (acc, fact) => {
             const source = (fact as any).source || 'unknown';
-            acc[source] = (acc[source]||0) + 1;
+            acc[source] = (acc[source] || 0) + 1;
             return acc;
           },
           {} as Record<string, number>
         ),
         confidence:
-          facts.reduce((sum, fact) => sum + ((fact as any).confidence||0), 0) /
-          (facts.length || 1),
+          facts.reduce(
+            (sum, fact) => sum + ((fact as any).confidence || 0),
+            0
+          ) / (facts.length || 1),
       };
     },
   };
@@ -255,7 +288,7 @@ export async function getFactSources(config?: FactSystemConfig): Promise<any> {
   const system = await getFactSystemAccess(config);
   return {
     npm: (packageName: string) =>
-      system.search({ source:'npm', query: packageName }),
+      system.search({ source: 'npm', query: packageName }),
     github: (repository: string) =>
       system.search({ source: 'github', query: repository }),
     apiDocs: (apiName: string) =>
@@ -283,7 +316,8 @@ export async function getFactIntelligence(
       // Reasoning implementation
       return {
         insights: facts.map(
-          (fact) => `${(fact as any).source || 'unknown'}: ${(fact as any).summary || (fact as any).content || 'no content'}`
+          (fact) =>
+            `${(fact as any).source || 'unknown'}: ${(fact as any).summary || (fact as any).content || 'no content'}`
         ),
         patterns: [], // Pattern detection would be implemented here
         recommendations: [], // Recommendations based on facts
@@ -295,8 +329,12 @@ export async function getFactIntelligence(
       for (let i = 0; i < facts.length; i++) {
         for (let j = i + 1; j < facts.length; j++) {
           // Simple correlation based on common terms
-          const fact1Terms = ((facts[i] as any).content||'').toLowerCase().split(' ');
-          const fact2Terms = ((facts[j] as any).content||'').toLowerCase().split(' ');
+          const fact1Terms = ((facts[i] as any).content || '')
+            .toLowerCase()
+            .split(' ');
+          const fact2Terms = ((facts[j] as any).content || '')
+            .toLowerCase()
+            .split(' ');
           const commonTerms = fact1Terms.filter((term: any) =>
             fact2Terms.includes(term)
           );

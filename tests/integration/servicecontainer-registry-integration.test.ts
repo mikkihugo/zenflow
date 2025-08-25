@@ -1,12 +1,12 @@
 /**
  * @fileoverview ServiceContainer Registry Integration Tests
- * 
+ *
  * Comprehensive integration testing for all 4 migrated registries:
  * - UACLRegistry (81 lines) -> MigratedUACLRegistry
- * - EventRegistry (986 lines) -> MigratedEventRegistry 
+ * - EventRegistry (986 lines) -> MigratedEventRegistry
  * - AgentRegistry (718 lines) -> MigratedAgentRegistry
  * - EnhancedServiceRegistry (1,118 lines) -> MigratedEnhancedServiceRegistry
- * 
+ *
  * Ensures zero breaking changes and enhanced functionality works correctly.
  */
 
@@ -18,12 +18,19 @@ const mockMemoryCoordinator = {
   coordinate: vi.fn().mockResolvedValue({ success: true }),
   deleteEntry: vi.fn().mockResolvedValue(true),
   store: vi.fn().mockResolvedValue(true),
-  list: vi.fn().mockResolvedValue([])
+  list: vi.fn().mockResolvedValue([]),
 };
 
 // Import migrated registries
-import { MigratedAgentRegistry, createMigratedAgentRegistry } from '../../apps/claude-code-zen-server/src/coordination/agents/agent-registry-migrated';
-import { MigratedEventRegistry, getMigratedEventRegistry, createMigratedEventRegistry } from '../../packages/implementation-packages/event-system/src/registry-migrated';
+import {
+  MigratedAgentRegistry,
+  createMigratedAgentRegistry,
+} from '../../apps/claude-code-zen-server/src/coordination/agents/agent-registry-migrated';
+import {
+  MigratedEventRegistry,
+  getMigratedEventRegistry,
+  createMigratedEventRegistry,
+} from '../../packages/implementation-packages/event-system/src/registry-migrated';
 
 // Mock client types for UACLRegistry test
 interface ClientInstance {
@@ -49,7 +56,7 @@ const testAgentData = {
     languages: ['typescript', 'javascript'],
     frameworks: ['node', 'express'],
     domains: ['web-development', 'api-design'],
-    tools: ['git', 'docker']
+    tools: ['git', 'docker'],
   },
   metrics: {
     tasksCompleted: 10,
@@ -64,9 +71,9 @@ const testAgentData = {
     resourceUsage: {
       memory: 0.4,
       cpu: 0.2,
-      disk: 0.1
-    }
-  }
+      disk: 0.1,
+    },
+  },
 };
 
 const testEventManagerData = {
@@ -79,14 +86,14 @@ const testEventManagerData = {
     eventsProcessed: 100,
     eventsFailed: 2,
     subscriptionCount: 15,
-    averageLatency: 50
-  })
+    averageLatency: 50,
+  }),
 };
 
 const testEventManagerFactory = {
   create: vi.fn(),
   constructor: { name: 'TestEventManagerFactory' },
-  healthCheck: vi.fn().mockReturnValue(true)
+  healthCheck: vi.fn().mockReturnValue(true),
 };
 
 const testEventManagerConfig = {
@@ -94,8 +101,8 @@ const testEventManagerConfig = {
   version: '1.0.0',
   options: {
     bufferSize: 1000,
-    timeout: 5000
-  }
+    timeout: 5000,
+  },
 };
 
 describe('ServiceContainer Registry Integration Tests', () => {
@@ -105,18 +112,21 @@ describe('ServiceContainer Registry Integration Tests', () => {
   beforeEach(async () => {
     // Reset all mocks
     vi.clearAllMocks();
-    
+
     // Initialize registries
-    agentRegistry = createMigratedAgentRegistry(mockMemoryCoordinator, 'test-agents');
+    agentRegistry = createMigratedAgentRegistry(
+      mockMemoryCoordinator,
+      'test-agents'
+    );
     await agentRegistry.initialize();
-    
+
     eventRegistry = createMigratedEventRegistry();
     await eventRegistry.initialize({
       autoRegisterDefaults: false,
       healthMonitoring: {
         checkInterval: 60000, // 1 minute for tests
-        timeout: 2000
-      }
+        timeout: 2000,
+      },
     });
   });
 
@@ -134,7 +144,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
     it('should maintain exact API compatibility with original AgentRegistry', async () => {
       // Test registration
       await agentRegistry.registerAgent(testAgentData);
-      
+
       // Verify memory coordination was called
       expect(mockMemoryCoordinator.coordinate).toHaveBeenCalledWith({
         type: 'write',
@@ -143,8 +153,8 @@ describe('ServiceContainer Registry Integration Tests', () => {
         metadata: expect.objectContaining({
           type: 'agent-registration',
           tags: ['coder', 'idle'],
-          partition: 'registry'
-        })
+          partition: 'registry',
+        }),
       });
 
       // Test retrieval methods
@@ -156,7 +166,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
       // Test query functionality
       const queryResults = await agentRegistry.queryAgents({
         type: 'coder',
-        status: 'idle'
+        status: 'idle',
       });
       expect(queryResults).toHaveLength(1);
       expect(queryResults[0].id).toBe(testAgentData.id);
@@ -165,7 +175,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
       const selectedAgents = await agentRegistry.selectAgents({
         type: 'coder',
         maxResults: 5,
-        prioritizeBy: 'performance'
+        prioritizeBy: 'performance',
       });
       expect(selectedAgents).toHaveLength(1);
       expect(selectedAgents[0].id).toBe(testAgentData.id);
@@ -186,10 +196,16 @@ describe('ServiceContainer Registry Integration Tests', () => {
       expect(agentsByCapability[0].id).toBe(testAgentData.id);
 
       // Test enable/disable functionality
-      const enableResult = agentRegistry.setAgentEnabled(testAgentData.id, false);
+      const enableResult = agentRegistry.setAgentEnabled(
+        testAgentData.id,
+        false
+      );
       expect(enableResult).toBe(true);
 
-      const disableResult = agentRegistry.setAgentEnabled(testAgentData.id, true);
+      const disableResult = agentRegistry.setAgentEnabled(
+        testAgentData.id,
+        true
+      );
       expect(disableResult).toBe(true);
 
       // Test enhanced statistics
@@ -208,12 +224,12 @@ describe('ServiceContainer Registry Integration Tests', () => {
         metrics: {
           ...testAgentData.metrics,
           tasksInProgress: 2,
-          successRate: 0.95
+          successRate: 0.95,
         },
         capabilities: {
           ...testAgentData.capabilities,
-          languages: ['typescript', 'javascript', 'python']
-        }
+          languages: ['typescript', 'javascript', 'python'],
+        },
       });
 
       // Verify updates
@@ -228,11 +244,11 @@ describe('ServiceContainer Registry Integration Tests', () => {
         `test-agents/agents/${testAgentData.id}`,
         expect.objectContaining({
           id: testAgentData.id,
-          status: 'busy'
+          status: 'busy',
         }),
         expect.objectContaining({
           ttl: 3600,
-          replicas: 2
+          replicas: 2,
         })
       );
     });
@@ -260,13 +276,17 @@ describe('ServiceContainer Registry Integration Tests', () => {
       );
 
       // Test manager retrieval
-      const retrievedManager = eventRegistry.findEventManager(testEventManagerData.name);
+      const retrievedManager = eventRegistry.findEventManager(
+        testEventManagerData.name
+      );
       expect(retrievedManager).toBe(testEventManagerData);
 
       // Test get all managers
       const allManagers = eventRegistry.getAllEventManagers();
       expect(allManagers.size).toBe(1);
-      expect(allManagers.get(testEventManagerData.name)).toBe(testEventManagerData);
+      expect(allManagers.get(testEventManagerData.name)).toBe(
+        testEventManagerData
+      );
     });
 
     it('should provide enhanced ServiceContainer capabilities', async () => {
@@ -283,14 +303,21 @@ describe('ServiceContainer Registry Integration Tests', () => {
       expect(healthStatus).toBeDefined();
 
       // Test capability-based queries
-      const managersByCapability = eventRegistry.getManagersByCapability('system');
+      const managersByCapability =
+        eventRegistry.getManagersByCapability('system');
       expect(managersByCapability).toHaveLength(1);
 
       // Test enable/disable functionality
-      const enableResult = eventRegistry.setManagerEnabled(testEventManagerData.name, false);
+      const enableResult = eventRegistry.setManagerEnabled(
+        testEventManagerData.name,
+        false
+      );
       expect(enableResult).toBe(true);
 
-      const disableResult = eventRegistry.setManagerEnabled(testEventManagerData.name, true);
+      const disableResult = eventRegistry.setManagerEnabled(
+        testEventManagerData.name,
+        true
+      );
       expect(disableResult).toBe(true);
 
       // Test global metrics
@@ -308,8 +335,8 @@ describe('ServiceContainer Registry Integration Tests', () => {
         managerTypes: ['system'],
         options: {
           bufferSize: 500,
-          timeout: 3000
-        }
+          timeout: 3000,
+        },
       });
 
       // Test event type retrieval
@@ -334,7 +361,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
       // Perform health check
       const healthResults = await eventRegistry.healthCheckAll();
       expect(healthResults.size).toBe(1);
-      
+
       const managerHealth = healthResults.get(testEventManagerData.name);
       expect(managerHealth).toBeDefined();
       expect(managerHealth?.status).toBe('healthy');
@@ -358,7 +385,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
         type: 'system:test',
         payload: { message: 'test broadcast' },
         timestamp: new Date(),
-        source: 'test'
+        source: 'test',
       };
 
       // Test global broadcast
@@ -384,20 +411,20 @@ describe('ServiceContainer Registry Integration Tests', () => {
             testEventManagerFactory,
             testEventManagerConfig
           );
-        })()
+        })(),
       ]);
 
       // Verify both registrations worked
       const agent = agentRegistry.getAgent(testAgentData.id);
       const manager = eventRegistry.findEventManager(testEventManagerData.name);
-      
+
       expect(agent).toBeDefined();
       expect(manager).toBeDefined();
 
       // Test concurrent health checks
       const [agentHealth, eventHealth] = await Promise.all([
         agentRegistry.getHealthStatus(),
-        eventRegistry.getHealthStatus()
+        eventRegistry.getHealthStatus(),
       ]);
 
       expect(agentHealth).toBeDefined();
@@ -407,7 +434,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
     it('should handle memory coordination correctly across registries', async () => {
       // Register in both registries
       await agentRegistry.registerAgent(testAgentData);
-      
+
       eventRegistry.registerFactory('system', testEventManagerFactory);
       eventRegistry.registerManager(
         testEventManagerData.name,
@@ -418,7 +445,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
 
       // Verify memory operations were called for agent registry
       expect(mockMemoryCoordinator.coordinate).toHaveBeenCalled();
-      
+
       // Test shutdown persists state
       await agentRegistry.shutdown();
       expect(mockMemoryCoordinator.store).toHaveBeenCalled();
@@ -428,23 +455,29 @@ describe('ServiceContainer Registry Integration Tests', () => {
   describe('Error Handling and Edge Cases', () => {
     it('should handle initialization errors gracefully', async () => {
       // Create registry but don't initialize
-      const uninitializedRegistry = createMigratedAgentRegistry(mockMemoryCoordinator);
-      
+      const uninitializedRegistry = createMigratedAgentRegistry(
+        mockMemoryCoordinator
+      );
+
       // Should still allow operations but may have degraded functionality
       await uninitializedRegistry.registerAgent(testAgentData);
       const agent = uninitializedRegistry.getAgent(testAgentData.id);
       expect(agent).toBeDefined();
-      
+
       await uninitializedRegistry.shutdown();
     });
 
     it('should handle memory coordination failures gracefully', async () => {
       // Mock memory coordinator failure
-      mockMemoryCoordinator.coordinate.mockRejectedValueOnce(new Error('Memory failure'));
-      
+      mockMemoryCoordinator.coordinate.mockRejectedValueOnce(
+        new Error('Memory failure')
+      );
+
       // Should still complete registration despite memory failure
-      await expect(agentRegistry.registerAgent(testAgentData)).resolves.not.toThrow();
-      
+      await expect(
+        agentRegistry.registerAgent(testAgentData)
+      ).resolves.not.toThrow();
+
       // Agent should still be available locally
       const agent = agentRegistry.getAgent(testAgentData.id);
       expect(agent).toBeDefined();
@@ -452,7 +485,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
 
     it('should handle ServiceContainer resolution failures gracefully', async () => {
       await agentRegistry.registerAgent(testAgentData);
-      
+
       // Should fall back to legacy storage when ServiceContainer fails
       const agent = agentRegistry.getAgent(testAgentData.id);
       expect(agent).toBeDefined();
@@ -467,7 +500,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
       await agentRegistry.registerAgent({
         ...testAgentData,
         id: 'test-agent-002',
-        name: 'Test Agent 2'
+        name: 'Test Agent 2',
       });
 
       eventRegistry.registerFactory('system', testEventManagerFactory);
@@ -488,7 +521,7 @@ describe('ServiceContainer Registry Integration Tests', () => {
 
     it('should handle large numbers of registrations efficiently', async () => {
       const startTime = Date.now();
-      
+
       // Register 100 agents
       const registrationPromises = [];
       for (let i = 0; i < 100; i++) {
@@ -496,27 +529,27 @@ describe('ServiceContainer Registry Integration Tests', () => {
           agentRegistry.registerAgent({
             ...testAgentData,
             id: `test-agent-${i.toString().padStart(3, '0')}`,
-            name: `Test Agent ${i}`
+            name: `Test Agent ${i}`,
           })
         );
       }
-      
+
       await Promise.all(registrationPromises);
-      
+
       const registrationTime = Date.now() - startTime;
-      
+
       // Should complete in reasonable time (less than 5 seconds)
       expect(registrationTime).toBeLessThan(5000);
-      
+
       // Verify all agents were registered
       const allAgents = agentRegistry.getAllAgents();
       expect(allAgents).toHaveLength(100);
-      
+
       // Test query performance
       const queryStart = Date.now();
       const coderAgents = await agentRegistry.queryAgents({ type: 'coder' });
       const queryTime = Date.now() - queryStart;
-      
+
       expect(queryTime).toBeLessThan(100); // Should be very fast
       expect(coderAgents).toHaveLength(100);
     });

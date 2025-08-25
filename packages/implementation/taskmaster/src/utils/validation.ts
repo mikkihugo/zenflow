@@ -9,7 +9,7 @@
  * @version 1.0.0
  */
 
-import { type ZodSafeParseResult, z } from 'zod';
+import { type ZodSafeParseResult, z } from '@claude-zen/foundation';
 
 // =============================================================================
 // DOMAIN VALIDATION SCHEMAS

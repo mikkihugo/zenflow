@@ -403,7 +403,7 @@ impl<T: Float + Send + Sync + 'static + 'static> NetworkAdapter<T> {
     let processed_input =
       self.input_preprocessor.process(input).map_err(|e| {
         NetworkIntegrationError::ValidationError {
-          message: format!("Input preprocessing failed: {}", e),
+          message: format!("Input preprocessing failed: {e}"),
           layer: None,
         }
       })?;
@@ -515,7 +515,7 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
         .algorithm
         .train_epoch(network, &training_data)
         .map_err(|e| NetworkIntegrationError::TrainingAlgorithmError {
-          message: format!("Training epoch {} failed: {}", epoch, e),
+          message: format!("Training epoch {epoch} failed: {e}"),
           algorithm: Some("ruv-fann".to_string()),
         })?;
 

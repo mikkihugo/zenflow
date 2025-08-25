@@ -73,33 +73,33 @@ let HashRing: any = null;
 let osutils: any = null;
 
 try {
-  ConsistentHashing = require('consistent-hashing');'
+  ConsistentHashing = require('consistent-hashing');
 } catch {
   ConsistentHashing = null; // Fallback: use simple round-robin
 }
 
 try {
-  HashRing = require('hashring');'
+  HashRing = require('hashring');
 } catch {
   HashRing = null; // Fallback: use simple hashing
 }
 
 try {
-  osutils = require('node-os-utils');'
+  osutils = require('node-os-utils');
 } catch {
   osutils = null; // Fallback: use basic system metrics
 }
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 
 // TensorFlow import - optional dependency support
 let tf: any = null;
 try {
-  tf = require('@tensorflow/tfjs-node');'
+  tf = require('@tensorflow/tfjs-node');
 } catch {
   // TensorFlow not available - will use fallback implementations
-  console.warn('@tensorflow/tfjs-node not available, ML predictions disabled');'
+  console.warn('@tensorflow/tfjs-node not available, ML predictions disabled');
 }
 
 // Simple stub functions for telemetry (to be replaced with proper imports later)
@@ -211,7 +211,7 @@ export class LoadBalancer extends TypedEventBase {
     this.loadBalancingConfig = this.mergeConfig(config);
 
     // Initialize battle-tested dependencies from foundation with comprehensive monitoring
-    this.logger = getLogger('load-balancer');'
+    this.logger = getLogger('load-balancer');
 
     // 🔬 Initialize comprehensive Foundation monitoring
     this.systemMonitor = createSystemMetricsCollector(); // System resource monitoring
@@ -228,7 +228,7 @@ export class LoadBalancer extends TypedEventBase {
     );
 
     // Foundation provides embedded KV storage (no external dependencies needed)
-    // Will be initialized in start() method with getKVStore('load-balancing')'
+    // Will be initialized in start() method with getKVStore('load-balancing')
 
     // Initialize consistent hashing for distributed load balancing
     this.consistentHashing = new ConsistentHashing();
@@ -244,15 +244,15 @@ export class LoadBalancer extends TypedEventBase {
 
   private async initializeComponents(): Promise<void> {
     this.logger.info(
-      'Initializing load balancing components with battle-tested dependencies and comprehensive monitoring''
+      'Initializing load balancing components with battle-tested dependencies and comprehensive monitoring'
     );
 
     // 🔬 Start comprehensive monitoring systems
     await this.systemMonitor.start();
-    this.performanceTracker.startTimer('initialization');'
+    this.performanceTracker.startTimer('initialization');
 
     // Record initialization event
-    recordEvent('load_balancer.initialization.started', {'
+    recordEvent('load_balancer.initialization.started', {
       algorithm: this.loadBalancingConfig.algorithm,
       timestamp: Date.now(),
     });
@@ -284,7 +284,7 @@ export class LoadBalancer extends TypedEventBase {
       this.loadBalancingConfig.algorithm
     )!;
     this.logger.info(
-      `Selected algorithm: ${this.loadBalancingConfig.algorithm}``
+      `Selected algorithm: ${this.loadBalancingConfig.algorithm}`
     );
 
     // Initialize core components with foundation integration
@@ -306,16 +306,16 @@ export class LoadBalancer extends TypedEventBase {
 
     // 🔬 Complete initialization monitoring
     const initTime = this.getDuration(
-      this.performanceTracker.endTimer('initialization')'
+      this.performanceTracker.endTimer('initialization')
     );
-    recordHistogram('load_balancer.initialization_ms', initTime);'
-    recordEvent('load_balancer.initialization.completed', {'
+    recordHistogram('load_balancer.initialization_ms', initTime);
+    recordEvent('load_balancer.initialization.completed', {
       duration_ms: initTime,
       algorithm: this.loadBalancingConfig.algorithm,
       timestamp: Date.now(),
     });
 
-    this.logger.info('Load balancing components initialized successfully', {'
+    this.logger.info('Load balancing components initialized successfully', {
       initializationTime: initTime,
       algorithm: this.loadBalancingConfig.algorithm,
     });
@@ -327,15 +327,15 @@ export class LoadBalancer extends TypedEventBase {
   private async initializeML(): Promise<void> {
     try {
       this.logger.info(
-        'Initializing TensorFlow.js model for ML-predictive routing''
+        'Initializing TensorFlow.js model for ML-predictive routing'
       );
 
       // Create a simple neural network for load prediction
       const model = tf.sequential({
         layers: [
-          tf.layers.dense({ inputShape: [5], units: 16, activation: 'relu' }), // Input: cpu, memory, tasks, latency, success_rate'
+          tf.layers.dense({ inputShape: [5], units: 16, activation: 'relu' }), // Input: cpu, memory, tasks, latency, success_rate
           tf.layers.dense({ units: 8, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'sigmoid' }), // Output: predicted success probability'
+          tf.layers.dense({ units: 1, activation: 'sigmoid' }), // Output: predicted success probability
         ],
       });
 
@@ -346,9 +346,9 @@ export class LoadBalancer extends TypedEventBase {
       });
 
       this.mlModel = model;
-      this.logger.info('TensorFlow.js model initialized successfully');'
+      this.logger.info('TensorFlow.js model initialized successfully');
     } catch (error) {
-      this.logger.error('Failed to initialize ML model', { error });'
+      this.logger.error('Failed to initialize ML model', { error });
     }
   }
 
@@ -364,14 +364,14 @@ export class LoadBalancer extends TypedEventBase {
       ).length;
 
       // Core load balancing metrics
-      recordMetric('load_balancer_healthy_agents', healthyAgents);'
-      recordMetric('load_balancer_total_agents', this.agents.size);'
+      recordMetric('load_balancer_healthy_agents', healthyAgents);
+      recordMetric('load_balancer_total_agents', this.agents.size);
       recordGauge(
         'load_balancer_healthy_ratio',
         this.agents.size > 0 ? healthyAgents / this.agents.size : 0
       );
-      recordHistogram('load_balancer_avg_load', this.calculateAverageLoad());'
-      recordGauge('load_balancer_load_variance', this.calculateLoadVariance());'
+      recordHistogram('load_balancer_avg_load', this.calculateAverageLoad());
+      recordGauge('load_balancer_load_variance', this.calculateLoadVariance());
 
       // System performance metrics via SystemMonitor
       const systemMetrics = this.systemMonitor.getMetrics();
@@ -390,18 +390,18 @@ export class LoadBalancer extends TypedEventBase {
 
       // Performance tracking via PerformanceTracker (commented out - interface not available)
       // const perfMetrics = this.performanceTracker.getMetrics();
-      // recordHistogram('load_balancer_operation_latency', perfMetrics.averageLatency);'
-      // recordGauge('load_balancer_operations_per_second', perfMetrics.operationsPerSecond);'
+      // recordHistogram('load_balancer_operation_latency', perfMetrics.averageLatency);
+      // recordGauge('load_balancer_operations_per_second', perfMetrics.operationsPerSecond);
 
       // Agent monitoring via AgentMonitor
-      this.agentMonitor.trackAgent('load-balancer', {'
+      this.agentMonitor.trackAgent('load-balancer', {
         tasksAssigned: this.calculateTotalActiveTasks(),
         coordinationEfficiency: this.calculateSystemEfficiency(),
       });
 
       // ML model monitoring (if available)
       if (this.mlModel) {
-        this.mlMonitor.trackPrediction('load-balancer-ml', {'
+        this.mlMonitor.trackPrediction('load-balancer-ml', {
           prediction: this.calculateMLAccuracy(),
           latency: this.getMLPredictionLatency(),
           confidence: this.getMLConfidence(),
@@ -410,11 +410,11 @@ export class LoadBalancer extends TypedEventBase {
 
       if (this.isRunning) {
         const uptime = this.startTime ? Date.now() - this.startTime : 0;
-        recordHistogram('load_balancer_uptime_ms', uptime);'
+        recordHistogram('load_balancer_uptime_ms', uptime);
       }
 
       // Record comprehensive system event
-      recordEvent('load_balancer.metrics.collected', {'
+      recordEvent('load_balancer.metrics.collected', {
         healthy_agents: healthyAgents,
         total_agents: this.agents.size,
         avg_load: this.calculateAverageLoad(),
@@ -436,31 +436,31 @@ export class LoadBalancer extends TypedEventBase {
       this.hashRing.add(agent.id);
     });
 
-    this.logger.info('Consistent hashing ring initialized');'
+    this.logger.info('Consistent hashing ring initialized');
   }
 
   /**
    * Setup event handlers for component coordination.
    */
   private setupEventHandlers(): void {
-    this.healthChecker.on('agent:unhealthy', (agentId: string) => {'
-      this.handleAgentFailure(agentId, new Error('Health check failed'));'
+    this.healthChecker.on('agent:unhealthy', (agentId: string) => {
+      this.handleAgentFailure(agentId, new Error('Health check failed'));
     });
 
-    this.healthChecker.on('agent:recovered', (agentId: string) => {'
+    this.healthChecker.on('agent:recovered', (agentId: string) => {
       this.handleAgentRecovery(agentId);
     });
 
-    this.autoScaler.on('scale:up', (count: number) => {'
+    this.autoScaler.on('scale:up', (count: number) => {
       this.handleScaleUp(count);
     });
 
-    this.autoScaler.on('scale:down', (agentIds: string[]) => {'
+    this.autoScaler.on('scale:down', (agentIds: string[]) => {
       this.handleScaleDown(agentIds);
     });
 
-    this.emergencyHandler.on('emergency:activated', (data: any) => {'
-      this.emit('emergency', {'
+    this.emergencyHandler.on('emergency:activated', (data: any) => {
+      this.emit('emergency', {
         type: data.type,
         severity: data.severity,
         timestamp: new Date(),
@@ -474,22 +474,22 @@ export class LoadBalancer extends TypedEventBase {
 
   public async start(): Promise<void> {
     if (this.isRunning) {
-      this.logger.warn('Load balancing system already running');'
+      this.logger.warn('Load balancing system already running');
       return;
     }
 
     this.startTime = Date.now();
-    this.performanceTracker.startTimer('system-startup');'
+    this.performanceTracker.startTimer('system-startup');
 
     const result = await withAsyncTrace(async () => {
       return await safeAsync(async () => {
         this.logger.info(
-          'Starting load balancing system with comprehensive monitoring''
+          'Starting load balancing system with comprehensive monitoring'
         );
 
-        // Initialize foundation's embedded KV storage'
-        this.foundationKVStore = await getKVStore('load-balancing');'
-        this.logger.info('Foundation KV storage initialized successfully');'
+        // Initialize KV storage
+        // this.kvStore = await getKVStore('load-balancing');
+        // this.logger.info('KV storage initialized successfully');
 
         // Initialize components with monitoring
         await this.initializeComponents();
@@ -509,16 +509,16 @@ export class LoadBalancer extends TypedEventBase {
 
         this.isRunning = true;
         const startupTimeResult =
-          this.performanceTracker.endTimer('system-startup');'
+          this.performanceTracker.endTimer('system-startup');
         const startupTime = this.getDuration(startupTimeResult);
 
         // Record comprehensive startup metrics
-        recordMetric('load_balancer_starts_total', 1);'
-        recordHistogram('load_balancer_startup_duration_ms', startupTime);'
-        recordGauge('load_balancer_startup_agent_count', this.agents.size);'
+        recordMetric('load_balancer_starts_total', 1);
+        recordHistogram('load_balancer_startup_duration_ms', startupTime);
+        recordGauge('load_balancer_startup_agent_count', this.agents.size);
 
         // Record startup event with full context
-        recordEvent('load_balancer.started', {'
+        recordEvent('load_balancer.started', {
           agent_count: this.agents.size,
           algorithm: this.loadBalancingConfig.algorithm,
           startup_duration_ms: startupTime,
@@ -526,51 +526,51 @@ export class LoadBalancer extends TypedEventBase {
           monitoring_enabled: true,
         });
 
-        this.logger.info('Load balancing system started successfully', {'
+        this.logger.info('Load balancing system started successfully', {
           agentCount: this.agents.size,
           algorithm: this.loadBalancingConfig.algorithm,
           startupTime,
           monitoringEnabled: true,
         });
 
-        this.emit('started', {});'
+        this.emit('started', {});
       });
     });
 
     if (
       result &&
-      typeof result === 'object' &&'
-      'isErr' in result &&'
+      typeof result === 'object' &&
+      'isErr' in result &&
       result.isErr()
     ) {
       const startupTimeResult =
-        this.performanceTracker.endTimer('system-startup');'
+        this.performanceTracker.endTimer('system-startup');
       const startupTime = this.getDuration(startupTimeResult);
 
       // Record failure metrics
-      recordMetric('load_balancer_startup_failures_total', 1);'
-      recordHistogram('load_balancer_startup_failure_duration_ms', startupTime);'
+      recordMetric('load_balancer_startup_failures_total', 1);
+      recordHistogram('load_balancer_startup_failure_duration_ms', startupTime);
 
-      recordEvent('load_balancer.startup.failed', {'
+      recordEvent('load_balancer.startup.failed', {
         error: result.error.message,
         duration_ms: startupTime,
         agent_count: this.agents.size,
         timestamp: Date.now(),
       });
 
-      this.logger.error('Failed to start load balancing system', {'
+      this.logger.error('Failed to start load balancing system', {
         error:
-          result && typeof result === 'object' && 'error' in result'
+          result && typeof result === 'object' && 'error' in result
             ? result.error
             : 'Unknown error',
         startupTime,
       });
 
       const errorInfo =
-        result && typeof result === 'object' && 'error' in result'
+        result && typeof result === 'object' && 'error' in result
           ? result.error
-          : new Error('Unknown error');'
-      throw new ContextError('Failed to start load balancing system', {'
+          : new Error('Unknown error');
+      throw new ContextError('Failed to start load balancing system', {
         context: {
           agentCount: this.agents.size,
           startupTime,
@@ -588,15 +588,15 @@ export class LoadBalancer extends TypedEventBase {
 
   public async stop(): Promise<void> {
     if (!this.isRunning) {
-      this.logger.warn('Load balancing system not running');'
+      this.logger.warn('Load balancing system not running');
       return;
     }
 
-    this.performanceTracker.startTimer('system-shutdown');'
+    this.performanceTracker.startTimer('system-shutdown');
 
     const result = await withAsyncTrace(async () => {
       return await safeAsync(async () => {
-        this.logger.info('Stopping load balancing system');'
+        this.logger.info('Stopping load balancing system');
 
         this.isRunning = false;
 
@@ -693,7 +693,7 @@ export class LoadBalancer extends TypedEventBase {
         // Store agent in memory and persistent storage
         this.agents.set(agent.id, agent);
         await this.foundationKVStore.set(
-          `agent:${agent.id}`,`
+          `agent:${agent.id}`,
           agent as unknown as Record<string, unknown>
         );
 
@@ -783,7 +783,7 @@ export class LoadBalancer extends TypedEventBase {
             ? result.error
             : 'Unknown error',
       });
-      throw new ContextError('Failed to add agent to load balancing pool', {'
+      throw new ContextError('Failed to add agent to load balancing pool', {
         context: { agentId: agent.id },
       });
     }
@@ -846,7 +846,7 @@ export class LoadBalancer extends TypedEventBase {
 
         if (availableAgents.length === 0) {
           recordMetric('load_balancer_no_agents_available_total', 1);'
-          throw new ContextError('No healthy agents available', {'
+          throw new ContextError('No healthy agents available', {
             context: {
               totalAgents: this.agents.size,
               taskId: task.id,
@@ -972,7 +972,7 @@ export class LoadBalancer extends TypedEventBase {
         recordMetric('load_balancer_routing_errors_total', 1);'
         throw result && typeof result === 'object' && 'error' in result'
           ? result.error
-          : new Error('Unknown startup error');'
+          : new Error('Unknown startup error');
       }
 
       return result.value;
@@ -1108,11 +1108,11 @@ export class LoadBalancer extends TypedEventBase {
       };
 
       await this.foundationKVStore.set(
-        `routing-decisions:${nanoid()}`,`
+        `routing-decisions:${generateNanoId()}`,
         decision
       );
     } catch (error) {
-      this.logger.warn('Failed to store routing decision', { error });'
+      this.logger.warn('Failed to store routing decision', { error });
     }
   }
 

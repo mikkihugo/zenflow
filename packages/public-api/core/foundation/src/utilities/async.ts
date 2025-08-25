@@ -1,8 +1,8 @@
 /**
  * @fileoverview Async utilities - Consolidated async patterns for claude-code-zen
  * @module utilities/async
- * 
- * Provides comprehensive async utilities including retry patterns, timeouts, 
+ *
+ * Provides comprehensive async utilities including retry patterns, timeouts,
  * circuit breakers, and concurrent execution helpers.
  */
 
@@ -20,8 +20,12 @@ export function pTimeout<T>(
     try {
       return await promise;
     } catch (error) {
-      if (error && typeof error === 'object' && 
-          ('name' in error && (error.name === 'TaskCancelledError' || error.name === 'TimeoutError'))) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'name' in error &&
+        (error.name === 'TaskCancelledError' || error.name === 'TimeoutError')
+      ) {
         throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`);
       }
       throw error;
@@ -163,11 +167,11 @@ export class CircuitBreaker<T extends unknown[], R> {
 
 /**
  * Retry an async operation with exponential backoff and jitter
- * 
+ *
  * @param fn - The async function to retry
  * @param config - Retry configuration options
  * @returns Promise that resolves with the function result or rejects after max attempts
- * 
+ *
  * @example
  * ```typescript
  * const result = await withRetry(
@@ -223,18 +227,18 @@ export async function withRetry<T>(
 
 /**
  * Add timeout to an async operation using Result pattern
- * 
+ *
  * @param promise - The promise to add timeout to
  * @param config - Timeout configuration
  * @returns Promise that resolves with Result containing success or timeout error
- * 
+ *
  * @example
  * ```typescript
  * const result = await withTimeout(
  *   fetch('/api/slow-endpoint'),
  *   { timeout: 5000, message: 'API request timed out' }
  * );
- * 
+ *
  * if (result.isOk()) {
  *   console.log('Success:', result.value);
  * } else {
@@ -251,7 +255,11 @@ export async function withTimeout<T>(
       promise,
       new Promise<never>((_, reject) => {
         setTimeout(() => {
-          reject(new Error(config.message || `Operation timed out after ${config.timeout}ms`));
+          reject(
+            new Error(
+              config.message || `Operation timed out after ${config.timeout}ms`
+            )
+          );
         }, config.timeout);
       }),
     ]);
@@ -263,11 +271,11 @@ export async function withTimeout<T>(
 
 /**
  * Execute async operations with timeout using Result pattern
- * 
+ *
  * @param fn - The async function to execute
  * @param config - Timeout configuration
  * @returns Promise that resolves with Result containing success or timeout error
- * 
+ *
  * @example
  * ```typescript
  * const result = await safeAsync(
@@ -285,11 +293,11 @@ export async function safeAsync<T>(
 ): Promise<Result<T, Error>> {
   try {
     const promise = fn();
-    
+
     if (config) {
       return withTimeout(promise, config);
     }
-    
+
     const result = await promise;
     return ok(result);
   } catch (error) {
@@ -299,11 +307,11 @@ export async function safeAsync<T>(
 
 /**
  * Create a circuit breaker for an async function
- * 
+ *
  * @param fn - The async function to wrap
  * @param config - Circuit breaker configuration
  * @returns Circuit breaker instance
- * 
+ *
  * @example
  * ```typescript
  * const apiCall = createCircuitBreaker(
@@ -314,7 +322,7 @@ export async function safeAsync<T>(
  *   },
  *   { failureThreshold: 3, resetTimeout: 30000 }
  * );
- * 
+ *
  * try {
  *   const data = await apiCall.execute('/api/data');
  * } catch (error) {
@@ -331,26 +339,26 @@ export function createCircuitBreaker<T extends unknown[], R>(
 
 /**
  * Sleep for specified milliseconds
- * 
+ *
  * @param ms - Milliseconds to sleep
  * @returns Promise that resolves after delay
- * 
+ *
  * @example
  * ```typescript
  * await sleep(1000); // Wait 1 second
  * ```
  */
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
  * Execute multiple promises concurrently with optional concurrency limit
- * 
+ *
  * @param tasks - Array of functions that return promises
  * @param concurrency - Maximum number of concurrent executions (default: unlimited)
  * @returns Promise that resolves with array of results
- * 
+ *
  * @example
  * ```typescript
  * const urls = ['url1', 'url2', 'url3', 'url4', 'url5'];
@@ -365,7 +373,7 @@ export async function concurrent<T>(
   concurrency?: number
 ): Promise<T[]> {
   if (!concurrency || concurrency >= tasks.length) {
-    return Promise.all(tasks.map(task => task()));
+    return Promise.all(tasks.map((task) => task()));
   }
 
   const results: T[] = [];
@@ -377,14 +385,16 @@ export async function concurrent<T>(
 
     const task = tasks[currentIndex];
     if (!task) return;
-    
+
     const result = await task();
     results[currentIndex] = result;
-    
+
     await executeNext();
   }
 
-  const workers = Array(concurrency).fill(0).map(() => executeNext());
+  const workers = Array(concurrency)
+    .fill(0)
+    .map(() => executeNext());
   await Promise.all(workers);
 
   return results;
@@ -392,10 +402,10 @@ export async function concurrent<T>(
 
 /**
  * Execute multiple promises and return results with Result pattern
- * 
+ *
  * @param promises - Array of promises to execute
  * @returns Promise that resolves with array of Results
- * 
+ *
  * @example
  * ```typescript
  * const results = await allSettledSafe([
@@ -403,7 +413,7 @@ export async function concurrent<T>(
  *   fetch('/api/data2'),
  *   fetch('/api/data3')
  * ]);
- * 
+ *
  * results.forEach((result, index) => {
  *   if (result.isOk()) {
  *     console.log(`Request ${index} succeeded:`, result.value);
@@ -417,17 +427,25 @@ export async function allSettledSafe<T>(
   promises: Promise<T>[]
 ): Promise<Result<T, Error>[]> {
   const settled = await Promise.allSettled(promises);
-  
-  return settled.map(result => result.status === 'fulfilled' ? ok(result.value) : err(result.reason instanceof Error ? result.reason : new Error(String(result.reason))));
+
+  return settled.map((result) =>
+    result.status === 'fulfilled'
+      ? ok(result.value)
+      : err(
+          result.reason instanceof Error
+            ? result.reason
+            : new Error(String(result.reason))
+        )
+  );
 }
 
 /**
  * Debounce an async function call
- * 
+ *
  * @param fn - The async function to debounce
  * @param delay - Debounce delay in milliseconds
  * @returns Debounced function
- * 
+ *
  * @example
  * ```typescript
  * const debouncedSave = debounce(
@@ -436,7 +454,7 @@ export async function allSettledSafe<T>(
  *   },
  *   1000
  * );
- * 
+ *
  * // Multiple rapid calls will be debounced
  * debouncedSave(data1);
  * debouncedSave(data2);
@@ -485,11 +503,11 @@ export function debounce<T extends unknown[], R>(
 
 /**
  * Throttle an async function call
- * 
+ *
  * @param fn - The async function to throttle
  * @param limit - Throttle limit in milliseconds
  * @returns Throttled function
- * 
+ *
  * @example
  * ```typescript
  * const throttledAPI = throttle(

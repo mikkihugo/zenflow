@@ -12,8 +12,8 @@
  * @version 1.0.0
  */
 
-import { addMonths, differenceInMonths, format } from 'date-fns';
-import { nanoid } from 'nanoid';
+import { dateFns, generateNanoId } from '@claude-zen/foundation';
+const { addMonths, differenceInMonths, format } = dateFns;
 import {
   groupBy,
   map,

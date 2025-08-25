@@ -43,7 +43,7 @@ import { promisify } from 'node:util';
 
 import { getLogger, type Logger } from '../logging';
 import { WorkspaceDetector, DetectedWorkspace } from '../../utilities/system';
-import { TypedEventBase, type ServiceEvents } from '@claude-zen/foundation';
+import { EventEmitter } from '../../events/typed.event.base';
 
 const execAsync = promisify(exec);
 
@@ -65,7 +65,13 @@ const COMPILER_TYPE = 'compiler' as const;
  */
 export interface EnvironmentTool {
   name: string;
-  type: 'package-manager' | 'runtime' | 'compiler' | 'cli-tool' | 'build-tool' | 'version-control';
+  type:
+    | 'package-manager'
+    | 'runtime'
+    | 'compiler'
+    | 'cli-tool'
+    | 'build-tool'
+    | 'version-control';
   available: boolean;
   version?: string;
   path?: string;
@@ -169,10 +175,10 @@ export interface EnvironmentSnapshot {
 export class EnvironmentDetectionError extends Error {
   constructor(
     message: string,
-    public readonly tool?: string,
+    public readonly tool?: string
   ) {
     super(message);
-    this.name ='EnvironmentDetectionError';
+    this.name = 'EnvironmentDetectionError';
   }
 }
 
@@ -202,18 +208,18 @@ export class EnvironmentDetectionError extends Error {
  * });
  * ```
  */
-export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
-  private snapshot: EnvironmentSnapshot|null = null;
-  private detectionInterval: NodeJS.Timeout|null = null;
+export class EnvironmentDetector extends EventEmitter {
+  private snapshot: EnvironmentSnapshot | null = null;
+  private detectionInterval: NodeJS.Timeout | null = null;
   private isDetecting = false;
   private logger: Logger;
-  private workspaceDetector: WorkspaceDetector|null;
+  private workspaceDetector: WorkspaceDetector | null;
 
   constructor(
     private projectRoot: string = process.cwd(),
     autoRefresh = true,
     private refreshInterval = 30000, // 30 seconds
-    logger?: Logger,
+    logger?: Logger
   ) {
     super({
       enableValidation: true,
@@ -222,7 +228,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       maxListeners: 20,
     });
 
-    this.logger = logger||getLogger('EnvironmentDetector');
+    this.logger = logger || getLogger('EnvironmentDetector');
     // Initialize workspace detector for comprehensive environment analysis
     this.workspaceDetector = null;
 
@@ -249,7 +255,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     }, this.refreshInterval);
 
     this.logger.info(
-      `Started auto-detection with ${this.refreshInterval}ms interval`,
+      `Started auto-detection with ${this.refreshInterval}ms interval`
     );
   }
 
@@ -273,7 +279,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    */
   async detectEnvironment(): Promise<EnvironmentSnapshot> {
     if (this.isDetecting) {
-      return this.snapshot||this.createEmptySnapshot();
+      return this.snapshot || this.createEmptySnapshot();
     }
 
     this.isDetecting = true;
@@ -292,7 +298,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
         tools,
         projectContext,
         systemCapabilities,
-        nixEnvironment,
+        nixEnvironment
       );
 
       this.snapshot = {
@@ -319,7 +325,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     } catch (error) {
       this.logger.error('Environment detection failed:', error);
       throw new EnvironmentDetectionError(
-        `Failed to detect environment: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to detect environment: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     } finally {
       this.isDetecting = false;
@@ -430,7 +436,9 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Detect tools in parallel
    */
-  private async detectToolsParallel(toolsToDetect: Array<{name: string; type: string; command: string}>) {
+  private async detectToolsParallel(
+    toolsToDetect: Array<{ name: string; type: string; command: string }>
+  ) {
     return await Promise.allSettled(
       toolsToDetect.map(async (tool) => {
         try {
@@ -452,14 +460,17 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
             available: false,
           };
         }
-      }),
+      })
     );
   }
 
   /**
    * Log tool detection failure for security audit
    */
-  private logToolDetectionFailure(tool: {name: string; type: string}, error: unknown) {
+  private logToolDetectionFailure(
+    tool: { name: string; type: string },
+    error: unknown
+  ) {
     this.logger.debug('Tool detection failed - security audit', {
       toolName: tool.name,
       toolType: tool.type,
@@ -470,14 +481,18 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Process tool detection results
    */
-  private processToolResults(results: PromiseSettledResult<EnvironmentTool>[], toolsToDetect: Array<{name: string; type: string}>) {
+  private processToolResults(
+    results: PromiseSettledResult<EnvironmentTool>[],
+    toolsToDetect: Array<{ name: string; type: string }>
+  ) {
     return results.map((result, index) =>
-      result.status === 'fulfilled' ? result.value
+      result.status === 'fulfilled'
+        ? result.value
         : {
-          name: toolsToDetect[index]?.name || 'unknown',
-          type: toolsToDetect[index]?.type || 'cli-tool',
-          available: false,
-        },
+            name: toolsToDetect[index]?.name || 'unknown',
+            type: toolsToDetect[index]?.type || 'cli-tool',
+            available: false,
+          }
     );
   }
 
@@ -499,12 +514,12 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       projectFiles.map((file) =>
         access(join(this.projectRoot, file))
           .then(() => true)
-          .catch(() => false),
-      ),
+          .catch(() => false)
+      )
     );
 
     // Integrate with workspace detector for comprehensive project analysis
-    let workspace: DetectedWorkspace|undefined;
+    let workspace: DetectedWorkspace | undefined;
     try {
       // Initialize workspace detector if not already done
       if (!this.workspaceDetector) {
@@ -512,7 +527,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       }
 
       const detected = await this.workspaceDetector.detectWorkspaceRoot(
-        this.projectRoot,
+        this.projectRoot
       );
       workspace = detected ?? undefined;
     } catch (error) {
@@ -527,25 +542,25 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
 
     return {
       hasPackageJson: Boolean(
-        fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value,
+        fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value
       ),
       hasCargoToml: Boolean(
-        fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value,
+        fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value
       ),
       hasMixExs: Boolean(
-        fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value,
+        fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value
       ),
       hasFlakeNix: Boolean(
-        fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value,
+        fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value
       ),
       hasShellNix: Boolean(
-        fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value,
+        fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value
       ),
       hasDockerfile: Boolean(
-        fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value,
+        fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value
       ),
       hasGitignore: Boolean(
-        fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value,
+        fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value
       ),
       languages,
       frameworks,
@@ -559,14 +574,14 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    */
   private async detectSystemCapabilities(): Promise<SystemCapabilities> {
     const os = process.platform;
-    const {arch, version} = process;
+    const { arch, version } = process;
 
     // Check for containerization
     const dockerAvailable = await this.checkCommandExists('docker');
     const podmanAvailable = await this.checkCommandExists('podman');
 
     // Basic virtualization detection
-    const virtualizationAvailable = dockerAvailable||podmanAvailable;
+    const virtualizationAvailable = dockerAvailable || podmanAvailable;
 
     return {
       operatingSystem: os,
@@ -579,9 +594,10 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       virtualization: {
         available: virtualizationAvailable,
         type: dockerAvailable
-          ?'docker'
+          ? 'docker'
           : podmanAvailable
-            ? 'podman': undefined,
+            ? 'podman'
+            : undefined,
       },
     };
   }
@@ -589,7 +605,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Detect Nix environment and available packages
    */
-  private async detectNixEnvironment(): Promise<NixEnvironment|undefined> {
+  private async detectNixEnvironment(): Promise<NixEnvironment | undefined> {
     try {
       // Check if Nix is available
       const nixTool = await this.checkCommandExists('nix');
@@ -610,7 +626,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       const packages = await this.scanAvailableNixPackages();
       const suggestedSetup = this.generateNixSetupSuggestions(
         flakesEnabled,
-        packages,
+        packages
       );
 
       return {
@@ -641,7 +657,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Get current Nix shell information
    */
-  private getCurrentNixShell(): string|null {
+  private getCurrentNixShell(): string | null {
     if (process.env['IN_NIX_SHELL']) {
       return 'nix-shell';
     }
@@ -749,7 +765,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     try {
       const { stdout } = await execAsync(
         `nix-env -qaP ${packageName}|head -1`,
-        { timeout: 5000 },
+        { timeout: 5000 }
       );
       return stdout.trim().length > 0;
     } catch {
@@ -766,11 +782,11 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       let binaryName = packageName;
       if (packageName.includes('.')) {
         const parts = packageName.split('.');
-        binaryName = parts[parts.length - 1]||packageName;
+        binaryName = parts[parts.length - 1] || packageName;
       }
       if (packageName.includes('_')) {
         const parts = packageName.split('_');
-        binaryName = parts[0]||packageName;
+        binaryName = parts[0] || packageName;
       }
 
       return await this.checkCommandExists(binaryName);
@@ -784,12 +800,13 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    */
   private generateNixSetupSuggestions(
     flakesEnabled: boolean,
-    packages: NixPackage[],
+    packages: NixPackage[]
   ): string[] {
     const suggestions: string[] = [];
 
     if (!flakesEnabled) {
-      suggestions.push('Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf',
+      suggestions.push(
+        'Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf'
       );
     }
 
@@ -799,7 +816,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       suggestions.push('Enter development shell: nix develop');
     } else {
       suggestions.push(
-        'Create flake.nix for reproducible development environment',
+        'Create flake.nix for reproducible development environment'
       );
     }
 
@@ -810,7 +827,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     const missingDev = devTools.filter((p) => p.available && !p.installed);
     if (missingDev.length > 0) {
       suggestions.push(
-        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`,
+        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`
       );
     }
 
@@ -836,7 +853,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     tools: EnvironmentTool[],
     projectContext: ProjectContext,
     systemCapabilities: SystemCapabilities,
-    nixEnvironment?: NixEnvironment,
+    nixEnvironment?: NixEnvironment
   ): string[] {
     const suggestions: string[] = [];
 
@@ -846,7 +863,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       !tools.some((t) => t.name === 'pnpm' && t.available)
     ) {
       suggestions.push(
-        'Consider installing pnpm for faster package management',
+        'Consider installing pnpm for faster package management'
       );
     }
 
@@ -864,7 +881,8 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       !systemCapabilities.containers.podman
     ) {
       suggestions.push(
-        'Consider installing Docker for containerized development');
+        'Consider installing Docker for containerized development'
+      );
     }
 
     // Nix-specific suggestions
@@ -878,7 +896,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   // Helper methods
   private parseVersion(output: string): string {
     const versionMatch = output.match(/v?(\d+\.\d+\.\d+)/);
-    return versionMatch?.[1]||output.split('\n')[0]||'unknown';
+    return versionMatch?.[1] || output.split('\n')[0] || 'unknown';
   }
 
   private async checkCommandExists(command: string): Promise<boolean> {
@@ -949,7 +967,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   }
 
   // Public API methods
-  getSnapshot(): EnvironmentSnapshot|null {
+  getSnapshot(): EnvironmentSnapshot | null {
     return this.snapshot;
   }
 
@@ -958,28 +976,28 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   }
 
   getAvailableTools(): EnvironmentTool[] {
-    return this.snapshot?.tools.filter((t) => t.available)||[];
+    return this.snapshot?.tools.filter((t) => t.available) || [];
   }
 
   hasTools(...toolNames: string[]): boolean {
     const availableTools = this.getAvailableTools();
     return toolNames.every((name) =>
-      availableTools.some((tool) => tool.name === name),
+      availableTools.some((tool) => tool.name === name)
     );
   }
 
   /**
    * Get Nix environment information
    */
-  getNixEnvironment(): NixEnvironment|null {
-    return this.snapshot?.nixEnvironment||null;
+  getNixEnvironment(): NixEnvironment | null {
+    return this.snapshot?.nixEnvironment || null;
   }
 
   /**
    * Check if Nix is available
    */
   hasNix(): boolean {
-    return this.getNixEnvironment()?.nixAvailable||false;
+    return this.getNixEnvironment()?.nixAvailable || false;
   }
 
   /**
@@ -993,7 +1011,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    * Get installed Nix packages
    */
   getInstalledNixPackages(): NixPackage[] {
-    return this.getNixEnvironment()?.packages.filter((p) => p.installed)||[];
+    return this.getNixEnvironment()?.packages.filter((p) => p.installed) || [];
   }
 
   /**
@@ -1050,9 +1068,9 @@ export class NixIntegration {
   constructor(
     private projectRoot: string = process.cwd(),
     private environmentDetector?: EnvironmentDetector,
-    logger?: Logger,
+    logger?: Logger
   ) {
-    this.logger = logger||getLogger('NixIntegration');
+    this.logger = logger || getLogger('NixIntegration');
     this.cachePath = join(projectRoot, '.cache', 'nix-integration.json');
 
     // Create environment detector if not provided
@@ -1061,7 +1079,7 @@ export class NixIntegration {
         projectRoot,
         false,
         30000,
-        this.logger,
+        this.logger
       );
     }
   }
@@ -1084,12 +1102,13 @@ export class NixIntegration {
       throw new Error('Environment detector not initialized');
     }
     const snapshot = await this.environmentDetector.detectEnvironment();
-    const nixEnvironment = snapshot.nixEnvironment||{
+    const nixEnvironment = snapshot.nixEnvironment || {
       nixAvailable: false,
       flakesEnabled: false,
       currentShell: null,
       packages: [],
-      suggestedSetup: ['Install Nix: curl -L https://nixos.org/nix/install | sh',
+      suggestedSetup: [
+        'Install Nix: curl -L https://nixos.org/nix/install | sh',
       ],
     };
 
@@ -1205,7 +1224,7 @@ export class NixIntegration {
       await execAsync('mkdir -p ~/.config/nix');
 
       // Add flakes configuration
-      const configPath = `${homedir()  }/.config/nix/nix.conf`;
+      const configPath = `${homedir()}/.config/nix/nix.conf`;
       const configContent = 'experimental-features = nix-command flakes\n';
 
       try {
@@ -1251,9 +1270,9 @@ export class NixIntegration {
   private async loadCache(): Promise<{
     timestamp: number;
     data: NixEnvironment;
-  }|null> {
+  } | null> {
     try {
-      const content = await readFile(this.cachePath,'utf8');
+      const content = await readFile(this.cachePath, 'utf8');
       return JSON.parse(content);
     } catch {
       return null;
@@ -1325,7 +1344,7 @@ export const NIX_INTEGRATION_TOKEN = Symbol('NixIntegration');
 export function createEnvironmentDetector(
   projectRoot?: string,
   autoRefresh?: boolean,
-  logger?: Logger,
+  logger?: Logger
 ): EnvironmentDetector {
   return new EnvironmentDetector(projectRoot, autoRefresh, 30000, logger);
 }
@@ -1336,7 +1355,7 @@ export function createEnvironmentDetector(
 export function createNixIntegration(
   projectRoot?: string,
   environmentDetector?: EnvironmentDetector,
-  logger?: Logger,
+  logger?: Logger
 ): NixIntegration {
   return new NixIntegration(projectRoot, environmentDetector, logger);
 }

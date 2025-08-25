@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from "@claude-zen/foundation"
 import { Bus } from "../bus"
 import { NamedError } from "../util/error"
 import { Message } from "./message"

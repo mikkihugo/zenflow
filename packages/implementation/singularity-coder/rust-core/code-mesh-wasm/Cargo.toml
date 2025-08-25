@@ -13,7 +13,7 @@ keywords = ["wasm", "webassembly", "javascript", "browser", "swarm"]
 categories = ["wasm", "web-programming", "development-tools", "api-bindings"]
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 # Core functionality - simplified for WASM
@@ -102,7 +102,9 @@ insta = "1.0"
 wasm-opt = false
 
 [features]
-default = ["console_error_panic_hook"]
+default = ["std", "auto-optimization"]
+std = []
+auto-optimization = []
 browser = ["web-sys/Storage"]
 node = []
 performance = [] # wee_alloc removed - using default allocator

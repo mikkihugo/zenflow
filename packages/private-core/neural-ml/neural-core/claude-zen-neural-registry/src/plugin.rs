@@ -10,9 +10,10 @@ use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 #[cfg(feature = "plugin-system")]
-use libloading::{Library, Symbol};
+use libloading::Library;
 
 /// Plugin descriptor containing metadata and model information
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]

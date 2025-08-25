@@ -3,12 +3,7 @@
   "compilerOptions": {
     "downlevelIteration": true
   },
-  "exclude": [
-    "dist", 
-    "node_modules", 
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ],
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
     { "path": "../../foundation" },
     { "path": "../event-system" },

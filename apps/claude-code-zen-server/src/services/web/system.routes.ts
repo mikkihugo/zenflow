@@ -24,15 +24,16 @@ import { getLogger } from '@claude-zen/foundation';
 import {
   getSystemCapabilityData,
   createHealthDataProviders,
-  getCapabilityScores
+  getCapabilityScores,
 } from '@claude-zen/foundation/system-capability-data-provider';
-import {
-  Router,
-  type Request,
-  type Response
-} from 'express';
+import { Router, type Request, type Response } from 'express';
 
 const logger = getLogger('SystemCapabilityRoutes');
+
+// Constants to avoid string duplication
+const SYSTEM_ERROR_MESSAGES = {
+  internalServerError: 'Internal server error',
+} as const;
 
 export class SystemCapabilityRoutes {
   private router: Router;
@@ -78,15 +79,15 @@ export class SystemCapabilityRoutes {
         data: statusData,
         meta: {
           endpoint: 'status',
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
     } catch (error) {
       logger.error('Failed to get system status', { error });
       res.status(500).json({
         success: false,
-        error: 'Internal server error',
-        message: 'Failed to retrieve system status'
+        error: SYSTEM_ERROR_MESSAGES.internalServerError,
+        message: 'Failed to retrieve system status',
       });
     }
   }
@@ -104,15 +105,15 @@ export class SystemCapabilityRoutes {
         meta: {
           endpoint: 'facades',
           timestamp: new Date().toISOString(),
-          count: facadesData.facades.length
-        }
+          count: facadesData.facades.length,
+        },
       });
     } catch (error) {
       logger.error('Failed to get facades data', { error });
       res.status(500).json({
         success: false,
-        error: 'Internal server error',
-        message: 'Failed to retrieve facades information'
+        error: SYSTEM_ERROR_MESSAGES.internalServerError,
+        message: 'Failed to retrieve facades information',
       });
     }
   }
@@ -121,7 +122,10 @@ export class SystemCapabilityRoutes {
    * GET /api/v1/system/capability/suggestions
    * Returns installation suggestions for missing packages
    */
-  private async handleGetSuggestions(req: Request, res: Response): Promise<void> {
+  private async handleGetSuggestions(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const suggestionsData = await this.healthProviders.getSuggestionsData();
       res.json({
@@ -130,15 +134,15 @@ export class SystemCapabilityRoutes {
         meta: {
           endpoint: 'suggestions',
           timestamp: new Date().toISOString(),
-          count: suggestionsData.suggestions.length
-        }
+          count: suggestionsData.suggestions.length,
+        },
       });
     } catch (error) {
       logger.error('Failed to get suggestions data', { error });
       res.status(500).json({
         success: false,
-        error: 'Internal server error',
-        message: 'Failed to retrieve installation suggestions'
+        error: SYSTEM_ERROR_MESSAGES.internalServerError,
+        message: 'Failed to retrieve installation suggestions',
       });
     }
   }
@@ -158,15 +162,15 @@ export class SystemCapabilityRoutes {
           timestamp: new Date().toISOString(),
           facades: detailedData.facades.length,
           totalPackages: detailedData.totalPackages,
-          availablePackages: detailedData.availablePackages
-        }
+          availablePackages: detailedData.availablePackages,
+        },
       });
     } catch (error) {
       logger.error('Failed to get detailed data', { error });
       res.status(500).json({
         success: false,
-        error: 'Internal server error',
-        message: 'Failed to retrieve detailed capability data'
+        error: SYSTEM_ERROR_MESSAGES.internalServerError,
+        message: 'Failed to retrieve detailed capability data',
       });
     }
   }
@@ -187,8 +191,8 @@ export class SystemCapabilityRoutes {
           score: capabilityData.systemHealthScore,
           overall: capabilityData.overall,
           packages: `${capabilityData.availablePackages}/${capabilityData.totalPackages}`,
-          services: capabilityData.registeredServices
-        }
+          services: capabilityData.registeredServices,
+        },
       };
 
       res.status(isHealthy ? 200 : 503).json(response);
@@ -197,7 +201,7 @@ export class SystemCapabilityRoutes {
       res.status(503).json({
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
-        error: 'Health check failed'
+        error: 'Health check failed',
       });
     }
   }
@@ -214,23 +218,25 @@ export class SystemCapabilityRoutes {
         data: {
           scores,
           summary: {
-            average: Object.values(scores).reduce((sum, score) => sum + score, 0) / Object.keys(scores).length,
+            average:
+              Object.values(scores).reduce((sum, score) => sum + score, 0) /
+              Object.keys(scores).length,
             highest: Math.max(...Object.values(scores)),
             lowest: Math.min(...Object.values(scores)),
-            facades: Object.keys(scores).length
-          }
+            facades: Object.keys(scores).length,
+          },
         },
         meta: {
           endpoint: 'scores',
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
     } catch (error) {
       logger.error('Failed to get capability scores', { error });
       res.status(500).json({
         success: false,
-        error: 'Internal server error',
-        message: 'Failed to retrieve capability scores'
+        error: SYSTEM_ERROR_MESSAGES.internalServerError,
+        message: 'Failed to retrieve capability scores',
       });
     }
   }

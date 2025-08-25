@@ -93,7 +93,9 @@ export type {
 
 export async function getDSPySystemAccess(_config?: any): Promise<any> {
   const { createDSPyEngine: createEngine } = await import('./core/dspy-engine');
-  const { getDSPyService: getService, initializeDSPyService } = await import('./core/service');
+  const { getDSPyService: getService, initializeDSPyService } = await import(
+    './core/service'
+  );
   const { DSPyModule } = await import('./primitives/module');
   const { Example } = await import('./primitives/example');
   const { ChatAdapter } = await import('./adapters/chat-adapter');
@@ -105,8 +107,7 @@ export async function getDSPySystemAccess(_config?: any): Promise<any> {
   return {
     createEngine: (engineConfig?: any) => createEngine(engineConfig),
     getService: () => getService(),
-    initializeService: () =>
-      initializeDSPyService(),
+    initializeService: () => initializeDSPyService(),
     createModule: (signature: any) => {
       const module = new DSPyModule();
       // Configure module with signature if provided
@@ -125,25 +126,13 @@ export async function getDSPySystemAccess(_config?: any): Promise<any> {
       }
       return ensemble;
     },
-    optimizeModule: async (
-      module: any,
-      examples: any[],
-      options?: any
-    ) => {
+    optimizeModule: async (module: any, examples: any[], options?: any) => {
       return engine.compile(module, examples, options);
     },
-    evaluateModule: async (
-      module: any,
-      examples: any[],
-      metrics: any[]
-    ) => {
+    evaluateModule: async (module: any, examples: any[], metrics: any[]) => {
       return engine.evaluate(module, examples, metrics);
     },
-    trainModule: async (
-      module: any,
-      trainingData: any,
-      config?: any
-    ) => {
+    trainModule: async (module: any, trainingData: any, config?: any) => {
       return engine.train(module, trainingData, config);
     },
     getEngineUtils: () => engine.utils || {},
@@ -156,38 +145,24 @@ export async function getDSPyEngineAccess(config?: any): Promise<any> {
   const engine = createEngine(config);
   return {
     create: (engineConfig?: any) => createEngine(engineConfig),
-    compile: (
-      module: any,
-      examples: any[],
-      options?: any
-    ) => engine.compile(module, examples, options),
-    evaluate: (
-      module: any,
-      examples: any[],
-      metrics: any[]
-    ) => engine.evaluate(module, examples, metrics),
-    train: (
-      module: any,
-      trainingData: any,
-      config?: any
-    ) => engine.train(module, trainingData, config),
-    optimize: (
-      candidates: any[],
-      config?: any
-    ) => engine.optimize(candidates, config),
+    compile: (module: any, examples: any[], options?: any) =>
+      engine.compile(module, examples, options),
+    evaluate: (module: any, examples: any[], metrics: any[]) =>
+      engine.evaluate(module, examples, metrics),
+    train: (module: any, trainingData: any, config?: any) =>
+      engine.train(module, trainingData, config),
+    optimize: (candidates: any[], config?: any) =>
+      engine.optimize(candidates, config),
     utils: engine.utils || {},
   };
 }
 
 export async function getDSPyOptimization(config?: any): Promise<any> {
   const system = await getDSPySystemAccess(config);
-  
+
   return {
-    optimize: (
-      module: any,
-      examples: any[],
-      options?: any
-    ) => system.optimizeModule(module, examples, options),
+    optimize: (module: any, examples: any[], options?: any) =>
+      system.optimizeModule(module, examples, options),
     ensemble: (predictors: any[]) => system.createEnsemble(predictors),
     fewShot: (module: any, examples: any[], k: number = 5) => {
       // Few-shot learning implementation
@@ -196,11 +171,7 @@ export async function getDSPyOptimization(config?: any): Promise<any> {
         strategy: 'few-shot',
       });
     },
-    bootstrap: (
-      module: any,
-      examples: any[],
-      rounds: number = 3
-    ) => {
+    bootstrap: (module: any, examples: any[], rounds: number = 3) => {
       // Bootstrap optimization implementation
       return system.optimizeModule(module, examples, {
         strategy: 'bootstrap',
@@ -213,15 +184,10 @@ export async function getDSPyOptimization(config?: any): Promise<any> {
 export async function getDSPyML(config?: any): Promise<any> {
   const system = await getDSPySystemAccess(config);
   return {
-    createModule: (signature: any) =>
-      system.createModule(signature),
-    trainModel: (module: any, data: any) =>
-      system.trainModule(module, data),
-    evaluateModel: (
-      module: any,
-      examples: any[],
-      metrics: any[]
-    ) => system.evaluateModule(module, examples, metrics),
+    createModule: (signature: any) => system.createModule(signature),
+    trainModel: (module: any, data: any) => system.trainModule(module, data),
+    evaluateModel: (module: any, examples: any[], metrics: any[]) =>
+      system.evaluateModule(module, examples, metrics),
     predictBatch: async (module: any, inputs: any[]) => {
       const results = [];
       for (const input of inputs) {
@@ -260,8 +226,9 @@ export const dspySystem = {
   getOptimization: getDSPyOptimization,
   getML: getDSPyML,
   getTeleprompters: getDSPyTeleprompters,
-  createEngine: () => import('./core/dspy-engine').then(m => m.createDSPyEngine()),
-  createService: () => import('./core/service').then(m => m.getDSPyService()),
+  createEngine: () =>
+    import('./core/dspy-engine').then((m) => m.createDSPyEngine()),
+  createService: () => import('./core/service').then((m) => m.getDSPyService()),
 };
 
 // =============================================================================

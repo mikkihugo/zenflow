@@ -14,7 +14,7 @@ import { getLogger } from '../../core/logging';
 export class ValidationError extends Error {
   constructor(
     message: string,
-    public readonly field?: string,
+    public readonly field?: string
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -24,7 +24,7 @@ export class ValidationError extends Error {
 export class ConfigurationError extends Error {
   constructor(
     message: string,
-    public readonly configKey?: string,
+    public readonly configKey?: string
   ) {
     super(message);
     this.name = 'ConfigurationError';
@@ -294,12 +294,12 @@ export class SwarmError extends BaseClaudeZenError {
     message: string,
     public readonly swarmId?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {},
+    context: Partial<ErrorContext> = {}
   ) {
     super(message, {
       category: 'Swarm',
       severity,
-      context: { ...context, metadata: { swarmId } }
+      context: { ...context, metadata: { swarmId } },
     });
     this.name = 'SwarmError';
   }
@@ -333,12 +333,12 @@ export class AgentError extends BaseClaudeZenError {
     message: string,
     public readonly agentId?: string,
     public readonly agentType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
   ) {
     super(message, {
       category: 'Agent',
       severity,
-      context: { metadata: { agentId, agentType } }
+      context: { metadata: { agentId, agentType } },
     });
     this.name = 'AgentError';
   }
@@ -359,7 +359,11 @@ export class SwarmCommunicationError extends SwarmError {
     }
   ) {
     super(message, undefined, options.severity ?? 'high', {
-      metadata: { fromAgent: options.fromAgent, toAgent: options.toAgent, messageType: options.messageType },
+      metadata: {
+        fromAgent: options.fromAgent,
+        toAgent: options.toAgent,
+        messageType: options.messageType,
+      },
     });
     this.name = 'SwarmCommunicationError';
     this.fromAgent = options.fromAgent;
@@ -373,7 +377,7 @@ export class SwarmCoordinationError extends SwarmError {
     message: string,
     public readonly coordinationType: string,
     public readonly participantCount?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
   ) {
     super(message, undefined, severity, {
       metadata: { coordinationType, participantCount },
@@ -398,12 +402,12 @@ export class TaskError extends BaseClaudeZenError {
     message: string,
     public readonly taskId?: string,
     public readonly taskType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
   ) {
     super(message, {
       category: 'Task',
       severity,
-      context: { metadata: { taskId, taskType } }
+      context: { metadata: { taskId, taskType } },
     });
     this.name = 'TaskError';
   }
@@ -416,12 +420,12 @@ export class NotFoundError extends BaseClaudeZenError {
   constructor(
     message: string,
     public readonly resource?: string,
-    public readonly resourceId?: string,
+    public readonly resourceId?: string
   ) {
     super(message, {
       category: 'NotFound',
       severity: 'medium',
-      context: { metadata: { resource, resourceId } }
+      context: { metadata: { resource, resourceId } },
     });
     this.name = 'NotFoundError';
   }
@@ -466,7 +470,10 @@ export function isRecoverableError(error: Error): boolean {
 
   // Default classification for non-Claude-Zen errors
   return !(
-    error instanceof TypeError || error instanceof ReferenceError || error.message.includes('out of memory') || error.message.includes('segmentation fault')
+    error instanceof TypeError ||
+    error instanceof ReferenceError ||
+    error.message.includes('out of memory') ||
+    error.message.includes('segmentation fault')
   );
 }
 
@@ -490,7 +497,7 @@ export function isRecoverableError(error: Error): boolean {
  * ```
  */
 export function getErrorSeverity(
-  error: Error,
+  error: Error
 ): 'low' | 'medium' | 'high' | 'critical' {
   if (error instanceof BaseClaudeZenError) {
     return error.severity;
@@ -535,7 +542,7 @@ export function getErrorSeverity(
 export function shouldRetry(
   error: Error,
   attempt: number,
-  maxRetries = 3,
+  maxRetries = 3
 ): boolean {
   return !(
     attempt >= maxRetries ||
@@ -556,7 +563,10 @@ export function isValidationError(error: unknown): error is ValidationError {
   return error instanceof ValidationError;
 }
 
-export function createValidationError(message: string, field?: string): ValidationError {
+export function createValidationError(
+  message: string,
+  field?: string
+): ValidationError {
   return new ValidationError(message, field);
 }
 

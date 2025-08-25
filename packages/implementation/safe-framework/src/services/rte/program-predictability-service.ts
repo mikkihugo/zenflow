@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, differenceInDays, subDays } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, differenceInDays, subDays } = dateFns;
 import {
   groupBy,
   map,
@@ -389,7 +388,7 @@ export class ProgramPredictabilityService {
     mitigationPlan: string;
     owner: string;
   }): Promise<BusinessImpactAssessment> {
-    const impactId = `impact-${nanoid(12)}`;`
+    const impactId = `impact-${generateNanoId(12)}`;`
 
     const assessment: BusinessImpactAssessment = {
       impactId,

@@ -5,7 +5,7 @@ import { Filesystem } from "../util/filesystem"
 import { Global } from "../global"
 import path from "path"
 import os from "os"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 
 export namespace App {
   const log = Log.create({ service: "app" })

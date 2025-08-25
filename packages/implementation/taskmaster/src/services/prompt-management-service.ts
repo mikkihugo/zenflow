@@ -14,7 +14,7 @@ import { getLogger } from '@claude-zen/foundation';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
 import { getTeamworkSystem } from '@claude-zen/teamwork';
 import { getWorkflowEngine } from '@claude-zen/enterprise';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@claude-zen/foundation';
 
 export interface PromptVersion {
   id: string;
@@ -204,8 +204,8 @@ export class PromptManagementService {
     createdBy: string,
     auditContext: { ipAddress?: string; userAgent?: string; sessionId?: string }
   ): Promise<PromptTemplate> {
-    const promptId = uuidv4();
-    const versionId = uuidv4();
+    const promptId = generateUUID();
+    const versionId = generateUUID();
 
     // Create initial version
     const initialVersion: PromptVersion = {
@@ -291,7 +291,7 @@ export class PromptManagementService {
     const nextVersion = this.generateNextVersion(template.versions);
 
     const newVersion: PromptVersion = {
-      id: uuidv4(),
+      id: generateUUID(),
       promptId,
       version: nextVersion,
       content: data.content,
@@ -364,7 +364,7 @@ export class PromptManagementService {
     }
 
     const variant: PromptVariant = {
-      id: uuidv4(),
+      id: generateUUID(),
       name: data.name,
       versionId,
       trafficAllocation: data.trafficAllocation,
@@ -419,7 +419,7 @@ export class PromptManagementService {
     await this.checkPermission(template, authorId, 'edit');'
 
     const draft: PromptDraft = {
-      id: uuidv4(),
+      id: generateUUID(),
       promptId,
       authorId,
       title: data.title,
@@ -667,7 +667,7 @@ export class PromptManagementService {
     metadata: any = {}
   ): Promise<void> {
     const auditEntry: PromptAuditEntry = {
-      id: uuidv4(),
+      id: generateUUID(),
       promptId,
       action,
       userId,

@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { addDays, differenceInDays, format } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { addDays, differenceInDays, format } = dateFns;
 import {
   groupBy,
   map,
@@ -278,7 +277,7 @@ export class EpicLifecycleService {
     blockerData: Omit<EpicBlocker, 'id|identifiedAt'>'
   ): Promise<string> {
     const blocker: EpicBlocker = {
-      id: `blocker-${nanoid(8)}`,`
+      id: `blocker-${generateNanoId(8)}`,`
       identifiedAt: new Date(),
       ...blockerData,
     };

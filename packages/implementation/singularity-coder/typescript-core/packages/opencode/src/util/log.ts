@@ -1,7 +1,7 @@
 import path from "path"
 import fs from "fs/promises"
 import { Global } from "../global"
-import z from "zod"
+import { z } from "@claude-zen/foundation"
 
 export namespace Log {
   export const Level = z.enum(["DEBUG", "INFO", "WARN", "ERROR"]).openapi({ ref: "LogLevel", description: "Log level" })

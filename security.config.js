@@ -35,8 +35,21 @@ export const securityConfig = {
     maxJsonPayload: '1mb',
     maxUrlLength: 2048,
     maxHeaderSize: '8kb',
-    allowedMimeTypes: ['application/json', 'text/plain', 'application/octet-stream'],
-    blockedFileExtensions: ['.exe', '.bat', '.cmd', '.scr', '.pif', '.vbs', '.js', '.jar'],
+    allowedMimeTypes: [
+      'application/json',
+      'text/plain',
+      'application/octet-stream',
+    ],
+    blockedFileExtensions: [
+      '.exe',
+      '.bat',
+      '.cmd',
+      '.scr',
+      '.pif',
+      '.vbs',
+      '.js',
+      '.jar',
+    ],
   },
 
   // Rate Limiting
@@ -51,9 +64,16 @@ export const securityConfig = {
 
   // CORS Configuration
   cors: {
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-API-Key'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'X-API-Key',
+    ],
     credentials: true,
     maxAge: 86400, // 24 hours
   },
@@ -116,7 +136,13 @@ export const securityConfig = {
   // File Upload Security
   upload: {
     maxFileSize: '5mb',
-    allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/json'],
+    allowedMimeTypes: [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'text/plain',
+      'application/json',
+    ],
     scanForViruses: true,
     quarantineSuspiciousFiles: true,
   },
@@ -188,13 +214,14 @@ export const securityValidators = {
 
   validateFileUpload(file) {
     const config = securityConfig.upload;
-    const sizeLimit = parseInt(config.maxFileSize.replace('mb', '')) * 1024 * 1024;
+    const sizeLimit =
+      parseInt(config.maxFileSize.replace('mb', '')) * 1024 * 1024;
 
     return {
       validSize: file.size <= sizeLimit,
       validType: config.allowedMimeTypes.includes(file.mimetype),
-      validExtension: !securityConfig.validation.blockedFileExtensions.some((ext) =>
-        file.originalname?.toLowerCase().endsWith(ext)
+      validExtension: !securityConfig.validation.blockedFileExtensions.some(
+        (ext) => file.originalname?.toLowerCase().endsWith(ext)
       ),
     };
   },

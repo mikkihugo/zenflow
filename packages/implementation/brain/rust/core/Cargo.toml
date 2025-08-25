@@ -1,5 +1,5 @@
 [package]
-name = "claude-zen-neural-core"
+name = "claude-zen-brain-core"
 version = "0.1.0"
 edition = "2021"
 authors = ["claude-code-zen Team"]
@@ -7,7 +7,7 @@ description = "Pure Rust neural network implementation based on FANN library"
 license = "MIT OR Apache-2.0"
 
 [lib]
-name = "claude_zen_neural_core"
+name = "claude_zen_brain_core"
 path = "lib.rs"
 crate-type = ["cdylib", "lib"]
 
@@ -60,12 +60,13 @@ features = [
 ]
 
 [features]
-default = ["std", "parallel", "gpu-backend", "wasm", "io", "full-training", "dspy-integration"]
+default = ["std", "auto-optimization", "parallel", "logging", "simd-acceleration", "async", "io", "burn-backend", "smartcore-backend", "dspy-integration"]  # FULL AUTO - safe features enabled by default
+auto-optimization = []  # Placeholder - actual features enabled by build.rs
 std = []
 serde = ["dep:serde"]
 parallel = ["dep:rayon"]
 io = ["dep:bincode", "serde", "dep:serde_json"]
-logging = []
+logging = ["dep:log"]
 binary = []
 
 # WASM features
@@ -81,6 +82,10 @@ wasm = [
   "dep:web-sys"
 ]
 console_error_panic_hook = ["dep:console_error_panic_hook"]
+
+# Acceleration features
+simd-acceleration = []  # SIMD acceleration for x86_64/ARM64
+async = []  # Async runtime support
 
 # Neural network backends (optional)
 burn-backend = ["dep:burn", "dep:burn-ndarray"]

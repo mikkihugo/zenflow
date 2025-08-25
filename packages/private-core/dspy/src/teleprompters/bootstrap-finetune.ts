@@ -28,9 +28,9 @@ export type DataFormat = 'chat|completion|instruction';
  */
 export class FailedPrediction {
   completion_text: string;
-  format_reward?: number|null;
+  format_reward?: number | null;
 
-  constructor(completion_text: string, format_reward?: number|null) {
+  constructor(completion_text: string, format_reward?: number | null) {
     this.completion_text = completion_text;
     this.format_reward = format_reward;
   }
@@ -44,14 +44,14 @@ export interface TraceData {
   example: Example;
   prediction: Prediction;
   trace: Array<[any, Record<string, any>, Prediction]>;
-  score?: number|null;
+  score?: number | null;
 }
 
 /**
  * Fine-tuning job interface
  */
 export interface FinetuneJob {
-  result(): Promise<LMInterface|Error>;
+  result(): Promise<LMInterface | Error>;
   thread: { join(): void };
 }
 
@@ -63,7 +63,10 @@ export abstract class FinetuneTeleprompter extends Teleprompter {
   protected trainKwargs: Map<LMInterface, any>;
 
   constructor(
-    train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null
+    train_kwargs?:
+      | Record<string, any>
+      | Map<LMInterface, Record<string, any>>
+      | null
   ) {
     super();
     this.trainKwargs = this.convertToLMDict(train_kwargs || {});
@@ -90,7 +93,7 @@ export abstract class FinetuneTeleprompter extends Teleprompter {
   }
 
   private static isLMInterface(obj: any): obj is LMInterface {
-    return obj && typeof obj === 'object' && 'generate'in obj;
+    return obj && typeof obj === 'object' && 'generate' in obj;
   }
 
   protected convertToLMDict(arg: any): Map<LMInterface, any> {
@@ -104,17 +107,20 @@ export abstract class FinetuneTeleprompter extends Teleprompter {
  */
 export interface BootstrapFinetuneConfig {
   /** Metric function for evaluation */
-  metric?: MetricFunction|null;
+  metric?: MetricFunction | null;
   /** Whether to use multitask fine-tuning */
   multitask?: boolean;
   /** Training kwargs for fine-tuning */
-  train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null;
+  train_kwargs?:
+    | Record<string, any>
+    | Map<LMInterface, Record<string, any>>
+    | null;
   /** Adapter for formatting fine-tuning data */
-  adapter?: Adapter|Map<LMInterface, Adapter>|null;
+  adapter?: Adapter | Map<LMInterface, Adapter> | null;
   /** Whether to exclude demos after fine-tuning */
   exclude_demos?: boolean;
   /** Number of threads for evaluation */
-  num_threads?: number|null;
+  num_threads?: number | null;
 }
 
 /**
@@ -282,12 +288,12 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     super(config.train_kwargs);
 
     this.config = {
-      metric: config.metric||null,
+      metric: config.metric || null,
       multitask: config.multitask ?? true,
-      train_kwargs: config.train_kwargs||null,
-      adapter: config.adapter||null,
+      train_kwargs: config.train_kwargs || null,
+      adapter: config.adapter || null,
       exclude_demos: config.exclude_demos ?? false,
-      num_threads: config.num_threads||null,
+      num_threads: config.num_threads || null,
     };
 
     this.adapterMap = this.convertToLMDict(config.adapter);
@@ -301,8 +307,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule|DSPyModule[]|null;
-      valset?: Example[]|null;
+      teacher?: DSPyModule | DSPyModule[] | null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -317,7 +323,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     const preparedTeachers = teachers.map((t) =>
       this.prepareTeacher(student, t)
     );
-    const numThreads = this.config.num_threads||1;
+    const numThreads = this.config.num_threads || 1;
 
     for (const t of preparedTeachers) {
       if (t) {
@@ -346,7 +352,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
         );
       }
 
-      const trainingKey = `${pred.lm.model||'default'}_${dataPredInd}`;
+      const trainingKey = `${pred.lm.model || 'default'}_${dataPredInd}`;
 
       if (!keyToData.has(trainingKey)) {
         const { trainData, dataFormat } = await this.prepareFinetuneData(
@@ -355,14 +361,14 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
           dataPredInd
         );
         console.log(
-          `Using ${trainData.length} data points for fine-tuning the model: ${pred.lm.model||'unknown'}`
+          `Using ${trainData.length} data points for fine-tuning the model: ${pred.lm.model || 'unknown'}`
         );
 
         const finetuneKwargs = {
           lm: pred.lm,
           train_data: trainData,
           train_data_format: dataFormat,
-          train_kwargs: this.trainKwargs.get(pred.lm)||{},
+          train_kwargs: this.trainKwargs.get(pred.lm) || {},
         };
         keyToData.set(trainingKey, finetuneKwargs);
       }
@@ -384,7 +390,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     for (let predInd = 0; predInd < student.predictors().length; predInd++) {
       const pred = student.predictors()[predInd];
       const dataPredInd = this.config.multitask ? null : predInd;
-      const trainingKey = `${pred.lm!.model||'default'}_${dataPredInd}`;
+      const trainingKey = `${pred.lm!.model || 'default'}_${dataPredInd}`;
       const finetunedLM = keyToLM.get(trainingKey);
 
       if (finetunedLM instanceof Error) {
@@ -410,7 +416,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
    */
   private async finetuneLMs(
     finetuneDict: Map<string, any>
-  ): Promise<Map<string, LMInterface|Error>> {
+  ): Promise<Map<string, LMInterface | Error>> {
     const numJobs = finetuneDict.size;
     console.log(`Starting ${numJobs} fine-tuning job(s)...`);
 
@@ -420,7 +426,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     for (const [key, finetuneKwargs] of finetuneDict) {
       const lm: LMInterface = finetuneKwargs.lm;
 
-      console.log('Calling lm.kill() on the LM to be fine-tuned to free up resources.'
+      console.log(
+        'Calling lm.kill() on the LM to be fine-tuned to free up resources.'
       );
 
       if (typeof lm.kill === 'function') {
@@ -429,7 +436,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
       // In production, this would call the actual LM fine-tuning API
       const job: FinetuneJob = {
-        async result(): Promise<LMInterface|Error> {
+        async result(): Promise<LMInterface | Error> {
           try {
             console.log(`Fine-tuning job for ${key} completed`);
             return lm; // Return the fine-tuned LM
@@ -444,7 +451,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     }
 
     // Wait for all jobs to complete
-    const keyToLM = new Map<string, LMInterface|Error>();
+    const keyToLM = new Map<string, LMInterface | Error>();
     let jobIndex = 0;
 
     for (const [key, job] of keyToJob) {
@@ -466,7 +473,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
   private async prepareFinetuneData(
     traceData: TraceData[],
     lm: LMInterface,
-    predInd: number|null = null
+    predInd: number | null = null
   ): Promise<{ trainData: any[]; dataFormat: DataFormat }> {
     if (this.config.metric) {
       console.log(`Collected data for ${traceData.length} examples`);
@@ -477,8 +484,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     }
 
     const data: any[] = [];
-    const adapter = this.adapterMap.get(lm)||new ChatAdapter();
-    const dataFormat: DataFormat ='chat'; // Simplified for production
+    const adapter = this.adapterMap.get(lm) || new ChatAdapter();
+    const dataFormat: DataFormat = 'chat'; // Simplified for production
 
     for (const item of traceData) {
       for (
@@ -486,7 +493,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
         tracePredInd < item.trace.length;
         tracePredInd++
       ) {
-        const includeData = predInd === null||predInd === tracePredInd;
+        const includeData = predInd === null || predInd === tracePredInd;
         if (includeData) {
           const callData = this.buildCallDataFromTrace(
             item.trace,
@@ -512,7 +519,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
     excludeDemos: boolean = false
   ): Record<string, any> {
     const [pred, inputs, outputs] = trace[predInd];
-    const demos = excludeDemos ? [] : pred.demos||[];
+    const demos = excludeDemos ? [] : pred.demos || [];
 
     return adapter.formatFinetuneData({
       signature: pred.signature,
@@ -528,12 +535,12 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
   private async bootstrapTraceData(
     program: DSPyModule,
     dataset: Example[],
-    metric?: MetricFunction|null,
-    numThreads?: number|null
+    metric?: MetricFunction | null,
+    numThreads?: number | null
   ): Promise<TraceData[]> {
     const data: TraceData[] = [];
 
-    if (!dataset||dataset.length === 0) {
+    if (!dataset || dataset.length === 0) {
       return data;
     }
 
@@ -549,7 +556,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
           prediction,
           trace,
           example_ind: exampleInd,
-          score: typeof score ==='number' ? score : score ? 1 : 0,
+          score: typeof score === 'number' ? score : score ? 1 : 0,
         };
 
         data.push(dataDict);
@@ -583,8 +590,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
    */
   private prepareTeacher(
     student: DSPyModule,
-    teacher?: DSPyModule|null
-  ): DSPyModule|null {
+    teacher?: DSPyModule | null
+  ): DSPyModule | null {
     if (!teacher) {
       return student;
     }

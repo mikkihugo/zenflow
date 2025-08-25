@@ -1,0 +1,72 @@
+[workspace]
+resolver = "2"
+members = [
+    "packages/implementation/brain/rust/core",
+    "packages/implementation/singularity-coder/rust-core/code-mesh-cli",
+    "packages/implementation/singularity-coder/rust-core/code-mesh-core", 
+    "packages/implementation/singularity-coder/rust-core/code-mesh-tui",
+    "packages/implementation/singularity-coder/rust-core/code-mesh-wasm",
+    "packages/private-core/fact-system/src/rust",
+    "packages/private-core/neural-ml/neural-core",
+    "packages/private-core/neural-ml/neural-core/claude-zen-neural-core",
+    "packages/private-core/neural-ml/neural-core/claude-zen-neural-data",
+    "packages/private-core/neural-ml/neural-core/claude-zen-neural-models",
+    "packages/private-core/neural-ml/neural-core/claude-zen-neural-registry",
+    "packages/private-core/neural-ml/neural-core/claude-zen-neural-training",
+    # taskmaster wasm has dependency conflicts, exclude for now
+    # "packages/implementation/taskmaster/src/wasm",
+]
+
+[workspace.dependencies]
+# Commonly used workspace dependencies for singularity-coder
+toml = "0.8"
+walkdir = "2.5"
+which = "3.0"
+url = "2.5"
+tempfile = "3.10"
+mockall = "0.12"
+criterion = { version = "0.5", features = ["html_reports"] }
+pprof = { version = "0.13", features = ["criterion", "flamegraph"] }
+jemallocator = "0.5"
+memory-stats = "1.1"
+flame = "0.2"
+inferno = "0.11"
+lru = "0.12"
+dashmap = "5.5"
+futures = "0.3"
+futures-util = "0.3"
+
+# Fix libsqlite3-sys version conflicts
+libsqlite3-sys = "0.37"
+rusqlite = "0.37"
+
+[workspace.lints.rust]
+unused_variables = "warn"
+unused_imports = "warn" 
+dead_code = "warn"
+unused_mut = "warn"
+unreachable_code = "warn"
+deprecated = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+similar_names = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = 2
+split-debuginfo = "unpacked"

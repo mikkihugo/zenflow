@@ -100,7 +100,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
-      throw new Error('No available agents');'
+      throw new Error('No available agents');
     }
 
     // Update resource profiles
@@ -149,7 +149,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0]?.score.toFixed(2)})`,`
+      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0]?.score.toFixed(2)})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics, false),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -178,18 +178,18 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
     const profiles = Array.from(this.resourceProfiles.values())();
 
-    const avgCpuUtilization = this.calculateAverageUtilization(profiles, 'cpu');'
+    const avgCpuUtilization = this.calculateAverageUtilization(profiles, 'cpu');
     const avgMemoryUtilization = this.calculateAverageUtilization(
       profiles,
-      'memory''
+      'memory'
     );
     const avgDiskUtilization = this.calculateAverageUtilization(
       profiles,
-      'disk''
+      'disk'
     );
     const avgNetworkUtilization = this.calculateAverageUtilization(
       profiles,
-      'network''
+      'network'
     );
 
     const resourceEfficiency = this.calculateResourceEfficiency(profiles);
@@ -558,10 +558,10 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     let penalty = 1.0;
 
     // Penalty for increasing resource usage trends
-    if (profile.cpu.trend === 'increasing') penalty *= 0.9;'
-    if (profile.memory.trend === 'increasing') penalty *= 0.9;'
-    if (profile.disk.trend === 'increasing') penalty *= 0.95;'
-    if (profile.network.trend === 'increasing') penalty *= 0.95;'
+    if (profile.cpu.trend === 'increasing') penalty *= 0.9;
+    if (profile.memory.trend === 'increasing') penalty *= 0.9;
+    if (profile.disk.trend === 'increasing') penalty *= 0.95;
+    if (profile.network.trend === 'increasing') penalty *= 0.95;
 
     return score * penalty;
   }
@@ -581,19 +581,19 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     // Check for active constraints
     if (
       profile.cpu.constraint &&
-      profile.cpu.constraint.severity === 'critical''
+      profile.cpu.constraint.severity === 'critical'
     )
       penalty *= 0.1;
     if (
       profile.memory.constraint &&
-      profile.memory.constraint.severity === 'critical''
+      profile.memory.constraint.severity === 'critical'
     )
       penalty *= 0.1;
-    if (profile.disk.constraint && profile.disk.constraint.severity === 'high')'
+    if (profile.disk.constraint && profile.disk.constraint.severity === 'high')
       penalty *= 0.5;
     if (
       profile.network.constraint &&
-      profile.network.constraint.severity === 'high''
+      profile.network.constraint.severity === 'high'
     )
       penalty *= 0.5;
 
@@ -697,7 +697,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
    */
   private calculateTrend(
     values: number[]
-  ): 'increasing|decreasing|stable' {'
+  ): 'increasing' | 'decreasing' | 'stable' {
     if (values.length < 3) return 'stable';
 
     const n = values.length;
@@ -708,8 +708,8 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
 
-    if (slope > 0.01) return 'increasing;
-    if (slope < -0.01) return 'decreasing;
+    if (slope > 0.01) return 'increasing';
+    if (slope < -0.01) return 'decreasing';
     return 'stable';
   }
 
@@ -767,7 +767,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>,
     isOverloaded: boolean
   ): number {
-    const baseLatency = metrics.get(agent.id)?.responseTime||1000;
+    const baseLatency = metrics.get(agent.id)?.responseTime || 1000;
     return isOverloaded ? baseLatency * 2 : baseLatency;
   }
 
@@ -781,7 +781,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
 
   private calculateAverageUtilization(
     profiles: ResourceProfile[],
-    resource: keyof Pick<ResourceProfile,'cpu|memory|disk|network'>'
+    resource: keyof Pick<ResourceProfile, 'cpu' | 'memory' | 'disk' | 'network'>
   ): number {
     if (profiles.length === 0) return 0;
     return (
@@ -815,18 +815,18 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     let violations = 0;
 
     for (const profile of profiles) {
-      if (profile.cpu.constraint && profile.cpu.constraint.severity !== 'low')'
+      if (profile.cpu.constraint && profile.cpu.constraint.severity !== 'low')
         violations++;
       if (
         profile.memory.constraint &&
-        profile.memory.constraint.severity !== 'low''
+        profile.memory.constraint.severity !== 'low'
       )
         violations++;
-      if (profile.disk.constraint && profile.disk.constraint.severity !== 'low')'
+      if (profile.disk.constraint && profile.disk.constraint.severity !== 'low')
         violations++;
       if (
         profile.network.constraint &&
-        profile.network.constraint.severity !== 'low''
+        profile.network.constraint.severity !== 'low'
       )
         violations++;
     }

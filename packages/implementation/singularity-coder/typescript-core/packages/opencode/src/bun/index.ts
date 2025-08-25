@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { Global } from "../global"
 import { Log } from "../util/log"
 import path from "path"

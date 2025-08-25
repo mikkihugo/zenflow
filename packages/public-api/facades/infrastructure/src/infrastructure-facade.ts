@@ -26,7 +26,7 @@ registerFacade(
     'System telemetry and metrics collection',
     'OpenTelemetry collection and processing',
     'Infrastructure coordination and management',
-  ],
+  ]
 );
 
 // =============================================================================
@@ -38,7 +38,9 @@ export const getDatabaseAccess = async () => {
     const { createDatabaseAccess } = await import('@claude-zen/database');
     return createDatabaseAccess();
   } catch (error) {
-    throw new Error('Database system not available - @claude-zen/database package required');
+    throw new Error(
+      'Database system not available - @claude-zen/database package required'
+    );
   }
 };
 
@@ -47,7 +49,9 @@ export const createDatabaseConnection = async (config?: any) => {
     const { DatabaseProvider } = await import('@claude-zen/database');
     return new DatabaseProvider(config);
   } catch (error) {
-    throw new Error('Database provider not available - @claude-zen/database package required');
+    throw new Error(
+      'Database provider not available - @claude-zen/database package required'
+    );
   }
 };
 
@@ -60,7 +64,9 @@ export const createEventSystem = async () => {
     const { createEventBus } = await import('@claude-zen/event-system');
     return createEventBus();
   } catch (error) {
-    throw new Error('Event system not available - @claude-zen/event-system package required');
+    throw new Error(
+      'Event system not available - @claude-zen/event-system package required'
+    );
   }
 };
 
@@ -69,7 +75,9 @@ export const getEventSystemAccess = async () => {
     const { getEventSystem } = await import('@claude-zen/event-system');
     return getEventSystem();
   } catch (error) {
-    throw new Error('Event system not available - @claude-zen/event-system package required');
+    throw new Error(
+      'Event system not available - @claude-zen/event-system package required'
+    );
   }
 };
 
@@ -82,16 +90,22 @@ export const getLoadBalancer = async () => {
     const { createLoadBalancer } = await import('@claude-zen/load-balancing');
     return createLoadBalancer();
   } catch (error) {
-    throw new Error('Load balancer not available - @claude-zen/load-balancing package required');
+    throw new Error(
+      'Load balancer not available - @claude-zen/load-balancing package required'
+    );
   }
 };
 
 export const getPerformanceTracker = async () => {
   try {
-    const { createPerformanceTracker } = await import('@claude-zen/load-balancing');
+    const { createPerformanceTracker } = await import(
+      '@claude-zen/load-balancing'
+    );
     return createPerformanceTracker();
   } catch (error) {
-    throw new Error('Performance tracker not available - @claude-zen/load-balancing package required');
+    throw new Error(
+      'Performance tracker not available - @claude-zen/load-balancing package required'
+    );
   }
 };
 
@@ -100,7 +114,9 @@ export const getTelemetryManager = async () => {
     const { createTelemetryManager } = await import('@claude-zen/telemetry');
     return createTelemetryManager();
   } catch (error) {
-    throw new Error('Telemetry manager not available - @claude-zen/telemetry package required');
+    throw new Error(
+      'Telemetry manager not available - @claude-zen/telemetry package required'
+    );
   }
 };
 
@@ -114,17 +130,23 @@ export const getOtelCollector = async () => {
     const { createOtelCollector } = await import('@claude-zen/otel-collector');
     return createOtelCollector();
   } catch (error) {
-    throw new Error('OTel collector not available - @claude-zen/otel-collector package required');
+    throw new Error(
+      'OTel collector not available - @claude-zen/otel-collector package required'
+    );
   }
 };
 
 // Service Container Integration
 export const getServiceContainer = async (name?: string) => {
   try {
-    const { createServiceContainer } = await import('@claude-zen/service-container');
+    const { createServiceContainer } = await import(
+      '@claude-zen/service-container'
+    );
     return createServiceContainer(name);
   } catch (error) {
-    throw new Error('Service container not available - @claude-zen/service-container package required');
+    throw new Error(
+      'Service container not available - @claude-zen/service-container package required'
+    );
   }
 };
 
@@ -135,13 +157,18 @@ export const getServiceContainer = async (name?: string) => {
 export const infrastructureSystem = {
   // Infrastructure modules
   database: () => import('@claude-zen/database').catch(() => ({ default: {} })),
-  events: () => import('@claude-zen/event-system').catch(() => ({ default: {} })),
-  loadBalancing: () => import('@claude-zen/load-balancing').catch(() => ({ default: {} })),
-  telemetry: () => import('@claude-zen/telemetry').catch(() => ({ default: {} })),
+  events: () =>
+    import('@claude-zen/event-system').catch(() => ({ default: {} })),
+  loadBalancing: () =>
+    import('@claude-zen/load-balancing').catch(() => ({ default: {} })),
+  telemetry: () =>
+    import('@claude-zen/telemetry').catch(() => ({ default: {} })),
 
   // Advanced infrastructure with enhanced fallbacks
-  otelCollector: () => import('@claude-zen/otel-collector').catch(() => ({ default: {} })),
-  serviceContainer: () => import('@claude-zen/service-container').catch(() => ({ default: {} })),
+  otelCollector: () =>
+    import('@claude-zen/otel-collector').catch(() => ({ default: {} })),
+  serviceContainer: () =>
+    import('@claude-zen/service-container').catch(() => ({ default: {} })),
 
   // Direct access functions
   getOtelCollector,

@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addMonths } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addMonths } = dateFns;
 import { groupBy, map, filter, orderBy, sumBy, meanBy } from 'lodash-es';
 import type {
   ProductVision,
@@ -93,7 +92,7 @@ export class ProductVisionService {
     this.logger.info('Creating product vision', { productId: input.productId });'
 
     const vision: ProductVision = {
-      id: `vision-${nanoid(12)}`,`
+      id: `vision-${generateNanoId(12)}`,`
       productId: input.productId,
       visionStatement: input.visionStatement,
       targetCustomers: input.targetCustomers,

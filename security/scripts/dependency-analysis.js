@@ -16,7 +16,10 @@ class DependencyAnalyzer {
       audit: this.runAudit(),
     };
 
-    fs.writeFileSync('security/audits/dependency-report.json', JSON.stringify(report, null, 2));
+    fs.writeFileSync(
+      'security/audits/dependency-report.json',
+      JSON.stringify(report, null, 2)
+    );
   }
 
   checkOutdated() {

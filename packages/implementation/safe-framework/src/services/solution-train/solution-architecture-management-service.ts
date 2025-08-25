@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addMonths, addWeeks, addDays } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addMonths, addWeeks, addDays } = dateFns;
 import {
   groupBy,
   map,
@@ -618,7 +617,7 @@ export class SolutionArchitectureManagementService {
     stakeholders: string[];
     urgency: DecisionUrgency;
   }): Promise<ArchitecturalDecision> {
-    const decisionId = `decision-${nanoid(12)}`;`
+    const decisionId = `decision-${generateNanoId(12)}`;`
 
     this.logger.info('Making architectural decision', {'
       decisionId,
@@ -675,7 +674,7 @@ export class SolutionArchitectureManagementService {
 
     this.logger.info('Assessing architectural compliance', { configId });'
 
-    const reportId = `compliance-${nanoid(12)}`;`
+    const reportId = `compliance-${generateNanoId(12)}`;`
 
     // Assess technology standards compliance
     const standardsCompliance = await this.assessStandardsCompliance(
@@ -889,7 +888,7 @@ export class SolutionArchitectureManagementService {
 
     if (standards < 80) {
       violations.push({
-        violationId: `violation-${nanoid(8)}`,`
+        violationId: `violation-${generateNanoId(8)}`,`
         type: 'standards',
         severity: 'medium',
         description: 'Technology standards compliance below threshold',
@@ -899,7 +898,7 @@ export class SolutionArchitectureManagementService {
 
     if (principles < 75) {
       violations.push({
-        violationId: `violation-${nanoid(8)}`,`
+        violationId: `violation-${generateNanoId(8)}`,`
         type: 'principles',
         severity: 'high',
         description: 'Architectural principles adherence below threshold',

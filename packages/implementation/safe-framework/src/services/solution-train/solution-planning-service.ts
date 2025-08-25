@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addWeeks, addDays, startOfWeek } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addWeeks, addDays, startOfWeek } = dateFns;
 import {
   groupBy,
   map,
@@ -507,7 +506,7 @@ export class SolutionPlanningService {
     });
 
     const startTime = Date.now();
-    const resultId = `planning-${nanoid(12)}`;`
+    const resultId = `planning-${generateNanoId(12)}`;`
 
     try {
       // Execute planning activities
@@ -665,7 +664,7 @@ export class SolutionPlanningService {
     for (const event of config.coordinationStrategy.coordinationEvents) {
       if (this.isEventRelevant(event, planningType)) {
         outcomes.push({
-          outcomeId: `outcome-${nanoid(8)}`,`
+          outcomeId: `outcome-${generateNanoId(8)}`,`
           category: OutcomeCategory.COMMITMENT,
           description: `${event.eventType} completed successfully`,`
           deliverables: [`${event.eventType} artifacts`, 'Meeting notes'],
@@ -701,9 +700,9 @@ export class SolutionPlanningService {
 
       for (let i = 0; i < commitmentCount; i++) {
         commitments.push({
-          commitmentId: `commit-${nanoid(8)}`,`
+          commitmentId: `commit-${generateNanoId(8)}`,`
           artId: art.artId,
-          objectiveId: `objective-${nanoid(6)}`,`
+          objectiveId: `objective-${generateNanoId(6)}`,`
           description: `ART ${art.artName} commitment ${i + 1}`,`
           confidence: this.getRandomConfidence(),
           dependencies: [],
@@ -732,7 +731,7 @@ export class SolutionPlanningService {
     );
     if (highCommitmentARTs.length > config.participatingARTs.length * 0.7) {
       risks.push({
-        riskId: `risk-${nanoid(8)}`,`
+        riskId: `risk-${generateNanoId(8)}`,`
         category: RiskCategory.RESOURCE,
         description:'High commitment levels across ARTs may lead to resource constraints',
         probability: RiskProbability.MEDIUM,
@@ -747,7 +746,7 @@ export class SolutionPlanningService {
     // Identify integration risks
     if (commitments.length > 15) {
       risks.push({
-        riskId: `risk-${nanoid(8)}`,`
+        riskId: `risk-${generateNanoId(8)}`,`
         category: RiskCategory.INTEGRATION,
         description:
           'High number of commitments increases integration complexity',
@@ -773,7 +772,7 @@ export class SolutionPlanningService {
         if (Math.random() > 0.7) {
           // 30% chance of dependency
           dependencies.push({
-            dependencyId: `dep-${nanoid(8)}`,`
+            dependencyId: `dep-${generateNanoId(8)}`,`
             fromART: arts[i].artId,
             toART: arts[j].artId,
             description: `Integration dependency between ${arts[i].domain} and ${arts[j].domain}`,`
@@ -805,7 +804,7 @@ export class SolutionPlanningService {
         risk.impact === RiskImpact.HIGH || risk.probability === RiskProbability.HIGH
       ) {
         nextSteps.push({
-          stepId: `step-${nanoid(8)}`,`
+          stepId: `step-${generateNanoId(8)}`,`
           description: `Address high-priority risk: ${risk.description}`,`
           owner: risk.owner,
           dueDate: addDays(new Date(), 7),
@@ -822,7 +821,7 @@ export class SolutionPlanningService {
     );
     for (const dep of criticalDeps) {
       nextSteps.push({
-        stepId: `step-${nanoid(8)}`,`
+        stepId: `step-${generateNanoId(8)}`,`
         description: `Coordinate critical dependency: ${dep.description}`,`
         owner: 'Solution Train Engineer',
         dueDate: addDays(new Date(), 3),

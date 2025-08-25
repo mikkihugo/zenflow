@@ -1,6 +1,6 @@
 import { Log } from "../util/log"
 import path from "path"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { App } from "../app/app"
 import { Filesystem } from "../util/filesystem"
 import { ModelsDev } from "../provider/models"

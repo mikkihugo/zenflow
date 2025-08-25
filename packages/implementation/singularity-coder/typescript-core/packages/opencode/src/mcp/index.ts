@@ -4,7 +4,7 @@ import { App } from "../app/app"
 import { Config } from "../config/config"
 import { Log } from "../util/log"
 import { NamedError } from "../util/error"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { Session } from "../session"
 import { Bus } from "../bus"
 

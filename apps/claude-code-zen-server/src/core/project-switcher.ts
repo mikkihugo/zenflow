@@ -101,25 +101,28 @@ export class ProjectSwitcher extends EventEmitter {
 
     try {
       this.emit('switchStarted', request);
-      
+
       const projectInfo = this.resolveProjectInfo(request);
       const currentProject = getCurrentProject();
-      
-      const alreadyOnTarget = this.checkIfAlreadyOnTarget(currentProject, projectInfo);
+
+      const alreadyOnTarget = this.checkIfAlreadyOnTarget(
+        currentProject,
+        projectInfo
+      );
       if (alreadyOnTarget) {
         return alreadyOnTarget;
       }
 
       await this.performProjectSwitch(request, currentProject, projectInfo);
-      
+
       const result = this.createSwitchResult(
         currentProject,
         projectInfo,
         startTime
       );
-      
+
       this.recordSuccessfulSwitch(currentProject.id, projectInfo.id, startTime);
-      
+
       logger.info('Project switch completed successfully', {
         projectId: result.projectId,
         duration: `${Date.now() - startTime}ms`,
@@ -201,13 +204,13 @@ export class ProjectSwitcher extends EventEmitter {
 
       if (!project) {
         throw new Error(
-          `Project with ID ${  request.projectId  } not found in registry`
+          `Project with ID ${request.projectId} not found in registry`
         );
       }
 
       // Verify project path still exists
       if (!fs.existsSync(project.path)) {
-        throw new Error(`Project path ${  project.path  } no longer exists`);
+        throw new Error(`Project path ${project.path} no longer exists`);
       }
 
       return {
@@ -220,7 +223,7 @@ export class ProjectSwitcher extends EventEmitter {
       const absolutePath = path.resolve(request.projectPath);
 
       if (!fs.existsSync(absolutePath)) {
-        throw new Error(`Project path ${  absolutePath  } does not exist`);
+        throw new Error(`Project path ${absolutePath} does not exist`);
       }
 
       // Generate project info for new path
@@ -295,7 +298,7 @@ export class ProjectSwitcher extends EventEmitter {
 
     // Ensure directories and reinitialize
     ensureDataDirectories();
-    
+
     logger.info('Reinitializing coordination system', {
       projectId: projectInfo.id,
     });
@@ -332,7 +335,7 @@ export class ProjectSwitcher extends EventEmitter {
     startTime: number
   ): void {
     this.lastSwitch = new Date();
-    
+
     this.switchHistory.push({
       from: fromProjectId,
       to: toProjectId,
@@ -389,7 +392,7 @@ export class ProjectSwitcher extends EventEmitter {
     // Create timeout promise
     const timeoutPromise = new Promise<never>((resolve, reject) => {
       setTimeout(() => {
-        reject(new Error(`Shutdown timeout after ${  timeout  }ms`));
+        reject(new Error(`Shutdown timeout after ${timeout}ms`));
       }, timeout);
     });
 

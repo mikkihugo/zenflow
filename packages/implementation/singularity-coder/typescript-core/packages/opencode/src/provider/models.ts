@@ -1,7 +1,7 @@
 import { Global } from "../global"
 import { Log } from "../util/log"
 import path from "path"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { data } from "./models-macro" with { type: "macro" }
 
 export namespace ModelsDev {

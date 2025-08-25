@@ -13,8 +13,7 @@
 // WorkflowDefinition, WorkflowEngineConfig, WorkflowState not available in intelligence facade
 export type {
   SystemConfig as CoreSystemConfig,
-  SystemStatus
-
+  SystemStatus,
 } from './core-system';
 // Main system coordinator
 export { System as CoreSystem } from './core-system';
@@ -25,16 +24,14 @@ export { DocumentationManager } from '@claude-zen/foundation';
 export type {
   ExporterDefinition,
   ExportOptions,
-  ExportResult
-
+  ExportResult,
 } from '@claude-zen/foundation';
 // Management systems
 export { ExportSystem as ExportManager } from '@claude-zen/foundation';
 export type {
   InterfaceManagerConfig,
   InterfaceMode,
-  InterfaceStats
-
+  InterfaceStats,
 } from '@claude-zen/foundation';
 export { InterfaceManager } from '@claude-zen/foundation';
 // Memory types now available via @claude-zen/foundation package
@@ -63,8 +60,7 @@ export {
   FACTError,
   NetworkError,
   RAGError,
-  SwarmError
-
+  SwarmError,
 } from '@claude-zen/foundation/errors';
 // Core utilities
 export { EventBus } from '@claude-zen/intelligence';
@@ -72,28 +68,18 @@ export { EventBus } from '@claude-zen/intelligence';
 // Export utilities (legacy)
 export type {
   ExportConfig,
-  ExportResult as LegacyExportResult
-
+  ExportResult as LegacyExportResult,
 } from '@claude-zen/foundation';
-export {
-  ExportSystem,
-  ExportUtils
-
-} from '@claude-zen/foundation';
+export { ExportSystem, ExportUtils } from '@claude-zen/foundation';
 export * from '@claude-zen/foundation/helpers';
 export { InterfaceModeDetector } from '@claude-zen/interfaces';
 export type {
   Logger,
   LoggerConfig,
-  LogLevel
-
+  LogLevel,
 } from '@claude-zen/foundation/logger';
 // Logging system
-export {
-  createLogger,
-  Logger
-
-} from '@claude-zen/foundation/logger';
+export { createLogger, Logger } from '@claude-zen/foundation/logger';
 export type { LogMeta } from '@claude-zen/foundation';
 export { Orchestrator } from './orchestrator';
 // Orchestrator functionality provided by multi-level-orchestration and teamwork packages via facades

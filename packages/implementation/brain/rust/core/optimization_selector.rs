@@ -4,6 +4,7 @@
 //! based on task complexity, resource availability, and performance requirements.
 
 use std::time::Instant;
+use std::sync::{Mutex, OnceLock};
 
 /// Metrics for determining optimization strategy
 #[derive(Debug, Clone)]
@@ -66,6 +67,23 @@ struct PerformanceRecord {
     accuracy: f32,
     resource_usage: f32,
     timestamp: Instant,
+}
+
+impl PerformanceRecord {
+    /// Get resource usage percentage (0.0 to 1.0)
+    pub fn get_resource_usage(&self) -> f32 {
+        self.resource_usage
+    }
+    
+    /// Get timestamp of this performance record
+    pub fn get_timestamp(&self) -> Instant {
+        self.timestamp
+    }
+    
+    /// Calculate age of this record in milliseconds
+    pub fn age_ms(&self) -> u64 {
+        self.timestamp.elapsed().as_millis() as u64
+    }
 }
 
 impl OptimizationSelector {
@@ -148,7 +166,7 @@ impl OptimizationSelector {
         // System load penalty
         score -= (resources.load_average / 4.0).min(0.3);
 
-        score.max(0.0).min(1.0)
+        score.clamp(0.0, 1.0)
     }
 
     /// Calculate urgency score (higher = more urgent = prefer faster basic optimization)
@@ -176,12 +194,12 @@ impl OptimizationSelector {
             return 0.5; // Neutral when no history
         }
 
-        // Find similar tasks in history
+        // Find similar tasks in history with age weighting
         let similar_tasks: Vec<&PerformanceRecord> = self
             .performance_history
             .iter()
             .filter(|record| {
-                self.task_similarity(metrics, &record.metrics) > 0.7
+                self.task_similarity(metrics, &record.metrics) > 0.7 && record.age_ms() < 86400000 // Within 24 hours
             })
             .collect();
 
@@ -269,14 +287,19 @@ impl OptimizationSelector {
         let mut dspy_count = 0;
         let mut basic_count = 0;
 
-        for record in recent_records {
+        for record in &recent_records {
             let perf_score = record.accuracy / (record.execution_time_ms as f32 / 1000.0 + 0.1);
             
+            // Apply age weighting and resource usage considerations
+            let age_weight = 1.0 - (record.age_ms() as f32 / 86400000.0).min(0.5); // Newer records weighted higher
+            let resource_penalty = record.get_resource_usage() * 0.1; // Light penalty for high resource usage
+            let weighted_score = perf_score * age_weight * (1.0 - resource_penalty);
+            
             if record.strategy != OptimizationStrategy::Basic {
-                dspy_performance += perf_score;
+                dspy_performance += weighted_score;
                 dspy_count += 1;
             } else {
-                basic_performance += perf_score;
+                basic_performance += weighted_score;
                 basic_count += 1;
             }
         }
@@ -295,13 +318,23 @@ impl OptimizationSelector {
             }
         }
 
+        // Log performance history analysis with timestamp information
+        let avg_age_ms = if !recent_records.is_empty() {
+            recent_records.iter().map(|r| r.age_ms()).sum::<u64>() / recent_records.len() as u64
+        } else {
+            0
+        };
+        
+        // Log most recent timestamp for debugging
+        let latest_timestamp = recent_records.first().map(|r| r.get_timestamp());
+        
         log::debug!(
-            "Threshold adaptation - Learning rate: {:.3}, DSPy samples: {}, Basic samples: {}",
-            self.learning_rate, dspy_count, basic_count
+            "Threshold adaptation - Learning rate: {:.3}, DSPy samples: {}, Basic samples: {}, Avg record age: {}ms, Latest: {:?}",
+            self.learning_rate, dspy_count, basic_count, avg_age_ms, latest_timestamp
         );
     }
 
-    /// Get current performance statistics
+    /// Get current performance statistics with resource usage analysis
     pub fn get_performance_stats(&self) -> (usize, f32, f32) {
         if self.performance_history.is_empty() {
             return (0, 0.0, 0.0);
@@ -313,12 +346,17 @@ impl OptimizationSelector {
             .filter(|r| r.strategy != OptimizationStrategy::Basic)
             .count() as f32 / total_records as f32;
 
-        let avg_accuracy = self.performance_history
+        // Calculate weighted accuracy considering resource usage and age
+        let weighted_accuracy: f32 = self.performance_history
             .iter()
-            .map(|r| r.accuracy)
+            .map(|r| {
+                let age_weight = 1.0 - (r.age_ms() as f32 / 86400000.0).min(0.5);
+                let resource_factor = 1.0 - (r.get_resource_usage() * 0.1);
+                r.accuracy * age_weight * resource_factor
+            })
             .sum::<f32>() / total_records as f32;
 
-        (total_records, dspy_usage, avg_accuracy)
+        (total_records, dspy_usage, weighted_accuracy)
     }
 }
 
@@ -329,18 +367,29 @@ impl Default for OptimizationSelector {
 }
 
 /// Global optimization selector instance
-static mut GLOBAL_SELECTOR: Option<OptimizationSelector> = None;
-static mut SELECTOR_INITIALIZED: bool = false;
+static GLOBAL_SELECTOR: OnceLock<Mutex<OptimizationSelector>> = OnceLock::new();
 
 /// Get the global optimization selector
-pub fn get_global_selector() -> &'static mut OptimizationSelector {
-    unsafe {
-        if !SELECTOR_INITIALIZED {
-            GLOBAL_SELECTOR = Some(OptimizationSelector::new());
-            SELECTOR_INITIALIZED = true;
-        }
-        GLOBAL_SELECTOR.as_mut().unwrap()
-    }
+pub fn get_global_selector() -> &'static Mutex<OptimizationSelector> {
+    GLOBAL_SELECTOR.get_or_init(|| Mutex::new(OptimizationSelector::new()))
+}
+
+/// Get a reference to the global selector for read operations
+pub fn with_global_selector<F, R>(f: F) -> R 
+where
+    F: FnOnce(&OptimizationSelector) -> R,
+{
+    let selector = get_global_selector().lock().unwrap();
+    f(&selector)
+}
+
+/// Get a mutable reference to the global selector for write operations
+pub fn with_global_selector_mut<F, R>(f: F) -> R 
+where
+    F: FnOnce(&mut OptimizationSelector) -> R,
+{
+    let mut selector = get_global_selector().lock().unwrap();
+    f(&mut selector)
 }
 
 /// Convenience function for automatic strategy selection
@@ -348,8 +397,7 @@ pub fn auto_select_strategy(
     metrics: &TaskMetrics,
     resources: &ResourceState,
 ) -> OptimizationStrategy {
-    let selector = get_global_selector();
-    selector.select_strategy(metrics, resources)
+    with_global_selector_mut(|selector| selector.select_strategy(metrics, resources))
 }
 
 /// Convenience function for recording performance
@@ -360,8 +408,9 @@ pub fn record_optimization_performance(
     accuracy: f32,
     resource_usage: f32,
 ) {
-    let selector = get_global_selector();
-    selector.record_performance(metrics, strategy, execution_time_ms, accuracy, resource_usage);
+    with_global_selector_mut(|selector| {
+        selector.record_performance(metrics, strategy, execution_time_ms, accuracy, resource_usage);
+    });
 }
 
 #[cfg(test)]

@@ -65,14 +65,14 @@ const configSchema = z.object({
   project: z.object({
     /**
      * Configuration directory name following Claude Zen storage architecture.
-     * 
+     *
      * @description Defines the standard directory name used throughout the Claude Zen
      * ecosystem for storing configuration files, databases, cache data, and other
      * persistent application state. This creates a consistent storage pattern across
      * all components and packages.
-     * 
+     *
      * **Default Value**: `.claude-zen`
-     * 
+     *
      * **Directory Structure Created**:
      * ```
      * .claude-zen/
@@ -89,50 +89,50 @@ const configSchema = z.object({
      * │   └── proj-{id}/       # Individual project directories
      * └── copilot-token.json   # Authentication tokens
      * ```
-     * 
+     *
      * **Usage Locations**:
      * - Project root: `./claude-zen/` (when `storeInUserHome: false`)
-     * - User home: `~/.claude-zen/` (when `storeInUserHome: true`) 
-     * 
+     * - User home: `~/.claude-zen/` (when `storeInUserHome: true`)
+     *
      * @example
      * ```typescript
      * const config = await getConfig();
-     * const configPath = config.project.storeInUserHome 
+     * const configPath = config.project.storeInUserHome
      *   ? path.join(os.homedir(), config.project.configDir)
      *   : path.join(process.cwd(), config.project.configDir);
      * // Results in: "/home/user/.claude-zen" or "/project/.claude-zen"
      * ```
-     * 
+     *
      * @see {@link storeInUserHome} for location selection logic
      * @since 1.0.0
      */
     configDir: z.string().default('.claude-zen'),
-    
+
     /**
      * Controls whether configuration and data are stored in user home or project directory.
-     * 
+     *
      * @description Determines the root location for the Claude Zen configuration directory,
      * enabling either user-global or project-local storage patterns. This setting affects
      * all storage operations including databases, memory, authentication tokens, and
      * configuration files.
-     * 
+     *
      * **Default Value**: `true` (user home storage)
-     * 
+     *
      * **Storage Patterns**:
      * - **`true` (User Home)**: `~/.claude-zen/` - Personal settings across projects
      * - **`false` (Project Local)**: `./.claude-zen/` - Project-specific settings
-     * 
+     *
      * **Use Cases**:
      * - **User Home** (`true`): Personal development, cross-project authentication,
      *   shared settings, single-user environments
-     * - **Project Local** (`false`): Team projects, CI/CD environments, 
+     * - **Project Local** (`false`): Team projects, CI/CD environments,
      *   project-specific configurations, containerized deployments
-     * 
+     *
      * @example
      * ```typescript
      * // Environment variable override:
      * // ZEN_STORE_CONFIG_IN_USER_HOME=false
-     * 
+     *
      * const config = await getConfig();
      * if (config.project.storeInUserHome) {
      *   console.log('Using user-global storage: ~/.claude-zen/');
@@ -140,7 +140,7 @@ const configSchema = z.object({
      *   console.log('Using project-local storage: ./.claude-zen/');
      * }
      * ```
-     * 
+     *
      * @see {@link configDir} for directory structure details
      * @since 1.0.0
      */
@@ -206,7 +206,7 @@ function parseEnvValue(value: string | undefined): unknown {
  * - HOSTNAME: System hostname
  * - IN_NIX_SHELL: Nix development shell detection
  * - ZEN_DEBUG_MODE: Debug mode flag
- * 
+ *
  * **Claude Zen Storage Architecture Variables**:
  * - ZEN_PROJECT_CONFIG_DIR: Override default `.claude-zen` directory name
  * - ZEN_STORE_CONFIG_IN_USER_HOME: Control user vs project storage location
@@ -233,53 +233,59 @@ function buildConfigFromEnv(): unknown {
     project: {
       /**
        * Environment override for Claude Zen configuration directory name.
-       * 
+       *
        * **Environment Variable**: `ZEN_PROJECT_CONFIG_DIR`
        * **Default**: `.claude-zen`
-       * 
+       *
        * Allows customization of the standard directory name used throughout
        * the Claude Zen storage architecture. When set, this overrides the
        * default `.claude-zen` directory name across all storage operations.
-       * 
+       *
        * @example
        * ```bash
        * # Use custom directory name
        * export ZEN_PROJECT_CONFIG_DIR=".my-claude-zen"
-       * 
+       *
        * # Results in: ./.my-claude-zen/ or ~/.my-claude-zen/
        * ```
        */
       configDir: parseEnvValue(process.env['ZEN_PROJECT_CONFIG_DIR']),
-      
+
       /**
        * Environment override for Claude Zen storage location selection.
-       * 
+       *
        * **Environment Variable**: `ZEN_STORE_CONFIG_IN_USER_HOME`
        * **Default**: `true` (user home storage)
-       * 
+       *
        * Controls whether the Claude Zen directory is created in the user's
        * home directory or in the current project directory. This affects
        * all storage operations throughout the system.
-       * 
+       *
        * @example
        * ```bash
        * # Force project-local storage
        * export ZEN_STORE_CONFIG_IN_USER_HOME=false
-       * 
+       *
        * # Results in: ./.claude-zen/ (project-local)
-       * 
+       *
        * # Force user-global storage (default)
        * export ZEN_STORE_CONFIG_IN_USER_HOME=true
-       * 
+       *
        * # Results in: ~/.claude-zen/ (user-global)
        * ```
        */
-      storeInUserHome: parseEnvValue(process.env['ZEN_STORE_CONFIG_IN_USER_HOME']),
+      storeInUserHome: parseEnvValue(
+        process.env['ZEN_STORE_CONFIG_IN_USER_HOME']
+      ),
     },
     otel: {
       enabled: parseEnvValue(process.env['ZEN_OTEL_ENABLED']),
-      useInternalCollector: parseEnvValue(process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR']),
-      internalCollectorEndpoint: parseEnvValue(process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT']),
+      useInternalCollector: parseEnvValue(
+        process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR']
+      ),
+      internalCollectorEndpoint: parseEnvValue(
+        process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT']
+      ),
     },
   };
 }
@@ -372,7 +378,7 @@ export class FoundationConfig {
     } catch (error) {
       logger.error('Foundation configuration initialization failed:', error);
       throw new Error(
-        `Configuration error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Configuration error: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -399,7 +405,12 @@ export class FoundationConfig {
       let value: Record<string, unknown> | unknown = this.config;
 
       for (const k of keys) {
-        if (value && typeof value === 'object' && value !== null && k in value) {
+        if (
+          value &&
+          typeof value === 'object' &&
+          value !== null &&
+          k in value
+        ) {
           value = (value as Record<string, unknown>)[k];
         } else {
           throw new Error(`Key '${key}' not found`);
@@ -443,7 +454,7 @@ export class FoundationConfig {
   private ensureInitialized(): void {
     if (!this.isInitialized) {
       throw new Error(
-        'Configuration not initialized. Call initialize() first.',
+        'Configuration not initialized. Call initialize() first.'
       );
     }
   }
@@ -516,7 +527,8 @@ export const isProduction = () => getConfig().env === 'production';
 export const isTest = () => getConfig().env === 'test';
 
 // FORCING PATTERN - Replace direct process.env access
-export const getEnv = (key: string, defaultValue?: string): string => process.env[key] || defaultValue || '';
+export const getEnv = (key: string, defaultValue?: string): string =>
+  process.env[key] || defaultValue || '';
 
 export const requireEnv = (key: string): string => {
   const value = process.env[key];
@@ -527,7 +539,9 @@ export const requireEnv = (key: string): string => {
 };
 
 // FORCING PATTERN - Replace console.log with configured logging
-export const shouldLog = (level: 'error' | 'warn' | 'info' | 'debug'): boolean => {
+export const shouldLog = (
+  level: 'error' | 'warn' | 'info' | 'debug'
+): boolean => {
   const configLevel = getConfig().logging.level;
   const levels = { error: 0, warn: 1, info: 2, debug: 3 };
   return levels[level] <= levels[configLevel as keyof typeof levels];

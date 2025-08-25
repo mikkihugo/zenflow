@@ -59,7 +59,9 @@ export const getKanbanManager = async () => {
 };
 
 export const getOrchestrationEngine = async () => {
-  const { createOrchestrationEngine } = await import('@claude-zen/multi-level-orchestration');
+  const { createOrchestrationEngine } = await import(
+    '@claude-zen/multi-level-orchestration'
+  );
   return createOrchestrationEngine();
 };
 
@@ -69,17 +71,23 @@ export const getAgentManager = async () => {
 };
 
 export const getEnterpriseCoordinator = async () => {
-  const { createEnterpriseCoordinator } = await import('@claude-zen/enterprise-coordination');
+  const { createEnterpriseCoordinator } = await import(
+    '@claude-zen/enterprise-coordination'
+  );
   return createEnterpriseCoordinator();
 };
 
 export const getDocumentIntelligence = async () => {
-  const { createDocumentIntelligence } = await import('@claude-zen/document-intelligence');
+  const { createDocumentIntelligence } = await import(
+    '@claude-zen/document-intelligence'
+  );
   return createDocumentIntelligence();
 };
 
 export const getDocumentationManager = async () => {
-  const { createDocumentationManager } = await import('@claude-zen/documentation');
+  const { createDocumentationManager } = await import(
+    '@claude-zen/documentation'
+  );
   return createDocumentationManager();
 };
 
@@ -112,12 +120,12 @@ export const enterpriseSystem = {
   getOrchestrationEngine,
   getAgentManager,
   getEnterpriseCoordinator,
-  
+
   // Document processing tools
   getDocumentIntelligence,
   getDocumentationManager,
   getExportManager,
-  
+
   // Agent and interface management
   getAgentRegistry,
   getInterfaceManager,

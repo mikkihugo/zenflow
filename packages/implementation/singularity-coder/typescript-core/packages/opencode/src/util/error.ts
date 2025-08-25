@@ -1,4 +1,4 @@
-import { z, type ZodSchema } from "zod"
+import { z, type ZodSchema } from "@claude-zen/foundation"
 // import { Log } from "./log"
 
 // const log = Log.create()

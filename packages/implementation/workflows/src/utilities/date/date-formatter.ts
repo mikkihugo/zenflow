@@ -8,7 +8,8 @@
  * @since 1.0.0
  */
 
-import { format, parseISO, isValid } from 'date-fns';
+import { dateFns } from '@claude-zen/foundation';
+const { format, parseISO, isValid } = dateFns;
 
 /**
  * Professional date formatting utilities

@@ -46,10 +46,7 @@ export { nanoid as generateNanoId } from 'nanoid';
 // =============================================================================
 // UUID UTILITIES
 // =============================================================================
-export {
-  generateUUID,
-  isUUID,
-} from './types/primitives';
+export { generateUUID, isUUID } from './types/primitives';
 
 // =============================================================================
 // DATE UTILITIES - date-fns re-exports
@@ -100,7 +97,10 @@ export {
 // =============================================================================
 
 // FORCE: Promise-based timers instead of callback-based
-export { setTimeout as delay, setInterval as recurring } from 'node:timers/promises';
+export {
+  setTimeout as delay,
+  setInterval as recurring,
+} from 'node:timers/promises';
 
 // FORCE: Type-safe path operations with validation
 export {
@@ -115,10 +115,10 @@ export {
 export { fileURLToPath, pathToFileURL } from 'node:url';
 
 // FORCE: Environment access with better naming
-export const {env} = process;
-export const {cwd} = process;
-export const {platform} = process;
-export const {version: nodeVersion} = process;
+export const { env } = process;
+export const { cwd } = process;
+export const { platform } = process;
+export const { version: nodeVersion } = process;
 
 // FORCE: Safe Buffer operations with clear naming
 export { Buffer as BinaryData } from 'node:buffer';
@@ -162,7 +162,9 @@ export {
 
 // FORCE: Better error patterns (no throwing, use Result)
 export const throwError = (): never => {
-  throw new Error('Use err(new Error()) and Result pattern instead of throwing');
+  throw new Error(
+    'Use err(new Error()) and Result pattern instead of throwing'
+  );
 };
 
 // =============================================================================
@@ -171,10 +173,14 @@ export const throwError = (): never => {
 
 // FORCE: Block synchronous file operations (thread-blocking footguns)
 export const readFileSync = (): never => {
-  throw new Error('Use async readFile() from foundation - sync file ops block the event loop');
+  throw new Error(
+    'Use async readFile() from foundation - sync file ops block the event loop'
+  );
 };
 export const writeFileSync = (): never => {
-  throw new Error('Use async writeFile() from foundation - sync file ops block the event loop');
+  throw new Error(
+    'Use async writeFile() from foundation - sync file ops block the event loop'
+  );
 };
 
 // FORCE: Block process.exit (crashes without cleanup)
@@ -187,28 +193,41 @@ export const setImmediate = (): never => {
   throw new Error('Use delay(0) from foundation for better async patterns');
 };
 export const nextTick = (): never => {
-  throw new Error('Use delay(0) or await from foundation - avoid nextTick footguns');
+  throw new Error(
+    'Use delay(0) or await from foundation - avoid nextTick footguns'
+  );
 };
 
 // FORCE: Block eval and Function constructor (security footguns)
 export const safeEval = (): never => {
-  throw new Error('eval() is dangerous - use safe parsing with parseJSON() from foundation');
+  throw new Error(
+    'eval() is dangerous - use safe parsing with parseJSON() from foundation'
+  );
 };
 export const createFunction = (): never => {
-  throw new Error('Function constructor is dangerous - use static imports or safe factories');
+  throw new Error(
+    'Function constructor is dangerous - use static imports or safe factories'
+  );
 };
 
 // FORCE: Block global pollution
-export const global = new Proxy({}, {
-  set: () => {
-    throw new Error('Avoid global pollution - use dependency injection from foundation');
-  },
-  get: () => {
-    throw new Error('Avoid global access - use explicit imports and DI');
-  },
-});
+export const global = new Proxy(
+  {},
+  {
+    set: () => {
+      throw new Error(
+        'Avoid global pollution - use dependency injection from foundation'
+      );
+    },
+    get: () => {
+      throw new Error('Avoid global access - use explicit imports and DI');
+    },
+  }
+);
 
 // FORCE: Block require() in ESM (module system confusion)
 export const require = (): never => {
-  throw new Error('Use import statements - mixing require/import causes module system issues');
+  throw new Error(
+    'Use import statements - mixing require/import causes module system issues'
+  );
 };

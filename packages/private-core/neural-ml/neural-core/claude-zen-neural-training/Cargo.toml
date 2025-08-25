@@ -1,5 +1,5 @@
 [package]
-name = "neuro-divergent-training"
+name = "claude-zen-neural-training"
 version = "0.1.0"
 edition = "2021"
 authors = ["rUv Contributors"]
@@ -11,7 +11,7 @@ categories = ["science", "algorithms", "mathematics"]
 
 [dependencies]
 # Internal dependencies
-neuro-divergent-core = { version = "0.1.0", path = "../neuro-divergent-core" }
+claude-zen-neural-core = { version = "0.1.0", path = "../claude-zen-neural-core" }
 # Core dependencies
 ruv-fann = "0.1"
 num-traits = "0.2"
@@ -49,8 +49,9 @@ approx = "0.5"
 pretty_assertions = "1.4"
 
 [features]
-default = ["std", "serde", "parallel", "logging", "simd", "checkpointing"]
+default = ["std", "auto-optimization"]
 std = []
+auto-optimization = []
 serde = ["dep:serde", "dep:serde_json"]
 parallel = ["dep:rayon", "std"]
 logging = ["dep:log", "std"]

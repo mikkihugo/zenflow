@@ -165,7 +165,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     contextFactors?: Record<string, unknown>
   ): TaskPrediction {
     const key = `${agentId.id}-${taskType}`;
-    const history = this.taskHistory.get(key)||[];
+    const history = this.taskHistory.get(key) || [];
 
     if (history.length < this.config.minSamplesRequired) {
       return this.createFallbackPrediction(agentId.id, taskType);

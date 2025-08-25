@@ -165,7 +165,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     // Apply capacity adjustment if significant change
     if (Math.abs(newCapacity - profile.currentCapacity) >= 1) {
-      await this.adjustCapacity(profile, newCapacity, 'performance_based');'
+      await this.adjustCapacity(profile, newCapacity, 'performance_based');
     }
 
     // Update predicted capacity
@@ -201,7 +201,8 @@ export class AgentCapacityManager implements CapacityManager {
     // Check resource constraints
     const constraints = this.evaluateResourceConstraints(profile);
     const criticalConstraints = constraints.filter(
-      (c) => c.severity === 'critical');'
+      (c) => c.severity === 'critical'
+    );
 
     if (criticalConstraints.length > 0) {
       return false; // Critical constraints prevent new tasks
@@ -209,7 +210,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     // Check if current utilization plus required resources exceeds capacity
     const projectedUtilization =
-      currentMetrics?.activeTasks + (requiredResources.tasks||1);
+      currentMetrics?.activeTasks + (requiredResources.tasks || 1);
     const availableCapacity = this.calculateAvailableCapacity(profile);
 
     return projectedUtilization <= availableCapacity;
@@ -246,7 +247,7 @@ export class AgentCapacityManager implements CapacityManager {
           errorRateThreshold: 0.05,
         },
         lastUpdate: new Date(),
-        capacityTrend:'stable',
+        capacityTrend: 'stable',
       });
     }
     return this.capacityProfiles.get(agentId)!;
@@ -440,13 +441,13 @@ export class AgentCapacityManager implements CapacityManager {
     const constraints = this.evaluateResourceConstraints(profile, metrics);
 
     for (const constraint of constraints) {
-      if (constraint.severity === 'critical') {'
+      if (constraint.severity === 'critical') {
         // Critical constraints force capacity reduction
         constrainedCapacity = Math.min(
           constrainedCapacity,
           profile.currentCapacity * 0.5
         );
-      } else if (constraint.severity === 'high') {'
+      } else if (constraint.severity === 'high') {
         // High severity constraints limit capacity growth
         constrainedCapacity = Math.min(
           constrainedCapacity,
@@ -562,13 +563,13 @@ export class AgentCapacityManager implements CapacityManager {
   private calculateConstraintSeverity(
     currentValue: number,
     threshold: number
-  ): 'low|medium|high|critical' {'
+  ): 'low' | 'medium' | 'high' | 'critical' {
     const violation = (currentValue - threshold) / threshold;
 
-    if (violation > 0.3) return 'critical;
-    if (violation > 0.2) return 'high;
-    if (violation > 0.1) return 'medium;
-    return 'low;
+    if (violation > 0.3) return 'critical';
+    if (violation > 0.2) return 'high';
+    if (violation > 0.1) return 'medium';
+    return 'low';
   }
 
   /**
@@ -631,7 +632,7 @@ export class AgentCapacityManager implements CapacityManager {
         0.9,
         thresholds.memoryThreshold + rate
       );
-    } else if (metrics.errorRate > 0.05||metrics.responseTime > 5000) {
+    } else if (metrics.errorRate > 0.05 || metrics.responseTime > 5000) {
       // Poor performance, decrease thresholds
       thresholds.cpuThreshold = Math.max(0.5, thresholds.cpuThreshold - rate);
       thresholds.memoryThreshold = Math.max(
@@ -677,7 +678,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private calculateCapacityTrend(
     profile: AgentCapacityProfile
-  ):'increasing|decreasing|stable' {'
+  ): 'increasing' | 'decreasing' | 'stable' {
     const history = profile.utilizationHistory;
     if (history.length < 10) return 'stable';
 
@@ -689,8 +690,8 @@ export class AgentCapacityManager implements CapacityManager {
 
     const change = (recentAvg - olderAvg) / olderAvg;
 
-    if (change > 0.1) return 'increasing;
-    if (change < -0.1) return 'decreasing;
+    if (change > 0.1) return 'increasing';
+    if (change < -0.1) return 'decreasing';
     return 'stable';
   }
 

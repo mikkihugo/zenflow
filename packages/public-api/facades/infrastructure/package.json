@@ -59,8 +59,7 @@
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/load-balancing": "workspace:*",
     "@claude-zen/telemetry": "workspace:*",
-    "@claude-zen/otel-collector": "workspace:*",
-    "@claude-zen/service-container": "workspace:*"
+    "@claude-zen/otel-collector": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@claude-zen/database": {
@@ -77,9 +76,6 @@
     },
     "@claude-zen/otel-collector": {
       "optional": true
-    },
-    "@claude-zen/service-container": {
-      "optional": false
     }
   },
   "files": [

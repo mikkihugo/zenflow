@@ -830,7 +830,7 @@ impl ConfigManager {
   ///
   /// # Panics
   ///
-  /// Panics if the path cannot be converted to a PathBuf.
+  /// Panics if the path cannot be converted to a `PathBuf`.
   pub fn add_search_path<P: AsRef<Path>>(&mut self, path: P) {
     self.search_paths.push(path.as_ref().to_path_buf());
   }
@@ -840,6 +840,10 @@ impl ConfigManager {
   /// # Errors
   ///
   /// Returns an error if no configuration file is found or if there are issues reading the file.
+  ///
+  /// # Panics
+  ///
+  /// Panics if the current config is `None` when it should have been set.
   pub fn load_config(&mut self) -> NeuroDivergentResult<&SystemConfig> {
     for search_path in &self.search_paths {
       let config_file = search_path.join("config.json");
@@ -865,17 +869,21 @@ impl ConfigManager {
     path: P,
   ) -> NeuroDivergentResult<SystemConfig> {
     let content = std::fs::read_to_string(path).map_err(|e| {
-      ErrorBuilder::config(format!("Failed to read config file: {}", e)).build()
+      ErrorBuilder::config(format!("Failed to read config file: {e}")).build()
     })?;
 
     let config: SystemConfig = serde_json::from_str(&content).map_err(|e| {
-      ErrorBuilder::config(format!("Failed to parse config: {}", e)).build()
+      ErrorBuilder::config(format!("Failed to parse config: {e}")).build()
     })?;
 
     Ok(config)
   }
 
   /// Save current configuration
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if no configuration is loaded, if serialization fails, or if the file cannot be written.
   pub fn save_config<P: AsRef<Path>>(
     &self,
     path: P,
@@ -886,11 +894,11 @@ impl ConfigManager {
       .ok_or_else(|| config_error!("No configuration loaded"))?;
 
     let content = serde_json::to_string_pretty(config).map_err(|e| {
-      ErrorBuilder::config(format!("Failed to serialize config: {}", e)).build()
+      ErrorBuilder::config(format!("Failed to serialize config: {e}")).build()
     })?;
 
     std::fs::write(path, content).map_err(|e| {
-      ErrorBuilder::config(format!("Failed to write config file: {}", e))
+      ErrorBuilder::config(format!("Failed to write config file: {e}"))
         .build()
     })?;
 

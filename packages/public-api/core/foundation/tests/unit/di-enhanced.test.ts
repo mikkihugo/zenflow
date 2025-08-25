@@ -16,7 +16,7 @@ describe('Enhanced DI Container Features', () => {
   describe('Singleton Support', () => {
     it('should register and resolve singleton services', async () => {
       let instanceCount = 0;
-      
+
       class TestService {
         id: number;
         constructor() {
@@ -37,7 +37,7 @@ describe('Enhanced DI Container Features', () => {
 
     it('should register singleton with factory function', async () => {
       let callCount = 0;
-      
+
       const factory = () => {
         callCount++;
         return { value: `factory-${callCount}` };
@@ -60,7 +60,7 @@ describe('Enhanced DI Container Features', () => {
 
       container.registerSingleton('cache', CacheService, {
         capabilities: ['storage', 'performance'],
-        tags: ['cache', 'singleton']
+        tags: ['cache', 'singleton'],
       });
 
       const metadata = container.getServiceMetadata('cache');
@@ -73,14 +73,14 @@ describe('Enhanced DI Container Features', () => {
   describe('Async Factory Support', () => {
     it('should register and resolve async factories', async () => {
       const asyncFactory = async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
         return { data: 'async-result', timestamp: Date.now() };
       };
 
       container.registerAsyncFactory('asyncService', asyncFactory);
-      
+
       const result = await container.resolveAsync('asyncService');
-      
+
       expect(result.data).toBe('async-result');
       expect(typeof result.timestamp).toBe('number');
     });
@@ -91,8 +91,10 @@ describe('Enhanced DI Container Features', () => {
       };
 
       container.registerAsyncFactory('failingAsync', failingFactory);
-      
-      await expect(container.resolveAsync('failingAsync')).rejects.toThrow('Async factory failed');
+
+      await expect(container.resolveAsync('failingAsync')).rejects.toThrow(
+        'Async factory failed'
+      );
     });
 
     it('should register async factory with metadata', async () => {
@@ -100,7 +102,7 @@ describe('Enhanced DI Container Features', () => {
 
       container.registerAsyncFactory('database', dbFactory, {
         capabilities: ['persistence', 'async'],
-        tags: ['database', 'async']
+        tags: ['database', 'async'],
       });
 
       const metadata = container.getServiceMetadata('database');
@@ -112,25 +114,37 @@ describe('Enhanced DI Container Features', () => {
   describe('Service Discovery', () => {
     beforeEach(() => {
       // Register test services with various tags and capabilities
-      container.registerInstance('service1', { name: 'service1' }, {
-        capabilities: ['read', 'write'],
-        tags: ['data', 'primary']
-      });
-      
-      container.registerInstance('service2', { name: 'service2' }, {
-        capabilities: ['read'],
-        tags: ['data', 'secondary']
-      });
-      
-      container.registerInstance('service3', { name: 'service3' }, {
-        capabilities: ['cache', 'fast'],
-        tags: ['cache', 'memory']
-      });
+      container.registerInstance(
+        'service1',
+        { name: 'service1' },
+        {
+          capabilities: ['read', 'write'],
+          tags: ['data', 'primary'],
+        }
+      );
+
+      container.registerInstance(
+        'service2',
+        { name: 'service2' },
+        {
+          capabilities: ['read'],
+          tags: ['data', 'secondary'],
+        }
+      );
+
+      container.registerInstance(
+        'service3',
+        { name: 'service3' },
+        {
+          capabilities: ['cache', 'fast'],
+          tags: ['cache', 'memory'],
+        }
+      );
     });
 
     it('should find services by tags', async () => {
       const dataServices = container.getServicesByTags(['data']);
-      
+
       expect(dataServices).toHaveLength(2);
       expect(dataServices).toContain('service1');
       expect(dataServices).toContain('service2');
@@ -138,7 +152,7 @@ describe('Enhanced DI Container Features', () => {
 
     it('should find services by capabilities', async () => {
       const readServices = container.getServicesByCapabilities(['read']);
-      
+
       expect(readServices).toHaveLength(2);
       expect(readServices).toContain('service1');
       expect(readServices).toContain('service2');
@@ -146,7 +160,7 @@ describe('Enhanced DI Container Features', () => {
 
     it('should resolve all services with specific tags', async () => {
       const allDataServices = container.resolveAll(['data']);
-      
+
       expect(allDataServices).toHaveLength(2);
       expect(allDataServices[0].name).toMatch(/service[12]/);
       expect(allDataServices[1].name).toMatch(/service[12]/);
@@ -161,9 +175,13 @@ describe('Enhanced DI Container Features', () => {
   describe('Conditional Registration', () => {
     it('should register service when condition is true', async () => {
       const condition = () => true;
-      
-      container.registerConditional('conditionalTrue', () => ({ enabled: true }), condition);
-      
+
+      container.registerConditional(
+        'conditionalTrue',
+        () => ({ enabled: true }),
+        condition
+      );
+
       expect(container.has('conditionalTrue')).toBe(true);
       const service = container.resolve('conditionalTrue');
       expect(service.enabled).toBe(true);
@@ -171,9 +189,13 @@ describe('Enhanced DI Container Features', () => {
 
     it('should not register service when condition is false', async () => {
       const condition = () => false;
-      
-      container.registerConditional('conditionalFalse', () => ({ enabled: true }), condition);
-      
+
+      container.registerConditional(
+        'conditionalFalse',
+        () => ({ enabled: true }),
+        condition
+      );
+
       expect(container.has('conditionalFalse')).toBe(false);
     });
 
@@ -181,9 +203,13 @@ describe('Enhanced DI Container Features', () => {
       class ConditionalClass {
         value = 'conditional';
       }
-      
-      container.registerConditional('conditionalClass', ConditionalClass, () => true);
-      
+
+      container.registerConditional(
+        'conditionalClass',
+        ConditionalClass,
+        () => true
+      );
+
       expect(container.has('conditionalClass')).toBe(true);
       const instance = container.resolve<ConditionalClass>('conditionalClass');
       expect(instance.value).toBe('conditional');
@@ -193,46 +219,48 @@ describe('Enhanced DI Container Features', () => {
   describe('Service Disposal', () => {
     it('should dispose services that implement dispose method', async () => {
       let disposed = false;
-      
+
       const disposableService = {
         name: 'disposable',
-        dispose: () => { disposed = true; }
+        dispose: () => {
+          disposed = true;
+        },
       };
 
       container.registerInstance('disposableService', disposableService);
       container.resolve('disposableService'); // Trigger registration in disposables
-      
+
       await container.dispose();
-      
+
       expect(disposed).toBe(true);
     });
 
     it('should handle async dispose methods', async () => {
       let asyncDisposed = false;
-      
+
       const asyncDisposableService = {
         name: 'asyncDisposable',
         dispose: async () => {
-          await new Promise(resolve => setTimeout(resolve, 5));
+          await new Promise((resolve) => setTimeout(resolve, 5));
           asyncDisposed = true;
-        }
+        },
       };
 
       container.registerInstance('asyncDisposable', asyncDisposableService);
       container.resolve('asyncDisposable');
-      
+
       await container.dispose();
-      
+
       expect(asyncDisposed).toBe(true);
     });
 
     it('should clear all containers after disposal', async () => {
       container.registerInstance('test', { value: 'test' });
-      
+
       expect(container.listServices()).toContain('test');
-      
+
       await container.dispose();
-      
+
       expect(container.listServices()).toEqual([]);
     });
   });
@@ -240,7 +268,7 @@ describe('Enhanced DI Container Features', () => {
   describe('Event System Integration', () => {
     it('should emit events for service registration', async () => {
       const events: any[] = [];
-      
+
       container.on('serviceRegistered', (event: any) => {
         events.push(event);
       });
@@ -257,7 +285,7 @@ describe('Enhanced DI Container Features', () => {
 
     it('should emit events for service resolution', async () => {
       const resolutionEvents: any[] = [];
-      
+
       container.on('serviceResolved', (event: any) => {
         resolutionEvents.push(event);
       });
@@ -286,7 +314,7 @@ describe('Enhanced DI Container Features', () => {
 
     it('should start health monitoring', async () => {
       const healthEvents: any[] = [];
-      
+
       container.on('healthCheck', (event: any) => {
         healthEvents.push(event);
       });
@@ -295,7 +323,7 @@ describe('Enhanced DI Container Features', () => {
       container.startHealthMonitoring(10); // 10ms interval
 
       // Wait for at least one health check
-      await new Promise(resolve => setTimeout(resolve, 25));
+      await new Promise((resolve) => setTimeout(resolve, 25));
 
       expect(healthEvents.length).toBeGreaterThan(0);
       expect(healthEvents[0].servicesCount).toBe(1);
@@ -318,10 +346,14 @@ describe('Enhanced DI Container Features', () => {
     });
 
     it('should get service metadata', async () => {
-      container.registerInstance('metadataTest', { value: 'test' }, {
-        capabilities: ['testing'],
-        tags: ['unit-test']
-      });
+      container.registerInstance(
+        'metadataTest',
+        { value: 'test' },
+        {
+          capabilities: ['testing'],
+          tags: ['unit-test'],
+        }
+      );
 
       const metadata = container.getServiceMetadata('metadataTest');
 
@@ -342,16 +374,16 @@ describe('Enhanced DI Container Features', () => {
   describe('Auto Discovery', () => {
     it('should discover services from patterns', async () => {
       const patterns = ['**/*service.js', '**/*provider.js'];
-      
+
       const discovered = await container.autoDiscoverServices(patterns, {
         baseDirectory: './src',
-        recursive: true
+        recursive: true,
       });
 
       expect(Array.isArray(discovered)).toBe(true);
       // Mock implementation returns services for patterns containing 'service'
       expect(discovered.length).toBeGreaterThan(0);
-      
+
       const serviceInfo = discovered[0];
       expect(serviceInfo.type).toBe('class');
       expect(serviceInfo.tags).toContain('discovered');

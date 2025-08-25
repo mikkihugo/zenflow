@@ -2,7 +2,7 @@
 import path from "path"
 import { Global } from "../global"
 import fs from "fs/promises"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { NamedError } from "../util/error"
 import { lazy } from "../util/lazy"
 import { $ } from "bun"

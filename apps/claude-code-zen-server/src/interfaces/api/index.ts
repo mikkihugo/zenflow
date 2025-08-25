@@ -41,7 +41,8 @@ export const apiUtils = {
    * @param baseUrl - The base HTTP URL to convert
    * @returns WebSocket URL
    */
-  createWebSocketUrl: (baseUrl: string): string => `${baseUrl.replace(/^http/, 'ws').replace(/\/$/, '')  }/ws`,
+  createWebSocketUrl: (baseUrl: string): string =>
+    `${baseUrl.replace(/^http/, 'ws').replace(/\/$/, '')}/ws`,
 
   /**
    * Validate API configuration.
@@ -49,7 +50,8 @@ export const apiUtils = {
    * @param config - API configuration to validate
    * @returns True if configuration is valid
    */
-  validateConfig: (config: APIInterfaceConfig): boolean => Boolean(config?.baseUrl || config?.websocketUrl),
+  validateConfig: (config: APIInterfaceConfig): boolean =>
+    Boolean(config?.baseUrl || config?.websocketUrl),
 
   /**
    * Parse API response.
@@ -86,11 +88,11 @@ export const apiUtils = {
    * @returns Formatted JSON-RPC request
    */
   formatRequest: (method: string, params: unknown = {}): unknown => ({
-      jsonrpc: '2.0',
-      method,
-      params,
-      id: Date.now(),
-    }),
+    jsonrpc: '2.0',
+    method,
+    params,
+    id: Date.now(),
+  }),
 };
 
 // API client factory
@@ -108,7 +110,7 @@ export class APIClientFactory {
     url: string,
     instanceKey = 'default'
   ): WebSocketClient {
-    const key = `ws:${  instanceKey  }`;
+    const key = `ws:${instanceKey}`;
     if (!APIClientFactory.instances.has(key)) {
       const client = new WebSocketClient(url);
       APIClientFactory.instances.set(key, client);
@@ -139,9 +141,10 @@ export class APIClientFactory {
 // Default configuration
 export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
   baseUrl: getWebDashboardURL(),
-  websocketUrl:
-    `${getWebDashboardURL({ protocol: 'ws' as 'ws' }).replace(/^https?/, 'ws') 
-    }/ws`,
+  websocketUrl: `${getWebDashboardURL({ protocol: 'ws' as 'ws' }).replace(
+    /^https?/,
+    'ws'
+  )}/ws`,
   timeout: 5000,
   retries: 3,
   reconnect: true,

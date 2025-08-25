@@ -5,14 +5,17 @@
 import { describe, it, expect } from 'vitest';
 
 describe('Error Types', () => {
-
   it('should have error type definitions', async () => {
-    const errorTypes = await import('../../src/error-handling/errors/error.types');
+    const errorTypes = await import(
+      '../../src/error-handling/errors/error.types'
+    );
     expect(errorTypes).toBeDefined();
   });
 
   it('should have base errors', async () => {
-    const baseErrors = await import('../../src/error-handling/errors/base.errors');
+    const baseErrors = await import(
+      '../../src/error-handling/errors/base.errors'
+    );
     expect(baseErrors).toBeDefined();
   });
 });

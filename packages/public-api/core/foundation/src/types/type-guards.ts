@@ -3,10 +3,22 @@
  * Runtime type checking utilities for foundation types.
  */
 
-import type { UUID, Timestamp, Email, JsonValue, JsonObject, JsonArray } from './primitives';
+import type {
+  UUID,
+  Timestamp,
+  Email,
+  JsonValue,
+  JsonObject,
+  JsonArray,
+} from './primitives';
 
 export function isUUID(value: unknown): value is UUID {
-  return typeof value === 'string' && /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value);
+  return (
+    typeof value === 'string' &&
+    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+      value
+    )
+  );
 }
 
 export function isTimestamp(value: unknown): value is Timestamp {
@@ -35,7 +47,12 @@ export function isArray(value: unknown): value is unknown[] {
 
 export function isJsonValue(value: unknown): value is JsonValue {
   if (value === null) return true;
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return true;
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  )
+    return true;
   if (Array.isArray(value)) return value.every(isJsonValue);
   if (isObject(value)) return Object.values(value).every(isJsonValue);
   return false;

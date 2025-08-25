@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { Tool } from "./tool"
 import { EditTool } from "./edit"
 import DESCRIPTION from "./multiedit.txt"

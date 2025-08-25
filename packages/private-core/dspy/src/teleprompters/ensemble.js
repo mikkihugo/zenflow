@@ -15,79 +15,85 @@ import { SeededRNG } from '../primitives/seeded-rng';
  * Exact port of Stanford DSPy's EnsembledProgram
  */
 class EnsembledProgram extends DSPyModule {
-    programs;
-    reduceFunction;
-    size;
-    rng;
-    constructor(programs, reduceFunction, size) {
-        super();
-        this.programs = programs;
-        this.reduceFunction = reduceFunction;
-        this.size = size;
-        this.rng = new SeededRNG(42); // Default seed for reproducibility
+  programs;
+  reduceFunction;
+  size;
+  rng;
+  constructor(programs, reduceFunction, size) {
+    super();
+    this.programs = programs;
+    this.reduceFunction = reduceFunction;
+    this.size = size;
+    this.rng = new SeededRNG(42); // Default seed for reproducibility
+  }
+  /**
+   * Forward pass through ensemble
+   * Exact implementation of Stanford DSPy's forward method
+   */
+  async forward(example) {
+    // Select programs to run (random sample if size specified, otherwise all)
+    const programsToRun = this.size
+      ? this.rng.sample(
+          this.programs,
+          Math.min(this.size, this.programs.length)
+        )
+      : this.programs;
+    // Run all selected programs
+    const outputs = [];
+    for (const program of programsToRun) {
+      const output = await program.forward(example);
+      outputs.push(output);
     }
-    /**
-     * Forward pass through ensemble
-     * Exact implementation of Stanford DSPy's forward method
-     */
-    async forward(example) {
-        // Select programs to run (random sample if size specified, otherwise all)
-        const programsToRun = this.size
-            ? this.rng.sample(this.programs, Math.min(this.size, this.programs.length))
-            : this.programs;
-        // Run all selected programs
-        const outputs = [];
-        for (const program of programsToRun) {
-            const output = await program.forward(example);
-            outputs.push(output);
+    // Apply reduce function if provided, otherwise return all outputs
+    if (this.reduceFunction) {
+      return this.reduceFunction(outputs);
+    }
+    // Return outputs as-is (note: this matches Python behavior)
+    return {
+      data: { outputs },
+      reasoning: `Ensemble of ${outputs.length} programs`,
+      confidence:
+        outputs.reduce((sum, output) => sum + (output.confidence || 0), 0) /
+        outputs.length,
+    };
+  }
+  /**
+   * Get predictors from all ensemble programs
+   */
+  predictors() {
+    const allPredictors = [];
+    for (const program of this.programs) {
+      if (typeof program.predictors === 'function') {
+        allPredictors.push(...program.predictors())();
+      }
+    }
+    return allPredictors;
+  }
+  /**
+   * Get named predictors from all ensemble programs
+   */
+  namedPredictors() {
+    const allNamedPredictors = [];
+    for (let i = 0; i < this.programs.length; i++) {
+      const program = this.programs[i];
+      if (typeof program.namedPredictors === 'function') {
+        const programPredictors = program.namedPredictors();
+        for (const [name, predictor] of programPredictors) {
+          allNamedPredictors.push([`program_${i}_${name}`, predictor]);
         }
-        // Apply reduce function if provided, otherwise return all outputs
-        if (this.reduceFunction) {
-            return this.reduceFunction(outputs);
-        }
-        // Return outputs as-is (note: this matches Python behavior)
-        return {
-            data: { outputs },
-            reasoning: `Ensemble of ${outputs.length} programs`,
-            confidence: outputs.reduce((sum, output) => sum + (output.confidence || 0), 0) /
-                outputs.length,
-        };
+      }
     }
-    /**
-     * Get predictors from all ensemble programs
-     */
-    predictors() {
-        const allPredictors = [];
-        for (const program of this.programs) {
-            if (typeof program.predictors === 'function') {
-                allPredictors.push(...program.predictors())();
-            }
-        }
-        return allPredictors;
-    }
-    /**
-     * Get named predictors from all ensemble programs
-     */
-    namedPredictors() {
-        const allNamedPredictors = [];
-        for (let i = 0; i < this.programs.length; i++) {
-            const program = this.programs[i];
-            if (typeof program.namedPredictors === 'function') {
-                const programPredictors = program.namedPredictors();
-                for (const [name, predictor] of programPredictors) {
-                    allNamedPredictors.push([`program_${i}_${name}`, predictor]);
-                }
-            }
-        }
-        return allNamedPredictors;
-    }
-    /**
-     * Deep copy ensemble program
-     */
-    deepcopy() {
-        const copiedPrograms = this.programs.map((program) => typeof program.deepcopy === 'function' ? program.deepcopy() : program);
-        return new EnsembledProgram(copiedPrograms, this.reduceFunction, this.size);
-    }
+    return allNamedPredictors;
+  }
+  /**
+   * Deep copy ensemble program
+   */
+  deepcopy() {
+    const copiedPrograms = this.programs.map((program) =>
+      typeof program.deepcopy === 'function' ? program.deepcopy() : program
+    );
+    return new EnsembledProgram(copiedPrograms, this.reduceFunction, this.size);
+  }
 }
 /**
  * Ensemble Teleprompter
@@ -222,41 +228,47 @@ class EnsembledProgram extends DSPyModule {
  * ```
  */
 export class Ensemble {
-    config;
-    /**
-     * Initialize Ensemble teleprompter
-     * Exact API match with Stanford DSPy constructor
-     */
-    constructor(config = {}) {
-        // Validate deterministic parameter (not implemented yet)
-        if (config.deterministic === true) {
-            throw new Error('TODO: Implement example hashing for deterministic ensemble.');
-        }
-        this.config = {
-            reduce_fn: config.reduce_fn || null,
-            size: config.size || null,
-            deterministic: config.deterministic || false,
-        };
+  config;
+  /**
+   * Initialize Ensemble teleprompter
+   * Exact API match with Stanford DSPy constructor
+   */
+  constructor(config = {}) {
+    // Validate deterministic parameter (not implemented yet)
+    if (config.deterministic === true) {
+      throw new Error(
+        'TODO: Implement example hashing for deterministic ensemble.'
+      );
     }
-    /**
-     * Compile multiple programs into an ensemble
-     * Exact API match with Stanford DSPy compile method
-     *
-     * @param programs Array of DSPy modules to ensemble
-     * @returns EnsembledProgram that combines all input programs
-     */
-    compile(programs) {
-        if (!Array.isArray(programs) || programs.length === 0) {
-            throw new Error('Programs must be a non-empty array of DSPy modules');
-        }
-        return new EnsembledProgram(programs, this.config.reduce_fn, this.config.size);
+    this.config = {
+      reduce_fn: config.reduce_fn || null,
+      size: config.size || null,
+      deterministic: config.deterministic || false,
+    };
+  }
+  /**
+   * Compile multiple programs into an ensemble
+   * Exact API match with Stanford DSPy compile method
+   *
+   * @param programs Array of DSPy modules to ensemble
+   * @returns EnsembledProgram that combines all input programs
+   */
+  compile(programs) {
+    if (!Array.isArray(programs) || programs.length === 0) {
+      throw new Error('Programs must be a non-empty array of DSPy modules');
     }
-    /**
-     * Get configuration
-     */
-    getConfig() {
-        return { ...this.config };
-    }
+    return new EnsembledProgram(
+      programs,
+      this.config.reduce_fn,
+      this.config.size
+    );
+  }
+  /**
+   * Get configuration
+   */
+  getConfig() {
+    return { ...this.config };
+  }
 }
 // Export for compatibility with Stanford DSPy naming
 export { Ensemble as EnsembleTeleprompter };

@@ -29,9 +29,17 @@ import { ControlApiRoutes } from './control-api-routes';
 import { SystemCapabilityRoutes } from './system-capability-routes';
 import { createTaskMasterRoutes } from '../api/taskmaster';
 
-const { getVersion } = (global as any).claudeZenFoundation || {
+const { getVersion } = (
+  global as { claudeZenFoundation?: { getVersion(): string } }
+).claudeZenFoundation || {
   getVersion: () => 'unknown',
 };
+
+// Constants to avoid duplicate strings
+const DEFAULT_HOST = 'localhost';
+const HEALTH_ENDPOINT = '/api/health';
+const STATUS_ENDPOINT = '/api/status';
+const WORKSPACE_FILES_ENDPOINT = '/api/workspace/files';
 
 interface ApiServerConfig {
   port: number;
@@ -63,37 +71,45 @@ export class ApiServer {
 
   private setupMiddleware(): void {
     this.logger.info('🔒 Setting up production middleware...');
-    
+
     // Status monitoring dashboard (visit /status for real-time metrics)
-    this.app.use(statusMonitor({
-      title: 'Claude Code Zen API Health',
-      path: '/status',
-      spans: [{
-        interval: 1,    // Every second
-        retention: 60   // Keep 60 seconds of data
-      }, {
-        interval: 5,    // Every 5 seconds  
-        retention: 60   // Keep 5 minutes of data
-      }, {
-        interval: 15,   // Every 15 seconds
-        retention: 60   // Keep 15 minutes of data  
-      }],
-      chartVisibility: {
-        cpu: true,
-        mem: true,
-        load: true,
-        heap: true,
-        responseTime: true,
-        rps: true,
-        statusCodes: true
-      },
-      healthChecks: [{
-        protocol: 'http',
-        host: 'localhost',
-        path: '/api/health',
-        port: this.config.port
-      }]
-    }));
+    this.app.use(
+      statusMonitor({
+        title: 'Claude Code Zen API Health',
+        path: '/status',
+        spans: [
+          {
+            interval: 1, // Every second
+            retention: 60, // Keep 60 seconds of data
+          },
+          {
+            interval: 5, // Every 5 seconds
+            retention: 60, // Keep 5 minutes of data
+          },
+          {
+            interval: 15, // Every 15 seconds
+            retention: 60, // Keep 15 minutes of data
+          },
+        ],
+        chartVisibility: {
+          cpu: true,
+          mem: true,
+          load: true,
+          heap: true,
+          responseTime: true,
+          rps: true,
+          statusCodes: true,
+        },
+        healthChecks: [
+          {
+            protocol: 'http',
+            host: DEFAULT_HOST,
+            path: HEALTH_ENDPOINT,
+            port: this.config.port,
+          },
+        ],
+      })
+    );
 
     // Basic middleware
     this.app.use(express.json());
@@ -184,121 +200,188 @@ export class ApiServer {
    * Set up health and monitoring endpoints (K8s compatible)
    */
   private setupHealthRoutes(): void {
+    this.setupKubernetesHealthRoutes();
+    this.setupLegacyHealthRoute();
+  }
+
+  /**
+   * Setup Kubernetes-compatible health check endpoints
+   */
+  private setupKubernetesHealthRoutes(): void {
     // K8s Liveness Probe - Basic server health
-    this.app.get('/healthz', (req: Request, res: Response) => {
-      res.status(200).json({
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-      });
-    });
+    this.app.get('/healthz', this.handleLivenessProbe.bind(this));
 
     // K8s Readiness Probe - Service ready to receive traffic
-    this.app.get('/readyz', async (req: Request, res: Response) => {
-      try {
-        // Check if all critical services are ready
-        const checks: Record<string, string> = {
-          filesystem: 'checking',
-          database: 'checking',
-          memory: 'checking',
-        };
-
-        // Filesystem check
-        try {
-          await stat(process.cwd());
-          checks.filesystem = 'ready';
-        } catch {
-          checks.filesystem = 'not_ready';
-        }
-
-        // Memory check
-        const memoryUsage = process.memoryUsage();
-        const memoryLimit = 1024 * 1024 * 1024; // 1GB threshold
-        checks.memory =
-          memoryUsage.heapUsed < memoryLimit ? 'ready' : 'not_ready';
-
-        // Database check (if available)
-        checks.database = 'ready'; // Assume ready for now
-
-        const allReady = Object.values(checks).every(
-          (status) => status === 'ready'
-        );
-        const statusCode = allReady ? 200 : 503;
-
-        res.status(statusCode).json({
-          status: allReady ? 'ready' : 'not_ready',
-          checks,
-          timestamp: new Date().toISOString(),
-        });
-      } catch (error) {
-        res.status(503).json({
-          status: 'not_ready',
-          error: 'Health check failed',
-          timestamp: new Date().toISOString(),
-        });
-      }
-    });
+    this.app.get('/readyz', this.handleReadinessProbe.bind(this));
 
     // K8s Startup Probe - Initial startup health
-    this.app.get('/started', (req: Request, res: Response) => {
-      const started = process.uptime() > 5; // 5 seconds startup time
-      res.status(started ? 200 : 503).json({
-        status: started ? 'started' : 'starting',
-        uptime: process.uptime(),
+    this.app.get('/started', this.handleStartupProbe.bind(this));
+  }
+
+  /**
+   * Handle Kubernetes liveness probe
+   */
+  private handleLivenessProbe(req: Request, res: Response): void {
+    res.status(200).json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    });
+  }
+
+  /**
+   * Handle Kubernetes readiness probe
+   */
+  private async handleReadinessProbe(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const checks = await this.performReadinessChecks();
+      const allReady = Object.values(checks).every(
+        (status) => status === 'ready'
+      );
+      const statusCode = allReady ? 200 : 503;
+
+      res.status(statusCode).json({
+        status: allReady ? 'ready' : 'not_ready',
+        checks,
         timestamp: new Date().toISOString(),
       });
-    });
-
-    // Enhanced health check endpoint with dependency verification (legacy)
-    this.app.get('/api/health', async (req: Request, res: Response) => {
-      const health: any = {
-        status: 'healthy',
-        uptime: process.uptime(),
+    } catch {
+      res.status(503).json({
+        status: 'not_ready',
+        error: 'Health check failed',
         timestamp: new Date().toISOString(),
-        version: getVersion(),
-        memory: process.memoryUsage(),
-        environment: process.env.NODE_ENV || 'development',
-        checks: {
-          filesystem: 'healthy',
-          memory: 'healthy',
-          uptime: 'healthy',
-        },
-      };
+      });
+    }
+  }
 
-      let isHealthy = true;
+  /**
+   * Perform readiness checks for all critical services
+   */
+  private async performReadinessChecks(): Promise<Record<string, string>> {
+    const checks: Record<string, string> = {
+      filesystem: 'checking',
+      database: 'checking',
+      memory: 'checking',
+    };
 
-      try {
-        // Check filesystem access
-        await stat(process.cwd());
-        health.checks.filesystem = 'healthy';
-      } catch (error) {
-        health.checks.filesystem = 'unhealthy';
-        isHealthy = false;
-        this.logger.error('Filesystem check failed: ', error as Error);
-      }
+    // Filesystem check
+    try {
+      await stat(process.cwd());
+      checks.filesystem = 'ready';
+    } catch {
+      checks.filesystem = 'not_ready';
+    }
 
-      // Check memory usage
-      const memoryUsage = process.memoryUsage();
-      const memoryLimit = 512 * 1024 * 1024; // 512MB threshold
-      if (memoryUsage.heapUsed > memoryLimit) {
-        health.checks.memory = 'warning';
-        this.logger.warn(
-          `High memory usage: ${ 
-            Math.round(memoryUsage.heapUsed / 1024 / 1024) 
-            }MB`
-        );
-      }
+    // Memory check
+    const memoryUsage = process.memoryUsage();
+    const memoryLimit = 1024 * 1024 * 1024; // 1GB threshold
+    checks.memory = memoryUsage.heapUsed < memoryLimit ? 'ready' : 'not_ready';
 
-      // Check uptime
-      if (process.uptime() < 1) {
-        health.checks.uptime = 'starting';
-      }
+    // Database check (assume ready for now)
+    checks.database = 'ready';
 
-      // Set overall status
-      health.status = isHealthy ? 'healthy' : 'unhealthy';
-      const statusCode = isHealthy ? 200 : 503;
-      res.status(statusCode).json(health);
+    return checks;
+  }
+
+  /**
+   * Handle Kubernetes startup probe
+   */
+  private handleStartupProbe(req: Request, res: Response): void {
+    const started = process.uptime() > 5; // 5 seconds startup time
+    res.status(started ? 200 : 503).json({
+      status: started ? 'started' : 'starting',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
     });
+  }
+
+  /**
+   * Setup legacy health check endpoint with enhanced dependency verification
+   */
+  private setupLegacyHealthRoute(): void {
+    this.app.get(HEALTH_ENDPOINT, this.handleLegacyHealthCheck.bind(this));
+  }
+
+  /**
+   * Handle legacy health check with comprehensive system verification
+   */
+  private async handleLegacyHealthCheck(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const health = await this.buildHealthResponse();
+    const statusCode = health.status === 'healthy' ? 200 : 503;
+    res.status(statusCode).json(health);
+  }
+
+  /**
+   * Build comprehensive health response
+   */
+  private async buildHealthResponse(): Promise<Record<string, unknown>> {
+    const health: Record<string, unknown> = {
+      status: 'healthy',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      version: getVersion(),
+      memory: process.memoryUsage(),
+      environment: process.env.NODE_ENV || 'development',
+      checks: {
+        filesystem: 'healthy',
+        memory: 'healthy',
+        uptime: 'healthy',
+      },
+    };
+
+    let isHealthy = true;
+    isHealthy = (await this.checkFilesystemHealth(health)) && isHealthy;
+    this.checkMemoryHealth(health);
+    this.checkUptimeHealth(health);
+
+    health.status = isHealthy ? 'healthy' : 'unhealthy';
+    return health;
+  }
+
+  /**
+   * Check filesystem health
+   */
+  private async checkFilesystemHealth(
+    health: Record<string, unknown>
+  ): Promise<boolean> {
+    try {
+      await stat(process.cwd());
+      health.checks.filesystem = 'healthy';
+      return true;
+    } catch (error) {
+      health.checks.filesystem = 'unhealthy';
+      this.logger.error('Filesystem check failed: ', error as Error);
+      return false;
+    }
+  }
+
+  /**
+   * Check memory usage health
+   */
+  private checkMemoryHealth(health: Record<string, unknown>): void {
+    const memoryUsage = process.memoryUsage();
+    const memoryLimit = 512 * 1024 * 1024; // 512MB threshold
+    if (memoryUsage.heapUsed > memoryLimit) {
+      health.checks.memory = 'warning';
+      this.logger.warn(
+        `High memory usage: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`
+      );
+    }
+  }
+
+  /**
+   * Check uptime health
+   */
+  private checkUptimeHealth(health: Record<string, unknown>): void {
+    if (process.uptime() < 1) {
+      health.checks.uptime = 'starting';
+    }
   }
 
   /**
@@ -306,7 +389,7 @@ export class ApiServer {
    */
   private setupSystemRoutes(): void {
     // System status endpoint
-    this.app.get('/api/status', (req: Request, res: Response) => {
+    this.app.get(STATUS_ENDPOINT, (req: Request, res: Response) => {
       res.json({
         status: 'operational',
         server: 'Claude Code Zen API',
@@ -325,10 +408,10 @@ export class ApiServer {
         description:
           'AI swarm orchestration platform with neural networks and web dashboard',
         endpoints: {
-          health: '/api/health',
-          status: '/api/status',
+          health: HEALTH_ENDPOINT,
+          status: STATUS_ENDPOINT,
           info: '/api/info',
-          workspace: '/api/workspace/files',
+          workspace: WORKSPACE_FILES_ENDPOINT,
           // Control API endpoints
           controlLogs: '/api/v1/control/logs',
           controlMetrics: '/api/v1/control/metrics',
@@ -369,104 +452,184 @@ export class ApiServer {
    * Set up workspace file system endpoints
    */
   private setupWorkspaceRoutes(): void {
-    // Real workspace endpoint with filesystem operations
     this.app.get(
-      '/api/workspace/files',
-      async (req: Request, res: Response) => {
-        try {
-          const requestedPath = (req.query.path as string) || '.';
-
-          // Input validation and security
-          if (typeof requestedPath !== 'string') {
-            return res.status(400).json({
-              error: 'Invalid path parameter',
-              message: 'Path must be a string',
-            });
-          }
-
-          // Prevent directory traversal attacks
-          if (requestedPath.includes('..') || requestedPath.includes('~')) {
-            return res.status(403).json({
-              error: 'Access denied',
-              message: 'Path traversal not allowed',
-            });
-          }
-
-          // Base directory - use current working directory
-          const baseDir = process.cwd();
-          const targetPath =
-            requestedPath === '.' ? baseDir : join(baseDir, requestedPath);
-          const resolvedBase = resolve(baseDir);
-          const resolvedPath = resolve(targetPath);
-
-          // Security check - ensure we're within the base directory
-          if (!resolvedPath.startsWith(resolvedBase)) {
-            return res.status(403).json({
-              error: 'Access denied',
-              message: 'Access outside workspace not allowed',
-            });
-          }
-
-          // Read directory contents
-          const items = await readdir(resolvedPath);
-          const files: Array<{
-            name: string;
-            path: string;
-            type: 'directory' | 'file';
-            size: number | null;
-            modified: string;
-          }> = [];
-
-          for (const item of items) {
-            // Skip hidden files and sensitive directories
-            if (item.startsWith('.') || item === 'node_modules') {
-              continue;
-            }
-            try {
-              const itemPath = join(resolvedPath, item);
-              const stats = await stat(itemPath);
-              files.push({
-                name: item,
-                path: requestedPath === '.' ? item : `${requestedPath}/${item}`,
-                type: stats.isDirectory() ? 'directory' : 'file',
-                size: stats.isFile() ? stats.size : null,
-                modified: stats.mtime.toISOString(),
-              });
-            } catch (itemError) {
-              // Skip items we cant stat (permissions, etc.)
-              this.logger.warn(
-                `Cannot access item ${  item  }:`,
-                itemError as Error
-              );
-            }
-          }
-
-          // Sort directories first, then files
-          files.sort((a, b) => {
-            if (a.type !== b.type) {
-              return a.type === 'directory' ? -1 : 1;
-            }
-            return a.name.localeCompare(b.name);
-          });
-
-          res.json({
-            path: requestedPath,
-            files,
-            parentPath:
-              requestedPath !== '.'
-                ? requestedPath.split('/').slice(0, -1).join('/') || ''
-                : null,
-            timestamp: new Date().toISOString(),
-          });
-        } catch (error) {
-          this.logger.error('Workspace API error: ', error as Error);
-          res.status(500).json({
-            error: 'Internal server error',
-            message: 'Failed to read directory contents',
-          });
-        }
-      }
+      WORKSPACE_FILES_ENDPOINT,
+      this.handleWorkspaceRequest.bind(this)
     );
+  }
+
+  /**
+   * Handle workspace file system requests
+   */
+  private async handleWorkspaceRequest(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const requestedPath = (req.query.path as string) || '.';
+
+      // Validate and secure the path
+      const validationResult = this.validateWorkspacePath(requestedPath);
+      if (!validationResult.valid) {
+        res.status(validationResult.statusCode).json({
+          error: validationResult.error,
+          message: validationResult.message,
+        });
+        return;
+      }
+
+      // Resolve paths safely
+      const { resolvedPath, parentPath } =
+        this.resolveWorkspacePaths(requestedPath);
+
+      // Read and process directory contents
+      const files = await this.readWorkspaceDirectory(
+        resolvedPath,
+        requestedPath
+      );
+
+      res.json({
+        path: requestedPath,
+        files,
+        parentPath,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      this.logger.error('Workspace API error: ', error as Error);
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to read directory contents',
+      });
+    }
+  }
+
+  /**
+   * Validate workspace path for security
+   */
+  private validateWorkspacePath(requestedPath: string): {
+    valid: boolean;
+    statusCode?: number;
+    error?: string;
+    message?: string;
+  } {
+    // Input type validation
+    if (typeof requestedPath !== 'string') {
+      return {
+        valid: false,
+        statusCode: 400,
+        error: 'Invalid path parameter',
+        message: 'Path must be a string',
+      };
+    }
+
+    // Prevent directory traversal attacks
+    if (requestedPath.includes('..') || requestedPath.includes('~')) {
+      return {
+        valid: false,
+        statusCode: 403,
+        error: 'Access denied',
+        message: 'Path traversal not allowed',
+      };
+    }
+
+    return { valid: true };
+  }
+
+  /**
+   * Resolve workspace paths safely
+   */
+  private resolveWorkspacePaths(requestedPath: string): {
+    resolvedPath: string;
+    parentPath: string | null;
+  } {
+    const baseDir = process.cwd();
+    const targetPath =
+      requestedPath === '.' ? baseDir : join(baseDir, requestedPath);
+    const resolvedBase = resolve(baseDir);
+    const resolvedPath = resolve(targetPath);
+
+    // Security check - ensure we're within the base directory
+    if (!resolvedPath.startsWith(resolvedBase)) {
+      throw new Error('Access outside workspace not allowed');
+    }
+
+    const parentPath =
+      requestedPath !== '.'
+        ? requestedPath.split('/').slice(0, -1).join('/') || ''
+        : null;
+
+    return { resolvedPath, parentPath };
+  }
+
+  /**
+   * Read workspace directory contents
+   */
+  private async readWorkspaceDirectory(
+    resolvedPath: string,
+    requestedPath: string
+  ): Promise<
+    Array<{
+      name: string;
+      path: string;
+      type: 'directory' | 'file';
+      size: number | null;
+      modified: string;
+    }>
+  > {
+    const items = await readdir(resolvedPath);
+    const files = [];
+
+    for (const item of items) {
+      // Skip hidden files and sensitive directories
+      if (this.shouldSkipWorkspaceItem(item)) {
+        continue;
+      }
+
+      try {
+        const itemPath = join(resolvedPath, item);
+        const stats = await stat(itemPath);
+        files.push({
+          name: item,
+          path: requestedPath === '.' ? item : `${requestedPath}/${item}`,
+          type: stats.isDirectory() ? 'directory' : 'file',
+          size: stats.isFile() ? stats.size : null,
+          modified: stats.mtime.toISOString(),
+        });
+      } catch (itemError) {
+        // Skip items we can't stat (permissions, etc.)
+        this.logger.warn(`Cannot access item ${item}:`, itemError as Error);
+      }
+    }
+
+    // Sort directories first, then files
+    return this.sortWorkspaceFiles(files);
+  }
+
+  /**
+   * Determine if workspace item should be skipped
+   */
+  private shouldSkipWorkspaceItem(item: string): boolean {
+    return item.startsWith('.') || item === 'node_modules';
+  }
+
+  /**
+   * Sort workspace files (directories first, then alphabetically)
+   */
+  private sortWorkspaceFiles(
+    files: Array<{
+      name: string;
+      path: string;
+      type: 'directory' | 'file';
+      size: number | null;
+      modified: string;
+    }>
+  ): typeof files {
+    return files.sort((a, b) => {
+      if (a.type !== b.type) {
+        return a.type === 'directory' ? -1 : 1;
+      }
+      return a.name.localeCompare(b.name);
+    });
   }
 
   /**
@@ -480,7 +643,7 @@ export class ApiServer {
       '../../../../../web-dashboard/build/client'
     );
     this.logger.info(
-      `📁 Serving Svelte static assets from: ${  svelteClientPath}`
+      `📁 Serving Svelte static assets from: ${svelteClientPath}`
     );
     // Serve static files from Svelte build/client (JS, CSS, assets)
     this.app.use(
@@ -539,10 +702,10 @@ export class ApiServer {
         path: req.originalUrl,
         timestamp: new Date().toISOString(),
         availableEndpoints: [
-          '/api/health',
-          '/api/status',
+          HEALTH_ENDPOINT,
+          STATUS_ENDPOINT,
           '/api/info',
-          '/api/workspace/files',
+          WORKSPACE_FILES_ENDPOINT,
           '/api/v1/control/* (comprehensive control APIs)',
           '/api/v1/taskmaster/* (SAFe workflow management)',
         ],
@@ -550,113 +713,189 @@ export class ApiServer {
     });
   }
 
-  async start(): Promise<void> {
+  start(): Promise<void> {
     this.logger.info(
-      `🚀 Starting server on ${`${this.config.host || 'localhost'  }:${  this.config.port}`}...`
+      `🚀 Starting server on ${this.config.host || DEFAULT_HOST}:${this.config.port}...`
     );
+
     // Setup terminus for graceful shutdown BEFORE starting server
     this.setupTerminus();
 
     return new Promise((resolveServerStart, rejectServerStart) => {
-      // Enhanced server connection monitoring and error handling
-      const connectionMonitor: {
-        startTime: number;
-        errorCount: number;
-        lastError: Error | null;
-        connectionState: 'initializing' | 'connecting' | 'connected' | 'error';
-      } = {
-        startTime: Date.now(),
-        errorCount: 0,
-        lastError: null,
-        connectionState: 'initializing',
-      };
+      const connectionMonitor = this.createConnectionMonitor();
 
-      // Enhanced error handler with connection state tracking
-      this.server.on('error', (error: NodeJS.ErrnoException) => {
-        connectionMonitor.errorCount++;
-        connectionMonitor.lastError = error;
-        connectionMonitor.connectionState = 'error';
-        this.logger.error('❌ Server error detected: ', {
-          error: error.message,
-          errorCount: connectionMonitor.errorCount,
-          connectionState: connectionMonitor.connectionState,
-          errorCode: (error as any).code,
-          errno: (error as any).errno,
-          syscall: (error as any).syscall,
-          address: (error as any).address,
-          port: (error as any).port,
-        });
-        // Enhanced error analysis and recovery suggestions
-        if ((error as any).code === 'EADDRINUSE') {
-          this.logger.error(
-            `🔴 Port ${this.config.port} is already in use. Try a different port or stop the conflicting process.`
-          );
-        } else if ((error as any).code === 'EACCES') {
-          this.logger.error(
-            `🔴 Permission denied for port ${this.config.port}. Try using a port > 1024 or run with elevated privileges.`
-          );
-        } else if ((error as any).code === 'ENOTFOUND') {
-          this.logger.error(
-            `🔴 Host '${this.config.host}' not found. Check network configuration.`
-          );
-        }
-        rejectServerStart(error);
-      });
+      // Setup error handling
+      this.setupServerErrorHandling(connectionMonitor, rejectServerStart);
 
-      // Enhanced connection success handler with monitoring
-      connectionMonitor.connectionState = 'connecting';
-      this.server.listen(
-        this.config.port,
-        this.config.host || 'localhost',
-        () => {
-          connectionMonitor.connectionState = 'connected';
-          const startupTime = Date.now() - connectionMonitor.startTime;
-          this.logger.info(
-            `🌐 Claude Code Zen Server started on http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}`
-          );
-          this.logger.info(`⚡ Startup completed in ${startupTime}ms`);
-          this.logger.info(
-            `🔌 Connection state: ${connectionMonitor.connectionState}`
-          );
-          this.logger.info(
-            `🎨 Web Dashboard: http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/ (Svelte)`
-          );
-          this.logger.info('🏥 K8s Health Checks:');
-          this.logger.info(
-            ` • Liveness:  http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/healthz`
-          );
-          this.logger.info(
-            ` • Readiness: http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/readyz`
-          );
-          this.logger.info(
-            ` • Startup:   http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/started`
-          );
-          this.logger.info(
-            `📊 System Status: http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/api/status`
-          );
-          this.logger.info(
-            `🎛️ Control APIs: http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/api/v1/control/*`
-          );
-          this.logger.info(
-            `📂 Workspace API: http://${`${this.config.host || 'localhost'  }:${  this.config.port}`}/api/workspace/files`
-          );
-          this.logger.info(
-            '🎯 Single port deployment: API + Svelte dashboard + K8s health'
-          );
-          this.logger.info(
-            '🛡️ Graceful shutdown enabled via @godaddy/terminus'
-          );
-          // Store connection monitoring data for future reference
-          this.logger.info(
-            `📈 Connection metrics: startup=${startupTime}ms, errors=${connectionMonitor.errorCount}`
-          );
-          resolveServerStart();
-        }
-      );
+      // Start the server
+      this.startServerListener(connectionMonitor, resolveServerStart);
     });
   }
 
-  async stop(): Promise<void> {
+  /**
+   * Create connection monitoring object
+   */
+  private createConnectionMonitor() {
+    return {
+      startTime: Date.now(),
+      errorCount: 0,
+      lastError: null as Error | null,
+      connectionState: 'initializing' as
+        | 'initializing'
+        | 'connecting'
+        | 'connected'
+        | 'error',
+    };
+  }
+
+  /**
+   * Setup server error handling with enhanced diagnostics
+   */
+  private setupServerErrorHandling(
+    connectionMonitor: ReturnType<typeof this.createConnectionMonitor>,
+    rejectServerStart: (error: Error) => void
+  ): void {
+    this.server.on('error', (error: NodeJS.ErrnoException) => {
+      connectionMonitor.errorCount++;
+      connectionMonitor.lastError = error;
+      connectionMonitor.connectionState = 'error';
+
+      this.logServerError(error, connectionMonitor);
+      this.provideErrorRecoverySuggestions(error);
+      rejectServerStart(error);
+    });
+  }
+
+  /**
+   * Log server error with comprehensive details
+   */
+  private logServerError(
+    error: NodeJS.ErrnoException,
+    connectionMonitor: ReturnType<typeof this.createConnectionMonitor>
+  ): void {
+    this.logger.error('❌ Server error detected: ', {
+      error: error.message,
+      errorCount: connectionMonitor.errorCount,
+      connectionState: connectionMonitor.connectionState,
+      errorCode: (error as { code?: string }).code,
+      errno: (error as { errno?: number }).errno,
+      syscall: (error as { syscall?: string }).syscall,
+      address: (error as { address?: string }).address,
+      port: (error as { port?: number }).port,
+    });
+  }
+
+  /**
+   * Provide error recovery suggestions based on error type
+   */
+  private provideErrorRecoverySuggestions(error: NodeJS.ErrnoException): void {
+    const errorCode = (error as { code?: string }).code;
+
+    if (errorCode === 'EADDRINUSE') {
+      this.logger.error(
+        `🔴 Port ${this.config.port} is already in use. Try a different port or stop the conflicting process.`
+      );
+    } else if (errorCode === 'EACCES') {
+      this.logger.error(
+        `🔴 Permission denied for port ${this.config.port}. Try using a port > 1024 or run with elevated privileges.`
+      );
+    } else if (errorCode === 'ENOTFOUND') {
+      this.logger.error(
+        `🔴 Host '${this.config.host}' not found. Check network configuration.`
+      );
+    }
+  }
+
+  /**
+   * Start server listener with success handling
+   */
+  private startServerListener(
+    connectionMonitor: ReturnType<typeof this.createConnectionMonitor>,
+    resolveServerStart: () => void
+  ): void {
+    connectionMonitor.connectionState = 'connecting';
+
+    this.server.listen(
+      this.config.port,
+      this.config.host || DEFAULT_HOST,
+      () => {
+        connectionMonitor.connectionState = 'connected';
+        const startupTime = Date.now() - connectionMonitor.startTime;
+
+        this.logServerStartupSuccess(startupTime, connectionMonitor);
+        resolveServerStart();
+      }
+    );
+  }
+
+  /**
+   * Log comprehensive server startup success information
+   */
+  private logServerStartupSuccess(
+    startupTime: number,
+    connectionMonitor: ReturnType<typeof this.createConnectionMonitor>
+  ): void {
+    const serverUrl = `http://${this.config.host || DEFAULT_HOST}:${this.config.port}`;
+
+    this.logger.info(`🌐 Claude Code Zen Server started on ${serverUrl}`);
+    this.logger.info(`⚡ Startup completed in ${startupTime}ms`);
+    this.logger.info(
+      `🔌 Connection state: ${connectionMonitor.connectionState}`
+    );
+
+    this.logWebDashboardInfo(serverUrl);
+    this.logHealthCheckEndpoints(serverUrl);
+    this.logApiEndpoints(serverUrl);
+    this.logDeploymentInfo();
+    this.logConnectionMetrics(startupTime, connectionMonitor.errorCount);
+  }
+
+  /**
+   * Log web dashboard information
+   */
+  private logWebDashboardInfo(serverUrl: string): void {
+    this.logger.info(`🎨 Web Dashboard: ${serverUrl}/ (Svelte)`);
+  }
+
+  /**
+   * Log health check endpoints
+   */
+  private logHealthCheckEndpoints(serverUrl: string): void {
+    this.logger.info('🏥 K8s Health Checks:');
+    this.logger.info(` • Liveness:  ${serverUrl}/healthz`);
+    this.logger.info(` • Readiness: ${serverUrl}/readyz`);
+    this.logger.info(` • Startup:   ${serverUrl}/started`);
+  }
+
+  /**
+   * Log API endpoints information
+   */
+  private logApiEndpoints(serverUrl: string): void {
+    this.logger.info(`📊 System Status: ${serverUrl}/api/status`);
+    this.logger.info(`🎛️ Control APIs: ${serverUrl}/api/v1/control/*`);
+    this.logger.info(`📂 Workspace API: ${serverUrl}/api/workspace/files`);
+  }
+
+  /**
+   * Log deployment configuration info
+   */
+  private logDeploymentInfo(): void {
+    this.logger.info(
+      '🎯 Single port deployment: API + Svelte dashboard + K8s health'
+    );
+    this.logger.info('🛡️ Graceful shutdown enabled via @godaddy/terminus');
+  }
+
+  /**
+   * Log connection metrics
+   */
+  private logConnectionMetrics(startupTime: number, errorCount: number): void {
+    this.logger.info(
+      `📈 Connection metrics: startup=${startupTime}ms, errors=${errorCount}`
+    );
+  }
+
+  stop(): Promise<void> {
     return new Promise((resolveServerStop) => {
       // Enhanced server shutdown monitoring
       const shutdownMonitor: {
@@ -678,7 +917,7 @@ export class ApiServer {
       this.server.getConnections((err, count) => {
         if (!err && typeof count === 'number') {
           shutdownMonitor.activeConnections = count;
-          this.logger.info(`🔌 Draining ${  count  } active connections...`);
+          this.logger.info(`🔌 Draining ${count} active connections...`);
         }
       });
 
@@ -711,24 +950,27 @@ export class ApiServer {
       signals: ['SIGTERM', 'SIGINT', 'SIGUSR2'],
       timeout: process.env.NODE_ENV === 'development' ? 5000 : 30000, // Fast restarts in dev
       healthChecks: {
-        '/healthz': async () => ({
-          status: 'ok',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-        }),
-        '/readyz': async () => ({
-          status: 'ready',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-        }),
-        '/api/health': async () => ({
-          status: 'healthy',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-          version: getVersion(),
-        }),
+        healthzCheck: () =>
+          Promise.resolve({
+            status: 'ok',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+          }),
+        readyzCheck: () =>
+          Promise.resolve({
+            status: 'ready',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+          }),
+        healthCheck: () =>
+          Promise.resolve({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            version: getVersion(),
+          }),
       },
-      beforeShutdown: async () => {
+      beforeShutdown: () => {
         // Keep connections alive briefly for zero-downtime restarts
         const delay = process.env.NODE_ENV === 'development' ? 100 : 1000;
         this.logger.info(
@@ -744,24 +986,26 @@ export class ApiServer {
           }, delay);
         });
       },
-      onSignal: async () => {
-        this.logger.info(
-          '🔄 Graceful shutdown initiated - keeping connections alive...'
-        );
-        // Close database connections, cleanup resources
-        // But don't close HTTP server - terminus handles that
-        this.logger.info('✅ Resources cleaned up, ready for shutdown');
-      },
-      onShutdown: async () => {
-        this.logger.info(
-          '🏁 Server shutdown complete - zero downtime restart ready'
-        );
-      },
+      onSignal: () =>
+        Promise.resolve().then(() => {
+          this.logger.info(
+            '🔄 Graceful shutdown initiated - keeping connections alive...'
+          );
+          // Close database connections, cleanup resources
+          // But don't close HTTP server - terminus handles that
+          this.logger.info('✅ Resources cleaned up, ready for shutdown');
+        }),
+      onShutdown: () =>
+        Promise.resolve().then(() => {
+          this.logger.info(
+            '🏁 Server shutdown complete - zero downtime restart ready'
+          );
+        }),
       logger: (msg: string, err?: Error) => {
         if (err) {
           this.logger.error('🔄 Terminus: ', msg, err);
         } else {
-          this.logger.info(`🔄 Terminus: ${  msg}`);
+          this.logger.info(`🔄 Terminus: ${msg}`);
         }
       },
     });
@@ -803,12 +1047,7 @@ export class ApiServer {
     }
 
     // Test environment - allow all for flexibility
-    if (nodeEnv === 'test') {
-      return true;
-    }
-
-    // Default fallback - same origin only
-    return false;
+    return nodeEnv === 'test';
   }
 
   getCapabilities() {

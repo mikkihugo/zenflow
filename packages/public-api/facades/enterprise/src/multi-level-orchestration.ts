@@ -20,7 +20,7 @@ async function loadOrchestrationModule() {
       );
     } catch {
       console.warn(
-        'Multi-level orchestration package not available, providing compatibility layer',
+        'Multi-level orchestration package not available, providing compatibility layer'
       );
       orchestrationModuleCache = {
         MultiLevelOrchestrationManager: class CompatibilityOrchestrationManager extends EventEmitter {

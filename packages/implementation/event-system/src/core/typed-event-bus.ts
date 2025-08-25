@@ -42,7 +42,7 @@
  */
 
 import mitt, { type Emitter } from 'mitt';
-import { z } from 'zod';
+import { z } from '@claude-zen/foundation';
 import {
   getLogger,
   Result,

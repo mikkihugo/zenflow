@@ -92,7 +92,8 @@ export function getPreset(
     return presets.find(
       (preset) =>
         preset.type === category &&
-        (preset.id === presetName || preset.name.toLowerCase().includes(presetName.toLowerCase()))
+        (preset.id === presetName ||
+          preset.name.toLowerCase().includes(presetName.toLowerCase()))
     );
   }
   // Single-argument version (legacy) - category is actually presetId
@@ -109,7 +110,7 @@ export function getRecommendedPreset(useCase: string): NeuralPreset {
   const presets = Object.values(NEURAL_PRESETS);
   const found = presets.find((preset) => preset.useCase.includes(useCase));
   // Fallback to a known safe baseline preset
-  return (found ?? NEURAL_PRESETS['BASIC_CLASSIFIER']) as NeuralPreset;'
+  return (found ?? NEURAL_PRESETS['BASIC_CLASSIFIER']) as NeuralPreset;
 }
 
 /**
@@ -141,19 +142,19 @@ export function getCategoryPresets(category: string): NeuralPreset[] {
  * @example
  */
 export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
-  const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];'
+  const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];
   const missing = required.filter(
     (field) => !(field in config) || (config as any)[field] == null
   );
 
   if (missing.length > 0) {
     throw new Error(
-      `Invalid preset configuration. Missing: ${missing.join(', ')}``
+      `Invalid preset configuration. Missing: ${missing.join(', ')}`
     );
   }
 
   if (!Array.isArray(config?.layers) || config?.layers.length === 0) {
-    throw new Error('Layers must be a non-empty array');'
+    throw new Error('Layers must be a non-empty array');
   }
 
   return true;

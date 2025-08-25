@@ -45,7 +45,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
-      throw new Error('No available agents');'
+      throw new Error('No available agents');
     }
 
     if (availableAgents.length === 1) {
@@ -63,7 +63,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     await this.updateWeightsFromMetrics(availableAgents, metrics);
 
     // Find the agent with highest current weight
-    let selectedAgent: Agent|null = null;
+    let selectedAgent: Agent | null = null;
     let maxCurrentWeight = -1;
     let totalWeight = 0;
 
@@ -84,7 +84,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     }
 
     if (!selectedAgent) {
-      throw new Error('No agent selected by weighted round robin');'
+      throw new Error('No agent selected by weighted round robin');
     }
 
     // Decrease the current weight of selected agent
@@ -108,7 +108,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight||'unknown'})`,`
+      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight || 'unknown'})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),

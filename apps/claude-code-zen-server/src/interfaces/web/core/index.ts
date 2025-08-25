@@ -17,5 +17,5 @@ export type {
   SwarmData,
   TaskData,
   DocumentData,
-  CommandResult
+  CommandResult,
 } from './handlers/data.handler';

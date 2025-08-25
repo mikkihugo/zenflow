@@ -43,6 +43,12 @@ import type { UnknownRecord } from '../types/primitives';
 const logger = getLogger('typed-event-base');
 
 /**
+ * Generic event listener function type that overrides Node.js EventListener.
+ * Provides type safety for event data.
+ */
+type EventListener<T = unknown> = (data: T) => void;
+
+/**
  * Configuration options for event validation and monitoring.
  * Controls behavior of the typed event system including validation and metrics.
  *
@@ -204,7 +210,7 @@ export class EventEmitter<
    */
   public emit<K extends keyof TEvents>(
     eventName: K,
-    data: TEvents[K],
+    data: TEvents[K]
   ): boolean {
     try {
       if (this.config.enableValidation) {
@@ -213,7 +219,7 @@ export class EventEmitter<
 
       const key = String(eventName);
       const listeners = this.getEventListeners(key);
-      
+
       if (!this.hasListeners(listeners)) {
         return false;
       }
@@ -239,8 +245,13 @@ export class EventEmitter<
     };
   }
 
-  private hasListeners(listeners: { regular?: Set<EventListener<unknown>>; once?: Set<EventListener<unknown>> }) {
-    return (listeners.regular?.size || 0) > 0 || (listeners.once?.size || 0) > 0;
+  private hasListeners(listeners: {
+    regular?: Set<EventListener<unknown>>;
+    once?: Set<EventListener<unknown>>;
+  }) {
+    return (
+      (listeners.regular?.size || 0) > 0 || (listeners.once?.size || 0) > 0
+    );
   }
 
   private createEventMetadata(): EventMetadata {
@@ -251,7 +262,10 @@ export class EventEmitter<
     };
   }
 
-  private getTotalListenerCount(listeners: { regular?: Set<EventListener<unknown>>; once?: Set<EventListener<unknown>> }) {
+  private getTotalListenerCount(listeners: {
+    regular?: Set<EventListener<unknown>>;
+    once?: Set<EventListener<unknown>>;
+  }) {
     return (listeners.regular?.size || 0) + (listeners.once?.size || 0);
   }
 
@@ -259,10 +273,15 @@ export class EventEmitter<
     key: string,
     data: TEvents[K],
     metadata: EventMetadata,
-    totalListenerCount: number,
+    totalListenerCount: number
   ) {
     if (this.config.enableHistory) {
-      this.addToHistory(key, data as UnknownRecord, metadata, totalListenerCount);
+      this.addToHistory(
+        key,
+        data as UnknownRecord,
+        metadata,
+        totalListenerCount
+      );
     }
 
     if (this.config.enableMetrics) {
@@ -271,9 +290,12 @@ export class EventEmitter<
   }
 
   private callEventListeners<K extends keyof TEvents>(
-    listeners: { regular?: Set<EventListener<unknown>>; once?: Set<EventListener<unknown>> },
+    listeners: {
+      regular?: Set<EventListener<unknown>>;
+      once?: Set<EventListener<unknown>>;
+    },
     data: TEvents[K],
-    eventName: K,
+    eventName: K
   ) {
     this.callRegularListeners(listeners.regular, data, eventName);
     this.callOnceListeners(listeners.once, data, eventName);
@@ -282,7 +304,7 @@ export class EventEmitter<
   private callRegularListeners<K extends keyof TEvents>(
     eventListeners: Set<EventListener<unknown>> | undefined,
     data: TEvents[K],
-    eventName: K,
+    eventName: K
   ) {
     if (!eventListeners) return;
 
@@ -294,7 +316,7 @@ export class EventEmitter<
   private callOnceListeners<K extends keyof TEvents>(
     onceEventListeners: Set<EventListener<unknown>> | undefined,
     data: TEvents[K],
-    eventName: K,
+    eventName: K
   ) {
     if (!onceEventListeners) return;
 
@@ -306,7 +328,7 @@ export class EventEmitter<
   private safeCallListener<K extends keyof TEvents>(
     listener: EventListener<unknown>,
     data: TEvents[K],
-    eventName: K,
+    eventName: K
   ) {
     try {
       listener(data);
@@ -327,7 +349,7 @@ export class EventEmitter<
    */
   public on<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     const key = String(eventName);
     if (!this.eventListeners.has(key)) {
@@ -342,7 +364,7 @@ export class EventEmitter<
     // Check max listeners limit
     if (eventListeners.size >= this.config.maxListeners) {
       logger.warn(
-        `Max listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`,
+        `Max listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`
       );
       return this;
     }
@@ -356,7 +378,7 @@ export class EventEmitter<
    */
   public once<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     const key = String(eventName);
     if (!this.onceListeners.has(key)) {
@@ -371,7 +393,7 @@ export class EventEmitter<
     // Check max listeners limit
     if (onceEventListeners.size >= this.config.maxListeners) {
       logger.warn(
-        `Max once listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`,
+        `Max once listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`
       );
       return this;
     }
@@ -385,7 +407,7 @@ export class EventEmitter<
    */
   public off<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     const key = String(eventName);
     const eventListeners = this.eventListeners.get(key);
@@ -427,8 +449,8 @@ export class EventEmitter<
    */
   public listenerCount<K extends keyof TEvents>(eventName: K): number {
     const key = String(eventName);
-    const regularCount = this.eventListeners.get(key)?.size||0;
-    const onceCount = this.onceListeners.get(key)?.size||0;
+    const regularCount = this.eventListeners.get(key)?.size || 0;
+    const onceCount = this.onceListeners.get(key)?.size || 0;
     return regularCount + onceCount;
   }
 
@@ -450,7 +472,7 @@ export class EventEmitter<
    */
   public addListener<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     return this.on(eventName, listener);
   }
@@ -460,7 +482,7 @@ export class EventEmitter<
    */
   public removeListener<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     return this.off(eventName, listener);
   }
@@ -483,7 +505,9 @@ export class EventEmitter<
   /**
    * EventEmitter-compatible listeners method
    */
-  public listeners<K extends keyof TEvents>(eventName: K): Array<(data: TEvents[K]) => void> {
+  public listeners<K extends keyof TEvents>(
+    eventName: K
+  ): Array<(data: TEvents[K]) => void> {
     const key = String(eventName);
     const regularListeners = Array.from(this.eventListeners.get(key) || []);
     const onceListeners = Array.from(this.onceListeners.get(key) || []);
@@ -493,7 +517,9 @@ export class EventEmitter<
   /**
    * EventEmitter-compatible rawListeners method
    */
-  public rawListeners<K extends keyof TEvents>(eventName: K): Array<(data: TEvents[K]) => void> {
+  public rawListeners<K extends keyof TEvents>(
+    eventName: K
+  ): Array<(data: TEvents[K]) => void> {
     return this.listeners(eventName);
   }
 
@@ -502,7 +528,7 @@ export class EventEmitter<
    */
   public prependListener<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     // Implement proper prepending by adding to the beginning of the listener set
     const eventKey = eventName as string;
@@ -521,7 +547,7 @@ export class EventEmitter<
    */
   public prependOnceListener<K extends keyof TEvents>(
     eventName: K,
-    listener: (data: TEvents[K]) => void,
+    listener: (data: TEvents[K]) => void
   ): this {
     // Implement proper prepending for once listeners
     const eventKey = eventName as string;
@@ -538,14 +564,14 @@ export class EventEmitter<
   /**
    * Get event metrics (if enabled)
    */
-  public getMetrics(): EventMetrics|null {
+  public getMetrics(): EventMetrics | null {
     return this.config.enableMetrics ? { ...this.metrics } : null;
   }
 
   /**
    * Get event history (if enabled)
    */
-  public getEventHistory(): InternalEvent[]|null {
+  public getEventHistory(): InternalEvent[] | null {
     return this.config.enableHistory ? [...this.eventHistory] : null;
   }
 
@@ -561,18 +587,18 @@ export class EventEmitter<
    */
   protected validateEvent<K extends keyof TEvents>(
     eventName: K,
-    data: TEvents[K],
+    data: TEvents[K]
   ): void {
-    if (data === null||data === undefined) {
+    if (data === null || data === undefined) {
       throw new Error(
-        `Event data cannot be null or undefined for event: ${String(eventName)}`,
+        `Event data cannot be null or undefined for event: ${String(eventName)}`
       );
     }
 
     // Basic type validation - ensure data is an object
-    if (typeof data !=='object') {
+    if (typeof data !== 'object') {
       throw new Error(
-        `Event data must be an object for event: ${String(eventName)}`,
+        `Event data must be an object for event: ${String(eventName)}`
       );
     }
   }
@@ -591,7 +617,7 @@ export class EventEmitter<
     eventName: string,
     data: UnknownRecord,
     metadata: EventMetadata,
-    listenerCount: number,
+    listenerCount: number
   ): void {
     this.eventHistory.push({
       eventName,
@@ -612,7 +638,7 @@ export class EventEmitter<
   private updateMetrics(eventName: string, listenerCount: number): void {
     this.metrics.totalEvents++;
     this.metrics.eventsByType[eventName] =
-      (this.metrics.eventsByType[eventName]||0) + 1;
+      (this.metrics.eventsByType[eventName] || 0) + 1;
     this.metrics.lastEvent = new Date();
 
     // Update average listeners using actual listener count
@@ -629,6 +655,9 @@ export class EventEmitter<
         : listenerCount;
   }
 }
+
+// Export a default EventEmitter instance for convenience
+export const eventEmitter = new EventEmitter();
 
 /**
  * Create a typed EventEmitter instance.

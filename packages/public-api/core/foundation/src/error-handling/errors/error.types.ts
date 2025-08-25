@@ -144,7 +144,7 @@ export interface ResourceError extends BaseError {
   /** Resource type (file, database, API, etc.) */
   readonly resourceType?: string;
   /** Resource operation that failed */
-  readonly operation?:|'read|write|delete|create|update|connect';
+  readonly operation?: 'read|write|delete|create|update|connect';
   /** Whether the resource exists */
   readonly resourceExists?: boolean;
 }
@@ -263,7 +263,9 @@ export interface ErrorMetadata {
  * Result type for operations that can succeed or fail
  * Alternative to exception throwing for expected failures
  */
-export type Result<T, E extends BaseError = BaseError> =|{ success: true; data: T; error?: never }|{ success: false; data?: never; error: E };
+export type Result<T, E extends BaseError = BaseError> =
+  | { success: true; data: T; error?: never }
+  | { success: false; data?: never; error: E };
 
 /**
  * Success result helper type
@@ -299,14 +301,14 @@ export type AsyncResult<T, E extends BaseError = BaseError> = Promise<
  */
 export type ErrorHandler<E extends BaseError = BaseError> = (
   error: E
-) => void|Promise<void>;
+) => void | Promise<void>;
 
 /**
  * Error recovery function signature
  */
 export type ErrorRecovery<T, E extends BaseError = BaseError> = (
   error: E
-) => T|Promise<T>;
+) => T | Promise<T>;
 
 /**
  * Error transformation function signature
@@ -361,10 +363,10 @@ export function createValidationError(
     violations?: ValidationViolation[];
     context?: Record<string, unknown>;
     cause?: Error;
-  },
+  }
 ): ValidationError {
   return {
-    type:'ValidationError',
+    type: 'ValidationError',
     name: 'ValidationError',
     code: 'VALIDATION_FAILED',
     message,
@@ -394,7 +396,7 @@ export function createSystemError(
     signal?: string;
     context?: Record<string, unknown>;
     cause?: Error;
-  },
+  }
 ): SystemError {
   return {
     type: 'SystemError',
@@ -427,7 +429,7 @@ export function createNetworkError(
     isTimeout?: boolean;
     context?: Record<string, unknown>;
     cause?: Error;
-  },
+  }
 ): NetworkError {
   return {
     type: 'NetworkError',
@@ -460,7 +462,7 @@ export function createResourceError(
     resourceExists?: boolean;
     context?: Record<string, unknown>;
     cause?: Error;
-  },
+  }
 ): ResourceError {
   return {
     type: 'ResourceError',
@@ -498,7 +500,7 @@ export function createError<E extends BaseError>(error: E): ErrorResult<E> {
  * Check if result is successful (type guard)
  */
 export function isSuccess<T, E extends BaseError>(
-  result: Result<T, E>,
+  result: Result<T, E>
 ): result is SuccessResult<T> {
   return result.success === true;
 }
@@ -507,7 +509,7 @@ export function isSuccess<T, E extends BaseError>(
  * Check if result is an error (type guard)
  */
 export function isError<T, E extends BaseError>(
-  result: Result<T, E>,
+  result: Result<T, E>
 ): result is ErrorResult<E> {
   return result.success === false;
 }

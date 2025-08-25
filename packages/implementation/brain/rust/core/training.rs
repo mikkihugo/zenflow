@@ -184,6 +184,13 @@ pub struct BurnTrainer;
 pub struct BurnNeuralNet;
 
 #[cfg(feature = "burn-backend")]
+impl Default for BurnTrainer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(feature = "burn-backend")]
 impl BurnTrainer {
   pub fn new() -> Self {
     Self

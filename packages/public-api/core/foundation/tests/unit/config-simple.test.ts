@@ -1,11 +1,11 @@
 /**
  * @fileoverview Simple Config Service Tests
- * 
+ *
  * Tests for existing config functionality
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { 
+import {
   getConfig,
   validateConfig,
   reloadConfig,
@@ -16,7 +16,7 @@ import {
   getEnv,
   requireEnv,
   shouldLog,
-  configHelpers
+  configHelpers,
 } from '../../src/core/config/config.service';
 
 describe('Config Service - Working Features', () => {
@@ -89,7 +89,7 @@ describe('Config Service - Working Features', () => {
     it('should require environment variable', () => {
       process.env.REQUIRED_VAR = 'required-value';
       expect(requireEnv('REQUIRED_VAR')).toBe('required-value');
-      
+
       // Test missing required var throws
       expect(() => requireEnv('MISSING_REQUIRED')).toThrow();
     });
@@ -105,7 +105,7 @@ describe('Config Service - Working Features', () => {
 
     it('should handle different log levels', () => {
       const levels = ['error', 'warn', 'info', 'debug'] as const;
-      levels.forEach(level => {
+      levels.forEach((level) => {
         const result = shouldLog(level);
         expect(typeof result).toBe('boolean');
       });
@@ -139,7 +139,7 @@ describe('Config Service - Working Features', () => {
     it('should handle undefined NODE_ENV', () => {
       delete process.env.NODE_ENV;
       reloadConfig();
-      
+
       // Should not throw with undefined NODE_ENV
       expect(() => isDevelopment()).not.toThrow();
       expect(() => isProduction()).not.toThrow();

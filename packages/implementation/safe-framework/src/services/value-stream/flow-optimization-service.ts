@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, addWeeks, addMonths } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, addWeeks, addMonths } = dateFns;
 import {
   groupBy,
   map,
@@ -870,7 +869,7 @@ export class FlowOptimizationService {
     // Generate process optimization recommendations
     if (config.optimizationScope.focusAreas.includes(FocusArea.CYCLE_TIME)) {
       recommendations.push({
-        recommendationId: `rec-${nanoid(8)}`,`
+        recommendationId: `rec-${generateNanoId(8)}`,`
         title:'Optimize stage handoffs',
         description:
           'Reduce wait time between stages through automated notifications and parallel processing',
@@ -891,7 +890,7 @@ export class FlowOptimizationService {
             estimatedDuration: 45,
             phases: [
               {
-                phaseId: `phase-${nanoid(6)}`,`
+                phaseId: `phase-${generateNanoId(6)}`,`
                 name: 'Analysis and Design',
                 duration: 15,
                 objectives: ['Analyze current handoffs', 'Design optimization'],
@@ -917,7 +916,7 @@ export class FlowOptimizationService {
         },
         risks: [
           {
-            riskId: `risk-${nanoid(6)}`,`
+            riskId: `risk-${generateNanoId(6)}`,`
             description: 'Resistance to process changes',
             category: RiskCategory.ORGANIZATIONAL,
             probability: RiskProbability.MEDIUM,
@@ -929,7 +928,7 @@ export class FlowOptimizationService {
         dependencies: ['Management approval', 'Team availability'],
         successMetrics: [
           {
-            metricId: `metric-${nanoid(6)}`,`
+            metricId: `metric-${generateNanoId(6)}`,`
             name: 'Handoff time reduction',
             description: 'Reduction in time between stage completions',
             target: 25,
@@ -944,7 +943,7 @@ export class FlowOptimizationService {
     // Generate resource allocation recommendations
     if (config.optimizationScope.focusAreas.includes(FocusArea.THROUGHPUT)) {
       recommendations.push({
-        recommendationId: `rec-${nanoid(8)}`,`
+        recommendationId: `rec-${generateNanoId(8)}`,`
         title: 'Dynamic resource allocation',
         description:
           'Implement intelligent resource allocation based on real-time demand',
@@ -991,7 +990,7 @@ export class FlowOptimizationService {
   ): Promise<OptimizationStrategy[]> {
     return [
       {
-        strategyId: `strategy-${nanoid(8)}`,`
+        strategyId: `strategy-${generateNanoId(8)}`,`
         name: 'Conservative Approach',
         description: 'Gradual implementation with low risk',
         riskProfile: 'low',
@@ -1007,11 +1006,11 @@ export class FlowOptimizationService {
     config: FlowOptimizationConfig
   ): Promise<ImplementationRoadmap> {
     return {
-      roadmapId: `roadmap-${nanoid(8)}`,`
+      roadmapId: `roadmap-${generateNanoId(8)}`,`
       totalDuration: 180,
       phases: [
         {
-          phaseId: `phase-${nanoid(6)}`,`
+          phaseId: `phase-${generateNanoId(6)}`,`
           name: 'Quick Wins',
           duration: 30,
           recommendations: recommendations.filter(
@@ -1032,7 +1031,7 @@ export class FlowOptimizationService {
   ): Promise<ExpectedOutcome[]> {
     return [
       {
-        outcomeId: `outcome-${nanoid(8)}`,`
+        outcomeId: `outcome-${generateNanoId(8)}`,`
         description: 'Overall flow improvement',
         category: 'performance',
         probability: 0.85,
@@ -1058,12 +1057,12 @@ export class FlowOptimizationService {
     const allRisks = recommendations.flatMap((r) => r.risks);
 
     return {
-      assessmentId: `risk-assessment-${nanoid(8)}`,`
+      assessmentId: `risk-assessment-${generateNanoId(8)}`,`
       overallRisk: 'medium',
       riskScore: 35,
       topRisks: allRisks.slice(0, 5),
       mitigationPlan: {
-        planId: `mitigation-${nanoid(8)}`,`
+        planId: `mitigation-${generateNanoId(8)}`,`
         actions: ['Regular monitoring', 'Stakeholder engagement'],
         timeline: 30,
         owner: 'Risk Manager',

@@ -26,6 +26,12 @@ pub struct HardwareDetector {
     detected_info: Option<HardwareInfo>,
 }
 
+impl Default for HardwareDetector {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 impl HardwareDetector {
     #[wasm_bindgen(constructor)]
@@ -335,10 +341,17 @@ pub struct CodeMesh {
     hardware_detector: HardwareDetector,
 }
 
+impl Default for CodeMesh {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 impl CodeMesh {
     #[wasm_bindgen(constructor)]
     pub fn new() -> CodeMesh {
+        #[cfg(feature = "console_error_panic_hook")]
         console_error_panic_hook::set_once();
         console_log!("CodeMesh initialized with hardware detection");
         
@@ -540,6 +553,12 @@ pub struct ToolRegistry {
     tools: HashMap<String, String>,
 }
 
+impl Default for ToolRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 impl ToolRegistry {
     #[wasm_bindgen(constructor)]
@@ -624,7 +643,7 @@ impl ToolRegistry {
         // Mock grep results
         let matches = vec![
             GrepMatch {
-                file: grep_params.paths.get(0).unwrap_or(&"unknown.ts".to_string()).clone(),
+                file: grep_params.paths.first().unwrap_or(&"unknown.ts".to_string()).clone(),
                 line: 1,
                 content: format!("import {} from 'module';", grep_params.pattern),
             }

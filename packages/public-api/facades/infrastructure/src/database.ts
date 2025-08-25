@@ -7,7 +7,9 @@ export const getDatabaseAccess = async () => {
     const { createDatabaseAccess } = await import('@claude-zen/database');
     return createDatabaseAccess();
   } catch (error) {
-    throw new Error('Database system not available - @claude-zen/database package required');
+    throw new Error(
+      'Database system not available - @claude-zen/database package required'
+    );
   }
 };
 
@@ -16,7 +18,9 @@ export const createDatabaseConnection = async (config?: any) => {
     const { DatabaseProvider } = await import('@claude-zen/database');
     return new DatabaseProvider(config);
   } catch (error) {
-    throw new Error('Database provider not available - @claude-zen/database package required');
+    throw new Error(
+      'Database provider not available - @claude-zen/database package required'
+    );
   }
 };
 

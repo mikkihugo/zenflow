@@ -17,7 +17,7 @@
  * @version 2.0.0
  */
 
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
 
 /**
@@ -52,8 +52,8 @@ export interface EpicBlockedEvent {
   readonly epicId: string;
   readonly currentState: PortfolioKanbanState;
   readonly blockerId: string;
-  readonly blockerType:|'technical|business|resource|external|regulatory;
-  readonly severity: 'low|medium|high|critical;
+  readonly blockerType: 'technical' | 'business' | 'resource' | 'external' | 'regulatory';
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
   readonly description: string;
   readonly owner: string;
   readonly timestamp: Date;
@@ -113,7 +113,7 @@ export function createEpicStateTransition(params: {
     reason: params.reason,
     evidence: params.evidence,
     timestamp: new Date(),
-    transitionId: nanoid(),
+    transitionId: generateNanoId(),
   };
 }
 
@@ -131,7 +131,7 @@ export function createEpicBlocked(params: {
   return {
     epicId: params.epicId,
     currentState: params.currentState,
-    blockerId: nanoid(),
+    blockerId: generateNanoId(),
     blockerType: params.blockerType,
     severity: params.severity,
     description: params.description,

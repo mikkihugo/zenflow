@@ -89,7 +89,7 @@ impl QueryProcessor {
     for (name, strategy) in &self.strategies {
       if regex_lite::Regex::new(&strategy.pattern)
         .ok()
-        .map_or(false, |re| re.is_match(&lower_query))
+        .is_some_and(|re| re.is_match(&lower_query))
       {
         return name.clone();
       }

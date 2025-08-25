@@ -1,6 +1,6 @@
 /**
  * Coordination Types
- * 
+ *
  * Types for swarm coordination, agents, tasks, and teamwork.
  * Consolidated from: swarm-types.ts, agent-types.ts, task-types.ts, queen-types.ts, swarm-results.ts
  */
@@ -30,9 +30,14 @@ export interface SwarmConfig {
   failureThreshold?: number;
 }
 
-export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star' | 'custom';
+export type SwarmTopology =
+  | 'mesh'
+  | 'hierarchical'
+  | 'ring'
+  | 'star'
+  | 'custom';
 
-export type SwarmStatus = 
+export type SwarmStatus =
   | 'initializing'
   | 'active'
   | 'paused'
@@ -41,9 +46,9 @@ export type SwarmStatus =
   | 'error'
   | 'degraded';
 
-export type CoordinationStrategy = 
+export type CoordinationStrategy =
   | 'consensus'
-  | 'leader-follower' 
+  | 'leader-follower'
   | 'democratic'
   | 'hierarchical'
   | 'competitive';
@@ -66,21 +71,16 @@ export interface SwarmAgent {
   updated: Date;
 }
 
-export type AgentType = 
+export type AgentType =
   | 'coordinator'
   | 'worker'
   | 'specialist'
   | 'monitor'
   | 'proxy';
 
-export type AgentRole = 
-  | 'queen'
-  | 'commander'
-  | 'cube'
-  | 'matron'
-  | 'drone';
+export type AgentRole = 'queen' | 'commander' | 'cube' | 'matron' | 'drone';
 
-export type AgentStatus = 
+export type AgentStatus =
   | 'idle'
   | 'busy'
   | 'error'
@@ -134,7 +134,7 @@ export interface Task {
   timeout?: Date;
 }
 
-export type TaskType = 
+export type TaskType =
   | 'analysis'
   | 'generation'
   | 'coordination'
@@ -142,7 +142,7 @@ export type TaskType =
   | 'integration'
   | 'custom';
 
-export type TaskStatus = 
+export type TaskStatus =
   | 'pending'
   | 'assigned'
   | 'running'
@@ -155,8 +155,8 @@ export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface TaskPayload {
   action: string;
-  parameters: Record<string, any>;
-  context?: Record<string, any>;
+  parameters: Record<string, unknown>;
+  context?: Record<string, unknown>;
   requirements?: TaskRequirements;
 }
 
@@ -176,7 +176,7 @@ export interface ResourceRequirements {
 
 export interface TaskResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   metrics?: TaskMetrics;
   artifacts?: TaskArtifact[];
 }
@@ -203,14 +203,14 @@ export interface QualityMetrics {
 
 export interface TaskArtifact {
   type: string;
-  content: any;
-  metadata?: Record<string, any>;
+  content: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 export interface TaskError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   recoverable: boolean;
 }
 
@@ -247,12 +247,12 @@ export interface SwarmMessage {
   from: string;
   to?: string; // undefined means broadcast
   type: MessageType;
-  payload: any;
+  payload: unknown;
   timestamp: Date;
   priority: MessagePriority;
 }
 
-export type MessageType = 
+export type MessageType =
   | 'task'
   | 'result'
   | 'status'
@@ -280,30 +280,38 @@ export interface ChannelConfig {
 // Type Guards
 // ============================================================================
 
-export function isZenSwarm(obj: any): obj is ZenSwarm {
-  return obj && 
+export function isZenSwarm(obj: unknown): obj is ZenSwarm {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.topology === 'string' &&
-    Array.isArray(obj.agents);
+    Array.isArray(obj.agents)
+  );
 }
 
-export function isSwarmAgent(obj: any): obj is SwarmAgent {
-  return obj && 
+export function isSwarmAgent(obj: unknown): obj is SwarmAgent {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.name === 'string' &&
-    typeof obj.type === 'string';
+    typeof obj.type === 'string'
+  );
 }
 
-export function isTask(obj: any): obj is Task {
-  return obj && 
+export function isTask(obj: unknown): obj is Task {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.type === 'string' &&
-    typeof obj.status === 'string';
+    typeof obj.status === 'string'
+  );
 }
 
-export function isSwarmMessage(obj: any): obj is SwarmMessage {
-  return obj && 
+export function isSwarmMessage(obj: unknown): obj is SwarmMessage {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.from === 'string' &&
-    typeof obj.type === 'string';
+    typeof obj.type === 'string'
+  );
 }

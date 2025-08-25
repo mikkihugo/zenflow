@@ -198,7 +198,7 @@ interface PredictionResult {
  */
 export class DSPyBrainMLBridge extends EventEmitter {
   private logger: Logger;
-  private brainCoordinator: BrainCoordinator|null = null;
+  private brainCoordinator: BrainCoordinator | null = null;
   private initialized = false;
   private optimizationHistory = new Map<string, DSPyOptimizationResult>();
 
@@ -253,15 +253,19 @@ export class DSPyBrainMLBridge extends EventEmitter {
           this.logger.debug('BrainCoordinator destroyed');
         },
         optimizePrompt: async (request: any) => {
-          this.logger.debug('Optimizing prompt via brain coordinator', { request });
+          this.logger.debug('Optimizing prompt via brain coordinator', {
+            request,
+          });
           return {
             optimizedPrompt: request.prompt || '',
             confidence: 0.85,
-            strategy: 'hybrid'
+            strategy: 'hybrid',
           };
         },
         processOptimizationTask: async (task: OptimizationTask) => {
-          this.logger.debug('Processing optimization task', { taskType: task.type });
+          this.logger.debug('Processing optimization task', {
+            taskType: task.type,
+          });
           return {
             accuracy: 0.85,
             executionTime: 150,
@@ -380,7 +384,8 @@ export class DSPyBrainMLBridge extends EventEmitter {
 
       return recommendation;
     } catch (error) {
-      this.logger.error('Failed to generate teleprompter recommendation:',
+      this.logger.error(
+        'Failed to generate teleprompter recommendation:',
         error
       );
       throw error;
@@ -421,58 +426,62 @@ export class DSPyBrainMLBridge extends EventEmitter {
     originalTask: DSPyOptimizationTask
   ): DSPyOptimizationResult {
     // Brain result has different structure - adapt it
-    const result = brainResult.result||brainResult;
+    const result = brainResult.result || brainResult;
 
     return {
       success: brainResult.success !== false, // Default to true if not specified
       optimizedParameters: {
         instructions:
-          result.optimizedPrompt?.instructions||result.prompt?.split('\n')||originalTask.parameters.instructions,
-        prefixes: result.optimizedPrefixes||originalTask.parameters.prefixes,
+          result.optimizedPrompt?.instructions ||
+          result.prompt?.split('\n') ||
+          originalTask.parameters.instructions,
+        prefixes: result.optimizedPrefixes || originalTask.parameters.prefixes,
         demonstrations:
-          result.optimizedDemonstrations||originalTask.parameters.demonstrations,
+          result.optimizedDemonstrations ||
+          originalTask.parameters.demonstrations,
         populationSize:
-          result.optimalPopulationSize||originalTask.parameters.populationSize,
+          result.optimalPopulationSize ||
+          originalTask.parameters.populationSize,
         maxIterations:
-          result.optimalIterations||originalTask.parameters.maxIterations,
-        learningRate: result.optimalLearningRate||0.01,
-        regularization: result.optimalRegularization||0.001,
+          result.optimalIterations || originalTask.parameters.maxIterations,
+        learningRate: result.optimalLearningRate || 0.01,
+        regularization: result.optimalRegularization || 0.001,
       },
       metrics: {
-        accuracy: result.confidence||result.expectedPerformance||0.8,
-        speed: result.averageSpeed||1.0,
-        memoryUsage: result.peakMemoryUsage||512,
-        convergenceTime: result.timeEstimate||result.convergenceTime||1000,
-        iterationsUsed: result.iterationsUsed||10,
-        paretoOptimality: result.paretoOptimality||0.5,
+        accuracy: result.confidence || result.expectedPerformance || 0.8,
+        speed: result.averageSpeed || 1.0,
+        memoryUsage: result.peakMemoryUsage || 512,
+        convergenceTime: result.timeEstimate || result.convergenceTime || 1000,
+        iterationsUsed: result.iterationsUsed || 10,
+        paretoOptimality: result.paretoOptimality || 0.5,
       },
       neuralAnalysis: {
-        patternRecognition: result.patterns||[],
-        conceptDrift: result.driftDetection||{
+        patternRecognition: result.patterns || [],
+        conceptDrift: result.driftDetection || {
           driftDetected: false,
           driftMagnitude: 0,
-          recommendedAdaptation:'none',
+          recommendedAdaptation: 'none',
         },
-        statisticalSignificance: result.statisticalTest||{
-          testType:'none',
+        statisticalSignificance: result.statisticalTest || {
+          testType: 'none',
           pValue: 1.0,
           significant: false,
           confidenceInterval: [0, 0],
         },
-        neuralPredictions: result.predictions||[],
+        neuralPredictions: result.predictions || [],
       },
       convergenceInfo: {
-        converged: result.converged||false,
-        convergenceIteration: result.convergenceIteration||0,
-        finalLoss: result.finalLoss||Infinity,
-        lossTrajectory: result.lossTrajectory||[],
-        gradientNorm: result.gradientNorm||0,
+        converged: result.converged || false,
+        convergenceIteration: result.convergenceIteration || 0,
+        finalLoss: result.finalLoss || Infinity,
+        lossTrajectory: result.lossTrajectory || [],
+        gradientNorm: result.gradientNorm || 0,
       },
       recommendations: {
-        suggestedParameters: result.nextParameters||{},
-        alternativeObjectives: result.alternativeObjectives||[],
-        performanceBottlenecks: result.bottlenecks||[],
-        nextOptimizationSteps: result.nextSteps||[],
+        suggestedParameters: result.nextParameters || {},
+        alternativeObjectives: result.alternativeObjectives || [],
+        performanceBottlenecks: result.bottlenecks || [],
+        nextOptimizationSteps: result.nextSteps || [],
       },
     };
   }
@@ -602,9 +611,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       : ('medium' as 'low' | 'medium' | 'high');
   }
 
-  private estimateSpeedRequirement(
-    description: string
-  ): 'low|medium|high' {
+  private estimateSpeedRequirement(description: string): 'low|medium|high' {
     const speedKeywords = ['fast', 'quick', 'real-time', 'immediate', 'urgent'];
     return speedKeywords.some((keyword) =>
       description.toLowerCase().includes(keyword)

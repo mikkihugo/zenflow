@@ -68,3 +68,7 @@ mockall = "0.12"
 assert_fs = "1.1"
 insta = "1.34"
 rstest = "0.18"
+[features]
+default = ["std", "auto-optimization"]
+std = []
+auto-optimization = []

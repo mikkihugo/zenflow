@@ -128,7 +128,7 @@ export class PredictionUtils {
    * Check if prediction has field
    */
   static hasField(prediction: Prediction, field: string): boolean {
-    return (prediction.data && field in prediction.data)||field in prediction;
+    return (prediction.data && field in prediction.data) || field in prediction;
   }
 
   /**
@@ -142,7 +142,7 @@ export class PredictionUtils {
     }
 
     Object.keys(prediction).forEach((key) => {
-      if (key !=='data') {
+      if (key !== 'data') {
         fields.add(key);
       }
     });

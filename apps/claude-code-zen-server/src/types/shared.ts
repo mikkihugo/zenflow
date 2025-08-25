@@ -1,6 +1,6 @@
 /**
  * Shared Types
- * 
+ *
  * Cross-domain types and utilities used throughout the system.
  * Consolidated from: shared-types.ts, global.d.ts, singletons.ts, event-types.ts
  */
@@ -17,7 +17,7 @@ export interface BaseEntity {
   id: UUID;
   created: Date;
   updated: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Identifiable {
@@ -42,12 +42,12 @@ export interface SystemEvent extends Timestamped {
   type: EventType;
   source: string;
   target?: string;
-  payload: any;
+  payload: unknown;
   priority: EventPriority;
   correlationId?: string;
 }
 
-export type EventType = 
+export type EventType =
   | 'system.startup'
   | 'system.shutdown'
   | 'system.error'
@@ -87,7 +87,7 @@ export interface Service {
   dependencies: string[];
 }
 
-export type ServiceStatus = 
+export type ServiceStatus =
   | 'starting'
   | 'running'
   | 'stopping'
@@ -148,7 +148,7 @@ export interface DataSource {
 
 export interface DataSourceConfig {
   connection: string;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
   credentials?: Record<string, string>;
 }
 
@@ -173,7 +173,7 @@ export interface SchemaIndex {
 
 export interface ValidationRule {
   type: 'regex' | 'range' | 'length' | 'custom';
-  value: any;
+  value: unknown;
   message?: string;
 }
 
@@ -198,7 +198,7 @@ export interface AccessControl {
 export interface AccessCondition {
   field: string;
   operator: 'eq' | 'ne' | 'in' | 'not-in' | 'gt' | 'lt';
-  value: any;
+  value: unknown;
 }
 
 // ============================================================================
@@ -222,7 +222,7 @@ export type KeysOfType<T, U> = {
 
 export type Awaitable<T> = T | Promise<T>;
 
-export type Constructor<T = {}> = new (...args: any[]) => T;
+export type Constructor<T = {}> = new (...args: unknown[]) => T;
 
 export type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -256,33 +256,39 @@ export function failure<E>(error: E): Failure<E> {
 // Type Guards
 // ============================================================================
 
-export function isBaseEntity(obj: any): obj is BaseEntity {
-  return obj && 
+export function isBaseEntity(obj: unknown): obj is BaseEntity {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     obj.created instanceof Date &&
-    obj.updated instanceof Date;
+    obj.updated instanceof Date
+  );
 }
 
-export function isSystemEvent(obj: any): obj is SystemEvent {
-  return obj && 
+export function isSystemEvent(obj: unknown): obj is SystemEvent {
+  return (
+    obj &&
     typeof obj.id === 'string' &&
     typeof obj.type === 'string' &&
     typeof obj.source === 'string' &&
-    obj.timestamp instanceof Date;
+    obj.timestamp instanceof Date
+  );
 }
 
-export function isService(obj: any): obj is Service {
-  return obj && 
+export function isService(obj: unknown): obj is Service {
+  return (
+    obj &&
     typeof obj.name === 'string' &&
     typeof obj.version === 'string' &&
-    typeof obj.status === 'string';
+    typeof obj.status === 'string'
+  );
 }
 
-export function isSuccess<T>(result: Result<T, any>): result is Success<T> {
+export function isSuccess<T>(result: Result<T, unknown>): result is Success<T> {
   return result.success === true;
 }
 
-export function isFailure<E>(result: Result<any, E>): result is Failure<E> {
+export function isFailure<E>(result: Result<unknown, E>): result is Failure<E> {
   return result.success === false;
 }
 
@@ -299,7 +305,7 @@ export const EVENT_PRIORITIES: Record<EventPriority, number> = {
   low: 1,
   medium: 2,
   high: 3,
-  critical: 4
+  critical: 4,
 };
 
 export const SERVICE_STATUSES: Record<ServiceStatus, string> = {
@@ -307,5 +313,5 @@ export const SERVICE_STATUSES: Record<ServiceStatus, string> = {
   running: 'Running',
   stopping: 'Stopping',
   stopped: 'Stopped',
-  error: 'Error'
+  error: 'Error',
 };

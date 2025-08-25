@@ -594,7 +594,7 @@ impl AutoFactOrchestrator {
           .version_registry
           .active_versions
           .entry(tool_name.to_string())
-          .or_insert_with(Vec::new);
+          .or_default();
 
         if let Some(main_entry) =
           versions.iter_mut().find(|dep| dep.version == "main")
@@ -656,7 +656,7 @@ impl AutoFactOrchestrator {
     match self.version_registry.build_queue.get(&fact_key) {
       Some(FactBuildStatus::Ready) => {
         debug!("✅ FACT ready: {}", fact_key);
-        return Ok(FactBuildResult::Ready);
+        Ok(FactBuildResult::Ready)
       }
       Some(FactBuildStatus::Building) => {
         info!("⏳ FACT already building, short wait: {}", fact_key);
@@ -846,7 +846,7 @@ impl AutoFactOrchestrator {
         }
 
         // Recursively scan subdirectories (with depth limit)
-        if path.file_name().map_or(false, |name| {
+        if path.file_name().is_some_and(|name| {
           !name.to_string_lossy().starts_with('.')
             && name != "node_modules"
             && name != "target"
@@ -1150,7 +1150,7 @@ impl AutoFactOrchestrator {
 
         ecosystem: "beam".to_string(),
 
-        source: Some(format!("github:{}", caps[2].to_string())),
+        source: Some(format!("github:{}", &caps[2])),
 
         first_seen: now,
 
@@ -1260,7 +1260,7 @@ impl AutoFactOrchestrator {
             deps.push(VersionedDependency {
               name: name.to_string(),
 
-              version: version,
+              version,
 
               ecosystem: "rust".to_string(),
 
@@ -1729,7 +1729,7 @@ impl AutoFactOrchestrator {
       let name = format!("{}:{}", caps[1].trim(), caps[2].trim());
       let now = chrono::Utc::now();
       deps.push(VersionedDependency {
-        name: name,
+        name,
 
         version: caps[3].trim().to_string(),
 
@@ -1771,7 +1771,7 @@ impl AutoFactOrchestrator {
       let name = format!("{}:{}", caps[1].trim(), caps[2].trim());
       let now = chrono::Utc::now();
       deps.push(VersionedDependency {
-        name: name,
+        name,
 
         version: caps[3].trim().to_string(),
 
@@ -1857,7 +1857,7 @@ impl AutoFactOrchestrator {
       deps.push(VersionedDependency {
         name: caps[1].to_string(),
 
-        version: version,
+        version,
 
         ecosystem: "ruby".to_string(),
 
@@ -1984,10 +1984,10 @@ impl AutoFactOrchestrator {
     .unwrap();
 
     for caps in dep_pattern.captures_iter(content) {
-      let name = caps[1].split('/').last().unwrap_or(&caps[1]).to_string();
+      let name = caps[1].split('/').next_back().unwrap_or(&caps[1]).to_string();
       let now = chrono::Utc::now();
       deps.push(VersionedDependency {
-        name: name,
+        name,
 
         version: caps[2].to_string(),
 
@@ -2034,7 +2034,7 @@ impl AutoFactOrchestrator {
       deps.push(VersionedDependency {
         name: caps[1].to_string(),
 
-        version: version,
+        version,
 
         ecosystem: "swift".to_string(),
 
@@ -2263,7 +2263,7 @@ impl AutoFactOrchestrator {
       deps.push(VersionedDependency {
         name: caps[1].to_string(),
 
-        version: version,
+        version,
 
         ecosystem: "perl".to_string(),
 
@@ -2624,7 +2624,7 @@ impl AutoFactOrchestrator {
           "Failed to analyze knowledge for {}@{}: {}",
           dep_name, version, e
         );
-        Err(e.into())
+        Err(e)
       }
     }
   }
@@ -2684,7 +2684,6 @@ pub struct AutoOrchestrationStatus {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use tempfile::tempdir;
 
   #[tokio::test]
   async fn test_auto_orchestrator_creation() {
@@ -2721,7 +2720,7 @@ mod tests {
       .parse_elixir_dependencies(mix_content)
       .await
       .unwrap();
-    assert!(deps.len() >= 1);
+    assert!(!deps.is_empty());
     assert!(deps.iter().any(|d| d.name == "phoenix"));
   }
 }

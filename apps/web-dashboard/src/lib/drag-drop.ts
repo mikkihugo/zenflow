@@ -4,6 +4,9 @@
  */
 
 import { writable } from 'svelte/store';
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('drag-drop');
 
 export interface Widget {
   id: string;
@@ -34,7 +37,7 @@ export const defaultWidgets: Widget[] = [
     icon: '⚡',
     size: 'small',
     position: { row: 0, col: 0 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'active-agents',
@@ -44,7 +47,7 @@ export const defaultWidgets: Widget[] = [
     icon: '🤖',
     size: 'small',
     position: { row: 0, col: 1 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'performance',
@@ -54,7 +57,7 @@ export const defaultWidgets: Widget[] = [
     icon: '📊',
     size: 'small',
     position: { row: 0, col: 2 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'quick-stats',
@@ -64,7 +67,7 @@ export const defaultWidgets: Widget[] = [
     icon: '📈',
     size: 'small',
     position: { row: 0, col: 3 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'realtime-chart',
@@ -74,7 +77,7 @@ export const defaultWidgets: Widget[] = [
     icon: '📈',
     size: 'large',
     position: { row: 1, col: 0 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'agent-chart',
@@ -84,7 +87,7 @@ export const defaultWidgets: Widget[] = [
     icon: '🤖',
     size: 'large',
     position: { row: 1, col: 1 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'recent-tasks',
@@ -94,7 +97,7 @@ export const defaultWidgets: Widget[] = [
     icon: '✅',
     size: 'large',
     position: { row: 2, col: 0 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'quick-actions',
@@ -104,7 +107,7 @@ export const defaultWidgets: Widget[] = [
     icon: '⚡',
     size: 'large',
     position: { row: 3, col: 0 },
-    enabled: true
+    enabled: true,
   },
   {
     id: 'ai-insights',
@@ -114,8 +117,8 @@ export const defaultWidgets: Widget[] = [
     icon: '🤖',
     size: 'large',
     position: { row: 2, col: 1 },
-    enabled: true
-  }
+    enabled: true,
+  },
 ];
 
 /**
@@ -124,13 +127,13 @@ export const defaultWidgets: Widget[] = [
 export const dashboardLayout = writable<DashboardLayout>({
   widgets: [...defaultWidgets],
   columns: 4,
-  rows: 4
+  rows: 4,
 });
 
 /**
  * Widget being dragged store
  */
-export const draggedWidget = writable<Widget|null>(null);
+export const draggedWidget = writable<Widget | null>(null);
 
 /**
  * Customization mode store
@@ -142,14 +145,14 @@ export const customizationMode = writable<boolean>(false);
  */
 export const availableWidgets: Widget[] = [
   {
-    id:'websocket-status',
+    id: 'websocket-status',
     name: 'WebSocket Status',
     component: 'WebSocketStatusWidget',
     title: '📡 Connection Status',
     icon: '📡',
     size: 'small',
     position: { row: 0, col: 0 },
-    enabled: false
+    enabled: false,
   },
   {
     id: 'memory-usage',
@@ -159,7 +162,7 @@ export const availableWidgets: Widget[] = [
     icon: '💾',
     size: 'medium',
     position: { row: 0, col: 0 },
-    enabled: false
+    enabled: false,
   },
   {
     id: 'task-queue',
@@ -169,7 +172,7 @@ export const availableWidgets: Widget[] = [
     icon: '📝',
     size: 'medium',
     position: { row: 0, col: 0 },
-    enabled: false
+    enabled: false,
   },
   {
     id: 'agent-logs',
@@ -179,7 +182,7 @@ export const availableWidgets: Widget[] = [
     icon: '📋',
     size: 'large',
     position: { row: 0, col: 0 },
-    enabled: false
+    enabled: false,
   },
   {
     id: 'ai-recommendations',
@@ -189,7 +192,7 @@ export const availableWidgets: Widget[] = [
     icon: '🎯',
     size: 'large',
     position: { row: 0, col: 0 },
-    enabled: false
+    enabled: false,
   },
   {
     id: 'predictive-analytics',
@@ -199,8 +202,8 @@ export const availableWidgets: Widget[] = [
     icon: '🔮',
     size: 'large',
     position: { row: 0, col: 0 },
-    enabled: false
-  }
+    enabled: false,
+  },
 ];
 
 /**
@@ -208,14 +211,14 @@ export const availableWidgets: Widget[] = [
  */
 export class DragDropManager {
   private dropZones = new Map<string, HTMLElement>();
-  private dragPreview: HTMLElement|null = null;
+  private dragPreview: HTMLElement | null = null;
 
   /**
    * Register a drop zone
    */
   registerDropZone(id: string, element: HTMLElement): void {
     this.dropZones.set(id, element);
-    
+
     element.addEventListener('dragover', this.handleDragOver.bind(this));
     element.addEventListener('drop', this.handleDrop.bind(this));
     element.addEventListener('dragenter', this.handleDragEnter.bind(this));
@@ -241,19 +244,19 @@ export class DragDropManager {
    */
   startDrag(widget: Widget, element: HTMLElement, event: DragEvent): void {
     draggedWidget.set(widget);
-    
+
     // Create drag preview
     this.createDragPreview(widget, element);
-    
+
     // Set drag data
     if (event.dataTransfer) {
       event.dataTransfer.setData('application/json', JSON.stringify(widget));
       event.dataTransfer.effectAllowed = 'move';
     }
-    
+
     // Add dragging class
     element.classList.add('dragging');
-    
+
     // Highlight valid drop zones
     this.highlightDropZones(true);
   }
@@ -263,16 +266,16 @@ export class DragDropManager {
    */
   endDrag(element: HTMLElement): void {
     draggedWidget.set(null);
-    
+
     // Remove drag preview
     if (this.dragPreview) {
       document.body.removeChild(this.dragPreview);
       this.dragPreview = null;
     }
-    
+
     // Remove dragging class
     element.classList.remove('dragging');
-    
+
     // Remove drop zone highlighting
     this.highlightDropZones(false);
   }
@@ -307,21 +310,23 @@ export class DragDropManager {
    */
   private handleDrop(event: DragEvent): void {
     event.preventDefault();
-    
+
     const dropZone = event.currentTarget as HTMLElement;
     dropZone.classList.remove('drag-over');
-    
+
     if (!event.dataTransfer) return;
-    
+
     try {
-      const widgetData = JSON.parse(event.dataTransfer.getData('application/json')) as Widget;
+      const widgetData = JSON.parse(
+        event.dataTransfer.getData('application/json')
+      ) as Widget;
       const dropZoneId = dropZone.dataset.dropZone;
-      
+
       if (dropZoneId) {
         this.moveWidget(widgetData.id, dropZoneId);
       }
     } catch (error) {
-      console.error('Failed to handle drop:', error);
+      logger.error('Failed to handle drop', { error });
     }
   }
 
@@ -337,7 +342,7 @@ export class DragDropManager {
     this.dragPreview.style.opacity = '0.8';
     this.dragPreview.style.pointerEvents = 'none';
     this.dragPreview.style.transform = 'rotate(5deg)';
-    
+
     document.body.appendChild(this.dragPreview);
   }
 
@@ -358,13 +363,13 @@ export class DragDropManager {
    * Move widget to new position
    */
   private moveWidget(widgetId: string, dropZoneId: string): void {
-    dashboardLayout.update(layout => {
-      const widget = layout.widgets.find(w => w.id === widgetId);
+    dashboardLayout.update((layout) => {
+      const widget = layout.widgets.find((w) => w.id === widgetId);
       if (widget) {
         // Parse drop zone position
         const [row, col] = dropZoneId.split('-').slice(1).map(Number);
         widget.position = { row, col };
-        
+
         // Save to localStorage
         this.saveDashboardLayout(layout);
       }
@@ -376,20 +381,20 @@ export class DragDropManager {
    * Add widget to dashboard
    */
   addWidget(widgetId: string): void {
-    const availableWidget = availableWidgets.find(w => w.id === widgetId);
+    const availableWidget = availableWidgets.find((w) => w.id === widgetId);
     if (!availableWidget) return;
 
-    dashboardLayout.update(layout => {
+    dashboardLayout.update((layout) => {
       // Find first available position
       const position = this.findAvailablePosition(layout);
-      
+
       const newWidget: Widget = {
         ...availableWidget,
         id: `${widgetId}-${Date.now()}`,
         position,
-        enabled: true
+        enabled: true,
       };
-      
+
       layout.widgets.push(newWidget);
       this.saveDashboardLayout(layout);
       return layout;
@@ -400,8 +405,8 @@ export class DragDropManager {
    * Remove widget from dashboard
    */
   removeWidget(widgetId: string): void {
-    dashboardLayout.update(layout => {
-      layout.widgets = layout.widgets.filter(w => w.id !== widgetId);
+    dashboardLayout.update((layout) => {
+      layout.widgets = layout.widgets.filter((w) => w.id !== widgetId);
       this.saveDashboardLayout(layout);
       return layout;
     });
@@ -411,8 +416,8 @@ export class DragDropManager {
    * Toggle widget enabled state
    */
   toggleWidget(widgetId: string): void {
-    dashboardLayout.update(layout => {
-      const widget = layout.widgets.find(w => w.id === widgetId);
+    dashboardLayout.update((layout) => {
+      const widget = layout.widgets.find((w) => w.id === widgetId);
       if (widget) {
         widget.enabled = !widget.enabled;
         this.saveDashboardLayout(layout);
@@ -428,30 +433,33 @@ export class DragDropManager {
     dashboardLayout.set({
       widgets: [...defaultWidgets],
       columns: 4,
-      rows: 4
+      rows: 4,
     });
     this.saveDashboardLayout({
       widgets: [...defaultWidgets],
       columns: 4,
-      rows: 4
+      rows: 4,
     });
   }
 
   /**
    * Find available position for new widget
    */
-  private findAvailablePosition(layout: DashboardLayout): { row: number; col: number } {
+  private findAvailablePosition(layout: DashboardLayout): {
+    row: number;
+    col: number;
+  } {
     for (let row = 0; row < layout.rows; row++) {
       for (let col = 0; col < layout.columns; col++) {
-        const occupied = layout.widgets.some(w => 
-          w.enabled && w.position.row === row && w.position.col === col
+        const occupied = layout.widgets.some(
+          (w) => w.enabled && w.position.row === row && w.position.col === col
         );
         if (!occupied) {
           return { row, col };
         }
       }
     }
-    
+
     // If no available position, expand grid
     return { row: layout.rows, col: 0 };
   }
@@ -463,7 +471,7 @@ export class DragDropManager {
     try {
       localStorage.setItem('dashboard-layout', JSON.stringify(layout));
     } catch (error) {
-      console.warn('Failed to save dashboard layout:', error);
+      logger.warn('Failed to save dashboard layout', { error });
     }
   }
 
@@ -478,7 +486,7 @@ export class DragDropManager {
         dashboardLayout.set(layout);
       }
     } catch (error) {
-      console.warn('Failed to load dashboard layout:', error);
+      logger.warn('Failed to load dashboard layout', { error });
       this.resetDashboard();
     }
   }
@@ -497,20 +505,20 @@ export const widgetSizes = {
     minWidth: '200px',
     minHeight: '120px',
     gridColumns: 1,
-    gridRows: 1
+    gridRows: 1,
   },
   medium: {
     minWidth: '300px',
     minHeight: '200px',
     gridColumns: 2,
-    gridRows: 1
+    gridRows: 1,
   },
   large: {
     minWidth: '400px',
     minHeight: '300px',
     gridColumns: 2,
-    gridRows: 2
-  }
+    gridRows: 2,
+  },
 };
 
 /**
@@ -520,5 +528,5 @@ export const dragDropClasses = {
   dragging: 'opacity-50 transform rotate-2 scale-95',
   dropZone: 'border-2 border-dashed border-transparent transition-colors',
   dropZoneActive: 'border-primary-500 bg-primary-500/10',
-  dragOver: 'border-success-500 bg-success-500/20'
+  dragOver: 'border-success-500 bg-success-500/20',
 };

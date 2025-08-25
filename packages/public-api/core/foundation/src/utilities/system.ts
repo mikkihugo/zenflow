@@ -1,20 +1,23 @@
 /**
  * @fileoverview System utilities - Consolidated system detection and environment utilities
  * @module utilities/system
- * 
+ *
  * Provides comprehensive system utilities including platform detection, process information,
  * monorepo detection, system capabilities, and environment validation.
  */
 
 import * as os from 'os';
 import * as process from 'process';
-import { WorkspaceDetector, DetectedWorkspace } from './system/monorepo.detector.js';
-import { 
-  getSystemCapabilityData, 
+import {
+  WorkspaceDetector,
+  DetectedWorkspace,
+} from './system/monorepo.detector.js';
+import {
+  getSystemCapabilityData,
   SystemCapabilityData,
   startSystemMonitoring,
   displaySystemStatus,
-  getCapabilityScores
+  getCapabilityScores,
 } from './system/capability.provider.js';
 
 // Re-export system modules for convenience
@@ -27,18 +30,35 @@ export {
   displaySystemStatus,
   startSystemMonitoring,
   getCapabilityScores,
-  createHealthDataProviders
+  createHealthDataProviders,
 } from './system/capability.provider.js';
 
 /**
  * Platform types
  */
-export type Platform = 'win32' | 'darwin' | 'linux' | 'freebsd' | 'openbsd' | 'android' | 'aix' | 'sunos' | 'unknown';
+export type Platform =
+  | 'win32'
+  | 'darwin'
+  | 'linux'
+  | 'freebsd'
+  | 'openbsd'
+  | 'android'
+  | 'aix'
+  | 'sunos'
+  | 'unknown';
 
 /**
  * Architecture types
  */
-export type Architecture = 'x64' | 'arm64' | 'ia32' | 'arm' | 'ppc64' | 's390x' | 'mips' | 'unknown';
+export type Architecture =
+  | 'x64'
+  | 'arm64'
+  | 'ia32'
+  | 'arm'
+  | 'ppc64'
+  | 's390x'
+  | 'mips'
+  | 'unknown';
 
 /**
  * System information interface
@@ -78,13 +98,19 @@ export interface ProcessInfo {
 /**
  * Environment type
  */
-export type EnvironmentType = 'development' | 'production' | 'test' | 'staging' | 'preview' | 'unknown';
+export type EnvironmentType =
+  | 'development'
+  | 'production'
+  | 'test'
+  | 'staging'
+  | 'preview'
+  | 'unknown';
 
 /**
  * Get current platform with normalization
- * 
+ *
  * @returns Normalized platform name
- * 
+ *
  * @example
  * ```typescript
  * const platform = getPlatform();
@@ -92,26 +118,30 @@ export type EnvironmentType = 'development' | 'production' | 'test' | 'staging' 
  * ```
  */
 export function getPlatform(): Platform {
-  const {platform} = process;
-  
+  const { platform } = process;
+
   // Handle known platforms
-  if (['win32', 'darwin', 'linux', 'freebsd', 'openbsd', 'aix', 'sunos'].includes(platform)) {
+  if (
+    ['win32', 'darwin', 'linux', 'freebsd', 'openbsd', 'aix', 'sunos'].includes(
+      platform
+    )
+  ) {
     return platform as Platform;
   }
-  
+
   // Check for Android (common in Node.js environments)
   if (platform === 'linux' && process.env['ANDROID_ROOT']) {
     return 'android';
   }
-  
+
   return 'unknown';
 }
 
 /**
  * Get system architecture with normalization
- * 
+ *
  * @returns Normalized architecture name
- * 
+ *
  * @example
  * ```typescript
  * const arch = getArchitecture();
@@ -119,21 +149,23 @@ export function getPlatform(): Platform {
  * ```
  */
 export function getArchitecture(): Architecture {
-  const {arch} = process;
-  
+  const { arch } = process;
+
   // Handle known architectures
-  if (['x64', 'arm64', 'ia32', 'arm', 'ppc64', 's390x', 'mips'].includes(arch)) {
+  if (
+    ['x64', 'arm64', 'ia32', 'arm', 'ppc64', 's390x', 'mips'].includes(arch)
+  ) {
     return arch as Architecture;
   }
-  
+
   return 'unknown';
 }
 
 /**
  * Check if running on Windows
- * 
+ *
  * @returns True if running on Windows
- * 
+ *
  * @example
  * ```typescript
  * if (isWindows()) {
@@ -147,9 +179,9 @@ export function isWindows(): boolean {
 
 /**
  * Check if running on macOS
- * 
+ *
  * @returns True if running on macOS
- * 
+ *
  * @example
  * ```typescript
  * if (isMacOS()) {
@@ -163,9 +195,9 @@ export function isMacOS(): boolean {
 
 /**
  * Check if running on Linux
- * 
+ *
  * @returns True if running on Linux
- * 
+ *
  * @example
  * ```typescript
  * if (isLinux()) {
@@ -179,9 +211,9 @@ export function isLinux(): boolean {
 
 /**
  * Check if running in CI environment
- * 
+ *
  * @returns True if running in CI
- * 
+ *
  * @example
  * ```typescript
  * if (isCI()) {
@@ -206,9 +238,9 @@ export function isCI(): boolean {
 
 /**
  * Check if running in Docker container
- * 
+ *
  * @returns True if running in Docker
- * 
+ *
  * @example
  * ```typescript
  * if (isDocker()) {
@@ -223,13 +255,13 @@ export function isDocker(): boolean {
     if (fs.existsSync('/.dockerenv')) {
       return true;
     }
-    
+
     // Check for Docker-specific cgroup entries
     if (fs.existsSync('/proc/1/cgroup')) {
       const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8');
       return cgroup.includes('docker') || cgroup.includes('containerd');
     }
-    
+
     return false;
   } catch {
     return false;
@@ -238,9 +270,9 @@ export function isDocker(): boolean {
 
 /**
  * Check if running in WSL (Windows Subsystem for Linux)
- * 
+ *
  * @returns True if running in WSL
- * 
+ *
  * @example
  * ```typescript
  * if (isWSL()) {
@@ -252,16 +284,16 @@ export function isWSL(): boolean {
   if (!isLinux()) {
     return false;
   }
-  
+
   try {
     const fs = require('fs');
-    
+
     // Check for WSL-specific files
     if (fs.existsSync('/proc/version')) {
       const version = fs.readFileSync('/proc/version', 'utf8').toLowerCase();
       return version.includes('microsoft') || version.includes('wsl');
     }
-    
+
     return false;
   } catch {
     return false;
@@ -270,9 +302,9 @@ export function isWSL(): boolean {
 
 /**
  * Get environment type from NODE_ENV and other indicators
- * 
+ *
  * @returns Environment type
- * 
+ *
  * @example
  * ```typescript
  * const env = getEnvironment();
@@ -283,41 +315,50 @@ export function isWSL(): boolean {
  */
 export function getEnvironment(): EnvironmentType {
   const nodeEnv = process.env['NODE_ENV']?.toLowerCase();
-  
+
   // Direct NODE_ENV mapping
   if (nodeEnv === 'production') return 'production';
   if (nodeEnv === 'development' || nodeEnv === 'dev') return 'development';
   if (nodeEnv === 'test') return 'test';
   if (nodeEnv === 'staging') return 'staging';
   if (nodeEnv === 'preview') return 'preview';
-  
+
   // Infer from other environment variables
-  if (process.env['VERCEL_ENV'] === 'production' || process.env['NETLIFY'] && process.env['CONTEXT'] === 'production') {
+  if (
+    process.env['VERCEL_ENV'] === 'production' ||
+    (process.env['NETLIFY'] && process.env['CONTEXT'] === 'production')
+  ) {
     return 'production';
   }
-  
-  if (process.env['VERCEL_ENV'] === 'preview' || process.env['NETLIFY'] && process.env['CONTEXT'] === 'deploy-preview') {
+
+  if (
+    process.env['VERCEL_ENV'] === 'preview' ||
+    (process.env['NETLIFY'] && process.env['CONTEXT'] === 'deploy-preview')
+  ) {
     return 'preview';
   }
-  
-  if (process.env['VERCEL_ENV'] === 'development' || process.env['NETLIFY'] && process.env['CONTEXT'] === 'dev') {
+
+  if (
+    process.env['VERCEL_ENV'] === 'development' ||
+    (process.env['NETLIFY'] && process.env['CONTEXT'] === 'dev')
+  ) {
     return 'development';
   }
-  
+
   // CI environments usually indicate production-like environments
   if (isCI()) {
     return 'production';
   }
-  
+
   // Default to development if no clear indicators
   return nodeEnv ? 'unknown' : 'development';
 }
 
 /**
  * Check if running in development environment
- * 
+ *
  * @returns True if in development mode
- * 
+ *
  * @example
  * ```typescript
  * if (isDevelopment()) {
@@ -331,9 +372,9 @@ export function isDevelopment(): boolean {
 
 /**
  * Check if running in production environment
- * 
+ *
  * @returns True if in production mode
- * 
+ *
  * @example
  * ```typescript
  * if (isProduction()) {
@@ -347,9 +388,9 @@ export function isProduction(): boolean {
 
 /**
  * Check if running in test environment
- * 
+ *
  * @returns True if in test mode
- * 
+ *
  * @example
  * ```typescript
  * if (isTest()) {
@@ -363,9 +404,9 @@ export function isTest(): boolean {
 
 /**
  * Get comprehensive system information
- * 
+ *
  * @returns System information object
- * 
+ *
  * @example
  * ```typescript
  * const sysInfo = getSystemInfo();
@@ -375,13 +416,13 @@ export function isTest(): boolean {
 export function getSystemInfo(): SystemInfo {
   const platform = getPlatform();
   const arch = getArchitecture();
-  
+
   // Calculate memory in GB
   const totalMemory = os.totalmem();
   const freeMemory = os.freemem();
-  const totalMemoryGB = Math.round((totalMemory / (1024 ** 3)) * 100) / 100;
-  const availableMemoryGB = Math.round((freeMemory / (1024 ** 3)) * 100) / 100;
-  
+  const totalMemoryGB = Math.round((totalMemory / 1024 ** 3) * 100) / 100;
+  const availableMemoryGB = Math.round((freeMemory / 1024 ** 3) * 100) / 100;
+
   return {
     platform,
     arch,
@@ -402,9 +443,9 @@ export function getSystemInfo(): SystemInfo {
 
 /**
  * Get current process information
- * 
+ *
  * @returns Process information object
- * 
+ *
  * @example
  * ```typescript
  * const procInfo = getProcessInfo();
@@ -427,9 +468,9 @@ export function getProcessInfo(): ProcessInfo {
 
 /**
  * Get workspace detection instance
- * 
+ *
  * @returns WorkspaceDetector instance
- * 
+ *
  * @example
  * ```typescript
  * const detector = getWorkspaceDetector();
@@ -445,10 +486,10 @@ export function getWorkspaceDetector(): WorkspaceDetector {
 
 /**
  * Detect monorepo workspace in current directory
- * 
+ *
  * @param startPath - Starting directory path (defaults to current working directory)
  * @returns Detected workspace information or null
- * 
+ *
  * @example
  * ```typescript
  * const workspace = await detectWorkspace();
@@ -459,16 +500,18 @@ export function getWorkspaceDetector(): WorkspaceDetector {
  * }
  * ```
  */
-export async function detectWorkspace(startPath?: string): Promise<DetectedWorkspace | null> {
+export async function detectWorkspace(
+  startPath?: string
+): Promise<DetectedWorkspace | null> {
   const detector = getWorkspaceDetector();
   return detector.detectWorkspaceRoot(startPath);
 }
 
 /**
  * Get system capabilities and health information
- * 
+ *
  * @returns System capability data
- * 
+ *
  * @example
  * ```typescript
  * const capabilities = await getSystemCapabilities();
@@ -482,7 +525,7 @@ export function getSystemCapabilities(): Promise<SystemCapabilityData> {
 
 /**
  * Display system status information to console
- * 
+ *
  * @example
  * ```typescript
  * await showSystemStatus();
@@ -495,7 +538,7 @@ export async function showSystemStatus(): Promise<void> {
 
 /**
  * Start system monitoring for status changes
- * 
+ *
  * @example
  * ```typescript
  * startMonitoring();
@@ -508,9 +551,9 @@ export function startMonitoring(): void {
 
 /**
  * Get capability scores for different system areas
- * 
+ *
  * @returns Record of capability area names to scores
- * 
+ *
  * @example
  * ```typescript
  * const scores = await getCapabilityScoreMap();
@@ -524,9 +567,9 @@ export async function getCapabilityScoreMap(): Promise<Record<string, number>> {
 
 /**
  * Create a formatted system summary for logging or display
- * 
+ *
  * @returns Formatted system summary string
- * 
+ *
  * @example
  * ```typescript
  * const summary = createSystemSummary();
@@ -537,27 +580,27 @@ export async function getCapabilityScoreMap(): Promise<Record<string, number>> {
 export function createSystemSummary(): string {
   const info = getSystemInfo();
   const env = getEnvironment();
-  
+
   let summary = `${info.platform} ${info.arch} (Node.js ${info.nodeVersion}) - ${info.cpuCount} CPUs, ${info.totalMemoryGB}GB RAM - ${env}`;
-  
+
   const indicators: string[] = [];
   if (info.isCI) indicators.push('CI');
   if (info.isDocker) indicators.push('Docker');
   if (info.isWSL) indicators.push('WSL');
-  
+
   if (indicators.length > 0) {
     summary += ` (${indicators.join(', ')})`;
   }
-  
+
   return summary;
 }
 
 /**
  * Check if current system meets minimum requirements
- * 
+ *
  * @param requirements - Minimum system requirements
  * @returns True if requirements are met
- * 
+ *
  * @example
  * ```typescript
  * const meetsRequirements = checkSystemRequirements({
@@ -565,7 +608,7 @@ export function createSystemSummary(): string {
  *   totalMemoryGB: 8,
  *   cpuCount: 4
  * });
- * 
+ *
  * if (!meetsRequirements) {
  *   console.warn('System does not meet minimum requirements');
  * }
@@ -578,12 +621,12 @@ export function checkSystemRequirements(requirements: {
   supportedPlatforms?: Platform[];
 }): boolean {
   const info = getSystemInfo();
-  
+
   // Check Node.js version
   if (requirements.nodeVersion) {
     const currentVersion = process.version.replace('v', '');
     const requiredVersion = requirements.nodeVersion.replace('v', '');
-    
+
     // Simple version comparison (assumes semantic versioning)
     const currentParts = currentVersion.split('.').map(Number);
     const requiredParts = requiredVersion.split('.').map(Number);
@@ -591,27 +634,35 @@ export function checkSystemRequirements(requirements: {
     const currentMinor = currentParts[1] ?? 0;
     const requiredMajor = requiredParts[0] ?? 0;
     const requiredMinor = requiredParts[1] ?? 0;
-    
-    if (currentMajor < requiredMajor || 
-        (currentMajor === requiredMajor && currentMinor < requiredMinor)) {
+
+    if (
+      currentMajor < requiredMajor ||
+      (currentMajor === requiredMajor && currentMinor < requiredMinor)
+    ) {
       return false;
     }
   }
-  
+
   // Check memory
-  if (requirements.totalMemoryGB && info.totalMemoryGB < requirements.totalMemoryGB) {
+  if (
+    requirements.totalMemoryGB &&
+    info.totalMemoryGB < requirements.totalMemoryGB
+  ) {
     return false;
   }
-  
+
   // Check CPU count
   if (requirements.cpuCount && info.cpuCount < requirements.cpuCount) {
     return false;
   }
-  
+
   // Check platform support
-  if (requirements.supportedPlatforms && !requirements.supportedPlatforms.includes(info.platform)) {
+  if (
+    requirements.supportedPlatforms &&
+    !requirements.supportedPlatforms.includes(info.platform)
+  ) {
     return false;
   }
-  
+
   return true;
 }

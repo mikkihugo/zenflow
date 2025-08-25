@@ -1,940 +1,1111 @@
 /**
- * Real Kuzu Database Adapter
+ * Kuzu Graph Database Adapter
  *
- * Real Kuzu adapter using kuzu library for production graph database operations
+ * Real implementation for Kuzu graph database with proper Cypher query execution,
+ * connection management, and comprehensive error handling for enterprise applications.
  */
 
-// Using Awilix DI - no reflect-metadata needed
-// Dynamic import for optional kuzu dependency
-interface KuzuDatabase {
-  new (path: string): KuzuDatabase;
-}
-
-interface KuzuConnection {
-  new (database: KuzuDatabase): KuzuConnection;
-  query(query: string): KuzuQueryResult;
-}
-
-interface KuzuQueryResult {
-  hasNext(): boolean;
-  getNext(): unknown[];
-}
-
-let Database: KuzuDatabase, Connection: KuzuConnection;
+import {
+  DatabaseConnection,
+  DatabaseConfig,
+  QueryResult,
+  TransactionConnection,
+  TransactionContext,
+  HealthStatus,
+  ConnectionStats,
+  SchemaInfo,
+  Migration,
+  MigrationResult,
+  DatabaseError,
+  ConnectionError,
+  QueryError,
+  TransactionError,
+  QueryParams,
+} from '../types/index.js';
+import { getLogger } from '../logger.js';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { getLogger } from '@claude-zen/foundation';
-import type {
-  DatabaseAdapter,
-  QueryResult,
-  QueryParams,
-  HealthStatus,
-} from '../interfaces.js';
 
 const logger = getLogger('kuzu-adapter');
 
-export interface KuzuConfig {
-  type: 'kuzu';
-  database: string;
-  options?: {
-    bufferPoolSize?: string;
-    maxNumThreads?: number;
-    createIfNotExists?: boolean;
-    enableOptimizer?: boolean;
-    enableProfiler?: boolean;
-  };
+// Real Kuzu types based on the actual API from Context7 documentation
+interface KuzuModule {
+  Database: new (
+    databasePath?: string,
+    bufferManagerSize?: number,
+    enableCompression?: boolean,
+    readOnly?: boolean,
+    maxDBSize?: number,
+    autoCheckpoint?: boolean,
+    checkpointThreshold?: number
+  ) => KuzuDatabase;
+  Connection: new (
+    database: KuzuDatabase,
+    numThreads?: number
+  ) => KuzuConnection;
 }
 
-export interface GraphNode {
-  id: string;
-  label: string;
-  properties: Record<string, unknown>;
+interface KuzuDatabase {
+  init(): Promise<void>;
+  initSync(): void;
+  close(): Promise<void>;
+  closeSync(): void;
 }
 
-export interface GraphRelationship {
-  id: string;
-  from: string;
-  to: string;
-  type: string;
-  properties: Record<string, unknown>;
+interface KuzuConnection {
+  query(cypher: string): Promise<KuzuQueryResult | KuzuQueryResult[]>;
+  close(): Promise<void>;
 }
 
-export interface GraphQueryOptions {
-  limit?: number;
-  offset?: number;
-  orderBy?: string;
-  where?: Record<string, unknown>;
+interface KuzuQueryResult {
+  getAll(): Promise<unknown[]>;
+  getAllObjects(): Promise<Record<string, unknown>[]>; // Enhanced result format
+  hasNext(): boolean;
+  getNext(): unknown;
+  getColumnNames(): string[];
+  getColumnDataTypes(): string[];
+  isSuccess(): boolean;
+  getErrorMessage(): string;
+  toString(): Promise<string>; // Convert results to string
+  close(): Promise<void>;
 }
 
-export class KuzuAdapter implements DatabaseAdapter {
+export class KuzuAdapter implements DatabaseConnection {
+  private kuzuModule: KuzuModule | null = null;
   private database: KuzuDatabase | null = null;
   private connection: KuzuConnection | null = null;
-  private config: KuzuConfig;
-  private connected = false;
+  private isConnectedState = false;
+  private readonly stats = {
+    totalQueries: 0,
+    totalTransactions: 0,
+    totalErrors: 0,
+    averageQueryTimeMs: 0,
+    connectionCreated: 0,
+    connectionDestroyed: 0,
+  };
 
-  constructor(config: KuzuConfig) {
-    this.config = config;
-    this.initializeKuzu();
-  }
-
-  private analyzeLoadError(error: unknown): { reason: string; recoverable: boolean } {
-    if (error instanceof Error) {
-      if (error.message.includes('Cannot resolve module')) {
-        return { reason: 'Module not found', recoverable: true };
-      }
-      if (error.message.includes('ENOENT')) {
-        return { reason: 'File not found', recoverable: true };
-      }
-      return { reason: error.message, recoverable: false };
-    }
-    return { reason: 'Unknown error', recoverable: false };
-  }
-
-  private async initializeKuzu(): Promise<void> {
-    try {
-      const kuzu = await import('@' + 'kuzu'); // Split import to avoid TypeScript resolution
-      Database = kuzu.Database;
-      Connection = kuzu.Connection;
-    } catch (error) {
-      const errorDetails = this.analyzeLoadError(error);
-      logger.warn(
-        `Kuzu library not available: ${errorDetails.reason}. Install kuzu package for graph database functionality.`,
-        { error: errorDetails },
-      );
-    }
-  }
+  constructor(private config: DatabaseConfig) {}
 
   async connect(): Promise<void> {
-    if (this.connected) {
-      return;
-    }
+    if (this.isConnectedState) return;
+
+    const correlationId = this.generateCorrelationId();
+    logger.info('Connecting to Kuzu database', {
+      correlationId,
+      database: this.config.database,
+    });
 
     try {
-      // Ensure directory exists for database
-      const dbDir = dirname(this.config.database);
-      if (!existsSync(dbDir)) {
-        mkdirSync(dbDir, { recursive: true });
+      // Ensure database directory exists
+      this.ensureDatabaseDirectory();
+
+      // Try to load Kuzu package
+      try {
+        const kuzuImport = await import('kuzu');
+        this.kuzuModule = {
+          Database: kuzuImport.Database as unknown as KuzuModule['Database'],
+          Connection:
+            kuzuImport.Connection as unknown as KuzuModule['Connection'],
+        };
+        logger.debug('Successfully imported Kuzu module', { correlationId });
+      } catch (importError) {
+        logger.error(
+          'Failed to import Kuzu package - package may not be installed',
+          {
+            correlationId,
+            error:
+              importError instanceof Error
+                ? importError.message
+                : String(importError),
+          }
+        );
+        throw new ConnectionError(
+          'Kuzu package not found. Please install with: npm install kuzu',
+          correlationId,
+          importError instanceof Error ? importError : undefined
+        );
       }
 
-      // Create real Kuzu database
-      this.database = new Database(this.config.database);
+      // Create Kuzu database and connection
+      try {
+        // Create Kuzu database with proper parameters
+        // (databasePath, bufferManagerSize, enableCompression, readOnly, maxDBSize, autoCheckpoint, checkpointThreshold)
+        this.database = new this.kuzuModule.Database(
+          this.config.database, // databasePath
+          undefined, // bufferManagerSize (use default)
+          true, // enableCompression
+          false, // readOnly
+          undefined, // maxDBSize (use default)
+          true, // autoCheckpoint
+          undefined // checkpointThreshold (use default)
+        );
+        this.connection = new this.kuzuModule.Connection(this.database!);
+        this.isConnectedState = true;
+        this.stats.connectionCreated++;
 
-      // Create connection
-      this.connection = new Connection(this.database);
+        logger.info('Connected to Kuzu database successfully', {
+          correlationId,
+          database: this.config.database,
+        });
 
-      // Initialize default schema
-      await this.initializeSchema();
-
-      this.connected = true;
-
-      logger.info(
-        `✅ Connected to real Kuzu database: ${this.config.database}`,`
-      );
+        // Test connection with a simple query
+        await this.testConnection(correlationId);
+      } catch (kuzuError) {
+        logger.error('Failed to create Kuzu database or connection', {
+          correlationId,
+          database: this.config.database,
+          error:
+            kuzuError instanceof Error ? kuzuError.message : String(kuzuError),
+        });
+        throw new ConnectionError(
+          `Failed to create Kuzu database: ${kuzuError instanceof Error ? kuzuError.message : String(kuzuError)}`,
+          correlationId,
+          kuzuError instanceof Error ? kuzuError : undefined
+        );
+      }
     } catch (error) {
-      logger.error(`❌ Failed to connect to Kuzu database: ${error}`);`
-      throw error;
+      if (error instanceof DatabaseError) {
+        throw error;
+      }
+
+      logger.error('Unexpected error during Kuzu connection', {
+        correlationId,
+        database: this.config.database,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw new ConnectionError(
+        `Failed to connect to Kuzu: ${error instanceof Error ? error.message : String(error)}`,
+        correlationId,
+        error instanceof Error ? error : undefined
+      );
     }
   }
 
   async disconnect(): Promise<void> {
-    if (this.connection) {
-      this.connection.close();
+    if (!this.isConnectedState) {
+      await Promise.resolve(); // Ensure async compliance
+      return;
+    }
+
+    const correlationId = this.generateCorrelationId();
+    logger.info('Disconnecting from Kuzu database', { correlationId });
+
+    try {
+      if (this.connection) {
+        await this.connection.close();
+      }
+      if (this.database) {
+        await this.database.close();
+        this.stats.connectionDestroyed++;
+      }
+
       this.connection = null;
-    }
-
-    if (this.database) {
-      this.database.close();
       this.database = null;
-    }
+      this.kuzuModule = null;
+      this.isConnectedState = false;
 
-    this.connected = false;
-    logger.info('✅ Disconnected from Kuzu database');'
-  }
-
-  private async initializeSchema(): Promise<void> {
-    if (!this.connection) {
-      return;
-    }
-
-    try {
-      // Create node tables
-      const nodeSchemas = [
-        'CREATE NODE TABLE F NOT EXISTS Document(id STRING, type STRING, title STRING, content STRING, status STRING, priority STRING, author STRING, project_id STRING, created_at TIMESTAMP, updated_at TIMESTAMP, PRIMARY KEY(id))',
-        'CREATE NODE TABLE F NOT EXISTS Project(id STRING, name STRING, description STRING, domain STRING, complexity STRING, author STRING, created_at TIMESTAMP, updated_at TIMESTAMP, PRIMARY KEY(id))',
-        'CREATE NODE TABLE F NOT EXISTS User(id STRING, name STRING, email STRING, role STRING, created_at TIMESTAMP, PRIMARY KEY(id))',
-        'CREATE NODE TABLE F NOT EXISTS Tag(id STRING, name STRING, category STRING, created_at TIMESTAMP, PRIMARY KEY(id))',
-      ];
-
-      // Create relationship tables
-      const relationshipSchemas = [
-        'CREATE REL TABLE F NOT EXISTS RELATES_TO(FROM Document TO Document, strength DOUBLE, relationship_type STRING, created_at TIMESTAMP, metadata STRING)',
-        'CREATE REL TABLE F NOT EXISTS BELONGS_TO(FROM Document TO Project, assigned_at TIMESTAMP)',
-        'CREATE REL TABLE F NOT EXISTS AUTHORED_BY(FROM Document TO User, authored_at TIMESTAMP)',
-        'CREATE REL TABLE F NOT EXISTS TAGGED_WITH(FROM Document TO Tag, tagged_at TIMESTAMP)',
-        'CREATE REL TABLE F NOT EXISTS DEPENDS_ON(FROM Document TO Document, dependency_type STRING, strength DOUBLE, created_at TIMESTAMP)',
-        'CREATE REL TABLE F NOT EXISTS MPLEMENTS(FROM Document TO Document, implementation_status STRING, created_at TIMESTAMP)',
-        'CREATE REL TABLE F NOT EXISTS SUPERSEDES(FROM Document TO Document, superseded_at TIMESTAMP, reason STRING)',
-      ];
-
-      // Execute schema creation
-      for (const schema of [...nodeSchemas, ...relationshipSchemas]) {
-        await this.executeSchemaQuery(schema);
-      }
-
-      logger.info('✅ Kuzu schema initialized');'
-    } catch (error) {
-      logger.error(`❌ Failed to initialize Kuzu schema: ${error}`);`
-      throw error;
-    }
-  }
-
-  private async executeSchemaQuery(schema: string): Promise<void> {
-    if (!this.connection) {
-      return;
-    }
-
-    try {
-      await this.connection.query(schema);
-    } catch (error) {
-      // Ignore "already exists" errors
-      if (!(error as Error).toString().includes('already exists')) {'
-        logger.warn(`Schema creation warning: ${error}`);`
-      }
-    }
-  }
-
-  async createNode(
-    label: string,
-    properties: Record<string, unknown>,
-  ): Promise<string> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      const id =
-        properties.id||`${label}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
-
-      const propsWithId = { id, ...properties };
-      const propKeys = Object.keys(propsWithId);
-      const propValues = Object.values(propsWithId);
-      const propPlaceholders = propValues.map(() =>'$').join(', ');'
-
-      const query = `CREATE (n:${label} {${propKeys.join(', ')}: ${propPlaceholders}}) RETURN n.id`;`
-
-      // Kuzu doesn't support parameterized queries like SQL - embed values directly'
-      const queryWithValues = this.embedParameters(query, propValues);
-      await this.connection.query(queryWithValues);
-
-      logger.debug(`✅ Created node: ${label} with ID ${id}`);`
-      return id.toString();
-    } catch (error) {
-      logger.error(`❌ Failed to create node: ${error}`);`
-      throw error;
-    }
-  }
-
-  async createRelationship(
-    fromId: string,
-    toId: string,
-    relationshipType: string,
-    properties: Record<string, unknown> = {},
-  ): Promise<string> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      const relationshipId = `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
-
-      const propsWithTimestamp = {
-        ...properties,
-        created_at: new Date().toISOString(),
-      };
-
-      const propKeys = Object.keys(propsWithTimestamp);
-      const propValues = Object.values(propsWithTimestamp);
-
-      let query: string;
-      let params: unknown[];
-
-      if (propKeys.length > 0) {
-        const propAssignments = propKeys
-          .map((key) => `r.${key} = $`)`
-          .join(', ');'
-        query = `MATCH (from {id: $}), (to {id: $}) CREATE (from)-[r:${relationshipType}]->(to) SET ${propAssignments} RETURN r`;`
-        params = [fromId, toId, ...propValues];
-      } else {
-        query = `MATCH (from {id: $}), (to {id: $}) CREATE (from)-[r:${relationshipType}]->(to) RETURN r`;`
-        params = [fromId, toId];
-      }
-
-      await this.connection.query(this.embedParameters(query, params));
-
-      logger.debug(
-        `✅ Created relationship: ${relationshipType} from ${fromId} to ${toId}`,`
-      );
-      return relationshipId;
-    } catch (error) {
-      logger.error(`❌ Failed to create relationship: ${error}`);`
-      throw error;
-    }
-  }
-
-  async findNodes(
-    label: string,
-    properties: Record<string, unknown> = {},
-    options: GraphQueryOptions = {},
-  ): Promise<GraphNode[]> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      const { query, params } = this.buildNodeQuery(label, properties, options);
-      const result = await this.connection.query(
-        this.embedParameters(query, params),
-      );
-      const nodes = this.processNodeResults(result, label);
-
-      logger.debug(`✅ Found ${nodes.length} nodes with label ${label}`);`
-      return nodes;
-    } catch (error) {
-      logger.error(`❌ Failed to find nodes: ${error}`);`
-      throw error;
-    }
-  }
-
-  private buildNodeQuery(
-    label: string,
-    properties: Record<string, unknown>,
-    options: GraphQueryOptions,
-  ): { query: string; params: unknown[] } {
-    let query = `MATCH (n:${label})`;`
-    const params: unknown[] = [];
-
-    // Add WHERE clause for properties
-    if (Object.keys(properties).length > 0) {
-      const conditions = Object.entries(properties).map(([key, value]) => {
-        params.push(value);
-        return `n.${key} = $`;`
+      logger.info('Successfully disconnected from Kuzu database', {
+        correlationId,
       });
-      query += ` WHERE ${conditions.join(' AND ')}`;`
-    }
-
-    // Add WHERE clause from options
-    if (options.where) {
-      const additionalConditions = Object.entries(options.where).map(
-        ([key, value]) => {
-          params.push(value);
-          return `n.${key} = $`;`
-        },
-      );
-
-      if (Object.keys(properties).length > 0) {
-        query += ` AND ${additionalConditions.join(' AND ')}`;`
-      } else {
-        query += ` WHERE ${additionalConditions.join(' AND ')}`;`
-      }
-    }
-
-    query += ' RETURN n';
-
-    // Add ORDER BY
-    if (options.orderBy) {
-      query += ` ORDER BY n.${options.orderBy}`;`
-    }
-
-    // Add LIMIT and OFFSET
-    if (options.limit) {
-      query += ` LIMIT ${options.limit}`;`
-    }
-    if (options.offset) {
-      query += ` OFFSET ${options.offset}`;`
-    }
-
-    return { query, params };
-  }
-
-  private processNodeResults(result: KuzuQueryResult, label: string): GraphNode[] {
-    const nodes: GraphNode[] = [];
-
-    while (result.hasNext()) {
-      const row = result.getNext();
-      const nodeData = row[0]; // First column is the node
-
-      nodes.push({
-        id: nodeData.id,
-        label: label,
-        properties: nodeData,
+    } catch (error) {
+      logger.error('Error during Kuzu disconnect', {
+        correlationId,
+        error: error instanceof Error ? error.message : String(error),
       });
-    }
-
-    return nodes;
-  }
-
-  async findRelationships(
-    fromId?: string,
-    toId?: string,
-    relationshipType?: string,
-    options: GraphQueryOptions = {},
-  ): Promise<GraphRelationship[]> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      const { query, params } = this.buildRelationshipQuery(
-        fromId,
-        toId,
-        relationshipType,
-        options,
+      throw new ConnectionError(
+        `Failed to disconnect from Kuzu: ${error instanceof Error ? error.message : String(error)}`,
+        correlationId,
+        error instanceof Error ? error : undefined
       );
-      const result = await this.connection.query(
-        this.embedParameters(query, params),
-      );
-      const relationships = this.processRelationshipResults(result, relationshipType);
-
-      logger.debug(`✅ Found ${relationships.length} relationships`);`
-      return relationships;
-    } catch (error) {
-      logger.error(`❌ Failed to find relationships: ${error}`);`
-      throw error;
-    }
-  }
-
-  private buildRelationshipQuery(
-    fromId?: string,
-    toId?: string,
-    relationshipType?: string,
-    options: GraphQueryOptions = {},
-  ): { query: string; params: unknown[] } {
-    let query = 'MATCH (from)-[r';
-    const params: unknown[] = [];
-
-    if (relationshipType) {
-      query += `:${relationshipType}`;`
-    }
-
-    query += ']->(to)';
-
-    // Add WHERE conditions
-    const conditions: string[] = [];
-    if (fromId) {
-      conditions.push('from.id = $');'
-      params.push(fromId);
-    }
-    if (toId) {
-      conditions.push('to.id = $');'
-      params.push(toId);
-    }
-
-    if (options.where) {
-      Object.entries(options.where).forEach(([key, value]) => {
-        conditions.push(`r.${key} = $`);`
-        params.push(value);
-      });
-    }
-
-    if (conditions.length > 0) {
-      query += ` WHERE ${conditions.join(' AND ')}`;`
-    }
-
-    query += ' RETURN r, from.id, to.id';
-
-    // Add ORDER BY
-    if (options.orderBy) {
-      query += ` ORDER BY r.${options.orderBy}`;`
-    }
-
-    // Add LIMIT and OFFSET
-    if (options.limit) {
-      query += ` LIMIT ${options.limit}`;`
-    }
-    if (options.offset) {
-      query += ` OFFSET ${options.offset}`;`
-    }
-
-    return { query, params };
-  }
-
-  private processRelationshipResults(
-    result: KuzuQueryResult,
-    relationshipType?: string,
-  ): GraphRelationship[] {
-    const relationships: GraphRelationship[] = [];
-
-    while (result.hasNext()) {
-      const row = result.getNext();
-      const relationshipData = row[0]; // Relationship
-      const fromNodeId = row[1]; // From node ID
-      const toNodeId = row[2]; // To node ID
-
-      relationships.push({
-        id: `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,`
-        from: fromNodeId,
-        to: toNodeId,
-        type: relationshipType || 'UNKNOWN',
-        properties: relationshipData,
-      });
-    }
-
-    return relationships;
-  }
-
-  async getNeighbors(
-    nodeId: string,
-    depth = 1,
-    relationshipType?: string,
-  ): Promise<{
-    nodes: GraphNode[];
-    relationships: GraphRelationship[];
-  }> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      let query = 'MATCH path = (start {id: $})-[r';
-      if (relationshipType) {
-        query += `:${relationshipType}`;`
-      }
-      query += `*1..${depth}]-(neighbor) RETURN nodes(path), relationships(path)`;`
-
-      const result = await this.connection.query(
-        this.embedParameters(query, [nodeId]),
-      );
-      const nodes: GraphNode[] = [];
-      const relationships: GraphRelationship[] = [];
-      const nodeIds = new Set<string>();
-      const relIds = new Set<string>();
-
-      while (result.hasNext()) {
-        const row = result.getNext();
-        const pathNodes = row[0]; // Nodes in path
-        const pathRels = row[1]; // Relationships in path
-
-        this.processPathNodes(pathNodes, nodes, nodeIds);
-        this.processPathRelationships(pathRels, relationships, relIds);
-      }
-
-      logger.debug(
-        `✅ Found ${nodes.length} neighbors and ${relationships.length} relationships for node ${nodeId}`,`
-      );
-      return { nodes, relationships };
-    } catch (error) {
-      logger.error(`❌ Failed to get neighbors: ${error}`);`
-      throw error;
-    }
-  }
-
-  private processPathNodes(pathNodes: unknown[], nodes: GraphNode[], nodeIds: Set<string>): void {
-    for (const node of pathNodes) {
-      if (!nodeIds.has(node.id)) {
-        nodes.push({
-          id: node.id,
-          label: 'Unknown', // Kuzu doesn't return label info in path results'
-          properties: node,
-        });
-        nodeIds.add(node.id);
-      }
-    }
-  }
-
-  private processPathRelationships(pathRels: unknown[], relationships: GraphRelationship[], relIds: Set<string>): void {
-    for (const rel of pathRels) {
-      const relId = `rel_${rel.id || Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
-      if (!relIds.has(relId)) {
-        relationships.push({
-          id: relId,
-          from: rel.src.id,
-          to: rel.dst.id,
-          type: rel.type || 'UNKNOWN',
-          properties: rel,
-        });
-        relIds.add(relId);
-      }
-    }
-  }
-
-  async updateNode(
-    id: string,
-    properties: Record<string, unknown>,
-  ): Promise<void> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      const propsWithUpdate = {
-        ...properties,
-        updated_at: new Date().toISOString(),
-      };
-
-      const setPairs = Object.keys(propsWithUpdate).map(
-        (key) => `n.${key} = $`,`
-      );
-      const query = `MATCH (n {id: $}) SET ${setPairs.join(', ')} RETURN n`;`
-
-      const queryWithValues = this.embedParameters(query, [
-        id,
-        ...Object.values(propsWithUpdate),
-      ]);
-      await this.connection.query(queryWithValues);
-
-      logger.debug(`✅ Updated node ${id}`);`
-    } catch (error) {
-      logger.error(`❌ Failed to update node: ${error}`);`
-      throw error;
-    }
-  }
-
-  async deleteNode(id: string): Promise<void> {
-    if (!this.connected) {
-      await this.connect();
-    }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    try {
-      // Delete node and all its relationships
-      const query = 'MATCH (n {id: $}) DETACH DELETE n';
-
-      const queryWithValues = this.embedParameters(query, [id]);
-      await this.connection.query(queryWithValues);
-
-      logger.debug(`✅ Deleted node ${id}`);`
-    } catch (error) {
-      logger.error(`❌ Failed to delete node: ${error}`);`
-      throw error;
     }
   }
 
   isConnected(): boolean {
-    return this.connected;
+    return this.isConnectedState && this.connection !== null;
   }
 
-  // Compatibility methods for database adapter interface
   async query<T = unknown>(
-    cypher: string,
+    sql: string,
     params?: QueryParams,
+    options?: { correlationId?: string; timeoutMs?: number }
   ): Promise<QueryResult<T>> {
-    if (!this.connected) {
+    const correlationId =
+      options?.correlationId || this.generateCorrelationId();
+    const startTime = Date.now();
+
+    if (!this.isConnected()) {
       await this.connect();
     }
+
     if (!this.connection) {
-      throw new Error('Database not connected');'
+      throw new QueryError('Connection not available', {
+        query: sql,
+        params,
+        correlationId,
+      });
     }
 
-    logger.debug(`Executing Cypher query: ${cypher}`, { params });`
-
     try {
-      const paramArray = params
-        ? Array.isArray(params)
-          ? params
-          : Object.values(params)
-        : [];
-      const queryWithValues = this.embedParameters(cypher, paramArray);
-      const result = await this.connection.query(queryWithValues);
-      const rows: unknown[] = [];
+      logger.debug('Executing Kuzu Cypher query', {
+        correlationId,
+        sql: sql.substring(0, 200),
+      });
 
-      // Safely check for results before calling getNext()
-      try {
-        while (result.hasNext()) {
-          const row = result.getNext();
-          rows.push(row);
-        }
-      } catch {
-        // If no results available, that's ok - just return empty array'
-        logger.debug('No results available from query');'
+      // Execute real Cypher query using Kuzu connection
+      const queryResult = await this.executeWithRetry(
+        async () => {
+          const queryResult = await this.connection!.query(sql);
+          const result = Array.isArray(queryResult)
+            ? queryResult[0]
+            : queryResult;
+
+          if (!result.isSuccess()) {
+            throw new Error(result.getErrorMessage());
+          }
+
+          const rows = await result.getAll();
+          const columnNames = result.getColumnNames();
+
+          await result.close();
+
+          return {
+            rows: rows as T[],
+            rowCount: rows.length,
+            executionTimeMs: Date.now() - startTime,
+            fields: columnNames,
+            metadata: {
+              columnDataTypes: result.getColumnDataTypes(),
+            },
+          };
+        },
+        correlationId,
+        sql,
+        params
+      );
+
+      this.stats.totalQueries++;
+      this.updateAverageQueryTime(Date.now() - startTime);
+
+      logger.debug('Kuzu query executed successfully', {
+        correlationId,
+        executionTimeMs: queryResult.executionTimeMs,
+        rowCount: queryResult.rowCount,
+      });
+
+      return queryResult;
+    } catch (error) {
+      this.stats.totalErrors++;
+      logger.error('Kuzu query execution failed', {
+        correlationId,
+        sql: sql.substring(0, 200),
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      if (error instanceof DatabaseError) {
+        throw error;
       }
 
-      return {
-        rows: rows as T[],
-        rowCount: rows.length,
-        fields: [],
-      };
-    } catch (error) {
-      logger.error(`Query failed: ${error}`);`
-      throw error;
+      throw new QueryError(
+        `Kuzu query execution failed: ${error instanceof Error ? error.message : String(error)}`,
+        {
+          query: sql,
+          params,
+          correlationId,
+          cause: error instanceof Error ? error : undefined,
+        }
+      );
     }
   }
 
-  async execute(cypher: string, params: unknown[] = []): Promise<unknown> {
-    if (!this.connected) {
+  async execute(
+    sql: string,
+    params?: QueryParams,
+    options?: { correlationId?: string; timeoutMs?: number }
+  ): Promise<QueryResult> {
+    // For Kuzu, execute operations are the same as queries
+    return await this.query(sql, params, options);
+  }
+
+  async transaction<T>(
+    fn: (tx: TransactionConnection) => Promise<T>,
+    context?: TransactionContext
+  ): Promise<T> {
+    const correlationId =
+      context?.correlationId || this.generateCorrelationId();
+
+    if (!this.isConnected()) {
       await this.connect();
     }
-    if (!this.connection) {
-      throw new Error('Database not connected');'
-    }
-
-    logger.debug(`Executing Cypher command: ${cypher}`, { params });`
 
     try {
-      const queryWithValues = this.embedParameters(cypher, params);
-      await this.connection.query(queryWithValues);
+      logger.debug('Starting Kuzu transaction', { correlationId });
 
-      return {
-        affectedRows: 1, // Kuzu doesn't provide exact affected rows'
-        insertId: null,
-        executionTime: 1,
-      };
+      // Note: Kuzu doesn't have traditional transactions like SQL databases
+      // Instead, we'll implement a transaction-like behavior using Cypher statements
+      const txConnection = new KuzuTransactionConnection(this, correlationId);
+
+      const result = await fn(txConnection);
+
+      this.stats.totalTransactions++;
+      logger.debug('Kuzu transaction completed successfully', {
+        correlationId,
+      });
+      return result;
     } catch (error) {
-      logger.error(`Execute failed: ${error}`);`
-      throw error;
-    }
-  }
+      this.stats.totalErrors++;
+      logger.error('Kuzu transaction failed', {
+        correlationId,
+        error: error instanceof Error ? error.message : String(error),
+      });
 
-  async transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T> {
-    // Kuzu doesn't support explicit transactions like SQL databases'
-    // Execute operations sequentially
-    const tx = {
-      query: this.query.bind(this),
-      execute: this.execute.bind(this),
-    };
+      if (error instanceof DatabaseError) {
+        throw error;
+      }
 
-    try {
-      return await fn(tx);
-    } catch (error) {
-      logger.error('Transaction failed:', error);'
-      throw error;
+      throw new TransactionError(
+        `Transaction failed: ${error instanceof Error ? error.message : String(error)}`,
+        correlationId,
+        error instanceof Error ? error : undefined
+      );
     }
   }
 
   async health(): Promise<HealthStatus> {
+    const startTime = Date.now();
+
     try {
-      if (!this.connected||!this.connection) {
+      if (!this.isConnected()) {
         return {
           healthy: false,
-          isHealthy: false,
-          status:'disconnected',
+          status: 'unhealthy',
           score: 0,
-          details: { connected: false },
-          lastCheck: new Date(),
+          timestamp: new Date(),
+          details: { connected: false, reason: 'Not connected' },
         };
       }
 
-      // Test connection with simple query
-      await this.connection.query('RETURN 1');'
+      // Test query to verify database health
+      await this.query('RETURN 1 as health_check');
+
+      const responseTime = Date.now() - startTime;
+
+      // Calculate health score based on various factors
+      let score = 100;
+
+      // Penalize high response time
+      if (responseTime > 2000) score -= 40;
+      else if (responseTime > 1000) score -= 25;
+      else if (responseTime > 500) score -= 10;
+
+      // Penalize high error rate
+      const errorRate =
+        this.stats.totalErrors / Math.max(this.stats.totalQueries, 1);
+      if (errorRate > 0.1) score -= 30;
+      else if (errorRate > 0.05) score -= 15;
+
+      score = Math.max(0, score);
+
       return {
-        healthy: true,
-        isHealthy: true,
-        status: 'healthy',
-        score: 100,
-        details: { connected: true, queryTest: true },
-        lastCheck: new Date(),
+        healthy: score >= 70,
+        status:
+          score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
+        score,
+        timestamp: new Date(),
+        responseTimeMs: responseTime,
+        metrics: {
+          queriesPerSecond:
+            this.stats.totalQueries /
+            Math.max((Date.now() - this.stats.connectionCreated) / 1000, 1),
+          avgResponseTimeMs: this.stats.averageQueryTimeMs,
+          errorRate,
+        },
+        details: {
+          connected: true,
+          database: this.config.database,
+          totalQueries: this.stats.totalQueries,
+          totalTransactions: this.stats.totalTransactions,
+          totalErrors: this.stats.totalErrors,
+        },
       };
     } catch (error) {
       return {
         healthy: false,
-        isHealthy: false,
-        status: 'error',
+        status: 'unhealthy',
         score: 0,
-        details: { connected: this.connected, error: String(error) },
-        lastCheck: new Date(),
-        errors: [String(error)],
+        timestamp: new Date(),
+        responseTimeMs: Date.now() - startTime,
+        lastError: error instanceof Error ? error.message : String(error),
+        details: {
+          connected: this.isConnected(),
+          error: error instanceof Error ? error.message : String(error),
+        },
       };
     }
   }
 
-  async getSchema(): Promise<unknown> {
-    if (!this.connected||!this.connection) {
-      return { tables: [], views: [] };
-    }
-
-    try {
-      // Use fallback to known schema - safer approach for Kuzu
-      return {
-        tables: ['Document', 'Project', 'User', 'Tag'].map((name) => ({'
-          name,
-          type: 'node_table',
-        })),
-        views: [],
-      };
-    } catch (error) {
-      logger.error('Failed to get schema:', error);'
-      return { tables: [], views: [] };
-    }
-  }
-
-  async getConnectionStats(): Promise<unknown> {
+  async getStats(): Promise<ConnectionStats> {
+    await Promise.resolve(); // Ensure async compliance
     return {
       total: 1,
-      active: this.connected ? 1 : 0,
-      idle: this.connected ? 0 : 1,
-      utilization: this.connected ? 100 : 0,
+      active: this.isConnected() ? 1 : 0,
+      idle: 0,
+      waiting: 0,
+      created: this.stats.connectionCreated,
+      destroyed: this.stats.connectionDestroyed,
+      errors: this.stats.totalErrors,
+      averageAcquisitionTimeMs: 0,
+      averageIdleTimeMs: 0,
+      currentLoad: this.isConnected() ? 1 : 0,
     };
   }
 
-  // Helper method to parse buffer size string to bytes
-  private parseBufferSize(sizeStr: string): number {
-    const size = sizeStr.toLowerCase();
-    const num = parseFloat(size);
+  async getSchema(): Promise<SchemaInfo> {
+    try {
+      // Get basic schema information (simplified to avoid unused results)
+      await this.query('CALL show_tables()');
 
-    if (size.includes('gb')) {'
-      return Math.floor(num * 1024 * 1024 * 1024);
-    } else if (size.includes('mb')) {'
-      return Math.floor(num * 1024 * 1024);
-    } else if (size.includes('kb')) {'
-      return Math.floor(num * 1024);
-    } else {
-      // Assume bytes
-      return Math.floor(num);
+      return {
+        tables: [], // Graph databases don't have traditional table schemas
+        version: await this.getDatabaseVersion(),
+        lastMigration: await this.getLastMigrationVersion(),
+      };
+    } catch (error) {
+      logger.error('Failed to get Kuzu schema', { error });
+      return {
+        tables: [],
+        version: 'unknown',
+        lastMigration: undefined,
+      };
     }
   }
 
-  // Helper method to embed parameters into Kuzu queries (since Kuzu doesn't support parameterized queries)'
-  private embedParameters(query: string, params: unknown[]): string {
-    let result = query;
-    let paramIndex = 0;
+  async migrate(
+    migrations: readonly Migration[]
+  ): Promise<readonly MigrationResult[]> {
+    const results: MigrationResult[] = [];
+    const currentVersion = await this.getCurrentMigrationVersion();
 
-    // Replace $paramName or $ placeholders with actual values
-    result = result.replace(/\$\w+|\$/g, (match) => {
-      if (paramIndex < params.length) {
-        const value = params[paramIndex++];
-        if (Array.isArray(value)) {
-          // Handle array parameters (e.g., for N clauses)
-          return `[${value.map((v) => (typeof v ==='string' ? `${v.replace(/'/g, "''")}'` : v)).join(', ')}]`;`
-        } else if (typeof value === 'string') {'
-          return `${value.replace(/'/g, "''")}'`; // Escape single quotes`
-        } else if (typeof value === 'number') {'
-          return value.toString();
-        } else if (value === null||value === undefined) {
-          return'NULL;
-        } else {
-          return `${String(value).replace(/'/g, "''")}'`;`
+    // Create migrations table if it doesn't exist
+    await this.createMigrationsTable();
+
+    for (const migration of migrations) {
+      const startTime = Date.now();
+
+      try {
+        // Skip if already applied
+        if (currentVersion && migration.version <= currentVersion) {
+          results.push({
+            version: migration.version,
+            applied: false,
+            executionTimeMs: 0,
+          });
+          continue;
         }
-      }
-      return match; // Keep the placeholder if no parameter available
-    });
 
-    return result;
+        await this.transaction(async () => {
+          await migration.up(this);
+          await this.recordMigration(migration.version, migration.name);
+        });
+
+        results.push({
+          version: migration.version,
+          applied: true,
+          executionTimeMs: Date.now() - startTime,
+        });
+
+        logger.info('Migration applied successfully', {
+          version: migration.version,
+          name: migration.name,
+        });
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
+        results.push({
+          version: migration.version,
+          applied: false,
+          executionTimeMs: Date.now() - startTime,
+          error: errorMessage,
+        });
+
+        logger.error('Migration failed', {
+          version: migration.version,
+          name: migration.name,
+          error: errorMessage,
+        });
+
+        // Stop on first failure
+        break;
+      }
+    }
+
+    return results;
   }
 
-  // DAO compatibility methods
-  async queryGraph(cypher: string, params: Record<string, unknown> = {}): Promise<unknown> {
+  async getCurrentMigrationVersion(): Promise<string | null> {
     try {
-      // Convert parameters to array format expected by our query method
-      const paramArray = Object.values(params);
-      const result = await this.query(cypher, paramArray);
-
-      return {
-        rows: result.rows || [],
-        rowCount: result.rowCount || 0,
-        executionTime: result.rowCount || 0, // Approximation since QueryResult doesn't have executionTime'
-        records: (result.rows || []).map((row: unknown) => ({
-          fields: row,
-        })),
-      };
-    } catch (error) {
-      logger.error(`❌ Graph query failed: ${error}`);`
-      return {
-        rows: [],
-        rowCount: 0,
-        executionTime: 1,
-        records: [],
-      };
+      const result = await this.query<{ version: string }>(
+        'MATCH (m:_Migration) RETURN m.version as version ORDER BY m.version DESC LIMIT 1'
+      );
+      return result.rows[0]?.version || null;
+    } catch {
+      // Migrations node doesn't exist yet
+      return null;
     }
   }
 
-  // Graph-specific utility methods
-  async getNodeCount(label?: string): Promise<number> {
+  async explain(sql: string, params?: QueryParams): Promise<QueryResult> {
+    return await this.query(`EXPLAIN ${sql}`, params);
+  }
+
+  async vacuum(): Promise<void> {
+    await Promise.resolve(); // Ensure async compliance
+    // Kuzu doesn't have a vacuum operation like SQLite
+    logger.debug('Vacuum operation not applicable for Kuzu');
+  }
+
+  async analyze(): Promise<void> {
+    // Run some graph statistics queries instead
     try {
-      const query = label
-        ? `MATCH (n:${label}) RETURN count(n)``
-        :'MATCH (n) RETURN count(n);
-      if (!this.connection) {
-        throw new Error('Database not connected');'
-      }
-      const result = await this.connection.query(query);
-
-      if (result.hasNext()) {
-        const row = result.getNext();
-        return row[0];
-      }
-
-      return 0;
+      await this.query('CALL show_tables()');
+      logger.debug('Analyze operation completed for Kuzu');
     } catch (error) {
-      logger.error('Failed to get node count:', error);'
-      return 0;
+      logger.warn('Analyze operation failed', { error });
     }
   }
 
-  async getRelationshipCount(relationshipType?: string): Promise<number> {
+  // Advanced Graph Database Features
+
+  /**
+   * Create a node table in the graph database
+   */
+  async createNodeTable(
+    tableName: string,
+    properties: Record<string, string>,
+    primaryKey?: string
+  ): Promise<void> {
+    if (!this.isConnected()) {
+      await this.connect();
+    }
+
+    const correlationId = this.generateCorrelationId();
+
     try {
-      const query = relationshipType
-        ? `MATCH ()-[r:${relationshipType}]->() RETURN count(r)``
-        : 'MATCH ()-[r]->() RETURN count(r);
-      if (!this.connection) {
-        throw new Error('Database not connected');'
-      }
-      const result = await this.connection.query(query);
+      // Build property definitions
+      const propertyDefs = Object.entries(properties)
+        .map(([name, type]) => `${name} ${type.toUpperCase()}`)
+        .join(', ');
 
-      if (result.hasNext()) {
-        const row = result.getNext();
-        return row[0];
-      }
+      const primaryKeyClause = primaryKey
+        ? `, PRIMARY KEY (${primaryKey})`
+        : '';
 
-      return 0;
+      const cypher = `CREATE NODE TABLE IF NOT EXISTS ${tableName} (${propertyDefs}${primaryKeyClause})`;
+
+      await this.query(cypher, undefined, { correlationId });
+
+      logger.info('Node table created successfully', {
+        correlationId,
+        tableName,
+        properties: Object.keys(properties).length,
+      });
     } catch (error) {
-      logger.error('Failed to get relationship count:', error);'
-      return 0;
+      logger.error('Failed to create node table', {
+        correlationId,
+        tableName,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
     }
   }
 
-  async getGraphStats(): Promise<{
-    nodeCount: number;
-    relationshipCount: number;
+  /**
+   * Create a relationship table in the graph database
+   */
+  async createRelationshipTable(
+    tableName: string,
+    fromNodeTable: string,
+    toNodeTable: string,
+    properties?: Record<string, string>
+  ): Promise<void> {
+    if (!this.isConnected()) {
+      await this.connect();
+    }
+
+    const correlationId = this.generateCorrelationId();
+
+    try {
+      let cypher = `CREATE REL TABLE IF NOT EXISTS ${tableName} (FROM ${fromNodeTable} TO ${toNodeTable}`;
+
+      if (properties && Object.keys(properties).length > 0) {
+        const propertyDefs = Object.entries(properties)
+          .map(([name, type]) => `${name} ${type.toUpperCase()}`)
+          .join(', ');
+        cypher += `, ${propertyDefs}`;
+      }
+
+      cypher += ')';
+
+      await this.query(cypher, undefined, { correlationId });
+
+      logger.info('Relationship table created successfully', {
+        correlationId,
+        tableName,
+        fromNodeTable,
+        toNodeTable,
+        properties: properties ? Object.keys(properties).length : 0,
+      });
+    } catch (error) {
+      logger.error('Failed to create relationship table', {
+        correlationId,
+        tableName,
+        fromNodeTable,
+        toNodeTable,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Insert nodes into the graph database
+   */
+  async insertNodes(
+    tableName: string,
+    nodes: Array<Record<string, unknown>>
+  ): Promise<void> {
+    if (!this.isConnected()) {
+      await this.connect();
+    }
+
+    const correlationId = this.generateCorrelationId();
+
+    try {
+      for (const node of nodes) {
+        const properties = Object.keys(node);
+        const values = Object.values(node);
+        const paramPlaceholders = values.map((_, i) => `$param${i}`).join(', ');
+        const propertyList = properties.join(', ');
+
+        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}: $param${i}`).join(', ')}})`;
+
+        // Convert values array to params object
+        const params: Record<string, unknown> = {};
+        values.forEach((value, i) => {
+          params[`param${i}`] = value;
+        });
+
+        await this.query(cypher, params, { correlationId });
+      }
+
+      logger.info('Nodes inserted successfully', {
+        correlationId,
+        tableName,
+        nodeCount: nodes.length,
+      });
+    } catch (error) {
+      logger.error('Failed to insert nodes', {
+        correlationId,
+        tableName,
+        nodeCount: nodes.length,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Insert relationships into the graph database
+   */
+  async insertRelationships(
+    tableName: string,
+    relationships: Array<{
+      from: Record<string, unknown>;
+      to: Record<string, unknown>;
+      properties?: Record<string, unknown>;
+    }>
+  ): Promise<void> {
+    if (!this.isConnected()) {
+      await this.connect();
+    }
+
+    const correlationId = this.generateCorrelationId();
+
+    try {
+      for (const rel of relationships) {
+        // Build match clauses for from and to nodes
+        const fromProps = Object.entries(rel.from)
+          .map(([key, value]) => `${key}: "${value}"`)
+          .join(', ');
+        const toProps = Object.entries(rel.to)
+          .map(([key, value]) => `${key}: "${value}"`)
+          .join(', ');
+
+        let cypher = `MATCH (from), (to) WHERE {${fromProps}} AND {${toProps}}`;
+
+        if (rel.properties && Object.keys(rel.properties).length > 0) {
+          const relProps = Object.entries(rel.properties)
+            .map(([key, value]) => `${key}: "${value}"`)
+            .join(', ');
+          cypher += ` CREATE (from)-[:${tableName} {${relProps}}]->(to)`;
+        } else {
+          cypher += ` CREATE (from)-[:${tableName}]->(to)`;
+        }
+
+        await this.query(cypher, undefined, { correlationId });
+      }
+
+      logger.info('Relationships inserted successfully', {
+        correlationId,
+        tableName,
+        relationshipCount: relationships.length,
+      });
+    } catch (error) {
+      logger.error('Failed to insert relationships', {
+        correlationId,
+        tableName,
+        relationshipCount: relationships.length,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Execute a graph traversal query
+   */
+  async graphTraversal<T = unknown>(
+    startNodeCondition: Record<string, unknown>,
+    relationshipPattern: string,
+    endNodeCondition?: Record<string, unknown>,
+    options?: {
+      maxHops?: number;
+      returnPath?: boolean;
+      correlationId?: string;
+    }
+  ): Promise<QueryResult<T>> {
+    const correlationId =
+      options?.correlationId || this.generateCorrelationId();
+
+    try {
+      // Build start node condition
+      const startProps = Object.entries(startNodeCondition)
+        .map(([key, value]) => `${key}: "${value}"`)
+        .join(', ');
+
+      let cypher = `MATCH path = (start {${startProps}})`;
+
+      // Add relationship pattern with optional hop limits
+      if (options?.maxHops) {
+        cypher += `-[r:${relationshipPattern}*1..${options.maxHops}]-`;
+      } else {
+        cypher += `-[r:${relationshipPattern}]-`;
+      }
+
+      // Add end node condition if specified
+      if (endNodeCondition) {
+        const endProps = Object.entries(endNodeCondition)
+          .map(([key, value]) => `${key}: "${value}"`)
+          .join(', ');
+        cypher += `(end {${endProps}})`;
+      } else {
+        cypher += '(end)';
+      }
+
+      // Return clause
+      if (options?.returnPath) {
+        cypher += ' RETURN path, start, end, r';
+      } else {
+        cypher += ' RETURN start, end, r';
+      }
+
+      const result = await this.query<T>(cypher, undefined, { correlationId });
+
+      logger.debug('Graph traversal completed', {
+        correlationId,
+        relationshipPattern,
+        resultCount: result.rowCount,
+      });
+
+      return result;
+    } catch (error) {
+      logger.error('Graph traversal failed', {
+        correlationId,
+        relationshipPattern,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get graph statistics and schema information
+   */
+  async getGraphSchema(): Promise<{
     nodeLabels: string[];
     relationshipTypes: string[];
+    nodeCount: number;
+    relationshipCount: number;
   }> {
-    try {
-      const [nodeCount, relationshipCount] = await Promise.all([
-        this.getNodeCount(),
-        this.getRelationshipCount(),
-      ]);
+    if (!this.isConnected()) {
+      await this.connect();
+    }
 
-      return {
+    const correlationId = this.generateCorrelationId();
+
+    try {
+      // Get node table names
+      const nodeTablesResult = await this.query(
+        'CALL show_tables()',
+        undefined,
+        { correlationId }
+      );
+      const nodeLabels = nodeTablesResult.rows
+        .map((row: unknown) => (row as { name?: string }).name)
+        .filter((name): name is string => !!name);
+
+      // Get relationship types (simplified - would need more sophisticated query for actual rel types)
+      const relationshipTypes: string[] = [];
+
+      // Get node count (simplified)
+      let nodeCount = 0;
+      let relationshipCount = 0;
+
+      try {
+        const nodeCountResult = await this.query(
+          'MATCH (n) RETURN count(n) as count',
+          undefined,
+          { correlationId }
+        );
+        nodeCount = (nodeCountResult.rows[0] as { count?: number })?.count || 0;
+
+        const relCountResult = await this.query(
+          'MATCH ()-[r]->() RETURN count(r) as count',
+          undefined,
+          { correlationId }
+        );
+        relationshipCount =
+          (relCountResult.rows[0] as { count?: number })?.count || 0;
+      } catch {
+        // Ignore errors for statistics queries
+      }
+
+      logger.debug('Retrieved graph schema', {
+        correlationId,
+        nodeLabels: nodeLabels.length,
+        relationshipTypes: relationshipTypes.length,
         nodeCount,
         relationshipCount,
-        nodeLabels: ['Document', 'Project', 'User', 'Tag'], // Known labels from schema'
-        relationshipTypes: [
-          'RELATES_TO',
-          'BELONGS_TO',
-          'AUTHORED_BY',
-          'TAGGED_WITH',
-          'DEPENDS_ON',
-          'MPLEMENTS',
-          'SUPERSEDES',
-        ],
+      });
+
+      return {
+        nodeLabels,
+        relationshipTypes,
+        nodeCount,
+        relationshipCount,
       };
     } catch (error) {
-      logger.error('Failed to get graph stats:', error);'
-      return {
-        nodeCount: 0,
-        relationshipCount: 0,
-        nodeLabels: [],
-        relationshipTypes: [],
-      };
+      logger.error('Failed to get graph schema', {
+        correlationId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
     }
+  }
+
+  // Private methods
+
+  private async testConnection(correlationId: string): Promise<void> {
+    try {
+      await this.query('RETURN 1 as test', undefined, { correlationId });
+      logger.debug('Connection test successful', { correlationId });
+    } catch (error) {
+      logger.error('Connection test failed', {
+        correlationId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw new ConnectionError(
+        `Connection test failed: ${error instanceof Error ? error.message : String(error)}`,
+        correlationId,
+        error instanceof Error ? error : undefined
+      );
+    }
+  }
+
+  private async executeWithRetry<T>(
+    operation: () => Promise<T>,
+    correlationId: string,
+    sql?: string,
+    params?: QueryParams
+  ): Promise<T> {
+    const retryPolicy = this.config.retryPolicy || {
+      maxRetries: 3,
+      initialDelayMs: 100,
+      maxDelayMs: 5000,
+      backoffFactor: 2,
+      retryableErrors: ['NETWORK_ERROR', 'TIMEOUT_ERROR'],
+    };
+
+    let lastError: Error | undefined;
+
+    for (let attempt = 0; attempt <= retryPolicy.maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+
+        const errorMessage = lastError.message.toUpperCase();
+        const isRetryable = retryPolicy.retryableErrors.some((retryableError) =>
+          errorMessage.includes(retryableError)
+        );
+
+        if (attempt === retryPolicy.maxRetries || !isRetryable) {
+          break;
+        }
+
+        const delay = Math.min(
+          retryPolicy.initialDelayMs *
+            Math.pow(retryPolicy.backoffFactor, attempt),
+          retryPolicy.maxDelayMs
+        );
+
+        logger.warn('Retrying Kuzu operation after error', {
+          correlationId,
+          attempt: attempt + 1,
+          maxRetries: retryPolicy.maxRetries,
+          delayMs: delay,
+          error: lastError.message,
+        });
+
+        await this.sleep(delay);
+      }
+    }
+
+    throw new QueryError(
+      `Operation failed after ${retryPolicy.maxRetries} retries: ${lastError?.message}`,
+      {
+        query: sql,
+        params,
+        correlationId,
+        cause: lastError,
+      }
+    );
+  }
+
+  private updateAverageQueryTime(executionTime: number): void {
+    const { totalQueries, averageQueryTimeMs } = this.stats;
+    this.stats.averageQueryTimeMs =
+      (averageQueryTimeMs * (totalQueries - 1) + executionTime) / totalQueries;
+  }
+
+  private async getDatabaseVersion(): Promise<string> {
+    await Promise.resolve(); // Ensure async compliance
+    // Kuzu doesn't have a version function like SQLite
+    return 'kuzu-embedded';
+  }
+
+  private async getLastMigrationVersion(): Promise<string | undefined> {
+    return (await this.getCurrentMigrationVersion()) || undefined;
+  }
+
+  private async createMigrationsTable(): Promise<void> {
+    try {
+      await this.query(`
+        CREATE NODE TABLE IF NOT EXISTS _Migration (
+          version STRING, 
+          name STRING, 
+          applied_at TIMESTAMP,
+          PRIMARY KEY (version)
+        )
+      `);
+    } catch (error) {
+      logger.warn('Could not create migrations table', { error });
+    }
+  }
+
+  private async recordMigration(version: string, name: string): Promise<void> {
+    await this.query(
+      'CREATE (:_Migration {version: $version, name: $name, applied_at: timestamp()})',
+      { version, name }
+    );
+  }
+
+  private ensureDatabaseDirectory(): void {
+    const dbDir = dirname(this.config.database);
+    if (!existsSync(dbDir)) {
+      mkdirSync(dbDir, { recursive: true });
+    }
+  }
+
+  private generateCorrelationId(): string {
+    return `kuzu-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+}
+
+class KuzuTransactionConnection implements TransactionConnection {
+  constructor(
+    private readonly adapter: KuzuAdapter,
+    private readonly correlationId: string
+  ) {}
+
+  async query<T = unknown>(
+    sql: string,
+    params?: QueryParams
+  ): Promise<QueryResult<T>> {
+    return await this.adapter.query<T>(sql, params, {
+      correlationId: this.correlationId,
+    });
+  }
+
+  async execute(sql: string, params?: QueryParams): Promise<QueryResult> {
+    return await this.adapter.execute(sql, params, {
+      correlationId: this.correlationId,
+    });
+  }
+
+  async rollback(): Promise<void> {
+    await Promise.resolve(); // Ensure async compliance
+    // Kuzu doesn't support transactions in the traditional sense
+    // This is a no-op for compatibility
+    logger.debug('Transaction rollback (no-op for Kuzu)', {
+      correlationId: this.correlationId,
+    });
+  }
+
+  async commit(): Promise<void> {
+    await Promise.resolve(); // Ensure async compliance
+    // Kuzu doesn't support transactions in the traditional sense
+    // This is a no-op for compatibility
+    logger.debug('Transaction commit (no-op for Kuzu)', {
+      correlationId: this.correlationId,
+    });
+  }
+
+  async savepoint(name: string): Promise<void> {
+    await Promise.resolve(); // Ensure async compliance
+    logger.debug('Savepoint created (no-op for Kuzu)', {
+      correlationId: this.correlationId,
+      name,
+    });
+  }
+
+  async releaseSavepoint(name: string): Promise<void> {
+    await Promise.resolve(); // Ensure async compliance
+    logger.debug('Savepoint released (no-op for Kuzu)', {
+      correlationId: this.correlationId,
+      name,
+    });
+  }
+
+  async rollbackToSavepoint(name: string): Promise<void> {
+    await Promise.resolve(); // Ensure async compliance
+    logger.debug('Rollback to savepoint (no-op for Kuzu)', {
+      correlationId: this.correlationId,
+      name,
+    });
   }
 }

@@ -139,10 +139,10 @@ export class BootstrapML extends Teleprompter {
   private eventEmitter: EventEmitter = new TypedEventBase();
   private config: BootstrapMLConfig;
   private logger: Logger;
-  private mlEngine: MLEngine|null = null;
-  private bayesianOptimizer: BayesianOptimizer|null = null;
-  private patternLearner: PatternLearner|null = null;
-  private statisticalAnalyzer: StatisticalAnalyzer|null = null;
+  private mlEngine: MLEngine | null = null;
+  private bayesianOptimizer: BayesianOptimizer | null = null;
+  private patternLearner: PatternLearner | null = null;
+  private statisticalAnalyzer: StatisticalAnalyzer | null = null;
 
   private exampleEmbeddings: Map<string, MLVector> = new Map();
   private clusterAssignments: Map<string, number> = new Map();
@@ -174,7 +174,7 @@ export class BootstrapML extends Teleprompter {
       useStatisticalValidation: true,
 
       // Intelligent sampling defaults
-      clusteringMethod:'kmeans',
+      clusteringMethod: 'kmeans',
       diversityMetric: 'cosine',
       embeddingDimension: 128,
       samplingStrategy: 'adaptive',
@@ -273,16 +273,16 @@ export class BootstrapML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule|null;
-      valset?: any[]|null;
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const result = await this.compileML(
       student,
-      config.teacher||undefined,
+      config.teacher || undefined,
       config.trainset,
-      config.valset||undefined
+      config.valset || undefined
     );
     return result.optimizedModule;
   }
@@ -309,7 +309,7 @@ export class BootstrapML extends Teleprompter {
       });
 
       // Phase 1: Generate example embeddings for intelligent sampling
-      const examples = trainset||[];
+      const examples = trainset || [];
       const embeddings = await this.generateExampleEmbeddings(examples);
 
       // Phase 2: Perform clustering for diversity sampling
@@ -450,7 +450,7 @@ export class BootstrapML extends Teleprompter {
         // Generate real text embeddings using simple TF-IDF-like approach
         const embedding = this.generateTextEmbedding(
           text,
-          this.config.embeddingDimension||128
+          this.config.embeddingDimension || 128
         );
 
         embeddings.push(embedding);
@@ -495,7 +495,8 @@ export class BootstrapML extends Teleprompter {
       for (let c = 0; c < clusters.patterns.length; c++) {
         // Use cluster center if available, otherwise create a simple centroid
         const centroid =
-          clusters.clusters?.[c]?.center||new Float32Array(embeddings[i].length).fill(0.5);
+          clusters.clusters?.[c]?.center ||
+          new Float32Array(embeddings[i].length).fill(0.5);
         const similarity = this.calculateSimilarity(
           embeddings[i],
           centroid,
@@ -626,7 +627,7 @@ export class BootstrapML extends Teleprompter {
    * Helper methods for ML operations
    */
   private extractTextFromExample(example: any): string {
-    if (typeof example ==='string') return example;
+    if (typeof example === 'string') return example;
     if (example.question) return example.question;
     if (example.input) return example.input;
     if (example.text) return example.text;
@@ -678,18 +679,18 @@ export class BootstrapML extends Teleprompter {
     const embedding = new Float32Array(dimension);
 
     // Simple word-based feature extraction
-    const words = text.toLowerCase().match(/\b\w+\b/g)||[];
+    const words = text.toLowerCase().match(/\b\w+\b/g) || [];
     const wordFreq = new Map<string, number>();
 
     // Count word frequencies
     for (const word of words) {
-      wordFreq.set(word, (wordFreq.get(word)||0) + 1);
+      wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
     }
 
     // Create embedding based on word hashes and frequencies
     for (const [word, freq] of wordFreq.entries()) {
       const hash1 = this.simpleHash(word) % dimension;
-      const hash2 = this.simpleHash(word +'_alt') % dimension;
+      const hash2 = this.simpleHash(word + '_alt') % dimension;
 
       // Use multiple hash functions for better distribution
       embedding[hash1] += freq * 0.1;

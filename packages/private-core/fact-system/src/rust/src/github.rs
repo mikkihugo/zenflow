@@ -100,6 +100,7 @@ pub struct GitHubAnalyzer {
   #[cfg(feature = "github-graphql")]
   graphql_client: crate::graphql::GitHubGraphQLClient,
 
+  #[allow(dead_code)]
   beam_tools: HashSet<String>,
   prefer_graphql: bool,
 }

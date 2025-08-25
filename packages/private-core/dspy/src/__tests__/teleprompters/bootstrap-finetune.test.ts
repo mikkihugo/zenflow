@@ -62,7 +62,7 @@ class MockModule extends DSPyModule {
     this.mockPredictors = [
       {
         name: `${name}_predictor`,
-        signature: { instructions: 'Follow instructions carefully.'},
+        signature: { instructions: 'Follow instructions carefully.' },
         lm: lm || new MockLM(),
         demos: [],
       },

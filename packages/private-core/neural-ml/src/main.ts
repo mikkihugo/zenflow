@@ -110,7 +110,7 @@ async function withRetry<T>(
       lastError = error instanceof Error ? error : new Error(String(error));
       if (i < options.retries) {
         await new Promise((resolve) =>
-          setTimeout(resolve, options.minTimeout||1000)
+          setTimeout(resolve, options.minTimeout || 1000)
         );
       }
     }
@@ -122,13 +122,16 @@ async function withRetry<T>(
 type Span = { setAttributes: (attrs: any) => void; end: () => void };
 
 // Monitoring functions with basic implementations
-const metrics = new Map<string, { value: number; timestamp: number; tags: any }>();
+const metrics = new Map<
+  string,
+  { value: number; timestamp: number; tags: any }
+>();
 
 function recordMetric(name: string, value?: number, tags?: any): Promise<void> {
   metrics.set(name, {
     value: value ?? 1,
     timestamp: Date.now(),
-    tags: tags || {}
+    tags: tags || {},
   });
   logger.debug(`Metric recorded: ${name} = ${value}`, tags);
   return Promise.resolve();
@@ -142,11 +145,11 @@ function recordHistogram(
   const histogramKey = `${name}_histogram`;
   const existing = metrics.get(histogramKey);
   const newValue = existing ? (existing.value + value) / 2 : value;
-  
+
   metrics.set(histogramKey, {
     value: newValue,
     timestamp: Date.now(),
-    tags: tags || {}
+    tags: tags || {},
   });
   logger.debug(`Histogram recorded: ${name} = ${value}`, tags);
   return Promise.resolve();
@@ -156,7 +159,7 @@ function recordGauge(name: string, value: number, tags?: any): Promise<void> {
   metrics.set(`${name}_gauge`, {
     value,
     timestamp: Date.now(),
-    tags: tags || {}
+    tags: tags || {},
   });
   logger.debug(`Gauge recorded: ${name} = ${value}`, tags);
   return Promise.resolve();
@@ -164,15 +167,15 @@ function recordGauge(name: string, value: number, tags?: any): Promise<void> {
 function startTrace(name: string): Span {
   const startTime = Date.now();
   logger.debug(`Trace started: ${name}`);
-  
-  return { 
+
+  return {
     setAttributes: (attrs: any) => {
       logger.debug(`Trace attributes for ${name}:`, attrs);
-    }, 
+    },
     end: () => {
       const duration = Date.now() - startTime;
       logger.debug(`Trace ended: ${name} (${duration}ms)`);
-    } 
+    },
   };
 }
 function withTrace<T>(
@@ -193,7 +196,7 @@ function getDatabaseAccess() {
         inMemoryStorage.set(namespace, new Map());
       }
       const kvStore = inMemoryStorage.get(namespace)!;
-      
+
       return {
         set: (key: string, value: string) => {
           kvStore.set(key, value);
@@ -232,18 +235,18 @@ function getDatabaseAccess() {
 // Simple ML monitoring classes
 class MLMonitor {
   private predictions = new Map<string, any[]>();
-  
+
   trackPrediction(name: string, data: any): void {
     if (!this.predictions.has(name)) {
       this.predictions.set(name, []);
     }
     this.predictions.get(name)!.push({
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     logger.debug(`Prediction tracked: ${name}`, data);
   }
-  
+
   getPredictionHistory(name: string): any[] {
     return this.predictions.get(name) || [];
   }
@@ -251,51 +254,53 @@ class MLMonitor {
 class PerformanceTracker {
   private timers = new Map<string, number>();
   private durations = new Map<string, number[]>();
-  
+
   startTimer(name: string): { label: string } {
     this.timers.set(name, Date.now());
     logger.debug(`Timer started: ${name}`);
     return { label: name };
   }
-  
+
   endTimer(label: string): { duration: number } {
     const startTime = this.timers.get(label);
     const duration = startTime ? Date.now() - startTime : 0;
-    
+
     if (!this.durations.has(label)) {
       this.durations.set(label, []);
     }
     this.durations.get(label)!.push(duration);
-    
+
     this.timers.delete(label);
     logger.debug(`Timer ended: ${label} (${duration}ms)`);
     return { duration };
   }
-  
+
   getAverageDuration(label: string): number {
     const durations = this.durations.get(label) || [];
-    return durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
+    return durations.length > 0
+      ? durations.reduce((a, b) => a + b, 0) / durations.length
+      : 0;
   }
 }
 class SystemMonitor {
   private isRunning = false;
   private intervalId: NodeJS.Timeout | null = null;
   private metrics = new Map<string, number>();
-  
+
   start(): void {
     if (this.isRunning) return;
-    
+
     this.isRunning = true;
     logger.debug('System monitor started');
-    
+
     this.intervalId = setInterval(() => {
       this.collectMetrics();
     }, 5000); // Collect metrics every 5 seconds
   }
-  
+
   stop(): void {
     if (!this.isRunning) return;
-    
+
     this.isRunning = false;
     if (this.intervalId) {
       clearInterval(this.intervalId);
@@ -303,13 +308,13 @@ class SystemMonitor {
     }
     logger.debug('System monitor stopped');
   }
-  
+
   private collectMetrics(): void {
     this.metrics.set('memory_usage', process.memoryUsage().heapUsed);
     this.metrics.set('uptime', process.uptime());
     logger.debug('System metrics collected', Object.fromEntries(this.metrics));
   }
-  
+
   getMetrics(): Map<string, number> {
     return new Map(this.metrics);
   }
@@ -339,7 +344,10 @@ function _inject(token: any) {
       target.__injections = [];
     }
     target.__injections.push({ token, key, index });
-    logger.debug(`Dependency injection registered: ${key} at index ${index}`, token);
+    logger.debug(
+      `Dependency injection registered: ${key} at index ${index}`,
+      token
+    );
   };
 }
 
@@ -391,7 +399,12 @@ logger.info('Neural ML module initializing...');
  */
 export interface OptimizationBackend {
   /** Backend type */
-  readonly type: 'apple-silicon' | 'nvidia-cuda' | 'intel-amd' | 'arm-neon' | 'cpu-optimized';
+  readonly type:
+    | 'apple-silicon'
+    | 'nvidia-cuda'
+    | 'intel-amd'
+    | 'arm-neon'
+    | 'cpu-optimized';
   /** Available acceleration features */
   readonly features: {
     readonly metalAvailable?: boolean;
@@ -584,8 +597,8 @@ export class NeuralMLEngine {
   private optimizers: Map<string, NeuralMLOptimizerInstance> = new Map();
   private config: NeuralMLConfig;
   private initialized = false;
-  private dbAccess: any|null = null;
-  private detectedBackend: OptimizationBackend|null = null;
+  private dbAccess: any | null = null;
+  private detectedBackend: OptimizationBackend | null = null;
 
   // Foundation monitoring and telemetry
   private mlMonitor: MLMonitor;
@@ -599,7 +612,7 @@ export class NeuralMLEngine {
     config: NeuralMLConfig = {}
   ) {
     this.config = {
-      target:'auto',
+      target: 'auto',
       precision: 'f32',
       enableProfiling: true,
       memoryOptimization: 'basic',
@@ -785,7 +798,7 @@ export class NeuralMLEngine {
 
     return safeAsync(async () => {
       // Validate input parameters
-      if (!id||typeof id !=='string') {
+      if (!id || typeof id !== 'string') {
         throw new ValidationError('Optimizer ID must be a non-empty string', {
           id,
         });
@@ -818,8 +831,13 @@ export class NeuralMLEngine {
 
       // Log the created Rust optimizer with tracing
       const trace = startTrace(`create-optimizer-${id}`);
-      trace.setAttributes({ optimizerId: rustOptimizerId, backend: this.detectedBackend });
-      this.foundationLogger.info(`Created Rust optimizer with ID: ${rustOptimizerId}`);
+      trace.setAttributes({
+        optimizerId: rustOptimizerId,
+        backend: this.detectedBackend,
+      });
+      this.foundationLogger.info(
+        `Created Rust optimizer with ID: ${rustOptimizerId}`
+      );
       trace.end();
 
       // Create optimizer instance
@@ -908,7 +926,9 @@ export class NeuralMLEngine {
         status: 'error',
         error: 'optimizer_not_found',
       });
-      return err(new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId }));
+      return err(
+        new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId })
+      );
     }
 
     const operationSize = m * n * k;
@@ -917,8 +937,9 @@ export class NeuralMLEngine {
     return withTrace('neural-ml-matrix-multiply', async (span: Span) => {
       return safeAsync(async () => {
         // Validate dimensions
-        if (a.length !== m * k||b.length !== k * n) {
-          const error = new ValidationError('Matrix dimensions do not match provided sizes',
+        if (a.length !== m * k || b.length !== k * n) {
+          const error = new ValidationError(
+            'Matrix dimensions do not match provided sizes',
             {
               aLength: a.length,
               bLength: b.length,
@@ -1092,7 +1113,7 @@ export class NeuralMLEngine {
             operation: 'matrix_multiply',
             status: 'error',
             error: error.constructor.name,
-            backend: this.detectedBackend?.type||'unknown',
+            backend: this.detectedBackend?.type || 'unknown',
           });
 
           return withContext(error, {
@@ -1127,7 +1148,9 @@ export class NeuralMLEngine {
         status: 'error',
         error: 'optimizer_not_found',
       });
-      return err(new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId }));
+      return err(
+        new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId })
+      );
     }
 
     return withTrace('neural-ml-vector-add', async (span: Span) => {
@@ -1299,7 +1322,9 @@ export class NeuralMLEngine {
   ): Promise<Result<NeuralActivationResult, ContextError>> {
     const optimizer = this.optimizers.get(optimizerId);
     if (!optimizer) {
-      return err(new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId }));
+      return err(
+        new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId })
+      );
     }
 
     return safeAsync(async () => {
@@ -1347,7 +1372,9 @@ export class NeuralMLEngine {
   ): Result<OptimizerPerformanceStats, ContextError> {
     const optimizer = this.optimizers.get(optimizerId);
     if (!optimizer) {
-      return err(new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId }));
+      return err(
+        new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId })
+      );
     }
     return ok(optimizer.stats);
   }
@@ -1363,7 +1390,9 @@ export class NeuralMLEngine {
   ): Promise<Result<string[], ContextError>> {
     const optimizer = this.optimizers.get(optimizerId);
     if (!optimizer) {
-      return err(new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId }));
+      return err(
+        new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId })
+      );
     }
 
     return safeAsync(async () => {
@@ -1400,7 +1429,9 @@ export class NeuralMLEngine {
   ): Promise<Result<boolean, ContextError>> {
     const optimizer = this.optimizers.get(optimizerId);
     if (!optimizer) {
-      return err(new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId }));
+      return err(
+        new ValidationError(OPTIMIZER_NOT_FOUND_ERROR, { optimizerId })
+      );
     }
 
     return safeAsync(async () => {
@@ -1438,7 +1469,7 @@ export class NeuralMLEngine {
   getStats(): {
     totalOptimizers: number;
     activeOptimizers: number;
-    detectedBackend: OptimizationBackend|null;
+    detectedBackend: OptimizationBackend | null;
     totalOperations: number;
     avgThroughput: number;
     memoryUsage: number;
@@ -1477,7 +1508,7 @@ export class NeuralMLEngine {
     optimizers.forEach((opt) => {
       Object.entries(opt.stats.backendUsage).forEach(([backend, count]) => {
         backendDistribution[backend] =
-          (backendDistribution[backend]||0) + count;
+          (backendDistribution[backend] || 0) + count;
       });
     });
 
@@ -1496,7 +1527,7 @@ export class NeuralMLEngine {
           gpu: (() => {
             const state = this.gpuCircuitBreaker.getState?.();
             return state?.isOpen === true
-              ?'open'
+              ? 'open'
               : state?.isOpen === false
                 ? 'closed'
                 : 'unknown';
@@ -1510,9 +1541,9 @@ export class NeuralMLEngine {
                 : 'unknown';
           })(),
         },
-        telemetryEnabled: this.config.enableTelemetry||false,
+        telemetryEnabled: this.config.enableTelemetry || false,
         monitoringActive:
-          (this.initialized && this.config.enableTelemetry)||false,
+          (this.initialized && this.config.enableTelemetry) || false,
       },
       performance: {
         totalProcessingTime: totalTime,
@@ -1751,18 +1782,18 @@ export class NeuralMLEngine {
                   ? 'closed'
                   : 'unknown';
             })(),
-            failures: this.gpuCircuitBreaker.getStats?.()?.failures||0,
+            failures: this.gpuCircuitBreaker.getStats?.()?.failures || 0,
           },
           cpu: {
             state: (() => {
               const state = this.cpuCircuitBreaker.getState?.();
               return state?.isOpen === true
-                ?'open'
+                ? 'open'
                 : state?.isOpen === false
                   ? 'closed'
                   : 'unknown';
             })(),
-            failures: this.cpuCircuitBreaker.getStats?.()?.failures||0,
+            failures: this.cpuCircuitBreaker.getStats?.()?.failures || 0,
           },
         },
         monitoring: {
@@ -1781,7 +1812,8 @@ export class NeuralMLEngine {
 
     // Record health metrics
     if (this.config.enableTelemetry) {
-      recordGauge('neural_ml_system_health_score',
+      recordGauge(
+        'neural_ml_system_health_score',
         status === 'healthy' ? 1.0 : status === 'degraded' ? 0.5 : 0.0
       );
 
@@ -1839,13 +1871,13 @@ export class NeuralMLEngine {
       return {
         type: 'cpu-optimized',
         features: {
-          threads: navigator.hardwareConcurrency||4,
-          simdLevel:'scalar',
+          threads: navigator.hardwareConcurrency || 4,
+          simdLevel: 'scalar',
         },
         performance: {
           estimatedThroughput: 1000000,
           memoryBandwidth: 1000000000,
-          computeUnits: navigator.hardwareConcurrency||4,
+          computeUnits: navigator.hardwareConcurrency || 4,
         },
       };
     }
@@ -1867,7 +1899,7 @@ export class NeuralMLEngine {
     const newThroughput = operationSize
       ? (operationSize / processingTime) * 1000000
       : 1000000 / processingTime;
-    const backendType = this.detectedBackend?.type||'unknown';
+    const backendType = this.detectedBackend?.type || 'unknown';
 
     const updatedStats: OptimizerPerformanceStats = {
       operationsCount: optimizer.stats.operationsCount + 1,
@@ -1875,7 +1907,7 @@ export class NeuralMLEngine {
       avgThroughput: (optimizer.stats.avgThroughput + newThroughput) / 2,
       backendUsage: {
         ...optimizer.stats.backendUsage,
-        [backendType]: (optimizer.stats.backendUsage[backendType]||0) + 1,
+        [backendType]: (optimizer.stats.backendUsage[backendType] || 0) + 1,
       },
       memoryEfficiency: optimizer.stats.memoryEfficiency,
     };

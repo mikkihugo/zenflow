@@ -5,7 +5,9 @@
  * For the web dashboard interface.
  */
 
-const { getLogger } = (global as Record<string, unknown>).foundation as { getLogger: Function };
+const { getLogger } = (global as Record<string, unknown>).foundation as {
+  getLogger: Function;
+};
 import type { Server as SocketIOServer } from 'socket.io';
 
 export interface WebSession {
@@ -59,8 +61,8 @@ export class WebSocketCoordinator {
         preferences: {
           theme: 'dark',
           refreshInterval: 3000,
-          notifications: true
-        }
+          notifications: true,
+        },
       };
 
       this.sessions.set(socket.id, session);
@@ -71,7 +73,7 @@ export class WebSocketCoordinator {
         if (session) {
           session.preferences = {
             ...session.preferences,
-            ...data
+            ...data,
           };
           session.lastActivity = new Date();
           this.logger.debug(`Session updated: ${socket.id}`, data);
@@ -82,7 +84,7 @@ export class WebSocketCoordinator {
       socket.on('requestStatus', () => {
         socket.emit('statusUpdate', {
           message: 'Status request received',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       });
 
@@ -95,7 +97,7 @@ export class WebSocketCoordinator {
       // Send initial connection acknowledgment
       socket.emit('connected', {
         sessionId: socket.id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     });
 
@@ -110,7 +112,7 @@ export class WebSocketCoordinator {
 
     this.io.emit(event, {
       ...data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     this.logger.debug(`Broadcasted event: ${event}`, data);
@@ -128,7 +130,7 @@ export class WebSocketCoordinator {
 
     socket.emit(event, {
       ...data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     return true;
@@ -162,7 +164,7 @@ export class WebSocketCoordinator {
 
     session.preferences = {
       ...session.preferences,
-      ...preferences
+      ...preferences,
     };
     session.lastActivity = new Date();
 
@@ -209,17 +211,18 @@ export class WebSocketCoordinator {
       return age < 5 * 60 * 1000; // Active within 5 minutes
     }).length;
 
-    const averageSessionAge = totalSessions > 0
-      ? sessions.reduce(
-          (sum, s) => sum + (now.getTime() - s.createdAt.getTime()),
-          0
-        ) / totalSessions
-      : 0;
+    const averageSessionAge =
+      totalSessions > 0
+        ? sessions.reduce(
+            (sum, s) => sum + (now.getTime() - s.createdAt.getTime()),
+            0
+          ) / totalSessions
+        : 0;
 
     return {
       totalSessions,
       activeSessions,
-      averageSessionAge
+      averageSessionAge,
     };
   }
 }

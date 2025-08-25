@@ -52,5 +52,5 @@ export function parseISO(isoString: string): Date {
   return parseISOString(isoString);
 }
 
-// Re-export date-fns utilities to force usage through foundation (prevents direct imports)  
+// Re-export date-fns utilities to force usage through foundation (prevents direct imports)
 export { formatISO, parseISO as parseISOString } from 'date-fns';

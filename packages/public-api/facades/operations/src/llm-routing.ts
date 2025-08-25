@@ -19,17 +19,19 @@ async function loadLLMRoutingModule() {
       llmRoutingModuleCache = {
         LLM_PROVIDER_CONFIG: {},
         ROUTING_STRATEGY: {},
-        getOptimalProvider: async () => await Promise.resolve({
-          providerId: 'default',
-          provider: 'compatibility',
-        }),
+        getOptimalProvider: async () =>
+          await Promise.resolve({
+            providerId: 'default',
+            provider: 'compatibility',
+          }),
         addProvider: async () => await Promise.resolve(),
         removeProvider: async () => await Promise.resolve(),
         updateProvider: async () => await Promise.resolve(),
-        getProvider: async () => await Promise.resolve({
-          id: 'default',
-          name: 'Compatibility Provider',
-        }),
+        getProvider: async () =>
+          await Promise.resolve({
+            id: 'default',
+            name: 'Compatibility Provider',
+          }),
         getProviderIds: async () => await Promise.resolve(['default']),
         getProvidersByCapability: async () => await Promise.resolve([]),
       };

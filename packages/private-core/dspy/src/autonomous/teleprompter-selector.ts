@@ -29,7 +29,7 @@
 
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'events';
+import { EventEmitter } from '@claude-zen/foundation';
 import { DSPyBrainMLBridge } from '../ml-bridge/dspy-brain-ml-bridge';
 // Removed unused import: import type { Teleprompter } from '../teleprompters/teleprompter';
 
@@ -49,7 +49,14 @@ export interface OptimizationTask {
 }
 
 export interface TaskDomain {
-  type: 'nlp' | 'vision' | 'reasoning' | 'classification' | 'generation' | 'multimodal' | 'general';
+  type:
+    | 'nlp'
+    | 'vision'
+    | 'reasoning'
+    | 'classification'
+    | 'generation'
+    | 'multimodal'
+    | 'general';
   specificArea?: string;
   dataCharacteristics: {
     size: 'small' | 'medium' | 'large' | 'massive';
@@ -74,7 +81,12 @@ export interface TaskRequirements {
 }
 
 export interface TaskConstraints {
-  computationalBudget?: 'unlimited' | 'high' | 'moderate' | 'limited' | 'minimal';
+  computationalBudget?:
+    | 'unlimited'
+    | 'high'
+    | 'moderate'
+    | 'limited'
+    | 'minimal';
   timeLimit?: number; // milliseconds
   memoryLimit?: number; // MB
   maxTokens?: number; // Maximum tokens allowed
@@ -106,7 +118,13 @@ export interface TeleprompterVariant {
 export interface ResourceRequirements {
   computationLevel: 'minimal' | 'low' | 'moderate' | 'high' | 'intensive';
   memoryUsage: number; // MB
-  timeComplexity: 'O(1)' | 'O(log n)' | 'O(n)' | 'O(n log n)' | 'O(n²)' | 'O(2^n)';
+  timeComplexity:
+    | 'O(1)'
+    | 'O(log n)'
+    | 'O(n)'
+    | 'O(n log n)'
+    | 'O(n²)'
+    | 'O(2^n)';
   gpuRequired: boolean;
   networkAccess: boolean;
 }
@@ -520,12 +538,21 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
   ): Promise<any> {
     // Analyze task using ML Bridge capabilities
     const features = {
-      domainComplexity: task.domain ? this.calculateDomainComplexity(task.domain) : 0.5,
-      computationalRequirements: task.complexity ? this.estimateComputationalRequirements(task.complexity) : 0.5,
-      dataCharacteristics: task.domain?.dataCharacteristics ? 
-        this.analyzeDataCharacteristics(task.domain.dataCharacteristics) : 0.5,
-      constraintsSeverity: task.constraints ? this.assessConstraints(task.constraints) : 0.5,
-      requirementsStrictness: task.requirements ? this.assessRequirements(task.requirements) : 0.5,
+      domainComplexity: task.domain
+        ? this.calculateDomainComplexity(task.domain)
+        : 0.5,
+      computationalRequirements: task.complexity
+        ? this.estimateComputationalRequirements(task.complexity)
+        : 0.5,
+      dataCharacteristics: task.domain?.dataCharacteristics
+        ? this.analyzeDataCharacteristics(task.domain.dataCharacteristics)
+        : 0.5,
+      constraintsSeverity: task.constraints
+        ? this.assessConstraints(task.constraints)
+        : 0.5,
+      requirementsStrictness: task.requirements
+        ? this.assessRequirements(task.requirements)
+        : 0.5,
     };
 
     return features;
@@ -574,7 +601,8 @@ Description: ${task.description || 'General optimization task'}
     if (analysis) {
       // Boost score based on analysis confidence and recommendations
       if (analysis.confidence > 0.8) analysisBoost *= 1.1;
-      if (analysis.recommendedAlgorithms?.includes(variant.algorithm)) analysisBoost *= 1.15;
+      if (analysis.recommendedAlgorithms?.includes(variant.algorithm))
+        analysisBoost *= 1.15;
       if (analysis.complexityMatch === variant.type) analysisBoost *= 1.05;
     }
 
@@ -584,7 +612,7 @@ Description: ${task.description || 'General optimization task'}
       speedFit * weights.speed +
       memoryFit * weights.memory +
       robustnessFit * weights.robustness;
-    
+
     const totalScore = baseScore * analysisBoost;
 
     return Math.max(0, Math.min(1, totalScore));
@@ -619,7 +647,7 @@ Description: ${task.description || 'General optimization task'}
     };
 
     const baseTime =
-      complexityMultipliers[variant.requiredResources.timeComplexity]||10;
+      complexityMultipliers[variant.requiredResources.timeComplexity] || 10;
     const estimatedTime =
       (baseTime * variant.requiredResources.memoryUsage) / 256; // Rough estimate
 
@@ -679,7 +707,8 @@ Description: ${task.description || 'General optimization task'}
         // Apply historical performance weighting
         const successRateBonus = history.successRate * 0.2;
         const domainSpecificBonus =
-          this.getDomainSpecificBonus(history, task.domain?.type || 'general') * 0.1;
+          this.getDomainSpecificBonus(history, task.domain?.type || 'general') *
+          0.1;
         const trendBonus = this.getTrendBonus(history) * 0.1;
 
         adjustedScore = Math.min(
@@ -728,7 +757,7 @@ Description: ${task.description || 'General optimization task'}
     if (!topCandidate) {
       throw new Error('No candidate variants evaluated');
     }
-    
+
     const selectedVariant = this.availableVariants.get(topCandidate[0]);
     if (!selectedVariant) {
       throw new Error(`Variant not found: ${topCandidate[0]}`);
@@ -753,7 +782,7 @@ Description: ${task.description || 'General optimization task'}
 
     // Generate fallback options (prefer basic variants for reliability)
     const fallbackOptions = Array.from(this.availableVariants.values())
-      .filter((v) => v.type ==='basic')
+      .filter((v) => v.type === 'basic')
       .sort(
         (a, b) =>
           b.estimatedPerformance.robustness - a.estimatedPerformance.robustness
@@ -804,12 +833,18 @@ Description: ${task.description || 'General optimization task'}
     );
 
     // Use evaluation scores to adjust confidence
-    const selectedScore = evaluations.get(selection.selectedTeleprompter.name) || 0.5;
-    const averageScore = Array.from(evaluations.values()).reduce((sum, score) => sum + score, 0) / evaluations.size;
+    const selectedScore =
+      evaluations.get(selection.selectedTeleprompter.name) || 0.5;
+    const averageScore =
+      Array.from(evaluations.values()).reduce((sum, score) => sum + score, 0) /
+      evaluations.size;
     const relativePerformance = selectedScore / Math.max(averageScore, 0.1);
-    
+
     // Adjust confidence based on relative performance
-    const adjustedConfidence = Math.min(1.0, selection.confidence * relativePerformance);
+    const adjustedConfidence = Math.min(
+      1.0,
+      selection.confidence * relativePerformance
+    );
 
     // Generate enriched alternatives based on evaluation scores
     const sortedEvaluations = Array.from(evaluations.entries())
@@ -819,14 +854,24 @@ Description: ${task.description || 'General optimization task'}
     const enrichedAlternatives = sortedEvaluations
       .map(([name, score]) => {
         const variant = this.availableVariants.get(name);
-        return variant ? {
-          variant,
-          score,
-          reasoning: `Alternative with ${(score * 100).toFixed(1)}% evaluation score`
-        } : null;
+        return variant
+          ? {
+              variant,
+              score,
+              reasoning: `Alternative with ${(score * 100).toFixed(1)}% evaluation score`,
+            }
+          : null;
       })
-      .filter((alt): alt is { variant: TeleprompterVariant; score: number; reasoning: string } => alt !== null)
-      .map(alt => alt.variant);
+      .filter(
+        (
+          alt
+        ): alt is {
+          variant: TeleprompterVariant;
+          score: number;
+          reasoning: string;
+        } => alt !== null
+      )
+      .map((alt) => alt.variant);
 
     return {
       ...selection,
@@ -837,8 +882,8 @@ Description: ${task.description || 'General optimization task'}
         ...selection.selectionMetadata,
         evaluationScore: selectedScore,
         relativePerformance,
-        evaluationCount: evaluations.size
-      }
+        evaluationCount: evaluations.size,
+      },
     };
   }
 
@@ -851,13 +896,17 @@ Description: ${task.description || 'General optimization task'}
     let enhanced = { ...variant.estimatedPerformance };
 
     // Adjust based on task complexity and constraints
-    const complexityMultiplier = task.expectedComplexity === 'complex' ? 0.85 : 
-                                task.expectedComplexity === 'simple' ? 1.15 : 1.0;
-    
+    const complexityMultiplier =
+      task.expectedComplexity === 'complex'
+        ? 0.85
+        : task.expectedComplexity === 'simple'
+          ? 1.15
+          : 1.0;
+
     // Apply complexity adjustments
     enhanced.accuracy.mean *= complexityMultiplier;
     enhanced.speed.mean *= task.expectedComplexity === 'complex' ? 0.7 : 1.0;
-    
+
     // Adjust for time constraints
     if (task.constraints?.timeLimit && task.constraints.timeLimit < 10000) {
       enhanced.speed.mean *= 0.8; // Tight time constraints reduce effective speed
@@ -871,11 +920,16 @@ Description: ${task.description || 'General optimization task'}
 
     if (history) {
       // Weight historical performance based on recency and task similarity
-      const weightedAccuracy = enhanced.accuracy.mean * 0.6 + history.averagePerformance.accuracy * 0.4;
-      const weightedSpeed = enhanced.speed.mean * 0.6 + history.averagePerformance.speed * 0.4;
-      const weightedMemory = enhanced.memory.mean * 0.6 + history.averagePerformance.memory * 0.4;
-      const weightedRobustness = enhanced.robustness * 0.6 + history.averagePerformance.robustness * 0.4;
-      
+      const weightedAccuracy =
+        enhanced.accuracy.mean * 0.6 +
+        history.averagePerformance.accuracy * 0.4;
+      const weightedSpeed =
+        enhanced.speed.mean * 0.6 + history.averagePerformance.speed * 0.4;
+      const weightedMemory =
+        enhanced.memory.mean * 0.6 + history.averagePerformance.memory * 0.4;
+      const weightedRobustness =
+        enhanced.robustness * 0.6 + history.averagePerformance.robustness * 0.4;
+
       enhanced.accuracy.mean = weightedAccuracy;
       enhanced.speed.mean = weightedSpeed;
       enhanced.memory.mean = weightedMemory;
@@ -926,7 +980,7 @@ Description: ${task.description || 'General optimization task'}
       complex: 0.8,
       highly_complex: 1.0,
     };
-    return complexityScores[domain.dataCharacteristics.complexity]||0.5;
+    return complexityScores[domain.dataCharacteristics.complexity] || 0.5;
   }
 
   private estimateComputationalRequirements(
@@ -938,7 +992,7 @@ Description: ${task.description || 'General optimization task'}
       high: 0.8,
       extreme: 1.0,
     };
-    return computationalScores[complexity.computational]||0.5;
+    return computationalScores[complexity.computational] || 0.5;
   }
 
   private analyzeDataCharacteristics(
@@ -948,15 +1002,15 @@ Description: ${task.description || 'General optimization task'}
       sizeScore:
         { small: 0.2, medium: 0.5, large: 0.8, massive: 1.0 }[
           characteristics.size
-        ]||0.5,
+        ] || 0.5,
       qualityScore:
         { poor: 0.2, fair: 0.4, good: 0.7, excellent: 1.0 }[
           characteristics.quality
-        ]||0.6,
+        ] || 0.6,
       complexityScore:
         { simple: 0.2, moderate: 0.5, complex: 0.8, highly_complex: 1.0 }[
           characteristics.complexity
-        ]||0.5,
+        ] || 0.5,
     };
   }
 
@@ -980,7 +1034,7 @@ Description: ${task.description || 'General optimization task'}
     const robustnessScore =
       { basic: 0.2, moderate: 0.5, high: 0.8, critical: 1.0 }[
         requirements.robustness
-      ]||0.5;
+      ] || 0.5;
 
     return (accuracyScore + latencyScore + memoryScore + robustnessScore) / 4;
   }
@@ -1053,14 +1107,14 @@ Variant offers ${variant.capabilities.join(', ')} capabilities with ${variant.ty
     // In a real implementation, this would query a task registry
     // For now, create a mock task based on the ID
     if (!taskId) return undefined;
-    
+
     return {
       id: taskId,
       signature: { instructions: 'Mock task based on ID' },
       examples: [],
       constraints: { maxTokens: 4096, timeLimit: 30000 },
       priority: 'medium',
-      expectedComplexity: 'moderate'
+      expectedComplexity: 'moderate',
     };
   }
 

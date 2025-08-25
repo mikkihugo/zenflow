@@ -30,28 +30,28 @@
 import { getDSPyService } from './service';
 // Simple logging for standalone mode
 const logger = {
-    info: (msg, ...args) => console.log(`[INFO] ${msg}`, ...args),
-    debug: (msg, ...args) => console.log(`[DEBUG] ${msg}`, ...args),
-    warn: (msg, ...args) => console.warn(`[WARN] ${msg}`, ...args),
-    error: (msg, ...args) => console.error(`[ERROR] ${msg}`, ...args),
+  info: (msg, ...args) => console.log(`[INFO] ${msg}`, ...args),
+  debug: (msg, ...args) => console.log(`[DEBUG] ${msg}`, ...args),
+  warn: (msg, ...args) => console.warn(`[WARN] ${msg}`, ...args),
+  error: (msg, ...args) => console.error(`[ERROR] ${msg}`, ...args),
 };
 /**
  * In-memory KV implementation for standalone DSPy
  */
 class InMemoryDSPyKV {
-    data = new Map();
-    async get(key) {
-        return this.data.get(key);
-    }
-    async set(key, value) {
-        this.data.set(key, value);
-    }
-    async delete(key) {
-        return this.data.delete(key);
-    }
-    async keys() {
-        return Array.from(this.data.keys())();
-    }
+  data = new Map();
+  async get(key) {
+    return this.data.get(key);
+  }
+  async set(key, value) {
+    this.data.set(key, value);
+  }
+  async delete(key) {
+    return this.data.delete(key);
+  }
+  async keys() {
+    return Array.from(this.data.keys())();
+  }
 }
 /**
  * DSPy Engine - Standalone Prompt Optimization
@@ -60,138 +60,154 @@ class InMemoryDSPyKV {
  * falls back to simple implementations when standalone.
  */
 export class DSPyEngine {
-    config;
-    kv = null;
-    llmService = null;
-    optimizationHistory = new Map();
-    constructor(config = {}) {
-        this.config = {
-            maxIterations: config.maxIterations || 5,
-            fewShotExamples: config.fewShotExamples || 3,
-            temperature: config.temperature || 0.1,
-            model: config.model || 'claude-3-sonnet',
-            metrics: config.metrics || ['accuracy', 'latency'],
-            swarmCoordination: config.swarmCoordination || false,
-            ...config,
+  config;
+  kv = null;
+  llmService = null;
+  optimizationHistory = new Map();
+  constructor(config = {}) {
+    this.config = {
+      maxIterations: config.maxIterations || 5,
+      fewShotExamples: config.fewShotExamples || 3,
+      temperature: config.temperature || 0.1,
+      model: config.model || 'claude-3-sonnet',
+      metrics: config.metrics || ['accuracy', 'latency'],
+      swarmCoordination: config.swarmCoordination || false,
+      ...config,
+    };
+    logger.info('DSPy Engine initialized with config:', this.config);
+  }
+  /**
+   * Initialize storage (foundation integration)
+   */
+  async getKV() {
+    if (!this.kv) {
+      try {
+        const dspyService = await getDSPyService();
+        const storage = await dspyService.getStorage();
+        this.kv = storage; // Foundation storage already implements DSPyKV interface
+        logger.info('DSPy storage initialized with @claude-zen/foundation');
+      } catch (error) {
+        logger.error('Failed to initialize foundation storage:', error);
+        // Use in-memory fallback only if foundation fails
+        this.kv = new InMemoryDSPyKV();
+        logger.warn('DSPy storage fallback to in-memory (foundation failed)');
+      }
+    }
+    return this.kv;
+  }
+  /**
+   * Get LLM service (foundation integration)
+   */
+  async getLLMService() {
+    if (!this.llmService) {
+      try {
+        const dspyService = await getDSPyService();
+        this.llmService = {
+          async analyze(prompt) {
+            return await dspyService.executePrompt(prompt, {
+              temperature: 0.1,
+              maxTokens: 16384, // 16K for DSPy optimization work
+              role: 'analyst',
+            });
+          },
         };
-        logger.info('DSPy Engine initialized with config:', this.config);
+        logger.info('DSPy LLM initialized with @claude-zen/foundation');
+      } catch (error) {
+        logger.error('Failed to initialize foundation LLM service:', error);
+        throw new Error(
+          'DSPy requires @claude-zen/foundation for LLM services'
+        );
+      }
     }
-    /**
-     * Initialize storage (foundation integration)
-     */
-    async getKV() {
-        if (!this.kv) {
-            try {
-                const dspyService = await getDSPyService();
-                const storage = await dspyService.getStorage();
-                this.kv = storage; // Foundation storage already implements DSPyKV interface
-                logger.info('DSPy storage initialized with @claude-zen/foundation');
-            }
-            catch (error) {
-                logger.error('Failed to initialize foundation storage:', error);
-                // Use in-memory fallback only if foundation fails
-                this.kv = new InMemoryDSPyKV();
-                logger.warn('DSPy storage fallback to in-memory (foundation failed)');
-            }
-        }
-        return this.kv;
+    return this.llmService;
+  }
+  /**
+   * Optimize a prompt using DSPy methodology
+   */
+  async optimizePrompt(task, examples, initialPrompt) {
+    logger.info(`Starting DSPy optimization for task: ${task}`);
+    const program = {
+      id: `dspy-${Date.now()}`,
+      name: task,
+      signature: 'input -> output',
+      prompt: initialPrompt || `Complete this task: ${task}`,
+      examples,
+      metrics: this.createInitialMetrics(),
+    };
+    const startTime = Date.now();
+    const variations = [];
+    // Generate initial prompt variations
+    const llm = await this.getLLMService();
+    for (
+      let iteration = 0;
+      iteration < this.config.maxIterations;
+      iteration++
+    ) {
+      logger.debug(
+        `DSPy iteration ${iteration + 1}/${this.config.maxIterations}`
+      );
+      // Generate prompt variation
+      const variation = await this.generatePromptVariation(
+        program,
+        examples,
+        llm
+      );
+      variations.push(variation);
+      // Evaluate variation
+      const score = await this.evaluatePromptVariation(
+        variation,
+        examples,
+        llm
+      );
+      variation.score = score;
+      // Update best if improved
+      if (score > (program.metrics.accuracy || 0)) {
+        program.prompt = variation.prompt;
+        program.metrics.accuracy = score;
+        logger.info(`DSPy improvement found: ${score.toFixed(3)} accuracy`);
+      }
     }
-    /**
-     * Get LLM service (foundation integration)
-     */
-    async getLLMService() {
-        if (!this.llmService) {
-            try {
-                const dspyService = await getDSPyService();
-                this.llmService = {
-                    async analyze(prompt) {
-                        return await dspyService.executePrompt(prompt, {
-                            temperature: 0.1,
-                            maxTokens: 16384, // 16K for DSPy optimization work
-                            role: 'analyst',
-                        });
-                    },
-                };
-                logger.info('DSPy LLM initialized with @claude-zen/foundation');
-            }
-            catch (error) {
-                logger.error('Failed to initialize foundation LLM service:', error);
-                throw new Error('DSPy requires @claude-zen/foundation for LLM services');
-            }
-        }
-        return this.llmService;
-    }
-    /**
-     * Optimize a prompt using DSPy methodology
-     */
-    async optimizePrompt(task, examples, initialPrompt) {
-        logger.info(`Starting DSPy optimization for task: ${task}`);
-        const program = {
-            id: `dspy-${Date.now()}`,
-            name: task,
-            signature: 'input -> output',
-            prompt: initialPrompt || `Complete this task: ${task}`,
-            examples,
-            metrics: this.createInitialMetrics(),
-        };
-        const startTime = Date.now();
-        const variations = [];
-        // Generate initial prompt variations
-        const llm = await this.getLLMService();
-        for (let iteration = 0; iteration < this.config.maxIterations; iteration++) {
-            logger.debug(`DSPy iteration ${iteration + 1}/${this.config.maxIterations}`);
-            // Generate prompt variation
-            const variation = await this.generatePromptVariation(program, examples, llm);
-            variations.push(variation);
-            // Evaluate variation
-            const score = await this.evaluatePromptVariation(variation, examples, llm);
-            variation.score = score;
-            // Update best if improved
-            if (score > (program.metrics.accuracy || 0)) {
-                program.prompt = variation.prompt;
-                program.metrics.accuracy = score;
-                logger.info(`DSPy improvement found: ${score.toFixed(3)} accuracy`);
-            }
-        }
-        const duration = Date.now() - startTime;
-        const result = {
-            programId: program.id,
-            originalPrompt: initialPrompt || `Complete this task: ${task}`,
-            optimizedPrompt: program.prompt,
-            improvement: (program.metrics.accuracy || 0) - 0.5, // Assume 0.5 baseline
-            iterations: this.config.maxIterations,
-            variations,
-            metrics: {
-                accuracy: program.metrics.accuracy || 0,
-                latency: duration,
-                tokenUsage: variations.length * 100, // Rough estimate
-                cost: variations.length * 0.001, // Rough estimate
-            },
-            timestamp: new Date(),
-            config: this.config,
-        };
-        // Store optimization result
-        await this.storeOptimizationResult(task, result);
-        logger.info(`DSPy optimization completed: ${result.improvement.toFixed(3)} improvement`);
-        return result;
-    }
-    /**
-     * Generate a new prompt variation
-     */
-    async generatePromptVariation(program, examples, llm) {
-        // Note: fewShotPrompt available for future enhancement
-        // const fewShotPrompt = this.createFewShotPrompt(program, examples);
-        try {
-            const optimizationPrompt = `
+    const duration = Date.now() - startTime;
+    const result = {
+      programId: program.id,
+      originalPrompt: initialPrompt || `Complete this task: ${task}`,
+      optimizedPrompt: program.prompt,
+      improvement: (program.metrics.accuracy || 0) - 0.5, // Assume 0.5 baseline
+      iterations: this.config.maxIterations,
+      variations,
+      metrics: {
+        accuracy: program.metrics.accuracy || 0,
+        latency: duration,
+        tokenUsage: variations.length * 100, // Rough estimate
+        cost: variations.length * 0.001, // Rough estimate
+      },
+      timestamp: new Date(),
+      config: this.config,
+    };
+    // Store optimization result
+    await this.storeOptimizationResult(task, result);
+    logger.info(
+      `DSPy optimization completed: ${result.improvement.toFixed(3)} improvement`
+    );
+    return result;
+  }
+  /**
+   * Generate a new prompt variation
+   */
+  async generatePromptVariation(program, examples, llm) {
+    // Note: fewShotPrompt available for future enhancement
+    // const fewShotPrompt = this.createFewShotPrompt(program, examples);
+    try {
+      const optimizationPrompt = `
 Improve this prompt for better results:
 
 Current prompt: "${program.prompt}"
 
 Few-shot examples:
 ${examples
-                .slice(0, this.config.fewShotExamples)
-                .map((ex) => `Input: ${ex.input}\nExpected: ${ex.output}`)
-                .join('\n\n')}
+  .slice(0, this.config.fewShotExamples)
+  .map((ex) => `Input: ${ex.input}\nExpected: ${ex.output}`)
+  .join('\n\n')}
 
 Generate an improved version that:
 1. Is more specific and clear
@@ -200,223 +216,228 @@ Generate an improved version that:
 4. Maintains the same task objective
 
 Improved prompt:`;
-            const response = await llm.analyze(optimizationPrompt);
-            return {
-                prompt: this.extractPromptFromResponse(response),
-                strategy: 'few-shot-optimization',
-                iteration: 0,
-                score: 0,
-            };
-        }
-        catch (error) {
-            logger.warn('Failed to generate prompt variation, using fallback');
-            return {
-                prompt: `${program.prompt} (Please be specific and detailed in your response.)`,
-                strategy: 'fallback',
-                iteration: 0,
-                score: 0,
-            };
-        }
+      const response = await llm.analyze(optimizationPrompt);
+      return {
+        prompt: this.extractPromptFromResponse(response),
+        strategy: 'few-shot-optimization',
+        iteration: 0,
+        score: 0,
+      };
+    } catch (error) {
+      logger.warn('Failed to generate prompt variation, using fallback');
+      return {
+        prompt: `${program.prompt} (Please be specific and detailed in your response.)`,
+        strategy: 'fallback',
+        iteration: 0,
+        score: 0,
+      };
     }
-    /**
-     * Evaluate a prompt variation
-     */
-    async evaluatePromptVariation(variation, examples, llm) {
-        try {
-            let totalScore = 0;
-            const testExamples = examples.slice(0, Math.min(3, examples.length));
-            for (const example of testExamples) {
-                const testPrompt = `${variation.prompt}\n\nInput: ${example.input}`;
-                const response = await llm.analyze(testPrompt);
-                // Simple similarity scoring (in real implementation, would be more sophisticated)
-                const similarity = this.calculateSimilarity(response, example.output);
-                totalScore += similarity;
-            }
-            return testExamples.length > 0 ? totalScore / testExamples.length : 0.5;
-        }
-        catch (error) {
-            logger.warn('Failed to evaluate prompt variation');
-            return 0.5; // Default middle score
-        }
+  }
+  /**
+   * Evaluate a prompt variation
+   */
+  async evaluatePromptVariation(variation, examples, llm) {
+    try {
+      let totalScore = 0;
+      const testExamples = examples.slice(0, Math.min(3, examples.length));
+      for (const example of testExamples) {
+        const testPrompt = `${variation.prompt}\n\nInput: ${example.input}`;
+        const response = await llm.analyze(testPrompt);
+        // Simple similarity scoring (in real implementation, would be more sophisticated)
+        const similarity = this.calculateSimilarity(response, example.output);
+        totalScore += similarity;
+      }
+      return testExamples.length > 0 ? totalScore / testExamples.length : 0.5;
+    } catch (error) {
+      logger.warn('Failed to evaluate prompt variation');
+      return 0.5; // Default middle score
     }
-    /**
-     * Simple similarity calculation (placeholder)
-     */
-    calculateSimilarity(response, expected) {
-        // Very simple implementation - in practice would use more sophisticated methods
-        const responseWords = response.toLowerCase().split(/\s+/);
-        const expectedWords = expected.toLowerCase().split(/\s+/);
-        const commonWords = responseWords.filter((word) => expectedWords.includes(word));
-        const totalWords = Math.max(responseWords.length, expectedWords.length);
-        return totalWords > 0 ? commonWords.length / totalWords : 0;
+  }
+  /**
+   * Simple similarity calculation (placeholder)
+   */
+  calculateSimilarity(response, expected) {
+    // Very simple implementation - in practice would use more sophisticated methods
+    const responseWords = response.toLowerCase().split(/\s+/);
+    const expectedWords = expected.toLowerCase().split(/\s+/);
+    const commonWords = responseWords.filter((word) =>
+      expectedWords.includes(word)
+    );
+    const totalWords = Math.max(responseWords.length, expectedWords.length);
+    return totalWords > 0 ? commonWords.length / totalWords : 0;
+  }
+  /**
+   * Create few-shot prompt from examples (available for future enhancement)
+   */
+  // private createFewShotPrompt(program: DSPyProgram, examples: DSPyExample[]): string {
+  //   const fewShot = examples
+  //     .slice(0, this.config.fewShotExamples)
+  //     .map(ex => `Input: ${ex.input}\nOutput: ${ex.output}`)
+  //     .join('\n\n');
+  //
+  //   return `${program.prompt}\n\nExamples:\n${fewShot}\n\nNow complete:`;
+  // }
+  /**
+   * Extract prompt from LLM response
+   */
+  extractPromptFromResponse(response) {
+    // Simple extraction - look for content after common markers
+    const markers = [
+      'Improved prompt:',
+      'Better prompt:',
+      'Optimized prompt:',
+      'New prompt:',
+    ];
+    for (const marker of markers) {
+      const index = response.indexOf(marker);
+      if (index !== -1) {
+        return response.substring(index + marker.length).trim();
+      }
     }
-    /**
-     * Create few-shot prompt from examples (available for future enhancement)
-     */
-    // private createFewShotPrompt(program: DSPyProgram, examples: DSPyExample[]): string {
-    //   const fewShot = examples
-    //     .slice(0, this.config.fewShotExamples)
-    //     .map(ex => `Input: ${ex.input}\nOutput: ${ex.output}`)
-    //     .join('\n\n');
-    //
-    //   return `${program.prompt}\n\nExamples:\n${fewShot}\n\nNow complete:`;
-    // }
-    /**
-     * Extract prompt from LLM response
-     */
-    extractPromptFromResponse(response) {
-        // Simple extraction - look for content after common markers
-        const markers = [
-            'Improved prompt:',
-            'Better prompt:',
-            'Optimized prompt:',
-            'New prompt:',
-        ];
-        for (const marker of markers) {
-            const index = response.indexOf(marker);
-            if (index !== -1) {
-                return response.substring(index + marker.length).trim();
-            }
-        }
-        // Fallback: return the response itself, cleaned up
-        return response.trim();
+    // Fallback: return the response itself, cleaned up
+    return response.trim();
+  }
+  /**
+   * Create initial metrics structure
+   */
+  createInitialMetrics() {
+    return {
+      accuracy: 0.5,
+      latency: 0,
+      tokenUsage: 0,
+      cost: 0,
+      iterationsCompleted: 0,
+      bestScore: 0,
+    };
+  }
+  /**
+   * Store optimization result
+   */
+  async storeOptimizationResult(task, result) {
+    try {
+      const kv = await this.getKV();
+      const key = `dspy-optimization:${task}:${result.timestamp.getTime()}`;
+      await kv.set(key, result);
+      // Update history
+      const history = this.optimizationHistory.get(task) || [];
+      history.push(result);
+      this.optimizationHistory.set(task, history);
+      logger.debug(`Stored DSPy optimization result: ${key}`);
+    } catch (error) {
+      logger.warn('Failed to store optimization result:', error);
     }
-    /**
-     * Create initial metrics structure
-     */
-    createInitialMetrics() {
-        return {
-            accuracy: 0.5,
-            latency: 0,
-            tokenUsage: 0,
-            cost: 0,
-            iterationsCompleted: 0,
-            bestScore: 0,
-        };
+  }
+  /**
+   * Get optimization history for a task
+   */
+  async getOptimizationHistory(task) {
+    try {
+      const kv = await this.getKV();
+      const keys = await kv.keys();
+      const taskKeys = keys.filter((key) =>
+        key.startsWith(`dspy-optimization:${task}:`)
+      );
+      const results = [];
+      for (const key of taskKeys) {
+        const result = await kv.get(key);
+        if (result) results.push(result);
+      }
+      return results.sort(
+        (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+      );
+    } catch (error) {
+      logger.warn('Failed to get optimization history:', error);
+      return this.optimizationHistory.get(task) || [];
     }
-    /**
-     * Store optimization result
-     */
-    async storeOptimizationResult(task, result) {
-        try {
-            const kv = await this.getKV();
-            const key = `dspy-optimization:${task}:${result.timestamp.getTime()}`;
-            await kv.set(key, result);
-            // Update history
-            const history = this.optimizationHistory.get(task) || [];
-            history.push(result);
-            this.optimizationHistory.set(task, history);
-            logger.debug(`Stored DSPy optimization result: ${key}`);
-        }
-        catch (error) {
-            logger.warn('Failed to store optimization result:', error);
-        }
+  }
+  /**
+   * Get DSPy engine statistics
+   */
+  async getStats() {
+    const allResults = Array.from(this.optimizationHistory.values()).flat();
+    if (allResults.length === 0) {
+      return {
+        totalOptimizations: 0,
+        averageImprovement: 0,
+        bestImprovement: 0,
+        totalTasks: 0,
+      };
     }
-    /**
-     * Get optimization history for a task
-     */
-    async getOptimizationHistory(task) {
-        try {
-            const kv = await this.getKV();
-            const keys = await kv.keys();
-            const taskKeys = keys.filter((key) => key.startsWith(`dspy-optimization:${task}:`));
-            const results = [];
-            for (const key of taskKeys) {
-                const result = await kv.get(key);
-                if (result)
-                    results.push(result);
-            }
-            return results.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-        }
-        catch (error) {
-            logger.warn('Failed to get optimization history:', error);
-            return this.optimizationHistory.get(task) || [];
-        }
+    const improvements = allResults.map((r) => r.improvement);
+    const averageImprovement =
+      improvements.reduce((a, b) => a + b, 0) / improvements.length;
+    const bestImprovement = Math.max(...improvements);
+    return {
+      totalOptimizations: allResults.length,
+      averageImprovement,
+      bestImprovement,
+      totalTasks: this.optimizationHistory.size,
+    };
+  }
+  /**
+   * Clear all stored optimization data
+   */
+  async clear() {
+    try {
+      const kv = await this.getKV();
+      const keys = await kv.keys();
+      const dspyKeys = keys.filter((key) => key.startsWith('dspy-'));
+      for (const key of dspyKeys) {
+        await kv.delete(key);
+      }
+      this.optimizationHistory.clear();
+      logger.info('DSPy optimization data cleared');
+    } catch (error) {
+      logger.warn('Failed to clear optimization data:', error);
     }
-    /**
-     * Get DSPy engine statistics
-     */
-    async getStats() {
-        const allResults = Array.from(this.optimizationHistory.values()).flat();
-        if (allResults.length === 0) {
-            return {
-                totalOptimizations: 0,
-                averageImprovement: 0,
-                bestImprovement: 0,
-                totalTasks: 0,
-            };
-        }
-        const improvements = allResults.map((r) => r.improvement);
-        const averageImprovement = improvements.reduce((a, b) => a + b, 0) / improvements.length;
-        const bestImprovement = Math.max(...improvements);
-        return {
-            totalOptimizations: allResults.length,
-            averageImprovement,
-            bestImprovement,
-            totalTasks: this.optimizationHistory.size,
-        };
-    }
-    /**
-     * Clear all stored optimization data
-     */
-    async clear() {
-        try {
-            const kv = await this.getKV();
-            const keys = await kv.keys();
-            const dspyKeys = keys.filter((key) => key.startsWith('dspy-'));
-            for (const key of dspyKeys) {
-                await kv.delete(key);
-            }
-            this.optimizationHistory.clear();
-            logger.info('DSPy optimization data cleared');
-        }
-        catch (error) {
-            logger.warn('Failed to clear optimization data:', error);
-        }
-    }
+  }
 }
 /**
  * Create DSPy engine instance with default configuration
  */
 export function createDSPyEngine(config) {
-    return new DSPyEngine(config);
+  return new DSPyEngine(config);
 }
 /**
  * DSPy utility functions
  */
 export const dspyUtils = {
-    /**
-     * Create training examples from data
-     */
-    createExamples(data) {
-        return data.map((item, index) => ({
-            id: `example-${index}`,
-            input: item.input,
-            output: item.output,
-            metadata: { createdAt: new Date() },
-        }));
-    },
-    /**
-     * Validate DSPy configuration
-     */
-    validateConfig(config) {
-        const errors = [];
-        if (typeof config?.maxIterations === 'number' && config.maxIterations < 1) {
-            errors.push('maxIterations must be at least 1');
-        }
-        if (typeof config?.fewShotExamples === 'number' &&
-            config.fewShotExamples < 0) {
-            errors.push('fewShotExamples must be non-negative');
-        }
-        if (typeof config?.temperature === 'number' &&
-            (config.temperature < 0 || config.temperature > 1)) {
-            errors.push('temperature must be between 0 and 1');
-        }
-        return {
-            valid: errors.length === 0,
-            errors,
-        };
-    },
+  /**
+   * Create training examples from data
+   */
+  createExamples(data) {
+    return data.map((item, index) => ({
+      id: `example-${index}`,
+      input: item.input,
+      output: item.output,
+      metadata: { createdAt: new Date() },
+    }));
+  },
+  /**
+   * Validate DSPy configuration
+   */
+  validateConfig(config) {
+    const errors = [];
+    if (typeof config?.maxIterations === 'number' && config.maxIterations < 1) {
+      errors.push('maxIterations must be at least 1');
+    }
+    if (
+      typeof config?.fewShotExamples === 'number' &&
+      config.fewShotExamples < 0
+    ) {
+      errors.push('fewShotExamples must be non-negative');
+    }
+    if (
+      typeof config?.temperature === 'number' &&
+      (config.temperature < 0 || config.temperature > 1)
+    ) {
+      errors.push('temperature must be between 0 and 1');
+    }
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
+  },
 };
 // Default export
 export default DSPyEngine;

@@ -1,18 +1,15 @@
 /**
  * Socket.IO WebSocket API Client (Uses Existing Backend)
- * 
+ *
  * The backend already has Socket.IO WebSocket support - this client uses it
  * instead of polling REST endpoints every 10-30 seconds.
  */
 import { io, type Socket } from 'socket.io-client';
+import { getLogger } from '@claude-zen/foundation';
 
-interface ConnectionStatus {
-  connected: boolean;
-  lastCheck: Date | null;
-  retrying: boolean;
-}
+const logger = getLogger('socket-api');
 
-type EventHandler = (data: any) => void;
+type EventHandler = (data: unknown) => void;
 type ConnectionHandler = (connected: boolean) => void;
 
 export class SocketIOAPIClient {
@@ -24,7 +21,7 @@ export class SocketIOAPIClient {
 
   constructor(private url: string = 'http://localhost:3000') {}
 
-  async connect(): Promise<void> {
+  connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         this.socket = io(this.url, {
@@ -37,7 +34,7 @@ export class SocketIOAPIClient {
         });
 
         this.socket.on('connect', () => {
-          console.log('✅ Socket.IO connected');
+          logger.info('Socket.IO connected');
           this.isConnected = true;
           this.reconnectAttempts = 0;
           this.notifyConnectionHandlers(true);
@@ -45,13 +42,13 @@ export class SocketIOAPIClient {
         });
 
         this.socket.on('disconnect', (reason) => {
-          console.warn('❌ Socket.IO disconnected:', reason);
+          logger.warn('Socket.IO disconnected', { reason });
           this.isConnected = false;
           this.notifyConnectionHandlers(false);
         });
 
         this.socket.on('connect_error', (error) => {
-          console.error('Socket.IO connection error:', error);
+          logger.error('Socket.IO connection error', { error });
           this.isConnected = false;
           this.notifyConnectionHandlers(false);
           reject(new Error('Socket.IO connection failed'));
@@ -59,9 +56,8 @@ export class SocketIOAPIClient {
 
         // Handle server acknowledgment
         this.socket.on('connected', (data) => {
-          console.log('🔗 Socket.IO session established:', data);
+          logger.info('Socket.IO session established', { data });
         });
-
       } catch (error) {
         reject(error);
       }
@@ -76,14 +72,14 @@ export class SocketIOAPIClient {
   subscribeToChannel(channel: string): void {
     if (this.socket && this.isConnected) {
       this.socket.emit('subscribe', channel);
-      console.log(`📡 Subscribed to channel: ${channel}`);
+      logger.info('Subscribed to channel', { channel });
     }
   }
 
   unsubscribeFromChannel(channel: string): void {
     if (this.socket && this.isConnected) {
       this.socket.emit('unsubscribe', channel);
-      console.log(`📡 Unsubscribed from channel: ${channel}`);
+      logger.info('Unsubscribed from channel', { channel });
     }
   }
 
@@ -110,11 +106,11 @@ export class SocketIOAPIClient {
   }
 
   // Simple health check equivalent
-  async getHealth(): Promise<{ status: string; timestamp: number }> {
+  getHealth(): Promise<{ status: string; timestamp: number }> {
     if (!this.connected) {
       throw new Error('Socket.IO not connected');
     }
-    
+
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Health check timeout'));
@@ -122,11 +118,11 @@ export class SocketIOAPIClient {
 
       // Use ping/pong for health check
       this.socket!.emit('ping');
-      this.socket!.once('pong', (response) => {
+      this.socket!.once('pong', () => {
         clearTimeout(timeout);
         resolve({
           status: 'ok',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       });
     });
@@ -148,23 +144,27 @@ export class SocketAPIClient {
   // Use existing backend Socket.IO channels
   async initialize(): Promise<void> {
     await this.socketClient.connect();
-    
+
     // Subscribe to existing backend channels
-    this.socketClient.subscribeToChannel('system');   // System status
-    this.socketClient.subscribeToChannel('tasks');    // Task updates  
-    this.socketClient.subscribeToChannel('logs');     // Real-time logs
+    this.socketClient.subscribeToChannel('system'); // System status
+    this.socketClient.subscribeToChannel('tasks'); // Task updates
+    this.socketClient.subscribeToChannel('logs'); // Real-time logs
   }
 
   // Health check using Socket.IO ping/pong
-  async getHealth(): Promise<{ status: string; timestamp: number }> {
+  getHealth(): Promise<{ status: string; timestamp: number }> {
     return this.socketClient.getHealth();
   }
 
   // System capabilities using existing Socket.IO events
-  async getSystemCapabilityDetailed(): Promise<{ success: boolean; data: any; error?: string }> {
+  getSystemCapabilityDetailed(): Promise<{
+    success: boolean;
+    data: Record<string, unknown>;
+    error?: string;
+  }> {
     return new Promise((resolve) => {
       if (!this.socketClient.connected) {
-        resolve({ success: false, data: null, error: 'Socket not connected' });
+        resolve({ success: false, data: {}, error: 'Socket not connected' });
         return;
       }
 
@@ -179,15 +179,15 @@ export class SocketAPIClient {
   }
 
   // Real-time event subscriptions (use existing backend events)
-  onSystemUpdate(handler: (data: any) => void): void {
+  onSystemUpdate(handler: (data: Record<string, unknown>) => void): void {
     this.socketClient.on('system:status', handler);
   }
 
-  onTaskUpdate(handler: (data: any) => void): void {
+  onTaskUpdate(handler: (data: Record<string, unknown>) => void): void {
     this.socketClient.on('tasks:update', handler);
   }
 
-  onPerformanceUpdate(handler: (data: any) => void): void {
+  onPerformanceUpdate(handler: (data: Record<string, unknown>) => void): void {
     this.socketClient.on('performance:update', handler);
   }
 
@@ -206,4 +206,6 @@ const socketClient = new SocketIOAPIClient();
 export const apiClient = new SocketAPIClient(socketClient);
 
 // Auto-initialize
-apiClient.initialize().catch(console.error);
+apiClient.initialize().catch((error) => {
+  logger.error('Failed to initialize Socket API client', { error });
+});

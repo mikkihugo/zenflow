@@ -13,8 +13,14 @@ export interface AgentId {
   instance: number;
 }
 
-export type AgentType = 
-  | 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator' | 'tester' | 'architect';
+export type AgentType =
+  | 'researcher'
+  | 'coder'
+  | 'analyst'
+  | 'optimizer'
+  | 'coordinator'
+  | 'tester'
+  | 'architect';
 
 // Agent Metrics and Performance
 export interface AgentMetrics {
@@ -273,7 +279,7 @@ export interface IntelligenceSystem {
     context?: Record<string, unknown>
   ): Promise<MultiHorizonTaskPrediction>;
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState|null;
+  getAgentLearningState(agentId: AgentId): AgentLearningState | null;
 
   updateAgentPerformance(
     agentId: AgentId,
@@ -281,7 +287,7 @@ export interface IntelligenceSystem {
     metadata?: Record<string, unknown>
   ): void;
 
-  getAgentHealth(agentId: AgentId): AgentHealth|null;
+  getAgentHealth(agentId: AgentId): AgentHealth | null;
 
   forecastPerformanceOptimization(
     swarmId: SwarmId,

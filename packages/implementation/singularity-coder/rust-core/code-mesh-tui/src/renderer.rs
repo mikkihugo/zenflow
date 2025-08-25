@@ -7,39 +7,39 @@ use ratatui::{
 use crate::theme::Theme;
 
 /// Renderer wrapper for consistent styling and theme application
-pub struct Renderer<'a> {
-    frame: &'a mut Frame<'a>,
-    theme: &'a dyn Theme,
+pub struct Renderer {
+    theme: Box<dyn Theme + Send + Sync>,
 }
 
-impl<'a> Renderer<'a> {
+impl Renderer {
     /// Create a new renderer
-    pub fn new(frame: &'a mut Frame<'a>, theme: &'a dyn Theme) -> Self {
-        Self { frame, theme }
+    pub fn new(theme: Box<dyn Theme + Send + Sync>) -> Self {
+        Self { theme }
     }
     
     /// Get the current theme
     pub fn theme(&self) -> &dyn Theme {
-        self.theme
+        self.theme.as_ref()
     }
     
     /// Render a widget in the specified area
-    pub fn render_widget<W: Widget>(&mut self, widget: W, area: Rect) {
-        self.frame.render_widget(widget, area);
+    pub fn render_widget<W: Widget>(&mut self, frame: &mut Frame, widget: W, area: Rect) {
+        frame.render_widget(widget, area);
     }
     
     /// Render a stateful widget
     pub fn render_stateful_widget<W: ratatui::widgets::StatefulWidget>(
         &mut self, 
+        frame: &mut Frame, 
         widget: W, 
         area: Rect, 
         state: &mut W::State
     ) {
-        self.frame.render_stateful_widget(widget, area, state);
+        frame.render_stateful_widget(widget, area, state);
     }
     
-    /// Get the terminal size
-    pub fn size(&self) -> Rect {
-        self.frame.size()
+    /// Get the terminal area
+    pub fn area(&self, frame: &Frame) -> Rect {
+        frame.area()
     }
 }

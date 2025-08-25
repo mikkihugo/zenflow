@@ -35,7 +35,15 @@ interface WorkspaceInfo {
 export interface DetectedProject {
   name: string;
   path: string;
-  type: 'app' | 'package' | 'lib' | 'service' | 'tool' | 'example' | 'test' | 'doc';
+  type:
+    | 'app'
+    | 'package'
+    | 'lib'
+    | 'service'
+    | 'tool'
+    | 'example'
+    | 'test'
+    | 'doc';
   framework?: string;
   language?: string;
   packageFile?: string;
@@ -43,7 +51,16 @@ export interface DetectedProject {
 
 export interface DetectedWorkspace {
   root: string;
-  tool: 'yarn' | 'npm' | 'pnpm' | 'lerna' | 'rush' | 'bun' | 'bazel' | 'nx' | 'unknown';
+  tool:
+    | 'yarn'
+    | 'npm'
+    | 'pnpm'
+    | 'lerna'
+    | 'rush'
+    | 'bun'
+    | 'bazel'
+    | 'nx'
+    | 'unknown';
   configFile?: string;
   projects: DetectedProject[];
   totalProjects: number;
@@ -57,8 +74,8 @@ export class WorkspaceDetector {
    * Detect monorepo workspace using @manypkg/find-root
    */
   async detectWorkspaceRoot(
-    startPath: string = process.cwd(),
-  ): Promise<DetectedWorkspace|null> {
+    startPath: string = process.cwd()
+  ): Promise<DetectedWorkspace | null> {
     try {
       // Use @manypkg/find-root which supports Yarn, npm, Lerna, pnpm, Bun, Rush
       const result = await findRoot(startPath);
@@ -82,7 +99,7 @@ export class WorkspaceDetector {
       workspaceInfo.totalProjects = workspaces.length;
 
       logger.info(
-        `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`,
+        `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`
       );
       return workspaceInfo;
     } catch (error) {
@@ -95,13 +112,13 @@ export class WorkspaceDetector {
    * Get workspace packages using find-workspaces
    */
   private async getWorkspacePackages(
-    rootDir: string,
+    rootDir: string
   ): Promise<DetectedProject[]> {
     try {
       // find-workspaces returns an array of workspace package info
       const workspaces = await findWorkspaces(rootDir);
 
-      if (!workspaces||!Array.isArray(workspaces)) {
+      if (!workspaces || !Array.isArray(workspaces)) {
         return [];
       }
 
@@ -109,11 +126,11 @@ export class WorkspaceDetector {
         const relativePath = path.relative(rootDir, workspace.location);
         const packageFile = this.detectProjectFile(workspace.location);
         const workspaceName =
-          workspace.name||path.basename(workspace.location);
+          workspace.name || path.basename(workspace.location);
         const packageName = workspace.package?.name;
 
         return {
-          name: packageName||workspaceName,
+          name: packageName || workspaceName,
           path: relativePath,
           type: this.inferProjectType(relativePath, packageName),
           framework: this.detectFramework(workspace.location, packageFile),
@@ -156,7 +173,7 @@ export class WorkspaceDetector {
     if (fs.existsSync(packageJsonPath)) {
       try {
         const packageJson = JSON.parse(
-          fs.readFileSync(packageJsonPath, 'utf8'),
+          fs.readFileSync(packageJsonPath, 'utf8')
         );
         if (packageJson.workspaces) {
           return 'npm'; // Default to npm if workspaces are defined but no specific tool detected
@@ -172,8 +189,9 @@ export class WorkspaceDetector {
   /**
    * Find workspace configuration file
    */
-  private findWorkspaceConfigFile(rootDir: string): string|undefined {
-    const configFiles = ['pnpm-workspace.yaml',
+  private findWorkspaceConfigFile(rootDir: string): string | undefined {
+    const configFiles = [
+      'pnpm-workspace.yaml',
       'pnpm-workspace.yml',
       'lerna.json',
       'rush.json',
@@ -196,7 +214,7 @@ export class WorkspaceDetector {
   /**
    * Detect project file for a directory
    */
-  private detectProjectFile(projectDir: string): string|undefined {
+  private detectProjectFile(projectDir: string): string | undefined {
     const projectFiles = [
       PACKAGE_JSON_FILE, // Node.js/TypeScript/React Native'Cargo.toml', // Rust
       'go.mod', // Go
@@ -222,15 +240,15 @@ export class WorkspaceDetector {
    */
   private detectFramework(
     projectDir: string,
-    packageFile?: string,
-  ): string|undefined {
+    packageFile?: string
+  ): string | undefined {
     if (!packageFile || packageFile !== PACKAGE_JSON_FILE) {
       return undefined;
     }
 
     try {
       const packageJsonPath = path.join(projectDir, PACKAGE_JSON_FILE);
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath,'utf8'));
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
       const deps = {
         ...packageJson.dependencies,
@@ -243,7 +261,9 @@ export class WorkspaceDetector {
     }
   }
 
-  private findFrameworkInDependencies(deps: Record<string, unknown>): string | undefined {
+  private findFrameworkInDependencies(
+    deps: Record<string, unknown>
+  ): string | undefined {
     const frameworkMap: Array<[string, string]> = [
       ['next', 'Next'],
       ['react-native', 'React Native'],
@@ -267,14 +287,14 @@ export class WorkspaceDetector {
    */
   private detectLanguage(
     _projectDir: string,
-    packageFile?: string,
-  ): string|undefined {
+    packageFile?: string
+  ): string | undefined {
     if (!packageFile) {
       return undefined;
     }
 
     const languageMap = {
-      PACKAGE_JSON_FILE:'TypeScript', // Default for JS/TS projects
+      PACKAGE_JSON_FILE: 'TypeScript', // Default for JS/TS projects
       'Cargo.toml': 'Rust',
       'go.mod': 'Go',
       'build.gradle': 'Kotlin',
@@ -289,17 +309,21 @@ export class WorkspaceDetector {
    */
   private inferProjectType(
     relativePath: string,
-    name?: string,
+    name?: string
   ): DetectedProject['type'] {
     const pathLower = relativePath.toLowerCase();
     const nameLower = name?.toLowerCase() || '';
 
-    return this.detectTypeFromPath(pathLower) || 
-           this.detectTypeFromName(nameLower) || 
-           'package';
+    return (
+      this.detectTypeFromPath(pathLower) ||
+      this.detectTypeFromName(nameLower) ||
+      'package'
+    );
   }
 
-  private detectTypeFromPath(pathLower: string): DetectedProject['type'] | null {
+  private detectTypeFromPath(
+    pathLower: string
+  ): DetectedProject['type'] | null {
     const pathPatterns: Array<[string[], DetectedProject['type']]> = [
       [['apps/'], 'app'],
       [['packages/'], 'package'],
@@ -312,14 +336,21 @@ export class WorkspaceDetector {
     ];
 
     for (const [patterns, type] of pathPatterns) {
-      if (patterns.some(pattern => pathLower.includes(pattern) || pathLower.startsWith(pattern))) {
+      if (
+        patterns.some(
+          (pattern) =>
+            pathLower.includes(pattern) || pathLower.startsWith(pattern)
+        )
+      ) {
         return type;
       }
     }
     return null;
   }
 
-  private detectTypeFromName(nameLower: string): DetectedProject['type'] | null {
+  private detectTypeFromName(
+    nameLower: string
+  ): DetectedProject['type'] | null {
     const namePatterns: Array<[string, DetectedProject['type']]> = [
       ['service', 'service'],
       ['app', 'app'],
@@ -330,7 +361,9 @@ export class WorkspaceDetector {
       ['doc', 'doc'],
     ];
 
-    return namePatterns.find(([pattern]) => nameLower.includes(pattern))?.[1] || null;
+    return (
+      namePatterns.find(([pattern]) => nameLower.includes(pattern))?.[1] || null
+    );
   }
 
   /**

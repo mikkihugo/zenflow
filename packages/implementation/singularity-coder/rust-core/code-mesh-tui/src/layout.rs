@@ -216,7 +216,7 @@ impl FlexLayout {
                 FlexBasis::Fixed(size) => constraints.push(Constraint::Length(size)),
                 FlexBasis::Percentage(percent) => constraints.push(Constraint::Percentage(percent)),
                 FlexBasis::Flex(flex) => {
-                    if flex == 1 {
+                    if flex == 1.0 {
                         constraints.push(Constraint::Min(1));
                     } else {
                         constraints.push(Constraint::Ratio(flex as u32, items.len() as u32));
@@ -417,12 +417,12 @@ impl GridLayout {
             .split(container);
 
         // Create column layouts for each row
-        for row_area in rows {
+        for row_area in rows.iter() {
             let columns = Layout::default()
                 .direction(Direction::Horizontal)
                 .constraints(col_constraints.clone())
-                .split(row_area);
-            areas.push(columns);
+                .split(*row_area);
+            areas.push(columns.to_vec());
         }
 
         areas
@@ -452,7 +452,7 @@ pub enum ResponsiveLayoutType {
     SingleColumn,
     TwoColumn { left_width: u16 },
     ThreeColumn { left_width: u16, right_width: u16 },
-    Custom(Box<dyn Fn(Rect) -> Vec<Rect> + Send + Sync>),
+    Custom(String), // Store function name instead of function pointer
 }
 
 impl ResponsiveLayout {
@@ -502,7 +502,7 @@ impl ResponsiveLayout {
                         Constraint::Length(*left_width),
                         Constraint::Min(1),
                     ])
-                    .split(area)
+                    .split(area).to_vec()
             },
             ResponsiveLayoutType::ThreeColumn { left_width, right_width } => {
                 Layout::default()
@@ -512,11 +512,11 @@ impl ResponsiveLayout {
                         Constraint::Min(1),
                         Constraint::Length(*right_width),
                     ])
-                    .split(area)
+                    .split(area).to_vec()
             },
-            ResponsiveLayoutType::Custom(_custom_fn) => {
+            ResponsiveLayoutType::Custom(_custom_name) => {
                 // For now, fallback to single column
-                // In a full implementation, we'd call the custom function
+                // In a full implementation, we'd look up the custom function by name
                 vec![area]
             },
         }

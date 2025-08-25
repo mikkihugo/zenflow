@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import * as path from "path"
 import * as fs from "fs/promises"
 import { Tool } from "./tool"

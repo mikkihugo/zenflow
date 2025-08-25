@@ -2,27 +2,31 @@
  * Simplified WebSocket-First API Client
  * Replaces the complex REST API with a single WebSocket connection
  */
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('websocket-api');
 
 interface WebSocketMessage {
   id: string;
   type: 'request' | 'response' | 'event';
   action: string;
-  data?: any;
+  data?: Record<string, unknown>;
   timestamp: number;
 }
 
-interface ConnectionStatus {
-  connected: boolean;
-  lastCheck: Date | null;
-  retrying: boolean;
-}
-
-type EventHandler = (data: any) => void;
+type EventHandler = (data: Record<string, unknown>) => void;
 type ConnectionHandler = (connected: boolean) => void;
 
 export class WebSocketAPIClient {
   private ws: WebSocket | null = null;
-  private requestMap = new Map<string, { resolve: (value: any) => void; reject: (error: any) => void; timeout: number }>();
+  private requestMap = new Map<
+    string,
+    {
+      resolve: (value: Record<string, unknown>) => void;
+      reject: (error: Error) => void;
+      timeout: number;
+    }
+  >();
   private eventHandlers = new Map<string, EventHandler[]>();
   private connectionHandlers: ConnectionHandler[] = [];
   private reconnectAttempts = 0;
@@ -32,13 +36,13 @@ export class WebSocketAPIClient {
 
   constructor(private url: string = 'ws://localhost:3000/ws') {}
 
-  async connect(): Promise<void> {
+  connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         this.ws = new WebSocket(this.url);
-        
+
         this.ws.onopen = () => {
-          console.log('✅ WebSocket connected');
+          logger.info('WebSocket connected');
           this.isConnected = true;
           this.reconnectAttempts = 0;
           this.notifyConnectionHandlers(true);
@@ -50,19 +54,19 @@ export class WebSocketAPIClient {
             const message: WebSocketMessage = JSON.parse(event.data);
             this.handleMessage(message);
           } catch (error) {
-            console.error('Failed to parse WebSocket message:', error);
+            logger.error('Failed to parse WebSocket message', { error });
           }
         };
 
         this.ws.onclose = () => {
-          console.warn('❌ WebSocket disconnected');
+          logger.warn('WebSocket disconnected');
           this.isConnected = false;
           this.notifyConnectionHandlers(false);
           this.handleReconnect();
         };
 
         this.ws.onerror = (error) => {
-          console.error('WebSocket error:', error);
+          logger.error('WebSocket error', { error });
           this.isConnected = false;
           this.notifyConnectionHandlers(false);
           reject(new Error('WebSocket connection failed'));
@@ -90,17 +94,22 @@ export class WebSocketAPIClient {
   private handleReconnect(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
-      
-      console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts}) in ${delay}ms`);
-      
+      const delay =
+        this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+
+      logger.info('Attempting to reconnect', {
+        attempt: this.reconnectAttempts,
+        maxAttempts: this.maxReconnectAttempts,
+        delay,
+      });
+
       setTimeout(() => {
         this.connect().catch(() => {
           // Will try again if this fails
         });
       }, delay);
     } else {
-      console.error('Max reconnection attempts reached');
+      logger.error('Max reconnection attempts reached');
     }
   }
 
@@ -112,7 +121,11 @@ export class WebSocketAPIClient {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  async request(action: string, data?: any, timeout: number = 10000): Promise<any> {
+  request(
+    action: string,
+    data?: Record<string, unknown>,
+    timeout: number = 10000
+  ): Promise<Record<string, unknown>> {
     if (!this.isConnected) {
       throw new Error('WebSocket not connected');
     }
@@ -123,7 +136,7 @@ export class WebSocketAPIClient {
       type: 'request',
       action,
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     return new Promise((resolve, reject) => {
@@ -176,25 +189,35 @@ export class SimplifiedAPIClient {
   constructor(private ws: WebSocketAPIClient) {}
 
   // System operations
-  async getHealth(): Promise<{ status: string; timestamp: number }> {
-    return this.ws.request('system.health');
+  getHealth(): Promise<{ status: string; timestamp: number }> {
+    return this.ws.request('system.health') as Promise<{
+      status: string;
+      timestamp: number;
+    }>;
   }
 
-  async getSystemCapabilityDetailed(): Promise<{ success: boolean; data: any; error?: string }> {
+  async getSystemCapabilityDetailed(): Promise<{
+    success: boolean;
+    data: Record<string, unknown>;
+    error?: string;
+  }> {
     try {
       const data = await this.ws.request('system.capabilities');
       return { success: true, data };
     } catch (error) {
-      return { success: false, data: null, error: (error as Error).message };
+      return { success: false, data: {}, error: (error as Error).message };
     }
   }
 
   // Agent operations
-  async getAgentStatus(): Promise<any> {
+  getAgentStatus(): Promise<Record<string, unknown>> {
     return this.ws.request('agents.status');
   }
 
-  async createSwarm(type: string, config: any): Promise<any> {
+  createSwarm(
+    type: string,
+    config: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     return this.ws.request('swarm.create', { type, config });
   }
 
@@ -213,4 +236,6 @@ const wsClient = new WebSocketAPIClient();
 export const apiClient = new SimplifiedAPIClient(wsClient);
 
 // Auto-connect
-wsClient.connect().catch(console.error);
+wsClient.connect().catch((error) => {
+  logger.error('Failed to connect WebSocket client', { error });
+});

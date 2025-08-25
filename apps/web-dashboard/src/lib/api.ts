@@ -3,6 +3,9 @@
  * Connects to real API endpoints instead of using mock data
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('api-client');
 const API_BASE_URL = 'http://localhost:3000/api';
 
 interface ApiResponse<T> {
@@ -81,7 +84,7 @@ class ApiClient {
   // Set current project context for all API calls
   setProjectContext(projectId: string | null) {
     this.currentProjectId = projectId;
-    console.log('🎯 API client project context updated:', projectId);
+    logger.info('API client project context updated', { projectId });
   }
 
   private async request<T>(
@@ -114,7 +117,7 @@ class ApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error(`API request failed for ${endpoint}:`, error);
+      logger.error('API request failed', { endpoint, error });
       throw error;
     }
   }
@@ -145,10 +148,10 @@ class ApiClient {
     });
   }
 
-  async getTasks(): Promise<Task[]> {
+  getTasks(): Promise<Task[]> {
     // Note: Based on the API, we need to get tasks through other endpoints or implement a tasks list endpoint
     // For now, return empty array and implement when backend supports it
-    return [];
+    return Promise.resolve([]);
   }
 
   async createTask(taskData: Partial<Task>): Promise<Task> {
@@ -177,7 +180,7 @@ class ApiClient {
     topology: string;
     maxAgents: number;
     strategy?: string;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/coordination/swarm/initialize', {
       method: 'POST',
       body: JSON.stringify(config),
@@ -197,40 +200,44 @@ class ApiClient {
 
   // ===== MEMORY API =====
 
-  async getMemoryHealth(): Promise<any> {
+  async getMemoryHealth(): Promise<Record<string, unknown>> {
     return await this.request('/v1/memory/health');
   }
 
-  async getMemoryStores(): Promise<any[]> {
-    const response = await this.request<{ stores: any[]; total: number }>(
-      '/v1/memory/stores'
-    );
+  async getMemoryStores(): Promise<Array<Record<string, unknown>>> {
+    const response = await this.request<{
+      stores: Record<string, unknown>[];
+      total: number;
+    }>('/v1/memory/stores');
     return response.stores || [];
   }
 
-  async getMemoryStats(storeId: string): Promise<any> {
+  async getMemoryStats(storeId: string): Promise<Record<string, unknown>> {
     return await this.request(`/v1/memory/stores/${storeId}/stats`);
   }
 
   // ===== DATABASE API =====
 
-  async getDatabaseHealth(): Promise<any> {
+  async getDatabaseHealth(): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/health');
   }
 
-  async getDatabaseStatus(): Promise<any> {
+  async getDatabaseStatus(): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/status');
   }
 
-  async getDatabaseAnalytics(): Promise<any> {
+  async getDatabaseAnalytics(): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/analytics');
   }
 
-  async getDatabaseSchema(): Promise<any> {
+  async getDatabaseSchema(): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/schema');
   }
 
-  async executeQuery(queryData: { sql: string; params?: any[] }): Promise<any> {
+  async executeQuery(queryData: {
+    sql: string;
+    params?: Record<string, unknown>[];
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/query', {
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -239,8 +246,8 @@ class ApiClient {
 
   async executeCommand(commandData: {
     sql: string;
-    params?: any[];
-  }): Promise<any> {
+    params?: Record<string, unknown>[];
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/execute', {
       method: 'POST',
       body: JSON.stringify(commandData),
@@ -248,9 +255,13 @@ class ApiClient {
   }
 
   async executeTransaction(transactionData: {
-    operations: Array<{ type: 'query|execute'; sql: string; params?: any[] }>;
+    operations: Array<{
+      type: 'query|execute';
+      sql: string;
+      params?: Record<string, unknown>[];
+    }>;
     useTransaction?: boolean;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/transaction', {
       method: 'POST',
       body: JSON.stringify(transactionData),
@@ -262,7 +273,7 @@ class ApiClient {
     version: string;
     description?: string;
     dryRun?: boolean;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/database/migrate', {
       method: 'POST',
       body: JSON.stringify(migrationData),
@@ -275,13 +286,16 @@ class ApiClient {
     storeId: string,
     pattern?: string,
     limit = 100
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const params = new URLSearchParams({ limit: limit.toString() });
     if (pattern) params.append('pattern', pattern);
     return await this.request(`/v1/memory/stores/${storeId}/keys?${params}`);
   }
 
-  async getMemoryValue(storeId: string, key: string): Promise<any> {
+  async getMemoryValue(
+    storeId: string,
+    key: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(
       `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`
     );
@@ -290,9 +304,9 @@ class ApiClient {
   async setMemoryValue(
     storeId: string,
     key: string,
-    value: any,
+    value: Record<string, unknown>,
     ttl?: number
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     return await this.request(
       `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
       {
@@ -311,7 +325,10 @@ class ApiClient {
     );
   }
 
-  async batchGetMemoryValues(storeId: string, keys: string[]): Promise<any> {
+  async batchGetMemoryValues(
+    storeId: string,
+    keys: string[]
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/memory/stores/${storeId}/batch/get`, {
       method: 'POST',
       body: JSON.stringify({ keys }),
@@ -320,15 +337,18 @@ class ApiClient {
 
   async batchSetMemoryValues(
     storeId: string,
-    items: Array<{ key: string; value: any; ttl?: number }>
-  ): Promise<any> {
+    items: Array<{ key: string; value: Record<string, unknown>; ttl?: number }>
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/memory/stores/${storeId}/batch/set`, {
       method: 'POST',
       body: JSON.stringify({ items }),
     });
   }
 
-  async syncMemoryStore(storeId: string, type = 'full'): Promise<any> {
+  async syncMemoryStore(
+    storeId: string,
+    type = 'full'
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/memory/stores/${storeId}/sync`, {
       method: 'POST',
       body: JSON.stringify({ type }),
@@ -337,8 +357,8 @@ class ApiClient {
 
   async createMemoryStore(storeData: {
     type: string;
-    config?: any;
-  }): Promise<any> {
+    config?: Record<string, unknown>;
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/memory/stores', {
       method: 'POST',
       body: JSON.stringify(storeData),
@@ -347,14 +367,20 @@ class ApiClient {
 
   // ===== ADVANCED COORDINATION API =====
 
-  async getAgentTasks(agentId: string, status?: string): Promise<any> {
+  async getAgentTasks(
+    agentId: string,
+    status?: string
+  ): Promise<Record<string, unknown>> {
     const params = status ? `?status=${encodeURIComponent(status)}` : '';
     return await this.request(
       `/v1/coordination/agents/${agentId}/tasks${params}`
     );
   }
 
-  async assignTask(taskId: string, agentId: string): Promise<any> {
+  async assignTask(
+    taskId: string,
+    agentId: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/coordination/tasks/${taskId}/assign`, {
       method: 'POST',
       body: JSON.stringify({ agentId }),
@@ -363,8 +389,8 @@ class ApiClient {
 
   async updateAgentHeartbeat(
     agentId: string,
-    heartbeatData: { workload?: any; status?: string }
-  ): Promise<any> {
+    heartbeatData: { workload?: Record<string, unknown>; status?: string }
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/coordination/agents/${agentId}/heartbeat`, {
       method: 'POST',
       body: JSON.stringify(heartbeatData),
@@ -377,7 +403,7 @@ class ApiClient {
     topology: string;
     maxAgents: number;
     strategy?: string;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/swarm/init', {
       method: 'POST',
       body: JSON.stringify(config),
@@ -391,7 +417,7 @@ class ApiClient {
       name: string;
       capabilities?: string[];
     }
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/swarm/${swarmId}/agents`, {
       method: 'POST',
       body: JSON.stringify(config),
@@ -403,30 +429,30 @@ class ApiClient {
     strategy?: string;
     priority?: string;
     maxAgents?: number;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/swarm/tasks', {
       method: 'POST',
       body: JSON.stringify(taskConfig),
     });
   }
 
-  async getSwarmStatus(swarmId?: string): Promise<any> {
+  async getSwarmStatus(swarmId?: string): Promise<Record<string, unknown>> {
     const endpoint = swarmId
       ? `/v1/swarm/${swarmId}/status`
       : '/v1/swarm/status';
     return await this.request(endpoint);
   }
 
-  async getSwarmTasks(taskId?: string): Promise<any> {
+  async getSwarmTasks(taskId?: string): Promise<Record<string, unknown>> {
     const endpoint = taskId ? `/v1/swarm/tasks/${taskId}` : '/v1/swarm/tasks';
     return await this.request(endpoint);
   }
 
-  async getSwarmStats(): Promise<any> {
+  async getSwarmStats(): Promise<Record<string, unknown>> {
     return await this.request('/v1/swarm/stats');
   }
 
-  async shutdownSwarm(): Promise<any> {
+  async shutdownSwarm(): Promise<Record<string, unknown>> {
     return await this.request('/v1/swarm/shutdown', {
       method: 'POST',
     });
@@ -449,24 +475,27 @@ class ApiClient {
     return await this.request<Project>(`/v1/projects/${projectId}`);
   }
 
-  async switchProject(projectId: string, projectPath?: string): Promise<any> {
+  async switchProject(
+    projectId: string,
+    projectPath?: string
+  ): Promise<Record<string, unknown>> {
     return await this.request('/v1/projects/switch', {
       method: 'POST',
       body: JSON.stringify({ projectId, projectPath }),
     });
   }
 
-  async switchToProject(projectId: string): Promise<any> {
+  async switchToProject(projectId: string): Promise<Record<string, unknown>> {
     return await this.request(`/v1/projects/${projectId}/switch`, {
       method: 'POST',
     });
   }
 
-  async getProjectStatus(): Promise<any> {
+  async getProjectStatus(): Promise<Record<string, unknown>> {
     return await this.request('/v1/projects/status');
   }
 
-  async cleanupProjectRegistry(): Promise<any> {
+  async cleanupProjectRegistry(): Promise<Record<string, unknown>> {
     return await this.request('/v1/projects/cleanup', {
       method: 'POST',
     });
@@ -481,11 +510,11 @@ class ApiClient {
 
   // ===== PROJECT MODE MANAGEMENT API =====
 
-  async getProjectModes(projectId: string): Promise<any> {
+  async getProjectModes(projectId: string): Promise<Record<string, unknown>> {
     return await this.request(`/v1/projects/${projectId}/modes`);
   }
 
-  async getModeCapabilities(mode: string): Promise<any> {
+  async getModeCapabilities(mode: string): Promise<Record<string, unknown>> {
     return await this.request(`/v1/projects/modes/${mode}/capabilities`);
   }
 
@@ -497,26 +526,28 @@ class ApiClient {
       backupBeforeMigration?: boolean;
       validateAfterMigration?: boolean;
     }
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/projects/${projectId}/modes/upgrade`, {
       method: 'POST',
       body: JSON.stringify(upgradeData),
     });
   }
 
-  async getProjectUpgradePaths(projectId: string): Promise<any> {
+  async getProjectUpgradePaths(
+    projectId: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/projects/${projectId}/modes/upgrade-paths`);
   }
 
   async getSchemaMigrationPath(
     fromVersion: string,
     toVersion: string
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const params = new URLSearchParams({ fromVersion, toVersion });
     return await this.request(`/v1/projects/schema/migration-path?${params}`);
   }
 
-  async getAllProjectModes(): Promise<any> {
+  async getAllProjectModes(): Promise<Record<string, unknown>> {
     return await this.request('/v1/projects/modes');
   }
 
@@ -526,94 +557,107 @@ class ApiClient {
 
   // ===== SYSTEM CAPABILITY API =====
 
-  async getSystemCapabilityStatus(): Promise<any> {
+  async getSystemCapabilityStatus(): Promise<Record<string, unknown>> {
     return await this.request('/v1/system/capability/status');
   }
 
-  async getSystemCapabilityFacades(): Promise<any> {
+  async getSystemCapabilityFacades(): Promise<Record<string, unknown>> {
     return await this.request('/v1/system/capability/facades');
   }
 
-  async getSystemCapabilitySuggestions(): Promise<any> {
+  async getSystemCapabilitySuggestions(): Promise<Record<string, unknown>> {
     return await this.request('/v1/system/capability/suggestions');
   }
 
-  async getSystemCapabilityDetailed(): Promise<any> {
+  async getSystemCapabilityDetailed(): Promise<Record<string, unknown>> {
     return await this.request('/v1/system/capability/detailed');
   }
 
-  async getSystemCapabilityHealth(): Promise<any> {
+  async getSystemCapabilityHealth(): Promise<Record<string, unknown>> {
     return await this.request('/v1/system/capability/health');
   }
 
-  async getSystemCapabilityScores(): Promise<any> {
+  async getSystemCapabilityScores(): Promise<Record<string, unknown>> {
     return await this.request('/v1/system/capability/scores');
   }
 
   // ===== FACADE MONITORING API =====
 
-  async getFacadeStatus(): Promise<any> {
+  async getFacadeStatus(): Promise<Record<string, unknown>> {
     return await this.request('/v1/facades/status');
   }
 
-  async getFacadeHealth(facadeName?: string): Promise<any> {
+  async getFacadeHealth(facadeName?: string): Promise<Record<string, unknown>> {
     const endpoint = facadeName
       ? `/v1/facades/${facadeName}/health`
       : '/v1/facades/health';
     return await this.request(endpoint);
   }
 
-  async getFacadePackages(facadeName: string): Promise<any> {
+  async getFacadePackages(
+    facadeName: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/facades/${facadeName}/packages`);
   }
 
-  async getFacadeServices(facadeName: string): Promise<any> {
+  async getFacadeServices(
+    facadeName: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/facades/${facadeName}/services`);
   }
 
-  async refreshFacadeStatus(facadeName?: string): Promise<any> {
+  async refreshFacadeStatus(
+    facadeName?: string
+  ): Promise<Record<string, unknown>> {
     const endpoint = facadeName
       ? `/v1/facades/${facadeName}/refresh`
       : '/v1/facades/refresh';
     return await this.request(endpoint, { method: 'POST' });
   }
 
-  async getPackageStatus(packageName: string): Promise<any> {
+  async getPackageStatus(
+    packageName: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(
       `/v1/facades/packages/${encodeURIComponent(packageName)}/status`
     );
   }
 
-  async getServiceStatus(serviceName: string): Promise<any> {
+  async getServiceStatus(
+    serviceName: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(
       `/v1/facades/services/${encodeURIComponent(serviceName)}/status`
     );
   }
 
-  async getFacadeMetrics(): Promise<any> {
+  async getFacadeMetrics(): Promise<Record<string, unknown>> {
     return await this.request('/v1/facades/metrics');
   }
 
-  async getFacadeHistory(facadeName: string, timeRange?: string): Promise<any> {
+  async getFacadeHistory(
+    facadeName: string,
+    timeRange?: string
+  ): Promise<Record<string, unknown>> {
     const params = timeRange ? `?timeRange=${timeRange}` : '';
     return await this.request(`/v1/facades/${facadeName}/history${params}`);
   }
 
-  async getSystemDependencies(): Promise<any> {
+  async getSystemDependencies(): Promise<Record<string, unknown>> {
     return await this.request('/v1/facades/dependencies');
   }
 
   // ===== TASKMASTER SAFE WORKFLOW API =====
 
-  async getTaskMasterMetrics(): Promise<any> {
+  async getTaskMasterMetrics(): Promise<Record<string, unknown>> {
     return await this.request('/v1/taskmaster/metrics');
   }
 
-  async getTaskMasterHealth(): Promise<any> {
+  async getTaskMasterHealth(): Promise<Record<string, unknown>> {
     return await this.request('/v1/taskmaster/health');
   }
 
-  async getTaskMasterDashboard(): Promise<any> {
+  async getTaskMasterDashboard(): Promise<Record<string, unknown>> {
     return await this.request('/v1/taskmaster/dashboard');
   }
 
@@ -623,25 +667,28 @@ class ApiClient {
     priority: 'critical' | 'high' | 'medium' | 'low';
     estimatedEffort: number;
     assignedAgent?: string;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/taskmaster/tasks', {
       method: 'POST',
       body: JSON.stringify(taskData),
     });
   }
 
-  async getTaskMasterTask(taskId: string): Promise<any> {
+  async getTaskMasterTask(taskId: string): Promise<Record<string, unknown>> {
     return await this.request(`/v1/taskmaster/tasks/${taskId}`);
   }
 
-  async moveSAFeTask(taskId: string, toState: string): Promise<any> {
+  async moveSAFeTask(
+    taskId: string,
+    toState: string
+  ): Promise<Record<string, unknown>> {
     return await this.request(`/v1/taskmaster/tasks/${taskId}/move`, {
       method: 'PUT',
       body: JSON.stringify({ toState }),
     });
   }
 
-  async getTasksByState(state: string): Promise<any> {
+  async getTasksByState(state: string): Promise<Record<string, unknown>> {
     return await this.request(`/v1/taskmaster/tasks/state/${state}`);
   }
 
@@ -651,7 +698,7 @@ class ApiClient {
     startDate: string;
     endDate: string;
     facilitator: string;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown>> {
     return await this.request('/v1/taskmaster/pi-planning', {
       method: 'POST',
       body: JSON.stringify(eventData),
@@ -660,20 +707,20 @@ class ApiClient {
 
   // Convenience methods for SAFe workflow states
   async getAllSAFeTasks(): Promise<{
-    backlog: any[];
-    analysis: any[];
-    development: any[];
-    testing: any[];
-    review: any[];
-    deployment: any[];
-    done: any[];
-    blocked: any[];
+    backlog: Record<string, unknown>[];
+    analysis: Record<string, unknown>[];
+    development: Record<string, unknown>[];
+    testing: Record<string, unknown>[];
+    review: Record<string, unknown>[];
+    deployment: Record<string, unknown>[];
+    done: Record<string, unknown>[];
+    blocked: Record<string, unknown>[];
   }> {
     const dashboard = await this.getTaskMasterDashboard();
     return dashboard.data.tasksByState;
   }
 
-  async getSAFeFlowMetrics(): Promise<any> {
+  async getSAFeFlowMetrics(): Promise<Record<string, unknown>> {
     const metrics = await this.getTaskMasterMetrics();
     return metrics.data;
   }

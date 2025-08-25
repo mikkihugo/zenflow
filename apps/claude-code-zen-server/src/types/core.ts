@@ -1,6 +1,6 @@
 /**
  * Core System Types
- * 
+ *
  * Core types for system configuration, lifecycle, and fundamental operations.
  * Consolidated from: core-config.ts, system-config.ts, config-types.ts, logger.ts
  */
@@ -22,7 +22,7 @@ export interface SystemConfig {
   database?: {
     url: string;
     type: 'sqlite' | 'postgres' | 'mongodb';
-    options?: Record<string, any>;
+    options?: Record<string, unknown>;
   };
   logging: LoggingConfig;
   features: FeatureFlags;
@@ -117,7 +117,7 @@ export interface ShutdownOptions {
   reason?: string;
 }
 
-export type SystemEvent = 
+export type SystemEvent =
   | 'startup'
   | 'shutdown'
   | 'error'
@@ -132,7 +132,7 @@ export interface SystemError extends Error {
   code: string;
   component: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   timestamp: Date;
 }
 
@@ -141,23 +141,27 @@ export interface ErrorContext {
   component: string;
   userId?: string;
   requestId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // ============================================================================
 // Type Guards
 // ============================================================================
 
-export function isSystemConfig(obj: any): obj is SystemConfig {
-  return obj && 
+export function isSystemConfig(obj: unknown): obj is SystemConfig {
+  return (
+    obj &&
     typeof obj.environment === 'string' &&
     typeof obj.server === 'object' &&
-    typeof obj.logging === 'object';
+    typeof obj.logging === 'object'
+  );
 }
 
-export function isSystemHealth(obj: any): obj is SystemHealth {
-  return obj && 
+export function isSystemHealth(obj: unknown): obj is SystemHealth {
+  return (
+    obj &&
     typeof obj.status === 'string' &&
     typeof obj.version === 'string' &&
-    typeof obj.uptime === 'number';
+    typeof obj.uptime === 'number'
+  );
 }

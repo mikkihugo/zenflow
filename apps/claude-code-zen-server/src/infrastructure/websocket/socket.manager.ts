@@ -5,10 +5,14 @@
  * and client event management for the web dashboard.
  */
 
-const { getLogger } = (global as Record<string, unknown>).foundation as { getLogger: Function };
+const { getLogger } = (global as Record<string, unknown>).foundation as {
+  getLogger: Function;
+};
 import type { Server as SocketIOServer } from 'socket.io';
 
-const { getVersion } = (global as Record<string, unknown>).foundation as { getVersion: () => string } || { getVersion: () => '1.0.0' };
+const { getVersion } = ((global as Record<string, unknown>).foundation as {
+  getVersion: () => string;
+}) || { getVersion: () => '1.0.0' };
 
 export interface BroadcastData {
   event: string;
@@ -63,14 +67,14 @@ export class WebSocketManager {
       socket.emit('connected', {
         sessionId: socket.handshake.headers['x-session-id'] || socket.id,
         timestamp: new Date().toISOString(),
-        serverVersion: getVersion()
+        serverVersion: getVersion(),
       });
 
       // Handle client subscription events
       socket.on('subscribe', (channel: string) => {
         socket.join(channel);
         this.logger.debug(`Client ${socket.id} subscribed to ${channel}`);
-        
+
         // Send initial data for the subscribed channel
         this.sendChannelData(socket, channel);
       });
@@ -86,7 +90,9 @@ export class WebSocketManager {
       });
 
       socket.on('disconnect', (reason) => {
-        this.logger.debug(`Client disconnected: ${socket.id}, reason: ${reason}`);
+        this.logger.debug(
+          `Client disconnected: ${socket.id}, reason: ${reason}`
+        );
       });
 
       socket.on('error', (error) => {
@@ -102,14 +108,17 @@ export class WebSocketManager {
   /**
    * Send initial data for a specific channel.
    */
-  private async sendChannelData(socket: Record<string, unknown>, channel: string): Promise<void> {
+  private async sendChannelData(
+    socket: Record<string, unknown>,
+    channel: string
+  ): Promise<void> {
     try {
       switch (channel) {
         case 'system': {
           const status = await this.dataService.getSystemStatus();
           socket.emit('system:initial', {
             data: status,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           break;
         }
@@ -117,7 +126,7 @@ export class WebSocketManager {
           const swarms = await this.dataService.getSwarms();
           socket.emit('swarms:initial', {
             data: swarms,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           break;
         }
@@ -125,7 +134,7 @@ export class WebSocketManager {
           const tasks = await this.dataService.getTasks();
           socket.emit('tasks:initial', {
             data: tasks,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           break;
         }
@@ -136,7 +145,7 @@ export class WebSocketManager {
             const logs = getLogEntries();
             socket.emit('logs:initial', {
               data: logs,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             });
           } catch (error) {
             this.logger.debug('Log entries not available:', error);
@@ -147,7 +156,10 @@ export class WebSocketManager {
           this.logger.warn(`Unknown channel subscription: ${channel}`);
       }
     } catch (error) {
-      this.logger.error(`Failed to send initial data for channel ${channel}:`, error);
+      this.logger.error(
+        `Failed to send initial data for channel ${channel}:`,
+        error
+      );
     }
   }
 
@@ -190,7 +202,7 @@ export class WebSocketManager {
       try {
         const { getLogEntries } = await import('@claude-zen/foundation');
         const logs = getLogEntries();
-        
+
         // Only broadcast if we have logs
         if (logs.length > 0) {
           this.broadcastToRoom('logs', 'logs:bulk', logs);
@@ -220,7 +232,7 @@ export class WebSocketManager {
     const broadcastData: BroadcastData = {
       event,
       data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     this.io.emit(event, broadcastData);
@@ -236,7 +248,7 @@ export class WebSocketManager {
     const broadcastData: BroadcastData = {
       event,
       data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     this.io.to(room).emit(event, broadcastData);
@@ -260,7 +272,7 @@ export class WebSocketManager {
     return {
       totalConnections: sockets.size,
       connectedClients,
-      rooms
+      rooms,
     };
   }
 
@@ -286,7 +298,9 @@ export class WebSocketManager {
               // Broadcast to the logs room specifically
               this.broadcastToRoom('logs', event, data);
             });
-            this.logger.debug('Log broadcaster configured for real-time updates');
+            this.logger.debug(
+              'Log broadcaster configured for real-time updates'
+            );
           }
         })
         .catch((error) => {

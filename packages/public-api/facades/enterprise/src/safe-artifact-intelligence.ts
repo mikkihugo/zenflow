@@ -22,16 +22,28 @@ async function loadDocumentIntelligenceModule() {
       documentIntelligenceModuleCache = {
         DocumentIntelligenceService: class {
           async analyzeDocument() {
-            return { result: 'fallback-analysis', status: 'analyzed', confidence: 0.5 };
+            return {
+              result: 'fallback-analysis',
+              status: 'analyzed',
+              confidence: 0.5,
+            };
           }
           async analyzeSemantics() {
-            return { documentType: 'unknown', confidence: 0.5, patterns: { detected: [] } };
+            return {
+              documentType: 'unknown',
+              confidence: 0.5,
+              patterns: { detected: [] },
+            };
           }
           async segmentDocument() {
             return { segments: [], strategy: 'fallback', qualityScore: 0.5 };
           }
           async coordinateVision() {
-            return { projectId: 'unknown', confidenceScore: 0.5, strategicGoals: [] };
+            return {
+              projectId: 'unknown',
+              confidenceScore: 0.5,
+              strategicGoals: [],
+            };
           }
           async processDocument() {
             return { result: 'fallback-processing', status: 'processed' };
@@ -43,14 +55,20 @@ async function loadDocumentIntelligenceModule() {
             return this;
           }
           async getStatus() {
-            return { initialized: true, enabledCapabilities: ['fallback'], componentStatus: {} };
+            return {
+              initialized: true,
+              enabledCapabilities: ['fallback'],
+              componentStatus: {},
+            };
           }
           async shutdown() {
             return Promise.resolve();
           }
         },
-        createDocumentIntelligenceService: () => createFallbackIntelligenceService(),
-        getDocumentIntelligenceServiceAccess: () => createFallbackIntelligenceService(),
+        createDocumentIntelligenceService: () =>
+          createFallbackIntelligenceService(),
+        getDocumentIntelligenceServiceAccess: () =>
+          createFallbackIntelligenceService(),
       };
     }
   }
@@ -63,7 +81,11 @@ function createFallbackIntelligenceService() {
       console.log('Document analysis options:', options);
       return {
         semanticClassification: { documentType: 'unknown', confidence: 0.5 },
-        processingMetrics: { totalProcessingTime: 0, confidenceScore: 0.5, qualityScore: 0.5 },
+        processingMetrics: {
+          totalProcessingTime: 0,
+          confidenceScore: 0.5,
+          qualityScore: 0.5,
+        },
         timestamp: Date.now(),
       };
     },
@@ -91,7 +113,11 @@ function createFallbackIntelligenceService() {
       totalIssues: 0,
       scanDuration: 0,
     }),
-    getStatus: () => ({ initialized: true, enabledCapabilities: ['fallback'], componentStatus: {} }),
+    getStatus: () => ({
+      initialized: true,
+      enabledCapabilities: ['fallback'],
+      componentStatus: {},
+    }),
     initialize: async () => Promise.resolve(),
     shutdown: async () => Promise.resolve(),
   };
@@ -135,7 +161,8 @@ function createFallbackWorkflow() {
 function createFallbackScanner() {
   const service = createFallbackIntelligenceService();
   return {
-    scanDocument: async (document: any) => service.scanForPatterns({ rootPath: document?.path || '.' }),
+    scanDocument: async (document: any) =>
+      service.scanForPatterns({ rootPath: document?.path || '.' }),
     scanForPatterns: service.scanForPatterns,
     getStatus: service.getStatus,
     initialize: service.initialize,
@@ -147,35 +174,40 @@ function createFallbackScanner() {
 export const getDocumentIntelligence = async (config?: any) => {
   const docIntelligenceModule = await loadDocumentIntelligenceModule();
   return (
-    docIntelligenceModule.createDocumentIntelligenceService?.(config) || createFallbackIntelligenceService()
+    docIntelligenceModule.createDocumentIntelligenceService?.(config) ||
+    createFallbackIntelligenceService()
   );
 };
 
 export const getDocumentDrivenSystem = async () => {
   const docIntelligenceModule = await loadDocumentIntelligenceModule();
   return (
-    docIntelligenceModule.createDocumentIntelligenceService?.() || createFallbackDocumentSystem()
+    docIntelligenceModule.createDocumentIntelligenceService?.() ||
+    createFallbackDocumentSystem()
   );
 };
 
 export const getDocumentProcessor = async () => {
   const docIntelligenceModule = await loadDocumentIntelligenceModule();
   return (
-    docIntelligenceModule.createDocumentIntelligenceService?.() || createFallbackProcessor()
+    docIntelligenceModule.createDocumentIntelligenceService?.() ||
+    createFallbackProcessor()
   );
 };
 
 export const getDocumentWorkflow = async () => {
   const docIntelligenceModule = await loadDocumentIntelligenceModule();
   return (
-    docIntelligenceModule.createDocumentIntelligenceService?.() || createFallbackWorkflow()
+    docIntelligenceModule.createDocumentIntelligenceService?.() ||
+    createFallbackWorkflow()
   );
 };
 
 export const getDocumentScanner = async () => {
   const docIntelligenceModule = await loadDocumentIntelligenceModule();
   return (
-    docIntelligenceModule.createDocumentIntelligenceService?.() || createFallbackScanner()
+    docIntelligenceModule.createDocumentIntelligenceService?.() ||
+    createFallbackScanner()
   );
 };
 
@@ -197,14 +229,14 @@ export class DocumentDrivenSystem {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.analyzeDocument ?
-      this.instance.analyzeDocument(document) :
-      this.instance.processDocument(document);
+    return this.instance.analyzeDocument
+      ? this.instance.analyzeDocument(document)
+      : this.instance.processDocument(document);
   }
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized' };
+      return { status: 'not-initialized' };
     }
     return this.instance.getStatus();
   }
@@ -234,14 +266,14 @@ export class DocumentProcessor {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.analyzeDocument ?
-      this.instance.analyzeDocument(document) :
-      this.instance.processDocument(document);
+    return this.instance.analyzeDocument
+      ? this.instance.analyzeDocument(document)
+      : this.instance.processDocument(document);
   }
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized' };
+      return { status: 'not-initialized' };
     }
     return this.instance.getStatus();
   }
@@ -269,7 +301,7 @@ export class DocumentWorkflowSystem {
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized' };
+      return { status: 'not-initialized' };
     }
     return this.instance.getStatus();
   }
@@ -292,14 +324,14 @@ export class EnhancedDocumentScanner {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.scanForPatterns ?
-      this.instance.scanForPatterns(document) :
-      this.instance.scanDocument(document);
+    return this.instance.scanForPatterns
+      ? this.instance.scanForPatterns(document)
+      : this.instance.scanDocument(document);
   }
 
   getStatus() {
     if (!this.instance) {
-      return { status:'not-initialized' };
+      return { status: 'not-initialized' };
     }
     return this.instance.getStatus();
   }

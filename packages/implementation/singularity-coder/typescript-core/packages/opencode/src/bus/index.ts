@@ -1,4 +1,4 @@
-import { z, type ZodType } from "zod"
+import { z, type ZodType } from "@claude-zen/foundation"
 import { App } from "../app/app"
 import { Log } from "../util/log"
 

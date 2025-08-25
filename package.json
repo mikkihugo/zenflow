@@ -36,7 +36,12 @@
     "clean": "rm -rf dist/ node_modules/.cache/ && pnpm run clean:all",
     "clean:all": "pnpm -r clean --if-present && find . -name 'dist' -type d -not -path '*/node_modules/*' -not -path './dist' -exec rm -rf {} + 2>/dev/null || true && find . -name 'target' -type d -not -path '*/node_modules/*' -exec rm -rf {} + 2>/dev/null || true",
     "clean:rust": "find . -name 'target' -type d -not -path '*/node_modules/*' -exec rm -rf {} + 2>/dev/null || true",
-    "clean:typescript": "find . -name 'dist' -type d -not -path '*/node_modules/*' -not -path './dist' -exec rm -rf {} + 2>/dev/null || true"
+    "clean:typescript": "find . -name 'dist' -type d -not -path '*/node_modules/*' -not -path './dist' -exec rm -rf {} + 2>/dev/null || true",
+    "validate:imports": "node scripts/validate-imports.js",
+    "validate:dependencies": "node scripts/validate-dependencies.js",
+    "validate:foundation": "pnpm run validate:imports && pnpm run validate:dependencies",
+    "prepare": "husky install || true",
+    "pre-commit": "bash scripts/pre-commit.sh"
   },
   "files": [
     "dist/",
@@ -142,6 +147,7 @@
   },
   "devDependencies": {
     "@babel/plugin-syntax-optional-chaining": "^7.8.3",
+    "eslint-formatter-unix": "^8.40.0",
     "@eslint/js": "^9.34.0",
     "@types/blessed": "^0.1.25",
     "@types/compression": "^1.8.1",

@@ -90,18 +90,18 @@ class InMemoryDSPyKV implements DSPyKV {
  */
 export class DSPyEngine {
   private config: DSPyConfig;
-  private kv: DSPyKV|null = null;
+  private kv: DSPyKV | null = null;
   private llmService: any = null;
   private optimizationHistory = new Map<string, DSPyOptimizationResult[]>();
 
   constructor(config: Partial<DSPyConfig> = {}) {
     this.config = {
-      maxIterations: config.maxIterations||5,
-      fewShotExamples: config.fewShotExamples||3,
-      temperature: config.temperature||0.1,
-      model: config.model||'claude-3-sonnet',
-      metrics: config.metrics||['accuracy', 'latency'],
-      swarmCoordination: config.swarmCoordination||false,
+      maxIterations: config.maxIterations || 5,
+      fewShotExamples: config.fewShotExamples || 3,
+      temperature: config.temperature || 0.1,
+      model: config.model || 'claude-3-sonnet',
+      metrics: config.metrics || ['accuracy', 'latency'],
+      swarmCoordination: config.swarmCoordination || false,
       ...config,
     };
 
@@ -169,7 +169,7 @@ export class DSPyEngine {
       id: `dspy-${Date.now()}`,
       name: task,
       signature: 'input -> output',
-      prompt: initialPrompt||`Complete this task: ${task}`,
+      prompt: initialPrompt || `Complete this task: ${task}`,
       examples,
       metrics: this.createInitialMetrics(),
     };
@@ -206,7 +206,7 @@ export class DSPyEngine {
       variation.score = score;
 
       // Update best if improved
-      if (score > (program.metrics.accuracy||0)) {
+      if (score > (program.metrics.accuracy || 0)) {
         program.prompt = variation.prompt;
         program.metrics.accuracy = score;
         logger.info(`DSPy improvement found: ${score.toFixed(3)} accuracy`);
@@ -216,13 +216,13 @@ export class DSPyEngine {
     const duration = Date.now() - startTime;
     const result: DSPyOptimizationResult = {
       programId: program.id,
-      originalPrompt: initialPrompt||`Complete this task: ${task}`,
+      originalPrompt: initialPrompt || `Complete this task: ${task}`,
       optimizedPrompt: program.prompt,
-      improvement: (program.metrics.accuracy||0) - 0.5, // Assume 0.5 baseline
+      improvement: (program.metrics.accuracy || 0) - 0.5, // Assume 0.5 baseline
       iterations: this.config.maxIterations,
       variations,
       metrics: {
-        accuracy: program.metrics.accuracy||0,
+        accuracy: program.metrics.accuracy || 0,
         latency: duration,
         tokenUsage: variations.length * 100, // Rough estimate
         cost: variations.length * 0.001, // Rough estimate
@@ -396,7 +396,7 @@ Improved prompt:`;
       await kv.set(key, result);
 
       // Update history
-      const history = this.optimizationHistory.get(task)||[];
+      const history = this.optimizationHistory.get(task) || [];
       history.push(result);
       this.optimizationHistory.set(task, history);
 
@@ -430,7 +430,7 @@ Improved prompt:`;
       );
     } catch (error) {
       logger.warn('Failed to get optimization history:', error);
-      return this.optimizationHistory.get(task)||[];
+      return this.optimizationHistory.get(task) || [];
     }
   }
 
@@ -491,12 +491,12 @@ Improved prompt:`;
    * Compile a DSPy module with examples and options
    */
   async compile(module: any, examples: any[], options?: any): Promise<any> {
-    logger.info('Compiling DSPy module with examples:', { 
+    logger.info('Compiling DSPy module with examples:', {
       moduleType: typeof module,
       examplesCount: examples.length,
-      options 
+      options,
     });
-    
+
     // Implementation would involve optimizing the module using DSPy techniques
     return module; // For now, return the module as-is
   }
@@ -508,16 +508,16 @@ Improved prompt:`;
     logger.info('Evaluating DSPy module:', {
       moduleType: typeof module,
       examplesCount: examples.length,
-      metricsCount: metrics.length
+      metricsCount: metrics.length,
     });
-    
+
     // Mock evaluation results - would implement real evaluation
     return {
       accuracy: 0.85,
       precision: 0.82,
       recall: 0.88,
       f1Score: 0.85,
-      evaluationTime: Date.now()
+      evaluationTime: Date.now(),
     };
   }
 
@@ -527,10 +527,12 @@ Improved prompt:`;
   async train(module: any, trainingData: any, config?: any): Promise<any> {
     logger.info('Training DSPy module:', {
       moduleType: typeof module,
-      trainingDataSize: Array.isArray(trainingData) ? trainingData.length : 'unknown',
-      config
+      trainingDataSize: Array.isArray(trainingData)
+        ? trainingData.length
+        : 'unknown',
+      config,
     });
-    
+
     // Training would involve updating module parameters
     return module; // For now, return the module as-is
   }
@@ -541,14 +543,14 @@ Improved prompt:`;
   async optimize(candidates: any[], config?: any): Promise<any> {
     logger.info('Optimizing candidates:', {
       candidatesCount: candidates.length,
-      config
+      config,
     });
-    
+
     // Return optimized candidates - would implement real optimization
     return candidates.map((candidate, index) => ({
       ...candidate,
       optimized: true,
-      score: 0.8 + (index * 0.01) // Mock scores
+      score: 0.8 + index * 0.01, // Mock scores
     }));
   }
 
@@ -558,10 +560,11 @@ Improved prompt:`;
   get utils() {
     return {
       createExample: (inputs: any, outputs?: any) => ({ inputs, outputs }),
-      formatPrompt: (template: string, data: any) => template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || ''),
+      formatPrompt: (template: string, data: any) =>
+        template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || ''),
       calculateMetrics: (predictions: any[], targets: any[]) => ({
-        accuracy: predictions.length === targets.length ? 0.85 : 0.70
-      })
+        accuracy: predictions.length === targets.length ? 0.85 : 0.7,
+      }),
     };
   }
 }
@@ -609,8 +612,8 @@ export const dspyUtils = {
     }
 
     if (
-      typeof config?.temperature === 'number'&&
-      (config.temperature < 0||config.temperature > 1)
+      typeof config?.temperature === 'number' &&
+      (config.temperature < 0 || config.temperature > 1)
     ) {
       errors.push('temperature must be between 0 and 1');
     }

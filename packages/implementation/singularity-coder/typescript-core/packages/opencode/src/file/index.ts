@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { Bus } from "../bus"
 import { $ } from "bun"
 import { createPatch } from "diff"

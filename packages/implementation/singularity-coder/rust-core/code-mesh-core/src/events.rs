@@ -11,10 +11,10 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use uuid::Uuid;
 
-#[cfg(feature = "native")]
+#[cfg(not(target_arch = "wasm32"))]
 use tokio::sync::{broadcast, RwLock};
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 use parking_lot::RwLock;
 
 /// Event trait that all events must implement
@@ -97,14 +97,10 @@ impl<E: Event, H: EventHandler<E>> EventHandlerDyn for EventHandlerWrapper<E, H>
 
 /// Event bus for managing event distribution
 pub struct EventBus {
-    #[cfg(feature = "native")]
     handlers: RwLock<HashMap<TypeId, Vec<BoxedHandler>>>,
     
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     broadcast_senders: RwLock<HashMap<TypeId, broadcast::Sender<Arc<dyn Any + Send + Sync>>>>,
-    
-    #[cfg(feature = "wasm")]
-    handlers: RwLock<HashMap<TypeId, Vec<BoxedHandler>>>,
     
     /// Maximum number of queued events per type
     max_queue_size: usize,
@@ -118,7 +114,7 @@ impl EventBus {
     pub fn new() -> Self {
         Self {
             handlers: RwLock::new(HashMap::new()),
-            #[cfg(feature = "native")]
+            #[cfg(not(target_arch = "wasm32"))]
             broadcast_senders: RwLock::new(HashMap::new()),
             max_queue_size: 1000,
             tracing_enabled: true,
@@ -129,7 +125,7 @@ impl EventBus {
     pub fn with_config(max_queue_size: usize, tracing_enabled: bool) -> Self {
         Self {
             handlers: RwLock::new(HashMap::new()),
-            #[cfg(feature = "native")]
+            #[cfg(not(target_arch = "wasm32"))]
             broadcast_senders: RwLock::new(HashMap::new()),
             max_queue_size,
             tracing_enabled,
@@ -144,7 +140,7 @@ impl EventBus {
             _phantom: std::marker::PhantomData::<E>,
         });
 
-        #[cfg(feature = "native")]
+        #[cfg(not(target_arch = "wasm32"))]
         {
             let mut handlers = self.handlers.write().await;
             let handlers_list = handlers.entry(type_id).or_insert_with(Vec::new);
@@ -160,7 +156,7 @@ impl EventBus {
             });
         }
 
-        #[cfg(feature = "wasm")]
+        #[cfg(target_arch = "wasm32")]
         {
             let mut handlers = self.handlers.write();
             let handlers_list = handlers.entry(type_id).or_insert_with(Vec::new);
@@ -196,7 +192,7 @@ impl EventBus {
         }
 
         // Handle direct subscriptions
-        #[cfg(feature = "native")]
+        #[cfg(not(target_arch = "wasm32"))]
         {
             let handlers = self.handlers.read().await;
             if let Some(handlers_list) = handlers.get(&type_id) {
@@ -218,7 +214,7 @@ impl EventBus {
             }
         }
 
-        #[cfg(feature = "wasm")]
+        #[cfg(target_arch = "wasm32")]
         {
             let handlers = self.handlers.read();
             if let Some(handlers_list) = handlers.get(&type_id) {
@@ -235,7 +231,7 @@ impl EventBus {
     }
 
     /// Create a broadcast channel for streaming events
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn create_stream<E: Event>(&self) -> broadcast::Receiver<Arc<dyn Any + Send + Sync>> {
         let type_id = TypeId::of::<E>();
         
@@ -250,13 +246,13 @@ impl EventBus {
 
     /// Unsubscribe from all events (clears all handlers)
     pub async fn clear(&self) {
-        #[cfg(feature = "native")]
+        #[cfg(not(target_arch = "wasm32"))]
         {
             self.handlers.write().await.clear();
             self.broadcast_senders.write().await.clear();
         }
 
-        #[cfg(feature = "wasm")]
+        #[cfg(target_arch = "wasm32")]
         {
             self.handlers.write().clear();
         }
@@ -266,7 +262,7 @@ impl EventBus {
     pub async fn handler_count<E: Event>(&self) -> usize {
         let type_id = TypeId::of::<E>();
         
-        #[cfg(feature = "native")]
+        #[cfg(not(target_arch = "wasm32"))]
         {
             self.handlers.read().await
                 .get(&type_id)
@@ -274,7 +270,7 @@ impl EventBus {
                 .unwrap_or(0)
         }
 
-        #[cfg(feature = "wasm")]
+        #[cfg(target_arch = "wasm32")]
         {
             self.handlers.read()
                 .get(&type_id)
@@ -601,7 +597,7 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "native")]
+    #[cfg(not(target_arch = "wasm32"))]
     #[tokio::test]
     async fn test_event_bus() {
         let bus = EventBus::new();

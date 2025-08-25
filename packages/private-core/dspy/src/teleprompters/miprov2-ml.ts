@@ -51,7 +51,7 @@ export interface MIPROv2MLConfig {
   useStatisticalValidation: boolean;
 
   // Bayesian optimization settings
-  acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement';
+  acquisitionFunction: 'expected_improvement|upper_confidence_bound|probability_improvement';
   kernelType: 'rbf|matern|linear';
   explorationWeight: number;
 
@@ -274,8 +274,8 @@ export class MIPROv2ML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule|null;
-      valset?: any[]|null;
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -299,7 +299,8 @@ export class MIPROv2ML extends Teleprompter {
     this.optimizationHistory = [];
 
     try {
-      this.logger.info('Starting MIPROv2ML compilation with ML enhancements...'
+      this.logger.info(
+        'Starting MIPROv2ML compilation with ML enhancements...'
       );
 
       // Step 1: Multi-objective optimization for hyperparameter search
@@ -379,7 +380,8 @@ export class MIPROv2ML extends Teleprompter {
     options: any
   ): Promise<{ bestSolution: any; paretoFront: ParetoFront }> {
     this.logger.info(
-      'Performing multi-objective optimization with NSGA-II algorithm...');
+      'Performing multi-objective optimization with NSGA-II algorithm...'
+    );
 
     // Define parameter bounds for MIPROv2
     const bounds: OptimizationBounds = {
@@ -399,12 +401,12 @@ export class MIPROv2ML extends Teleprompter {
 
     const result = await this.multiObjectiveOptimizer!.optimize(objectives);
 
-    if (!result||result.solutions.length === 0) {
+    if (!result || result.solutions.length === 0) {
       throw new Error('Multi-objective optimization failed to find solutions');
     }
 
     // Select best solution from Pareto front based on weighted objectives
-    const weights = this.config.objectiveWeights||[0.6, 0.25, 0.15]; // Prioritize accuracy
+    const weights = this.config.objectiveWeights || [0.6, 0.25, 0.15]; // Prioritize accuracy
     const bestSolution = this.selectBestSolution(result, weights);
 
     this.logger.info(
@@ -424,7 +426,9 @@ export class MIPROv2ML extends Teleprompter {
     student: DSPyModule,
     initialSolution: any
   ): Promise<OptimizationResult> {
-    this.logger.info('Performing Bayesian optimization with Gaussian Process...');
+    this.logger.info(
+      'Performing Bayesian optimization with Gaussian Process...'
+    );
 
     const bounds: OptimizationBounds = {
       lower: initialSolution.parameters.map((p: number) => p * 0.8), // 20% below initial
@@ -462,12 +466,15 @@ export class MIPROv2ML extends Teleprompter {
    */
   private async analyzeOptimizationPatterns(): Promise<Pattern[]> {
     if (
-      !this.config.usePatternAnalysis||this.optimizationHistory.length < 10
+      !this.config.usePatternAnalysis ||
+      this.optimizationHistory.length < 10
     ) {
       return [];
     }
 
-    this.logger.info('Analyzing optimization patterns with clustering algorithms...');
+    this.logger.info(
+      'Analyzing optimization patterns with clustering algorithms...'
+    );
 
     // Extract trajectory features for pattern analysis
     const trajectoryFeatures = this.optimizationHistory.map((point) => [
@@ -494,7 +501,7 @@ export class MIPROv2ML extends Teleprompter {
       await this.patternLearner!.trainPatterns(trainingExamples);
     const patterns = Array.isArray(patternResult)
       ? patternResult
-      : patternResult.patterns||[];
+      : patternResult.patterns || [];
 
     this.logger.info(`Detected ${patterns.length} optimization patterns`);
 
@@ -506,12 +513,14 @@ export class MIPROv2ML extends Teleprompter {
    */
   private async performStatisticalValidation(): Promise<HypothesisTest[]> {
     if (
-      !this.config.useStatisticalValidation||this.optimizationHistory.length < this.config.minimumSampleSize
+      !this.config.useStatisticalValidation ||
+      this.optimizationHistory.length < this.config.minimumSampleSize
     ) {
       return [];
     }
 
-    this.logger.info('Performing statistical validation of optimization results...'
+    this.logger.info(
+      'Performing statistical validation of optimization results...'
     );
 
     const tests: HypothesisTest[] = [];

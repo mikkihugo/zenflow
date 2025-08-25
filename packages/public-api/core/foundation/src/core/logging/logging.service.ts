@@ -5,7 +5,6 @@
  * use this shared logging configuration with ZEN_ environment variables.
  */
 
-
 import { getLogger as getLogTapeLogger } from '@logtape/logtape';
 
 import type { UnknownRecord } from '../../types/primitives';
@@ -195,7 +194,9 @@ class LoggingConfigurationManager {
     const collectorConfig = await this.setupInternalCollector();
     const { configure } = await import('@logtape/logtape');
     const sinkConfig = this.createSinkConfiguration(collectorConfig);
-    const loggerConfig = this.createLoggerConfiguration(collectorConfig.useInternalCollector);
+    const loggerConfig = this.createLoggerConfiguration(
+      collectorConfig.useInternalCollector
+    );
 
     await configure({
       sinks: sinkConfig as Record<string, (record: UnknownRecord) => void>,
@@ -211,17 +212,21 @@ class LoggingConfigurationManager {
   private async setupInternalCollector() {
     const config = {
       internalCollectorSink: null as ((record: UnknownRecord) => void) | null,
-      useInternalCollector: false
+      useInternalCollector: false,
     };
 
     try {
       const otelConfig = this.loadOtelEnvironmentConfig();
-      
+
       if (otelConfig.useInternalOtelCollector && otelConfig.zenOtelEnabled) {
-        const isCollectorReachable = await this.checkCollectorAvailability(otelConfig.internalCollectorEndpoint);
-        
+        const isCollectorReachable = await this.checkCollectorAvailability(
+          otelConfig.internalCollectorEndpoint
+        );
+
         if (isCollectorReachable) {
-          config.internalCollectorSink = this.createInternalCollectorSink(otelConfig.internalCollectorEndpoint);
+          config.internalCollectorSink = this.createInternalCollectorSink(
+            otelConfig.internalCollectorEndpoint
+          );
           config.useInternalCollector = true;
           this.logCollectorSuccess(otelConfig.internalCollectorEndpoint);
         } else {
@@ -229,7 +234,9 @@ class LoggingConfigurationManager {
         }
       }
     } catch {
-      console.log('📝 Foundation LogTape using console-only (OTEL unavailable)');
+      console.log(
+        '📝 Foundation LogTape using console-only (OTEL unavailable)'
+      );
     }
 
     return config;
@@ -240,10 +247,13 @@ class LoggingConfigurationManager {
    */
   private loadOtelEnvironmentConfig() {
     return {
-      useInternalOtelCollector: process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== 'false',
+      useInternalOtelCollector:
+        process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== 'false',
       zenOtelEnabled: process.env['ZEN_OTEL_ENABLED'] === 'true',
-      internalCollectorEndpoint: process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || 'http://localhost:4318',
-      otelLogsExporter: process.env['OTEL_LOGS_EXPORTER']
+      internalCollectorEndpoint:
+        process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] ||
+        'http://localhost:4318',
+      otelLogsExporter: process.env['OTEL_LOGS_EXPORTER'],
     };
   }
 
@@ -258,7 +268,7 @@ class LoggingConfigurationManager {
           headers: { accept: 'application/json' },
         })
         .catch(() => null);
-      
+
       return response?.ok === true;
     } catch {
       return false;
@@ -268,11 +278,18 @@ class LoggingConfigurationManager {
   /**
    * Handle collector fallback scenarios
    */
-  private handleCollectorFallback(otelConfig: {otelLogsExporter?: string; zenOtelEnabled: boolean}) {
-    console.log('⚠️  Internal OTEL collector unavailable, trying external OTEL...');
-    
+  private handleCollectorFallback(otelConfig: {
+    otelLogsExporter?: string;
+    zenOtelEnabled: boolean;
+  }) {
+    console.log(
+      '⚠️  Internal OTEL collector unavailable, trying external OTEL...'
+    );
+
     if (otelConfig.otelLogsExporter === 'otlp' || otelConfig.zenOtelEnabled) {
-      console.log('⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.');
+      console.log(
+        '⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.'
+      );
       console.log('   Foundation logging will use console-only mode.');
     }
   }
@@ -294,12 +311,18 @@ class LoggingConfigurationManager {
   /**
    * Create sink configuration
    */
-  private createSinkConfiguration(collectorConfig: {internalCollectorSink: ((record: UnknownRecord) => void) | null; useInternalCollector: boolean}) {
+  private createSinkConfiguration(collectorConfig: {
+    internalCollectorSink: ((record: UnknownRecord) => void) | null;
+    useInternalCollector: boolean;
+  }) {
     const sinkConfig: Record<string, (record: UnknownRecord) => void> = {
       console: this.createConsoleSink(),
     };
 
-    if (collectorConfig.useInternalCollector && collectorConfig.internalCollectorSink) {
+    if (
+      collectorConfig.useInternalCollector &&
+      collectorConfig.internalCollectorSink
+    ) {
       sinkConfig['collector'] = collectorConfig.internalCollectorSink;
     }
 
@@ -316,7 +339,7 @@ class LoggingConfigurationManager {
       }
 
       const timestamp = this.config.timestamp
-        ? `[${new Date(record['timestamp'] as string|number|Date).toISOString()}] `
+        ? `[${new Date(record['timestamp'] as string | number | Date).toISOString()}] `
         : '';
       const level = String(record['level']).toUpperCase().padStart(5);
       const category = Array.isArray(record['category'])
@@ -326,9 +349,10 @@ class LoggingConfigurationManager {
         ? record['message'].join('')
         : String(record['message'] || '');
       const properties = (record['properties'] || {}) as UnknownRecord;
-      const props = Object.keys(properties).length > 0
-        ? ` ${JSON.stringify(properties)}`
-        : '';
+      const props =
+        Object.keys(properties).length > 0
+          ? ` ${JSON.stringify(properties)}`
+          : '';
 
       console.log(`${timestamp}${level} [${category}] ${message}${props}`);
     };
@@ -339,7 +363,7 @@ class LoggingConfigurationManager {
    */
   private createLoggerConfiguration(useInternalCollector: boolean) {
     const sinks = useInternalCollector ? ['console', 'collector'] : ['console'];
-    
+
     return [
       {
         category: ['foundation'],
@@ -376,23 +400,23 @@ class LoggingConfigurationManager {
     return async (record: UnknownRecord) => {
       try {
         const { timestamp } = record;
-        const level = String(record['level']||'info');
+        const level = String(record['level'] || 'info');
         const category = Array.isArray(record['category'])
           ? record['category']
-          : [String(record['category']||'unknown')];
+          : [String(record['category'] || 'unknown')];
         const message = Array.isArray(record['message'])
           ? record['message']
-          : [String(record['message']||'')];
-        const properties = (record['properties']||{}) as UnknownRecord;
+          : [String(record['message'] || '')];
+        const properties = (record['properties'] || {}) as UnknownRecord;
 
         // Convert LogTape record to our internal telemetry format
         const telemetryData = {
           timestamp,
-          type:'logs' as const,
+          type: 'logs' as const,
           service: {
             name: 'claude-zen-foundation',
             version: '1.0.0',
-            instance: process.env['HOSTNAME']||'localhost',
+            instance: process.env['HOSTNAME'] || 'localhost',
           },
           data: {
             logs: [
@@ -428,7 +452,7 @@ class LoggingConfigurationManager {
             // Silently ignore fetch errors to avoid logging loops
             console.debug(
               'Failed to send log to internal collector:',
-              fetchError.message,
+              fetchError.message
             );
           });
       } catch (error) {
@@ -450,7 +474,7 @@ class LoggingConfigurationManager {
       error: 17, // ERROR
       critical: 21, // FATAL
     };
-    return severityMap[level.toLowerCase()]||9;
+    return severityMap[level.toLowerCase()] || 9;
   }
 
   getLogger(name: string): Logger {
@@ -464,7 +488,7 @@ class LoggingConfigurationManager {
 
     // Get component-specific log level if configured
     const componentLevel =
-      this.config.components[name.toLowerCase()]||this.config.level;
+      this.config.components[name.toLowerCase()] || this.config.level;
 
     // Create LogTape logger
     const logTapeLogger = getLogTapeLogger(name);
@@ -514,7 +538,7 @@ class LoggingConfigurationManager {
 
   private shouldLog(
     messageLevel: string,
-    componentLevel: LoggingLevel,
+    componentLevel: LoggingLevel
   ): boolean {
     const levels = ['trace', 'debug', 'info', 'warning', 'error'];
     const messageLevelIndex = levels.indexOf(messageLevel);
@@ -556,12 +580,12 @@ class LoggingConfigurationManager {
     isValid: boolean;
     issues: string[];
     config: LoggingConfig;
-    } {
+  } {
     const issues: string[] = [];
 
     // Check if ZEN environment variables are properly set
     const zenVars = Object.keys(process.env).filter((key) =>
-      key.startsWith('ZEN_LOG_'),
+      key.startsWith('ZEN_LOG_')
     );
 
     if (zenVars.length === 0) {
@@ -575,7 +599,7 @@ class LoggingConfigurationManager {
 
     if (invalidLevels.length > 0) {
       issues.push(
-        `Invalid log levels for components: ${invalidLevels.join(', ')}`,
+        `Invalid log levels for components: ${invalidLevels.join(', ')}`
       );
     }
 
@@ -627,7 +651,7 @@ export function validateLoggingEnvironment(): {
   isValid: boolean;
   issues: string[];
   config: LoggingConfig;
-  } {
+} {
   return loggingManager.validateEnvironment();
 }
 

@@ -51,7 +51,7 @@ export interface ErrorResult<E> {
   error: E;
 }
 
-export type Result<T, E = Error> = SuccessResult<T>|ErrorResult<E>;
+export type Result<T, E = Error> = SuccessResult<T> | ErrorResult<E>;
 
 // Async operation results
 export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
@@ -59,7 +59,7 @@ export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
 // Query patterns
 export interface QueryCriteria {
   filters?: Record<string, unknown>;
-  sort?: { field: string; direction:'asc|desc' }[];
+  sort?: { field: string; direction: 'asc|desc' }[];
   pagination?: PaginationOptions;
 }
 
@@ -249,9 +249,18 @@ export type DeepRequired<T> = import('type-fest').RequiredDeep<T>;
 export type DeepReadonly<T> = import('type-fest').ReadonlyDeep<T>;
 
 // Selective property modifications
-export type MarkOptional<T, K extends keyof T> = import('type-fest').SetOptional<T, K>;
-export type MarkRequired<T, K extends keyof T> = import('type-fest').SetRequired<T, K>;
-export type MarkReadonly<T, K extends keyof T> = import('type-fest').SetReadonly<T, K>;
+export type MarkOptional<
+  T,
+  K extends keyof T,
+> = import('type-fest').SetOptional<T, K>;
+export type MarkRequired<
+  T,
+  K extends keyof T,
+> = import('type-fest').SetRequired<T, K>;
+export type MarkReadonly<
+  T,
+  K extends keyof T,
+> = import('type-fest').SetReadonly<T, K>;
 
 // Additional utility types
 export type StrictOmit<T, K extends keyof T> = import('type-fest').Except<T, K>;
@@ -268,8 +277,18 @@ export type Dictionary<T = unknown> = Record<string, T>;
 export type SafeDictionary<T> = Record<string, T>;
 
 // Common utility types
-export type Head<T extends readonly unknown[]> = T extends readonly [infer H, ...unknown[]] ? H : never;
-export type Tail<T extends readonly unknown[]> = T extends readonly [unknown, ...infer Rest] ? Rest : [];
+export type Head<T extends readonly unknown[]> = T extends readonly [
+  infer H,
+  ...unknown[],
+]
+  ? H
+  : never;
+export type Tail<T extends readonly unknown[]> = T extends readonly [
+  unknown,
+  ...infer Rest,
+]
+  ? Rest
+  : [];
 export type ReadonlyKeys<T> = {
   [K in keyof T]: T[K] extends Readonly<T[K]> ? K : never;
 }[keyof T];

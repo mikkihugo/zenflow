@@ -1,18 +1,18 @@
 /**
  * @fileoverview Production-Ready Configuration for Claude Code Zen
- * 
+ *
  * Comprehensive system configuration with enterprise-grade security,
  * performance optimization, and production deployment features.
  * Replaces all development-only placeholders with production implementations.
- * 
+ *
  * ## Security Features
- * 
+ *
  * - **JWT Security**: Production-grade token management with rotation
  * - **Rate Limiting**: Multi-tier rate limiting with DDoS protection
  * - **CORS Security**: Strict origin validation and security headers
  * - **Encryption**: At-rest and in-transit encryption with HSM support
  * - **Authentication**: Multi-factor authentication and session management
- * 
+ *
  * @author Claude Code Zen Production Team
  * @version 2.0.0-production.1
  * @since 2.0.0
@@ -29,20 +29,30 @@ const config = {
     name: 'Claude-Zen',
     version: '2.0.0-production.1',
     environment: process.env.NODE_ENV ?? 'development',
-    debug: process.env.DEBUG === 'true' && process.env.NODE_ENV !== 'production',
+    debug:
+      process.env.DEBUG === 'true' && process.env.NODE_ENV !== 'production',
     instanceId: process.env.INSTANCE_ID ?? randomBytes(8).toString('hex'),
     deploymentTime: new Date().toISOString(),
   },
   server: {
     port: parseInt(process.env.PORT ?? '3000', 10),
-    host: process.env.HOST ?? (process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'),
+    host:
+      process.env.HOST ??
+      (process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'),
     cors: {
-      origin: process.env.CORS_ORIGIN?.split(',') ?? (
-        process.env.NODE_ENV === 'production' ? false : ['http://localhost:3000', 'http://localhost:3001']
-      ),
+      origin:
+        process.env.CORS_ORIGIN?.split(',') ??
+        (process.env.NODE_ENV === 'production'
+          ? false
+          : ['http://localhost:3000', 'http://localhost:3001']),
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-API-Key'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'X-API-Key',
+      ],
       exposedHeaders: ['X-Total-Count', 'X-Rate-Limit-Remaining'],
       maxAge: 86400, // 24 hours
       preflightContinue: false,
@@ -50,13 +60,20 @@ const config = {
     },
     rateLimit: {
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: process.env.NODE_ENV === 'production'? 100 : 1000, // Stricter in production
+      max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Stricter in production
       standardHeaders: true,
       legacyHeaders: false,
       skipSuccessfulRequests: false,
       skipFailedRequests: false,
       keyGenerator: (req: any) => {
-        return req.ip||req.connection.remoteAddress||req.socket.remoteAddress||(req.connection.socket ? req.connection.socket.remoteAddress :'127.0.0.1');
+        return (
+          req.ip ||
+          req.connection.remoteAddress ||
+          req.socket.remoteAddress ||
+          (req.connection.socket
+            ? req.connection.socket.remoteAddress
+            : '127.0.0.1')
+        );
       },
       handler: (req: any, res: any) => {
         res.status(429).json({
@@ -107,17 +124,18 @@ const config = {
     sqlite: {
       path: process.env.SQLITE_PATH ?? './databases/claude-zen.db',
       timeout: parseInt(process.env.DB_TIMEOUT ?? '10000', 10),
-      verbose: process.env.DEBUG === 'true' && process.env.NODE_ENV !== 'production',
+      verbose:
+        process.env.DEBUG === 'true' && process.env.NODE_ENV !== 'production',
       // Production optimizations
       pragmas: {
-        'journal_mode': 'WAL',
-        'synchronous': process.env.NODE_ENV === 'production' ? 'NORMAL' : 'FULL',
-        'cache_size': -32000, // 32MB cache
-        'temp_store': 'MEMORY',
-        'mmap_size': 134217728, // 128MB memory mapping
-        'optimize': 'ON',
-        'foreign_keys': 'ON',
-        'busy_timeout': 5000,
+        journal_mode: 'WAL',
+        synchronous: process.env.NODE_ENV === 'production' ? 'NORMAL' : 'FULL',
+        cache_size: -32000, // 32MB cache
+        temp_store: 'MEMORY',
+        mmap_size: 134217728, // 128MB memory mapping
+        optimize: 'ON',
+        foreign_keys: 'ON',
+        busy_timeout: 5000,
       },
       backup: {
         enabled: process.env.DB_BACKUP_ENABLED !== 'false',
@@ -126,7 +144,7 @@ const config = {
         location: process.env.DB_BACKUP_PATH ?? './databases/backups',
       },
     },
-    
+
     // Production-grade vector database configuration
     lancedb: {
       path: process.env.LANCEDB_PATH ?? './databases/vectors',
@@ -137,7 +155,10 @@ const config = {
         nlist: parseInt(process.env.VECTOR_NLIST ?? '1000', 10),
         metric: process.env.VECTOR_METRIC ?? 'cosine',
         ef: parseInt(process.env.VECTOR_EF ?? '100', 10),
-        efConstruction: parseInt(process.env.VECTOR_EF_CONSTRUCTION ?? '200', 10),
+        efConstruction: parseInt(
+          process.env.VECTOR_EF_CONSTRUCTION ?? '200',
+          10
+        ),
       },
       performance: {
         batchSize: parseInt(process.env.VECTOR_BATCH_SIZE ?? '1000', 10),
@@ -159,7 +180,7 @@ const config = {
         encryption: process.env.NODE_ENV === 'production',
       },
     },
-    
+
     // Graph database production configuration
     kuzu: {
       path: process.env.KUZU_PATH ?? './databases/graph',
@@ -177,7 +198,7 @@ const config = {
         schedule: process.env.GRAPH_BACKUP_SCHEDULE ?? '0 3 * * *', // Daily at 3 AM
       },
     },
-    
+
     // Connection pooling and management
     connection: {
       poolSize: parseInt(process.env.DB_POOL_SIZE ?? '10', 10),
@@ -191,12 +212,15 @@ const config = {
         retries: 3,
       },
     },
-    
+
     // Production monitoring and alerting
     monitoring: {
       enabled: process.env.DB_MONITORING !== 'false',
       metricsCollection: true,
-      slowQueryThreshold: parseInt(process.env.SLOW_QUERY_THRESHOLD ?? '1000', 10), // 1 second
+      slowQueryThreshold: parseInt(
+        process.env.SLOW_QUERY_THRESHOLD ?? '1000',
+        10
+      ), // 1 second
       alerting: {
         enabled: process.env.DB_ALERTING === 'true',
         webhookUrl: process.env.DB_ALERT_WEBHOOK,
@@ -212,10 +236,26 @@ const config = {
       wasmPath: './src/neural/wasm/binaries',
       // Production neural architectures with performance optimizations
       models: [
-        'LSTM', 'N-BEATS', 'Transformer', 'CNN-LSTM', 'GRU',
-        'ARIMA', 'Prophet', 'DeepAR', 'WaveNet', 'TCN',
-        'BERT', 'GPT', 'ResNet', 'EfficientNet', 'YOLOv5',
-        'VAE', 'GAN', 'Diffusion', 'NeRF', 'Graph-Neural-Networks'
+        'LSTM',
+        'N-BEATS',
+        'Transformer',
+        'CNN-LSTM',
+        'GRU',
+        'ARIMA',
+        'Prophet',
+        'DeepAR',
+        'WaveNet',
+        'TCN',
+        'BERT',
+        'GPT',
+        'ResNet',
+        'EfficientNet',
+        'YOLOv5',
+        'VAE',
+        'GAN',
+        'Diffusion',
+        'NeRF',
+        'Graph-Neural-Networks',
       ],
       performance: {
         gpuAcceleration: process.env.GPU_ACCELERATION !== 'false',
@@ -226,7 +266,7 @@ const config = {
         optimizationLevel: process.env.NEURAL_OPTIMIZATION ?? 'O2',
       },
     },
-    
+
     // Production embeddings and NLP
     embeddings: {
       provider: process.env.EMBEDDINGS_PROVIDER ?? 'openai',
@@ -249,7 +289,8 @@ const config = {
       // Local embeddings fallback
       local: {
         enabled: process.env.LOCAL_EMBEDDINGS === 'true',
-        modelPath: process.env.LOCAL_MODEL_PATH ?? './models/sentence-transformers',
+        modelPath:
+          process.env.LOCAL_MODEL_PATH ?? './models/sentence-transformers',
         device: process.env.LOCAL_DEVICE ?? 'cpu',
         cacheSize: parseInt(process.env.LOCAL_CACHE_SIZE ?? '10000', 10),
       },
@@ -261,7 +302,7 @@ const config = {
         compression: true,
       },
     },
-    
+
     // Advanced NLP and ML processing
     nlp: {
       // Real NLP pipeline (replaces simple heuristics)
@@ -278,7 +319,9 @@ const config = {
         },
         sentimentAnalysis: {
           enabled: process.env.NLP_SENTIMENT === 'true',
-          model: process.env.NLP_SENTIMENT_MODEL ?? 'cardiffnlp/twitter-roberta-base-sentiment-latest',
+          model:
+            process.env.NLP_SENTIMENT_MODEL ??
+            'cardiffnlp/twitter-roberta-base-sentiment-latest',
         },
         keywordExtraction: {
           enabled: process.env.NLP_KEYWORDS === 'true',
@@ -292,7 +335,7 @@ const config = {
         },
       },
     },
-    
+
     // Model management and versioning
     modelManagement: {
       registry: {
@@ -328,9 +371,11 @@ const config = {
   },
   // Production-grade logging and monitoring configuration
   logging: {
-    level: process.env.LOG_LEVEL ?? (process.env.NODE_ENV === 'production' ? 'warn' : 'info'),
+    level:
+      process.env.LOG_LEVEL ??
+      (process.env.NODE_ENV === 'production' ? 'warn' : 'info'),
     format: process.env.LOG_FORMAT ?? 'json',
-    
+
     // Multiple output destinations for production
     transports: {
       file: {
@@ -370,7 +415,7 @@ const config = {
         tags: process.env.DATADOG_TAGS?.split(',') ?? [],
       },
     },
-    
+
     // Advanced logging features
     features: {
       requestTracing: process.env.LOG_TRACING !== 'false',
@@ -384,7 +429,7 @@ const config = {
       },
     },
   },
-  
+
   // Production monitoring and observability
   monitoring: {
     // Metrics collection and export
@@ -392,15 +437,18 @@ const config = {
       enabled: process.env.METRICS_ENABLED !== 'false',
       port: parseInt(process.env.METRICS_PORT ?? '9090', 10),
       path: process.env.METRICS_PATH ?? '/metrics',
-      
+
       // Prometheus integration
       prometheus: {
         enabled: process.env.PROMETHEUS_ENABLED === 'true',
         gateway: process.env.PROMETHEUS_GATEWAY,
         jobName: 'claude-zen',
-        pushInterval: parseInt(process.env.PROMETHEUS_PUSH_INTERVAL ?? '10000', 10),
+        pushInterval: parseInt(
+          process.env.PROMETHEUS_PUSH_INTERVAL ?? '10000',
+          10
+        ),
       },
-      
+
       // Application Performance Monitoring
       apm: {
         enabled: process.env.APM_ENABLED === 'true',
@@ -420,7 +468,7 @@ const config = {
         },
       },
     },
-    
+
     // Health checks and status endpoints
     health: {
       enabled: process.env.HEALTH_CHECKS !== 'false',
@@ -435,7 +483,7 @@ const config = {
       timeout: parseInt(process.env.HEALTH_TIMEOUT ?? '5000', 10),
       interval: parseInt(process.env.HEALTH_INTERVAL ?? '30000', 10),
     },
-    
+
     // Real-time alerts and notifications
     alerting: {
       enabled: process.env.ALERTING_ENABLED === 'true',
@@ -471,11 +519,14 @@ const config = {
         cpuUsage: parseFloat(process.env.ALERT_CPU_USAGE ?? '0.80'), // 80%
       },
     },
-    
+
     // Performance tracking
     performance: {
       enabled: process.env.PERFORMANCE_MONITORING !== 'false',
-      collectInterval: parseInt(process.env.PERF_COLLECT_INTERVAL ?? '10000', 10), // 10 seconds
+      collectInterval: parseInt(
+        process.env.PERF_COLLECT_INTERVAL ?? '10000',
+        10
+      ), // 10 seconds
       retentionDays: parseInt(process.env.PERF_RETENTION ?? '7', 10),
       metrics: [
         'response_time',
@@ -497,7 +548,7 @@ const config = {
         if (!secret && process.env.NODE_ENV === 'production') {
           throw new Error(
             'SECURITY ERROR: JWT_SECRET environment variable is required in production. ' +
-            'Generate with: openssl rand -base64 64'
+              'Generate with: openssl rand -base64 64'
           );
         }
         if (!secret && process.env.NODE_ENV !== 'test') {
@@ -506,12 +557,14 @@ const config = {
           );
           return 'claude-zen-development-secret-REPLACE-IN-PRODUCTION';
         }
-        return secret||'test-secret-for-testing-only';
+        return secret || 'test-secret-for-testing-only';
       })(),
       algorithm: 'HS256',
       issuer: 'claude-zen',
       audience: process.env.JWT_AUDIENCE ?? 'claude-zen-api',
-      tokenExpiry: process.env.TOKEN_EXPIRY ?? (process.env.NODE_ENV === 'production' ? '1h' : '24h'),
+      tokenExpiry:
+        process.env.TOKEN_EXPIRY ??
+        (process.env.NODE_ENV === 'production' ? '1h' : '24h'),
       refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY ?? '7d',
       clockTolerance: 10, // seconds
       // Production: Implement JWT key rotation
@@ -521,7 +574,7 @@ const config = {
         gracePeriod: parseInt(process.env.JWT_GRACE_PERIOD ?? '3600', 10), // 1 hour
       },
     },
-    
+
     // Multi-factor authentication configuration
     mfa: {
       enabled: process.env.MFA_ENABLED === 'true',
@@ -533,7 +586,7 @@ const config = {
         length: 8,
       },
     },
-    
+
     // Session management
     session: {
       name: 'claude-zen-session',
@@ -548,7 +601,7 @@ const config = {
       saveUninitialized: false,
       rolling: true, // Refresh session on activity
     },
-    
+
     // Password security
     password: {
       minLength: 12,
@@ -560,7 +613,7 @@ const config = {
       historyLimit: 12, // Prevent reusing last 12 passwords
       bcryptRounds: process.env.NODE_ENV === 'production' ? 12 : 10,
     },
-    
+
     // API Key management
     apiKeys: {
       enabled: process.env.API_KEYS_ENABLED === 'true',
@@ -572,7 +625,7 @@ const config = {
         maxRequests: process.env.NODE_ENV === 'production' ? 60 : 1000,
       },
     },
-    
+
     // Encryption settings
     encryption: {
       algorithm: 'aes-256-gcm',
@@ -590,7 +643,7 @@ const config = {
         region: process.env.HSM_REGION,
       },
     },
-    
+
     // Advanced security features
     rateLimiting: process.env.RATE_LIMITING !== 'false',
     bruteForceProtection: {
@@ -599,7 +652,7 @@ const config = {
       lockoutDuration: 15 * 60 * 1000, // 15 minutes
       progressiveDelay: true,
     },
-    
+
     // Security monitoring
     monitoring: {
       enabled: process.env.SECURITY_MONITORING === 'true',
@@ -607,7 +660,7 @@ const config = {
       alertOnSuspiciousActivity: true,
       geoLocationTracking: process.env.NODE_ENV === 'production',
     },
-    
+
     // OWASP compliance settings
     owasp: {
       preventClickjacking: true,

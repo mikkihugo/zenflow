@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, startOfMonth, endOfMonth } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, startOfMonth, endOfMonth } = dateFns;
 import {
   groupBy,
   map,
@@ -306,7 +305,7 @@ export class ComplianceMonitoringService {
 
     this.logger.info('Performing compliance assessment', { frameworkId });'
 
-    const assessmentId = `assessment-${nanoid(12)}`;`
+    const assessmentId = `assessment-${generateNanoId(12)}`;`
     const startTime = Date.now();
 
     try {
@@ -347,7 +346,7 @@ export class ComplianceMonitoringService {
 
       // Record audit trail
       this.recordAuditEntry({
-        entryId: `audit-${nanoid(8)}`,`
+        entryId: `audit-${generateNanoId(8)}`,`
         timestamp: new Date(),
         action: 'compliance_assessment',
         details: {
@@ -391,7 +390,7 @@ export class ComplianceMonitoringService {
       period,
     });
 
-    const reportId = `report-${nanoid(12)}`;`
+    const reportId = `report-${generateNanoId(12)}`;`
 
     try {
       // Collect framework reports
@@ -544,7 +543,7 @@ export class ComplianceMonitoringService {
     for (const requirement of evidenceRequirements) {
       // Simulate evidence collection
       evidence.push({
-        evidenceId: `evidence-${nanoid(8)}`,`
+        evidenceId: `evidence-${generateNanoId(8)}`,`
         type: requirement.type as any,
         source: requirement.source,
         description: requirement.description,
@@ -634,7 +633,7 @@ export class ComplianceMonitoringService {
     for (const req of requirements) {
       if (!req.compliant) {
         violations.push({
-          violationId: `violation-${nanoid(8)}`,`
+          violationId: `violation-${generateNanoId(8)}`,`
           frameworkId: framework.id,
           requirementId: req.requirementId,
           severity: req.complianceScore < 40 ?'high' : 'medium',
@@ -656,7 +655,7 @@ export class ComplianceMonitoringService {
     return validationResults
       .filter((result) => !result.passed)
       .map((result) => ({
-        violationId: `violation-${nanoid(8)}`,`
+        violationId: `violation-${generateNanoId(8)}`,`
         frameworkId: '',
         requirementId: requirement.id,
         severity: 'medium' as const,

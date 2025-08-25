@@ -169,9 +169,7 @@ export class ApplicationCoordinator extends EventEmitter {
     };
   }
 
-  async exportSystemData(
-    format: string
-  ): Promise<{
+  async exportSystemData(format: string): Promise<{
     success: boolean;
     filename?: string;
     error?: string;

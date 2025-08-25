@@ -10,11 +10,7 @@
     "emitDecoratorMetadata": true,
     "verbatimModuleSyntax": false
   },
-  "include": [
-    "index.ts",
-    "src/**/*.ts",
-    "src/**/*.d.ts"
-  ],
+  "include": ["index.ts", "src/**/*.ts", "src/**/*.d.ts"],
   "exclude": [
     "node_modules",
     "dist",

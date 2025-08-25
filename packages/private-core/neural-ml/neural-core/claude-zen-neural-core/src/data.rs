@@ -403,6 +403,10 @@ impl TimeSeriesSchema {
   }
 
   /// Validate schema against a DataFrame
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if required columns are missing from the DataFrame or if column types don't match.
   pub fn validate_dataframe(&self, df: &DataFrame) -> NeuroDivergentResult<()> {
     let columns: Vec<String> = df
       .get_column_names()
@@ -439,7 +443,7 @@ impl TimeSeriesSchema {
     for feature in &self.static_features {
       if !columns.contains(feature) {
         return Err(data_error!(
-          format!("Static feature column '{}' not found", feature),
+          format!("Static feature column '{feature}' not found"),
           field = "static_features"
         ));
       }
@@ -448,7 +452,7 @@ impl TimeSeriesSchema {
     for feature in &self.historical_exogenous {
       if !columns.contains(feature) {
         return Err(data_error!(
-          format!("Historical exogenous column '{}' not found", feature),
+          format!("Historical exogenous column '{feature}' not found"),
           field = "historical_exogenous"
         ));
       }
@@ -457,7 +461,7 @@ impl TimeSeriesSchema {
     for feature in &self.future_exogenous {
       if !columns.contains(feature) {
         return Err(data_error!(
-          format!("Future exogenous column '{}' not found", feature),
+          format!("Future exogenous column '{feature}' not found"),
           field = "future_exogenous"
         ));
       }
@@ -482,6 +486,10 @@ impl TimeSeriesSchema {
 
 impl<T: Float> TimeSeriesDataFrame<T> {
   /// Create from Polars DataFrame with schema
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the DataFrame schema validation fails or if required columns are missing.
   pub fn from_polars(
     df: DataFrame,
     schema: TimeSeriesSchema,
@@ -498,6 +506,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
 
   /// Create from CSV file
   /// TODO: Fix polars CSV reading API compatibility
+  ///
+  /// # Errors
+  ///
+  /// Currently returns a todo error as CSV reading needs to be updated for current polars version.
   #[allow(dead_code)]
   pub fn from_csv<P: AsRef<Path>>(
     _path: P,
@@ -507,6 +519,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Create from Parquet file
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the file cannot be read, parsed, or if schema validation fails.
   pub fn from_parquet<P: AsRef<Path>>(
     path: P,
     schema: TimeSeriesSchema,
@@ -517,11 +533,11 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       ScanArgsParquet::default(),
     )
     .map_err(|e| {
-      ErrorBuilder::data(format!("Failed to read Parquet: {}", e)).build()
+      ErrorBuilder::data(format!("Failed to read Parquet: {e}")).build()
     })?
     .collect()
     .map_err(|e| {
-      ErrorBuilder::data(format!("Failed to collect DataFrame: {}", e)).build()
+      ErrorBuilder::data(format!("Failed to collect DataFrame: {e}")).build()
     })?;
 
     Self::from_polars(df, schema)
@@ -533,11 +549,11 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       .data
       .column(&self.schema.unique_id_col)
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to get unique IDs: {}", e)).build()
+        ErrorBuilder::data(format!("Failed to get unique IDs: {e}")).build()
       })?
       .unique()
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to get unique values: {}", e))
+        ErrorBuilder::data(format!("Failed to get unique values: {e}"))
           .build()
       })?
       .str()
@@ -572,7 +588,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       )
       .collect()
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to filter by date range: {}", e))
+        ErrorBuilder::data(format!("Failed to filter by date range: {e}"))
           .build()
       })?;
 
@@ -592,7 +608,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       .filter(col(&self.schema.unique_id_col).eq(lit(id)))
       .collect()
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to filter by ID: {}", e)).build()
+        ErrorBuilder::data(format!("Failed to filter by ID: {e}")).build()
       })?;
 
     Ok(Self {
@@ -645,7 +661,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     let timestamps: Vec<DateTime<Utc>> = df
       .column(&self.schema.ds_col)
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to get timestamp column: {}", e))
+        ErrorBuilder::data(format!("Failed to get timestamp column: {e}"))
           .build()
       })?
       .datetime()
@@ -665,12 +681,12 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     let target_values: Vec<T> = df
       .column(&self.schema.y_col)
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to get target column: {}", e))
+        ErrorBuilder::data(format!("Failed to get target column: {e}"))
           .build()
       })?
       .f64()
       .map_err(|e| {
-        ErrorBuilder::data(format!("Target column is not numeric: {}", e))
+        ErrorBuilder::data(format!("Target column is not numeric: {e}"))
           .build()
       })?
       .iter()
@@ -882,13 +898,13 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   /// Export to CSV
   pub fn to_csv<P: AsRef<Path>>(&self, path: P) -> NeuroDivergentResult<()> {
     let mut file = std::fs::File::create(path).map_err(|e| {
-      ErrorBuilder::data(format!("Failed to create CSV file: {}", e)).build()
+      ErrorBuilder::data(format!("Failed to create CSV file: {e}")).build()
     })?;
 
     CsvWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to write CSV: {}", e)).build()
+        ErrorBuilder::data(format!("Failed to write CSV: {e}")).build()
       })?;
 
     Ok(())
@@ -900,14 +916,14 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     path: P,
   ) -> NeuroDivergentResult<()> {
     let mut file = std::fs::File::create(path).map_err(|e| {
-      ErrorBuilder::data(format!("Failed to create Parquet file: {}", e))
+      ErrorBuilder::data(format!("Failed to create Parquet file: {e}"))
         .build()
     })?;
 
     ParquetWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        ErrorBuilder::data(format!("Failed to write Parquet: {}", e)).build()
+        ErrorBuilder::data(format!("Failed to write Parquet: {e}")).build()
       })?;
 
     Ok(())

@@ -279,7 +279,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     const multiObjConfig: MultiObjectiveConfig = {
       ...DefaultConfigs.multiObjective(),
       max_iterations: config.max_iterations,
-      population_size: config.population_size||50,
+      population_size: config.population_size || 50,
       timeout_ms: config.timeout_ms,
       memory_limit_mb: config.memory_limit_mb,
     };
@@ -336,8 +336,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
         recall: bestSolution.objectives[0] * 0.98,
         loss: 1.0 - bestSolution.objectives[0],
         convergence_rate:
-          optimizationResult.metrics?.custom_metrics?.convergence_rate||0.8,
-        iterations_used: optimizationResult.metrics?.iterations||0,
+          optimizationResult.metrics?.custom_metrics?.convergence_rate || 0.8,
+        iterations_used: optimizationResult.metrics?.iterations || 0,
       },
       optimization_history: this.convertSolutionsToPoints(
         paretoFront.solutions
@@ -373,8 +373,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Online learning for concept drift detection
     const onlineConfig: OnlineLearningConfig = {
       ...DefaultConfigs.onlineLearning(),
-      learning_rate: config.learning_rate||0.01,
-      drift_detection_method:'page_hinkley',
+      learning_rate: config.learning_rate || 0.01,
+      drift_detection_method: 'page_hinkley',
     };
 
     await this.onlineLearner.initialize(onlineConfig);
@@ -421,12 +421,12 @@ export class MLNeuralCoordinator extends TypedEventBase {
       // Update optimization history
       optimizationHistory.push({
         parameters: [
-          learningUpdate.data?.learning_rate||0.01,
+          learningUpdate.data?.learning_rate || 0.01,
           Math.random(),
           Math.random(),
           Math.random(),
         ],
-        objective: learningUpdate.data?.accuracy||0.5,
+        objective: learningUpdate.data?.accuracy || 0.5,
         timestamp: Date.now(),
       });
 
@@ -474,8 +474,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Gradient-based optimization for GRPO
     const gradientConfig: GradientConfig = {
       ...DefaultConfigs.gradient(),
-      max_iterations: config.gradient_steps||100,
-      learning_rate: config.learning_rate||0.001,
+      max_iterations: config.gradient_steps || 100,
+      learning_rate: config.learning_rate || 0.001,
       timeout_ms: config.timeout_ms,
       memory_limit_mb: config.memory_limit_mb,
     };
@@ -497,7 +497,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
     for (
       let iteration = 0;
-      iteration < config.gradient_steps||50;
+      iteration < config.gradient_steps || 50;
       iteration++
     ) {
       // Simulate forward pass and compute gradients
@@ -575,7 +575,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
    */
   async getCoordinationMetrics(): Promise<MLResult<CoordinationMetrics>> {
     if (!this.initialized) {
-      return { success: false, error:'Coordinator not initialized' };
+      return { success: false, error: 'Coordinator not initialized' };
     }
 
     try {
@@ -754,7 +754,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       throw new Error('Empty Pareto front');
     }
 
-    if (!weights||weights.length !== solutions[0].objectives.length) {
+    if (!weights || weights.length !== solutions[0].objectives.length) {
       // Default: select solution with highest first objective (usually accuracy)
       return solutions.reduce((best, current) =>
         current.objectives[0] > best.objectives[0] ? current : best

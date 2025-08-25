@@ -6,12 +6,12 @@
  * preserving the expected interface.
  */
 
-import {
-  getLogger,
-  EventEmitter,
-} from '@claude-zen/foundation';
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
 // DocumentationManager, ExportSystem, InterfaceManager moved - using fallbacks
-import { getTaskMasterService, type TaskMasterService } from '../services/taskmaster/taskmaster-service';
+import {
+  getTaskMasterService,
+  type TaskMasterService,
+} from '../services/taskmaster/taskmaster-service';
 
 const logger = getLogger('core-system');
 
@@ -75,7 +75,7 @@ export class System extends EventEmitter {
 
   // Component placeholders - using facade types
   private brainSystem?: unknown;
-  private enterpriseSystem?: unknown; 
+  private enterpriseSystem?: unknown;
   private taskMasterService?: TaskMasterService;
 
   constructor(config: SystemConfig = {}) {
@@ -94,7 +94,7 @@ export class System extends EventEmitter {
     } catch (error) {
       logger.error('Failed to initialize TaskMaster service', error);
     }
-    
+
     logger.info('Core components initialized (stub mode)');
   }
 
@@ -174,25 +174,23 @@ export class System extends EventEmitter {
     error?: string;
   }> {
     await this.ensureInitialized();
-    logger.info(`Processing document: ${  documentPath  } (stub mode)`);
+    logger.info(`Processing document: ${documentPath} (stub mode)`);
     return { success: true };
   }
 
-  async exportSystemData(
-    format: string
-  ): Promise<{
+  async exportSystemData(format: string): Promise<{
     success: boolean;
     filename?: string;
     error?: string;
   }> {
     await this.ensureInitialized();
-    logger.info(`Exporting system data to ${  format  } (stub mode)`);
-    return { success: true, filename: `export.${  format}` };
+    logger.info(`Exporting system data to ${format} (stub mode)`);
+    return { success: true, filename: `export.${format}` };
   }
 
   async shutdown(): Promise<void> {
     logger.info('Shutting down Core System (stub mode)');
-    
+
     // Shutdown TaskMaster service
     if (this.taskMasterService) {
       try {
@@ -202,7 +200,7 @@ export class System extends EventEmitter {
         logger.error('Error shutting down TaskMaster service', error);
       }
     }
-    
+
     this.status = 'shutdown';
     this.emit(STATUS_CHANGED_EVENT, this.status);
     this.removeAllListeners();
@@ -244,7 +242,10 @@ export class System extends EventEmitter {
     error?: string;
   }> {
     logger.info('Chaos test run (stub mode)');
-    return Promise.resolve({ success: true, results: { message: 'Stub implementation' } });
+    return Promise.resolve({
+      success: true,
+      results: { message: 'Stub implementation' },
+    });
   }
 
   getAISystemStatus(): Promise<{

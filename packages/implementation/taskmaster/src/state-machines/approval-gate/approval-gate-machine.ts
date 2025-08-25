@@ -18,7 +18,7 @@
  */
 
 import { assign, setup, fromPromise } from 'xstate';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 

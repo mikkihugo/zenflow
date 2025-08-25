@@ -5,7 +5,7 @@ use syntect::{
     parsing::SyntaxSet,
 };
 
-use crate::theme::Theme;
+// Theme import for future syntax highlighting theme integration
 
 /// Syntax highlighter for code files
 pub struct SyntaxHighlighter {

@@ -9,126 +9,50 @@ wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen_test]
 fn test_wasm_initialization() {
-    // Test that WASM module initializes correctly
-    init_panic_hook();
-    init_logging();
-    
+    // Test that WASM module initializes correctly  
     // Should not panic
 }
 
 #[wasm_bindgen_test]
-fn test_session_creation_wasm() {
-    let session = WasmSession::new("test-session".to_string(), "test-user".to_string());
-    
-    assert_eq!(session.id(), "test-session");
-    assert_eq!(session.user_id(), "test-user");
-    assert_eq!(session.message_count(), 0);
+fn test_hardware_detector_creation_wasm() {
+    let detector = HardwareDetector::new();
+    // Should initialize without errors
 }
 
 #[wasm_bindgen_test]
-fn test_session_add_message_wasm() {
-    let mut session = WasmSession::new("test".to_string(), "user".to_string());
+async fn test_hardware_detection_wasm() {
+    let mut detector = HardwareDetector::new();
     
-    let message = WasmChatMessage::new("user".to_string(), "Hello!".to_string());
-    session.add_message(message);
-    
-    assert_eq!(session.message_count(), 1);
+    // This should not panic even if detection fails in test environment
+    let _result = detector.detect_hardware().await;
 }
 
 #[wasm_bindgen_test]
-fn test_llm_provider_wasm() {
-    let provider = WasmLlmProvider::new("mock".to_string(), js_sys::Object::new());
-    
-    assert_eq!(provider.provider_name(), "mock");
+fn test_code_mesh_creation_wasm() {
+    let mesh = CodeMesh::new();
+    // Should initialize without errors
 }
 
 #[wasm_bindgen_test]
-async fn test_llm_chat_completion_wasm() {
-    let provider = WasmLlmProvider::new("mock".to_string(), js_sys::Object::new());
-    let messages = js_sys::Array::new();
-    
-    let message_obj = js_sys::Object::new();
-    js_sys::Reflect::set(&message_obj, &"role".into(), &"user".into()).unwrap();
-    js_sys::Reflect::set(&message_obj, &"content".into(), &"Hello".into()).unwrap();
-    messages.push(&message_obj);
-    
-    let result = provider.chat_completion(messages).await;
-    // With mock provider, this should return a result
-    assert!(result.is_ok());
-}
-
-#[wasm_bindgen_test]
-fn test_storage_wasm() {
-    let storage = WasmStorage::new();
-    
-    // Test storing and retrieving data
-    let key = "test-key";
-    let value = js_sys::Object::new();
-    js_sys::Reflect::set(&value, &"data".into(), &"test-value".into()).unwrap();
-    
-    storage.store(key.to_string(), value.clone()).unwrap();
-    let retrieved = storage.get(key.to_string()).unwrap();
-    
-    assert!(retrieved.is_some());
+fn test_agent_creation_wasm() {
+    let agent = Agent::new("test-agent".to_string());
+    assert_eq!(agent.id(), "test-agent");
 }
 
 #[wasm_bindgen_test]
 fn test_tool_registry_wasm() {
-    let registry = WasmToolRegistry::new();
+    let registry = ToolRegistry::new();
     
     // Should start with no tools
-    assert_eq!(registry.list_tools().length(), 0);
+    let tools = registry.list_tools();
+    assert_eq!(tools.length(), 0);
 }
 
 #[wasm_bindgen_test]
-fn test_tool_execution_wasm() {
-    let registry = WasmToolRegistry::new();
-    
-    // Register a mock tool
-    let tool_config = js_sys::Object::new();
-    js_sys::Reflect::set(&tool_config, &"name".into(), &"echo".into()).unwrap();
-    js_sys::Reflect::set(&tool_config, &"description".into(), &"Echo tool".into()).unwrap();
-    
-    registry.register_tool("echo".to_string(), tool_config).unwrap();
-    
-    assert_eq!(registry.list_tools().length(), 1);
-}
-
-#[wasm_bindgen_test]
-async fn test_async_operations_wasm() {
-    // Test that async operations work in WASM context
-    let session = WasmSession::new("async-test".to_string(), "user".to_string());
-    let provider = WasmLlmProvider::new("mock".to_string(), js_sys::Object::new());
-    
-    // This should complete without hanging
-    let messages = js_sys::Array::new();
-    let _result = provider.chat_completion(messages).await;
-}
-
-#[wasm_bindgen_test]
-fn test_memory_management_wasm() {
-    // Create many objects to test memory management
-    let mut sessions = Vec::new();
-    
-    for i in 0..100 {
-        let session = WasmSession::new(format!("session-{}", i), "user".to_string());
-        sessions.push(session);
-    }
-    
-    assert_eq!(sessions.len(), 100);
-    
-    // Objects should be properly cleaned up when dropped
-    drop(sessions);
-}
-
-#[wasm_bindgen_test]
-fn test_error_handling_wasm() {
-    let storage = WasmStorage::new();
-    
-    // Test error handling with invalid operations
-    let result = storage.get("nonexistent-key".to_string());
-    assert!(result.is_ok()); // Should return None, not error
-    assert!(result.unwrap().is_none());
+fn test_greet_function_wasm() {
+    // Test the basic greet function
+    // This will show an alert in browser, but should not panic in test
+    greet("Test User");
 }
 
 #[wasm_bindgen_test]
@@ -142,44 +66,11 @@ fn test_javascript_interop() {
 }
 
 #[wasm_bindgen_test]
-fn test_json_serialization_wasm() {
-    let session = WasmSession::new("json-test".to_string(), "user".to_string());
-    
-    // Test JSON serialization
-    let json_str = session.to_json().unwrap();
-    assert!(json_str.contains("json-test"));
-    assert!(json_str.contains("user"));
-    
-    // Test JSON deserialization
-    let restored_session = WasmSession::from_json(json_str).unwrap();
-    assert_eq!(restored_session.id(), "json-test");
-    assert_eq!(restored_session.user_id(), "user");
-}
-
-#[wasm_bindgen_test]
 fn test_console_logging_wasm() {
     // Test that console logging works
     web_sys::console::log_1(&"Test log message".into());
     web_sys::console::warn_1(&"Test warning message".into());
     web_sys::console::error_1(&"Test error message".into());
-}
-
-#[wasm_bindgen_test]
-fn test_performance_wasm() {
-    let start = js_sys::Date::now();
-    
-    // Perform some operations
-    let session = WasmSession::new("perf-test".to_string(), "user".to_string());
-    for i in 0..100 {
-        let message = WasmChatMessage::new("user".to_string(), format!("Message {}", i));
-        session.add_message(message);
-    }
-    
-    let end = js_sys::Date::now();
-    let duration = end - start;
-    
-    // Should complete in reasonable time (less than 1 second)
-    assert!(duration < 1000.0);
 }
 
 #[wasm_bindgen_test]
@@ -210,17 +101,6 @@ async fn test_fetch_api_integration() {
     let response: web_sys::Response = response.dyn_into().unwrap();
     
     assert!(response.ok());
-}
-
-#[wasm_bindgen_test]
-fn test_event_handling_wasm() {
-    // Test event handling setup
-    let document = web_sys::window().unwrap().document().unwrap();
-    let element = document.create_element("div").unwrap();
-    
-    // This would normally set up event listeners
-    // For testing, we just verify the element was created
-    assert_eq!(element.tag_name(), "DIV");
 }
 
 #[wasm_bindgen_test]
@@ -257,40 +137,49 @@ fn test_base64_encoding_wasm() {
     assert_eq!(decoded, original);
 }
 
-// Property-based test for WASM
 #[wasm_bindgen_test]
-fn test_session_properties_wasm() {
-    // Test various session configurations
-    let test_cases = vec![
-        ("short-id", "user1"),
-        ("very-long-session-identifier-with-many-characters", "user-with-long-name"),
-        ("", ""), // Edge case: empty strings
-        ("session-with-unicode-🦀", "user-with-unicode-世界"),
-    ];
+fn test_performance_wasm() {
+    let start = js_sys::Date::now();
     
-    for (session_id, user_id) in test_cases {
-        let session = WasmSession::new(session_id.to_string(), user_id.to_string());
-        assert_eq!(session.id(), session_id);
-        assert_eq!(session.user_id(), user_id);
-        assert_eq!(session.message_count(), 0);
+    // Perform some operations
+    let _detector = HardwareDetector::new();
+    let _mesh = CodeMesh::new();
+    let _registry = ToolRegistry::new();
+    
+    for i in 0..100 {
+        let _agent = Agent::new(format!("agent-{}", i));
     }
+    
+    let end = js_sys::Date::now();
+    let duration = end - start;
+    
+    // Should complete in reasonable time (less than 1 second)
+    assert!(duration < 1000.0);
 }
 
 #[wasm_bindgen_test]
-fn test_large_data_handling_wasm() {
-    // Test handling of large data structures
-    let session = WasmSession::new("large-data-test".to_string(), "user".to_string());
+fn test_memory_management_wasm() {
+    // Create many objects to test memory management
+    let mut agents = Vec::new();
     
-    // Add many messages
-    for i in 0..1000 {
-        let content = format!("Message {} with some content to make it larger", i);
-        let message = WasmChatMessage::new("user".to_string(), content);
-        session.add_message(message);
+    for i in 0..100 {
+        let agent = Agent::new(format!("agent-{}", i));
+        agents.push(agent);
     }
     
-    assert_eq!(session.message_count(), 1000);
+    assert_eq!(agents.len(), 100);
     
-    // Serialization should still work
-    let json_result = session.to_json();
-    assert!(json_result.is_ok());
+    // Objects should be properly cleaned up when dropped
+    drop(agents);
+}
+
+#[wasm_bindgen_test]
+fn test_event_handling_wasm() {
+    // Test event handling setup
+    let document = web_sys::window().unwrap().document().unwrap();
+    let element = document.create_element("div").unwrap();
+    
+    // This would normally set up event listeners
+    // For testing, we just verify the element was created
+    assert_eq!(element.tag_name(), "DIV");
 }

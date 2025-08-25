@@ -60,9 +60,16 @@ pub struct Dialog {
 
 impl Dialog {
     /// Create a new confirmation dialog
-    pub fn confirmation(title: String, message: String, theme: &dyn Theme) -> Self {
+    pub fn confirmation(title: String, message: String, current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             dialog_type: DialogType::Confirmation { title, message },
             input_text: String::new(),
             cursor_position: 0,
@@ -73,9 +80,16 @@ impl Dialog {
     }
     
     /// Create a new input dialog
-    pub fn input(title: String, prompt: String, default_value: String, theme: &dyn Theme) -> Self {
+    pub fn input(title: String, prompt: String, default_value: String, current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             dialog_type: DialogType::Input { title, prompt, default_value: default_value.clone() },
             input_text: default_value,
             cursor_position: 0,
@@ -86,10 +100,17 @@ impl Dialog {
     }
     
     /// Create a new selection dialog
-    pub fn selection(title: String, message: String, options: Vec<String>, theme: &dyn Theme) -> Self {
+    pub fn selection(title: String, message: String, options: Vec<String>, current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         let height = 8 + options.len().min(10) as u16;
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             dialog_type: DialogType::Selection { title, message, options },
             input_text: String::new(),
             cursor_position: 0,
@@ -100,9 +121,16 @@ impl Dialog {
     }
     
     /// Create a new file picker dialog
-    pub fn file_picker(title: String, current_path: String, filter: Option<String>, theme: &dyn Theme) -> Self {
+    pub fn file_picker(title: String, current_path: String, filter: Option<String>, current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             dialog_type: DialogType::FilePicker { title, current_path, filter },
             input_text: String::new(),
             cursor_position: 0,
@@ -246,7 +274,7 @@ impl Dialog {
     }
     
     /// Render the dialog
-    pub fn render(&self, renderer: &Renderer, area: Rect) {
+    pub fn render(&self, renderer: &mut Renderer, area: Rect) {
         let block = Block::default()
             .borders(Borders::ALL)
             .border_style(Style::default().fg(self.theme.border_active()))
@@ -273,7 +301,7 @@ impl Dialog {
     }
     
     /// Render confirmation dialog
-    fn render_confirmation(&self, renderer: &Renderer, area: Rect, title: &str, message: &str) {
+    fn render_confirmation(&self, renderer: &mut Renderer, area: Rect, title: &str, message: &str) {
         let chunks = ratatui::layout::Layout::default()
             .direction(ratatui::layout::Direction::Vertical)
             .constraints([
@@ -304,7 +332,7 @@ impl Dialog {
     }
     
     /// Render input dialog
-    fn render_input(&self, renderer: &Renderer, area: Rect, title: &str, prompt: &str) {
+    fn render_input(&self, renderer: &mut Renderer, area: Rect, title: &str, prompt: &str) {
         let chunks = ratatui::layout::Layout::default()
             .direction(ratatui::layout::Direction::Vertical)
             .constraints([
@@ -348,7 +376,7 @@ impl Dialog {
     }
     
     /// Render selection dialog
-    fn render_selection(&self, renderer: &Renderer, area: Rect, title: &str, message: &str, options: &[String]) {
+    fn render_selection(&self, renderer: &mut Renderer, area: Rect, title: &str, message: &str, options: &[String]) {
         let chunks = ratatui::layout::Layout::default()
             .direction(ratatui::layout::Direction::Vertical)
             .constraints([
@@ -405,7 +433,7 @@ impl Dialog {
     }
     
     /// Render file picker dialog
-    fn render_file_picker(&self, renderer: &Renderer, area: Rect, title: &str, current_path: &str) {
+    fn render_file_picker(&self, renderer: &mut Renderer, area: Rect, title: &str, current_path: &str) {
         // This is a simplified file picker
         // A full implementation would show directory contents
         let chunks = ratatui::layout::Layout::default()

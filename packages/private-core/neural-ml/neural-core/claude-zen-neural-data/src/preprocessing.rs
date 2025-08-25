@@ -578,7 +578,7 @@ impl<T: Float> Scaler<T> for QuantileTransformer<T> {
           } else {
             // Simple approximation for normal quantile
             let t = T::from(2.0 * p - 1.0).unwrap();
-            t * T::from(1.4142135623730951).unwrap() // sqrt(2)
+            t * T::from(std::f64::consts::SQRT_2).unwrap()
           };
           references.push(z);
         }

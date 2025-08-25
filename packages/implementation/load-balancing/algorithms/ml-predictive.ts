@@ -21,10 +21,10 @@ import type {
 import { taskPriorityToNumber } from '../types';
 
 // Direct brain.js import for practical neural networks
-const brain = require('brain.js');'
+const brain = require('brain.js');
 
 // Foundation-optimized logging
-const logger = getLogger('MLPredictiveAlgorithm');'
+const logger = getLogger('MLPredictiveAlgorithm');
 
 interface MLFeatures {
   agentId: string;
@@ -97,7 +97,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   };
 
   constructor(predictionEngine?: PredictionEngine) {
-    this.predictionEngine = predictionEngine||new DefaultPredictionEngine();
+    this.predictionEngine = predictionEngine || new DefaultPredictionEngine();
     this.brainJsConfig = {
       latencyNetwork: null,
       successNetwork: null,
@@ -120,7 +120,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
-      throw new Error('No available agents');'
+      throw new Error('No available agents');
     }
 
     // Extract features for prediction
@@ -162,7 +162,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence: bestPrediction.confidenceScore,
-      reasoning: `ML prediction: ${bestPrediction.predictedLatency.toFixed(0)}ms latency, ${(bestPrediction.predictedSuccessRate * 100).toFixed(1)}% success rate`,`
+      reasoning: `ML prediction: ${bestPrediction.predictedLatency.toFixed(0)}ms latency, ${(bestPrediction.predictedSuccessRate * 100).toFixed(1)}% success rate`,
       alternativeAgents: alternatives,
       estimatedLatency: bestPrediction.predictedLatency,
       expectedQuality: bestPrediction.predictedSuccessRate,
@@ -180,7 +180,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     this.config = { ...this.config, ...config };
 
     // Retrain models if configuration changed significantly
-    if (config?.modelEnsembleWeights||config?.adaptiveLearningRate) {
+    if (config?.modelEnsembleWeights || config?.adaptiveLearningRate) {
       await this.retrainModels();
     }
   }
@@ -264,7 +264,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     const failureData: HistoricalData = {
       timestamp: new Date(),
       agentId,
-      taskType:'system_failure',
+      taskType: 'system_failure',
       duration: 0,
       success: false,
       resourceUsage: this.createEmptyResourceUsage(),
@@ -314,7 +314,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     try {
       if (!brain) {
         logger.warn(
-          'brain.js not available, skipping neural network initialization''
+          'brain.js not available, skipping neural network initialization'
         );
         return;
       }
@@ -332,9 +332,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       });
 
       this.brainJsConfig.initialized = true;
-      logger.info('Brain.js neural networks initialized successfully');'
+      logger.info('Brain.js neural networks initialized successfully');
     } catch (error) {
-      logger.error('Error initializing brain.js models:', error);'
+      logger.error('Error initializing brain.js models:', error);
     }
   }
 
@@ -389,12 +389,12 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       estimatedDuration: task.estimatedDuration,
       timeOfDay: now.getHours(),
       dayOfWeek: now.getDay(),
-      currentLoad: metrics?.activeTasks||0,
-      avgResponseTime: metrics?.responseTime||1000,
-      errorRate: metrics?.errorRate||0,
-      cpuUsage: metrics?.cpuUsage||0,
-      memoryUsage: metrics?.memoryUsage||0,
-      recentThroughput: metrics?.throughput||0,
+      currentLoad: metrics?.activeTasks || 0,
+      avgResponseTime: metrics?.responseTime || 1000,
+      errorRate: metrics?.errorRate || 0,
+      cpuUsage: metrics?.cpuUsage || 0,
+      memoryUsage: metrics?.memoryUsage || 0,
+      recentThroughput: metrics?.throughput || 0,
       historicalSuccessRate: this.getHistoricalSuccessRate(agent.id, task.type),
       agentCapability: this.calculateAgentCapability(agent, task),
     };
@@ -417,7 +417,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     // Get brain.js predictions if available
     const brainJsPrediction = await this.getBrainJsPrediction(features);
     if (brainJsPrediction) {
-      predictions.set('brainjs', brainJsPrediction);'
+      predictions.set('brainjs', brainJsPrediction);
     }
 
     // Get predictions from traditional models
@@ -428,7 +428,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         );
         predictions.set(modelType, prediction);
       } catch (error) {
-        logger.warn(`Model ${modelType} prediction failed:`, error);`
+        logger.warn(`Model ${modelType} prediction failed:`, error);
       }
     }
 
@@ -443,10 +443,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     let totalWeight = 0;
 
     for (const [modelType, prediction] of predictions) {
-      let weight = weights[modelType as keyof typeof weights]||0;
+      let weight = weights[modelType as keyof typeof weights] || 0;
 
-      // Give brain.js higher weight if it's available and confident'
-      if (modelType === 'brainjs'&& prediction.confidence > 0.7) {'
+      // Give brain.js higher weight if it's available and confident
+      if (modelType === 'brainjs' && prediction.confidence > 0.7) {
         weight = 0.6; // Higher weight for confident brain.js predictions
       }
 
@@ -479,7 +479,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    */
   private async getBrainJsPrediction(
     features: MLFeatures
-  ): Promise<any|null> {
+  ): Promise<Record<string, unknown> | null> {
     if (!this.brainJsConfig.initialized) {
       return null;
     }
@@ -529,11 +529,11 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
           latency: predictedLatency,
           successRate: predictedSuccessRate,
           confidence,
-          source:'brainjs',
+          source: 'brainjs',
         };
       }
     } catch (error) {
-      logger.warn('Brain.js prediction failed:', error);'
+      logger.warn('Brain.js prediction failed:', error);
     }
 
     return null;
@@ -586,7 +586,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         // Evaluate model performance
         await this.evaluateModel(modelType, trainingData);
       } catch (error) {
-        logger.error(`Failed to retrain model ${modelType}:`, error);`
+        logger.error(`Failed to retrain model ${modelType}:`, error);
       }
     }
 
@@ -598,7 +598,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    * Retrain brain.js neural networks with historical data.
    */
   private async retrainBrainJsModels(): Promise<void> {
-    if (!this.brainJsConfig.initialized||this.historicalData.length < 50) {
+    if (!this.brainJsConfig.initialized || this.historicalData.length < 50) {
       return; // Need at least 50 samples for neural network training
     }
 
@@ -607,9 +607,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       const brainJsData = this.prepareBrainJsTrainingData();
 
       if (
-        brainJsData.latencyData.length === 0||brainJsData.successData.length === 0
+        brainJsData.latencyData.length === 0 ||
+        brainJsData.successData.length === 0
       ) {
-        logger.warn('Insufficient data for brain.js retraining');'
+        logger.warn('Insufficient data for brain.js retraining');
         return;
       }
 
@@ -634,13 +635,13 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       );
 
       this.brainJsConfig.lastTrainingSize = this.historicalData.length;
-      logger.info('Brain.js models retrained successfully', {'
+      logger.info('Brain.js models retrained successfully', {
         latencyStats,
         successStats,
         dataSize: this.historicalData.length,
       });
     } catch (error) {
-      logger.error('Error retraining brain.js models:', error);'
+      logger.error('Error retraining brain.js models:', error);
     }
   }
 
@@ -704,7 +705,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     return (
       // Retrain every 500 new data points
-      timeSinceRetraining > this.config.retrainingInterval||this.historicalData.length % 500 === 0
+      timeSinceRetraining > this.config.retrainingInterval ||
+      this.historicalData.length % 500 === 0
     );
   }
 
@@ -742,18 +744,19 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent: bestAgent,
       confidence: 0.5,
-      reasoning:'ML prediction unavailable, used heuristic fallback',
+      reasoning: 'ML prediction unavailable, used heuristic fallback',
       alternativeAgents: availableAgents
         .filter((a) => a.id !== bestAgent.id)
         .slice(0, 2),
-      estimatedLatency: metrics.get(bestAgent.id)?.responseTime||1000,
+      estimatedLatency: metrics.get(bestAgent.id)?.responseTime || 1000,
       expectedQuality: 0.7,
     };
   }
 
   // Helper methods
   private getDefaultFeatures(): string[] {
-    return ['taskPriority',
+    return [
+      'taskPriority',
       'estimatedDuration',
       'timeOfDay',
       'dayOfWeek',
@@ -920,7 +923,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     _reliable: boolean
   ): Promise<void> {
     // Update agent reliability in the model
-    // This would adjust the agent's reliability score in the training data'
+    // This would adjust the agent's reliability score in the training data
   }
 
   private extractFeaturesFromHistorical(
@@ -950,15 +953,15 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private getLastRetrainingTime(): number {
     let lastRetraining = 0;
     for (const model of this.models.values()) {
-      lastRetraining = Math.max(lastRetraining, model.lastTraining.getTime())();
+      lastRetraining = Math.max(lastRetraining, model.lastTraining.getTime());
     }
     return lastRetraining;
   }
 
   private generateModelVersion(currentVersion: string): string {
-    const parts = currentVersion?.split('.');'
+    const parts = currentVersion?.split('.');
     const patch = (Number.parseInt(parts[2]) + 1) as any;
-    return `${parts[0]}.${parts[1]}.${patch}`;`
+    return `${parts[0]}.${parts[1]}.${patch}`;
   }
 
   private async calculateCacheHitRate(): Promise<number> {

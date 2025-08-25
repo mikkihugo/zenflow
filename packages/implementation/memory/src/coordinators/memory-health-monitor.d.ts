@@ -62,10 +62,10 @@ export declare class MemoryHealthMonitor extends TypedEventBase {
   private getConsecutiveFailures;
   private getConsecutiveSuccesses;
   private updateHealthStats;
-  getNodeHealth(nodeId: string): MemoryHealthStatus|null;
+  getNodeHealth(nodeId: string): MemoryHealthStatus | null;
   getNodeHealthHistory(nodeId: string, limit?: number): HealthCheckResult[];
   getOverallHealth(): {
-    status:'healthy' | 'degraded' | 'unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     score: number;
     summary: string;
     details: HealthStats;

@@ -16,10 +16,10 @@ import {
 } from '@claude-zen/foundation';
 
 import { getDatabaseAccess } from '@claude-zen/infrastructure';
-import { 
-  getBrainSystem, 
-  getTeamworkOrchestrator, 
-  createAgentCoordinator 
+import {
+  getBrainSystem,
+  getTeamworkOrchestrator,
+  createAgentCoordinator,
 } from '@claude-zen/intelligence';
 import { createSafeFrameworkAgentRegistry } from '@claude-zen/enterprise';
 
@@ -37,7 +37,6 @@ const TOKENS = {
 
 // Constants to avoid duplicate string literals
 const LOGGER_NAME = 'claude-zen-core';
-
 
 /**
  * Main Application class with full DI integration.
@@ -70,24 +69,28 @@ export class ClaudeZenCore {
     container.registerFunction(TOKENS.eventBus, () => new EventEmitter());
     container.registerFunction(TOKENS.database, () => getDatabaseAccess());
 
-
     // Register enterprise system
-    container.registerFunction(TOKENS.enterprise, () => createSafeFrameworkAgentRegistry());
+    container.registerFunction(TOKENS.enterprise, () =>
+      createSafeFrameworkAgentRegistry()
+    );
 
     // Register brain system
     container.registerFunction(TOKENS.brain, () => getBrainSystem());
 
     // Register teamwork orchestrator
-    container.registerFunction(TOKENS.teamwork, () => getTeamworkOrchestrator());
+    container.registerFunction(TOKENS.teamwork, () =>
+      getTeamworkOrchestrator()
+    );
 
     // Register agent coordinator
-    container.registerFunction(TOKENS.agentCoordinator, () => createAgentCoordinator({
+    container.registerFunction(TOKENS.agentCoordinator, () =>
+      createAgentCoordinator({
         maxAgents: 10,
         heartbeatInterval: 5000,
         timeout: 30000,
         enableHealthCheck: true,
-      }));
-
+      })
+    );
 
     return container;
   }
@@ -117,7 +120,9 @@ export class ClaudeZenCore {
       await this.initializeAsync();
     }
 
-    this.logger.info('🚀 Initializing Claude Code Zen with full DI integration.');
+    this.logger.info(
+      '🚀 Initializing Claude Code Zen with full DI integration.'
+    );
 
     try {
       // Initialize core database
@@ -152,7 +157,10 @@ export class ClaudeZenCore {
       if (this.teamwork && typeof this.teamwork.initialize === 'function') {
         await this.teamwork.initialize();
       }
-      if (this.agentCoordinator && typeof this.agentCoordinator.start === 'function') {
+      if (
+        this.agentCoordinator &&
+        typeof this.agentCoordinator.start === 'function'
+      ) {
         await this.agentCoordinator.start();
       }
 
@@ -179,7 +187,6 @@ export class ClaudeZenCore {
 
     this.logger.info('🔗 Demonstrating DI-enhanced system integration.');
 
-
     // Example: Test enterprise system
     if (this.enterprise) {
       this.logger.info('🏢 Testing Enterprise System with DI.');
@@ -191,9 +198,7 @@ export class ClaudeZenCore {
     // Example: Test brain system
     if (this.brain) {
       this.logger.info('🧠 Testing Brain System with DI.');
-      this.logger.info(
-        '  - Brain System successfully using strategic facades'
-      );
+      this.logger.info('  - Brain System successfully using strategic facades');
     }
 
     // Example: Test teamwork orchestrator
@@ -212,8 +217,9 @@ export class ClaudeZenCore {
       );
     }
 
-
-    this.logger.info('🎉 All DI integration demonstrations completed successfully!');
+    this.logger.info(
+      '🎉 All DI integration demonstrations completed successfully!'
+    );
   }
 
   /**
@@ -237,7 +243,10 @@ export class ClaudeZenCore {
       if (this.teamwork && typeof this.teamwork.shutdown === 'function') {
         await this.teamwork.shutdown();
       }
-      if (this.agentCoordinator && typeof this.agentCoordinator.stop === 'function') {
+      if (
+        this.agentCoordinator &&
+        typeof this.agentCoordinator.stop === 'function'
+      ) {
         await this.agentCoordinator.stop();
       }
 

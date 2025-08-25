@@ -17,7 +17,7 @@
  * @since 2024-01-01
  */
 
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 
 import { CodingPrinciplesResearcher } from './coding-principles-researcher';
 import { IntelligentPromptGenerator } from './intelligent-prompt-generator';
@@ -161,7 +161,7 @@ export class SPARCMultiSwarmExecutor {
       cleanupWorktrees?: boolean;
     } = {}
   ): Promise<SPARCMultiSwarmResult> {
-    const testId = `sparc-multiswarm-${nanoid()}`;`
+    const testId = `sparc-multiswarm-${generateNanoId()}`;`
     const startTime = new Date();
 
     console.log(`🧪 Starting SPARC Multi-Swarm A/B test: ${testId}`);`
@@ -598,7 +598,7 @@ export class SPARCMultiSwarmExecutor {
     await new Promise((resolve) => setTimeout(resolve, executionDelay));
 
     // Generate git tree info
-    const worktreePath = `/tmp/sparc-worktrees/sparc-${strategy.id}-${nanoid(6)}`;`
+    const worktreePath = `.claude-zen/tmp/sparc-worktrees/sparc-${strategy.id}-${generateNanoId(6)}`;`
     const branchName = `sparc-${strategy.id}-${Date.now()}`;`
     const commitsCreated =
       strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;'

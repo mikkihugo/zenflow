@@ -1,6 +1,6 @@
 /**
  * Types Index
- * 
+ *
  * Main export point for all type definitions.
  * Foundation-style organization with clean, focused modules.
  */
@@ -27,7 +27,7 @@ export type {
   WebSocketConfig,
   RouteDefinition,
   DashboardConfig,
-  DashboardWidget
+  DashboardWidget,
 } from './api';
 
 // ============================================================================
@@ -45,7 +45,7 @@ export type {
   AgentMetrics,
   SwarmResult,
   SwarmMetrics,
-  SwarmMessage
+  SwarmMessage,
 } from './coordination';
 
 // ============================================================================
@@ -67,7 +67,7 @@ export type {
   DeepRequired,
   Nullable,
   Optional,
-  Awaitable
+  Awaitable,
 } from './shared';
 
 // ============================================================================
@@ -87,7 +87,7 @@ export {
   isSystemEvent,
   isService,
   isSuccess,
-  isFailure
+  isFailure,
 } from './core';
 // Removed duplicate export - already included in export * from './api'
 // Removed duplicate export - already included in export * from './coordination'
@@ -107,7 +107,7 @@ export {
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
   EVENT_PRIORITIES,
-  SERVICE_STATUSES
+  SERVICE_STATUSES,
 } from './shared';
 
 // ============================================================================
@@ -118,7 +118,7 @@ export type {
   // Foundation types
   Logger,
   Result as FoundationResult,
-  UUID as FoundationUUID
+  UUID as FoundationUUID,
 } from '@claude-zen/foundation';
 
 // Note: Only import types that are actually available and needed

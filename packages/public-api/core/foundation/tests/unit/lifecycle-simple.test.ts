@@ -1,6 +1,6 @@
 /**
  * @fileoverview Process Lifecycle Management Tests (Simplified)
- * 
+ *
  * Tests for process lifecycle management focusing on testable aspects
  * without interfering with process.exit() calls.
  */
@@ -15,7 +15,7 @@ describe('Process Lifecycle Management - Simplified', () => {
     // Mock process event handling
     mockHandlers = {};
     originalProcessOn = process.on;
-    
+
     // Mock process.on to track event listeners
     process.on = vi.fn((event: string, handler: Function) => {
       if (!mockHandlers[event]) {
@@ -34,23 +34,27 @@ describe('Process Lifecycle Management - Simplified', () => {
 
   describe('ProcessLifecycleManager Creation', () => {
     it('should create lifecycle manager with basic handlers', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const shutdownHandler = vi.fn().mockResolvedValue(undefined);
       const manager = new ProcessLifecycleManager({
-        onShutdown: shutdownHandler
+        onShutdown: shutdownHandler,
       });
-      
+
       expect(manager).toBeDefined();
       expect(typeof manager.shutdown).toBe('function');
       expect(typeof manager.dispose).toBe('function');
     });
 
     it('should register signal handlers', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const manager = new ProcessLifecycleManager({
-        onShutdown: async () => {}
+        onShutdown: async () => {},
       });
 
       // Verify signal handlers were registered
@@ -62,28 +66,35 @@ describe('Process Lifecycle Management - Simplified', () => {
     });
 
     it('should accept configuration options', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
-      const manager = new ProcessLifecycleManager({
-        onShutdown: async () => {},
-        onError: async () => {},
-        onUncaughtException: () => {},
-        onUnhandledRejection: () => {}
-      }, {
-        gracefulShutdownTimeout: 5000,
-        exitOnUncaughtException: false,
-        exitOnUnhandledRejection: false
-      });
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
+      const manager = new ProcessLifecycleManager(
+        {
+          onShutdown: async () => {},
+          onError: async () => {},
+          onUncaughtException: () => {},
+          onUnhandledRejection: () => {},
+        },
+        {
+          gracefulShutdownTimeout: 5000,
+          exitOnUncaughtException: false,
+          exitOnUnhandledRejection: false,
+        }
+      );
+
       expect(manager).toBeDefined();
     });
 
     it('should work with minimal configuration', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       // Should work with no handlers or options
       const manager = new ProcessLifecycleManager();
-      
+
       expect(manager).toBeDefined();
       expect(mockHandlers['SIGTERM']).toBeDefined();
       expect(mockHandlers['SIGINT']).toBeDefined();
@@ -92,30 +103,36 @@ describe('Process Lifecycle Management - Simplified', () => {
 
   describe('setupProcessLifecycle Helper', () => {
     it('should create manager with simple shutdown handler', async () => {
-      const { setupProcessLifecycle } = await import('../../src/core/lifecycle');
-      
+      const { setupProcessLifecycle } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const shutdownHandler = vi.fn().mockResolvedValue(undefined);
       const manager = setupProcessLifecycle(shutdownHandler);
-      
+
       expect(manager).toBeDefined();
       expect(typeof manager.shutdown).toBe('function');
     });
 
     it('should work without parameters', async () => {
-      const { setupProcessLifecycle } = await import('../../src/core/lifecycle');
-      
+      const { setupProcessLifecycle } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const manager = setupProcessLifecycle();
-      
+
       expect(manager).toBeDefined();
     });
   });
 
   describe('Handler Registration', () => {
     it('should register all required signal handlers', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       new ProcessLifecycleManager({
-        onShutdown: async () => {}
+        onShutdown: async () => {},
       });
 
       // Verify all expected handlers are registered
@@ -124,7 +141,7 @@ describe('Process Lifecycle Management - Simplified', () => {
       expect(mockHandlers).toHaveProperty('SIGHUP');
       expect(mockHandlers).toHaveProperty('uncaughtException');
       expect(mockHandlers).toHaveProperty('unhandledRejection');
-      
+
       // Each should have exactly one handler
       expect(mockHandlers['SIGTERM']).toHaveLength(1);
       expect(mockHandlers['SIGINT']).toHaveLength(1);
@@ -134,19 +151,21 @@ describe('Process Lifecycle Management - Simplified', () => {
     });
 
     it('should handle multiple manager instances', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const manager1 = new ProcessLifecycleManager({
-        onShutdown: async () => {}
+        onShutdown: async () => {},
       });
-      
+
       const manager2 = new ProcessLifecycleManager({
-        onShutdown: async () => {}
+        onShutdown: async () => {},
       });
-      
+
       expect(manager1).toBeDefined();
       expect(manager2).toBeDefined();
-      
+
       // Should have multiple handlers registered (one per manager)
       expect(mockHandlers['SIGTERM'].length).toBeGreaterThanOrEqual(2);
     });
@@ -154,14 +173,16 @@ describe('Process Lifecycle Management - Simplified', () => {
 
   describe('Dispose Functionality', () => {
     it('should provide dispose method', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const manager = new ProcessLifecycleManager({
-        onShutdown: async () => {}
+        onShutdown: async () => {},
       });
-      
+
       expect(typeof manager.dispose).toBe('function');
-      
+
       // Should not throw when called
       expect(() => manager.dispose()).not.toThrow();
     });
@@ -169,31 +190,35 @@ describe('Process Lifecycle Management - Simplified', () => {
 
   describe('Interface Validation', () => {
     it('should expose correct public interface', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       const manager = new ProcessLifecycleManager();
-      
+
       // Public methods
       expect(manager).toHaveProperty('shutdown');
       expect(manager).toHaveProperty('dispose');
-      
+
       expect(typeof manager.shutdown).toBe('function');
       expect(typeof manager.dispose).toBe('function');
-      
+
       // Note: TypeScript private members may still be accessible in tests
       // The important part is the public API is correct
     });
 
     it('should validate handler types', async () => {
-      const { ProcessLifecycleManager } = await import('../../src/core/lifecycle');
-      
+      const { ProcessLifecycleManager } = await import(
+        '../../src/core/lifecycle'
+      );
+
       // Should accept valid handlers
       expect(() => {
         new ProcessLifecycleManager({
           onShutdown: async () => {},
           onError: async (error: Error) => {},
           onUncaughtException: (error: Error) => {},
-          onUnhandledRejection: (reason: unknown) => {}
+          onUnhandledRejection: (reason: unknown) => {},
         });
       }).not.toThrow();
     });
@@ -202,10 +227,10 @@ describe('Process Lifecycle Management - Simplified', () => {
   describe('Export Validation', () => {
     it('should export expected classes and functions', async () => {
       const lifecycle = await import('../../src/core/lifecycle');
-      
+
       expect(lifecycle).toHaveProperty('ProcessLifecycleManager');
       expect(lifecycle).toHaveProperty('setupProcessLifecycle');
-      
+
       expect(typeof lifecycle.ProcessLifecycleManager).toBe('function');
       expect(typeof lifecycle.setupProcessLifecycle).toBe('function');
     });

@@ -6,16 +6,8 @@
  */
 
 import { existsSync } from 'node:fs';
-import {
-  mkdir,
-  readFile,
-  unlink,
-  writeFile
-} from 'node:fs/promises';
-import {
-  dirname,
-  join
-} from 'node:path';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 
 import { getLogger } from '@claude-zen/foundation';
 
@@ -62,7 +54,7 @@ export class WebProcessManager {
     // Setup signal handlers for graceful shutdown
     this.setupSignalHandlers();
 
-    this.logger.info(`Daemon started with PID: ${  this.pid}`);
+    this.logger.info(`Daemon started with PID: ${this.pid}`);
   }
 
   /**
@@ -71,14 +63,11 @@ export class WebProcessManager {
   private async savePidFile(): Promise<void> {
     try {
       await mkdir(dirname(this.pidFile), { recursive: true });
-      await writeFile(
-        this.pidFile,
-        (this.pid || process.pid).toString()
-      );
-      this.logger.debug(`PID file saved: ${  this.pidFile}`);
+      await writeFile(this.pidFile, (this.pid || process.pid).toString());
+      this.logger.debug(`PID file saved: ${this.pidFile}`);
     } catch (error) {
       this.logger.error('Failed to save PID file:', error);
-      throw new Error(`Failed to save PID file: ${  error}`);
+      throw new Error(`Failed to save PID file: ${error}`);
     }
   }
 
@@ -89,7 +78,7 @@ export class WebProcessManager {
     try {
       if (existsSync(this.pidFile)) {
         await unlink(this.pidFile);
-        this.logger.debug(`PID file removed: ${  this.pidFile}`);
+        this.logger.debug(`PID file removed: ${this.pidFile}`);
       }
     } catch (error) {
       this.logger.warn('Failed to remove PID file:', error);
@@ -105,7 +94,7 @@ export class WebProcessManager {
 
     for (const signal of signals) {
       process.on(signal, () => {
-        this.logger.info(`Received ${  signal  }, initiating graceful shutdown`);
+        this.logger.info(`Received ${signal}, initiating graceful shutdown`);
         this.gracefulShutdown(signal);
       });
     }
@@ -117,13 +106,13 @@ export class WebProcessManager {
     });
 
     // Handle unhandled promise rejections
-    process.on(
-      'unhandledRejection',
-      (reason, promise) => {
-        this.logger.error('Unhandled promise rejection:', { reason, promise: promise.toString() });
-        this.gracefulShutdown('unhandledRejection');
-      }
-    );
+    process.on('unhandledRejection', (reason, promise) => {
+      this.logger.error('Unhandled promise rejection:', {
+        reason,
+        promise: promise.toString(),
+      });
+      this.gracefulShutdown('unhandledRejection');
+    });
   }
 
   /**
@@ -139,7 +128,7 @@ export class WebProcessManager {
 
     this.isShuttingDown = true;
     this.logger.info(
-      `Starting graceful shutdown${  signal ? ` (${signal})` : ''}`
+      `Starting graceful shutdown${signal ? ` (${signal})` : ''}`
     );
 
     try {
@@ -186,7 +175,7 @@ export class WebProcessManager {
         pid,
         startTime: new Date(), // Can't determine exact start time from PID alone
         isRunning: true,
-        pidFile: this.pidFile
+        pidFile: this.pidFile,
       };
     } catch (error) {
       this.logger.error('Error checking running instance:', error);
@@ -231,7 +220,7 @@ export class WebProcessManager {
         targetPid = runningInstance.pid;
       }
 
-      this.logger.info(`Stopping instance with PID: ${  targetPid}`);
+      this.logger.info(`Stopping instance with PID: ${targetPid}`);
 
       // Send SIGTERM for graceful shutdown
       process.kill(targetPid, 'SIGTERM');
@@ -240,14 +229,14 @@ export class WebProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       if (this.isProcessRunning(targetPid)) {
-        this.logger.warn(`Process ${  targetPid  } still running, sending SIGKILL`);
+        this.logger.warn(`Process ${targetPid} still running, sending SIGKILL`);
         process.kill(targetPid, 'SIGKILL');
       }
 
       // Clean up PID file
       await this.removePidFile();
 
-      this.logger.info(`Instance ${  targetPid  } stopped successfully`);
+      this.logger.info(`Instance ${targetPid} stopped successfully`);
       return true;
     } catch (error) {
       this.logger.error('Error stopping instance:', error);
@@ -263,7 +252,7 @@ export class WebProcessManager {
       pid: process.pid,
       startTime: new Date(Date.now() - process.uptime() * 1000),
       isRunning: true,
-      pidFile: this.pidFile
+      pidFile: this.pidFile,
     };
   }
 
@@ -282,7 +271,7 @@ export class WebProcessManager {
       uptime: process.uptime(),
       memory: process.memoryUsage(),
       cpu: process.cpuUsage(),
-      isMain: process.pid === this.pid
+      isMain: process.pid === this.pid,
     };
   }
 
@@ -303,7 +292,7 @@ export class WebProcessManager {
       uptime: process.uptime(),
       daemonMode: this.config.daemon,
       pidFile: this.pidFile,
-      pidFileExists: existsSync(this.pidFile)
+      pidFileExists: existsSync(this.pidFile),
     };
   }
 }

@@ -54,7 +54,10 @@ export {
  * const API_URL: InjectionToken<string> = 'apiUrl';
  * ```
  */
-export type InjectionToken<T = unknown> = string | symbol | (new (...args: unknown[]) => T);
+export type InjectionToken<T = unknown> =
+  | string
+  | symbol
+  | (new (...args: unknown[]) => T);
 
 /**
  * Service lifecycle options compatible with Awilix.
@@ -104,5 +107,5 @@ export enum Lifetime {
   /** New instance created for each resolution */
   Transient = 'transient',
   /** One instance per scope/request */
-  Scoped = 'scoped'
+  Scoped = 'scoped',
 }

@@ -55,7 +55,7 @@ export class SignatureOptimizer extends COPRO {
   constructor(
     config: {
       prompt_model?: any;
-      metric?: MetricFunction|null;
+      metric?: MetricFunction | null;
       breadth?: number;
       depth?: number;
       init_temperature?: number;
@@ -64,7 +64,8 @@ export class SignatureOptimizer extends COPRO {
     } = {}
   ) {
     // Show deprecation warning exactly matching Stanford implementation
-    console.warn('\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. ' +
+    console.warn(
+      '\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. ' +
         'SignatureOptimizer will be removed in a future release. \u001b[31m'
     );
 

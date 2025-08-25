@@ -12,18 +12,10 @@
  * @version 1.0.0
  */
 
-import { addDays, differenceInDays, format } from 'date-fns';
-import { nanoid } from 'nanoid';
-import {
-  groupBy,
-  map,
-  filter,
-  orderBy,
-  sumBy,
-  meanBy,
-  maxBy,
-  countBy,
-} from 'lodash-es';
+import { generateNanoId, dateFns, _ } from '@claude-zen/foundation';
+
+const { addDays, differenceInDays, format } = dateFns;
+const { groupBy, map, filter, orderBy, sumBy, meanBy, maxBy, countBy } = _;
 import type {
   CustomerSegment,
   CustomerNeed,
@@ -145,7 +137,7 @@ export class CustomerResearchService {
     }
 
     const segment: CustomerSegment = {
-      id: `segment-${nanoid(10)}`,`
+      id: `segment-${generateNanoId(10)}`,
       ...segmentData,
     };
 

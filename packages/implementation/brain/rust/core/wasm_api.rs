@@ -193,7 +193,7 @@ impl WasmNetwork {
         
         for epoch in 0..epochs {
             let error = network.train_batch(inputs, outputs, 1)
-                .map_err(|e| JsValue::from(e))?;
+                .map_err(JsValue::from)?;
             
             final_error = error;
             
@@ -222,7 +222,7 @@ impl WasmNetwork {
             .ok_or_else(|| JsValue::from_str("Network not found"))?;
         
         let outputs = network.forward(inputs)
-            .map_err(|e| JsValue::from(e))?;
+            .map_err(JsValue::from)?;
         
         log::debug!("Prediction completed for network {}", self.handle);
         Ok(outputs)

@@ -941,6 +941,431 @@ impl GpuAccelerated for BayesianOptimizer {
     }
 }
 
+/// Advanced ML ensemble for hyperparameter optimization using multiple algorithms
+#[derive(Debug, Clone)]
+pub struct MLEnsembleOptimizer {
+    /// Gaussian Process for smooth functions
+    gp_optimizer: Option<BayesianOptimizer>,
+    /// Decision tree for discrete/categorical parameters
+    #[cfg(feature = "ml-optimization")]
+    tree_model: Option<DecisionTreeRegressor<f64>>,
+    /// Random forest for ensemble predictions
+    #[cfg(feature = "ml-optimization")]
+    forest_model: Option<RandomForestRegressor<f64>>,
+    /// Clustering for exploration strategies
+    #[cfg(feature = "pattern-learning")]
+    clustering: Option<KMeans<f64, Euclidean>>,
+    /// Statistical distributions for prior modeling
+    #[cfg(feature = "statistical-analysis")]
+    prior_distributions: HashMap<String, Box<dyn Continuous<f64, f64>>>,
+    /// Configuration
+    config: MLEnsembleConfig,
+}
+
+/// Configuration for ML ensemble optimizer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MLEnsembleConfig {
+    /// Enable Gaussian Process component
+    pub use_gaussian_process: bool,
+    /// Enable tree-based models
+    pub use_tree_models: bool,
+    /// Enable clustering for exploration
+    pub use_clustering: bool,
+    /// Number of clusters for exploration
+    pub n_clusters: usize,
+    /// Ensemble voting strategy
+    pub voting_strategy: VotingStrategy,
+    /// Statistical priors configuration
+    pub use_statistical_priors: bool,
+}
+
+/// Voting strategies for ensemble predictions
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum VotingStrategy {
+    /// Simple average of all predictions
+    Average,
+    /// Weighted average based on model confidence
+    Weighted,
+    /// Select best model based on historical performance
+    BestModel,
+    /// Bayesian model averaging
+    BayesianAveraging,
+}
+
+impl Default for MLEnsembleConfig {
+    fn default() -> Self {
+        Self {
+            use_gaussian_process: true,
+            use_tree_models: true,
+            use_clustering: true,
+            n_clusters: 5,
+            voting_strategy: VotingStrategy::Weighted,
+            use_statistical_priors: true,
+        }
+    }
+}
+
+impl MLEnsembleOptimizer {
+    /// Create new ML ensemble optimizer
+    pub fn new(bounds: Vec<(f64, f64)>, config: MLEnsembleConfig) -> Self {
+        let gp_config = BayesianOptimizerConfig::default();
+        let gp_optimizer = if config.use_gaussian_process {
+            Some(BayesianOptimizer::new(bounds.clone(), gp_config))
+        } else {
+            None
+        };
+
+        Self {
+            gp_optimizer,
+            #[cfg(feature = "ml-optimization")]
+            tree_model: None,
+            #[cfg(feature = "ml-optimization")]
+            forest_model: None,
+            #[cfg(feature = "pattern-learning")]
+            clustering: None,
+            #[cfg(feature = "statistical-analysis")]
+            prior_distributions: HashMap::new(),
+            config,
+        }
+    }
+
+    /// Initialize ensemble with statistical priors
+    #[cfg(feature = "statistical-analysis")]
+    pub fn initialize_with_priors(&mut self, parameter_priors: HashMap<String, (f64, f64)>) -> MLResult<()> {
+        if !self.config.use_statistical_priors {
+            return Ok(());
+        }
+
+        for (param_name, (alpha, beta)) in parameter_priors {
+            // Use Beta distribution for bounded parameters
+            let beta_dist = Beta::new(alpha, beta)
+                .map_err(|e| MLError::OptimizationError(format!("Invalid Beta parameters: {}", e)))?;
+            
+            // Box the distribution for storage
+            self.prior_distributions.insert(param_name, Box::new(beta_dist));
+        }
+
+        Ok(())
+    }
+
+    /// Suggest next point using ensemble of models
+    pub fn suggest_ensemble(&mut self, observations: &[(Array1<f64>, f64)]) -> MLResult<Array1<f64>> {
+        let timer = Timer::new("MLEnsembleOptimizer::suggest_ensemble");
+        
+        let mut ensemble_suggestions = Vec::new();
+        let mut ensemble_confidences = Vec::new();
+
+        // 1. Gaussian Process suggestion
+        if let Some(ref mut gp) = self.gp_optimizer {
+            // Update GP with observations
+            for (x, y) in observations {
+                gp.update(x.clone(), *y)?;
+            }
+
+            if observations.len() >= gp.config.n_initial {
+                match gp.suggest() {
+                    Ok(suggestion) => {
+                        ensemble_suggestions.push(suggestion);
+                        // GP confidence based on model likelihood
+                        let confidence = gp.gp.as_ref()
+                            .and_then(|gp| gp.log_marginal_likelihood())
+                            .unwrap_or(-1000.0)
+                            .exp();
+                        ensemble_confidences.push(confidence);
+                    },
+                    Err(_) => {
+                        // GP failed, continue with other models
+                    }
+                }
+            }
+        }
+
+        // 2. Tree-based model suggestions
+        #[cfg(feature = "ml-optimization")]
+        if self.config.use_tree_models && observations.len() >= 3 {
+            if let Ok(suggestion) = self.suggest_with_trees(observations) {
+                ensemble_suggestions.push(suggestion);
+                ensemble_confidences.push(0.7); // Fixed confidence for tree models
+            }
+        }
+
+        // 3. Clustering-based exploration
+        #[cfg(feature = "pattern-learning")]
+        if self.config.use_clustering && observations.len() >= self.config.n_clusters {
+            if let Ok(suggestion) = self.suggest_with_clustering(observations) {
+                ensemble_suggestions.push(suggestion);
+                ensemble_confidences.push(0.5); // Exploration has lower confidence
+            }
+        }
+
+        // 4. Statistical prior-based suggestion
+        #[cfg(feature = "statistical-analysis")]
+        if self.config.use_statistical_priors && !self.prior_distributions.is_empty() {
+            if let Ok(suggestion) = self.suggest_with_priors() {
+                ensemble_suggestions.push(suggestion);
+                ensemble_confidences.push(0.3); // Prior-based has lowest confidence
+            }
+        }
+
+        // Combine ensemble suggestions
+        let final_suggestion = match self.config.voting_strategy {
+            VotingStrategy::Average => self.average_suggestions(&ensemble_suggestions)?,
+            VotingStrategy::Weighted => self.weighted_average_suggestions(&ensemble_suggestions, &ensemble_confidences)?,
+            VotingStrategy::BestModel => self.select_best_suggestion(&ensemble_suggestions, &ensemble_confidences)?,
+            VotingStrategy::BayesianAveraging => self.bayesian_average_suggestions(&ensemble_suggestions, &ensemble_confidences)?,
+        };
+
+        timer.finish();
+        Ok(final_suggestion)
+    }
+
+    /// Suggest using tree-based models
+    #[cfg(feature = "ml-optimization")]
+    fn suggest_with_trees(&mut self, observations: &[(Array1<f64>, f64)]) -> MLResult<Array1<f64>> {
+        let (x_data, y_data) = self.prepare_training_data(observations)?;
+        
+        // Train decision tree
+        let tree = DecisionTreeRegressor::fit(
+            &x_data,
+            &y_data,
+            Default::default()
+        ).map_err(|e| MLError::OptimizationError(format!("Tree training failed: {}", e)))?;
+
+        // Generate candidates and predict
+        let n_candidates = 100;
+        let bounds = self.get_bounds_from_observations(observations);
+        let candidates = self.generate_random_candidates(n_candidates, &bounds)?;
+        
+        let predictions = tree.predict(&candidates)
+            .map_err(|e| MLError::OptimizationError(format!("Tree prediction failed: {}", e)))?;
+        
+        // Select best candidate
+        let best_idx = predictions
+            .iter()
+            .enumerate()
+            .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
+            .map(|(idx, _)| idx)
+            .ok_or_else(|| MLError::OptimizationError("No valid prediction".to_string()))?;
+        
+        let suggestion = candidates.get_row(best_idx).to_vec();
+        Ok(Array1::from_vec(suggestion))
+    }
+
+    /// Suggest using clustering-based exploration
+    #[cfg(feature = "pattern-learning")]
+    fn suggest_with_clustering(&mut self, observations: &[(Array1<f64>, f64)]) -> MLResult<Array1<f64>> {
+        let (x_data, _) = self.prepare_training_data(observations)?;
+        
+        // Perform k-means clustering
+        let kmeans = KMeans::fit(&x_data, self.config.n_clusters, Default::default())
+            .map_err(|e| MLError::OptimizationError(format!("Clustering failed: {}", e)))?;
+        
+        let centroids = kmeans.centroids();
+        
+        // Find least explored centroid (farthest from existing observations)
+        let mut best_centroid_idx = 0;
+        let mut max_min_distance = 0.0;
+        
+        for (i, centroid) in centroids.row_iter().enumerate() {
+            let centroid_vec: Vec<f64> = centroid.iterator(0).collect();
+            
+            // Find minimum distance to existing observations
+            let min_distance = observations.iter()
+                .map(|(obs, _)| {
+                    obs.iter().zip(centroid_vec.iter())
+                        .map(|(a, b)| (a - b).powi(2))
+                        .sum::<f64>()
+                        .sqrt()
+                })
+                .fold(f64::INFINITY, |a, b| a.min(b));
+            
+            if min_distance > max_min_distance {
+                max_min_distance = min_distance;
+                best_centroid_idx = i;
+            }
+        }
+        
+        let suggestion_vec = centroids.get_row(best_centroid_idx).to_vec();
+        Ok(Array1::from_vec(suggestion_vec))
+    }
+
+    /// Suggest using statistical priors
+    #[cfg(feature = "statistical-analysis")]
+    fn suggest_with_priors(&self) -> MLResult<Array1<f64>> {
+        // Sample from prior distributions
+        let bounds = self.gp_optimizer.as_ref()
+            .map(|gp| &gp.bounds)
+            .ok_or_else(|| MLError::OptimizationError("No bounds available".to_string()))?;
+        
+        let mut suggestion = Array1::zeros(bounds.len());
+        
+        for i in 0..bounds.len() {
+            let (low, high) = bounds[i];
+            let param_name = format!("param_{}", i);
+            
+            if let Some(prior_dist) = self.prior_distributions.get(&param_name) {
+                // Sample from prior and scale to bounds
+                let sample = prior_dist.sample(&mut rand::thread_rng());
+                suggestion[i] = low + sample * (high - low);
+            } else {
+                // Fallback to uniform sampling
+                suggestion[i] = low + rand::random::<f64>() * (high - low);
+            }
+        }
+        
+        Ok(suggestion)
+    }
+
+    /// Average ensemble suggestions
+    fn average_suggestions(&self, suggestions: &[Array1<f64>]) -> MLResult<Array1<f64>> {
+        if suggestions.is_empty() {
+            return Err(MLError::OptimizationError("No suggestions to average".to_string()));
+        }
+        
+        let n_dims = suggestions[0].len();
+        let mut result = Array1::zeros(n_dims);
+        
+        for suggestion in suggestions {
+            result = &result + suggestion;
+        }
+        
+        result = result / suggestions.len() as f64;
+        Ok(result)
+    }
+
+    /// Weighted average of ensemble suggestions
+    fn weighted_average_suggestions(
+        &self, 
+        suggestions: &[Array1<f64>], 
+        confidences: &[f64]
+    ) -> MLResult<Array1<f64>> {
+        if suggestions.is_empty() || suggestions.len() != confidences.len() {
+            return Err(MLError::OptimizationError("Invalid suggestions or confidences".to_string()));
+        }
+        
+        let total_confidence: f64 = confidences.iter().sum();
+        if total_confidence <= 0.0 {
+            return self.average_suggestions(suggestions);
+        }
+        
+        let n_dims = suggestions[0].len();
+        let mut result = Array1::zeros(n_dims);
+        
+        for (suggestion, &confidence) in suggestions.iter().zip(confidences.iter()) {
+            let weight = confidence / total_confidence;
+            result = &result + &(suggestion * weight);
+        }
+        
+        Ok(result)
+    }
+
+    /// Select best suggestion based on confidence
+    fn select_best_suggestion(
+        &self, 
+        suggestions: &[Array1<f64>], 
+        confidences: &[f64]
+    ) -> MLResult<Array1<f64>> {
+        if suggestions.is_empty() || suggestions.len() != confidences.len() {
+            return Err(MLError::OptimizationError("Invalid suggestions or confidences".to_string()));
+        }
+        
+        let best_idx = confidences
+            .iter()
+            .enumerate()
+            .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
+            .map(|(idx, _)| idx)
+            .ok_or_else(|| MLError::OptimizationError("No valid confidence".to_string()))?;
+        
+        Ok(suggestions[best_idx].clone())
+    }
+
+    /// Bayesian averaging of suggestions
+    fn bayesian_average_suggestions(
+        &self, 
+        suggestions: &[Array1<f64>], 
+        confidences: &[f64]
+    ) -> MLResult<Array1<f64>> {
+        // For simplicity, use weighted average with softmax-normalized confidences
+        let exp_confidences: Vec<f64> = confidences.iter()
+            .map(|&c| c.exp())
+            .collect();
+        
+        self.weighted_average_suggestions(suggestions, &exp_confidences)
+    }
+
+    /// Prepare training data for ML models
+    #[cfg(feature = "ml-optimization")]
+    fn prepare_training_data(&self, observations: &[(Array1<f64>, f64)]) -> MLResult<(DenseMatrix<f64>, Vec<f64>)> {
+        if observations.is_empty() {
+            return Err(MLError::OptimizationError("No observations provided".to_string()));
+        }
+        
+        let n_obs = observations.len();
+        let n_dims = observations[0].0.len();
+        
+        let mut x_data = Vec::with_capacity(n_obs * n_dims);
+        let mut y_data = Vec::with_capacity(n_obs);
+        
+        for (x, y) in observations {
+            for &val in x.iter() {
+                x_data.push(val);
+            }
+            y_data.push(*y);
+        }
+        
+        let x_matrix = DenseMatrix::from_2d_vec(&x_data.chunks(n_dims).map(|chunk| chunk.to_vec()).collect::<Vec<_>>());
+        
+        Ok((x_matrix, y_data))
+    }
+
+    /// Generate random candidates for optimization
+    fn generate_random_candidates(&self, n_candidates: usize, bounds: &[(f64, f64)]) -> MLResult<DenseMatrix<f64>> {
+        let n_dims = bounds.len();
+        let mut candidates = Vec::with_capacity(n_candidates * n_dims);
+        
+        for _ in 0..n_candidates {
+            for &(low, high) in bounds {
+                candidates.push(low + rand::random::<f64>() * (high - low));
+            }
+        }
+        
+        let candidate_matrix = DenseMatrix::from_2d_vec(
+            &candidates.chunks(n_dims).map(|chunk| chunk.to_vec()).collect::<Vec<_>>()
+        );
+        
+        Ok(candidate_matrix)
+    }
+
+    /// Get bounds from observations (fallback when bounds not stored)
+    fn get_bounds_from_observations(&self, observations: &[(Array1<f64>, f64)]) -> Vec<(f64, f64)> {
+        if let Some(ref gp) = self.gp_optimizer {
+            return gp.bounds.clone();
+        }
+        
+        // Fallback: compute bounds from observations with padding
+        let n_dims = observations[0].0.len();
+        let mut bounds = Vec::with_capacity(n_dims);
+        
+        for dim in 0..n_dims {
+            let mut min_val = f64::INFINITY;
+            let mut max_val = f64::NEG_INFINITY;
+            
+            for (x, _) in observations {
+                let val = x[dim];
+                if val < min_val { min_val = val; }
+                if val > max_val { max_val = val; }
+            }
+            
+            // Add 20% padding
+            let range = max_val - min_val;
+            let padding = range * 0.2;
+            bounds.push((min_val - padding, max_val + padding));
+        }
+        
+        bounds
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1019,5 +1444,123 @@ mod tests {
             },
             _ => panic!("Kernel type should be RBF"),
         }
+    }
+
+    #[test]
+    fn test_ml_ensemble_optimizer_creation() {
+        let bounds = vec![(0.0, 10.0), (-5.0, 5.0)];
+        let config = MLEnsembleConfig::default();
+        let optimizer = MLEnsembleOptimizer::new(bounds, config);
+        
+        assert!(optimizer.gp_optimizer.is_some());
+        assert_eq!(optimizer.config.use_gaussian_process, true);
+        assert_eq!(optimizer.config.use_tree_models, true);
+        assert_eq!(optimizer.config.use_clustering, true);
+    }
+
+    #[test]
+    fn test_voting_strategies() {
+        let bounds = vec![(0.0, 1.0)];
+        let config = MLEnsembleConfig::default();
+        let optimizer = MLEnsembleOptimizer::new(bounds, config);
+        
+        let suggestions = vec![
+            Array1::from_vec(vec![0.2]),
+            Array1::from_vec(vec![0.4]),
+            Array1::from_vec(vec![0.6]),
+        ];
+        let confidences = vec![0.3, 0.5, 0.2];
+        
+        // Test average
+        let avg_result = optimizer.average_suggestions(&suggestions).unwrap();
+        assert_relative_eq!(avg_result[0], 0.4, epsilon = 1e-10);
+        
+        // Test weighted average
+        let weighted_result = optimizer.weighted_average_suggestions(&suggestions, &confidences).unwrap();
+        let expected_weighted = (0.2 * 0.3 + 0.4 * 0.5 + 0.6 * 0.2) / (0.3 + 0.5 + 0.2);
+        assert_relative_eq!(weighted_result[0], expected_weighted, epsilon = 1e-10);
+        
+        // Test best selection
+        let best_result = optimizer.select_best_suggestion(&suggestions, &confidences).unwrap();
+        assert_relative_eq!(best_result[0], 0.4, epsilon = 1e-10); // Index 1 has highest confidence
+    }
+
+    #[test]
+    #[cfg(feature = "statistical-analysis")]
+    fn test_statistical_priors() {
+        let bounds = vec![(0.0, 1.0), (0.0, 1.0)];
+        let config = MLEnsembleConfig::default();
+        let mut optimizer = MLEnsembleOptimizer::new(bounds, config);
+        
+        let mut priors = HashMap::new();
+        priors.insert("param_0".to_string(), (2.0, 5.0)); // Beta(2, 5)
+        priors.insert("param_1".to_string(), (3.0, 2.0)); // Beta(3, 2)
+        
+        optimizer.initialize_with_priors(priors).unwrap();
+        
+        assert_eq!(optimizer.prior_distributions.len(), 2);
+        
+        // Test prior-based suggestion
+        let suggestion = optimizer.suggest_with_priors().unwrap();
+        assert_eq!(suggestion.len(), 2);
+        assert!(suggestion[0] >= 0.0 && suggestion[0] <= 1.0);
+        assert!(suggestion[1] >= 0.0 && suggestion[1] <= 1.0);
+    }
+
+    #[test]
+    fn test_ensemble_bounds_from_observations() {
+        let bounds = vec![(0.0, 10.0), (-5.0, 5.0)];
+        let config = MLEnsembleConfig::default();
+        let optimizer = MLEnsembleOptimizer::new(bounds.clone(), config);
+        
+        let observations = vec![
+            (Array1::from_vec(vec![1.0, 0.0]), 1.0),
+            (Array1::from_vec(vec![2.0, 1.0]), 4.0),
+            (Array1::from_vec(vec![3.0, -1.0]), 2.0),
+        ];
+        
+        let computed_bounds = optimizer.get_bounds_from_observations(&observations);
+        assert_eq!(computed_bounds.len(), 2);
+        
+        // Should use GP bounds when available
+        assert_eq!(computed_bounds[0], bounds[0]);
+        assert_eq!(computed_bounds[1], bounds[1]);
+    }
+
+    #[test]
+    fn test_acquisition_function_edge_cases() {
+        let mut acq = AcquisitionFunction::expected_improvement(0.0);
+        acq.update_best(1.0);
+        
+        // Test with zero standard deviation
+        let mean = Array1::from_vec(vec![1.5, 0.5]);
+        let std = Array1::from_vec(vec![0.0, 0.1]);
+        
+        let values = acq.compute(mean.view(), std.view()).unwrap();
+        assert_eq!(values.len(), 2);
+        assert_eq!(values[0], 0.5); // improvement with zero std
+        assert!(values[1] >= 0.0);   // normal EI calculation
+    }
+
+    #[test]
+    fn test_gaussian_process_edge_cases() {
+        let kernel = KernelFunction::rbf(1.0, 1.0);
+        let mut gp = GaussianProcess::new(kernel, 1e-6);
+        
+        // Test with identical points
+        let x_train = Array2::from_shape_vec((2, 1), vec![1.0, 1.0]).unwrap();
+        let y_train = Array1::from_vec(vec![2.0, 2.1]);
+        
+        // Should handle near-singular matrices
+        let result = gp.fit(x_train, y_train);
+        assert!(result.is_ok());
+        
+        // Test prediction on training point
+        let x_test = Array2::from_shape_vec((1, 1), vec![1.0]).unwrap();
+        let (mean, std) = gp.predict(x_test.view()).unwrap();
+        
+        assert_eq!(mean.len(), 1);
+        assert_eq!(std.len(), 1);
+        assert!(std[0] >= 0.0); // Standard deviation should be non-negative
     }
 }

@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, subDays } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, subDays } = dateFns;
 import {
   groupBy,
   map,
@@ -243,7 +242,7 @@ export class SecurityScanningService {
     });
 
     const startTime = Date.now();
-    const resultId = `result-${nanoid(12)}`;`
+    const resultId = `result-${generateNanoId(12)}`;`
 
     try {
       // Execute all configured tools in parallel
@@ -375,7 +374,7 @@ export class SecurityScanningService {
 
       for (let i = 0; i < findingCount; i++) {
         findings.push({
-          id: `finding-${nanoid(8)}`,`
+          id: `finding-${generateNanoId(8)}`,`
           title: `${tool.name} finding in ${target.path}`,`
           description: `Security issue detected by ${tool.name}`,`
           severity: this.getRandomSeverity(),

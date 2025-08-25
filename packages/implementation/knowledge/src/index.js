@@ -8,4 +8,17 @@ export * from './main';
 export * from './intelligent-doc-import';
 export { BasicKnowledgeManager } from './main';
 // Public coordination API (fact system implementation is private)
-export { getCoordinationFactSystem, initializeCoordinationFactSystem, storeCoordinationFact, queryCoordinationFacts, searchCoordinationFacts, getCoordinationFacts, storeCoordinationEvent, storeAgentFact, queryAgentFacts, searchExternalFacts, getNPMPackageInfo, getGitHubRepoInfo, } from './coordination-api';
+export {
+  getCoordinationFactSystem,
+  initializeCoordinationFactSystem,
+  storeCoordinationFact,
+  queryCoordinationFacts,
+  searchCoordinationFacts,
+  getCoordinationFacts,
+  storeCoordinationEvent,
+  storeAgentFact,
+  queryAgentFacts,
+  searchExternalFacts,
+  getNPMPackageInfo,
+  getGitHubRepoInfo,
+} from './coordination-api';

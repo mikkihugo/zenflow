@@ -50,7 +50,7 @@ interface ProtocolResponse {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const __protocolTypesIdentity = <T>(v: T) => v;
 __protocolTypesIdentity<
-  ProtocolMessage|ProtocolResponse|ExpectedCall|undefined
+  ProtocolMessage | ProtocolResponse | ExpectedCall | undefined
 >(undefined);
 
 // Enhanced mock configuration for London TDD
@@ -75,7 +75,7 @@ afterEach(() => {
  */
 function setupDefaultMocks(): void {
   // Mock console methods to reduce noise in tests
-  vi.spyOn(console,'log').mockImplementation(() => {});
+  vi.spyOn(console, 'log').mockImplementation(() => {});
   vi.spyOn(console, 'warn').mockImplementation(() => {});
   vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -101,7 +101,10 @@ globalThis.createInteractionSpy = (name: string): any => {
  * @param spy - Jest mock to verify
  * @param expectedCalls - Array of expected call arguments
  */
-globalThis.verifyInteractions = (spy: any, expectedCalls: ExpectedCall[]): void => {
+globalThis.verifyInteractions = (
+  spy: any,
+  expectedCalls: ExpectedCall[]
+): void => {
   expect(spy).toHaveBeenCalledTimes(expectedCalls.length);
   expectedCalls.forEach((call, index) => {
     expect(spy).toHaveBeenNthCalledWith(index + 1, ...call.args);
@@ -131,7 +134,10 @@ globalThis.createMockFactory = <T>(defaults: Partial<T> = {}) => {
  * @param timeout - Maximum time to wait in milliseconds
  * @throws Error if interaction doesn't occur within timeout
  */
-globalThis.waitForInteraction = async (spy: any, timeout = 1000): Promise<void> => {
+globalThis.waitForInteraction = async (
+  spy: any,
+  timeout = 1000
+): Promise<void> => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
     await new Promise((resolve) => setTimeout(resolve, 10));

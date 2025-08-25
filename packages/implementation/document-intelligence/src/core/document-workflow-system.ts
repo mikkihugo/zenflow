@@ -11,7 +11,7 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 
 import { getLogger } from '@claude-zen/foundation';
 // DocumentManager interface - using fallback type if intelligence facade not available
@@ -108,7 +108,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    * @param workspacePath
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
-    const workspaceId = nanoid();
+    const workspaceId = generateNanoId();
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
     logger.info(

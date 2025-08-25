@@ -32,7 +32,7 @@
       "description": "Current status of the business epic"
     },
     "priority": {
-      "type": "string", 
+      "type": "string",
       "enum": ["low", "medium", "high", "critical"],
       "default": "medium",
       "description": "Priority level"
@@ -60,7 +60,7 @@
       "description": "Creation timestamp"
     },
     "updated_at": {
-      "type": "string", 
+      "type": "string",
       "format": "date-time",
       "description": "Last update timestamp"
     },
@@ -137,7 +137,7 @@
       },
       "default": [
         "Requirements documented and approved",
-        "User stories created and estimated", 
+        "User stories created and estimated",
         "Acceptance criteria defined"
       ],
       "description": "Definition of done checklist (Agile+ modes)"
@@ -163,7 +163,7 @@
           "default": []
         },
         "success_metrics": {
-          "type": "array", 
+          "type": "array",
           "items": {
             "type": "string"
           },
@@ -207,7 +207,13 @@
           "type": "number"
         }
       },
-      "required": ["user_business_value", "time_criticality", "risk_reduction", "job_size", "total_score"],
+      "required": [
+        "user_business_value",
+        "time_criticality",
+        "risk_reduction",
+        "job_size",
+        "total_score"
+      ],
       "description": "Weighted Shortest Job First scoring (SAFe mode)"
     },
     "program_epics_generated": {
@@ -218,10 +224,10 @@
     }
   },
   "required": [
-    "id", 
-    "title", 
-    "content", 
-    "business_objective", 
+    "id",
+    "title",
+    "content",
+    "business_objective",
     "target_audience"
   ],
   "additionalProperties": false,

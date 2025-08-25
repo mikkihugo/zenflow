@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { z } from 'zod';
+import { z } from '@claude-zen/foundation';
 
 /**
  * Workflow step validation schema

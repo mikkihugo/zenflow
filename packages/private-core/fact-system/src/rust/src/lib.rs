@@ -72,9 +72,9 @@ pub use graphql::{GitHubGraphQLClient, SimpleVersionAnalysis};
 #[cfg(feature = "auto")]
 pub use auto_orchestrator::AutoFactOrchestrator;
 
-// Storage - conditional on feature
-#[cfg(feature = "storage")]
-pub use storage::sled_storage::SledStorage;
+// Storage - simple global facts storage
+pub use storage::simple_storage::SimpleFactStorage;
+pub use storage::{create_storage, StorageConfig, FactStorage};
 
 /// Result type for FACT operations
 pub type Result<T> = std::result::Result<T, FactError>;

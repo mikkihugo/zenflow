@@ -1,16 +1,16 @@
 /**
  * Infrastructure Layer - Foundation Pattern
- * 
+ *
  * Single coordinating facade for system infrastructure.
  * Internally delegates to strategic facades when needed.
  */
 
-import { 
+import {
   getLogger,
   createContainer,
   Result,
   ok,
-  err 
+  err,
 } from '@claude-zen/foundation';
 
 const logger = getLogger('infrastructure');
@@ -66,7 +66,12 @@ class SystemCoordinatorImpl implements SystemCoordinator {
       const coordHealth = this.getCoordinationHealth();
 
       const health: SystemHealth = {
-        overall: this.assessOverallHealth([brainHealth, memoryHealth, dbHealth, coordHealth]),
+        overall: this.assessOverallHealth([
+          brainHealth,
+          memoryHealth,
+          dbHealth,
+          coordHealth,
+        ]),
         components: {
           brain: brainHealth,
           memory: memoryHealth,
@@ -107,10 +112,10 @@ class SystemCoordinatorImpl implements SystemCoordinator {
 
     try {
       logger.info('Initializing system coordinator...');
-      
+
       // Initialize strategic facades in order
       await this.initializeBrainSystem();
-      await this.initializeMemorySystem(); 
+      await this.initializeMemorySystem();
       await this.initializeDatabaseSystem();
       await this.initializeCoordinationSystem();
 
@@ -126,7 +131,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
   async shutdownSystem(): Promise<Result<void, Error>> {
     try {
       logger.info('Shutting down system coordinator...');
-      
+
       // Shutdown in reverse order
       await this.shutdownCoordinationSystem();
       await this.shutdownDatabaseSystem();
@@ -149,7 +154,11 @@ class SystemCoordinatorImpl implements SystemCoordinator {
       const { getBrainSystem } = await import('@claude-zen/intelligence');
       const brainSystem = await getBrainSystem();
       const health = await brainSystem.getHealth();
-      return health.isHealthy ? 'healthy' : health.hasWarnings ? 'warning' : 'critical';
+      return health.isHealthy
+        ? 'healthy'
+        : health.hasWarnings
+          ? 'warning'
+          : 'critical';
     } catch (error) {
       logger.warn('Brain system not available:', error);
       return 'critical';
@@ -163,7 +172,9 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     return 'healthy';
   }
 
-  private async getDatabaseHealth(): Promise<'healthy' | 'warning' | 'critical'> {
+  private async getDatabaseHealth(): Promise<
+    'healthy' | 'warning' | 'critical'
+  > {
     try {
       const { getDatabaseSystem } = await import('@claude-zen/infrastructure');
       const dbSystem = await getDatabaseSystem();
@@ -180,7 +191,9 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     return 'healthy'; // Simplified for now
   }
 
-  private assessOverallHealth(componentHealths: string[]): 'healthy' | 'warning' | 'critical' {
+  private assessOverallHealth(
+    componentHealths: string[]
+  ): 'healthy' | 'warning' | 'critical' {
     if (componentHealths.includes('critical')) return 'critical';
     if (componentHealths.includes('warning')) return 'warning';
     return 'healthy';
@@ -258,4 +271,6 @@ export type { WebSession } from './session.manager';
 export { WebProcessManager } from './process/web.manager';
 export type { ProcessInfo } from './process/web.manager';
 
-logger.info('Infrastructure layer initialized with coordinating facade pattern');
+logger.info(
+  'Infrastructure layer initialized with coordinating facade pattern'
+);

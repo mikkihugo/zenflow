@@ -10,7 +10,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    
+
     /* Relaxed Type Checking for Implementation Package */
     "strict": false,
     "noImplicitAny": false,
@@ -24,18 +24,12 @@
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "useDefineForClassFields": true,
-    
+
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2022", "DOM"],
     "types": ["node"]
   },
-  "include": [
-    "./**/*.ts"
-  ],
-  "exclude": [
-    "dist/",
-    "**/*.test.ts",
-    "node_modules/"
-  ]
+  "include": ["./**/*.ts"],
+  "exclude": ["dist/", "**/*.test.ts", "node_modules/"]
 }

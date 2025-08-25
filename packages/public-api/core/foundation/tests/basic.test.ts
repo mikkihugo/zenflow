@@ -1,6 +1,6 @@
 /**
  * @fileoverview Basic Foundation Package Tests
- * 
+ *
  * Simple, working tests that verify core functionality without complex imports
  */
 
@@ -19,7 +19,7 @@ describe('Foundation Package - Core Functionality', () => {
     it('should have proper exports configuration', () => {
       const pkg = require('../package.json');
       const exports = pkg.exports;
-      
+
       expect(exports['.']).toBeDefined();
       expect(exports['./core']).toBeDefined();
       expect(exports['./di']).toBeDefined();
@@ -79,11 +79,11 @@ describe('Foundation Package - Core Functionality', () => {
   describe('Core Dependencies', () => {
     it('should have neverthrow for Result pattern', async () => {
       const { Result, ok, err } = await import('neverthrow');
-      
+
       const successResult = ok('test');
       expect(successResult.isOk()).toBe(true);
       expect(successResult.isErr()).toBe(false);
-      
+
       const errorResult = err('error');
       expect(errorResult.isOk()).toBe(false);
       expect(errorResult.isErr()).toBe(true);
@@ -91,42 +91,44 @@ describe('Foundation Package - Core Functionality', () => {
 
     it('should have zod for validation', async () => {
       const { z } = await import('zod');
-      
+
       const schema = z.object({
         name: z.string(),
         age: z.number(),
       });
-      
+
       const validData = { name: 'test', age: 25 };
       expect(() => schema.parse(validData)).not.toThrow();
-      
+
       const invalidData = { name: 123, age: 'invalid' };
       expect(() => schema.parse(invalidData)).toThrow();
     });
 
     it('should have awilix for dependency injection', async () => {
       const { createContainer, asValue } = await import('awilix');
-      
+
       const container = createContainer();
       container.register('test', asValue('test-value'));
-      
+
       expect(container.resolve('test')).toBe('test-value');
     });
 
     it('should have cockatiel for resilience', async () => {
-      const { retry, ExponentialBackoff, handleAll } = await import('cockatiel');
-      
+      const { retry, ExponentialBackoff, handleAll } = await import(
+        'cockatiel'
+      );
+
       const retryPolicy = retry(handleAll, {
         maxAttempts: 3,
         backoff: new ExponentialBackoff(),
       });
-      
+
       expect(retryPolicy).toBeDefined();
     });
 
     it('should have lodash utilities', async () => {
       const _ = await import('lodash');
-      
+
       expect(typeof _.default.map).toBe('function');
       expect(typeof _.default.filter).toBe('function');
       expect(typeof _.default.reduce).toBe('function');
@@ -134,7 +136,7 @@ describe('Foundation Package - Core Functionality', () => {
 
     it('should have date-fns for date operations', async () => {
       const { format, addDays } = await import('date-fns');
-      
+
       const date = new Date('2025-01-01');
       expect(typeof format(date, 'yyyy-MM-dd')).toBe('string');
       expect(addDays(date, 1)).toBeInstanceOf(Date);
@@ -142,7 +144,7 @@ describe('Foundation Package - Core Functionality', () => {
 
     it('should have nanoid for ID generation', async () => {
       const { nanoid } = await import('nanoid');
-      
+
       const id = nanoid();
       expect(typeof id).toBe('string');
       expect(id.length).toBeGreaterThan(0);
@@ -150,7 +152,7 @@ describe('Foundation Package - Core Functionality', () => {
 
     it('should have commander for CLI support', async () => {
       const { Command } = await import('commander');
-      
+
       const program = new Command();
       expect(program).toBeDefined();
       expect(typeof program.option).toBe('function');
@@ -170,11 +172,11 @@ describe('Foundation Package - Core Functionality', () => {
       // Verify that different entry points exist (tree-shaking)
       const main = await import('../src/index');
       const full = await import('../src/index.full');
-      
+
       // Main should be minimal
       expect(Object.keys(main).length).toBeLessThan(20);
-      
-      // Full should be comprehensive  
+
+      // Full should be comprehensive
       expect(Object.keys(full).length).toBeGreaterThan(50);
     });
   });

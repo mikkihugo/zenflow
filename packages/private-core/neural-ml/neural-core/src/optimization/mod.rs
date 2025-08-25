@@ -11,11 +11,14 @@
 
 pub mod backend_detector;
 pub mod adaptive_executor;
+#[cfg(feature = "simd-acceleration")]
 pub mod simd_ops;
 pub mod gpu_executor;
+#[cfg(feature = "apple-acceleration")]
 pub mod apple_acceleration;
+#[cfg(feature = "cuda-support")]
 pub mod cuda_acceleration;
-pub mod simple_matrix;
+pub mod cpu_fallback;
 
 use std::sync::OnceLock;
 use crate::error::{Result, NeuralError};
@@ -110,27 +113,34 @@ pub fn get_f32_optimized_ops() -> Result<Box<dyn OptimizedOps<f32>>> {
     })?;
 
     match backend {
+        #[cfg(feature = "apple-acceleration")]
         OptimizationBackend::AppleSilicon { .. } => {
             Ok(Box::new(apple_acceleration::AppleOptimizedOps::new()?))
         }
+        #[cfg(feature = "cuda-support")]
         OptimizationBackend::NvidiaCuda { .. } => {
             Ok(Box::new(cuda_acceleration::CudaOptimizedOps::new()?))
         }
+        #[cfg(feature = "simd-acceleration")]
         OptimizationBackend::IntelAmd { avx512: true, .. } => {
             Ok(Box::new(simd_ops::Avx512Ops::new()))
         }
+        #[cfg(feature = "simd-acceleration")]
         OptimizationBackend::IntelAmd { avx2: true, .. } => {
             Ok(Box::new(simd_ops::Avx2Ops::new()))
         }
+        #[cfg(feature = "simd-acceleration")]
         OptimizationBackend::IntelAmd { avx512: false, avx2: false, .. } => {
             // No SIMD support, fall back to CPU optimized
             Ok(Box::new(simd_ops::FallbackOps::new()))
         }
+        #[cfg(feature = "simd-acceleration")]
         OptimizationBackend::ArmNeon { .. } => {
             Ok(Box::new(simd_ops::NeonOps::new()))
         }
-        OptimizationBackend::CpuOptimized { .. } => {
-            Ok(Box::new(simd_ops::FallbackOps::new()))
+        _ => {
+            // Fallback to CPU-optimized operations when advanced features aren't available
+            Ok(Box::new(cpu_fallback::CpuOptimizedOps::new()))
         }
     }
 }

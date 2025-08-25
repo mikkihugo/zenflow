@@ -98,14 +98,39 @@ export interface Container {
   off(event: string, listener: (...args: unknown[]) => void): this;
 
   // Core registration methods
-  register<T>(token: string, implementation: new (...args: unknown[]) => T, options?: { capabilities?: string[], tags?: string[] }): void;
-  registerFunction<T>(token: string, factory: () => T, options?: { capabilities?: string[], tags?: string[] }): void;
-  registerInstance<T>(token: string, instance: T, options?: { capabilities?: string[], tags?: string[] }): void;
+  register<T>(
+    token: string,
+    implementation: new (...args: unknown[]) => T,
+    options?: { capabilities?: string[]; tags?: string[] }
+  ): void;
+  registerFunction<T>(
+    token: string,
+    factory: () => T,
+    options?: { capabilities?: string[]; tags?: string[] }
+  ): void;
+  registerInstance<T>(
+    token: string,
+    instance: T,
+    options?: { capabilities?: string[]; tags?: string[] }
+  ): void;
 
   // New reasonable DI features
-  registerSingleton<T>(token: string, factory: (() => T) | (new (...args: unknown[]) => T), options?: { capabilities?: string[], tags?: string[] }): void;
-  registerAsyncFactory<T>(token: string, factory: () => Promise<T>, options?: { capabilities?: string[], tags?: string[] }): void;
-  registerConditional<T>(token: string, factory: (() => T) | (new (...args: unknown[]) => T), condition: () => boolean, options?: { capabilities?: string[], tags?: string[] }): void;
+  registerSingleton<T>(
+    token: string,
+    factory: (() => T) | (new (...args: unknown[]) => T),
+    options?: { capabilities?: string[]; tags?: string[] }
+  ): void;
+  registerAsyncFactory<T>(
+    token: string,
+    factory: () => Promise<T>,
+    options?: { capabilities?: string[]; tags?: string[] }
+  ): void;
+  registerConditional<T>(
+    token: string,
+    factory: (() => T) | (new (...args: unknown[]) => T),
+    condition: () => boolean,
+    options?: { capabilities?: string[]; tags?: string[] }
+  ): void;
 
   // Resolution methods
   resolve<T>(token: string): T;
@@ -123,12 +148,20 @@ export interface Container {
   dispose(): Promise<void>;
 
   // Advanced features (existing)
-  autoDiscoverServices(patterns: string[], options: ServiceDiscoveryOptions): Promise<ServiceInfo[]>;
+  autoDiscoverServices(
+    patterns: string[],
+    options: ServiceDiscoveryOptions
+  ): Promise<ServiceInfo[]>;
   startHealthMonitoring(interval: number): void;
   getStats(): ContainerStats;
   getServicesByCapability?(capability: string): ServiceInfo[];
   getServicesByTag?(tag: string): ServiceInfo[];
-  getHealthStatus?(): { status: string; serviceCount: number; timestamp: number; uptime: number };
+  getHealthStatus?(): {
+    status: string;
+    serviceCount: number;
+    timestamp: number;
+    uptime: number;
+  };
   getName?(): string;
 }
 
@@ -170,3 +203,6 @@ export const TOKENS = {
 
 // Keep 'inject' as it teaches the injection pattern concept
 export const inject = createContainer;
+
+// Export a default container instance for convenience
+export const container = createContainer();

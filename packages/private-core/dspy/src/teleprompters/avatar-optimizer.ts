@@ -35,7 +35,7 @@ const DEFAULT_MAX_EXAMPLES = 10;
 export interface EvalResult {
   example: Record<string, any>;
   score: number;
-  actions?: any[]|null;
+  actions?: any[] | null;
 }
 
 /**
@@ -101,7 +101,7 @@ export class AvatarOptimizer extends Teleprompter {
   private upper_bound: number;
   private max_positive_inputs: number;
   private max_negative_inputs: number;
-  private optimize_for:'max|min';
+  private optimize_for: 'max|min';
 
   // Internal components exactly matching Stanford implementation
   private comparator: any;
@@ -112,14 +112,16 @@ export class AvatarOptimizer extends Teleprompter {
     max_iters?: number;
     lower_bound?: number;
     upper_bound?: number;
-    max_positive_inputs?: number|null;
+    max_positive_inputs?: number | null;
     max_negative_inputs?: number | null;
     optimize_for?: string;
   }) {
     super();
 
     if (!config.metric) {
-      throw new Error('`metric` argument cannot be None. Please provide a metric function.');
+      throw new Error(
+        '`metric` argument cannot be None. Please provide a metric function.'
+      );
     }
 
     this.metric = config.metric;
@@ -144,15 +146,15 @@ export class AvatarOptimizer extends Teleprompter {
     student: AvatarModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule|null;
-      valset?: Example[]|null;
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<AvatarModule> {
     const { trainset } = config;
 
     let best_actor = this._deepcopy(student);
-    let best_score = this.optimize_for ==='max' ? -999 : 999;
+    let best_score = this.optimize_for === 'max' ? -999 : 999;
 
     for (let i = 0; i < this.max_iters; i++) {
       console.log('='.repeat(20));
@@ -208,7 +210,8 @@ export class AvatarOptimizer extends Teleprompter {
 
       // Update best actor exactly matching Stanford logic
       const should_update =
-        (this.optimize_for === 'max'&& best_score < score)||(this.optimize_for ==='min'&& best_score > score);
+        (this.optimize_for === 'max' && best_score < score) ||
+        (this.optimize_for === 'min' && best_score > score);
 
       if (should_update) {
         best_actor.actor.signature =
@@ -317,19 +320,20 @@ export class AvatarOptimizer extends Teleprompter {
         pos_inputs.push({
           example: example.inputs,
           score,
-          actions: prediction?.actions||null,
+          actions: prediction?.actions || null,
         });
       } else if (score <= this.lower_bound) {
         neg_inputs.push({
           example: example.inputs,
           score,
-          actions: prediction?.actions||null,
+          actions: prediction?.actions || null,
         });
       }
     }
 
     if (pos_inputs.length === 0) {
-      throw new Error('No positive examples found, try lowering the upper_bound or providing more training data'
+      throw new Error(
+        'No positive examples found, try lowering the upper_bound or providing more training data'
       );
     }
     if (neg_inputs.length === 0) {

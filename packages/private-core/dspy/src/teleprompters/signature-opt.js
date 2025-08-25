@@ -47,36 +47,38 @@ import { COPRO } from './copro';
  * ```
  */
 export class SignatureOptimizer extends COPRO {
-    constructor(config = {}) {
-        // Show deprecation warning exactly matching Stanford implementation
-        console.warn('\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. ' +
-            'SignatureOptimizer will be removed in a future release. \u001b[31m');
-        // Pass through to COPRO parent class exactly matching Stanford implementation
-        super({
-            prompt_model: config.prompt_model,
-            metric: config.metric,
-            breadth: config.breadth,
-            depth: config.depth,
-            init_temperature: config.init_temperature,
-            track_stats: config.track_stats,
-        });
-    }
-    /**
-     * Compile method exactly matching Stanford DSPy SignatureOptimizer API
-     *
-     * Note: Uses 'devset' parameter name for backward compatibility,
-     * but passes it as 'trainset' to COPRO as per Stanford implementation.
-     */
-    async compile(student, config) {
-        const { trainset, eval_kwargs = {} } = config;
-        const devset = trainset;
-        // Delegate to parent COPRO class exactly matching Stanford implementation
-        // Note: devset becomes trainset in COPRO
-        return super.compile(student, {
-            trainset: devset,
-            eval_kwargs,
-        });
-    }
+  constructor(config = {}) {
+    // Show deprecation warning exactly matching Stanford implementation
+    console.warn(
+      '\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. ' +
+        'SignatureOptimizer will be removed in a future release. \u001b[31m'
+    );
+    // Pass through to COPRO parent class exactly matching Stanford implementation
+    super({
+      prompt_model: config.prompt_model,
+      metric: config.metric,
+      breadth: config.breadth,
+      depth: config.depth,
+      init_temperature: config.init_temperature,
+      track_stats: config.track_stats,
+    });
+  }
+  /**
+   * Compile method exactly matching Stanford DSPy SignatureOptimizer API
+   *
+   * Note: Uses 'devset' parameter name for backward compatibility,
+   * but passes it as 'trainset' to COPRO as per Stanford implementation.
+   */
+  async compile(student, config) {
+    const { trainset, eval_kwargs = {} } = config;
+    const devset = trainset;
+    // Delegate to parent COPRO class exactly matching Stanford implementation
+    // Note: devset becomes trainset in COPRO
+    return super.compile(student, {
+      trainset: devset,
+      eval_kwargs,
+    });
+  }
 }
 // Export for backward compatibility
 export default SignatureOptimizer;

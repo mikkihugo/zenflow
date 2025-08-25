@@ -22,7 +22,7 @@ try {
     info: () => {},
     error: () => {},
     warn: () => {},
-    debug: () => {}
+    debug: () => {},
   };
 }
 
@@ -46,14 +46,17 @@ const colors = {
   cyan: '\x1b[36m',
   white: '\x1b[37m',
   reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  bold: '\x1b[1m',
 };
 
 // Helper function to find tsc path and handle spawn ENOENT issues
 function getTscCommand() {
   try {
     // Try to use local tsc from node_modules
-    const localTscPath = path.join(process.cwd(), 'apps/claude-code-zen-server/node_modules/.bin/tsc');
+    const localTscPath = path.join(
+      process.cwd(),
+      'apps/claude-code-zen-server/node_modules/.bin/tsc'
+    );
     execSync(`${localTscPath} --version`, { stdio: 'ignore' });
     return localTscPath;
   } catch {
@@ -162,23 +165,27 @@ function createErrorPage(error) {
 
 function startErrorServer() {
   if (errorServer) return;
-  
+
   errorServer = createServer((req, res) => {
     res.writeHead(200, {
       'Content-Type': 'text/html',
-      'Cache-Control': 'no-cache'
+      'Cache-Control': 'no-cache',
     });
-    
+
     if (lastError) {
       res.end(createErrorPage(lastError));
     } else {
       res.end(createErrorPage('Server starting...'));
     }
   });
-  
+
   errorServer.listen(PORT, () => {
-    console.log(`${colors.yellow}🚨 Error server running at http://localhost:${PORT}${colors.reset}`);
-    console.log(`${colors.cyan}   Fix the TypeScript errors and the main server will restart${colors.reset}`);
+    console.log(
+      `${colors.yellow}🚨 Error server running at http://localhost:${PORT}${colors.reset}`
+    );
+    console.log(
+      `${colors.cyan}   Fix the TypeScript errors and the main server will restart${colors.reset}`
+    );
   });
 }
 
@@ -191,44 +198,50 @@ function stopErrorServer() {
 
 function runTypeCheck() {
   return new Promise((resolve, reject) => {
-    console.log(`${colors.blue}🔍 Running TypeScript type check...${colors.reset}`);
-    
+    console.log(
+      `${colors.blue}🔍 Running TypeScript type check...${colors.reset}`
+    );
+
     const tscCommand = getTscCommand();
     let tsc;
     if (Array.isArray(tscCommand)) {
       // Using npx tsc
-      tsc = spawn(tscCommand[0], [tscCommand[1], '--noEmit', '--project', './tsconfig.json'], {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-        env: { ...process.env, PATH: process.env.PATH }
-      });
+      tsc = spawn(
+        tscCommand[0],
+        [tscCommand[1], '--noEmit', '--project', './tsconfig.json'],
+        {
+          stdio: 'pipe',
+          cwd: process.cwd(),
+          env: { ...process.env, PATH: process.env.PATH },
+        }
+      );
     } else {
       // Using local tsc
       tsc = spawn(tscCommand, ['--noEmit', '--project', './tsconfig.json'], {
         stdio: 'pipe',
         cwd: process.cwd(),
-        env: { ...process.env, PATH: process.env.PATH }
+        env: { ...process.env, PATH: process.env.PATH },
       });
     }
-    
+
     let stdout = '';
     let stderr = '';
-    
+
     tsc.stdout.on('data', (data) => {
       stdout += data.toString();
     });
-    
+
     tsc.stderr.on('data', (data) => {
       stderr += data.toString();
     });
-    
+
     tsc.on('close', (code) => {
       if (code === 0) {
         console.log(`${colors.green}✅ TypeScript check passed${colors.reset}`);
         if (syslogBridge) {
           syslogBridge.info('typescript', 'TypeScript compilation successful', {
             exitCode: code,
-            component: 'tsc'
+            component: 'tsc',
           });
         }
         resolve();
@@ -240,7 +253,7 @@ function runTypeCheck() {
           syslogBridge.error('typescript', 'TypeScript compilation failed', {
             exitCode: code,
             errorOutput: error.substring(0, 500), // Truncate for syslog
-            component: 'tsc'
+            component: 'tsc',
           });
         }
         reject(error);
@@ -252,49 +265,57 @@ function runTypeCheck() {
 function startMainServer() {
   return new Promise((resolve, reject) => {
     console.log(`${colors.green}🚀 Starting main server...${colors.reset}`);
-    
+
     try {
       const npxPath = execSync('which npx', { encoding: 'utf8' }).trim();
       mainServer = spawn(npxPath, ['tsx', './src/main.ts'], {
         stdio: ['inherit', 'inherit', 'pipe'],
         cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
-        env: { ...process.env, NODE_ENV: 'development' }
+        env: { ...process.env, NODE_ENV: 'development' },
       });
     } catch {
       // Fallback to direct node command if npx fails
       mainServer = spawn('node', ['--require', 'tsx/cjs', './src/main.ts'], {
         stdio: ['inherit', 'inherit', 'pipe'],
         cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
-        env: { ...process.env, NODE_ENV: 'development' }
+        env: { ...process.env, NODE_ENV: 'development' },
       });
     }
-    
+
     let startupError = '';
-    
+
     mainServer.stderr.on('data', (data) => {
       const errorText = data.toString();
       console.error(errorText);
       startupError += errorText;
     });
-    
+
     mainServer.on('close', (code) => {
       if (code !== 0 && code !== null) {
-        console.log(`${colors.red}💥 Main server exited with code ${code}${colors.reset}`);
+        console.log(
+          `${colors.red}💥 Main server exited with code ${code}${colors.reset}`
+        );
         lastError = startupError || `Server exited with code ${code}`;
         reject(new Error(lastError));
       }
     });
-    
+
     // Give the server a moment to start
     setTimeout(() => {
       if (mainServer && !mainServer.killed) {
-        console.log(`${colors.green}✅ Main server started successfully${colors.reset}`);
+        console.log(
+          `${colors.green}✅ Main server started successfully${colors.reset}`
+        );
         if (syslogBridge) {
-          syslogBridge.info('main-server', 'Claude Code Zen server started successfully', {
-            port: PORT,
-            pid: mainServer.pid,
-            component: 'tsx'
-          });
+          syslogBridge.info(
+            'main-server',
+            'Claude Code Zen server started successfully',
+            {
+              port: PORT,
+              pid: mainServer.pid,
+              component: 'tsx',
+            }
+          );
         }
         resolve();
       }
@@ -314,14 +335,14 @@ function broadcastMessage(message) {
     const { spawn } = require('child_process');
     spawn('/home/mhugo/code/claude-code-zen/broadcast-reload.sh', [message], {
       stdio: 'inherit',
-      detached: true
+      detached: true,
     });
-    
+
     // Also log to syslog for centralized logging
     if (syslogBridge) {
       syslogBridge.info('dev-runner', message, {
         type: 'broadcast',
-        pid: process.pid
+        pid: process.pid,
       });
     }
   } catch (error) {
@@ -331,54 +352,71 @@ function broadcastMessage(message) {
 
 function startFileWatcher() {
   if (fileWatcher) return;
-  
-  console.log(`${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`);
-  
+
+  console.log(
+    `${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`
+  );
+
   // Watch TypeScript files for changes from the server directory
   const serverDir = path.join(process.cwd(), 'apps/claude-code-zen-server');
   const srcDir = path.join(serverDir, 'src');
-  
+
   fileWatcher = watch(srcDir, { recursive: true }, (eventType, filename) => {
     if (filename && filename.endsWith('.ts') && !isCheckingTypes) {
       console.log(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
-      
+
       // Clear existing timer
       if (debounceTimer) {
         clearTimeout(debounceTimer);
       }
-      
+
       // Set new timer with 10 second debounce
       debounceTimer = setTimeout(async () => {
         if (isCheckingTypes) return; // Double-check
-        
-        console.log(`${colors.blue}🔍 Debounce complete, checking TypeScript after file changes...${colors.reset}`);
-        broadcastMessage("🔄 Claude Code Zen: File changes detected, checking TypeScript...");
-        
+
+        console.log(
+          `${colors.blue}🔍 Debounce complete, checking TypeScript after file changes...${colors.reset}`
+        );
+        broadcastMessage(
+          '🔄 Claude Code Zen: File changes detected, checking TypeScript...'
+        );
+
         isCheckingTypes = true;
         try {
           await runTypeCheck();
-          
+
           // TypeScript passed! Switch to main server
-          console.log(`${colors.green}✅ TypeScript errors fixed! Starting main server...${colors.reset}`);
-          broadcastMessage("🎉 Claude Code Zen: TypeScript errors fixed! Starting main server...");
-          
+          console.log(
+            `${colors.green}✅ TypeScript errors fixed! Starting main server...${colors.reset}`
+          );
+          broadcastMessage(
+            '🎉 Claude Code Zen: TypeScript errors fixed! Starting main server...'
+          );
+
           stopErrorServer();
           lastError = null;
           await startMainServer();
-          
-          broadcastMessage("🚀 Claude Code Zen: Server ready at http://localhost:3000");
-          
+
+          broadcastMessage(
+            '🚀 Claude Code Zen: Server ready at http://localhost:3000'
+          );
         } catch (error) {
           // Still has errors, update error server
           lastError = error.toString();
-          console.log(`${colors.yellow}⚠️ TypeScript errors still present, updating error page...${colors.reset}`);
-          broadcastMessage("⚠️ Claude Code Zen: TypeScript errors still present...");
+          console.log(
+            `${colors.yellow}⚠️ TypeScript errors still present, updating error page...${colors.reset}`
+          );
+          broadcastMessage(
+            '⚠️ Claude Code Zen: TypeScript errors still present...'
+          );
         }
         isCheckingTypes = false;
         debounceTimer = null;
       }, 30000); // 30 second debounce for batch file operations
-      
-      console.log(`${colors.magenta}⏱️ TypeScript check scheduled in 30 seconds... (batching file changes)${colors.reset}`);
+
+      console.log(
+        `${colors.magenta}⏱️ TypeScript check scheduled in 30 seconds... (batching file changes)${colors.reset}`
+      );
     }
   });
 }
@@ -395,51 +433,68 @@ function stopFileWatcher() {
 }
 
 async function start() {
-  console.log(`${colors.bold}${colors.cyan}🔥 Claude Code Zen Development Runner${colors.reset}`);
-  console.log(`${colors.cyan}   TypeScript checking + Error visualization${colors.reset}`);
-  console.log(`${colors.green}📖 Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`);
-  
+  console.log(
+    `${colors.bold}${colors.cyan}🔥 Claude Code Zen Development Runner${colors.reset}`
+  );
+  console.log(
+    `${colors.cyan}   TypeScript checking + Error visualization${colors.reset}`
+  );
+  console.log(
+    `${colors.green}📖 Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`
+  );
+
   try {
     // First, check TypeScript
     await runTypeCheck();
-    
+
     // TypeScript is good, stop error server and start main server
     stopErrorServer();
     lastError = null;
-    
+
     // Broadcast success message
-    broadcastMessage("✅ Claude Code Zen: TypeScript check passed, server starting...");
-    
+    broadcastMessage(
+      '✅ Claude Code Zen: TypeScript check passed, server starting...'
+    );
+
     await startMainServer();
-    
+
     // Start file watcher for ongoing development
     startFileWatcher();
-    
+
     // Broadcast server ready
-    broadcastMessage("🚀 Claude Code Zen: Server ready at http://localhost:3000");
-    
+    broadcastMessage(
+      '🚀 Claude Code Zen: Server ready at http://localhost:3000'
+    );
   } catch (error) {
     // TypeScript failed or server crashed
     lastError = error.toString();
-    
-    console.log(`${colors.red}🚨 Error detected - starting error server${colors.reset}`);
-    
+
+    console.log(
+      `${colors.red}🚨 Error detected - starting error server${colors.reset}`
+    );
+
     // Broadcast error message
-    broadcastMessage("❌ Claude Code Zen: TypeScript errors detected! Fix errors to continue...");
-    
+    broadcastMessage(
+      '❌ Claude Code Zen: TypeScript errors detected! Fix errors to continue...'
+    );
+
     stopMainServer();
     startErrorServer();
-    
+
     // Start file watcher to automatically detect fixes
     startFileWatcher();
-    
-    console.log(`${colors.yellow}🔄 Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`);
+
+    console.log(
+      `${colors.yellow}🔄 Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`
+    );
   }
 }
 
 // Handle shutdown gracefully
 process.on('SIGTERM', () => {
-  console.log(`${colors.yellow}🔄 Received SIGTERM, shutting down gracefully...${colors.reset}`);
+  console.log(
+    `${colors.yellow}🔄 Received SIGTERM, shutting down gracefully...${colors.reset}`
+  );
   stopFileWatcher();
   stopMainServer();
   stopErrorServer();
@@ -447,7 +502,9 @@ process.on('SIGTERM', () => {
 });
 
 process.on('SIGINT', () => {
-  console.log(`${colors.yellow}🔄 Received SIGINT, shutting down gracefully...${colors.reset}`);
+  console.log(
+    `${colors.yellow}🔄 Received SIGINT, shutting down gracefully...${colors.reset}`
+  );
   stopFileWatcher();
   stopMainServer();
   stopErrorServer();

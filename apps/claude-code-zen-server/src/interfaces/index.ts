@@ -28,7 +28,7 @@ export interface InterfaceConfig {
   // Enable intelligent project scaffolding
 }
 
-// Enhanced Interface launcher utilities  
+// Enhanced Interface launcher utilities
 export const interfaceUtils = {
   detectMode(): 'terminal' | 'web' | 'mcp' | 'api' | 'advanced-cli' {
     // Auto-detect interface mode based on environment and commands
@@ -45,10 +45,11 @@ export const interfaceUtils = {
       'swarm',
       'neural',
     ];
-    const AI_ASSIST_FLAG = '--ai-assist';
-    const REAL_TIME_FLAG = '--real-time'; 
-    const OPTIMIZE_FLAG = '--optimize';
-    
+    const FLAG_PREFIX = '--';
+    const AI_ASSIST_FLAG = `${FLAG_PREFIX}ai-assist`;
+    const REAL_TIME_FLAG = `${FLAG_PREFIX}real-time`;
+    const OPTIMIZE_FLAG = `${FLAG_PREFIX}optimize`;
+
     const aiFlags = [
       AI_ASSIST_FLAG,
       REAL_TIME_FLAG,
@@ -80,9 +81,9 @@ export const interfaceUtils = {
       'neural',
     ];
     const AI_ASSIST_FLAG = '--ai-assist';
-    const REAL_TIME_FLAG = '--real-time'; 
+    const REAL_TIME_FLAG = '--real-time';
     const OPTIMIZE_FLAG = '--optimize';
-    
+
     const aiFlags = [
       AI_ASSIST_FLAG,
       REAL_TIME_FLAG,
@@ -134,9 +135,9 @@ export const interfaceUtils = {
       'neural',
     ];
     const AI_ASSIST_FLAG = '--ai-assist';
-    const REAL_TIME_FLAG = '--real-time'; 
+    const REAL_TIME_FLAG = '--real-time';
     const OPTIMIZE_FLAG = '--optimize';
-    
+
     const aiFlags = [
       AI_ASSIST_FLAG,
       REAL_TIME_FLAG,

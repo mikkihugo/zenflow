@@ -1,31 +1,31 @@
 /**
  * @fileoverview Time Utilities
- * 
+ *
  * Consolidated time and date utilities - timestamps, formatting, delays, and date operations.
  * Combines custom timestamp functions with date-fns re-exports.
- * 
+ *
  * @example Timestamp Operations
  * ```typescript
  * import { now, timestampFromDate, formatTimestamp } from '@claude-zen/foundation/utilities/time';
- * 
+ *
  * const timestamp = now();
  * const date = new Date('2024-01-01');
  * const ts = timestampFromDate(date);
  * const formatted = formatTimestamp(ts);
  * ```
- * 
+ *
  * @example Date Operations
  * ```typescript
  * import { addDays, format, differenceInHours } from '@claude-zen/foundation/utilities/time';
- * 
+ *
  * const tomorrow = addDays(new Date(), 1);
  * const formatted = format(tomorrow, 'yyyy-MM-dd');
  * ```
- * 
+ *
  * @example Async Delays
  * ```typescript
  * import { sleep, delay } from '@claude-zen/foundation/utilities/time';
- * 
+ *
  * await sleep(1000); // Wait 1 second
  * await delay(5000); // Wait 5 seconds
  * ```
@@ -79,7 +79,7 @@ export {
 /**
  * Get current timestamp as branded Timestamp type.
  * Uses Date.now() for high precision.
- * 
+ *
  * @returns Current timestamp in milliseconds
  * @example
  * ```typescript
@@ -94,7 +94,7 @@ export function now(): Timestamp {
 /**
  * Create timestamp from Date object.
  * Converts Date to branded Timestamp type.
- * 
+ *
  * @param date - Date to convert
  * @returns Timestamp in milliseconds
  * @example
@@ -110,7 +110,7 @@ export function timestampFromDate(date: Date): Timestamp {
 /**
  * Create Date object from branded Timestamp.
  * Safe conversion with validation.
- * 
+ *
  * @param timestamp - Timestamp to convert
  * @returns Date object
  * @example
@@ -126,7 +126,7 @@ export function dateFromTimestamp(timestamp: Timestamp): Date {
 /**
  * Create ISO string from branded Timestamp.
  * Returns branded ISODateString type.
- * 
+ *
  * @param timestamp - Timestamp to convert
  * @returns ISO date string
  * @example
@@ -143,7 +143,7 @@ export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
 /**
  * Create timestamp from ISO string.
  * Parses ISO string to branded Timestamp.
- * 
+ *
  * @param isoString - ISO date string to parse
  * @returns Timestamp in milliseconds
  * @example
@@ -158,7 +158,7 @@ export function timestampFromISOString(isoString: string): Timestamp {
 /**
  * Format timestamp using date-fns format patterns.
  * Combines branded types with date-fns formatting.
- * 
+ *
  * @param timestamp - Timestamp to format
  * @param formatStr - date-fns format string
  * @returns Formatted date string
@@ -169,7 +169,10 @@ export function timestampFromISOString(isoString: string): Timestamp {
  * // "2024-01-01 12:00:00"
  * ```
  */
-export function formatTimestamp(timestamp: Timestamp, formatStr: string = 'yyyy-MM-dd HH:mm:ss'): string {
+export function formatTimestamp(
+  timestamp: Timestamp,
+  formatStr: string = 'yyyy-MM-dd HH:mm:ss'
+): string {
   return format(new Date(timestamp), formatStr);
 }
 
@@ -180,7 +183,7 @@ export function formatTimestamp(timestamp: Timestamp, formatStr: string = 'yyyy-
 /**
  * Sleep for specified milliseconds using Promise.
  * Modern alternative to setTimeout with Promise.
- * 
+ *
  * @param ms - Milliseconds to sleep
  * @returns Promise that resolves after delay
  * @example
@@ -196,7 +199,7 @@ export function sleep(ms: number): Promise<void> {
 /**
  * Delay using Node.js timers/promises for better performance.
  * Uses Node.js native setTimeout from timers/promises.
- * 
+ *
  * @param ms - Milliseconds to delay
  * @returns Promise that resolves after delay
  * @example
@@ -212,7 +215,7 @@ export function delay(ms: number): Promise<void> {
 /**
  * Create a timeout that rejects after specified time.
  * Useful for implementing timeouts in async operations.
- * 
+ *
  * @param ms - Milliseconds before timeout
  * @param message - Optional timeout error message
  * @returns Promise that rejects after timeout
@@ -224,7 +227,10 @@ export function delay(ms: number): Promise<void> {
  * ]);
  * ```
  */
-export function timeout(ms: number, message: string = 'Operation timed out'): Promise<never> {
+export function timeout(
+  ms: number,
+  message: string = 'Operation timed out'
+): Promise<never> {
   return new Promise((_, reject) => {
     setTimeout(() => reject(new Error(message)), ms);
   });
@@ -233,7 +239,7 @@ export function timeout(ms: number, message: string = 'Operation timed out'): Pr
 /**
  * Execute function with timeout using Promise.race.
  * Automatically races the operation with a timeout.
- * 
+ *
  * @param operation - Async operation to execute
  * @param timeoutMs - Timeout in milliseconds
  * @param timeoutMessage - Optional timeout error message
@@ -252,10 +258,7 @@ export function withTimeout<T>(
   timeoutMs: number,
   timeoutMessage?: string
 ): Promise<T> {
-  return Promise.race([
-    operation,
-    timeout(timeoutMs, timeoutMessage)
-  ]);
+  return Promise.race([operation, timeout(timeoutMs, timeoutMessage)]);
 }
 
 // =============================================================================
@@ -265,7 +268,7 @@ export function withTimeout<T>(
 /**
  * High-resolution time measurement for performance timing.
  * Uses process.hrtime.bigint() for nanosecond precision.
- * 
+ *
  * @returns High-resolution timestamp in nanoseconds
  * @example
  * ```typescript
@@ -283,7 +286,7 @@ export function highResTime(): bigint {
 /**
  * Measure execution time of async operation.
  * Returns both result and execution time.
- * 
+ *
  * @param operation - Async operation to measure
  * @returns Object with result and duration in milliseconds
  * @example
@@ -301,14 +304,14 @@ export async function measureTime<T>(
   const result = await operation();
   const end = highResTime();
   const durationMs = Number(end - start) / 1_000_000;
-  
+
   return { result, durationMs };
 }
 
 /**
  * Create a simple timer for manual time measurement.
  * Returns functions to start, stop, and get elapsed time.
- * 
+ *
  * @returns Timer object with control functions
  * @example
  * ```typescript
@@ -316,7 +319,7 @@ export async function measureTime<T>(
  * timer.start();
  * // ... some operations
  * const elapsed = timer.stop(); // Returns elapsed milliseconds
- * 
+ *
  * // Or get elapsed without stopping
  * const current = timer.elapsed();
  * ```
@@ -330,7 +333,7 @@ export function createTimer() {
       startTime = highResTime();
       endTime = null;
     },
-    
+
     stop(): number {
       if (startTime === null) {
         throw new Error('Timer not started');
@@ -338,7 +341,7 @@ export function createTimer() {
       endTime = highResTime();
       return Number(endTime - startTime) / 1_000_000;
     },
-    
+
     elapsed(): number {
       if (startTime === null) {
         throw new Error('Timer not started');
@@ -346,11 +349,11 @@ export function createTimer() {
       const currentTime = endTime || highResTime();
       return Number(currentTime - startTime) / 1_000_000;
     },
-    
+
     reset() {
       startTime = null;
       endTime = null;
-    }
+    },
   };
 }
 
@@ -361,7 +364,7 @@ export function createTimer() {
 /**
  * Check if timestamp is valid and within reasonable range.
  * Validates timestamp is positive and not too far in future/past.
- * 
+ *
  * @param timestamp - Timestamp to validate
  * @returns True if valid timestamp
  * @example
@@ -376,18 +379,18 @@ export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
   if (typeof timestamp !== 'number' || !Number.isInteger(timestamp)) {
     return false;
   }
-  
+
   // Must be positive and reasonable (after 1970, before year 3000)
   const minTimestamp = 0;
   const maxTimestamp = new Date('3000-01-01').getTime();
-  
+
   return timestamp >= minTimestamp && timestamp <= maxTimestamp;
 }
 
 /**
  * Check if ISO date string is valid format and parseable.
  * More comprehensive than basic date parsing.
- * 
+ *
  * @param dateString - String to validate
  * @returns True if valid ISO date string
  * @example
@@ -397,13 +400,15 @@ export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
  * }
  * ```
  */
-export function isValidISOString(dateString: unknown): dateString is ISODateString {
+export function isValidISOString(
+  dateString: unknown
+): dateString is ISODateString {
   if (typeof dateString !== 'string') return false;
-  
+
   // Check ISO 8601 format pattern
   const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
   if (!isoPattern.test(dateString)) return false;
-  
+
   // Check if actually parseable
   const parsed = Date.parse(dateString);
   return !isNaN(parsed);
@@ -414,4 +419,7 @@ export function isValidISOString(dateString: unknown): dateString is ISODateStri
 // =============================================================================
 
 // Alias for Node.js timers/promises setTimeout
-export { setTimeout as nodeDelay, setInterval as recurring } from 'node:timers/promises';
+export {
+  setTimeout as nodeDelay,
+  setInterval as recurring,
+} from 'node:timers/promises';

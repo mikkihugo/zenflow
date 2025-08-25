@@ -48,7 +48,7 @@ export interface FinetuneDataInput {
   /** Input data */
   inputs: Record<string, any>;
   /** Output data */
-  outputs: Prediction|Record<string, any>;
+  outputs: Prediction | Record<string, any>;
   /** Additional metadata */
   metadata?: Record<string, any>;
 }
@@ -141,8 +141,8 @@ export abstract class BaseAdapter implements Adapter {
     demos: Example[],
     signature: PredictorSignature
   ): string {
-    if (!demos||demos.length === 0) {
-      return'';
+    if (!demos || demos.length === 0) {
+      return '';
     }
 
     const formattedDemos = demos
@@ -241,25 +241,25 @@ export abstract class BaseAdapter implements Adapter {
    */
   protected createSystemMessage(signature: PredictorSignature): string {
     const instructions =
-      signature.instructions||'Follow the examples and complete the task.';
+      signature.instructions || 'Follow the examples and complete the task.';
 
     let message = instructions;
 
     // Add input/output field descriptions if available
-    if (signature.inputs||signature.outputs) {
-      message +='\n\nFields:';
+    if (signature.inputs || signature.outputs) {
+      message += '\n\nFields:';
 
       if (signature.inputs) {
         message += '\nInputs:';
         for (const [key, _spec] of Object.entries(signature.inputs)) {
-          message += `\n- ${key}: ${_spec.description||'No description'}`;
+          message += `\n- ${key}: ${_spec.description || 'No description'}`;
         }
       }
 
       if (signature.outputs) {
         message += '\nOutputs:';
         for (const [key, spec] of Object.entries(signature.outputs)) {
-          message += `\n- ${key}: ${spec.description||'No description'}`;
+          message += `\n- ${key}: ${spec.description || 'No description'}`;
         }
       }
     }

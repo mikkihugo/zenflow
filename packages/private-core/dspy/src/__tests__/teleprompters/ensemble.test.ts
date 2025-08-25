@@ -39,7 +39,7 @@ class MockModule extends DSPyModule {
 
   namedPredictors() {
     return [
-      [`${this.name}_predictor`, { signature: { instructions: 'Test'} }],
+      [`${this.name}_predictor`, { signature: { instructions: 'Test' } }],
     ];
   }
 
@@ -58,7 +58,7 @@ const mockMajority = (outputs: Prediction[]): Prediction => {
   }
 
   let maxVotes = 0;
-  let winner ='unknown';
+  let winner = 'unknown';
   for (const [answer, count] of votes) {
     if (count > maxVotes) {
       maxVotes = count;

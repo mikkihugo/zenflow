@@ -14,9 +14,9 @@ console.log('🦀 Building Rust Projects (Smart Mode)...\n');
 // Known problematic packages to skip or build differently
 const HEAVY_PACKAGES = [
   'neural-core',
-  'claude-zen-neural-core', 
+  'claude-zen-neural-core',
   'claude-zen-neural-models',
-  'claude-zen-neural-training'
+  'claude-zen-neural-training',
 ];
 
 const SKIP_PACKAGES = [
@@ -26,9 +26,12 @@ const SKIP_PACKAGES = [
 // Find all Cargo.toml files
 const cargoProjects = [];
 try {
-  const result = execSync('find . -name "Cargo.toml" -not -path "*/node_modules/*" -not -path "*/target/*"', { 
-    encoding: 'utf8' 
-  });
+  const result = execSync(
+    'find . -name "Cargo.toml" -not -path "*/node_modules/*" -not -path "*/target/*"',
+    {
+      encoding: 'utf8',
+    }
+  );
   cargoProjects.push(...result.trim().split('\n').filter(Boolean));
 } catch (error) {
   console.log('⚠️ No Rust projects found');
@@ -46,16 +49,16 @@ let failureCount = 0;
 for (const cargoPath of cargoProjects) {
   const projectDir = path.dirname(cargoPath);
   const projectName = path.basename(projectDir);
-  
+
   // Check if should skip
   if (SKIP_PACKAGES.includes(projectName)) {
     console.log(`⏭️ Skipping ${projectName} (known issues)`);
     skippedCount++;
     continue;
   }
-  
+
   console.log(`🔧 Building ${projectName}...`);
-  
+
   try {
     // Heavy packages: build with minimal features
     if (HEAVY_PACKAGES.includes(projectName)) {
@@ -63,24 +66,27 @@ for (const cargoPath of cargoProjects) {
       execSync('cargo build --release --no-default-features --features std', {
         cwd: projectDir,
         stdio: 'inherit',
-        timeout: 120000  // 2 minute timeout
+        timeout: 120000, // 2 minute timeout
       });
-    } 
+    }
     // WASM packages: try wasm-pack first
     else if (cargoPath.includes('wasm') || projectName.includes('wasm')) {
       console.log(`   🌐 WASM package, trying wasm-pack...`);
       try {
-        execSync('wasm-pack build --target web --out-dir ./pkg --scope claude-zen --dev', {
-          cwd: projectDir,
-          stdio: 'inherit',
-          timeout: 60000
-        });
+        execSync(
+          'wasm-pack build --target web --out-dir ./pkg --scope claude-zen --dev',
+          {
+            cwd: projectDir,
+            stdio: 'inherit',
+            timeout: 60000,
+          }
+        );
       } catch (wasmError) {
         console.log(`   ⚠️ wasm-pack failed, trying cargo build...`);
         execSync('cargo build --release', {
           cwd: projectDir,
           stdio: 'inherit',
-          timeout: 60000
+          timeout: 60000,
         });
       }
     }
@@ -89,15 +95,16 @@ for (const cargoPath of cargoProjects) {
       execSync('cargo build --release', {
         cwd: projectDir,
         stdio: 'inherit',
-        timeout: 60000  // 1 minute timeout
+        timeout: 60000, // 1 minute timeout
       });
     }
-    
+
     console.log(`   ✅ ${projectName} built successfully\n`);
     successCount++;
-    
   } catch (error) {
-    console.log(`   ❌ ${projectName} failed: ${error.message.split('\n')[0]}\n`);
+    console.log(
+      `   ❌ ${projectName} failed: ${error.message.split('\n')[0]}\n`
+    );
     failureCount++;
   }
 }

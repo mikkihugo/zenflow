@@ -288,11 +288,11 @@ export async function getHumanInteraction(config?: AGUIConfig): Promise<any> {
     ask: (question: string, options?: any) =>
       agui.askQuestion(question, options),
     confirm: (message: string) =>
-      agui.askQuestion(message, { type: 'boolean'}),
+      agui.askQuestion(message, { type: 'boolean' }),
     approve: (request: ApprovalRequest) =>
       taskApproval.requestApproval(request),
     notify: (message: string, type?: MessageType) =>
-      agui.showMessage?.(message, type||'info'),
+      agui.showMessage?.(message, type || 'info'),
     progress: (info: ProgressInfo) => agui.showProgress?.(info),
   };
 }

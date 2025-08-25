@@ -33,7 +33,6 @@ export type {
   MonitoringSystemConnectionError,
 } from '../monitoring';
 
-
 /**
  * Combined operations system configuration
  */
@@ -68,7 +67,6 @@ export interface OperationsSystemConfig {
     telemetryBuffer?: number;
     healthCheckInterval?: number;
   };
-
 }
 
 /**
@@ -98,7 +96,6 @@ export interface OperationsSystemStatus {
     metricsAggregated: number;
     healthChecksRunning: number;
   };
-
 }
 
 /**

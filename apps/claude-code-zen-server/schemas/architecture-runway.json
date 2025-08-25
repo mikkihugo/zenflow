@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://claude-code-zen.com/schemas/architecture-runway.json", 
+  "$id": "https://claude-code-zen.com/schemas/architecture-runway.json",
   "title": "Architecture Runway",
   "description": "SAFe Architecture Runway Item with progressive enhancement from Kanban to Agile to SAFe modes",
   "type": "object",
@@ -28,7 +28,7 @@
     "status": {
       "type": "string",
       "enum": ["todo", "in_progress", "done", "archived"],
-      "default": "todo", 
+      "default": "todo",
       "description": "Current status"
     },
     "priority": {
@@ -61,7 +61,7 @@
     },
     "updated_at": {
       "type": "string",
-      "format": "date-time", 
+      "format": "date-time",
       "description": "Last update timestamp"
     },
     "schema_version": {
@@ -159,7 +159,7 @@
           "format": "date-time"
         },
         "target_date": {
-          "type": "string", 
+          "type": "string",
           "format": "date-time"
         },
         "dependencies": {
@@ -185,13 +185,7 @@
       "description": "Runway item that supersedes this one (SAFe mode)"
     }
   },
-  "required": [
-    "id",
-    "title", 
-    "context",
-    "decision",
-    "consequences"
-  ],
+  "required": ["id", "title", "context", "decision", "consequences"],
   "additionalProperties": false,
   "metadata": {
     "supportedModes": ["kanban", "agile", "safe"],

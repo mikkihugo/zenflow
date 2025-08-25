@@ -23,9 +23,16 @@ pub struct StatusBar {
 
 impl StatusBar {
     /// Create a new status bar
-    pub fn new(theme: &dyn Theme) -> Self {
+    pub fn new(current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             mode: "NORMAL".to_string(),
             file_path: None,
             cursor_position: (0, 0),
@@ -63,9 +70,13 @@ impl StatusBar {
     }
     
     /// Update theme
-    pub fn update_theme(&mut self, theme: &dyn Theme) {
-        // In a real implementation, we'd clone or recreate the theme
-        // For now, this is a placeholder
+    pub fn update_theme(&mut self, current_theme: &dyn Theme) {
+        // Update the stored theme based on the current theme name
+        self.theme = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
     }
     
     /// Render the status bar

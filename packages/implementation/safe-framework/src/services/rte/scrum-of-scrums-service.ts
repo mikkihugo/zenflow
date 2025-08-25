@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, startOfWeek, endOfWeek } = dateFns;
 import {
   groupBy,
   map,
@@ -258,7 +257,7 @@ export class ScrumOfScrumsService {
     const agenda = this.generateStandardAgenda();
 
     const scrumConfig: ScrumOfScrumsConfig = {
-      id: `sos-${nanoid(12)}`,`
+      id: `sos-${generateNanoId(12)}`,`
       artId,
       frequency: config.frequency,
       duration: config.duration,
@@ -290,7 +289,7 @@ export class ScrumOfScrumsService {
 
     this.logger.info('Conducting Scrum of Scrums meeting', { artId });'
 
-    const meetingId = `sos-meeting-${nanoid(12)}`;`
+    const meetingId = `sos-meeting-${generateNanoId(12)}`;`
     const attendance = this.generateAttendance(config.participants);
 
     const result: ScrumOfScrumsResult = {
@@ -332,7 +331,7 @@ export class ScrumOfScrumsService {
     affectedTeams: string[];
     impact: string;
   }): Promise<ProgramImpediment> {
-    const impedimentId = `imp-${nanoid(12)}`;`
+    const impedimentId = `imp-${generateNanoId(12)}`;`
 
     const programImpediment: ProgramImpediment = {
       id: impedimentId,
@@ -486,7 +485,7 @@ export class ScrumOfScrumsService {
   private generateActionItems(): ScrumActionItem[] {
     return [
       {
-        id: `action-${nanoid(8)}`,`
+        id: `action-${generateNanoId(8)}`,`
         description:'Follow up on team dependencies',
         owner: 'RTE',
         dueDate: addDays(new Date(), 2),

@@ -128,7 +128,7 @@ export interface DSPyOptimizationResult {
 /**
  * DSPy Optimization Strategy
  */
-export type DSPyOptimizationStrategy =|'few-shot-optimization'// Use few-shot examples for improvement|'iterative-refinement'// Iterative prompt refinement|'pattern-matching'// Match successful patterns|'fallback'; // Simple fallback strategy
+export type DSPyOptimizationStrategy = 'few-shot-optimization'; // Use few-shot examples for improvement|'iterative-refinement'// Iterative prompt refinement|'pattern-matching'// Match successful patterns|'fallback'; // Simple fallback strategy
 
 /**
  * DSPy Pattern for Learning

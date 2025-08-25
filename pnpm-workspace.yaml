@@ -1,12 +1,10 @@
 packages:
   - apps/*
-  - packages/tier1-public/core/*
-  - packages/tier1-public/facades/*
-  - packages/tier1-public/integrations/*
-  - packages/tier2-private/*
-  - packages/tier3-internal/*
-  - packages/tier4-restricted/*
-  - packages/tier5-deepcore/*
+  - packages/public-api/core/*
+  - packages/public-api/facades/*
+  - packages/implementation/*
+  - packages/enterprise/*
+  - packages/private-core/*
   - '!apps/*-backup'
 
 catalog:

@@ -24,34 +24,39 @@ export type Email = string & { __brand: 'Email' };
 // Enums
 export enum Priority {
   LOW = 'low',
-  MEDIUM = 'medium', 
+  MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 export enum Status {
   PENDING = 'pending',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 export enum LogLevel {
   ERROR = 'error',
-  WARN = 'warn', 
+  WARN = 'warn',
   INFO = 'info',
-  DEBUG = 'debug'
+  DEBUG = 'debug',
 }
 
 export enum Environment {
   DEVELOPMENT = 'development',
   PRODUCTION = 'production',
-  TEST = 'test'
+  TEST = 'test',
 }
 
 // Type guards
 export function isUUID(value: unknown): value is UUID {
-  return typeof value === 'string' && /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value);
+  return (
+    typeof value === 'string' &&
+    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+      value
+    )
+  );
 }
 
 export function isTimestamp(value: unknown): value is Timestamp {
@@ -67,7 +72,10 @@ export function isEmail(value: unknown): value is Email {
 }
 
 export function isPrimitive(value: unknown): boolean {
-  return value === null || ['string', 'number', 'boolean', 'undefined'].includes(typeof value);
+  return (
+    value === null ||
+    ['string', 'number', 'boolean', 'undefined'].includes(typeof value)
+  );
 }
 
 export function isNonEmptyArray<T>(arr: T[]): boolean {

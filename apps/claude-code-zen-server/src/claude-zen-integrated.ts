@@ -7,7 +7,8 @@ import { getLogger } from '@claude-zen/foundation';
 // Removed missing coordination types - using basic types instead
 type ServerInstance = unknown;
 type BaseError = Error;
-const hasErrorCode = (error: unknown): boolean => error !== null && typeof error === 'object' && 'code' in error;
+const hasErrorCode = (error: unknown): boolean =>
+  error !== null && typeof error === 'object' && 'code' in error;
 
 const logger = getLogger('claude-zen-integrated');
 
@@ -51,7 +52,7 @@ export class ClaudeZenIntegrated {
       daemon: false,
       dev: false,
       verbose: false,
-      ...options
+      ...options,
     };
   }
 
@@ -65,17 +66,13 @@ export class ClaudeZenIntegrated {
     const options: IntegratedOptions = {};
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      const result = this.parseArgument(
-  arg,
-  args,
-  i, options
-);
+      const result = this.parseArgument(arg, args, i, options);
       if (result.skipNext) {
         i++; // Skip next argument for port parsing
       }
     }
-    return options
-}
+    return options;
+  }
 
   /**
    * Parse a single argument to reduce cognitive complexity.
@@ -87,18 +84,14 @@ export class ClaudeZenIntegrated {
    * @returns Object indicating if next argument should be skipped
    */
   private static parseArgument(
-  arg: string,
-  args: string[],
-  index: number,
+    arg: string,
+    args: string[],
+    index: number,
     options: IntegratedOptions
-): { skipNext: boolean } {
+  ): { skipNext: boolean } {
     switch (arg) {
       case '--port':
-        return this.parsePortArgument(
-  args,
-  index,
-  options
-);
+        return this.parsePortArgument(args, index, options);
       case '--daemon':
         options.daemon = true;
         return { skipNext: false };
@@ -115,8 +108,8 @@ export class ClaudeZenIntegrated {
         process.exit(0);
         return { skipNext: false };
       default:
-        return { skipNext: false }
-}
+        return { skipNext: false };
+    }
   }
 
   /**
@@ -128,21 +121,19 @@ export class ClaudeZenIntegrated {
    * @returns Object indicating if next argument should be skipped
    */
   private static parsePortArgument(
-  args: string[],
-  index: number,
-  options: IntegratedOptions
-): { skipNext: boolean } {
+    args: string[],
+    index: number,
+    options: IntegratedOptions
+  ): { skipNext: boolean } {
     if (index + 1 < args.length) {
       const nextArg = args[index + 1];
       if (nextArg !== undefined) {
-  options.port = Number.parseInt(nextArg,
-  10)
-
-}
-      return { skipNext: true }
-}
-    return { skipNext: false }
-}
+        options.port = Number.parseInt(nextArg, 10);
+      }
+      return { skipNext: true };
+    }
+    return { skipNext: false };
+  }
 
   /**
    * Show help message.
@@ -162,8 +153,7 @@ Options:
 `;
     // Use process.stdout.write instead of console.log to avoid ESLint error
     process.stdout.write(helpMessage);
-
-}
+  }
 
   /**
    * Initialize basic system without DI complexity.
@@ -177,7 +167,7 @@ Options:
     }
 
     logger.info('✅ Claude Code Zen Integrated initialized successfully');
-}
+  }
 
   /**
    * Start HTTP server for API access.
@@ -190,50 +180,55 @@ Options:
 
       // Basic health check endpoint
       app.get(
-  '/health',
-  (req: unknown,
-  res: { json: (data: HealthResponse) => void }) => {
-        res.json({
-          status: 'healthy',
-          timestamp: new Date().toISOString(),
-          version: '2.0.0-alpha.73'
-        });
-      });
+        '/health',
+        (req: unknown, res: { json: (data: HealthResponse) => void }) => {
+          res.json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            version: '2.0.0-alpha.73',
+          });
+        }
+      );
 
       // API status endpoint
       app.get(
-  '/api/status',
-  (req: unknown,
-  res: { json: (data: StatusResponse) => void }) => {
-        res.json({
-          status: 'running',
-          mode: this.options.dev ? 'development' : 'production',
-          daemon: this.options.daemon,
-          uptime: process.uptime()
-        });
-      });
+        '/api/status',
+        (req: unknown, res: { json: (data: StatusResponse) => void }) => {
+          res.json({
+            status: 'running',
+            mode: this.options.dev ? 'development' : 'production',
+            daemon: this.options.daemon,
+            uptime: process.uptime(),
+          });
+        }
+      );
 
       // Start server
       const expressServer = app.listen(this.options.port, () => {
-        logger.info(`HTTP server started on port ${  this.options.port}`);
-        logger.info(`Health check: http://localhost:${  this.options.port  }/health`);
+        logger.info(`HTTP server started on port ${this.options.port}`);
+        logger.info(
+          `Health check: http://localhost:${this.options.port}/health`
+        );
       });
 
       // Wrap Express server with ServerInstance interface
       this.server = {
-        id: `server-${  Date.now()}`,
+        id: `server-${Date.now()}`,
         status: 'running',
         port: this.options.port,
         host: 'localhost',
         uptime: 0,
         close: expressServer.close.bind(expressServer),
-        on: expressServer.on.bind(expressServer)
-};
+        on: expressServer.on.bind(expressServer),
+      };
 
       expressServer.on('error', (err: BaseError) => {
         logger.error('Server error:', err);
-        if (hasErrorCode(err) && (err as { code: string }).code === 'EADDRINUSE') {
-          logger.error(`Port ${  this.options.port  } is already in use`);
+        if (
+          hasErrorCode(err) &&
+          (err as { code: string }).code === 'EADDRINUSE'
+        ) {
+          logger.error(`Port ${this.options.port} is already in use`);
         }
         throw err;
       });
@@ -260,7 +255,7 @@ Options:
     }
 
     logger.info('✅ Shutdown completed successfully');
-}
+  }
 }
 
 /**
@@ -304,7 +299,7 @@ async function main() {
 }
 
 // Start the application if this file is run directly
-if (import.meta.url === `file://${  process.argv[1]}`) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
     const logger = getLogger('ClaudeZenIntegrated');
     logger.error('Fatal error in main:', error);

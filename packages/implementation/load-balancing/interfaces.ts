@@ -54,7 +54,7 @@ export interface CapacityManager {
 export interface ResourceMonitor {
   startMonitoring(agentId: string): Promise<void>;
   stopMonitoring(agentId: string): Promise<void>;
-  getCurrentMetrics(agentId: string): Promise<LoadMetrics'||'null>;'
+  getCurrentMetrics(agentId: string): Promise<LoadMetrics | null>;
   getHistoricalMetrics(
     agentId: string,
     timeRange: { start: Date; end: Date }
@@ -94,7 +94,7 @@ export interface CircuitBreaker {
   recordSuccess(agentId: string): void;
   recordFailure(agentId: string, error: Error): void;
   reset(agentId: string): void;
-  getState(agentId: string):'closed''||'open'||''half-open;
+  getState(agentId: string): 'closed' | 'open' | 'half-open';
 }
 
 export interface ConnectionPool {
@@ -144,7 +144,7 @@ export interface AutoScaler extends TypedEventBase {
 export interface EmergencyHandler extends TypedEventBase {
   handleEmergency(
     type: string,
-    severity: 'low''||'medium'||'high'||''critical''
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void>;
   shedLoad(percentage: number): Promise<void>;
   activateFailover(): Promise<void>;
@@ -157,7 +157,7 @@ export interface MetricsAggregator {
   calculateTrends(
     metrics: LoadMetrics[],
     timeWindow: number
-  ): Promise<Record<string, 'up''||'down'||''stable'>>;'
+  ): Promise<Record<string, 'up' | 'down' | 'stable'>>;
   detectAnomalies(
     metrics: LoadMetrics[]
   ): Promise<

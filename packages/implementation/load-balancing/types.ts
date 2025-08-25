@@ -81,15 +81,15 @@ export interface CapacityMetrics {
   currentUtilization: number;
   availableCapacity: number;
   predictedCapacity: number;
-  capacityTrend: 'increasing''||'decreasing'||''stable';
+  capacityTrend: 'increasing' | 'decreasing' | 'stable';
   resourceConstraints: ResourceConstraint[];
 }
 
 export interface ResourceConstraint {
-  type: 'cpu''||'memory'||'disk'||'network'||''custom;
+  type: 'cpu' | 'memory' | 'disk' | 'network' | 'custom';
   threshold: number;
   currentValue: number;
-  severity: 'low''||'medium'||'high'||''critical;
+  severity: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface RoutingResult {
@@ -135,7 +135,7 @@ export interface StickySessionConfig {
   enabled: boolean;
   sessionTimeout: number;
   affinityStrength: number;
-  fallbackStrategy: 'fail''||''redistribute;
+  fallbackStrategy: 'fail' | 'redistribute';
 }
 
 export interface AutoScalingConfig {
@@ -156,7 +156,7 @@ export interface OptimizationConfig {
 }
 
 export interface PredictionModel {
-  modelType: 'linear''||'neural'||''ensemble;
+  modelType: 'linear' | 'neural' | 'ensemble';
   accuracy: number;
   features: string[];
   lastTraining: Date;
@@ -229,7 +229,7 @@ export interface EmergencyProtocol {
 }
 
 export interface EmergencyAction {
-  type: 'load_shed''||'scale_up'||'failover'||'throttle'||''alert;
+  type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
   parameters: Record<string, unknown>;
   timeout: number;
 }
@@ -253,7 +253,7 @@ export interface AgentAssignment {
   assignedAt: Date;
   estimatedCompletion: Date;
   priority: TaskPriority;
-  status: 'assigned''||'active'||'completed'||'failed'||''cancelled;
+  status: 'assigned' | 'active' | 'completed' | 'failed' | 'cancelled';
 }
 
 export interface LoadBalancingMetrics {

@@ -35,7 +35,9 @@ export const getCodeAnalyzer = async () => {
 };
 
 export const getGitOperationsManager = async () => {
-  const { createGitOperationsManager } = await import('@claude-zen/git-operations');
+  const { createGitOperationsManager } = await import(
+    '@claude-zen/git-operations'
+  );
   return createGitOperationsManager();
 };
 
@@ -50,7 +52,9 @@ export const getBeamAnalyzer = async () => {
 };
 
 export const getRepositoryAnalyzer = async () => {
-  const { createRepositoryAnalyzer } = await import('@claude-zen/repo-analyzer');
+  const { createRepositoryAnalyzer } = await import(
+    '@claude-zen/repo-analyzer'
+  );
   return createRepositoryAnalyzer();
 };
 
@@ -65,7 +69,9 @@ export const getLanguageParser = async () => {
 };
 
 export const getArchitectureValidator = async () => {
-  const { createDomainBoundaryValidator } = await import('@claude-zen/architecture');
+  const { createDomainBoundaryValidator } = await import(
+    '@claude-zen/architecture'
+  );
   return createDomainBoundaryValidator();
 };
 
@@ -80,7 +86,9 @@ export const createSafe6SolutionTrainManager = async (...args: unknown[]) => {
 };
 
 export const createSafe6BusinessAgilityManager = async (...args: unknown[]) => {
-  const { createSafe6BusinessAgilityManager } = await import('@claude-zen/sparc');
+  const { createSafe6BusinessAgilityManager } = await import(
+    '@claude-zen/sparc'
+  );
   return createSafe6BusinessAgilityManager(...args);
 };
 

@@ -202,19 +202,28 @@ export class Orchestrator {
   private executeNeuralTraining(task: Task): Promise<unknown> {
     this.logger.info('Executing neural training', { task });
     // Neural training implementation would go here
-    return Promise.resolve({ trained: true, model: (task.input as Record<string, unknown>)?.dataset });
+    return Promise.resolve({
+      trained: true,
+      model: (task.input as Record<string, unknown>)?.dataset,
+    });
   }
 
   private executeDataProcessing(task: Task): Promise<unknown> {
     this.logger.info('Executing data processing', { task });
     // Data processing implementation would go here
-    return Promise.resolve({ processed: true, records: (task.input as Record<string, unknown>)?.recordCount || 0 });
+    return Promise.resolve({
+      processed: true,
+      records: (task.input as Record<string, unknown>)?.recordCount || 0,
+    });
   }
 
   private executeSystemCoordination(task: Task): Promise<unknown> {
     this.logger.info('Executing system coordination', { task });
     // System coordination implementation would go here
-    return Promise.resolve({ coordinated: true, systems: (task.input as Record<string, unknown>)?.systems || [] });
+    return Promise.resolve({
+      coordinated: true,
+      systems: (task.input as Record<string, unknown>)?.systems || [],
+    });
   }
 
   private startHealthCheck(): void {

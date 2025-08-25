@@ -15,7 +15,9 @@ export const createEventSystem = async () => {
     const { createEventBus } = await import('@claude-zen/event-system');
     return createEventBus();
   } catch (error) {
-    throw new Error('Event system not available - @claude-zen/event-system package required');
+    throw new Error(
+      'Event system not available - @claude-zen/event-system package required'
+    );
   }
 };
 
@@ -24,7 +26,9 @@ export const getEventSystemAccess = async () => {
     const { getEventSystem } = await import('@claude-zen/event-system');
     return getEventSystem();
   } catch (error) {
-    throw new Error('Event system not available - @claude-zen/event-system package required');
+    throw new Error(
+      'Event system not available - @claude-zen/event-system package required'
+    );
   }
 };
 

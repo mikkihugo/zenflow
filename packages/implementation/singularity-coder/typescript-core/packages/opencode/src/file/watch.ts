@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { Bus } from "../bus"
 import fs from "fs"
 import { App } from "../app/app"

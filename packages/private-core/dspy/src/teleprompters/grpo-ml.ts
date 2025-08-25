@@ -354,7 +354,8 @@ export class GRPOML extends Teleprompter {
 
     try {
       this.logger.info(
-        'Initializing GRPOML with reinforcement learning components...');
+        'Initializing GRPOML with reinforcement learning components...'
+      );
 
       // Mock ML engine initialization for compilation
       this.mlEngine = {
@@ -374,7 +375,7 @@ export class GRPOML extends Teleprompter {
             selectAction: async (state) => ({ action: 0, probability: 0.4 }),
           }),
           computeAdvantages: async (rewards, values) =>
-            rewards.map((r, i) => r - (values[i]||0)),
+            rewards.map((r, i) => r - (values[i] || 0)),
         },
         rewardShaper: {
           configure: async () => {},
@@ -484,8 +485,8 @@ export class GRPOML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule|null;
-      valset?: any[]|null;
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -508,7 +509,8 @@ export class GRPOML extends Teleprompter {
     this.resetTrainingState();
 
     try {
-      this.logger.info('Starting GRPOML compilation with policy gradient optimization...'
+      this.logger.info(
+        'Starting GRPOML compilation with policy gradient optimization...'
       );
 
       // Step 1: Policy gradient training with experience replay

@@ -11,7 +11,7 @@
  * @version 2.0.0
  */
 
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
 
 /**
@@ -76,7 +76,7 @@ export function createApprovalRequest(params: {
   context?: Record<string, any>;
 }): ApprovalRequestEvent {
   return {
-    requestId: nanoid(),
+    requestId: generateNanoId(),
     type: params.type,
     title: params.title,
     description: params.description,

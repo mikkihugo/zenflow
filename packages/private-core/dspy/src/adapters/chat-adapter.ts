@@ -151,7 +151,10 @@ export class ChatAdapter extends BaseAdapter {
         const [key, value] = pair;
         // For single inputs, often just the value is sufficient
         if (
-          key === 'question'||key ==='query'||key ==='input'||key ==='prompt'
+          key === 'question' ||
+          key === 'query' ||
+          key === 'input' ||
+          key === 'prompt'
         ) {
           return String(value);
         }
@@ -184,7 +187,10 @@ export class ChatAdapter extends BaseAdapter {
         const [key, value] = pair;
         // For single outputs, often just the value is sufficient
         if (
-          key === 'answer'||key ==='response'||key ==='output'||key ==='completion'
+          key === 'answer' ||
+          key === 'response' ||
+          key === 'output' ||
+          key === 'completion'
         ) {
           return String(value);
         }
@@ -201,7 +207,7 @@ export class ChatAdapter extends BaseAdapter {
    * Format prediction as assistant message content
    */
   private formatPredictionAsAssistantMessage(
-    outputs: Prediction|Record<string, any>
+    outputs: Prediction | Record<string, any>
   ): string {
     // Handle Prediction objects
     if ('data' in outputs && outputs.data) {
@@ -274,13 +280,14 @@ export class ChatAdapter extends BaseAdapter {
    * Validate chat message format
    */
   validateMessages(messages: ChatMessage[]): boolean {
-    if (!Array.isArray(messages)||messages.length === 0) {
+    if (!Array.isArray(messages) || messages.length === 0) {
       return false;
     }
 
     for (const message of messages) {
       if (
-        !message.role||!['system', 'user', 'assistant'].includes(message.role)
+        !message.role ||
+        !['system', 'user', 'assistant'].includes(message.role)
       ) {
         return false;
       }

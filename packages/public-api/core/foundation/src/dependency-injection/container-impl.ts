@@ -2,7 +2,12 @@
  * Container implementation class - extracted for complexity reduction
  */
 
-import type { Container, ServiceInfo, ContainerStats, ServiceDiscoveryOptions } from './container.types';
+import type {
+  Container,
+  ServiceInfo,
+  ContainerStats,
+  ServiceDiscoveryOptions,
+} from './container.types';
 
 const ASYNC_FACTORY_TYPE = 'async-factory';
 
@@ -28,7 +33,9 @@ export class ContainerImpl implements Container {
       for (const listener of listeners) {
         try {
           listener(...args);
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
       }
       return true;
     }
@@ -46,7 +53,11 @@ export class ContainerImpl implements Container {
   register<T>(
     token: string,
     implementation: new (...args: unknown[]) => T,
-    options: { capabilities?: string[], tags?: string[], singleton?: boolean } = {},
+    options: {
+      capabilities?: string[];
+      tags?: string[];
+      singleton?: boolean;
+    } = {}
   ): void {
     this.services.set(token, implementation);
     this.serviceMetadata.set(token, {
@@ -63,12 +74,16 @@ export class ContainerImpl implements Container {
   registerFunction<T>(
     token: string,
     factory: () => T,
-    options: { capabilities?: string[], tags?: string[], singleton?: boolean } = {},
+    options: {
+      capabilities?: string[];
+      tags?: string[];
+      singleton?: boolean;
+    } = {}
   ): void {
     this.services.set(token, factory);
     this.serviceMetadata.set(token, {
       name: token,
-      type: 'function',
+      type: 'factory',
       capabilities: options.capabilities || [],
       tags: options.tags || [],
       singleton: options.singleton === true,
@@ -80,7 +95,7 @@ export class ContainerImpl implements Container {
   registerValue<T>(
     token: string,
     value: T,
-    options: { capabilities?: string[], tags?: string[] } = {},
+    options: { capabilities?: string[]; tags?: string[] } = {}
   ): void {
     this.services.set(token, value);
     this.serviceMetadata.set(token, {
@@ -97,7 +112,7 @@ export class ContainerImpl implements Container {
   registerInstance<T>(
     token: string,
     instance: T,
-    options: { capabilities?: string[], tags?: string[] } = {},
+    options: { capabilities?: string[]; tags?: string[] } = {}
   ): void {
     this.registerValue(token, instance, options);
   }
@@ -105,19 +120,25 @@ export class ContainerImpl implements Container {
   registerSingleton<T>(
     token: string,
     factory: (() => T) | (new (...args: unknown[]) => T),
-    options: { capabilities?: string[], tags?: string[] } = {},
+    options: { capabilities?: string[]; tags?: string[] } = {}
   ): void {
     if (typeof factory === 'function' && factory.prototype) {
-      this.register(token, factory as new (...args: unknown[]) => T, { ...options, singleton: true });
+      this.register(token, factory as new (...args: unknown[]) => T, {
+        ...options,
+        singleton: true,
+      });
     } else {
-      this.registerFunction(token, factory as () => T, { ...options, singleton: true });
+      this.registerFunction(token, factory as () => T, {
+        ...options,
+        singleton: true,
+      });
     }
   }
 
   registerAsyncFactory<T>(
     token: string,
     factory: () => Promise<T>,
-    options: { capabilities?: string[], tags?: string[] } = {},
+    options: { capabilities?: string[]; tags?: string[] } = {}
   ): void {
     this.services.set(token, factory);
     this.serviceMetadata.set(token, {
@@ -144,11 +165,11 @@ export class ContainerImpl implements Container {
     if (metadata.type === ASYNC_FACTORY_TYPE) {
       const factory = this.services.get(token) as () => Promise<T>;
       const instance = await factory();
-      
+
       if (metadata.singleton) {
         this.singletonCache.set(token, instance);
       }
-      
+
       this.emit('serviceResolved', { token, type: metadata.type });
       return instance;
     }
@@ -172,19 +193,28 @@ export class ContainerImpl implements Container {
       throw new Error(`Service definition for '${token}' not found`);
     }
 
-    const instance = this.createServiceInstance<T>(serviceDefinition, metadata, token);
+    const instance = this.createServiceInstance<T>(
+      serviceDefinition,
+      metadata,
+      token
+    );
     this.handleServiceInstance(instance, metadata, token);
     return instance;
   }
 
-  private createServiceInstance<T>(serviceDefinition: unknown, metadata: ServiceInfo, token: string): T {
+  private createServiceInstance<T>(
+    serviceDefinition: unknown,
+    metadata: ServiceInfo,
+    token: string
+  ): T {
     try {
       switch (metadata.type) {
         case 'class': {
-          const serviceClass = serviceDefinition as new (...args: unknown[]) => T;
+          const serviceClass = serviceDefinition as new (
+            ...args: unknown[]
+          ) => T;
           return new serviceClass();
         }
-        case 'function':
         case 'factory': {
           const factory = serviceDefinition as () => T;
           return factory();
@@ -193,7 +223,9 @@ export class ContainerImpl implements Container {
         case 'singleton':
           return serviceDefinition as T;
         default:
-          throw new Error(`Unknown service type '${metadata.type}' for '${token}'`);
+          throw new Error(
+            `Unknown service type '${metadata.type}' for '${token}'`
+          );
       }
     } catch (error) {
       const message = `Failed to resolve service '${token}': ${error instanceof Error ? error.message : String(error)}`;
@@ -202,13 +234,23 @@ export class ContainerImpl implements Container {
     }
   }
 
-  private handleServiceInstance<T>(instance: T, metadata: ServiceInfo, token: string): void {
+  private handleServiceInstance<T>(
+    instance: T,
+    metadata: ServiceInfo,
+    token: string
+  ): void {
     if (metadata.singleton) {
       this.singletonCache.set(token, instance);
     }
 
-    if (instance && typeof (instance as { dispose?: () => void | Promise<void> }).dispose === 'function') {
-      this.disposableServices.add(instance as { dispose(): void | Promise<void> });
+    if (
+      instance &&
+      typeof (instance as { dispose?: () => void | Promise<void> }).dispose ===
+        'function'
+    ) {
+      this.disposableServices.add(
+        instance as { dispose(): void | Promise<void> }
+      );
     }
 
     this.emit('serviceResolved', { token, type: metadata.type });
@@ -218,7 +260,7 @@ export class ContainerImpl implements Container {
     return this.services.has(token);
   }
 
-  unregister(token: string): boolean {
+  remove(token: string): boolean {
     if (!this.services.has(token)) {
       return false;
     }
@@ -241,7 +283,7 @@ export class ContainerImpl implements Container {
   getServicesByTags(tags: string[]): string[] {
     const matchingServices: string[] = [];
     for (const [token, metadata] of this.serviceMetadata) {
-      const hasAllTags = tags.every(tag => metadata.tags.includes(tag));
+      const hasAllTags = tags.every((tag) => metadata.tags.includes(tag));
       if (hasAllTags) {
         matchingServices.push(token);
       }
@@ -252,7 +294,9 @@ export class ContainerImpl implements Container {
   getServicesByCapabilities(capabilities: string[]): string[] {
     const matchingServices: string[] = [];
     for (const [token, metadata] of this.serviceMetadata) {
-      const hasAllCapabilities = capabilities.every(cap => metadata.capabilities.includes(cap));
+      const hasAllCapabilities = capabilities.every((cap) =>
+        metadata.capabilities.includes(cap)
+      );
       if (hasAllCapabilities) {
         matchingServices.push(token);
       }
@@ -262,14 +306,14 @@ export class ContainerImpl implements Container {
 
   resolveAll<T>(tags: string[]): T[] {
     const serviceTokens = this.getServicesByTags(tags);
-    return serviceTokens.map(token => this.resolve<T>(token));
+    return serviceTokens.map((token) => this.resolve<T>(token));
   }
 
   registerConditional<T>(
     token: string,
     factory: (() => T) | (new (...args: unknown[]) => T),
     condition: () => boolean,
-    options?: { capabilities?: string[], tags?: string[] },
+    options?: { capabilities?: string[]; tags?: string[] }
   ): void {
     if (condition()) {
       if (typeof factory === 'function' && factory.prototype) {
@@ -289,7 +333,9 @@ export class ContainerImpl implements Container {
         if (result instanceof Promise) {
           disposePromises.push(result);
         }
-      } catch { /* ignore disposal errors */ }
+      } catch {
+        /* ignore disposal errors */
+      }
     }
 
     await Promise.all(disposePromises);
@@ -305,7 +351,10 @@ export class ContainerImpl implements Container {
     return Array.from(this.services.keys());
   }
 
-  autoDiscoverServices(patterns: string[], options: ServiceDiscoveryOptions = {}): Promise<ServiceInfo[]> {
+  autoDiscoverServices(
+    patterns: string[],
+    options: ServiceDiscoveryOptions = {}
+  ): Promise<ServiceInfo[]> {
     const discoveredServices: ServiceInfo[] = [];
     void options; // Use options parameter
 
@@ -317,6 +366,7 @@ export class ContainerImpl implements Container {
           capabilities: [],
           tags: ['discovered'],
           registeredAt: Date.now(),
+          singleton: false,
         });
       }
     }
@@ -351,8 +401,12 @@ export class ContainerImpl implements Container {
     const matchingServices: ServiceInfo[] = [];
     for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
       if (metadata.capabilities && metadata.capabilities.includes(capability)) {
-        const logger = require('../core/logging').getLogger('foundation:service-discovery');
-        logger.debug(`Service ${serviceToken} provides capability: ${capability}`);
+        const logger = require('../core/logging').getLogger(
+          'foundation:service-discovery'
+        );
+        logger.debug(
+          `Service ${serviceToken} provides capability: ${capability}`
+        );
         matchingServices.push(metadata);
       }
     }
@@ -363,7 +417,9 @@ export class ContainerImpl implements Container {
     const matchingServices: ServiceInfo[] = [];
     for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
       if (metadata.tags && metadata.tags.includes(tag)) {
-        const logger = require('../core/logging').getLogger('foundation:service-discovery');
+        const logger = require('../core/logging').getLogger(
+          'foundation:service-discovery'
+        );
         logger.debug(`Service ${serviceToken} has tag: ${tag}`);
         matchingServices.push(metadata);
       }
@@ -382,5 +438,13 @@ export class ContainerImpl implements Container {
 
   getName(): string {
     return 'ServiceContainer';
+  }
+
+  getServiceInfo(name: string): ServiceInfo | undefined {
+    return this.serviceMetadata.get(name);
+  }
+
+  getAllServices(): string[] {
+    return Array.from(this.services.keys());
   }
 }

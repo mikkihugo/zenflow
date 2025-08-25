@@ -7,9 +7,9 @@
  */
 
 // ✅ FOUNDATION - Direct import (contains primitives and centralized utilities)
-import { 
-  getLogger, 
-  createContainer, 
+import {
+  getLogger,
+  createContainer,
   getConfig,
   initializeTelemetry,
   withRetry,
@@ -17,7 +17,7 @@ import {
   getProjectManager,
   createCircuitBreaker,
   recordMetric,
-  getStorage
+  getStorage,
 } from '@claude-zen/foundation';
 
 // ✅ STRATEGIC FACADES - Tier 1 Public API
@@ -47,6 +47,25 @@ interface FoundationGlobal {
   createCircuitBreaker?: typeof createCircuitBreaker;
   recordMetric?: typeof recordMetric;
   getStorage?: typeof getStorage;
+}
+
+// Global systems interface for type safety
+interface GlobalSystems {
+  brainSystem: unknown;
+  safeFramework: unknown;
+  workflowEngine: unknown;
+  performanceTracker: unknown;
+  eventSystem: unknown;
+  databaseSystem: unknown;
+  safetySystem: unknown;
+  safetyInterventionProtocols: unknown;
+}
+
+// Extend global to include systems
+declare global {
+  namespace globalThis {
+    let systems: GlobalSystems;
+  }
 }
 
 // Make foundation services globally available with proper typing
@@ -84,9 +103,7 @@ interface FoundationGlobal {
 
 const logger = getLogger('Main');
 
-// Use foundation's configuration system + command line args
-const { getConfig: getConfigFn } = await import('@claude-zen/foundation');
-const foundationConfig = getConfigFn();
+// Foundation config available but not used in this scope
 
 // Handle CLI commands first
 if (process.argv.includes('auth')) {
@@ -130,117 +147,254 @@ async function main() {
     logger.info(`🌐 Access your dashboard at: http://localhost:${port}`);
     process.exit(0);
   }
+
   logger.info('🚀 Starting Claude Code Zen with FULL SWARM SYSTEM ACTIVATION');
-  // 🔧 FOUNDATION INFRASTRUCTURE: Initialize comprehensive systems from packages
+
+  try {
+    // Initialize foundation infrastructure
+    const {
+      container,
+      eventSystem,
+      databaseSystem,
+      systemCircuitBreaker,
+      withTraceFn,
+    } = await initializeFoundationInfrastructure();
+
+    // Initialize strategic facade systems
+    const systems = await initializeStrategicSystems(
+      systemCircuitBreaker,
+      withTraceFn
+    );
+
+    // Store systems for global access
+    globalThis.systems = systems;
+
+    // Start the web server
+    await startWebServer({
+      port,
+      host,
+      eventSystem,
+      databaseSystem,
+      container,
+      systems,
+    });
+
+    // Log final system status
+    logSystemStatus(systems);
+
+    // Keep the application alive
+    await keepApplicationAlive();
+  } catch (error) {
+    logger.error('💥 Application error: ', error);
+    process.exit(1);
+  }
+}
+
+// ============================================================================
+// INFRASTRUCTURE INITIALIZATION FUNCTIONS
+// ============================================================================
+
+/**
+ * Initialize foundation infrastructure (telemetry, DI, events, database)
+ */
+async function initializeFoundationInfrastructure() {
   logger.info('🏗️ Initializing comprehensive foundation infrastructure...');
-  // Initialize telemetry system for observability
+
+  // Initialize telemetry system
   const {
     initializeTelemetry: initializeTelemetryFn,
     withTrace: foundationWithTrace,
   } = await import('@claude-zen/foundation');
-  // Provide fallback for withTrace if not available
-  const withTraceFn =
-    foundationWithTrace ||
-    (async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
-      logger.debug(`Starting trace: ${name}`);
-      const result = await fn();
-      logger.debug(`Completed trace: ${name}`);
-      return result;
-    });
-  const telemetry = await withRetry(
+
+  const withTraceFn = foundationWithTrace || createFallbackTracer();
+
+  await withRetry(
     async () =>
-      initializeTelemetryFn({
+      await initializeTelemetryFn({
         serviceName: 'claude-code-zen',
         serviceVersion: '2.0.0',
         enableTracing: true,
         enableMetrics: true,
         enableLogging: true,
       }),
-    {
-      retries: 3,
-      minTimeout: 1000,
-    }
+    { retries: 3, minTimeout: 1000 }
   );
-  // Initialize core systems via strategic facades
+
+  // Initialize core systems
   const container = createContainer('claude-zen-main');
   const eventSystem = await getEventSystem();
   const databaseSystem = await getDatabaseSystem();
-  // Get other foundation services (already imported)
-  const storage = await getStorage();
-  const projectManager = await getProjectManager();
+
+  // Initialize other foundation services
+  await getStorage();
+  await getProjectManager();
+
   // Initialize circuit breaker for resilience
   const systemCircuitBreaker = createCircuitBreaker({
     timeout: 30000,
     errorThresholdPercentage: 50,
     resetTimeout: 60000,
   });
-  // Record system startup metrics
+
+  // Record startup metrics
   recordMetric('system_startup', 1, {
     component: 'main',
     version: '2.0.0',
   });
+
   logger.info(
     '✅ Foundation infrastructure initialized (DI, Events, Database, Telemetry, Storage, Resilience)'
   );
-  // 🔥 Initialize systems via strategic facades
+
+  return {
+    container,
+    eventSystem,
+    databaseSystem,
+    systemCircuitBreaker,
+    withTraceFn,
+  };
+}
+
+/**
+ * Create fallback tracer when foundation withTrace is not available
+ */
+function createFallbackTracer() {
+  return async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
+    logger.debug(`Starting trace: ${name}`);
+    const result = await fn();
+    logger.debug(`Completed trace: ${name}`);
+    return result;
+  };
+}
+
+/**
+ * Initialize all strategic facade systems
+ */
+async function initializeStrategicSystems(
+  systemCircuitBreaker: unknown,
+  withTraceFn: unknown
+) {
+  // Initialize enterprise systems
   logger.info('👑 Initializing enterprise systems...');
   const safeFramework = await getSafeFramework({
     coordinationSafety: true,
     realTimeMonitoring: true,
-    interventionThreshold: 0.7
+    interventionThreshold: 0.7,
   });
   logger.info('✅ Enterprise systems initialized');
-  // Initialize workflow engine
+
+  // Initialize workflow systems
+  const workflowEngine = await initializeWorkflowSystems();
+
+  // Initialize performance systems
+  const performanceTracker = await initializePerformanceSystems();
+
+  // Initialize brain systems
+  const brainSystem = await initializeBrainSystems(
+    systemCircuitBreaker,
+    withTraceFn
+  );
+
+  // Initialize safety systems
+  const { safetySystem, safetyInterventionProtocols } =
+    await initializeSafetySystems(
+      safeFramework,
+      systemCircuitBreaker,
+      withTraceFn
+    );
+
+  logger.info('✅ All strategic facade systems initialized');
+
+  return {
+    brainSystem,
+    safeFramework,
+    workflowEngine,
+    performanceTracker,
+    safetySystem,
+    safetyInterventionProtocols,
+  };
+}
+
+/**
+ * Initialize workflow engine systems
+ */
+async function initializeWorkflowSystems() {
   logger.info('🎯 Initializing workflow systems...');
   const workflowEngine = await getWorkflowEngine({
     orchestration: true,
-    processManagement: true
+    processManagement: true,
   });
   logger.info('✅ Workflow systems initialized');
-  // Initialize performance tracking
+  return workflowEngine;
+}
+
+/**
+ * Initialize performance tracking systems
+ */
+async function initializePerformanceSystems() {
   logger.info('⚡ Initializing performance systems...');
   const performanceTracker = await getPerformanceTracker({
     healthMonitoring: true,
     performancePrediction: true,
-    realTimeMetrics: true
+    realTimeMetrics: true,
   });
   logger.info('✅ Performance systems initialized');
-  // Initialize Neural Brain System via strategic facade
-  logger.info(
-    '🧠 Initializing Brain System via strategic facade...'
-  );
+  return performanceTracker;
+}
+
+/**
+ * Initialize brain system with neural networks and DSPy
+ */
+async function initializeBrainSystems(
+  systemCircuitBreaker: unknown,
+  withTraceFn: unknown
+) {
+  logger.info('🧠 Initializing Brain System via strategic facade...');
+
   const brainSystem = await getBrainSystem({
     enabled: true,
     neuralNetworks: true,
     wasmAcceleration: true,
     rustCore: true,
     dspyOptimization: true,
-    retrainingEnabled: true
+    retrainingEnabled: true,
   });
-  // Initialize brain system with telemetry and resilience
+
+  // Initialize with telemetry and resilience
   await withTraceFn('brain-system-initialization', async () => {
     await systemCircuitBreaker.fire(async () => {
       await brainSystem?.initialize();
     });
   });
-  // Record brain system metrics
+
+  // Record metrics
   recordMetric('brain_system_initialized', 1, {
     components: 'coordinator, neural-bridge, dspy, retraining',
     version: '2.0.0',
   });
+
   logger.info(
     '✅ Brain System initialized - Neural foundation ready with telemetry tracking'
   );
   logger.info(
     '🔬Capabilities: Agent learning, performance prediction, behavioral optimization, DSPy optimization'
   );
-  // Initialize AI Safety via enterprise facade
-  logger.info(
-    '🛡️ Initializing AI Safety via enterprise facade...'
-  );
-  // Safety systems are part of the enterprise facade
+
+  return brainSystem;
+}
+
+/**
+ * Initialize AI safety systems with intervention protocols
+ */
+async function initializeSafetySystems(
+  safeFramework: unknown,
+  systemCircuitBreaker: unknown,
+  withTraceFn: unknown
+) {
+  logger.info('🛡️ Initializing AI Safety via enterprise facade...');
+
   const safetySystem = safeFramework.getSafetySystem();
-  // Initialize local Safety Intervention Protocols (local coordination)
+
   const safetyInterventionProtocols = new SafetyInterventionProtocols({
     enabled: true,
     autoEscalationThreshold: 0.8,
@@ -254,6 +408,7 @@ async function main() {
       'KNOWLEDGE_HALLUCINATION_TECHNICAL',
     ],
   });
+
   // Start safety monitoring with circuit breaker protection
   await withTraceFn('ai-safety-initialization', async () => {
     await systemCircuitBreaker.fire(async () => {
@@ -263,13 +418,15 @@ async function main() {
       ]);
     });
   });
-  // Record safety system metrics
+
+  // Record safety metrics
   recordMetric('ai_safety_system_initialized', 1, {
     patterns: '25',
     categories: 'capability, knowledge, verification, confidence, context',
     coordinationSafety: 'enabled',
     version: '1.0.0',
   });
+
   logger.info(
     '✅ AI Safety System initialized - 25-pattern deception detection ACTIVE'
   );
@@ -286,91 +443,108 @@ async function main() {
     '🚨 Human escalation protocols: AGUI integration, 60s timeout, critical pattern detection'
   );
   logger.info('⚠️ Real-time intervention protocols: ENABLED');
-  // All systems are now accessed via strategic facades
-  logger.info('✅ All strategic facade systems initialized');
-  // Store strategic facade systems for global access
-  (global as any).systems = {
-    brainSystem,
-    safeFramework,
-    workflowEngine,
-    performanceTracker,
-    eventSystem,
-    databaseSystem,
-    safetySystem,
-    safetyInterventionProtocols, // Local coordination
-  };
-  try {
-    logger.info('🚀 Starting Claude Code Zen Web Server...');
-    logger.info('🌐 Web server with API endpoints and workspace functionality');
-    // Import and start the API server
-    logger.info('🔧 Importing ApiServer...');
-    const { ApiServer } = await import('./interfaces/web/api-server');
-    logger.info('✅ ApiServer imported successfully');
-    logger.info('🏗️ Creating ApiServer instance...');
-    const webApp = new ApiServer({
-      port,
-      host,
-      // Pass foundation infrastructure to ApiServer
-      eventBus: eventSystem,
-      databaseAccess: databaseSystem,
-      container,
-      swarmCoordinators: (global as any).systems,
-    });
-    logger.info('✅ ApiServer instance created');
-    logger.info('🚀 Starting ApiServer...');
-    await webApp?.start();
-    logger.info('✅ ApiServer started successfully');
-    logger.info(`✅ Web Server running at http://localhost:${port}`);
-    logger.info(`🌐 Access your workspace: http://localhost:${port}/workspace`);
-    logger.info(
-      '📊 API Features: File Operations • Health Check • System Status • Workspace Management'
-    );
-    // 🔥 SWARM STATUS: Log complete hierarchy activation
-    logger.info('🐝 SWARM HIERARCHY FULLY ACTIVATED:');
-    logger.info(
-      '👑 Queen Coordinator: Strategic multi-swarm coordination active'
-    );
-    logger.info('🎯 Cube Matrons: Dev + Ops domain leaders active');
-    logger.info(
-      '⚡ Swarm Commanders: Primary + SPARC tactical coordination active'
-    );
-    logger.info(
-      '🧠 Unified Brain System: Neural networks, behavioral intelligence, learning active'
-    );
-    logger.info(
-      '🔧 Specialized Systems: Chaos, load balancing, teamwork, AI safety active'
-    );
-    const swarmStats = (global as any).systems;
-    logger.info('📈 System Statistics:');
-    logger.info(
-      `• Brain System: ${swarmStats.brainSystem ? 'Active' : 'Inactive'}`
-    );
-    logger.info(
-      `• Safety Framework: ${swarmStats.safeFramework ? 'Active' : 'Inactive'}`
-    );
-    logger.info(
-      `• Systems: ${Object.keys(swarmStats).length} strategic facade systems`
-    );
-    logger.info('✅ Claude Code Zen STRATEGIC FACADE SYSTEM running successfully');
-    logger.info(`🌐 Workspace: http://localhost:${port}/workspace`);
-    logger.info(`🔗 API: http://localhost:${port}/api/`);
-    logger.info(
-      '🎯 Ready for strategic facade coordination and neural processing'
-    );
-    logger.info('🛡️ Graceful shutdown enabled - use Ctrl+C or SIGTERM to stop');
-    // Since terminus handles shutdown, we can use a simple keep-alive
-    // The server will handle graceful shutdown via terminus
-    const keepAlive = () => new Promise(() => {});
-    // Infinite promise
-    await keepAlive();
-  } catch (error) {
-    logger.error('💥 Application error: ', error);
-    process.exit(1);
-  }
+
+  return { safetySystem, safetyInterventionProtocols };
+}
+
+// ============================================================================
+// WEB SERVER INITIALIZATION
+// ============================================================================
+
+/**
+ * Start the web server with all systems
+ */
+async function startWebServer(config: {
+  port: number;
+  host: string;
+  eventSystem: unknown;
+  databaseSystem: unknown;
+  container: unknown;
+  systems: unknown;
+}) {
+  logger.info('🚀 Starting Claude Code Zen Web Server...');
+  logger.info('🌐 Web server with API endpoints and workspace functionality');
+
+  // Import and start the API server
+  logger.info('🔧 Importing ApiServer...');
+  const { ApiServer: API_SERVER } = await import('./services/web/api-server');
+  logger.info('✅ ApiServer imported successfully');
+
+  logger.info('🏗️ Creating ApiServer instance...');
+  const webApp = new API_SERVER({
+    port: config.port,
+    host: config.host,
+    // Pass foundation infrastructure to ApiServer
+    eventBus: config.eventSystem,
+    databaseAccess: config.databaseSystem,
+    container: config.container,
+    swarmCoordinators: config.systems,
+  });
+  logger.info('✅ ApiServer instance created');
+
+  logger.info('🚀 Starting ApiServer...');
+  await webApp?.start();
+  logger.info('✅ ApiServer started successfully');
+
+  logger.info(`✅ Web Server running at http://localhost:${config.port}`);
+  logger.info(
+    `🌐 Access your workspace: http://localhost:${config.port}/workspace`
+  );
+  logger.info(
+    '📊 API Features: File Operations • Health Check • System Status • Workspace Management'
+  );
+}
+
+/**
+ * Log comprehensive system status information
+ */
+function logSystemStatus(systems: Record<string, unknown>) {
+  logger.info('🐝 SWARM HIERARCHY FULLY ACTIVATED:');
+  logger.info(
+    '👑 Queen Coordinator: Strategic multi-swarm coordination active'
+  );
+  logger.info('🎯 Cube Matrons: Dev + Ops domain leaders active');
+  logger.info(
+    '⚡ Swarm Commanders: Primary + SPARC tactical coordination active'
+  );
+  logger.info(
+    '🧠 Unified Brain System: Neural networks, behavioral intelligence, learning active'
+  );
+  logger.info(
+    '🔧 Specialized Systems: Chaos, load balancing, teamwork, AI safety active'
+  );
+
+  logger.info('📈 System Statistics:');
+  logger.info(`• Brain System: ${systems.brainSystem ? 'Active' : 'Inactive'}`);
+  logger.info(
+    `• Safety Framework: ${systems.safeFramework ? 'Active' : 'Inactive'}`
+  );
+  logger.info(
+    `• Systems: ${Object.keys(systems).length} strategic facade systems`
+  );
+
+  logger.info(
+    '✅ Claude Code Zen STRATEGIC FACADE SYSTEM running successfully'
+  );
+  logger.info(`🌐 Workspace: http://localhost:${port}/workspace`);
+  logger.info(`🔗 API: http://localhost:${port}/api/`);
+  logger.info(
+    '🎯 Ready for strategic facade coordination and neural processing'
+  );
+  logger.info('🛡️ Graceful shutdown enabled - use Ctrl+C or SIGTERM to stop');
+}
+
+/**
+ * Keep the application alive with graceful shutdown handling
+ */
+async function keepApplicationAlive() {
+  // Since terminus handles shutdown, we can use a simple keep-alive
+  const keepAlive = () => new Promise(() => {});
+  await keepAlive();
 }
 
 // Start the application
 main().catch((error) => {
-  console.error('💥 Fatal error:', error);
+  logger.error('💥 Fatal error:', error);
   process.exit(1);
 });

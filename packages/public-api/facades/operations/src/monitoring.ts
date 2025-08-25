@@ -34,19 +34,19 @@ const logger = getLogger('operations-monitoring');
  * Custom error types for monitoring operations
  */
 export class MonitoringSystemError extends Error {
-  public override cause?: Error|undefined;
+  public override cause?: Error | undefined;
 
-  constructor(message: string, cause?: Error|undefined) {
+  constructor(message: string, cause?: Error | undefined) {
     super(message);
-    this.name ='MonitoringSystemError';
+    this.name = 'MonitoringSystemError';
     this.cause = cause;
   }
 }
 
 export class MonitoringSystemConnectionError extends MonitoringSystemError {
-  constructor(message: string, cause?: Error|undefined) {
+  constructor(message: string, cause?: Error | undefined) {
     super(message, cause);
-    this.name ='MonitoringSystemConnectionError';
+    this.name = 'MonitoringSystemConnectionError';
   }
 }
 
@@ -198,14 +198,14 @@ interface MonitoringSystemConfig {
  * Implementation of monitoring access via runtime delegation
  */
 class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
-  private monitoringModule: MonitoringSystemModule|null = null;
+  private monitoringModule: MonitoringSystemModule | null = null;
 
   private async getMonitoringModule(): Promise<MonitoringSystemModule> {
     if (!this.monitoringModule) {
       try {
         // Import the monitoring package at runtime (matches database pattern)
         // Use dynamic import with string to avoid TypeScript compile-time checking
-        const packageName ='@claude-zen/system-monitoring';
+        const packageName = '@claude-zen/system-monitoring';
         this.monitoringModule = (await import(
           packageName
         )) as MonitoringSystemModule;
@@ -213,7 +213,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
       } catch (error) {
         throw new MonitoringSystemConnectionError(
           'System monitoring package not available. Operations requires @claude-zen/system-monitoring for monitoring operations.',
-          error instanceof Error ? error : undefined,
+          error instanceof Error ? error : undefined
         );
       }
     }
@@ -221,7 +221,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
   }
 
   async createMonitoringFacade(
-    config?: MonitoringSystemConfig,
+    config?: MonitoringSystemConfig
   ): Promise<MonitoringFacade> {
     const module = await this.getMonitoringModule();
     logger.debug('Creating monitoring facade via operations delegation', {
@@ -233,7 +233,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
   }
 
   async createObservabilityFramework(
-    config?: MonitoringSystemConfig,
+    config?: MonitoringSystemConfig
   ): Promise<ObservabilityFramework> {
     const module = await this.getMonitoringModule();
     logger.debug('Creating observability framework via operations delegation', {
@@ -245,7 +245,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
   }
 
   async createTelemetryCollector(
-    config?: MonitoringSystemConfig,
+    config?: MonitoringSystemConfig
   ): Promise<TelemetryCollector> {
     const module = await this.getMonitoringModule();
     logger.debug('Creating telemetry collector via operations delegation', {
@@ -257,7 +257,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
   }
 
   async createMetricsAggregator(
-    config?: MonitoringSystemConfig,
+    config?: MonitoringSystemConfig
   ): Promise<MetricsAggregator> {
     const module = await this.getMonitoringModule();
     logger.debug('Creating metrics aggregator via operations delegation', {
@@ -267,7 +267,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
   }
 
   async createHealthChecker(
-    config?: MonitoringSystemConfig,
+    config?: MonitoringSystemConfig
   ): Promise<HealthChecker> {
     const module = await this.getMonitoringModule();
     logger.debug('Creating health checker via operations delegation', {
@@ -278,7 +278,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
 }
 
 // Global singleton instance
-let globalMonitoringSystemAccess: MonitoringSystemAccess|null = null;
+let globalMonitoringSystemAccess: MonitoringSystemAccess | null = null;
 
 /**
  * Get monitoring access interface (singleton pattern)
@@ -296,7 +296,7 @@ export function getMonitoringSystemAccess(): MonitoringSystemAccess {
  * @param config - Monitoring facade configuration
  */
 export async function getMonitoringFacade(
-  config?: MonitoringSystemConfig,
+  config?: MonitoringSystemConfig
 ): Promise<MonitoringFacade> {
   const monitoringSystem = getMonitoringSystemAccess();
   return await Promise.resolve(monitoringSystem.createMonitoringFacade(config));
@@ -307,10 +307,12 @@ export async function getMonitoringFacade(
  * @param config - Observability framework configuration
  */
 export async function getObservabilityFramework(
-  config?: MonitoringSystemConfig,
+  config?: MonitoringSystemConfig
 ): Promise<ObservabilityFramework> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return await Promise.resolve(monitoringSystem.createObservabilityFramework(config));
+  return await Promise.resolve(
+    monitoringSystem.createObservabilityFramework(config)
+  );
 }
 
 /**
@@ -318,10 +320,12 @@ export async function getObservabilityFramework(
  * @param config - Telemetry collector configuration
  */
 export async function getTelemetryCollector(
-  config?: MonitoringSystemConfig,
+  config?: MonitoringSystemConfig
 ): Promise<TelemetryCollector> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return await Promise.resolve(monitoringSystem.createTelemetryCollector(config));
+  return await Promise.resolve(
+    monitoringSystem.createTelemetryCollector(config)
+  );
 }
 
 /**
@@ -329,10 +333,12 @@ export async function getTelemetryCollector(
  * @param config - Metrics aggregator configuration
  */
 export async function getMetricsAggregator(
-  config?: MonitoringSystemConfig,
+  config?: MonitoringSystemConfig
 ): Promise<MetricsAggregator> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return await Promise.resolve(monitoringSystem.createMetricsAggregator(config));
+  return await Promise.resolve(
+    monitoringSystem.createMetricsAggregator(config)
+  );
 }
 
 /**
@@ -340,7 +346,7 @@ export async function getMetricsAggregator(
  * @param config - Health checker configuration
  */
 export async function getHealthChecker(
-  config?: MonitoringSystemConfig,
+  config?: MonitoringSystemConfig
 ): Promise<HealthChecker> {
   const monitoringSystem = getMonitoringSystemAccess();
   return await Promise.resolve(monitoringSystem.createHealthChecker(config));
@@ -379,7 +385,7 @@ interface TelemetryMonitoringModule {
 
 export class TelemetryManager {
   private enabled = true;
-  private monitoringModule: TelemetryMonitoringModule|null = null;
+  private monitoringModule: TelemetryMonitoringModule | null = null;
 
   constructor(config?: TelemetryConfig) {
     this.enabled = config?.enabled !== false;
@@ -388,7 +394,7 @@ export class TelemetryManager {
   private async getMonitoringModule(): Promise<TelemetryMonitoringModule> {
     if (!this.monitoringModule) {
       try {
-        const packageName ='@claude-zen/system-monitoring';
+        const packageName = '@claude-zen/system-monitoring';
         this.monitoringModule = (await import(
           packageName
         )) as TelemetryMonitoringModule;
@@ -445,7 +451,7 @@ export const monitoringSystem = {
 
 // Additional facade functions for compatibility with legacy usage patterns
 export async function getTelemetryManager(
-  config?: any,
+  config?: any
 ): Promise<TelemetryManager> {
   const telemetryManager = new TelemetryManager(config);
   await telemetryManager.initialize();
@@ -472,11 +478,12 @@ export async function getPerformanceTracker(config?: any): Promise<any> {
       recordMetric: (name: string, value: number) => {
         logger.debug(`Metric: ${name} = ${value}`);
       },
-      getMetrics: async () => await Promise.resolve({
-        operations: {},
-        memory: { used: 0, free: 0, total: 0 },
-        cpu: { usage: 0 },
-      }),
+      getMetrics: async () =>
+        await Promise.resolve({
+          operations: {},
+          memory: { used: 0, free: 0, total: 0 },
+          cpu: { usage: 0 },
+        }),
       reset: () => logger.debug('Performance tracker reset'),
     };
   }

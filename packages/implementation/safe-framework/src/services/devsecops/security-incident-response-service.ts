@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addMinutes, addHours, addDays } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addMinutes, addHours, addDays } = dateFns;
 import {
   groupBy,
   map,
@@ -460,7 +459,7 @@ export class SecurityIncidentResponseService {
     reportedBy: string;
     initialEvidence?: Partial<IncidentEvidence>[];
   }): SecurityIncident {
-    const incidentId = `incident-${nanoid(12)}`;`
+    const incidentId = `incident-${generateNanoId(12)}`;`
 
     this.logger.info('Creating security incident', {'
       incidentId,
@@ -497,7 +496,7 @@ export class SecurityIncidentResponseService {
       responseTeam,
       timeline: [
         {
-          entryId: `timeline-${nanoid(8)}`,`
+          entryId: `timeline-${generateNanoId(8)}`,`
           timestamp: new Date(),
           action: 'incident_created',
           description: `Incident created: ${incidentData.title}`,`
@@ -572,7 +571,7 @@ export class SecurityIncidentResponseService {
 
     // Add timeline entry
     const timelineEntry: IncidentTimelineEntry = {
-      entryId: `timeline-${nanoid(8)}`,`
+      entryId: `timeline-${generateNanoId(8)}`,`
       timestamp: new Date(),
       action: 'status_updated',
       description: `Status changed from ${incident.status} to ${status}${notes ? `: ${notes}` : ''}`,`
@@ -611,7 +610,7 @@ export class SecurityIncidentResponseService {
     }
 
     const newEvidence: IncidentEvidence = {
-      evidenceId: `evidence-${nanoid(8)}`,`
+      evidenceId: `evidence-${generateNanoId(8)}`,`
       collectedDate: new Date(),
       chainOfCustody: [
         {
@@ -631,7 +630,7 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${nanoid(8)}`,`
+          entryId: `timeline-${generateNanoId(8)}`,`
           timestamp: new Date(),
           action: 'evidence_added',
           description: `Evidence added: ${evidence.description}`,`
@@ -671,7 +670,7 @@ export class SecurityIncidentResponseService {
     });
 
     const containmentActions: ContainmentAction[] = actions.map((action) => ({
-      actionId: `action-${nanoid(8)}`,`
+      actionId: `action-${generateNanoId(8)}`,`
       status: ActionStatus.PLANNED,
       startTime: new Date(),
       ...action,
@@ -688,7 +687,7 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${nanoid(8)}`,`
+          entryId: `timeline-${generateNanoId(8)}`,`
           timestamp: new Date(),
           action: 'containment_initiated',
           description: `Containment strategy initiated: ${strategy}`,`
@@ -738,7 +737,7 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${nanoid(8)}`,`
+          entryId: `timeline-${generateNanoId(8)}`,`
           timestamp: resolutionDate,
           action: 'incident_resolved',
           description: `Incident resolved: ${resolution.resolutionSummary}`,`
@@ -870,7 +869,7 @@ export class SecurityIncidentResponseService {
     partialEvidence: Partial<IncidentEvidence>[]
   ): IncidentEvidence[] {
     return partialEvidence.map((evidence) => ({
-      evidenceId: `evidence-${nanoid(8)}`,`
+      evidenceId: `evidence-${generateNanoId(8)}`,`
       collectedDate: new Date(),
       chainOfCustody: [],
       type: EvidenceType.OTHER,

@@ -20,10 +20,19 @@
 
 import { Result, ok, err, ResultAsync, errAsync, okAsync } from 'neverthrow';
 import {
-  handleAll, circuitBreaker as createCircuitBreakerPolicy, ConsecutiveBreaker,
-  timeout as createTimeoutPolicy, retry as createRetryPolicy,
-  ExponentialBackoff, CircuitBreakerPolicy, CircuitState, TimeoutStrategy,
-  TaskCancelledError, ConstantBackoff, IterableBackoff, DelegateBackoff,
+  handleAll,
+  circuitBreaker as createCircuitBreakerPolicy,
+  ConsecutiveBreaker,
+  timeout as createTimeoutPolicy,
+  retry as createRetryPolicy,
+  ExponentialBackoff,
+  CircuitBreakerPolicy,
+  CircuitState,
+  TimeoutStrategy,
+  TaskCancelledError,
+  ConstantBackoff,
+  IterableBackoff,
+  DelegateBackoff,
 } from 'cockatiel';
 
 import { getLogger } from '../../core/logging';
@@ -39,7 +48,11 @@ const logger = getLogger('error-handling');
  */
 export interface CockatielRetryOptions {
   maxAttempts?: number;
-  backoff?: ExponentialBackoff<unknown> | ConstantBackoff | IterableBackoff | DelegateBackoff<unknown, unknown>;
+  backoff?:
+    | ExponentialBackoff<unknown>
+    | ConstantBackoff
+    | IterableBackoff
+    | DelegateBackoff<unknown, unknown>;
 }
 
 /**
@@ -93,7 +106,7 @@ export class EnhancedError extends Error {
     message: string,
     context: JsonObject = {},
     code?: string,
-    options?: { cause?: unknown },
+    options?: { cause?: unknown }
   ) {
     super(message);
     if (options?.cause) {
@@ -117,7 +130,7 @@ export class EnhancedError extends Error {
       this.message,
       { ...this.context, ...additionalContext },
       this.code,
-      { cause: this },
+      { cause: this }
     );
   }
 
@@ -166,7 +179,7 @@ export class ContextError extends Error {
     message: string,
     context: JsonObject = {},
     code?: string,
-    options?: { cause?: unknown },
+    options?: { cause?: unknown }
   ) {
     super(message);
     if (options?.cause) {
@@ -190,7 +203,7 @@ export class ContextError extends Error {
       this.message,
       { ...this.context, ...additionalContext },
       this.code,
-      { cause: this },
+      { cause: this }
     );
   }
 
@@ -215,10 +228,10 @@ export class ContextError extends Error {
     return {
       ...baseObject,
       errorType: 'ContextError',
-      contextKeys: Object.keys(this.context||{}),
+      contextKeys: Object.keys(this.context || {}),
       hasContext: Boolean(this.context && Object.keys(this.context).length > 0),
       contextSummary:
-        Object.keys(this.context||{}).join(', ')||'no context',
+        Object.keys(this.context || {}).join(', ') || 'no context',
     };
   }
 }
@@ -296,7 +309,7 @@ export function withContext(error: unknown, context: JsonObject): ContextError {
  * Safe async execution with Result pattern
  */
 export async function safeAsync<T>(
-  fn: () => Promise<T>,
+  fn: () => Promise<T>
 ): Promise<Result<T, Error>> {
   try {
     const result = await fn();
@@ -323,8 +336,15 @@ export function safe<T>(fn: () => T): Result<T, Error> {
  */
 export interface RetryOptions {
   maxAttempts?: number;
-  backoff?: ExponentialBackoff<unknown> | ConstantBackoff | IterableBackoff | DelegateBackoff<unknown, unknown>;
-  onFailedAttempt?: (error: Error, attemptNumber: number) => void|Promise<void>;
+  backoff?:
+    | ExponentialBackoff<unknown>
+    | ConstantBackoff
+    | IterableBackoff
+    | DelegateBackoff<unknown, unknown>;
+  onFailedAttempt?: (
+    error: Error,
+    attemptNumber: number
+  ) => void | Promise<void>;
   shouldRetry?: (error: Error) => boolean;
   retryIf?: (error: Error) => boolean;
   abortIf?: (error: Error) => boolean;
@@ -335,7 +355,7 @@ export interface RetryOptions {
  */
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  options: RetryOptions = {},
+  options: RetryOptions = {}
 ): Promise<Result<T, Error>> {
   const {
     maxAttempts = 3,
@@ -350,35 +370,45 @@ export async function withRetry<T>(
   const retryPolicy = createRetryPolicy(handleAll, { maxAttempts, backoff });
 
   // Add event listeners for monitoring
-  const retryListener = retryPolicy.onRetry((data: {delay: number; attempt: number; error?: Error; reason?: unknown}) => {
-    const { delay, attempt, error: dataError, reason } = data;
-    const error = dataError || new Error(String(reason || data));
-    logger.warn(`Attempt ${attempt} failed (retrying in ${delay}ms):`, error);
+  const retryListener = retryPolicy.onRetry(
+    (data: {
+      delay: number;
+      attempt: number;
+      error?: Error;
+      reason?: unknown;
+    }) => {
+      const { delay, attempt, error: dataError, reason } = data;
+      const error = dataError || new Error(String(reason || data));
+      logger.warn(`Attempt ${attempt} failed (retrying in ${delay}ms):`, error);
 
-    // Custom abort logic - called via onFailedAttempt if provided
-    if (onFailedAttempt) {
-      onFailedAttempt(error, attempt);
-    }
-
-    // Custom retry filters (marked as used to avoid compiler warnings)
-    void shouldRetry;
-    void retryIf;
-    void abortIf;
-
-    // Call user-provided callback
-    if (onFailedAttempt) {
-      const result = onFailedAttempt(error, attempt);
-      if (result instanceof Promise) {
-        return result;
+      // Custom abort logic - called via onFailedAttempt if provided
+      if (onFailedAttempt) {
+        onFailedAttempt(error, attempt);
       }
-    }
-    return Promise.resolve();
-  });
 
-  const giveUpListener = retryPolicy.onGiveUp((data: {error?: Error; reason?: unknown}) => {
-    const error = 'error' in data ? data.error : new Error(String(data.reason || data));
-    logger.error('Retry failed permanently:', error);
-  });
+      // Custom retry filters (marked as used to avoid compiler warnings)
+      void shouldRetry;
+      void retryIf;
+      void abortIf;
+
+      // Call user-provided callback
+      if (onFailedAttempt) {
+        const result = onFailedAttempt(error, attempt);
+        if (result instanceof Promise) {
+          return result;
+        }
+      }
+      return Promise.resolve();
+    }
+  );
+
+  const giveUpListener = retryPolicy.onGiveUp(
+    (data: { error?: Error; reason?: unknown }) => {
+      const error =
+        'error' in data ? data.error : new Error(String(data.reason || data));
+      logger.error('Retry failed permanently:', error);
+    }
+  );
 
   try {
     const result = await retryPolicy.execute(fn);
@@ -412,7 +442,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
       resetTimeout?: number;
       minimumThroughput?: number;
     } = {},
-    name = 'circuit-breaker',
+    name = 'circuit-breaker'
   ) {
     this.name = name;
     this.action = action;
@@ -426,7 +456,9 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
     // Create a circuit breaker policy with cockatiel's proper API
     this.policy = createCircuitBreakerPolicy(handleAll, {
       halfOpenAfter: resetTimeout,
-      breaker: new ConsecutiveBreaker(Math.ceil(minimumThroughput * (errorThresholdPercentage / 100))),
+      breaker: new ConsecutiveBreaker(
+        Math.ceil(minimumThroughput * (errorThresholdPercentage / 100))
+      ),
     });
 
     this.setupEventListeners();
@@ -446,7 +478,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
       logger.info(`Circuit breaker ${this.name} half-opened`);
     });
 
-    this.policy.onFailure((data: {reason?: unknown}) => {
+    this.policy.onFailure((data: { reason?: unknown }) => {
       const reason = data.reason || data;
       logger.debug(`Circuit breaker ${this.name} recorded failure:`, reason);
     });
@@ -475,7 +507,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
    * Get circuit breaker statistics
    */
   getStats() {
-    const {state} = this.policy;
+    const { state } = this.policy;
     return {
       name: this.name,
       state: CircuitState[state],
@@ -489,7 +521,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
    * Get circuit breaker state
    */
   getState() {
-    const {state} = this.policy;
+    const { state } = this.policy;
     return {
       isOpen: state === CircuitState.Open,
       isHalfOpen: state === CircuitState.HalfOpen,
@@ -502,7 +534,9 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
    * Clear metrics (cockatiel doesn't support reset/shutdown)
    */
   clear(): void {
-    logger.info(`Circuit breaker ${this.name} metrics cleared (note: cockatiel doesn't support reset)`);
+    logger.info(
+      `Circuit breaker ${this.name} metrics cleared (note: cockatiel doesn't support reset)`
+    );
   }
 }
 
@@ -517,7 +551,7 @@ export function createCircuitBreaker<T extends unknown[], R>(
     resetTimeout?: number;
     minimumThroughput?: number;
   } = {},
-  name?: string,
+  name?: string
 ): CircuitBreakerWithMonitoring<T, R> {
   return new CircuitBreakerWithMonitoring(action, options, name);
 }
@@ -529,7 +563,7 @@ export async function withTimeout<T>(
   fn: (context: { signal: AbortSignal }) => Promise<T>,
   timeoutMs: number,
   timeoutMessage?: string,
-  strategy: TimeoutStrategy = TimeoutStrategy.Cooperative,
+  strategy: TimeoutStrategy = TimeoutStrategy.Cooperative
 ): Promise<Result<T, TimeoutError>> {
   // Create timeout policy with cockatiel
   const timeoutPolicy = createTimeoutPolicy(timeoutMs, strategy);
@@ -539,14 +573,16 @@ export async function withTimeout<T>(
     logger.warn(`Operation timed out after ${timeoutMs}ms`);
   });
 
-  const failureListener = timeoutPolicy.onFailure((data: {reason?: unknown}) => {
-    const reason = data.reason || data;
-    if (reason instanceof TaskCancelledError) {
-      logger.debug('Timeout policy cancelled operation');
-    } else {
-      logger.warn('Timeout policy failed:', reason);
+  const failureListener = timeoutPolicy.onFailure(
+    (data: { reason?: unknown }) => {
+      const reason = data.reason || data;
+      if (reason instanceof TaskCancelledError) {
+        logger.debug('Timeout policy cancelled operation');
+      } else {
+        logger.warn('Timeout policy failed:', reason);
+      }
     }
-  });
+  );
 
   try {
     const result = await timeoutPolicy.execute(fn);
@@ -555,7 +591,7 @@ export async function withTimeout<T>(
     if (error instanceof TaskCancelledError) {
       const timeoutError = new TimeoutError(
         timeoutMessage || `Operation timed out after ${timeoutMs}ms`,
-        { timeoutMs, strategy },
+        { timeoutMs, strategy }
       );
       return err(timeoutError);
     } else {
@@ -565,7 +601,7 @@ export async function withTimeout<T>(
           originalError: enhancedError.message,
           timeoutMs,
           strategy,
-        }),
+        })
       );
     }
   } finally {
@@ -580,24 +616,23 @@ export async function withTimeout<T>(
 export async function withTimeoutLegacy<T>(
   fn: () => Promise<T>,
   timeoutMs: number,
-  timeoutMessage?: string,
+  timeoutMessage?: string
 ): Promise<Result<T, TimeoutError>> {
   return withTimeout(
-    ({ signal }) => 
+    ({ signal }) =>
       // For legacy functions, we can't pass the signal
       // Use Promise.race with timeout
-       Promise.race([
+      Promise.race([
         fn(),
         new Promise<never>((_, reject) => {
           signal.addEventListener('abort', () => {
             reject(new TaskCancelledError());
           });
         }),
-      ])
-    ,
+      ]),
     timeoutMs,
     timeoutMessage,
-    TimeoutStrategy.Aggressive,
+    TimeoutStrategy.Aggressive
   );
 }
 
@@ -605,7 +640,7 @@ export async function withTimeoutLegacy<T>(
  * Execute all operations in parallel and collect results
  */
 export async function executeAll<T>(
-  operations: (() => Promise<T>)[],
+  operations: (() => Promise<T>)[]
 ): Promise<Result<T[], Error[]>> {
   const results = await Promise.allSettled(operations.map((op) => op()));
 
@@ -613,7 +648,7 @@ export async function executeAll<T>(
   const failures: Error[] = [];
 
   for (const result of results) {
-    if (result.status ==='fulfilled') {
+    if (result.status === 'fulfilled') {
       successes.push(result.value);
     } else {
       failures.push(ensureError(result.reason));
@@ -627,7 +662,7 @@ export async function executeAll<T>(
  * Execute all operations and return only successful results
  */
 export async function executeAllSuccessful<T>(
-  operations: (() => Promise<T>)[],
+  operations: (() => Promise<T>)[]
 ): Promise<Result<T[], Error[]>> {
   const result = await executeAll(operations);
 
@@ -653,7 +688,7 @@ export async function executeAllSuccessful<T>(
  */
 export function transformError<T, E, F>(
   result: Result<T, E>,
-  transformer: (error: E) => F,
+  transformer: (error: E) => F
 ): Result<T, F> {
   return result.mapErr(transformer);
 }
@@ -663,10 +698,10 @@ export function transformError<T, E, F>(
  */
 export function createErrorRecovery<T>(
   fallbackValue: T,
-  shouldRecover?: (error: Error) => boolean,
+  shouldRecover?: (error: Error) => boolean
 ) {
   return (error: Error): Result<T, Error> => {
-    if (!shouldRecover||shouldRecover(error)) {
+    if (!shouldRecover || shouldRecover(error)) {
       logger.debug('Recovering from error with fallback value:', error.message);
       return ok(fallbackValue);
     }
@@ -700,8 +735,8 @@ export class ErrorAggregator {
     return [...this.errors];
   }
 
-  getFirstError(): Error|null {
-    return this.errors[0]||null;
+  getFirstError(): Error | null {
+    return this.errors[0] || null;
   }
 
   clear(): this {
@@ -754,7 +789,7 @@ export function createErrorChain(
       errorCount: allErrors.length,
     },
     'ERROR_CHAIN',
-    { cause: baseError },
+    { cause: baseError }
   );
 }
 
@@ -798,7 +833,7 @@ export const panic = (error: Error): never => {
 
 export const assert = <T>(
   condition: T,
-  errorMessage = 'Assertion failed',
+  errorMessage = 'Assertion failed'
 ): asserts condition => {
   if (!condition) {
     throw new Error(errorMessage);
@@ -807,7 +842,7 @@ export const assert = <T>(
 
 export const invariant = <T>(
   condition: T,
-  errorMessage = 'Invariant violation',
+  errorMessage = 'Invariant violation'
 ): asserts condition => {
   if (!condition) {
     throw new Error(errorMessage);

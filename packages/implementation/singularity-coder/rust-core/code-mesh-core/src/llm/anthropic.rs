@@ -807,8 +807,9 @@ impl LanguageModel for AnthropicModel {
             )));
         }
         
-        // Create SSE stream
-        let stream = AnthropicStream::new(response.bytes_stream());
+        // Create SSE stream - use reqwest bytes stream
+        let byte_stream = response.bytes_stream();
+        let stream = AnthropicStream::new(byte_stream);
         Ok(Box::new(stream))
     }
     

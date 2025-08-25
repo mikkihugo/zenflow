@@ -1,5 +1,5 @@
 [package]
-name = "neuro-divergent-models"
+name = "claude-zen-neural-models"
 version = "0.1.0"
 edition = "2021"
 authors = ["rUv Contributors"]
@@ -52,8 +52,9 @@ pretty_assertions = "1.4"
 tokio = { version = "1.0", features = ["full"] }
 
 [features]
-default = ["std", "serde", "polars"]
+default = ["std", "auto-optimization"]
 std = []
+auto-optimization = []
 serde = ["dep:serde", "dep:serde_json", "ruv-fann/serde"]
 polars = ["dep:polars"]
 nalgebra = ["dep:nalgebra"]
@@ -64,12 +65,4 @@ testing = ["dep:approx"]
 recurrent = []
 transformer = []
 specialized = []
-
-[[example]]
-name = "basic_lstm"
-path = "examples/basic_lstm.rs"
-
-[[example]]
-name = "time_series_forecasting"
-path = "examples/time_series_forecasting.rs"
 

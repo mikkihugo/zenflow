@@ -47,7 +47,7 @@ registerFacade(
     'LLM provider routing and management',
     'System and infrastructure performance monitoring',
     'Real-time operational metrics and alerting',
-  ],
+  ]
 );
 
 // =============================================================================
@@ -113,36 +113,40 @@ async function loadSystemMonitoring() {
         },
         createSystemMonitor: () => ({
           initialize: async () => await Promise.resolve(),
-          startMonitoring: async () => await Promise.resolve({
-            result: 'fallback-start',
-            status: 'started',
-            timestamp: Date.now(),
-          }),
-          stopMonitoring: async () => await Promise.resolve({
-            result: 'fallback-stop',
-            status: 'stopped',
-            timestamp: Date.now(),
-          }),
-          getMetrics: async () => await Promise.resolve({
-            system: { cpu: 45, memory: 67, disk: 23 },
-            network: { bytesIn: 1024, bytesOut: 512 },
-            processes: { count: 156, active: 89 },
-            status: 'fallback',
-            timestamp: Date.now(),
-          }),
+          startMonitoring: async () =>
+            await Promise.resolve({
+              result: 'fallback-start',
+              status: 'started',
+              timestamp: Date.now(),
+            }),
+          stopMonitoring: async () =>
+            await Promise.resolve({
+              result: 'fallback-stop',
+              status: 'stopped',
+              timestamp: Date.now(),
+            }),
+          getMetrics: async () =>
+            await Promise.resolve({
+              system: { cpu: 45, memory: 67, disk: 23 },
+              network: { bytesIn: 1024, bytesOut: 512 },
+              processes: { count: 156, active: 89 },
+              status: 'fallback',
+              timestamp: Date.now(),
+            }),
           getStatus: () => ({
             status: 'fallback',
             healthy: true,
             monitoring: false,
           }),
         }),
-        getSystemMetrics: async () => await Promise.resolve({
-          uptime: Date.now(),
-          loadAverage: [0.5, 0.7, 0.9],
-          memoryUsage: { used: 4096, free: 4096, total: 8192 },
-          cpuUsage: { user: 15, system: 5, idle: 80 },
-          status: 'fallback',
-        }),
+        getSystemMetrics: async () =>
+          await Promise.resolve({
+            uptime: Date.now(),
+            loadAverage: [0.5, 0.7, 0.9],
+            memoryUsage: { used: 4096, free: 4096, total: 8192 },
+            cpuUsage: { user: 15, system: 5, idle: 80 },
+            status: 'fallback',
+          }),
       };
     }
   }
@@ -153,7 +157,7 @@ async function loadSystemMonitoring() {
 export const getSystemMonitor = async () => {
   const systemModule = await loadSystemMonitoring();
   return (
-    systemModule.createSystemMonitor?.()||systemModule.createSystemMonitor()
+    systemModule.createSystemMonitor?.() || systemModule.createSystemMonitor()
   );
 };
 
@@ -174,7 +178,6 @@ export const operationsSystem = {
   monitoring: () => import('./monitoring'),
   systemMonitoring: () => loadSystemMonitoring(),
 
-
   // Agent monitoring
   agents: () => import('./agent-monitoring'),
 
@@ -192,7 +195,10 @@ export const operationsSystem = {
   logger,
   init: async () => {
     logger.info('Operations system initialized');
-    return await Promise.resolve({ success: true, message: 'Operations ready' });
+    return await Promise.resolve({
+      success: true,
+      message: 'Operations ready',
+    });
   },
 };
 
@@ -212,7 +218,9 @@ export type * from './types';
  */
 // Performance agent registry functions removed - no implementation package available
 export const getPerformanceAgentRegistry = async () => {
-  throw new Error('Performance agent registry not available - implementation package required');
+  throw new Error(
+    'Performance agent registry not available - implementation package required'
+  );
 };
 
 /**
@@ -220,7 +228,9 @@ export const getPerformanceAgentRegistry = async () => {
  * Delegates to @claude-zen/telemetry-agents implementation package
  */
 export const getTelemetryAgentRegistry = async () => {
-  throw new Error('Telemetry agent registry not available - implementation package required');
+  throw new Error(
+    'Telemetry agent registry not available - implementation package required'
+  );
 };
 
 /**
@@ -254,7 +264,9 @@ export const createHealthMonitoringAgentRegistry = async (config?: any) => {
   if (config) {
     logger.info('Health monitoring agent registry config:', config);
   }
-  throw new Error('Health monitoring agent registry not available - implementation package required');
+  throw new Error(
+    'Health monitoring agent registry not available - implementation package required'
+  );
 };
 
 // Default export for convenience

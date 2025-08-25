@@ -18,8 +18,7 @@
  * @since 2024-01-01
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { getLogger, generateNanoId, joinPath, getHomeDirectory } from '@claude-zen/foundation';
 
 import {
   CodingPrinciplesResearcher,
@@ -206,7 +205,7 @@ export class MultiSwarmABTesting {
       collectDetailedMetrics?: boolean;
     } = {}
   ): Promise<ABTestResult> {
-    const testId = `ab-test-${nanoid()}`;`
+    const testId = `ab-test-${generateNanoId()}`;`
     const startTime = new Date();
 
     logger.info(`🧪 Starting A/B test: ${testId}`);`
@@ -511,8 +510,8 @@ export class MultiSwarmABTesting {
     });
 
     for (const strategy of strategiesToProcess) {
-      const branchName = `${branchPrefix}-${strategy.id}-${nanoid(6)}`;`
-      const worktreePath = `/tmp/ab-test-worktrees/${branchName}`;`
+      const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`
+      const worktreePath = joinPath(getHomeDirectory(), '.claude-zen', 'tmp', 'ab-test-worktrees', branchName);`
 
       // Log worktree creation with gitConfig details
       logger.debug(`📁 Creating worktree for ${strategy.name}`, {`

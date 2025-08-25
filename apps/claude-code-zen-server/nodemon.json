@@ -1,8 +1,5 @@
 {
-  "watch": [
-    "src/**/*",
-    "../../packages/**/*"
-  ],
+  "watch": ["src/**/*", "../../packages/**/*"],
   "ext": "ts,js,json",
   "ignore": [
     "dist/**/*",

@@ -45,7 +45,10 @@ export class DataProtection {
   }
 
   static secureCompare(a, b) {
-    return crypto.timingSafeEqual(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8'));
+    return crypto.timingSafeEqual(
+      Buffer.from(a, 'utf8'),
+      Buffer.from(b, 'utf8')
+    );
   }
 }
 

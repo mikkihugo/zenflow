@@ -1,5 +1,5 @@
 [package]
-name = "neuro-divergent-data"
+name = "claude-zen-neural-data"
 version = "0.1.0"
 edition = "2021"
 description = "Comprehensive data processing and validation pipeline for neural forecasting"
@@ -10,15 +10,16 @@ keywords = ["neural-networks", "time-series", "forecasting", "data-processing", 
 categories = ["science", "mathematics", "algorithms"]
 
 [features]
-default = ["std", "serde_support", "parallel"]
+default = ["std", "auto-optimization"]
 std = []
+auto-optimization = []
 serde_support = ["serde", "serde_json", "chrono/serde"]
 parallel = ["rayon"]
 simd = []
 
 [dependencies]
 # Internal dependencies
-neuro-divergent-core = { version = "0.1.0", path = "../neuro-divergent-core" }
+claude-zen-neural-core = { version = "0.1.0", path = "../claude-zen-neural-core" }
 
 # Core numeric traits and operations  
 num-traits = "0.2"

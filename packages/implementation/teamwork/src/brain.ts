@@ -24,7 +24,7 @@
  */
 
 import { getLogger, type Logger } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 
 import { ConversationOrchestratorImpl } from './main';
 import type {
@@ -546,7 +546,7 @@ export class BrainMeetingIntelligence {
 
     for (const messageData of phaseMessages) {
       const message = {
-        id: nanoid(),
+        id: generateNanoId(),
         conversationId: session.id,
         fromAgent: messageData.from,
         toAgent: undefined, // Broadcast
@@ -650,7 +650,7 @@ export class BrainMeetingIntelligence {
 
         sortedRoles.forEach((roleData, index) => {
           selectedParticipants.push({
-            id: `neural-${roleData.role}-${nanoid(6)}`,`
+            id: `neural-${roleData.role}-${generateNanoId(6)}`,`
             role: roleData.role as BrainMeetingParticipant['role'],
             domain: issue.domains[index % issue.domains.length]||'general',
             expertise: [
@@ -699,7 +699,7 @@ export class BrainMeetingIntelligence {
           });
 
         return recommendations.recommendations.map((rec: any) => ({
-          id: rec.agentId||rec.id||nanoid(),
+          id: rec.agentId||rec.id||generateNanoId(),
           role: this.mapBrainRole(rec.role||'specialist'),
           domain: rec.domain||issue.domains[0]||'general',
           expertise: rec.expertise||[],
@@ -783,7 +783,7 @@ export class BrainMeetingIntelligence {
       if (index < 4) {
         // Limit to 4 participants
         participants.push({
-          id: `brain-participant-${domain}-${nanoid(6)}`,`
+          id: `brain-participant-${domain}-${generateNanoId(6)}`,`
           role: index === 0 ?'coordinator' : 'specialist',
           domain,
           expertise: [domain, 'collaboration', 'brain-enhanced'],
@@ -947,7 +947,7 @@ export class BrainMeetingIntelligence {
 
   private createDefaultBrainAgent(): AgentId {
     return {
-      id: `brain-agent-${nanoid(6)}`,`
+      id: `brain-agent-${generateNanoId(6)}`,`
       swarmId: 'brain-meeting',
       type: 'coordinator',
       instance: 0,

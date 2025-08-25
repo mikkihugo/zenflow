@@ -196,6 +196,9 @@ importers:
       redis:
         specifier: ^5.8.2
         version: 5.8.2
+      seedrandom:
+        specifier: ^3.0.5
+        version: 3.0.5
       semver:
         specifier: ^7.7.2
         version: 7.7.2
@@ -332,6 +335,9 @@ importers:
       eslint-formatter-compact:
         specifier: ^8.40.0
         version: 8.40.0
+      eslint-formatter-unix:
+        specifier: ^8.40.0
+        version: 8.40.0
       eslint-plugin-import:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))
@@ -373,76 +379,76 @@ importers:
         version: 12.0.0(openapi-types@12.1.3)
       '@claude-zen/agent-monitoring':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/agent-monitoring
+        version: link:../../packages/implementation/agent-monitoring
       '@claude-zen/ai-safety':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/ai-safety
+        version: link:../../packages/implementation/ai-safety
       '@claude-zen/brain':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/brain
+        version: link:../../packages/implementation/brain
       '@claude-zen/chaos-engineering':
         specifier: workspace:*
-        version: link:../../packages/tier4-restricted/chaos-engineering
+        version: link:../../packages/enterprise/chaos-engineering
       '@claude-zen/database':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/database
+        version: link:../../packages/implementation/database
       '@claude-zen/development':
         specifier: workspace:*
-        version: link:../../packages/tier1-public/facades/development
+        version: link:../../packages/public-api/facades/development
       '@claude-zen/dspy':
         specifier: workspace:*
-        version: link:../../packages/tier5-deepcore/dspy
+        version: link:../../packages/private-core/dspy
       '@claude-zen/enterprise':
         specifier: workspace:*
-        version: link:../../packages/tier1-public/facades/enterprise
+        version: link:../../packages/public-api/facades/enterprise
       '@claude-zen/event-system':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/event-system
+        version: link:../../packages/implementation/event-system
       '@claude-zen/fact-system':
         specifier: workspace:*
-        version: link:../../packages/tier5-deepcore/fact-system
+        version: link:../../packages/private-core/fact-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../packages/tier1-public/core/foundation
+        version: link:../../packages/public-api/core/foundation
       '@claude-zen/infrastructure':
         specifier: workspace:*
-        version: link:../../packages/tier1-public/facades/infrastructure
+        version: link:../../packages/public-api/facades/infrastructure
       '@claude-zen/intelligence':
         specifier: workspace:*
-        version: link:../../packages/tier1-public/facades/intelligence
+        version: link:../../packages/public-api/facades/intelligence
       '@claude-zen/knowledge':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/knowledge
+        version: link:../../packages/implementation/knowledge
       '@claude-zen/llm-routing':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/llm-routing
+        version: link:../../packages/implementation/llm-routing
       '@claude-zen/memory':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/memory
+        version: link:../../packages/implementation/memory
       '@claude-zen/neural-ml':
         specifier: workspace:*
-        version: link:../../packages/tier5-deepcore/neural-ml
+        version: link:../../packages/private-core/neural-ml
       '@claude-zen/operations':
         specifier: workspace:*
-        version: link:../../packages/tier1-public/facades/operations
+        version: link:../../packages/public-api/facades/operations
       '@claude-zen/safe-framework':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/safe-framework
+        version: link:../../packages/implementation/safe-framework
       '@claude-zen/sparc':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/sparc
+        version: link:../../packages/implementation/sparc
       '@claude-zen/system-monitoring':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/system-monitoring
+        version: link:../../packages/implementation/system-monitoring
       '@claude-zen/teamwork':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/teamwork
+        version: link:../../packages/implementation/teamwork
       '@claude-zen/telemetry':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/telemetry
+        version: link:../../packages/implementation/telemetry
       '@claude-zen/workflows':
         specifier: workspace:*
-        version: link:../../packages/tier3-internal/workflows
+        version: link:../../packages/implementation/workflows
       '@godaddy/terminus':
         specifier: ^4.12.1
         version: 4.12.1
@@ -776,737 +782,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier1-public/core/foundation:
-    dependencies:
-      '@logtape/logtape':
-        specifier: ^1.0.4
-        version: 1.0.4
-      awilix:
-        specifier: ^12.0.5
-        version: 12.0.5
-      cockatiel:
-        specifier: ^3.2.1
-        version: 3.2.1
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      envalid:
-        specifier: ^8.1.0
-        version: 8.1.0
-      exit-hook:
-        specifier: ^4.0.0
-        version: 4.0.0
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
-      neverthrow:
-        specifier: ^8.2.0
-        version: 8.2.0
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/lodash':
-        specifier: ^4.17.7
-        version: 4.17.20
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-    optionalDependencies:
-      '@manypkg/find-root':
-        specifier: ^2.2.3
-        version: 2.2.3
-      find-workspaces:
-        specifier: ^0.3.1
-        version: 0.3.1
-      type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
-
-  packages/tier1-public/facades/development:
-    dependencies:
-      '@anthropic-ai/sdk':
-        specifier: ^0.60.0
-        version: 0.60.0
-      '@babel/parser':
-        specifier: ^7.23.9
-        version: 7.28.3
-      '@babel/traverse':
-        specifier: ^7.23.9
-        version: 7.28.3
-      '@babel/types':
-        specifier: ^7.23.9
-        version: 7.28.2
-      '@claude-zen/beam-analyzer':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/beam-analyzer
-      '@claude-zen/codeql':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/codeql
-      '@claude-zen/enterprise':
-        specifier: workspace:*
-        version: link:../enterprise
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../core/foundation
-      '@claude-zen/infrastructure':
-        specifier: workspace:*
-        version: link:../infrastructure
-      '@claude-zen/intelligence':
-        specifier: workspace:*
-        version: link:../intelligence
-      '@claude-zen/operations':
-        specifier: workspace:*
-        version: link:../operations
-      '@claude-zen/repo-analyzer':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/repo-analyzer
-      '@jridgewell/source-map':
-        specifier: ^0.3.6
-        version: 0.3.11
-      '@typescript-eslint/parser':
-        specifier: ^8.20.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/typescript-estree':
-        specifier: ^8.20.0
-        version: 8.40.0(typescript@5.9.2)
-      acorn:
-        specifier: ^8.11.3
-        version: 8.15.0
-      acorn-walk:
-        specifier: ^8.3.2
-        version: 8.3.4
-      chokidar:
-        specifier: ^3.6.0
-        version: 3.6.0
-      esprima:
-        specifier: ^4.0.1
-        version: 4.0.1
-      estree-walker:
-        specifier: ^3.0.3
-        version: 3.0.3
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.3
-      magic-string:
-        specifier: ^0.30.7
-        version: 0.30.18
-      openai:
-        specifier: ^5.15.0
-        version: 5.15.0(ws@8.18.3)(zod@3.25.76)
-      picomatch:
-        specifier: ^4.0.3
-        version: 4.0.3
-      ts-morph:
-        specifier: ^26.0.0
-        version: 26.0.0
-    devDependencies:
-      '@types/babel__traverse':
-        specifier: ^7.20.5
-        version: 7.28.0
-      '@types/esprima':
-        specifier: ^4.0.6
-        version: 4.0.6
-      '@types/estree':
-        specifier: ^1.0.5
-        version: 1.0.8
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      '@types/source-map':
-        specifier: ^0.5.7
-        version: 0.5.7
-      eslint:
-        specifier: ^9.17.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier1-public/facades/enterprise:
+  packages/enterprise/chaos-engineering:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../core/foundation
-      '@claude-zen/knowledge':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/knowledge
-      '@claude-zen/safe-framework':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/safe-framework
-      '@claude-zen/sparc':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/sparc
-      '@claude-zen/teamwork':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/teamwork
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier1-public/facades/infrastructure:
-    dependencies:
-      '@claude-zen/agent-registry':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/agent-registry
-      '@claude-zen/database':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/database
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../core/foundation
-      '@claude-zen/load-balancing':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/load-balancing
-      '@claude-zen/system-monitoring':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/system-monitoring
-      neverthrow:
-        specifier: ^8.2.0
-        version: 8.2.0
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier1-public/facades/intelligence:
-    dependencies:
-      '@claude-zen/ai-safety':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/ai-safety
-      '@claude-zen/brain':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/brain
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../core/foundation
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier1-public/facades/operations:
-    dependencies:
-      '@claude-zen/agent-monitoring':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/agent-monitoring
-      '@claude-zen/chaos-engineering':
-        specifier: workspace:*
-        version: link:../../../tier4-restricted/chaos-engineering
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../core/foundation
-      '@claude-zen/memory':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/memory
-      '@claude-zen/telemetry':
-        specifier: workspace:*
-        version: link:../../../tier3-internal/telemetry
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/agent-monitoring:
-    dependencies:
-      '@claude-zen/brain':
-        specifier: workspace:*
-        version: link:../../tier3-internal/brain
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/telemetry':
-        specifier: workspace:*
-        version: link:../../tier3-internal/telemetry
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/agent-registry:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/ai-linter:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: ^20.10.5
-        version: 20.19.11
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.2
-      vitest:
-        specifier: ^1.1.0
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
-
-  packages/tier2-private/ai-safety:
-    dependencies:
-      '@claude-zen/brain':
-        specifier: workspace:*
-        version: link:../../tier3-internal/brain
-      '@claude-zen/chaos-engineering':
-        specifier: workspace:*
-        version: link:../../tier4-restricted/chaos-engineering
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/architecture:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/beam-analyzer:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      fast-xml-parser:
-        specifier: ^4.3.2
-        version: 4.5.3
-      glob:
-        specifier: ^10.3.10
-        version: 10.4.5
-      semver:
-        specifier: ^7.5.4
-        version: 7.7.2
-      which:
-        specifier: ^4.0.0
-        version: 4.0.0
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      '@types/which':
-        specifier: ^3.0.3
-        version: 3.0.4
-      eslint:
-        specifier: ^9.0.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
-
-  packages/tier2-private/brain:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/load-balancing':
-        specifier: workspace:*
-        version: link:../../tier3-internal/load-balancing
-      '@tensorflow/tfjs':
-        specifier: ^4.22.0
-        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.22.0
-        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
-      '@xenova/transformers':
-        specifier: ^2.17.2
-        version: 2.17.2
-      brain.js:
-        specifier: 2.0.0-beta.24
-        version: 2.0.0-beta.24(gpu.js@2.16.0)
-      consistent-hashing:
-        specifier: ^0.3.0
-        version: 0.3.0
-      d3-array:
-        specifier: ^3.2.4
-        version: 3.2.4
-      density-clustering:
-        specifier: ^1.3.0
-        version: 1.3.0
-      fft-js:
-        specifier: ^0.0.12
-        version: 0.0.12
-      hashring:
-        specifier: ^3.2.0
-        version: 3.2.0
-      ml-distance:
-        specifier: ^4.0.1
-        version: 4.0.1
-      ml-hclust:
-        specifier: ^3.1.0
-        version: 3.1.0
-      ml-kmeans:
-        specifier: ^6.0.0
-        version: 6.0.0
-      ml-matrix:
-        specifier: ^6.12.1
-        version: 6.12.1
-      ml-pca:
-        specifier: ^4.1.1
-        version: 4.1.1
-      ml-random-forest:
-        specifier: ^2.1.0
-        version: 2.1.0
-      ml-stat:
-        specifier: ^1.3.3
-        version: 1.3.3
-      moving-averages:
-        specifier: ^4.0.6
-        version: 4.0.6
-      natural:
-        specifier: ^8.1.0
-        version: 8.1.0(socks@2.8.7)
-      node-os-utils:
-        specifier: ^1.3.7
-        version: 1.3.7
-      onnxruntime-node:
-        specifier: ^1.22.0
-        version: 1.22.0
-      regression:
-        specifier: ^2.0.1
-        version: 2.0.1
-      simple-statistics:
-        specifier: ^7.8.8
-        version: 7.8.8
-      synaptic:
-        specifier: ^1.1.4
-        version: 1.1.4
-      trendyways:
-        specifier: ^1.0.1
-        version: 1.0.1
-      zod:
-        specifier: ^4.1.1
-        version: 4.1.1
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@vitest/ui':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      concurrently:
-        specifier: ^9.2.0
-        version: 9.2.1
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      eslint-plugin-unused-imports:
-        specifier: ^4.2.0
-        version: 4.2.0(@typescript-eslint/eslint-plugin@8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))
-      tsx:
-        specifier: ^4.20.5
-        version: 4.20.5
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-    optionalDependencies:
-      '@claude-zen/dspy':
-        specifier: workspace:*
-        version: link:../../tier5-deepcore/dspy
-      '@claude-zen/neural-ml':
-        specifier: workspace:*
-        version: link:../../tier5-deepcore/neural-ml
-      openai:
-        specifier: ^5.13.1
-        version: 5.15.0(ws@8.18.3)(zod@4.1.1)
-
-  packages/tier2-private/code-analyzer:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/repo-analyzer':
-        specifier: workspace:*
-        version: link:../../tier3-internal/repo-analyzer
-      chokidar:
-        specifier: ^3.6.0
-        version: 3.6.0
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.3
-      ts-morph:
-        specifier: ^26.0.0
-        version: 26.0.0
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/node':
-        specifier: ^22.17.2
-        version: 22.18.0
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-
-  packages/tier2-private/codeql:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      fast-xml-parser:
-        specifier: ^4.3.2
-        version: 4.5.3
-      glob:
-        specifier: ^10.3.10
-        version: 10.4.5
-      semver:
-        specifier: ^7.5.4
-        version: 7.7.2
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      '@types/semver':
-        specifier: ^7.5.6
-        version: 7.7.0
-      eslint:
-        specifier: ^9.0.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
-
-  packages/tier2-private/database:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@lancedb/lancedb':
-        specifier: ^0.21.3
-        version: 0.21.3(apache-arrow@18.1.0)
-      better-sqlite3:
-        specifier: ^12.2.0
-        version: 12.2.0
-      kuzu:
-        specifier: ^0.11.1
-        version: 0.11.2
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.0.0
-        version: 9.34.0
-      '@types/better-sqlite3':
-        specifier: ^7.6.13
-        version: 7.6.13
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.0.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.0.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.0.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/document-intelligence:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@24.3.0)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/documentation:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/enterprise-coordination:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/event-system:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      koa-compose:
-        specifier: ^4.1.0
-        version: 4.1.0
-      mitt:
-        specifier: ^3.0.1
-        version: 3.0.1
-      zod:
-        specifier: ^4.1.1
-        version: 4.1.1
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@eslint/js':
         specifier: ^9.0.0
@@ -1520,9 +800,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.0.0
         version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
       eslint:
         specifier: ^9.0.0
         version: 9.34.0(jiti@2.5.1)
@@ -1533,797 +810,7 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier2-private/exporters:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/file-aware-ai:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/llm-routing':
-        specifier: workspace:*
-        version: link:../../tier3-internal/llm-routing
-      chokidar:
-        specifier: ^4.0.1
-        version: 4.0.3
-      diff:
-        specifier: ^7.0.0
-        version: 7.0.0
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
-      ignore:
-        specifier: ^6.0.2
-        version: 6.0.2
-      simple-git:
-        specifier: ^3.27.0
-        version: 3.28.0
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-    devDependencies:
-      '@types/diff':
-        specifier: ^6.0.0
-        version: 6.0.0
-      '@types/node':
-        specifier: ^22.17.2
-        version: 22.17.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/git-operations:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      node-cron:
-        specifier: ^3.0.3
-        version: 3.0.3
-      simple-git:
-        specifier: ^3.20.0
-        version: 3.28.0
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.33.0
-        version: 9.34.0
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      '@types/node-cron':
-        specifier: ^3.0.11
-        version: 3.0.11
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.40.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.40.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/interfaces:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/knowledge:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/fact-system':
-        specifier: workspace:*
-        version: link:../../tier5-deepcore/fact-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.9.2)(yaml@2.8.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/language-parsers:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-
-  packages/tier2-private/llm-providers:
-    dependencies:
-      '@anthropic-ai/claude-code':
-        specifier: ^1.0.88
-        version: 1.0.90
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/infrastructure':
-        specifier: workspace:*
-        version: link:../../tier1-public/facades/infrastructure
-      validator:
-        specifier: ^13.12.0
-        version: 13.15.15
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      '@vitest/ui':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/llm-routing:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.0.0
-        version: 9.34.0
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.0.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.0.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      eslint:
-        specifier: ^9.0.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/load-balancing:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-    optionalDependencies:
-      '@tensorflow/tfjs-node':
-        specifier: ^4.22.0
-        version: 4.22.0(encoding@0.1.13)
-      consistent-hashing:
-        specifier: ^0.3.0
-        version: 0.3.0
-      hashring:
-        specifier: ^3.2.0
-        version: 3.2.0
-      node-os-utils:
-        specifier: ^1.3.7
-        version: 1.3.7
-
-  packages/tier2-private/memory:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      '@vitest/ui':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/multi-level-orchestration:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/workflows':
-        specifier: workspace:*
-        version: link:../../tier3-internal/workflows
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/otel-collector:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@opentelemetry/api':
-        specifier: ^1.9.0
-        version: 1.9.0
-      '@opentelemetry/exporter-jaeger':
-        specifier: ^2.0.1
-        version: 2.0.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-metrics-otlp-grpc':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-metrics-otlp-http':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-prometheus':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-trace-otlp-grpc':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-trace-otlp-http':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources':
-        specifier: ^2.0.1
-        version: 2.0.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-node':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions':
-        specifier: ^1.36.0
-        version: 1.36.0
-      compression:
-        specifier: ^1.8.1
-        version: 1.8.1
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      helmet:
-        specifier: ^8.1.0
-        version: 8.1.0
-      prom-client:
-        specifier: ^15.1.3
-        version: 15.1.3
-    devDependencies:
-      '@types/compression':
-        specifier: ^1.8.1
-        version: 1.8.1
-      '@types/cors':
-        specifier: ^2.8.19
-        version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/repo-analyzer:
-    dependencies:
-      '@babel/parser':
-        specifier: ^7.23.9
-        version: 7.28.3
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@typescript-eslint/parser':
-        specifier: ^8.20.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      acorn:
-        specifier: ^8.11.3
-        version: 8.15.0
-      acorn-walk:
-        specifier: ^8.3.2
-        version: 8.3.4
-      complexity-report:
-        specifier: ^2.0.0-alpha
-        version: 2.0.0-alpha
-      dagre:
-        specifier: ^0.8.5
-        version: 0.8.5
-      detective:
-        specifier: ^5.2.1
-        version: 5.2.1
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.3
-      graphlib:
-        specifier: ^2.1.8
-        version: 2.1.8
-      madge:
-        specifier: ^6.1.0
-        version: 6.1.0(typescript@5.9.2)
-      precinct:
-        specifier: ^11.0.5
-        version: 11.0.5
-      simple-git:
-        specifier: ^3.22.0
-        version: 3.28.0
-      ts-morph:
-        specifier: ^26.0.0
-        version: 26.0.0
-    devDependencies:
-      '@types/dagre':
-        specifier: ^0.7.52
-        version: 0.7.53
-      '@types/graphlib':
-        specifier: ^2.1.12
-        version: 2.1.12
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      eslint:
-        specifier: ^9.17.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/safe-framework:
-    dependencies:
-      '@claude-zen/ai-safety':
-        specifier: workspace:*
-        version: link:../../tier3-internal/ai-safety
-      '@claude-zen/brain':
-        specifier: workspace:*
-        version: link:../../tier3-internal/brain
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/knowledge':
-        specifier: workspace:*
-        version: link:../../tier3-internal/knowledge
-      '@claude-zen/sparc':
-        specifier: file:../sparc
-        version: file:packages/tier2-private/sparc
-      '@claude-zen/teamwork':
-        specifier: workspace:*
-        version: link:../../tier3-internal/teamwork
-      '@claude-zen/telemetry':
-        specifier: workspace:*
-        version: link:../../tier3-internal/telemetry
-      '@claude-zen/workflows':
-        specifier: workspace:*
-        version: link:../../tier3-internal/workflows
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-      xstate:
-        specifier: ^5.20.2
-        version: 5.20.2
-      zod:
-        specifier: ^4.1.1
-        version: 4.1.1
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/singularity-coder:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/llm-routing':
-        specifier: workspace:*
-        version: link:../../tier3-internal/llm-routing
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.3
-      ignore:
-        specifier: ^5.3.0
-        version: 5.3.2
-      os-utils:
-        specifier: ^0.0.14
-        version: 0.0.14
-      systeminformation:
-        specifier: ^5.22.7
-        version: 5.27.7
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.9.2)(yaml@2.8.1)
-      vitest:
-        specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
-      wasm-pack:
-        specifier: ^0.12.1
-        version: 0.12.1
-    optionalDependencies:
-      '@code-mesh/wasm':
-        specifier: file:./rust-core/code-mesh-wasm/pkg
-        version: code-mesh-wasm@file:packages/tier2-private/singularity-coder/rust-core/code-mesh-wasm/pkg
-
-  packages/tier2-private/sparc:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/workflows':
-        specifier: workspace:*
-        version: link:../../tier3-internal/workflows
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/system-monitoring:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@claude-zen/telemetry':
-        specifier: workspace:*
-        version: link:../../tier3-internal/telemetry
-      pidusage:
-        specifier: ^4.0.1
-        version: 4.0.1
-      systeminformation:
-        specifier: ^5.27.7
-        version: 5.27.7
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@types/pidusage':
-        specifier: ^2.0.5
-        version: 2.0.5
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/taskmaster:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@statelyai/inspect':
-        specifier: ^0.4.0
-        version: 0.4.0(ws@8.18.3)(xstate@5.20.2)
-      '@xstate/inspect':
-        specifier: ^0.8.0
-        version: 0.8.0(@types/ws@8.18.1)(ws@8.18.3)(xstate@5.20.2)
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.1
-      rxjs:
-        specifier: ^7.8.1
-        version: 7.8.2
-      xstate:
-        specifier: ^5.20.2
-        version: 5.20.2
-      zod:
-        specifier: ^4.1.1
-        version: 4.1.1
-    devDependencies:
-      '@commitlint/cli':
-        specifier: ^19.5.0
-        version: 19.8.1(@types/node@22.17.1)(typescript@5.9.2)
-      '@commitlint/config-conventional':
-        specifier: ^19.5.0
-        version: 19.8.1
-      '@semantic-release/changelog':
-        specifier: ^6.0.3
-        version: 6.0.3(semantic-release@24.2.7(typescript@5.9.2))
-      '@semantic-release/git':
-        specifier: ^10.0.1
-        version: 10.0.1(semantic-release@24.2.7(typescript@5.9.2))
-      '@types/lodash':
-        specifier: ^4.17.7
-        version: 4.17.20
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@types/uuid':
-        specifier: ^10.0.0
-        version: 10.0.0
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.8.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.8.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      '@vitest/ui':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      commitizen:
-        specifier: ^4.3.1
-        version: 4.3.1(@types/node@22.17.1)(typescript@5.9.2)
-      concurrently:
-        specifier: ^9.0.1
-        version: 9.2.1
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      husky:
-        specifier: ^9.1.6
-        version: 9.1.7
-      lint-staged:
-        specifier: ^15.2.10
-        version: 15.5.2
-      prettier:
-        specifier: ^3.4.2
-        version: 3.6.2
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
-      semantic-release:
-        specifier: ^24.2.0
-        version: 24.2.7(typescript@5.9.2)
-      testcontainers:
-        specifier: ^10.13.2
-        version: 10.28.0
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.9.2)(yaml@2.8.1)
-      typedoc:
-        specifier: ^0.26.7
-        version: 0.26.11(typescript@5.9.2)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-      wasm-pack:
-        specifier: ^0.13.0
-        version: 0.13.1
-    optionalDependencies:
-      canvas:
-        specifier: ^2.11.2
-        version: 2.11.2(encoding@0.1.13)
-      sharp:
-        specifier: ^0.33.5
-        version: 0.33.5
-
-  packages/tier2-private/teamwork:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier2-private/telemetry:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      '@opentelemetry/api':
-        specifier: ^1.9.0
-        version: 1.9.0
-      '@opentelemetry/auto-instrumentations-node':
-        specifier: ^0.62.1
-        version: 0.62.1(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.0.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)
-      '@opentelemetry/exporter-jaeger':
-        specifier: ^2.0.1
-        version: 2.0.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-prometheus':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-node':
-        specifier: ^0.203.0
-        version: 0.203.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions':
-        specifier: ^1.36.0
-        version: 1.36.0
-      prom-client:
-        specifier: ^15.1.3
-        version: 15.1.3
-    devDependencies:
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-    optionalDependencies:
-      '@claude-zen/otel-collector':
-        specifier: workspace:*
-        version: link:../../tier3-internal/otel-collector
-
-  packages/tier2-private/workflows:
-    dependencies:
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../../tier3-internal/event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-      async:
-        specifier: ^3.2.6
-        version: 3.2.6
-      expr-eval:
-        specifier: ^2.0.2
-        version: 2.0.2
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.1
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
-      mermaid:
-        specifier: ^11.10.0
-        version: 11.10.1
-      node-cron:
-        specifier: ^4.2.1
-        version: 4.2.1
-      p-limit:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-      xstate:
-        specifier: ^5.20.2
-        version: 5.20.2
-      zod:
-        specifier: ^4.1.1
-        version: 4.1.1
-    devDependencies:
-      '@types/async':
-        specifier: ^3.2.25
-        version: 3.2.25
-      '@types/lodash-es':
-        specifier: ^4.17.12
-        version: 4.17.12
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      eslint:
-        specifier: ^9.33.0
-        version: 9.34.0(jiti@2.5.1)
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.9.2)(yaml@2.8.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier3-internal/agent-monitoring:
+  packages/implementation/agent-monitoring:
     dependencies:
       '@claude-zen/brain':
         specifier: workspace:*
@@ -2333,7 +820,7 @@ importers:
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -2348,11 +835,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/agent-registry:
+  packages/implementation/agent-registry:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -2361,11 +848,11 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/ai-linter:
+  packages/implementation/ai-linter:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: ^20.10.5
@@ -2375,19 +862,19 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^1.1.0
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
 
-  packages/tier3-internal/ai-safety:
+  packages/implementation/ai-safety:
     dependencies:
       '@claude-zen/brain':
         specifier: workspace:*
         version: link:../brain
       '@claude-zen/chaos-engineering':
         specifier: workspace:*
-        version: link:../../tier4-restricted/chaos-engineering
+        version: link:../../enterprise/chaos-engineering
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -2399,21 +886,21 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/architecture:
+  packages/implementation/architecture:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/beam-analyzer:
+  packages/implementation/beam-analyzer:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       fast-xml-parser:
         specifier: ^4.3.2
         version: 4.5.3
@@ -2441,13 +928,13 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
 
-  packages/tier3-internal/brain:
+  packages/implementation/brain:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/load-balancing':
         specifier: workspace:*
         version: link:../load-balancing
@@ -2535,7 +1022,7 @@ importers:
         version: 3.2.4(vitest@3.2.4)
       concurrently:
         specifier: ^9.2.0
-        version: 9.2.0
+        version: 9.2.1
       eslint:
         specifier: ^9.33.0
         version: 9.34.0(jiti@2.5.1)
@@ -2554,19 +1041,19 @@ importers:
     optionalDependencies:
       '@claude-zen/dspy':
         specifier: workspace:*
-        version: link:../../tier5-deepcore/dspy
+        version: link:../../private-core/dspy
       '@claude-zen/neural-ml':
         specifier: workspace:*
-        version: link:../../tier5-deepcore/neural-ml
+        version: link:../../private-core/neural-ml
       openai:
         specifier: ^5.13.1
         version: 5.15.0(ws@8.18.3)(zod@4.1.1)
 
-  packages/tier3-internal/code-analyzer:
+  packages/implementation/code-analyzer:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/repo-analyzer':
         specifier: workspace:*
         version: link:../repo-analyzer
@@ -2588,7 +1075,7 @@ importers:
         version: 9.34.0
       '@types/node':
         specifier: ^22.17.2
-        version: 22.17.2
+        version: 22.18.0
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
         version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
@@ -2599,11 +1086,11 @@ importers:
         specifier: ^9.33.0
         version: 9.34.0(jiti@2.5.1)
 
-  packages/tier3-internal/codeql:
+  packages/implementation/codeql:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       fast-xml-parser:
         specifier: ^4.3.2
         version: 4.5.3
@@ -2628,13 +1115,13 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
 
-  packages/tier3-internal/database:
+  packages/implementation/database:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@lancedb/lancedb':
         specifier: ^0.21.3
         version: 0.21.3(apache-arrow@18.1.0)
@@ -2642,7 +1129,7 @@ importers:
         specifier: ^12.2.0
         version: 12.2.0
       kuzu:
-        specifier: ^0.11.1
+        specifier: ^0.11.2
         version: 0.11.2
     devDependencies:
       '@eslint/js':
@@ -2670,11 +1157,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/document-intelligence:
+  packages/implementation/document-intelligence:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       typescript:
         specifier: ^5.9.2
@@ -2683,21 +1170,21 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.3.0)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/documentation:
+  packages/implementation/documentation:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/enterprise-coordination:
+  packages/implementation/enterprise-coordination:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: ^20.19.11
@@ -2706,11 +1193,11 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/event-system:
+  packages/implementation/event-system:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -2746,21 +1233,21 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/exporters:
+  packages/implementation/exporters:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/file-aware-ai:
+  packages/implementation/file-aware-ai:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/llm-routing':
         specifier: workspace:*
         version: link:../llm-routing
@@ -2793,11 +1280,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.18.0)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/git-operations:
+  packages/implementation/git-operations:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       node-cron:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2827,27 +1314,27 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/interfaces:
+  packages/implementation/interfaces:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/knowledge:
+  packages/implementation/knowledge:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/fact-system':
         specifier: workspace:*
-        version: link:../../tier5-deepcore/fact-system
+        version: link:../../private-core/fact-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -2865,11 +1352,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/language-parsers:
+  packages/implementation/language-parsers:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: ^20.19.11
@@ -2878,17 +1365,17 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/tier3-internal/llm-providers:
+  packages/implementation/llm-providers:
     dependencies:
       '@anthropic-ai/claude-code':
         specifier: ^1.0.88
         version: 1.0.90
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/infrastructure':
         specifier: workspace:*
-        version: link:../../tier1-public/facades/infrastructure
+        version: link:../../public-api/facades/infrastructure
       validator:
         specifier: ^13.12.0
         version: 13.15.15
@@ -2909,14 +1396,14 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/llm-routing:
+  packages/implementation/llm-routing:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@eslint/js':
         specifier: ^9.0.0
@@ -2943,14 +1430,14 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/load-balancing:
+  packages/implementation/load-balancing:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -2964,7 +1451,7 @@ importers:
     optionalDependencies:
       '@tensorflow/tfjs-node':
         specifier: ^4.22.0
-        version: 4.22.0(encoding@0.1.13)
+        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
       consistent-hashing:
         specifier: ^0.3.0
         version: 0.3.0
@@ -2975,14 +1462,14 @@ importers:
         specifier: ^1.3.7
         version: 1.3.7
 
-  packages/tier3-internal/memory:
+  packages/implementation/memory:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -3000,14 +1487,14 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/multi-level-orchestration:
+  packages/implementation/multi-level-orchestration:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/workflows':
         specifier: workspace:*
         version: link:../workflows
@@ -3022,11 +1509,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/otel-collector:
+  packages/implementation/otel-collector:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -3098,14 +1585,14 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/repo-analyzer:
+  packages/implementation/repo-analyzer:
     dependencies:
       '@babel/parser':
         specifier: ^7.23.9
         version: 7.28.3
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@typescript-eslint/parser':
         specifier: ^8.20.0
         version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
@@ -3162,7 +1649,7 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/safe-framework:
+  packages/implementation/safe-framework:
     dependencies:
       '@claude-zen/ai-safety':
         specifier: workspace:*
@@ -3175,13 +1662,13 @@ importers:
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/knowledge':
         specifier: workspace:*
         version: link:../knowledge
       '@claude-zen/sparc':
         specifier: file:../sparc
-        version: file:packages/tier3-internal/sparc
+        version: file:packages/implementation/sparc
       '@claude-zen/teamwork':
         specifier: workspace:*
         version: link:../teamwork
@@ -3214,11 +1701,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/singularity-coder:
+  packages/implementation/singularity-coder:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/llm-routing':
         specifier: workspace:*
         version: link:../llm-routing
@@ -3246,23 +1733,23 @@ importers:
         version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.9.2)(yaml@2.8.1)
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1)
       wasm-pack:
         specifier: ^0.12.1
         version: 0.12.1
     optionalDependencies:
       '@code-mesh/wasm':
         specifier: file:./rust-core/code-mesh-wasm/pkg
-        version: code-mesh-wasm@file:packages/tier3-internal/singularity-coder/rust-core/code-mesh-wasm/pkg
+        version: '@claude-zen/code-mesh-wasm@file:packages/implementation/singularity-coder/rust-core/code-mesh-wasm/pkg'
 
-  packages/tier3-internal/sparc:
+  packages/implementation/sparc:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/workflows':
         specifier: workspace:*
         version: link:../workflows
@@ -3277,11 +1764,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/system-monitoring:
+  packages/implementation/system-monitoring:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@claude-zen/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -3305,14 +1792,14 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/taskmaster:
+  packages/implementation/taskmaster:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@statelyai/inspect':
         specifier: ^0.4.0
         version: 0.4.0(ws@8.18.3)(xstate@5.20.2)
@@ -3418,11 +1905,11 @@ importers:
         specifier: ^0.33.5
         version: 0.33.5
 
-  packages/tier3-internal/teamwork:
+  packages/implementation/teamwork:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -3434,11 +1921,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier3-internal/telemetry:
+  packages/implementation/telemetry:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -3475,14 +1962,14 @@ importers:
         specifier: workspace:*
         version: link:../otel-collector
 
-  packages/tier3-internal/workflows:
+  packages/implementation/workflows:
     dependencies:
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../event-system
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       async:
         specifier: ^3.2.6
         version: 3.2.6
@@ -3536,39 +2023,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier4-restricted/chaos-engineering:
+  packages/private-core/dspy:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.0.0
-        version: 9.34.0
-      '@types/node':
-        specifier: 22.17.1
-        version: 22.17.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.0.0
-        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      '@typescript-eslint/parser':
-        specifier: ^8.0.0
-        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
-      eslint:
-        specifier: ^9.0.0
-        version: 9.34.0(jiti@2.5.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-
-  packages/tier5-deepcore/dspy:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
@@ -3589,11 +2048,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier5-deepcore/fact-system:
+  packages/private-core/fact-system:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
@@ -3605,15 +2064,298 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  packages/tier5-deepcore/neural-ml:
+  packages/private-core/neural-ml:
     dependencies:
       '@claude-zen/foundation':
         specifier: workspace:*
-        version: link:../../tier1-public/core/foundation
+        version: link:../../public-api/core/foundation
     devDependencies:
       '@types/node':
         specifier: 22.17.1
         version: 22.17.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+
+  packages/public-api/core/foundation:
+    dependencies:
+      '@logtape/logtape':
+        specifier: ^1.0.4
+        version: 1.0.4
+      awilix:
+        specifier: ^12.0.5
+        version: 12.0.5
+      cockatiel:
+        specifier: ^3.2.1
+        version: 3.2.1
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
+      envalid:
+        specifier: ^8.1.0
+        version: 8.1.0
+      exit-hook:
+        specifier: ^4.0.0
+        version: 4.0.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
+      neverthrow:
+        specifier: ^8.2.0
+        version: 8.2.0
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.34.0
+      '@types/lodash':
+        specifier: ^4.17.7
+        version: 4.17.20
+      '@types/node':
+        specifier: 22.17.1
+        version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.33.0
+        version: 9.34.0(jiti@2.5.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+    optionalDependencies:
+      '@manypkg/find-root':
+        specifier: ^2.2.3
+        version: 2.2.3
+      find-workspaces:
+        specifier: ^0.3.1
+        version: 0.3.1
+      type-fest:
+        specifier: ^4.41.0
+        version: 4.41.0
+
+  packages/public-api/facades/development:
+    dependencies:
+      '@claude-zen/ai-linter':
+        specifier: workspace:*
+        version: link:../../../implementation/ai-linter
+      '@claude-zen/architecture':
+        specifier: workspace:*
+        version: link:../../../implementation/architecture
+      '@claude-zen/beam-analyzer':
+        specifier: workspace:*
+        version: link:../../../implementation/beam-analyzer
+      '@claude-zen/code-analyzer':
+        specifier: workspace:*
+        version: link:../../../implementation/code-analyzer
+      '@claude-zen/codeql':
+        specifier: workspace:*
+        version: link:../../../implementation/codeql
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../core/foundation
+      '@claude-zen/git-operations':
+        specifier: workspace:*
+        version: link:../../../implementation/git-operations
+      '@claude-zen/language-parsers':
+        specifier: workspace:*
+        version: link:../../../implementation/language-parsers
+      '@claude-zen/repo-analyzer':
+        specifier: workspace:*
+        version: link:../../../implementation/repo-analyzer
+      '@claude-zen/sparc':
+        specifier: workspace:*
+        version: link:../../../implementation/sparc
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.34.0
+      '@types/node':
+        specifier: ^20.19.11
+        version: 20.19.11
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.17.0
+        version: 9.34.0(jiti@2.5.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+
+  packages/public-api/facades/enterprise:
+    dependencies:
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../core/foundation
+      '@claude-zen/knowledge':
+        specifier: workspace:*
+        version: link:../../../implementation/knowledge
+      '@claude-zen/safe-framework':
+        specifier: workspace:*
+        version: link:../../../implementation/safe-framework
+      '@claude-zen/sparc':
+        specifier: workspace:*
+        version: link:../../../implementation/sparc
+      '@claude-zen/teamwork':
+        specifier: workspace:*
+        version: link:../../../implementation/teamwork
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.34.0
+      '@types/node':
+        specifier: 22.17.1
+        version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.33.0
+        version: 9.34.0(jiti@2.5.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+
+  packages/public-api/facades/infrastructure:
+    dependencies:
+      '@claude-zen/database':
+        specifier: workspace:*
+        version: link:../../../implementation/database
+      '@claude-zen/event-system':
+        specifier: workspace:*
+        version: link:../../../implementation/event-system
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../core/foundation
+      '@claude-zen/load-balancing':
+        specifier: workspace:*
+        version: link:../../../implementation/load-balancing
+      '@claude-zen/otel-collector':
+        specifier: workspace:*
+        version: link:../../../implementation/otel-collector
+      '@claude-zen/telemetry':
+        specifier: workspace:*
+        version: link:../../../implementation/telemetry
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.34.0
+      '@types/node':
+        specifier: 22.17.1
+        version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.33.0
+        version: 9.34.0(jiti@2.5.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+
+  packages/public-api/facades/intelligence:
+    dependencies:
+      '@claude-zen/ai-safety':
+        specifier: workspace:*
+        version: link:../../../implementation/ai-safety
+      '@claude-zen/brain':
+        specifier: workspace:*
+        version: link:../../../implementation/brain
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../core/foundation
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.34.0
+      '@types/node':
+        specifier: 22.17.1
+        version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.33.0
+        version: 9.34.0(jiti@2.5.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+
+  packages/public-api/facades/operations:
+    dependencies:
+      '@claude-zen/agent-monitoring':
+        specifier: workspace:*
+        version: link:../../../implementation/agent-monitoring
+      '@claude-zen/chaos-engineering':
+        specifier: workspace:*
+        version: link:../../../enterprise/chaos-engineering
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../core/foundation
+      '@claude-zen/memory':
+        specifier: workspace:*
+        version: link:../../../implementation/memory
+      '@claude-zen/telemetry':
+        specifier: workspace:*
+        version: link:../../../implementation/telemetry
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.34.0
+      '@types/node':
+        specifier: 22.17.1
+        version: 22.17.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      eslint:
+        specifier: ^9.33.0
+        version: 9.34.0(jiti@2.5.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -3771,11 +2513,11 @@ packages:
   '@chevrotain/utils@11.0.3':
     resolution: {integrity: sha512-YslZMgtJUyuMbZ+aKvfF3x1f5liK4mWNxghFRv7jqRR9C3R3fAOGTTKvxXDa2Y1s9zSbcpuO0cAxDYsc9SrXoQ==}
 
-  '@claude-zen/sparc@file:packages/tier2-private/sparc':
-    resolution: {directory: packages/tier2-private/sparc, type: directory}
+  '@claude-zen/code-mesh-wasm@file:packages/implementation/singularity-coder/rust-core/code-mesh-wasm/pkg':
+    resolution: {directory: packages/implementation/singularity-coder/rust-core/code-mesh-wasm/pkg, type: directory}
 
-  '@claude-zen/sparc@file:packages/tier3-internal/sparc':
-    resolution: {directory: packages/tier3-internal/sparc, type: directory}
+  '@claude-zen/sparc@file:packages/implementation/sparc':
+    resolution: {directory: packages/implementation/sparc, type: directory}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -4271,9 +3013,6 @@ packages:
   '@jridgewell/resolve-uri@3.1.2':
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
-
-  '@jridgewell/source-map@0.3.11':
-    resolution: {integrity: sha512-ZMp1V8ZFcPG5dIWnQLr3NSI1MiCU7UETdS/A0G8V/XWHvJv3ZsFqutJn1Y5RPmAPX6F3BiE397OqveU/9NCuIA==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -5228,11 +3967,6 @@ packages:
     cpu: [s390x]
     os: [linux]
 
-  '@rollup/rollup-linux-x64-gnu@4.48.0':
-    resolution: {integrity: sha512-GUdZKTeKBq9WmEBzvFYuC88yk26vT66lQV8D5+9TgkfbewhLaTHRNATyzpQwwbHIfJvDJ3N9WJ90wK/uR3cy3Q==}
-    cpu: [x64]
-    os: [linux]
-
   '@rollup/rollup-linux-x64-gnu@4.48.1':
     resolution: {integrity: sha512-90taWXCWxTbClWuMZD0DKYohY1EovA+W5iytpE89oUPmT5O1HFdf8cuuVIylE6vCbrGdIGv85lVRzTcpTRZ+kA==}
     cpu: [x64]
@@ -5599,9 +4333,6 @@ packages:
   '@types/aws-lambda@8.10.150':
     resolution: {integrity: sha512-AX+AbjH/rH5ezX1fbK8onC/a+HyQHo7QGmvoxAE42n22OsciAxvZoZNEr22tbXs8WfP1nIsBjKDpgPm3HjOZbA==}
 
-  '@types/babel__traverse@7.28.0':
-    resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
-
   '@types/better-sqlite3@7.6.13':
     resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
 
@@ -5746,9 +4477,6 @@ packages:
   '@types/dockerode@3.3.43':
     resolution: {integrity: sha512-YCi0aKKpKeC9dhKTbuglvsWDnAyuIITd6CCJSTKiAdbDzPH4RWu0P9IK2XkJHdyplH6mzYtDYO+gB06JlzcPxg==}
 
-  '@types/esprima@4.0.6':
-    resolution: {integrity: sha512-lIk+kSt9lGv5hxK6aZNjiUEGZqKmOTpmg0tKiJQI+Ow98fLillxsiZNik5+RcP7mXL929KiTH/D9jGtpDlMbVw==}
-
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -5833,9 +4561,6 @@ packages:
   '@types/node@22.17.1':
     resolution: {integrity: sha512-y3tBaz+rjspDTylNjAX37jEC3TETEFGNJL6uQDxwF9/8GLLIjW1rvVHlynyuUKMnMr1Roq8jOv3vkopBjC4/VA==}
 
-  '@types/node@22.17.2':
-    resolution: {integrity: sha512-gL6z5N9Jm9mhY+U2KXZpteb+09zyffliRkZyZOHODGATyC5B1Jt/7TzuuiLkFsSUMLbS1OLmlj/E+/3KF4Q/4w==}
-
   '@types/node@22.18.0':
     resolution: {integrity: sha512-m5ObIqwsUp6BZzyiy4RdZpzWGub9bqLJMvZDD0QMXhxjqMHMENlj+SqF5QxoUwaQNFe+8kz8XM8ZQhqkQPTgMQ==}
 
@@ -5895,10 +4620,6 @@ packages:
 
   '@types/serve-static@1.15.8':
     resolution: {integrity: sha512-roei0UY3LhpOJvjbIP6ZZFngyLKl5dskOtDhxY5THRSpO+ZI+nzJ+m5yUMzGrp89YRa7lvknKkMYjqQFGwA7Sg==}
-
-  '@types/source-map@0.5.7':
-    resolution: {integrity: sha512-LrnsgZIfJaysFkv9rRJp4/uAyqw87oVed3s1hhF83nwbo9c7MG9g5DqR0seHP+lkX4ldmMrVolPjQSe2ZfD0yA==}
-    deprecated: This is a stub types definition for source-map (https://github.com/mozilla/source-map). source-map provides its own type definitions, so you don't need @types/source-map installed!
 
   '@types/ssh2-streams@0.1.12':
     resolution: {integrity: sha512-Sy8tpEmCce4Tq0oSOYdfqaBpA3hDM8SoxoFh5vzFsu2oL+znzGz8oVWW7xb4K920yYMUY+PIG31qZnFMfPWNCg==}
@@ -6889,12 +5610,6 @@ packages:
 
   code-block-writer@13.0.3:
     resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
-
-  code-mesh-wasm@file:packages/tier2-private/singularity-coder/rust-core/code-mesh-wasm/pkg:
-    resolution: {directory: packages/tier2-private/singularity-coder/rust-core/code-mesh-wasm/pkg, type: directory}
-
-  code-mesh-wasm@file:packages/tier3-internal/singularity-coder/rust-core/code-mesh-wasm/pkg:
-    resolution: {directory: packages/tier3-internal/singularity-coder/rust-core/code-mesh-wasm/pkg, type: directory}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -7908,6 +6623,10 @@ packages:
 
   eslint-formatter-compact@8.40.0:
     resolution: {integrity: sha512-cwGUs113TgmTQXecx5kfRjB7m0y2wkDLSadPTE2pK6M/wO4N8PjmUaoWOFNCP9MHgsiZwgqd5bZFnDCnszC56Q==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  eslint-formatter-unix@8.40.0:
+    resolution: {integrity: sha512-gfsmFZ/cb1MobrMfYl2IPFLZEz2tWQVO/tnmziNQdhWJMN85GfZD64dcPsEgaEoeVKgAtK6W9LWLlOxhJWZvDw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   eslint-import-resolver-node@0.3.9:
@@ -13004,17 +11723,14 @@ snapshots:
 
   '@chevrotain/utils@11.0.3': {}
 
-  '@claude-zen/sparc@file:packages/tier2-private/sparc':
-    dependencies:
-      '@claude-zen/event-system': link:packages/tier3-internal/event-system
-      '@claude-zen/foundation': link:packages/tier1-public/core/foundation
-      '@claude-zen/workflows': link:packages/tier3-internal/workflows
+  '@claude-zen/code-mesh-wasm@file:packages/implementation/singularity-coder/rust-core/code-mesh-wasm/pkg':
+    optional: true
 
-  '@claude-zen/sparc@file:packages/tier3-internal/sparc':
+  '@claude-zen/sparc@file:packages/implementation/sparc':
     dependencies:
-      '@claude-zen/event-system': link:packages/tier3-internal/event-system
-      '@claude-zen/foundation': link:packages/tier1-public/core/foundation
-      '@claude-zen/workflows': link:packages/tier3-internal/workflows
+      '@claude-zen/event-system': link:packages/implementation/event-system
+      '@claude-zen/foundation': link:packages/public-api/core/foundation
+      '@claude-zen/workflows': link:packages/implementation/workflows
 
   '@colors/colors@1.5.0':
     optional: true
@@ -13462,11 +12178,6 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.30
 
   '@jridgewell/resolve-uri@3.1.2': {}
-
-  '@jridgewell/source-map@0.3.11':
-    dependencies:
-      '@jridgewell/gen-mapping': 0.3.13
-      '@jridgewell/trace-mapping': 0.3.30
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
@@ -14660,9 +13371,6 @@ snapshots:
   '@rollup/rollup-linux-s390x-gnu@4.48.1':
     optional: true
 
-  '@rollup/rollup-linux-x64-gnu@4.48.0':
-    optional: true
-
   '@rollup/rollup-linux-x64-gnu@4.48.1':
     optional: true
 
@@ -15104,16 +13812,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@tensorflow/tfjs-data@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(encoding@0.1.13)':
-    dependencies:
-      '@tensorflow/tfjs-core': 4.22.0(encoding@0.1.13)
-      '@types/node-fetch': 2.6.13
-      node-fetch: 2.6.13(encoding@0.1.13)
-      string_decoder: 1.3.0
-    transitivePeerDependencies:
-      - encoding
-    optional: true
-
   '@tensorflow/tfjs-data@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(encoding@0.1.13)(seedrandom@3.0.5)':
     dependencies:
       '@tensorflow/tfjs-core': 4.22.0(encoding@0.1.13)
@@ -15127,22 +13825,6 @@ snapshots:
   '@tensorflow/tfjs-layers@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))':
     dependencies:
       '@tensorflow/tfjs-core': 4.22.0(encoding@0.1.13)
-
-  '@tensorflow/tfjs-node@4.22.0(encoding@0.1.13)':
-    dependencies:
-      '@mapbox/node-pre-gyp': 1.0.9(encoding@0.1.13)
-      '@tensorflow/tfjs': 4.22.0(encoding@0.1.13)
-      adm-zip: 0.5.16
-      google-protobuf: 3.21.4
-      https-proxy-agent: 2.2.4
-      progress: 2.0.3
-      rimraf: 2.7.1
-      tar: 6.2.1
-    transitivePeerDependencies:
-      - encoding
-      - seedrandom
-      - supports-color
-    optional: true
 
   '@tensorflow/tfjs-node@4.22.0(encoding@0.1.13)(seedrandom@3.0.5)':
     dependencies:
@@ -15158,24 +13840,6 @@ snapshots:
       - encoding
       - seedrandom
       - supports-color
-
-  '@tensorflow/tfjs@4.22.0(encoding@0.1.13)':
-    dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
-      '@tensorflow/tfjs-backend-webgl': 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
-      '@tensorflow/tfjs-converter': 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
-      '@tensorflow/tfjs-core': 4.22.0(encoding@0.1.13)
-      '@tensorflow/tfjs-data': 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(encoding@0.1.13)
-      '@tensorflow/tfjs-layers': 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
-      argparse: 1.0.10
-      chalk: 4.1.2
-      core-js: 3.29.1
-      regenerator-runtime: 0.13.11
-      yargs: 16.2.0
-    transitivePeerDependencies:
-      - encoding
-      - seedrandom
-    optional: true
 
   '@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5)':
     dependencies:
@@ -15216,10 +13880,6 @@ snapshots:
 
   '@types/aws-lambda@8.10.150': {}
 
-  '@types/babel__traverse@7.28.0':
-    dependencies:
-      '@babel/types': 7.28.2
-
   '@types/better-sqlite3@7.6.13':
     dependencies:
       '@types/node': 22.18.0
@@ -15235,7 +13895,7 @@ snapshots:
 
   '@types/bunyan@1.8.11':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/chai@5.2.2':
     dependencies:
@@ -15256,7 +13916,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/cookie@0.6.0': {}
 
@@ -15389,18 +14049,14 @@ snapshots:
 
   '@types/docker-modem@3.0.6':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       '@types/ssh2': 1.15.5
 
   '@types/dockerode@3.3.43':
     dependencies:
       '@types/docker-modem': 3.0.6
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       '@types/ssh2': 1.15.5
-
-  '@types/esprima@4.0.6':
-    dependencies:
-      '@types/estree': 1.0.8
 
   '@types/estree@1.0.8': {}
 
@@ -15469,19 +14125,19 @@ snapshots:
 
   '@types/memcached@2.2.10':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/mime@1.3.5': {}
 
   '@types/mysql@2.15.27':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/node-cron@3.0.11': {}
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       form-data: 4.0.4
 
   '@types/node@18.19.123':
@@ -15493,10 +14149,6 @@ snapshots:
       undici-types: 6.21.0
 
   '@types/node@22.17.1':
-    dependencies:
-      undici-types: 6.21.0
-
-  '@types/node@22.17.2':
     dependencies:
       undici-types: 6.21.0
 
@@ -15521,7 +14173,7 @@ snapshots:
 
   '@types/oracledb@6.5.2':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/pg-pool@2.0.6':
     dependencies:
@@ -15529,13 +14181,13 @@ snapshots:
 
   '@types/pg@8.15.4':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
   '@types/pg@8.15.5':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
@@ -15569,17 +14221,13 @@ snapshots:
       '@types/node': 22.18.0
       '@types/send': 0.17.5
 
-  '@types/source-map@0.5.7':
-    dependencies:
-      source-map: 0.6.1
-
   '@types/ssh2-streams@0.1.12':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/ssh2@0.5.52':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       '@types/ssh2-streams': 0.1.12
 
   '@types/ssh2@1.15.5':
@@ -15595,7 +14243,7 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/trusted-types@2.0.7':
     optional: true
@@ -15787,7 +14435,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.17.1)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.18.0)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -16767,12 +15415,6 @@ snapshots:
   cockatiel@3.2.1: {}
 
   code-block-writer@13.0.3: {}
-
-  code-mesh-wasm@file:packages/tier2-private/singularity-coder/rust-core/code-mesh-wasm/pkg:
-    optional: true
-
-  code-mesh-wasm@file:packages/tier3-internal/singularity-coder/rust-core/code-mesh-wasm/pkg:
-    optional: true
 
   color-convert@1.9.3:
     dependencies:
@@ -17966,6 +16608,8 @@ snapshots:
       semver: 7.7.2
 
   eslint-formatter-compact@8.40.0: {}
+
+  eslint-formatter-unix@8.40.0: {}
 
   eslint-import-resolver-node@0.3.9:
     dependencies:
@@ -20468,7 +19112,7 @@ snapshots:
 
   neverthrow@8.2.0:
     optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.48.0
+      '@rollup/rollup-linux-x64-gnu': 4.48.1
 
   no-case@3.0.4:
     dependencies:
@@ -20720,11 +19364,6 @@ snapshots:
       onnx-proto: 4.0.4
       onnxruntime-common: 1.14.0
       platform: 1.3.6
-
-  openai@5.15.0(ws@8.18.3)(zod@3.25.76):
-    optionalDependencies:
-      ws: 8.18.3
-      zod: 3.25.76
 
   openai@5.15.0(ws@8.18.3)(zod@4.1.1):
     optionalDependencies:
@@ -21265,7 +19904,7 @@ snapshots:
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
       '@types/long': 4.0.2
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       long: 4.0.0
 
   protobufjs@7.5.4:
@@ -21280,7 +19919,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
       long: 5.3.2
 
   proxy-addr@2.0.7:
@@ -23079,27 +21718,6 @@ snapshots:
       - tsx
       - yaml
 
-  vite-node@3.2.4(@types/node@22.17.2)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1):
-    dependencies:
-      cac: 6.7.14
-      debug: 4.4.1
-      es-module-lexer: 1.7.0
-      pathe: 2.0.3
-      vite: 7.1.3(@types/node@22.17.2)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-    transitivePeerDependencies:
-      - '@types/node'
-      - jiti
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - yaml
-
   vite-node@3.2.4(@types/node@22.18.0)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       cac: 6.7.14
@@ -23185,22 +21803,6 @@ snapshots:
       tsx: 4.20.5
       yaml: 2.8.1
 
-  vite@7.1.3(@types/node@22.17.2)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1):
-    dependencies:
-      esbuild: 0.25.9
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.48.1
-      tinyglobby: 0.2.14
-    optionalDependencies:
-      '@types/node': 22.17.2
-      fsevents: 2.3.3
-      jiti: 2.5.1
-      lightningcss: 1.30.1
-      tsx: 4.20.5
-      yaml: 2.8.1
-
   vite@7.1.3(@types/node@22.18.0)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.9
@@ -23241,7 +21843,7 @@ snapshots:
     optionalDependencies:
       vite: 7.1.3(@types/node@22.18.0)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  vitest@1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1):
+  vitest@1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(less@2.7.3)(lightningcss@1.30.1):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -23347,49 +21949,6 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.17.1
-      '@vitest/ui': 3.2.4(vitest@3.2.4)
-      happy-dom: 18.0.1
-    transitivePeerDependencies:
-      - jiti
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - yaml
-
-  vitest@3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1):
-    dependencies:
-      '@types/chai': 5.2.2
-      '@vitest/expect': 3.2.4
-      '@vitest/mocker': 3.2.4(vite@7.1.3(@types/node@22.18.0)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1))
-      '@vitest/pretty-format': 3.2.4
-      '@vitest/runner': 3.2.4
-      '@vitest/snapshot': 3.2.4
-      '@vitest/spy': 3.2.4
-      '@vitest/utils': 3.2.4
-      chai: 5.3.3
-      debug: 4.4.1
-      expect-type: 1.2.2
-      magic-string: 0.30.18
-      pathe: 2.0.3
-      picomatch: 4.0.3
-      std-env: 3.9.0
-      tinybench: 2.9.0
-      tinyexec: 0.3.2
-      tinyglobby: 0.2.14
-      tinypool: 1.1.1
-      tinyrainbow: 2.0.0
-      vite: 7.1.3(@types/node@22.17.2)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-      vite-node: 3.2.4(@types/node@22.17.2)(jiti@2.5.1)(lightningcss@1.30.1)(tsx@4.20.5)(yaml@2.8.1)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 22.17.2
       '@vitest/ui': 3.2.4(vitest@3.2.4)
       happy-dom: 18.0.1
     transitivePeerDependencies:

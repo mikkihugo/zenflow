@@ -125,6 +125,13 @@ pub enum DataPipelineError {
   /// Configuration error
   #[error("Configuration error: {message}")]
   ConfigError { message: String },
+
+  /// Polars error
+  #[error("Polars error: {source}")]
+  PolarsError {
+    #[from]
+    source: polars::prelude::PolarsError,
+  },
 }
 
 /// Specialized Result type for data pipeline operations

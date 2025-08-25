@@ -1,5 +1,5 @@
 import { App } from "../app/app"
-import { z } from "zod"
+import { z } from "@claude-zen/foundation"
 import { Bus } from "../bus"
 import { Log } from "../util/log"
 

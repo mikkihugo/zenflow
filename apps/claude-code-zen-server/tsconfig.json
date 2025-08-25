@@ -16,13 +16,28 @@
     "noImplicitThis": false,
     "downlevelIteration": true,
     "paths": {
-      "@claude-zen/foundation": ["../../packages/foundation/src", "../../packages/foundation/dist"],
-      "@claude-zen/infrastructure": ["../../packages/strategic-facades/infrastructure/src", "../../packages/strategic-facades/infrastructure/dist"],
-      "@claude-zen/intelligence": ["../../packages/strategic-facades/intelligence/src", "../../packages/strategic-facades/intelligence/dist"],
-      "@claude-zen/enterprise": ["../../packages/strategic-facades/enterprise/src", "../../packages/strategic-facades/enterprise/dist"],
-      "@claude-zen/operations": ["../../packages/strategic-facades/operations/src", "../../packages/strategic-facades/operations/dist"],
+      "@claude-zen/foundation": [
+        "../../packages/foundation/src",
+        "../../packages/foundation/dist"
+      ],
+      "@claude-zen/infrastructure": [
+        "../../packages/strategic-facades/infrastructure/src",
+        "../../packages/strategic-facades/infrastructure/dist"
+      ],
+      "@claude-zen/intelligence": [
+        "../../packages/strategic-facades/intelligence/src",
+        "../../packages/strategic-facades/intelligence/dist"
+      ],
+      "@claude-zen/enterprise": [
+        "../../packages/strategic-facades/enterprise/src",
+        "../../packages/strategic-facades/enterprise/dist"
+      ],
+      "@claude-zen/operations": [
+        "../../packages/strategic-facades/operations/src",
+        "../../packages/strategic-facades/operations/dist"
+      ],
       "@claude-zen/*": [
-        "../../packages/implementation-packages/*/src", 
+        "../../packages/implementation-packages/*/src",
         "../../packages/implementation-packages/*/dist",
         "../../packages/strategic-facades/*/src",
         "../../packages/strategic-facades/*/dist",
@@ -36,9 +51,7 @@
       "$types/*": ["./src/types/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "exclude": [
     "dist",
     "node_modules",

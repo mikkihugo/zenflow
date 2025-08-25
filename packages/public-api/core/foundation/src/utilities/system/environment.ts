@@ -22,7 +22,11 @@ export function isTest(): boolean {
   return process.env['NODE_ENV'] === 'test';
 }
 
-export function getEnvironment(): 'development' | 'production' | 'test' | 'unknown' {
+export function getEnvironment():
+  | 'development'
+  | 'production'
+  | 'test'
+  | 'unknown' {
   const env = process.env['NODE_ENV'];
   if (env === 'development' || env === 'production' || env === 'test') {
     return env;
@@ -102,8 +106,10 @@ export function isCI(): boolean {
 export function isDocker(): boolean {
   try {
     const fs = require('node:fs');
-    return fs.existsSync('/.dockerenv') || 
-           fs.readFileSync('/proc/1/cgroup', 'utf8').includes('docker');
+    return (
+      fs.existsSync('/.dockerenv') ||
+      fs.readFileSync('/proc/1/cgroup', 'utf8').includes('docker')
+    );
   } catch {
     return false;
   }
@@ -128,9 +134,11 @@ export function getWorkspaceDetector() {
       try {
         const fs = require('node:fs');
         const path = require('node:path');
-        return fs.existsSync(path.join(process.cwd(), 'pnpm-workspace.yaml')) ||
-               fs.existsSync(path.join(process.cwd(), 'yarn.lock')) ||
-               fs.existsSync(path.join(process.cwd(), 'lerna.json'));
+        return (
+          fs.existsSync(path.join(process.cwd(), 'pnpm-workspace.yaml')) ||
+          fs.existsSync(path.join(process.cwd(), 'yarn.lock')) ||
+          fs.existsSync(path.join(process.cwd(), 'lerna.json'))
+        );
       } catch {
         return false;
       }
@@ -143,7 +151,7 @@ export function getWorkspaceDetector() {
       } catch {
         return false;
       }
-    }
+    },
   };
 }
 
@@ -152,7 +160,7 @@ export function getWorkspaceDetector() {
  */
 export function startMonitoring() {
   const logger = require('../../core/logging').getLogger('system:monitoring');
-  
+
   return {
     start: () => {
       // Basic system monitoring implementation
@@ -160,7 +168,7 @@ export function startMonitoring() {
     },
     stop: () => {
       logger.info('System monitoring stopped');
-    }
+    },
   };
 }
 
@@ -179,7 +187,7 @@ export function createSystemSummary() {
       isCI: isCI(),
       isDocker: isDocker(),
       isWSL: isWSL(),
-    }
+    },
   };
 }
 
@@ -189,21 +197,21 @@ export function createSystemSummary() {
 export function checkSystemRequirements() {
   const nodeVersion = process.version;
   const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0] || '0', 10);
-  
+
   return {
     nodeVersion: {
       current: nodeVersion,
       supported: majorVersion >= 18,
-      minimum: '18.0.0'
+      minimum: '18.0.0',
     },
     platform: {
       supported: ['win32', 'darwin', 'linux'].includes(process.platform),
-      current: process.platform
+      current: process.platform,
     },
     memory: {
       total: os.totalmem(),
       free: os.freemem(),
-      sufficient: os.totalmem() > 1024 * 1024 * 1024 // 1GB minimum
-    }
+      sufficient: os.totalmem() > 1024 * 1024 * 1024, // 1GB minimum
+    },
   };
 }

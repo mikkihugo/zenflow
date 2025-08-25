@@ -49,7 +49,7 @@
     "@apidevtools/swagger-parser": "^12.0.0",
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/intelligence": "workspace:*",
-    "@claude-zen/infrastructure": "workspace:*", 
+    "@claude-zen/infrastructure": "workspace:*",
     "@claude-zen/enterprise": "workspace:*",
     "@claude-zen/operations": "workspace:*",
     "@claude-zen/development": "workspace:*",

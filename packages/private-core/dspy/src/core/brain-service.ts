@@ -127,7 +127,7 @@ export class BrainService {
         metadata: {
           processingTime,
           dspyOptimized,
-          role: request.role||'user',
+          role: request.role || 'user',
           timestamp: new Date().toISOString(),
         },
       };
@@ -159,13 +159,13 @@ export class BrainService {
           originalPrompt: cached.originalPrompt,
           optimizedPrompt: cached.optimizedPrompt,
           improvement: cached.improvement,
-          examples: request.examples||[],
+          examples: request.examples || [],
         };
       }
 
       // Create examples if not provided
       const examples =
-        request.examples||this.generateExamplesFromContext(request.prompt);
+        request.examples || this.generateExamplesFromContext(request.prompt);
 
       // Use DSPy for optimization
       const optimization = await this.dspyEngine.optimizePrompt(
@@ -230,7 +230,7 @@ export class BrainService {
 
     // Auto-decide based on complexity and role
     if (request.complexity === 'complex') return true;
-    if (request.role === 'architect'||request.role ==='analyst') return true;
+    if (request.role === 'architect' || request.role === 'analyst') return true;
     if (request.task.length > 200) return true; // Long tasks benefit from optimization
 
     return false;
@@ -330,7 +330,7 @@ export class BrainService {
         id: 'default',
         input: 'Analyze this request',
         output: 'Provided comprehensive analysis with actionable insights',
-        metadata: { createdAt: new Date(), source: 'default-example'},
+        metadata: { createdAt: new Date(), source: 'default-example' },
       });
     }
 
@@ -357,7 +357,7 @@ export class BrainService {
    * Private: Generate cache key for optimization results
    */
   private generateCacheKey(prompt: string, domain?: string): string {
-    const content = `${prompt}-${domain||'general'}`;
+    const content = `${prompt}-${domain || 'general'}`;
     return Buffer.from(content).toString('base64').slice(0, 32);
   }
 }

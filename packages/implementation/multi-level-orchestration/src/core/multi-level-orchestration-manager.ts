@@ -20,7 +20,7 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 
 // ============================================================================
 // CORE ORCHESTRATION TYPES
@@ -444,7 +444,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
     item: Omit<PortfolioItem, 'id|createdAt|updatedAt'>'
   ): Promise<PortfolioItem> {
     const portfolioItem: PortfolioItem = {
-      id: nanoid(),
+      id: generateNanoId(),
       createdAt: new Date(),
       updatedAt: new Date(),
       ...item,
@@ -478,7 +478,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
     item: Omit<ProgramItem, 'id|createdAt|updatedAt'>'
   ): Promise<ProgramItem> {
     const programItem: ProgramItem = {
-      id: nanoid(),
+      id: generateNanoId(),
       createdAt: new Date(),
       updatedAt: new Date(),
       ...item,
@@ -517,7 +517,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
     item: Omit<SwarmExecutionItem, 'id|createdAt|updatedAt'>'
   ): Promise<SwarmExecutionItem> {
     const swarmItem: SwarmExecutionItem = {
-      id: nanoid(),
+      id: generateNanoId(),
       createdAt: new Date(),
       updatedAt: new Date(),
       ...item,

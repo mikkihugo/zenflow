@@ -11,10 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // ✅ TIER 1 ONLY - 5-Tier Architecture Compliance
-import {
-  getLogger,
-  ProcessLifecycleManager
-} from '@claude-zen/foundation';
+import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
 
 // Strategic facades for accessing functionality
 
@@ -22,12 +19,12 @@ import {
   createSvelteProxyRoute,
   createDashboardRedirect,
   createSvelteHealthCheck,
-  type SvelteProxyConfig
+  type SvelteProxyConfig,
 } from './svelte-proxy-route';
 
 // Types from consolidated system
-import type { 
-  WebConfig, 
+import type {
+  WebConfig,
   DIContainer,
   WebDashboardServer,
   WebSessionManager,
@@ -35,10 +32,16 @@ import type {
   WebApiRoutes,
   WebSocketManager,
   WebHtmlGenerator,
-  WebProcessManager
+  WebProcessManager,
 } from '../../types';
 
-const { getVersion } = (global as any).foundation;
+const { getVersion } = (global as { foundation?: { getVersion: () => string } })
+  .foundation || { getVersion: () => '1.0.0' };
+
+// Constants to avoid string duplication
+const DASHBOARD_PATHS = {
+  basePath: DASHBOARD_PATHS.basePath,
+} as const;
 
 /**
  * Main Web Interface orchestrator.
@@ -51,7 +54,7 @@ export class WebInterface {
   private config: WebConfig;
   private container?: DIContainer;
   private lifecycleManager?: ProcessLifecycleManager;
-  
+
   // Component instances
   private server: WebDashboardServer;
   private sessionManager: WebSessionManager;
@@ -65,8 +68,11 @@ export class WebInterface {
   constructor(config: WebConfig = {}) {
     // Create unified configuration with defaults
     this.config = this.createWebConfig({
-      staticDir: join(dirname(fileURLToPath(import.meta.url)), "../../../web/dist"),
-      ...config
+      staticDir: join(
+        dirname(fileURLToPath(import.meta.url)),
+        '../../../web/dist'
+      ),
+      ...config,
     });
 
     // Store DI container if provided
@@ -77,8 +83,8 @@ export class WebInterface {
       enabled: true,
       sveltePort: 3003,
       svelteHost: 'localhost',
-      basePath: '/dashboard',
-      fallbackToLegacy: true
+      basePath: DASHBOARD_PATHS.basePath,
+      fallbackToLegacy: true,
     };
 
     // Initialize all components
@@ -91,33 +97,33 @@ export class WebInterface {
   private initializeComponents(): void {
     // Core server setup
     this.server = new WebDashboardServer(this.config);
-    
+
     // Business logic and data management
     this.dataService = new WebDataService();
-    
+
     // Session management
     this.sessionManager = new WebSessionManager(this.config);
-    
+
     // API route handling
     this.apiRoutes = new WebApiRoutes(
       this.config,
       this.sessionManager,
       this.dataService
     );
-    
+
     // WebSocket real-time communication
     this.webSocketManager = new WebSocketManager(
       this.server?.getSocketIO,
       this.config,
       this.dataService
     );
-    
+
     // HTML generation for fallback UI
     this.htmlGenerator = new WebHtmlGenerator(this.config);
-    
+
     // Process and daemon management
     this.processManager = new WebProcessManager(this.config);
-    
+
     this.logger.debug('All web interface components initialized');
   }
 
@@ -126,8 +132,10 @@ export class WebInterface {
    */
   async run(): Promise<void> {
     try {
-      this.logger.info('Starting claude-code-zen web interface with enhanced lifecycle management');
-      
+      this.logger.info(
+        'Starting claude-code-zen web interface with enhanced lifecycle management'
+      );
+
       // Setup process lifecycle management if container is available
       if (this.container) {
         this.lifecycleManager = new ProcessLifecycleManager({
@@ -135,9 +143,9 @@ export class WebInterface {
             this.logger.info('🧹 Graceful shutdown initiated...');
             await this.stop();
           },
-          onError: async (error: Error) => {
+          onError: (error: Error) => {
             this.logger.error('💥 Application error in web interface:', error);
-          }
+          },
         });
         this.logger.info('✅ Process lifecycle management enabled');
       }
@@ -146,12 +154,14 @@ export class WebInterface {
       if (this.config.daemon) {
         const existing = await this.processManager?.isInstanceRunning();
         if (existing) {
-          throw new Error(`Web interface already running with PID ${existing.pid}`);
+          throw new Error(
+            `Web interface already running with PID ${existing.pid}`
+          );
         }
       }
 
       // Setup all components
-      await this.setupComponents();
+      this.setupComponents();
 
       // Start daemon mode if requested
       if (this.config.daemon) {
@@ -160,7 +170,7 @@ export class WebInterface {
 
       // Start the HTTP server
       await this.server?.start();
-      
+
       this.logger.info('Web interface started successfully');
     } catch (error) {
       this.logger.error('Failed to start web interface:', error);
@@ -171,9 +181,9 @@ export class WebInterface {
   /**
    * Setup all components with proper integration.
    */
-  private async setupComponents(): Promise<void> {
+  private setupComponents(): void {
     const app = this.server?.getApp();
-    
+
     try {
       // Setup Express middleware
       this.server?.setupMiddleware();
@@ -202,7 +212,10 @@ export class WebInterface {
       this.apiRoutes.setupRoutes(app);
       this.logger.debug('✅ API routes setup complete');
     } catch (error) {
-      this.logger.warn('⚠️ API routes setup failed, continuing...', error.message);
+      this.logger.warn(
+        '⚠️ API routes setup failed, continuing...',
+        error.message
+      );
     }
 
     try {
@@ -210,7 +223,10 @@ export class WebInterface {
       this.webSocketManager?.setupWebSocket(app);
       this.logger.debug('✅ WebSocket setup complete');
     } catch (error) {
-      this.logger.warn('⚠️ WebSocket setup failed, continuing...', error.message);
+      this.logger.warn(
+        '⚠️ WebSocket setup failed, continuing...',
+        error.message
+      );
     }
 
     try {
@@ -218,7 +234,10 @@ export class WebInterface {
       this.setupSvelteProxy(app);
       this.logger.debug('✅ Svelte proxy setup complete');
     } catch (error) {
-      this.logger.warn('⚠️ Svelte proxy setup failed, continuing...', error.message);
+      this.logger.warn(
+        '⚠️ Svelte proxy setup failed, continuing...',
+        error.message
+      );
     }
 
     try {
@@ -226,18 +245,23 @@ export class WebInterface {
       this.setupFallbackRoutes(app);
       this.logger.debug('✅ Fallback routes setup complete');
     } catch (error) {
-      this.logger.warn('⚠️ Fallback routes setup failed, continuing...', error.message);
+      this.logger.warn(
+        '⚠️ Fallback routes setup failed, continuing...',
+        error.message
+      );
     }
 
-    this.logger.info('🎉 Component setup completed (with error tolerance for tsx compatibility)');
+    this.logger.info(
+      '🎉 Component setup completed (with error tolerance for tsx compatibility)'
+    );
   }
 
   /**
    * Setup Svelte proxy routes for the web dashboard.
-   * 
+   *
    * @param app Express application
    */
-  private setupSvelteProxy(app: any): void {
+  private setupSvelteProxy(app: unknown): void {
     if (!this.svelteProxyConfig.enabled) {
       this.logger.info('Svelte proxy disabled');
       return;
@@ -245,19 +269,29 @@ export class WebInterface {
 
     // Health check endpoint for Svelte dashboard
     app.get('/health/svelte', createSvelteHealthCheck(this.svelteProxyConfig));
-    
+
     // Main Svelte proxy - proxy /dashboard/* to Svelte app
     const svelteProxy = createSvelteProxyRoute(this.svelteProxyConfig);
-    app.use('/dashboard', svelteProxy);
-    
+    app.use(DASHBOARD_PATHS.basePath, svelteProxy);
+
     // Redirect root to dashboard
-    app.get('/', createDashboardRedirect('/dashboard'));
-    
+    app.get('/', createDashboardRedirect(DASHBOARD_PATHS.basePath));
+
     // SAFe-specific routes redirect to dashboard
-    app.get('/safe', (req: any, res: any) => res.redirect('/dashboard/safe'));
-    app.get('/safe-production', (req: any, res: any) => res.redirect('/dashboard/safe-production'));
-    
-    this.logger.info(`✅ Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`);
+    app.get(
+      '/safe',
+      (req: unknown, res: { redirect: (path: string) => void }) =>
+        res.redirect('/dashboard/safe')
+    );
+    app.get(
+      '/safe-production',
+      (req: unknown, res: { redirect: (path: string) => void }) =>
+        res.redirect('/dashboard/safe-production')
+    );
+
+    this.logger.info(
+      `✅ Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`
+    );
   }
 
   /**
@@ -265,27 +299,59 @@ export class WebInterface {
    *
    * @param app Express application
    */
-  private setupFallbackRoutes(app: any): void {
+  private setupFallbackRoutes(app: unknown): void {
     // Fallback route for legacy dashboard (only if Svelte proxy is disabled)
     if (!this.svelteProxyConfig.enabled) {
-      app.get('/', (_req: any, res: any) => {
+      (
+        app as {
+          get: (
+            path: string,
+            handler: (req: unknown, res: unknown) => void
+          ) => void;
+        }
+      ).get(
+        '/',
+        (
+          unusedReq: unknown,
+          res: {
+            sendFile?: (path: string) => void;
+            send?: (content: unknown) => void;
+          }
+        ) => {
+          if (existsSync(this.config.staticDir!)) {
+            res.sendFile(join(this.config.staticDir!, 'index.html'));
+          } else {
+            res.send(this.htmlGenerator?.generateDashboardHtml());
+          }
+        }
+      );
+    }
+
+    // Legacy dashboard route
+    (
+      app as {
+        get: (
+          path: string,
+          handler: (req: unknown, res: unknown) => void
+        ) => void;
+      }
+    ).get(
+      '/legacy',
+      (
+        unusedReq: unknown,
+        res: {
+          sendFile?: (path: string) => void;
+          send?: (content: unknown) => void;
+        }
+      ) => {
         if (existsSync(this.config.staticDir!)) {
           res.sendFile(join(this.config.staticDir!, 'index.html'));
         } else {
           res.send(this.htmlGenerator?.generateDashboardHtml());
         }
-      });
-    }
-
-    // Legacy dashboard route
-    app.get('/legacy', (_req: any, res: any) => {
-      if (existsSync(this.config.staticDir!)) {
-        res.sendFile(join(this.config.staticDir!, 'index.html'));
-      } else {
-        res.send(this.htmlGenerator?.generateDashboardHtml());
       }
-    });
-    
+    );
+
     // Catch all for SPA - temporarily disabled due to path-to-regexp error
     // app.get('*', (_req: any, res: any) => {
     //   if (existsSync(join(this.config.staticDir!, 'index.html'))) {
@@ -304,20 +370,20 @@ export class WebInterface {
     try {
       // Stop WebSocket broadcasting
       this.webSocketManager?.stopBroadcasting();
-      
+
       // Stop HTTP server
       await this.server?.stop();
-      
+
       // Perform graceful shutdown if in daemon mode
       if (this.config.daemon) {
         await this.processManager?.gracefulShutdown();
       }
-      
+
       // Cleanup lifecycle manager
       if (this.lifecycleManager) {
         this.lifecycleManager?.dispose();
       }
-      
+
       this.logger.info('Web interface stopped successfully');
     } catch (error) {
       this.logger.error('Error during shutdown:', error);
@@ -328,39 +394,39 @@ export class WebInterface {
   /**
    * Get comprehensive system status.
    */
-  async getStatus(): Promise<{
-    server: any;
-    sessions: any;
-    webSocket: any;
-    process: any;
+  getStatus(): {
+    server: unknown;
+    sessions: unknown;
+    webSocket: unknown;
+    process: unknown;
     config: WebConfig;
-  }> {
+  } {
     return {
       server: {
         status: 'running',
-        capabilities: WebDashboardServer?.getCapabilities()
+        capabilities: WebDashboardServer?.getCapabilities(),
       },
       sessions: this.sessionManager?.getStats(),
       webSocket: this.webSocketManager?.getConnectionStats(),
       process: this.processManager?.getProcessStats(),
-      config: this.config
+      config: this.config,
     };
   }
 
   /**
    * Broadcast event to all connected WebSocket clients.
-   * 
+   *
    * @param event Event name
    * @param data Event data
    */
-  broadcast(event: string, data: any): void {
+  broadcast(event: string, data: unknown): void {
     this.webSocketManager.broadcast(event, data);
   }
 
   /**
    * Get web interface capabilities (static method).
    */
-  static getCapabilities(): any {
+  static getCapabilities(): unknown {
     return WebDashboardServer?.getCapabilities();
   }
 
@@ -380,10 +446,10 @@ export class WebInterface {
         sessions: this.sessionManager?.getStats(),
         webSocket: this.webSocketManager?.getConnectionStats(),
         process: this.processManager?.healthCheck(),
-        dataService: { status: 'ready' }
+        dataService: { status: 'ready' },
       },
       version: getVersion(),
-      uptime: process.uptime()
+      uptime: process.uptime(),
     };
   }
 
@@ -396,7 +462,7 @@ export class WebInterface {
       host: 'localhost',
       staticDir: join(process.cwd(), 'web/dist'),
       daemon: false,
-      ...config
+      ...config,
     };
   }
 }

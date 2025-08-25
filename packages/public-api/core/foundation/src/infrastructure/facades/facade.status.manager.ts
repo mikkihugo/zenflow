@@ -92,7 +92,7 @@ import type { JsonObject, JsonValue } from '../../types/primitives';
 // Temporary types to replace Awilix during build issues
 type AwilixContainer = {
   register: (
-    nameOrRegistrations: string|JsonObject,
+    nameOrRegistrations: string | JsonObject,
     resolver?: JsonValue,
     options?: JsonObject
   ) => void;
@@ -104,9 +104,9 @@ type AwilixContainer = {
 // Fallback container implementation
 const createContainer = (): AwilixContainer => ({
   register: (
-    nameOrRegistrations: string|JsonObject,
+    nameOrRegistrations: string | JsonObject,
     resolver?: JsonValue,
-    options?: JsonObject,
+    options?: JsonObject
   ) => {
     // Security audit: tracking service registration attempts for facade status management
     logger.debug('Service registration attempt in fallback container', {
@@ -250,13 +250,13 @@ interface FacadeStatusEvents {
  * Central facade status manager with Awilix integration and typed events
  */
 export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
-  private static instance: FacadeStatusManager|null = null;
+  private static instance: FacadeStatusManager | null = null;
   private packageCache = new Map<string, PackageInfo>();
   private facadeStatus = new Map<string, FacadeStatus>();
   private packageCacheExpiry = new Map<string, number>();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   private container: AwilixContainer;
-  private statusUpdateInterval: NodeJS.Timeout|null = null;
+  private statusUpdateInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     super({
@@ -316,7 +316,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
    */
   async checkAndRegisterPackage(
     packageName: string,
-    serviceName?: string,
+    serviceName?: string
   ): Promise<PackageInfo> {
     const cached = this.getCachedPackage(packageName);
     if (cached) {
@@ -343,18 +343,21 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   private getCachedPackage(packageName: string): PackageInfo | null {
     const cached = this.packageCache.get(packageName);
     const expiry = this.packageCacheExpiry.get(packageName);
-    
+
     if (cached && expiry && Date.now() < expiry) {
       return cached;
     }
-    
+
     return null;
   }
 
   /**
    * Create initial package info
    */
-  private createInitialPackageInfo(packageName: string, serviceName?: string): PackageInfo {
+  private createInitialPackageInfo(
+    packageName: string,
+    serviceName?: string
+  ): PackageInfo {
     return {
       name: packageName,
       status: PackageStatus.LOADING,
@@ -385,10 +388,15 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   /**
    * Process failed package import
    */
-  private processFailedImport(packageInfo: PackageInfo, error: unknown, packageName: string): void {
+  private processFailedImport(
+    packageInfo: PackageInfo,
+    error: unknown,
+    packageName: string
+  ): void {
     packageInfo.status = PackageStatus.UNAVAILABLE;
-    packageInfo.error = error instanceof Error ? error.message : 'Unknown error';
-    
+    packageInfo.error =
+      error instanceof Error ? error.message : 'Unknown error';
+
     logger.debug(`Package ${packageName} is unavailable`, {
       error: packageInfo.error,
     });
@@ -404,7 +412,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   ): void {
     try {
       const registrations = this.createRegistrations(module, packageInfo);
-      
+
       if (Object.keys(registrations).length > 0) {
         this.container.register(registrations);
         packageInfo.awilixRegistered = true;
@@ -424,23 +432,29 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   /**
    * Create Awilix registrations for module exports
    */
-  private createRegistrations(module: Record<string, unknown>, packageInfo: PackageInfo): JsonObject {
+  private createRegistrations(
+    module: Record<string, unknown>,
+    packageInfo: PackageInfo
+  ): JsonObject {
     const registrations: JsonObject = {};
 
     // Register factory functions
     for (const [exportName, exportValue] of Object.entries(module)) {
-      if (typeof exportValue === 'function' && exportName.startsWith('create')) {
+      if (
+        typeof exportValue === 'function' &&
+        exportName.startsWith('create')
+      ) {
         const serviceName = exportName.replace('create', '').toLowerCase();
         registrations[serviceName] = asFunction(
           exportValue as unknown as JsonValue,
-          { lifetime: Lifetime.SINGLETON },
+          { lifetime: Lifetime.SINGLETON }
         );
       }
       if (typeof exportValue === 'function' && exportName.startsWith('get')) {
         const serviceName = exportName.replace('get', '').toLowerCase();
         registrations[serviceName] = asFunction(
           exportValue as unknown as JsonValue,
-          { lifetime: Lifetime.SINGLETON },
+          { lifetime: Lifetime.SINGLETON }
         );
       }
     }
@@ -456,7 +470,10 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   /**
    * Cache result and emit event
    */
-  private cacheAndEmitResult(packageName: string, packageInfo: PackageInfo): void {
+  private cacheAndEmitResult(
+    packageName: string,
+    packageInfo: PackageInfo
+  ): void {
     // Cache the result
     this.packageCache.set(packageName, packageInfo);
     this.packageCacheExpiry.set(packageName, Date.now() + this.CACHE_DURATION);
@@ -485,7 +502,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   async registerFacade(
     facadeName: string,
     expectedPackages: string[],
-    features: string[] = [],
+    features: string[] = []
   ): Promise<void> {
     logger.info(`Registering facade: ${facadeName}`, {
       expectedPackages,
@@ -494,7 +511,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
 
     // Check and register all expected packages
     const packageChecks = await Promise.all(
-      expectedPackages.map((pkg) => this.checkAndRegisterPackage(pkg)),
+      expectedPackages.map((pkg) => this.checkAndRegisterPackage(pkg))
     );
 
     const packages: Record<string, PackageInfo> = {};
@@ -505,7 +522,8 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
     for (const pkg of packageChecks) {
       packages[pkg.name] = pkg;
       if (
-        pkg.status === PackageStatus.AVAILABLE||pkg.status === PackageStatus.REGISTERED
+        pkg.status === PackageStatus.AVAILABLE ||
+        pkg.status === PackageStatus.REGISTERED
       ) {
         availableCount++;
         if (pkg.awilixRegistered && pkg.serviceName) {
@@ -575,17 +593,14 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
    * }));
    * ```
    */
-  getService<T>(
-    serviceName: string,
-    fallback?: () => T,
-  ): T|null {
+  getService<T>(serviceName: string, fallback?: () => T): T | null {
     try {
       // Try to resolve the service directly - if it fails, the service doesn't exist
       return this.container.resolve<T>(serviceName);
     } catch (error) {
       logger.debug(
         `Service ${serviceName} not registered or failed to resolve`,
-        error,
+        error
       );
     }
 
@@ -632,7 +647,8 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
       totalPackages += Object.keys(status.packages).length;
       availablePackages += Object.values(status.packages).filter(
         (pkg) =>
-          pkg.status === PackageStatus.AVAILABLE || pkg.status === PackageStatus.REGISTERED,
+          pkg.status === PackageStatus.AVAILABLE ||
+          pkg.status === PackageStatus.REGISTERED
       ).length;
       registeredServices += status.registeredServices.length;
       totalHealthScore += status.healthScore;
@@ -672,7 +688,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
   getHealthSummary(): {
     status: 'healthy' | 'degraded' | 'unhealthy';
     details: JsonObject;
-    } {
+  } {
     const systemStatus = this.getSystemStatus();
 
     let status: 'healthy' | 'degraded' | 'unhealthy';
@@ -709,10 +725,10 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
 
       if (stalePackages.length > 0) {
         logger.debug(
-          `Refreshing ${stalePackages.length} stale package statuses`,
+          `Refreshing ${stalePackages.length} stale package statuses`
         );
         await Promise.all(
-          stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg)),
+          stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg))
         );
       }
 
@@ -732,7 +748,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
    */
   async refreshAllStatuses(): Promise<void> {
     logger.info(
-      'Force refreshing all package statuses and re-registering services',
+      'Force refreshing all package statuses and re-registering services'
     );
     this.packageCache.clear();
 
@@ -746,7 +762,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
       await this.registerFacade(
         facade,
         Object.keys(status.packages),
-        status.features,
+        status.features
       );
     }
   }
@@ -804,18 +820,18 @@ export function getHealthSummary() {
 export async function registerFacade(
   facadeName: string,
   expectedPackages: string[],
-  features: string[] = [],
+  features: string[] = []
 ): Promise<void> {
   return facadeStatusManager.registerFacade(
     facadeName,
     expectedPackages,
-    features,
+    features
   );
 }
 
 export async function getService<T>(
   serviceName: string,
-  fallback?: () => T,
+  fallback?: () => T
 ): Promise<T | null> {
   return Promise.resolve(facadeStatusManager.getService(serviceName, fallback));
 }

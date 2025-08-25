@@ -35,11 +35,10 @@ registerFacade(
   'infrastructure',
   [
     '@claude-zen/database',
-    '@claude-zen/event-system', 
+    '@claude-zen/event-system',
     '@claude-zen/load-balancing',
     '@claude-zen/telemetry',
     '@claude-zen/otel-collector',
-    '@claude-zen/service-container',
   ],
   [
     'Multi-backend database abstraction layer',
@@ -47,9 +46,8 @@ registerFacade(
     'Performance optimization and routing',
     'System telemetry and metrics collection',
     'OpenTelemetry collection and processing',
-    'Service container and dependency injection',
     'Infrastructure coordination and management',
-  ],
+  ]
 );
 
 // =============================================================================
@@ -83,7 +81,7 @@ async function loadOtelCollector() {
           async collect(metrics: unknown) {
             console.debug(
               'OTel Collector Fallback: Collected metrics',
-              metrics,
+              metrics
             );
             return {
               result: 'fallback-collection',
@@ -123,108 +121,12 @@ async function loadOtelCollector() {
   return otelCollectorCache;
 }
 
-// Service Container Integration with Enhanced Fallback
-let serviceContainerCache: unknown = null;
-
-async function loadServiceContainer() {
-  if (!serviceContainerCache) {
-    try {
-      const packageName = '@claude-zen/service-container';
-      serviceContainerCache = await import(packageName);
-    } catch {
-      // Enhanced fallback service container implementation
-      serviceContainerCache = {
-        ServiceContainer: class {
-          private services = new Map<string, unknown>();
-          async initialize() {
-            return this;
-          }
-          register(key: string, factory: unknown) {
-            this.services.set(key, factory);
-          }
-          resolve(key: string) {
-            const factory = this.services.get(key);
-            return factory
-              ? typeof factory === 'function'
-                ? factory()
-                : factory
-              : null;
-          }
-          has(key: string) {
-            return this.services.has(key);
-          }
-          clear() {
-            this.services.clear();
-          }
-          getStatus() {
-            return {
-              status: 'fallback',
-              healthy: true,
-              services: this.services.size,
-            };
-          }
-        },
-        createServiceContainer: (name = 'default') => {
-          // Enhanced fallback service container with local registry
-          const localServices = new Map<string, unknown>();
-
-          return {
-            name,
-            register: (key: string, factory: unknown) => {
-              console.debug(
-                `Registering service '${key}' in container '${name}'`,
-              );
-              // Store factory function for potential resolution
-              localServices.set(key, factory);
-              return { registered: true, key, container: name };
-            },
-            resolve: (key: string) => {
-              console.debug(
-                `Resolving service '${key}' from container '${name}'`,
-              );
-              const factory = localServices.get(key);
-              if (factory) {
-                try {
-                  return typeof factory === 'function' ? factory() : factory;
-                } catch (error) {
-                  console.warn(`Failed to resolve service '${key}':`, error);
-                  return null;
-                }
-              }
-              return null;
-            },
-            has: (key: string) => localServices.has(key),
-            clear: () => {
-              console.debug(
-                `Cleared container '${name}' (${localServices.size} services)`,
-              );
-              localServices.clear();
-            },
-            getStatus: () => ({
-              status: 'fallback',
-              healthy: true,
-              name,
-              serviceCount: localServices.size,
-              services: Array.from(localServices.keys()),
-            }),
-          };
-        },
-      };
-    }
-  }
-  return serviceContainerCache;
-}
-
 // Professional exports for advanced infrastructure components
 export const getOtelCollector = async () => {
   const otelModule = await loadOtelCollector();
-  return (otelModule as any).createOtelCollector?.() || (otelModule as any).createOtelCollector();
-};
-
-export const getServiceContainer = async (name?: string) => {
-  const containerModule = await loadServiceContainer();
   return (
-    (containerModule as any).createServiceContainer?.(name) || (containerModule as any).createServiceContainer(name)
+    (otelModule as any).createOtelCollector?.() ||
+    (otelModule as any).createOtelCollector()
   );
 };
 
@@ -250,11 +152,9 @@ export const infrastructureSystem = {
 
   // Advanced infrastructure with enhanced fallbacks
   otelCollector: () => loadOtelCollector(),
-  serviceContainer: () => loadServiceContainer(),
 
   // Direct access functions
   getOtelCollector,
-  getServiceContainer,
   getDatabaseAccess: async () => {
     const { getDatabaseAccess } = await import('./database');
     return getDatabaseAccess();

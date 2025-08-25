@@ -46,3 +46,7 @@ panic = "abort"
 
 [profile.release.package."*"]
 opt-level = "z"
+[features]
+default = ["std", "auto-optimization"]
+std = []
+auto-optimization = []

@@ -19,9 +19,7 @@
     "composite": false,
     "incremental": false
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "exclude": [
     "dist/**/*",
     "node_modules/**/*",

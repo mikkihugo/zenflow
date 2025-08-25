@@ -142,7 +142,7 @@ impl FactEngine {
 
     // Execute each step in the template
     for step in &template.steps {
-      context = self.execute_step(&step, context, options).await?;
+      context = self.execute_step(step, context, options).await?;
     }
 
     Ok(serde_json::json!({
@@ -768,7 +768,7 @@ fn extract_entities(value: &serde_json::Value) -> Vec<String> {
   // Extract capitalized words as potential entities
   text
     .split_whitespace()
-    .filter(|word| word.chars().next().map_or(false, |c| c.is_uppercase()))
+    .filter(|word| word.chars().next().is_some_and(|c| c.is_uppercase()))
     .take(10)
     .map(|s| s.to_string())
     .collect()

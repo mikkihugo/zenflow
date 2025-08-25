@@ -55,7 +55,7 @@ export default [
         clearInterval: 'readonly',
         Event: 'readonly',
         EventTarget: 'readonly',
-        
+
         // Node.js globals still needed
         process: 'readonly',
         Buffer: 'readonly',
@@ -90,15 +90,15 @@ export default [
     ignores: [
       'dist/**/*',
       'node_modules/**/*',
-      'src/wasm/**/*',        // Exclude entire WASM directory
-      'src/**/*.js',          // Exclude generated JavaScript files
-      'src/**/*.d.ts',        // Exclude generated declaration files
+      'src/wasm/**/*', // Exclude entire WASM directory
+      'src/**/*.js', // Exclude generated JavaScript files
+      'src/**/*.d.ts', // Exclude generated declaration files
       '**/*.wasm',
       '**/*.d.ts.map',
       '**/*.js.map',
       '.pnpm-debug.log*',
-      'tsup.config.ts',       // Skip config files that reference missing tsconfigs
-      '*.config.js',          // Skip other config files
+      'tsup.config.ts', // Skip config files that reference missing tsconfigs
+      '*.config.js', // Skip other config files
       '*.config.ts',
     ],
   },

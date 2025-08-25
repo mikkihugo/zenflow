@@ -58,9 +58,16 @@ pub enum DiffLineType {
 
 impl DiffViewer {
     /// Create a new diff viewer
-    pub fn new(theme: &dyn Theme) -> Self {
+    pub fn new(current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             current_diff: None,
             style: DiffStyle::SideBySide,
             scroll_offset: 0,
@@ -223,7 +230,7 @@ impl DiffViewer {
     }
     
     /// Render the diff viewer
-    pub fn render(&self, renderer: &Renderer, area: Rect) {
+    pub fn render(&self, renderer: &mut Renderer, area: Rect) {
         let title = if let Some(ref diff) = self.current_diff {
             format!("Diff: {} → {}", diff.original_file, diff.modified_file)
         } else {
@@ -231,7 +238,7 @@ impl DiffViewer {
         };
         
         let block = Block::default()
-            .title(title)
+            .title(title.as_str())
             .borders(Borders::ALL)
             .border_style(Style::default().fg(self.theme.border()));
         
@@ -252,7 +259,7 @@ impl DiffViewer {
     }
     
     /// Render unified diff view
-    fn render_unified(&self, renderer: &Renderer, area: Rect, diff: &DiffContent) {
+    fn render_unified(&self, renderer: &mut Renderer, area: Rect, diff: &DiffContent) {
         let mut lines = Vec::new();
         
         // Collect all lines from all hunks
@@ -292,7 +299,7 @@ impl DiffViewer {
     }
     
     /// Render side-by-side diff view
-    fn render_side_by_side(&self, renderer: &Renderer, area: Rect, diff: &DiffContent) {
+    fn render_side_by_side(&self, renderer: &mut Renderer, area: Rect, diff: &DiffContent) {
         // Split area into left and right halves
         let chunks = ratatui::layout::Layout::default()
             .direction(ratatui::layout::Direction::Horizontal)
@@ -310,7 +317,7 @@ impl DiffViewer {
     }
     
     /// Render one side of the side-by-side view
-    fn render_side(&self, renderer: &Renderer, area: Rect, diff: &DiffContent, is_original: bool) {
+    fn render_side(&self, renderer: &mut Renderer, area: Rect, diff: &DiffContent, is_original: bool) {
         let title = if is_original {
             &diff.original_file
         } else {
@@ -318,7 +325,7 @@ impl DiffViewer {
         };
         
         let block = Block::default()
-            .title(title)
+            .title(title.as_str())
             .borders(Borders::ALL)
             .border_style(Style::default().fg(self.theme.border()));
         

@@ -37,10 +37,13 @@ const assert_structural_equivalency = {} as any;
  * GRPO Configuration exactly matching Stanford DSPy API
  */
 export interface GRPOConfig {
-  metric?: MetricFunction|null;
+  metric?: MetricFunction | null;
   multitask?: boolean;
-  train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null;
-  adapter?: Adapter|Map<LMInterface, Adapter>|null;
+  train_kwargs?:
+    | Record<string, any>
+    | Map<LMInterface, Record<string, any>>
+    | null;
+  adapter?: Adapter | Map<LMInterface, Adapter> | null;
   exclude_demos?: boolean;
   num_threads?: number;
   num_train_steps?: number;
@@ -63,11 +66,11 @@ class Counter {
   private counts = new Map<number, number>();
 
   increment(id: number): void {
-    this.counts.set(id, (this.counts.get(id)||0) + 1);
+    this.counts.set(id, (this.counts.get(id) || 0) + 1);
   }
 
   get(id: number): number {
-    return this.counts.get(id)||0;
+    return this.counts.get(id) || 0;
   }
 
   most_common(): Array<[number, number]> {
@@ -81,7 +84,7 @@ class Counter {
  * Exact implementation matching Stanford DSPy GRPO teleprompter with 100% API compatibility.
  */
 export class GRPO extends FinetuneTeleprompter {
-  private metric: MetricFunction|null;
+  private metric: MetricFunction | null;
   private multitask: boolean;
   private adapter: Map<LMInterface, Adapter>;
   private exclude_demos: boolean;
@@ -95,7 +98,10 @@ export class GRPO extends FinetuneTeleprompter {
   private report_train_scores: boolean;
   private failure_score: number;
   private format_failure_score: number;
-  private variably_invoked_predictor_grouping_mode: 'truncate' | 'fill' | 'ragged';
+  private variably_invoked_predictor_grouping_mode:
+    | 'truncate'
+    | 'fill'
+    | 'ragged';
   private variably_invoked_predictor_fill_strategy: 'randint' | 'max' | null;
   private shuffled_trainset_ids: number[];
   private epoch: number;
@@ -117,7 +123,7 @@ export class GRPO extends FinetuneTeleprompter {
     report_train_scores = false,
     failure_score = 0,
     format_failure_score = -1,
-    variably_invoked_predictor_grouping_mode ='truncate' as const,
+    variably_invoked_predictor_grouping_mode = 'truncate' as const,
     variably_invoked_predictor_fill_strategy = null,
   }: GRPOConfig = {}) {
     super(train_kwargs);
@@ -194,7 +200,7 @@ export class GRPO extends FinetuneTeleprompter {
    * Convert adapter to LM dictionary
    */
   private convert_to_lm_dict(
-    adapter: Adapter|Map<LMInterface, Adapter>|null
+    adapter: Adapter | Map<LMInterface, Adapter> | null
   ): Map<LMInterface, Adapter> {
     if (adapter instanceof Map) {
       return adapter;
@@ -285,7 +291,7 @@ export class GRPO extends FinetuneTeleprompter {
   private async report_validation_metrics(
     student: DSPyModule,
     trainset: Example[],
-    valset: Example[]|null,
+    valset: Example[] | null,
     logger: any,
     step_idx: number = -1
   ): Promise<void> {
@@ -300,7 +306,8 @@ export class GRPO extends FinetuneTeleprompter {
     if (valset !== null) {
       // Validation set provided by user
       if (this.use_train_as_val) {
-        throw new Error('If valset is provided, use_train_as_val must be False.'
+        throw new Error(
+          'If valset is provided, use_train_as_val must be False.'
         );
       }
       if (
@@ -472,7 +479,8 @@ export class GRPO extends FinetuneTeleprompter {
         }
         if (step_idx === -1) {
           logger.info(
-            'Not using any validation set and not reporting train scores.');
+            'Not using any validation set and not reporting train scores.'
+          );
         }
       }
     }
@@ -572,15 +580,16 @@ export class GRPO extends FinetuneTeleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule|DSPyModule[]|null;
-      valset?: Example[]|null;
+      teacher?: DSPyModule | DSPyModule[] | null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     let { trainset, teacher = null, valset = null } = config;
     const logger = { info: console.log, warning: console.warn };
 
-    logger.info('Starting the GRPO compilation process... The LM(s) for the student program will be updated in place at the end of the training.'
+    logger.info(
+      'Starting the GRPO compilation process... The LM(s) for the student program will be updated in place at the end of the training.'
     );
     logger.info('Validating the inputs...');
 
@@ -637,9 +646,10 @@ export class GRPO extends FinetuneTeleprompter {
     const num_student_predictors = student.predictors().length;
 
     logger.info(
-      'Preparing the teacher program(s)... We will ensure that the provided programs have the same program structure as the student program.');
+      'Preparing the teacher program(s)... We will ensure that the provided programs have the same program structure as the student program.'
+    );
     let teachers: DSPyModule[];
-    if ((Array.isArray(teacher) && teacher.length === 0)||teacher === null) {
+    if ((Array.isArray(teacher) && teacher.length === 0) || teacher === null) {
       teachers = [student];
     } else {
       teachers = Array.isArray(teacher) ? teacher : [teacher];
@@ -653,7 +663,8 @@ export class GRPO extends FinetuneTeleprompter {
     // Ensure that the teachers list contains the student program
     if (!teachers.includes(student)) {
       throw new Error(
-        `Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +'Alternatively, you can leave the teacher argument as None, and the student program will be used as the teacher program.'
+        `Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +
+          'Alternatively, you can leave the teacher argument as None, and the student program will be used as the teacher program.'
       );
     }
 
@@ -661,7 +672,8 @@ export class GRPO extends FinetuneTeleprompter {
       throw new Error(
         `The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ${teachers.length}. ` +
           'This is required to ensure that each teacher gets the same number of examples. ' +
-          'Please provide a number of examples that is divisible by the number of teachers.');
+          'Please provide a number of examples that is divisible by the number of teachers.'
+      );
     }
     const num_samples_per_input = Math.floor(
       this.num_rollouts_per_grpo_step / teachers.length
@@ -676,7 +688,7 @@ export class GRPO extends FinetuneTeleprompter {
 
     // Update train_kwargs
     for (const pred of student.predictors()) {
-      let train_kwargs = this.trainKwargs?.get(pred.lm)||{};
+      let train_kwargs = this.trainKwargs?.get(pred.lm) || {};
       train_kwargs = { ...train_kwargs };
       train_kwargs['num_generations'] = this.num_rollouts_per_grpo_step;
       this.trainKwargs?.set(pred.lm, train_kwargs);
@@ -867,7 +879,7 @@ export class GRPO extends FinetuneTeleprompter {
                 const predictor = trace_instance[0];
                 const pred_lm = predictor.lm;
 
-                const adapter = this.adapter.get(pred_lm)||new ChatAdapter();
+                const adapter = this.adapter.get(pred_lm) || new ChatAdapter();
                 if (!(adapter instanceof ChatAdapter)) {
                   throw new Error(
                     `Adapter ${adapter} is not a ChatAdapter. GRPO training is not supported for this adapter.`
@@ -883,12 +895,12 @@ export class GRPO extends FinetuneTeleprompter {
                 if (this.is_failed_prediction(trace_instance[2])) {
                   const failed_pred = trace_instance[2] as FailedPrediction;
                   const failure_score =
-                    failed_pred.format_reward||this.format_failure_score;
+                    failed_pred.format_reward || this.format_failure_score;
 
                   example_training_data[group_idx].push({
                     messages: inp_messages,
                     completion: {
-                      role:'assistant',
+                      role: 'assistant',
                       content: failed_pred.completion_text,
                     },
                     reward: failure_score,
@@ -966,11 +978,11 @@ export class GRPO extends FinetuneTeleprompter {
       for (const [job_key, job] of grpo_training_jobs.entries()) {
         const [, data_key_str] = job_key.split('_');
         const data_key =
-          data_key_str === 'null'? null : parseInt(data_key_str);
+          data_key_str === 'null' ? null : parseInt(data_key_str);
         const train_data =
           data_key === null
             ? train_batch_per_predictor.flat()
-            : train_batch_per_predictor[data_key]||[];
+            : train_batch_per_predictor[data_key] || [];
 
         for (const group of train_data) {
           if (group.length !== this.num_rollouts_per_grpo_step) {
@@ -990,7 +1002,7 @@ export class GRPO extends FinetuneTeleprompter {
           }
         }
 
-        await job.step(train_data,'grpo_chat' as any);
+        await job.step(train_data, 'grpo_chat' as any);
       }
 
       logger.info(

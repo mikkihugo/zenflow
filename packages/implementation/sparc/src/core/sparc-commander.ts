@@ -25,7 +25,7 @@
  * @since 2024-01-01
  */
 
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 import { TypedEventBase } from '@claude-zen/foundation';
 
 // Core SPARC types
@@ -254,7 +254,7 @@ export class SPARCCommander extends TypedEventBase {
     workingDirectory?: string;
     outputDirectory?: string;
   }): Promise<SPARCProject> {
-    const projectId = nanoid();
+    const projectId = generateNanoId();
 
     const project: SPARCProject = {
       id: projectId,
@@ -469,7 +469,7 @@ export class SPARCCommander extends TypedEventBase {
     const requirementsDoc = this.generateRequirementsDocument(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'requirements',
       name: 'Requirements Document',
       content: requirementsDoc,
@@ -486,7 +486,7 @@ export class SPARCCommander extends TypedEventBase {
     const acceptanceCriteria = this.generateAcceptanceCriteria(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'acceptance-criteria',
       name: 'Acceptance Criteria',
       content: acceptanceCriteria,
@@ -511,7 +511,7 @@ export class SPARCCommander extends TypedEventBase {
     const pseudocode = this.generatePseudocode(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'pseudocode',
       name: 'Algorithm Pseudocode',
       content: pseudocode,
@@ -528,7 +528,7 @@ export class SPARCCommander extends TypedEventBase {
     const dataFlow = this.generateDataFlowDiagram(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'data-flow',
       name: 'Data Flow Diagram',
       content: dataFlow,
@@ -553,7 +553,7 @@ export class SPARCCommander extends TypedEventBase {
     const architecture = this.generateArchitectureDocument(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'architecture',
       name: 'System Architecture',
       content: architecture,
@@ -570,7 +570,7 @@ export class SPARCCommander extends TypedEventBase {
     const components = this.generateComponentSpecifications(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'components',
       name: 'Component Specifications',
       content: components,
@@ -595,7 +595,7 @@ export class SPARCCommander extends TypedEventBase {
     const implementation = this.generateImplementation(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'implementation',
       name: 'Optimized Implementation',
       content: implementation,
@@ -612,7 +612,7 @@ export class SPARCCommander extends TypedEventBase {
     const optimizations = this.generateOptimizations(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'optimizations',
       name: 'Performance Optimizations',
       content: optimizations,
@@ -637,7 +637,7 @@ export class SPARCCommander extends TypedEventBase {
     const tests = this.generateTestSuite(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'tests',
       name: 'Test Suite',
       content: tests,
@@ -655,7 +655,7 @@ export class SPARCCommander extends TypedEventBase {
     const documentation = this.generateDocumentation(project);
 
     phase.deliverables.push({
-      id: nanoid(),
+      id: generateNanoId(),
       type: 'documentation',
       name: 'Project Documentation',
       content: documentation,
@@ -742,7 +742,7 @@ export class SPARCCommander extends TypedEventBase {
       criteria.reduce((sum, c) => sum + c.weight, 0);
 
     return {
-      id: nanoid(),
+      id: generateNanoId(),
       name: gateName,
       criteria,
       passed: criteria.every((c) => c.passed),

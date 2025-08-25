@@ -53,12 +53,19 @@ pub struct MessageAttachment {
 
 impl ChatComponent {
     /// Create a new chat component
-    pub fn new(config: &ChatConfig, theme: &dyn Theme) -> Self {
+    pub fn new(config: &ChatConfig, current_theme: &dyn Theme) -> Self {
         let mut input_area = TextArea::default();
         input_area.set_placeholder_text("Type your message...");
         
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             config: config.clone(),
             messages: Vec::new(),
             input_area,
@@ -195,13 +202,17 @@ impl ChatComponent {
     }
     
     /// Update theme
-    pub fn update_theme(&mut self, theme: &dyn Theme) {
-        // In a real implementation, we'd clone or recreate the theme
-        // For now, this is a placeholder
+    pub fn update_theme(&mut self, current_theme: &dyn Theme) {
+        // Update the stored theme based on the current theme name
+        self.theme = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
     }
     
     /// Render the main chat area (messages)
-    pub fn render(&mut self, renderer: &Renderer, area: Rect) {
+    pub fn render(&mut self, renderer: &mut Renderer, area: Rect) {
         let block = Block::default()
             .title("Chat")
             .borders(Borders::ALL)
@@ -214,7 +225,7 @@ impl ChatComponent {
     }
     
     /// Render the input area
-    pub fn render_input(&mut self, renderer: &Renderer, area: Rect) {
+    pub fn render_input(&mut self, renderer: &mut Renderer, area: Rect) {
         let block = Block::default()
             .title("Message")
             .borders(Borders::ALL)
@@ -237,7 +248,7 @@ impl ChatComponent {
     }
     
     /// Render the message list
-    fn render_messages(&self, renderer: &Renderer, area: Rect) {
+    fn render_messages(&self, renderer: &mut Renderer, area: Rect) {
         if self.messages.is_empty() {
             let empty_msg = Paragraph::new("No messages yet. Start a conversation!")
                 .style(Style::default().fg(self.theme.text_muted()));
@@ -275,8 +286,8 @@ impl ChatComponent {
                 .content_length(self.messages.len())
                 .position(self.scroll_offset);
             
-            // Note: scrollbar rendering would need proper state management
-            // renderer.render_stateful_widget(scrollbar, area, &mut scrollbar_state);
+            // Render the scrollbar to show current position in chat history
+            renderer.render_stateful_widget(scrollbar, area, &mut scrollbar_state);
         }
     }
     
@@ -336,8 +347,8 @@ impl ChatComponent {
 
 /// Format a timestamp for display
 fn format_timestamp(timestamp: u64) -> String {
-    match chrono::NaiveDateTime::from_timestamp_opt(timestamp as i64, 0) {
-        Some(dt) => dt.format("%H:%M:%S").to_string(),
+    match chrono::DateTime::from_timestamp(timestamp as i64, 0) {
+        Some(dt) => dt.naive_utc().format("%H:%M:%S").to_string(),
         None => "??:??:??".to_string(),
     }
 }

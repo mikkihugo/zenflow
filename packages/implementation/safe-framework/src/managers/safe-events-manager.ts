@@ -17,7 +17,7 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { generateNanoId } from '@claude-zen/foundation';
 import type { Logger, MemorySystem, TypeSafeEventBus } from '../types';
 import { getLogger, createEvent, EventPriority } from '../types';
 import type {

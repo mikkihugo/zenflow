@@ -12,9 +12,8 @@
  * @version 1.0.0
  */
 
-import { format, addDays, addWeeks, startOfWeek } from 'date-fns';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+const { format, addDays, addWeeks, startOfWeek } = dateFns;
 import {
   groupBy,
   map,
@@ -464,7 +463,7 @@ export class MultiARTCoordinationService {
     });
 
     const startTime = Date.now();
-    const resultId = `coordination-${nanoid(12)}`;`
+    const resultId = `coordination-${generateNanoId(12)}`;`
 
     try {
       // Execute coordination activities
@@ -531,7 +530,7 @@ export class MultiARTCoordinationService {
   trackDependency(
     dependency: Omit<ARTDependency, 'dependencyId'>'
   ): ARTDependency {
-    const dependencyId = `dep-${nanoid(12)}`;`
+    const dependencyId = `dep-${generateNanoId(12)}`;`
 
     const trackedDependency: ARTDependency = {
       dependencyId,
@@ -679,7 +678,7 @@ export class MultiARTCoordinationService {
 
     // Execute planning activities
     activities.push({
-      activityId: `activity-${nanoid(8)}`,`
+      activityId: `activity-${generateNanoId(8)}`,`
       activityType: 'planning',
       duration: 60,
       participants: config.coordinatedARTs.map((art) => art.rteContact),
@@ -689,7 +688,7 @@ export class MultiARTCoordinationService {
 
     // Execute synchronization activities
     activities.push({
-      activityId: `activity-${nanoid(8)}`,`
+      activityId: `activity-${generateNanoId(8)}`,`
       activityType: 'synchronization',
       duration: 45,
       participants: config.coordinatedARTs.map((art) => art.rteContact),
@@ -729,7 +728,7 @@ export class MultiARTCoordinationService {
     for (const art of config.coordinatedARTs) {
       for (const syncReq of art.synchronizationNeeds) {
         outcomes.push({
-          outcomeId: `sync-${nanoid(8)}`,`
+          outcomeId: `sync-${generateNanoId(8)}`,`
           synchronizationType: syncReq.synchronizationType,
           success: Math.random() > 0.2, // 80% success rate simulation
           participants: syncReq.involvedARTs,
@@ -752,7 +751,7 @@ export class MultiARTCoordinationService {
     for (const art of arts) {
       if (art.capacity.utilization > 90) {
         issues.push({
-          issueId: `issue-${nanoid(8)}`,`
+          issueId: `issue-${generateNanoId(8)}`,`
           severity: 'high',
           description: `${art.artName} capacity utilization at ${art.capacity.utilization}%`,`
           impactedARTs: [art.artId],
@@ -768,7 +767,7 @@ export class MultiARTCoordinationService {
     const blockedDeps = this.getBlockedDependencies();
     for (const dep of blockedDeps) {
       issues.push({
-        issueId: `issue-${nanoid(8)}`,`
+        issueId: `issue-${generateNanoId(8)}`,`
         severity:
           dep.criticality === DependencyCriticality.CRITICAL
             ? 'critical''
@@ -787,7 +786,7 @@ export class MultiARTCoordinationService {
 
   private generateActionItems(issues: CoordinationIssue[]): ActionItem[] {
     return issues.map((issue) => ({
-      itemId: `action-${nanoid(8)}`,`
+      itemId: `action-${generateNanoId(8)}`,`
       description: `Address: ${issue.description}`,`
       owner: issue.owner,
       assignedART: issue.impactedARTs[0],

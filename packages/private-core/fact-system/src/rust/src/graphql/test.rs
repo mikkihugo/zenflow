@@ -2,15 +2,13 @@
 //!
 //! Demonstrates version-specific GraphQL functionality working
 
-use super::{VersionSpecificAnalysis, simple_client::SimpleGraphQLClient};
-
 #[cfg(test)]
 mod tests {
-  use super::*;
+  use crate::graphql::{VersionSpecificAnalysis, simple_client::SimpleGraphQLClient};
 
   #[tokio::test]
   async fn test_graphql_client_creation() {
-    let client = SimpleGraphQLClient::new(None);
+    let _client = SimpleGraphQLClient::new(None);
 
     // Test creating analysis request
     let analysis = VersionSpecificAnalysis {

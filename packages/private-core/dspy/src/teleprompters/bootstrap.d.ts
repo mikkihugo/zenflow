@@ -38,8 +38,8 @@ export declare class LabeledFewShot extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule|null;
-      valset?: Example[]|null;
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
       [key: string]: any;
     }
   ): Promise<DSPyModule>;

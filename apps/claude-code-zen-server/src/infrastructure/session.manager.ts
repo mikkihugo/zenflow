@@ -6,11 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type {
-  NextFunction,
-  Request,
-  Response
-} from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 import type { WebConfig } from '../configuration/server.config';
 
@@ -38,32 +34,26 @@ export class WebSessionManager {
    * Session middleware for Express.
    */
   middleware() {
-    return (
-      req: Request,
-      unusedRes: Response,
-      next: NextFunction
-    ) => {
-      const sessionId = (req.headers['x-session-id'] as string) || this.generateSessionId();
+    return (req: Request, unusedRes: Response, next: NextFunction) => {
+      const sessionId =
+        (req.headers['x-session-id'] as string) || this.generateSessionId();
       req.sessionId = sessionId;
 
       if (this.sessions.has(sessionId)) {
         const session = this.sessions.get(sessionId)!;
         session.lastActivity = new Date();
       } else {
-        this.sessions.set(
-          sessionId,
-          {
-            id: sessionId,
-            createdAt: new Date(),
-            lastActivity: new Date(),
-            preferences: {
-              theme: this.config.theme || 'dark',
-              refreshInterval: 5000,
-              notifications: true
-            }
-          }
-        );
-        this.logger.debug(`Created new session: ${  sessionId}`);
+        this.sessions.set(sessionId, {
+          id: sessionId,
+          createdAt: new Date(),
+          lastActivity: new Date(),
+          preferences: {
+            theme: this.config.theme || 'dark',
+            refreshInterval: 5000,
+            notifications: true,
+          },
+        });
+        this.logger.debug(`Created new session: ${sessionId}`);
       }
       next();
     };
@@ -92,9 +82,9 @@ export class WebSessionManager {
     if (session) {
       session.preferences = {
         ...session.preferences,
-        ...preferences
+        ...preferences,
       };
-      this.logger.debug(`Updated preferences for session: ${  sessionId}`);
+      this.logger.debug(`Updated preferences for session: ${sessionId}`);
       return true;
     }
     return false;
@@ -125,7 +115,7 @@ export class WebSessionManager {
     }
 
     if (cleanedCount > 0) {
-      this.logger.info(`Cleaned up ${  cleanedCount  } expired sessions`);
+      this.logger.info(`Cleaned up ${cleanedCount} expired sessions`);
     }
     return cleanedCount;
   }
@@ -134,7 +124,7 @@ export class WebSessionManager {
    * Generate unique session ID.
    */
   private generateSessionId(): string {
-    return `session-${  Date.now()  }-${  Math.random().toString(36).substring(2, 11)}`;
+    return `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
@@ -148,12 +138,13 @@ export class WebSessionManager {
     const sessions = Array.from(this.sessions.values());
     const now = new Date();
     const ages = sessions.map((s) => now.getTime() - s.createdAt.getTime());
-    const averageAge = ages.length > 0 ? ages.reduce((a, b) => a + b, 0) / ages.length : 0;
+    const averageAge =
+      ages.length > 0 ? ages.reduce((a, b) => a + b, 0) / ages.length : 0;
 
     return {
       total: sessions.length,
       active: sessions.length, // All sessions in memory are considered active
-      averageAge
+      averageAge,
     };
   }
 }

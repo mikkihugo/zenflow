@@ -402,14 +402,14 @@
 
 // Configuration types
 export type {
-	ChaosEngineeringOptions,
-	ChaosExperiment,
-	ChaosStats,
-	ExperimentExecution,
-	// Note: SafetyGuardrails, ExperimentResult, MonitoringConfig not found in src/main.ts
-} from "./src/main";
+  ChaosEngineeringOptions,
+  ChaosExperiment,
+  ChaosStats,
+  ExperimentExecution,
+  // Note: SafetyGuardrails, ExperimentResult, MonitoringConfig not found in src/main.ts
+} from './src/main';
 // ✅ MAIN ENTRY POINT - Use this for everything!
-export { ChaosEngineering as default, ChaosEngineering } from "./src/main";
+export { ChaosEngineering as default, ChaosEngineering } from './src/main';
 
 // Advanced interfaces (for power users) - File not found
 // export type {
@@ -431,8 +431,8 @@ export { ChaosEngineering as default, ChaosEngineering } from "./src/main";
 
 // Re-export useful types for consumers
 export type ChaosEngineeringFeatures = {
-	chaosEngineering: InstanceType<typeof import("./src/main").ChaosEngineering>;
-	// Note: SafetyMonitor and EmergencyProtocols types not found
-	// safetyMonitor: SafetyMonitor;
-	// emergencyProtocols: EmergencyProtocols;
+  chaosEngineering: InstanceType<typeof import('./src/main').ChaosEngineering>;
+  // Note: SafetyMonitor and EmergencyProtocols types not found
+  // safetyMonitor: SafetyMonitor;
+  // emergencyProtocols: EmergencyProtocols;
 };

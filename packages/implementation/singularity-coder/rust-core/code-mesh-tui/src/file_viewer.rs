@@ -49,9 +49,16 @@ pub enum FileType {
 
 impl FileViewer {
     /// Create a new file viewer
-    pub fn new(config: &FileViewerConfig, theme: &dyn Theme) -> Self {
+    pub fn new(config: &FileViewerConfig, current_theme: &dyn Theme) -> Self {
+        // Create a boxed version of the current theme
+        let boxed_theme: Box<dyn Theme + Send + Sync> = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
+        
         Self {
-            theme: Box::new(crate::theme::DefaultTheme), // Temporary
+            theme: boxed_theme,
             config: config.clone(),
             current_file: None,
             scroll_offset: 0,
@@ -148,9 +155,13 @@ impl FileViewer {
     }
     
     /// Update theme
-    pub fn update_theme(&mut self, theme: &dyn Theme) {
-        // In a real implementation, we'd clone or recreate the theme
-        // For now, this is a placeholder
+    pub fn update_theme(&mut self, current_theme: &dyn Theme) {
+        // Update the stored theme based on the current theme name
+        self.theme = match current_theme.name() {
+            "gruvbox" => Box::new(crate::theme::GruvboxTheme),
+            "dracula" => Box::new(crate::theme::DraculaTheme),
+            _ => Box::new(crate::theme::DefaultTheme),
+        };
     }
     
     /// Load file content from disk
@@ -352,7 +363,7 @@ impl FileViewer {
     }
     
     /// Render the file viewer
-    pub fn render(&mut self, renderer: &Renderer, area: Rect) {
+    pub fn render(&mut self, renderer: &mut Renderer, area: Rect) {
         if !self.is_visible {
             return;
         }
@@ -386,7 +397,7 @@ impl FileViewer {
     }
     
     /// Render a text file
-    fn render_text_file(&self, renderer: &Renderer, area: Rect, file: &FileContent) {
+    fn render_text_file(&self, renderer: &mut Renderer, area: Rect, file: &FileContent) {
         let visible_height = area.height as usize;
         let start_line = self.scroll_offset;
         let end_line = (start_line + visible_height).min(file.lines.len());
@@ -439,13 +450,13 @@ impl FileViewer {
                 .content_length(file.lines.len())
                 .position(self.scroll_offset);
             
-            // Note: scrollbar rendering would need proper state management
-            // renderer.render_stateful_widget(scrollbar, area, &mut scrollbar_state);
+            // Render the scrollbar to show current position in file
+            renderer.render_stateful_widget(scrollbar, area, &mut scrollbar_state);
         }
     }
     
     /// Render a diff file
-    fn render_diff(&self, renderer: &Renderer, area: Rect, file: &FileContent) {
+    fn render_diff(&self, renderer: &mut Renderer, area: Rect, file: &FileContent) {
         // This is a simplified diff renderer
         // A full implementation would parse the diff and show changes
         let lines: Vec<Line> = file.lines

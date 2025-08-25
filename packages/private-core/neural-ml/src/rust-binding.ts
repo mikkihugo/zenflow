@@ -99,7 +99,7 @@ export class RustNeuralML {
         performance: {
           duration_ms: Date.now() - startTime,
           memory_used: process.memoryUsage().heapUsed,
-          iterations: result.iterations||0,
+          iterations: result.iterations || 0,
         },
       };
     } catch (error) {
@@ -188,7 +188,7 @@ export class RustNeuralML {
       this.logger.warn('Could not get performance stats:', error);
       return {
         backend: this.config.backend,
-        threads: this.config.threads||1,
+        threads: this.config.threads || 1,
         gpu_available: false,
       };
     }
@@ -198,7 +198,8 @@ export class RustNeuralML {
 
   private detectRustBinary(): string {
     // Try to find the compiled Rust binary
-    const _possiblePaths = ['./neural-core/target/release/neural-ml',
+    const _possiblePaths = [
+      './neural-core/target/release/neural-ml',
       './neural-core/target/debug/neural-ml',
       'cargo',
     ];

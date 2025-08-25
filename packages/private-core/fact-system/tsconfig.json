@@ -4,12 +4,7 @@
     "rootDir": ".",
     "downlevelIteration": true
   },
-  "include": [
-    "index.ts",
-    "src/**/*.ts", 
-    "src/**/*.d.ts",
-    "wasm/**/*.ts"
-  ],
+  "include": ["index.ts", "src/**/*.ts", "src/**/*.d.ts", "wasm/**/*.ts"],
   "exclude": [
     "node_modules",
     "dist",

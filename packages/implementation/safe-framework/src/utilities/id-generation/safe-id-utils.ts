@@ -1,7 +1,7 @@
 /**
  * @fileoverview SAFe ID Generation - Secure ID Utilities
  *
- * ID generation utilities using nanoid for SAFe framework operations.
+ * ID generation utilities using generateNanoId for SAFe framework operations.
  * Provides consistent, secure, URL-safe identifiers.
  *
  * SINGLE RESPONSIBILITY: ID generation for SAFe framework
@@ -12,7 +12,7 @@
  * @version 1.0.0
  */
 
-import { nanoid, customAlphabet } from 'nanoid';
+import { generateNanoId, customAlphabet } from '@claude-zen/foundation';
 
 /**
  * SAFe ID generation utilities
@@ -22,49 +22,49 @@ export class SafeIdUtils {
    * Generate epic identifier
    */
   static generateEpicId(): string {
-    return `epic-${nanoid(12)}`;`
+    return `epic-${generateNanoId(12)}`;`
   }
 
   /**
    * Generate feature identifier
    */
   static generateFeatureId(): string {
-    return `feature-${nanoid(10)}`;`
+    return `feature-${generateNanoId(10)}`;`
   }
 
   /**
    * Generate Program Increment identifier
    */
   static generatePIId(quarter: string, year: number): string {
-    return `PI-${year}${quarter}-${nanoid(8)}`;`
+    return `PI-${year}${quarter}-${generateNanoId(8)}`;`
   }
 
   /**
    * Generate ART identifier
    */
   static generateARTId(valueStreamPrefix: string): string {
-    return `${valueStreamPrefix}-ART-${nanoid(8)}`;`
+    return `${valueStreamPrefix}-ART-${generateNanoId(8)}`;`
   }
 
   /**
    * Generate value stream identifier
    */
   static generateValueStreamId(): string {
-    return `vs-${nanoid(10)}`;`
+    return `vs-${generateNanoId(10)}`;`
   }
 
   /**
    * Generate milestone identifier
    */
   static generateMilestoneId(): string {
-    return `milestone-${nanoid(8)}`;`
+    return `milestone-${generateNanoId(8)}`;`
   }
 
   /**
    * Generate session identifier for PI planning
    */
   static generateSessionId(): string {
-    return `session-${nanoid(16)}`;`
+    return `session-${generateNanoId(16)}`;`
   }
 
   /**
@@ -80,28 +80,28 @@ export class SafeIdUtils {
    */
   static generateTeamId(artId: string, teamName: string): string {
     const sanitizedName = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');'
-    return `${artId}-${sanitizedName}-${nanoid(6)}`;`
+    return `${artId}-${sanitizedName}-${generateNanoId(6)}`;`
   }
 
   /**
    * Generate dependency tracking identifier
    */
   static generateDependencyId(): string {
-    return `dep-${nanoid(10)}`;`
+    return `dep-${generateNanoId(10)}`;`
   }
 
   /**
    * Generate risk identifier
    */
   static generateRiskId(): string {
-    return `risk-${nanoid(8)}`;`
+    return `risk-${generateNanoId(8)}`;`
   }
 
   /**
    * Generate objective identifier for PI
    */
   static generateObjectiveId(): string {
-    return `obj-${nanoid(8)}`;`
+    return `obj-${generateNanoId(8)}`;`
   }
 }
 
