@@ -149,20 +149,85 @@ export interface ProjectRegistry {
  */
 export class ProjectManager {
   private static instance: ProjectManager;
+  
+  /**
+   * Root configuration directory path following Claude Zen storage architecture.
+   * 
+   * @description Absolute path to the Claude Zen configuration directory, resolved
+   * based on the `storeInUserHome` configuration setting. This path serves as the
+   * root for all project management storage operations.
+   * 
+   * **Possible Values**:
+   * - User-global: `/home/user/.claude-zen/` or `C:\Users\user\.claude-zen\`
+   * - Project-local: `/path/to/project/.claude-zen/`
+   * 
+   * @see {@link constructor} for initialization logic
+   */
   private configDir: string;
+  
+  /**
+   * Path to the main project registry file.
+   * 
+   * @description Absolute path to `projects.json` file that contains the registry
+   * of all managed projects. Located within the configDir following the standard
+   * Claude Zen storage structure.
+   * 
+   * **Example Paths**:
+   * - User-global: `~/.claude-zen/projects.json`
+   * - Project-local: `./.claude-zen/projects.json`
+   */
   private projectsFile: string;
+  
+  /**
+   * Path to the projects storage directory.
+   * 
+   * @description Absolute path to the `projects/` directory containing individual
+   * project databases and storage. Each project gets its own subdirectory with
+   * isolated storage following the `proj-{id}/` naming pattern.
+   * 
+   * **Example Paths**:
+   * - User-global: `~/.claude-zen/projects/`
+   * - Project-local: `./.claude-zen/projects/`
+   * 
+   * **Directory Structure**:
+   * ```
+   * projects/
+   * ├── proj-abc123/
+   * │   ├── workspace.db
+   * │   ├── memory/
+   * │   └── cache/
+   * └── proj-def456/
+   *     ├── workspace.db
+   *     └── data/
+   * ```
+   */
   private projectsDir: string;
+  
   private registry: ProjectRegistry|null = null;
 
   private constructor() {
     const config = getConfig();
 
+    /**
+     * Initialize Claude Zen configuration directory path based on storage preference.
+     * 
+     * **Storage Resolution Logic**:
+     * 1. Check `config.project.storeInUserHome` setting
+     * 2. If `true` → Use user home directory (`~/.claude-zen/`)
+     * 3. If `false` → Use project directory (`./.claude-zen/`)
+     * 4. Resolve to absolute path for consistent access
+     * 
+     * **Use Cases**:
+     * - **User Home**: Personal development, cross-project settings, single-user
+     * - **Project Local**: Team development, CI/CD, containerized environments
+     */
     this.configDir = config.project.storeInUserHome
       ? // User home mode: Multi-repo support with central project registry
       path.resolve(path.join(os.homedir(), config.project.configDir))
       : // Project root mode: Single repo mode, store in current project root
       path.resolve(config.project.configDir);
 
+    // Initialize storage paths within the resolved configuration directory
     this.projectsFile = path.join(this.configDir,'projects.json');
     this.projectsDir = path.join(this.configDir, 'projects');
 
@@ -249,41 +314,243 @@ export class ProjectManager {
    * Ensure .gitignore exists to ignore claude-zen directory
    * This creates a .gitignore file regardless of existing .gitignore
    */
+  /**
+   * Ensures comprehensive .gitignore protection within .claude-zen directory.
+   * 
+   * @description Creates a complete .gitignore file inside the .claude-zen directory
+   * to ensure that NOTHING within this directory ever gets committed to version control.
+   * This provides defense-in-depth protection against accidental commits of sensitive
+   * data, databases, authentication tokens, and cache files.
+   * 
+   * **Protection Coverage**:
+   * - All database files (SQLite, KuzuDB, LanceDB)
+   * - Authentication tokens and credentials
+   * - Memory storage and cache directories
+   * - Project-specific configuration and data
+   * - Logs, temporary files, and system artifacts
+   * - IDE and OS generated files
+   * 
+   * @private
+   * @see {@link ensureGitignoreAsync} for async version
+   */
   private ensureGitignore(): void {
     const gitignorePath = path.join(this.configDir, '.gitignore');
 
     if (!fs.existsSync(gitignorePath)) {
-      const gitignoreContent = `# Claude-Zen project configuration and databases
-# This directory contains project-specific data and should not be committed
+      const gitignoreContent = `# ============================================================================
+# CLAUDE ZEN STORAGE PROTECTION - IGNORE EVERYTHING
+# ============================================================================
+#
+# This .gitignore ensures that NOTHING in the .claude-zen directory is ever
+# committed to version control. This directory contains sensitive data that
+# should remain local to each user/environment.
+#
+# Protected content includes:
+# - Database files (SQLite, KuzuDB, LanceDB, etc.)
+# - Authentication tokens and API keys  
+# - Memory storage and cache data
+# - Project-specific configuration
+# - User preferences and session data
+# - Logs and temporary processing files
+#
 
-# Project databases
-projects/*/workspace.db
-projects/*/memory/
-projects/*/cache/
+# =============================================================================
+# IGNORE EVERYTHING BY DEFAULT - MAXIMUM PROTECTION
+# =============================================================================
 
-# Logs
-*.log
+# Ignore all files and directories
+*
+*/
 
-# Temporary files
+# Ignore all file types
+*.*
+
+# =============================================================================
+# DATABASE STORAGE PROTECTION
+# =============================================================================
+
+# Core database files
+*.db
+*.sqlite
+*.sqlite3
+*.kuzu
+*.lancedb
+
+# Database directories
+data/
+databases/
+storage/
+
+# Specific database files from Claude Zen architecture
+coordination.db
+kuzu-graph.db
+lancedb-vectors.db
+
+# =============================================================================
+# MEMORY AND CACHE PROTECTION  
+# =============================================================================
+
+# Memory storage
+memory/
+sessions/
+vectors/
+cache/
 .tmp/
 temp/
 
-# OS generated files
-.DS_Store
-Thumbs.db
+# Memory-specific files
+debug.json
+memory.json
+cache.json
 
-# IDE files
+# =============================================================================
+# AUTHENTICATION AND SECURITY PROTECTION
+# =============================================================================
+
+# Authentication tokens
+*.json
+copilot-token.json
+auth-token.json
+api-keys.json
+credentials.json
+config.json
+
+# Security-related files
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cert
+
+# =============================================================================
+# PROJECT AND WORKSPACE PROTECTION
+# =============================================================================
+
+# Project directories
+projects/
+workspaces/
+proj-*/
+
+# Project-specific files
+workspace.db
+project.json
+workspace.json
+settings.json
+
+# =============================================================================
+# LOGS AND DEVELOPMENT ARTIFACTS
+# =============================================================================
+
+# Log files
+*.log
+*.out
+*.err
+logs/
+
+# Development artifacts
+*.bak
+*.backup
+*.tmp
+*.temp
+*.cache
+*.swap
+*.swp
+*.swo
+
+# =============================================================================
+# SYSTEM AND OS FILES
+# =============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows  
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# =============================================================================
+# IDE AND EDITOR FILES
+# =============================================================================
+
+# Visual Studio Code
 .vscode/
+
+# JetBrains IDEs
 .idea/
+*.iml
+*.iws
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+#*#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# DEVELOPMENT AND BUILD ARTIFACTS
+# =============================================================================
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Rust
+target/
+
+# =============================================================================
+# END OF CLAUDE ZEN PROTECTION
+# =============================================================================
+#
+# This comprehensive .gitignore ensures maximum protection against accidental
+# commits of sensitive Claude Zen data. If you need to commit something from
+# this directory (which should be rare), you'll need to explicitly force it
+# with 'git add -f filename' after careful consideration.
+#
 `;
 
       fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
-      logger.info(`Created .gitignore: ${gitignorePath}`);
+      logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
     }
   }
 
   /**
-   * Ensure .gitignore exists to ignore claude-zen directory (async version)
+   * Ensures comprehensive .gitignore protection within .claude-zen directory (async version).
+   * 
+   * @description Asynchronous version of {@link ensureGitignore}. Creates a complete 
+   * .gitignore file inside the .claude-zen directory to ensure that NOTHING within 
+   * this directory ever gets committed to version control.
+   * 
+   * @private
+   * @returns Promise that resolves when .gitignore is created or verified to exist
+   * @see {@link ensureGitignore} for sync version and detailed documentation
    */
   private async ensureGitignoreAsync(): Promise<void> {
     const gitignorePath = path.join(this.configDir, '.gitignore');
@@ -291,32 +558,208 @@ Thumbs.db
     try {
       await fsAsync.access(gitignorePath);
     } catch {
-      const gitignoreContent = `# Claude-Zen project configuration and databases
-# This directory contains project-specific data and should not be committed
+      // Reuse the same comprehensive content from the sync version
+      const gitignoreContent = `# ============================================================================
+# CLAUDE ZEN STORAGE PROTECTION - IGNORE EVERYTHING
+# ============================================================================
+#
+# This .gitignore ensures that NOTHING in the .claude-zen directory is ever
+# committed to version control. This directory contains sensitive data that
+# should remain local to each user/environment.
+#
+# Protected content includes:
+# - Database files (SQLite, KuzuDB, LanceDB, etc.)
+# - Authentication tokens and API keys  
+# - Memory storage and cache data
+# - Project-specific configuration
+# - User preferences and session data
+# - Logs and temporary processing files
+#
 
-# Project databases
-projects/*/workspace.db
-projects/*/memory/
-projects/*/cache/
+# =============================================================================
+# IGNORE EVERYTHING BY DEFAULT - MAXIMUM PROTECTION
+# =============================================================================
 
-# Logs
-*.log
+# Ignore all files and directories
+*
+*/
 
-# Temporary files
+# Ignore all file types
+*.*
+
+# =============================================================================
+# DATABASE STORAGE PROTECTION
+# =============================================================================
+
+# Core database files
+*.db
+*.sqlite
+*.sqlite3
+*.kuzu
+*.lancedb
+
+# Database directories
+data/
+databases/
+storage/
+
+# Specific database files from Claude Zen architecture
+coordination.db
+kuzu-graph.db
+lancedb-vectors.db
+
+# =============================================================================
+# MEMORY AND CACHE PROTECTION  
+# =============================================================================
+
+# Memory storage
+memory/
+sessions/
+vectors/
+cache/
 .tmp/
 temp/
 
-# OS generated files
-.DS_Store
-Thumbs.db
+# Memory-specific files
+debug.json
+memory.json
+cache.json
 
-# IDE files
+# =============================================================================
+# AUTHENTICATION AND SECURITY PROTECTION
+# =============================================================================
+
+# Authentication tokens
+*.json
+copilot-token.json
+auth-token.json
+api-keys.json
+credentials.json
+config.json
+
+# Security-related files
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cert
+
+# =============================================================================
+# PROJECT AND WORKSPACE PROTECTION
+# =============================================================================
+
+# Project directories
+projects/
+workspaces/
+proj-*/
+
+# Project-specific files
+workspace.db
+project.json
+workspace.json
+settings.json
+
+# =============================================================================
+# LOGS AND DEVELOPMENT ARTIFACTS
+# =============================================================================
+
+# Log files
+*.log
+*.out
+*.err
+logs/
+
+# Development artifacts
+*.bak
+*.backup
+*.tmp
+*.temp
+*.cache
+*.swap
+*.swp
+*.swo
+
+# =============================================================================
+# SYSTEM AND OS FILES
+# =============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows  
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# =============================================================================
+# IDE AND EDITOR FILES
+# =============================================================================
+
+# Visual Studio Code
 .vscode/
+
+# JetBrains IDEs
 .idea/
+*.iml
+*.iws
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+#*#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# DEVELOPMENT AND BUILD ARTIFACTS
+# =============================================================================
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Rust
+target/
+
+# =============================================================================
+# END OF CLAUDE ZEN PROTECTION
+# =============================================================================
+#
+# This comprehensive .gitignore ensures maximum protection against accidental
+# commits of sensitive Claude Zen data. If you need to commit something from
+# this directory (which should be rare), you'll need to explicitly force it
+# with 'git add -f filename' after careful consideration.
+#
 `;
 
       await fsAsync.writeFile(gitignorePath, gitignoreContent, 'utf8');
-      logger.info(`Created .gitignore: ${gitignorePath}`);
+      logger.info(`Created comprehensive .gitignore protection: ${gitignorePath}`);
     }
   }
 

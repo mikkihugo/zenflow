@@ -63,7 +63,87 @@ const configSchema = z.object({
 
   // Basic Project Configuration (for foundation config storage only)
   project: z.object({
+    /**
+     * Configuration directory name following Claude Zen storage architecture.
+     * 
+     * @description Defines the standard directory name used throughout the Claude Zen
+     * ecosystem for storing configuration files, databases, cache data, and other
+     * persistent application state. This creates a consistent storage pattern across
+     * all components and packages.
+     * 
+     * **Default Value**: `.claude-zen`
+     * 
+     * **Directory Structure Created**:
+     * ```
+     * .claude-zen/
+     * ├── config.json          # Main configuration file
+     * ├── data/                # Database storage directory
+     * │   ├── coordination.db  # Agent coordination database
+     * │   ├── kuzu-graph.db   # Graph database storage
+     * │   └── lancedb-vectors.db # Vector database storage
+     * ├── memory/              # Memory subsystem storage
+     * │   ├── sessions/        # Session storage directory
+     * │   ├── vectors/         # Vector memory storage
+     * │   └── debug.json       # Debug memory data
+     * ├── projects/            # Project management storage
+     * │   └── proj-{id}/       # Individual project directories
+     * └── copilot-token.json   # Authentication tokens
+     * ```
+     * 
+     * **Usage Locations**:
+     * - Project root: `./claude-zen/` (when `storeInUserHome: false`)
+     * - User home: `~/.claude-zen/` (when `storeInUserHome: true`) 
+     * 
+     * @example
+     * ```typescript
+     * const config = await getConfig();
+     * const configPath = config.project.storeInUserHome 
+     *   ? path.join(os.homedir(), config.project.configDir)
+     *   : path.join(process.cwd(), config.project.configDir);
+     * // Results in: "/home/user/.claude-zen" or "/project/.claude-zen"
+     * ```
+     * 
+     * @see {@link storeInUserHome} for location selection logic
+     * @since 1.0.0
+     */
     configDir: z.string().default('.claude-zen'),
+    
+    /**
+     * Controls whether configuration and data are stored in user home or project directory.
+     * 
+     * @description Determines the root location for the Claude Zen configuration directory,
+     * enabling either user-global or project-local storage patterns. This setting affects
+     * all storage operations including databases, memory, authentication tokens, and
+     * configuration files.
+     * 
+     * **Default Value**: `true` (user home storage)
+     * 
+     * **Storage Patterns**:
+     * - **`true` (User Home)**: `~/.claude-zen/` - Personal settings across projects
+     * - **`false` (Project Local)**: `./.claude-zen/` - Project-specific settings
+     * 
+     * **Use Cases**:
+     * - **User Home** (`true`): Personal development, cross-project authentication,
+     *   shared settings, single-user environments
+     * - **Project Local** (`false`): Team projects, CI/CD environments, 
+     *   project-specific configurations, containerized deployments
+     * 
+     * @example
+     * ```typescript
+     * // Environment variable override:
+     * // ZEN_STORE_CONFIG_IN_USER_HOME=false
+     * 
+     * const config = await getConfig();
+     * if (config.project.storeInUserHome) {
+     *   console.log('Using user-global storage: ~/.claude-zen/');
+     * } else {
+     *   console.log('Using project-local storage: ./.claude-zen/');
+     * }
+     * ```
+     * 
+     * @see {@link configDir} for directory structure details
+     * @since 1.0.0
+     */
     storeInUserHome: z.boolean().default(true),
   }),
 
@@ -126,6 +206,10 @@ function parseEnvValue(value: string | undefined): unknown {
  * - HOSTNAME: System hostname
  * - IN_NIX_SHELL: Nix development shell detection
  * - ZEN_DEBUG_MODE: Debug mode flag
+ * 
+ * **Claude Zen Storage Architecture Variables**:
+ * - ZEN_PROJECT_CONFIG_DIR: Override default `.claude-zen` directory name
+ * - ZEN_STORE_CONFIG_IN_USER_HOME: Control user vs project storage location
  */
 function buildConfigFromEnv(): unknown {
   return {
@@ -147,7 +231,49 @@ function buildConfigFromEnv(): unknown {
       flakeDevShell: parseEnvValue(process.env['FLAKE_DEVSHELL']),
     },
     project: {
+      /**
+       * Environment override for Claude Zen configuration directory name.
+       * 
+       * **Environment Variable**: `ZEN_PROJECT_CONFIG_DIR`
+       * **Default**: `.claude-zen`
+       * 
+       * Allows customization of the standard directory name used throughout
+       * the Claude Zen storage architecture. When set, this overrides the
+       * default `.claude-zen` directory name across all storage operations.
+       * 
+       * @example
+       * ```bash
+       * # Use custom directory name
+       * export ZEN_PROJECT_CONFIG_DIR=".my-claude-zen"
+       * 
+       * # Results in: ./.my-claude-zen/ or ~/.my-claude-zen/
+       * ```
+       */
       configDir: parseEnvValue(process.env['ZEN_PROJECT_CONFIG_DIR']),
+      
+      /**
+       * Environment override for Claude Zen storage location selection.
+       * 
+       * **Environment Variable**: `ZEN_STORE_CONFIG_IN_USER_HOME`
+       * **Default**: `true` (user home storage)
+       * 
+       * Controls whether the Claude Zen directory is created in the user's
+       * home directory or in the current project directory. This affects
+       * all storage operations throughout the system.
+       * 
+       * @example
+       * ```bash
+       * # Force project-local storage
+       * export ZEN_STORE_CONFIG_IN_USER_HOME=false
+       * 
+       * # Results in: ./.claude-zen/ (project-local)
+       * 
+       * # Force user-global storage (default)
+       * export ZEN_STORE_CONFIG_IN_USER_HOME=true
+       * 
+       * # Results in: ~/.claude-zen/ (user-global)
+       * ```
+       */
       storeInUserHome: parseEnvValue(process.env['ZEN_STORE_CONFIG_IN_USER_HOME']),
     },
     otel: {

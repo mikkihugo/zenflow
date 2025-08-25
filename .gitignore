@@ -157,6 +157,15 @@ merge_script.sh
 .swarm/
 .hive-mind/
 .ruv-swarm/
+
+# Claude Zen Storage Architecture - CRITICAL PROTECTION
+# The .claude-zen/ directory contains sensitive local data that must NEVER be committed:
+# - Database files (SQLite, KuzuDB, LanceDB) 
+# - Authentication tokens and API keys
+# - Memory storage and cache data
+# - User preferences and session data
+# - Project-specific configuration and logs
+# This directory has its own comprehensive .gitignore for defense-in-depth protection.
 .claude-zen/
 # Svelte build artifacts
 .svelte-kit/
@@ -216,3 +225,4 @@ integration-test-report.json
 *-completion*.md
 .rollup.cache/
 .aider*
+storage/

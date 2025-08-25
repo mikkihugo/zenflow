@@ -940,6 +940,24 @@ export class DALFactory {
       tableName: entityType,
       databaseConfig: {
         type: 'sqlite', // Use SQLite for coordination by default
+        /**
+         * Coordination database storage location following Claude Zen architecture.
+         * 
+         * **Storage Path**: `./.claude-zen/data/coordination.db`
+         * - **Project-local**: Always uses project's `.claude-zen/data/` directory
+         * - **Purpose**: Central coordination state for agents, tasks, and workflows
+         * - **Database**: SQLite for ACID transactions and reliability
+         * - **Consistent naming**: `coordination.db` follows component-purpose pattern
+         * 
+         * This database stores:
+         * - Agent coordination states and hierarchies
+         * - Task orchestration and progress tracking  
+         * - Workflow state machines and transitions
+         * - Inter-agent communication logs
+         * - System coordination metadata
+         * 
+         * @see {@link CONFIG_PATH} in auth.ts for directory structure details
+         */
         database: './.claude-zen/data/coordination.db',
       },
     };
@@ -1375,6 +1393,31 @@ export class DALFactory {
     ].join(':');
   }
 
+  /**
+   * Creates default KuzuDB configuration with Claude Zen storage architecture.
+   * 
+   * @description Returns standardized KuzuDB configuration that follows the Claude Zen
+   * storage pattern. KuzuDB is used for graph database operations including entity
+   * relationships, dependency graphs, and complex querying scenarios.
+   * 
+   * **Storage Location**: `./.claude-zen/data/kuzu-graph.db`
+   * - **Project-local**: Uses project's `.claude-zen/data/` directory
+   * - **Consistent naming**: `kuzu-graph.db` follows component-purpose pattern
+   * - **Performance tuned**: 1GB buffer pool with 4-thread processing
+   * 
+   * @returns {DatabaseConfig} Complete KuzuDB configuration object
+   * 
+   * @example
+   * ```typescript  
+   * const kuzuConfig = this.getDefaultKuzuConfig();
+   * // Results in: "./.claude-zen/data/kuzu-graph.db"
+   * const graphDb = await this.createRepository(kuzuConfig);
+   * ```
+   * 
+   * @see {@link DatabaseConfig} for configuration interface
+   * @see {@link createGraphRepository} for usage in graph operations
+   * @since 1.0.0
+   */
   private getDefaultKuzuConfig(): DatabaseConfig {
     return {
       type: 'kuzu',
@@ -1386,6 +1429,32 @@ export class DALFactory {
     };
   }
 
+  /**
+   * Creates default LanceDB configuration with Claude Zen storage architecture.
+   * 
+   * @description Returns standardized LanceDB configuration that follows the Claude Zen
+   * storage pattern. LanceDB is used for vector storage operations including semantic
+   * search, embeddings storage, and AI-powered similarity matching.
+   * 
+   * **Storage Location**: `./.claude-zen/data/lancedb-vectors.db`
+   * - **Project-local**: Uses project's `.claude-zen/data/` directory  
+   * - **Consistent naming**: `lancedb-vectors.db` follows component-purpose pattern
+   * - **Vector optimized**: Cosine similarity with IVF_PQ indexing for performance
+   * 
+   * @param {number} vectorDimension The dimensionality of vectors to be stored
+   * @returns {DatabaseConfig} Complete LanceDB configuration object
+   * 
+   * @example
+   * ```typescript
+   * const lanceConfig = this.getDefaultLanceDBConfig(1536); // OpenAI embedding size
+   * // Results in: "./.claude-zen/data/lancedb-vectors.db"
+   * const vectorDb = await this.createRepository(lanceConfig);
+   * ```
+   * 
+   * @see {@link DatabaseConfig} for configuration interface  
+   * @see {@link createVectorRepository} for usage in vector operations
+   * @since 1.0.0
+   */
   private getDefaultLanceDBConfig(vectorDimension: number): DatabaseConfig {
     return {
       type: 'lancedb',

@@ -41,6 +41,23 @@ export const defaultMemoryConfigurations = {
   // Persistent session storage (SQLite via DAL Factory)
   session: {
     type: 'sqlite' as const,
+    /**
+     * Session storage path following Claude Zen storage architecture.
+     * 
+     * **Storage Location**: `./.claude-zen/memory/sessions`
+     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory
+     * - **Purpose**: Persistent session storage with SQLite backend
+     * - **Features**: ACID compliance, 24-hour TTL, compression enabled
+     * - **Use case**: User sessions, authentication state, temporary data
+     * 
+     * This path stores:
+     * - Active user sessions and state
+     * - Authentication tokens and refresh data
+     * - Temporary workflow state between sessions
+     * - Cross-session data continuity
+     * 
+     * @see {@link CONFIG_PATH} for directory structure documentation
+     */
     path: './.claude-zen/memory/sessions',
     maxSize: 50000,
     ttl: 86400000, // 24 hours
@@ -50,6 +67,23 @@ export const defaultMemoryConfigurations = {
   // Vector-based semantic memory (LanceDB via DAL Factory)
   semantic: {
     type: 'lancedb' as const,
+    /**
+     * Semantic memory storage path following Claude Zen storage architecture.
+     * 
+     * **Storage Location**: `./.claude-zen/memory/vectors`
+     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory
+     * - **Purpose**: Vector embeddings and semantic search using LanceDB
+     * - **Features**: High-performance vector operations, no compression for speed
+     * - **Use case**: AI embeddings, semantic search, similarity matching
+     * 
+     * This path stores:
+     * - Document and code embeddings
+     * - Semantic similarity vectors
+     * - AI-powered search indices
+     * - Knowledge graph embeddings
+     * 
+     * @see {@link CONFIG_PATH} for directory structure documentation
+     */
     path: './.claude-zen/memory/vectors',
     maxSize: 100000,
     compression: false,
@@ -58,6 +92,23 @@ export const defaultMemoryConfigurations = {
   // Development/debugging (JSON)
   debug: {
     type: 'json' as const,
+    /**
+     * Debug memory storage path following Claude Zen storage architecture.
+     * 
+     * **Storage Location**: `./.claude-zen/memory/debug.json`
+     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory  
+     * - **Purpose**: Development debugging and inspection storage
+     * - **Features**: Human-readable JSON format, small size limit
+     * - **Use case**: Development debugging, memory inspection, testing
+     * 
+     * This file stores:
+     * - Debug snapshots of memory state
+     * - Development testing data
+     * - Memory operation logs for debugging
+     * - Human-readable memory inspection data
+     * 
+     * @see {@link CONFIG_PATH} for directory structure documentation
+     */
     path: './.claude-zen/memory/debug.json',
     maxSize: 1000,
     compression: false,
