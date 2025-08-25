@@ -1,139 +1,109 @@
 # Claude Code Configuration for claude-code-zen
 
-## 🎯 IMPORTANT: Separation of Responsibilities
+## 🎯 CRITICAL: Understanding the True Architecture
 
-### Claude Code Handles:
-- ✅ **ALL file operations** (Read, Write, Edit, MultiEdit)
-- ✅ **ALL code generation** and development tasks
-- ✅ **ALL bash commands** and system operations
-- ✅ **ALL actual implementation** work
-- ✅ **Project navigation** and code analysis
+### 🧠 claude-code-zen IS THE PRIMARY SYSTEM:
+- 🏢 **SAFe 6.0 Enterprise Planning** - Portfolio management, Program Increments, Value Streams
+- 🔄 **SPARC Development Execution** - 5-phase systematic methodology (Specification → Completion)
+- 👥 **Teamwork Multi-Agent Coordination** - Collaborative problem-solving and decision-making
+- ⚡ **Advanced Workflow Orchestration** - XState-powered process management with document import
+- 📋 **TaskMaster Enterprise Management** - SOC2-compliant task flow with human approval gates
+- 🏗️ **5-Tier Strategic Architecture** - 50+ packages with strict access control
+- 🌐 **Event-Driven Coordination** - Comprehensive type-safe event communication
+- 💾 **Multi-Database Persistence** - SQLite, LanceDB, Kuzu for enterprise state management
 
-### claude-code-zen Event System Handles:
-- 🧠 **Intelligent Coordination** - Advanced learning and adaptation
-- 💾 **Persistent Memory** - Multi-database storage (SQLite, LanceDB, Kuzu)
-- 🤖 **Neural Intelligence** - DSPy integration with cognitive patterns
-- 📊 **Performance Analytics** - System health monitoring and prediction
-- ⚡ **Event System** - Comprehensive type-safe event-driven coordination
-- 🏗️ **SPARC Integration** - Systematic architecture development
-- 🌐 **Web API** - RESTful API with OpenAPI 3.0 (web interface ONLY)
-- 🎨 **Svelte Frontend** - Web-based dashboard and interface
+### 🛠️ Claude Code is ONE TOOL in the system:
+- ✅ **Gets called** by the orchestration system when code writing is needed
+- ✅ **Uses native tools** (Read, Write, Edit, MultiEdit, Bash) for implementation
+- ✅ **Reports results** back to the event system for further coordination
+- ✅ **Part of Tool Integration Layer** - Like any other specialized tool
 
-### ⚠️ Key Principle:
-**claude-code-zen provides an event-driven coordination system.** All coordination happens through **type-safe events** managed by the event system. The standalone agent manager is separate and not used in the main system.
+### ⚠️ Key Architectural Principle:
+**claude-code-zen is the orchestration BRAIN. Claude Code is a specialized TOOL for code implementation.** The system uses SAFe 6.0 for planning, SPARC for systematic development, Teamwork for agent coordination, Workflows for process orchestration, and TaskMaster for enterprise management. Claude Code gets invoked when actual code writing is required.
 
-## System Architecture
+## 🏗️ Enterprise Coordination Architecture
 
-The system uses a TypeScript swarm coordination system with:
-- Multi-database backends (SQLite, LanceDB, Kuzu graph)  
-- Event-driven coordination with 28 specialized packages
-- RESTful API with OpenAPI 3.0 documentation
-- Svelte web dashboard interface
+### 6-Layer Enterprise System:
+1. **SAFe 6.0 Planning Layer** - Enterprise portfolio and program management
+2. **SPARC Execution Layer** - Systematic 5-phase development methodology 
+3. **Teamwork Coordination Layer** - Multi-agent collaborative problem-solving
+4. **Workflow Orchestration Layer** - XState process automation and document import
+5. **TaskMaster Management Layer** - SOC2-compliant task flow with AGUI approval gates
+6. **Tool Integration Layer** - Claude Code and other specialized tools
+
+### Technical Foundation:
+- **5-Tier Package Architecture** - 50+ packages with strategic facades and strict access control
+- **Multi-Database Backends** - SQLite, LanceDB, Kuzu for enterprise persistence
+- **Event-Driven Coordination** - Comprehensive TypedEventBase communication system
+- **RESTful API** - OpenAPI 3.0 web interface for monitoring and control
+- **Svelte Dashboard** - Real-time monitoring and visualization interface
 
 
-## 🚀 CRITICAL: Parallel Execution & Batch Operations
+## 🛠️ Tool Usage in Enterprise Context
 
-### 🚨 MANDATORY RULE #1: BATCH EVERYTHING
+### Natural Tool Flow:
+Claude Code operates within the larger orchestration system:
+1. **Event System coordinates** overall workflow and task assignment
+2. **Claude Code gets invoked** for specific code-related tasks
+3. **Tools used naturally** - Read files to understand, Write/Edit to implement
+4. **Results flow back** through event system for further coordination
 
-**When working with the swarm system, you MUST use parallel operations:**
+### Integration Pattern:
+- Use tools as needed without artificial constraints
+- Batch operations when it makes logical sense
+- Trust the orchestration system to coordinate overall workflow
+- Focus on implementation quality rather than coordination complexity
 
-1. **NEVER** send multiple messages for related operations
-2. **ALWAYS** combine multiple tool calls in ONE message
-3. **PARALLEL** execution is MANDATORY, not optional
-
-### ⚡ THE GOLDEN RULE OF SWARMS
-
-```
-If you need to do X operations, they should be in 1 message, not X messages
-```
-
-### 📦 BATCH TOOL EXAMPLES
-
-**✅ CORRECT - Everything in ONE Message:**
-```javascript
-[Single Message with BatchTool]:
-  // File operations
-  Read("file1.ts")
-  Read("file2.ts") 
-  Write("output.ts", content)
-  Edit("config.ts", oldStr, newStr)
-  
-  // API coordination
-  // Call swarm API endpoints for coordination
-  // All operations batched together
-```
-
-**❌ WRONG - Multiple Messages (NEVER DO THIS):**
-```javascript
-Message 1: Read file
-Message 2: Process data
-Message 3: Write output
-Message 4: Update config
-// This is 4x slower and breaks coordination!
-```
-
-### 🎯 BATCH OPERATIONS BY TYPE
-
-**File Operations (Single Message):**
-- Read 10 files? → One message with 10 Read calls
-- Write 5 files? → One message with 5 Write calls
-- Edit 1 file many times? → One MultiEdit call
-
-**API Operations (Single Message):**
-- Multiple API calls? → One message with all HTTP requests
-- Database operations? → One message with all queries
-- Coordination tasks? → One message with all instructions
-
-**Command Operations (Single Message):**
-- Multiple directories? → One message with all mkdir commands
-- Install + test + lint? → One message with all pnpm commands
-- Git operations? → One message with all git commands
+## 🌐 External Site
+**Production Dashboard**: https://fra-d1.in.centralcloud.net/
+- External deployment of the web dashboard
+- Used for production monitoring and testing
 
 ## 🚀 System Architecture
 
-### **5-Tier Strategic Package Architecture - PRODUCTION READY**
+### **5-Tier Strategic Package Architecture - ENTERPRISE READY**
 
-claude-code-zen uses a **battle-tested 5-tier architecture** with **50+ packages** organized for maximum maintainability and security:
+claude-code-zen uses a **comprehensive 5-tier architecture** with **50+ packages** providing enterprise coordination, systematic development, and tool integration:
 
-#### **🏗️ 5-Tier Architecture Overview:**
+#### **🏗️ 5-Tier Enterprise Architecture:**
 
 ```
 📦 Tier 1: Public API (Strategic Facades + Foundation)
-├── @claude-zen/foundation       ✅ Core utilities, logging, type-safe primitives (direct import)
-├── @claude-zen/llm-providers    ✅ LLM provider integrations (direct import)
-├── @claude-zen/repo-analyzer    ✅ Repository analysis tools (direct import)
-└── Strategic Facades (delegation only):
-    ├── @claude-zen/intelligence     ✅ AI/Neural coordination facades
-    ├── @claude-zen/enterprise       ✅ Business workflow facades
-    ├── @claude-zen/operations       ✅ Performance tracking facades
-    ├── @claude-zen/infrastructure   ✅ Database/event system facades
-    └── @claude-zen/development      ✅ Development tool facades
+├── @claude-zen/foundation       ✅ Core utilities, centralized common utilities
+├── @claude-zen/llm-providers    ✅ LLM provider integrations  
+├── @claude-zen/repo-analyzer    ✅ Repository analysis tools
+└── Strategic Facades (delegation to implementation):
+    ├── @claude-zen/intelligence     ✅ Facades → brain, teamwork, knowledge
+    ├── @claude-zen/enterprise       ✅ Facades → safe-framework, sparc, workflows
+    ├── @claude-zen/operations       ✅ Facades → telemetry, system-monitoring
+    ├── @claude-zen/infrastructure   ✅ Facades → database, event-system
+    └── @claude-zen/development      ✅ Facades → code-analyzer, git-operations
 
-🔒 Tier 2: Private Implementation (Internal Business Logic)
-├── Core Systems: database, memory, event-system, service-container
-├── Infrastructure: load-balancing, system-monitoring, telemetry, otel-collector
-├── Document Intelligence: document-intelligence, documentation, exporters
+🔒 Tier 2: Private Implementation (Business Logic)
+├── Core Systems: database, memory, event-system, teamwork
+├── Infrastructure: load-balancing, system-monitoring, telemetry
+├── Document Systems: document-intelligence, documentation, exporters
 ├── Language Support: language-parsers, file-aware-ai, interfaces
 └── Agent Systems: agent-monitoring, agent-registry, llm-routing
 
-🔐 Tier 3: Internal Specialized Systems
-├── Neural/AI: brain, knowledge, teamwork
-├── Enterprise: safe-framework, sparc, agui
-├── Development: code-analyzer, git-operations, architecture
-├── Analysis: beam-analyzer, codeql, document-processing
-├── Coordination: enterprise-coordination, multi-level-orchestration
-└── Advanced: singularity-coder, workflows
+🔐 Tier 3: Internal Specialized (Advanced Coordination)
+├── Enterprise Planning: safe-framework (SAFe 6.0), sparc (SPARC methodology)
+├── Neural/AI Coordination: brain, knowledge (DSPy integration)
+├── Process Management: workflows (XState), agui (approval gates)
+├── Development Tools: code-analyzer, git-operations, architecture
+├── Analysis Systems: beam-analyzer, codeql, document-processing
+└── Advanced Coordination: enterprise-coordination, multi-level-orchestration
 
-🚫 Tier 4: Restricted Access (Special Authorization)
-├── ai-safety           → Ultra-restricted safety systems
-├── chaos-engineering   → Restricted failure simulation
-└── taskmaster         → Restricted task orchestration
+🚫 Tier 4: Restricted Access (Security Critical)
+├── ai-safety           → AI deception detection and safety monitoring
+├── chaos-engineering   → System fault injection and resilience testing
+└── taskmaster         → SOC2-compliant task approval and audit systems
 
 ⛔ Tier 5: Deep Core (Ultra Restricted)
-├── dspy               → Only via @claude-zen/brain
-├── neural-ml          → Only via @claude-zen/brain
-├── fact-system        → Only via @claude-zen/knowledge
-└── memory-root        → Only via @claude-zen/memory
+├── dspy               → DSPy neural optimization (accessed via brain only)
+├── neural-ml          → Neural networks (accessed via brain only)
+├── fact-system        → Knowledge facts (accessed via knowledge only)
+└── memory-root        → Core memory (accessed via memory only)
 ```
 
 #### **⚠️ CRITICAL: 5-Tier Architecture Rules**
@@ -303,32 +273,36 @@ pnpm run validate:architecture
 - **Security Isolation** through 5-tier access control
 - **Dependency Simplification** - import only from Tier 1
 
-### **Internal Coordination System**
-- **Technology**: TypeScript with comprehensive event system and strategic facades
-- **Coordination**: Direct method calls and type-safe event-driven communication via facades
-- **Database**: Multi-backend (SQLite, LanceDB, Kuzu graph) via @claude-zen/infrastructure
-- **Architecture**: Queens → Commanders → Cubes → Matrons → Agents/Drones
-- **Features**: Agent coordination, memory management, neural processing via strategic facades
+### **Enterprise Coordination System**
+- **SAFe 6.0 Planning**: Portfolio managers, Program Increment coordination, Value Stream optimization
+- **SPARC Development**: 5-phase methodology (Specification → Pseudocode → Architecture → Refinement → Completion)
+- **Teamwork Coordination**: Multi-agent collaboration with shared memory and sequential decision-making
+- **Workflow Orchestration**: XState state machines with document import and process automation
+- **TaskMaster Management**: SOC2-compliant task flow with human approval gates and audit trails
+- **Event-Driven Architecture**: TypedEventBase coordination across all layers
+- **Multi-Database Persistence**: SQLite, LanceDB, Kuzu for enterprise state management
 
 ### **Web Interface** 
-- **Backend API**: RESTful with OpenAPI 3.0/Swagger documentation (web interface ONLY)
-- **Frontend**: Svelte web application dashboard
-- **Purpose**: Monitoring, visualization, and external control
-- **Integration**: API consumes internal coordination system
+- **Backend API**: RESTful with OpenAPI 3.0/Swagger documentation for monitoring
+- **Frontend**: Svelte dashboard with real-time enterprise coordination visualization
+- **Purpose**: SAFe planning visualization, SPARC progress tracking, workflow monitoring
+- **Integration**: Consumes event system for real-time coordination state
 
 ### **Event System Components**
-- **Event Coordinators**: Strategic coordination via type-safe events
-- **Task Orchestrators**: Task planning and routing through events
-- **Memory Managers**: Persistent storage via event-driven patterns
-- **Neural Coordinators**: Learning and adaptation via events
-- **Performance Monitors**: System health tracking via events
+- **SAFe Coordinators**: Portfolio and Program Increment coordination via events
+- **SPARC Orchestrators**: 5-phase development execution via events
+- **Teamwork Managers**: Multi-agent collaboration via events
+- **Workflow Engines**: XState process orchestration via events
+- **TaskMaster Controllers**: Task approval and compliance via events
+- **Tool Integration**: Claude Code and other tools called via events
 
-### **Coordination Patterns**
-- **Event-driven communication** via comprehensive type-safe event system
-- **Memory persistence** across sessions through database backends  
-- **Task orchestration** with SPARC methodology via events
-- **Neural coordination** with DSPy integration via events
-- **Performance monitoring** via event-driven patterns
+### **Enterprise Coordination Patterns**
+- **SAFe Planning Flow**: Business requirements → Portfolio → Program Increments → Features
+- **SPARC Development Flow**: Features → Specification → Pseudocode → Architecture → Refinement → Completion
+- **Teamwork Collaboration**: Multi-agent coordination with shared memory and sequential decisions
+- **Workflow Automation**: XState orchestration with document import and approval gates
+- **TaskMaster Compliance**: Human approval workflows with SOC2 audit trails
+- **Tool Integration**: Event-driven tool selection and coordination (including Claude Code)
 
 ## 🧠 **Automatic DSPy Integration - COMPLETED**
 
@@ -472,145 +446,164 @@ These packages can ONLY be accessed by specific Tier 2 packages:
 **Continue using these foundation packages directly:**
 - `@claude-zen/foundation` ✅ (Core utilities, logging, types)
 
-## Workflow Examples (Event-Driven Internal Coordination)
+## Enterprise Workflow Examples
 
-### Research Coordination Example
-**Context:** Claude Code needs to research a complex topic systematically
+### Enterprise Feature Development Example
+**Context:** Complex feature needs systematic development from business requirements to production code
 
-**Step 1:** Set up research coordination internally
-- Queen Coordinator initializes multi-swarm topology via direct method calls
-- Event system broadcasts coordination setup to all components
-- Result: Creates internal coordination framework for comprehensive exploration
+**Step 1: SAFe 6.0 Planning**
+- Portfolio Manager defines strategic theme: "Customer Self-Service Enhancement"
+- Program Increment planning breaks down into features: "User Authentication", "Profile Management", "Settings Dashboard"
+- Value Stream Mapper optimizes delivery flow and identifies dependencies
+- Architecture Runway Manager ensures technical infrastructure readiness
+- **Result:** Business requirements systematically planned with enterprise methodology
 
-**Step 2:** Define research perspectives internally
-- SwarmCommander spawns researcher agents through event system
-- Neural coordination patterns activated via direct calls
-- Result: Different cognitive patterns coordinate through events
+**Step 2: SPARC Development Execution**
+- Feature "User Authentication" enters SPARC 5-phase development:
+  - **Specification:** Requirements analysis with acceptance criteria
+  - **Pseudocode:** Algorithm design for OAuth2, 2FA, and session management
+  - **Architecture:** System design with security patterns and scalability
+  - **Refinement:** Implementation optimization with performance tuning
+  - **Completion:** Test suite generation and comprehensive documentation
+- **Result:** Systematic technical development with quality gates
 
-**Step 3:** Coordinate research execution internally
-- Task orchestration through SPARC methodology and event system
-- Memory persistence through multi-database backends
-- Result: Claude Code systematically searches, reads, and analyzes papers
+**Step 3: Teamwork Multi-Agent Coordination**
+- Multiple agents coordinate collaboratively:
+  - Architecture Agent: Designs security patterns and system integration
+  - Implementation Agent: Focuses on code quality and best practices
+  - Testing Agent: Creates comprehensive test coverage
+  - Review Agent: Ensures code quality and optimization
+- Shared memory maintains context across agent interactions
+- **Result:** Collaborative problem-solving with specialized expertise
+
+**Step 4: Workflow Process Orchestration**
+- XState workflow manages complex development process:
+  - Document import from existing security guidelines
+  - Parallel branches for frontend and backend development
+  - Human approval gates for security-sensitive components
+  - Error recovery patterns for failed deployments
+- **Result:** Automated process management with human oversight
+
+**Step 5: TaskMaster Enterprise Management**
+- SOC2-compliant task flow with enterprise controls:
+  - WIP limits prevent resource overallocation
+  - Capacity control maintains sustainable development pace
+  - Bottleneck detection identifies and resolves workflow constraints
+  - Human approval gates require security team sign-off for production deployment
+  - Comprehensive audit trails for compliance and review
+- **Result:** Enterprise-grade task management with compliance
+
+**Step 6: Tool Integration & Execution**
+- System determines specific tools needed:
+  - **Claude Code called** for actual code writing and editing
+  - **File operations** for documentation updates
+  - **API integrations** for third-party service connections
+  - **System commands** for deployment and testing
+- Claude Code uses its native tools (Read, Write, Edit, Bash) for implementation
+- **Result:** Actual code implementation coordinated by the enterprise system
+
+**Complete Flow:**
+```
+SAFe Planning → SPARC Development → Teamwork Coordination → 
+Workflow Orchestration → TaskMaster Management → Claude Code Implementation
+```
 
 **What Actually Happens:**
-1. Queens/Commanders coordinate through internal event system and direct calls
-2. Agents communicate via comprehensive event-driven architecture
-3. Claude Code uses its native Read, WebSearch, and Task tools
-4. Internal coordination through events, memory backends, and neural networks
-5. Results synthesized by Claude Code with full internal coordination history
+1. **claude-code-zen orchestrates** the entire enterprise development process
+2. **Event system coordinates** communication between all 6 layers
+3. **Claude Code gets invoked** only when code writing/editing is specifically needed
+4. **Multi-database persistence** maintains state across the entire workflow
+5. **Enterprise compliance** is maintained through TaskMaster audit trails
 
-### Development Coordination Example
-**Context:** Claude Code needs to build a complex system with multiple components
-
-**Step 1:** Set up development coordination internally
-- Cube Matrons initialize domain-specific coordination via direct calls
-- Event system coordinates hierarchical agent topology
-- Result: Hierarchical internal structure for organized development
-
-**Step 2:** Define development perspectives internally
-- SwarmCommanders spawn architect agents through event system
-- Neural patterns configure specialized cognitive approaches
-- Result: Architectural thinking patterns coordinate through internal events
-
-**Step 3:** Coordinate implementation internally
-- SPARC methodology orchestrates implementation through event system
-- Memory backends persist progress and coordination state
-- Result: Claude Code implements features using its native tools
-
-**What Actually Happens:**
-1. Queens/Commanders/Matrons create development plan through internal coordination
-2. Agents coordinate using event system and database persistence
-3. Claude Code uses Write, Edit, Bash tools for implementation
-4. Internal coordination through events, memory, and neural networks
-5. All code is written by Claude Code with full internal coordination
-
-## Best Practices for Coordination
+## Best Practices for Enterprise Coordination
 
 ### ✅ DO:
-- Use the internal coordination system to approach complex tasks systematically
-- Let Queens/Commanders/Matrons break down problems through event system
-- Leverage multi-database backends to maintain context across sessions
-- Monitor coordination effectiveness through internal metrics
-- Train neural patterns for better coordination over time
-- Use the comprehensive event system for agent communication
+- **Understand the hierarchy:** SAFe planning → SPARC development → Teamwork coordination → Workflow orchestration → TaskMaster management → Tool integration
+- **Leverage systematic methodologies:** Use SAFe 6.0 for planning, SPARC for development execution
+- **Trust the coordination system:** Let event system manage complex workflows and agent coordination
+- **Use Claude Code appropriately:** Focus on code implementation tasks when invoked by the system
+- **Maintain enterprise compliance:** Respect TaskMaster approval gates and audit requirements
+- **Follow tier separation:** Only import from Tier 1 packages, let facades handle delegation
 
 ### ❌ DON'T:
-- Expect agents to write code (Claude Code does all implementation)
-- Use internal coordination for file operations (use Claude Code's native tools)
-- Try to make agents execute bash commands (Claude Code handles this)
-- Confuse internal coordination with execution (Events coordinate, Claude executes)
-- Use API for internal coordination (API is web interface only)
+- **Bypass the orchestration system:** Don't try to coordinate everything through Claude Code
+- **Break tier boundaries:** Don't import directly from Tiers 2-5 packages
+- **Skip enterprise processes:** Don't bypass SAFe planning or TaskMaster approval gates
+- **Confuse roles:** claude-code-zen coordinates, Claude Code implements
+- **Force artificial patterns:** Use tools naturally within the orchestrated workflow
 
-## Memory and Persistence
+## Enterprise Memory and Persistence
 
-The swarm provides persistent memory through multi-database backends that helps Claude Code:
-- Remember project context across sessions via SQLite/LanceDB/Kuzu
-- Track decisions and rationale through event system persistence
-- Maintain consistency in large projects through shared memory
-- Learn from previous coordination patterns through neural network training
+The enterprise coordination system provides comprehensive persistence:
+- **SAFe Planning State:** Portfolio strategies, Program Increments, feature definitions via SQLite
+- **SPARC Development Progress:** Phase completion, deliverables, quality metrics via LanceDB
+- **Teamwork Coordination Memory:** Agent interactions, shared decisions, collaboration patterns via memory system
+- **Workflow State Management:** XState persistence, process history, approval status via database backends
+- **TaskMaster Audit Trails:** SOC2 compliance records, approval workflows, capacity tracking via Kuzu graph
+- **Cross-Session Continuity:** Enterprise context maintained across development cycles
 
-## Performance Benefits
+## Enterprise Performance Benefits
 
-When using swarm coordination with Claude Code:
-- **84.8% SWE-Bench solve rate** - Better problem-solving through coordination
-- **32.3% token reduction** - Efficient task breakdown reduces redundancy
-- **2.8-4.4x speed improvement** - Parallel coordination strategies
-- **27+ neural models** - Diverse cognitive approaches
+When using enterprise coordination with systematic methodologies:
+- **84.8% SWE-Bench solve rate** - Systematic SAFe + SPARC approach improves problem-solving
+- **Enterprise scalability** - Handles complex multi-team projects with proper coordination
+- **Compliance ready** - Built-in SOC2 audit trails and approval workflows
+- **Systematic quality** - SPARC quality gates ensure robust implementation
+- **Multi-agent efficiency** - Teamwork coordination leverages specialized expertise
+- **Process automation** - Workflow orchestration reduces manual coordination overhead
 
-## Integration Tips
+## Integration Guidelines
 
-1. **Start Simple**: Begin with foundation utilities and strategic facades
-2. **Use Facades**: Access all functionality through Tier 1 strategic facades
-3. **Leverage Foundation**: Use centralized utilities for consistency
-4. **Batch Operations**: Combine multiple file operations in single messages
-5. **Follow Architecture**: Respect 3-tier separation and import rules
+1. **Understand Your Role**: You are Claude Code, a tool in the enterprise orchestration system
+2. **Use Strategic Facades**: Only import from Tier 1 packages (@claude-zen/foundation and facades)
+3. **Respect the Coordination Flow**: Let the event system coordinate, focus on implementation
+4. **Follow Enterprise Patterns**: Work within SAFe planning, SPARC development, and TaskMaster approval workflows
+5. **Use Tools Naturally**: Read, Write, Edit, Bash as needed without artificial constraints
+6. **Trust the Architecture**: The 5-tier system ensures proper separation and delegation
 
-## 🧠 **Event-Driven Coordination**
+## 🧠 **Enterprise Event-Driven Architecture**
 
-### **🎯 Coordination Principles**
+### **🎯 True Architecture Principles**
 
-claude-code-zen provides **event-driven coordination** while Claude Code handles all actual implementation work:
+claude-code-zen IS the comprehensive enterprise coordination brain:
 
-**✅ Event System Handles:**
-- Task planning and coordination
-- Type-safe event communication
-- Memory persistence across sessions
-- Neural pattern learning and adaptation
-- Performance monitoring and optimization
+**✅ claude-code-zen Orchestrates:**
+- SAFe 6.0 enterprise planning and portfolio management
+- SPARC 5-phase systematic development execution
+- Teamwork multi-agent coordination and collaboration
+- Workflow orchestration with XState and document import
+- TaskMaster enterprise task flow with SOC2 compliance
+- Event-driven coordination across all 6 layers
+- Multi-database persistence and state management
 
-**✅ Claude Code Handles:**
-- ALL file operations (Read, Write, Edit, MultiEdit)
-- ALL code generation and implementation
-- ALL bash commands and system operations
-- ALL actual development work
+**✅ Claude Code Executes (When Called):**
+- File operations (Read, Write, Edit, MultiEdit) for implementation
+- Code generation based on SPARC specifications
+- Bash commands for testing, building, deployment
+- Specific implementation work as directed by the orchestration system
 
-### **🚀 Efficient Tool Usage Patterns**
+### **🚀 Natural Tool Integration Pattern**
 
-**✅ RECOMMENDED - Batch Operations:**
-```javascript
-// Single message with multiple related operations
-[BatchTool]:
-  - Read("file1.ts", "file2.ts", "file3.ts")    // Multiple file reads
-  - Write("output.ts", content)                  // Create new file
-  - Edit("config.ts", oldStr, newStr)            // Update configuration
-  - Bash("npm test && npm run lint")             // Combined commands
+**✅ ENTERPRISE FLOW:**
+```
+SAFe Planning → SPARC Development → Teamwork Coordination → 
+Workflow Orchestration → TaskMaster Management → Tool Selection → 
+Claude Code Implementation
 ```
 
-**❌ INEFFICIENT - Sequential Operations:**
-```javascript
-// Multiple messages (slower, breaks coordination context)
-Message 1: Read file
-Message 2: Process data  
-Message 3: Write output
-Message 4: Update config
-```
+**Your role as Claude Code:**
+- Get invoked by the enterprise system when code work is needed
+- Use tools naturally (Read to understand, Write/Edit to implement)
+- Focus on quality implementation within the systematic framework
+- Report results back through the event system for further coordination
 
 ## Support
 
-- **Primary**: claude-code-zen swarm system (this repository)
+- **Primary**: claude-code-zen enterprise coordination system (this repository)
+- **Architecture**: SAFe 6.0 + SPARC + Teamwork + Workflows + TaskMaster coordination
 - **Documentation**: https://github.com/zen-neural/claude-code-zen
 - **Issues**: https://github.com/zen-neural/claude-code-zen/issues
-- **API Documentation**: OpenAPI 3.0 Swagger interface
+- **Web Interface**: OpenAPI 3.0 Swagger with Svelte dashboard
 
 ---
 
@@ -627,15 +620,17 @@ Message 4: Update config
 2. **Initialize if needed**: POST to `/api/v1/coordination/init`
 3. **Check agent status**: GET `/api/v1/agents/status`
 
-### **Performance issues:**
-1. **Use parallel API calls**: Combine multiple requests in one message
-2. **Don't chain sequentially**: Avoid message-per-request pattern
-3. **Batch file operations**: Use multiple Read/Write/Edit calls together
+### **Enterprise coordination:**
+1. **Trust the orchestration**: Let the enterprise system coordinate complex workflows
+2. **Focus on implementation quality**: When called by the system, deliver excellent code
+3. **Use tools naturally**: Read, understand, implement without artificial constraints
+4. **Respect enterprise processes**: Work within SAFe planning and TaskMaster approval gates
 
-### **When coordination fails:**
-1. **Check API logs**: Review backend service logs
-2. **Monitor health**: Use `/api/v1/health` endpoint
-3. **Reset if needed**: POST to `/api/v1/coordination/reset`
+### **When enterprise coordination needs attention:**
+1. **Check orchestration logs**: Review enterprise coordination service logs
+2. **Monitor health**: Use `/api/v1/health` endpoint for system status
+3. **Review enterprise state**: Check SAFe planning, SPARC progress, TaskMaster workflows
+4. **Reset if needed**: POST to `/api/v1/coordination/reset` for coordination restart
 
 ---
 

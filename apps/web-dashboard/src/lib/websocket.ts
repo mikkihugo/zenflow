@@ -42,6 +42,13 @@ export class WebSocketManager {
   public performance = writable<any>(null);
   public logs = writable<any[]>([]);
   
+  // SAFe 6.0 Essential artifact stores
+  public stories = writable<any[]>([]);
+  public epics = writable<any[]>([]);
+  public features = writable<any[]>([]);
+  public teams = writable<any[]>([]);
+  public safeMetrics = writable<any>(null);
+  
   constructor(private serverUrl: string ='http://localhost:3000') {}
 
   /**
@@ -250,6 +257,57 @@ export class WebSocketManager {
       console.log('📋 New log entry:', data.data);
       this.logs.update(logs => [data.data, ...logs.slice(0, 99)]); // Keep last 100
     });
+
+    // SAFe 6.0 Essential artifact updates
+    this.socket.on('stories:initial', (data: WebSocketData) => {
+      console.log('📖 User Stories initial data:', data.data);
+      this.stories.set(data.data?.stories || []);
+    });
+
+    this.socket.on('stories:update', (data: WebSocketData) => {
+      console.log('📖 User Stories update:', data.data);
+      this.stories.set(data.data?.stories || []);
+    });
+
+    this.socket.on('epics:initial', (data: WebSocketData) => {
+      console.log('🏔️ Epics initial data:', data.data);
+      this.epics.set(data.data?.epics || []);
+    });
+
+    this.socket.on('epics:update', (data: WebSocketData) => {
+      console.log('🏔️ Epics update:', data.data);
+      this.epics.set(data.data?.epics || []);
+    });
+
+    this.socket.on('features:initial', (data: WebSocketData) => {
+      console.log('🎯 Features initial data:', data.data);
+      this.features.set(data.data?.features || []);
+    });
+
+    this.socket.on('features:update', (data: WebSocketData) => {
+      console.log('🎯 Features update:', data.data);
+      this.features.set(data.data?.features || []);
+    });
+
+    this.socket.on('teams:initial', (data: WebSocketData) => {
+      console.log('👥 Teams (ART) initial data:', data.data);
+      this.teams.set(data.data?.teams || []);
+    });
+
+    this.socket.on('teams:update', (data: WebSocketData) => {
+      console.log('👥 Teams (ART) update:', data.data);
+      this.teams.set(data.data?.teams || []);
+    });
+
+    this.socket.on('safe-metrics:initial', (data: WebSocketData) => {
+      console.log('📊 SAFe LPM metrics initial data:', data.data);
+      this.safeMetrics.set(data.data);
+    });
+
+    this.socket.on('safe-metrics:update', (data: WebSocketData) => {
+      console.log('📊 SAFe LPM metrics update:', data.data);
+      this.safeMetrics.set(data.data);
+    });
   }
 
   /**
@@ -314,7 +372,7 @@ export class WebSocketManager {
    * Subscribe to multiple channels at once
    */
   subscribeToAll(): void {
-    const channels = ['system', 'agents', 'tasks', 'performance', 'logs'];
+    const channels = ['system', 'agents', 'tasks', 'performance', 'logs', 'stories', 'epics', 'features', 'teams', 'safe-metrics'];
     channels.forEach(channel => this.subscribe(channel));
   }
 

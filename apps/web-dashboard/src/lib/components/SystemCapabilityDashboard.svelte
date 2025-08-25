@@ -14,7 +14,7 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { apiClient } from '../api';
+  import { webSocketManager } from '$lib/websocket';
   
   interface FacadeSummary {
     name: string;
@@ -47,49 +47,87 @@
   let capabilityData: SystemCapabilityData | null = null;
   let loading = true;
   let error: string | null = null;
-  let refreshInterval: number;
   let autoRefresh = true;
+  let unsubscribeSystem: (() => void) | null = null;
   
-  // Configuration
-  const REFRESH_INTERVAL = 30000; // 30 seconds
-  
-  async function fetchCapabilityData() {
-    try {
-      loading = true;
-      error = null;
-      
-      const response = await apiClient.getSystemCapabilityDetailed();
-      if (response.success) {
-        capabilityData = response.data;
-      } else {
-        throw new Error(response.error || 'Failed to fetch capability data');
+  // Use existing Socket.IO real-time updates instead of polling!
+  function setupRealTimeUpdates() {
+    // Subscribe to system status updates from existing WebSocket
+    unsubscribeSystem = webSocketManager.systemStatus.subscribe((systemData) => {
+      if (systemData) {
+        console.log('📊 Real-time system data received:', systemData);
+        // Transform the real-time data to match our interface
+        capabilityData = transformSystemData(systemData);
+        loading = false;
+        error = null;
       }
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown error occurred';
-      console.error('Failed to fetch capability data:', err);
-    } finally {
-      loading = false;
-    }
+    });
+
+    // Subscribe to the 'system' channel for real-time updates
+    webSocketManager.subscribe('system');
+    
+    // Set initial loading state
+    loading = !webSocketManager.isConnected();
+    
+    // Listen for connection changes
+    webSocketManager.connectionState.subscribe((connectionState) => {
+      if (!connectionState.connected) {
+        error = 'WebSocket disconnected - showing cached data';
+      } else {
+        error = null;
+      }
+    });
   }
-  
-  function startAutoRefresh() {
-    if (autoRefresh) {
-      refreshInterval = setInterval(fetchCapabilityData, REFRESH_INTERVAL);
-    }
-  }
-  
-  function stopAutoRefresh() {
-    if (refreshInterval) {
-      clearInterval(refreshInterval);
-    }
+
+  // Transform WebSocket system data to match our dashboard interface
+  function transformSystemData(systemData: any): SystemCapabilityData {
+    // Mock transform since we don't have real backend data structure yet
+    return {
+      overall: systemData.status || 'partial',
+      systemHealthScore: systemData.healthScore || 75,
+      timestamp: systemData.timestamp || new Date().toISOString(),
+      facades: systemData.facades || [
+        {
+          name: 'Socket.IO WebSocket',
+          capability: 'full',
+          healthScore: webSocketManager.isConnected() ? 95 : 0,
+          packages: 'socket.io-client',
+          missingPackages: [],
+          features: ['Real-time Updates', 'Auto-reconnection', 'Health Monitoring']
+        }
+      ],
+      totalPackages: systemData.totalPackages || 50,
+      availablePackages: systemData.availablePackages || 45,
+      registeredServices: systemData.registeredServices || 12,
+      installationSuggestions: systemData.installationSuggestions || []
+    };
   }
   
   function toggleAutoRefresh() {
     autoRefresh = !autoRefresh;
-    if (autoRefresh) {
-      startAutoRefresh();
-    } else {
-      stopAutoRefresh();
+    // Socket.IO is always real-time, no need for intervals
+    console.log(`Auto-refresh ${autoRefresh ? 'enabled' : 'disabled'} (Socket.IO real-time)`);
+  }
+
+  // Manual refresh triggers a ping to get fresh data
+  async function fetchCapabilityData() {
+    loading = true;
+    error = null;
+    
+    try {
+      if (webSocketManager.isConnected()) {
+        // Ping the WebSocket to trigger fresh data
+        webSocketManager.ping();
+        // Resubscribe to ensure we get fresh data
+        webSocketManager.subscribe('system');
+      } else {
+        throw new Error('WebSocket not connected');
+      }
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Unknown error occurred';
+      console.error('Failed to refresh capability data:', err);
+    } finally {
+      loading = false;
     }
   }
   
@@ -133,12 +171,13 @@
   }
   
   onMount(() => {
-    fetchCapabilityData();
-    startAutoRefresh();
+    setupRealTimeUpdates();
   });
   
   onDestroy(() => {
-    stopAutoRefresh();
+    if (unsubscribeSystem) unsubscribeSystem();
+    // Optionally unsubscribe from the channel
+    webSocketManager.unsubscribe('system');
   });
 </script>
 

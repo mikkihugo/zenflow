@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/agui" | "/database" | "/facades" | "/memory" | "/roadmap" | "/safe-production" | "/safe" | "/swarm" | "/system";
+		RouteId(): "/" | "/agui" | "/database" | "/facades" | "/memory" | "/roadmap" | "/safe-production" | "/safe" | "/stories" | "/swarm" | "/system";
 		RouteParams(): {
 			
 		};
@@ -40,10 +40,11 @@ declare module "$app/types" {
 			"/roadmap": Record<string, never>;
 			"/safe-production": Record<string, never>;
 			"/safe": Record<string, never>;
+			"/stories": Record<string, never>;
 			"/swarm": Record<string, never>;
 			"/system": Record<string, never>
 		};
-		Pathname(): "/" | "/agui" | "/agui/" | "/database" | "/database/" | "/facades" | "/facades/" | "/memory" | "/memory/" | "/roadmap" | "/roadmap/" | "/safe-production" | "/safe-production/" | "/safe" | "/safe/" | "/swarm" | "/swarm/" | "/system" | "/system/";
+		Pathname(): "/" | "/agui" | "/agui/" | "/database" | "/database/" | "/facades" | "/facades/" | "/memory" | "/memory/" | "/roadmap" | "/roadmap/" | "/safe-production" | "/safe-production/" | "/safe" | "/safe/" | "/stories" | "/stories/" | "/swarm" | "/swarm/" | "/system" | "/system/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf" | string & {};
 	}

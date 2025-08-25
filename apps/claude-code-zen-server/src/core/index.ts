@@ -96,8 +96,8 @@ export {
 } from '@claude-zen/foundation/logger';
 export type { LogMeta } from '@claude-zen/foundation';
 export { Orchestrator } from './orchestrator';
-export * from '@claude-zen/foundation/orchestrator-provider';
+// Orchestrator functionality provided by multi-level-orchestration and teamwork packages via facades
 // External systems
-export { ProductFlowSystem } from '@claude-zen/document-processing';
+export { SafeArtifactIntelligence } from '@claude-zen/document-intelligence';
 export * from '@claude-zen/foundation/type-guards';
 export * from '@claude-zen/foundation/types';

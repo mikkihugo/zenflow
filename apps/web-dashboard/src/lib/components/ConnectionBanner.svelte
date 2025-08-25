@@ -1,44 +1,40 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import { apiClient } from '$lib/api';
+  import type { Writable } from 'svelte/store';
+  import { webSocketManager } from '$lib/websocket';
 
-  // Connection state
-  const connectionStatus = writable<{
+  // Accept connection status store as prop
+  export let connectionStatus: Writable<{
     connected: boolean;
     lastCheck: Date | null;
     retrying: boolean;
-  }>({
+  }> = writable({
     connected: true,
     lastCheck: null,
     retrying: false
   });
 
-  // Export the store
-  export { connectionStatus };
-
-  let checkInterval: number;
   let retryTimeout: number;
-  
-  // Check connection every 10 seconds
-  const CHECK_INTERVAL = 10000;
-  const RETRY_TIMEOUT = 2000;
+  let unsubscribeConnectionState: (() => void) | null = null;
 
-  async function checkConnection(): Promise<boolean> {
-    try {
-      await apiClient.getHealth();
-      return true;
-    } catch (error) {
-      console.warn('API connection check failed:', error);
-      return false;
-    }
-  }
+  // Use existing Socket.IO WebSocket connection - no polling needed!
+  function setupConnectionMonitoring() {
+    // Subscribe to the existing WebSocket connection state
+    unsubscribeConnectionState = webSocketManager.connectionState.subscribe((state) => {
+      console.log(state.connected ? '✅ Socket.IO connected' : '❌ Socket.IO disconnected');
+      connectionStatus.update(currentState => ({
+        ...currentState,
+        connected: state.connected,
+        lastCheck: new Date(),
+        retrying: state.reconnecting
+      }));
+    });
 
-  async function performConnectionCheck() {
-    const isConnected = await checkConnection();
+    // Set initial state from existing WebSocket manager
     connectionStatus.update(state => ({
       ...state,
-      connected: isConnected,
+      connected: webSocketManager.isConnected(),
       lastCheck: new Date(),
       retrying: false
     }));
@@ -47,23 +43,29 @@
   async function retryConnection() {
     connectionStatus.update(state => ({ ...state, retrying: true }));
     
-    // Show retry state for a brief moment
+    // Show retry state briefly, then attempt reconnection using existing Socket.IO
     setTimeout(async () => {
-      await performConnectionCheck();
-    }, RETRY_TIMEOUT);
+      try {
+        // Use the existing WebSocket manager's reconnection
+        if (!webSocketManager.isConnected()) {
+          await webSocketManager.connect();
+        }
+        // Send a ping to verify connection
+        webSocketManager.ping();
+      } catch (error) {
+        console.warn('Retry connection failed:', error);
+        // Connection status will be updated automatically via Socket.IO events
+      }
+    }, 2000);
   }
 
-  onMount(async () => {
-    // Initial connection check
-    await performConnectionCheck();
-    
-    // Set up periodic checks
-    checkInterval = setInterval(performConnectionCheck, CHECK_INTERVAL);
+  onMount(() => {
+    setupConnectionMonitoring();
   });
 
   onDestroy(() => {
-    if (checkInterval) clearInterval(checkInterval);
     if (retryTimeout) clearTimeout(retryTimeout);
+    if (unsubscribeConnectionState) unsubscribeConnectionState();
   });
 
   $: status = $connectionStatus;

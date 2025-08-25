@@ -23,9 +23,9 @@ export const dictionary = {
 		"/database": [4],
 		"/facades": [5],
 		"/memory": [6],
-		"/roadmap": [7],
-		"/safe-production": [9],
-		"/safe": [8],
+		"/safe-production": [8],
+		"/safe": [7],
+		"/stories": [9],
 		"/swarm": [10],
 		"/system": [11]
 	};

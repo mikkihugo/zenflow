@@ -1,7 +1,12 @@
 <script lang="ts">
 	import '../app.postcss';
 	import { page } from '$app/stores';
-	import ConnectionBanner, { connectionStatus } from '$lib/components/ConnectionBanner.svelte';
+	import ConnectionBanner from '$lib/components/ConnectionBanner.svelte';
+	import { writable } from 'svelte/store';
+	
+	// Create connection status store here since export from component isn't working
+	// Start as potentially disconnected until verified
+	const connectionStatus = writable({ connected: false, lastCheck: null, retrying: false });
 
 	// Admin navigation items
 	const navItems = [
@@ -14,11 +19,11 @@
 		{ href: '/agui', icon: '🎛️', label: 'AGUI', title: 'Advanced GUI Interface' },
 		{ href: '/memory', icon: '💾', label: 'Memory', title: 'Memory Management' },
 		{ href: '/database', icon: '🗃️', label: 'Database', title: 'Database Management' },
-		{ href: '/roadmap', icon: '🗺️', label: 'Roadmap', title: 'Strategic Roadmap Tasks' },
+		{ href: '/stories', icon: '📖', label: 'User Stories', title: 'SAFe 6.0 User Stories & LPM' },
 	];
 
 	$: activeUrl = $page.url.pathname;
-	$: bannerHeight = $connectionStatus?.connected !== false ? '4rem' : '7rem';
+	$: bannerVisible = $connectionStatus?.connected === false;
 </script>
 
 <!-- Clean Dashboard Layout -->
@@ -48,11 +53,12 @@
 	</nav>
 
 	<!-- Connection Status Banner (shows when API is disconnected) -->
-	<ConnectionBanner />
+	<ConnectionBanner {connectionStatus} />
 
 	<!-- Sidebar -->
 	<aside class="fixed left-0 z-40 w-64 h-screen transition-transform bg-white border-r border-gray-200" 
-	       style="top: {bannerHeight};">
+	       class:with-banner={bannerVisible}
+	       style="top: {bannerVisible ? '7rem' : '4rem'};">
 		<div class="h-full px-3 py-4 overflow-y-auto">
 			<ul class="space-y-2 font-medium">
 				{#each navItems as item}
@@ -80,7 +86,9 @@
 	</aside>
 
 	<!-- Main Content -->
-	<div class="p-4 ml-64" style="margin-top: {bannerHeight};">
+	<div class="p-4 ml-64 transition-all duration-300"
+	     class:content-with-banner={bannerVisible}
+	     style="padding-top: {bannerVisible ? '7.5rem' : '4.5rem'};">
 		<slot />
 	</div>
 </div>
