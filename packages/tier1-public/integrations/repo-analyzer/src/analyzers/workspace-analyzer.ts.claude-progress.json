@@ -1,4 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T07:16:36.024Z","model":"gpt-4.1","tokensUsed":15899,"contentLength":32856,"file":"packages/repo-analyzer/src/analyzers/workspace-analyzer.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T07:17:06.644Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/repo-analyzer/src/analyzers/workspace-analyzer.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T07:19:32.918Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/repo-analyzer/src/analyzers/workspace-analyzer.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T07:19:33.065Z","contentLength":42056,"hasToolUse":false,"messageCount":3,"file":"packages/repo-analyzer/src/analyzers/workspace-analyzer.ts","tier":"inference"}

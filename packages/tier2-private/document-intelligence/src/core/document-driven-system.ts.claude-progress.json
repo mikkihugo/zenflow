@@ -1,4 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T06:42:49.600Z","model":"gpt-4.1","tokensUsed":6668,"contentLength":13110,"file":"packages/document-intelligence/src/core/document-driven-system.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T06:43:19.927Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/document-intelligence/src/core/document-driven-system.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T06:44:19.264Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/document-intelligence/src/core/document-driven-system.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T06:44:19.303Z","contentLength":18172,"hasToolUse":false,"messageCount":3,"file":"packages/document-intelligence/src/core/document-driven-system.ts","tier":"inference"}

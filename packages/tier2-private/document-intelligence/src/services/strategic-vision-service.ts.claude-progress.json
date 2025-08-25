@@ -1,4 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T06:52:45.816Z","model":"gpt-4.1","tokensUsed":18839,"contentLength":40498,"file":"packages/document-intelligence/src/services/strategic-vision-service.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T06:53:15.939Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/document-intelligence/src/services/strategic-vision-service.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T06:55:49.259Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/document-intelligence/src/services/strategic-vision-service.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T06:55:49.312Z","contentLength":38805,"hasToolUse":false,"messageCount":3,"file":"packages/document-intelligence/src/services/strategic-vision-service.ts","tier":"inference"}

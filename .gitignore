@@ -100,6 +100,7 @@ apps/**/*.bak
 claude-zen-memory.db
 tasks.db
 qdrant_storage/
+storage/
 # Test and development databases
 test-data/
 .ai-learning-data.json

@@ -1,7 +1,0 @@
-{"type":"gpt_response","timestamp":"2025-08-24T06:55:17.588Z","model":"gpt-4.1","tokensUsed":2910,"contentLength":6060,"file":"packages/document-intelligence/src/types/index.ts","tier":"gpt4.1"}
-{"type":"system","timestamp":"2025-08-24T06:55:49.108Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/document-intelligence/src/types/index.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T06:56:12.845Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/document-intelligence/src/types/index.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T06:56:12.861Z","contentLength":7585,"hasToolUse":false,"messageCount":3,"file":"packages/document-intelligence/src/types/index.ts","tier":"inference"}
-{"type":"system","timestamp":"2025-08-24T06:56:46.177Z","contentLength":0,"hasToolUse":false,"messageCount":1,"file":"packages/document-intelligence/src/types/index.ts","tier":"inference"}
-{"type":"assistant","timestamp":"2025-08-24T06:57:06.098Z","contentLength":0,"hasToolUse":false,"messageCount":2,"file":"packages/document-intelligence/src/types/index.ts","tier":"inference"}
-{"type":"result","timestamp":"2025-08-24T06:57:06.119Z","contentLength":6870,"hasToolUse":false,"messageCount":3,"file":"packages/document-intelligence/src/types/index.ts","tier":"inference"}
