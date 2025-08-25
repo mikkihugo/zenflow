@@ -64,8 +64,8 @@ export interface HealthStatus {
 }
 
 // Core database types
-export type EntityType = 'relational'|'vector'|'graph'|'memory'|'coordination';
-export type DatabaseType = 'sqlite'|'lancedb'|'kuzu';
+export type EntityType = 'relational' | 'vector' | 'graph' | 'memory' | 'coordination';
+export type DatabaseType = 'sqlite' | 'lancedb' | 'kuzu';
 
 export interface QueryOptions {
   limit?: number;

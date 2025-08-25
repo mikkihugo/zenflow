@@ -142,7 +142,7 @@ interface DatabaseProviderFactory {
  */
 export interface RepositoryConfig {
   /** Database type to use */
-  databaseType: 'postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination;
+  databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination;
 
   /** Entity type name */
   entityType: string;

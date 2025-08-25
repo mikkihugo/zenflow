@@ -818,7 +818,7 @@ export interface VectorFilter {
  */
 export interface VectorCondition {
   field: string;
-  operator: 'eq'|'ne'|'gt'|'gte'|'lt'|'lte'|'in'|'nin'|'contains;
+  operator: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' | 'contains;
   value: QueryValue|QueryValue[];
 }
 

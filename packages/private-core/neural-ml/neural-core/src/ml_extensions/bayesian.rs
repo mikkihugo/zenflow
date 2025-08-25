@@ -2,6 +2,8 @@
 //!
 //! Provides Gaussian process-based optimization for hyperparameter tuning
 //! and intelligent parameter selection in DSPy teleprompters.
+//!
+//! Integrates with linfa ecosystem for production-grade ML algorithms.
 
 use super::{MLError, MLResult, AsyncOptimizer, MemoryAware, GpuAccelerated, Serializable, monitoring::Timer};
 use crate::errors::NeuroDivergentResult;
@@ -12,6 +14,46 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 use rayon::prelude::*;
+
+// Linfa integration for production-grade ML
+#[cfg(feature = "ml-optimization")]
+use linfa::prelude::*;
+#[cfg(feature = "bayesian-optimization")]
+use linfa_bayes::{GaussianNb, MultinomialNb};
+#[cfg(feature = "statistical-analysis")]
+use statrs::{
+    distribution::{Normal, ContinuousCDF},
+    statistics::Statistics,
+};
+#[cfg(feature = "multi-objective")]
+use argmin::prelude::*;
+
+// SmartCore integration for comprehensive ML algorithms
+#[cfg(feature = "ml-optimization")]
+use smartcore::{
+    linalg::basic::matrix::DenseMatrix,
+    naive_bayes::gaussian::GaussianNB as SmartGaussianNB,
+    preprocessing::StandardScaler,
+    tree::decision_tree_regressor::DecisionTreeRegressor,
+    ensemble::random_forest_regressor::RandomForestRegressor,
+    cluster::k_means::KMeans,
+    metrics::distance::euclidean::Euclidean,
+};
+
+// Additional statistical analysis
+#[cfg(feature = "statistical-analysis")]
+use statrs::{
+    distribution::{Gamma, Continuous, Beta, Uniform},
+    statistics::{Max, Min, Variance},
+};
+
+// Distance metrics for clustering and optimization
+#[cfg(feature = "pattern-learning")]
+use distances::Number;
+
+// KDTree for nearest neighbor search
+#[cfg(feature = "pattern-learning")]
+use kdtree::{KdTree, ErrorKind as KdError};
 
 /// Kernel function types for Gaussian processes
 #[derive(Debug, Clone, Serialize, Deserialize)]

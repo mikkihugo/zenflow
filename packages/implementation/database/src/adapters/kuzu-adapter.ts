@@ -31,10 +31,10 @@ import type {
   HealthStatus,
 } from '../interfaces.js';
 
-const logger = getLogger('kuzu-adapter');'
+const logger = getLogger('kuzu-adapter');
 
 export interface KuzuConfig {
-  type: 'kuzu;
+  type: 'kuzu';
   database: string;
   options?: {
     bufferPoolSize?: string;
@@ -79,11 +79,11 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   private analyzeLoadError(error: unknown): { reason: string; recoverable: boolean } {
     if (error instanceof Error) {
-      if (error.message.includes('Cannot resolve module')) {'
-        return { reason: 'Module not found', recoverable: true };'
+      if (error.message.includes('Cannot resolve module')) {
+        return { reason: 'Module not found', recoverable: true };
       }
-      if (error.message.includes('ENOENT')) {'
-        return { reason: 'File not found', recoverable: true };'
+      if (error.message.includes('ENOENT')) {
+        return { reason: 'File not found', recoverable: true };
       }
       return { reason: error.message, recoverable: false };
     }
@@ -813,15 +813,15 @@ export class KuzuAdapter implements DatabaseAdapter {
         const value = params[paramIndex++];
         if (Array.isArray(value)) {
           // Handle array parameters (e.g., for N clauses)
-          return `[${value.map((v) => (typeof v ==='string' ? `'${v.replace(/'/g, "''")}'` : v)).join(', ')}]`;`
+          return `[${value.map((v) => (typeof v ==='string' ? `${v.replace(/'/g, "''")}'` : v)).join(', ')}]`;`
         } else if (typeof value === 'string') {'
-          return `'${value.replace(/'/g, "''")}'`; // Escape single quotes`
+          return `${value.replace(/'/g, "''")}'`; // Escape single quotes`
         } else if (typeof value === 'number') {'
           return value.toString();
         } else if (value === null||value === undefined) {
           return'NULL;
         } else {
-          return `'${String(value).replace(/'/g, "''")}'`;`
+          return `${String(value).replace(/'/g, "''")}'`;`
         }
       }
       return match; // Keep the placeholder if no parameter available

@@ -1,9 +1,9 @@
 [package]
 name = "code-mesh-cli"
-version.workspace = true
-authors.workspace = true
-edition.workspace = true
-license.workspace = true
+version = "0.1.0"
+authors = ["claude-code-zen Team"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
 description = "Command-line interface for the Code-Mesh distributed swarm intelligence system"
 homepage = "https://github.com/ruvnet/code-mesh"
 repository = "https://github.com/ruvnet/code-mesh"
@@ -19,15 +19,15 @@ path = "src/main.rs"
 [dependencies]
 # Workspace dependencies
 code-mesh-core = { version = "0.1.0", path = "../code-mesh-core" }
-tokio = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
-thiserror = { workspace = true }
-anyhow = { workspace = true }
-tracing = { workspace = true }
-tracing-subscriber = { workspace = true }
-dirs = { workspace = true }
-which = { workspace = true }
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+dirs = "5.0"
+which = "6.0"
 
 # CLI specific
 clap = { version = "4.5", features = ["derive", "cargo"] }
@@ -59,12 +59,12 @@ url = "2.5"
 reqwest = { version = "0.12", features = ["json"] }
 
 [dev-dependencies]
-tempfile = { workspace = true }
+tempfile = "3.8"
 assert_cmd = "2.0"
-predicates = { workspace = true }
-proptest = { workspace = true }
-criterion = { workspace = true }
-mockall = { workspace = true }
-assert_fs = { workspace = true }
-insta = { workspace = true }
-rstest = { workspace = true }
+predicates = "3.0"
+proptest = "1.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+mockall = "0.12"
+assert_fs = "1.1"
+insta = "1.34"
+rstest = "0.18"

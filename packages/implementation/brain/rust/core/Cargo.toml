@@ -64,7 +64,7 @@ default = ["std", "parallel", "gpu-backend", "wasm", "io", "full-training", "dsp
 std = []
 serde = ["dep:serde"]
 parallel = ["dep:rayon"]
-io = ["dep:bincode", "dep:serde", "dep:serde_json"]
+io = ["dep:bincode", "serde", "dep:serde_json"]
 logging = []
 binary = []
 

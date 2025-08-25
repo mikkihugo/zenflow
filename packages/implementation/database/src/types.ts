@@ -197,7 +197,7 @@ export interface MigrationStatus {
 }
 
 // Query builder types
-export type QueryOperator = '='|'!='|'>'|'<'|'>='|'<='|'LIKE'|'IN'|'NOT IN';
+export type QueryOperator = '=' | '!=' | '>' | '<' | '>=' | '<=' | 'LIKE' | 'IN' | 'NOT IN';
 
 export interface QueryCondition {
   readonly field: string;

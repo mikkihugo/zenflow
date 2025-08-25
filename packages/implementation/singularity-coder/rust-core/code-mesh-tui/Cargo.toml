@@ -1,9 +1,9 @@
 [package]
 name = "code-mesh-tui"
-version.workspace = true
-authors.workspace = true
-edition.workspace = true
-license.workspace = true
+version = "0.1.0"
+authors = ["claude-code-zen Team"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
 description = "Interactive Terminal User Interface for the Code-Mesh distributed swarm intelligence system"
 homepage = "https://github.com/ruvnet/code-mesh"
 repository = "https://github.com/ruvnet/code-mesh"
@@ -15,45 +15,45 @@ categories = ["command-line-utilities", "visualization", "development-tools"]
 [dependencies]
 # Core dependencies
 code-mesh-core = { version = "0.1.0", path = "../code-mesh-core" }
-tokio.workspace = true
-anyhow.workspace = true
-serde.workspace = true
-serde_json.workspace = true
-clap.workspace = true
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.0", features = ["derive"] }
 
 # TUI dependencies
-ratatui.workspace = true
-crossterm.workspace = true
-tui-textarea.workspace = true
-tui-input.workspace = true
+ratatui = "0.24"
+crossterm = "0.27"
+tui-textarea = "0.4"
+tui-input = "0.8"
 
 # Text processing and rendering
-syntect.workspace = true
-pulldown-cmark.workspace = true
-unicode-width.workspace = true
-unicode-segmentation.workspace = true
+syntect = "5.1"
+pulldown-cmark = "0.9"
+unicode-width = "0.1"
+unicode-segmentation = "1.10"
 
 # Color and styling
 owo-colors = "4.0"
 
 # Event handling
-futures.workspace = true
-futures-util.workspace = true
+futures = "0.3"
+futures-util = "0.3"
 
 # File and path utilities
-dirs.workspace = true
-walkdir.workspace = true
+dirs = "5.0"
+walkdir = "2.4"
 
 # Date/time
-chrono.workspace = true
+chrono = { version = "0.4", features = ["serde"] }
 
 # UUID generation
-uuid.workspace = true
+uuid = { version = "1.0", features = ["v4", "serde"] }
 
 # Logging
-tracing.workspace = true
-tracing-subscriber.workspace = true
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
-tokio-test.workspace = true
-tempfile.workspace = true
+tokio-test = "0.4"
+tempfile = "3.8"
