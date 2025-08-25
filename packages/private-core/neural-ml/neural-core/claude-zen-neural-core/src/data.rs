@@ -1045,7 +1045,7 @@ impl<T: Float> Default for TimeSeriesDatasetBuilder<T> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use polars::prelude::*;
+  use chrono::NaiveDate;
 
   fn create_test_dataframe() -> DataFrame {
     df! {

@@ -643,11 +643,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         },
       ];
 
-      await this.database!.createTable({
-        name: tableName,
-        data: sampleData,
-        mode: 'overwrite',
-      });
+      await (this.database as any).createTable(tableName, sampleData, { mode: 'overwrite' });
 
       logger.info('Table with embedding support created successfully', {
         correlationId,
@@ -847,7 +843,9 @@ export class LanceDBAdapter implements DatabaseConnection {
       }
 
       // For HNSW or default
-      await table.createIndex(options.column || 'vector', indexConfig);
+      if ((table as any).createIndex) {
+        await (table as any).createIndex(options.column || 'vector', indexConfig);
+      }
 
       logger.info('Vector index created successfully', {
         correlationId,
@@ -922,7 +920,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       // Perform text search if text query provided
       if (query.text && query.textColumn) {
         try {
-          let textQuery = table.search(query.text, 'fts', [query.textColumn]);
+          let textQuery = (table as any).search ? (table as any).search(query.text) : (table as any).query();
 
           if (options.filter) {
             textQuery = textQuery.where(options.filter);

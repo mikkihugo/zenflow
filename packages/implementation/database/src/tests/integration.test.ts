@@ -13,6 +13,7 @@ import {
   createStorage,
   defaultConfigs,
   type DatabaseConfig,
+  type QueryResult,
 } from '../main.js';
 
 // Test constants
@@ -42,7 +43,8 @@ async function performBasicSQLiteTests(adapter: SQLiteAdapter): Promise<void> {
 
 async function transactionCallback(tx: any): Promise<void> { // Use any to avoid import issues
   await tx.execute(INSERT_TEST_SQL, [TRANSACTION_TEST]);
-  const txResult = await tx.query<{ count: number }>(COUNT_QUERY);
+  const txResult = await tx.query(COUNT_QUERY) as any;
+  expect((txResult as QueryResult<{ count: number }>).rows[0].count).toBe(2);
   expect(txResult.rows[0].count).toBe(2);
 }
 

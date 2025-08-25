@@ -638,7 +638,8 @@ export class SQLiteAdapter implements DatabaseConnection {
     const timeout = this.config.pool?.acquireTimeoutMillis;
     const startTime = Date.now();
 
-    while (Date.now() - startTime < timeout ?? 30000) {
+    const timeoutMs = timeout || 30000;
+    while (Date.now() - startTime < timeoutMs) {
       // Find available connection
       const available = this.pool.find((conn) => !conn.inUse);
 
@@ -649,7 +650,8 @@ export class SQLiteAdapter implements DatabaseConnection {
       }
 
       // Create new connection if under limit
-      if (this.pool.length < this.config.pool?.max ?? 10) {
+      const maxConnections = this.config.pool?.max || 10;
+      if (this.pool.length < maxConnections) {
         const newConnection = await this.createConnection();
         newConnection.inUse = true;
         return newConnection;
@@ -787,7 +789,7 @@ export class SQLiteAdapter implements DatabaseConnection {
       const primaryKey = columns
         .filter(
           (col) =>
-            pragmaResult.rows.find((row) => row.name === col.name)?.pk > 0
+            (pragmaResult.rows.find((row) => row.name === col.name)?.pk || 0) > 0
         )
         .map((col) => col.name);
 

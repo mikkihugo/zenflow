@@ -693,9 +693,9 @@ export class LoadBalancer extends TypedEventBase {
         // Store agent in memory and persistent storage
         this.agents.set(agent.id, agent);
         // await this.kvStore.set(
-          `agent:${agent.id}`,
-          agent as unknown as Record<string, unknown>
-        );
+        //   `agent:${agent.id}`,
+        //   agent as unknown as Record<string, unknown>
+        // );
 
         // Add to consistent hashing ring
         this.consistentHashing.add(agent.id, 1);
@@ -931,13 +931,13 @@ export class LoadBalancer extends TypedEventBase {
           await observer.onTaskRouted(task, routingResult?.selectedAgent);
         }
 
-        recordMetric('load_balancer_tasks_routed_total', 1);'
+        recordMetric('load_balancer_tasks_routed_total', 1);
         recordHistogram(
           'load_balancer_routing_latency_ms',
           routingResult.estimatedLatency || 0
         );
 
-        this.logger.debug('Task routed successfully', {'
+        this.logger.debug('Task routed successfully', {
           taskId: task.id,
           selectedAgent: routingResult?.selectedAgent?.id,
           routingDecision: routingResult?.routingDecision,
@@ -956,7 +956,7 @@ export class LoadBalancer extends TypedEventBase {
           span.end();
         }
 
-        this.emit('task:routed', {'
+        this.emit('task:routed', {
           task,
           agent: routingResult?.selectedAgent,
           result: routingResult,
@@ -965,12 +965,12 @@ export class LoadBalancer extends TypedEventBase {
       });
 
       if (result.isErr()) {
-        this.logger.error('Failed to route task', {'
+        this.logger.error('Failed to route task', {
           taskId: task.id,
           error: result.error,
         });
-        recordMetric('load_balancer_routing_errors_total', 1);'
-        throw result && typeof result === 'object' && 'error' in result'
+        recordMetric('load_balancer_routing_errors_total', 1);
+        throw result && typeof result === 'object' && 'error' in result
           ? result.error
           : new Error('Unknown startup error');
       }
@@ -1011,7 +1011,7 @@ export class LoadBalancer extends TypedEventBase {
 
       return enhancedMetrics;
     } catch (error) {
-      this.logger.warn('Failed to get enhanced metrics', { agentId, error });'
+      this.logger.warn('Failed to get enhanced metrics', { agentId, error });
       return this.getLatestMetrics(agentId);
     }
   }
@@ -1157,7 +1157,7 @@ export class LoadBalancer extends TypedEventBase {
       await observer.onTaskCompleted(task, agent, duration, success);
     }
 
-    this.emit('task:completed', { taskId, agentId, duration, success });'
+    this.emit('task:completed', { taskId, agentId, duration, success });
   }
 
   /**
