@@ -92,13 +92,13 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   private async initializeKuzu(): Promise<void> {
     try {
-      const kuzu = await import('@' + 'kuzu'); // Split import to avoid TypeScript resolution'
+      const kuzu = await import('@' + 'kuzu'); // Split import to avoid TypeScript resolution
       Database = kuzu.Database;
       Connection = kuzu.Connection;
     } catch (error) {
       const errorDetails = this.analyzeLoadError(error);
       logger.warn(
-        `Kuzu library not available: ${errorDetails.reason}. Install kuzu package for graph database functionality.`,`
+        `Kuzu library not available: ${errorDetails.reason}. Install kuzu package for graph database functionality.`,
         { error: errorDetails },
       );
     }
