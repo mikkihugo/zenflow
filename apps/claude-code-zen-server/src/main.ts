@@ -35,24 +35,26 @@ import { SafetyInterventionProtocols } from './coordination/safety-intervention-
 
 // Foundation services already imported above
 
-// Make ALL foundation facades globally available - eliminates scattered imports
-(global as any).foundation = {
+// Foundation global interface for type safety
+interface FoundationGlobal {
+  getLogger: typeof getLogger;
+  createContainer: typeof createContainer;
+  getConfig: typeof getConfig;
+  initializeTelemetry?: typeof initializeTelemetry;
+  withRetry?: typeof withRetry;
+  withTrace?: typeof withTrace;
+  getProjectManager?: typeof getProjectManager;
+  createCircuitBreaker?: typeof createCircuitBreaker;
+  recordMetric?: typeof recordMetric;
+  getStorage?: typeof getStorage;
+}
+
+// Make foundation services globally available with proper typing
+(global as { foundation: FoundationGlobal }).foundation = {
   // Core foundation services
   getLogger,
   createContainer,
   getConfig,
-  // Infrastructure services
-  getEventBus,
-  getDatabaseSystemAccess,
-  getTelemetryManager,
-  getLoadBalancingSystemAccess,
-  // Operations services
-  getAgentMonitoringSystem,
-  getChaosEngine,
-  // Enterprise services
-  getSPARCCommander,
-  getWorkflowEngineAccess,
-  getTeamworkAccess,
   // Foundation utilities
   initializeTelemetry,
   withRetry,
@@ -61,14 +63,6 @@ import { SafetyInterventionProtocols } from './coordination/safety-intervention-
   createCircuitBreaker,
   recordMetric,
   getStorage,
-  // New packages - Moved from core for clean separation
-  getDocumentProcessing: async () =>
-    await import('claude-zen/document-processing'),
-  getExporters: async () => await import('claude-zen/exporters'),
-  getDocumentation: async () => await import('claude-zen/documentation'),
-  getArchitecture: async () => await import('claude-zen/architecture'),
-  getCodeAnalyzer: async () => await import('claude-zen/code-analyzer'),
-  getInterfaces: async () => await import('claude-zen/interfaces'),
   // Version information - inline instead of separate config file
   getVersion: () => {
     try {
@@ -91,8 +85,8 @@ import { SafetyInterventionProtocols } from './coordination/safety-intervention-
 const logger = getLogger('Main');
 
 // Use foundation's configuration system + command line args
-const { getConfig: getConfigFn } = await import('claude-zen/foundation');
-const config = getConfigFn();
+const { getConfig: getConfigFn } = await import('@claude-zen/foundation');
+const foundationConfig = getConfigFn();
 
 // Handle CLI commands first
 if (process.argv.includes('auth')) {
@@ -147,7 +141,7 @@ async function main() {
   // Provide fallback for withTrace if not available
   const withTraceFn =
     foundationWithTrace ||
-    (async (name: string, fn: () => Promise<any>) => {
+    (async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
       logger.debug(`Starting trace: ${name}`);
       const result = await fn();
       logger.debug(`Completed trace: ${name}`);

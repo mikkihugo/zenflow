@@ -55,7 +55,6 @@ import {
 } from '@claude-zen/foundation';
 
 // Strategic facades for accessing lower tier functionality
-import { getSafeFramework } from '@claude-zen/enterprise';
 import { getBrainSystem } from '@claude-zen/intelligence';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
 import { getPerformanceTracker } from '@claude-zen/operations';
