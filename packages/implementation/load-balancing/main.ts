@@ -1170,7 +1170,7 @@ export class LoadBalancer extends TypedEventBase {
   ): Promise<void> {
     const newAlgorithm = this.algorithms.get(algorithm);
     if (!newAlgorithm) {
-      throw new Error(`Algorithm ${algorithm} not available`);`
+      throw new Error(`Algorithm ${algorithm} not available`);
     }
 
     this.currentAlgorithm = newAlgorithm;
@@ -1191,7 +1191,7 @@ export class LoadBalancer extends TypedEventBase {
       );
     }
 
-    this.emit('algorithm:changed', algorithm);'
+    this.emit('algorithm:changed', algorithm);
   }
 
   /**
@@ -1244,7 +1244,7 @@ export class LoadBalancer extends TypedEventBase {
       // Implementation depends on HealthChecker interface
     }
 
-    this.emit('configuration:updated', this.loadBalancingConfig);'
+    this.emit('configuration:updated', this.loadBalancingConfig);
   }
 
   /**
@@ -1299,7 +1299,7 @@ export class LoadBalancer extends TypedEventBase {
     // Check if emergency protocols should be activated
     await this.checkEmergencyConditions();
 
-    this.emit('agent:failed', { agentId, error });'
+    this.emit('agent:failed', { agentId, error });
   }
 
   /**
@@ -1319,7 +1319,7 @@ export class LoadBalancer extends TypedEventBase {
       Array.from(this.agents.values())
     );
 
-    this.emit('agent:recovered', agentId);'
+    this.emit('agent:recovered', agentId);
   }
 
   /**
@@ -1330,7 +1330,7 @@ export class LoadBalancer extends TypedEventBase {
   private async handleScaleUp(count: number): Promise<void> {
     // This would trigger actual agent spawning
     // Implementation depends on the agent spawning mechanism
-    this.emit('scale:up:requested', count);'
+    this.emit('scale:up:requested', count);
   }
 
   /**
@@ -1344,7 +1344,7 @@ export class LoadBalancer extends TypedEventBase {
       await this.removeAgent(agentId);
     }
 
-    this.emit('scale:down:completed', agentIds);'
+    this.emit('scale:down:completed', agentIds);
   }
 
   /**
@@ -1403,7 +1403,7 @@ export class LoadBalancer extends TypedEventBase {
       // Optimize routes
       await this.routingEngine.optimizeRoutes();
     } catch (error) {
-      this.emit('monitoring:error', error);'
+      this.emit('monitoring:error', error);
     }
   }
 
