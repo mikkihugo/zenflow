@@ -44,13 +44,13 @@ jobs:
           node-version: '22.x'
           # Enable built-in caching for npm. This significantly speeds up subsequent runs by caching dependencies.
           # The cache key is generated from the hash of the 'package-lock.json' file. [6, 10]
-          cache: 'npm'
+          cache: 'pnpm'
 
       # Step 3: Install Node.js Dependencies
       # Use 'npm ci' instead of 'npm install'. 'npm ci' provides faster, more reliable, and deterministic builds
       # by installing dependencies directly from the 'package-lock.json' file, which is ideal for CI environments. [10]
       - name: Install Node.js Dependencies
-        run: npm ci
+        run: pnpm install
 
       # Step 4: Setup Rust Stable Toolchain
       # Configures the Rust environment using a modern, well-maintained action.
