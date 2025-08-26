@@ -203,5 +203,12 @@
 	"bugs": {
 		"url": "https://github.com/your-org/claude-code-zen/issues"
 	},
-	"homepage": "https://github.com/your-org/claude-code-zen#readme"
+	"homepage": "https://github.com/your-org/claude-code-zen#readme",
+	"pnpm": {
+		"overrides": {
+			"cookie": ">=1.0.0",
+			"request": "npm:@cypress/request@>=3.0.0",
+			"parseuri": ">=2.0.0"
+		}
+	}
 }
