@@ -8,7 +8,7 @@
  * Advanced emergency response and load shedding system.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 import type { EmergencyHandler } from '../interfaces';
 
@@ -37,7 +37,7 @@ interface EmergencyAction {
 }
 
 export class EmergencyProtocolHandler
-  extends TypedEventBase
+  extends EventEmitter
   implements EmergencyHandler
 {
   private activeProtocols: Map<string, EmergencyProtocol> = new Map();
@@ -63,7 +63,7 @@ export class EmergencyProtocolHandler
       : this.executeDefaultEmergencyResponse(type, severity));
 
     this.recordEmergency(type, severity, 'protocol_executed');
-    this.emit('emergency:activated', type, severity);
+    this.emit('emergency:activated', { type, severity });
   }
 
   public async shedLoad(percentage: number): Promise<void> {

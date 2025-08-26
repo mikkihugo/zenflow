@@ -1,13 +1,15 @@
 ---
-applies_to: "src/interfaces/**/*"
+applies_to: 'src/interfaces/**/*'
 ---
 
 # Interface Systems Development Instructions
 
 ## Domain Focus
+
 The interfaces domain handles all user-facing interactions: CLI, API, MCP servers, terminal interfaces, and web dashboards. This is how users and systems interact with claude-code-zen.
 
 ## Key Subdirectories
+
 ```
 src/interfaces/
 ├── api/           # REST API and WebSocket interfaces
@@ -23,6 +25,7 @@ src/interfaces/
 ## Architecture Patterns
 
 ### Multi-Interface Strategy
+
 - **CLI** for command-line automation and scripting
 - **HTTP API** for external integrations and web services
 - **WebSocket** for real-time coordination and monitoring
@@ -31,12 +34,14 @@ src/interfaces/
 - **Web dashboard** for visual monitoring and control
 
 ### MCP Integration (Critical)
+
 - **HTTP MCP** (port 3000) for external tool integration with Claude Desktop
 - **Stdio MCP** for internal swarm coordination with Claude Code
 - **Tool schema validation** for all MCP tools
 - **Protocol compliance** with MCP specifications
 
 ## Testing Strategy - London TDD (Mockist)
+
 Use London TDD for interface code - test interactions and protocols:
 
 ```typescript
@@ -45,9 +50,9 @@ describe('CoordinationAPI', () => {
   it('should handle swarm creation requests', async () => {
     const mockSwarmManager = { createSwarm: jest.fn() };
     const api = new CoordinationAPI(mockSwarmManager);
-    
+
     const response = await api.createSwarm(request);
-    
+
     expect(mockSwarmManager.createSwarm).toHaveBeenCalledWith(request.params);
     expect(response.status).toBe(201);
   });
@@ -57,6 +62,7 @@ describe('CoordinationAPI', () => {
 ## Interface-Specific Patterns
 
 ### CLI Interface
+
 ```typescript
 // Follow established CLI patterns
 export class CLICommand {
@@ -70,6 +76,7 @@ export class CLICommand {
 ```
 
 ### HTTP API
+
 ```typescript
 // REST API endpoint patterns
 @Controller('/coordination')
@@ -84,6 +91,7 @@ export class CoordinationController {
 ```
 
 ### MCP Server Tools
+
 ```typescript
 // MCP tool implementation pattern
 export const mcpSwarmTool: MCPTool = {
@@ -93,19 +101,20 @@ export const mcpSwarmTool: MCPTool = {
     type: 'object',
     properties: {
       topology: { type: 'string', enum: ['mesh', 'hierarchical', 'ring'] },
-      size: { type: 'number', minimum: 1, maximum: 100 }
+      size: { type: 'number', minimum: 1, maximum: 100 },
     },
-    required: ['topology']
+    required: ['topology'],
   },
   handler: async (params) => {
     // Validate parameters
     // Execute swarm initialization
     // Return structured response
-  }
+  },
 };
 ```
 
 ### WebSocket Real-time
+
 ```typescript
 // WebSocket event patterns
 export class RealtimeCoordination {
@@ -121,18 +130,21 @@ export class RealtimeCoordination {
 ## Performance Requirements
 
 ### API Performance
+
 - **<100ms response time** for coordination APIs
 - **<50ms response time** for status queries
 - **Real-time updates** via WebSocket with <10ms latency
 - **Rate limiting** to prevent abuse and ensure stability
 
 ### MCP Performance
+
 - **<10ms tool execution** for simple coordination tools
 - **<100ms tool execution** for complex swarm operations
 - **Protocol compliance** with MCP specifications
 - **Concurrent tool execution** support
 
 ### Interface Responsiveness
+
 - **Immediate CLI feedback** for user commands
 - **Progressive loading** for web interfaces
 - **Graceful degradation** when backend services unavailable
@@ -141,17 +153,20 @@ export class RealtimeCoordination {
 ## Integration Points
 
 ### With Coordination Domain
+
 - **Expose coordination APIs** for external access
 - **Provide MCP tools** for swarm management
 - **Real-time coordination updates** via WebSocket
 - **CLI commands** for agent and swarm management
 
 ### With Neural Domain
+
 - **Neural training APIs** for model management
 - **Performance monitoring** for neural computations
 - **WASM status reporting** through interfaces
 
 ### With Memory Domain
+
 - **Memory management APIs** for external tools
 - **Cache status reporting** and control
 - **Memory usage monitoring** and alerts
@@ -159,18 +174,21 @@ export class RealtimeCoordination {
 ## Quality Standards
 
 ### API Design
+
 - **RESTful patterns** for HTTP APIs
 - **Consistent error handling** across all interfaces
 - **Comprehensive input validation** and sanitization
 - **Rate limiting and security** measures
 
 ### MCP Compliance
+
 - **Schema validation** for all tool parameters
 - **Protocol specification adherence** for compatibility
 - **Error handling** with proper MCP error codes
 - **Documentation** for all available tools
 
 ### User Experience
+
 - **Clear error messages** and helpful guidance
 - **Consistent interface patterns** across all access methods
 - **Comprehensive help** and documentation
@@ -179,6 +197,7 @@ export class RealtimeCoordination {
 ## Common Interface Patterns
 
 ### Input Validation
+
 ```typescript
 // Consistent validation patterns
 export class InputValidator {
@@ -192,6 +211,7 @@ export class InputValidator {
 ```
 
 ### Error Handling
+
 ```typescript
 // Standardized error responses
 export class InterfaceError extends Error {
@@ -206,6 +226,7 @@ export class InterfaceError extends Error {
 ```
 
 ### Authentication & Authorization
+
 ```typescript
 // Security patterns for interfaces
 export class InterfaceAuth {
@@ -221,16 +242,19 @@ export class InterfaceAuth {
 ## MCP Server Configuration
 
 ### HTTP MCP Server (Port 3000)
+
 - **External tool integration** with Claude Desktop
 - **Project management tools** for human interaction
 - **System status and monitoring** endpoints
 
 ### Stdio MCP Server
+
 - **Internal swarm coordination** with Claude Code
 - **Agent management tools** for AI automation
 - **Task orchestration** and execution
 
 ## Common Anti-Patterns to Avoid
+
 - **Don't bypass input validation** - always validate user input
 - **Don't ignore authentication** - secure all interface endpoints
 - **Don't mix interface concerns** - keep presentation logic separate
@@ -238,6 +262,7 @@ export class InterfaceAuth {
 - **Don't skip error handling** - handle all failure scenarios gracefully
 
 ## Monitoring and Debugging
+
 - **Request/response logging** for all interfaces
 - **Performance metrics** for API endpoints
 - **MCP protocol compliance** monitoring

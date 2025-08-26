@@ -6,7 +6,7 @@
  */
 
 // Export compatibility from main compatibility file
-export * from '../compatibility';
+export * from '../compatibility;
 
 // Add missing exports for index.ts compatibility
 export class CompatibilityLayer {

@@ -89,6 +89,7 @@ pnpm dev
 ### Build Output
 
 The build process creates:
+
 - **Cross-platform binaries**: Linux, macOS, Windows executables
 - **Node.js bundle**: Single JavaScript file for environments with Node.js
 - **Smart launchers**: Auto-detect best available binary
@@ -120,10 +121,12 @@ When you install `@zen-ai/claude-code-zen`, you get:
 ## 🌐 Web Interface
 
 Access the web dashboard at:
+
 - Local: `http://localhost:3000` (default)
 - Custom port: `http://localhost:YOUR_PORT`
 
 Features:
+
 - Real-time system monitoring
 - Package management
 - Configuration interface

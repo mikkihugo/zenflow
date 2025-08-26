@@ -11,6 +11,7 @@ This guide covers the most common issues encountered when working with Claude Ze
 ### **Issue: Build Failures**
 
 #### **Symptoms**
+
 ```bash
 error TS2688: Cannot find type definition file for 'jest'
 error TS2688: Cannot find type definition file for 'node'
@@ -18,6 +19,7 @@ npm ERR! Error: ENOENT: no such file or directory
 ```
 
 #### **Root Cause Analysis**
+
 - Missing type definitions in node_modules
 - Corrupted package-lock.json
 - Node.js version incompatibility
@@ -26,6 +28,7 @@ npm ERR! Error: ENOENT: no such file or directory
 #### **Solutions**
 
 **Step 1: Clean Installation**
+
 ```bash
 # Remove existing dependencies
 rm -rf node_modules package-lock.json
@@ -42,6 +45,7 @@ yarn install
 ```
 
 **Step 2: Verify Node.js Version**
+
 ```bash
 # Check Node.js version (requires 18+)
 node --version
@@ -55,6 +59,7 @@ n 18
 ```
 
 **Step 3: Install Missing Global Dependencies**
+
 ```bash
 # Install required global packages
 npm install -g typescript tsx @types/node
@@ -64,6 +69,7 @@ tsc --version
 ```
 
 **Step 4: Fix Type Definitions**
+
 ```bash
 # Install missing type definitions
 npm install --save-dev @types/jest @types/node @types/react
@@ -81,6 +87,7 @@ npm install --save-dev @types/jest @types/node @types/react
 ### **Issue: WASM Module Loading Failures**
 
 #### **Symptoms**
+
 ```bash
 Error: WebAssembly module compilation failed
 Failed to load WASM module: neural-core.wasm
@@ -88,6 +95,7 @@ RuntimeError: unreachable executed
 ```
 
 #### **Root Cause Analysis**
+
 - WASM module not built or corrupted
 - Browser/Node.js doesn't support required WASM features
 - Memory allocation limits exceeded
@@ -96,6 +104,7 @@ RuntimeError: unreachable executed
 #### **Solutions**
 
 **Step 1: Rebuild WASM Modules**
+
 ```bash
 # Rebuild WASM modules
 npm run build:wasm
@@ -106,6 +115,7 @@ cd src/neural/wasm
 ```
 
 **Step 2: Verify WASM Support**
+
 ```javascript
 // Check WASM support in Node.js
 if (typeof WebAssembly === 'undefined') {
@@ -117,12 +127,13 @@ if (typeof WebAssembly === 'undefined') {
 // Check specific features
 const features = {
   simd: WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])),
-  threads: typeof SharedArrayBuffer !== 'undefined'
+  threads: typeof SharedArrayBuffer !== 'undefined',
 };
 console.log('WASM features:', features);
 ```
 
 **Step 3: Increase Memory Limits**
+
 ```bash
 # Increase Node.js memory limit
 export NODE_OPTIONS="--max-old-space-size=8192"
@@ -136,6 +147,7 @@ export NODE_OPTIONS="--max-old-space-size=8192"
 ```
 
 **Step 4: Fallback Configuration**
+
 ```typescript
 // Configure WASM fallback
 const neuralConfig = {
@@ -143,8 +155,8 @@ const neuralConfig = {
     enabled: true,
     fallbackToJS: true, // Fall back to JavaScript if WASM fails
     memoryLimit: '2GB',
-    timeout: 30000
-  }
+    timeout: 30000,
+  },
 };
 ```
 
@@ -155,6 +167,7 @@ const neuralConfig = {
 ### **Issue: MCP Server Connection Failures**
 
 #### **Symptoms**
+
 ```bash
 Error: MCP server failed to start on port 3000
 Connection refused to localhost:3000
@@ -162,6 +175,7 @@ Tool execution timeout
 ```
 
 #### **Root Cause Analysis**
+
 - Port already in use
 - Firewall blocking connections
 - MCP server process crashed
@@ -170,6 +184,7 @@ Tool execution timeout
 #### **Solutions**
 
 **Step 1: Check Port Availability**
+
 ```bash
 # Check if port 3000 is in use
 netstat -tulpn | grep :3000
@@ -180,6 +195,7 @@ kill -9 $(lsof -t -i:3000)
 ```
 
 **Step 2: Start MCP Server with Debugging**
+
 ```bash
 # Start with debug logging
 DEBUG=mcp:* claude-zen mcp start --port 3000 --debug
@@ -190,6 +206,7 @@ curl http://localhost:3000/capabilities
 ```
 
 **Step 3: Configure Alternative Port**
+
 ```bash
 # Use alternative port
 claude-zen mcp start --port 3001
@@ -206,6 +223,7 @@ claude-zen mcp start --port 3001
 ```
 
 **Step 4: Verify Tool Registration**
+
 ```bash
 # List available tools
 curl http://localhost:3000/tools
@@ -221,6 +239,7 @@ curl -X POST http://localhost:3000/tools/system_info \
 ### **Issue: WebSocket Connection Problems**
 
 #### **Symptoms**
+
 ```bash
 WebSocket connection failed
 socket.io client disconnect due to ping timeout
@@ -228,6 +247,7 @@ Connection keeps dropping every few minutes
 ```
 
 #### **Root Cause Analysis**
+
 - Network proxy interfering with WebSocket
 - Incorrect WebSocket configuration
 - Server overload causing timeouts
@@ -236,6 +256,7 @@ Connection keeps dropping every few minutes
 #### **Solutions**
 
 **Step 1: Verify WebSocket Endpoint**
+
 ```bash
 # Test WebSocket connection
 websocat ws://localhost:3456/socket.io/?EIO=4&transport=websocket
@@ -249,27 +270,28 @@ curl -i -N -H "Connection: Upgrade" \
 ```
 
 **Step 2: Configure Connection Parameters**
+
 ```typescript
 // Robust WebSocket configuration
 const socket = io('http://localhost:3456', {
   transports: ['websocket', 'polling'], // Fallback to polling
   upgrade: true,
   rememberUpgrade: true,
-  
+
   // Timeout configuration
   timeout: 20000,
   pingTimeout: 60000,
   pingInterval: 25000,
-  
+
   // Reconnection strategy
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  
+
   // Error handling
   autoConnect: true,
-  forceNew: false
+  forceNew: false,
 });
 
 // Enhanced error handling
@@ -283,6 +305,7 @@ socket.on('connect_error', (error) => {
 ```
 
 **Step 3: Proxy Configuration**
+
 ```bash
 # Configure proxy for WebSocket (if needed)
 export HTTP_PROXY=http://proxy.company.com:8080
@@ -305,6 +328,7 @@ const socket = io('http://localhost:3456', {
 ### **Issue: High Coordination Latency**
 
 #### **Symptoms**
+
 ```bash
 Swarm coordination latency: 500-1000ms
 Task assignment timeout
@@ -312,6 +336,7 @@ Agent communication failures
 ```
 
 #### **Root Cause Analysis**
+
 - Inefficient topology for workload
 - Network bottlenecks
 - Agent overload
@@ -320,6 +345,7 @@ Agent communication failures
 #### **Solutions**
 
 **Step 1: Analyze Current Topology**
+
 ```bash
 # Check swarm topology and performance
 claude-zen swarm analyze --detailed --metrics
@@ -329,6 +355,7 @@ claude-zen swarm metrics --focus coordination --timeframe 1h
 ```
 
 **Step 2: Optimize Topology**
+
 ```bash
 # Switch to hierarchical for large swarms
 claude-zen swarm migrate --topology hierarchical --preserve-state
@@ -338,6 +365,7 @@ claude-zen swarm optimize --strategy latency-reduction
 ```
 
 **Step 3: Reduce Communication Overhead**
+
 ```typescript
 // Configure efficient communication
 const swarmConfig = {
@@ -348,18 +376,19 @@ const swarmConfig = {
     batching: {
       enabled: true,
       maxBatchSize: 10,
-      batchTimeout: 100
+      batchTimeout: 100,
     },
     connectionPooling: {
       enabled: true,
       maxConnections: 50,
-      keepAlive: true
-    }
-  }
+      keepAlive: true,
+    },
+  },
 };
 ```
 
 **Step 4: Load Balancing**
+
 ```bash
 # Enable intelligent load balancing
 claude-zen swarm config --load-balancing ml-predictive
@@ -373,6 +402,7 @@ claude-zen swarm agents --utilization --real-time
 ### **Issue: Agent Failures and Recovery**
 
 #### **Symptoms**
+
 ```bash
 Agent health check failed
 Agent process crashed unexpectedly
@@ -381,6 +411,7 @@ Orphaned tasks in queue
 ```
 
 #### **Root Cause Analysis**
+
 - Resource exhaustion (memory/CPU)
 - Unhandled exceptions in agent code
 - Network connectivity issues
@@ -389,6 +420,7 @@ Orphaned tasks in queue
 #### **Solutions**
 
 **Step 1: Enable Health Monitoring**
+
 ```bash
 # Enable comprehensive health monitoring
 claude-zen swarm config --health-monitoring enabled \
@@ -397,6 +429,7 @@ claude-zen swarm config --health-monitoring enabled \
 ```
 
 **Step 2: Configure Automatic Recovery**
+
 ```typescript
 // Agent recovery configuration
 const recoveryConfig = {
@@ -406,18 +439,19 @@ const recoveryConfig = {
     maxRestartAttempts: 3,
     restartDelay: 5000,
     backupAgentCreation: true,
-    taskRedistribution: true
+    taskRedistribution: true,
   },
   healthCheck: {
     interval: 30000,
     timeout: 10000,
     retries: 3,
-    endpoints: ['status', 'memory', 'tasks']
-  }
+    endpoints: ['status', 'memory', 'tasks'],
+  },
 };
 ```
 
 **Step 3: Resource Monitoring**
+
 ```bash
 # Monitor agent resource usage
 claude-zen agents monitor --resource-usage --alerts
@@ -427,11 +461,12 @@ claude-zen agents config --memory-limit 2GB --cpu-limit 80%
 ```
 
 **Step 4: Error Handling**
+
 ```typescript
 // Robust agent error handling
 agent.on('error', async (error) => {
   console.error(`Agent ${agent.id} error:`, error);
-  
+
   // Attempt recovery
   try {
     await agent.restart();
@@ -446,7 +481,7 @@ agent.on('task:error', async (taskError) => {
   // Reassign task to another agent
   await swarm.reassignTask(taskError.taskId, {
     excludeAgents: [agent.id],
-    priority: 'high'
+    priority: 'high',
   });
 });
 ```
@@ -458,6 +493,7 @@ agent.on('task:error', async (taskError) => {
 ### **Issue: Training Convergence Problems**
 
 #### **Symptoms**
+
 ```bash
 Neural network training stuck at high loss
 Training loss oscillating wildly
@@ -465,6 +501,7 @@ Model accuracy not improving after many epochs
 ```
 
 #### **Root Cause Analysis**
+
 - Learning rate too high or too low
 - Insufficient or poor quality training data
 - Network architecture not suitable for problem
@@ -473,6 +510,7 @@ Model accuracy not improving after many epochs
 #### **Solutions**
 
 **Step 1: Adjust Learning Rate**
+
 ```typescript
 // Learning rate scheduling
 const trainingConfig = {
@@ -480,20 +518,21 @@ const trainingConfig = {
   learningRateSchedule: {
     type: 'exponential-decay',
     decayRate: 0.96,
-    decaySteps: 1000
+    decaySteps: 1000,
   },
   // Or use adaptive learning rate
   optimizer: 'adam', // Adam automatically adjusts learning rate
-  
+
   // Gradient clipping to prevent exploding gradients
   gradientClipping: {
     enabled: true,
-    maxNorm: 1.0
-  }
+    maxNorm: 1.0,
+  },
 };
 ```
 
 **Step 2: Improve Training Data**
+
 ```bash
 # Analyze training data quality
 claude-zen neural analyze-data --dataset training-data.json
@@ -503,42 +542,44 @@ claude-zen neural preprocess --normalize --augment --split 0.8/0.1/0.1
 ```
 
 **Step 3: Architecture Optimization**
+
 ```typescript
 // Try different network architectures
 const architectures = [
   { layers: [512, 256, 128, 64, 10], activation: 'relu' },
   { layers: [1024, 512, 256, 10], activation: 'leaky_relu' },
-  { layers: [768, 384, 192, 96, 10], activation: 'swish' }
+  { layers: [768, 384, 192, 96, 10], activation: 'swish' },
 ];
 
 // Automated architecture search
 const bestArchitecture = await neuralCore.searchArchitecture({
   searchSpace: architectures,
   metric: 'validation_accuracy',
-  maxTrials: 10
+  maxTrials: 10,
 });
 ```
 
 **Step 4: Advanced Training Techniques**
+
 ```typescript
 // Implement advanced training techniques
 const advancedConfig = {
   regularization: {
     l2: 0.001,
     dropout: 0.3,
-    batchNormalization: true
+    batchNormalization: true,
   },
   earlyStoppingPatience: 10,
   modelCheckpointing: {
     enabled: true,
     saveEvery: 10,
-    saveBest: true
+    saveBest: true,
   },
   validation: {
     enabled: true,
     split: 0.2,
-    monitorMetric: 'val_accuracy'
-  }
+    monitorMetric: 'val_accuracy',
+  },
 };
 ```
 
@@ -547,6 +588,7 @@ const advancedConfig = {
 ### **Issue: WASM Performance Problems**
 
 #### **Symptoms**
+
 ```bash
 WASM acceleration slower than JavaScript
 High memory usage with WASM
@@ -554,6 +596,7 @@ WASM module crashes during inference
 ```
 
 #### **Root Cause Analysis**
+
 - WASM module not optimized for current workload
 - Memory allocation issues
 - SIMD instructions not utilized
@@ -562,6 +605,7 @@ WASM module crashes during inference
 #### **Solutions**
 
 **Step 1: Benchmark WASM vs JavaScript**
+
 ```bash
 # Run performance benchmark
 claude-zen neural benchmark --wasm --js --iterations 1000
@@ -571,6 +615,7 @@ claude-zen neural profile --wasm --memory --cpu
 ```
 
 **Step 2: Optimize WASM Build**
+
 ```bash
 # Build with optimizations
 cd src/neural/wasm
@@ -581,6 +626,7 @@ ENABLE_SIMD=true ./scripts/build-wasm.sh
 ```
 
 **Step 3: Memory Management**
+
 ```typescript
 // Optimize WASM memory usage
 const wasmConfig = {
@@ -588,29 +634,32 @@ const wasmConfig = {
     initialSize: '256MB',
     maxSize: '1GB',
     preAllocate: true,
-    reusableBlocks: true
+    reusableBlocks: true,
   },
   batchProcessing: {
     enabled: true,
     batchSize: 32,
-    minBatchSize: 8
-  }
+    minBatchSize: 8,
+  },
 };
 ```
 
 **Step 4: Threshold-based Switching**
+
 ```typescript
 // Use WASM only when beneficial
 const performanceThresholds = {
   matrixSize: 500, // Use WASM for matrices larger than 500x500
-  batchSize: 16,   // Use WASM for batches larger than 16
-  complexity: 0.7  // Use WASM for complex operations
+  batchSize: 16, // Use WASM for batches larger than 16
+  complexity: 0.7, // Use WASM for complex operations
 };
 
 const shouldUseWasm = (operation) => {
-  return operation.matrixSize > performanceThresholds.matrixSize ||
-         operation.batchSize > performanceThresholds.batchSize ||
-         operation.complexity > performanceThresholds.complexity;
+  return (
+    operation.matrixSize > performanceThresholds.matrixSize ||
+    operation.batchSize > performanceThresholds.batchSize ||
+    operation.complexity > performanceThresholds.complexity
+  );
 };
 ```
 
@@ -621,6 +670,7 @@ const shouldUseWasm = (operation) => {
 ### **Issue: High Memory Usage**
 
 #### **Symptoms**
+
 ```bash
 Memory usage constantly increasing
 Out of memory errors
@@ -628,6 +678,7 @@ Garbage collection pauses affecting performance
 ```
 
 #### **Root Cause Analysis**
+
 - Memory leaks in application code
 - Inefficient object creation patterns
 - Large neural network models in memory
@@ -636,6 +687,7 @@ Garbage collection pauses affecting performance
 #### **Solutions**
 
 **Step 1: Memory Profiling**
+
 ```bash
 # Enable memory profiling
 NODE_OPTIONS="--inspect --max-old-space-size=8192" claude-zen start
@@ -648,6 +700,7 @@ npm install -g heapdump
 ```
 
 **Step 2: Enable Memory Optimization**
+
 ```bash
 # Configure garbage collection
 export NODE_OPTIONS="--max-old-space-size=4096 --gc-interval=100"
@@ -657,6 +710,7 @@ claude-zen monitor memory --leak-detection --gc-stats
 ```
 
 **Step 3: Optimize Neural Network Memory**
+
 ```typescript
 // Enable memory pooling for neural networks
 const memoryConfig = {
@@ -664,35 +718,37 @@ const memoryConfig = {
     memoryPooling: true,
     maxCachedModels: 5,
     unloadUnusedModels: true,
-    unloadTimeout: 300000 // 5 minutes
+    unloadTimeout: 300000, // 5 minutes
   },
   agents: {
     memoryLimit: '512MB',
     gcInterval: 60000,
-    objectPooling: ['Float32Array', 'TaskData']
-  }
+    objectPooling: ['Float32Array', 'TaskData'],
+  },
 };
 ```
 
 **Step 4: Memory Leak Detection**
+
 ```typescript
 // Automatic memory leak detection
 setInterval(() => {
   const memUsage = process.memoryUsage();
-  
-  if (memUsage.heapUsed > 2 * 1024 * 1024 * 1024) { // 2GB
+
+  if (memUsage.heapUsed > 2 * 1024 * 1024 * 1024) {
+    // 2GB
     console.warn('High memory usage detected:', memUsage);
-    
+
     // Force garbage collection
     if (global.gc) {
       global.gc();
     }
-    
+
     // Alert monitoring system
     alertManager.sendAlert({
       type: 'memory-warning',
       usage: memUsage,
-      threshold: '2GB'
+      threshold: '2GB',
     });
   }
 }, 30000); // Check every 30 seconds
@@ -703,6 +759,7 @@ setInterval(() => {
 ### **Issue: API Response Time Issues**
 
 #### **Symptoms**
+
 ```bash
 API responses taking >1 second
 Request timeouts
@@ -710,6 +767,7 @@ High CPU usage during API calls
 ```
 
 #### **Root Cause Analysis**
+
 - Database query performance
 - Inefficient API endpoint implementation
 - Missing caching
@@ -718,6 +776,7 @@ High CPU usage during API calls
 #### **Solutions**
 
 **Step 1: API Performance Analysis**
+
 ```bash
 # Analyze API performance
 claude-zen api analyze --endpoints --bottlenecks --timeframe 1h
@@ -727,30 +786,28 @@ claude-zen api profile --slow-requests --threshold 500ms
 ```
 
 **Step 2: Enable Caching**
+
 ```typescript
 // Configure response caching
 const cacheConfig = {
   redis: {
     host: 'localhost',
     port: 6379,
-    ttl: 300 // 5 minutes
+    ttl: 300, // 5 minutes
   },
   endpoints: {
     '/api/status': { ttl: 60 },
     '/api/swarms': { ttl: 120 },
-    '/api/agents': { ttl: 180 }
-  }
+    '/api/agents': { ttl: 180 },
+  },
 };
 
 // Enable cache warming
-await cacheManager.warmCache([
-  '/api/status',
-  '/api/swarms',
-  '/api/agents'
-]);
+await cacheManager.warmCache(['/api/status', '/api/swarms', '/api/agents']);
 ```
 
 **Step 3: Database Optimization**
+
 ```bash
 # Analyze database queries
 claude-zen db analyze --slow-queries --explain
@@ -760,6 +817,7 @@ claude-zen db index --create --tables tasks,agents,swarms
 ```
 
 **Step 4: Connection Pool Tuning**
+
 ```typescript
 // Optimize connection pools
 const poolConfig = {
@@ -770,13 +828,13 @@ const poolConfig = {
     createTimeoutMillis: 30000,
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 30000,
-    reapIntervalMillis: 1000
+    reapIntervalMillis: 1000,
   },
   http: {
     maxConnections: 100,
     keepAlive: true,
-    timeout: 30000
-  }
+    timeout: 30000,
+  },
 };
 ```
 
@@ -787,6 +845,7 @@ const poolConfig = {
 ### **Issue: Environment Configuration Problems**
 
 #### **Symptoms**
+
 ```bash
 Configuration file not found
 Environment variables not loaded
@@ -794,6 +853,7 @@ Service discovery failures
 ```
 
 #### **Root Cause Analysis**
+
 - Missing or incorrect configuration files
 - Environment variable naming conflicts
 - Path resolution issues
@@ -802,6 +862,7 @@ Service discovery failures
 #### **Solutions**
 
 **Step 1: Verify Configuration Files**
+
 ```bash
 # Check configuration file locations
 claude-zen config validate --check-paths
@@ -814,6 +875,7 @@ claude-zen config env --validate
 ```
 
 **Step 2: Configuration File Structure**
+
 ```json
 // config/production.json
 {
@@ -837,6 +899,7 @@ claude-zen config env --validate
 ```
 
 **Step 3: Environment Variable Template**
+
 ```bash
 # .env.template
 NODE_ENV=production
@@ -849,17 +912,18 @@ REDIS_URL=redis://localhost:6379
 ```
 
 **Step 4: Configuration Validation**
+
 ```typescript
 // Configuration validation schema
 const configSchema = {
   server: {
     port: { type: 'number', min: 1000, max: 65535 },
-    host: { type: 'string', default: 'localhost' }
+    host: { type: 'string', default: 'localhost' },
   },
   neural: {
     wasmAcceleration: { type: 'boolean', default: true },
-    memoryLimit: { type: 'string', pattern: /^\d+[GMK]B$/ }
-  }
+    memoryLimit: { type: 'string', pattern: /^\d+[GMK]B$/ },
+  },
 };
 
 // Validate configuration on startup
@@ -871,6 +935,7 @@ const config = validateConfig(loadConfig(), configSchema);
 ### **Issue: Docker Deployment Problems**
 
 #### **Symptoms**
+
 ```bash
 Docker container fails to start
 Port binding errors in Docker
@@ -878,6 +943,7 @@ Volume mount issues
 ```
 
 #### **Root Cause Analysis**
+
 - Port conflicts on host system
 - Missing volume mounts for persistent data
 - Incorrect Docker networking configuration
@@ -886,6 +952,7 @@ Volume mount issues
 #### **Solutions**
 
 **Step 1: Fix Port Conflicts**
+
 ```bash
 # Check for port conflicts
 docker ps --format "table {{.Ports}}"
@@ -895,6 +962,7 @@ docker run -p 3457:3456 -p 3001:3000 claude-zen-flow
 ```
 
 **Step 2: Docker Compose Configuration**
+
 ```yaml
 # docker-compose.yml
 version: '3.8'
@@ -902,8 +970,8 @@ services:
   claude-zen:
     build: .
     ports:
-      - "3456:3456"
-      - "3000:3000"
+      - '3456:3456'
+      - '3000:3000'
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
@@ -921,13 +989,14 @@ services:
           memory: 2G
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3456/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3456/health']
       interval: 30s
       timeout: 10s
       retries: 3
 ```
 
 **Step 3: Volume Permissions**
+
 ```bash
 # Fix volume permissions
 sudo chown -R 1000:1000 ./data ./logs
@@ -942,6 +1011,7 @@ docker run --user $(id -u):$(id -g) claude-zen-flow
 ## 🔍 **Debugging Tools and Commands**
 
 ### **Comprehensive Debugging Commands**
+
 ```bash
 # System-wide diagnostic
 claude-zen diagnose --comprehensive --output diagnostic-report.json
@@ -966,6 +1036,7 @@ claude-zen health --detailed --components swarm,neural,api,database
 ```
 
 ### **Log Level Configuration**
+
 ```bash
 # Set debug logging for troubleshooting
 export DEBUG=claude-zen:*
@@ -976,6 +1047,7 @@ export DEBUG=claude-zen:swarm,claude-zen:neural
 ```
 
 ### **Emergency Recovery Commands**
+
 ```bash
 # Emergency system reset (preserves data)
 claude-zen emergency reset --preserve-data --backup-config
@@ -990,11 +1062,13 @@ claude-zen rollback --version 2.0.0-alpha.72 --preserve-state
 ## 🆘 **Getting Additional Help**
 
 ### **Support Channels**
+
 - **GitHub Issues**: https://github.com/mikkihugo/claude-code-zen/issues
 - **Discussions**: https://github.com/mikkihugo/claude-code-zen/discussions
 - **Documentation**: https://docs.anthropic.com/en/docs/claude-code
 
 ### **Diagnostic Information to Include**
+
 When reporting issues, please include:
 
 ```bash
@@ -1010,6 +1084,7 @@ claude-zen logs --since 24h --level error
 ```
 
 ### **Community Resources**
+
 - **Examples Repository**: https://github.com/mikkihugo/claude-code-zen/examples
 - **Performance Tuning Guide**: [Performance Guide](../performance/optimization-strategies.md)
 - **Integration Examples**: [Integration Guide](../integration/external-systems.md)

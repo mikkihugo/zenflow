@@ -1,15 +1,17 @@
 # Claude-Zen Developer Guide
 
-*Generated: 2025-08-02T13:55:10.266Z*
+_Generated: 2025-08-02T13:55:10.266Z_
 
 ## Quick Start
 
 ### Installation
+
 ```bash
 npm install claude-code-zen
 ```
 
 ### Basic Usage
+
 ```bash
 # Initialize project
 claude-zen init my-project

@@ -17,9 +17,9 @@ import type {
   EventManagerFactory,
   EventManagerRegistry,
   SystemEvent,
-} from './core/interfaces';
-import { EventManagerTypes } from './core/interfaces';
-import { EventCategories, EventPriorityMap } from './types';
+} from './core/interfaces;
+import { EventManagerTypes } from './core/interfaces;
+import { EventCategories, EventPriorityMap } from './types;
 
 /**
  * Registry entry for managing event manager instances and their lifecycle.
@@ -758,13 +758,13 @@ export class EventRegistry implements EventManagerRegistry {
       async (entry) => {
         try {
           await entry.manager.destroy();
-          entry.status = 'stopped';
+          entry.status = 'stopped;
         } catch (error) {
           this._logger?.error(
             `❌ Failed to shutdown ${entry.manager.name}:`,`
             error
           );
-          entry.status = 'error';
+          entry.status = 'error;
         }
       }
     );

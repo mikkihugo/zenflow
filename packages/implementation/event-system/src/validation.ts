@@ -12,11 +12,11 @@ import type {
   EventManagerConfig,
   EventManagerType,
   SystemEvent,
-} from './core/interfaces';
+} from './core/interfaces;
 
-import { EventManagerTypes, EventTypeGuards } from './core/interfaces';
-import type { EventManager } from './manager';
-import type { EventRegistry } from './registry';
+import { EventManagerTypes, EventTypeGuards } from './core/interfaces;
+import type { EventManager } from './manager;
+import type { EventRegistry } from './registry;
 
 /**
  * Validation result interface.
@@ -43,7 +43,7 @@ export interface ValidationResult {
   metrics: {
     validationTime: number;
     checkCount: number;
-    complexity: 'low' | 'medium' | 'high';
+    complexity: 'low' | 'medium' | 'high;
   };
 
   /** Validation metadata */
@@ -100,10 +100,10 @@ export interface ValidationWarning {
   message: string;
 
   /** Warning category */
-  category: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin';
+  category: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
 
   /** Warning impact */
-  impact: 'low' | 'medium' | 'high';
+  impact: 'low' | 'medium' | 'high;
 
   /** Warning context */
   context?: Record<string, unknown>;
@@ -125,7 +125,7 @@ export interface ValidationRecommendation {
   benefit: string;
 
   /** Implementation effort */
-  effort: 'low' | 'medium' | 'high';
+  effort: 'low' | 'medium' | 'high;
 
   /** Priority */
   priority: 'low|medium|high|critical;
@@ -1037,11 +1037,11 @@ export class UELValidationFramework {
   private validatePropertyType(value: unknown, expectedType: string): boolean {
     switch (expectedType) {
       case'string':'
-        return typeof value === 'string';
+        return typeof value === 'string;
       case 'number':'
         return typeof value === 'number' && !Number.isNaN(value);'
       case 'boolean':'
-        return typeof value === 'boolean';
+        return typeof value === 'boolean;
       case 'object':'
         return (
           typeof value === 'object' && value !== null && !Array.isArray(value)'

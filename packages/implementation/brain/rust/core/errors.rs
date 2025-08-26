@@ -443,7 +443,7 @@ impl ErrorLogger {
 
     #[cfg(feature = "logging")]
     log::log!(self.log_level, "Error{context_str}: {error}");
-    
+
     #[cfg(not(feature = "logging"))]
     {
       // When logging is disabled, respect log level for stderr output

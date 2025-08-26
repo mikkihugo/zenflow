@@ -58,7 +58,7 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import { BaseEventManager } from '../core/base-event-manager';
+import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -66,9 +66,9 @@ import type {
   EventManager,
   EventManagerFactory,
   SystemEvent,
-} from '../core/interfaces';
-import type { InterfaceEventManager } from '../event-manager-types';
-import type { InterfaceEvent } from '../types';
+} from '../core/interfaces;
+import type { InterfaceEventManager } from '../event-manager-types;
+import type { InterfaceEvent } from '../types;
 
 /**
  * Interface Event Manager implementation for UI and interaction events.

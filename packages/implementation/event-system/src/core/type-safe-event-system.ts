@@ -17,7 +17,7 @@ import { EventEmitter } from '@claude-zen/foundation';
  * - Performance optimized for production workloads
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import type {
@@ -31,10 +31,10 @@ import type {
   PerformanceMetrics,
   Result,
   EventBus,
-} from './types';
-import type { EventTypeSchema } from '../validation';
-import { Domain, ContractViolationError, DomainValidationError } from './types';
-import { getDomainValidator, validateCrossDomain } from './domain-validator';
+} from './types;
+import type { EventTypeSchema } from '../validation;
+import { Domain, ContractViolationError, DomainValidationError } from './types;
+import { getDomainValidator, validateCrossDomain } from './domain-validator;
 
 // ============================================================================
 // EVENT SYSTEM CORE TYPES - Foundation for all event operations
@@ -97,8 +97,8 @@ export interface EventHandlerConfig {
   readonly priority?: number;
   readonly timeout?: number;
   readonly retries?: number;
-  readonly backoffStrategy?: 'linear|exponential';
-  readonly errorHandling?: 'ignore' | 'retry' | 'failfast';
+  readonly backoffStrategy?: 'linear|exponential;
+  readonly errorHandling?: 'ignore' | 'retry' | 'failfast;
   readonly validatePayload?: boolean;
   readonly trackMetrics?: boolean;
 }
@@ -149,7 +149,7 @@ export interface AgentCreatedEvent extends CoordinationEvent {
   readonly payload: {
     readonly agent: Agent;
     readonly capabilities: string[];
-    readonly initialStatus: 'idle|busy';
+    readonly initialStatus: 'idle|busy;
   };
 }
 
@@ -158,7 +158,7 @@ export interface AgentDestroyedEvent extends CoordinationEvent {
   readonly payload: {
     readonly agentId: string;
     readonly reason: string;
-    readonly finalStatus: 'idle|busy';
+    readonly finalStatus: 'idle|busy;
   };
 }
 
@@ -338,7 +338,7 @@ export interface MemoryEvictedEvent extends MemoryEvent {
   readonly type: 'memory.evicted;
   readonly payload: {
     readonly key: string;
-    readonly reason: 'ttl' | 'capacity' | 'manual';
+    readonly reason: 'ttl' | 'capacity' | 'manual;
     readonly size: number;
   };
 }
@@ -355,7 +355,7 @@ export interface KnowledgeUpdatedEvent extends KnowledgeEvent {
   readonly payload: {
     readonly entityId: string;
     readonly entityType: string;
-    readonly updateType: 'create' | 'update' | 'delete';
+    readonly updateType: 'create' | 'update' | 'delete;
     readonly version: number;
   };
 }
@@ -664,7 +664,7 @@ export interface EventSystemConfig {
 /**
  * Type-safe event bus with domain boundary validation
  */
-export class TypeSafeEventBus extends TypedEventBase implements EventBus {
+export class TypeSafeEventBus extends EventEmitter implements EventBus {
   private readonly logger: Logger;
   private readonly domainValidators = new Map<
     Domain,

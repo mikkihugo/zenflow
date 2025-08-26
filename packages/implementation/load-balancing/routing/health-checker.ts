@@ -8,7 +8,7 @@
  * Comprehensive agent health monitoring and status management.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 import type { Agent } from '../types';
 
@@ -31,10 +31,10 @@ interface HealthStatus {
   consecutiveFailures: number;
 }
 
-export class HealthChecker extends TypedEventBase implements HealthChecker {
+export class HealthChecker extends EventEmitter implements HealthChecker {
   private healthStatuses: Map<string, HealthStatus> = new Map();
   private checkInterval: number;
-  private healthCheckTimer: NodeJS.Timeout|null = null;
+  private healthCheckTimer: NodeJS.Timeout | null = null;
   private activeAgents: Agent[] = [];
 
   constructor(checkInterval: number = 30000) {
@@ -123,10 +123,10 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
 
   public async getHealthStatus(agentId: string): Promise<HealthStatus> {
     return (
-      this.healthStatuses.get(agentId)||{
+      this.healthStatuses.get(agentId) || {
         healthy: false,
         lastCheck: new Date(0),
-        details:'No health data available',
+        details: 'No health data available',
         consecutiveFailures: 0,
       }
     );

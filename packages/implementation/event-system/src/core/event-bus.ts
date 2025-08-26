@@ -21,7 +21,7 @@ import { EventEmitter } from '@claude-zen/foundation';
  *
  * @example Basic event bus usage
  * ```typescript`
- * import { EventBus } from '@claude-zen/event-system';
+ * import { EventBus } from '@claude-zen/event-system;
  *
  * const eventBus = new EventBus({
  *   maxListeners: 100,
@@ -37,25 +37,17 @@ import { EventEmitter } from '@claude-zen/foundation';
  * ````
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 import compose from 'koa-compose';
 import {
   getLogger,
-  injectable,
-  singleton,
   Result,
   ok,
   err,
   safeAsync,
-  recordMetric,
-  recordHistogram,
-  startTrace,
-  withTrace,
-  traced,
-  metered,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('EventBus');'
+const logger = getLogger('EventBus');
 
 export interface EventBusConfig {
   maxListeners: number;
@@ -105,9 +97,7 @@ export type EventMiddleware = (
  * });
  * ````
  */
-@injectable()
-@singleton()
-export class EventBus extends TypedEventBase {
+export class EventBus extends EventEmitter {
   private static instance: EventBus|null = null;
   private middleware: EventMiddleware[] = [];
   private metrics: EventMetrics;

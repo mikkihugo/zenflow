@@ -6,7 +6,7 @@
  * @file intelligent-routing processing engine
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
@@ -58,7 +58,7 @@ interface RoutingMetrics {
 }
 
 export class IntelligentRoutingEngine
-  extends TypedEventBase
+  extends EventEmitter
   implements RoutingEngine
 {
   private routingTable: Map<string, RoutingTable> = new Map();
@@ -67,9 +67,9 @@ export class IntelligentRoutingEngine
   private networkOptimizer: NetworkLatencyOptimizer;
   private capacityManager: CapacityManager;
   private routingMetrics: RoutingMetrics;
-  private networkTopology: NetworkTopology|null = null;
+  private networkTopology: NetworkTopology | null = null;
 
-  private config = {
+  private routingConfig = {
     routeUpdateInterval: 30000, // 30 seconds
     maxRoutingAttempts: 3,
     routingTimeout: 5000,
@@ -82,7 +82,8 @@ export class IntelligentRoutingEngine
     failoverThreshold: 0.8,
     adaptiveRoutingEnabled: true,
     geographicAwareRouting: true,
-    loadBalancingStrategy:'intelligent'as|'round_robin|least_connections|intelligent',
+    loadBalancingStrategy:
+      'intelligent' as 'round_robin|least_connections|intelligent',
   };
 
   constructor(capacityManager: CapacityManager) {
@@ -187,7 +188,7 @@ export class IntelligentRoutingEngine
    * Optimize routing paths and decisions.
    */
   public async optimizeRoutes(): Promise<void> {
-    if (!this.config.adaptiveRoutingEnabled) return;
+    if (!this.routingConfig.adaptiveRoutingEnabled) return;
 
     this.routingMetrics.routeOptimizations++;
 
@@ -228,7 +229,7 @@ export class IntelligentRoutingEngine
     return {
       ...this.routingMetrics,
       routingTableSize: this.routingTable.size,
-      avgRouteReliability: avgReliability||0,
+      avgRouteReliability: avgReliability || 0,
     };
   }
 
@@ -298,7 +299,7 @@ export class IntelligentRoutingEngine
     });
 
     // Geographic routes if topology is available
-    if (this.networkTopology && this.config.geographicAwareRouting) {
+    if (this.networkTopology && this.routingConfig.geographicAwareRouting) {
       const geoRoutes = await this.discoverGeographicRoutes(agent);
       routes.push(...geoRoutes);
     }
@@ -320,7 +321,8 @@ export class IntelligentRoutingEngine
     if (!agentLocation) return routes;
 
     // Find optimal path using network topology
-    const optimalPath = await this.networkOptimizer.selectOptimalPath('source', // Would be actual source location'
+    const optimalPath = await this.networkOptimizer.selectOptimalPath(
+      'source', // Would be actual source location'
       agent.id
     );
 
@@ -409,7 +411,7 @@ export class IntelligentRoutingEngine
     agent: Agent,
     routingEntry: RoutingTable
   ): Promise<number> {
-    const weights = this.config.qosWeights;
+    const weights = this.routingConfig.qosWeights;
 
     // Latency score (lower latency = higher score)
     const latencyScore = Math.max(0, 1 - routingEntry.averageLatency / 10000);
@@ -448,7 +450,7 @@ export class IntelligentRoutingEngine
    */
   private selectBestRoute(routingEntry: RoutingTable, task: Task): RouteEntry {
     if (routingEntry.routes.length === 0) {
-      throw new Error('No routes available');'
+      throw new Error('No routes available');
     }
 
     // Score each route based on task requirements
@@ -473,7 +475,7 @@ export class IntelligentRoutingEngine
    * @param task
    */
   private scoreRoute(route: RouteEntry, task: Task): number {
-    const weights = this.config.qosWeights;
+    const weights = this.routingConfig.qosWeights;
 
     const latencyScore = Math.max(0, 1 - route.latency / 10000);
     const reliabilityScore = route.reliability;
@@ -535,7 +537,7 @@ export class IntelligentRoutingEngine
     for (const agentId of affectedRoutes) {
       // Trigger route recalculation for affected agent
       await this.updateAgentRoute({ id: agentId } as Agent);
-      this.emit('route:recalculated', { agentId, timestamp: Date.now() });'
+      this.emit('route:recalculated', { agentId, timestamp: Date.now() });
     }
   }
 
@@ -644,7 +646,7 @@ export class IntelligentRoutingEngine
 
   private calculateFreshnessFactor(lastUpdate: Date): number {
     const ageMs = Date.now() - lastUpdate.getTime();
-    const maxAge = this.config.routeUpdateInterval * 2;
+    const maxAge = this.routingConfig.routeUpdateInterval * 2;
 
     return Math.max(0, 1 - ageMs / maxAge);
   }

@@ -1,6 +1,6 @@
 /**
  * Vitest Configuration for Database Package
- * 
+ *
  * This configuration isolates the database package testing environment
  * from the main project configuration to avoid setup file dependencies.
  */
@@ -15,12 +15,7 @@ export default defineConfig({
       'tests/**/*.test.ts',
       'tests/**/*.test.tsx',
     ],
-    exclude: [
-      'node_modules',
-      'dist',
-      '.git',
-      'coverage',
-    ],
+    exclude: ['node_modules', 'dist', '.git', 'coverage'],
     globals: true,
     testTimeout: 30000,
     hookTimeout: 10000,

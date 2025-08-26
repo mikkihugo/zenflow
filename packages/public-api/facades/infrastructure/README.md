@@ -11,6 +11,7 @@ The Infrastructure package consolidates access to all system infrastructure in t
 ## Architecture
 
 **Strategic Layer: Infrastructure (System Platform)**
+
 - Position: Layer 2 of 5 in the strategic architecture
 - Role: Unified system infrastructure coordination
 - Pattern: Runtime delegation with lazy loading
@@ -18,7 +19,9 @@ The Infrastructure package consolidates access to all system infrastructure in t
 ## Delegated Systems
 
 ### 💾 Database System (`@claude-zen/database`)
+
 Multi-database abstraction layer with comprehensive data persistence:
+
 - `DatabaseProvider` - Multi-database management (SQLite, LanceDB, Kuzu)
 - `KVStorage` - Key-value storage with JSON serialization
 - `SQLDatabase` - Structured query operations
@@ -26,14 +29,18 @@ Multi-database abstraction layer with comprehensive data persistence:
 - `GraphDatabase` - Graph relationships and traversal
 
 ### 📊 Telemetry System (`@claude-zen/monitoring`)
+
 Telemetry, observability, metrics collection, and distributed tracing:
+
 - `TelemetryManager` - Comprehensive telemetry coordination
 - `ObservabilityFramework` - System observability management
 - `MetricsCollector` - Metrics aggregation and analysis
 - `TracingSystem` - Distributed tracing and span management
 
 ### 📡 Event System (`@claude-zen/event-system`)
+
 Type-safe event system, messaging, and coordination:
+
 - `EventBus` - Central event coordination
 - `EventEmitter` - Event emission and handling
 - `MessageBroker` - Message routing and delivery
@@ -41,7 +48,9 @@ Type-safe event system, messaging, and coordination:
 - `TypeSafeEventSystem` - Type-safe event validation
 
 ### ⚖️ Load Balancing System (`@claude-zen/load-balancing`)
+
 Load balancing algorithms, resource optimization, and intelligent routing:
+
 - `LoadBalancer` - Request distribution and balancing
 - `ResourceOptimizer` - Resource utilization optimization
 - `IntelligentRouter` - Smart request routing
@@ -65,21 +74,21 @@ const telemetry = await infrastructureSystem.telemetry();
 const telemetryManager = await telemetry.getTelemetryManager({
   serviceName: 'my-service',
   enableTracing: true,
-  enableMetrics: true
+  enableMetrics: true,
 });
 
 // Access event system
 const eventSystem = await infrastructureSystem.eventSystem();
 const eventBus = await eventSystem.getEventBus({
   enableTypeValidation: true,
-  enableEventPersistence: true
+  enableEventPersistence: true,
 });
 
 // Access load balancing
 const loadBalancing = await infrastructureSystem.loadBalancing();
 const loadBalancer = await loadBalancing.getLoadBalancer({
   algorithm: 'resource-aware',
-  enableHealthChecking: true
+  enableHealthChecking: true,
 });
 ```
 
@@ -96,7 +105,7 @@ const infrastructure = new InfrastructureSystem({
     enableGraphDatabase: true,
     defaultNamespace: 'app',
     connectionPoolSize: 10,
-    enableCaching: true
+    enableCaching: true,
   },
   telemetry: {
     serviceName: 'my-application',
@@ -106,8 +115,8 @@ const infrastructure = new InfrastructureSystem({
     endpoint: 'http://localhost:4318',
     attributes: {
       environment: 'production',
-      version: '1.0.0'
-    }
+      version: '1.0.0',
+    },
   },
   eventSystem: {
     enableTypeValidation: true,
@@ -115,7 +124,7 @@ const infrastructure = new InfrastructureSystem({
     enableDistribution: true,
     maxEventHistory: 1000,
     eventTimeout: 30000,
-    batchSize: 100
+    batchSize: 100,
   },
   loadBalancing: {
     algorithm: 'ml-predictive',
@@ -124,8 +133,8 @@ const infrastructure = new InfrastructureSystem({
     enableFailover: true,
     maxCapacity: 1000,
     healthCheckInterval: 30000,
-    failoverTimeout: 5000
-  }
+    failoverTimeout: 5000,
+  },
 });
 
 await infrastructure.initialize();
@@ -146,21 +155,21 @@ import {
   getKVStorage,
   getTelemetryManager,
   getEventBus,
-  getLoadBalancer
+  getLoadBalancer,
 } from '@claude-zen/infrastructure';
 
 // Direct access to specific systems
 const storage = await getKVStorage('cache');
-const telemetry = await getTelemetryManager({ 
+const telemetry = await getTelemetryManager({
   serviceName: 'worker',
-  enableMetrics: true 
+  enableMetrics: true,
 });
-const events = await getEventBus({ 
-  enableTypeValidation: true 
+const events = await getEventBus({
+  enableTypeValidation: true,
 });
-const balancer = await getLoadBalancer({ 
+const balancer = await getLoadBalancer({
   algorithm: 'least-connections',
-  enableHealthChecking: true 
+  enableHealthChecking: true,
 });
 ```
 
@@ -179,7 +188,7 @@ interface InfrastructureSystemConfig {
     connectionPoolSize?: number;
     enableCaching?: boolean;
   };
-  
+
   telemetry?: {
     serviceName: string;
     enableTracing?: boolean;
@@ -188,7 +197,7 @@ interface InfrastructureSystemConfig {
     endpoint?: string;
     attributes?: Record<string, string | number | boolean>;
   };
-  
+
   eventSystem?: {
     enableTypeValidation?: boolean;
     enableEventPersistence?: boolean;
@@ -197,9 +206,14 @@ interface InfrastructureSystemConfig {
     eventTimeout?: number;
     batchSize?: number;
   };
-  
+
   loadBalancing?: {
-    algorithm?: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware' | 'ml-predictive';
+    algorithm?:
+      | 'round-robin'
+      | 'least-connections'
+      | 'weighted'
+      | 'resource-aware'
+      | 'ml-predictive';
     enableHealthChecking?: boolean;
     enableResourceOptimization?: boolean;
     enableFailover?: boolean;
@@ -215,6 +229,7 @@ interface InfrastructureSystemConfig {
 Each infrastructure system provides a professional object for convenient access:
 
 ### Database System Object
+
 ```typescript
 import { databaseSystem } from '@claude-zen/infrastructure';
 
@@ -227,6 +242,7 @@ const graph = await databaseSystem.getGraph('namespace');
 ```
 
 ### Telemetry System Object
+
 ```typescript
 import { telemetrySystem } from '@claude-zen/infrastructure';
 
@@ -238,6 +254,7 @@ const metrics = await telemetrySystem.getMetricsCollector(config);
 ```
 
 ### Event System Object
+
 ```typescript
 import { eventSystem } from '@claude-zen/infrastructure';
 
@@ -249,6 +266,7 @@ const broker = await eventSystem.getBroker(config);
 ```
 
 ### Load Balancing System Object
+
 ```typescript
 import { loadBalancingSystem } from '@claude-zen/infrastructure';
 
@@ -284,7 +302,7 @@ import {
   DatabaseSystemError,
   TelemetrySystemError,
   EventSystemError,
-  LoadBalancingSystemError
+  LoadBalancingSystemError,
 } from '@claude-zen/infrastructure';
 
 try {
@@ -299,9 +317,11 @@ try {
 ## Dependencies
 
 ### Core Dependencies
+
 - `@claude-zen/foundation` - Core utilities and logging
 
 ### Peer Dependencies (Optional)
+
 - `@claude-zen/database` - Multi-database abstraction (required)
 - `@claude-zen/monitoring` - Telemetry and observability (required)
 - `@claude-zen/event-system` - Type-safe events (required)
@@ -320,6 +340,7 @@ Part of the Strategic Architecture v2.0.0:
 ## Examples
 
 See the `examples/` directory for complete usage examples including:
+
 - Multi-database applications with KV, SQL, vector, and graph storage
 - Comprehensive telemetry and observability setup
 - Event-driven architectures with type-safe messaging

@@ -11,6 +11,7 @@ The Operations package consolidates access to all monitoring, performance, and o
 ## Architecture
 
 **Strategic Layer: Operations (Monitoring & Performance)**
+
 - Position: Layer 4 of 4 in the strategic architecture
 - Role: Unified operational system coordination
 - Pattern: Runtime delegation with lazy loading
@@ -18,7 +19,9 @@ The Operations package consolidates access to all monitoring, performance, and o
 ## Delegated Systems
 
 ### 🔍 Agent Monitoring System (`@claude-zen/agent-monitoring`)
+
 Comprehensive agent health monitoring, intelligence systems, and performance tracking:
+
 - `IntelligenceSystem` - Agent intelligence monitoring
 - `IntelligenceFactory` - Intelligence system factory
 - `PerformanceTracker` - Agent performance monitoring
@@ -26,14 +29,18 @@ Comprehensive agent health monitoring, intelligence systems, and performance tra
 - `AgentHealthMonitor` - Agent health and status monitoring
 
 ### 🔥 Chaos Engineering System (`@claude-zen/chaos-engineering`)
+
 System resilience testing, failure simulation, and chaos experiments:
+
 - `ChaosEngine` - Chaos experiment orchestration
 - `ResilienceTestSuite` - System resilience testing
 - `FailureSimulator` - Controlled failure simulation
 - `ExperimentRunner` - Chaos experiment management
 
 ### 📊 Monitoring System (`@claude-zen/monitoring`)
+
 System monitoring, observability, telemetry, and metrics collection:
+
 - `MonitoringFacade` - Unified monitoring interface
 - `ObservabilityFramework` - System observability management
 - `TelemetryCollector` - Telemetry data collection
@@ -41,7 +48,9 @@ System monitoring, observability, telemetry, and metrics collection:
 - `HealthChecker` - System health monitoring
 
 ### 💾 Memory System (`@claude-zen/memory`)
+
 Memory orchestration, persistence management, and memory coordination:
+
 - `MemoryOrchestrator` - Memory system orchestration
 - `MemoryCoordinator` - Memory operation coordination
 - `PersistenceManager` - Data persistence management
@@ -60,7 +69,7 @@ const agentMonitoring = await operationsSystem.agentMonitoring();
 const intelligenceSystem = await agentMonitoring.getIntelligenceSystem({
   enableIntelligenceTracking: true,
   enablePerformanceMonitoring: true,
-  monitoringInterval: 5000
+  monitoringInterval: 5000,
 });
 
 // Access chaos engineering
@@ -68,21 +77,21 @@ const chaosEngineering = await operationsSystem.chaosEngineering();
 const chaosEngine = await chaosEngineering.getChaosEngine({
   enableChaosExperiments: true,
   safetyChecks: true,
-  experimentDuration: 30000
+  experimentDuration: 30000,
 });
 
 // Access monitoring
 const monitoring = await operationsSystem.monitoring();
 const observabilityFramework = await monitoring.getObservabilityFramework({
   enableObservability: true,
-  enableTelemetryCollection: true
+  enableTelemetryCollection: true,
 });
 
 // Access memory system
 const memory = await operationsSystem.memory();
 const memoryOrchestrator = await memory.getMemoryOrchestrator({
   enableMemoryOrchestration: true,
-  enablePersistence: true
+  enablePersistence: true,
 });
 ```
 
@@ -99,7 +108,7 @@ const operations = new OperationsSystem({
     enableTaskPrediction: true,
     monitoringInterval: 5000,
     healthThreshold: 0.8,
-    performanceMetrics: ['cpu', 'memory', 'response_time']
+    performanceMetrics: ['cpu', 'memory', 'response_time'],
   },
   chaosEngineering: {
     enableChaosExperiments: true,
@@ -108,7 +117,7 @@ const operations = new OperationsSystem({
     experimentDuration: 60000,
     failureRate: 0.1,
     recoveryTime: 10000,
-    safetyChecks: true
+    safetyChecks: true,
   },
   monitoring: {
     enableObservability: true,
@@ -118,7 +127,7 @@ const operations = new OperationsSystem({
     monitoringInterval: 1000,
     metricsRetention: 86400000,
     telemetryBuffer: 1000,
-    healthCheckInterval: 30000
+    healthCheckInterval: 30000,
   },
   memory: {
     enableMemoryOrchestration: true,
@@ -129,8 +138,8 @@ const operations = new OperationsSystem({
     persistenceInterval: 10000,
     coordinationTimeout: 5000,
     maxMemorySize: 1073741824,
-    compressionEnabled: true
-  }
+    compressionEnabled: true,
+  },
 });
 
 await operations.initialize();
@@ -151,28 +160,28 @@ import {
   getIntelligenceSystem,
   getChaosEngine,
   getObservabilityFramework,
-  getMemoryOrchestrator
+  getMemoryOrchestrator,
 } from '@claude-zen/operations';
 
 // Direct access to specific systems
-const intelligence = await getIntelligenceSystem({ 
+const intelligence = await getIntelligenceSystem({
   enableIntelligenceTracking: true,
-  monitoringInterval: 5000
+  monitoringInterval: 5000,
 });
 
-const chaos = await getChaosEngine({ 
+const chaos = await getChaosEngine({
   enableChaosExperiments: true,
-  safetyChecks: true
+  safetyChecks: true,
 });
 
-const observability = await getObservabilityFramework({ 
+const observability = await getObservabilityFramework({
   enableObservability: true,
-  enableTelemetryCollection: true
+  enableTelemetryCollection: true,
 });
 
-const memory = await getMemoryOrchestrator({ 
+const memory = await getMemoryOrchestrator({
   enableMemoryOrchestration: true,
-  enablePersistence: true
+  enablePersistence: true,
 });
 ```
 
@@ -191,7 +200,7 @@ interface OperationsSystemConfig {
     healthThreshold?: number;
     performanceMetrics?: string[];
   };
-  
+
   chaosEngineering?: {
     enableChaosExperiments?: boolean;
     enableResilienceTesting?: boolean;
@@ -201,7 +210,7 @@ interface OperationsSystemConfig {
     recoveryTime?: number;
     safetyChecks?: boolean;
   };
-  
+
   monitoring?: {
     enableObservability?: boolean;
     enableTelemetryCollection?: boolean;
@@ -212,7 +221,7 @@ interface OperationsSystemConfig {
     telemetryBuffer?: number;
     healthCheckInterval?: number;
   };
-  
+
   memory?: {
     enableMemoryOrchestration?: boolean;
     enablePersistence?: boolean;
@@ -232,6 +241,7 @@ interface OperationsSystemConfig {
 Each operational system provides a professional object for convenient access:
 
 ### Agent Monitoring System Object
+
 ```typescript
 import { agentMonitoringSystem } from '@claude-zen/operations';
 
@@ -243,6 +253,7 @@ const health = await agentMonitoringSystem.getHealthMonitor(config);
 ```
 
 ### Chaos Engineering System Object
+
 ```typescript
 import { chaosEngineeringSystem } from '@claude-zen/operations';
 
@@ -254,6 +265,7 @@ const simulator = await chaosEngineeringSystem.getSimulator(config);
 ```
 
 ### Monitoring System Object
+
 ```typescript
 import { monitoringSystem } from '@claude-zen/operations';
 
@@ -265,6 +277,7 @@ const telemetry = await monitoringSystem.getTelemetryCollector(config);
 ```
 
 ### Memory System Object
+
 ```typescript
 import { memorySystem } from '@claude-zen/operations';
 
@@ -300,7 +313,7 @@ import {
   AgentMonitoringSystemError,
   ChaosEngineeringSystemError,
   MonitoringSystemError,
-  MemorySystemError
+  MemorySystemError,
 } from '@claude-zen/operations';
 
 try {
@@ -315,9 +328,11 @@ try {
 ## Dependencies
 
 ### Core Dependencies
+
 - `@claude-zen/foundation` - Core utilities and logging
 
 ### Peer Dependencies (Optional)
+
 - `@claude-zen/agent-monitoring` - Agent monitoring system (required)
 - `@claude-zen/chaos-engineering` - Chaos engineering system (optional)
 - `@claude-zen/monitoring` - Monitoring system (required)
@@ -335,6 +350,7 @@ Part of the Strategic Architecture v2.0.0:
 ## Examples
 
 See the `examples/` directory for complete usage examples including:
+
 - Agent monitoring and performance tracking
 - Chaos engineering and resilience testing
 - System observability and telemetry

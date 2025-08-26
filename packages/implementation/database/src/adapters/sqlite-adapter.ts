@@ -789,7 +789,8 @@ export class SQLiteAdapter implements DatabaseConnection {
       const primaryKey = columns
         .filter(
           (col) =>
-            (pragmaResult.rows.find((row) => row.name === col.name)?.pk || 0) > 0
+            (pragmaResult.rows.find((row) => row.name === col.name)?.pk || 0) >
+            0
         )
         .map((col) => col.name);
 
@@ -945,8 +946,11 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           const stmt = this.db.prepare(sql);
           // Use instance method for transaction connections
-          const paramArray = (this as any).normalizeParams ? (this as any).normalizeParams(params) : 
-            Array.isArray(params) ? [...params] : Object.values(params || {});
+          const paramArray = (this as any).normalizeParams
+            ? (this as any).normalizeParams(params)
+            : Array.isArray(params)
+              ? [...params]
+              : Object.values(params || {});
 
           let rows: unknown[];
           if (
@@ -961,7 +965,10 @@ class SQLiteTransactionConnection implements TransactionConnection {
               rowCount: 0,
               executionTimeMs: Date.now() - startTime,
               affectedRows: runResult.changes,
-              insertId: typeof runResult.lastInsertRowid === 'bigint' ? Number(runResult.lastInsertRowid) : (runResult.lastInsertRowid as number | undefined),
+              insertId:
+                typeof runResult.lastInsertRowid === 'bigint'
+                  ? Number(runResult.lastInsertRowid)
+                  : (runResult.lastInsertRowid as number | undefined),
             });
             return;
           }

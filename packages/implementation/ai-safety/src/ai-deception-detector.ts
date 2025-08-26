@@ -10,7 +10,7 @@
 import { TypedEventBase , getLogger } from '@claude-zen/foundation';
 import { recordMetric, withTrace } from '@claude-zen/infrastructure';
 
-const logger = getLogger('ai-deception-detector');'
+const logger = getLogger('ai-deception-detector');
 
 /**
  * Deception alert interface.

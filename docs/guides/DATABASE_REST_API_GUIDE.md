@@ -25,6 +25,7 @@ Currently no authentication required. The API is ready for authentication middle
 **Request**: No body required
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -51,6 +52,7 @@ Currently no authentication required. The API is ready for authentication middle
 ```
 
 **Example**:
+
 ```bash
 curl http://localhost:3000/api/v1/database/status
 ```
@@ -64,6 +66,7 @@ curl http://localhost:3000/api/v1/database/status
 **Description**: Execute SELECT queries with parameter support and field metadata.
 
 **Request Body**:
+
 ```json
 {
   "sql": "SELECT * FROM users WHERE age > ? LIMIT ?",
@@ -77,6 +80,7 @@ curl http://localhost:3000/api/v1/database/status
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -92,10 +96,10 @@ curl http://localhost:3000/api/v1/database/status
       }
     ],
     "fields": [
-      {"name": "id", "type": "integer"},
-      {"name": "name", "type": "text"},
-      {"name": "age", "type": "integer"},
-      {"name": "email", "type": "text"}
+      { "name": "id", "type": "integer" },
+      { "name": "name", "type": "text" },
+      { "name": "age", "type": "integer" },
+      { "name": "email", "type": "text" }
     ]
   },
   "metadata": {
@@ -108,6 +112,7 @@ curl http://localhost:3000/api/v1/database/status
 ```
 
 **Example**:
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/database/query \
   -H "Content-Type: application/json" \
@@ -128,6 +133,7 @@ curl -X POST http://localhost:3000/api/v1/database/query \
 **Description**: Execute DML/DDL commands (INSERT, UPDATE, DELETE, CREATE, etc.).
 
 **Request Body**:
+
 ```json
 {
   "sql": "INSERT INTO users (name, email, age) VALUES (?, ?, ?)",
@@ -141,6 +147,7 @@ curl -X POST http://localhost:3000/api/v1/database/query \
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -165,6 +172,7 @@ curl -X POST http://localhost:3000/api/v1/database/query \
 ```
 
 **Example**:
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/database/execute \
   -H "Content-Type: application/json" \
@@ -183,6 +191,7 @@ curl -X POST http://localhost:3000/api/v1/database/execute \
 **Description**: Execute multiple operations within a transaction with ACID compliance.
 
 **Request Body**:
+
 ```json
 {
   "operations": [
@@ -192,7 +201,7 @@ curl -X POST http://localhost:3000/api/v1/database/execute \
       "params": ["User 1", "user1@example.com"]
     },
     {
-      "type": "execute", 
+      "type": "execute",
       "sql": "INSERT INTO profiles (user_id, bio) VALUES (?, ?)",
       "params": [1, "Software developer"]
     },
@@ -208,6 +217,7 @@ curl -X POST http://localhost:3000/api/v1/database/execute \
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -232,7 +242,7 @@ curl -X POST http://localhost:3000/api/v1/database/execute \
         "sql": "SELECT COUNT(*)...",
         "success": true,
         "rowCount": 1,
-        "data": [{"total": 10}]
+        "data": [{ "total": 10 }]
       }
     ],
     "summary": {
@@ -252,6 +262,7 @@ curl -X POST http://localhost:3000/api/v1/database/execute \
 ```
 
 **Example**:
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/database/transaction \
   -H "Content-Type: application/json" \
@@ -275,6 +286,7 @@ curl -X POST http://localhost:3000/api/v1/database/transaction \
 **Request**: No body required
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -341,6 +353,7 @@ curl -X POST http://localhost:3000/api/v1/database/transaction \
 ```
 
 **Example**:
+
 ```bash
 curl http://localhost:3000/api/v1/database/schema
 ```
@@ -354,6 +367,7 @@ curl http://localhost:3000/api/v1/database/schema
 **Description**: Execute database migrations with version management and rollback support.
 
 **Request Body**:
+
 ```json
 {
   "version": "2.1.0",
@@ -368,6 +382,7 @@ curl http://localhost:3000/api/v1/database/schema
 ```
 
 **Response (Dry Run)**:
+
 ```json
 {
   "success": true,
@@ -400,6 +415,7 @@ curl http://localhost:3000/api/v1/database/schema
 ```
 
 **Response (Actual Migration)**:
+
 ```json
 {
   "success": true,
@@ -427,6 +443,7 @@ curl http://localhost:3000/api/v1/database/schema
 ```
 
 **Example (Dry Run)**:
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/database/migrate \
   -H "Content-Type: application/json" \
@@ -449,6 +466,7 @@ curl -X POST http://localhost:3000/api/v1/database/migrate \
 **Request**: No body required
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -493,6 +511,7 @@ curl -X POST http://localhost:3000/api/v1/database/migrate \
 ```
 
 **Example**:
+
 ```bash
 curl http://localhost:3000/api/v1/database/analytics
 ```
@@ -545,6 +564,7 @@ All endpoints include performance metrics:
 ## Rate Limiting
 
 The API supports rate limiting (when enabled):
+
 - **Window**: 15 minutes
 - **Limit**: 100 requests per window
 - **Headers**: Standard rate limit headers included

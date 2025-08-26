@@ -63,15 +63,15 @@
 
 import type { Logger } from '@claude-zen/foundation';
 import type { Config } from '@claude-zen/foundation';
-import { BaseEventManager } from '../core/base-event-manager';
+import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   EventManager,
   EventManagerFactory,
-} from '../core/interfaces';
-import type { WorkflowEvent } from '../types';
+} from '../core/interfaces;
+import type { WorkflowEvent } from '../types;
 
 /**
  * Workflow Event Manager implementation for workflow orchestration.
@@ -560,10 +560,10 @@ class WorkflowEventManagerImpl
     if (workflow) {
       switch (event.operation) {
         case 'pause':'
-          workflow.status = 'paused';
+          workflow.status = 'paused;
           break;
         case 'resume':'
-          workflow.status = 'running';
+          workflow.status = 'running;
           break;
         case 'task-complete':'
           workflow.completedTasks++;

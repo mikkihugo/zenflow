@@ -15,7 +15,7 @@
  *
  * @example Basic middleware usage
  * ```typescript`
- * import { createLoggingMiddleware, createTimingMiddleware } from '@claude-zen/event-system/core';
+ * import { createLoggingMiddleware, createTimingMiddleware } from '@claude-zen/event-system/core;
  *
  * const eventBus = new EventBus();
  *
@@ -27,7 +27,7 @@
  */
 
 import { getLogger, Result, ok, err, safeAsync } from '@claude-zen/foundation';
-import type { EventMiddleware, EventContext } from './event-bus';
+import type { EventMiddleware, EventContext } from './event-bus;
 
 const logger = getLogger('EventMiddleware');'
 

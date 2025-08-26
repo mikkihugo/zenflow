@@ -9,7 +9,7 @@ The native binding system in claude-code-zen provides a robust platform-specific
 ### Core Components
 
 1. **Platform Detection** - Automatic detection of OS and architecture
-2. **Binding Resolution** - Multi-path binding discovery with fallbacks  
+2. **Binding Resolution** - Multi-path binding discovery with fallbacks
 3. **Fallback Mode** - Full JavaScript implementation when native bindings unavailable
 4. **Error Handling** - Comprehensive error recovery and graceful degradation
 
@@ -25,13 +25,13 @@ The native binding system in claude-code-zen provides a robust platform-specific
 
 ### Supported Platforms
 
-| Platform | Architecture | Binding File Format |
-|----------|-------------|---------------------|
-| Linux    | x64         | `zen-code-bindings.linux-x64-gnu.node` |
-| Linux    | arm64       | `zen-code-bindings.linux-arm64-gnu.node` |
-| macOS    | x64         | `zen-code-bindings.darwin-x64-gnu.node` |
-| macOS    | arm64       | `zen-code-bindings.darwin-arm64-gnu.node` |
-| Windows  | x64         | `zen-code-bindings.win32-x64-gnu.node` |
+| Platform | Architecture | Binding File Format                       |
+| -------- | ------------ | ----------------------------------------- |
+| Linux    | x64          | `zen-code-bindings.linux-x64-gnu.node`    |
+| Linux    | arm64        | `zen-code-bindings.linux-arm64-gnu.node`  |
+| macOS    | x64          | `zen-code-bindings.darwin-x64-gnu.node`   |
+| macOS    | arm64        | `zen-code-bindings.darwin-arm64-gnu.node` |
+| Windows  | x64          | `zen-code-bindings.win32-x64-gnu.node`    |
 
 ### Fallback Chain
 
@@ -71,7 +71,7 @@ if (orchestrator.isFallbackMode()) {
 ```typescript
 // Works in both native and fallback modes
 const result = await orchestrator.executeService('echo', {
-  message: 'Hello, World!'
+  message: 'Hello, World!',
 });
 
 if (result.success) {
@@ -90,7 +90,7 @@ console.log('System status:', status.data);
 
 // Check for warnings in fallback mode
 if (status.data.warnings) {
-  status.data.warnings.forEach(warning => {
+  status.data.warnings.forEach((warning) => {
     console.warn('Warning:', warning);
   });
 }
@@ -150,11 +150,11 @@ npm test -- src/__tests__/native-binding-integration.test.ts --timeout 10000
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ZEN_FORCE_FALLBACK` | Force fallback mode | `false` |
-| `ZEN_BINDING_DEBUG` | Enable debug logging | `false` |
-| `ZEN_BINDING_PATH` | Custom binding path | Auto-detected |
+| Variable             | Description          | Default       |
+| -------------------- | -------------------- | ------------- |
+| `ZEN_FORCE_FALLBACK` | Force fallback mode  | `false`       |
+| `ZEN_BINDING_DEBUG`  | Enable debug logging | `false`       |
+| `ZEN_BINDING_PATH`   | Custom binding path  | Auto-detected |
 
 ### Configuration Options
 
@@ -164,18 +164,18 @@ const orchestrator = new ZenOrchestratorIntegration({
   enabled: true,
   host: 'localhost',
   port: 4003,
-  
+
   // A2A Protocol Configuration
   a2a_server_port: 4005,
   heartbeat_timeout_sec: 300,
   message_timeout_ms: 30000,
-  
+
   // Neural Stack Configuration
   enable_zen_neural: true,
   enable_zen_forecasting: true,
   enable_zen_compute: true,
   gpu_enabled: false,
-  
+
   // Quantum Computing Configuration
   enable_quantum: true,
   quantum_backend: 'ibmq_qasm_simulator',
@@ -235,13 +235,13 @@ ls -la *.node
 
 ### Native vs Fallback Mode
 
-| Feature | Native Mode | Fallback Mode |
-|---------|-------------|---------------|
-| Performance | High (native code) | Moderate (JavaScript) |
-| Memory Usage | Optimized | Standard |
-| CPU Utilization | Efficient | Standard |
-| Startup Time | Fast | Faster (no binding load) |
-| Functionality | Full | Limited |
+| Feature         | Native Mode        | Fallback Mode            |
+| --------------- | ------------------ | ------------------------ |
+| Performance     | High (native code) | Moderate (JavaScript)    |
+| Memory Usage    | Optimized          | Standard                 |
+| CPU Utilization | Efficient          | Standard                 |
+| Startup Time    | Fast               | Faster (no binding load) |
+| Functionality   | Full               | Limited                  |
 
 ### Optimization Tips
 

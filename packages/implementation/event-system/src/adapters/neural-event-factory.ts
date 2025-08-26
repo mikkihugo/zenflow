@@ -62,7 +62,7 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import { BaseEventManager } from '../core/base-event-manager';
+import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -71,8 +71,8 @@ import type {
   EventManagerFactory,
   EventManagerType,
   SystemEvent,
-} from '../core/interfaces';
-import type { NeuralEvent } from '../types';
+} from '../core/interfaces;
+import type { NeuralEvent } from '../types;
 
 /**
  * Neural Event Manager implementation for AI/ML operations.

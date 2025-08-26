@@ -39,9 +39,7 @@ import type {
 } from '../../types/primitives';
 
 // Node.js fetch polyfill for older versions
-declare const fetch: (
-  url: string
-) => Promise<{
+declare const fetch: (url: string) => Promise<{
   ok: boolean;
   status: number;
   statusText: string;

@@ -41,7 +41,7 @@ eventManager.emit('system:startup', {
   timestamp: new Date(),
   source: 'my-app',
   type: 'system:startup',
-  status: 'success'
+  status: 'success',
 });
 ```
 
@@ -54,7 +54,7 @@ import { TypeSafeEventBus, Domain } from '@zen-ai/event-system';
 
 const eventBus = new TypeSafeEventBus({
   domain: Domain.SYSTEM,
-  enableValidation: true
+  enableValidation: true,
 });
 
 // Type-safe event emission with validation
@@ -63,34 +63,34 @@ await eventBus.emit({
   type: 'user:action',
   domain: Domain.SYSTEM,
   timestamp: new Date(),
-  data: { action: 'click', target: 'button' }
+  data: { action: 'click', target: 'button' },
 });
 ```
 
 ### Event Adapters
 
 ```typescript
-import { 
+import {
   createCommunicationEventAdapter,
   createCoordinationEventAdapter,
-  createMonitoringEventAdapter 
+  createMonitoringEventAdapter,
 } from '@zen-ai/event-system';
 
 // Communication events (HTTP, WebSocket, MCP)
 const commAdapter = createCommunicationEventAdapter({
   protocols: ['http', 'websocket'],
-  enableMetrics: true
+  enableMetrics: true,
 });
 
 // Coordination events (agent coordination, swarm management)
 const coordAdapter = createCoordinationEventAdapter({
   topology: 'mesh',
-  enableLearning: true
+  enableLearning: true,
 });
 
 // Monitoring events (health checks, performance metrics)
 const monitorAdapter = createMonitoringEventAdapter({
-  intervals: { health: 30000, metrics: 5000 }
+  intervals: { health: 30000, metrics: 5000 },
 });
 ```
 
@@ -139,7 +139,7 @@ import { UEL } from '@zen-ai/event-system';
 // Get system health status
 const healthStatus = await UEL.getHealthStatus();
 
-healthStatus.forEach(status => {
+healthStatus.forEach((status) => {
   console.log(`${status.name}: ${status.status}`);
   if (status.status !== 'healthy') {
     console.warn('Issues:', status.details);
@@ -159,10 +159,10 @@ const validator = createEventValidator({
       required: ['action', 'target'],
       properties: {
         action: { type: 'string' },
-        target: { type: 'string' }
-      }
-    }
-  }
+        target: { type: 'string' },
+      },
+    },
+  },
 });
 
 // Events are automatically validated against schemas
@@ -200,7 +200,7 @@ await UEL.initialize({
   enableCompatibility: true,
   healthMonitoring: true,
   autoRegisterFactories: true,
-  logger: customLogger
+  logger: customLogger,
 });
 ```
 

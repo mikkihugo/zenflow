@@ -37,7 +37,7 @@ import type {
   EventManager,
   EventManagerType,
   SystemEvent,
-} from './interfaces';
+} from './interfaces;
 
 /**
  * Base Event Manager providing core event management functionality.
@@ -562,7 +562,7 @@ export abstract class BaseEventManager implements EventManager {
   async emitImmediate<T extends SystemEvent>(event: T): Promise<void> {
     // Force immediate processing regardless of strategy
     const originalStrategy = this.processingStrategy;
-    this.processingStrategy = 'immediate';
+    this.processingStrategy = 'immediate;
 
     try {
       await this.emit(event);

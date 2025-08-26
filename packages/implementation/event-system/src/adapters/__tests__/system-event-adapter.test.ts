@@ -6,20 +6,20 @@
  * - Classical TDD (30%): For event correlation algorithms, health calculations, and performance metrics.
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest;
 import {
   EventManagerTypes,
   type SystemLifecycleEvent,
   type SystemEvent,
-} from '../../core/interfaces';
+} from '../../core/interfaces;
 import {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
   type SystemEventAdapter,
   type SystemEventAdapterConfig,
   SystemEventHelpers,
-} from '../system-event-adapter';
-import { SystemEventManagerFactory } from '../system-event-factory';
+} from '../system-event-adapter;
+import { SystemEventManagerFactory } from '../system-event-factory;
 
 // Mock logger to avoid console output during tests
 vi.mock('../../../../utils/logger', () => ({'
@@ -450,7 +450,7 @@ describe('SystemEventAdapter', () => {'
     });
 
     it('should create correlation when emitting correlated events', async () => {'
-      const correlationId = 'test-correlation-123';
+      const correlationId = 'test-correlation-123;
 
       const startupEvent: SystemLifecycleEvent = {
         id: 'startup-event',
@@ -474,7 +474,7 @@ describe('SystemEventAdapter', () => {'
     });
 
     it('should update correlation with related events', async () => {'
-      const correlationId = 'test-correlation-456';
+      const correlationId = 'test-correlation-456;
 
       const startupEvent: SystemLifecycleEvent = {
         id: 'startup-event',
@@ -509,7 +509,7 @@ describe('SystemEventAdapter', () => {'
     });
 
     it('should handle correlation pattern matching correctly', async () => {'
-      const correlationId = 'pattern-test-789';
+      const correlationId = 'pattern-test-789;
 
       // Emit events that match system:startup->system:health pattern
       const startupEvent: SystemLifecycleEvent = {

@@ -17,6 +17,7 @@ This document outlines the JSDoc/TSDoc standards optimized for AI consumption an
 ### Required Tags
 
 #### `@description`
+
 Clear, detailed descriptions of what the function/class/interface does.
 
 ```typescript
@@ -28,6 +29,7 @@ class SwarmManager {
 ```
 
 #### `@param`
+
 Type-safe parameter documentation with detailed descriptions.
 
 ```typescript
@@ -40,6 +42,7 @@ async spawnAgent(agentId: string, config: AgentConfig, timeout?: number): Promis
 ```
 
 #### `@returns`
+
 Specific return type information with detailed explanation.
 
 ```typescript
@@ -50,9 +53,10 @@ Specific return type information with detailed explanation.
 ```
 
 #### `@example`
+
 Concrete usage examples - most important for AI understanding.
 
-```typescript
+````typescript
 /**
  * @example
  * ```typescript
@@ -62,17 +66,18 @@ Concrete usage examples - most important for AI understanding.
  *   capabilities: ['web-search', 'document-analysis'],
  *   maxConcurrency: 5
  * });
- * 
+ *
  * if (agent.success) {
  *   console.log('Agent spawned:', agent.data.id);
  * }
  * ```
  */
-```
+````
 
 ### Event System Tags
 
 #### `@fires` (Keep These!)
+
 Document which events a method fires - critical for event-driven architectures.
 
 ```typescript
@@ -85,6 +90,7 @@ async spawnAgent(agentId: string, config: AgentConfig): Promise<Agent>
 ```
 
 #### `@listens`
+
 Document which events a class/method listens to.
 
 ```typescript
@@ -98,6 +104,7 @@ class SwarmManager {
 ### Error Documentation
 
 #### `@throws`
+
 Document all possible error conditions with specific types.
 
 ```typescript
@@ -112,6 +119,7 @@ async spawnAgent(agentId: string, config: AgentConfig): Promise<Agent>
 ### Lifecycle and Version Tags
 
 #### `@since`
+
 Version/API stability information.
 
 ```typescript
@@ -121,6 +129,7 @@ Version/API stability information.
 ```
 
 #### `@deprecated`
+
 Clear deprecation information with migration paths.
 
 ```typescript
@@ -135,6 +144,7 @@ Clear deprecation information with migration paths.
 ### Semantic Tags
 
 #### `@namespace`
+
 Group related functionality.
 
 ```typescript
@@ -145,6 +155,7 @@ Group related functionality.
 ```
 
 #### `@memberof`
+
 Indicate class/namespace membership.
 
 ```typescript
@@ -154,6 +165,7 @@ Indicate class/namespace membership.
 ```
 
 #### `@override`
+
 Indicate method overrides for inheritance clarity.
 
 ```typescript
@@ -166,6 +178,7 @@ Indicate method overrides for inheritance clarity.
 ### Implementation Tags
 
 #### `@internal`
+
 Mark internal APIs not intended for external use.
 
 ```typescript
@@ -176,6 +189,7 @@ Mark internal APIs not intended for external use.
 ```
 
 #### `@beta`
+
 Mark experimental APIs.
 
 ```typescript
@@ -186,6 +200,7 @@ Mark experimental APIs.
 ```
 
 #### `@readonly`
+
 Mark read-only properties.
 
 ```typescript
@@ -200,12 +215,12 @@ readonly topology: SwarmTopology;
 
 Here's a complete example showing all AI-friendly documentation patterns:
 
-```typescript
+````typescript
 /**
  * @description High-performance swarm coordination manager for Claude Code Zen.
  * Orchestrates multi-agent workflows with neural pattern matching and automatic
  * load balancing across distributed compute resources.
- * 
+ *
  * @example
  * ```typescript
  * const swarm = new SwarmManager({
@@ -213,19 +228,19 @@ Here's a complete example showing all AI-friendly documentation patterns:
  *   maxAgents: 100,
  *   loadBalancing: true
  * });
- * 
+ *
  * // Spawn specialized agents
  * const researcher = await swarm.spawnAgent('research-001', {
  *   type: 'researcher',
  *   capabilities: ['web-search', 'document-analysis']
  * });
- * 
+ *
  * // Handle events
  * swarm.on('AgentSpawned', (agent) => {
  *   console.log(`New agent: ${agent.id}`);
  * });
  * ```
- * 
+ *
  * @since 1.0.0-alpha.43
  * @fires AgentSpawned When new agent is successfully created
  * @fires SwarmTopologyChanged When topology is reconfigured
@@ -234,18 +249,18 @@ Here's a complete example showing all AI-friendly documentation patterns:
 export class SwarmManager {
   /**
    * @description Creates a new specialized agent within the swarm
-   * 
+   *
    * @param {string} agentId - Unique identifier (UUID format recommended)
    * @param {AgentConfig} config - Agent configuration with capabilities
    * @param {SwarmSpawnOptions} [options] - Optional spawn parameters
-   * 
+   *
    * @returns {Promise<SwarmResult<Agent>>} Promise resolving to the spawned agent
    *   or error details if spawn fails
-   * 
+   *
    * @throws {AgentSpawnError} Invalid configuration or duplicate ID
    * @throws {ResourceExhaustionError} Insufficient system resources
    * @throws {NetworkError} Communication failure in distributed setup
-   * 
+   *
    * @example
    * ```typescript
    * const agent = await swarm.spawnAgent('coder-001', {
@@ -253,24 +268,24 @@ export class SwarmManager {
    *   capabilities: ['typescript', 'react', 'testing'],
    *   resources: { memory: '512MB', cpu: 2 }
    * });
-   * 
+   *
    * if (agent.success) {
    *   await agent.data.execute('implement user authentication');
    * }
    * ```
-   * 
+   *
    * @fires AgentSpawned Emitted when agent is fully initialized
    * @since 1.0.0-alpha.43
    */
   async spawnAgent(
-    agentId: string, 
-    config: AgentConfig, 
+    agentId: string,
+    config: AgentConfig,
     options?: SwarmSpawnOptions
   ): Promise<SwarmResult<Agent>> {
     // Implementation...
   }
 }
-```
+````
 
 ## Documentation Generation Scripts
 

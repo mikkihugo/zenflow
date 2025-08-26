@@ -20,7 +20,7 @@ class SafeManager {
   private readonly performanceTracker: PerformanceTracker;
   private readonly telemetryManager: TelemetryManager;
   private readonly logger: Logger;
-  
+
   // OPTIONAL AI ENHANCEMENTS (brain - only for actual intelligence)
   private readonly aiEnhancements: OptionalAIEnhancements;
 }
@@ -29,6 +29,7 @@ class SafeManager {
 ## 📦 **Package Dependencies**
 
 ### **Core Dependencies (Always Required)**
+
 - `@claude-zen/foundation` - DI, logging, error handling, telemetry infrastructure
 - `@claude-zen/event-system` - Type-safe event-driven coordination
 - `@claude-zen/workflows` - Process orchestration and workflow automation
@@ -36,30 +37,35 @@ class SafeManager {
 - `@claude-zen/ai-safety` - Safety protocols and deception detection
 
 ### **Optional Dependencies (Enhanced Features)**
+
 - `@claude-zen/brain` - AI-powered decision making and neural coordination
 - `@claude-zen/agui` - Advanced GUI and task approval workflows
 
 ## 🎯 **Key Features**
 
 ### **Portfolio Level**
+
 - **Epic Lifecycle Management** - Portfolio Kanban with state transitions
 - **WSJF Prioritization** - Weighted Shortest Job First scoring
 - **Business Case Development** - Investment analysis and approval workflows
 - **Epic Ownership** - Stakeholder coordination and governance
 
 ### **Program Level**
+
 - **Program Increment (PI) Planning** - Quarterly planning ceremonies
 - **Release Train Engineering** - ART coordination and facilitation
 - **Feature Management** - Feature lifecycle and dependencies
 - **Architecture Runway** - Technical enablers and infrastructure
 
-### **Large Solution Level**  
+### **Large Solution Level**
+
 - **Solution Train Engineering** - Multi-ART coordination
 - **Cross-ART Collaboration** - Dependencies and integration
 - **Solution Architecture** - System-level design and governance
 - **Capability Management** - Business capability development
 
 ### **Enterprise Level**
+
 - **Value Stream Mapping** - End-to-end value delivery
 - **DevSecOps Integration** - Security and compliance pipelines
 - **Continuous Delivery** - Deployment automation and quality gates
@@ -68,10 +74,14 @@ class SafeManager {
 ## 🚀 **Usage Examples**
 
 ### **Basic Usage (Infrastructure Only)**
+
 ```typescript
 import { EpicOwnerManager } from '@claude-zen/safe-framework';
 import { getLogger } from '@claude-zen/foundation/logging';
-import { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation/telemetry';
+import {
+  PerformanceTracker,
+  TelemetryManager,
+} from '@claude-zen/foundation/telemetry';
 import { EventBus } from '@claude-zen/event-system';
 
 const epicManager = new EpicOwnerManager(
@@ -87,6 +97,7 @@ const metrics = await epicManager.getPortfolioMetrics();
 ```
 
 ### **Enhanced Usage (With AI Coordination)**
+
 ```typescript
 import { BrainCoordinator } from '@claude-zen/brain';
 import type { OptionalAIEnhancements } from '@claude-zen/safe-framework';
@@ -94,8 +105,8 @@ import type { OptionalAIEnhancements } from '@claude-zen/safe-framework';
 // Optional AI enhancements for intelligent decision making
 const aiEnhancements: OptionalAIEnhancements = {
   brainCoordinator: new BrainCoordinator({
-    autonomous: { enabled: true, learningRate: 0.1 }
-  })
+    autonomous: { enabled: true, learningRate: 0.1 },
+  }),
 };
 
 const epicManager = new EpicOwnerManager(
@@ -105,7 +116,7 @@ const epicManager = new EpicOwnerManager(
   eventBus,
   workflowEngine,
   conversationOrchestrator,
-  aiEnhancements  // AI enhancement is optional
+  aiEnhancements // AI enhancement is optional
 );
 
 // AI-enhanced WSJF scoring with machine learning
@@ -116,7 +127,7 @@ const wsjfResult = await epicManager.calculateEpicWSJF({
   riskReduction: 5,
   opportunityEnablement: 7,
   size: 13,
-  scoredBy: 'product-owner'
+  scoredBy: 'product-owner',
 });
 
 // Result includes AI-powered recommendations
@@ -126,6 +137,7 @@ console.log(wsjfResult.recommendations);
 ## 🏛️ **Architectural Patterns**
 
 ### **1. Infrastructure Services (Foundation)**
+
 **Always Available - Core Functionality**
 
 ```typescript
@@ -134,22 +146,22 @@ class SafeManager {
   private readonly performanceTracker: PerformanceTracker;
   private readonly telemetryManager: TelemetryManager;
   private readonly logger: Logger;
-  
+
   constructor() {
     // Infrastructure is always available
     this.performanceTracker = new PerformanceTracker();
     this.telemetryManager = new TelemetryManager({
       serviceName: 'safe-manager',
       enableTracing: true,
-      enableMetrics: true
+      enableMetrics: true,
     });
     this.logger = getLogger('SafeManager');
   }
-  
+
   async someOperation() {
     // Infrastructure - no conditional checks needed
     const timer = this.performanceTracker.startTimer('operation');
-    
+
     try {
       // Business logic...
       this.telemetryManager.recordCounter('operations_completed', 1);
@@ -163,44 +175,48 @@ class SafeManager {
 ```
 
 ### **2. Neural/AI Services (Brain)**
+
 **Optional - Only for Actual Intelligence**
 
 ```typescript
 // ✅ AI services are optional and used only for intelligent decision making
 class SafeManager {
   private readonly aiEnhancements: OptionalAIEnhancements;
-  
+
   constructor(aiEnhancements?: OptionalAIEnhancements) {
     this.aiEnhancements = aiEnhancements || {};
   }
-  
+
   async enhancedDecisionMaking(input: any) {
     // Standard business logic first
     const standardResult = await this.calculateStandardWSJF(input);
-    
+
     // Optional AI enhancement for intelligent analysis
     if (this.aiEnhancements.brainCoordinator) {
-      const aiAnalysis = await this.aiEnhancements.brainCoordinator.analyzeWSJF({
-        ...input,
-        context: { currentScore: standardResult.score }
-      });
-      
+      const aiAnalysis = await this.aiEnhancements.brainCoordinator.analyzeWSJF(
+        {
+          ...input,
+          context: { currentScore: standardResult.score },
+        }
+      );
+
       return {
         ...standardResult,
         recommendations: [
           ...standardResult.recommendations,
-          ...aiAnalysis.recommendations
+          ...aiAnalysis.recommendations,
         ],
-        confidenceLevel: aiAnalysis.confidenceLevel
+        confidenceLevel: aiAnalysis.confidenceLevel,
       };
     }
-    
+
     return standardResult;
   }
 }
 ```
 
 ### **3. Event-Driven UI Architecture**
+
 **No DI for UI Components**
 
 ```typescript
@@ -209,23 +225,25 @@ class SafeManager {
   async approveEpic(epicId: string, context: ApprovalContext) {
     // Auto-approve based on business rules
     const shouldAutoApprove = this.shouldAutoApproveEpic(epicId, context);
-    
+
     if (shouldAutoApprove) {
       return { status: 'auto-approved', message: 'Criteria met' };
     }
-    
+
     // Emit event for UI to handle - clean separation
-    this.eventBus.emit(createEvent({
-      type: 'approval-required',
-      data: {
-        epicId,
-        businessCase: context.businessCase,
-        wsjfScore: context.wsjfScore,
-        approvers: context.stakeholders
-      },
-      priority: EventPriority.HIGH
-    }));
-    
+    this.eventBus.emit(
+      createEvent({
+        type: 'approval-required',
+        data: {
+          epicId,
+          businessCase: context.businessCase,
+          wsjfScore: context.wsjfScore,
+          approvers: context.stakeholders,
+        },
+        priority: EventPriority.HIGH,
+      })
+    );
+
     return { status: 'pending', message: 'Approval requested' };
   }
 }
@@ -234,6 +252,7 @@ class SafeManager {
 ## 🔧 **Configuration**
 
 ### **Basic Configuration**
+
 ```typescript
 import type { EpicOwnerManagerConfig } from '@claude-zen/safe-framework';
 
@@ -243,11 +262,12 @@ const config: EpicOwnerManagerConfig = {
   maxActiveEpics: 20,
   epicAnalysisTimeLimit: 30, // days
   wsjfUpdateFrequency: 7, // days
-  autoApprovalWSJFThreshold: 25
+  autoApprovalWSJFThreshold: 25,
 };
 ```
 
 ### **AI Enhancement Configuration**
+
 ```typescript
 import type { AIEnhancementConfig } from '@claude-zen/safe-framework';
 
@@ -255,25 +275,26 @@ const aiConfig: AIEnhancementConfig = {
   enableBrainCoordinator: true,
   enableWorkflowAutomation: true,
   enableConversationOrchestration: true,
-  
+
   brainConfig: {
     learningRate: 0.1,
     adaptationThreshold: 0.7,
-    confidenceThreshold: 0.8
+    confidenceThreshold: 0.8,
   },
-  
+
   telemetryConfig: {
     serviceName: 'safe-framework',
     enableTracing: true,
     enableMetrics: true,
-    sampleRate: 1.0
-  }
+    sampleRate: 1.0,
+  },
 };
 ```
 
 ## 📊 **Performance & Monitoring**
 
 ### **Built-in Infrastructure Monitoring**
+
 ```typescript
 // Infrastructure monitoring is always available
 const metrics = await epicManager.getPortfolioMetrics();
@@ -281,21 +302,23 @@ const status = epicManager.getStatus();
 
 // Performance tracking for all operations
 // - Epic lifecycle transitions
-// - WSJF calculations  
+// - WSJF calculations
 // - Business case analysis
 // - Approval workflows
 ```
 
 ### **Optional AI Performance Analytics**
+
 ```typescript
 // AI-enhanced performance predictions (optional)
 if (aiEnhancements.brainCoordinator) {
-  const predictions = await aiEnhancements.brainCoordinator.predictDeliveryOutcomes({
-    features: portfolioFeatures,
-    teamCapacity: artCapacity,
-    historicalData: completedEpics,
-    constraints: currentBlockers
-  });
+  const predictions =
+    await aiEnhancements.brainCoordinator.predictDeliveryOutcomes({
+      features: portfolioFeatures,
+      teamCapacity: artCapacity,
+      historicalData: completedEpics,
+      constraints: currentBlockers,
+    });
 }
 ```
 
@@ -303,7 +326,10 @@ if (aiEnhancements.brainCoordinator) {
 
 ```typescript
 import { EpicOwnerManager } from '@claude-zen/safe-framework';
-import { createMockLogger, createMockEventBus } from '@claude-zen/foundation/testing';
+import {
+  createMockLogger,
+  createMockEventBus,
+} from '@claude-zen/foundation/testing';
 
 describe('Epic Owner Manager', () => {
   it('should work without AI enhancements', async () => {
@@ -314,21 +340,21 @@ describe('Epic Owner Manager', () => {
       createMockEventBus()
       // No AI enhancements - tests basic functionality
     );
-    
+
     await manager.initialize();
     const result = await manager.calculateEpicWSJF(wsjfInput);
-    
+
     expect(result.wsjfScore).toBeGreaterThan(0);
   });
-  
+
   it('should enhance with AI when available', async () => {
     const mockBrain = {
       analyzeWSJF: jest.fn().mockResolvedValue({
         recommendations: ['AI recommendation'],
-        confidenceLevel: 0.85
-      })
+        confidenceLevel: 0.85,
+      }),
     };
-    
+
     const manager = new EpicOwnerManager(
       config,
       createMockLogger(),
@@ -338,9 +364,9 @@ describe('Epic Owner Manager', () => {
       undefined,
       { brainCoordinator: mockBrain }
     );
-    
+
     const result = await manager.calculateEpicWSJF(wsjfInput);
-    
+
     expect(mockBrain.analyzeWSJF).toHaveBeenCalled();
     expect(result.recommendations).toContain('AI recommendation');
   });
@@ -350,6 +376,7 @@ describe('Epic Owner Manager', () => {
 ## 📚 **API Reference**
 
 ### **Epic Owner Manager**
+
 - `initialize()` - Setup Portfolio Kanban and business case services
 - `progressEpic()` - Move epic through Portfolio Kanban states
 - `calculateEpicWSJF()` - WSJF scoring with optional AI enhancement
@@ -358,12 +385,14 @@ describe('Epic Owner Manager', () => {
 - `getPortfolioMetrics()` - Performance analytics and KPIs
 
 ### **Release Train Engineer Manager**
+
 - `facilitatePIPlanning()` - Quarterly planning coordination
 - `manageProgramRisks()` - Risk identification and mitigation
 - `trackProgramPredictability()` - Delivery metrics and forecasting
 - `coordinateTeamOfTeams()` - Scrum of Scrums facilitation
 
-### **Solution Train Engineer Manager**  
+### **Solution Train Engineer Manager**
+
 - `coordinateSolutionTrainSync()` - Multi-ART coordination
 - `manageSolutionBacklog()` - Large solution planning
 - `facilitatePrePIPlanning()` - Solution-level planning events

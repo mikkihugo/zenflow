@@ -41,7 +41,8 @@ async function performBasicSQLiteTests(adapter: SQLiteAdapter): Promise<void> {
   expect(health.score).toBeGreaterThan(0);
 }
 
-async function transactionCallback(tx: any): Promise<void> { // Use any to avoid import issues
+async function transactionCallback(tx: any): Promise<void> {
+  // Use any to avoid import issues
   await tx.execute(INSERT_TEST_SQL, [TRANSACTION_TEST]);
   const txResult = await tx.query(COUNT_QUERY);
   expect(txResult.rows[0].count).toBe(2);
@@ -338,7 +339,7 @@ describe('Database Package Integration Tests - Performance', () => {
         await adapter.execute(
           'CREATE TABLE perf_test (id INTEGER PRIMARY KEY, data TEXT)'
         );
-        
+
         // Ensure table creation is committed across all connections
         await adapter.query('SELECT COUNT(*) FROM perf_test');
 

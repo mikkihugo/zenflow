@@ -5,11 +5,13 @@
 ## 🚀 **Quick Installation**
 
 ### **Prerequisites**
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 - Git
 
 ### **Global Installation**
+
 ```bash
 # Install Claude Zen Flow globally
 npm install -g claude-code-zen
@@ -19,6 +21,7 @@ claude-zen --version
 ```
 
 ### **Local Development Setup**
+
 ```bash
 # Clone repository
 git clone https://github.com/mikkihugo/claude-code-zen.git
@@ -37,6 +40,7 @@ npm test
 ## 🎯 **First Steps**
 
 ### **1. Initialize Your First Project**
+
 ```bash
 # Create a new project with advanced template
 claude-zen workspace init my-ai-project --template=advanced
@@ -49,6 +53,7 @@ ls -la
 ```
 
 **Generated Structure:**
+
 ```
 my-ai-project/
 ├── docs/                    # Document-driven development
@@ -70,6 +75,7 @@ my-ai-project/
 ### **2. Start the Multi-Interface System**
 
 **Start all interfaces in parallel:**
+
 ```bash
 # HTTP MCP server for Claude Desktop (port 3000)
 claude-zen mcp start &
@@ -82,6 +88,7 @@ claude mcp add claude-zen-swarm npx claude-zen swarm mcp start
 ```
 
 ### **3. Verify System Status**
+
 ```bash
 # Check overall system status
 claude-zen status
@@ -94,7 +101,9 @@ claude-zen swarm status
 ## 🖥️ **Interface Overview**
 
 ### **1. Command Line Interface (CLI)**
+
 **Direct command execution and scripting:**
+
 ```bash
 # Basic commands
 claude-zen init project-name
@@ -106,14 +115,17 @@ claude-zen workspace process docs/vision/product-vision.md
 claude-zen workspace implement docs/features/authentication.md
 ```
 
-### **2. Web Dashboard** 
+### **2. Web Dashboard**
+
 **Browser-based real-time monitoring:**
+
 - **URL**: http://localhost:3456
 - **Features**: Real-time swarm monitoring, task management, system health
 - **API**: RESTful endpoints for programmatic access
 - **WebSocket**: Live updates without page refresh
 
 **Key Features:**
+
 - 📊 System status and health monitoring
 - 🐝 Active swarm visualization
 - ✅ Task progress tracking
@@ -121,7 +133,9 @@ claude-zen workspace implement docs/features/authentication.md
 - ⚙️ Configuration management
 
 ### **3. Terminal UI (TUI)**
+
 **Interactive terminal interface:**
+
 ```bash
 # Start interactive terminal interface
 claude-zen tui
@@ -133,9 +147,11 @@ claude-zen tui --mode system-monitor
 ```
 
 ### **4. Claude Desktop Integration**
+
 **AI-assisted development via HTTP MCP:**
 
 **Setup Steps:**
+
 1. Ensure HTTP MCP server is running: `claude-zen mcp start`
 2. Add to Claude Desktop configuration:
 
@@ -154,6 +170,7 @@ claude-zen tui --mode system-monitor
 ## 🧠 **Your First AI Swarm**
 
 ### **1. Initialize a Basic Swarm**
+
 ```bash
 # Create a mesh topology swarm with 4 agents
 claude-zen swarm init --topology mesh --agents 4
@@ -163,6 +180,7 @@ claude-zen swarm status
 ```
 
 ### **2. Create and Execute a Task**
+
 ```bash
 # Create a new task for the swarm
 claude-zen task create "Analyze project structure" --priority high
@@ -175,6 +193,7 @@ claude-zen task results
 ```
 
 ### **3. Use Document-Driven Development**
+
 ```bash
 # Create a vision document
 claude-zen create vision "AI-Powered Code Assistant"
@@ -189,6 +208,7 @@ claude-zen workspace status
 ## 📊 **Monitoring and Debugging**
 
 ### **System Health Check**
+
 ```bash
 # Comprehensive health check
 claude-zen status --detailed
@@ -200,6 +220,7 @@ claude-zen web health
 ```
 
 ### **Logs and Troubleshooting**
+
 ```bash
 # View system logs
 claude-zen logs
@@ -216,6 +237,7 @@ claude-zen --debug status
 ## 🎯 **Common Workflows**
 
 ### **Development Workflow**
+
 1. **Plan**: Create vision and PRD documents
 2. **Architect**: Generate ADRs for technical decisions
 3. **Implement**: Use swarms to coordinate development
@@ -223,6 +245,7 @@ claude-zen --debug status
 5. **Deploy**: Continuous integration with GitHub Actions
 
 ### **AI-Assisted Workflow**
+
 1. **Claude Desktop**: High-level planning and architecture
 2. **Claude Code**: Detailed implementation with swarm coordination
 3. **Web Dashboard**: Real-time monitoring and control
@@ -231,12 +254,14 @@ claude-zen --debug status
 ## ⚡ **Performance Tips**
 
 ### **Optimize Swarm Performance**
+
 - **Topology Selection**: Use `mesh` for exploration, `hierarchical` for coordination
 - **Agent Count**: Start with 4-6 agents, scale based on task complexity
 - **Memory Usage**: Enable persistent memory for complex projects
 - **Parallel Execution**: Always batch operations for maximum efficiency
 
 ### **System Performance**
+
 - **Resource Monitoring**: Use web dashboard for real-time resource tracking
 - **Cache Optimization**: Enable intelligent caching for repeated operations
 - **Network Optimization**: Use local MCP servers when possible
@@ -244,23 +269,26 @@ claude-zen --debug status
 ## 🆘 **Getting Help**
 
 ### **Documentation**
+
 - **Full Documentation**: [docs/README.md](README.md)
 - **CLI Reference**: [cli-reference.md](cli-reference.md)
 - **API Documentation**: [api/README.md](api/README.md)
 - **Troubleshooting**: [troubleshooting.md](troubleshooting.md)
 
 ### **Community & Support**
+
 - **GitHub Issues**: https://github.com/mikkihugo/claude-code-zen/issues
 - **Discussions**: https://github.com/mikkihugo/claude-code-zen/discussions
 - **Documentation**: https://docs.anthropic.com/en/docs/claude-code
 
 ### **Quick Commands Reference**
+
 ```bash
 # System management
 claude-zen status                    # System status
 claude-zen --help                   # Command help
 
-# Project management  
+# Project management
 claude-zen workspace init <name>    # Initialize project
 claude-zen workspace status         # Project status
 

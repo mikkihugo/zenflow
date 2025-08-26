@@ -170,7 +170,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
    */
   protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug(`Migration event: ${event}`, data);`
+      this.logger.debug(`Migration event: ${event}`, data);
     }
     this.emit(event, data);
   }

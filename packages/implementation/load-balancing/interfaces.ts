@@ -5,7 +5,7 @@
  * @file Coordination system: interfaces
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 import type {
   Agent,
@@ -80,7 +80,7 @@ export interface PredictionEngine {
   getAccuracy(): Promise<number>;
 }
 
-export interface HealthChecker extends TypedEventBase {
+export interface HealthChecker extends EventEmitter {
   checkHealth(agent: Agent): Promise<boolean>;
   startHealthChecks(agents: Agent[]): Promise<void>;
   stopHealthChecks(): Promise<void>;
@@ -131,7 +131,7 @@ export interface NetworkOptimizer {
   adjustQoS(requirements: QoSRequirement): Promise<void>;
 }
 
-export interface AutoScaler extends TypedEventBase {
+export interface AutoScaler extends EventEmitter {
   shouldScaleUp(metrics: Map<string, LoadMetrics>): Promise<boolean>;
   shouldScaleDown(metrics: Map<string, LoadMetrics>): Promise<boolean>;
   scaleUp(count: number): Promise<Agent[]>;
@@ -141,7 +141,7 @@ export interface AutoScaler extends TypedEventBase {
   >;
 }
 
-export interface EmergencyHandler extends TypedEventBase {
+export interface EmergencyHandler extends EventEmitter {
   handleEmergency(
     type: string,
     severity: 'low' | 'medium' | 'high' | 'critical'

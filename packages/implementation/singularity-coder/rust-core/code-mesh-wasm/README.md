@@ -12,24 +12,28 @@ Code-Mesh WASM brings the full power of Rust-based distributed computing to Java
 ## 🌟 Features
 
 ### 🚀 **Native WASM Performance**
+
 - **Rust-to-WASM Compilation**: Near-native execution speed in browsers
 - **SIMD Optimization**: Hardware-accelerated operations where supported
 - **Memory Efficiency**: Smart memory management with minimal overhead
 - **Zero-Copy Operations**: Direct memory access for maximum performance
 
 ### 🌐 **Universal JavaScript Support**
+
 - **Browser Compatible**: Works in all modern browsers
 - **Node.js Ready**: Full server-side JavaScript support
 - **TypeScript Definitions**: Complete type safety and IntelliSense
 - **Module Formats**: ESM, CommonJS, and UMD builds available
 
 ### 🧠 **Neural WASM Networks**
+
 - **WebAssembly ML**: Neural networks compiled to WASM
 - **Browser-based AI**: Client-side machine learning capabilities
 - **Real-time Processing**: Low-latency neural operations
 - **Offline Capabilities**: No server required for AI processing
 
 ### ⚡ **Swarm in the Browser**
+
 - **Web Workers**: Multi-threaded agent execution
 - **Shared Array Buffers**: High-performance inter-agent communication
 - **Service Workers**: Background swarm processing
@@ -78,38 +82,38 @@ wasm-bindgen = "0.2"
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Code-Mesh WASM Demo</title>
-</head>
-<body>
+  </head>
+  <body>
     <script type="module">
-        import { CodeMesh } from '@ruvnet/code-mesh';
-        
-        async function main() {
-            // Initialize Code-Mesh WASM
-            const mesh = new CodeMesh();
-            await mesh.init();
-            
-            // Create a browser-based swarm
-            const swarm = await mesh.createSwarm({
-                topology: 'mesh',
-                agents: 3,
-                useWebWorkers: true
-            });
-            
-            // Execute a task across web workers
-            const result = await swarm.executeTask({
-                type: 'data-processing',
-                data: largeDataset,
-                operation: 'analyze'
-            });
-            
-            console.log('Processing complete:', result);
-        }
-        
-        main();
+      import { CodeMesh } from '@ruvnet/code-mesh';
+
+      async function main() {
+        // Initialize Code-Mesh WASM
+        const mesh = new CodeMesh();
+        await mesh.init();
+
+        // Create a browser-based swarm
+        const swarm = await mesh.createSwarm({
+          topology: 'mesh',
+          agents: 3,
+          useWebWorkers: true,
+        });
+
+        // Execute a task across web workers
+        const result = await swarm.executeTask({
+          type: 'data-processing',
+          data: largeDataset,
+          operation: 'analyze',
+        });
+
+        console.log('Processing complete:', result);
+      }
+
+      main();
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -119,25 +123,25 @@ wasm-bindgen = "0.2"
 import { CodeMesh } from '@ruvnet/code-mesh';
 
 async function main() {
-    // Initialize Code-Mesh for Node.js
-    const mesh = new CodeMesh();
-    await mesh.init();
-    
-    // Create high-performance swarm
-    const swarm = await mesh.createSwarm({
-        topology: 'hierarchical',
-        agents: 8,
-        enableSIMD: true
-    });
-    
-    // Process files with WASM speed
-    const files = await fs.readdir('./src');
-    const results = await swarm.processFiles(files, {
-        operation: 'analyze',
-        parallel: true
-    });
-    
-    console.log('Analysis results:', results);
+  // Initialize Code-Mesh for Node.js
+  const mesh = new CodeMesh();
+  await mesh.init();
+
+  // Create high-performance swarm
+  const swarm = await mesh.createSwarm({
+    topology: 'hierarchical',
+    agents: 8,
+    enableSIMD: true,
+  });
+
+  // Process files with WASM speed
+  const files = await fs.readdir('./src');
+  const results = await swarm.processFiles(files, {
+    operation: 'analyze',
+    parallel: true,
+  });
+
+  console.log('Analysis results:', results);
 }
 
 main().catch(console.error);
@@ -146,49 +150,45 @@ main().catch(console.error);
 ### TypeScript Usage
 
 ```typescript
-import { 
-    CodeMesh, 
-    SwarmConfig, 
-    AgentType, 
-    TaskResult 
+import {
+  CodeMesh,
+  SwarmConfig,
+  AgentType,
+  TaskResult,
 } from '@ruvnet/code-mesh';
 
 interface AnalysisTask {
-    files: string[];
-    operation: 'analyze' | 'optimize' | 'test';
-    options?: {
-        parallel?: boolean;
-        neural?: boolean;
-    };
+  files: string[];
+  operation: 'analyze' | 'optimize' | 'test';
+  options?: {
+    parallel?: boolean;
+    neural?: boolean;
+  };
 }
 
 async function analyzeCodebase(): Promise<TaskResult> {
-    const mesh = new CodeMesh();
-    await mesh.init();
-    
-    const config: SwarmConfig = {
-        topology: 'mesh',
-        agents: 5,
-        agentTypes: [
-            AgentType.Researcher,
-            AgentType.Coder, 
-            AgentType.Analyst
-        ],
-        enableNeuralNetworks: true
-    };
-    
-    const swarm = await mesh.createSwarm(config);
-    
-    const task: AnalysisTask = {
-        files: ['src/**/*.ts'],
-        operation: 'analyze',
-        options: {
-            parallel: true,
-            neural: true
-        }
-    };
-    
-    return await swarm.executeTask(task);
+  const mesh = new CodeMesh();
+  await mesh.init();
+
+  const config: SwarmConfig = {
+    topology: 'mesh',
+    agents: 5,
+    agentTypes: [AgentType.Researcher, AgentType.Coder, AgentType.Analyst],
+    enableNeuralNetworks: true,
+  };
+
+  const swarm = await mesh.createSwarm(config);
+
+  const task: AnalysisTask = {
+    files: ['src/**/*.ts'],
+    operation: 'analyze',
+    options: {
+      parallel: true,
+      neural: true,
+    },
+  };
+
+  return await swarm.executeTask(task);
 }
 ```
 
@@ -234,7 +234,7 @@ class Agent {
     readonly id: string
     readonly type: AgentType
     readonly status: AgentStatus
-    
+
     async executeTask(task: Task): Promise<TaskResult>
     async getMetrics(): Promise<AgentMetrics>
     async communicate(targetAgent: string, message: any): Promise<void>
@@ -246,36 +246,36 @@ class Agent {
 
 ```typescript
 interface SwarmConfig {
-    topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
-    agents: number;
-    agentTypes?: AgentType[];
-    useWebWorkers?: boolean;
-    enableSIMD?: boolean;
-    enableNeuralNetworks?: boolean;
-    memoryLimit?: string;
+  topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  agents: number;
+  agentTypes?: AgentType[];
+  useWebWorkers?: boolean;
+  enableSIMD?: boolean;
+  enableNeuralNetworks?: boolean;
+  memoryLimit?: string;
 }
 
 interface Task {
-    id?: string;
-    type: string;
-    data?: any;
-    options?: {
-        timeout?: number;
-        priority?: 'low' | 'medium' | 'high';
-        neural?: boolean;
-    };
+  id?: string;
+  type: string;
+  data?: any;
+  options?: {
+    timeout?: number;
+    priority?: 'low' | 'medium' | 'high';
+    neural?: boolean;
+  };
 }
 
 interface TaskResult {
-    id: string;
-    status: 'completed' | 'failed' | 'timeout';
-    result?: any;
-    error?: string;
-    metrics: {
-        executionTime: number;
-        memoryUsed: number;
-        agentsUsed: number;
-    };
+  id: string;
+  status: 'completed' | 'failed' | 'timeout';
+  result?: any;
+  error?: string;
+  metrics: {
+    executionTime: number;
+    memoryUsed: number;
+    agentsUsed: number;
+  };
 }
 ```
 
@@ -288,14 +288,14 @@ interface TaskResult {
 import { CodeMesh } from '@ruvnet/code-mesh';
 
 const mesh = new CodeMesh({
-    useWebWorkers: true,
-    maxWorkers: navigator.hardwareConcurrency
+  useWebWorkers: true,
+  maxWorkers: navigator.hardwareConcurrency,
 });
 
 // Automatic worker management
 const swarm = await mesh.createSwarm({
-    topology: 'mesh',
-    agents: 4 // Each agent runs in separate worker
+  topology: 'mesh',
+  agents: 4, // Each agent runs in separate worker
 });
 ```
 
@@ -304,8 +304,8 @@ const swarm = await mesh.createSwarm({
 ```javascript
 // Enable high-performance inter-agent communication
 const mesh = new CodeMesh({
-    useSharedArrayBuffer: true,
-    sharedMemorySize: '64MB'
+  useSharedArrayBuffer: true,
+  sharedMemorySize: '64MB',
 });
 
 // Agents can now share data without serialization overhead
@@ -321,16 +321,18 @@ import { CodeMesh } from '@ruvnet/code-mesh';
 let backgroundSwarm;
 
 self.addEventListener('message', async (event) => {
-    if (event.data.type === 'START_BACKGROUND_PROCESSING') {
-        backgroundSwarm = new CodeMesh();
-        await backgroundSwarm.init();
-        
-        // Process data in background
-        const result = await backgroundSwarm.processInBackground(event.data.payload);
-        
-        // Send result back to main thread
-        self.postMessage({ type: 'PROCESSING_COMPLETE', result });
-    }
+  if (event.data.type === 'START_BACKGROUND_PROCESSING') {
+    backgroundSwarm = new CodeMesh();
+    await backgroundSwarm.init();
+
+    // Process data in background
+    const result = await backgroundSwarm.processInBackground(
+      event.data.payload
+    );
+
+    // Send result back to main thread
+    self.postMessage({ type: 'PROCESSING_COMPLETE', result });
+  }
 });
 ```
 
@@ -343,23 +345,23 @@ import { NeuralNetwork, ActivationFunction } from '@ruvnet/code-mesh';
 
 // Create custom neural network in WASM
 const network = new NeuralNetwork({
-    layers: [784, 128, 64, 10],
-    activation: ActivationFunction.ReLU,
-    optimizer: 'adam',
-    learningRate: 0.001
+  layers: [784, 128, 64, 10],
+  activation: ActivationFunction.ReLU,
+  optimizer: 'adam',
+  learningRate: 0.001,
 });
 
 // Train with WASM performance
 await network.train(trainingData, {
-    epochs: 100,
-    batchSize: 32,
-    useSIMD: true
+  epochs: 100,
+  batchSize: 32,
+  useSIMD: true,
 });
 
 // Deploy to agents
 const swarm = await mesh.createSwarm({
-    agents: 3,
-    neuralNetwork: network
+  agents: 3,
+  neuralNetwork: network,
 });
 ```
 
@@ -368,19 +370,19 @@ const swarm = await mesh.createSwarm({
 ```javascript
 // Process streaming data with WASM agents
 const stream = new ReadableStream({
-    start(controller) {
-        // Stream data to WASM processors
-    }
+  start(controller) {
+    // Stream data to WASM processors
+  },
 });
 
 const processor = await mesh.createStreamProcessor({
-    inputStream: stream,
-    agents: 4,
-    bufferSize: '16MB'
+  inputStream: stream,
+  agents: 4,
+  bufferSize: '16MB',
 });
 
 processor.on('data', (processedChunk) => {
-    console.log('Processed:', processedChunk);
+  console.log('Processed:', processedChunk);
 });
 ```
 
@@ -390,9 +392,9 @@ processor.on('data', (processedChunk) => {
 import { PerformanceMonitor } from '@ruvnet/code-mesh';
 
 const monitor = new PerformanceMonitor({
-    enableCPUProfiling: true,
-    enableMemoryProfiling: true,
-    sampleRate: 1000 // 1 second
+  enableCPUProfiling: true,
+  enableMemoryProfiling: true,
+  sampleRate: 1000, // 1 second
 });
 
 // Monitor WASM performance
@@ -409,19 +411,19 @@ console.log('WASM Performance:', metrics);
 ```javascript
 // Optimize for different browser environments
 const mesh = new CodeMesh({
-    // Use WebAssembly SIMD if available
-    autoDetectSIMD: true,
-    
-    // Optimize memory allocation
-    memoryGrowthStrategy: 'dynamic',
-    initialMemory: '32MB',
-    maxMemory: '512MB',
-    
-    // Enable threading if available
-    useSharedArrayBuffer: 'auto',
-    
-    // Optimize for mobile devices
-    mobileOptimizations: true
+  // Use WebAssembly SIMD if available
+  autoDetectSIMD: true,
+
+  // Optimize memory allocation
+  memoryGrowthStrategy: 'dynamic',
+  initialMemory: '32MB',
+  maxMemory: '512MB',
+
+  // Enable threading if available
+  useSharedArrayBuffer: 'auto',
+
+  // Optimize for mobile devices
+  mobileOptimizations: true,
 });
 ```
 
@@ -430,17 +432,17 @@ const mesh = new CodeMesh({
 ```javascript
 // Server-side optimizations
 const mesh = new CodeMesh({
-    // Use all available CPU cores
-    maxAgents: require('os').cpus().length,
-    
-    // Enable SIMD for math operations
-    enableSIMD: true,
-    
-    // Optimize for server workloads
-    serverMode: true,
-    
-    // Large memory allocation for big data
-    memoryLimit: '2GB'
+  // Use all available CPU cores
+  maxAgents: require('os').cpus().length,
+
+  // Enable SIMD for math operations
+  enableSIMD: true,
+
+  // Optimize for server workloads
+  serverMode: true,
+
+  // Large memory allocation for big data
+  memoryLimit: '2GB',
 });
 ```
 
@@ -451,17 +453,17 @@ const mesh = new CodeMesh({
 ```javascript
 // webpack.config.js
 module.exports = {
-    // ... other config
-    experiments: {
-        asyncWebAssembly: true,
-        topLevelAwait: true
+  // ... other config
+  experiments: {
+    asyncWebAssembly: true,
+    topLevelAwait: true,
+  },
+  resolve: {
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
     },
-    resolve: {
-        fallback: {
-            "crypto": require.resolve("crypto-browserify"),
-            "stream": require.resolve("stream-browserify")
-        }
-    }
+  },
 };
 ```
 
@@ -470,15 +472,15 @@ module.exports = {
 ```javascript
 // vite.config.js
 export default {
-    optimizeDeps: {
-        exclude: ['@ruvnet/code-mesh']
+  optimizeDeps: {
+    exclude: ['@ruvnet/code-mesh'],
+  },
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
     },
-    server: {
-        headers: {
-            'Cross-Origin-Embedder-Policy': 'require-corp',
-            'Cross-Origin-Opener-Policy': 'same-origin'
-        }
-    }
+  },
 };
 ```
 
@@ -494,25 +496,25 @@ const mesh = new CodeMesh();
 await mesh.init();
 
 const swarm = await mesh.createSwarm({
-    topology: 'ring',
-    agents: 6,
-    enableNeuralNetworks: true
+  topology: 'ring',
+  agents: 6,
+  enableNeuralNetworks: true,
 });
 
 // Process sensor data stream
 const sensorStream = new EventSource('/api/sensors');
 sensorStream.onmessage = async (event) => {
-    const sensorData = JSON.parse(event.data);
-    
-    const analysis = await swarm.executeTask({
-        type: 'sensor-analysis',
-        data: sensorData,
-        options: { neural: true }
-    });
-    
-    if (analysis.result.anomaly) {
-        alert('Anomaly detected!');
-    }
+  const sensorData = JSON.parse(event.data);
+
+  const analysis = await swarm.executeTask({
+    type: 'sensor-analysis',
+    data: sensorData,
+    options: { neural: true },
+  });
+
+  if (analysis.result.anomaly) {
+    alert('Anomaly detected!');
+  }
 };
 ```
 
@@ -524,20 +526,20 @@ const mesh = new CodeMesh();
 await mesh.init();
 
 const imageProcessor = await mesh.createImageProcessor({
-    agents: 4,
-    enableSIMD: true
+  agents: 4,
+  enableSIMD: true,
 });
 
 document.getElementById('upload').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    const imageData = await readImageData(file);
-    
-    const processed = await imageProcessor.process(imageData, {
-        operations: ['resize', 'enhance', 'denoise'],
-        parallel: true
-    });
-    
-    displayProcessedImage(processed);
+  const file = e.target.files[0];
+  const imageData = await readImageData(file);
+
+  const processed = await imageProcessor.process(imageData, {
+    operations: ['resize', 'enhance', 'denoise'],
+    parallel: true,
+  });
+
+  displayProcessedImage(processed);
 });
 ```
 
@@ -562,18 +564,18 @@ document.getElementById('upload').addEventListener('change', async (e) => {
 ```javascript
 // Enable debug logging
 const mesh = new CodeMesh({
-    debug: true,
-    logLevel: 'verbose'
+  debug: true,
+  logLevel: 'verbose',
 });
 
 // Monitor WASM memory usage
 mesh.on('memory-warning', (usage) => {
-    console.warn('High memory usage:', usage);
+  console.warn('High memory usage:', usage);
 });
 
 // Track performance
 mesh.on('performance-update', (metrics) => {
-    console.log('Performance:', metrics);
+  console.log('Performance:', metrics);
 });
 ```
 
@@ -609,6 +611,6 @@ at your option.
 
 **Code-Mesh WASM - Rust Performance in Every Browser** 🌐⚡
 
-*Bringing distributed swarm intelligence to the web*
+_Bringing distributed swarm intelligence to the web_
 
 </div>

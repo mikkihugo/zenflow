@@ -22,9 +22,15 @@ Use type guards for safe property access:
 
 ```typescript
 // ✅ Safe - Using type guards
-import { DatabaseResult, isQuerySuccess, isQueryError } from '../../utils/type-guards';
+import {
+  DatabaseResult,
+  isQuerySuccess,
+  isQueryError,
+} from '../../utils/type-guards';
 
-const result: DatabaseResult<User[]> = await queryWithResult('SELECT * FROM users');
+const result: DatabaseResult<User[]> = await queryWithResult(
+  'SELECT * FROM users'
+);
 
 if (isQuerySuccess(result)) {
   // TypeScript knows this is QuerySuccess<User[]>
@@ -40,9 +46,15 @@ if (isQuerySuccess(result)) {
 ### Memory Store Operations
 
 ```typescript
-import { MemoryResult, isMemorySuccess, isMemoryNotFound, isMemoryError } from '../../utils/type-guards';
+import {
+  MemoryResult,
+  isMemorySuccess,
+  isMemoryNotFound,
+  isMemoryError,
+} from '../../utils/type-guards';
 
-const result: MemoryResult<UserProfile> = await memoryStore.retrieve('user:123');
+const result: MemoryResult<UserProfile> =
+  await memoryStore.retrieve('user:123');
 
 if (isMemorySuccess(result)) {
   // Safe access to user data
@@ -58,7 +70,12 @@ if (isMemorySuccess(result)) {
 ### Neural Network Operations
 
 ```typescript
-import { NeuralResult, isTrainingResult, isInferenceResult, isNeuralError } from '../../utils/type-guards';
+import {
+  NeuralResult,
+  isTrainingResult,
+  isInferenceResult,
+  isNeuralError,
+} from '../../utils/type-guards';
 
 const result: NeuralResult = await neuralNetwork.train(trainingData, options);
 
@@ -66,7 +83,7 @@ if (isTrainingResult(result)) {
   console.log('Training completed successfully');
   console.log('Final error:', result.finalError);
   console.log('Converged:', result.converged);
-  
+
   if (result.accuracy !== undefined) {
     console.log('Accuracy:', result.accuracy * 100, '%');
   }
@@ -89,7 +106,7 @@ if (isAPISuccess(result)) {
   console.log('Request ID:', result.metadata?.requestId);
 } else if (isAPIError(result)) {
   console.error('API error:', result.error.message);
-  
+
   // Handle specific error codes
   switch (result.error.code) {
     case 'HTTP_404':
@@ -107,7 +124,11 @@ if (isAPISuccess(result)) {
 ### WASM Operations
 
 ```typescript
-import { WasmResult, isWasmSuccess, isWasmError } from '../../utils/type-guards';
+import {
+  WasmResult,
+  isWasmSuccess,
+  isWasmError,
+} from '../../utils/type-guards';
 
 const result: WasmResult<number[]> = await wasmModule.computeVector(input);
 
@@ -173,30 +194,30 @@ if (userData) {
 async function createUserWorkflow(userData: CreateUserData): Promise<void> {
   // 1. Store user in database
   const dbResult = await database.queryWithResult('INSERT INTO users ...');
-  
+
   if (!isQuerySuccess(dbResult)) {
     console.error('Database error:', extractErrorMessage(dbResult));
     return;
   }
-  
+
   const userId = dbResult.data.insertId;
-  
+
   // 2. Cache user profile
   const cacheResult = await memoryStore.store(`user:${userId}`, userData);
-  
+
   if (!isMemorySuccess(cacheResult)) {
     console.warn('Cache error:', extractErrorMessage(cacheResult));
     // Continue - caching failure is not critical
   }
-  
+
   // 3. Initialize user's neural profile
   const neuralResult = await neuralService.initializeUserProfile(userId);
-  
+
   if (isNeuralError(neuralResult)) {
     console.error('Neural initialization failed:', neuralResult.error.message);
     // Handle cleanup if needed
   }
-  
+
   console.log('✅ User workflow completed successfully');
 }
 ```
@@ -204,28 +225,30 @@ async function createUserWorkflow(userData: CreateUserData): Promise<void> {
 ### Error Handling Patterns
 
 ```typescript
-function handleOperationResult<T>(result: DatabaseResult<T> | MemoryResult<T> | APIResult<T>): T | null {
+function handleOperationResult<T>(
+  result: DatabaseResult<T> | MemoryResult<T> | APIResult<T>
+): T | null {
   // Extract error message works with any result type
   const errorMessage = extractErrorMessage(result);
-  
+
   if (errorMessage) {
     console.error('Operation failed:', errorMessage);
     return null;
   }
-  
+
   // Type guards work with union types
   if ('success' in result && isQuerySuccess(result)) {
     return result.data;
   }
-  
+
   if ('found' in result && isMemorySuccess(result)) {
     return result.data;
   }
-  
+
   if ('success' in result && isAPISuccess(result)) {
     return result.data;
   }
-  
+
   return null;
 }
 ```
@@ -243,6 +266,7 @@ function handleOperationResult<T>(result: DatabaseResult<T> | MemoryResult<T> | 
 ### Common Migration Patterns
 
 Before:
+
 ```typescript
 // Unsafe union type access
 const result = await someOperation();
@@ -252,6 +276,7 @@ if (result.success) {
 ```
 
 After:
+
 ```typescript
 // Safe union type access
 const result = await someOperation();
@@ -278,6 +303,7 @@ npm test src/__tests__/unit/classical/utils/type-guards.test.ts
 ```
 
 The test suite covers:
+
 - Type discrimination accuracy
 - Type narrowing behavior
 - Edge cases and error conditions

@@ -18,16 +18,16 @@ import { AgentRegistryAdapter } from '@claude-zen/foundation';
 // Same interface, enhanced backend
 const agentRegistry = new AgentRegistryAdapter({
   enableHealthMonitoring: true,
-  healthCheckFrequency: 30000
+  healthCheckFrequency: 30000,
 });
 
 // All existing code works unchanged
 await agentRegistry.registerAgent({
   id: 'agent-1',
-  name: 'Test Agent', 
+  name: 'Test Agent',
   type: 'coder',
   status: 'idle',
-  capabilities: { languages: ['typescript'] }
+  capabilities: { languages: ['typescript'] },
 });
 
 const agents = await agentRegistry.queryAgents({ type: 'coder' });
@@ -41,7 +41,10 @@ Use the `MigratedAgentRegistry` for enhanced capabilities:
 // NEW: Full ServiceContainer implementation
 import { MigratedAgentRegistry } from '@claude-zen/server/coordination/agents';
 
-const agentRegistry = new MigratedAgentRegistry(memoryCoordinator, 'agent-registry');
+const agentRegistry = new MigratedAgentRegistry(
+  memoryCoordinator,
+  'agent-registry'
+);
 
 await agentRegistry.initialize();
 
@@ -49,9 +52,9 @@ await agentRegistry.initialize();
 await agentRegistry.registerAgent({
   id: 'agent-1',
   name: 'Test Agent',
-  type: 'coder', 
+  type: 'coder',
   status: 'idle',
-  capabilities: { languages: ['typescript'] }
+  capabilities: { languages: ['typescript'] },
 });
 
 // NEW: Enhanced capabilities
@@ -63,11 +66,13 @@ agentRegistry.setAgentEnabled('agent-1', false);
 ## Migration Benefits
 
 ### Performance Improvements
+
 - **25%+ faster** agent resolution via Awilix DI container
 - **15% memory reduction** through optimized service management
 - **Battle-tested** dependency injection patterns
 
 ### Enhanced Features
+
 - **Health monitoring** with automatic agent health checks
 - **Service discovery** by capabilities
 - **Lifecycle management** with enable/disable controls
@@ -75,6 +80,7 @@ agentRegistry.setAgentEnabled('agent-1', false);
 - **Error handling** with Result patterns
 
 ### ServiceContainer Integration
+
 - **Professional DI patterns** using industry-standard Awilix
 - **Type-safe registration** with full TypeScript support
 - **Event-driven notifications** for registry changes
@@ -83,11 +89,13 @@ agentRegistry.setAgentEnabled('agent-1', false);
 ## Step-by-Step Migration
 
 ### Step 1: Install Foundation Package
+
 ```bash
 pnpm add @claude-zen/foundation
 ```
 
 ### Step 2: Update Imports
+
 ```typescript
 // Before
 import { AgentRegistry } from './coordination/agents/agent-registry';
@@ -100,6 +108,7 @@ import { MigratedAgentRegistry } from './coordination/agents/agent-registry-migr
 ```
 
 ### Step 3: Update Initialization
+
 ```typescript
 // Before
 const agentRegistry = new AgentRegistry(memory, 'agents');
@@ -108,7 +117,7 @@ await agentRegistry.initialize();
 // After - Option A (Drop-in replacement)
 const agentRegistry = new AgentRegistryAdapter({
   containerName: 'agents',
-  enableHealthMonitoring: true
+  enableHealthMonitoring: true,
 });
 await agentRegistry.initialize();
 
@@ -118,6 +127,7 @@ await agentRegistry.initialize();
 ```
 
 ### Step 4: Test & Validate
+
 ```typescript
 // Verify functionality works
 const stats = agentRegistry.getStats();
@@ -134,8 +144,9 @@ if (agentRegistry instanceof MigratedAgentRegistry) {
 ## Compatibility
 
 ### ✅ Fully Compatible APIs
+
 - `registerAgent()`
-- `unregisterAgent()`  
+- `unregisterAgent()`
 - `updateAgent()`
 - `queryAgents()`
 - `selectAgents()`
@@ -147,12 +158,14 @@ if (agentRegistry instanceof MigratedAgentRegistry) {
 - `shutdown()`
 
 ### 🆕 New APIs (MigratedAgentRegistry only)
+
 - `getAgentsByCapability(capability)` - Find agents with specific capabilities
 - `getHealthStatus()` - Comprehensive health monitoring
 - `setAgentEnabled(agentId, enabled)` - Enable/disable agents
 - Enhanced `getStats()` with ServiceContainer metrics
 
 ### 📊 Enhanced Statistics
+
 Both implementations provide enhanced statistics:
 
 ```typescript
@@ -181,7 +194,7 @@ const comparison = await RegistryMigrationUtil.performanceComparison(
   [
     () => registry.registerAgent(testAgent),
     () => registry.queryAgents({ type: 'coder' }),
-    () => registry.selectAgents({ type: 'coder', maxResults: 5 })
+    () => registry.selectAgents({ type: 'coder', maxResults: 5 }),
   ]
 );
 
@@ -204,12 +217,13 @@ await agentRegistry.initialize();
 ## Best Practices
 
 ### Health Monitoring
+
 ```typescript
 // Enable health monitoring for production
 const agentRegistry = new AgentRegistryAdapter({
   enableHealthMonitoring: true,
   healthCheckFrequency: 30000, // 30 seconds
-  enableMigrationLogging: true
+  enableMigrationLogging: true,
 });
 
 // Monitor agent health
@@ -223,6 +237,7 @@ agentRegistry.on('agentRegistered', ({ agent }) => {
 ```
 
 ### Error Handling
+
 ```typescript
 try {
   await agentRegistry.registerAgent(agent);
@@ -233,6 +248,7 @@ try {
 ```
 
 ### Memory Management
+
 ```typescript
 // Proper cleanup
 process.on('SIGTERM', async () => {
@@ -246,18 +262,20 @@ process.on('SIGTERM', async () => {
 ### Common Issues
 
 **Issue**: ServiceContainer registration fails
+
 ```typescript
 // Solution: Check agent capabilities format
 const agent = {
   id: 'test-agent',
   capabilities: {
     languages: ['typescript'], // Must be arrays
-    frameworks: ['react']
-  }
+    frameworks: ['react'],
+  },
 };
 ```
 
 **Issue**: Health checks failing
+
 ```typescript
 // Solution: Implement proper health check
 const agentRegistry = new MigratedAgentRegistry(memory);
@@ -268,11 +286,12 @@ agentRegistry.on('agentStale', ({ agentId }) => {
 ```
 
 **Issue**: Performance slower than expected
+
 ```typescript
 // Solution: Enable caching and optimize queries
 const agentRegistry = new AgentRegistryAdapter({
   enableHealthMonitoring: false, // Disable if not needed
-  strictCompatibility: false     // Allow optimizations
+  strictCompatibility: false, // Allow optimizations
 });
 ```
 
@@ -291,6 +310,7 @@ const agentRegistry = new AgentRegistryAdapter({
 ## Support
 
 For migration assistance:
+
 - Check logs for migration events
 - Use `getMigrationStats()` for progress tracking
 - Review ServiceContainer health status

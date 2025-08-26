@@ -116,7 +116,7 @@ export class DomainValidationError extends Error {
     public domain: Domain
   ) {
     super(message);
-    this.name = 'DomainValidationError';
+    this.name = 'DomainValidationError;
   }
 }
 
@@ -126,7 +126,7 @@ export class ContractViolationError extends Error {
     public contract: string
   ) {
     super(message);
-    this.name = 'ContractViolationError';
+    this.name = 'ContractViolationError;
   }
 }
 

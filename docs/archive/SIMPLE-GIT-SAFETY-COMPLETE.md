@@ -3,6 +3,7 @@
 ## 🎯 **Mission: Simple & Effective Safety**
 
 User feedback was crystal clear:
+
 - "dont make it crzy complex there is normally a good enough simple solution"
 - "its not maskin git because then then will just do it via a shellscript"
 - "perhaps we should control the enviroment variables"
@@ -12,27 +13,39 @@ User feedback was crystal clear:
 ## 🚀 **Ultra-Simple Solution Implemented**
 
 ### ✅ 1. Simple Git Sandbox (`simple-git-sandbox.ts`)
+
 **File**: `apps/claude-code-zen-server/src/coordination/swarm/sparc/simple-git-sandbox.ts`
 
 **Key Features**:
-- **Environment Variable Control**: Strips dangerous env vars (AWS_*, DOCKER_*, SSH_AUTH_SOCK)
+
+- **Environment Variable Control**: Strips dangerous env vars (AWS*\*, DOCKER*\*, SSH_AUTH_SOCK)
 - **Isolated Workspaces**: Each project gets its own sandbox directory
 - **Immutable File Safety**: Read-only operations where possible
 - **Simple Cron Cleanup**: Auto-cleanup every hour, no complexity
 - **No Git Masking**: Uses real git but controls the environment
 
 **Simple Environment Restrictions**:
+
 ```typescript
 restrictedEnvVars: [
-  'HOME', 'PATH', 'SHELL', 'USER', 'SSH_AUTH_SOCK',
-  'AWS_*', 'DOCKER_*', 'GITHUB_TOKEN', 'NPM_TOKEN'
-]
+  'HOME',
+  'PATH',
+  'SHELL',
+  'USER',
+  'SSH_AUTH_SOCK',
+  'AWS_*',
+  'DOCKER_*',
+  'GITHUB_TOKEN',
+  'NPM_TOKEN',
+];
 ```
 
 ### ✅ 2. Comprehensive Git Commander (`git-commander.ts`)
+
 **File**: `apps/claude-code-zen-server/src/coordination/swarm/sparc/git-commander.ts`
 
 **Answers Your Questions**:
+
 - **"when should tree close"**: Intelligent lifecycle based on age, commits, quality
 - **"when should shit merge"**: AI-assisted conflict resolution with multiple strategies
 - **"when should we push"**: Quality gates + configurable timing strategies
@@ -40,6 +53,7 @@ restrictedEnvVars: [
 - **"after something bugs out"**: Emergency recovery system with multiple fallback levels
 
 **Simple Scheduling**:
+
 ```typescript
 // Every 30 minutes: cleanup stale worktrees
 cron.schedule('*/30 * * * *', cleanupStaleBoxes);
@@ -54,6 +68,7 @@ cron.schedule('0 2 * * *', auditCleanup);
 ### ✅ 3. Battle-Tested Package Integration
 
 **Installed Packages**:
+
 - ✅ `node-cron` - Simple scheduling (not complex)
 - ✅ `git-diff-parser` - For intelligent conflict analysis
 - ✅ `diff3` - For 3-way merge resolution
@@ -63,12 +78,14 @@ cron.schedule('0 2 * * *', auditCleanup);
 ## 🛡️ **Safety Without Complexity**
 
 ### Environment-Based Security (Not Masking)
+
 - **Controls what Claude agents can see/access via environment variables**
 - **Doesn't try to block git commands (they'll just use libraries)**
 - **Creates safe isolated workspaces instead**
 - **Simple but effective**
 
 ### Immutable File Safety Pattern
+
 ```typescript
 // Read operations are safe by default
 const results = await extractSandboxResults(sandbox);
@@ -81,6 +98,7 @@ await withRestrictedEnv(sandbox, () => operation());
 ```
 
 ### Simple Cleanup Strategy
+
 ```typescript
 // Ultra-simple: age-based cleanup
 const maxAge = 4 * 60 * 60 * 1000; // 4 hours
@@ -92,25 +110,25 @@ if (sandbox.age > maxAge) {
 ## 🎯 **Tree Lifecycle Intelligence**
 
 ### Decision Factors (Simple Logic)
-```typescript
-const shouldClose = 
-  factors.ageInMinutes > 240 ||    // 4 hours old
-  factors.commitCount > 20 ||      // Too many commits
-  factors.codeQuality < 0.6;       // Poor quality
 
-const shouldMerge = 
+```typescript
+const shouldClose =
+  factors.ageInMinutes > 240 || // 4 hours old
+  factors.commitCount > 20 || // Too many commits
+  factors.codeQuality < 0.6; // Poor quality
+
+const shouldMerge =
   factors.testsPass &&
   !factors.hasConflicts &&
   factors.codeQuality > 0.7 &&
   factors.securityScanPassed;
 
-const shouldPush = 
-  shouldMerge &&
-  factors.performanceImpact < 0.2 &&
-  factors.commitCount >= 1;
+const shouldPush =
+  shouldMerge && factors.performanceImpact < 0.2 && factors.commitCount >= 1;
 ```
 
 ### AI-Assisted Merging (When Complex)
+
 - **Auto merge**: No conflicts, simple case
 - **AI-assisted**: Analyze patterns, suggest resolutions
 - **Safe fallback**: Manual intervention required
@@ -119,6 +137,7 @@ const shouldPush =
 ## 🔧 **Integration Status**
 
 ### ✅ Completed Components
+
 1. **Simple Git Sandbox** - Environment control + isolation
 2. **Git Commander** - Comprehensive git operations with AI
 3. **Cron Scheduling** - Simple cleanup without complexity
@@ -126,9 +145,11 @@ const shouldPush =
 5. **Safety Architecture** - Environment-based, not tool-blocking
 
 ### 🔄 In Progress
+
 - **SPARC Commander Integration** - Updating to use simple sandbox
 
 ### 📦 Simple Usage Example
+
 ```typescript
 // Create ultra-simple sandbox
 const sandbox = await gitSandbox.createSandbox(projectId);
@@ -141,8 +162,8 @@ await gitSandbox.executeSafeGitOp(sandbox, async (git) => {
 
 // AI-assisted merge when needed
 const mergeResult = await gitCommander.aiAssistedMerge(
-  worktreeId, 
-  'main', 
+  worktreeId,
+  'main',
   'ai_assisted'
 );
 
@@ -175,6 +196,7 @@ await gitSandbox.cleanupSandbox(sandbox.id);
 **Status**: 🎉 **ULTRA-SIMPLE SAFETY SYSTEM COMPLETE** 🎉
 
 This solution follows your guidance perfectly:
+
 - Simple, not complex
 - Controls environment, doesn't mask tools
 - Immutable safety where possible

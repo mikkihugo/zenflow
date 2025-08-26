@@ -15,16 +15,16 @@
  * - Health monitoring computations.
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EventManagerTypes } from '../../core/interfaces';
-import type { CoordinationEvent } from '../../types';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest;
+import { EventManagerTypes } from '../../core/interfaces;
+import type { CoordinationEvent } from '../../types;
 import {
   CoordinationEventAdapter,
   type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-} from '../coordination-event-adapter';
+} from '../coordination-event-adapter;
 
 describe('CoordinationEventAdapter', () => {'
   let adapter: CoordinationEventAdapter;

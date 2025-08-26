@@ -34,8 +34,8 @@ export interface MCPEvent extends SystemEvent {
   toolName: string;
   executionTime: number;
   result: ToolResult;
-  protocol: 'http|stdio';
-  operation: 'execute' | 'validate' | 'error';
+  protocol: 'http|stdio;
+  operation: 'execute' | 'validate' | 'error;
   requestId: string;
 }
 
@@ -111,7 +111,7 @@ export interface ToolResult {
   warnings?: string[];
 }
 
-export type SwarmTopology = 'mesh|hierarchical|ring|star';
+export type SwarmTopology = 'mesh|hierarchical|ring|star;
 
 // Generic observer interface with event typing and priority
 export interface SystemObserver<T extends SystemEvent = SystemEvent> {
@@ -194,7 +194,7 @@ export class WebSocketObserver
   }
 
   getObserverType(): ObserverType {
-    return 'websocket;
+    return 'websocket';
   }
 
   getPriority(): EventPriority {

@@ -27,7 +27,7 @@ import type {
   FileDiscoveryOptions 
 } from './types.js';
 
-const logger = getLogger('ai-linter');'
+const logger = getLogger('ai-linter');
 
 /**
  * AI-powered TypeScript/JavaScript linter

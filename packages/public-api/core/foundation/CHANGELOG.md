@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.1] - 2025-08-24
 
 ### Added
+
 - 🌳 **Tree-Shaking Optimization** - 92% bundle size reduction (36KB → 2.8KB)
 - 📦 **Focused Entry Points** - `/core`, `/di`, `/resilience`, `/utils` for optimal imports
 - 📚 **Comprehensive Documentation** - README, CHANGELOG, LICENSE for production readiness
@@ -15,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ **Production-Grade Package** - Complete documentation and security compliance
 
 ### Changed
+
 - **BREAKING**: Main entry point now minimal (2.8KB vs 36KB)
 - **Migration**: Use `/full` entry point for backwards compatibility
 - **Improved**: Package exports now optimized for tree-shaking
@@ -22,19 +24,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Updated**: All dependencies to latest secure versions
 
 ### Fixed
+
 - 🔒 Fixed critical security vulnerabilities:
   - EJS template injection vulnerability
-  - form-data boundary randomness issue  
+  - form-data boundary randomness issue
   - lodash prototype pollution
   - marked RegExp complexity issues
 - 📝 Added missing essential files (README, CHANGELOG, LICENSE)
 - 🔧 Corrected package.json exports configuration
 
 ### Removed
+
 - Removed oversized monolithic exports from main entry point
 - Cleaned up trailing whitespace and ESLint violations
 
 ### Security
+
 - 🛡️ **27 security overrides applied** to fix vulnerable dependencies
 - 🔒 **42 vulnerabilities resolved** (4 critical, 15 high, 18 moderate, 5 low)
 - 📋 **Dependency audit clean** for production deployment
@@ -42,21 +47,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Tree-Shaking Guide
 
 **Recommended Imports (Optimal Bundle Size):**
+
 ```typescript
-import { getLogger } from '@claude-zen/foundation/core';        // 923B
-import { Result, ok, err } from '@claude-zen/foundation/resilience'; // 1.8KB  
-import { createContainer } from '@claude-zen/foundation/di';    // 1.2KB
+import { getLogger } from '@claude-zen/foundation/core'; // 923B
+import { Result, ok, err } from '@claude-zen/foundation/resilience'; // 1.8KB
+import { createContainer } from '@claude-zen/foundation/di'; // 1.2KB
 import { z, validateInput } from '@claude-zen/foundation/utils'; // 2.1KB
 ```
 
 **Legacy Import (Larger Bundle):**
+
 ```typescript
-import { getLogger } from '@claude-zen/foundation/full';        // 36KB
+import { getLogger } from '@claude-zen/foundation/full'; // 36KB
 ```
 
 ## [1.1.0] - 2025-08-22
 
 ### Added
+
 - Professional TypeScript directory structure
 - Battle-tested dependency integration (awilix, neverthrow, cockatiel)
 - Result pattern for type-safe error handling
@@ -65,11 +73,13 @@ import { getLogger } from '@claude-zen/foundation/full';        // 36KB
 - Circuit breaker and retry logic patterns
 
 ### Changed
+
 - Restructured package with modular organization
 - Improved TypeScript strict compliance
 - Enhanced error handling patterns
 
 ### Fixed
+
 - TypeScript compilation errors
 - Import path corrections
 - Dependency resolution issues
@@ -77,6 +87,7 @@ import { getLogger } from '@claude-zen/foundation/full';        // 36KB
 ## [1.0.0] - 2025-08-20
 
 ### Added
+
 - Initial foundation package release
 - Core utilities and type definitions
 - Basic logging and configuration systems
@@ -97,7 +108,7 @@ import { getLogger, Result, createContainer } from '@claude-zen/foundation';
 
 // After (1.1.1) - Optimal Bundle Size
 import { getLogger } from '@claude-zen/foundation/core';
-import { Result } from '@claude-zen/foundation/resilience';  
+import { Result } from '@claude-zen/foundation/resilience';
 import { createContainer } from '@claude-zen/foundation/di';
 ```
 
@@ -105,16 +116,20 @@ import { createContainer } from '@claude-zen/foundation/di';
 
 ```typescript
 // If you need everything (maintains same bundle size)
-import { getLogger, Result, createContainer } from '@claude-zen/foundation/full';
+import {
+  getLogger,
+  Result,
+  createContainer,
+} from '@claude-zen/foundation/full';
 ```
 
 ### Bundle Size Impact
 
-| Version | Bundle Size | Tree-Shaking |
-|---------|-------------|--------------|
-| 1.1.0   | 36KB        | ❌ No        |
-| 1.1.1   | 2.8KB       | ✅ Yes       |
-| 1.1.1 `/full` | 36KB  | ❌ Legacy    |
+| Version       | Bundle Size | Tree-Shaking |
+| ------------- | ----------- | ------------ |
+| 1.1.0         | 36KB        | ❌ No        |
+| 1.1.1         | 2.8KB       | ✅ Yes       |
+| 1.1.1 `/full` | 36KB        | ❌ Legacy    |
 
 **🎯 Result: 92% bundle size reduction with focused imports**
 
@@ -123,7 +138,7 @@ import { getLogger, Result, createContainer } from '@claude-zen/foundation/full'
 ### Version 1.1.1 Security Fixes
 
 - **Critical**: EJS template injection (CVE-2024-33883)
-- **Critical**: form-data boundary weakness (CVE-2024-28863)  
+- **Critical**: form-data boundary weakness (CVE-2024-28863)
 - **Critical**: lodash prototype pollution (CVE-2019-10744)
 - **High**: marked RegExp DoS (CVE-2022-21681)
 - **Moderate**: Various transitive dependency vulnerabilities

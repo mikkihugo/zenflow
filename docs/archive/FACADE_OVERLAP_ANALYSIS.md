@@ -9,10 +9,12 @@
 ### 1. **No Real Monitoring Package Overlap**
 
 **Infrastructure facade** (`@claude-zen/infrastructure`):
+
 - Delegates to: `@claude-zen/monitoring` (system monitoring)
 - Focus: System telemetry, performance tracking, infrastructure monitoring
 
 **Operations facade** (`@claude-zen/operations`):
+
 - Delegates to: `@claude-zen/agent-monitoring` (agent health monitoring)
 - **ALSO** delegates to: `@claude-zen/monitoring` (system monitoring)
 - Focus: Agent lifecycle monitoring + system monitoring access
@@ -24,18 +26,22 @@
 All facades potentially use foundation utilities, but each accesses different aspects:
 
 **Infrastructure facade**:
+
 - Configuration management, environment detection
 - Basic utilities for system setup
 
-**Operations facade**: 
+**Operations facade**:
+
 - Logging, error handling for operational tasks
 - Memory management utilities
 
 **Intelligence facade**:
+
 - Type utilities, validation for AI operations
 - Result pattern handling
 
 **Enterprise facade**:
+
 - Business logic utilities, workflow helpers
 - SPARC methodology utilities
 
@@ -44,31 +50,34 @@ All facades potentially use foundation utilities, but each accesses different as
 ### 3. **Functional Overlap Areas**
 
 #### **Teamwork/Collaboration**
+
 - **Intelligence facade**: Exports teamwork functionality via `./teamwork`
 - **Enterprise facade**: Previously had teamwork, now delegates to Intelligence
 - **Status**: ✅ **RESOLVED** - Enterprise correctly delegates teamwork to Intelligence
 
 #### **Memory Management**
+
 - **Operations facade**: Memory orchestration and lifecycle management
 - **Intelligence facade**: Conversation memory for AI interactions
 - **Status**: ✅ **APPROPRIATE** - Different memory concerns for different domains
 
 ### 4. **Package Delegation Summary**
 
-| Facade | Unique Packages | Shared Packages | Total Packages |
-|--------|----------------|-----------------|----------------|
-| **Infrastructure** | event-system, database, load-balancing | monitoring, foundation | 5 |
-| **Operations** | agent-monitoring, chaos-engineering, memory | monitoring, foundation | 5 |
-| **Intelligence** | brain, ai-safety, fact-system, workflows | foundation | 5 |
-| **Enterprise** | safe-framework, sparc, agui, knowledge, kanban | foundation | 6 |
+| Facade             | Unique Packages                                | Shared Packages        | Total Packages |
+| ------------------ | ---------------------------------------------- | ---------------------- | -------------- |
+| **Infrastructure** | event-system, database, load-balancing         | monitoring, foundation | 5              |
+| **Operations**     | agent-monitoring, chaos-engineering, memory    | monitoring, foundation | 5              |
+| **Intelligence**   | brain, ai-safety, fact-system, workflows       | foundation             | 5              |
+| **Enterprise**     | safe-framework, sparc, agui, knowledge, kanban | foundation             | 6              |
 
 ## Facade-to-Facade Delegations
 
 ### ✅ **NO Facade-to-Facade Delegations Found**
 
 I checked all facade source files for imports or requires of other facades:
+
 - **Infrastructure** → No facade imports ✅
-- **Operations** → No facade imports ✅  
+- **Operations** → No facade imports ✅
 - **Intelligence** → No facade imports ✅
 - **Enterprise** → No facade imports ✅
 
@@ -77,6 +86,7 @@ I checked all facade source files for imports or requires of other facades:
 ### ⚠️ **One Documentation Reference**
 
 **Enterprise facade** has comments:
+
 ```typescript
 // Note: teamwork functionality now handled by @claude-zen/intelligence facade
 // Teamwork is handled by @claude-zen/intelligence - use that facade directly
@@ -105,6 +115,7 @@ But there's **no actual import/delegation** - just documentation telling users w
 ## Recommendations
 
 ### 1. **Monitor the @claude-zen/monitoring Overlap**
+
 ```typescript
 // Ensure different contexts/namespaces
 // Infrastructure: system monitoring context
@@ -112,6 +123,7 @@ But there's **no actual import/delegation** - just documentation telling users w
 ```
 
 ### 2. **Document Package Boundaries**
+
 - Infrastructure: System-level monitoring
 - Operations: Agent monitoring + operational system monitoring
 

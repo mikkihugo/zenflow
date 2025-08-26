@@ -5,6 +5,7 @@
 ## 🚀 Quick Start
 
 ### Demo Mode (Instant Start)
+
 ```bash
 # Start with simulated data - no setup required
 npm run monitor:demo
@@ -14,6 +15,7 @@ npx tsx bin/tui-monitor.ts start --demo
 ```
 
 ### Production Mode (Real Systems)
+
 ```bash
 # Auto-discover and monitor real Phase 3 systems
 npm run monitor
@@ -23,6 +25,7 @@ npx tsx bin/tui-monitor.ts start --auto-discover
 ```
 
 ### Standalone OTel Consumer
+
 ```bash
 # Start just the telemetry consumer (useful for debugging)
 npm run monitor:otel
@@ -34,24 +37,28 @@ npx tsx bin/tui-monitor.ts otel-consumer --port 4318
 ## 📊 Features
 
 ### **Live Performance Metrics**
+
 - **Real-time accuracy tracking** - Updates after every task
 - **Confidence level monitoring** - Live confidence scoring
 - **Token efficiency metrics** - Token usage optimization tracking
 - **Task throughput** - Tasks completed per hour/minute
 
 ### **Multi-Tier Ensemble Monitoring**
+
 - **Tier 1 (Swarm Commanders)** - Agent performance and patterns
-- **Tier 2 (Queen Coordinators)** - Cross-swarm coordination efficiency  
+- **Tier 2 (Queen Coordinators)** - Cross-swarm coordination efficiency
 - **Tier 3 (Neural Learning)** - Deep learning model performance
 - **Cross-tier alignment** - How well tiers work together
 
 ### **Learning Intelligence Display**
+
 - **Learning events stream** - Real-time adaptation notifications
 - **Model updates** - When and how models improve
 - **Strategy adaptations** - Ensemble strategy changes
 - **Performance trends** - Historical accuracy progression
 
 ### **Advanced Telemetry Integration**
+
 - **OpenTelemetry consumer** - Ingests from any OTel source
 - **Claude Code telemetry** - Native Claude Code metrics
 - **Phase 3 telemetry** - Ensemble learning specific metrics
@@ -59,20 +66,21 @@ npx tsx bin/tui-monitor.ts otel-consumer --port 4318
 
 ## 🎮 Interactive Controls
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `q` | Quit | Exit the dashboard |
-| `r` | Reset | Reset all metrics and history |
-| `p` | Pause | Pause/resume live updates |
-| `+/-` | Speed | Adjust refresh rate (200ms - 5000ms) |
-| `s` | Save | Save snapshot to logs |
-| `tab` | Navigate | Move between dashboard components |
+| Key   | Action   | Description                          |
+| ----- | -------- | ------------------------------------ |
+| `q`   | Quit     | Exit the dashboard                   |
+| `r`   | Reset    | Reset all metrics and history        |
+| `p`   | Pause    | Pause/resume live updates            |
+| `+/-` | Speed    | Adjust refresh rate (200ms - 5000ms) |
+| `s`   | Save     | Save snapshot to logs                |
+| `tab` | Navigate | Move between dashboard components    |
 
 ## 📡 Telemetry Sources
 
 The dashboard automatically consumes telemetry from multiple sources:
 
 ### **1. Claude Code Native Telemetry**
+
 ```bash
 # Enable Claude Code telemetry
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
@@ -80,13 +88,16 @@ claude --telemetry-enabled
 ```
 
 ### **2. Phase 3 Ensemble Systems**
+
 The dashboard auto-discovers running Phase 3 systems and displays:
+
 - Ensemble prediction accuracy
 - Neural coordination metrics
 - Learning adaptation events
 - Cross-tier performance
 
 ### **3. Manual Telemetry Injection**
+
 ```bash
 # Send custom metrics via HTTP POST
 curl -X POST http://localhost:4318/v1/metrics \
@@ -101,15 +112,19 @@ curl -X POST http://localhost:4318/v1/metrics \
 ```
 
 ### **4. OTel Compatible Systems**
+
 Any system that exports OpenTelemetry metrics can send data:
+
 ```javascript
 // Example: Send OTel metrics
 fetch('http://localhost:4318/v1/metrics', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    resourceMetrics: [/* OTel format metrics */]
-  })
+    resourceMetrics: [
+      /* OTel format metrics */
+    ],
+  }),
 });
 ```
 
@@ -145,6 +160,7 @@ fetch('http://localhost:4318/v1/metrics', {
 ## 🔧 Configuration Options
 
 ### **CLI Options**
+
 ```bash
 # Full option list
 npx tsx bin/tui-monitor.ts start --help
@@ -152,12 +168,13 @@ npx tsx bin/tui-monitor.ts start --help
 Options:
   -r, --refresh-rate <ms>     Refresh rate (default: 1000ms)
   -d, --demo                  Demo mode with simulated data
-  -o, --otel-port <port>      OTel consumer port (default: 4318)  
+  -o, --otel-port <port>      OTel consumer port (default: 4318)
   -a, --auto-discover         Auto-discover systems (default: true)
   -v, --verbose               Verbose logging
 ```
 
 ### **Environment Variables**
+
 ```bash
 # OTel configuration
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
@@ -172,25 +189,29 @@ export TUI_VERBOSE=true              # Verbose logging
 ## 📊 Metrics Tracked
 
 ### **Performance Metrics**
+
 - **Accuracy**: Current ensemble prediction accuracy (0-100%)
-- **Confidence**: Model confidence in predictions (0-100%)  
+- **Confidence**: Model confidence in predictions (0-100%)
 - **Token Efficiency**: Tokens saved vs baseline (percentage)
 - **Task Success Rate**: Percentage of successful task completions
 - **Response Time**: Average time per task completion
 
-### **Learning Metrics**  
+### **Learning Metrics**
+
 - **Learning Events**: Number of adaptation events per day
 - **Model Updates**: How often models improve performance
 - **Strategy Changes**: Ensemble strategy adaptations
 - **Cross-Tier Alignment**: How well different tiers coordinate (0-100%)
 
 ### **Resource Metrics**
+
 - **Active Agents**: Number of agents currently working
-- **Concurrent Tasks**: Tasks running simultaneously  
+- **Concurrent Tasks**: Tasks running simultaneously
 - **Memory Usage**: System memory consumption
 - **CPU Utilization**: Processing resource usage
 
 ### **Quality Metrics**
+
 - **Error Rate**: Percentage of failed predictions/tasks
 - **User Satisfaction**: Feedback scores when available
 - **Prediction Stability**: How consistent predictions are
@@ -199,6 +220,7 @@ export TUI_VERBOSE=true              # Verbose logging
 ## 🚀 Advanced Usage
 
 ### **Health Check**
+
 ```bash
 # Check system connectivity and health
 npx tsx bin/tui-monitor.ts health
@@ -211,6 +233,7 @@ npx tsx bin/tui-monitor.ts health
 ```
 
 ### **Test Telemetry Generation**
+
 ```bash
 # Generate test data for 60 seconds
 npx tsx bin/tui-monitor.ts test-telemetry \
@@ -222,6 +245,7 @@ npx tsx bin/tui-monitor.ts test-telemetry \
 ```
 
 ### **Custom OTel Port**
+
 ```bash
 # Run consumer on different port
 npx tsx bin/tui-monitor.ts start --otel-port 9999
@@ -233,6 +257,7 @@ export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:9999"
 ## 🐛 Troubleshooting
 
 ### **Dashboard Won't Start**
+
 ```bash
 # Check Node.js version (requires 22+)
 node --version
@@ -245,6 +270,7 @@ npx tsx bin/tui-monitor.ts start --verbose
 ```
 
 ### **No Telemetry Data**
+
 ```bash
 # Verify OTel consumer is running
 curl http://localhost:4318/metrics
@@ -257,6 +283,7 @@ npx tsx bin/tui-monitor.ts start --demo
 ```
 
 ### **Performance Issues**
+
 ```bash
 # Reduce refresh rate
 npx tsx bin/tui-monitor.ts start --refresh-rate 2000
@@ -268,6 +295,7 @@ npx tsx bin/tui-monitor.ts health
 ## 🎯 Integration Examples
 
 ### **With Claude Code**
+
 ```bash
 # Terminal 1: Start TUI Dashboard
 npm run monitor
@@ -280,6 +308,7 @@ claude --telemetry-enabled
 ```
 
 ### **With Phase 3 Systems**
+
 ```typescript
 // Your Phase 3 code automatically sends telemetry
 const ensemble = new Phase3EnsembleLearning(config, eventBus, memory);
@@ -287,24 +316,26 @@ const ensemble = new Phase3EnsembleLearning(config, eventBus, memory);
 ```
 
 ### **With External Systems**
+
 ```javascript
 // Send custom metrics from any system
 const metrics = {
   accuracy: getCurrentAccuracy(),
   confidence: getConfidenceScore(),
-  tasksCompleted: getTotalTasks()
+  tasksCompleted: getTotalTasks(),
 };
 
 fetch('http://localhost:4318/v1/metrics', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(metrics)
+  body: JSON.stringify(metrics),
 });
 ```
 
 ## 📈 Performance Benefits
 
 **Real-time visibility enables:**
+
 - **84% → 90%+ accuracy** through immediate feedback loops
 - **32% token efficiency** by tracking waste in real-time
 - **2.8x faster debugging** with live error tracking
@@ -313,12 +344,14 @@ fetch('http://localhost:4318/v1/metrics', {
 ## 🎪 What You'll See
 
 **In Demo Mode:**
+
 - Simulated accuracy trending upward (84-89%)
-- Mock learning events every few seconds  
+- Mock learning events every few seconds
 - Realistic task completions and timing
 - Dynamic agent activity simulation
 
 **In Production Mode:**
+
 - Real Phase 3 ensemble accuracy metrics
 - Actual learning adaptations as they happen
 - True task completion times and success rates

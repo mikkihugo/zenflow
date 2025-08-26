@@ -75,8 +75,10 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     strategyUpdateInterval: 1000,
     contextSimilarityThreshold: 0.8,
     reinforcementDiscountFactor: 0.9,
-    strategySelectionMethod:
-      'epsilon_greedy' as 'epsilon_greedy|ucb|thompson_sampling',
+    strategySelectionMethod: 'epsilon_greedy' as
+      | 'epsilon_greedy'
+      | 'ucb'
+      | 'thompson_sampling',
   };
 
   constructor() {
@@ -149,7 +151,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const strategies = Array.from(this.strategies.values())();
+    const strategies = Array.from(this.strategies.values());
     const totalDecisions = this.decisionHistory.length;
 
     const avgSuccessRate =
@@ -383,7 +385,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy | '|Array.from(this.strategies.keys())[0];';
+    return bestStrategy || Array.from(this.strategies.keys())[0];
   }
 
   /**
@@ -416,7 +418,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy | '|Array.from(this.strategies.keys())[0];';
+    return bestStrategy || Array.from(this.strategies.keys())[0];
   }
 
   /**
@@ -440,7 +442,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy | '|Array.from(this.strategies.keys())[0];';
+    return bestStrategy || Array.from(this.strategies.keys())[0];
   }
 
   /**
@@ -979,7 +981,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   private calculateLearningProgress(): number {
     // Calculate how much the algorithm has learned
-    const strategies = Array.from(this.strategies.values())();
+    const strategies = Array.from(this.strategies.values());
     const avgConfidence =
       strategies.reduce((sum, s) => sum + s.confidence, 0) / strategies.length;
     const patternsLearned = this.patterns.size / 100; // Normalize by expected patterns

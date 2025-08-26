@@ -17,8 +17,8 @@ import type { Logger } from '@claude-zen/foundation';
 // Import logger (using relative path)
 import { getLogger } from '@claude-zen/foundation';
 // Import types (will be set as any for now to fix type resolution issues)
-// import type { ApplicationCoordinator } from '../core/application-coordinator';
-// import type { CoreSystem } from '../core/core-system';
+// import type { ApplicationCoordinator } from '../core/application-coordinator;
+// import type { CoreSystem } from '../core/core-system;
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -33,14 +33,14 @@ import type {
   EventTransform,
   EventManager,
   SystemEvent,
-} from '../core/interfaces';
+} from '../core/interfaces;
 import {
   EventEmissionError,
   EventManagerTypes,
   EventTimeoutError,
-} from '../core/interfaces';
-import type { SystemLifecycleEvent } from '../types';
-import { EventPriorityMap } from '../types';
+} from '../core/interfaces;
+import type { SystemLifecycleEvent } from '../types;
+import { EventPriorityMap } from '../types;
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig.
@@ -742,7 +742,7 @@ export class SystemEventAdapter implements EventManager {
     // Determine overall health status
     let status: EventManagerStatus['status'] = 'healthy';
     if (errorRate > 20||!this.running) {
-      status ='unhealthy;
+      status ='unhealthy';
     } else if (
       errorRate > 10||Object.values(componentHealth).some((h) => h.status !=='healthy')'
     ) {
@@ -1733,7 +1733,7 @@ export class SystemEventAdapter implements EventManager {
     const dataObj = data as any;
     if (dataObj?.error||dataObj?.status ==='error') return 'error;
     if (dataObj?.warning||dataObj?.status ==='warning') return 'warning;
-    if (dataObj?.status === 'critical') return 'critical';
+    if (dataObj?.status === 'critical') return 'critical;
     return 'success;
   }
 

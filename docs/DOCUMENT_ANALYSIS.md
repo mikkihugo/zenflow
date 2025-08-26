@@ -19,7 +19,7 @@ The Document Analysis System provides enhanced document scanning with **human-in
        ↓
 🔍 Enhanced Document Scanner
    • Pattern detection (TODO, FIXME, etc.)
-   • Code quality analysis  
+   • Code quality analysis
    • Missing implementation detection
        ↓
 🤖 Task Generation Engine
@@ -46,6 +46,7 @@ The Document Analysis System provides enhanced document scanning with **human-in
 ## 📦 Components
 
 ### EnhancedDocumentScanner
+
 - **File**: `src/core/enhanced-document-scanner.ts`
 - **Purpose**: Scans markdown and code files for issues and improvement opportunities
 - **Capabilities**:
@@ -54,7 +55,8 @@ The Document Analysis System provides enhanced document scanning with **human-in
   - Markdown documentation gap detection
   - Configurable analysis patterns and file filtering
 
-### TaskApprovalSystem  
+### TaskApprovalSystem
+
 - **File**: `src/core/task-approval-system.ts`
 - **Purpose**: Human-in-the-loop approval workflow using existing AGUI
 - **Capabilities**:
@@ -65,6 +67,7 @@ The Document Analysis System provides enhanced document scanning with **human-in
   - Integration with WorkflowAGUIAdapter
 
 ### DocumentAnalysisWorkflow
+
 - **File**: `src/core/document-analysis-workflow.ts`
 - **Purpose**: Orchestrates the complete workflow from scanning to swarm execution
 - **Capabilities**:
@@ -77,6 +80,7 @@ The Document Analysis System provides enhanced document scanning with **human-in
 ## 🚀 Quick Start
 
 ### 1. Interactive Workflow
+
 ```bash
 # Run full interactive workflow with human approval
 npm run scan:interactive
@@ -86,6 +90,7 @@ npm run example:doc-analysis
 ```
 
 ### 2. Quick Demo (Auto-Approve)
+
 ```bash
 # Quick demo with auto-approval for testing
 npm run scan:docs
@@ -95,23 +100,24 @@ npx tsx src/examples/document-analysis-example.ts --path ./src/core
 ```
 
 ### 3. Programmatic Usage
+
 ```typescript
 import { createCompleteWorkflow } from './src/core/document-analysis-workflow';
 import { createAGUI } from './src/interfaces/agui/agui-adapter';
 
 async function scanProject() {
   const agui = createAGUI('terminal');
-  
+
   const workflow = await createCompleteWorkflow('./src', agui, {
     scanner: {
       enabledPatterns: ['todo', 'fixme', 'missing_implementation'],
-      deepAnalysis: true
+      deepAnalysis: true,
     },
     approval: {
       enableRichDisplay: true,
-      requireRationale: true
+      requireRationale: true,
     },
-    enableSwarmIntegration: true
+    enableSwarmIntegration: true,
   });
 
   const results = await workflow.executeWorkflow();
@@ -124,19 +130,22 @@ async function scanProject() {
 The scanner detects various patterns in your code and documentation:
 
 ### Code Patterns
+
 - **`TODO`** - Items marked for implementation
-- **`FIXME`** - Known issues that need fixing  
+- **`FIXME`** - Known issues that need fixing
 - **`HACK`** - Temporary solutions needing refactoring
 - **`DEPRECATED`** - Outdated code needing updates
 - **Empty Functions** - Functions without implementation
 - **Missing Error Handling** - Async functions without try-catch
 
 ### Documentation Patterns
+
 - **Empty Sections** - Markdown headers without content
 - **Broken Links** - Internal links to missing files
 - **Missing Documentation** - Functions without JSDoc
 
 ### Code Quality Issues
+
 - **Performance Issues** - Potential performance bottlenecks
 - **Security Concerns** - Security-related code issues
 - **Refactoring Opportunities** - Code that needs restructuring
@@ -144,6 +153,7 @@ The scanner detects various patterns in your code and documentation:
 ## 🔧 Configuration
 
 ### Scanner Configuration
+
 ```typescript
 const scannerConfig = {
   rootPath: './src',
@@ -151,19 +161,20 @@ const scannerConfig = {
   excludePatterns: ['**/node_modules/**', '**/*.test.*'],
   enabledPatterns: ['todo', 'fixme', 'missing_implementation'],
   maxDepth: 10,
-  deepAnalysis: true
+  deepAnalysis: true,
 };
 ```
 
 ### Approval Configuration
+
 ```typescript
 const approvalConfig = {
-  enableRichDisplay: true,      // Show detailed task information
-  enableBatchMode: true,        // Allow batch processing
-  batchSize: 5,                 // Tasks per batch
+  enableRichDisplay: true, // Show detailed task information
+  enableBatchMode: true, // Allow batch processing
+  batchSize: 5, // Tasks per batch
   autoApproveLowSeverity: false, // Require manual approval for all
-  requireRationale: true,       // Require reason for rejections
-  enableModification: true      // Allow task editing
+  requireRationale: true, // Require reason for rejections
+  enableModification: true, // Allow task editing
 };
 ```
 
@@ -172,11 +183,13 @@ const approvalConfig = {
 The system integrates seamlessly with the existing document entity system:
 
 ### Document Entities Created
+
 - **TaskDocumentEntity** - For implementation tasks
 - **FeatureDocumentEntity** - For larger features
 - **EpicDocumentEntity** - For major initiatives
 
 ### Entity Fields Populated
+
 - Source analysis information
 - File paths and line numbers
 - Estimated effort and priority
@@ -188,13 +201,15 @@ The system integrates seamlessly with the existing document entity system:
 Approved tasks are automatically configured for swarm execution:
 
 ### Swarm Configuration
+
 - **Agent Types**: Based on task type (coder, reviewer, tester, etc.)
 - **Swarm Topology**: Determined by task complexity
 - **Execution Strategy**: Single-agent, collaborative, or research-based
 
 ### Task Metadata
+
 - **Duration Estimates** - Based on analysis complexity
-- **Dependencies** - Extracted from code relationships  
+- **Dependencies** - Extracted from code relationships
 - **Acceptance Criteria** - Generated from analysis context
 
 ## 🎮 AGUI Integration
@@ -202,6 +217,7 @@ Approved tasks are automatically configured for swarm execution:
 The system leverages the existing AGUI infrastructure:
 
 ### Features Used
+
 - **Rich Prompts** - Contextual task display
 - **Validation Questions** - Structured approval workflow
 - **Batch Processing** - Efficient multi-task review
@@ -209,6 +225,7 @@ The system leverages the existing AGUI infrastructure:
 - **Timeout Handling** - Automatic escalation support
 
 ### User Experience
+
 - Clear task summaries with code context
 - Options for approve/reject/modify/defer
 - Bulk operations for similar tasks
@@ -219,12 +236,14 @@ The system leverages the existing AGUI infrastructure:
 The system provides comprehensive analytics:
 
 ### Approval Statistics
+
 - Approval rates by task type
 - Average processing times
 - Common rejection reasons
 - Modification patterns
 
 ### Scan Results
+
 - Issues found by severity
 - Pattern distribution
 - File coverage metrics
@@ -260,26 +279,29 @@ The system provides comprehensive analytics:
 ## 🛠️ Extending the System
 
 ### Adding New Analysis Patterns
+
 ```typescript
 // Add custom pattern to enhanced-document-scanner.ts
 patterns.set('custom_pattern', [
   /\/\/\s*CUSTOM[:\s](.*?)(?:\n|$)/gi,
-  /\/\*\s*CUSTOM[:\s](.*?)(?:\*\/|$)/gi
+  /\/\*\s*CUSTOM[:\s](.*?)(?:\*\/|$)/gi,
 ]);
 ```
 
 ### Custom Task Generation
+
 ```typescript
 // Override task generation in createSwarmTask method
 const customTemplate = {
   title: `Custom task for ${pattern}`,
   type: 'custom' as const,
   swarmType: 'specialized' as const,
-  agents: ['custom_agent', 'reviewer']
+  agents: ['custom_agent', 'reviewer'],
 };
 ```
 
 ### AGUI Extensions
+
 ```typescript
 // Add custom validation questions
 const customQuestion: ValidationQuestion = {
@@ -287,7 +309,7 @@ const customQuestion: ValidationQuestion = {
   type: 'custom',
   question: 'Custom review question',
   options: ['Option 1', 'Option 2'],
-  confidence: 0.9
+  confidence: 0.9,
 };
 ```
 

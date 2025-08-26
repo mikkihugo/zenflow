@@ -7,24 +7,28 @@ The Database REST API has been upgraded with **complete dependency injection int
 ## 🎯 Enhanced Features
 
 ### ✅ Full DI System Integration
+
 - **Dependency Injection Container**: Complete DI container setup for database operations
 - **Service Registration**: Proper registration of database controllers, adapters, and providers
 - **Lifecycle Management**: Singleton and transient service lifecycle management
 - **Health Monitoring**: Container health checks and service validation
 
 ### ✅ Authentication & Authorization
+
 - **Route Protection**: Authentication required for data access operations
 - **Permission System**: Fine-grained permissions (read, write, admin)
 - **Optional Auth**: Flexible authentication for monitoring endpoints
 - **User Context**: Full user context available in all operations
 
 ### ✅ Intelligent Rate Limiting
+
 - **Operation-Based Limits**: Different limits for different operation types
 - **User-Aware Limiting**: Higher limits for authenticated users and admins
 - **Adaptive Thresholds**: Light, medium, heavy, and admin operation categories
 - **Rate Limit Headers**: Standard rate limiting headers in responses
 
 ### ✅ Real Database Adapter Ready
+
 - **Mock Implementation**: Complete mock adapter for development/testing
 - **Adapter Interface**: Ready for real database adapter integration
 - **Multi-Database Support**: Designed for PostgreSQL, MySQL, SQLite, LanceDB, Kuzu
@@ -34,14 +38,15 @@ The Database REST API has been upgraded with **complete dependency injection int
 
 ### Operation Categories
 
-| Category | Window | Limit | Operations |
-|----------|--------|-------|------------|
-| **Light** | 1 min | 100 req | `/status`, `/schema`, `/analytics` |
-| **Medium** | 1 min | 50 req | `/query`, `/execute` |
-| **Heavy** | 1 min | 10 req | `/transaction`, `/batch` |
-| **Admin** | 5 min | 5 req | `/migrate` (non-dry-run) |
+| Category   | Window | Limit   | Operations                         |
+| ---------- | ------ | ------- | ---------------------------------- |
+| **Light**  | 1 min  | 100 req | `/status`, `/schema`, `/analytics` |
+| **Medium** | 1 min  | 50 req  | `/query`, `/execute`               |
+| **Heavy**  | 1 min  | 10 req  | `/transaction`, `/batch`           |
+| **Admin**  | 5 min  | 5 req   | `/migrate` (non-dry-run)           |
 
 ### User-Based Multipliers
+
 - **Anonymous Users**: 1x (base rate)
 - **Authenticated Users**: 2x rate limit
 - **Admin Users**: 5x rate limit
@@ -49,11 +54,13 @@ The Database REST API has been upgraded with **complete dependency injection int
 ## 🔐 Authentication & Permissions
 
 ### Permission Levels
+
 - **`database:read`**: Required for queries, schema, analytics, status
 - **`database:write`**: Required for commands, transactions, batch operations
 - **`database:admin`**: Required for migrations, schema modifications
 
 ### Route Protection
+
 ```
 ✅ GET  /api/v1/database/health    - No auth (monitoring)
 ✅ GET  /api/v1/database/status    - Optional auth + read permission
@@ -68,6 +75,7 @@ The Database REST API has been upgraded with **complete dependency injection int
 ## 🏗️ Architecture
 
 ### Dependency Injection Structure
+
 ```
 DatabaseContainer
 ├── Logger (ConsoleLogger)
@@ -78,6 +86,7 @@ DatabaseContainer
 ```
 
 ### Middleware Stack
+
 ```
 Request → Rate Limiting → Auth → Permission Check → Controller → Response
          ↓             ↓        ↓                ↓           ↓
@@ -88,6 +97,7 @@ Request → Rate Limiting → Auth → Permission Check → Controller → Respo
 ## 🚀 API Usage Examples
 
 ### 1. Database Status (Light Rate Limiting)
+
 ```bash
 # No authentication required
 curl -X GET http://localhost:3000/api/v1/database/status
@@ -100,6 +110,7 @@ X-Database-RateLimit-Reset: 2024-01-01T12:01:00.000Z
 ```
 
 ### 2. Execute Query (Medium Rate Limiting + Auth)
+
 ```bash
 # Authentication required
 curl -X POST http://localhost:3000/api/v1/database/query \
@@ -116,6 +127,7 @@ curl -X POST http://localhost:3000/api/v1/database/query \
 ```
 
 ### 3. Execute Transaction (Heavy Rate Limiting + Auth)
+
 ```bash
 # Authentication + write permission required
 curl -X POST http://localhost:3000/api/v1/database/transaction \
@@ -140,6 +152,7 @@ curl -X POST http://localhost:3000/api/v1/database/transaction \
 ```
 
 ### 4. Execute Migration (Admin Rate Limiting + Admin Permission)
+
 ```bash
 # Admin authentication required
 curl -X POST http://localhost:3000/api/v1/database/migrate \
@@ -159,6 +172,7 @@ curl -X POST http://localhost:3000/api/v1/database/migrate \
 ## 📈 Monitoring & Analytics
 
 ### Health Check Response
+
 ```json
 {
   "status": "healthy",
@@ -190,6 +204,7 @@ curl -X POST http://localhost:3000/api/v1/database/migrate \
 ```
 
 ### Analytics Response
+
 ```json
 {
   "success": true,
@@ -220,29 +235,32 @@ curl -X POST http://localhost:3000/api/v1/database/migrate \
 ## 🔧 Configuration
 
 ### Rate Limiting Configuration
+
 ```typescript
 // Customize rate limits per environment
 const DATABASE_RATE_LIMITS = {
-  light: { windowMs: 60000, max: 100 },    // Status, schema, analytics
-  medium: { windowMs: 60000, max: 50 },    // Query, execute
-  heavy: { windowMs: 60000, max: 10 },     // Transaction, batch
-  admin: { windowMs: 300000, max: 5 }      // Migration
+  light: { windowMs: 60000, max: 100 }, // Status, schema, analytics
+  medium: { windowMs: 60000, max: 50 }, // Query, execute
+  heavy: { windowMs: 60000, max: 10 }, // Transaction, batch
+  admin: { windowMs: 300000, max: 5 }, // Migration
 };
 ```
 
 ### Authentication Configuration
+
 ```typescript
 // Configure permissions per user role
 const ROLE_PERMISSIONS = {
-  'public': ['database:read'],
-  'user': ['database:read', 'database:write'],
-  'admin': ['database:read', 'database:write', 'database:admin']
+  public: ['database:read'],
+  user: ['database:read', 'database:write'],
+  admin: ['database:read', 'database:write', 'database:admin'],
 };
 ```
 
 ## 🧪 Testing
 
 ### Test Script Usage
+
 ```bash
 # Run comprehensive API tests
 node /tmp/test-enhanced-database-api.js
@@ -257,6 +275,7 @@ node /tmp/test-enhanced-database-api.js
 ```
 
 ### Rate Limiting Test
+
 ```bash
 # Test rate limiting with rapid requests
 for i in {1..10}; do
@@ -269,6 +288,7 @@ done
 ## 🚀 Production Readiness
 
 ### Security Features
+
 - ✅ **SQL Injection Prevention**: Parameterized queries enforced
 - ✅ **Authentication Required**: All data operations protected
 - ✅ **Permission Validation**: Fine-grained access control
@@ -276,6 +296,7 @@ done
 - ✅ **Input Validation**: Comprehensive request validation
 
 ### Performance Features
+
 - ✅ **Connection Pooling**: Efficient database connections
 - ✅ **Response Time Tracking**: Sub-millisecond monitoring
 - ✅ **Caching Ready**: Built for caching layer integration
@@ -283,6 +304,7 @@ done
 - ✅ **Resource Limiting**: Memory and connection limits
 
 ### Operational Features
+
 - ✅ **Health Monitoring**: Container and database health checks
 - ✅ **Performance Metrics**: Comprehensive operation analytics
 - ✅ **Error Handling**: Standardized error responses
@@ -292,18 +314,21 @@ done
 ## 🔮 Next Steps
 
 ### Real Database Integration
+
 1. **PostgreSQL Adapter**: Replace mock with real PostgreSQL adapter
 2. **Connection Pool**: Configure production connection pooling
 3. **Migration System**: Set up proper database migration management
 4. **Backup Integration**: Add backup and recovery procedures
 
 ### Advanced Features
+
 1. **Query Caching**: Add Redis-based query result caching
 2. **Read Replicas**: Support for read-only database replicas
 3. **Monitoring**: Integrate with Prometheus/Grafana
 4. **Audit Logging**: Complete audit trail for all operations
 
 ### Security Enhancements
+
 1. **JWT Validation**: Real JWT token validation
 2. **RBAC**: Complete role-based access control
 3. **API Keys**: Support for API key authentication

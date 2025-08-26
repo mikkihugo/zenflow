@@ -27,8 +27,8 @@ import type {
   EventManager as CoreEventManager,
   EventManagerFactory,
   SystemEvent,
-} from './core/interfaces';
-import { EventManagerPresets, EventManagerTypes } from './core/interfaces';
+} from './core/interfaces;
+import { EventManagerPresets, EventManagerTypes } from './core/interfaces;
 import type {
   CommunicationEventManager,
   CoordinationEventManager,
@@ -38,10 +38,10 @@ import type {
   NeuralEventManager,
   SystemEventManager,
   WorkflowEventManager,
-} from './event-manager-types';
-import type { MonitoringEventManager } from './event-manager-types';
-import { EventRegistry } from './registry';
-import { DefaultEventManagerConfigs, EventCategories } from './types';
+} from './event-manager-types;
+import type { MonitoringEventManager } from './event-manager-types;
+import { EventRegistry } from './registry;
+import { DefaultEventManagerConfigs, EventCategories } from './types;
 
 /**
  * Configuration options for creating new event managers.
@@ -832,7 +832,7 @@ export class EventManager implements CoreEventManager {
     totalManagers: number;
     healthyManagers: number;
     healthPercentage: number;
-    status:'healthy' | 'warning' | 'critical';
+    status:'healthy' | 'warning' | 'critical;
     registry: ReturnType<EventRegistry['getRegistryStats']>;'
     statistics: ManagerStatistics;
     uptime: number;

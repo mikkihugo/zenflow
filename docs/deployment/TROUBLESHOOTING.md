@@ -80,6 +80,7 @@ ss -tlnp | grep -E "3000|3456"
 ### Issue: Service Fails to Start
 
 **Symptoms:**
+
 - Service exits immediately after start
 - "Connection refused" errors
 - Process not visible in process list
@@ -87,6 +88,7 @@ ss -tlnp | grep -E "3000|3456"
 **Common Causes & Solutions:**
 
 #### 1. Port Already in Use
+
 ```bash
 # Check what's using the port
 sudo lsof -i :3000
@@ -100,6 +102,7 @@ CLAUDE_MCP_PORT=3001
 ```
 
 #### 2. Missing Environment Variables
+
 ```bash
 # Check required environment variables
 env | grep CLAUDE_
@@ -114,6 +117,7 @@ export ANTHROPIC_API_KEY="your-key-here"
 ```
 
 #### 3. File Permissions
+
 ```bash
 # Check file ownership
 ls -la /opt/claude-zen/
@@ -128,6 +132,7 @@ sudo chmod 755 /var/log/claude-zen/
 ```
 
 #### 4. Node.js Version Incompatibility
+
 ```bash
 # Check Node.js version
 node --version
@@ -143,6 +148,7 @@ sudo apt-get install -y nodejs
 ```
 
 #### 5. Missing Dependencies
+
 ```bash
 # Reinstall dependencies
 cd /opt/claude-zen
@@ -157,6 +163,7 @@ npm install
 ### Issue: Service Starts but Immediately Crashes
 
 **Check Application Logs:**
+
 ```bash
 # Recent crash logs
 journalctl -u claude-zen --since "5 minutes ago"
@@ -167,6 +174,7 @@ dmesg | grep -i "killed\|memory\|oom"
 ```
 
 **Common Fixes:**
+
 ```bash
 # Increase memory limit
 NODE_OPTIONS="--max-old-space-size=8192"
@@ -183,12 +191,14 @@ NODE_ENV=production
 ### Issue: Cannot Connect to PostgreSQL
 
 **Symptoms:**
+
 ```
 Error: Connection refused to database
 ECONNREFUSED 127.0.0.1:5432
 ```
 
 **Diagnostics:**
+
 ```bash
 # Check PostgreSQL status
 sudo systemctl status postgresql
@@ -204,6 +214,7 @@ sudo tail -f /var/log/postgresql/postgresql-*.log
 **Solutions:**
 
 #### 1. PostgreSQL Not Running
+
 ```bash
 # Start PostgreSQL
 sudo systemctl start postgresql
@@ -214,6 +225,7 @@ sudo netstat -tlnp | grep 5432
 ```
 
 #### 2. Authentication Issues
+
 ```bash
 # Check pg_hba.conf
 sudo nano /etc/postgresql/14/main/pg_hba.conf
@@ -227,6 +239,7 @@ sudo systemctl reload postgresql
 ```
 
 #### 3. Database/User Doesn't Exist
+
 ```sql
 -- Connect as postgres user
 sudo -u postgres psql
@@ -244,6 +257,7 @@ GRANT ALL PRIVILEGES ON DATABASE claude_zen_production TO claude_user;
 ```
 
 #### 4. Connection String Issues
+
 ```bash
 # Check DATABASE_URL format
 echo $DATABASE_URL
@@ -256,6 +270,7 @@ DATABASE_URL="postgresql://claude_user:password@localhost:5432/claude_zen_produc
 ### Issue: Redis Connection Problems
 
 **Diagnostics:**
+
 ```bash
 # Check Redis status
 sudo systemctl status redis
@@ -269,6 +284,7 @@ redis-cli -a your-redis-password ping
 ```
 
 **Solutions:**
+
 ```bash
 # Start Redis
 sudo systemctl start redis
@@ -287,6 +303,7 @@ sudo systemctl restart redis
 ### Issue: Database Migration Failures
 
 **Check Migration Status:**
+
 ```bash
 # Check migration table
 psql -h localhost -U claude_user -d claude_zen_production -c "SELECT * FROM migrations;"
@@ -299,6 +316,7 @@ npm run migrate:reset
 ```
 
 **Common Migration Issues:**
+
 ```sql
 -- Check for locks
 SELECT * FROM pg_stat_activity WHERE state = 'active';
@@ -315,6 +333,7 @@ SELECT pg_size_pretty(pg_database_size('claude_zen_production'));
 ### Issue: Anthropic API Connection Failures
 
 **Symptoms:**
+
 ```
 Error: Request failed with status 401
 Error: Request failed with status 429
@@ -322,6 +341,7 @@ Error: Network timeout
 ```
 
 **Diagnostics:**
+
 ```bash
 # Test API key
 curl -H "Authorization: Bearer $ANTHROPIC_API_KEY" \
@@ -339,6 +359,7 @@ ANTHROPIC_MODEL=claude-3-haiku-20240307
 **Solutions:**
 
 #### 1. Invalid API Key
+
 ```bash
 # Verify API key is correct
 # Get new key from: https://console.anthropic.com/
@@ -349,6 +370,7 @@ export ANTHROPIC_API_KEY="sk-ant-api03-..."
 ```
 
 #### 2. Rate Limiting (429 errors)
+
 ```bash
 # Reduce request frequency
 ANTHROPIC_TIMEOUT=120000
@@ -360,6 +382,7 @@ AI_FAILOVER_ENABLED=true
 ```
 
 #### 3. Network/Firewall Issues
+
 ```bash
 # Test connectivity
 curl -I https://api.anthropic.com
@@ -375,6 +398,7 @@ sudo ufw allow out 443/tcp
 ### Issue: OpenAI API Failover Not Working
 
 **Check Failover Configuration:**
+
 ```bash
 # Ensure both keys are set
 echo $ANTHROPIC_API_KEY
@@ -392,12 +416,14 @@ curl -H "Authorization: Bearer $OPENAI_API_KEY" \
 ### Issue: GitHub Integration Problems
 
 **Symptoms:**
+
 ```
 Error: Bad credentials
 Error: API rate limit exceeded
 ```
 
 **Solutions:**
+
 ```bash
 # Check GitHub token
 curl -H "Authorization: token $GITHUB_TOKEN" \
@@ -418,6 +444,7 @@ curl -H "Authorization: token $GITHUB_TOKEN" \
 ### Issue: High Memory Usage
 
 **Diagnostics:**
+
 ```bash
 # Check memory usage
 free -h
@@ -434,6 +461,7 @@ ENABLE_PROFILING=true
 **Solutions:**
 
 #### 1. Increase Node.js Memory Limit
+
 ```bash
 # Increase heap size
 NODE_OPTIONS="--max-old-space-size=8192"
@@ -443,6 +471,7 @@ NODE_OPTIONS="--max-old-space-size=16384"
 ```
 
 #### 2. Optimize Cache Settings
+
 ```bash
 # Reduce memory cache size
 MEMORY_CACHE_SIZE_MB=256
@@ -453,6 +482,7 @@ MEMORY_CACHE_TTL=1800000  # 30 minutes
 ```
 
 #### 3. Optimize Database Connections
+
 ```bash
 # Reduce connection pool size
 DATABASE_POOL_MAX=10
@@ -465,6 +495,7 @@ REDIS_POOL_SIZE=5
 ### Issue: High CPU Usage
 
 **Diagnostics:**
+
 ```bash
 # Monitor CPU usage
 htop
@@ -475,6 +506,7 @@ strace -p <PID>
 ```
 
 **Solutions:**
+
 ```bash
 # Reduce worker threads
 WORKER_THREADS=2
@@ -490,6 +522,7 @@ DEFAULT_SWARM_SIZE=4
 ### Issue: Slow Response Times
 
 **Check Performance Bottlenecks:**
+
 ```bash
 # Enable performance logging
 CLAUDE_LOG_PERFORMANCE=true
@@ -503,6 +536,7 @@ redis-cli --latency -h localhost -p 6379
 ```
 
 **Optimization:**
+
 ```bash
 # Enable SIMD optimizations
 ENABLE_SIMD=true
@@ -520,11 +554,13 @@ psql -c "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_created_at ON doc
 ### Issue: Cannot Access Web Dashboard
 
 **Symptoms:**
+
 - Connection refused on port 3456
 - Timeout errors
 - 502/503 errors from reverse proxy
 
 **Diagnostics:**
+
 ```bash
 # Check if service is listening
 sudo netstat -tlnp | grep 3456
@@ -541,6 +577,7 @@ sudo iptables -L INPUT | grep 3456
 **Solutions:**
 
 #### 1. Service Not Binding Correctly
+
 ```bash
 # Check binding configuration
 CLAUDE_WEB_HOST=0.0.0.0  # Not localhost
@@ -551,6 +588,7 @@ sudo systemctl restart claude-zen
 ```
 
 #### 2. Firewall Blocking Connections
+
 ```bash
 # Open required ports
 sudo ufw allow 3000/tcp  # MCP Server
@@ -563,6 +601,7 @@ sudo iptables-save
 ```
 
 #### 3. Reverse Proxy Misconfiguration
+
 ```nginx
 # Check nginx configuration
 sudo nginx -t
@@ -571,7 +610,7 @@ sudo nginx -t
 server {
     listen 80;
     server_name your-domain.com;
-    
+
     location / {
         proxy_pass http://localhost:3456;
         proxy_set_header Host $host;
@@ -588,11 +627,13 @@ sudo systemctl restart nginx
 ### Issue: CORS Errors
 
 **Symptoms:**
+
 ```
 Access to fetch at 'http://localhost:3000' blocked by CORS policy
 ```
 
 **Solutions:**
+
 ```bash
 # Update CORS configuration
 CORS_ORIGIN=https://your-domain.com
@@ -609,6 +650,7 @@ CORS_CREDENTIALS=true
 ### Issue: WebSocket Connection Problems
 
 **Check WebSocket Status:**
+
 ```bash
 # Test WebSocket connection
 wscat -c ws://localhost:4001
@@ -627,6 +669,7 @@ CLAUDE_WS_MAX_CONNECTIONS=1000
 ### Issue: Container Won't Start
 
 **Check Docker Status:**
+
 ```bash
 # Check container status
 docker ps -a
@@ -642,6 +685,7 @@ docker inspect claude-zen-app
 **Common Issues:**
 
 #### 1. Environment Variables Not Set
+
 ```bash
 # Check environment in container
 docker exec claude-zen-app env | grep CLAUDE_
@@ -653,6 +697,7 @@ docker run -v $(pwd)/.env:/app/.env claude-zen:latest
 ```
 
 #### 2. Volume Mount Issues
+
 ```bash
 # Check volume mounts
 docker inspect claude-zen-app | grep -A 20 "Mounts"
@@ -665,6 +710,7 @@ mkdir -p data logs cache workspace
 ```
 
 #### 3. Network Connectivity
+
 ```bash
 # Check Docker network
 docker network ls
@@ -678,6 +724,7 @@ docker exec claude-zen-app ping redis
 ### Issue: Database Connection from Container
 
 **Check Database Service:**
+
 ```bash
 # Check if postgres container is running
 docker ps | grep postgres
@@ -690,6 +737,7 @@ docker exec claude-zen-app env | grep DATABASE_URL
 ```
 
 **Fix Connection Issues:**
+
 ```bash
 # Use service name in connection string
 DATABASE_URL=postgresql://user:pass@postgres:5432/claude_zen
@@ -701,6 +749,7 @@ DATABASE_URL=postgresql://user:pass@postgres:5432/claude_zen
 ### Issue: Docker Compose Service Dependencies
 
 **Check Service Status:**
+
 ```bash
 # Check all services
 docker-compose -f docker-compose.production.yml ps
@@ -714,6 +763,7 @@ docker-compose -f docker-compose.production.yml restart claude-zen
 ```
 
 **Fix Startup Order:**
+
 ```yaml
 # In docker-compose.yml
 services:
@@ -730,6 +780,7 @@ services:
 ### Issue: Pods Not Starting
 
 **Diagnostics:**
+
 ```bash
 # Check pod status
 kubectl get pods -n claude-zen
@@ -745,6 +796,7 @@ kubectl logs -f deployment/claude-zen -n claude-zen
 **Common Issues:**
 
 #### 1. Image Pull Errors
+
 ```bash
 # Check image availability
 kubectl describe pod <pod-name> -n claude-zen | grep -A 10 "Events"
@@ -754,6 +806,7 @@ imagePullPolicy: Always  # or IfNotPresent
 ```
 
 #### 2. Resource Limits
+
 ```bash
 # Check resource usage
 kubectl top pods -n claude-zen
@@ -769,6 +822,7 @@ resources:
 ```
 
 #### 3. ConfigMap/Secret Issues
+
 ```bash
 # Check ConfigMap
 kubectl get configmap claude-zen-config -n claude-zen -o yaml
@@ -785,6 +839,7 @@ kubectl create secret generic claude-zen-secrets \
 ### Issue: Service Not Accessible
 
 **Check Service Configuration:**
+
 ```bash
 # Check service
 kubectl get svc -n claude-zen
@@ -801,6 +856,7 @@ kubectl run test-pod --image=busybox --rm -it --restart=Never \
 ### Issue: Ingress Not Working
 
 **Check Ingress:**
+
 ```bash
 # Check ingress status
 kubectl get ingress -n claude-zen
@@ -818,6 +874,7 @@ openssl s_client -connect your-domain.com:443 -servername your-domain.com
 ### Issue: Certificate Expired or Invalid
 
 **Check Certificate:**
+
 ```bash
 # Check certificate expiration
 openssl x509 -in /path/to/cert.pem -noout -dates
@@ -832,6 +889,7 @@ openssl s_client -connect your-domain.com:443
 **Solutions:**
 
 #### 1. Renew Let's Encrypt Certificate
+
 ```bash
 # With Certbot
 sudo certbot renew
@@ -844,6 +902,7 @@ sudo certbot renew --dry-run
 ```
 
 #### 2. Update Certificate in Application
+
 ```bash
 # Update paths in nginx config
 ssl_certificate /path/to/new-cert.pem;
@@ -854,6 +913,7 @@ sudo systemctl restart nginx
 ```
 
 #### 3. Docker/Kubernetes Certificate Update
+
 ```bash
 # Update Docker volume mount
 -v /path/to/certs:/certs:ro
@@ -868,6 +928,7 @@ kubectl create secret tls claude-zen-tls \
 ### Issue: SSL Handshake Failures
 
 **Common Causes:**
+
 ```bash
 # Check SSL configuration
 curl -I https://your-domain.com
@@ -878,6 +939,7 @@ nmap --script ssl-enum-ciphers -p 443 your-domain.com
 ```
 
 **Fix SSL Configuration:**
+
 ```nginx
 # Strong SSL configuration
 ssl_protocols TLSv1.2 TLSv1.3;
@@ -895,6 +957,7 @@ add_header X-Frame-Options DENY;
 ### Issue: Backup Failures
 
 **Check Backup Status:**
+
 ```bash
 # Check backup logs
 tail -f /var/log/claude-zen/backup.log
@@ -910,6 +973,7 @@ df -h /backups/  # Check disk space
 **Common Issues:**
 
 #### 1. Insufficient Disk Space
+
 ```bash
 # Check available space
 df -h
@@ -922,6 +986,7 @@ gzip /backups/*.sql
 ```
 
 #### 2. Database Connection Issues
+
 ```bash
 # Test pg_dump
 pg_dump -U claude_user -h localhost claude_zen_production > test_backup.sql
@@ -931,6 +996,7 @@ psql -U claude_user -h localhost -c "\l"
 ```
 
 #### 3. S3 Upload Failures
+
 ```bash
 # Test AWS credentials
 aws s3 ls s3://your-backup-bucket
@@ -945,6 +1011,7 @@ echo "test" | aws s3 cp - s3://your-backup-bucket/test.txt
 ### Issue: Recovery Failures
 
 **Database Recovery:**
+
 ```bash
 # Stop application first
 sudo systemctl stop claude-zen
@@ -962,6 +1029,7 @@ sudo systemctl start claude-zen
 ```
 
 **File Recovery:**
+
 ```bash
 # Stop application
 sudo systemctl stop claude-zen
@@ -982,6 +1050,7 @@ sudo systemctl start claude-zen
 ### Issue: Metrics Not Collected
 
 **Check Metrics Endpoint:**
+
 ```bash
 # Test metrics endpoint
 curl http://localhost:9090/metrics
@@ -992,6 +1061,7 @@ tail -f /var/log/prometheus/prometheus.log
 ```
 
 **Fix Prometheus Issues:**
+
 ```yaml
 # Check prometheus.yml configuration
 scrape_configs:
@@ -1005,6 +1075,7 @@ scrape_configs:
 ### Issue: Grafana Dashboard Not Working
 
 **Check Grafana:**
+
 ```bash
 # Check Grafana status
 sudo systemctl status grafana-server
@@ -1020,6 +1091,7 @@ sudo grafana-cli admin reset-admin-password newpassword
 ### Issue: Alerts Not Firing
 
 **Check Alert Configuration:**
+
 ```bash
 # Check alert rules
 curl http://localhost:9090/api/v1/rules
@@ -1034,6 +1106,7 @@ curl http://localhost:9093/api/v1/status
 ### Analyzing Application Logs
 
 **Common Log Patterns:**
+
 ```bash
 # Error analysis
 grep -i error /var/log/claude-zen/claude-zen.log | tail -20
@@ -1049,6 +1122,7 @@ grep -i "heap\|memory\|gc" /var/log/claude-zen/claude-zen.log
 ```
 
 **Log Parsing Scripts:**
+
 ```bash
 # Top error messages
 grep -i error /var/log/claude-zen/claude-zen.log | \
@@ -1079,6 +1153,7 @@ grep -i "network\|connection" /var/log/syslog
 ### Database Errors
 
 **Error: `connection terminated unexpectedly`**
+
 ```bash
 # Check PostgreSQL status
 sudo systemctl status postgresql
@@ -1093,6 +1168,7 @@ max_connections = 200
 ```
 
 **Error: `database "claude_zen_production" does not exist`**
+
 ```sql
 -- Create database
 sudo -u postgres createdb claude_zen_production
@@ -1104,6 +1180,7 @@ sudo -u postgres psql -c "CREATE DATABASE claude_zen_production;"
 ### Authentication Errors
 
 **Error: `Invalid API key`**
+
 ```bash
 # Check API key format
 echo $ANTHROPIC_API_KEY | wc -c  # Should be ~108 characters
@@ -1115,6 +1192,7 @@ curl -H "Authorization: Bearer $ANTHROPIC_API_KEY" \
 ```
 
 **Error: `JWT token invalid`**
+
 ```bash
 # Check JWT secret
 echo $JWT_SECRET | wc -c  # Should be at least 32 characters
@@ -1126,6 +1204,7 @@ JWT_SECRET=$(openssl rand -base64 48)
 ### Memory Errors
 
 **Error: `JavaScript heap out of memory`**
+
 ```bash
 # Increase heap size
 NODE_OPTIONS="--max-old-space-size=8192"
@@ -1137,6 +1216,7 @@ node -e "console.log(process.memoryUsage())"
 ```
 
 **Error: `ENOMEM: not enough memory`**
+
 ```bash
 # Check available memory
 free -h
@@ -1154,6 +1234,7 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ### Network Errors
 
 **Error: `ECONNREFUSED`**
+
 ```bash
 # Check if service is running
 sudo netstat -tlnp | grep <port>
@@ -1166,6 +1247,7 @@ telnet localhost <port>
 ```
 
 **Error: `ETIMEDOUT`**
+
 ```bash
 # Check DNS resolution
 nslookup api.anthropic.com
@@ -1185,6 +1267,7 @@ echo $HTTPS_PROXY
 ### Service Recovery
 
 **Quick Service Restart:**
+
 ```bash
 # SystemD
 sudo systemctl restart claude-zen
@@ -1200,6 +1283,7 @@ pm2 restart claude-zen
 ```
 
 **Emergency Shutdown:**
+
 ```bash
 # Graceful shutdown
 sudo systemctl stop claude-zen
@@ -1215,20 +1299,22 @@ docker-compose -f docker-compose.production.yml down
 ### Database Emergency Procedures
 
 **Database Connection Pool Exhaustion:**
+
 ```sql
 -- Check active connections
 SELECT count(*), state FROM pg_stat_activity GROUP BY state;
 
 -- Kill idle connections
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity 
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity
 WHERE state = 'idle' AND state_change < now() - interval '1 hour';
 
 -- Kill all application connections (CAUTION!)
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity 
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity
 WHERE usename = 'claude_user';
 ```
 
 **Database Corruption Recovery:**
+
 ```bash
 # Stop application
 sudo systemctl stop claude-zen
@@ -1245,6 +1331,7 @@ sudo -u postgres psql claude_zen_production < latest_backup.sql
 ### Disk Space Emergency
 
 **Free Up Space Immediately:**
+
 ```bash
 # Clean logs
 sudo truncate -s 0 /var/log/claude-zen/*.log
@@ -1264,6 +1351,7 @@ npm cache clean --force
 ### Security Incident Response
 
 **Suspected Compromise:**
+
 ```bash
 # Immediately stop service
 sudo systemctl stop claude-zen
@@ -1286,6 +1374,7 @@ who
 ```
 
 **Rate Limiting Emergency:**
+
 ```bash
 # Implement immediate rate limiting
 # Add to nginx config:
@@ -1301,6 +1390,7 @@ sudo iptables -A INPUT -p tcp --dport 3000 -m limit --limit 25/minute --limit-bu
 ### Collecting Diagnostic Information
 
 **System Information:**
+
 ```bash
 #!/bin/bash
 # diagnostic-info.sh

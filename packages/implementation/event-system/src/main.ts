@@ -13,19 +13,17 @@
  * - Structured validation and type safety
  *
  * ENHANCEMENT: 437 → 600+ lines with comprehensive enterprise features
- * PATTERN: Matches memory package's comprehensive foundation integration'
+ * PATTERN: Matches memory package's comprehensive foundation integration
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation/logging';
-import { injectable } from '@claude-zen/foundation/di';
-import type { Logger } from '@claude-zen/foundation/logging';
+import { EventEmitter } from '@claude-zen/foundation';
+import { getLogger, inject, type Logger } from '@claude-zen/foundation';
 
 // Simple utilities to replace missing foundation imports
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {'
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16)|0;
-    const v = c =='x'? r : (r & 0x3)|0x8;'
+    const v = c == 'x' ? r : (r & 0x3)|0x8;
     return v.toString(16);
   });
 }
@@ -79,7 +77,7 @@ export class EventSystemError extends ContextError {
     cause?: Error
   ) {
     super(message, { ...context, domain: 'event-system' }, cause);'
-    this.name = 'EventSystemError';
+    this.name = 'EventSystemError;
   }
 }
 

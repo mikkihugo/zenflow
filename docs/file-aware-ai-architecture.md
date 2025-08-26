@@ -1,6 +1,7 @@
 # Claude Code Zen File-Aware AI System Architecture
 
 ## 🎯 **Vision**
+
 Build a comprehensive file-aware AI system that integrates with our existing LLM routing to provide codebase-aware capabilities using any AI model (GitHub Copilot GPT-5, Claude, etc.) without requiring CLI tools.
 
 ## 🏗️ **Architecture Overview**
@@ -32,9 +33,11 @@ Build a comprehensive file-aware AI system that integrates with our existing LLM
 ## 📦 **Component Details**
 
 ### **1. Codebase Analyzer**
+
 **Purpose**: Create intelligent maps and understanding of the codebase
 
 **Features**:
+
 - **AST Analysis**: Parse TypeScript/JavaScript/Python/etc. files for structure
 - **Dependency Mapping**: Track imports, exports, function calls
 - **Symbol Index**: Create searchable index of classes, functions, variables
@@ -42,15 +45,18 @@ Build a comprehensive file-aware AI system that integrates with our existing LLM
 - **Semantic Search**: Vector embeddings for finding relevant code
 
 **Technologies**:
+
 - TypeScript Compiler API for TS/JS analysis
 - Tree-sitter for multi-language parsing
 - LanceDB for vector embeddings
 - File watching for real-time updates
 
 ### **2. Context Manager**
+
 **Purpose**: Provide relevant context to AI models
 
 **Features**:
+
 - **Smart Context Selection**: Choose relevant files for AI prompts
 - **Context Compression**: Summarize large codebases for model limits
 - **Relevance Scoring**: Rank files by relevance to current task
@@ -58,14 +64,17 @@ Build a comprehensive file-aware AI system that integrates with our existing LLM
 - **Template System**: Pre-built prompts for common tasks
 
 **Capabilities**:
+
 - "Show me all files that use this function"
 - "What would break if I change this interface?"
 - "Find similar patterns in the codebase"
 
 ### **3. AI Agent Orchestrator**
+
 **Purpose**: Coordinate AI interactions with codebase understanding
 
 **Features**:
+
 - **Task Planning**: Break complex requests into steps
 - **Multi-turn Conversations**: Maintain context across interactions
 - **Tool Integration**: Use existing claude-code-zen tools
@@ -73,10 +82,11 @@ Build a comprehensive file-aware AI system that integrates with our existing LLM
 - **Progress Tracking**: Show user what's happening
 
 **Workflow Example**:
+
 ```
 User: "Refactor the LLM routing to add caching"
 ├── 1. Analyze current LLM routing files
-├── 2. Identify cache integration points  
+├── 2. Identify cache integration points
 ├── 3. Generate cache implementation
 ├── 4. Update configuration
 ├── 5. Add tests
@@ -84,9 +94,11 @@ User: "Refactor the LLM routing to add caching"
 ```
 
 ### **4. File Operations Engine**
+
 **Purpose**: Safe and intelligent file modifications
 
 **Features**:
+
 - **Atomic Operations**: Rollback on errors
 - **Backup System**: Automatic backups before changes
 - **Diff Generation**: Show what will change before applying
@@ -94,15 +106,18 @@ User: "Refactor the LLM routing to add caching"
 - **Permission Checks**: Respect file permissions and git status
 
 **Safety Features**:
+
 - Never modify files without user confirmation
 - Always show diffs before applying changes
 - Automatic git commits with descriptive messages
 - Rollback capabilities
 
 ### **5. Git Integration**
+
 **Purpose**: Seamless version control integration
 
 **Features**:
+
 - **Branch Management**: Create feature branches for changes
 - **Commit Intelligence**: Generate meaningful commit messages
 - **Change Tracking**: Track what files were modified and why
@@ -110,9 +125,11 @@ User: "Refactor the LLM routing to add caching"
 - **History Analysis**: Learn from past changes
 
 ### **6. Memory System**
+
 **Purpose**: Learn and remember codebase patterns
 
 **Features**:
+
 - **Pattern Recognition**: Learn common refactoring patterns
 - **Decision Memory**: Remember past architectural decisions
 - **User Preferences**: Learn user's coding style and preferences
@@ -122,6 +139,7 @@ User: "Refactor the LLM routing to add caching"
 ## 🔄 **Integration with Existing System**
 
 ### **LLM Routing Enhancement**
+
 ```typescript
 // Enhanced provider configuration
 interface ProviderConfig {
@@ -141,15 +159,16 @@ interface ProviderConfig {
 ```
 
 ### **New Routing Rules**
+
 ```typescript
 // Update routing strategy
 RULES: {
   // File-aware tasks: Use our new system with any LLM
   fileAwareTasks: ['copilot', 'claude-code', 'gemini-direct'],
-  
+
   // Large refactoring: Use models with big context windows
   largeRefactoring: ['gemini-direct', 'copilot', 'claude-code'],
-  
+
   // Multi-file editing: Use our file-aware system
   multiFileEditing: ['copilot', 'gemini-direct', 'claude-code'],
 }
@@ -158,32 +177,37 @@ RULES: {
 ## 🚀 **Implementation Phases**
 
 ### **Phase 1: Foundation (Week 1-2)**
+
 - [x] Research existing solutions
 - [ ] Create codebase analyzer proof-of-concept
 - [ ] Integrate with existing LLM routing
 - [ ] Basic file operations with safety checks
 
-### **Phase 2: Intelligence (Week 3-4)**  
+### **Phase 2: Intelligence (Week 3-4)**
+
 - [ ] Context manager with smart file selection
 - [ ] AST analysis for TypeScript/JavaScript
 - [ ] Vector embeddings for semantic search
 - [ ] Multi-file awareness
 
 ### **Phase 3: AI Integration (Week 5-6)**
+
 - [ ] AI agent orchestrator
 - [ ] GitHub Copilot GPT-5 integration
 - [ ] Task planning and execution
 - [ ] Error handling and recovery
 
 ### **Phase 4: Advanced Features (Week 7-8)**
+
 - [ ] Git integration with smart commits
-- [ ] Memory system for learning patterns  
+- [ ] Memory system for learning patterns
 - [ ] Web interface integration
 - [ ] Advanced refactoring capabilities
 
 ## 🎯 **Competitive Advantages**
 
 ### **Over Aider/Cline/OpenCode**:
+
 1. **Integrated Ecosystem**: Built into claude-code-zen's comprehensive system
 2. **Multi-LLM Support**: Use any AI model, not locked to one provider
 3. **Enterprise Features**: Built-in monitoring, analytics, team coordination
@@ -191,6 +215,7 @@ RULES: {
 5. **Strategic Architecture**: Leverages our existing facade system
 
 ### **Key Differentiators**:
+
 - **No CLI Required**: Pure API/web interface option
 - **Swarm Coordination**: Multiple AI agents working together
 - **Enterprise Ready**: Built for team environments
@@ -219,6 +244,7 @@ RULES: {
 ## 🎉 **End Goal**
 
 A file-aware AI system that:
+
 1. **Understands** your entire codebase structure and relationships
 2. **Uses** any AI model (GPT-5, Claude, Gemini) for code understanding
 3. **Modifies** multiple files safely with atomic operations

@@ -50,14 +50,14 @@ import type {
   EventTransform,
   EventManager,
   SystemEvent,
-} from '../core/interfaces';
+} from '../core/interfaces;
 import {
   EventEmissionError,
   EventManagerTypes,
   EventTimeoutError,
-} from '../core/interfaces';
-import type { CoordinationEvent } from '../types';
-import { EventPriorityMap } from '../types';
+} from '../core/interfaces;
+import type { CoordinationEvent } from '../types;
+import { EventPriorityMap } from '../types;
 
 /**
  * Coordination event adapter configuration extending UEL EventManagerConfig.
@@ -889,7 +889,7 @@ export class CoordinationEventAdapter implements EventManager {
     // Determine overall health status
     let status: EventManagerStatus['status'] = 'healthy';
     if (errorRate > 20||!this.running) {
-      status ='unhealthy;
+      status ='unhealthy';
     } else if (
       errorRate > 10||Object.values(componentHealth).some((h) => h.status !=='healthy')'
     ) {

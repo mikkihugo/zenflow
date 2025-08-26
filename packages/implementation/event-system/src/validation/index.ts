@@ -27,7 +27,7 @@ export {
   WorkflowEventSchemas,
   InterfaceEventSchemas,
   CoreEventSchemas,
-} from './zod-validation';
+} from './zod-validation;
 
 export type {
   BaseEvent,
@@ -37,7 +37,7 @@ export type {
   CoreEvent,
   EventTypeFromSchema,
   AllEventTypes,
-} from './zod-validation';
+} from './zod-validation;
 
 // =============================================================================
 // LEGACY DOMAIN VALIDATION - Keep for domain boundary validation
@@ -45,8 +45,8 @@ export type {
 export {
   SimpleDomainValidator,
   getDomainValidator,
-} from '../core/domain-validator';
-export { SimpleDomainValidator as DomainValidator } from '../core/domain-validator';
+} from '../core/domain-validator;
+export { SimpleDomainValidator as DomainValidator } from '../core/domain-validator;
 
 // Export validation utilities from main validation file
-export * from '../validation';
+export * from '../validation;

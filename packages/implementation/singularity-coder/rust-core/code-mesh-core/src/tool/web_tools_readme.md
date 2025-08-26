@@ -9,6 +9,7 @@ This module implements comprehensive web functionality for Code Mesh, including 
 The HTTP client provides a unified interface that works across both native and WASM environments:
 
 #### Key Features:
+
 - **Cross-Platform**: Works on native (using reqwest) and WASM (using web-sys fetch)
 - **Request/Response Interceptors**: Pluggable middleware system for modifying requests and responses
 - **Rate Limiting**: Built-in rate limiting to respect server limits
@@ -19,6 +20,7 @@ The HTTP client provides a unified interface that works across both native and W
 - **Proxy Support**: HTTP proxy support for corporate environments
 
 #### Example Usage:
+
 ```rust
 use code_mesh_core::tool::http::HttpClientBuilder;
 
@@ -39,6 +41,7 @@ let response = client.execute(request).await?;
 Retrieves and processes web content with multiple output formats:
 
 #### Features:
+
 - **Multiple Formats**: HTML, text, markdown output
 - **HTML Processing**: Clean text extraction and markdown conversion using scraper and html2md
 - **Security**: URL validation and SSRF protection
@@ -46,6 +49,7 @@ Retrieves and processes web content with multiple output formats:
 - **Rate Limiting**: Built-in request throttling
 
 #### Tool Parameters:
+
 - `url`: Target URL (HTTP/HTTPS only)
 - `format`: Output format ("text", "markdown", "html")
 - `timeout`: Request timeout in seconds (max 120)
@@ -55,12 +59,14 @@ Retrieves and processes web content with multiple output formats:
 Multi-provider web search with result processing:
 
 #### Features:
+
 - **DuckDuckGo Integration**: Uses DuckDuckGo Instant Answer API
 - **Result Processing**: Structured search results with ranking
 - **Extensible**: Framework for adding additional search providers
 - **Rate Limiting**: Separate rate limits for search requests
 
 #### Tool Parameters:
+
 - `query`: Search query string
 - `max_results`: Maximum results to return (1-20)
 - `language`: Result language preference
@@ -71,6 +77,7 @@ Multi-provider web search with result processing:
 Comprehensive task management with dependency tracking:
 
 #### Features:
+
 - **Task Lifecycle**: Full status tracking (pending, in_progress, completed, cancelled, blocked)
 - **Dependency Management**: Task dependencies with cycle detection
 - **Progress Tracking**: Percentage completion and duration tracking
@@ -79,6 +86,7 @@ Comprehensive task management with dependency tracking:
 - **Session Persistence**: Per-session task storage
 
 #### Task Actions:
+
 - `list`: Display all tasks with status grouping
 - `add`: Create new task with priority
 - `update`: Modify task status, priority, content, or progress
@@ -91,18 +99,21 @@ Comprehensive task management with dependency tracking:
 ## Security Considerations
 
 ### SSRF Protection
+
 - URL validation to prevent access to internal networks
 - Blocked schemes (file://, ftp://, etc.)
 - Private IP range blocking (127.0.0.1, 192.168.x.x, 10.x.x.x, etc.)
 - Localhost and .local domain blocking
 
 ### Request Sanitization
+
 - User-Agent header validation
 - Content-Type verification
 - Response size limits
 - Timeout enforcement
 
 ### Cookie Security
+
 - Domain and path matching
 - Secure cookie handling
 - Session isolation
@@ -112,11 +123,13 @@ Comprehensive task management with dependency tracking:
 All web tools are designed to work in WASM environments with appropriate fallbacks:
 
 ### Native Implementation
+
 - Uses `reqwest` for HTTP requests
 - Full feature set including connection pooling
 - Proxy support for corporate environments
 
 ### WASM Implementation
+
 - Uses `web-sys` fetch API
 - CORS handling for browser security
 - Limited to browser capabilities
@@ -124,16 +137,19 @@ All web tools are designed to work in WASM environments with appropriate fallbac
 ## Performance Optimizations
 
 ### Connection Management
+
 - HTTP keep-alive support
 - Connection pooling (native)
 - Request pipelining where supported
 
 ### Caching
+
 - Response caching with TTL
 - Search result caching
 - Memory-efficient storage
 
 ### Rate Limiting
+
 - Per-host rate limiting
 - Configurable limits per tool
 - Burst capacity handling
@@ -141,18 +157,21 @@ All web tools are designed to work in WASM environments with appropriate fallbac
 ## Error Handling
 
 ### Network Errors
+
 - Timeout handling
 - Connection failure recovery
 - DNS resolution errors
 - SSL/TLS errors
 
 ### HTTP Errors
+
 - Status code validation
 - Content-Type checking
 - Response size validation
 - Redirect handling
 
 ### Parsing Errors
+
 - HTML parsing errors
 - JSON deserialization errors
 - URL parsing errors
@@ -161,6 +180,7 @@ All web tools are designed to work in WASM environments with appropriate fallbac
 ## Testing
 
 The module includes comprehensive tests for:
+
 - HTTP client functionality
 - Web content fetching
 - Search result processing
@@ -171,6 +191,7 @@ The module includes comprehensive tests for:
 ## Dependencies
 
 ### Core Dependencies
+
 - `reqwest`: HTTP client for native environments
 - `tokio`: Async runtime
 - `serde`: Serialization framework
@@ -178,6 +199,7 @@ The module includes comprehensive tests for:
 - `uuid`: Unique identifier generation
 
 ### Web-Specific Dependencies
+
 - `scraper`: HTML parsing and text extraction
 - `html2md`: HTML to Markdown conversion
 - `cookie`: Cookie parsing and management
@@ -185,6 +207,7 @@ The module includes comprehensive tests for:
 - `urlencoding`: URL encoding utilities
 
 ### WASM Dependencies
+
 - `web-sys`: Web API bindings
 - `wasm-bindgen`: JavaScript interop
 - `js-sys`: JavaScript standard library bindings
@@ -192,6 +215,7 @@ The module includes comprehensive tests for:
 ## Future Enhancements
 
 ### Planned Features
+
 - Additional search providers (Google, Bing)
 - Semantic search capabilities
 - Advanced result filtering and ranking
@@ -200,6 +224,7 @@ The module includes comprehensive tests for:
 - WebSocket support for live updates
 
 ### Performance Improvements
+
 - HTTP/2 support
 - Request batching
 - Advanced caching strategies
@@ -207,6 +232,7 @@ The module includes comprehensive tests for:
 - Connection multiplexing
 
 ### Security Enhancements
+
 - Certificate pinning
 - Request signing
 - Enhanced SSRF protection

@@ -8,7 +8,7 @@
  * @file TypeScript type definitions for interfaces.
  */
 
-import type { EventPriority, SystemEvent } from './core/interfaces';
+import type { EventPriority, SystemEvent } from './core/interfaces;
 
 /**
  * System Events - Core system lifecycle and health.
@@ -36,7 +36,7 @@ export interface SystemLifecycleEvent extends SystemEvent {
  */
 export interface CoordinationEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
-  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail';
+  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail;
   targetId: string; // swarmId, agentId, taskId, etc.
   details?: {
     agentCount?: number;
@@ -114,7 +114,7 @@ export interface MonitoringEvent extends SystemEvent {
  */
 export interface InterfaceEvent extends SystemEvent {
   type: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
-  operation:|''start|stop|command|request|response|interaction|render';
+  operation:|''start|stop|command|request|response|interaction|render;
   interface: 'cli|web|tui|api;
   details?: {
     command?: string;
@@ -195,7 +195,7 @@ export interface MemoryEvent extends SystemEvent {
     memoryUsage?: number;
     poolSize?: number;
     gcDuration?: number;
-    gcType?: 'minor' | 'major' | 'full';
+    gcType?: 'minor' | 'major' | 'full;
     objectCount?: number;
   };
 }
@@ -244,7 +244,7 @@ export interface WorkflowEvent extends SystemEvent {
 export interface OrchestrationEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||orchestration:bottleneck;
   operation:|'plan|execute|monitor|optimize|escalate|delegate|coordinate|sync;
-  level: 'portfolio' | 'program' | 'execution';
+  level: 'portfolio' | 'program' | 'execution;
   details?: {
     orchestrationId?: string;
     parentId?: string;
@@ -271,7 +271,7 @@ export interface OrchestrationEvent extends SystemEvent {
  */
 export interface SafeEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||safe:execution;
-  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set';
+  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set;
   details?: {
     epicId?: string;
     piId?: string;
@@ -279,7 +279,7 @@ export interface SafeEvent extends SystemEvent {
     businessValue?: number;
     confidence?: number;
     phase?: 'preparation|day1|day2|finalization;
-    investmentHorizon?: 'near' | 'mid' | 'long';
+    investmentHorizon?: 'near' | 'mid' | 'long;
     budgetAllocation?: number;
     piObjectives?: Array<{
       id: string;
@@ -303,10 +303,10 @@ export interface MemoryOrchestrationEvent extends SystemEvent {
   details?: {
     systemId?: string;
     cacheId?: string;
-    syncType?: 'full' | 'incremental' | 'delta';
+    syncType?: 'full' | 'incremental' | 'delta;
     dataSize?: number;
     keyPattern?: string;
-    consistencyLevel?: 'eventual' | 'strong' | 'weak';
+    consistencyLevel?: 'eventual' | 'strong' | 'weak;
     optimizationStrategy?: 'lru|lfu|ttl|adaptive;
     memoryPools?: string[];
     crossSystemSync?: boolean;

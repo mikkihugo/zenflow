@@ -6,7 +6,7 @@
  * @file Coordination system: auto-scaling-strategy
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 import type { AutoScaler } from '../interfaces';
 import { AgentStatus } from '../types';
@@ -28,7 +28,7 @@ interface ScalingHistory {
   newCount: number;
 }
 
-export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
+export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   private autoScalingConfig: AutoScalingConfig;
   private scalingHistory: ScalingHistory[] = [];
   private lastScalingAction: Date = new Date(0);
@@ -61,7 +61,7 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
     const newAgents: Agent[] = [];
 
     for (let i = 0; i < count; i++) {
-      const agentId = `auto-agent-${Date.now()}-${i}`;`
+      const agentId = `auto-agent-${Date.now()}-${i}`;
       newAgents.push({
         id: agentId,
         name: `Auto-scaled Agent ${agentId}`,
@@ -131,7 +131,8 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
 
     // Scale up conditions
     if (
-      (avgUtilization > this.autoScalingConfig.scaleUpThreshold||maxUtilization > 0.95) &&
+      (avgUtilization > this.autoScalingConfig.scaleUpThreshold ||
+        maxUtilization > 0.95) &&
       agentCount < this.autoScalingConfig.maxAgents
     ) {
       const targetCount = Math.min(

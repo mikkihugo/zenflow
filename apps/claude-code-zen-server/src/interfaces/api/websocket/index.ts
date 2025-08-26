@@ -7,5 +7,5 @@
  * @file Websocket module exports.
  */
 
-export * from './client';
-export { WebSocketClient as default } from './client';
+export * from "./client";
+export { WebSocketClient as default } from "./client";

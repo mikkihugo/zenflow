@@ -33,8 +33,14 @@ const logger = getLogger('lancedb-adapter');
 // Real LanceDB types based on the actual API
 interface LanceDBModule {
   connect: {
-    (uri: string, options?: Partial<ConnectionOptions>, session?: Session): Promise<Connection>;
-    (options: Partial<ConnectionOptions> & { uri: string }): Promise<Connection>;
+    (
+      uri: string,
+      options?: Partial<ConnectionOptions>,
+      session?: Session
+    ): Promise<Connection>;
+    (
+      options: Partial<ConnectionOptions> & { uri: string }
+    ): Promise<Connection>;
   };
 }
 
@@ -55,11 +61,27 @@ interface Connection {
   uri: string;
   createTable: {
     <T>(options: CreateTableOptions<T>): Promise<Table<T>>;
-    (name: string, data: Table<any> | Record<string, unknown>[], options?: WriteOptions): Promise<Table<number[]>>;
-    <T>(name: string, data: Table<any> | Record<string, unknown>[], embeddings: EmbeddingFunction<T>): Promise<Table<T>>;
-    <T>(name: string, data: Table<any> | Record<string, unknown>[], embeddings: EmbeddingFunction<T>, options: WriteOptions): Promise<Table<T>>;
+    (
+      name: string,
+      data: Table<any> | Record<string, unknown>[],
+      options?: WriteOptions
+    ): Promise<Table<number[]>>;
+    <T>(
+      name: string,
+      data: Table<any> | Record<string, unknown>[],
+      embeddings: EmbeddingFunction<T>
+    ): Promise<Table<T>>;
+    <T>(
+      name: string,
+      data: Table<any> | Record<string, unknown>[],
+      embeddings: EmbeddingFunction<T>,
+      options: WriteOptions
+    ): Promise<Table<T>>;
   };
-  openTable<T>(name: string, embeddings?: EmbeddingFunction<T>): Promise<Table<T>>;
+  openTable<T>(
+    name: string,
+    embeddings?: EmbeddingFunction<T>
+  ): Promise<Table<T>>;
   dropTable(name: string): Promise<void>;
   tableNames(): Promise<string[]>;
   close(): Promise<void>;
@@ -93,7 +115,11 @@ interface Table<T> {
   vectorSearch(query: number[]): Query;
   query(): Query;
   delete(predicate: string): Promise<void>;
-  update(options: { values?: Record<string, unknown>; valuesSql?: Record<string, string>; where?: string }): Promise<void>;
+  update(options: {
+    values?: Record<string, unknown>;
+    valuesSql?: Record<string, string>;
+    where?: string;
+  }): Promise<void>;
   countRows(): Promise<number>;
   schema: unknown;
   createIndex?(column: string, options?: { config?: any }): Promise<void>;
@@ -174,7 +200,9 @@ export class LanceDBAdapter implements DatabaseConnection {
 
       // Create LanceDB database connection
       try {
-        this.database = await this.lancedbModule!.connect(this.config.database) as any;
+        this.database = (await this.lancedbModule!.connect(
+          this.config.database
+        )) as any;
         this.isConnectedState = true;
         this.stats.connectionCreated++;
 
@@ -643,7 +671,9 @@ export class LanceDBAdapter implements DatabaseConnection {
         },
       ];
 
-      await (this.database as any).createTable(tableName, sampleData, { mode: 'overwrite' });
+      await (this.database as any).createTable(tableName, sampleData, {
+        mode: 'overwrite',
+      });
 
       logger.info('Table with embedding support created successfully', {
         correlationId,
@@ -844,7 +874,10 @@ export class LanceDBAdapter implements DatabaseConnection {
 
       // For HNSW or default
       if ((table as any).createIndex) {
-        await (table as any).createIndex(options.column || 'vector', indexConfig);
+        await (table as any).createIndex(
+          options.column || 'vector',
+          indexConfig
+        );
       }
 
       logger.info('Vector index created successfully', {
@@ -920,7 +953,9 @@ export class LanceDBAdapter implements DatabaseConnection {
       // Perform text search if text query provided
       if (query.text && query.textColumn) {
         try {
-          let textQuery = (table as any).search ? (table as any).search(query.text) : (table as any).query();
+          let textQuery = (table as any).search
+            ? (table as any).search(query.text)
+            : (table as any).query();
 
           if (options.filter) {
             textQuery = textQuery.where(options.filter);

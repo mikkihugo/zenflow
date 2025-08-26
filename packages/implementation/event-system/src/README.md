@@ -63,12 +63,13 @@ await uel.initialize({
   enableValidation: true,
   enableCompatibility: true,
   healthMonitoring: true,
-  autoRegisterFactories: true
+  autoRegisterFactories: true,
 });
 
 // Create event managers
 const systemManager = await uel.createSystemEventManager('my-system');
-const coordManager = await uel.createCoordinationEventManager('my-coordination');
+const coordManager =
+  await uel.createCoordinationEventManager('my-coordination');
 ```
 
 ### 2. Event Manager System (`EventManager`)
@@ -86,13 +87,14 @@ await eventManager.initialize({
   healthMonitoring: true,
   coordination: {
     crossManagerRouting: true,
-    eventDeduplication: true
-  }
+    eventDeduplication: true,
+  },
 });
 
 // Create typed event managers
 const systemEvents = await eventManager.createSystemEventManager('core-system');
-const coordEvents = await eventManager.createCoordinationEventManager('swarm-coord');
+const coordEvents =
+  await eventManager.createCoordinationEventManager('swarm-coord');
 ```
 
 ### 3. Event Registry (`EventRegistry`)
@@ -108,7 +110,7 @@ const registry = new EventRegistry(logger);
 registry.registerEventType('system:startup', {
   category: 'system',
   managerTypes: ['system'],
-  priority: 3
+  priority: 3,
 });
 
 // Register custom factory
@@ -149,15 +151,15 @@ UEL supports comprehensive event categorization:
 
 ```typescript
 export const EventCategories = {
-  SYSTEM: 'system',           // System lifecycle events
-  COORDINATION: 'coordination', // Swarm & agent coordination  
+  SYSTEM: 'system', // System lifecycle events
+  COORDINATION: 'coordination', // Swarm & agent coordination
   COMMUNICATION: 'communication', // Protocol & network events
-  MONITORING: 'monitoring',   // Metrics & health events
-  INTERFACE: 'interface',     // UI & API interaction events
-  NEURAL: 'neural',          // AI & neural network events
-  DATABASE: 'database',      // Database operation events
-  MEMORY: 'memory',          // Memory & cache events
-  WORKFLOW: 'workflow'       // Workflow execution events
+  MONITORING: 'monitoring', // Metrics & health events
+  INTERFACE: 'interface', // UI & API interaction events
+  NEURAL: 'neural', // AI & neural network events
+  DATABASE: 'database', // Database operation events
+  MEMORY: 'memory', // Memory & cache events
+  WORKFLOW: 'workflow', // Workflow execution events
 };
 ```
 
@@ -172,7 +174,7 @@ const systemEvent: SystemLifecycleEvent = {
   type: 'system:startup',
   operation: 'start',
   status: 'success',
-  details: { component: 'event-bus', startupTime: 1250 }
+  details: { component: 'event-bus', startupTime: 1250 },
 };
 
 // Coordination event
@@ -183,7 +185,7 @@ const coordEvent: CoordinationEvent = {
   type: 'coordination:agent',
   operation: 'spawn',
   targetId: 'agent-researcher-001',
-  details: { agentType: 'researcher', capabilities: ['analysis'] }
+  details: { agentType: 'researcher', capabilities: ['analysis'] },
 };
 
 // Communication event
@@ -194,7 +196,7 @@ const commEvent: CommunicationEvent = {
   type: 'communication:websocket',
   operation: 'message',
   protocol: 'websocket',
-  details: { messageType: 'coordination', size: 1024 }
+  details: { messageType: 'coordination', size: 1024 },
 };
 ```
 
@@ -206,15 +208,22 @@ UEL uses the factory pattern for type-safe event manager creation:
 
 ```typescript
 // System Event Factory
-export class SystemEventManagerFactory implements IEventManagerFactory<SystemEventConfig> {
+export class SystemEventManagerFactory
+  implements IEventManagerFactory<SystemEventConfig>
+{
   async create(config: SystemEventConfig): Promise<ISystemEventManager> {
     const manager = new SystemEventManager(config, this.logger);
     await manager.initialize();
     return manager;
   }
-  
+
   getSupportedEventTypes(): string[] {
-    return ['system:startup', 'system:shutdown', 'system:error', 'system:health'];
+    return [
+      'system:startup',
+      'system:shutdown',
+      'system:error',
+      'system:health',
+    ];
   }
 }
 
@@ -223,11 +232,13 @@ const factory = new SystemEventManagerFactory(logger, config);
 registry.registerFactory(EventManagerTypes.SYSTEM, factory);
 
 // Factory Usage
-const systemManager = await registry.getFactory(EventManagerTypes.SYSTEM)?.create({
-  name: 'main-system',
-  type: EventManagerTypes.SYSTEM,
-  maxListeners: 100
-});
+const systemManager = await registry
+  .getFactory(EventManagerTypes.SYSTEM)
+  ?.create({
+    name: 'main-system',
+    type: EventManagerTypes.SYSTEM,
+    maxListeners: 100,
+  });
 ```
 
 ### Factory Registry Pattern
@@ -235,12 +246,16 @@ const systemManager = await registry.getFactory(EventManagerTypes.SYSTEM)?.creat
 ```typescript
 // Auto-registration of factories
 await uel.initialize({
-  autoRegisterFactories: true  // Registers all available factories
+  autoRegisterFactories: true, // Registers all available factories
 });
 
 // Manual factory registration
-uel.getRegistry().registerFactory(EventManagerTypes.COORDINATION, coordinationFactory);
-uel.getRegistry().registerFactory(EventManagerTypes.COMMUNICATION, communicationFactory);
+uel
+  .getRegistry()
+  .registerFactory(EventManagerTypes.COORDINATION, coordinationFactory);
+uel
+  .getRegistry()
+  .registerFactory(EventManagerTypes.COMMUNICATION, communicationFactory);
 
 // Factory discovery
 const availableFactories = uel.getRegistry().listFactoryTypes();
@@ -263,23 +278,25 @@ await UELSystemIntegration.initialize(eventManager, logger);
 const enhancedEventBus = UELSystemIntegration.factory.createEnhancedEventBus({
   enableUEL: true,
   managerType: EventManagerTypes.SYSTEM,
-  managerName: 'main-event-bus'
+  managerName: 'main-event-bus',
 });
 
 // Enhanced application coordinator
-const enhancedCoordinator = UELSystemIntegration.factory.createEnhancedApplicationCoordinator({
-  enableUEL: true,
-  uelConfig: {
-    enableValidation: true,
-    enableCompatibility: true,
-    healthMonitoring: true
-  }
-});
+const enhancedCoordinator =
+  UELSystemIntegration.factory.createEnhancedApplicationCoordinator({
+    enableUEL: true,
+    uelConfig: {
+      enableValidation: true,
+      enableCompatibility: true,
+      healthMonitoring: true,
+    },
+  });
 
 // Enhanced observer system
-const enhancedObserver = UELSystemIntegration.factory.createEnhancedObserverSystem({
-  enableUEL: true
-});
+const enhancedObserver =
+  UELSystemIntegration.factory.createEnhancedObserverSystem({
+    enableUEL: true,
+  });
 ```
 
 ### 2. Gradual Migration Pattern
@@ -289,7 +306,7 @@ const enhancedObserver = UELSystemIntegration.factory.createEnhancedObserverSyst
 const systems = {
   eventBus: existingEventBus,
   coordinator: existingCoordinator,
-  observers: existingObservers
+  observers: existingObservers,
 };
 
 const analysis = await uel.analyzeSystemEventEmitters(systems);
@@ -300,11 +317,14 @@ console.log('Recommendations:', analysis.migrationRecommendations);
 const migrationResult = await UELHelpers.migrateSystemToUEL(systems);
 
 if (migrationResult.migrationReport.success) {
-  console.log('Successfully migrated:', migrationResult.migrationReport.migratedSystems);
-  
+  console.log(
+    'Successfully migrated:',
+    migrationResult.migrationReport.migratedSystems
+  );
+
   // Use enhanced systems
   const { eventBus, applicationCoordinator, observerSystem } = migrationResult;
-  
+
   // Enhanced systems provide both EventEmitter API and UEL features
   eventBus?.emit('system:ready'); // EventEmitter compatibility
   eventBus?.mapEventToUEL('legacy-event', 'system:lifecycle'); // UEL enhancement
@@ -319,18 +339,18 @@ const completeSystem = await UELHelpers.setupCompleteUELSystem({
   systemComponents: {
     eventBus: true,
     applicationCoordinator: true,
-    observerSystem: true
+    observerSystem: true,
   },
   eventManagers: {
     system: true,
     coordination: true,
     communication: true,
     monitoring: true,
-    interface: true
+    interface: true,
   },
   validation: true,
   compatibility: true,
-  healthMonitoring: true
+  healthMonitoring: true,
 });
 
 console.log('System setup status:', completeSystem.status);
@@ -354,7 +374,7 @@ const compatibleEmitter = new UELCompatibleEventEmitter({
   enableUEL: true,
   uelManager: await uel.createSystemEventManager('compatible'),
   migrationMode: 'passive', // or 'active', 'disabled'
-  logger: logger
+  logger: logger,
 });
 
 // Standard EventEmitter API works unchanged
@@ -438,7 +458,7 @@ const analysis = await UEL.getInstance().analyzeSystemEventEmitters(systems);
 
 // Step 2: Review migration complexity and recommendations
 console.log('Overall complexity:', analysis.overallComplexity);
-analysis.migrationRecommendations.forEach(rec => console.log('💡', rec));
+analysis.migrationRecommendations.forEach((rec) => console.log('💡', rec));
 
 // Step 3: Plan migration phases based on complexity
 if (analysis.overallComplexity === 'low') {
@@ -457,18 +477,18 @@ if (analysis.overallComplexity === 'low') {
 await uel.initialize({
   enableValidation: true,
   enableCompatibility: true,
-  healthMonitoring: true
+  healthMonitoring: true,
 });
 
 // Step 2: Enable UEL for high-traffic systems first
 const enhancedEventBus = await uel.createEnhancedEventBus({
   enableUEL: true,
-  managerName: 'main-event-bus'
+  managerName: 'main-event-bus',
 });
 
 // Step 3: Gradually replace existing systems
 // Old code continues to work:
-enhancedEventBus.on('data', handler);  // EventEmitter API
+enhancedEventBus.on('data', handler); // EventEmitter API
 enhancedEventBus.emit('data', payload); // EventEmitter API
 
 // New UEL features available:
@@ -484,17 +504,18 @@ const fullMigrationResult = await UELHelpers.migrateSystemToUEL({
   eventBus: existingEventBus,
   coordinator: existingCoordinator,
   observers: existingObservers,
-  customSystem: myCustomEventEmitter
+  customSystem: myCustomEventEmitter,
 });
 
 // Step 2: Enable active UEL mode for enhanced features
 if (fullMigrationResult.migrationReport.success) {
   // All systems now support both EventEmitter API and UEL features
-  const { eventBus, applicationCoordinator, observerSystem } = fullMigrationResult;
-  
+  const { eventBus, applicationCoordinator, observerSystem } =
+    fullMigrationResult;
+
   // Step 3: Start using advanced UEL features
   await eventBus?.enableUELMode(eventManager, {
-    migrateExistingListeners: true
+    migrateExistingListeners: true,
   });
 }
 ```
@@ -507,7 +528,7 @@ const validationResult = await UELHelpers.performCompleteValidation({
   includeHealthCheck: true,
   includeIntegrationCheck: true,
   includeSampleEvents: true,
-  exportReport: true
+  exportReport: true,
 });
 
 console.log('System validation score:', validationResult.summary.score);
@@ -522,9 +543,9 @@ uel.registerEventTypeSchema('custom:workflow', {
   required: ['id', 'timestamp', 'workflowId', 'stage'],
   properties: {
     workflowId: { type: 'string' },
-    stage: { type: 'string', enum: ['start', 'progress', 'complete', 'error'] }
+    stage: { type: 'string', enum: ['start', 'progress', 'complete', 'error'] },
   },
-  additionalProperties: true
+  additionalProperties: true,
 });
 ```
 
@@ -541,7 +562,8 @@ await uel.initialize();
 
 // Create event managers
 const systemManager = await uel.createSystemEventManager('app-system');
-const coordManager = await uel.createCoordinationEventManager('app-coordination');
+const coordManager =
+  await uel.createCoordinationEventManager('app-coordination');
 
 // Emit events
 await systemManager.emit({
@@ -550,7 +572,7 @@ await systemManager.emit({
   source: 'app-system',
   type: 'system:startup',
   operation: 'start',
-  status: 'success'
+  status: 'success',
 });
 
 // Subscribe to events
@@ -569,28 +591,29 @@ const integratedSystem = await UELHelpers.setupCompleteUELSystem({
   systemComponents: {
     eventBus: true,
     applicationCoordinator: true,
-    observerSystem: true
+    observerSystem: true,
   },
   eventManagers: {
     system: true,
     coordination: true,
     communication: true,
-    monitoring: true
+    monitoring: true,
   },
   validation: true,
   compatibility: true,
-  healthMonitoring: true
+  healthMonitoring: true,
 });
 
 // Access integrated components
 const { uel, systems, eventManagers, status } = integratedSystem;
 
 // Enhanced event bus with both APIs
-systems.eventBus?.on('custom-event', handler);  // EventEmitter API
+systems.eventBus?.on('custom-event', handler); // EventEmitter API
 systems.eventBus?.mapEventToUEL('custom-event', 'system:custom'); // UEL enhancement
 
 // Enhanced application coordinator
-const coordinatorStatus = await systems.applicationCoordinator?.getSystemStatus();
+const coordinatorStatus =
+  await systems.applicationCoordinator?.getSystemStatus();
 ```
 
 ### Event Validation
@@ -605,10 +628,13 @@ validator.registerEventTypeSchema('workflow:task', {
   required: ['id', 'timestamp', 'taskId', 'status'],
   properties: {
     taskId: { type: 'string' },
-    status: { type: 'string', enum: ['pending', 'running', 'completed', 'failed'] },
-    progress: { type: 'number', minimum: 0, maximum: 100 }
+    status: {
+      type: 'string',
+      enum: ['pending', 'running', 'completed', 'failed'],
+    },
+    progress: { type: 'number', minimum: 0, maximum: 100 },
   },
-  additionalProperties: false
+  additionalProperties: false,
 });
 
 // Validate events
@@ -619,7 +645,7 @@ const event = {
   type: 'workflow:task',
   taskId: 'build-project',
   status: 'running',
-  progress: 45
+  progress: 45,
 };
 
 const result = validator.validateEventType(event);
@@ -640,8 +666,10 @@ await uel.initialize({ healthMonitoring: true });
 
 // Manual health checks
 const healthStatus = await uel.getHealthStatus();
-healthStatus.forEach(status => {
-  console.log(`${status.name}: ${status.status} (${status.subscriptions} subscriptions)`);
+healthStatus.forEach((status) => {
+  console.log(
+    `${status.name}: ${status.status} (${status.subscriptions} subscriptions)`
+  );
 });
 
 // Global metrics
@@ -702,15 +730,15 @@ const goodEvent: SystemLifecycleEvent = {
     component: 'event-bus',
     version: '1.0.0',
     startupTime: 1250,
-    configuration: { maxListeners: 100 }
-  }
+    configuration: { maxListeners: 100 },
+  },
 };
 
 // ❌ Avoid: Poorly structured event
 const badEvent = {
   id: 'event1',
   type: 'stuff-happened',
-  data: 'some data'
+  data: 'some data',
 };
 ```
 
@@ -719,7 +747,7 @@ const badEvent = {
 ```typescript
 // ✅ Good: Register factories during initialization
 await uel.initialize({
-  autoRegisterFactories: true  // Automatically registers available factories
+  autoRegisterFactories: true, // Automatically registers available factories
 });
 
 // Or register manually with proper error handling
@@ -743,10 +771,10 @@ if (analysis.overallComplexity === 'high') {
   // Implement gradual migration
   const phase1Systems = { eventBus: existingSystems.eventBus };
   const phase1Result = await UELHelpers.migrateSystemToUEL(phase1Systems);
-  
+
   // Monitor and validate before proceeding
   const validationResult = await UELHelpers.performCompleteValidation();
-  
+
   if (validationResult.summary.passed) {
     // Proceed with phase 2
   }
@@ -764,15 +792,14 @@ try {
   const manager = await uel.createSystemEventManager('critical-system', {
     maxListeners: 50,
     enableRetry: true,
-    retryAttempts: 3
+    retryAttempts: 3,
   });
-  
+
   await manager.start();
   logger.info('System manager started successfully');
-  
 } catch (error) {
   logger.error('Failed to create system manager:', error);
-  
+
   // Fallback to basic EventEmitter if UEL fails
   const fallbackEmitter = new EventEmitter();
   fallbackEmitter.setMaxListeners(50);
@@ -794,7 +821,7 @@ class MyApplication {
   async initialize() {
     this.uel = UEL.getInstance();
     await this.uel.initialize();
-    
+
     // Create and track managers
     const systemManager = await this.uel.createSystemEventManager('app-system');
     this.managers.set('system', systemManager);
@@ -810,7 +837,7 @@ class MyApplication {
         console.warn(`Failed to shutdown ${name}:`, error);
       }
     }
-    
+
     // Shutdown UEL system
     if (this.uel) {
       await this.uel.shutdown();
@@ -836,11 +863,11 @@ class BadApplication {
 class UEL {
   // Singleton pattern
   static getInstance(): UEL;
-  
+
   // Initialization
   async initialize(config?: UELInitConfig): Promise<void>;
   isInitialized(): boolean;
-  
+
   // Core component access
   getFactory(): UELFactory;
   getRegistry(): UELRegistry;
@@ -848,24 +875,52 @@ class UEL {
   getEventRegistry(): EventRegistry;
   getValidationFramework(): UELValidationFramework;
   getCompatibilityFactory(): CompatibilityFactory;
-  
+
   // Event manager creation
-  async createSystemEventManager(name: string, config?: Partial<EventManagerConfig>): Promise<ISystemEventManager>;
-  async createCoordinationEventManager(name: string, config?: Partial<EventManagerConfig>): Promise<ICoordinationEventManager>;
-  async createCommunicationEventManager(name: string, config?: Partial<EventManagerConfig>): Promise<ICommunicationEventManager>;
-  async createMonitoringEventManager(name: string, config?: Partial<EventManagerConfig>): Promise<IMonitoringEventManager>;
+  async createSystemEventManager(
+    name: string,
+    config?: Partial<EventManagerConfig>
+  ): Promise<ISystemEventManager>;
+  async createCoordinationEventManager(
+    name: string,
+    config?: Partial<EventManagerConfig>
+  ): Promise<ICoordinationEventManager>;
+  async createCommunicationEventManager(
+    name: string,
+    config?: Partial<EventManagerConfig>
+  ): Promise<ICommunicationEventManager>;
+  async createMonitoringEventManager(
+    name: string,
+    config?: Partial<EventManagerConfig>
+  ): Promise<IMonitoringEventManager>;
   // ... other event manager types
-  
+
   // Enhanced system creation
-  async createEnhancedEventBus(options?: EnhancedEventBusOptions): Promise<UELEnhancedEventBus>;
-  async createEnhancedApplicationCoordinator(options?: EnhancedCoordinatorOptions): Promise<UELEnhancedApplicationCoordinator>;
-  async createEnhancedObserverSystem(options?: EnhancedObserverOptions): Promise<UELEnhancedObserverSystem>;
-  
+  async createEnhancedEventBus(
+    options?: EnhancedEventBusOptions
+  ): Promise<UELEnhancedEventBus>;
+  async createEnhancedApplicationCoordinator(
+    options?: EnhancedCoordinatorOptions
+  ): Promise<UELEnhancedApplicationCoordinator>;
+  async createEnhancedObserverSystem(
+    options?: EnhancedObserverOptions
+  ): Promise<UELEnhancedObserverSystem>;
+
   // Compatibility and migration
-  async createCompatibleEventEmitter(name: string, type?: EventManagerType, options?: CompatibilityOptions): Promise<UELCompatibleEventEmitter>;
-  async migrateEventEmitter(emitter: EventEmitter, name: string, type?: EventManagerType): Promise<UELCompatibleEventEmitter>;
-  async analyzeSystemEventEmitters(systems: Record<string, EventEmitter>): Promise<SystemAnalysis>;
-  
+  async createCompatibleEventEmitter(
+    name: string,
+    type?: EventManagerType,
+    options?: CompatibilityOptions
+  ): Promise<UELCompatibleEventEmitter>;
+  async migrateEventEmitter(
+    emitter: EventEmitter,
+    name: string,
+    type?: EventManagerType
+  ): Promise<UELCompatibleEventEmitter>;
+  async analyzeSystemEventEmitters(
+    systems: Record<string, EventEmitter>
+  ): Promise<SystemAnalysis>;
+
   // System operations
   async getHealthStatus(): Promise<EventManagerStatus[]>;
   async getGlobalMetrics(): Promise<GlobalMetrics>;
@@ -884,16 +939,16 @@ const UELHelpers = {
   async initializeCompleteSystem(config?: CompleteSystemConfig): Promise<UEL>;
   async setupCommonEventManagers(config?: CommonManagersConfig): Promise<EventManagers>;
   async setupCompleteUELSystem(options?: CompleteSetupOptions): Promise<CompleteSystemResult>;
-  
+
   // Migration utilities
   async migrateObserverSystem(observerSystem: any): Promise<MigrationResult>;
   async migrateSystemToUEL(systems: SystemsMap): Promise<SystemMigrationResult>;
-  
+
   // Monitoring and validation
   async getQuickStatus(): Promise<QuickStatus>;
   async performHealthCheck(): Promise<HealthCheckResult>;
   async performCompleteValidation(options?: ValidationOptions): Promise<CompleteValidationResult>;
-  
+
   // Event utilities
   createEventBuilder(): EventBuilder;
 };
@@ -911,7 +966,7 @@ const EventManagerTypes = {
   NEURAL: 'neural',
   DATABASE: 'database',
   MEMORY: 'memory',
-  WORKFLOW: 'workflow'
+  WORKFLOW: 'workflow',
 } as const;
 ```
 
@@ -927,7 +982,7 @@ const EventCategories = {
   NEURAL: 'neural',
   DATABASE: 'database',
   MEMORY: 'memory',
-  WORKFLOW: 'workflow'
+  WORKFLOW: 'workflow',
 } as const;
 ```
 

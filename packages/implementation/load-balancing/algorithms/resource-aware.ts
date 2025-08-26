@@ -176,7 +176,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const profiles = Array.from(this.resourceProfiles.values())();
+    const profiles = Array.from(this.resourceProfiles.values());
 
     const avgCpuUtilization = this.calculateAverageUtilization(profiles, 'cpu');
     const avgMemoryUtilization = this.calculateAverageUtilization(

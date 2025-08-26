@@ -11,11 +11,13 @@ The claude-code-zen project has a robust **local document processing system** bu
 ### 🔍 **Current Document Processing Architecture**
 
 #### 1. **DocumentProcessor** (`src/core/document-processor.ts`)
+
 - **Purpose**: Unified document processing system for local workspaces
 - **Document Types Supported**: vision, ADRs, PRDs, epics, features, tasks, specs
 - **Current Scan Method**: Local directory scanning only
 
 **Key Features:**
+
 ```typescript
 // Document Types Supported
 type DocumentType = 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec';
@@ -24,18 +26,19 @@ type DocumentType = 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'sp
 async scanDocuments(workspaceId: string) {
   // Scans local directories like:
   // - 01-vision/
-  // - 02-adrs/ 
+  // - 02-adrs/
   // - 03-prds/
   // - 04-epics/
   // - 05-features/
   // - 06-tasks/
   // - 07-specs/
-  
+
   // Only processes .md files in these directories
 }
 ```
 
 #### 2. **GitHub Code Analyzer** (`src/fact-integration/github-code-analyzer.ts`)
+
 - **Purpose**: Analyzes GitHub repositories for code patterns
 - **Current Focus**: Code snippets and patterns, NOT documentation
 - **Integration**: FACT system knowledge base
@@ -60,13 +63,15 @@ const workspaceId = await documentProcessor.loadWorkspace('./my-project');
 ## 🚫 **Missing: Repository Import Functionality**
 
 ### **What's NOT Currently Available:**
+
 1. **Git Repository Cloning** - No automatic repo cloning
-2. **Remote Document Scanning** - Can't scan GitHub/GitLab repos directly  
+2. **Remote Document Scanning** - Can't scan GitHub/GitLab repos directly
 3. **Batch Repository Import** - No bulk import from multiple repos
 4. **Documentation Detection** - No smart detection of docs in various repo structures
 5. **Repository Metadata Integration** - No integration of repo info with documents
 
 ### **Current Limitations:**
+
 - Must manually clone repositories locally first
 - No automatic discovery of documentation in repos
 - No handling of different documentation structures (README.md, docs/, wiki/, etc.)
@@ -100,7 +105,7 @@ import { DomainDiscoveryBridge } from './src/coordination/discovery/domain-disco
 // The bridge can work with any document structure
 const bridge = new DomainDiscoveryBridge(
   documentProcessor,
-  domainAnalyzer, 
+  domainAnalyzer,
   projectAnalyzer,
   intelligenceCoordinator
 );
@@ -167,15 +172,15 @@ private async loadFromRepository(repoUrl: string, options: any) {
 private getDocumentType(path: string, content?: string): DocumentType {
   // Current: Only checks directory structure
   // Enhanced: Also analyzes content, filename patterns, metadata
-  
+
   const filename = basename(path).toLowerCase();
-  
+
   // Smart classification based on multiple factors
   if (filename.includes('vision') || content?.includes('# Vision')) return 'vision';
   if (filename.includes('adr-') || filename.includes('decision')) return 'adr';
   if (filename.includes('prd') || content?.includes('Product Requirements')) return 'prd';
   // ... more intelligent classification
-  
+
   return this.classifyByContent(content); // ML-based classification
 }
 ```
@@ -183,18 +188,21 @@ private getDocumentType(path: string, content?: string): DocumentType {
 ## 🎯 **Recommended Implementation Plan**
 
 ### **Phase 1: Basic Repository Import (2-3 days)**
+
 1. Create `RepositoryImportService` class
 2. Add git cloning functionality (using `simple-git` package)
 3. Extend `DocumentProcessor.loadWorkspace()` to accept repository URLs
 4. Basic document detection and classification
 
-### **Phase 2: Smart Document Detection (3-5 days)**  
+### **Phase 2: Smart Document Detection (3-5 days)**
+
 1. Implement content-based document classification
 2. Add support for various documentation structures
 3. Integrate repository metadata (stars, contributors, etc.)
 4. Add bulk import capabilities
 
 ### **Phase 3: Advanced Integration (5-7 days)**
+
 1. TUI interface for repository import
 2. Progress tracking and error handling
 3. Caching and incremental updates
@@ -212,25 +220,31 @@ import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 
 export class SimpleRepoImporter {
-  async importRepository(repoUrl: string, targetDir: string): Promise<string[]> {
+  async importRepository(
+    repoUrl: string,
+    targetDir: string
+  ): Promise<string[]> {
     const tempDir = `/tmp/repo-import-${Date.now()}`;
-    
+
     try {
       // Clone repository
       execSync(`git clone ${repoUrl} ${tempDir}`, { stdio: 'inherit' });
-      
+
       // Find all markdown files
       const mdFiles = await this.findMarkdownFiles(tempDir);
-      
+
       // Create workspace structure
       await this.createWorkspaceStructure(targetDir);
-      
+
       // Copy and classify documents
-      const importedFiles = await this.classifyAndCopyDocuments(mdFiles, targetDir);
-      
+      const importedFiles = await this.classifyAndCopyDocuments(
+        mdFiles,
+        targetDir
+      );
+
       // Clean up
       execSync(`rm -rf ${tempDir}`);
-      
+
       return importedFiles;
     } catch (error) {
       console.error('Repository import failed:', error);
@@ -241,13 +255,13 @@ export class SimpleRepoImporter {
   private async findMarkdownFiles(repoPath: string): Promise<string[]> {
     // Recursively find all .md files
     const result: string[] = [];
-    
+
     const scan = async (dir: string) => {
       const files = await readdir(dir, { withFileTypes: true });
-      
+
       for (const file of files) {
         const fullPath = join(dir, file.name);
-        
+
         if (file.isDirectory() && !file.name.startsWith('.')) {
           await scan(fullPath);
         } else if (file.name.endsWith('.md')) {
@@ -255,27 +269,30 @@ export class SimpleRepoImporter {
         }
       }
     };
-    
+
     await scan(repoPath);
     return result;
   }
 
-  private async classifyAndCopyDocuments(files: string[], targetDir: string): Promise<string[]> {
+  private async classifyAndCopyDocuments(
+    files: string[],
+    targetDir: string
+  ): Promise<string[]> {
     const imported: string[] = [];
-    
+
     for (const file of files) {
       const content = await readFile(file, 'utf8');
       const docType = this.classifyDocument(file, content);
       const targetSubdir = this.getTargetDirectory(docType);
-      
+
       // Copy to appropriate directory
       const filename = basename(file);
       const targetPath = join(targetDir, targetSubdir, filename);
-      
+
       await copyFile(file, targetPath);
       imported.push(targetPath);
     }
-    
+
     return imported;
   }
 }
@@ -294,6 +311,7 @@ const workspaceId = await documentProcessor.loadWorkspace('./docs');
 ## 🎉 **Summary**
 
 ### **Current State:**
+
 - ✅ **Excellent local document processing** - Full-featured system for local docs
 - ✅ **Smart document classification** - Handles vision, ADRs, PRDs, epics, features, tasks
 - ✅ **Real-time monitoring** - File watching and auto-processing
@@ -303,17 +321,20 @@ const workspaceId = await documentProcessor.loadWorkspace('./docs');
 ### **To Import Documents from Repos:**
 
 **Option A (Manual - Works Today):**
+
 1. Clone repository locally
 2. Organize docs into expected directory structure
 3. Use existing `documentProcessor.loadWorkspace()`
 
 **Option B (Recommended Enhancement):**
-1. Implement `RepositoryImportService` 
+
+1. Implement `RepositoryImportService`
 2. Add git cloning and smart document detection
 3. Extend `DocumentProcessor` with repository support
 4. Integrate with existing domain discovery system
 
 ### **Implementation Effort:**
+
 - **Basic functionality**: 2-3 days
 - **Production-ready**: 1-2 weeks
 - **Full TUI integration**: 2-3 weeks
@@ -322,4 +343,4 @@ The document processing system is **excellent** and **ready to be extended** wit
 
 ---
 
-*Analysis completed by Claude Code on 2025-08-12*
+_Analysis completed by Claude Code on 2025-08-12_

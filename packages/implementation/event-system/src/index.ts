@@ -9,7 +9,7 @@
 // MAIN EXPORTS - Core functionality from src/main
 // =============================================================================
 // Import for internal use
-import { EventBus } from './main';
+import { EventBus } from './main;
 
 export {
   EventBus,
@@ -21,7 +21,7 @@ export {
   createTypeSafeEventBus,
   uel,
   createUEL,
-} from './main';
+} from './main;
 
 // =============================================================================
 // NEURAL INTEGRATION - AI-powered event processing
@@ -31,12 +31,12 @@ export {
   createNeuralEventProcessor,
   createHighPerformanceNeuralProcessor,
   createFullNeuralProcessor,
-} from './neural-integration';
+} from './neural-integration;
 
 export type {
   NeuralEventConfig,
   EventClassification,
-} from './neural-integration';
+} from './neural-integration;
 
 // =============================================================================
 // CORE TYPES - Essential interfaces
@@ -71,7 +71,7 @@ export type {
   CoreEvent,
   EventTypeFromSchema,
   AllEventTypes,
-} from './main';
+} from './main;
 
 // =============================================================================
 // EVENT SYSTEM DOMAIN TYPES - Comprehensive event domain types
@@ -126,7 +126,7 @@ export type {
   EventResult,
   EventProcessingResult,
   EventSubscriptionResult,
-} from './types/index';
+} from './types/index;
 
 // Export constants and type guards
 export {
@@ -135,7 +135,7 @@ export {
   EventPriorityMap,
   EventConstants,
   UELTypeGuards,
-} from './types/index';
+} from './types/index;
 
 // Export enums (avoiding duplicate exports - these are already exported as types above)
 
@@ -149,7 +149,7 @@ export {
   createValidationChain,
   BaseEventSchema,
   EventSchemas,
-} from './main';
+} from './main;
 
 // =============================================================================
 // MIDDLEWARE SYSTEM
@@ -163,7 +163,7 @@ export {
   createConditionalMiddleware,
   createEventTypeMiddleware,
   createAsyncMiddleware,
-} from './main';
+} from './main;
 
 // =============================================================================
 // UTILITY FUNCTIONS
@@ -180,6 +180,6 @@ export function createEventSystem(config?: any) {
  * Package information
  */
 export const VERSION ='1.0.1;
-export const DESCRIPTION = 'Type-safe event system with neural intelligence';
+export const DESCRIPTION = 'Type-safe event system with neural intelligence;
 
 export default createEventSystem;

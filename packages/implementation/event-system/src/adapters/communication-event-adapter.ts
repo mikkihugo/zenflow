@@ -96,7 +96,7 @@ interface RPCClientConfig {
   retries?: number;
 }
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 /**
  * Communication event adapter configuration extending UEL EventManagerConfig.
@@ -228,7 +228,7 @@ interface CommunicationCorrelation {
   protocolType: string;
   messageIds: string[];
   operation: string;
-  status:'active|completed|failed|timeout;
+  status: 'active|completed|failed|timeout;
   performance: {
     totalLatency: number;
     communicationEfficiency: number;
@@ -244,8 +244,8 @@ interface CommunicationCorrelation {
  */
 interface CommunicationHealthEntry {
   component: string;
-  componentType:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||protocol;
-  status: 'healthy|degraded|unhealthy|unknown;
+  componentType: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin' | 'protocol;
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown;
   lastCheck: Date;
   consecutiveFailures: number;
   communicationLatency: number;
@@ -268,7 +268,7 @@ interface CommunicationHealthEntry {
  */
 interface WrappedCommunicationComponent {
   component: unknown;
-  componentType:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||protocol;
+  componentType: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin' | 'protocol;
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
   eventMappings: Map<string, string>;
@@ -444,8 +444,8 @@ export class CommunicationEventAdapter implements EventManager {
       ...config,
     };
 
-    this.logger = getLogger(`CommunicationEventAdapter:${this.name}`);`
-    this.logger.info(`Creating communication event adapter: ${this.name}`);`
+    this.logger = getLogger(`CommunicationEventAdapter:${this.name}`);
+    this.logger.info(`Creating communication event adapter: ${this.name}`);
 
     // Set max listeners to handle many communication components
   }
@@ -465,7 +465,7 @@ export class CommunicationEventAdapter implements EventManager {
       return;
     }
 
-    this.logger.info(`Starting communication event adapter: ${this.name}`);`
+    this.logger.info(`Starting communication event adapter: ${this.name}`);
 
     try {
       // Initialize communication component integrations
@@ -491,17 +491,17 @@ export class CommunicationEventAdapter implements EventManager {
 
       this.running = true;
       this.startTime = new Date();
-      this.emitInternal('start');'
+      this.emitInternal('start');
 
       this.logger.info(
-        `Communication event adapter started successfully: ${this.name}``
+        `Communication event adapter started successfully: ${this.name}`
       );
     } catch (error) {
       this.logger.error(
-        `Failed to start communication event adapter ${this.name}:`,`
+        `Failed to start communication event adapter ${this.name}:`,
         error
       );
-      this.emitInternal('error', error);'
+      this.emitInternal('error', error);
       throw error;
     }
   }
@@ -577,7 +577,7 @@ export class CommunicationEventAdapter implements EventManager {
     try {
       // Validate event (assume valid for SystemEvent - would check CommunicationEvent fields in real implementation)
       if (!(event.id && event.timestamp && event.source && event.type)) {
-        throw new Error('Invalid communication event format');'
+        throw new Error('Invalid communication event format');
       }
 
       // Apply timeout if specified
@@ -962,7 +962,7 @@ export class CommunicationEventAdapter implements EventManager {
     // Determine overall health status
     let status: EventManagerStatus['status'] = 'healthy';
     if (errorRate > 20||!this.running) {
-      status ='unhealthy;
+      status ='unhealthy';
     } else if (
       errorRate > 10||Object.values(componentHealth).some((h) => h.status !=='healthy')'
     ) {

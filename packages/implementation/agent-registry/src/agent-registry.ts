@@ -61,10 +61,10 @@ export class AgentRegistry extends TypedEventBase {
 
   constructor(
     _memoryCoordinator?: JsonObject,
-    sessionPrefix = 'enhanced-agents''
+    sessionPrefix = 'enhanced-agents'
   ) {
     super();
-    this.logger = getLogger(`EnhancedAgentRegistry:${sessionPrefix}`);`
+    this.logger = getLogger(`EnhancedAgentRegistry:${sessionPrefix}`);
 
     // Create service container
     this.container = createServiceContainer();

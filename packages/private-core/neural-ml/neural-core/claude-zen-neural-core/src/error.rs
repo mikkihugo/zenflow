@@ -289,6 +289,7 @@ impl ErrorBuilder {
   }
 
   /// Build the error
+  #[must_use]
   pub fn build(self) -> NeuroDivergentError {
     match self.error_type {
       ErrorType::Config => NeuroDivergentError::ConfigError {

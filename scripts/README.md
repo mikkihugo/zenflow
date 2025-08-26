@@ -19,7 +19,7 @@ npm run import-scanner
 ### What it does
 
 1. **Scans** repository for all `.md` files automatically
-2. **Analyzes** each document with LLM-style categorization  
+2. **Analyzes** each document with LLM-style categorization
 3. **Presents** documents **file-by-file** for your approval
 4. **Categorizes** as vision/roadmap/epic/prd/adr based on content
 5. **Imports** approved documents into database with relationships
@@ -41,8 +41,9 @@ Action [i]mport / [s]kip / [m]odify category / [q]uit:
 ```
 
 **Interactive Options:**
+
 - **[i]mport** - Import as analyzed category
-- **[s]kip** - Skip this document  
+- **[s]kip** - Skip this document
 - **[m]odify** - Change category before import
 - **[q]uit** - Exit the scanner
 
@@ -84,7 +85,7 @@ Use `npm run demo-scanner` to see the workflow without database setup:
 
 ✅ Import process completed!
    📄 Documents imported: 15
-   ⏭️ Documents skipped: 8  
+   ⏭️ Documents skipped: 8
    🎯 Total reviewed: 23
 ```
 
@@ -99,6 +100,7 @@ Use `npm run demo-scanner` to see the workflow without database setup:
 ### Repository Scanning
 
 **Automatically scans:**
+
 - All `.md` files in the repository
 - Excludes: `node_modules`, `.git`, `dist`, `build`, etc.
 - Filters: Skips small files (<100 chars) and low-relevance content
@@ -107,8 +109,9 @@ Use `npm run demo-scanner` to see the workflow without database setup:
 ### Database Import
 
 **Creates proper entities:**
+
 - `VisionDocumentEntity` for vision documents
-- `EpicDocumentEntity` for epic documents  
+- `EpicDocumentEntity` for epic documents
 - `PRDDocumentEntity` for PRD documents
 - Full metadata tracking and import history
 - Semantic embeddings for vector search

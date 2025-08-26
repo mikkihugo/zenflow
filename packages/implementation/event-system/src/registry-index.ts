@@ -24,7 +24,7 @@ export {
   MigratedEventRegistry as EventRegistry,
   getMigratedEventRegistry as getEventRegistry,
   createMigratedEventRegistry as createEventRegistry,
-} from './registry-migrated';
+} from './registry-migrated;
 
 // =============================================================================
 // LEGACY IMPLEMENTATIONS - Available for fallback
@@ -33,7 +33,7 @@ export {
 export {
   EventRegistry as LegacyEventRegistry,
   globalEventRegistry,
-} from './registry';
+} from './registry;
 
 // =============================================================================
 // TYPE EXPORTS - Core interfaces and types
@@ -45,7 +45,7 @@ export type {
   FactoryRegistry,
   HealthMonitoringConfig,
   EventDiscoveryConfig,
-} from './registry';
+} from './registry;
 
 // =============================================================================
 // ENHANCED FUNCTIONALITY - ServiceContainer-based features
@@ -56,7 +56,7 @@ export {
   MigratedEventRegistry,
   getMigratedEventRegistry,
   createMigratedEventRegistry,
-} from './registry-migrated';
+} from './registry-migrated;
 
 /**
  * Convenience factory function that creates the migrated registry with sensible defaults

@@ -10,7 +10,7 @@ import type {
   DomainValidationError,
   Result,
   TypeSchema,
-} from './types';
+} from './types;
 
 /**
  * Simple domain boundary validator implementation

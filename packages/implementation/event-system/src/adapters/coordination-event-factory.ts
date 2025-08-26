@@ -15,13 +15,13 @@
  */
 
 import { getLogger, type Logger, getConfig } from '@claude-zen/foundation';
-import type { EventManager, EventManagerFactory } from '../core/interfaces';
-import { EventManagerTypes } from '../core/interfaces';
-import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
+import type { EventManager, EventManagerFactory } from '../core/interfaces;
+import { EventManagerTypes } from '../core/interfaces;
+import type { CoordinationEventAdapterConfig } from './coordination-event-adapter;
 import {
   CoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-} from './coordination-event-adapter';
+} from './coordination-event-adapter;
 
 /**
  * Coordination Event Manager Factory.

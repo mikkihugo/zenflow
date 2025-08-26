@@ -12,24 +12,28 @@ Code-Mesh CLI provides a powerful command-line interface to harness the full pot
 ## 🌟 Features
 
 ### ⚡ **Swarm Orchestration**
+
 - **Multi-Topology Swarms**: Create mesh, hierarchical, ring, or star topologies
 - **Agent Management**: Spawn, monitor, and coordinate different agent types
 - **Task Distribution**: Intelligent task allocation across available agents
 - **Real-time Monitoring**: Live performance metrics and agent status
 
 ### 🧠 **Neural Intelligence**
+
 - **Cognitive Patterns**: Choose from 6 different thinking patterns
 - **Learning Capabilities**: Agents that adapt and improve over time
 - **Pattern Recognition**: AI-powered analysis of code and data patterns
 - **Cross-Agent Learning**: Shared knowledge across the entire swarm
 
 ### 🔧 **Developer Tools**
+
 - **File Operations**: Concurrent file processing with WASM speed
 - **Code Analysis**: Advanced static analysis and optimization suggestions
 - **Performance Profiling**: Real-time performance monitoring and bottleneck detection
 - **Integration Ready**: Seamless integration with existing development workflows
 
 ### 🌐 **Universal Compatibility**
+
 - **Cross-Platform**: Windows, macOS, Linux support
 - **Shell Integration**: Works with bash, zsh, fish, PowerShell
 - **CI/CD Ready**: Perfect for automated workflows and deployment pipelines
@@ -91,7 +95,7 @@ code-mesh swarm monitor --live
 ```bash
 # Spawn different types of agents
 code-mesh agent spawn researcher --name "code-analyzer"
-code-mesh agent spawn coder --name "optimizer" 
+code-mesh agent spawn coder --name "optimizer"
 code-mesh agent spawn analyst --name "performance-monitor"
 
 # List all agents
@@ -119,6 +123,7 @@ code-mesh task results --task-id task-456
 ### Core Commands
 
 #### `code-mesh init`
+
 Initialize a new Code-Mesh workspace with default configuration.
 
 ```bash
@@ -129,6 +134,7 @@ code-mesh init [OPTIONS]
 ```
 
 #### `code-mesh config`
+
 Manage Code-Mesh configuration settings.
 
 ```bash
@@ -142,6 +148,7 @@ SUBCOMMANDS:
 ```
 
 #### `code-mesh status`
+
 Display comprehensive system status and health information.
 
 ```bash
@@ -154,6 +161,7 @@ code-mesh status [OPTIONS]
 ### Swarm Management
 
 #### `code-mesh swarm`
+
 Manage distributed agent swarms.
 
 ```bash
@@ -161,13 +169,14 @@ code-mesh swarm <SUBCOMMAND>
 
 SUBCOMMANDS:
     create      Create a new swarm
-    list        List active swarms  
+    list        List active swarms
     destroy     Destroy a swarm
     monitor     Monitor swarm performance
     optimize    Optimize swarm topology
 ```
 
 #### `code-mesh agent`
+
 Manage individual agents within swarms.
 
 ```bash
@@ -184,6 +193,7 @@ SUBCOMMANDS:
 ### Task Execution
 
 #### `code-mesh task`
+
 Execute and manage tasks across the swarm.
 
 ```bash
@@ -200,6 +210,7 @@ SUBCOMMANDS:
 ### Performance & Monitoring
 
 #### `code-mesh perf`
+
 Performance monitoring and optimization tools.
 
 ```bash
@@ -228,7 +239,7 @@ code-mesh swarm create \
 
 # Spawn specialized agents
 code-mesh agent spawn researcher --capabilities "static-analysis,dependency-analysis"
-code-mesh agent spawn analyst --capabilities "performance-analysis,security-analysis"  
+code-mesh agent spawn analyst --capabilities "performance-analysis,security-analysis"
 code-mesh agent spawn coder --capabilities "optimization,refactoring"
 
 # Execute comprehensive code analysis
@@ -389,7 +400,7 @@ code-mesh ide install vim
   with:
     agents: 5
     tasks: "analyze,optimize,test"
-    
+
 # GitLab CI
 code_mesh_analysis:
   image: ruvnet/code-mesh:latest
@@ -458,6 +469,6 @@ at your option.
 
 **Code-Mesh CLI - Command Your Swarm Intelligence** 🚀⌨️
 
-*Unleash the power of distributed computing from your terminal*
+_Unleash the power of distributed computing from your terminal_
 
 </div>

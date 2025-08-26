@@ -33,7 +33,7 @@ import type {
 /**
  * Event priorities for processing order and urgency
  */
-export type EventPriority = 'low|medium|high|critical';
+export type EventPriority = 'low|medium|high|critical;
 
 /**
  * Core system event interface - Base for all events
@@ -158,7 +158,7 @@ export interface SystemLifecycleEvent extends SystemEvent {
  */
 export interface CoordinationEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
-  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail';
+  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail;
   targetId: string; // swarmId, agentId, taskId, etc.
   details?: {
     agentCount?: number;
@@ -240,7 +240,7 @@ export interface CommunicationProtocol {
  */
 export interface MonitoringEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||monitoring:trace;
-  operation:|'collect|report|alert|recover|threshold|anomaly|trace';
+  operation:|'collect|report|alert|recover|threshold|anomaly|trace;
   component: string;
   details?: {
     metricName?: string;
@@ -272,7 +272,7 @@ export interface MonitoringEvent extends SystemEvent {
  */
 export interface InterfaceEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||interface:mobile|interface:desktop;
-  operation:|''start|stop|command|request|response|interaction|render';
+  operation:|''start|stop|command|request|response|interaction|render;
   interface: 'cli|web|tui|api|mobile|desktop;
   details?: {
     command?: string;
@@ -330,7 +330,7 @@ export interface NeuralEvent extends SystemEvent {
  */
 export interface DatabaseEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||database:replication;
-  operation:|'select|insert|update|delete|create|drop|index | backup'|restore|replicate';
+  operation:|'select|insert|update|delete|create|drop|index | backup'|restore|replicate;
   details?: {
     tableName?: string;
     databaseName?: string;
@@ -356,7 +356,7 @@ export interface DatabaseEvent extends SystemEvent {
  */
 export interface MemoryEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||memory:vector|memory:graph;
-  operation:|''get|set|delete|clear|expire|cleanup|allocate | deallocate'|search|index';
+  operation:|''get|set|delete|clear|expire|cleanup|allocate | deallocate'|search|index;
   details?: {
     key?: string;
     keyPattern?: string;
@@ -414,7 +414,7 @@ export interface WorkflowEvent extends SystemEvent {
 export interface OrchestrationEvent extends SystemEvent {
   type:|''javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||orchestration:bottleneck;
   operation:|'plan|execute|monitor|optimize|escalate|delegate|coordinate|sync;
-  level: 'portfolio' | 'program' | 'execution';
+  level: 'portfolio' | 'program' | 'execution;
   details?: {
     orchestrationId?: string;
     parentId?: string;
@@ -441,7 +441,7 @@ export interface OrchestrationEvent extends SystemEvent {
  */
 export interface SafeEvent extends SystemEvent {
   type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||safe:execution;
-  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set';
+  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set;
   details?: {
     epicId?: string;
     piId?: string;
@@ -449,7 +449,7 @@ export interface SafeEvent extends SystemEvent {
     businessValue?: number;
     confidence?: number;
     phase?: 'preparation|day1|day2|finalization;
-    investmentHorizon?: 'near' | 'mid' | 'long';
+    investmentHorizon?: 'near' | 'mid' | 'long;
     budgetAllocation?: number;
     piObjectives?: Array<{
       id: string;
@@ -473,10 +473,10 @@ export interface MemoryOrchestrationEvent extends SystemEvent {
   details?: {
     systemId?: string;
     cacheId?: string;
-    syncType?: 'full' | 'incremental' | 'delta';
+    syncType?: 'full' | 'incremental' | 'delta;
     dataSize?: number;
     keyPattern?: string;
-    consistencyLevel?: 'eventual' | 'strong' | 'weak';
+    consistencyLevel?: 'eventual' | 'strong' | 'weak;
     optimizationStrategy?: 'lru|lfu|ttl|adaptive;
     memoryPools?: string[];
     crossSystemSync?: boolean;

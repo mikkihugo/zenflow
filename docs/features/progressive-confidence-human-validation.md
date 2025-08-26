@@ -28,8 +28,14 @@ Questions now include additional metadata for better tracking:
 ```typescript
 interface ValidationQuestion {
   id: string;
-  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 
-        'priority' | 'checkpoint' | 'review';
+  type:
+    | 'relevance'
+    | 'boundary'
+    | 'relationship'
+    | 'naming'
+    | 'priority'
+    | 'checkpoint'
+    | 'review';
   question: string;
   context: any;
   options?: string[];
@@ -95,6 +101,7 @@ Domains that don't meet the minimum threshold will trigger additional validation
 ### 6. Confidence Impact Calculation
 
 Smart confidence adjustment based on:
+
 - Question type (boundary, relationship, naming, etc.)
 - Response sentiment (positive, negative, neutral)
 - Domain validation history
@@ -103,18 +110,23 @@ Smart confidence adjustment based on:
 ### 7. Interactive Features
 
 #### Domain Review
+
 At any checkpoint, validators can review all discovered domains:
+
 - View confidence levels
 - Check validation counts
 - See associated files
 
 #### Confidence Adjustment
+
 Manual confidence adjustment options:
+
 - Increase/decrease by 10%
 - Set to specific value
 - Keep current level
 
 #### Validator Notes
+
 Capture additional context and observations at any checkpoint.
 
 ## Usage Example
@@ -161,7 +173,7 @@ console.log('Audit trail entries:', result.learningHistory.length);
 
 1. **Initial Discovery**: System analyzes codebase and documents
 2. **Checkpoint Detection**: Monitors confidence levels for configured thresholds
-3. **Human Validation**: 
+3. **Human Validation**:
    - Prioritized questions based on confidence and importance
    - Batch presentation for better UX
    - Response time tracking
@@ -181,14 +193,14 @@ console.log('Audit trail entries:', result.learningHistory.length);
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `targetConfidence` | number | 0.8 | Target confidence level to achieve |
-| `validationCheckpoints` | number[] | [0.3, 0.5, 0.7, 0.9] | Confidence levels that trigger checkpoints |
-| `requireHumanApprovalAt` | number[] | [0.5, 0.8] | Checkpoints requiring explicit approval |
-| `minimumValidationsPerDomain` | number | 2 | Minimum validations per domain |
-| `validationTimeoutMs` | number | 300000 | Timeout for validation responses (ms) |
-| `enableDetailedAuditTrail` | boolean | true | Enable comprehensive audit logging |
+| Option                        | Type     | Default              | Description                                |
+| ----------------------------- | -------- | -------------------- | ------------------------------------------ |
+| `targetConfidence`            | number   | 0.8                  | Target confidence level to achieve         |
+| `validationCheckpoints`       | number[] | [0.3, 0.5, 0.7, 0.9] | Confidence levels that trigger checkpoints |
+| `requireHumanApprovalAt`      | number[] | [0.5, 0.8]           | Checkpoints requiring explicit approval    |
+| `minimumValidationsPerDomain` | number   | 2                    | Minimum validations per domain             |
+| `validationTimeoutMs`         | number   | 300000               | Timeout for validation responses (ms)      |
+| `enableDetailedAuditTrail`    | boolean  | true                 | Enable comprehensive audit logging         |
 
 ## Best Practices
 

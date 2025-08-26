@@ -9,7 +9,8 @@ Claude Zen Flow integrates advanced neural network capabilities with WebAssembly
 ## 🧠 **Neural Architecture Components**
 
 ### **1. Core Neural Network System**
-```typescript
+
+````typescript
 /**
  * Core neural network implementation with WASM acceleration
  * Supports multiple network types and training algorithms
@@ -21,7 +22,7 @@ Claude Zen Flow integrates advanced neural network capabilities with WebAssembly
  *   optimizer: 'adam',
  *   accelerated: true // Enable WASM acceleration
  * });
- * 
+ *
  * await network.train(trainingData, {
  *   epochs: 100,
  *   batchSize: 32,
@@ -58,25 +59,28 @@ class NeuralNetwork {
         env: {
           // Memory allocation functions
           memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
-          
+
           // Math functions for neural operations
           exp: Math.exp,
           log: Math.log,
           pow: Math.pow,
           sqrt: Math.sqrt,
-          
+
           // Random number generation for initialization
           random: Math.random,
-          
+
           // Debug and logging functions
           log_debug: (msg: number) => console.debug(`WASM Debug: ${msg}`),
-          log_error: (msg: number) => console.error(`WASM Error: ${msg}`)
-        }
+          log_error: (msg: number) => console.error(`WASM Error: ${msg}`),
+        },
       });
 
       console.log('WASM neural acceleration initialized successfully');
     } catch (error) {
-      console.warn('WASM acceleration failed, falling back to JavaScript:', error);
+      console.warn(
+        'WASM acceleration failed, falling back to JavaScript:',
+        error
+      );
       this.wasmModule = null; // Fall back to JS implementation
     }
   }
@@ -103,12 +107,12 @@ class NeuralNetwork {
       batchIndex: 0,
       loss: Infinity,
       accuracy: 0,
-      learningRate: config.learningRate
+      learningRate: config.learningRate,
     };
 
     // Prepare training batches
     const batches = this.createBatches(trainingData, config.batchSize);
-    
+
     for (let epoch = 0; epoch < config.epochs; epoch++) {
       let epochLoss = 0;
       let correctPredictions = 0;
@@ -118,16 +122,16 @@ class NeuralNetwork {
 
       for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
         const batch = batches[batchIndex];
-        
+
         // Forward pass - compute predictions
-        const batchLoss = this.wasmModule ? 
-          await this.forwardPassWasm(batch) : 
-          await this.forwardPassJS(batch);
+        const batchLoss = this.wasmModule
+          ? await this.forwardPassWasm(batch)
+          : await this.forwardPassJS(batch);
 
         // Backward pass - compute gradients
-        const gradients = this.wasmModule ?
-          await this.backwardPassWasm(batch) :
-          await this.backwardPassJS(batch);
+        const gradients = this.wasmModule
+          ? await this.backwardPassWasm(batch)
+          : await this.backwardPassJS(batch);
 
         // Update weights using optimizer
         await this.updateWeights(gradients, config.optimizer);
@@ -142,7 +146,11 @@ class NeuralNetwork {
 
         // Learning rate scheduling
         if (config.learningRateSchedule) {
-          this.updateLearningRate(epoch, batchIndex, config.learningRateSchedule);
+          this.updateLearningRate(
+            epoch,
+            batchIndex,
+            config.learningRateSchedule
+          );
         }
 
         // Early stopping check
@@ -167,13 +175,17 @@ class NeuralNetwork {
 
       // Progress reporting
       if (epoch % 10 === 0 || epoch === config.epochs - 1) {
-        console.log(`Epoch ${epoch}: Loss=${avgLoss.toFixed(4)}, Accuracy=${(accuracy * 100).toFixed(2)}%`);
+        console.log(
+          `Epoch ${epoch}: Loss=${avgLoss.toFixed(4)}, Accuracy=${(accuracy * 100).toFixed(2)}%`
+        );
       }
 
       // Validation check
       if (config.validationData && epoch % config.validationInterval === 0) {
         const validationResults = await this.validate(config.validationData);
-        console.log(`Validation: Loss=${validationResults.loss.toFixed(4)}, Accuracy=${(validationResults.accuracy * 100).toFixed(2)}%`);
+        console.log(
+          `Validation: Loss=${validationResults.loss.toFixed(4)}, Accuracy=${(validationResults.accuracy * 100).toFixed(2)}%`
+        );
       }
     }
 
@@ -191,7 +203,7 @@ class NeuralNetwork {
       lossHistory,
       trainingTime,
       epochsCompleted: this.trainingState.epoch + 1,
-      convergenceAchieved: this.checkConvergence(lossHistory)
+      convergenceAchieved: this.checkConvergence(lossHistory),
     };
   }
 
@@ -205,7 +217,7 @@ class NeuralNetwork {
     }
 
     const wasmExports = this.wasmModule.instance.exports as any;
-    
+
     // Allocate memory for batch data
     const inputSize = batch.inputs[0].length;
     const batchSize = batch.inputs.length;
@@ -213,8 +225,12 @@ class NeuralNetwork {
 
     // Copy input data to WASM memory
     const memory = wasmExports.memory.buffer;
-    const inputArray = new Float32Array(memory, inputPtr, inputSize * batchSize);
-    
+    const inputArray = new Float32Array(
+      memory,
+      inputPtr,
+      inputSize * batchSize
+    );
+
     for (let i = 0; i < batchSize; i++) {
       inputArray.set(batch.inputs[i], i * inputSize);
     }
@@ -230,8 +246,13 @@ class NeuralNetwork {
     );
 
     // Read results from WASM memory
-    const outputSize = this.networkTopology.layers[this.networkTopology.layers.length - 1];
-    const outputArray = new Float32Array(memory, outputPtr, outputSize * batchSize);
+    const outputSize =
+      this.networkTopology.layers[this.networkTopology.layers.length - 1];
+    const outputArray = new Float32Array(
+      memory,
+      outputPtr,
+      outputSize * batchSize
+    );
 
     // Calculate loss
     let totalLoss = 0;
@@ -257,11 +278,15 @@ class NeuralNetwork {
     for (const example of batch.inputs) {
       // Forward propagation through all layers
       let activation = example;
-      
-      for (let layer = 0; layer < this.networkTopology.layers.length - 1; layer++) {
+
+      for (
+        let layer = 0;
+        layer < this.networkTopology.layers.length - 1;
+        layer++
+      ) {
         const weights = this.networkTopology.weights[layer];
         const biases = this.networkTopology.biases[layer];
-        
+
         // Matrix multiplication: activation = weights * activation + biases
         const newActivation = new Float32Array(weights.length);
         for (let i = 0; i < weights.length; i++) {
@@ -269,9 +294,12 @@ class NeuralNetwork {
           for (let j = 0; j < activation.length; j++) {
             sum += weights[i][j] * activation[j];
           }
-          newActivation[i] = this.applyActivation(sum, this.networkTopology.activationFunction);
+          newActivation[i] = this.applyActivation(
+            sum,
+            this.networkTopology.activationFunction
+          );
         }
-        
+
         activation = newActivation;
       }
 
@@ -286,7 +314,10 @@ class NeuralNetwork {
   /**
    * Apply activation function (ReLU, Sigmoid, Tanh, etc.)
    */
-  private applyActivation(x: number, activationFunction: ActivationFunction): number {
+  private applyActivation(
+    x: number,
+    activationFunction: ActivationFunction
+  ): number {
     switch (activationFunction) {
       case 'relu':
         return Math.max(0, x);
@@ -314,21 +345,28 @@ class NeuralNetwork {
 
     for (const input of inputs) {
       let activation = input;
-      
+
       // Forward pass through all layers
-      for (let layer = 0; layer < this.networkTopology.layers.length - 1; layer++) {
+      for (
+        let layer = 0;
+        layer < this.networkTopology.layers.length - 1;
+        layer++
+      ) {
         const weights = this.networkTopology.weights[layer];
         const biases = this.networkTopology.biases[layer];
-        
+
         const newActivation = new Float32Array(weights.length);
         for (let i = 0; i < weights.length; i++) {
           let sum = biases[i];
           for (let j = 0; j < activation.length; j++) {
             sum += weights[i][j] * activation[j];
           }
-          newActivation[i] = this.applyActivation(sum, this.networkTopology.activationFunction);
+          newActivation[i] = this.applyActivation(
+            sum,
+            this.networkTopology.activationFunction
+          );
         }
-        
+
         activation = newActivation;
       }
 
@@ -348,14 +386,15 @@ class NeuralNetwork {
    */
   private applySoftmax(logits: Float32Array): Float32Array {
     const maxLogit = Math.max(...logits);
-    const exps = logits.map(x => Math.exp(x - maxLogit)); // Subtract max for numerical stability
+    const exps = logits.map((x) => Math.exp(x - maxLogit)); // Subtract max for numerical stability
     const sumExps = exps.reduce((sum, exp) => sum + exp, 0);
-    return new Float32Array(exps.map(exp => exp / sumExps));
+    return new Float32Array(exps.map((exp) => exp / sumExps));
   }
 }
-```
+````
 
 ### **2. Pre-configured Neural Architectures**
+
 ```typescript
 /**
  * Collection of pre-configured neural network architectures
@@ -375,7 +414,7 @@ export const NeuralArchitectures = {
       specialization: 'syntax-error-detection',
       languages: ['typescript', 'javascript', 'python', 'rust'],
       accuracy: 0.94,
-      trainingData: '2M+ code samples'
+      trainingData: '2M+ code samples',
     },
 
     // Code quality assessment
@@ -386,7 +425,7 @@ export const NeuralArchitectures = {
       specialization: 'code-quality-metrics',
       metrics: ['readability', 'maintainability', 'complexity', 'security'],
       accuracy: 0.89,
-      trainingData: 'Enterprise codebases'
+      trainingData: 'Enterprise codebases',
     },
 
     // Performance optimization suggestions
@@ -397,8 +436,8 @@ export const NeuralArchitectures = {
       specialization: 'performance-optimization',
       optimizations: ['algorithmic', 'memory', 'cpu', 'io'],
       accuracy: 0.87,
-      trainingData: 'Performance benchmarks'
-    }
+      trainingData: 'Performance benchmarks',
+    },
   },
 
   /**
@@ -412,9 +451,14 @@ export const NeuralArchitectures = {
       activation: 'relu',
       outputActivation: 'softmax',
       specialization: 'optimal-task-assignment',
-      features: ['agent-expertise', 'current-load', 'task-complexity', 'deadlines'],
+      features: [
+        'agent-expertise',
+        'current-load',
+        'task-complexity',
+        'deadlines',
+      ],
       accuracy: 0.92,
-      trainingData: 'Multi-agent scenarios'
+      trainingData: 'Multi-agent scenarios',
     },
 
     // Load balancing predictor
@@ -425,7 +469,7 @@ export const NeuralArchitectures = {
       specialization: 'load-prediction',
       metrics: ['cpu-usage', 'memory-usage', 'response-time', 'throughput'],
       accuracy: 0.88,
-      trainingData: 'Production workloads'
+      trainingData: 'Production workloads',
     },
 
     // Failure prediction and prevention
@@ -437,8 +481,8 @@ export const NeuralArchitectures = {
       timeHorizon: '1-24 hours',
       factors: ['resource-usage', 'error-patterns', 'communication-latency'],
       accuracy: 0.91,
-      trainingData: 'Production incidents'
-    }
+      trainingData: 'Production incidents',
+    },
   },
 
   /**
@@ -452,9 +496,15 @@ export const NeuralArchitectures = {
       activation: 'relu',
       outputActivation: 'softmax',
       specialization: 'documentation-quality',
-      aspects: ['clarity', 'completeness', 'accuracy', 'relevance', 'structure'],
+      aspects: [
+        'clarity',
+        'completeness',
+        'accuracy',
+        'relevance',
+        'structure',
+      ],
       accuracy: 0.86,
-      trainingData: 'Technical documentation'
+      trainingData: 'Technical documentation',
     },
 
     // Requirement extraction from natural language
@@ -465,7 +515,7 @@ export const NeuralArchitectures = {
       specialization: 'requirement-extraction',
       types: ['functional', 'non-functional', 'constraints', 'dependencies'],
       accuracy: 0.84,
-      trainingData: 'Project specifications'
+      trainingData: 'Project specifications',
     },
 
     // Code comment generation
@@ -476,8 +526,8 @@ export const NeuralArchitectures = {
       specialization: 'code-documentation',
       styles: ['javadoc', 'inline', 'docstring', 'tsdoc'],
       accuracy: 0.81,
-      trainingData: 'Well-documented codebases'
-    }
+      trainingData: 'Well-documented codebases',
+    },
   },
 
   /**
@@ -493,7 +543,7 @@ export const NeuralArchitectures = {
       specialization: 'performance-anomaly-detection',
       metrics: ['cpu', 'memory', 'disk', 'network', 'application'],
       accuracy: 0.93,
-      trainingData: 'Production monitoring data'
+      trainingData: 'Production monitoring data',
     },
 
     // Capacity planning predictor
@@ -505,9 +555,9 @@ export const NeuralArchitectures = {
       timeHorizon: '1-12 months',
       resources: ['cpu', 'memory', 'storage', 'bandwidth'],
       accuracy: 0.85,
-      trainingData: 'Growth patterns'
-    }
-  }
+      trainingData: 'Growth patterns',
+    },
+  },
 };
 
 /**
@@ -523,7 +573,7 @@ export async function createNeuralNetwork(
   // Parse architecture path (e.g., "CodeAnalysis.SyntaxAnalyzer")
   const [category, specific] = architectureName.split('.');
   const architecture = NeuralArchitectures[category]?.[specific];
-  
+
   if (!architecture) {
     throw new Error(`Architecture not found: ${architectureName}`);
   }
@@ -534,31 +584,31 @@ export async function createNeuralNetwork(
       layers: architecture.layers,
       activation: architecture.activation,
       outputActivation: architecture.outputActivation,
-      initialization: 'xavier'
+      initialization: 'xavier',
     },
     training: {
       learningRate: 0.001,
       batchSize: 32,
       epochs: 100,
       optimizer: 'adam',
-      earlyStoppingPatience: 10
+      earlyStoppingPatience: 10,
     },
     optimization: {
       l2Regularization: 0.001,
       dropout: 0.2,
-      batchNormalization: true
+      batchNormalization: true,
     },
     acceleration: {
       useWasm: true,
       useSIMD: true,
-      useGPU: false // Future: GPU acceleration via WebGPU
-    }
+      useGPU: false, // Future: GPU acceleration via WebGPU
+    },
   };
 
   // Merge with custom configuration
-  const finalConfig = customConfig ? 
-    mergeDeep(baseConfig, customConfig) : 
-    baseConfig;
+  const finalConfig = customConfig
+    ? mergeDeep(baseConfig, customConfig)
+    : baseConfig;
 
   // Create and initialize network
   const network = new NeuralNetwork(finalConfig);
@@ -574,11 +624,16 @@ export async function createNeuralNetwork(
 
 // Usage examples
 const syntaxAnalyzer = await createNeuralNetwork('CodeAnalysis.SyntaxAnalyzer');
-const taskAssigner = await createNeuralNetwork('SwarmCoordination.TaskAssigner');
-const anomalyDetector = await createNeuralNetwork('PerformanceMonitoring.AnomalyDetector');
+const taskAssigner = await createNeuralNetwork(
+  'SwarmCoordination.TaskAssigner'
+);
+const anomalyDetector = await createNeuralNetwork(
+  'PerformanceMonitoring.AnomalyDetector'
+);
 ```
 
 ### **3. WASM Performance Optimization**
+
 ```typescript
 /**
  * WebAssembly optimization layer for maximum neural network performance
@@ -595,39 +650,39 @@ class WasmNeuralOptimizer {
   async initialize(): Promise<void> {
     try {
       // Create shared memory for neural computations
-      this.memoryPool = new WebAssembly.Memory({ 
+      this.memoryPool = new WebAssembly.Memory({
         initial: 256, // 256 * 64KB = 16MB initial
         maximum: 1024, // 1024 * 64KB = 64MB maximum
-        shared: true // Enable shared memory for multi-threading
+        shared: true, // Enable shared memory for multi-threading
       });
 
       // Load optimized WASM module
       const wasmModule = await this.loadOptimizedWasmModule();
-      
+
       this.wasmInstance = await WebAssembly.instantiate(wasmModule, {
         env: {
           memory: this.memoryPool,
-          
+
           // High-performance math functions
           exp_simd: this.vectorizedExp,
           tanh_simd: this.vectorizedTanh,
           relu_simd: this.vectorizedRelu,
           softmax_simd: this.vectorizedSoftmax,
-          
+
           // Matrix operations with SIMD
           matrix_multiply_simd: this.simdMatrixMultiply,
           matrix_add_simd: this.simdMatrixAdd,
           matrix_transpose_simd: this.simdMatrixTranspose,
-          
+
           // Memory management
           malloc: this.wasmMalloc.bind(this),
           free: this.wasmFree.bind(this),
           memcpy: this.wasmMemcpy.bind(this),
-          
+
           // Debug and profiling
           profile_start: this.profileStart.bind(this),
-          profile_end: this.profileEnd.bind(this)
-        }
+          profile_end: this.profileEnd.bind(this),
+        },
       });
 
       console.log('WASM neural optimizer initialized with SIMD support');
@@ -659,12 +714,12 @@ class WasmNeuralOptimizer {
     }
 
     const exports = this.wasmInstance.exports as any;
-    
+
     // Allocate memory for matrices in WASM
     const sizeA = matrixA.length * 4; // 4 bytes per float
     const sizeB = matrixB.length * 4;
     const sizeResult = rowsA * colsB * 4;
-    
+
     const ptrA = exports.malloc(sizeA);
     const ptrB = exports.malloc(sizeB);
     const ptrResult = exports.malloc(sizeResult);
@@ -676,17 +731,10 @@ class WasmNeuralOptimizer {
       new Float32Array(memory, ptrB, matrixB.length).set(matrixB);
 
       // Perform optimized matrix multiplication
-      exports.matrix_multiply_simd(
-        ptrA, ptrB, ptrResult,
-        rowsA, colsA, colsB
-      );
+      exports.matrix_multiply_simd(ptrA, ptrB, ptrResult, rowsA, colsA, colsB);
 
       // Read result from WASM memory
-      const result = new Float32Array(
-        memory, 
-        ptrResult, 
-        rowsA * colsB
-      ).slice(); // Create a copy
+      const result = new Float32Array(memory, ptrResult, rowsA * colsB).slice(); // Create a copy
 
       return result;
     } finally {
@@ -711,7 +759,7 @@ class WasmNeuralOptimizer {
 
     const exports = this.wasmInstance.exports as any;
     const inputSize = input.length * 4;
-    
+
     const inputPtr = exports.malloc(inputSize);
     const outputPtr = exports.malloc(inputSize);
 
@@ -737,11 +785,7 @@ class WasmNeuralOptimizer {
       }
 
       // Read result
-      const result = new Float32Array(
-        memory,
-        outputPtr,
-        input.length
-      ).slice();
+      const result = new Float32Array(memory, outputPtr, input.length).slice();
 
       return result;
     } finally {
@@ -762,7 +806,7 @@ class WasmNeuralOptimizer {
       // Generate test matrices
       const matrixA = new Float32Array(size * size);
       const matrixB = new Float32Array(size * size);
-      
+
       for (let i = 0; i < matrixA.length; i++) {
         matrixA[i] = Math.random();
         matrixB[i] = Math.random();
@@ -782,16 +826,18 @@ class WasmNeuralOptimizer {
         size,
         wasmTime,
         jsTime,
-        speedup: jsTime / wasmTime
+        speedup: jsTime / wasmTime,
       });
 
-      console.log(`Size ${size}: WASM=${wasmTime.toFixed(2)}ms, JS=${jsTime.toFixed(2)}ms, Speedup=${(jsTime/wasmTime).toFixed(1)}x`);
+      console.log(
+        `Size ${size}: WASM=${wasmTime.toFixed(2)}ms, JS=${jsTime.toFixed(2)}ms, Speedup=${(jsTime / wasmTime).toFixed(1)}x`
+      );
     }
 
     return {
       results,
       recommendedThreshold: this.calculateOptimalThreshold(results),
-      wasmOverhead: this.estimateWasmOverhead(results)
+      wasmOverhead: this.estimateWasmOverhead(results),
     };
   }
 
@@ -801,7 +847,8 @@ class WasmNeuralOptimizer {
    */
   private calculateOptimalThreshold(results: BenchmarkResult[]): number {
     for (const result of results) {
-      if (result.speedup > 1.1) { // 10% speedup threshold
+      if (result.speedup > 1.1) {
+        // 10% speedup threshold
         return result.size;
       }
     }
@@ -819,7 +866,7 @@ class WasmNeuralOptimizer {
     colsB: number
   ): Float32Array {
     const result = new Float32Array(rowsA * colsB);
-    
+
     for (let i = 0; i < rowsA; i++) {
       for (let j = 0; j < colsB; j++) {
         let sum = 0;
@@ -829,7 +876,7 @@ class WasmNeuralOptimizer {
         result[i * colsB + j] = sum;
       }
     }
-    
+
     return result;
   }
 
@@ -840,19 +887,19 @@ class WasmNeuralOptimizer {
   private wasmMalloc(size: number): number {
     // Align to 16-byte boundaries for SIMD operations
     const alignedSize = Math.ceil(size / 16) * 16;
-    
+
     // Simple linear allocator - can be improved with free list
     const currentEnd = this.memoryPool.buffer.byteLength;
-    
+
     // Grow memory if needed
     if (currentEnd + alignedSize > this.memoryPool.buffer.byteLength) {
       const additionalPages = Math.ceil(alignedSize / (64 * 1024));
       this.memoryPool.grow(additionalPages);
     }
-    
+
     const ptr = currentEnd;
     this.allocatedBlocks.set(ptr, alignedSize);
-    
+
     return ptr;
   }
 
@@ -884,24 +931,24 @@ console.log(`Recommended threshold: ${benchmark.recommendedThreshold}`);
 // Use optimizer in neural network training
 const network = new NeuralNetwork({
   architecture: { layers: [1000, 500, 100, 10] },
-  acceleration: { 
+  acceleration: {
     useWasm: true,
     optimizer: wasmOptimizer,
-    threshold: benchmark.recommendedThreshold
-  }
+    threshold: benchmark.recommendedThreshold,
+  },
 });
 ```
 
 ## 🎯 **Training Strategies and Optimization**
 
 ### **1. Advanced Training Patterns**
+
 ```typescript
 /**
  * Advanced neural network training strategies for optimal performance
  * Includes transfer learning, hyperparameter optimization, and distributed training
  */
 class AdvancedTrainer {
-  
   /**
    * Transfer learning from pre-trained models
    * Adapts existing neural networks to new tasks with minimal training
@@ -915,7 +962,6 @@ class AdvancedTrainer {
     newTask: TaskSpecification,
     transferStrategy: TransferStrategy = 'feature-extraction'
   ): Promise<NeuralNetwork> {
-    
     switch (transferStrategy) {
       case 'feature-extraction':
         return this.featureExtractionTransfer(baseModel, newTask);
@@ -938,31 +984,31 @@ class AdvancedTrainer {
   ): Promise<NeuralNetwork> {
     // Clone the base model
     const transferModel = baseModel.clone();
-    
+
     // Freeze feature extraction layers (all but the last 2 layers)
     const totalLayers = transferModel.getLayerCount();
     for (let i = 0; i < totalLayers - 2; i++) {
       transferModel.freezeLayer(i);
     }
-    
+
     // Replace final classification layer to match new task
     transferModel.replaceLayer(totalLayers - 1, {
       size: newTask.outputClasses,
       activation: newTask.outputActivation || 'softmax',
-      initialization: 'xavier'
+      initialization: 'xavier',
     });
-    
+
     // Train only the unfrozen layers
     const trainingConfig = {
       learningRate: 0.001, // Lower learning rate for transfer learning
       batchSize: 32,
       epochs: 50, // Fewer epochs needed
       optimizer: 'adam',
-      earlyStoppingPatience: 5
+      earlyStoppingPatience: 5,
     };
-    
+
     await transferModel.train(newTask.trainingData, trainingConfig);
-    
+
     return transferModel;
   }
 
@@ -975,14 +1021,14 @@ class AdvancedTrainer {
     newTask: TaskSpecification
   ): Promise<NeuralNetwork> {
     const transferModel = baseModel.clone();
-    
+
     // Replace final layer for new task
     const totalLayers = transferModel.getLayerCount();
     transferModel.replaceLayer(totalLayers - 1, {
       size: newTask.outputClasses,
-      activation: newTask.outputActivation || 'softmax'
+      activation: newTask.outputActivation || 'softmax',
     });
-    
+
     // Use very low learning rate for fine-tuning
     const trainingConfig = {
       learningRate: 0.0001, // Very low learning rate
@@ -990,11 +1036,11 @@ class AdvancedTrainer {
       epochs: 30,
       optimizer: 'adam',
       weightDecay: 0.0001, // Prevent overfitting
-      earlyStoppingPatience: 10
+      earlyStoppingPatience: 10,
     };
-    
+
     await transferModel.train(newTask.trainingData, trainingConfig);
-    
+
     return transferModel;
   }
 
@@ -1008,16 +1054,22 @@ class AdvancedTrainer {
     validationData: TrainingData[],
     searchSpace: HyperparameterSearchSpace
   ): Promise<OptimalHyperparameters> {
-    
     const bayesianOptimizer = new BayesianOptimizer(searchSpace);
     const results: OptimizationResult[] = [];
-    
-    for (let iteration = 0; iteration < searchSpace.maxIterations; iteration++) {
+
+    for (
+      let iteration = 0;
+      iteration < searchSpace.maxIterations;
+      iteration++
+    ) {
       // Get next hyperparameter configuration to try
       const hyperparams = await bayesianOptimizer.suggest(results);
-      
-      console.log(`Iteration ${iteration + 1}: Testing hyperparameters:`, hyperparams);
-      
+
+      console.log(
+        `Iteration ${iteration + 1}: Testing hyperparameters:`,
+        hyperparams
+      );
+
       // Create and train network with suggested hyperparameters
       const network = new NeuralNetwork({
         architecture,
@@ -1027,14 +1079,17 @@ class AdvancedTrainer {
           epochs: hyperparams.epochs,
           optimizer: hyperparams.optimizer,
           l2Regularization: hyperparams.l2Regularization,
-          dropout: hyperparams.dropout
-        }
+          dropout: hyperparams.dropout,
+        },
       });
-      
+
       // Train and evaluate
-      const trainingResult = await network.train(trainingData, network.config.training);
+      const trainingResult = await network.train(
+        trainingData,
+        network.config.training
+      );
       const validationResult = await network.evaluate(validationData);
-      
+
       // Record result for Bayesian optimization
       const score = validationResult.accuracy; // Objective to maximize
       results.push({
@@ -1042,28 +1097,30 @@ class AdvancedTrainer {
         score,
         trainingLoss: trainingResult.finalLoss,
         validationLoss: validationResult.loss,
-        trainingTime: trainingResult.trainingTime
+        trainingTime: trainingResult.trainingTime,
       });
-      
+
       console.log(`Validation accuracy: ${(score * 100).toFixed(2)}%`);
-      
+
       // Early termination if very good result found
       if (score > searchSpace.targetAccuracy) {
-        console.log(`Target accuracy ${searchSpace.targetAccuracy} reached, stopping optimization`);
+        console.log(
+          `Target accuracy ${searchSpace.targetAccuracy} reached, stopping optimization`
+        );
         break;
       }
     }
-    
+
     // Find best configuration
-    const bestResult = results.reduce((best, current) => 
+    const bestResult = results.reduce((best, current) =>
       current.score > best.score ? current : best
     );
-    
+
     return {
       hyperparameters: bestResult.hyperparameters,
       expectedAccuracy: bestResult.score,
       searchHistory: results,
-      convergenceIteration: results.indexOf(bestResult) + 1
+      convergenceIteration: results.indexOf(bestResult) + 1,
     };
   }
 
@@ -1076,50 +1133,57 @@ class AdvancedTrainer {
     trainingData: TrainingData[],
     config: DistributedTrainingConfig
   ): Promise<TrainingResults> {
-    
     const coordinator = new DistributedTrainingCoordinator(config);
-    
+
     // Split training data across workers
     const dataShards = this.shardTrainingData(trainingData, config.numWorkers);
-    
+
     // Initialize worker agents
     const workers = await coordinator.initializeWorkers(config.numWorkers);
-    
+
     console.log(`Starting distributed training with ${workers.length} workers`);
-    
+
     const results: WorkerResult[] = [];
-    
+
     for (let epoch = 0; epoch < config.epochs; epoch++) {
       console.log(`Distributed training epoch ${epoch + 1}/${config.epochs}`);
-      
+
       // Train on each worker in parallel
       const epochPromises = workers.map(async (worker, index) => {
         const shard = dataShards[index];
-        return worker.trainEpoch(network.getWeights(), shard, config.learningRate);
+        return worker.trainEpoch(
+          network.getWeights(),
+          shard,
+          config.learningRate
+        );
       });
-      
+
       const epochResults = await Promise.all(epochPromises);
-      
+
       // Aggregate gradients from all workers
       const aggregatedGradients = this.aggregateGradients(epochResults);
-      
+
       // Update main network with aggregated gradients
       await network.updateWeights(aggregatedGradients, config.optimizer);
-      
+
       // Evaluate progress
       if (epoch % config.evaluationInterval === 0) {
         const accuracy = await network.evaluate(config.validationData);
-        console.log(`Epoch ${epoch}: Distributed accuracy: ${(accuracy.accuracy * 100).toFixed(2)}%`);
+        console.log(
+          `Epoch ${epoch}: Distributed accuracy: ${(accuracy.accuracy * 100).toFixed(2)}%`
+        );
       }
-      
+
       // Synchronize weights across all workers
       const updatedWeights = network.getWeights();
-      await Promise.all(workers.map(worker => worker.updateWeights(updatedWeights)));
+      await Promise.all(
+        workers.map((worker) => worker.updateWeights(updatedWeights))
+      );
     }
-    
+
     // Clean up workers
     await coordinator.cleanup(workers);
-    
+
     return {
       finalAccuracy: results[results.length - 1]?.accuracy || 0,
       trainingTime: Date.now() - config.startTime,
@@ -1127,8 +1191,8 @@ class AdvancedTrainer {
       distributedStats: {
         totalWorkers: workers.length,
         avgWorkerUtilization: this.calculateAvgUtilization(results),
-        communicationOverhead: this.calculateCommOverhead(results)
-      }
+        communicationOverhead: this.calculateCommOverhead(results),
+      },
     };
   }
 }
@@ -1137,6 +1201,7 @@ class AdvancedTrainer {
 ## 🚀 **Practical Usage Examples**
 
 ### **Code Quality Analysis Network**
+
 ```bash
 # Train a neural network to analyze code quality
 claude-zen neural train \
@@ -1154,19 +1219,23 @@ claude-zen neural predict \
 ```
 
 ### **Swarm Coordination Optimization**
+
 ```typescript
 // Create task assignment optimizer
-const taskOptimizer = await createNeuralNetwork('SwarmCoordination.TaskAssigner', {
-  training: {
-    learningRate: 0.002,
-    batchSize: 64,
-    epochs: 200
-  },
-  acceleration: {
-    useWasm: true,
-    useSIMD: true
+const taskOptimizer = await createNeuralNetwork(
+  'SwarmCoordination.TaskAssigner',
+  {
+    training: {
+      learningRate: 0.002,
+      batchSize: 64,
+      epochs: 200,
+    },
+    acceleration: {
+      useWasm: true,
+      useSIMD: true,
+    },
   }
-});
+);
 
 // Integrate with swarm coordinator
 swarmCoordinator.setTaskAssignmentStrategy(async (availableAgents, task) => {
@@ -1177,24 +1246,28 @@ swarmCoordinator.setTaskAssignmentStrategy(async (availableAgents, task) => {
 ```
 
 ### **Performance Anomaly Detection**
+
 ```typescript
 // Set up real-time anomaly detection
-const anomalyDetector = await createNeuralNetwork('PerformanceMonitoring.AnomalyDetector');
+const anomalyDetector = await createNeuralNetwork(
+  'PerformanceMonitoring.AnomalyDetector'
+);
 
 // Monitor system metrics in real-time
 setInterval(async () => {
   const metrics = await systemMonitor.getCurrentMetrics();
   const normalizedMetrics = normalizeMetrics(metrics);
-  
+
   const anomalyScore = await anomalyDetector.predict([normalizedMetrics]);
-  
-  if (anomalyScore[0] > 0.8) { // 80% anomaly threshold
+
+  if (anomalyScore[0] > 0.8) {
+    // 80% anomaly threshold
     console.warn(`Performance anomaly detected: ${anomalyScore[0]}`);
     await alertingSystem.sendAlert({
       type: 'performance-anomaly',
       severity: 'warning',
       metrics,
-      confidence: anomalyScore[0]
+      confidence: anomalyScore[0],
     });
   }
 }, 30000); // Check every 30 seconds
@@ -1203,68 +1276,74 @@ setInterval(async () => {
 ## 📊 **Performance Benchmarks**
 
 ### **WASM vs JavaScript Performance**
+
 ```typescript
 // Benchmark results for matrix operations
 const benchmarkResults = {
   matrixMultiplication: {
     size_100x100: { wasmTime: 2.1, jsTime: 15.3, speedup: 7.3 },
     size_500x500: { wasmTime: 45.2, jsTime: 892.1, speedup: 19.7 },
-    size_1000x1000: { wasmTime: 356.8, jsTime: 7124.3, speedup: 20.0 }
+    size_1000x1000: { wasmTime: 356.8, jsTime: 7124.3, speedup: 20.0 },
   },
   activationFunctions: {
     relu_10000: { wasmTime: 0.8, jsTime: 3.2, speedup: 4.0 },
     tanh_10000: { wasmTime: 1.2, jsTime: 8.1, speedup: 6.8 },
-    softmax_10000: { wasmTime: 1.9, jsTime: 12.4, speedup: 6.5 }
+    softmax_10000: { wasmTime: 1.9, jsTime: 12.4, speedup: 6.5 },
   },
   neuralNetworkTraining: {
     small_network: { wasmTime: 125, jsTime: 1840, speedup: 14.7 },
     medium_network: { wasmTime: 2340, jsTime: 28920, speedup: 12.4 },
-    large_network: { wasmTime: 15230, jsTime: 195400, speedup: 12.8 }
-  }
+    large_network: { wasmTime: 15230, jsTime: 195400, speedup: 12.8 },
+  },
 };
 ```
 
 ### **Memory Usage Optimization**
+
 ```typescript
 // Memory usage comparison
 const memoryOptimization = {
   standardJS: {
     baselineUsage: '45MB',
     peakUsage: '127MB',
-    gcPauses: '15-30ms'
+    gcPauses: '15-30ms',
   },
   wasmOptimized: {
     baselineUsage: '23MB',
     peakUsage: '78MB',
-    gcPauses: '2-5ms'
+    gcPauses: '2-5ms',
   },
   improvement: {
     memoryReduction: '48%',
     gcPauseReduction: '83%',
-    allocationEfficiency: '2.8x'
-  }
+    allocationEfficiency: '2.8x',
+  },
 };
 ```
 
 ## 🎯 **Best Practices**
 
 ### **1. Architecture Selection**
+
 - **Small datasets (<10K samples)**: Use pre-trained models with transfer learning
 - **Medium datasets (10K-100K)**: Train custom architectures with regularization
 - **Large datasets (>100K)**: Use distributed training with data parallelism
 
 ### **2. WASM Optimization**
+
 - **Enable WASM acceleration for matrices larger than 500x500**
 - **Use SIMD operations for activation functions with >1000 neurons**
 - **Implement memory pooling to reduce allocation overhead**
 
 ### **3. Training Optimization**
+
 - **Start with pre-configured architectures and fine-tune as needed**
 - **Use Bayesian optimization for hyperparameter search**
 - **Implement early stopping to prevent overfitting**
 - **Monitor validation metrics to detect training issues**
 
 ### **4. Production Deployment**
+
 - **Use model quantization to reduce memory usage**
 - **Implement model caching for frequently used networks**
 - **Set up monitoring for prediction accuracy drift**
@@ -1275,6 +1354,7 @@ const memoryOptimization = {
 ### **Common Issues**
 
 #### **WASM Loading Failures**
+
 ```typescript
 // Debug WASM loading issues
 try {
@@ -1286,6 +1366,7 @@ try {
 ```
 
 #### **Memory Allocation Errors**
+
 ```bash
 # Increase WASM memory limits
 export WASM_MEMORY_INITIAL=512  # 512 pages = 32MB
@@ -1296,13 +1377,14 @@ claude-zen neural monitor --memory-usage --interval 5000
 ```
 
 #### **Training Convergence Issues**
+
 ```typescript
 // Adjust learning rate and optimization strategy
 const trainingConfig = {
   learningRate: 0.0001, // Lower learning rate
   optimizer: 'rmsprop', // Try different optimizer
   learningRateSchedule: 'exponential-decay',
-  gradientClipping: 1.0 // Prevent exploding gradients
+  gradientClipping: 1.0, // Prevent exploding gradients
 };
 ```
 

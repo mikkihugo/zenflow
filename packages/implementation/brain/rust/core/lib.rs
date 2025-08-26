@@ -13,32 +13,35 @@ pub use neuron::Neuron;
 
 // Re-export training types
 pub use training_types::{
-    ParallelTrainingOptions, TrainingAlgorithm as TrainingAlgorithmTrait, TrainingData,
-    TrainingError, TrainingState, IncrementalBackprop,
+  IncrementalBackprop, ParallelTrainingOptions,
+  TrainingAlgorithm as TrainingAlgorithmTrait, TrainingData, TrainingError,
+  TrainingState,
 };
 
 // Re-export training with battle-tested crates
-pub use training::{ModernTrainer};
+pub use training::ModernTrainer;
 
 #[cfg(feature = "burn-backend")]
-pub use training::{BurnTrainer, BurnNeuralNet};
+pub use training::{BurnNeuralNet, BurnTrainer};
 
 #[cfg(feature = "smartcore-backend")]
-pub use training::{SmartCoreTrainer, SmartCoreClassifierType};
+pub use training::{SmartCoreClassifierType, SmartCoreTrainer};
 
 /// Enumeration of available training algorithms
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TrainingAlgorithm {
-    IncrementalBackprop,
-    BatchBackprop,
-    Batch,           // Alias for BatchBackprop
-    Backpropagation, // Alias for IncrementalBackprop
-    RProp,
-    QuickProp,
+  IncrementalBackprop,
+  BatchBackprop,
+  Batch,           // Alias for BatchBackprop
+  Backpropagation, // Alias for IncrementalBackprop
+  RProp,
+  QuickProp,
 }
 
 // Re-export cascade training types
-pub use cascade::{CascadeConfig, CascadeError, CascadeNetwork, CascadeTrainer};
+pub use cascade::{
+  CascadeConfig, CascadeError, CascadeNetwork, CascadeTrainer,
+};
 
 // Re-export comprehensive error handling
 pub use errors::{ErrorCategory, RuvFannError, ValidationError};
@@ -53,8 +56,8 @@ pub mod layer;
 pub mod memory_manager;
 pub mod network;
 pub mod neuron;
-pub mod training_types;
 pub mod training;
+pub mod training_types;
 
 // Optional I/O module
 #[cfg(feature = "io")]
@@ -68,13 +71,13 @@ pub mod simd;
 #[cfg(feature = "wasm")]
 pub mod wasm_api;
 #[cfg(feature = "wasm")]
-pub use wasm_api::{WasmNetwork, get_wasm_info, get_active_network_count};
+pub use wasm_api::{WasmNetwork, get_active_network_count, get_wasm_info};
 
 // Automatic optimization selection
 pub mod optimization_selector;
 pub use optimization_selector::{
-    OptimizationSelector, OptimizationStrategy, TaskMetrics, ResourceState,
-    auto_select_strategy, record_optimization_performance
+  OptimizationSelector, OptimizationStrategy, ResourceState, TaskMetrics,
+  auto_select_strategy, record_optimization_performance,
 };
 
 // Tests are in individual modules

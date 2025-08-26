@@ -9,13 +9,13 @@
  */
 
 import { getLogger, type Logger, type Config } from '@claude-zen/foundation';
-import type { EventManager, EventManagerFactory } from '../core/interfaces';
-import { EventManagerTypes } from '../core/interfaces';
-import type { SystemEventAdapterConfig } from './system-event-adapter';
+import type { EventManager, EventManagerFactory } from '../core/interfaces;
+import { EventManagerTypes } from '../core/interfaces;
+import type { SystemEventAdapterConfig } from './system-event-adapter;
 import {
   createDefaultSystemEventAdapterConfig,
   SystemEventAdapter,
-} from './system-event-adapter';
+} from './system-event-adapter;
 
 /**
  * System Event Manager Factory.

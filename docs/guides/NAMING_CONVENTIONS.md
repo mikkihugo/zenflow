@@ -32,6 +32,7 @@ Following Google TypeScript Style Guide:
 ## Recent Changes
 
 All non-compliant files have been renamed to kebab-case:
+
 - 25 files renamed from PascalCase to kebab-case
 - 60 import paths updated automatically
 - All TypeScript files now follow consistent naming

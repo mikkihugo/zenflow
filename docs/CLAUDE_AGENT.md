@@ -9,12 +9,13 @@
 ## 2. Architectural Understanding
 
 ### Domain-Driven Structure (CRITICAL)
+
 Respect these domain boundaries strictly:
 
 ```
 src/
 ├── coordination/     # Agent coordination, swarm management, orchestration
-├── neural/          # Neural networks, WASM acceleration, fact-core integration  
+├── neural/          # Neural networks, WASM acceleration, fact-core integration
 ├── interfaces/      # API, CLI, MCP servers, web dashboard, terminal UI
 ├── memory/          # Memory stores, persistence, caching strategies
 ├── database/        # Database abstraction, vector storage, pooling
@@ -26,6 +27,7 @@ src/
 **NEVER mix domain concerns**. Coordination code stays in coordination/, neural code in neural/, etc.
 
 ### Agent System (147+ Types)
+
 - **Use existing agent types** from `src/types/agent-types.ts`
 - **Never create generic agent implementations**
 - **Follow fine-grained specialization patterns**
@@ -34,6 +36,7 @@ src/
 ## 3. Implementation Standards
 
 ### Technology Stack Requirements
+
 - **TypeScript 5.x** with strict mode enabled
 - **Node.js 22.x** for backend services
 - **React + TypeScript** for interface components
@@ -41,6 +44,7 @@ src/
 - **Performance Rule**: `always_use_wasm_for_heavy_computation`
 
 ### Code Quality Gates
+
 - **Zero ESLint errors** required
 - **Prettier formatting** using repository config
 - **JSDoc documentation** for all exported functions/classes
@@ -48,6 +52,7 @@ src/
 - **85% test coverage minimum**
 
 ### Testing Strategy (Hybrid TDD)
+
 - **London TDD (70%)**: For interactions, protocols, coordination, integration boundaries
 - **Classical TDD (30%)**: For algorithms, neural networks, mathematical computations
 - **Co-located test files** using `*.test.ts` or `*.test.tsx`
@@ -55,6 +60,7 @@ src/
 ## 4. Performance Requirements
 
 ### Critical Benchmarks
+
 - **Coordination latency**: < 100ms
 - **API response time**: < 50ms
 - **Neural computations**: Must use WASM
@@ -62,6 +68,7 @@ src/
 - **MCP tool execution**: < 10ms
 
 ### Memory and Database
+
 - **Multi-backend**: sqlite, lancedb, json
 - **Connection pooling**: Required for all database operations
 - **Caching strategies**: Multi-layer approach
@@ -70,12 +77,14 @@ src/
 ## 5. MCP Protocol Integration
 
 ### Dual MCP Architecture
+
 - **HTTP MCP (Port 3000)**: Claude Desktop integration
 - **Stdio MCP**: Internal swarm coordination
 - **Protocol compliance**: Follow established MCP patterns
 - **Tool categories**: Coordination, monitoring, memory, GitHub integration
 
 ### Integration Requirements
+
 - **Respect existing MCP tools**
 - **Follow stdio protocol for internal coordination**
 - **Maintain HTTP endpoints for external integration**
@@ -83,12 +92,14 @@ src/
 ## 6. Security and Safety Rules
 
 ### Absolute Prohibitions
+
 - **No hardcoded secrets**: Never embed API keys, tokens, or credentials
 - **No force operations**: Never use `git push --force` or destructive commands
 - **No dependency changes**: Unless explicitly required by the issue
 - **No domain boundary violations**: Keep concerns properly separated
 
 ### Required Practices
+
 - **Validate all inputs**
 - **Sanitize all outputs**
 - **Use least privilege principles**
@@ -97,12 +108,14 @@ src/
 ## 7. Neural Network and WASM Integration
 
 ### WASM Requirements (CRITICAL)
+
 - **fact-core module**: Use for all neural acceleration
 - **Performance validation**: Ensure WASM modules meet benchmarks
 - **Memory management**: Efficient JavaScript/WASM bridge
 - **Computation rule**: Heavy calculations MUST use WASM
 
 ### Neural Standards
+
 - **Established patterns**: Follow existing neural domain conventions
 - **Continuous learning**: Support agent coordination improvements
 - **Accuracy metrics**: Implement proper model performance tracking
@@ -110,6 +123,7 @@ src/
 ## 8. Development Workflow
 
 ### Issue Resolution Process
+
 1. **Analyze**: Read issue thoroughly, understand requirements
 2. **Plan**: Create detailed implementation plan with file changes
 3. **Research**: Use sub-agents to understand existing implementations
@@ -121,6 +135,7 @@ src/
 9. **Pull Request**: Create clear PR with implementation summary
 
 ### Quality Validation Checklist
+
 - [ ] All tests pass
 - [ ] ESLint passes with zero errors
 - [ ] Prettier formatting applied
@@ -133,17 +148,19 @@ src/
 ## 9. Sub-Agent Usage Guidelines
 
 ### When to Use Sub-Agents
+
 - **Research existing implementations** before making changes
 - **Understand utility functions** and their purposes
 - **Verify compatibility** with existing codebase
 - **Analyze dependencies** and architectural constraints
 
 ### Sub-Agent Patterns
+
 ```bash
 # Research existing patterns
 "Use a sub-agent to analyze the existing MCP server implementation in src/interfaces/mcp/ and provide a summary of the current architecture."
 
-# Understand dependencies  
+# Understand dependencies
 "Use a sub-agent to read src/types/agent-types.ts and explain the existing agent type system before implementing new agent functionality."
 
 # Verify compatibility
@@ -153,12 +170,14 @@ src/
 ## 10. Error Handling and Recovery
 
 ### Graceful Failure Patterns
+
 - **Detailed error messages**: Explain what went wrong and why
 - **Recovery suggestions**: Provide actionable next steps
 - **Context preservation**: Maintain state for debugging
 - **Clean rollback**: Undo partial changes if implementation fails
 
 ### Communication Standards
+
 - **Clear commit messages**: Explain the change and its purpose
 - **Detailed PR descriptions**: Include implementation approach and testing
 - **Issue comments**: Provide progress updates and clarification requests
@@ -167,20 +186,23 @@ src/
 ## 11. Advanced Coordination
 
 ### Swarm Intelligence Integration
+
 - **Use established swarm patterns** for multi-agent coordination
 - **Leverage MCP protocols** for agent communication
 - **Maintain persistent state** across agent interactions
 - **Optimize for concurrent execution** (>1000 agents)
 
 ### Memory and State Management
+
 - **Cross-session persistence**: Use established memory patterns
-- **State coordination**: Follow swarm coordination protocols  
+- **State coordination**: Follow swarm coordination protocols
 - **Context preservation**: Maintain agent interaction history
 - **Performance optimization**: Use intelligent caching strategies
 
 ## 12. Success Criteria
 
 ### Definition of "Fully Solved"
+
 - **Complete implementation**: All requirements from issue addressed
 - **Quality gates passed**: All tests, linting, building successful
 - **Performance maintained**: Benchmarks not degraded
@@ -189,6 +211,7 @@ src/
 - **No regressions**: Existing functionality unaffected
 
 ### Pull Request Standards
+
 - **Clear title**: Summarizes the change
 - **Detailed description**: Explains approach and implementation
 - **Testing evidence**: Shows quality gates passed

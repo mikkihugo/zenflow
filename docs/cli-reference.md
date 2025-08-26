@@ -39,7 +39,7 @@ Once running, the system provides:
 When running, Claude Code Zen provides:
 
 - **File Operations**: Create, read, edit, and delete files via API
-- **Workspace Management**: Browser-based workspace interface  
+- **Workspace Management**: Browser-based workspace interface
 - **Health Monitoring**: System health checks and status reporting
 - **Auto-Detection**: Automatically detects if another instance is running
 
@@ -49,7 +49,7 @@ When running, Claude Code Zen provides:
 # Start on default port (3000)
 claude-zen
 
-# Start on custom port  
+# Start on custom port
 claude-zen --port 8080
 
 # Using npm scripts
@@ -60,21 +60,26 @@ npm run start        # Production mode (requires build)
 ## ⚡ **Quick Start**
 
 1. Install the package:
+
 ```bash
 npm install -g @zen-ai/claude-code-zen
 ```
 
 2. Start the workspace server:
+
 ```bash
 claude-zen
 ```
 
 3. Open your browser:
+
 ```
 http://localhost:3000/workspace
 ```
+
 claude-zen status --component swarm
-```
+
+````
 
 **Output Includes:**
 - System health and version
@@ -92,22 +97,25 @@ Manage AI agent swarms for coordinated task execution.
 
 ```bash
 claude-zen swarm <action> [options]
-```
+````
 
 #### **Swarm Actions**
 
 #### **`swarm init` - Initialize Swarm**
+
 ```bash
 claude-zen swarm init [options]
 ```
 
 **Options:**
+
 - `--topology <type>` - Swarm topology: `mesh`, `hierarchical`, `ring`, `star` (default: `mesh`)
 - `--agents <count>` - Number of agents: 1-20 (default: 4)
 - `--strategy <type>` - Coordination strategy: `parallel`, `sequential`, `adaptive` (default: `parallel`)
 - `--memory` - Enable persistent memory across sessions
 
 **Examples:**
+
 ```bash
 # Basic mesh swarm
 claude-zen swarm init
@@ -120,26 +128,31 @@ claude-zen swarm init --topology mesh --agents 6 --strategy adaptive --memory
 ```
 
 #### **`swarm status` - Swarm Status**
+
 ```bash
 claude-zen swarm status [options]
 ```
 
 **Options:**
+
 - `--agents` - Show individual agent status
 - `--tasks` - Show active task information
 - `--metrics` - Show performance metrics
 
 #### **`swarm stop` - Stop Swarm**
+
 ```bash
 claude-zen swarm stop [swarm-id]
 ```
 
 #### **`swarm list` - List All Swarms**
+
 ```bash
 claude-zen swarm list [options]
 ```
 
 **Options:**
+
 - `--active` - Show only active swarms
 - `--history` - Include completed swarms
 
@@ -158,17 +171,20 @@ claude-zen mcp <action> [options]
 #### **MCP Actions**
 
 #### **`mcp start` - Start MCP Server**
+
 ```bash
 claude-zen mcp start [options]
 ```
 
 **Options:**
+
 - `--port <number>` - Server port (default: 3000)
 - `--host <address>` - Server host (default: localhost)
 - `--protocol <type>` - Protocol type: `http`, `stdio` (default: `http`)
 - `--daemon` - Run as background daemon
 
 **Examples:**
+
 ```bash
 # Start HTTP MCP server for Claude Desktop
 claude-zen mcp start
@@ -181,21 +197,25 @@ claude-zen mcp start --daemon
 ```
 
 #### **`mcp status` - MCP Server Status**
+
 ```bash
 claude-zen mcp status
 ```
 
 #### **`mcp stop` - Stop MCP Server**
+
 ```bash
 claude-zen mcp stop
 ```
 
 #### **`mcp tools` - List Available MCP Tools**
+
 ```bash
 claude-zen mcp tools [options]
 ```
 
 **Options:**
+
 - `--category <name>` - Filter by category: `swarm`, `neural`, `system`, `memory`
 - `--detailed` - Show tool descriptions and parameters
 
@@ -214,11 +234,13 @@ claude-zen web <action> [options]
 #### **Web Actions**
 
 #### **`web start` - Start Web Dashboard**
+
 ```bash
 claude-zen web start [options]
 ```
 
 **Options:**
+
 - `--port <number>` - Server port (default: 3456)
 - `--host <address>` - Server host (default: 0.0.0.0)
 - `--daemon` - Run as background daemon
@@ -226,6 +248,7 @@ claude-zen web start [options]
 - `--no-realtime` - Disable WebSocket real-time updates
 
 **Examples:**
+
 ```bash
 # Start web dashboard
 claude-zen web start
@@ -238,11 +261,13 @@ claude-zen web start --daemon
 ```
 
 #### **`web status` - Web Dashboard Status**
+
 ```bash
 claude-zen web status
 ```
 
 #### **`web stop` - Stop Web Dashboard**
+
 ```bash
 claude-zen web stop
 ```
@@ -262,23 +287,28 @@ claude-zen workspace <action> [options]
 #### **Workspace Actions**
 
 #### **`workspace init` - Initialize Workspace**
+
 ```bash
 claude-zen workspace init <name> [options]
 ```
 
 **Options:**
+
 - `--template <type>` - Workspace template: `basic`, `advanced`, `research` (default: `advanced`)
 
 #### **`workspace process` - Process Documents**
+
 ```bash
 claude-zen workspace process <document-path> [options]
 ```
 
 **Options:**
+
 - `--output <path>` - Output directory for generated files
 - `--format <type>` - Output format: `markdown`, `json`, `yaml`
 
 **Examples:**
+
 ```bash
 # Process vision document
 claude-zen workspace process docs/01-vision/product-vision.md
@@ -288,20 +318,24 @@ claude-zen workspace process docs/03-prds/user-auth.md --output generated/
 ```
 
 #### **`workspace status` - Workspace Status**
+
 ```bash
 claude-zen workspace status [options]
 ```
 
 **Options:**
+
 - `--progress` - Show document processing progress
 - `--metrics` - Show productivity metrics
 
 #### **`workspace implement` - Implement Features**
+
 ```bash
 claude-zen workspace implement <feature-document> [options]
 ```
 
 **Options:**
+
 - `--swarm` - Use swarm coordination for implementation
 - `--test` - Generate tests alongside implementation
 
@@ -318,10 +352,12 @@ claude-zen tui [options]
 ```
 
 **Options:**
+
 - `--mode <type>` - Initial mode: `overview`, `swarm-manager`, `task-manager`, `system-monitor`
 - `--theme <type>` - TUI theme: `dark`, `light`, `auto` (default: `auto`)
 
 **Examples:**
+
 ```bash
 # Launch TUI with overview
 claude-zen tui
@@ -334,6 +370,7 @@ claude-zen tui --theme light
 ```
 
 **TUI Features:**
+
 - **Overview Dashboard** - System status and quick actions
 - **Swarm Manager** - Visual swarm coordination and monitoring
 - **Task Manager** - Interactive task creation and tracking
@@ -353,6 +390,7 @@ claude-zen create <type> <title> [options]
 ```
 
 **Document Types:**
+
 - `vision` - Strategic vision document
 - `adr` - Architecture Decision Record
 - `prd` - Product Requirements Document
@@ -362,11 +400,13 @@ claude-zen create <type> <title> [options]
 - `spec` - Technical specification
 
 **Options:**
+
 - `--template <name>` - Custom template to use
 - `--author <name>` - Document author
 - `--output <path>` - Custom output location
 
 **Examples:**
+
 ```bash
 # Create vision document
 claude-zen create vision "AI-Powered Code Assistant"
@@ -393,17 +433,20 @@ claude-zen task <action> [options]
 #### **Task Actions**
 
 #### **`task create` - Create Task**
+
 ```bash
 claude-zen task create <description> [options]
 ```
 
 **Options:**
+
 - `--priority <level>` - Task priority: `low`, `medium`, `high`, `critical` (default: `medium`)
 - `--assignee <agent>` - Assign to specific agent or agent type
 - `--deadline <date>` - Task deadline (ISO format)
 - `--dependencies <tasks>` - Comma-separated list of dependency task IDs
 
 **Examples:**
+
 ```bash
 # Create basic task
 claude-zen task create "Implement user authentication"
@@ -416,27 +459,32 @@ claude-zen task create "Deploy to production" --dependencies task-123,task-124
 ```
 
 #### **`task list` - List Tasks**
+
 ```bash
 claude-zen task list [options]
 ```
 
 **Options:**
+
 - `--status <type>` - Filter by status: `pending`, `active`, `completed`, `blocked`
 - `--priority <level>` - Filter by priority
 - `--assignee <agent>` - Filter by assignee
 - `--limit <number>` - Limit number of results
 
 #### **`task status` - Task Status**
+
 ```bash
 claude-zen task status <task-id>
 ```
 
 #### **`task complete` - Mark Task Complete**
+
 ```bash
 claude-zen task complete <task-id> [options]
 ```
 
 **Options:**
+
 - `--notes <text>` - Completion notes
 - `--artifacts <paths>` - Generated artifacts (files, reports)
 
@@ -455,11 +503,13 @@ claude-zen config <action> [options]
 #### **Configuration Actions**
 
 #### **`config get` - Get Configuration**
+
 ```bash
 claude-zen config get [key] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Get all configuration
 claude-zen config get
@@ -469,15 +519,18 @@ claude-zen config get swarm.defaultTopology
 ```
 
 #### **`config set` - Set Configuration**
+
 ```bash
 claude-zen config set <key> <value> [options]
 ```
 
 **Options:**
+
 - `--global` - Set global configuration
 - `--project` - Set project-specific configuration
 
 **Examples:**
+
 ```bash
 # Set default swarm topology
 claude-zen config set swarm.defaultTopology hierarchical
@@ -487,6 +540,7 @@ claude-zen config set web.theme light
 ```
 
 #### **`config reset` - Reset Configuration**
+
 ```bash
 claude-zen config reset [key] [options]
 ```
@@ -504,6 +558,7 @@ claude-zen logs [options]
 ```
 
 **Options:**
+
 - `--component <name>` - Filter by component: `mcp`, `swarm`, `web`, `neural`
 - `--level <type>` - Log level: `debug`, `info`, `warn`, `error`
 - `--tail <number>` - Show last N lines (default: 50)
@@ -511,6 +566,7 @@ claude-zen logs [options]
 - `--since <time>` - Show logs since timestamp
 
 **Examples:**
+
 ```bash
 # View recent logs
 claude-zen logs
@@ -531,6 +587,7 @@ claude-zen metrics [options]
 ```
 
 **Options:**
+
 - `--component <name>` - Specific component metrics
 - `--timeframe <period>` - Time period: `1h`, `6h`, `24h`, `7d` (default: `1h`)
 - `--export <format>` - Export metrics: `json`, `csv`
@@ -548,6 +605,7 @@ claude-zen help [command]
 ```
 
 **Examples:**
+
 ```bash
 # General help
 claude-zen help
@@ -566,6 +624,7 @@ claude-zen doctor [options]
 ```
 
 **Options:**
+
 - `--fix` - Attempt to fix detected issues automatically
 - `--verbose` - Show detailed diagnostic information
 
@@ -578,7 +637,7 @@ claude-zen doctor [options]
 Claude Code Zen can be configured using environment variables:
 
 ```bash
-# Web dashboard configuration  
+# Web dashboard configuration
 export WEB_PORT=3000
 export WEB_HOST=localhost
 
@@ -611,6 +670,7 @@ Claude Code Flow uses standard exit codes for automation and scripting:
 ## 💡 **Tips and Best Practices**
 
 ### **Command Chaining**
+
 ```bash
 # Initialize project and start services
 claude-zen init my-project --template advanced && \
@@ -621,6 +681,7 @@ claude-zen swarm init --topology mesh
 ```
 
 ### **JSON Output for Automation**
+
 ```bash
 # Get status in JSON for scripts
 STATUS=$(claude-zen status --format json)
@@ -628,6 +689,7 @@ AGENT_COUNT=$(echo $STATUS | jq '.swarm.agents')
 ```
 
 ### **Background Operations**
+
 ```bash
 # Start services in background
 claude-zen mcp start --daemon
@@ -638,6 +700,7 @@ ps aux | grep claude-zen
 ```
 
 ### **Monitoring and Alerting**
+
 ```bash
 # Continuous monitoring with alerts
 claude-zen status --watch | grep -E "(ERROR|CRITICAL)" | mail -s "Claude-Zen Alert" admin@example.com

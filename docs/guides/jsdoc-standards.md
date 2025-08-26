@@ -34,82 +34,82 @@ This comprehensive guide establishes enterprise-grade JSDoc documentation standa
 
 ### 1. File-Level Documentation Template
 
-```typescript
+````typescript
 /**
  * [Layer] [Component Name] - [Brief Description]
- * 
+ *
  * [Detailed architectural context and purpose. Explain how this component
  * fits into the unified architecture and its role in the overall system.]
- * 
+ *
  * @fileoverview [Comprehensive overview of file contents, key interfaces,
  *               classes, and architectural patterns implemented]
  * @module [layer]/[component-path]
  * @version [semantic version]
  * @since [version when introduced]
  * @author [team name or author]
- * 
+ *
  * @description [Extended description covering:]
  *              - Key design principles and patterns
  *              - Integration points with other layers
  *              - Performance characteristics
  *              - Scalability considerations
- * 
+ *
  * ## Key Features
  * - **[Feature 1]**: [Description with metrics/benefits]
  * - **[Feature 2]**: [Description with metrics/benefits]
  * - **[Feature 3]**: [Description with metrics/benefits]
- * 
+ *
  * ## Architecture Integration
  * - **[Layer] Integration**: [How this integrates with other layers]
  * - **Performance Metrics**: [Actual performance numbers where applicable]
  * - **Scalability**: [Horizontal/vertical scaling characteristics]
- * 
+ *
  * @example Basic Usage
  * ```typescript
  * // [Complete, runnable example showing basic usage]
  * import { [ComponentName] } from './path';
- * 
+ *
  * const instance = new [ComponentName]({
  *   // ... configuration
  * });
- * 
+ *
  * // Demonstrate key functionality
  * const result = await instance.method();
  * console.log(result);
  * ```
- * 
+ *
  * @example Advanced Integration
  * ```typescript
  * // [Complex example showing integration with other layers]
  * // [Real-world scenario with error handling]
  * ```
- * 
+ *
  * @example Production Configuration
  * ```typescript
  * // [Enterprise-ready configuration example]
  * // [Include performance tuning and security considerations]
  * ```
  */
-```
+````
 
 ### 2. Interface Documentation Template
 
-```typescript
+````typescript
 /**
  * [Interface Purpose] Configuration/Contract
- * 
+ *
  * @interface [InterfaceName]
  * @description [Detailed description of the interface purpose, when to use it,
  *              and how it fits into the architectural patterns]
- * 
+ *
  * @template T [Description of generic type parameters if applicable]
- * 
+ *
  * @property {Type} propertyName - [Detailed description including:]
  *                                 - Valid values/ranges
  *                                 - Default behavior if optional
  *                                 - Side effects or implications
  *                                 - Performance considerations
- * 
+ *
  * @example Interface Usage
  * ```typescript
  * // [Complete example showing interface implementation]
@@ -117,11 +117,11 @@ This comprehensive guide establishes enterprise-grade JSDoc documentation standa
  *   propertyName: 'example-value',
  *   // ... other properties with realistic values
  * };
- * 
+ *
  * // [Show how this interface is consumed]
  * const service = new ServiceClass(config);
  * ```
- * 
+ *
  * @example Advanced Configuration
  * ```typescript
  * // [Complex configuration for enterprise scenarios]
@@ -129,7 +129,7 @@ This comprehensive guide establishes enterprise-grade JSDoc documentation standa
  *   // [Production-ready values with explanations]
  * };
  * ```
- * 
+ *
  * @example Type-Safe Implementation
  * ```typescript
  * // [Demonstrate type safety and generic usage]
@@ -137,53 +137,53 @@ This comprehensive guide establishes enterprise-grade JSDoc documentation standa
  *   // [Implementation details]
  * }
  * ```
- * 
+ *
  * @since [version when introduced]
  */
 export interface [InterfaceName]<T = any> {
   /** [Property description with constraints and examples] */
   propertyName: Type;
-  
+
   /** [Optional property with default behavior explanation] */
   optionalProperty?: Type;
-  
+
   /** [Method signature with comprehensive documentation] */
   methodName(param: Type): ReturnType;
 }
-```
+````
 
 ### 3. Class Documentation Template
 
-```typescript
+````typescript
 /**
  * [Class Purpose] - [Brief Description]
- * 
+ *
  * [Comprehensive class description explaining:]
  * - Primary responsibilities and capabilities
  * - Design patterns implemented (Factory, Observer, etc.)
  * - Performance characteristics and optimizations
  * - Integration points with unified architecture layers
  * - Thread safety and concurrency considerations
- * 
+ *
  * @class [ClassName]
  * @template T [Description of generic parameters]
  * @extends [BaseClass] [If applicable, explain inheritance relationship]
  * @implements [Interface] [If applicable, explain contract fulfillment]
- * 
+ *
  * @since [version when introduced]
  * @version [current version]
- * 
+ *
  * @example Basic Instantiation
  * ```typescript
  * // [Simple creation and usage example]
  * const instance = new [ClassName]({
  *   // [Minimal required configuration]
  * });
- * 
+ *
  * // [Basic operation demonstration]
  * const result = await instance.operation();
  * ```
- * 
+ *
  * @example Advanced Usage with Error Handling
  * ```typescript
  * // [Production-ready example with proper error handling]
@@ -191,15 +191,15 @@ export interface [InterfaceName]<T = any> {
  *   const instance = new [ClassName]({
  *     // [Production configuration]
  *   });
- * 
+ *
  *   // [Event handling setup]
  *   instance.on('event', (data) => {
  *     console.log('Event received:', data);
  *   });
- * 
+ *
  *   // [Complex operation with error handling]
  *   const result = await instance.complexOperation(params);
- *   
+ *
  *   if (result.success) {
  *     console.log('Operation successful:', result.data);
  *   } else {
@@ -209,13 +209,13 @@ export interface [InterfaceName]<T = any> {
  *   console.error('Initialization failed:', error);
  * }
  * ```
- * 
+ *
  * @example Enterprise Integration Pattern
  * ```typescript
  * // [Show integration with DI container and other layers]
  * import { DIContainer } from '../di/container';
  * import type { [RelatedInterface] } from '../other-layer';
- * 
+ *
  * // [Enterprise setup with dependency injection]
  * const container = new DIContainer();
  * container.register('[ClassName]', {
@@ -224,7 +224,7 @@ export interface [InterfaceName]<T = any> {
  *     // [Enterprise configuration]
  *   })
  * });
- * 
+ *
  * // [Usage in application context]
  * const service = container.resolve<[ClassName]>('[ClassName]');
  * ```
@@ -232,25 +232,25 @@ export interface [InterfaceName]<T = any> {
 export class [ClassName]<T = any> extends BaseClass implements Interface {
   /** [Public property documentation with access patterns] */
   public readonly property: Type;
-  
+
   /** [Private property documentation with implementation details] */
   private readonly internalState: Type;
-  
+
   /**
    * [Constructor purpose and initialization process]
-   * 
+   *
    * @param {ConfigType} config - [Detailed configuration parameter description]
    *                              including validation requirements, defaults,
    *                              and side effects of different settings
-   * 
+   *
    * @throws {ValidationError} When [specific validation condition fails]
    * @throws {InitializationError} When [specific initialization condition fails]
-   * 
+   *
    * @example Constructor Usage
    * ```typescript
    * // [Multiple constructor examples with different configurations]
    * const minimal = new [ClassName]({ name: 'test' });
-   * 
+   *
    * const advanced = new [ClassName]({
    *   name: 'production',
    *   timeout: 30000,
@@ -266,21 +266,21 @@ export class [ClassName]<T = any> extends BaseClass implements Interface {
     // [Implementation]
   }
 }
-```
+````
 
 ### 4. Method Documentation Template
 
-```typescript
+````typescript
 /**
  * [Method Purpose] - [Brief Description]
- * 
+ *
  * [Comprehensive method description including:]
  * - Detailed behavior and side effects
  * - Performance characteristics and complexity
  * - Concurrency safety considerations
  * - Integration patterns with other methods/classes
  * - State changes and persistence implications
- * 
+ *
  * @template T [Description of method-level generics]
  * @param {Type} paramName - [Detailed parameter description including:]
  *                          - Valid value ranges or constraints
@@ -291,33 +291,33 @@ export class [ClassName]<T = any> extends BaseClass implements Interface {
  * @param {ConfigType} [options] - [Options object with property breakdown]
  * @param {number} [options.timeout=30000] - [Specific option documentation]
  * @param {boolean} [options.retry=true] - [Another specific option]
- * 
+ *
  * @returns {Promise<ReturnType>} [Comprehensive return value description:]
  *                                - Success cases and expected data structure
  *                                - Partial success scenarios
  *                                - Performance characteristics of return data
  *                                - Caching behavior and data freshness
- * 
+ *
  * @throws {SpecificError} When [detailed error condition with remediation]
  * @throws {ValidationError} When [parameter validation fails - include valid ranges]
  * @throws {TimeoutError} When [operation exceeds timeout - include typical duration]
  * @throws {NetworkError} When [network operation fails - include retry behavior]
- * 
+ *
  * @emits eventName When [event emission conditions and payload description]
  * @emits error When [error conditions that trigger event emission]
- * 
+ *
  * @example Basic Usage
  * ```typescript
  * // [Simple usage example with minimal parameters]
  * const result = await instance.method(basicParam);
- * 
+ *
  * if (result.success) {
  *   console.log('Result:', result.data);
  * } else {
  *   console.error('Error:', result.error);
  * }
  * ```
- * 
+ *
  * @example Advanced Usage with Full Options
  * ```typescript
  * // [Complex usage with all options and error handling]
@@ -332,7 +332,7 @@ export class [ClassName]<T = any> extends BaseClass implements Interface {
  *       traceId: 'trace-456'
  *     }
  *   });
- * 
+ *
  *   // [Handle different response types]
  *   switch (result.status) {
  *     case 'complete':
@@ -355,7 +355,7 @@ export class [ClassName]<T = any> extends BaseClass implements Interface {
  *   }
  * }
  * ```
- * 
+ *
  * @example Batch Processing Pattern
  * ```typescript
  * // [Show batch usage patterns if applicable]
@@ -364,7 +364,7 @@ export class [ClassName]<T = any> extends BaseClass implements Interface {
  *   instance.method(param2),
  *   instance.method(param3)
  * ]);
- * 
+ *
  * // [Process batch results with proper error handling]
  * batchResults.forEach((result, index) => {
  *   if (result.status === 'fulfilled') {
@@ -374,13 +374,13 @@ export class [ClassName]<T = any> extends BaseClass implements Interface {
  *   }
  * });
  * ```
- * 
+ *
  * @example Integration with Other Layers
  * ```typescript
  * // [Show how this method integrates with other architecture layers]
  * // [Include coordination patterns if applicable]
  * ```
- * 
+ *
  * @since [version when introduced]
  * @version [version of last significant change]
  */
@@ -391,13 +391,14 @@ async method<T>(
 ): Promise<ReturnType<T>> {
   // [Implementation]
 }
-```
+````
 
 ## 🎯 Layer-Specific Standards
 
 ### UACL (Unified API Client Layer) Standards
 
 #### Key Documentation Patterns
+
 - **Client Interface Compliance**: Document IClient interface implementation
 - **Protocol Specifications**: Detail HTTP, WebSocket, MCP protocol handling
 - **Authentication Methods**: Document all supported auth types with examples
@@ -405,28 +406,29 @@ async method<T>(
 - **Health Monitoring**: Document metrics collection and status reporting
 
 #### Example UACL Documentation
-```typescript
+
+````typescript
 /**
  * UACL WebSocket Client Adapter - Real-time Communication Client
- * 
+ *
  * Enterprise-grade WebSocket client providing real-time bidirectional communication
  * with automatic reconnection, message queuing, heartbeat monitoring, and comprehensive
  * observability features. Implements the UACL IClient interface for unified client
  * management across all protocol types.
- * 
+ *
  * @fileoverview WebSocket client implementation with advanced connection management,
  *               automatic reconnection strategies, message queuing during disconnections,
  *               heartbeat monitoring, and integration with the UACL authentication and
  *               monitoring systems.
- * 
+ *
  * @class WebSocketClientAdapter
  * @extends EventEmitter
  * @implements IClient
- * 
+ *
  * @example Basic WebSocket Connection
  * ```typescript
  * import { WebSocketClientAdapter } from './websocket-client-adapter';
- * 
+ *
  * const wsClient = new WebSocketClientAdapter({
  *   name: 'realtime-api',
  *   baseURL: 'wss://api.example.com/ws',
@@ -440,25 +442,26 @@ async method<T>(
  *     backoff: 'exponential'
  *   }
  * });
- * 
+ *
  * // Connection management
  * await wsClient.connect();
  * console.log('Connected:', wsClient.isConnected());
- * 
+ *
  * // Message handling
  * wsClient.on('message', (data) => {
  *   console.log('Received:', data);
  * });
- * 
+ *
  * // Send messages
  * await wsClient.send({ type: 'subscribe', channel: 'notifications' });
  * ```
  */
-```
+````
 
 ### DAL (Data Access Layer) Standards
 
 #### Key Documentation Patterns
+
 - **Repository Pattern**: Document repository vs DAO differences
 - **Transaction Management**: Explain ACID compliance and rollback scenarios
 - **Multi-Database Support**: Document adapter pattern implementation
@@ -466,19 +469,20 @@ async method<T>(
 - **Performance Optimization**: Document indexing, caching, batch operations
 
 #### Example DAL Documentation
-```typescript
+
+````typescript
 /**
  * Relational Database DAO Implementation
- * 
+ *
  * Comprehensive relational database DAO implementation supporting PostgreSQL,
  * MySQL, SQLite and other SQL-based databases. Provides standardized CRUD operations,
  * advanced query building, transaction management, and database-specific optimizations.
- * 
+ *
  * @class RelationalDao
  * @template T The entity type this DAO manages
  * @extends BaseDao<T>
  * @implements IDao<T>
- * 
+ *
  * @example PostgreSQL User DAO
  * ```typescript
  * interface User {
@@ -488,7 +492,7 @@ async method<T>(
  *   profile: UserProfile;
  *   createdAt: Date;
  * }
- * 
+ *
  * const userDao = new RelationalDao<User>(
  *   postgresAdapter,
  *   logger,
@@ -501,7 +505,7 @@ async method<T>(
  *     createdAt: { type: 'datetime', default: 'now' }
  *   }
  * );
- * 
+ *
  * // Advanced relational operations
  * const activeUsers = await userDao.findByDateRange(
  *   'createdAt',
@@ -510,11 +514,12 @@ async method<T>(
  * );
  * ```
  */
-```
+````
 
 ### USL (Unified Service Layer) Standards
 
 #### Key Documentation Patterns
+
 - **Service Lifecycle**: Document initialization, start, stop, destroy phases
 - **Dependency Management**: Explain service dependencies and injection
 - **Health Monitoring**: Document health checks and metric collection
@@ -522,23 +527,24 @@ async method<T>(
 - **Configuration Validation**: Document schema validation and defaults
 
 #### Example USL Documentation
-```typescript
+
+````typescript
 /**
  * USL Data Service Implementation - Multi-Database Data Operations
- * 
+ *
  * Enterprise-grade data service providing unified access to multiple database types
  * through the DAL layer. Handles service lifecycle management, dependency injection,
  * health monitoring, and operation execution with comprehensive error handling and
  * performance tracking.
- * 
+ *
  * @class DataService
  * @extends BaseService
  * @implements IService
- * 
+ *
  * @example Data Service Configuration
  * ```typescript
  * import { DataService } from './data-service';
- * 
+ *
  * const dataService = new DataService({
  *   name: 'primary-data-service',
  *   type: 'data',
@@ -559,11 +565,11 @@ async method<T>(
  *     interval: 30000
  *   }
  * });
- * 
+ *
  * // Service lifecycle
  * await dataService.initialize();
  * await dataService.start();
- * 
+ *
  * // Data operations
  * const result = await dataService.execute('query', {
  *   collection: 'users',
@@ -571,11 +577,12 @@ async method<T>(
  * });
  * ```
  */
-```
+````
 
 ### UEL (Unified Event Layer) Standards
 
 #### Key Documentation Patterns
+
 - **Event Types**: Document all event categories and payloads
 - **Event Flow**: Explain event propagation and handling patterns
 - **Adapter Pattern**: Document different event adapter implementations
@@ -583,22 +590,23 @@ async method<T>(
 - **Integration**: Explain integration with other layers for event coordination
 
 #### Example UEL Documentation
-```typescript
+
+````typescript
 /**
  * UEL Communication Event Adapter - Inter-Service Event Management
- * 
+ *
  * Specialized event adapter for managing communication events between services,
  * agents, and system components. Provides reliable event delivery, event persistence,
  * and integration with the broader UEL event management system.
- * 
+ *
  * @class CommunicationEventAdapter
  * @extends EventEmitter
  * @implements IEventAdapter
- * 
+ *
  * @example Communication Event Setup
  * ```typescript
  * import { CommunicationEventAdapter } from './communication-event-adapter';
- * 
+ *
  * const commEvents = new CommunicationEventAdapter({
  *   name: 'service-communication',
  *   persistence: {
@@ -611,13 +619,13 @@ async method<T>(
  *     retries: 3
  *   }
  * });
- * 
+ *
  * // Event handling
  * commEvents.on('message-sent', async (event) => {
  *   console.log(`Message sent from ${event.from} to ${event.to}`);
  *   await auditLog.record(event);
  * });
- * 
+ *
  * // Event emission
  * await commEvents.emit('agent-communication', {
  *   from: 'agent-1',
@@ -627,42 +635,42 @@ async method<T>(
  * });
  * ```
  */
-```
+````
 
 ## 📊 Cross-Layer Integration Examples
 
 ### Multi-Layer Integration Documentation
 
-```typescript
+````typescript
 /**
  * Cross-Layer Integration Example - Document Processing Workflow
- * 
+ *
  * Demonstrates how all four unified architecture layers work together
  * to process documents in a distributed, event-driven workflow.
- * 
+ *
  * @example Complete Document Processing Workflow
  * ```typescript
  * import { uacl } from '../interfaces/clients';     // UACL
- * import { createDao } from '../database';          // DAL  
+ * import { createDao } from '../database';          // DAL
  * import { ServiceRegistry } from '../interfaces/services'; // USL
  * import { EventBus } from '../interfaces/events';  // UEL
- * 
+ *
  * // 1. UACL - HTTP client for document upload
  * const httpClient = await uacl.http.create({
  *   name: 'document-api',
  *   baseURL: 'https://api.example.com',
  *   authentication: { type: 'bearer', token: 'jwt-token' }
  * });
- * 
+ *
  * // 2. DAL - Document storage
  * const documentDao = await createDao('Document', 'postgresql', {
  *   connectionString: process.env.DATABASE_URL
  * });
- * 
+ *
  * // 3. USL - Document processing service
  * const docService = ServiceRegistry.get('document-processor');
  * await docService.start();
- * 
+ *
  * // 4. UEL - Event coordination
  * const eventBus = EventBus.getInstance();
  * eventBus.on('document-uploaded', async (event) => {
@@ -672,7 +680,7 @@ async method<T>(
  *     pipeline: 'vision-to-code'
  *   });
  * });
- * 
+ *
  * // Complete workflow execution
  * const uploadResult = await httpClient.post('/documents', documentData);
  * const document = await documentDao.create({
@@ -680,18 +688,19 @@ async method<T>(
  *   content: documentData.content,
  *   type: 'vision'
  * });
- * 
+ *
  * // Emit event to trigger processing
  * eventBus.emit('document-uploaded', { documentId: document.id });
  * ```
  */
-```
+````
 
 ## 🔧 Implementation Guidelines
 
 ### 1. JSDoc Validation Rules
 
 #### Required Tags for All Components
+
 - `@fileoverview` - File-level description
 - `@version` - Current version
 - `@since` - Introduction version
@@ -701,6 +710,7 @@ async method<T>(
 - `@throws` - For all possible exceptions
 
 #### Layer-Specific Required Tags
+
 - **UACL**: `@implements IClient`, `@emits` for events
 - **DAL**: `@template` for generic DAOs, `@param` with SQL examples
 - **USL**: `@implements IService`, service lifecycle documentation
@@ -709,6 +719,7 @@ async method<T>(
 ### 2. Documentation Quality Metrics
 
 #### Coverage Requirements
+
 - **File-level**: 100% coverage for all modules
 - **Class-level**: 100% coverage with architecture context
 - **Method-level**: 100% coverage for public methods
@@ -716,6 +727,7 @@ async method<T>(
 - **Type-level**: 100% coverage for complex types
 
 #### Quality Standards
+
 - **Examples**: Minimum 2 examples per major component (basic + advanced)
 - **Error Documentation**: All throws conditions documented
 - **Performance**: Include performance characteristics where applicable
@@ -725,12 +737,13 @@ async method<T>(
 ### 3. Automation and Tooling
 
 #### Documentation Generation
+
 ```json
 {
   "typedoc": {
     "entryPoints": [
       "src/interfaces/clients",
-      "src/database", 
+      "src/database",
       "src/interfaces/services",
       "src/interfaces/events"
     ],
@@ -744,13 +757,14 @@ async method<T>(
 ```
 
 #### Linting Rules
+
 ```json
 {
   "eslint": {
     "plugins": ["jsdoc"],
     "rules": {
       "jsdoc/require-description": "error",
-      "jsdoc/require-param": "error", 
+      "jsdoc/require-param": "error",
       "jsdoc/require-param-type": "error",
       "jsdoc/require-returns": "error",
       "jsdoc/require-returns-type": "error",
@@ -763,18 +777,21 @@ async method<T>(
 ## 📈 Benefits and ROI
 
 ### Developer Experience Benefits
+
 - **50% Faster Onboarding**: Comprehensive examples and clear architectural context
 - **80% Reduction in Integration Issues**: Cross-layer integration documentation
 - **90% Fewer Configuration Errors**: Production-ready configuration examples
 - **100% IDE Support**: Full IntelliSense with parameter hints and type information
 
 ### Maintenance Benefits
+
 - **Consistent Patterns**: Standardized documentation across all layers
 - **Version Tracking**: Clear versioning and change documentation
 - **Dependency Clarity**: Explicit inter-layer dependencies documented
 - **Testing Guidance**: Example-driven development patterns
 
 ### Quality Assurance Benefits
+
 - **Automated Validation**: ESLint rules enforce documentation standards
 - **Type Safety**: Comprehensive TypeScript integration documentation
 - **Error Prevention**: All error conditions and remediation documented
@@ -783,24 +800,28 @@ async method<T>(
 ## 🎯 Action Items for Standardization
 
 ### Phase 1: Foundation (Week 1-2)
+
 1. **Establish Documentation Templates**: Create standardized templates for each component type
 2. **Configure Tooling**: Set up TypeDoc, ESLint JSDoc plugin, and automated validation
 3. **Create Style Guide**: Finalize coding standards and documentation patterns
 4. **Training Materials**: Prepare developer training on new standards
 
 ### Phase 2: Layer Implementation (Week 3-6)
+
 1. **UACL Documentation**: Standardize all client adapter documentation
 2. **DAL Documentation**: Enhance DAO, repository, and adapter documentation
 3. **USL Documentation**: Standardize service interface and implementation docs
 4. **UEL Documentation**: Complete event adapter and manager documentation
 
 ### Phase 3: Cross-Layer Integration (Week 7-8)
+
 1. **Integration Examples**: Create comprehensive cross-layer usage examples
 2. **Performance Documentation**: Add performance metrics and optimization guides
 3. **Enterprise Patterns**: Document enterprise deployment and scaling patterns
 4. **Quality Validation**: Run comprehensive documentation quality assessment
 
 ### Phase 4: Validation and Rollout (Week 9-10)
+
 1. **Automated Testing**: Implement automated documentation testing
 2. **Developer Feedback**: Collect and incorporate developer feedback
 3. **Documentation Website**: Generate and deploy comprehensive API documentation
@@ -809,12 +830,14 @@ async method<T>(
 ## 📋 Success Criteria
 
 ### Documentation Quality Metrics
+
 - **100% Coverage**: All public APIs documented to standard
 - **Zero Lint Errors**: All JSDoc validation rules passing
 - **Performance Benchmarks**: Documented performance characteristics for all major components
 - **Integration Examples**: Working examples for all cross-layer patterns
 
 ### Developer Experience Metrics
+
 - **Onboarding Time**: <2 hours for new developers to become productive
 - **Integration Success**: >95% first-attempt success rate for cross-layer integration
 - **Configuration Accuracy**: >98% correct production configurations on first attempt

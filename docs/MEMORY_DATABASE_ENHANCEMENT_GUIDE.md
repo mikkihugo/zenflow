@@ -20,44 +20,53 @@ Both Memory and Database domains now feature:
 ### Core Components
 
 #### 1. Memory Coordinator (`src/memory/core/memory-coordinator.ts`)
+
 Advanced coordination system for distributed memory operations.
 
 ```typescript
-import { MemoryCoordinator, type MemoryCoordinationConfig } from '@memory/core/memory-coordinator';
+import {
+  MemoryCoordinator,
+  type MemoryCoordinationConfig,
+} from '@memory/core/memory-coordinator';
 
 const config: MemoryCoordinationConfig = {
   enabled: true,
   consensus: {
     quorum: 0.67,
     timeout: 5000,
-    strategy: 'majority'
+    strategy: 'majority',
   },
   distributed: {
     replication: 2,
     consistency: 'eventual',
-    partitioning: 'hash'
+    partitioning: 'hash',
   },
   optimization: {
     autoCompaction: true,
     cacheEviction: 'adaptive',
-    memoryThreshold: 0.8
-  }
+    memoryThreshold: 0.8,
+  },
 };
 
 const coordinator = new MemoryCoordinator(config);
 ```
 
 **Key Features:**
+
 - Distributed memory operations with consensus protocols
 - Node registration and health monitoring
 - Automatic repair and synchronization
 - Multi-node coordination with quorum-based decisions
 
 #### 2. Performance Optimizer (`src/memory/optimization/performance-optimizer.ts`)
+
 Intelligent performance optimization with adaptive learning.
 
 ```typescript
-import { PerformanceOptimizer, type OptimizationConfig } from '@memory/optimization/performance-optimizer';
+import {
+  PerformanceOptimizer,
+  type OptimizationConfig,
+} from '@memory/optimization/performance-optimizer';
 
 const optimizer = new PerformanceOptimizer({
   enabled: true,
@@ -66,33 +75,38 @@ const optimizer = new PerformanceOptimizer({
     compression: true,
     prefetching: true,
     indexing: true,
-    partitioning: false
+    partitioning: false,
   },
   thresholds: {
     latencyWarning: 100,
     errorRateWarning: 0.05,
     memoryUsageWarning: 0.8,
-    cacheHitRateMin: 0.7
+    cacheHitRateMin: 0.7,
   },
   adaptation: {
     enabled: true,
     learningRate: 0.1,
-    adaptationInterval: 60000
-  }
+    adaptationInterval: 60000,
+  },
 });
 ```
 
 **Key Features:**
+
 - ML-like adaptive optimization algorithms
 - Real-time performance threshold monitoring
 - Cache optimization and compression strategies
 - Automated performance adjustment
 
 #### 3. Memory Monitor (`src/memory/monitoring/memory-monitor.ts`)
+
 Real-time monitoring and analytics system.
 
 ```typescript
-import { MemoryMonitor, type MonitoringConfig } from '@memory/monitoring/memory-monitor';
+import {
+  MemoryMonitor,
+  type MonitoringConfig,
+} from '@memory/monitoring/memory-monitor';
 
 const monitor = new MemoryMonitor({
   enabled: true,
@@ -104,18 +118,19 @@ const monitor = new MemoryMonitor({
       latency: 100,
       errorRate: 0.05,
       memoryUsage: 200,
-      cacheHitRate: 0.7
-    }
+      cacheHitRate: 0.7,
+    },
   },
   metrics: {
     detailed: true,
     histograms: true,
-    percentiles: true
-  }
+    percentiles: true,
+  },
 });
 ```
 
 **Key Features:**
+
 - Real-time performance metrics collection
 - Automated alerting with configurable thresholds
 - Comprehensive health reporting
@@ -126,6 +141,7 @@ const monitor = new MemoryMonitor({
 The Memory domain provides 5 comprehensive MCP tools:
 
 #### 1. `memory_init` - System Initialization
+
 ```typescript
 {
   "name": "memory_init",
@@ -139,9 +155,10 @@ The Memory domain provides 5 comprehensive MCP tools:
 ```
 
 #### 2. `memory_optimize` - Performance Optimization
+
 ```typescript
 {
-  "name": "memory_optimize", 
+  "name": "memory_optimize",
   "description": "Optimize memory system performance",
   "parameters": {
     "target": "latency|memory|cache|error_rate|all",
@@ -152,6 +169,7 @@ The Memory domain provides 5 comprehensive MCP tools:
 ```
 
 #### 3. `memory_monitor` - Real-time Monitoring
+
 ```typescript
 {
   "name": "memory_monitor",
@@ -165,6 +183,7 @@ The Memory domain provides 5 comprehensive MCP tools:
 ```
 
 #### 4. `memory_distribute` - Distributed Operations
+
 ```typescript
 {
   "name": "memory_distribute",
@@ -179,6 +198,7 @@ The Memory domain provides 5 comprehensive MCP tools:
 ```
 
 #### 5. `memory_health_check` - Health Assessment
+
 ```typescript
 {
   "name": "memory_health_check",
@@ -195,11 +215,11 @@ The Memory domain provides 5 comprehensive MCP tools:
 The Memory domain includes comprehensive error handling:
 
 ```typescript
-import { 
-  MemoryError, 
-  MemoryErrorCode, 
+import {
+  MemoryError,
+  MemoryErrorCode,
   MemoryErrorClassifier,
-  RecoveryStrategyManager 
+  RecoveryStrategyManager,
 } from '@memory/error-handling';
 
 // Error classification
@@ -213,12 +233,14 @@ const result = await recoveryManager.recover(error, context);
 ```
 
 **Error Types:**
+
 - Coordination errors (consensus timeout, node unreachable)
 - Backend errors (connection lost, corruption, capacity exceeded)
 - Data errors (corruption, inconsistency, version conflicts)
 - Performance errors (threshold exceeded, cache miss rate high)
 
 **Recovery Strategies:**
+
 - Node reconnection
 - Data repair with consensus
 - Cache optimization
@@ -230,10 +252,14 @@ const result = await recoveryManager.recover(error, context);
 ### Core Components
 
 #### 1. Database Coordinator (`src/database/core/database-coordinator.ts`)
+
 Multi-engine database coordination with intelligent routing.
 
 ```typescript
-import { DatabaseCoordinator, type DatabaseEngine } from '@database/core/database-coordinator';
+import {
+  DatabaseCoordinator,
+  type DatabaseEngine,
+} from '@database/core/database-coordinator';
 
 const coordinator = new DatabaseCoordinator();
 
@@ -251,12 +277,14 @@ await coordinator.registerEngine(vectorEngine);
 ```
 
 **Key Features:**
+
 - Multi-engine support (vector, graph, document, relational, time-series)
 - Intelligent query routing with 4 load balancing strategies
 - Real-time health monitoring and performance tracking
 - Sophisticated coordination strategies
 
 #### 2. Query Optimizer (`src/database/optimization/query-optimizer.ts`)
+
 Advanced query optimization with pattern learning.
 
 ```typescript
@@ -272,6 +300,7 @@ optimizer.recordExecution(execution);
 ```
 
 **Key Features:**
+
 - ML-like query pattern analysis and optimization
 - Advanced caching with intelligent TTL and eviction
 - Query rewriting and performance enhancement rules
@@ -286,10 +315,10 @@ import { DatabaseFactory } from '@database';
 const system = await DatabaseFactory.createAdvancedDatabaseSystem({
   engines: [
     { id: 'vector-db', type: 'vector', config: {} },
-    { id: 'graph-db', type: 'graph', config: {} }
+    { id: 'graph-db', type: 'graph', config: {} },
   ],
   optimization: { enabled: true, aggressiveness: 'medium' },
-  coordination: { loadBalancing: 'performance_based' }
+  coordination: { loadBalancing: 'performance_based' },
 });
 
 // Execute optimized query
@@ -299,7 +328,7 @@ const result = await system.query({
   operation: 'vector_search',
   parameters: { vector: embedding, options: { limit: 10 } },
   requirements: { consistency: 'eventual', priority: 'high' },
-  routing: { loadBalancing: 'performance_based' }
+  routing: { loadBalancing: 'performance_based' },
 });
 ```
 
@@ -308,6 +337,7 @@ const result = await system.query({
 The Database domain provides 5 comprehensive MCP tools:
 
 #### 1. `database_init` - Multi-Engine Initialization
+
 ```typescript
 {
   "name": "database_init",
@@ -316,7 +346,7 @@ The Database domain provides 5 comprehensive MCP tools:
     "engines": [
       {
         "id": "vector-db",
-        "type": "vector", 
+        "type": "vector",
         "capabilities": ["vector_search", "similarity"],
         "config": {}
       }
@@ -328,10 +358,11 @@ The Database domain provides 5 comprehensive MCP tools:
 ```
 
 #### 2. `database_query` - Optimized Query Execution
+
 ```typescript
 {
   "name": "database_query",
-  "description": "Execute optimized database queries", 
+  "description": "Execute optimized database queries",
   "parameters": {
     "operation": "vector_search|graph_query|document_find",
     "parameters": { /* query parameters */ },
@@ -342,6 +373,7 @@ The Database domain provides 5 comprehensive MCP tools:
 ```
 
 #### 3. `database_optimize` - Performance Optimization
+
 ```typescript
 {
   "name": "database_optimize",
@@ -356,9 +388,10 @@ The Database domain provides 5 comprehensive MCP tools:
 ```
 
 #### 4. `database_monitor` - Real-time Monitoring
+
 ```typescript
 {
-  "name": "database_monitor", 
+  "name": "database_monitor",
   "description": "Monitor database system performance",
   "parameters": {
     "duration": 30000,
@@ -369,10 +402,11 @@ The Database domain provides 5 comprehensive MCP tools:
 ```
 
 #### 5. `database_health_check` - Health Assessment
+
 ```typescript
 {
   "name": "database_health_check",
-  "description": "Comprehensive database health check", 
+  "description": "Comprehensive database health check",
   "parameters": {
     "components": ["coordinator", "optimizer", "engines", "cache"],
     "detailed": false,
@@ -386,10 +420,10 @@ The Database domain provides 5 comprehensive MCP tools:
 Comprehensive error handling with 21 specific error types:
 
 ```typescript
-import { 
-  DatabaseError, 
-  DatabaseErrorCode, 
-  DatabaseErrorClassifier 
+import {
+  DatabaseError,
+  DatabaseErrorCode,
+  DatabaseErrorClassifier,
 } from '@database/error-handling';
 
 // Error classification with retry strategies
@@ -399,6 +433,7 @@ console.log('Retry strategy:', classification.retryStrategy);
 ```
 
 **Error Categories:**
+
 - Coordination errors (engine selection failed, routing failed)
 - Engine errors (unavailable, overloaded, timeout, connection failed)
 - Query errors (invalid, timeout, optimization failed, execution failed)
@@ -412,20 +447,34 @@ console.log('Retry strategy:', classification.retryStrategy);
 
 ```typescript
 import { MemorySystemFactory } from '@memory';
-import { DatabaseFactory } from '@database'; 
+import { DatabaseFactory } from '@database';
 
 // Create integrated system
 const memorySystem = await MemorySystemFactory.createAdvancedMemorySystem({
-  coordination: { /* config */ },
-  optimization: { /* config */ },
-  monitoring: { /* config */ },
-  backends: [ /* backends */ ]
+  coordination: {
+    /* config */
+  },
+  optimization: {
+    /* config */
+  },
+  monitoring: {
+    /* config */
+  },
+  backends: [
+    /* backends */
+  ],
 });
 
 const databaseSystem = await DatabaseFactory.createAdvancedDatabaseSystem({
-  engines: [ /* engines */ ],
-  optimization: { /* config */ },
-  coordination: { /* config */ }
+  engines: [
+    /* engines */
+  ],
+  optimization: {
+    /* config */
+  },
+  coordination: {
+    /* config */
+  },
 });
 
 // Coordinated operations
@@ -435,13 +484,16 @@ async function storeWithCoordination(sessionId, key, data) {
     type: 'write',
     sessionId,
     target: key,
-    metadata: { data }
+    metadata: { data },
   });
-  
+
   // Persist in database
   await databaseSystem.query({
     operation: 'document_insert',
-    parameters: { collection: 'memory_store', document: { sessionId, key, data } }
+    parameters: {
+      collection: 'memory_store',
+      document: { sessionId, key, data },
+    },
   });
 }
 ```
@@ -457,23 +509,24 @@ const databaseTools = await import('@database/mcp/database-tools');
 await memoryTools.memoryInitTool.handler({
   coordination: { enabled: true },
   optimization: { enabled: true },
-  backends: [{ id: 'main', type: 'sqlite', config: {} }]
+  backends: [{ id: 'main', type: 'sqlite', config: {} }],
 });
 
 await databaseTools.databaseInitTool.handler({
-  engines: [{ id: 'vector', type: 'vector', capabilities: ['vector_search'] }]
+  engines: [{ id: 'vector', type: 'vector', capabilities: ['vector_search'] }],
 });
 
 // Execute operations via MCP
 const queryResult = await databaseTools.databaseQueryTool.handler({
   operation: 'vector_search',
-  parameters: { vector: embedding }
+  parameters: { vector: embedding },
 });
 ```
 
 ## Performance Characteristics
 
 ### Memory System Performance
+
 - **50% Faster Access**: Advanced caching and optimization
 - **30% Memory Reduction**: Intelligent memory management
 - **99.9% Availability**: Fault-tolerant distributed memory
@@ -481,6 +534,7 @@ const queryResult = await databaseTools.databaseQueryTool.handler({
 - **Predictive Scaling**: ML-based memory allocation
 
 ### Database System Performance
+
 - **60% Query Performance**: Advanced query optimization
 - **40% Storage Efficiency**: Intelligent data organization
 - **99.99% Data Consistency**: Robust transaction management
@@ -490,6 +544,7 @@ const queryResult = await databaseTools.databaseQueryTool.handler({
 ## Best Practices
 
 ### 1. System Initialization
+
 ```typescript
 // Always use factory methods for proper initialization
 const system = await MemorySystemFactory.createAdvancedMemorySystem(config);
@@ -497,11 +552,12 @@ const system = await MemorySystemFactory.createAdvancedMemorySystem(config);
 // Enable monitoring for production systems
 const config = {
   monitoring: { enabled: true, alerts: { enabled: true } },
-  optimization: { enabled: true, adaptation: { enabled: true } }
+  optimization: { enabled: true, adaptation: { enabled: true } },
 };
 ```
 
 ### 2. Error Handling
+
 ```typescript
 // Use proper error classification
 try {
@@ -518,6 +574,7 @@ try {
 ```
 
 ### 3. Performance Monitoring
+
 ```typescript
 // Regular health checks
 const health = await system.getHealthReport();
@@ -535,6 +592,7 @@ for (const rec of recommendations) {
 ```
 
 ### 4. MCP Tool Usage
+
 ```typescript
 // Use MCP tools for external management
 const result = await mcpTool.handler(parameters);
@@ -557,7 +615,7 @@ const system = await MemorySystemFactory.createAdvancedMemorySystem({
   backends: [{ id: 'main', type: 'sqlite', config: options.backendConfig }],
   coordination: { enabled: true },
   optimization: { enabled: true },
-  monitoring: { enabled: true }
+  monitoring: { enabled: true },
 });
 ```
 
@@ -571,10 +629,10 @@ const db = DatabaseFactory.getInstance('lancedb', config);
 const system = await DatabaseFactory.createAdvancedDatabaseSystem({
   engines: [
     { id: 'main', type: 'lancedb', config },
-    { id: 'backup', type: 'document', config: backupConfig }
+    { id: 'backup', type: 'document', config: backupConfig },
   ],
   optimization: { enabled: true },
-  coordination: { loadBalancing: 'performance_based' }
+  coordination: { loadBalancing: 'performance_based' },
 });
 ```
 

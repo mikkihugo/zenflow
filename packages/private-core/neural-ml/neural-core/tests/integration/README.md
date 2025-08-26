@@ -21,6 +21,7 @@ tests/integration/
 ## Test Categories
 
 ### 1. Model Registry Integration (`model_registry.rs`)
+
 Tests for dynamic model discovery, plugin loading, and model serialization/deserialization:
 
 - **Dynamic Model Discovery**: Tests the registry's ability to discover and list available models
@@ -30,6 +31,7 @@ Tests for dynamic model discovery, plugin loading, and model serialization/deser
 - **Model Versioning**: Tests version compatibility and migration
 
 ### 2. Cross-Crate Communication (`cross_crate_communication.rs`)
+
 Tests for Registry ↔ Models interaction, Core ↔ Models data flow, and CLI ↔ All crates:
 
 - **Registry ↔ Models Interaction**: Tests model creation, registration, and retrieval
@@ -39,6 +41,7 @@ Tests for Registry ↔ Models interaction, Core ↔ Models data flow, and CLI �
 - **Data Type Compatibility**: Tests type system compatibility
 
 ### 3. Error Propagation (`error_propagation.rs`)
+
 Tests for error handling across crate boundaries, graceful degradation, and recovery:
 
 - **Error Propagation Across Crates**: Tests error chains from core → models → registry
@@ -48,6 +51,7 @@ Tests for error handling across crate boundaries, graceful degradation, and reco
 - **Error Boundaries and Isolation**: Tests error containment
 
 ### 4. Performance Integration (`performance_integration.rs`)
+
 Tests for multi-threaded training, parallel model execution, and memory usage:
 
 - **Multi-Threaded Training**: Tests concurrent model training across threads
@@ -57,6 +61,7 @@ Tests for multi-threaded training, parallel model execution, and memory usage:
 - **Scalability Under Load**: Tests system behavior under various load conditions
 
 ### 5. CLI Integration (`cli_integration.rs`)
+
 Tests for command execution flow, model training via CLI, and results visualization:
 
 - **CLI Command Execution Flow**: Tests basic CLI functionality
@@ -66,6 +71,7 @@ Tests for command execution flow, model training via CLI, and results visualizat
 - **CLI Error Handling**: Tests user-friendly error messages
 
 ### 6. Real-World Scenarios (`real_world_scenarios.rs`)
+
 Tests for multiple time series forecasting, model ensemble creation, and online learning:
 
 - **Multiple Time Series Forecasting**: Tests handling various data characteristics
@@ -86,6 +92,7 @@ The `mock_implementations.rs` file provides simplified implementations of the co
 ## Running the Tests
 
 ### Individual Test Suites
+
 ```bash
 # Model Registry Integration
 cargo test --test model_registry_integration
@@ -107,11 +114,13 @@ cargo test --test real_world_scenarios
 ```
 
 ### All Integration Tests
+
 ```bash
 cargo test --test integration
 ```
 
 ### With Verbose Output
+
 ```bash
 cargo test --test integration -- --nocapture
 ```

@@ -7,9 +7,9 @@
  * @file Express error handling middleware.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from "@claude-zen/foundation";
 
-const logger = getLogger('interfaces-api-http-middleware-errors');
+const logger = getLogger("interfaces-api-http-middleware-errors");
 
 /**
  * Standard API Error Response Structure.
@@ -18,16 +18,16 @@ const logger = getLogger('interfaces-api-http-middleware-errors');
  * @example
  */
 export interface ApiError {
-  error: {
-    code: number;
-    message: string;
-    status: string;
-  };
+	error: {
+		code: number;
+		message: string;
+		status: string;
+	};
 }
 
 /**
  * Log error for debugging and monitoring
  */
 export function logError(error: unknown, context?: string): void {
-  logger.error(`${context || 'API'} error:`, error);
+	logger.error(`${context || "API"} error:`, error);
 }

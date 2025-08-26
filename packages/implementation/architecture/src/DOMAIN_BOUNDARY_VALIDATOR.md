@@ -9,16 +9,19 @@ This system is used by **all subsequent phases** and provides the foundational t
 ## 🏗️ Architecture Integration
 
 ### Core Principles
+
 - **Runtime Type Safety**: Validates all data crossing domain boundaries
-- **Contract Enforcement**: Ensures domain operations meet defined contracts  
+- **Contract Enforcement**: Ensures domain operations meet defined contracts
 - **Performance Optimized**: Production-grade with caching and metrics
 - **Architecture Compliant**: Follows the multi-agent cognitive architecture
 - **Comprehensive Logging**: Full observability for debugging and monitoring
 
 ### Domain Support
+
 Supports all system domains:
+
 - `COORDINATION` - Agent orchestration and task distribution
-- `WORKFLOWS` - Process execution and step management  
+- `WORKFLOWS` - Process execution and step management
 - `NEURAL` - Pattern recognition and optimization
 - `DATABASE` - Data persistence and entity management
 - `MEMORY` - State management and context retention
@@ -32,7 +35,10 @@ Supports all system domains:
 ### Basic Usage
 
 ```typescript
-import { getDomainValidator, CommonSchemas } from '../core/domain-boundary-validator';
+import {
+  getDomainValidator,
+  CommonSchemas,
+} from '../core/domain-boundary-validator';
 import type { Agent } from '../coordination/types';
 
 // Get validator for your domain
@@ -42,10 +48,13 @@ const coordValidator = getDomainValidator(Domain.COORDINATION);
 const agentData: Agent = {
   id: 'agent-001',
   capabilities: ['task-planning'],
-  status: 'idle'
+  status: 'idle',
 };
 
-const validatedAgent = coordValidator.validateInput(agentData, CommonSchemas.Agent);
+const validatedAgent = coordValidator.validateInput(
+  agentData,
+  CommonSchemas.Agent
+);
 ```
 
 ### Cross-Domain Validation
@@ -56,7 +65,7 @@ import { validateCrossDomain } from '../core/domain-boundary-validator';
 // Validate data crossing domain boundaries
 const result = validateCrossDomain(
   taskData,
-  CommonSchemas.Task, 
+  CommonSchemas.Task,
   Domain.COORDINATION,
   Domain.WORKFLOWS,
   'task-assignment'
@@ -66,7 +75,10 @@ const result = validateCrossDomain(
 ### Contract Enforcement
 
 ```typescript
-import { DomainOperation, ContractRule } from '../core/domain-boundary-validator';
+import {
+  DomainOperation,
+  ContractRule,
+} from '../core/domain-boundary-validator';
 
 const securityRule: ContractRule = {
   name: 'security-validation',
@@ -75,7 +87,7 @@ const securityRule: ContractRule = {
     return context.metadata?.authenticated === true;
   },
   severity: 'error',
-  errorMessage: 'Authentication required'
+  errorMessage: 'Authentication required',
 };
 
 const operation: DomainOperation = {
@@ -86,10 +98,10 @@ const operation: DomainOperation = {
   inputSchema: { type: 'object' },
   outputSchema: { type: 'object' },
   contractValidation: [securityRule],
-  metadata: { 
+  metadata: {
     description: 'Secure database operation',
-    version: '1.0.0'
-  }
+    version: '1.0.0',
+  },
 };
 
 const result = await validator.enforceContract(operation);
@@ -98,6 +110,7 @@ const result = await validator.enforceContract(operation);
 ## 📋 Core Interfaces
 
 ### DomainBoundary Interface
+
 ```typescript
 interface DomainBoundary {
   validateInput<T>(data: unknown, schema: TypeSchema<T>): T;
@@ -107,9 +120,18 @@ interface DomainBoundary {
 ```
 
 ### TypeSchema Definition
+
 ```typescript
 interface TypeSchema<T = any> {
-  type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null' | 'undefined' | 'function';
+  type:
+    | 'string'
+    | 'number'
+    | 'boolean'
+    | 'object'
+    | 'array'
+    | 'null'
+    | 'undefined'
+    | 'function';
   required?: boolean;
   properties?: { [K in keyof T]?: TypeSchema<T[K]> };
   items?: TypeSchema;
@@ -121,6 +143,7 @@ interface TypeSchema<T = any> {
 ```
 
 ### DomainOperation Contract
+
 ```typescript
 interface DomainOperation {
   id: string;
@@ -142,26 +165,29 @@ interface DomainOperation {
 ## 🛠️ Advanced Features
 
 ### Custom Validators
+
 ```typescript
 const customSchema: TypeSchema<string> = {
   type: 'string',
   required: true,
   validator: (value: string) => value.length > 5 && /^[A-Z]/.test(value),
-  description: 'Must be >5 chars and start with capital letter'
+  description: 'Must be >5 chars and start with capital letter',
 };
 ```
 
 ### Data Transformations
+
 ```typescript
 const transformSchema: TypeSchema<string> = {
   type: 'string',
   required: true,
   transform: (value: string) => value.trim().toLowerCase(),
-  description: 'Normalized string'
+  description: 'Normalized string',
 };
 ```
 
 ### Complex Object Validation
+
 ```typescript
 const complexSchema: TypeSchema = {
   type: 'object',
@@ -176,28 +202,29 @@ const complexSchema: TypeSchema = {
           type: 'object',
           required: true,
           properties: {
-            email: { 
-              type: 'string', 
+            email: {
+              type: 'string',
               required: true,
-              validator: (email: string) => /\S+@\S+\.\S+/.test(email)
-            }
-          }
-        }
-      }
+              validator: (email: string) => /\S+@\S+\.\S+/.test(email),
+            },
+          },
+        },
+      },
     },
     permissions: {
       type: 'array',
       required: true,
-      items: { 
+      items: {
         type: 'string',
-        enum: ['read', 'write', 'execute']
-      }
-    }
-  }
+        enum: ['read', 'write', 'execute'],
+      },
+    },
+  },
 };
 ```
 
 ### Contract Rules
+
 ```typescript
 const rateLimitRule: ContractRule = {
   name: 'rate-limit-check',
@@ -208,23 +235,27 @@ const rateLimitRule: ContractRule = {
     return await checkRateLimit(context.requestId, rateLimit);
   },
   severity: 'warning',
-  errorMessage: 'Rate limit exceeded'
+  errorMessage: 'Rate limit exceeded',
 };
 
 const dataConsistencyRule: ContractRule = {
   name: 'data-consistency',
   description: 'Validates data consistency',
   validator: async (operation, context) => {
-    return validateDataConsistency(operation.inputSchema, operation.outputSchema);
+    return validateDataConsistency(
+      operation.inputSchema,
+      operation.outputSchema
+    );
   },
   severity: 'error',
-  errorMessage: 'Data consistency violation'
+  errorMessage: 'Data consistency violation',
 };
 ```
 
 ## 📊 Performance & Monitoring
 
 ### Performance Metrics
+
 ```typescript
 const validator = getDomainValidator(Domain.COORDINATION);
 
@@ -243,6 +274,7 @@ console.log(`Average time: ${stats.averageValidationTime}ms`);
 ```
 
 ### System-Wide Statistics
+
 ```typescript
 import { domainValidatorRegistry } from '../core/domain-boundary-validator';
 
@@ -256,12 +288,16 @@ for (const [domain, stats] of systemStats.domainStatistics) {
 ```
 
 ### Domain Crossing Analysis
+
 ```typescript
 const crossings = validator.getDomainCrossings(50); // Last 50 crossings
-const crossingsByTarget = crossings.reduce((acc, crossing) => {
-  acc[crossing.toDomain] = (acc[crossing.toDomain] || 0) + 1;
-  return acc;
-}, {} as Record<string, number>);
+const crossingsByTarget = crossings.reduce(
+  (acc, crossing) => {
+    acc[crossing.toDomain] = (acc[crossing.toDomain] || 0) + 1;
+    return acc;
+  },
+  {} as Record<string, number>
+);
 
 console.log('Domain crossings by target:', crossingsByTarget);
 ```
@@ -271,6 +307,7 @@ console.log('Domain crossings by target:', crossingsByTarget);
 The system provides pre-built schemas for existing domain types:
 
 ### Agent Schema
+
 ```typescript
 import { CommonSchemas } from '../core/domain-boundary-validator';
 
@@ -279,25 +316,34 @@ const agent = validator.validateInput(agentData, CommonSchemas.Agent);
 ```
 
 ### Task Schema
+
 ```typescript
 // Validates Task from coordination/types.ts
 const task = validator.validateInput(taskData, CommonSchemas.Task);
 ```
 
 ### Extended Schemas
+
 ```typescript
 import { ExtendedSchemas } from '../examples/domain-boundary-integration';
 
 // Validates PhaseAssignment from coordination/types.ts
-const phase = validator.validateInput(phaseData, ExtendedSchemas.PhaseAssignment);
+const phase = validator.validateInput(
+  phaseData,
+  ExtendedSchemas.PhaseAssignment
+);
 
 // Validates WorkflowExecution from workflows/types.ts
-const execution = validator.validateInput(executionData, ExtendedSchemas.WorkflowExecution);
+const execution = validator.validateInput(
+  executionData,
+  ExtendedSchemas.WorkflowExecution
+);
 ```
 
 ## 🚨 Error Handling
 
 ### Validation Errors
+
 ```typescript
 import { DomainValidationError } from '../core/domain-boundary-validator';
 
@@ -315,6 +361,7 @@ try {
 ```
 
 ### Contract Violations
+
 ```typescript
 import { ContractViolationError } from '../core/domain-boundary-validator';
 
@@ -329,8 +376,12 @@ if (!result.success && result.error instanceof ContractViolationError) {
 ## 🧪 Testing
 
 ### Unit Testing
+
 ```typescript
-import { DomainBoundaryValidator, Domain } from '../core/domain-boundary-validator';
+import {
+  DomainBoundaryValidator,
+  Domain,
+} from '../core/domain-boundary-validator';
 
 describe('Domain validation', () => {
   let validator: DomainBoundaryValidator;
@@ -348,6 +399,7 @@ describe('Domain validation', () => {
 ```
 
 ### Integration Testing
+
 ```typescript
 import { runAllExamples } from '../examples/domain-boundary-integration';
 
@@ -360,25 +412,36 @@ await runAllExamples();
 ### With Existing Domains
 
 #### Coordination Domain
+
 ```typescript
 // In coordination/agent-manager.ts
-import { getDomainValidator, CommonSchemas } from '../core/domain-boundary-validator';
+import {
+  getDomainValidator,
+  CommonSchemas,
+} from '../core/domain-boundary-validator';
 
 const validator = getDomainValidator(Domain.COORDINATION);
 
 export class AgentManager {
   async createAgent(agentData: unknown): Promise<Agent> {
-    const validatedAgent = validator.validateInput(agentData, CommonSchemas.Agent);
+    const validatedAgent = validator.validateInput(
+      agentData,
+      CommonSchemas.Agent
+    );
     // ... rest of creation logic
     return validatedAgent;
   }
 }
 ```
 
-#### Workflows Domain  
+#### Workflows Domain
+
 ```typescript
 // In workflows/workflow-engine.ts
-import { getDomainValidator, validateCrossDomain } from '../core/domain-boundary-validator';
+import {
+  getDomainValidator,
+  validateCrossDomain,
+} from '../core/domain-boundary-validator';
 
 const validator = getDomainValidator(Domain.WORKFLOWS);
 
@@ -398,6 +461,7 @@ export class WorkflowEngine {
 ```
 
 ### With Neural Domain
+
 ```typescript
 // Neural optimization with validation
 const neuralValidator = getDomainValidator(Domain.NEURAL);
@@ -412,8 +476,8 @@ const optimizationOperation: DomainOperation = {
   contractValidation: [ContractRules.dataConsistencyValidation],
   metadata: {
     description: 'Optimize workflow with neural network',
-    version: '1.0.0'
-  }
+    version: '1.0.0',
+  },
 };
 
 const result = await neuralValidator.enforceContract(optimizationOperation);
@@ -422,40 +486,45 @@ const result = await neuralValidator.enforceContract(optimizationOperation);
 ## 📈 Performance Optimization
 
 ### Caching
+
 - Automatic validation result caching
 - Configurable cache size limits
 - LRU eviction policy
 - Cache hit/miss metrics
 
 ### Schema Complexity Analysis
+
 - Automatic schema complexity scoring
 - Performance impact assessment
 - Optimization recommendations
 
 ### Batch Operations
+
 ```typescript
 // Optimize multiple validations
 const results = await Promise.all([
   validator.validateInput(data1, schema1),
-  validator.validateInput(data2, schema2), 
-  validator.validateInput(data3, schema3)
+  validator.validateInput(data2, schema2),
+  validator.validateInput(data3, schema3),
 ]);
 ```
 
 ## 🔐 Security Considerations
 
 ### Input Sanitization
+
 ```typescript
 const sanitizedSchema: TypeSchema<string> = {
   type: 'string',
   required: true,
   validator: (value: string) => !/<script|javascript:/i.test(value),
   transform: (value: string) => value.replace(/<[^>]*>/g, ''),
-  description: 'HTML-sanitized string'
+  description: 'HTML-sanitized string',
 };
 ```
 
 ### Authentication Contracts
+
 ```typescript
 const authRule: ContractRule = {
   name: 'authentication-required',
@@ -464,20 +533,22 @@ const authRule: ContractRule = {
     return await validateAuthToken(context.metadata?.authToken);
   },
   severity: 'error',
-  errorMessage: 'Valid authentication required'
+  errorMessage: 'Valid authentication required',
 };
 ```
 
 ## 📚 Best Practices
 
 ### Schema Design
+
 1. **Be Specific**: Use precise types and constraints
-2. **Include Descriptions**: Document schemas for maintainability  
+2. **Include Descriptions**: Document schemas for maintainability
 3. **Use Enums**: Constrain string values to valid options
 4. **Validate Business Rules**: Use custom validators for domain logic
 5. **Transform Consistently**: Normalize data formats
 
 ### Contract Rules
+
 1. **Single Responsibility**: One concern per rule
 2. **Fast Validation**: Keep validators lightweight
 3. **Clear Error Messages**: Help debugging and monitoring
@@ -485,6 +556,7 @@ const authRule: ContractRule = {
 5. **Async-Safe**: Handle async operations properly
 
 ### Performance
+
 1. **Cache Strategically**: Enable caching for repeated validations
 2. **Monitor Metrics**: Track validation performance
 3. **Optimize Schemas**: Keep complexity reasonable
@@ -492,6 +564,7 @@ const authRule: ContractRule = {
 5. **Set Reasonable Limits**: Configure cache and log sizes
 
 ### Error Handling
+
 1. **Catch Specific Errors**: Handle DomainValidationError vs ContractViolationError
 2. **Log Appropriately**: Include sufficient context for debugging
 3. **Fail Fast**: Don't continue with invalid data

@@ -11,7 +11,7 @@ This library is designed for **internal workflow coordination systems** like Que
 ## 🚀 **Key Features**
 
 - ✅ **XState-Powered Foundation** - Battle-tested state machine reliability
-- ✅ **Domain-Specific API** - Clean interfaces for workflow coordination  
+- ✅ **Domain-Specific API** - Clean interfaces for workflow coordination
 - ✅ **Intelligent WIP Management** - Automated limit optimization and enforcement
 - ✅ **Real-Time Bottleneck Detection** - Proactive workflow issue identification
 - ✅ **Flow Metrics & Analytics** - Comprehensive performance tracking
@@ -64,7 +64,7 @@ import { createWorkflowKanban } from '@claude-zen/taskmaster';
 const kanban = createWorkflowKanban({
   enableIntelligentWIP: true,
   enableBottleneckDetection: true,
-  enableFlowOptimization: true
+  enableFlowOptimization: true,
 });
 
 await kanban.initialize();
@@ -73,7 +73,7 @@ await kanban.initialize();
 const task = await kanban.createTask({
   title: 'Implement feature X',
   priority: 'high',
-  estimatedEffort: 8
+  estimatedEffort: 8,
 });
 
 // Move through workflow with WIP checking
@@ -138,13 +138,13 @@ kanban.on('health:critical', (health) => {
 const metrics = await kanban.getFlowMetrics();
 
 console.log({
-  throughput: metrics.throughput,        // tasks per day
-  cycleTime: metrics.cycleTime,          // average hours per task
-  leadTime: metrics.leadTime,            // hours from creation to completion
-  wipEfficiency: metrics.wipEfficiency,  // 0-1 efficiency rating
-  blockageRate: metrics.blockageRate,    // percentage of blocked time
+  throughput: metrics.throughput, // tasks per day
+  cycleTime: metrics.cycleTime, // average hours per task
+  leadTime: metrics.leadTime, // hours from creation to completion
+  wipEfficiency: metrics.wipEfficiency, // 0-1 efficiency rating
+  blockageRate: metrics.blockageRate, // percentage of blocked time
   flowEfficiency: metrics.flowEfficiency, // 0-1 flow rating
-  predictability: metrics.predictability  // 0-1 predictability score
+  predictability: metrics.predictability, // 0-1 predictability score
 });
 ```
 
@@ -156,15 +156,15 @@ const bottleneckReport = await kanban.detectBottlenecks();
 
 console.log('System Health:', bottleneckReport.systemHealth);
 
-bottleneckReport.bottlenecks.forEach(bottleneck => {
+bottleneckReport.bottlenecks.forEach((bottleneck) => {
   console.log({
     state: bottleneck.state,
-    type: bottleneck.type,           // 'capacity' | 'dependency' | 'resource' | 'skill' | 'process'
-    severity: bottleneck.severity,    // 'low' | 'medium' | 'high' | 'critical'
+    type: bottleneck.type, // 'capacity' | 'dependency' | 'resource' | 'skill' | 'process'
+    severity: bottleneck.severity, // 'low' | 'medium' | 'high' | 'critical'
     impactScore: bottleneck.impactScore,
     affectedTasks: bottleneck.affectedTasks.length,
     estimatedDelay: bottleneck.estimatedDelay, // hours
-    recommendation: bottleneck.recommendedResolution
+    recommendation: bottleneck.recommendedResolution,
   });
 });
 ```
@@ -174,8 +174,8 @@ bottleneckReport.bottlenecks.forEach(bottleneck => {
 ```typescript
 // Get workflow statistics over time range
 const stats = await kanban.getWorkflowStatistics({
-  start: new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)), // 30 days ago
-  end: new Date()
+  start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+  end: new Date(),
 });
 
 console.log({
@@ -185,7 +185,7 @@ console.log({
   averageCycleTime: stats.averageCycleTime,
   averageLeadTime: stats.averageLeadTime,
   throughput: stats.throughput,
-  wipEfficiency: stats.wipEfficiency
+  wipEfficiency: stats.wipEfficiency,
 });
 ```
 
@@ -200,7 +200,7 @@ console.log({
   allowed: wipCheck.allowed,
   currentCount: wipCheck.currentCount,
   limit: wipCheck.limit,
-  utilization: wipCheck.utilization // 0-1
+  utilization: wipCheck.utilization, // 0-1
 });
 
 // Get all WIP limits
@@ -210,7 +210,7 @@ console.log(limits);
 // Update WIP limits dynamically
 await kanban.updateWIPLimits({
   development: 15,
-  testing: 10
+  testing: 10,
 });
 ```
 
@@ -234,20 +234,20 @@ if (!moveResult.success) {
 ```typescript
 interface WorkflowKanbanConfig {
   // Feature toggles
-  enableIntelligentWIP: boolean;        // Auto-optimize WIP limits
-  enableBottleneckDetection: boolean;    // Real-time bottleneck detection
-  enableFlowOptimization: boolean;       // Automatic flow optimization
-  enablePredictiveAnalytics: boolean;    // Future performance prediction
-  enableRealTimeMonitoring: boolean;     // Continuous monitoring
-  
+  enableIntelligentWIP: boolean; // Auto-optimize WIP limits
+  enableBottleneckDetection: boolean; // Real-time bottleneck detection
+  enableFlowOptimization: boolean; // Automatic flow optimization
+  enablePredictiveAnalytics: boolean; // Future performance prediction
+  enableRealTimeMonitoring: boolean; // Continuous monitoring
+
   // Monitoring intervals
-  wipCalculationInterval: number;        // WIP recalculation frequency (ms)
-  bottleneckDetectionInterval: number;   // Bottleneck check frequency (ms)
-  optimizationAnalysisInterval: number;  // Optimization analysis frequency (ms)
-  
+  wipCalculationInterval: number; // WIP recalculation frequency (ms)
+  bottleneckDetectionInterval: number; // Bottleneck check frequency (ms)
+  optimizationAnalysisInterval: number; // Optimization analysis frequency (ms)
+
   // Capacity limits
-  maxConcurrentTasks: number;           // Maximum total active tasks
-  
+  maxConcurrentTasks: number; // Maximum total active tasks
+
   // Default WIP limits per state
   defaultWIPLimits: {
     backlog: number;
@@ -261,7 +261,7 @@ interface WorkflowKanbanConfig {
     expedite: number;
     total: number;
   };
-  
+
   // Performance thresholds for alerts
   performanceThresholds: Array<{
     metric: keyof FlowMetrics;
@@ -271,7 +271,7 @@ interface WorkflowKanbanConfig {
     alertMessage: string;
     enabled: boolean;
   }>;
-  
+
   // System adaptation rate (0-1)
   adaptationRate: number;
 }
@@ -296,7 +296,7 @@ const wipLimits = migrationHelper.convertLegacyWIPLimits(legacyLimits);
 const kanban = createWorkflowKanban({
   defaultWIPLimits: wipLimits,
   enableIntelligentWIP: true,
-  enableBottleneckDetection: true
+  enableBottleneckDetection: true,
 });
 ```
 
@@ -307,15 +307,15 @@ const kanban = createWorkflowKanban({
 const healthCheck = await kanban.getHealthStatus();
 
 console.log({
-  overallHealth: healthCheck.overallHealth,     // 0-1 overall system health
+  overallHealth: healthCheck.overallHealth, // 0-1 overall system health
   componentHealth: {
     wipManagement: healthCheck.componentHealth.wipManagement,
     bottleneckDetection: healthCheck.componentHealth.bottleneckDetection,
     flowOptimization: healthCheck.componentHealth.flowOptimization,
-    taskCoordination: healthCheck.componentHealth.taskCoordination
+    taskCoordination: healthCheck.componentHealth.taskCoordination,
   },
   activeIssues: healthCheck.activeIssues.length,
-  recommendations: healthCheck.recommendations
+  recommendations: healthCheck.recommendations,
 });
 
 // Handle critical health events
@@ -329,18 +329,21 @@ kanban.on('health:critical', (health) => {
 ## 🎯 **Use Cases**
 
 ### Internal Workflow Coordination Systems
-- Queens/Commanders/Cubes orchestration  
+
+- Queens/Commanders/Cubes orchestration
 - Multi-agent task coordination
 - Service workflow management
 - Process automation coordination
 
 ### Task State Management & Optimization
+
 - Automated WIP limit enforcement
 - Intelligent workflow optimization
 - Real-time bottleneck resolution
 - Flow efficiency improvement
 
 ### Performance Analytics & Monitoring
+
 - Flow metrics calculation and tracking
 - Bottleneck trend analysis
 - System health monitoring
@@ -366,7 +369,7 @@ kanban.on('health:critical', (health) => {
 // Comprehensive error handling
 kanban.on('error', (error, context) => {
   console.error(`Error in ${context}:`, error.message);
-  
+
   // Handle different error contexts
   switch (context) {
     case 'initialization':
@@ -387,31 +390,37 @@ kanban.on('error', (error, context) => {
 ### WorkflowKanban Class
 
 #### Task Management
+
 - `createTask(taskData)` - Create new workflow task
 - `moveTask(taskId, toState, reason?)` - Move task with WIP checking
 - `getTask(taskId)` - Get task by ID
 - `getTasksByState(state)` - Get all tasks in specific state
 
-#### WIP Management  
+#### WIP Management
+
 - `checkWIPLimits(state)` - Check WIP status for state
 - `getWIPLimits()` - Get current WIP limits
 - `updateWIPLimits(limits)` - Update WIP limits dynamically
 
 #### Flow Analysis
+
 - `getFlowMetrics()` - Get current flow metrics
 - `getWorkflowStatistics(timeRange?)` - Get workflow statistics
 - `detectBottlenecks()` - Comprehensive bottleneck analysis
 
 #### System Health
+
 - `getHealthStatus()` - Get system health status
 - `initialize()` - Initialize the system
 - `shutdown()` - Graceful shutdown
 
 ### Factory Functions
+
 - `createWorkflowKanban(config?, eventBus?)` - Standard configuration
 - `createHighThroughputWorkflowKanban(eventBus?)` - High-throughput optimization
 
 ### Migration Helpers
+
 - `createMigrationHelper()` - Utilities for migrating from legacy systems
 
 ## 📄 **License**

@@ -130,7 +130,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics for this algorithm.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const weights = Array.from(this.weights.values())();
+    const weights = Array.from(this.weights.values());
 
     return {
       totalAgents: weights.length,

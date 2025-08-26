@@ -6,7 +6,7 @@ import { EventEmitter } from '@claude-zen/foundation';
  * to eliminate the circular import.
  */
 
-import type { EventManagerConfig } from './core/interfaces';
+import type { EventManagerConfig } from './core/interfaces;
 
 /**
  * UEL Enhanced Event Bus Interface.

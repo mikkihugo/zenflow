@@ -41,7 +41,7 @@ pub struct NetworkAdapter<T: Float + Send + Sync + 'static> {
   training_state: Option<NetworkTrainingState<T>>,
 }
 
-/// Configuration for NetworkAdapter
+/// Configuration for `NetworkAdapter`
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NetworkAdapterConfig<T: Float + Send + Sync + 'static> {
   /// Input dimension
@@ -60,7 +60,7 @@ pub struct NetworkAdapterConfig<T: Float + Send + Sync + 'static> {
   pub network_type: String,
 }
 
-/// Training state for NetworkAdapter
+/// Training state for `NetworkAdapter`
 #[derive(Debug, Clone)]
 pub struct NetworkTrainingState<T: Float + Send + Sync + 'static> {
   /// Current epoch
@@ -88,6 +88,10 @@ pub trait InputPreprocessor<T: Float + Send + Sync + 'static>:
   Send + Sync
 {
   /// Process input time series data for network consumption
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the input processing fails.
   fn process(&self, input: &TimeSeriesInput<T>)
     -> NeuroDivergentResult<Vec<T>>;
 
@@ -106,6 +110,10 @@ pub trait OutputPostprocessor<T: Float + Send + Sync + 'static>:
   Send + Sync
 {
   /// Process network output to generate forecasts
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the output processing fails.
   fn process(
     &self,
     output: &[T],
@@ -242,9 +250,9 @@ pub struct NormalizationParams<T: Float + Send + Sync + 'static> {
   pub means: Vec<T>,
   /// Standard deviation values per feature
   pub stds: Vec<T>,
-  /// Minimum values per feature (for MinMax scaling)
+  /// Minimum values per feature (for `MinMax` scaling)
   pub mins: Option<Vec<T>>,
-  /// Maximum values per feature (for MinMax scaling)
+  /// Maximum values per feature (for `MinMax` scaling)
   pub maxs: Option<Vec<T>>,
 }
 
@@ -310,7 +318,7 @@ pub struct EarlyStoppingConfig<T: Float + Send + Sync + 'static> {
   pub patience: usize,
   /// Minimum improvement threshold
   pub min_delta: T,
-  /// Metric to monitor ('loss' or 'validation_loss')
+  /// Metric to monitor ('loss' or '`validation_loss`')
   pub monitor: String,
   /// Mode ('min' or 'max')
   pub mode: String,
@@ -377,6 +385,7 @@ impl<T: Float + Send + Sync + 'static + 'static> NetworkAdapter<T> {
   }
 
   /// Configure input preprocessing
+  #[must_use]
   pub fn with_input_processor(
     mut self,
     processor: Box<dyn InputPreprocessor<T>>,
@@ -386,6 +395,7 @@ impl<T: Float + Send + Sync + 'static + 'static> NetworkAdapter<T> {
   }
 
   /// Configure output postprocessing
+  #[must_use]
   pub fn with_output_processor(
     mut self,
     processor: Box<dyn OutputPostprocessor<T>>,
@@ -395,6 +405,10 @@ impl<T: Float + Send + Sync + 'static + 'static> NetworkAdapter<T> {
   }
 
   /// Forward pass through the network
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the forward pass fails due to preprocessing, network computation, or postprocessing issues.
   pub fn forward(
     &mut self,
     input: &TimeSeriesInput<T>,
@@ -714,7 +728,8 @@ pub struct DefaultOutputPostprocessor<T: Float + Send + Sync + 'static> {
 
 impl<T: Float + Send + Sync + 'static> DefaultOutputPostprocessor<T> {
   /// Create a new default output postprocessor
-  pub fn new() -> Self {
+  #[must_use]
+  pub const fn new() -> Self {
     Self {
       config: PostprocessorConfig {
         horizon: 1,

@@ -59,12 +59,8 @@
 import {
   getLogger,
   type Logger,
-  ContextError,
   withRetry,
-  CircuitBreakerWithMonitoring,
   createCircuitBreaker,
-  SystemMetricsCollector,
-  createSystemMetricsCollector,
   safeAsync,
 } from '@claude-zen/foundation';
 // Optional imports with fallbacks for ML features
@@ -90,8 +86,7 @@ try {
   osutils = null; // Fallback: use basic system metrics
 }
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { generateNanoId } from '@claude-zen/foundation';
+import { EventEmitter, generateNanoId } from '@claude-zen/foundation';
 
 // TensorFlow import - optional dependency support
 let tf: any = null;
@@ -164,7 +159,7 @@ import {
   TaskPriority,
 } from './types';
 
-export class LoadBalancer extends TypedEventBase {
+export class LoadBalancer extends EventEmitter {
   private agents: Map<string, Agent> = new Map();
   private algorithms: Map<string, LoadBalancingAlgorithm> = new Map();
   private currentAlgorithm!: LoadBalancingAlgorithm;

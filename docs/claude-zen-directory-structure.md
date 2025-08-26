@@ -64,23 +64,27 @@
 ## 🎯 Key Benefits
 
 ### **Centralized System State**
+
 - All Claude-Zen system data in one standardized location (`.claude/`)
 - Easy backup and migration of entire system state
 - Clean separation from user project files
 - Full Claude Code integration compatibility
 
 ### **Vector Database Integration**
+
 - **LanceDB** for agent prompts and performance analysis
 - Enables semantic search and pattern recognition
 - Perfect for DSPy neural enhancement capabilities
 
 ### **Multi-Database Architecture**
+
 - **agent-ecosystem.lancedb**: Vector database for prompts & agent instances
 - **memory.sqlite**: Fast relational data for sessions
 - **workflows.sqlite**: Workflow definitions and execution history
 - **performance.sqlite**: Performance metrics and optimization tracking
 
 ### **Comprehensive Analytics**
+
 - Agent performance tracking with automatic size checks
 - Optimization history analysis
 - Usage pattern recognition
@@ -90,6 +94,7 @@
 ## 🔧 Integration with Awesome Claude Code Patterns
 
 ### **Agent Instruction Patterns** (Inspired by awesome-claude-code)
+
 ```
 .claude/templates/agents/
 ├── system-prompts/
@@ -108,6 +113,7 @@
 ```
 
 ### **Slash Command Integration**
+
 ```
 .claude/commands/slash-commands/
 ├── create-prd/                  # Product requirements document creation
@@ -118,6 +124,7 @@
 ```
 
 ### **CLAUDE.md Template System**
+
 ```
 .claude/templates/claude-md/
 ├── agent-instructions.md        # Comprehensive agent instruction template
@@ -130,6 +137,7 @@
 ## 🚀 DSPy Integration Benefits
 
 ### **Agent Prompt Optimization (✅ YES - DSPy Helps!)**
+
 - **Store ALL agent prompts** in vector database for analysis
 - **Enable semantic similarity search** for prompt optimization
 - **Track optimization history** and performance improvements
@@ -142,12 +150,14 @@
   - Learns from cross-agent prompt patterns
 
 ### **Cross-Agent Learning**
+
 - Agents learn from each other's successful patterns
 - DSPy neural-enhancer automatically improves prompts
 - Performance tracking across all agent types
 - Continuous optimization based on real usage data
 
 ### **Workflow Enhancement**
+
 - DSPy can analyze entire workflow patterns
 - Automatic optimization of multi-agent coordination
 - Pattern recognition for efficient task distribution
@@ -156,6 +166,7 @@
 ## 🛡️ Built-in Backup & Size Management
 
 ### **Automatic Backup System (✅ YES - Built-in!)**
+
 ```javascript
 // Automatic backup triggers
 .claude/backups/
@@ -170,6 +181,7 @@
 ```
 
 **Backup Features:**
+
 - **Automatic daily snapshots** of all `.claude/` data
 - **Pre-optimization snapshots** for safe rollback
 - **Cross-project backup sharing** of successful configurations
@@ -177,28 +189,30 @@
 - **Compressed storage** to minimize disk usage
 
 ### **Size Monitoring & Checks (✅ YES - Built-in!)**
+
 ```typescript
 // Size monitoring system
 export interface SizeMonitor {
   databases: {
-    agentEcosystem: string;    // "2.3 MB / 50 MB limit"
-    memory: string;            // "850 KB / 10 MB limit" 
-    workflows: string;         // "1.2 MB / 25 MB limit"
+    agentEcosystem: string; // "2.3 MB / 50 MB limit"
+    memory: string; // "850 KB / 10 MB limit"
+    workflows: string; // "1.2 MB / 25 MB limit"
   };
   cache: {
-    embeddings: string;        // "15.7 MB / 100 MB limit"
-    sessions: string;          // "3.4 MB / 50 MB limit"
+    embeddings: string; // "15.7 MB / 100 MB limit"
+    sessions: string; // "3.4 MB / 50 MB limit"
   };
   logs: {
-    totalSize: string;         // "45.2 MB / 200 MB limit"
-    oldestLog: string;         // "30 days ago"
-    autoCleanup: boolean;      // true
+    totalSize: string; // "45.2 MB / 200 MB limit"
+    oldestLog: string; // "30 days ago"
+    autoCleanup: boolean; // true
   };
-  alerts: string[];            // ["Cache approaching limit", "Old logs need cleanup"]
+  alerts: string[]; // ["Cache approaching limit", "Old logs need cleanup"]
 }
 ```
 
 **Size Management Features:**
+
 - **Real-time size monitoring** of all directories
 - **Automatic cleanup** of old logs and cache files
 - **Size limit warnings** before hitting storage limits
@@ -209,33 +223,39 @@ export interface SizeMonitor {
 ## 📊 Analytics and Monitoring
 
 ### **Real-Time Analytics**
+
 ```javascript
 // Example: Access agent ecosystem analytics
 const analytics = await claudeZen.analytics.getAgentEcosystemAnalytics();
 console.log(`Total Agents: ${analytics.totalAgents}`);
-console.log(`Optimization Impact: ${analytics.optimizationImpact.averageImprovement}%`);
+console.log(
+  `Optimization Impact: ${analytics.optimizationImpact.averageImprovement}%`
+);
 ```
 
 ### **Performance Tracking**
+
 ```javascript
 // Example: Track agent performance
 await claudeZen.agents.updatePerformance(agentId, {
   taskCompleted: true,
   responseTime: 1200,
   errorOccurred: false,
-  taskDescription: "Code optimization task"
+  taskDescription: 'Code optimization task',
 });
 ```
 
 ## 🔄 Migration and Backup
 
 ### **Automatic Backups**
+
 - Daily snapshots of critical system state
 - Pre-optimization snapshots for rollback capability
 - Weekly comprehensive backups
 - Migration-ready backup format
 
 ### **Cross-Project Sharing**
+
 - Export successful agent configurations
 - Share optimized workflow templates
 - Transfer neural enhancement patterns
@@ -255,21 +275,27 @@ await claudeZen.agents.updatePerformance(agentId, {
 ## 🎯 Questions Answered
 
 ### **Q: Do we have backup built in?**
+
 **✅ YES!** The `.claude/backups/` system provides:
+
 - Daily automatic snapshots
-- Pre-optimization rollback points  
+- Pre-optimization rollback points
 - Cross-project configuration sharing
 - Migration-ready backup format
 
 ### **Q: Do we keep some things size in checks?**
+
 **✅ YES!** Built-in size monitoring includes:
+
 - Real-time directory size tracking
 - Automatic cleanup of old files
 - Size limit warnings and alerts
 - Intelligent cache management
 
 ### **Q: Does DSPy help with agent prompts?**
+
 **✅ ABSOLUTELY!** DSPy's neural-enhancer:
+
 - Analyzes all agent prompts for optimization opportunities
 - Generates improved prompt variations automatically
 - Tests prompt effectiveness across scenarios

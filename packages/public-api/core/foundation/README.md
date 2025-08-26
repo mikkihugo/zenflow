@@ -14,7 +14,7 @@ Professional foundation utilities for the claude-code-zen ecosystem - logging, c
 📊 **Advanced Logging** - LogTape integration with environment configuration  
 ⚡ **Circuit Breakers & Retry Logic** - Cockatiel resilience patterns  
 🎯 **Schema Validation** - Zod-based input validation  
-📦 **Battle-Tested Dependencies** - Only production-proven libraries  
+📦 **Battle-Tested Dependencies** - Only production-proven libraries
 
 ## Installation
 
@@ -58,7 +58,10 @@ const userSchema = z.object({
   email: z.string().email(),
 });
 
-const validation = validateInput({ name: 'John', email: 'john@example.com' }, userSchema);
+const validation = validateInput(
+  { name: 'John', email: 'john@example.com' },
+  userSchema
+);
 if (validation.isOk()) {
   console.log('Valid user:', validation.value);
 }
@@ -67,28 +70,30 @@ if (validation.isOk()) {
 ## Entry Points (Tree-Shaking Optimized)
 
 ### Core Utilities (`/core` - 923B)
+
 Essential logging, configuration, and environment detection:
 
 ```typescript
-import { 
-  getLogger, 
-  getConfig, 
-  isDevelopment, 
-  isProduction, 
-  isTest 
+import {
+  getLogger,
+  getConfig,
+  isDevelopment,
+  isProduction,
+  isTest,
 } from '@claude-zen/foundation/core';
 ```
 
 ### Dependency Injection (`/di` - 1.2KB)
+
 Professional IoC container and service management:
 
 ```typescript
-import { 
-  createContainer, 
-  inject, 
-  asFunction, 
-  asClass, 
-  asValue 
+import {
+  createContainer,
+  inject,
+  asFunction,
+  asClass,
+  asValue,
 } from '@claude-zen/foundation/di';
 
 const container = createContainer();
@@ -99,42 +104,44 @@ container.register({
 ```
 
 ### Resilience Patterns (`/resilience` - 1.8KB)
+
 Error handling, circuit breakers, and retry logic:
 
 ```typescript
-import { 
-  Result, 
-  ok, 
-  err, 
-  withRetry, 
+import {
+  Result,
+  ok,
+  err,
+  withRetry,
   circuitBreaker,
-  safeAsync 
+  safeAsync,
 } from '@claude-zen/foundation/resilience';
 
 // Circuit breaker
-const apiCall = circuitBreaker(
-  async () => fetch('/api/data'),
-  { timeout: 5000, errorThresholdPercentage: 50 }
-);
+const apiCall = circuitBreaker(async () => fetch('/api/data'), {
+  timeout: 5000,
+  errorThresholdPercentage: 50,
+});
 
 // Retry with exponential backoff
-const resilientCall = withRetry(apiCall, { 
+const resilientCall = withRetry(apiCall, {
   maxAttempts: 3,
-  backoff: new ExponentialBackoff()
+  backoff: new ExponentialBackoff(),
 });
 ```
 
 ### Utilities (`/utils` - 2.1KB)
+
 Validation, date operations, and common utilities:
 
 ```typescript
-import { 
-  z, 
-  validateInput, 
-  _, 
-  nanoid, 
-  format, 
-  addDays 
+import {
+  z,
+  validateInput,
+  _,
+  nanoid,
+  format,
+  addDays,
 } from '@claude-zen/foundation/utils';
 
 // Schema validation
@@ -152,14 +159,14 @@ const processedData = _(data).groupBy('category').value();
 
 ## Bundle Size Comparison
 
-| Entry Point | Size | Use Case |
-|------------|------|----------|
-| `@claude-zen/foundation` | 2.8KB | Minimal essentials |
-| `@claude-zen/foundation/core` | 923B | Logging & config only |
-| `@claude-zen/foundation/di` | 1.2KB | Dependency injection |
-| `@claude-zen/foundation/resilience` | 1.8KB | Error handling |
-| `@claude-zen/foundation/utils` | 2.1KB | Validation & utilities |
-| `@claude-zen/foundation/full` | 36KB | Everything (legacy) |
+| Entry Point                         | Size  | Use Case               |
+| ----------------------------------- | ----- | ---------------------- |
+| `@claude-zen/foundation`            | 2.8KB | Minimal essentials     |
+| `@claude-zen/foundation/core`       | 923B  | Logging & config only  |
+| `@claude-zen/foundation/di`         | 1.2KB | Dependency injection   |
+| `@claude-zen/foundation/resilience` | 1.8KB | Error handling         |
+| `@claude-zen/foundation/utils`      | 2.1KB | Validation & utilities |
+| `@claude-zen/foundation/full`       | 36KB  | Everything (legacy)    |
 
 **🌳 Tree-Shaking Benefits: 92% bundle size reduction (36KB → 2.8KB)**
 
@@ -168,7 +175,10 @@ const processedData = _(data).groupBy('category').value();
 ### Error Handling with Context
 
 ```typescript
-import { EnhancedError, createCircuitBreaker } from '@claude-zen/foundation/resilience';
+import {
+  EnhancedError,
+  createCircuitBreaker,
+} from '@claude-zen/foundation/resilience';
 
 class UserService {
   async getUser(id: string): Promise<Result<User, EnhancedError>> {
@@ -176,11 +186,13 @@ class UserService {
       const user = await this.repository.findById(id);
       return ok(user);
     } catch (error) {
-      return err(new EnhancedError(
-        'Failed to get user',
-        { userId: id, timestamp: Date.now() },
-        'USER_NOT_FOUND'
-      ));
+      return err(
+        new EnhancedError(
+          'Failed to get user',
+          { userId: id, timestamp: Date.now() },
+          'USER_NOT_FOUND'
+        )
+      );
     }
   }
 }
@@ -190,12 +202,12 @@ class UserService {
 
 ```typescript
 // Environment variables
-ZEN_LOG_LEVEL=debug
-ZEN_LOG_FORMAT=json
-ZEN_LOG_CONSOLE=true
-ZEN_LOG_FILE=app.log
-ZEN_LOG_COMPONENT_DATABASE=debug
-ZEN_LOG_COMPONENT_AUTH=info
+ZEN_LOG_LEVEL = debug;
+ZEN_LOG_FORMAT = json;
+ZEN_LOG_CONSOLE = true;
+ZEN_LOG_FILE = app.log;
+ZEN_LOG_COMPONENT_DATABASE = debug;
+ZEN_LOG_COMPONENT_AUTH = info;
 ```
 
 ### Dependency Injection Patterns
@@ -239,13 +251,13 @@ ZEN_LOG_COMPONENT_AUTH=info
 Full TypeScript support with strict type checking:
 
 ```typescript
-import type { 
-  Logger, 
-  Config, 
-  UUID, 
+import type {
+  Logger,
+  Config,
+  UUID,
   JsonObject,
   Result,
-  ServiceContainer 
+  ServiceContainer,
 } from '@claude-zen/foundation';
 
 // Type-safe service resolution
@@ -265,6 +277,7 @@ The foundation package follows a 3-tier architecture:
 - **Tier 3**: Deep internals (restricted access)
 
 This ensures:
+
 - 70%+ code reduction through intelligent delegation
 - Zero breaking changes via stable facades
 - Lazy loading for optimal performance
@@ -295,6 +308,7 @@ npm run test:integration
 ## Dependencies
 
 **Core Dependencies (Production-Proven):**
+
 - `neverthrow` - Type-safe Result pattern
 - `cockatiel` - Circuit breakers and resilience
 - `awilix` - Dependency injection container

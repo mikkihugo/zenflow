@@ -15,7 +15,7 @@
  *
  * @example Basic event validation
  * ```typescript`
- * import { createEventValidator, EventSchemas } from '@claude-zen/event-system/validation';
+ * import { createEventValidator, EventSchemas } from '@claude-zen/event-system/validation;
  *
  * const validator = createEventValidator(EventSchemas.UserAction);
  * const result = validator.validate(eventData);

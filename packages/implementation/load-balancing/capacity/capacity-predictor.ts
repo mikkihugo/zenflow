@@ -33,7 +33,7 @@ export class CapacityPredictor {
     const history = profile.utilizationHistory.slice(-20);
     if (history.length < 5) {
       return (
-        profile.utilizationHistory[profile.utilizationHistory.length - 1] | '|5'
+        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 5
       );
     }
 

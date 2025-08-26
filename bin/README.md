@@ -19,9 +19,9 @@ claude-zen.cmd --help
 - ✅ Neural WASM acceleration
 - ✅ MCP server capabilities
 - ✅ Cross-platform support
-- ✅ No Node.js installation required*
+- ✅ No Node.js installation required\*
 
-*Requires Node.js 18+ for now (standalone binaries coming soon)
+\*Requires Node.js 18+ for now (standalone binaries coming soon)
 
 ## Bundle Contents
 

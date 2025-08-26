@@ -62,7 +62,7 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import { BaseEventManager } from '../core/base-event-manager';
+import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -70,9 +70,9 @@ import type {
   EventManager,
   EventManagerFactory,
   SystemEvent,
-} from '../core/interfaces';
-import type { MemoryEventManager } from '../event-manager-types';
-import type { MemoryEvent } from '../types';
+} from '../core/interfaces;
+import type { MemoryEventManager } from '../event-manager-types;
+import type { MemoryEvent } from '../types;
 
 /**
  * Memory Event Manager implementation for memory and caching operations.

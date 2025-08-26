@@ -63,7 +63,7 @@
  */
 
 import { getLogger, type Logger, type Config } from '@claude-zen/foundation';
-import { BaseEventManager } from '../core/base-event-manager';
+import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -71,9 +71,9 @@ import type {
   EventManager,
   EventManagerFactory,
   SystemEvent,
-} from '../core/interfaces';
-import type { DatabaseEventManager } from '../event-manager-types';
-import type { DatabaseEvent } from '../types';
+} from '../core/interfaces;
+import type { DatabaseEventManager } from '../event-manager-types;
+import type { DatabaseEvent } from '../types;
 
 /**
  * Database Event Manager implementation for database operations.

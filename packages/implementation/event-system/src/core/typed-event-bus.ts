@@ -18,8 +18,8 @@
  *
  * @example Type-safe event usage
  * ```typescript`
- * import { TypedEventBus } from '@claude-zen/event-system/core';
- * import { EventSchemas } from '@claude-zen/event-system/validation';
+ * import { TypedEventBus } from '@claude-zen/event-system/core;
+ * import { EventSchemas } from '@claude-zen/event-system/validation;
  *
  * const eventBus = new TypedEventBus({
  *   enableValidation: true,
@@ -41,7 +41,7 @@
  * ````
  */
 
-import mitt, { type Emitter } from 'mitt';
+import mitt, { type Emitter } from 'mitt;
 import { z } from '@claude-zen/foundation';
 import {
   getLogger,
@@ -61,7 +61,7 @@ import {
   EventSchemas,
   type BaseEvent,
   type AllEventTypes,
-} from '../validation/zod-validation';
+} from '../validation/zod-validation;
 
 const logger = getLogger('TypedEventBus');'
 

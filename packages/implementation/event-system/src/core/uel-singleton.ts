@@ -7,12 +7,12 @@ import { EventEmitter } from '@claude-zen/foundation';
 
 import type { Logger } from '@claude-zen/foundation';
 import { TOKENS } from '@claude-zen/foundation';
-import type { CompatibilityFactory } from '../compatibility';
-import type { UELFactory, UELRegistry } from '../factories';
-import type { EventManager } from '../manager';
-import type { EventRegistry } from '../registry';
-import type { UELValidationFramework } from '../validation';
-import type { EventManagerConfig } from './interfaces';
+import type { CompatibilityFactory } from '../compatibility;
+import type { UELFactory, UELRegistry } from '../factories;
+import type { EventManager } from '../manager;
+import type { EventRegistry } from '../registry;
+import type { UELValidationFramework } from '../validation;
+import type { EventManagerConfig } from './interfaces;
 
 /**
  * UEL Main Interface - Primary entry point for the Unified Event Layer.

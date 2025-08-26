@@ -10,7 +10,7 @@
 The Development Strategic Facade integrates **ALL strategic facades and foundation** to provide a unified development experience:
 
 - 🧠 **Intelligence Facade**: AI-powered code analysis and recommendations
-- 🏢 **Enterprise Facade**: Workflow integration and SAFE methodology  
+- 🏢 **Enterprise Facade**: Workflow integration and SAFE methodology
 - 📊 **Operations Facade**: Performance tracking and telemetry
 - 🏗️ **Infrastructure Facade**: Data persistence and event coordination
 - 🔍 **Repo-Analyzer**: Repository-level insights and metrics
@@ -19,6 +19,7 @@ The Development Strategic Facade integrates **ALL strategic facades and foundati
 ## Features
 
 ### 🔍 **Live Code Analysis**
+
 - Real-time file watching and analysis
 - Multi-language support (TypeScript, JavaScript, Python, Go, Rust, Java, C++)
 - AST parsing and semantic analysis
@@ -26,6 +27,7 @@ The Development Strategic Facade integrates **ALL strategic facades and foundati
 - AI-powered insights and recommendations
 
 ### 📊 **Repository Analysis**
+
 - Comprehensive workspace detection (Nx, Bazel, Moon, Turbo, Rush, Lerna, Nix)
 - Dependency analysis with circular detection
 - Git repository analysis with hotspot detection
@@ -33,6 +35,7 @@ The Development Strategic Facade integrates **ALL strategic facades and foundati
 - Security vulnerability scanning
 
 ### 🤖 **AI-Powered Features**
+
 - Intent analysis and code understanding
 - Refactoring opportunity detection
 - Performance prediction and optimization
@@ -41,6 +44,7 @@ The Development Strategic Facade integrates **ALL strategic facades and foundati
 - Architecture improvement recommendations
 
 ### ⚡ **Performance & Monitoring**
+
 - Real-time performance tracking
 - Resource usage monitoring
 - Analysis latency metrics
@@ -53,7 +57,7 @@ The Development Strategic Facade integrates **ALL strategic facades and foundati
 npm install @claude-zen/development
 # or
 yarn add @claude-zen/development
-# or  
+# or
 pnpm add @claude-zen/development
 ```
 
@@ -70,7 +74,7 @@ const session = await startLiveCodeAnalysis('/path/to/your/repo', {
   enableAILinting: true,
   enableContextualAnalysis: true,
   realTimeAnalysis: true,
-  languages: ['typescript', 'javascript', 'python']
+  languages: ['typescript', 'javascript', 'python'],
 });
 
 console.log(`Analysis session started: ${session.id}`);
@@ -88,10 +92,12 @@ const analysis = await analyzeRepositoryWithAI('/path/to/your/repo', {
   enableComplexityAnalysis: true,
   enableDependencyAnalysis: true,
   enableDomainAnalysis: true,
-  enableAIRecommendations: true
+  enableAIRecommendations: true,
 });
 
-console.log(`Health Score: ${(analysis.summary.overallScore * 100).toFixed(1)}%`);
+console.log(
+  `Health Score: ${(analysis.summary.overallScore * 100).toFixed(1)}%`
+);
 console.log(`Domains: ${analysis.domains.length}`);
 console.log(`Recommendations: ${analysis.recommendations.length}`);
 ```
@@ -105,7 +111,7 @@ import { analyzeFileWithAI } from '@claude-zen/development';
 const result = await analyzeFileWithAI('/path/to/file.ts', {
   enableAIRecommendations: true,
   enableAILinting: true,
-  analysisMode: 'comprehensive'
+  analysisMode: 'comprehensive',
 });
 
 console.log(`Complexity: ${result.quality.cyclomaticComplexity}`);
@@ -150,13 +156,13 @@ const sessionResult = await analyzer.startLiveAnalysis({
   batchSize: 10,
   throttleMs: 100,
   languages: ['typescript', 'javascript'],
-  excludePatterns: ['**/node_modules/**', '**/dist/**']
+  excludePatterns: ['**/node_modules/**', '**/dist/**'],
 });
 
 if (sessionResult.isOk()) {
   const session = sessionResult.value;
   console.log(`Live analysis started: ${session.id}`);
-  
+
   // Monitor session progress
   setInterval(() => {
     const status = analyzer.getSessionStatus();
@@ -171,18 +177,24 @@ if (sessionResult.isOk()) {
 // Analyze specific file
 const fileResult = await analyzer.analyzeFile('src/main.ts', {
   enableAIRecommendations: true,
-  enableContextualAnalysis: true
+  enableContextualAnalysis: true,
 });
 
 if (fileResult.isOk()) {
   const analysis = fileResult.value;
   console.log(`Analysis completed in ${analysis.analysisTime}ms`);
   console.log(`Suggestions: ${analysis.suggestions.length}`);
-  
+
   if (analysis.aiInsights) {
-    console.log(`Primary intent: ${analysis.aiInsights.intentAnalysis.primaryIntent}`);
-    console.log(`Complexity: ${analysis.aiInsights.complexityAssessment.overallComplexity}`);
-    console.log(`Refactoring opportunities: ${analysis.aiInsights.refactoringOpportunities.length}`);
+    console.log(
+      `Primary intent: ${analysis.aiInsights.intentAnalysis.primaryIntent}`
+    );
+    console.log(
+      `Complexity: ${analysis.aiInsights.complexityAssessment.overallComplexity}`
+    );
+    console.log(
+      `Refactoring opportunities: ${analysis.aiInsights.refactoringOpportunities.length}`
+    );
   }
 }
 
@@ -210,38 +222,38 @@ console.log('AI Recommendations:', health.aiRecommendations);
 ```typescript
 interface CodeAnalysisOptions {
   // Analysis scope
-  includeTests?: boolean;              // Include test files (default: false)
-  includeNodeModules?: boolean;        // Include node_modules (default: false)
-  includeDotFiles?: boolean;           // Include hidden files (default: false)
-  maxFileSize?: number;                // Skip files larger than this (default: 1MB)
-  excludePatterns?: string[];          // Glob patterns to exclude
+  includeTests?: boolean; // Include test files (default: false)
+  includeNodeModules?: boolean; // Include node_modules (default: false)
+  includeDotFiles?: boolean; // Include hidden files (default: false)
+  maxFileSize?: number; // Skip files larger than this (default: 1MB)
+  excludePatterns?: string[]; // Glob patterns to exclude
 
   // Analysis depth
   analysisMode?: 'syntax' | 'semantic' | 'intelligent' | 'comprehensive';
-  realTimeAnalysis?: boolean;          // Enable real-time analysis (default: true)
-  enableWatching?: boolean;            // Enable file watching (default: true)
+  realTimeAnalysis?: boolean; // Enable real-time analysis (default: true)
+  enableWatching?: boolean; // Enable file watching (default: true)
 
   // AI-powered features
-  enableAIRecommendations?: boolean;   // Enable AI recommendations (default: true)
-  enableAILinting?: boolean;           // Enable AI linting (default: true)
-  enableAIRefactoring?: boolean;       // Enable AI refactoring (default: false)
-  enableContextualAnalysis?: boolean;  // Enable contextual analysis (default: true)
+  enableAIRecommendations?: boolean; // Enable AI recommendations (default: true)
+  enableAILinting?: boolean; // Enable AI linting (default: true)
+  enableAIRefactoring?: boolean; // Enable AI refactoring (default: false)
+  enableContextualAnalysis?: boolean; // Enable contextual analysis (default: true)
 
   // Performance settings
-  batchSize?: number;                  // Batch size for processing (default: 10)
-  throttleMs?: number;                 // Throttle delay in ms (default: 100)
-  cachingEnabled?: boolean;            // Enable caching (default: true)
-  parallelProcessing?: boolean;        // Enable parallel processing (default: true)
+  batchSize?: number; // Batch size for processing (default: 10)
+  throttleMs?: number; // Throttle delay in ms (default: 100)
+  cachingEnabled?: boolean; // Enable caching (default: true)
+  parallelProcessing?: boolean; // Enable parallel processing (default: true)
 
   // Language support
-  languages?: SupportedLanguage[];     // Languages to analyze
-  tsConfigPath?: string;               // TypeScript config path
-  babelConfigPath?: string;            // Babel config path
+  languages?: SupportedLanguage[]; // Languages to analyze
+  tsConfigPath?: string; // TypeScript config path
+  babelConfigPath?: string; // Babel config path
 
   // Integration settings
-  enableVSCodeIntegration?: boolean;   // Enable VS Code integration
-  enableIDEIntegration?: boolean;      // Enable IDE integration
-  enableCIIntegration?: boolean;       // Enable CI integration
+  enableVSCodeIntegration?: boolean; // Enable VS Code integration
+  enableIDEIntegration?: boolean; // Enable IDE integration
+  enableCIIntegration?: boolean; // Enable CI integration
 }
 ```
 
@@ -321,6 +333,7 @@ interface AICodeInsights {
 The Development facade integrates all strategic facades:
 
 ### Intelligence Facade
+
 ```typescript
 import { getBrainSystem } from '@claude-zen/development';
 
@@ -332,11 +345,12 @@ const insights = await coordinator.optimizePrompt({
   task: 'Code analysis and insights generation',
   basePrompt: 'Analyze this TypeScript code...',
   context: { language: 'typescript', filePath: './src/main.ts' },
-  qualityRequirement: 0.9
+  qualityRequirement: 0.9,
 });
 ```
 
 ### Enterprise Facade
+
 ```typescript
 import { getWorkflowEngine, getSafeFramework } from '@claude-zen/development';
 
@@ -346,13 +360,17 @@ const safeFramework = await getSafeFramework();
 // Integrate code analysis into development workflows
 await workflowEngine.executeWorkflow('code-quality-check', {
   repositoryPath: '/path/to/repo',
-  analysisOptions: { enableAIRecommendations: true }
+  analysisOptions: { enableAIRecommendations: true },
 });
 ```
 
 ### Operations Facade
+
 ```typescript
-import { getPerformanceTracker, getTelemetryManager } from '@claude-zen/development';
+import {
+  getPerformanceTracker,
+  getTelemetryManager,
+} from '@claude-zen/development';
 
 const performanceTracker = await getPerformanceTracker();
 const telemetryManager = await getTelemetryManager();
@@ -362,11 +380,12 @@ await performanceTracker.startSession('code-analysis-session');
 await telemetryManager.trackEvent('file-analyzed', {
   language: 'typescript',
   complexity: 15,
-  duration: 450
+  duration: 450,
 });
 ```
 
 ### Infrastructure Facade
+
 ```typescript
 import { getDatabaseSystem, getEventSystem } from '@claude-zen/development';
 
@@ -379,7 +398,7 @@ await databaseSystem.store('analysis-results', analysisId, result);
 // Coordinate development events
 await eventSystem.emit('code-quality-improved', {
   filePath: './src/main.ts',
-  improvement: 25
+  improvement: 25,
 });
 ```
 
@@ -390,22 +409,18 @@ await eventSystem.emit('code-quality-improved', {
 ```typescript
 // For large repositories
 const result = await startLiveCodeAnalysis('/large/repo', {
-  analysisMode: 'semantic',           // Skip comprehensive analysis
-  batchSize: 5,                       // Smaller batches
-  throttleMs: 200,                    // More throttling
-  excludePatterns: [
-    '**/node_modules/**',
-    '**/vendor/**',
-    '**/third_party/**'
-  ],
-  languages: ['typescript', 'javascript'] // Limit languages
+  analysisMode: 'semantic', // Skip comprehensive analysis
+  batchSize: 5, // Smaller batches
+  throttleMs: 200, // More throttling
+  excludePatterns: ['**/node_modules/**', '**/vendor/**', '**/third_party/**'],
+  languages: ['typescript', 'javascript'], // Limit languages
 });
 
 // For CI/CD pipelines
 const health = await getRepositoryHealthWithAI('/repo', {
-  enableGitAnalysis: false,           // Skip git analysis in CI
-  enableAIRecommendations: false,     // Skip AI for speed
-  maxFileSize: 100000                 // Skip very large files
+  enableGitAnalysis: false, // Skip git analysis in CI
+  enableAIRecommendations: false, // Skip AI for speed
+  maxFileSize: 100000, // Skip very large files
 });
 ```
 

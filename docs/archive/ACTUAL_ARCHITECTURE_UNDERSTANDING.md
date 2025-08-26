@@ -7,13 +7,13 @@ You were absolutely right to question this! Here's what actually exists:
 ### **What We Actually Have:**
 
 1. **TypeScript COLLECTIVE Intelligence** ✅
-   - **Location**: `src/coordination/` 
+   - **Location**: `src/coordination/`
    - **Features**: Queen Commander, AI safety (deception detection), SPARC workflows
    - **File Access**: Direct repository access for intelligence operations
 
-2. **zen_orchestrator_binding.rs (NAPI)** ✅  
+2. **zen_orchestrator_binding.rs (NAPI)** ✅
    - **Location**: `src/bindings/src/zen_orchestrator_binding.rs` (2,800+ lines)
-   - **Uses**: **a2a-rs protocol** for agent coordination 
+   - **Uses**: **a2a-rs protocol** for agent coordination
    - **Purpose**: Provides TypeScript access to a2a-rs coordination capabilities
    - **Does NOT use**: zen-neural-stack/zen-swarm directly
 
@@ -61,16 +61,18 @@ You were absolutely right to question this! Here's what actually exists:
 
 We need to build a bridge so that:
 
-**TypeScript COLLECTIVE** (intelligence + safety) 
-↕ 
+**TypeScript COLLECTIVE** (intelligence + safety)
+↕
 **a2a orchestrator** (coordination)
-↕ 
+↕
 **zen-swarm** (high-performance execution)
 
 ## 💡 **INTEGRATION OPTIONS**
 
 ### **Option 1: Direct NAPI Bridge**
+
 Add zen-swarm bindings to zen_orchestrator_binding.rs:
+
 ```rust
 // Add to zen_orchestrator_binding.rs
 use zen_swarm::{Swarm, SwarmConfig, Agent};
@@ -81,8 +83,10 @@ pub async fn create_zen_swarm(config: String) -> napi::Result<String> {
 }
 ```
 
-### **Option 2: A2A Protocol Bridge**  
+### **Option 2: A2A Protocol Bridge**
+
 Make zen-swarm speak A2A protocol:
+
 ```rust
 // In zen-swarm
 impl A2AMessageHandler for ZenSwarm {
@@ -91,13 +95,15 @@ impl A2AMessageHandler for ZenSwarm {
 ```
 
 ### **Option 3: Hybrid Communication**
+
 - Intelligence operations: TypeScript → Direct file access
-- Coordination: TypeScript → a2a orchestrator  
+- Coordination: TypeScript → a2a orchestrator
 - Execution: a2a orchestrator → zen-swarm via API/protocol
 
 ## 🎯 **RECOMMENDED APPROACH**
 
 **Option 1: Direct NAPI Bridge** because:
+
 - ✅ Preserves TypeScript intelligence + AI safety
 - ✅ Keeps a2a orchestrator for coordination
 - ✅ Adds zen-swarm high-performance capabilities

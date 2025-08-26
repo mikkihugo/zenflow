@@ -128,7 +128,10 @@ This is a sophisticated, production-grade AI platform. Maintain high standards a
 
 ## Performance Benchmarks
 ${this.config.performance_benchmarks
-  .map((benchmark) => `- **${benchmark.name}**: ${benchmark.target} (${benchmark.measurement})`)
+  .map(
+    (benchmark) =>
+      `- **${benchmark.name}**: ${benchmark.target} (${benchmark.measurement})`
+  )
   .join('\n')}
 
 ## Validation Rules
@@ -476,7 +479,10 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
         - [ ] Architecture validation passes
         - [ ] No breaking changes to existing systems`;
 
-    await fs.writeFile('.github/ISSUE_TEMPLATE/copilot-autonomous.yml', template);
+    await fs.writeFile(
+      '.github/ISSUE_TEMPLATE/copilot-autonomous.yml',
+      template
+    );
   }
 
   async generate() {

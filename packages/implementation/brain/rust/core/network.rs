@@ -1,11 +1,11 @@
 use crate::{ActivationFunction, Layer, TrainingAlgorithm};
+#[cfg(feature = "io")]
+use bincode;
 use num_traits::Float;
 use rand::Rng;
 use rand::distributions::Uniform;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
-#[cfg(feature = "io")]
-use bincode;
 use thiserror::Error;
 
 /// Errors that can occur during network operations

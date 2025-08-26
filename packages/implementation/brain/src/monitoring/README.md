@@ -14,24 +14,28 @@ The Intelligence subsystem provides advanced monitoring, learning, and optimizat
 The `AgentHealthMonitor` provides comprehensive health management for swarm agents with the following capabilities:
 
 #### Real-time Health Tracking
+
 - **Health Status**: Tracks agent status (healthy, degraded, unhealthy, critical, unknown)
 - **Performance Metrics**: Monitors CPU, memory, disk usage, network latency, task success rates
 - **Health Scoring**: Calculates weighted health scores based on multiple performance factors
 - **Trend Analysis**: Analyzes health trends over time with confidence scoring
 
 #### Predictive Health Detection
+
 - **Trend Prediction**: Predicts future health status based on historical data
 - **Degradation Detection**: Early warning system for performance degradation
 - **Contributing Factors**: Identifies specific issues affecting agent health
 - **Time-to-Change Estimation**: Predicts when status changes will occur
 
 #### Alerting and Notification System
+
 - **Threshold-based Alerts**: Configurable thresholds for all monitored metrics
 - **Severity Classification**: Alert severity levels (info, warning, error, critical)
 - **Alert Aggregation**: Prevents alert spam through intelligent aggregation
 - **Alert Resolution**: Track and resolve alerts with resolution details
 
 #### Recovery Action Recommendations
+
 - **Intelligent Recommendations**: AI-powered recovery action suggestions
 - **Priority Scoring**: Actions prioritized by impact and urgency
 - **Risk Assessment**: Risk level analysis for each recovery action
@@ -39,6 +43,7 @@ The `AgentHealthMonitor` provides comprehensive health management for swarm agen
 - **Confidence Scoring**: Confidence levels for recovery success
 
 #### System-wide Analytics
+
 - **Health Summary**: System-wide health overview and statistics
 - **Performance Trends**: System-level performance trend analysis
 - **Top Issues Identification**: Identifies most common health issues
@@ -49,10 +54,10 @@ The `AgentHealthMonitor` provides comprehensive health management for swarm agen
 #### Basic Setup
 
 ```typescript
-import { 
-  AgentHealthMonitor, 
+import {
+  AgentHealthMonitor,
   createAgentHealthMonitor,
-  type HealthMonitorConfig 
+  type HealthMonitorConfig,
 } from './agent-health-monitor.ts';
 
 // Create with default configuration
@@ -64,8 +69,8 @@ const customConfig: Partial<HealthMonitorConfig> = {
   alertThresholds: {
     cpu: 0.8,
     memory: 0.9,
-    taskFailureRate: 0.3
-  }
+    taskFailureRate: 0.3,
+  },
 };
 
 const monitor = new AgentHealthMonitor(customConfig);
@@ -80,7 +85,7 @@ monitor.updateAgentHealth('agent-1', {
   memoryUsage: 0.45,
   taskSuccessRate: 0.92,
   averageResponseTime: 1500,
-  errorRate: 0.05
+  errorRate: 0.05,
 });
 
 // Get agent health status
@@ -111,7 +116,7 @@ console.log(`Active alerts: ${summary.activeAlerts}`);
 ```typescript
 // Get active alerts
 const alerts = monitor.getActiveAlerts('agent-1');
-alerts.forEach(alert => {
+alerts.forEach((alert) => {
   console.log(`Alert: ${alert.type} - ${alert.severity} - ${alert.message}`);
 });
 
@@ -124,8 +129,10 @@ monitor.resolveAlert(alertId, 'Issue resolved through optimization');
 ```typescript
 // Get recovery recommendations
 const recommendations = monitor.getRecoveryRecommendations('agent-1');
-recommendations.forEach(action => {
-  console.log(`Action: ${action.type} - ${action.priority} - ${action.description}`);
+recommendations.forEach((action) => {
+  console.log(
+    `Action: ${action.type} - ${action.priority} - ${action.description}`
+  );
 });
 
 // Execute a recovery action
@@ -146,7 +153,7 @@ const healthMonitor = new AgentHealthMonitor({}, learningSystem);
 // Health updates automatically feed into learning system
 healthMonitor.updateAgentHealth('agent-1', {
   cpuUsage: 0.7,
-  taskSuccessRate: 0.85
+  taskSuccessRate: 0.85,
 });
 
 // Learning system adapts based on health performance
@@ -156,6 +163,7 @@ const optimalLearningRate = learningSystem.getOptimalLearningRate('agent-1');
 ### Configuration Options
 
 #### Alert Thresholds
+
 ```typescript
 alertThresholds: {
   cpu: 0.8,           // 80% CPU usage
@@ -169,6 +177,7 @@ alertThresholds: {
 ```
 
 #### Health Score Weights
+
 ```typescript
 healthScoreWeights: {
   cpuUsage: 0.2,        // 20% weight
@@ -181,6 +190,7 @@ healthScoreWeights: {
 ```
 
 #### Trend Analysis
+
 ```typescript
 trendAnalysis: {
   windowSize: 50,           // 50 data points for analysis
@@ -190,6 +200,7 @@ trendAnalysis: {
 ```
 
 #### Prediction Settings
+
 ```typescript
 prediction: {
   enabled: true,        // Enable predictive analysis

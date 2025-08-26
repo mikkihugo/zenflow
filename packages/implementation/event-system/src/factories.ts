@@ -30,7 +30,7 @@ import type {
   EventManagerFactory,
   EventManagerRegistry,
   SystemEvent,
-} from './core/interfaces';
+} from './core/interfaces;
 
 // Import event manager types for use in this file
 import type {
@@ -43,13 +43,13 @@ import type {
   NeuralEventManager,
   SystemEventManager,
   WorkflowEventManager,
-} from './event-manager-types';
+} from './event-manager-types;
 
 import {
   EventManagerPresets,
   EventManagerTypes,
   EventTypeGuards,
-} from './core/interfaces';
+} from './core/interfaces;
 import type {
   CommunicationEvent,
   CoordinationEvent,
@@ -60,8 +60,8 @@ import type {
   NeuralEvent,
   SystemLifecycleEvent,
   WorkflowEvent,
-} from './types';
-import { DefaultEventManagerConfigs, EventCategories } from './types';
+} from './types;
+import { DefaultEventManagerConfigs, EventCategories } from './types;
 
 /**
  * Configuration for event manager creation through factories.
@@ -140,7 +140,7 @@ export interface EventManagerTransaction {
   id: string;
   operations: Array<{
     manager: string;
-    operation: 'emit' | 'subscribe' | 'unsubscribe';
+    operation: 'emit' | 'subscribe' | 'unsubscribe;
     data: unknown;
     result?: unknown;
     error?: Error;
@@ -584,7 +584,7 @@ export class UELFactory {
   async executeTransaction(
     operations: Array<{
       manager: string;
-      operation: 'emit' | 'subscribe' | 'unsubscribe';
+      operation: 'emit' | 'subscribe' | 'unsubscribe;
       data: unknown;
     }>
   ): Promise<EventManagerTransaction> {
@@ -640,7 +640,7 @@ export class UELFactory {
       transaction.status = 'completed';
       transaction.endTime = new Date();
     } catch (error) {
-      transaction.status = 'failed';
+      transaction.status = 'failed;
       transaction.endTime = new Date();
       transaction.error = error as Error;
 

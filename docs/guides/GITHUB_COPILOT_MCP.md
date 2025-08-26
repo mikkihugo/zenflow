@@ -5,21 +5,25 @@ This document outlines the external MCP (Model Context Protocol) servers configu
 ## External MCP Servers
 
 ### Research and Analysis
+
 - **Context7** (`https://mcp.context7.com/mcp`)
   - Type: HTTP
   - Purpose: Research and analysis tools for enhanced development workflow
 
 ### Knowledge Base
+
 - **DeepWiki** (`https://mcp.deepwiki.com/sse`)
   - Type: SSE
   - Purpose: Knowledge base and documentation research
 
-### Git Operations  
+### Git Operations
+
 - **GitMCP** (`https://gitmcp.io/docs`)
   - Type: HTTP
   - Purpose: Git operations and repository management tools
 
 ### Code Analysis
+
 - **Semgrep** (`https://mcp.semgrep.ai/sse`)
   - Type: SSE
   - Purpose: Code analysis and security scanning for code quality
@@ -29,13 +33,14 @@ This document outlines the external MCP (Model Context Protocol) servers configu
 These external servers provide GitHub Copilot with enhanced research and development capabilities:
 
 1. **Research tasks**: Use Context7 for in-depth analysis
-2. **Documentation**: Query DeepWiki for knowledge base searches  
+2. **Documentation**: Query DeepWiki for knowledge base searches
 3. **Git operations**: Leverage GitMCP for repository management
 4. **Security**: Apply Semgrep for code quality and vulnerability detection
 
 ## Configuration
 
 The GitHub Copilot MCP configuration is defined in:
+
 - `.github/copilot-config.yml` - Main configuration with external MCP servers
 - `.github/copilot-instructions.md` - Detailed instructions
 - `.github/copilot-context.md` - Context overview
@@ -46,6 +51,7 @@ The GitHub Copilot MCP configuration is defined in:
 ### External Server Configuration
 
 Each external MCP server is configured with:
+
 - **URL**: Server endpoint for tool access
 - **Transport**: HTTP or SSE protocol
 - **Timeout**: 30 second timeout for requests

@@ -11,6 +11,7 @@ The Intelligence package consolidates access to all AI, Neural, and ML systems i
 ## Architecture
 
 **Strategic Layer: Intelligence (AI/Neural/ML)**
+
 - Position: Layer 2 of 4 in the strategic architecture
 - Role: Unified AI/Neural/ML system coordination
 - Pattern: Runtime delegation with lazy loading
@@ -18,35 +19,45 @@ The Intelligence package consolidates access to all AI, Neural, and ML systems i
 ## Delegated Systems
 
 ### 🧠 Brain System (`@claude-zen/brain`)
+
 Neural coordination, brain functionality, and AI processing:
+
 - `BrainCoordinator` - Main neural coordination
 - `SmartNeuralCoordinator` - Advanced neural coordination
 - `NeuralOrchestrator` - Neural process orchestration
 - `TaskComplexityEstimator` - Task complexity analysis
 
 ### 🛡️ AI Safety System (`@claude-zen/ai-safety`)
+
 AI safety protocols, deception detection, and safety monitoring:
+
 - `SafetyOrchestrator` - Main safety coordination
 - `AIDeceptionDetector` - AI deception detection
 - `NeuralDeceptionDetector` - Neural-based detection
 - `LogBasedDeceptionDetector` - Log analysis detection
 
 ### 🔬 Neural ML System (`@claude-zen/neural-ml`)
+
 ML integration, adaptive learning, and neural forecasting:
+
 - `MLInterfaces` - ML interface abstraction
 - `AdaptiveLearningEngine` - Adaptive learning algorithms
 - `NeuralForecaster` - Neural forecasting models
 - `RustBinding` - High-performance Rust integration
 
 ### 🎯 DSPy System (`@claude-zen/dspy`)
+
 DSPy Stanford framework, optimization, and teleprompters:
+
 - `DSPyFramework` - Main DSPy framework
 - `OptimizationEngine` - Optimization algorithms
 - `Teleprompter` - DSPy teleprompter functionality
 - `BootstrapML` - Bootstrap ML optimization
 
 ### 📚 Fact System (`@claude-zen/fact-system`)
+
 Fact-based reasoning and knowledge management:
+
 - `FactEngine` - Fact processing engine
 - `ReasoningEngine` - Logic reasoning system
 - `KnowledgeManager` - Knowledge graph management
@@ -62,20 +73,20 @@ import { intelligenceSystem } from '@claude-zen/intelligence';
 // Access brain system
 const brain = await intelligenceSystem.brain();
 const coordinator = await brain.getBrainCoordinator({
-  autonomous: { enabled: true, learningRate: 0.1 }
+  autonomous: { enabled: true, learningRate: 0.1 },
 });
 
 // Access safety system
 const safety = await intelligenceSystem.safety();
 const detector = await safety.getDeceptionDetector({
-  detectionSensitivity: 'high'
+  detectionSensitivity: 'high',
 });
 
 // Access neural ML system
 const neuralML = await intelligenceSystem.neuralML();
 const learner = await neuralML.getAdaptiveLearningEngine({
   learningRate: 0.05,
-  optimization: 'accuracy'
+  optimization: 'accuracy',
 });
 ```
 
@@ -88,28 +99,28 @@ const intelligence = new IntelligenceSystem({
   brain: {
     autonomous: { enabled: true, learningRate: 0.1 },
     enableGPU: true,
-    neuralNetworkType: 'transformer'
+    neuralNetworkType: 'transformer',
   },
   safety: {
     enableDeceptionDetection: true,
     detectionSensitivity: 'high',
-    safetyThreshold: 0.95
+    safetyThreshold: 0.95,
   },
   neuralML: {
     enableAdaptiveLearning: true,
     enableForecasting: true,
-    optimization: 'balanced'
+    optimization: 'balanced',
   },
   dspy: {
     enableOptimization: true,
     optimizationStrategy: 'bootstrap-finetune',
-    maxIterations: 100
+    maxIterations: 100,
   },
   factSystem: {
     enableReasoning: true,
     enableWasmTools: true,
-    reasoningDepth: 5
-  }
+    reasoningDepth: 5,
+  },
 });
 
 await intelligence.initialize();
@@ -131,12 +142,14 @@ import {
   getSafetyOrchestrator,
   getAdaptiveLearningEngine,
   getDSPyFramework,
-  getFactEngine
+  getFactEngine,
 } from '@claude-zen/intelligence';
 
 // Direct access to specific systems
 const brain = await getBrainCoordinator({ enableGPU: true });
-const safety = await getSafetyOrchestrator({ detectionSensitivity: 'critical' });
+const safety = await getSafetyOrchestrator({
+  detectionSensitivity: 'critical',
+});
 const ml = await getAdaptiveLearningEngine({ learningRate: 0.02 });
 const dspy = await getDSPyFramework({ optimizationStrategy: 'copro' });
 const facts = await getFactEngine({ enableReasoning: true });
@@ -159,7 +172,7 @@ interface IntelligenceSystemConfig {
     neuralNetworkType?: 'feedforward' | 'recurrent' | 'transformer';
     maxConcurrentTasks?: number;
   };
-  
+
   safety?: {
     enableDeceptionDetection?: boolean;
     enableNeuralSafety?: boolean;
@@ -167,7 +180,7 @@ interface IntelligenceSystemConfig {
     safetyThreshold?: number;
     detectionSensitivity?: 'low' | 'medium' | 'high' | 'critical';
   };
-  
+
   neuralML?: {
     enableAdaptiveLearning?: boolean;
     enableForecasting?: boolean;
@@ -177,16 +190,20 @@ interface IntelligenceSystemConfig {
     modelType?: 'neural' | 'statistical' | 'hybrid';
     optimization?: 'speed' | 'accuracy' | 'balanced';
   };
-  
+
   dspy?: {
     enableOptimization?: boolean;
     enableTeleprompting?: boolean;
-    optimizationStrategy?: 'bootstrap' | 'copro' | 'mipro' | 'bootstrap-finetune';
+    optimizationStrategy?:
+      | 'bootstrap'
+      | 'copro'
+      | 'mipro'
+      | 'bootstrap-finetune';
     maxIterations?: number;
     learningRate?: number;
     validationSplit?: number;
   };
-  
+
   factSystem?: {
     enableReasoning?: boolean;
     enableWasmTools?: boolean;
@@ -217,9 +234,11 @@ The Intelligence package uses runtime delegation to prevent circular dependencie
 ## Dependencies
 
 ### Core Dependencies
+
 - `@claude-zen/foundation` - Core utilities and logging
 
 ### Peer Dependencies (Optional)
+
 - `@claude-zen/brain` - Neural coordination (required)
 - `@claude-zen/ai-safety` - Safety protocols (optional)
 - `@claude-zen/neural-ml` - ML integration (optional)
@@ -238,6 +257,7 @@ Part of the Strategic Architecture v2.0.0:
 ## Examples
 
 See the `examples/` directory for complete usage examples including:
+
 - Basic intelligence system setup
 - Advanced neural coordination
 - Safety monitoring integration

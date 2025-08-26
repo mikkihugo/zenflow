@@ -17,12 +17,12 @@ import type {
   EventManagerMetrics,
   EventManagerStatus,
   EventManagerFactory,
-} from '../core/interfaces';
+} from '../core/interfaces;
 import {
   CommunicationEventAdapter,
   type CommunicationEventAdapterConfig,
   createDefaultCommunicationEventAdapterConfig,
-} from './communication-event-adapter';
+} from './communication-event-adapter;
 
 /**
  * Communication Event Manager Factory.

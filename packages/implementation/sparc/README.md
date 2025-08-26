@@ -13,7 +13,7 @@ SPECIFICATION → PSEUDOCODE → ARCHITECTURE → REFINEMENT → COMPLETION
 ```
 
 - **Specification**: Goals, scope, constraints, success criteria
-- **Pseudocode**: Algorithms, data structures, workflows  
+- **Pseudocode**: Algorithms, data structures, workflows
 - **Architecture**: Components, relationships, patterns, technologies
 - **Refinement**: Optimizations, improvements, changes
 - **Completion**: Implementation, tests, documentation, deployment
@@ -21,12 +21,14 @@ SPECIFICATION → PSEUDOCODE → ARCHITECTURE → REFINEMENT → COMPLETION
 ## 🚀 **Features**
 
 ### **Clean Implementation**
+
 - **Standalone Package**: No complex coordination dependencies
 - **Minimal Dependencies**: Only foundation and event-system packages
 - **Type-Safe**: Full TypeScript support with comprehensive interfaces
 - **Engine-Based**: Core SPARC engine with phase handlers
 
 ### **Comprehensive Types**
+
 - Complete SPARC project definitions
 - All phase result interfaces
 - Progress tracking and metrics
@@ -57,7 +59,7 @@ const project = await SPARC.createProject(
 const results = await SPARC.executeFullWorkflow(project.id);
 
 console.log('SPARC phases completed:', results.length);
-results.forEach(result => {
+results.forEach((result) => {
   console.log(`${result.phase}: ${result.success ? 'SUCCESS' : 'FAILED'}`);
 });
 ```
@@ -70,7 +72,7 @@ import { SPARCEngineCore } from '@claude-zen/sparc';
 const engine = new SPARCEngineCore({
   defaultTimeout: 300000, // 5 minutes
   enableMetrics: true,
-  maxProjects: 100
+  maxProjects: 100,
 });
 
 // Initialize project
@@ -78,7 +80,7 @@ const project = await engine.initializeProject({
   name: 'microservice-api',
   domain: 'rest-api',
   complexity: 'high',
-  requirements: ['GraphQL', 'authentication', 'rate limiting', 'caching']
+  requirements: ['GraphQL', 'authentication', 'rate limiting', 'caching'],
 });
 
 // Execute individual phases
@@ -119,20 +121,25 @@ console.log(`Total projects: ${allProjects.length}`);
 ### **Supported Domains**
 
 ```typescript
-type ProjectDomain = 
+type ProjectDomain =
   | 'swarm-coordination'
-  | 'neural-networks' 
+  | 'neural-networks'
   | 'wasm-integration'
   | 'rest-api'
   | 'memory-systems'
   | 'interfaces'
-  | 'general'
+  | 'general';
 ```
 
 ### **Complexity Levels**
 
 ```typescript
-type ProjectComplexity = 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise'
+type ProjectComplexity =
+  | 'simple'
+  | 'moderate'
+  | 'high'
+  | 'complex'
+  | 'enterprise';
 ```
 
 ## 📊 **Project Structure**
@@ -147,14 +154,14 @@ interface SPARCProject {
   complexity: ProjectComplexity;
   requirements: string[];
   currentPhase: SPARCPhase;
-  
+
   // Phase outputs
   specification?: ProjectSpecification;
   pseudocode?: ProjectPseudocode;
-  architecture?: ProjectArchitecture;  
+  architecture?: ProjectArchitecture;
   refinements?: ProjectRefinement[];
   implementation?: ProjectImplementation;
-  
+
   // Tracking
   progress: SPARCProgress;
   metadata: Record<string, unknown>;
@@ -169,9 +176,9 @@ Each phase returns structured results:
 interface PhaseResult {
   phase: SPARCPhase;
   success: boolean;
-  data?: unknown;      // Phase-specific output
-  duration: number;    // Execution time in ms
-  timestamp: number;   // Completion timestamp
+  data?: unknown; // Phase-specific output
+  duration: number; // Execution time in ms
+  timestamp: number; // Completion timestamp
 }
 ```
 

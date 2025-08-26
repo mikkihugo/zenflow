@@ -14,7 +14,7 @@
  * @version 2.1.0
  */
 
-import { jest } from '@jest/globals';
+import { jest } from '@jest/globals;
 
 // Mock logger to avoid actual logging during tests
 jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({'
@@ -26,7 +26,7 @@ jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({'
   }),
 }));
 
-import { EventBus as EventSystem, createEventSystem } from '../index';
+import { EventBus as EventSystem, createEventSystem } from '../index;
 
 // Test event interfaces
 interface TestPayload {

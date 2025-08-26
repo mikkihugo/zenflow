@@ -12,7 +12,7 @@
  *
  * @example Neural event classification
  * ```typescript`
- * import { NeuralEventProcessor } from '@claude-zen/event-system/neural';
+ * import { NeuralEventProcessor } from '@claude-zen/event-system/neural;
  *
  * const processor = new NeuralEventProcessor({
  *   enableLearning: true,
@@ -46,8 +46,8 @@ import {
 import {
   BrainCoordinator,
   type BrainConfig,
-} from '@claude-zen/brain/coordinator';
-import type { BaseEvent } from './validation/zod-validation';
+} from '@claude-zen/brain/coordinator;
+import type { BaseEvent } from './validation/zod-validation;
 
 const logger = getLogger('NeuralEventProcessor');'
 

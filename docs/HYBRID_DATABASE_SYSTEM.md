@@ -7,14 +7,16 @@ We have successfully **extended the existing global DAL factory system** to crea
 ## 🏗️ **Architecture Overview**
 
 ### **Built on Existing Foundation** ✅
+
 - **Extended DAL Factory**: Used existing `src/database/factory.ts` infrastructure
-- **Leveraged Entity System**: Used existing `src/database/entities/document-entities.ts` 
+- **Leveraged Entity System**: Used existing `src/database/entities/document-entities.ts`
 - **Utilized Existing Repositories**: Extended `IGraphRepository`, `IVectorRepository`, `IRepository` interfaces
 - **Integrated with Current Patterns**: Followed established DAO and repository patterns
 
 ### **Hybrid Database Components**
 
 #### **1. LanceDB (Vector Database) 🚀**
+
 - **Purpose**: Semantic search and document embeddings
 - **Location**: `./data/claude-zen-vectors.lance`
 - **Features**:
@@ -24,6 +26,7 @@ We have successfully **extended the existing global DAL factory system** to crea
   - Automatic relationship detection
 
 #### **2. Kuzu (Graph Database) 🕸️**
+
 - **Purpose**: Document relationships and workflow dependencies
 - **Location**: `./data/claude-zen-graph.kuzu`
 - **Features**:
@@ -33,6 +36,7 @@ We have successfully **extended the existing global DAL factory system** to crea
   - Graph analytics and shortest path algorithms
 
 #### **3. SQLite (Structured Storage) 🗃️**
+
 - **Purpose**: ACID-compliant structured document storage
 - **Location**: `./data/claude-zen.db`
 - **Features**:
@@ -44,6 +48,7 @@ We have successfully **extended the existing global DAL factory system** to crea
 ## 📁 **File Structure**
 
 ### **New Components Created**
+
 ```
 src/database/managers/
 ├── hybrid-document-manager.ts          # 🔗 Unified hybrid interface
@@ -62,6 +67,7 @@ docs/
 ```
 
 ### **Extended Existing Components**
+
 - **DAL Factory** (`src/database/factory.ts`): Added document entity registrations
 - **Entity Definitions** (`src/database/entities/document-entities.ts`): Used existing comprehensive schemas
 - **Repository Interfaces** (`src/database/interfaces.ts`): Leveraged existing specialized interfaces
@@ -69,12 +75,14 @@ docs/
 ## 🚀 **Features Implemented**
 
 ### **Hybrid Document Manager**
+
 - **Unified Interface**: Single API for all document operations
 - **Semantic Search**: Vector-based content similarity
 - **Graph Relationships**: Automatic relationship detection and traversal
 - **Multi-Database Coordination**: Seamless operations across SQLite, LanceDB, and Kuzu
 
 ### **Enhanced ADR Manager**
+
 - **Semantic ADR Search**: Find ADRs by meaning, not just keywords
 - **Decision Impact Analysis**: Track which ADRs influence others
 - **Relationship Mapping**: Visualize ADR dependency networks
@@ -82,6 +90,7 @@ docs/
 - **Workflow Integration**: Status tracking and approval flows
 
 ### **AGUI Integration Ready**
+
 - **Document Validation Points**: Human-in-the-loop for critical decisions
 - **Workflow Gates**: Approval, checkpoint, review, emergency gates
 - **Audit Trails**: Complete decision history and rationale
@@ -90,6 +99,7 @@ docs/
 ## 🎯 **Usage Examples**
 
 ### **Initialize the System**
+
 ```bash
 # Initialize hybrid database system
 npm run build
@@ -100,6 +110,7 @@ node scripts/init-hybrid-db.js /path/to/data
 ```
 
 ### **Create an ADR with Semantic Indexing**
+
 ```typescript
 import { ADRManagerHybrid } from './src/database/managers/adr-manager-hybrid.js';
 
@@ -110,47 +121,57 @@ const adr = await adrManager.createADR({
   title: 'Use Microservices Architecture',
   context: 'Our monolithic system is becoming difficult to scale and maintain.',
   decision: 'Split the monolith into domain-specific microservices.',
-  consequences: 'Increased operational complexity but better scalability and team autonomy.',
+  consequences:
+    'Increased operational complexity but better scalability and team autonomy.',
   priority: 'high',
-  stakeholders: ['architecture-team', 'backend-team', 'devops']
+  stakeholders: ['architecture-team', 'backend-team', 'devops'],
 });
 ```
 
 ### **Semantic Search for Related ADRs**
+
 ```typescript
-const results = await adrManager.semanticSearchADRs('database architecture patterns', {
-  limit: 10,
-  include_related: true,
-  analyze_impact: true
-});
+const results = await adrManager.semanticSearchADRs(
+  'database architecture patterns',
+  {
+    limit: 10,
+    include_related: true,
+    analyze_impact: true,
+  }
+);
 
 for (const result of results) {
   console.log(`ADR: ${result.adr.title}`);
   console.log(`Similarity: ${result.similarity_score}`);
-  console.log(`Influences: ${result.decision_impact.influences.length} other decisions`);
+  console.log(
+    `Influences: ${result.decision_impact.influences.length} other decisions`
+  );
 }
 ```
 
 ### **Hybrid Search Across All Documents**
+
 ```typescript
 const searchResults = await hybridDocumentManager.hybridSearch({
   query: 'authentication security patterns',
   documentTypes: ['adr', 'prd', 'feature'],
   semanticWeight: 0.7, // 70% semantic, 30% graph-based
   maxResults: 20,
-  includeRelationships: true
+  includeRelationships: true,
 });
 ```
 
 ## 📊 **Performance Characteristics**
 
 ### **Query Performance**
+
 - **Semantic Search**: ~50ms for 10K documents
 - **Graph Traversal**: ~20ms for relationship depth 3
 - **Hybrid Search**: ~70ms combining vector + graph
 - **ACID Operations**: ~5ms for SQLite transactions
 
 ### **Storage Efficiency**
+
 - **Vector Storage**: ~1.5KB per document embedding
 - **Graph Storage**: ~500B per relationship edge
 - **Document Storage**: ~2KB per full document
@@ -159,6 +180,7 @@ const searchResults = await hybridDocumentManager.hybridSearch({
 ## 🔧 **Integration Points**
 
 ### **AGUI Workflow Integration**
+
 The hybrid system integrates seamlessly with AGUI for human validation:
 
 ```typescript
@@ -168,23 +190,25 @@ const validationResult = await aguiAdapter.requestValidation({
   question: 'Does this ADR conflict with existing architectural decisions?',
   context: adr,
   options: ['Approve', 'Request Changes', 'Escalate'],
-  relatedDocuments: semanticResults.map(r => r.adr)
+  relatedDocuments: semanticResults.map((r) => r.adr),
 });
 ```
 
 ### **Workflow State Management**
+
 ```typescript
 // Automatic workflow progression
 await workflowManager.advanceWorkflow(adr.id, 'approved', {
   validator: 'architecture-team',
   semanticConflicts: [],
-  impactAnalysis: decisionImpact
+  impactAnalysis: decisionImpact,
 });
 ```
 
 ## 🚨 **What We Actually Built**
 
 ### ✅ **HAVE IT - Production Ready**
+
 1. **Complete Hybrid Database Architecture** extending existing DAL system
 2. **Semantic ADR Management** with vector search and relationship mapping
 3. **Graph-based Document Relationships** using Kuzu integration
@@ -194,6 +218,7 @@ await workflowManager.advanceWorkflow(adr.id, 'approved', {
 7. **Performance Optimized** with caching, indexing, and batch operations
 
 ### 🔄 **READY FOR INTEGRATION**
+
 1. **MCP Tools**: Expose hybrid search via claude-code-zen MCP server
 2. **SPARC Integration**: Connect document workflows to SPARC methodology
 3. **Real Embedding Service**: Replace mock embeddings with OpenAI/Sentence Transformers

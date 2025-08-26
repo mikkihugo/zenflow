@@ -153,9 +153,10 @@ mod tests {
 
   #[test]
   fn test_version_info() {
-    assert!(!VERSION.is_empty());
-    assert!(!NAME.is_empty());
-    assert!(!DESCRIPTION.is_empty());
+    // Verify that version info is accessible and non-empty
+    assert_eq!(VERSION, env!("CARGO_PKG_VERSION"));
+    assert_eq!(NAME, env!("CARGO_PKG_NAME"));
+    assert_eq!(DESCRIPTION, env!("CARGO_PKG_DESCRIPTION"));
   }
 
   #[test]

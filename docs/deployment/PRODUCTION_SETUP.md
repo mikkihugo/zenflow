@@ -32,12 +32,14 @@ Claude-Zen is a production-ready AI-powered development environment that support
 ### System Requirements
 
 **Minimum Hardware:**
+
 - CPU: 4 cores, 2.4GHz
 - RAM: 8GB
 - Storage: 50GB SSD
 - Network: 100Mbps
 
 **Recommended Hardware:**
+
 - CPU: 8 cores, 3.0GHz
 - RAM: 16GB
 - Storage: 200GB NVMe SSD
@@ -179,6 +181,7 @@ RATE_LIMIT_WINDOW=60000
 ### Method 1: Docker Compose (Recommended)
 
 **Prerequisites:**
+
 ```bash
 # Install Docker and Docker Compose
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -225,6 +228,7 @@ mkdir -p certs
 ### Method 2: Kubernetes Deployment
 
 **Prerequisites:**
+
 ```bash
 # Ensure kubectl is configured
 kubectl cluster-info
@@ -262,6 +266,7 @@ kubectl apply -f kubernetes/claude-zen-config.yaml
 ### Method 3: SystemD Service (Linux Servers)
 
 **Prerequisites:**
+
 ```bash
 # Install Node.js 20
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -375,12 +380,12 @@ server {
 
     ssl_certificate /path/to/your/certificate.pem;
     ssl_certificate_key /path/to/your/private-key.pem;
-    
+
     # Modern SSL configuration
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
-    
+
     # Security headers
     add_header Strict-Transport-Security "max-age=63072000" always;
     add_header X-Content-Type-Options nosniff;
@@ -457,6 +462,7 @@ sudo chmod -R 640 /var/log/claude-zen
 ### 1. Application Monitoring
 
 **Health Check Endpoint:**
+
 ```bash
 # Check application health
 curl -f http://localhost:3000/health
@@ -476,6 +482,7 @@ curl -f http://localhost:3000/health
 ```
 
 **Metrics Endpoint:**
+
 ```bash
 # Prometheus metrics
 curl http://localhost:9090/metrics
@@ -724,7 +731,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        
+
         # Health check
         proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
     }
@@ -740,24 +747,28 @@ See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed troubleshooting guid
 ### Regular Maintenance Tasks
 
 **Daily:**
+
 - Check service status
 - Monitor disk space
 - Review error logs
 - Verify backups completed
 
 **Weekly:**
+
 - Update system packages
 - Clean up temporary files
 - Rotate logs
 - Review performance metrics
 
 **Monthly:**
+
 - Security updates
 - Database optimization
 - Backup testing
 - Capacity planning review
 
 **Quarterly:**
+
 - Full security audit
 - Disaster recovery testing
 - Performance benchmarking

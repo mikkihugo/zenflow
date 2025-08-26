@@ -9,7 +9,8 @@ Claude Zen Flow's swarm coordination system enables multiple AI agents to work t
 ## 🏗️ **Swarm Topologies**
 
 ### **1. Mesh Topology** - Dynamic Collaboration
-```typescript
+
+````typescript
 /**
  * Mesh topology enables direct communication between all agents
  * Best for: Exploration, brainstorming, complex problem-solving
@@ -33,18 +34,22 @@ const codeReviewSwarm = await swarmCoordinator.initialize({
     { role: 'security-reviewer', expertise: ['security', 'vulnerabilities'] },
     { role: 'performance-reviewer', expertise: ['optimization', 'algorithms'] },
     { role: 'style-reviewer', expertise: ['code-style', 'best-practices'] },
-    { role: 'architecture-reviewer', expertise: ['design-patterns', 'architecture'] }
+    {
+      role: 'architecture-reviewer',
+      expertise: ['design-patterns', 'architecture'],
+    },
   ],
   task: {
     type: 'code-review',
     target: 'src/coordination/swarm/',
-    criteria: ['security', 'performance', 'maintainability']
-  }
+    criteria: ['security', 'performance', 'maintainability'],
+  },
 });
-```
+````
 
 ### **2. Hierarchical Topology** - Structured Command
-```typescript
+
+````typescript
 /**
  * Hierarchical topology with clear command structure
  * Best for: Large-scale coordination, enterprise workflows, structured tasks
@@ -68,25 +73,26 @@ const developmentPipeline = await swarmCoordinator.initialize({
     level_0: [{ role: 'project-manager', responsibility: 'coordination' }],
     level_1: [
       { role: 'lead-architect', responsibility: 'technical-direction' },
-      { role: 'qa-lead', responsibility: 'quality-assurance' }
+      { role: 'qa-lead', responsibility: 'quality-assurance' },
     ],
     level_2: [
       { role: 'frontend-dev', responsibility: 'ui-implementation' },
       { role: 'backend-dev', responsibility: 'api-implementation' },
       { role: 'test-engineer', responsibility: 'test-automation' },
-      { role: 'devops-engineer', responsibility: 'deployment-automation' }
-    ]
+      { role: 'devops-engineer', responsibility: 'deployment-automation' },
+    ],
   },
   communicationRules: {
-    'level_0': ['level_1'],           // Manager coordinates with leads
-    'level_1': ['level_0', 'level_2'], // Leads coordinate up and down
-    'level_2': ['level_1']            // Developers report to leads
-  }
+    level_0: ['level_1'], // Manager coordinates with leads
+    level_1: ['level_0', 'level_2'], // Leads coordinate up and down
+    level_2: ['level_1'], // Developers report to leads
+  },
 });
-```
+````
 
 ### **3. Ring Topology** - Sequential Processing
-```typescript
+
+````typescript
 /**
  * Ring topology for sequential task processing with handoffs
  * Best for: Pipeline processing, linear workflows, quality gates
@@ -107,22 +113,47 @@ interface RingTopology {
 const documentPipeline = await swarmCoordinator.initialize({
   topology: 'ring',
   agents: [
-    { role: 'content-extractor', input: 'raw-documents', output: 'structured-content' },
-    { role: 'content-analyzer', input: 'structured-content', output: 'analyzed-content' },
-    { role: 'content-enhancer', input: 'analyzed-content', output: 'enhanced-content' },
-    { role: 'quality-checker', input: 'enhanced-content', output: 'validated-content' },
-    { role: 'format-converter', input: 'validated-content', output: 'final-documents' },
-    { role: 'distributor', input: 'final-documents', output: 'published-content' }
+    {
+      role: 'content-extractor',
+      input: 'raw-documents',
+      output: 'structured-content',
+    },
+    {
+      role: 'content-analyzer',
+      input: 'structured-content',
+      output: 'analyzed-content',
+    },
+    {
+      role: 'content-enhancer',
+      input: 'analyzed-content',
+      output: 'enhanced-content',
+    },
+    {
+      role: 'quality-checker',
+      input: 'enhanced-content',
+      output: 'validated-content',
+    },
+    {
+      role: 'format-converter',
+      input: 'validated-content',
+      output: 'final-documents',
+    },
+    {
+      role: 'distributor',
+      input: 'final-documents',
+      output: 'published-content',
+    },
   ],
   qualityGates: [
     { after: 'content-analyzer', criteria: 'accuracy > 0.95' },
-    { after: 'quality-checker', criteria: 'completeness = 100%' }
-  ]
+    { after: 'quality-checker', criteria: 'completeness = 100%' },
+  ],
 });
-```
+````
 
 ### **4. Star Topology** - Centralized Coordination
-```typescript
+
+````typescript
 /**
  * Star topology with central coordinator managing all agents
  * Best for: Simple coordination, resource-constrained environments, debugging
@@ -144,28 +175,33 @@ const dataProcessingSwarm = await swarmCoordinator.initialize({
   topology: 'star',
   coordinator: {
     role: 'data-coordinator',
-    responsibilities: ['task-distribution', 'result-aggregation', 'error-handling']
+    responsibilities: [
+      'task-distribution',
+      'result-aggregation',
+      'error-handling',
+    ],
   },
   workers: [
     { role: 'csv-processor', specialization: 'csv-files' },
     { role: 'json-processor', specialization: 'json-files' },
     { role: 'xml-processor', specialization: 'xml-files' },
     { role: 'image-processor', specialization: 'image-files' },
-    { role: 'text-processor', specialization: 'text-files' }
+    { role: 'text-processor', specialization: 'text-files' },
   ],
-  loadBalancing: 'specialized-routing' // Route tasks based on file type
+  loadBalancing: 'specialized-routing', // Route tasks based on file type
 });
-```
+````
 
 ## ⚡ **Advanced Coordination Strategies**
 
 ### **1. Adaptive Load Balancing**
-```typescript
+
+````typescript
 /**
  * Intelligent load balancing that adapts to agent performance and capacity
  * Monitors agent metrics and adjusts task distribution in real-time
  * @param agents - Available agents with capacity metrics
- * @param task - Task to be distributed with priority and requirements  
+ * @param task - Task to be distributed with priority and requirements
  * @param strategy - Load balancing strategy ('round-robin' | 'weighted' | 'ml-predictive')
  * @returns Promise resolving to agent assignment with confidence score
  * @throws {LoadBalancingError} When no suitable agents available
@@ -204,7 +240,10 @@ class AdaptiveLoadBalancer {
    * Machine learning-based task distribution
    * Uses historical performance data to predict optimal agent assignment
    */
-  private async mlPredictiveDistribution(agents: Agent[], task: Task): Promise<TaskAssignment> {
+  private async mlPredictiveDistribution(
+    agents: Agent[],
+    task: Task
+  ): Promise<TaskAssignment> {
     const predictions = await Promise.all(
       agents.map(async (agent) => {
         const features = this.extractFeatures(agent, task);
@@ -213,20 +252,22 @@ class AdaptiveLoadBalancer {
           agent,
           confidence: prediction.confidence,
           estimatedDuration: prediction.duration,
-          successProbability: prediction.successRate
+          successProbability: prediction.successRate,
         };
       })
     );
 
     // Select agent with highest success probability and confidence
-    const bestAssignment = predictions.reduce((best, current) => 
+    const bestAssignment = predictions.reduce((best, current) =>
       current.successProbability > best.successProbability ? current : best
     );
 
     return {
       agent: bestAssignment.agent,
       confidence: bestAssignment.confidence,
-      estimatedCompletion: new Date(Date.now() + bestAssignment.estimatedDuration)
+      estimatedCompletion: new Date(
+        Date.now() + bestAssignment.estimatedDuration
+      ),
     };
   }
 
@@ -243,7 +284,7 @@ class AdaptiveLoadBalancer {
       taskComplexity: this.calculateTaskComplexity(task),
       taskPriority: task.priority,
       timeOfDay: new Date().getHours(),
-      historicalPerformance: metrics.getHistoricalPerformance(task.type)
+      historicalPerformance: metrics.getHistoricalPerformance(task.type),
     };
   }
 }
@@ -253,7 +294,7 @@ const loadBalancer = new AdaptiveLoadBalancer();
 await loadBalancer.initialize({
   modelPath: 'models/task-assignment-predictor.json',
   updateInterval: 300000, // Update predictions every 5 minutes
-  metricsRetention: 7 * 24 * 60 * 60 * 1000 // Keep metrics for 7 days
+  metricsRetention: 7 * 24 * 60 * 60 * 1000, // Keep metrics for 7 days
 });
 
 const assignment = await loadBalancer.distributeTask(
@@ -263,13 +304,14 @@ const assignment = await loadBalancer.distributeTask(
     priority: 'high',
     requirements: ['typescript', 'neural-networks'],
     estimatedComplexity: 8.5,
-    deadline: new Date('2024-02-01T16:00:00Z')
+    deadline: new Date('2024-02-01T16:00:00Z'),
   },
   'ml-predictive'
 );
-```
+````
 
 ### **2. Dynamic Topology Adaptation**
+
 ```typescript
 /**
  * Automatically adapts swarm topology based on task requirements and performance
@@ -279,7 +321,7 @@ class DynamicTopologyManager {
   private performanceThresholds = {
     communicationLatency: 100, // ms
     taskCompletionEfficiency: 0.85,
-    resourceUtilization: 0.8
+    resourceUtilization: 0.8,
   };
 
   /**
@@ -288,38 +330,48 @@ class DynamicTopologyManager {
    * @param metrics Recent performance metrics
    * @returns Recommended topology changes with expected improvements
    */
-  async analyzeAndRecommend(swarm: Swarm, metrics: SwarmMetrics): Promise<TopologyRecommendation> {
+  async analyzeAndRecommend(
+    swarm: Swarm,
+    metrics: SwarmMetrics
+  ): Promise<TopologyRecommendation> {
     const analysis = {
       communicationEfficiency: this.analyzeCommunicationPatterns(metrics),
       taskDistributionEfficiency: this.analyzeTaskDistribution(metrics),
       failureRecoveryTime: this.analyzeFailureRecovery(metrics),
-      resourceUtilization: this.analyzeResourceUsage(metrics)
+      resourceUtilization: this.analyzeResourceUsage(metrics),
     };
 
     // Determine if topology change would be beneficial
-    if (analysis.communicationEfficiency < this.performanceThresholds.communicationLatency) {
+    if (
+      analysis.communicationEfficiency <
+      this.performanceThresholds.communicationLatency
+    ) {
       if (swarm.topology === 'mesh') {
         return {
           recommendedTopology: 'hierarchical',
           reason: 'High communication overhead in mesh topology',
           expectedImprovement: {
             latencyReduction: '40-60%',
-            throughputIncrease: '25-35%'
+            throughputIncrease: '25-35%',
           },
-          migrationComplexity: 'medium'
+          migrationComplexity: 'medium',
         };
       }
     }
 
-    if (analysis.taskDistributionEfficiency < this.performanceThresholds.taskCompletionEfficiency) {
+    if (
+      analysis.taskDistributionEfficiency <
+      this.performanceThresholds.taskCompletionEfficiency
+    ) {
       return {
         recommendedTopology: 'star',
-        reason: 'Inefficient task distribution, centralized coordination needed',
+        reason:
+          'Inefficient task distribution, centralized coordination needed',
         expectedImprovement: {
           taskCompletionRate: '30-45%',
-          resourceUtilization: '20-30%'
+          resourceUtilization: '20-30%',
         },
-        migrationComplexity: 'low'
+        migrationComplexity: 'low',
       };
     }
 
@@ -327,7 +379,7 @@ class DynamicTopologyManager {
       recommendedTopology: swarm.topology,
       reason: 'Current topology is optimal for current workload',
       expectedImprovement: null,
-      migrationComplexity: null
+      migrationComplexity: null,
     };
   }
 
@@ -340,7 +392,7 @@ class DynamicTopologyManager {
     migrationStrategy: 'gradual' | 'immediate' = 'gradual'
   ): Promise<MigrationResult> {
     const migrationPlan = await this.createMigrationPlan(swarm, targetTopology);
-    
+
     if (migrationStrategy === 'gradual') {
       return this.performGradualMigration(swarm, migrationPlan);
     } else {
@@ -348,7 +400,10 @@ class DynamicTopologyManager {
     }
   }
 
-  private async performGradualMigration(swarm: Swarm, plan: MigrationPlan): Promise<MigrationResult> {
+  private async performGradualMigration(
+    swarm: Swarm,
+    plan: MigrationPlan
+  ): Promise<MigrationResult> {
     const steps = plan.steps;
     const results: StepResult[] = [];
 
@@ -356,21 +411,29 @@ class DynamicTopologyManager {
       try {
         // Pause new task assignments to affected agents
         await this.pauseTaskAssignments(step.affectedAgents);
-        
+
         // Wait for current tasks to complete
-        await this.waitForTaskCompletion(step.affectedAgents, { timeout: 30000 });
-        
+        await this.waitForTaskCompletion(step.affectedAgents, {
+          timeout: 30000,
+        });
+
         // Reconfigure agent connections
         await this.reconfigureAgentConnections(step.connectionChanges);
-        
+
         // Resume task assignments
         await this.resumeTaskAssignments(step.affectedAgents);
-        
-        results.push({ step: step.id, status: 'success', duration: step.duration });
+
+        results.push({
+          step: step.id,
+          status: 'success',
+          duration: step.duration,
+        });
       } catch (error) {
         // Rollback changes and return error
         await this.rollbackMigration(swarm, results);
-        throw new MigrationError(`Migration failed at step ${step.id}: ${error.message}`);
+        throw new MigrationError(
+          `Migration failed at step ${step.id}: ${error.message}`
+        );
       }
     }
 
@@ -379,7 +442,7 @@ class DynamicTopologyManager {
       fromTopology: swarm.topology,
       toTopology: plan.targetTopology,
       duration: results.reduce((sum, r) => sum + r.duration, 0),
-      stepsCompleted: results.length
+      stepsCompleted: results.length,
     };
   }
 }
@@ -390,15 +453,24 @@ const topologyManager = new DynamicTopologyManager();
 // Monitor and auto-adapt topology
 setInterval(async () => {
   const metrics = await swarm.getPerformanceMetrics();
-  const recommendation = await topologyManager.analyzeAndRecommend(swarm, metrics);
-  
+  const recommendation = await topologyManager.analyzeAndRecommend(
+    swarm,
+    metrics
+  );
+
   if (recommendation.recommendedTopology !== swarm.topology) {
-    console.log(`Topology change recommended: ${swarm.topology} → ${recommendation.recommendedTopology}`);
+    console.log(
+      `Topology change recommended: ${swarm.topology} → ${recommendation.recommendedTopology}`
+    );
     console.log(`Reason: ${recommendation.reason}`);
-    
+
     if (recommendation.migrationComplexity === 'low') {
       // Auto-migrate for low complexity changes
-      await topologyManager.migrateTopology(swarm, recommendation.recommendedTopology, 'gradual');
+      await topologyManager.migrateTopology(
+        swarm,
+        recommendation.recommendedTopology,
+        'gradual'
+      );
       console.log('Topology migration completed successfully');
     }
   }
@@ -406,6 +478,7 @@ setInterval(async () => {
 ```
 
 ### **3. Fault-Tolerant Coordination**
+
 ```typescript
 /**
  * Advanced fault tolerance with automatic recovery and redundancy
@@ -422,13 +495,13 @@ class FaultTolerantCoordinator {
   async initializeFaultTolerance(swarm: Swarm): Promise<void> {
     // Set up health monitoring for all agents
     await this.setupHealthMonitoring(swarm);
-    
+
     // Create redundancy for critical agents
     await this.establishRedundancy(swarm);
-    
+
     // Configure automatic recovery strategies
     this.configureRecoveryStrategies(swarm);
-    
+
     // Start fault detection and recovery service
     this.startFaultDetectionService();
   }
@@ -444,37 +517,39 @@ class FaultTolerantCoordinator {
     failureType: FailureType
   ): Promise<RecoveryAction> {
     const startTime = Date.now();
-    
+
     try {
       // 1. Immediate isolation - prevent failed agent from affecting others
       await this.isolateFailedAgent(failedAgent);
-      
+
       // 2. Redistribute active tasks from failed agent
-      const redistributedTasks = await this.redistributeActiveTasks(failedAgent);
-      
+      const redistributedTasks =
+        await this.redistributeActiveTasks(failedAgent);
+
       // 3. Activate backup agent if available
       const replacementAgent = await this.activateBackupAgent(failedAgent.role);
-      
+
       // 4. Update swarm topology to exclude failed agent
       await this.updateSwarmTopology(failedAgent, replacementAgent);
-      
+
       // 5. Notify other agents of topology change
       await this.broadcastTopologyUpdate(failedAgent, replacementAgent);
-      
+
       const recoveryTime = Date.now() - startTime;
-      
+
       return {
         success: true,
         recoveryTime,
         replacementAgent,
         redistributedTasks: redistributedTasks.length,
-        impact: this.calculateImpact(failedAgent, recoveryTime)
+        impact: this.calculateImpact(failedAgent, recoveryTime),
       };
-      
     } catch (error) {
       // Critical failure - escalate to human intervention
       await this.escalateToHuman(failedAgent, failureType, error);
-      throw new CriticalFailureError(`Failed to recover from agent failure: ${error.message}`);
+      throw new CriticalFailureError(
+        `Failed to recover from agent failure: ${error.message}`
+      );
     }
   }
 
@@ -486,7 +561,7 @@ class FaultTolerantCoordinator {
       // Start continuous health monitoring
       setInterval(async () => {
         const healthStatus = await this.checkAgentHealth(agent);
-        
+
         if (healthStatus.risk > 0.7) {
           // High risk of failure - take preventive action
           await this.preventiveAction(agent, healthStatus);
@@ -503,7 +578,7 @@ class FaultTolerantCoordinator {
    */
   private async checkAgentHealth(agent: Agent): Promise<HealthStatus> {
     const metrics = await agent.getMetrics();
-    
+
     return {
       agent: agent.id,
       timestamp: new Date(),
@@ -513,7 +588,7 @@ class FaultTolerantCoordinator {
       errorRate: metrics.errorRate,
       taskSuccess: metrics.taskSuccessRate,
       risk: this.calculateFailureRisk(metrics),
-      predictions: await this.predictFailure(agent, metrics)
+      predictions: await this.predictFailure(agent, metrics),
     };
   }
 
@@ -522,29 +597,32 @@ class FaultTolerantCoordinator {
    */
   private calculateFailureRisk(metrics: AgentMetrics): number {
     const factors = {
-      cpuUsage: Math.min(metrics.cpuUsage / 90, 1) * 0.3,      // 30% weight
+      cpuUsage: Math.min(metrics.cpuUsage / 90, 1) * 0.3, // 30% weight
       memoryUsage: Math.min(metrics.memoryUsage / 95, 1) * 0.25, // 25% weight
-      errorRate: Math.min(metrics.errorRate / 0.1, 1) * 0.25,    // 25% weight
-      responseTime: Math.min(metrics.averageResponseTime / 5000, 1) * 0.2 // 20% weight
+      errorRate: Math.min(metrics.errorRate / 0.1, 1) * 0.25, // 25% weight
+      responseTime: Math.min(metrics.averageResponseTime / 5000, 1) * 0.2, // 20% weight
     };
-    
+
     return Object.values(factors).reduce((sum, factor) => sum + factor, 0);
   }
 
   /**
    * Predictive failure analysis using machine learning
    */
-  private async predictFailure(agent: Agent, metrics: AgentMetrics): Promise<FailurePrediction> {
+  private async predictFailure(
+    agent: Agent,
+    metrics: AgentMetrics
+  ): Promise<FailurePrediction> {
     const historicalData = await this.getHistoricalMetrics(agent.id);
     const features = this.extractPredictiveFeatures(metrics, historicalData);
-    
+
     const prediction = await this.failurePredictionModel.predict(features);
-    
+
     return {
       probabilityOfFailure: prediction.probability,
       timeToFailure: prediction.estimatedTimeToFailure,
       confidence: prediction.confidence,
-      mainRiskFactors: prediction.riskFactors
+      mainRiskFactors: prediction.riskFactors,
     };
   }
 }
@@ -558,18 +636,23 @@ await faultTolerantCoordinator.initializeFaultTolerance(swarm);
 // Set up automatic failure handling
 swarm.on('agent-failure', async (failedAgent, failureType) => {
   console.log(`Agent ${failedAgent.id} failed: ${failureType}`);
-  
-  const recovery = await faultTolerantCoordinator.handleAgentFailure(failedAgent, failureType);
-  
+
+  const recovery = await faultTolerantCoordinator.handleAgentFailure(
+    failedAgent,
+    failureType
+  );
+
   if (recovery.success) {
-    console.log(`Recovered in ${recovery.recoveryTime}ms with ${recovery.impact} impact`);
+    console.log(
+      `Recovered in ${recovery.recoveryTime}ms with ${recovery.impact} impact`
+    );
   }
 });
 
 // Monitor overall swarm health
 setInterval(async () => {
   const healthReport = await faultTolerantCoordinator.generateHealthReport();
-  
+
   if (healthReport.overallRisk > 0.6) {
     console.warn('Swarm health degraded, consider scaling or maintenance');
   }
@@ -579,24 +662,28 @@ setInterval(async () => {
 ## 🎯 **Best Practices**
 
 ### **1. Topology Selection Guidelines**
+
 - **Mesh**: Use for creative tasks, exploration, and when agent expertise overlaps
 - **Hierarchical**: Use for large teams, enterprise workflows, and when clear command structure is needed
 - **Ring**: Use for pipeline processing, quality gates, and linear workflows
 - **Star**: Use for simple coordination, resource-constrained environments, and debugging
 
 ### **2. Performance Optimization**
+
 - Monitor communication overhead and switch topologies when latency becomes problematic
 - Use specialized agents for specific task types to improve efficiency
 - Implement caching for frequently accessed data and computations
 - Balance agent workloads to prevent bottlenecks
 
 ### **3. Failure Recovery**
+
 - Always maintain redundancy for critical roles
 - Implement graceful degradation when agents fail
 - Use health monitoring to predict and prevent failures
 - Have escalation procedures for critical failures
 
 ### **4. Scaling Strategies**
+
 - Start with smaller swarms and scale up based on performance metrics
 - Use dynamic agent creation for burst workloads
 - Implement agent pooling for frequently used roles
@@ -607,6 +694,7 @@ setInterval(async () => {
 ### **Common Issues**
 
 #### **High Communication Latency**
+
 ```bash
 # Symptoms: Slow task completion, high network usage
 # Solution: Switch to hierarchical topology
@@ -617,6 +705,7 @@ claude-zen swarm metrics --focus communication
 ```
 
 #### **Agent Overload**
+
 ```bash
 # Symptoms: High CPU/memory usage, task failures
 # Solution: Add more agents or redistribute load
@@ -627,6 +716,7 @@ claude-zen swarm balance --strategy ml-predictive
 ```
 
 #### **Coordination Deadlocks**
+
 ```bash
 # Symptoms: Tasks stuck in pending state
 # Solution: Reset coordination state
@@ -646,17 +736,17 @@ interface SwarmPerformanceMetrics {
   averageTaskCompletionTime: number;
   communicationLatency: number;
   coordinationOverhead: number;
-  
+
   // Resource utilization
   averageCpuUsage: number;
   averageMemoryUsage: number;
   networkBandwidthUsage: number;
-  
+
   // Quality metrics
   taskSuccessRate: number;
   errorRate: number;
   retryRate: number;
-  
+
   // Scalability metrics
   throughputPerAgent: number;
   scalabilityEfficiency: number;
@@ -667,6 +757,7 @@ interface SwarmPerformanceMetrics {
 ## 🚀 **Advanced Examples**
 
 ### **Multi-Modal Development Swarm**
+
 ```typescript
 // Create a sophisticated development swarm with multiple specializations
 const developmentSwarm = await swarmCoordinator.initialize({
@@ -674,60 +765,72 @@ const developmentSwarm = await swarmCoordinator.initialize({
   coordination: {
     strategy: 'adaptive-load-balancing',
     faultTolerance: 'high-redundancy',
-    communication: 'optimized-routing'
+    communication: 'optimized-routing',
   },
   agents: [
     {
       role: 'project-lead',
       level: 0,
       specializations: ['coordination', 'architecture-review'],
-      resources: { cpu: 4, memory: '8GB', priority: 'high' }
+      resources: { cpu: 4, memory: '8GB', priority: 'high' },
     },
     {
       role: 'senior-architect',
       level: 1,
       specializations: ['system-design', 'technology-selection'],
-      resources: { cpu: 8, memory: '16GB', priority: 'high' }
+      resources: { cpu: 8, memory: '16GB', priority: 'high' },
     },
     {
       role: 'full-stack-developer',
       level: 2,
       specializations: ['typescript', 'react', 'node.js', 'postgresql'],
       count: 3,
-      resources: { cpu: 4, memory: '8GB', priority: 'medium' }
+      resources: { cpu: 4, memory: '8GB', priority: 'medium' },
     },
     {
       role: 'ml-engineer',
       level: 2,
       specializations: ['machine-learning', 'neural-networks', 'python'],
       count: 2,
-      resources: { cpu: 8, memory: '32GB', gpu: 'required', priority: 'high' }
+      resources: { cpu: 8, memory: '32GB', gpu: 'required', priority: 'high' },
     },
     {
       role: 'devops-engineer',
       level: 2,
       specializations: ['kubernetes', 'terraform', 'monitoring'],
-      resources: { cpu: 4, memory: '8GB', priority: 'medium' }
+      resources: { cpu: 4, memory: '8GB', priority: 'medium' },
     },
     {
       role: 'qa-engineer',
       level: 2,
       specializations: ['test-automation', 'performance-testing'],
       count: 2,
-      resources: { cpu: 2, memory: '4GB', priority: 'medium' }
-    }
+      resources: { cpu: 2, memory: '4GB', priority: 'medium' },
+    },
   ],
   workflows: [
     {
       name: 'feature-development',
       steps: [
         { agent: 'senior-architect', action: 'design-review' },
-        { agent: 'full-stack-developer', action: 'implementation', parallel: true },
-        { agent: 'qa-engineer', action: 'testing', dependencies: ['implementation'] },
-        { agent: 'devops-engineer', action: 'deployment', dependencies: ['testing'] }
-      ]
-    }
-  ]
+        {
+          agent: 'full-stack-developer',
+          action: 'implementation',
+          parallel: true,
+        },
+        {
+          agent: 'qa-engineer',
+          action: 'testing',
+          dependencies: ['implementation'],
+        },
+        {
+          agent: 'devops-engineer',
+          action: 'deployment',
+          dependencies: ['testing'],
+        },
+      ],
+    },
+  ],
 });
 ```
 

@@ -12,24 +12,28 @@ Code-Mesh TUI provides a beautiful, feature-rich terminal interface to visualize
 ## 🌟 Features
 
 ### 🎨 **Beautiful Interface**
+
 - **Modern Design**: Clean, intuitive interface with customizable themes
 - **Real-time Updates**: Live monitoring with smooth animations
 - **Responsive Layout**: Adapts to any terminal size
 - **Syntax Highlighting**: Code display with language-aware highlighting
 
 ### 📊 **Visual Monitoring**
+
 - **Swarm Topology Visualization**: Interactive network graphs of agent relationships
 - **Performance Dashboards**: Real-time metrics with charts and graphs
 - **Agent Status Display**: Live status updates for all active agents
 - **Task Progress Tracking**: Visual progress bars and completion indicators
 
 ### 🎮 **Interactive Controls**
+
 - **Command Palette**: Quick access to all functions with fuzzy search
 - **Keyboard Shortcuts**: Efficient navigation and control
 - **Mouse Support**: Click and scroll support where available
 - **Multi-panel Layout**: Split views for monitoring multiple aspects simultaneously
 
 ### 🧠 **Neural Intelligence Visualization**
+
 - **Neural Network Display**: Visual representation of agent neural networks
 - **Learning Progress**: Real-time learning metrics and pattern recognition
 - **Cognitive Pattern Visualization**: See how different thinking patterns work
@@ -128,36 +132,42 @@ F5                 - Refresh data
 ### Available Views
 
 #### 1. **Dashboard View** (Default)
+
 - Overview of entire swarm
 - Key performance metrics
 - Active task monitoring
 - Agent status summary
 
 #### 2. **Swarm View**
+
 - Detailed swarm topology visualization
 - Agent relationships and communication flows
 - Network health and connectivity status
 - Real-time topology optimization
 
 #### 3. **Agent View**
+
 - Individual agent details
 - Neural network visualization
 - Performance metrics per agent
 - Task history and success rates
 
 #### 4. **Task View**
+
 - Task queue and execution status
 - Detailed progress tracking
 - Task results and outputs
 - Performance analytics
 
 #### 5. **Neural View**
+
 - Neural network architecture display
 - Learning progress visualization
 - Pattern recognition results
 - Cross-agent knowledge sharing
 
 #### 6. **Performance View**
+
 - Comprehensive system metrics
 - Resource utilization graphs
 - Performance trends and analytics
@@ -167,48 +177,52 @@ F5                 - Refresh data
 
 ### Global Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+Q` | Quit application |
-| `Ctrl+P` | Open command palette |
-| `Tab` / `Shift+Tab` | Navigate panels |
-| `?` | Show help |
-| `F5` | Refresh data |
-| `Space` | Pause/Resume updates |
-| `Ctrl+R` | Reset view |
+| Key                 | Action               |
+| ------------------- | -------------------- |
+| `Ctrl+Q`            | Quit application     |
+| `Ctrl+P`            | Open command palette |
+| `Tab` / `Shift+Tab` | Navigate panels      |
+| `?`                 | Show help            |
+| `F5`                | Refresh data         |
+| `Space`             | Pause/Resume updates |
+| `Ctrl+R`            | Reset view           |
 
 ### View-Specific Shortcuts
 
 #### Dashboard View
-| Key | Action |
-|-----|--------|
-| `1-6` | Switch to specific view |
+
+| Key     | Action                        |
+| ------- | ----------------------------- |
+| `1-6`   | Switch to specific view       |
 | `Enter` | View details of selected item |
-| `D` | Toggle detailed mode |
+| `D`     | Toggle detailed mode          |
 
 #### Swarm View
-| Key | Action |
-|-----|--------|
-| `+/-` | Zoom in/out |
-| `Arrow Keys` | Pan around topology |
-| `S` | Save topology layout |
-| `R` | Reset layout |
+
+| Key          | Action               |
+| ------------ | -------------------- |
+| `+/-`        | Zoom in/out          |
+| `Arrow Keys` | Pan around topology  |
+| `S`          | Save topology layout |
+| `R`          | Reset layout         |
 
 #### Agent View
-| Key | Action |
-|-----|--------|
-| `Up/Down` | Select agent |
-| `Enter` | View agent details |
-| `K` | Kill selected agent |
-| `M` | Send message to agent |
+
+| Key       | Action                |
+| --------- | --------------------- |
+| `Up/Down` | Select agent          |
+| `Enter`   | View agent details    |
+| `K`       | Kill selected agent   |
+| `M`       | Send message to agent |
 
 #### Task View
-| Key | Action |
-|-----|--------|
-| `Up/Down` | Select task |
-| `Enter` | View task details |
-| `C` | Cancel selected task |
-| `N` | Create new task |
+
+| Key       | Action               |
+| --------- | -------------------- |
+| `Up/Down` | Select task          |
+| `Enter`   | View task details    |
+| `C`       | Cancel selected task |
+| `N`       | Create new task      |
 
 ## 🎨 Themes and Customization
 
@@ -318,17 +332,17 @@ use code_mesh_core::CodeMesh;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize Code-Mesh core
     let mesh = CodeMesh::new().await?;
-    
+
     // Configure TUI
     let config = TuiConfig::default()
         .with_theme("cyberpunk")
         .with_refresh_rate(500)
         .with_mouse_support(true);
-    
+
     // Create and run TUI
     let mut tui = TuiApp::new(mesh, config).await?;
     tui.run().await?;
-    
+
     Ok(())
 }
 ```
@@ -347,7 +361,7 @@ impl View for CustomMetricsView {
         // Custom rendering logic
         Ok(())
     }
-    
+
     fn handle_input(&mut self, input: InputEvent) -> bool {
         // Custom input handling
         false
@@ -467,6 +481,6 @@ at your option.
 
 **Code-Mesh TUI - Visualize Your Swarm Intelligence** 🖥️✨
 
-*Beautiful, interactive terminal interface for distributed computing*
+_Beautiful, interactive terminal interface for distributed computing_
 
 </div>

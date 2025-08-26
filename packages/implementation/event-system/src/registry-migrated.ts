@@ -38,9 +38,9 @@ import type {
   EventManagerFactory,
   EventManagerRegistry,
   SystemEvent,
-} from './core/interfaces';
-import { EventManagerTypes } from './core/interfaces';
-import { EventCategories, EventPriorityMap } from './types';
+} from './core/interfaces;
+import { EventManagerTypes } from './core/interfaces;
+import { EventCategories, EventPriorityMap } from './types;
 
 /**
  * Service Container-based Event Registry

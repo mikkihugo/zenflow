@@ -16,16 +16,16 @@ import { getLogger, type Logger } from '@claude-zen/foundation';
 import {
   EventEmitterMigrationHelper,
   type UELCompatibleEventEmitter,
-} from './compatibility';
+} from './compatibility;
 import type {
   EventManagerConfig,
   EventManagerType,
   EventManager,
   SystemEvent,
-} from './core/interfaces';
+} from './core/interfaces;
 
-import { EventManagerTypes } from './core/interfaces';
-import type { MonitoringEvent, SystemLifecycleEvent } from './types';
+import { EventManagerTypes } from './core/interfaces;
+import type { MonitoringEvent, SystemLifecycleEvent } from './types;
 
 // Define EventManagerInterface for backward compatibility
 interface EventManagerInterface extends EventManager {
@@ -1089,7 +1089,7 @@ export function analyzeSystemEventEmitterUsage(
     >;
   };
   migrationRecommendations: string[];
-  overallComplexity: 'low' | 'medium' | 'high';
+  overallComplexity: 'low' | 'medium' | 'high;
 } {
   const migrationHelper = new TypedEventBaseMigrationHelper(
     null as any,
@@ -1101,7 +1101,7 @@ export function analyzeSystemEventEmitterUsage(
       listenerCounts: Record<string, number>;
       maxListeners: number;
       recommendations: string[];
-      migrationComplexity: 'high' | 'medium' | 'low';
+      migrationComplexity: 'high' | 'medium' | 'low;
     };
   } = {};
   const migrationRecommendations: string[] = [];
@@ -1144,7 +1144,7 @@ export function analyzeSystemEventEmitterUsage(
 
   // Determine overall complexity
   const systemCount = Object.keys(systems).length;
-  let overallComplexity: 'low|medium|high' = 'low';
+  let overallComplexity: 'low|medium|high' = 'low;
 
   if (highComplexitySystems > systemCount * 0.3||totalListeners > 100) {
     overallComplexity ='high;

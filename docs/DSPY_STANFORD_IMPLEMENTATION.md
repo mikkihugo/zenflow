@@ -14,6 +14,7 @@ This library provides a full production-ready port of Stanford DSPy's sophistica
 ## 📦 Features
 
 ### Core Stanford DSPy Algorithms
+
 - ✅ **Complete Teleprompter Architecture** - Abstract base class with full Stanford compatibility
 - ✅ **LabeledFewShot** - Random k-shot example selection with seeded reproducibility
 - ✅ **BootstrapFewShot** - Sophisticated bootstrapping with teacher models and validation metrics
@@ -21,6 +22,7 @@ This library provides a full production-ready port of Stanford DSPy's sophistica
 - ✅ **Ensemble** - Multi-teleprompter combination with custom reduction functions
 
 ### Production Features
+
 - ✅ **@zen-ai/shared Integration** - LLM, logging, storage, and configuration services
 - ✅ **Standalone Operation** - Graceful fallback when shared services unavailable
 - ✅ **TypeScript Strict Mode** - Full type safety with ES2022 compilation target
@@ -28,6 +30,7 @@ This library provides a full production-ready port of Stanford DSPy's sophistica
 - ✅ **Seeded Reproducibility** - Deterministic results for consistent testing
 
 ### Advanced Capabilities
+
 - ✅ **Program Builder** - Fluent API for creating DSPy programs
 - ✅ **Signature System** - Input/output field specifications with type validation
 - ✅ **Trace System** - Execution path capture for debugging and analysis
@@ -53,50 +56,48 @@ import {
   MIPROv2,
   createProgram,
   createSignature,
-  createExamples
+  createExamples,
 } from '../lib/dspy';
 
 // Create training data
 const trainset = createExamples([
   {
-    input: { question: "What is the capital of France?" },
-    output: { answer: "Paris", reasoning: "Paris is the capital of France." }
+    input: { question: 'What is the capital of France?' },
+    output: { answer: 'Paris', reasoning: 'Paris is the capital of France.' },
   },
   // ... more examples
 ]);
 
 // Define task signature
 const qaSignature = createSignature(
-  "Question Answering",
-  { question: "The question to answer" },
-  { answer: "Direct answer", reasoning: "Explanation" },
-  "Answer questions accurately with clear reasoning."
+  'Question Answering',
+  { question: 'The question to answer' },
+  { answer: 'Direct answer', reasoning: 'Explanation' },
+  'Answer questions accurately with clear reasoning.'
 );
 
 // Create DSPy program
-const program = createProgram()
-  .addPredictor("qa", qaSignature)
-  .build();
+const program = createProgram().addPredictor('qa', qaSignature).build();
 
 // Optimize with Stanford algorithms
 const teleprompter = new MIPROv2({
-  auto: "light",
+  auto: 'light',
   metric: (example, prediction, trace) => {
     return prediction.answer && prediction.reasoning ? 1 : 0;
-  }
+  },
 });
 
 const optimized = await teleprompter.compile({
   student: program,
-  trainset
+  trainset,
 });
 
 // Use optimized program
 const result = await optimized.forward({
-  question: "What is TypeScript?"
+  question: 'What is TypeScript?',
 });
 
-console.log(result.answer);    // Optimized answer
+console.log(result.answer); // Optimized answer
 console.log(result.reasoning); // Optimized reasoning
 ```
 
@@ -105,11 +106,11 @@ console.log(result.reasoning); // Optimized reasoning
 ```typescript
 const mipro = new MIPROv2({
   metric: customMetric,
-  auto: "heavy",                    // light, medium, heavy
+  auto: 'heavy', // light, medium, heavy
   max_bootstrapped_demos: 4,
   max_labeled_demos: 4,
   verbose: true,
-  track_stats: true
+  track_stats: true,
 });
 
 const optimized = await mipro.compile({
@@ -119,16 +120,16 @@ const optimized = await mipro.compile({
   teacher: teacherProgram,
   minibatch: true,
   minibatch_size: 50,
-  program_aware_proposer: true,     // Use program structure
-  data_aware_proposer: true,        // Use training data insights
-  tip_aware_proposer: true,         // Include prompting tips
-  fewshot_aware_proposer: true      // Consider few-shot context
+  program_aware_proposer: true, // Use program structure
+  data_aware_proposer: true, // Use training data insights
+  tip_aware_proposer: true, // Include prompting tips
+  fewshot_aware_proposer: true, // Consider few-shot context
 });
 
 // Access optimization statistics
-console.log(optimized.score);              // Final optimization score
-console.log(optimized.total_calls);        // LLM calls made
-console.log(optimized.trial_logs);         // Detailed optimization logs
+console.log(optimized.score); // Final optimization score
+console.log(optimized.total_calls); // LLM calls made
+console.log(optimized.trial_logs); // Detailed optimization logs
 ```
 
 ### Ensemble Optimization
@@ -137,18 +138,18 @@ console.log(optimized.trial_logs);         // Detailed optimization logs
 const ensemble = new Ensemble({
   reduce_fn: (predictions) => {
     // Custom prediction combination logic
-    const answers = predictions.map(p => p.answer);
+    const answers = predictions.map((p) => p.answer);
     const mostCommon = getMostFrequent(answers);
     return {
       answer: mostCommon,
-      confidence: getConfidence(predictions)
+      confidence: getConfidence(predictions),
     };
-  }
+  },
 });
 
 const optimized = await ensemble.compile({
   student: program,
-  trainset
+  trainset,
 });
 ```
 
@@ -224,7 +225,7 @@ await initializeDSPyService();
 const teleprompter = new MIPROv2({
   track_stats: true,
   verbose: true,
-  log_dir: "./optimization_logs"
+  log_dir: './optimization_logs',
 });
 
 // Access metrics after optimization
@@ -233,7 +234,7 @@ const metrics = {
   totalCalls: optimized.total_calls,
   promptModelCalls: optimized.prompt_model_total_calls,
   candidatePrograms: optimized.candidate_programs,
-  trialLogs: optimized.trial_logs
+  trialLogs: optimized.trial_logs,
 };
 ```
 
@@ -253,15 +254,18 @@ const customMetric = (example, prediction, trace) => {
   if (prediction.answer === example.expected_answer) {
     return 1.0;
   }
-  
+
   // Partial credit for semantic similarity
-  const similarity = calculateSimilarity(prediction.answer, example.expected_answer);
+  const similarity = calculateSimilarity(
+    prediction.answer,
+    example.expected_answer
+  );
   return similarity > 0.8 ? 0.5 : 0;
 };
 
 const teleprompter = new BootstrapFewShot({
   metric: customMetric,
-  metric_threshold: 0.8
+  metric_threshold: 0.8,
 });
 ```
 
@@ -285,15 +289,15 @@ const teleprompter = new BootstrapFewShot({
 
 ## 📚 Comparison with Stanford DSPy
 
-| Feature | Stanford DSPy (Python) | This Implementation |
-|---------|------------------------|-------------------|
-| LabeledFewShot | ✅ | ✅ Full compatibility |
-| BootstrapFewShot | ✅ | ✅ Complete algorithm |
-| MIPROv2 | ✅ | ✅ All features ported |
-| Ensemble | ✅ | ✅ Custom reduction functions |
-| Type Safety | ❌ | ✅ Full TypeScript |
-| @zen-ai Integration | ❌ | ✅ Production ready |
-| Standalone Operation | ❌ | ✅ Graceful fallbacks |
+| Feature              | Stanford DSPy (Python) | This Implementation           |
+| -------------------- | ---------------------- | ----------------------------- |
+| LabeledFewShot       | ✅                     | ✅ Full compatibility         |
+| BootstrapFewShot     | ✅                     | ✅ Complete algorithm         |
+| MIPROv2              | ✅                     | ✅ All features ported        |
+| Ensemble             | ✅                     | ✅ Custom reduction functions |
+| Type Safety          | ❌                     | ✅ Full TypeScript            |
+| @zen-ai Integration  | ❌                     | ✅ Production ready           |
+| Standalone Operation | ❌                     | ✅ Graceful fallbacks         |
 
 ## 🤝 Contributing
 
@@ -313,4 +317,4 @@ MIT License - see claude-code-zen project license.
 
 **Built with ❤️ for the TypeScript community**
 
-*"Bringing Stanford's sophisticated prompt optimization to TypeScript with production-grade reliability."*
+_"Bringing Stanford's sophisticated prompt optimization to TypeScript with production-grade reliability."_

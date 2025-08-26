@@ -12,10 +12,10 @@ import { EventEmitter } from '@claude-zen/foundation';
 /**
  * Event priority levels for processing order.
  */
-export type EventPriority = 'critical|high|medium|low';
+export type EventPriority = 'critical|high|medium|low;
 
 // Re-export SystemLifecycleEvent from types for backwards compatibility
-export type { SystemLifecycleEvent } from '../types';
+export type { SystemLifecycleEvent } from '../types;
 
 /**
  * Event processing strategies.
@@ -87,7 +87,7 @@ export interface EventTransform {
  *   backoff: 'exponential',
  *   maxDelay: 10000,
  *   retryCondition: (error, event) => {
- *     return error.code !== 'VALIDATION_ERROR' && event.priority !== 'low';
+ *     return error.code !== 'VALIDATION_ERROR' && event.priority !== 'low;
  *   }
  * };
  * ````
@@ -98,7 +98,7 @@ export interface EventRetryConfig {
   /** Initial delay between retries in milliseconds */
   delay: number;
   /** Backoff strategy for increasing delay between retries */
-  backoff: 'linear' | 'exponential' | 'fixed';
+  backoff: 'linear' | 'exponential' | 'fixed;
   /** Maximum delay between retries in milliseconds */
   maxDelay?: number;
   /** Function to determine if an error/event combination should be retried */
@@ -337,7 +337,7 @@ export interface EventQueryOptions {
   limit?: number;
   offset?: number;
   sortBy?: 'timestamp|priority|type|source;
-  sortOrder?: 'asc|desc';
+  sortOrder?: 'asc|desc;
   includeMetadata?: boolean;
 }
 
@@ -911,7 +911,7 @@ export class EventError extends Error {
     public readonly cause?: Error
   ) {
     super(message);
-    this.name = 'EventError';
+    this.name = 'EventError;
   }
 }
 
@@ -941,7 +941,7 @@ export class EventSubscriptionError extends EventError {
       subscriptionId,
       cause
     );
-    this.name = 'EventSubscriptionError';
+    this.name = 'EventSubscriptionError;
   }
 }
 
@@ -954,7 +954,7 @@ export class EventEmissionError extends EventError {
       eventId,
       cause
     );
-    this.name = 'EventEmissionError';
+    this.name = 'EventEmissionError;
   }
 }
 
@@ -967,7 +967,7 @@ export class EventFilterError extends EventError {
       filterId,
       cause
     );
-    this.name = 'EventFilterError';
+    this.name = 'EventFilterError;
   }
 }
 
@@ -985,7 +985,7 @@ export class EventTimeoutError extends EventError {
       eventId,
       cause
     );
-    this.name = 'EventTimeoutError';
+    this.name = 'EventTimeoutError;
   }
 }
 
@@ -1003,7 +1003,7 @@ export class EventRetryExhaustedError extends EventError {
       eventId,
       cause
     );
-    this.name = 'EventRetryExhaustedError';
+    this.name = 'EventRetryExhaustedError;
   }
 }
 
@@ -1184,7 +1184,7 @@ export const EventTypeGuards = {
 } as const;
 
 // Re-export types for compatibility
-export type { SystemEvent as BaseSystemEvent } from '../observer-system';
+export type { SystemEvent as BaseSystemEvent } from '../observer-system;
 
 // Event types are exported from core/type-safe-event-system.ts to avoid conflicts
 

@@ -189,7 +189,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const performances = Array.from(this.modelPerformance.values())();
+    const performances = Array.from(this.modelPerformance.values());
 
     const avgAccuracy =
       performances.length > 0

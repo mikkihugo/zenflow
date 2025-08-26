@@ -5,7 +5,7 @@ Advanced load balancing and resource optimization package for claude-code-zen sw
 ## 🚀 Features
 
 - **ML-Predictive Routing**: Machine learning-based agent assignment with 95%+ accuracy
-- **Real-time Health Monitoring**: Continuous agent health checks with automatic failover  
+- **Real-time Health Monitoring**: Continuous agent health checks with automatic failover
 - **Adaptive Load Balancing**: Automatically adjusts algorithms based on workload patterns
 - **Auto-scaling**: Dynamic agent scaling based on demand and performance metrics
 - **QoS Enforcement**: Guarantees quality of service through intelligent routing
@@ -24,7 +24,7 @@ Advanced load balancing and resource optimization package for claude-code-zen sw
 
 - **ML-Predictive**: Machine learning-based prediction using historical patterns
 - **Weighted Round Robin**: Performance-weighted circular assignment
-- **Least Connections**: Assigns to agents with fewest active connections  
+- **Least Connections**: Assigns to agents with fewest active connections
 - **Resource Aware**: Considers CPU, memory, and specialization requirements
 - **Adaptive Learning**: Learns from performance patterns and adapts strategy
 
@@ -45,7 +45,7 @@ import { LoadBalancer } from '@claude-zen/load-balancing';
 const loadBalancer = new LoadBalancer({
   algorithm: 'ml-predictive',
   healthCheckInterval: 5000,
-  adaptiveLearning: true
+  adaptiveLearning: true,
 });
 
 await loadBalancer.start();
@@ -55,7 +55,7 @@ const assignment = await loadBalancer.routeTask({
   type: 'neural-training',
   priority: 'high',
   requirements: ['gpu', 'high-memory'],
-  estimatedDuration: 300000
+  estimatedDuration: 300000,
 });
 
 console.log(`Task assigned to agent: ${assignment.agent.id}`);
@@ -72,8 +72,8 @@ const loadBalancer = new LoadBalancer({
     maxAgents: 20,
     targetUtilization: 0.7,
     scaleUpThreshold: 0.8,
-    scaleDownThreshold: 0.3
-  }
+    scaleDownThreshold: 0.3,
+  },
 });
 ```
 
@@ -85,7 +85,7 @@ import { HealthChecker } from '@claude-zen/load-balancing';
 const healthChecker = new HealthChecker({
   checkInterval: 30000,
   failureThreshold: 3,
-  recoveryThreshold: 2
+  recoveryThreshold: 2,
 });
 
 await healthChecker.start();
@@ -104,7 +104,7 @@ healthChecker.on('agentRecovered', (agent) => {
 This package is part of the claude-code-zen strategic architecture:
 
 - **Foundation**: `@claude-zen/foundation` - Core utilities and types
-- **Intelligence**: `@claude-zen/intelligence` - AI coordination facade  
+- **Intelligence**: `@claude-zen/intelligence` - AI coordination facade
 - **Operations**: `@claude-zen/operations` - System management facade
 - **Implementation**: `@claude-zen/load-balancing` - This package
 

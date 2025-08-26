@@ -1,12 +1,12 @@
 # Security Analysis Documentation
 
-*Generated: 2025-08-02T13:54:25.598Z*
+_Generated: 2025-08-02T13:54:25.598Z_
 
 ## Security Audit Results
 
 {
-  "status": "Available",
-  "file": "src/__tests__/swarm-zen/security-audit.test.js"
+"status": "Available",
+"file": "src/**tests**/swarm-zen/security-audit.test.js"
 }
 
 ## Vulnerability Scan
@@ -21,4 +21,4 @@
 
 ---
 
-*Security analysis automatically generated.*
+_Security analysis automatically generated._

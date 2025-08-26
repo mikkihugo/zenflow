@@ -53,6 +53,10 @@ pub trait BaseModel<T: Float + Send + Sync + 'static>: Send + Sync {
   /// # Returns
   ///
   /// A new model instance or an error if the configuration is invalid
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the configuration is invalid or model creation fails.
   fn new(config: Self::Config) -> NeuroDivergentResult<Self>
   where
     Self: Sized;
@@ -66,6 +70,10 @@ pub trait BaseModel<T: Float + Send + Sync + 'static>: Send + Sync {
   /// # Returns
   ///
   /// Ok(()) if training succeeds, or an error describing the failure
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if training fails due to invalid data, insufficient memory, or convergence issues.
   fn fit(&mut self, data: &TimeSeriesDataset<T>) -> NeuroDivergentResult<()>;
 
   /// Generate forecasts for the given dataset
@@ -77,6 +85,10 @@ pub trait BaseModel<T: Float + Send + Sync + 'static>: Send + Sync {
   /// # Returns
   ///
   /// Forecast results or an error if prediction fails
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if prediction fails due to model not being trained, invalid input data, or computation errors.
   fn predict(
     &self,
     data: &TimeSeriesDataset<T>,
@@ -92,6 +104,10 @@ pub trait BaseModel<T: Float + Send + Sync + 'static>: Send + Sync {
   /// # Returns
   ///
   /// Cross-validation results or an error if validation fails
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if cross-validation fails due to insufficient data, invalid configuration, or computation errors.
   fn cross_validation(
     &mut self,
     data: &TimeSeriesDataset<T>,
@@ -113,12 +129,20 @@ pub trait BaseModel<T: Float + Send + Sync + 'static>: Send + Sync {
   /// # Returns
   ///
   /// Ok(()) if restoration succeeds, or an error if the state is invalid
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the state is invalid or restoration fails.
   fn restore_state(&mut self, state: Self::State) -> NeuroDivergentResult<()>;
 
   /// Reset model to initial state
   ///
   /// This clears all learned parameters and resets the model to its
   /// initial untrained state.
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the reset operation fails.
   fn reset(&mut self) -> NeuroDivergentResult<()>;
 
   /// Get model metadata and information
@@ -133,6 +157,10 @@ pub trait BaseModel<T: Float + Send + Sync + 'static>: Send + Sync {
   /// # Returns
   ///
   /// Ok(()) if data is compatible, or an error describing the incompatibility
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the data is incompatible with the model requirements.
   fn validate_data(
     &self,
     data: &TimeSeriesDataset<T>,
@@ -160,6 +188,10 @@ pub trait ModelConfig<T: Float + Send + Sync + 'static>:
   /// # Returns
   ///
   /// Ok(()) if configuration is valid, or an error describing the issue
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the configuration parameters are invalid.
   fn validate(&self) -> NeuroDivergentResult<()>;
 
   /// Get the forecast horizon (number of steps to predict)
@@ -181,6 +213,10 @@ pub trait ModelConfig<T: Float + Send + Sync + 'static>:
   fn to_parameters(&self) -> HashMap<String, ConfigParameter<T>>;
 
   /// Create configuration from a generic parameter map
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the parameters are invalid or cannot be converted to this configuration type.
   fn from_parameters(
     params: HashMap<String, ConfigParameter<T>>,
   ) -> NeuroDivergentResult<Self>
@@ -232,6 +268,10 @@ pub trait ForecastingEngine<T: Float + Send + Sync + 'static>:
   /// # Returns
   ///
   /// Vector of forecast results, one for each input dataset
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if batch prediction fails due to invalid datasets or computation errors.
   fn batch_predict(
     &self,
     datasets: &[TimeSeriesDataset<T>],
@@ -247,6 +287,10 @@ pub trait ForecastingEngine<T: Float + Send + Sync + 'static>:
   /// # Returns
   ///
   /// Interval forecasts with specified confidence levels
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if interval prediction fails due to invalid confidence levels or computation errors.
   fn predict_intervals(
     &self,
     data: &TimeSeriesDataset<T>,
@@ -263,6 +307,10 @@ pub trait ForecastingEngine<T: Float + Send + Sync + 'static>:
   /// # Returns
   ///
   /// Quantile forecasts for the specified levels
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if quantile prediction fails due to invalid quantile levels or computation errors.
   fn predict_quantiles(
     &self,
     data: &TimeSeriesDataset<T>,
@@ -279,6 +327,10 @@ pub trait ForecastingEngine<T: Float + Send + Sync + 'static>:
   /// # Returns
   ///
   /// Forecasts for each specified horizon
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if multi-horizon prediction fails due to invalid horizons or computation errors.
   fn predict_multi_horizon(
     &self,
     data: &TimeSeriesDataset<T>,
@@ -417,27 +469,66 @@ pub struct ModelMetadata {
   pub metadata: HashMap<String, String>,
 }
 
-/// Model capabilities flags
+/// Model capabilities flags - Refactored to use capability sets instead of excessive booleans
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModelCapabilities {
+  /// Exogenous variable support capabilities
+  pub exogenous_support: ExogenousSupport,
+  /// Forecasting type capabilities  
+  pub forecasting_support: ForecastingSupport,
+  /// Training and prediction capabilities
+  pub training_support: TrainingSupport,
+}
+
+/// Exogenous variable support capabilities
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExogenousSupport {
   /// Supports future exogenous variables
-  pub supports_future_exogenous: bool,
-  /// Supports historical exogenous variables
-  pub supports_historical_exogenous: bool,
+  pub future: bool,
+  /// Supports historical exogenous variables  
+  pub historical: bool,
   /// Supports static exogenous variables
-  pub supports_static_exogenous: bool,
-  /// Supports multivariate forecasting
-  pub supports_multivariate: bool,
-  /// Supports probabilistic forecasting
-  pub supports_probabilistic: bool,
-  /// Supports quantile forecasting
-  pub supports_quantile: bool,
+  pub static_vars: bool,
+}
+
+/// Forecasting type capabilities using set-based approach to avoid excessive booleans
+#[derive(Debug, Clone, Serialize, Deserialize)]  
+pub struct ForecastingSupport {
+  /// Set of supported forecasting types
+  pub types: Vec<ForecastingType>,
+  /// Prediction method capabilities
+  pub prediction_methods: PredictionMethods,
+}
+
+/// Types of forecasting supported
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ForecastingType {
+  /// Univariate forecasting
+  Univariate,
+  /// Multivariate forecasting  
+  Multivariate,
+  /// Probabilistic forecasting
+  Probabilistic,
+  /// Quantile forecasting
+  Quantile,
+}
+
+/// Prediction method capabilities  
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PredictionMethods {
   /// Supports recursive prediction
-  pub supports_recursive: bool,
+  pub recursive: bool,
+  /// Supports direct prediction
+  pub direct: bool,
+}
+
+/// Training and prediction capabilities
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TrainingSupport {
   /// Supports parallel training
-  pub supports_parallel_training: bool,
+  pub parallel_training: bool,
   /// Supports online learning
-  pub supports_online_learning: bool,
+  pub online_learning: bool,
 }
 
 /// Training statistics and metrics
@@ -540,15 +631,22 @@ impl Default for ExogenousConfig {
 impl Default for ModelCapabilities {
   fn default() -> Self {
     Self {
-      supports_future_exogenous: false,
-      supports_historical_exogenous: false,
-      supports_static_exogenous: false,
-      supports_multivariate: false,
-      supports_probabilistic: false,
-      supports_quantile: false,
-      supports_recursive: true,
-      supports_parallel_training: false,
-      supports_online_learning: false,
+      exogenous_support: ExogenousSupport {
+        future: false,
+        historical: false,
+        static_vars: false,
+      },
+      forecasting_support: ForecastingSupport {
+        types: vec![ForecastingType::Univariate],
+        prediction_methods: PredictionMethods {
+          recursive: true,
+          direct: false,
+        },
+      },
+      training_support: TrainingSupport {
+        parallel_training: false,
+        online_learning: false,
+      },
     }
   }
 }
@@ -595,8 +693,8 @@ mod tests {
     assert!(exog_config.auto_encode_categorical);
 
     let capabilities = ModelCapabilities::default();
-    assert!(!capabilities.supports_multivariate);
-    assert!(capabilities.supports_recursive);
+    assert!(!capabilities.forecasting_support.types.contains(&ForecastingType::Multivariate));
+    assert!(capabilities.forecasting_support.prediction_methods.recursive);
 
     let cv_config = CrossValidationConfig::default();
     assert_eq!(cv_config.n_windows, 3);
