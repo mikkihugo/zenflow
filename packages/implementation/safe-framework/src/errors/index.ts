@@ -9,20 +9,15 @@
  * @version 2.0.0
  */
 
-// Re-export all error handling from @claude-zen/foundation
-export * from '@claude-zen/foundation';
-
-// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
-export { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
 
 // Re-export safety monitoring from @claude-zen/ai-safety
 export { AIDeceptionDetector } from '@claude-zen/ai-safety';
+// Re-export all error handling from @claude-zen/foundation
+export * from '@claude-zen/foundation';
+// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
+export { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
 
-// SAFe-specific error types (minimal extensions)
-import {
-  createValidationError,
-  createSystemError,
-} from '@claude-zen/foundation';
+
 // Define error types locally since not exported from foundation
 type ErrorSeverity = 'low|medium|high|critical';
 
@@ -87,8 +82,8 @@ export class KanbanTransitionError extends Error {
  */
 export const createSAFeError = {
   epicLifecycle: (
-    epicId: string,
-    currentState: string,
+    _epicId: string,
+    _currentState: string,
     operation: string,
     cause?: Error
   ) =>
@@ -108,10 +103,10 @@ export const createSAFeError = {
 
   kanbanTransition: (
     epicId: string,
-    fromState: string,
-    toState: string,
+    _fromState: string,
+    _toState: string,
     reason: string,
-    cause?: Error
+    _cause?: Error
   ) =>
     new KanbanTransitionError(
       `Invalid transition for epic ${epicId}: ${reason}`,`

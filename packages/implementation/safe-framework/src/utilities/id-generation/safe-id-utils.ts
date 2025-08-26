@@ -12,7 +12,7 @@
  * @version 1.0.0
  */
 
-import { generateNanoId, customAlphabet } from '@claude-zen/foundation';
+import { generateNanoId } from '@claude-zen/foundation';
 
 /**
  * SAFe ID generation utilities
@@ -29,7 +29,7 @@ export class SafeIdUtils {
    * Generate feature identifier
    */
   static generateFeatureId(): string {
-    return `feature-${generateNanoId(10)}`;`
+    return `feature-$generateNanoId(10)`;`
   }
 
   /**
@@ -43,7 +43,7 @@ export class SafeIdUtils {
    * Generate ART identifier
    */
   static generateARTId(valueStreamPrefix: string): string {
-    return `${valueStreamPrefix}-ART-${generateNanoId(8)}`;`
+    return `$valueStreamPrefix-ART-$generateNanoId(8)`;`
   }
 
   /**
@@ -57,7 +57,7 @@ export class SafeIdUtils {
    * Generate milestone identifier
    */
   static generateMilestoneId(): string {
-    return `milestone-${generateNanoId(8)}`;`
+    return `milestone-$generateNanoId(8)`;`
   }
 
   /**
@@ -72,7 +72,7 @@ export class SafeIdUtils {
    */
   static generateReadablePIId(year: number, increment: number): string {
     const alphabet = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6);'
-    return `PI${year}${increment.toString().padStart(2, '0')}-${alphabet()}`;`
+    return `PI$year$increment.toString().padStart(2, '0')-$alphabet()`;`
   }
 
   /**
@@ -87,7 +87,7 @@ export class SafeIdUtils {
    * Generate dependency tracking identifier
    */
   static generateDependencyId(): string {
-    return `dep-${generateNanoId(10)}`;`
+    return `dep-$generateNanoId(10)`;`
   }
 
   /**
@@ -101,7 +101,7 @@ export class SafeIdUtils {
    * Generate objective identifier for PI
    */
   static generateObjectiveId(): string {
-    return `obj-${generateNanoId(8)}`;`
+    return `obj-$generateNanoId(8)`;`
   }
 }
 
@@ -181,6 +181,6 @@ export class SafeIdValidator {
    * Validate ID belongs to correct domain
    */
   static validateIdDomain(id: string, expectedPrefix: string): boolean {
-    return this.extractIdPrefix(id) === expectedPrefix;
+    return SafeIdValidator.extractIdPrefix(id) === expectedPrefix;
   }
 }

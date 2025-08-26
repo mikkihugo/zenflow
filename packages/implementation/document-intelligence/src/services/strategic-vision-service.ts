@@ -116,7 +116,7 @@ export class StrategicVisionService {
       await this.enhanceWithRelationships(analysis, documents);
 
       logger.info(
-        `Strategic vision analysis completed for ${projectId} with confidence ${analysis.confidenceScore}``
+        `Strategic vision analysis completed for ${projectId} with confidence $analysis.confidenceScore``
       );
       return analysis;
     } catch (error) {
@@ -136,7 +136,7 @@ export class StrategicVisionService {
   }> {
     try {
       logger.info(
-        `Importing strategic documents for project: ${options.projectId}``
+        `Importing strategic documents for project: $options.projectId``
       );
 
       const results = { imported: 0, skipped: 0, errors: [] };
@@ -172,7 +172,7 @@ export class StrategicVisionService {
       }
 
       // Import from code comments (TODOs, STRATEGY, VISION annotations)
-      const codeImportResults = await this.importFromCodeAnnotations(
+      const _codeImportResults = await this.importFromCodeAnnotations(
         options.projectId,
         options.projectPath||`/home/mhugo/code/${options.projectId}`,`
         existingTypes
@@ -217,10 +217,10 @@ export class StrategicVisionService {
     error?: string;
   }> {
     try {
-      logger.info(`Creating ${type} document for project ${projectId}`);`
+      logger.info(`Creating $typedocument for project ${projectId}`);`
 
       // Create structured document in database
-      const docData = {
+      const _docData = {
         type,
         title: content.title,
         summary: content.summary,
@@ -373,7 +373,7 @@ export class StrategicVisionService {
       if (doc.related_documents?.length > 0) {
         // Could fetch related documents and extract additional insights
         logger.debug(
-          `Document ${doc.id} has ${doc.related_documents.length} related documents``
+          `Document $doc.idhas $doc.related_documents.lengthrelated documents``
         );
       }
     }
@@ -423,7 +423,7 @@ export class StrategicVisionService {
       }
 
       logger.info(
-        `Found ${potentialDocFiles.length} potential document files for LLM classification``
+        `Found $potentialDocFiles.lengthpotential document files for LLM classification``
       );
 
       // Classify each file using LLM content analysis
@@ -488,7 +488,7 @@ export class StrategicVisionService {
           if (createResult.success) {
             results.imported++;
             logger.info(
-              `Successfully imported and classified: ${file} as ${classification.documentType} (confidence: ${classification.confidence})``
+              `Successfully imported and classified: ${file} as ${classification.documentType} (_confidence: ${classification.confidence})``
             );
 
             // Log human-actionable suggestions
@@ -502,14 +502,13 @@ export class StrategicVisionService {
               `Failed to import ${file}: ${createResult.error?.message}``
             );
           }
-        } catch (fileError) {
+        } catch (fileError) 
           logger.warn(`Could not process file ${file}:`, fileError);`
           // Continue with other files
         }
       }
     } catch (error) {
-      results.errors.push(`Error importing files: ${error.message}`);`
-    }
+      results.errors.push(`Error importing files: $error.message`);`
 
     return results;
   }
@@ -520,7 +519,7 @@ export class StrategicVisionService {
   private async classifyDocumentWithLLM(
     filename: string,
     content: string
-  ): Promise<{
+  ): Promise<
     documentType: string;
     suggestedTitle: string;
     summary: string;
@@ -532,8 +531,7 @@ export class StrategicVisionService {
     contentThemes: string[];
     documentMaturity: 'draft|partial|complete|outdated;
     strategicRelevance: number; // 0-1 score
-    suggestedDependencies: string[];
-  }> {
+    suggestedDependencies: string[];> 
     try {
       // Analyze content patterns and themes
       const contentLower = content?.toLowerCase();
@@ -684,7 +682,6 @@ export class StrategicVisionService {
         suggestedDependencies: [],
       };
     }
-  }
 
   // Content analysis helper methods
   private containsVisionKeywords(content: string): boolean {
@@ -763,10 +760,10 @@ export class StrategicVisionService {
 
   private hasStructuredFormat(content: string): boolean {
     // Check for structured elements
-    const hasHeaders = /^#{1,6}\s/.test(content);
-    const hasBullets = /^\s*[*+-]\s/.test(content);
-    const hasNumbering = /^\s*\d+\.\s/.test(content);
-    const hasCode = /```/.test(content)||/`[^`]+`/.test(content);`
+    const _hasHeaders = /^#{1,6}\s/.test(content);
+    const _hasBullets = /^\s*[*+-]\s/.test(content);
+    const _hasNumbering = /^\s*\d+\.\s/.test(content);
+    const _hasCode = /```/.test(content)||/`[^`]+`/.test(content);`
 
     return hasHeaders||hasBullets||hasNumbering||hasCode;
   }
@@ -775,8 +772,8 @@ export class StrategicVisionService {
     // Simple keyword extraction (could be enhanced with NLP)
     const words = content
       ?.toLowerCase()
-      .replace(/[^\s\w]/g,' ')'
-      .split(/\s+/)
+      .replace(/[^sw]/g,' ')'
+      .split(/s+/)
       .filter((word) => word.length > 3)
       .filter(
         (word) =>
@@ -833,7 +830,7 @@ export class StrategicVisionService {
     }
 
     // Check for outdated indicators
-    const dateRegex = /\b(20\d{2})\b/g;
+    const dateRegex = /\b(20d{2})\b/g;
     const dates = content.match(dateRegex);
     if (dates) {
       const years = dates.map((date) => Number.parseInt(date));
@@ -890,13 +887,13 @@ export class StrategicVisionService {
     documentType: string
   ): string {
     // Try to extract title from first heading
-    const headingMatch = content.match(/^#\s+(.+)$/m);
+    const headingMatch = content.match(/^#s+(.+)$/m);
     if (headingMatch) {
       return headingMatch[1]?.trim();
     }
 
     // Generate from filename and type
-    const baseName = filename.replace(/\.(md|txt|rst|adoc)$/i,'');'
+    const baseName = filename.replace(/.(md|txt|rst|adoc)$/i,'');'
     const typePrefix =
       documentType === 'vision''
         ? 'Vision:''
@@ -906,19 +903,19 @@ export class StrategicVisionService {
             ? 'Architecture:''
             : ';
 
-    return typePrefix ? `${typePrefix} ${baseName}` : baseName;`
+    return typePrefix ? `$typePrefix$baseName` : baseName;`
   }
 
   private generateContentSummary(content: string, themes: string[]): string {
     const firstSentence = content.split('.')[0]?.trim();'
-    const themesText = themes.length > 0 ? ` Covers: ${themes.join(', ')}` : ;
+    const _themesText = themes.length > 0 ? ` Covers: ${themes.join(', ')}` : ;
     return `${firstSentence|||Content summary'}.${themesText}`;`
   }
 
   // .gitignore support helpers
   private async loadGitignorePatterns(
     projectPath: string
-  ): Promise<Set<string>> {
+  ): Promise<Set<string>> 
     try {
       const { readFile } = await import('node:fs/promises');'
       const { join } = await import('node:path');'
@@ -939,15 +936,14 @@ export class StrategicVisionService {
       // Load .gitignore file if it exists
       try {
         const gitignorePath = join(projectPath, '.gitignore');'
-        const gitignoreContent = await readFile(gitignorePath, 'utf8');'
+        const _gitignoreContent = await readFile(gitignorePath, 'utf8');'
 
         gitignoreContent
           .split('\n')'
           .map((line) => line?.trim())
           .filter((line) => line && !line.startsWith('#'))'
-          .forEach((pattern) => {
-            gitignorePatterns.add(pattern);
-          });
+          .forEach((pattern) => 
+            gitignorePatterns.add(pattern););
 
         logger.info(
           `Loaded ${gitignorePatterns.size} .gitignore patterns for ${projectPath}``
@@ -971,13 +967,12 @@ export class StrategicVisionService {
         'build',
       ]);
     }
-  }
 
   private shouldIgnoreFile(
     filePath: string,
     patterns: Set<string>,
     projectPath: string
-  ): boolean {
+  ): boolean 
     try {
       const { relative } = require('node:path');'
       const relativePath = relative(projectPath, filePath);
@@ -995,27 +990,25 @@ export class StrategicVisionService {
           // Directory pattern
           const dirPattern = pattern.slice(0, -1);
           if (
-            relativePath.startsWith(dirPattern + '/')||relativePath === dirPattern'
+            relativePath.startsWith(`${dirPattern}/`)||relativePath === dirPattern'
           )
             return true;
         } else if (
-          relativePath === pattern||relativePath.startsWith(pattern +'/')'
-        ) {
+          relativePath === pattern||relativePath.startsWith(`${pattern}/`)'
+        ) 
           return true;
-        }
       }
 
       return false;
     } catch {
       return false;
     }
-  }
 
   private async importFromCodeAnnotations(
     projectId: string,
     projectPath: string,
     existingTypes: Set<string>
-  ): Promise<{ imported: number; skipped: number; errors: string[] }> {
+  ): Promise<imported: number; skipped: number; errors: string[] > {
     const results = { imported: 0, skipped: 0, errors: [] };
 
     try {
@@ -1035,7 +1028,7 @@ export class StrategicVisionService {
         if (
           typeof file === 'string' &&'
           ['.ts', '.tsx', '.js', '.jsx'].includes(extname(file))'
-        ) {
+        ) 
           try {
             const filePath = join(srcPath, file);
             const content = await readFile(filePath, 'utf8');'
@@ -1045,11 +1038,11 @@ export class StrategicVisionService {
               content.match(
                 /\/\/\s*todo[\s:]*(.*)|\/\*\s*todo[\s:]*(.*?)\*\//gi
               )||[];
-            const strategyMatches =
+            const _strategyMatches =
               content.match(
                 /\/\/\s*strategy[\s:]*(.*)|\/\*\s*strategy[\s:]*(.*?)\*\//gi
               )||[];
-            const visionMatches =
+            const _visionMatches =
               content.match(
                 /\/\/\s*vision[\s:]*(.*)|\/\*\s*vision[\s:]*(.*?)\*\//gi
               )||[];
@@ -1061,12 +1054,11 @@ export class StrategicVisionService {
               ...strategyMatches.map((match) => `${file}: ${match?.trim()}`)`
             );
             visionAnnotations.push(
-              ...visionMatches.map((match) => `${file}: ${match?.trim()}`)`
+              ...visionMatches.map((match) => `$file: $match?.trim()`)`
             );
           } catch {
             // Skip files we can't read'
           }
-        }
       }
 
       // Create documents from code annotations if we have enough content
@@ -1141,7 +1133,7 @@ export class StrategicVisionService {
     projectId: string,
     type: string,
     content: any
-  ): Promise<string|undefined> {
+  ): Promise<string|undefined> 
     // Only save specific document types back to repo
     if (!['vision', 'strategy'].includes(type)) {'
       return undefined;
@@ -1151,14 +1143,14 @@ export class StrategicVisionService {
       const { writeFile } = await import('node:fs/promises');'
       const { join } = await import('node:path');'
 
-      const filename = type === 'vision' ? 'VISION.md' : 'STRATEGY.md';
-      const projectPath = `/home/mhugo/code/${projectId}`;`
+      const _filename = type === 'vision' ? 'VISION.md' : 'STRATEGY.md';
+      const _projectPath = `/home/mhugo/code/${projectId}`;`
       const filePath = join(projectPath, filename);
 
-      const fileContent = `# ${content.title}\n\n${content.summary}\n\n${content.content}`;`
+      const fileContent = `# $content.title\n\n$content.summary\n\n$content.content`;`
       await writeFile(filePath, fileContent, 'utf8');'
 
-      logger.info(`Saved ${type} document to repository: ${filePath}`);`
+      logger.info(`Saved $typedocument to repository: $filePath`);`
       return filePath;
     } catch (error) {
       logger.error(`Error saving to repository:`, error);`

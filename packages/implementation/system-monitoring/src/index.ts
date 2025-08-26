@@ -37,40 +37,36 @@
  * @version 1.0.0
  */
 
+// Default export for convenience
 export {
-  SystemMonitor,
-  PerformanceTracker,
-  HealthChecker,
-  InfrastructureMetrics,
-  getSystemMonitoring,
-  createSystemMonitor,
-  createPerformanceTracker,
-  createHealthChecker,
-} from './monitoring.js';
-
-// System metrics implementation (moved from foundation)
-export {
-  SystemMetricsCollector,
-  createSystemMetricsCollector,
-  SYSTEM_METRICS_COLLECTOR_TOKEN,
-} from './system-metrics.js';
-
-export type {
-  SystemMetrics,
-  PerformanceMetrics,
-  HealthStatus,
-  InfrastructureConfig,
-  SystemMonitoringConfig,
-} from './types.js';
-
+	createHealthChecker,
+	createPerformanceTracker,
+	createSystemMonitor,
+	getSystemMonitoring,
+	HealthChecker,
+	InfrastructureMetrics,
+	PerformanceTracker,
+	SystemMonitor,
+	SystemMonitor as default,
+} from "./monitoring.js";
 // System metrics types (moved from foundation)
 export type {
-  CpuMetrics,
-  MemoryMetrics,
-  SystemPerformanceTracker,
-  SystemHealth,
-  SystemMetricsError,
-} from './system-metrics.js';
-
-// Default export for convenience
-export { SystemMonitor as default } from './monitoring.js';
+	CpuMetrics,
+	MemoryMetrics,
+	SystemHealth,
+	SystemMetricsError,
+	SystemPerformanceTracker,
+} from "./system-metrics.js";
+// System metrics implementation (moved from foundation)
+export {
+	createSystemMetricsCollector,
+	SYSTEM_METRICS_COLLECTOR_TOKEN,
+	SystemMetricsCollector,
+} from "./system-metrics.js";
+export type {
+	HealthStatus,
+	InfrastructureConfig,
+	PerformanceMetrics,
+	SystemMetrics,
+	SystemMonitoringConfig,
+} from "./types.js";

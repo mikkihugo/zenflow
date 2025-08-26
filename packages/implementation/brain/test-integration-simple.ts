@@ -3,11 +3,11 @@
  * Tests the basic functionality without complex dependencies
  */
 
-import { SmartNeuralCoordinator } from './src/smart-neural-coordinator';
 import type {
   NeuralBackendConfig,
   NeuralEmbeddingRequest,
 } from './src/smart-neural-coordinator';
+import { SmartNeuralCoordinator } from './src/smart-neural-coordinator';
 
 // Mock external dependencies
 const mockTransformers = {
@@ -18,11 +18,9 @@ const mockTransformers = {
 };
 
 const mockBrainJs = {
-  NeuralNetwork: function () {
-    return {
+  NeuralNetwork: () => ({
       run: () => new Array(10).fill(0).map(() => Math.random()),
-    };
-  },
+    }),
 };
 
 // Mock modules at runtime
@@ -39,9 +37,7 @@ require = function (id: string) {
   }
   if (id === 'openai') {'
     return {
-      default: function () {
-        return { embeddings: { create: async () => null } };
-      },
+      default: () => ({ embeddings: { create: async () => null } }),
     };
   }
   return originalRequire.call(this, id);
@@ -83,7 +79,7 @@ async function runIntegrationTest() {
       qualityLevel: 'standard',
     };
 
-    const result = await coordinator.generateEmbedding(request);
+    const _result = await coordinator.generateEmbedding(request);
     console.log('🧠 Embedding Result:');'
     console.log('  Success:', result.success);'
     console.log('  Embedding Length:', result.embedding?.length || 0);'
@@ -94,7 +90,7 @@ async function runIntegrationTest() {
 
     // Test 4: Test caching
     console.log('Test 4: Test Caching');'
-    const result2 = await coordinator.generateEmbedding(request);
+    const _result2 = await coordinator.generateEmbedding(request);
     console.log('🔄 Second Request Result:');'
     console.log('  Success:', result2.success);'
     console.log('  From Cache:', result2.metadata?.fromCache);'
@@ -108,7 +104,7 @@ async function runIntegrationTest() {
       priority: 'medium',
     };
 
-    const emptyResult = await coordinator.generateEmbedding(emptyRequest);
+    const _emptyResult = await coordinator.generateEmbedding(emptyRequest);
     console.log('🚫 Empty Text Result:');'
     console.log('  Success:', emptyResult.success);'
     console.log('  Error:', emptyResult.error);'

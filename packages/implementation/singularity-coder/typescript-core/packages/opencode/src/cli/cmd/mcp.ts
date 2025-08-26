@@ -1,8 +1,6 @@
-import { cmd } from "./cmd"
-import { Client } from "@modelcontextprotocol/sdk/client/index.js"
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 import * as prompts from "@clack/prompts"
 import { UI } from "../ui"
+import { cmd } from "./cmd"
 
 export const McpCommand = cmd({
   command: "mcp",
@@ -71,7 +69,7 @@ export const McpAddCommand = cmd({
       })
       const transport = new StreamableHTTPClientTransport(new URL(url))
       await client.connect(transport)
-      prompts.log.info(`Remote MCP server "${name}" configured with URL: ${url}`)`
+      prompts.log.info(`Remote MCP server "${name}" configured with URL: $url`)`
     }
 
     prompts.outro("MCP server added successfully")

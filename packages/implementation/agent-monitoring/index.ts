@@ -9,13 +9,12 @@
  * @author claude-code-zen Team
  */
 
-// Main exports
-export * from './src/index.js';
-
 // Re-export key components for convenience
 export type {
-  AgentHealthMonitor,
-  PerformanceTracker,
-  HealthMetrics,
-  MonitoringConfig,
-} from './src/index.js';
+	AgentHealthMonitor,
+	HealthMetrics,
+	MonitoringConfig,
+	PerformanceTracker,
+} from "./src/index.js";
+// Main exports
+export * from "./src/index.js";

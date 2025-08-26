@@ -13,16 +13,16 @@
  * Verifies that Claude-Zen has been installed correctly
  */
 async function main(): Promise<void> {
-  try {
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ Installation verification failed:', errorMessage);
-    process.exit(1);
-  }
+	try {
+	} catch (error) {
+		const errorMessage = error instanceof Error ? error.message : String(error);
+		console.error("❌ Installation verification failed:", errorMessage);
+		process.exit(1);
+	}
 }
 
 // Execute main function with error handling
 main().catch((error) => {
-  console.error('❌ Unhandled installation error:', error);
-  process.exit(1);
+	console.error("❌ Unhandled installation error:", error);
+	process.exit(1);
 });

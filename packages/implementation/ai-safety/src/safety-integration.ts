@@ -6,19 +6,16 @@
  */
 
 import type {
-  AIInteractionData,
   DeceptionAlert,
 } from './ai-deception-detector';
-import {
-  type AISafetyOrchestrator,
-  type SafetyMetrics,
-  createAISafetyOrchestrator,
+import type {
+  AISafetyOrchestrator,
 } from './safety-orchestrator';
 
 /**
  * Global safety orchestrator instance.
  */
-let globalSafetyOrchestrator: AISafetyOrchestrator|null = null;
+const globalSafetyOrchestrator: AISafetyOrchestrator|null = null;
 
 /**
  * Initialize AI safety monitoring system.
@@ -36,13 +33,13 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
 
   // Set up event handlers for the global instance
   globalSafetyOrchestrator.on('safety:alert', (alert: DeceptionAlert) => {'
-    console.warn(`🚨 Safety Alert: ${alert.type} from agent ${alert.agentId}`);`
+    console.warn(`🚨 Safety Alert: $alert.typefrom agent $alert.agentId`);`
   });
 
   globalSafetyOrchestrator.on('safety:critical', (alert: DeceptionAlert) => {'
-    console.error(`🛑 CRITICAL Safety Alert: ${alert.type}`);`
+    console.error(`🛑 CRITICAL Safety Alert: $alert.type`);`
     console.error(`   Agent: ${alert.agentId}`);`
-    console.error(`   Evidence: ${alert.evidence.join(', ')}`);`
+    console.error(`   Evidence: $alert.evidence.join(', ')`);`
     console.error(`   Intervention: ${alert.intervention}`);`
   });
 

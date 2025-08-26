@@ -1,12 +1,11 @@
-import { spawn, type ChildProcessWithoutNullStreams } from "child_process"
-import type { App } from "../app/app"
-import path from "path"
-import { Global } from "../global"
-import { Log } from "../util/log"
-import { BunProc } from "../bun"
+import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process"
+import path from "node:path"
 import { $ } from "bun"
-import fs from "fs/promises"
+import type { App } from "../app/app"
+import { BunProc } from "../bun"
+import { Global } from "../global"
 import { Filesystem } from "../util/filesystem"
+import { Log } from "../util/log"
 
 export namespace LSPServer {
   const log = Log.create({ service: "lsp.server" })
@@ -75,7 +74,7 @@ export namespace LSPServer {
     extensions: [".go"],
     async spawn(_, root) {
       let bin = Bun.which("gopls", {
-        PATH: process.env["PATH"] + ":" + Global.Path.bin,
+        PATH: `${process.env.PATH}:${Global.Path.bin}`,
       })
       if (!bin) {
         if (!Bun.which("go")) return
@@ -92,7 +91,7 @@ export namespace LSPServer {
           log.error("Failed to install gopls")
           return
         }
-        bin = path.join(Global.Path.bin, "gopls" + (process.platform === "win32" ? ".exe" : ""))
+        bin = path.join(Global.Path.bin, `gopls${process.platform === "win32" ? ".exe" : ""}`)
         log.info(`installed gopls`, {`
           bin,
         })
@@ -111,7 +110,7 @@ export namespace LSPServer {
     extensions: [".rb", ".rake", ".gemspec", ".ru"],
     async spawn(_, root) {
       let bin = Bun.which("ruby-lsp", {
-        PATH: process.env["PATH"] + ":" + Global.Path.bin,
+        PATH: `${process.env.PATH}:${Global.Path.bin}`,
       })
       if (!bin) {
         const ruby = Bun.which("ruby")
@@ -132,7 +131,7 @@ export namespace LSPServer {
           log.error("Failed to install ruby-lsp")
           return
         }
-        bin = path.join(Global.Path.bin, "ruby-lsp" + (process.platform === "win32" ? ".exe" : ""))
+        bin = path.join(Global.Path.bin, `ruby-lsp${process.platform === "win32" ? ".exe" : ""}`)
         log.info(`installed ruby-lsp`, {`
           bin,
         })
@@ -222,9 +221,9 @@ export namespace LSPServer {
     id: "zls",
     extensions: [".zig", ".zon"],
     root: NearestRoot(["build.zig"]),
-    async spawn(_, root) {
-      let bin = Bun.which("zls", {
-        PATH: process.env["PATH"] + ":" + Global.Path.bin,
+    async spawn(_, _root) {
+      const bin = Bun.which("zls", {
+        PATH: `${process.env.PATH}:${Global.Path.bin}`,
       })
 
       if (!bin) {
@@ -242,11 +241,11 @@ export namespace LSPServer {
           return
         }
 
-        const release = await releaseResponse.json()
+        const _release = await releaseResponse.json()
 
         const platform = process.platform
         const arch = process.arch
-        let assetName = ""
+        let _assetName = ""
 
         let zlsArch: string = arch
         if (arch === "arm64") zlsArch = "aarch64"
@@ -259,7 +258,7 @@ export namespace LSPServer {
 
         const ext = platform === "win32" ? "zip" : "tar.xz"
 
-        assetName = `zls-${zlsArch}-${zlsPlatform}.${ext}``
+        _assetName = `zls-${zlsArch}-${zlsPlatform}.${ext}``
 
         const supportedCombos = [
           "zls-x86_64-linux.tar.xz",
@@ -273,7 +272,7 @@ export namespace LSPServer {
         ]
 
         if (!supportedCombos.includes(assetName)) {
-          log.error(`Platform ${platform} and architecture ${arch} is not supported by zls`)`
+          log.error(`Platform $platformand architecture $archis not supported by zls`)`
           return
         }
 
@@ -294,7 +293,7 @@ export namespace LSPServer {
         await Bun.file(tempPath).write(downloadResponse)
 
         if (ext === "zip") {
-          await $`unzip -o -q ${tempPath}`.cwd(Global.Path.bin).nothrow()`
+          await $`unzip -o -q $tempPath`.cwd(Global.Path.bin).nothrow()`
         } else {
           await $`tar -xf ${tempPath}`.cwd(Global.Path.bin).nothrow()`
         }
@@ -309,7 +308,7 @@ export namespace LSPServer {
         }
 
         if (platform !== "win32") {
-          await $`chmod +x ${bin}`.nothrow()`
+          await $`chmod +x $bin`.nothrow()`
         }
 
         log.info(`installed zls`, { bin })`

@@ -22,118 +22,100 @@
  */
 
 // =============================================================================
-// PRIMARY INTELLIGENCE SYSTEM - Main implementation
-// =============================================================================
-export { CompleteIntelligenceSystem } from './intelligence-system';
-
-// =============================================================================
 // FACTORY FUNCTIONS - Quick setup methods
 // =============================================================================
 export {
-  createIntelligenceSystem,
-  createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem,
-} from './intelligence-factory';
-
+	createBasicIntelligenceSystem,
+	createIntelligenceSystem,
+	createProductionIntelligenceSystem,
+} from "./intelligence-factory";
 // =============================================================================
-// TASK PREDICTION - Core Monitoring Primitives
+// PRIMARY INTELLIGENCE SYSTEM - Main implementation
 // =============================================================================
-export {
-  SimpleTaskPredictor,
-  createTaskPredictor,
-  isHighConfidencePrediction,
-  getPredictionSummary,
-} from './task-predictor';
-
-export type { TaskPredictor } from './task-predictor';
-
+export { CompleteIntelligenceSystem } from "./intelligence-system";
+export type {
+	PerformanceSnapshot,
+	PerformanceStats,
+	PerformanceTrackerConfig,
+	PerformanceTrackingResult,
+} from "./performance-tracker";
 // =============================================================================
 // PERFORMANCE TRACKING - Replaces Hook System Performance Tracking
 // =============================================================================
 export {
-  PerformanceTracker,
-  createPerformanceTracker,
-  getGlobalPerformanceTracker,
-  withPerformanceTracking,
-  DEFAULT_PERFORMANCE_CONFIG,
-} from './performance-tracker';
-
-export type {
-  PerformanceSnapshot,
-  PerformanceTrackingResult,
-  PerformanceStats,
-  PerformanceTrackerConfig,
-} from './performance-tracker';
-
-export { DEFAULT_TASK_PREDICTOR_CONFIG } from './task-predictor';
-
+	createPerformanceTracker,
+	DEFAULT_PERFORMANCE_CONFIG,
+	getGlobalPerformanceTracker,
+	PerformanceTracker,
+	withPerformanceTracking,
+} from "./performance-tracker";
+export type { TaskPredictor } from "./task-predictor";
+// =============================================================================
+// TASK PREDICTION - Core Monitoring Primitives
+// =============================================================================
+export {
+	createTaskPredictor,
+	DEFAULT_TASK_PREDICTOR_CONFIG,
+	getPredictionSummary,
+	isHighConfidencePrediction,
+	SimpleTaskPredictor,
+} from "./task-predictor";
 // =============================================================================
 // TYPE DEFINITIONS - All monitoring types (tree-shakable)
 // =============================================================================
-export type {
-  // Core Agent Types
-  AgentId,
-  AgentType,
-  SwarmId,
-  ForecastHorizon,
-
-  // Intelligence System Types
-  IntelligenceSystem,
-  IntelligenceSystemConfig,
-
-  // Task Prediction Types
-  TaskPrediction,
-  MultiHorizonTaskPrediction,
-  TaskPredictorConfig,
-  TaskCompletionRecord,
-  PredictionFactor,
-
-  // Health and Learning Types
-  AgentHealth,
-  AgentLearningState,
-  AgentMetrics,
-  HealthStatus,
-  HealthThresholds,
-
-  // Performance Types
-  PerformanceHistory,
-  PerformanceEntry,
-  ResourceUsage,
-
-  // Prediction Types
-  PredictionRequest,
-  PredictionResult,
-  PerformanceOptimizationForecast,
-  KnowledgeTransferPrediction,
-  EmergentBehaviorPrediction,
-  AdaptiveLearningUpdate,
-
-  // System Types
-  SystemHealthSummary,
-  MonitoringConfig,
-  MonitoringEvent,
-  MonitoringEventType,
-  HealthStatusType,
-  TrendType,
-
-  // Intelligence Types
-  IntelligenceMetrics,
-  EmergentBehavior,
-  AgentCapabilities,
-
-  // Learning Types
-  LearningConfiguration,
-} from './types';
-
 // =============================================================================
 // CONVENIENCE EXPORTS - Re-export commonly used types
 // =============================================================================
 export type {
-  IntelligenceSystemConfig as Config,
-  TaskPrediction as Prediction,
-  AgentHealth as Health,
-  SystemHealthSummary as SystemHealth,
-} from './types';
+	AdaptiveLearningUpdate,
+	AgentCapabilities,
+	// Health and Learning Types
+	AgentHealth,
+	AgentHealth as Health,
+	// Core Agent Types
+	AgentId,
+	AgentLearningState,
+	AgentMetrics,
+	AgentType,
+	EmergentBehavior,
+	EmergentBehaviorPrediction,
+	ForecastHorizon,
+	HealthStatus,
+	HealthStatusType,
+	HealthThresholds,
+	// Intelligence Types
+	IntelligenceMetrics,
+	// Intelligence System Types
+	IntelligenceSystem,
+	IntelligenceSystemConfig,
+	IntelligenceSystemConfig as Config,
+	KnowledgeTransferPrediction,
+	// Learning Types
+	LearningConfiguration,
+	MonitoringConfig,
+	MonitoringEvent,
+	MonitoringEventType,
+	MultiHorizonTaskPrediction,
+	PerformanceEntry,
+	// Performance Types
+	PerformanceHistory,
+	PerformanceOptimizationForecast,
+	PredictionFactor,
+	// Prediction Types
+	PredictionRequest,
+	PredictionResult,
+	ResourceUsage,
+	SwarmId,
+	// System Types
+	SystemHealthSummary,
+	SystemHealthSummary as SystemHealth,
+	TaskCompletionRecord,
+	// Task Prediction Types
+	TaskPrediction,
+	TaskPrediction as Prediction,
+	TaskPredictorConfig,
+	TrendType,
+} from "./types";
 
 // =============================================================================
 // DEFAULT CONFIGURATIONS - For easy setup
@@ -144,14 +126,14 @@ export type {
  * Package metadata and version information
  */
 export const PACKAGE_INFO = {
-  name: '@claude-zen/agent-monitoring',
-  version: '1.0.0',
-  description: 'Core agent monitoring primitives for Claude Code Zen',
-  features: [
-    'Basic task prediction interfaces',
-    'Simple intelligence system implementations',
-    'Core monitoring types and configurations',
-    'Foundation logging and storage integration',
-    'Tree-shakable exports for optimal bundles',
-  ],
+	name: "@claude-zen/agent-monitoring",
+	version: "1.0.0",
+	description: "Core agent monitoring primitives for Claude Code Zen",
+	features: [
+		"Basic task prediction interfaces",
+		"Simple intelligence system implementations",
+		"Core monitoring types and configurations",
+		"Foundation logging and storage integration",
+		"Tree-shakable exports for optimal bundles",
+	],
 } as const;

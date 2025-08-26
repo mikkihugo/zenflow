@@ -50,5 +50,4 @@ export declare class MemoryLoadBalancer extends TypedEventBase {
   setWeights(weights: Record<string, number>): void;
   setThresholds(thresholds: LoadBalancingConfig['thresholds']): void;'
 }
-export {};
 //# sourceMappingURL=memory-load-balancer.d.ts.map

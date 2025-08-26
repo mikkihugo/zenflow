@@ -1,191 +1,237 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { ProgressRadial } from '@skeletonlabs/skeleton';
-	import { apiClient } from '../../lib/api';
-	import { webSocketManager } from '../../lib/websocket';
+import { onDestroy, onMount } from "svelte";
+import { apiClient } from "../../lib/api";
+import { webSocketManager } from "../../lib/websocket";
 
-	// Facade monitoring data
-	let facadeStatus: any = null;
-	let systemStatus: any = null;
-	let loading = true;
-	let error: string | null = null;
+// Facade monitoring data
+let facadeStatus: any = null;
+let systemStatus: any = null;
+let _loading = true;
+let _error: string | null = null;
 
-	// Real-time updates
-	let updateInterval: NodeJS.Timeout | null = null;
-	let connectionState: any = null;
+// Real-time updates
+let updateInterval: NodeJS.Timeout | null = null;
+let _connectionState: any = null;
 
-	// Mock facade data for demonstration when API is unavailable
-	const mockFacadeData = {
-		overall: 'partial',
-		facades: {
-			foundation: {
-				name: 'foundation',
-				capability: 'full',
-				healthScore: 95,
-				packages: {
-					'@claude-zen/foundation': { status: 'registered', version: '1.1.1' }
-				},
-				features: ['Core utilities', 'Logging', 'Error handling', 'Type-safe primitives'],
-				missingPackages: [],
-				registeredServices: ['logger', 'errorHandler', 'typeGuards']
+// Mock facade data for demonstration when API is unavailable
+const mockFacadeData = {
+	overall: "partial",
+	facades: {
+		foundation: {
+			name: "foundation",
+			capability: "full",
+			healthScore: 95,
+			packages: {
+				"@claude-zen/foundation": { status: "registered", version: "1.1.1" },
 			},
-			infrastructure: {
-				name: 'infrastructure',
-				capability: 'partial',
-				healthScore: 75,
-				packages: {
-					'@claude-zen/database': { status: 'fallback', version: null },
-					'@claude-zen/event-system': { status: 'fallback', version: null },
-					'@claude-zen/otel-collector': { status: 'fallback', version: null },
-					'@claude-zen/service-container': { status: 'fallback', version: null }
-				},
-				features: ['Database abstraction', 'Event system', 'OpenTelemetry', 'Service container'],
-				missingPackages: ['@claude-zen/database', '@claude-zen/event-system', '@claude-zen/otel-collector'],
-				registeredServices: ['fallbackDatabase', 'fallbackEvents']
-			},
-			intelligence: {
-				name: 'intelligence',
-				capability: 'partial',
-				healthScore: 60,
-				packages: {
-					'@claude-zen/brain': { status: 'fallback', version: null },
-					'@claude-zen/neural-ml': { status: 'fallback', version: null },
-					'@claude-zen/dspy': { status: 'fallback', version: null }
-				},
-				features: ['Neural coordination', 'Brain systems', 'DSPy optimization'],
-				missingPackages: ['@claude-zen/brain', '@claude-zen/neural-ml', '@claude-zen/dspy'],
-				registeredServices: ['fallbackBrain']
-			},
-			enterprise: {
-				name: 'enterprise',
-				capability: 'fallback',
-				healthScore: 40,
-				packages: {
-					'@claude-zen/safe-framework': { status: 'fallback', version: null },
-					'@claude-zen/workflows': { status: 'fallback', version: null },
-					'@claude-zen/portfolio': { status: 'fallback', version: null }
-				},
-				features: ['SAFE framework', 'Business workflows', 'Portfolio management'],
-				missingPackages: ['@claude-zen/safe-framework', '@claude-zen/workflows', '@claude-zen/portfolio'],
-				registeredServices: ['fallbackWorkflows']
-			},
-			operations: {
-				name: 'operations',
-				capability: 'partial',
-				healthScore: 70,
-				packages: {
-					'@claude-zen/system-monitoring': { status: 'fallback', version: null },
-					'@claude-zen/chaos-engineering': { status: 'fallback', version: null },
-					'@claude-zen/load-balancing': { status: 'fallback', version: null }
-				},
-				features: ['System monitoring', 'Chaos engineering', 'Load balancing'],
-				missingPackages: ['@claude-zen/system-monitoring', '@claude-zen/chaos-engineering'],
-				registeredServices: ['fallbackMonitoring']
-			},
-			development: {
-				name: 'development',
-				capability: 'partial',
-				healthScore: 85,
-				packages: {
-					'@claude-zen/code-analyzer': { status: 'fallback', version: null },
-					'@claude-zen/git-operations': { status: 'fallback', version: null },
-					'@claude-zen/architecture': { status: 'fallback', version: null }
-				},
-				features: ['Code analysis', 'Git operations', 'Architecture validation'],
-				missingPackages: ['@claude-zen/code-analyzer', '@claude-zen/git-operations'],
-				registeredServices: ['fallbackCodeAnalyzer', 'fallbackGitOps']
-			}
+			features: [
+				"Core utilities",
+				"Logging",
+				"Error handling",
+				"Type-safe primitives",
+			],
+			missingPackages: [],
+			registeredServices: ["logger", "errorHandler", "typeGuards"],
 		},
-		totalPackages: 18,
-		availablePackages: 1,
-		registeredServices: 8,
-		healthScore: 71,
-		lastUpdated: Date.now()
-	};
+		infrastructure: {
+			name: "infrastructure",
+			capability: "partial",
+			healthScore: 75,
+			packages: {
+				"@claude-zen/database": { status: "fallback", version: null },
+				"@claude-zen/event-system": { status: "fallback", version: null },
+				"@claude-zen/otel-collector": { status: "fallback", version: null },
+				"@claude-zen/service-container": { status: "fallback", version: null },
+			},
+			features: [
+				"Database abstraction",
+				"Event system",
+				"OpenTelemetry",
+				"Service container",
+			],
+			missingPackages: [
+				"@claude-zen/database",
+				"@claude-zen/event-system",
+				"@claude-zen/otel-collector",
+			],
+			registeredServices: ["fallbackDatabase", "fallbackEvents"],
+		},
+		intelligence: {
+			name: "intelligence",
+			capability: "partial",
+			healthScore: 60,
+			packages: {
+				"@claude-zen/brain": { status: "fallback", version: null },
+				"@claude-zen/neural-ml": { status: "fallback", version: null },
+				"@claude-zen/dspy": { status: "fallback", version: null },
+			},
+			features: ["Neural coordination", "Brain systems", "DSPy optimization"],
+			missingPackages: [
+				"@claude-zen/brain",
+				"@claude-zen/neural-ml",
+				"@claude-zen/dspy",
+			],
+			registeredServices: ["fallbackBrain"],
+		},
+		enterprise: {
+			name: "enterprise",
+			capability: "fallback",
+			healthScore: 40,
+			packages: {
+				"@claude-zen/safe-framework": { status: "fallback", version: null },
+				"@claude-zen/workflows": { status: "fallback", version: null },
+				"@claude-zen/portfolio": { status: "fallback", version: null },
+			},
+			features: [
+				"SAFE framework",
+				"Business workflows",
+				"Portfolio management",
+			],
+			missingPackages: [
+				"@claude-zen/safe-framework",
+				"@claude-zen/workflows",
+				"@claude-zen/portfolio",
+			],
+			registeredServices: ["fallbackWorkflows"],
+		},
+		operations: {
+			name: "operations",
+			capability: "partial",
+			healthScore: 70,
+			packages: {
+				"@claude-zen/system-monitoring": { status: "fallback", version: null },
+				"@claude-zen/chaos-engineering": { status: "fallback", version: null },
+				"@claude-zen/load-balancing": { status: "fallback", version: null },
+			},
+			features: ["System monitoring", "Chaos engineering", "Load balancing"],
+			missingPackages: [
+				"@claude-zen/system-monitoring",
+				"@claude-zen/chaos-engineering",
+			],
+			registeredServices: ["fallbackMonitoring"],
+		},
+		development: {
+			name: "development",
+			capability: "partial",
+			healthScore: 85,
+			packages: {
+				"@claude-zen/code-analyzer": { status: "fallback", version: null },
+				"@claude-zen/git-operations": { status: "fallback", version: null },
+				"@claude-zen/architecture": { status: "fallback", version: null },
+			},
+			features: ["Code analysis", "Git operations", "Architecture validation"],
+			missingPackages: [
+				"@claude-zen/code-analyzer",
+				"@claude-zen/git-operations",
+			],
+			registeredServices: ["fallbackCodeAnalyzer", "fallbackGitOps"],
+		},
+	},
+	totalPackages: 18,
+	availablePackages: 1,
+	registeredServices: 8,
+	healthScore: 71,
+	lastUpdated: Date.now(),
+};
 
-	onMount(async () => {
-		// Subscribe to WebSocket connection state
-		webSocketManager.connectionState.subscribe(state => {
-			connectionState = state;
-		});
-
-		// Load facade status from API or use mock data
-		await loadFacadeStatus();
-
-		// Set up periodic refresh
-		updateInterval = setInterval(loadFacadeStatus, 30000); // Every 30 seconds
+onMount(async () => {
+	// Subscribe to WebSocket connection state
+	webSocketManager.connectionState.subscribe((state) => {
+		_connectionState = state;
 	});
 
-	onDestroy(() => {
-		if (updateInterval) {
-			clearInterval(updateInterval);
-		}
-	});
+	// Load facade status from API or use mock data
+	await loadFacadeStatus();
 
-	async function loadFacadeStatus() {
+	// Set up periodic refresh
+	updateInterval = setInterval(loadFacadeStatus, 30000); // Every 30 seconds
+});
+
+onDestroy(() => {
+	if (updateInterval) {
+		clearInterval(updateInterval);
+	}
+});
+
+async function loadFacadeStatus() {
+	try {
+		_loading = true;
+		_error = null;
+
+		// Try to load from API first
 		try {
-			loading = true;
-			error = null;
-
-			// Try to load from API first
-			try {
-				facadeStatus = await apiClient.getFacadeStatus();
-				systemStatus = facadeStatus;
-			} catch (apiError) {
-				console.warn('API unavailable, using mock facade data:', apiError);
-				// Use mock data when API is unavailable
-				facadeStatus = mockFacadeData;
-				systemStatus = mockFacadeData;
-			}
-
-			console.log('✅ Loaded facade status:', facadeStatus);
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load facade status';
-			console.error('❌ Failed to load facade status:', err);
-			
-			// Fallback to mock data on error
+			facadeStatus = await apiClient.getFacadeStatus();
+			systemStatus = facadeStatus;
+		} catch (apiError) {
+			console.warn("API unavailable, using mock facade data:", apiError);
+			// Use mock data when API is unavailable
 			facadeStatus = mockFacadeData;
 			systemStatus = mockFacadeData;
-		} finally {
-			loading = false;
 		}
-	}
 
-	function getCapabilityColor(capability: string): string {
-		switch (capability) {
-			case 'full': return 'success';
-			case 'partial': return 'warning';
-			case 'fallback': return 'secondary';
-			case 'disabled': return 'error';
-			default: return 'surface';
-		}
-	}
+		console.log("✅ Loaded facade status:", facadeStatus);
+	} catch (err) {
+		_error =
+			err instanceof Error ? err.message : "Failed to load facade status";
+		console.error("❌ Failed to load facade status:", err);
 
-	function getHealthColor(score: number): string {
-		if (score >= 90) return 'success';
-		if (score >= 70) return 'warning';
-		if (score >= 50) return 'secondary';
-		return 'error';
+		// Fallback to mock data on error
+		facadeStatus = mockFacadeData;
+		systemStatus = mockFacadeData;
+	} finally {
+		_loading = false;
 	}
+}
 
-	function getStatusBadge(status: string): string {
-		switch (status) {
-			case 'registered': return '✅ Registered';
-			case 'available': return '🟢 Available';
-			case 'fallback': return '🟡 Fallback';
-			case 'unavailable': return '🔴 Missing';
-			case 'error': return '❌ Error';
-			default: return '❓ Unknown';
-		}
+function _getCapabilityColor(capability: string): string {
+	switch (capability) {
+		case "full":
+			return "success";
+		case "partial":
+			return "warning";
+		case "fallback":
+			return "secondary";
+		case "disabled":
+			return "error";
+		default:
+			return "surface";
 	}
+}
 
-	function formatPackageName(name: string): string {
-		return name.replace('@claude-zen/', '');
+function _getHealthColor(score: number): string {
+	if (score >= 90) return "success";
+	if (score >= 70) return "warning";
+	if (score >= 50) return "secondary";
+	return "error";
+}
+
+function _getStatusBadge(status: string): string {
+	switch (status) {
+		case "registered":
+			return "✅ Registered";
+		case "available":
+			return "🟢 Available";
+		case "fallback":
+			return "🟡 Fallback";
+		case "unavailable":
+			return "🔴 Missing";
+		case "error":
+			return "❌ Error";
+		default:
+			return "❓ Unknown";
 	}
+}
 
-	$: overallHealthScore = systemStatus?.healthScore || 0;
-	$: totalFacades = systemStatus ? Object.keys(systemStatus.facades).length : 0;
-	$: healthyFacades = systemStatus ? Object.values(systemStatus.facades).filter((f: any) => f.healthScore >= 80).length : 0;
+function _formatPackageName(name: string): string {
+	return name.replace("@claude-zen/", "");
+}
+
+$: overallHealthScore = systemStatus?.healthScore || 0;
+$: totalFacades = systemStatus ? Object.keys(systemStatus.facades).length : 0;
+$: healthyFacades = systemStatus
+	? Object.values(systemStatus.facades).filter((f: any) => f.healthScore >= 80)
+			.length
+	: 0;
 </script>
 
 <svelte:head>

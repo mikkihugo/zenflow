@@ -5,9 +5,8 @@
  * for the command palette and file explorer.
  */
 
-import { spawn } from "child_process";
-import * as path from "path";
-
+import { spawn } from "node:child_process";
+import * as path from "node:path";
 import { getLogger } from "@claude-zen/foundation";
 import type { Express, Request, Response } from "express";
 
@@ -286,7 +285,7 @@ export class WorkspaceApiRoutes {
 	/**
 	 * Get project information
 	 */
-	private async getProjectInfo(req: Request, res: Response): Promise<void> {
+	private async getProjectInfo(_req: Request, res: Response): Promise<void> {
 		try {
 			const packageJsonPath = path.join(this.workspaceRoot, "package.json");
 			let packageInfo = null;
@@ -423,7 +422,7 @@ export class WorkspaceApiRoutes {
 	/**
 	 * Get Git status
 	 */
-	private getGitStatus(req: Request, res: Response): void {
+	private getGitStatus(_req: Request, res: Response): void {
 		try {
 			const child = spawn("git", ["status", "--porcelain"], {
 				cwd: this.workspaceRoot,
@@ -501,7 +500,7 @@ export class WorkspaceApiRoutes {
 	/**
 	 * Get recent files
 	 */
-	private getRecentFiles(req: Request, res: Response): void {
+	private getRecentFiles(_req: Request, res: Response): void {
 		try {
 			// Simple implementation - could be enhanced with actual recent file tracking
 			res.json({ files: [] });

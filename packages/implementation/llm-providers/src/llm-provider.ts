@@ -8,37 +8,31 @@
 
 // Use CLI tools architecture with foundation integration
 import {
-  getLogger,
-  Result,
-  ok,
   err,
-  withTimeout,
-  withRetry,
-  validateInput,
-  z,
+  getLogger,
+  ok,
   TypedEventBase,
+  validateInput,
+  withRetry,
+  withTimeout,
+  z,
 } from '@claude-zen/foundation';
 
 import { CLAUDE_SWARM_AGENT_ROLES } from './claude';
 import type {
-  CLIProvider,
-  CLIRequest,
-  CLIResponse,
-  CLIResult,
-  CLIError,
   CLIProviderConfig,
-  SwarmAgentRole,
+  CLIRequest,
 } from './types/cli-providers';
 import { CLI_ERROR_CODES } from './types/cli-providers';
 
 // Export CLI types with proper names
 export type {
+  CLIError,
   CLIMessage,
+  CLIProviderConfig,
   CLIRequest,
   CLIResponse,
   CLIResult,
-  CLIError,
-  CLIProviderConfig,
   SwarmAgentRole,
 } from './types/cli-providers';
 export const SWARM_AGENT_ROLES = CLAUDE_SWARM_AGENT_ROLES;
@@ -72,11 +66,7 @@ const logger = getLogger('llm-provider');'
 
 // Generic LLM Provider with pluggable CLI tool backends and event system integration
 export class LLMProvider extends TypedEventBase {
-  private cliProvider: CLIProvider|null = null;
-  private requestCount = 0;
-  private lastRequestTime = 0;
   private providerId: string;
-  private llmConfig: CLIProviderConfig;
 
   constructor(
     providerId: string ='claude-code',
@@ -88,7 +78,7 @@ export class LLMProvider extends TypedEventBase {
     // Validate and set configuration using foundation's validation'
     const configResult = validateInput(cliProviderConfigSchema, config);
     if (configResult.isErr()) {
-      const error = new Error(
+      const _error = new Error(
         `Invalid LLM provider configuration: ${configResult.error.message}``
       );
       logger.error('Configuration validation failed', {'
@@ -224,9 +214,8 @@ export class LLMProvider extends TypedEventBase {
       this.cliProvider &&
       'setRole' in this.cliProvider &&'
       typeof this.cliProvider.setRole === 'function''
-    ) {
+    ) 
       this.cliProvider.setRole(currentRole.role);
-    }
   }
 
   // Get current provider info
@@ -289,7 +278,7 @@ export class LLMProvider extends TypedEventBase {
   private async executeWithRetryAndTimeout(request: CLIRequest): Promise<CLIResult> {
     // Execute with retry logic
     const retryResult = await withRetry(
-      async () => await this.cliProvider!.execute(request),
+      async () => await this.cliProvider?.execute(request),
       {
         retries: this.llmConfig.retries,
         minTimeout: this.llmConfig.retryDelay,
@@ -306,7 +295,7 @@ export class LLMProvider extends TypedEventBase {
 
     // Apply timeout protection
     const timeout = this.llmConfig.timeout || 30000;
-    const result = await withTimeout(
+    const _result = await withTimeout(
       () => Promise.resolve(retryResult.value),
       timeout,
       `LLM request timed out after ${timeout}ms``
@@ -418,7 +407,7 @@ export class LLMProvider extends TypedEventBase {
 
     const prompt = context
       ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:``
-      : `Coding task: ${task}`;`
+      : `Coding task: $task`;`
     return this.complete(prompt, options);
   }
 
@@ -432,7 +421,7 @@ export class LLMProvider extends TypedEventBase {
       return err(roleResult.error);
     }
 
-    const prompt = `Analysis type: ${analysisType}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;`
+    const _prompt = `Analysis type: ${analysisType}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;`
     return this.complete(prompt, options);
   }
 
@@ -447,8 +436,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = scope
-      ? `Research topic: ${topic}\nScope: ${scope}\n\nPlease provide comprehensive research:``
-      : `Research topic: ${topic}\n\nPlease provide comprehensive research:`;`
+      ? `Research topic: $topic\nScope: $scope\n\nPlease provide comprehensive research:``
+      : `Research topic: $topic\n\nPlease provide comprehensive research:`;`
     return this.complete(prompt, options);
   }
 
@@ -463,8 +452,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = teamContext
-      ? `Coordination task: ${task}\nTeam context: ${teamContext}\n\nPlease provide coordination plan:``
-      : `Coordination task: ${task}\n\nPlease provide coordination plan:`;`
+      ? `Coordination task: $task\nTeam context: $teamContext\n\nPlease provide coordination plan:``
+      : `Coordination task: $task\n\nPlease provide coordination plan:`;`
     return this.complete(prompt, options);
   }
 
@@ -479,8 +468,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = requirements
-      ? `Feature to test: ${feature}\nRequirements: ${requirements}\n\nPlease provide test plan and cases:``
-      : `Feature to test: ${feature}\n\nPlease provide test plan and cases:`;`
+      ? `Feature to test: $feature\nRequirements: $requirements\n\nPlease provide test plan and cases:``
+      : `Feature to test: $feature\n\nPlease provide test plan and cases:`;`
     return this.complete(prompt, options);
   }
 
@@ -495,8 +484,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = requirements
-      ? `System to architect: ${system}\nRequirements: ${requirements}\n\nPlease provide architectural design:``
-      : `System to architect: ${system}\n\nPlease provide architectural design:`;`
+      ? `System to architect: $system\nRequirements: $requirements\n\nPlease provide architectural design:``
+      : `System to architect: $system\n\nPlease provide architectural design:`;`
     return this.complete(prompt, options);
   }
 
@@ -522,7 +511,7 @@ export class LLMProvider extends TypedEventBase {
     data: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const prompt = `Task: ${task}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;`
+    const prompt = `Task: $task\n\nData to analyze:\n$data\n\nPlease provide your analysis:`;`
     return this.complete(prompt, options);
   }
 
@@ -623,7 +612,7 @@ export async function executeSwarmTask(
       if (roleResult.isErr()) {
         results.push({
           role: agent.role,
-          output: `Role error: ${roleResult.error.message}`,`
+          output: `Role error: $roleResult.error.message`,`
         });
         continue;
       }

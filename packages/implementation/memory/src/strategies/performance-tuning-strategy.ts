@@ -5,19 +5,17 @@
  * automated parameter adjustment, and continuous optimization feedback loops.
  */
 
-import { TypedEventBase ,
+import type { Logger } from '@claude-zen/foundation';
+import { 
   getLogger,
-  recordMetric,
-  TelemetryManager,
+  recordMetric,TypedEventBase ,
   withTrace,
 } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
 
 import type {
   PerformanceConfig,
   TuningAction,
   TuningRecommendation,
-  StrategyMetrics,
 } from './types';
 
 interface PerformanceSnapshot {
@@ -55,25 +53,18 @@ interface TuningResult {
 export class PerformanceTuningStrategy extends TypedEventBase {
   private logger: Logger;
   private config: PerformanceConfig;
-  private telemetry: TelemetryManager;
   private snapshots: PerformanceSnapshot[] = [];
-  private tuningParameters = new Map<string, TuningParameter>();
-  private tuningHistory: TuningResult[] = [];
-  private tuningTimer?: NodeJS.Timeout;
-  private metrics: StrategyMetrics['performance'];'
+  private tuningParameters = new Map<string, TuningParameter>();'
   private initialized = false;
-  private stabilityCounter = 0;
-  private lastTuningTime = 0;
 
   constructor(config: PerformanceConfig) {
     super();
     this.config = config;
     this.logger = getLogger('PerformanceTuningStrategy');'
-    this.telemetry = new TelemetryManager({
+    this.telemetry = new TelemetryManager(
       serviceName: 'performance-tuning',
       enableTracing: true,
-      enableMetrics: true,
-    });
+      enableMetrics: true,);
     this.initializeMetrics();
     this.initializeTuningParameters();
   }
@@ -111,11 +102,10 @@ export class PerformanceTuningStrategy extends TypedEventBase {
       return [];
     }
 
-    return withTrace('performance-tuning-cycle', async (span) => {'
-      span?.setAttributes({
+    return withTrace('performance-tuning-cycle', async (_span) => {'
+      span?.setAttributes(
         'tuning.auto': this.config.tuning.autoTune,
-        'tuning.snapshots': this.snapshots.length,
-      });
+        'tuning.snapshots': this.snapshots.length,);
 
       try {
         // Take performance snapshot
@@ -371,16 +361,16 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   }
 
   private getTrend(
-    recent: number,
-    older: number,
-    higherIsBetter: boolean
+    _recent: number,
+    _older: number,
+    _higherIsBetter: boolean
   ): 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading' {'
-    if (older === 0) return 'stable';
+    if (_older === 0) return 'stable';
 
     const change = (recent - older) / older;
     const threshold = 0.05; // 5% change threshold
 
-    if (Math.abs(change) < threshold) {
+    if (_Math._abs(_change) < _threshold) {
       return 'stable';
     }
 
@@ -406,7 +396,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     // Response time optimization
     if (
       analysis.responseTimeTrend === 'degrading'||snapshot.responseTime > this.config.targets.responseTime'
-    ) {
+    ) 
       if (this.config.actions.adjustCacheSize) {
         recommendations.push({
           action:'increase_cache_size',
@@ -454,12 +444,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           },
         });
       }
-    }
 
     // Throughput optimization
     if (
       analysis.throughputTrend === 'degrading'||snapshot.throughput < this.config.targets.throughput'
-    ) {
+    ) 
       if (this.config.actions.balanceLoad) {
         recommendations.push({
           action:'rebalance_load',
@@ -504,12 +493,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           },
         });
       }
-    }
 
     // Memory optimization
     if (
       analysis.memoryTrend === 'degrading'||snapshot.memoryUsage > this.config.targets.memoryEfficiency * 1000'
-    ) {
+    ) 
       recommendations.push({
         action:'increase_cleanup_frequency',
         priority: 'medium',
@@ -529,7 +517,6 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           memoryUsage: -0.25,
         },
       });
-    }
 
     // Cache efficiency optimization
     if (snapshot.cacheHitRate < this.config.targets.cacheEfficiency) {
@@ -631,10 +618,9 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           this.updateMetrics(result);
 
           this.emit('tuningApplied', { recommendation, result });'
-          recordMetric('performance_tuning_applied', 1, {'
+          recordMetric('performance_tuning_applied', 1, '
             action: recommendation.action,
-            improvement,
-          });
+            improvement,);
 
           this.lastTuningTime = Date.now();
 
@@ -643,7 +629,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
             parameters: recommendation.parameters,
           });
         }
-      } catch (error) {
+      } catch (_error) {
         this.logger.error(
           `Failed to apply tuning: ${recommendation.action}`,`
           error

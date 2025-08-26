@@ -2,21 +2,19 @@
  * Foundation Storage Adapter for Memory Backend - Simplified Implementation
  */
 
-import {
-  getKVStore,
-  getLogger,
-  recordMetric,
-  withTrace,
-} from '@claude-zen/foundation';
 import type {
   KeyValueStore,
   Logger,
 } from '@claude-zen/foundation';
+import {
+  getLogger,
+  recordMetric,
+  withTrace,
+} from '@claude-zen/foundation';
 
-import type { JSONValue } from '../core/memory-system';
 import type { MemoryConfig } from '../providers/memory-providers';
 
-import { BaseMemoryBackend, type BackendCapabilities } from './base-backend';
+import { BaseMemoryBackend } from './base-backend';
 
 interface FoundationMemoryConfig extends MemoryConfig {
   storageType: 'kv' | 'database' | 'hybrid';
@@ -93,7 +91,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     namespace = 'default'): Promise<T|null> {'
     await this.ensureInitialized();
 
-    const finalKey = `${namespace}:${key}`;`
+    const finalKey = `$namespace:$key`;`
 
     if (this.kvStore) {
       const data = await this.kvStore.get(finalKey);
@@ -114,14 +112,13 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     return null;
   }
 
-  override async get<T = JSONValue>(key: string): Promise<T|null> {
+  override async get<T = JSONValue>(key: string): Promise<T|null> 
     return this.retrieve<T>(key);
-  }
 
   override async delete(key: string, namespace ='default'): Promise<boolean> {'
     await this.ensureInitialized();
 
-    const finalKey = `${namespace}:${key}`;`
+    const _finalKey = `${namespace}:${key}`;`
     let deleted = false;
 
     if (this.kvStore) {
@@ -151,7 +148,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
     if (this.kvStore) {
       const allKeys = await this.kvStore.keys();
-      const namespacePrefix = `${namespace}:`;`
+      const namespacePrefix = `$namespace:`;`
 
       keys = allKeys
         .filter((key) => key.startsWith(namespacePrefix))
@@ -168,7 +165,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     if (this.kvStore) {
       if (namespace) {
         const allKeys = await this.kvStore.keys();
-        const namespacePrefix = `${namespace}:`;`
+        const namespacePrefix = `$namespace:`;`
 
         for (const key of allKeys) {
           if (key.startsWith(namespacePrefix)) {
@@ -251,7 +248,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // Enhanced stats tracking with operation logging and size metrics
     const timestamp = Date.now();
     
-    logger.debug(`Memory operation: ${operation} at ${timestamp}`, {`
+    logger.debug(`Memory operation: $operationat $timestamp`, {`
       operation,
       size: size || 0,
       backend: 'foundation-adapter',
@@ -265,8 +262,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   }
 
   private matchesPattern(str: string, pattern: string): boolean {
-    const regexPattern = pattern.replace(/\*/g, '.*');'
-    const regex = new RegExp(`^${regexPattern}$`, 'i');'
+    const regexPattern = pattern.replace(/*/g, '.*');'
+    const regex = new RegExp(`^$regexPattern$`, 'i');'
     return regex.test(str);
   }
 }

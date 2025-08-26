@@ -3,20 +3,18 @@
  * Security-focused static analysis for Phoenix/Elixir applications
  */
 
-import { spawn } from 'child_process';
 
-import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+import { spawn } from 'node:child_process';
+import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
-  BeamProject,
   BeamAnalysisContext,
-  SobelowResult,
-  SobelowFinding,
-  SobelowCategory,
-  PhoenixSecurityIssue,
-  ConfigSecurityIssue,
   BeamAnalysisError,
-  BeamSeverity,
+  BeamProject,
+  ConfigSecurityIssue,
+  PhoenixSecurityIssue,
+  SobelowFinding,
+  SobelowResult,
 } from '../types/beam-types';
 
 export class SobelowIntegration {
@@ -138,7 +136,7 @@ export class SobelowIntegration {
       args.push('.');'
 
       this.logger.debug(
-        `Running Sobelow with command: sobelow ${args.join(' ')}``
+        `Running Sobelow with command: sobelow $args.join(' ')``
       );
 
       const child = spawn('sobelow', args, {'
@@ -146,14 +144,14 @@ export class SobelowIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
@@ -166,7 +164,7 @@ export class SobelowIntegration {
           resolve(
             err({
               code:'ANALYSIS_FAILED',
-              message: `Sobelow analysis failed: ${stderr}`,`
+              message: `Sobelow analysis failed: $stderr`,`
               tool: 'sobelow',
             })
           );
@@ -175,12 +173,11 @@ export class SobelowIntegration {
 
       child.on('error', (error) => {'
         resolve(
-          err({
+          err(
             code: 'TOOL_NOT_FOUND',
-            message: `Failed to spawn sobelow: ${error.message}`,`
+            message: `Failed to spawn sobelow: $error.message`,`
             tool: 'sobelow',
-            originalError: error,
-          })
+            originalError: error,)
         );
       });
     });
@@ -206,7 +203,7 @@ export class SobelowIntegration {
         // Parse text format
         result.findings = this.parseTextFindings(output);
       }
-    } catch (error) {
+    } catch (_error) {
       this.logger.warn(
         'Failed to parse Sobelow output as JSON, attempting text parsing');'
       result.findings = this.parseTextFindings(output);
@@ -297,7 +294,7 @@ export class SobelowIntegration {
 
       // Add details to current finding
       if (currentFinding && trimmed.startsWith('-')) {'
-        currentFinding.details += `\n${trimmed}`;`
+        currentFinding.details += `\n$trimmed`;`
       }
     }
 
@@ -446,14 +443,14 @@ export class SobelowIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const _stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
@@ -474,12 +471,11 @@ export class SobelowIntegration {
 
       child.on('error', (error) => {'
         resolve(
-          err({
+          err(
             code: 'TOOL_NOT_FOUND',
-            message: `Sobelow not available: ${error.message}`,`
+            message: `Sobelow not available: $error.message`,`
             tool: 'sobelow',
-            originalError: error,
-          })
+            originalError: error,)
         );
       });
     });
@@ -500,7 +496,7 @@ export class SobelowIntegration {
   details: true,
   
   # Security checks to run
-  checks: %{
+  checks: %
     # SQL Injection
     sql_injection: true,
     
@@ -526,8 +522,7 @@ export class SobelowIntegration {
     dos: true,
     
     # Miscellaneous
-    misc: true
-  },
+    misc: true,
   
   # Custom rules
   custom_rules: []

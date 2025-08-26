@@ -14,8 +14,8 @@
  * - Integration with existing domain types system
  */
 
-import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
+
 // Type imports for domain validation - use fallback types if facade not available
 interface Agent {
   id: string;
@@ -257,19 +257,9 @@ export class ContractViolationError extends Error {
  * Production-grade domain boundary validator with comprehensive features
  */
 export class DomainBoundaryValidator implements DomainBoundary {
-  private readonly logger: Logger;
-  private readonly validationCache = new Map<string, any>();
-  private readonly crossingLog: DomainCrossing[] = [];
-  private readonly performanceMetrics = new Map<string, PerformanceMetrics>();
 
-  // Performance optimization settings
-  private readonly cacheEnabled: boolean = true;
-  private readonly maxCacheSize: number = 1000;
-  private readonly maxCrossingLogSize: number = 10000;
-
-  constructor(
-    private readonly domain: Domain,
-    options: {
+  constructor(readonly domain: Domain,
+    _options: {
       cacheEnabled?: boolean;
       maxCacheSize?: number;
       maxCrossingLogSize?: number;
@@ -351,7 +341,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
    * Enforce contract rules for domain operations
    */
   public async enforceContract(operation: DomainOperation): Promise<Result> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
     const crossingId = this.generateCrossingId();
 
     this.logger.info('Enforcing contract', {'
@@ -395,7 +385,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
             });
           }
         } catch (error) {
-          const violation = new ContractViolationError(
+          const _violation = new ContractViolationError(
             `Contract rule execution failed: ${error instanceof Error ? error.message : String(error)}`,`
             rule.name,
             operation.sourceDomain,
@@ -750,7 +740,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
     return `${dataHash}-${schemaHash}`;`
   }
 
-  private generateCrossingId(): string {
+  private generateCrossingId(): string 
     return `crossing-${this.domain}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
   }
 

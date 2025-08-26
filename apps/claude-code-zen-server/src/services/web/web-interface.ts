@@ -15,25 +15,24 @@ import { getLogger, ProcessLifecycleManager } from "@claude-zen/foundation";
 
 // Strategic facades for accessing functionality
 
-import {
-	createSvelteProxyRoute,
-	createDashboardRedirect,
-	createSvelteHealthCheck,
-	type SvelteProxyConfig,
-} from "./svelte-proxy-route";
-
 // Types from consolidated system
 import type {
-	WebConfig,
 	DIContainer,
-	WebDashboardServer,
-	WebSessionManager,
-	WebDataService,
 	WebApiRoutes,
-	WebSocketManager,
+	WebConfig,
+	WebDashboardServer,
+	WebDataService,
 	WebHtmlGenerator,
 	WebProcessManager,
+	WebSessionManager,
+	WebSocketManager,
 } from "../../types";
+import {
+	createDashboardRedirect,
+	createSvelteHealthCheck,
+	createSvelteProxyRoute,
+	type SvelteProxyConfig,
+} from "./svelte-proxy-route";
 
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
 	.foundation || { getVersion: () => "1.0.0" };
@@ -280,12 +279,12 @@ export class WebInterface {
 		// SAFe-specific routes redirect to dashboard
 		app.get(
 			"/safe",
-			(req: unknown, res: { redirect: (path: string) => void }) =>
+			(_req: unknown, res: { redirect: (path: string) => void }) =>
 				res.redirect("/dashboard/safe"),
 		);
 		app.get(
 			"/safe-production",
-			(req: unknown, res: { redirect: (path: string) => void }) =>
+			(_req: unknown, res: { redirect: (path: string) => void }) =>
 				res.redirect("/dashboard/safe-production"),
 		);
 
@@ -312,7 +311,7 @@ export class WebInterface {
 			).get(
 				"/",
 				(
-					unusedReq: unknown,
+					_unusedReq: unknown,
 					res: {
 						sendFile?: (path: string) => void;
 						send?: (content: unknown) => void;
@@ -338,7 +337,7 @@ export class WebInterface {
 		).get(
 			"/legacy",
 			(
-				unusedReq: unknown,
+				_unusedReq: unknown,
 				res: {
 					sendFile?: (path: string) => void;
 					send?: (content: unknown) => void;

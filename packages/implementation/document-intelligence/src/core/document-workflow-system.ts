@@ -10,10 +10,8 @@
  * @file Document-workflow-system implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { generateNanoId } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import { getLogger } from '@claude-zen/foundation';
 // DocumentManager interface - using fallback type if intelligence facade not available
 interface DocumentManager {
   initialize(): Promise<void>;
@@ -41,9 +39,7 @@ interface ProductWorkflowEngine {
  * @example
  */
 export class DocumentWorkflowSystem extends TypedEventBase {
-  private workflowEngine: ProductWorkflowEngine;
   private documentService: DocumentManager;
-  private activeWorkspaces = new Map<string, string>();
 
   constructor(
     workflowEngine: ProductWorkflowEngine,
@@ -71,7 +67,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    * @param docPath
    */
   async processVisionaryDocument(
-    workspaceId: string,
+    _workspaceId: string,
     docPath: string
   ): Promise<void> {
     logger.info(`🚀 Processing visionary document: ${docPath}`);`
@@ -87,7 +83,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
       );
 
       if (result?.success && result?.workflowId) {
-        logger.info(`✅ Product Flow workflow started: ${result?.workflowId}`);`
+        logger.info(`✅ Product Flow workflow started: $result?.workflowId`);`
         this.emit('product-flow:started', {'
           workflowId: result?.workflowId,
           docPath,

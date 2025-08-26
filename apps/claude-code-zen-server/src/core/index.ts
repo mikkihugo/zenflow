@@ -10,6 +10,23 @@
  * @file Core mo"ule exports.
  */
 
+export type {
+	ExporterDefinition,
+	ExportOptions,
+	ExportResult,
+	InterfaceManagerConfig,
+	InterfaceMode,
+	InterfaceStats,
+} from "@claude-zen/foundation";
+// Document types not available in intelligence facade
+// getDocumentProcessor not available in enterprise facade
+// DocumentationManagerConfig, DocumentationStats moved from foundation
+// Management systems
+export {
+	DocumentationManager,
+	ExportSystem as ExportManager,
+	InterfaceManager,
+} from "@claude-zen/foundation";
 // WorkflowDefinition, WorkflowEngineConfig, WorkflowState not available in intelligence facade
 export type {
 	SystemConfig as CoreSystemConfig,
@@ -17,23 +34,6 @@ export type {
 } from "./core-system";
 // Main system coordinator
 export { System as CoreSystem } from "./core-system";
-// Document types not available in intelligence facade
-// getDocumentProcessor not available in enterprise facade
-// DocumentationManagerConfig, DocumentationStats moved from foundation
-export { DocumentationManager } from "@claude-zen/foundation";
-export type {
-	ExporterDefinition,
-	ExportOptions,
-	ExportResult,
-} from "@claude-zen/foundation";
-// Management systems
-export { ExportSystem as ExportManager } from "@claude-zen/foundation";
-export type {
-	InterfaceManagerConfig,
-	InterfaceMode,
-	InterfaceStats,
-} from "@claude-zen/foundation";
-export { InterfaceManager } from "@claude-zen/foundation";
 // Memory types now available via @claude-zen/foundation package
 // Memory functionality now available via @claude-zen/foundation Storage and getDatabaseAccess
 // Core processing engines
@@ -42,12 +42,24 @@ export { InterfaceManager } from "@claude-zen/foundation";
 // ==================== LEGACY COMPATIBILITY ====================
 
 export { ApplicationCoordinator } from "./application-coordinator"; // Legacy - use CoreSystem
+
 // Keep these for backward compatibility during transition
 // DocumentDrivenSystem package not available // Moved to package - legacy compatibility
 // export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use BrainCoordinator
 
 // ==================== SHARED UTILITIES ====================
 
+// Orchestrator functionality provided by multi-level-orchestration and teamwork packages via facades
+// External systems
+export { SafeArtifactIntelligence } from "@claude-zen/document-intelligence";
+// ExportManager already exported above as UnifiedExportSystem
+// Export utilities (legacy)
+export type {
+	ExportConfig,
+	ExportResult as LegacyExportResult,
+	LogMeta,
+} from "@claude-zen/foundation";
+export { ExportSystem, ExportUtils } from "@claude-zen/foundation";
 // Types (re-export for convenience) - removed wildcard export to avoid conflicts
 // Documentation utilities (legacy)
 // CrossReference, DocumentationIndex not available in intelligence facade
@@ -62,17 +74,7 @@ export {
 	RAGError,
 	SwarmError,
 } from "@claude-zen/foundation/errors";
-// Core utilities
-export { EventBus } from "@claude-zen/intelligence";
-// ExportManager already exported above as UnifiedExportSystem
-// Export utilities (legacy)
-export type {
-	ExportConfig,
-	ExportResult as LegacyExportResult,
-} from "@claude-zen/foundation";
-export { ExportSystem, ExportUtils } from "@claude-zen/foundation";
 export * from "@claude-zen/foundation/helpers";
-export { InterfaceModeDetector } from "@claude-zen/interfaces";
 export type {
 	Logger,
 	LoggerConfig,
@@ -80,10 +82,9 @@ export type {
 } from "@claude-zen/foundation/logger";
 // Logging system
 export { createLogger, Logger } from "@claude-zen/foundation/logger";
-export type { LogMeta } from "@claude-zen/foundation";
-export { Orchestrator } from "./orchestrator";
-// Orchestrator functionality provided by multi-level-orchestration and teamwork packages via facades
-// External systems
-export { SafeArtifactIntelligence } from "@claude-zen/document-intelligence";
 export * from "@claude-zen/foundation/type-guards";
 export * from "@claude-zen/foundation/types";
+// Core utilities
+export { EventBus } from "@claude-zen/intelligence";
+export { InterfaceModeDetector } from "@claude-zen/interfaces";
+export { Orchestrator } from "./orchestrator";

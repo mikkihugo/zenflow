@@ -1,177 +1,212 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import AGUIIntegration from '../../lib/components/AGUIIntegration.svelte';
-	
-	interface AGUIInterface {
-		askQuestion(question: string, options?: any): Promise<any>;
-		isReady(): boolean;
+import { onMount } from "svelte";
+import type AGUIIntegration from "../../lib/components/AGUIIntegration.svelte";
+
+interface AGUIInterface {
+	askQuestion(question: string, options?: any): Promise<any>;
+	isReady(): boolean;
+}
+
+let aguiComponent: AGUIIntegration;
+let _aguiInstance: AGUIInterface | null = null;
+let log: string[] = [];
+let testResults: {
+	test: string;
+	status: "pending" | "success" | "error";
+	message?: string;
+}[] = [];
+
+// Test scenarios
+const tests = [
+	{ name: "AGUI Initialization", id: "init" },
+	{ name: "Ask Simple Question", id: "question" },
+	{ name: "Request Task Approval", id: "approval" },
+	{ name: "Handle Multiple Tasks", id: "multiple" },
+];
+
+onMount(() => {
+	// Initialize test results
+	testResults = tests.map((test) => ({
+		test: test.name,
+		status: "pending",
+	}));
+});
+
+// Handle AGUI ready event
+function _handleAGUIReady(event: CustomEvent<{ agui: AGUIInterface }>) {
+	_aguiInstance = event.detail.agui;
+	addLog("✅ AGUI system initialized and ready");
+
+	// Mark initialization test as success
+	testResults = testResults.map((result) =>
+		result.test === "AGUI Initialization"
+			? {
+					...result,
+					status: "success",
+					message: "AGUI WebInterface created successfully",
+				}
+			: result,
+	);
+
+	// Auto-run basic tests
+	setTimeout(() => runBasicTests(), 1000);
+}
+
+// Handle task approval events
+function _handleTaskApproval(
+	event: CustomEvent<{ task: string; approved: boolean }>,
+) {
+	const { task, approved } = event.detail;
+	addLog(`📋 Task ${task}: ${approved ? "APPROVED" : "REJECTED"}`);
+}
+
+// Handle user responses
+function _handleUserResponse(event: CustomEvent<{ response: any }>) {
+	const { response } = event.detail;
+	addLog(`💬 User responded: ${JSON.stringify(response)}`);
+}
+
+// Add log entry
+function addLog(message: string) {
+	const timestamp = new Date().toLocaleTimeString();
+	log = [`[${timestamp}] ${message}`, ...log];
+}
+
+// Run basic tests
+async function runBasicTests() {
+	if (!aguiComponent) {
+		addLog("❌ AGUI component not available");
+		return;
 	}
-	
-	let aguiComponent: AGUIIntegration;
-	let aguiInstance: AGUIInterface | null = null;
-	let log: string[] = [];
-	let testResults: { test: string; status: 'pending' | 'success' | 'error'; message?: string }[] = [];
 
-	// Test scenarios
-	const tests = [
-		{ name: 'AGUI Initialization', id: 'init' },
-		{ name: 'Ask Simple Question', id: 'question' },
-		{ name: 'Request Task Approval', id: 'approval' },
-		{ name: 'Handle Multiple Tasks', id: 'multiple' }
-	];
+	// Test 1: Ask a simple question
+	try {
+		addLog("🧪 Testing: Ask simple question...");
 
-	onMount(() => {
-		// Initialize test results
-		testResults = tests.map(test => ({
-			test: test.name,
-			status: 'pending'
-		}));
-	});
+		// Simulate asking a question (will be handled by the UI)
+		addLog('💭 Question: "Should we proceed with the deployment?"');
 
-	// Handle AGUI ready event
-	function handleAGUIReady(event: CustomEvent<{ agui: AGUIInterface }>) {
-		aguiInstance = event.detail.agui;
-		addLog('✅ AGUI system initialized and ready');
-		
-		// Mark initialization test as success
-		testResults = testResults.map(result => 
-			result.test === 'AGUI Initialization' 
-				? { ...result, status: 'success', message: 'AGUI WebInterface created successfully' }
-				: result
+		testResults = testResults.map((result) =>
+			result.test === "Ask Simple Question"
+				? { ...result, status: "success", message: "Question interface ready" }
+				: result,
 		);
-
-		// Auto-run basic tests
-		setTimeout(() => runBasicTests(), 1000);
+	} catch (error) {
+		addLog(`❌ Question test failed: ${error}`);
+		testResults = testResults.map((result) =>
+			result.test === "Ask Simple Question"
+				? {
+						...result,
+						status: "error",
+						message: error instanceof Error ? error.message : "Unknown error",
+					}
+				: result,
+		);
 	}
 
-	// Handle task approval events
-	function handleTaskApproval(event: CustomEvent<{ task: string; approved: boolean }>) {
-		const { task, approved } = event.detail;
-		addLog(`📋 Task ${task}: ${approved ? 'APPROVED' : 'REJECTED'}`);
-	}
+	// Test 2: Request task approval
+	try {
+		addLog("🧪 Testing: Request task approval...");
 
-	// Handle user responses
-	function handleUserResponse(event: CustomEvent<{ response: any }>) {
-		const { response } = event.detail;
-		addLog(`💬 User responded: ${JSON.stringify(response)}`);
-	}
-
-	// Add log entry
-	function addLog(message: string) {
-		const timestamp = new Date().toLocaleTimeString();
-		log = [`[${timestamp}] ${message}`, ...log];
-	}
-
-	// Run basic tests
-	async function runBasicTests() {
-		if (!aguiComponent) {
-			addLog('❌ AGUI component not available');
-			return;
-		}
-
-		// Test 1: Ask a simple question
-		try {
-			addLog('🧪 Testing: Ask simple question...');
-			
-			// Simulate asking a question (will be handled by the UI)
-			addLog('💭 Question: "Should we proceed with the deployment?"');
-			
-			testResults = testResults.map(result => 
-				result.test === 'Ask Simple Question' 
-					? { ...result, status: 'success', message: 'Question interface ready' }
-					: result
-			);
-		} catch (error) {
-			addLog(`❌ Question test failed: ${error}`);
-			testResults = testResults.map(result => 
-				result.test === 'Ask Simple Question' 
-					? { ...result, status: 'error', message: error instanceof Error ? error.message : 'Unknown error' }
-					: result
-			);
-		}
-
-		// Test 2: Request task approval
-		try {
-			addLog('🧪 Testing: Request task approval...');
-			
-			// This will trigger the approval UI
-			setTimeout(() => {
-				if (aguiComponent) {
-					aguiComponent.requestApproval(
-						'test-deployment',
-						'Deploy new features to production environment'
-					).then(() => {
-						addLog('✅ Task approval request sent');
-						testResults = testResults.map(result => 
-							result.test === 'Request Task Approval' 
-								? { ...result, status: 'success', message: 'Approval request created successfully' }
-								: result
-						);
-					}).catch(error => {
-						addLog(`❌ Task approval failed: ${error}`);
-						testResults = testResults.map(result => 
-							result.test === 'Request Task Approval' 
-								? { ...result, status: 'error', message: error.message }
-								: result
-						);
-					});
-				}
-			}, 2000);
-		} catch (error) {
-			addLog(`❌ Approval test failed: ${error}`);
-		}
-
-		// Test 3: Multiple tasks
+		// This will trigger the approval UI
 		setTimeout(() => {
-			try {
-				addLog('🧪 Testing: Multiple task approvals...');
-				
-				if (aguiComponent) {
-					// Send multiple approval requests
-					const tasks = [
-						{ id: 'backup-db', desc: 'Create database backup before deployment' },
-						{ id: 'scale-servers', desc: 'Scale up server instances for traffic' },
-						{ id: 'notify-users', desc: 'Send maintenance notification to users' }
-					];
-
-					tasks.forEach((task, i) => {
-						setTimeout(() => {
-							aguiComponent.requestApproval(task.id, task.desc);
-						}, i * 1000);
+			if (aguiComponent) {
+				aguiComponent
+					.requestApproval(
+						"test-deployment",
+						"Deploy new features to production environment",
+					)
+					.then(() => {
+						addLog("✅ Task approval request sent");
+						testResults = testResults.map((result) =>
+							result.test === "Request Task Approval"
+								? {
+										...result,
+										status: "success",
+										message: "Approval request created successfully",
+									}
+								: result,
+						);
+					})
+					.catch((error) => {
+						addLog(`❌ Task approval failed: ${error}`);
+						testResults = testResults.map((result) =>
+							result.test === "Request Task Approval"
+								? { ...result, status: "error", message: error.message }
+								: result,
+						);
 					});
+			}
+		}, 2000);
+	} catch (error) {
+		addLog(`❌ Approval test failed: ${error}`);
+	}
 
-					testResults = testResults.map(result => 
-						result.test === 'Handle Multiple Tasks' 
-							? { ...result, status: 'success', message: `${tasks.length} tasks queued successfully` }
-							: result
-					);
-				}
-			} catch (error) {
-				addLog(`❌ Multiple tasks test failed: ${error}`);
-				testResults = testResults.map(result => 
-					result.test === 'Handle Multiple Tasks' 
-						? { ...result, status: 'error', message: error instanceof Error ? error.message : 'Unknown error' }
-						: result
+	// Test 3: Multiple tasks
+	setTimeout(() => {
+		try {
+			addLog("🧪 Testing: Multiple task approvals...");
+
+			if (aguiComponent) {
+				// Send multiple approval requests
+				const tasks = [
+					{ id: "backup-db", desc: "Create database backup before deployment" },
+					{
+						id: "scale-servers",
+						desc: "Scale up server instances for traffic",
+					},
+					{
+						id: "notify-users",
+						desc: "Send maintenance notification to users",
+					},
+				];
+
+				tasks.forEach((task, i) => {
+					setTimeout(() => {
+						aguiComponent.requestApproval(task.id, task.desc);
+					}, i * 1000);
+				});
+
+				testResults = testResults.map((result) =>
+					result.test === "Handle Multiple Tasks"
+						? {
+								...result,
+								status: "success",
+								message: `${tasks.length} tasks queued successfully`,
+							}
+						: result,
 				);
 			}
-		}, 5000);
-	}
-
-	// Manual test trigger
-	function triggerManualTest() {
-		if (aguiComponent) {
-			aguiComponent.requestApproval(
-				`manual-test-${Date.now()}`,
-				'Manual test: Please approve this test task'
+		} catch (error) {
+			addLog(`❌ Multiple tasks test failed: ${error}`);
+			testResults = testResults.map((result) =>
+				result.test === "Handle Multiple Tasks"
+					? {
+							...result,
+							status: "error",
+							message: error instanceof Error ? error.message : "Unknown error",
+						}
+					: result,
 			);
-			addLog('🧪 Manual test triggered');
 		}
-	}
+	}, 5000);
+}
 
-	// Clear log
-	function clearLog() {
-		log = [];
+// Manual test trigger
+function _triggerManualTest() {
+	if (aguiComponent) {
+		aguiComponent.requestApproval(
+			`manual-test-${Date.now()}`,
+			"Manual test: Please approve this test task",
+		);
+		addLog("🧪 Manual test triggered");
 	}
+}
+
+// Clear log
+function _clearLog() {
+	log = [];
+}
 </script>
 
 <svelte:head>

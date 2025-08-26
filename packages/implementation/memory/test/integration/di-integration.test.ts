@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  mockLogger,
+  createMockMemoryConfig,
   mockConfig,
   mockDIContainer,
-  createMockMemoryConfig,
+  mockLogger,
 } from '../mocks/foundation-mocks';
 
 // Mock the entire foundation module
@@ -102,7 +102,7 @@ describe('Memory System DI Integration', () => {'
       });
 
       // Resolve controller
-      const controller = container.resolve('MemoryController');'
+      const _controller = container.resolve('MemoryController');'
 
       expect(controller).toBeDefined();
       expect(container.resolve).toHaveBeenCalledWith('Logger');'
@@ -110,15 +110,14 @@ describe('Memory System DI Integration', () => {'
     });
 
     it('should handle missing dependencies gracefully', async () => {'
-      container.resolve.mockImplementation((token: any) => {
+      container.resolve.mockImplementation((token: any) => 
         if (token.toString().includes('MissingService')) {'
           throw new Error('Service not found');'
         }
-        return mockLogger;
-      });
+        return mockLogger;);
 
       try {
-        const result = container.resolve('MissingService');'
+        const _result = container.resolve('MissingService');'
         expect(result).toBeUndefined();
       } catch (error) {
         expect(error).toBeDefined();

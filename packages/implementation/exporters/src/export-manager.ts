@@ -8,10 +8,8 @@
  * @file Export management system.
  */
 
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('UnifiedExport');'
 
@@ -70,11 +68,6 @@ export class ExportSystem extends TypedEventBase {
     this.initialized = true;
     this.emit('initialized', {});'
     logger.info('Unified export system ready');'
-  }
-
-  private async setupDefaultExporters(): Promise<void> {
-    // Setup default exporters asynchronously
-    await Promise.resolve();
   }
 
   private async validateSystemCapabilities(): Promise<void> {
@@ -141,7 +134,7 @@ export class ExportSystem extends TypedEventBase {
       export: (data: unknown, _options?: ExportOptions) => {
         return `<?xml version="1.0" encoding="UTF-8"?>`
       <root>
-      ${this.convertToXML(data, 1)}
+      $this.convertToXML(data, 1)
       </root>`;`
       },
       validate: (data: unknown) => data !== undefined && data !== null,
@@ -196,7 +189,7 @@ export class ExportSystem extends TypedEventBase {
    */
   registerExporter(format: string, definition: ExporterDefinition): void {
     this.exporters.set(format.toLowerCase(), definition);
-    logger.info(`Registered custom exporter: ${format}`);`
+    logger.info(`Registered custom exporter: $format`);`
     this.emit('exporter:registered', { format, definition });'
   }
 
@@ -229,10 +222,10 @@ export class ExportSystem extends TypedEventBase {
 
       // Export data
       const exportedData = await exporter.export(data, options);
-      const size = Buffer.byteLength(exportedData, 'utf8');'
+      const _size = Buffer.byteLength(exportedData, 'utf8');'
 
       // Generate filename if not provided
-      const filename =
+      const _filename =
         options?.filename||`export_${timestamp}${exporter.extension}`;`
 
       // Save to file if output path provided
@@ -260,7 +253,7 @@ export class ExportSystem extends TypedEventBase {
       this.exportHistory.push(result);
       this.emit('export:success', result);'
       logger.info(
-        `Successfully exported data as ${format.toUpperCase()}: ${filename}``
+        `Successfully exported data as $format.toUpperCase(): $_filename``
       );
 
       return result;
@@ -301,7 +294,7 @@ export class ExportSystem extends TypedEventBase {
         const result = await this.exportData(data, format, {
           ...options,
           ...(options?.filename && {
-            filename: `${options?.filename?.replace(/\.[^./]+$/, '')}.${format}`,`
+            filename: `$options?.filename?.replace(/\.[^./]+$/, '').$format`,`
           }),
         });
         results.push(result);
@@ -357,11 +350,9 @@ export class ExportSystem extends TypedEventBase {
 
     return this.exportData(documentData, format, {
       ...options,
-      filename: options?.filename||`workflow_export_${Date.now()}.${format}`,`
-      metadata: {
+      filename: options?.filename||`workflow_export_$Date.now().$format`,`
         ...options?.metadata,
-        type:'workflow_export',
-      },
+        type:'workflow_export',,
     });
   }
 
@@ -406,17 +397,17 @@ export class ExportSystem extends TypedEventBase {
 
     // Get headers from first object
     const headers = Object.keys(data[0] || {});
-    const csvRows = [headers.join(',')];'
+    const _csvRows = [headers.join(',')];'
 
     // Convert each row
     for (const row of data) {
-      const values = headers.map((header) => {
+      const _values = headers.map((header) => {
         const value = row[header];
         // Escape values that contain commas or quotes
         if (
           typeof value === 'string' &&'
           (value.includes(',')||value.includes('"'))'
-        ) {
+        ) 
           return `"${value.replace(/"/g, '""')}"`;`
         }
         return value;
@@ -433,7 +424,7 @@ export class ExportSystem extends TypedEventBase {
     if (obj === null) return 'null;
     if (typeof obj === 'boolean') return obj.toString();'
     if (typeof obj === 'number') return obj.toString();'
-    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')}"`;`
+    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')"`;`
 
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[];
@@ -449,7 +440,7 @@ export class ExportSystem extends TypedEventBase {
       return entries
         .map(
           ([key, value]) =>
-            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}``
+            `$spaces$key: $this.convertToYAML(value, indent + 1)``
         )
         .join('\n');'
     }
@@ -462,7 +453,7 @@ export class ExportSystem extends TypedEventBase {
 
     if (
       typeof obj === 'string'||typeof obj ==='number'||typeof obj ==='boolean''
-    ) {
+    ) 
       return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;`
     }
 
@@ -470,7 +461,7 @@ export class ExportSystem extends TypedEventBase {
       return obj
         .map(
           (item, index) =>
-            `${spaces}<item index="${index}">`
+            `$spaces<item index="${index}">`
       ${this.convertToXML(item, indent + 1)}
       ${spaces}</item>``
         )
@@ -481,29 +472,28 @@ export class ExportSystem extends TypedEventBase {
       return Object.entries(obj)
         .map(
           ([key, value]) =>
-            `${spaces}<${this.sanitizeXMLTag(key)}>`
+            `$spaces<${this.sanitizeXMLTag(key)}>`
       ${this.convertToXML(value, indent + 1)}
       ${spaces}</${this.sanitizeXMLTag(key)}>``
         )
         .join('\n');'
     }
 
-    return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;`
-  }
+    return `$spaces<value>$this.escapeXML(String(obj))</value>`;`
 
   private convertToMarkdown(data: unknown): string {
-    let markdown = '';
+    const _markdown = '';
 
     if (typeof data === 'object' && data !== null) {'
       // Handle document-like objects
       const dataObj = data as Record<string, unknown>;
-      if (dataObj['title']) {'
-        markdown += `# ${dataObj['title']}'
+      if (dataObj.title) {'
+        markdown += `# $dataObj.title'
       \n`;`
       }
 
       if (dataObj['description']) {'
-        markdown += `${dataObj['description']}'
+        markdown += `$dataObj.description'
       \n`;`
       }
 
@@ -512,38 +502,38 @@ export class ExportSystem extends TypedEventBase {
         for (const [key, value] of Object.entries(
           dataObj['metadata'] as Record<string, unknown>'
         )) {
-          markdown += `- **${key}**: ${value}\n`;`
+          markdown += `- **$key**: $value\n`;`
         }
         markdown += '\n';
       }
 
       if (dataObj['content']) {'
         markdown += '## Content\n';
-        markdown += `${dataObj['content']}\n`;`
+        markdown += `$dataObj.content\n`;`
       }
 
       // Handle arrays of items
       for (const [key, value] of Object.entries(dataObj)) {
         if (Array.isArray(value) && key !== 'metadata') {'
-          markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}`
+          markdown += `## $key.charAt(0).toUpperCase() + key.slice(1)`
       \n`;`
           for (const item of value) {
             if (typeof item === 'object' && item !== null) {'
               const itemObj = item as Record<string, unknown>;
               if (itemObj['title']) {'
-                markdown += `### ${itemObj['title']}'
+                markdown += `### $itemObj.title'
       \n`;`
                 if (itemObj['description'])'
-                  markdown += `${itemObj['description']}'
+                  markdown += `$itemObj.description'
       \n`;`
                 if (itemObj['content'])'
-                  markdown += `${itemObj['content']}'
+                  markdown += `$itemObj.content'
       \n`;`
               } else {
-                markdown += `- ${JSON.stringify(item)}\n`;`
+                markdown += `- $JSON.stringify(item)\n`;`
               }
             } else {
-              markdown += `- ${typeof item === 'string' ? item : JSON.stringify(item)}\n`;`
+              markdown += `- $typeof item === 'string' ? item : JSON.stringify(item)\n`;`
             }
           }
           markdown += '\n';
@@ -581,11 +571,11 @@ export class ExportSystem extends TypedEventBase {
 </head>
 <body>`;`
 
-    html += `<h1>${this.escapeHTML(String(title))}</h1>`;`
+    html += `<h1>$this.escapeHTML(String(title))</h1>`;`
 
     const dataObj = data as Record<string, unknown>;
-    if (dataObj['timestamp']||dataObj['exportedAt']) {'
-      html += `<p class="timestamp">Exported: ${new Date((dataObj['timestamp'] as string)||(dataObj['exportedAt'] as string)).toLocaleString()}</p>`;`
+    if (dataObj.timestamp||dataObj.exportedAt) {'
+      html += `<p class="timestamp">Exported: ${new Date((_dataObj['timestamp'] _as _string)||(dataObj"exportedAt" as string)).toLocaleString()}</p>`;`
     }
 
     html += this.objectToHTML(data);
@@ -598,14 +588,14 @@ export class ExportSystem extends TypedEventBase {
   }
 
   private objectToHTML(obj: unknown, level: number = 2): string {
-    let html = '';
+    let _html = '';
 
     if (typeof obj === 'object' && obj !== null) {'
-      for (const [key, value] of Object.entries(obj)) {
+      for (const [key, _value] of Object.entries(obj)) {
         if (key === 'title'||key ==='timestamp'||key ==='exportedAt')'
           continue;
 
-        html += `<h${Math.min(level, 6)}>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h${Math.min(level, 6)}>`;`
+        _html += `<h${Math.min(level, 6)}>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h${Math.min(level, 6)}>`;`
 
         if (Array.isArray(value)) {
           for (const item of value) {
@@ -613,24 +603,24 @@ export class ExportSystem extends TypedEventBase {
             if (typeof item === 'object' && item !== null) {'
               const itemObj = item as Record<string, unknown>;
               if (itemObj['title']) {'
-                html += `<strong>${this.escapeHTML(String(itemObj['title']))}</strong><br>`;`
+                html += `<strong>$this.escapeHTML(String(itemObj.title))</strong><br>`;`
               }
             }
-            html += this.objectToHTML(item, level + 1);
-            html += '</div>';
+            _html += this.objectToHTML(item, level + 1);
+            _html += '</div>';
           }
         } else if (typeof value === 'object') {'
           html += '<div class="metadata">';
           html += this.objectToHTML(value, level + 1);
           html += '</div>';
         } else if (typeof value === 'string' && value.length > 100) {'
-          html += `<pre>${this.escapeHTML(value)}</pre>`;`
+          html += `<pre>$this.escapeHTML(value)</pre>`;`
         } else {
           html += `<p>${this.escapeHTML(String(value))}</p>`;`
         }
       }
     } else {
-      html += `<p>${this.escapeHTML(String(obj))}</p>`;`
+      html += `<p>$this.escapeHTML(String(obj))</p>`;`
     }
 
     return html;
@@ -641,29 +631,26 @@ export class ExportSystem extends TypedEventBase {
    *
    * @param str
    */
-  private escapeXML(str: string): string {
+  private escapeXML(str: string): string 
     return str
       .replace(/&/g, '&amp;')'
       .replace(/</g, '&lt;')'
       .replace(/>/g, '&gt;')'
       .replace(/"/g, '&quot;')'
       .replace(/'/g, '&apos;');'
-  }
 
-  private escapeHTML(str: string): string {
+  private escapeHTML(str: string): string 
     return str
       .replace(/&/g, '&amp;')'
       .replace(/</g, '&lt;')'
       .replace(/>/g, '&gt;')'
       .replace(/"/g, '&quot;')'
       .replace(/'/g, '&#39;');'
-  }
 
-  private sanitizeXMLTag(tag: string): string {
+  private sanitizeXMLTag(tag: string): string 
     return tag.replace(/[^\w-]/g, '_');'
-  }
 
-  private generateId(): string {
+  private generateId(): string 
     return `export-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 

@@ -9,19 +9,18 @@
  * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
+import { createSafeFrameworkAgentRegistry } from "@claude-zen/enterprise";
 import {
-	getLogger,
-	EventEmitter,
 	createContainer,
+	EventEmitter,
+	getLogger,
 } from "@claude-zen/foundation";
-
 import { getDatabaseAccess } from "@claude-zen/infrastructure";
 import {
+	createAgentCoordinator,
 	getBrainSystem,
 	getTeamworkOrchestrator,
-	createAgentCoordinator,
 } from "@claude-zen/intelligence";
-import { createSafeFrameworkAgentRegistry } from "@claude-zen/enterprise";
 
 // Service tokens for dependency injection
 const TOKENS = {
@@ -126,7 +125,7 @@ export class ClaudeZenCore {
 
 		try {
 			// Initialize core database
-			const database = this.container!.resolve<{
+			const database = this.container?.resolve<{
 				initialize?: () => Promise<void>;
 			}>(TOKENS.database);
 			if (database?.initialize) {
@@ -134,16 +133,16 @@ export class ClaudeZenCore {
 			}
 
 			// Resolve all coordinators through DI
-			this.enterprise = await this.container!.resolve<Promise<unknown>>(
+			this.enterprise = await this.container?.resolve<Promise<unknown>>(
 				TOKENS.enterprise,
 			);
-			this.brain = await this.container!.resolve<Promise<unknown>>(
+			this.brain = await this.container?.resolve<Promise<unknown>>(
 				TOKENS.brain,
 			);
-			this.teamwork = await this.container!.resolve<Promise<unknown>>(
+			this.teamwork = await this.container?.resolve<Promise<unknown>>(
 				TOKENS.teamwork,
 			);
-			this.agentCoordinator = await this.container!.resolve<Promise<unknown>>(
+			this.agentCoordinator = await this.container?.resolve<Promise<unknown>>(
 				TOKENS.agentCoordinator,
 			);
 

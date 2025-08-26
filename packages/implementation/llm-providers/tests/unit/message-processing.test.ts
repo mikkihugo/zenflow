@@ -1,18 +1,15 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   mockMessageProcessor,
   mockPermissionHandler,
-  createMockResponse,
-  createMockError,
 } from '../mocks/llm-mocks';
 
 // Since the actual message processor and permission handler are not exported,
 // we'll test the general patterns and interfaces they should follow'
 
 describe('Message Processing', () => {'
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  beforeEach(() => 
+    vi.clearAllMocks(););
 
   describe('Message Processor', () => {'
     it('should process basic messages', () => {'
@@ -172,17 +169,16 @@ describe('Message Processing', () => {'
       expect(typeof granted).toBe('boolean');'
       expect(mockPermissionHandler.requestPermission).toHaveBeenCalledWith(
         'write',
-        expect.objectContaining({
+        expect.objectContaining(
           context: 'file-modification',
-          justification: 'Save analysis results',
-        })
+          justification: 'Save analysis results',)
       );
     });
 
     it('should check if permissions exist', () => {'
-      const hasRead = mockPermissionHandler.hasPermission('read');'
-      const hasWrite = mockPermissionHandler.hasPermission('write');'
-      const hasBash = mockPermissionHandler.hasPermission('bash');'
+      const _hasRead = mockPermissionHandler.hasPermission('read');'
+      const _hasWrite = mockPermissionHandler.hasPermission('write');'
+      const _hasBash = mockPermissionHandler.hasPermission('bash');'
 
       expect(typeof hasRead).toBe('boolean');'
       expect(typeof hasWrite).toBe('boolean');'
@@ -197,9 +193,8 @@ describe('Message Processing', () => {'
       expect(typeof revoked).toBe('boolean');'
       expect(mockPermissionHandler.revokePermission).toHaveBeenCalledWith(
         'bash',
-        expect.objectContaining({
-          reason: 'Security policy change',
-        })
+        expect.objectContaining(
+          reason: 'Security policy change',)
       );
     });
 
@@ -227,7 +222,7 @@ describe('Message Processing', () => {'
 
     it('should validate permission requests', async () => {'
       // Test with invalid tool name
-      const invalidResult = await mockPermissionHandler.checkPermission('');'
+      const _invalidResult = await mockPermissionHandler.checkPermission('');'
       expect(invalidResult.allowed).toBe(false);
 
       // Test with null context
@@ -370,7 +365,7 @@ describe('Message Processing', () => {'
       );
 
       // Should not crash the message processing
-      const message = { role: 'user', content: 'Test message' };'
+      const _message = { role: 'user', content: 'Test message' };'
       expect(() => mockMessageProcessor.processMessage(message)).not.toThrow();
     });
 

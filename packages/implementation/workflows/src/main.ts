@@ -47,24 +47,24 @@
  * ````
  */
 
-// =============================================================================
-// MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
-// =============================================================================
-export { WorkflowEngine as default, WorkflowEngine } from './engine';
 
 // =============================================================================
 // TYPE EXPORTS - Comprehensive type definitions
 // =============================================================================
 export type {
-  WorkflowStep,
-  WorkflowDefinition,
-  WorkflowContext,
   DocumentContent,
   StepExecutionResult,
+  WorkflowContext,
   WorkflowData,
-  WorkflowState,
+  WorkflowDefinition,
   WorkflowEngineConfig,
+  WorkflowState,
+  WorkflowStep,
 } from './engine';
+// =============================================================================
+// MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
+// =============================================================================
+export { WorkflowEngine as default, WorkflowEngine } from './engine';
 
 // =============================================================================
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
@@ -160,7 +160,7 @@ export async function getWorkflowVisualization(
         logger.warn(`Unsupported workflow export format: ${format}, defaulting to mermaid`);`
         format = 'mermaid';
       }
-      logger.debug(`Exporting workflow ${workflow.id} in ${format} format`);`
+      logger.debug(`Exporting workflow $workflow.idin $formatformat`);`
       return system.generateVisualization(workflow);
     },
   };

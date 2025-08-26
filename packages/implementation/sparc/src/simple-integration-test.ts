@@ -152,7 +152,7 @@ async function testSafe6Core(): Promise<{
       };
       logger.info('✅ SAFe-SPARC workflow integration working');'
     } catch (error) {
-      const errorMsg = `SAFe-SPARC workflow test failed: ${error}`;`
+      const errorMsg = `SAFe-SPARC workflow test failed: $error`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
       results.safeSparcWorkflow = { status: 'failed', error: String(error) };'
@@ -203,7 +203,7 @@ async function testSafe6Core(): Promise<{
     const success = errors.length === 0 && successCount === totalTests;
 
     logger.info(
-      `🎯 Integration test complete: ${successCount}/${totalTests} tests passed``
+      `🎯 Integration test complete: $successCount/${totalTests} tests passed``
     );
 
     if (success) {
@@ -214,7 +214,7 @@ async function testSafe6Core(): Promise<{
 
     return { success, results, errors };
   } catch (error) {
-    const errorMsg = `Integration test failed: ${error}`;`
+    const errorMsg = `Integration test failed: $error`;`
     errors.push(errorMsg);
     logger.error(errorMsg);
 
@@ -239,7 +239,7 @@ if (require.main === module) {
 
       if (result.errors.length > 0) {
         console.log('\n❌ Errors:');'
-        result.errors.forEach((error) => console.log(`  - ${error}`));`
+        result.errors.forEach((error) => console.log(`  - $error`));`
       }
 
       process.exit(result.success ? 0 : 1);

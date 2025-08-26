@@ -1,9 +1,7 @@
-import { z } from "@claude-zen/foundation"
-import { EOL } from "os"
-import { NamedError } from "../util/error"
+
 
 export namespace UI {
-  const LOGO = [
+  const _LOGO = [
     [`█▀▀█ █▀▀█ █▀▀ █▀▀▄ `, `█▀▀ █▀▀█ █▀▀▄ █▀▀`],`
     [`█░░█ █░░█ █▀▀ █░░█ `, `█░░ █░░█ █░░█ █▀▀`],`
     [`▀▀▀▀ █▀▀▀ ▀▀▀ ▀  ▀ `, `▀▀▀ ▀▀▀▀ ▀▀▀  ▀▀▀`],`

@@ -6,15 +6,14 @@
  */
 
 // Core monitoring components
-export * from './agent-health-monitor.js';
-export * from './performance-tracker.js';
-export * from './health-metrics.js';
-export * from './monitoring-config.js';
-export { CompleteIntelligenceSystem } from './intelligence-system.js';
-
+export * from "./agent-health-monitor.js";
+export * from "./health-metrics.js";
+export { CompleteIntelligenceSystem } from "./intelligence-system.js";
+export * from "./interfaces/index.js";
+export * from "./monitoring-config.js";
+export * from "./performance-tracker.js";
 // Types and interfaces
-export * from './types/index.js';
-export * from './interfaces/index.js';
+export * from "./types/index.js";
 
 // Utilities
-export * from './utils/index.js';
+export * from "./utils/index.js";

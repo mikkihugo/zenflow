@@ -8,84 +8,84 @@
  * @author Claude Code Zen Team
  * @see {@link https://github.com/stanfordnlp/dspy/blob/main/dspy/teleprompt/bootstrap_finetune.py} Original Implementation
  */
-import { Teleprompter } from './teleprompter.js';
-import { DSPyModule } from '../primitives/module';
-import type { Example } from '../primitives/example';
-import type { Prediction } from '../primitives/prediction';
-import type { LMInterface } from '../interfaces/lm';
-import type { MetricFunction } from '../interfaces/types';
-import type { Adapter } from '../interfaces/adapter';
+import { Teleprompter } from "./teleprompter.js";
+import { DSPyModule } from "../primitives/module";
+import type { Example } from "../primitives/example";
+import type { Prediction } from "../primitives/prediction";
+import type { LMInterface } from "../interfaces/lm";
+import type { MetricFunction } from "../interfaces/types";
+import type { Adapter } from "../interfaces/adapter";
 /**
  * Data format types for fine-tuning
  */
-export type DataFormat = 'chat|completion|instruction';
+export type DataFormat = "chat|completion|instruction";
 /**
  * Failed prediction class for error handling
  */
 export declare class FailedPrediction {
-  completion_text: string;
-  format_reward?: number | null;
-  constructor(completion_text: string, format_reward?: number | null);
+	completion_text: string;
+	format_reward?: number | null;
+	constructor(completion_text: string, format_reward?: number | null);
 }
 /**
  * Trace data interface
  */
 export interface TraceData {
-  example_ind: number;
-  example: Example;
-  prediction: Prediction;
-  trace: Array<[any, Record<string, any>, Prediction]>;
-  score?: number | null;
+	example_ind: number;
+	example: Example;
+	prediction: Prediction;
+	trace: Array<[any, Record<string, any>, Prediction]>;
+	score?: number | null;
 }
 /**
  * Fine-tuning job interface
  */
 export interface FinetuneJob {
-  result(): Promise<LMInterface | Error>;
-  thread: {
-    join(): void;
-  };
+	result(): Promise<LMInterface | Error>;
+	thread: {
+		join(): void;
+	};
 }
 /**
  * Abstract base class for fine-tuning teleprompters
  * Exact port of Stanford DSPy's FinetuneTeleprompter
  */
 export declare abstract class FinetuneTeleprompter extends Teleprompter {
-  protected trainKwargs: Map<LMInterface, any>;
-  constructor(
-    train_kwargs?:
-      | Record<string, any>
-      | Map<LMInterface, Record<string, any>>
-      | null
-  );
-  /**
-   * Convert train_kwargs to LM-specific dictionary
-   * Exact port of Stanford DSPy's convert_to_lm_dict
-   */
-  static convertToLMDict(arg: any): Map<LMInterface, any>;
-  private static isLMInterface;
-  protected convertToLMDict(arg: any): Map<LMInterface, any>;
+	protected trainKwargs: Map<LMInterface, any>;
+	constructor(
+		train_kwargs?:
+			| Record<string, any>
+			| Map<LMInterface, Record<string, any>>
+			| null,
+	);
+	/**
+	 * Convert train_kwargs to LM-specific dictionary
+	 * Exact port of Stanford DSPy's convert_to_lm_dict
+	 */
+	static convertToLMDict(arg: any): Map<LMInterface, any>;
+	private static isLMInterface;
+	protected convertToLMDict(arg: any): Map<LMInterface, any>;
 }
 /**
  * Configuration interface for BootstrapFinetune teleprompter
  * Exact match with Stanford DSPy BootstrapFinetune constructor
  */
 export interface BootstrapFinetuneConfig {
-  /** Metric function for evaluation */
-  metric?: MetricFunction | null;
-  /** Whether to use multitask fine-tuning */
-  multitask?: boolean;
-  /** Training kwargs for fine-tuning */
-  train_kwargs?:
-    | Record<string, any>
-    | Map<LMInterface, Record<string, any>>
-    | null;
-  /** Adapter for formatting fine-tuning data */
-  adapter?: Adapter | Map<LMInterface, Adapter> | null;
-  /** Whether to exclude demos after fine-tuning */
-  exclude_demos?: boolean;
-  /** Number of threads for evaluation */
-  num_threads?: number | null;
+	/** Metric function for evaluation */
+	metric?: MetricFunction | null;
+	/** Whether to use multitask fine-tuning */
+	multitask?: boolean;
+	/** Training kwargs for fine-tuning */
+	train_kwargs?:
+		| Record<string, any>
+		| Map<LMInterface, Record<string, any>>
+		| null;
+	/** Adapter for formatting fine-tuning data */
+	adapter?: Adapter | Map<LMInterface, Adapter> | null;
+	/** Whether to exclude demos after fine-tuning */
+	exclude_demos?: boolean;
+	/** Number of threads for evaluation */
+	num_threads?: number | null;
 }
 /**
  * BootstrapFinetune Teleprompter
@@ -241,63 +241,63 @@ export interface BootstrapFinetuneConfig {
  * ```
  */
 export declare class BootstrapFinetune extends FinetuneTeleprompter {
-  private config;
-  private adapterMap;
-  /**
-   * Initialize BootstrapFinetune teleprompter
-   * Exact API match with Stanford DSPy constructor
-   */
-  constructor(config?: BootstrapFinetuneConfig);
-  /**
-   * Compile student program with fine-tuning
-   * Exact API match with Stanford DSPy compile method
-   */
-  compile(
-    student: DSPyModule,
-    config: {
-      trainset: Example[];
-      teacher?: DSPyModule | DSPyModule[] | null;
-      valset?: Example[] | null;
-      [key: string]: any;
-    }
-  ): Promise<DSPyModule>;
-  /**
-   * Fine-tune language models
-   * Exact port of Stanford DSPy's finetune_lms static method
-   */
-  private finetuneLMs;
-  /**
-   * Prepare fine-tuning data from trace data
-   */
-  private prepareFinetuneData;
-  /**
-   * Build call data from trace
-   */
-  private buildCallDataFromTrace;
-  /**
-   * Bootstrap trace data
-   */
-  private bootstrapTraceData;
-  /**
-   * Check if all predictors have LMs assigned
-   */
-  private allPredictorsHaveLMs;
-  /**
-   * Prepare teacher program
-   */
-  private prepareTeacher;
-  /**
-   * Validate structural equivalency between student and teacher
-   */
-  private validateStructuralEquivalency;
-  /**
-   * Validate that student and teacher don't share predictor objects
-   */
-  private validateSharedPredictors;
-  /**
-   * Get configuration
-   */
-  getConfig(): Required<BootstrapFinetuneConfig>;
+	private config;
+	private adapterMap;
+	/**
+	 * Initialize BootstrapFinetune teleprompter
+	 * Exact API match with Stanford DSPy constructor
+	 */
+	constructor(config?: BootstrapFinetuneConfig);
+	/**
+	 * Compile student program with fine-tuning
+	 * Exact API match with Stanford DSPy compile method
+	 */
+	compile(
+		student: DSPyModule,
+		config: {
+			trainset: Example[];
+			teacher?: DSPyModule | DSPyModule[] | null;
+			valset?: Example[] | null;
+			[key: string]: any;
+		},
+	): Promise<DSPyModule>;
+	/**
+	 * Fine-tune language models
+	 * Exact port of Stanford DSPy's finetune_lms static method
+	 */
+	private finetuneLMs;
+	/**
+	 * Prepare fine-tuning data from trace data
+	 */
+	private prepareFinetuneData;
+	/**
+	 * Build call data from trace
+	 */
+	private buildCallDataFromTrace;
+	/**
+	 * Bootstrap trace data
+	 */
+	private bootstrapTraceData;
+	/**
+	 * Check if all predictors have LMs assigned
+	 */
+	private allPredictorsHaveLMs;
+	/**
+	 * Prepare teacher program
+	 */
+	private prepareTeacher;
+	/**
+	 * Validate structural equivalency between student and teacher
+	 */
+	private validateStructuralEquivalency;
+	/**
+	 * Validate that student and teacher don't share predictor objects
+	 */
+	private validateSharedPredictors;
+	/**
+	 * Get configuration
+	 */
+	getConfig(): Required<BootstrapFinetuneConfig>;
 }
 export { BootstrapFinetune as BootstrapFinetuneTeleprompter };
 export default BootstrapFinetune;

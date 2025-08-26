@@ -9,9 +9,9 @@
  * through the knowledge package's public API.'
  */
 
-import { getLogger, getDatabaseAccess } from '@claude-zen/foundation';
 // Import the high-performance Rust fact bridge from the fact-system package
 import { FactBridge } from '@claude-zen/fact-system/bridge';
+import { getDatabaseAccess, getLogger } from '@claude-zen/foundation';
 
 // Placeholder types for foundation fact system (to be implemented later)
 interface FactClient {
@@ -37,7 +37,7 @@ export interface FactSearchResult {
 }
 
 // Simple in-memory fact client for now
-async function createSQLiteFactClient(): Promise<FactClient> {
+async function _createSQLiteFactClient(): Promise<FactClient> {
   return {
     async initialize() {
       // No-op for in-memory implementation
@@ -203,7 +203,7 @@ class KnowledgeFactSystem {
     }
     if (query.tags?.length) {
       results = results.filter((fact) =>
-        query.tags!.some((tag) => fact.tags.includes(tag))
+        query.tags?.some((tag) => fact.tags.includes(tag))
       );
     }
     if (query.minConfidence !== undefined) {
@@ -398,7 +398,7 @@ class KnowledgeFactSystem {
 
     try {
       // First try Rust fact bridge for maximum performance
-      const npmResult = await this.factBridge.getNPMFacts(packageName, version);
+      const _npmResult = await this.factBridge.getNPMFacts(packageName, version);
       logger.info(
         `✅ NPM package info retrieved via Rust bridge: ${packageName}``
       );
@@ -413,7 +413,7 @@ class KnowledgeFactSystem {
       if (this.factClient) {
         try {
           return await this.factClient.getNPMPackage?.(packageName, version);
-        } catch (fallbackError) {
+        } catch (_fallbackError) {
           logger.error(
             `Foundation NPM lookup also failed for ${packageName}:`,`
             fallbackError
@@ -440,7 +440,7 @@ class KnowledgeFactSystem {
         `✅ GitHub repo info retrieved via Rust bridge: ${owner}/${repo}``
       );
       return githubResult;
-    } catch (error) {
+    } catch (error) 
       logger.warn(
         `Rust bridge GitHub lookup failed for ${owner}/${repo}, trying foundation fallback:`,`
         error
@@ -455,7 +455,6 @@ class KnowledgeFactSystem {
             `Foundation GitHub lookup also failed for ${owner}/${repo}:`,`
             fallbackError
           );
-        }
       } else {
         logger.warn('Foundation fact client not available for GitHub lookup');'
       }

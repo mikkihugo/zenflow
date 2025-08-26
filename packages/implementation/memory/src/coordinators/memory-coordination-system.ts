@@ -5,33 +5,21 @@
  * load balancing, health monitoring, and automatic failover.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
-  getLogger,
-  withRetry,
-  createCircuitBreaker,
-  recordMetric,
-  withTrace,
-  TelemetryManager,
-} from '@claude-zen/foundation';
 import type {
   Logger,
-  RetryOptions,
-  CircuitBreakerOptions,
 } from '@claude-zen/foundation';
-import { MemoryLoadBalancer } from './memory-load-balancer';
+import { 
+  getLogger,
+  recordMetric,
+  TelemetryManager,TypedEventBase, 
+  withTrace,} from '@claude-zen/foundation';
+import type { BaseMemoryBackend } from '../backends/base-backend';
 import { MemoryHealthMonitor } from './memory-health-monitor';
+import type { MemoryLoadBalancer } from './memory-load-balancer';
 import type {
   MemoryCoordinationConfig,
   MemoryNode,
-  MemoryOperationRequest,
-  MemoryOperationResult,
-  MemoryDistributionStrategy,
-  MemoryShardConfig,
-  MemoryTierConfig,
 } from './types';
-import type { BaseMemoryBackend } from '../backends/base-backend';
-import type { JSONValue } from '../core/memory-system';
 
 export class MemoryCoordinationSystem extends TypedEventBase {
   private logger: Logger;
@@ -39,11 +27,8 @@ export class MemoryCoordinationSystem extends TypedEventBase {
   private nodes = new Map<string, MemoryNode>();
   private loadBalancer: MemoryLoadBalancer;
   private healthMonitor: MemoryHealthMonitor;
-  private telemetry: TelemetryManager;
   private initialized = false;
   private primaryNode?: string;
-  private shardConfig?: MemoryShardConfig;
-  private tierConfig?: MemoryTierConfig;
 
   constructor(config: MemoryCoordinationConfig) {
     super();
@@ -105,11 +90,10 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     this.ensureInitialized();
 
     try {
-      await withTrace('memory-coordination-add-node', async (span) => {'
-        span?.setAttributes({
+      await withTrace('memory-coordination-add-node', async (_span) => {'
+        span?.setAttributes(
           'memory.node.id': id,
-          'memory.node.tier': options.tier||'warm',
-        });
+          'memory.node.tier': options.tier||'warm',);
 
         // Initialize the backend
         await backend.initialize();
@@ -156,7 +140,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
         }
 
         this.emit('nodeAdded', { nodeId: id, node });'
-        this.logger.info(`Added memory node: ${id}`);`
+        this.logger.info(`Added memory node: $id`);`
         recordMetric('memory_coordination_nodes_total', this.nodes.size);'
       });
     } catch (error) {
@@ -170,12 +154,12 @@ export class MemoryCoordinationSystem extends TypedEventBase {
 
     const node = this.nodes.get(id);
     if (!node) {
-      throw new Error(`Memory node not found: ${id}`);`
+      throw new Error(`Memory node not found: $id`);`
     }
 
     try {
-      await withTrace('memory-coordination-remove-node', async (span) => {'
-        span?.setAttributes({ 'memory.node.id': id });'
+      await withTrace('memory-coordination-remove-node', async (_span) => {'
+        span?.setAttributes('memory.node.id': id );'
 
         // Remove from monitoring and load balancing
         this.healthMonitor.removeNode(id);
@@ -193,7 +177,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
         }
 
         this.emit('nodeRemoved', { nodeId: id });'
-        this.logger.info(`Removed memory node: ${id}`);`
+        this.logger.info(`Removed memory node: $id`);`
         recordMetric('memory_coordination_nodes_total', this.nodes.size);'
       });
     } catch (error) {
@@ -353,7 +337,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
             break;
 
           default:
-            throw new Error(`Unsupported strategy: ${this.config.strategy}`);`
+            throw new Error(`Unsupported strategy: $this.config.strategy`);`
         }
 
         const latency = Date.now() - startTime;
@@ -622,7 +606,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
   }
 
   private handleNodeUnhealthy(nodeId: string): void {
-    this.logger.warn(`Memory node unhealthy: ${nodeId}`);`
+    this.logger.warn(`Memory node unhealthy: $nodeId`);`
     recordMetric('memory_coordination_node_unhealthy', 1, { nodeId });'
 
     // If primary node is unhealthy, select new primary
@@ -640,9 +624,9 @@ export class MemoryCoordinationSystem extends TypedEventBase {
   }
 
   private handleNodeOverloaded(nodeId: string): void {
-    this.logger.warn(`Memory node overloaded: ${nodeId}`);`
+    this.logger.warn(`Memory node overloaded: $nodeId`);`
     recordMetric('memory_coordination_node_overloaded', 1, { nodeId });'
-    this.emit('nodeOverloaded', { nodeId });'
+    this.emit('nodeOverloaded', nodeId );'
   }
 
   private selectNewPrimaryNode(): void {

@@ -24,12 +24,11 @@
 
 import {
   createServiceContainer,
-  type ServiceContainer,
-  getLogger,
-  Result,
-  ok,
   err,
+  getLogger,
   type Logger,
+  ok,
+  type Result,
   TypedEventBase,
 } from '@claude-zen/foundation';
 import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
@@ -41,7 +40,6 @@ import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
  * with auto-discovery, advanced scoping, and intelligent service graphs.
  */
 export class AgentRegistry extends TypedEventBase {
-  private container: ServiceContainer;
   private logger: Logger;
   private agentCache = new Map<string, JsonValue>();
   private performanceMetrics = new Map<
@@ -170,7 +168,7 @@ export class AgentRegistry extends TypedEventBase {
 
       // Register with advanced DI features
       const registrationResult = this.container.registerInstance(
-        `agent-${agent.id}`,`
+        `agent-$agent.id`,`
         enhancedAgent,
         {
           lifetime: Lifetime.SCOPED, // Scoped for better performance
@@ -275,7 +273,7 @@ export class AgentRegistry extends TypedEventBase {
       }
 
       // Resolve from container if not cached
-      const resolveResult = this.container.resolve(`agent-${agentId}`);`
+      const resolveResult = this.container.resolve(`agent-$agentId`);`
       if (resolveResult.isOk()) {
         const agent = resolveResult.value;
 
@@ -331,9 +329,9 @@ export class AgentRegistry extends TypedEventBase {
           selectionTime,
         });
 
-        this.logger.debug(`🎯 Agents selected: ${results.length} matches`, {`
+        this.logger.debug(`🎯 Agents selected: $results.lengthmatches`, {`
           criteria,
-          selectionTime: `${selectionTime.toFixed(2)}ms`,`
+          selectionTime: `$selectionTime.toFixed(2)ms`,`
         });
 
         return results;
@@ -666,4 +664,4 @@ export function createEnhancedAgentRegistry(
   return new EnhancedAgentRegistry(memoryCoordinator, sessionPrefix);
 }
 
-export { DIContainer, createDIContainer };
+export type { DIContainer, createDIContainer };

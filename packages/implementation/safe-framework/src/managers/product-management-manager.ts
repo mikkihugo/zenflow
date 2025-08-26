@@ -9,25 +9,22 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
+import { CustomerResearchService } from '../services/customer-research-service';
+import { MarketAnalysisService } from '../services/market-analysis-service';
+import { ProductVisionService } from '../services/product-vision-service';
 import type {
+  Feature,
   Logger,
   MemorySystem,
   TypeSafeEventBus,
-  PortfolioEpic,
-  ValueStream,
-  Feature,
-  AgileReleaseTrain,
 } from '../types';
 import type {
-  ProductManagerConfig,
-  ProductVision,
   CustomerSegment,
   MarketOpportunity,
   ProductLifecycleStage,
+  ProductManagerConfig,
+  ProductVision,
 } from '../types/product-management';
-import { ProductVisionService } from '../services/product-vision-service';
-import { CustomerResearchService } from '../services/customer-research-service';
-import { MarketAnalysisService } from '../services/market-analysis-service';
 import { SafeCollectionUtils } from '../utilities/collections/safe-collections';
 import { SafeDateUtils } from '../utilities/date/safe-date-utils';
 import { SafeValidationUtils } from '../utilities/validation/safe-validation';
@@ -135,7 +132,7 @@ export class ProductManagementManager extends TypedEventBase {
       this.initialized = true;
       this.logger.info('Product Management Manager initialized successfully');'
 
-      this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });'
+      this.emit('initialized', timestamp: SafeDateUtils.formatISOString() );'
     } catch (error) {
       this.logger.error(
         'Failed to initialize Product Management Manager:',
@@ -428,12 +425,12 @@ export class ProductManagementManager extends TypedEventBase {
    * Setup event handlers for coordination
    */
   private setupEventHandlers(): void {
-    this.eventBus.on('product-vision-updated', (data) => {'
+    this.eventBus.on('product-vision-updated', (_data) => {'
       this.logger.info('Product vision updated', data);'
       this.emit('vision-updated', data);'
     });
 
-    this.eventBus.on('market-data-refreshed', (data) => {'
+    this.eventBus.on('market-data-refreshed', (_data) => {'
       this.logger.info('Market data refreshed', data);'
       this.emit('market-data-updated', data);'
     });

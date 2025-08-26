@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /* eslint-disable no-console */
 /**
  * @fileoverview Claude Code Zen Auth Commands
@@ -7,13 +8,12 @@
  * OpenAI, and other AI providers used within the claude-code-zen ecosystem.
  */
 
-import { spawn } from "child_process";
-import { promises as fs } from "fs";
+import { spawn } from "node:child_process";
+import { promises as fs } from "node:fs";
 // Using native fetch (Node 18+)
-import { homedir } from "os";
-import { join } from "path";
-import { createInterface } from "readline";
-
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { createInterface } from "node:readline";
 import { getLogger } from "@claude-zen/foundation";
 
 const logger = getLogger("claude-zen-auth");
@@ -330,7 +330,6 @@ async function copyToClipboard(text: string): Promise<void> {
 				return;
 			} catch (error) {
 				logger.debug(`Failed to use ${cmd[0]}:`, error);
-				continue;
 			}
 		}
 

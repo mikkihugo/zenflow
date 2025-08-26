@@ -14,9 +14,8 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 /**
  * Incident Severity Levels
@@ -293,8 +292,8 @@ export interface ComplianceStatus {
 
 // Re-export types from services for backward compatibility
 export type {
-  SecurityIncident,
   IncidentPriority,
+  SecurityIncident,
 } from '../services/devsecops/security-incident-response-service';
 
 export class DevSecOpsManager extends TypedEventBase {
@@ -302,7 +301,6 @@ export class DevSecOpsManager extends TypedEventBase {
   private securityScanningService: any;
   private complianceMonitoringService: any;
   private incidentResponseService: any;
-  private config: DevSecOpsManagerConfig;
   private initialized = false;
 
   constructor(config: DevSecOpsManagerConfig) {

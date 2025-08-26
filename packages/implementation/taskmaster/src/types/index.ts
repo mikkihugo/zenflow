@@ -22,13 +22,13 @@
 
 // Import shared types from events to avoid circular dependency
 export type {
-  TaskState,
-  OptimizationStrategy,
-  WorkflowTask,
   FlowMetrics,
+  OptimizationStrategy,
+  TaskState,
   WIPLimits,
   WorkflowBottleneck,
   WorkflowKanbanConfig,
+  WorkflowTask,
 } from './events';
 
 /**

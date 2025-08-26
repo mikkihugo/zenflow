@@ -10,9 +10,7 @@
  * - WASM integration types
  */
 
-import type { TypedEventBase, EventEmitter } from '@claude-zen/foundation';
-import type { Actor, StateValue } from 'xstate';
-import type { z } from '@claude-zen/foundation';
+import type { EventEmitter, } from '@claude-zen/foundation';
 
 // =============================================================================
 // CORE DOMAIN TYPES

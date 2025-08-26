@@ -3,33 +3,22 @@
  * Battle-hardened repository analysis with comprehensive metrics and recommendations
  */
 
-import fastGlob from 'fast-glob';
 import { getLogger } from '@claude-zen/foundation';
 import { ComplexityAnalyzer } from './analyzers/complexity-analyzer.js';
 import { DependencyAnalyzer } from './analyzers/dependency-analyzer.js';
-import { WorkspaceAnalyzer } from './analyzers/workspace-analyzer.js';
 import { GitAnalyzer } from './analyzers/git-analyzer.js';
+import { WorkspaceAnalyzer } from './analyzers/workspace-analyzer.js';
 import { DomainAnalyzer } from './domain/domain-analyzer.js';
 import { RecommendationEngine } from './recommendations/recommendation-engine.js';
 import { ReportGenerator } from './reporting/report-generator.js';
 import type {
-  RepositoryMetrics,
   AnalysisOptions,
   AnalysisResult,
-  AnalysisRecommendation,
-  AnalysisSummary,
-  ExportFormat,
+  RepositoryMetrics,
 } from './types/index.js';
 
 export class RepositoryAnalyzer {
   private logger = getLogger('RepositoryAnalyzer');'
-  private complexityAnalyzer: ComplexityAnalyzer;
-  private dependencyAnalyzer: DependencyAnalyzer;
-  private workspaceAnalyzer: WorkspaceAnalyzer;
-  private gitAnalyzer: GitAnalyzer;
-  private domainAnalyzer: DomainAnalyzer;
-  private recommendationEngine: RecommendationEngine;
-  private reportGenerator: ReportGenerator;
 
   constructor(private repositoryPath: string) {
     this.complexityAnalyzer = new ComplexityAnalyzer();
@@ -44,7 +33,7 @@ export class RepositoryAnalyzer {
   /**
    * Perform comprehensive repository analysis
    */
-  async analyze(options: AnalysisOptions = {}): Promise<AnalysisResult> {
+  async analyze(_options: AnalysisOptions = {}): Promise<AnalysisResult> {
     this.logger.info(
       `Starting comprehensive analysis of repository: ${this.repositoryPath}``
     );
@@ -79,7 +68,7 @@ export class RepositoryAnalyzer {
       this.logger.info(`Found ${sourceFiles.length} source files to analyze`);`
 
       // Run all analyses in parallel for maximum performance
-      const [workspaceInfo, complexity, dependencies, gitMetrics, domains] =
+      const [_workspaceInfo, complexity, dependencies, gitMetrics, domains] =
         await Promise.allSettled([
           this.analyzeWorkspace(analysisOptions),
           this.analyzeComplexity(sourceFiles, analysisOptions),
@@ -115,7 +104,7 @@ export class RepositoryAnalyzer {
       );
 
       // Generate summary
-      const summary = this.generateSummary(repositoryMetrics, recommendations);
+      const _summary = this.generateSummary(repositoryMetrics, recommendations);
 
       const analysisTime = Date.now() - startTime;
       this.logger.info(`Repository analysis completed in ${analysisTime}ms`);`
@@ -287,7 +276,7 @@ export class RepositoryAnalyzer {
           ]),
       ...(options.includeNodeModules ? [] : ['!**/node_modules/**']),
       ...(options.includeDotFiles ? [] : ['!**/.*']),
-      ...(options.excludePatterns||[]).map((p) => `!${p}`),'!**/dist/**',
+      ...(options.excludePatterns||[]).map((p) => `!$p`),'!**/dist/**',
       '!**/build/**',
       '!**/.git/**',
     ];
@@ -526,7 +515,7 @@ export class RepositoryAnalyzer {
 
   // Helper methods
   private generateRepositoryId(): string {
-    return `repo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+    return `repo-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
   }
 
   private getRepositoryName(): string {

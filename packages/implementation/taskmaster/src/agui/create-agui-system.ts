@@ -27,7 +27,7 @@ export async function createAGUISystem(config?: {
     case 'headless':'
       agui = createAGUI('headless');'
       break;
-    default:
+    default: {
       agui = createAGUI('web');'
   }
 
@@ -41,4 +41,5 @@ export async function createAGUISystem(config?: {
     agui,
     taskApproval,
   };
+    }
 }

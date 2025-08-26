@@ -5,7 +5,7 @@
  * For the web interface server.
  */
 
-import { spawn, type ChildProcess } from "node:child_process";
+import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -34,7 +34,6 @@ export interface ProcessInfo {
 export class DaemonProcessManager {
 	private logger = getLogger("Daemon");
 	private config: Required<DaemonConfig>;
-	private currentProcess?: ChildProcess;
 
 	constructor(config: DaemonConfig = {}) {
 		this.config = {
@@ -175,7 +174,7 @@ export class DaemonProcessManager {
 
 		try {
 			const pidContent = await readFile(this.config.pidFile, "utf-8");
-			const pid = Number.parseInt(pidContent.trim());
+			const pid = Number.parseInt(pidContent.trim(), 10);
 
 			if (Number.isNaN(pid)) {
 				await this.cleanupPidFile();

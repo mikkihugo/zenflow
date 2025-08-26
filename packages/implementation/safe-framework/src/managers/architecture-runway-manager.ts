@@ -18,7 +18,7 @@
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger, MemorySystem, TypeSafeEventBus } from '../types';
-import { getLogger, createEvent, EventPriority } from '../types';
+import { createEvent, EventPriority, getLogger } from '../types';
 
 // ============================================================================
 // ARCHITECTURE RUNWAY CONFIGURATION
@@ -143,7 +143,6 @@ export interface CapabilityKPI {
  */
 export class ArchitectureRunwayManager extends TypedEventBase {
   private logger: Logger;
-  private memory: MemorySystem;
   private eventBus: TypeSafeEventBus;
   private config: ArchitectureRunwayConfig;
 
@@ -155,7 +154,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
   private initialized = false;
 
   constructor(
-    memory: MemorySystem,
+    _memory: MemorySystem,
     eventBus: TypeSafeEventBus,
     config: Partial<ArchitectureRunwayConfig> = {}
   ) {
@@ -259,11 +258,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       this.emit('runway-item:added', { item: runwayItem });'
       this.eventBus.emit(
         'architecture-runway:item:added',
-        createEvent('architecture-runway:item:added', {'
+        createEvent('architecture-runway:item:added', '
           itemId: runwayItem.id,
           type: runwayItem.type,
-          priority: runwayItem.priority,
-        })
+          priority: runwayItem.priority,)
       );
 
       return runwayItem;
@@ -334,11 +332,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       this.emit('technical-debt:added', { item: debtItem });'
       this.eventBus.emit(
         'architecture-runway:debt:added',
-        createEvent('architecture-runway:debt:added', {'
+        createEvent('architecture-runway:debt:added', '
           itemId: debtItem.id,
           severity: debtItem.severity,
-          component: debtItem.component,
-        })
+          component: debtItem.component,)
       );
 
       return debtItem;
@@ -370,11 +367,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       this.emit('architecture-decision:created', { adr });'
       this.eventBus.emit(
         'architecture-runway:adr:created',
-        createEvent('architecture-runway:adr:created', {'
+        createEvent('architecture-runway:adr:created', '
           adrId: adr.id,
           title: adr.title,
-          author: adr.author,
-        })
+          author: adr.author,)
       );
 
       return adr;
@@ -406,11 +402,10 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       this.emit('capability:added', { capability: cap });'
       this.eventBus.emit(
         'architecture-runway:capability:added',
-        createEvent('architecture-runway:capability:added', {'
+        createEvent('architecture-runway:capability:added', '
           capabilityId: cap.id,
           name: cap.name,
-          category: cap.category,
-        })
+          category: cap.category,)
       );
 
       return cap;
@@ -495,7 +490,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
     try {
       // Transform request to service format
-      const decisionRequest = {
+      const _decisionRequest = {
         title: decision.title,
         description: decision.description,
         context: `Architecture decision requested with ${decision.options.length} options`,`

@@ -23,7 +23,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -357,8 +356,6 @@ export class TechnologyStandardsService extends TypedEventBase {
   private readonly standards = new Map<string, TechnologyStandard>();
   private knowledgeManager: any;
   private factSystem: any;
-  private workflowEngine: any;
-  private monitoringSystem: any;
   private initialized = false;
 
   constructor(logger: Logger) {
@@ -578,7 +575,7 @@ export class TechnologyStandardsService extends TypedEventBase {
       );
 
       const result: StandardComplianceResult = {
-        complianceId: `compliance-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
+        complianceId: `compliance-$Date.now()-$Math.random().toString(36).substring(2, 9)`,`
         standardId,
         timestamp: new Date(),
         scope,
@@ -671,7 +668,7 @@ export class TechnologyStandardsService extends TypedEventBase {
    */
   async updateStandardStatus(
     standardId: string,
-    status: TechnologyStandard['status']'
+    _status: TechnologyStandard['status']'
   ): Promise<void> {
     const standard = this.standards.get(standardId);
     if (!standard) {
@@ -737,7 +734,7 @@ export class TechnologyStandardsService extends TypedEventBase {
   ): Promise<void> {
     for (const verification of standard.verification.automated) {
       await this.monitoringSystem.addMonitor({
-        monitorId: `${standard.id}-${verification.toolId}`,`
+        monitorId: `$standard.id-$verification.toolId`,`
         standardId: standard.id,
         verificationConfig: verification,
         frequency: verification.frequency,
@@ -823,8 +820,8 @@ export class TechnologyStandardsService extends TypedEventBase {
           ? 'critical''
           : 'high',
         category: 'immediate',
-        description: `Address ${typeViolations.length} ${violationType} violations for ${standard.name}`,`
-        implementation: `Systematic remediation of ${violationType} violations`,`
+        description: `Address $typeViolations.length$violationTypeviolations for ${standard.name}`,`
+        implementation: `Systematic remediation of $violationTypeviolations`,`
         expectedImpact: `Improved compliance for ${standard.name} standard`,`
         effort: typeViolations.length > 10 ? 'high' : 'medium',
         timeline: typeViolations.length > 10 ? '4-6 weeks' : '2-3 weeks',
@@ -864,16 +861,14 @@ export class TechnologyStandardsService extends TypedEventBase {
         factor: 'Critical violations present',
         impact: 'critical',
         probability: criticalCount > 0 ? 1.0 : 0.0,
-        description: `${criticalCount} critical violations detected`,`
+        description: `$criticalCountcritical violations detected`,`
         category: 'compliance',
       },
-      {
         factor: 'Mandatory standard non-compliance',
         impact: 'high',
         probability: standard.mandatory && complianceRate < 85 ? 0.9 : 0.1,
-        description: `Mandatory standard compliance at ${complianceRate.toFixed(1)}%`,`
-        category: 'compliance',
-      },
+        description: `Mandatory standard compliance at $complianceRate.toFixed(1)%`,`
+        category: 'compliance',,
     ];
 
     const mitigationStrategies: ComplianceMitigationStrategy[] = [
@@ -949,7 +944,7 @@ export class TechnologyStandardsService extends TypedEventBase {
         this.logger.debug('Facts queried (fallback)', { query });'
         return [];
       },
-      updateFact: async (entityId: string, updates: any) => {
+      updateFact: async (entityId: string, _updates: any) => {
         this.logger.debug('Fact updated (fallback)', { entityId });'
       },
     };

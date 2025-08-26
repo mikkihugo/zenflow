@@ -5,27 +5,20 @@
  * optimization strategies, lifecycle management, and comprehensive monitoring.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
-  getLogger,
-  recordMetric,
-  withTrace,
-  TelemetryManager,
+import type { CircuitBreakerOptions, } from '@claude-zen/foundation';
+import { 
   createCircuitBreaker,
-} from '@claude-zen/foundation';
-import type { Logger, CircuitBreakerOptions } from '@claude-zen/foundation';
+  getLogger,
+  recordMetric,TypedEventBase, 
+  withTrace,} from '@claude-zen/foundation';
 import { MemoryCoordinationSystem } from '../coordinators/memory-coordination-system';
-import { MemoryOptimizationEngine } from '../strategies/memory-optimization-engine';
-import { DataLifecycleManager } from '../strategies/data-lifecycle-manager';
-import { PerformanceTuningStrategy } from '../strategies/performance-tuning-strategy';
 import { CacheEvictionStrategy } from '../strategies/cache-eviction-strategy';
+import { DataLifecycleManager } from '../strategies/data-lifecycle-manager';
+import { MemoryOptimizationEngine } from '../strategies/memory-optimization-engine';
+import { PerformanceTuningStrategy } from '../strategies/performance-tuning-strategy';
 import type {
   MemorySystemConfig,
-  MemorySystemStatus,
-  SystemMetrics,
 } from './types';
-import type { BaseMemoryBackend } from '../backends/base-backend';
-import type { JSONValue } from '../core/memory-system';
 
 interface ManagedComponent {
   name: string;
@@ -36,27 +29,13 @@ interface ManagedComponent {
 }
 
 export class MemorySystemManager extends TypedEventBase {
-  private logger: Logger;
-  private config: MemorySystemConfig;
-  private telemetry: TelemetryManager;
-  private coordination?: MemoryCoordinationSystem;
-  private optimization?: MemoryOptimizationEngine;
-  private lifecycle?: DataLifecycleManager;
-  private performance?: PerformanceTuningStrategy;
-  private cacheEviction?: CacheEvictionStrategy;
-  private components = new Map<string, ManagedComponent>();
-  private monitoringTimer?: NodeJS.Timeout;
-  private healthCheckTimer?: NodeJS.Timeout;
-  private initialized = false;
-  private startTime = Date.now();
-  private circuitBreaker: any;
 
   constructor(config: MemorySystemConfig) {
     super();
     this.config = config;
     this.logger = getLogger(`MemorySystemManager:${config.name}`);`
     this.telemetry = new TelemetryManager({
-      serviceName: `memory-system-${config.name}`,`
+      serviceName: `memory-system-$config.name`,`
       enableTracing: true,
       enableMetrics: true,
     });
@@ -73,11 +52,10 @@ export class MemorySystemManager extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      await withTrace('memory-system-manager-init', async (span) => {'
-        span?.setAttributes({
+      await withTrace('memory-system-manager-init', async (_span) => {'
+        span?.setAttributes(
           'system.name': this.config.name,
-          'system.mode': this.config.mode,
-        });
+          'system.mode': this.config.mode,);
 
         await this.telemetry.initialize();
 
@@ -150,13 +128,12 @@ export class MemorySystemManager extends TypedEventBase {
     }
 
     return this.circuitBreaker.execute(async () => {
-      await this.coordination!.addNode(id, backend, options);
+      await this.coordination?.addNode(id, backend, options);
 
       this.emit('nodeAdded', { id, options });'
-      recordMetric('memory_system_node_added', 1, {'
+      recordMetric('memory_system_node_added', 1, '
         systemName: this.config.name,
-        nodeId: id,
-      });
+        nodeId: id,);
     });
   }
 
@@ -166,13 +143,12 @@ export class MemorySystemManager extends TypedEventBase {
     }
 
     return this.circuitBreaker.execute(async () => {
-      await this.coordination!.removeNode(id);
+      await this.coordination?.removeNode(id);
 
       this.emit('nodeRemoved', { id });'
-      recordMetric('memory_system_node_removed', 1, {'
+      recordMetric('memory_system_node_removed', 1, '
         systemName: this.config.name,
-        nodeId: id,
-      });
+        nodeId: id,);
     });
   }
 
@@ -192,15 +168,14 @@ export class MemorySystemManager extends TypedEventBase {
       throw new Error('Coordination system not initialized');'
     }
 
-    return withTrace('memory-system-store', async (span) => {'
-      span?.setAttributes({
+    return withTrace('memory-system-store', async (_span) => {'
+      span?.setAttributes(
         'memory.key': key,
         'memory.namespace': namespace,
-        'memory.tier': options?.tier||'warm',
-      });
+        'memory.tier': options?.tier||'warm',);
 
       // Store via coordination system
-      const result = await this.coordination!.store(key, value, namespace, {
+      const result = await this.coordination?.store(key, value, namespace, {
         consistency: options?.consistency,
         tier: options?.tier,
         replicate: this.config.coordination.strategy === 'replicated',
@@ -238,11 +213,10 @@ export class MemorySystemManager extends TypedEventBase {
       throw new Error('Coordination system not initialized');'
     }
 
-    return withTrace('memory-system-retrieve', async (span) => {'
-      span?.setAttributes({
+    return withTrace('memory-system-retrieve', async (_span) => {'
+      span?.setAttributes(
         'memory.key': key,
-        'memory.namespace': namespace,
-      });
+        'memory.namespace': namespace,);
 
       // Try lifecycle manager first if enabled
       if (this.lifecycle && this.config.lifecycle?.enabled) {
@@ -258,7 +232,7 @@ export class MemorySystemManager extends TypedEventBase {
       }
 
       // Fall back to coordination system
-      const result = await this.coordination!.retrieve<T>(
+      const result = await this.coordination?.retrieve<T>(
         key,
         namespace,
         options
@@ -280,11 +254,10 @@ export class MemorySystemManager extends TypedEventBase {
       throw new Error('Coordination system not initialized');'
     }
 
-    return withTrace('memory-system-delete', async (span) => {'
-      span?.setAttributes({
+    return withTrace('memory-system-delete', async (_span) => {'
+      span?.setAttributes(
         'memory.key': key,
-        'memory.namespace': namespace,
-      });
+        'memory.namespace': namespace,);
 
       // Delete from lifecycle manager if enabled
       if (this.lifecycle && this.config.lifecycle?.enabled) {
@@ -292,7 +265,7 @@ export class MemorySystemManager extends TypedEventBase {
       }
 
       // Delete from coordination system
-      const result = await this.coordination!.delete(key, namespace);
+      const result = await this.coordination?.delete(key, namespace);
 
       recordMetric('memory_system_delete', 1, {'
         systemName: this.config.name,
@@ -309,10 +282,9 @@ export class MemorySystemManager extends TypedEventBase {
       throw new Error('Coordination system not initialized');'
     }
 
-    return withTrace('memory-system-clear', async (span) => {'
-      span?.setAttributes({
-        'memory.namespace': namespace||'all',
-      });
+    return withTrace('memory-system-clear', async (_span) => {'
+      span?.setAttributes(
+        'memory.namespace': namespace||'all',);
 
       // Clear cache eviction if enabled
       if (this.cacheEviction) {
@@ -320,7 +292,7 @@ export class MemorySystemManager extends TypedEventBase {
       }
 
       // Clear coordination system
-      await this.coordination!.clear(namespace);
+      await this.coordination?.clear(namespace);
 
       recordMetric('memory_system_clear', 1, {'
         systemName: this.config.name,
@@ -459,7 +431,7 @@ export class MemorySystemManager extends TypedEventBase {
     this.coordination.on('nodeRemoved', (data) =>'
       this.emit('nodeRemoved', data)'
     );
-    this.coordination.on('nodeUnhealthy', (data) =>'
+    this.coordination.on('nodeUnhealthy', (_data) =>'
       this.emit('nodeUnhealthy', data)'
     );
     this.coordination.on('nodeRecovered', (data) =>'
@@ -482,7 +454,7 @@ export class MemorySystemManager extends TypedEventBase {
     });
 
     // Forward optimization events
-    this.optimization.on('optimizationCompleted', (data) =>'
+    this.optimization.on('optimizationCompleted', (_data) =>'
       this.emit('optimizationCompleted', data)'
     );
     this.optimization.on('optimizationApplied', (data) =>'
@@ -527,7 +499,7 @@ export class MemorySystemManager extends TypedEventBase {
     });
 
     // Forward performance events
-    this.performance.on('tuningApplied', (data) =>'
+    this.performance.on('tuningApplied', (_data) =>'
       this.emit('tuningApplied', data)'
     );
     this.performance.on('tuningAnalysisCompleted', (data) =>'
@@ -559,7 +531,7 @@ export class MemorySystemManager extends TypedEventBase {
     });
 
     // Forward cache events
-    this.cacheEviction.on('entryEvicted', (data) =>'
+    this.cacheEviction.on('entryEvicted', (_data) =>'
       this.emit('entryEvicted', data)'
     );
     this.cacheEviction.on('evictionCompleted', (data) =>'
@@ -598,9 +570,8 @@ export class MemorySystemManager extends TypedEventBase {
       this.emit('monitoringUpdate', { status, metrics });'
 
       // Record key metrics
-      recordMetric('memory_system_health_score', status.health.score, {'
-        systemName: this.config.name,
-      });
+      recordMetric('memory_system_health_score', status.health.score, '
+        systemName: this.config.name,);
       recordMetric('memory_system_nodes_healthy', status.nodes.healthy, {'
         systemName: this.config.name,
       });
@@ -621,7 +592,7 @@ export class MemorySystemManager extends TypedEventBase {
       try {
         // Perform health check if component has one
         if (typeof component.instance.getStats === 'function') {'
-          const stats = component.instance.getStats();
+          const _stats = component.instance.getStats();
           component.healthy = true;
           component.lastHealthCheck = Date.now();
         }
@@ -810,7 +781,7 @@ export class MemorySystemManager extends TypedEventBase {
 
       this.emit('systemShutdown', { name: this.config.name });'
       this.logger.info(`Memory system '${this.config.name}' shut down`);`
-    } catch (error) {
+    } catch (error) 
       this.logger.error(`Error during memory system shutdown:`, error);`
       throw error;
     }

@@ -6,18 +6,17 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { WorkflowKanban, createWorkflowKanban } from '../api/workflow-kanban';
+import { createWorkflowKanban, type WorkflowKanban } from '../api/workflow-kanban';
 import { ApprovalGateManager } from '../core/approval-gate-manager';
 import { getDatabaseIntegration } from '../database/database-integration';
 import type {
-  WorkflowTask,
-  WorkflowKanbanConfig,
   ApprovalGateInstance,
-  TaskState,
   FlowMetrics,
-  PIPlanningEvent
+  PIPlanningEvent, 
+  TaskState,
+  WorkflowKanbanConfig,
+  WorkflowTask
 } from '../types/index';
-import type { PIPlanningCoordination } from '../events/pi-planning-coordination';
 
 const logger = getLogger('TaskMasterFacade');'
 
@@ -165,7 +164,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
   }): Promise<WorkflowTask> {
     this.ensureInitialized();
 
-    const result = await this.workflowKanban!.createTask({
+    const result = await this.workflowKanban?.createTask({
       title: taskData.title,
       description: taskData.description,
       priority: taskData.priority as any,
@@ -186,11 +185,11 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
   async moveTask(taskId: string, toState: TaskState): Promise<boolean> {
     this.ensureInitialized();
 
-    const result = await this.workflowKanban!.moveTask(taskId, toState);
+    const result = await this.workflowKanban?.moveTask(taskId, toState);
     
     if (result.success && result.data) {
       // Update database
-      const task = await this.workflowKanban!.getTask(taskId);
+      const task = await this.workflowKanban?.getTask(taskId);
       if (task) {
         await this.databaseIntegration.saveTask(task);
       }
@@ -204,7 +203,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     this.ensureInitialized();
     
     // Try memory first, then database
-    let task = await this.workflowKanban!.getTask(taskId);
+    let task = await this.workflowKanban?.getTask(taskId);
     if (!task) {
       task = await this.databaseIntegration.loadTask(taskId);
     }
@@ -216,7 +215,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     this.ensureInitialized();
     
     // Try memory first, then database
-    let tasks = await this.workflowKanban!.getTasksByState(state);
+    let tasks = await this.workflowKanban?.getTasksByState(state);
     if (tasks.length === 0) {
       tasks = await this.databaseIntegration.loadTasksByState(state);
     }
@@ -228,7 +227,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
     this.ensureInitialized();
     
     // Get real-time metrics from workflow engine
-    const workflowMetrics = await this.workflowKanban!.getFlowMetrics();
+    const workflowMetrics = await this.workflowKanban?.getFlowMetrics();
     if (workflowMetrics) return workflowMetrics;
     
     // Fallback to database metrics
@@ -253,8 +252,8 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
   }> {
     this.ensureInitialized();
     
-    const healthStatus = await this.workflowKanban!.getHealthStatus();
-    const bottleneckReport = await this.workflowKanban!.detectBottlenecks();
+    const healthStatus = await this.workflowKanban?.getHealthStatus();
+    const bottleneckReport = await this.workflowKanban?.detectBottlenecks();
     
     return {
       overallHealth: healthStatus.overallHealth,
@@ -303,7 +302,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
       minimumApprovals: requirement.minimumApprovals
     } as any;
 
-    const result = await this.approvalGateManager!.createApprovalGate(
+    const result = await this.approvalGateManager?.createApprovalGate(
       gateRequirement,
       taskId
     );
@@ -318,7 +317,7 @@ class TaskMasterFacadeImpl implements TaskMasterSystem {
   async processApproval(gateId: string, approverId: string, decision: 'approved' | 'rejected'): Promise<boolean> {'
     this.ensureInitialized();
 
-    const result = await this.approvalGateManager!.processApproval(
+    const result = await this.approvalGateManager?.processApproval(
       gateId,
       approverId,
       decision
@@ -353,7 +352,7 @@ export function getTaskMasterSystem(): TaskMasterSystem {
 /**
  * Create TaskMaster system with custom configuration (factory function)
  */
-export function createTaskMasterSystem(config?: {
+export function createTaskMasterSystem(_config?: {
   enableIntelligentWIP?: boolean;
   enableBottleneckDetection?: boolean;
   enableFlowOptimization?: boolean;

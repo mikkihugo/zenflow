@@ -5,35 +5,24 @@
  * Supports JSON and JSONL formats with rotation and compression.
  */
 
-import { promises as fs } from 'node:fs';
-import { createWriteStream, type WriteStream } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { createWriteStream, promises as fs, type WriteStream } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { createGzip } from 'node:zlib';
-
-import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
-
+import { getLogger } from '@claude-zen/foundation/logging';
+import type { ExporterConfig, } from '../types.js';
 import type { BaseExporter } from './index.js';
-import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 
 /**
  * File exporter implementation
  */
 export class FileExporter implements BaseExporter {
-  private config: ExporterConfig;
   private logger: Logger;
   private writeStream: WriteStream|null = null;
   private currentFilePath: string|null = null;
-  private fileRotationTimer: NodeJS.Timeout|null = null;
-  private exportCount = 0;
-  private lastExportTime = 0;
-  private lastError: string|null = null;
 
   // Configuration
-  private readonly baseFilePath: string;
-  private readonly format:'json|jsonl;
-  private readonly maxFileSize: number;
-  private readonly rotationInterval: number;
+  private readonly baseFilePath: string;'json|jsonl;
   private readonly compression: boolean;
   private readonly maxFiles: number;
 
@@ -232,11 +221,11 @@ export class FileExporter implements BaseExporter {
     // Generate new file path
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');'
     const extension = this.format === 'jsonl' ? 'jsonl' : 'json';
-    this.currentFilePath = `${this.baseFilePath}-${timestamp}.${extension}`;`
+    this.currentFilePath = `$this.baseFilePath-$timestamp.$extension`;`
 
     // Create new write stream
     if (this.compression) {
-      const fileStream = createWriteStream(this.currentFilePath + '.gz');'
+      const fileStream = createWriteStream(`${this.currentFilePath}.gz`);'
       const gzipStream = createGzip();
       gzipStream.pipe(fileStream);
       this.writeStream = gzipStream as any;
@@ -245,7 +234,7 @@ export class FileExporter implements BaseExporter {
     }
 
     // Handle stream errors
-    this.writeStream.on('error', (error) => {'
+    this.writeStream.on('error', (_error) => {'
       this.logger.error('File write stream error', error);'
       this.lastError = String(error);
     });
@@ -257,19 +246,6 @@ export class FileExporter implements BaseExporter {
 
     // Clean up old files
     await this.cleanupOldFiles();
-  }
-
-  /**
-   * Start file rotation timer
-   */
-  private startRotationTimer(): void {
-    this.fileRotationTimer = setInterval(async () => {
-      try {
-        await this.rotateFile();
-      } catch (error) {
-        this.logger.error('Automatic file rotation failed', error);'
-      }
-    }, this.rotationInterval);
   }
 
   /**
@@ -293,7 +269,7 @@ export class FileExporter implements BaseExporter {
       for (const file of telemetryFiles) {
         try {
           file.stat = await fs.stat(file.path);
-        } catch (error) {
+        } catch (_error) {
           // Skip files that can't be accessed'
         }
       }

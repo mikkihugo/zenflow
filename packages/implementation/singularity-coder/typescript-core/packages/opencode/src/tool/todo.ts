@@ -1,7 +1,7 @@
 import { z } from "@claude-zen/foundation"
-import { Tool } from "./tool"
-import DESCRIPTION_WRITE from "./todowrite.txt"
 import { App } from "../app/app"
+import DESCRIPTION_WRITE from "./todowrite.txt"
+import { Tool } from "./tool"
 
 const TodoInfo = z.object({
   content: z.string().min(1).describe("Brief description of the task"),

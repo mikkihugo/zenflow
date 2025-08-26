@@ -4,5 +4,5 @@
  * Professional logging system with structured output and syslog integration.
  */
 
-export * from './logging.service';
-export * from './syslog.bridge';
+export * from "./logging.service";
+export * from "./syslog.bridge";

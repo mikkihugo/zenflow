@@ -1,7 +1,6 @@
-import { App } from "../app/app"
+import fs from "node:fs/promises"
 import { $ } from "bun"
-import path from "path"
-import fs from "fs/promises"
+import { App } from "../app/app"
 import { Ripgrep } from "../file/ripgrep"
 import { Log } from "../util/log"
 
@@ -22,7 +21,7 @@ export namespace Snapshot {
       if (files.length >= 1000) return
     }
 
-    const git = gitdir(sessionID)
+    let git = gitdir(sessionID)
     if (await fs.mkdir(git, { recursive: true })) {
       await $`git init``
         .env({
@@ -35,10 +34,10 @@ export namespace Snapshot {
       log.info("initialized")
     }
 
-    await $`git --git-dir ${git} add .`.quiet().cwd(app.path.cwd).nothrow()`
+    await $`git --git-dir $gitadd .`.quiet().cwd(app.path.cwd).nothrow()`
     log.info("added files")
 
-    const result = await $`git --git-dir ${git} commit -m "snapshot" --author="opencode <mail@opencode.ai>"``
+    const _result = await $`git --git-dir ${git} commit -m "snapshot" --author="opencode <mail@opencode.ai>"``
       .quiet()
       .cwd(app.path.cwd)
       .nothrow()
@@ -52,12 +51,12 @@ export namespace Snapshot {
     log.info("restore", { commit: snapshot })
     const app = App.info()
     const git = gitdir(sessionID)
-    await $`git --git-dir=${git} checkout ${snapshot} --force`.quiet().cwd(app.path.root)`
+    await $`git --git-dir=$gitcheckout $snapshot--force`.quiet().cwd(app.path.root)`
   }
 
-  export async function diff(sessionID: string, commit: string) {
+  export async function _diff(sessionID: string, commit: string) {
     const git = gitdir(sessionID)
-    const result = await $`git --git-dir=${git} diff -R ${commit}`.quiet().cwd(App.info().path.root)`
+    const _result = await $`git --git-dir=${git} diff -R ${commit}`.quiet().cwd(App.info().path.root)`
     return result.stdout.toString("utf8")
   }
 

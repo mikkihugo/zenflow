@@ -32,7 +32,7 @@ export function getLogger(componentName: string): SafeLogger {
       console.info(`[${componentName}] ${message}`, ...args);`
     },
     warn: (message: string, ...args: any[]) => {
-      console.warn(`[${componentName}] ${message}`, ...args);`
+      console.warn(`[$componentName] $message`, ...args);`
     },
     error: (message: string, error?: any, ...args: any[]) => {
       if (error instanceof Error) {
@@ -43,13 +43,13 @@ export function getLogger(componentName: string): SafeLogger {
           ...args
         );
       } else if (error) {
-        console.error(`[${componentName}] ${message}`, error, ...args);`
+        console.error(`[${componentName}] $message`, error, ...args);`
       } else {
         console.error(`[${componentName}] ${message}`, ...args);`
       }
     },
     debug: (message: string, ...args: any[]) => {
-      console.debug(`[${componentName}] ${message}`, ...args);`
+      console.debug(`[$componentName] $message`, ...args);`
     },
   };
 }

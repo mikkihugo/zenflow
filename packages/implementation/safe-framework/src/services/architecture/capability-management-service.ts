@@ -418,7 +418,6 @@ export class CapabilityManagementService {
 
   // Capability state
   private capabilities = new Map<string, ArchitectureCapability>();
-  private roadmaps = new Map<string, CapabilityRoadmap>();
   private config: CapabilityConfig;
 
   constructor(logger: Logger, config: Partial<CapabilityConfig> = {}) {
@@ -447,13 +446,10 @@ export class CapabilityManagementService {
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent capability analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -470,10 +466,9 @@ export class CapabilityManagementService {
 
       // Lazy load @claude-zen/workflows for capability development workflows
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 5,
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for investment approval workflows
@@ -490,10 +485,9 @@ export class CapabilityManagementService {
 
       // Lazy load @claude-zen/brain for LoadBalancer - resource optimization
       const { LoadBalancer } = await import('@claude-zen/brain');'
-      this.loadBalancer = new LoadBalancer({
+      this.loadBalancer = new LoadBalancer(
         strategy: 'intelligent_distribution',
-        enablePredictiveScaling: true,
-      });
+        enablePredictiveScaling: true,);
       await this.loadBalancer.initialize();
 
       this.initialized = true;
@@ -519,7 +513,7 @@ export class CapabilityManagementService {
   ): Promise<ArchitectureCapability> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('add_capability');'
+    const _timer = this.performanceTracker.startTimer('add_capability');'
 
     try {
       this.logger.info('Adding architecture capability with AI analysis', {'
@@ -645,7 +639,7 @@ export class CapabilityManagementService {
 
       if (!statusTransition.isValid) {
         throw new Error(
-          `Invalid status transition: ${statusTransition.reason}``
+          `Invalid status transition: $statusTransition.reason``
         );
       }
 
@@ -661,19 +655,17 @@ export class CapabilityManagementService {
       this.performanceTracker.endTimer('update_capability_status');'
       this.telemetryManager.recordCounter('capability_status_updates', 1);'
 
-      this.logger.info('Capability status updated', {'
+      this.logger.info('Capability status updated', '
         capabilityId,
         oldStatus: capability.status,
         newStatus,
-        name: capability.name,
-      });
+        name: capability.name,);
 
       return updatedCapability;
-    } catch (error) {
+    } catch (error) 
       this.performanceTracker.endTimer('update_capability_status');'
       this.logger.error('Failed to update capability status:', error);'
       throw error;
-    }
   }
 
   /**
@@ -682,7 +674,7 @@ export class CapabilityManagementService {
   async getCapabilityDashboard(): Promise<CapabilityDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'generate_capability_dashboard');'
 
     try {
@@ -718,11 +710,10 @@ export class CapabilityManagementService {
 
       this.performanceTracker.endTimer('generate_capability_dashboard');'
 
-      this.logger.info('Capability dashboard generated', {'
+      this.logger.info('Capability dashboard generated', '
         totalCapabilities: dashboard.totalCapabilities,
         averageMaturity: dashboard.averageMaturityLevel,
-        portfolioROI: dashboard.portfolioROI,
-      });
+        portfolioROI: dashboard.portfolioROI,);
 
       return dashboard;
     } catch (error) {
@@ -735,21 +726,19 @@ export class CapabilityManagementService {
   /**
    * Get all architecture capabilities
    */
-  getAllCapabilities(): ArchitectureCapability[] {
+  getAllCapabilities(): ArchitectureCapability[] 
     return Array.from(this.capabilities.values())();
-  }
 
   /**
    * Get architecture capability by ID
    */
-  getCapability(capabilityId: string): ArchitectureCapability | undefined {
+  getCapability(capabilityId: string): ArchitectureCapability | undefined 
     return this.capabilities.get(capabilityId);
-  }
 
   /**
    * Shutdown service gracefully
    */
-  async shutdown(): Promise<void> {
+  async shutdown(): Promise<void> 
     if (this.brainCoordinator?.shutdown) {
       await this.brainCoordinator.shutdown();
     }
@@ -767,7 +756,6 @@ export class CapabilityManagementService {
     }
     this.initialized = false;
     this.logger.info('Capability Management Service shutdown complete');'
-  }
 
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
@@ -775,7 +763,7 @@ export class CapabilityManagementService {
 
   private async requestInvestmentApproval(
     capability: ArchitectureCapability
-  ): Promise<any> {
+  ): Promise<any> 
     try {
       const approval = await this.aguiService.createApprovalTask({
         taskType: 'capability_investment_approval',
@@ -793,7 +781,6 @@ export class CapabilityManagementService {
       );
       return { approved: false, reason: 'approval_system_error'};'
     }
-  }
 
   private calculateBusinessValue(
     capability: any,
@@ -1065,7 +1052,7 @@ export class CapabilityManagementService {
 
     // Add category-specific metrics
     if (capability.category === 'technology_capability') {'
-      baseMetrics.push({
+      baseMetrics.push(
         metricId: 'availability',
         name: 'System Availability',
         description: 'Percentage uptime of the technology capability',
@@ -1075,8 +1062,7 @@ export class CapabilityManagementService {
         unit: 'percentage',
         trend: 'stable',
         benchmarkValue: 99.5,
-        lastMeasured: new Date(),
-      });
+        lastMeasured: new Date(),);
     }
 
     return baseMetrics;
@@ -1100,46 +1086,41 @@ export class CapabilityManagementService {
     return categoryWeights[capability.category] || 5;
   }
 
-  private assessRevenueImpact(capability: any): number {
+  private assessRevenueImpact(capability: any): number 
     // Revenue impact based on category
     return capability.category ==='business_capability''
       ? 8
       : capability.category === 'innovation_capability''
         ? 7
         : 4;
-  }
 
-  private assessCostReduction(capability: any): number {
+  private assessCostReduction(capability: any): number 
     // Cost reduction potential
     return capability.category === 'process_capability''
       ? 8
       : capability.category === 'technology_capability''
         ? 6
         : 3;
-  }
 
-  private assessRiskMitigation(capability: any): number {
+  private assessRiskMitigation(capability: any): number 
     // Risk mitigation value
     return capability.category === 'security_capability''
       ? 9
       : capability.category === 'governance_capability''
         ? 7
         : 4;
-  }
 
-  private assessMarketAdvantage(capability: any): number {
+  private assessMarketAdvantage(capability: any): number 
     // Market advantage potential
     return capability.category === 'innovation_capability''
       ? 9
       : capability.category === 'business_capability''
         ? 7
         : 3;
-  }
 
-  private assessCustomerSatisfaction(capability: any): number {
+  private assessCustomerSatisfaction(capability: any): number 
     // Customer satisfaction impact
     return capability.category === 'business_capability'? 8 : 5;'
-  }
 
   private assessArchitecturalComplexity(capability: any): number {
     // Complexity based on dependencies and enablers
@@ -1148,30 +1129,25 @@ export class CapabilityManagementService {
     return Math.min(10, Math.max(1, (dependencyCount + enablerCount) / 2));
   }
 
-  private assessIntegrationComplexity(capability: any): number {
+  private assessIntegrationComplexity(capability: any): number 
     return capability.category ==='integration_capability' ? 8 : 4;'
-  }
 
-  private assessDataComplexity(capability: any): number {
+  private assessDataComplexity(capability: any): number 
     return capability.category === 'data_capability' ? 7 : 3;'
-  }
 
-  private assessSecurityComplexity(capability: any): number {
+  private assessSecurityComplexity(capability: any): number 
     return capability.category === 'security_capability' ? 8 : 4;'
-  }
 
-  private assessScalabilityRequirements(capability: any): number {
+  private assessScalabilityRequirements(capability: any): number 
     return capability.category === 'platform_capability' ? 8 : 5;'
-  }
 
-  private assessMaintenanceOverhead(capability: any): number {
+  private assessMaintenanceOverhead(capability: any): number 
     return capability.category === 'infrastructure_capability' ? 7 : 4;'
-  }
 
   // Analytics helper methods
   private groupCapabilitiesByCategory(
     capabilities: ArchitectureCapability[]
-  ): Record<CapabilityCategory, number> {
+  ): Record<CapabilityCategory, number> 
     return capabilities.reduce(
       (groups, capability) => {
         groups[capability.category] = (groups[capability.category] || 0) + 1;
@@ -1179,11 +1155,10 @@ export class CapabilityManagementService {
       },
       {} as Record<CapabilityCategory, number>
     );
-  }
 
   private groupCapabilitiesByStatus(
     capabilities: ArchitectureCapability[]
-  ): Record<CapabilityStatus, number> {
+  ): Record<CapabilityStatus, number> 
     return capabilities.reduce(
       (groups, capability) => {
         groups[capability.status] = (groups[capability.status] || 0) + 1;
@@ -1191,11 +1166,10 @@ export class CapabilityManagementService {
       },
       {} as Record<CapabilityStatus, number>
     );
-  }
 
   private groupCapabilitiesByMaturity(
     capabilities: ArchitectureCapability[]
-  ): Record<number, number> {
+  ): Record<number, number> 
     return capabilities.reduce(
       (groups, capability) => {
         groups[capability.maturityLevel] =
@@ -1204,7 +1178,6 @@ export class CapabilityManagementService {
       },
       {} as Record<number, number>
     );
-  }
 
   private calculateAverageMaturity(
     capabilities: ArchitectureCapability[]
@@ -1219,12 +1192,11 @@ export class CapabilityManagementService {
 
   private calculateTotalInvestment(
     capabilities: ArchitectureCapability[]
-  ): number {
+  ): number 
     return capabilities.reduce(
       (total, capability) => total + capability.investmentPlan.totalInvestment,
       0
     );
-  }
 
   private calculatePortfolioROI(
     capabilities: ArchitectureCapability[]

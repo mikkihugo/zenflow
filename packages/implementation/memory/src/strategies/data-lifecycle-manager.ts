@@ -5,13 +5,12 @@
  * migration, intelligent promotion/demotion, and efficient cleanup.
  */
 
-import { TypedEventBase ,
+import type { Logger } from '@claude-zen/foundation';
+import { 
   getLogger,
-  recordMetric,
-  TelemetryManager,
+  recordMetric,TypedEventBase ,
   withTrace,
 } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
 
 import type {
   LifecycleConfig,
@@ -40,12 +39,8 @@ interface StageStats {
 
 export class DataLifecycleManager extends TypedEventBase {
   private logger: Logger;
-  private config: LifecycleConfig;
-  private telemetry: TelemetryManager;
   private entries = new Map<string, LifecycleEntry>();
   private stageData = new Map<LifecycleStage, Map<string, unknown>>();
-  private migrationTimer?: NodeJS.Timeout;
-  private cleanupTimer?: NodeJS.Timeout;
   private metrics: StrategyMetrics['lifecycle'];'
   private initialized = false;
 
@@ -53,11 +48,10 @@ export class DataLifecycleManager extends TypedEventBase {
     super();
     this.config = config;
     this.logger = getLogger('DataLifecycleManager');'
-    this.telemetry = new TelemetryManager({
+    this.telemetry = new TelemetryManager(
       serviceName: 'data-lifecycle',
       enableTracing: true,
-      enableMetrics: true,
-    });
+      enableMetrics: true,);
     this.initializeMetrics();
     this.initializeStages();
   }
@@ -134,9 +128,9 @@ export class DataLifecycleManager extends TypedEventBase {
     this.entries.set(key, entry);
 
     this.emit('dataStored', { key, stage, entry });'
-    recordMetric('data_lifecycle_stored', 1, { stage });'
+    recordMetric('data_lifecycle_stored', 1, stage );'
 
-    this.logger.debug(`Data stored in ${stage} stage: ${key}`);`
+    this.logger.debug(`Data stored in $stagestage: $key`);`
   }
 
   retrieve(key: string): { value: unknown; entry: LifecycleEntry }|null {
@@ -186,7 +180,7 @@ export class DataLifecycleManager extends TypedEventBase {
     this.entries.delete(key);
 
     this.emit('dataDeleted', { key, stage: entry.stage });'
-    recordMetric('data_lifecycle_deleted', 1, { stage: entry.stage });'
+    recordMetric('data_lifecycle_deleted', 1, stage: entry.stage );'
 
     return true;
   }
@@ -245,7 +239,7 @@ export class DataLifecycleManager extends TypedEventBase {
 
   private updateAccessTracking(entry: LifecycleEntry): void {
     const now = Date.now();
-    const timeSinceLastAccess = now - entry.lastAccessed;
+    const _timeSinceLastAccess = now - entry.lastAccessed;
 
     entry.lastAccessed = now;
     entry.accessCount++;
@@ -297,7 +291,7 @@ export class DataLifecycleManager extends TypedEventBase {
       await withTrace('data-lifecycle-migration', async () => {'
         const now = Date.now();
         const entries = Array.from(this.entries.values())();
-        let migrated = 0;
+        const migrated = 0;
 
         for (const entry of entries) {
           if (migrated >= this.configuration.migration.batchSize) {
@@ -502,13 +496,12 @@ export class DataLifecycleManager extends TypedEventBase {
     return stageOrder.indexOf(to) > stageOrder.indexOf(from);
   }
 
-  private compressValue(value: unknown): unknown {
+  private compressValue(value: unknown): unknown 
     // Mock compression - in real implementation, would use actual compression
     if (typeof value === 'string') {'
       return { compressed: true, data: value };
     }
     return { compressed: true, data: JSON.stringify(value) };
-  }
 
   private performStageCleanup(stage: LifecycleStage): void {
     const stageMap = this.stageData.get(stage);
@@ -517,7 +510,7 @@ export class DataLifecycleManager extends TypedEventBase {
     const entries = Array.from(stageMap.keys())
       .map((key) => this.entries.get(key))
       .filter((entry) => entry !== undefined)
-      .sort((a, b) => a!.lastAccessed - b!.lastAccessed); // Oldest first
+      .sort((a, b) => a?.lastAccessed - b?.lastAccessed); // Oldest first
 
     const cleanupCount = Math.min(
       entries.length,
@@ -535,7 +528,7 @@ export class DataLifecycleManager extends TypedEventBase {
     }
   }
 
-  private async performPeriodicCleanup(): Promise<void> {
+  private async performPeriodicCleanup(): Promise<void> 
     if (!this.configuration.enabled) return;
 
     try {

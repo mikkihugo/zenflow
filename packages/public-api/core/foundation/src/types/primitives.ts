@@ -5,11 +5,11 @@
 
 // Basic IDs
 export type ID = string | number;
-export type UUID = string & { __brand: 'UUID' };
+export type UUID = string & { __brand: "UUID" };
 
 // Time
-export type Timestamp = number & { __brand: 'Timestamp' };
-export type ISODateString = string & { __brand: 'ISODateString' };
+export type Timestamp = number & { __brand: "Timestamp" };
+export type ISODateString = string & { __brand: "ISODateString" };
 
 // JSON types
 export type JsonPrimitive = string | number | boolean | null;
@@ -19,86 +19,86 @@ export type JsonArray = JsonValue[];
 
 // Utility types
 export type UnknownRecord = Record<string, unknown>;
-export type Email = string & { __brand: 'Email' };
+export type Email = string & { __brand: "Email" };
 
 // Enums
 export enum Priority {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+	LOW = "low",
+	MEDIUM = "medium",
+	HIGH = "high",
+	CRITICAL = "critical",
 }
 
 export enum Status {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
+	PENDING = "pending",
+	IN_PROGRESS = "in_progress",
+	COMPLETED = "completed",
+	FAILED = "failed",
 }
 
 export enum LogLevel {
-  ERROR = 'error',
-  WARN = 'warn',
-  INFO = 'info',
-  DEBUG = 'debug',
+	ERROR = "error",
+	WARN = "warn",
+	INFO = "info",
+	DEBUG = "debug",
 }
 
 export enum Environment {
-  DEVELOPMENT = 'development',
-  PRODUCTION = 'production',
-  TEST = 'test',
+	DEVELOPMENT = "development",
+	PRODUCTION = "production",
+	TEST = "test",
 }
 
 // Type guards
 export function isUUID(value: unknown): value is UUID {
-  return (
-    typeof value === 'string' &&
-    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-      value
-    )
-  );
+	return (
+		typeof value === "string" &&
+		/^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+			value,
+		)
+	);
 }
 
 export function isTimestamp(value: unknown): value is Timestamp {
-  return typeof value === 'number' && value > 0;
+	return typeof value === "number" && value > 0;
 }
 
 export function isISODateString(value: unknown): value is ISODateString {
-  return typeof value === 'string' && !isNaN(Date.parse(value));
+	return typeof value === "string" && !Number.isNaN(Date.parse(value));
 }
 
 export function isEmail(value: unknown): value is Email {
-  return typeof value === 'string' && value.includes('@');
+	return typeof value === "string" && value.includes("@");
 }
 
 export function isPrimitive(value: unknown): boolean {
-  return (
-    value === null ||
-    ['string', 'number', 'boolean', 'undefined'].includes(typeof value)
-  );
+	return (
+		value === null ||
+		["string", "number", "boolean", "undefined"].includes(typeof value)
+	);
 }
 
 export function isNonEmptyArray<T>(arr: T[]): boolean {
-  return Array.isArray(arr) && arr.length > 0;
+	return Array.isArray(arr) && arr.length > 0;
 }
 
 // Utility functions
 export function generateUUID(): UUID {
-  return crypto.randomUUID() as UUID;
+	return crypto.randomUUID() as UUID;
 }
 
 export function now(): Timestamp {
-  return Date.now() as Timestamp;
+	return Date.now() as Timestamp;
 }
 
 export function timestampFromDate(date: Date): Timestamp {
-  return date.getTime() as Timestamp;
+	return date.getTime() as Timestamp;
 }
 
 export function dateFromTimestamp(timestamp: Timestamp): Date {
-  return new Date(timestamp);
+	return new Date(timestamp);
 }
 
 export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
-  return new Date(timestamp).toISOString() as ISODateString;
+	return new Date(timestamp).toISOString() as ISODateString;
 }

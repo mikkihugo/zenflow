@@ -1,7 +1,7 @@
-import path from "path"
-import fs from "fs/promises"
-import { Global } from "../global"
+import fs from "node:fs/promises"
+import path from "node:path"
 import { z } from "@claude-zen/foundation"
+import { Global } from "../global"
 
 export namespace Log {
   export const Level = z.enum(["DEBUG", "INFO", "WARN", "ERROR"]).openapi({ ref: "LogLevel", description: "Log level" })
@@ -24,7 +24,7 @@ export namespace Log {
     return currentLevel
   }
 
-  function shouldLog(level: Level): boolean {
+  function _shouldLog(level: Level): boolean {
     return levelPriority[level] >= levelPriority[currentLevel]
   }
 
@@ -63,7 +63,7 @@ export namespace Log {
     await fs.mkdir(dir, { recursive: true })
     cleanup(dir)
     if (options.print) return
-    logpath = path.join(dir, new Date().toISOString().split(".")[0].replace(/:/g, "") + ".log")
+    logpath = path.join(dir, `${new Date().toISOString().split(".")[0].replace(/:/g, "")}.log`)
     const logfile = Bun.file(logpath)
     await fs.truncate(logpath).catch(() => {})
     const writer = logfile.writer()
@@ -87,11 +87,11 @@ export namespace Log {
     await Promise.all(filesToDelete.map((file) => fs.unlink(file).catch(() => {})))
   }
 
-  let last = Date.now()
+  const _last = Date.now()
   export function create(tags?: Record<string, any>) {
     tags = tags || {}
 
-    const service = tags["service"]
+    const service = tags.service
     if (service && typeof service === "string") {
       const cached = loggers.get(service)
       if (cached) {
@@ -99,8 +99,8 @@ export namespace Log {
       }
     }
 
-    function build(message: any, extra?: Record<string, any>) {
-      const prefix = Object.entries({
+    function _build(_message: any, extra?: Record<string, any>) {
+      const _prefix = Object.entries({
         ...tags,
         ...extra,
       })

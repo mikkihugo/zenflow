@@ -68,12 +68,12 @@ export class MemoryError extends Error {
     this.recoverable = options?.recoverable ?? MemoryError.isRecoverable(code);
     this.severity = options?.severity ?? MemoryError.getSeverity(code);
 
-    if (options?.cause) {
+    if (options?._cause) {
       this.cause = options?.cause;
     }
 
     // Maintain proper stack trace
-    if (Error.captureStackTrace) {
+    if (Error._captureStackTrace) {
       Error.captureStackTrace(this, MemoryError);
     }
   }
@@ -159,19 +159,16 @@ export class MemoryError extends Error {
       code = MemoryErrorCode.CONSENSUS_TIMEOUT;
     } else if (
       error.message.includes('connection')||error.message.includes('unreachable')'
-    ) {
-      code = MemoryErrorCode.NODE_UNREACHABLE;
-    } else if (
+    ) 
+      code = MemoryErrorCode.NODE_UNREACHABLE;else if (
       error.message.includes('corruption')||error.message.includes('corrupted')'
-    ) {
-      code = MemoryErrorCode.DATA_CORRUPTION;
-    } else if (error.message.includes('not found')) {'
+    ) 
+      code = MemoryErrorCode.DATA_CORRUPTION;else if (error.message.includes('not found')) {'
       code = MemoryErrorCode.DATA_NOT_FOUND;
     } else if (
       error.message.includes('capacity')||error.message.includes('full')'
-    ) {
+    ) 
       code = MemoryErrorCode.BACKEND_CAPACITY_EXCEEDED;
-    }
 
     return new MemoryError(code, error.message, context, { cause: error });
   }
@@ -265,19 +262,16 @@ export class MemoryErrorClassifier {
 
     if (
       error.code.includes('COORDINATION')||error.code.includes('CONSENSUS')||error.code.includes('QUORUM')'
-    ) {
-      category = 'coordination';
-    } else if (error.code.includes('BACKEND')) {'
+    ) 
+      category = 'coordination';else if (error.code.includes('BACKEND')) {'
       category = 'backend';
     } else if (error.code.includes('DATA')) {'
       category = 'data';
     } else if (
       error.code.includes('OPTIMIZATION')||error.code.includes('CACHE')||error.code.includes('LATENCY')'
-    ) {
-      category = 'performance';
-    } else {
+    ) 
+      category = 'performance';else 
       category = 'system';
-    }
 
     return {
       category,
@@ -298,24 +292,20 @@ export class MemoryErrorClassifier {
 
     if (
       message.includes('coordination')||message.includes('consensus')||message.includes('node')'
-    ) {
+    ) 
       return 'coordination;
-    }
     if (
       message.includes('backend')||message.includes('connection')||message.includes('database')'
-    ) {
+    ) 
       return 'backend;
-    }
     if (
       message.includes('data')||message.includes('corruption')||message.includes('not found')'
-    ) {
+    ) 
       return 'data;
-    }
     if (
       message.includes('performance')||message.includes('slow')||message.includes('cache')'
-    ) {
+    ) 
       return 'performance;
-    }
     return 'system;
   }
 
@@ -326,19 +316,16 @@ export class MemoryErrorClassifier {
 
     if (
       message.includes('corruption')||message.includes('critical')||message.includes('fatal')'
-    ) {
+    ) 
       return 'critical;
-    }
     if (
       message.includes('failed')||message.includes('error')||message.includes('unreachable')'
-    ) {
+    ) 
       return 'high;
-    }
     if (
       message.includes('warning')||message.includes('slow')||message.includes('timeout')'
-    ) {
+    ) 
       return 'medium;
-    }
     return 'low;
   }
 

@@ -13,26 +13,20 @@
  */
 
 import { query } from '@anthropic-ai/claude-code/sdk.mjs';
-import { getLogger, withTimeout, withRetry } from '@claude-zen/foundation';
+import { getLogger, withRetry, withTimeout } from '@claude-zen/foundation';
 
-// Import from focused modules
-import {
-  processClaudeMessage,
-  validateProcessedMessage,
-} from './message-processor';
 import { createPermissionHandler } from './permission-handler';
-import { DEFAULT_SDK_OPTIONS, type ClaudeSDKOptions, type ClaudeMessage } from './types';
+import { type ClaudeMessage, type ClaudeSDKOptions, DEFAULT_SDK_OPTIONS } from './types';
 import {
-  validateTaskInputs,
   resolveWorkingDirectory,
-  generateSessionId,
+  validateTaskInputs,
 } from './utils';
 
+export * from './message-processor';
+export * from './permission-handler';
 // Re-export types for consumers
 export type * from './types';
 export * from './utils';
-export * from './permission-handler';
-export * from './message-processor';
 
 const logger = getLogger('claude-sdk');'
 
@@ -40,7 +34,7 @@ const logger = getLogger('claude-sdk');'
 // Global State Management (Simplified)
 // =============================================================================
 
-let globalTaskManager: ClaudeTaskManager|null = null;
+const _globalTaskManager: ClaudeTaskManager|null = null;
 
 // =============================================================================
 // Main SDK Functions
@@ -70,13 +64,13 @@ export async function executeClaudeTask(
 
   // Setup cancellation
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => {
+  const _timeoutId = setTimeout(() => {
     controller.abort();
   }, config.timeout);
 
   try {
     logger.info(`Executing Claude task with model: ${config.model}`);`
-    logger.debug(`Working directory: ${workingDirectory}`);`
+    logger.debug(`Working directory: $workingDirectory`);`
 
     // Prepare SDK options
     const sdkOptions = {
@@ -124,15 +118,14 @@ export async function executeClaudeTask(
       typeof retryResult === 'object' &&'
       'isErr' in retryResult &&'
       retryResult.isErr()
-    ) {
+    ) 
       throw retryResult.error;
-    }
 
     const resultValue =
       retryResult && typeof retryResult === 'object' && 'value' in retryResult'
         ? retryResult.value
         : retryResult;
-    const result = await withTimeout(
+    const _result = await withTimeout(
       () => Promise.resolve(resultValue),
       config.timeout,
       `Claude SDK request timed out after ${config.timeout}ms``
@@ -167,7 +160,7 @@ export async function executeClaudeTask(
     }
 
     logger.info(
-      `Task completed successfully, returned ${validMessages.length} messages``
+      `Task completed successfully, returned $validMessages.lengthmessages``
     );
     return validMessages;
   } catch (error) {
@@ -244,14 +237,14 @@ export async function executeParallelClaudeTasks(
     logger.warn('Executing many tasks in parallel, consider batching');'
   }
 
-  const taskPromises = tasks.map(async (task, index) => {
-    const taskOptions = { ...globalOptions, ...task.options };
+  const _taskPromises = tasks.map(async (task, index) => {
+    const _taskOptions = { ...globalOptions, ...task.options };
     logger.debug(`Starting parallel task ${index + 1}/${tasks.length}`);`
 
     try {
       return await executeClaudeTask(task.prompt, taskOptions);
     } catch (error) {
-      logger.error(`Parallel task ${index + 1} failed:`, error);`
+      logger.error(`Parallel task $index + 1failed:`, error);`
       // Return error message instead of throwing
       return [
         {
@@ -284,7 +277,7 @@ export class ClaudeTaskManager {
 
   constructor(options: ClaudeSDKOptions = {}) {
     this.sessionId = options.sessionId||generateSessionId();
-    logger.debug(`Created task manager with session: ${this.sessionId}`);`
+    logger.debug(`Created task manager with session: $this.sessionId`);`
   }
 
   async executeTask(

@@ -105,34 +105,6 @@ export interface OrchestrationMetrics {
  * Neural Orchestrator - Brain as intelligent coordinator
  */
 export class NeuralOrchestrator {
-  private neuralMlCache: any = null;
-  private isNeuralMlLoaded = false;
-  private taskHistory: Map<string, TaskComplexity> = new Map();
-  private dataStorageMap: Map<string, StorageStrategy> = new Map();
-  private metrics: OrchestrationMetrics = {
-    tasksProcessed: 0,
-    complexityDistribution: {
-      [TaskComplexity.SIMPLE]: 0,
-      [TaskComplexity.MODERATE]: 0,
-      [TaskComplexity.COMPLEX]: 0,
-      [TaskComplexity.HEAVY]: 0,
-    },
-    averageLatency: {
-      [TaskComplexity.SIMPLE]: 0,
-      [TaskComplexity.MODERATE]: 0,
-      [TaskComplexity.COMPLEX]: 0,
-      [TaskComplexity.HEAVY]: 0,
-    },
-    cacheHitRate: 0,
-    neuralMlLoadCount: 0,
-    storageDistribution: {
-      [StorageStrategy.MEMORY]: 0,
-      [StorageStrategy.DATABASE]: 0,
-      [StorageStrategy.VECTOR]: 0,
-      [StorageStrategy.GRAPH]: 0,
-      [StorageStrategy.HYBRID]: 0,
-    },
-  };
 
   constructor() {
     logger.info(
@@ -143,7 +115,7 @@ export class NeuralOrchestrator {
    * Main orchestration method - analyzes and routes neural tasks
    */
   async processNeuralTask(task: NeuralTask): Promise<NeuralResult> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
     logger.debug(
       `🎯 Orchestrating neural task: ${task.id} (type: ${task.type})``
     );
@@ -170,7 +142,7 @@ export class NeuralOrchestrator {
           result = await this.processHeavyTask(task);
           break;
         default:
-          throw new Error(`Unknown complexity level: ${complexity}`);`
+          throw new Error(`Unknown complexity level: $complexity`);`
       }
 
       // Update metrics
@@ -216,7 +188,7 @@ export class NeuralOrchestrator {
     if (needsHighAccuracy) {
       requirementComplexity = TaskComplexity.COMPLEX;
       logger.debug(
-        `High accuracy required - upgrading complexity to ${requirementComplexity}``
+        `High accuracy required - upgrading complexity to $requirementComplexity``
       );
     }
     if (needsLowLatency) {
@@ -226,7 +198,7 @@ export class NeuralOrchestrator {
     if (needsGpu) {
       requirementComplexity = TaskComplexity.HEAVY;
       logger.debug(
-        `GPU processing required - upgrading complexity to ${requirementComplexity}``
+        `GPU processing required - upgrading complexity to $requirementComplexity``
       );
     }
 
@@ -313,7 +285,7 @@ export class NeuralOrchestrator {
    */
   private async processModerateTask(task: NeuralTask): Promise<NeuralResult> {
     logger.debug(
-      `🟡 Processing moderate task with enhanced brain.js: ${task.id}``
+      `🟡 Processing moderate task with enhanced brain.js: $task.id``
     );
 
     // Enhanced processing with some ML features
@@ -562,7 +534,7 @@ export class NeuralOrchestrator {
 
   private async storeInVectorDB(data: NeuralData): Promise<void> {
     // Use foundation's LanceDB storage'
-    logger.debug(`📊 Storing in vector DB: ${data.id}`);`
+    logger.debug(`📊 Storing in vector DB: $data.id`);`
   }
 
   private async storeInGraphDB(data: NeuralData): Promise<void> {
@@ -572,7 +544,7 @@ export class NeuralOrchestrator {
 
   private async storeInHybrid(data: NeuralData): Promise<void> {
     // Use multiple storage backends
-    logger.debug(`🔀 Storing in hybrid mode: ${data.id}`);`
+    logger.debug(`🔀 Storing in hybrid mode: $data.id`);`
     await Promise.all([this.storeInDatabase(data), this.storeInVectorDB(data)]);
   }
 

@@ -1,4 +1,4 @@
-import { EventEmitter, getLogger } from '@claude-zen/foundation';
+import { type EventEmitter, getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');'
 
@@ -61,24 +61,15 @@ interface RealTimePerformanceMonitor {
 }
 
 import type {
-  EventBatch,
-  EventEmissionOptions,
-  EventFilter,
-  EventListener,
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventMonitoringConfig,
-  EventPriority,
-  EventQueryOptions,
   EventSubscription,
-  EventTransform,
   EventManager,
   SystemEvent,
 } from '../core/interfaces;
 import { type EventManagerType, EventManagerTypes } from '../core/interfaces;
-import type { MonitoringEvent } from '../types;
-import { EventPriorityMap } from '../types;
+import type { MonitoringEvent } from '../types;'../types;
 
 // Note: Additional monitoring imports would be here in production
 
@@ -105,8 +96,7 @@ const createLogger = (name: string): Logger => ({
     error?: Error|unknown
   ) => logger.error(`[ERROR] ${name}: ${message}`, { ...meta, error }),`
 });
-
-import { TypedEventBase } from'@claude-zen/foundation;
+'@claude-zen/foundation;
 
 /**
  * Monitoring event adapter configuration extending UEL EventManagerConfig.
@@ -339,39 +329,7 @@ export class MonitoringEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new EventEmitter();
   private logger: Logger;
-  private startTime?: Date;
-  private eventCount = 0;
-  private successCount = 0;
-  private errorCount = 0;
-  private totalLatency = 0;
-
-  // Monitoring component integration
-  private wrappedComponents = new Map<string, WrappedMonitoringComponent>();
-  private performanceMonitors = new Map<string, RealTimePerformanceMonitor>();
-  private metricsCollectors = new Map<string, MetricsCollector>();
-  private analyticsComponents = new Map<string, PerformanceAnalyzer>();
-  private dashboardComponents = new Map<string, any>();
-
-  // Event correlation and tracking
-  private monitoringCorrelations = new Map<string, MonitoringCorrelation>();
-  private monitoringHealth = new Map<string, MonitoringHealthEntry>();
-  private metrics: MonitoringEventMetrics[] = [];
-  private subscriptions = new Map<string, EventSubscription>();
-  private filters = new Map<string, EventFilter>();
-  private transforms = new Map<string, EventTransform>();
-
-  // Event processing queues
-  private eventQueue: MonitoringEvent[] = [];
-  private processingEvents = false;
-  private eventHistory: MonitoringEvent[] = [];
-
-  // Monitoring-specific tracking.
-  private metricsData = new Map<string, any>();
-  private healthData = new Map<string, any>();
-  private alertData = new Map<string, any>();
-  private performanceInsights = new Map<string, any>();
 
   constructor(config: MonitoringEventAdapterConfig) {
     this.name = config?.name;
@@ -552,8 +510,7 @@ export class MonitoringEventAdapter implements EventManager {
       );
     } catch (error) 
       this.logger.error(
-        `Failed to start monitoring event adapter ${this.name}:`,`
-        { error }
+        `Failed to start monitoring event adapter $this.name:`,`error 
       );
       this.emitInternal('error', { error });'
       throw error;
@@ -568,7 +525,7 @@ export class MonitoringEventAdapter implements EventManager {
       this.logger.warn(`Monitoring event adapter ${this.name} is not running`);`
       return;
 
-    this.logger.info(`Stopping monitoring event adapter: ${this.name}`);`
+    this.logger.info(`Stopping monitoring event adapter: $this.name`);`
 
     try {
       // Stop event processing
@@ -586,7 +543,7 @@ export class MonitoringEventAdapter implements EventManager {
       this.logger.info(
         `Monitoring event adapter stopped successfully: $this.name``
       );
-    } catch (error) {
+    } catch (_error) {
       this.logger.error(
         `Failed to stop monitoring event adapter ${this.name}:`,`
         { error }
@@ -765,9 +722,8 @@ export class MonitoringEventAdapter implements EventManager {
    *
    * @param event
    */
-  async emitImmediate<T extends SystemEvent>(event: T): Promise<void> {
+  async emitImmediate<T extends SystemEvent>(event: T): Promise<void> 
     await this.emit(event, { timeout: 5000 });
-  }
 
   /**
    * Subscribe to monitoring events with filtering and transformation.
@@ -1995,7 +1951,7 @@ export class MonitoringEventAdapter implements EventManager {
 
         // Call the listener
         await subscription.listener(subscriptionEvent);
-      } catch (error) {
+      } catch (_error) {
         this.logger.error(
           `Monitoring subscription listener error for ${subscription.id}:`,`
           { error }
@@ -2886,10 +2842,10 @@ export const MonitoringEventHelpers = {
    * @param details
    */
   createPerformanceMetricsEvent(
-    metricName: string,
-    metricValue: number,
-    component: string,
-    details?: unknown
+    _metricName: string,
+    _metricValue: number,
+    _component: string,
+    _details?: unknown
   ): Omit<MonitoringEvent, 'id|timestamp''> {'
     return {
       source: 'performance-monitor',

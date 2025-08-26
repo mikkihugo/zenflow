@@ -22,38 +22,36 @@
  * @see {@link https://arxiv.org/abs/2507.19457} GEPA: Reflective Prompt Evolution Paper
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
-import { Example } from '../primitives/example';
-import { DSPyModule } from '../primitives/module';
-import { type Prediction } from '../primitives/prediction';
-import { Teleprompter } from './teleprompter';
-import { type LMInterface } from '../interfaces/lm';
+import { Example } from "../primitives/example";
+import { DSPyModule } from "../primitives/module";
+import { type Prediction } from "../primitives/prediction";
+import { Teleprompter } from "./teleprompter";
+import { type LMInterface } from "../interfaces/lm";
 /**
  * AUTO_RUN_SETTINGS for GEPA budget configuration
  * Matches Stanford DSPy GEPA implementation exactly
  */
 export declare const AUTO_RUN_SETTINGS: {
-  readonly light: {
-    readonly n: 6;
-  };
-  readonly medium: {
-    readonly n: 12;
-  };
-  readonly heavy: {
-    readonly n: 18;
-  };
+	readonly light: {
+		readonly n: 6;
+	};
+	readonly medium: {
+		readonly n: 12;
+	};
+	readonly heavy: {
+		readonly n: 18;
+	};
 };
 /**
  * Protocol for GEPA feedback metrics with exact Stanford API
  */
-export interface GEPAFeedbackMetric {
-  (
-    gold: Example,
-    pred: Prediction,
-    trace?: DSPyTrace | null,
-    pred_name?: string | null,
-    pred_trace?: DSPyTrace | null
-  ): number | ScoreWithFeedback;
-}
+export type GEPAFeedbackMetric = (
+	gold: Example,
+	pred: Prediction,
+	trace?: DSPyTrace | null,
+	pred_name?: string | null,
+	pred_trace?: DSPyTrace | null,
+) => number | ScoreWithFeedback;
 /**
  * DSPy trace type for execution tracking
  */
@@ -62,59 +60,59 @@ export type DSPyTrace = Array<[any, Record<string, any>, Prediction]>;
  * Score with feedback for GEPA optimization
  */
 export interface ScoreWithFeedback {
-  score: number;
-  feedback: string;
+	score: number;
+	feedback: string;
 }
 /**
  * Result data for GEPA optimization
  * Matches Stanford DSPy DspyGEPAResult exactly
  */
 export declare class DspyGEPAResult {
-  /** Proposed candidates (component_name -> component_text) */
-  readonly candidates: DSPyModule[];
-  /** Lineage info; for each candidate i, parents[i] is a list of parent indices or None */
-  readonly parents: Array<Array<number | null>>;
-  /** Per-candidate aggregate score on the validation set (higher is better) */
-  readonly val_aggregate_scores: number[];
-  /** Per-candidate per-instance scores on the validation set */
-  readonly val_subscores: number[][];
-  /** For each val instance t, a set of candidate indices achieving the best score on t */
-  readonly per_val_instance_best_candidates: Set<number>[];
-  /** Budget consumed up to the discovery of each candidate */
-  readonly discovery_eval_counts: number[];
-  /** Best outputs on validation set (optional) */
-  readonly best_outputs_valset?: Array<Array<[number, Prediction[]]>> | null;
-  /** Total number of metric calls made across the run */
-  readonly total_metric_calls?: number | null;
-  /** Number of full validation evaluations performed */
-  readonly num_full_val_evals?: number | null;
-  /** Where artifacts were written (if any) */
-  readonly log_dir?: string | null;
-  /** RNG seed for reproducibility (if known) */
-  readonly seed?: number | null;
-  constructor(data: {
-    candidates: DSPyModule[];
-    parents: Array<Array<number | null>>;
-    val_aggregate_scores: number[];
-    val_subscores: number[][];
-    per_val_instance_best_candidates: Set<number>[];
-    discovery_eval_counts: number[];
-    best_outputs_valset?: Array<Array<[number, Prediction[]]>> | null;
-    total_metric_calls?: number | null;
-    num_full_val_evals?: number | null;
-    log_dir?: string | null;
-    seed?: number | null;
-  });
-  /** Candidate index with the highest val_aggregate_scores */
-  get best_idx(): number;
-  /** The program text mapping for best_idx */
-  get best_candidate(): DSPyModule;
-  /** Highest score achieved per validation task */
-  get highest_score_achieved_per_val_task(): number[];
-  /** Convert to dictionary representation */
-  to_dict(): Record<string, any>;
-  /** Create from GEPA result with adapter */
-  static from_gepa_result(gepa_result: any, adapter: any): DspyGEPAResult;
+	/** Proposed candidates (component_name -> component_text) */
+	readonly candidates: DSPyModule[];
+	/** Lineage info; for each candidate i, parents[i] is a list of parent indices or None */
+	readonly parents: Array<Array<number | null>>;
+	/** Per-candidate aggregate score on the validation set (higher is better) */
+	readonly val_aggregate_scores: number[];
+	/** Per-candidate per-instance scores on the validation set */
+	readonly val_subscores: number[][];
+	/** For each val instance t, a set of candidate indices achieving the best score on t */
+	readonly per_val_instance_best_candidates: Set<number>[];
+	/** Budget consumed up to the discovery of each candidate */
+	readonly discovery_eval_counts: number[];
+	/** Best outputs on validation set (optional) */
+	readonly best_outputs_valset?: Array<Array<[number, Prediction[]]>> | null;
+	/** Total number of metric calls made across the run */
+	readonly total_metric_calls?: number | null;
+	/** Number of full validation evaluations performed */
+	readonly num_full_val_evals?: number | null;
+	/** Where artifacts were written (if any) */
+	readonly log_dir?: string | null;
+	/** RNG seed for reproducibility (if known) */
+	readonly seed?: number | null;
+	constructor(data: {
+		candidates: DSPyModule[];
+		parents: Array<Array<number | null>>;
+		val_aggregate_scores: number[];
+		val_subscores: number[][];
+		per_val_instance_best_candidates: Set<number>[];
+		discovery_eval_counts: number[];
+		best_outputs_valset?: Array<Array<[number, Prediction[]]>> | null;
+		total_metric_calls?: number | null;
+		num_full_val_evals?: number | null;
+		log_dir?: string | null;
+		seed?: number | null;
+	});
+	/** Candidate index with the highest val_aggregate_scores */
+	get best_idx(): number;
+	/** The program text mapping for best_idx */
+	get best_candidate(): DSPyModule;
+	/** Highest score achieved per validation task */
+	get highest_score_achieved_per_val_task(): number[];
+	/** Convert to dictionary representation */
+	to_dict(): Record<string, any>;
+	/** Create from GEPA result with adapter */
+	static from_gepa_result(gepa_result: any, adapter: any): DspyGEPAResult;
 }
 /**
  * GEPA Teleprompter with exact Stanford DSPy API compatibility
@@ -206,120 +204,120 @@ export declare class DspyGEPAResult {
  * ```
  */
 export declare class GEPA extends Teleprompter {
-  private metric_fn;
-  private auto?;
-  private max_full_evals?;
-  private max_metric_calls?;
-  private reflection_minibatch_size;
-  private candidate_selection_strategy;
-  private reflection_lm;
-  private skip_perfect_score;
-  private add_format_failure_as_feedback;
-  private use_merge;
-  private max_merge_invocations?;
-  private num_threads?;
-  private failure_score;
-  private perfect_score;
-  private log_dir?;
-  private track_stats;
-  private use_wandb;
-  private wandb_api_key?;
-  private wandb_init_kwargs?;
-  private track_best_outputs;
-  private seed?;
-  constructor(config: {
-    metric: GEPAFeedbackMetric;
-    auto?: 'light' | 'medium' | 'heavy' | null;
-    max_full_evals?: number | null;
-    max_metric_calls?: number | null;
-    reflection_minibatch_size?: number;
-    candidate_selection_strategy?: 'pareto|current_best';
-    reflection_lm?: LMInterface | null;
-    skip_perfect_score?: boolean;
-    add_format_failure_as_feedback?: boolean;
-    use_merge?: boolean;
-    max_merge_invocations?: number | null;
-    num_threads?: number | null;
-    failure_score?: number;
-    perfect_score?: number;
-    log_dir?: string | null;
-    track_stats?: boolean;
-    use_wandb?: boolean;
-    wandb_api_key?: string | null;
-    wandb_init_kwargs?: Record<string, any> | null;
-    track_best_outputs?: boolean;
-    seed?: number | null;
-  });
-  /**
-   * Auto budget calculation matching Stanford DSPy implementation
-   */
-  auto_budget(
-    num_preds: number,
-    num_candidates: number,
-    valset_size: number,
-    minibatch_size?: number,
-    full_eval_steps?: number
-  ): number;
-  /**
-   * Compile method with exact Stanford DSPy API
-   */
-  compile(
-    student: DSPyModule,
-    config: {
-      trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
-      [key: string]: any;
-    }
-  ): Promise<DSPyModule>;
-  /**
-   * Create feedback function for predictor
-   */
-  private createFeedbackFunction;
-  /**
-   * Create DSPy adapter for evaluation coordination
-   */
-  private createDspyAdapter;
-  /**
-   * Core GEPA optimization algorithm
-   */
-  private optimize;
-  /**
-   * Generate new candidates through reflective mutation
-   */
-  private generateCandidates;
-  /**
-   * Mutate candidate using reflection strategy
-   */
-  private mutateCandidate;
-  /**
-   * Simplify instruction by removing redundancy
-   */
-  private simplifyInstruction;
-  /**
-   * Elaborate instruction with more detail
-   */
-  private elaborateInstruction;
-  /**
-   * Specialize instruction for domain
-   */
-  private specializeInstruction;
-  /**
-   * Generalize instruction for broader applicability
-   */
-  private generalizeInstruction;
-  /**
-   * Debug instruction to fix issues
-   */
-  private debugInstruction;
-  /**
-   * Check if candidate is duplicate
-   */
-  private isDuplicate;
-  /**
-   * Create seeded random number generator
-   */
-  private createSeededRNG;
+	private metric_fn;
+	private auto?;
+	private max_full_evals?;
+	private max_metric_calls?;
+	private reflection_minibatch_size;
+	private candidate_selection_strategy;
+	private reflection_lm;
+	private skip_perfect_score;
+	private add_format_failure_as_feedback;
+	private use_merge;
+	private max_merge_invocations?;
+	private num_threads?;
+	private failure_score;
+	private perfect_score;
+	private log_dir?;
+	private track_stats;
+	private use_wandb;
+	private wandb_api_key?;
+	private wandb_init_kwargs?;
+	private track_best_outputs;
+	private seed?;
+	constructor(config: {
+		metric: GEPAFeedbackMetric;
+		auto?: "light" | "medium" | "heavy" | null;
+		max_full_evals?: number | null;
+		max_metric_calls?: number | null;
+		reflection_minibatch_size?: number;
+		candidate_selection_strategy?: "pareto|current_best";
+		reflection_lm?: LMInterface | null;
+		skip_perfect_score?: boolean;
+		add_format_failure_as_feedback?: boolean;
+		use_merge?: boolean;
+		max_merge_invocations?: number | null;
+		num_threads?: number | null;
+		failure_score?: number;
+		perfect_score?: number;
+		log_dir?: string | null;
+		track_stats?: boolean;
+		use_wandb?: boolean;
+		wandb_api_key?: string | null;
+		wandb_init_kwargs?: Record<string, any> | null;
+		track_best_outputs?: boolean;
+		seed?: number | null;
+	});
+	/**
+	 * Auto budget calculation matching Stanford DSPy implementation
+	 */
+	auto_budget(
+		num_preds: number,
+		num_candidates: number,
+		valset_size: number,
+		minibatch_size?: number,
+		full_eval_steps?: number,
+	): number;
+	/**
+	 * Compile method with exact Stanford DSPy API
+	 */
+	compile(
+		student: DSPyModule,
+		config: {
+			trainset: Example[];
+			teacher?: DSPyModule | null;
+			valset?: Example[] | null;
+			[key: string]: any;
+		},
+	): Promise<DSPyModule>;
+	/**
+	 * Create feedback function for predictor
+	 */
+	private createFeedbackFunction;
+	/**
+	 * Create DSPy adapter for evaluation coordination
+	 */
+	private createDspyAdapter;
+	/**
+	 * Core GEPA optimization algorithm
+	 */
+	private optimize;
+	/**
+	 * Generate new candidates through reflective mutation
+	 */
+	private generateCandidates;
+	/**
+	 * Mutate candidate using reflection strategy
+	 */
+	private mutateCandidate;
+	/**
+	 * Simplify instruction by removing redundancy
+	 */
+	private simplifyInstruction;
+	/**
+	 * Elaborate instruction with more detail
+	 */
+	private elaborateInstruction;
+	/**
+	 * Specialize instruction for domain
+	 */
+	private specializeInstruction;
+	/**
+	 * Generalize instruction for broader applicability
+	 */
+	private generalizeInstruction;
+	/**
+	 * Debug instruction to fix issues
+	 */
+	private debugInstruction;
+	/**
+	 * Check if candidate is duplicate
+	 */
+	private isDuplicate;
+	/**
+	 * Create seeded random number generator
+	 */
+	private createSeededRNG;
 }
 export default GEPA;
 //# sourceMappingURL=gepa.d.ts.map

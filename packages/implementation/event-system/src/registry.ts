@@ -19,7 +19,7 @@ import type {
   SystemEvent,
 } from './core/interfaces;
 import { EventManagerTypes } from './core/interfaces;
-import { EventCategories, EventPriorityMap } from './types;
+import { EventPriorityMap } from './types;
 
 /**
  * Registry entry for managing event manager instances and their lifecycle.
@@ -242,7 +242,6 @@ export class EventRegistry implements EventManagerRegistry {
   private factoryRegistry: FactoryRegistry = {} as FactoryRegistry;
   private healthMonitoring: HealthMonitoringConfig;
   private discoveryConfig: EventDiscoveryConfig;
-  private healthCheckInterval?: NodeJS.Timeout|undefined;
   private initialized = false;
 
   constructor(private _logger?: Logger) {
@@ -537,8 +536,8 @@ export class EventRegistry implements EventManagerRegistry {
       type: eventType,
       category: config?.category,
       priority:
-        config?.priority||(typeof EventPriorityMap['medium'] === 'number''
-          ? EventPriorityMap['medium']'
+        config?.priority||(typeof EventPriorityMap.medium === 'number''
+          ? EventPriorityMap.medium'
           : 2),
       schema: config?.schema,
       managerTypes: config?.managerTypes,
@@ -572,10 +571,10 @@ export class EventRegistry implements EventManagerRegistry {
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
-    const healthPromises: Promise<void>[] = [];
+    const _healthPromises: Promise<void>[] = [];
 
     for (const [name, entry] of this.eventManagers) {
-      const healthPromise = this.performHealthCheck(name, entry)
+      const _healthPromise = this.performHealthCheck(name, entry)
         .then((status) => {
           results?.set(name, status);
         })
@@ -705,7 +704,7 @@ export class EventRegistry implements EventManagerRegistry {
 
     for (const [name, entry] of this.eventManagers) {
       if (entry.status ==='healthy') {'
-        const broadcastPromise = entry.manager
+        const _broadcastPromise = entry.manager
           .emit(event)
           .then(() => {
             entry.usage.totalEvents++;
@@ -752,12 +751,12 @@ export class EventRegistry implements EventManagerRegistry {
     this.stopHealthMonitoring();
 
     // Shutdown all managers
-    const shutdownPromises = Array.from(this.eventManagers.values()).map(
+    const _shutdownPromises = Array.from(this.eventManagers.values()).map(
       async (entry) => {
         try {
           await entry.manager.destroy();
           entry.status = 'stopped;
-        } catch (error) {
+        } catch (_error) {
           this._logger?.error(
             `❌ Failed to shutdown ${entry.manager.name}:`,`
             error

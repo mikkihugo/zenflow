@@ -4,7 +4,6 @@
  * CONVERTED FROM VITEST: Uses Jest testing framework
  */
 
-import { jest } from '@jest/globals';
 import {
   AIDeceptionDetector,
   type AIInteractionData,
@@ -82,7 +81,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {'
     it('should detect MEMORY_FABRICATION when claiming false information recall', async () => {'
       mockInteraction.response =
         'I remember from our previous conversation that you specifically asked for Redis implementation;
-      mockInteraction.context = { conversationHistory: [] };
+      mockInteraction.context = conversationHistory: [] ;
 
       const alerts = await detector.detectDeception(mockInteraction);
 
@@ -231,7 +230,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {'
     it('should detect PROJECT_CONFLATION when mixing up different projects', async () => {'
       mockInteraction.response =
         'Like we did in the e-commerce project, we should use the same payment gateway here;
-      mockInteraction.context = { currentProject: 'blog-system' };'
+      mockInteraction.context = currentProject: 'blog-system' ;'
 
       const alerts = await detector.detectDeception(mockInteraction);
 

@@ -6,28 +6,28 @@
  * Generates comprehensive context for GitHub Copilot Coding Agent
  */
 
-const fs = require('node:fs').promises;
-const _path = require('node:path');
-const yaml = require('js-yaml');
+const fs = require("node:fs").promises;
+const _path = require("node:path");
+const yaml = require("js-yaml");
 
 class CopilotContextGenerator {
-  constructor(configPath = '.github/copilot-config.yml') {
-    this.configPath = configPath;
-    this.config = null;
-  }
+	constructor(configPath = ".github/copilot-config.yml") {
+		this.configPath = configPath;
+		this.config = null;
+	}
 
-  async loadConfig() {
-    try {
-      const configContent = await fs.readFile(this.configPath, 'utf8');
-      this.config = yaml.load(configContent);
-    } catch (error) {
-      console.error('Failed to load configuration:', error.message);
-      process.exit(1);
-    }
-  }
+	async loadConfig() {
+		try {
+			const configContent = await fs.readFile(this.configPath, "utf8");
+			this.config = yaml.load(configContent);
+		} catch (error) {
+			console.error("Failed to load configuration:", error.message);
+			process.exit(1);
+		}
+	}
 
-  async generateRepositoryInstructions() {
-    const instructions = `---
+	async generateRepositoryInstructions() {
+		const instructions = `---
 applies_to: "**/*"
 ---
 
@@ -47,31 +47,31 @@ ${this.config.project.description}
 - **Performance optimization**: ${this.config.copilot_context.neural_capabilities.performance_critical}
 
 ## Architecture Principles
-${this.config.architecture.principles.map((p) => `- ${p}`).join('\n')}
+${this.config.architecture.principles.map((p) => `- ${p}`).join("\n")}
 
 ## Domain Structure
 \`\`\`
 src/
-${this.config.architecture.domains.map((domain) => `├── ${domain}/`).join('\n')}
+${this.config.architecture.domains.map((domain) => `├── ${domain}/`).join("\n")}
 \`\`\`
 
 ## Performance Requirements
 ${Object.entries(this.config.development.performance_requirements)
-  .map(([key, value]) => `- **${key.replace(/_/g, ' ')}**: ${value}`)
-  .join('\n')}
+	.map(([key, value]) => `- **${key.replace(/_/g, " ")}**: ${value}`)
+	.join("\n")}
 
 ## Quality Gates
 ${Object.entries(this.config.quality_gates)
-  .map(([key, value]) => `- **${key.replace(/_/g, ' ')}**: ${value}`)
-  .join('\n')}
+	.map(([key, value]) => `- **${key.replace(/_/g, " ")}**: ${value}`)
+	.join("\n")}
 
 ## Custom Instructions
 ${this.config.custom_instructions.architectural_constraints
-  .map((constraint) => `- ${constraint}`)
-  .join('\n')}
+	.map((constraint) => `- ${constraint}`)
+	.join("\n")}
 
 ## Integration Patterns
-${this.config.custom_instructions.integration_patterns.map((pattern) => `- ${pattern}`).join('\n')}
+${this.config.custom_instructions.integration_patterns.map((pattern) => `- ${pattern}`).join("\n")}
 
 ## Build Commands
 \`\`\`bash
@@ -90,11 +90,11 @@ npm run mcp:start        # Start MCP servers
 
 This is a sophisticated, production-grade AI platform. Maintain high standards and leverage comprehensive systems already in place.`;
 
-    await fs.writeFile('.github/instructions/.instructions.md', instructions);
-  }
+		await fs.writeFile(".github/instructions/.instructions.md", instructions);
+	}
 
-  async generateCopilotContext() {
-    const context = `# ${this.config.project.name} - Copilot Context
+	async generateCopilotContext() {
+		const context = `# ${this.config.project.name} - Copilot Context
 
 ## System Architecture
 **Type**: ${this.config.project.type}
@@ -103,8 +103,8 @@ This is a sophisticated, production-grade AI platform. Maintain high standards a
 ## Technology Stack
 - **Primary**: ${this.config.technology_stack.primary_language}
 - **Runtime**: ${this.config.technology_stack.runtime} ${this.config.technology_stack.version}
-- **Frameworks**: ${this.config.technology_stack.frameworks.join(', ')}
-- **Specialized**: ${this.config.technology_stack.specialized.join(', ')}
+- **Frameworks**: ${this.config.technology_stack.frameworks.join(", ")}
+- **Specialized**: ${this.config.technology_stack.specialized.join(", ")}
 
 ## Agent System Context
 - **Total Agent Types**: ${this.config.copilot_context.agent_system.total_types}
@@ -128,22 +128,22 @@ This is a sophisticated, production-grade AI platform. Maintain high standards a
 
 ## Performance Benchmarks
 ${this.config.performance_benchmarks
-  .map(
-    (benchmark) =>
-      `- **${benchmark.name}**: ${benchmark.target} (${benchmark.measurement})`
-  )
-  .join('\n')}
+	.map(
+		(benchmark) =>
+			`- **${benchmark.name}**: ${benchmark.target} (${benchmark.measurement})`,
+	)
+	.join("\n")}
 
 ## Validation Rules
 ${this.config.validation_rules
-  .map((rule) => `- **${rule.name}**: ${rule.description}`)
-  .join('\n')}`;
+	.map((rule) => `- **${rule.name}**: ${rule.description}`)
+	.join("\n")}`;
 
-    await fs.writeFile('.github/copilot-context.md', context);
-  }
+		await fs.writeFile(".github/copilot-context.md", context);
+	}
 
-  async generateValidationWorkflow() {
-    const workflow = `name: "Copilot Code Validation"
+	async generateValidationWorkflow() {
+		const workflow = `name: "Copilot Code Validation"
 
 on:
   pull_request:
@@ -161,7 +161,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "${this.config.technology_stack.version.replace('+', '')}"
+          node-version: "${this.config.technology_stack.version.replace("+", "")}"
           cache: 'npm'
 
       - name: Install dependencies
@@ -212,16 +212,16 @@ jobs:
 ✅ MCP integration validated
 
 **Key Metrics Checked:**
-${this.config.performance_benchmarks.map((b) => `- ${b.name}: ${b.target}`).join('\n')}
+${this.config.performance_benchmarks.map((b) => `- ${b.name}: ${b.target}`).join("\n")}
 
 Ready for human review! 🚀\`
             })`;
 
-    await fs.writeFile('.github/workflows/copilot-validation.yml', workflow);
-  }
+		await fs.writeFile(".github/workflows/copilot-validation.yml", workflow);
+	}
 
-  async generateArchitectureValidator() {
-    const validator = `#!/usr/bin/env node
+	async generateArchitectureValidator() {
+		const validator = `#!/usr/bin/env node
 
 /**
  * Architecture Validation Script
@@ -407,12 +407,12 @@ const validator = new ArchitectureValidator();
 const exitCode = validator.validate();
 process.exit(exitCode);`;
 
-    await fs.writeFile('.github/scripts/validate-architecture.js', validator);
-    await fs.chmod('.github/scripts/validate-architecture.js', 0o755);
-  }
+		await fs.writeFile(".github/scripts/validate-architecture.js", validator);
+		await fs.chmod(".github/scripts/validate-architecture.js", 0o755);
+	}
 
-  async generateIssueTemplate() {
-    const template = `name: Copilot Autonomous Task
+	async generateIssueTemplate() {
+		const template = `name: Copilot Autonomous Task
 description: Task for GitHub Copilot Coding Agent autonomous completion
 title: "[COPILOT] "
 labels: ["copilot-autonomous", "enhancement"]
@@ -441,7 +441,7 @@ body:
       label: Primary Domain
       description: Which domain will this primarily affect?
       options:
-${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join('\n')}
+${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join("\n")}
     validations:
       required: true
 
@@ -464,8 +464,8 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
       description: Specific performance constraints
       placeholder: |
         ${Object.entries(this.config.development.performance_requirements)
-          .map(([key, value]) => `- ${key.replace(/_/g, ' ')}: ${value}`)
-          .join('\n')}
+					.map(([key, value]) => `- ${key.replace(/_/g, " ")}: ${value}`)
+					.join("\n")}
 
   - type: textarea
     id: acceptance-criteria
@@ -479,27 +479,27 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
         - [ ] Architecture validation passes
         - [ ] No breaking changes to existing systems`;
 
-    await fs.writeFile(
-      '.github/ISSUE_TEMPLATE/copilot-autonomous.yml',
-      template
-    );
-  }
+		await fs.writeFile(
+			".github/ISSUE_TEMPLATE/copilot-autonomous.yml",
+			template,
+		);
+	}
 
-  async generate() {
-    await this.loadConfig();
+	async generate() {
+		await this.loadConfig();
 
-    // Ensure directories exist
-    await fs.mkdir('.github/instructions', { recursive: true });
-    await fs.mkdir('.github/scripts', { recursive: true });
-    await fs.mkdir('.github/workflows', { recursive: true });
-    await fs.mkdir('.github/ISSUE_TEMPLATE', { recursive: true });
+		// Ensure directories exist
+		await fs.mkdir(".github/instructions", { recursive: true });
+		await fs.mkdir(".github/scripts", { recursive: true });
+		await fs.mkdir(".github/workflows", { recursive: true });
+		await fs.mkdir(".github/ISSUE_TEMPLATE", { recursive: true });
 
-    await this.generateRepositoryInstructions();
-    await this.generateCopilotContext();
-    await this.generateValidationWorkflow();
-    await this.generateArchitectureValidator();
-    await this.generateIssueTemplate();
-  }
+		await this.generateRepositoryInstructions();
+		await this.generateCopilotContext();
+		await this.generateValidationWorkflow();
+		await this.generateArchitectureValidator();
+		await this.generateIssueTemplate();
+	}
 }
 
 // Run the generator

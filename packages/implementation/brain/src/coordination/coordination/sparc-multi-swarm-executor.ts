@@ -22,9 +22,9 @@ import { generateNanoId } from '@claude-zen/foundation';
 import { CodingPrinciplesResearcher } from './coding-principles-researcher';
 import { IntelligentPromptGenerator } from './intelligent-prompt-generator';
 import {
-  MultiSwarmABTesting,
   type ABTestStrategy,
   type GitTreeConfig,
+  MultiSwarmABTesting,
 } from './multi-swarm-ab-testing';
 
 /**
@@ -124,7 +124,6 @@ export interface SPARCMultiSwarmResult {
  * optimal approaches for systematic development workflows.
  */
 export class SPARCMultiSwarmExecutor {
-  private abTesting: MultiSwarmABTesting;
   private codingPrinciplesResearcher: CodingPrinciplesResearcher;
   private promptGenerator: IntelligentPromptGenerator;
 
@@ -164,10 +163,10 @@ export class SPARCMultiSwarmExecutor {
     const testId = `sparc-multiswarm-${generateNanoId()}`;`
     const startTime = new Date();
 
-    console.log(`🧪 Starting SPARC Multi-Swarm A/B test: ${testId}`);`
+    console.log(`🧪 Starting SPARC Multi-Swarm A/B test: $testId`);`
     console.log(`📋 Task: ${taskDescription}`);`
     console.log(
-      `🔬 Testing ${sparcStrategies.length} SPARC strategies with git tree isolation``
+      `🔬 Testing $sparcStrategies.lengthSPARC strategies with git tree isolation``
     );
 
     try {
@@ -210,7 +209,7 @@ export class SPARCMultiSwarmExecutor {
         (r) => r.gitTreeInfo.worktreePath
       ).length;
 
-      const multiSwarmResult: SPARCMultiSwarmResult = {
+      const _multiSwarmResult: SPARCMultiSwarmResult = {
         testId,
         taskDescription,
         strategies: sparcStrategies,
@@ -229,13 +228,13 @@ export class SPARCMultiSwarmExecutor {
 
       console.log(`✅ SPARC Multi-Swarm test completed: ${testId}`);`
       console.log(
-        `🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(2)} confidence)``
+        `🏆 Winner: $comparison.winner.name($comparison.confidence.toFixed(2)confidence)``
       );
       console.log(`🌳 Git trees created: ${totalWorktreesCreated}`);`
 
       return multiSwarmResult;
     } catch (error) {
-      console.error(`❌ SPARC Multi-Swarm test failed: ${testId}`, error);`
+      console.error(`❌ SPARC Multi-Swarm test failed: $testId`, error);`
       throw error;
     }
   }
@@ -426,7 +425,7 @@ export class SPARCMultiSwarmExecutor {
           ...this.createSPARCStrategySet('enterprise-grade'),
         ];
 
-      default:
+      default: {
         throw new Error(`Unknown SPARC strategy scenario: ${scenario}`);`
     }
   }
@@ -441,7 +440,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     console.log(
-      `⚡ Executing ${strategies.length} SPARC strategies in parallel with git trees...``
+      `⚡ Executing $strategies.lengthSPARC strategies in parallel with git trees...``
     );
 
     const promises = strategies.map((strategy) =>
@@ -454,6 +453,7 @@ export class SPARCMultiSwarmExecutor {
     );
 
     return Promise.all(promises);
+      }
   }
 
   /**
@@ -464,7 +464,7 @@ export class SPARCMultiSwarmExecutor {
     strategies: SPARCStrategy[],
     gitConfig: GitTreeConfig,
     options: any
-  ): Promise<SPARCExecutionResult[]> {
+  ): Promise<SPARCExecutionResult[]> 
     console.log(
       `⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...``
     );
@@ -501,7 +501,7 @@ export class SPARCMultiSwarmExecutor {
 
     try {
       // Simulate SPARC Commander execution with git tree isolation
-      const sparcResult = await this.simulateSPARCExecution(
+      const _sparcResult = await this.simulateSPARCExecution(
         taskDescription,
         strategy,
         gitConfig
@@ -598,8 +598,8 @@ export class SPARCMultiSwarmExecutor {
     await new Promise((resolve) => setTimeout(resolve, executionDelay));
 
     // Generate git tree info
-    const worktreePath = `.claude-zen/tmp/sparc-worktrees/sparc-${strategy.id}-${generateNanoId(6)}`;`
-    const branchName = `sparc-${strategy.id}-${Date.now()}`;`
+    const worktreePath = `.claude-zen/tmp/sparc-worktrees/sparc-$strategy.id-$generateNanoId(6)`;`
+    const _branchName = `sparc-${strategy.id}-${Date.now()}`;`
     const commitsCreated =
       strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;'
 
@@ -638,9 +638,9 @@ export class SPARCMultiSwarmExecutor {
         mergedToMain: overallScore > 75, // Only merge successful executions
       },
       insights: [
-        `SPARC ${strategy.sparcConfig.methodology} methodology completed`,`
+        `SPARC $strategy.sparcConfig.methodologymethodology completed`,`
         `Git tree isolation: ${worktreePath}`,`
-        `Created ${commitsCreated} commits in isolated branch`,`
+        `Created $commitsCreatedcommits in isolated branch`,`
         `Overall SPARC quality score: ${overallScore.toFixed(1)}`,`
       ],
     };
@@ -839,7 +839,7 @@ export class SPARCMultiSwarmExecutor {
       .sort((a, b) => b.avgScore - a.avgScore)[0];
 
     reasoning.push(
-      `Best methodology: ${bestMethodology.methodology} (${bestMethodology.avgScore.toFixed(1)} avg score)``
+      `Best methodology: $bestMethodology.methodology($bestMethodology.avgScore.toFixed(1)avg score)``
     );
 
     // Analyze git tree usage
@@ -889,12 +889,11 @@ export class SPARCMultiSwarmExecutor {
       reasoning,
     };
   }
-}
 
 /**
  * Export convenience function for quick SPARC A/B testing
  */
-export async function quickSPARCTest(
+export async function _quickSPARCTest(
   taskDescription: string,
   scenario: 'rapid-development' | 'quality-focused' | 'enterprise-grade' | 'comprehensive' = 'comprehensive',
   options: {
@@ -917,4 +916,4 @@ export async function quickSPARCTest(
 /**
  * Export default instance for immediate use
  */
-export const sparcMultiSwarmExecutor = new SPARCMultiSwarmExecutor();
+export const _sparcMultiSwarmExecutor = new SPARCMultiSwarmExecutor();

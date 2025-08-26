@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { generateNanoId, customAlphabet } from '@claude-zen/foundation';
+import { generateNanoId } from '@claude-zen/foundation';
 
 /**
  * Professional secure ID generation utilities
@@ -32,7 +32,7 @@ export class SecureIdGenerator {
    * Generate step-specific ID
    */
   static generateStepId(): string {
-    return `step-${generateNanoId(10)}`;`
+    return `step-$generateNanoId(10)`;`
   }
 
   /**

@@ -22,118 +22,100 @@
  */
 
 // =============================================================================
-// PRIMARY INTELLIGENCE SYSTEM - Main implementation
-// =============================================================================
-export { CompleteIntelligenceSystem } from './intelligence-system';
-
-// =============================================================================
 // FACTORY FUNCTIONS - Quick setup methods
 // =============================================================================
 export {
-  createIntelligenceSystem,
-  createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem,
-} from './intelligence-factory';
-
+	createBasicIntelligenceSystem,
+	createIntelligenceSystem,
+	createProductionIntelligenceSystem,
+} from "./intelligence-factory";
 // =============================================================================
-// TASK PREDICTION - Core Monitoring Primitives
+// PRIMARY INTELLIGENCE SYSTEM - Main implementation
 // =============================================================================
-export {
-  SimpleTaskPredictor,
-  createTaskPredictor,
-  isHighConfidencePrediction,
-  getPredictionSummary,
-} from './task-predictor';
-
-export type { TaskPredictor } from './task-predictor';
-
+export { CompleteIntelligenceSystem } from "./intelligence-system";
+export type {
+	PerformanceSnapshot,
+	PerformanceStats,
+	PerformanceTrackerConfig,
+	PerformanceTrackingResult,
+} from "./performance-tracker";
 // =============================================================================
 // PERFORMANCE TRACKING - Replaces Hook System Performance Tracking
 // =============================================================================
 export {
-  PerformanceTracker,
-  createPerformanceTracker,
-  getGlobalPerformanceTracker,
-  withPerformanceTracking,
-  DEFAULT_PERFORMANCE_CONFIG,
-} from './performance-tracker';
-
-export type {
-  PerformanceSnapshot,
-  PerformanceTrackingResult,
-  PerformanceStats,
-  PerformanceTrackerConfig,
-} from './performance-tracker';
-
-export { DEFAULT_TASK_PREDICTOR_CONFIG } from './task-predictor';
-
+	createPerformanceTracker,
+	DEFAULT_PERFORMANCE_CONFIG,
+	getGlobalPerformanceTracker,
+	PerformanceTracker,
+	withPerformanceTracking,
+} from "./performance-tracker";
+export type { TaskPredictor } from "./task-predictor";
+// =============================================================================
+// TASK PREDICTION - Core Monitoring Primitives
+// =============================================================================
+export {
+	createTaskPredictor,
+	DEFAULT_TASK_PREDICTOR_CONFIG,
+	getPredictionSummary,
+	isHighConfidencePrediction,
+	SimpleTaskPredictor,
+} from "./task-predictor";
 // =============================================================================
 // TYPE DEFINITIONS - All monitoring types (tree-shakable)
 // =============================================================================
-export type {
-  // Core Agent Types
-  AgentId,
-  AgentType,
-  SwarmId,
-  ForecastHorizon,
-
-  // Intelligence System Types
-  IntelligenceSystem,
-  IntelligenceSystemConfig,
-
-  // Task Prediction Types
-  TaskPrediction,
-  MultiHorizonTaskPrediction,
-  TaskPredictorConfig,
-  TaskCompletionRecord,
-  PredictionFactor,
-
-  // Health and Learning Types
-  AgentHealth,
-  AgentLearningState,
-  AgentMetrics,
-  HealthStatus,
-  HealthThresholds,
-
-  // Performance Types
-  PerformanceHistory,
-  PerformanceEntry,
-  ResourceUsage,
-
-  // Prediction Types
-  PredictionRequest,
-  PredictionResult,
-  PerformanceOptimizationForecast,
-  KnowledgeTransferPrediction,
-  EmergentBehaviorPrediction,
-  AdaptiveLearningUpdate,
-
-  // System Types
-  SystemHealthSummary,
-  MonitoringConfig,
-  MonitoringEvent,
-  MonitoringEventType,
-  HealthStatusType,
-  TrendType,
-
-  // Intelligence Types
-  IntelligenceMetrics,
-  EmergentBehavior,
-  AgentCapabilities,
-
-  // Learning Types
-  LearningConfiguration,
-} from './types';
-
 // =============================================================================
 // CONVENIENCE EXPORTS - Re-export commonly used types
 // =============================================================================
 export type {
-  IntelligenceSystemConfig as Config,
-  TaskPrediction as Prediction,
-  AgentHealth as Health,
-  SystemHealthSummary as SystemHealth,
-} from './types';
+	AdaptiveLearningUpdate,
+	AgentCapabilities,
+	// Health and Learning Types
+	AgentHealth,
+	AgentHealth as Health,
+	// Core Agent Types
+	AgentId,
+	AgentLearningState,
+	AgentMetrics,
+	AgentType,
+	EmergentBehavior,
+	EmergentBehaviorPrediction,
+	ForecastHorizon,
+	HealthStatus,
+	HealthStatusType,
+	HealthThresholds,
+	// Intelligence Types
+	IntelligenceMetrics,
+	// Intelligence System Types
+	IntelligenceSystem,
+	IntelligenceSystemConfig,
+	IntelligenceSystemConfig as Config,
+	KnowledgeTransferPrediction,
+	// Learning Types
+	LearningConfiguration,
+	MonitoringConfig,
+	MonitoringEvent,
+	MonitoringEventType,
+	MultiHorizonTaskPrediction,
+	PerformanceEntry,
+	// Performance Types
+	PerformanceHistory,
+	PerformanceOptimizationForecast,
+	PredictionFactor,
+	// Prediction Types
+	PredictionRequest,
+	PredictionResult,
+	ResourceUsage,
+	SwarmId,
+	// System Types
+	SystemHealthSummary,
+	SystemHealthSummary as SystemHealth,
+	TaskCompletionRecord,
+	// Task Prediction Types
+	TaskPrediction,
+	TaskPrediction as Prediction,
+	TaskPredictorConfig,
+	TrendType,
+} from "./types";
 
 // =============================================================================
 // DEFAULT CONFIGURATIONS - For easy setup
@@ -145,109 +127,109 @@ export type {
 // =============================================================================
 
 export async function getAgentMonitoringSystemAccess(
-  config?: IntelligenceSystemConfig
+	config?: IntelligenceSystemConfig,
 ): Promise<any> {
-  const intelligenceSystem = new CompleteIntelligenceSystem(config);
-  await intelligenceSystem.initialize();
-  return {
-    createIntelligenceSystem: (systemConfig?: IntelligenceSystemConfig) =>
-      createIntelligenceSystem(systemConfig),
-    createBasicSystem: (systemConfig?: IntelligenceSystemConfig) =>
-      createBasicIntelligenceSystem(systemConfig),
-    createProductionSystem: (systemConfig?: IntelligenceSystemConfig) =>
-      createProductionIntelligenceSystem(systemConfig),
-    createTaskPredictor: (predictorConfig?: TaskPredictorConfig) =>
-      createTaskPredictor(predictorConfig),
-    createPerformanceTracker: (trackerConfig?: PerformanceTrackerConfig) =>
-      createPerformanceTracker(trackerConfig),
-    getGlobalPerformanceTracker: () => getGlobalPerformanceTracker(),
-    withPerformanceTracking: <T>(fn: () => T) => withPerformanceTracking(fn),
-    predict: (request: PredictionRequest) =>
-      intelligenceSystem.predict(request),
-    getHealth: (agentId: AgentId) => intelligenceSystem.getAgentHealth(agentId),
-    updateHealth: (agentId: AgentId, health: AgentHealth) =>
-      intelligenceSystem.updateAgentHealth(agentId, health),
-    getMetrics: () => intelligenceSystem.getIntelligenceMetrics(),
-    shutdown: () => intelligenceSystem.shutdown(),
-  };
+	const intelligenceSystem = new CompleteIntelligenceSystem(config);
+	await intelligenceSystem.initialize();
+	return {
+		createIntelligenceSystem: (systemConfig?: IntelligenceSystemConfig) =>
+			createIntelligenceSystem(systemConfig),
+		createBasicSystem: (systemConfig?: IntelligenceSystemConfig) =>
+			createBasicIntelligenceSystem(systemConfig),
+		createProductionSystem: (systemConfig?: IntelligenceSystemConfig) =>
+			createProductionIntelligenceSystem(systemConfig),
+		createTaskPredictor: (predictorConfig?: TaskPredictorConfig) =>
+			createTaskPredictor(predictorConfig),
+		createPerformanceTracker: (trackerConfig?: PerformanceTrackerConfig) =>
+			createPerformanceTracker(trackerConfig),
+		getGlobalPerformanceTracker: () => getGlobalPerformanceTracker(),
+		withPerformanceTracking: <T>(fn: () => T) => withPerformanceTracking(fn),
+		predict: (request: PredictionRequest) =>
+			intelligenceSystem.predict(request),
+		getHealth: (agentId: AgentId) => intelligenceSystem.getAgentHealth(agentId),
+		updateHealth: (agentId: AgentId, health: AgentHealth) =>
+			intelligenceSystem.updateAgentHealth(agentId, health),
+		getMetrics: () => intelligenceSystem.getIntelligenceMetrics(),
+		shutdown: () => intelligenceSystem.shutdown(),
+	};
 }
 
 export async function getIntelligenceSystemInstance(
-  config?: IntelligenceSystemConfig
+	config?: IntelligenceSystemConfig,
 ): Promise<CompleteIntelligenceSystem> {
-  const system = new CompleteIntelligenceSystem(config);
-  await system.initialize();
-  return system;
+	const system = new CompleteIntelligenceSystem(config);
+	await system.initialize();
+	return system;
 }
 
 export async function getTaskPredictionAccess(
-  config?: TaskPredictorConfig
+	config?: TaskPredictorConfig,
 ): Promise<any> {
-  const predictor = createTaskPredictor(config);
-  return {
-    predict: (request: PredictionRequest) => predictor.predict(request),
-    isHighConfidence: (prediction: TaskPrediction) =>
-      isHighConfidencePrediction(prediction),
-    getSummary: (predictions: TaskPrediction[]) =>
-      getPredictionSummary(predictions),
-    updateLearning: (record: TaskCompletionRecord) =>
-      predictor.updateLearning?.(record),
-  };
+	const predictor = createTaskPredictor(config);
+	return {
+		predict: (request: PredictionRequest) => predictor.predict(request),
+		isHighConfidence: (prediction: TaskPrediction) =>
+			isHighConfidencePrediction(prediction),
+		getSummary: (predictions: TaskPrediction[]) =>
+			getPredictionSummary(predictions),
+		updateLearning: (record: TaskCompletionRecord) =>
+			predictor.updateLearning?.(record),
+	};
 }
 
 export async function getPerformanceMonitoring(
-  config?: PerformanceTrackerConfig
+	config?: PerformanceTrackerConfig,
 ): Promise<any> {
-  const tracker = createPerformanceTracker(config);
-  return {
-    track: <T>(fn: () => T) => withPerformanceTracking(fn),
-    snapshot: () => tracker.getSnapshot(),
-    getStats: () => tracker.getStats(),
-    reset: () => tracker.reset?.(),
-  };
+	const tracker = createPerformanceTracker(config);
+	return {
+		track: <T>(fn: () => T) => withPerformanceTracking(fn),
+		snapshot: () => tracker.getSnapshot(),
+		getStats: () => tracker.getStats(),
+		reset: () => tracker.reset?.(),
+	};
 }
 
 export async function getAgentHealthMonitoring(
-  config?: IntelligenceSystemConfig
+	config?: IntelligenceSystemConfig,
 ): Promise<any> {
-  const system = await getAgentMonitoringSystemAccess(config);
-  return {
-    checkHealth: (agentId: AgentId) => system.getHealth(agentId),
-    updateHealth: (agentId: AgentId, health: AgentHealth) =>
-      system.updateHealth(agentId, health),
-    getSystemHealth: () => system.getMetrics(),
-    monitorAgent: (agentId: AgentId) => ({
-      getHealth: () => system.getHealth(agentId),
-      updateHealth: (health: AgentHealth) =>
-        system.updateHealth(agentId, health),
-    }),
-  };
+	const system = await getAgentMonitoringSystemAccess(config);
+	return {
+		checkHealth: (agentId: AgentId) => system.getHealth(agentId),
+		updateHealth: (agentId: AgentId, health: AgentHealth) =>
+			system.updateHealth(agentId, health),
+		getSystemHealth: () => system.getMetrics(),
+		monitorAgent: (agentId: AgentId) => ({
+			getHealth: () => system.getHealth(agentId),
+			updateHealth: (health: AgentHealth) =>
+				system.updateHealth(agentId, health),
+		}),
+	};
 }
 
 // Professional agent monitoring system object with proper naming (matches brainSystem pattern)
 export const agentMonitoringSystem = {
-  getAccess: getAgentMonitoringSystemAccess,
-  getIntelligence: getIntelligenceSystemInstance,
-  getPrediction: getTaskPredictionAccess,
-  getPerformance: getPerformanceMonitoring,
-  getHealthMonitoring: getAgentHealthMonitoring,
-  createSystem: createIntelligenceSystem,
-  createBasic: createBasicIntelligenceSystem,
-  createProduction: createProductionIntelligenceSystem,
+	getAccess: getAgentMonitoringSystemAccess,
+	getIntelligence: getIntelligenceSystemInstance,
+	getPrediction: getTaskPredictionAccess,
+	getPerformance: getPerformanceMonitoring,
+	getHealthMonitoring: getAgentHealthMonitoring,
+	createSystem: createIntelligenceSystem,
+	createBasic: createBasicIntelligenceSystem,
+	createProduction: createProductionIntelligenceSystem,
 };
 
 /**
  * Package metadata and version information
  */
 export const PACKAGE_INFO = {
-  name: '@claude-zen/agent-monitoring',
-  version: '1.0.0',
-  description: 'Core agent monitoring primitives for Claude Code Zen',
-  features: [
-    'Basic task prediction interfaces',
-    'Simple intelligence system implementations',
-    'Core monitoring types and configurations',
-    'Foundation logging and storage integration',
-    'Tree-shakable exports for optimal bundles',
-  ],
+	name: "@claude-zen/agent-monitoring",
+	version: "1.0.0",
+	description: "Core agent monitoring primitives for Claude Code Zen",
+	features: [
+		"Basic task prediction interfaces",
+		"Simple intelligence system implementations",
+		"Core monitoring types and configurations",
+		"Foundation logging and storage integration",
+		"Tree-shakable exports for optimal bundles",
+	],
 } as const;

@@ -8,9 +8,9 @@
  * Uses foundation error patterns for consistency with the rest of the system.
  */
 
-import { getLogger, EnhancedError } from '@claude-zen/foundation';
+import { EnhancedError, getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('KnowledgeErrors');'
+const _logger = getLogger('KnowledgeErrors');'
 
 /**
  * Base error context interface for knowledge operations
@@ -54,14 +54,14 @@ export abstract class BaseKnowledgeError extends EnhancedError {
   }
 
   private logError(): void {
-    const logLevel =
+    const _logLevel =
       this.severity === 'critical''
         ? 'error''
         : this.severity === 'high''
           ? 'warn''
           : 'info;
 
-    logger[logLevel](`[${this.category}] ${this.message}`, {`
+    logger[logLevel](`[$this.category] $this.message`, {`
       severity: this.severity,
       context: this.context,
       recoverable: this.recoverable,

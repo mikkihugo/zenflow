@@ -10,11 +10,11 @@ import { LLM_PROVIDER_CONFIG } from '../config/providers';
 import type {
   AnalysisRequest,
   AnalysisResult,
+  LLMAnalytics,
   LLMCallRecord,
   LLMProviderStats,
   LLMRoutingStats,
   LLMSystemHealth,
-  LLMAnalytics,
 } from '../types/index';
 
 const logger = getLogger('llm-routing-stats');'
@@ -248,7 +248,7 @@ export class LLMStatsService {
   // Private helper methods
 
   private generateCallId(): string {
-    return `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+    return `llm-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
   }
 
   private addCallRecord(record: LLMCallRecord): void {
@@ -584,7 +584,7 @@ export class LLMStatsService {
   }
 
   private getProviderStatus(
-    providerId: string,
+    _providerId: string,
     calls: LLMCallRecord[],
   ): LLMProviderStats['currentStatus'] {'
     const recentCalls = calls.filter(
@@ -611,7 +611,7 @@ export class LLMStatsService {
   }
 
   private getPreferredTasks(
-    providerId: string,
+    _providerId: string,
     calls: LLMCallRecord[],
   ): string[] {
     const taskCounts = new Map<string, number>();
@@ -760,7 +760,7 @@ export class LLMStatsService {
         bottlenecks.push(`${provider.displayName} has low success rate`);`
       }
       if (provider.averageResponseTime > 5000) {
-        bottlenecks.push(`${provider.displayName} has high latency`);`
+        bottlenecks.push(`$provider.displayNamehas high latency`);`
       }
     });
 

@@ -14,13 +14,8 @@
  */
 
 import type {
-  Branded as Brand,
   Entity,
-  NonEmptyArray,
-  Optional,
-  Priority,
   OperationResult as Result,
-  Status,
   Timestamp,
   UUID,
   ValidationError,

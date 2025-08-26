@@ -30,8 +30,6 @@ import type { Logger } from '@claude-zen/foundation';
 import type {
   EventFilter,
   EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
   EventPriority,
   EventProcessingStrategy,
   EventManager,
@@ -255,7 +253,7 @@ export abstract class BaseEventManager implements EventManager {
    */
   async emit(
     event: SystemEvent,
-    options?: {
+    _options?: {
       priority?: EventPriority;
       timeout?: number;
       retries?: number;
@@ -335,7 +333,7 @@ export abstract class BaseEventManager implements EventManager {
       }
 
       this.logger.debug(`Event emitted: $event.type($processingTimems)`);`
-    } catch (error) {
+    } catch (error) 
       this.metrics.eventsFailed++;
       this.metrics.errorCount++;
       this.logger.error(`Event emission failed: $event.id`, error);`
@@ -403,10 +401,9 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     this.logger.debug(
-      `Subscription created: ${subscriptionId} for types ${types.join(', ')}``
+      `Subscription created: $subscriptionIdfor types ${types.join(', ')}``
     );
     return subscriptionId;
-  }
 
   /**
    * Unsubscribe from events.
@@ -531,7 +528,7 @@ export abstract class BaseEventManager implements EventManager {
    * Restart the event manager (stop then start).
    */
   async restart(): Promise<void> {
-    this.logger.info(`Restarting event manager: ${this.name}`);`
+    this.logger.info(`Restarting event manager: $this.name`);`
     await this.stop();
     await this.start();
   }
@@ -547,8 +544,8 @@ export abstract class BaseEventManager implements EventManager {
       created: Date;
       metadata?: Record<string, unknown>;
     },
-    options?: { priority?: EventPriority; timeout?: number; retries?: number }
-  ): Promise<void> {
+    options?: priority?: EventPriority; timeout?: number; retries?: number 
+  ): Promise<void> 
     this.logger.debug(`Emitting batch of $batch.events.lengthevents`);`
 
     // Process all events in the batch
@@ -593,16 +590,15 @@ export abstract class BaseEventManager implements EventManager {
 
     this.metrics.subscriptionCount -= removedCount;
     this.logger.debug(
-      `Unsubscribed ${removedCount} listeners${eventType ? ` for event type: ${eventType}` : ''}``
+      `Unsubscribed $removedCountlisteners$eventType ? ` for event type: ${eventType}` : ''``
     );
     return removedCount;
-  }
 
   /**
    * Add a global event filter with comprehensive validation and storage.
    */
   addFilter(filter: EventFilter): string {
-    const filterId = `filter-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
+    const _filterId = `filter-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
     // Validate filter structure
     if (!filter || typeof filter !== 'object') {'
@@ -629,8 +625,8 @@ export abstract class BaseEventManager implements EventManager {
       },
     });
 
-    this.logger.info(`Global event filter added: ${filterId}`, {`
-      filterId,
+    this.logger.info(`Global event filter added: $_filterId`, {`
+      _filterId,
       filterTypes: filter.types,
       filterSources: filter.sources,
       hasCustomFilter: !!filter.customFilter,
@@ -666,11 +662,11 @@ export abstract class BaseEventManager implements EventManager {
    * Add a global event transformation with comprehensive processing.
    */
   addTransform(transform: {
-    mapper?: (event: SystemEvent) => SystemEvent;
-    enricher?: (event: SystemEvent) => Promise<SystemEvent>;
-    validator?: (event: SystemEvent) => boolean;
+    mapper?: (_event: SystemEvent) => SystemEvent;
+    enricher?: (_event: SystemEvent) => Promise<SystemEvent>;
+    validator?: (_event: SystemEvent) => boolean;
   }): string {
-    const transformId = `transform-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
+    const _transformId = `transform-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
     // Validate transform structure
     if (!transform || typeof transform !== 'object') {'
@@ -717,7 +713,7 @@ export abstract class BaseEventManager implements EventManager {
     });
 
     this.logger.info(`Global event transform added: $transformId`, {`
-      transformId,
+      _transformId,
       hasMapper: !!transform.mapper,
       hasEnricher: !!transform.enricher,
       hasValidator: !!transform.validator,
@@ -866,8 +862,8 @@ export abstract class BaseEventManager implements EventManager {
     eventType: string,
     limit?: number
   ): Promise<SystemEvent[]> {
-    const startTime = Date.now();
-    const historyId = `history-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
+    const _startTime = Date.now();
+    const _historyId = `history-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
     this.logger.debug(`Getting event history: $historyId`, {`
       eventType,
@@ -969,7 +965,7 @@ export abstract class BaseEventManager implements EventManager {
 
     this.lifecycleEmitter.on(event, handler);
     
-    this.logger.debug(`Lifecycle listener added for event: $event`, {`
+    this.logger.debug(`Lifecycle listener added for event: $event`, `
       event,
       managerName: this.name,
       listenerCount: this.lifecycleEmitter.listenerCount(event),
@@ -981,12 +977,11 @@ export abstract class BaseEventManager implements EventManager {
    */
   off(event: string, handler?: (...args: unknown[]) => void): void {
     if (!this.lifecycleEmitter) {
-      this.logger.warn(`No lifecycle emitter exists for manager: ${this.name}`);`
+      this.logger.warn(`No lifecycle emitter exists for manager: $this.name`);`
       return;
-    }
 
     if (!event || typeof event !== 'string') {'
-      this.logger.warn('Invalid event name provided for removal', { event });'
+      this.logger.warn('Invalid event name provided for removal', event );'
       return;
     }
 
@@ -1007,7 +1002,7 @@ export abstract class BaseEventManager implements EventManager {
   /**
    * Add one-time listener for manager events.
    */
-  once(event: string, handler: (...args: unknown[]) => void): void {
+  once(event: string, handler: (..._args: unknown[]) => void): void {
     // Initialize lifecycle emitter if not exists
     if (!this.lifecycleEmitter) {
       this.lifecycleEmitter = new EventEmitter();
@@ -1103,7 +1098,7 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     // Notify subscribers in parallel
-    const notifications = matchingSubscribers.map(async (subscription) => {
+    const _notifications = matchingSubscribers.map(async (subscription) => {
       try {
         subscription.eventCount++;
         await subscription.listener(event);

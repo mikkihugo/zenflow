@@ -9,12 +9,12 @@
  * @version 2.0.0
  */
 
-import {
-  ConversationOrchestrator,
+import type {
   ConversationConfig,
+  ConversationOrchestrator,
   ConversationParticipant,
-  ConversationMessage,
 } from '@claude-zen/teamwork';
+
 // ConversationSummary type definition (not exported from teamwork yet)
 interface ConversationSummary {
   id: string;
@@ -27,14 +27,15 @@ interface ConversationSummary {
   keyDecisions: string[];
   timestamp: Date;
 }
-import {
-  WorkflowEngine,
+
+// Temporarily use Node.js EventEmitter until event-system is built
+import type { EventEmitter } from 'node:events';
+import type { Logger } from '@claude-zen/foundation';
+import type {
   WorkflowDefinition,
+  WorkflowEngine,
   WorkflowStep,
 } from '@claude-zen/workflows';
-// Temporarily use Node.js EventEmitter until event-system is built
-import { EventEmitter } from 'node:events';
-import type { Logger } from '@claude-zen/foundation';
 
 /**
  * SAFe-specific ART coordination using proven teamwork patterns
@@ -237,7 +238,7 @@ export class CrossARTCoordinator {
         capabilities: ['facilitate', 'provide-context', 'track-resolution'],
       },
       ...params.affectedARTs.map((artId) => ({
-        id: `rte-${artId}`,`
+        id: `rte-$artId`,`
         name: `RTE ${artId}`,`
         role: 'release-train-engineer',
         status: 'active' as const,
@@ -266,11 +267,11 @@ export class CrossARTCoordinator {
     }
 
     const conversationConfig: ConversationConfig = {
-      title: `Cross-ART Impediment Resolution: ${params.impedimentId}`,`
+      title: `Cross-ART Impediment Resolution: $params.impedimentId`,`
       pattern: 'decision',
       initialParticipants: [], // Convert participants to AgentId later
       timeout: (params.severity === 'critical' ? 120 : 60) * 60 * 1000, // Convert to milliseconds'
-      context: {
+      context: 
         task: `Resolve cross-ART impediment ${params.impedimentId}`,`
         goal: 'Identify resolution path and assign ownership',
         constraints: [],

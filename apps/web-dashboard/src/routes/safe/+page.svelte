@@ -1,56 +1,91 @@
 <script lang="ts">
-  const safeRoles = [
-    { 
-      role: 'team_member', 
-      title: 'Team Member', 
-      icon: '👨‍💻', 
-      description: 'Individual contributor focused on technical excellence and collaboration',
-      features: ['Personal skill tracking', 'Story management', 'Code quality metrics', 'Team collaboration tools']
-    },
-    { 
-      role: 'scrum_master', 
-      title: 'Scrum Master', 
-      icon: '🎯', 
-      description: 'Team facilitator ensuring process excellence and impediment removal',
-      features: ['Team health monitoring', 'Impediment tracking', 'Velocity optimization', 'Retrospective facilitation']
-    },
-    { 
-      role: 'po', 
-      title: 'Product Owner', 
-      icon: '🎨', 
-      description: 'Product strategy leader maximizing value delivery to customers',
-      features: ['Value stream mapping', 'Backlog optimization', 'Customer feedback', 'Feature success tracking']
-    },
-    { 
-      role: 'rte', 
-      title: 'RTE', 
-      icon: '🚀', 
-      description: 'Release Train Engineer coordinating ART-level execution',
-      features: ['ART coordination', 'PI Planning facilitation', 'Dependency management', 'System demo orchestration']
-    },
-    { 
-      role: 'architect', 
-      title: 'System Architect', 
-      icon: '🏗️', 
-      description: 'Technical leader driving architecture evolution and enablement',
-      features: ['Architecture governance', 'Technical debt tracking', 'Innovation enablement', 'Architectural runway']
-    },
-    { 
-      role: 'business_owner', 
-      title: 'Business Owner', 
-      icon: '💼', 
-      description: 'Strategic leader optimizing portfolio investment and business outcomes',
-      features: ['Portfolio management', 'ROI optimization', 'Business outcome tracking', 'Investment decisions']
-    }
-  ];
+const _safeRoles = [
+	{
+		role: "team_member",
+		title: "Team Member",
+		icon: "👨‍💻",
+		description:
+			"Individual contributor focused on technical excellence and collaboration",
+		features: [
+			"Personal skill tracking",
+			"Story management",
+			"Code quality metrics",
+			"Team collaboration tools",
+		],
+	},
+	{
+		role: "scrum_master",
+		title: "Scrum Master",
+		icon: "🎯",
+		description:
+			"Team facilitator ensuring process excellence and impediment removal",
+		features: [
+			"Team health monitoring",
+			"Impediment tracking",
+			"Velocity optimization",
+			"Retrospective facilitation",
+		],
+	},
+	{
+		role: "po",
+		title: "Product Owner",
+		icon: "🎨",
+		description:
+			"Product strategy leader maximizing value delivery to customers",
+		features: [
+			"Value stream mapping",
+			"Backlog optimization",
+			"Customer feedback",
+			"Feature success tracking",
+		],
+	},
+	{
+		role: "rte",
+		title: "RTE",
+		icon: "🚀",
+		description: "Release Train Engineer coordinating ART-level execution",
+		features: [
+			"ART coordination",
+			"PI Planning facilitation",
+			"Dependency management",
+			"System demo orchestration",
+		],
+	},
+	{
+		role: "architect",
+		title: "System Architect",
+		icon: "🏗️",
+		description:
+			"Technical leader driving architecture evolution and enablement",
+		features: [
+			"Architecture governance",
+			"Technical debt tracking",
+			"Innovation enablement",
+			"Architectural runway",
+		],
+	},
+	{
+		role: "business_owner",
+		title: "Business Owner",
+		icon: "💼",
+		description:
+			"Strategic leader optimizing portfolio investment and business outcomes",
+		features: [
+			"Portfolio management",
+			"ROI optimization",
+			"Business outcome tracking",
+			"Investment decisions",
+		],
+	},
+];
 
-  function enterProductionDashboard(role: string) {
-    window.location.href = `/safe-production?userRole=${role}&immersionLevel=production`;
-  }
+function _enterProductionDashboard(role: string) {
+	window.location.href = `/safe-production?userRole=${role}&immersionLevel=production`;
+}
 
-  function enterEnhancedDashboard(role: string) {
-    window.location.href = `/safe-production?userRole=${role}&immersionLevel=enhanced`;
-  }
+function _enterEnhancedDashboard(role: string) {
+	window.location.href = `/safe-production?userRole=${role}&immersionLevel=enhanced`;
+}
 </script>
 
 <svelte:head>

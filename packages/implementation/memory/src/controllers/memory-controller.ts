@@ -195,13 +195,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to get memory status: ${error instanceof Error ? error.message :'Unknown error'}`,`
-        metadata: {
+        error: `Failed to get memory status: $error instanceof Error ? error.message :'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }
@@ -238,7 +236,7 @@ export class MemoryController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this._logger.debug(`Successfully stored key: ${request.key}`);`
+      this._logger.debug(`Successfully stored key: $request.key`);`
 
       return {
         success: true,
@@ -262,13 +260,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to store memory: ${error instanceof Error ? error.message :'Unknown error'}`,`
-        metadata: {
+        error: `Failed to store memory: $error instanceof Error ? error.message :'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }
@@ -296,7 +292,7 @@ export class MemoryController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this._logger.debug(`Successfully retrieved key: ${key}`);`
+      this._logger.debug(`Successfully retrieved key: $key`);`
 
       return {
         success: true,
@@ -321,13 +317,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to retrieve memory: ${error instanceof Error ? error.message :'Unknown error'}`,`
-        metadata: {
+        error: `Failed to retrieve memory: $error instanceof Error ? error.message :'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }
@@ -354,7 +348,7 @@ export class MemoryController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this._logger.debug(`Successfully deleted key: ${key}`);`
+      this._logger.debug(`Successfully deleted key: $key`);`
 
       return {
         success: true,
@@ -376,13 +370,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to delete memory: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-        metadata: {
+        error: `Failed to delete memory: $error instanceof Error ? error.message : 'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }
@@ -424,13 +416,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to clear memory: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-        metadata: {
+        error: `Failed to clear memory: $error instanceof Error ? error.message : 'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }
@@ -508,7 +498,7 @@ export class MemoryController {
       this.updateMetrics(executionTime, errorCount === 0);
 
       this._logger.debug(
-        `Batch operations completed: ${results.length} operations, ${errorCount} errors``
+        `Batch operations completed: $results.lengthoperations, $errorCounterrors``
       );
 
       return {
@@ -533,13 +523,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Batch operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-        metadata: {
+        error: `Batch operations failed: $error instanceof Error ? error.message : 'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }
@@ -617,13 +605,11 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to get analytics: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-        metadata: {
+        error: `Failed to get analytics: $error instanceof Error ? error.message : 'Unknown error'`,`
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this._config.type,
-        },
+          backend: this._config.type,,
       };
     }
   }

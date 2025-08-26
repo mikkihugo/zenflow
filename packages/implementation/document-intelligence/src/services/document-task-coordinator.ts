@@ -8,7 +8,6 @@
 
 import type { DocumentType } from '@claude-zen/enterprise';
 import { getLogger } from '@claude-zen/foundation';
-import type { BaseDocumentEntity } from '@claude-zen/intelligence';
 import { DocumentManager } from '@claude-zen/intelligence';
 
 import {
@@ -143,7 +142,7 @@ export class DocumentTaskVisionCoordinator {
       };
 
       logger.info(
-        `Dashboard built successfully with ${tasks.length} tasks and ${documents.length} documents``
+        `Dashboard built successfully with ${tasks.length} tasks and $documents.lengthdocuments``
       );
       return dashboard;
     } catch (error) {
@@ -164,7 +163,7 @@ export class DocumentTaskVisionCoordinator {
     errors: string[];
   }> {
     try {
-      logger.info(`Generating strategic tasks for project: ${projectId}`);`
+      logger.info(`Generating strategic tasks for project: $projectId`);`
 
       const vision = await this.visionService.getVisionForWorkspace(projectId);
 
@@ -255,7 +254,7 @@ export class DocumentTaskVisionCoordinator {
   }> {
     try {
       logger.info(
-        `Linking documents to strategic goals for project: ${projectId}``
+        `Linking documents to strategic goals for project: $projectId``
       );
 
       const vision = await this.visionService.getVisionForWorkspace(projectId);
@@ -307,7 +306,7 @@ export class DocumentTaskVisionCoordinator {
     notes?: string
   ): Promise<{ success: boolean; updatedDocuments: string[]; error?: string }> {
     try {
-      logger.info(`Updating task ${taskId} status to ${status}`);`
+      logger.info(`Updating task $taskIdstatus to $status`);`
 
       // Find task document in database
       const searchResult = await this.documentManager.searchDocuments({
@@ -372,7 +371,7 @@ export class DocumentTaskVisionCoordinator {
                 updatedDocuments.push(docId);
               }
             }
-          } catch (docError) {
+          } catch (_docError) {
             logger.warn(
               `Could not update related document ${docId}:`,`
               docError
@@ -402,7 +401,7 @@ export class DocumentTaskVisionCoordinator {
     // Generate tasks from strategic goals
     for (let i = 0; i < vision.strategicGoals.length; i++) {
       const goal = vision.strategicGoals[i];
-      const goalId = `goal_${i}_${goal?.toLowerCase.replace(/\s+/g, '_')}`;`
+      const goalId = `goal_$i_$goal?.toLowerCase.replace(/\s+/g, '_')`;`
 
       // Create main implementation task for each goal
       tasks.push({
@@ -613,7 +612,7 @@ export class DocumentTaskVisionCoordinator {
           task.description?.toLowerCase.includes(risk?.toLowerCase)
       );
       if (!hasTask) {
-        riskMitigations.push(`Create mitigation plan for: ${risk}`);`
+        riskMitigations.push(`Create mitigation plan for: $risk`);`
       }
     }
 
@@ -621,10 +620,9 @@ export class DocumentTaskVisionCoordinator {
     if (
       tasks.filter((task) => task.status === 'blocked').length >'
       tasks.length * .2
-    ) {
+    ) 
       optimizationOpportunities.push(
         'High number of blocked tasks - review dependencies and bottlenecks');'
-    }
 
     if (vision.businessValue < .6||vision.technicalImpact < .6) {
       optimizationOpportunities.push('Strategic vision could be strengthened with more detailed documentation''
@@ -639,39 +637,39 @@ export class DocumentTaskVisionCoordinator {
     };
   }
 
-  private createTaskDocumentContent(task: StrategicTask): string {
+  private createTaskDocumentContent(task: StrategicTask): string 
     return `# ${task.title}`
 
 ## Description
-${task.description}
+$task.description
 
 ## Strategic Goal
-${task.strategicGoalId}
+$task.strategicGoalId
 
 ## Priority & Effort
-- **Priority**: ${task.priority}
-- **Estimated Effort**: ${task.estimatedEffort}
-- **Business Value**: ${Math.round(task.businessValue * 100)}%
-- **Technical Complexity**: ${Math.round(task.technicalComplexity * 100)}%
+- **Priority**: $task.priority
+- **Estimated Effort**: $task.estimatedEffort
+- **Business Value**: $Math.round(task.businessValue * 100)%
+- **Technical Complexity**: $Math.round(task.technicalComplexity * 100)%
 
 ## Expected Outcomes
-${task.outcomes.map((outcome) => `- ${outcome}`).join('\n')}'
+$task.outcomes.map((outcome) => `- ${outcome}`).join('\n')'
 
 ## Success Metrics
-${task.metrics.map((metric) => `- ${metric}`).join('\n')}'
+$task.metrics.map((metric) => `- ${metric}`).join('\n')'
 
 ## Dependencies
-${task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n') : 'No dependencies'}'
+$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n') : 'No dependencies''
 
 ## Status
-Current Status: ${task.status}
-${task.dueDate ? `Due Date: ${task.dueDate?.toLocaleDateString}` : '}'
-${task.assignedTo ? `Assigned To: ${task.assignedTo}` : '}'
+Current Status: $task.status
+$task.dueDate ? `Due Date: ${task.dueDate?.toLocaleDateString}` : '}'
+$task.assignedTo ? `Assigned To: ${task.assignedTo}` : '}'
 
 ---
 *Generated by Document-Task-Vision Coordinator*
-*Created: ${task.createdAt?.toLocaleString}*
-*Last Updated: ${task.updatedAt?.toLocaleString}*
+*Created: $task.createdAt?.toLocaleString*
+*Last Updated: $task.updatedAt?.toLocaleString*
 `;`
   }
 }

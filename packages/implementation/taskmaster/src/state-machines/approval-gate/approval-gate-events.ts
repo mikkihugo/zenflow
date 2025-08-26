@@ -11,8 +11,8 @@
 
 import type { SystemEvent } from '@claude-zen/event-system';
 import type {
-  ApprovalRequest,
   ApprovalDecision,
+  ApprovalRequest,
 } from './approval-gate-machine';
 
 // =============================================================================

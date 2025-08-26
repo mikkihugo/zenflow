@@ -4,16 +4,15 @@
  * Centralized exports for all LLM statistics and analytics functionality
  */
 
-export { default as LLMStatsService } from './llm-stats-service';
-
 // Re-export types for convenience
 export type {
-  LLMCallRecord,
-  LLMError,
-  LLMProviderStats,
-  LLMRoutingStats,
-  LLMSystemHealth,
-  LLMAnalytics,
-  AnalysisRequest,
-  AnalysisResult,
-} from '../types/index';
+	AnalysisRequest,
+	AnalysisResult,
+	LLMAnalytics,
+	LLMCallRecord,
+	LLMError,
+	LLMProviderStats,
+	LLMRoutingStats,
+	LLMSystemHealth,
+} from "../types/index";
+export { default as LLMStatsService } from "./llm-stats-service";

@@ -35,25 +35,14 @@ interface AgentManager extends TypedEventBase {
   [key: string]: any;
 }
 import type {
-  EventBatch,
-  EventEmissionOptions,
-  EventFilter,
-  EventListener,
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
-  EventPriority,
-  EventQueryOptions,
-  EventSubscription,
-  EventTransform,
   EventManager,
   SystemEvent,
 } from '../core/interfaces;
 import {
-  EventEmissionError,
   EventManagerTypes,
-  EventTimeoutError,
 } from '../core/interfaces;
 import type { CoordinationEvent } from '../types;
 import { EventPriorityMap } from '../types;
@@ -266,38 +255,7 @@ export class CoordinationEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new EventEmitter();
   private logger: Logger;
-  private startTime?: Date;
-  private eventCount = 0;
-  private successCount = 0;
-  private errorCount = 0;
-  private totalLatency = 0;
-
-  // Coordination component integration
-  private wrappedComponents = new Map<string, WrappedCoordinationComponent>();
-  private swarmCoordinators = new Map<string, SwarmCoordinator>();
-  private agentManagers = new Map<string, AgentManager>();
-  private orchestrators = new Map<string, Orchestrator>();
-
-  // Event correlation and tracking
-  private coordinationCorrelations = new Map<string, CoordinationCorrelation>();
-  private coordinationHealth = new Map<string, CoordinationHealthEntry>();
-  private metrics: CoordinationEventMetrics[] = [];
-  private subscriptions = new Map<string, EventSubscription>();
-  private filters = new Map<string, EventFilter>();
-  private transforms = new Map<string, EventTransform>();
-
-  // Event processing queues
-  private eventQueue: CoordinationEvent[] = [];
-  private processingEvents = false;
-  private eventHistory: CoordinationEvent[] = [];
-
-  // Coordination-specific tracking.
-  private swarmMetrics = new Map<string, any>();
-  private agentMetrics = new Map<string, any>();
-  private taskMetrics = new Map<string, any>();
-  private coordinationPatterns = new Map<string, any>();
 
   constructor(config: CoordinationEventAdapterConfig) {
     this.name = config?.name;
@@ -449,7 +407,7 @@ export class CoordinationEventAdapter implements EventManager {
       );
     } catch (error) 
       this.logger.error(
-        `Failed to start coordination event adapter ${this.name}:`,`
+        `Failed to start coordination event adapter $this.name:`,`
         error
       );
       this.emitInternal('error', error);'
@@ -485,7 +443,7 @@ export class CoordinationEventAdapter implements EventManager {
       this.logger.info(
         `Coordination event adapter stopped successfully: $this.name``
       );
-    } catch (error) {
+    } catch (error) 
       this.logger.error(
         `Failed to stop coordination event adapter ${this.name}:`,`
         error
@@ -624,7 +582,6 @@ export class CoordinationEventAdapter implements EventManager {
         error
       );
       throw error;
-    }
   }
 
   /**
@@ -637,7 +594,7 @@ export class CoordinationEventAdapter implements EventManager {
     batch: EventBatch<T>,
     options?: EventEmissionOptions
   ): Promise<void> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     try {
       this.logger.debug(
@@ -666,7 +623,7 @@ export class CoordinationEventAdapter implements EventManager {
       this.logger.debug(
         `Coordination event batch processed successfully: ${batch.id} in ${duration}ms``
       );
-    } catch (error) {
+    } catch (_error) {
       this.logger.error(
         `Coordination event batch processing failed for ${batch.id}:`,`
         error
@@ -847,7 +804,7 @@ export class CoordinationEventAdapter implements EventManager {
     // Apply pagination
     const offset = options?.offset||0;
     const limit = options?.limit||100;
-    const total = events.length;
+    const _total = events.length;
     events = events.slice(offset, offset + limit);
 
     // Cast to T[] for return - assumes T extends CoordinationEvent
@@ -1193,17 +1150,17 @@ export class CoordinationEventAdapter implements EventManager {
   async performCoordinationHealthCheck(): Promise<
     Record<string, CoordinationHealthEntry>
   > {
-    const healthResults: Record<string, CoordinationHealthEntry> = {};
+    const _healthResults: Record<string, CoordinationHealthEntry> = {};
 
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
       try {
-        const startTime = Date.now();
+        const _startTime = Date.now();
 
         // Perform component-specific health check
-        const isHealthy = wrapped.isActive;
-        let coordinationLatency = 0;
-        let throughput = 0;
-        let reliability = 1.0;
+        const _isHealthy = wrapped.isActive;
+        let _coordinationLatency = 0;
+        let _throughput = 0;
+        let _reliability = 1.0;
 
         // Get component-specific health data if available
         if (
@@ -1213,10 +1170,10 @@ export class CoordinationEventAdapter implements EventManager {
           typeof (wrapped.component as any).getMetrics === 'function') '
           try {
             const metrics = await (wrapped.component as any).getMetrics();
-            coordinationLatency = metrics?.averageLatency||0;
-            throughput = metrics?.throughput||0;
-            reliability = 1 - (metrics?.errorRate||0);
-          } catch (error) {
+            _coordinationLatency = metrics?.averageLatency||0;
+            _throughput = metrics?.throughput||0;
+            _reliability = 1 - (metrics?.errorRate||0);
+          } catch (_error) {
             // Ignore metrics errors during health check
             this.logger.debug(
               `Failed to get metrics for ${componentName}:`,`
@@ -1636,7 +1593,7 @@ export class CoordinationEventAdapter implements EventManager {
         this.logger.debug(`Unwrapped coordination component: $componentName`);`
       } catch (error) 
         this.logger.warn(
-          `Failed to unwrap coordination component ${componentName}:`,`
+          `Failed to unwrap coordination component $componentName:`,`
           error
         );
       }
@@ -1772,30 +1729,23 @@ export class CoordinationEventAdapter implements EventManager {
         await this.performCoordinationHealthCheck();
 
         // Emit health status events for unhealthy components
-        for (const [component, health] of this.coordinationHealth.entries()) {
+        for (const [_component, health] of this.coordinationHealth.entries()) {
           if (health.status !=='healthy') {'
-            await this.emitSwarmCoordinationEvent({
-              source: component,
+            await this.emitSwarmCoordinationEvent(
+              source: _component,
               type: 'coordination:swarm',
               operation: 'coordinate',
               targetId: component,
-              payload: {
-                metrics: {
+              payload: 
                   latency: health.coordinationLatency,
                   throughput: health.throughput,
                   reliability: health.reliability,
-                  resourceUsage: health.resourceUsage,
-                },
-              },
-              details: {
-                metrics: {
+                  resourceUsage: health.resourceUsage,,,
+              details: 
                   latency: health.coordinationLatency,
                   throughput: health.throughput,
                   reliability: health.reliability,
-                  resourceUsage: health.resourceUsage,
-                },
-              },
-            });
+                  resourceUsage: health.resourceUsage,,,);
           }
         }
       } catch (error) {
@@ -1808,7 +1758,7 @@ export class CoordinationEventAdapter implements EventManager {
    * Start coordination correlation cleanup to prevent memory leaks.
    */
   private startCoordinationCorrelationCleanup(): void {
-    const cleanupInterval = 60000; // 1 minute
+    const _cleanupInterval = 60000; // 1 minute
     const correlationTTL = this.config.coordination?.correlationTTL||300000; // 5 minutes
 
     setInterval(() => {
@@ -2594,9 +2544,9 @@ export const CoordinationEventHelpers = {
    * @param details
    */
   createSwarmInitEvent(
-    swarmId: string,
-    topology: 'mesh|hierarchical|ring|star',
-    details?: unknown
+    _swarmId: string,
+    _topology: 'mesh|hierarchical|ring|star',
+    _details?: unknown
   ): Omit<CoordinationEvent, 'id|timestamp''> {'
     return {
       source: 'swarm-coordinator',

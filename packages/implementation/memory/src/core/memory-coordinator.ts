@@ -65,7 +65,6 @@ export interface CoordinationDecision {
 export class MemoryCoordinator extends TypedEventBase {
   private nodes = new Map<string, MemoryNode>();
   private decisions = new Map<string, CoordinationDecision>();
-  private configuration: MemoryCoordinationConfig;
 
   constructor(config: MemoryCoordinationConfig) {
     super();
@@ -211,192 +210,6 @@ export class MemoryCoordinator extends TypedEventBase {
   }
 
   /**
-   * Execute distributed write operation.
-   *
-   * @param decision
-   */
-  private async executeWrite(decision: CoordinationDecision): Promise<void> {
-    const writePromises = decision.participants.map(async (nodeId) => {
-      const node = this.nodes.get(nodeId);
-      if (!node) {
-        throw new Error(`Node not found: ${nodeId}`);`
-      }
-
-      return await node?.backend?.store(
-        decision.target,
-        decision.metadata?.data
-      );
-    });
-
-    if (this.config.distributed.consistency === 'strong') {'
-      // Wait for all writes to complete
-      await Promise.all(writePromises);
-    } else {
-      // Wait for quorum
-      const quorum = Math.ceil(
-        decision.participants.length * this.config.consensus.quorum
-      );
-      await Promise.race([
-        Promise.all(writePromises.slice(0, quorum)),
-        new Promise((_, reject) =>
-          setTimeout(
-            () => reject(new Error('Quorum timeout')),
-            this.config.consensus.timeout
-          )
-        ),
-      ]);
-    }
-  }
-
-  /**
-   * Execute distributed delete operation.
-   *
-   * @param decision
-   */
-  private async executeDelete(decision: CoordinationDecision): Promise<void> {
-    const deletePromises = decision.participants.map(async (nodeId) => {
-      const node = this.nodes.get(nodeId);
-      if (!node) {
-        throw new Error(`Node not found: ${nodeId}`);`
-      }
-
-      return await node?.backend?.delete(decision.target);
-    });
-
-    await Promise.all(deletePromises);
-  }
-
-  /**
-   * Execute sync operation between nodes.
-   *
-   * @param decision
-   */
-  private async executeSync(decision: CoordinationDecision): Promise<void> {
-    // Synchronize data between nodes
-    const sourceNode = this.nodes.get(decision.participants[0]);
-    if (!sourceNode) {
-      throw new Error(`Source node not found: ${decision.participants[0]}`);`
-    }
-
-    for (let i = 1; i < decision.participants.length; i++) {
-      const targetNode = this.nodes.get(decision.participants[i]);
-      if (!targetNode) {
-        continue;
-      }
-
-      const data = await sourceNode?.backend?.retrieve(decision.target);
-      if (data) {
-        await targetNode?.backend?.store(decision.target, data);
-      }
-    }
-  }
-
-  /**
-   * Execute repair operation for inconsistent data.
-   *
-   * @param decision
-   */
-  private async executeRepair(decision: CoordinationDecision): Promise<void> {
-    // Implement repair logic for data inconsistencies
-    const values = await Promise.all(
-      decision.participants.map(async (nodeId) => {
-        const node = this.nodes.get(nodeId);
-        if (!node) return null;
-
-        try {
-          return await node?.backend?.retrieve(decision.target);
-        } catch {
-          return null;
-        }
-      })
-    );
-
-    // Find the most common value (simple consensus)
-    const validValues = values.filter((v) => v !== null);
-    if (validValues.length === 0) return;
-
-    const valueCount = new Map();
-    validValues.forEach((value) => {
-      const key = JSON.stringify(value);
-      valueCount.set(key, (valueCount.get(key)||0) + 1);
-    });
-
-    const [winningValue] = Array.from(valueCount.entries()).sort(
-      ([, a], [, b]) => b - a
-    )[0];
-
-    const correctValue = JSON.parse(winningValue);
-
-    // Repair all nodes with the correct value
-    const repairPromises = decision.participants.map(async (nodeId) => {
-      const node = this.nodes.get(nodeId);
-      if (!node) return;
-
-      await node?.backend?.store(decision.target, correctValue);
-    });
-
-    await Promise.all(repairPromises);
-  }
-
-  /**
-   * Get coordination statistics.
-   */
-  getStats() {
-    return {
-      nodes: {
-        total: this.nodes.size,
-        active: Array.from(this.nodes.values()).filter(
-          (n) => n.status ==='active''
-        ).length,
-        degraded: Array.from(this.nodes.values()).filter(
-          (n) => n.status === 'degraded''
-        ).length,
-      },
-      decisions: {
-        total: this.decisions.size,
-        pending: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'pending''
-        ).length,
-        executing: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'executing''
-        ).length,
-        completed: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'completed''
-        ).length,
-        failed: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'failed''
-        ).length,
-      },
-      config: this.config,
-    };
-  }
-
-  /**
-   * Store data across distributed memory nodes.
-   *
-   * @param key
-   * @param data
-   * @param options
-   * @param options.ttl
-   * @param options.replicas
-   */
-  async store(
-    key: string,
-    data: unknown,
-    options?: { ttl?: number; replicas?: number }
-  ): Promise<void> {
-    const decision = await this.coordinate({
-      type: 'write',
-      target: key,
-      metadata: { data, options },
-    });
-
-    if (decision.status === 'failed') {'
-      throw new Error(`Failed to store data for key: ${key}`);`
-    }
-  }
-
-  /**
    * Retrieve data from distributed memory nodes.
    *
    * @param key
@@ -426,7 +239,7 @@ export class MemoryCoordinator extends TypedEventBase {
     });
 
     if (decision.status === 'failed') {'
-      throw new Error(`Failed to delete data for key: ${key}`);`
+      throw new Error(`Failed to delete data for key: $key`);`
     }
   }
 
@@ -482,7 +295,7 @@ export class MemoryCoordinator extends TypedEventBase {
    * @param key
    * @param pattern
    */
-  private matchesPattern(key: string, pattern: string): boolean {
+  private matchesPattern(_key: string, pattern: string): boolean {
     // Convert simple glob pattern to regex
     const regexPattern = pattern
       .replace(/\\/g, '\\\\')'
@@ -491,7 +304,7 @@ export class MemoryCoordinator extends TypedEventBase {
       .replace(/\[/g, '\\[')'
       .replace(/\]/g, '\\]');'
 
-    const regex = new RegExp(`^${regexPattern}$`);`
+    const _regex = new RegExp(`^${regexPattern}$`);`
     return regex.test(key);
   }
 

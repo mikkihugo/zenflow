@@ -118,9 +118,9 @@ export class SimpleTaskPredictor implements TaskPredictor {
   recordTaskCompletion(
     agentId: AgentId,
     taskType: string,
-    duration: number,
-    success: boolean,
-    metadata?: Record<string, unknown>
+    _duration: number,
+    _success: boolean,
+    _metadata?: Record<string, unknown>
   ): void {
     const key = `${agentId.id}-${taskType}`;`
 
@@ -165,7 +165,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     taskType: string,
     contextFactors?: Record<string, unknown>
   ): TaskPrediction {
-    const key = `${agentId.id}-${taskType}`;`
+    const key = `$agentId.id-$taskType`;`
     const history = this.taskHistory.get(key)||[];
 
     if (history.length < this.config.minSamplesRequired) {
@@ -335,7 +335,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
   private calculateVariance(numbers: number[]): number {
     if (numbers.length === 0) return 0;
     const mean = this.calculateMean(numbers);
-    const squaredDiffs = numbers.map((n) => Math.pow(n - mean, 2));
+    const squaredDiffs = numbers.map((n) => (n - mean) ** 2);
     return this.calculateMean(squaredDiffs);
   }
 

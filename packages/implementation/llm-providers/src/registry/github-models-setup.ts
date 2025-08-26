@@ -12,8 +12,8 @@ import { GitHubModelsAPI } from '../api/github-models';
 import type { APIProvider } from '../types/api-providers';
 
 import {
-  ModelRegistryService,
   createModelRegistryService,
+  type ModelRegistryService,
 } from './model-registry';
 
 const logger = getLogger('GitHubModelsSetup');'
@@ -228,7 +228,7 @@ export async function setupGitHubModelsDefault(): Promise<ModelRegistryService> 
     logger.info('📊 GitHub Models setup complete:');'
     logger.info(`   Total Models: ${summary.totalModels}`);`
     logger.info(
-      `   Providers: ${Object.keys(summary.providerCounts).join(', ')}``
+      `   Providers: $Object.keys(summary.providerCounts).join(', ')``
     );
     logger.info(
       `   Capabilities: ${summary.capabilities.slice(0, 5).join(', ')}${summary.capabilities.length > 5 ? '...' : ''}``

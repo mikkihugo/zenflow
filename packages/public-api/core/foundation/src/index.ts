@@ -29,220 +29,205 @@
 // CORE MODULES - Essential system functionality
 // =============================================================================
 
-// Core logging system
-export { getLogger, LoggingLevel as LogLevel } from './core/logging';
-export type { Logger } from './core/logging';
-
+export type { Config } from "./core/config";
 // Core configuration and environment
-export { getConfig, EnvironmentDetector } from './core/config';
-export type { Config } from './core/config';
-
+export { EnvironmentDetector, getConfig } from "./core/config";
 // Process lifecycle management
 export {
-  ProcessLifecycleManager,
-  setupProcessLifecycle,
-} from './core/lifecycle';
+	ProcessLifecycleManager,
+	setupProcessLifecycle,
+} from "./core/lifecycle";
+export type { Logger } from "./core/logging";
+// Core logging system
+export { getLogger, LoggingLevel as LogLevel } from "./core/logging";
 
 // DEPENDENCY INJECTION - Service container and patterns
 // =============================================================================
-export { createContainer, inject, TOKENS } from './dependency-injection';
-
-// EVENT SYSTEM - Type-safe event management
-// =============================================================================
-export { default as EventEmitter } from './events/typed.event.base';
-
+export { createContainer, inject, TOKENS } from "./dependency-injection";
 // ERROR HANDLING AND RESILIENCE - Comprehensive error management
 // =============================================================================
 export {
-  Result,
-  ok,
-  err,
-  safeAsync,
-  withRetry,
-  withTimeout,
-  createCircuitBreaker,
-  ValidationError,
-  NetworkError,
-  ResourceError,
-  ConfigurationError,
-  TimeoutError,
-  isError,
-} from './error-handling';
-
+	ConfigurationError,
+	createCircuitBreaker,
+	err,
+	isError,
+	NetworkError,
+	ok,
+	ResourceError,
+	Result,
+	safeAsync,
+	TimeoutError,
+	ValidationError,
+	withRetry,
+	withTimeout,
+} from "./error-handling";
+// EVENT SYSTEM - Type-safe event management
+// =============================================================================
+export { default as EventEmitter } from "./events/typed.event.base";
 // TYPE SYSTEM - All types and type utilities
 // =============================================================================
-export type {
-  UUID,
-  JsonValue,
-  JsonObject,
-  JsonArray,
-  JsonPrimitive,
-  UnknownRecord,
-  Timestamp,
-  ISODateString,
-  Email,
-  NonEmptyArray,
-  LogLevel as LogLevelType,
-  Environment,
-  Priority,
-  Status,
-  Result as ResultType,
-  SuccessResult,
-  ErrorResult,
-  Entity,
-  Identifiable,
-  Timestamped,
-  Paginated,
-  PaginationOptions,
-} from './types';
-
 // Type utilities and advanced types
 export type {
-  DeepPartial,
-  DeepRequired,
-  DeepReadonly,
-  MarkOptional,
-  MarkRequired,
-  StrictOmit,
-  ValueOf,
-  Dictionary,
-  AnyFunction,
-  AsyncOrSync,
-  Primitive,
-} from './types';
+	AnyFunction,
+	AsyncOrSync,
+	DeepPartial,
+	DeepReadonly,
+	DeepRequired,
+	Dictionary,
+	Email,
+	Entity,
+	Environment,
+	ErrorResult,
+	Identifiable,
+	ISODateString,
+	JsonArray,
+	JsonObject,
+	JsonPrimitive,
+	JsonValue,
+	LogLevel as LogLevelType,
+	MarkOptional,
+	MarkRequired,
+	NonEmptyArray,
+	Paginated,
+	PaginationOptions,
+	Primitive,
+	Priority,
+	Result as ResultType,
+	Status,
+	StrictOmit,
+	SuccessResult,
+	Timestamp,
+	Timestamped,
+	UnknownRecord,
+	UUID,
+	ValueOf,
+} from "./types";
 
 // UTILITIES - Comprehensive utility functions
 // =============================================================================
 
-// Validation and schema utilities
-export {
-  validateInput,
-  createValidator,
-  z,
-  isEmail,
-  isURL,
-  isUUID,
-  isTimestamp,
-  isISODateString,
-  isPrimitive,
-  isNonEmptyArray,
-  isValidJSON,
-  UUIDSchema,
-  EmailSchema,
-  URLSchema,
-  NonEmptyStringSchema,
-  PositiveNumberSchema,
-  hasValidationError,
-  getValidationErrors,
-} from './utilities';
-
-// Async utilities and patterns
-export {
-  pTimeout,
-  withRetry as retryAsync,
-  concurrent,
-  withTimeout as timeoutPromise,
-} from './utilities/async';
-
-// System detection and information
-export {
-  isDevelopment,
-  isProduction,
-  isTest,
-  getEnvironment,
-  getSystemInfo,
-  getProcessInfo,
-  getPlatform,
-  getArchitecture,
-  isWindows,
-  isMacOS,
-  isLinux,
-  isCI,
-  isDocker,
-  isWSL,
-  getWorkspaceDetector,
-  createSystemSummary,
-  checkSystemRequirements,
-} from './utilities/system';
-
-// ID generation utilities
-export {
-  generateUUID,
-  generateShortId,
-  generateCustomId,
-  generateTimestampId,
-  generateSessionId,
-  generateApiKey,
-} from './utilities/ids';
-
-// Time utilities
-export {
-  now,
-  timestampFromDate,
-  dateFromTimestamp,
-  isoStringFromTimestamp,
-  formatTimestamp,
-  parseISO,
-} from './utilities/time';
-
-// Common utilities (lodash-style functions)
-export {
-  _,
-  lodash,
-  dateFns,
-  format,
-  addDays,
-  nanoid,
-  customAlphabet,
-} from './utilities/common';
-
 // INFRASTRUCTURE - Facade system and infrastructure utilities
 // =============================================================================
 export {
-  registerFacade,
-  hasService,
-  getSystemStatus,
-  FacadeStatusManager,
-} from './infrastructure/facades';
-
+	FacadeStatusManager,
+	getSystemStatus,
+	hasService,
+	registerFacade,
+} from "./infrastructure/facades";
+// Export resilience types
+export type { CircuitBreakerOptions, RetryOptions } from "./resilience";
 // RESILIENCE PATTERNS - Advanced resilience utilities (using cockatiel)
 // =============================================================================
 export {
-  // Re-export cockatiel patterns for resilience
-  retry,
-  circuitBreaker,
-  timeout,
-  bulkhead,
-  fallback,
-  wrap,
-  noop,
-  handleAll,
-  handleType,
-  handleWhen,
-  handleResultType,
-  handleWhenResult,
-  Policy,
-  ExponentialBackoff,
-  ConstantBackoff,
-  IterableBackoff,
-  DelegateBackoff,
-  noJitterGenerator,
-  decorrelatedJitterGenerator,
-  ConsecutiveBreaker,
-  SamplingBreaker,
-  CountBreaker,
-  BrokenCircuitError,
-  BulkheadRejectedError,
-  IsolatedCircuitError,
-  TaskCancelledError,
-  CircuitState,
-  TimeoutStrategy,
-  Event,
-  usePolicy,
-} from './resilience';
+	BrokenCircuitError,
+	BulkheadRejectedError,
+	bulkhead,
+	CircuitState,
+	ConsecutiveBreaker,
+	ConstantBackoff,
+	CountBreaker,
+	circuitBreaker,
+	DelegateBackoff,
+	decorrelatedJitterGenerator,
+	Event,
+	ExponentialBackoff,
+	fallback,
+	handleAll,
+	handleResultType,
+	handleType,
+	handleWhen,
+	handleWhenResult,
+	IsolatedCircuitError,
+	IterableBackoff,
+	noJitterGenerator,
+	noop,
+	Policy,
+	// Re-export cockatiel patterns for resilience
+	retry,
+	SamplingBreaker,
+	TaskCancelledError,
+	TimeoutStrategy,
+	timeout,
+	usePolicy,
+	wrap,
+} from "./resilience";
+// Validation and schema utilities
+export {
+	createValidator,
+	EmailSchema,
+	getValidationErrors,
+	hasValidationError,
+	isEmail,
+	isISODateString,
+	isNonEmptyArray,
+	isPrimitive,
+	isTimestamp,
+	isURL,
+	isUUID,
+	isValidJSON,
+	NonEmptyStringSchema,
+	PositiveNumberSchema,
+	URLSchema,
+	UUIDSchema,
+	validateInput,
+	z,
+} from "./utilities";
+// Async utilities and patterns
+export {
+	concurrent,
+	pTimeout,
+	withRetry as retryAsync,
+	withTimeout as timeoutPromise,
+} from "./utilities/async";
 
-// Export resilience types
-export type { RetryOptions, CircuitBreakerOptions } from './resilience';
+// Common utilities (lodash-style functions)
+export {
+	_,
+	addDays,
+	customAlphabet,
+	dateFns,
+	format,
+	lodash,
+	nanoid,
+} from "./utilities/common";
+// ID generation utilities
+export {
+	generateApiKey,
+	generateCustomId,
+	generateSessionId,
+	generateShortId,
+	generateTimestampId,
+	generateUUID,
+} from "./utilities/ids";
+// System detection and information
+export {
+	checkSystemRequirements,
+	createSystemSummary,
+	getArchitecture,
+	getEnvironment,
+	getPlatform,
+	getProcessInfo,
+	getSystemInfo,
+	getWorkspaceDetector,
+	isCI,
+	isDevelopment,
+	isDocker,
+	isLinux,
+	isMacOS,
+	isProduction,
+	isTest,
+	isWindows,
+	isWSL,
+} from "./utilities/system";
+// Time utilities
+export {
+	dateFromTimestamp,
+	formatTimestamp,
+	isoStringFromTimestamp,
+	now,
+	parseISO,
+	timestampFromDate,
+} from "./utilities/time";
 
 // =============================================================================
 // TREE-SHAKING GUIDANCE COMMENTS

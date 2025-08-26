@@ -1,74 +1,80 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
-  import type { Writable } from 'svelte/store';
-  import { webSocketManager } from '$lib/websocket';
+import { onDestroy, onMount } from "svelte";
+import type { Writable } from "svelte/store";
+import { writable } from "svelte/store";
+import { webSocketManager } from "$lib/websocket";
 
-  // Accept connection status store as prop
-  export let connectionStatus: Writable<{
-    connected: boolean;
-    lastCheck: Date | null;
-    retrying: boolean;
-  }> = writable({
-    connected: true,
-    lastCheck: null,
-    retrying: false
-  });
+// Accept connection status store as prop
+export const connectionStatus: Writable<{
+	connected: boolean;
+	lastCheck: Date | null;
+	retrying: boolean;
+}> = writable({
+	connected: true,
+	lastCheck: null,
+	retrying: false,
+});
 
-  let retryTimeout: number;
-  let unsubscribeConnectionState: (() => void) | null = null;
+let retryTimeout: number;
+let unsubscribeConnectionState: (() => void) | null = null;
 
-  // Use existing Socket.IO WebSocket connection - no polling needed!
-  function setupConnectionMonitoring() {
-    // Subscribe to the existing WebSocket connection state
-    unsubscribeConnectionState = webSocketManager.connectionState.subscribe((state) => {
-      console.log(state.connected ? '✅ Socket.IO connected' : '❌ Socket.IO disconnected');
-      connectionStatus.update(currentState => ({
-        ...currentState,
-        connected: state.connected,
-        lastCheck: new Date(),
-        retrying: state.reconnecting
-      }));
-    });
+// Use existing Socket.IO WebSocket connection - no polling needed!
+function setupConnectionMonitoring() {
+	// Subscribe to the existing WebSocket connection state
+	unsubscribeConnectionState = webSocketManager.connectionState.subscribe(
+		(state) => {
+			console.log(
+				state.connected
+					? "✅ Socket.IO connected"
+					: "❌ Socket.IO disconnected",
+			);
+			connectionStatus.update((currentState) => ({
+				...currentState,
+				connected: state.connected,
+				lastCheck: new Date(),
+				retrying: state.reconnecting,
+			}));
+		},
+	);
 
-    // Set initial state from existing WebSocket manager
-    connectionStatus.update(state => ({
-      ...state,
-      connected: webSocketManager.isConnected(),
-      lastCheck: new Date(),
-      retrying: false
-    }));
-  }
+	// Set initial state from existing WebSocket manager
+	connectionStatus.update((state) => ({
+		...state,
+		connected: webSocketManager.isConnected(),
+		lastCheck: new Date(),
+		retrying: false,
+	}));
+}
 
-  async function retryConnection() {
-    connectionStatus.update(state => ({ ...state, retrying: true }));
-    
-    // Show retry state briefly, then attempt reconnection using existing Socket.IO
-    setTimeout(async () => {
-      try {
-        // Use the existing WebSocket manager's reconnection
-        if (!webSocketManager.isConnected()) {
-          await webSocketManager.connect();
-        }
-        // Send a ping to verify connection
-        webSocketManager.ping();
-      } catch (error) {
-        console.warn('Retry connection failed:', error);
-        // Connection status will be updated automatically via Socket.IO events
-      }
-    }, 2000);
-  }
+async function _retryConnection() {
+	connectionStatus.update((state) => ({ ...state, retrying: true }));
 
-  onMount(() => {
-    setupConnectionMonitoring();
-  });
+	// Show retry state briefly, then attempt reconnection using existing Socket.IO
+	setTimeout(async () => {
+		try {
+			// Use the existing WebSocket manager's reconnection
+			if (!webSocketManager.isConnected()) {
+				await webSocketManager.connect();
+			}
+			// Send a ping to verify connection
+			webSocketManager.ping();
+		} catch (error) {
+			console.warn("Retry connection failed:", error);
+			// Connection status will be updated automatically via Socket.IO events
+		}
+	}, 2000);
+}
 
-  onDestroy(() => {
-    if (retryTimeout) clearTimeout(retryTimeout);
-    if (unsubscribeConnectionState) unsubscribeConnectionState();
-  });
+onMount(() => {
+	setupConnectionMonitoring();
+});
 
-  $: status = $connectionStatus;
+onDestroy(() => {
+	if (retryTimeout) clearTimeout(retryTimeout);
+	if (unsubscribeConnectionState) unsubscribeConnectionState();
+});
+
+$: status = $connectionStatus;
 </script>
 
 {#if !status.connected}

@@ -21,12 +21,9 @@
  */
 
 import { existsSync } from 'node:fs';
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
-import { basename, dirname, join } from 'node:path';
-import { getLogger } from '@claude-zen/foundation';
-import type { WorkflowEngine } from '@claude-zen/intelligence';
-import type { BrainCoordinator } from '@claude-zen/intelligence';
-import { TypedEventBase } from '@claude-zen/foundation';
+import { dirname, } from 'node:path';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { BrainCoordinator, WorkflowEngine } from '@claude-zen/intelligence';
 
 const logger = getLogger('DocumentProcessor');'
 
@@ -165,7 +162,6 @@ export interface DocumentStats {
 export class DocumentProcessor extends TypedEventBase {
   private memory: BrainCoordinator;
   private workflowEngine: WorkflowEngine|null = null;
-  private configuration: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
   private documentWatchers: Map<string, any> = new Map();
   private initialized = false;
@@ -271,7 +267,7 @@ export class DocumentProcessor extends TypedEventBase {
     }
 
     logger.info(
-      `Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)``
+      `Loaded workspace: $workspacePath($context.activeDocuments.sizedocuments)``
     );
     this.emit('workspace:loaded', {'
       workspaceId,
@@ -312,7 +308,7 @@ export class DocumentProcessor extends TypedEventBase {
       const content = await readFile(documentPath, 'utf8');'
       const metadata = await this.extractMetadata(content);
 
-      logger.info(`Processing ${docType} document: ${documentPath}`);`
+      logger.info(`Processing $docTypedocument: $documentPath`);`
 
       const document: Document = {
         type: docType,
@@ -352,7 +348,7 @@ export class DocumentProcessor extends TypedEventBase {
         document,
         suggestedNextSteps: this.getSuggestedNextSteps(docType),
       });
-    } catch (error) {
+    } catch (error) 
       this.stats.errors++;
       logger.error(`Failed to process document ${documentPath}:`, error);`
       throw error;
@@ -385,12 +381,11 @@ export class DocumentProcessor extends TypedEventBase {
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found: ${workspaceId}`);`
-    }
+      throw new Error(`Workspace not found: $workspaceId`);`
 
     // Generate file path
-    const dirPath = this.getDocumentDirectory(context.workspace, type);
-    const fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
+    const _dirPath = this.getDocumentDirectory(context.workspace, type);
+    const _fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
     const filePath = join(dirPath, fileName);
 
     // Create document content with metadata
@@ -407,7 +402,7 @@ export class DocumentProcessor extends TypedEventBase {
       throw new Error('Failed to create document');'
     }
 
-    logger.info(`Created ${type} document: ${title}`);`
+    logger.info(`Created $typedocument: $title`);`
     return document;
   }
 
@@ -482,7 +477,7 @@ export class DocumentProcessor extends TypedEventBase {
     workspaceId: string,
     document: Document
   ): Promise<void> {
-    const context = this.workspaces.get(workspaceId)!;
+    const _context = this.workspaces.get(workspaceId)!;
 
     switch (document.type) {
       case 'vision':'
@@ -513,310 +508,3 @@ export class DocumentProcessor extends TypedEventBase {
         break;
     }
   }
-
-  /**
-   * Scan workspace for existing documents.
-   *
-   * @param workspaceId
-   */
-  private async scanDocuments(workspaceId: string): Promise<void> {
-    const context = this.workspaces.get(workspaceId)!;
-    const dirs = Object.entries(context.workspace);
-
-    for (const [type, dirPath] of dirs) {
-      if (
-        dirPath &&
-        existsSync(dirPath) &&
-        type !== 'root' &&'
-        type !== 'implementation''
-      ) {
-        try {
-          const files = await readdir(dirPath);
-          for (const file of files) {
-            if (file.endsWith('.md')) {'
-              const fullPath = join(dirPath, file);
-              const docType = this.getDocumentType(fullPath);
-              const content = await readFile(fullPath, 'utf8');'
-              const metadata = await this.extractMetadata(content);
-
-              const document: Document = {
-                type: docType,
-                path: fullPath,
-                content,
-                metadata,
-                id: this.generateDocumentId(docType, fullPath),
-              };
-
-              context.activeDocuments.set(fullPath, document);
-              await this.memory.storeDocument(docType, document.id!, document);
-              this.updateStats(document);
-            }
-          }
-        } catch (error) {
-          logger.warn(`Failed to scan directory ${dirPath}:`, error);`
-        }
-      }
-    }
-
-    logger.info(`📚 Loaded ${context.activeDocuments.size} documents`);`
-  }
-
-  /**
-   * Determine document type from path.
-   *
-   * @param path
-   */
-  private getDocumentType(path: string): DocumentType {
-    if (path.includes('/01-vision/')||path.includes('/vision/'))'
-      return 'vision;
-    if (path.includes('/02-adrs/')||path.includes('/adrs/')) return 'adr;
-    if (path.includes('/03-prds/')||path.includes('/prds/')) return 'prd;
-    if (path.includes('/04-epics/')||path.includes('/epics/')) return 'epic;
-    if (path.includes('/05-features/')||path.includes('/features/'))'
-      return 'feature;
-    if (path.includes('/06-tasks/')||path.includes('/tasks/')) return 'task;
-    if (path.includes('/07-specs/')||path.includes('/specs/')) return 'spec;
-    return 'task'; // default'
-  }
-
-  /**
-   * Get document directory for a type.
-   *
-   * @param workspace
-   * @param type
-   */
-  private getDocumentDirectory(
-    workspace: DocumentWorkspace,
-    type: DocumentType
-  ): string {
-    switch (type) {
-      case 'vision':'
-        return workspace.vision!;
-      case 'adr':'
-        return workspace.adrs!;
-      case 'prd':'
-        return workspace.prds!;
-      case 'epic':'
-        return workspace.epics!;
-      case 'feature':'
-        return workspace.features!;
-      case 'task':'
-        return workspace.tasks!;
-      case 'spec':'
-        return workspace.specs!;
-      default:
-        return workspace.tasks!;
-    }
-  }
-
-  /**
-   * Extract metadata from document content.
-   *
-   * @param content
-   */
-  private async extractMetadata(content: string): Promise<DocumentMetadata> {
-    const metadata: DocumentMetadata = {};
-
-    // Parse frontmatter or inline metadata
-    const lines = content.split('\n');'
-    for (const line of lines.slice(0, 15)) {
-      // Check first 15 lines
-      const trimmedLine = line.trim();
-
-      if (
-        trimmedLine.startsWith('- **Author:**')||trimmedLine.startsWith('Author:')'
-      ) {
-        const author = trimmedLine.split(':')[1]?.trim();'
-        if (author) metadata.author = author;
-      }
-      if (
-        trimmedLine.startsWith('- **Created:**')||trimmedLine.startsWith('Created:')'
-      ) {
-        const dateStr = trimmedLine.split(':')[1]?.trim();'
-        if (dateStr) metadata.created = new Date(dateStr);
-      }
-      if (
-        trimmedLine.startsWith('- **Status:**')||trimmedLine.startsWith('Status:')'
-      ) {
-        const status = trimmedLine.split(':')[1]?.trim();'
-        if (status) metadata.status = status;
-      }
-      if (
-        trimmedLine.startsWith('- **Priority:**')||trimmedLine.startsWith('Priority:')'
-      ) {
-        metadata.priority = trimmedLine.split(':')[1]?.trim() as any;'
-      }
-      if (
-        trimmedLine.startsWith('- **Tags:**')||trimmedLine.startsWith('Tags:')'
-      ) {
-        const tagsStr = trimmedLine.split(':')[1]?.trim();'
-        if (tagsStr) {
-          metadata.tags = tagsStr.split(',').map((tag) => tag.trim())();'
-        }
-      }
-    }
-
-    return metadata;
-  }
-
-  /**
-   * Generate unique document ID.
-   *
-   * @param type
-   * @param path
-   */
-  private generateDocumentId(type: DocumentType, path: string): string {
-    const filename = basename(path, '.md');'
-    const timestamp = Date.now().toString(36);
-    return `${type}-${filename}-${timestamp}`;`
-  }
-
-  /**
-   * Generate document content with metadata header.
-   *
-   * @param title
-   * @param content
-   * @param type
-   */
-  private generateDocumentContent(
-    title: string,
-    content: string,
-    type: DocumentType
-  ): string {
-    const now = new Date().toISOString();
-
-    return `# ${title}`
-
-- **Type:** ${type}
-- **Created:** ${now}
-- **Status:** draft
-- **Priority:** medium
-
-${content}
-
----
-*Generated by Document Processor*`;`
-  }
-
-  /**
-   * Get suggested next steps for document type.
-   *
-   * @param documentType
-   */
-  private getSuggestedNextSteps(documentType: DocumentType): string[] {
-    const nextSteps = {
-      vision: [
-        'Create PRDs',
-        'Define stakeholder requirements',
-        'Conduct stakeholder alignment',
-      ],
-      adr: [
-        'Review architectural implications',
-        'Update related PRDs',
-        'Validate decisions',
-      ],
-      prd: [
-        'Generate epics',
-        'Create user stories',
-        'Define acceptance criteria',
-      ],
-      epic: ['Break down into features', 'Estimate effort', 'Plan timeline'],
-      feature: [
-        'Create implementation tasks',
-        'Define test cases',
-        'Review dependencies',
-      ],
-      task: ['Begin implementation', 'Write tests', 'Update documentation'],
-      spec: [
-        'Review technical approach',
-        'Validate with stakeholders',
-        'Begin implementation',
-      ],
-    };
-    return nextSteps[documentType]||[];
-  }
-
-  /**
-   * Update processing statistics.
-   *
-   * @param document
-   */
-  private updateStats(document: Document): void {
-    this.stats.totalDocuments++;
-    this.stats.byType[document.type] =
-      (this.stats.byType[document.type]||0) + 1;
-
-    const status = document.metadata?.status||'unknown;
-    this.stats.byStatus[status] = (this.stats.byStatus[status]||0) + 1;
-  }
-
-  /**
-   * Ensure workspace directories exist.
-   *
-   * @param workspace
-   */
-  private async ensureDirectories(workspace: DocumentWorkspace): Promise<void> {
-    const dirs = [
-      workspace.vision,
-      workspace.adrs,
-      workspace.prds,
-      workspace.epics,
-      workspace.features,
-      workspace.tasks,
-      workspace.specs,
-      workspace.implementation,
-    ];
-
-    for (const dir of dirs) {
-      if (dir) {
-        try {
-          await mkdir(dir, { recursive: true });
-        } catch (_error) {
-          // Directory might already exist, that's ok'
-        }
-      }
-    }
-  }
-
-  /**
-   * Setup file watchers for document changes.
-   *
-   * @param workspaceId
-   */
-  private setupDocumentWatchers(workspaceId: string): void {
-    // Note: In a real implementation, this would use fs.watch or chokidar
-    // For now, we'll just log that watchers would be set up'
-    logger.debug(
-      `Document watchers would be set up for workspace: ${workspaceId}``
-    );
-  }
-
-  /**
-   * Ensure the processor is initialized.
-   */
-  private async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-  }
-
-  // ==================== EVENT HANDLERS ====================
-
-  private async handleDocumentCreated(event: any): Promise<void> {
-    logger.debug(`Document created: ${event.document.path}`);`
-  }
-
-  private async handleDocumentUpdated(event: any): Promise<void> {
-    logger.debug(`Document updated: ${event.document.path}`);`
-    // Re-process the document
-    await this.processDocument(event.document.path, event.workspaceId);
-  }
-
-  private async handleDocumentDeleted(event: any): Promise<void> {
-    logger.debug(`Document deleted: ${event.path}`);`
-    const context = this.workspaces.get(event.workspaceId);
-    if (context) {
-      context.activeDocuments.delete(event.path);
-    }
-  }
-}

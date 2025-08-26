@@ -17,16 +17,16 @@
  * @version 1.0.0
  */
 
-// BEAM Language Parser Exports
-export { BeamLanguageParser } from './beam-parser';
 
 export type {
-  BeamModule,
   BeamFunction,
-  BeamType,
+  BeamModule,
   BeamModuleMetrics,
   BeamParserOptions,
+  BeamType,
 } from './beam-parser';
+// BEAM Language Parser Exports
+export { BeamLanguageParser } from './beam-parser';
 
 /**
  * Supported language families
@@ -102,7 +102,7 @@ export function createParserFactory(): ParserFactory {
  */
 export async function parseFile(
   filePath: string,
-  options?: {
+  _options?: {
     includeMetrics?: boolean;
     analyzeFunctionComplexity?: boolean;
     extractDocumentation?: boolean;
@@ -132,7 +132,7 @@ export async function parseFile(
       return await parser.parseFile(filePath);
     }
     default:
-      throw new Error(`Parser not implemented for language family: ${family}`);`
+      throw new Error(`Parser not implemented for language family: $family`);`
   }
 }
 
@@ -156,7 +156,7 @@ export async function parseFiles(
       if (!filesByFamily.has(family)) {
         filesByFamily.set(family, []);
       }
-      filesByFamily.get(family)!.push(filePath);
+      filesByFamily.get(family)?.push(filePath);
     }
   }
 

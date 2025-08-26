@@ -6,28 +6,14 @@
  */
 
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { Logger } from '@claude-zen/foundation';
-
+import type { ProcessorConfig, TelemetryData } from '../types.js';
 import type { BaseProcessor } from './index.js';
-import type { TelemetryData, ProcessorConfig } from '../types.js';
 
 /**
  * Batch processor implementation
  */
 export class BatchProcessor implements BaseProcessor {
-  private config: ProcessorConfig;
-  private logger: Logger;
   private batch: TelemetryData[] = [];
-  private batchTimer: NodeJS.Timeout|null = null;
-  private processedCount = 0;
-  private lastProcessedTime = 0;
-  private lastError: string|null = null;
-  private isShuttingDown = false;
-
-  // Configuration
-  private readonly maxBatchSize: number;
-  private readonly batchTimeout: number;
-  private readonly flushOnShutdown: boolean;
 
   constructor(config: ProcessorConfig) {
     this.config = config;
@@ -122,7 +108,7 @@ export class BatchProcessor implements BaseProcessor {
     // Flush remaining batch if configured to do so
     if (this.flushOnShutdown && this.batch.length > 0) {
       this.logger.info(
-        `Flushing ${this.batch.length} remaining items before shutdown``
+        `Flushing $this.batch.lengthremaining items before shutdown``
       );
       await this.flushBatch();
     }

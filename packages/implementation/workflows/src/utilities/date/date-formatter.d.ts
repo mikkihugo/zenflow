@@ -11,21 +11,21 @@
  * Professional date formatting utilities
  */
 export declare class DateFormatter {
-  /**
-   * Format date as ISO string with proper timezone
-   */
-  static formatISOString(date?: Date): string;
-  /**
-   * Create standardized workflow timestamp
-   */
-  static createTimestamp(): string;
-  /**
-   * Parse ISO string with validation
-   */
-  static parseISO(dateString: string): Date | null;
-  /**
-   * Format relative time display
-   */
-  static formatRelative(date: Date): string;
+	/**
+	 * Format date as ISO string with proper timezone
+	 */
+	static formatISOString(date?: Date): string;
+	/**
+	 * Create standardized workflow timestamp
+	 */
+	static createTimestamp(): string;
+	/**
+	 * Parse ISO string with validation
+	 */
+	static parseISO(dateString: string): Date | null;
+	/**
+	 * Format relative time display
+	 */
+	static formatRelative(date: Date): string;
 }
 //# sourceMappingURL=date-formatter.d.ts.map

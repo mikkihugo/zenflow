@@ -22,10 +22,10 @@
  * ````
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { readdir, readFile } from 'fs/promises';
-import { extname, join, relative } from 'path';
-import { getLogger } from '@claude-zen/foundation';
+import { readdir, } from 'node:fs/promises';
+import { extname, join, } from 'node:path';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+
 // Define WorkflowGateRequest interface locally since we moved from workflows
 interface WorkflowGateRequest {
   id: string;
@@ -184,8 +184,6 @@ export interface ImportWorkflowResult {
  */
 export class IntelligentDocImport extends TypedEventBase {
   private config: IntelligentDocImportConfig;
-  private documentManager: DocumentManager;
-  private workflowGates: WorkflowGateRequest[] = [];
 
   /**
    * Create a new intelligent document import workflow.
@@ -234,7 +232,7 @@ export class IntelligentDocImport extends TypedEventBase {
    */
   async importAndAnalyze(): Promise<ImportWorkflowResult> {
     logger.info('🚀 Starting intelligent document import workflow');'
-    logger.info(`Repository: ${this.config.repositoryPath}`);`
+    logger.info(`Repository: $this.config.repositoryPath`);`
 
     try {
       // Phase 1: Repository Discovery
@@ -246,7 +244,7 @@ export class IntelligentDocImport extends TypedEventBase {
       this.emit('phase', 'analysis');'
       const analyses = await this.performSwarmAnalysis(discoveredFiles);
       logger.info(
-        `🧠 Analyzed ${analyses.length} files with swarm intelligence``
+        `🧠 Analyzed $analyses.lengthfiles with swarm intelligence``
       );
 
       // Phase 3: Classification & Recommendations
@@ -322,9 +320,8 @@ export class IntelligentDocImport extends TypedEventBase {
             !entry.name.includes('target') &&'
             !entry.name.includes('dist') &&'
             !entry.name.includes('build')'
-          ) {
+          ) 
             await scanDirectory(fullPath);
-          }
         } else if (this.isRelevantFile(entry.name)) {
           files.push(fullPath);
         }
@@ -377,206 +374,16 @@ export class IntelligentDocImport extends TypedEventBase {
     // Configuration files
     if (
       filename.toLowerCase().includes('readme')||filename.toLowerCase().includes('changelog')||filename.toLowerCase().includes('todo')'
-    ) {
+    ) 
       return true;
-    }
 
     return false;
-  }
-
-  /**
-   * Phase 2: Perform swarm-based analysis with LLM intelligence.
-   */
-  /**
-   * Phase 2: Perform swarm-based analysis with LLM intelligence.
-   *
-   * Processes files in batches using multiple analysis agents.
-   * Each file gets comprehensive analysis including:
-   * - Content classification and quality assessment
-   * - Documentation completeness (for code files)
-   * - LLM-powered insights and recommendations
-   *
-   * @param files - Array of file paths to analyze
-   * @returns Promise resolving to analysis results for each file
-   * @private
-   */
-  private async performSwarmAnalysis(
-    files: string[]
-  ): Promise<FileAnalysisResult[]> {
-    const results: FileAnalysisResult[] = [];
-
-    logger.info('🐝 Initializing analysis swarm...');'
-
-    // Process files in batches for efficiency
-    const batchSize = 10;
-    for (let i = 0; i < files.length; i += batchSize) {
-      const batch = files.slice(i, i + batchSize);
-
-      const batchResults = await Promise.all(
-        batch.map((file) => this.analyzeFile(file))
-      );
-
-      results.push(...batchResults);
-
-      // Emit progress
-      this.emit('progress', {'
-        phase: 'analysis',
-        completed: i + batch.length,
-        total: files.length,
-      });
-    }
-
-    return results;
-  }
-
-  /**
-   * Analyze a single file with comprehensive intelligence.
-   */
-  /**
-   * Analyze a single file with comprehensive intelligence.
-   *
-   * Performs multi-layered analysis:
-   * - File type detection (document/code/config)
-   * - Document classification (vision/adr/prd/epic/feature/task/spec)
-   * - Documentation completeness analysis (for code)
-   * - LLM quality assessment
-   * - Recommendation generation
-   *
-   * @param filePath - Absolute path to file for analysis
-   * @returns Promise resolving to comprehensive analysis result
-   * @private
-   */
-  private async analyzeFile(filePath: string): Promise<FileAnalysisResult> {
-    const relativePath = relative(this.config.repositoryPath, filePath);
-    const ext = extname(filePath).toLowerCase();
-    const content = await readFile(filePath, 'utf8');'
-
-    logger.debug(`🔍 Analyzing: ${relativePath}`);`
-
-    // Determine file type
-    const fileType = this.determineFileType(filePath, content);
-
-    const result: FileAnalysisResult = {
-      filePath: relativePath,
-      fileType,
-      recommendations: {
-        action: 'manual_review',
-        reasoning: 'Analysis in progress',
-        confidence: 0.5,
-      },
-    };
-
-    // Document analysis
-    if (fileType === 'document') {'
-      result.documentType = this.classifyDocument(filePath, content);
-
-      if (this.config.analysisConfig.analyzeDocuments) {
-        result.llmAnalysis = await this.performLLMDocumentAnalysis(
-          content,
-          result.documentType
-        );
-      }
-    }
-
-    // Code documentation analysis
-    if (fileType === 'code' && this.config.analysisConfig.checkDocumentation) {'
-      result.documentationScore = await this.analyzeDocumentationCompleteness(
-        content,
-        ext
-      );
-    }
-
-    // Generate recommendations
-    result.recommendations = await this.generateRecommendations(result);
-
-    return result;
-  }
-
-  /**
-   * Determine file type from path and content.
-   */
-  /**
-   * Determine file type from path and content.
-   *
-   * Analyzes file extension and path patterns to classify files into:
-   * - document: Markdown, RST, text files
-   * - code: Source code files (TS, JS, Python, Rust, etc.)
-   * - config: Configuration files (JSON, YAML, TOML, etc.)
-   * - other: Unclassified files
-   *
-   * @param filePath - Path to the file
-   * @param content - File content for additional analysis
-   * @returns File type classification
-   * @private
-   */
-  private determineFileType(
-    filePath: string,
-    _content: string
-  ): 'document|code|config|other' {'
-    const ext = extname(filePath).toLowerCase();
-    const filename = filePath.toLowerCase();
-
-    // Documentation
-    if (ext === '.md'||ext ==='.rst'||ext ==='.txt') return 'document';
-
-    // Code files
-    if (
-      [
-        ',
-        ',
-        '.tsx',
-        '.jsx',
-        '.py',
-        '.rs',
-        '.go',
-        '.java',
-        '.cpp',
-        '.hpp',
-      ].includes(ext)
-    ) {
-      return 'code;
-    }
-
-    // Configuration
-    if (
-      ['.json', '.yaml', '.yml', '.toml', '.ini'].includes(ext)||filename.includes('package.json')||filename.includes('tsconfig')||filename.includes('config')'
-    ) {
-      return 'config;
-    }
-
-    return 'other;
-  }
-
-  /**
-   * Classify document type using content analysis.
-   */
-  /**
-   * Classify document type using content analysis.
-   *
-   * Uses both filename patterns and content analysis to determine
-   * the document type according to standard documentation taxonomy:
-   * - vision: Project vision, README files
-   * - adr: Architectural Decision Records
-   * - prd: Product Requirements Documents
-   * - epic: Epic-level requirements
-   * - feature: Feature specifications
-   * - task: Task lists, TODO files
-   * - spec: Technical specifications
-   *
-   * @param filePath - Path to the document file
-   * @param content - Document content for pattern matching
-   * @returns Classified document type
-   * @private
-   */
-  private classifyDocument(
-    filePath: string,
-    content: string
-  ): 'vision|adr|prd|epic|feature|task|spec'' {'
+  }' {'
     const filename = filePath.toLowerCase();
     const contentLower = content.toLowerCase();
 
     // Filename patterns
-    if (filename.includes('readme')||filename.includes('vision'))'
+    if (_filename._includes('readme')||filename.includes('vision'))'
       return 'vision;
     if (filename.includes('adr-')||filename.includes('decision'))'
       return 'adr;
@@ -735,7 +542,7 @@ export class IntelligentDocImport extends TypedEventBase {
         .map((c) => `Class: ${c.name}`),`
       ...interfaces
         .filter((i) => !i.hasDocumentation)
-        .map((i) => `Interface: ${i.name}`),`
+        .map((i) => `Interface: $i.name`),`
     ];
 
     return {
@@ -767,7 +574,7 @@ export class IntelligentDocImport extends TypedEventBase {
     content: string,
     fileExt: string
   ): Array<{ name: string; hasDocumentation: boolean }> {
-    const functions: Array<{ name: string; hasDocumentation: boolean }> = [];
+    const _functions: Array<{ name: string; hasDocumentation: boolean }> = [];
 
     if (fileExt === ''||fileExt ===') {'
       // TypeScript/JavaScript function patterns
@@ -782,14 +589,13 @@ export class IntelligentDocImport extends TypedEventBase {
           content.substring(0, match.index).split('\n').length - 1;'
 
         // Check for JSDoc/TSDoc comment above
-        const hasDocumentation =
+        const _hasDocumentation =
           lineIndex > 0 &&
           (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 1]?.trim().startsWith('//')||lines[lineIndex - 2]?.trim().includes('/**'));'
 
-        functions.push({
+        functions.push(
           name: functionName||'unknown',
-          hasDocumentation: hasDocumentation||false,
-        });
+          _hasDocumentation: hasDocumentation||false,);
       }
     }
 
@@ -827,14 +633,13 @@ export class IntelligentDocImport extends TypedEventBase {
         const lineIndex =
           content.substring(0, match.index).split('\n').length - 1;'
 
-        const hasDocumentation =
+        const _hasDocumentation =
           lineIndex > 0 &&
           (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 2]?.trim().includes('/**'));'
 
-        classes.push({
+        classes.push(
           name: className||'unknown',
-          hasDocumentation: hasDocumentation||false,
-        });
+          _hasDocumentation: hasDocumentation||false,);
       }
     }
 
@@ -872,14 +677,13 @@ export class IntelligentDocImport extends TypedEventBase {
         const lineIndex =
           content.substring(0, match.index).split('\n').length - 1;'
 
-        const hasDocumentation =
+        const _hasDocumentation =
           lineIndex > 0 &&
           (lines[lineIndex - 1]?.trim().includes('*/')||lines[lineIndex - 2]?.trim().includes('/**'));'
 
-        interfaces.push({
+        interfaces.push(
           name: interfaceName||'unknown',
-          hasDocumentation: hasDocumentation||false,
-        });
+          _hasDocumentation: hasDocumentation||false,);
       }
     }
 
@@ -908,10 +712,10 @@ export class IntelligentDocImport extends TypedEventBase {
     improvements?: string[];
     confidence: number;
   }> {
-    let confidence = 0.5;
+    let _confidence = 0.5;
     let action: 'import|improve|reject|manual_review' ='
       'manual_review;
-    let reasoning = 'Requires manual review';
+    let _reasoning = 'Requires manual review';
     const improvements: string[] = [];
 
     // Document recommendations
@@ -922,21 +726,21 @@ export class IntelligentDocImport extends TypedEventBase {
         suggestions: string[];
         confidence: number;
       };
-      confidence = llmAnalysis.confidence;
+      _confidence = llmAnalysis.confidence;
 
       if (
         llmAnalysis.qualityScore >= 0.8 &&
         llmAnalysis.completenessScore >= 0.8
       ) {
         action = 'import';
-        reasoning = 'High quality document ready for import';
+        _reasoning = 'High quality document ready for import';
       } else if (llmAnalysis.qualityScore >= 0.6) {
         action = 'improve';
-        reasoning = 'Good document that could benefit from improvements';
+        _reasoning = 'Good document that could benefit from improvements';
         improvements.push(...llmAnalysis.suggestions);
       } else {
         action = 'manual_review';
-        reasoning = 'Document quality below threshold, needs manual review';
+        _reasoning = 'Document quality below threshold, needs manual review';
       }
     }
 
@@ -950,12 +754,12 @@ export class IntelligentDocImport extends TypedEventBase {
 
       if (score >= 0.9) {
         action = 'import';
-        reasoning = 'Well-documented code ready for import';
-        confidence = 0.9;
+        _reasoning = 'Well-documented code ready for import';
+        _confidence = 0.9;
       } else if (score >= 0.6) {
         action = 'improve';
-        reasoning = 'Code partially documented, improvements recommended';
-        confidence = 0.7;
+        _reasoning = 'Code partially documented, improvements recommended';
+        _confidence = 0.7;
         improvements.push(
           `Add documentation for ${docScore.missing.length} missing items``
         );
@@ -1077,7 +881,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Create improvement review gates
     for (const analysis of classified.needsImprovement) {
-      const gateId = `doc-improve-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+      const _gateId = `doc-improve-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
       const gate: WorkflowGateRequest = {
         // ValidationQuestion base properties
         id: gateId,
@@ -1088,18 +892,16 @@ export class IntelligentDocImport extends TypedEventBase {
           stepName: 'improvement',
         },
         question: `Apply suggested improvements to "${analysis.filePath}"?`,`
-        context: {
+        context: 
           fileAnalysis: analysis,
           improvements: analysis.recommendations.improvements,
-          workflowType: 'document_improvement_review',
-        },
+          workflowType: 'document_improvement_review',,
         // Required fields
-        data: {
+        data: 
           filePath: analysis.filePath,
           improvements: analysis.recommendations.improvements,
           documentType: analysis.documentType,
-          fileType: analysis.fileType,
-        },
+          fileType: analysis.fileType,,
         requester: 'intelligent-doc-import-workflow',
         timestamp: new Date(),
       };
@@ -1144,9 +946,9 @@ export class IntelligentDocImport extends TypedEventBase {
       classified.needsImprovement.length;
     const readyPercent = (classified.readyForImport.length / total) * 100;
 
-    const summary = `Repository analysis complete. ${readyPercent.toFixed(0)}% of files ready for immediate import.`;`
+    const summary = `Repository analysis complete. $readyPercent.toFixed(0)% of files ready for immediate import.`;`
 
-    const keyFindings = [
+    const _keyFindings = [
       `${classified.readyForImport.length} files ready for automatic import`,`
       `${classified.requiresApproval.length} files require manual approval`,`
       `${classified.needsImprovement.length} files would benefit from improvements`,`
@@ -1221,7 +1023,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
         logger.debug(`✅ Stored: ${analysis.filePath}`);`
       } catch (error) {
-        logger.error(`❌ Failed to store ${analysis.filePath}:`, error);`
+        logger.error(`❌ Failed to store $analysis.filePath:`, error);`
       }
     }
 
@@ -1244,18 +1046,16 @@ export class IntelligentDocImport extends TypedEventBase {
    * ```typescript`
    * const status = workflow.getApprovalStatus();
    * const pending = status.filter(s => s.status === 'pending');'
-   * console.log(`${pending.length} gates awaiting approval`);`
+   * console.log(`$pending.lengthgates awaiting approval`);`
    * ````
    */
-  getApprovalStatus(): Array<{
+  getApprovalStatus(): Array<
     gateId: string;
     status: string;
-    filePath: string;
-  }> {
+    filePath: string;> 
     return this.workflowGates.map((gate) => ({
       gateId: gate.id,
       status: (gate as any).status||'pending',
       filePath: (gate.context as any)?.fileAnalysis?.filePath||'unknown',
     }));
-  }
 }

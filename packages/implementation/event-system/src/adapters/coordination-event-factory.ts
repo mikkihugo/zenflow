@@ -14,13 +14,12 @@
  * @file Interface implementation: coordination-event-factory.
  */
 
-import { getConfig, getLogger, type Logger } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 import type { EventManager, EventManagerFactory } from '../core/interfaces;
 import { EventManagerTypes } from '../core/interfaces;
 import type { CoordinationEventAdapterConfig } from './coordination-event-adapter;
-import {
-  type CoordinationEventAdapter,
-  createDefaultCoordinationEventAdapterConfig,
+import type {
+  CoordinationEventAdapter,
 } from './coordination-event-adapter;
 
 /**
@@ -64,7 +63,7 @@ export class CoordinationEventManagerFactory
         `Coordination event manager created successfully: $config?.name``
       );
       return adapter as EventManager;
-    } catch (error) {
+    } catch (_error) {
       this.logger.error(
         `Failed to create coordination event manager ${config?.name}:`,`
         error
@@ -107,7 +106,7 @@ export class CoordinationEventManagerFactory
       );
     } else 
       this.logger.info(
-        `Successfully created ${managers.length} coordination event managers``
+        `Successfully created $managers.lengthcoordination event managers``
       );
     }
 
@@ -209,12 +208,12 @@ export class CoordinationEventManagerFactory
   async getMetricsAll(): Promise<Map<string, any>> {
     const results = new Map<string, any>();
 
-    const metricsPromises = Array.from(this.instances.entries()).map(
+    const _metricsPromises = Array.from(this.instances.entries()).map(
       async ([name, manager]) => {
         try {
           const metrics = await manager.getMetrics();
           results?.set(name, metrics);
-        } catch (error) {
+        } catch (_error) {
           this.logger.warn(
             `Failed to get metrics for coordination event manager ${name}:`,`
             error
@@ -235,13 +234,13 @@ export class CoordinationEventManagerFactory
       `Starting ${this.instances.size} coordination event managers``
     );
 
-    const startPromises = Array.from(this.instances.values()).map(
+    const _startPromises = Array.from(this.instances.values()).map(
       async (manager) => {
         try {
           if (!manager.isRunning()) {
             await manager.start();
           }
-        } catch (error) {
+        } catch (_error) {
           this.logger.error(
             `Failed to start coordination event manager ${manager.name}:`,`
             error
@@ -264,7 +263,7 @@ export class CoordinationEventManagerFactory
       `Stopping ${this.instances.size} coordination event managers``
     );
 
-    const stopPromises = Array.from(this.instances.values()).map(
+    const _stopPromises = Array.from(this.instances.values()).map(
       async (manager) => {
         try {
           if (manager.isRunning()) {

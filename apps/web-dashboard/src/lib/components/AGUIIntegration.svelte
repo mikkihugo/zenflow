@@ -1,207 +1,219 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { createEventDispatcher } from 'svelte';
-	
-	// Browser-compatible AGUI types and implementation
-	interface TaskApprovalRequest {
-		id: string;
-		task: string;
-		description: string;
-		priority: 'low' | 'normal' | 'high' | 'critical';
-		timestamp: Date;
-	}
-	
-	interface UserResponse {
-		approved: boolean;
-		response?: any;
-		timestamp: Date;
-		reason?: string;
-	}
-	
-	interface AGUIInterface {
-		askQuestion(question: string, options?: any): Promise<UserResponse>;
-		isReady(): boolean;
-	}
-	
-	// Simple browser-compatible AGUI implementation
-	function createSimpleAGUI(): { agui: AGUIInterface; taskApproval: any } {
-		const taskQueue: TaskApprovalRequest[] = [];
-		const listeners: Record<string, Function[]> = {};
-		
-		const on = (event: string, callback: Function) => {
-			if (!listeners[event]) listeners[event] = [];
-			listeners[event].push(callback);
-		};
-		
-		const emit = (event: string, data: any) => {
-			if (listeners[event]) {
-				listeners[event].forEach(cb => cb(data));
+import { createEventDispatcher, onDestroy, onMount } from "svelte";
+
+// Browser-compatible AGUI types and implementation
+interface TaskApprovalRequest {
+	id: string;
+	task: string;
+	description: string;
+	priority: "low" | "normal" | "high" | "critical";
+	timestamp: Date;
+}
+
+interface UserResponse {
+	approved: boolean;
+	response?: any;
+	timestamp: Date;
+	reason?: string;
+}
+
+interface AGUIInterface {
+	askQuestion(question: string, options?: any): Promise<UserResponse>;
+	isReady(): boolean;
+}
+
+// Simple browser-compatible AGUI implementation
+function createSimpleAGUI(): { agui: AGUIInterface; taskApproval: any } {
+	const taskQueue: TaskApprovalRequest[] = [];
+	const listeners: Record<string, Function[]> = {};
+
+	const on = (event: string, callback: Function) => {
+		if (!listeners[event]) listeners[event] = [];
+		listeners[event].push(callback);
+	};
+
+	const emit = (event: string, data: any) => {
+		if (listeners[event]) {
+			listeners[event].forEach((cb) => cb(data));
+		}
+	};
+
+	const agui: AGUIInterface = {
+		async askQuestion(question: string, _options?: any): Promise<UserResponse> {
+			return new Promise((resolve) => {
+				const response: UserResponse = {
+					approved: true,
+					response: `Simulated response to: ${question}`,
+					timestamp: new Date(),
+					reason: "Browser simulation",
+				};
+				setTimeout(() => resolve(response), 500);
+			});
+		},
+		isReady() {
+			return true;
+		},
+	};
+
+	const taskApproval = {
+		on,
+		emit,
+		async requestApproval(
+			request: TaskApprovalRequest,
+		): Promise<{ approved: boolean }> {
+			taskQueue.push(request);
+			emit("approval-requested", request);
+
+			return new Promise((resolve) => {
+				setTimeout(() => {
+					const result = { taskId: request.id, approved: true };
+					emit("approval-completed", result);
+					resolve({ approved: true });
+				}, 1000);
+			});
+		},
+		async processApproval(id: string, result: any): Promise<void> {
+			const taskIndex = taskQueue.findIndex((t) => t.id === id);
+			if (taskIndex >= 0) {
+				taskQueue.splice(taskIndex, 1);
 			}
-		};
-		
-		const agui: AGUIInterface = {
-			async askQuestion(question: string, options?: any): Promise<UserResponse> {
-				return new Promise((resolve) => {
-					const response: UserResponse = {
-						approved: true,
-						response: `Simulated response to: ${question}`,
-						timestamp: new Date(),
-						reason: 'Browser simulation'
-					};
-					setTimeout(() => resolve(response), 500);
-				});
-			},
-			isReady() { return true; }
-		};
-		
-		const taskApproval = {
-			on,
-			emit,
-			async requestApproval(request: TaskApprovalRequest): Promise<{ approved: boolean }> {
-				taskQueue.push(request);
-				emit('approval-requested', request);
-				
-				return new Promise((resolve) => {
-					setTimeout(() => {
-						const result = { taskId: request.id, approved: true };
-						emit('approval-completed', result);
-						resolve({ approved: true });
-					}, 1000);
-				});
-			},
-			async processApproval(id: string, result: any): Promise<void> {
-				const taskIndex = taskQueue.findIndex(t => t.id === id);
-				if (taskIndex >= 0) {
-					taskQueue.splice(taskIndex, 1);
-				}
-				emit('approval-completed', { taskId: id, ...result });
-			},
-			removeAllListeners() {
-				Object.keys(listeners).forEach(key => delete listeners[key]);
-			}
-		};
-		
-		return { agui, taskApproval };
-	}
-	
-	const dispatch = createEventDispatcher<{
-		taskApproved: { task: string; approved: boolean };
-		userResponse: { response: UserResponse };
-		aguiReady: { agui: AGUIInterface };
-	}>();
+			emit("approval-completed", { taskId: id, ...result });
+		},
+		removeAllListeners() {
+			Object.keys(listeners).forEach((key) => delete listeners[key]);
+		},
+	};
 
-	// AGUI instance and state
-	let aguiSystem: { agui: AGUIInterface; taskApproval: any } | null = null;
-	let isInitialized = false;
-	let pendingTasks: TaskApprovalRequest[] = [];
-	let currentTask: TaskApprovalRequest | null = null;
-	let userPrompt = '';
-	let isProcessing = false;
-	let error = '';
+	return { agui, taskApproval };
+}
 
-	// Initialize AGUI system
-	onMount(async () => {
-		try {
-			// Create simple browser-compatible AGUI
-			aguiSystem = createSimpleAGUI();
+const dispatch = createEventDispatcher<{
+	taskApproved: { task: string; approved: boolean };
+	userResponse: { response: UserResponse };
+	aguiReady: { agui: AGUIInterface };
+}>();
 
-			if (aguiSystem) {
-				isInitialized = true;
-				
-				// Set up event listeners for task approvals
-				aguiSystem.taskApproval.on('approval-requested', (request: TaskApprovalRequest) => {
+// AGUI instance and state
+let aguiSystem: { agui: AGUIInterface; taskApproval: any } | null = null;
+let _isInitialized = false;
+let pendingTasks: TaskApprovalRequest[] = [];
+let currentTask: TaskApprovalRequest | null = null;
+let _userPrompt = "";
+let _isProcessing = false;
+let _error = "";
+
+// Initialize AGUI system
+onMount(async () => {
+	try {
+		// Create simple browser-compatible AGUI
+		aguiSystem = createSimpleAGUI();
+
+		if (aguiSystem) {
+			_isInitialized = true;
+
+			// Set up event listeners for task approvals
+			aguiSystem.taskApproval.on(
+				"approval-requested",
+				(request: TaskApprovalRequest) => {
 					pendingTasks = [...pendingTasks, request];
 					if (!currentTask) {
 						processNextTask();
 					}
+				},
+			);
+
+			aguiSystem.taskApproval.on("approval-completed", (result: any) => {
+				dispatch("taskApproved", {
+					task: result.taskId,
+					approved: result.approved,
 				});
-
-				aguiSystem.taskApproval.on('approval-completed', (result: any) => {
-					dispatch('taskApproved', {
-						task: result.taskId,
-						approved: result.approved
-					});
-				});
-
-				// Dispatch ready event
-				dispatch('aguiReady', { agui: aguiSystem.agui });
-				console.log('🎨 AGUI System initialized successfully');
-			}
-		} catch (err) {
-			console.error('❌ Failed to initialize AGUI:', err);
-			error = err instanceof Error ? err.message : 'Unknown error';
-		}
-	});
-
-	// Process next pending task
-	function processNextTask() {
-		if (pendingTasks.length > 0 && !currentTask) {
-			currentTask = pendingTasks.shift()!;
-			userPrompt = `${currentTask.description}\n\nDo you want to proceed?`;
-		}
-	}
-
-	// Handle user approval
-	async function handleApproval(approved: boolean) {
-		if (!aguiSystem || !currentTask) return;
-		
-		isProcessing = true;
-		try {
-			await aguiSystem.taskApproval.processApproval(currentTask.id, {
-				approved,
-				timestamp: new Date(),
-				reason: approved ? 'User approved' : 'User rejected'
 			});
-			
-			currentTask = null;
-			processNextTask();
-		} catch (err) {
-			console.error('Error processing approval:', err);
-			error = err instanceof Error ? err.message : 'Processing failed';
-		} finally {
-			isProcessing = false;
-		}
-	}
 
-	// Ask user a question (public API)
-	export async function askQuestion(question: string, options?: any): Promise<UserResponse> {
-		if (!aguiSystem) throw new Error('AGUI not initialized');
-		
-		try {
-			const response = await aguiSystem.agui.askQuestion(question, options);
-			dispatch('userResponse', { response });
-			return response;
-		} catch (err) {
-			console.error('Error asking question:', err);
-			throw err;
+			// Dispatch ready event
+			dispatch("aguiReady", { agui: aguiSystem.agui });
+			console.log("🎨 AGUI System initialized successfully");
 		}
+	} catch (err) {
+		console.error("❌ Failed to initialize AGUI:", err);
+		_error = err instanceof Error ? err.message : "Unknown error";
 	}
+});
 
-	// Request task approval (public API)
-	export async function requestApproval(task: string, description: string): Promise<boolean> {
-		if (!aguiSystem) throw new Error('AGUI not initialized');
-		
-		try {
-			const result = await aguiSystem.taskApproval.requestApproval({
-				id: `task-${Date.now()}`,
-				task,
-				description,
-				priority: 'normal',
-				timestamp: new Date()
-			});
-			return result.approved;
-		} catch (err) {
-			console.error('Error requesting approval:', err);
-			throw err;
-		}
+// Process next pending task
+function processNextTask() {
+	if (pendingTasks.length > 0 && !currentTask) {
+		currentTask = pendingTasks.shift()!;
+		_userPrompt = `${currentTask.description}\n\nDo you want to proceed?`;
 	}
+}
 
-	// Cleanup
-	onDestroy(() => {
-		if (aguiSystem) {
-			aguiSystem.taskApproval.removeAllListeners();
-		}
-	});
+// Handle user approval
+async function _handleApproval(approved: boolean) {
+	if (!aguiSystem || !currentTask) return;
+
+	_isProcessing = true;
+	try {
+		await aguiSystem.taskApproval.processApproval(currentTask.id, {
+			approved,
+			timestamp: new Date(),
+			reason: approved ? "User approved" : "User rejected",
+		});
+
+		currentTask = null;
+		processNextTask();
+	} catch (err) {
+		console.error("Error processing approval:", err);
+		_error = err instanceof Error ? err.message : "Processing failed";
+	} finally {
+		_isProcessing = false;
+	}
+}
+
+// Ask user a question (public API)
+export async function askQuestion(
+	question: string,
+	options?: any,
+): Promise<UserResponse> {
+	if (!aguiSystem) throw new Error("AGUI not initialized");
+
+	try {
+		const response = await aguiSystem.agui.askQuestion(question, options);
+		dispatch("userResponse", { response });
+		return response;
+	} catch (err) {
+		console.error("Error asking question:", err);
+		throw err;
+	}
+}
+
+// Request task approval (public API)
+export async function requestApproval(
+	task: string,
+	description: string,
+): Promise<boolean> {
+	if (!aguiSystem) throw new Error("AGUI not initialized");
+
+	try {
+		const result = await aguiSystem.taskApproval.requestApproval({
+			id: `task-${Date.now()}`,
+			task,
+			description,
+			priority: "normal",
+			timestamp: new Date(),
+		});
+		return result.approved;
+	} catch (err) {
+		console.error("Error requesting approval:", err);
+		throw err;
+	}
+}
+
+// Cleanup
+onDestroy(() => {
+	if (aguiSystem) {
+		aguiSystem.taskApproval.removeAllListeners();
+	}
+});
 </script>
 
 <div class="agui-integration card p-4 space-y-4">

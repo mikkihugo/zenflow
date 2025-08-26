@@ -1,34 +1,34 @@
 {
-  "watch": ["src/**/*", "../../packages/**/*"],
-  "ext": "ts,js,json",
-  "ignore": [
-    "dist/**/*",
-    "build/**/*",
-    "node_modules/**/*",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "**/__tests__/**/*",
-    "coverage/**/*",
-    "docs/**/*",
-    "**/*.d.ts"
-  ],
-  "exec": "node scripts/dev-runner.js",
-  "env": {
-    "NODE_ENV": "development",
-    "GRACEFUL_RESTART": "true"
-  },
-  "delay": 500,
-  "verbose": true,
-  "colours": true,
-  "signal": "SIGTERM",
-  "killSignal": "SIGKILL",
-  "restartable": "rs",
-  "stdout": true,
-  "stderr": true,
-  "events": {
-    "restart": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '🔄 Claude Code Zen: File changes detected, checking TypeScript and restarting...'",
-    "start": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '🚀 Claude Code Zen: Development server started successfully'",
-    "crash": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '💥 Claude Code Zen: Server crashed - checking for compile errors...'",
-    "exit": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '🛑 Claude Code Zen: Server stopped gracefully'"
-  }
+	"watch": ["src/**/*", "../../packages/**/*"],
+	"ext": "ts,js,json",
+	"ignore": [
+		"dist/**/*",
+		"build/**/*",
+		"node_modules/**/*",
+		"**/*.test.ts",
+		"**/*.spec.ts",
+		"**/__tests__/**/*",
+		"coverage/**/*",
+		"docs/**/*",
+		"**/*.d.ts"
+	],
+	"exec": "node scripts/dev-runner.js",
+	"env": {
+		"NODE_ENV": "development",
+		"GRACEFUL_RESTART": "true"
+	},
+	"delay": 500,
+	"verbose": true,
+	"colours": true,
+	"signal": "SIGTERM",
+	"killSignal": "SIGKILL",
+	"restartable": "rs",
+	"stdout": true,
+	"stderr": true,
+	"events": {
+		"restart": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '🔄 Claude Code Zen: File changes detected, checking TypeScript and restarting...'",
+		"start": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '🚀 Claude Code Zen: Development server started successfully'",
+		"crash": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '💥 Claude Code Zen: Server crashed - checking for compile errors...'",
+		"exit": "/home/mhugo/code/claude-code-zen/broadcast-reload.sh '🛑 Claude Code Zen: Server stopped gracefully'"
+	}
 }

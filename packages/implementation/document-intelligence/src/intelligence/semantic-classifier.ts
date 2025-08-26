@@ -5,7 +5,7 @@
  * indicators, confidence scoring, and multi-pattern analysis inspired by DeepCode's approach.'
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('SemanticClassifier');'
 
@@ -60,8 +60,6 @@ export interface ClassifierConfig {
  * DeepCode-style semantic classifier for intelligent document analysis
  */
 export class SemanticClassifier extends TypedEventBase {
-  private config: ClassifierConfig;
-  private semanticPatterns: SemanticPatterns;
 
   constructor(config: Partial<ClassifierConfig> = {}) {
     super();
@@ -144,7 +142,7 @@ export class SemanticClassifier extends TypedEventBase {
       const patterns = this.detectPatterns(content);
       
       // Calculate overall confidence
-      const confidence = this.calculateOverallConfidence(categoryScores, patterns);
+      const _confidence = this.calculateOverallConfidence(categoryScores, patterns);
       
       // Recommend segmentation strategy
       const recommendedStrategy = this.recommendSegmentationStrategy(
@@ -165,12 +163,12 @@ export class SemanticClassifier extends TypedEventBase {
       };
 
       this.emit('classification_complete', classification);'
-      logger.info(`Document classified as: ${documentType} (confidence: ${confidence.toFixed(2)})`);`
+      logger.info(`Document classified as: $documentType(confidence: ${confidence.toFixed(2)})`);`
 
       return classification;
     } catch (error) {
       logger.error('Error during document classification:', error);'
-      throw new Error(`Semantic classification failed: ${error}`);`
+      throw new Error(`Semantic classification failed: $error`);`
     }
   }
 
@@ -248,15 +246,15 @@ export class SemanticClassifier extends TypedEventBase {
    */
   private calculateAlgorithmDensity(content: string): number {
     const algorithmPatterns = [
-      /algorithm\s+\d+/gi,
-      /procedure\s+\d+/gi,
-      /(for\s+each|while|if.*then|repeat.*until)/gi,
+      /algorithms+d+/gi,
+      /procedures+d+/gi,
+      /(fors+each|while|if.*then|repeat.*until)/gi,
       /(input:|output:|returns?:|require:|ensure:)/gi,
       /\b(sort|search|traverse|iterate|compute)\b/gi
     ];
 
     let totalMatches = 0;
-    const words = content.split(/\s+/).length;
+    const words = content.split(/s+/).length;
 
     for (const pattern of algorithmPatterns) {
       const matches = content.match(pattern);
@@ -302,11 +300,11 @@ export class SemanticClassifier extends TypedEventBase {
       /\b(database|SQL|NoSQL|schema|migration)\b/gi,
       /\b(REST|GraphQL|HTTP|JSON|XML|YAML)\b/gi,
       /\b(Docker|Kubernetes|cloud|serverless)\b/gi,
-      /\b(testing|CI\/CD|deployment|monitoring)\b/gi
+      /\b(testing|CI/CD|deployment|monitoring)\b/gi
     ];
 
     let depthScore = 0;
-    const paragraphs = content.split(/\n\s*\n/).length;
+    const paragraphs = content.split(/\ns*\n/).length;
 
     for (const pattern of technicalPatterns) {
       const matches = content.match(pattern);

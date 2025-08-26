@@ -17,17 +17,9 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { generateNanoId } from '@claude-zen/foundation';
-import type { Logger, MemorySystem, TypeSafeEventBus } from '../types';
-import { getLogger, createEvent, EventPriority } from '../types';
-import type {
-  AgileReleaseTrain,
-  ARTTeam,
-  Feature,
-  ProgramIncrement,
-  SAFeIntegrationConfig,
-  ValueStream,
-} from '../types';
+import type { 
+  Feature,Logger, MemorySystem, TypeSafeEventBus, } from '../types';
+import { createEvent, EventPriority, getLogger } from '../types';
 
 // ============================================================================
 // SAFE EVENTS MANAGER CONFIGURATION
@@ -181,7 +173,6 @@ export class SAFeEventsManager extends TypedEventBase {
   private logger: Logger;
   private memory: MemorySystem;
   private eventBus: TypeSafeEventBus;
-  private config: SAFeEventsManagerConfig;
 
   // Internal state
   private scheduledEvents = new Map<string, SAFeEventConfig>();
@@ -190,7 +181,7 @@ export class SAFeEventsManager extends TypedEventBase {
   private initialized = false;
 
   constructor(
-    memory: MemorySystem,
+    _memory: MemorySystem,
     eventBus: TypeSafeEventBus,
     config: Partial<SAFeEventsManagerConfig> = {}
   ) {
@@ -262,7 +253,7 @@ export class SAFeEventsManager extends TypedEventBase {
       const eventConfig: SAFeEventConfig = {
         id: eventId,
         type: 'system-demo',
-        title: `System Demo - PI ${piId}${iterationId ? ` Iteration ${iterationId}` : ''}`,`
+        title: `System Demo - PI $piId$iterationId ? ` Iteration ${iterationId}` : ''`,`
         description: `Demonstration of completed features from PI ${piId}`,`
         duration: this.config.defaultEventDuration,
         participants: await this.buildParticipantList(features),
@@ -275,7 +266,7 @@ export class SAFeEventsManager extends TypedEventBase {
 
       // Store in memory for persistence
       await this.memory.store(
-        `safe-events:system-demo:${eventId}`,`
+        `safe-events:system-demo:$eventId`,`
         eventConfig
       );
 
@@ -307,7 +298,7 @@ export class SAFeEventsManager extends TypedEventBase {
   async scheduleInspectAdaptWorkshop(
     piId: string,
     artId: string,
-    retrospectiveData: any
+    _retrospectiveData: any
   ): Promise<{ success: boolean; eventId?: string; error?: string }> {
     if (!this.initialized) await this.initialize();
 
@@ -316,7 +307,7 @@ export class SAFeEventsManager extends TypedEventBase {
       const eventConfig: SAFeEventConfig = {
         id: eventId,
         type: 'inspect-adapt',
-        title: `Inspect & Adapt Workshop - PI ${piId}`,`
+        title: `Inspect & Adapt Workshop - PI $piId`,`
         description: `PI retrospective and improvement planning for ART ${artId}`,`
         duration: 240, // 4 hours typical I&A duration
         participants: await this.buildARTParticipantList(artId),
@@ -328,18 +319,17 @@ export class SAFeEventsManager extends TypedEventBase {
 
       this.scheduledEvents.set(eventId, eventConfig);
       await this.memory.store(
-        `safe-events:inspect-adapt:${eventId}`,`
+        `safe-events:inspect-adapt:$eventId`,`
         eventConfig
       );
 
       this.emit('inspect-adapt:scheduled', { eventId, piId, artId });'
       this.eventBus.emit(
         'safe-events:inspect-adapt:scheduled',
-        createEvent('safe-events:inspect-adapt:scheduled', {'
+        createEvent('safe-events:inspect-adapt:scheduled', '
           eventId,
           piId,
-          artId,
-        })
+          artId,)
       );
 
       return { success: true, eventId };
@@ -354,7 +344,7 @@ export class SAFeEventsManager extends TypedEventBase {
    */
   async executeEvent(
     eventId: string,
-    context: EventExecutionContext
+    _context: EventExecutionContext
   ): Promise<{ success: boolean; outcome?: EventOutcome; error?: string }> {
     if (!this.initialized) await this.initialize();
 
@@ -537,7 +527,7 @@ export class SAFeEventsManager extends TypedEventBase {
     // Build participant list from feature teams
     const uniqueTeams = new Set(features.map((f) => f.team).filter(Boolean));
     return Array.from(uniqueTeams).map((team) => ({
-      id: `team-${team}`,`
+      id: `team-$team`,`
       name: `${team} Team`,`
       role: 'development-team',
       team: team!,
@@ -550,14 +540,13 @@ export class SAFeEventsManager extends TypedEventBase {
     // Build ART participant list
     return [
       {
-        id: `art-${artId}-coach`,`
+        id: `art-$artId-coach`,`
         name: 'SAFe Coach',
         role: 'safe-coach',
         team: artId,
         required: true,
         facilitator: true,
       },
-      {
         id: `art-${artId}-rte`,`
         name: 'Release Train Engineer',
         role: 'rte',
@@ -582,41 +571,12 @@ export class SAFeEventsManager extends TypedEventBase {
         title: `Feature Demonstrations (${features.length} features)`,`
         duration: Math.max(60, features.length * 10),
         type: 'demo',
-        objectives: ['Show completed features', 'Gather stakeholder feedback'],
-      },
-      {
+        objectives: ['Show completed features', 'Gather stakeholder feedback'],,
         id: 'wrap-up',
         title: 'Wrap-up & Feedback',
         duration: 20,
         type: 'discussion',
-        objectives: ['Collect feedback', 'Plan next iteration'],
-      },
-    ];
-  }
-
-  private buildInspectAdaptAgenda(): EventAgendaItem[] {
-    return [
-      {
-        id: 'retrospective',
-        title: 'PI Retrospective',
-        duration: 90,
-        type: 'retrospective',
-        objectives: ['Review PI performance', 'Identify improvement areas'],
-      },
-      {
-        id: 'problem-solving',
-        title: 'Problem Solving Workshop',
-        duration: 90,
-        type: 'workshop',
-        objectives: ['Address identified issues', 'Develop solutions'],
-      },
-      {
-        id: 'planning',
-        title: 'Action Planning',
-        duration: 60,
-        type: 'workshop',
-        objectives: ['Create improvement backlog', 'Assign ownership'],
-      },
+        objectives: ['Collect feedback', 'Plan next iteration'],,
     ];
   }
 

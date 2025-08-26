@@ -1,47 +1,47 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { dragDropManager, type Widget } from '../drag-drop';
+import { onMount } from "svelte";
+import { dragDropManager, type Widget } from "../drag-drop";
 
-  export let widget: Widget;
-  export let isDragMode: boolean = false;
-  
-  let elementRef: HTMLElement;
-  let isDragging = false;
+export let widget: Widget;
+export const isDragMode: boolean = false;
 
-  onMount(() => {
-    if (elementRef) {
-      // Register as drag source
-      elementRef.draggable = isDragMode;
-      
-      if (isDragMode) {
-        elementRef.addEventListener('dragstart', handleDragStart);
-        elementRef.addEventListener('dragend', handleDragEnd);
-      }
-    }
+let elementRef: HTMLElement;
+let _isDragging = false;
 
-    return () => {
-      if (elementRef) {
-        elementRef.removeEventListener('dragstart', handleDragStart);
-        elementRef.removeEventListener('dragend', handleDragEnd);
-      }
-    };
-  });
+onMount(() => {
+	if (elementRef) {
+		// Register as drag source
+		elementRef.draggable = isDragMode;
 
-  $: {
-    if (elementRef) {
-      elementRef.draggable = isDragMode;
-    }
-  }
+		if (isDragMode) {
+			elementRef.addEventListener("dragstart", handleDragStart);
+			elementRef.addEventListener("dragend", handleDragEnd);
+		}
+	}
 
-  function handleDragStart(event: DragEvent) {
-    isDragging = true;
-    dragDropManager.startDrag(widget, elementRef, event);
-  }
+	return () => {
+		if (elementRef) {
+			elementRef.removeEventListener("dragstart", handleDragStart);
+			elementRef.removeEventListener("dragend", handleDragEnd);
+		}
+	};
+});
 
-  function handleDragEnd(event: DragEvent) {
-    isDragging = false;
-    dragDropManager.endDrag(elementRef);
-  }
+$: {
+	if (elementRef) {
+		elementRef.draggable = isDragMode;
+	}
+}
+
+function handleDragStart(event: DragEvent) {
+	_isDragging = true;
+	dragDropManager.startDrag(widget, elementRef, event);
+}
+
+function handleDragEnd(_event: DragEvent) {
+	_isDragging = false;
+	dragDropManager.endDrag(elementRef);
+}
 </script>
 
 <div 

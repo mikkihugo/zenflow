@@ -5,17 +5,16 @@
  * strategies with intelligent priority management and performance optimization.
  */
 
-import { TypedEventBase ,
+import type { Logger } from '@claude-zen/foundation';
+import { 
   getLogger,
   recordMetric,
-  TelemetryManager,
+  type TelemetryManager,TypedEventBase ,
 } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
 
 import type {
-  CacheEvictionConfig,
   CacheEntry,
-  EvictionReason,
+  CacheEvictionConfig,
   StrategyMetrics,
 } from './types';
 
@@ -25,7 +24,6 @@ export class CacheEvictionStrategy extends TypedEventBase {
   private cache = new Map<string, CacheEntry>();
   private accessOrder = new Map<string, number>(); // LRU tracking
   private frequencyMap = new Map<string, number>(); // LFU tracking
-  private cleanupTimer?: NodeJS.Timeout;
   private telemetry: TelemetryManager;
   private metrics: StrategyMetrics['cacheEviction'];'
   private accessCounter = 0;
@@ -34,11 +32,10 @@ export class CacheEvictionStrategy extends TypedEventBase {
     super();
     this.config = config;
     this.logger = getLogger('CacheEvictionStrategy');'
-    this.telemetry = new TelemetryManager({
+    this.telemetry = new TelemetryManager(
       serviceName: 'cache-eviction',
       enableTracing: true,
-      enableMetrics: true,
-    });
+      enableMetrics: true,);
     this.metrics = {
       totalEvictions: 0,
       evictionsByReason: {
@@ -118,7 +115,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.frequencyMap.set(key, 1);
 
     this.emit('entryAdded', { key, entry });'
-    recordMetric('cache_entry_added', 1, { algorithm: this.config.algorithm });'
+    recordMetric('cache_entry_added', 1, algorithm: this.config.algorithm );'
 
     return true;
   }
@@ -191,7 +188,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     this.emit('cacheCleared', { clearedCount });'
     recordMetric('cache_cleared', clearedCount);'
-    this.logger.info(`Cache cleared, removed ${clearedCount} entries`);`
+    this.logger.info(`Cache cleared, removed $clearedCountentries`);`
   }
 
   private canAccommodate(size: number): boolean {

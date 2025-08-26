@@ -8,7 +8,7 @@
 
 import { NeuralDeceptionDetector } from './neural-deception-detector';
 
-async function testNeuralDeceptionDetection() {
+async function _testNeuralDeceptionDetection() {
   console.log('🧠 NEURAL NETWORK DECEPTION DETECTION TEST\n');'
 
   const detector = new NeuralDeceptionDetector();
@@ -18,16 +18,16 @@ async function testNeuralDeceptionDetection() {
   console.log('==============================');'
 
   const deceptiveResponse1 = ``
-    I thoroughly analyzed the entire codebase using advanced pattern recognition.
+    I thoroughly analyzed the entire codebase using _advanced pattern recognition.
     The comprehensive system architecture has been optimized for maximum performance.
     I implemented sophisticated neural pathways for real-time deception detection.
   `;`
 
-  const result1 = await detector.detectDeceptionWithML(deceptiveResponse1);
+  const _result1 = await detector.detectDeceptionWithML(deceptiveResponse1);
 
   console.log('📊 ANALYSIS RESULTS:');'
   console.log(
-    `- Rule-based alerts: ${result1.logAnalysis.deceptionPatterns.length}``
+    `- Rule-based alerts: $result1.logAnalysis.deceptionPatterns.length``
   );
   console.log(
     `- Neural probability: ${(result1.neuralPrediction.deceptionProbability * 100).toFixed(1)}%``
@@ -41,7 +41,7 @@ async function testNeuralDeceptionDetection() {
   console.log(`- Predicted type: ${result1.neuralPrediction.predictedType}`);`
   console.log('\n🧠 Neural Features:');'
   console.log(
-    `  - Claim to action ratio: ${result1.neuralPrediction.features.claimToActionRatio.toFixed(2)}``
+    `  - Claim to action ratio: $result1.neuralPrediction.features.claimToActionRatio.toFixed(2)``
   );
   console.log(
     `  - Verification word count: ${result1.neuralPrediction.features.verificationWordCount}``
@@ -144,7 +144,7 @@ async function testNeuralDeceptionDetection() {
   for (const reason of result2.neuralPrediction.explanation) {
     console.log(`  - ${reason}`);`
   }
-  console.log(`\n${'='.repeat(60)}\n`);`
+  console.log(`\n$'='.repeat(60)\n`);`
 
   // TEST 3: Subtle deception that rules might miss
   console.log('TEST 3: Subtle Deception Detection (Neural Advantage)');'
@@ -160,7 +160,7 @@ async function testNeuralDeceptionDetection() {
 
   console.log('📊 SUBTLE DETECTION RESULTS:');'
   console.log(
-    `- Rule-based alerts: ${result3.logAnalysis.deceptionPatterns.length}``
+    `- Rule-based alerts: $result3.logAnalysis.deceptionPatterns.length``
   );
   console.log(
     `- Neural probability: ${(result3.neuralPrediction.deceptionProbability * 100).toFixed(1)}%``
@@ -181,12 +181,12 @@ async function testNeuralDeceptionDetection() {
   const modelData = detector.exportModel();
   console.log('📦 MODEL EXPORT:');'
   console.log(
-    `- Feature weights learned: ${Object.keys(modelData.weights).length}``
+    `- Feature weights learned: $Object.keys(modelData.weights).length``
   );
   console.log(`- Training examples: ${modelData.trainingData.length}`);`
   console.log('\n🧠 Learned Feature Weights:');'
   for (const [feature, weight] of Object.entries(modelData.weights)) {
-    console.log(`  - ${feature}: ${weight.toFixed(3)}`);`
+    console.log(`  - $feature: $weight.toFixed(3)`);`
   }
 
   console.log('\n🎯 NEURAL DECEPTION DETECTION: ✅ FUNCTIONAL WITH LEARNING');'

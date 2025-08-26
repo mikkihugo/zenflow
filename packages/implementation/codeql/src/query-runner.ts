@@ -3,32 +3,20 @@
  * Executes CodeQL queries against databases and manages query packs
  */
 
-import {
-  getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync,
-  type Logger,
+import { spawn } from 'node:child_process';
+import * as path from 'node:path';
+import type {
+  Logger,
 } from '@claude-zen/foundation';
-
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { spawn } from 'child_process';
-
 import type {
   CodeQLConfig,
   CodeQLDatabase,
-  QueryPack,
-  QueryExecutionOptions,
-  QueryExecutionResult,
-  CodeQLAnalysisResult,
   CodeQLError,
-  SARIFResult,
   CodeQLFinding,
+  QueryExecutionOptions,
+  QueryPack,
+  SARIFResult,
 } from './types/codeql-types';
-
-import { ResultParser } from './result-parser';
 
 /**
  * Handles CodeQL query execution and result processing
@@ -36,7 +24,6 @@ import { ResultParser } from './result-parser';
 export class QueryRunner {
   private readonly logger: Logger;
   private readonly config: CodeQLConfig;
-  private readonly resultParser: ResultParser;
 
   constructor(config: CodeQLConfig, logger: Logger) {
     this.config = config;
@@ -88,9 +75,6 @@ export class QueryRunner {
           databaseId: database.id,
           error,
         });
-
-        // Continue with other query packs
-        continue;
       }
     }
 
@@ -116,7 +100,7 @@ export class QueryRunner {
     });
 
     // Prepare output file
-    const outputFile =
+    const _outputFile =
       options.outputPath||path.join(
         this.config.tempDir!,
         `results_${database.id}_${queryPack.name}_${Date.now()}.sarif``
@@ -313,24 +297,23 @@ export class QueryRunner {
         env: options.env||process.env,
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
-      const timeoutId = setTimeout(() => {
+      const _timeoutId = setTimeout(() => {
         child.kill('SIGTERM');'
         reject(
-          this.createError('system', 'Query execution timeout', {'
+          this.createError('system', 'Query execution timeout', '
             timeout,
-            command: args.join(' '),
-          })
+            command: args.join(' '),)
         );
       }, timeout);
 

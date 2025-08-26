@@ -327,20 +327,20 @@ export interface MemoryHealthCheck {
 
 // Re-export foundation error types and create memory-specific errors
 export {
-  ContextError,
-  ValidationError,
   ConfigurationError,
+  ContextError,
+  err,
   NetworkError,
-  TimeoutError,
+  ok,
   ResourceError,
   Result,
-  ok,
-  err,
-  safeAsync,
   safe,
+  safeAsync,
+  TimeoutError,
+  ValidationError,
+  withContext,
   withRetry,
   withTimeout,
-  withContext,
 } from '@claude-zen/foundation';
 
 // Memory-specific error types extending foundation's ContextError'

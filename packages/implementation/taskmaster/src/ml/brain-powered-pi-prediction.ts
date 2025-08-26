@@ -244,7 +244,7 @@ export class BrainPoweredPIPredictionService {
    */
   async updateBrainLearning(
     predictionId: string,
-    actualOutcomes: any
+    _actualOutcomes: any
   ): Promise<void> {
     try {
       const prediction = this.predictionCache.get(predictionId);
@@ -267,7 +267,7 @@ export class BrainPoweredPIPredictionService {
       logger.info(
         `Updated brain learning with actual outcomes for ${predictionId}``
       );
-    } catch (error) {
+    } catch (error) 
       logger.error(
         `Failed to update brain learning for ${predictionId}`,`
         error
@@ -290,8 +290,7 @@ export class BrainPoweredPIPredictionService {
         complexity: request.brainConfig?.complexity||'moderate',
         timeout: request.brainConfig?.timeoutMs||30000,
         useCache: true,
-        learningEnabled: true,
-      },
+        learningEnabled: true,,
     });
 
     // Configure session with SAFe-specific context
@@ -543,22 +542,20 @@ export class BrainPoweredPIPredictionService {
         recommendations: { immediate: [], strategic: [], monitoring: [] },
         confidence: simpleAnalysis.confidence,
       },
-      neuralInsights: {
-        patternRecognition: { enabled: false, reason: 'brain_unavailable' },
-        predictiveFactors: { enabled: false, reason: 'brain_unavailable' },
-        learningRecommendations: {
+      neuralInsights: {enabled: false, reason: 'brain_unavailable' ,
+        predictiveFactors: enabled: false, reason: 'brain_unavailable' ,
+        learningRecommendations: 
           enabled: false,
-          reason: 'brain_unavailable',
-        },
+          reason: 'brain_unavailable',,
       },
       coordinationPlan: {
         suggestedActions: [],
-        monitoringPlan: {},
+        monitoringPlan: ,
         escalationTriggers: [],
       },
       metadata: {
         processingTime: Date.now() - startTime,
-        brainUtilization: { status: 'unavailable' },
+        brainUtilization: status: 'unavailable' ,
         analysisDepth: 'fallback',
         dataQuality: this.assessDataQuality(request.piData),
       },

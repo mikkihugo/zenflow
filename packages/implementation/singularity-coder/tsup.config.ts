@@ -1,6 +1,6 @@
+import { copyFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { defineConfig } from 'tsup';
-import { copyFileSync, existsSync } from 'fs';
-import { resolve } from 'path';
 
 export default defineConfig({
   entry: ['src/index.ts', 'src/integration/code-mesh-bridge.ts'],

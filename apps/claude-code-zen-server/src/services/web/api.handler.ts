@@ -10,7 +10,7 @@ import { getLogger } from "@claude-zen/foundation";
 
 import type { Express, Request, Response } from "express";
 
-import { WebSocketCoordinator } from "../../infrastructure/websocket/socket.coordinator";
+import type { WebSocketCoordinator } from "../../infrastructure/websocket/socket.coordinator";
 
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
 	.foundation || { getVersion: () => "1.0.0" };
@@ -98,7 +98,7 @@ export class ApiRouteHandler {
 	/**
 	 * Health check handler.
 	 */
-	private handleHealth(req: Request, res: Response): void {
+	private handleHealth(_req: Request, res: Response): void {
 		res.json({
 			status: "healthy",
 			timestamp: new Date().toISOString(),
@@ -110,7 +110,7 @@ export class ApiRouteHandler {
 	/**
 	 * System status handler.
 	 */
-	private handleSystemStatus(req: Request, res: Response): void {
+	private handleSystemStatus(_req: Request, res: Response): void {
 		try {
 			const status = this.getSystemStatus();
 			res.json(status);
@@ -123,7 +123,7 @@ export class ApiRouteHandler {
 	/**
 	 * Get swarms handler.
 	 */
-	private handleGetSwarms(req: Request, res: Response): void {
+	private handleGetSwarms(_req: Request, res: Response): void {
 		try {
 			const swarms = this.getSwarms();
 			res.json(swarms);
@@ -150,7 +150,7 @@ export class ApiRouteHandler {
 	/**
 	 * Get tasks handler.
 	 */
-	private handleGetTasks(req: Request, res: Response): void {
+	private handleGetTasks(_req: Request, res: Response): void {
 		try {
 			const tasks = this.getTasks();
 			res.json(tasks);
@@ -177,7 +177,10 @@ export class ApiRouteHandler {
 	/**
 	 * Get documents handler.
 	 */
-	private async handleGetDocuments(req: Request, res: Response): Promise<void> {
+	private async handleGetDocuments(
+		_req: Request,
+		res: Response,
+	): Promise<void> {
 		try {
 			const documents = await this.getDocuments();
 			res.json(documents);
@@ -206,7 +209,7 @@ export class ApiRouteHandler {
 	/**
 	 * Get settings handler.
 	 */
-	private async handleGetSettings(req: Request, res: Response): Promise<void> {
+	private async handleGetSettings(_req: Request, res: Response): Promise<void> {
 		try {
 			const settings = await this.getSettings();
 			res.json(settings);
@@ -331,7 +334,7 @@ export class ApiRouteHandler {
 			global as { foundation?: { withRetry: Function; withTrace: Function } }
 		).foundation || {
 			withRetry: (fn: Function) => fn(),
-			withTrace: (name: string, fn: Function) => fn(),
+			withTrace: (_name: string, fn: Function) => fn(),
 		};
 
 		try {
@@ -577,7 +580,7 @@ export class ApiRouteHandler {
 			}
 
 			// Fallback: return sample logs for development
-			return Array.from({ length: Math.min(limit, 10) }, (unusedValue, i) => ({
+			return Array.from({ length: Math.min(limit, 10) }, (_unusedValue, i) => ({
 				id: `log-${offset + i}`,
 				timestamp: new Date(Date.now() - i * 60000).toISOString(),
 				level: ["info", "warn", "error"][i % 3],

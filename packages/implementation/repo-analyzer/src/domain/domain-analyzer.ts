@@ -3,15 +3,11 @@
  * Advanced domain splitting with machine learning patterns and heuristics
  */
 
-import * as fastGlob from 'fast-glob';
 import { getLogger } from '@claude-zen/foundation';
 import type {
-  Domain,
-  DomainSize,
-  DomainType,
-  SplitRecommendation,
-  SuggestedSplit,
   AnalysisOptions,
+  Domain,
+  SuggestedSplit,
 } from '../types/index.js';
 
 export class DomainAnalyzer {
@@ -37,7 +33,7 @@ export class DomainAnalyzer {
 
       for (const [dirPath, dirFiles] of directoryGroups) {
         const domain = await this.analyzeDomain(
-          `domain-${domainId++}`,`
+          `domain-$domainId++`,`
           dirPath,
           dirFiles,
           rootPath,
@@ -55,7 +51,7 @@ export class DomainAnalyzer {
       // Calculate domain relationships
       this.calculateDomainDependencies(domains, files);
 
-      return domains.sort((a, b) => b.complexity - a.complexity);
+      return domains.sort((_a, _b) => b.complexity - a.complexity);
     } catch (error) {
       this.logger.warn('Domain analysis failed:', error);'
       return [];
@@ -94,7 +90,7 @@ export class DomainAnalyzer {
       id,
       name,
       description,
-      files: files.map((f) => f.replace(rootPath +'/', '')),
+      files: files.map((f) => f.replace(`${rootPath}/`, '')),
       dependencies: [], // Will be calculated later
       complexity,
       cohesion,
@@ -131,7 +127,7 @@ export class DomainAnalyzer {
         if (!groups.has(dirPath)) {
           groups.set(dirPath, []);
         }
-        groups.get(dirPath)!.push(file);
+        groups.get(dirPath)?.push(file);
       }
     }
 
@@ -210,7 +206,7 @@ export class DomainAnalyzer {
       return `${detectedContext.charAt(0).toUpperCase() + detectedContext.slice(1)} domain containing ${primaryType} files`;`
     }
 
-    return `Domain containing ${files.length} ${primaryType} files`;`
+    return `Domain containing $files.length$primaryTypefiles`;`
   }
 
   /**
@@ -223,51 +219,44 @@ export class DomainAnalyzer {
     // Infrastructure patterns
     if (
       pathLower.includes('config')||pathLower.includes('infrastructure')||pathLower.includes('database')||pathLower.includes('migration')'
-    ) {
+    ) 
       return 'infrastructure;
-    }
 
     // API patterns
     if (
       pathLower.includes('api')||pathLower.includes('route')||pathLower.includes('endpoint')||pathLower.includes('controller')'
-    ) {
+    ) 
       return 'api;
-    }
 
     // UI patterns
     if (
       pathLower.includes('component')||pathLower.includes('view')||pathLower.includes('ui')||pathLower.includes('frontend')'
-    ) {
+    ) 
       return 'ui;
-    }
 
     // Utility patterns
     if (
       pathLower.includes('util')||pathLower.includes('helper')||pathLower.includes('tool')||pathLower.includes('lib')'
-    ) {
+    ) 
       return 'utility;
-    }
 
     // Test patterns
     if (
       pathLower.includes('test')||pathLower.includes('spec')||Object.keys(fileTypes).some((type) => type.includes('test'))'
-    ) {
+    ) 
       return 'test;
-    }
 
     // Data patterns
     if (
       pathLower.includes('model')||pathLower.includes('entity')||pathLower.includes('data')||pathLower.includes('repository')'
-    ) {
+    ) 
       return 'data;
-    }
 
     // Core business logic
     if (
       pathLower.includes('core')||pathLower.includes('business')||pathLower.includes('domain')||pathLower.includes('service')'
-    ) {
+    ) 
       return 'core;
-    }
 
     // Feature-specific
     if (pathLower.includes('feature')||pathLower.includes('module')) {'
@@ -281,8 +270,8 @@ export class DomainAnalyzer {
    * Calculate domain size metrics
    */
   private async calculateDomainSize(files: string[]): Promise<DomainSize> {
-    const fs = await import('fs/promises');'
-    let totalLines = 0;
+    const fs = await import('node:fs/promises');'
+    const totalLines = 0;
     let functions = 0;
     let classes = 0;
     let interfaces = 0;
@@ -290,7 +279,7 @@ export class DomainAnalyzer {
     for (const file of files) {
       try {
         const content = await fs.readFile(file, 'utf-8');'
-        const lines = content.split('\n').length;'
+        const _lines = content.split('\n').length;'
         totalLines += lines;
 
         // Simple pattern matching
@@ -356,7 +345,7 @@ export class DomainAnalyzer {
     files: string[],
     rootPath: string
   ): Promise<number> {
-    const fs = await import('fs/promises');'
+    const fs = await import('node:fs/promises');'
     let totalImports = 0;
     let externalImports = 0;
 
@@ -646,18 +635,17 @@ export class DomainAnalyzer {
     importPath: string,
     currentFile: string,
     domainFiles: string[]
-  ): boolean {
+  ): boolean 
     if (importPath.startsWith('.')) {'
       // Relative import - check if target is in domain
       const currentDir = currentFile.split('/').slice(0, -1).join('/');'
-      const path = require('path');'
+      const path = require('node:path');'
       const resolvedPath = path.resolve(currentDir, importPath);
       return !domainFiles.some((f) => f.startsWith(resolvedPath));
     }
 
     // External package import
     return !importPath.startsWith('/') && !importPath.startsWith('.');'
-  }
 
   private groupFilesByPurpose(files: string[]): Map<string, string[]> {
     const groups = new Map<string, string[]>();
@@ -684,7 +672,7 @@ export class DomainAnalyzer {
           if (!groups.has(purpose)) {
             groups.set(purpose, []);
           }
-          groups.get(purpose)!.push(file);
+          groups.get(purpose)?.push(file);
           assigned = true;
           break;
         }
@@ -694,7 +682,7 @@ export class DomainAnalyzer {
         if (!groups.has('other')) {'
           groups.set('other', []);'
         }
-        groups.get('other')!.push(file);'
+        groups.get('other')?.push(file);'
       }
     }
 
@@ -717,11 +705,10 @@ export class DomainAnalyzer {
   private calculateDomainDependencies(
     domains: Domain[],
     allFiles: string[]
-  ): void {
+  ): void 
     // This would require analyzing imports between domains
     // For now, leaving empty - could be enhanced with full dependency analysis
     for (const domain of domains) {
       domain.dependencies = [];
     }
-  }
 }

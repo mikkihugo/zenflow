@@ -4,7 +4,7 @@
  * Basic conversation management utilities and helpers.
  */
 
-import type { ConversationSession, AgentId } from './types';
+import type { AgentId, ConversationSession } from './types';
 
 /**
  * Utility functions for conversation management

@@ -3,52 +3,52 @@
  * Simple exports for all foundation types.
  */
 
+export * from "./errors";
+export * from "./patterns";
 // Export all types
-export * from './primitives';
-export * from './patterns';
-export * from './errors';
+export * from "./primitives";
 // Basic type guards - imported by guards for basic types
 
 // Additional basic entity patterns
 export interface Timestamped {
-  createdAt: number;
-  updatedAt: number;
+	createdAt: number;
+	updatedAt: number;
 }
 
 export interface Identifiable<T = string> {
-  id: T;
+	id: T;
 }
 
 export interface Entity extends Timestamped, Identifiable<string> {
-  name: string;
-  version: number;
-  isActive: boolean;
+	name: string;
+	version: number;
+	isActive: boolean;
 }
 
 // Generic utility patterns
 export interface Paginated<T> {
-  items: T[];
-  totalItems: number;
-  totalPages: number;
-  currentPage: number;
-  pageSize: number;
+	items: T[];
+	totalItems: number;
+	totalPages: number;
+	currentPage: number;
+	pageSize: number;
 }
 
 export interface PaginationOptions {
-  page?: number;
-  limit?: number;
-  offset?: number;
+	page?: number;
+	limit?: number;
+	offset?: number;
 }
 
 // Result pattern for error handling
 export interface SuccessResult<T> {
-  success: true;
-  data: T;
+	success: true;
+	data: T;
 }
 
 export interface ErrorResult<E> {
-  success: false;
-  error: E;
+	success: false;
+	error: E;
 }
 
 export type Result<T, E = Error> = SuccessResult<T> | ErrorResult<E>;
@@ -58,26 +58,26 @@ export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
 
 // Query patterns
 export interface QueryCriteria {
-  filters?: Record<string, unknown>;
-  sort?: { field: string; direction: 'asc|desc' }[];
-  pagination?: PaginationOptions;
+	filters?: Record<string, unknown>;
+	sort?: { field: string; direction: "asc|desc" }[];
+	pagination?: PaginationOptions;
 }
 
 // Audit and versioning
 export interface AuditEntry extends Timestamped {
-  id: string;
-  entityId: string;
-  entityType: string;
-  action: string;
-  changes: Record<string, unknown>;
-  userId?: string;
-  metadata?: Record<string, unknown>;
+	id: string;
+	entityId: string;
+	entityType: string;
+	action: string;
+	changes: Record<string, unknown>;
+	userId?: string;
+	metadata?: Record<string, unknown>;
 }
 
 // Additional utility types needed by brain package
 export type NonEmptyArray<T> = [T, ...T[]];
 
-export type LogLevel = 'debug|info|warn|error|fatal';
+export type LogLevel = "debug|info|warn|error|fatal";
 
 // =============================================================================
 // TYPE UTILITIES - Advanced type manipulation utilities
@@ -140,87 +140,81 @@ export type LogLevel = 'debug|info|warn|error|fatal';
  * ```
  */
 export type {
-  // String manipulation utilities - comprehensive text transformations
-  LiteralUnion,
-  CamelCase,
-  PascalCase,
-  SnakeCase,
-  KebabCase,
-  DelimiterCase,
-  Trim,
-  // TrimLeft, TrimRight - Use Trim instead
-  // Capitalize, Uncapitalize - Use native string methods instead
+	// ArgumentsType - Use Parameters<T> instead
+	// Constructor - Already exported from primitives
+	AbstractConstructor,
+	// Function utilities
+	Asyncify,
+	AsyncReturnType,
+	CamelCase,
+	// IntersectionFromUnion - Not available in this version
 
-  // Object manipulation utilities - powerful merging and picking
-  SetOptional,
-  SetRequired,
-  SetReadonly,
-  Writable, // SetWritable renamed to Writable
-  SetNonNullable,
-  Merge,
-  MergeDeep,
-  MergeExclusive,
-  Except,
-  // Omit, Pick - Use native TypeScript instead
-  OmitDeep,
-  PickDeep,
-  PartialDeep,
-  RequiredDeep,
-  ReadonlyDeep,
+	// Conditional types
+	ConditionalExcept,
+	ConditionalKeys,
+	ConditionalPick,
+	DelimiterCase,
+	// Array and object utilities
+	EmptyObject,
+	Entries,
+	Except,
+	// Advanced type operations - path and value extraction
+	Get,
+	Includes,
+	IsAny,
+	IsEmptyObject,
+	// Type checking utilities
+	IsEqual,
+	IsNever,
+	IsUnknown,
+	Join,
+	KebabCase,
+	// Array utilities
+	// ArrayElement, FirstArrayElement - Use LastArrayElement or custom
+	LastArrayElement,
+	// String manipulation utilities - comprehensive text transformations
+	LiteralUnion,
+	Merge,
+	MergeDeep,
+	MergeExclusive,
+	// Omit, Pick - Use native TypeScript instead
+	OmitDeep,
+	Opaque,
+	// JSON utilities - Already exported from primitives
+	// JsonValue, JsonObject, JsonArray, JsonPrimitive,
 
-  // Advanced type operations - path and value extraction
-  Get,
-  // Has - Use custom implementation
-  Paths,
-  Split,
-  Join,
-  Replace,
-  Includes,
+	// Configuration file types
+	PackageJson,
+	PartialDeep,
+	PascalCase,
+	// Has - Use custom implementation
+	Paths,
+	PickDeep,
+	Promisable,
+	ReadonlyDeep,
+	ReadonlyTuple,
+	Replace,
+	RequiredDeep,
+	SetNonNullable,
+	// TrimLeft, TrimRight - Use Trim instead
+	// Capitalize, Uncapitalize - Use native string methods instead
 
-  // Array utilities
-  // ArrayElement, FirstArrayElement - Use LastArrayElement or custom
-  LastArrayElement,
-  ReadonlyTuple,
-  // WritableTuple - Not available in this version
+	// Object manipulation utilities - powerful merging and picking
+	SetOptional,
+	SetReadonly,
+	SetRequired,
+	Simplify,
+	SnakeCase,
+	Split,
+	Trim,
+	TsConfigJson,
+	// WritableTuple - Not available in this version
 
-  // Union and intersection utilities
-  UnionToIntersection,
-  UnionToTuple,
-  // IntersectionFromUnion - Not available in this version
-
-  // Conditional types
-  ConditionalExcept,
-  ConditionalKeys,
-  ConditionalPick,
-
-  // Array and object utilities
-  EmptyObject,
-  IsEmptyObject,
-  Entries,
-  Simplify,
-  Opaque,
-
-  // Type checking utilities
-  IsEqual,
-  IsNever,
-  IsUnknown,
-  IsAny,
-
-  // Function utilities
-  Asyncify,
-  Promisable,
-  AsyncReturnType,
-  // ArgumentsType - Use Parameters<T> instead
-  // Constructor - Already exported from primitives
-  AbstractConstructor,
-
-  // JSON utilities - Already exported from primitives
-  // JsonValue, JsonObject, JsonArray, JsonPrimitive,
-
-  // Configuration file types
-  PackageJson,
-  TsConfigJson,
-} from 'type-fest';
+	// Union and intersection utilities
+	UnionToIntersection,
+	UnionToTuple,
+	Writable, // SetWritable renamed to Writable
+} from "type-fest";
 
 // FORCING EXPORTS - Guide developers to type-fest patterns with foundation naming
 
@@ -244,26 +238,26 @@ export type {
  */
 
 // Type utilities using type-fest for enhanced type safety
-export type DeepPartial<T> = import('type-fest').PartialDeep<T>;
-export type DeepRequired<T> = import('type-fest').RequiredDeep<T>;
-export type DeepReadonly<T> = import('type-fest').ReadonlyDeep<T>;
+export type DeepPartial<T> = import("type-fest").PartialDeep<T>;
+export type DeepRequired<T> = import("type-fest").RequiredDeep<T>;
+export type DeepReadonly<T> = import("type-fest").ReadonlyDeep<T>;
 
 // Selective property modifications
 export type MarkOptional<
-  T,
-  K extends keyof T,
-> = import('type-fest').SetOptional<T, K>;
+	T,
+	K extends keyof T,
+> = import("type-fest").SetOptional<T, K>;
 export type MarkRequired<
-  T,
-  K extends keyof T,
-> = import('type-fest').SetRequired<T, K>;
+	T,
+	K extends keyof T,
+> = import("type-fest").SetRequired<T, K>;
 export type MarkReadonly<
-  T,
-  K extends keyof T,
-> = import('type-fest').SetReadonly<T, K>;
+	T,
+	K extends keyof T,
+> = import("type-fest").SetReadonly<T, K>;
 
 // Additional utility types
-export type StrictOmit<T, K extends keyof T> = import('type-fest').Except<T, K>;
+export type StrictOmit<T, K extends keyof T> = import("type-fest").Except<T, K>;
 export type NonNever<T> = T extends never ? never : T;
 
 // Type checking utilities
@@ -278,28 +272,28 @@ export type SafeDictionary<T> = Record<string, T>;
 
 // Common utility types
 export type Head<T extends readonly unknown[]> = T extends readonly [
-  infer H,
-  ...unknown[],
+	infer H,
+	...unknown[],
 ]
-  ? H
-  : never;
+	? H
+	: never;
 export type Tail<T extends readonly unknown[]> = T extends readonly [
-  unknown,
-  ...infer Rest,
+	unknown,
+	...infer Rest,
 ]
-  ? Rest
-  : [];
+	? Rest
+	: [];
 export type ReadonlyKeys<T> = {
-  [K in keyof T]: T[K] extends Readonly<T[K]> ? K : never;
+	[K in keyof T]: T[K] extends Readonly<T[K]> ? K : never;
 }[keyof T];
 export type WritableKeys<T> = {
-  [K in keyof T]: T[K] extends Readonly<T[K]> ? never : K;
+	[K in keyof T]: T[K] extends Readonly<T[K]> ? never : K;
 }[keyof T];
 export type RequiredKeys<T> = {
-  [K in keyof T]: T extends Record<K, T[K]> ? K : never;
+	[K in keyof T]: T extends Record<K, T[K]> ? K : never;
 }[keyof T];
 export type OptionalKeys<T> = {
-  [K in keyof T]: T extends Record<K, T[K]> ? never : K;
+	[K in keyof T]: T extends Record<K, T[K]> ? never : K;
 }[keyof T];
 
 // Function utilities
@@ -313,64 +307,61 @@ export type AnyFunction = (...args: unknown[]) => unknown;
 // COMPREHENSIVE TYPE EXPORTS - All foundation types and utilities
 // =============================================================================
 
+export * from "./errors";
 // Re-export all patterns, errors, and type guards
-export * from './patterns';
-export * from './errors';
-export * from './type-guards';
+export * from "./patterns";
+export * from "./type-guards";
 
 // =============================================================================
 // CONCRETE EXPORTS - Re-export all concrete functions and enums
 // =============================================================================
 
+export {
+	createError,
+	createNetworkError,
+	createResourceError,
+	createSuccess,
+	createSystemError,
+	// Error utility functions from errors
+	createValidationError,
+	isBaseError,
+	isError,
+	isNetworkError,
+	isResourceError,
+	isRetryableError,
+	isSuccess,
+	isSystemError,
+	isValidationError,
+} from "./errors";
+export {
+	createErrorResult,
+	createPaginated,
+	// Pattern utility functions from patterns
+	createPaginationMetadata,
+	createSuccessResult,
+	isErrorResult,
+	isSuccessResult,
+} from "./patterns";
 // Re-export enums and concrete functions from submodules
 export {
-  // Enums from primitives
-  Priority as PriorityEnum,
-  Status as StatusEnum,
-  LogLevel as LogLevelEnum,
-  Environment as EnvironmentEnum,
-
-  // Utility functions from primitives
-  isUUID,
-  isTimestamp,
-  isISODateString,
-  isEmail,
-  isPrimitive,
-  isNonEmptyArray,
-  generateUUID,
-  now,
-  timestampFromDate,
-  dateFromTimestamp,
-  isoStringFromTimestamp,
-} from './primitives';
-
-export {
-  // Error utility functions from errors
-  createValidationError,
-  createSystemError,
-  createNetworkError,
-  createResourceError,
-  createSuccess,
-  createError,
-  isSuccess,
-  isError,
-  isValidationError,
-  isSystemError,
-  isNetworkError,
-  isResourceError,
-  isRetryableError,
-  isBaseError,
-} from './errors';
-
-export {
-  // Pattern utility functions from patterns
-  createPaginationMetadata,
-  createPaginated,
-  createSuccessResult,
-  createErrorResult,
-  isSuccessResult,
-  isErrorResult,
-} from './patterns';
+	dateFromTimestamp,
+	Environment as EnvironmentEnum,
+	generateUUID,
+	isEmail,
+	isISODateString,
+	isNonEmptyArray,
+	isoStringFromTimestamp,
+	isPrimitive,
+	isTimestamp,
+	// Utility functions from primitives
+	isUUID,
+	LogLevel as LogLevelEnum,
+	now,
+	// Enums from primitives
+	Priority as PriorityEnum,
+	Status as StatusEnum,
+	timestampFromDate,
+} from "./primitives";
 
 // =============================================================================
 // AGENT TYPES MOVED TO INTELLIGENCE PACKAGE

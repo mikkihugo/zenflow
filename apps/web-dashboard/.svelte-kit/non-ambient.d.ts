@@ -1,36 +1,48 @@
-
 // this file is generated — do not edit it
 
-
 declare module "svelte/elements" {
-	export interface HTMLAttributes<T> {
-		'data-sveltekit-keepfocus'?: true | '' | 'off' | undefined | null;
-		'data-sveltekit-noscroll'?: true | '' | 'off' | undefined | null;
-		'data-sveltekit-preload-code'?:
+	export interface HTMLAttributes<_T> {
+		"data-sveltekit-keepfocus"?: true | "" | "off" | undefined | null;
+		"data-sveltekit-noscroll"?: true | "" | "off" | undefined | null;
+		"data-sveltekit-preload-code"?:
 			| true
-			| ''
-			| 'eager'
-			| 'viewport'
-			| 'hover'
-			| 'tap'
-			| 'off'
+			| ""
+			| "eager"
+			| "viewport"
+			| "hover"
+			| "tap"
+			| "off"
 			| undefined
 			| null;
-		'data-sveltekit-preload-data'?: true | '' | 'hover' | 'tap' | 'off' | undefined | null;
-		'data-sveltekit-reload'?: true | '' | 'off' | undefined | null;
-		'data-sveltekit-replacestate'?: true | '' | 'off' | undefined | null;
+		"data-sveltekit-preload-data"?:
+			| true
+			| ""
+			| "hover"
+			| "tap"
+			| "off"
+			| undefined
+			| null;
+		"data-sveltekit-reload"?: true | "" | "off" | undefined | null;
+		"data-sveltekit-replacestate"?: true | "" | "off" | undefined | null;
 	}
 }
 
 export {};
 
-
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/agui" | "/database" | "/facades" | "/memory" | "/safe-production" | "/safe" | "/stories" | "/swarm" | "/system";
-		RouteParams(): {
-			
-		};
+		RouteId():
+			| "/"
+			| "/agui"
+			| "/database"
+			| "/facades"
+			| "/memory"
+			| "/safe-production"
+			| "/safe"
+			| "/stories"
+			| "/swarm"
+			| "/system";
+		RouteParams(): {};
 		LayoutParams(): {
 			"/": Record<string, never>;
 			"/agui": Record<string, never>;
@@ -41,10 +53,29 @@ declare module "$app/types" {
 			"/safe": Record<string, never>;
 			"/stories": Record<string, never>;
 			"/swarm": Record<string, never>;
-			"/system": Record<string, never>
+			"/system": Record<string, never>;
 		};
-		Pathname(): "/" | "/agui" | "/agui/" | "/database" | "/database/" | "/facades" | "/facades/" | "/memory" | "/memory/" | "/safe-production" | "/safe-production/" | "/safe" | "/safe/" | "/stories" | "/stories/" | "/swarm" | "/swarm/" | "/system" | "/system/";
-		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf" | string & {};
+		Pathname():
+			| "/"
+			| "/agui"
+			| "/agui/"
+			| "/database"
+			| "/database/"
+			| "/facades"
+			| "/facades/"
+			| "/memory"
+			| "/memory/"
+			| "/safe-production"
+			| "/safe-production/"
+			| "/safe"
+			| "/safe/"
+			| "/stories"
+			| "/stories/"
+			| "/swarm"
+			| "/swarm/"
+			| "/system"
+			| "/system/";
+		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes["Pathname"]>}`;
+		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf" | (string & {});
 	}
 }

@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+import type { EventEmitter } from '@claude-zen/foundation';
 
 /**
  * UEL (Unified Event Layer) - Backward Compatibility Layer.
@@ -13,8 +13,6 @@ import type { Logger } from '@claude-zen/foundation';
 import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   EventManagerType,
-  EventManager as IEventManager,
-  SystemEvent,
 } from './core/interfaces;
 import { EventManagerTypes } from './core/interfaces;
 import type { EventManager } from './manager;
@@ -27,7 +25,6 @@ import type { EventManager } from './manager;
 export class UELCompatibleEventEmitter extends TypedEventBase {
   private uelManager?: EventManager;
   private uelEnabled = false;
-  private eventMappings = new Map<string, string>();
   private migrationMode: 'disabled|passive|active' = 'passive;
   private logger?: Logger;
 
@@ -141,7 +138,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
     eventName: string|symbol,
     listener: (...args: unknown[]) => void
   ): this {
-    const result = super.once(eventName, listener);
+    const _result = super.once(eventName, listener);
 
     // Track one-time UEL subscriptions if enabled
     if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {'
@@ -243,7 +240,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
       }
 
       this.logger?.debug(
-        `UEL subscription created: ${subscriptionId} for ${eventName}``
+        `UEL subscription created: $subscriptionIdfor ${eventName}``
       );
     } catch (error) {
       if (this.migrationMode ==='active') {'
@@ -282,8 +279,8 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
 
   private convertUELEventToArgs(event: SystemEvent): unknown[] 
     // Extract original args from metadata if available
-    if (event.metadata?.['args'] && Array.isArray(event.metadata['args'])) {'
-      return event.metadata['args'];'
+    if (event.metadata?.args && Array.isArray(event.metadata.args)) {'
+      return event.metadata.args;'
     }
 
     // Fallback to event object itself
@@ -424,7 +421,7 @@ export class EventEmitterMigrationHelper {
     } catch (error) 
       this.migrationStats.failed++;
       this.logger?.error(
-        `❌ Failed to wrap EventEmitter ${managerName}:`,`
+        `❌ Failed to wrap EventEmitter $managerName:`,`
         error
       );
       throw error;
@@ -619,7 +616,6 @@ export class EventEmitterMigrationHelper {
 export class CompatibilityFactory {
   private static instance: CompatibilityFactory;
   private migrationHelper?: EventEmitterMigrationHelper;
-  private eventManager?: EventManager;
 
   private constructor() {}
 
@@ -718,7 +714,7 @@ export async function createCompatibleEventEmitter(
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
 
-  if (eventManager && !factory['eventManager']) {'
+  if (eventManager && !factory.eventManager) {'
     await factory.initialize(eventManager);
   }
 
@@ -745,7 +741,7 @@ export async function wrapWithUEL(
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
 
-  if (eventManager && !factory['eventManager']) {'
+  if (eventManager && !factory.eventManager) {'
     await factory.initialize(eventManager);
   }
 
@@ -754,5 +750,5 @@ export async function wrapWithUEL(
 
 export {
   UELCompatibleEventEmitter as CompatibleEventEmitter,
-  EventEmitterMigrationHelper as MigrationHelper,
+  type EventEmitterMigrationHelper as MigrationHelper,
 };

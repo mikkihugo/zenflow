@@ -17,10 +17,6 @@ import {
   isMemoryError,
   isMemoryNotFound,
   isMemorySuccess,
-  type MemoryError,
-  type MemoryNotFound,
-  type MemoryResult,
-  type MemorySuccess,
 } from '../utils/type-guards';
 
 const logger = getLogger('src-memory-safe-memory-store');'
@@ -389,14 +385,14 @@ export class SafeMemoryStore extends TypedEventBase {
   // ============================================
 
   private createKey(key: string): string {
-    return `${this.options.namespace}:${key}`;`
+    return `$this.options.namespace:$key`;`
   }
 
   private createMemoryError(
     key: string,
     code: string,
     message: string
-  ): MemoryError {
+  ): MemoryError 
     return {
       found: false,
       error: {
@@ -405,15 +401,13 @@ export class SafeMemoryStore extends TypedEventBase {
         key: this.createKey(key),
       },
     };
-  }
 
-  private calculateSize(data: unknown): number {
+  private calculateSize(data: unknown): number 
     try {
       return JSON.stringify(data).length;
     } catch {
       return 0;
     }
-  }
 
   private setTTL(key: string, ttl: number): void {
     // Clear existing timer
@@ -433,12 +427,11 @@ export class SafeMemoryStore extends TypedEventBase {
     this.ttlTimers.set(key, timer);
   }
 
-  private startCleanupInterval(): void {
+  private startCleanupInterval(): void 
     // Run cleanup every 5 minutes
     setInterval(() => {
       this.cleanupExpiredEntries();
     }, 300000);
-  }
 
   private cleanupExpiredEntries(): void {
     const now = Date.now();

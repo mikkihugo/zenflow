@@ -23,16 +23,11 @@
  * @version 1.0.0
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
-import { generateNanoId } from '@claude-zen/foundation';
+import { generateNanoId, getLogger, type Logger } from '@claude-zen/foundation';
 
-import { ConversationOrchestratorImpl } from './main';
+import type { ConversationOrchestratorImpl } from './main';
 import type {
   ConversationSession,
-  ConversationConfig,
-  ConversationOutcome,
-  AgentId,
-  ConversationContext,
 } from './types';
 
 // REAL NEURAL BRAIN INTEGRATION - High-performance Rust/WASM neural networks
@@ -43,7 +38,7 @@ let TaskComplexityEstimator: any;
 let AgentPerformancePredictor: any;
 let NeuralBridge: any;
 let createNeuralNetwork: any;
-// @ts-ignore: Neural network training function reserved for future use
+// @ts-expect-error: Neural network training function reserved for future use
 let _trainNeuralNetwork: any;
 
 try {
@@ -64,7 +59,7 @@ try {
   console.log(
     '🧠✨ REAL Neural Brain System Loaded - Rust/WASM + AI Coordination''
   );
-} catch (error) {
+} catch (_error) {
   // Brain package not available - use fallback implementations
   console.warn(
     '🧠 Real neural brain package not available for meeting intelligence, using fallback implementations''
@@ -176,31 +171,11 @@ export interface BrainMeetingOutcome {
 export class BrainMeetingIntelligence {
   private logger: Logger;
 
-  // ===== TEAMWORK INTEGRATION =====
-  private conversationOrchestrator: ConversationOrchestratorImpl;
-
-  // ===== BRAIN SYSTEM ENHANCEMENT =====
-  // @ts-ignore: Brain coordinator reserved for future brain coordination features
-  private _brainCoordinator?: any;
-  private behavioralIntelligence?: any;
-  private autonomousOptimizer?: any;
-  private complexityEstimator?: any;
-  // @ts-ignore: Performance predictor reserved for future performance optimization
-  private _performancePredictor?: any;
-
-  // ===== REAL NEURAL NETWORKS - Rust/WASM =====
-  private neuralBridge?: any;
-  private consensusPredictorNetwork?: any;
-  private participantSelectorNetwork?: any;
-
   // ===== MEETING INTELLIGENCE STATE =====
   private activeMeetings = new Map<string, BrainMeetingConfig>();
   private meetingHistory = new Map<string, BrainMeetingOutcome>();
-  // @ts-ignore: Participant registry reserved for future participant tracking
-  private _participantRegistry = new Map<string, BrainMeetingParticipant>();
-  private brainLearningData: any[] = [];
 
-  constructor(conversationOrchestrator?: ConversationOrchestratorImpl) {
+  constructor(_conversationOrchestrator?: ConversationOrchestratorImpl) {
     this.logger = getLogger('brain-meeting-intelligence');'
     this.conversationOrchestrator =
       conversationOrchestrator||new ConversationOrchestratorImpl();
@@ -527,7 +502,7 @@ export class BrainMeetingIntelligence {
         const consensusPrediction =
           await this.predictBrainConsensusProgress(session);
         this.logger.info(
-          `🔮 Brain consensus prediction for ${phase}: ${consensusPrediction.toFixed(2)}``
+          `🔮 Brain consensus prediction for ${phase}: $consensusPrediction.toFixed(2)``
         );
       }
     }
@@ -854,7 +829,7 @@ export class BrainMeetingIntelligence {
           from: participants[0]
             ? this.convertToAgentId(participants[0])
             : this.createDefaultBrainAgent(),
-          content: `🧠 Brain-enhanced analysis of ${config.issue.title}: ${config.issue.description}`,`
+          content: `🧠 Brain-enhanced analysis of $config.issue.title: $config.issue.description`,`
           type: 'question',
         });
         break;
@@ -887,7 +862,7 @@ export class BrainMeetingIntelligence {
           from: participants[0]
             ? this.convertToAgentId(participants[0])
             : this.createDefaultBrainAgent(),
-          content: `🤝 Building neural consensus on ${config.issue.title} resolution with brain assistance`,`
+          content: `🤝 Building neural consensus on $config.issue.titleresolution with brain assistance`,`
           type: 'agreement',
         });
         break;
@@ -992,10 +967,10 @@ export class BrainMeetingIntelligence {
           : 'Brain-enhanced collaborative discussion completed',
       actions: outcomes.map(
         (o) =>
-          `Brain action from ${o.type}: ${String(o.content).substring(0, 100)}``
+          `Brain action from ${o.type}: $String(o.content).substring(0, 100)``
       ),
-      assignments: {},
-      timeline: {},
+      assignments: ,
+      timeline: ,
       confidence:
         outcomes.length > 0
           ? Math.min(1.0, (outcomes[0]?.confidence||0.7) + 0.1)

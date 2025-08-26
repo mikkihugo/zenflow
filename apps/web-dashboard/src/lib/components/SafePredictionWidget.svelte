@@ -1,145 +1,318 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
+import { onMount } from "svelte";
+import { writable } from "svelte/store";
 
-  export let data: any;
-  export let userRole: string;
-  export let immersionLevel: 'basic' | 'enhanced' | 'production';
+export let data: any;
+export let userRole: string;
+export let immersionLevel: "basic" | "enhanced" | "production";
 
-  const predictions = writable([]);
-  const trends = writable([]);
+const predictions = writable([]);
+const _trends = writable([]);
 
-  // Role-specific prediction data
-  const rolePredictions = {
-    team_member: {
-      piSuccessProbability: 0.78,
-      personalGoals: [
-        { metric: 'Skill Growth', current: 7.2, predicted: 8.1, confidence: 0.85, trend: 'improving' },
-        { metric: 'Code Quality', current: 8.3, predicted: 8.7, confidence: 0.79, trend: 'stable' },
-        { metric: 'Collaboration', current: 7.8, predicted: 8.4, confidence: 0.82, trend: 'improving' }
-      ],
-      opportunities: [
-        { type: 'skill_development', description: 'React advanced patterns course completion predicted to boost productivity 15%', confidence: 0.73 },
-        { type: 'mentorship', description: 'Pairing with senior dev could accelerate learning by 23%', confidence: 0.81 }
-      ]
-    },
-    scrum_master: {
-      piSuccessProbability: 0.82,
-      personalGoals: [
-        { metric: 'Team Velocity', current: 23, predicted: 27, confidence: 0.78, trend: 'improving' },
-        { metric: 'Team Health', current: 8.1, predicted: 8.6, confidence: 0.85, trend: 'stable' },
-        { metric: 'Impediment Resolution', current: 2.3, predicted: 1.8, confidence: 0.71, trend: 'improving' }
-      ],
-      opportunities: [
-        { type: 'process_optimization', description: 'Retrospective action completion rate improvement could boost velocity 12%', confidence: 0.76 },
-        { type: 'team_dynamics', description: 'Conflict resolution training predicted to improve team health 18%', confidence: 0.84 }
-      ]
-    },
-    po: {
-      piSuccessProbability: 0.79,
-      personalGoals: [
-        { metric: 'Customer Satisfaction', current: 4.2, predicted: 4.6, confidence: 0.74, trend: 'improving' },
-        { metric: 'Feature Success Rate', current: 0.73, predicted: 0.81, confidence: 0.68, trend: 'improving' },
-        { metric: 'Stakeholder Alignment', current: 7.9, predicted: 8.3, confidence: 0.82, trend: 'stable' }
-      ],
-      opportunities: [
-        { type: 'user_research', description: 'Additional user interviews predicted to improve feature success rate 22%', confidence: 0.79 },
-        { type: 'data_analysis', description: 'Advanced analytics adoption could boost decision accuracy 28%', confidence: 0.71 }
-      ]
-    },
-    rte: {
-      piSuccessProbability: 0.85,
-      personalGoals: [
-        { metric: 'ART Health Score', current: 8.2, predicted: 8.7, confidence: 0.81, trend: 'improving' },
-        { metric: 'Dependency Resolution', current: 0.73, predicted: 0.84, confidence: 0.75, trend: 'improving' },
-        { metric: 'PI Predictability', current: 0.78, predicted: 0.83, confidence: 0.79, trend: 'stable' }
-      ],
-      opportunities: [
-        { type: 'architectural_alignment', description: 'System architect collaboration predicted to reduce dependencies 19%', confidence: 0.83 },
-        { type: 'pi_planning_optimization', description: 'Advanced facilitation techniques could improve predictability 14%', confidence: 0.77 }
-      ]
-    },
-    architect: {
-      piSuccessProbability: 0.81,
-      personalGoals: [
-        { metric: 'Technical Debt Ratio', current: 0.23, predicted: 0.18, confidence: 0.76, trend: 'improving' },
-        { metric: 'Architecture Compliance', current: 0.87, predicted: 0.92, confidence: 0.84, trend: 'improving' },
-        { metric: 'Innovation Index', current: 7.4, predicted: 8.1, confidence: 0.69, trend: 'improving' }
-      ],
-      opportunities: [
-        { type: 'automation', description: 'Architecture governance automation predicted to improve compliance 16%', confidence: 0.82 },
-        { type: 'modernization', description: 'Microservices migration could reduce technical debt 31%', confidence: 0.74 }
-      ]
-    },
-    business_owner: {
-      piSuccessProbability: 0.83,
-      personalGoals: [
-        { metric: 'Portfolio ROI', current: 0.18, predicted: 0.24, confidence: 0.78, trend: 'improving' },
-        { metric: 'Time to Market', current: 45, predicted: 38, confidence: 0.73, trend: 'improving' },
-        { metric: 'Business Value Delivery', current: 0.76, predicted: 0.84, confidence: 0.81, trend: 'stable' }
-      ],
-      opportunities: [
-        { type: 'portfolio_optimization', description: 'Epic prioritization refinement predicted to improve ROI 21%', confidence: 0.79 },
-        { type: 'market_analysis', description: 'Competitive intelligence integration could accelerate time to market 17%', confidence: 0.76 }
-      ]
-    }
-  };
+// Role-specific prediction data
+const rolePredictions = {
+	team_member: {
+		piSuccessProbability: 0.78,
+		personalGoals: [
+			{
+				metric: "Skill Growth",
+				current: 7.2,
+				predicted: 8.1,
+				confidence: 0.85,
+				trend: "improving",
+			},
+			{
+				metric: "Code Quality",
+				current: 8.3,
+				predicted: 8.7,
+				confidence: 0.79,
+				trend: "stable",
+			},
+			{
+				metric: "Collaboration",
+				current: 7.8,
+				predicted: 8.4,
+				confidence: 0.82,
+				trend: "improving",
+			},
+		],
+		opportunities: [
+			{
+				type: "skill_development",
+				description:
+					"React advanced patterns course completion predicted to boost productivity 15%",
+				confidence: 0.73,
+			},
+			{
+				type: "mentorship",
+				description: "Pairing with senior dev could accelerate learning by 23%",
+				confidence: 0.81,
+			},
+		],
+	},
+	scrum_master: {
+		piSuccessProbability: 0.82,
+		personalGoals: [
+			{
+				metric: "Team Velocity",
+				current: 23,
+				predicted: 27,
+				confidence: 0.78,
+				trend: "improving",
+			},
+			{
+				metric: "Team Health",
+				current: 8.1,
+				predicted: 8.6,
+				confidence: 0.85,
+				trend: "stable",
+			},
+			{
+				metric: "Impediment Resolution",
+				current: 2.3,
+				predicted: 1.8,
+				confidence: 0.71,
+				trend: "improving",
+			},
+		],
+		opportunities: [
+			{
+				type: "process_optimization",
+				description:
+					"Retrospective action completion rate improvement could boost velocity 12%",
+				confidence: 0.76,
+			},
+			{
+				type: "team_dynamics",
+				description:
+					"Conflict resolution training predicted to improve team health 18%",
+				confidence: 0.84,
+			},
+		],
+	},
+	po: {
+		piSuccessProbability: 0.79,
+		personalGoals: [
+			{
+				metric: "Customer Satisfaction",
+				current: 4.2,
+				predicted: 4.6,
+				confidence: 0.74,
+				trend: "improving",
+			},
+			{
+				metric: "Feature Success Rate",
+				current: 0.73,
+				predicted: 0.81,
+				confidence: 0.68,
+				trend: "improving",
+			},
+			{
+				metric: "Stakeholder Alignment",
+				current: 7.9,
+				predicted: 8.3,
+				confidence: 0.82,
+				trend: "stable",
+			},
+		],
+		opportunities: [
+			{
+				type: "user_research",
+				description:
+					"Additional user interviews predicted to improve feature success rate 22%",
+				confidence: 0.79,
+			},
+			{
+				type: "data_analysis",
+				description:
+					"Advanced analytics adoption could boost decision accuracy 28%",
+				confidence: 0.71,
+			},
+		],
+	},
+	rte: {
+		piSuccessProbability: 0.85,
+		personalGoals: [
+			{
+				metric: "ART Health Score",
+				current: 8.2,
+				predicted: 8.7,
+				confidence: 0.81,
+				trend: "improving",
+			},
+			{
+				metric: "Dependency Resolution",
+				current: 0.73,
+				predicted: 0.84,
+				confidence: 0.75,
+				trend: "improving",
+			},
+			{
+				metric: "PI Predictability",
+				current: 0.78,
+				predicted: 0.83,
+				confidence: 0.79,
+				trend: "stable",
+			},
+		],
+		opportunities: [
+			{
+				type: "architectural_alignment",
+				description:
+					"System architect collaboration predicted to reduce dependencies 19%",
+				confidence: 0.83,
+			},
+			{
+				type: "pi_planning_optimization",
+				description:
+					"Advanced facilitation techniques could improve predictability 14%",
+				confidence: 0.77,
+			},
+		],
+	},
+	architect: {
+		piSuccessProbability: 0.81,
+		personalGoals: [
+			{
+				metric: "Technical Debt Ratio",
+				current: 0.23,
+				predicted: 0.18,
+				confidence: 0.76,
+				trend: "improving",
+			},
+			{
+				metric: "Architecture Compliance",
+				current: 0.87,
+				predicted: 0.92,
+				confidence: 0.84,
+				trend: "improving",
+			},
+			{
+				metric: "Innovation Index",
+				current: 7.4,
+				predicted: 8.1,
+				confidence: 0.69,
+				trend: "improving",
+			},
+		],
+		opportunities: [
+			{
+				type: "automation",
+				description:
+					"Architecture governance automation predicted to improve compliance 16%",
+				confidence: 0.82,
+			},
+			{
+				type: "modernization",
+				description: "Microservices migration could reduce technical debt 31%",
+				confidence: 0.74,
+			},
+		],
+	},
+	business_owner: {
+		piSuccessProbability: 0.83,
+		personalGoals: [
+			{
+				metric: "Portfolio ROI",
+				current: 0.18,
+				predicted: 0.24,
+				confidence: 0.78,
+				trend: "improving",
+			},
+			{
+				metric: "Time to Market",
+				current: 45,
+				predicted: 38,
+				confidence: 0.73,
+				trend: "improving",
+			},
+			{
+				metric: "Business Value Delivery",
+				current: 0.76,
+				predicted: 0.84,
+				confidence: 0.81,
+				trend: "stable",
+			},
+		],
+		opportunities: [
+			{
+				type: "portfolio_optimization",
+				description:
+					"Epic prioritization refinement predicted to improve ROI 21%",
+				confidence: 0.79,
+			},
+			{
+				type: "market_analysis",
+				description:
+					"Competitive intelligence integration could accelerate time to market 17%",
+				confidence: 0.76,
+			},
+		],
+	},
+};
 
-  $: roleData = rolePredictions[userRole] || rolePredictions.team_member;
-  $: currentPredictions = data?.predictions || [];
+$: roleData = rolePredictions[userRole] || rolePredictions.team_member;
+$: currentPredictions = data?.predictions || [];
 
-  onMount(() => {
-    predictions.set(roleData.personalGoals);
-    // Simulate real-time prediction updates
-    setInterval(updatePredictions, 45000);
-  });
+onMount(() => {
+	predictions.set(roleData.personalGoals);
+	// Simulate real-time prediction updates
+	setInterval(updatePredictions, 45000);
+});
 
-  function updatePredictions() {
-    predictions.update(preds => 
-      preds.map(pred => ({
-        ...pred,
-        confidence: Math.max(0.6, Math.min(0.95, pred.confidence + (Math.random() - 0.5) * 0.1)),
-        predicted: pred.predicted + (Math.random() - 0.5) * 0.2
-      }))
-    );
-  }
+function updatePredictions() {
+	predictions.update((preds) =>
+		preds.map((pred) => ({
+			...pred,
+			confidence: Math.max(
+				0.6,
+				Math.min(0.95, pred.confidence + (Math.random() - 0.5) * 0.1),
+			),
+			predicted: pred.predicted + (Math.random() - 0.5) * 0.2,
+		})),
+	);
+}
 
-  function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-400';
-    if (confidence >= 0.7) return 'text-yellow-400';
-    return 'text-red-400';
-  }
+function _getConfidenceColor(confidence: number): string {
+	if (confidence >= 0.8) return "text-green-400";
+	if (confidence >= 0.7) return "text-yellow-400";
+	return "text-red-400";
+}
 
-  function getTrendIcon(trend: string): string {
-    const icons = {
-      improving: '📈',
-      stable: '➡️',
-      declining: '📉'
-    };
-    return icons[trend] || '➡️';
-  }
+function _getTrendIcon(trend: string): string {
+	const icons = {
+		improving: "📈",
+		stable: "➡️",
+		declining: "📉",
+	};
+	return icons[trend] || "➡️";
+}
 
-  function getTrendColor(trend: string): string {
-    const colors = {
-      improving: 'text-green-400',
-      stable: 'text-blue-400', 
-      declining: 'text-red-400'
-    };
-    return colors[trend] || 'text-slate-400';
-  }
+function _getTrendColor(trend: string): string {
+	const colors = {
+		improving: "text-green-400",
+		stable: "text-blue-400",
+		declining: "text-red-400",
+	};
+	return colors[trend] || "text-slate-400";
+}
 
-  function formatMetricValue(value: number, metric: string): string {
-    if (metric.includes('Ratio') || metric.includes('Rate') || metric.includes('Delivery')) {
-      return `${(value * 100).toFixed(0)}%`;
-    }
-    if (metric.includes('ROI')) {
-      return `${(value * 100).toFixed(0)}%`;
-    }
-    if (metric.includes('Time') && value > 10) {
-      return `${value.toFixed(0)} days`;
-    }
-    return value.toFixed(1);
-  }
+function _formatMetricValue(value: number, metric: string): string {
+	if (
+		metric.includes("Ratio") ||
+		metric.includes("Rate") ||
+		metric.includes("Delivery")
+	) {
+		return `${(value * 100).toFixed(0)}%`;
+	}
+	if (metric.includes("ROI")) {
+		return `${(value * 100).toFixed(0)}%`;
+	}
+	if (metric.includes("Time") && value > 10) {
+		return `${value.toFixed(0)} days`;
+	}
+	return value.toFixed(1);
+}
 </script>
 
 <div class="flex flex-col h-full space-y-4">

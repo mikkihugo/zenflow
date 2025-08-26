@@ -6,27 +6,19 @@
 import { getLogger } from '@claude-zen/foundation';
 
 import detective from 'detective';
-import { Graph, alg } from 'graphlib';
-import madge from 'madge';
+import { alg, } from 'graphlib';
 import precinct from 'precinct';
-import fastGlob from 'fast-glob';
 import type {
-  DependencyMetrics,
-  DependencyGraph,
-  DependencyNode,
-  DependencyEdge,
-  DependencyCluster,
-  CircularDependency,
-  CouplingMetrics,
-  CohesionMetrics,
-  StabilityMetrics,
   AnalysisOptions,
+  CircularDependency,
+  DependencyCluster,
+  DependencyEdge,
+  DependencyMetrics,
+  DependencyNode,
 } from '../types/index.js';
 
 export class DependencyAnalyzer {
   private logger = getLogger('DependencyAnalyzer');'
-  private graph = new Graph({ directed: true });
-  private fileStats = new Map<string, any>();
 
   /**
    * Analyze dependencies for the entire repository
@@ -39,7 +31,7 @@ export class DependencyAnalyzer {
 
     // Get all relevant files
     const files = await this.getSourceFiles(rootPath, options);
-    this.logger.info(`Found ${files.length} source files to analyze`);`
+    this.logger.info(`Found $files.lengthsource files to analyze`);`
 
     // Build dependency graph using multiple tools
     const [madgeResult, dependencyMap, graphMetrics] = await Promise.allSettled(
@@ -52,7 +44,7 @@ export class DependencyAnalyzer {
 
     const madgeGraph = this.getSettledValue(madgeResult, null);
     const detailedDeps = this.getSettledValue(dependencyMap, new Map())();
-    const metrics = this.getSettledValue(graphMetrics, this.getEmptyMetrics())();
+    const _metrics = this.getSettledValue(graphMetrics, this.getEmptyMetrics())();
 
     // Detect circular dependencies
     const circularDependencies = await this.detectCircularDependencies(
@@ -87,115 +79,6 @@ export class DependencyAnalyzer {
       stability,
     };
   }
-
-  /**
-   * Get source files using fast-glob
-   */
-  private async getSourceFiles(
-    rootPath: string,
-    options?: AnalysisOptions
-  ): Promise<string[]> {
-    const patterns = [
-      '**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}',
-      ...(options?.includeTests
-        ? []
-        : ['!**/*.{test,spec}.{ts,tsx,js,jsx}', '!**/test/**', '!**/tests/**']),
-      ...(options?.includeNodeModules ? [] : ['!**/node_modules/**']),
-      ...(options?.includeDotFiles ? [] : ['!**/.*']),
-      ...(options?.excludePatterns||[]).map((p) => `!${p}`),`
-    ];
-
-    return fastGlob(patterns, {
-      cwd: rootPath,
-      absolute: true,
-      followSymbolicLinks: false,
-      ignore: ['**/dist/**', '**/build/**', '**/.git/**'],
-    });
-  }
-
-  /**
-   * Build dependency graph using madge (battle-tested circular dependency detection)
-   */
-  private async buildMadgeGraph(
-    rootPath: string,
-    options?: AnalysisOptions
-  ): Promise<any> {
-    try {
-      const madgeOptions = {
-        fileExtensions: ['ts', 'tsx', 'js', 'jsx', 'mts', 'cts', 'mjs', 'cjs'],
-        excludeRegExp: [
-          ...(options?.includeTests
-            ? []
-            : [/\.test\.|\.spec\.|\/test\/|\/tests\//]),
-          ...(options?.includeNodeModules ? [] : [/node_modules/]),
-          /dist\/|build\/|\.git\//,
-        ],
-        tsConfig: `${rootPath}/tsconfig.json`,`
-        webpackConfig: `${rootPath}/webpack.config.js`,`
-        requireConfig: `${rootPath}/.requirerc`,`
-        detectiveOptions: {
-          skipTypeImports: true,
-        },
-      };
-
-      const result = await madge(rootPath, madgeOptions);
-      this.logger.info(
-        `Madge found ${Object.keys(result.obj()).length} modules``
-      );
-      return result;
-    } catch (error) {
-      this.logger.warn('Madge analysis failed, falling back to manual analysis:',
-        error
-      );
-      return null;
-    }
-  }
-
-  /**
-   * Build detailed dependency map using detective and precinct
-   */
-  private async buildDetailedDependencyMap(
-    files: string[]
-  ): Promise<Map<string, FileDependencyInfo>> {
-    const dependencyMap = new Map<string, FileDependencyInfo>();
-    const fs = await import('fs/promises');'
-
-    await Promise.all(
-      files.map(async (filePath) => {
-        try {
-          const content = await fs.readFile(filePath, 'utf-8');'
-          const deps = await this.extractDependencies(content, filePath);
-
-          dependencyMap.set(filePath, {
-            filePath,
-            dependencies: deps,
-            size: content.length,
-            lines: content.split('\n').length,
-            complexity: this.estimateComplexity(content),
-          });
-
-          // Add to graph
-          this.graph.setNode(filePath, {
-            file: filePath,
-            size: content.length,
-            lines: content.split('\n').length,
-          });
-
-          // Add edges
-          for (const dep of deps) {
-            if (dep.resolvedPath && files.includes(dep.resolvedPath)) {
-              this.graph.setEdge(filePath, dep.resolvedPath, {
-                type: dep.type,
-                weight: dep.weight,
-              });
-            }
-          }
-        } catch (error) {
-          this.logger.debug(
-            `Failed to analyze dependencies for ${filePath}:`,`
-            error
-          );
-        }
       })
     );
 
@@ -324,7 +207,7 @@ export class DependencyAnalyzer {
   private calculateDependencyWeight(depName: string, content: string): number {
     // Count usage frequency
     const regex = new RegExp(
-      depName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),
+      depName.replace(/[.*+?^${}()|[]\\]/g,'\\$&'),
       'g''
     );
     const matches = content.match(regex);
@@ -338,7 +221,7 @@ export class DependencyAnalyzer {
     depName: string,
     content: string
   ): 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'' {'
-    if (content.includes(`import type`) && content.includes(depName))`
+    if (content.includes(``) && content.includes(depName))`
       return 'type-only;
     if (content.includes(`import(`) && content.includes(depName))`
       return 'dynamic-import;
@@ -356,9 +239,8 @@ export class DependencyAnalyzer {
       if (
         lines[i].includes(depName) &&
         (lines[i].includes('import')||lines[i].includes('require'))'
-      ) {
+      ) 
         return i + 1;
-      }
     }
     return 0;
   }
@@ -530,7 +412,7 @@ export class DependencyAnalyzer {
    * Calculate coupling metrics
    */
   private calculateCouplingMetrics(graph: DependencyGraph): CouplingMetrics {
-    const nodeMap = new Map(graph.nodes.map((n) => [n.id, n]));
+    const _nodeMap = new Map(graph.nodes.map((n) => [n.id, n]));
     let totalAfferent = 0;
     let totalEfferent = 0;
     let totalInstability = 0;
@@ -624,7 +506,7 @@ export class DependencyAnalyzer {
   }
 
   // Helper methods
-  private getFileType(filePath: string): string {
+  private getFileType(filePath: string): string 
     if (filePath.endsWith('.ts')||filePath.endsWith('.tsx'))'
       return 'typescript;
     if (filePath.endsWith('.js')||filePath.endsWith('.jsx'))'
@@ -634,7 +516,6 @@ export class DependencyAnalyzer {
     if (filePath.endsWith('.mjs')||filePath.endsWith('.cjs'))'
       return 'javascript;
     return 'javascript;
-  }
 
   private classifyFileType(
     filePath: string
@@ -681,7 +562,7 @@ export class DependencyAnalyzer {
       if (!clusters.has(clusterKey)) {
         clusters.set(clusterKey, []);
       }
-      clusters.get(clusterKey)!.push(node.id);
+      clusters.get(clusterKey)?.push(node.id);
     }
 
     return Array.from(clusters.entries()).map(([path, nodeIds], index) => ({
@@ -754,19 +635,17 @@ export class DependencyAnalyzer {
     return 0.2;
   }
 
-  private estimateLCOM(filePath: string): number {
+  private estimateLCOM(filePath: string): number 
     // Simplified LCOM estimation
     // In practice, would require full class analysis
     return Math.random() * 0.5; // Placeholder
-  }
 
-  private calculateGraphMetrics(files: string[]): any {
+  private calculateGraphMetrics(files: string[]): any 
     return {
       nodeCount: files.length,
       edgeCount: 0,
       density: 0,
     };
-  }
 
   private countTotalDependencies(
     dependencyMap: Map<string, FileDependencyInfo>
@@ -797,17 +676,15 @@ export class DependencyAnalyzer {
   private getSettledValue<T>(
     result: PromiseSettledResult<T>,
     defaultValue: T
-  ): T {
+  ): T 
     return result.status === 'fulfilled' ? result.value : defaultValue;'
-  }
 
-  private getEmptyMetrics(): any {
+  private getEmptyMetrics(): any 
     return {
       nodeCount: 0,
       edgeCount: 0,
       density: 0,
     };
-  }
 }
 
 // Primary DependencyInfo interface for file-level analysis

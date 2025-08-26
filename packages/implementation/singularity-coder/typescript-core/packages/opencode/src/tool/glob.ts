@@ -1,9 +1,7 @@
+
 import { z } from "@claude-zen/foundation"
-import path from "path"
-import { Tool } from "./tool"
-import { App } from "../app/app"
 import DESCRIPTION from "./glob.txt"
-import { Ripgrep } from "../file/ripgrep"
+import { Tool } from "./tool"
 
 export const GlobTool = Tool.define({
   id: "glob",

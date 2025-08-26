@@ -4,24 +4,24 @@
  */
 
 import {
+  type Entity,
+  err,
+  getGlobalContainer,
   // Core logging and error handling
   getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync,
-  withRetry,
+  type InjectionToken,
 
   // Modern Awilix-based DI system - refactored!
   injectable,
-  getGlobalContainer,
-  type InjectionToken,
 
   // Foundation types and utilities
   type LiteralUnion,
-  type Entity,
-  type Priority,
   type Merge,
+  ok,
+  type Priority,
+  type Result,
+  safeAsync,
+  withRetry,
 } from '@claude-zen/foundation';
 
 // Enhanced strategic facade imports with fallbacks for comprehensive analysis
@@ -32,7 +32,7 @@ let getEventSystem: any;
 
 // Try to import strategic facades, with enhanced fallbacks if not available
 try {
-  const intelligence = require('@claude-zen/intelligence');'
+  const _intelligence = require('@claude-zen/intelligence');'
   getBrainSystem = intelligence.getBrainSystem;
 } catch {
   getBrainSystem = async () => ({
@@ -53,7 +53,7 @@ try {
 }
 
 try {
-  const operations = require('@claude-zen/operations');'
+  const _operations = require('@claude-zen/operations');'
   getPerformanceTracker = operations.getPerformanceTracker;
 } catch {
   getPerformanceTracker = async () => ({
@@ -91,21 +91,16 @@ try {
   });
 }
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { Project } from 'ts-morph';
 
 import type {
+  AICodeInsights,
   CodeAnalysisOptions,
   CodeAnalysisResult,
   LiveAnalysisSession,
   SupportedLanguage,
-  CodeSuggestion,
-  AICodeInsights,
-  SessionMetrics,
-  ASTAnalysis,
-  SemanticAnalysis,
-  CodeQualityMetrics,
 } from './types/code-analysis';
 
 // Enhanced type-safe configurations using foundation utilities
@@ -183,7 +178,6 @@ diContainer.registerSingleton(ANALYSIS_TOKENS.AnalysisMetrics, AnalysisMetrics);
 export class CodeAnalyzer {
   private readonly repositoryPath: string;
   private readonly _project: Project; // Used for TypeScript analysis
-  private currentSession?: LiveAnalysisSession;
 
   // Strategic facade systems - real implementations
   private brainSystem?: any;
@@ -332,9 +326,9 @@ export class CodeAnalyzer {
    */
   async analyzeFile(
     filePath: string,
-    options: Partial<EnhancedAnalysisOptions> = {},
+    _options: Partial<EnhancedAnalysisOptions> = {},
   ): Promise<Result<CodeAnalysisResult, Error>> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     return await safeAsync(async (): Promise<CodeAnalysisResult> => {
       // Get metrics service from DI container
@@ -472,8 +466,8 @@ export class CodeAnalyzer {
 
       const coordinator = this.brainSystem.createCoordinator();
 
-      const prompt = `Analyze this ${language} code for insights:`
-${content.substring(0, 2000)}...
+      const prompt = `Analyze this $languagecode for insights:`
+$content.substring(0, 2000)...
 
 Provide:
 1. Code quality assessment
@@ -547,10 +541,9 @@ Provide:
       };
 
       return ok(insights);
-    } catch (error) {
+    } catch (error) 
       logger.warn('AI insights generation failed', { error });'
       return err(error instanceof Error ? error : new Error(String(error)));
-    }
   }
 
   // Helper methods
@@ -859,7 +852,7 @@ Provide:
   private calculateBasicComplexity(content: string): number {
     // Count control flow statements as a simple complexity metric
     const complexity = (
-      content.match(/\b(if|for|while|switch|catch|&&|\|\|)\b/g) || []
+      content.match(/\b(if|for|while|switch|catch|&&|||)\b/g) || []
     ).length;
     return Math.max(1, complexity);
   }
@@ -912,8 +905,8 @@ Provide:
   ): any[] {
     const declarations = [];
     if (language === 'typescript' || language === 'javascript') {'
-      const funcMatches = content.match(/function\s+(\w+)/g)|| [];
-      const classMatches = content.match(/class\s+(\w+)/g)|| [];
+      const funcMatches = content.match(/functions+(w+)/g)|| [];
+      const classMatches = content.match(/classs+(w+)/g)|| [];
       declarations.push(
         ...funcMatches.map((f) => ({ type:'function', name: f }))'
       );
@@ -940,9 +933,9 @@ Provide:
     // Basic scope analysis - could be enhanced with proper parsing
     const scopes = [];
     if (language === 'typescript' || language === 'javascript') {'
-      const functionScopes = (content.match(/function\s+\w+\s*\(/g)|| [])
+      const functionScopes = (content.match(/functions+w+s*(/g)|| [])
         .length;
-      const blockScopes = (content.match(/\{/g)|| []).length;
+      const blockScopes = (content.match(/{/g)|| []).length;
       scopes.push({ type:'global', depth: 0 });'
       for (let i = 0; i < functionScopes; i++) {
         scopes.push({ type: 'function', depth: 1 });'
@@ -958,14 +951,14 @@ Provide:
     // Basic binding analysis
     const bindings = [];
     if (language === 'typescript'||language ==='javascript') {'
-      const letBindings = (content.match(/\blet\s+(\w+)/g)|| []).map((m) => ({
+      const letBindings = (content.match(/\blets+(w+)/g)|| []).map((m) => ({
         type: 'let',
         name: m,
       }));
-      const constBindings = (content.match(/\bconst\s+(\w+)/g)|| []).map(
+      const constBindings = (content.match(/\bconsts+(w+)/g)|| []).map(
         (m) => ({ type:'const', name: m })'
       );
-      const varBindings = (content.match(/\bvar\s+(\w+)/g)|| []).map((m) => ({
+      const varBindings = (content.match(/\bvars+(w+)/g)|| []).map((m) => ({
         type: 'var',
         name: m,
       }));
@@ -978,10 +971,10 @@ Provide:
     // Basic type information extraction
     const typeInfo = [];
     if (language === 'typescript') {'
-      const interfaces = (content.match(/interface\s+(\w+)/g)|| []).map(
+      const interfaces = (content.match(/interfaces+(w+)/g)|| []).map(
         (m) => ({ type:'interface', name: m })'
       );
-      const types = (content.match(/type\s+(\w+)/g)|| []).map((m) => ({
+      const types = (content.match(/types+(w+)/g)|| []).map((m) => ({
         type: 'type',
         name: m,
       }));
@@ -1015,7 +1008,7 @@ Provide:
     const uses = [];
 
     if (language === 'typescript' || language === 'javascript') {'
-      const assignments = content.match(/(\w+)\s*=/g)|| [];
+      const assignments = content.match(/(w+)s*=/g)|| [];
       assignments.forEach((assign, index) => {
         definitions.push({ variable: assign, location: index });
         nodes.push({ id: index, type:'definition' });'
@@ -1033,7 +1026,7 @@ Provide:
     const recursiveCalls = [];
 
     if (language === 'typescript'||language ==='javascript') {'
-      const functionCalls = content.match(/(\w+)\s*\(/g)|| [];
+      const functionCalls = content.match(/(w+)s*(/g)|| [];
       functionCalls.forEach((call, index) => {
         nodes.push({ id: index, name: call });
         if (index === 0) {
@@ -1060,15 +1053,15 @@ Provide:
       }
 
       // Magic number detection
-      const magicNumbers = content.match(/\b\d{2,}\b/g)|| [];
+      const magicNumbers = content.match(/\bd{2,}\b/g)|| [];
       if (magicNumbers.length > 5) {
         smells.push({ type:'magic-numbers', severity: 'low', line: 0 });'
       }
 
       // Deep nesting detection
       const nestingLevel =
-        (content.match(/\{/g)|| []).length -
-        (content.match(/\}/g)|| []).length;
+        (content.match(/{/g)|| []).length -
+        (content.match(/}/g)|| []).length;
       if (Math.abs(nestingLevel) > 4) {
         smells.push({ type:'deep-nesting', severity: 'high', line: 0 });'
       }
@@ -1258,15 +1251,15 @@ export class DependencyRelationshipMapper {
 
       // Phase 1: Discovery - Find all analyzable files
       const files = await this.discoverFiles(options);
-      this.logger.debug(`Discovered ${files.length} files for analysis`);`
+      this.logger.debug(`Discovered $files.lengthfiles for analysis`);`
 
       // Phase 2: Node Extraction - Extract all dependency nodes
-      const nodes = await this.extractNodes(files);
+      const _nodes = await this.extractNodes(files);
       this.logger.debug(`Extracted ${nodes.length} dependency nodes`);`
 
       // Phase 3: Edge Analysis - Analyze relationships between nodes
       const edges = await this.analyzeRelationships(nodes, files);
-      this.logger.debug(`Analyzed ${edges.length} dependency relationships`);`
+      this.logger.debug(`Analyzed $edges.lengthdependency relationships`);`
 
       // Phase 4: Cluster Analysis - Group related nodes
       const clusters = await this.performClusterAnalysis(nodes, edges);
@@ -1298,7 +1291,7 @@ export class DependencyRelationshipMapper {
         },
       };
 
-      this.logger.info(`Dependency relationship map completed in ${analysisTime.toFixed(2)}ms`, {`
+      this.logger.info(`Dependency relationship map completed in $analysisTime.toFixed(2)ms`, {`
         nodes: nodes.length,
         edges: edges.length,
         clusters: clusters.length,
@@ -1376,14 +1369,13 @@ export class DependencyRelationshipMapper {
     const circularDeps = await this.detectCircularDependencies(nodes, edges);
     for (const circular of circularDeps) {
       if (circular.severity === 'high' || circular.severity === 'critical') {'
-        violations.push({
+        violations.push(
           type: 'circular-dependency',
           severity: circular.severity,
-          description: `Circular dependency detected: ${circular.cycle.join(' -> ')}`,`
+          description: `Circular dependency detected: $circular.cycle.join(' -> ')`,`
           affectedNodes: circular.cycle,
           suggestedFix: 'Consider breaking the cycle by introducing an interface or moving shared code to a common module',
-          impact: circular.cycle.length * 10,
-        });
+          impact: circular.cycle.length * 10,);
       }
     }
 
@@ -1396,7 +1388,7 @@ export class DependencyRelationshipMapper {
     const files: string[] = [];
     const extensions = ['.ts', '.tsx', '.js', '.jsx'];'
     
-    const walkDir = async (dir: string): Promise<void> => {
+    const _walkDir = async (dir: string): Promise<void> => {
       try {
         const entries = await fs.readdir(dir, { withFileTypes: true });
         
@@ -1435,7 +1427,7 @@ export class DependencyRelationshipMapper {
         const fileNodes = await this.extractNodesFromFile(filePath, content);
         nodes.push(...fileNodes);
       } catch (error) {
-        this.logger.warn(`Failed to extract nodes from file: ${filePath}`, { error });`
+        this.logger.warn(`Failed to extract nodes from file: $filePath`, { error });`
       }
     }
     
@@ -1456,35 +1448,32 @@ export class DependencyRelationshipMapper {
       export: /export\s+(?:(?:default\s+)?(?:class|function|interface|type|const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)|{([^}]+)})/g,
     };
 
-    for (const [nodeType, pattern] of Object.entries(patterns)) {
+    for (const [_nodeType, pattern] of Object.entries(patterns)) {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         const name = match[1] || match[2];
         if (name) {
           const lineIndex = content.substring(0, match.index).split('\n').length - 1;'
-          const line = lines[lineIndex];
-          const column = match.index - content.lastIndexOf('\n', match.index) - 1;'
+          const _line = lines[lineIndex];
+          const _column = match.index - content.lastIndexOf('\n', match.index) - 1;'
           
-          nodes.push({
+          nodes.push(
             id: this.generateNodeId(),
             name,
             type: nodeType as any,
             filePath,
-            location: {
+            location: 
               line: lineIndex + 1,
-              column,
+              _column,
               endLine: lineIndex + 1,
-              endColumn: column + name.length,
-            },
-            metadata: {
+              endColumn: column + name.length,,
+            metadata: 
               isExported: content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),`
-              isDefault: content.includes(`export default ${name}`),`
+              isDefault: content.includes(`export default $name`),`
               visibility: 'public',
               complexity: this.calculateNodeComplexity(content, name),
               size: name.length,
-              lastModified: new Date(),
-            },
-          });
+              lastModified: new Date(),,);
         }
       }
     }
@@ -1517,11 +1506,11 @@ export class DependencyRelationshipMapper {
     const edges: DependencyEdge[] = [];
     
     // Extract import relationships
-    const importPattern = /import\s+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(\*\s+as\s+[A-Za-z_$][A-Za-z0-9_$]*))\s+from\s+['"`]([^'"`]+)['"`]/g;`
+    const importPattern = /imports+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[A-Za-z_$][A-Za-z0-9_$]*))s+froms+['"`]([^'"`]+)['"`]/g;`
     let match;
     
     while ((match = importPattern.exec(content)) !== null) {
-      const [, namedImports, defaultImport, namespaceImport, modulePath] = match;
+      const [, namedImports, defaultImport, _namespaceImport, _modulePath] = match;
       
       // Handle different import types
       if (namedImports) {
@@ -1565,7 +1554,7 @@ export class DependencyRelationshipMapper {
       if (!fileGroups.has(dir)) {
         fileGroups.set(dir, []);
       }
-      fileGroups.get(dir)!.push(node);
+      fileGroups.get(dir)?.push(node);
     }
     
     let clusterIndex = 0;
@@ -1614,7 +1603,7 @@ export class DependencyRelationshipMapper {
     edges: DependencyEdge[],
     clusters: DependencyCluster[],
     metrics: DependencyMetrics
-  ): Promise<DependencyAnalysis> {
+  ): Promise<DependencyAnalysis> 
     return {
       hotspots: this.identifyDependencyHotspots(nodes, edges),
       antipatterns: this.detectDependencyAntipatterns(nodes, edges, clusters),
@@ -1622,18 +1611,16 @@ export class DependencyRelationshipMapper {
       evolutionPrediction: this.predictEvolution(nodes, edges, metrics),
       qualityAssessment: this.assessOverallQuality(nodes, edges, clusters, metrics),
     };
-  }
 
   // Additional helper methods (simplified implementations for brevity)
-  private generateNodeId(): string {
+  private generateNodeId(): string 
     return `node_${++this.nodeIdCounter}`;`
   }
 
   private generateEdgeId(): string {
-    return `edge_${++this.edgeIdCounter}`;`
-  }
+    return `edge_$++this.edgeIdCounter`;`
 
-  private createEdge(type: string, from: string, to: string, importType?: string): DependencyEdge {
+  private createEdge(type: string, from: string, to: string, importType?: string): DependencyEdge 
     return {
       id: this.generateEdgeId(),
       from,
@@ -1647,7 +1634,6 @@ export class DependencyRelationshipMapper {
         criticality: 'medium',
       },
     };
-  }
 
   private calculateNodeComplexity(content: string, nodeName: string): number {
     // Simple complexity calculation based on occurrence and context
@@ -1662,69 +1648,59 @@ export class DependencyRelationshipMapper {
       if (!adjacencyList.has(edge.from)) {
         adjacencyList.set(edge.from, []);
       }
-      adjacencyList.get(edge.from)!.push(edge.to);
+      adjacencyList.get(edge.from)?.push(edge.to);
     }
     
     return adjacencyList;
   }
 
-  private assessCircularDependencySeverity(cycle: string[], edges: DependencyEdge[]): 'low|medium|high|critical' {'
+  private assessCircularDependencySeverity(cycle: string[], edges: DependencyEdge[]): 'low|medium|high|critical' '
     if (cycle.length <= 2) return 'low;
     if (cycle.length <= 4) return 'medium;
     if (cycle.length <= 6) return 'high;
     return 'critical;
-  }
 
-  private detectLayerViolations(nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] {
+  private detectLayerViolations(nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] 
     // Simplified layer violation detection
     return [];
-  }
 
-  private detectCouplingViolations(nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] {
+  private detectCouplingViolations(nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] 
     // Simplified coupling violation detection
     return [];
-  }
 
-  private detectCohesionViolations(clusters: DependencyCluster[], nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] {
+  private detectCohesionViolations(clusters: DependencyCluster[], nodes: DependencyNode[], edges: DependencyEdge[]): ArchitecturalViolation[] 
     // Simplified cohesion violation detection
     return [];
-  }
 
-  private calculateCohesion(nodes: DependencyNode[], edges: DependencyEdge[]): number {
+  private calculateCohesion(nodes: DependencyNode[], edges: DependencyEdge[]): number 
     // Simplified cohesion calculation
     return Math.random() * 0.5 + 0.5; // Placeholder
-  }
 
-  private calculateCoupling(nodes: DependencyNode[], edges: DependencyEdge[]): number {
+  private calculateCoupling(nodes: DependencyNode[], edges: DependencyEdge[]): number 
     // Simplified coupling calculation
     return Math.random() * 0.5 + 0.5; // Placeholder
-  }
 
-  private calculateStability(nodes: DependencyNode[], edges: DependencyEdge[]): number {
+  private calculateStability(nodes: DependencyNode[], edges: DependencyEdge[]): number 
     // Simplified stability calculation
     return Math.random() * 0.5 + 0.5; // Placeholder
-  }
 
   private inferResponsibility(nodes: DependencyNode[]): string {
     const dir = path.dirname(nodes[0]?.filePath || '');'
     return path.basename(dir) || 'unknown;
   }
 
-  private calculateMaxDependencyDepth(nodes: DependencyNode[], edges: DependencyEdge[]): number {
+  private calculateMaxDependencyDepth(nodes: DependencyNode[], edges: DependencyEdge[]): number 
     // Simplified depth calculation
     return Math.ceil(Math.log2(nodes.length));
-  }
 
-  private calculateStronglyConnectedComponents(nodes: DependencyNode[], edges: DependencyEdge[]): number {
+  private calculateStronglyConnectedComponents(nodes: DependencyNode[], edges: DependencyEdge[]): number 
     // Simplified SCC calculation
     return Math.ceil(nodes.length / 10);
-  }
 
-  private calculateOverallInstability(clusters: DependencyCluster[]): number {
+  private calculateOverallInstability(clusters: DependencyCluster[]): number 
     return clusters.reduce((acc, cluster) => acc + (1 - cluster.stability), 0) / clusters.length;
-  }
 
-  private calculateCouplingDistribution(clusters: DependencyCluster[]): { [key: string]: number } {
+  private calculateCouplingDistribution(clusters: DependencyCluster[]): [key: string]: number 
     return clusters.reduce((acc, cluster, index) => {
       acc[`cluster_${index}`] = cluster.coupling;`
       return acc;

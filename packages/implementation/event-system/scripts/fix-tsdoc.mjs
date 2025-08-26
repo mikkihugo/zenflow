@@ -20,10 +20,10 @@
  * @version 1.0.0
  */
 
-import { spawn } from "child_process";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,14 +95,14 @@ async function runTSDocCheck(filePath = ".") {
 		});
 
 		let stdout = "";
-		let stderr = "";
+		let _stderr = "";
 
 		child.stdout.on("data", (data) => {
 			stdout += data.toString();
 		});
 
 		child.stderr.on("data", (data) => {
-			stderr += data.toString();
+			_stderr += data.toString();
 		});
 
 		child.on("close", (code) => {
@@ -275,7 +275,7 @@ ${systemInstructions}${userPrompt}`;
 /**
  * Generates an analysis report for a file needing documentation
  */
-function generateAnalysisReport(filePath, fileAnalysis) {
+function generateAnalysisReport(_filePath, fileAnalysis) {
 	const { coverage, undocumented } = fileAnalysis;
 
 	const typeBreakdown = undocumented.reduce((acc, exp) => {
@@ -327,7 +327,7 @@ async function fixFileWithClaude(
 
 		if (CONFIG.OUTPUT.verbose) {
 			console.log(colorize("📝 Enhanced Prompt Preview:", "cyan"));
-			console.log(prompt.substring(0, 300) + "...\n");
+			console.log(`${prompt.substring(0, 300)}...\n`);
 			if (analysisReport) {
 				console.log(colorize("📊 Analysis Report:", "magenta"));
 				console.log(analysisReport);

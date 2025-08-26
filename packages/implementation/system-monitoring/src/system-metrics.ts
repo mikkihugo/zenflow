@@ -25,9 +25,9 @@
  * @version 1.0.0
  */
 
-import { cpus, totalmem, freemem, loadavg } from 'os';
-import { cpuUsage, memoryUsage } from 'process';
 
+import { cpus, freemem, loadavg, totalmem } from 'node:os';
+import { cpuUsage, memoryUsage } from 'node:process';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 
@@ -178,7 +178,7 @@ export class SystemMetricsCollector {
   ): SystemPerformanceTracker|null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
-      this.logger.warn(`No performance tracker found for: ${operationId}`);`
+      this.logger.warn(`No performance tracker found for: $operationId`);`
       return null;
     }
 

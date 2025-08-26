@@ -1,6 +1,6 @@
 import { z } from "@claude-zen/foundation"
-import { Auth } from "./index"
 import { NamedError } from "../util/error"
+import { Auth } from "./index"
 
 export namespace AuthGithubCopilot {
   const CLIENT_ID = "Iv1.b507a08c87ecfe98"

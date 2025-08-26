@@ -19,30 +19,30 @@
  *
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
-import { Example } from '../primitives/example';
-import { DSPyModule } from '../primitives/module';
-import { Teleprompter } from './teleprompter';
-import { type MetricFunction } from '../interfaces/types';
+import { Example } from "../primitives/example";
+import { DSPyModule } from "../primitives/module";
+import { Teleprompter } from "./teleprompter";
+import { type MetricFunction } from "../interfaces/types";
 /**
  * LabeledFewShot teleprompter matching Stanford DSPy vanilla.py implementation
  * Used as a component in Bootstrap and other teleprompters
  */
 export declare class LabeledFewShot extends Teleprompter {
-  private k;
-  constructor(k?: number);
-  /**
-   * Compile module with labeled few-shot examples
-   * Matches Stanford DSPy API exactly: compile(student, *, trainset, teacher=None, valset=None, **kwargs)
-   */
-  compile(
-    student: DSPyModule,
-    config: {
-      trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
-      [key: string]: any;
-    }
-  ): Promise<DSPyModule>;
+	private k;
+	constructor(k?: number);
+	/**
+	 * Compile module with labeled few-shot examples
+	 * Matches Stanford DSPy API exactly: compile(student, *, trainset, teacher=None, valset=None, **kwargs)
+	 */
+	compile(
+		student: DSPyModule,
+		config: {
+			trainset: Example[];
+			teacher?: DSPyModule | null;
+			valset?: Example[] | null;
+			[key: string]: any;
+		},
+	): Promise<DSPyModule>;
 }
 /**
  * BootstrapFewShot Teleprompter with exact Stanford DSPy API compatibility
@@ -90,86 +90,86 @@ export declare class LabeledFewShot extends Teleprompter {
  * ```
  */
 export declare class BootstrapFewShot extends Teleprompter {
-  private metric?;
-  private metric_threshold?;
-  private teacher_settings;
-  private max_bootstrapped_demos;
-  private max_labeled_demos;
-  private max_rounds;
-  private max_errors?;
-  private error_count;
-  private trainset;
-  private validation;
-  private student?;
-  private teacher?;
-  private name2predictor;
-  private predictor2name;
-  private name2traces;
-  constructor(config?: {
-    metric?: MetricFunction | null;
-    metric_threshold?: number | null;
-    teacher_settings?: Record<string, any> | null;
-    max_bootstrapped_demos?: number;
-    max_labeled_demos?: number;
-    max_rounds?: number;
-    max_errors?: number | null;
-  });
-  /**
-   * Compile method exactly matching Stanford DSPy API
-   */
-  compile(
-    student: DSPyModule,
-    config: {
-      trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
-      [key: string]: any;
-    }
-  ): Promise<DSPyModule>;
-  /**
-   * Prepare student and teacher models exactly matching Stanford implementation
-   */
-  private _prepare_student_and_teacher;
-  /**
-   * Prepare predictor mappings exactly matching Stanford implementation
-   */
-  private _prepare_predictor_mappings;
-  /**
-   * Bootstrap demonstrations exactly matching Stanford implementation
-   */
-  private _bootstrap;
-  /**
-   * Bootstrap one example exactly matching Stanford implementation
-   */
-  private _bootstrap_one_example;
-  /**
-   * Train student with collected demonstrations exactly matching Stanford implementation
-   */
-  private _train;
-  /**
-   * Helper methods for Stanford DSPy compatibility
-   */
-  private getObjectId;
-  private examplesEqual;
-  private shuffleArray;
-  private sampleArray;
-  private hashDemos;
-  private createSeededRNG;
+	private metric?;
+	private metric_threshold?;
+	private teacher_settings;
+	private max_bootstrapped_demos;
+	private max_labeled_demos;
+	private max_rounds;
+	private max_errors?;
+	private error_count;
+	private trainset;
+	private validation;
+	private student?;
+	private teacher?;
+	private name2predictor;
+	private predictor2name;
+	private name2traces;
+	constructor(config?: {
+		metric?: MetricFunction | null;
+		metric_threshold?: number | null;
+		teacher_settings?: Record<string, any> | null;
+		max_bootstrapped_demos?: number;
+		max_labeled_demos?: number;
+		max_rounds?: number;
+		max_errors?: number | null;
+	});
+	/**
+	 * Compile method exactly matching Stanford DSPy API
+	 */
+	compile(
+		student: DSPyModule,
+		config: {
+			trainset: Example[];
+			teacher?: DSPyModule | null;
+			valset?: Example[] | null;
+			[key: string]: any;
+		},
+	): Promise<DSPyModule>;
+	/**
+	 * Prepare student and teacher models exactly matching Stanford implementation
+	 */
+	private _prepare_student_and_teacher;
+	/**
+	 * Prepare predictor mappings exactly matching Stanford implementation
+	 */
+	private _prepare_predictor_mappings;
+	/**
+	 * Bootstrap demonstrations exactly matching Stanford implementation
+	 */
+	private _bootstrap;
+	/**
+	 * Bootstrap one example exactly matching Stanford implementation
+	 */
+	private _bootstrap_one_example;
+	/**
+	 * Train student with collected demonstrations exactly matching Stanford implementation
+	 */
+	private _train;
+	/**
+	 * Helper methods for Stanford DSPy compatibility
+	 */
+	private getObjectId;
+	private examplesEqual;
+	private shuffleArray;
+	private sampleArray;
+	private hashDemos;
+	private createSeededRNG;
 }
 export interface BootstrapConfig {
-  metric?: MetricFunction | null;
-  metric_threshold?: number | null;
-  teacher_settings?: Record<string, any> | null;
-  max_bootstrapped_demos?: number;
-  max_labeled_demos?: number;
-  max_rounds?: number;
-  max_errors?: number | null;
+	metric?: MetricFunction | null;
+	metric_threshold?: number | null;
+	teacher_settings?: Record<string, any> | null;
+	max_bootstrapped_demos?: number;
+	max_labeled_demos?: number;
+	max_rounds?: number;
+	max_errors?: number | null;
 }
 export declare const DEFAULT_BOOTSTRAP_CONFIG: BootstrapConfig;
 export interface BootstrapCompileOptions {
-  student: DSPyModule;
-  teacher?: DSPyModule | null;
-  trainset: Example[];
+	student: DSPyModule;
+	teacher?: DSPyModule | null;
+	trainset: Example[];
 }
 export default BootstrapFewShot;
 //# sourceMappingURL=bootstrap.d.ts.map

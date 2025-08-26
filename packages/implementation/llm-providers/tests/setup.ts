@@ -31,7 +31,7 @@ global.console = {
 };
 
 // Global error handler for unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {'
+process.on('unhandledRejection', (_reason, _promise) => {'
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);'
 });
 
@@ -92,12 +92,8 @@ vi.mock('@claude-zen/foundation', () => ({'
     error: { message: error?.message||'Test error'},
     value: undefined,
   }),
-  withRetry: vi.fn().mockImplementation(async (fn: Function, options?: any) => {
-    try {
+  withRetry: vi.fn().mockImplementation(async (fn: Function, _options?: any) => {
       return await fn();
-    } catch (error) {
-      throw error;
-    }
   }),
   TypedEventBase: vi.fn().mockImplementation(() => ({
     emit: vi.fn(),
@@ -105,7 +101,7 @@ vi.mock('@claude-zen/foundation', () => ({'
     off: vi.fn(),
     once: vi.fn(),
   })),
-  validateInput: vi.fn().mockImplementation((schema: any, data: any) => {
+  validateInput: vi.fn().mockImplementation((_schema: any, data: any) => {
     const result = {
       isOk: () => true,
       isErr: () => false,

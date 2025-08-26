@@ -4,8 +4,8 @@
  * Analyzes codebase structure and relationships for file-aware AI
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 // import { glob } from 'fast-glob'; // Temporarily disabled for compilation'
 import ignore from 'ignore';
 
@@ -14,8 +14,8 @@ async function glob(pattern: string, options: any): Promise<string[]> {
   // Simple fallback - in production this would use fast-glob
   console.log('Using fallback glob for pattern:', pattern); // Use pattern parameter'
   try {
-    const fs = require('fs');'
-    const path = require('path');'
+    const fs = require('node:fs');'
+    const path = require('node:path');'
 
     function walkDir(dir: string, fileList: string[] = []): string[] {
       // Validate that dir is actually a string
@@ -36,9 +36,8 @@ async function glob(pattern: string, options: any): Promise<string[]> {
             if (
               stat.isDirectory() &&
               !file.startsWith('.') &&'
-              file !== 'node_modules') {'
-              walkDir(fullPath, fileList);
-            } else if (stat.isFile() && options.onlyFiles) {
+              file !== 'node_modules') '
+              walkDir(fullPath, fileList);else if (stat.isFile() && options.onlyFiles) {
               const relativePath = path.relative(
                 options.cwd||process.cwd(),
                 fullPath
@@ -52,7 +51,6 @@ async function glob(pattern: string, options: any): Promise<string[]> {
               fullPath,
               statError instanceof Error ? statError.message : String(statError)
             );
-            continue;
           }
         }
       } catch (readDirError) {
@@ -82,7 +80,8 @@ async function glob(pattern: string, options: any): Promise<string[]> {
     return [];
   }
 }
-import {
+
+import type {
   AnalyzedContext,
   FileDependency,
   SymbolReference,
@@ -223,13 +222,12 @@ export class CodebaseAnalyzer {
         importPath &&
         !importPath.startsWith('.') &&'
         !importPath.includes('node_modules')'
-      ) {
+      ) 
         dependencies.push({
           from: filePath,
           to: importPath,
           type: 'import',
         });
-      }
     }
 
     return dependencies;
@@ -243,14 +241,14 @@ export class CodebaseAnalyzer {
     filePath: string
   ): SymbolReference[] {
     const symbols: SymbolReference[] = [];
-    const lines = content.split('\n');'
+    const _lines = content.split('\n');'
 
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
       const functionMatch = line.match(
         /(?:function|const|let|var)\s+(\w+)\s*[=:]?\s*(?:function|\()/
       );
-      if (functionMatch && functionMatch[1]) {
+      if (functionMatch?.[1]) {
         symbols.push({
           name: functionMatch[1],
           type:'function',
@@ -262,7 +260,7 @@ export class CodebaseAnalyzer {
 
       // Extract class declarations
       const classMatch = line.match(/(?:class|interface)\s+(\w+)/);
-      if (classMatch && classMatch[1] && classMatch[0]) {
+      if (classMatch?.[1] && classMatch[0]) {
         symbols.push({
           name: classMatch[1],
           type: classMatch[0].includes('class') ? 'class' : 'interface',
@@ -288,9 +286,9 @@ export class CodebaseAnalyzer {
     const mainLanguages = Object.keys(fileTypes).slice(0, 3);
 
     return (
-      `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. ` +`
-      `Primary languages: ${mainLanguages.join(', ')}. ` +`
-      `Structure includes ${fileTypes['ts']||0} TypeScript, ${fileTypes['js']||0} JavaScript, ${fileTypes['json']||0} config files.``
+      `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. 
+      `Primary languages: $mainLanguages.join(', '). ` +`
+      `Structure includes $fileTypes.ts||0TypeScript, $fileTypes.js||0JavaScript, $fileTypes.json||0config files.``
     );
   }
 
@@ -419,7 +417,7 @@ export class CodebaseAnalyzer {
     try {
       // Validate that filePath is actually a string
       if (typeof filePath !=='string') {'
-        console.warn(`Invalid filePath type: ${typeof filePath}`, filePath);`
+        console.warn(`Invalid filePath type: $typeof filePath`, filePath);`
         return null;
       }
 

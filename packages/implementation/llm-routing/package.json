@@ -1,66 +1,66 @@
 {
-  "name": "@claude-zen/llm-routing",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "Intelligent multi-provider LLM routing and management system",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./config": {
-      "import": "./dist/config/index.js",
-      "types": "./dist/config/index.d.ts"
-    },
-    "./stats": {
-      "import": "./dist/stats/index.js",
-      "types": "./dist/stats/index.d.ts"
-    }
-  },
-  "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "build:watch": "tsc --project tsconfig.json --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "format": "eslint . --ext .ts --fix",
-    "prepublishOnly": "pnpm run build"
-  },
-  "dependencies": {
-    "@claude-zen/event-system": "workspace:*",
-    "@claude-zen/foundation": "workspace:*"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "@types/node": "22.17.1",
-    "@vitest/coverage-v8": "^3.2.4",
-    "eslint": "^9.0.0",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "keywords": [
-    "llm",
-    "routing",
-    "multi-provider",
-    "ai",
-    "optimization",
-    "claude-zen"
-  ],
-  "author": "Claude Code Zen Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/zen-neural/claude-code-zen.git",
-    "directory": "packages/llm-routing"
-  },
-  "private": true
+	"name": "@claude-zen/llm-routing",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Intelligent multi-provider LLM routing and management system",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./config": {
+			"import": "./dist/config/index.js",
+			"types": "./dist/config/index.d.ts"
+		},
+		"./stats": {
+			"import": "./dist/stats/index.js",
+			"types": "./dist/stats/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc --project tsconfig.json",
+		"build:watch": "tsc --project tsconfig.json --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"format": "eslint . --ext .ts --fix",
+		"prepublishOnly": "pnpm run build"
+	},
+	"dependencies": {
+		"@claude-zen/event-system": "workspace:*",
+		"@claude-zen/foundation": "workspace:*"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.0",
+		"@typescript-eslint/parser": "^8.0.0",
+		"@types/node": "22.17.1",
+		"@vitest/coverage-v8": "^3.2.4",
+		"eslint": "^9.0.0",
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4"
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"keywords": [
+		"llm",
+		"routing",
+		"multi-provider",
+		"ai",
+		"optimization",
+		"claude-zen"
+	],
+	"author": "Claude Code Zen Team",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/zen-neural/claude-code-zen.git",
+		"directory": "packages/llm-routing"
+	},
+	"private": true
 }

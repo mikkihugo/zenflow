@@ -19,20 +19,20 @@
  * @abstract
  */
 export class Teleprompter {
-  /**
-   * Get teleprompter parameters (matches Stanford get_params())
-   * Returns all instance attributes as a dictionary
-   */
-  getParams() {
-    // Return all enumerable properties (matches Python __dict__)
-    const params = {};
-    for (const key in this) {
-      if (this.hasOwnProperty(key) && typeof this[key] !== 'function') {
-        params[key] = this[key];
-      }
-    }
-    return params;
-  }
+	/**
+	 * Get teleprompter parameters (matches Stanford get_params())
+	 * Returns all instance attributes as a dictionary
+	 */
+	getParams() {
+		// Return all enumerable properties (matches Python __dict__)
+		const params = {};
+		for (const key in this) {
+			if (Object.hasOwn(this, key) && typeof this[key] !== "function") {
+				params[key] = this[key];
+			}
+		}
+		return params;
+	}
 }
 /**
  * Default export for compatibility

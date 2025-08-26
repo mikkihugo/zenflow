@@ -13,7 +13,7 @@
  * - Enhanced algorithm confidence scoring with complexity analysis
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type { DocumentClassification } from './semantic-classifier';
 
 const logger = getLogger('SegmentationEngine');'
@@ -118,9 +118,6 @@ interface AlgorithmBlock {
  * Intelligent document segmentation engine
  */
 export class SegmentationEngine extends TypedEventBase {
-  private config: SegmentationConfig;
-  private algorithmPatterns: RegExp[];
-  private boundaryPatterns: RegExp[];
 
   constructor(config: Partial<SegmentationConfig> = {}) {
     super();
@@ -207,10 +204,10 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment document using intelligent strategies
    */
   async segmentDocument(
-    content: string, 
+    _content: string, 
     classification: DocumentClassification
   ): Promise<SegmentationResult> {
-    const startTime = performance.now();
+    const _startTime = performance.now();
     logger.info(`Starting document segmentation with strategy: ${classification.recommendedStrategy}`);`
 
     try {
@@ -252,7 +249,7 @@ export class SegmentationEngine extends TypedEventBase {
       };
 
       this.emit('segmentation_complete', result);'
-      logger.info(`Document segmented into ${segments.length} segments (${processingTime.toFixed(2)}ms)`);`
+      logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);`
 
       return result;
     } catch (error) {
@@ -756,7 +753,7 @@ export class SegmentationEngine extends TypedEventBase {
     segmentType: DocumentSegment['segmentType'],
     algorithmBlocks: AlgorithmBlock[]
   ): DocumentSegment {
-    const id = `segment_${startPosition}_${Date.now()}`;`
+    const _id = `segment_${startPosition}_${Date.now()}`;`
     const endPosition = startPosition + content.length;
     
     // Check if this segment overlaps with algorithm blocks
@@ -787,7 +784,7 @@ export class SegmentationEngine extends TypedEventBase {
   // Helper methods for segment creation and analysis
   private findSectionHeaders(content: string): Array<{ index: number; level: number; text: string }> {
     const headers: Array<{ index: number; level: number; text: string }> = [];
-    const headerPattern = /^(#{1,6})\s+(.+)$/gm;
+    const headerPattern = /^(#{1,6})s+(.+)$/gm;
     
     let match;
     while ((match = headerPattern.exec(content)) !== null) {
@@ -806,7 +803,7 @@ export class SegmentationEngine extends TypedEventBase {
     const sections: Array<{ start: number; end: number; type: string }> = [];
     
     for (const keyword of strategicKeywords) {
-      const regex = new RegExp(`\\b${keyword}\\b[\\s\\S]{0,500}`, 'gi');'
+      const regex = new RegExp(`\\b$keyword\\b[\\s\\S]0,500`, 'gi');'
       let match;
       
       while ((match = regex.exec(content)) !== null) {
@@ -920,7 +917,7 @@ export class SegmentationEngine extends TypedEventBase {
 
   private calculateSegmentConfidence(content: string, segmentType: DocumentSegment['segmentType']): number {'
     // Simple confidence calculation based on content characteristics
-    const wordCount = content.split(/\s+/).length;
+    const wordCount = content.split(/s+/).length;
     const sentenceCount = content.split(/[.!?]+/).length;
     
     let confidence = 0.7; // Base confidence
@@ -943,7 +940,7 @@ export class SegmentationEngine extends TypedEventBase {
 
   private calculateLocalAlgorithmDensity(content: string): number {
     const algorithmKeywords = ['algorithm', 'procedure', 'method', 'function', 'compute', 'calculate'];'
-    const words = content.toLowerCase().split(/\s+/);
+    const words = content.toLowerCase().split(/s+/);
     const keywordCount = words.filter(word => 
       algorithmKeywords.some(keyword => word.includes(keyword))
     ).length;
@@ -955,7 +952,7 @@ export class SegmentationEngine extends TypedEventBase {
     const complexityKeywords = ['complex', 'advanced', 'sophisticated', 'intricate', 'detailed'];'
     const technicalKeywords = ['technical', 'specification', 'architecture', 'framework', 'system'];'
     
-    const words = content.toLowerCase().split(/\s+/);
+    const words = content.toLowerCase().split(/s+/);
     const complexityCount = words.filter(word =>
       complexityKeywords.some(keyword => word.includes(keyword))
     ).length;
@@ -969,8 +966,8 @@ export class SegmentationEngine extends TypedEventBase {
   private extractKeywords(content: string): string[] {
     // Simple keyword extraction - in production, could use NLP libraries
     const words = content.toLowerCase()
-      .replace(/[^\w\s]/g, '')'
-      .split(/\s+/)
+      .replace(/[^ws]/g, '')'
+      .split(/s+/)
       .filter(word => word.length > 3);
     
     // Count word frequency
@@ -1047,12 +1044,12 @@ export class SegmentationEngine extends TypedEventBase {
     // Cyclomatic complexity (control flow analysis)
     const controlFlowKeywords = ['if', 'else', 'for', 'while', 'switch', 'case', 'try', 'catch'];'
     const cyclomaticComplexity = controlFlowKeywords.reduce((count, keyword) => {
-      const matches = text.match(new RegExp(`\\b${keyword}\\b`, 'g'));'
+      const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));'
       return count + (matches ? matches.length : 0);
     }, 1); // Base complexity is 1
 
     // Algorithmic complexity detection (Big O notation)
-    let algorithmicComplexity = 'O(1)'; // Default'
+    const algorithmicComplexity = 'O(1)'; // Default'
     if (text.includes('o(n²)') || text.includes('o(n^2)') || text.includes('nested loop')) {'
       algorithmicComplexity = 'O(n²)';
     } else if (text.includes('o(n log n)') || text.includes('divide and conquer')) {'
@@ -1067,7 +1064,7 @@ export class SegmentationEngine extends TypedEventBase {
 
     // Mathematical complexity (formula density)
     const mathSymbols = (text.match(/[∀∃∈∉⊆⊇∪∩∑∏∫∂∇±×÷≤≥≠≈∞]/g) || []).length;
-    const mathOperators = (text.match(/[\+\-\*\/\^\%]/g) || []).length;
+    const mathOperators = (text.match(/[+\-*/^%]/g) || []).length;
     const mathFunctions = (text.match(/\b(sin|cos|tan|log|exp|sqrt|abs|max|min)\b/g) || []).length;
     const mathematicalComplexity = Math.min((mathSymbols + mathOperators + mathFunctions) / 10, 1.0);
 

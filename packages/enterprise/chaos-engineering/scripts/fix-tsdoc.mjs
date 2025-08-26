@@ -108,7 +108,7 @@ async function runTSDocCheck(filePath = ".") {
 		child.on("close", (code) => {
 			// Report any errors from stderr
 			if (stderr.trim() && code !== 0) {
-				console.warn('TSDoc analysis warning:', stderr.trim());
+				console.warn("TSDoc analysis warning:", stderr.trim());
 			}
 			// Parse the output to extract file analysis
 			const files = [];
@@ -279,7 +279,7 @@ ${systemInstructions}${userPrompt}`;
 /**
  * Generates an analysis report for a file needing documentation
  */
-function generateAnalysisReport(filePath, fileAnalysis) {
+function generateAnalysisReport(_filePath, fileAnalysis) {
 	const { coverage, undocumented } = fileAnalysis;
 
 	const typeBreakdown = undocumented.reduce((acc, exp) => {
@@ -331,7 +331,7 @@ async function fixFileWithClaude(
 
 		if (CONFIG.OUTPUT.verbose) {
 			console.log(colorize("📝 Enhanced Prompt Preview:", "cyan"));
-			console.log(prompt.substring(0, 300) + "...\n");
+			console.log(`${prompt.substring(0, 300)}...\n`);
 			if (analysisReport) {
 				console.log(colorize("📊 Analysis Report:", "magenta"));
 				console.log(analysisReport);
@@ -373,7 +373,7 @@ async function fixFileWithClaude(
 					),
 				);
 			} else if (stderr.trim()) {
-				console.error('Claude documentation error:', stderr.trim());
+				console.error("Claude documentation error:", stderr.trim());
 				resolve({ success: true, output: stdout });
 			} else {
 				console.error(

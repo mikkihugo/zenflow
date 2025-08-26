@@ -11,7 +11,7 @@
  */
 
 // Import Vitest globals and utilities
-import { vi, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, expect, vi } from 'vitest';
 import './global-types';
 
 /**
@@ -169,7 +169,7 @@ function setupHybridTDD() {
   // Hybrid-specific utilities
   globalThis.testWithApproach = (
     approach:'london|classical',
-    testFn: () => void|'Promise<void>
+    testFn: () => undefined|'Promise<void>
   ) => {
     if (approach ==='london') {
       // Use mocks for external dependencies

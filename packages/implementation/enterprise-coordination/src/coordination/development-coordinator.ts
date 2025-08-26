@@ -12,8 +12,8 @@
  * @version 1.0.0
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 // SPARC types for development coordination
 export type SPARCPhase = 'specification'|'pseudocode'|'architecture'|'refinement'|'completion';
@@ -65,10 +65,8 @@ export interface DevelopmentTask {
  */
 export class DevelopmentCoordinator extends TypedEventBase {
   private logger: Logger;
-  private config: DevelopmentCoordinationConfig|null = null;
   private activeTasks = new Map<string, DevelopmentTask>();
   private initialized = false;
-  private sparcWorkflowInstance: any = null;
 
   constructor() {
     super();
@@ -140,7 +138,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
   async progressSPARCPhase(taskId: string): Promise<void> {
     const task = this.activeTasks.get(taskId);
     if (!task) {
-      throw new Error(`Task not found: ${taskId}`);`
+      throw new Error(`Task not found: $taskId`);`
     }
 
     // Perform async phase validation
@@ -155,7 +153,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
     ];
     const currentIndex = phaseOrder.indexOf(task.sparcPhase);
 
-    if (currentIndex < phaseOrder.length - 1) {
+    if (currentIndex < phaseOrder._length - 1) {
       const nextPhase = phaseOrder[currentIndex + 1];
       task.sparcPhase = nextPhase;
 
@@ -177,7 +175,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
     const task = this.activeTasks.get(taskId);
     if (!task) {
-      throw new Error(`Task not found: ${taskId}`);`
+      throw new Error(`Task not found: $taskId`);`
     }
 
     // Perform async Git branch creation
@@ -207,7 +205,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
 
     if (agentIds.length > this.config.maxSwarmSize) {
       throw new Error(
-        `Swarm size exceeds limit: ${agentIds.length} > ${this.config.maxSwarmSize}``
+        `Swarm size exceeds limit: $agentIds.length> $this.config.maxSwarmSize``
       );
     }
 

@@ -28,18 +28,18 @@
  * @license MIT
  */
 import type {
-  DSPyConfig,
-  DSPyExample,
-  DSPyOptimizationResult,
-} from '../types/interfaces';
+	DSPyConfig,
+	DSPyExample,
+	DSPyOptimizationResult,
+} from "../types/interfaces";
 /**
  * Simple KV storage interface for DSPy persistence
  */
 export interface DSPyKV {
-  get(key: string): Promise<any>;
-  set(key: string, value: any): Promise<void>;
-  delete(key: string): Promise<boolean>;
-  keys(): Promise<string[]>;
+	get(key: string): Promise<any>;
+	set(key: string, value: any): Promise<void>;
+	delete(key: string): Promise<boolean>;
+	keys(): Promise<string[]>;
 }
 /**
  * DSPy Engine - Standalone Prompt Optimization
@@ -48,98 +48,98 @@ export interface DSPyKV {
  * falls back to simple implementations when standalone.
  */
 export declare class DSPyEngine {
-  private config;
-  private kv;
-  private llmService;
-  private optimizationHistory;
-  constructor(config?: Partial<DSPyConfig>);
-  /**
-   * Initialize storage (foundation integration)
-   */
-  private getKV;
-  /**
-   * Get LLM service (foundation integration)
-   */
-  private getLLMService;
-  /**
-   * Optimize a prompt using DSPy methodology
-   */
-  optimizePrompt(
-    task: string,
-    examples: DSPyExample[],
-    initialPrompt?: string
-  ): Promise<DSPyOptimizationResult>;
-  /**
-   * Generate a new prompt variation
-   */
-  private generatePromptVariation;
-  /**
-   * Evaluate a prompt variation
-   */
-  private evaluatePromptVariation;
-  /**
-   * Simple similarity calculation (placeholder)
-   */
-  private calculateSimilarity;
-  /**
-   * Create few-shot prompt from examples (available for future enhancement)
-   */
-  /**
-   * Extract prompt from LLM response
-   */
-  private extractPromptFromResponse;
-  /**
-   * Create initial metrics structure
-   */
-  private createInitialMetrics;
-  /**
-   * Store optimization result
-   */
-  private storeOptimizationResult;
-  /**
-   * Get optimization history for a task
-   */
-  getOptimizationHistory(task: string): Promise<DSPyOptimizationResult[]>;
-  /**
-   * Get DSPy engine statistics
-   */
-  getStats(): Promise<{
-    totalOptimizations: number;
-    averageImprovement: number;
-    bestImprovement: number;
-    totalTasks: number;
-  }>;
-  /**
-   * Clear all stored optimization data
-   */
-  clear(): Promise<void>;
+	private config;
+	private kv;
+	private llmService;
+	private optimizationHistory;
+	constructor(config?: Partial<DSPyConfig>);
+	/**
+	 * Initialize storage (foundation integration)
+	 */
+	private getKV;
+	/**
+	 * Get LLM service (foundation integration)
+	 */
+	private getLLMService;
+	/**
+	 * Optimize a prompt using DSPy methodology
+	 */
+	optimizePrompt(
+		task: string,
+		examples: DSPyExample[],
+		initialPrompt?: string,
+	): Promise<DSPyOptimizationResult>;
+	/**
+	 * Generate a new prompt variation
+	 */
+	private generatePromptVariation;
+	/**
+	 * Evaluate a prompt variation
+	 */
+	private evaluatePromptVariation;
+	/**
+	 * Simple similarity calculation (placeholder)
+	 */
+	private calculateSimilarity;
+	/**
+	 * Create few-shot prompt from examples (available for future enhancement)
+	 */
+	/**
+	 * Extract prompt from LLM response
+	 */
+	private extractPromptFromResponse;
+	/**
+	 * Create initial metrics structure
+	 */
+	private createInitialMetrics;
+	/**
+	 * Store optimization result
+	 */
+	private storeOptimizationResult;
+	/**
+	 * Get optimization history for a task
+	 */
+	getOptimizationHistory(task: string): Promise<DSPyOptimizationResult[]>;
+	/**
+	 * Get DSPy engine statistics
+	 */
+	getStats(): Promise<{
+		totalOptimizations: number;
+		averageImprovement: number;
+		bestImprovement: number;
+		totalTasks: number;
+	}>;
+	/**
+	 * Clear all stored optimization data
+	 */
+	clear(): Promise<void>;
 }
 /**
  * Create DSPy engine instance with default configuration
  */
 export declare function createDSPyEngine(
-  config?: Partial<DSPyConfig>
+	config?: Partial<DSPyConfig>,
 ): DSPyEngine;
 /**
  * DSPy utility functions
  */
 export declare const dspyUtils: {
-  /**
-   * Create training examples from data
-   */
-  createExamples(
-    data: Array<{
-      input: string;
-      output: string;
-    }>
-  ): DSPyExample[];
-  /**
-   * Validate DSPy configuration
-   */
-  validateConfig(config: any): {
-    valid: boolean;
-    errors: string[];
-  };
+	/**
+	 * Create training examples from data
+	 */
+	createExamples(
+		data: Array<{
+			input: string;
+			output: string;
+		}>,
+	): DSPyExample[];
+	/**
+	 * Validate DSPy configuration
+	 */
+	validateConfig(config: any): {
+		valid: boolean;
+		errors: string[];
+	};
 };
 export default DSPyEngine;
 //# sourceMappingURL=dspy-engine.d.ts.map

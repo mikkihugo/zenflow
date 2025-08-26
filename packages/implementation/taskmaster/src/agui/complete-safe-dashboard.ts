@@ -35,16 +35,14 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { TaskApprovalSystem } from './task-approval-system.js';
-import { CompleteSafeFlowIntegration, CompleteSafeGateCategory, SafeFlowStage } from '../integrations/complete-safe-flow-integration.js';
-import { SafeFrameworkIntegration, SafeGateTraceabilityRecord } from '../integrations/safe-framework-integration.js';
-import { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type { CompleteSafeFlowIntegration, CompleteSafeGateCategory, SafeFlowStage } from '../integrations/complete-safe-flow-integration.js';
+import type { SafeFrameworkIntegration, } from '../integrations/safe-framework-integration.js';
 import type {
   ApprovalGateId,
-  TaskId,
-  UserId,
-  EnhancedApprovalGate
+  UserId
 } from '../types/index.js';
+import type { TaskApprovalSystem } from './task-approval-system.js';
 
 // ============================================================================
 // AGUI DASHBOARD TYPES
@@ -227,23 +225,9 @@ export interface DashboardNotification {
  */
 export class CompleteSafeDashboard {
   private readonly logger = getLogger('CompleteSafeDashboard');'
-  
-  // Core services
-  private taskApprovalSystem: TaskApprovalSystem;
   private safeFlowIntegration: CompleteSafeFlowIntegration;
-  private safeFrameworkIntegration: SafeFrameworkIntegration;
   private approvalGateManager: ApprovalGateManager;
-  
-  // Dashboard state
-  private currentViewMode: DashboardViewMode = DashboardViewMode.FULL_TRACEABILITY;
   private liveGates = new Map<ApprovalGateId, LiveGateStatus>();
-  private notifications: DashboardNotification[] = [];
-  private analytics: DashboardAnalytics;
-  private userPreferences = new Map<string, any>();
-  
-  // Real-time updates
-  private updateInterval: NodeJS.Timeout|null = null;
-  private eventListeners = new Map<string, Function>();
   
   constructor(
     taskApprovalSystem: TaskApprovalSystem,
@@ -396,7 +380,7 @@ export class CompleteSafeDashboard {
     userId: string,
     action: DashboardAction,
     reason?: string,
-    metadata?: Record<string, unknown>
+    _metadata?: Record<string, unknown>
   ): Promise<{
     success: boolean;
     results: Array<{
@@ -420,8 +404,8 @@ export class CompleteSafeDashboard {
       message: string;
     }> = [];
     
-    const updatedGates: LiveGateStatus[] = [];
-    const notifications: DashboardNotification[] = [];
+    const _updatedGates: LiveGateStatus[] = [];
+    const _notifications: DashboardNotification[] = [];
     
     // Execute action for each gate
     for (const gateId of action.gateIds) {
@@ -436,7 +420,7 @@ export class CompleteSafeDashboard {
           continue;
         }
         
-        let actionResult;
+        let _actionResult;
         
         switch (action.type) {
           case 'approve':'
@@ -468,7 +452,7 @@ export class CompleteSafeDashboard {
             
           case 'batch_approve':'
             if (this.canBatchApprove(gate, userId)) {
-              actionResult = await this.approvalGateManager.processApproval(
+              _actionResult = await this.approvalGateManager.processApproval(
                 gateId,
                 userId as UserId,
                 'approved',

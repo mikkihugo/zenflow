@@ -5,13 +5,10 @@
  * Focus on behavior verification with actual implementation.
  */
 
-import type { AgentId } from '../src/types';
 import { ConversationOrchestratorImpl } from '../src/main';
-import type {
+import type { AgentId, 
   ConversationConfig,
-  ConversationMessage,
-  ConversationSession,
-} from '../src/types';
+  ConversationMessage,} from '../src/types';
 
 describe('ConversationOrchestratorImpl - Classical TDD', () => {'
   let orchestrator: ConversationOrchestratorImpl;
@@ -368,11 +365,11 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {'
       };
 
       // Act - Create multiple sessions
-      const session1 = await orchestrator.createConversation({
+      const _session1 = await orchestrator.createConversation({
         ...config,
         title: 'Session 1',
       });
-      const session2 = await orchestrator.createConversation({
+      const _session2 = await orchestrator.createConversation({
         ...config,
         title: 'Session 2',
       });

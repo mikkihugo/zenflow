@@ -15,27 +15,27 @@
 // Import the class for type reference in factory functions
 import { GitOperationsManager } from './git-operations-manager';
 
-// Export main GitOperationsManager class and utilities
-export { GitOperationsManager } from './git-operations-manager';
 
 // Export all types
 export type {
-  GitOperationConfig,
   BranchStrategy,
   ConflictResolution,
+  ConflictSuggestion,
+  GitCommanderResult as GitOperationsResult,
   GitOperation,
+  GitOperationConfig,
   GitTreeStatus,
   MaintenanceTask,
-  GitCommanderResult as GitOperationsResult,
   RemoteConfig,
-  ConflictSuggestion,
 } from './git-operations-manager';
+// Export main GitOperationsManager class and utilities
+export { GitOperationsManager } from './git-operations-manager';
 
 // Export factory functions for common use cases
 export function createEnterpriseGitManager(
   repositoryPath: string
 ): GitOperationsManager {
-  const config = {
+  const _config = {
     aiConflictResolution: true,
     intelligentBranching: true,
     automatedMaintenance: true,
@@ -49,7 +49,7 @@ export function createEnterpriseGitManager(
     ],
   };
 
-  const branchStrategy = {
+  const _branchStrategy = {
     namingPattern: 'feature/{name}' as const,
     autoCleanup: true,
     protectedBranches: ['main', 'master', 'develop', 'release/*'],

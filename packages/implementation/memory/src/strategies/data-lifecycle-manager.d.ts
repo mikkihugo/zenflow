@@ -77,5 +77,4 @@ export declare class DataLifecycleManager extends TypedEventBase {
   updateConfig(newConfig: Partial<LifecycleConfig>): void;
   shutdown(): Promise<void>;
 }
-export {};
 //# sourceMappingURL=data-lifecycle-manager.d.ts.map

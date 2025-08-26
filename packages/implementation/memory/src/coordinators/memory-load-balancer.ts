@@ -5,10 +5,9 @@
  * including round-robin, least-connections, weighted, and resource-aware strategies.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { getLogger, recordMetric } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
-import type { MemoryNode, MemoryLoadMetrics } from './types';
+import { getLogger, recordMetric, TypedEventBase } from '@claude-zen/foundation';
+import type { MemoryNode } from './types';
 
 interface LoadBalancingConfig {
   enabled: boolean;
@@ -34,20 +33,18 @@ export class MemoryLoadBalancer extends TypedEventBase {
   private logger: Logger;
   private config: LoadBalancingConfig;
   private nodes = new Map<string, MemoryNode>();
-  private roundRobinIndex = 0;
   private stats: LoadBalancingStats;
 
   constructor(config: LoadBalancingConfig) {
     super();
     this.config = config;
     this.logger = getLogger('MemoryLoadBalancer');'
-    this.stats = {
+    this.stats = 
       totalRequests: 0,
-      nodeDistribution: {},
+      nodeDistribution: ,
       averageLatency: 0,
       overloadedNodes: [],
-      algorithm: config.algorithm,
-    };
+      algorithm: config.algorithm,;
   }
 
   addNode(node: MemoryNode): void {
@@ -62,7 +59,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
     this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
       (id) => id !== nodeId
     );
-    this.logger.debug(`Removed node from load balancer: ${nodeId}`);`
+    this.logger.debug(`Removed node from load balancer: $nodeId`);`
   }
 
   selectNode(availableNodes: MemoryNode[]): MemoryNode {
@@ -112,106 +109,6 @@ export class MemoryLoadBalancer extends TypedEventBase {
     return selectedNode;
   }
 
-  private selectRoundRobin(nodes: MemoryNode[]): MemoryNode {
-    const nodeIndex = this.roundRobinIndex % nodes.length;
-    this.roundRobinIndex++;
-    return nodes[nodeIndex];
-  }
-
-  private selectLeastConnections(nodes: MemoryNode[]): MemoryNode {
-    return nodes.reduce((least, current) => {
-      if (current.metrics.connections < least.metrics.connections) {
-        return current;
-      }
-      if (current.metrics.connections === least.metrics.connections) {
-        // Secondary sort by response time
-        return current.metrics.averageResponseTime <
-          least.metrics.averageResponseTime
-          ? current
-          : least;
-      }
-      return least;
-    });
-  }
-
-  private selectWeighted(nodes: MemoryNode[]): MemoryNode {
-    const weights = this.config.weights||{};
-
-    // Calculate total weight
-    const totalWeight = nodes.reduce((sum, node) => {
-      const weight = weights[node.id]||node.weight||1;
-      return sum + weight;
-    }, 0);
-
-    // Random selection based on weights
-    let random = Math.random() * totalWeight;
-
-    for (const node of nodes) {
-      const weight = weights[node.id]||node.weight||1;
-      random -= weight;
-      if (random <= 0) {
-        return node;
-      }
-    }
-
-    // Fallback to first node
-    return nodes[0];
-  }
-
-  private selectResourceAware(nodes: MemoryNode[]): MemoryNode {
-    // Score nodes based on multiple factors
-    const scoredNodes = nodes.map((node) => ({
-      node,
-      score: this.calculateNodeScore(node),
-    }));
-
-    // Sort by score (higher is better)
-    scoredNodes.sort((a, b) => b.score - a.score);
-
-    return scoredNodes[0].node;
-  }
-
-  private calculateNodeScore(node: MemoryNode): number {
-    const metrics = node.metrics;
-    const thresholds = this.config.thresholds||{
-      maxLatency: 100,
-      maxErrorRate: 0.05,
-      maxConnectionsPerNode: 100,
-      maxMemoryUsage: 0.8,
-    };
-
-    // Base score
-    let score = 100;
-
-    // Penalize high latency
-    if (metrics.averageResponseTime > thresholds.maxLatency) {
-      score -= (metrics.averageResponseTime / thresholds.maxLatency) * 20;
-    }
-
-    // Penalize high error rate
-    if (node.status.errorRate > thresholds.maxErrorRate) {
-      score -= (node.status.errorRate / thresholds.maxErrorRate) * 30;
-    }
-
-    // Penalize high connection count
-    if (metrics.connections > thresholds.maxConnectionsPerNode) {
-      score -= (metrics.connections / thresholds.maxConnectionsPerNode) * 15;
-    }
-
-    // Penalize high memory usage
-    if (metrics.memoryUsage > thresholds.maxMemoryUsage) {
-      score -= (metrics.memoryUsage / thresholds.maxMemoryUsage) * 25;
-    }
-
-    // Bonus for high cache hit rate
-    score += metrics.cacheHitRate * 10;
-
-    // Apply node weight multiplier
-    score *= node.weight;
-
-    return Math.max(0, score);
-  }
-
   private checkNodeOverload(node: MemoryNode): void {
     const thresholds = this.config.thresholds||{
       maxLatency: 100,
@@ -228,7 +125,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
     if (isOverloaded && !wasOverloaded) {
       this.stats.overloadedNodes.push(node.id);
       this.emit('overloaded', node.id);'
-      this.logger.warn(`Node overloaded: ${node.id}`, {`
+      this.logger.warn(`Node overloaded: $node.id`, {`
         latency: node.metrics.averageResponseTime,
         errorRate: node.status.errorRate,
         connections: node.metrics.connections,
@@ -236,12 +133,12 @@ export class MemoryLoadBalancer extends TypedEventBase {
       });
 
       recordMetric('memory_load_balancer_overload', 1, { nodeId: node.id });'
-    } else if (!isOverloaded && wasOverloaded) {
+    } else if (!_isOverloaded && _wasOverloaded) {
       this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
         (id) => id !== node.id
       );
       this.emit('recovered', node.id);'
-      this.logger.info(`Node recovered from overload: ${node.id}`);`
+      this.logger.info(`Node recovered from overload: $node.id`);`
 
       recordMetric('memory_load_balancer_recovery', 1, { nodeId: node.id });'
     }

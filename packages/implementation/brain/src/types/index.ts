@@ -14,13 +14,13 @@
  */
 
 import type {
-  UUID,
-  Timestamp,
-  Priority,
   Entity,
-  Result,
-  NonEmptyArray,
   LogLevel,
+  NonEmptyArray,
+  Priority,
+  Result,
+  Timestamp,
+  UUID,
 } from '@claude-zen/foundation/types';
 
 // =============================================================================

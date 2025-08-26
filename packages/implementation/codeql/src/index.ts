@@ -6,8 +6,8 @@
 // Core exports
 export {
   CodeQLBridge,
-  createCodeQLBridge,
   checkCodeQLAvailability,
+  createCodeQLBridge,
 } from './codeql-bridge';
 export { DatabaseManager } from './database-manager';
 export { QueryRunner } from './query-runner';
@@ -18,18 +18,18 @@ export type * from './types/codeql-types';
 
 // Re-export commonly used interfaces
 export type {
+  CodeQLAnalysisResult,
   CodeQLConfig,
   CodeQLDatabase,
+  CodeQLError,
+  CodeQLFinding,
   CodeQLLanguage,
   DatabaseCreationOptions,
-  QueryPack,
+  FixSuggestion,
   QueryExecutionOptions,
-  CodeQLAnalysisResult,
-  CodeQLFinding,
+  QueryPack,
   SARIFResult,
   SecurityClassification,
-  FixSuggestion,
-  CodeQLError,
 } from './types/codeql-types';
 
 /**
@@ -39,7 +39,7 @@ export const DEFAULT_CODEQL_CONFIG: Partial<
   import('./types/codeql-types').CodeQLConfig'
 > = {
   maxMemory: 4096,
-  threads: Math.max(1, Math.floor(require('os').cpus().length / 2)),
+  threads: Math.max(1, Math.floor(require('node:os').cpus().length / 2)),
   verbose: false,
   timeout: 300000, // 5 minutes
 };
@@ -119,7 +119,7 @@ export async function analyzeFile(
     config?: Partial<import('./types/codeql-types').CodeQLConfig>;'
   } = {}
 ): Promise<import('./types/codeql-types').QueryExecutionResult> {'
-  const bridge = createCodeQLBridge(options.config);
+  const _bridge = createCodeQLBridge(options.config);
 
   // Detect language from file extension
   const language = detectLanguageFromPath(filePath);
@@ -225,9 +225,9 @@ export function getSecurityQueryPacks(
   for (const language of languages) {
     // OWASP Top 10 queries
     queryPacks.push({
-      name: `${language}-security-extended`,`
+      name: `$language-security-extended`,`
       version: 'latest',
-      metadata: {
+      metadata: 
         description: `OWASP Top 10 security queries for ${language}`,`
         category: 'security',
         tags: ['owasp', 'top-10'],
@@ -236,9 +236,9 @@ export function getSecurityQueryPacks(
 
     // CWE-specific queries
     queryPacks.push({
-      name: `${language}-security-and-quality`,`
+      name: `$language-security-and-quality`,`
       version: 'latest',
-      metadata: {
+      metadata: 
         description: `CWE-based security and quality queries for ${language}`,`
         category: 'security',
         tags: ['cwe', 'quality'],

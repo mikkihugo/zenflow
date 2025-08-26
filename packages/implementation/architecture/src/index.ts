@@ -6,5 +6,5 @@
  * validation and SAFe-specific coordination.
  */
 
-export * from './domain-boundary-validator';
-export * from './verify-domain-boundary-validator';
+export * from "./domain-boundary-validator";
+export * from "./verify-domain-boundary-validator";

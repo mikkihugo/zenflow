@@ -11,41 +11,28 @@
  * - Clean separation of concerns with focused methods
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
-  getLogger,
-  type Logger,
+import { 
+  type AgentMonitor,
+  createAgentMonitor,
+  createCircuitBreaker,
+  createMLMonitor,
+  createPerformanceTracker,
+  createSystemMonitor,
   EnhancedError,
-  withRetry,
+  getLogger,
+  type MLMonitor,
+  metered,
+  type PerformanceTracker,
+  recordEvent,
+  recordGauge,
+  recordHistogram,
   // 🔬 Enterprise Telemetry & Monitoring Systems
   recordMetric,
-  recordHistogram,
-  recordGauge,
-  createCircuitBreaker,
-  startTrace,
-  withTrace,
-  withAsyncTrace,
-  recordEvent,
-  setTraceAttributes,
-  traced,
-  tracedAsync,
-  metered,
   // 🏥 Comprehensive Monitoring Classes
-  SystemMonitor,
-  PerformanceTracker,
-  AgentMonitor,
-  MLMonitor,
-  createSystemMonitor,
-  createPerformanceTracker,
-  createAgentMonitor,
-  createMLMonitor,
-  createMonitoringSystem,
-  // 🛡️ Enterprise Error Handling & Safety
-  safeAsync,
-  Result,
-  ok,
-  err,
-} from '@claude-zen/foundation';
+  type SystemMonitor,
+  setTraceAttributes,TypedEventBase, 
+  tracedAsync,
+  withAsyncTrace,} from '@claude-zen/foundation';
 
 // Import types from workflow-base-types
 import type {
@@ -78,15 +65,12 @@ interface DocumentManager {
 interface MemorySystemFactory {
   createMemory(config: any): any;
 }
+
 import type {
-  DocumentContent,
-  StepExecutionResult,
   WorkflowContext,
-  WorkflowData,
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-  WorkflowStep,
 } from './workflow-base-types';
 
 const logger = getLogger('WorkflowEngine');'
@@ -216,13 +200,11 @@ export class WorkflowEngine extends TypedEventBase {
 
     logger.info(
       'WorkflowEngine constructor completed with Foundation integration',
-      {
         config: this.config,
         hasDocumentManager: !!documentManager,
         hasMemoryFactory: !!memoryFactory,
         hasGatesManager: !!gatesManager,
         foundationIntegration: 'comprehensive',
-      }
     );
   }
 
@@ -240,13 +222,12 @@ export class WorkflowEngine extends TypedEventBase {
       return;
     }
 
-    return withAsyncTrace('workflow-engine-initialization', async (span) => {'
-      setTraceAttributes({
+    return withAsyncTrace('workflow-engine-initialization', async (_span) => {'
+      setTraceAttributes(
         'workflow.engine.config': JSON.stringify(this.config),
         'workflow.engine.has_document_manager': !!this.documentManager,
         'workflow.engine.has_memory_factory': !!this.memory,
-        'workflow.engine.has_gates_manager': !!this.gatesManager,
-      });
+        'workflow.engine.has_gates_manager': !!this.gatesManager,);
 
       const initStartTime = Date.now();
 
@@ -286,15 +267,14 @@ export class WorkflowEngine extends TypedEventBase {
         recordGauge('workflow_engine_initialized_timestamp', Date.now())();'
         recordMetric('workflow_engine_initialized_successfully', 1);'
 
-        this.emit('initialized', { timestamp: new Date() });'
+        this.emit('initialized', timestamp: new Date() );'
 
-        setTraceAttributes({
+        setTraceAttributes(
           'workflow.engine.initialized': true,
           'workflow.engine.initialization_duration_ms': initDuration,
           'workflow.engine.step_handlers_count': this.stepHandlers.size,
           'workflow.engine.workflow_definitions_count':'
-            this.workflowDefinitions.size,
-        });
+            this.workflowDefinitions.size,);
 
         logger.info(
           'WorkflowEngine initialized successfully with Foundation monitoring',
@@ -330,8 +310,8 @@ export class WorkflowEngine extends TypedEventBase {
   @tracedAsync('workflow-engine-shutdown')'
   @metered('workflow_engine_shutdown')'
   async shutdown(): Promise<void> {
-    return withAsyncTrace('workflow-engine-shutdown', async (span) => {'
-      const shutdownStartTime = Date.now();
+    return withAsyncTrace('workflow-engine-shutdown', async (_span) => {'
+      const _shutdownStartTime = Date.now();
       logger.info(
         'Shutting down WorkflowEngine with comprehensive Foundation cleanup''
       );
@@ -350,7 +330,7 @@ export class WorkflowEngine extends TypedEventBase {
           activeWorkflowsCount: this.activeWorkflows.size,
         });
 
-        const cancelPromises = Array.from(this.activeWorkflows.keys()).map(
+        const _cancelPromises = Array.from(this.activeWorkflows.keys()).map(
           async (id) => {
             try {
               recordEvent('workflow_cancellation_started', { workflowId: id });'
@@ -563,7 +543,7 @@ export class WorkflowEngine extends TypedEventBase {
             recordMetric('workflow_execution_background_error', 1, {'
               workflowId,
             });
-            logger.error(`Workflow ${workflowId} execution failed:`, {`
+            logger.error(`Workflow $workflowIdexecution failed:`, {`
               error: error instanceof Error ? error.message : String(error),
               workflowType: definition.name,
               workflowId,
@@ -577,10 +557,9 @@ export class WorkflowEngine extends TypedEventBase {
         recordMetric('workflow_start_circuit_breaker_failure', 1);'
         recordHistogram('workflow_start_error_duration', duration);'
 
-        logger.error('Workflow start failed with circuit breaker protection', {'
+        logger.error('Workflow start failed with circuit breaker protection', '
           error: error instanceof Error ? error.message : String(error),
-          duration,
-        });
+          duration,);
 
         return {
           success: false,
@@ -624,7 +603,7 @@ export class WorkflowEngine extends TypedEventBase {
 
   registerStepHandler(type: string, handler: StepHandler): void {
     this.stepHandlers.set(type, handler);
-    logger.debug(`Registered step handler: ${type}`);`
+    logger.debug(`Registered step handler: $type`);`
   }
 
   // --------------------------------------------------------------------------
@@ -702,7 +681,7 @@ export class WorkflowEngine extends TypedEventBase {
               documentType: docData.type||'unknown',
             });
 
-            logger.debug(`No workflows for document type: ${docData.type}`, {`
+            logger.debug(`No workflows for document type: $docData.type`, {`
               eventType,
               documentType: docData.type,
               documentId: docData.id,
@@ -960,7 +939,7 @@ export class WorkflowEngine extends TypedEventBase {
   updateWorkflowData(workflowId: string, updates: Partial<WorkflowData>): void {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
-      throw new Error(`Workflow ${workflowId} not found`);`
+      throw new Error(`Workflow $workflowIdnot found`);`
     }
 
     if (updates.data) {
@@ -977,7 +956,7 @@ export class WorkflowEngine extends TypedEventBase {
   @tracedAsync('workflow-execution')'
   @metered('workflow_execution_operation')'
   private async executeWorkflowAsync(workflow: WorkflowState): Promise<void> {
-    return withAsyncTrace('workflow-execution', async (span) => {'
+    return withAsyncTrace('workflow-execution', async (_span) => {'
       const executionStartTime = Date.now();
 
       setTraceAttributes({
@@ -998,11 +977,10 @@ export class WorkflowEngine extends TypedEventBase {
         // 🔄 Execute each step with comprehensive telemetry
         for (let i = 0; i < workflow.definition.steps.length; i++) {
           if (workflow.status !== 'running') {'
-            recordEvent('workflow_execution_interrupted', {'
+            recordEvent('workflow_execution_interrupted', '
               workflowId: workflow.id,
               currentStep: i,
-              status: workflow.status,
-            });
+              status: workflow.status,);
             break;
           }
 
@@ -1136,12 +1114,11 @@ export class WorkflowEngine extends TypedEventBase {
         this.workflowMetrics.delete(workflow.id);
         recordGauge('workflow_active_count', this.activeWorkflows.size);'
 
-        setTraceAttributes({
+        setTraceAttributes(
           'workflow.execution.final_status': workflow.status,
           'workflow.execution.duration_ms': totalExecutionDuration,
           'workflow.execution.steps_completed': workflow.currentStep,
-          'workflow.execution.finalized': true,
-        });
+          'workflow.execution.finalized': true,);
 
         this.emit('workflow:completed', {'
           workflowId: workflow.id,
@@ -1236,13 +1213,13 @@ export class WorkflowEngine extends TypedEventBase {
 
   private registerDefaultStepHandlers(): void {
     // Default step handlers
-    this.registerStepHandler('delay', async (context, params) => {'
+    this.registerStepHandler('delay', async (_context, params) => {'
       const duration = (params as { duration?: number }).duration||1000;
       await new Promise((resolve) => setTimeout(resolve, duration));
       return { delayed: duration };
     });
 
-    this.registerStepHandler('log', (context, params) => {'
+    this.registerStepHandler('log', (_context, params) => {'
       const message =
         (params as { message?: string }).message||'Step executed;
       logger.info(message);
@@ -1292,7 +1269,7 @@ export class WorkflowEngine extends TypedEventBase {
   private createTimeoutPromise(timeout: number): Promise<never> {
     return new Promise((_, reject) =>
       setTimeout(
-        () => reject(new Error(`Step timeout after ${timeout}ms`)),`
+        () => reject(new Error(`Step timeout after $timeoutms`)),`
         timeout
       )
     );
@@ -1345,36 +1322,33 @@ export class WorkflowEngine extends TypedEventBase {
         // ValidationQuestion base properties
         id: gateId,
         type: 'checkpoint',
-        question: `Approve execution of step: ${step.name||step.type}?`,`
-        context: {
+        question: `Approve execution of step: $step.name||step.type?`,`
+        context: 
           workflowId: workflow.id,
           stepName: step.name||step.type,
           stepType: step.type,
-          stepParams: step.params||{},
-        },
+          stepParams: step.params||,,
         confidence: 0.8,
         priority:
           step.gateConfig.businessImpact ==='critical' ? 'critical' : 'medium',
-        validationReason: `Workflow step gate: ${step.name||step.type}`,`
+        validationReason: `Workflow step gate: $step.name||step.type`,`
         expectedImpact: step.gateConfig.businessImpact ==='high'? 0.7 : 0.4,
 
         // WorkflowGateRequest specific properties
-        workflowContext: {
+        workflowContext: 
           workflowId: workflow.id,
           stepName: step.name||step.type,
           businessImpact: step.gateConfig.businessImpact||'medium',
           decisionScope: 'task',
           stakeholders: step.gateConfig.stakeholders||['workflow-manager'],
           dependencies: [],
-          riskFactors: [],
-        },
+          riskFactors: [],,
         gateType: step.gateConfig.gateType||'checkpoint',
-        timeoutConfig: {
+        timeoutConfig: 
           initialTimeout: step.timeout||300000, // 5 minutes
           escalationTimeouts: [600000, 1200000], // 10, 20 minutes
-          maxTotalTimeout: 1800000, // 30 minutes
-        },
-        integrationConfig: {
+          maxTotalTimeout: 1800000, // 30 minutes,
+        integrationConfig: 
           correlationId: `${workflow.id}-${workflow.currentStep}`,`
           domainValidation: true,
           enableMetrics: true,
@@ -1519,8 +1493,7 @@ export class WorkflowEngine extends TypedEventBase {
         Date.now() - new Date(workflow.pausedForGate.pausedAt).getTime(),
       escalationLevel: 0,
       decisionMaker: 'external',
-      correlationId: `${workflowId}-${gateId}`,`
-    };
+      correlationId: `$workflowId-$gateId`,`;
 
     workflow.gateResults.set(gateId, gateResult);
 
@@ -1546,7 +1519,7 @@ export class WorkflowEngine extends TypedEventBase {
 
     // Resume execution from the paused step
     this.executeWorkflowAsync(workflow).catch((error) => {
-      logger.error(`Workflow ${workflowId} failed after gate resume:`, error);`
+      logger.error(`Workflow $workflowIdfailed after gate resume:`, error);`
     });
 
     this.emit('workflow:resumed', { workflowId, gateId });'
@@ -1557,11 +1530,11 @@ export class WorkflowEngine extends TypedEventBase {
   /**
    * Get workflow gate status
    */
-  getWorkflowGateStatus(workflowId: string): {
+  getWorkflowGateStatus(workflowId: string): 
     hasPendingGates: boolean;
     pendingGates: WorkflowGateRequest[];
     gateResults: WorkflowGateResult[];
-    pausedForGate?: { stepIndex: number; gateId: string; pausedAt: string };
+    pausedForGate?: { stepIndex: number; gateId: string; pausedAt: string ;
   } {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {

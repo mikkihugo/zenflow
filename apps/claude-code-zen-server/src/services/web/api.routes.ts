@@ -49,14 +49,13 @@
 
 // ✅ TIER 1 ONLY - 5-Tier Architecture Compliance
 import {
-	getLogger,
 	assertDefined,
 	getErrorMessage,
+	getLogger,
 } from "@claude-zen/foundation";
-
+import { getDatabaseSystem } from "@claude-zen/infrastructure";
 // Strategic facades for system access - only import what's actually used
 import { getBrainSystem } from "@claude-zen/intelligence";
-import { getDatabaseSystem } from "@claude-zen/infrastructure";
 import { getPerformanceTracker } from "@claude-zen/operations";
 
 // Constants to avoid string duplication
@@ -72,13 +71,9 @@ interface WebConfig {
 	apiPrefix?: string;
 }
 
-interface WebSessionManager {
-	// Session management interface
-}
+type WebSessionManager = {};
 
-interface WebDataService {
-	// Data service interface
-}
+type WebDataService = {};
 
 // Strategic imports from @claude-zen packages
 // Foundation utilities for web operations
@@ -112,8 +107,6 @@ const { getVersion } = (global as { foundation?: { getVersion: () => string } })
 export class WebApiRoutes {
 	private logger = getLogger("WebAPI");
 	private config: WebConfig;
-	private sessionManager: WebSessionManager;
-	private dataService: WebDataService;
 
 	// Strategic delegation instances with proper typing
 	// Note: AGUI functionality handled by TaskMaster service
@@ -257,7 +250,7 @@ export class WebApiRoutes {
 	 */
 	private setupCoreRoutes(app: Express, api: string): void {
 		// Root route
-		app.get("/", (req, res) => {
+		app.get("/", (_req, res) => {
 			res.json({
 				message: "Claude Code Zen API Server",
 				version: getVersion(),
@@ -267,7 +260,7 @@ export class WebApiRoutes {
 		});
 
 		// Health check - delegate to monitoring package
-		app.get(`${api}/health`, async (req: Request, res: Response) => {
+		app.get(`${api}/health`, async (_req: Request, res: Response) => {
 			try {
 				assertDefined(
 					this.healthMonitor,
@@ -284,7 +277,7 @@ export class WebApiRoutes {
 		});
 
 		// System status - delegate to monitoring package
-		app.get(`${api}/system/status`, async (req: Request, res: Response) => {
+		app.get(`${api}/system/status`, async (_req: Request, res: Response) => {
 			try {
 				assertDefined(
 					this.healthMonitor,
@@ -315,7 +308,7 @@ export class WebApiRoutes {
 		await this.advancedGUI.setupWebRoutes(app, `${api}/agui`);
 
 		// Task approval routes
-		app.get(`${api}/agui/approvals`, async (req: Request, res: Response) => {
+		app.get(`${api}/agui/approvals`, async (_req: Request, res: Response) => {
 			try {
 				const approvals = await this.advancedGUI?.getPendingApprovals();
 				res.json({
@@ -363,12 +356,12 @@ export class WebApiRoutes {
 		assertDefined(this.workflowEngine, "Workflow engine not initialized");
 
 		// Delegate all workflow routes to workflows package
-		await this.workflowEngine!.setupWebRoutes(app, `${api}/workflows`);
+		await this.workflowEngine?.setupWebRoutes(app, `${api}/workflows`);
 
 		// Task management routes
 		app.get(`${api}/tasks`, async (req: Request, res: Response) => {
 			try {
-				const tasks = await this.workflowEngine!.getTasks(req.query);
+				const tasks = await this.workflowEngine?.getTasks(req.query);
 				res.json({
 					success: true,
 					data: tasks,
@@ -383,7 +376,7 @@ export class WebApiRoutes {
 
 		app.post(`${api}/tasks`, async (req: Request, res: Response) => {
 			try {
-				const task = await this.workflowEngine!.createTask(req.body);
+				const task = await this.workflowEngine?.createTask(req.body);
 				res.status(201).json({
 					success: true,
 					data: task,
@@ -400,7 +393,7 @@ export class WebApiRoutes {
 			`${api}/tasks/:id/execute`,
 			async (req: Request, res: Response) => {
 				try {
-					const result = await this.workflowEngine!.executeTask(req.params.id);
+					const result = await this.workflowEngine?.executeTask(req.params.id);
 					res.json({
 						success: true,
 						data: result,
@@ -432,7 +425,7 @@ export class WebApiRoutes {
 		await this.healthMonitor.setupWebRoutes(app, `${api}/monitoring`);
 
 		// Metrics endpoints
-		app.get(`${api}/metrics`, async (req: Request, res: Response) => {
+		app.get(`${api}/metrics`, async (_req: Request, res: Response) => {
 			try {
 				const metrics = await this.healthMonitor?.getMetrics();
 				res.json({
@@ -479,13 +472,13 @@ export class WebApiRoutes {
 		);
 
 		// Delegate all collaboration routes to teamwork package
-		await this.collaborationEngine!.setupWebRoutes(app, `${api}/collaboration`);
+		await this.collaborationEngine?.setupWebRoutes(app, `${api}/collaboration`);
 
 		// WebSocket setup for real-time collaboration
 		app.get(`${api}/ws`, async (req: Request, res: Response) => {
 			try {
 				// Delegate WebSocket upgrade to collaboration engine
-				await this.collaborationEngine!.handleWebSocketUpgrade(req, res);
+				await this.collaborationEngine?.handleWebSocketUpgrade(req, res);
 			} catch (error) {
 				res.status(500).json({
 					error: "WebSocket upgrade failed",
@@ -506,7 +499,7 @@ export class WebApiRoutes {
 			this.webMiddleware.setupErrorHandling(app);
 		} else {
 			// Fallback error handler
-			app.use((err: Error, req: Request, res: Response) => {
+			app.use((err: Error, _req: Request, res: Response) => {
 				this.logger.error("Unhandled error:", err);
 				res.status(500).json({
 					error: "Internal server error",

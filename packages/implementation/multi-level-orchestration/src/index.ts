@@ -5,75 +5,74 @@
  * coordination with intelligent WIP management, flow optimization, and cross-level dependency management.
  */
 
-// ============================================================================
-// TYPES - Core orchestration type definitions
-// ============================================================================
-export type {
-  // Core types
-  OrchestrationLevel,
-  WIPLimits,
-  FlowMetrics,
-  BottleneckInfo,
-  WorkflowStream,
-  StreamStatus,
-  StreamMetrics,
-  StreamConfiguration,
-
-  // Work item types
-  PortfolioItem,
-  ProgramItem,
-  SwarmExecutionItem,
-  SuccessMetric,
-  TechnicalSpecification,
-  CodeArtifact,
-  QualityGate,
-  QualityGateResult,
-
-  // Coordination types
-  CrossLevelDependency,
-  OptimizationRecommendation,
-  MultiLevelOrchestratorState,
-  SystemPerformanceMetrics,
-
-  // SPARC integration
-  SPARCPhase,
-  SPARCProjectRef,
-} from './types';
 
 // ============================================================================
 // EVENTS - Event system integration
 // ============================================================================
 export type {
   OrchestrationEvent,
+  OrchestrationEventType,
   StreamStatusChangedEvent,
   WIPLimitExceededEvent,
-  OrchestrationEventType,
 } from './events/orchestration-events';
-
 export { isStreamEvent } from './events/orchestration-events';
+// ============================================================================
+// TYPES - Core orchestration type definitions
+// ============================================================================
+export type {
+  BottleneckInfo,
+  CodeArtifact,
+
+  // Coordination types
+  CrossLevelDependency,
+  FlowMetrics,
+  MultiLevelOrchestratorState,
+  OptimizationRecommendation,
+  // Core types
+  OrchestrationLevel,
+
+  // Work item types
+  PortfolioItem,
+  ProgramItem,
+  QualityGate,
+  QualityGateResult,
+
+  // SPARC integration
+  SPARCPhase,
+  SPARCProjectRef,
+  StreamConfiguration,
+  StreamMetrics,
+  StreamStatus,
+  SuccessMetric,
+  SwarmExecutionItem,
+  SystemPerformanceMetrics,
+  TechnicalSpecification,
+  WIPLimits,
+  WorkflowStream,
+} from './types';
 
 // ============================================================================
 // ORCHESTRATORS - Core orchestration engines
 // ============================================================================
 
-// Production Multi-Level Orchestration Manager
-export { MultiLevelOrchestrationManager } from './core/multi-level-orchestration-manager';
 
 // Export additional types from the production manager (not duplicating existing types)
 export type {
+  ExecutionPhase,
+  ExecutionPlan,
+  LevelTransition,
+  LevelTransitionConfig,
+  MultiLevelOrchestrationConfig,
+  OrchestrationError,
+  OrchestrationResult,
+  OrchestrationWarning,
+  TransitionCriterion,
+  TransitionTrigger,
   WIPStatus,
   WIPViolation,
-  LevelTransition,
-  MultiLevelOrchestrationConfig,
-  LevelTransitionConfig,
-  TransitionTrigger,
-  TransitionCriterion,
-  OrchestrationResult,
-  OrchestrationError,
-  OrchestrationWarning,
-  ExecutionPlan,
-  ExecutionPhase,
 } from './core/multi-level-orchestration-manager';
+// Production Multi-Level Orchestration Manager
+export { MultiLevelOrchestrationManager } from './core/multi-level-orchestration-manager';
 
 /**
  * Legacy alias for compatibility - use MultiLevelOrchestrationManager instead
@@ -81,7 +80,7 @@ export type {
 export class MultiLevelOrchestrator {
   public readonly id: string;
 
-  constructor(config: { wipLimits: WIPLimits }) {
+  constructor(_config: { wipLimits: WIPLimits }) {
     this.id = `orchestrator-${Date.now()}`;`
     console.warn(
       'MultiLevelOrchestrator is deprecated. Use MultiLevelOrchestrationManager instead.''

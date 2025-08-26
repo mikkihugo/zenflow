@@ -95,76 +95,76 @@
  * @since 1.0.0
  * @public
  */
-export { createAGUISystem as createAGUI } from './create-agui-system';
-export { createAGUISystem as AGUISystem } from './create-agui-system';
-export { createAGUISystem as AGUIService } from './create-agui-system';
+export {
+	createAGUISystem as createAGUI,
+	createAGUISystem as AGUISystem,
+	createAGUISystem as AGUIService,
+} from "./create-agui-system";
 
 // =============================================================================
 // CORE INTERFACES - Basic AGUI components
 // =============================================================================
 export {
-  WebAGUI,
-  HeadlessAGUI,
-  createAGUI as createBasicAGUI,
-} from './interfaces';
+	createAGUI as createBasicAGUI,
+	HeadlessAGUI,
+	WebAGUI,
+} from "./interfaces";
 
 // =============================================================================
 // TASK APPROVAL SYSTEM - Human-in-the-loop workflows
 // =============================================================================
 export {
-  TaskApprovalSystem,
-  createTaskApprovalSystem,
-} from './task-approval-system';
+	createTaskApprovalSystem,
+	TaskApprovalSystem,
+} from "./task-approval-system";
 
 // =============================================================================
 // TYPE DEFINITIONS - Interfaces and types (tree-shakable)
 // =============================================================================
 
 // Core interface types
-export type { AGUIInterface, EventHandlerConfig } from './interfaces';
-
-// AGUI library types
-export type {
-  ValidationQuestion,
-  Priority,
-  MessageType,
-  QuestionType,
-  QuestionContext,
-  ProgressInfo,
-  AGUIResponse,
-  BatchQuestionResult,
-  AGUIConfig,
-  EventHandlerConfig as AGUIEventHandlerConfig,
-  AGUIFactory,
-  AGUIRegistry,
-} from './types';
-
+export type { AGUIInterface, EventHandlerConfig } from "./interfaces";
 // Task approval types
 export type {
-  BaseDocumentEntity,
-  TaskDocumentEntity,
-  FeatureDocumentEntity,
-  EpicDocumentEntity,
-  CodeAnalysisResult,
-  GeneratedSwarmTask,
-  ScanResults,
-  ApprovalRequest,
-  ApprovalWorkflowConfig,
-  TaskApprovalDecision,
-  BatchApprovalResults,
-  TaskApprovalConfig,
-  ApprovalStatistics,
-} from './task-approval-system';
+	ApprovalRequest,
+	ApprovalStatistics,
+	ApprovalWorkflowConfig,
+	BaseDocumentEntity,
+	BatchApprovalResults,
+	CodeAnalysisResult,
+	EpicDocumentEntity,
+	FeatureDocumentEntity,
+	GeneratedSwarmTask,
+	ScanResults,
+	TaskApprovalConfig,
+	TaskApprovalDecision,
+	TaskDocumentEntity,
+} from "./task-approval-system";
+// AGUI library types
+export type {
+	AGUIConfig,
+	AGUIFactory,
+	AGUIRegistry,
+	AGUIResponse,
+	BatchQuestionResult,
+	EventHandlerConfig as AGUIEventHandlerConfig,
+	MessageType,
+	Priority,
+	ProgressInfo,
+	QuestionContext,
+	QuestionType,
+	ValidationQuestion,
+} from "./types";
 
 // =============================================================================
 // ENUMS AND CONSTANTS - Essential values (tree-shakable)
 // =============================================================================
 export {
-  AGUIType,
-  AGUIError,
-  AGUITimeoutError,
-  AGUIValidationError,
-} from './types';
+	AGUIError,
+	AGUITimeoutError,
+	AGUIType,
+	AGUIValidationError,
+} from "./types";
 
 // =============================================================================
 // METADATA - Package information
@@ -227,17 +227,17 @@ export {
  * @readonly
  */
 export const AGUI_INFO = {
-  version: '1.0.0',
-  name: '@claude-zen/agui',
-  description: 'Autonomous Graphical User Interface Library for Claude-Zen',
-  capabilities: [
-    'Human-in-the-loop interactions',
-    'Task approval workflows',
-    'Terminal and web interfaces',
-    'Event-driven architecture',
-    'Rich terminal interactions',
-    'Workflow gates and decision logging',
-  ],
+	version: "1.0.0",
+	name: "@claude-zen/agui",
+	description: "Autonomous Graphical User Interface Library for Claude-Zen",
+	capabilities: [
+		"Human-in-the-loop interactions",
+		"Task approval workflows",
+		"Terminal and web interfaces",
+		"Event-driven architecture",
+		"Rich terminal interactions",
+		"Workflow gates and decision logging",
+	],
 } as const;
 
 // =============================================================================
@@ -245,86 +245,86 @@ export const AGUI_INFO = {
 // =============================================================================
 
 export async function getAGUISystemAccess(config?: AGUIConfig): Promise<any> {
-  const { agui, taskApproval } = await createAGUI(config);
-  return {
-    createSystem: (systemConfig?: AGUIConfig) => createAGUI(systemConfig),
-    createTaskApproval: (approvalConfig?: TaskApprovalConfig) =>
-      createTaskApprovalSystem(approvalConfig),
-    createBasicAGUI: (aguiConfig?: any) => createBasicAGUI(aguiConfig),
-    askQuestion: (question: string, options?: any) =>
-      agui.askQuestion(question, options),
-    requestApproval: (request: ApprovalRequest) =>
-      taskApproval.requestApproval(request),
-    batchQuestions: (questions: any[]) => agui.batchQuestions?.(questions),
-    showProgress: (info: ProgressInfo) => agui.showProgress?.(info),
-    getApprovalStats: () => taskApproval.getStatistics?.(),
-    shutdown: () => Promise.all([agui.shutdown?.(), taskApproval.shutdown?.()]),
-  };
+	const { agui, taskApproval } = await createAGUI(config);
+	return {
+		createSystem: (systemConfig?: AGUIConfig) => createAGUI(systemConfig),
+		createTaskApproval: (approvalConfig?: TaskApprovalConfig) =>
+			createTaskApprovalSystem(approvalConfig),
+		createBasicAGUI: (aguiConfig?: any) => createBasicAGUI(aguiConfig),
+		askQuestion: (question: string, options?: any) =>
+			agui.askQuestion(question, options),
+		requestApproval: (request: ApprovalRequest) =>
+			taskApproval.requestApproval(request),
+		batchQuestions: (questions: any[]) => agui.batchQuestions?.(questions),
+		showProgress: (info: ProgressInfo) => agui.showProgress?.(info),
+		getApprovalStats: () => taskApproval.getStatistics?.(),
+		shutdown: () => Promise.all([agui.shutdown?.(), taskApproval.shutdown?.()]),
+	};
 }
 
 export async function getAGUIInterface(config?: AGUIConfig): Promise<any> {
-  const { agui } = await createAGUI(config);
-  return agui;
+	const { agui } = await createAGUI(config);
+	return agui;
 }
 
 export async function getTaskApprovalAccess(
-  config?: TaskApprovalConfig
+	config?: TaskApprovalConfig,
 ): Promise<any> {
-  const taskApproval = await createTaskApprovalSystem(config);
-  return {
-    request: (request: ApprovalRequest) =>
-      taskApproval.requestApproval(request),
-    batch: (requests: ApprovalRequest[]) =>
-      taskApproval.batchApproval?.(requests),
-    getStats: () => taskApproval.getStatistics?.(),
-    configure: (newConfig: Partial<TaskApprovalConfig>) =>
-      taskApproval.updateConfig?.(newConfig),
-  };
+	const taskApproval = await createTaskApprovalSystem(config);
+	return {
+		request: (request: ApprovalRequest) =>
+			taskApproval.requestApproval(request),
+		batch: (requests: ApprovalRequest[]) =>
+			taskApproval.batchApproval?.(requests),
+		getStats: () => taskApproval.getStatistics?.(),
+		configure: (newConfig: Partial<TaskApprovalConfig>) =>
+			taskApproval.updateConfig?.(newConfig),
+	};
 }
 
 export async function getHumanInteraction(config?: AGUIConfig): Promise<any> {
-  const { agui, taskApproval } = await createAGUI(config);
-  return {
-    ask: (question: string, options?: any) =>
-      agui.askQuestion(question, options),
-    confirm: (message: string) =>
-      agui.askQuestion(message, { type: 'boolean' }),
-    approve: (request: ApprovalRequest) =>
-      taskApproval.requestApproval(request),
-    notify: (message: string, type?: MessageType) =>
-      agui.showMessage?.(message, type || 'info'),
-    progress: (info: ProgressInfo) => agui.showProgress?.(info),
-  };
+	const { agui, taskApproval } = await createAGUI(config);
+	return {
+		ask: (question: string, options?: any) =>
+			agui.askQuestion(question, options),
+		confirm: (message: string) =>
+			agui.askQuestion(message, { type: "boolean" }),
+		approve: (request: ApprovalRequest) =>
+			taskApproval.requestApproval(request),
+		notify: (message: string, type?: MessageType) =>
+			agui.showMessage?.(message, type || "info"),
+		progress: (info: ProgressInfo) => agui.showProgress?.(info),
+	};
 }
 
 export async function getWorkflowGates(
-  config?: TaskApprovalConfig
+	config?: TaskApprovalConfig,
 ): Promise<any> {
-  const taskApproval = await createTaskApprovalSystem(config);
-  return {
-    gate: (request: ApprovalRequest) => taskApproval.requestApproval(request),
-    checkpoint: (description: string, context?: any) =>
-      taskApproval.requestApproval({
-        taskType: 'checkpoint',
-        description,
-        context,
-      }),
-    decision: (options: { description: string; choices: string[] }) =>
-      taskApproval.requestApproval({
-        taskType: 'decision',
-        description: options.description,
-        context: { choices: options.choices },
-      }),
-  };
+	const taskApproval = await createTaskApprovalSystem(config);
+	return {
+		gate: (request: ApprovalRequest) => taskApproval.requestApproval(request),
+		checkpoint: (description: string, context?: any) =>
+			taskApproval.requestApproval({
+				taskType: "checkpoint",
+				description,
+				context,
+			}),
+		decision: (options: { description: string; choices: string[] }) =>
+			taskApproval.requestApproval({
+				taskType: "decision",
+				description: options.description,
+				context: { choices: options.choices },
+			}),
+	};
 }
 
 // Professional AGUI system object with proper naming (matches brainSystem pattern)
 export const aguiSystem = {
-  getAccess: getAGUISystemAccess,
-  getInterface: getAGUIInterface,
-  getTaskApproval: getTaskApprovalAccess,
-  getHumanInteraction: getHumanInteraction,
-  getWorkflowGates: getWorkflowGates,
-  createSystem: createAGUI,
-  createTaskApproval: createTaskApprovalSystem,
+	getAccess: getAGUISystemAccess,
+	getInterface: getAGUIInterface,
+	getTaskApproval: getTaskApprovalAccess,
+	getHumanInteraction: getHumanInteraction,
+	getWorkflowGates: getWorkflowGates,
+	createSystem: createAGUI,
+	createTaskApproval: createTaskApprovalSystem,
 };

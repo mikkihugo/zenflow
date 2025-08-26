@@ -174,9 +174,8 @@ export async function up(knex: Knex): Promise<void> {
     // table.foreign('approver_id').references('users.id').onDelete('RESTRICT');'
 
     // Unique constraint to prevent duplicate approvals
-    table.unique(['gate_id', 'approver_id'], {'
-      indexName: 'uk_approval_records_gate_approver',
-    });
+    table.unique(['gate_id', 'approver_id'], '
+      indexName: 'uk_approval_records_gate_approver',);
   });
 
   // Add table comments

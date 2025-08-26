@@ -12,38 +12,26 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, } from '@claude-zen/foundation';
+
 const { addMonths, addYears, differenceInMonths, format } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
+  meanBy,
   orderBy,
   sumBy,
-  meanBy,
-  sortBy,
-  maxBy,
 } from 'lodash-es';
-import type {
-  EpicBusinessCase,
-  BusinessHypothesis,
-  MarketAnalysis,
-  FinancialProjection,
-  FinancialViability,
-  RiskAssessment,
-  ImplementationPlan,
-  SuccessMetric,
-  AlternativeSolution,
-  ApprovalStatus,
-  BusinessAssumption,
-  ValidationStep,
-  EpicRisk,
-  RiskMitigation,
-  ROICalculation,
-  RevenueProjection,
-  CostProjection,
-} from '../types/epic-management';
 import type { Logger } from '../types';
+import type {
+  BusinessHypothesis,
+  EpicBusinessCase,
+  EpicRisk,
+  FinancialViability,
+  MarketAnalysis,
+  RevenueProjection,
+  ROICalculation,
+} from '../types/epic-management';
 
 /**
  * Business case service configuration
@@ -162,10 +150,8 @@ export interface CompetitorResponse {
  * Business Case Service for comprehensive business case development
  */
 export class BusinessCaseService {
-  private readonly config: BusinessCaseConfig;
   private readonly logger: Logger;
   private businessCases = new Map<string, EpicBusinessCase>();
-  private analysisResults = new Map<string, BusinessCaseAnalysis>();
 
   constructor(config: BusinessCaseConfig, logger: Logger) {
     this.config = config;
@@ -326,7 +312,7 @@ export class BusinessCaseService {
   ): void {
     const businessCase = this.businessCases.get(businessCaseId);
     if (!businessCase) {
-      throw new Error(`Business case not found: ${businessCaseId}`);`
+      throw new Error(`Business case not found: $businessCaseId`);`
     }
 
     const updatedBusinessCase = {
@@ -367,10 +353,10 @@ export class BusinessCaseService {
     const sortedComparison = orderBy(comparison, 'overallScore', 'desc');'
     const topChoice = sortedComparison[0];
 
-    const recommendation = `Recommend ${topChoice.businessCaseId} based on overall score`;`
+    const _recommendation = `Recommend ${topChoice.businessCaseId} based on overall score`;`
     const reasoning = [
-      `Highest ROI: ${topChoice.roi}%`,`
-      `Best payback period: ${topChoice.paybackPeriod} months`,`
+      `Highest ROI: $topChoice.roi%`,`
+      `Best payback period: $topChoice.paybackPeriodmonths`,`
       `Risk level: ${analyses.find((a) => a.businessCase.id === topChoice.businessCaseId)?.riskProfile.overallRiskLevel}`,`
     ];
 
@@ -405,7 +391,7 @@ export class BusinessCaseService {
     assumptions: BusinessAssumption[]
   ): ValidationStep[] {
     return assumptions.map((assumption) => ({
-      step: `Validate: ${assumption.assumption}`,`
+      step: `Validate: $assumption.assumption`,`
       method: assumption.validationMethod as any,
       timeline: 30, // 30 days
       owner: 'Epic Owner',
@@ -523,7 +509,7 @@ export class BusinessCaseService {
     for (let year = 0; year < Math.min(revenue.length, costs.length); year++) {
       const cashFlow = revenue[year].revenue - costs[year].totalCost;
       const discountedCashFlow =
-        cashFlow / Math.pow(1 + this.config.discountRate / 100, year + 1);
+        cashFlow / (1 + this.config.discountRate / 100) ** (year + 1);
       npv += discountedCashFlow;
     }
 

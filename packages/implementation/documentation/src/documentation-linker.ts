@@ -9,10 +9,9 @@
  */
 
 import { existsSync } from 'node:fs';
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { readdir, } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
-import { getLogger } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('UnifiedDocLinker');'
 
@@ -169,7 +168,7 @@ export class DocumentationLinker extends TypedEventBase {
         }
       }
     } catch (error) {
-      logger.warn(`Failed to index directory ${directoryPath}:`, error);`
+      logger.warn(`Failed to index directory $directoryPath:`, error);`
     }
   }
 
@@ -196,7 +195,7 @@ export class DocumentationLinker extends TypedEventBase {
       this.documentationIndex.set(documentIndex.id, documentIndex);
       this.emit('document:indexed', documentIndex);'
     } catch (error) {
-      logger.warn(`Failed to index document ${filePath}:`, error);`
+      logger.warn(`Failed to index document $filePath:`, error);`
     }
   }
 
@@ -210,7 +209,7 @@ export class DocumentationLinker extends TypedEventBase {
       }
     }
 
-    logger.info(`Found ${this.codeReferences.length} code references`);`
+    logger.info(`Found $this.codeReferences.lengthcode references`);`
   }
 
   private async analyzeCodeDirectory(directoryPath: string): Promise<void> {
@@ -252,7 +251,7 @@ export class DocumentationLinker extends TypedEventBase {
         // Find TODO comments
         if (line) {
           const todoMatch =
-            line.match(/\/\/\s*todo:?\s*(.+)/i)||line.match(/#\s*todo:?\s*(.+)/i);
+            line.match(///s*todo:?s*(.+)/i)||line.match(/#s*todo:?s*(.+)/i);
           if (todoMatch && todoMatch?.[1]) {
             await this.addCodeReference({
               file: filePath,
@@ -267,7 +266,7 @@ export class DocumentationLinker extends TypedEventBase {
         // Find documentation comments
         if (line) {
           const docCommentMatch =
-            line.match(/\/\*\*\s*(.+?)\s*\*\//s)||line.match(/\*\s*(.+)/);
+            line.match(//**s*(.+?)s**//s)||line.match(/*s*(.+)/);
           if (
             docCommentMatch &&
             docCommentMatch?.[1] &&
@@ -286,7 +285,7 @@ export class DocumentationLinker extends TypedEventBase {
         // Find function/class definitions that might need documentation
         if (line) {
           const functionMatch = line.match(
-            /(?:function|class|interface|type)\s+(\w+)/
+            /(?:function|class|interface|type)s+(w+)/
           );
           if (functionMatch) {
             const precedingComment =
@@ -302,7 +301,7 @@ export class DocumentationLinker extends TypedEventBase {
                 type: functionMatch?.[0]?.includes('class')'
                   ? 'class''
                   : 'function',
-                text: `${functionMatch?.[0]} needs documentation`,`
+                text: `$functionMatch?.[0]needs documentation`,`
                 context: this.getContextLines(lines, i, 3),
               });
             }
@@ -359,7 +358,7 @@ export class DocumentationLinker extends TypedEventBase {
       }
     }
 
-    logger.info(`Generated ${this.crossReferences.length} cross-references`);`
+    logger.info(`Generated $this.crossReferences.lengthcross-references`);`
   }
 
   /**
@@ -371,9 +370,9 @@ export class DocumentationLinker extends TypedEventBase {
     // Missing documentation suggestions
     for (const codeRef of this.codeReferences) {
       if (codeRef.suggestedLinks.length === 0 && codeRef.type === 'todo') {'
-        suggestions.push({
+        suggestions.push(
           type: 'missing_doc',
-          source: `${codeRef.file}:${codeRef.line}`,`
+          source: `$codeRef.file:$codeRef.line`,`
           description: `Consider creating documentation for: ${codeRef.text}`,`
           priority: 'medium',
           autoFixable: false,
@@ -391,10 +390,9 @@ export class DocumentationLinker extends TypedEventBase {
         suggestions.push({
           type: 'enhancement',
           source: doc.path,
-          description: `Add links to ${relatedCode.length} related code references`,`
+          description: `Add links to $relatedCode.lengthrelated code references`,`
           priority: 'low',
-          autoFixable: true,
-        });
+          autoFixable: true,);
       }
     }
 
@@ -425,14 +423,14 @@ export class DocumentationLinker extends TypedEventBase {
     const report: string[] = [];
 
     report.push('# Documentation Linker Report');'
-    report.push(`Generated: ${new Date().toISOString()}`);`
+    report.push(`Generated: $new Date().toISOString()`);`
     report.push('');'
 
     // Summary
     report.push('## Summary');'
-    report.push(`- **Documents Indexed**: ${this.documentationIndex.size}`);`
+    report.push(`- **Documents Indexed**: $this.documentationIndex.size`);`
     report.push(`- **Code References**: ${this.codeReferences.length}`);`
-    report.push(`- **Cross References**: ${this.crossReferences.length}`);`
+    report.push(`- **Cross References**: $this.crossReferences.length`);`
     report.push(');'
 
     // Document Types
@@ -454,15 +452,15 @@ export class DocumentationLinker extends TypedEventBase {
     if (highConfidenceRefs.length > 0) {
       report.push('## High-Confidence Code References');'
       for (const ref of highConfidenceRefs.slice(0, 10)) {
-        report.push(`### ${relative(process.cwd(), ref.file)}:${ref.line}`);`
+        report.push(`### $relative(process.cwd(), ref.file):$ref.line`);`
         report.push(`**Type**: ${ref.type}`);`
-        report.push(`**Text**: ${ref.text}`);`
+        report.push(`**Text**: $ref.text`);`
         report.push(`**Confidence**: ${Math.round(ref.confidence * 100)}%`);`
         if (ref.suggestedLinks.length > 0) {
           report.push('**Suggested Links**:');'
           for (const link of ref.suggestedLinks.slice(0, 3)) {
             report.push(
-              `- ${link.title} (${Math.round(link.relevance * 100)}%)``
+              `- $link.title($Math.round(link.relevance * 100)%)``
             );
           }
         }
@@ -483,7 +481,7 @@ export class DocumentationLinker extends TypedEventBase {
 
         if (sourceDoc && targetDoc) {
           report.push(`### ${sourceDoc.title} → ${targetDoc?.title}`);`
-          report.push(`**Relationship**: ${crossRef.linkType}`);`
+          report.push(`**Relationship**: $crossRef.linkType`);`
           report.push(
             `**Confidence**: ${Math.round(crossRef.confidence * 100)}%``
           );
@@ -498,11 +496,11 @@ export class DocumentationLinker extends TypedEventBase {
     if (suggestions.length > 0) {
       report.push('## Improvement Suggestions');'
       for (const suggestion of suggestions.slice(0, 15)) {
-        report.push(`### ${suggestion.type.replace('_', ' ').toUpperCase()}`);`
+        report.push(`### $suggestion.type.replace('_', ' ').toUpperCase()`);`
         report.push(`**Source**: ${suggestion.source}`);`
-        if (suggestion.target) report.push(`**Target**: ${suggestion.target}`);`
+        if (suggestion.target) report.push(`**Target**: $suggestion.target`);`
         report.push(`**Description**: ${suggestion.description}`);`
-        report.push(`**Priority**: ${suggestion.priority}`);`
+        report.push(`**Priority**: $suggestion.priority`);`
         report.push(
           `**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}``
         );
@@ -547,7 +545,7 @@ export class DocumentationLinker extends TypedEventBase {
       }
 
       // Check title similarity
-      const titleWords = doc.title.toLowerCase().split(/\s+/);
+      const titleWords = doc.title.toLowerCase().split(/s+/);
       for (const word of words) {
         if (
           titleWords.some(
@@ -555,7 +553,7 @@ export class DocumentationLinker extends TypedEventBase {
           )
         ) {
           score += 2;
-          reasons.push(`title similarity: ${word}`);`
+          reasons.push(`title similarity: $word`);`
         }
       }
 
@@ -630,7 +628,7 @@ export class DocumentationLinker extends TypedEventBase {
           targetDocument: doc2.id,
           linkType,
           confidence,
-          context: `Common keywords: ${commonKeywords.join(', ')}`,`
+          context: `Common keywords: $commonKeywords.join(', ')`,`
         };
       }
     }
@@ -669,7 +667,7 @@ export class DocumentationLinker extends TypedEventBase {
   private extractTitle(content: string, filePath: string): string {
     // Try to extract title from first heading
     const headingMatch = content.match(/^#\s+(.+)$/m);
-    if (headingMatch && headingMatch?.[1]) return headingMatch?.[1]?.trim();
+    if (headingMatch?.[1]) return headingMatch?.[1]?.trim();
 
     // Try to extract from filename
     const filename = relative(process.cwd(), filePath).replace(
@@ -778,9 +776,9 @@ export class DocumentationLinker extends TypedEventBase {
     }> = [];
 
     // Markdown links
-    const markdownLinks = content.match(/\[([^\]]+)]\(([^)]+)\)/g)||[];
+    const markdownLinks = content.match(/[([^]]+)](([^)]+))/g)||[];
     for (const link of markdownLinks) {
-      const match = link.match(/\[([^\]]+)]\(([^)]+)\)/);
+      const match = link.match(/[([^]]+)](([^)]+))/);
       if (match && match?.[1] && match?.[2]) {
         const text = match?.[1];
         const target = match?.[2];
@@ -820,6 +818,6 @@ export class DocumentationLinker extends TypedEventBase {
   async saveReportToFile(outputPath: string): Promise<void> {
     const report = await this.generateDocumentationReport();
     await writeFile(outputPath, report, 'utf8');'
-    logger.info(`Documentation report saved to: ${outputPath}`);`
+    logger.info(`Documentation report saved to: $outputPath`);`
   }
 }

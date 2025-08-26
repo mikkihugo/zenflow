@@ -131,5 +131,4 @@ export declare class SwarmKnowledgeExtractor extends TypedEventBase {
   updateConfig(newConfig: Partial<ExtractionConfig>): void;
   shutdown(): Promise<void>;
 }
-export {};
 //# sourceMappingURL=swarm-knowledge-extractor.d.ts.map

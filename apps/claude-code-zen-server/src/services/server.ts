@@ -17,32 +17,30 @@
  */
 
 import {
-	getLogger,
-	Result,
+	createContainer,
+	EventEmitter,
 	generateUUID,
+	getLogger,
+	type Result,
 	safeAsync,
 	withTimeout,
-	EventEmitter,
-	createContainer,
 } from "@claude-zen/foundation";
-
 import type {
-	ServerConfig,
-	ServerStatus,
-	HealthCheckResult,
-	ServerMetrics,
-	RequestContext,
-	ResponseData,
-	ServerEvent,
-	LifecycleHook,
-} from "./types/server-types";
-
-import type {
-	HttpAdapter,
-	WebSocketAdapter,
 	DatabaseAdapter,
 	EventAdapter,
+	HttpAdapter,
+	WebSocketAdapter,
 } from "./adapters/types";
+import type {
+	HealthCheckResult,
+	LifecycleHook,
+	RequestContext,
+	ResponseData,
+	ServerConfig,
+	ServerEvent,
+	ServerMetrics,
+	ServerStatus,
+} from "./types/server-types";
 
 const logger = getLogger("server-interface");
 

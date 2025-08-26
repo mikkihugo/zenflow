@@ -24,7 +24,7 @@ import { jest } from '@jest/globals';
 jest.unstable_mockModule('@xenova/transformers', () => ({'
   pipeline: jest
     .fn()
-    .mockImplementation(async (task: string, model: string) => {
+    .mockImplementation(async (_task: string, _model: string) => {
       // Simulate model loading time
       await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -78,8 +78,8 @@ jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({'
   }),
 }));
 
-import { BrainCoordinator } from '../main';
 import type { BrainConfig } from '../main';
+import { BrainCoordinator } from '../main';
 
 describe('Brain Coordinator Integration Tests (Jest)', () => {'
   let brainCoordinator: BrainCoordinator;
@@ -129,7 +129,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   afterEach(async () => {
-    if (brainCoordinator && brainCoordinator.shutdown) {
+    if (brainCoordinator?.shutdown) {
       await brainCoordinator.shutdown();
     }
   });
@@ -209,9 +209,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('Neural Processing', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should make predictions with neural input', async () => {'
       const input = [1.0, 2.0, 3.0, -1.0, 0.5];
@@ -294,9 +293,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('Neural Task Processing', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should process neural tasks with various types', async () => {'
       const task = {
@@ -372,9 +370,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('Prompt Optimization', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should optimize prompts for different tasks', async () => {'
       const request = {
@@ -419,7 +416,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
         requests.map((req) => brainCoordinator.optimizePrompt(req))
       );
 
-      results.forEach((result, index) => {
+      results.forEach((result, _index) => {
         expect(result).toBeDefined();
         expect(result.strategy).toBeDefined();
         expect(result.prompt).toContain('Optimized:');'
@@ -468,9 +465,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('Neural Bridge Integration', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should work with neural bridge for predictions', async () => {'
       // Test neural bridge functionality through brain coordinator
@@ -528,7 +524,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
         tasks.map((task) => brainCoordinator.processNeuralTask(task))
       );
 
-      results.forEach((result, index) => {
+      results.forEach((result, _index) => {
         expect(result).toBeDefined();
         expect(result.result).toBeDefined();
       });
@@ -555,9 +551,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('Error Handling', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should handle invalid inputs gracefully', async () => {'
       // Test with invalid numeric inputs
@@ -586,7 +581,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
       const results = await Promise.allSettled(predictionPromises);
 
       // All predictions should succeed
-      const successfulResults = results.filter((r) => r.status === 'fulfilled');'
+      const _successfulResults = results.filter((r) => r.status === 'fulfilled');'
       expect(successfulResults.length).toBe(20);
 
       // System should still be responsive after load
@@ -632,9 +627,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('System Integration Tests', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should integrate neural processing with orchestration', async () => {'
       // Test that neural processing works with orchestration layer
@@ -693,12 +687,11 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
   });
 
   describe('Complete System Integration', () => {'
-    beforeEach(async () => {
-      await brainCoordinator.initialize();
-    });
+    beforeEach(async () => 
+      await brainCoordinator.initialize(););
 
     it('should integrate all available subsystems', async () => {'
-      const sessionId = 'comprehensive-integration-test';
+      const _sessionId = 'comprehensive-integration-test';
 
       // 1. Neural processing
       const predictionResult = await brainCoordinator.predict([1, 2, 3, 4]);
@@ -773,7 +766,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {'
       expect(brainCoordinator.isInitialized()).toBe(true);
 
       // All results should be valid
-      results.forEach((result, index) => {
+      results.forEach((result, _index) => {
         if (result.status === 'fulfilled') {'
           expect(result.value).toBeDefined();
         }

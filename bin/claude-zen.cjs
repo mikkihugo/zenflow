@@ -5,9 +5,9 @@
  * Simple launcher that bypasses module system issues
  */
 
-const { join } = require('path');
-const { spawn } = require('child_process');
-const { existsSync } = require('fs');
+const { join } = require('node:path');
+const { spawn } = require('node:child_process');
+const { existsSync } = require('node:fs');
 
 const binDir = __dirname;
 const bundleDir = join(binDir, 'bundle');
@@ -38,11 +38,11 @@ Examples:
   }
   
   // Simple inline auth implementation
-  const fs = require('fs');
-  const path = require('path');
-  const https = require('https');
-  const readline = require('readline');
-  const os = require('os');
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const https = require('node:https');
+  const readline = require('node:readline');
+  const os = require('node:os');
   
   const CONFIG_DIR = '.claude-zen';
   const TOKEN_FILE = 'copilot-token.json';
@@ -106,7 +106,6 @@ Examples:
           token = tokenRes.data.access_token;
           break;
         } else if (tokenRes.data.error === 'authorization_pending') {
-          continue;
         } else if (tokenRes.data.error === 'expired_token') {
           throw new Error('Device code expired. Please try again.');
         } else {
@@ -182,7 +181,7 @@ process.env.CLAUDE_ZEN_BUNDLE_MODE = 'true';
 process.env.CLAUDE_ZEN_WASM_PATH = bundleDir;
 
 // Remove type declaration temporarily and run bundle directly
-const fs = require('fs');
+const fs = require('node:fs');
 const pkgPath = join(bundleDir, 'package.json');
 const originalPkg = fs.readFileSync(pkgPath, 'utf8');
 fs.writeFileSync(pkgPath, '{}');

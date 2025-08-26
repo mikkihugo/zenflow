@@ -1,8 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  mockLogger,
-  createMockMemoryConfig,
   createMockResult,
+  mockLogger,
 } from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
@@ -80,14 +79,13 @@ describe('Memory System Integration', () => {'
   });
 
   describe('Multi-Backend Operations', () => {'
-    it('should route operations to appropriate backends', async () => {'
+    it('should route operations to appropriate backends', async () => '
       // Setup routing logic
-      memorySystem.routeToBackend.mockImplementation((key: string) => {
+      memorySystem.routeToBackend.mockImplementation((key: string) => 
         if (key.startsWith('cache:')) return 'cache;
         if (key.startsWith('session:')) return 'session;
         if (key.startsWith('semantic:')) return 'semantic;
-        return 'cache'; // default'
-      });
+        return 'cache'; // default');
 
       memorySystem.store.mockImplementation(async (key: string, value: any) => {
         const backendName = memorySystem.routeToBackend(key);
@@ -97,11 +95,10 @@ describe('Memory System Integration', () => {'
 
       // Test routing to different backends
       await memorySystem.store('cache:user:123', { name: 'John' });'
-      await memorySystem.store('session:auth:456', { token: 'abc123' });'
-      await memorySystem.store('semantic:doc:789', {'
+      await memorySystem.store('session:auth:456', token: 'abc123' );'
+      await memorySystem.store('semantic:doc:789', '
         content: 'test document',
-        embedding: [0.1, 0.2, 0.3],
-      });
+        embedding: [0.1, 0.2, 0.3],);
 
       expect(mockBackends.cache.store).toHaveBeenCalledWith('cache:user:123', {'
         name: 'John',
@@ -113,8 +110,7 @@ describe('Memory System Integration', () => {'
       expect(mockBackends.semantic.store).toHaveBeenCalledWith(
         'semantic:doc:789',
         expect.any(Object)
-      );
-    });
+      ););
 
     it('should handle cross-backend data migration', async () => {'
       // Simulate data migration from cache to session storage
@@ -215,11 +211,10 @@ describe('Memory System Integration', () => {'
 
     it('should support cross-backend search queries', async () => {'
       // Setup test data across backends
-      mockBackends.cache.retrieve.mockImplementation((key: string) => {
+      mockBackends.cache.retrieve.mockImplementation((key: string) => 
         if (key === 'cache:user:123')'
           return Promise.resolve({ name: 'John', type: 'user' });'
-        return Promise.resolve(null);
-      });
+        return Promise.resolve(null););
 
       mockBackends.session.retrieve.mockImplementation((key: string) => {
         if (key === 'session:auth:123')'
@@ -268,7 +263,7 @@ describe('Memory System Integration', () => {'
   });
 
   describe('System Health and Monitoring', () => {'
-    it('should monitor health across all backends', async () => {'
+    it('should monitor health across all backends', async () => '
       mockBackends.cache.health.mockResolvedValue(true);
       mockBackends.session.health.mockResolvedValue(true);
       mockBackends.semantic.health.mockResolvedValue(false); // Unhealthy
@@ -499,17 +494,16 @@ describe('Memory System Integration', () => {'
               return { acquired: false, reason: 'already-locked' };'
             }
             lockManager.locks.set(key, { acquiredAt: Date.now(), timeout });
-            return { acquired: true, lockId: `lock-${Date.now()}` };`
+            return { acquired: true, lockId: `lock-$Date.now()` };`
           }),
         release: vi
           .fn()
-          .mockImplementation(async (key: string, lockId: string) => {
+          .mockImplementation(async (key: string, lockId: string) => 
             if (lockManager.locks.has(key)) {
               lockManager.locks.delete(key);
               return { released: true };
             }
-            return { released: false, reason: 'not-locked' };'
-          }),
+            return { released: false, reason: 'not-locked' };'),
       };
 
       const key = 'concurrent:operation:123';
@@ -530,8 +524,7 @@ describe('Memory System Integration', () => {'
       // Now second operation can acquire lock
       const lock3 = await lockManager.acquire(key);
       expect(lock3.acquired).toBe(true);
-    });
-  });
+    }););
 
   describe('System Configuration and Lifecycle', () => {'
     it('should support dynamic backend registration and unregistration', async () => {'
@@ -576,7 +569,7 @@ describe('Memory System Integration', () => {'
       expect(mockBackends.redis.type).toBe('redis');'
 
       // Unregister backend
-      const unregisterResult = await memorySystem.unregisterBackend('redis');'
+      const _unregisterResult = await memorySystem.unregisterBackend('redis');'
       expect(unregisterResult.success).toBe(true);
       expect(mockBackends.redis).toBeUndefined();
     });

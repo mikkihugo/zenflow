@@ -5,9 +5,9 @@
  * Cross-references AI claims with actual logged tool usage.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { getLogger, safeAsync } from '@claude-zen/foundation';
 
 export interface LogAnalysisResult {
@@ -53,7 +53,7 @@ export class LogBasedDeceptionDetector {
     // Read actual log files
     const activityLog = await this.readLogFile('claude-zen-activity.log');'
     const aiFixingLog = await this.readLogFile('ai-fixing-detailed.log');'
-    const httpLog = await this.readLogFile('http-requests.log');'
+    const _httpLog = await this.readLogFile('http-requests.log');'
 
     // Extract actual tool usage from logs
     result.toolCallsFound = this.extractToolCalls(
@@ -131,34 +131,6 @@ export class LogBasedDeceptionDetector {
     }
 
     return claims;
-  }
-
-  /**
-   * Extract actual tool calls from logs.
-   *
-   * @param logContent
-   */
-  private extractToolCalls(logContent: string): string[] {
-    const toolCalls: string[] = [];
-
-    // Look for tool call patterns in logs - optimized regex patterns
-    const toolPatterns = [
-      /read tool.*file_path.*"([^"]+)"/gi,
-      /write tool.*file_path.*"([^"]+)"/gi,
-      /edit tool.*file_path.*"([^"]+)"/gi,
-      /bash tool.*command.*"([^"]+)"/gi,
-      /grep tool.*pattern.*"([^"]+)"/gi,
-      /multiedit tool.*file_path.*"([^"]+)"/gi,
-    ];
-
-    for (const pattern of toolPatterns) {
-      let match;
-      while ((match = pattern.exec(logContent)) !== null) {
-        toolCalls.push(match[0]);
-      }
-    }
-
-    return toolCalls;
   }
 
   /**
@@ -303,7 +275,7 @@ export class LogBasedDeceptionDetector {
         report += `Claim: "${pattern.claim}"\n`;`
         report += `Evidence:\n`;`
         for (const evidence of pattern.evidence) {
-          report += `  - ${evidence}\n`;`
+          report += `  - $evidence\n`;`
         }
         report += '\n';
       }

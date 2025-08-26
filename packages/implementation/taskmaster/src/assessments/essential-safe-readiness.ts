@@ -8,12 +8,11 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import {
+import type {
   SafeConfigurationManager,
-  SafeConfigurationLevel,
 } from '../config/safe-configuration.js';
 
-const logger = getLogger('EssentialSafeReadiness');'
+const _logger = getLogger('EssentialSafeReadiness');'
 
 // ============================================================================
 // ESSENTIAL SAFe 6.0 COMPONENTS ASSESSMENT
@@ -272,7 +271,6 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
  * Essential SAFe readiness assessment
  */
 export class EssentialSafeReadinessAssessment {
-  private configManager: SafeConfigurationManager;
 
   constructor(configManager: SafeConfigurationManager) {
     this.configManager = configManager;
@@ -356,7 +354,7 @@ export class EssentialSafeReadinessAssessment {
   }
 
   private identifyTaskMasterStrengths(
-    complete: EssentialSafeComponent[]
+    _complete: EssentialSafeComponent[]
   ): string[] {
     return [
       'Universal approval gate orchestration across all SAFe levels',

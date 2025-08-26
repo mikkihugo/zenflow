@@ -1,14 +1,14 @@
-import path from "path"
+import path from "node:path"
+import { z } from "@claude-zen/foundation"
 import { createMessageConnection, StreamMessageReader, StreamMessageWriter } from "vscode-jsonrpc/node"
 import type { Diagnostic as VSCodeDiagnostic } from "vscode-languageserver-types"
 import { App } from "../app/app"
-import { Log } from "../util/log"
-import { LANGUAGE_EXTENSIONS } from "./language"
 import { Bus } from "../bus"
-import { z } from "@claude-zen/foundation"
-import type { LSPServer } from "./server"
 import { NamedError } from "../util/error"
+import { Log } from "../util/log"
 import { withTimeout } from "../util/timeout"
+import { LANGUAGE_EXTENSIONS } from "./language"
+import type { LSPServer } from "./server"
 
 export namespace LSPClient {
   const log = Log.create({ service: "lsp.client" })
@@ -67,12 +67,12 @@ export namespace LSPClient {
     l.info("sending initialize")
     await withTimeout(
       connection.sendRequest("initialize", {
-        rootUri: "file://" + input.root,
+        rootUri: `file://${input.root}`,
         processId: input.server.process.pid,
         workspaceFolders: [
           {
             name: "workspace",
-            uri: "file://" + input.root,
+            uri: `file://${input.root}`,
           },
         ],
         initializationOptions: {
@@ -131,7 +131,7 @@ export namespace LSPClient {
             diagnostics.delete(input.path)
             await connection.sendNotification("textDocument/didClose", {
               textDocument: {
-                uri: `file://` + input.path,`
+                uri: `file://${input.path}`,`
               },
             })
           }
@@ -141,7 +141,7 @@ export namespace LSPClient {
           const languageId = LANGUAGE_EXTENSIONS[extension] ?? "plaintext"
           await connection.sendNotification("textDocument/didOpen", {
             textDocument: {
-              uri: `file://` + input.path,`
+              uri: `file://${input.path}`,`
               languageId,
               version: 0,
               text,

@@ -369,22 +369,18 @@ export class SPARCCDMappingService {
     try {
       // Lazy load @claude-zen/workflows for pipeline orchestration
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 50,
         stepTimeout: 7200000, // 2 hours
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -408,7 +404,7 @@ export class SPARCCDMappingService {
   async mapSPARCToPipelineStages(): Promise<Map<string, CDPipelineStage[]>> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('sparc_cd_mapping');'
+    const _timer = this.performanceTracker.startTimer('sparc_cd_mapping');'
 
     try {
       this.logger.info(
@@ -452,11 +448,9 @@ export class SPARCCDMappingService {
 
       this.logger.info(
         'SPARC to CD pipeline mapping completed with intelligent optimization',
-        {
           templateCount: pipelineTemplates.size,
           mappingStrategy: mappingStrategy.strategy || 'standard',
           optimizationScore: mappingStrategy.confidence || 0.8,
-        }
       );
 
       return pipelineTemplates;
@@ -478,7 +472,7 @@ export class SPARCCDMappingService {
   ): Promise<string> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'sparc_pipeline_execution''
     );
 
@@ -519,7 +513,7 @@ export class SPARCCDMappingService {
       });
 
       // Initialize pipeline execution with workflow coordination
-      const execution = await this.initializePipelineExecution(
+      const _execution = await this.initializePipelineExecution(
         context,
         pipelineType,
         workflowId
@@ -527,11 +521,10 @@ export class SPARCCDMappingService {
 
       this.performanceTracker.endTimer('sparc_pipeline_execution');'
 
-      this.logger.info('CD pipeline started with workflow orchestration', {'
+      this.logger.info('CD pipeline started with workflow orchestration', '
         pipelineId: context.pipelineId,
         workflowId,
-        stageCount: execution.stages.length,
-      });
+        stageCount: execution.stages.length,);
 
       return context.pipelineId;
     } catch (error) {
@@ -577,7 +570,7 @@ export class SPARCCDMappingService {
   ): Promise<CDPipelineStage[]> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('pipeline_optimization');'
+    const _timer = this.performanceTracker.startTimer('pipeline_optimization');'
 
     try {
       // Use brain coordinator for intelligent optimization
@@ -593,12 +586,11 @@ export class SPARCCDMappingService {
 
       this.performanceTracker.endTimer('pipeline_optimization');'
 
-      this.logger.info('Pipeline stages optimized with brain coordination', {'
+      this.logger.info('Pipeline stages optimized with brain coordination', '
         pipelineType,
         executionHistoryCount: executionHistory.length,
         optimizationScore: optimizationResult.score,
-        improvementAreas: optimizationResult.improvements,
-      });
+        improvementAreas: optimizationResult.improvements,);
 
       return (
         optimizationResult.optimizedStages || (await this.getPipelineTemplate(pipelineType))
@@ -629,7 +621,7 @@ export class SPARCCDMappingService {
   // ============================================================================
 
   private async createStandardPipelineFromSPARC(
-    mappingStrategy: any
+    _mappingStrategy: any
   ): Promise<CDPipelineStage[]> {
     const stages: CDPipelineStage[] = [];
 
@@ -878,7 +870,7 @@ export class SPARCCDMappingService {
   private async initializePipelineExecution(
     context: PipelineExecutionContext,
     pipelineType: string,
-    workflowId: string
+    _workflowId: string
   ): Promise<PipelineExecution> {
     const stages = await this.getPipelineTemplate(pipelineType);
 

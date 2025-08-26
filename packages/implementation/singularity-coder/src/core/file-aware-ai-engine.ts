@@ -4,11 +4,11 @@
  * Main engine for processing file-aware AI requests with LLM integration
  */
 
-import {
+import type {
+  AnalyzedContext,
   FileAwareRequest,
   FileAwareResponse,
   FileChange,
-  AnalyzedContext,
 } from '../types/index';
 import { CodebaseAnalyzer } from './codebase-analyzer';
 
@@ -96,13 +96,13 @@ export class FileAwareAIEngine {
     if (context.relevantFiles.length > 0) {
       const targetFile = context.relevantFiles[0];
       if (targetFile) {
-        changes.push({
+        changes.push(`${{
           type: 'modify',
           path: targetFile,
           reasoning:
-            `Suggested modification for file ${targetFile} based on task: ${request.task}. ` +`
+            `Suggested modification for file ${targetFile} based on task: ${request.task}. 
             `This is a fallback response - actual AI processing would analyze the code structure ` +`
-            `and generate specific improvements based on the ${context.complexity} complexity context ` +`
+            `and generate specific improvements based on the ${context.complexity} complexity context `}
             `with ${context.dependencies.length} dependencies and ${context.symbols.length} symbols.`,`
         });
       }
@@ -111,7 +111,7 @@ export class FileAwareAIEngine {
         type: 'create',
         path: 'ANALYSIS.md',
         content:
-          `# Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +`
+          `Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +`
           `## Files Analyzed\n${context.relevantFiles.length} files\n\n` +`
           `## Dependencies\n${context.dependencies.length} dependencies found\n\n` +`
           `## Symbols\n${context.symbols.length} symbols identified\n\n` +`

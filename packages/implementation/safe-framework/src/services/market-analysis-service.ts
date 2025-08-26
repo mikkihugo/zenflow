@@ -12,27 +12,25 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId } from '@claude-zen/foundation';
+import { dateFns, } from '@claude-zen/foundation';
+
 const { addMonths, differenceInMonths, format } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
+  map,
+  maxBy,
+  meanBy,
   orderBy,
   sumBy,
-  meanBy,
-  maxBy,
-  sortBy,
 } from 'lodash-es';
+import type { Logger } from '../types';
 import type {
-  MarketOpportunity,
   CompetitorAnalysis,
+  MarketOpportunity,
   MarketTrend,
-  MarketBarrier,
-  MarketDriver,
   PricingStrategy,
 } from '../types/product-management';
-import type { Logger } from '../types';
 
 /**
  * Market analysis configuration
@@ -113,12 +111,9 @@ export interface OpportunityAssessment {
  * Market Analysis Service for comprehensive market intelligence
  */
 export class MarketAnalysisService {
-  private readonly config: MarketAnalysisConfig;
   private readonly logger: Logger;
-  private marketData = new Map<string, MarketOpportunity>();
   private competitorProfiles = new Map<string, CompetitorAnalysis>();
   private trendDatabase = new Map<string, MarketTrend>();
-  private analysisCache = new Map<string, any>();
 
   constructor(config: MarketAnalysisConfig, logger: Logger) {
     this.config = config;
@@ -224,9 +219,8 @@ export class MarketAnalysisService {
     this.logger.info('Analyzing market trends', { trendCount: trends.length });'
 
     // Store trends
-    trends.forEach((trend) => {
-      this.trendDatabase.set(trend.trend, trend);
-    });
+    trends.forEach((trend) => 
+      this.trendDatabase.set(trend.trend, trend););
 
     // Categorize trends by trajectory
     const emergingTrends = filter(
@@ -263,7 +257,7 @@ export class MarketAnalysisService {
   async assessOpportunity(
     marketData: MarketOpportunity,
     competitivePosition: number,
-    investmentCapacity: number
+    _investmentCapacity: number
   ): Promise<OpportunityAssessment> {
     this.logger.info('Assessing market opportunity');'
 
@@ -408,7 +402,7 @@ export class MarketAnalysisService {
   private calculateHHI(competitors: CompetitorAnalysis[]): number {
     const totalShare = sumBy(competitors, 'marketShare');'
     return sumBy(competitors, (c) =>
-      Math.pow((c.marketShare / totalShare) * 100, 2)
+      ((c.marketShare / totalShare) * 100) ** 2
     );
   }
 
@@ -463,9 +457,9 @@ export class MarketAnalysisService {
    * Parse timeframe string to months
    */
   private parseTimeframe(timeframe: string): number {
-    if (timeframe.includes('year')) return parseInt(timeframe) * 12||24;'
-    if (timeframe.includes('month')) return parseInt(timeframe)||12;'
-    if (timeframe.includes('quarter')) return parseInt(timeframe) * 3||6;'
+    if (timeframe.includes('year')) return parseInt(timeframe, 10) * 12||24;'
+    if (timeframe.includes('month')) return parseInt(timeframe, 10)||12;'
+    if (timeframe.includes('quarter')) return parseInt(timeframe, 10) * 3||6;'
     return 12; // Default 1 year
   }
 
@@ -526,7 +520,7 @@ export class MarketAnalysisService {
    * Estimate time to market
    */
   private estimateTimeToMarket(
-    marketData: MarketOpportunity,
+    _marketData: MarketOpportunity,
     complexity: number
   ): number {
     const baseTime = 12; // 12 months base

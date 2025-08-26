@@ -3,8 +3,7 @@
  * Main server application with comprehensive coordination system
  */
 
-import { createServer } from "http";
-
+import { createServer } from "node:http";
 import { getSafeFramework } from "@claude-zen/enterprise";
 import { getLogger } from "@claude-zen/foundation";
 import { getDatabaseSystem } from "@claude-zen/infrastructure";
@@ -75,7 +74,7 @@ async function startServer() {
 		setupWebSocketHandlers(io, applicationCoordinator);
 
 		// Health check endpoint
-		app.get("/health", (req, res) => {
+		app.get("/health", (_req, res) => {
 			res.json({
 				status: "healthy",
 				timestamp: new Date().toISOString(),

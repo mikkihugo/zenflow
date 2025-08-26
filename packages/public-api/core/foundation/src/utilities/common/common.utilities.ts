@@ -63,48 +63,43 @@
 
 // Re-export zod for type-safe validation
 // Foundation integration utilities
-import type { Spec, CleanedEnv } from 'envalid';
-import { cleanEnv, str as envStr, bool as envBool } from 'envalid';
-import { z, type ZodType } from 'zod';
-
-import { Result, ok, err } from '../../error-handling';
-import { getLogger } from '../../core/logging';
+import type { CleanedEnv, Spec } from "envalid";
+import { cleanEnv, bool as envBool, str as envStr } from "envalid";
+import { type ZodType, z } from "zod";
+import { getLogger } from "../../core/logging";
+import { err, ok, type Result } from "../../error-handling";
 
 /**
  * Common environment configuration schema and validation utilities.
  * Provides type-safe environment variable processing.
  */
 
-export { z } from 'zod';
-export type { ZodSchema, ZodType, ZodError } from 'zod';
-
+// Re-export date-fns for date utilities
+export * as dateFns from "date-fns";
+export {
+	addDays,
+	differenceInDays,
+	format,
+	formatISO,
+	parseISO,
+	subDays,
+} from "date-fns";
+export type { CleanedEnv, Spec } from "envalid";
 // Re-export envalid for environment validation
-export { str, num, bool, port, url, email, json, host } from 'envalid';
-export type { Spec, CleanedEnv } from 'envalid';
+export { bool, email, host, json, num, port, str, url } from "envalid";
 
 // Re-export exit-hook for process lifecycle
-export { default as onExit } from 'exit-hook';
-
+export { default as onExit } from "exit-hook";
 // Re-export lodash for utility functions
-export { default as _ } from 'lodash';
-export { default as lodash } from 'lodash';
+export { default as _, default as lodash } from "lodash";
 
 // Re-export nanoid for ID generation
-export { nanoid, customAlphabet } from 'nanoid';
-
-// Re-export date-fns for date utilities
-export * as dateFns from 'date-fns';
-export {
-  format,
-  addDays,
-  subDays,
-  differenceInDays,
-  parseISO,
-  formatISO,
-} from 'date-fns';
+export { customAlphabet, nanoid } from "nanoid";
+export type { ZodError, ZodSchema, ZodType } from "zod";
+export { z } from "zod";
 
 // Use cockatiel timeout policies: import { timeout, TimeoutStrategy } from '@claude-zen/foundation'
-const logger = getLogger('foundation-utilities');
+const logger = getLogger("foundation-utilities");
 
 /**
  * Validates input data using a Zod schema with type-safe Result pattern.
@@ -131,21 +126,21 @@ const logger = getLogger('foundation-utilities');
  * ```
  */
 export function validateInput<T>(
-  schema: z.ZodSchema<T>,
-  input: unknown
+	schema: z.ZodSchema<T>,
+	input: unknown,
 ): Result<T, Error> {
-  try {
-    const validated = schema.parse(input);
-    return ok(validated);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
-      return err(new Error(message));
-    }
-    return err(
-      error instanceof Error ? error : new Error('Unknown validation error')
-    );
-  }
+	try {
+		const validated = schema.parse(input);
+		return ok(validated);
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join(".")}: ${e.message}`).join(", ")}`;
+			return err(new Error(message));
+		}
+		return err(
+			error instanceof Error ? error : new Error("Unknown validation error"),
+		);
+	}
 }
 
 /**
@@ -169,7 +164,7 @@ export function validateInput<T>(
  * ```
  */
 export function createValidator<T>(schema: z.ZodSchema<T>) {
-  return (input: unknown): Result<T, Error> => validateInput(schema, input);
+	return (input: unknown): Result<T, Error> => validateInput(schema, input);
 }
 
 /**
@@ -195,14 +190,14 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * ```
  */
 export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
-  specs: T
+	specs: T,
 ): CleanedEnv<T> {
-  try {
-    return cleanEnv(process.env, specs);
-  } catch (error) {
-    logger.error('Environment validation failed:', error);
-    throw error;
-  }
+	try {
+		return cleanEnv(process.env, specs);
+	} catch (error) {
+		logger.error("Environment validation failed:", error);
+		throw error;
+	}
 }
 
 /**
@@ -240,77 +235,77 @@ export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
  * ```
  */
 export async function withTimeout<T>(
-  promise: Promise<T>,
-  timeoutMs: number,
-  timeoutMessage?: string
+	promise: Promise<T>,
+	timeoutMs: number,
+	timeoutMessage?: string,
 ): Promise<Result<T, Error>> {
-  let timeoutHandle: NodeJS.Timeout | undefined;
+	let timeoutHandle: NodeJS.Timeout | undefined;
 
-  const cleanup = () => {
-    if (timeoutHandle) {
-      clearTimeout(timeoutHandle);
-      timeoutHandle = undefined;
-    }
-  };
+	const cleanup = () => {
+		if (timeoutHandle) {
+			clearTimeout(timeoutHandle);
+			timeoutHandle = undefined;
+		}
+	};
 
-  const timeoutPromise = new Promise<never>((_resolve, reject) => {
-    timeoutHandle = setTimeout(() => {
-      reject(
-        new Error(timeoutMessage || `Operation timed out after ${timeoutMs}ms`)
-      );
-    }, timeoutMs);
-  });
+	const timeoutPromise = new Promise<never>((_resolve, reject) => {
+		timeoutHandle = setTimeout(() => {
+			reject(
+				new Error(timeoutMessage || `Operation timed out after ${timeoutMs}ms`),
+			);
+		}, timeoutMs);
+	});
 
-  try {
-    const result = await Promise.race([promise, timeoutPromise]);
-    cleanup();
-    return ok(result);
-  } catch (error) {
-    cleanup();
-    const errorInstance =
-      error instanceof Error ? error : new Error(String(error));
-    return err(errorInstance);
-  }
+	try {
+		const result = await Promise.race([promise, timeoutPromise]);
+		cleanup();
+		return ok(result);
+	} catch (error) {
+		cleanup();
+		const errorInstance =
+			error instanceof Error ? error : new Error(String(error));
+		return err(errorInstance);
+	}
 }
 
 export const commonEnvSchema = {
-  NODE_ENV: envStr({
-    choices: ['development', 'production', 'test'],
-    default: 'development',
-  }),
-  LOG_LEVEL: envStr({
-    choices: ['error', 'warn', 'info', 'debug'],
-    default: 'info',
-  }),
-  DEBUG: envBool({ default: false }),
+	NODE_ENV: envStr({
+		choices: ["development", "production", "test"],
+		default: "development",
+	}),
+	LOG_LEVEL: envStr({
+		choices: ["error", "warn", "info", "debug"],
+		default: "info",
+	}),
+	DEBUG: envBool({ default: false }),
 } as const;
 
 /**
  * Get common environment configuration
  */
 export function getCommonEnv() {
-  return createEnvValidator(commonEnvSchema);
+	return createEnvValidator(commonEnvSchema);
 }
 
 /**
  * Utility to check if we're in development mode
  */
 export function isDevelopment(): boolean {
-  return process.env['NODE_ENV'] === 'development';
+	return process.env.NODE_ENV === "development";
 }
 
 /**
  * Utility to check if we're in production mode
  */
 export function isProduction(): boolean {
-  return process.env['NODE_ENV'] === 'production';
+	return process.env.NODE_ENV === "production";
 }
 
 /**
  * Utility to check if we're in test mode
  */
 export function isTest(): boolean {
-  return process.env['NODE_ENV'] === 'test';
+	return process.env.NODE_ENV === "test";
 }
 
 // =============================================================================
@@ -322,16 +317,16 @@ export function isTest(): boolean {
  * Forces developers away from JSON.parse() which crashes on invalid input
  */
 export function parseJSON<T = unknown>(text: string): Result<T, Error> {
-  try {
-    const result = JSON.parse(text) as T;
-    return ok(result);
-  } catch (error) {
-    return err(
-      new Error(
-        `Invalid JSON: ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+	try {
+		const result = JSON.parse(text) as T;
+		return ok(result);
+	} catch (error) {
+		return err(
+			new Error(
+				`Invalid JSON: ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -339,22 +334,22 @@ export function parseJSON<T = unknown>(text: string): Result<T, Error> {
  * Forces developers away from JSON.stringify() which can throw
  */
 export function stringifyJSON(
-  value: unknown,
-  space?: number
+	value: unknown,
+	space?: number,
 ): Result<string, Error> {
-  try {
-    const result = JSON.stringify(value, null, space);
-    if (result === undefined) {
-      return err(new Error('Value cannot be serialized to JSON'));
-    }
-    return ok(result);
-  } catch (error) {
-    return err(
-      new Error(
-        `JSON serialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+	try {
+		const result = JSON.stringify(value, null, space);
+		if (result === undefined) {
+			return err(new Error("Value cannot be serialized to JSON"));
+		}
+		return ok(result);
+	} catch (error) {
+		return err(
+			new Error(
+				`JSON serialization failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -362,15 +357,15 @@ export function stringifyJSON(
  * Combines parsing + validation in one operation
  */
 export function parseJSONWithSchema<T>(
-  text: string,
-  schema: ZodType<T>
+	text: string,
+	schema: ZodType<T>,
 ): Result<T, Error> {
-  const parseResult = parseJSON(text);
-  if (parseResult.isErr()) {
-    return err(parseResult.error);
-  }
+	const parseResult = parseJSON(text);
+	if (parseResult.isErr()) {
+		return err(parseResult.error);
+	}
 
-  return validateInput(schema, parseResult.value);
+	return validateInput(schema, parseResult.value);
 }
 
 // =============================================================================
@@ -382,10 +377,10 @@ export function parseJSONWithSchema<T>(
  * Prevents runtime errors and security vulnerabilities
  */
 export function validate<T>(
-  schema: ZodType<T>,
-  data: unknown
+	schema: ZodType<T>,
+	data: unknown,
 ): Result<T, Error> {
-  return validateInput(schema, data);
+	return validateInput(schema, data);
 }
 
 /**
@@ -393,13 +388,13 @@ export function validate<T>(
  * Standardizes request validation across all endpoints
  */
 export function validateRequest<T>(
-  schema: ZodType<T>,
-  body: unknown
+	schema: ZodType<T>,
+	body: unknown,
 ): Result<T, Error> {
-  if (body === null || body === undefined) {
-    return err(new Error('Request body is required'));
-  }
-  return validate(schema, body);
+	if (body === null || body === undefined) {
+		return err(new Error("Request body is required"));
+	}
+	return validate(schema, body);
 }
 
 /**
@@ -407,10 +402,10 @@ export function validateRequest<T>(
  * Prevents runtime errors from missing or invalid env vars
  */
 export function validateEnv<T>(
-  schema: ZodType<T>,
-  env: Record<string, string | undefined> = process.env
+	schema: ZodType<T>,
+	env: Record<string, string | undefined> = process.env,
 ): Result<T, Error> {
-  return validate(schema, env);
+	return validate(schema, env);
 }
 
 /**
@@ -418,10 +413,10 @@ export function validateEnv<T>(
  * Ensures configuration is valid before use
  */
 export function validateConfig<T>(
-  schema: ZodType<T>,
-  config: unknown
+	schema: ZodType<T>,
+	config: unknown,
 ): Result<T, Error> {
-  return validate(schema, config);
+	return validate(schema, config);
 }
 
 /**
@@ -429,68 +424,68 @@ export function validateConfig<T>(
  * Forces type-safe access to object properties
  */
 export function safeGet<T>(
-  obj: unknown,
-  path: string,
-  schema: ZodType<T>
+	obj: unknown,
+	path: string,
+	schema: ZodType<T>,
 ): Result<T, Error> {
-  try {
-    const keys = path.split('.');
-    let current = obj;
+	try {
+		const keys = path.split(".");
+		let current = obj;
 
-    for (const key of keys) {
-      if (current && typeof current === 'object' && key in current) {
-        current = (current as Record<string, unknown>)[key];
-      } else {
-        return err(new Error(`Property '${path}' not found`));
-      }
-    }
+		for (const key of keys) {
+			if (current && typeof current === "object" && key in current) {
+				current = (current as Record<string, unknown>)[key];
+			} else {
+				return err(new Error(`Property '${path}' not found`));
+			}
+		}
 
-    return validate(schema, current);
-  } catch (error) {
-    return err(
-      new Error(
-        `Failed to access property '${path}': ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+		return validate(schema, current);
+	} catch (error) {
+		return err(
+			new Error(
+				`Failed to access property '${path}': ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 // =============================================================================
 // FILE OPERATIONS FORCING PATTERNS - Safe async file operations
 // =============================================================================
 
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from "node:fs";
+import path from "node:path";
 
 /**
  * Safe file reading with Result pattern
  * Forces async operations and proper error handling
  */
 export async function readFile(
-  filePath: string,
-  encoding:
-    | 'utf8'
-    | 'ascii'
-    | 'utf-8'
-    | 'utf16le'
-    | 'ucs2'
-    | 'ucs-2'
-    | 'base64'
-    | 'base64url'
-    | 'latin1'
-    | 'binary'
-    | 'hex' = 'utf8'
+	filePath: string,
+	encoding:
+		| "utf8"
+		| "ascii"
+		| "utf-8"
+		| "utf16le"
+		| "ucs2"
+		| "ucs-2"
+		| "base64"
+		| "base64url"
+		| "latin1"
+		| "binary"
+		| "hex" = "utf8",
 ): Promise<Result<string, Error>> {
-  try {
-    const content = await fs.readFile(filePath, encoding);
-    return ok(content);
-  } catch (error) {
-    return err(
-      new Error(
-        `Failed to read file '${filePath}': ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+	try {
+		const content = await fs.readFile(filePath, encoding);
+		return ok(content);
+	} catch (error) {
+		return err(
+			new Error(
+				`Failed to read file '${filePath}': ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -498,31 +493,31 @@ export async function readFile(
  * Forces async operations and proper error handling
  */
 export async function writeFile(
-  filePath: string,
-  content: string,
-  encoding:
-    | 'utf8'
-    | 'ascii'
-    | 'utf-8'
-    | 'utf16le'
-    | 'ucs2'
-    | 'ucs-2'
-    | 'base64'
-    | 'base64url'
-    | 'latin1'
-    | 'binary'
-    | 'hex' = 'utf8'
+	filePath: string,
+	content: string,
+	encoding:
+		| "utf8"
+		| "ascii"
+		| "utf-8"
+		| "utf16le"
+		| "ucs2"
+		| "ucs-2"
+		| "base64"
+		| "base64url"
+		| "latin1"
+		| "binary"
+		| "hex" = "utf8",
 ): Promise<Result<void, Error>> {
-  try {
-    await fs.writeFile(filePath, content, encoding);
-    return ok();
-  } catch (error) {
-    return err(
-      new Error(
-        `Failed to write file '${filePath}': ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+	try {
+		await fs.writeFile(filePath, content, encoding);
+		return ok();
+	} catch (error) {
+		return err(
+			new Error(
+				`Failed to write file '${filePath}': ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -530,21 +525,21 @@ export async function writeFile(
  * Prevents errors from missing directories
  */
 export async function directoryExists(
-  dirPath: string
+	dirPath: string,
 ): Promise<Result<boolean, Error>> {
-  try {
-    const stats = await fs.stat(dirPath);
-    return ok(stats.isDirectory());
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      return ok(false);
-    }
-    return err(
-      new Error(
-        `Failed to check directory '${dirPath}': ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+	try {
+		const stats = await fs.stat(dirPath);
+		return ok(stats.isDirectory());
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+			return ok(false);
+		}
+		return err(
+			new Error(
+				`Failed to check directory '${dirPath}': ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -552,21 +547,21 @@ export async function directoryExists(
  * Prevents errors from missing files
  */
 export async function fileExists(
-  filePath: string
+	filePath: string,
 ): Promise<Result<boolean, Error>> {
-  try {
-    const stats = await fs.stat(filePath);
-    return ok(stats.isFile());
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      return ok(false);
-    }
-    return err(
-      new Error(
-        `Failed to check file '${filePath}': ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+	try {
+		const stats = await fs.stat(filePath);
+		return ok(stats.isFile());
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+			return ok(false);
+		}
+		return err(
+			new Error(
+				`Failed to check file '${filePath}': ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -574,23 +569,23 @@ export async function fileExists(
  * Forces secure path joining and validation
  */
 export function safePath(...segments: string[]): Result<string, Error> {
-  try {
-    const joined = path.join(...segments);
-    const normalized = path.normalize(joined);
+	try {
+		const joined = path.join(...segments);
+		const normalized = path.normalize(joined);
 
-    // Prevent directory traversal
-    if (normalized.includes('..')) {
-      return err(new Error('Path traversal detected: path contains ".."'));
-    }
+		// Prevent directory traversal
+		if (normalized.includes("..")) {
+			return err(new Error('Path traversal detected: path contains ".."'));
+		}
 
-    return ok(normalized);
-  } catch (error) {
-    return err(
-      new Error(
-        `Invalid path: ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    );
-  }
+		return ok(normalized);
+	} catch (error) {
+		return err(
+			new Error(
+				`Invalid path: ${error instanceof Error ? error.message : "Unknown error"}`,
+			),
+		);
+	}
 }
 
 /**
@@ -598,25 +593,25 @@ export function safePath(...segments: string[]): Result<string, Error> {
  * Combines file I/O with JSON parsing/stringifying
  */
 export async function readJSONFile<T = unknown>(
-  filePath: string
+	filePath: string,
 ): Promise<Result<T, Error>> {
-  const fileResult = await readFile(filePath);
-  if (fileResult.isErr()) {
-    return err(fileResult.error);
-  }
+	const fileResult = await readFile(filePath);
+	if (fileResult.isErr()) {
+		return err(fileResult.error);
+	}
 
-  return parseJSON<T>(fileResult.value);
+	return parseJSON<T>(fileResult.value);
 }
 
 export async function writeJSONFile(
-  filePath: string,
-  data: unknown,
-  space?: number
+	filePath: string,
+	data: unknown,
+	space?: number,
 ): Promise<Result<void, Error>> {
-  const jsonResult = stringifyJSON(data, space);
-  if (jsonResult.isErr()) {
-    return err(jsonResult.error);
-  }
+	const jsonResult = stringifyJSON(data, space);
+	if (jsonResult.isErr()) {
+		return err(jsonResult.error);
+	}
 
-  return writeFile(filePath, jsonResult.value);
+	return writeFile(filePath, jsonResult.value);
 }

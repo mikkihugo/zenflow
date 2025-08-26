@@ -19,9 +19,9 @@ import type { Logger } from '../../types';
 
 // Re-export types from SPARC-CD mapping service
 export type {
-  PipelineExecution,
-  PipelineArtifact,
   AutomationResult,
+  PipelineArtifact,
+  PipelineExecution,
   RetryPolicy,
   RollbackPolicy,
 } from './sparc-cd-mapping-service';
@@ -532,11 +532,8 @@ export interface DeploymentError {
 
 // Import types from mapping service
 import type {
-  PipelineExecution,
   PipelineArtifact,
-  AutomationResult,
   RetryPolicy,
-  RollbackPolicy,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -554,14 +551,12 @@ export class DeploymentAutomationService {
   private loadBalancer?: any;
   private brainCoordinator?: any;
   private performanceTracker?: any;
-  private aguiService?: any;
   private initialized = false;
 
   // Deployment state
   private environments = new Map<string, DeploymentEnvironment>();
   private activeDeployments = new Map<string, DeploymentExecution>();
   private deploymentHistory = new Map<string, DeploymentExecution[]>();
-  private strategies = new Map<string, any>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -576,23 +571,19 @@ export class DeploymentAutomationService {
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - deployment strategies
       const { LoadBalancer } = await import('@claude-zen/brain');'
-      this.loadBalancer = new LoadBalancer({
+      this.loadBalancer = new LoadBalancer(
         strategy: 'intelligent',
         enableHealthChecks: true,
         healthCheckInterval: 30000,
-        failoverTimeout: 5000,
-      });
+        failoverTimeout: 5000,);
       await this.loadBalancer.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent deployment decisions
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -640,7 +631,7 @@ export class DeploymentAutomationService {
   ): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('deployment_execution');'
+    const _timer = this.performanceTracker.startTimer('deployment_execution');'
 
     try {
       this.logger.info(
@@ -746,16 +737,15 @@ export class DeploymentAutomationService {
 
       if (!readinessAssessment.ready) {
         throw new Error(
-          `Deployment not ready: ${readinessAssessment.reasons.join(', ')}``
+          `Deployment not ready: $readinessAssessment.reasons.join(', ')``
         );
       }
 
       this.performanceTracker.endTimer('deployment_validation');'
 
-      this.logger.info('Deployment readiness validation completed', {'
+      this.logger.info('Deployment readiness validation completed', '
         planId: plan.id,
-        readinessScore: readinessAssessment.score || 1.0,
-      });
+        readinessScore: readinessAssessment.score || 1.0,);
     } catch (error) {
       this.performanceTracker.endTimer('deployment_validation');'
       this.logger.error('Deployment readiness validation failed:', error);'
@@ -766,10 +756,10 @@ export class DeploymentAutomationService {
   /**
    * Execute rollback with intelligent recovery strategy
    */
-  async executeRollback(executionId: string, reason: string): Promise<void> {
+  async executeRollback(executionId: string, _reason: string): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('deployment_rollback');'
+    const _timer = this.performanceTracker.startTimer('deployment_rollback');'
 
     try {
       const execution = this.activeDeployments.get(executionId);
@@ -955,7 +945,7 @@ export class DeploymentAutomationService {
     );
 
     const plan: DeploymentPlan = {
-      id: `deploy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
+      id: `deploy-$Date.now()-$Math.random().toString(36).substr(2, 9)`,`
       pipelineId,
       strategy,
       environment,
@@ -1045,7 +1035,7 @@ export class DeploymentAutomationService {
   private createRollbackPlan(
     strategy: DeploymentStrategy,
     environment: DeploymentEnvironment
-  ): RollbackPlan {
+  ): RollbackPlan 
     return {
       enabled: environment.rollbackEnabled,
       automatic: strategy === DeploymentStrategy.BLUE_GREEN,
@@ -1054,11 +1044,10 @@ export class DeploymentAutomationService {
       timeout: 600000, // 10 minutes
       healthCheckRequired: true,
     };
-  }
 
   private createValidationPlan(
     environment: DeploymentEnvironment
-  ): ValidationPlan {
+  ): ValidationPlan 
     return {
       healthChecks: [],
       performanceTests: [],
@@ -1071,17 +1060,15 @@ export class DeploymentAutomationService {
         monitoringPeriod: 3600000, // 1 hour
       },
     };
-  }
 
   private createNotificationPlan(
     environment: DeploymentEnvironment
-  ): NotificationPlan {
+  ): NotificationPlan 
     return {
       channels: [],
       triggers: [],
       templates: [],
     };
-  }
 
   private executeDeploymentPlan(plan: DeploymentPlan): DeploymentExecution {
     const execution: DeploymentExecution = {
@@ -1126,75 +1113,65 @@ export class DeploymentAutomationService {
     return execution;
   }
 
-  private monitorDeploymentExecution(execution: DeploymentExecution): void {
+  private monitorDeploymentExecution(execution: DeploymentExecution): void 
     // Monitor deployment progress with load balancer integration
     this.logger.info('Monitoring deployment execution', {'
       planId: execution.planId,
     });
-  }
 
   private performPostDeploymentValidation(
     execution: DeploymentExecution,
     plan: DeploymentPlan
-  ): void {
+  ): void 
     // Perform comprehensive post-deployment validation
     this.logger.info('Performing post-deployment validation', {'
       planId: plan.id,
     });
-  }
 
-  private validateArtifacts(artifacts: DeploymentArtifact[]): void {
+  private validateArtifacts(artifacts: DeploymentArtifact[]): void 
     // Validate deployment artifacts
     this.logger.debug('Validating deployment artifacts', {'
       count: artifacts.length,
     });
-  }
 
-  private validateEnvironmentHealth(environment: DeploymentEnvironment): void {
+  private validateEnvironmentHealth(environment: DeploymentEnvironment): void 
     // Validate environment health
     this.logger.debug('Validating environment health', {'
       environment: environment.name,
     });
-  }
 
   private validateInfrastructureCapacity(
     environment: DeploymentEnvironment,
     artifacts: DeploymentArtifact[]
-  ): void {
+  ): void 
     // Validate infrastructure capacity
     this.logger.debug('Validating infrastructure capacity');'
-  }
 
   private validateSecurityCompliance(
     environment: DeploymentEnvironment,
     artifacts: DeploymentArtifact[]
-  ): void {
+  ): void 
     // Validate security compliance
     this.logger.debug('Validating security compliance');'
-  }
 
   private executeRollbackPhases(
     execution: DeploymentExecution,
     strategy: any
-  ): void {
+  ): void 
     // Execute rollback phases
     this.logger.info('Executing rollback phases', { planId: execution.planId });'
-  }
 
-  private verifyRollbackSuccess(execution: DeploymentExecution): void {
+  private verifyRollbackSuccess(execution: DeploymentExecution): void 
     // Verify rollback success
     this.logger.info('Verifying rollback success', {'
       planId: execution.planId,
     });
-  }
 
-  private calculateRiskTolerance(environment: DeploymentEnvironment): string {
+  private calculateRiskTolerance(environment: DeploymentEnvironment): string 
     return environment.type === 'production' ? 'low' : 'medium';
-  }
 
-  private getDeploymentHistory(environment: string): DeploymentExecution[] {
+  private getDeploymentHistory(environment: string): DeploymentExecution[] 
     return this.deploymentHistory.get(environment) || [];
-  }
 
   private updateDeploymentHistory(
     environment: string,

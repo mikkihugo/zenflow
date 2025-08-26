@@ -21,13 +21,12 @@ import compression from "compression";
 import cors from "cors";
 import express, { type Express, type Request, type Response } from "express";
 import rateLimit from "express-rate-limit";
+import statusMonitor from "express-status-monitor";
 import helmet from "helmet";
 import morgan from "morgan";
-import statusMonitor from "express-status-monitor";
-
+import { createTaskMasterRoutes } from "../api/taskmaster";
 import { ControlApiRoutes } from "./control-api-routes";
 import { SystemCapabilityRoutes } from "./system-capability-routes";
-import { createTaskMasterRoutes } from "../api/taskmaster";
 
 const { getVersion } = (
 	global as { claudeZenFoundation?: { getVersion(): string } }
@@ -221,7 +220,7 @@ export class ApiServer {
 	/**
 	 * Handle Kubernetes liveness probe
 	 */
-	private handleLivenessProbe(req: Request, res: Response): void {
+	private handleLivenessProbe(_req: Request, res: Response): void {
 		res.status(200).json({
 			status: "ok",
 			timestamp: new Date().toISOString(),
@@ -233,7 +232,7 @@ export class ApiServer {
 	 * Handle Kubernetes readiness probe
 	 */
 	private async handleReadinessProbe(
-		req: Request,
+		_req: Request,
 		res: Response,
 	): Promise<void> {
 		try {
@@ -289,7 +288,7 @@ export class ApiServer {
 	/**
 	 * Handle Kubernetes startup probe
 	 */
-	private handleStartupProbe(req: Request, res: Response): void {
+	private handleStartupProbe(_req: Request, res: Response): void {
 		const started = process.uptime() > 5; // 5 seconds startup time
 		res.status(started ? 200 : 503).json({
 			status: started ? "started" : "starting",
@@ -309,7 +308,7 @@ export class ApiServer {
 	 * Handle legacy health check with comprehensive system verification
 	 */
 	private async handleLegacyHealthCheck(
-		req: Request,
+		_req: Request,
 		res: Response,
 	): Promise<void> {
 		const health = await this.buildHealthResponse();
@@ -389,7 +388,7 @@ export class ApiServer {
 	 */
 	private setupSystemRoutes(): void {
 		// System status endpoint
-		this.app.get(STATUS_ENDPOINT, (req: Request, res: Response) => {
+		this.app.get(STATUS_ENDPOINT, (_req: Request, res: Response) => {
 			res.json({
 				status: "operational",
 				server: "Claude Code Zen API",
@@ -401,7 +400,7 @@ export class ApiServer {
 		});
 
 		// API info endpoint
-		this.app.get("/api/info", (req: Request, res: Response) => {
+		this.app.get("/api/info", (_req: Request, res: Response) => {
 			res.json({
 				name: "Claude Code Zen",
 				version: getVersion(),
@@ -675,7 +674,7 @@ export class ApiServer {
 				);
 				const { handler } = await import(svelteHandlerPath);
 				// Use SvelteKit handler for non-API routes
-				// @ts-ignore - handler signature from SvelteKit
+				// @ts-expect-error - handler signature from SvelteKit
 				handler(req, res);
 			} catch (error) {
 				this.logger.error("Error loading Svelte handler: ", error as Error);

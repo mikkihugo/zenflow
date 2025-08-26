@@ -6,10 +6,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { Logger } from '@claude-zen/foundation';
-
+import type { ProcessorConfig, } from '../types.js';
 import type { BaseProcessor } from './index.js';
-import type { TelemetryData, ProcessorConfig } from '../types.js';
 
 /**
  * Filter rule interface
@@ -25,18 +23,6 @@ interface FilterRule {
  * Filter processor implementation
  */
 export class FilterProcessor implements BaseProcessor {
-  private config: ProcessorConfig;
-  private logger: Logger;
-  private filterRules: FilterRule[] = [];
-  private processedCount = 0;
-  private filteredCount = 0;
-  private lastProcessedTime = 0;
-  private lastError: string|null = null;
-
-  // Configuration
-  private readonly includeRules: FilterRule[];
-  private readonly excludeRules: FilterRule[];
-  private readonly filterMode:'include' | 'exclude' | 'both';
 
   constructor(config: ProcessorConfig) {
     this.config = config;
@@ -100,7 +86,7 @@ export class FilterProcessor implements BaseProcessor {
 
       if (filteredItems.length < dataItems.length) {
         this.logger.debug(
-          `Filtered ${dataItems.length - filteredItems.length} out of ${dataItems.length} items``
+          `Filtered $dataItems.length - filteredItems.lengthout of $dataItems.lengthitems``
         );
       }
 
@@ -121,7 +107,7 @@ export class FilterProcessor implements BaseProcessor {
       totalFiltered: this.filteredCount,
       filterRate:
         this.processedCount > 0
-          ? ((this.filteredCount / this.processedCount) * 100).toFixed(1) + '%''
+          ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`'
           : '0%',
     });
   }
@@ -150,7 +136,7 @@ export class FilterProcessor implements BaseProcessor {
     const passed = this.processedCount - this.filteredCount;
     const filterRate =
       this.processedCount > 0
-        ? ((this.filteredCount / this.processedCount) * 100).toFixed(1) +'%''
+        ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`'
         : '0%;
 
     return {
@@ -176,7 +162,7 @@ export class FilterProcessor implements BaseProcessor {
         // Must not match any exclude rule
         return !this.excludeRules.some((rule) => this.matchesRule(data, rule));
 
-      case 'both':'
+      case 'both': {'
         // Must match include rules AND not match exclude rules
         const passesInclude =
           this.includeRules.length === 0||this.includeRules.some((rule) => this.matchesRule(data, rule));
@@ -184,6 +170,7 @@ export class FilterProcessor implements BaseProcessor {
           this.matchesRule(data, rule)
         );
         return passesInclude && passesExclude;
+      }
 
       default:
         return true;
@@ -197,7 +184,7 @@ export class FilterProcessor implements BaseProcessor {
     const fieldValue = this.getFieldValue(data, rule.field);
 
     if (fieldValue === undefined) {
-      return rule.operator ==='exists' ? false : true;'
+      return rule.operator !=='exists';'
     }
 
     switch (rule.operator) {

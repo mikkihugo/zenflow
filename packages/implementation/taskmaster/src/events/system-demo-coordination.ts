@@ -44,19 +44,19 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
+import { getDatabaseSystem, } from '@claude-zen/infrastructure';
 import { getBrainSystem } from '@claude-zen/intelligence';
-import { ApprovalGateManager } from '../core/approval-gate-manager.js';
-import { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 
 import type {
   ApprovalGateId,
-  TaskId,
   ApprovalGateRequirement,
+  TaskId,
 } from '../types/index.js';
 
-const logger = getLogger('SystemDemoCoordination');'
+const _logger = getLogger('SystemDemoCoordination');'
 
 // ============================================================================
 // SYSTEM DEMO TYPES AND INTERFACES
@@ -436,21 +436,7 @@ export interface SystemDemoOutcomes {
  */
 export class SystemDemoCoordination {
   private readonly logger = getLogger('SystemDemoCoordination');'
-
-  // Core services
-  private approvalGateManager: ApprovalGateManager;
-  private safeIntegration: SafeFrameworkIntegration;
   private taskApprovalSystem: TaskApprovalSystem;
-
-  // Infrastructure
-  private database: any;
-  private eventSystem: any;
-  private brainSystem: any;
-
-  // State management
-  private activeDemos = new Map<string, SystemDemoConfig>();
-  private feedbackCollectors = new Map<string, StakeholderFeedback[]>();
-  private demoAssessments = new Map<string, DemoAssessment>();
 
   constructor(
     approvalGateManager: ApprovalGateManager,
@@ -508,7 +494,7 @@ export class SystemDemoCoordination {
     coordinationTraceabilityId: string;
   }> {
     const demoId = config.id;
-    const coordinationTraceabilityId = `system-demo-${demoId}-${Date.now()}`;`
+    const _coordinationTraceabilityId = `system-demo-${demoId}-${Date.now()}`;`
 
     this.logger.info('Scheduling System Demo', {'
       demoId,
@@ -567,7 +553,7 @@ export class SystemDemoCoordination {
   }> {
     const config = this.activeDemos.get(demoId);
     if (!config) {
-      throw new Error(`System Demo ${demoId} not found`);`
+      throw new Error(`System Demo $demoIdnot found`);`
     }
 
     this.logger.info('Validating Demo Readiness', {'
@@ -617,22 +603,16 @@ export class SystemDemoCoordination {
     demoId: string,
     executionMode: 'live|recorded|hybrid''
   ): Promise<{
-    execution: {
       started: boolean;
       currentStep: string;
       feedbackCapture: boolean;
-      technicalStatus: string;
-    };
-    realTimeFeedback: {
+      technicalStatus: string;;
       enabled: boolean;
       feedbackCount: number;
-      criticalIssues: number;
-    };
-    approvalWorkflows: {
+      criticalIssues: number;;
       active: number;
       pending: number;
-      escalated: number;
-    };
+      escalated: number;;
   }> {
     const config = this.activeDemos.get(demoId);
     if (!config) {
@@ -690,10 +670,10 @@ export class SystemDemoCoordination {
   }> {
     const config = this.activeDemos.get(demoId);
     if (!config) {
-      throw new Error(`System Demo ${demoId} not found`);`
+      throw new Error(`System Demo $demoIdnot found`);`
     }
 
-    const feedbackId = `feedback-${demoId}-${Date.now()}`;`
+    const _feedbackId = `feedback-${demoId}-${Date.now()}`;`
 
     const fullFeedback: StakeholderFeedback = {
       id: feedbackId,
@@ -771,7 +751,7 @@ export class SystemDemoCoordination {
   }> {
     const config = this.activeDemos.get(demoId);
     if (!config) {
-      throw new Error(`System Demo ${demoId} not found`);`
+      throw new Error(`System Demo $demoIdnot found`);`
     }
 
     this.logger.info('Completing Demo and Assessment', {'
@@ -831,30 +811,24 @@ export class SystemDemoCoordination {
    * Get demo coordination status and progress
    */
   async getDemoCoordinationStatus(demoId: string): Promise<{
-    demoStatus: {
       phase:|'preparation|execution|feedback|assessment|completed;
       readiness: number; // percentage
       issues: string[];
-      nextSteps: string[];
-    };
-    feedbackSummary: {
+      nextSteps: string[];;
       totalFeedback: number;
       criticalIssues: number;
       approvalsNeeded: number;
-      responsesPending: number;
-    };
+      responsesPending: number;;
     teamProgress: Array<{
       teamId: string;
       preparationStatus: string;
       featuresReady: number;
       blockers: string[];
     }>;
-    stakeholderEngagement: {
       confirmed: number;
       pending: number;
       feedbackProvided: number;
-      approvalActions: number;
-    };
+      approvalActions: number;;
   }> {
     const config = this.activeDemos.get(demoId);
     if (!config) {
@@ -1058,7 +1032,7 @@ export class SystemDemoCoordination {
     traceabilityId: string
   ): Promise<ApprovalGateId> {
     const gateId =
-      `demo-readiness-${team.teamId}-${config.id}` as ApprovalGateId;`
+      `demo-readiness-$team.teamId-$config.id` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
@@ -1069,8 +1043,8 @@ export class SystemDemoCoordination {
         team.presenters.technical,
         // Find Product Owner and Scrum Master from team
         // Would typically be resolved from team membership
-        'product-owner-' + team.teamId,
-        'scrum-master-' + team.teamId,
+        `product-owner-${team.teamId}`,
+        `scrum-master-${team.teamId}`,
       ].filter(Boolean),
       minimumApprovals: 3, // Primary presenters + one team lead
       isRequired: true,
@@ -1091,7 +1065,7 @@ export class SystemDemoCoordination {
       },
     };
 
-    const result = await this.approvalGateManager.createApprovalGate(
+    const _result = await this.approvalGateManager.createApprovalGate(
       requirement,
       `demo-prep-${team.teamId}-${config.id}` as TaskId`
     );
@@ -1119,7 +1093,7 @@ export class SystemDemoCoordination {
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `Feature Demo Approval: ${feature.featureName}`,`
+      name: `Feature Demo Approval: $feature.featureName`,`
       description: `Approve demonstration of ${feature.featureName} (Business Value: ${feature.businessValue}/10)`,`
       requiredApprovers: [
         // Business stakeholders for high-value features
@@ -1155,7 +1129,7 @@ export class SystemDemoCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `feature-demo-${feature.featureId}-${config.id}` as TaskId`
+      `feature-demo-$feature.featureId-$config.id` as TaskId`
     );
 
     if (!result.success) {
@@ -1182,7 +1156,7 @@ export class SystemDemoCoordination {
       description: `Approve overall coordination and readiness for ${config.artName} System Demo`,`
       requiredApprovers: [
         // ART leadership
-        'rte-' + config.artName,
+        `rte-${config.artName}`,
         // Product management
         ...config.attendees.productManagement,
         // Business ownership
@@ -1233,7 +1207,7 @@ export class SystemDemoCoordination {
     feedback: StakeholderFeedback,
     config: SystemDemoConfig
   ): Promise<ApprovalGateId> {
-    const gateId = `feedback-approval-${feedback.id}` as ApprovalGateId;`
+    const _gateId = `feedback-approval-${feedback.id}` as ApprovalGateId;`
 
     // Determine approvers based on feedback impact and priority
     let approvers: string[] = [];
@@ -1250,7 +1224,7 @@ export class SystemDemoCoordination {
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `Stakeholder Feedback Response: ${feedback.feedback.type.toUpperCase()}`,`
+      name: `Stakeholder Feedback Response: $feedback.feedback.type.toUpperCase()`,`
       description: `Respond to ${feedback.feedback.priority} priority ${feedback.feedback.type} feedback from ${feedback.role}`,`
       requiredApprovers: approvers,
       minimumApprovals:
@@ -1282,7 +1256,7 @@ export class SystemDemoCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `feedback-response-${feedback.id}` as TaskId`
+      `feedback-response-$feedback.id` as TaskId`
     );
 
     if (!result.success) {

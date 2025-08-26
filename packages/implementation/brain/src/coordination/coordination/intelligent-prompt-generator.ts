@@ -17,15 +17,12 @@
  * @since 2024-01-01
  */
 
-import { getLogger } from '@claude-zen/foundation';
 
 import type { BehavioralIntelligence } from '../../behavioral-intelligence';
 
-import {
+import type {
   CodingPrinciplesResearcher,
-  type ProgrammingLanguage,
-  type TaskDomain,
-  type DevelopmentRole,
+  ProgrammingLanguage,
 } from './coding-principles-researcher';
 
 /**
@@ -102,11 +99,7 @@ export interface IntelligentPrompt {
  * Generates context-aware, high-quality development prompts with
  * integrated coding standards and best practices.
  */
-export class IntelligentPromptGenerator {
-  private behavioralIntelligence?: BehavioralIntelligence;
-  private codingPrinciplesResearcher?: CodingPrinciplesResearcher;
-  private defaultConfig: Required<CodingStandardsConfig>;
-  private logger = getLogger('IntelligentPromptGenerator');'
+export class IntelligentPromptGenerator {'
 
   constructor(
     behavioralIntelligence?: BehavioralIntelligence,
@@ -289,25 +282,25 @@ export class IntelligentPromptGenerator {
       { performanceRecommendations, securityRecommendations, testingRecommendations }
     );
 
-    let standards = ``
-## 🎯 Coding Standards & Best Practices (${language.toUpperCase()})
-${enhancedStandards.contextualIntro}
+    let _standards = ``
+## 🎯 Coding Standards & Best Practices ($language.toUpperCase())
+$enhancedStandards.contextualIntro
 
 ### 📁 File Organization & Naming:
 - **Descriptive filenames**: Use clear, descriptive names that indicate file purpose
-  - ✅ user-authentication-service.${language === 'typescript' ? 'ts' : 'js'}'
-  - ✅ product-catalog-manager.${language === 'typescript' ? 'ts' : 'js'}'
-  - ✅ order-validation-utils.${language === 'typescript' ? 'ts' : 'js'}'
-  - ❌ helper.${language === 'typescript' ? 'ts' : 'js'}, utils.${language === 'typescript' ? 'ts' : 'js'}, data.${language === 'typescript' ? 'ts' : 'js'}'
+  - ✅ user-authentication-service.$language === 'typescript' ? 'ts' : 'js''
+  - ✅ product-catalog-manager.$language === 'typescript' ? 'ts' : 'js''
+  - ✅ order-validation-utils.$language === 'typescript' ? 'ts' : 'js''
+  - ❌ helper.$language === 'typescript' ? 'ts' : 'js', utils.$language === 'typescript' ? 'ts' : 'js', data.$language === 'typescript' ? 'ts' : 'js''
 - **Single responsibility**: Each file should have ONE clear purpose
-- **Naming convention**: Use ${fileNaming} for files
+- **Naming convention**: Use $fileNamingfor files
 - **Max functions per file**: 5-7 focused functions maximum
 
 ### ⚡ Function Quality Guidelines:
-- **Single responsibility**: Each function does ONE thing well
-- **Max ${maxLinesPerFunction} lines**: Keep functions focused and readable
-- **Max ${maxParameters} parameters**: Use objects for complex parameter sets
-- **Cyclomatic complexity**: Keep below ${maxComplexity}
+- **Single responsibility**: Each function _does ONE thing well
+- **Max $maxLinesPerFunctionlines**: Keep functions focused and readable
+- **Max $maxParametersparameters**: Use objects for complex parameter sets
+- **Cyclomatic complexity**: Keep below $maxComplexity
 - **Pure functions**: Prefer pure functions when possible
 - **Clear naming**: Function names should describe what they do`;`
 
@@ -324,7 +317,7 @@ ${enhancedStandards.contextualIntro}
     }
 
     if (config.includePerformance) {
-      standards += ``
+      _standards += ``
 
 ### ⚡ Performance Guidelines:
 - **Big O awareness**: Consider algorithmic complexity
@@ -471,21 +464,21 @@ ${enhancedStandards.contextualIntro}
     phaseGuidelines: string
   ): string {
     return ``
-# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt
+# 🚀 $phase.charAt(0).toUpperCase() + phase.slice(1)Phase Development Prompt
 
 ## 📋 Project Context:
-- **Project**: ${context.name}
-- **Domain**: ${context.domain}
-- **Requirements**: ${context.requirements?.length || 0} defined
-- **Tech Stack**: ${context.techStack?.join(', ') || 'To be determined'}'
+- **Project**: $context.name
+- **Domain**: $context.domain
+- **Requirements**: $context.requirements?.length || 0defined
+- **Tech Stack**: $context.techStack?.join(', ') || 'To be determined''
 
-${codingStandards}
+$codingStandards
 
-${phaseGuidelines}
+$phaseGuidelines
 
 ## 🎯 Implementation Focus:
 1. **Follow naming conventions** - Use descriptive, purpose-driven filenames
-2. **Maintain function complexity** - Keep functions simple and focused
+2. **Maintain function _complexity** - Keep functions simple and focused
 3. **Ensure type safety** - Use explicit typing throughout
 4. **Write clean code** - Self-documenting, maintainable code
 5. **Plan for testing** - Design with testability in mind
@@ -493,7 +486,7 @@ ${phaseGuidelines}
 ## 🔍 Quality Checklist:
 - [ ] Descriptive filenames that indicate purpose
 - [ ] Single responsibility per file/function
-- [ ] Appropriate complexity levels
+- [ ] Appropriate _complexity levels
 - [ ] Comprehensive error handling
 - [ ] Clear documentation and comments
 - [ ] Type safety (for TypeScript)
@@ -566,15 +559,15 @@ Remember: Write code that tells a story - it should be self-documenting and easy
       await dspyBridge.initialize();
 
       // Create coordination task with DSPy examples for prompt generation
-      const promptTask = {
+      const _promptTask = {
         id: `prompt-gen-${phase}-${Date.now()}`,`
         type: 'generation' as const,
         input: `Generate a high-quality development prompt for ${phase} phase.`
 
 Project: "${context.name}" in ${context.domain} domain
-Language: ${config.language}
-Requirements: ${context.requirements?.join(', ') || 'To be determined'}'
-Tech Stack: ${context.techStack?.join(', ') || 'To be determined'}'
+Language: $config.language
+Requirements: $context.requirements?.join(', ') || 'To be determined''
+Tech Stack: $context.techStack?.join(', ') || 'To be determined''
 
 The prompt should include:
 1. Project context section
@@ -584,7 +577,6 @@ The prompt should include:
 5. Quality metrics (complexity < ${config.maxComplexity}, length < ${config.maxLinesPerFunction} lines)
 
 Generate a complete, ready-to-use development prompt.`,`
-        context: {
           phase,
           projectName: context.name,
           domain: context.domain,
@@ -595,8 +587,7 @@ Generate a complete, ready-to-use development prompt.`,`
           maxLinesPerFunction: config.maxLinesPerFunction,
           includePerformance: config.includePerformance,
           includeSecurity: config.includeSecurity,
-          fewShotExamples: this.generateFewShotPromptExamples(phase, config),
-        },
+          fewShotExamples: this.generateFewShotPromptExamples(phase, config),,
         priority:'high' as const,
       };
 
@@ -623,10 +614,9 @@ Generate a complete, ready-to-use development prompt.`,`
       }
 
       return null;
-    } catch (error) {
+    } catch (error) 
       this.logger.warn('DSPy prompt generation failed:', error);'
       return null;
-    }
   }
 
   /**
@@ -640,7 +630,7 @@ Generate a complete, ready-to-use development prompt.`,`
         return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`;`
       case 'architecture':'
         return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;`
-      case 'refinement':'
+      case 'refinement': {'
         return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage`;`
       case 'completion':'
         return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`;`
@@ -658,11 +648,11 @@ Generate a complete, ready-to-use development prompt.`,`
   ): Array<{ input: string; output: string }> {
     return [
       {
-        input: `Generate ${phase} phase prompt for e-commerce API project in rest-api domain using ${config.language}`,`
+        input: `Generate $phasephase prompt for e-commerce API project in rest-api domain using $config.language`,`
         output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,`
       },
       {
-        input: `Generate ${phase} phase prompt for mobile app project in mobile domain using ${config.language}`,`
+        input: `Generate $phasephase prompt for mobile app project in mobile domain using $config.language`,`
         output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,`
       },
     ];
@@ -694,23 +684,23 @@ Generate a complete, ready-to-use development prompt.`,`
       let contextualInsights = '';
 
       if (context.currentPhase) {
-        contextualInsights += `- Project phase: ${context.currentPhase} - applying phase-specific patterns\n`;`
+        contextualInsights += `- Project phase: $context.currentPhase- applying phase-specific patterns\n`;`
       }
 
       if (context.domainSpecific) {
-        contextualInsights += `- Domain: ${context.domainSpecific} - leveraging domain expertise\n`;`
+        contextualInsights += `- Domain: $context.domainSpecific- leveraging domain expertise\n`;`
       }
 
       if (complexityLevel > 0.7) {
-        contextualInsights += `- High complexity detected (${(complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;`
+        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;`
       }
 
       // Include agent performance insights relevant to project type
       if (enhancedStats.averagePerformance > 0.8) {
-        contextualInsights += `- High-performing agent patterns available (${(enhancedStats.averagePerformance * 100).toFixed(1)}%)\n`;`
+        contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n`;`
       }
 
-      return `${content}`
+      return `$content`
 
 ## 🧠 AI-Enhanced Recommendations:
 Based on ${agentProfiles.size} agent profiles and project context analysis:
@@ -739,7 +729,8 @@ ${contextualInsights}
 
     // Add additional tags based on context properties
     if (context.requirements && context.requirements.length > 0) {
-      tags.push(`${context.requirements.length}-requirements`);`
+      tags.push(`$context.requirements.length-requirements`);`
+      }
     }
 
     if (tags.length === 0) {
@@ -822,32 +813,27 @@ ${contextualInsights}
 
     if (
       domain?.includes('api') || domain?.includes('rest') || domain?.includes('service')'
-    ) {
+    ) 
       return 'rest-api;
-    }
     if (
       domain?.includes('web') || domain?.includes('frontend') || domain?.includes('react') || domain?.includes('vue')'
-    ) {
+    ) 
       return 'web-app;
-    }
     if (
       domain?.includes('mobile') || domain?.includes('ios') || domain?.includes('android')'
-    ) {
+    ) 
       return 'mobile-app;
-    }
     if (domain?.includes('microservice')) {'
       return 'microservices;
     }
     if (
       domain?.includes('data') || domain?.includes('pipeline') || domain?.includes('etl')'
-    ) {
+    ) 
       return 'data-pipeline;
-    }
     if (
       domain?.includes('ml') || domain?.includes('machine-learning') || domain?.includes('ai')'
-    ) {
+    ) 
       return 'ml-model;
-    }
     if (domain?.includes('game')) {'
       return 'game-dev;
     }
@@ -896,20 +882,20 @@ ${contextualInsights}
 ## META-LEARNING ENABLED ✨
 
 ## 📋 Project Context:
-- **Project**: ${context.name}
-- **Domain**: ${context.domain}
-- **Requirements**: ${context.requirements?.length || 0} defined
-- **Tech Stack**: ${context.techStack?.join(', ') || 'To be determined'}'
-- **Research Confidence**: ${(principles.researchMetadata.confidence * 100).toFixed(1)}%
+- **Project**: $context.name
+- **Domain**: $context.domain
+- **Requirements**: $context.requirements?.length || 0defined
+- **Tech Stack**: $context.techStack?.join(', ') || 'To be determined''
+- **Research Confidence**: $(principles.researchMetadata.confidence * 100).toFixed(1)%
 
 ## 🎯 AI-Researched Standards:
-${principles.template}
+$principles.template
 
 ## 🔍 Quality Metrics (Research-Based):
-- **Complexity**: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}
-- **Coverage**: ${principles.qualityMetrics.coverage.metric} > ${principles.qualityMetrics.coverage.threshold}%
-- **Maintainability**: ${principles.qualityMetrics.maintainability.metric} > ${principles.qualityMetrics.maintainability.threshold}
-- **Performance**: ${principles.qualityMetrics.performance.metric} < ${principles.qualityMetrics.performance.threshold}ms
+- **Complexity**: $principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
+- **Coverage**: $principles.qualityMetrics.coverage.metric> $principles.qualityMetrics.coverage.threshold%
+- **Maintainability**: $principles.qualityMetrics.maintainability.metric> $principles.qualityMetrics.maintainability.threshold
+- **Performance**: $principles.qualityMetrics.performance.metric< ${principles.qualityMetrics.performance.threshold}ms
 
 ## 🧠 Meta-Learning Instructions:
 1. **Track your execution**: Note what works well and what doesn't'
@@ -920,7 +906,7 @@ ${principles.template}
 ## 📝 CRITICAL INSTRUCTIONS:
 1. **Follow research-based guidelines** above - these improve over time
 2. **Use descriptive, purpose-driven filenames** 
-3. **Maintain function complexity** within researched thresholds
+3. **Maintain function _complexity** within researched thresholds
 4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications'
 5. **Plan for validation** - another AI may review your work for accuracy
 
@@ -935,7 +921,7 @@ Remember: This prompt learns from your execution. The better you follow and prov
 
     if (principles.qualityMetrics.complexity) {
       metrics.push(
-        `Complexity: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}``
+        `Complexity: $principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}``
       );
     }
     if (principles.qualityMetrics.coverage) {
@@ -1030,18 +1016,18 @@ Remember: This prompt learns from your execution. The better you follow and prov
 
 ## Original Task Prompt:
 \`\`\``
-${originalPrompt}
+$originalPrompt
 \`\`\``
 
 ## Agent's Implementation:'
 \`\`\``
-${agentResponse}
+$agentResponse
 \`\`\``
 
 ## Project Context:
-- **Project**: ${context.name}
-- **Domain**: ${context.domain}
-- **Requirements**: ${context.requirements?.join(', ') || 'Not specified'}'
+- **Project**: $context.name
+- **Domain**: $context.domain
+- **Requirements**: $context.requirements?.join(', ') || 'Not specified''
 
 ## Validation Instructions:
 
@@ -1073,7 +1059,6 @@ ${agentResponse}
 ## Output Format:
 Provide your validation in JSON format:
 \`\`\`json`
-{
   "compliance_score": 85,
   "quality_score": 90,
   "correctness_score": 95,
@@ -1082,7 +1067,6 @@ Provide your validation in JSON format:
   "improvement_suggestions": ["Example: Could use more descriptive variable names"],
   "overall_assessment": "Good implementation with minor areas for improvement",
   "validation_confidence": 0.9
-}
 \`\`\``
 
 Be thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.`;`

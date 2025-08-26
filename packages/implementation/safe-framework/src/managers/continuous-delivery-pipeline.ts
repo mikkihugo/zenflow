@@ -22,94 +22,91 @@ import type {
   Logger,
   MemorySystem,
   TypeSafeEventBus,
-  ValueStream,
 } from '../types';
 import { getLogger } from '../types';
 
-// Re-export all types for API compatibility
-export type {
-  CDPipelineConfig,
-  CDPipelineStage,
-  SPARCPhase,
-  StageType,
-  QualityGate,
-  QualityGateType,
-  QualityGateCriterion,
-  QualityGateResult,
-  CriterionResult,
-  StageAutomation,
-  AutomationType,
-  AutomationTrigger,
-  AutomationAction,
-  PipelineExecutionContext,
-  PipelineExecution,
-  PipelineStatus,
-  StageExecution,
-  StageStatus,
-  PipelineArtifact,
-  PipelineMetrics,
-  PipelineBottleneck,
-  MetricTrend,
-  CDPipelineState,
-  RetryPolicy,
-  RollbackPolicy,
-  EscalationRule,
-  NotificationRule,
-  AutomationCondition,
-  AutomationResult,
-  PipelineError,
-  SwarmExecutionOrchestrator,
-} from '../services/continuous-delivery/sparc-cd-mapping-service';
 
 export type {
-  QualityGateExecutionConfig,
-  QualityGateContext,
-  QualityArtifact,
-  QualityHistoricalData,
-  QualityTrend,
-  QualityBenchmark,
-  QualityImprovement,
-  GateRetryPolicy,
-  QualityGateTemplate,
-  QualityGateOptimization,
-} from '../services/continuous-delivery/quality-gate-service';
-
-export type {
-  DeploymentStrategy,
-  DeploymentEnvironment,
-  InfrastructureConfig,
-  NetworkConfig,
-  SecurityConfig,
-  MonitoringConfig,
-  ScalingConfig,
-  DeploymentPlan,
-  DeploymentArtifact,
-  DeploymentPhase,
   DeploymentAction,
+  DeploymentArtifact,
   DeploymentCondition,
+  DeploymentEnvironment,
   DeploymentExecution,
-  DeploymentStatus,
   DeploymentMetrics,
+  DeploymentPhase,
+  DeploymentPlan,
+  DeploymentStatus,
+  DeploymentStrategy,
+  InfrastructureConfig,
+  MonitoringConfig,
+  NetworkConfig,
   ResourceUtilization,
+  ScalingConfig,
+  SecurityConfig,
   UserImpactMetrics,
 } from '../services/continuous-delivery/deployment-automation-service';
-
 export type {
-  PerformanceMonitoringConfig,
-  PerformanceThresholds,
+  BottleneckAnalysis,
+  DetailedPerformanceMetrics,
+  EfficiencyMetrics,
+  ExecutionTimeMetrics,
+  HistoricalComparison,
   PerformanceAlert,
   PerformanceAnalysisResult,
-  DetailedPerformanceMetrics,
-  ExecutionTimeMetrics,
-  ThroughputMetrics,
-  ReliabilityMetrics,
-  EfficiencyMetrics,
-  ResourceUtilizationMetrics,
-  BottleneckAnalysis,
-  TrendAnalysis,
+  PerformanceMonitoringConfig,
   PerformanceRecommendation,
-  HistoricalComparison,
+  PerformanceThresholds,
+  ReliabilityMetrics,
+  ResourceUtilizationMetrics,
+  ThroughputMetrics,
+  TrendAnalysis,
 } from '../services/continuous-delivery/pipeline-performance-service';
+export type {
+  GateRetryPolicy,
+  QualityArtifact,
+  QualityBenchmark,
+  QualityGateContext,
+  QualityGateExecutionConfig,
+  QualityGateOptimization,
+  QualityGateTemplate,
+  QualityHistoricalData,
+  QualityImprovement,
+  QualityTrend,
+} from '../services/continuous-delivery/quality-gate-service';
+// Re-export all types for API compatibility
+export type {
+  AutomationAction,
+  AutomationCondition,
+  AutomationResult,
+  AutomationTrigger,
+  AutomationType,
+  CDPipelineConfig,
+  CDPipelineStage,
+  CDPipelineState,
+  CriterionResult,
+  EscalationRule,
+  MetricTrend,
+  NotificationRule,
+  PipelineArtifact,
+  PipelineBottleneck,
+  PipelineError,
+  PipelineExecution,
+  PipelineExecutionContext,
+  PipelineMetrics,
+  PipelineStatus,
+  QualityGate,
+  QualityGateCriterion,
+  QualityGateResult,
+  QualityGateType,
+  RetryPolicy,
+  RollbackPolicy,
+  SPARCPhase,
+  StageAutomation,
+  StageExecution,
+  StageStatus,
+  StageType,
+  SwarmExecutionOrchestrator,
+} from '../services/continuous-delivery/sparc-cd-mapping-service';
 
 // Import service types
 import type { ValueStreamMapper } from './value-stream-mapper';
@@ -128,8 +125,6 @@ export class ContinuousDeliveryPipelineManager extends TypedEventBase {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
   private readonly memory: MemorySystem;
-  private readonly swarmOrchestrator: any;
-  private readonly valueStreamMapper: ValueStreamMapper;
   private readonly config: any;
 
   // Specialized services (lazy-loaded)
@@ -154,7 +149,7 @@ export class ContinuousDeliveryPipelineManager extends TypedEventBase {
   private cleanupTimer?: NodeJS.Timeout;
 
   constructor(
-    eventBus: TypeSafeEventBus,
+    _eventBus: TypeSafeEventBus,
     memory: MemorySystem,
     swarmOrchestrator: any,
     valueStreamMapper: ValueStreamMapper,
@@ -470,7 +465,7 @@ export class ContinuousDeliveryPipelineManager extends TypedEventBase {
     await this.pipelinePerformanceService.monitorPipelinePerformance();
 
     // Update local performance metrics for compatibility
-    const insights =
+    const _insights =
       await this.pipelinePerformanceService.getPerformanceInsights();
     // Store insights in local state if needed for compatibility
   }
@@ -554,7 +549,7 @@ export class ContinuousDeliveryPipelineManager extends TypedEventBase {
   }
 
   private registerEventHandlers(): void {
-    this.eventBus.registerHandler('sparc-project-completed', async (event) => {'
+    this.eventBus.registerHandler('sparc-project-completed', async (_event) => {'
       await this.handleSPARCProjectCompletion(event.payload);
     });
 
@@ -582,15 +577,7 @@ export class ContinuousDeliveryPipelineManager extends TypedEventBase {
     await Promise.resolve(); // Placeholder for actual cleanup
   }
 
-  private async handleSPARCProjectCompletion(payload: any): Promise<void> {
-    // Implementation would handle SPARC project completion
-    this.logger.info('Handling SPARC project completion', { payload });'
-
-    // In production: await SPARC integration
-    await Promise.resolve(); // Placeholder for actual SPARC handling
-  }
-
-  private handleFeatureDeploymentRequest(payload: unknown): void {
+  private handleFeatureDeploymentRequest(_payload: unknown): void {
     // Implementation would handle feature deployment request
     this.logger.info('Handling feature deployment request');'
   }

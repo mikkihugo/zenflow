@@ -25,8 +25,7 @@
  * @since 2024-01-01
  */
 
-import { generateNanoId } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
+import { generateNanoId, TypedEventBase } from '@claude-zen/foundation';
 
 // Core SPARC types
 export interface SPARCProject {
@@ -321,7 +320,7 @@ export class SPARCCommander extends TypedEventBase {
           continue;
         }
 
-        this.logger.info(`Executing phase: ${phase.name}`);`
+        this.logger.info(`Executing phase: $phase.name`);`
 
         const phaseResult = await this.executePhase(project, phase);
 
@@ -351,10 +350,10 @@ export class SPARCCommander extends TypedEventBase {
       project.updatedAt = new Date();
 
       this.logger.info(
-        `SPARC methodology execution completed. Success: ${result.success}``
+        `SPARC methodology execution completed. Success: $result.success``
       );
       this.emit('methodology:completed', { project, result });'
-    } catch (error) {
+    } catch (error) 
       result.errors.push({
         phase: 'methodology',
         code: 'EXECUTION_ERROR',
@@ -366,8 +365,7 @@ export class SPARCCommander extends TypedEventBase {
       project.updatedAt = new Date();
 
       this.logger.error('SPARC methodology execution failed:', error);'
-      this.emit('methodology:failed', { project, result, error });'
-    }
+      this.emit('methodology:failed', project, result, error );'
 
     return result;
   }
@@ -378,13 +376,12 @@ export class SPARCCommander extends TypedEventBase {
   private async executePhase(
     project: SPARCProject,
     phase: SPARCPhase
-  ): Promise<{
+  ): Promise<
     success: boolean;
     errors: SPARCError[];
-    warnings: SPARCWarning[];
-  }> {
-    const phaseConfig = this.configuration.phases[phase.name];
-    const startTime = Date.now();
+    warnings: SPARCWarning[];> {
+    const _phaseConfig = this.configuration.phases[phase.name];
+    const _startTime = Date.now();
 
     phase.status = 'active';
     phase.startedAt = new Date();
@@ -426,7 +423,7 @@ export class SPARCCommander extends TypedEventBase {
             phase: phase.name,
             code: 'QUALITY_GATE_FAILED',
             message: `Quality gates failed for phase ${phase.name}`,`
-            details: { qualityResult },
+            { qualityResult },
             timestamp: new Date(),
           });
           throw new Error(`Quality gates failed for phase ${phase.name}`);`
@@ -452,7 +449,7 @@ export class SPARCCommander extends TypedEventBase {
 
       this.emit('phase:failed', { project, phase, error });'
     } finally {
-      this.activePhases.delete(`${project.id}:${phase.name}`);`
+      this.activePhases.delete(`$project.id:$phase.name`);`
     }
 
     return result;
@@ -676,11 +673,10 @@ export class SPARCCommander extends TypedEventBase {
   private async runQualityGates(
     project: SPARCProject,
     phase: SPARCPhase
-  ): Promise<{
+  ): Promise<
     passed: boolean;
     score: number;
-    gates: QualityGate[];
-  }> {
+    gates: QualityGate[];> {
     const gates: QualityGate[] = [];
     const phaseConfig = this.configuration.phases[phase.name];
 
@@ -754,11 +750,11 @@ export class SPARCCommander extends TypedEventBase {
   }
 
   // Helper methods for generating content (mock implementations)
-  private generateRequirementsDocument(project: SPARCProject): string {
+  private generateRequirementsDocument(project: SPARCProject): string 
     return `# Requirements Document for ${project.name}`
 
 ## Functional Requirements
-${project.requirements.map((req) => `- ${req}`).join('\n')}'
+$project.requirements.map((req) => `- ${req}`).join('\n')'
 
 ## Non-Functional Requirements
 - Performance: Response time < 200ms
@@ -767,24 +763,23 @@ ${project.requirements.map((req) => `- ${req}`).join('\n')}'
 - Security: Industry-standard encryption
 
 ## Domain Context
-Domain: ${project.domain}
+Domain: $project.domain
 `;`
-  }
 
-  private generateAcceptanceCriteria(project: SPARCProject): string {
+  private generateAcceptanceCriteria(project: SPARCProject): string 
     return `# Acceptance Criteria for ${project.name}`
 
 ## Given/When/Then Scenarios
-${project.requirements
+$project.requirements
   .map(
-    (req) => ``
+    (_req) => ``
 ### Scenario: ${req}
 - **Given** initial conditions
 - **When** user performs action
 - **Then** expected outcome occurs
 ``
   )
-  .join('\n')}'
+  .join('\n')'
 `;`
   }
 
@@ -793,7 +788,7 @@ ${project.requirements
 
 FUNCTION main():
     INITIALIZE system components
-    FOR each requirement in ${project.requirements.length} requirements:
+    FOR each requirement in $project.requirements.lengthrequirements:
         PROCESS requirement
         VALIDATE result
         STORE outcome
@@ -801,9 +796,8 @@ FUNCTION main():
     RETURN success
 END FUNCTION
 `;`
-  }
 
-  private generateDataFlowDiagram(project: SPARCProject): string {
+  private generateDataFlowDiagram(project: SPARCProject): string 
     return `# Data Flow Diagram for ${project.name}`
 
 ## Data Sources
@@ -812,7 +806,7 @@ END FUNCTION
 - Database
 
 ## Data Transformations
-${project.requirements.map((req) => `- ${req} → Processing → Output`).join('\n')}'
+$project.requirements.map((req) => `- ${req} → Processing → Output`).join('\n')'
 
 ## Data Sinks
 - User Interface
@@ -832,7 +826,7 @@ ${project.requirements.map((req) => `- ${req} → Processing → Output`).join('
 ## Component Architecture
 ${project.requirements
   .map(
-    (req, i) => ``
+    (_req, _i) => ``
 ### Component ${i + 1}: ${req}
 - **Purpose**: ${req}
 - **Dependencies**: Core utilities
@@ -857,7 +851,7 @@ This document outlines the detailed specifications for each component in the ${p
 
 ${project.requirements
   .map(
-    (req, i) => ``
+    (_req, _i) => ``
 ## Component ${i + 1}: ${req.replace(/\s+/g, ')}Component'
 
 ### Purpose
@@ -893,7 +887,7 @@ Input → Validation → Processing → Output
 ---
 ``
   )
-  .join('\n')}'
+  .join('\n')'
 
 ## Integration Points
 All components integrate through standardized interfaces and event systems.
@@ -908,25 +902,23 @@ All components integrate through standardized interfaces and event systems.
   private generateImplementation(project: SPARCProject): string {
     return `// Implementation for ${project.name}`
 
-export class ${project.name.replace(/\s+/g, '')} {'
+export class ${project.name.replace(/\s+/g, '')} '
   private components: Map<string, Component> = new Map();
   
-  constructor() {
+  constructor() 
     this.initializeComponents();
-  }
   
-  private initializeComponents(): void {
-    ${project.requirements
+  private initializeComponents(): void 
+    $project.requirements
       .map(
-        (req) => ``
+        (_req) => ``
     this.components.set('${req}', new ${req.replace(/\s+/g, ')}Component())();``
       )
       .join(')}'
-  }
   
-  public async execute(): Promise<boolean> {
+  public async execute(): Promise<boolean> 
     try {
-      for (const [name, component] of this.components) {
+      for (const [_name, component] of this.components) {
         await component.process();
       }
       return true;
@@ -934,12 +926,9 @@ export class ${project.name.replace(/\s+/g, '')} {'
       console.error('Execution failed:', error);'
       return false;
     }
-  }
-}
 `;`
-  }
 
-  private generateOptimizations(project: SPARCProject): string {
+  private generateOptimizations(project: SPARCProject): string 
     return `# Performance Optimizations for ${project.name}`
 
 ## Identified Optimizations
@@ -961,44 +950,40 @@ export class ${project.name.replace(/\s+/g, '')} {'
 - Memory usage reduction: 25%
 - CPU utilization improvement: 30%
 `;`
-  }
 
-  private generateTestSuite(project: SPARCProject): string {
+  private generateTestSuite(project: SPARCProject): string 
     return `// Test Suite for ${project.name}`
 
 import { describe, it, expect } from 'vitest';
-import { ${project.name.replace(/\s+/g, '')} } from './implementation';
+import { $project.name.replace(/\s+/g, '')from './implementation';
 
 describe('${project.name}', () => {'
-  let instance: ${project.name.replace(/\s+/g, ')};'
+  let instance: $project.name.replace(/\s+/g, ')};'
   
   beforeEach(() => {
-    instance = new ${project.name.replace(/\s+/g, ')}();'
-  });
+    instance = new $project.name.replace(/\s+/g, ')}();');
   
-  ${project.requirements
+  $project.requirements
     .map(
-      (req) => ``
+      (_req) => ``
   it('should handle ${req}', async () => {'
     const result = await instance.execute();
     expect(result).toBe(true);
   });``
     )
-    .join('\n')}'
+    .join('\n')'
   
-  it('should handle errors gracefully', async () => {'
+  it('should handle errors gracefully', async () => '
     // Test error handling
-    expect(() => instance.execute()).not.toThrow();
-  });
+    expect(() => instance.execute()).not.toThrow(););
 });
 `;`
-  }
 
-  private generateDocumentation(project: SPARCProject): string {
+  private generateDocumentation(project: SPARCProject): string 
     return `# ${project.name}`
 
 ## Overview
-This project implements ${project.requirements.join(', ')}.'
+This project implements $project.requirements.join(', ').'
 
 ## Installation
 \`\`\`bash`
@@ -1007,14 +992,14 @@ npm install
 
 ## Usage
 \`\`\`typescript`
-import { ${project.name.replace(/\s+/g, '')} } from './${project.name.toLowerCase()}';
+import { $project.name.replace(/\s+/g, '')from './${project.name.toLowerCase()}';
 
-const instance = new ${project.name.replace(/\s+/g, '')}();'
+const _instance = new $project.name.replace(/\s+/g, '')();'
 await instance.execute();
 \`\`\``
 
 ## Requirements
-${project.requirements.map((req) => `- ${req}`).join('\n')}'
+$project.requirements.map((req) => `- ${req}`).join('\n')'
 
 ## Architecture
 See \`architecture.md\` for detailed system architecture.`
@@ -1059,65 +1044,6 @@ Please follow the SPARC methodology for all contributions.
     const lines = content.split('\n').length;'
     const words = content.split(/\s+/).length;
     return Math.min(1.0, lines * 0.01 + words * 0.0001);
-  }
-
-  private calculatePhaseMetrics(
-    phase: SPARCPhase,
-    executionTime: number
-  ): PhaseMetrics {
-    const deliverableCount = phase.deliverables.length;
-    const averageQuality =
-      deliverableCount > 0
-        ? phase.deliverables.reduce((sum, d) => sum + d.metrics.quality, 0) /
-          deliverableCount
-        : 0;
-
-    return {
-      executionTime,
-      qualityScore: averageQuality,
-      complexityScore:
-        deliverableCount > 0
-          ? phase.deliverables.reduce(
-              (sum, d) => sum + d.metrics.complexity,
-              0
-            ) / deliverableCount
-          : 0,
-      completeness: phase.deliverables.length > 0 ? 1.0 : 0,
-      errorCount: 0, // Would track actual errors in real implementation
-      warningCount: 0, // Would track actual warnings in real implementation
-    };
-  }
-
-  private calculateProjectMetrics(
-    project: SPARCProject,
-    totalTime: number
-  ): ProjectMetrics {
-    const completedPhases = project.phases.filter(
-      (p) => p.status === 'completed''
-    );
-    const allDeliverables = project.phases.flatMap((p) => p.deliverables);
-
-    return {
-      totalExecutionTime: totalTime,
-      averageQualityScore:
-        completedPhases.length > 0
-          ? completedPhases.reduce(
-              (sum, p) => sum + p.metrics.qualityScore,
-              0
-            ) / completedPhases.length
-          : 0,
-      overallComplexity:
-        allDeliverables.length > 0
-          ? allDeliverables.reduce((sum, d) => sum + d.metrics.complexity, 0) /
-            allDeliverables.length
-          : 0,
-      deliverableCount: allDeliverables.length,
-      successRate:
-        project.phases.length > 0
-          ? completedPhases.length / project.phases.length
-          : 0,
-      errorRate: 0, // Would calculate from actual errors
-    };
   }
 
   /**

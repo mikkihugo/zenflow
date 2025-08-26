@@ -21,15 +21,13 @@
  */
 
 import {
-  WorkflowKanban,
   createTaskFlowController as createWorkflowKanban,
-  type TaskFlowConfig as WorkflowKanbanConfig,
-  type TaskFlowState as TaskState,
   type TaskPriority,
-  type WorkflowTask,
+  type TaskFlowState as TaskState,
   type WIPLimits,
-  type TaskFlowStatus as FlowMetrics,
-  type WorkflowBottleneck,
+  type WorkflowKanban,
+  type TaskFlowConfig as WorkflowKanbanConfig,
+  type WorkflowTask,
 } from '@claude-zen/taskmaster';
 
 // Define constants since they're expected by SAFe integration'
@@ -44,9 +42,9 @@ const ALL_WORKFLOW_STATES: TaskState[] = [
 
 const DEFAULT_WORKFLOW_STATES: TaskState[] = ALL_WORKFLOW_STATES;
 
-import type { Logger } from '@claude-zen/foundation';
 // Use Node.js EventEmitter until event-system is implemented
-import { EventEmitter } from 'node:events';
+import type { EventEmitter } from 'node:events';
+import type { Logger } from '@claude-zen/foundation';
 
 // Define WSJFPriority type locally since it's not exported yet'
 interface WSJFPriority {
@@ -61,11 +59,9 @@ interface WSJFPriority {
 }
 
 import type {
-  PortfolioEpic,
   Feature,
+  PortfolioEpic,
   Story,
-  ProgramIncrement,
-  ValueStream,
 } from '../types';
 
 // ============================================================================
@@ -355,49 +351,44 @@ export async function createSafeTeamKanban(
  */
 function configureSafePortfolioEvents(
   kanban: WorkflowKanban,
-  logger: Logger
+  _logger: Logger
 ): void {
   // Epic business case validation events
-  kanban.on('task:created', (task) => {'
-    logger.info('Portfolio Epic created', {'
+  kanban.on('task:created', (_task) => {'
+    logger.info('Portfolio Epic created', '
       epicId: task.id,
       title: task.title,
-      priority: task.priority,
-    });
+      priority: task.priority,);
   });
 
   // WSJF calculation events
-  kanban.on('task:moved', (task, fromState, toState) => {'
+  kanban.on('task:moved', (_task, _fromState, toState) => {'
     if (toState === 'analyzing') {'
-      logger.info('Epic entered analysis', {'
+      logger.info('Epic entered analysis', '
         epicId: task.id,
-        wsjfCalculationNeeded: true,
-      });
+        wsjfCalculationNeeded: true,);
     } else if (toState === 'portfolio_backlog') {'
-      logger.info('Epic approved for portfolio backlog', {'
+      logger.info('Epic approved for portfolio backlog', '
         epicId: task.id,
-        wsjfScore: task.metadata?.wsjfScore,
-      });
+        wsjfScore: task.metadata?.wsjfScore,);
     }
   });
 
   // Portfolio bottleneck alerts
-  kanban.on('bottleneck:detected', (bottleneck) => {'
-    logger.warn('Portfolio bottleneck detected', {'
+  kanban.on('bottleneck:detected', (_bottleneck) => {'
+    logger.warn('Portfolio bottleneck detected', '
       state: bottleneck.state,
       severity: bottleneck.severity,
-      recommendedAction: bottleneck.recommendations[0],
-    });
+      recommendedAction: bottleneck.recommendations[0],);
   });
 
   // WIP limit enforcement at portfolio level
-  kanban.on('wip:exceeded', (state, count, limit) => {'
-    logger.warn('Portfolio WIP limit exceeded', {'
+  kanban.on('wip:exceeded', (_state, _count, _limit) => {'
+    logger.warn('Portfolio WIP limit exceeded', '
       state,
       currentCount: count,
       limit,
-      action: 'Block new epics until capacity available',
-    });
+      action: 'Block new epics until capacity available',);
   });
 }
 
@@ -406,61 +397,55 @@ function configureSafePortfolioEvents(
  */
 function configureSafeProgramEvents(
   kanban: WorkflowKanban,
-  logger: Logger
+  _logger: Logger
 ): void {
-  kanban.on('task:created', (task) => {'
-    logger.info('Program Feature created', {'
+  kanban.on('task:created', (_task) => {'
+    logger.info('Program Feature created', '
       featureId: task.id,
       title: task.title,
-      pi: task.metadata?.programIncrement,
-    });
+      pi: task.metadata?.programIncrement,);
   });
 
-  kanban.on('bottleneck:detected', (bottleneck) => {'
-    logger.warn('Program bottleneck detected', {'
+  kanban.on('bottleneck:detected', (_bottleneck) => {'
+    logger.warn('Program bottleneck detected', '
       state: bottleneck.state,
       impact: 'May affect PI objectives',
-      severity: bottleneck.severity,
-    });
+      severity: bottleneck.severity,);
   });
 
-  kanban.on('wip:exceeded', (state, count, limit) => {'
-    logger.warn('Program WIP limit exceeded', {'
+  kanban.on('wip:exceeded', (_state, _count, _limit) => {'
+    logger.warn('Program WIP limit exceeded', '
       state,
       currentCount: count,
       limit,
-      impact: 'Feature delivery may be delayed',
-    });
+      impact: 'Feature delivery may be delayed',);
   });
 }
 
 /**
  * Configure Team Kanban events for Story/Task flow
  */
-function configureSafeTeamEvents(kanban: WorkflowKanban, logger: Logger): void {
-  kanban.on('task:created', (task) => {'
-    logger.info('Team Story created', {'
+function configureSafeTeamEvents(kanban: WorkflowKanban, _logger: Logger): void {
+  kanban.on('task:created', (_task) => {'
+    logger.info('Team Story created', '
       storyId: task.id,
       title: task.title,
-      storyPoints: task.metadata?.storyPoints,
-    });
+      storyPoints: task.metadata?.storyPoints,);
   });
 
-  kanban.on('bottleneck:detected', (bottleneck) => {'
-    logger.warn('Team bottleneck detected', {'
+  kanban.on('bottleneck:detected', (_bottleneck) => {'
+    logger.warn('Team bottleneck detected', '
       state: bottleneck.state,
       impact: 'Sprint commitment at risk',
-      severity: bottleneck.severity,
-    });
+      severity: bottleneck.severity,);
   });
 
-  kanban.on('wip:exceeded', (state, count, limit) => {'
-    logger.warn('Team WIP limit exceeded', {'
+  kanban.on('wip:exceeded', (_state, _count, _limit) => {'
+    logger.warn('Team WIP limit exceeded', '
       state,
       currentCount: count,
       limit,
-      impact: 'Sprint velocity may decrease',
-    });
+      impact: 'Sprint velocity may decrease',);
   });
 }
 

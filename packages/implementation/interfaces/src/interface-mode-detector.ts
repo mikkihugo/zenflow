@@ -39,7 +39,7 @@ export class InterfaceModeDetector {
 
     // Environment analysis
     const isCI = !!(
-      process.env['CI']||process.env['GITHUB_ACTIONS']||process.env['TRAVIS']||process.env['JENKINS']||process.env['GITLAB_CI']'
+      process.env.CI||process.env.GITHUB_ACTIONS||process.env.TRAVIS||process.env.JENKINS||process.env.GITLAB_CI'
     );
 
     const hasTerminal = !!process.stdin?.isTTY;
@@ -47,8 +47,8 @@ export class InterfaceModeDetector {
 
     // Command line argument analysis
     const args = process.argv.slice(2);
-    const hasCliFlag = args.includes('--cli');'
-    const hasWebFlag = args.includes('--web')||args.includes('--daemon');'
+    const _hasCliFlag = args.includes('--cli');'
+    const _hasWebFlag = args.includes('--web')||args.includes('--daemon');'
     const hasTuiFlag = args.includes('--tui')||args.includes('--interactive');'
 
     let mode: InterfaceMode;
@@ -74,7 +74,7 @@ export class InterfaceModeDetector {
       reason = hasWebFlag
         ? 'Explicit --web or --daemon flag provided''
         : webPort
-          ? `Web port ${webPort} specified``
+          ? `Web port $webPortspecified``
           : 'Daemon mode enabled;
     }
     // Explicit TUI flag
@@ -133,11 +133,11 @@ export class InterfaceModeDetector {
         stderr: !!process.stderr?.isTTY,
       },
       environment: {
-        ci: !!process.env['CI'],
-        github: !!process.env['GITHUB_ACTIONS'],
-        term: process.env['TERM'],
-        termProgram: process.env['TERM_PROGRAM'],
-        colorTerm: process.env['COLORTERM'],
+        ci: !!process.env.CI,
+        github: !!process.env.GITHUB_ACTIONS,
+        term: process.env.TERM,
+        termProgram: process.env.TERM_PROGRAM,
+        colorTerm: process.env.COLORTERM,
       },
       argv: process.argv,
       cwd: process.cwd(),
@@ -158,7 +158,7 @@ export class InterfaceModeDetector {
         return { valid: true };
 
       case 'tui':'
-        if (!(process.stdin && process.stdin.isTTY)) {
+        if (!(process.stdin?.isTTY)) {
           return {
             valid: false,
             reason: 'TUI mode requires an interactive terminal',
@@ -204,9 +204,9 @@ export class InterfaceModeDetector {
       alternatives.push('web');'
     }
 
-    let explanation = `Primary mode: ${detection.mode} (${detection.reason}).`;`
+    const _explanation = `Primary mode: ${detection.mode} (${detection.reason}).`;`
     if (alternatives.length > 0) {
-      explanation += ` Alternatives: ${alternatives.join(', ')}.`;`
+      explanation += ` Alternatives: $alternatives.join(', ').`;`
     }
 
     return {

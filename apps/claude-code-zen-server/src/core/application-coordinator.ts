@@ -6,7 +6,7 @@
  * preserving the expected interface.
  */
 
-import { getLogger, EventEmitter } from "@claude-zen/foundation";
+import { EventEmitter, getLogger } from "@claude-zen/foundation";
 
 const logger = getLogger("application-coordinator");
 
@@ -70,7 +70,6 @@ export interface SystemStatus {
  * TODO: Restore full functionality from corrupted original.
  */
 export class ApplicationCoordinator extends EventEmitter {
-	private configuration: ApplicationCoordinatorConfig;
 	private status: SystemStatus["status"] = "initializing";
 	private startTime: number;
 	private initialized = false;

@@ -1,33 +1,30 @@
 #!/usr/bin/env node
 
-import { spawn } from 'child_process';
-import { execSync } from 'child_process';
-import { createServer } from 'http';
-import { readFileSync, watch } from 'fs';
-import { join } from 'path';
-import path from 'path';
-import chalk from 'chalk';
+import { execSync, spawn } from "node:child_process";
+import { watch } from "node:fs";
+import { createServer } from "node:http";
+import path from "node:path";
 
 // LogTape syslog bridge - optional feature
 let syslogBridge = null;
 try {
-  // Try to import syslog bridge if available
-  const syslogModule = await import('../src/utils/logtape-syslog-bridge');
-  syslogBridge = syslogModule.syslogBridge;
-  console.log('✅ LogTape syslog bridge loaded successfully');
-} catch (error) {
-  console.log('ℹ️ LogTape syslog bridge not available (optional feature)');
-  // Provide a simple null implementation
-  syslogBridge = {
-    info: () => {},
-    error: () => {},
-    warn: () => {},
-    debug: () => {},
-  };
+	// Try to import syslog bridge if available
+	const syslogModule = await import("../src/utils/logtape-syslog-bridge");
+	syslogBridge = syslogModule.syslogBridge;
+	console.log("✅ LogTape syslog bridge loaded successfully");
+} catch (_error) {
+	console.log("ℹ️ LogTape syslog bridge not available (optional feature)");
+	// Provide a simple null implementation
+	syslogBridge = {
+		info: () => {},
+		error: () => {},
+		warn: () => {},
+		debug: () => {},
+	};
 }
 
 const PORT = process.env.PORT || 3000;
-const ERROR_PORT = 3001; // Fallback error server
+const _ERROR_PORT = 3001; // Fallback error server
 
 let mainServer = null;
 let errorServer = null;
@@ -38,40 +35,40 @@ let debounceTimer = null;
 
 // ANSI color codes for terminal
 const colors = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
-  cyan: '\x1b[36m',
-  white: '\x1b[37m',
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
+	red: "\x1b[31m",
+	green: "\x1b[32m",
+	yellow: "\x1b[33m",
+	blue: "\x1b[34m",
+	magenta: "\x1b[35m",
+	cyan: "\x1b[36m",
+	white: "\x1b[37m",
+	reset: "\x1b[0m",
+	bold: "\x1b[1m",
 };
 
 // Helper function to find tsc path and handle spawn ENOENT issues
 function getTscCommand() {
-  try {
-    // Try to use local tsc from node_modules
-    const localTscPath = path.join(
-      process.cwd(),
-      'apps/claude-code-zen-server/node_modules/.bin/tsc'
-    );
-    execSync(`${localTscPath} --version`, { stdio: 'ignore' });
-    return localTscPath;
-  } catch {
-    // Fallback to npx tsc
-    try {
-      const npxPath = execSync('which npx', { encoding: 'utf8' }).trim();
-      return [npxPath, 'tsc'];
-    } catch {
-      return ['npx', 'tsc'];
-    }
-  }
+	try {
+		// Try to use local tsc from node_modules
+		const localTscPath = path.join(
+			process.cwd(),
+			"apps/claude-code-zen-server/node_modules/.bin/tsc",
+		);
+		execSync(`${localTscPath} --version`, { stdio: "ignore" });
+		return localTscPath;
+	} catch {
+		// Fallback to npx tsc
+		try {
+			const npxPath = execSync("which npx", { encoding: "utf8" }).trim();
+			return [npxPath, "tsc"];
+		} catch {
+			return ["npx", "tsc"];
+		}
+	}
 }
 
 function createErrorPage(error) {
-  return `<!DOCTYPE html>
+	return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -164,351 +161,351 @@ function createErrorPage(error) {
 }
 
 function startErrorServer() {
-  if (errorServer) return;
+	if (errorServer) return;
 
-  errorServer = createServer((req, res) => {
-    res.writeHead(200, {
-      'Content-Type': 'text/html',
-      'Cache-Control': 'no-cache',
-    });
+	errorServer = createServer((_req, res) => {
+		res.writeHead(200, {
+			"Content-Type": "text/html",
+			"Cache-Control": "no-cache",
+		});
 
-    if (lastError) {
-      res.end(createErrorPage(lastError));
-    } else {
-      res.end(createErrorPage('Server starting...'));
-    }
-  });
+		if (lastError) {
+			res.end(createErrorPage(lastError));
+		} else {
+			res.end(createErrorPage("Server starting..."));
+		}
+	});
 
-  errorServer.listen(PORT, () => {
-    console.log(
-      `${colors.yellow}🚨 Error server running at http://localhost:${PORT}${colors.reset}`
-    );
-    console.log(
-      `${colors.cyan}   Fix the TypeScript errors and the main server will restart${colors.reset}`
-    );
-  });
+	errorServer.listen(PORT, () => {
+		console.log(
+			`${colors.yellow}🚨 Error server running at http://localhost:${PORT}${colors.reset}`,
+		);
+		console.log(
+			`${colors.cyan}   Fix the TypeScript errors and the main server will restart${colors.reset}`,
+		);
+	});
 }
 
 function stopErrorServer() {
-  if (errorServer) {
-    errorServer.close();
-    errorServer = null;
-  }
+	if (errorServer) {
+		errorServer.close();
+		errorServer = null;
+	}
 }
 
 function runTypeCheck() {
-  return new Promise((resolve, reject) => {
-    console.log(
-      `${colors.blue}🔍 Running TypeScript type check...${colors.reset}`
-    );
+	return new Promise((resolve, reject) => {
+		console.log(
+			`${colors.blue}🔍 Running TypeScript type check...${colors.reset}`,
+		);
 
-    const tscCommand = getTscCommand();
-    let tsc;
-    if (Array.isArray(tscCommand)) {
-      // Using npx tsc
-      tsc = spawn(
-        tscCommand[0],
-        [tscCommand[1], '--noEmit', '--project', './tsconfig.json'],
-        {
-          stdio: 'pipe',
-          cwd: process.cwd(),
-          env: { ...process.env, PATH: process.env.PATH },
-        }
-      );
-    } else {
-      // Using local tsc
-      tsc = spawn(tscCommand, ['--noEmit', '--project', './tsconfig.json'], {
-        stdio: 'pipe',
-        cwd: process.cwd(),
-        env: { ...process.env, PATH: process.env.PATH },
-      });
-    }
+		const tscCommand = getTscCommand();
+		let tsc;
+		if (Array.isArray(tscCommand)) {
+			// Using npx tsc
+			tsc = spawn(
+				tscCommand[0],
+				[tscCommand[1], "--noEmit", "--project", "./tsconfig.json"],
+				{
+					stdio: "pipe",
+					cwd: process.cwd(),
+					env: { ...process.env, PATH: process.env.PATH },
+				},
+			);
+		} else {
+			// Using local tsc
+			tsc = spawn(tscCommand, ["--noEmit", "--project", "./tsconfig.json"], {
+				stdio: "pipe",
+				cwd: process.cwd(),
+				env: { ...process.env, PATH: process.env.PATH },
+			});
+		}
 
-    let stdout = '';
-    let stderr = '';
+		let stdout = "";
+		let stderr = "";
 
-    tsc.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
+		tsc.stdout.on("data", (data) => {
+			stdout += data.toString();
+		});
 
-    tsc.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
+		tsc.stderr.on("data", (data) => {
+			stderr += data.toString();
+		});
 
-    tsc.on('close', (code) => {
-      if (code === 0) {
-        console.log(`${colors.green}✅ TypeScript check passed${colors.reset}`);
-        if (syslogBridge) {
-          syslogBridge.info('typescript', 'TypeScript compilation successful', {
-            exitCode: code,
-            component: 'tsc',
-          });
-        }
-        resolve();
-      } else {
-        const error = stderr || stdout || 'Unknown TypeScript error';
-        console.log(`${colors.red}❌ TypeScript check failed:${colors.reset}`);
-        console.log(error);
-        if (syslogBridge) {
-          syslogBridge.error('typescript', 'TypeScript compilation failed', {
-            exitCode: code,
-            errorOutput: error.substring(0, 500), // Truncate for syslog
-            component: 'tsc',
-          });
-        }
-        reject(error);
-      }
-    });
-  });
+		tsc.on("close", (code) => {
+			if (code === 0) {
+				console.log(`${colors.green}✅ TypeScript check passed${colors.reset}`);
+				if (syslogBridge) {
+					syslogBridge.info("typescript", "TypeScript compilation successful", {
+						exitCode: code,
+						component: "tsc",
+					});
+				}
+				resolve();
+			} else {
+				const error = stderr || stdout || "Unknown TypeScript error";
+				console.log(`${colors.red}❌ TypeScript check failed:${colors.reset}`);
+				console.log(error);
+				if (syslogBridge) {
+					syslogBridge.error("typescript", "TypeScript compilation failed", {
+						exitCode: code,
+						errorOutput: error.substring(0, 500), // Truncate for syslog
+						component: "tsc",
+					});
+				}
+				reject(error);
+			}
+		});
+	});
 }
 
 function startMainServer() {
-  return new Promise((resolve, reject) => {
-    console.log(`${colors.green}🚀 Starting main server...${colors.reset}`);
+	return new Promise((resolve, reject) => {
+		console.log(`${colors.green}🚀 Starting main server...${colors.reset}`);
 
-    try {
-      const npxPath = execSync('which npx', { encoding: 'utf8' }).trim();
-      mainServer = spawn(npxPath, ['tsx', './src/main.ts'], {
-        stdio: ['inherit', 'inherit', 'pipe'],
-        cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
-        env: { ...process.env, NODE_ENV: 'development' },
-      });
-    } catch {
-      // Fallback to direct node command if npx fails
-      mainServer = spawn('node', ['--require', 'tsx/cjs', './src/main.ts'], {
-        stdio: ['inherit', 'inherit', 'pipe'],
-        cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
-        env: { ...process.env, NODE_ENV: 'development' },
-      });
-    }
+		try {
+			const npxPath = execSync("which npx", { encoding: "utf8" }).trim();
+			mainServer = spawn(npxPath, ["tsx", "./src/main.ts"], {
+				stdio: ["inherit", "inherit", "pipe"],
+				cwd: path.join(process.cwd(), "apps/claude-code-zen-server"),
+				env: { ...process.env, NODE_ENV: "development" },
+			});
+		} catch {
+			// Fallback to direct node command if npx fails
+			mainServer = spawn("node", ["--require", "tsx/cjs", "./src/main.ts"], {
+				stdio: ["inherit", "inherit", "pipe"],
+				cwd: path.join(process.cwd(), "apps/claude-code-zen-server"),
+				env: { ...process.env, NODE_ENV: "development" },
+			});
+		}
 
-    let startupError = '';
+		let startupError = "";
 
-    mainServer.stderr.on('data', (data) => {
-      const errorText = data.toString();
-      console.error(errorText);
-      startupError += errorText;
-    });
+		mainServer.stderr.on("data", (data) => {
+			const errorText = data.toString();
+			console.error(errorText);
+			startupError += errorText;
+		});
 
-    mainServer.on('close', (code) => {
-      if (code !== 0 && code !== null) {
-        console.log(
-          `${colors.red}💥 Main server exited with code ${code}${colors.reset}`
-        );
-        lastError = startupError || `Server exited with code ${code}`;
-        reject(new Error(lastError));
-      }
-    });
+		mainServer.on("close", (code) => {
+			if (code !== 0 && code !== null) {
+				console.log(
+					`${colors.red}💥 Main server exited with code ${code}${colors.reset}`,
+				);
+				lastError = startupError || `Server exited with code ${code}`;
+				reject(new Error(lastError));
+			}
+		});
 
-    // Give the server a moment to start
-    setTimeout(() => {
-      if (mainServer && !mainServer.killed) {
-        console.log(
-          `${colors.green}✅ Main server started successfully${colors.reset}`
-        );
-        if (syslogBridge) {
-          syslogBridge.info(
-            'main-server',
-            'Claude Code Zen server started successfully',
-            {
-              port: PORT,
-              pid: mainServer.pid,
-              component: 'tsx',
-            }
-          );
-        }
-        resolve();
-      }
-    }, 2000);
-  });
+		// Give the server a moment to start
+		setTimeout(() => {
+			if (mainServer && !mainServer.killed) {
+				console.log(
+					`${colors.green}✅ Main server started successfully${colors.reset}`,
+				);
+				if (syslogBridge) {
+					syslogBridge.info(
+						"main-server",
+						"Claude Code Zen server started successfully",
+						{
+							port: PORT,
+							pid: mainServer.pid,
+							component: "tsx",
+						},
+					);
+				}
+				resolve();
+			}
+		}, 2000);
+	});
 }
 
 function stopMainServer() {
-  if (mainServer) {
-    mainServer.kill('SIGTERM');
-    mainServer = null;
-  }
+	if (mainServer) {
+		mainServer.kill("SIGTERM");
+		mainServer = null;
+	}
 }
 
 function broadcastMessage(message) {
-  try {
-    const { spawn } = require('child_process');
-    spawn('/home/mhugo/code/claude-code-zen/broadcast-reload.sh', [message], {
-      stdio: 'inherit',
-      detached: true,
-    });
+	try {
+		const { spawn } = require("node:child_process");
+		spawn("/home/mhugo/code/claude-code-zen/broadcast-reload.sh", [message], {
+			stdio: "inherit",
+			detached: true,
+		});
 
-    // Also log to syslog for centralized logging
-    if (syslogBridge) {
-      syslogBridge.info('dev-runner', message, {
-        type: 'broadcast',
-        pid: process.pid,
-      });
-    }
-  } catch (error) {
-    // Ignore broadcast errors - non-critical
-  }
+		// Also log to syslog for centralized logging
+		if (syslogBridge) {
+			syslogBridge.info("dev-runner", message, {
+				type: "broadcast",
+				pid: process.pid,
+			});
+		}
+	} catch (_error) {
+		// Ignore broadcast errors - non-critical
+	}
 }
 
 function startFileWatcher() {
-  if (fileWatcher) return;
+	if (fileWatcher) return;
 
-  console.log(
-    `${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`
-  );
+	console.log(
+		`${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`,
+	);
 
-  // Watch TypeScript files for changes from the server directory
-  const serverDir = path.join(process.cwd(), 'apps/claude-code-zen-server');
-  const srcDir = path.join(serverDir, 'src');
+	// Watch TypeScript files for changes from the server directory
+	const serverDir = path.join(process.cwd(), "apps/claude-code-zen-server");
+	const srcDir = path.join(serverDir, "src");
 
-  fileWatcher = watch(srcDir, { recursive: true }, (eventType, filename) => {
-    if (filename && filename.endsWith('.ts') && !isCheckingTypes) {
-      console.log(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
+	fileWatcher = watch(srcDir, { recursive: true }, (_eventType, filename) => {
+		if (filename?.endsWith(".ts") && !isCheckingTypes) {
+			console.log(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
 
-      // Clear existing timer
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
+			// Clear existing timer
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+			}
 
-      // Set new timer with 10 second debounce
-      debounceTimer = setTimeout(async () => {
-        if (isCheckingTypes) return; // Double-check
+			// Set new timer with 10 second debounce
+			debounceTimer = setTimeout(async () => {
+				if (isCheckingTypes) return; // Double-check
 
-        console.log(
-          `${colors.blue}🔍 Debounce complete, checking TypeScript after file changes...${colors.reset}`
-        );
-        broadcastMessage(
-          '🔄 Claude Code Zen: File changes detected, checking TypeScript...'
-        );
+				console.log(
+					`${colors.blue}🔍 Debounce complete, checking TypeScript after file changes...${colors.reset}`,
+				);
+				broadcastMessage(
+					"🔄 Claude Code Zen: File changes detected, checking TypeScript...",
+				);
 
-        isCheckingTypes = true;
-        try {
-          await runTypeCheck();
+				isCheckingTypes = true;
+				try {
+					await runTypeCheck();
 
-          // TypeScript passed! Switch to main server
-          console.log(
-            `${colors.green}✅ TypeScript errors fixed! Starting main server...${colors.reset}`
-          );
-          broadcastMessage(
-            '🎉 Claude Code Zen: TypeScript errors fixed! Starting main server...'
-          );
+					// TypeScript passed! Switch to main server
+					console.log(
+						`${colors.green}✅ TypeScript errors fixed! Starting main server...${colors.reset}`,
+					);
+					broadcastMessage(
+						"🎉 Claude Code Zen: TypeScript errors fixed! Starting main server...",
+					);
 
-          stopErrorServer();
-          lastError = null;
-          await startMainServer();
+					stopErrorServer();
+					lastError = null;
+					await startMainServer();
 
-          broadcastMessage(
-            '🚀 Claude Code Zen: Server ready at http://localhost:3000'
-          );
-        } catch (error) {
-          // Still has errors, update error server
-          lastError = error.toString();
-          console.log(
-            `${colors.yellow}⚠️ TypeScript errors still present, updating error page...${colors.reset}`
-          );
-          broadcastMessage(
-            '⚠️ Claude Code Zen: TypeScript errors still present...'
-          );
-        }
-        isCheckingTypes = false;
-        debounceTimer = null;
-      }, 30000); // 30 second debounce for batch file operations
+					broadcastMessage(
+						"🚀 Claude Code Zen: Server ready at http://localhost:3000",
+					);
+				} catch (error) {
+					// Still has errors, update error server
+					lastError = error.toString();
+					console.log(
+						`${colors.yellow}⚠️ TypeScript errors still present, updating error page...${colors.reset}`,
+					);
+					broadcastMessage(
+						"⚠️ Claude Code Zen: TypeScript errors still present...",
+					);
+				}
+				isCheckingTypes = false;
+				debounceTimer = null;
+			}, 30000); // 30 second debounce for batch file operations
 
-      console.log(
-        `${colors.magenta}⏱️ TypeScript check scheduled in 30 seconds... (batching file changes)${colors.reset}`
-      );
-    }
-  });
+			console.log(
+				`${colors.magenta}⏱️ TypeScript check scheduled in 30 seconds... (batching file changes)${colors.reset}`,
+			);
+		}
+	});
 }
 
 function stopFileWatcher() {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-    debounceTimer = null;
-  }
-  if (fileWatcher) {
-    fileWatcher.close();
-    fileWatcher = null;
-  }
+	if (debounceTimer) {
+		clearTimeout(debounceTimer);
+		debounceTimer = null;
+	}
+	if (fileWatcher) {
+		fileWatcher.close();
+		fileWatcher = null;
+	}
 }
 
 async function start() {
-  console.log(
-    `${colors.bold}${colors.cyan}🔥 Claude Code Zen Development Runner${colors.reset}`
-  );
-  console.log(
-    `${colors.cyan}   TypeScript checking + Error visualization${colors.reset}`
-  );
-  console.log(
-    `${colors.green}📖 Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`
-  );
+	console.log(
+		`${colors.bold}${colors.cyan}🔥 Claude Code Zen Development Runner${colors.reset}`,
+	);
+	console.log(
+		`${colors.cyan}   TypeScript checking + Error visualization${colors.reset}`,
+	);
+	console.log(
+		`${colors.green}📖 Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`,
+	);
 
-  try {
-    // First, check TypeScript
-    await runTypeCheck();
+	try {
+		// First, check TypeScript
+		await runTypeCheck();
 
-    // TypeScript is good, stop error server and start main server
-    stopErrorServer();
-    lastError = null;
+		// TypeScript is good, stop error server and start main server
+		stopErrorServer();
+		lastError = null;
 
-    // Broadcast success message
-    broadcastMessage(
-      '✅ Claude Code Zen: TypeScript check passed, server starting...'
-    );
+		// Broadcast success message
+		broadcastMessage(
+			"✅ Claude Code Zen: TypeScript check passed, server starting...",
+		);
 
-    await startMainServer();
+		await startMainServer();
 
-    // Start file watcher for ongoing development
-    startFileWatcher();
+		// Start file watcher for ongoing development
+		startFileWatcher();
 
-    // Broadcast server ready
-    broadcastMessage(
-      '🚀 Claude Code Zen: Server ready at http://localhost:3000'
-    );
-  } catch (error) {
-    // TypeScript failed or server crashed
-    lastError = error.toString();
+		// Broadcast server ready
+		broadcastMessage(
+			"🚀 Claude Code Zen: Server ready at http://localhost:3000",
+		);
+	} catch (error) {
+		// TypeScript failed or server crashed
+		lastError = error.toString();
 
-    console.log(
-      `${colors.red}🚨 Error detected - starting error server${colors.reset}`
-    );
+		console.log(
+			`${colors.red}🚨 Error detected - starting error server${colors.reset}`,
+		);
 
-    // Broadcast error message
-    broadcastMessage(
-      '❌ Claude Code Zen: TypeScript errors detected! Fix errors to continue...'
-    );
+		// Broadcast error message
+		broadcastMessage(
+			"❌ Claude Code Zen: TypeScript errors detected! Fix errors to continue...",
+		);
 
-    stopMainServer();
-    startErrorServer();
+		stopMainServer();
+		startErrorServer();
 
-    // Start file watcher to automatically detect fixes
-    startFileWatcher();
+		// Start file watcher to automatically detect fixes
+		startFileWatcher();
 
-    console.log(
-      `${colors.yellow}🔄 Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`
-    );
-  }
+		console.log(
+			`${colors.yellow}🔄 Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`,
+		);
+	}
 }
 
 // Handle shutdown gracefully
-process.on('SIGTERM', () => {
-  console.log(
-    `${colors.yellow}🔄 Received SIGTERM, shutting down gracefully...${colors.reset}`
-  );
-  stopFileWatcher();
-  stopMainServer();
-  stopErrorServer();
-  process.exit(0);
+process.on("SIGTERM", () => {
+	console.log(
+		`${colors.yellow}🔄 Received SIGTERM, shutting down gracefully...${colors.reset}`,
+	);
+	stopFileWatcher();
+	stopMainServer();
+	stopErrorServer();
+	process.exit(0);
 });
 
-process.on('SIGINT', () => {
-  console.log(
-    `${colors.yellow}🔄 Received SIGINT, shutting down gracefully...${colors.reset}`
-  );
-  stopFileWatcher();
-  stopMainServer();
-  stopErrorServer();
-  process.exit(0);
+process.on("SIGINT", () => {
+	console.log(
+		`${colors.yellow}🔄 Received SIGINT, shutting down gracefully...${colors.reset}`,
+	);
+	stopFileWatcher();
+	stopMainServer();
+	stopErrorServer();
+	process.exit(0);
 });
 
 // Start the development server

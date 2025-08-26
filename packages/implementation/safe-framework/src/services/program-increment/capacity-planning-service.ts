@@ -23,7 +23,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -276,7 +275,7 @@ export class CapacityPlanningService extends TypedEventBase {
       teamCount: teams.length,
     });
 
-    const timer = this.performanceTracker.startTimer('capacity_calculation');'
+    const _timer = this.performanceTracker.startTimer('capacity_calculation');'
 
     try {
       const capacities: TeamCapacity[] = [];
@@ -328,13 +327,12 @@ export class CapacityPlanningService extends TypedEventBase {
 
       this.performanceTracker.endTimer('capacity_calculation');'
 
-      this.emit('team-capacities-calculated', {'
+      this.emit('team-capacities-calculated', '
         teamCount: capacities.length,
         totalCapacity: capacities.reduce((sum, c) => sum + c.totalCapacity, 0),
         averageVelocity:
           capacities.reduce((sum, c) => sum + c.velocity, 0) /
-          capacities.length,
-      });
+          capacities.length,);
 
       this.logger.info('Team capacities calculated successfully', {'
         teamCount: capacities.length,
@@ -363,7 +361,7 @@ export class CapacityPlanningService extends TypedEventBase {
       featureCount: features.length,
     });
 
-    const timer = this.performanceTracker.startTimer('capacity_planning');'
+    const _timer = this.performanceTracker.startTimer('capacity_planning');'
 
     try {
       // Initialize planning result
@@ -484,13 +482,12 @@ export class CapacityPlanningService extends TypedEventBase {
 
       this.performanceTracker.endTimer('capacity_planning');'
 
-      this.emit('capacity-planning-completed', {'
+      this.emit('capacity-planning-completed', '
         allocatedFeatures: planningResult.teamAllocations.length,
         unallocatedFeatures: planningResult.unallocatedFeatures.length,
         utilizationRate: planningResult.utilizationRate,
         riskCount: planningResult.capacityRisks.length,
-        recommendationCount: planningResult.recommendations.length,
-      });
+        recommendationCount: planningResult.recommendations.length,);
 
       this.logger.info('Capacity planning completed successfully', {'
         allocatedFeatures: planningResult.teamAllocations.length,
@@ -791,7 +788,7 @@ export class CapacityPlanningService extends TypedEventBase {
     }
 
     const team = teamMatch.team;
-    const allocationId = `alloc-${feature.featureId}-${team.teamId}-${Date.now()}`;`
+    const _allocationId = `alloc-${feature.featureId}-${team.teamId}-${Date.now()}`;`
 
     // Calculate skill matches
     const skillMatches = this.calculateSkillMatches(
@@ -917,11 +914,11 @@ export class CapacityPlanningService extends TypedEventBase {
     if (poorSkillMatches.length > 0) {
       risks.push({
         riskType: 'skill',
-        description: `Skill gaps identified: ${poorSkillMatches.map((sm) => sm.skill).join(', ')}`,`
+        description: `Skill gaps identified: $poorSkillMatches.map((sm) => sm.skill).join(', ')`,`
         probability: 0.8,
         impact: 'high',
         mitigation: 'Cross-training or external expertise required',
-        owner: `team-lead-${team.teamId}`,`
+        owner: `team-lead-$team.teamId`,`
       });
     }
 
@@ -1048,7 +1045,7 @@ export class CapacityPlanningService extends TypedEventBase {
     teamCapacities: TeamCapacity[],
     allocationStrategy: any
   ): Promise<CapacityRecommendation[]> {
-    const recommendations: CapacityRecommendation[] = [];
+    const _recommendations: CapacityRecommendation[] = [];
 
     // Use brain coordinator for intelligent recommendations
     const intelligentRecommendations =
@@ -1173,7 +1170,7 @@ export class CapacityPlanningService extends TypedEventBase {
       teamWorkloads.length;
     const utilizationVariance =
       teamWorkloads.reduce(
-        (sum, t) => sum + Math.pow(t.utilization - averageUtilization, 2),
+        (sum, t) => sum + (t.utilization - averageUtilization) ** 2,
         0
       ) / teamWorkloads.length;
     const evenness = Math.max(0, 1 - Math.sqrt(utilizationVariance));

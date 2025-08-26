@@ -6,11 +6,11 @@
  */
 
 import {
-	getLogger,
 	createContainer,
-	Result,
-	ok,
 	err,
+	getLogger,
+	ok,
+	type Result,
 } from "@claude-zen/foundation";
 
 const logger = getLogger("infrastructure");
@@ -54,7 +54,6 @@ export interface SystemMetrics {
 }
 
 class SystemCoordinatorImpl implements SystemCoordinator {
-	private serviceContainer = createContainer();
 	private initialized = false;
 
 	async getSystemHealth(): Promise<Result<SystemHealth, Error>> {
@@ -265,11 +264,11 @@ export function getSystemCoordinator(): SystemCoordinator {
  */
 export const infrastructureContainer = createContainer();
 
+export type { ProcessInfo } from "./process/web.manager";
+export { WebProcessManager } from "./process/web.manager";
+export type { WebSession } from "./session.manager";
 // Legacy exports for backward compatibility
 export { WebSessionManager } from "./session.manager";
-export type { WebSession } from "./session.manager";
-export { WebProcessManager } from "./process/web.manager";
-export type { ProcessInfo } from "./process/web.manager";
 
 logger.info(
 	"Infrastructure layer initialized with coordinating facade pattern",

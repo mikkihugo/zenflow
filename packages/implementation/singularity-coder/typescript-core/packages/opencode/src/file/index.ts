@@ -1,15 +1,15 @@
+
+import path from "node:path"
 import { z } from "@claude-zen/foundation"
-import { Bus } from "../bus"
 import { $ } from "bun"
 import { createPatch } from "diff"
-import path from "path"
 import * as git from "isomorphic-git"
 import { App } from "../app/app"
-import fs from "fs"
+import { Bus } from "../bus"
 import { Log } from "../util/log"
 
 export namespace File {
-  const log = Log.create({ service: "file" })
+  const _log = Log.create({ service: "file" })
 
   export const Info = z
     .object({
@@ -37,7 +37,7 @@ export namespace File {
     const app = App.info()
     if (!app.git) return []
 
-    const diffOutput = await $`git diff --numstat HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const _diffOutput = await $`git diff --numstat HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
 
     const changedFiles: Info[] = []
 
@@ -69,13 +69,12 @@ export namespace File {
             status: "added",
           })
         } catch {
-          continue
         }
       }
     }
 
     // Get deleted files
-    const deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const _deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
 
     if (deletedOutput.trim()) {
       const deletedFiles = deletedOutput.trim().split("\n")
@@ -111,7 +110,7 @@ export namespace File {
         filepath: rel,
       })
       if (diff !== "unmodified") {
-        const original = await $`git show HEAD:${rel}`.cwd(app.path.root).quiet().nothrow().text()`
+        const original = await $`git show HEAD:$rel`.cwd(app.path.root).quiet().nothrow().text()`
         const patch = createPatch(file, original, content, "old", "new", {
           context: Infinity,
         })

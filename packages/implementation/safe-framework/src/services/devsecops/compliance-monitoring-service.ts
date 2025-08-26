@@ -12,17 +12,14 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, startOfMonth, endOfMonth } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
-  orderBy,
-  sumBy,
   meanBy,
-  countBy,
-  uniqBy,
+  sumBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -256,9 +253,6 @@ export class ComplianceMonitoringService {
   private readonly logger: Logger;
   private configurations = new Map<string, ComplianceMonitoringConfig>();
   private complianceStatuses = new Map<string, ComplianceStatus>();
-  private violations = new Map<string, ComplianceViolation>();
-  private reports = new Map<string, ComplianceReport>();
-  private auditTrail: AuditEntry[] = [];
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -305,7 +299,7 @@ export class ComplianceMonitoringService {
 
     this.logger.info('Performing compliance assessment', { frameworkId });'
 
-    const assessmentId = `assessment-${generateNanoId(12)}`;`
+    const assessmentId = `assessment-$generateNanoId(12)`;`
     const startTime = Date.now();
 
     try {
@@ -390,7 +384,7 @@ export class ComplianceMonitoringService {
       period,
     });
 
-    const reportId = `report-${generateNanoId(12)}`;`
+    const _reportId = `report-${generateNanoId(12)}`;`
 
     try {
       // Collect framework reports
@@ -509,7 +503,7 @@ export class ComplianceMonitoringService {
           ruleName: rule.name,
           passed,
           score,
-          details: `Validation rule ${rule.name} ${passed ?'passed' : 'failed'}`,`
+          details: `Validation rule $rule.name$passed ?'passed' : 'failed'`,`
           evidence: `Automated validation result for ${rule.name}`,`
         });
       } catch (error) {
@@ -523,7 +517,7 @@ export class ComplianceMonitoringService {
           ruleName: rule.name,
           passed: false,
           score: 0,
-          details: `Validation failed: ${error}`,`
+          details: `Validation failed: $error`,`
           evidence: '',
         });
       }
@@ -735,7 +729,7 @@ export class ComplianceMonitoringService {
     for (const violation of status.violations) {
       if (violation.severity === 'high' || violation.severity ==='critical') {'
         actions.push(
-          `Address ${violation.severity} violation: ${violation.description}``
+          `Address $violation.severityviolation: $violation.description``
         );
       }
     }

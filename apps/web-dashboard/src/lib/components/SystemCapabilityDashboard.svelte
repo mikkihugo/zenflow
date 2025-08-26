@@ -13,172 +13,191 @@
 -->
 
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { webSocketManager } from '$lib/websocket';
-  
-  interface FacadeSummary {
-    name: string;
-    capability: string;
-    healthScore: number;
-    packages: string;
-    missingPackages: string[];
-    features: string[];
-  }
-  
-  interface InstallationSuggestion {
-    package: string;
-    facade: string;
-    priority: 'high' | 'medium' | 'low';
-    reason: string;
-    installCommand: string;
-  }
-  
-  interface SystemCapabilityData {
-    overall: string;
-    systemHealthScore: number;
-    timestamp: string;
-    facades: FacadeSummary[];
-    totalPackages: number;
-    availablePackages: number;
-    registeredServices: number;
-    installationSuggestions: InstallationSuggestion[];
-  }
-  
-  let capabilityData: SystemCapabilityData | null = null;
-  let loading = true;
-  let error: string | null = null;
-  let autoRefresh = true;
-  let unsubscribeSystem: (() => void) | null = null;
-  
-  // Use existing Socket.IO real-time updates instead of polling!
-  function setupRealTimeUpdates() {
-    // Subscribe to system status updates from existing WebSocket
-    unsubscribeSystem = webSocketManager.systemStatus.subscribe((systemData) => {
-      if (systemData) {
-        console.log('📊 Real-time system data received:', systemData);
-        // Transform the real-time data to match our interface
-        capabilityData = transformSystemData(systemData);
-        loading = false;
-        error = null;
-      }
-    });
+import { onDestroy, onMount } from "svelte";
+import { webSocketManager } from "$lib/websocket";
 
-    // Subscribe to the 'system' channel for real-time updates
-    webSocketManager.subscribe('system');
-    
-    // Set initial loading state
-    loading = !webSocketManager.isConnected();
-    
-    // Listen for connection changes
-    webSocketManager.connectionState.subscribe((connectionState) => {
-      if (!connectionState.connected) {
-        error = 'WebSocket disconnected - showing cached data';
-      } else {
-        error = null;
-      }
-    });
-  }
+interface FacadeSummary {
+	name: string;
+	capability: string;
+	healthScore: number;
+	packages: string;
+	missingPackages: string[];
+	features: string[];
+}
 
-  // Transform WebSocket system data to match our dashboard interface
-  function transformSystemData(systemData: any): SystemCapabilityData {
-    // Mock transform since we don't have real backend data structure yet
-    return {
-      overall: systemData.status || 'partial',
-      systemHealthScore: systemData.healthScore || 75,
-      timestamp: systemData.timestamp || new Date().toISOString(),
-      facades: systemData.facades || [
-        {
-          name: 'Socket.IO WebSocket',
-          capability: 'full',
-          healthScore: webSocketManager.isConnected() ? 95 : 0,
-          packages: 'socket.io-client',
-          missingPackages: [],
-          features: ['Real-time Updates', 'Auto-reconnection', 'Health Monitoring']
-        }
-      ],
-      totalPackages: systemData.totalPackages || 50,
-      availablePackages: systemData.availablePackages || 45,
-      registeredServices: systemData.registeredServices || 12,
-      installationSuggestions: systemData.installationSuggestions || []
-    };
-  }
-  
-  function toggleAutoRefresh() {
-    autoRefresh = !autoRefresh;
-    // Socket.IO is always real-time, no need for intervals
-    console.log(`Auto-refresh ${autoRefresh ? 'enabled' : 'disabled'} (Socket.IO real-time)`);
-  }
+interface InstallationSuggestion {
+	package: string;
+	facade: string;
+	priority: "high" | "medium" | "low";
+	reason: string;
+	installCommand: string;
+}
 
-  // Manual refresh triggers a ping to get fresh data
-  async function fetchCapabilityData() {
-    loading = true;
-    error = null;
-    
-    try {
-      if (webSocketManager.isConnected()) {
-        // Ping the WebSocket to trigger fresh data
-        webSocketManager.ping();
-        // Resubscribe to ensure we get fresh data
-        webSocketManager.subscribe('system');
-      } else {
-        throw new Error('WebSocket not connected');
-      }
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown error occurred';
-      console.error('Failed to refresh capability data:', err);
-    } finally {
-      loading = false;
-    }
-  }
-  
-  function getHealthScoreColor(score: number): string {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
-  }
-  
-  function getCapabilityBadgeColor(capability: string): string {
-    switch (capability) {
-      case 'full': return 'bg-green-100 text-green-800';
-      case 'partial': return 'bg-yellow-100 text-yellow-800';
-      case 'fallback': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-red-100 text-red-800';
-    }
-  }
-  
-  function getPriorityBadgeColor(priority: string): string {
-    switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-blue-100 text-blue-800';
-    }
-  }
-  
-  function getPriorityIcon(priority: string): string {
-    switch (priority) {
-      case 'high': return '🔥';
-      case 'medium': return '⭐';
-      default: return '💡';
-    }
-  }
-  
-  function getOverallStatusIcon(overall: string): string {
-    switch (overall) {
-      case 'full': return '✅';
-      case 'partial': return '⚠️';
-      default: return '❌';
-    }
-  }
-  
-  onMount(() => {
-    setupRealTimeUpdates();
-  });
-  
-  onDestroy(() => {
-    if (unsubscribeSystem) unsubscribeSystem();
-    // Optionally unsubscribe from the channel
-    webSocketManager.unsubscribe('system');
-  });
+interface SystemCapabilityData {
+	overall: string;
+	systemHealthScore: number;
+	timestamp: string;
+	facades: FacadeSummary[];
+	totalPackages: number;
+	availablePackages: number;
+	registeredServices: number;
+	installationSuggestions: InstallationSuggestion[];
+}
+
+let _capabilityData: SystemCapabilityData | null = null;
+let _loading = true;
+let _error: string | null = null;
+let autoRefresh = true;
+let unsubscribeSystem: (() => void) | null = null;
+
+// Use existing Socket.IO real-time updates instead of polling!
+function setupRealTimeUpdates() {
+	// Subscribe to system status updates from existing WebSocket
+	unsubscribeSystem = webSocketManager.systemStatus.subscribe((systemData) => {
+		if (systemData) {
+			console.log("📊 Real-time system data received:", systemData);
+			// Transform the real-time data to match our interface
+			_capabilityData = transformSystemData(systemData);
+			_loading = false;
+			_error = null;
+		}
+	});
+
+	// Subscribe to the 'system' channel for real-time updates
+	webSocketManager.subscribe("system");
+
+	// Set initial loading state
+	_loading = !webSocketManager.isConnected();
+
+	// Listen for connection changes
+	webSocketManager.connectionState.subscribe((connectionState) => {
+		if (!connectionState.connected) {
+			_error = "WebSocket disconnected - showing cached data";
+		} else {
+			_error = null;
+		}
+	});
+}
+
+// Transform WebSocket system data to match our dashboard interface
+function transformSystemData(systemData: any): SystemCapabilityData {
+	// Mock transform since we don't have real backend data structure yet
+	return {
+		overall: systemData.status || "partial",
+		systemHealthScore: systemData.healthScore || 75,
+		timestamp: systemData.timestamp || new Date().toISOString(),
+		facades: systemData.facades || [
+			{
+				name: "Socket.IO WebSocket",
+				capability: "full",
+				healthScore: webSocketManager.isConnected() ? 95 : 0,
+				packages: "socket.io-client",
+				missingPackages: [],
+				features: [
+					"Real-time Updates",
+					"Auto-reconnection",
+					"Health Monitoring",
+				],
+			},
+		],
+		totalPackages: systemData.totalPackages || 50,
+		availablePackages: systemData.availablePackages || 45,
+		registeredServices: systemData.registeredServices || 12,
+		installationSuggestions: systemData.installationSuggestions || [],
+	};
+}
+
+function _toggleAutoRefresh() {
+	autoRefresh = !autoRefresh;
+	// Socket.IO is always real-time, no need for intervals
+	console.log(
+		`Auto-refresh ${autoRefresh ? "enabled" : "disabled"} (Socket.IO real-time)`,
+	);
+}
+
+// Manual refresh triggers a ping to get fresh data
+async function _fetchCapabilityData() {
+	_loading = true;
+	_error = null;
+
+	try {
+		if (webSocketManager.isConnected()) {
+			// Ping the WebSocket to trigger fresh data
+			webSocketManager.ping();
+			// Resubscribe to ensure we get fresh data
+			webSocketManager.subscribe("system");
+		} else {
+			throw new Error("WebSocket not connected");
+		}
+	} catch (err) {
+		_error = err instanceof Error ? err.message : "Unknown error occurred";
+		console.error("Failed to refresh capability data:", err);
+	} finally {
+		_loading = false;
+	}
+}
+
+function _getHealthScoreColor(score: number): string {
+	if (score >= 80) return "text-green-600";
+	if (score >= 60) return "text-yellow-600";
+	return "text-red-600";
+}
+
+function _getCapabilityBadgeColor(capability: string): string {
+	switch (capability) {
+		case "full":
+			return "bg-green-100 text-green-800";
+		case "partial":
+			return "bg-yellow-100 text-yellow-800";
+		case "fallback":
+			return "bg-orange-100 text-orange-800";
+		default:
+			return "bg-red-100 text-red-800";
+	}
+}
+
+function _getPriorityBadgeColor(priority: string): string {
+	switch (priority) {
+		case "high":
+			return "bg-red-100 text-red-800";
+		case "medium":
+			return "bg-yellow-100 text-yellow-800";
+		default:
+			return "bg-blue-100 text-blue-800";
+	}
+}
+
+function _getPriorityIcon(priority: string): string {
+	switch (priority) {
+		case "high":
+			return "🔥";
+		case "medium":
+			return "⭐";
+		default:
+			return "💡";
+	}
+}
+
+function _getOverallStatusIcon(overall: string): string {
+	switch (overall) {
+		case "full":
+			return "✅";
+		case "partial":
+			return "⚠️";
+		default:
+			return "❌";
+	}
+}
+
+onMount(() => {
+	setupRealTimeUpdates();
+});
+
+onDestroy(() => {
+	if (unsubscribeSystem) unsubscribeSystem();
+	// Optionally unsubscribe from the channel
+	webSocketManager.unsubscribe("system");
+});
 </script>
 
 <div class="p-6 space-y-6">

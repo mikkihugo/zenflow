@@ -184,10 +184,10 @@ export type EventAdapterType =
  * Adapter factory registry for easy access to all adapter factories.
  */
 export const EventAdapterFactories = {
-  [EventAdapterTypes['SYSTEM']]: SystemEventManagerFactory,
-  [EventAdapterTypes['COORDINATION']]: CoordinationEventManagerFactory,
-  [EventAdapterTypes['COMMUNICATION']]: CommunicationEventFactory,
-  [EventAdapterTypes['MONITORING']]: MonitoringEventFactory,
+  [EventAdapterTypes.SYSTEM]: SystemEventManagerFactory,
+  [EventAdapterTypes.COORDINATION]: CoordinationEventManagerFactory,
+  [EventAdapterTypes.COMMUNICATION]: CommunicationEventFactory,
+  [EventAdapterTypes.MONITORING]: MonitoringEventFactory,
 } as const;
 
 /**

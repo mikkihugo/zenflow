@@ -1,47 +1,47 @@
 {
-  "name": "@claude-zen/git-operations",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "AI-powered Git operations implementation with intelligent conflict resolution and branch management",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix"
-  },
-  "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "node-cron": "^3.0.3",
-    "simple-git": "^3.20.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@types/node": "^20.19.11",
-    "@types/node-cron": "^3.0.11",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
-    "@typescript-eslint/parser": "^8.40.0",
-    "eslint": "^9.33.0",
-    "typescript": "^5.9.2"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "keywords": [
-    "git-operations",
-    "ai-conflict-resolution",
-    "branch-management",
-    "enterprise-git",
-    "safe-development",
-    "automated-maintenance"
-  ],
-  "author": "Claude Code Zen Team",
-  "license": "MIT",
-  "private": true
+	"name": "@claude-zen/git-operations",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "AI-powered Git operations implementation with intelligent conflict resolution and branch management",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src --ext .ts",
+		"lint:fix": "eslint src --ext .ts --fix"
+	},
+	"dependencies": {
+		"@claude-zen/foundation": "workspace:*",
+		"node-cron": "^3.0.3",
+		"simple-git": "^3.20.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.33.0",
+		"@types/node": "^20.19.11",
+		"@types/node-cron": "^3.0.11",
+		"@typescript-eslint/eslint-plugin": "^8.40.0",
+		"@typescript-eslint/parser": "^8.40.0",
+		"eslint": "^9.33.0",
+		"typescript": "^5.9.2"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"keywords": [
+		"git-operations",
+		"ai-conflict-resolution",
+		"branch-management",
+		"enterprise-git",
+		"safe-development",
+		"automated-maintenance"
+	],
+	"author": "Claude Code Zen Team",
+	"license": "MIT",
+	"private": true
 }

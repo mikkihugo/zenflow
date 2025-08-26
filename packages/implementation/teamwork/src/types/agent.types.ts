@@ -36,8 +36,7 @@
  * ````
  */
 
-import type { ChildProcess } from 'node:child_process';
-import type { UUID, Timestamp } from '@claude-zen/foundation';
+import type { Timestamp, UUID } from '@claude-zen/foundation';
 
 // Define local interfaces to avoid circular dependency
 interface Identifiable<T = string> {

@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	
-	// Simple dashboard data
-	let systemStatus = { status: 'healthy', uptime: '2h 34m', services: 12 };
-	let metrics = { 
-		cpu: 45, 
-		memory: 62, 
-		disk: 78, 
-		network: 23,
-		activeAgents: 8,
-		completedTasks: 156,
-		errorRate: 2.3
-	};
+import { onMount } from "svelte";
 
-	onMount(() => {
-		// Simple status check
-		console.log('Dashboard loaded');
-	});
+// Simple dashboard data
+const _systemStatus = { status: "healthy", uptime: "2h 34m", services: 12 };
+const _metrics = {
+	cpu: 45,
+	memory: 62,
+	disk: 78,
+	network: 23,
+	activeAgents: 8,
+	completedTasks: 156,
+	errorRate: 2.3,
+};
+
+onMount(() => {
+	// Simple status check
+	console.log("Dashboard loaded");
+});
 </script>
 
 <div class="space-y-6">

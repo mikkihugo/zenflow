@@ -3,18 +3,14 @@
  * Gold standard complexity analysis with comprehensive metrics
  */
 
-import { Project, SourceFile, SyntaxKind } from 'ts-morph';
-// Simplified to use only ts-morph for all parsing
-// Note: babelParse and acornParse removed - using ts-morph fallback
-import * as complexityReport from 'complexity-report';
 import { getLogger } from '@claude-zen/foundation';
+import { Project, SyntaxKind } from 'ts-morph';
 import type {
-  ComplexityMetrics,
-  HalsteadMetrics,
+  AnalysisOptions,
   CodeSmell,
   ComplexityHotspot,
+  ComplexityMetrics,
   ComplexityThresholds,
-  AnalysisOptions,
 } from '../types/index.js';
 
 export class ComplexityAnalyzer {
@@ -62,12 +58,11 @@ export class ComplexityAnalyzer {
       this.logger.info(
         `Initialized TypeScript project with ${this.project.getSourceFiles().length} files``
       );
-    } catch (error) {
+    } catch (error) 
       this.logger.warn(
         'Failed to initialize TypeScript project, falling back to file-by-file analysis',
         error
       );
-    }
   }
 
   /**
@@ -323,16 +318,16 @@ export class ComplexityAnalyzer {
       // Simple regex-based approach for robustness
       const patterns = [
         /\bif\b/g,
-        /\belse\s+if\b/g,
+        /\belses+if\b/g,
         /\bwhile\b/g,
         /\bfor\b/g,
         /\bdo\b/g,
         /\bswitch\b/g,
         /\bcase\b/g,
         /\bcatch\b/g,
-        /\&\&/g,
-        /\|\|/g,
-        /\?/g, // Ternary operator
+        /&&/g,
+        /||/g,
+        /?/g, // Ternary operator
       ];
 
       for (const pattern of patterns) {
@@ -493,23 +488,21 @@ export class ComplexityAnalyzer {
   }
 
   // Helper methods
-  private async readFile(filePath: string): Promise<string|null> {
+  private async readFile(filePath: string): Promise<string|null> 
     try {
-      const fs = await import('fs/promises');'
+      const fs = await import('node:fs/promises');'
       return await fs.readFile(filePath, 'utf-8');'
     } catch {
       return null;
     }
-  }
 
   private getSettledValue<T>(
     result: PromiseSettledResult<T>,
     defaultValue: T
-  ): T {
+  ): T 
     return result.status === 'fulfilled' ? result.value : defaultValue;'
-  }
 
-  private getEmptyComplexity(): ComplexityMetrics {
+  private getEmptyComplexity(): ComplexityMetrics 
     return {
       cyclomatic: 1,
       halstead: this.getEmptyHalstead(),
@@ -518,9 +511,8 @@ export class ComplexityAnalyzer {
       codeSmells: [],
       hotspots: [],
     };
-  }
 
-  private getEmptyHalstead(): HalsteadMetrics {
+  private getEmptyHalstead(): HalsteadMetrics 
     return {
       vocabulary: 0,
       length: 0,
@@ -530,9 +522,8 @@ export class ComplexityAnalyzer {
       bugs: 0,
       volume: 0,
     };
-  }
 
-  private isOperatorKind(kind: SyntaxKind): boolean {
+  private isOperatorKind(kind: SyntaxKind): boolean 
     return [
       SyntaxKind.PlusToken,
       SyntaxKind.MinusToken,
@@ -547,9 +538,8 @@ export class ComplexityAnalyzer {
       SyntaxKind.QuestionToken,
       SyntaxKind.ColonToken,
     ].includes(kind);
-  }
 
-  private isLiteralKind(kind: SyntaxKind): boolean {
+  private isLiteralKind(kind: SyntaxKind): boolean 
     return [
       SyntaxKind.NumericLiteral,
       SyntaxKind.StringLiteral,
@@ -557,17 +547,15 @@ export class ComplexityAnalyzer {
       SyntaxKind.FalseKeyword,
       SyntaxKind.NullKeyword,
     ].includes(kind);
-  }
 
   private extractMethods(
     content: string
-  ): Array<{
+  ): Array<
     name: string;
     startLine: number;
     endLine: number;
     lines: number;
-    content: string;
-  }> {
+    content: string;> {
     const methods: Array<{
       name: string;
       startLine: number;
@@ -588,10 +576,10 @@ export class ComplexityAnalyzer {
         line.match(methodRegex)||line.match(arrowFunctionRegex);
 
       if (methodMatch) {
-        const name = methodMatch[3]||methodMatch[1]||'anonymous;
+        const _name = methodMatch[3]||methodMatch[1]||'anonymous;
         const startLine = i + 1;
         let endLine = startLine;
-        let braceCount = 0;
+        const braceCount = 0;
         let started = false;
 
         // Find the end of the method
@@ -612,16 +600,15 @@ export class ComplexityAnalyzer {
           }
         }
 
-        const methodLines = endLine - startLine + 1;
-        const methodContent = lines.slice(i, endLine).join('\n');'
+        const _methodLines = endLine - startLine + 1;
+        const _methodContent = lines.slice(i, endLine).join('\n');'
 
-        methods.push({
-          name,
+        methods.push(
+          _name,
           startLine,
           endLine,
           lines: methodLines,
-          content: methodContent,
-        });
+          content: methodContent,);
       }
     }
 
@@ -630,7 +617,7 @@ export class ComplexityAnalyzer {
 
   private findDuplicateBlocks(
     lines: string[]
-  ): Array<{ startLine: number; endLine: number; lines: number }> {
+  ): Array<startLine: number; endLine: number; lines: number > {
     const duplicates: Array<{
       startLine: number;
       endLine: number;
@@ -648,9 +635,8 @@ export class ComplexityAnalyzer {
           j + matchLength < lines.length &&
           lines[i + matchLength].trim() === lines[j + matchLength].trim() &&
           lines[i + matchLength].trim() !== '''
-        ) {
+        ) 
           matchLength++;
-        }
 
         if (matchLength >= minBlockSize) {
           duplicates.push({
@@ -667,13 +653,13 @@ export class ComplexityAnalyzer {
 
   private findDeadCode(
     content: string
-  ): Array<{ name: string; line: number; type: string }> {
-    const deadCode: Array<{ name: string; line: number; type: string }> = [];
+  ): Array<name: string; line: number; type: string > {
+    const _deadCode: Array<{ name: string; line: number; type: string }> = [];
     const lines = content.split('\n');'
 
     // Simple dead code detection
     const declarations = new Map<string, { line: number; type: string }>();
-    const usages = new Set<string>();
+    const _usages = new Set<string>();
 
     // Find declarations
     for (let i = 0; i < lines.length; i++) {

@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 
 import "zod-openapi/extend"
-import { Config } from "../src/config/config"
 import { zodToJsonSchema } from "zod-to-json-schema"
+import { Config } from "../src/config/config"
 
-const file = process.argv[2]
+const _file = process.argv[2]
 
-const result = zodToJsonSchema(Config.Info, {
+const _result = zodToJsonSchema(Config.Info, {
   /**
    * We'll use the `default` values of the field as the only value in `examples`.`
    * This will ensure no docs are needed to be read, as the configuration is

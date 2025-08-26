@@ -3,28 +3,22 @@
  * Orchestrates multiple analysis tools for comprehensive BEAM project scanning
  */
 
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import * as path from 'path';
 
-import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import * as path from 'node:path';
+import { err, getLogger, ok, } from '@claude-zen/foundation';
 import which from 'which';
 
 import type {
   BeamAnalysisConfig,
-  BeamAnalysisResult,
-  BeamProject,
-  BeamLanguage,
   BeamAnalysisContext,
-  BeamAnalysisExecutionResult,
-  BeamProjectDetectionResult,
   BeamAnalysisError,
-  BeamAnalysisMetrics,
+  BeamAnalysisExecutionResult,
   BeamFinding,
-  DialyzerResult,
-  SobelowResult,
-  ElvisResult,
-  CustomAnalysisResult,
+  BeamLanguage,
+  BeamProject,
+  BeamProjectDetectionResult,
 } from '../types/beam-types';
 
 export class BeamBridge {
@@ -51,8 +45,8 @@ export class BeamBridge {
     projectPath: string,
     config?: Partial<BeamAnalysisConfig>
   ): BeamAnalysisExecutionResult {
-    const startTime = Date.now();
-    const analysisConfig = { ...this.config, ...config };
+    const _startTime = Date.now();
+    const _analysisConfig = { ...this.config, ...config };
 
     try {
       this.logger.info(`Starting BEAM analysis of project: ${projectPath}`);`
@@ -145,7 +139,7 @@ export class BeamBridge {
       };
 
       this.logger.info(
-        `BEAM analysis completed: ${findings.length} findings in ${metrics.totalTime}ms``
+        `BEAM analysis completed: $findings.lengthfindings in $metrics.totalTimems``
       );
       return ok(result);
     } catch (error) {
@@ -439,7 +433,7 @@ export class BeamBridge {
     this.logger.info('Running custom analysis rules...');'
     
     try {
-      const results: any[] = [];
+      const _results: any[] = [];
       
       for (const rule of rules) {
         this.logger.debug(`Applying custom rule: ${rule.name}`);`
@@ -453,7 +447,7 @@ export class BeamBridge {
     } catch (error) {
       return err({
         code: 'ANALYSIS_FAILED',
-        message: `Custom analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
+        message: `Custom analysis failed: $error instanceof Error ? error.message : String(error)`,`
         tool: 'custom',
       });
     }
@@ -473,7 +467,7 @@ export class BeamBridge {
         project.applications = this.parseMixApplications(mixContent);
       }
     } catch (error) {
-      this.logger.warn(`Failed to analyze Mix project: ${error}`);`
+      this.logger.warn(`Failed to analyze Mix project: $error`);`
     }
   }
 
@@ -491,7 +485,7 @@ export class BeamBridge {
         project.applications = this.parseRebarApplications(rebarContent);
       }
     } catch (error) {
-      this.logger.warn(`Failed to analyze Rebar project: ${error}`);`
+      this.logger.warn(`Failed to analyze Rebar project: $error`);`
     }
   }
 
@@ -509,7 +503,7 @@ export class BeamBridge {
         project.applications = this.parseGleamApplications(gleamContent);
       }
     } catch (error) {
-      this.logger.warn(`Failed to analyze Gleam project: ${error}`);`
+      this.logger.warn(`Failed to analyze Gleam project: $error`);`
     }
   }
 
@@ -517,10 +511,10 @@ export class BeamBridge {
     projectPath: string,
     primaryLanguage: BeamLanguage
   ): Promise<BeamLanguage[]> {
-    const additional: BeamLanguage[] = [];
+    const _additional: BeamLanguage[] = [];
 
     // Check for different file extensions
-    const extensions = {
+    const _extensions = {
       erlang: ['.erl', '.hrl'],
       elixir: ['.ex', '.exs'],
       gleam: ['.gleam'],
@@ -537,7 +531,7 @@ export class BeamBridge {
             const hasFiles = await this.hasFilesWithExtension(projectPath, _ext);
             if (hasFiles && !additional.includes(lang as BeamLanguage)) {
               additional.push(lang as BeamLanguage);
-              this.logger.debug(`Detected additional language: ${lang}`);`
+              this.logger.debug(`Detected _additional language: $lang`);`
             }
           }
         }
@@ -553,7 +547,7 @@ export class BeamBridge {
     project: BeamProject,
     startTime: number
   ): Promise<BeamAnalysisMetrics> {
-    this.logger.debug(`Calculating metrics for project: ${project.name}`);`
+    this.logger.debug(`Calculating metrics for project: $project.name`);`
     
     try {
       const metrics = await this.analyzeProjectMetrics(project.rootPath);
@@ -603,11 +597,11 @@ export class BeamBridge {
     
     for (const warning of result.warnings) {
       findings.push({
-        id: `dialyzer-${warning.type || 'warning'}`,`
+        id: `dialyzer-$warning.type || 'warning'`,`
         message: warning.message || 'Dialyzer warning',
         severity: 'medium' as const,
-        category: 'type-safety' as const,
-        location: warning.location || { file: '', line: 1 },
+        _category: 'type-safety' as const,
+        _location: warning.location || file: '', line: 1 ,
         tool: 'dialyzer',
       });
     }
@@ -663,9 +657,9 @@ export class BeamBridge {
   private getToolVersion(tool: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const child = spawn(tool, ['--version'], { stdio: 'pipe' });'
-      let output = '';
+      const output = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         output += data.toString();
       });
 

@@ -18,30 +18,27 @@
  */
 
 import {
-  getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync,
-  withRetry,
-  PerformanceTracker,
   BasicTelemetryManager,
-  TelemetryConfig,
-  Storage,
-  KeyValueStore,
-  injectable,
-  createErrorAggregator,
-  createCircuitBreaker,
-  recordMetric,
-  withTrace,
-  ensureError,
-  generateUUID,
-  UUID,
-  Timestamp,
-  createTimestamp,
-  validateObject,
   ContextError,
-  Logger,
+  createCircuitBreaker,
+  createErrorAggregator,
+  ensureError,
+  err,
+  getLogger,
+  injectable,
+  type KeyValueStore,
+  type Logger,
+  ok,
+  type PerformanceTracker,
+  type Result,
+  recordMetric,
+  Storage,
+  safeAsync,
+  type TelemetryConfig,
+  type Timestamp,
+  type UUID,
+  withRetry,
+  withTrace,
 } from '@claude-zen/foundation';
 
 import {
@@ -167,11 +164,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
   private storage: KeyValueStore|null = null;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager|null = null;
   private errorAggregator = createErrorAggregator();
-  private sessionCircuitBreaker: any;
   private initialized = false;
-  private telemetryInitialized = false;
 
   constructor() {
     super();
@@ -197,7 +191,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
   async initialize(): Promise<Result<void, SafetyError>> {
     if (this.initialized) return ok();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'safety_orchestrator_initialize''
     );
 
@@ -238,10 +232,9 @@ export class AISafetyOrchestrator extends TypedEventBase {
       this.performanceTracker.endTimer('safety_orchestrator_initialize');'
       recordMetric('safety_orchestrator_initialized', 1);'
 
-      this.logger.info('Safety orchestrator initialized successfully', {'
+      this.logger.info('Safety orchestrator initialized successfully', '
         storageConnected: !!this.storage,
-        metricsLoaded: !!loadResult.success,
-      });
+        metricsLoaded: !!loadResult.success,);
 
       return ok();
     } catch (error) {
@@ -315,7 +308,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
    */
   async stopSafetyMonitoring(): Promise<Result<void, SafetyError>> {
     return withTrace('safety_monitoring_stop', async () => {'
-      const timer = this.performanceTracker.startTimer(
+      const _timer = this.performanceTracker.startTimer(
         'safety_monitoring_stop''
       );
 
@@ -326,7 +319,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         if (this.storage) {
           await withRetry(
             () =>
-              this.storage!.set(
+              this.storage?.set(
                 'monitoring-state',
                 JSON.stringify({ active: false, stoppedAt: Date.now() })
               ),
@@ -338,7 +331,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
         recordMetric('safety_monitoring_stopped', 1);'
 
         this.logger.info('🛑 Enterprise AI Safety monitoring STOPPED');'
-        this.emit('safety:monitoring-stopped', {});'
+        this.emit('safety:monitoring-stopped', );'
 
         return ok();
       } catch (error) {
@@ -535,11 +528,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
     interactionData: AIInteractionData
   ): Promise<DeceptionAlert[]> {
     return withTrace('ai-safety-analysis', async (span) => {'
-      span?.setAttributes({
+      span?.setAttributes(
         'agent.id': interactionData.agentId,
         'interaction.toolCalls': interactionData.toolCalls.length,
-        'interaction.responseLength': interactionData.response.length,
-      });
+        'interaction.responseLength': interactionData.response.length,);
 
       this.metrics.totalInteractions++;
 
@@ -604,7 +596,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     logger.warn('⏸️ EMERGENCY: Pausing all agent sessions');'
 
     // This would integrate with agent management system
-    this.emit('safety:emergency-pause', {});'
+    this.emit('safety:emergency-pause', );'
 
     return true;
   }
@@ -630,7 +622,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     logger.error('🛡️ SAFETY PROTOCOLS ACTIVATED');'
 
     // Lock down systems, enable enhanced monitoring
-    this.emit('safety:protocols-active', {});'
+    this.emit('safety:protocols-active', );'
   }
 
   /**
@@ -672,11 +664,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
    * Setup event handlers.
    */
   private setupEventHandlers(): void {
-    this.deceptionDetector.on('deception:detected', (alert: DeceptionAlert) => {'
+    this.deceptionDetector.on('deception:detected', (_alert: DeceptionAlert) => {'
       this.handleDeceptionAlert(alert);
     });
 
-    this.deceptionDetector.on('deception:critical', (alert: DeceptionAlert) => {'
+    this.deceptionDetector.on('deception:critical', (_alert: DeceptionAlert) => {'
       this.handleCriticalDeception(alert);
     });
 
@@ -689,39 +681,6 @@ export class AISafetyOrchestrator extends TypedEventBase {
       };
       this.handleEscalation(escalationData);
     });
-  }
-
-  /**
-   * Handle deception alert.
-   *
-   * @param alert
-   */
-  private async handleDeceptionAlert(alert: DeceptionAlert): Promise<void> {
-    logger.warn(`🚨 Deception alert: ${alert.type}`, {`
-      severity: alert.severity,
-      agentId: alert.agentId,
-    });
-
-    this.emit('safety:alert', alert);'
-  }
-
-  /**
-   * Handle critical deception.
-   *
-   * @param alert
-   */
-  private async handleCriticalDeception(alert: DeceptionAlert): Promise<void> {
-    logger.error(`🛑 CRITICAL deception: ${alert.type}`, {`
-      agentId: alert.agentId,
-      evidence: alert.evidence,
-    });
-
-    // Immediate intervention
-    if (alert.agentId) {
-      await this.pauseAgentSession(alert.agentId);
-    }
-
-    this.emit('safety:critical', alert);'
   }
 
   /**
@@ -758,110 +717,6 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
     this.emit('safety:escalation', data);'
   }
-
-  /**
-   * Pause specific agent session.
-   *
-   * @param agentId
-   */
-  private async pauseAgentSession(agentId: string): Promise<void> {
-    logger.warn(`⏸️ Pausing session for agent ${agentId}`);`
-    this.emit('safety:agent-paused', { agentId });'
-  }
-
-  /**
-   * Initialize metrics.
-   */
-  private initializeMetrics(): SafetyMetrics {
-    const metricsId = generateUUID();
-    const timestamp = createTimestamp();
-
-    return {
-      id: metricsId,
-      totalInteractions: 0,
-      deceptionDetected: 0,
-      interventionsSuccessful: 0,
-      falsePositives: 0,
-      humanEscalations: 0,
-      averageResponseTime: 0,
-      timestamp,
-      version: 1,
-      isActive: true,
-      performanceScore: 0.0,
-      reliabilityScore: 0.0,
-    };
-  }
-
-  /**
-   * Get safety statistics.
-   */
-  getSafetyMetrics(): SafetyMetrics & { detectorStats: unknown } {
-    return {
-      ...this.metrics,
-      detectorStats: this.deceptionDetector.getStatistics(),
-    };
-  }
-
-  /**
-   * Reset safety metrics.
-   */
-  resetMetrics(): void {
-    this.metrics = this.initializeMetrics();
-    this.interventionHistory.clear();
-    logger.info('🔄 Safety metrics reset');'
-  }
-
-  /**
-   * Validate safety of a command or action (replaces hook system).
-   *
-   * @param context - Context containing command, agent info, and environment
-   * @returns Safety validation result with recommendations
-   */
-  async validateSafety(context: {
-    command?: string;
-    agentId?: string;
-    toolCalls?: Array<{ tool: string; parameters: unknown }>;
-    environment?: string;
-  }): Promise<{
-    safe: boolean;
-    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
-    warnings: string[];
-    recommendations: string[];
-    blocked?: boolean;
-  }> {
-    return withTrace('safety-validation', async (span) => {'
-      span?.setAttributes({
-        command: context.command||'unknown',
-        agentId: context.agentId||'unknown',
-        toolCallsCount: context.toolCalls?.length||0,
-      });
-
-      // Basic safety checks
-      const warnings: string[] = [];
-      const recommendations: string[] = [];
-      let riskLevel:'LOW|MEDIUM|HIGH|CRITICAL' = 'LOW';
-      let blocked = false;
-
-      // Check for dangerous commands
-      if (context.command) {
-        const dangerousPatterns = [
-          /rm\s+-rf\s+\/(?!tmp|var\/tmp)/i, // Dangerous rm commands
-          /sudo\s+(?!which|type)/i, // Sudo commands (except safe ones)
-          /curl.*\|\s*(?:sh|bash)/i, // Piping curl to shell
-          /wget.*\|\s*(?:sh|bash)/i, // Piping wget to shell
-          /eval\s*\(/i, // Eval statements
-        ];
-
-        for (const pattern of dangerousPatterns) {
-          if (pattern.test(context.command)) {
-            warnings.push(
-              `Potentially dangerous command detected: ${context.command}``
-            );
-            riskLevel ='HIGH;
-            recommendations.push('Review command before execution');'
-            blocked = true;
-            break;
-          }
         }
       }
 

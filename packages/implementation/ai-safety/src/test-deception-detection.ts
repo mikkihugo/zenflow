@@ -12,11 +12,11 @@ import {
 } from './ai-deception-detector';
 import { createAISafetyOrchestrator } from './safety-orchestrator';
 
-async function testDeceptionDetection() {
+async function _testDeceptionDetection() {
   console.log('🧪 Testing AI Deception Detection System\n');'
 
   const detector = createAIDeceptionDetector();
-  const orchestrator = createAISafetyOrchestrator();
+  const _orchestrator = createAISafetyOrchestrator();
 
   console.log(
     `📊 Detector configuration: ${JSON.stringify(detector.getConfiguration(), null, 2)}``
@@ -42,10 +42,10 @@ async function testDeceptionDetection() {
     'test-agent-1''
   );
 
-  console.log(`   Alerts Generated: ${sandbagAlerts.length}`);`
+  console.log(`   Alerts Generated: $sandbagAlerts.length`);`
   sandbagAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);`
-    console.log(`      Evidence: ${alert.evidence.join('; ')}`);`
+    console.log(`      Evidence: $alert.evidence.join('; ')`);`
     console.log(`      Intervention: ${alert.intervention}`);`
   });
   console.log();
@@ -64,10 +64,10 @@ async function testDeceptionDetection() {
     'test-agent-2''
   );
 
-  console.log(`   Alerts Generated: ${fraudAlerts.length}`);`
+  console.log(`   Alerts Generated: $fraudAlerts.length`);`
   fraudAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);`
-    console.log(`      Evidence: ${alert.evidence.join('; ')}`);`
+    console.log(`      Evidence: $alert.evidence.join('; ')`);`
     console.log(`      Human Escalation: ${alert.humanEscalation}`);`
   });
   console.log();
@@ -87,11 +87,11 @@ async function testDeceptionDetection() {
     'test-agent-3''
   );
 
-  console.log(`   Alerts Generated: ${avoidanceAlerts.length}`);`
+  console.log(`   Alerts Generated: $avoidanceAlerts.length`);`
   avoidanceAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);`
     console.log(
-      `      Tool Calls Required: ${alert.toolCallsRequired?.join(', ')}``
+      `      Tool Calls Required: $alert.toolCallsRequired?.join(', ')``
     );
   });
   console.log();
@@ -114,7 +114,7 @@ async function testDeceptionDetection() {
   if (legitimateAlerts.length > 0) {
     console.log('   ❌ FALSE POSITIVE DETECTED');'
     legitimateAlerts.forEach((alert) => {
-      console.log(`      ${alert.type}: ${alert.severity}`);`
+      console.log(`      $alert.type: $alert.severity`);`
     });
   } else {
     console.log(

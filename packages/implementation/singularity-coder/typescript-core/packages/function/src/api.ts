@@ -1,9 +1,4 @@
 import { DurableObject } from "cloudflare:workers"
-import { randomUUID } from "node:crypto"
-import { jwtVerify, createRemoteJWKSet } from "jose"
-import { createAppAuth } from "@octokit/auth-app"
-import { Octokit } from "@octokit/rest"
-import { Resource } from "sst"
 
 type Env = {
   SYNC_SERVER: DurableObjectNamespace<SyncServer>
@@ -12,9 +7,6 @@ type Env = {
 }
 
 export class SyncServer extends DurableObject<Env> {
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env)
-  }
   async fetch() {
     console.log("SyncServer subscribe")
 
@@ -34,23 +26,23 @@ export class SyncServer extends DurableObject<Env> {
     })
   }
 
-  async webSocketMessage(ws, message) {}
+  async webSocketMessage(_ws, _message) {}
 
-  async webSocketClose(ws, code, reason, wasClean) {
+  async webSocketClose(ws, code, _reason, _wasClean) {
     ws.close(code, "Durable Object is closing WebSocket")
   }
 
-  async publish(key: string, content: any) {
+  async publish(key: string, _content: any) {
     const sessionID = await this.getSessionID()
     if (
       !key.startsWith(`session/info/${sessionID}`) &&`
-      !key.startsWith(`session/message/${sessionID}/`) &&`
+      !key.startsWith(`session/message/$sessionID/`) &&`
       !key.startsWith(`session/part/${sessionID}/`)`
     )
       return new Response("Error: Invalid key", { status: 400 })
 
     // store message
-    await this.env.Bucket.put(`share/${key}.json`, JSON.stringify(content), {`
+    await this.env.Bucket.put(`share/$key.json`, JSON.stringify(content), `
       httpMetadata: {
         contentType: "application/json",
       },
@@ -96,9 +88,8 @@ export class SyncServer extends DurableObject<Env> {
   async clear() {
     const sessionID = await this.getSessionID()
     const list = await this.env.Bucket.list({
-      prefix: `session/message/${sessionID}/`,`
-      limit: 1000,
-    })
+      prefix: `session/message/$sessionID/`,`
+      limit: 1000,)
     for (const item of list.objects) {
       await this.env.Bucket.delete(item.key)
     }
@@ -204,7 +195,7 @@ export default {
       let info
       const messages: Record<string, any> = {}
       data.forEach((d) => {
-        const [root, type, ...splits] = d.key.split("/")
+        const [root, type, ..._splits] = d.key.split("/")
         if (root !== "session") return
         if (type === "info") {
           info = d.content
@@ -236,9 +227,9 @@ export default {
      * Used by the GitHub action to get GitHub installation access token given the OIDC token
      */
     if (request.method === "POST" && method === "exchange_github_app_token") {
-      const EXPECTED_AUDIENCE = "opencode-github-action"
+      const _EXPECTED_AUDIENCE = "opencode-github-action"
       const GITHUB_ISSUER = "https://token.actions.githubusercontent.com"
-      const JWKS_URL = `${GITHUB_ISSUER}/.well-known/jwks``
+      const _JWKS_URL = `${GITHUB_ISSUER}/.well-known/jwks``
 
       // get Authorization header
       const authHeader = request.headers.get("Authorization")

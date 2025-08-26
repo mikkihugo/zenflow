@@ -356,7 +356,7 @@ export class SafeConfigurationManager {
       ([categoryName, category]) => {
         Object.entries(category).forEach(([featureName, enabled]) => {
           if (!enabled) {
-            missing.push(`${categoryName}.${featureName}`);`
+            missing.push(`$categoryName.$featureName`);`
           }
         });
       }

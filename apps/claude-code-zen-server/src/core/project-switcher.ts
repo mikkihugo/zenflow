@@ -12,14 +12,13 @@
  * @version 2.0.0
  */
 
-import * as fs from "fs";
-import * as path from "path";
-
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { EventEmitter, getLogger } from "@claude-zen/foundation";
 import {
-	getRegisteredProjects,
-	getCurrentProject,
 	ensureDataDirectories,
+	getCurrentProject,
+	getRegisteredProjects,
 } from "@claude-zen/intelligence";
 
 import { initializeClaudeZen, shutdownClaudeZen } from "./index";
@@ -390,7 +389,7 @@ export class ProjectSwitcher extends EventEmitter {
 		const shutdownPromise = shutdownClaudeZen();
 
 		// Create timeout promise
-		const timeoutPromise = new Promise<never>((resolve, reject) => {
+		const timeoutPromise = new Promise<never>((_resolve, reject) => {
 			setTimeout(() => {
 				reject(new Error(`Shutdown timeout after ${timeout}ms`));
 			}, timeout);

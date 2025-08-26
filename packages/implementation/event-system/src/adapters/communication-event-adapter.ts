@@ -11,9 +11,9 @@
  * management for communication events across Claude-Zen.
  */
 
-import { EventEmitter, getLogger, type Logger } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
-const logger = getLogger(
+const _logger = getLogger(
   'interfaces-events-adapters-communication-event-adapter'
 );
 
@@ -60,24 +60,14 @@ interface HTTPRPCServer {
 }
 
 import type {
-  EventBatch,
-  EventEmissionOptions,
-  EventFilter,
-  EventListener,
   EventManager,
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
-  EventPriority,
-  EventQueryOptions,
-  EventSubscription,
-  EventTransform,
   SystemEvent,
 } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { CommunicationEvent } from '../types';
-import { EventPriorityMap } from '../types';
 
 // Production RPC client and server management
 interface RPCServerConfig {
@@ -312,39 +302,6 @@ export class CommunicationEventAdapter implements EventManager {
   private running = false;
   private eventEmitter = new EventEmitter();
   private logger: Logger;
-  private startTime?: Date;
-  private eventCount = 0;
-  private successCount = 0;
-  private errorCount = 0;
-  private totalLatency = 0;
-
-  // Communication component integration
-  private wrappedComponents = new Map<string, WrappedCommunicationComponent>();
-  private websocketClients = new Map<string, WebSocketClientAdapter>();
-  private rpcServers = new Map<string, HTTPRPCServer>();
-  private rpcClients = new Map<string, any>();
-
-  // Event correlation and tracking
-  private communicationCorrelations = new Map<
-    string,
-    CommunicationCorrelation
-  >();
-  private communicationHealth = new Map<string, CommunicationHealthEntry>();
-  private metrics: CommunicationEventMetrics[] = [];
-  private subscriptions = new Map<string, EventSubscription>();
-  private filters = new Map<string, EventFilter>();
-  private transforms = new Map<string, EventTransform>();
-
-  // Event processing queues
-  private eventQueue: CommunicationEvent[] = [];
-  private processingEvents = false;
-  private eventHistory: CommunicationEvent[] = [];
-
-  // Communication-specific tracking.
-  private connectionMetrics = new Map<string, any>();
-  private messageMetrics = new Map<string, any>();
-  private protocolMetrics = new Map<string, any>();
-  private communicationPatterns = new Map<string, any>();
 
   constructor(config: CommunicationEventAdapterConfig) {
     this.name = config?.name;
@@ -510,7 +467,7 @@ export class CommunicationEventAdapter implements EventManager {
   /**
    * Stop the communication event adapter.
    */
-  async stop(): Promise<void> {
+  async stop(): Promise<void> 
     if (!this.running) {
       this.logger.warn(
         `Communication event adapter ${this.name} is not running``
@@ -538,12 +495,11 @@ export class CommunicationEventAdapter implements EventManager {
       );
     } catch (error) 
       this.logger.error(
-        `Failed to stop communication event adapter ${this.name}:`,`
+        `Failed to stop communication event adapter $this.name:`,`
         error
       );
       this.emitInternal('error', error);'
       throw error;
-    }
   }
 
   /**
@@ -681,7 +637,7 @@ export class CommunicationEventAdapter implements EventManager {
     batch: EventBatch<T>,
     options?: EventEmissionOptions
   ): Promise<void> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     try {
       this.logger.debug(
@@ -726,7 +682,7 @@ export class CommunicationEventAdapter implements EventManager {
       this.logger.debug(
         `Communication event batch processed successfully: ${batch.id} in ${duration}ms``
       );
-    } catch (error) {
+    } catch (_error) {
       this.logger.error(
         `Communication event batch processing failed for ${batch.id}:`,`
         error
@@ -1910,7 +1866,7 @@ export class CommunicationEventAdapter implements EventManager {
 
         // Call the listener
         await subscription.listener(subscriptionEvent);
-      } catch (error) {
+      } catch (_error) {
         this.logger.error(
           `Communication subscription listener error for ${subscription.id}:`,`
           error
@@ -1981,7 +1937,7 @@ export class CommunicationEventAdapter implements EventManager {
                 errorCode: 'HEALTH_DEGRADED',
               },
               details: 
-                requestId: `health-${Date.now()}`,`
+                requestId: `health-$Date.now()`,`
                 responseTime: health.communicationLatency,
                 errorCode: 'HEALTH_DEGRADED',
               },
@@ -1998,7 +1954,7 @@ export class CommunicationEventAdapter implements EventManager {
    * Start communication correlation cleanup to prevent memory leaks.
    */
   private startCommunicationCorrelationCleanup(): void {
-    const cleanupInterval = 60000; // 1 minute
+    const _cleanupInterval = 60000; // 1 minute
     const correlationTTL = this.config.communication?.correlationTTL||300000; // 5 minutes
 
     setInterval(() => {
@@ -2710,9 +2666,9 @@ export const CommunicationEventHelpers = {
    * @param details
    */
   createWebSocketConnectionEvent(
-    connectionId: string,
-    url: string,
-    details?: unknown
+    _connectionId: string,
+    _url: string,
+    _details?: unknown
   ): Omit<CommunicationEvent, 'id|timestamp''> {'
     return {
       source: 'websocket-client',

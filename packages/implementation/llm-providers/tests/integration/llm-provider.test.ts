@@ -14,7 +14,7 @@
  * @since 2.0.0
  */
 
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the logging system
 vi.mock('@claude-zen/foundation/logging', () => ({'
@@ -37,12 +37,11 @@ vi.mock('@anthropic/claude', () => ({'
 }));
 
 import {
-  LLMProvider,
-  setGlobalLLM,
   getGlobalLLM,
+  LLMProvider,
   SWARM_AGENT_ROLES,
+  setGlobalLLM,
 } from '../../src/llm-provider';
-import type { SwarmAgentRole } from '../../src/types/cli-providers';
 
 describe('LLM Provider - Unit Tests (Vitest)', () => {'
   let llmProvider: LLMProvider;

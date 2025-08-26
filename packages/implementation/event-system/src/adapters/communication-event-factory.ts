@@ -11,10 +11,8 @@
  * @file Interface implementation: communication-event-factory.
  */
 
-import { EventEmitter, getLogger, type Logger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, type Logger, TypedEventBase } from '@claude-zen/foundation';
 import type {
-  EventManagerMetrics,
-  EventManagerStatus,
   EventManagerFactory,
 } from '../core/interfaces;
 import {
@@ -40,9 +38,6 @@ export class CommunicationEventFactory
 {
   private adapters = new Map<string, CommunicationEventAdapter>();
   private logger: Logger;
-  private startTime: Date;
-  private totalErrors = 0;
-  private totalCreated = 0;
 
   constructor() {
     super();
@@ -317,11 +312,11 @@ export class CommunicationEventFactory
       `Starting ${this.adapters.size} communication event adapters``
     );
 
-    const startPromises: Promise<void>[] = [];
+    const _startPromises: Promise<void>[] = [];
     const errors: Array<{ name: string; error: Error }> = [];
 
     for (const [name, adapter] of this.adapters) {
-      const startPromise = (async () => {
+      const _startPromise = (async () => {
         try {
           if (!adapter.isRunning()) {
             await adapter.start();
@@ -364,11 +359,11 @@ export class CommunicationEventFactory
       `Stopping ${this.adapters.size} communication event adapters``
     );
 
-    const stopPromises: Promise<void>[] = [];
+    const _stopPromises: Promise<void>[] = [];
     const errors: Array<{ name: string; error: Error }> = [];
 
     for (const [name, adapter] of this.adapters) {
-      const stopPromise = (async () => {
+      const _stopPromise = (async () => {
         try {
           if (adapter.isRunning()) {
             await adapter.stop();
@@ -838,17 +833,17 @@ export class CommunicationEventFactory
       this.emit('adapter-stopped', name: adapter.name );'
     });
 
-    adapter.on('error', (error) => {'
+    adapter.on('error', (_error) => {'
       this.emit('adapter-error', name: adapter.name, error );'
     });
 
-    adapter.on('subscription', (data) => {'
+    adapter.on('subscription', (_data) => {'
       this.emit('adapter-subscription', '
         name: adapter.name,
         ...(data as object),);
     });
 
-    adapter.on('emission', (data) => {'
+    adapter.on('emission', (_data) => {'
       this.emit('adapter-emission', '
         name: adapter.name,
         ...(data as object),);

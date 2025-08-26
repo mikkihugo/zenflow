@@ -26,7 +26,7 @@
  * ````
  */
 
-import { err, getLogger, ok, type Result, safeAsync } from '@claude-zen/foundation';
+import { err, getLogger, type Result, } from '@claude-zen/foundation';
 import type { EventMiddleware, EventContext } from './event-bus;
 
 const logger = getLogger('EventMiddleware');'
@@ -53,10 +53,10 @@ export function createLoggingMiddleware(
   } = options;
   const middlewareLogger = getLogger(loggerName);
 
-  return async (context: EventContext, next: () => Promise<void>) => {
+  return async (context: EventContext, _next: () => Promise<void>) => {
     const { event, payload, timestamp } = context;
 
-    const logData = {
+    const _logData = {
       event: String(event),
       timestamp,
       ...(includePayload && { payload }),
@@ -137,7 +137,7 @@ export function createValidationMiddleware<T>(
 ): EventMiddleware {
   const { throwOnError = false, logErrors = true } = options;
 
-  return async (context: EventContext, next: () => Promise<void>) => {
+  return async (context: EventContext, _next: () => Promise<void>) => {
     const validationResult = validator(context.payload);
 
     if (validationResult.isOk()) {
@@ -146,7 +146,7 @@ export function createValidationMiddleware<T>(
       context.processedBy.push('validation-middleware');'
       await next();
     } else {
-      const error = validationResult.error;
+      const _error = validationResult.error;
 
       if (logErrors) {
         logger.error(
@@ -231,7 +231,7 @@ export function createRateLimitingMiddleware(
   } = options;
   const eventCounts = new Map<string, { count: number; windowStart: number }>();
 
-  return async (context: EventContext, next: () => Promise<void>) => {
+  return async (context: EventContext, _next: () => Promise<void>) => {
     const eventKey = String(context.event);
     const now = Date.now();
 

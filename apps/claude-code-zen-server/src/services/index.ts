@@ -5,14 +5,14 @@
  * Services delegate to strategic facades when needed.
  */
 
-import { getLogger, createContainer } from "@claude-zen/foundation";
+import { createContainer, getLogger } from "@claude-zen/foundation";
 
 const logger = getLogger("services");
 
 // Re-export service modules using foundation patterns
 export * from "./api";
-export * from "./web";
 export * from "./coordination";
+export * from "./web";
 
 /**
  * Service container using foundation DI

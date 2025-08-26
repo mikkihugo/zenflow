@@ -499,12 +499,14 @@
 // =============================================================================
 // ConversationFramework is defined in this file, exported at the bottom
 
-// =============================================================================
-// ORCHESTRATION - Conversation orchestration and coordination
-// =============================================================================
-export { ConversationOrchestratorImpl as ConversationOrchestrator } from './src/main';
-export { ConversationOrchestratorImpl as TeamCoordinator } from './src/main';
 
+// Brain intelligence types
+export type {
+  BrainMeetingConfig,
+  BrainMeetingOutcome,
+  BrainMeetingParticipant,
+  MeetingIssue,
+} from './src/brain';
 // =============================================================================
 // BRAIN INTELLIGENCE - Brain-enhanced meeting intelligence
 // =============================================================================
@@ -513,45 +515,39 @@ export {
   createBrainMeetingIntelligence,
   enhanceTeamworkWithBrain,
 } from './src/brain';
-
+// =============================================================================
+// ORCHESTRATION - Conversation orchestration and coordination
+// =============================================================================
+export { ConversationOrchestratorImpl as ConversationOrchestrator, ConversationOrchestratorImpl as TeamCoordinator } from './src/main';
 // =============================================================================
 // STORAGE - Conversation storage and persistence
 // =============================================================================
-export { getConversationStorage, conversationStorage } from './src/storage';
-
+export { conversationStorage, getConversationStorage } from './src/storage';
 // =============================================================================
 // TYPE DEFINITIONS - Interfaces and types (tree-shakable)
 // =============================================================================
 export type {
-  ConversationOrchestrator as IConversationOrchestrator,
-  ConversationOrchestrator as ITeamCoordinator,
   ConversationConfig,
   ConversationConfig as TeamConfig,
-  ConversationParticipant,
-  ConversationParticipant as TeamMember,
-  ConversationMessage,
-  ConversationMessage as TeamMessage,
-  ConversationPattern,
-  ConversationPattern as TeamPattern,
   ConversationContext,
   ConversationContext as TeamContext,
-  ConversationOutcome,
-  ConversationOutcome as TeamOutcome,
+  ConversationMessage,
+  ConversationMessage as TeamMessage,
   ConversationMetrics,
   ConversationMetrics as TeamMetrics,
+  ConversationOrchestrator as IConversationOrchestrator,
+  ConversationOrchestrator as ITeamCoordinator,
+  ConversationOutcome,
+  ConversationOutcome as TeamOutcome,
+  ConversationParticipant,
+  ConversationParticipant as TeamMember,
+  ConversationPattern,
+  ConversationPattern as TeamPattern,
   ConversationRole,
   ConversationRole as TeamRole,
   DialoguePattern,
   TeamworkConfig,
 } from './src/types';
-
-// Brain intelligence types
-export type {
-  MeetingIssue,
-  BrainMeetingParticipant,
-  BrainMeetingConfig,
-  BrainMeetingOutcome,
-} from './src/brain';
 
 /**
  * Conversation framework with shared storage.
@@ -630,27 +626,22 @@ class ConversationFramework {
   static validateConfig(config: any): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (!config?.title''||''''||''typeof config.title !=='string') {'
+    if (!config?.title''||''''||''typeof config.title !=='string') '
       errors.push('Title is required and must be a string');'
-    }
 
-    if (!config?.pattern''||''''||''typeof config.pattern !=='string') {'
+    if (!config?.pattern''||''''||''typeof config.pattern !=='string') '
       errors.push('Pattern is required and must be a string');'
-    }
 
-    if (!config?.context?.goal''||''''||''typeof config.context.goal !=='string') {'
+    if (!config?.context?.goal''||''''||''typeof config.context.goal !=='string') '
       errors.push('Goal is required and must be a string');'
-    }
 
-    if (!config?.context?.domain''||''''||''typeof config.context.domain !=='string') {'
+    if (!config?.context?.domain''||''''||''typeof config.context.domain !=='string') '
       errors.push('Domain is required and must be a string');'
-    }
 
     if (
       !Array.isArray(config?.initialParticipants)''||''''||''config.initialParticipants.length === 0'
-    ) {
+    ) 
       errors.push('At least one participant is required');'
-    }
 
     if (config?.initialParticipants) {
       config.initialParticipants.forEach((participant: any, index: number) => {

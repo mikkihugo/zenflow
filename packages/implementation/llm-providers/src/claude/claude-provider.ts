@@ -5,21 +5,18 @@
  * Integrates directly with Claude Code SDK for swarm agent capabilities.
  */
 
-import { Result, ok, err } from '@claude-zen/foundation';
+import { err, ok, type Result } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
 
 import type {
-  CLIProvider,
-  CLIRequest,
-  CLIResponse,
-  CLIResult,
   CLIError,
-  SwarmAgentRole,
+  CLIProvider,
   CLIProviderCapabilities,
-  CLI_ERROR_CODES,
+  CLIRequest,
+  CLIResult,
+  SwarmAgentRole,
 } from '../types/cli-providers';
 
-import { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk';
 
 const logger = getLogger('claude-provider');'
 
@@ -109,7 +106,6 @@ export class ClaudeProvider implements CLIProvider {
   public readonly name = 'Claude Code CLI';
 
   private requestCount = 0;
-  private lastRequestTime = 0;
   private currentRole: SwarmAgentRole|undefined;
 
   constructor() {
@@ -179,10 +175,9 @@ export class ClaudeProvider implements CLIProvider {
     // Add role system prompt if set
     const messages = [...request.messages];
     if (this.currentRole && messages[0]?.role !=='system') {'
-      messages.unshift({
+      messages.unshift(
         role: 'system',
-        content: this.currentRole.systemPrompt,
-      });
+        content: this.currentRole.systemPrompt,);
     }
 
     try {
@@ -207,13 +202,11 @@ export class ClaudeProvider implements CLIProvider {
           cliError.code = CLI_ERROR_CODES.TIMEOUT_ERROR;
         } else if (
           message.includes('network')||message.includes('connection')'
-        ) {
-          cliError.code = CLI_ERROR_CODES.NETWORK_ERROR;
-        } else if (
+        ) 
+          cliError.code = CLI_ERROR_CODES.NETWORK_ERROR;else if (
           message.includes('auth')||message.includes('unauthorized')'
-        ) {
-          cliError.code = CLI_ERROR_CODES.AUTH_ERROR;
-        } else if (message.includes('rate limit')) {'
+        ) 
+          cliError.code = CLI_ERROR_CODES.AUTH_ERROR;else if (message.includes('rate limit')) {'
           cliError.code = CLI_ERROR_CODES.RATE_LIMIT_ERROR;
         } else if (message.includes('model')) {'
           cliError.code = CLI_ERROR_CODES.MODEL_ERROR;
@@ -249,21 +242,21 @@ export class ClaudeProvider implements CLIProvider {
 
     const prompt = context
       ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:``
-      : `Coding task: ${task}`;`
+      : `Coding task: $task`;`
     return this.complete(prompt, options);
   }
 
   executeAsAnalyst(
     data: string,
     analysisType: string,
-    options?: Partial<CLIRequest>
+    _options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('analyst');'
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
-    const prompt = `Analysis type: ${analysisType}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;`
+    const _prompt = `Analysis type: ${analysisType}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;`
     return this.complete(prompt, options);
   }
 
@@ -278,8 +271,8 @@ export class ClaudeProvider implements CLIProvider {
     }
 
     const prompt = scope
-      ? `Research topic: ${topic}\nScope: ${scope}\n\nPlease provide comprehensive research:``
-      : `Research topic: ${topic}\n\nPlease provide comprehensive research:`;`
+      ? `Research topic: $topic\nScope: $scope\n\nPlease provide comprehensive research:``
+      : `Research topic: $topic\n\nPlease provide comprehensive research:`;`
     return this.complete(prompt, options);
   }
 
@@ -294,8 +287,8 @@ export class ClaudeProvider implements CLIProvider {
     }
 
     const prompt = teamContext
-      ? `Coordination task: ${task}\nTeam context: ${teamContext}\n\nPlease provide coordination plan:``
-      : `Coordination task: ${task}\n\nPlease provide coordination plan:`;`
+      ? `Coordination task: $task\nTeam context: $teamContext\n\nPlease provide coordination plan:``
+      : `Coordination task: $task\n\nPlease provide coordination plan:`;`
     return this.complete(prompt, options);
   }
 
@@ -310,8 +303,8 @@ export class ClaudeProvider implements CLIProvider {
     }
 
     const prompt = requirements
-      ? `Feature to test: ${feature}\nRequirements: ${requirements}\n\nPlease provide test plan and cases:``
-      : `Feature to test: ${feature}\n\nPlease provide test plan and cases:`;`
+      ? `Feature to test: $feature\nRequirements: $requirements\n\nPlease provide test plan and cases:``
+      : `Feature to test: $feature\n\nPlease provide test plan and cases:`;`
     return this.complete(prompt, options);
   }
 
@@ -326,8 +319,8 @@ export class ClaudeProvider implements CLIProvider {
     }
 
     const prompt = requirements
-      ? `System to architect: ${system}\nRequirements: ${requirements}\n\nPlease provide architectural design:``
-      : `System to architect: ${system}\n\nPlease provide architectural design:`;`
+      ? `System to architect: $system\nRequirements: $requirements\n\nPlease provide architectural design:``
+      : `System to architect: $system\n\nPlease provide architectural design:`;`
     return this.complete(prompt, options);
   }
 
@@ -370,11 +363,9 @@ export class ClaudeProvider implements CLIProvider {
     } catch (error) {
       const cliError: CLIError = {
         code: CLI_ERROR_CODES.UNKNOWN_ERROR,
-        message: `Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-        details: {
+        message: `Task execution failed: $error instanceof Error ? error.message : 'Unknown error'`,`
           providerId: this.id,
-          currentRole: this.currentRole?.role,
-        },
+          currentRole: this.currentRole?.role,,
         cause: error instanceof Error ? error : undefined,
       };
 
@@ -443,27 +434,26 @@ export class ClaudeProvider implements CLIProvider {
         content,
         metadata: {
           provider: 'claude-code-cli',
-          model: `claude-3-${model}-20240229`,`
+          model: `claude-3-$model-20240229`,`
           timestamp: Date.now(),
-          usage: {
+          usage: 
             promptTokens: Math.floor(prompt.length / 4), // Rough estimate
             completionTokens: Math.floor(content.length / 4),
-            totalTokens: Math.floor((prompt.length + content.length) / 4),
-          },
+            totalTokens: Math.floor((prompt.length + content.length) / 4),,
         },
       };
 
       // Add optional metadata only if they have values
       if (this.currentRole?.role) {
-        response.metadata!['role'] = this.currentRole.role;'
+        response.metadata!.role = this.currentRole.role;'
       }
       if (this.currentRole?.capabilities) {
-        response.metadata!['capabilities'] = this.currentRole.capabilities;'
+        response.metadata!.capabilities = this.currentRole.capabilities;'
       }
 
       return response;
     } catch (error) {
-      const logger = getLogger('ClaudeProvider');'
+      const _logger = getLogger('ClaudeProvider');'
       logger.error('Claude Code SDK call failed:', error);'
       throw new Error(`Claude Code SDK request failed: ${error}`);`
     }

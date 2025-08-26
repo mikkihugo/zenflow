@@ -24,7 +24,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -227,11 +226,10 @@ export class PIPlanningService extends TypedEventBase {
   private readonly planningResults = new Map<string, PIPlanningResult>();
   private workflowEngine: any;
   private aguiSystem: any;
-  private teamworkOrchestrator: any;
   private knowledgeManager: any;
   private initialized = false;
 
-  constructor(logger: Logger, config: Partial<PIPlanningConfiguration> = {}) {
+  constructor(logger: Logger, _config: Partial<PIPlanningConfiguration> = {}) {
     super();
     this.logger = logger;
   }
@@ -275,7 +273,7 @@ export class PIPlanningService extends TypedEventBase {
 
     try {
       const eventId = `pi-planning-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;`
-      const piId = `pi-${artId}-${Date.now()}`;`
+      const piId = `pi-$artId-$Date.now()`;`
 
       // Generate comprehensive planning agenda
       const agenda = this.generatePlanningAgenda(
@@ -481,10 +479,9 @@ export class PIPlanningService extends TypedEventBase {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       this.logger.error('PI planning workflow execution failed:', errorMessage);'
-      this.emit('planning-workflow-failed', {'
+      this.emit('planning-workflow-failed', '
         eventId: planningEvent.eventId,
-        error: errorMessage,
-      });
+        error: errorMessage,);
       throw error;
     }
   }
@@ -515,7 +512,7 @@ export class PIPlanningService extends TypedEventBase {
    */
   async updatePlanningEvent(
     eventId: string,
-    adjustments: PlanningAdjustment[]
+    _adjustments: PlanningAdjustment[]
   ): Promise<void> {
     const event = this.planningEvents.get(eventId);
     if (!event) {
@@ -737,7 +734,7 @@ export class PIPlanningService extends TypedEventBase {
       nextActions: coordination.nextActions || [],
       participants: coordination.actualParticipants || [],
       duration: coordination.actualDuration || agendaItem.duration,
-      notes: coordination.notes || `Executed ${agendaItem.activity}`,`
+      notes: coordination.notes || `Executed $agendaItem.activity`,`
     };
 
     return outcome;
@@ -757,7 +754,7 @@ export class PIPlanningService extends TypedEventBase {
     });
 
     // Create AGUI interface for decision
-    const gateInterface = await this.aguiSystem.createInterface({
+    const _gateInterface = await this.aguiSystem.createInterface({
       type: 'planning_gate',
       entityId: `${planningEvent.eventId}-${agendaItem.id}`,`
       title: `Planning Gate: ${agendaItem.activity}`,`
@@ -806,42 +803,6 @@ export class PIPlanningService extends TypedEventBase {
     };
 
     return decision;
-  }
-
-  /**
-   * Handle critical path delays
-   */
-  private async handleCriticalPathDelay(
-    agendaItem: PlanningAgendaItem,
-    outcome: PlanningOutcome,
-    planningEvent: PIPlanningEventConfig
-  ): Promise<void> {
-    this.logger.warn('Critical path delay detected', {'
-      itemId: agendaItem.id,
-      outcome: outcome.outcome,
-      impact: 'PI planning timeline at risk',
-    });
-
-    // Notify stakeholders of critical path delay
-    this.emit('critical-path-delay', {'
-      eventId: planningEvent.eventId,
-      agendaItemId: agendaItem.id,
-      activity: agendaItem.activity,
-      outcome: outcome.outcome,
-      impact: 'Planning timeline at risk',
-    });
-
-    // Suggest mitigation strategies
-    const mitigationStrategies = await this.suggestMitigationStrategies(
-      agendaItem,
-      outcome
-    );
-
-    this.emit('mitigation-strategies-suggested', {'
-      eventId: planningEvent.eventId,
-      agendaItemId: agendaItem.id,
-      strategies: mitigationStrategies,
-    });
   }
 
   /**
@@ -900,11 +861,11 @@ export class PIPlanningService extends TypedEventBase {
     for (const agendaItem of agenda) {
       for (const prerequisite of agendaItem.prerequisites) {
         const dependency: PlanningDependency = {
-          dependencyId: `dep-${prerequisite}-${agendaItem.id}`,`
+          dependencyId: `dep-$prerequisite-$agendaItem.id`,`
           fromItem: prerequisite,
           toItem: agendaItem.id,
           type: 'finish-to-start',
-          description: `${agendaItem.activity} depends on completion of ${prerequisite}`,`
+          description: `$agendaItem.activitydepends on completion of $prerequisite`,`
           criticality: agendaItem.criticalPath ? 'critical' : 'medium',
           owner: agendaItem.facilitator,
           status: this.getDependencyStatus(prerequisite, outcomes),
@@ -1056,7 +1017,7 @@ export class PIPlanningService extends TypedEventBase {
         this.logger.debug('AGUI interface created (fallback)', {'
           type: config.type,
         });
-        return { interfaceId: `interface-${Date.now()}` };`
+        return { interfaceId: `interface-$Date.now()` };`
       },
     };
   }

@@ -34,11 +34,6 @@
  * ````
  */
 
-// =============================================================================
-// PRIMARY ENTRY POINT - Main safety guard
-// =============================================================================
-export { AISafetyOrchestrator as SafetyGuard } from './safety-orchestrator';
-export { createAISafetyOrchestrator as createSafetyGuard } from './safety-orchestrator';
 
 // =============================================================================
 // DECEPTION DETECTION - AI behavior analysis
@@ -48,20 +43,21 @@ export {
   analyzeAIResponse,
   createAIDeceptionDetector,
 } from './ai-deception-detector';
-
+// =============================================================================
+// PRIMARY ENTRY POINT - Main safety guard
+// =============================================================================
 // =============================================================================
 // ENTERPRISE SAFETY ORCHESTRATION - Comprehensive foundation integration
 // =============================================================================
-export {
+export { AISafetyOrchestrator as SafetyGuard, 
   AISafetyOrchestrator,
+  AutomatedDetectionResult,
+  BehavioralAnalysisResult,createAISafetyOrchestrator as createSafetyGuard, 
   createAISafetyOrchestrator,
   createInitializedAISafetyOrchestrator,
-  SafetyError,
-  SafetyOrchestrationResult,
-  AutomatedDetectionResult,
-  BehavioralAnalysisResult,
   HumanEscalationResult,
-} from './safety-orchestrator';
+  SafetyError,
+  SafetyOrchestrationResult,} from './safety-orchestrator';
 
 // =============================================================================
 // CONVENIENCE FUNCTIONS - Quick setup and emergency controls
@@ -124,12 +120,12 @@ export async function emergencySafetyShutdown() {
     console.log('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');'
 
     // Enhanced safety logging with error handling capabilities
-    const safetyResult = ok('Safety shutdown initiated');'
+    const _safetyResult = ok('Safety shutdown initiated');'
     console.log('Safety result:', safetyResult);'
     
     // Error scenario demonstration (expanded functionality)
     if (process.env.NODE_ENV === 'test') {'
-      const testError = new SafetyError('Test safety error for validation', 'TEST_ERROR');'
+      const _testError = new SafetyError('Test safety error for validation', 'TEST_ERROR');'
       console.log('Test error created:', testError.message);'
     }
 
@@ -206,7 +202,7 @@ export interface InterventionAction {
 // =============================================================================
 
 export async function getAISafetySystemAccess(
-  config?: SafetyConfig
+  _config?: SafetyConfig
 ): Promise<any> {
   const orchestrator = await createInitializedAISafetyOrchestrator();
   if (!orchestrator.success) {
@@ -243,7 +239,7 @@ export async function getSafetyOrchestrator(
   return result.value;
 }
 
-export async function getDeceptionDetection(config?: any): Promise<any> {
+export async function getDeceptionDetection(_config?: any): Promise<any> {
   const detector = createAIDeceptionDetector();
   return {
     analyze: (data: AIInteractionData) => detector.analyzeAIResponse(data),
@@ -267,7 +263,7 @@ export async function getSafetyMonitoring(config?: SafetyConfig): Promise<any> {
 export async function getSafetyIntervention(
   config?: SafetyConfig
 ): Promise<any> {
-  const system = await getAISafetySystemAccess(config);
+  const _system = await getAISafetySystemAccess(config);
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types

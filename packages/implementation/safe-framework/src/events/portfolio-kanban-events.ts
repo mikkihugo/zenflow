@@ -17,8 +17,8 @@
  * @version 2.0.0
  */
 
+import { createEvent, type EventBus, EventPriority } from '@claude-zen/event-system';
 import { generateNanoId } from '@claude-zen/foundation';
-import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
 
 /**
  * SAFe Portfolio Kanban states
@@ -433,7 +433,7 @@ export class PortfolioKanbanWorkflow {
     pendingGates: string[];
   } {
     const missingRequirements: string[] = [];
-    const pendingGates: string[] = [];
+    const _pendingGates: string[] = [];
 
     // Check required evidence
     for (const requirement of requirements.required) {

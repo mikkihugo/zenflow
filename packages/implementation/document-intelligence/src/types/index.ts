@@ -5,20 +5,18 @@
  * strategic vision, document processing, and swarm integration types.
  */
 
-// Re-export types from intelligence modules
-export type * from '../intelligence/semantic-classifier';
-export type * from '../intelligence/segmentation-engine';
-
-// Re-export types from services
-export type * from '../services/strategic-vision-service';
-
-// Re-export types from scanning
-export type * from '../scanning/enhanced-document-scanner';
 
 // Re-export types from core processing
 export type * from '../core/document-driven-system';
 export type * from '../core/document-processor';
 export type * from '../core/document-workflow-system';
+export type * from '../intelligence/segmentation-engine';
+// Re-export types from intelligence modules
+export type * from '../intelligence/semantic-classifier';
+// Re-export types from scanning
+export type * from '../scanning/enhanced-document-scanner';
+// Re-export types from services
+export type * from '../services/strategic-vision-service';
 
 /**
  * Document intelligence service types

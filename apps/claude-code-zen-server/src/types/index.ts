@@ -5,110 +5,92 @@
  * Foundation-style organization with clean, focused modules.
  */
 
-// ============================================================================
-// Core System Types
-// ============================================================================
-export * from "./core";
+export type {
+	ApiError,
+	ApiResponse,
+	ClientConfig,
+	DashboardConfig,
+	DashboardWidget,
+	FilterParams,
+	HttpClient,
+	PaginatedResponse,
+	PaginationParams,
+	QueryParams,
+	RouteDefinition,
+	WebSocketConfig,
+	WebSocketMessage,
+} from "./api";
 
 // ============================================================================
 // API & Web Interface Types
 // ============================================================================
 export * from "./api";
 export type {
-	ApiResponse,
-	ApiError,
-	PaginatedResponse,
-	PaginationParams,
-	FilterParams,
-	QueryParams,
-	HttpClient,
-	ClientConfig,
-	WebSocketMessage,
-	WebSocketConfig,
-	RouteDefinition,
-	DashboardConfig,
-	DashboardWidget,
-} from "./api";
+	AgentCapabilities,
+	AgentMetrics,
+	SwarmAgent,
+	SwarmConfig,
+	SwarmMessage,
+	SwarmMetrics,
+	SwarmResult,
+	Task,
+	TaskPayload,
+	TaskResult,
+	ZenSwarm,
+} from "./coordination";
 
 // ============================================================================
 // Coordination & Swarm Types
 // ============================================================================
 export * from "./coordination";
-export type {
-	ZenSwarm,
-	SwarmAgent,
-	SwarmConfig,
-	Task,
-	TaskResult,
-	TaskPayload,
-	AgentCapabilities,
-	AgentMetrics,
-	SwarmResult,
-	SwarmMetrics,
-	SwarmMessage,
-} from "./coordination";
-
 // ============================================================================
-// Shared Cross-Domain Types
+// Core System Types
 // ============================================================================
-export * from "./shared";
-export type {
-	UUID,
-	Timestamp,
-	BaseEntity,
-	SystemEvent,
-	Service,
-	ServiceHealth,
-	SecurityContext,
-	Result,
-	Success,
-	Failure,
-	DeepPartial,
-	DeepRequired,
-	Nullable,
-	Optional,
-	Awaitable,
-} from "./shared";
-
+export * from "./core";
 // ============================================================================
 // Type Guards (Re-exported for convenience)
 // ============================================================================
 export {
-	isSystemConfig,
-	isSystemHealth,
-	isApiResponse,
 	isApiError,
-	isPaginatedResponse,
-	isZenSwarm,
-	isSwarmAgent,
-	isTask,
-	isSwarmMessage,
+	isApiResponse,
 	isBaseEntity,
-	isSystemEvent,
+	isFailure,
+	isPaginatedResponse,
 	isService,
 	isSuccess,
-	isFailure,
+	isSwarmAgent,
+	isSwarmMessage,
+	isSystemConfig,
+	isSystemEvent,
+	isSystemHealth,
+	isTask,
+	isZenSwarm,
 } from "./core";
+export type {
+	Awaitable,
+	BaseEntity,
+	DeepPartial,
+	DeepRequired,
+	Failure,
+	Nullable,
+	Optional,
+	Result,
+	SecurityContext,
+	Service,
+	ServiceHealth,
+	Success,
+	SystemEvent,
+	Timestamp,
+	UUID,
+} from "./shared";
+// ============================================================================
+// Shared Cross-Domain Types
+// ============================================================================
+export * from "./shared";
+
 // Removed duplicate export - already included in export * from './api'
 // Removed duplicate export - already included in export * from './coordination'
 // Removed duplicate export - already included in export * from './shared'
-
-// ============================================================================
-// Utility Functions (Re-exported for convenience)
-// ============================================================================
-export { success, failure } from "./shared";
-
-// ============================================================================
-// Constants
-// ============================================================================
-export {
-	DEFAULT_TIMEOUT,
-	DEFAULT_RETRY_ATTEMPTS,
-	DEFAULT_PAGE_SIZE,
-	MAX_PAGE_SIZE,
-	EVENT_PRIORITIES,
-	SERVICE_STATUSES,
-} from "./shared";
 
 // ============================================================================
 // External Package Types (Strategic Facade Compliance)
@@ -120,6 +102,22 @@ export type {
 	Result as FoundationResult,
 	UUID as FoundationUUID,
 } from "@claude-zen/foundation";
+// ============================================================================
+// Utility Functions (Re-exported for convenience)
+// ============================================================================
+// ============================================================================
+// Constants
+// ============================================================================
+export {
+	DEFAULT_PAGE_SIZE,
+	DEFAULT_RETRY_ATTEMPTS,
+	DEFAULT_TIMEOUT,
+	EVENT_PRIORITIES,
+	failure,
+	MAX_PAGE_SIZE,
+	SERVICE_STATUSES,
+	success,
+} from "./shared";
 
 // Note: Only import types that are actually available and needed
 // Removed imports for packages that may not exist or aren't being used

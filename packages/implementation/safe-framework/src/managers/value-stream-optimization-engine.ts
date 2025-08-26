@@ -17,9 +17,8 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 // Core configuration interfaces
 export interface OptimizationEngineConfig {
@@ -68,11 +67,11 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
   private state: OptimizationEngineState;
   private optimizationTimer?: NodeJS.Timeout;
 
-  constructor(config: Partial<OptimizationEngineConfig> = {}) {
+  constructor(_config: Partial<OptimizationEngineConfig> = {}) {
     super();
     this.logger = getLogger('ValueStreamOptimizationEngine');'
 
-    this.config = {
+    this.config = 
       enableAdvancedBottleneckAnalysis: true,
       enableAIOptimizationRecommendations: true,
       enableAutomatedKaizen: true,
@@ -85,8 +84,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
       learningDataRetentionDays: 365,
       minImpactThreshold: 5, // 5% minimum impact
       maxRecommendationsPerCycle: 10,
-      ...config,
-    };
+      ...config,;
 
     this.state = this.initializeState();
   }
@@ -351,7 +349,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
    */
   async executeAutomatedKaizenCycle(
     valueStreamId: string,
-    kaizenConfig: any,
+    _kaizenConfig: any,
     currentMetrics: any
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
@@ -477,7 +475,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
    */
   async predictValueDeliveryTimes(
     valueStreamId: string,
-    predictionConfig: any,
+    _predictionConfig: any,
     historicalData: any[]
   ): Promise<any> {
     if (!this.initialized) await this.initialize();

@@ -13,14 +13,14 @@
  */
 
 import {
-  format,
   addMonths,
   addWeeks,
   differenceInDays,
+  endOfWeek,
+  format,
   isAfter,
   isBefore,
   startOfWeek,
-  endOfWeek,
 } from 'date-fns';
 
 /**
@@ -86,7 +86,7 @@ export class SafeDateUtils {
       quarters.push({
         start: quarterStart,
         end: quarterEnd,
-        label: `Q${(i % 4) + 1} ${quarterStart.getFullYear()}`,`
+        label: `Q$(i % 4) + 1$quarterStart.getFullYear()`,`
       });
     }
 

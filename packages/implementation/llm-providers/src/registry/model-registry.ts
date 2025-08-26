@@ -10,11 +10,9 @@ import { getLogger } from '@claude-zen/foundation/logging';
 
 import type {
   APIProvider,
-  APIProviderCapabilities,
 } from '../types/api-providers';
 import type {
   CLIProvider,
-  CLIProviderCapabilities,
 } from '../types/cli-providers';
 
 const logger = getLogger('ModelRegistry');'
@@ -77,7 +75,7 @@ export class ModelRegistry extends TypedEventBase {
   /**
    * Register a provider with the registry
    */
-  registerProvider(provider: CLIProvider|APIProvider): void {
+  registerProvider(_provider: CLIProvider|APIProvider): void {
     logger.info(`📝 Registering provider: ${provider.name} (${provider.id})`);`
 
     this.providers.set(provider.id, provider);
@@ -90,7 +88,7 @@ export class ModelRegistry extends TypedEventBase {
    * Unregister a provider
    */
   unregisterProvider(providerId: string): void {
-    logger.info(`🗑️ Unregistering provider: ${providerId}`);`
+    logger.info(`🗑️ Unregistering provider: $providerId`);`
 
     const provider = this.providers.get(providerId);
     if (provider) {
@@ -200,194 +198,3 @@ export class ModelRegistry extends TypedEventBase {
 
     return candidates[0];
   }
-
-  /**
-   * Load models from a provider's capabilities'
-   */
-  private loadProviderModels(provider: CLIProvider | APIProvider): void {
-    try {
-      const capabilities = provider.getCapabilities();
-
-      for (const modelId of capabilities.models) {
-        const modelInfo: ModelInfo = {
-          id: `${provider.id}:${modelId}`,`
-          name: modelId,
-          provider: provider.id,
-          capabilities: this.extractCapabilities(capabilities),
-          contextWindow: capabilities.contextWindow,
-          maxTokens: capabilities.maxTokens,
-          pricing: capabilities.pricing,
-          available: true,
-        };
-
-        this.models.set(modelInfo.id, modelInfo);
-        logger.info(
-          `📊 Registered model: ${modelInfo.name} from ${provider.name}``
-        );
-      }
-
-      this.emit('models:loaded', {'
-        providerId: provider.id,
-        modelCount: capabilities.models.length,
-      });
-    } catch (error) {
-      logger.error(
-        `Failed to load models from provider ${provider.id}:`,`
-        error
-      );
-    }
-  }
-
-  /**
-   * Extract capability strings from provider capabilities
-   */
-  private extractCapabilities(
-    capabilities: CLIProviderCapabilities|APIProviderCapabilities
-  ): string[] {
-    const caps: string[] = [];
-
-    for (const [key, value] of Object.entries(capabilities.features)) {
-      if (value === true) {
-        caps.push(key);
-      }
-    }
-
-    return caps;
-  }
-
-  /**
-   * Start auto-discovery of providers
-   */
-  private startAutoDiscovery(): void {
-    if (this.registryConfig.refreshInterval) {
-      setInterval(() => {
-        this.refreshAvailability();
-      }, this.registryConfig.refreshInterval);
-    }
-  }
-
-  /**
-   * Refresh model availability
-   */
-  private async refreshAvailability(): Promise<void> {
-    logger.debug('🔄 Refreshing model availability...');'
-
-    for (const [providerId, provider] of this.providers.entries()) {
-      try {
-        // Check if provider has healthCheck method
-        if (
-          'healthCheck' in provider &&'
-          typeof provider.healthCheck === 'function''
-        ) {
-          const isHealthy = await provider.healthCheck();
-
-          // Update all models from this provider
-          for (const [modelId, model] of this.models.entries()) {
-            if (model.provider === providerId) {
-              const wasAvailable = model.available;
-              model.available = isHealthy;
-
-              if (wasAvailable !== isHealthy) {
-                this.emit('model:availability-changed', {'
-                  modelId,
-                  available: isHealthy,
-                });
-              }
-            }
-          }
-        }
-      } catch (error) {
-        logger.warn(`Health check failed for provider ${providerId}:`, error);`
-      }
-    }
-  }
-
-  /**
-   * Export registry state for debugging
-   */
-  getRegistryState(): {
-    providers: string[];
-    models: string[];
-    config: ModelRegistryConfig;
-  } {
-    return {
-      providers: Array.from(this.providers.keys()),
-      models: Array.from(this.models.keys()),
-      config: this.registryConfig,
-    };
-  }
-}
-
-/**
- * DI Factory for ModelRegistry
- */
-export class ModelRegistryFactory {
-  private static instance: ModelRegistry;
-
-  /**
-   * Create or get singleton instance
-   */
-  static getInstance(config?: Partial<ModelRegistryConfig>): ModelRegistry {
-    if (!this.instance) {
-      this.instance = new ModelRegistry(config);
-    }
-    return this.instance;
-  }
-
-  /**
-   * Create new instance (for testing)
-   */
-  static createInstance(config?: Partial<ModelRegistryConfig>): ModelRegistry {
-    return new ModelRegistry(config);
-  }
-
-  /**
-   * Reset singleton (for testing)
-   */
-  static reset(): void {
-    this.instance = undefined;
-  }
-}
-
-/**
- * DI Service for automatic provider registration
- */
-export class ModelRegistryService {
-  constructor(
-    private registry: ModelRegistry,
-    private providers: (CLIProvider|APIProvider)[]
-  ) {}
-
-  /**
-   * Initialize the service by registering all providers
-   */
-  initialize(): void {
-    logger.info('🚀 Initializing ModelRegistryService...');'
-
-    for (const provider of this.providers) {
-      this.registry.registerProvider(provider);
-    }
-
-    logger.info(
-      `✅ ModelRegistryService initialized with ${this.providers.length} providers``
-    );
-  }
-
-  /**
-   * Get the registry instance
-   */
-  getRegistry(): ModelRegistry {
-    return this.registry;
-  }
-}
-
-/**
- * Export factory function for easy DI setup
- */
-export function createModelRegistryService(
-  providers: (CLIProvider | APIProvider)[],
-  config?: Partial<ModelRegistryConfig>
-): ModelRegistryService {
-  const registry = ModelRegistryFactory.createInstance(config);
-  return new ModelRegistryService(registry, providers);
-}

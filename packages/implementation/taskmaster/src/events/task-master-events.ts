@@ -11,23 +11,23 @@
  * - Error handling and recovery
  */
 
+import { getLogger, } from '@claude-zen/foundation';
 import { getEventSystem } from '@claude-zen/infrastructure';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import { getTelemetryManager } from '@claude-zen/operations';
 
 import type {
+  APIError,
+  ApprovalGateId,
+  AuditLogEntry,
+  BottleneckInfo,
+  FlowMetrics,
+  SystemHealthStatus,
   TaskId,
   TaskMetadata,
   TaskStateTransition,
-  ApprovalGateId,
   UserId,
-  WorkflowId,
-  FlowMetrics,
-  BottleneckInfo,
-  SystemHealthStatus,
-  APIError,
-  AuditLogEntry,
   WIPViolationSeverity,
+  WorkflowId,
 } from '../types/core/index.js';
 
 // =============================================================================
@@ -530,11 +530,10 @@ export class TaskMasterEventManager {
       // Set up error handling
       this.eventBus.on('error', this.handleEventError.bind(this));'
 
-      this.logger.info('TaskMaster Event Manager initialized', {'
+      this.logger.info('TaskMaster Event Manager initialized', '
         persistence: this.config.enablePersistence,
         telemetry: this.config.enableTelemetry,
-        replay: this.config.enableReplay,
-      });
+        replay: this.config.enableReplay,);
     } catch (error) {
       this.logger.error('Failed to initialize event manager', error);'
       throw error;
@@ -655,7 +654,7 @@ export class TaskMasterEventManager {
       }
     };
 
-    this.handlers.get(eventTypeStr)!.push(asyncHandler);
+    this.handlers.get(eventTypeStr)?.push(asyncHandler);
     this.eventBus.on(eventType, asyncHandler);
 
     this.logger.debug('Event handler registered', { eventType });'
@@ -789,21 +788,19 @@ export class TaskMasterEventManager {
     this.logger.error('Event bus error', error, { event });'
 
     // Emit system error event
-    await this.emit('system:error', {'
+    await this.emit('system:error', '
       id: this.generateEventId(),
       timestamp: new Date(),
       source: 'event_manager',
       version: '2.0.0',
-      metadata: {},
-      error: {
+      metadata: ,
+      error: 
         code: 'EVENT_BUS_ERROR',
         message: error.message,
         details: error.stack,
-        metadata: { event },
-        correlationId: this.generateEventId(),
-      },
-      component: 'event_bus',
-    });
+        metadata: event ,
+        correlationId: this.generateEventId(),,
+      component: 'event_bus',);
   }
 
   private generateEventId(): string {

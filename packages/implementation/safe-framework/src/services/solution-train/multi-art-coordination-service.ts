@@ -12,17 +12,12 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, addWeeks, startOfWeek } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
-  orderBy,
-  sumBy,
-  meanBy,
-  uniqBy,
-  flatten,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -530,7 +525,7 @@ export class MultiARTCoordinationService {
   trackDependency(
     dependency: Omit<ARTDependency, 'dependencyId'>'
   ): ARTDependency {
-    const dependencyId = `dep-${generateNanoId(12)}`;`
+    const _dependencyId = `dep-${generateNanoId(12)}`;`
 
     const trackedDependency: ARTDependency = {
       dependencyId,
@@ -560,7 +555,7 @@ export class MultiARTCoordinationService {
   ): ARTDependency {
     const dependency = this.dependencies.get(dependencyId);
     if (!dependency) {
-      throw new Error(`Dependency not found: ${dependencyId}`);`
+      throw new Error(`Dependency not found: $_dependencyId`);`
     }
 
     const updatedDependency: ARTDependency = {
@@ -796,7 +791,7 @@ export class MultiARTCoordinationService {
           : 'medium',
       dueDate: issue.dueDate,
       status: 'open' as const,
-      dependencies: [],
+      _dependencies: [],
     }));
   }
 

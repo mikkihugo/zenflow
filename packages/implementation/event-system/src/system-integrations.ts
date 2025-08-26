@@ -24,7 +24,7 @@ import type {
 } from './core/interfaces;
 
 import { EventManagerTypes } from './core/interfaces;
-import type { MonitoringEvent, SystemLifecycleEvent } from './types;
+import type { SystemLifecycleEvent } from './types;
 
 // Define EventManagerInterface for backward compatibility
 interface EventManagerInterface extends EventManager {
@@ -63,7 +63,6 @@ export class UELEnhancedEventBus extends TypedEventBase {
   private uelEnabled = false;
   private eventMappings = new Map<string, string>();
   private logger: Logger;
-  private migrationHelper?: EventEmitterMigrationHelper;
 
   constructor(
     options: {
@@ -133,7 +132,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
    * @param {...any} args
    */
   override emit(eventName: string|symbol, ...args: unknown[]): boolean {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     // Standard EventEmitter behavior
     const result = super.emit(eventName, ...args);
@@ -634,8 +633,8 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
     recommendations: string[];
   }> {
     const issues: string[] = [];
-    const recommendations: string[] = [];
-    const score = 100;
+    const _recommendations: string[] = [];
+    const _score = 100;
 
     // Check UEL integration
     if (this.uelSystem) {
@@ -711,12 +710,11 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
 
       this.eventBus = undefined as any;
       this.logger.info('✅ Application Coordinator UEL integration shut down');'
-    } catch (error) {
+    } catch (error) 
       this.logger.error(
         '❌ Failed to shutdown Application Coordinator UEL integration:',
         error
       );
-    }
   }
 }
 
@@ -1098,20 +1096,20 @@ export function analyzeSystemEventEmitterUsage(
   } = {};
   const migrationRecommendations: string[] = [];
 
-  let totalListeners = 0;
-  let totalEventTypes = 0;
-  const highComplexitySystems = 0;
+  let _totalListeners = 0;
+  let _totalEventTypes = 0;
+  const _highComplexitySystems = 0;
 
   for (const [systemName, system] of Object.entries(systems)) {
     try {
       const analysis = migrationHelper.analyzeEventEmitter(system);
       systemAnalyses[systemName] = analysis as any;
 
-      totalListeners += Object.values(analysis.listenerCounts).reduce(
+      _totalListeners += Object.values(analysis.listenerCounts).reduce(
         (sum, count) => sum + count,
         0
       );
-      totalEventTypes += analysis.eventTypes.length;
+      _totalEventTypes += analysis.eventTypes.length;
 
       if (analysis.migrationComplexity === 'high') {'
         highComplexitySystems++;

@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * UEL Shared Types and Utilities - Breaks Circular Dependencies
  *

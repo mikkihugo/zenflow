@@ -7,7 +7,6 @@
 
 import {
   ESSENTIAL_SAFE_COMPONENTS,
-  EssentialSafeComponent,
 } from './essential-safe-readiness.js';
 
 // ============================================================================
@@ -82,7 +81,7 @@ export function calculateActualSafeCoverage(): {
 
 function generateRecommendation(
   essentialCoverage: number,
-  overallCoverage: number
+  _overallCoverage: number
 ): string {
   if (essentialCoverage >= 80) {
     return 'Strong foundation - focus on completing Essential SAFe before expanding;
@@ -105,20 +104,20 @@ export function generateHonestAssessmentReport(): string {
 # TaskMaster SAFe Implementation - Honest Assessment
 
 ## Executive Summary
-- **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
-- **Overall SAFe Coverage**: ${coverage.overallSafeCoverage}%
-- **Recommendation**: ${coverage.recommendation}
+- **Essential SAFe Coverage**: $coverage.essentialSafeCoverage%
+- **Overall SAFe Coverage**: $coverage.overallSafeCoverage%
+- **Recommendation**: $coverage.recommendation
 
 ## Component Status
-- ✅ **Complete**: ${coverage.breakdown.complete} components
-- ⚠️ **Partial**: ${coverage.breakdown.partial} components  
-- ❌ **Missing**: ${coverage.breakdown.missing} components
+- ✅ **Complete**: $coverage.breakdown.completecomponents
+- ⚠️ **Partial**: $coverage.breakdown.partialcomponents  
+- ❌ **Missing**: $coverage.breakdown.missingcomponents
 
 ## TaskMaster Strengths
-${coverage.strengths.map((s) => `- ${s}`).join('\n')}'
+$coverage.strengths.map((s) => `- ${s}`).join('\n')'
 
 ## Critical Gaps
-${coverage.gaps.map((g) => `- ${g}`).join('\n')}'
+$coverage.gaps.map((g) => `- ${g}`).join('\n')'
 
 ## Next Steps
 1. Complete partial implementations (4-6 weeks)

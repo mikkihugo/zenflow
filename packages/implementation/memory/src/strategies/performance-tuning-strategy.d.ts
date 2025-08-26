@@ -85,5 +85,4 @@ export declare class PerformanceTuningStrategy extends TypedEventBase {
   updateConfig(newConfig: Partial<PerformanceConfig>): void;
   shutdown(): Promise<void>;
 }
-export {};
 //# sourceMappingURL=performance-tuning-strategy.d.ts.map

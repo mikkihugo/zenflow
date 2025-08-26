@@ -13,7 +13,8 @@
  */
 
 // Export main CodeAnalyzer class and utilities
-export { CodeAnalyzer, createCodeAnalyzer, analyzeFile } from './code-analyzer';
+export { analyzeFile, CodeAnalyzer, createCodeAnalyzer } from './code-analyzer';
+
 import { CodeAnalyzer } from './code-analyzer';
 
 // Export all types

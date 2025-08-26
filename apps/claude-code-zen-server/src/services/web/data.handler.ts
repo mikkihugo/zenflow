@@ -5,25 +5,25 @@
  * Provides comprehensive system status, metrics, and data management.
  */
 
+import {
+	getAILinter,
+	getCodeAnalyzer,
+	getGitOperations,
+	getRepoAnalyzer,
+} from "@claude-zen/development";
+import {
+	getSafeFramework,
+	getTaskMasterSystem,
+	getWorkflowEngine,
+} from "@claude-zen/enterprise";
 import { getLogger, safeAsync, withRetry } from "@claude-zen/foundation";
 // ALL strategic facades for comprehensive system integration
 import { getDatabaseSystem, getEventSystem } from "@claude-zen/infrastructure";
-import {
-	getTaskMasterSystem,
-	getSafeFramework,
-	getWorkflowEngine,
-} from "@claude-zen/enterprise";
+import { getBrainSystem, getMemorySystem } from "@claude-zen/intelligence";
 import {
 	getPerformanceTracker,
 	getTelemetryManager,
 } from "@claude-zen/operations";
-import { getBrainSystem, getMemorySystem } from "@claude-zen/intelligence";
-import {
-	getCodeAnalyzer,
-	getRepoAnalyzer,
-	getAILinter,
-	getGitOperations,
-} from "@claude-zen/development";
 
 const logger = getLogger("WebDataService");
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
@@ -100,18 +100,9 @@ export interface TaskMetricsData {
 export class WebDataService {
 	// ALL strategic facade systems for comprehensive functionality
 	private databaseSystem: unknown | null = null;
-	private eventSystem: unknown | null = null;
 	private taskMasterSystem: unknown | null = null;
-	private workflowEngine: unknown | null = null;
 	private safetyFramework: unknown | null = null;
 	private brainSystem: unknown | null = null;
-	private memorySystem: unknown | null = null;
-	private performanceTracker: unknown | null = null;
-	private telemetryManager: unknown | null = null;
-	private codeAnalyzer: unknown | null = null;
-	private repoAnalyzer: unknown | null = null;
-	private aiLinter: unknown | null = null;
-	private gitOperations: unknown | null = null;
 
 	constructor() {
 		this.initializeStrategicSystems();

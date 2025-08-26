@@ -1,13 +1,12 @@
 import { generatePKCE } from "@openauthjs/openauth/pkce"
-import { Auth } from "./index"
 
 export namespace AuthAnthropic {
-  const CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
+  const _CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
 
   export async function authorize(mode: "max" | "console") {
-    const pkce = await generatePKCE()
+    const _pkce = await generatePKCE()
 
-    const url = new URL(
+    const _url = new URL(
       `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize`,`
       import.meta.url,
     )

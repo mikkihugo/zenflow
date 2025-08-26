@@ -18,10 +18,10 @@ import type { Logger } from '../../types';
 
 // Re-export types from SPARC-CD mapping service
 export type {
+  MetricTrend,
+  PipelineBottleneck,
   PipelineExecution,
   PipelineMetrics,
-  PipelineBottleneck,
-  MetricTrend,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -265,9 +265,6 @@ export interface MetricDegradation {
 // Import types from mapping service
 import type {
   PipelineExecution,
-  PipelineMetrics,
-  PipelineBottleneck,
-  MetricTrend,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -291,7 +288,6 @@ export class PipelinePerformanceService {
   private performanceMetrics = new Map<string, PerformanceAnalysisResult>();
   private historicalData = new Map<string, PipelineExecution[]>();
   private activeAlerts = new Map<string, PerformanceAlert[]>();
-  private monitoringTimer?: NodeJS.Timeout;
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -306,13 +302,10 @@ export class PipelinePerformanceService {
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -321,12 +314,11 @@ export class PipelinePerformanceService {
 
       // Lazy load @claude-zen/brain for LoadBalancer - optimization
       const { LoadBalancer } = await import('@claude-zen/brain');'
-      this.loadBalancer = new LoadBalancer({
+      this.loadBalancer = new LoadBalancer(
         strategy: 'intelligent',
         enableHealthChecks: true,
         healthCheckInterval: 30000,
-        failoverTimeout: 5000,
-      });
+        failoverTimeout: 5000,);
       await this.loadBalancer.initialize();
 
       this.initialized = true;
@@ -346,7 +338,7 @@ export class PipelinePerformanceService {
   async monitorPipelinePerformance(): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'pipeline_performance_monitoring''
     );
 
@@ -378,10 +370,9 @@ export class PipelinePerformanceService {
 
       this.performanceTracker.endTimer('pipeline_performance_monitoring');'
 
-      this.logger.info('Pipeline performance monitoring completed', {'
+      this.logger.info('Pipeline performance monitoring completed', '
         pipelineCount: activePipelines.length,
-        alertCount: Array.from(this.activeAlerts.values()).flat().length,
-      });
+        alertCount: Array.from(this.activeAlerts.values()).flat().length,);
     } catch (error) {
       this.performanceTracker.endTimer('pipeline_performance_monitoring');'
       this.logger.error('Pipeline performance monitoring failed:', error);'
@@ -397,7 +388,7 @@ export class PipelinePerformanceService {
   ): Promise<PerformanceAnalysisResult> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'pipeline_performance_analysis''
     );
 
@@ -451,12 +442,11 @@ export class PipelinePerformanceService {
 
       this.performanceTracker.endTimer('pipeline_performance_analysis');'
 
-      this.logger.info('Pipeline performance analysis completed', {'
+      this.logger.info('Pipeline performance analysis completed', '
         pipelineId: execution.context.pipelineId,
         overallScore: result.overallScore,
         bottleneckCount: result.bottlenecks.length,
-        recommendationCount: result.recommendations.length,
-      });
+        recommendationCount: result.recommendations.length,);
 
       return result;
     } catch (error) {
@@ -479,7 +469,7 @@ export class PipelinePerformanceService {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('performance_insights');'
+    const _timer = this.performanceTracker.startTimer('performance_insights');'
 
     try {
       // Use brain coordinator for comprehensive insights
@@ -502,12 +492,11 @@ export class PipelinePerformanceService {
 
       this.performanceTracker.endTimer('performance_insights');'
 
-      this.logger.info('Performance insights generated', {'
+      this.logger.info('Performance insights generated', '
         pipelineId,
         overallPerformance: result.overallPerformance,
         bottleneckCount: result.topBottlenecks.length,
-        alertCount: result.criticalAlerts.length,
-      });
+        alertCount: result.criticalAlerts.length,);
 
       return result;
     } catch (error) {
@@ -522,7 +511,7 @@ export class PipelinePerformanceService {
    */
   async optimizePipelinePerformance(
     pipelineId: string,
-    optimizationGoals: string[] = [
+    _optimizationGoals: string[] = [
       'reduce_duration',
       'improve_reliability',
       'increase_throughput',
@@ -535,7 +524,7 @@ export class PipelinePerformanceService {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('pipeline_optimization');'
+    const _timer = this.performanceTracker.startTimer('pipeline_optimization');'
 
     try {
       const analysis = this.performanceMetrics.get(pipelineId);

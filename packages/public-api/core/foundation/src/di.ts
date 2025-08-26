@@ -6,38 +6,37 @@
  */
 
 // =============================================================================
-// FOUNDATION DI CONTAINER
-// =============================================================================
-export {
-  createContainer,
-  inject,
-  container,
-  TOKENS,
-} from './dependency-injection';
-
-export type {
-  Container,
-  ServiceInfo,
-  ServiceDiscoveryOptions,
-  ContainerStats,
-} from './dependency-injection';
-
-// =============================================================================
 // AWILIX RE-EXPORTS - Professional DI system
 // =============================================================================
 export {
-  createContainer as createAwilixContainer,
-  listModules,
-  asFunction,
-  asClass,
-  asValue,
-  aliasTo,
-  Lifetime as AwilixLifetime,
-  InjectionMode,
-  RESOLVER,
-  AwilixResolutionError,
-  AwilixRegistrationError,
-} from 'awilix';
+	AwilixRegistrationError,
+	AwilixResolutionError,
+	aliasTo,
+	asClass,
+	asFunction,
+	asValue,
+	createContainer as createAwilixContainer,
+	InjectionMode,
+	Lifetime as AwilixLifetime,
+	listModules,
+	RESOLVER,
+} from "awilix";
+
+export type {
+	Container,
+	ContainerStats,
+	ServiceDiscoveryOptions,
+	ServiceInfo,
+} from "./dependency-injection";
+// =============================================================================
+// FOUNDATION DI CONTAINER
+// =============================================================================
+export {
+	container,
+	createContainer,
+	inject,
+	TOKENS,
+} from "./dependency-injection";
 
 // =============================================================================
 // DI TYPES
@@ -55,9 +54,11 @@ export {
  * ```
  */
 export type InjectionToken<T = unknown> =
-  | string
-  | symbol
-  | (new (...args: unknown[]) => T);
+	| string
+	| symbol
+	| (new (
+			...args: unknown[]
+	  ) => T);
 
 /**
  * Service lifecycle options compatible with Awilix.
@@ -65,7 +66,7 @@ export type InjectionToken<T = unknown> =
  * - `transient`: New instance created for each resolution
  * - `scoped`: One instance per scope/request
  */
-export type LifecycleCompat = 'singleton' | 'transient' | 'scoped';
+export type LifecycleCompat = "singleton" | "transient" | "scoped";
 
 /**
  * Options for service registration in the DI container.
@@ -81,14 +82,14 @@ export type LifecycleCompat = 'singleton' | 'transient' | 'scoped';
  * ```
  */
 export interface ServiceRegistrationOptions {
-  /** Service lifecycle - how instances are managed */
-  lifetime?: LifecycleCompat;
-  /** Service capabilities for discovery and filtering */
-  capabilities?: string[];
-  /** Tags for categorization and querying */
-  tags?: string[];
-  /** Optional health check function */
-  healthCheck?: () => boolean;
+	/** Service lifecycle - how instances are managed */
+	lifetime?: LifecycleCompat;
+	/** Service capabilities for discovery and filtering */
+	capabilities?: string[];
+	/** Tags for categorization and querying */
+	tags?: string[];
+	/** Optional health check function */
+	healthCheck?: () => boolean;
 }
 
 /**
@@ -102,10 +103,10 @@ export interface ServiceRegistrationOptions {
  * ```
  */
 export enum Lifetime {
-  /** Single instance shared across the application */
-  Singleton = 'singleton',
-  /** New instance created for each resolution */
-  Transient = 'transient',
-  /** One instance per scope/request */
-  Scoped = 'scoped',
+	/** Single instance shared across the application */
+	Singleton = "singleton",
+	/** New instance created for each resolution */
+	Transient = "transient",
+	/** One instance per scope/request */
+	Scoped = "scoped",
 }

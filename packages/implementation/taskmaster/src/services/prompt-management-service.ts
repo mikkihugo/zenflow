@@ -10,11 +10,9 @@
  * - A/B testing and performance tracking
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import { getTeamworkSystem } from '@claude-zen/teamwork';
 import { getWorkflowEngine } from '@claude-zen/enterprise';
-import { generateUUID } from '@claude-zen/foundation';
+import { generateUUID, getLogger } from '@claude-zen/foundation';
+import { getDatabaseSystem } from '@claude-zen/infrastructure';
 
 export interface PromptVersion {
   id: string;
@@ -349,7 +347,7 @@ export class PromptManagementService {
   ): Promise<PromptVariant> {
     const template = await this.getPromptTemplate(promptId);
     if (!template) {
-      throw new Error(`Prompt template ${promptId} not found`);`
+      throw new Error(`Prompt template $promptIdnot found`);`
     }
 
     await this.checkPermission(template, createdBy, 'edit');'
@@ -403,15 +401,15 @@ export class PromptManagementService {
    */
   async createDraft(
     promptId: string,
-    data: {
+    _data: {
       title: string;
       content: string;
       config?: Partial<PromptVersion['config']>;'
       collaborators?: string[];
     },
-    authorId: string
+    _authorId: string
   ): Promise<PromptDraft> {
-    const template = await this.getPromptTemplate(promptId);
+    const _template = await this.getPromptTemplate(promptId);
     if (!template) {
       throw new Error(`Prompt template ${promptId} not found`);`
     }
@@ -462,7 +460,7 @@ export class PromptManagementService {
   ): Promise<void> {
     const template = await this.getPromptTemplate(promptId);
     if (!template) {
-      throw new Error(`Prompt template ${promptId} not found`);`
+      throw new Error(`Prompt _template $promptIdnot found`);`
     }
 
     await this.checkPermission(template, approvedBy, 'approve');'
@@ -517,7 +515,7 @@ export class PromptManagementService {
     const templates = await this.getPromptTemplatesByGateType(gateType);
 
     if (templates.length === 0) {
-      throw new Error(`No prompt templates found for gate type: ${gateType}`);`
+      throw new Error(`No prompt templates found for gate type: $gateType`);`
     }
 
     // For now, use the first template (could be more sophisticated)
@@ -607,7 +605,7 @@ export class PromptManagementService {
   ): Promise<void> {
     const { accessControl } = template;
 
-    let hasPermission = false;
+    const hasPermission = false;
     switch (action) {
       case 'view':'
         hasPermission = [
@@ -639,7 +637,7 @@ export class PromptManagementService {
   private generateNextVersion(versions: PromptVersion[]): string {
     const latest = versions[versions.length - 1];
     const [major, minor, patch] = latest.version.split('.').map(Number);'
-    return `${major}.${minor}.${patch + 1}`;`
+    return `$major.$minor.$patch + 1`;`
   }
 
   private selectVariant(template: PromptTemplate): PromptVariant|undefined {
@@ -681,7 +679,7 @@ export class PromptManagementService {
     await this.storeAuditEntry(auditEntry);
   }
 
-  private async enableTeamworkCollaboration(draft: PromptDraft): Promise<void> {
+  private async enableTeamworkCollaboration(draft: PromptDraft): Promise<void> 
     // Integration with teamwork package for real-time collaboration
     await this.teamworkSystem.createCollaborativeSession({
       resourceId: draft.id,
@@ -693,13 +691,12 @@ export class PromptManagementService {
         canView: true,
       },
     });
-  }
 
   private async startApprovalWorkflow(
     template: PromptTemplate,
     version: PromptVersion,
     createdBy: string
-  ): Promise<void> {
+  ): Promise<void> 
     if (!template.teamworkConfig?.approvalWorkflowId) return;
 
     // Start workflow using the workflow engine
@@ -712,10 +709,9 @@ export class PromptManagementService {
         approvers: template.accessControl.approvers,
       },
     });
-  }
 
   // Database operations
-  private async createTables(): Promise<void> {
+  private async createTables(): Promise<void> 
     // Create tables for prompt management with SOC2 compliance
     await this.database.schema.createTableIfNotExists(
       'prompt_templates',
@@ -832,9 +828,8 @@ export class PromptManagementService {
         table.index(['review_status']);'
       }
     );
-  }
 
-  private async storePromptTemplate(template: PromptTemplate): Promise<void> {
+  private async storePromptTemplate(template: PromptTemplate): Promise<void> 
     await this.database.transaction(async (trx: any) => {
       // Insert template
       await trx('prompt_templates').insert({'
@@ -870,40 +865,35 @@ export class PromptManagementService {
         });
       }
     });
-  }
 
-  private async updatePromptTemplate(template: PromptTemplate): Promise<void> {
+  private async updatePromptTemplate(template: PromptTemplate): Promise<void> 
     // Implementation would update the database records
     // This is a simplified version
     await this.database('prompt_templates').where('id', template.id).update({'
       active_version_id: template.activeVersionId,
       updated_at: template.updatedAt,
     });
-  }
 
   private async getPromptTemplate(
     promptId: string
-  ): Promise<PromptTemplate|null> {
+  ): Promise<PromptTemplate|null> 
     // Implementation would fetch from database and reconstruct object
     // This is a placeholder
     return null;
-  }
 
   private async getPromptTemplatesByGateType(
     gateType: string
-  ): Promise<PromptTemplate[]> {
+  ): Promise<PromptTemplate[]> 
     // Implementation would fetch templates by gate type
     return [];
-  }
 
   private async getPromptTemplateByVersionId(
     versionId: string
-  ): Promise<PromptTemplate|null> {
+  ): Promise<PromptTemplate|null> 
     // Implementation would fetch template by version ID
     return null;
-  }
 
-  private async storeAuditEntry(entry: PromptAuditEntry): Promise<void> {
+  private async storeAuditEntry(entry: PromptAuditEntry): Promise<void> 
     await this.database('prompt_audit_log').insert({'
       id: entry.id,
       prompt_id: entry.promptId,
@@ -919,9 +909,8 @@ export class PromptManagementService {
       risk_assessment: entry.riskAssessment,
       metadata: JSON.stringify(entry.metadata),
     });
-  }
 
-  private async storeDraft(draft: PromptDraft): Promise<void> {
+  private async storeDraft(draft: PromptDraft): Promise<void> 
     await this.database('prompt_drafts').insert({'
       id: draft.id,
       prompt_id: draft.promptId,
@@ -937,12 +926,10 @@ export class PromptManagementService {
       updated_at: draft.updatedAt,
       expires_at: draft.expiresAt,
     });
-  }
 
-  private async trackVariantUsage(variantId: string): Promise<void> {
+  private async trackVariantUsage(variantId: string): Promise<void> 
     // Track variant usage for A/B testing
     await this.database('prompt_variants')'
       .where('id', variantId)'
       .increment('metrics->requests', 1);'
-  }
 }

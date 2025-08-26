@@ -134,7 +134,7 @@ export interface ProgressInfo {
 /**
  * Response from AGUI interactions
  */
-export interface AGUIResponse {
+export type AGUIResponse = {}
   /** The user's response */'
   response: string;
 

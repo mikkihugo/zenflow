@@ -208,5 +208,4 @@ interface Logger {
   warn(message: string): void;
   debug(message: string): void;
 }
-export {};
 //# sourceMappingURL=memory-controller.d.ts.map

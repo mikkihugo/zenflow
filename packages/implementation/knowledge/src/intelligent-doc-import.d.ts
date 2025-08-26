@@ -485,5 +485,4 @@ export declare class IntelligentDocImport extends TypedEventBase {
     filePath: string;
   }>;
 }
-export {};
 //# sourceMappingURL=intelligent-doc-import.d.ts.map

@@ -14,6 +14,7 @@
  */
 
 import type { BaseError, Timestamp, UUID } from '@claude-zen/foundation';
+
 // Define error types locally since not exported from foundation
 enum ErrorCategory {
   BUSINESS = 'business',
@@ -25,10 +26,9 @@ enum ErrorCategory {
 }
 
 type ErrorSeverity = 'low|medium|high|critical';
+
+
 import type { LogLevel } from '@claude-zen/foundation';
-import { AIDeceptionDetector } from '@claude-zen/ai-safety';
-// Import infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
-import { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
 
 /**
  * SAFe error categories mapped to claude-zen error categories
@@ -397,21 +397,21 @@ export class SAFeErrorHandler implements ErrorHandler {
     // Log based on severity
     switch (error.severity) {
       case 'critical':'
-        this.logger.error(`[CRITICAL] ${error.message}`, context);`
+        this.logger.error(`[CRITICAL] $error.message`, context);`
         break;
       case 'high':'
-        this.logger.error(`[HIGH] ${error.message}`, context);`
+        this.logger.error(`[HIGH] $error.message`, context);`
         break;
       case 'medium':'
-        this.logger.warn(`[MEDIUM] ${error.message}`, context);`
+        this.logger.warn(`[MEDIUM] $error.message`, context);`
         break;
       case 'low':'
-        this.logger.info(`[LOW] ${error.message}`, context);`
+        this.logger.info(`[LOW] $error.message`, context);`
         break;
     }
 
     // Send to telemetry if available
-    if (this.telemetryManager) {
+    if (this._telemetryManager) {
       try {
         // Record error counter
         this.telemetryManager.recordCounter('safe_errors_total', 1, {'
@@ -422,19 +422,18 @@ export class SAFeErrorHandler implements ErrorHandler {
         });
 
         // Create error span for tracing
-        const span = this.telemetryManager.createSpan('safe_error_handled');'
-        this.telemetryManager.finishSpan(span, {
+        const _span = this.telemetryManager.createSpan('safe_error_handled');'
+        this.telemetryManager.finishSpan(span, 
           error_id: error.errorId,
           error_category: error.category,
-          error_severity: error.severity,
-        });
+          error_severity: error.severity,);
       } catch (telemetryError) {
         this.logger.warn('Failed to send error telemetry:', telemetryError);'
       }
     }
 
     // Log recovery suggestions
-    if (error.suggestedActions.length > 0) {
+    if (error._suggestedActions._length > 0) {
       this.logger.info(`Recovery suggestions for ${error.errorId}:`, {`
         suggestions: error.suggestedActions,
       });
@@ -512,7 +511,7 @@ export class ErrorRecovery {
           result,
           recoveryStrategy,
         };
-      } catch (retryError) {
+      } catch (_retryError) {
         return {
           recovered: false,
           recoveryStrategy,

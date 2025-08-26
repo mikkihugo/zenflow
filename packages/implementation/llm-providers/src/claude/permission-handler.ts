@@ -7,7 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation/logging';
 
-import type { CanUseTool, PermissionResult, PermissionMode } from './types';
+import type { CanUseTool, PermissionMode, PermissionResult } from './types';
 
 // Security audit trail
 interface PermissionAuditEntry {
@@ -154,7 +154,7 @@ const logger = getLogger('claude-permission-handler');'
  */
 export async function createPermissionHandler(
   mode: PermissionMode,
-  customHandler?: CanUseTool
+  _customHandler?: CanUseTool
 ): Promise<CanUseTool> {
   logger.debug(`Creating permission handler with mode: ${mode}`);`
 
@@ -178,7 +178,7 @@ export async function createPermissionHandler(
 
     default:
       logger.warn(
-        `Unknown permission mode: ${mode}, defaulting to interactive``
+        `Unknown permission mode: $mode, defaulting to interactive``
       );
       return createInteractiveHandler();
   }
@@ -191,7 +191,7 @@ export async function createPermissionHandler(
 /**
  * Allow all tools - USE WITH CAUTION
  */
-function createAllowAllHandler(): CanUseTool {
+function _createAllowAllHandler(): CanUseTool {
   logger.warn('Using allow-all permission handler - this may be unsafe');'
 
   return async (
@@ -220,7 +220,7 @@ function createAllowAllHandler(): CanUseTool {
 /**
  * Deny all tools - Very restrictive
  */
-function createDenyAllHandler(): CanUseTool {
+function _createDenyAllHandler(): CanUseTool {
   logger.info('Using deny-all permission handler - all tools will be blocked');'
 
   return async (
@@ -363,7 +363,7 @@ function createInteractiveHandler(): CanUseTool {
 /**
  * Custom handler wrapper with validation
  */
-function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
+function _createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
   logger.info('Using custom permission handler with validation wrapper');'
 
   return async (
@@ -403,13 +403,12 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
       // Validate result
       if (
         !result||typeof result !=='object'||typeof result.allowed !=='boolean''
-      ) {
+      ) 
         logger.error('Custom permission handler returned invalid result');'
         return {
           allowed: false,
           reason: 'Invalid handler response',
         };
-      }
 
       if (!result.allowed && !result.reason) {
         logger.warn('Permission denied but no reason provided');'
@@ -468,11 +467,11 @@ export function validatePermissionResult(
 
   const r = result as Record<string, unknown>;
 
-  if (typeof r['allowed'] !== 'boolean') {'
+  if (typeof r.allowed !== 'boolean') {'
     return false;
   }
 
-  if (!r['allowed'] && typeof r['reason'] !== 'string') {'
+  if (!r.allowed && typeof r.reason !== 'string') {'
     return false;
   }
 

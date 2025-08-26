@@ -34,16 +34,6 @@
  * - GDPR/CCPA compliance monitoring
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
-import { getTelemetryManager } from '@claude-zen/operations';
-import { generateUUID } from '@claude-zen/foundation';
-import { createHash } from 'crypto';
-import type {
-  ApprovalGateId,
-  TaskId,
-  UserId
-} from '../types/index.js';
 
 // ============================================================================
 // SOC2 AUDIT TYPES

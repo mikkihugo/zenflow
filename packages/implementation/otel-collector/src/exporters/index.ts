@@ -5,19 +5,16 @@
  * Supports Jaeger, OTLP (HTTP/gRPC), Prometheus, console, and file exporters.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation/logging';
-
+import type {
+  ExporterConfig,
+  ExportResult,
+  TelemetryData,
+} from '../types.js';
 import { ConsoleExporter } from './console-exporter.js';
 import { FileExporter } from './file-exporter.js';
 import { JaegerExporter } from './jaeger-exporter.js';
 import { OTLPExporter } from './otlp-exporter.js';
 import { PrometheusExporter } from './prometheus-exporter.js';
-import type {
-  ExporterConfig,
-  TelemetryData,
-  ExportResult,
-} from '../types.js';
 
 /**
  * Base exporter interface
@@ -149,7 +146,7 @@ export class ExporterManager {
    * Export batch data to all configured exporters
    */
   async exportBatch(dataItems: TelemetryData[]): Promise<ExportResult[]> {
-    const exportPromises = Array.from(this.exporters.entries()).map(
+    const _exportPromises = Array.from(this.exporters.entries()).map(
       async ([name, exporter]) => {
         const config = this.configs.get(name)!;
 
@@ -157,7 +154,7 @@ export class ExporterManager {
         let filteredItems = dataItems;
         if (config.signals) {
           filteredItems = dataItems.filter((item) =>
-            config.signals!.includes(item.type)
+            config.signals?.includes(item.type)
           );
         }
 
@@ -201,8 +198,8 @@ export class ExporterManager {
       async ([name, exporter]) => {
         try {
           await exporter.shutdown();
-          this.logger.info(`Exporter ${name} shut down`);`
-        } catch (error) {
+          this.logger.info(`Exporter $nameshut down`);`
+        } catch (error) 
           this.logger.error(`Failed to shutdown exporter ${name}`, error);`
         }
       }
@@ -278,8 +275,7 @@ export class ExporterManager {
    */
   async addExporter(config: ExporterConfig): Promise<void> {
     if (this.exporters.has(config.name)) {
-      throw new Error(`Exporter ${config.name} already exists`);`
-    }
+      throw new Error(`Exporter $config.namealready exists`);`
 
     try {
       const exporter = ExporterFactory.create(config);
@@ -290,7 +286,7 @@ export class ExporterManager {
 
       this.logger.info(`Added exporter ${config.name}`);`
     } catch (error) {
-      this.logger.error(`Failed to add exporter ${config.name}`, error);`
+      this.logger.error(`Failed to add exporter $config.name`, error);`
       throw error;
     }
   }
@@ -310,8 +306,8 @@ export class ExporterManager {
       this.exporters.delete(name);
       this.configs.delete(name);
 
-      this.logger.info(`Removed exporter ${name}`);`
-    } catch (error) {
+      this.logger.info(`Removed exporter $name`);`
+    } catch (error) 
       this.logger.error(`Failed to remove exporter ${name}`, error);`
       throw error;
     }

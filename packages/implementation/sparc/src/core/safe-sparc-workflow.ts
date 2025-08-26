@@ -16,7 +16,7 @@
  * @author Claude Code Zen Team
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 // SPARC workflow configuration
 export interface SafeSparcWorkflowConfig {
@@ -103,10 +103,7 @@ interface WorkflowEvents {
 export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   private logger: ReturnType<typeof getLogger>;
   private workflowConfig: SafeSparcWorkflowConfig;
-  private sparcEngine: any;
-  private workflowEngine: any;
   private initialized = false;
-  private executedProjects: SparcExecutionResult[] = [];
 
   constructor(
     config: SafeSparcWorkflowConfig,
@@ -119,7 +116,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     this.logger = logger||getLogger('SafeSparcWorkflow');'
 
     this.logger.info(
-      `SPARC Workflow initialized: ${this.workflowConfig.workflowId}``
+      `SPARC Workflow initialized: $this.workflowConfig.workflowId``
     );
   }
 
@@ -137,43 +134,40 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
       // Import SPARCCommander from this package
       const { SPARCCommander } = await import('./sparc-commander');'
 
-      this.sparcEngine = new SPARCCommander({
+      this.sparcEngine = new SPARCCommander(
         enableQualityGates: true,
         enableMetrics: true,
         enableDocumentation: true,
         enableTesting: true,
-        qualityThreshold: 0.8,
-      });
+        qualityThreshold: 0.8,);
 
       // Use actual workflow engine from @claude-zen/workflows package
       try {
         const { WorkflowEngine } = await import('@claude-zen/workflows');'
 
-        this.workflowEngine = new WorkflowEngine({
+        this.workflowEngine = new WorkflowEngine(
           enableVisualization: true,
           persistWorkflows: true,
           timeout: 300000, // 5 minute timeout per phase
-          errorHandling: {
+          errorHandling: 
             retryCount: 2,
-            strategy: 'exponential-backoff',
-          },
-        });
+            strategy: 'exponential-backoff',,);
 
         this.logger.info('Workflow engine initialized successfully');'
-      } catch (workflowError) {
+      } catch (_workflowError) {
         this.logger.warn(
           '@claude-zen/workflows not available, using minimal workflow engine''
         );
 
         // Fallback to minimal workflow engine
         this.workflowEngine = {
-          createWorkflow: (config: any) => ({
+          createWorkflow: (_config: any) => ({
             id: 'sparc-workflow',
             status: 'created',
           }),
-          executeWorkflow: (id: string) =>
+          executeWorkflow: (_id: string) =>
             Promise.resolve({ success: true, duration: 1000 }),
-          getWorkflowStatus: (id: string) => ({
+          getWorkflowStatus: (_id: string) => ({
             status: 'completed',
             progress: 100,
           }),
@@ -454,7 +448,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
   private determineProjectDomain(epic: EpicProposal): string {
     // Simple heuristic to determine domain from epic title/business case
-    const text = `${epic.title} ${epic.businessCase}`.toLowerCase();`
+    const _text = `${epic.title} ${epic.businessCase}`.toLowerCase();`
 
     if (
       text.includes('web')||text.includes('frontend')||text.includes('ui')'

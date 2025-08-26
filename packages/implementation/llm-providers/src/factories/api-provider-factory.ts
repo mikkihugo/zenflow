@@ -7,7 +7,6 @@
 
 import { getLogger } from '@claude-zen/foundation/logging';
 
-import type { APIProvider } from '../types/api-providers';
 
 const logger = getLogger('APIProviderFactory');'
 
@@ -45,7 +44,7 @@ export async function createAPIProvider(
       throw new Error('OpenAI API provider not yet implemented');'
 
     default:
-      throw new Error(`Unknown API provider: ${providerId}`);`
+      throw new Error(`Unknown API provider: $providerId`);`
   }
 }
 

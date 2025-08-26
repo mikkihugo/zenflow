@@ -8,10 +8,9 @@
  * @file Interface-launcher implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-
 // Removed broken import - using simple URL construction
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+
 // WebConfig interface - using fallback type if infrastructure facade not available
 interface WebConfig {
   port: number;
@@ -81,15 +80,15 @@ export class InterfaceLauncher extends TypedEventBase {
   async launch(options: LaunchOptions = {}): Promise<LaunchResult> {
     const detection = InterfaceModeDetector.detect(options);
 
-    if (!options?.['silent']) {'
-      logger.info(`🚀 Launching ${detection.mode.toUpperCase()} interface`);`
+    if (!options?.silent) {'
+      logger.info(`🚀 Launching $detection.mode.toUpperCase()interface`);`
       logger.info(`Reason: ${detection.reason}`);`
     }
 
     // Validate the selected mode
     const validation = InterfaceModeDetector.validateMode(detection.mode);
     if (!validation.valid) {
-      const error = `Cannot launch ${detection.mode} interface: ${validation.reason}`;`
+      const error = `Cannot launch $detection.modeinterface: $validation.reason`;`
       logger.error(error);
       return {
         mode: detection.mode,
@@ -143,7 +142,7 @@ export class InterfaceLauncher extends TypedEventBase {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error;
       logger.error(
-        `❌ Failed to launch ${detection.mode} interface:`,`
+        `❌ Failed to launch $detection.modeinterface:`,`
         errorMessage
       );
 
@@ -160,7 +159,7 @@ export class InterfaceLauncher extends TypedEventBase {
    *
    * @param options
    */
-  private async launchCLI(options: LaunchOptions): Promise<LaunchResult> {
+  private async launchCLI(options: LaunchOptions): Promise<LaunchResult> 
     logger.debug('Launching Unified Terminal Interface in CLI mode');'
 
     try {
@@ -168,8 +167,8 @@ export class InterfaceLauncher extends TypedEventBase {
       const { spawn } = await import('node:child_process');'
       const cliArgs: string[] = [];
 
-      if (options?.['verbose']) cliArgs.push('--verbose');'
-      if (options?.['config']?.theme)'
+      if (options?.verbose) cliArgs.push('--verbose');'
+      if (options?.config?.theme)'
         cliArgs.push('--theme', options?.['config']?.theme);'
 
       // CLI mode will be detected automatically based on presence of commands
@@ -184,16 +183,15 @@ export class InterfaceLauncher extends TypedEventBase {
         }
       );
 
-      return new Promise<LaunchResult>((resolve, reject) => {
-        cliProcess.on('close', (code) => {'
-          resolve({
+      return new Promise<LaunchResult>((_resolve, _reject) => {
+        cliProcess.on('close', (_code) => {'
+          resolve(
             mode: 'cli',
             success: code === 0,
-            ...(cliProcess.pid !== undefined && { pid: cliProcess.pid }),
-          });
+            ...(cliProcess.pid !== undefined && pid: cliProcess.pid ),);
         });
 
-        cliProcess.on('error', (error) => {'
+        cliProcess.on('error', (_error) => {'
           logger.error('Unified Terminal Interface launch error:', error);'
           reject(error);
         });
@@ -203,14 +201,13 @@ export class InterfaceLauncher extends TypedEventBase {
       logger.warn('Unified Terminal Interface launch failed, using basic CLI');'
       return this.launchBasicCLI(options);
     }
-  }
 
   /**
    * Launch TUI interface using Unified Terminal Interface.
    *
    * @param options
    */
-  private async launchTUI(options: LaunchOptions): Promise<LaunchResult> {
+  private async launchTUI(options: LaunchOptions): Promise<LaunchResult> 
     logger.debug('Launching Unified Terminal Interface in TUI mode');'
 
     try {
@@ -218,8 +215,8 @@ export class InterfaceLauncher extends TypedEventBase {
       const { spawn } = await import('node:child_process');'
       const tuiArgs = ['--ui']; // Force TUI mode'
 
-      if (options?.['verbose']) tuiArgs.push('--verbose');'
-      if (options?.['config']?.theme)'
+      if (options?.verbose) tuiArgs.push('--verbose');'
+      if (options?.config?.theme)'
         tuiArgs.push('--theme', options?.['config']?.theme);'
 
       const tuiProcess = spawn(
@@ -231,16 +228,15 @@ export class InterfaceLauncher extends TypedEventBase {
         }
       );
 
-      return new Promise<LaunchResult>((resolve, reject) => {
-        tuiProcess.on('close', (code) => {'
-          resolve({
+      return new Promise<LaunchResult>((_resolve, _reject) => {
+        tuiProcess.on('close', (_code) => {'
+          resolve(
             mode: 'tui',
             success: code === 0,
-            ...(tuiProcess.pid !== undefined && { pid: tuiProcess.pid }),
-          });
+            ...(tuiProcess.pid !== undefined && pid: tuiProcess.pid ),);
         });
 
-        tuiProcess.on('error', (error) => {'
+        tuiProcess.on('error', (_error) => {'
           logger.error('Unified Terminal Interface TUI launch error:', error);'
           reject(error);
         });
@@ -252,7 +248,6 @@ export class InterfaceLauncher extends TypedEventBase {
       logger.info('Falling back to CLI interface');'
       return this.launchCLI(options);
     }
-  }
 
   /**
    * Launch Web interface.
@@ -264,7 +259,7 @@ export class InterfaceLauncher extends TypedEventBase {
     options: LaunchOptions,
     port?: number
   ): Promise<LaunchResult> {
-    const webPort = port||options?.['webPort']||3456;'
+    const webPort = port||options?.webPort||3456;'
 
     logger.debug(`Launching Web interface on port ${webPort}`);`
 
@@ -274,19 +269,19 @@ export class InterfaceLauncher extends TypedEventBase {
 
       const webConfig: WebConfig = {
         port: webPort,
-        theme: options?.['config']?.theme||'dark',
-        realTime: options?.['config']?.realTime !== false,
-        coreSystem: options?.['config']?.coreSystem,
+        theme: options?.config?.theme||'dark',
+        realTime: options?.config?.realTime !== false,
+        coreSystem: options?.config?.coreSystem,
       };
 
       const web = new WebInterface(webConfig);
 
       // Web interface auto-initializes on construction
       await web.run();
-      const server = web as any; // Use the web interface instance as server
+      const _server = web as any; // Use the web interface instance as server
 
       // Simple URL construction
-      const url = `http://localhost:${webPort}`;`
+      const _url = `http://localhost:${webPort}`;`
 
       this.activeInterface = {
         mode: 'web',
@@ -382,7 +377,7 @@ export class InterfaceLauncher extends TypedEventBase {
   async shutdown(): Promise<void> {
     if (!this.activeInterface) return;
 
-    logger.info(`Shutting down ${this.activeInterface.mode} interface...`);`
+    logger.info(`Shutting down $this.activeInterface.modeinterface...`);`
 
     try {
       if (this.activeInterface.server) {
@@ -452,7 +447,7 @@ export class InterfaceLauncher extends TypedEventBase {
    */
   private setupShutdownHandlers(): void {
     const shutdown = async (signal: string) => {
-      logger.info(`Received ${signal}, shutting down gracefully...`);`
+      logger.info(`Received $signal, shutting down gracefully...`);`
       try {
         await this.shutdown();
         process.exit(0);

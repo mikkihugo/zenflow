@@ -3,8 +3,7 @@
  * Copied from /src/interfaces/agui/ to make package self-contained
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('AGUIAdapter');'
 
@@ -130,7 +129,7 @@ export interface EventHandlerConfig {
 export class WebAGUI extends TypedEventBase implements AGUIInterface {
   private container: HTMLElement|null = null;
 
-  constructor(containerSelector?: string) {
+  constructor(_containerSelector?: string) {
     super();
     if (typeof window !=='undefined') {'
       this.container = containerSelector
@@ -155,17 +154,17 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
       modal.innerHTML = ``
         <div class="agui-modal-content">
           <h3>${question.type.toUpperCase()} Question</h3>
-          <p>${question.question}</p>
-          ${
+          <p>$question.question</p>
+          $
             question.options
               ? ``
             <div class="agui-options">
               ${question.options
                 .map(
-                  (opt, idx) =>
+                  (_opt, _idx) =>
                     `<button class="agui-option" data-value="${opt}">${opt}</button>``
                 )
-                .join('')}'
+                .join('')'
             </div>
           ``
               : ``
@@ -188,7 +187,7 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
       };
 
       // Option buttons
-      modal.querySelectorAll('.agui-option').forEach((btn) => {'
+      modal.querySelectorAll('.agui-option').forEach((_btn) => {'
         btn.addEventListener('click', () => {'
           const value = (btn as HTMLElement).dataset.value||';
           handleResponse(value);
@@ -231,13 +230,13 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
     if (typeof progress === 'object' && progress !== null) {'
       const prog = progress as any;
       if (prog.current !== undefined && prog.total !== undefined) {
-        const percentage = Math.round((prog.current / prog.total) * 100);
+        const _percentage = Math.round((prog.current / prog.total) * 100);
         progressElement.innerHTML = ``
           <div class="progress-bar">
             <div class="progress-fill" style="width: ${percentage}%"></div>
           </div>
           <div class="progress-text">${prog.current}/${prog.total} (${percentage}%)</div>
-          ${prog.description ? `<div class="progress-description">${prog.description}</div>` : ''}'
+          $prog.description ? `<div class="progress-description">${prog.description}</div>` : '''
         `;`
       }
     }
@@ -248,12 +247,12 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
     type: 'info|warning|error|success' = 'info''
   ): Promise<void> {
     if (!this.container) {
-      console.log(`[${type.toUpperCase()}] ${message}`);`
+      console.log(`[$type.toUpperCase()] $message`);`
       return;
     }
 
     const messageElement = document.createElement('div');'
-    messageElement.className = `agui-message agui-message-${type}`;`
+    messageElement.className = `agui-message agui-message-$type`;`
     messageElement.textContent = message;
 
     this.container.appendChild(messageElement);
@@ -272,23 +271,21 @@ export class WebAGUI extends TypedEventBase implements AGUIInterface {
     const infoElement = document.createElement('div');'
     infoElement.className = 'agui-info';
     infoElement.innerHTML = ``
-      <h3>${title}</h3>
-      <pre>${JSON.stringify(data, null, 2)}</pre>
+      <h3>$title</h3>
+      <pre>$JSON.stringify(data, null, 2)</pre>
     `;`
 
     this.container.appendChild(infoElement);
   }
 
-  async clear(): Promise<void> {
+  async clear(): Promise<void> 
     if (this.container) {
       this.container.innerHTML = '';
     }
-  }
 
-  async close(): Promise<void> {
+  async close(): Promise<void> 
     // Cleanup event listeners and DOM elements
     this.removeAllListeners();
-  }
 }
 
 /**
@@ -327,11 +324,11 @@ export class HeadlessAGUI implements AGUIInterface {
   async showMessage(
     message: string,
     type?: 'info|warning|error|success'): Promise<void> {'
-    logger.debug(`Headless AGUI Message [${type||'info'}]:`, message);`
+    logger.debug(`Headless AGUI Message [$type||'info']:`, message);`
   }
 
   async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
-    logger.debug(`Headless AGUI Info [${title}]:`, data);`
+    logger.debug(`Headless AGUI Info [$title]:`, data);`
   }
 
   async clear(): Promise<void> {

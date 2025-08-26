@@ -43,49 +43,24 @@
  * **COMPLETE TRACEABILITY:** Every decision, every gate, every flow tracked with AGUI visibility
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
-import { getBrainSystem } from '@claude-zen/intelligence';
 import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
-import { SafeFrameworkIntegration } from './safe-framework-integration.js';
-import { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import { getLogger } from '@claude-zen/foundation';
+import { getDatabaseSystem, } from '@claude-zen/infrastructure';
+import { getBrainSystem } from '@claude-zen/intelligence';
+// SAFE Framework comprehensive types
+import type {
+  InvestmentHorizon,
+  PIObjective,
+} from '@claude-zen/safe-framework';
+import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
 import { LLMApprovalService } from '../services/llm-approval-service.js';
 import { PromptManagementService } from '../services/prompt-management-service.js';
-import { TaskApprovalSystem } from '../agui/task-approval-system.js';
 
 import type {
   ApprovalGateId,
-  TaskId,
-  UserId,
-  ApprovalGateRequirement,
 } from '../types/index.js';
-
-// SAFE Framework comprehensive types
-import type {
-  // Portfolio Level
-  PortfolioEpic,
-  InvestmentHorizon,
-  ValueStream,
-  PortfolioKanbanState,
-
-  // ART Level (Agile Release Train)
-  ProgramIncrement,
-  PIObjective,
-  Feature,
-  AgileReleaseTrain,
-
-  // Team Level
-  Story,
-  TeamMember,
-  TeamCapacity,
-
-  // Solution Level
-  ArchitecturalDriver,
-
-  // CD Pipeline
-  QualityGate,
-  QualityGateType,
-} from '@claude-zen/safe-framework';
+import { SafeFrameworkIntegration } from './safe-framework-integration.js';
 
 // ============================================================================
 // COMPLETE SAFe 6.0 FLOW GATE TYPES
@@ -306,22 +281,9 @@ export interface CompleteSafeFlowConfig {
  */
 export class CompleteSafeFlowIntegration {
   private readonly logger = getLogger('CompleteSafeFlowIntegration');'
-
-  // Base integration
-  private baseIntegration: SafeFrameworkIntegration;
-
-  // Core services
-  private approvalGateManager: ApprovalGateManager;
   private llmApprovalService: LLMApprovalService;
   private promptManagementService: PromptManagementService;
   private taskApprovalSystem: TaskApprovalSystem;
-
-  // Infrastructure
-  private database: any;
-  private eventSystem: any;
-  private brainSystem: any;
-  private safeFramework: any;
-  private workflowEngine: any;
 
   // Configuration and state
   private config: CompleteSafeFlowConfig;
@@ -424,7 +386,7 @@ export class CompleteSafeFlowIntegration {
     flowTraceabilityId: string;
   }> {
     const flowId = `strategic-flow-${strategicTheme.id}-${Date.now()}`;`
-    const flowTraceabilityId = `flow-trace-${flowId}`;`
+    const flowTraceabilityId = `flow-trace-$flowId`;`
 
     this.logger.info('Starting Strategic Theme Flow', {'
       flowId,
@@ -537,7 +499,7 @@ export class CompleteSafeFlowIntegration {
     }>;
     piTraceabilityId: string;
   }> {
-    const piTraceabilityId = `pi-trace-${programIncrement.id}-${Date.now()}`;`
+    const _piTraceabilityId = `pi-trace-${programIncrement.id}-${Date.now()}`;`
 
     this.logger.info('Continuing to ART Flow', {'
       flowId,
@@ -548,7 +510,7 @@ export class CompleteSafeFlowIntegration {
     // Get existing flow
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);`
+      throw new Error(`Flow $flowIdnot found`);`
     }
 
     // Create PI entity
@@ -599,7 +561,7 @@ export class CompleteSafeFlowIntegration {
     gates.push(planningIntervalGate);
 
     // 2. Feature Approval Gates (for each objective)
-    for (const objective of programIncrement.objectives) {
+    for (const objective _of _programIncrement._objectives) {
       const featureGate = await this.createFeatureGate(
         piEntity,
         objective,
@@ -661,7 +623,7 @@ export class CompleteSafeFlowIntegration {
     }>;
     sprintTraceabilityId: string;
   }> {
-    const sprintTraceabilityId = `sprint-trace-${sprint.id}-${Date.now()}`;`
+    const _sprintTraceabilityId = `sprint-trace-${sprint.id}-${Date.now()}`;`
 
     this.logger.info('Continuing to Team Flow', {'
       flowId,
@@ -671,7 +633,7 @@ export class CompleteSafeFlowIntegration {
 
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);`
+      throw new Error(`Flow $flowIdnot found`);`
     }
 
     const gates: Array<{
@@ -682,7 +644,7 @@ export class CompleteSafeFlowIntegration {
 
     // Create gates for each story
     for (const story of sprint.stories) {
-      const storyEntity: SafeEntity = {
+      const _storyEntity: SafeEntity = {
         type: 'story',
         id: story.id,
         title: story.title,
@@ -701,14 +663,14 @@ export class CompleteSafeFlowIntegration {
         approvers: sprint.teamMembers
           .filter((m) => m.role ==='product_owner')'
           .map((m) => m.id), // Product Owner - SAFe 6.0
-        metadata: {
+        _metadata: {
           sprintId: sprint.id,
           sprintNumber: sprint.number,
           storyPoints: story.storyPoints,
           acceptanceCriteria: story.acceptanceCriteria,
           parentFlow: flowId,
         },
-        createdAt: new Date(),
+        _createdAt: new Date(),
         updatedAt: new Date(),
       };
 
@@ -757,11 +719,11 @@ export class CompleteSafeFlowIntegration {
       approvers: sprint.teamMembers
         .filter((m) => m.role ==='product_owner')'
         .map((m) => m.id),
-      metadata: {
+      _metadata: {
         sprintNumber: sprint.number,
         capacity: sprint.capacity,
         stories: sprint.stories.map((s) => s.id),
-        parentFlow: flowId,
+        _parentFlow: flowId,
       },
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -799,7 +761,7 @@ export class CompleteSafeFlowIntegration {
     }>;
     cdTraceabilityId: string;
   }> {
-    const cdTraceabilityId = `cd-trace-${deployment.id}-${Date.now()}`;`
+    const _cdTraceabilityId = `cd-trace-${deployment.id}-${Date.now()}`;`
 
     this.logger.info('Continuing to Continuous Delivery Flow', {'
       flowId,
@@ -809,7 +771,7 @@ export class CompleteSafeFlowIntegration {
 
     const flow = this.activeFlows.get(flowId);
     if (!flow) {
-      throw new Error(`Flow ${flowId} not found`);`
+      throw new Error(`Flow $flowIdnot found`);`
     }
 
     const deploymentEntity: SafeEntity = {
@@ -836,7 +798,7 @@ export class CompleteSafeFlowIntegration {
         targetVersion: deployment.targetVersion,
         parentFlow: flowId,
       },
-      createdAt: new Date(),
+      _createdAt: new Date(),
       updatedAt: new Date(),
     };
 
@@ -893,15 +855,13 @@ export class CompleteSafeFlowIntegration {
    * Get complete flow traceability across all SAFE levels
    */
   async getCompleteFlowTraceability(flowId: string): Promise<{
-    flowSummary: {
       id: string;
       startedAt: Date;
       currentStage: SafeFlowStage;
       entitiesInFlow: number;
       totalGates: number;
       completedGates: number;
-      pendingGates: number;
-    };
+      pendingGates: number;;
     traceabilityChain: Array<{
       level: 'portfolio|art|team|solution|cd;
       entity: SafeEntity;
@@ -911,7 +871,7 @@ export class CompleteSafeFlowIntegration {
         traceabilityRecord: any;
       }>;
     }>;
-    learningInsights: {
+    {
       decisionPatterns: any[];
       aiPerformance: any;
       humanBehavior: any;
@@ -957,7 +917,7 @@ export class CompleteSafeFlowIntegration {
     traceabilityId: string;
   }> {
     // Implementation similar to base integration but for strategic themes
-    const gateId = `strategic-${entity.id}` as ApprovalGateId;`
+    const gateId = `strategic-$entity.id` as ApprovalGateId;`
     // Create gate with strategic theme specific criteria
     return {
       gateId,
@@ -969,16 +929,15 @@ export class CompleteSafeFlowIntegration {
   private async createInvestmentFundingGate(
     entity: SafeEntity,
     flowTraceabilityId: string
-  ): Promise<{
+  ): Promise<
     gateId: ApprovalGateId;
     category: CompleteSafeGateCategory;
-    traceabilityId: string;
-  }> {
-    const gateId = `funding-${entity.id}` as ApprovalGateId;`
+    traceabilityId: string;> {
+    const _gateId = `funding-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.INVESTMENT_FUNDING,
-      traceabilityId: `${flowTraceabilityId}-funding`,`
+      traceabilityId: `$flowTraceabilityId-funding`,`
     };
   }
 
@@ -990,11 +949,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `valuestream-${entity.id}` as ApprovalGateId;`
+    const _gateId = `valuestream-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.VALUE_STREAM,
-      traceabilityId: `${flowTraceabilityId}-valuestream`,`
+      traceabilityId: `$flowTraceabilityId-valuestream`,`
     };
   }
 
@@ -1006,11 +965,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `planning-interval-planning-${entity.id}` as ApprovalGateId;`
+    const _gateId = `planning-interval-planning-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.PLANNING_INTERVAL_PLANNING,
-      traceabilityId: `${flowTraceabilityId}-planning-interval-planning`,`
+      traceabilityId: `$flowTraceabilityId-planning-interval-planning`,`
     };
   }
 
@@ -1023,11 +982,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `feature-${objective.id}` as ApprovalGateId;`
+    const _gateId = `feature-${objective.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.FEATURE_APPROVAL,
-      traceabilityId: `${flowTraceabilityId}-feature-${objective.id}`,`
+      traceabilityId: `$flowTraceabilityId-feature-$objective.id`,`
     };
   }
 
@@ -1039,11 +998,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `system-demo-${entity.id}` as ApprovalGateId;`
+    const _gateId = `system-demo-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.SYSTEM_DEMO,
-      traceabilityId: `${flowTraceabilityId}-system-demo`,`
+      traceabilityId: `$flowTraceabilityId-system-demo`,`
     };
   }
 
@@ -1055,11 +1014,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `inspect-adapt-${entity.id}` as ApprovalGateId;`
+    const _gateId = `inspect-adapt-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.INSPECT_ADAPT,
-      traceabilityId: `${flowTraceabilityId}-inspect-adapt`,`
+      traceabilityId: `$flowTraceabilityId-inspect-adapt`,`
     };
   }
 
@@ -1071,11 +1030,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `story-${entity.id}` as ApprovalGateId;`
+    const _gateId = `story-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.STORY_APPROVAL,
-      traceabilityId: `${flowTraceabilityId}-story-${entity.id}`,`
+      traceabilityId: `$flowTraceabilityId-story-$entity.id`,`
     };
   }
 
@@ -1088,11 +1047,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `code-review-${task.id}` as ApprovalGateId;`
+    const _gateId = `code-review-${task.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.CODE_REVIEW,
-      traceabilityId: `${flowTraceabilityId}-code-review-${task.id}`,`
+      traceabilityId: `$flowTraceabilityId-code-review-$task.id`,`
     };
   }
 
@@ -1104,11 +1063,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `dod-${entity.id}` as ApprovalGateId;`
+    const _gateId = `dod-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.DEFINITION_OF_DONE,
-      traceabilityId: `${flowTraceabilityId}-dod-${entity.id}`,`
+      traceabilityId: `$flowTraceabilityId-dod-$entity.id`,`
     };
   }
 
@@ -1120,11 +1079,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `sprint-review-${entity.id}` as ApprovalGateId;`
+    const _gateId = `sprint-review-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.SPRINT_REVIEW,
-      traceabilityId: `${flowTraceabilityId}-sprint-review`,`
+      traceabilityId: `$flowTraceabilityId-sprint-review`,`
     };
   }
 
@@ -1136,11 +1095,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `build-${entity.id}` as ApprovalGateId;`
+    const _gateId = `build-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.BUILD_GATE,
-      traceabilityId: `${flowTraceabilityId}-build`,`
+      traceabilityId: `$flowTraceabilityId-build`,`
     };
   }
 
@@ -1152,11 +1111,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `test-${entity.id}` as ApprovalGateId;`
+    const _gateId = `test-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.TEST_GATE,
-      traceabilityId: `${flowTraceabilityId}-test`,`
+      traceabilityId: `$flowTraceabilityId-test`,`
     };
   }
 
@@ -1168,11 +1127,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `security-${entity.id}` as ApprovalGateId;`
+    const _gateId = `security-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.SECURITY_GATE,
-      traceabilityId: `${flowTraceabilityId}-security`,`
+      traceabilityId: `$flowTraceabilityId-security`,`
     };
   }
 
@@ -1184,11 +1143,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `performance-${entity.id}` as ApprovalGateId;`
+    const _gateId = `performance-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.PERFORMANCE_GATE,
-      traceabilityId: `${flowTraceabilityId}-performance`,`
+      traceabilityId: `$flowTraceabilityId-performance`,`
     };
   }
 
@@ -1200,11 +1159,11 @@ export class CompleteSafeFlowIntegration {
     category: CompleteSafeGateCategory;
     traceabilityId: string;
   }> {
-    const gateId = `release-${entity.id}` as ApprovalGateId;`
+    const _gateId = `release-${entity.id}` as ApprovalGateId;`
     return {
       gateId,
       category: CompleteSafeGateCategory.RELEASE_GATE,
-      traceabilityId: `${flowTraceabilityId}-release`,`
+      traceabilityId: `$flowTraceabilityId-release`,`
     };
   }
 
@@ -1405,7 +1364,7 @@ export class CompleteSafeFlowIntegration {
     });
 
     // Create investment validation gate
-    const validationGate = await this.createInvestmentValidationGate(
+    const _validationGate = await this.createInvestmentValidationGate(
       investment,
       flowId
     );
@@ -1460,7 +1419,7 @@ export class CompleteSafeFlowIntegration {
     });
 
     // Create value stream organization gate
-    const organizationGate = await this.createValueStreamOrganizationGate(
+    const _organizationGate = await this.createValueStreamOrganizationGate(
       valueStreams,
       flowId
     );
@@ -1502,7 +1461,7 @@ export class CompleteSafeFlowIntegration {
     });
 
     // Create business team launch gate
-    const launchGate = await this.createBusinessTeamLaunchGate(
+    const _launchGate = await this.createBusinessTeamLaunchGate(
       businessTeams,
       flowId
     );
@@ -1547,7 +1506,7 @@ export class CompleteSafeFlowIntegration {
     });
 
     // Create continuous value delivery gate
-    const deliveryGate = await this.createContinuousValueDeliveryGate(
+    const _deliveryGate = await this.createContinuousValueDeliveryGate(
       deliveryConfiguration,
       flowId
     );

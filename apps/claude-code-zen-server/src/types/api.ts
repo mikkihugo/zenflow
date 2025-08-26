@@ -143,9 +143,11 @@ export interface WebSocketClient {
 // Route Types
 // ============================================================================
 
-export interface RouteHandler {
-	(req: unknown, res: unknown, next?: unknown): void | Promise<void>;
-}
+export type RouteHandler = (
+	req: unknown,
+	res: unknown,
+	next?: unknown,
+) => void | Promise<void>;
 
 export interface RouteDefinition {
 	method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "ALL";

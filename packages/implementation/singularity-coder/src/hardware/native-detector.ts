@@ -1,19 +1,19 @@
-import * as os from 'os';
+import * as os from 'node:os';
 import '../types/hardware-types;
 
 // Optional native dependencies for enhanced hardware detection
 let osUtils: typeof import('os-utils')|null = null;'
-let si: typeof import('systeminformation')|null = null;'
+let _si: typeof import('systeminformation')|null = null;'
 
 try {
   osUtils = require('os-utils');'
-} catch (e) {
+} catch (_e) {
   console.log('os-utils not available, using fallback detection');'
 }
 
 try {
-  si = require('systeminformation');'
-} catch (e) {
+  _si = require('systeminformation');'
+} catch (_e) {
   console.log('systeminformation not available, using fallback detection');'
 }
 
@@ -66,7 +66,7 @@ export class NativeHardwareDetector {
     const arch = os.arch();
     const loadAvg = os.loadavg();
 
-    let hardwareInfo: HardwareInfo = {
+    const _hardwareInfo: HardwareInfo = {
       cpu_cores: cpus.length,
       cpu_arch: arch,
       memory_total_mb: Math.round(totalMemory / (1024 * 1024)),
@@ -156,7 +156,7 @@ export class NativeHardwareDetector {
       this.determineOptimizationLevel(hardwareInfo);
 
     console.log(
-      `Final detection: ${hardwareInfo.cpu_cores} cores, ${hardwareInfo.memory_total_mb}MB RAM, GPU: ${hardwareInfo.has_gpu}, Level: ${hardwareInfo.optimization_level}``
+      `Final detection: $hardwareInfo.cpu_corescores, $hardwareInfo.memory_total_mbMB RAM, GPU: $hardwareInfo.has_gpu, Level: $hardwareInfo.optimization_level``
     );
 
     // Cache the result
@@ -205,7 +205,7 @@ export class NativeHardwareDetector {
     const level = hardwareInfo.optimization_level;
 
     // Base strategy on hardware capabilities
-    let strategy: OptimizationStrategy = {
+    const strategy: OptimizationStrategy = {
       parallel_tasks: Math.max(1, coreCount - 1), // Leave one core for system
       memory_buffer_size: 1024 * 1024, // 1MB base
       use_simd: coreCount >= 2,

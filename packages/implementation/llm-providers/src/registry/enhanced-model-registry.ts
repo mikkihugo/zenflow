@@ -7,21 +7,13 @@
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
-
 import type {
-  BaseModelInfo,
   RichModelInfo,
-  ModelQuery,
-  ModelComparison,
-  ModelRecommendation,
-  ProviderMetadata,
 } from '../types/enhanced-models';
-import type { GitHubCopilotModelMetadata } from '../api/github-copilot-db';
-import type { GitHubModelMetadata } from '../api/github-models-db';
 
 import { 
-  providerDatabaseRegistry,
-  type ProviderDatabaseRegistryEvents 
+  type ProviderDatabaseRegistryEvents, 
+  providerDatabaseRegistry
 } from './provider-database-registry';
 
 const logger = getLogger('EnhancedModelRegistry');'
@@ -70,8 +62,6 @@ export interface TaskRequirements {
  * Enhanced Model Registry with rich metadata preservation
  */
 export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryEvents> {
-  private indexed = false;
-  private indexedAt?: Date;
 
   constructor() {
     super();
@@ -82,16 +72,16 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
    * Forward provider database registry events
    */
   private setupRegistryForwarding(): void {
-    providerDatabaseRegistry.on('database:registered', (data) => {'
+    providerDatabaseRegistry.on('database:registered', (_data) => {'
       this.emit('database:registered', data);'
     });
     
-    providerDatabaseRegistry.on('database:updated', (data) => {'
+    providerDatabaseRegistry.on('database:updated', (_data) => {'
       this.emit('database:updated', data);'
       this.indexed = false; // Force re-indexing
     });
     
-    providerDatabaseRegistry.on('models:changed', (data) => {'
+    providerDatabaseRegistry.on('models:changed', (_data) => {'
       this.emit('models:changed', data);'
       this.indexed = false; // Force re-indexing
     });
@@ -400,7 +390,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
   private generateReasoning(model: RichModelInfo, requirements: TaskRequirements): string[] {
     const reasons: string[] = [];
     
-    reasons.push(`Selected ${model.name} from ${model.provider}`);`
+    reasons.push(`Selected $model.namefrom $model.provider`);`
     
     if (requirements.needsVision && model.supportsVision) {
       reasons.push('Supports vision processing as required');'
@@ -443,12 +433,11 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
     return `Alternative with ${model.contextWindow.toLocaleString()} token context`;`
   }
 
-  private getTradeoffAnalysis(best: RichModelInfo, alternative: RichModelInfo): string {
+  private getTradeoffAnalysis(best: RichModelInfo, alternative: RichModelInfo): string 
     if (best.contextWindow > alternative.contextWindow) {
       return 'Smaller context window but potentially faster;
     }
     return 'Different capabilities and performance characteristics;
-  }
 }
 
 /**

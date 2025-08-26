@@ -1,7 +1,7 @@
-import path from "path"
-import { Global } from "../global"
-import fs from "fs/promises"
+import fs from "node:fs/promises"
+import path from "node:path"
 import { z } from "@claude-zen/foundation"
+import { Global } from "../global"
 import { NamedError } from "../util/error"
 import { lazy } from "../util/lazy"
 import { Log } from "../util/log"
@@ -45,7 +45,7 @@ export namespace Fzf {
       log.info("found", { filepath })
       return { filepath }
     }
-    filepath = path.join(Global.Path.bin, "fzf" + (process.platform === "win32" ? ".exe" : ""))
+    filepath = path.join(Global.Path.bin, `fzf${process.platform === "win32" ? ".exe" : ""}`)
 
     const file = Bun.file(filepath)
     if (!(await file.exists())) {

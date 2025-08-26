@@ -5,18 +5,18 @@
  */
 
 import {
-  describe,
-  it,
-  expect,
-  beforeAll,
   afterAll,
+  beforeAll,
   beforeEach,
+  describe,
+  expect,
+  it,
   vi,
 } from 'vitest';
-import { BrainCoordinator } from '../../brain-coordinator';
-import { SmartNeuralCoordinator } from '../../smart-neural-coordinator';
-import { NeuralBridge } from '../../neural-bridge';
 import type { BrainConfig } from '../../brain-coordinator';
+import { BrainCoordinator } from '../../brain-coordinator';
+import { NeuralBridge } from '../../neural-bridge';
+import { SmartNeuralCoordinator } from '../../smart-neural-coordinator';
 
 // Mock external dependencies for testing
 vi.mock('@xenova/transformers', () => ({'
@@ -99,11 +99,10 @@ describe('Smart Neural Integration Tests', () => {'
   });
 
   describe('Initialization Integration', () => {'
-    it('should initialize BrainCoordinator with SmartNeuralCoordinator', async () => {'
+    it('should initialize BrainCoordinator with SmartNeuralCoordinator', async () => '
       expect(brainCoordinator).toBeDefined();
       expect(smartNeuralCoordinator).toBeDefined();
-      expect(smartNeuralCoordinator).toBeInstanceOf(SmartNeuralCoordinator);
-    });
+      expect(smartNeuralCoordinator).toBeInstanceOf(SmartNeuralCoordinator););
 
     it('should initialize NeuralBridge with smart neural backend', async () => {'
       expect(neuralBridge).toBeDefined();
@@ -223,15 +222,14 @@ describe('Smart Neural Integration Tests', () => {'
   describe('Error Handling Integration', () => {'
     it('should handle embedding generation errors gracefully', async () => {'
       // Mock a failure in the transformers pipeline
-      const mockPipeline = vi
+      const _mockPipeline = vi
         .fn()
         .mockRejectedValue(new Error('Model loading failed'));'
-      vi.doMock('@xenova/transformers', () => ({'
-        pipeline: mockPipeline,
-      }));
+      vi.doMock('@xenova/transformers', () => ('
+        pipeline: mockPipeline,));
 
       try {
-        const result = await brainCoordinator.generateEmbedding('test text');'
+        const _result = await brainCoordinator.generateEmbedding('test text');'
 
         // Should still return a result with fallback
         expect(result).toBeDefined();
@@ -245,7 +243,7 @@ describe('Smart Neural Integration Tests', () => {'
     it('should handle invalid input gracefully', async () => {'
       try {
         // Test with empty string
-        const result1 = await brainCoordinator.generateEmbedding('');'
+        const _result1 = await brainCoordinator.generateEmbedding('');'
         expect(result1.success).toBe(false);
 
         // Test with very long string

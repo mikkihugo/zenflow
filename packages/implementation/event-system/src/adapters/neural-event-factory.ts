@@ -61,16 +61,12 @@
  * @since 1.0.0
  */
 
-import type { Config, Logger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
   EventManager,
-  EventManagerFactory,
   EventManagerType,
-  SystemEvent,
 } from '../core/interfaces;
 import type { NeuralEvent } from '../types;
 
@@ -118,12 +114,6 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     model: new Map<string, (event: NeuralEvent) => void>(),
     performance: new Map<string, (event: NeuralEvent) => void>(),
     resource: new Map<string, (event: NeuralEvent) => void>(),
-  };
-
-  private loadedModels = new Set<string>();
-  private processingStats = {
-    batchesProcessed: 0,
-    totalSamples: 0,
   };
 
   constructor(config: EventManagerConfig, logger: Logger) {
@@ -197,7 +187,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
   /**
    * Subscribe to model lifecycle events.
    */
-  subscribeModelEvents(listener: (event: NeuralEvent) => void): string {
+  subscribeModelEvents(listener: (_event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.model.set(subscriptionId, listener);
 
@@ -221,7 +211,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
   /**
    * Subscribe to resource management events.
    */
-  subscribeResourceEvents(listener: (event: NeuralEvent) => void): string {
+  subscribeResourceEvents(listener: (_event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.resource.set(subscriptionId, listener);
 
@@ -375,7 +365,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
       }
 
       // Track processing time
-      const processingTime = Date.now() - startTime;
+      const _processingTime = Date.now() - startTime;
       if (operationType === 'training') {'
         this.neuralMetrics.totalTrainingTime += processingTime;
       } else if (operationType === 'inference') {'
@@ -460,7 +450,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
   }
 
   private async notifyNeuralSubscribers(
-    subscribers: Map<string, (event: NeuralEvent) => void>,
+    subscribers: Map<string, (_event: NeuralEvent) => void>,
     event: NeuralEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
@@ -625,7 +615,7 @@ export class NeuralEventManagerFactory
               status.metadata
             );
           }
-        } catch (error) {
+        } catch (_error) {
           this.logger.error(
             `Neural manager health check failed: ${config.name}`,`
             error

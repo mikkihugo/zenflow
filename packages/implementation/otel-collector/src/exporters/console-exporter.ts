@@ -5,11 +5,10 @@
  * Outputs formatted telemetry data to console with color coding.
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
-
+import { getLogger } from '@claude-zen/foundation/logging';
+import type { ExporterConfig, } from '../types.js';
 import type { BaseExporter } from './index.js';
-import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 
 /**
  * Console exporter for development and debugging
@@ -17,9 +16,6 @@ import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 export class ConsoleExporter implements BaseExporter {
   private config: ExporterConfig;
   private logger: Logger;
-  private exportCount = 0;
-  private lastExportTime = 0;
-  private lastError: string|null = null;
 
   constructor(config: ExporterConfig) {
     this.config = config;
@@ -65,7 +61,7 @@ export class ConsoleExporter implements BaseExporter {
   async exportBatch(dataItems: TelemetryData[]): Promise<ExportResult> {
     try {
       this.logger.info(
-        `📦 Batch Export (${dataItems.length} items) - ${this.config.name}``
+        `📦 Batch Export ($dataItems.lengthitems) - $this.config.name``
       );
 
       for (const data of dataItems) {
@@ -124,7 +120,7 @@ export class ConsoleExporter implements BaseExporter {
    */
   private formatAndLog(data: TelemetryData): void {
     const timestamp = new Date(data.timestamp).toISOString();
-    const service = `${data.service.name}${data.service.version ? `@${data.service.version}` :''}`;`
+    const _service = `${data.service.name}${data.service.version ? `@${data.service.version}` :''}`;`
 
     let emoji = '📊';
     let color = '';
@@ -147,7 +143,7 @@ export class ConsoleExporter implements BaseExporter {
     const reset = '\x1b[0m';
 
     console.log(
-      `${color}${emoji} [${timestamp}] ${data.type.toUpperCase()} ${service}${reset}``
+      `$color$emoji[${timestamp}] $data.type.toUpperCase()$_service$reset``
     );
 
     // Format the data payload
@@ -180,7 +176,7 @@ export class ConsoleExporter implements BaseExporter {
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
           console.log(
-            `     ├─ ${span.name || 'unnamed'} (${span.duration || 'unknown'}ms)``
+            `     ├─ $span.name || 'unnamed'($span.duration || 'unknown'ms)``
           );
         }
         if (data.data.spans.length > 3) {
@@ -200,7 +196,7 @@ export class ConsoleExporter implements BaseExporter {
   private logMetricData(data: TelemetryData): void {
     try {
       if (data.data && data.data.metrics) {
-        console.log(`   📈 Metrics: ${data.data.metrics.length}`);`
+        console.log(`   📈 Metrics: $data.data.metrics.length`);`
         for (const metric of data.data.metrics.slice(0, 5)) {
           // Show first 5 metrics
           const value = metric.value||metric.count||metric.sum||'N/A;
@@ -223,7 +219,7 @@ export class ConsoleExporter implements BaseExporter {
   private logLogData(data: TelemetryData): void {
     try {
       if (data.data && data.data.logs) {
-        console.log(`   📄 Logs: ${data.data.logs.length}`);`
+        console.log(`   📄 Logs: $data.data.logs.length`);`
         for (const log of data.data.logs.slice(0, 3)) {
           // Show first 3 logs
           const level = log.level|||INFO;
@@ -240,7 +236,7 @@ export class ConsoleExporter implements BaseExporter {
         }
       } else if (typeof data.data === 'string') {'
         console.log(
-          `   📝 Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}``
+          `   📝 Message: $data.data.substring(0, 200)$data.data.length > 200 ? '...' : ''``
         );
       } else {
         console.log(`   📋 Data:`, JSON.stringify(data.data, null, 2));`

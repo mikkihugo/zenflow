@@ -1,15 +1,13 @@
-import { AuthAnthropic } from "../../auth/anthropic"
-import { AuthCopilot } from "../../auth/copilot"
-import { Auth } from "../../auth"
-import { cmd } from "./cmd"
+import os from "node:os"
+import path from "node:path"
 import * as prompts from "@clack/prompts"
-import open from "open"
-import { UI } from "../ui"
-import { ModelsDev } from "../../provider/models"
 import { map, pipe, sortBy, values } from "remeda"
-import path from "path"
-import os from "os"
+import { Auth } from "../../auth"
+import { AuthCopilot } from "../../auth/copilot"
 import { Global } from "../../global"
+import { ModelsDev } from "../../provider/models"
+import { UI } from "../ui"
+import { cmd } from "./cmd"
 
 export const AuthCommand = cmd({
   command: "auth",
@@ -34,7 +32,7 @@ export const AuthListCommand = cmd({
 
     for (const [providerID, result] of results) {
       const name = database[providerID]?.name || providerID
-      prompts.log.info(`${name} ${UI.Style.TEXT_DIM}${result.type}`)`
+      prompts.log.info(`$name$UI.Style.TEXT_DIM$result.type`)`
     }
 
     prompts.outro(`${results.length} credentials`)`
@@ -61,7 +59,7 @@ export const AuthListCommand = cmd({
         prompts.log.info(`${provider} ${UI.Style.TEXT_DIM}${envVar}`)`
       }
 
-      prompts.outro(`${activeEnvVars.length} environment variables`)`
+      prompts.outro(`$activeEnvVars.lengthenvironment variables`)`
     }
   },
 })
@@ -213,7 +211,7 @@ export const AuthLoginCommand = cmd({
               Accept: "application/json, text/plain, */*",
             },
           })
-          if (!response.ok) {
+          if (!_response._ok) {
             throw new Error("Failed to create API key")
           }
           const json = await response.json()

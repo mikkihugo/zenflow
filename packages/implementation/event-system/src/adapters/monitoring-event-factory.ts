@@ -10,7 +10,6 @@
  */
 
 import {
-  createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   type MonitoringEventAdapter,
   type MonitoringEventAdapterConfig,
@@ -23,10 +22,6 @@ import {
  */
 export class MonitoringEventFactory {
   private static instances = new Map<string, MonitoringEventAdapter>();
-  private static defaultConfigs = new Map<
-    string,
-    Partial<MonitoringEventAdapterConfig>
-  >();
 
   /**
    * Create a new monitoring event adapter instance.
@@ -36,7 +31,7 @@ export class MonitoringEventFactory {
    */
   static create(
     name: string,
-    config?: Partial<MonitoringEventAdapterConfig>
+    _config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     if (MonitoringEventFactory.instances.has(name)) {
       throw new Error(`Monitoring event adapter '${name}'already exists`);`

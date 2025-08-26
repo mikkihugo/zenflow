@@ -19,13 +19,12 @@ describe('Teamwork Basic Integration - Hybrid Brain', () => {'
   });
 
   describe('🎯 Core Functionality', () => {'
-    it('should create orchestrator with brain coordination', () => {'
+    it('should create orchestrator with brain coordination', () => '
       expect(orchestrator).toBeDefined();
       expect(typeof orchestrator.createConversation).toBe('function');'
       expect(typeof orchestrator.joinConversation).toBe('function');'
       expect(typeof orchestrator.sendMessage).toBe('function');'
-      expect(typeof orchestrator.terminateConversation).toBe('function');'
-    });
+      expect(typeof orchestrator.terminateConversation).toBe('function');');
 
     it('should create a conversation successfully', async () => {'
       const config: ConversationConfig = {

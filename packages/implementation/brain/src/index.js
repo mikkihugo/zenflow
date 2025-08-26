@@ -694,37 +694,29 @@
 // =============================================================================
 // MAIN ENTRY POINT - Complete brain system
 // =============================================================================
-export { BrainCoordinator } from './main';
-export { BrainCoordinator as BrainSystem } from './main';
-export { BrainCoordinator as default } from './main';
-// =============================================================================
-// NEURAL BRIDGE AND NETWORK OPERATIONS
-// =============================================================================
-export { NeuralBridge } from './main';
-export {
-  createNeuralNetwork,
-  trainNeuralNetwork,
-  predictWithNetwork,
-} from './main';
-// =============================================================================
-// SMART NEURAL COORDINATION SYSTEM - Intelligent Neural Backend
-// =============================================================================
-export { SmartNeuralCoordinator } from './smart-neural-coordinator';
-// =============================================================================
-// GPU ACCELERATION AND COORDINATION SYSTEMS
-// =============================================================================
-export {
-  detectGPUCapabilities,
-  initializeGPUAcceleration,
-  // Note: GPUSupport and optimizeForGPU commented out to fix compilation
-  // DSPyLLMBridge, // Exported separately below to avoid duplicates
-  // RetrainingMonitor // Exported separately below to avoid duplicates
-} from './main';
-// =============================================================================
-// ADDITIONAL BRAIN SYSTEMS - Extended functionality
-// =============================================================================
-// Note: BrainJs functionality moved to neural-ml package
-export { BehavioralIntelligence } from './main';
+
+/**
+ * 📊 AgentPerformancePredictor - Behavioral prediction and optimization
+ *
+ * Predicts agent performance using time series analysis and clustering:
+ * - Performance trend prediction
+ * - Behavioral pattern recognition
+ * - Agent-task matching optimization
+ * - Continuous performance monitoring
+ */
+export { AgentPerformancePredictor } from "./agent-performance-predictor";
+/**
+ * 🏛️ AutonomousCoordinator - Self-governing system management
+ *
+ * Comprehensive autonomous system coordination and resource management:
+ * - Automatic resource allocation
+ * - Dynamic scaling decisions
+ * - Performance optimization
+ * - System health monitoring
+ *
+ * Note: Advanced system coordination - use with caution in production
+ */
+export { AutonomousCoordinator } from "./autonomous-coordinator";
 // Note: BrainJs functionality moved to neural-ml package
 // export {
 //   BrainJsBridge,
@@ -751,7 +743,59 @@ export { BehavioralIntelligence } from './main';
  * - Real-time adaptation to changing patterns
  * - Continuous learning from optimization results
  */
-export { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
+export { AutonomousOptimizationEngine } from "./autonomous-optimization-engine";
+// =============================================================================
+// COORDINATION SYSTEMS - Advanced coordination components
+// =============================================================================
+export { DSPyLLMBridge } from "./coordination/dspy-llm-bridge";
+export { RetrainingMonitor } from "./coordination/retraining-monitor";
+export {
+	BehavioralIntelligence,
+	BrainCoordinator,
+	BrainCoordinator as BrainSystem,
+	BrainCoordinator as default,
+	createNeuralNetwork,
+	detectGPUCapabilities,
+	initializeGPUAcceleration,
+	NeuralBridge,
+	predictWithNetwork,
+	trainNeuralNetwork,
+} from "./main";
+// ===== MEETING INTELLIGENCE - Neural-Powered Collaborative Decision Making =====
+export {
+	createMeetingIntelligence,
+	MeetingIntelligence,
+} from "./meeting-intelligence";
+// =============================================================================
+// NEURAL MODELS - Pre-built neural network models
+// =============================================================================
+export {
+	AutoencoderPreset,
+	CNNPreset,
+	GraphNeuralNetwork,
+	LSTMPreset,
+	NeuralModelPresets,
+	TransformerModel,
+	VAEModel,
+} from "./models-dir";
+// =============================================================================
+// LEGACY COMPATIBILITY - Backward compatibility exports
+// =============================================================================
+export { NeuralBridge as IntelligenceBridge } from "./neural-bridge";
+// =============================================================================
+// SMART NEURAL COORDINATION SYSTEM - Intelligent Neural Backend
+// =============================================================================
+export { SmartNeuralCoordinator } from "./smart-neural-coordinator";
+/**
+ * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
+ *
+ * Advanced prompt optimization using machine learning algorithms:
+ * - Pattern recognition and template matching
+ * - Statistical analysis and regression models
+ * - Domain-specific optimization strategies
+ * - Performance tracking and improvement
+ */
+export { SmartPromptOptimizer } from "./smart-prompt-optimizer";
 /**
  * 🎯 TaskComplexityEstimator - ML-based automatic task complexity analysis
  *
@@ -767,69 +811,13 @@ export { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
  * - Duration and difficulty predictions
  * - Continuous learning and model updates
  */
-export { TaskComplexityEstimator } from './task-complexity-estimator';
-/**
- * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
- *
- * Advanced prompt optimization using machine learning algorithms:
- * - Pattern recognition and template matching
- * - Statistical analysis and regression models
- * - Domain-specific optimization strategies
- * - Performance tracking and improvement
- */
-export { SmartPromptOptimizer } from './smart-prompt-optimizer';
-/**
- * 📊 AgentPerformancePredictor - Behavioral prediction and optimization
- *
- * Predicts agent performance using time series analysis and clustering:
- * - Performance trend prediction
- * - Behavioral pattern recognition
- * - Agent-task matching optimization
- * - Continuous performance monitoring
- */
-export { AgentPerformancePredictor } from './agent-performance-predictor';
-/**
- * 🏛️ AutonomousCoordinator - Self-governing system management
- *
- * Comprehensive autonomous system coordination and resource management:
- * - Automatic resource allocation
- * - Dynamic scaling decisions
- * - Performance optimization
- * - System health monitoring
- *
- * Note: Advanced system coordination - use with caution in production
- */
-export { AutonomousCoordinator } from './autonomous-coordinator';
-// =============================================================================
-// COORDINATION SYSTEMS - Advanced coordination components
-// =============================================================================
-export { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
-export { RetrainingMonitor } from './coordination/retraining-monitor';
-// =============================================================================
-// NEURAL MODELS - Pre-built neural network models
-// =============================================================================
-export {
-  NeuralModelPresets,
-  AutoencoderPreset,
-  CNNPreset,
-  LSTMPreset,
-} from './models-dir';
-export { GraphNeuralNetwork, TransformerModel, VAEModel } from './models-dir';
-// =============================================================================
-// LEGACY COMPATIBILITY - Backward compatibility exports
-// =============================================================================
-export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
-// ===== MEETING INTELLIGENCE - Neural-Powered Collaborative Decision Making =====
-export {
-  MeetingIntelligence,
-  createMeetingIntelligence,
-} from './meeting-intelligence';
+export { TaskComplexityEstimator } from "./task-complexity-estimator";
 // Type guards for runtime type checking
 export {
-  isNeuralAgent,
-  isNeuralNetworkConfig,
-  isAgentMessage,
-} from './types/index';
+	isAgentMessage,
+	isNeuralAgent,
+	isNeuralNetworkConfig,
+} from "./types/index";
 // =============================================================================
 // METADATA - Package information
 // =============================================================================
@@ -840,36 +828,36 @@ export {
  * version details, capabilities, and neural features.
  */
 export const BRAIN_INFO = {
-  version: '2.0.0',
-  name: '@claude-zen/brain',
-  description:
-    'Autonomous AI decision-making system with neural intelligence and Rust/WASM acceleration',
-  capabilities: [
-    'Autonomous decision-making and strategy selection',
-    'Task complexity estimation with ML models',
-    'Neural network coordination with FANN integration',
-    'GPU acceleration for high-performance computing',
-    'Behavioral intelligence and performance prediction',
-    'Real-time adaptation and continuous learning',
-    'Enterprise-grade security and multi-tenant isolation',
-    'Foundation telemetry integration',
-  ],
-  neuralArchitectures: [
-    'Feedforward Neural Networks',
-    'Convolutional Neural Networks (CNN)',
-    'Recurrent Neural Networks (RNN/LSTM)',
-    'Transformer and Attention-based models',
-    'Variational Autoencoders (VAE)',
-    'Generative Adversarial Networks (GAN)',
-    'Reinforcement Learning models',
-    'Custom neural architectures',
-  ],
-  acceleration: {
-    rust: 'High-performance Rust backend with WASM bindings',
-    gpu: 'CUDA, OpenCL, Metal, and WebGL support',
-    cpu: 'Multi-threaded processing with SIMD optimization',
-    distributed: 'Horizontal scaling across multiple nodes',
-  },
+	version: "2.0.0",
+	name: "@claude-zen/brain",
+	description:
+		"Autonomous AI decision-making system with neural intelligence and Rust/WASM acceleration",
+	capabilities: [
+		"Autonomous decision-making and strategy selection",
+		"Task complexity estimation with ML models",
+		"Neural network coordination with FANN integration",
+		"GPU acceleration for high-performance computing",
+		"Behavioral intelligence and performance prediction",
+		"Real-time adaptation and continuous learning",
+		"Enterprise-grade security and multi-tenant isolation",
+		"Foundation telemetry integration",
+	],
+	neuralArchitectures: [
+		"Feedforward Neural Networks",
+		"Convolutional Neural Networks (CNN)",
+		"Recurrent Neural Networks (RNN/LSTM)",
+		"Transformer and Attention-based models",
+		"Variational Autoencoders (VAE)",
+		"Generative Adversarial Networks (GAN)",
+		"Reinforcement Learning models",
+		"Custom neural architectures",
+	],
+	acceleration: {
+		rust: "High-performance Rust backend with WASM bindings",
+		gpu: "CUDA, OpenCL, Metal, and WebGL support",
+		cpu: "Multi-threaded processing with SIMD optimization",
+		distributed: "Horizontal scaling across multiple nodes",
+	},
 };
 /**
  * Brain Package Documentation
@@ -996,10 +984,11 @@ export const BRAIN_INFO = {
  */
 // Export neural orchestrator for brain-as-coordinator architecture
 export {
-  NeuralOrchestrator,
-  TaskComplexity,
-  StorageStrategy,
-} from './neural-orchestrator';
+	NeuralOrchestrator,
+	StorageStrategy,
+	TaskComplexity,
+} from "./neural-orchestrator";
+
 // =============================================================================
 // PROFESSIONAL NAMING PATTERNS - Enterprise Brain System Access
 // =============================================================================
@@ -1012,73 +1001,73 @@ export {
 // Core brain system access with lazy loading
 let brainSystemInstance = null;
 export async function getBrainSystemAccess() {
-  if (!brainSystemInstance) {
-    const { BrainCoordinator } = await import('./main');
-    brainSystemInstance = new BrainCoordinator({
-      autonomous: {
-        enabled: true,
-        learningRate: 0.1,
-        adaptationThreshold: 0.7,
-      },
-    });
-    await brainSystemInstance.initialize();
-  }
-  return brainSystemInstance;
+	if (!brainSystemInstance) {
+		const { BrainCoordinator } = await import("./main");
+		brainSystemInstance = new BrainCoordinator({
+			autonomous: {
+				enabled: true,
+				learningRate: 0.1,
+				adaptationThreshold: 0.7,
+			},
+		});
+		await brainSystemInstance.initialize();
+	}
+	return brainSystemInstance;
 }
 export async function getBrainCoordinator(config) {
-  const brainSystem = await getBrainSystemAccess();
-  return brainSystem.createCoordinator(config);
+	const brainSystem = await getBrainSystemAccess();
+	return brainSystem.createCoordinator(config);
 }
 export async function getSmartNeuralCoordinator(config) {
-  const { SmartNeuralCoordinator } = await import('./smart-neural-coordinator');
-  return new SmartNeuralCoordinator(config);
+	const { SmartNeuralCoordinator } = await import("./smart-neural-coordinator");
+	return new SmartNeuralCoordinator(config);
 }
-export async function getNeuralOrchestrator(config) {
-  const { NeuralOrchestrator } = await import('./neural-orchestrator');
-  return new NeuralOrchestrator();
+export async function getNeuralOrchestrator(_config) {
+	const { NeuralOrchestrator } = await import("./neural-orchestrator");
+	return new NeuralOrchestrator();
 }
 export async function getTaskComplexityEstimator(config) {
-  const brainSystem = await getBrainSystemAccess();
-  return brainSystem.createTaskComplexityEstimator(config);
+	const brainSystem = await getBrainSystemAccess();
+	return brainSystem.createTaskComplexityEstimator(config);
 }
-export async function getAutonomousOptimizer(config) {
-  const { AutonomousOptimizationEngine } = await import(
-    './autonomous-optimization-engine'
-  );
-  return new AutonomousOptimizationEngine();
+export async function getAutonomousOptimizer(_config) {
+	const { AutonomousOptimizationEngine } = await import(
+		"./autonomous-optimization-engine"
+	);
+	return new AutonomousOptimizationEngine();
 }
-export async function getBehavioralIntelligence(config) {
-  const { BehavioralIntelligence } = await import('./main');
-  return new BehavioralIntelligence();
+export async function getBehavioralIntelligence(_config) {
+	const { BehavioralIntelligence } = await import("./main");
+	return new BehavioralIntelligence();
 }
-export async function getNeuralBridge(config) {
-  const { NeuralBridge } = await import('./main');
-  return new NeuralBridge();
+export async function getNeuralBridge(_config) {
+	const { NeuralBridge } = await import("./main");
+	return new NeuralBridge();
 }
 // Professional brain system object with proper naming (matches Storage/Telemetry patterns)
 export const brainSystem = {
-  getAccess: getBrainSystemAccess,
-  getCoordinator: getBrainCoordinator,
-  getSmartCoordinator: getSmartNeuralCoordinator,
-  getOrchestrator: getNeuralOrchestrator,
-  getComplexityEstimator: getTaskComplexityEstimator,
-  getAutonomousOptimizer: getAutonomousOptimizer,
-  getBehavioralIntelligence: getBehavioralIntelligence,
-  getNeuralBridge: getNeuralBridge,
+	getAccess: getBrainSystemAccess,
+	getCoordinator: getBrainCoordinator,
+	getSmartCoordinator: getSmartNeuralCoordinator,
+	getOrchestrator: getNeuralOrchestrator,
+	getComplexityEstimator: getTaskComplexityEstimator,
+	getAutonomousOptimizer: getAutonomousOptimizer,
+	getBehavioralIntelligence: getBehavioralIntelligence,
+	getNeuralBridge: getNeuralBridge,
 };
 // =============================================================================
 // MONITORING SYSTEM - Internal agent monitoring (formerly @claude-zen/agent-monitoring)
 // =============================================================================
 export {
-  CompleteIntelligenceSystem,
-  createIntelligenceSystem,
-  createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem,
-  SimpleTaskPredictor,
-  createTaskPredictor,
-  isHighConfidencePrediction,
-  getPredictionSummary,
-} from './monitoring/main';
+	CompleteIntelligenceSystem,
+	createBasicIntelligenceSystem,
+	createIntelligenceSystem,
+	createProductionIntelligenceSystem,
+	createTaskPredictor,
+	getPredictionSummary,
+	isHighConfidencePrediction,
+	SimpleTaskPredictor,
+} from "./monitoring/main";
 // export type {
 //   IntelligenceSystemConfig,
 //   PerformanceMetrics,

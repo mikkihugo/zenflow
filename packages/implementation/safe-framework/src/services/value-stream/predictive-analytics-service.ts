@@ -12,7 +12,8 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const {
   format,
   addDays,
@@ -21,18 +22,10 @@ const {
   differenceInDays,
   subDays,
 } = dateFns;
+
 import {
   groupBy,
-  map,
-  filter,
-  orderBy,
-  sumBy,
-  maxBy,
-  minBy,
   meanBy,
-  sortBy,
-  take,
-  last,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -749,7 +742,6 @@ export interface ScenarioImpact {
 export class PredictiveAnalyticsService {
   private readonly logger: Logger;
   private predictions = new Map<string, ValueDeliveryPrediction>();
-  private models = new Map<string, any>();
   private historicalData = new Map<string, any[]>();
 
   constructor(logger: Logger) {
@@ -875,8 +867,8 @@ export class PredictiveAnalyticsService {
    */
   async updateModel(
     predictionId: string,
-    newData: any[],
-    actualResults?: RecentPrediction[]
+    _newData: any[],
+    _actualResults?: RecentPrediction[]
   ): Promise<void> {
     const prediction = this.predictions.get(predictionId);
     if (!prediction) {
@@ -964,7 +956,7 @@ export class PredictiveAnalyticsService {
   ): Promise<any> {
     const modelTemplate = this.models.get(config.algorithm);
     if (!modelTemplate) {
-      throw new Error(`Unknown algorithm: ${config.algorithm}`);`
+      throw new Error(`Unknown algorithm: $config.algorithm`);`
     }
 
     // Simulate model training
@@ -1064,8 +1056,8 @@ export class PredictiveAnalyticsService {
   }
 
   private async generateScenarios(
-    model: any,
-    config: PredictiveAnalyticsConfig,
+    _model: any,
+    _config: PredictiveAnalyticsConfig,
     basePredictions: DeliveryPrediction[]
   ): Promise<ScenarioPrediction[]> {
     return [
@@ -1158,8 +1150,8 @@ export class PredictiveAnalyticsService {
   }
 
   private async assessPredictionAccuracy(
-    predictionId: string,
-    model: any
+    _predictionId: string,
+    _model: any
   ): Promise<PredictionAccuracy> {
     return {
       historical: [
@@ -1199,7 +1191,7 @@ export class PredictiveAnalyticsService {
 
   private async validateModel(
     config: ValidationConfig,
-    data: any[]
+    _data: any[]
   ): Promise<ValidationResult[]> {
     return [
       {
@@ -1221,42 +1213,10 @@ export class PredictiveAnalyticsService {
     ];
   }
 
-  private async retrainModel(
-    predictionId: string,
-    data: any[],
-    actualResults: RecentPrediction[]
-  ): Promise<void> {
-    // Simulate model retraining with new data
-    this.logger.info('Retraining model', {'
-      predictionId,
-      dataPoints: data.length,
-      actualResults: actualResults.length,
-    });
-  }
-
-  // Additional helper methods...
-  private imputeMissingValues(
-    data: any[],
-    config: MissingValueHandling
-  ): any[] {
-    return data; // Simplified implementation
-  }
-
-  private handleOutliers(data: any[], config: OutlierHandling): any[] {
-    return data; // Simplified implementation
-  }
-
-  private applyFeatureTransformations(
-    data: any[],
-    feature: FeatureConfig
-  ): any[] {
-    return data; // Simplified implementation
-  }
-
   private generateBasePrediction(
-    model: any,
+    _model: any,
     dayOffset: number,
-    context: any
+    _context: any
   ): number {
     // Simulate prediction generation
     const baseTime = 48; // hours
@@ -1275,8 +1235,8 @@ export class PredictiveAnalyticsService {
   }
 
   private identifyPredictionFactors(
-    model: any,
-    context: any
+    _model: any,
+    _context: any
   ): PredictionFactor[] {
     return [
       {

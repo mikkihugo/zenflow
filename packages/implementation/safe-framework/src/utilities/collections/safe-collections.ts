@@ -13,21 +13,21 @@
  */
 
 import {
+  chunk,
+  countBy,
   filter,
-  map,
-  reduce,
-  sortBy,
+  findIndex,
   groupBy,
-  uniqBy,
   keyBy,
-  orderBy,
-  partition,
-  sumBy,
+  map,
   maxBy,
   minBy,
-  countBy,
-  findIndex,
-  chunk,
+  orderBy,
+  partition,
+  reduce,
+  sortBy,
+  sumBy,
+  uniqBy,
 } from 'lodash-es';
 
 /**

@@ -9,7 +9,7 @@
  * @version 2.0.0
  */
 
-import { TokenFactory, InjectionToken } from '@claude-zen/foundation';
+import { TokenFactory } from '@claude-zen/foundation';
 
 /**
  * Core SAFe service tokens

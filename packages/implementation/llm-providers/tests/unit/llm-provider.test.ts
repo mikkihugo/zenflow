@@ -1,17 +1,15 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  LLMProvider,
-  setGlobalLLM,
-  getGlobalLLM,
   createLLMProvider,
-  listLLMProviders,
+  getGlobalLLM,
   getLLMProviderByCapability,
+  LLMProvider,
+  listLLMProviders,
+  setGlobalLLM,
 } from '../../src/index';
 import {
-  mockLogger,
-  createMockLLMProvider,
-  createMockResponse,
   createMockError,
+  createMockResponse,
 } from '../mocks/llm-mocks';
 
 // Mock the LLMProvider class to avoid initialization issues
@@ -46,7 +44,7 @@ vi.mock('../../src/llm-provider', () => ({'
       }),
       streamMessage: async function* () {
         yield { type: 'content', content: 'Mock' };'
-        yield { type: 'done' };'
+        yield type: 'done' ;'
       },
       health: async () => ({ status: 'healthy' }),
       getStats: async () => ({
@@ -111,12 +109,12 @@ describe('LLMProvider', () => {'
 
   describe('Message Handling', () => {'
     it('should send simple text messages', async () => {'
-      const mockResponse = createMockResponse('Hello from Claude!');'
+      const _mockResponse = createMockResponse('Hello from Claude!');'
 
       // Mock the internal sendMessage method
       vi.spyOn(provider as any, 'sendMessage').mockResolvedValue(mockResponse);'
 
-      const response = await provider.sendMessage('Hello');'
+      const _response = await provider.sendMessage('Hello');'
       expect(response).toEqual(mockResponse);
     });
 
@@ -134,7 +132,7 @@ describe('LLMProvider', () => {'
     });
 
     it('should handle message sending errors gracefully', async () => {'
-      const error = createMockError('Network error', 'NETWORK_ERROR');'
+      const _error = createMockError('Network error', 'NETWORK_ERROR');'
       vi.spyOn(provider as any, 'sendMessage').mockRejectedValue(error);'
 
       await expect(provider.sendMessage('Hello')).rejects.toThrow('
@@ -153,7 +151,7 @@ describe('LLMProvider', () => {'
 
       vi.spyOn(provider as any, 'executeTask').mockResolvedValue(mockResult);'
 
-      const result = await provider.executeTask('simple task');'
+      const _result = await provider.executeTask('simple task');'
       expect(result).toEqual(mockResult);
     });
 
@@ -170,12 +168,12 @@ describe('LLMProvider', () => {'
       };
       vi.spyOn(provider as any, 'executeTask').mockResolvedValue(mockResult);'
 
-      const result = await provider.executeTask('complex task', taskOptions);'
+      const _result = await provider.executeTask('complex task', taskOptions);'
       expect(result).toEqual(mockResult);
     });
 
     it('should handle task execution failures', async () => {'
-      const error = createMockError('Task execution failed', 'TASK_ERROR');'
+      const _error = createMockError('Task execution failed', 'TASK_ERROR');'
       vi.spyOn(provider as any, 'executeTask').mockRejectedValue(error);'
 
       await expect(provider.executeTask('failing task')).rejects.toThrow('
@@ -188,8 +186,8 @@ describe('LLMProvider', () => {'
     it('should support streaming responses', async () => {'
       const mockStream = async function* () {
         yield { type: 'content', content: 'Streaming' };'
-        yield { type: 'content', content: ' response' };'
-        yield { type: 'done' };'
+        yield type: 'content', content: ' response' ;'
+        yield type: 'done' ;'
       };
 
       vi.spyOn(provider as any, 'streamMessage').mockReturnValue(mockStream())();'
@@ -203,8 +201,8 @@ describe('LLMProvider', () => {'
 
       expect(chunks).toHaveLength(3);
       expect(chunks[0]).toEqual({ type: 'content', content: 'Streaming' });'
-      expect(chunks[1]).toEqual({ type: 'content', content: ' response' });'
-      expect(chunks[2]).toEqual({ type: 'done' });'
+      expect(chunks[1]).toEqual(type: 'content', content: ' response' );'
+      expect(chunks[2]).toEqual(type: 'done' );'
     });
 
     it('should handle streaming errors', async () => {'
@@ -278,10 +276,9 @@ describe('LLMProvider', () => {'
 });
 
 describe('Global LLM Management', () => {'
-  beforeEach(() => {
+  beforeEach(() => 
     // Clear global state
-    setGlobalLLM(null as any);
-  });
+    setGlobalLLM(null as any););
 
   it('should set and get global LLM provider', () => {'
     const provider = new LLMProvider('claude-code');'
@@ -309,7 +306,7 @@ describe('Global LLM Management', () => {'
 });
 
 describe('Factory Functions', () => {'
-  describe('createLLMProvider', () => {'
+  describe('createLLMProvider', () => '
     it('should create claude-code provider by default', () => {'
       const provider = createLLMProvider();
       expect(provider).toBeInstanceOf(LLMProvider);
@@ -329,8 +326,7 @@ describe('Factory Functions', () => {'
         expect(provider).toBeInstanceOf(LLMProvider);
         expect(provider.getProviderId()).toBe(providerId);
       });
-    });
-  });
+    }););
 
   describe('listLLMProviders', () => {'
     it('should return list of available providers', () => {'
@@ -392,7 +388,7 @@ describe('Factory Functions', () => {'
 
 describe('Provider Type Detection', () => {'
   it('should correctly identify CLI providers', () => {'
-    const cliProviders = ['claude-code', 'cursor-cli', 'gemini-cli'];'
+    const _cliProviders = ['claude-code', 'cursor-cli', 'gemini-cli'];'
 
     cliProviders.forEach((providerId) => {
       const provider = new LLMProvider(providerId as any);
@@ -402,7 +398,7 @@ describe('Provider Type Detection', () => {'
   });
 
   it('should correctly identify API providers', () => {'
-    const apiProviders = ['github-models-api', 'anthropic-api', 'openai-api'];'
+    const _apiProviders = ['github-models-api', 'anthropic-api', 'openai-api'];'
 
     apiProviders.forEach((providerId) => {
       const provider = new LLMProvider(providerId as any);
@@ -421,7 +417,7 @@ describe('Error Handling', () => {'
   });
 
   it('should handle network errors gracefully', async () => {'
-    const networkError = createMockError('Network timeout', 'NETWORK_TIMEOUT');'
+    const _networkError = createMockError('Network timeout', 'NETWORK_TIMEOUT');'
     vi.spyOn(provider as any, 'sendMessage').mockRejectedValue(networkError);'
 
     await expect(provider.sendMessage('test')).rejects.toThrow('
@@ -430,7 +426,7 @@ describe('Error Handling', () => {'
   });
 
   it('should handle authentication errors', async () => {'
-    const authError = createMockError('Authentication failed', 'AUTH_ERROR');'
+    const _authError = createMockError('Authentication failed', 'AUTH_ERROR');'
     vi.spyOn(provider as any, 'sendMessage').mockRejectedValue(authError);'
 
     await expect(provider.sendMessage('test')).rejects.toThrow('
@@ -439,7 +435,7 @@ describe('Error Handling', () => {'
   });
 
   it('should handle rate limiting', async () => {'
-    const rateLimitError = createMockError('Rate limit exceeded', 'RATE_LIMIT');'
+    const _rateLimitError = createMockError('Rate limit exceeded', 'RATE_LIMIT');'
     vi.spyOn(provider as any, 'sendMessage').mockRejectedValue(rateLimitError);'
 
     await expect(provider.sendMessage('test')).rejects.toThrow('
@@ -450,7 +446,7 @@ describe('Error Handling', () => {'
   it('should handle malformed responses', async () => {'
     vi.spyOn(provider as any, 'sendMessage').mockResolvedValue(null);'
 
-    const response = await provider.sendMessage('test');'
+    const _response = await provider.sendMessage('test');'
     expect(response).toBeNull();
   });
 });

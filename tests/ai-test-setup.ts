@@ -256,7 +256,7 @@ import { jest } from '@jest/globals';
         for (const word of words) {
           await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
           yield {
-            text: word + ' ',
+            text: `${word} `,
             confidence: response.confidence,
             isComplete: false,
           };

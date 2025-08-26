@@ -31,14 +31,10 @@
  */
 
 import { 
-  err,
   getLogger,
-  metered,
-  ok,
   type Result,
   recordMetric,
   safeAsync,
-  traced,
   withTrace,z, } from '@claude-zen/foundation';
 // Import the full BrainCoordinator with learnFromResult method
 import {
@@ -115,7 +111,6 @@ export class NeuralEventProcessor {
     context?: any;
     optimizationResult?: any;
   }[] = [];
-  private eventHistory: BaseEvent[] = [];
   private isInitialized = false;
 
   constructor(config: Partial<NeuralEventConfig> = {}) {
@@ -401,52 +396,9 @@ export class NeuralEventProcessor {
     return Math.abs(hash);
   }
 
-  // =============================================================================
-  // PREDICTION INTERPRETATION
-  // =============================================================================
-
-  /**
-   * Interpret neural network prediction as event classification.
-   */
-  private interpretPrediction(
-    prediction: { output: Record<string, number> },
-    event: BaseEvent
-  ): EventClassification {
-    // Convert prediction output to classification
-    // This is simplified - in practice, you'd have trained outputs for each class'
-
-    const confidence = Math.max(...Object.values(prediction.output || {}));
-
-    return {
-      category: event.domain, // Use event domain as base
-      priority: confidence > 0.8 ?'HIGH' : confidence > 0.6 ? 'MEDIUM' : 'LOW',
-      confidence: confidence,
-      patterns: this.identifyPatterns(event),
-      recommendedAction: confidence > 0.8 ? 'PRIORITIZE' : 'PROCESS',
-    };
-  }
-
-  /**
-   * Interpret prediction for routing recommendations.
-   */
-  private interpretRoutingPrediction(
-    prediction: { output: Record<string, number> },
-    event: BaseEvent
-  ): string[] {
-    const routes: string[] = [];
-
-    // Add domain-specific routes
-    routes.push(`${event.domain.toLowerCase()}-handler`);`
-
-    // Add type-specific routes
-    if (event.type.includes('.')) {'
-      const [category] = event.type.split('.');'
-      routes.push(`$category-processor`);`
-    }
-
     // Add priority-based routes
     const confidence = Math.max(...Object.values(prediction.output||{}));
-    if (confidence > 0.8) {
+    if (_confidence > 0.8) {
       routes.push('priority-queue');'
     } else {
       routes.push('standard-queue');'
@@ -537,7 +489,7 @@ export class NeuralEventProcessor {
 
     // Add type-specific routes
     if (event.type.includes('.')) {'
-      const [category] = event.type.split('.');'
+      const [_category] = event.type.split('.');'
       routes.push(`$category-processor`);`
     }
 
@@ -568,7 +520,7 @@ export class NeuralEventProcessor {
     if (confidence > 0.7) {
       // Predict likely follow-up events
       const followUpEvent: BaseEvent = {
-        id: `predicted-${Date.now()}`,`
+        id: `predicted-$Date.now()`,`
         type: `${currentEvent.type}.followup`,`
         domain: currentEvent.domain,
         timestamp: new Date(Date.now() + timeHorizon / 2),
@@ -606,13 +558,11 @@ export class NeuralEventProcessor {
       input: features,
       output: this.classificationToTrainingOutput(classification),
       success: classification.confidence > this.config.confidenceThreshold,
-      feedback: `Classification: ${classification.category}, Priority: ${classification.priority}`,`
-      context: {
+      feedback: `Classification: $classification.category, Priority: $classification.priority`,`
         eventType: event.type,
         domain: event.domain,
-        classification,
-      },
-      optimizationResult: {
+        classification,,
+      optimizationResult: 
         optimizedPrompt: `Event classification for ${event.type}`,`
         confidence: classification.confidence,
         method:'neural-classification',

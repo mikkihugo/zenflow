@@ -10,7 +10,6 @@
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryConfig } from '../types';
-import type { JSONValue } from '../core/memory-system';
 
 // Define BackendCapabilities here to avoid circular dependency
 export interface BackendCapabilities {
@@ -241,13 +240,13 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     capabilities: BackendCapabilities;
     stats: MemoryStats;
   }> {
-    const start = Date.now();
-    let healthy = false;
+    const _start = Date.now();
+    const _healthy = false;
 
     try {
       await this.ensureInitialized();
       // Test basic operations
-      const testKey = `__health_check_${Date.now()}`;`
+      const _testKey = `__health_check_${Date.now()}`;`
       await this.store(testKey, { test: true });
       const retrieved = await this.retrieve(testKey);
       await this.delete(testKey);
@@ -302,7 +301,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     try {
       return JSON.stringify(value);
     } catch (error) {
-      throw new Error(`Failed to serialize value: ${(error as Error).message}`);`
+      throw new Error(`Failed to serialize value: $(error as Error).message`);`
     }
   }
 

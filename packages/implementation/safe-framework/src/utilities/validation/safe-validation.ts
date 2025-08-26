@@ -248,10 +248,10 @@ export class SafeValidationUtils {
     errors: string[];
   } {
     const errors: string[] = [];
-    const circularDependencies: string[] = [];
+    const _circularDependencies: string[] = [];
 
     // Create adjacency list
-    const graph = new Map<string, string[]>();
+    const _graph = new Map<string, string[]>();
     const epicIds = new Set(epics.map((e) => e.id));
 
     epics.forEach((epic) => {

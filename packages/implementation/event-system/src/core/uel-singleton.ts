@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * @file UEL Singleton.
  *
@@ -153,7 +153,7 @@ export class UEL {
     if (!this.initialized) {
       await this.initialize();
     }
-    return this.factory!.createSystemEventManager(name, config);
+    return this.factory?.createSystemEventManager(name, config);
   }
 
   async getSystemStatus(): Promise<unknown> {
@@ -192,7 +192,7 @@ export class UEL {
     if (!this.initialized) {
       await this.initialize();
     }
-    return this.factory!.createCoordinationEventManager(name, config);
+    return this.factory?.createCoordinationEventManager(name, config);
   }
 
   async createCommunicationEventManager(
@@ -202,7 +202,7 @@ export class UEL {
     if (!this.initialized) {
       await this.initialize();
     }
-    return this.factory!.createCommunicationEventManager(name, config);
+    return this.factory?.createCommunicationEventManager(name, config);
   }
 
   async createMonitoringEventManager(
@@ -212,7 +212,7 @@ export class UEL {
     if (!this.initialized) {
       await this.initialize();
     }
-    return this.factory!.createMonitoringEventManager(name, config);
+    return this.factory?.createMonitoringEventManager(name, config);
   }
 
   async createInterfaceEventManager(
@@ -222,7 +222,7 @@ export class UEL {
     if (!this.initialized) {
       await this.initialize();
     }
-    return this.factory!.createInterfaceEventManager(name, config);
+    return this.factory?.createInterfaceEventManager(name, config);
   }
 
   async getHealthStatus(): Promise<

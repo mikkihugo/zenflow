@@ -72,10 +72,11 @@
  * @see {@link AGUIInterface} AGUI integration for human interaction
  */
 
-import { execSync } from 'child_process';
 
+import { execSync } from 'node:child_process';
 import type { AGUIInterface } from '@claude-zen/enterprise';
 import { getLogger } from '@claude-zen/foundation';
+
 // Use compatible ValidationQuestion interface that matches AGUI expectations
 interface ValidationQuestion {
   question: string;
@@ -143,7 +144,6 @@ export interface DeadCodeDecision {
 export class AutomatedDeadCodeManager {
   private aguiInterface: AGUIInterface|null = null;
   private scanHistory: DeadCodeScanResult[] = [];
-  private pendingDecisions = new Map<string, DeadCodeItem>();
 
   constructor(aguiInterface?: AGUIInterface) {
     this.aguiInterface = aguiInterface||null;
@@ -466,7 +466,7 @@ export class AutomatedDeadCodeManager {
           type: 'export',
           location: `${filePath}:${lineNum}`,`
           name: exportName,
-          confidence: usage && usage.includes('used') ? 0.3 : 0.8,
+          confidence: usage?.includes('used') ? 0.3 : 0.8,
           safetyScore: this.calculateSafetyScore(filePath, exportName),
           context: {
             publicAPI:
@@ -528,7 +528,7 @@ export class AutomatedDeadCodeManager {
    * Calculate safety score for removing an item
    */
   private calculateSafetyScore(filePath: string, name: string): number {
-    let score = 0.5; // Base score
+    const score = 0.5; // Base score
 
     // Lower safety for public APIs
     if (filePath.includes('index')||filePath.includes('public-api')) {'
@@ -557,11 +557,11 @@ export class AutomatedDeadCodeManager {
    * Merge results from multiple tools
    */
   private mergeResults(resultArrays: DeadCodeItem[][]): DeadCodeItem[] {
-    const merged = new Map<string, DeadCodeItem>();
+    const _merged = new Map<string, DeadCodeItem>();
 
     for (const results of resultArrays) {
       for (const item of results) {
-        const key = `${item.type}:${item.location}:${item.name}`;`
+        const _key = `${item.type}:${item.location}:${item.name}`;`
         const existing = merged.get(key);
 
         if (existing) {
@@ -582,10 +582,10 @@ export class AutomatedDeadCodeManager {
   private generateAnalysisText(item: DeadCodeItem): string {
     const parts: string[] = [];
 
-    parts.push(`📍 Location: ${item.location}`);`
+    parts.push(`📍 Location: $item.location`);`
     parts.push(`🔍 Type: ${item.type}`);`
     parts.push(
-      `📊 Confidence: ${(item.confidence * 100).toFixed(1)}% that it's unused``
+      `📊 Confidence: $(item.confidence * 100).toFixed(1)% that it's unused``
     );
     parts.push(
       `🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove``

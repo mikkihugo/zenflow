@@ -161,9 +161,8 @@ export class ValidationUtils {
     // Special states can transition to any state
     if (
       ['blocked', 'expedite'].includes(from.data)||['blocked', 'expedite'].includes(to.data)'
-    ) {
+    ) 
       return true;
-    }
 
     // Define valid workflow progression
     const workflowOrder = [

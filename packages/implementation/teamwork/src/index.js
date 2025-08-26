@@ -9,13 +9,16 @@
  * @version 2.0.0
  */
 // Export all types
-export * from './types';
+
 // Export conversation management
-export * from './conversation-manager';
-// Export conversation orchestrator
-export { ConversationOrchestratorImpl } from './conversation-orchestrator';
+export * from "./conversation-manager";
 // Export conversation memory
-export * from './conversation-memory';
+export * from "./conversation-memory";
+// Export conversation orchestrator
 // Default export for convenience
-export { ConversationOrchestratorImpl as ConversationOrchestrator } from './conversation-orchestrator';
+export {
+	ConversationOrchestratorImpl,
+	ConversationOrchestratorImpl as ConversationOrchestrator,
+} from "./conversation-orchestrator";
+export * from "./types";
 //# sourceMappingURL=index.js.map

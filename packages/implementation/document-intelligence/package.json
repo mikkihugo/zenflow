@@ -1,29 +1,29 @@
 {
-  "name": "@claude-zen/document-intelligence",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Unified document intelligence service with semantic analysis, strategic vision, and workflow processing",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "vitest",
-    "type-check": "tsc --noEmit"
-  },
-  "keywords": [
-    "document-intelligence",
-    "semantic-analysis",
-    "strategic-vision",
-    "document-processing",
-    "pattern-recognition",
-    "swarm-coordination"
-  ],
-  "dependencies": {
-    "@claude-zen/foundation": "workspace:*"
-  },
-  "devDependencies": {
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
-  }
+	"name": "@claude-zen/document-intelligence",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Unified document intelligence service with semantic analysis, strategic vision, and workflow processing",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"test": "vitest",
+		"type-check": "tsc --noEmit"
+	},
+	"keywords": [
+		"document-intelligence",
+		"semantic-analysis",
+		"strategic-vision",
+		"document-processing",
+		"pattern-recognition",
+		"swarm-coordination"
+	],
+	"dependencies": {
+		"@claude-zen/foundation": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4"
+	}
 }

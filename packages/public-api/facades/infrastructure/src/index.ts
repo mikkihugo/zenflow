@@ -26,38 +26,38 @@
  * @version 1.0.0
  */
 
-import { registerFacade, getLogger } from '@claude-zen/foundation';
+import { getLogger, registerFacade } from "@claude-zen/foundation";
 
-const logger = getLogger('infrastructure');
+const logger = getLogger("infrastructure");
 
 // Register infrastructure facade with expected packages
 registerFacade(
-  'infrastructure',
-  [
-    '@claude-zen/database',
-    '@claude-zen/event-system',
-    '@claude-zen/load-balancing',
-    '@claude-zen/telemetry',
-    '@claude-zen/otel-collector',
-  ],
-  [
-    'Multi-backend database abstraction layer',
-    'Type-safe event bus and management',
-    'Performance optimization and routing',
-    'System telemetry and metrics collection',
-    'OpenTelemetry collection and processing',
-    'Infrastructure coordination and management',
-  ]
+	"infrastructure",
+	[
+		"@claude-zen/database",
+		"@claude-zen/event-system",
+		"@claude-zen/load-balancing",
+		"@claude-zen/telemetry",
+		"@claude-zen/otel-collector",
+	],
+	[
+		"Multi-backend database abstraction layer",
+		"Type-safe event bus and management",
+		"Performance optimization and routing",
+		"System telemetry and metrics collection",
+		"OpenTelemetry collection and processing",
+		"Infrastructure coordination and management",
+	],
 );
 
 // =============================================================================
 // MODULE EXPORTS - Delegate to implementation modules with fallback patterns
 // =============================================================================
 
-export * from './database';
-export * from './events';
-export * from './load-balancing';
-export * from './telemetry';
+export * from "./database";
+export * from "./events";
+export * from "./load-balancing";
+export * from "./telemetry";
 
 // =============================================================================
 // STRATEGIC FACADE DELEGATION - Advanced Infrastructure Components
@@ -67,112 +67,112 @@ export * from './telemetry';
 let otelCollectorCache: unknown = null;
 
 async function loadOtelCollector() {
-  if (!otelCollectorCache) {
-    try {
-      const packageName = '@claude-zen/otel-collector';
-      otelCollectorCache = await import(packageName);
-    } catch {
-      // Enhanced fallback OTel collector implementation
-      otelCollectorCache = {
-        OtelCollector: class {
-          async initialize() {
-            return this;
-          }
-          async collect(metrics: unknown) {
-            console.debug(
-              'OTel Collector Fallback: Collected metrics',
-              metrics
-            );
-            return {
-              result: 'fallback-collection',
-              status: 'collected',
-              timestamp: Date.now(),
-            };
-          }
-          async export(data: unknown) {
-            console.debug('OTel Collector Fallback: Exported data', data);
-            return {
-              result: 'fallback-export',
-              status: 'exported',
-              timestamp: Date.now(),
-            };
-          }
-          getStatus() {
-            return { status: 'fallback', healthy: true };
-          }
-        },
-        createOtelCollector: () => ({
-          initialize: async () => Promise.resolve(),
-          collect: async (metrics: unknown) => ({
-            result: 'fallback-collection',
-            metrics,
-            timestamp: Date.now(),
-          }),
-          export: async (data: unknown) => ({
-            result: 'fallback-export',
-            data,
-            timestamp: Date.now(),
-          }),
-          getStatus: () => ({ status: 'fallback', healthy: true }),
-        }),
-      };
-    }
-  }
-  return otelCollectorCache;
+	if (!otelCollectorCache) {
+		try {
+			const packageName = "@claude-zen/otel-collector";
+			otelCollectorCache = await import(packageName);
+		} catch {
+			// Enhanced fallback OTel collector implementation
+			otelCollectorCache = {
+				OtelCollector: class {
+					async initialize() {
+						return this;
+					}
+					async collect(metrics: unknown) {
+						console.debug(
+							"OTel Collector Fallback: Collected metrics",
+							metrics,
+						);
+						return {
+							result: "fallback-collection",
+							status: "collected",
+							timestamp: Date.now(),
+						};
+					}
+					async export(data: unknown) {
+						console.debug("OTel Collector Fallback: Exported data", data);
+						return {
+							result: "fallback-export",
+							status: "exported",
+							timestamp: Date.now(),
+						};
+					}
+					getStatus() {
+						return { status: "fallback", healthy: true };
+					}
+				},
+				createOtelCollector: () => ({
+					initialize: async () => Promise.resolve(),
+					collect: async (metrics: unknown) => ({
+						result: "fallback-collection",
+						metrics,
+						timestamp: Date.now(),
+					}),
+					export: async (data: unknown) => ({
+						result: "fallback-export",
+						data,
+						timestamp: Date.now(),
+					}),
+					getStatus: () => ({ status: "fallback", healthy: true }),
+				}),
+			};
+		}
+	}
+	return otelCollectorCache;
 }
 
 // Professional exports for advanced infrastructure components
 export const getOtelCollector = async () => {
-  const otelModule = await loadOtelCollector();
-  return (
-    (otelModule as any).createOtelCollector?.() ||
-    (otelModule as any).createOtelCollector()
-  );
+	const otelModule = await loadOtelCollector();
+	return (
+		(otelModule as any).createOtelCollector?.() ||
+		(otelModule as any).createOtelCollector()
+	);
 };
 
 // Direct exports for commonly used functions
-export { getDatabaseAccess } from './database';
-export { createEventSystem, getEventSystemAccess } from './events';
+export { getDatabaseAccess } from "./database";
+export { createEventSystem, getEventSystemAccess } from "./events";
 export {
-  getLoadBalancer,
-  getPerformanceTracker,
-  getTelemetryManager,
-} from './load-balancing';
+	getLoadBalancer,
+	getPerformanceTracker,
+	getTelemetryManager,
+} from "./load-balancing";
 
 // =============================================================================
 // MAIN SYSTEM OBJECT - For programmatic access to all infrastructure capabilities
 // =============================================================================
 
 export const infrastructureSystem = {
-  // Infrastructure modules
-  database: () => import('./database'),
-  events: () => import('./events'),
-  loadBalancing: () => import('./load-balancing'),
-  telemetry: () => import('./telemetry'),
+	// Infrastructure modules
+	database: () => import("./database"),
+	events: () => import("./events"),
+	loadBalancing: () => import("./load-balancing"),
+	telemetry: () => import("./telemetry"),
 
-  // Advanced infrastructure with enhanced fallbacks
-  otelCollector: () => loadOtelCollector(),
+	// Advanced infrastructure with enhanced fallbacks
+	otelCollector: () => loadOtelCollector(),
 
-  // Direct access functions
-  getOtelCollector,
-  getDatabaseAccess: async () => {
-    const { getDatabaseAccess } = await import('./database');
-    return getDatabaseAccess();
-  },
+	// Direct access functions
+	getOtelCollector,
+	getDatabaseAccess: async () => {
+		const { getDatabaseAccess } = await import("./database");
+		return getDatabaseAccess();
+	},
 
-  // Utilities
-  logger,
-  init: async () => {
-    logger.info('Infrastructure system initialized');
-    return { success: true, message: 'Infrastructure ready' };
-  },
+	// Utilities
+	logger,
+	init: async () => {
+		logger.info("Infrastructure system initialized");
+		return { success: true, message: "Infrastructure ready" };
+	},
 };
 
 // =============================================================================
 // TYPE EXPORTS - For external consumers
 // =============================================================================
 
-export type * from './types';
+export type * from "./types";
 
 // Default export for convenience
 export default infrastructureSystem;

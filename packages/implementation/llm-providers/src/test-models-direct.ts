@@ -6,7 +6,7 @@ import { getLogger } from '@claude-zen/foundation/logging';
 
 const logger = getLogger('direct-test');'
 
-async function testDirectModelsCall() {
+async function _testDirectModelsCall() {
   try {
     logger.info('🔍 Direct test of GitHub Models API...');'
 
@@ -17,7 +17,7 @@ async function testDirectModelsCall() {
       method: 'GET',
     });
 
-    logger.info(`📊 Status: ${response.status} ${response.statusText}`);`
+    logger.info(`📊 Status: $response.status$response.statusText`);`
     logger.info(
       `📋 Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}``
     );
@@ -27,7 +27,7 @@ async function testDirectModelsCall() {
       logger.info(`📦 Response data: ${JSON.stringify(data, null, 2)}`);`
     } else {
       const text = await response.text();
-      logger.error(`❌ Error response: ${text}`);`
+      logger.error(`❌ Error response: $text`);`
     }
   } catch (error) {
     logger.error('💥 Direct test failed:', error);'

@@ -1,194 +1,211 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { CodeBlock, TabGroup, Tab } from '@skeletonlabs/skeleton';
-	import { apiClient } from '../../lib/api';
+import { onMount } from "svelte";
+import { apiClient } from "../../lib/api";
 
-	// Database management data
-	let databaseStatus: any = null;
-	let databaseSchema: any = null;
-	let databaseAnalytics: any = null;
-	let queryResult: any = null;
-	let commandResult: any = null;
+// Database management data
+let databaseStatus: any = null;
+let databaseSchema: any = null;
+let databaseAnalytics: any = null;
+let queryResult: any = null;
+let commandResult: any = null;
 
-	// Loading states
-	let statusLoading = true;
-	let schemaLoading = false;
-	let analyticsLoading = false;
-	let queryLoading = false;
-	let commandLoading = false;
+// Loading states
+let _statusLoading = true;
+let _schemaLoading = false;
+let _analyticsLoading = false;
+let _queryLoading = false;
+let _commandLoading = false;
 
-	// Error states
-	let statusError: string | null = null;
-	let schemaError: string | null = null;
-	let analyticsError: string | null = null;
-	let queryError: string | null = null;
-	let commandError: string | null = null;
+// Error states
+let _statusError: string | null = null;
+let _schemaError: string | null = null;
+let _analyticsError: string | null = null;
+let _queryError: string | null = null;
+let _commandError: string | null = null;
 
-	// Form states
-	let activeTab = 0;
-	let querySQL = 'SELECT COUNT(*) as total_records FROM information_schema.tables;';
-	let queryParams = '[]';
-	let commandSQL = '';
-	let commandParams = '[]';
+// Form states
+const _activeTab = 0;
+let querySQL =
+	"SELECT COUNT(*) as total_records FROM information_schema.tables;";
+let queryParams = "[]";
+const commandSQL = "";
+const commandParams = "[]";
 
-	// Pre-defined queries
-	const sampleQueries = [
-		{
-			name: 'Table Count',
-			sql: 'SELECT COUNT(*) as total_records FROM information_schema.tables;',
-			params: '[]'
-		},
-		{
-			name: 'Database Size',
-			sql: 'SELECT pg_size_pretty(pg_database_size(current_database())) as database_size;',
-			params: '[]'
-		},
-		{
-			name: 'Table Sizes',
-			sql: `SELECT 
+// Pre-defined queries
+const _sampleQueries = [
+	{
+		name: "Table Count",
+		sql: "SELECT COUNT(*) as total_records FROM information_schema.tables;",
+		params: "[]",
+	},
+	{
+		name: "Database Size",
+		sql: "SELECT pg_size_pretty(pg_database_size(current_database())) as database_size;",
+		params: "[]",
+	},
+	{
+		name: "Table Sizes",
+		sql: `SELECT 
 				schemaname,
 				tablename,
 				pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
 			FROM pg_tables 
 			ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC 
 			LIMIT 10;`,
-			params: '[]'
-		}
-	];
+		params: "[]",
+	},
+];
 
-	onMount(async () => {
+onMount(async () => {
+	await loadDatabaseStatus();
+
+	// Listen for project changes
+	const handleProjectChange = async () => {
 		await loadDatabaseStatus();
+		// Clear cached data when project changes
+		databaseSchema = null;
+		databaseAnalytics = null;
+		queryResult = null;
+		commandResult = null;
+	};
 
-		// Listen for project changes
-		const handleProjectChange = async () => {
-			await loadDatabaseStatus();
-			// Clear cached data when project changes
-			databaseSchema = null;
-			databaseAnalytics = null;
-			queryResult = null;
-			commandResult = null;
-		};
+	window.addEventListener(
+		"projectChanged",
+		handleProjectChange as EventListener,
+	);
 
-		window.addEventListener('projectChanged', handleProjectChange as EventListener);
+	return () => {
+		window.removeEventListener(
+			"projectChanged",
+			handleProjectChange as EventListener,
+		);
+	};
+});
 
-		return () => {
-			window.removeEventListener('projectChanged', handleProjectChange as EventListener);
-		};
-	});
+async function loadDatabaseStatus() {
+	try {
+		_statusLoading = true;
+		databaseStatus = await apiClient.getDatabaseStatus();
+		_statusError = null;
+		console.log("✅ Loaded database status:", databaseStatus);
+	} catch (error) {
+		_statusError =
+			error instanceof Error ? error.message : "Failed to load database status";
+		console.error("❌ Failed to load database status:", error);
+	} finally {
+		_statusLoading = false;
+	}
+}
 
-	async function loadDatabaseStatus() {
+async function _loadDatabaseSchema() {
+	try {
+		_schemaLoading = true;
+		databaseSchema = await apiClient.getDatabaseSchema();
+		_schemaError = null;
+		console.log("📋 Loaded database schema:", databaseSchema);
+	} catch (error) {
+		_schemaError =
+			error instanceof Error ? error.message : "Failed to load database schema";
+		console.error("❌ Failed to load database schema:", error);
+	} finally {
+		_schemaLoading = false;
+	}
+}
+
+async function _loadDatabaseAnalytics() {
+	try {
+		_analyticsLoading = true;
+		databaseAnalytics = await apiClient.getDatabaseAnalytics();
+		_analyticsError = null;
+		console.log("📊 Loaded database analytics:", databaseAnalytics);
+	} catch (error) {
+		_analyticsError =
+			error instanceof Error
+				? error.message
+				: "Failed to load database analytics";
+		console.error("❌ Failed to load database analytics:", error);
+	} finally {
+		_analyticsLoading = false;
+	}
+}
+
+async function _executeQuery() {
+	try {
+		_queryLoading = true;
+		_queryError = null;
+
+		let params = [];
 		try {
-			statusLoading = true;
-			databaseStatus = await apiClient.getDatabaseStatus();
-			statusError = null;
-			console.log('✅ Loaded database status:', databaseStatus);
-		} catch (error) {
-			statusError = error instanceof Error ? error.message : 'Failed to load database status';
-			console.error('❌ Failed to load database status:', error);
-		} finally {
-			statusLoading = false;
+			params = JSON.parse(queryParams);
+		} catch (_e) {
+			params = [];
 		}
-	}
 
-	async function loadDatabaseSchema() {
+		queryResult = await apiClient.executeQuery({
+			sql: querySQL,
+			params,
+		});
+		console.log("🔍 Query executed:", queryResult);
+	} catch (error) {
+		_queryError =
+			error instanceof Error ? error.message : "Failed to execute query";
+		console.error("❌ Query execution failed:", error);
+	} finally {
+		_queryLoading = false;
+	}
+}
+
+async function _executeCommand() {
+	try {
+		_commandLoading = true;
+		_commandError = null;
+
+		let params = [];
 		try {
-			schemaLoading = true;
-			databaseSchema = await apiClient.getDatabaseSchema();
-			schemaError = null;
-			console.log('📋 Loaded database schema:', databaseSchema);
-		} catch (error) {
-			schemaError = error instanceof Error ? error.message : 'Failed to load database schema';
-			console.error('❌ Failed to load database schema:', error);
-		} finally {
-			schemaLoading = false;
+			params = JSON.parse(commandParams);
+		} catch (_e) {
+			params = [];
 		}
+
+		commandResult = await apiClient.executeCommand({
+			sql: commandSQL,
+			params,
+		});
+		console.log("⚡ Command executed:", commandResult);
+	} catch (error) {
+		_commandError =
+			error instanceof Error ? error.message : "Failed to execute command";
+		console.error("❌ Command execution failed:", error);
+	} finally {
+		_commandLoading = false;
 	}
+}
 
-	async function loadDatabaseAnalytics() {
-		try {
-			analyticsLoading = true;
-			databaseAnalytics = await apiClient.getDatabaseAnalytics();
-			analyticsError = null;
-			console.log('📊 Loaded database analytics:', databaseAnalytics);
-		} catch (error) {
-			analyticsError = error instanceof Error ? error.message : 'Failed to load database analytics';
-			console.error('❌ Failed to load database analytics:', error);
-		} finally {
-			analyticsLoading = false;
-		}
+function _loadSampleQuery(query: any) {
+	querySQL = query.sql;
+	queryParams = query.params;
+}
+
+function _getStatusColor(status: string): string {
+	switch (status?.toLowerCase()) {
+		case "healthy":
+		case "connected":
+		case "success":
+			return "success";
+		case "warning":
+			return "warning";
+		case "error":
+		case "failed":
+			return "error";
+		default:
+			return "surface";
 	}
+}
 
-	async function executeQuery() {
-		try {
-			queryLoading = true;
-			queryError = null;
-			
-			let params = [];
-			try {
-				params = JSON.parse(queryParams);
-			} catch (e) {
-				params = [];
-			}
-
-			queryResult = await apiClient.executeQuery({
-				sql: querySQL,
-				params
-			});
-			console.log('🔍 Query executed:', queryResult);
-		} catch (error) {
-			queryError = error instanceof Error ? error.message : 'Failed to execute query';
-			console.error('❌ Query execution failed:', error);
-		} finally {
-			queryLoading = false;
-		}
-	}
-
-	async function executeCommand() {
-		try {
-			commandLoading = true;
-			commandError = null;
-			
-			let params = [];
-			try {
-				params = JSON.parse(commandParams);
-			} catch (e) {
-				params = [];
-			}
-
-			commandResult = await apiClient.executeCommand({
-				sql: commandSQL,
-				params
-			});
-			console.log('⚡ Command executed:', commandResult);
-		} catch (error) {
-			commandError = error instanceof Error ? error.message : 'Failed to execute command';
-			console.error('❌ Command execution failed:', error);
-		} finally {
-			commandLoading = false;
-		}
-	}
-
-	function loadSampleQuery(query: any) {
-		querySQL = query.sql;
-		queryParams = query.params;
-	}
-
-	function getStatusColor(status: string): string {
-		switch (status?.toLowerCase()) {
-			case 'healthy':
-			case 'connected':
-			case 'success': return 'success';
-			case 'warning': return 'warning';
-			case 'error':
-			case 'failed': return 'error';
-			default: return 'surface';
-		}
-	}
-
-	function formatDuration(ms: number): string {
-		if (ms < 1000) return `${ms}ms`;
-		return `${(ms / 1000).toFixed(2)}s`;
-	}
+function _formatDuration(ms: number): string {
+	if (ms < 1000) return `${ms}ms`;
+	return `${(ms / 1000).toFixed(2)}s`;
+}
 </script>
 
 <svelte:head>

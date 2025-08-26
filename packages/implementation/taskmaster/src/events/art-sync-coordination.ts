@@ -35,19 +35,19 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
+import { getDatabaseSystem, } from '@claude-zen/infrastructure';
 import { getBrainSystem } from '@claude-zen/intelligence';
-import { ApprovalGateManager } from '../core/approval-gate-manager.js';
-import { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 
 import type {
   ApprovalGateId,
-  TaskId,
   ApprovalGateRequirement,
+  TaskId,
 } from '../types/index.js';
 
-const logger = getLogger('ARTSyncCoordination');'
+const _logger = getLogger('ARTSyncCoordination');'
 
 // ============================================================================
 // ART SYNC TYPES AND INTERFACES
@@ -389,22 +389,7 @@ export interface ARTSyncOutcomes {
  */
 export class ARTSyncCoordination {
   private readonly logger = getLogger('ARTSyncCoordination');'
-
-  // Core services
-  private approvalGateManager: ApprovalGateManager;
-  private safeIntegration: SafeFrameworkIntegration;
   private taskApprovalSystem: TaskApprovalSystem;
-
-  // Infrastructure
-  private database: any;
-  private eventSystem: any;
-  private brainSystem: any;
-
-  // State management
-  private activeSessions = new Map<string, ARTSyncSessionConfig>();
-  private teamProgressData = new Map<string, TeamProgressReport[]>();
-  private dependencyMatrix = new Map<string, CrossTeamDependency[]>();
-  private impedimentQueue = new Map<string, Impediment[]>();
 
   constructor(
     approvalGateManager: ApprovalGateManager,
@@ -462,7 +447,7 @@ export class ARTSyncCoordination {
     coordinationTraceabilityId: string;
   }> {
     const sessionId = config.id;
-    const coordinationTraceabilityId = `art-sync-${sessionId}-${Date.now()}`;`
+    const _coordinationTraceabilityId = `art-sync-${sessionId}-${Date.now()}`;`
 
     this.logger.info('Starting ART Sync Session', {'
       sessionId,
@@ -511,7 +496,7 @@ export class ARTSyncCoordination {
   }> {
     const config = this.activeSessions.get(sessionId);
     if (!config) {
-      throw new Error(`ART Sync session ${sessionId} not found`);`
+      throw new Error(`ART Sync session $sessionIdnot found`);`
     }
 
     this.logger.info('Executing Dependency Resolution', {'
@@ -527,7 +512,7 @@ export class ARTSyncCoordination {
     const escalatedDependencies: string[] = [];
     const mitigationPlans: Array<{ dependencyId: string; plan: string }> = [];
 
-    for (const dependency of dependencies) {
+    for (const dependency _of _dependencies) {
       const analysis = await this.analyzeDependencyResolution(
         dependency,
         config
@@ -686,7 +671,7 @@ export class ARTSyncCoordination {
   }> {
     const config = this.activeSessions.get(sessionId);
     if (!config) {
-      throw new Error(`ART Sync session ${sessionId} not found`);`
+      throw new Error(`ART Sync session $sessionIdnot found`);`
     }
 
     this.logger.info('Executing Progress Review', {'
@@ -1006,7 +991,7 @@ export class ARTSyncCoordination {
     config: ARTSyncSessionConfig,
     analysis: any
   ): Promise<ApprovalGateId> {
-    const gateId = `dependency-${dependency.id}-${config.id}` as ApprovalGateId;`
+    const gateId = `dependency-$dependency.id-$config.id` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
@@ -1039,7 +1024,7 @@ export class ARTSyncCoordination {
       },
     };
 
-    const result = await this.approvalGateManager.createApprovalGate(
+    const _result = await this.approvalGateManager.createApprovalGate(
       requirement,
       `art-sync-dependency-${dependency.id}` as TaskId`
     );
@@ -1079,7 +1064,7 @@ export class ARTSyncCoordination {
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `Impediment Escalation: ${impediment.title}`,`
+      name: `Impediment Escalation: $impediment.title`,`
       description: `Approve escalation and resolution plan for ${impediment.severity} impediment`,`
       requiredApprovers: approvers,
       minimumApprovals: Math.ceil(approvers.length * 0.6), // 60% approval
@@ -1098,7 +1083,7 @@ export class ARTSyncCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `art-sync-impediment-${impediment.id}` as TaskId`
+      `art-sync-impediment-$impediment.id` as TaskId`
     );
 
     if (!result.success) {
@@ -1386,7 +1371,7 @@ export class ARTSyncCoordination {
     outcomes: ARTSyncOutcomes
   ): Promise<void> {
     await this.database('art_sync_traceability').insert({'
-      id: `summary-${sessionId}-${Date.now()}`,`
+      id: `summary-$sessionId-$Date.now()`,`
       session_id: sessionId,
       coordination_type: 'session_completion',
       coordination_data: JSON.stringify(outcomes),

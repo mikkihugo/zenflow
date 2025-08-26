@@ -20,11 +20,9 @@ const err = <E>(error: E): Result<never, E> => ({ success: false, error });
 
 import type { 
   AILinterConfig, 
-  AIMode, 
-  ScopeMode, 
-  ProcessingResult, 
   BatchResult,
-  FileDiscoveryOptions 
+  FileDiscoveryOptions, 
+  ProcessingResult, 
 } from './types.js';
 
 const logger = getLogger('ai-linter');
@@ -220,7 +218,7 @@ export function createAILinter(config?: Partial<AILinterConfig>): AILinter {
 export type { 
   AILinterConfig, 
   AIMode, 
-  ScopeMode, 
+  BatchResult, 
   ProcessingResult, 
-  BatchResult 
+  ScopeMode 
 } from './types.js';

@@ -329,91 +329,90 @@
  * @see {@link https://github.com/stanfordnlp/dspy} Original Stanford DSPy Framework
  */
 
+// Export adapter
+export {
+	ChatAdapter,
+	type ChatAdapterConfig,
+	type ChatMessage,
+} from "./src/adapters/chat-adapter.js";
+export type {
+	Config,
+	SharedLLMService,
+	SharedLogger,
+	SharedStorage,
+} from "./src/core/service.js";
+export {
+	type Adapter,
+	BaseAdapter,
+	type EvaluationDataInput,
+	type EvaluationDataOutput,
+	type FinetuneDataInput,
+	type FinetuneDataOutput,
+	type InferenceDataInput,
+	type InferenceDataOutput,
+} from "./src/interfaces/adapter.js";
+// Export interfaces
+export {
+	BaseLM,
+	type GenerationOptions,
+	type LMInterface,
+	type ModelInfo,
+	type ModelUsage,
+} from "./src/interfaces/lm.js";
+export type { DSPyKV } from "./src/main";
 // =============================================================================
 // MAIN ENTRY POINT - Complete DSPy system
 // =============================================================================
-export { DSPyEngine, createDSPyEngine, dspyUtils } from './src/main';
-export type { DSPyKV } from './src/main';
-
 // =============================================================================
 // DSPY SERVICE LAYER AND FOUNDATION INTEGRATION
 // =============================================================================
-export { DSPyService, getDSPyService, initializeDSPyService } from './src/main';
-
-export type {
-  SharedLLMService,
-  SharedStorage,
-  SharedLogger,
-  Config,
-} from './src/core/service.js';
-
+export {
+	createDSPyEngine,
+	DSPyEngine,
+	DSPyService,
+	dspyUtils,
+	getDSPyService,
+	initializeDSPyService,
+} from "./src/main";
+export { Example } from "./src/primitives/example.js";
+// Export core DSPy components only - working modules without complex Stanford DSPy issues
+export { DSPyModule } from "./src/primitives/module.js";
+export {
+	type Prediction,
+	PredictionUtils,
+} from "./src/primitives/prediction.js";
+export { SeededRNG } from "./src/primitives/seeded-rng.js";
 // Export all DSPy types
 export type {
-  DSPyConfig,
-  DSPyExample,
-  DSPyProgram,
-  DSPyOptimizationResult,
-  DSPyPromptVariation,
-  DSPyMetrics,
-  DSPyOptimizationStrategy,
-  DSPyPattern,
-  DSPyTaskConfig,
-  DSPyEngineStats,
-  DSPyStorage,
-  DSPyExampleGenerator,
-  DSPyPromptEvaluator,
-  DSPyConfigValidator,
-} from './src/types/interfaces.js';
-
-// Export core DSPy components only - working modules without complex Stanford DSPy issues
-export { DSPyModule } from './src/primitives/module.js';
-export { Example } from './src/primitives/example.js';
-export {
-  type Prediction,
-  PredictionUtils,
-} from './src/primitives/prediction.js';
-export { SeededRNG } from './src/primitives/seeded-rng.js';
-
-// Export adapter
-export {
-  ChatAdapter,
-  type ChatAdapterConfig,
-  type ChatMessage,
-} from './src/adapters/chat-adapter.js';
-
-// Export interfaces
-export {
-  type LMInterface,
-  type GenerationOptions,
-  type ModelInfo,
-  type ModelUsage,
-  BaseLM,
-} from './src/interfaces/lm.js';
-
-export {
-  type Adapter,
-  type FinetuneDataInput,
-  type FinetuneDataOutput,
-  type InferenceDataInput,
-  type InferenceDataOutput,
-  type EvaluationDataInput,
-  type EvaluationDataOutput,
-  BaseAdapter,
-} from './src/interfaces/adapter.js';
+	DSPyConfig,
+	DSPyConfigValidator,
+	DSPyEngineStats,
+	DSPyExample,
+	DSPyExampleGenerator,
+	DSPyMetrics,
+	DSPyOptimizationResult,
+	DSPyOptimizationStrategy,
+	DSPyPattern,
+	DSPyProgram,
+	DSPyPromptEvaluator,
+	DSPyPromptVariation,
+	DSPyStorage,
+	DSPyTaskConfig,
+} from "./src/types/interfaces.js";
 
 // Import the necessary functions
-import { DSPyEngine, createDSPyEngine, dspyUtils } from './src/main';
+import { createDSPyEngine, DSPyEngine, dspyUtils } from "./src/main";
 
 /**
  * Production DSPy Library
  */
 export const DSPy = {
-  // Simple engine for basic optimization
-  Engine: {
-    DSPyEngine,
-    createDSPyEngine,
-    utils: dspyUtils,
-  },
+	// Simple engine for basic optimization
+	Engine: {
+		DSPyEngine,
+		createDSPyEngine,
+		utils: dspyUtils,
+	},
 } as const;
 
 // Default export

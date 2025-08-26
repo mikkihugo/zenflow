@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * @file Observer Pattern Implementation for Real-Time Event System
  * Provides type-safe event handling with priority management and error recovery.
@@ -174,7 +174,7 @@ export class WebSocketObserver
       });
 
       // Emit specific event types
-      this.connections.forEach((socket) => {
+      this.connections.forEach((_socket) => {
         switch (event.type) {
           case'swarm':'
             socket.emit('swarm:update', event);'
@@ -757,28 +757,6 @@ export class SystemEventManager extends TypedEventBase {
       default:
         return 1;
     }
-  }
-
-  private calculateEventPriority(
-    event: SystemEvent,
-    observers: SystemObserver[]
-  ): number {
-    // Calculate priority based on highest priority observer and event characteristics
-    const maxObserverPriority = Math.max(
-      ...observers.map((o) => this.getPriorityValue(o.getPriority()))
-    );
-
-    // Add event-specific priority adjustments
-    let eventPriorityBonus = 0;
-    if ('success' in event && !event.success) eventPriorityBonus += 1; // Errors get higher priority'
-    if (
-      event.type === 'swarm' &&'
-      'operation' in event &&'
-      event.operation === 'destroy''
-    )
-      eventPriorityBonus += 1;
-
-    return maxObserverPriority + eventPriorityBonus;
   }
 }
 

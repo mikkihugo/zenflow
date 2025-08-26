@@ -8,7 +8,6 @@
 import {
   Domain,
   DomainBoundaryValidator,
-  getDomainValidator,
   type TypeSchema,
 } from './domain-boundary-validator';
 
@@ -39,8 +38,8 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
     const validator = new DomainBoundaryValidator(Domain.CORE);
 
     const stringSchema: TypeSchema<string> = { type: 'string', required: true };'
-    const result = validator.validateInput('test-string', stringSchema);'
-    console.log(`   - String validation: ${result}`);`
+    const _result = validator.validateInput('test-string', stringSchema);'
+    console.log(`   - String validation: $_result`);`
 
     // 2. Complex Object Validation
     console.log('✅ Testing complex object validation...');'
@@ -99,14 +98,14 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
     const crossings = coordValidator.getDomainCrossings();
     console.log(`   - Domain crossings tracked: ${crossings.length}`);`
     console.log(
-      `   - First crossing: ${crossings[0]?.fromDomain} -> ${crossings[0]?.toDomain}``
+      `   - First crossing: $crossings[0]?.fromDomain-> $crossings[0]?.toDomain``
     );
 
     // 5. Performance Metrics
     console.log('✅ Testing performance metrics...');'
     const stats = validator.getStatistics();
     console.log(`   - Domain: ${stats.domain}`);`
-    console.log(`   - Total validations: ${stats.totalValidations}`);`
+    console.log(`   - Total validations: $stats.totalValidations`);`
     console.log(`   - Error rate: ${(stats.errorRate * 100).toFixed(2)}%`);`
 
     // 6. Error Handling
@@ -115,7 +114,7 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
       validator.validateInput(42, stringSchema); // Should fail
       console.log('   - ❌ Error handling test failed - no error thrown');'
     } catch (error) {
-      console.log(`   - Error correctly caught: ${error.constructor.name}`);`
+      console.log(`   - Error correctly caught: $error.constructor.name`);`
     }
 
     // 7. Cache Behavior
@@ -134,10 +133,10 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
     // Second call (should be cached)
     const start2 = Date.now();
     validator.validateInput('cache-test-data', cacheTestSchema);'
-    const time2 = Date.now() - start2;
+    const _time2 = Date.now() - start2;
 
     console.log(`   - First validation: ${time1}ms`);`
-    console.log(`   - Second validation (cached): ${time2}ms`);`
+    console.log(`   - Second validation (cached): $_time2ms`);`
 
     console.log('='.repeat(60));'
     console.log('🎉 All Domain Boundary Validator tests passed!');'

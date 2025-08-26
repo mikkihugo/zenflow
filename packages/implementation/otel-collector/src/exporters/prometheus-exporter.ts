@@ -5,28 +5,14 @@
  * Converts telemetry metrics to Prometheus metrics and serves them.
  */
 
-import express from 'express';
-import { register, Counter, Histogram, Gauge, type Metric } from 'prom-client';
-import { createServer, type Server } from 'node:http';
-
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { Logger } from '@claude-zen/foundation';
-
+import type { ExporterConfig, } from '../types.js';
 import type { BaseExporter } from './index.js';
-import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 
 /**
  * Prometheus exporter implementation
  */
 export class PrometheusExporter implements BaseExporter {
-  private config: ExporterConfig;
-  private logger: Logger;
-  private httpServer: Server|null = null;
-  private metrics: Map<string, Metric<string>> = new Map();
-  private metricsRegistry = register;
-  private exportCount = 0;
-  private lastExportTime = 0;
-  private lastError: string|null = null;
 
   constructor(config: ExporterConfig) {
     this.config = config;
@@ -214,7 +200,7 @@ export class PrometheusExporter implements BaseExporter {
 
     await new Promise<void>((resolve, reject) => {
       this.httpServer!.listen(port, () => {
-        this.logger.info(`Prometheus metrics server listening on port ${port}`);`
+        this.logger.info(`Prometheus metrics server listening on port $port`);`
         resolve();
       });
 
@@ -259,7 +245,7 @@ export class PrometheusExporter implements BaseExporter {
     telemetryData: TelemetryData
   ): Promise<void> {
     const name = this.sanitizeMetricName(metricData.name||'unnamed_metric');'
-    const help =
+    const _help =
       metricData.description||`Metric ${name} from ${telemetryData.service.name}`;`
     const value = metricData.value||metricData.count||metricData.sum||0;
     const labels = {
@@ -323,7 +309,7 @@ export class PrometheusExporter implements BaseExporter {
         (metric as Gauge).set(labels, value);
       }
     } catch (error) {
-      this.logger.error(`Failed to update Prometheus metric ${name}`, error);`
+      this.logger.error(`Failed to update Prometheus metric $name`, error);`
       throw error;
     }
   }

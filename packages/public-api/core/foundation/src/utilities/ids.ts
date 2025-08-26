@@ -21,9 +21,9 @@
  * ```
  */
 
-import { randomBytes, randomUUID } from 'node:crypto';
-import { nanoid, customAlphabet } from 'nanoid';
-import type { UUID } from '../types/primitives';
+import { randomBytes, randomUUID } from "node:crypto";
+import { customAlphabet, nanoid } from "nanoid";
+import type { UUID } from "../types/primitives";
 
 // =============================================================================
 // UUID UTILITIES - Standard RFC 4122 UUIDs
@@ -40,7 +40,7 @@ import type { UUID } from '../types/primitives';
  * ```
  */
 export function generateUUID(): UUID {
-  return randomUUID() as UUID;
+	return randomUUID() as UUID;
 }
 
 /**
@@ -56,12 +56,12 @@ export function generateUUID(): UUID {
  * ```
  */
 export function isUUID(value: unknown): value is UUID {
-  return (
-    typeof value === 'string' &&
-    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-      value
-    )
-  );
+	return (
+		typeof value === "string" &&
+		/^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+			value,
+		)
+	);
 }
 
 // =============================================================================
@@ -81,7 +81,7 @@ export function isUUID(value: unknown): value is UUID {
  * ```
  */
 export function generateShortId(size?: number): string {
-  return nanoid(size);
+	return nanoid(size);
 }
 
 /**
@@ -98,7 +98,7 @@ export function generateShortId(size?: number): string {
  * ```
  */
 export function createCustomGenerator(alphabet: string, size: number = 21) {
-  return customAlphabet(alphabet, size);
+	return customAlphabet(alphabet, size);
 }
 
 // =============================================================================
@@ -118,7 +118,7 @@ export function createCustomGenerator(alphabet: string, size: number = 21) {
  * ```
  */
 export function generateCustomId(bytes: number = 16): string {
-  return randomBytes(bytes).toString('hex');
+	return randomBytes(bytes).toString("hex");
 }
 
 /**
@@ -135,13 +135,13 @@ export function generateCustomId(bytes: number = 16): string {
  * ```
  */
 export function generateTimestampId(
-  prefix?: string,
-  randomBytesCount: number = 4
+	prefix?: string,
+	randomBytesCount: number = 4,
 ): string {
-  const timestamp = Date.now();
-  const random = randomBytes(randomBytesCount).toString('hex');
+	const timestamp = Date.now();
+	const random = randomBytes(randomBytesCount).toString("hex");
 
-  return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
+	return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
 }
 
 // =============================================================================
@@ -160,7 +160,7 @@ export function generateTimestampId(
  * ```
  */
 export function generateSessionId(): string {
-  return randomBytes(32).toString('hex');
+	return randomBytes(32).toString("hex");
 }
 
 /**
@@ -177,11 +177,11 @@ export function generateSessionId(): string {
  * ```
  */
 export function generateApiKey(
-  prefix: string = 'key',
-  bytes: number = 24
+	prefix: string = "key",
+	bytes: number = 24,
 ): string {
-  const keyData = randomBytes(bytes).toString('base64url');
-  return `${prefix}_${keyData}`;
+	const keyData = randomBytes(bytes).toString("base64url");
+	return `${prefix}_${keyData}`;
 }
 
 // =============================================================================

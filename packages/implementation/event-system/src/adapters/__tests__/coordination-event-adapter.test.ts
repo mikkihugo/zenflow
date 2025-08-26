@@ -28,10 +28,10 @@ import {
 
 describe('CoordinationEventAdapter', () => {'
   let adapter: CoordinationEventAdapter;
-  let config: CoordinationEventAdapterConfig;
+  let _config: CoordinationEventAdapterConfig;
 
   beforeEach(() => {
-    config = createDefaultCoordinationEventAdapterConfig('test-coordination');'
+    _config = createDefaultCoordinationEventAdapterConfig('test-coordination');'
     adapter = new CoordinationEventAdapter(config);
   });
 
@@ -148,13 +148,13 @@ describe('CoordinationEventAdapter', () => {'
 
     it('should unsubscribe all listeners for event type', () => {'
       const listener1 = vi.fn();
-      const listener2 = vi.fn();
+      const _listener2 = vi.fn();
 
       adapter.subscribe(['coordination:swarm'], listener1);'
       adapter.subscribe(['coordination:swarm'], listener2);'
       adapter.subscribe(['coordination:agent'], listener1);'
 
-      const removedCount = adapter.unsubscribeAll('coordination:swarm');'
+      const _removedCount = adapter.unsubscribeAll('coordination:swarm');'
 
       expect(removedCount).toBe(2);
       expect(adapter.getSubscriptions()).toHaveLength(1);
@@ -699,7 +699,7 @@ describe('CoordinationEventAdapter', () => {'
     });
 
     it('should handle subscription errors gracefully', async () => {'
-      const faultyListener = vi
+      const _faultyListener = vi
         .fn()
         .mockRejectedValue(new Error('Listener error'));'
       const subscriptionErrorHandler = vi.fn();

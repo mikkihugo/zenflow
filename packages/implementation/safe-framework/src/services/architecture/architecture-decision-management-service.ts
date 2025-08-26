@@ -287,7 +287,6 @@ export class ArchitectureDecisionManagementService {
 
   // ADR state
   private decisionRecords = new Map<string, ArchitectureDecisionRecord>();
-  private decisionRequests = new Map<string, DecisionRequest>();
   private config: ADRConfig;
 
   constructor(logger: Logger, config: Partial<ADRConfig> = {}) {
@@ -315,13 +314,10 @@ export class ArchitectureDecisionManagementService {
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent decision analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -338,10 +334,9 @@ export class ArchitectureDecisionManagementService {
 
       // Lazy load @claude-zen/workflows for decision approval workflows
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 10,
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
@@ -384,7 +379,7 @@ export class ArchitectureDecisionManagementService {
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'create_architecture_decision''
     );
 
@@ -454,12 +449,11 @@ export class ArchitectureDecisionManagementService {
       this.performanceTracker.endTimer('create_architecture_decision');'
       this.telemetryManager.recordCounter('architecture_decisions_created', 1);'
 
-      this.logger.info('Architecture decision record created successfully', {'
+      this.logger.info('Architecture decision record created successfully', '
         adrId: adr.id,
         title: adr.title,
         category: adr.category,
-        confidenceLevel: adr.confidenceLevel,
-      });
+        confidenceLevel: adr.confidenceLevel,);
 
       return adr;
     } catch (error) {
@@ -485,7 +479,7 @@ export class ArchitectureDecisionManagementService {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'request_architecture_decision''
     );
 
@@ -581,11 +575,11 @@ export class ArchitectureDecisionManagementService {
   async updateADRStatus(
     adrId: string,
     newStatus: ADRStatus,
-    context?: any
+    _context?: any
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('update_adr_status');'
+    const _timer = this.performanceTracker.startTimer('update_adr_status');'
 
     try {
       const adr = this.decisionRecords.get(adrId);
@@ -603,7 +597,7 @@ export class ArchitectureDecisionManagementService {
 
       if (!statusTransition.isValid) {
         throw new Error(
-          `Invalid status transition: ${statusTransition.reason}``
+          `Invalid status transition: $statusTransition.reason``
         );
       }
 
@@ -619,12 +613,11 @@ export class ArchitectureDecisionManagementService {
       this.performanceTracker.endTimer('update_adr_status');'
       this.telemetryManager.recordCounter('adr_status_updates', 1);'
 
-      this.logger.info('ADR status updated', {'
+      this.logger.info('ADR status updated', '
         adrId,
         oldStatus: adr.status,
         newStatus,
-        title: adr.title,
-      });
+        title: adr.title,);
 
       return updatedADR;
     } catch (error) {
@@ -640,7 +633,7 @@ export class ArchitectureDecisionManagementService {
   async getADRDashboard(): Promise<ADRDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('generate_adr_dashboard');'
+    const _timer = this.performanceTracker.startTimer('generate_adr_dashboard');'
 
     try {
       const allDecisions = Array.from(this.decisionRecords.values())();
@@ -665,10 +658,9 @@ export class ArchitectureDecisionManagementService {
 
       this.performanceTracker.endTimer('generate_adr_dashboard');'
 
-      this.logger.info('ADR dashboard generated', {'
+      this.logger.info('ADR dashboard generated', '
         totalDecisions: dashboard.totalDecisions,
-        pendingReviews: dashboard.upcomingReviews.length,
-      });
+        pendingReviews: dashboard.upcomingReviews.length,);
 
       return dashboard;
     } catch (error) {
@@ -719,7 +711,7 @@ export class ArchitectureDecisionManagementService {
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
 
-  private generateAlternatives(decision: any, analysis: any): Alternative[] {
+  private generateAlternatives(_decision: any, analysis: any): Alternative[] {
     // AI-powered alternative generation
     const alternatives = analysis.alternatives || [];
 
@@ -807,7 +799,7 @@ export class ArchitectureDecisionManagementService {
 
     // Add category-specific metrics
     if (decision.category === 'performance_standard') {'
-      baseMetrics.push({
+      baseMetrics.push(
         metricId: 'performance-improvement',
         name: 'Performance Improvement',
         description: 'Performance improvement achieved',
@@ -815,8 +807,7 @@ export class ArchitectureDecisionManagementService {
         currentValue: 0,
         unit: 'percentage',
         trend: 'stable',
-        lastMeasured: new Date(),
-      });
+        lastMeasured: new Date(),);
     }
 
     return baseMetrics;

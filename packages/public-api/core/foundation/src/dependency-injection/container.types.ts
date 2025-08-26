@@ -11,12 +11,12 @@
  * @interface ServiceInfo
  */
 export interface ServiceInfo {
-  name: string;
-  type: 'class' | 'factory' | 'instance' | 'singleton' | 'async-factory';
-  capabilities: string[];
-  tags: string[];
-  registeredAt: number;
-  singleton: boolean;
+	name: string;
+	type: "class" | "factory" | "instance" | "singleton" | "async-factory";
+	capabilities: string[];
+	tags: string[];
+	registeredAt: number;
+	singleton: boolean;
 }
 
 /**
@@ -35,11 +35,11 @@ export interface ServiceInfo {
  * ```
  */
 export interface ServiceDiscoveryOptions {
-  recursive?: boolean;
-  includeTests?: boolean;
-  extensions?: string[];
-  cwd?: string;
-  ignore?: string[];
+	recursive?: boolean;
+	includeTests?: boolean;
+	extensions?: string[];
+	cwd?: string;
+	ignore?: string[];
 }
 
 /**
@@ -49,10 +49,10 @@ export interface ServiceDiscoveryOptions {
  * @interface ContainerStats
  */
 export interface ContainerStats {
-  totalServices: number;
-  healthyServices: number;
-  unhealthyServices: number;
-  lastHealthCheck: number;
+	totalServices: number;
+	healthyServices: number;
+	unhealthyServices: number;
+	lastHealthCheck: number;
 }
 
 /**
@@ -60,15 +60,15 @@ export interface ContainerStats {
  * Provides full featured dependency injection with monitoring and health checks.
  */
 export interface Container {
-  register<T>(name: string, implementation: new (...args: any[]) => T): void;
-  registerFunction<T>(name: string, factory: (...args: any[]) => T): void;
-  registerInstance<T>(name: string, instance: T): void;
-  resolve<T>(name: string): T;
-  has(name: string): boolean;
-  remove(name: string): boolean;
-  clear(): void;
-  getStats(): ContainerStats;
-  getServiceInfo(name: string): ServiceInfo | undefined;
-  getAllServices(): string[];
-  dispose(): Promise<void>;
+	register<T>(name: string, implementation: new (...args: any[]) => T): void;
+	registerFunction<T>(name: string, factory: (...args: any[]) => T): void;
+	registerInstance<T>(name: string, instance: T): void;
+	resolve<T>(name: string): T;
+	has(name: string): boolean;
+	remove(name: string): boolean;
+	clear(): void;
+	getStats(): ContainerStats;
+	getServiceInfo(name: string): ServiceInfo | undefined;
+	getAllServices(): string[];
+	dispose(): Promise<void>;
 }

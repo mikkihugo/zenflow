@@ -9,26 +9,17 @@
 
 import type { Config, Logger } from '@claude-zen/foundation';
 import {
-  CircuitBreakerWithMonitoring,
-  createCircuitBreaker,
-  EnhancedError,
-  getDatabaseAccess,
   inject,
-  injectable,
-  Storage,
-  safeAsync,
   TOKENS,
-  withRetry,
 } from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
-  EventManagerStatus,
   EventManagerType,
   EventManager as CoreEventManager,
   EventManagerFactory,
   SystemEvent,
 } from './core/interfaces;
-import { EventManagerPresets, EventManagerTypes } from './core/interfaces;
+import { type EventManagerPresets, EventManagerTypes } from './core/interfaces;
 import type {
   CommunicationEventManager,
   CoordinationEventManager,
@@ -40,8 +31,7 @@ import type {
   WorkflowEventManager,
 } from './event-manager-types;
 import type { MonitoringEventManager } from './event-manager-types;
-import { EventRegistry } from './registry;
-import { DefaultEventManagerConfigs, EventCategories } from './types;
+import { EventRegistry } from './registry;'./types;
 
 /**
  * Configuration options for creating new event managers.
@@ -226,13 +216,7 @@ export class EventManager implements CoreEventManager {
   private coordinationSettings: CoordinationSettings;
   private statistics: ManagerStatistics;
   private initialized = false;
-  private healthCheckInterval?: NodeJS.Timeout|undefined;
   private recoveryAttempts = new Map<string, number>();
-  private storage = Storage;
-  private database = getDatabaseAccess();
-  private circuitBreaker = createCircuitBreaker(async () => {
-    /* Default function for circuit breaker */
-  });
 
   constructor(
     @inject(TOKENS.Logger) private _logger: Logger,
@@ -387,7 +371,7 @@ export class EventManager implements CoreEventManager {
   async createEventManager<T extends EventManagerType>(
     options: EventManagerCreationOptions & { type: T }
   ): Promise<EventManager> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     try {
       this._logger.info(
@@ -438,7 +422,7 @@ export class EventManager implements CoreEventManager {
         `✅ Event manager created successfully: ${options?.name} (${duration}ms)``
       );
       return manager as any;
-    } catch (error) {
+    } catch (_error) {
       this.statistics.failedManagers++;
       this._logger.error(
         `❌ Failed to create event manager ${options?.name}:`,`
@@ -881,7 +865,7 @@ export class EventManager implements CoreEventManager {
           await manager.stop();
           await manager.destroy();
         } catch (error) {
-          this._logger.error(`❌ Failed to shutdown manager ${name}:`, error);`
+          this._logger.error(`❌ Failed to shutdown manager $name:`, error);`
         }
       }
     );
@@ -1013,7 +997,7 @@ export class EventManager implements CoreEventManager {
       try {
         // First try with logger and config parameters (SystemEventFactory pattern)
         newFactory = new FactoryClass(this._logger, this._config);
-      } catch (error) {
+      } catch (_error) {
         // Fallback to no-parameter constructor (CommunicationEventFactory pattern)
         newFactory = new FactoryClass();
       }
@@ -1021,7 +1005,7 @@ export class EventManager implements CoreEventManager {
       this.registry.registerFactory(type, newFactory);
 
       return newFactory;
-    } catch (importError) {
+    } catch (importError) 
       this._logger.error(`❌ Failed to load factory for ${type}:`, importError);`
       throw new Error(`Factory not available for event manager type: $type`);`
     }
@@ -1140,13 +1124,12 @@ export class EventManager implements CoreEventManager {
         } catch (error) {
           this._logger.warn(`Failed to emit event to manager:`, error);`
         }
-      }
     );
     await Promise.allSettled(emitPromises);
   }
 
-  async emitBatch<T extends SystemEvent>(batch: any): Promise<void> 
-    for (const event of batch.events) {
+  async emitBatch<_T extends SystemEvent>(batch: any): Promise<void> 
+    for (const event _of _batch._events) {
       await this.emit(event);
     }
 
@@ -1154,9 +1137,9 @@ export class EventManager implements CoreEventManager {
     await this.emit(event);
 
   subscribe<T extends SystemEvent>(
-    eventTypes: string|string[],
-    listener: (event: T) => void|Promise<void>,
-    options?: any
+    _eventTypes: string|string[],
+    _listener: (event: T) => void|Promise<void>,
+    _options?: any
   ): string {
     // Basic subscription implementation
     const subscriptionId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
@@ -1174,7 +1157,7 @@ export class EventManager implements CoreEventManager {
     return 0;
 
   addFilter(filter: any): string {
-    const filterId = `filter_${Date.now()}`;`
+    const filterId = `filter_$Date.now()`;`
     return filterId;
   }
 
@@ -1183,7 +1166,7 @@ export class EventManager implements CoreEventManager {
   }
 
   addTransform(transform: any): string {
-    const transformId = `transform_$Date.now()`;`
+    const _transformId = `transform_$Date.now()`;`
     return transformId;
   }
 

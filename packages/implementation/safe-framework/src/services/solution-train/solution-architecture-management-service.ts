@@ -12,17 +12,13 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addMonths, addWeeks, addDays } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
   orderBy,
-  sumBy,
-  uniqBy,
-  countBy,
-  flatten,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -570,9 +566,7 @@ export interface ComponentLifecycle {
 export class SolutionArchitectureManagementService {
   private readonly logger: Logger;
   private configurations = new Map<string, SolutionArchitectureConfig>();
-  private architecturalDecisions = new Map<string, ArchitecturalDecision>();
   private runwayComponents = new Map<string, RunwayComponent>();
-  private complianceReports = new Map<string, ArchitecturalComplianceReport>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -609,7 +603,7 @@ export class SolutionArchitectureManagementService {
   /**
    * Make architectural decision
    */
-  async makeArchitecturalDecision(decision: {
+  async makeArchitecturalDecision(_decision: {
     title: string;
     context: string;
     alternatives: Alternative[];
@@ -617,7 +611,7 @@ export class SolutionArchitectureManagementService {
     stakeholders: string[];
     urgency: DecisionUrgency;
   }): Promise<ArchitecturalDecision> {
-    const decisionId = `decision-${generateNanoId(12)}`;`
+    const _decisionId = `decision-${generateNanoId(12)}`;`
 
     this.logger.info('Making architectural decision', {'
       decisionId,
@@ -641,7 +635,7 @@ export class SolutionArchitectureManagementService {
       alternatives: decision.alternatives,
       criteria: decision.criteria,
       selectedAlternative,
-      rationale: `Selected based on evaluation criteria: ${selectedAlternative.name}`,`
+      rationale: `Selected based on evaluation criteria: $selectedAlternative.name`,`
       consequences: selectedAlternative.consequences,
       stakeholders: decision.stakeholders,
       status: DecisionStatus.APPROVED,
@@ -654,7 +648,7 @@ export class SolutionArchitectureManagementService {
 
     this.logger.info('Architectural decision made', {'
       decisionId,
-      selectedAlternative: selectedAlternative.name,
+      selectedAlternative.name,
       status: architecturalDecision.status,
     });
 
@@ -674,7 +668,7 @@ export class SolutionArchitectureManagementService {
 
     this.logger.info('Assessing architectural compliance', { configId });'
 
-    const reportId = `compliance-${generateNanoId(12)}`;`
+    const reportId = `compliance-$generateNanoId(12)`;`
 
     // Assess technology standards compliance
     const standardsCompliance = await this.assessStandardsCompliance(
@@ -785,7 +779,7 @@ export class SolutionArchitectureManagementService {
         break;
 
       default:
-        throw new Error(`Unknown component operation: ${operation}`);`
+        throw new Error(`Unknown component operation: $operation`);`
     }
 
     this.runwayComponents.set(componentId, updatedComponent);
@@ -801,7 +795,7 @@ export class SolutionArchitectureManagementService {
   /**
    * Private helper methods
    */
-  private validateArchitectureConfig(config: SolutionArchitectureConfig): void {
+  private validateArchitectureConfig(config: SolutionArchitectureConfig): void 
     if (!config.configId || config.configId.trim() ==='') {'
       throw new Error('Configuration ID is required');'
     }
@@ -809,12 +803,11 @@ export class SolutionArchitectureManagementService {
     if (!config.solutionId || config.solutionId.trim() ==='') {'
       throw new Error('Solution ID is required');'
     }
-  }
 
   private async evaluateAlternatives(
     alternatives: Alternative[],
     criteria: DecisionCriteria[]
-  ): Promise<AlternativeEvaluation[]> {
+  ): Promise<AlternativeEvaluation[]> 
     return alternatives.map((alternative) => ({
       alternative,
       scores: criteria.map((criterion) => ({
@@ -824,60 +817,52 @@ export class SolutionArchitectureManagementService {
       })),
       totalScore: this.calculateTotalScore(alternative, criteria),
     }));
-  }
 
   private scoreAlternative(
     alternative: Alternative,
     criterion: DecisionCriteria
-  ): number {
+  ): number 
     // Simplified scoring logic
     return Math.random() * 100;
-  }
 
   private calculateTotalScore(
     alternative: Alternative,
     criteria: DecisionCriteria[]
-  ): number {
+  ): number 
     return criteria.reduce((total, criterion) => {
       const score = this.scoreAlternative(alternative, criterion);
       return total + (score * criterion.weight) / 100;
     }, 0);
-  }
 
   private selectBestAlternative(
     evaluations: AlternativeEvaluation[]
-  ): Alternative {
+  ): Alternative 
     return orderBy(evaluations, 'totalScore', 'desc')[0].alternative;'
-  }
 
   private async assessStandardsCompliance(
     standards: TechnologyStandard[]
-  ): Promise<number> {
+  ): Promise<number> 
     // Simulate standards compliance assessment
     return Math.random() * 20 + 75; // 75-95% compliance
-  }
 
   private async assessPrincipleCompliance(
     principles: ArchitecturalPrinciple[]
-  ): Promise<number> {
+  ): Promise<number> 
     // Simulate principle compliance assessment
     return Math.random() * 25 + 70; // 70-95% compliance
-  }
 
   private async assessQualityCompliance(
     attributes: QualityAttribute[]
-  ): Promise<number> {
+  ): Promise<number> 
     // Simulate quality attributes compliance assessment
     return Math.random() * 30 + 65; // 65-95% compliance
-  }
 
   private calculateOverallCompliance(
     standards: number,
     principles: number,
     quality: number
-  ): number {
+  ): number 
     return standards * 0.4 + principles * 0.3 + quality * 0.3;
-  }
 
   private identifyViolations(
     standards: number,
@@ -923,7 +908,7 @@ export class SolutionArchitectureManagementService {
     return recommendations;
   }
 
-  private getNextStatus(currentStatus: ComponentStatus): ComponentStatus {
+  private getNextStatus(currentStatus: ComponentStatus): ComponentStatus 
     switch (currentStatus) {
       case ComponentStatus.PLANNED:
         return ComponentStatus.IN_DEVELOPMENT;
@@ -932,41 +917,34 @@ export class SolutionArchitectureManagementService {
       default:
         return currentStatus;
     }
-  }
 
   /**
    * Getter methods
    */
   getArchitecturalDecision(
     decisionId: string
-  ): ArchitecturalDecision | undefined {
+  ): ArchitecturalDecision | undefined 
     return this.architecturalDecisions.get(decisionId);
-  }
 
-  getRunwayComponent(componentId: string): RunwayComponent | undefined {
+  getRunwayComponent(componentId: string): RunwayComponent | undefined 
     return this.runwayComponents.get(componentId);
-  }
 
   getComplianceReport(
     reportId: string
-  ): ArchitecturalComplianceReport | undefined {
+  ): ArchitecturalComplianceReport | undefined 
     return this.complianceReports.get(reportId);
-  }
 
-  getAllArchitecturalDecisions(): ArchitecturalDecision[] {
+  getAllArchitecturalDecisions(): ArchitecturalDecision[] 
     return Array.from(this.architecturalDecisions.values())();
-  }
 
-  getAllRunwayComponents(): RunwayComponent[] {
+  getAllRunwayComponents(): RunwayComponent[] 
     return Array.from(this.runwayComponents.values())();
-  }
 
-  getAvailableComponents(): RunwayComponent[] {
+  getAvailableComponents(): RunwayComponent[] 
     return filter(
       Array.from(this.runwayComponents.values()),
       (component) => component.status === ComponentStatus.AVAILABLE
     );
-  }
 }
 
 /**

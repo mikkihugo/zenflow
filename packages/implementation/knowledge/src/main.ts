@@ -17,38 +17,28 @@
  * PATTERN: Matches memory package's comprehensive foundation integration'
  */
 
-import { EventEmitter } from 'node:events';
 import {
-  getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync,
-  withRetry,
-  withTimeout,
-  withContext,
-  PerformanceTracker,
-  BasicTelemetryManager,
-  TelemetryConfig,
-  Storage,
-  KeyValueStore,
-  StorageError,
-  injectable,
-  createErrorAggregator,
-  createCircuitBreaker,
-  recordMetric,
-  recordHistogram,
-  withTrace,
-  ensureError,
-  generateUUID,
-  UUID,
-  Timestamp,
-  createTimestamp,
-  isUUID,
-  validateObject,
-  createContextError,
   ContextError,
-  Logger,
+  createCircuitBreaker,
+  createErrorAggregator,
+  createTimestamp,
+  ensureError,
+  err,
+  generateUUID,
+  getLogger,
+  injectable,
+  type Logger,
+  ok,
+  type PerformanceTracker,
+  type Result,
+  recordMetric,
+  Storage,
+  safeAsync,
+  type Timestamp,
+  type UUID,
+  validateObject,
+  withRetry,
+  withTrace,
 } from '@claude-zen/foundation';
 
 // =============================================================================
@@ -137,14 +127,11 @@ export class FoundationKnowledgeStore
   implements KnowledgeStore
 {
   private items = new Map<UUID, KnowledgeItem>();
-  private storage: KeyValueStore|null = null;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager|null = null;
   private errorAggregator = createErrorAggregator();
   private circuitBreaker: any;
   private initialized = false;
-  private telemetryInitialized = false;
 
   constructor() {
     super();
@@ -169,7 +156,7 @@ export class FoundationKnowledgeStore
   async initialize(): Promise<Result<void, KnowledgeError>> {
     if (this.initialized) return ok(undefined);
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'knowledge_store_initialize''
     );
 
@@ -210,10 +197,9 @@ export class FoundationKnowledgeStore
       this.performanceTracker.endTimer('knowledge_store_initialize');'
       recordMetric('knowledge_store_initialized', 1);'
 
-      this.logger.info('Knowledge store initialized successfully', {'
+      this.logger.info('Knowledge store initialized successfully', '
         itemCount: this.items.size,
-        storageConnected: !!this.storage,
-      });
+        storageConnected: !!this.storage,);
 
       return ok(undefined);
     } catch (error) {
@@ -242,7 +228,7 @@ export class FoundationKnowledgeStore
     }
 
     return withTrace('knowledge_store_add', async () => {'
-      const timer = this.performanceTracker.startTimer('knowledge_store_add');'
+      const _timer = this.performanceTracker.startTimer('knowledge_store_add');'
 
       try {
         // Validate input
@@ -289,7 +275,7 @@ export class FoundationKnowledgeStore
         this.items.set(id, knowledgeItem);
 
         // Persist to storage via circuit breaker
-        const storageResult = await withRetry(
+        const _storageResult = await withRetry(
           () =>
             this.circuitBreaker.execute(
               'set',
@@ -874,7 +860,7 @@ export async function getKnowledgeManagement(config?: any): Promise<any> {
         const knowledgePromises = topFacts.map((fact: any) =>
           system.addKnowledge(fact.content||fact.summary,'insight', {'
             confidence: fact.confidence||0.7,
-            source: `fact-derived-${fact.source}`,`
+            source: `fact-derived-$fact.source`,`
             tags: ['fact-derived', fact.source],
           })
         );

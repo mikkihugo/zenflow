@@ -5,12 +5,11 @@
  * Primarily handles trace data but can also export logs and metrics.
  */
 
-import { JaegerExporter as OTELJaegerExporter } from '@opentelemetry/exporter-jaeger';
-import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
-
+import { getLogger } from '@claude-zen/foundation/logging';
+import type { JaegerExporter as OTELJaegerExporter } from '@opentelemetry/exporter-jaeger';
+import type { ExporterConfig, TelemetryData } from '../types.js';
 import type { BaseExporter } from './index.js';
-import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 
 /**
  * Queue item for batching exports
@@ -24,20 +23,9 @@ interface QueueItem {
  * Jaeger exporter implementation
  */
 export class JaegerExporter implements BaseExporter {
-  private config: ExporterConfig;
   private logger: Logger;
   private jaegerExporter: OTELJaegerExporter|null = null;
   private queue: QueueItem[] = [];
-  private batchTimer: NodeJS.Timeout|null = null;
-  private isShuttingDown = false;
-  private exportCount = 0;
-  private lastExportTime = 0;
-  private lastError: string|null = null;
-
-  // Configuration
-  private readonly maxQueueSize: number;
-  private readonly batchTimeout: number;
-  private readonly maxBatchSize: number;
 
   constructor(config: ExporterConfig) {
     this.config = config;
@@ -190,13 +178,13 @@ export class JaegerExporter implements BaseExporter {
     // Process remaining items in queue
     if (this.queue.length > 0) {
       this.logger.info(
-        `Processing ${this.queue.length} remaining items before shutdown``
+        `Processing $this.queue.lengthremaining items before shutdown``
       );
       await this.processBatch();
     }
 
     // Shutdown Jaeger exporter
-    if (this.jaegerExporter) {
+    if (this._jaegerExporter) {
       try {
         await this.jaegerExporter.shutdown();
       } catch (error) {
@@ -285,7 +273,7 @@ export class JaegerExporter implements BaseExporter {
 
     // Export to Jaeger
     return new Promise<void>((resolve, reject) => {
-      this.jaegerExporter!.export(spans, (result) => {
+      this.jaegerExporter?.export(spans, (result) => {
         if (result.code === 0) {
           // SUCCESS
           resolve();

@@ -1,13 +1,13 @@
+import * as path from "node:path"
 import { z } from "@claude-zen/foundation"
-import * as path from "path"
-import { Tool } from "./tool"
-import { LSP } from "../lsp"
-import { Permission } from "../permission"
-import DESCRIPTION from "./write.txt"
 import { App } from "../app/app"
 import { Bus } from "../bus"
 import { File } from "../file"
 import { FileTime } from "../file/time"
+import { LSP } from "../lsp"
+import { Permission } from "../permission"
+import { Tool } from "./tool"
+import DESCRIPTION from "./write.txt"
 
 export const WriteTool = Tool.define({
   id: "write",
@@ -27,7 +27,7 @@ export const WriteTool = Tool.define({
     await Permission.ask({
       id: "write",
       sessionID: ctx.sessionID,
-      title: exists ? "Overwrite this file: " + filepath : "Create new file: " + filepath,
+      title: exists ? `Overwrite this file: ${filepath}` : `Create new file: ${filepath}`,
       metadata: {
         filePath: filepath,
         content: params.content,
@@ -50,7 +50,7 @@ export const WriteTool = Tool.define({
         output += `\nThis file has errors, please fix\n<file_diagnostics>\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</file_diagnostics>\n``
         continue
       }
-      output += `\n<project_diagnostics>\n${file}\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</project_diagnostics>\n``
+      output += `\n<project_diagnostics>\n$file\n$issues.map(LSP.Diagnostic.pretty).join("\n")\n</project_diagnostics>\n``
     }
 
     return {

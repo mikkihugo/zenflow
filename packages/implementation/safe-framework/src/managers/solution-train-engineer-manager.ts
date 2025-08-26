@@ -15,9 +15,8 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 // Core Solution Train Interfaces
 export interface SolutionTrainEngineerConfig {
@@ -222,9 +221,8 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
   private solutionPlanningService: any;
   private solutionArchitectureManagementService: any;
   private initialized = false;
-  private configuration: SolutionTrainEngineerConfig|null = null;
 
-  constructor(config?: SolutionTrainEngineerConfig) {
+  constructor(_config?: SolutionTrainEngineerConfig) {
     super();
     this.logger = getLogger('SolutionTrainEngineerManager');'
     this.config = config||null;

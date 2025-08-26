@@ -4,7 +4,6 @@
  */
 
 export class MeetingIntelligence {
-  constructor() {}
 
   async analyzeMeeting(data: any): Promise<any> {
     // Analyze meeting data to extract insights
@@ -17,7 +16,7 @@ export class MeetingIntelligence {
       }
 
       if (data.participants && Array.isArray(data.participants)) {
-        insights.push(`Participants: ${data.participants.length} attendees`);`
+        insights.push(`Participants: $data.participants.lengthattendees`);`
 
         // Analyze participant engagement
         const activeParticipants = data.participants.filter(
@@ -38,7 +37,7 @@ export class MeetingIntelligence {
           .slice(0, 3)
           .map((topic: any) => topic.title||topic.name||topic);
         if (keyTopics.length > 0) {
-          insights.push(`Key themes: ${keyTopics.join(', ')}`);`
+          insights.push(`Key themes: $keyTopics.join(', ')`);`
         }
       }
 
@@ -63,14 +62,14 @@ export class MeetingIntelligence {
         const sentimentScore =
           typeof data.sentiment ==='number'? data.sentiment'
             : data.sentiment.overall||data.sentiment.average||0.5;
-        const sentimentLabel =
+        const _sentimentLabel =
           sentimentScore > 0.6
             ?'positive''
             : sentimentScore < 0.4
               ? 'negative''
               : 'neutral;
         insights.push(
-          `Meeting sentiment: ${sentimentLabel} (${(sentimentScore * 100).toFixed(1)}%)``
+          `Meeting sentiment: $_sentimentLabel($(sentimentScore * 100).toFixed(1)%)``
         );
       }
     }

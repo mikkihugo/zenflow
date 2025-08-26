@@ -12,19 +12,19 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addMonths } = dateFns;
-import { groupBy, map, filter, orderBy, sumBy, meanBy } from 'lodash-es';
-import type {
-  ProductVision,
-  CustomerSegment,
-  SuccessCriterion,
-  StrategyAlignment,
-  MarketOpportunity,
-  StakeholderAlignment,
-  ProductLifecycleStage,
-} from '../types/product-management';
+
+import { filter, meanBy, } from 'lodash-es';
 import type { Logger } from '../types';
+import type {
+  CustomerSegment,
+  MarketOpportunity,
+  ProductVision,
+  StakeholderAlignment,
+  SuccessCriterion,
+} from '../types/product-management';
 
 /**
  * Product vision service configuration
@@ -335,14 +335,13 @@ export class ProductVisionService {
    */
   private calculateStrategyAlignment(
     strategicThemes: string[]
-  ): StrategyAlignment {
+  ): StrategyAlignment 
     return {
       strategicTheme: strategicThemes.join(', '),
       alignmentScore: strategicThemes.length > 0 ? 75 : 25,
       contributionLevel: strategicThemes.length > 0 ? 'direct' : 'indirect',
       strategicImportance: Math.min(10, strategicThemes.length * 3),
     };
-  }
 
   /**
    * Update stakeholder alignment

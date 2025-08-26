@@ -8,6 +8,7 @@
 const { getLogger } = (global as Record<string, unknown>).foundation as {
 	getLogger: Function;
 };
+
 import type { Server as SocketIOServer } from "socket.io";
 
 export interface WebSession {

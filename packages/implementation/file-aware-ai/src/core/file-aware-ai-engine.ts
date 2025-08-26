@@ -5,21 +5,19 @@
  * to provide intelligent, file-aware AI coding assistance.
  */
 
-import { promises as fs } from 'fs';
-import { join, relative, dirname } from 'path';
 import { getLogger } from '@claude-zen/foundation';
 import {
   getOptimalProvider,
   LLM_PROVIDER_CONFIG,
 } from '@claude-zen/llm-routing';
-import { CodebaseAnalyzer } from './codebase-analyzer.js';
 import type {
+  AnalyzedContext,
+  FileAwareConfig,
   FileAwareRequest,
   FileAwareResponse,
   FileChange,
-  FileAwareConfig,
-  AnalyzedContext,
 } from '../types/index.js';
+import { CodebaseAnalyzer } from './codebase-analyzer.js';
 
 const logger = getLogger('file-aware-ai:engine');'
 
@@ -164,9 +162,9 @@ export class FileAwareAIEngine {
     context: AnalyzedContext,
     request: FileAwareRequest
   ): Promise<string> {
-    let aiContext = `# Task\n${request.task}\n\n`;`
+    let aiContext = `# Task\n$request.task\n\n`;`
 
-    aiContext += `# Codebase Context\n${context.summary}\n\n`;`
+    aiContext += `# Codebase Context\n$context.summary\n\n`;`
 
     aiContext += `# Relevant Files\n`;`
     for (const filePath of context.relevantFiles) {
@@ -174,19 +172,18 @@ export class FileAwareAIEngine {
         const fullPath = join(this.rootPath, filePath);
         const content = await fs.readFile(fullPath, 'utf8');'
 
-        aiContext += `## ${filePath}\n`;`
+        aiContext += `## $filePath\n`;`
         aiContext += '```' + this.getFileLanguage(filePath) + '\n';
         aiContext += content;
         aiContext += '\n```\n\n';
-      } catch (error) {
+      } catch (error) 
         logger.warn('Could not read file for context', { filePath });'
-      }
     }
 
-    if (context.dependencies.length > 0) {
+    if (_context._dependencies._length > 0) {
       aiContext += `# Dependencies\n`;`
       for (const dep of context.dependencies) {
-        aiContext += `- ${dep.from} → ${dep.to} (${dep.type})\n`;`
+        aiContext += `- $dep.from→ $dep.to($dep.type)\n`;`
       }
       aiContext += '\n';
     }
@@ -194,16 +191,16 @@ export class FileAwareAIEngine {
     aiContext += `# Instructions\n`;`
     aiContext += `Please analyze the codebase and implement the requested changes.\n`;`
     aiContext += `Return a JSON response with the following structure:\n`;`
-    aiContext += `{\n`;`
+    aiContext += `\n`;`
     aiContext += `  "changes": [\n`;`
-    aiContext += `    {\n`;`
+    aiContext += `    \n`;`
     aiContext += `      "path": "relative/file/path.ts",\n`;`
     aiContext += `      "type": "modify"|"create"|"delete"|"rename",\n`;`
     aiContext += `      "newContent": "full file content after changes",\n`;`
     aiContext += `      "reasoning": "explanation of why this change was made"\n`;`
-    aiContext += `    }\n`;`
+    aiContext += `    \n`;`
     aiContext += `  ]\n`;`
-    aiContext += `}\n`;`
+    aiContext += `\n`;`
 
     return aiContext;
   }

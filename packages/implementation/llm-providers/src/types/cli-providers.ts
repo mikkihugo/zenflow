@@ -8,8 +8,8 @@
 import type { Result } from '@claude-zen/foundation';
 import type {
   LiteralUnion,
-  SetOptional,
   Merge,
+  SetOptional,
 } from '@claude-zen/foundation/types';
 
 export interface CLIMessage {

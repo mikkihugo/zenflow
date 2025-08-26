@@ -18,58 +18,53 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
+import type { CapacityPlanningService, TeamCapacity } from '../services/program-increment/capacity-planning-service';
+import type { PICompletionService } from '../services/program-increment/pi-completion-service';
+import type { PIExecutionService } from '../services/program-increment/pi-execution-service';
+import type { PIPlanningService } from '../services/program-increment/pi-planning-service';
 import type {
-  Logger,
-  MemorySystem,
-  TypeSafeEventBus,
-  ProgramIncrement,
-  PIObjective,
-  Feature,
   AgileReleaseTrain,
   Dependency,
+  Feature,
+  Logger,
+  MemorySystem,
+  PIObjective,
+  ProgramIncrement,
   Risk,
+  TypeSafeEventBus,
 } from '../types';
-
-import type { TeamCapacity } from '../services/program-increment/capacity-planning-service';
-
 import { PIStatus } from '../types';
-import { PIPlanningService } from '../services/program-increment/pi-planning-service';
-import { CapacityPlanningService } from '../services/program-increment/capacity-planning-service';
-import { PIExecutionService } from '../services/program-increment/pi-execution-service';
-import { PICompletionService } from '../services/program-increment/pi-completion-service';
 
-// Re-export service interfaces for API compatibility
-export type {
-  PIPlanningEventConfig,
-  PlanningParticipant,
-  PlanningAgendaItem,
-  BusinessContext,
-  ArchitecturalVision,
-  PlanningAdjustment,
-} from '../services/program-increment/pi-planning-service';
-
-export type {
-  PIExecutionMetrics,
-  VelocityTrend,
-  PredictabilityMetrics,
-  QualityMetrics,
-  RiskBurndown,
-  DependencyHealth,
-} from '../services/program-increment/pi-execution-service';
 
 export type {
   CapacityPlanningResult,
-  TeamAllocation,
   CapacityRisk,
+  TeamAllocation,
 } from '../services/program-increment/capacity-planning-service';
-
 export type {
-  PICompletionReport,
   Achievement,
   Challenge,
-  LessonLearned,
   ImprovementRecommendation,
+  LessonLearned,
+  PICompletionReport,
 } from '../services/program-increment/pi-completion-service';
+export type {
+  DependencyHealth,
+  PIExecutionMetrics,
+  PredictabilityMetrics,
+  QualityMetrics,
+  RiskBurndown,
+  VelocityTrend,
+} from '../services/program-increment/pi-execution-service';
+// Re-export service interfaces for API compatibility
+export type {
+  ArchitecturalVision,
+  BusinessContext,
+  PIPlanningEventConfig,
+  PlanningAdjustment,
+  PlanningAgendaItem,
+  PlanningParticipant,
+} from '../services/program-increment/pi-planning-service';
 
 // ============================================================================
 // PROGRAM INCREMENT MANAGER CONFIGURATION
@@ -112,8 +107,6 @@ export interface PIManagerState {
  */
 export class ProgramIncrementManager extends TypedEventBase {
   private readonly logger: Logger;
-  private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
   private readonly config: PIManagerConfig;
 
   private state: PIManagerState;
@@ -188,7 +181,7 @@ export class ProgramIncrementManager extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info('Program Increment Manager initialized successfully');'
-      this.emit('initialized', {});'
+      this.emit('initialized', );'
     } catch (error) {
       this.logger.error('Failed to initialize PI Manager', { error });'
       throw error;
@@ -237,7 +230,7 @@ export class ProgramIncrementManager extends TypedEventBase {
 
     this.logger.info('Starting comprehensive PI Planning', { artId });'
 
-    const timer = this.startTimer('pi_planning');'
+    const _timer = this.startTimer('pi_planning');'
 
     try {
       // Delegate to PI Planning Service for event orchestration
@@ -275,7 +268,7 @@ export class ProgramIncrementManager extends TypedEventBase {
       );
 
       // Delegate to Capacity Planning Service for feature allocation
-      const capacityResult =
+      const _capacityResult =
         await this.getCapacityPlanningService().implementCapacityPlanning(
           teamCapacities,
           [] // Features will be generated from objectives
@@ -315,13 +308,12 @@ export class ProgramIncrementManager extends TypedEventBase {
 
       this.endTimer('pi_planning');'
 
-      this.logger.info('PI Planning completed successfully', {'
+      this.logger.info('PI Planning completed successfully', '
         piId: completePIPlan.id,
         objectiveCount: piObjectives.length,
         featureCount: features.length,
         capacityUtilization:
-          capacityResult.allocatedCapacity / capacityResult.totalCapacity,
-      });
+          capacityResult.allocatedCapacity / capacityResult.totalCapacity,);
 
       this.emit('pi-planned', completePIPlan);'
       return completePIPlan;
@@ -348,7 +340,7 @@ export class ProgramIncrementManager extends TypedEventBase {
    */
   async implementCapacityPlanning(
     teamCapacities: TeamCapacity[],
-    piObjectives: PIObjective[],
+    _piObjectives: PIObjective[],
     features: Feature[]
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
@@ -413,7 +405,7 @@ export class ProgramIncrementManager extends TypedEventBase {
 
     const pi = this.state.activePIs.get(piId);
     if (!pi) {
-      throw new Error(`PI not found: ${piId}`);`
+      throw new Error(`PI not found: $piId`);`
     }
 
     // Delegate to Execution Service for comprehensive tracking
@@ -627,14 +619,14 @@ export class ProgramIncrementManager extends TypedEventBase {
   }
 
   private endTimer(name: string): void {
-    this.logger.debug(`Timer ${name} completed`);`
+    this.logger.debug(`Timer $namecompleted`);`
   }
 
   private createProgramIncrement(
     artId: string,
     piPlan: any,
     teamCapacities: TeamCapacity[]
-  ): ProgramIncrement {
+  ): ProgramIncrement 
     return {
       id: `pi-${artId}-${Date.now()}`,`
       name: `Program Increment for ART ${artId}`,`
@@ -649,13 +641,12 @@ export class ProgramIncrementManager extends TypedEventBase {
       dependencies: [],
       risks: [],
     };
-  }
 
   private generatePIObjectives(
     piId: string,
     businessContext: any,
     teamCapacities: TeamCapacity[]
-  ): PIObjective[] {
+  ): PIObjective[] 
     // Simplified objective generation
     return [
       {
@@ -665,14 +656,13 @@ export class ProgramIncrementManager extends TypedEventBase {
         confidence: 8,
       },
     ];
-  }
 
   private planFeatureAllocation(
     piId: string,
     piObjectives: PIObjective[],
     architecturalVision: any,
     teamCapacities: TeamCapacity[]
-  ): Feature[] {
+  ): Feature[] 
     // Simplified feature allocation
     return [
       {
@@ -692,22 +682,19 @@ export class ProgramIncrementManager extends TypedEventBase {
         team: teamCapacities[0]?.teamId||'team-1',
       },
     ];
-  }
 
   private identifyPIDependencies(
     features: Feature[],
     objectives: PIObjective[]
-  ): Dependency[] {
+  ): Dependency[] 
     return [];
-  }
 
   private assessPIRisks(
     pi: ProgramIncrement,
     features: Feature[],
     deps: Dependency[]
-  ): Risk[] {
+  ): Risk[] 
     return [];
-  }
 
   private async updateAllPIMetrics(): Promise<void> {
     const activePIs = Array.from(this.state.activePIs.keys())();

@@ -594,8 +594,7 @@ export type {
   Problem,
   ProblemDecomposition,
 } from './src/collaborative-reasoning-engine';
-export { CollaborativeReasoningEngine } from './src/collaborative-reasoning-engine';
-export { CollaborativeReasoningEngine as ReasoningEngine } from './src/collaborative-reasoning-engine';
+export { CollaborativeReasoningEngine, CollaborativeReasoningEngine as ReasoningEngine } from './src/collaborative-reasoning-engine';
 // Collective Intelligence Types
 export type {
   AgentContribution,
@@ -607,8 +606,7 @@ export type {
   WorkDistributionResult,
 } from './src/collective-intelligence-coordinator';
 // Core Collective Intelligence Systems
-export { CollectiveIntelligenceCoordinator } from './src/collective-intelligence-coordinator';
-export { CollectiveIntelligenceCoordinator as IntelligenceHub } from './src/collective-intelligence-coordinator';
+export { CollectiveIntelligenceCoordinator, CollectiveIntelligenceCoordinator as IntelligenceHub } from './src/collective-intelligence-coordinator';
 // Type Definitions - Main Configuration Types
 // Type Definitions - Result Types
 // Type Definitions - Request Types
@@ -645,6 +643,24 @@ export type {
   ModelSynchronizationResult,
 } from './src/distributed-learning-system';
 export { DistributedLearningSystem } from './src/distributed-learning-system';
+export type { KnowledgeErrorContext } from './src/errors';
+// Knowledge Domain Error Classes
+export {
+  BaseKnowledgeError,
+  createKnowledgeError,
+  FACTError,
+  FACTGatheringError,
+  FACTProcessingError,
+  FACTStorageError,
+  getKnowledgeErrorSeverity,
+  isRecoverableKnowledgeError,
+  RAGEmbeddingError,
+  RAGError,
+  RAGRetrievalError,
+  RAGVectorError,
+} from './src/errors';
+// Direct error class exports for easy access
+export * from './src/errors.js';
 // Intelligence Coordination Types
 export type {
   CrossDomainTransferResult as IntelligenceTransferResult,
@@ -665,8 +681,7 @@ export type {
   ReviewResult,
   ValidationResult,
 } from './src/knowledge-quality-management';
-export { KnowledgeQualityManagementSystem } from './src/knowledge-quality-management';
-export { KnowledgeQualityManagementSystem as KnowledgeValidator } from './src/knowledge-quality-management';
+export { KnowledgeQualityManagementSystem, KnowledgeQualityManagementSystem as KnowledgeValidator } from './src/knowledge-quality-management';
 // export { KnowledgeStorage } from './src/knowledge-storage';
 // Existing Knowledge System Types
 export type {
@@ -685,31 +700,10 @@ export type {
   KnowledgeSharingRequest,
   OptimizedKnowledgeResponse,
 } from './src/performance-optimization-system';
-export { PerformanceOptimizationSystem } from './src/performance-optimization-system';
-export { PerformanceOptimizationSystem as PerformanceOptimizer } from './src/performance-optimization-system';
+export { PerformanceOptimizationSystem, PerformanceOptimizationSystem as PerformanceOptimizer } from './src/performance-optimization-system';
 export { ProjectContextAnalyzer } from './src/project-context-analyzer';
 // Storage Backends
 export { SQLiteBackend } from './src/storage-backends/sqlite-backend';
-
-// Knowledge Domain Error Classes
-export {
-  BaseKnowledgeError,
-  FACTError,
-  FACTStorageError,
-  FACTGatheringError,
-  FACTProcessingError,
-  RAGError,
-  RAGVectorError,
-  RAGEmbeddingError,
-  RAGRetrievalError,
-  isRecoverableKnowledgeError,
-  getKnowledgeErrorSeverity,
-  createKnowledgeError,
-} from './src/errors';
-export type { KnowledgeErrorContext } from './src/errors';
-
-// Direct error class exports for easy access
-export * from './src/errors.js';
 // export { StorageInterface } from './src/storage-interface';
 
 /**
@@ -813,9 +807,8 @@ export function validateKnowledgeConfig(config: unknown): {
   // Validate distributed learning config
   if (config?.distributedLearning?.federatedConfig) {
     const fedConfig = config?.distributedLearning?.federatedConfig;
-    if (fedConfig?.clientFraction > 1.0''||''''||''fedConfig?.clientFraction <= 0) {'
+    if (fedConfig?.clientFraction > 1.0''||''''||''fedConfig?.clientFraction <= 0) '
       errors.push('federatedConfig.clientFraction must be between 0 and 1');'
-    }
   }
 
   return {
@@ -904,7 +897,7 @@ export async function ensureStorageDirectory(
   const cacheDir = path.join(basePath, '.cache', 'knowledge');'
 
   // Create directories if they don't exist'
-  await fs.mkdir(swarmDir, { recursive: true });
+  await fs.mkdir(swarmDir, recursive: true );
   await fs.mkdir(hiveMindDir, { recursive: true });
   await fs.mkdir(knowledgeDir, { recursive: true });
   await fs.mkdir(cacheDir, { recursive: true });

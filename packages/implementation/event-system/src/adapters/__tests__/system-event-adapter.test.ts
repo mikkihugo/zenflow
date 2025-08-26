@@ -168,7 +168,7 @@ describe('SystemEventAdapter', () => {'
       };
 
       // Mock a slow emission
-      const _originalEmit = adapter['processEventEmission'];'
+      const _originalEmit = adapter.processEventEmission;'
       adapter['processEventEmission'] = vi.fn('
         () => new Promise<void>((resolve) => setTimeout(resolve, 100))
       );
@@ -223,19 +223,19 @@ describe('SystemEventAdapter', () => {'
     });
 
     it('should return false when unsubscribing non-existent subscription', () => {'
-      const result = adapter.unsubscribe('non-existent-id');'
+      const _result = adapter.unsubscribe('non-existent-id');'
       expect(result).toBe(false);
     });
 
     it('should unsubscribe all listeners for event type', async () => {'
       const mockListener1 = vi.fn();
-      const mockListener2 = vi.fn();
+      const _mockListener2 = vi.fn();
 
       adapter.subscribe(['system:startup'], mockListener1);'
       adapter.subscribe(['system:startup'], mockListener2);'
       adapter.subscribe(['system:health'], mockListener1);'
 
-      const removedCount = adapter.unsubscribeAll('system:startup');'
+      const _removedCount = adapter.unsubscribeAll('system:startup');'
       expect(removedCount).toBe(2);
 
       const subscriptions = adapter.getSubscriptions();
@@ -430,7 +430,7 @@ describe('SystemEventAdapter', () => {'
 
   describe('Event Correlation Logic (Classical TDD)', () => {'
     beforeEach(async () => 
-      config['correlation'] = {'
+      config['correlation'] = '
         enabled: true,
         strategy: 'component',
         correlationTTL: 300000,
@@ -438,8 +438,7 @@ describe('SystemEventAdapter', () => {'
         correlationPatterns: [
           'system:startup->system:health',
           'system:error->system:recovery',
-        ],
-      };
+        ],;
       adapter = createSystemEventAdapter(config);
       await adapter.start(););
 
@@ -518,7 +517,7 @@ describe('SystemEventAdapter', () => {'
         correlationId,
       };
 
-      const healthEvent: SystemLifecycleEvent = {
+      const _healthEvent: SystemLifecycleEvent = {
         id: 'health-1',
         timestamp: new Date(Date.now() + 1000),
         payload: {},
@@ -544,15 +543,13 @@ describe('SystemEventAdapter', () => {'
 
   describe('Health Calculation Logic (Classical TDD)', () => {'
     beforeEach(async () => 
-      config['healthMonitoring'] = {'
+      config['healthMonitoring'] = '
         enabled: true,
         healthCheckInterval: 1000,
-        componentHealthThresholds: {
+        componentHealthThresholds: 
           'test-component': 0.8,
-          'critical-component': 0.95,
-        },
-        autoRecoveryEnabled: true,
-      };
+          'critical-component': 0.95,,
+        autoRecoveryEnabled: true,;
       adapter = createSystemEventAdapter(config);
       await adapter.start(););
 
@@ -636,12 +633,11 @@ describe('SystemEventAdapter', () => {'
 
   describe('Performance Metrics Calculation (Classical TDD)', () => {'
     beforeEach(async () => 
-      config['performance'] = {'
+      config['performance'] = '
         enableEventCorrelation: true,
         maxConcurrentEvents: 100,
         eventTimeout: 30000,
-        enablePerformanceTracking: true,
-      };
+        enablePerformanceTracking: true,;
       adapter = createSystemEventAdapter(config);
       await adapter.start(););
 
@@ -745,7 +741,7 @@ describe('SystemEventAdapter', () => {'
         version: '1.0.0',
       });
 
-      expect(event['source']).toBe('test-component');'
+      expect(event.source).toBe('test-component');'
       expect(event.type).toBe('system:startup');'
       expect(event['operation']).toBe('start');'
       expect(event['status']).toBe('success');'
@@ -759,7 +755,7 @@ describe('SystemEventAdapter', () => {'
         errorMessage: 'maintenance',
       });
 
-      expect(event['source']).toBe('test-component');'
+      expect(event.source).toBe('test-component');'
       expect(event.type).toBe('system:shutdown');'
       expect(event['operation']).toBe('stop');'
       expect(event['status']).toBe('success');'
@@ -797,7 +793,7 @@ describe('SystemEventAdapter', () => {'
         }
       );
 
-      expect(event['source']).toBe('test-component');'
+      expect(event.source).toBe('test-component');'
       expect(event.type).toBe('system:error');'
       expect(event['status']).toBe('error');'
       expect(event['priority']).toBe('high');'
@@ -844,7 +840,7 @@ describe('SystemEventManagerFactory', () => {'
     });
 
     it('should get existing manager by name', async () => {'
-      const config = createDefaultSystemEventAdapterConfig('get-test');'
+      const _config = createDefaultSystemEventAdapterConfig('get-test');'
       await factory.create(config);
 
       const manager = factory.get('get-test');'
@@ -853,18 +849,18 @@ describe('SystemEventManagerFactory', () => {'
     });
 
     it('should remove manager successfully', async () => {'
-      const config = createDefaultSystemEventAdapterConfig('remove-test');'
+      const _config = createDefaultSystemEventAdapterConfig('remove-test');'
       await factory.create(config);
 
       expect(factory.has('remove-test')).toBe(true);'
 
-      const removed = await factory.remove('remove-test');'
+      const _removed = await factory.remove('remove-test');'
       expect(removed).toBe(true);
       expect(factory.has('remove-test')).toBe(false);'
     });
 
     it('should perform health check on all managers', async () => {'
-      const config1 = createDefaultSystemEventAdapterConfig('health-1');'
+      const _config1 = createDefaultSystemEventAdapterConfig('health-1');'
       const config2 = createDefaultSystemEventAdapterConfig('health-2');'
 
       await factory.create(config1);
@@ -893,7 +889,7 @@ describe('SystemEventManagerFactory', () => {'
     it('should validate configuration during creation', async () => {'
       const invalidConfig = {
         name: '', // Invalid empty name'
-        type: EventManagerTypes['SYSTEM'],
+        type: EventManagerTypes.SYSTEM,
       } as SystemEventAdapterConfig;
 
       await expect(factory.create(invalidConfig)).rejects.toThrow();

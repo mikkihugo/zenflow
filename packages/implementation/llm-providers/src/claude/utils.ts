@@ -5,13 +5,12 @@
  * Contains workspace detection, path resolution, and validation functions.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { getLogger } from '@claude-zen/foundation/logging';
 import validator from 'validator';
 
-import type { ClaudeSDKOptions } from './types';
 
 const logger = getLogger('claude-sdk-utils');'
 
@@ -23,7 +22,7 @@ const logger = getLogger('claude-sdk-utils');'
  * Find workspace root by looking for workspace configuration files
  */
 export function findWorkspaceRoot(startPath: string): string|null {
-  let currentPath = startPath;
+  const currentPath = startPath;
 
   while (currentPath !== path.dirname(currentPath)) {
     // Check for workspace configuration files
@@ -70,7 +69,7 @@ export function findProjectRoot(
     for (const projectFile of projectFiles) {
       const projectPath = path.join(currentPath, projectFile);
       if (fs.existsSync(projectPath)) {
-        logger.debug(`Found project root at: ${currentPath} (${projectFile})`);`
+        logger.debug(`Found project root at: $currentPath($projectFile)`);`
         return currentPath;
       }
     }
@@ -142,7 +141,7 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
 
   if (!fs.existsSync(resolved)) {
     logger.warn(
-      `Working directory ${resolved} does not exist, using current directory``
+      `Working directory $resolveddoes not exist, using current directory``
     );
     return process.cwd();
   }
@@ -165,7 +164,7 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
 export function ensureDirectory(directoryPath: string): void {
   if (!fs.existsSync(directoryPath)) {
     fs.mkdirSync(directoryPath, { recursive: true });
-    logger.debug(`Created directory: ${directoryPath}`);`
+    logger.debug(`Created directory: $directoryPath`);`
   }
 }
 
@@ -176,7 +175,7 @@ export function ensureDirectory(directoryPath: string): void {
 /**
  * Truncate string for logging
  */
-export function truncateForLogging(str: string, maxLength = 200): string {
+export function _truncateForLogging(str: string, maxLength = 200): string {
   if (str.length <= maxLength) {
     return str;
   }
@@ -187,13 +186,13 @@ export function truncateForLogging(str: string, maxLength = 200): string {
  * Generate unique session ID
  */
 export function generateSessionId(): string {
-  return `claude-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+  return `claude-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
 }
 
 /**
  * Battle-tested input sanitization using validator.js
  */
-export function sanitizeString(str: string): string {
+export function _sanitizeString(str: string): string {
   if (typeof str !== 'string') {'
     throw new Error('Input must be a string');'
   }
@@ -240,8 +239,8 @@ export function sanitizeFilePath(filePath: string): string {
 
   for (const dangerousPath of dangerousPaths) {
     if (
-      resolvedPath.startsWith(`${dangerousPath}/`) || resolvedPath === dangerousPath`
-    ) {
+      resolvedPath.startsWith(`$dangerousPath/`) || resolvedPath === dangerousPath`
+    ) 
       throw new Error(`Access to ${dangerousPath} is not allowed`);`
     }
   }
@@ -281,11 +280,10 @@ export function validateCommand(command: string): boolean {
     'eslint',
   ];
 
-  const firstWord = command.trim().split(/\s+/)[0];
+  const firstWord = command.trim().split(/s+/)[0];
   if (!firstWord||!allowedCommands.includes(firstWord)) {
     logger.warn(`Command'${firstWord || 'empty'}'is not in allowlist`);`
     return false;
-  }
 
   // Check for dangerous patterns
   if (/[$&;<>`|]/.test(command)) {`

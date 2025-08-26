@@ -5,27 +5,21 @@
  * file selection and context management for AI operations.
  */
 
-import { promises as fs } from 'fs';
-import { join, relative, extname, dirname, basename } from 'path';
-import { createHash } from 'crypto';
-import * as ts from 'typescript';
-import glob from 'fast-glob';
-import ignore from 'ignore';
+import { basename, } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
 import type {
+  AnalyzedContext,
   CodebaseIndex,
+  FileAwareConfig,
+  FileDependency,
   FileInfo,
   SymbolReference,
-  FileDependency,
-  FileAwareConfig,
-  AnalyzedContext,
 } from '../types/index.js';
 
 const logger = getLogger('file-aware-ai:codebase-analyzer');'
 
 export class CodebaseAnalyzer {
   private index: CodebaseIndex|null = null;
-  private gitignore: ReturnType<typeof ignore>|null = null;
   private readonly rootPath: string;
   private readonly config: FileAwareConfig;
 
@@ -72,13 +66,13 @@ export class CodebaseAnalyzer {
     logger.debug('Getting relevant context', { task, focusFiles, maxFiles });'
 
     let relevantFiles: string[] = [];
-    let dependencies: FileDependency[] = [];
-    let symbols: SymbolReference[] = [];
+    const dependencies: FileDependency[] = [];
+    const symbols: SymbolReference[] = [];
 
     if (focusFiles && focusFiles.length > 0) {
       // Start with explicitly requested files
       relevantFiles = focusFiles.filter((file) =>
-        this.index!.files.some((f) => f.path === file)
+        this.index?.files.some((f) => f.path === file)
       );
 
       // Add dependencies of focus files
@@ -131,11 +125,11 @@ export class CodebaseAnalyzer {
    */
   private async buildIndex(): Promise<void> {
     const files: FileInfo[] = [];
-    const symbols = new Map<string, SymbolReference>();
-    const dependencies: FileDependency[] = [];
+    const _symbols = new Map<string, SymbolReference>();
+    const _dependencies: FileDependency[] = [];
 
     // Find all relevant files
-    const patterns = this.config.indexing.supportedLanguages.map(
+    const _patterns = this.config.indexing.supportedLanguages.map(
       (lang) => `**/*.${lang}``
     );
     const foundFiles = await glob(patterns, {
@@ -365,7 +359,7 @@ export class CodebaseAnalyzer {
 
     // Simple keyword-based relevance for now
     // TODO: Implement proper semantic search with embeddings
-    const keywords = task.toLowerCase().split(/\s+/);
+    const keywords = task.toLowerCase().split(/s+/);
     const scored: Array<{ file: string; score: number }> = [];
 
     for (const fileInfo of this.index.files) {
@@ -429,10 +423,10 @@ export class CodebaseAnalyzer {
     const languages = [...new Set(files.map((f) => extname(f).slice(1)))];
 
     return (
-      `Task: ${task}\n` +`
-      `Relevant files: ${fileCount}\n` +`
-      `Languages: ${languages.join(', ')}\n` +`
-      `Files: ${files.map((f) => basename(f)).join(', ')}``
+      `Task: $task\n` +`
+      `Relevant files: $fileCount\n` +`
+      `Languages: $languages.join(', ')\n` +`
+      `Files: $files.map((f) => basename(f)).join(', ')``
     );
   }
 
@@ -446,21 +440,6 @@ export class CodebaseAnalyzer {
     if (files.length <= 3 && dependencies.length <= 5) return 'low;
     if (files.length <= 10 && dependencies.length <= 20) return 'medium;
     return 'high;
-  }
-
-  /**
-   * Load .gitignore file
-   */
-  private async loadGitignore(): Promise<void> {
-    try {
-      const gitignorePath = join(this.rootPath, '.gitignore');'
-      const content = await fs.readFile(gitignorePath, 'utf8');'
-      this.gitignore = ignore().add(content);
-      logger.debug('Loaded .gitignore');'
-    } catch (error) {
-      // .gitignore doesn't exist or can't be read - that's ok'
-      logger.debug('No .gitignore found or error reading it');'
-    }
   }
 
   /**

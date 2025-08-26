@@ -22,8 +22,8 @@ export const mockClaudeSDK = {
   closeSession: vi.fn().mockResolvedValue(undefined),
   streamMessage: vi.fn().mockImplementation(async function* () {
     yield { type: 'content', content: 'Mock' };'
-    yield { type: 'content', content: ' streaming' };'
-    yield { type: 'content', content: ' response' };'
+    yield type: 'content', content: ' streaming' ;'
+    yield type: 'content', content: ' response' ;'
   }),
   getTools: vi.fn().mockResolvedValue(['read', 'write', 'bash']),
   checkPermissions: vi
@@ -119,7 +119,7 @@ export const mockMessageProcessor = {
   }),
   filterMessagesForProvider: vi.fn().mockImplementation((messages: any[]) => {
     if (!Array.isArray(messages)) return [];
-    return messages.filter((msg) => msg && msg.role && msg.content);
+    return messages.filter((msg) => msg?.role && msg.content);
   }),
   validateMessage: vi.fn().mockImplementation((message: any) => {
     if (!message||!message.role||!message.content) {

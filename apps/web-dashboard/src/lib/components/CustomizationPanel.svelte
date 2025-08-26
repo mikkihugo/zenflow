@@ -1,96 +1,99 @@
 <script lang="ts">
-  import { slide } from 'svelte/transition';
-  import { 
-    customizationMode, 
-    dashboardLayout, 
-    availableWidgets, 
-    dragDropManager, 
-    type Widget 
-  } from '../drag-drop';
-  import { notifySuccess, notifyInfo, notifyError } from '../notifications';
+import {
+	availableWidgets,
+	customizationMode,
+	dashboardLayout,
+	dragDropManager,
+	type Widget,
+} from "../drag-drop";
+import { notifyError, notifyInfo, notifySuccess } from "../notifications";
 
-  export let isOpen = false;
+export let isOpen = false;
 
-  let availableWidgetsList: Widget[] = availableWidgets;
-  
-  // Subscribe to layout changes
-  let layout: any;
-  dashboardLayout.subscribe(value => {
-    layout = value;
-  });
+const availableWidgetsList: Widget[] = availableWidgets;
 
-  function toggleCustomization() {
-    isOpen = !isOpen;
-    customizationMode.set(isOpen);
-    
-    if (isOpen) {
-      notifyInfo('Customization mode enabled - drag widgets to reorder');
-    } else {
-      notifySuccess('Dashboard customization saved');
-    }
-  }
+// Subscribe to layout changes
+let layout: any;
+dashboardLayout.subscribe((value) => {
+	layout = value;
+});
 
-  function addWidget(widgetId: string) {
-    dragDropManager.addWidget(widgetId);
-    notifySuccess(`Added ${availableWidgetsList.find(w => w.id === widgetId)?.name} widget`);
-  }
+function _toggleCustomization() {
+	isOpen = !isOpen;
+	customizationMode.set(isOpen);
 
-  function removeWidget(widgetId: string) {
-    const widget = layout.widgets.find((w: Widget) => w.id === widgetId);
-    dragDropManager.removeWidget(widgetId);
-    notifySuccess(`Removed ${widget?.name} widget`);
-  }
+	if (isOpen) {
+		notifyInfo("Customization mode enabled - drag widgets to reorder");
+	} else {
+		notifySuccess("Dashboard customization saved");
+	}
+}
 
-  function toggleWidget(widgetId: string) {
-    const widget = layout.widgets.find((w: Widget) => w.id === widgetId);
-    dragDropManager.toggleWidget(widgetId);
-    notifyInfo(`${widget?.enabled ? 'Disabled' : 'Enabled'} ${widget?.name} widget`);
-  }
+function _addWidget(widgetId: string) {
+	dragDropManager.addWidget(widgetId);
+	notifySuccess(
+		`Added ${availableWidgetsList.find((w) => w.id === widgetId)?.name} widget`,
+	);
+}
 
-  function resetDashboard() {
-    if (confirm('Reset dashboard to default layout? This cannot be undone.')) {
-      dragDropManager.resetDashboard();
-      notifySuccess('Dashboard reset to default layout');
-    }
-  }
+function _removeWidget(widgetId: string) {
+	const widget = layout.widgets.find((w: Widget) => w.id === widgetId);
+	dragDropManager.removeWidget(widgetId);
+	notifySuccess(`Removed ${widget?.name} widget`);
+}
 
-  function exportLayout() {
-    try {
-      const layoutData = JSON.stringify(layout, null, 2);
-      const blob = new Blob([layoutData], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'dashboard-layout.json';
-      a.click();
-      
-      URL.revokeObjectURL(url);
-      notifySuccess('Dashboard layout exported');
-    } catch (error) {
-      console.error('Failed to export layout:', error);
-    }
-  }
+function _toggleWidget(widgetId: string) {
+	const widget = layout.widgets.find((w: Widget) => w.id === widgetId);
+	dragDropManager.toggleWidget(widgetId);
+	notifyInfo(
+		`${widget?.enabled ? "Disabled" : "Enabled"} ${widget?.name} widget`,
+	);
+}
 
-  function importLayout(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const layoutData = JSON.parse(e.target?.result as string);
-        dashboardLayout.set(layoutData);
-        notifySuccess('Dashboard layout imported');
-      } catch (error) {
-        console.error('Failed to import layout:', error);
-        notifyError('Failed to import dashboard layout');
-      }
-    };
-    reader.readAsText(file);
-  }
+function _resetDashboard() {
+	if (confirm("Reset dashboard to default layout? This cannot be undone.")) {
+		dragDropManager.resetDashboard();
+		notifySuccess("Dashboard reset to default layout");
+	}
+}
+
+function _exportLayout() {
+	try {
+		const layoutData = JSON.stringify(layout, null, 2);
+		const blob = new Blob([layoutData], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = "dashboard-layout.json";
+		a.click();
+
+		URL.revokeObjectURL(url);
+		notifySuccess("Dashboard layout exported");
+	} catch (error) {
+		console.error("Failed to export layout:", error);
+	}
+}
+
+function _importLayout(event: Event) {
+	const input = event.target as HTMLInputElement;
+	const file = input.files?.[0];
+
+	if (!file) return;
+
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		try {
+			const layoutData = JSON.parse(e.target?.result as string);
+			dashboardLayout.set(layoutData);
+			notifySuccess("Dashboard layout imported");
+		} catch (error) {
+			console.error("Failed to import layout:", error);
+			notifyError("Failed to import dashboard layout");
+		}
+	};
+	reader.readAsText(file);
+}
 </script>
 
 <!-- Customization Toggle Button -->

@@ -62,15 +62,13 @@
  * @since 1.0.0
  */
 
-import { type Config, getLogger, type Logger } from '@claude-zen/foundation';
+import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManager,
   EventManagerFactory,
-  SystemEvent,
 } from '../core/interfaces;
 import type { DatabaseEventManager } from '../event-manager-types;
 import type { DatabaseEvent } from '../types;
@@ -199,7 +197,7 @@ class DatabaseEventManagerImpl
   /**
    * Subscribe to connection events.
    */
-  subscribeConnectionEvents(listener: (event: DatabaseEvent) => void): string {
+  subscribeConnectionEvents(listener: (_event: DatabaseEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.connection.set(subscriptionId, listener);
 
@@ -225,7 +223,7 @@ class DatabaseEventManagerImpl
   /**
    * Subscribe to performance events.
    */
-  subscribePerformanceEvents(listener: (event: DatabaseEvent) => void): string {
+  subscribePerformanceEvents(listener: (_event: DatabaseEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.performance.set(subscriptionId, listener);
 
@@ -451,7 +449,7 @@ class DatabaseEventManagerImpl
     }
 
     // Update performance tracking
-    if (event.details?.queryTime) {
+    if (event._details?._queryTime) {
       if (
         event.details.queryTime >
         this.databaseMetrics.performanceStats.longestQueryTime
@@ -515,7 +513,7 @@ class DatabaseEventManagerImpl
   }
 
   private async notifyDatabaseSubscribers(
-    subscribers: Map<string, (event: DatabaseEvent) => void>,
+    subscribers: Map<string, (_event: DatabaseEvent) => void>,
     event: DatabaseEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
@@ -667,11 +665,9 @@ class DatabaseEventManagerImpl
 export class DatabaseEventManagerFactory
   implements EventManagerFactory<EventManagerConfig>
 {
-  private managers = new Map<string, EventManager>();
 
   constructor(
-    private logger: Logger,
-    private config: Config
+    private logger: Logger,_config: Config
   ) {
     this.logger.debug('DatabaseEventManagerFactory initialized');'
   }
@@ -701,7 +697,7 @@ export class DatabaseEventManagerFactory
     this.managers.set(config.name, manager as unknown as EventManager);
 
     this.logger.info(
-      `Database event manager created successfully: ${config.name}``
+      `Database event manager created successfully: $config.name``
     );
     return manager as unknown as EventManager;
   }
@@ -725,7 +721,7 @@ export class DatabaseEventManagerFactory
       } else {
         errors.push(
           new Error(
-            `Failed to create manager ${configs[index]?.name}: ${result.reason}``
+            `Failed to create manager $configs[index]?.name: $result.reason``
           )
         );
       }
@@ -791,7 +787,7 @@ export class DatabaseEventManagerFactory
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
 
-    const healthChecks = Array.from(this.managers.entries()).map(
+    const _healthChecks = Array.from(this.managers.entries()).map(
       async ([name, manager]) => {
         try {
           const status = await manager.healthCheck();
@@ -1027,7 +1023,7 @@ export class DatabaseEventManagerFactory
     }
 
     // Set up health checking with database-specific intervals
-    const healthCheckInterval = 120000; // 2 minutes default
+    const _healthCheckInterval = 120000; // 2 minutes default
     setInterval(async () => {
       try {
         const status = await manager.healthCheck();
@@ -1037,7 +1033,7 @@ export class DatabaseEventManagerFactory
             status.metadata
           );
         }
-      } catch (error) {
+      } catch (_error) {
         this.logger.error(
           `Database manager health check failed: ${config.name}`,`
           error

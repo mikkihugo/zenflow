@@ -21,9 +21,8 @@ import type {
   Logger,
   MemorySystem,
   TypeSafeEventBus,
-  EventPriority,
 } from '../types';
-import { getLogger, createEvent, WorkflowHumanGateType } from '../types';
+import { getLogger, } from '../types';
 
 // ============================================================================
 // SYSTEM AND SOLUTION ARCHITECTURE CONFIGURATION
@@ -321,8 +320,6 @@ export interface ReviewFinding {
  */
 export class SystemSolutionArchitectureManager extends TypedEventBase {
   private readonly logger: Logger;
-  private readonly config: SystemSolutionArchConfig;
-  private readonly memorySystem: MemorySystem;
   private readonly eventBus: TypeSafeEventBus;
 
   // Service delegation instances
@@ -334,7 +331,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
   private initialized = false;
 
   constructor(
-    config: SystemSolutionArchConfig,
+    _config: SystemSolutionArchConfig,
     memorySystem: MemorySystem,
     eventBus: TypeSafeEventBus
   ) {
@@ -372,14 +369,12 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
         '../services/system-solution/compliance-monitoring-service');'
       this.complianceMonitoringService = new ComplianceMonitoringService(
         this.logger,
-        {
           enableContinuousMonitoring:
             this.configuration.enableComplianceMonitoring,
           enableAutomatedRemediation: false,
           enableRealTimeAlerts: true,
           monitoringInterval:
             this.configuration.complianceCheckInterval||3600000,
-        }
       );
       await this.complianceMonitoringService.initialize();
 
@@ -387,12 +382,10 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
       const { ArchitectureReviewManagementService } = await import('../services/system-solution/architecture-review-management-service');'
       this.architectureReviewService = new ArchitectureReviewManagementService(
         this.logger,
-        {
           maxConcurrentReviews: this.configuration.maxConcurrentReviews,
           defaultReviewTimeout: this.configuration.reviewTimeout||480,
           enableAIAnalysis: true,
           enableAutomatedReviews: true,
-        }
       );
       await this.architectureReviewService.initialize();
 
@@ -439,10 +432,10 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
   ): Promise<SystemDesign> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('create_system_design');'
+    const _timer = this.performanceTracker.startTimer('create_system_design');'
 
     try {
-      const systemDesign = await this.systemDesignService.createSystemDesign(
+      const _systemDesign = await this.systemDesignService.createSystemDesign(
         name,
         type,
         pattern,
@@ -450,10 +443,9 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
       );
 
       this.performanceTracker.endTimer('create_system_design');'
-      this.telemetryManager.recordCounter('system_designs_created', 1, {'
+      this.telemetryManager.recordCounter('system_designs_created', 1, '
         type,
-        pattern,
-      });
+        pattern,);
 
       this.logger.info(`Created system design: ${name} (${type}/${pattern})`);`
       this.emit('systemDesignCreated', { systemDesign });'
@@ -479,7 +471,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
     const systemDesign =
       this.systemDesignService.getSystemDesign(systemDesignId);
     if (!systemDesign) {
-      throw new Error(`System design not found: ${systemDesignId}`);`
+      throw new Error(`System design not found: $systemDesignId`);`
     }
 
     try {
@@ -493,7 +485,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
         ),
       };
 
-      const review =
+      const _review =
         await this.architectureReviewService.initiateArchitectureReview(
           reviewRequest,
           systemDesign
@@ -552,7 +544,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
       );
 
       this.logger.info(
-        `Compliance validation for ${systemDesign.name}: ${validationResult.compliant ? 'COMPLIANT' : 'NON-COMPLIANT'}``
+        `Compliance validation for ${systemDesign.name}: $validationResult.compliant ? 'COMPLIANT' : 'NON-COMPLIANT'``
       );
 
       return {
@@ -685,7 +677,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
 
     // Handle compliance check events
     this.eventBus.on('complianceCheckRequired', (event: any) => {'
-      if (event.data && event.data.systemDesignId) {
+      if (event.data?.systemDesignId) {
         this.validateCompliance(event.data.systemDesignId).catch((error) => {
           this.logger.error('Compliance check failed:', error);'
         });

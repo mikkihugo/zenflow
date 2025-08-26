@@ -12,16 +12,11 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, subDays } = dateFns;
+
 import {
-  groupBy,
-  map,
-  filter,
-  orderBy,
-  sumBy,
-  meanBy,
-  maxBy,
   countBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
@@ -196,7 +191,6 @@ export class SecurityScanningService {
   private readonly logger: Logger;
   private scanConfigurations = new Map<string, SecurityScanConfig>();
   private scanResults = new Map<string, SecurityScanResult>();
-  private activeScans = new Map<string, NodeJS.Timeout>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -242,7 +236,7 @@ export class SecurityScanningService {
     });
 
     const startTime = Date.now();
-    const resultId = `result-${generateNanoId(12)}`;`
+    const resultId = `result-$generateNanoId(12)`;`
 
     try {
       // Execute all configured tools in parallel
@@ -539,7 +533,7 @@ export class SecurityScanningService {
   /**
    * Validate scan configuration
    */
-  private validateScanConfiguration(config: SecurityScanConfig): void {
+  private validateScanConfiguration(config: SecurityScanConfig): void 
     if (!config.scanId || config.scanId.trim() ==='') {'
       throw new Error('Scan ID is required');'
     }
@@ -551,18 +545,16 @@ export class SecurityScanningService {
     if (config.targets.length === 0) {
       throw new Error('At least one scan target must be specified');'
     }
-  }
 
   /**
    * Schedule recurring scan
    */
-  private scheduleScan(config: SecurityScanConfig): void {
+  private scheduleScan(config: SecurityScanConfig): void 
     // Implementation would integrate with job scheduler
     this.logger.info('Scheduling recurring scan', {'
       scanId: config.scanId,
       frequency: config.schedule.frequency,
     });
-  }
 
   /**
    * Helper methods for simulation
@@ -589,7 +581,7 @@ export class SecurityScanningService {
     return categories[Math.floor(Math.random() * categories.length)];
   }
 
-  private generateCVSSScore(): CVSSScore {
+  private generateCVSSScore(): CVSSScore 
     return {
       version: '3.1',
       baseScore: Math.random() * 10,
@@ -597,9 +589,8 @@ export class SecurityScanningService {
       environmentalScore: Math.random() * 10,
       vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
     };
-  }
 
-  private getEmptyMetrics(): ScanMetrics {
+  private getEmptyMetrics(): ScanMetrics 
     return {
       totalFindings: 0,
       findingsBySeverity: {} as Record<SecuritySeverity, number>,
@@ -608,9 +599,8 @@ export class SecurityScanningService {
       falsePositiveRate: 0,
       scanEfficiency: 0,
     };
-  }
 
-  private getEmptySummary(): ScanSummary {
+  private getEmptySummary(): ScanSummary 
     return {
       criticalIssues: 0,
       highIssues: 0,
@@ -622,26 +612,22 @@ export class SecurityScanningService {
       riskScore: 0,
       recommendations: [],
     };
-  }
 
   /**
    * Get scan result
    */
-  getScanResult(resultId: string): SecurityScanResult | undefined {
+  getScanResult(resultId: string): SecurityScanResult | undefined 
     return this.scanResults.get(resultId);
-  }
 
   /**
    * Get scan configuration
    */
-  getScanConfiguration(scanId: string): SecurityScanConfig | undefined {
+  getScanConfiguration(scanId: string): SecurityScanConfig | undefined 
     return this.scanConfigurations.get(scanId);
-  }
 
   /**
    * Get all scan results
    */
-  getAllScanResults(): SecurityScanResult[] {
+  getAllScanResults(): SecurityScanResult[] 
     return Array.from(this.scanResults.values())();
-  }
 }

@@ -21,9 +21,9 @@
  * @version 1.0.0
  */
 
-import { createMachine, assign, type ActorRefFrom, fromPromise } from 'xstate';
-import { getLogger } from '../types';
+import { type ActorRefFrom, assign, createMachine, fromPromise } from 'xstate';
 import type { PortfolioEpic } from '../types';
+import { getLogger } from '../types';
 
 // Define missing interfaces locally
 interface BusinessCase {
@@ -166,9 +166,8 @@ const epicKanbanActions = {
   storeWSJFPriority: assign({
     wsjfPriority: ({
       event,
-    }: {
-      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_COMPLETE' }>;'
-    }) => event.wsjfPriority,
+    }: 
+      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_COMPLETE' }>;') => event.wsjfPriority,
   }),
 
   /**
@@ -177,9 +176,8 @@ const epicKanbanActions = {
   handleAnalysisRejection: assign({
     errorMessage: ({
       event,
-    }: {
-      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_REJECTED' }>;'
-    }) => event.reason,
+    }: 
+      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_REJECTED' }>;') => event.reason,
   }),
 
   /**
@@ -188,10 +186,9 @@ const epicKanbanActions = {
   startImplementation: assign({
     implementationStartTime: ({
       event,
-    }: {
-      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_STARTED' }>;'
-    }) => event.startTime,
-    currentCapacityUsage: ({ context }) => context.currentCapacityUsage + 1,
+    }: 
+      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_STARTED' }>;') => event.startTime,
+    currentCapacityUsage: (context ) => context.currentCapacityUsage + 1,
   }),
 
   /**
@@ -200,9 +197,8 @@ const epicKanbanActions = {
   addBlockers: assign({
     blockers: ({
       event,
-    }: {
-      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_BLOCKED' }>;'
-    }) => event.blockers,
+    }: 
+      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_BLOCKED' }>;') => event.blockers,
   }),
 
   /**

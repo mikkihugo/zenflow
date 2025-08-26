@@ -72,10 +72,9 @@ export class NeuralDeceptionDetector {
     this.modelWeights.set('fileModificationRatio', -0.8);'
     this.modelWeights.set('bashCommandComplexity', -0.4);'
 
-    this.logger.info('Neural deception detection model initialized', {'
+    this.logger.info('Neural deception detection model initialized', '
       featureCount: this.modelWeights.size,
-      adaptationRate: this.adaptationRate,
-    });
+      adaptationRate: this.adaptationRate,);
   }
 
   /**
@@ -381,10 +380,9 @@ export class NeuralDeceptionDetector {
     };
   }> {
     return withTrace('neural-deception-detection', async (span) => {'
-      span?.setAttributes({
+      span?.setAttributes(
         'ai.response.length': aiResponse.length,
-        'ai.response.wordCount': aiResponse.split(/\s+/).length,
-      });
+        'ai.response.wordCount': aiResponse.split(/\s+/).length,);
 
       // Get base log analysis
       const logAnalysis =

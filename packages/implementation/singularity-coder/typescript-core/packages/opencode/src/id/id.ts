@@ -1,5 +1,5 @@
+
 import { z } from "@claude-zen/foundation"
-import { randomBytes } from "crypto"
 
 export namespace Identifier {
   const prefixes = {
@@ -13,11 +13,11 @@ export namespace Identifier {
     return z.string().startsWith(prefixes[prefix])
   }
 
-  const LENGTH = 26
+  const _LENGTH = 26
 
   // State for monotonic ID generation
-  let lastTimestamp = 0
-  let counter = 0
+  const _lastTimestamp = 0
+  const _counter = 0
 
   export function ascending(prefix: keyof typeof prefixes, given?: string) {
     return generateID(prefix, false, given)

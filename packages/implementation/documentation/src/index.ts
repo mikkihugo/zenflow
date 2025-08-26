@@ -6,6 +6,6 @@
  * functionality and SAFe-specific coordination.
  */
 
-export { DocumentationLinker } from './documentation-linker';
-export * from './documentation-manager';
-export type * from './documentation-linker';
+export type * from "./documentation-linker";
+export { DocumentationLinker } from "./documentation-linker";
+export * from "./documentation-manager";

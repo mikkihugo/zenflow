@@ -27,14 +27,7 @@ export class ExpressWebInterface
   implements WebInterface
 {
   private config: WebConfig;
-  private server: any = null;
   private app: any = null;
-  private startTime: number = 0;
-  private connections: number = 0;
-
-  constructor() {
-    super();
-  }
 
   async initialize(config: WebConfig): Promise<void> {
     this.config = config;
@@ -90,7 +83,7 @@ export class ExpressWebInterface
       throw new Error('Web interface not initialized');'
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((_resolve, _reject) => {
       this.server = this.app.listen(this.config.port, this.config.host, () => {
         this.startTime = Date.now();
         console.log(
@@ -162,17 +155,16 @@ export class ExpressWebInterface
 
   private setupDefaultRoutes(): void {
     // Health check endpoint
-    this.registerRoute('GET', '/health', (_req: any, res: any) => {'
-      res.json({
+    this.registerRoute('GET', '/health', (_req: any, _res: any) => {'
+      res.json(
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: this.getStatus().uptime,
-        version: '1.0.0',
-      });
+        version: '1.0.0',);
     });
 
     // Status endpoint
-    this.registerRoute('GET', '/status', (_req: any, res: any) => {'
+    this.registerRoute('GET', '/status', (_req: any, _res: any) => {'
       res.json(this.getStatus())();
     });
   }
@@ -180,12 +172,12 @@ export class ExpressWebInterface
   private async loadExpress() {
     try {
       return await import('express');'
-    } catch (error) {
+    } catch (_error) {
       // Fallback for when express is not available
       return {
         default: () => ({
           use: () => {},
-          listen: (port: number, host: string, callback: Function) => {
+          listen: (port: number, host: string, _callback: Function) => {
             console.log(`Fallback server listening on http://${host}:${port}`);`
             callback();
             return {

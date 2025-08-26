@@ -12,9 +12,8 @@ import { type Config, getLogger, type Logger } from '@claude-zen/foundation';
 import type { EventManager, EventManagerFactory } from '../core/interfaces;
 import { EventManagerTypes } from '../core/interfaces;
 import type { SystemEventAdapterConfig } from './system-event-adapter;
-import {
-  createDefaultSystemEventAdapterConfig,
-  type SystemEventAdapter,
+import type {
+  SystemEventAdapter,
 } from './system-event-adapter;
 
 /**
@@ -29,10 +28,9 @@ export class SystemEventManagerFactory
   implements EventManagerFactory<SystemEventAdapterConfig>
 {
   private logger: Logger;
-  private config: Config;
   private instances = new Map<string, SystemEventAdapter>();
 
-  constructor(logger?: Logger, config?: Config) {
+  constructor(logger?: Logger, _config?: Config) {
     this.logger = logger||getLogger('SystemEventManagerFactory');'
     this.config = config||(as any);
     this.logger.debug('SystemEventManagerFactory initialized');'
@@ -60,7 +58,7 @@ export class SystemEventManagerFactory
         `System event manager created successfully: $config?.name``
       );
       return adapter;
-    } catch (error) {
+    } catch (_error) {
       this.logger.error(
         `Failed to create system event manager ${config?.name}:`,`
         error
@@ -103,7 +101,7 @@ export class SystemEventManagerFactory
       );
     } else 
       this.logger.info(
-        `Successfully created ${managers.length} system event managers``
+        `Successfully created $managers.lengthsystem event managers``
       );
     }
 
@@ -205,12 +203,12 @@ export class SystemEventManagerFactory
   async getMetricsAll(): Promise<Map<string, any>> {
     const results = new Map<string, any>();
 
-    const metricsPromises = Array.from(this.instances.entries()).map(
+    const _metricsPromises = Array.from(this.instances.entries()).map(
       async ([name, manager]) => {
         try {
           const metrics = await manager.getMetrics();
           results?.set(name, metrics);
-        } catch (error) {
+        } catch (_error) {
           this.logger.warn(
             `Failed to get metrics for system event manager ${name}:`,`
             error
@@ -229,13 +227,13 @@ export class SystemEventManagerFactory
   async startAll(): Promise<void> {
     this.logger.info(`Starting ${this.instances.size} system event managers`);`
 
-    const startPromises = Array.from(this.instances.values()).map(
+    const _startPromises = Array.from(this.instances.values()).map(
       async (manager) => {
         try {
           if (!manager.isRunning()) {
             await manager.start();
           }
-        } catch (error) {
+        } catch (_error) {
           this.logger.error(
             `Failed to start system event manager ${manager.name}:`,`
             error
@@ -254,7 +252,7 @@ export class SystemEventManagerFactory
   async stopAll(): Promise<void> {
     this.logger.info(`Stopping ${this.instances.size} system event managers`);`
 
-    const stopPromises = Array.from(this.instances.values()).map(
+    const _stopPromises = Array.from(this.instances.values()).map(
       async (manager) => {
         try {
           if (manager.isRunning()) {

@@ -7,18 +7,14 @@
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
-
-import type {
-  ProviderDatabase,
-  RichModelInfo,
-  BaseModelInfo,
-  ModelQuery,
-  ModelComparison,
-  ProviderMetadata,
-} from '../types/enhanced-models';
-
 import { githubCopilotDB } from '../api/github-copilot-db';
 import { githubModelsDB } from '../api/github-models-db';
+import type {
+  ModelQuery,
+  ProviderDatabase,
+  ProviderMetadata,
+  RichModelInfo,
+} from '../types/enhanced-models';
 
 const logger = getLogger('ProviderDatabaseRegistry');'
 
@@ -149,7 +145,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
     const modelCount = database.getAllModels().length;
     
     this.emit('database:registered', { providerId, modelCount });'
-    logger.info(`📊 Registered ${providerId} database with ${modelCount} models`);`
+    logger.info(`📊 Registered $providerIddatabase with ${modelCount} models`);`
   }
 
   /**
@@ -176,7 +172,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
   getAllRichModels(): RichModelInfo[] {
     const allModels: RichModelInfo[] = [];
     
-    for (const [providerId, db] of this.databases) {
+    for (const [_providerId, db] of this.databases) {
       const models = db.getAllModels();
       for (const model of models) {
         allModels.push(db.toRichModelInfo(model));
@@ -227,7 +223,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
     }
     
     if (query.family) {
-      models = models.filter(m => m.family?.toLowerCase().includes(query.family!.toLowerCase()));
+      models = models.filter(m => m.family?.toLowerCase().includes(query.family?.toLowerCase()));
     }
     
     if (query.minContextWindow) {
@@ -252,7 +248,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
 
     // Apply sorting
     if (query.sortBy) {
-      models.sort((a, b) => {
+      models.sort((_a, b) => {
         let aVal: number;
         let bVal: number;
         
@@ -299,7 +295,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
    * Update all provider databases
    */
   async updateAllDatabases(): Promise<void> {
-    const updatePromises = Array.from(this.databases.entries()).map(
+    const _updatePromises = Array.from(this.databases.entries()).map(
       async ([providerId, db]) => {
         try {
           await db.updateModels();
@@ -307,7 +303,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
           const modelCount = db.getAllModels().length;
           
           this.emit('database:updated', { providerId, modelCount });'
-          logger.info(`🔄 Updated ${providerId} database (${modelCount} models)`);`
+          logger.info(`🔄 Updated $providerIddatabase (${modelCount} models)`);`
         } catch (error) {
           logger.error(`Failed to update ${providerId} database:`, error);`
         }

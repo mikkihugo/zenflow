@@ -5,11 +5,11 @@
  * Updates models hourly from GitHub Copilot API
  */
 
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
 
-import { Result, ok, err } from '@claude-zen/foundation';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { err, } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
 
 const logger = getLogger('GitHubCopilotDB');'
@@ -68,8 +68,6 @@ function loadCopilotToken(): string {
 
 class GitHubCopilotDatabase {
   private models: Map<string, GitHubCopilotModelMetadata> = new Map();
-  private lastUpdate: Date = new Date(0);
-  private updateInterval: NodeJS.Timeout | null = null;
   private token: string;
 
   constructor() {
@@ -187,7 +185,7 @@ class GitHubCopilotDatabase {
       logger.info(`✅ Updated ${this.models.size} GitHub Copilot Models`);`
       logger.info(`📊 Models by vendor: ${this.getVendorStats()}`);`
       logger.info(
-        `🎯 Primary models: ${this.getPrimaryModels()`
+        `🎯 Primary models: $this.getPrimaryModels()`
           .map((m) => m.id)
           .join(', ')}``
       );
@@ -279,9 +277,8 @@ class GitHubCopilotDatabase {
       stats.set(model.vendor, (stats.get(model.vendor)||0) + 1);
     }
     return Array.from(stats.entries())
-      .map(([vendor, count]) => `${vendor}:${count}`)`
+      .map(([vendor, count]) => `$vendor:$count`)`
       .join(', ');'
-  }
 
   /**
    * Get context window analysis
@@ -332,12 +329,11 @@ class GitHubCopilotDatabase {
   /**
    * Cleanup
    */
-  destroy(): void {
+  destroy(): void 
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
       this.updateInterval = null;
     }
-  }
 }
 
 // Singleton instance

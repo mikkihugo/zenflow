@@ -7,20 +7,13 @@
 import { getLogger } from '@claude-zen/foundation';
 
 import type {
-  IntelligenceSystemConfig,
-  IntelligenceSystem,
-  AgentId,
-  SwarmId,
-  TaskPrediction,
-  MultiHorizonTaskPrediction,
-  AgentLearningState,
   AgentHealth,
-  PerformanceOptimizationForecast,
-  KnowledgeTransferPrediction,
-  EmergentBehaviorPrediction,
-  AdaptiveLearningUpdate,
-  SystemHealthSummary,
-  ForecastHorizon,
+  AgentId,
+  AgentLearningState,
+  IntelligenceSystem,
+  IntelligenceSystemConfig,
+  MultiHorizonTaskPrediction,
+  TaskPrediction,
 } from './types';
 
 const logger = getLogger('agent-monitoring-intelligence-system');'
@@ -29,8 +22,6 @@ const logger = getLogger('agent-monitoring-intelligence-system');'
  * Complete Intelligence System - Main implementation
  */
 export class CompleteIntelligenceSystem implements IntelligenceSystem {
-  private config: IntelligenceSystemConfig;
-  private initialized: boolean = false;
 
   constructor(config: IntelligenceSystemConfig) {
     this.config = config;
@@ -96,7 +87,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     const shortDuration = 1000 * contextComplexity;
     const mediumDuration = 1500 * contextComplexity * contextVolatility;
     const longDuration =
-      2000 * contextComplexity * Math.pow(contextVolatility, 1.5);
+      2000 * contextComplexity * contextVolatility ** 1.5;
 
     logger.debug('Multi-horizon prediction with context', {'
       agentId: agentId.id,
@@ -137,7 +128,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     });
 
     // Create mock learning state based on agent characteristics
-    const learningState: AgentLearningState = {
+    const _learningState: AgentLearningState = {
       agentId: agentId.id,
       learningRate: agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster'
       adaptationStrategy:
@@ -145,21 +136,20 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
           ? 'exploration-focused''
           : 'exploitation-focused',
       performanceHistory: [], // Would be populated from historical data
-      knowledgeBase: {
+      knowledgeBase: 
         domains:
           agentId.type === 'researcher''
             ? ['research', 'analysis']'
             : ['coordination', 'execution'],
         expertise: agentId.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
-        lastUpdated: Date.now(),
-      },
+        lastUpdated: Date.now(),,
       adaptabilityScore: Math.min(0.9, 0.5 + agentId.instance * 0.1), // More experienced agents adapt better
-      currentFocus: `${agentId.type}-optimization`,`
+      currentFocus: `$agentId.type-optimization`,`
       lastLearningUpdate: Date.now(),
     };
 
     logger.debug('Agent learning state retrieved', {'
-      agentId: agentId.id,
+      agentId.id,
       learningRate: learningState.learningRate,
       adaptationStrategy: learningState.adaptationStrategy,
       adaptabilityScore: learningState.adaptabilityScore,
@@ -245,7 +235,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
             ? 'critical''
             : 'offline;
 
-    const agentHealth: AgentHealth = {
+    const _agentHealth: AgentHealth = {
       agentId: agentId.id,
       status,
       overallScore: overallHealth,
@@ -375,7 +365,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
         type: 'coder',
         instance: 1,
       },
-      knowledge: `patterns-${patternCount}-items`,`
+      knowledge: `patterns-$patternCount-items`,`
       transferProbability: adjustedProbability,
       expectedBenefit: adjustedBenefit,
     };

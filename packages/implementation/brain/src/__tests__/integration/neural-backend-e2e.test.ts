@@ -5,22 +5,22 @@
  */
 
 import {
-  describe,
-  it,
-  expect,
-  beforeAll,
   afterAll,
+  beforeAll,
   beforeEach,
+  describe,
+  expect,
+  it,
   vi,
 } from 'vitest';
-import { BrainCoordinator } from '../../brain-coordinator';
 import type { BrainConfig } from '../../brain-coordinator';
+import { BrainCoordinator } from '../../brain-coordinator';
 
 // Mock transformers with realistic behavior
 vi.mock('@xenova/transformers', () => {'
   const mockPipeline = vi
     .fn()
-    .mockImplementation(async (task: string, model: string) => {
+    .mockImplementation(async (_task: string, _model: string) => {
       // Simulate model loading time
       await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -156,7 +156,7 @@ describe('Neural Backend E2E Tests', () => {'
         )
       );
 
-      codeResults.forEach((result, index) => {
+      codeResults.forEach((result, _index) => {
         expect(result.success).toBe(true);
         expect(result.metadata.context).toBe('code-analysis');'
         expect(result.metadata.priority).toBe('high');'
@@ -352,7 +352,7 @@ describe('Neural Backend E2E Tests', () => {'
 
   describe('Quality Assurance Scenarios', () => {'
     it('should maintain embedding quality across different text types', async () => {'
-      const testCases = [
+      const _testCases = [
         { text: 'Short text', type: 'short' },
         {
           text: 'This is a medium-length text that contains several words and should generate a meaningful embedding vector for semantic analysis purposes.',
@@ -377,7 +377,7 @@ describe('Neural Backend E2E Tests', () => {'
         )
       );
 
-      results.forEach((result, index) => {
+      results.forEach((result, _index) => {
         expect(result.success).toBe(true);
         expect(result.embedding).toBeDefined();
         expect(result.embedding.length).toBe(384);

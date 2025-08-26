@@ -188,7 +188,7 @@ router.post(
  */
 router.get(
 	"/status",
-	handleErrors(async (req: express.Request, res: express.Response) => {
+	handleErrors(async (_req: express.Request, res: express.Response) => {
 		logger.debug("API: Getting swarm status");
 		const result = await swarmService.getSwarmStatus();
 		res.json({
@@ -226,7 +226,7 @@ router.get(
  */
 router.get(
 	"/tasks",
-	handleErrors(async (req: express.Request, res: express.Response) => {
+	handleErrors(async (_req: express.Request, res: express.Response) => {
 		logger.debug("API: Getting task status");
 		const result = await swarmService.getTaskStatus();
 		res.json({
@@ -263,7 +263,7 @@ router.get(
  */
 router.get(
 	"/stats",
-	handleErrors(async (req: express.Request, res: express.Response) => {
+	handleErrors(async (_req: express.Request, res: express.Response) => {
 		logger.debug("API: Getting service stats");
 		const result = await swarmService.getStats();
 		res.json({
@@ -283,7 +283,7 @@ router.get(
  */
 router.post(
 	"/shutdown",
-	handleErrors(async (req: express.Request, res: express.Response) => {
+	handleErrors(async (_req: express.Request, res: express.Response) => {
 		logger.warn("API: Shutdown requested");
 		// In production, this would require admin authentication
 		await swarmService.shutdown();

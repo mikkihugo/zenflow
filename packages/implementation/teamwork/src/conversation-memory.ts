@@ -6,8 +6,8 @@
 
 import type {
   ConversationMemory,
-  ConversationSession,
   ConversationQuery,
+  ConversationSession,
 } from './types';
 
 /**
@@ -67,7 +67,7 @@ export class InMemoryConversationMemory implements ConversationMemory {
 
   async updateConversation(
     id: string,
-    updates: Partial<ConversationSession>
+    _updates: Partial<ConversationSession>
   ): Promise<void> {
     const existing = this.conversations.get(id);
     if (!existing) {

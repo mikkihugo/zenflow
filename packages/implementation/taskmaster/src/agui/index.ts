@@ -5,4 +5,4 @@
  */
 
 // Re-export everything from main module
-export * from './main.js';
+export * from "./main.js";

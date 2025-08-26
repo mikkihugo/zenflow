@@ -11,9 +11,9 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { RepositoryMetrics, AnalysisResult } from './types/index.js';
+import type { RepositoryMetrics } from './types/index.js';
 
-const logger = getLogger('EnhancedGitHubAnalysis');'
+const _logger = getLogger('EnhancedGitHubAnalysis');'
 
 /**
  * Enhanced repository analysis result with DeepCode capabilities
@@ -88,10 +88,9 @@ export interface RelevanceScoring {
  * Enhanced GitHub Repository Analyzer
  * Integrates DeepCode's repository intelligence capabilities'
  */
-export class EnhancedGitHubAnalyzer {
-  private logger = getLogger('EnhancedGitHubAnalyzer');'
+export class EnhancedGitHubAnalyzer {'
   
-  constructor(private githubToken?: string) {
+  constructor() {
     if (githubToken) {
       this.logger.info('GitHub token provided - enhanced API access enabled');'
     } else {
@@ -111,14 +110,12 @@ export class EnhancedGitHubAnalyzer {
       relevanceScore: RelevanceScoring;
       preliminaryMetrics: Partial<EnhancedRepositoryAnalysis>;
     }>;
-    discoveryMetrics: {
       totalSearched: number;
       relevantFound: number;
       averageRelevance: number;
-      searchTime: number;
-    };
+      searchTime: number;;
   }> {
-    const startTime = performance.now();
+    const _startTime = performance.now();
     this.logger.info(`Starting repository discovery for query: "${options.query}"`);`
 
     try {
@@ -155,7 +152,7 @@ export class EnhancedGitHubAnalyzer {
         searchTime: endTime - startTime
       };
 
-      this.logger.info(`Repository discovery completed: ${sortedRepos.length} relevant repos found`);`
+      this.logger.info(`Repository discovery completed: $sortedRepos.lengthrelevant repos found`);`
       return { repositories: sortedRepos, discoveryMetrics };
 
     } catch (error) {
@@ -169,7 +166,7 @@ export class EnhancedGitHubAnalyzer {
    * Implements DeepCode's deep repository intelligence'
    */
   async analyzeRepository(repositoryUrl: string): Promise<EnhancedRepositoryAnalysis> {
-    this.logger.info(`Starting comprehensive analysis of repository: ${repositoryUrl}`);`
+    this.logger.info(`Starting comprehensive analysis of repository: $repositoryUrl`);`
     const startTime = performance.now();
 
     try {
@@ -192,7 +189,7 @@ export class EnhancedGitHubAnalyzer {
       ]);
 
       // Synthesize comprehensive analysis
-      const analysis: EnhancedRepositoryAnalysis = {
+      const _analysis: EnhancedRepositoryAnalysis = {
         // Base metrics (from existing RepositoryMetrics)
         totalFiles: codeAnalysis.fileCount,
         totalLines: codeAnalysis.lineCount,
@@ -252,7 +249,7 @@ export class EnhancedGitHubAnalyzer {
 
     } catch (error) {
       this.logger.error('Repository analysis failed:', error);'
-      throw new Error(`GitHub repository analysis failed: ${error}`);`
+      throw new Error(`GitHub repository _analysis failed: $error`);`
     }
   }
 
@@ -314,7 +311,7 @@ export class EnhancedGitHubAnalyzer {
         .sort((a, b) => b.similarityScore - a.similarityScore)
         .slice(0, options.maxResults || 10);
 
-      this.logger.info(`Found ${validResults.length} similar repositories`);`
+      this.logger.info(`Found $validResults.lengthsimilar repositories`);`
       return validResults;
 
     } catch (error) {
@@ -363,8 +360,8 @@ export class EnhancedGitHubAnalyzer {
   }
 
   private parseGitHubUrl(url: string): { owner: string; repo: string } {
-    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-    if (!match) throw new Error(`Invalid GitHub URL: ${url}`);`
+    const match = url.match(/github.com/([^/]+)/([^/]+)/);
+    if (!match) throw new Error(`Invalid GitHub URL: $url`);`
     return { owner: match[1], repo: match[2] };
   }
 

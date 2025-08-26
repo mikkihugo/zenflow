@@ -1,14 +1,11 @@
+import * as fs from "node:fs"
+import * as path from "node:path"
 import { z } from "@claude-zen/foundation"
-import * as fs from "fs"
-import * as path from "path"
-import { Tool } from "./tool"
-import { LSP } from "../lsp"
-import { FileTime } from "../file/time"
 import DESCRIPTION from "./read.txt"
-import { App } from "../app/app"
+import { Tool } from "./tool"
 
 const DEFAULT_READ_LIMIT = 2000
-const MAX_LINE_LENGTH = 2000
+const _MAX_LINE_LENGTH = 2000
 
 export const ReadTool = Tool.define({
   id: "read",
@@ -18,7 +15,7 @@ export const ReadTool = Tool.define({
     offset: z.number().describe("The line number to start reading from (0-based)").optional(),
     limit: z.number().describe("The number of lines to read (defaults to 2000)").optional(),
   }),
-  async execute(params, ctx) {
+  async execute(params, _ctx) {
     let filePath = params.filePath
     if (!path.isAbsolute(filePath)) {
       filePath = path.join(process.cwd(), filePath)
@@ -42,10 +39,10 @@ export const ReadTool = Tool.define({
         throw new Error(`File not found: ${filePath}\n\nDid you mean one of these?\n${suggestions.join("\n")}`)`
       }
 
-      throw new Error(`File not found: ${filePath}`)`
+      throw new Error(`File not found: $filePath`)`
     }
 
-    const limit = params.limit ?? DEFAULT_READ_LIMIT
+    const _limit = params.limit ?? DEFAULT_READ_LIMIT
     const offset = params.offset || 0
     const isImage = isImageFile(filePath)
     if (isImage) throw new Error(`This is an image file of type: ${isImage}\nUse a different tool to process images`)`
@@ -54,15 +51,15 @@ export const ReadTool = Tool.define({
       return line.length > MAX_LINE_LENGTH ? line.substring(0, MAX_LINE_LENGTH) + "..." : line
     })
     const content = raw.map((line, index) => {
-      return `${(index + offset + 1).toString().padStart(5, "0")}| ${line}``
+      return `$(index + offset + 1).toString().padStart(5, "0")| $line``
     })
-    const preview = raw.slice(0, 20).join("\n")
+    const _preview = raw.slice(0, 20).join("\n")
 
-    let output = "<file>\n"
-    output += content.join("\n")
+    let _output = "<file>\n"
+    _output += content.join("\n")
 
     if (lines.length > offset + content.length) {
-      output += `\n\n(File has more lines. Use 'offset' parameter to read beyond line ${offset + content.length})``
+      _output += `\n\n(File has more lines. Use 'offset' parameter to read beyond line ${offset + content.length})``
     }
     output += "\n</file>"
 

@@ -8,32 +8,32 @@
 // CORE TYPES (WORKING)
 // ===================================================================
 
-// Core memory types from types.ts
-export type {
-  MemoryStore,
-  MemoryStats,
-  StoreOptions,
-  MemoryConfig,
-  SessionState,
-  SessionMemoryStoreOptions,
-  CacheEntry,
-  MemoryBackendType,
-  MemoryError,
-  MemoryConnectionError,
-  MemoryStorageError,
-  MemoryCapacityError,
-} from './types';
 
 // Core system types
-export type { JSONValue, BackendInterface } from './core/memory-system';
+export type { BackendInterface, JSONValue } from './core/memory-system';
+// Core memory types from types.ts
+export type {
+  CacheEntry,
+  MemoryBackendType,
+  MemoryCapacityError,
+  MemoryConfig,
+  MemoryConnectionError,
+  MemoryError,
+  MemoryStats,
+  MemoryStorageError,
+  MemoryStore,
+  SessionMemoryStoreOptions,
+  SessionState,
+  StoreOptions,
+} from './types';
 
 // ===================================================================
 // BACKEND SYSTEM (WORKING)
 // ===================================================================
 
+export type { BackendCapabilities, MemoryEntry } from './backends/base-backend';
 // Base backend and capabilities
 export { BaseMemoryBackend } from './backends/base-backend';
-export type { BackendCapabilities, MemoryEntry } from './backends/base-backend';
 
 // Backend factory - excluded from compilation for now
 // export { MemoryBackendFactory, memoryBackendFactory } from './backends/factory';
@@ -43,10 +43,8 @@ export type { BackendCapabilities, MemoryEntry } from './backends/base-backend';
 // ===================================================================
 
 // Main memory classes - only export if working
-export { MemoryManager, SessionMemoryStore } from './memory';
-
 // Alias for compatibility
-export { MemoryManager as MemorySystem } from './memory';
+export { MemoryManager, MemoryManager as MemorySystem, SessionMemoryStore } from './memory';
 
 // ===================================================================
 // SIMPLE FACTORY
@@ -144,7 +142,7 @@ export async function getSessionMemory(
   config?: MemoryConfig
 ): Promise<any> {
   const system = await getMemorySystemAccess(config);
-  const sessionStore = await system.createStore(`session:${sessionId}`);`
+  const _sessionStore = await system.createStore(`session:${sessionId}`);`
   return {
     save: (key: string, value: any) => sessionStore.store(key, value),
     load: (key: string) => sessionStore.retrieve(key),
@@ -168,7 +166,7 @@ export async function getMemoryCoordination(
         case 'removeStore':'
           return system.removeStore(args[0]);
         default:
-          throw new Error(`Unknown operation: ${operation}`);`
+          throw new Error(`Unknown operation: $operation`);`
       }
     },
     monitor: () => system.getGlobalStats(),

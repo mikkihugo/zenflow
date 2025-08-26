@@ -6,6 +6,6 @@
  * management and SAFe-specific coordination.
  */
 
-export * from './interface-manager';
-export * from './interface-mode-detector';
-export * from './interface-launcher';
+export * from "./interface-launcher";
+export * from "./interface-manager";
+export * from "./interface-mode-detector";

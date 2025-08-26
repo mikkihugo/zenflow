@@ -12,17 +12,12 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addWeeks, addDays, startOfWeek } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
-  orderBy,
-  sumBy,
-  meanBy,
-  maxBy,
-  minBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -506,7 +501,7 @@ export class SolutionPlanningService {
     });
 
     const startTime = Date.now();
-    const resultId = `planning-${generateNanoId(12)}`;`
+    const resultId = `planning-$generateNanoId(12)`;`
 
     try {
       // Execute planning activities
@@ -610,7 +605,7 @@ export class SolutionPlanningService {
   ): Promise<PlanningRisk> {
     const risk = this.risks.get(riskId);
     if (!risk) {
-      throw new Error(`Risk not found: ${riskId}`);`
+      throw new Error(`Risk not found: $riskId`);`
     }
 
     const updatedRisk: PlanningRisk = {
@@ -633,7 +628,7 @@ export class SolutionPlanningService {
   /**
    * Private helper methods
    */
-  private validatePlanningConfig(config: SolutionPlanningConfig): void {
+  private validatePlanningConfig(config: SolutionPlanningConfig): void 
     if (!config.planningId || config.planningId.trim() ==='') {'
       throw new Error('Planning ID is required');'
     }
@@ -643,16 +638,13 @@ export class SolutionPlanningService {
         'At least two ARTs must participate in solution planning''
       );
     }
-  }
 
   private async initializeStakeholderCommunication(
     stakeholders: SolutionStakeholder[]
-  ): Promise<void> {
+  ): Promise<void> 
     this.logger.info('Initializing stakeholder communication', {'
       stakeholderCount: stakeholders.length,
     });
-    // Implementation would set up communication channels
-  }
 
   private async executePlanningActivities(
     config: SolutionPlanningConfig,
@@ -680,14 +672,13 @@ export class SolutionPlanningService {
   private isEventRelevant(
     event: CoordinationEvent,
     planningType: PlanningType
-  ): boolean {
+  ): boolean 
     if (planningType === PlanningType.PI_PLANNING) {
       return (
         event.eventType === EventType.PI_PLANNING || event.eventType === EventType.SOLUTION_SYNC
       );
     }
     return true;
-  }
 
   private async collectCommitments(
     arts: PlanningART[]
@@ -845,32 +836,26 @@ export class SolutionPlanningService {
   /**
    * Getter methods
    */
-  getPlanningResult(resultId: string): SolutionPlanningResult | undefined {
+  getPlanningResult(resultId: string): SolutionPlanningResult | undefined 
     return this.planningResults.get(resultId);
-  }
 
-  getCommitment(commitmentId: string): SolutionCommitment | undefined {
+  getCommitment(commitmentId: string): SolutionCommitment | undefined 
     return this.commitments.get(commitmentId);
-  }
 
-  getRisk(riskId: string): PlanningRisk | undefined {
+  getRisk(riskId: string): PlanningRisk | undefined 
     return this.risks.get(riskId);
-  }
 
-  getAllCommitments(): SolutionCommitment[] {
+  getAllCommitments(): SolutionCommitment[] 
     return Array.from(this.commitments.values())();
-  }
 
-  getAllRisks(): PlanningRisk[] {
+  getAllRisks(): PlanningRisk[] 
     return Array.from(this.risks.values())();
-  }
 
-  getOpenRisks(): PlanningRisk[] {
+  getOpenRisks(): PlanningRisk[] 
     return filter(
       Array.from(this.risks.values()),
       (risk) => risk.status === RiskStatus.OPEN
     );
-  }
 }
 
 /**

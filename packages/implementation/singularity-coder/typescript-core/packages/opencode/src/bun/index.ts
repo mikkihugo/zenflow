@@ -1,9 +1,6 @@
-import { z } from "@claude-zen/foundation"
-import { Global } from "../global"
-import { Log } from "../util/log"
-import path from "path"
-import { NamedError } from "../util/error"
+
 import { readableStreamToText } from "bun"
+import { Log } from "../util/log"
 
 export namespace BunProc {
   const log = Log.create({ service: "bun" })

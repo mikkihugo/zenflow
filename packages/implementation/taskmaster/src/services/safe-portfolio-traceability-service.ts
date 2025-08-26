@@ -45,20 +45,6 @@
  * Strategic Theme → AI Analysis → Epic Generation → Human Review → Portfolio Entry → ART Planning → Team Implementation → Value Delivery
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
-import { getBrainSystem } from '@claude-zen/intelligence';
-import { CompleteSafeFlowIntegration } from '../integrations/complete-safe-flow-integration.js';
-import { SOC2AuditService } from './soc2-audit-service.js';
-import { LLMApprovalService } from './llm-approval-service.js';
-import { PromptManagementService } from './prompt-management-service.js';
-import { TaskApprovalSystem } from '../agui/task-approval-system.js';
-import { generateUUID } from '@claude-zen/foundation';
-import type {
-  ApprovalGateId,
-  TaskId,
-  UserId
-} from '../types/index.js';
 
 // ============================================================================
 // EPIC GENERATION TRACEABILITY TYPES

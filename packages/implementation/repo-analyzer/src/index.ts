@@ -11,37 +11,32 @@
  * - Multiple export formats (JSON, YAML, CSV, HTML, Markdown, PDF, GraphML, DOT)
  */
 
-// Main analyzer
-export { RepositoryAnalyzer } from './repository-analyzer.js';
 
 // Individual analyzers
 export { ComplexityAnalyzer } from './analyzers/complexity-analyzer.js';
 export { DependencyAnalyzer } from './analyzers/dependency-analyzer.js';
-export { WorkspaceAnalyzer } from './analyzers/workspace-analyzer.js';
 export { GitAnalyzer } from './analyzers/git-analyzer.js';
+export { WorkspaceAnalyzer } from './analyzers/workspace-analyzer.js';
 export { DomainAnalyzer } from './domain/domain-analyzer.js';
-
 // Engines
 export { RecommendationEngine } from './recommendations/recommendation-engine.js';
 export { ReportGenerator } from './reporting/report-generator.js';
-
+// Main analyzer
+export { RepositoryAnalyzer, RepositoryAnalyzer } from './repository-analyzer.js';
 // Types
 export type * from './types/index.js';
-
 // Re-export specific interfaces for convenience
 export type {
-  RepositoryMetrics,
   AnalysisOptions,
-  AnalysisResult,
   AnalysisRecommendation,
-  Domain,
+  AnalysisResult,
   ComplexityMetrics,
   DependencyMetrics,
-  GitMetrics,
+  Domain,
   ExportFormat,
+  GitMetrics,
+  RepositoryMetrics,
 } from './types/index.js';
-
-export { RepositoryAnalyzer } from './repository-analyzer.js';
 
 /**
  * Quick analysis function for simple use cases
@@ -100,13 +95,12 @@ export const DEFAULT_ANALYSIS_OPTIONS: import('./types/index.js').AnalysisOption
     enableDependencyAnalysis: true,
     enableDomainAnalysis: true,
     performanceMode: 'balanced',
-    complexityThresholds: {
+    complexityThresholds: 
       cyclomaticComplexity: 10,
       maintainabilityIndex: 20,
       linesOfCode: 300,
       parameters: 7,
-      nestingDepth: 4,
-    },
+      nestingDepth: 4,,
   };
 
 // Export default analyzer class

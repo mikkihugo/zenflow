@@ -9,7 +9,7 @@ import { getLogger } from '@claude-zen/foundation/logging';
 import type { JsonObject } from '@claude-zen/foundation/types';
 
 import type { ClaudeMessage } from './types';
-import { sanitizeString, truncateForLogging, generateSessionId } from './utils';
+import { truncateForLogging } from './utils';
 
 const logger = getLogger('claude-message-processor');'
 
@@ -21,7 +21,7 @@ const logger = getLogger('claude-message-processor');'
  * Process Claude message from raw SDK output
  */
 export function processClaudeMessage(
-  message: unknown,
+  _message: unknown,
   messageCount: number
 ): ClaudeMessage {
   logger.debug(`Processing message ${messageCount}`);`
@@ -55,7 +55,7 @@ export function processClaudeMessage(
       },
     } as ClaudeMessage;
 
-    logger.debug(`Processed ${type} message: ${truncateForLogging(content)}`);`
+    logger.debug(`Processed $typemessage: $truncateForLogging(content)`);`
     return processedMessage;
   } catch (error) {
     logger.error(`Error processing message ${messageCount}:`, error);`
@@ -63,13 +63,12 @@ export function processClaudeMessage(
     // Return error message as fallback
     return {
       type: 'system',
-      content: `Error processing message: ${error instanceof Error ? error.message : 'Unknown error'}`,`
+      content: `Error processing message: $error instanceof Error ? error.message : 'Unknown error'`,`
       timestamp: Date.now(),
-      metadata: {
+      metadata: 
         level: 'error',
         source: 'message-processor',
-        messageId: generateSessionId(),
-      },
+        messageId: generateSessionId(),,
     };
   }
 }
@@ -81,28 +80,28 @@ export function processClaudeMessage(
 /**
  * Extract message type and content from raw message
  */
-function extractMessageTypeAndContent(msg: Record<string, unknown>): {
+function _extractMessageTypeAndContent(msg: Record<string, unknown>): {
   type: string;
   content: string;
 } {
   // Check for explicit type field
-  if (msg['type'] && typeof msg['type'] === 'string') {'
+  if (msg.type && typeof msg.type === 'string') {'
     return {
-      type: msg['type'],
+      type: msg.type,
       content: extractContent(msg),
     };
   }
 
   // Infer type from content structure
-  if (msg['role']) {'
+  if (msg.role) {'
     return {
-      type: String(msg['role']),
+      type: String(msg.role),
       content: extractContent(msg),
     };
   }
 
   // Check for result indicators
-  if (msg['success'] !== undefined||msg['exitCode'] !== undefined) {'
+  if (msg.success !== undefined||msg.exitCode !== undefined) {'
     return {
       type: 'result',
       content: extractContent(msg),
@@ -110,7 +109,7 @@ function extractMessageTypeAndContent(msg: Record<string, unknown>): {
   }
 
   // Check for system message indicators
-  if (msg['level']||msg['source'] === 'system') {'
+  if (msg.level||msg.source === 'system') {'
     return {
       type: 'system',
       content: extractContent(msg),
@@ -129,38 +128,37 @@ function extractMessageTypeAndContent(msg: Record<string, unknown>): {
  */
 function extractContent(msg: Record<string, unknown>): string {
   // Direct content field
-  if (msg['content'] && typeof msg['content'] === 'string') {'
-    return msg['content'];'
+  if (msg.content && typeof msg.content === 'string') {'
+    return msg.content;'
   }
 
   // Message field
-  if (msg['message'] && typeof msg['message'] === 'string') {'
-    return msg['message'];'
+  if (msg.message && typeof msg.message === 'string') {'
+    return msg.message;'
   }
 
   // Text field
-  if (msg['text'] && typeof msg['text'] === 'string') {'
-    return msg['text'];'
+  if (msg.text && typeof msg.text === 'string') {'
+    return msg.text;'
   }
 
   // Array of content parts (for complex messages)
-  if (Array.isArray(msg['content'])) {'
-    return msg['content']'
-      .map((part) => {
+  if (Array.isArray(msg.content)) {'
+    return msg.content'
+      .map((part) => 
         if (typeof part === 'string') {'
           return part;
         }
         if (part && typeof part === 'object' && 'text' in part) {'
-          return String((part as JsonObject)['text']);'
+          return String((part as JsonObject).text);'
         }
-        return String(part);
-      })
+        return String(part);)
       .join(' ');'
   }
 
   // Fallback to string representation
   return String(
-    msg['content']||msg['message']||msg['text']||'Empty message''
+    msg.content||msg.message||msg.text||'Empty message''
   );
 }
 
@@ -171,7 +169,7 @@ function extractContent(msg: Record<string, unknown>): string {
 /**
  * Extract type-specific metadata from raw message
  */
-function extractMessageMetadata(
+function _extractMessageMetadata(
   msg: Record<string, unknown>,
   type: string
 ): Record<string, unknown> {

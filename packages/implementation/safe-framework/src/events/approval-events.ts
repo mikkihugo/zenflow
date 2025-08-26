@@ -12,7 +12,6 @@
  */
 
 import { generateNanoId } from '@claude-zen/foundation';
-import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
 
 /**
  * Approval request event data

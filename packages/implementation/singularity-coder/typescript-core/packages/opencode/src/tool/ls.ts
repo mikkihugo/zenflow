@@ -1,8 +1,8 @@
+import * as path from "node:path"
 import { z } from "@claude-zen/foundation"
-import { Tool } from "./tool"
 import { App } from "../app/app"
-import * as path from "path"
 import DESCRIPTION from "./ls.txt"
+import { Tool } from "./tool"
 
 export const IGNORE_PATTERNS = [
   "node_modules/",
@@ -70,7 +70,7 @@ export const ListTool = Tool.define({
 
       // Add file to its directory
       if (!filesByDir.has(dir)) filesByDir.set(dir, [])
-      filesByDir.get(dir)!.push(path.basename(file))
+      filesByDir.get(dir)?.push(path.basename(file))
     }
 
     function renderDir(dirPath: string, depth: number): string {
@@ -94,13 +94,13 @@ export const ListTool = Tool.define({
       // Render files
       const files = filesByDir.get(dirPath) || []
       for (const file of files.sort()) {
-        output += `${childIndent}${file}\n``
+        output += `$childIndent$file\n``
       }
 
       return output
     }
 
-    const output = `${searchPath}/\n` + renderDir(".", 0)`
+    const _output = `${searchPath}/\n${renderDir(".", 0)`
 
     return {
       title: path.relative(app.path.root, searchPath),
@@ -112,3 +112,4 @@ export const ListTool = Tool.define({
     }
   },
 })
+}`

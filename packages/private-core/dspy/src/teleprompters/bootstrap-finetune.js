@@ -8,53 +8,54 @@
  * @author Claude Code Zen Team
  * @see {@link https://github.com/stanfordnlp/dspy/blob/main/dspy/teleprompt/bootstrap_finetune.py} Original Implementation
  */
-import { Teleprompter } from './teleprompter.js';
-import { ChatAdapter } from '../adapters/chat-adapter';
+
+import { ChatAdapter } from "../adapters/chat-adapter";
+import { Teleprompter } from "./teleprompter.js";
 /**
  * Failed prediction class for error handling
  */
 export class FailedPrediction {
-  completion_text;
-  format_reward;
-  constructor(completion_text, format_reward) {
-    this.completion_text = completion_text;
-    this.format_reward = format_reward;
-  }
+	completion_text;
+	format_reward;
+	constructor(completion_text, format_reward) {
+		this.completion_text = completion_text;
+		this.format_reward = format_reward;
+	}
 }
 /**
  * Abstract base class for fine-tuning teleprompters
  * Exact port of Stanford DSPy's FinetuneTeleprompter
  */
 export class FinetuneTeleprompter extends Teleprompter {
-  trainKwargs;
-  constructor(train_kwargs) {
-    super();
-    this.trainKwargs = this.convertToLMDict(train_kwargs || {});
-  }
-  /**
-   * Convert train_kwargs to LM-specific dictionary
-   * Exact port of Stanford DSPy's convert_to_lm_dict
-   */
-  static convertToLMDict(arg) {
-    const nonEmptyDict = arg && typeof arg === 'object';
-    if (nonEmptyDict && arg instanceof Map) {
-      // Check if all keys are LM instances
-      for (const key of arg.keys()) {
-        if (!this.isLMInterface(key)) {
-          break;
-        }
-      }
-      return arg;
-    }
-    // Default to using the same value for all LMs
-    return new Map([[null, arg]]);
-  }
-  static isLMInterface(obj) {
-    return obj && typeof obj === 'object' && 'generate' in obj;
-  }
-  convertToLMDict(arg) {
-    return FinetuneTeleprompter.convertToLMDict(arg);
-  }
+	trainKwargs;
+	constructor(train_kwargs) {
+		super();
+		this.trainKwargs = this.convertToLMDict(train_kwargs || {});
+	}
+	/**
+	 * Convert train_kwargs to LM-specific dictionary
+	 * Exact port of Stanford DSPy's convert_to_lm_dict
+	 */
+	static convertToLMDict(arg) {
+		const nonEmptyDict = arg && typeof arg === "object";
+		if (nonEmptyDict && arg instanceof Map) {
+			// Check if all keys are LM instances
+			for (const key of arg.keys()) {
+				if (!FinetuneTeleprompter.isLMInterface(key)) {
+					break;
+				}
+			}
+			return arg;
+		}
+		// Default to using the same value for all LMs
+		return new Map([[null, arg]]);
+	}
+	static isLMInterface(obj) {
+		return obj && typeof obj === "object" && "generate" in obj;
+	}
+	convertToLMDict(arg) {
+		return FinetuneTeleprompter.convertToLMDict(arg);
+	}
 }
 /**
  * BootstrapFinetune Teleprompter
@@ -210,293 +211,293 @@ export class FinetuneTeleprompter extends Teleprompter {
  * ```
  */
 export class BootstrapFinetune extends FinetuneTeleprompter {
-  config;
-  adapterMap;
-  /**
-   * Initialize BootstrapFinetune teleprompter
-   * Exact API match with Stanford DSPy constructor
-   */
-  constructor(config = {}) {
-    super(config.train_kwargs);
-    this.config = {
-      metric: config.metric || null,
-      multitask: config.multitask ?? true,
-      train_kwargs: config.train_kwargs || null,
-      adapter: config.adapter || null,
-      exclude_demos: config.exclude_demos ?? false,
-      num_threads: config.num_threads || null,
-    };
-    this.adapterMap = this.convertToLMDict(config.adapter);
-  }
-  /**
-   * Compile student program with fine-tuning
-   * Exact API match with Stanford DSPy compile method
-   */
-  async compile(student, config) {
-    const { trainset, teacher } = config;
-    console.log('Preparing the student and teacher programs...');
-    this.allPredictorsHaveLMs(student);
-    console.log('Bootstrapping data...');
-    let traceData = [];
-    const teachers = Array.isArray(teacher) ? teacher : [teacher];
-    const preparedTeachers = teachers.map((t) =>
-      this.prepareTeacher(student, t)
-    );
-    const numThreads = this.config.num_threads || 1;
-    for (const t of preparedTeachers) {
-      if (t) {
-        const teacherTraceData = await this.bootstrapTraceData(
-          t,
-          trainset,
-          this.config.metric,
-          numThreads
-        );
-        traceData = traceData.concat(teacherTraceData);
-      }
-    }
-    console.log('Preparing the train data...');
-    const keyToData = new Map();
-    for (let predInd = 0; predInd < student.predictors().length; predInd++) {
-      const pred = student.predictors()[predInd];
-      const dataPredInd = this.config.multitask ? null : predInd;
-      if (!pred.lm) {
-        throw new Error(
-          `Predictor ${predInd} does not have an LM assigned. ` +
-            `Please ensure the module's predictors have their LM set before fine-tuning. ` +
-            `You can set it using: your_module.set_lm(your_lm)`
-        );
-      }
-      const trainingKey = `${pred.lm.model || 'default'}_${dataPredInd}`;
-      if (!keyToData.has(trainingKey)) {
-        const { trainData, dataFormat } = await this.prepareFinetuneData(
-          traceData,
-          pred.lm,
-          dataPredInd
-        );
-        console.log(
-          `Using ${trainData.length} data points for fine-tuning the model: ${pred.lm.model || 'unknown'}`
-        );
-        const finetuneKwargs = {
-          lm: pred.lm,
-          train_data: trainData,
-          train_data_format: dataFormat,
-          train_kwargs: this.trainKwargs.get(pred.lm) || {},
-        };
-        keyToData.set(trainingKey, finetuneKwargs);
-      }
-    }
-    console.log('Starting LM fine-tuning...');
-    if (keyToData.size > numThreads) {
-      throw new Error(
-        `BootstrapFinetune requires \`num_threads\` to be bigger than or equal to the number of fine-tuning ` +
-          `jobs. There are ${keyToData.size} fine-tuning jobs to start, but the number of threads is: ` +
-          `${numThreads}!`
-      );
-    }
-    console.log(`${keyToData.size} fine-tuning job(s) to start`);
-    const keyToLM = await this.finetuneLMs(keyToData);
-    console.log('Updating the student program with the fine-tuned LMs...');
-    for (let predInd = 0; predInd < student.predictors().length; predInd++) {
-      const pred = student.predictors()[predInd];
-      const dataPredInd = this.config.multitask ? null : predInd;
-      const trainingKey = `${pred.lm.model || 'default'}_${dataPredInd}`;
-      const finetunedLM = keyToLM.get(trainingKey);
-      if (finetunedLM instanceof Error) {
-        throw new Error(`Finetuned LM for predictor ${predInd} failed.`);
-      }
-      if (finetunedLM) {
-        pred.lm = finetunedLM;
-      }
-      // Update demos based on exclude_demos setting
-      pred.demos = this.config.exclude_demos ? [] : pred.demos;
-    }
-    console.log('BootstrapFinetune has finished compiling the student program');
-    student._compiled = true;
-    return student;
-  }
-  /**
-   * Fine-tune language models
-   * Exact port of Stanford DSPy's finetune_lms static method
-   */
-  async finetuneLMs(finetuneDict) {
-    const numJobs = finetuneDict.size;
-    console.log(`Starting ${numJobs} fine-tuning job(s)...`);
-    const keyToJob = new Map();
-    // Start all fine-tuning jobs
-    for (const [key, finetuneKwargs] of finetuneDict) {
-      const lm = finetuneKwargs.lm;
-      console.log(
-        'Calling lm.kill() on the LM to be fine-tuned to free up resources.'
-      );
-      if (typeof lm.kill === 'function') {
-        lm.kill();
-      }
-      // In production, this would call the actual LM fine-tuning API
-      const job = {
-        async result() {
-          try {
-            console.log(`Fine-tuning job for ${key} completed`);
-            return lm; // Return the fine-tuned LM
-          } catch (error) {
-            return error instanceof Error ? error : new Error(String(error));
-          }
-        },
-        thread: { join() {} },
-      };
-      keyToJob.set(key, job);
-    }
-    // Wait for all jobs to complete
-    const keyToLM = new Map();
-    let jobIndex = 0;
-    for (const [key, job] of keyToJob) {
-      const result = await job.result();
-      if (result instanceof Error) {
-        throw result;
-      }
-      keyToLM.set(key, result);
-      job.thread.join();
-      console.log(`Job ${++jobIndex}/${numJobs} is done`);
-    }
-    return keyToLM;
-  }
-  /**
-   * Prepare fine-tuning data from trace data
-   */
-  async prepareFinetuneData(traceData, lm, predInd = null) {
-    if (this.config.metric) {
-      console.log(`Collected data for ${traceData.length} examples`);
-      traceData = traceData.filter((d) => d.score);
-      console.log(
-        `After filtering with the metric, ${traceData.length} examples remain`
-      );
-    }
-    const data = [];
-    const adapter = this.adapterMap.get(lm) || new ChatAdapter();
-    const dataFormat = 'chat'; // Simplified for production
-    for (const item of traceData) {
-      for (
-        let tracePredInd = 0;
-        tracePredInd < item.trace.length;
-        tracePredInd++
-      ) {
-        const includeData = predInd === null || predInd === tracePredInd;
-        if (includeData) {
-          const callData = this.buildCallDataFromTrace(
-            item.trace,
-            tracePredInd,
-            adapter,
-            this.config.exclude_demos
-          );
-          data.push(callData);
-        }
-      }
-    }
-    return { trainData: data, dataFormat };
-  }
-  /**
-   * Build call data from trace
-   */
-  buildCallDataFromTrace(trace, predInd, adapter, excludeDemos = false) {
-    const [pred, inputs, outputs] = trace[predInd];
-    const demos = excludeDemos ? [] : pred.demos || [];
-    return adapter.formatFinetuneData({
-      signature: pred.signature,
-      demos,
-      inputs,
-      outputs,
-    });
-  }
-  /**
-   * Bootstrap trace data
-   */
-  async bootstrapTraceData(program, dataset, metric, numThreads) {
-    const data = [];
-    if (!dataset || dataset.length === 0) {
-      return data;
-    }
-    for (let exampleInd = 0; exampleInd < dataset.length; exampleInd++) {
-      const example = dataset[exampleInd];
-      try {
-        const prediction = await program.forward(example);
-        const trace = []; // Simplified trace
-        const score = metric ? metric(example, prediction, trace) : undefined;
-        const dataDict = {
-          example,
-          prediction,
-          trace,
-          example_ind: exampleInd,
-          score: typeof score === 'number' ? score : score ? 1 : 0,
-        };
-        data.push(dataDict);
-      } catch (error) {
-        console.warn('Failed to process example during bootstrapping');
-      }
-    }
-    return data;
-  }
-  /**
-   * Check if all predictors have LMs assigned
-   */
-  allPredictorsHaveLMs(program) {
-    const predictors = program.predictors();
-    for (let i = 0; i < predictors.length; i++) {
-      if (!predictors[i].lm) {
-        throw new Error(
-          `Predictor ${i} does not have an LM assigned. ` +
-            `Please ensure the module's predictors have their LM set before fine-tuning. ` +
-            `You can set it using: your_module.set_lm(your_lm)`
-        );
-      }
-    }
-    return true;
-  }
-  /**
-   * Prepare teacher program
-   */
-  prepareTeacher(student, teacher) {
-    if (!teacher) {
-      return student;
-    }
-    // Validate structural equivalency
-    this.validateStructuralEquivalency(student, teacher);
-    this.validateSharedPredictors(student, teacher);
-    return teacher;
-  }
-  /**
-   * Validate structural equivalency between student and teacher
-   */
-  validateStructuralEquivalency(student, teacher) {
-    const studentPredictors = student.predictors();
-    const teacherPredictors = teacher.predictors();
-    if (studentPredictors.length !== teacherPredictors.length) {
-      throw new Error(
-        `Structurally equivalent programs must have the same number of predictors. ` +
-          `Student has ${studentPredictors.length}, Teacher has ${teacherPredictors.length}.`
-      );
-    }
-  }
-  /**
-   * Validate that student and teacher don't share predictor objects
-   */
-  validateSharedPredictors(student, teacher) {
-    const studentPredictors = student.predictors();
-    const teacherPredictors = teacher.predictors();
-    for (let i = 0; i < studentPredictors.length; i++) {
-      if (studentPredictors[i] === teacherPredictors[i]) {
-        throw new Error(
-          `The programs share predictor ${i}. ` +
-            `This is not allowed for BootstrapFinetune. ` +
-            `Please ensure the teacher is a separate instance.`
-        );
-      }
-    }
-  }
-  /**
-   * Get configuration
-   */
-  getConfig() {
-    return { ...this.config };
-  }
+	config;
+	adapterMap;
+	/**
+	 * Initialize BootstrapFinetune teleprompter
+	 * Exact API match with Stanford DSPy constructor
+	 */
+	constructor(config = {}) {
+		super(config.train_kwargs);
+		this.config = {
+			metric: config.metric || null,
+			multitask: config.multitask ?? true,
+			train_kwargs: config.train_kwargs || null,
+			adapter: config.adapter || null,
+			exclude_demos: config.exclude_demos ?? false,
+			num_threads: config.num_threads || null,
+		};
+		this.adapterMap = this.convertToLMDict(config.adapter);
+	}
+	/**
+	 * Compile student program with fine-tuning
+	 * Exact API match with Stanford DSPy compile method
+	 */
+	async compile(student, config) {
+		const { trainset, teacher } = config;
+		console.log("Preparing the student and teacher programs...");
+		this.allPredictorsHaveLMs(student);
+		console.log("Bootstrapping data...");
+		let traceData = [];
+		const teachers = Array.isArray(teacher) ? teacher : [teacher];
+		const preparedTeachers = teachers.map((t) =>
+			this.prepareTeacher(student, t),
+		);
+		const numThreads = this.config.num_threads || 1;
+		for (const t of preparedTeachers) {
+			if (t) {
+				const teacherTraceData = await this.bootstrapTraceData(
+					t,
+					trainset,
+					this.config.metric,
+					numThreads,
+				);
+				traceData = traceData.concat(teacherTraceData);
+			}
+		}
+		console.log("Preparing the train data...");
+		const keyToData = new Map();
+		for (let predInd = 0; predInd < student.predictors().length; predInd++) {
+			const pred = student.predictors()[predInd];
+			const dataPredInd = this.config.multitask ? null : predInd;
+			if (!pred.lm) {
+				throw new Error(
+					`Predictor ${predInd} does not have an LM assigned. ` +
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`You can set it using: your_module.set_lm(your_lm)`,
+				);
+			}
+			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`;
+			if (!keyToData.has(trainingKey)) {
+				const { trainData, dataFormat } = await this.prepareFinetuneData(
+					traceData,
+					pred.lm,
+					dataPredInd,
+				);
+				console.log(
+					`Using ${trainData.length} data points for fine-tuning the model: ${pred.lm.model || "unknown"}`,
+				);
+				const finetuneKwargs = {
+					lm: pred.lm,
+					train_data: trainData,
+					train_data_format: dataFormat,
+					train_kwargs: this.trainKwargs.get(pred.lm) || {},
+				};
+				keyToData.set(trainingKey, finetuneKwargs);
+			}
+		}
+		console.log("Starting LM fine-tuning...");
+		if (keyToData.size > numThreads) {
+			throw new Error(
+				`BootstrapFinetune requires \`num_threads\` to be bigger than or equal to the number of fine-tuning ` +
+					`jobs. There are ${keyToData.size} fine-tuning jobs to start, but the number of threads is: ` +
+					`${numThreads}!`,
+			);
+		}
+		console.log(`${keyToData.size} fine-tuning job(s) to start`);
+		const keyToLM = await this.finetuneLMs(keyToData);
+		console.log("Updating the student program with the fine-tuned LMs...");
+		for (let predInd = 0; predInd < student.predictors().length; predInd++) {
+			const pred = student.predictors()[predInd];
+			const dataPredInd = this.config.multitask ? null : predInd;
+			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`;
+			const finetunedLM = keyToLM.get(trainingKey);
+			if (finetunedLM instanceof Error) {
+				throw new Error(`Finetuned LM for predictor ${predInd} failed.`);
+			}
+			if (finetunedLM) {
+				pred.lm = finetunedLM;
+			}
+			// Update demos based on exclude_demos setting
+			pred.demos = this.config.exclude_demos ? [] : pred.demos;
+		}
+		console.log("BootstrapFinetune has finished compiling the student program");
+		student._compiled = true;
+		return student;
+	}
+	/**
+	 * Fine-tune language models
+	 * Exact port of Stanford DSPy's finetune_lms static method
+	 */
+	async finetuneLMs(finetuneDict) {
+		const numJobs = finetuneDict.size;
+		console.log(`Starting ${numJobs} fine-tuning job(s)...`);
+		const keyToJob = new Map();
+		// Start all fine-tuning jobs
+		for (const [key, finetuneKwargs] of finetuneDict) {
+			const lm = finetuneKwargs.lm;
+			console.log(
+				"Calling lm.kill() on the LM to be fine-tuned to free up resources.",
+			);
+			if (typeof lm.kill === "function") {
+				lm.kill();
+			}
+			// In production, this would call the actual LM fine-tuning API
+			const job = {
+				async result() {
+					try {
+						console.log(`Fine-tuning job for ${key} completed`);
+						return lm; // Return the fine-tuned LM
+					} catch (error) {
+						return error instanceof Error ? error : new Error(String(error));
+					}
+				},
+				thread: { join() {} },
+			};
+			keyToJob.set(key, job);
+		}
+		// Wait for all jobs to complete
+		const keyToLM = new Map();
+		let jobIndex = 0;
+		for (const [key, job] of keyToJob) {
+			const result = await job.result();
+			if (result instanceof Error) {
+				throw result;
+			}
+			keyToLM.set(key, result);
+			job.thread.join();
+			console.log(`Job ${++jobIndex}/${numJobs} is done`);
+		}
+		return keyToLM;
+	}
+	/**
+	 * Prepare fine-tuning data from trace data
+	 */
+	async prepareFinetuneData(traceData, lm, predInd = null) {
+		if (this.config.metric) {
+			console.log(`Collected data for ${traceData.length} examples`);
+			traceData = traceData.filter((d) => d.score);
+			console.log(
+				`After filtering with the metric, ${traceData.length} examples remain`,
+			);
+		}
+		const data = [];
+		const adapter = this.adapterMap.get(lm) || new ChatAdapter();
+		const dataFormat = "chat"; // Simplified for production
+		for (const item of traceData) {
+			for (
+				let tracePredInd = 0;
+				tracePredInd < item.trace.length;
+				tracePredInd++
+			) {
+				const includeData = predInd === null || predInd === tracePredInd;
+				if (includeData) {
+					const callData = this.buildCallDataFromTrace(
+						item.trace,
+						tracePredInd,
+						adapter,
+						this.config.exclude_demos,
+					);
+					data.push(callData);
+				}
+			}
+		}
+		return { trainData: data, dataFormat };
+	}
+	/**
+	 * Build call data from trace
+	 */
+	buildCallDataFromTrace(trace, predInd, adapter, excludeDemos = false) {
+		const [pred, inputs, outputs] = trace[predInd];
+		const demos = excludeDemos ? [] : pred.demos || [];
+		return adapter.formatFinetuneData({
+			signature: pred.signature,
+			demos,
+			inputs,
+			outputs,
+		});
+	}
+	/**
+	 * Bootstrap trace data
+	 */
+	async bootstrapTraceData(program, dataset, metric, _numThreads) {
+		const data = [];
+		if (!dataset || dataset.length === 0) {
+			return data;
+		}
+		for (let exampleInd = 0; exampleInd < dataset.length; exampleInd++) {
+			const example = dataset[exampleInd];
+			try {
+				const prediction = await program.forward(example);
+				const trace = []; // Simplified trace
+				const score = metric ? metric(example, prediction, trace) : undefined;
+				const dataDict = {
+					example,
+					prediction,
+					trace,
+					example_ind: exampleInd,
+					score: typeof score === "number" ? score : score ? 1 : 0,
+				};
+				data.push(dataDict);
+			} catch (_error) {
+				console.warn("Failed to process example during bootstrapping");
+			}
+		}
+		return data;
+	}
+	/**
+	 * Check if all predictors have LMs assigned
+	 */
+	allPredictorsHaveLMs(program) {
+		const predictors = program.predictors();
+		for (let i = 0; i < predictors.length; i++) {
+			if (!predictors[i].lm) {
+				throw new Error(
+					`Predictor ${i} does not have an LM assigned. ` +
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`You can set it using: your_module.set_lm(your_lm)`,
+				);
+			}
+		}
+		return true;
+	}
+	/**
+	 * Prepare teacher program
+	 */
+	prepareTeacher(student, teacher) {
+		if (!teacher) {
+			return student;
+		}
+		// Validate structural equivalency
+		this.validateStructuralEquivalency(student, teacher);
+		this.validateSharedPredictors(student, teacher);
+		return teacher;
+	}
+	/**
+	 * Validate structural equivalency between student and teacher
+	 */
+	validateStructuralEquivalency(student, teacher) {
+		const studentPredictors = student.predictors();
+		const teacherPredictors = teacher.predictors();
+		if (studentPredictors.length !== teacherPredictors.length) {
+			throw new Error(
+				`Structurally equivalent programs must have the same number of predictors. ` +
+					`Student has ${studentPredictors.length}, Teacher has ${teacherPredictors.length}.`,
+			);
+		}
+	}
+	/**
+	 * Validate that student and teacher don't share predictor objects
+	 */
+	validateSharedPredictors(student, teacher) {
+		const studentPredictors = student.predictors();
+		const teacherPredictors = teacher.predictors();
+		for (let i = 0; i < studentPredictors.length; i++) {
+			if (studentPredictors[i] === teacherPredictors[i]) {
+				throw new Error(
+					`The programs share predictor ${i}. ` +
+						`This is not allowed for BootstrapFinetune. ` +
+						`Please ensure the teacher is a separate instance.`,
+				);
+			}
+		}
+	}
+	/**
+	 * Get configuration
+	 */
+	getConfig() {
+		return { ...this.config };
+	}
 }
 // Export for compatibility with Stanford DSPy naming
 export { BootstrapFinetune as BootstrapFinetuneTeleprompter };

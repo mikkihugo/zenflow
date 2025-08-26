@@ -6,5 +6,5 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-export { ImmutableOps } from './immutable-ops';
+export { ImmutableOps } from "./immutable-ops";
 //# sourceMappingURL=index.js.map

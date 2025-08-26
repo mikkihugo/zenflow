@@ -4,4 +4,4 @@
  * Infrastructure services and facades for external system integration.
  */
 
-export * from './facades';
+export * from "./facades";

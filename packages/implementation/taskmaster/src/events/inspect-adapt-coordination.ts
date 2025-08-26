@@ -49,19 +49,19 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
+import { getDatabaseSystem, } from '@claude-zen/infrastructure';
 import { getBrainSystem } from '@claude-zen/intelligence';
-import { ApprovalGateManager } from '../core/approval-gate-manager.js';
-import { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 
 import type {
   ApprovalGateId,
-  TaskId,
   ApprovalGateRequirement,
+  TaskId,
 } from '../types/index.js';
 
-const logger = getLogger('InspectAdaptCoordination');'
+const _logger = getLogger('InspectAdaptCoordination');'
 
 // ============================================================================
 // INSPECT & ADAPT TYPES AND INTERFACES
@@ -127,7 +127,7 @@ export interface InspectAdaptConfig {
   };
 
   // Data inputs
-  inputs: {
+  {
     piMetrics: PIMetrics;
     teamRetrospectives: TeamRetrospective[];
     identifiedProblems: IASystemProblem[];
@@ -575,22 +575,7 @@ export interface TeamQualityMetrics {
  */
 export class InspectAdaptCoordination {
   private readonly logger = getLogger('InspectAdaptCoordination');'
-
-  // Core services
-  private approvalGateManager: ApprovalGateManager;
-  private safeIntegration: SafeFrameworkIntegration;
   private taskApprovalSystem: TaskApprovalSystem;
-
-  // Infrastructure
-  private database: any;
-  private eventSystem: any;
-  private brainSystem: any;
-
-  // State management
-  private activeWorkshops = new Map<string, InspectAdaptConfig>();
-  private problemAnalysis = new Map<string, RootCauseAnalysis[]>();
-  private solutionBrainstorming = new Map<string, ProposedSolution[]>();
-  private improvementBacklog = new Map<string, ImprovementBacklogItem[]>();
 
   constructor(
     approvalGateManager: ApprovalGateManager,
@@ -651,7 +636,7 @@ export class InspectAdaptCoordination {
     coordinationTraceabilityId: string;
   }> {
     const workshopId = config.id;
-    const coordinationTraceabilityId = `inspect-adapt-${workshopId}-${Date.now()}`;`
+    const _coordinationTraceabilityId = `inspect-adapt-${workshopId}-${Date.now()}`;`
 
     this.logger.info('Scheduling Inspect & Adapt Workshop', {'
       workshopId,
@@ -710,7 +695,7 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);`
+      throw new Error(`I&A Workshop $workshopIdnot found`);`
     }
 
     this.logger.info('Executing PI System Demo Review', {'
@@ -739,7 +724,7 @@ export class InspectAdaptCoordination {
     return {
       demoReviewCompleted: true,
       stakeholderSatisfaction: this.calculateAverageSatisfaction(
-        demoResults.stakeholderFeedback
+        _demoResults._stakeholderFeedback
       ),
       businessValueAchieved: demoResults.businessValueValidation,
       identifiedIssues: stakeholderIssues,
@@ -754,12 +739,10 @@ export class InspectAdaptCoordination {
     detailedMetrics?: Partial<PIMetrics>
   ): Promise<{
     reviewCompleted: boolean;
-    metricsAnalysis: {
       performanceVsCommitment: number; // percentage
       flowEfficiency: number;
       qualityTrends: string;
-      improvementOpportunities: string[];
-    };
+      improvementOpportunities: string[];;
     identifiedProblems: IASystemProblem[];
     stakeholderInsights: string[];
   }> {
@@ -837,7 +820,7 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);`
+      throw new Error(`I&A Workshop $workshopIdnot found`);`
     }
 
     this.logger.info('Executing Problem-Solving Workshop', {'
@@ -917,16 +900,12 @@ export class InspectAdaptCoordination {
     }
   ): Promise<{
     outcomes: InspectAdaptOutcomes;
-    nextPIIntegration: {
       improvementItemsForPlanning: number;
       priorityImprovements: string[];
-      resourceRequirements: string[];
-    };
-    learningCapture: {
+      resourceRequirements: string[];;
       processImprovements: string[];
       facilitationLessons: string[];
-      culturalObservations: string[];
-    };
+      culturalObservations: string[];;
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
@@ -1009,7 +988,7 @@ export class InspectAdaptCoordination {
   }> {
     const config = this.activeWorkshops.get(workshopId);
     if (!config) {
-      throw new Error(`I&A Workshop ${workshopId} not found`);`
+      throw new Error(`I&A Workshop $workshopIdnot found`);`
     }
 
     // Load current workshop status
@@ -1224,7 +1203,7 @@ export class InspectAdaptCoordination {
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `I&A Workshop Readiness - PI ${config.piNumber}`,`
+      name: `I&A Workshop Readiness - PI $config.piNumber`,`
       description: `Approve readiness for Inspect & Adapt workshop for ${config.artName}`,`
       requiredApprovers: [
         config.facilitators.rte,
@@ -1255,7 +1234,7 @@ export class InspectAdaptCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `ia-workshop-${config.id}` as TaskId`
+      `ia-workshop-$config.id` as TaskId`
     );
 
     if (!result.success) {
@@ -1317,7 +1296,7 @@ export class InspectAdaptCoordination {
     config: InspectAdaptConfig,
     traceabilityId: string
   ): Promise<ApprovalGateId> {
-    const gateId = `ia-facilitation-${config.id}` as ApprovalGateId;`
+    const _gateId = `ia-facilitation-${config.id}` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
@@ -1351,7 +1330,7 @@ export class InspectAdaptCoordination {
 
     const result = await this.approvalGateManager.createApprovalGate(
       requirement,
-      `ia-facilitation-${config.id}` as TaskId`
+      `ia-facilitation-$config.id` as TaskId`
     );
 
     if (!result.success) {

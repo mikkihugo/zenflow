@@ -1,152 +1,155 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
-  export let data: any;
-  export let userRole: string;
-  export let immersionLevel: 'basic' | 'enhanced' | 'production';
+export let data: any;
+export let userRole: string;
+export let immersionLevel: "basic" | "enhanced" | "production";
 
-  const conversationStore = writable([]);
-  let currentMessage = '';
-  let isCoachTyping = false;
+const conversationStore = writable([]);
+let currentMessage = "";
+let _isCoachTyping = false;
 
-  // AI Coach personality based on role
-  const coachPersonalities = {
-    team_member: {
-      name: 'Alex',
-      avatar: '👨‍💻',
-      personality: 'Encouraging technical mentor',
-      focus: 'Technical excellence and collaboration'
-    },
-    scrum_master: {
-      name: 'Sam',
-      avatar: '🎯',
-      personality: 'Facilitation expert',
-      focus: 'Team dynamics and process improvement'
-    },
-    po: {
-      name: 'Pat',
-      avatar: '🎨',
-      personality: 'Product strategy guide',
-      focus: 'Value delivery and stakeholder alignment'
-    },
-    rte: {
-      name: 'Riley',
-      avatar: '🚀',
-      personality: 'Program excellence coach',
-      focus: 'ART coordination and scaling'
-    },
-    architect: {
-      name: 'Ava',
-      avatar: '🏗️',
-      personality: 'Technical leadership advisor',
-      focus: 'Architecture evolution and innovation'
-    },
-    business_owner: {
-      name: 'Blake',
-      avatar: '💼',
-      personality: 'Strategic business advisor',
-      focus: 'Portfolio optimization and ROI'
-    }
-  };
+// AI Coach personality based on role
+const coachPersonalities = {
+	team_member: {
+		name: "Alex",
+		avatar: "👨‍💻",
+		personality: "Encouraging technical mentor",
+		focus: "Technical excellence and collaboration",
+	},
+	scrum_master: {
+		name: "Sam",
+		avatar: "🎯",
+		personality: "Facilitation expert",
+		focus: "Team dynamics and process improvement",
+	},
+	po: {
+		name: "Pat",
+		avatar: "🎨",
+		personality: "Product strategy guide",
+		focus: "Value delivery and stakeholder alignment",
+	},
+	rte: {
+		name: "Riley",
+		avatar: "🚀",
+		personality: "Program excellence coach",
+		focus: "ART coordination and scaling",
+	},
+	architect: {
+		name: "Ava",
+		avatar: "🏗️",
+		personality: "Technical leadership advisor",
+		focus: "Architecture evolution and innovation",
+	},
+	business_owner: {
+		name: "Blake",
+		avatar: "💼",
+		personality: "Strategic business advisor",
+		focus: "Portfolio optimization and ROI",
+	},
+};
 
-  $: coach = coachPersonalities[userRole] || coachPersonalities.team_member;
-  $: activeSession = data?.activeSession || { confidence: 0.85, currentFocus: 'general_guidance' };
-  $: suggestions = data?.suggestions || [];
-  $: nextActions = data?.nextActions || [];
+$: coach = coachPersonalities[userRole] || coachPersonalities.team_member;
+$: activeSession = data?.activeSession || {
+	confidence: 0.85,
+	currentFocus: "general_guidance",
+};
+$: suggestions = data?.suggestions || [];
+$: nextActions = data?.nextActions || [];
 
-  function sendMessage() {
-    if (!currentMessage.trim()) return;
+function sendMessage() {
+	if (!currentMessage.trim()) return;
 
-    // Add user message
-    conversationStore.update(conv => [
-      ...conv,
-      {
-        type: 'user',
-        message: currentMessage,
-        timestamp: new Date()
-      }
-    ]);
+	// Add user message
+	conversationStore.update((conv) => [
+		...conv,
+		{
+			type: "user",
+			message: currentMessage,
+			timestamp: new Date(),
+		},
+	]);
 
-    const userMsg = currentMessage;
-    currentMessage = '';
-    
-    // Simulate AI coach response
-    isCoachTyping = true;
-    setTimeout(() => {
-      const response = generateCoachResponse(userMsg);
-      conversationStore.update(conv => [
-        ...conv,
-        {
-          type: 'coach',
-          message: response,
-          timestamp: new Date()
-        }
-      ]);
-      isCoachTyping = false;
-    }, 1500);
-  }
+	const userMsg = currentMessage;
+	currentMessage = "";
 
-  function generateCoachResponse(userMessage: string): string {
-    const responses = {
-      team_member: [
-        "Great question! Let's break this down into manageable steps. First, consider...",
-        "I've noticed similar patterns before. Here's what usually works well...",
-        "That's a thoughtful approach. Have you considered the impact on your team's workflow?",
-        "Excellent progress! To build on this, you might want to explore...",
-        "I see you're facing a common challenge. Let me share some proven strategies..."
-      ],
-      scrum_master: [
-        "This is a perfect opportunity to practice facilitation. Try using the 'Five Whys' technique...",
-        "I can see this is affecting team dynamics. Consider having a focused retrospective on...",
-        "Your team health metrics suggest this is the right area to focus on. Let's explore...",
-        "Facilitation tip: When this happens, I recommend creating psychological safety by...",
-        "Great observation! This pattern often indicates deeper team needs. Have you considered..."
-      ],
-      po: [
-        "From a value delivery perspective, this aligns well with your customer outcomes. Consider...",
-        "I see an opportunity to strengthen stakeholder alignment here. What if you...",
-        "Your backlog prioritization is crucial here. Based on business value, I'd suggest...",
-        "This connects nicely to your product vision. To maximize impact, you might...",
-        "Excellent product thinking! To validate this assumption, consider running..."
-      ],
-      rte: [
-        "This is exactly the kind of cross-team coordination challenge RTEs excel at. Try...",
-        "Your ART health metrics show this is impacting multiple teams. I recommend...",
-        "PI Planning insight: This dependency pattern suggests we need better architectural alignment...",
-        "Great systems thinking! To scale this across the ART, consider implementing...",
-        "This is a perfect use case for our Solution Train coordination. Let's..."
-      ],
-      architect: [
-        "From an architectural perspective, this creates an interesting design challenge. Consider...",
-        "Your technical debt metrics suggest this is the right investment. To maximize ROI...",
-        "This aligns well with our architectural runway needs. I'd recommend prioritizing...",
-        "Excellent technical leadership! To influence the broader architecture, you might...",
-        "This decision will impact multiple ARTs. Have you considered the enterprise implications..."
-      ],
-      business_owner: [
-        "This directly impacts our portfolio ROI. From an investment perspective, I'd recommend...",
-        "Your business outcomes tracking shows this is a high-value opportunity. Consider...",
-        "Excellent strategic thinking! To maximize business value across the portfolio...",
-        "This connects well to our Lean Portfolio Management principles. You might want to...",
-        "From a funding perspective, this creates an interesting optimization opportunity..."
-      ]
-    };
+	// Simulate AI coach response
+	_isCoachTyping = true;
+	setTimeout(() => {
+		const response = generateCoachResponse(userMsg);
+		conversationStore.update((conv) => [
+			...conv,
+			{
+				type: "coach",
+				message: response,
+				timestamp: new Date(),
+			},
+		]);
+		_isCoachTyping = false;
+	}, 1500);
+}
 
-    const roleResponses = responses[userRole] || responses.team_member;
-    return roleResponses[Math.floor(Math.random() * roleResponses.length)];
-  }
+function generateCoachResponse(_userMessage: string): string {
+	const responses = {
+		team_member: [
+			"Great question! Let's break this down into manageable steps. First, consider...",
+			"I've noticed similar patterns before. Here's what usually works well...",
+			"That's a thoughtful approach. Have you considered the impact on your team's workflow?",
+			"Excellent progress! To build on this, you might want to explore...",
+			"I see you're facing a common challenge. Let me share some proven strategies...",
+		],
+		scrum_master: [
+			"This is a perfect opportunity to practice facilitation. Try using the 'Five Whys' technique...",
+			"I can see this is affecting team dynamics. Consider having a focused retrospective on...",
+			"Your team health metrics suggest this is the right area to focus on. Let's explore...",
+			"Facilitation tip: When this happens, I recommend creating psychological safety by...",
+			"Great observation! This pattern often indicates deeper team needs. Have you considered...",
+		],
+		po: [
+			"From a value delivery perspective, this aligns well with your customer outcomes. Consider...",
+			"I see an opportunity to strengthen stakeholder alignment here. What if you...",
+			"Your backlog prioritization is crucial here. Based on business value, I'd suggest...",
+			"This connects nicely to your product vision. To maximize impact, you might...",
+			"Excellent product thinking! To validate this assumption, consider running...",
+		],
+		rte: [
+			"This is exactly the kind of cross-team coordination challenge RTEs excel at. Try...",
+			"Your ART health metrics show this is impacting multiple teams. I recommend...",
+			"PI Planning insight: This dependency pattern suggests we need better architectural alignment...",
+			"Great systems thinking! To scale this across the ART, consider implementing...",
+			"This is a perfect use case for our Solution Train coordination. Let's...",
+		],
+		architect: [
+			"From an architectural perspective, this creates an interesting design challenge. Consider...",
+			"Your technical debt metrics suggest this is the right investment. To maximize ROI...",
+			"This aligns well with our architectural runway needs. I'd recommend prioritizing...",
+			"Excellent technical leadership! To influence the broader architecture, you might...",
+			"This decision will impact multiple ARTs. Have you considered the enterprise implications...",
+		],
+		business_owner: [
+			"This directly impacts our portfolio ROI. From an investment perspective, I'd recommend...",
+			"Your business outcomes tracking shows this is a high-value opportunity. Consider...",
+			"Excellent strategic thinking! To maximize business value across the portfolio...",
+			"This connects well to our Lean Portfolio Management principles. You might want to...",
+			"From a funding perspective, this creates an interesting optimization opportunity...",
+		],
+	};
 
-  function handleKeyPress(event: KeyboardEvent) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      sendMessage();
-    }
-  }
+	const roleResponses = responses[userRole] || responses.team_member;
+	return roleResponses[Math.floor(Math.random() * roleResponses.length)];
+}
 
-  function applySuggestion(suggestion: string) {
-    currentMessage = `Can you help me with: ${suggestion}`;
-    sendMessage();
-  }
+function _handleKeyPress(event: KeyboardEvent) {
+	if (event.key === "Enter" && !event.shiftKey) {
+		event.preventDefault();
+		sendMessage();
+	}
+}
+
+function _applySuggestion(suggestion: string) {
+	currentMessage = `Can you help me with: ${suggestion}`;
+	sendMessage();
+}
 </script>
 
 <div class="flex flex-col h-full">

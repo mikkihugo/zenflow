@@ -5,15 +5,14 @@
  */
 
 // SDK Integration
-import { ClaudeProvider } from './claude-provider';
-
-export * from './claude-sdk';
-export { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk';
+import { ClaudeProvider } from "./claude-provider";
 
 // Provider Implementation
-export { ClaudeProvider, CLAUDE_SWARM_AGENT_ROLES } from './claude-provider';
+export { CLAUDE_SWARM_AGENT_ROLES, ClaudeProvider } from "./claude-provider";
+export * from "./claude-sdk";
+export { type ClaudeSDKOptions, executeClaudeTask } from "./claude-sdk";
 
 // Default provider instance
 export function createClaudeProvider(): ClaudeProvider {
-  return new ClaudeProvider();
+	return new ClaudeProvider();
 }

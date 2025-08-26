@@ -1,27 +1,26 @@
 import { z } from "@claude-zen/foundation"
-import { App } from "../app/app"
-import { Config } from "../config/config"
-import { mergeDeep, sortBy } from "remeda"
-import { NoSuchModelError, type LanguageModel, type Provider as SDK } from "ai"
-import { Log } from "../util/log"
+import { NoSuchModelError, } from "ai"
+import { sortBy } from "remeda"
+import { Auth } from "../auth"
+import { AuthAnthropic } from "../auth/anthropic"
+import { AuthCopilot } from "../auth/copilot"
 import { BunProc } from "../bun"
+import { Config } from "../config/config"
 import { BashTool } from "../tool/bash"
 import { EditTool } from "../tool/edit"
-import { WebFetchTool } from "../tool/webfetch"
 import { GlobTool } from "../tool/glob"
 import { GrepTool } from "../tool/grep"
 import { ListTool } from "../tool/ls"
 import { PatchTool } from "../tool/patch"
 import { ReadTool } from "../tool/read"
-import type { Tool } from "../tool/tool"
-import { WriteTool } from "../tool/write"
-import { TodoReadTool, TodoWriteTool } from "../tool/todo"
-import { AuthAnthropic } from "../auth/anthropic"
-import { AuthCopilot } from "../auth/copilot"
-import { ModelsDev } from "./models"
-import { NamedError } from "../util/error"
-import { Auth } from "../auth"
 import { TaskTool } from "../tool/task"
+import { TodoReadTool, TodoWriteTool } from "../tool/todo"
+import type { Tool } from "../tool/tool"
+import { WebFetchTool } from "../tool/webfetch"
+import { WriteTool } from "../tool/write"
+import { NamedError } from "../util/error"
+import { Log } from "../util/log"
+import type { ModelsDev } from "./models"
 
 export namespace Provider {
   const log = Log.create({ service: "provider" })
@@ -37,7 +36,7 @@ export namespace Provider {
 
   type Source = "env" | "config" | "custom" | "api"
 
-  const CUSTOM_LOADERS: Record<string, CustomLoader> = {
+  const _CUSTOM_LOADERS: Record<string, CustomLoader> = {
     async anthropic(provider) {
       const access = await AuthAnthropic.access()
       if (!access) return { autoload: false }
@@ -70,10 +69,10 @@ export namespace Provider {
     "github-copilot": async (provider) => {
       const copilot = await AuthCopilot()
       if (!copilot) return { autoload: false }
-      let info = await Auth.get("github-copilot")
+      const info = await Auth.get("github-copilot")
       if (!info || info.type !== "oauth") return { autoload: false }
 
-      if (provider && provider.models) {
+      if (provider?.models) {
         for (const model of Object.values(provider.models)) {
           model.cost = {
             input: 0,
@@ -139,9 +138,9 @@ export namespace Provider {
       }
     },
     "amazon-bedrock": async () => {
-      if (!process.env["AWS_PROFILE"] && !process.env["AWS_ACCESS_KEY_ID"]) return { autoload: false }
+      if (!process.env.AWS_PROFILE && !process.env.AWS_ACCESS_KEY_ID) return { autoload: false }
 
-      const region = process.env["AWS_REGION"] ?? "us-east-1"
+      const region = process.env.AWS_REGION ?? "us-east-1"
 
       const { fromNodeProviderChain } = await import(await BunProc.install("@aws-sdk/credential-providers"))
       return {
@@ -150,7 +149,7 @@ export namespace Provider {
           region,
           credentialProvider: fromNodeProviderChain(),
         },
-        async getModel(sdk: any, modelID: string) {
+        async getModel(_sdk: any, modelID: string) {
           let regionPrefix = region.split("-")[0]
 
           switch (regionPrefix) {
@@ -174,7 +173,7 @@ export namespace Provider {
                 modelID.includes(m),
               )
               if (regionRequiresPrefix && modelRequiresPrefix) {
-                modelID = `${regionPrefix}.${modelID}``
+                modelID = `$regionPrefix.$modelID``
               }
               break
             }
@@ -369,7 +368,7 @@ export namespace Provider {
   }
 
   export async function getModel(providerID: string, modelID: string) {
-    const key = `${providerID}/${modelID}``
+    const key = `$providerID/${modelID}``
     const s = await state()
     if (s.models.has(key)) return s.models.get(key)!
 
@@ -408,7 +407,7 @@ export namespace Provider {
     }
   }
 
-  export async function getSmallModel(providerID: string) {
+  export async function _getSmallModel(providerID: string) {
     const provider = await state().then((state) => state.providers[providerID])
     if (!provider) return
     const priority = ["3-5-haiku", "3.5-haiku", "gemini-2.5-flash"]
@@ -429,7 +428,7 @@ export namespace Provider {
     )
   }
 
-  export async function defaultModel() {
+  export async function _defaultModel() {
     const cfg = await Config.get()
     if (cfg.model) return parseModel(cfg.model)
     const provider = await list()
@@ -483,7 +482,7 @@ export namespace Provider {
     google: TOOLS,
   }
 
-  export async function tools(providerID: string) {
+  export async function _tools(providerID: string) {
     /*
     const cfg = await Config.get()
     if (cfg.tool?.provider?.[providerID])
@@ -536,7 +535,7 @@ export namespace Provider {
     }),
   )
 
-  export const InitError = NamedError.create(
+  export const _InitError = NamedError.create(
     "ProviderInitError",
     z.object({
       providerID: z.string(),

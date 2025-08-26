@@ -22,11 +22,11 @@
 
 import { getLogger } from "@claude-zen/foundation";
 import {
-	getSystemCapabilityData,
 	createHealthDataProviders,
 	getCapabilityScores,
+	getSystemCapabilityData,
 } from "@claude-zen/foundation/system-capability-data-provider";
-import { Router, type Request, type Response } from "express";
+import { type Request, type Response, Router } from "express";
 
 const logger = getLogger("SystemCapabilityRoutes");
 
@@ -71,7 +71,7 @@ export class SystemCapabilityRoutes {
 	 * GET /api/v1/system/capability/status
 	 * Returns overall system status summary
 	 */
-	private async handleGetStatus(req: Request, res: Response): Promise<void> {
+	private async handleGetStatus(_req: Request, res: Response): Promise<void> {
 		try {
 			const statusData = await this.healthProviders.getStatusData();
 			res.json({
@@ -96,7 +96,7 @@ export class SystemCapabilityRoutes {
 	 * GET /api/v1/system/capability/facades
 	 * Returns detailed facade information
 	 */
-	private async handleGetFacades(req: Request, res: Response): Promise<void> {
+	private async handleGetFacades(_req: Request, res: Response): Promise<void> {
 		try {
 			const facadesData = await this.healthProviders.getFacadesData();
 			res.json({
@@ -123,7 +123,7 @@ export class SystemCapabilityRoutes {
 	 * Returns installation suggestions for missing packages
 	 */
 	private async handleGetSuggestions(
-		req: Request,
+		_req: Request,
 		res: Response,
 	): Promise<void> {
 		try {
@@ -151,7 +151,7 @@ export class SystemCapabilityRoutes {
 	 * GET /api/v1/system/capability/detailed
 	 * Returns complete system capability data
 	 */
-	private async handleGetDetailed(req: Request, res: Response): Promise<void> {
+	private async handleGetDetailed(_req: Request, res: Response): Promise<void> {
 		try {
 			const detailedData = await this.healthProviders.getDetailedData();
 			res.json({
@@ -179,7 +179,7 @@ export class SystemCapabilityRoutes {
 	 * GET /api/v1/system/capability/health
 	 * Health check endpoint for monitoring systems
 	 */
-	private async handleGetHealth(req: Request, res: Response): Promise<void> {
+	private async handleGetHealth(_req: Request, res: Response): Promise<void> {
 		try {
 			const capabilityData = await getSystemCapabilityData();
 			const isHealthy = capabilityData.systemHealthScore >= 70;
@@ -210,7 +210,7 @@ export class SystemCapabilityRoutes {
 	 * GET /api/v1/system/capability/scores
 	 * Returns capability scores by facade
 	 */
-	private async handleGetScores(req: Request, res: Response): Promise<void> {
+	private async handleGetScores(_req: Request, res: Response): Promise<void> {
 		try {
 			const scores = await getCapabilityScores();
 			res.json({

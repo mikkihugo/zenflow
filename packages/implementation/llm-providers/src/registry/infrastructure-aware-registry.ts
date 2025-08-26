@@ -7,15 +7,12 @@
  * ✅ TIER 1 COMPLIANT - Uses only strategic facades
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
 
 import type {
   BaseModelInfo,
   RichModelInfo,
-  ModelQuery,
-  ModelRecommendation,
-  TaskRequirements,
 } from '../types/enhanced-models';
 
 const logger = getLogger('InfrastructureAwareRegistry');'
@@ -63,12 +60,6 @@ export interface InfrastructureAwareRegistryEvents {
 export class InfrastructureAwareModelRegistry extends TypedEventBase<InfrastructureAwareRegistryEvents> {
   private databaseSystem: any; // Will be typed by infrastructure facade
   private modelCache = new Map<string, RichModelInfo>();
-  private syncStatus = new Map<string, ProviderSyncStatus>();
-  private initialized = false;
-
-  constructor() {
-    super();
-  }
 
   /**
    * Initialize with infrastructure database system
@@ -164,7 +155,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     providerModels: any[], 
     transformer: (model: any) => RichModelInfo
   ): Promise<void> {
-    logger.info(`🔄 Syncing ${providerId} models...`);`
+    logger.info(`🔄 Syncing $providerIdmodels...`);`
     
     const transformedModels = providerModels.map(transformer);
     let changesCount = 0;
@@ -243,13 +234,13 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     }
 
     this.emit('models:synced', { provider: providerId, changes: changesCount });'
-    logger.info(`✅ Synced ${transformedModels.length} models for ${providerId} (${changesCount} changes)`);`
+    logger.info(`✅ Synced $transformedModels.lengthmodels for ${providerId} (${changesCount} changes)`);`
   }
 
   /**
    * Get all models (basic info)
    */
-  getAllModels(): BaseModelInfo[] {
+  getAllModels(): BaseModelInfo[] 
     return Array.from(this.modelCache.values()).map(model => ({
       id: model.id,
       name: model.name,
@@ -265,26 +256,23 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
       lastUpdated: model.lastUpdated,
       pricing: model.pricing,
     }));
-  }
 
   /**
    * Get all rich models
    */
-  getAllRichModels(): RichModelInfo[] {
+  getAllRichModels(): RichModelInfo[] 
     return Array.from(this.modelCache.values());
-  }
 
   /**
    * Get rich model by ID
    */
-  getRichModel(modelId: string): RichModelInfo | undefined {
+  getRichModel(modelId: string): RichModelInfo | undefined 
     return this.modelCache.get(modelId);
-  }
 
   /**
    * Query models with advanced filtering
    */
-  async queryModels(query: ModelQuery): Promise<RichModelInfo[]> {
+  async queryModels(query: ModelQuery): Promise<RichModelInfo[]> 
     // If we have database system, use it for complex queries
     if (this.databaseSystem && this.shouldUseDatabaseQuery(query)) {
       return this.queryFromDatabase(query);
@@ -292,24 +280,22 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
 
     // Otherwise, use in-memory filtering
     return this.queryFromMemory(query);
-  }
 
   /**
    * Determine if query should use database vs memory
    */
-  private shouldUseDatabaseQuery(query: ModelQuery): boolean {
+  private shouldUseDatabaseQuery(query: ModelQuery): boolean 
     // Use database for complex queries or when dealing with large datasets
     return (
       this.modelCache.size > 1000 ||
       query.customFilter !== undefined ||
       query.sortBy !== undefined
     );
-  }
 
   /**
    * Query from infrastructure database
    */
-  private async queryFromDatabase(query: ModelQuery): Promise<RichModelInfo[]> {
+  private async queryFromDatabase(query: ModelQuery): Promise<RichModelInfo[]> 
     try {
       const dbQuery: any = {};
       
@@ -333,9 +319,9 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
         dbQuery['baseInfo.supportsStreaming'] = query.requiresStreaming;'
       }
 
-      const options: any = {};
+      const _options: any = {};
       if (query.sortBy) {
-        const sortField = `baseInfo.${query.sortBy}`;`
+        const _sortField = `baseInfo.${query.sortBy}`;`
         options.orderBy = [{ 
           field: sortField, 
           direction: query.sortOrder === 'desc' ? 'desc' : 'asc' '
@@ -467,7 +453,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     return {
       modelId: best.model.id,
       confidence: Math.min(best.score / 100, 1.0),
-      reasoning: [`Selected ${best.model.name} for ${requirements.task} task`],`
+      reasoning: [`Selected $best.model.namefor ${requirements.task} task`],`
       alternatives: scored.slice(1, 3).map(s => ({
         modelId: s.model.id,
         reason: `Alternative with ${s.model.contextWindow} context`,`
@@ -502,12 +488,11 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
   /**
    * Get cache statistics
    */
-  getCacheStats(): {
+  getCacheStats(): 
     totalModels: number;
     providers: number;
     lastUpdate: Date | null;
-    memoryUsage: number;
-  } {
+    memoryUsage: number;{
     const lastUpdate = Math.max(...Array.from(this.modelCache.values())
       .map(m => m.lastUpdated.getTime()));
 
@@ -518,12 +503,11 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
       memoryUsage: this.modelCache.size * 2048, // Rough estimate
     };
   }
-}
 
 /**
  * Create infrastructure-aware registry service
  */
-export async function createInfrastructureAwareModelRegistry(): Promise<InfrastructureAwareModelRegistry> {
+export async function _createInfrastructureAwareModelRegistry(): Promise<InfrastructureAwareModelRegistry> {
   const registry = new InfrastructureAwareModelRegistry();
   await registry.initialize();
   return registry;

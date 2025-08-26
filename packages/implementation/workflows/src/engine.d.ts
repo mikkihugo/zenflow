@@ -1,15 +1,4 @@
-/**
- * @file Engine implementation - Battle-Tested Workflow Processing
- *
- * Professional workflow engine using battle-tested libraries for reliability:
- * - lodash-es: Data manipulation and collection operations
- * - date-fns: Professional date/time handling
- * - nanoid: Secure ID generation
- * - zod: Runtime validation and type safety
- * - rxjs: Reactive programming and async coordination
- * - immer: Immutable state management
- */
-import { TypedEventBase } from '@claude-zen/foundation';
+
 export interface WorkflowStep {
   id?: string;
   type: string;

@@ -5,14 +5,13 @@
  * Updates models hourly from GitHub CLI and API
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
 
-import { Result, ok, err } from '@claude-zen/foundation';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 import { getLogger } from '@claude-zen/foundation/logging';
 
 const logger = getLogger('GitHubModelsDB');'
-const execAsync = promisify(exec);
+const _execAsync = promisify(exec);
 
 export interface GitHubModelMetadata {
   id: string;
@@ -35,7 +34,7 @@ export interface GitHubModelMetadata {
  * GitHub Models context window sizes based on documentation
  * Most models are limited to 8k/4k (input/output) on free tier
  */
-const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
+const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   // OpenAI Models - Limited context on GitHub
   'openai/gpt-4.1': {'
     contextWindow: 8000,
@@ -728,7 +727,7 @@ class GitHubModelsDatabase {
       stats.set(model.provider, (stats.get(model.provider)||0) + 1);
     }
     return Array.from(stats.entries())
-      .map(([provider, count]) => `${provider}:${count}`)`
+      .map(([provider, count]) => `$provider:$count`)`
       .join(', ');'
   }
 

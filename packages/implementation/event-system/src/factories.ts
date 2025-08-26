@@ -9,58 +9,20 @@
  * @file Interface implementation: factories.
  */
 
-import type { Config, Logger, RetryOptions } from '@claude-zen/foundation';
-import {
-  EnhancedError,
-  getDatabaseAccess,
-  inject,
-  injectable,
-  Storage,
-  safeAsync,
-  TOKENS,
-  withRetry,
-  withTimeout,
-} from '@claude-zen/foundation';
+import type { Config, Logger, } from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
   EventManager,
   EventManagerFactory,
-  EventManagerRegistry,
-  SystemEvent,
 } from './core/interfaces;
-
-// Import event manager types for use in this file
-import type {
-  CommunicationEventManager,
-  CoordinationEventManager,
-  DatabaseEventManager,
-  InterfaceEventManager,
-  MemoryEventManager,
-  MonitoringEventManager,
-  NeuralEventManager,
-  SystemEventManager,
-  WorkflowEventManager,
-} from './event-manager-types;
+'./event-manager-types;
 
 import {
   type EventManagerPresets,
-  EventManagerTypes,
   EventTypeGuards,
-} from './core/interfaces;
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  DatabaseEvent,
-  InterfaceEvent,
-  MemoryEvent,
-  MonitoringEvent,
-  NeuralEvent,
-  SystemLifecycleEvent,
-  WorkflowEvent,
-} from './types;
+} from './core/interfaces;'./types;
 import { DefaultEventManagerConfigs, EventCategories } from './types;
 
 /**
@@ -215,8 +177,6 @@ export interface EventManagerTransaction {
 export class UELFactory {
   private managerCache = new Map<string, EventManager>();
   private factoryCache = new Map<EventManagerType, EventManagerFactory>();
-  private storage = Storage;
-  private database = getDatabaseAccess();
   private managerInstances = new Map<
     string,
     {
@@ -225,32 +185,6 @@ export class UELFactory {
       config: EventManagerConfig;
     }
   >();
-  private managerRegistry: EventManagerRegistry = {
-    registerFactory: () => {},
-    getFactory: () => undefined,
-    listFactoryTypes: () => [],
-    getAllEventManagers: () => {
-      const result = new Map<string, EventManager>();
-      this.managerInstances.forEach((entry, id) => {
-        result.set(id, entry.manager);
-      });
-      return result;
-    },
-    findEventManager: (id: string) => this.managerInstances.get(id)?.manager,
-    getEventManagersByType: () => [],
-    broadcast: async () => {},
-    broadcastToType: async () => {},
-    getGlobalMetrics: async () => ({
-      totalManagers: 0,
-      totalEvents: 0,
-      totalSubscriptions: 0,
-      averageLatency: 0,
-      errorRate: 0,
-    }),
-    healthCheckAll: async () => new Map<string, EventManagerStatus>(),
-    shutdownAll: async () => {},
-  };
-  private transactionLog = new Map<string, EventManagerTransaction>();
 
   constructor(
     private _logger: Logger,
@@ -303,7 +237,7 @@ export class UELFactory {
       return cachedManager as EventManagerTypeMap<T>;
     }
 
-    this._logger.info(`Creating new event manager: $managerType/${name}`);`
+    this._logger.info(`Creating new event manager: $managerType/$name`);`
 
     try {
       // Validate configuration
@@ -604,7 +538,7 @@ export class UELFactory {
         transaction.operations.map(async (op) => {
           const manager = this.getEventManager(op.manager);
           if (!manager) {
-            throw new Error(`Event manager not found: ${op.manager}`);`
+            throw new Error(`Event manager not found: $op.manager`);`
           }
 
           switch (op.operation) {
@@ -656,12 +590,12 @@ export class UELFactory {
   async shutdownAll(): Promise<void> {
     this._logger.info('Shutting down all event managers');'
 
-    const shutdownPromises = Array.from(this.managerInstances.values()).map(
+    const _shutdownPromises = Array.from(this.managerInstances.values()).map(
       async (entry) => {
         try {
           await entry.manager.stop();
           await entry.manager.destroy();
-        } catch (error) {
+        } catch (_error) {
           this._logger.warn(`Failed to shutdown event manager: $error`);`
         }
       }
@@ -831,7 +765,7 @@ export class UELFactory {
       }
 
       default: {
-        throw new Error(`Unsupported event manager type: ${managerType}`);`
+        throw new Error(`Unsupported event manager type: $managerType`);`
       }
     }
 
@@ -845,17 +779,14 @@ export class UELFactory {
     managerType: EventManagerType,
     name: string,
     _config?: Partial<EventManagerConfig>
-  ): void {
+  ): void 
     if (!EventTypeGuards.isEventManagerType(managerType)) {
       throw new Error(`Invalid event manager type: $managerType`);`
     }
 
     if (!name||typeof name !=='string') {'
-      throw new Error(`Invalid event manager name: ${name}`);`
+      throw new Error(`Invalid event manager name: $name`);`
     }
-
-    // Additional validation logic would go here
-  }
 
   private mergeWithDefaults(
     managerType: EventManagerType,
@@ -893,28 +824,26 @@ export class UELFactory {
     return managerId;
   }
 
-  private updateManagerUsage(cacheKey: string): void {
+  private updateManagerUsage(cacheKey: string): void 
     // Find manager by cache key and update last used time
-    for (const [managerId, entry] of this.managerInstances.entries()) {
+    for (const [managerId, _entry] of this.managerInstances.entries()) {
       if (managerId.includes(cacheKey)) {
         // Entry is now correctly typed from managerInstances Map
         break;
       }
     }
-  }
 
   private generateCacheKey(
     managerType: EventManagerType,
     name: string
-  ): string {
+  ): string 
     return `$managerType:$name`;`
   }
 
   private generateManagerId(config: EventManagerConfig): string {
-    return `${config?.type}:${config?.name}:${Date.now()}`;`
-  }
+    return `$config?.type:$config?.name:$Date.now()`;`
 
-  private generateTransactionId(): string {
+  private generateTransactionId(): string 
     return `tx:$Date.now():$Math.random().toString(36).substring(2, 11)`;`
   }
 }
@@ -936,32 +865,26 @@ export class UELRegistry implements EventManagerRegistry {
     factory: EventManagerFactory<T>
   ): void {
     this.factories.set(type, factory as EventManagerFactory);
-    this._logger.debug(`Registered event manager factory: ${type}`);`
-  }
+    this._logger.debug(`Registered event manager factory: $type`);`
 
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>|undefined {
+  ): EventManagerFactory<T>|undefined 
     return this.factories.get(type) as EventManagerFactory<T>;
-  }
 
-  listFactoryTypes(): EventManagerType[] {
+  listFactoryTypes(): EventManagerType[] 
     return Array.from(this.factories.keys())();
-  }
 
-  getAllEventManagers(): Map<string, EventManager> {
+  getAllEventManagers(): Map<string, EventManager> 
     return new Map(this.globalEventManagers);
-  }
 
-  findEventManager(name: string): EventManager|undefined {
+  findEventManager(name: string): EventManager|undefined 
     return this.globalEventManagers.get(name);
-  }
 
-  getEventManagersByType(type: EventManagerType): EventManager[] {
+  getEventManagersByType(type: EventManagerType): EventManager[] 
     return Array.from(this.globalEventManagers.values()).filter(
       (manager) => manager.type === type
     );
-  }
 
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
@@ -990,19 +913,18 @@ export class UELRegistry implements EventManagerRegistry {
     return results;
   }
 
-  async getGlobalMetrics(): Promise<{
+  async getGlobalMetrics(): Promise<
     totalManagers: number;
     totalEvents: number;
     totalSubscriptions: number;
     averageLatency: number;
-    errorRate: number;
-  }> {
+    errorRate: number;> {
     const managers = Array.from(this.globalEventManagers.values())();
 
-    const metricsPromises = managers.map(async (manager) => {
+    const _metricsPromises = managers.map(async (manager) => {
       try {
         return await manager.getMetrics();
-      } catch (error) {
+      } catch (_error) {
         this._logger.warn(
           `Failed to get metrics for manager ${manager.name}:`,`
           error

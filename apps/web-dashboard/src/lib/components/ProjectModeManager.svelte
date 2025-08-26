@@ -1,170 +1,183 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { apiClient } from '../api';
-  
-  // Props
-  export let projectId: string;
-  export let showModeManager = false;
-  
-  // Types
-  interface ProjectMode {
-    mode: string;
-    capabilities: any;
-    schemaVersion: string;
-    description: string;
-    settings: any;
-    migration: {
-      upgradeableTo: string[];
-      downgradeableTo: string[];
-      migrationRequired: boolean;
-    };
-  }
+import { onMount } from "svelte";
+import { writable } from "svelte/store";
+import { apiClient } from "../api";
 
-  interface ModeUpgradeResult {
-    success: boolean;
-    newSchemaVersion: string;
-    migrationLog: string[];
-    warnings: string[];
-  }
+// Props
+export let projectId: string;
+export let showModeManager = false;
 
-  // State
-  const currentMode = writable<string>('basic');
-  const availableModes = writable<string[]>([]);
-  const allModes = writable<ProjectMode[]>([]);
-  const upgrading = writable(false);
-  const loading = writable(false);
-  const error = writable<string | null>(null);
-  const upgradeProgress = writable<string[]>([]);
+// Types
+interface ProjectMode {
+	mode: string;
+	capabilities: any;
+	schemaVersion: string;
+	description: string;
+	settings: any;
+	migration: {
+		upgradeableTo: string[];
+		downgradeableTo: string[];
+		migrationRequired: boolean;
+	};
+}
 
-  let selectedTargetMode = '';
-  let upgradeOptions = {
-    preserveData: true,
-    backupBeforeMigration: true,
-    validateAfterMigration: true
-  };
+interface ModeUpgradeResult {
+	success: boolean;
+	newSchemaVersion: string;
+	migrationLog: string[];
+	warnings: string[];
+}
 
-  // Reactive variables
-  $: currentModeData = $allModes.find(m => m.mode === $currentMode);
-  $: upgradableModes = currentModeData?.migration.upgradeableTo || [];
-  $: downgradableModes = currentModeData?.migration.downgradeableTo || [];
-  $: canUpgrade = upgradableModes.length > 0;
-  $: canDowngrade = downgradableModes.length > 0;
+// State
+const currentMode = writable<string>("basic");
+const availableModes = writable<string[]>([]);
+const allModes = writable<ProjectMode[]>([]);
+const upgrading = writable(false);
+const loading = writable(false);
+const error = writable<string | null>(null);
+const upgradeProgress = writable<string[]>([]);
 
-  onMount(() => {
-    loadProjectModes();
-    loadAllModes();
-  });
+let selectedTargetMode = "";
+const upgradeOptions = {
+	preserveData: true,
+	backupBeforeMigration: true,
+	validateAfterMigration: true,
+};
 
-  async function loadProjectModes() {
-    try {
-      loading.set(true);
-      error.set(null);
-      
-      const response = await apiClient.getProjectModes(projectId);
-      
-      currentMode.set(response.currentMode);
-      availableModes.set(response.availableModes);
-      
-    } catch (err) {
-      console.error('Failed to load project modes:', err);
-      error.set('Failed to load project modes');
-    } finally {
-      loading.set(false);
-    }
-  }
+// Reactive variables
+$: currentModeData = $allModes.find((m) => m.mode === $currentMode);
+$: upgradableModes = currentModeData?.migration.upgradeableTo || [];
+$: downgradableModes = currentModeData?.migration.downgradeableTo || [];
+$: canUpgrade = upgradableModes.length > 0;
+$: canDowngrade = downgradableModes.length > 0;
 
-  async function loadAllModes() {
-    try {
-      const response = await apiClient.getAllProjectModes();
-      allModes.set(response.modes);
-    } catch (err) {
-      console.error('Failed to load all modes:', err);
-    }
-  }
+onMount(() => {
+	loadProjectModes();
+	loadAllModes();
+});
 
-  async function upgradeMode() {
-    if (!selectedTargetMode || $upgrading) {
-      return;
-    }
+async function loadProjectModes() {
+	try {
+		loading.set(true);
+		error.set(null);
 
-    try {
-      upgrading.set(true);
-      upgradeProgress.set(['Starting mode upgrade...']);
-      error.set(null);
+		const response = await apiClient.getProjectModes(projectId);
 
-      const result: ModeUpgradeResult = await apiClient.upgradeProjectMode(projectId, {
-        toMode: selectedTargetMode,
-        ...upgradeOptions
-      });
+		currentMode.set(response.currentMode);
+		availableModes.set(response.availableModes);
+	} catch (err) {
+		console.error("Failed to load project modes:", err);
+		error.set("Failed to load project modes");
+	} finally {
+		loading.set(false);
+	}
+}
 
-      if (result.success) {
-        upgradeProgress.set([
-          ...result.migrationLog,
-          `✅ Successfully upgraded to ${selectedTargetMode}`,
-          `New schema version: ${result.newSchemaVersion}`
-        ]);
-        
-        // Reload project modes to reflect the change
-        await loadProjectModes();
-        
-        // Show success notification
-        showUpgradeSuccess(selectedTargetMode, result);
-        
-        // Reset selection
-        selectedTargetMode = '';
-      } else {
-        throw new Error('Mode upgrade failed');
-      }
+async function loadAllModes() {
+	try {
+		const response = await apiClient.getAllProjectModes();
+		allModes.set(response.modes);
+	} catch (err) {
+		console.error("Failed to load all modes:", err);
+	}
+}
 
-    } catch (err) {
-      console.error('Mode upgrade failed:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      error.set(`Mode upgrade failed: ${errorMessage}`);
-      upgradeProgress.set([
-        ...$upgradeProgress,
-        `❌ Upgrade failed: ${errorMessage}`
-      ]);
-    } finally {
-      upgrading.set(false);
-    }
-  }
+async function _upgradeMode() {
+	if (!selectedTargetMode || $upgrading) {
+		return;
+	}
 
-  function showUpgradeSuccess(targetMode: string, result: ModeUpgradeResult) {
-    // This would integrate with a notification system
-    console.info(`Successfully upgraded to ${targetMode}`, result);
-  }
+	try {
+		upgrading.set(true);
+		upgradeProgress.set(["Starting mode upgrade..."]);
+		error.set(null);
 
-  function getModeIcon(mode: string): string {
-    switch (mode) {
-      case 'basic': return '📋';
-      case 'agile': return '🚀';
-      case 'safe': return '🏢';
-      case 'kanban': return '📊';
-      case 'custom': return '⚙️';
-      default: return '❓';
-    }
-  }
+		const result: ModeUpgradeResult = await apiClient.upgradeProjectMode(
+			projectId,
+			{
+				toMode: selectedTargetMode,
+				...upgradeOptions,
+			},
+		);
 
-  function getModeColor(mode: string): string {
-    switch (mode) {
-      case 'basic': return '#6B7280';
-      case 'agile': return '#3B82F6';
-      case 'safe': return '#8B5CF6';
-      case 'kanban': return '#10B981';
-      case 'custom': return '#F59E0B';
-      default: return '#6B7280';
-    }
-  }
+		if (result.success) {
+			upgradeProgress.set([
+				...result.migrationLog,
+				`✅ Successfully upgraded to ${selectedTargetMode}`,
+				`New schema version: ${result.newSchemaVersion}`,
+			]);
 
-  function toggleModeManager() {
-    showModeManager = !showModeManager;
-  }
+			// Reload project modes to reflect the change
+			await loadProjectModes();
 
-  function clearUpgradeProgress() {
-    upgradeProgress.set([]);
-    error.set(null);
-  }
+			// Show success notification
+			showUpgradeSuccess(selectedTargetMode, result);
+
+			// Reset selection
+			selectedTargetMode = "";
+		} else {
+			throw new Error("Mode upgrade failed");
+		}
+	} catch (err) {
+		console.error("Mode upgrade failed:", err);
+		const errorMessage = err instanceof Error ? err.message : "Unknown error";
+		error.set(`Mode upgrade failed: ${errorMessage}`);
+		upgradeProgress.set([
+			...$upgradeProgress,
+			`❌ Upgrade failed: ${errorMessage}`,
+		]);
+	} finally {
+		upgrading.set(false);
+	}
+}
+
+function showUpgradeSuccess(targetMode: string, result: ModeUpgradeResult) {
+	// This would integrate with a notification system
+	console.info(`Successfully upgraded to ${targetMode}`, result);
+}
+
+function _getModeIcon(mode: string): string {
+	switch (mode) {
+		case "basic":
+			return "📋";
+		case "agile":
+			return "🚀";
+		case "safe":
+			return "🏢";
+		case "kanban":
+			return "📊";
+		case "custom":
+			return "⚙️";
+		default:
+			return "❓";
+	}
+}
+
+function _getModeColor(mode: string): string {
+	switch (mode) {
+		case "basic":
+			return "#6B7280";
+		case "agile":
+			return "#3B82F6";
+		case "safe":
+			return "#8B5CF6";
+		case "kanban":
+			return "#10B981";
+		case "custom":
+			return "#F59E0B";
+		default:
+			return "#6B7280";
+	}
+}
+
+function _toggleModeManager() {
+	showModeManager = !showModeManager;
+}
+
+function _clearUpgradeProgress() {
+	upgradeProgress.set([]);
+	error.set(null);
+}
 </script>
 
 <div class="project-mode-manager">

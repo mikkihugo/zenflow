@@ -89,7 +89,6 @@ export interface MonitoringConfig {
  * @example
  */
 export class MemoryMonitor extends TypedEventBase {
-  private config: MonitoringConfig;
   private metrics: MemoryMetrics[] = [];
   private alerts: MemoryAlert[] = [];
   private collecting = false;

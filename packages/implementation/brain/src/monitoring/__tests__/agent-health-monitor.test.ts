@@ -16,13 +16,13 @@
  */
 
 import {
-  describe,
-  it,
-  expect,
-  beforeEach,
   afterEach,
-  vi,
   beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
 } from 'vitest';
 import {
   AgentHealthMonitor,
@@ -30,7 +30,7 @@ import {
   DEFAULT_HEALTH_MONITOR_CONFIG,
 } from '../agent-health-monitor';
 import {
-  AgentLearningSystem,
+  type AgentLearningSystem,
   createAgentLearningSystem,
 } from '../agent-learning-system';
 
@@ -128,13 +128,13 @@ describe('AgentHealthMonitor', () => {'
       const health = healthMonitor.getAgentHealth(agentId);
 
       expect(health).toBeTruthy();
-      expect(health!.agentId).toBe(agentId);
-      expect(health!.cpuUsage).toBe(metrics.cpuUsage);
-      expect(health!.memoryUsage).toBe(metrics.memoryUsage);
-      expect(health!.taskSuccessRate).toBe(metrics.taskSuccessRate);
-      expect(health!.averageResponseTime).toBe(metrics.averageResponseTime);
-      expect(health!.errorRate).toBe(metrics.errorRate);
-      expect(health!.uptime).toBe(metrics.uptime);
+      expect(health?.agentId).toBe(agentId);
+      expect(health?.cpuUsage).toBe(metrics.cpuUsage);
+      expect(health?.memoryUsage).toBe(metrics.memoryUsage);
+      expect(health?.taskSuccessRate).toBe(metrics.taskSuccessRate);
+      expect(health?.averageResponseTime).toBe(metrics.averageResponseTime);
+      expect(health?.errorRate).toBe(metrics.errorRate);
+      expect(health?.uptime).toBe(metrics.uptime);
     });
 
     it('should calculate health score correctly', () => {'
@@ -151,21 +151,20 @@ describe('AgentHealthMonitor', () => {'
       });
 
       let health = healthMonitor.getAgentHealth(agentId);
-      expect(health!.healthScore).toBeGreaterThan(0.8);
-      expect(health!.status).toBe('healthy');'
+      expect(health?.healthScore).toBeGreaterThan(0.8);
+      expect(health?.status).toBe('healthy');'
 
       // Test unhealthy metrics
-      healthMonitor.updateAgentHealth(agentId, {
+      healthMonitor.updateAgentHealth(agentId, 
         cpuUsage: 0.95,
         memoryUsage: 0.92,
         taskSuccessRate: 0.4,
         averageResponseTime: 8000,
-        errorRate: 0.4,
-      });
+        errorRate: 0.4,);
 
       health = healthMonitor.getAgentHealth(agentId);
-      expect(health!.healthScore).toBeLessThan(0.4);
-      expect(health!.status).toBe('unhealthy');'
+      expect(health?.healthScore).toBeLessThan(0.4);
+      expect(health?.status).toBe('unhealthy');'
     });
 
     it('should determine health status correctly', () => {'
@@ -178,38 +177,35 @@ describe('AgentHealthMonitor', () => {'
         taskSuccessRate: 0.95,
         errorRate: 0.02,
       });
-      expect(healthMonitor.getAgentHealth(agentId)!.status).toBe('healthy');'
+      expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('healthy');'
 
       // Test degraded status
-      healthMonitor.updateAgentHealth(agentId, {
+      healthMonitor.updateAgentHealth(agentId, 
         cpuUsage: 0.6,
         memoryUsage: 0.7,
         taskSuccessRate: 0.6,
-        averageResponseTime: 6000,
-      });
-      expect(healthMonitor.getAgentHealth(agentId)!.status).toBe('degraded');'
+        averageResponseTime: 6000,);
+      expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('degraded');'
 
       // Test unhealthy status
-      healthMonitor.updateAgentHealth(agentId, {
+      healthMonitor.updateAgentHealth(agentId, 
         cpuUsage: 0.85,
         memoryUsage: 0.95,
         taskSuccessRate: 0.4,
-        errorRate: 0.3,
-      });
-      expect(healthMonitor.getAgentHealth(agentId)!.status).toBe('unhealthy');'
+        errorRate: 0.3,);
+      expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('unhealthy');'
 
       // Test critical status
-      healthMonitor.updateAgentHealth(agentId, {
+      healthMonitor.updateAgentHealth(agentId, 
         cpuUsage: 0.97,
         memoryUsage: 0.99,
-        errorRate: 0.6,
-      });
-      expect(healthMonitor.getAgentHealth(agentId)!.status).toBe('critical');'
+        errorRate: 0.6,);
+      expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('critical');'
     });
   });
 
   describe('Health Status Queries', () => {'
-    beforeEach(() => {
+    beforeEach(() => 
       // Set up multiple agents with different health statuses
       healthMonitor.updateAgentHealth('healthy-agent-1', {'
         cpuUsage: 0.3,
@@ -237,8 +233,7 @@ describe('AgentHealthMonitor', () => {'
         memoryUsage: 0.95,
         taskSuccessRate: 0.4,
         errorRate: 0.3,
-      });
-    });
+      }););
 
     it('should return healthy agents correctly', () => {'
       const healthyAgents = healthMonitor.getHealthyAgents();
@@ -280,9 +275,9 @@ describe('AgentHealthMonitor', () => {'
 
       const trend = healthMonitor.getHealthTrend(agentId);
       expect(trend).toBeTruthy();
-      expect(trend!.trend).toBe('improving' | 'stable' | 'declining'');'
-      expect(trend!.slope).toBeGreaterThan(0);
-      expect(trend!.confidence).toBeGreaterThan(0.5);
+      expect(trend?.trend).toBe('improving' | 'stable' | 'declining'');'
+      expect(trend?.slope).toBeGreaterThan(0);
+      expect(trend?.confidence).toBeGreaterThan(0.5);
     });
 
     it('should analyze declining health trends', () => {'
@@ -303,9 +298,9 @@ describe('AgentHealthMonitor', () => {'
 
       const trend = healthMonitor.getHealthTrend(agentId);
       expect(trend).toBeTruthy();
-      expect(trend!.trend).toBe(''improving' | 'stable' | 'declining');'
-      expect(trend!.slope).toBeLessThan(0);
-      expect(trend!.confidence).toBeGreaterThan(0.5);
+      expect(trend?.trend).toBe(''improving' | 'stable' | 'declining');'
+      expect(trend?.slope).toBeLessThan(0);
+      expect(trend?.confidence).toBeGreaterThan(0.5);
     });
 
     it('should analyze stable health trends', () => {'
@@ -326,7 +321,7 @@ describe('AgentHealthMonitor', () => {'
 
       const trend = healthMonitor.getHealthTrend(agentId);
       expect(trend).toBeTruthy();
-      expect(trend!.trend).toBe('stable');'
+      expect(trend?.trend).toBe('stable');'
       expect(Math.abs(trend!.slope)).toBeLessThan(0.1);
     });
   });
@@ -349,12 +344,12 @@ describe('AgentHealthMonitor', () => {'
 
       const trend = healthMonitor.getHealthTrend(agentId);
       expect(trend).toBeTruthy();
-      expect(trend!.prediction).toBeTruthy();
-      expect(trend!.prediction.predictedStatus).toBeTruthy();
-      expect(trend!.prediction.timeToStatusChange).toBeGreaterThan(0);
-      expect(trend!.prediction.confidence).toBeGreaterThan(0);
-      expect(trend!.prediction.factors).toBeInstanceOf(Array);
-      expect(trend!.prediction.recommendations).toBeInstanceOf(Array);
+      expect(trend?.prediction).toBeTruthy();
+      expect(trend?.prediction.predictedStatus).toBeTruthy();
+      expect(trend?.prediction.timeToStatusChange).toBeGreaterThan(0);
+      expect(trend?.prediction.confidence).toBeGreaterThan(0);
+      expect(trend?.prediction.factors).toBeInstanceOf(Array);
+      expect(trend?.prediction.recommendations).toBeInstanceOf(Array);
     });
 
     it('should identify contributing factors in predictions', () => {'
@@ -381,7 +376,7 @@ describe('AgentHealthMonitor', () => {'
       }
 
       const trend = healthMonitor.getHealthTrend(agentId);
-      const factors = trend!.prediction.factors;
+      const factors = trend?.prediction.factors;
 
       expect(factors).toContain('High CPU usage');'
       expect(factors).toContain('High memory usage');'
@@ -424,13 +419,12 @@ describe('AgentHealthMonitor', () => {'
       });
 
       let alerts = healthMonitor.getActiveAlerts(agentId);
-      const criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');'
+      const _criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');'
       expect(criticalAlert!.severity).toBe('critical');'
 
       // Warning level CPU usage
-      healthMonitor.updateAgentHealth(agentId, {
-        cpuUsage: 0.82,
-      });
+      healthMonitor.updateAgentHealth(agentId, 
+        cpuUsage: 0.82,);
 
       // Clear previous alerts for clean test
       for (const alert of alerts) {
@@ -462,16 +456,16 @@ describe('AgentHealthMonitor', () => {'
       expect(alerts.length).toBeGreaterThan(0);
 
       const alertId = alerts[0].id;
-      const resolved = healthMonitor.resolveAlert(alertId, 'Test resolution');'
+      const _resolved = healthMonitor.resolveAlert(alertId, 'Test resolution');'
 
       expect(resolved).toBe(true);
 
       const resolvedAlert = healthMonitor
         .getActiveAlerts()
         .find((a) => a.id === alertId);
-      expect(resolvedAlert!.resolved).toBe(true);
-      expect(resolvedAlert!.resolvedAt).toBeTruthy();
-      expect(resolvedAlert!.details.resolution).toBe('Test resolution');'
+      expect(resolvedAlert?.resolved).toBe(true);
+      expect(resolvedAlert?.resolvedAt).toBeTruthy();
+      expect(resolvedAlert?.details.resolution).toBe('Test resolution');'
     });
   });
 
@@ -497,10 +491,10 @@ describe('AgentHealthMonitor', () => {'
       // Check action properties
       const cpuAction = actions.find((a) => a.description.includes('CPU'));'
       expect(cpuAction).toBeTruthy();
-      expect(cpuAction!.priority).toBe('critical');'
+      expect(cpuAction?.priority).toBe('critical');'
       expect(cpuAction!.confidence).toBeGreaterThan(0);
-      expect(cpuAction!.estimatedDuration).toBeGreaterThan(0);
-      expect(cpuAction!.prerequisites).toBeInstanceOf(Array);
+      expect(cpuAction?.estimatedDuration).toBeGreaterThan(0);
+      expect(cpuAction?.prerequisites).toBeInstanceOf(Array);
     });
 
     it('should generate restart action for critical agents', () => {'
@@ -514,13 +508,13 @@ describe('AgentHealthMonitor', () => {'
 
       // Ensure critical status
       const health = healthMonitor.getAgentHealth(agentId);
-      expect(health!.status).toBe('critical');'
+      expect(health?.status).toBe('critical');'
 
       const actions = healthMonitor.getRecoveryRecommendations(agentId);
       const restartAction = actions.find((a) => a.type === 'restart');'
 
       expect(restartAction).toBeTruthy();
-      expect(restartAction!.priority).toBe('critical');'
+      expect(restartAction?.priority).toBe('critical');'
       expect(restartAction!.riskLevel).toBe('high');'
       expect(restartAction!.automation).toBe(false);
     });
@@ -547,7 +541,7 @@ describe('AgentHealthMonitor', () => {'
   });
 
   describe('System Health Summary', () => {'
-    beforeEach(() => {
+    beforeEach(() => 
       // Set up multiple agents with various health statuses
       healthMonitor.updateAgentHealth('healthy-1', {'
         cpuUsage: 0.3,
@@ -581,8 +575,7 @@ describe('AgentHealthMonitor', () => {'
         cpuUsage: 0.97,
         memoryUsage: 0.99,
         errorRate: 0.6,
-      });
-    });
+      }););
 
     it('should generate comprehensive system health summary', () => {'
       const summary = healthMonitor.getSystemHealthSummary();
@@ -649,8 +642,8 @@ describe('AgentHealthMonitor', () => {'
 
       // Learning system should track the performance changes
       const updatedState = learningSystem.getPerformanceSummary(agentId);
-      expect(updatedState!.totalTasks).toBeGreaterThan(
-        learningState!.totalTasks
+      expect(updatedState?.totalTasks).toBeGreaterThan(
+        learningState?.totalTasks
       );
     });
   });
@@ -666,13 +659,13 @@ describe('AgentHealthMonitor', () => {'
       });
 
       let health = healthMonitor.getAgentHealth(agentId);
-      expect(health!.status).not.toBe('unknown');'
+      expect(health?.status).not.toBe('unknown');'
 
       // Advance time beyond stale threshold
       vi.advanceTimersByTime(mockConfig.healthCheckInterval * 3);
 
       health = healthMonitor.getAgentHealth(agentId);
-      expect(health!.status).toBe('unknown');'
+      expect(health?.status).toBe('unknown');'
       expect(health!.healthScore).toBeLessThan(0.5);
     });
   });
@@ -718,9 +711,9 @@ describe('AgentHealthMonitor', () => {'
       });
 
       const health = healthMonitor.getAgentHealth(agentId);
-      expect(health!.healthScore).toBeGreaterThanOrEqual(0);
-      expect(health!.healthScore).toBeLessThanOrEqual(1);
-      expect(health!.status).toBe('critical');'
+      expect(health?.healthScore).toBeGreaterThanOrEqual(0);
+      expect(health?.healthScore).toBeLessThanOrEqual(1);
+      expect(health?.status).toBe('critical');'
     });
   });
 

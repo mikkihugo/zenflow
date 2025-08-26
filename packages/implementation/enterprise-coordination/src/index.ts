@@ -12,7 +12,7 @@
  */
 
 // Re-export everything from coordination
-export * from './coordination';
+export * from "./coordination";
 
 // Export coordination sub-module for modular imports
-export * as coordination from './coordination';
+export * as coordination from "./coordination";

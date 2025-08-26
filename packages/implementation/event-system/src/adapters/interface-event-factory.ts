@@ -61,11 +61,9 @@ import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManager,
   EventManagerFactory,
-  SystemEvent,
 } from '../core/interfaces;
 import type { InterfaceEventManager } from '../event-manager-types;
 import type { InterfaceEvent } from '../types;
@@ -178,7 +176,7 @@ class InterfaceEventManagerImpl
   /**
    * Subscribe to API interface events.
    */
-  subscribeAPIEvents(listener: (event: InterfaceEvent) => void): string {
+  subscribeAPIEvents(listener: (_event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.api.set(subscriptionId, listener);
 
@@ -202,7 +200,7 @@ class InterfaceEventManagerImpl
   /**
    * Subscribe to user interaction events.
    */
-  subscribeUserEvents(listener: (event: InterfaceEvent) => void): string {
+  subscribeUserEvents(listener: (_event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.user.set(subscriptionId, listener);
 
@@ -414,7 +412,7 @@ class InterfaceEventManagerImpl
    * Required by InterfaceEventManager interface.
    */
   async handleUIInteraction(element: string, action: string): Promise<void> 
-    this.logger.debug(`Handling UI interaction: ${element} - ${action}`);`
+    this.logger.debug(`Handling UI interaction: $element- $action`);`
 
     try {
       // Emit UI interaction event
@@ -425,7 +423,7 @@ class InterfaceEventManagerImpl
         type: 'interface:web',
         interface: 'web',
         operation: 'interaction',
-        payload: element, action ,
+        payload: element, 
         metadata: 
           element,
           action,
@@ -553,11 +551,9 @@ class InterfaceEventManagerImpl
 export class InterfaceEventManagerFactory
   implements EventManagerFactory<EventManagerConfig>
 {
-  private managers = new Map<string, EventManager>();
 
   constructor(
-    private logger: Logger,
-    private config: Config
+    private logger: Logger,_config: Config
   ) {
     this.logger.debug('InterfaceEventManagerFactory initialized');'
   }
@@ -677,7 +673,7 @@ export class InterfaceEventManagerFactory
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
 
-    const healthChecks = Array.from(this.managers.entries()).map(
+    const _healthChecks = Array.from(this.managers.entries()).map(
       async ([name, manager]) => {
         try {
           const status = await manager.healthCheck();
@@ -903,11 +899,11 @@ export class InterfaceEventManagerFactory
     }
 
     // Set up health checking with default interval
-    const healthCheckInterval = 60000; // 1 minute default
+    const _healthCheckInterval = 60000; // 1 minute default
     setInterval(async () => {
       try {
         await manager.healthCheck();
-      } catch (error) {
+      } catch (_error) {
         this.logger.error(
           `Interface manager health check failed: ${config.name}`,`
           error

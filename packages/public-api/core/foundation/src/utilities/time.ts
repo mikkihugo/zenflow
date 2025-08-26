@@ -31,46 +31,46 @@
  * ```
  */
 
-import { setTimeout as nodeSetTimeout } from 'node:timers/promises';
-import { format } from 'date-fns';
-import type { Timestamp, ISODateString } from '../types/primitives';
+import { setTimeout as nodeSetTimeout } from "node:timers/promises";
+import { format } from "date-fns";
+import type { ISODateString, Timestamp } from "../types/primitives";
 
 // Re-export date-fns for comprehensive date operations
-export * as dateFns from 'date-fns';
+export * as dateFns from "date-fns";
 export {
-  format,
-  parseISO,
-  addDays,
-  addHours,
-  addMinutes,
-  addSeconds,
-  addMilliseconds,
-  subDays,
-  subHours,
-  subMinutes,
-  subSeconds,
-  subMilliseconds,
-  differenceInDays,
-  differenceInHours,
-  differenceInMinutes,
-  differenceInSeconds,
-  differenceInMilliseconds,
-  isAfter,
-  isBefore,
-  isEqual,
-  isSameDay,
-  startOfDay,
-  endOfDay,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-  startOfYear,
-  endOfYear,
-  getTime,
-  getUnixTime,
-  fromUnixTime,
-} from 'date-fns';
+	addDays,
+	addHours,
+	addMilliseconds,
+	addMinutes,
+	addSeconds,
+	differenceInDays,
+	differenceInHours,
+	differenceInMilliseconds,
+	differenceInMinutes,
+	differenceInSeconds,
+	endOfDay,
+	endOfMonth,
+	endOfWeek,
+	endOfYear,
+	format,
+	fromUnixTime,
+	getTime,
+	getUnixTime,
+	isAfter,
+	isBefore,
+	isEqual,
+	isSameDay,
+	parseISO,
+	startOfDay,
+	startOfMonth,
+	startOfWeek,
+	startOfYear,
+	subDays,
+	subHours,
+	subMilliseconds,
+	subMinutes,
+	subSeconds,
+} from "date-fns";
 
 // =============================================================================
 // TIMESTAMP UTILITIES - Branded timestamp type operations
@@ -88,7 +88,7 @@ export {
  * ```
  */
 export function now(): Timestamp {
-  return Date.now() as Timestamp;
+	return Date.now() as Timestamp;
 }
 
 /**
@@ -104,7 +104,7 @@ export function now(): Timestamp {
  * ```
  */
 export function timestampFromDate(date: Date): Timestamp {
-  return date.getTime() as Timestamp;
+	return date.getTime() as Timestamp;
 }
 
 /**
@@ -120,7 +120,7 @@ export function timestampFromDate(date: Date): Timestamp {
  * ```
  */
 export function dateFromTimestamp(timestamp: Timestamp): Date {
-  return new Date(timestamp);
+	return new Date(timestamp);
 }
 
 /**
@@ -137,7 +137,7 @@ export function dateFromTimestamp(timestamp: Timestamp): Date {
  * ```
  */
 export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
-  return new Date(timestamp).toISOString() as ISODateString;
+	return new Date(timestamp).toISOString() as ISODateString;
 }
 
 /**
@@ -152,7 +152,7 @@ export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
  * ```
  */
 export function timestampFromISOString(isoString: string): Timestamp {
-  return Date.parse(isoString) as Timestamp;
+	return Date.parse(isoString) as Timestamp;
 }
 
 /**
@@ -170,10 +170,10 @@ export function timestampFromISOString(isoString: string): Timestamp {
  * ```
  */
 export function formatTimestamp(
-  timestamp: Timestamp,
-  formatStr: string = 'yyyy-MM-dd HH:mm:ss'
+	timestamp: Timestamp,
+	formatStr: string = "yyyy-MM-dd HH:mm:ss",
 ): string {
-  return format(new Date(timestamp), formatStr);
+	return format(new Date(timestamp), formatStr);
 }
 
 // =============================================================================
@@ -193,7 +193,7 @@ export function formatTimestamp(
  * ```
  */
 export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -209,7 +209,7 @@ export function sleep(ms: number): Promise<void> {
  * ```
  */
 export function delay(ms: number): Promise<void> {
-  return nodeSetTimeout(ms);
+	return nodeSetTimeout(ms);
 }
 
 /**
@@ -228,12 +228,12 @@ export function delay(ms: number): Promise<void> {
  * ```
  */
 export function timeout(
-  ms: number,
-  message: string = 'Operation timed out'
+	ms: number,
+	message: string = "Operation timed out",
 ): Promise<never> {
-  return new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(message)), ms);
-  });
+	return new Promise((_, reject) => {
+		setTimeout(() => reject(new Error(message)), ms);
+	});
 }
 
 /**
@@ -254,11 +254,11 @@ export function timeout(
  * ```
  */
 export function withTimeout<T>(
-  operation: Promise<T>,
-  timeoutMs: number,
-  timeoutMessage?: string
+	operation: Promise<T>,
+	timeoutMs: number,
+	timeoutMessage?: string,
 ): Promise<T> {
-  return Promise.race([operation, timeout(timeoutMs, timeoutMessage)]);
+	return Promise.race([operation, timeout(timeoutMs, timeoutMessage)]);
 }
 
 // =============================================================================
@@ -280,7 +280,7 @@ export function withTimeout<T>(
  * ```
  */
 export function highResTime(): bigint {
-  return process.hrtime.bigint();
+	return process.hrtime.bigint();
 }
 
 /**
@@ -298,14 +298,14 @@ export function highResTime(): bigint {
  * ```
  */
 export async function measureTime<T>(
-  operation: () => Promise<T>
+	operation: () => Promise<T>,
 ): Promise<{ result: T; durationMs: number }> {
-  const start = highResTime();
-  const result = await operation();
-  const end = highResTime();
-  const durationMs = Number(end - start) / 1_000_000;
+	const start = highResTime();
+	const result = await operation();
+	const end = highResTime();
+	const durationMs = Number(end - start) / 1_000_000;
 
-  return { result, durationMs };
+	return { result, durationMs };
 }
 
 /**
@@ -325,36 +325,36 @@ export async function measureTime<T>(
  * ```
  */
 export function createTimer() {
-  let startTime: bigint | null = null;
-  let endTime: bigint | null = null;
+	let startTime: bigint | null = null;
+	let endTime: bigint | null = null;
 
-  return {
-    start() {
-      startTime = highResTime();
-      endTime = null;
-    },
+	return {
+		start() {
+			startTime = highResTime();
+			endTime = null;
+		},
 
-    stop(): number {
-      if (startTime === null) {
-        throw new Error('Timer not started');
-      }
-      endTime = highResTime();
-      return Number(endTime - startTime) / 1_000_000;
-    },
+		stop(): number {
+			if (startTime === null) {
+				throw new Error("Timer not started");
+			}
+			endTime = highResTime();
+			return Number(endTime - startTime) / 1_000_000;
+		},
 
-    elapsed(): number {
-      if (startTime === null) {
-        throw new Error('Timer not started');
-      }
-      const currentTime = endTime || highResTime();
-      return Number(currentTime - startTime) / 1_000_000;
-    },
+		elapsed(): number {
+			if (startTime === null) {
+				throw new Error("Timer not started");
+			}
+			const currentTime = endTime || highResTime();
+			return Number(currentTime - startTime) / 1_000_000;
+		},
 
-    reset() {
-      startTime = null;
-      endTime = null;
-    },
-  };
+		reset() {
+			startTime = null;
+			endTime = null;
+		},
+	};
 }
 
 // =============================================================================
@@ -376,15 +376,15 @@ export function createTimer() {
  * ```
  */
 export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
-  if (typeof timestamp !== 'number' || !Number.isInteger(timestamp)) {
-    return false;
-  }
+	if (typeof timestamp !== "number" || !Number.isInteger(timestamp)) {
+		return false;
+	}
 
-  // Must be positive and reasonable (after 1970, before year 3000)
-  const minTimestamp = 0;
-  const maxTimestamp = new Date('3000-01-01').getTime();
+	// Must be positive and reasonable (after 1970, before year 3000)
+	const minTimestamp = 0;
+	const maxTimestamp = new Date("3000-01-01").getTime();
 
-  return timestamp >= minTimestamp && timestamp <= maxTimestamp;
+	return timestamp >= minTimestamp && timestamp <= maxTimestamp;
 }
 
 /**
@@ -401,17 +401,17 @@ export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
  * ```
  */
 export function isValidISOString(
-  dateString: unknown
+	dateString: unknown,
 ): dateString is ISODateString {
-  if (typeof dateString !== 'string') return false;
+	if (typeof dateString !== "string") return false;
 
-  // Check ISO 8601 format pattern
-  const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
-  if (!isoPattern.test(dateString)) return false;
+	// Check ISO 8601 format pattern
+	const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+	if (!isoPattern.test(dateString)) return false;
 
-  // Check if actually parseable
-  const parsed = Date.parse(dateString);
-  return !isNaN(parsed);
+	// Check if actually parseable
+	const parsed = Date.parse(dateString);
+	return !Number.isNaN(parsed);
 }
 
 // =============================================================================
@@ -420,6 +420,6 @@ export function isValidISOString(
 
 // Alias for Node.js timers/promises setTimeout
 export {
-  setTimeout as nodeDelay,
-  setInterval as recurring,
-} from 'node:timers/promises';
+	setInterval as recurring,
+	setTimeout as nodeDelay,
+} from "node:timers/promises";

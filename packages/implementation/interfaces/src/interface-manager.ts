@@ -23,6 +23,7 @@
 import { TypedEventBase } from '@claude-zen/foundation';
 
 const { getConfig } = (global as any).claudeZenFoundation;
+
 import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('InterfaceManager');'
@@ -70,9 +71,7 @@ export interface InterfaceStats {
  * @example
  */
 export class InterfaceManager extends TypedEventBase {
-  private config: Required<InterfaceManagerConfig>;
   private currentMode: InterfaceMode = 'auto';
-  private isActive = false;
   private initialized = false;
 
   constructor(userConfig: InterfaceManagerConfig = {}) {
@@ -105,7 +104,7 @@ export class InterfaceManager extends TypedEventBase {
 
     this.initialized = true;
     this.emit('initialized', {});'
-    logger.info(`Interface manager ready (mode: ${this.currentMode})`);`
+    logger.info(`Interface manager ready (mode: $this.currentMode)`);`
   }
 
   async launch(): Promise<void> {
@@ -116,7 +115,7 @@ export class InterfaceManager extends TypedEventBase {
       return;
     }
 
-    logger.info(`Launching ${this.currentMode} interface...`);`
+    logger.info(`Launching $this.currentModeinterface...`);`
 
     switch (this.currentMode) {
       case 'cli':'
@@ -134,7 +133,7 @@ export class InterfaceManager extends TypedEventBase {
 
     this.isActive = true;
     this.emit('launched', { mode: this.currentMode });'
-    logger.info(`${this.currentMode} interface launched`);`
+    logger.info(`$this.currentModeinterface launched`);`
   }
 
   async getStats(): Promise<InterfaceStats> {
@@ -206,11 +205,5 @@ export class InterfaceManager extends TypedEventBase {
       `Web interface would be launched on port ${this.config.webPort}``
     );
     // In a real implementation, this would start the web server
-  }
-
-  private async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
   }
 }

@@ -5,8 +5,7 @@
  * Supports default configurations, environment overrides, and validation.
  */
 
-import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
@@ -212,7 +211,7 @@ export class ConfigManager {
     const resolvedPath = resolve(configPath);
 
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Configuration file not found: ${resolvedPath}`);`
+      throw new Error(`Configuration file not found: $resolvedPath`);`
     }
 
     try {
@@ -229,7 +228,7 @@ export class ConfigManager {
       }
     } catch (error) {
       this.logger.error(
-        `Failed to parse configuration file: ${configPath}`,`
+        `Failed to parse configuration file: $configPath`,`
         error
       );
       throw error;
@@ -251,7 +250,7 @@ export class ConfigManager {
       }
 
       merged[key] = typeof value === 'object' && !Array.isArray(value) '
-        ? { ...merged[key], ...value } 
+        ? ...merged[key], ...value 
         : value;
     }
 
@@ -268,7 +267,7 @@ export class ConfigManager {
     if (process.env.OTEL_COLLECTOR_PORT) {
       envOverrides.http = {
         ...config.http,
-        port: parseInt(process.env.OTEL_COLLECTOR_PORT),
+        port: parseInt(process.env.OTEL_COLLECTOR_PORT, 10),
       };
     }
 
@@ -284,7 +283,7 @@ export class ConfigManager {
     if (process.env.OTEL_COLLECTOR_QUEUE_SIZE) {
       envOverrides.queue = {
         ...config.queue,
-        maxSize: parseInt(process.env.OTEL_COLLECTOR_QUEUE_SIZE),
+        maxSize: parseInt(process.env.OTEL_COLLECTOR_QUEUE_SIZE, 10),
       };
     }
 
@@ -341,7 +340,7 @@ export class ConfigManager {
         enabled: true,
         signals: ['metrics'],
         config: {
-          port: parseInt(process.env.OTEL_COLLECTOR_PROMETHEUS_PORT),
+          port: parseInt(process.env.OTEL_COLLECTOR_PROMETHEUS_PORT, 10),
           metricsPath: '/metrics',
         },
       };
@@ -416,16 +415,16 @@ export const configManager = new ConfigManager();
 /**
  * Load default configuration
  */
-export function loadDefaultConfig(): CollectorConfig {
+export function _loadDefaultConfig(): CollectorConfig {
   return configManager.loadConfig();
 }
 
 /**
  * Create a minimal development configuration
  */
-export function createDevelopmentConfig(): CollectorConfig {
+export function _createDevelopmentConfig(): CollectorConfig {
   const config = new ConfigManager();
-  const devConfig = config['getDefaultConfig']();'
+  const devConfig = config.getDefaultConfig();'
 
   // Enable console exporter for development
   const consoleExporter = devConfig.exporters.find((e) => e.name === 'console');'
@@ -452,9 +451,9 @@ export function createDevelopmentConfig(): CollectorConfig {
 /**
  * Create a production configuration
  */
-export function createProductionConfig(): CollectorConfig {
+export function _createProductionConfig(): CollectorConfig {
   const config = new ConfigManager();
-  const prodConfig = config['getDefaultConfig']();'
+  const prodConfig = config.getDefaultConfig();'
 
   // Disable console exporter for production
   const consoleExporter = prodConfig.exporters.find(

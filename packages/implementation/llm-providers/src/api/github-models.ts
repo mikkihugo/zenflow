@@ -19,18 +19,15 @@
  * ````
  */
 
-import { ok, err } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
 
 import type {
   APIProvider,
   APIRequest,
   APIResult,
-  APIProviderCapabilities,
-  API_ERROR_CODES,
 } from '../types/api-providers';
 
-import { githubModelsDB, initializeGitHubModelsDB } from './github-models-db';
+import { initializeGitHubModelsDB } from './github-models-db';
 
 const logger = getLogger('GitHubModelsAPI');'
 
@@ -203,10 +200,10 @@ export class GitHubModelsAPI implements APIProvider {
 
       logger.info(`📋 GitHub Models from database: ${modelIds.length} models`);`
       logger.info(
-        `📊 Categories: low:${stats.byCategory.low}, medium:${stats.byCategory.medium}, high:${stats.byCategory.high}``
+        `📊 Categories: low:$stats.byCategory.low, medium:$stats.byCategory.medium, high:$stats.byCategory.high``
       );
       logger.info(`🖼️ Multimodal models: ${stats.multimodal}`);`
-      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);`
+      logger.info(`🔄 Last updated: $stats.lastUpdate.toISOString()`);`
 
       return modelIds;
     } catch (error) {

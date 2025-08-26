@@ -41,36 +41,36 @@
 
 // Core agent registry implementation
 // Factory functions
-import { AgentRegistry } from './agent-registry';
-import type { AgentRegistryOptions } from './types';
+import { AgentRegistry } from "./agent-registry";
+import type { AgentRegistryOptions } from "./types";
 
-export { AgentRegistry } from './agent-registry';
+export { AgentRegistry } from "./agent-registry";
 
 // Registry adapter for migration and compatibility
 export {
-  AgentRegistryAdapter,
-  createAgentRegistryAdapter,
-  type RegistryAdapterOptions,
-  type MigrationStats,
-} from './registry-adapter';
+	AgentRegistryAdapter,
+	createAgentRegistryAdapter,
+	type MigrationStats,
+	type RegistryAdapterOptions,
+} from "./registry-adapter";
 
 // Type definitions
 export type {
-  AgentRegistrationConfig,
-  AgentInstance,
-  AgentHealthStatus,
-  AgentRegistryOptions,
-  AgentTemplate,
-  RegistryStats,
-} from './types';
+	AgentHealthStatus,
+	AgentInstance,
+	AgentRegistrationConfig,
+	AgentRegistryOptions,
+	AgentTemplate,
+	RegistryStats,
+} from "./types";
 
 /**
  * Create a new agent registry instance with default configuration
  */
 export function createAgentRegistry(
-  options?: AgentRegistryOptions
+	options?: AgentRegistryOptions,
 ): AgentRegistry {
-  return new AgentRegistry(options);
+	return new AgentRegistry(options);
 }
 
 /**
@@ -82,17 +82,17 @@ let globalAgentRegistry: AgentRegistry | null = null;
  * Get or create the global agent registry instance
  */
 export function getGlobalAgentRegistry(
-  options?: AgentRegistryOptions
+	options?: AgentRegistryOptions,
 ): AgentRegistry {
-  if (!globalAgentRegistry) {
-    globalAgentRegistry = new AgentRegistry(options);
-  }
-  return globalAgentRegistry;
+	if (!globalAgentRegistry) {
+		globalAgentRegistry = new AgentRegistry(options);
+	}
+	return globalAgentRegistry;
 }
 
 /**
  * Reset the global agent registry (primarily for testing)
  */
 export function resetGlobalAgentRegistry(): void {
-  globalAgentRegistry = null;
+	globalAgentRegistry = null;
 }

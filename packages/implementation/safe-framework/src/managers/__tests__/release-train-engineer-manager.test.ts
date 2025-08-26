@@ -2,20 +2,20 @@
  * @fileoverview Release Train Engineer Manager Tests
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import ReleaseTrainEngineerManager from '../release-train-engineer-manager';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
+  FeatureStatus,
   Logger,
   MemorySystem,
   TypeSafeEventBus,
-  FeatureStatus,
 } from '../../types';
 import type { RTEManagerConfig } from '../release-train-engineer-manager';
+import ReleaseTrainEngineerManager from '../release-train-engineer-manager';
 
 describe('ReleaseTrainEngineerManager', () => {'
   let manager: ReleaseTrainEngineerManager;
   let mockLogger: Logger;
-  let mockMemory: MemorySystem;
+  let _mockMemory: MemorySystem;
   let mockEventBus: TypeSafeEventBus;
   let config: RTEManagerConfig;
 
@@ -27,7 +27,7 @@ describe('ReleaseTrainEngineerManager', () => {'
       debug: vi.fn(),
     };
 
-    mockMemory = {
+    _mockMemory = {
       store: vi.fn().mockResolvedValue(undefined),
       retrieve: vi.fn().mockResolvedValue(null),
     };
@@ -248,7 +248,7 @@ describe('ReleaseTrainEngineerManager', () => {'
   });
 
   it('should throw error when trying disabled features', async () => {'
-    const disabledConfig = { enablePIPlanningFacilitation: false };
+    const _disabledConfig = { enablePIPlanningFacilitation: false };
     const disabledManager = new ReleaseTrainEngineerManager({
       ...config,
       enablePIPlanningFacilitation: false,
@@ -256,7 +256,7 @@ describe('ReleaseTrainEngineerManager', () => {'
 
     await disabledManager.initialize();
 
-    const planningConfig = {
+    const _planningConfig = {
       participants: [],
       durationHours: 16,
       objectives: [],

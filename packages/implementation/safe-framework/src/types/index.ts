@@ -149,15 +149,15 @@ export interface CVSSScore {
   readonly vector: string;
 }
 
-// Re-export from specific type modules
-export * from './product-management';
-export * from './integration-bridge';
 // Note: Selective re-export from epic-management to avoid QualityGate conflict
 export type {
+  EpicBlocker,
+  EpicLifecycleStage,
+  EpicOwnerManagerConfig,
+  GateCriterion,
   PortfolioKanbanState,
   WSJFScore,
-  EpicLifecycleStage,
-  GateCriterion,
-  EpicBlocker,
-  EpicOwnerManagerConfig,
 } from './epic-management';
+export * from './integration-bridge';
+// Re-export from specific type modules
+export * from './product-management';

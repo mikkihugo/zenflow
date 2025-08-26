@@ -8,7 +8,7 @@ import { createAPIProvider } from './factories/api-provider-factory';
 
 const logger = getLogger('test-list-models');'
 
-async function testListModels() {
+async function _testListModels() {
   try {
     logger.info('🚀 Testing GitHub Copilot API model listing...');'
 
@@ -22,11 +22,10 @@ async function testListModels() {
     if (models.length > 0) {
       logger.info(`✅ Found ${models.length} available models:`);`
       for (const [index, model] of models.entries()) {
-        logger.info(`   ${index + 1}. ${model}`);`
+        logger.info(`   $index + 1. $model`);`
       }
-    } else {
+    } else 
       logger.warn('⚠️ No models returned or API call failed');'
-    }
 
     // Also test health check
     const health = await copilot.healthCheck();

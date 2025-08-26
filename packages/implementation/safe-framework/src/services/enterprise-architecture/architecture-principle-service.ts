@@ -22,7 +22,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -209,7 +208,6 @@ export class ArchitecturePrincipleService extends TypedEventBase {
   private readonly principles = new Map<string, ArchitecturePrinciple>();
   private knowledgeManager: any;
   private factSystem: any;
-  private workflowEngine: any;
   private initialized = false;
 
   constructor(logger: Logger) {
@@ -500,7 +498,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
    */
   updatePrincipleStatus(
     principleId: string,
-    status: ArchitecturePrinciple['status']'
+    _status: ArchitecturePrinciple['status']'
   ): void {
     const principle = this.principles.get(principleId);
     if (!principle) {
@@ -571,7 +569,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
     for (const fact of facts) {
       if (this.factViolatesRule(fact, rule)) {
         violations.push({
-          id: `violation-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,`
+          id: `violation-$Date.now()-$Math.random().toString(36).substring(2, 9)`,`
           principleId: principle.id,
           violationType:
             rule.severity === 'critical''
@@ -579,7 +577,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
               : rule.severity === 'high''
                 ? 'major''
                 : 'minor',
-          description: `Rule "${rule.name}" violated: ${rule.description}`,`
+          description: `Rule "${rule.name}" violated: $rule.description`,`
           impact: `Violation of ${principle.name} principle`,`
           detectedAt: new Date(),
           source: fact.source || 'unknown',
@@ -645,10 +643,10 @@ export class ArchitecturePrincipleService extends TypedEventBase {
 
     if (criticalViolations.length > 0) {
       recommendations.push({
-        id: `rec-critical-${Date.now()}`,`
+        id: `rec-critical-$Date.now()`,`
         priority: 'critical',
         category: 'governance',
-        description: `Address ${criticalViolations.length} critical violations of ${principle.name}`,`
+        description: `Address $criticalViolations.lengthcritical violations of $principle.name`,`
         implementation:
           'Immediate remediation required for all critical violations',
         expectedImpact: 'Significant improvement in principle compliance',
@@ -658,7 +656,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
       });
     }
 
-    if (majorViolations.length > 0) {
+    if (majorViolations._length > 0) {
       recommendations.push({
         id: `rec-major-${Date.now()}`,`
         priority: 'high',
@@ -796,7 +794,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         this.logger.debug('Facts queried (fallback)', { query });'
         return [];
       },
-      updateFact: (entityId: string, updates: any) => {
+      updateFact: (entityId: string, _updates: any) => {
         this.logger.debug('Fact updated (fallback)', { entityId });'
       },
     };

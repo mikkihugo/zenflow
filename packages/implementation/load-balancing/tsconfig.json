@@ -1,35 +1,35 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ES2022",
+		"moduleResolution": "bundler",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"outDir": "./dist",
+		"rootDir": "./",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
 
-    /* Relaxed Type Checking for Implementation Package */
-    "strict": false,
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
-    "noImplicitThis": false,
-    "noImplicitOverride": false,
-    "noFallthroughCasesInSwitch": false,
-    "noUncheckedIndexedAccess": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "exactOptionalPropertyTypes": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "useDefineForClassFields": true,
+		/* Relaxed Type Checking for Implementation Package */
+		"strict": false,
+		"noImplicitAny": false,
+		"noImplicitReturns": false,
+		"noImplicitThis": false,
+		"noImplicitOverride": false,
+		"noFallthroughCasesInSwitch": false,
+		"noUncheckedIndexedAccess": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"exactOptionalPropertyTypes": false,
+		"noPropertyAccessFromIndexSignature": false,
+		"useDefineForClassFields": true,
 
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["ES2022", "DOM"],
-    "types": ["node"]
-  },
-  "include": ["./**/*.ts"],
-  "exclude": ["dist/", "**/*.test.ts", "node_modules/"]
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"lib": ["ES2022", "DOM"],
+		"types": ["node"]
+	},
+	"include": ["./**/*.ts"],
+	"exclude": ["dist/", "**/*.test.ts", "node_modules/"]
 }

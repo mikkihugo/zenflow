@@ -1,128 +1,316 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
+import { onMount } from "svelte";
+import { cubicOut } from "svelte/easing";
+import { tweened } from "svelte/motion";
 
-  export let data: any;
-  export let userRole: string;
-  export let immersionLevel: 'basic' | 'enhanced' | 'production';
+export let data: any;
+export let userRole: string;
+export let immersionLevel: "basic" | "enhanced" | "production";
 
-  // Animated progress bars
-  const levelProgress = tweened(0, { duration: 1000, easing: cubicOut });
-  const experienceProgress = tweened(0, { duration: 1500, easing: cubicOut });
+// Animated progress bars
+const levelProgress = tweened(0, { duration: 1000, easing: cubicOut });
+const experienceProgress = tweened(0, { duration: 1500, easing: cubicOut });
 
-  // Sample gamification data
-  $: currentLevel = data?.currentLevel || { level: 12, title: 'SAFe Navigator', progress: 0.73, pointsToNext: 1250 };
-  $: achievements = data?.achievements || [];
-  $: challenges = data?.challenges || [];
-  $: leaderboards = data?.leaderboards || { team: { rank: 2, total: 8 }, art: { rank: 7, total: 45 } };
+// Sample gamification data
+$: currentLevel = data?.currentLevel || {
+	level: 12,
+	title: "SAFe Navigator",
+	progress: 0.73,
+	pointsToNext: 1250,
+};
+$: achievements = data?.achievements || [];
+$: challenges = data?.challenges || [];
+$: leaderboards = data?.leaderboards || {
+	team: { rank: 2, total: 8 },
+	art: { rank: 7, total: 45 },
+};
 
-  // Sample achievements and challenges based on role
-  const roleContent = {
-    team_member: {
-      recentAchievements: [
-        { id: 'first_pr', title: 'First Contribution', icon: '🚀', rarity: 'common', points: 50 },
-        { id: 'code_quality', title: 'Quality Champion', icon: '✨', rarity: 'uncommon', points: 100 },
-        { id: 'team_player', title: 'Team Player', icon: '🤝', rarity: 'rare', points: 150 }
-      ],
-      activeChallenges: [
-        { id: 'code_review', title: 'Code Review Champion', progress: 7, target: 10, reward: '200 points + Review Master badge' },
-        { id: 'innovation', title: 'Innovation Sprint', progress: 2, target: 3, reward: '500 points + Innovation badge' }
-      ]
-    },
-    scrum_master: {
-      recentAchievements: [
-        { id: 'retro_master', title: 'Retrospective Master', icon: '🎯', rarity: 'uncommon', points: 125 },
-        { id: 'impediment_buster', title: 'Impediment Buster', icon: '🔨', rarity: 'rare', points: 200 },
-        { id: 'team_velocity', title: 'Velocity Optimizer', icon: '⚡', rarity: 'epic', points: 300 }
-      ],
-      activeChallenges: [
-        { id: 'team_health', title: 'Team Health Champion', progress: 85, target: 90, reward: '300 points + Health Master badge' },
-        { id: 'facilitation', title: 'Facilitation Excellence', progress: 12, target: 15, reward: '400 points + Facilitator badge' }
-      ]
-    },
-    po: {
-      recentAchievements: [
-        { id: 'value_delivery', title: 'Value Delivery Hero', icon: '💎', rarity: 'rare', points: 250 },
-        { id: 'stakeholder', title: 'Stakeholder Whisperer', icon: '🎭', rarity: 'uncommon', points: 175 },
-        { id: 'backlog_master', title: 'Backlog Master', icon: '📋', rarity: 'rare', points: 200 }
-      ],
-      activeChallenges: [
-        { id: 'customer_satisfaction', title: 'Customer Satisfaction Star', progress: 4.2, target: 4.5, reward: '500 points + Customer Hero badge' },
-        { id: 'story_clarity', title: 'Story Clarity Champion', progress: 18, target: 20, reward: '350 points + Clarity Master badge' }
-      ]
-    },
-    rte: {
-      recentAchievements: [
-        { id: 'pi_success', title: 'PI Planning Master', icon: '🎪', rarity: 'epic', points: 400 },
-        { id: 'dependency_resolver', title: 'Dependency Resolver', icon: '🔗', rarity: 'rare', points: 300 },
-        { id: 'art_health', title: 'ART Health Guardian', icon: '🏥', rarity: 'legendary', points: 500 }
-      ],
-      activeChallenges: [
-        { id: 'art_coordination', title: 'ART Coordination Excellence', progress: 87, target: 95, reward: '600 points + Coordination Master badge' },
-        { id: 'cross_team', title: 'Cross-Team Collaboration', progress: 23, target: 25, reward: '450 points + Collaboration badge' }
-      ]
-    },
-    architect: {
-      recentAchievements: [
-        { id: 'tech_debt', title: 'Technical Debt Slayer', icon: '⚔️', rarity: 'rare', points: 275 },
-        { id: 'architecture_vision', title: 'Architecture Visionary', icon: '🏗️', rarity: 'epic', points: 350 },
-        { id: 'innovation_enabler', title: 'Innovation Enabler', icon: '🚀', rarity: 'legendary', points: 450 }
-      ],
-      activeChallenges: [
-        { id: 'architectural_runway', title: 'Architectural Runway Builder', progress: 14, target: 20, reward: '550 points + Runway Master badge' },
-        { id: 'tech_leadership', title: 'Technical Leadership', progress: 8, target: 10, reward: '400 points + Tech Leader badge' }
-      ]
-    },
-    business_owner: {
-      recentAchievements: [
-        { id: 'roi_optimizer', title: 'ROI Optimizer', icon: '💰', rarity: 'epic', points: 400 },
-        { id: 'portfolio_master', title: 'Portfolio Master', icon: '📊', rarity: 'legendary', points: 500 },
-        { id: 'business_outcomes', title: 'Business Outcomes Champion', icon: '🎯', rarity: 'rare', points: 300 }
-      ],
-      activeChallenges: [
-        { id: 'portfolio_health', title: 'Portfolio Health Optimization', progress: 82, target: 90, reward: '700 points + Portfolio Master badge' },
-        { id: 'investment_efficiency', title: 'Investment Efficiency', progress: 15, target: 20, reward: '600 points + Investment Expert badge' }
-      ]
-    }
-  };
+// Sample achievements and challenges based on role
+const roleContent = {
+	team_member: {
+		recentAchievements: [
+			{
+				id: "first_pr",
+				title: "First Contribution",
+				icon: "🚀",
+				rarity: "common",
+				points: 50,
+			},
+			{
+				id: "code_quality",
+				title: "Quality Champion",
+				icon: "✨",
+				rarity: "uncommon",
+				points: 100,
+			},
+			{
+				id: "team_player",
+				title: "Team Player",
+				icon: "🤝",
+				rarity: "rare",
+				points: 150,
+			},
+		],
+		activeChallenges: [
+			{
+				id: "code_review",
+				title: "Code Review Champion",
+				progress: 7,
+				target: 10,
+				reward: "200 points + Review Master badge",
+			},
+			{
+				id: "innovation",
+				title: "Innovation Sprint",
+				progress: 2,
+				target: 3,
+				reward: "500 points + Innovation badge",
+			},
+		],
+	},
+	scrum_master: {
+		recentAchievements: [
+			{
+				id: "retro_master",
+				title: "Retrospective Master",
+				icon: "🎯",
+				rarity: "uncommon",
+				points: 125,
+			},
+			{
+				id: "impediment_buster",
+				title: "Impediment Buster",
+				icon: "🔨",
+				rarity: "rare",
+				points: 200,
+			},
+			{
+				id: "team_velocity",
+				title: "Velocity Optimizer",
+				icon: "⚡",
+				rarity: "epic",
+				points: 300,
+			},
+		],
+		activeChallenges: [
+			{
+				id: "team_health",
+				title: "Team Health Champion",
+				progress: 85,
+				target: 90,
+				reward: "300 points + Health Master badge",
+			},
+			{
+				id: "facilitation",
+				title: "Facilitation Excellence",
+				progress: 12,
+				target: 15,
+				reward: "400 points + Facilitator badge",
+			},
+		],
+	},
+	po: {
+		recentAchievements: [
+			{
+				id: "value_delivery",
+				title: "Value Delivery Hero",
+				icon: "💎",
+				rarity: "rare",
+				points: 250,
+			},
+			{
+				id: "stakeholder",
+				title: "Stakeholder Whisperer",
+				icon: "🎭",
+				rarity: "uncommon",
+				points: 175,
+			},
+			{
+				id: "backlog_master",
+				title: "Backlog Master",
+				icon: "📋",
+				rarity: "rare",
+				points: 200,
+			},
+		],
+		activeChallenges: [
+			{
+				id: "customer_satisfaction",
+				title: "Customer Satisfaction Star",
+				progress: 4.2,
+				target: 4.5,
+				reward: "500 points + Customer Hero badge",
+			},
+			{
+				id: "story_clarity",
+				title: "Story Clarity Champion",
+				progress: 18,
+				target: 20,
+				reward: "350 points + Clarity Master badge",
+			},
+		],
+	},
+	rte: {
+		recentAchievements: [
+			{
+				id: "pi_success",
+				title: "PI Planning Master",
+				icon: "🎪",
+				rarity: "epic",
+				points: 400,
+			},
+			{
+				id: "dependency_resolver",
+				title: "Dependency Resolver",
+				icon: "🔗",
+				rarity: "rare",
+				points: 300,
+			},
+			{
+				id: "art_health",
+				title: "ART Health Guardian",
+				icon: "🏥",
+				rarity: "legendary",
+				points: 500,
+			},
+		],
+		activeChallenges: [
+			{
+				id: "art_coordination",
+				title: "ART Coordination Excellence",
+				progress: 87,
+				target: 95,
+				reward: "600 points + Coordination Master badge",
+			},
+			{
+				id: "cross_team",
+				title: "Cross-Team Collaboration",
+				progress: 23,
+				target: 25,
+				reward: "450 points + Collaboration badge",
+			},
+		],
+	},
+	architect: {
+		recentAchievements: [
+			{
+				id: "tech_debt",
+				title: "Technical Debt Slayer",
+				icon: "⚔️",
+				rarity: "rare",
+				points: 275,
+			},
+			{
+				id: "architecture_vision",
+				title: "Architecture Visionary",
+				icon: "🏗️",
+				rarity: "epic",
+				points: 350,
+			},
+			{
+				id: "innovation_enabler",
+				title: "Innovation Enabler",
+				icon: "🚀",
+				rarity: "legendary",
+				points: 450,
+			},
+		],
+		activeChallenges: [
+			{
+				id: "architectural_runway",
+				title: "Architectural Runway Builder",
+				progress: 14,
+				target: 20,
+				reward: "550 points + Runway Master badge",
+			},
+			{
+				id: "tech_leadership",
+				title: "Technical Leadership",
+				progress: 8,
+				target: 10,
+				reward: "400 points + Tech Leader badge",
+			},
+		],
+	},
+	business_owner: {
+		recentAchievements: [
+			{
+				id: "roi_optimizer",
+				title: "ROI Optimizer",
+				icon: "💰",
+				rarity: "epic",
+				points: 400,
+			},
+			{
+				id: "portfolio_master",
+				title: "Portfolio Master",
+				icon: "📊",
+				rarity: "legendary",
+				points: 500,
+			},
+			{
+				id: "business_outcomes",
+				title: "Business Outcomes Champion",
+				icon: "🎯",
+				rarity: "rare",
+				points: 300,
+			},
+		],
+		activeChallenges: [
+			{
+				id: "portfolio_health",
+				title: "Portfolio Health Optimization",
+				progress: 82,
+				target: 90,
+				reward: "700 points + Portfolio Master badge",
+			},
+			{
+				id: "investment_efficiency",
+				title: "Investment Efficiency",
+				progress: 15,
+				target: 20,
+				reward: "600 points + Investment Expert badge",
+			},
+		],
+	},
+};
 
-  $: roleData = roleContent[userRole] || roleContent.team_member;
+$: roleData = roleContent[userRole] || roleContent.team_member;
 
-  onMount(() => {
-    levelProgress.set(currentLevel.progress);
-    experienceProgress.set(0.8); // Sample experience progress
-  });
+onMount(() => {
+	levelProgress.set(currentLevel.progress);
+	experienceProgress.set(0.8); // Sample experience progress
+});
 
-  function getRarityColor(rarity: string): string {
-    const colors = {
-      common: 'text-gray-400 border-gray-500',
-      uncommon: 'text-green-400 border-green-500',
-      rare: 'text-blue-400 border-blue-500',
-      epic: 'text-purple-400 border-purple-500',
-      legendary: 'text-yellow-400 border-yellow-500'
-    };
-    return colors[rarity] || colors.common;
-  }
+function _getRarityColor(rarity: string): string {
+	const colors = {
+		common: "text-gray-400 border-gray-500",
+		uncommon: "text-green-400 border-green-500",
+		rare: "text-blue-400 border-blue-500",
+		epic: "text-purple-400 border-purple-500",
+		legendary: "text-yellow-400 border-yellow-500",
+	};
+	return colors[rarity] || colors.common;
+}
 
-  function getRarityGlow(rarity: string): string {
-    const glows = {
-      common: 'shadow-gray-500/20',
-      uncommon: 'shadow-green-500/30',
-      rare: 'shadow-blue-500/30',
-      epic: 'shadow-purple-500/40',
-      legendary: 'shadow-yellow-500/50'
-    };
-    return glows[rarity] || glows.common;
-  }
+function _getRarityGlow(rarity: string): string {
+	const glows = {
+		common: "shadow-gray-500/20",
+		uncommon: "shadow-green-500/30",
+		rare: "shadow-blue-500/30",
+		epic: "shadow-purple-500/40",
+		legendary: "shadow-yellow-500/50",
+	};
+	return glows[rarity] || glows.common;
+}
 
-  function formatProgress(current: number, target: number): string {
-    if (current > 1) {
-      return `${current}/${target}`;
-    } else {
-      return `${(current * 100).toFixed(1)}%`;
-    }
-  }
+function _formatProgress(current: number, target: number): string {
+	if (current > 1) {
+		return `${current}/${target}`;
+	} else {
+		return `${(current * 100).toFixed(1)}%`;
+	}
+}
 </script>
 
 <div class="flex flex-col h-full space-y-4">

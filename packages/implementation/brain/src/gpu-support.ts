@@ -133,13 +133,12 @@ export async function initializeGPUAcceleration(
     switch (selectedBackend) {
       case 'tensorflow-gpu':'
         if (capabilities.hasTensorFlowGPU) {
-          const tf = await import('@tensorflow/tfjs-node-gpu');'
+          const _tf = await import('@tensorflow/tfjs-node-gpu');'
 
           // Use tf to configure GPU memory settings
-          logger.debug('TensorFlow GPU module loaded', {'
+          logger.debug('TensorFlow GPU module loaded', '
             version: (tf.version as any)?.['tfjs-core']||'unknown',
-            backend: selectedBackend,
-          });
+            backend: selectedBackend,);
 
           // Configure memory growth to avoid GPU memory issues
           if (memoryFraction < 1.0) {

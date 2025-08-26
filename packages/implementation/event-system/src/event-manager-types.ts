@@ -6,20 +6,8 @@
  */
 
 import type {
-  EventManagerConfig,
   EventManager,
-  SystemEvent,
-} from './core/interfaces;
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  DatabaseEvent,
-  InterfaceEvent,
-  MemoryEvent,
-  NeuralEvent,
-  WorkflowEvent,
-} from './types;
-import type { MonitoringEvent } from './types;
+} from './core/interfaces;'./types;'./types;
 
 /**
  * Workflow Event Manager Interface.

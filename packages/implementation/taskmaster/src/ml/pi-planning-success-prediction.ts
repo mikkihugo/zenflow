@@ -254,10 +254,6 @@ export interface MitigationStrategy {
 // ============================================================================
 
 export class PIPlanningSuccessPredictionService {
-  private neuralML: any = null;
-  private predictionModels: Map<string, any> = new Map();
-  private historicalDataCache: Map<string, HistoricalPIData[]> = new Map();
-  private modelAccuracy: Map<string, number> = new Map();
 
   constructor() {
     this.initializeModels();
@@ -331,9 +327,9 @@ export class PIPlanningSuccessPredictionService {
 
       const prediction: PISuccessPrediction = {
         piId: input.piId,
-        predictionId: `pred-${input.piId}-${Date.now()}`,`
+        predictionId: `pred-$input.piId-$Date.now()`,`
         timestamp: new Date().toISOString(),
-        overall: {
+        overall: 
           successProbability: neuralPredictions.overallSuccess,
           expectedBusinessValueRealization:
             neuralPredictions.businessValueRealization,
@@ -341,8 +337,7 @@ export class PIPlanningSuccessPredictionService {
           riskScore: neuralPredictions.riskScore,
           confidenceLevel: this.mapConfidenceToLevel(confidence.overall),
           keySuccessFactors: neuralPredictions.successFactors,
-          primaryRisks: riskFactors.slice(0, 5).map((r) => r.description),
-        },
+          primaryRisks: riskFactors.slice(0, 5).map((r) => r.description),,
         teams: teamPredictions,
         objectives: objectivePredictions,
         dependencies: dependencyPredictions,
@@ -722,13 +717,11 @@ export class PIPlanningSuccessPredictionService {
         'minimal;
       if (
         dependency.complexity === 'critical'||dependency.riskLevel ==='high''
-      ) {
-        impactOnPI = 'critical';
-      } else if (
+      ) 
+        impactOnPI = 'critical';else if (
         dependency.complexity === 'high'||dependency.riskLevel ==='medium''
-      ) {
-        impactOnPI = 'significant';
-      } else if (dependency.complexity === 'medium') {'
+      ) 
+        impactOnPI = 'significant';else if (dependency.complexity === 'medium') {'
         impactOnPI = 'moderate';
       }
 

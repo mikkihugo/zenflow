@@ -1,9 +1,9 @@
+import * as fs from "node:fs/promises"
+import * as path from "node:path"
 import { z } from "@claude-zen/foundation"
-import * as path from "path"
-import * as fs from "fs/promises"
-import { Tool } from "./tool"
 import { FileTime } from "../file/time"
 import DESCRIPTION from "./patch.txt"
+import { Tool } from "./tool"
 
 const PatchParams = z.object({
   patchText: z.string().describe("The full patch text that describes all changes to be made"),
@@ -48,7 +48,7 @@ function identifyFilesNeeded(patchText: string): string[] {
   return files
 }
 
-function identifyFilesAdded(patchText: string): string[] {
+function _identifyFilesAdded(patchText: string): string[] {
   const files: string[] = []
   const lines = patchText.split("\n")
   for (const line of lines) {
@@ -64,7 +64,7 @@ function textToPatch(patchText: string, _currentFiles: Record<string, string>): 
   const operations: PatchOperation[] = []
   const lines = patchText.split("\n")
   let i = 0
-  let fuzz = 0
+  const fuzz = 0
 
   while (i < lines.length) {
     const line = lines[i]
@@ -119,7 +119,7 @@ function textToPatch(patchText: string, _currentFiles: Record<string, string>): 
 
       while (i < lines.length && !lines[i].startsWith("***")) {
         if (lines[i].startsWith("+")) {
-          content += lines[i].substring(1) + "\n"
+          content += `${lines[i].substring(1)}\n`
         }
         i++
       }
@@ -139,7 +139,7 @@ function textToPatch(patchText: string, _currentFiles: Record<string, string>): 
   return [operations, fuzz]
 }
 
-function patchToCommit(operations: PatchOperation[], currentFiles: Record<string, string>): Commit {
+function _patchToCommit(operations: PatchOperation[], currentFiles: Record<string, string>): Commit {
   const changes: Record<string, Change> = {}
 
   for (const op of operations) {
@@ -193,10 +193,10 @@ function generateDiff(oldContent: string, newContent: string, filePath: string):
   const lines2 = newContent.split("\n")
   const additions = Math.max(0, lines2.length - lines1.length)
   const removals = Math.max(0, lines1.length - lines2.length)
-  return [`--- ${filePath}\n+++ ${filePath}\n`, additions, removals]`
+  return [`--- $filePath\n+++ $filePath\n`, additions, removals]`
 }
 
-async function applyCommit(
+async function _applyCommit(
   commit: Commit,
   writeFile: (path: string, content: string) => Promise<void>,
   deleteFile: (path: string) => Promise<void>,
@@ -210,7 +210,7 @@ async function applyCommit(
   }
 }
 
-export const PatchTool = Tool.define({
+export const _PatchTool = Tool.define({
   id: "patch",
   description: DESCRIPTION,
   parameters: PatchParams,
@@ -232,7 +232,7 @@ export const PatchTool = Tool.define({
         }
       } catch (error: any) {
         if (error.code === "ENOENT") {
-          throw new Error(`file not found: ${absPath}`)`
+          throw new Error(`file not found: $absPath`)`
         }
         throw new Error(`failed to access file: ${error.message}`)`
       }
@@ -248,7 +248,7 @@ export const PatchTool = Tool.define({
 
       try {
         await fs.stat(absPath)
-        throw new Error(`file already exists and cannot be added: ${absPath}`)`
+        throw new Error(`file already exists and cannot be added: $absPath`)`
       } catch (error: any) {
         if (error.code !== "ENOENT") {
           throw new Error(`failed to check file: ${error.message}`)`
@@ -268,12 +268,12 @@ export const PatchTool = Tool.define({
         const content = await fs.readFile(absPath, "utf-8")
         currentFiles[filePath] = content
       } catch (error: any) {
-        throw new Error(`failed to read file ${absPath}: ${error.message}`)`
+        throw new Error(`failed to read file $absPath: $error.message`)`
       }
     }
 
     // Process the patch
-    const [patch, fuzz] = textToPatch(params.patchText, currentFiles)
+    const [_patch, fuzz] = textToPatch(params.patchText, currentFiles)
     if (fuzz > 3) {
       throw new Error(`patch contains fuzzy matches (fuzz level: ${fuzz}). Please make your context lines more precise`)`
     }
@@ -327,7 +327,7 @@ export const PatchTool = Tool.define({
       FileTime.read(ctx.sessionID, absPath)
     }
 
-    const result = `Patch applied successfully. ${changedFiles.length} files changed, ${totalAdditions} additions, ${totalRemovals} removals``
+    const result = `Patch applied successfully. $changedFiles.lengthfiles changed, $totalAdditionsadditions, $totalRemovalsremovals``
     const output = result
 
     return {

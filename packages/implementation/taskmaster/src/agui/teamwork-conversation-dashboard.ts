@@ -29,9 +29,9 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { AGUIVisualization } from '../interfaces/agui-dashboard';
+import type { AGUIVisualization } from '../interfaces/agui-dashboard';
 
-const logger = getLogger('TeamworkConversationDashboard');'
+const _logger = getLogger('TeamworkConversationDashboard');'
 
 // ============================================================================
 // CONVERSATION DASHBOARD TYPES
@@ -88,7 +88,6 @@ export interface ConversationPattern {
 export class TeamworkConversationDashboard {
   private activeConversations: Map<string, ActiveConversationSummary> =
     new Map();
-  private conversationHistory: any[] = [];
   private config: ConversationDashboardConfig;
 
   constructor(config?: Partial<ConversationDashboardConfig>) {
@@ -384,7 +383,7 @@ export class TeamworkConversationDashboard {
       
       // In real implementation, this would connect to the teamwork conversation system
       // Load from persistent storage, Redis cache, or conversation management API
-      const storedConversations = await this.loadConversationsFromStorage();
+      const _storedConversations = await this.loadConversationsFromStorage();
       const realtimeUpdates = await this.fetchRealtimeConversationUpdates();
       
       // Merge stored data with real-time updates
@@ -590,7 +589,7 @@ export class TeamworkConversationDashboard {
   /**
    * Perform advanced pattern analysis using ML
    */
-  private async performPatternAnalysis(conversations: any[], historicalData: any[]): Promise<any[]> {
+  private async performPatternAnalysis(_conversations: any[], _historicalData: any[]): Promise<any[]> {
     try {
       // Simulate ML pattern analysis
       await new Promise(resolve => setTimeout(resolve, 15));
@@ -605,7 +604,7 @@ export class TeamworkConversationDashboard {
   /**
    * Generate AI-powered insights
    */
-  private async generateAIInsights(conversations: any[], patterns: any[], metrics: any): Promise<any> {
+  private async generateAIInsights(_conversations: any[], _patterns: any[], _metrics: any): Promise<any> {
     try {
       // Simulate AI insight generation
       await new Promise(resolve => setTimeout(resolve, 20));
@@ -794,14 +793,14 @@ export class TeamworkConversationDashboard {
   }
 
   private calculateParticipantResponsiveness(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): number {
     // Simplified calculation - in real implementation would analyze response times
     return 82; // Example: 82% responsive
   }
 
   private calculateAverageResponseTime(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): number {
     // Simplified calculation - in real implementation would analyze actual response times
     return 4.2; // Example: 4.2 minutes average
@@ -821,7 +820,7 @@ export class TeamworkConversationDashboard {
   }
 
   private calculateParticipantSatisfaction(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): number {
     // Simplified calculation - in real implementation would survey participants
     return 84; // Example: 84% satisfaction
@@ -994,7 +993,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeCrossTeamDependencies(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       total: 15,
@@ -1006,7 +1005,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeImpedimentEscalations(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       total: 8,
@@ -1018,7 +1017,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeProgressAlignment(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       aligned: 85, // percentage
@@ -1028,7 +1027,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeRiskMitigation(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       risksIdentified: 12,
@@ -1039,7 +1038,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeTeamParticipation(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       averageParticipation: 92, // percentage
@@ -1050,7 +1049,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeTeamCollaboration(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       collaborationScore: 87,
@@ -1061,7 +1060,7 @@ export class TeamworkConversationDashboard {
   }
 
   private async analyzeTeamEffectiveness(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {
       effectivenessScore: 84,
@@ -1079,157 +1078,157 @@ export class TeamworkConversationDashboard {
   // PI Planning, System Demo, etc. specific analysis methods
 
   private async countResolvedDependencies(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 8; // Example count
   }
 
   private async countEscalatedImpediments(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 3; // Example count
   }
 
   private async countActionItems(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 15; // Example count
   }
 
   private async countFollowUpMeetings(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 4; // Example count
   }
 
   // More placeholder methods for other conversation types...
   private async countObjectivesDiscussed(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 12;
   }
   private async countCommitmentsReached(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 8;
   }
   private async calculateAverageConfidence(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 7.8;
   }
   private async analyzePIObjectiveDiscussions(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeCapacityDiscussions(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeDependencyIdentification(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeRiskAssessment(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeCrossTeamAlignment(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeStakeholderEngagement(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeDecisionQuality(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async countFinalizedObjectives(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 10;
   }
   private async countIdentifiedRisks(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 6;
   }
   private async countTeamCommitments(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 8;
   }
   private async analyzeConfidenceVotes(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async countEngagedStakeholders(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 12;
   }
   private async countFeedbackItems(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 25;
   }
   private async countAcceptedFeatures(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 18;
   }
   private async analyzeRealTimeFeedback(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeStakeholderSentiment(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeBusinessValueFeedback(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeFeatureAcceptance(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeStakeholderParticipation(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async analyzeStakeholderSatisfaction(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<any> {
     return {};
   }
   private async countRejectedFeatures(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 2;
   }
   private async countImprovementRequests(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 8;
   }
   private async countFollowUpActions(
-    conversations: ActiveConversationSummary[]
+    _conversations: ActiveConversationSummary[]
   ): Promise<number> {
     return 12;
   }

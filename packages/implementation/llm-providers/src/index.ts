@@ -36,10 +36,10 @@
 // CORE LLM PROVIDER - Main provider abstraction
 // =============================================================================
 import {
-  LLMProvider,
-  setGlobalLLM,
   getGlobalLLM,
+  LLMProvider,
   SWARM_AGENT_ROLES,
+  setGlobalLLM,
 } from './llm-provider';
 
 export { LLMProvider, setGlobalLLM, getGlobalLLM, SWARM_AGENT_ROLES };
@@ -56,24 +56,24 @@ export type {
 
 // Claude Code CLI (primary for file operations)
 export {
-  executeClaudeTask,
-  executeSwarmCoordinationTask,
   ClaudeTaskManager,
+  cleanupGlobalInstances,
+  executeClaudeTask,
+  executeParallelClaudeTasks,
+  executeSwarmCoordinationTask,
+  filterMessagesForClaudeCode,
   getGlobalClaudeTaskManager,
   streamClaudeTask,
-  executeParallelClaudeTasks,
-  filterMessagesForClaudeCode,
-  cleanupGlobalInstances,
 } from './claude/claude-sdk';
 export type {
-  ClaudeSDKOptions,
-  ClaudeMessage,
-  ClaudeAssistantMessage,
-  ClaudeUserMessage,
-  ClaudeResultMessage,
-  ClaudeSystemMessage,
-  PermissionResult,
   CanUseTool,
+  ClaudeAssistantMessage,
+  ClaudeMessage,
+  ClaudeResultMessage,
+  ClaudeSDKOptions,
+  ClaudeSystemMessage,
+  ClaudeUserMessage,
+  PermissionResult,
 } from './claude/types';
 
 // GitHub Copilot integrations (future - NO CLI, only APIs)
@@ -86,22 +86,21 @@ export type {
 // DIRECT API INTEGRATIONS - Pure inference, conversational AI
 // =============================================================================
 
-// GitHub Models API (available now)
-export {
-  GitHubModelsAPI,
-  createGitHubModelsProvider,
-  executeGitHubModelsTask,
-} from './api/github-models';
-export type { GitHubModelsOptions } from './api/github-models';
-
+export type { GitHubCopilotOptions } from './api/github-copilot';
 // GitHub Copilot Chat API (available now)
 export {
-  GitHubCopilotAPI,
   createGitHubCopilotProvider,
   executeGitHubCopilotTask,
+  GitHubCopilotAPI,
   gitHubCopilotConfig,
 } from './api/github-copilot';
-export type { GitHubCopilotOptions } from './api/github-copilot';
+export type { GitHubModelsOptions } from './api/github-models';
+// GitHub Models API (available now)
+export {
+  createGitHubModelsProvider,
+  executeGitHubModelsTask,
+  GitHubModelsAPI,
+} from './api/github-models';
 
 // Future API integrations:
 // export { AnthropicProvider } from './api/anthropic';
@@ -114,37 +113,34 @@ export type { GitHubCopilotOptions } from './api/github-copilot';
 // PROVIDER REGISTRY - Factory and management
 // =============================================================================
 
-// Model Registry with DI support
-export {
-  ModelRegistry,
-  ModelRegistryFactory,
-  ModelRegistryService,
-  createModelRegistryService,
-} from './registry/model-registry';
-export type { ModelInfo, ModelRegistryConfig } from './registry/model-registry';
-
+export type { GitHubModelsConfig } from './registry/github-models-setup';
 // GitHub Models Setup with DI
 export {
   GitHubModelsContainer,
   setupGitHubModels,
-  setupGitHubModelsDefault,
   setupGitHubModelsAdvanced,
+  setupGitHubModelsDefault,
 } from './registry/github-models-setup';
-export type { GitHubModelsConfig } from './registry/github-models-setup';
-
-export type {
-  CLIProvider,
-  CLIProviderRegistry,
-  CLIProviderFactory,
-  CLIProviderCapabilities,
-} from './types/cli-providers';
-
+export type { ModelInfo, ModelRegistryConfig } from './registry/model-registry';
+// Model Registry with DI support
+export {
+  createModelRegistryService,
+  ModelRegistry,
+  ModelRegistryFactory,
+  ModelRegistryService,
+} from './registry/model-registry';
 export type {
   APIProvider,
-  APIProviderRegistry,
-  APIProviderFactory,
   APIProviderCapabilities,
+  APIProviderFactory,
+  APIProviderRegistry,
 } from './types/api-providers';
+export type {
+  CLIProvider,
+  CLIProviderCapabilities,
+  CLIProviderFactory,
+  CLIProviderRegistry,
+} from './types/cli-providers';
 
 // =============================================================================
 // CONVENIENCE FACTORIES - For intelligence facade use
@@ -256,46 +252,43 @@ export function getLLMProviderByCapability(
 
 // ✅ TIER 1 COMPLIANT ENHANCED EXPORTS
 
-// Enhanced Types (Rich Metadata)
-export type {
-  BaseModelInfo,
-  RichModelInfo,
-  ModelQuery,
-  ModelRecommendation,
-  ModelComparison,
-  TaskRequirements,
-  ProviderDatabase,
-  ProviderMetadata,
-} from './types/enhanced-models';
-
-// Infrastructure-Aware Registry (✅ Uses @claude-zen/infrastructure)
-export {
-  InfrastructureAwareModelRegistry,
-  createInfrastructureAwareModelRegistry,
-  type InfrastructureAwareRegistryEvents,
-} from './registry/infrastructure-aware-registry';
-
+export type * from './claude/types';
 // Enhanced Registry (Rich metadata preservation)
 export {
-  EnhancedModelRegistry,
-  enhancedModelRegistry,
   createEnhancedModelRegistryService,
+  EnhancedModelRegistry,
   type EnhancedModelRegistryEvents,
+  enhancedModelRegistry,
 } from './registry/enhanced-model-registry';
+// Infrastructure-Aware Registry (✅ Uses @claude-zen/infrastructure)
+export {
+  createInfrastructureAwareModelRegistry,
+  InfrastructureAwareModelRegistry,
+  type InfrastructureAwareRegistryEvents,
+} from './registry/infrastructure-aware-registry';
 
 // Provider Database Registry (Manages provider-specific DBs)
 export {
   ProviderDatabaseRegistry,
-  providerDatabaseRegistry,
   type ProviderDatabaseRegistryEvents,
+  providerDatabaseRegistry,
 } from './registry/provider-database-registry';
-
+export type * from './types/api-providers';
 // =============================================================================
 // TYPES - Re-export all LLM provider types
 // =============================================================================
 export type * from './types/cli-providers';
-export type * from './types/api-providers';
-export type * from './claude/types';
+// Enhanced Types (Rich Metadata)
+export type {
+  BaseModelInfo,
+  ModelComparison,
+  ModelQuery,
+  ModelRecommendation,
+  ProviderDatabase,
+  ProviderMetadata,
+  RichModelInfo,
+  TaskRequirements,
+} from './types/enhanced-models';
 // Future: export type * from './github/types';
 
 /**

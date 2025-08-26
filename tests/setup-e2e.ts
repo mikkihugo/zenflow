@@ -5,10 +5,10 @@
  * Focus: Full system workflows, user scenarios, performance validation
  */
 
-// Import Vitest globals and utilities
-import { expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { type ChildProcess, spawn } from 'node:child_process';
 import * as path from 'node:path';
+// Import Vitest globals and utilities
+import { afterAll, afterEach, beforeAll, beforeEach, expect } from 'vitest';
 import './global-types';
 
 // E2E test setup with real system components

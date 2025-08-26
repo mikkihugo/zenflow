@@ -1,263 +1,298 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { ProgressRadial, CodeBlock, TabGroup, Tab } from '@skeletonlabs/skeleton';
-	import { apiClient } from '../../lib/api';
+import { onMount } from "svelte";
+import { apiClient } from "../../lib/api";
 
-	// Swarm management data
-	let swarmStatus: any = null;
-	let swarmStats: any = null;
-	let swarmTasks: any[] = [];
-	let selectedTask: any = null;
+// Swarm management data
+let swarmStatus: any = null;
+let swarmStats: any = null;
+let swarmTasks: any[] = [];
+let selectedTask: any = null;
 
-	// Loading states
-	let statusLoading = true;
-	let statsLoading = false;
-	let tasksLoading = false;
-	let taskDetailsLoading = false;
-	let initLoading = false;
-	let agentSpawningLoading = false;
-	let taskCreationLoading = false;
+// Loading states
+let _statusLoading = true;
+let _statsLoading = false;
+let _tasksLoading = false;
+let _taskDetailsLoading = false;
+let _initLoading = false;
+let _agentSpawningLoading = false;
+let _taskCreationLoading = false;
 
-	// Error states
-	let statusError: string | null = null;
-	let statsError: string | null = null;
-	let tasksError: string | null = null;
-	let taskDetailsError: string | null = null;
-	let initError: string | null = null;
-	let agentSpawnError: string | null = null;
-	let taskCreationError: string | null = null;
+// Error states
+let _statusError: string | null = null;
+let _statsError: string | null = null;
+let _tasksError: string | null = null;
+let _taskDetailsError: string | null = null;
+let _initError: string | null = null;
+let _agentSpawnError: string | null = null;
+let _taskCreationError: string | null = null;
 
-	// Form states
-	let activeTab = 0;
-	
-	// Swarm initialization form
-	let swarmTopology = 'mesh';
-	let swarmMaxAgents = 5;
-	let swarmStrategy = 'adaptive';
+// Form states
+const _activeTab = 0;
 
-	// Agent spawning form
-	let agentSwarmId = '';
-	let agentType = 'general';
-	let agentName = '';
-	let agentCapabilities = 'coordination,analysis';
+// Swarm initialization form
+const swarmTopology = "mesh";
+const swarmMaxAgents = 5;
+const swarmStrategy = "adaptive";
 
-	// Task orchestration form
-	let taskDescription = '';
-	let taskStrategy = 'adaptive';
-	let taskPriority = 'medium';
-	let taskMaxAgents = 3;
+// Agent spawning form
+let agentSwarmId = "";
+const agentType = "general";
+let agentName = "";
+let agentCapabilities = "coordination,analysis";
 
-	const topologies = ['mesh', 'hierarchical', 'ring', 'star'];
-	const strategies = ['adaptive', 'parallel', 'sequential', 'balanced'];
-	const agentTypes = ['general', 'researcher', 'coder', 'analyst', 'tester', 'coordinator'];
-	const priorities = ['low', 'medium', 'high', 'critical'];
+// Task orchestration form
+let taskDescription = "";
+const taskStrategy = "adaptive";
+const taskPriority = "medium";
+const taskMaxAgents = 3;
 
-	onMount(async () => {
+const _topologies = ["mesh", "hierarchical", "ring", "star"];
+const _strategies = ["adaptive", "parallel", "sequential", "balanced"];
+const _agentTypes = [
+	"general",
+	"researcher",
+	"coder",
+	"analyst",
+	"tester",
+	"coordinator",
+];
+const _priorities = ["low", "medium", "high", "critical"];
+
+onMount(async () => {
+	await loadSwarmStatus();
+
+	// Listen for project changes
+	const handleProjectChange = async () => {
+		await loadSwarmStatus();
+		// Clear cached data when project changes
+		swarmStats = null;
+		swarmTasks = [];
+		selectedTask = null;
+	};
+
+	window.addEventListener(
+		"projectChanged",
+		handleProjectChange as EventListener,
+	);
+
+	return () => {
+		window.removeEventListener(
+			"projectChanged",
+			handleProjectChange as EventListener,
+		);
+	};
+});
+
+async function loadSwarmStatus() {
+	try {
+		_statusLoading = true;
+		swarmStatus = await apiClient.getSwarmStatus();
+		_statusError = null;
+		console.log("🐝 Loaded swarm status:", swarmStatus);
+	} catch (error) {
+		_statusError =
+			error instanceof Error ? error.message : "Failed to load swarm status";
+		console.error("❌ Failed to load swarm status:", error);
+	} finally {
+		_statusLoading = false;
+	}
+}
+
+async function _loadSwarmStats() {
+	try {
+		_statsLoading = true;
+		swarmStats = await apiClient.getSwarmStats();
+		_statsError = null;
+		console.log("📊 Loaded swarm stats:", swarmStats);
+	} catch (error) {
+		_statsError =
+			error instanceof Error ? error.message : "Failed to load swarm stats";
+		console.error("❌ Failed to load swarm stats:", error);
+	} finally {
+		_statsLoading = false;
+	}
+}
+
+async function loadSwarmTasks() {
+	try {
+		_tasksLoading = true;
+		const result = await apiClient.getSwarmTasks();
+		swarmTasks = Array.isArray(result?.data)
+			? result.data
+			: result?.tasks || [];
+		_tasksError = null;
+		console.log("📋 Loaded swarm tasks:", swarmTasks.length);
+	} catch (error) {
+		_tasksError =
+			error instanceof Error ? error.message : "Failed to load swarm tasks";
+		console.error("❌ Failed to load swarm tasks:", error);
+	} finally {
+		_tasksLoading = false;
+	}
+}
+
+async function _loadTaskDetails(taskId: string) {
+	try {
+		_taskDetailsLoading = true;
+		selectedTask = await apiClient.getSwarmTasks(taskId);
+		_taskDetailsError = null;
+		console.log("📄 Loaded task details:", selectedTask);
+	} catch (error) {
+		_taskDetailsError =
+			error instanceof Error ? error.message : "Failed to load task details";
+		console.error("❌ Failed to load task details:", error);
+	} finally {
+		_taskDetailsLoading = false;
+	}
+}
+
+async function _initializeSwarm() {
+	try {
+		_initLoading = true;
+		_initError = null;
+
+		const result = await apiClient.initializeAdvancedSwarm({
+			topology: swarmTopology,
+			maxAgents: swarmMaxAgents,
+			strategy: swarmStrategy,
+		});
+
+		console.log("✅ Swarm initialized:", result);
 		await loadSwarmStatus();
 
-		// Listen for project changes
-		const handleProjectChange = async () => {
-			await loadSwarmStatus();
-			// Clear cached data when project changes
-			swarmStats = null;
-			swarmTasks = [];
-			selectedTask = null;
-		};
-
-		window.addEventListener('projectChanged', handleProjectChange as EventListener);
-
-		return () => {
-			window.removeEventListener('projectChanged', handleProjectChange as EventListener);
-		};
-	});
-
-	async function loadSwarmStatus() {
-		try {
-			statusLoading = true;
-			swarmStatus = await apiClient.getSwarmStatus();
-			statusError = null;
-			console.log('🐝 Loaded swarm status:', swarmStatus);
-		} catch (error) {
-			statusError = error instanceof Error ? error.message : 'Failed to load swarm status';
-			console.error('❌ Failed to load swarm status:', error);
-		} finally {
-			statusLoading = false;
+		// Update swarmId for agent spawning
+		if (result?.data?.swarmId) {
+			agentSwarmId = result.data.swarmId;
 		}
+	} catch (error) {
+		_initError =
+			error instanceof Error ? error.message : "Failed to initialize swarm";
+		console.error("❌ Swarm initialization failed:", error);
+	} finally {
+		_initLoading = false;
+	}
+}
+
+async function _spawnAgent() {
+	if (!agentSwarmId) {
+		_agentSpawnError = "Please provide a swarm ID";
+		return;
 	}
 
-	async function loadSwarmStats() {
-		try {
-			statsLoading = true;
-			swarmStats = await apiClient.getSwarmStats();
-			statsError = null;
-			console.log('📊 Loaded swarm stats:', swarmStats);
-		} catch (error) {
-			statsError = error instanceof Error ? error.message : 'Failed to load swarm stats';
-			console.error('❌ Failed to load swarm stats:', error);
-		} finally {
-			statsLoading = false;
-		}
+	try {
+		_agentSpawningLoading = true;
+		_agentSpawnError = null;
+
+		const capabilities = agentCapabilities
+			.split(",")
+			.map((c) => c.trim())
+			.filter((c) => c);
+
+		const result = await apiClient.spawnSwarmAgent(agentSwarmId, {
+			type: agentType,
+			name: agentName || `${agentType}-agent-${Date.now()}`,
+			capabilities,
+		});
+
+		console.log("✅ Agent spawned:", result);
+
+		// Clear form
+		agentName = "";
+		agentCapabilities = "coordination,analysis";
+
+		// Refresh status
+		await loadSwarmStatus();
+	} catch (error) {
+		_agentSpawnError =
+			error instanceof Error ? error.message : "Failed to spawn agent";
+		console.error("❌ Agent spawning failed:", error);
+	} finally {
+		_agentSpawningLoading = false;
+	}
+}
+
+async function _orchestrateTask() {
+	if (!taskDescription) {
+		_taskCreationError = "Please provide a task description";
+		return;
 	}
 
-	async function loadSwarmTasks() {
-		try {
-			tasksLoading = true;
-			const result = await apiClient.getSwarmTasks();
-			swarmTasks = Array.isArray(result?.data) ? result.data : (result?.tasks || []);
-			tasksError = null;
-			console.log('📋 Loaded swarm tasks:', swarmTasks.length);
-		} catch (error) {
-			tasksError = error instanceof Error ? error.message : 'Failed to load swarm tasks';
-			console.error('❌ Failed to load swarm tasks:', error);
-		} finally {
-			tasksLoading = false;
-		}
+	try {
+		_taskCreationLoading = true;
+		_taskCreationError = null;
+
+		const result = await apiClient.orchestrateSwarmTask({
+			task: taskDescription,
+			strategy: taskStrategy,
+			priority: taskPriority,
+			maxAgents: taskMaxAgents,
+		});
+
+		console.log("✅ Task orchestrated:", result);
+
+		// Clear form
+		taskDescription = "";
+
+		// Refresh tasks
+		await loadSwarmTasks();
+	} catch (error) {
+		_taskCreationError =
+			error instanceof Error ? error.message : "Failed to orchestrate task";
+		console.error("❌ Task orchestration failed:", error);
+	} finally {
+		_taskCreationLoading = false;
+	}
+}
+
+async function _shutdownSwarm() {
+	if (
+		!confirm(
+			"Are you sure you want to shutdown the swarm? This will stop all agents and tasks.",
+		)
+	) {
+		return;
 	}
 
-	async function loadTaskDetails(taskId: string) {
-		try {
-			taskDetailsLoading = true;
-			selectedTask = await apiClient.getSwarmTasks(taskId);
-			taskDetailsError = null;
-			console.log('📄 Loaded task details:', selectedTask);
-		} catch (error) {
-			taskDetailsError = error instanceof Error ? error.message : 'Failed to load task details';
-			console.error('❌ Failed to load task details:', error);
-		} finally {
-			taskDetailsLoading = false;
-		}
+	try {
+		await apiClient.shutdownSwarm();
+		console.log("🛑 Swarm shutdown initiated");
+		await loadSwarmStatus();
+	} catch (error) {
+		console.error("❌ Swarm shutdown failed:", error);
+		alert(
+			`Failed to shutdown swarm: ${error instanceof Error ? error.message : String(error)}`,
+		);
 	}
+}
 
-	async function initializeSwarm() {
-		try {
-			initLoading = true;
-			initError = null;
-
-			const result = await apiClient.initializeAdvancedSwarm({
-				topology: swarmTopology,
-				maxAgents: swarmMaxAgents,
-				strategy: swarmStrategy
-			});
-
-			console.log('✅ Swarm initialized:', result);
-			await loadSwarmStatus();
-			
-			// Update swarmId for agent spawning
-			if (result?.data?.swarmId) {
-				agentSwarmId = result.data.swarmId;
-			}
-		} catch (error) {
-			initError = error instanceof Error ? error.message : 'Failed to initialize swarm';
-			console.error('❌ Swarm initialization failed:', error);
-		} finally {
-			initLoading = false;
-		}
+function _getStatusColor(status: string): string {
+	switch (status?.toLowerCase()) {
+		case "active":
+		case "healthy":
+		case "running":
+			return "success";
+		case "idle":
+		case "paused":
+			return "warning";
+		case "error":
+		case "failed":
+			return "error";
+		case "initializing":
+			return "tertiary";
+		default:
+			return "surface";
 	}
+}
 
-	async function spawnAgent() {
-		if (!agentSwarmId) {
-			agentSpawnError = 'Please provide a swarm ID';
-			return;
-		}
+function _formatUptime(seconds: number): string {
+	const minutes = Math.floor(seconds / 60);
+	const hours = Math.floor(minutes / 60);
+	const days = Math.floor(hours / 24);
 
-		try {
-			agentSpawningLoading = true;
-			agentSpawnError = null;
-
-			const capabilities = agentCapabilities.split(',').map(c => c.trim()).filter(c => c);
-
-			const result = await apiClient.spawnSwarmAgent(agentSwarmId, {
-				type: agentType,
-				name: agentName || `${agentType}-agent-${Date.now()}`,
-				capabilities
-			});
-
-			console.log('✅ Agent spawned:', result);
-			
-			// Clear form
-			agentName = '';
-			agentCapabilities = 'coordination,analysis';
-			
-			// Refresh status
-			await loadSwarmStatus();
-		} catch (error) {
-			agentSpawnError = error instanceof Error ? error.message : 'Failed to spawn agent';
-			console.error('❌ Agent spawning failed:', error);
-		} finally {
-			agentSpawningLoading = false;
-		}
-	}
-
-	async function orchestrateTask() {
-		if (!taskDescription) {
-			taskCreationError = 'Please provide a task description';
-			return;
-		}
-
-		try {
-			taskCreationLoading = true;
-			taskCreationError = null;
-
-			const result = await apiClient.orchestrateSwarmTask({
-				task: taskDescription,
-				strategy: taskStrategy,
-				priority: taskPriority,
-				maxAgents: taskMaxAgents
-			});
-
-			console.log('✅ Task orchestrated:', result);
-			
-			// Clear form
-			taskDescription = '';
-			
-			// Refresh tasks
-			await loadSwarmTasks();
-		} catch (error) {
-			taskCreationError = error instanceof Error ? error.message : 'Failed to orchestrate task';
-			console.error('❌ Task orchestration failed:', error);
-		} finally {
-			taskCreationLoading = false;
-		}
-	}
-
-	async function shutdownSwarm() {
-		if (!confirm('Are you sure you want to shutdown the swarm? This will stop all agents and tasks.')) {
-			return;
-		}
-
-		try {
-			await apiClient.shutdownSwarm();
-			console.log('🛑 Swarm shutdown initiated');
-			await loadSwarmStatus();
-		} catch (error) {
-			console.error('❌ Swarm shutdown failed:', error);
-			alert('Failed to shutdown swarm: ' + (error instanceof Error ? error.message : String(error)));
-		}
-	}
-
-	function getStatusColor(status: string): string {
-		switch (status?.toLowerCase()) {
-			case 'active':
-			case 'healthy':
-			case 'running': return 'success';
-			case 'idle':
-			case 'paused': return 'warning';
-			case 'error':
-			case 'failed': return 'error';
-			case 'initializing': return 'tertiary';
-			default: return 'surface';
-		}
-	}
-
-	function formatUptime(seconds: number): string {
-		const minutes = Math.floor(seconds / 60);
-		const hours = Math.floor(minutes / 60);
-		const days = Math.floor(hours / 24);
-		
-		if (days > 0) return `${days}d ${hours % 24}h`;
-		if (hours > 0) return `${hours}h ${minutes % 60}m`;
-		return `${minutes}m`;
-	}
+	if (days > 0) return `${days}d ${hours % 24}h`;
+	if (hours > 0) return `${hours}h ${minutes % 60}m`;
+	return `${minutes}m`;
+}
 </script>
 
 <svelte:head>

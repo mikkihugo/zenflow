@@ -17,8 +17,6 @@
  * @version 2.0.0 - XState Task Flow Management
  */
 
-import { assign, setup, fromPromise } from 'xstate';
-import { generateNanoId } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 
@@ -90,7 +88,7 @@ type ApprovalGateEvent =|{ type:'REQUEST_APPROVAL'; request: ApprovalRequest }|{
  * Create approval gate state machine
  */
 export function createApprovalGateMachine(config: ApprovalGateConfig) {
-  const logger = getLogger(`ApprovalGate:${config.gateId}`);`
+  const _logger = getLogger(`ApprovalGate:${config.gateId}`);`
 
   return setup({
     types: {
@@ -296,24 +294,20 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
       }),
     },
   }).createMachine({
-    id: `approvalGate_${config.gateId}`,`
-
-    context: {
+    id: `approvalGate_$config.gateId`,`
       config,
       queueDepth: 0,
       pendingRequests: [],
-      logger,
-    },
+      logger,,
 
     initial: 'idle',
 
-    states: {
-      idle: {
+    states: 
         entry: [
           { type: 'logTransition', params: { from: 'unknown', to: 'idle' } },
         ],
 
-        on: {
+        on: 
           REQUEST_APPROVAL: [
             {
               guard: 'isQueueFull',
@@ -331,13 +325,10 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
             },
           ],
 
-          UPDATE_CONFIG: {
-            actions: ['updateConfig'],
-          },
-        },
-      },
+          UPDATE_CONFIG: 
+            actions: ['updateConfig'],,,,
 
-      autoApproving: {
+      autoApproving: 
         entry: [
           {
             type: 'logTransition',
@@ -349,55 +340,41 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
           },
         ],
 
-        always: {
-          target: 'approved',
-        },
-      },
+        always: 
+          target: 'approved',,,
 
-      pending: {
+      pending: 
         entry: [
           { type: 'logTransition', params: { from: 'idle', to: 'pending' } },
         ],
 
-        invoke: {
+        invoke: 
           src: 'requestHumanApproval',
-          input: ({ context }) => ({ request: context.currentRequest! }),
+          input: (context ) => (request: context.currentRequest! ),
 
-          onDone: {
+          onDone: 
             target: 'deciding',
             actions: [
-              assign({
-                lastDecision: ({ event }) => event.output,
-              }),
-            ],
-          },
+              assign(
+                lastDecision: ({ event }) => event.output,),
+            ],,
 
-          onError: {
+          onError: 
             target: 'error',
             actions: [
-              {
                 type: 'setError',
-                params: { error: 'Human approval request failed' },
-              },
-            ],
-          },
-        },
+                params: error: 'Human approval request failed' ,,
+            ],,,
 
-        after: {
-          [config.humanApprovalTimeout]: {
-            target: 'timeout',
-          },
-        },
+        after: 
+          [config.humanApprovalTimeout]: 
+            target: 'timeout',,,
 
-        on: {
-          HUMAN_DECISION: {
+        on: 
             target: 'deciding',
-            actions: ['storeDecision'],
-          },
-        },
-      },
+            actions: ['storeDecision'],,,,
 
-      deciding: {
+      deciding: 
         entry: [
           {
             type: 'logTransition',
@@ -406,17 +383,12 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
         ],
 
         always: [
-          {
             guard: ({ context }) => context.lastDecision?.approved === true,
-            target: 'approved',
-          },
-          {
-            target: 'rejected',
-          },
-        ],
-      },
+            target: 'approved',,
+            target: 'rejected',,
+        ],,
 
-      approved: {
+      approved: 
         entry: [
           {
             type: 'logTransition',
@@ -425,15 +397,12 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
           'removeFromQueue',
         ],
 
-        after: {
-          100: {
+        after: 
+          100: 
             target: 'idle',
-            actions: ['clearCurrentRequest'],
-          },
-        },
-      },
+            actions: ['clearCurrentRequest'],,,,
 
-      rejected: {
+      rejected: 
         entry: [
           {
             type: 'logTransition',
@@ -442,87 +411,64 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
           'removeFromQueue',
         ],
 
-        after: {
-          100: {
+        after: 
+          100: 
             target: 'idle',
-            actions: ['clearCurrentRequest'],
-          },
-        },
-      },
+            actions: ['clearCurrentRequest'],,,,
 
-      overflow: {
+      overflow: 
         entry: [
           { type: 'logTransition', params: { from: 'idle', to: 'overflow' } },
         ],
 
-        invoke: {
+        invoke: 
           src: 'handleOverflow',
-          input: ({ context }) => ({
+          input: (context ) => (
             request: context.currentRequest!,
-            behavior: context.config.onQueueFull,
-          }),
+            behavior: context.config.onQueueFull,),
 
           onDone: [
-            {
               guard: ({ event }) => event.output.approved,
               target: 'approved',
               actions: [
-                assign({
-                  lastDecision: ({ event }) => event.output,
-                }),
-              ],
-            },
-            {
+                assign(
+                  lastDecision: ({ event }) => event.output,),
+              ],,
               target: 'rejected',
               actions: [
-                assign({
-                  lastDecision: ({ event }) => event.output,
-                }),
-              ],
-            },
+                assign(
+                  lastDecision: ({ event }) => event.output,),
+              ],,
           ],
 
-          onError: {
+          onError: 
             target: 'error',
             actions: [
-              {
                 type: 'setError',
-                params: { error: 'Overflow handling failed' },
-              },
-            ],
-          },
-        },
-      },
+                params: error: 'Overflow handling failed' ,,
+            ],,,,
 
-      timeout: {
+      timeout: 
         entry: [
           { type: 'logTransition', params: { from: 'pending', to: 'timeout' } },
           { type: 'autoReject', params: { reason: 'Human approval timeout' } },
         ],
 
-        always: {
-          target: 'rejected',
-        },
-      },
+        always: 
+          target: 'rejected',,,
 
-      error: {
+      error: 
         entry: [
           { type: 'logTransition', params: { from: 'unknown', to: 'error' } },
         ],
 
-        on: {
-          RESET: {
+        on: 
             target: 'idle',
             actions: [
-              assign({
+              assign(
                 error: undefined,
-                currentRequest: undefined,
-              }),
-            ],
-          },
-        },
-      },
-    },
+                currentRequest: undefined,),
+            ],,,,,
   });
 }
 
@@ -566,7 +512,7 @@ export class ApprovalGateManager {
    */
   async requestApproval(
     gateId: string,
-    request: ApprovalRequest
+    _request: ApprovalRequest
   ): Promise<ApprovalDecision> {
     const gate = this.gates.get(gateId);
     if (!gate) {
@@ -603,7 +549,7 @@ export class ApprovalGateManager {
   getGateStatus(gateId: string) {
     const gate = this.gates.get(gateId);
     if (!gate) {
-      throw new Error(`Approval gate not found: ${gateId}`);`
+      throw new Error(`Approval gate not found: $gateId`);`
     }
 
     const snapshot = gate.getSnapshot();
@@ -620,7 +566,7 @@ export class ApprovalGateManager {
   /**
    * Update gate configuration
    */
-  updateGateConfig(gateId: string, config: Partial<ApprovalGateConfig>) {
+  updateGateConfig(gateId: string, _config: Partial<ApprovalGateConfig>) {
     const gate = this.gates.get(gateId);
     if (!gate) {
       throw new Error(`Approval gate not found: ${gateId}`);`

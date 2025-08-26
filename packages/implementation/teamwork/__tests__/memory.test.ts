@@ -1,10 +1,9 @@
-import type { AgentId } from '../src/types';
 import { TeamworkStorage } from '../src/storage';
-import type { ConversationSession } from '../src/types';
+import type { AgentId, ConversationSession } from '../src/types';
 
 describe('TeamworkStorage - Classical TDD', () => {'
   let storage: TeamworkStorage;
-  let mockBackend: unknown;
+  let _mockBackend: unknown;
 
   const sampleAgents: AgentId[] = [
     { id: 'agent-1', swarmId: 'test-swarm', type: 'coder', instance: 0 },
@@ -101,7 +100,7 @@ describe('TeamworkStorage - Classical TDD', () => {'
 
       // Verify messages are preserved with exact content
       expect(retrieved?.messages).toHaveLength(1);
-      expect(retrieved!.messages[0]!.content.text).toBe('Test message');'
+      expect(retrieved?.messages[0]?.content.text).toBe('Test message');'
       expect(retrieved!.messages[0]!.metadata.tags).toEqual([
         'test',
         'storage',
@@ -109,7 +108,7 @@ describe('TeamworkStorage - Classical TDD', () => {'
 
       // Verify outcomes are preserved
       expect(retrieved?.outcomes).toHaveLength(1);
-      expect(retrieved!.outcomes[0]!.type).toBe('solution');'
+      expect(retrieved?.outcomes[0]?.type).toBe('solution');'
       expect(retrieved!.outcomes[0]!.confidence).toBe(0.95);
 
       // Verify metrics are preserved with exact values
@@ -125,7 +124,7 @@ describe('TeamworkStorage - Classical TDD', () => {'
 
     it('should return null for non-existent conversation', async () => {'
       // Act
-      const result = await storage.getSession('non-existent');'
+      const _result = await storage.getSession('non-existent');'
 
       // Assert
       expect(result).toBeNull();
@@ -226,8 +225,8 @@ describe('TeamworkStorage - Classical TDD', () => {'
       expect(foundIds).toEqual(['conv-1', 'conv-2']);'
 
       // Verify the conversations are correctly retrieved
-      const conv1 = agent1Conversations.find((c) => c.id === 'conv-1');'
-      const conv2 = agent1Conversations.find((c) => c.id === 'conv-2');'
+      const _conv1 = agent1Conversations.find((c) => c.id === 'conv-1');'
+      const _conv2 = agent1Conversations.find((c) => c.id === 'conv-2');'
 
       expect(conv1?.title).toBe('Agent 1 Conversation');'
       expect(conv2?.title).toBe('Both Agents Conversation');'
@@ -360,7 +359,7 @@ describe('TeamworkStorage - Classical TDD', () => {'
 
       // Assert
       expect(reviewConversations).toHaveLength(1);
-      expect(reviewConversations[0]!.id).toBe('conv-review-1');'
+      expect(reviewConversations[0]?.id).toBe('conv-review-1');'
       expect(reviewConversations[0]!.context.domain).toBe('code-review');'
     });
   });
@@ -460,7 +459,7 @@ describe('TeamworkStorage - Classical TDD', () => {'
       expect(updatedConversation!.messages[0]!.content.text).toBe(
         'Original message''
       );
-      expect(updatedConversation!.messages[1]!.content.text).toBe(
+      expect(updatedConversation?.messages[1]?.content.text).toBe(
         'New message after update''
       );
     });
@@ -468,7 +467,7 @@ describe('TeamworkStorage - Classical TDD', () => {'
     it('should throw error when updating non-existent conversation', async () => {'
       // Act & Assert
       await expect(
-        storage.updateSession('non-existent', { status: 'completed' })'
+        storage.updateSession('non-existent', status: 'completed' )'
       ).rejects.toThrow('Conversation non-existent not found');'
     });
   });
@@ -504,14 +503,14 @@ describe('TeamworkStorage - Classical TDD', () => {'
       await storage.storeSession(conversation);
 
       // Verify it exists
-      const beforeDelete = await storage.getSession('conv-delete-test');'
+      const _beforeDelete = await storage.getSession('conv-delete-test');'
       expect(beforeDelete).not.toBeNull();
 
       // Act
       await storage.deleteSession('conv-delete-test');'
 
       // Assert
-      const afterDelete = await storage.getSession('conv-delete-test');'
+      const _afterDelete = await storage.getSession('conv-delete-test');'
       expect(afterDelete).toBeNull();
 
       // Verify it's removed from agent indexes'
@@ -565,10 +564,9 @@ describe('TeamworkStorage - Classical TDD', () => {'
 
       const retrieved1 = await storage.getSession('conv-consistency-test');'
 
-      await storage.updateSession('conv-consistency-test', {'
+      await storage.updateSession('conv-consistency-test', '
         status: 'paused',
-        metrics: { ...conversation.metrics, messageCount: 5 },
-      });
+        metrics: ...conversation.metrics, messageCount: 5 ,);
 
       const retrieved2 = await storage.getSession('conv-consistency-test');'
 

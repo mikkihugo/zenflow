@@ -3,15 +3,14 @@
  * Advanced git metrics, hotspot detection, and contributor analysis
  */
 
-import { simpleGit, SimpleGit, LogResult, StatusResult } from 'simple-git';
-import * as fastGlob from 'fast-glob';
 import { getLogger } from '@claude-zen/foundation';
+import { type LogResult, type SimpleGit, type StatusResult, simpleGit } from 'simple-git';
 import type {
-  GitMetrics,
-  GitHotFile,
-  ContributorStats,
-  BranchMetrics,
   AnalysisOptions,
+  BranchMetrics,
+  ContributorStats,
+  GitHotFile,
+  GitMetrics,
 } from '../types/index.js';
 
 export class GitAnalyzer {
@@ -43,7 +42,7 @@ export class GitAnalyzer {
     ]);
 
     const commits = this.getSettledValue(logResult, []);
-    const status = this.getSettledValue(statusResult, null);
+    const _status = this.getSettledValue(statusResult, null);
     const branches = this.getSettledValue(
       branchResult,
       this.getEmptyBranchMetrics()
@@ -148,7 +147,7 @@ export class GitAnalyzer {
 
       for (const commit of commits) {
         const author = commit.author_name;
-        const email = commit.author_email;
+        const _email = commit.author_email;
         const date = new Date(commit.date);
 
         if (!contributorMap.has(author)) {
@@ -288,15 +287,15 @@ export class GitAnalyzer {
               const insertions = m.match(/(\d+)\s+insertions?\(\+\)/);
               const deletions = m.match(/(\d+)\s+deletions?\(-\)/);
 
-              if (insertions) linesAdded += parseInt(insertions[1]);
-              if (deletions) linesDeleted += parseInt(deletions[1]);
+              if (insertions) linesAdded += parseInt(insertions[1], 10);
+              if (deletions) linesDeleted += parseInt(deletions[1], 10);
             }
           }
         }
       }
 
       return { linesAdded, linesDeleted, filesModified };
-    } catch (error) {
+    } catch (_error) {
       return { linesAdded: 0, linesDeleted: 0, filesModified: 0 };
     }
   }
@@ -311,7 +310,7 @@ export class GitAnalyzer {
         commitHash,
       ]);
       return diff.split('\n').filter((file) => file.trim() !== ');'
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }
@@ -337,7 +336,7 @@ export class GitAnalyzer {
   /**
    * Calculate file change frequency
    */
-  private calculateFileChangeFrequency(commits: any[]): Record<string, number> {
+  private calculateFileChangeFrequency(_commits: any[]): Record<string, number> {
     const frequency: Record<string, number> = {};
 
     // This would require parsing commit diffs
@@ -387,7 +386,7 @@ export class GitAnalyzer {
    */
   private async estimateFileComplexity(filePath: string): Promise<number> {
     try {
-      const fs = await import('fs/promises');'
+      const fs = await import('node:fs/promises');'
       const content = await fs.readFile(filePath, 'utf-8');'
 
       // Simple complexity estimation
@@ -400,7 +399,7 @@ export class GitAnalyzer {
       ).length;
 
       return Math.min(100, lines * 0.1 + functions * 2 + conditionals * 3);
-    } catch (error) {
+    } catch (_error) {
       return 10; // Default complexity
     }
   }

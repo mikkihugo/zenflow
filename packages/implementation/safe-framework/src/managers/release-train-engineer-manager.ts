@@ -14,9 +14,8 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 /**
  * RTE Manager configuration
@@ -56,36 +55,36 @@ export interface FacilitationConfig {
   readonly participantEngagementTracking: boolean;
 }
 
-// Re-export types from services for backward compatibility
-export type {
-  ScrumOfScrumsConfig,
-  ScrumOfScrumsParticipant,
-  ParticipationRecord,
-  ScrumOfScrumsAgenda,
-  ProgramImpediment,
-  ImpedimentCategory,
-  ImpedimentSeverity,
-  ImpedimentStatus,
-  ImpedimentEscalationLevel,
-} from '../services/rte/scrum-of-scrums-service';
-
-export type {
-  ProgramPredictability,
-  PredictabilityTrend,
-  ProgramSynchronization,
-  MultiARTCoordination,
-  BusinessImpactAssessment,
-  QualityImpactLevel,
-  CustomerImpactLevel,
-  MoraleImpactLevel,
-} from '../services/rte/program-predictability-service';
 
 export type {
   PIPlanningEventConfig,
-  PlanningParticipant,
   PlanningAgenda,
   PlanningFacilitationResult,
+  PlanningParticipant,
 } from '../services/rte/pi-planning-facilitation-service';
+
+export type {
+  BusinessImpactAssessment,
+  CustomerImpactLevel,
+  MoraleImpactLevel,
+  MultiARTCoordination,
+  PredictabilityTrend,
+  ProgramPredictability,
+  ProgramSynchronization,
+  QualityImpactLevel,
+} from '../services/rte/program-predictability-service';
+// Re-export types from services for backward compatibility
+export type {
+  ImpedimentCategory,
+  ImpedimentEscalationLevel,
+  ImpedimentSeverity,
+  ImpedimentStatus,
+  ParticipationRecord,
+  ProgramImpediment,
+  ScrumOfScrumsAgenda,
+  ScrumOfScrumsConfig,
+  ScrumOfScrumsParticipant,
+} from '../services/rte/scrum-of-scrums-service';
 
 export class ReleaseTrainEngineerManager extends TypedEventBase {
   private logger: Logger;
@@ -192,7 +191,7 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
 
     try {
       // Configure Scrum of Scrums
-      const config = await this.scrumOfScrumsService.configureScrumsOfScrums(
+      const _config = await this.scrumOfScrumsService.configureScrumsOfScrums(
         artId,
         {
           frequency: this.config.scrumOfScrumsFrequency,
@@ -476,7 +475,7 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
   async facilitateInspectAndAdapt(
     piId: string,
     artId: string,
-    config: any
+    _config: any
   ): Promise<any> {
     return {
       piId,
@@ -489,7 +488,7 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
 
   async manageSystemDemo(config: any): Promise<any> {
     return {
-      demoId: 'demo-' + Date.now(),
+      demoId: `demo-${Date.now()}`,
       piId: config.piId,
       artId: config.artId,
       demoStatus: 'scheduled',

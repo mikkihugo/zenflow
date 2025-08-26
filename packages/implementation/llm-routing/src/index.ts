@@ -24,26 +24,23 @@
  */
 
 // Configuration exports
-export * from './config/index';
-
-// Statistics exports
-export * from './stats/index';
-
-// Type exports
-export * from './types/index';
-
-// Main service class
-export { default as LLMStatsService } from './stats/llm-stats-service';
-
+export * from "./config/index";
 // Convenience exports for common usage
 export {
-  LLM_PROVIDER_CONFIG,
-  ROUTING_STRATEGY,
-  getOptimalProvider,
-  addProvider,
-  removeProvider,
-  updateProvider,
-  getProvider,
-  getProviderIds,
-  getProvidersByCapability,
-} from './config/providers';
+	addProvider,
+	getOptimalProvider,
+	getProvider,
+	getProviderIds,
+	getProvidersByCapability,
+	LLM_PROVIDER_CONFIG,
+	ROUTING_STRATEGY,
+	removeProvider,
+	updateProvider,
+} from "./config/providers";
+// Statistics exports
+export * from "./stats/index";
+
+// Main service class
+export { default as LLMStatsService } from "./stats/llm-stats-service";
+// Type exports
+export * from "./types/index";

@@ -31,5 +31,4 @@ export declare class FoundationMemoryBackend extends BaseMemoryBackend {
   private updateStats;
   private matchesPattern;
 }
-export {};
 //# sourceMappingURL=foundation-adapter.d.ts.map

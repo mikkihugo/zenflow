@@ -124,13 +124,10 @@ export class RunwayItemManagementService {
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -139,10 +136,9 @@ export class RunwayItemManagementService {
 
       // Lazy load @claude-zen/workflows for approval workflows
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 5,
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
@@ -181,7 +177,7 @@ export class RunwayItemManagementService {
   ): Promise<ArchitectureRunwayItem> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('add_runway_item');'
+    const _timer = this.performanceTracker.startTimer('add_runway_item');'
 
     try {
       this.logger.info('Adding runway item with AI optimization', {'
@@ -266,7 +262,7 @@ export class RunwayItemManagementService {
 
       if (!statusTransition.isValid) {
         throw new Error(
-          `Invalid status transition: ${statusTransition.reason}``
+          `Invalid status transition: $statusTransition.reason``
         );
       }
 
@@ -281,19 +277,17 @@ export class RunwayItemManagementService {
 
       this.performanceTracker.endTimer('update_runway_item_status');'
 
-      this.logger.info('Runway item status updated', {'
+      this.logger.info('Runway item status updated', '
         itemId,
         oldStatus: item.status,
         newStatus,
-        title: item.title,
-      });
+        title: item.title,);
 
       return updatedItem;
-    } catch (error) {
+    } catch (error) 
       this.performanceTracker.endTimer('update_runway_item_status');'
       this.logger.error('Failed to update runway item status:', error);'
       throw error;
-    }
   }
 
   /**
@@ -302,7 +296,7 @@ export class RunwayItemManagementService {
   async getRunwayPlanningDashboard(): Promise<RunwayPlanningDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'generate_runway_dashboard');'
 
     try {
@@ -327,10 +321,9 @@ export class RunwayItemManagementService {
 
       this.performanceTracker.endTimer('generate_runway_dashboard');'
 
-      this.logger.info('Runway planning dashboard generated', {'
+      this.logger.info('Runway planning dashboard generated', '
         totalItems: dashboard.totalItems,
-        blockedItems: dashboard.blockedItems.length,
-      });
+        blockedItems: dashboard.blockedItems.length,);
 
       return dashboard;
     } catch (error) {
@@ -343,21 +336,19 @@ export class RunwayItemManagementService {
   /**
    * Get all runway items
    */
-  getAllRunwayItems(): ArchitectureRunwayItem[] {
+  getAllRunwayItems(): ArchitectureRunwayItem[] 
     return Array.from(this.runwayItems.values())();
-  }
 
   /**
    * Get runway item by ID
    */
-  getRunwayItem(itemId: string): ArchitectureRunwayItem | undefined {
+  getRunwayItem(itemId: string): ArchitectureRunwayItem | undefined 
     return this.runwayItems.get(itemId);
-  }
 
   /**
    * Shutdown service gracefully
    */
-  async shutdown(): Promise<void> {
+  async shutdown(): Promise<void> 
     if (this.brainCoordinator?.shutdown) {
       await this.brainCoordinator.shutdown();
     }
@@ -369,7 +360,6 @@ export class RunwayItemManagementService {
     }
     this.initialized = false;
     this.logger.info('Runway Item Management Service shutdown complete');'
-  }
 
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
@@ -377,7 +367,7 @@ export class RunwayItemManagementService {
 
   private async requestGovernanceApproval(
     item: ArchitectureRunwayItem
-  ): Promise<any> {
+  ): Promise<any> 
     try {
       const approval = await this.aguiService.createApprovalTask({
         taskType: 'runway_item_governance',
@@ -392,11 +382,10 @@ export class RunwayItemManagementService {
       this.logger.error('Governance approval request failed:', error);'
       return { approved: false, reason: 'approval_system_error' };'
     }
-  }
 
   private groupItemsByStatus(
     items: ArchitectureRunwayItem[]
-  ): Record<string, number> {
+  ): Record<string, number> 
     return items.reduce(
       (groups, item) => {
         groups[item.status] = (groups[item.status] || 0) + 1;
@@ -404,11 +393,10 @@ export class RunwayItemManagementService {
       },
       {} as Record<string, number>
     );
-  }
 
   private groupItemsByPriority(
     items: ArchitectureRunwayItem[]
-  ): Record<string, number> {
+  ): Record<string, number> 
     return items.reduce(
       (groups, item) => {
         groups[item.priority] = (groups[item.priority] || 0) + 1;
@@ -416,7 +404,6 @@ export class RunwayItemManagementService {
       },
       {} as Record<string, number>
     );
-  }
 }
 
 export default RunwayItemManagementService;

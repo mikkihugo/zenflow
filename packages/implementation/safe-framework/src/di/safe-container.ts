@@ -11,16 +11,12 @@
  */
 
 import {
-  DIContainer,
-  createContainer,
-  Lifecycle,
+  type DIContainer,getLogger, 
 } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-import { SAFE_TOKENS, AI_ENHANCEMENT_TOKENS, INTERFACE_TOKENS } from './tokens';
 import type {
-  OptionalAIEnhancements,
   AIEnhancementConfig,
 } from '../interfaces/ai-enhancements';
+import { AI_ENHANCEMENT_TOKENS, INTERFACE_TOKENS, } from './tokens';
 
 const logger = getLogger('SAFeContainer');'
 
@@ -31,7 +27,7 @@ export class SafeContainer {
   private container: DIContainer;
   private initialized = false;
 
-  constructor(name: string = 'safe-framework') {'
+  constructor(_name: string = 'safe-framework') {'
     this.container = createContainer(name);
   }
 
@@ -62,104 +58,6 @@ export class SafeContainer {
       logger.error('Failed to configure SAFe container:', error);'
       throw error;
     }
-  }
-
-  /**
-   * Register core SAFe services (always required)
-   */
-  private registerCoreSAFeServices(config: SafeContainerConfig): void {
-    const { coreServices } = config;
-
-    // Core infrastructure services
-    if (coreServices.logger) {
-      this.container.registerInstance(SAFE_TOKENS.Logger, coreServices.logger);
-    }
-
-    if (coreServices.memorySystem) {
-      this.container.registerInstance(
-        SAFE_TOKENS.MemorySystem,
-        coreServices.memorySystem
-      );
-    }
-
-    if (coreServices.eventBus) {
-      this.container.registerInstance(
-        SAFE_TOKENS.EventBus,
-        coreServices.eventBus
-      );
-    }
-
-    if (coreServices.config) {
-      this.container.registerInstance(SAFE_TOKENS.Config, coreServices.config);
-    }
-
-    // Portfolio level services
-    if (coreServices.epicLifecycleService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.EpicLifecycleService,
-        coreServices.epicLifecycleService
-      );
-    }
-
-    if (coreServices.businessCaseService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.BusinessCaseService,
-        coreServices.businessCaseService
-      );
-    }
-
-    // Architecture services
-    if (coreServices.runwayItemService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.RunwayItemService,
-        coreServices.runwayItemService
-      );
-    }
-
-    if (coreServices.technicalDebtService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.TechnicalDebtService,
-        coreServices.technicalDebtService
-      );
-    }
-
-    if (coreServices.architectureDecisionService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.ArchitectureDecisionService,
-        coreServices.architectureDecisionService
-      );
-    }
-
-    if (coreServices.capabilityService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.CapabilityService,
-        coreServices.capabilityService
-      );
-    }
-
-    // DevSecOps services
-    if (coreServices.securityScanningService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.SecurityScanningService,
-        coreServices.securityScanningService
-      );
-    }
-
-    if (coreServices.complianceMonitoringService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.ComplianceMonitoringService,
-        coreServices.complianceMonitoringService
-      );
-    }
-
-    if (coreServices.incidentResponseService) {
-      this.container.registerSingleton(
-        SAFE_TOKENS.IncidentResponseService,
-        coreServices.incidentResponseService
-      );
-    }
-
-    logger.debug('Core SAFe services registered');'
   }
 
   /**
@@ -370,7 +268,7 @@ export class SafeContainer {
         return this.container.resolve<T>(token);
       }
       return undefined;
-    } catch (error) {
+    } catch (_error) {
       logger.debug(
         `Optional dependency ${String(token)} not available:`,`
         error

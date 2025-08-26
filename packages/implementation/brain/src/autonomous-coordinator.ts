@@ -19,7 +19,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import regression from 'regression';
 import * as ss from 'simple-statistics';
 
 import type { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
@@ -63,14 +62,12 @@ export interface ScalingDecision {
  * without requiring human intervention. Continuously learns and adapts.
  */
 export class AutonomousCoordinator {
-  private behavioralIntelligence: BehavioralIntelligence|null = null;
   private optimizationEngine: AutonomousOptimizationEngine|null = null;
   private initialized = false;
 
   // System monitoring and learning
   private systemMetricsHistory: SystemMetrics[] = [];
   private decisionHistory: AutonomousDecision[] = [];
-  private performanceBaselines: Map<string, number> = new Map();
 
   // Autonomous decision parameters (self-tuning)
   private autonomousConfig = {
@@ -108,7 +105,7 @@ export class AutonomousCoordinator {
    * Initialize autonomous coordination system
    */
   async initialize(
-    behavioralIntelligence?: BehavioralIntelligence,
+    _behavioralIntelligence?: BehavioralIntelligence,
     optimizationEngine?: AutonomousOptimizationEngine
   ): Promise<void> {
     if (this.initialized) return;
@@ -238,23 +235,22 @@ export class AutonomousCoordinator {
           `CPU: ${(metrics.cpuUsage * 100).toFixed(1)}% (${cpuPressure})`,`
           `Memory: ${(metrics.memoryUsage * 100).toFixed(1)}% (${memoryPressure})`,`
           `Response time: ${metrics.averageResponseTime}ms (${timePressure})`,`
-          `Response time analysis: ${responseTimeAnalysis.category} (${responseTimeAnalysis.severity})`,`
+          `Response time analysis: $responseTimeAnalysis.category($responseTimeAnalysis.severity)`,`
           `Initiating emergency resource reallocation`,`
         ],
         confidence: 0.95,
         expectedImpact: 0.8,
         timestamp: Date.now(),
-        parameters: {
+        parameters: 
           cpuPressure,
           memoryPressure,
           timePressure,
           redistributeLoad: true,
-          prioritizeHigh: true,
-        },
+          prioritizeHigh: true,,
       };
     }
 
-    if (cpuPressure === 'high' && memoryPressure === 'high') {'
+    if (_cpuPressure === 'high' && _memoryPressure === 'high') {'
       return {
         type: 'resource_allocation',
         action: 'optimize_resource_allocation',
@@ -338,7 +334,7 @@ export class AutonomousCoordinator {
         (profile) => profile.averagePerformance < 0.4
       );
 
-      if (underperformers.length > 0) {
+      if (underperformers._length > 0) {
         return {
           type: 'agent_routing',
           action: 'redirect_from_underperformers',
@@ -770,7 +766,7 @@ export class AutonomousCoordinator {
     switch (type) {
       case 'resource_allocation':'
         Object.keys(this.autonomousConfig.resourceThresholds).forEach(
-          (resource: string) => {
+          (_resource: string) => {
             const thresholds = (
               this.autonomousConfig.resourceThresholds as Record<string, any>
             )[resource];
@@ -1157,7 +1153,7 @@ export class AutonomousCoordinator {
   private async calculateLoadBalancingEfficiency(agentProfiles: Map<string, any>): Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 75));
     const loads = Array.from(agentProfiles.values()).map(p => p.currentLoad || 0.5);
-    const variance = loads.reduce((sum, load) => sum + Math.pow(load - 0.5, 2), 0) / loads.length;
+    const variance = loads.reduce((sum, load) => sum + (load - 0.5) ** 2, 0) / loads.length;
     return Math.max(0, 1 - variance);
   }
 

@@ -7,7 +7,6 @@
 import type {
   Domain,
   DomainBoundaryValidator,
-  DomainValidationError,
   Result,
   TypeSchema,
 } from './types;

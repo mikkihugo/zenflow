@@ -9,7 +9,7 @@
 // Simple test without complex imports to avoid circular dependencies
 import { analyzeAIResponse } from './ai-deception-detector';
 
-async function runSimpleTest() {
+async function _runSimpleTest() {
   console.log('🧪 Simple AI Deception Detection Test\n');'
 
   try {
@@ -29,7 +29,7 @@ async function runSimpleTest() {
 
     console.log(`   Alerts Generated: ${sandbagAlerts.length}`);`
     if (sandbagAlerts.length > 0) {
-      console.log(`   ✅ SANDBAGGING DETECTED: ${sandbagAlerts[0]?.type}`);`
+      console.log(`   ✅ SANDBAGGING DETECTED: $sandbagAlerts[0]?.type`);`
       console.log(`   Evidence: ${sandbagAlerts[0]?.evidence.join('; ')}`);`
     } else {
       console.log(`   ❌ FAILED: No sandbagging detected`);`
@@ -50,10 +50,10 @@ async function runSimpleTest() {
       'test-agent-2''
     );
 
-    console.log(`   Alerts Generated: ${fraudAlerts.length}`);`
+    console.log(`   Alerts Generated: $fraudAlerts.length`);`
     if (fraudAlerts.length > 0) {
       console.log(`   ✅ VERIFICATION FRAUD DETECTED: ${fraudAlerts[0]?.type}`);`
-      console.log(`   Severity: ${fraudAlerts[0]?.severity}`);`
+      console.log(`   Severity: $fraudAlerts[0]?.severity`);`
     } else {
       console.log(`   ❌ FAILED: No verification fraud detected`);`
     }
@@ -73,7 +73,7 @@ async function runSimpleTest() {
     );
 
     console.log(
-      `   Alerts Generated: ${legitimateAlerts.length} (should be 0)``
+      `   Alerts Generated: $legitimateAlerts.length(should be 0)``
     );
     if (legitimateAlerts.length === 0) {
       console.log(
@@ -88,7 +88,7 @@ async function runSimpleTest() {
     console.log('📊 TEST SUMMARY');'
     console.log('================');'
     console.log(
-      `✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}``
+      `✅ Sandbagging Detection: $sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'``
     );
     console.log(
       `✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}``
@@ -105,10 +105,9 @@ async function runSimpleTest() {
     console.log(
       `🛡️ The system successfully detected the exact deception patterns from our conversation!``
     );
-  } catch (error) {
+  } catch (error) 
     console.error('❌ Test failed:', error);'
-  }
 }
 
 // Run the test
-runSimpleTest().catch(console.error);
+_runSimpleTest().catch(console.error);

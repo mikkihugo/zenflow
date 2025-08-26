@@ -68,7 +68,6 @@ const createEvent = (
 });
 
 import {
-  createDefaultWorkflowConfig,
   createWorkflowMachine,
   type WorkflowMachineContext,
 } from '../state-machines/workflow';
@@ -76,23 +75,18 @@ import {
 import type {
   BottleneckReport,
   FlowMetrics,
-  HealthCheckResult,
   KanbanOperationResult,
   TaskMovementResult,
   TaskState,
-  TimeRange,
-  WIPLimits,
   WorkflowBottleneck,
   WorkflowKanbanConfig,
-  WorkflowStatistics,
   WorkflowTask,
 } from '../types/index';
 import {
   ImmutableMetricsUtils,
   ImmutableTaskUtils,
-  ImmutableWIPUtils,
 } from '../utilities/immutable-utils';
-import { validateTaskCreation, validateWIPLimits } from '../utils/validation';
+import { validateTaskCreation, } from '../utils/validation';
 
 // =============================================================================
 // WORKFLOW KANBAN EVENTS
@@ -169,28 +163,20 @@ export interface WorkflowKanbanEvents {
 export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   private readonly logger: Logger;
   private readonly config: WorkflowKanbanConfig;
-  private readonly eventBus?: TypeSafeEventBus;
 
   private workflowMachine: ActorRef<any, any>|null = null;
   private machine: ReturnType<typeof createWorkflowMachine>;
   private initialized = false;
   private readonly taskIndex = new Map<string, WorkflowTask>();
 
-  // Performance tracking
-  private readonly performanceMetrics = {
-    operationsPerSecond: 0,
-    averageResponseTime: 0,
-    lastOperationTime: Date.now(),
-  };
-
   constructor(
-    config: Partial<WorkflowKanbanConfig> = {},
+    _config: Partial<WorkflowKanbanConfig> = {},
     eventBus?: TypeSafeEventBus
   ) {
     super();
 
     this.logger = getLogger('WorkflowKanban');'
-    this.config = { ...createDefaultWorkflowConfig(), ...config };
+    this.config = ...createDefaultWorkflowConfig(), ...config ;
     this.eventBus = eventBus;
     this.machine = createWorkflowMachine(this.config);
 
@@ -238,10 +224,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       this.logger.info('WorkflowKanban initialized successfully');'
 
       // Emit initialization event
-      this.emitCoordinationEvent('workflow:initialized', {'
+      this.emitCoordinationEvent('workflow:initialized', '
         timestamp: new Date(),
-        config: this.config,
-      });
+        config: this.config,);
     } catch (error) {
       this.logger.error('Failed to initialize WorkflowKanban:', error);'
       this.emit('error', error as Error, 'initialization');'
@@ -291,7 +276,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   }): Promise<KanbanOperationResult<WorkflowTask>> {
     this.ensureInitialized();
 
-    const startTime = performance.now();
+    const _startTime = performance.now();
 
     try {
       // Validate input with Zod for runtime safety
@@ -366,10 +351,10 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     try {
       const task = this.taskIndex.get(taskId);
       if (!task) {
-        throw new Error(`Task not found: ${taskId}`);`
+        throw new Error(`Task not found: $taskId`);`
       }
 
-      const fromState = task.state;
+      const _fromState = task.state;
 
       // Check WIP limits before moving
       const wipCheck = await this.checkWIPLimits(toState);
@@ -542,7 +527,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     const validation = validateWIPLimits(updatedLimits);
     if (!validation.success) {
       throw new Error(
-        `Invalid WIP limits: ${validation.error.issues.map((i) => i.message).join(', ')}``
+        `Invalid WIP limits: $validation.error.issues.map((i) => i.message).join(', ')``
       );
     }
 
@@ -737,13 +722,12 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       this.emit('bottleneck:detected', bottleneck);'
 
       // Send to XState machine
-      this.workflowMachine?.send({
+      this.workflowMachine?.send(
         type: 'BOTTLENECK_DETECTED',
-        bottleneck,
-      });
+        bottleneck,);
     }
 
-    const report: BottleneckReport = {
+    const _report: BottleneckReport = {
       reportId: `report-${timestamp.getTime()}`,`
       generatedAt: timestamp,
       timeRange: {

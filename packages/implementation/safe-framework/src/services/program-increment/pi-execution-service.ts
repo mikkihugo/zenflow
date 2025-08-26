@@ -24,7 +24,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -298,7 +297,6 @@ export class PIExecutionService extends TypedEventBase {
   private readonly executionTimers = new Map<string, NodeJS.Timeout>();
   private brainCoordinator: any;
   private performanceTracker: any;
-  private eventBus: any;
   private factSystem: any;
   private initialized = false;
 
@@ -356,7 +354,7 @@ export class PIExecutionService extends TypedEventBase {
 
     this.logger.debug('Tracking PI progress', { piId });'
 
-    const timer = this.performanceTracker.startTimer('pi_progress_tracking');'
+    const _timer = this.performanceTracker.startTimer('pi_progress_tracking');'
 
     try {
       // Gather execution data from multiple sources
@@ -474,13 +472,12 @@ export class PIExecutionService extends TypedEventBase {
 
       this.performanceTracker.endTimer('pi_progress_tracking');'
 
-      this.emit('pi-progress-updated', {'
+      this.emit('pi-progress-updated', '
         piId,
         overallHealth,
         progressPercentage,
         alertCount: alerts.length,
-        criticalAlerts: alerts.filter((a) => a.severity === 'critical').length,
-      });
+        criticalAlerts: alerts.filter((a) => a.severity === 'critical').length,);
 
       this.logger.debug('PI progress tracking completed', {'
         piId,
@@ -538,7 +535,7 @@ export class PIExecutionService extends TypedEventBase {
       this.executionTimers.delete(piId);
 
       this.logger.info('Continuous PI monitoring stopped', { piId });'
-      this.emit('continuous-monitoring-stopped', { piId });'
+      this.emit('continuous-monitoring-stopped', piId );'
     }
   }
 
@@ -567,7 +564,7 @@ export class PIExecutionService extends TypedEventBase {
 
     const alert = metrics.alerts.find((a) => a.alertId === alertId);
     if (!alert) {
-      throw new Error(`Alert not found: ${alertId}`);`
+      throw new Error(`Alert not found: $alertId`);`
     }
 
     // Update alert (in practice, this would update persistent storage)
@@ -620,11 +617,11 @@ export class PIExecutionService extends TypedEventBase {
     // Check if scope change exceeds threshold
     if (Math.abs(scopeChange) > this.config.alertThresholds.scopeIncrease) {
       const alert: ExecutionAlert = {
-        alertId: `scope-change-${piId}-${Date.now()}`,`
+        alertId: `scope-change-$piId-$Date.now()`,`
         severity: scopeChange > 0 ? 'warning' : 'info',
         category: 'scope',
         title: 'Significant Scope Change Detected',
-        message: `PI scope ${scopeChange > 0 ? 'increased' : 'decreased'} by ${Math.abs(scopeChange)}%. Reason: ${reason}`,`
+        message: `PI scope $scopeChange > 0 ? 'increased' : 'decreased'by $Math.abs(scopeChange)%. Reason: $reason`,`
         affectedItems: [piId],
         recommendedActions: [
           'Review impact on timeline and capacity',
@@ -903,7 +900,7 @@ export class PIExecutionService extends TypedEventBase {
     // Calculate stability index (lower variance = higher stability)
     const velocities = velocityHistory.map((v) => v.velocity);
     const variance =
-      velocities.reduce((sum, v) => sum + Math.pow(v - averageVelocity, 2), 0) /
+      velocities.reduce((sum, v) => sum + (v - averageVelocity) ** 2, 0) /
       velocities.length;
     const stabilityIndex = Math.max(
       0,
@@ -953,7 +950,7 @@ export class PIExecutionService extends TypedEventBase {
             (s: number, i: any) => s + i.quality,
             0
           ) / executionData.iterations.length;
-        return sum + Math.pow(iter.quality - avgQuality, 2);
+        return sum + (iter.quality - avgQuality) ** 2;
       }, 0) / executionData.iterations.length;
     const qualityPredictability = Math.max(0, 100 - Math.sqrt(qualityVariance));
 
@@ -1082,9 +1079,9 @@ export class PIExecutionService extends TypedEventBase {
     // Convert risk data to RiskItem format
     const highRiskItems: RiskItem[] = risks
       .filter((r: any) => r.impact === 'high' || r.impact ==='critical')'
-      .map((r: any) => ({
+      .map((r: any) => (
         riskId: r.id,
-        description: r.description || `Risk ${r.id}`,`
+        description: r.description || `Risk $r.id`,`
         category: r.category || 'general',
         probability: r.probability,
         impact: r.impact,
@@ -1100,8 +1097,7 @@ export class PIExecutionService extends TypedEventBase {
         status: r.status,
         dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         mitigationProgress:
-          r.status === 'closed' ? 100 : r.status === 'mitigating' ? 50 : 0,
-      }));
+          r.status === 'closed' ? 100 : r.status === 'mitigating' ? 50 : 0,));
 
     // Calculate risk velocity (risks resolved per iteration)
     const riskVelocity =
@@ -1196,13 +1192,12 @@ export class PIExecutionService extends TypedEventBase {
     // Calculate blockage impact
     const blockageImpact: BlockageImpact[] = dependencies
       .filter((d: any) => d.status === 'blocked')'
-      .map((d: any) => ({
+      .map((d: any) => (
         dependencyId: d.id,
-        blockedFeatures: [`feature-${d.id}`], // Would be actual feature IDs`
+        blockedFeatures: [`feature-$d.id`], // Would be actual feature IDs`
         blockedTeams: [`team-${d.id}`], // Would be actual team IDs`
         estimatedDelay: d.blockedDays || 5,
-        businessImpact: d.impact,
-      }));
+        businessImpact: d.impact,));
 
     return {
       totalDependencies: dependencies.length,
@@ -1344,7 +1339,7 @@ export class PIExecutionService extends TypedEventBase {
     executionData: any,
     intelligentMetrics: any
   ): ExecutionForecast {
-    const currentProgress =
+    const _currentProgress =
       executionData.scope.completedScope / executionData.scope.currentScope;
     const remainingWork =
       executionData.scope.currentScope - executionData.scope.completedScope;
@@ -1448,15 +1443,13 @@ export class PIExecutionService extends TypedEventBase {
 
     if (
       criticalAlerts > 0 || dependencyHealth.dependencyHealth ==='critical''
-    ) {
+    ) 
       return 'critical;
-    }
 
     if (
       errorAlerts > 0 || riskBurndown.riskTrend ==='worsening' || dependencyHealth.dependencyHealth ==='at-risk''
-    ) {
+    ) 
       return 'at-risk;
-    }
 
     return 'healthy;
   }

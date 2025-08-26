@@ -12,27 +12,20 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { addDays, differenceInDays, format } = dateFns;
+
 import {
-  groupBy,
-  map,
-  filter,
   orderBy,
-  sumBy,
-  meanBy,
-  countBy,
-  maxBy,
 } from 'lodash-es';
-import {
-  PortfolioKanbanState,
-  type WSJFScore,
-  type EpicLifecycleStage,
-  type GateCriterion,
-  type EpicBlocker,
-  type EpicOwnerManagerConfig,
-} from '../types/epic-management';
 import type { Logger, PortfolioEpic } from '../types';
+import type {
+  EpicBlocker,
+  GateCriterion,
+  PortfolioKanbanState,
+  WSJFScore,
+} from '../types/epic-management';
 
 /**
  * Epic lifecycle service configuration
@@ -87,10 +80,8 @@ export interface WSJFCalculationResult {
  * Epic Lifecycle Service for Portfolio Kanban management
  */
 export class EpicLifecycleService {
-  private readonly config: EpicLifecycleConfig;
   private readonly logger: Logger;
   private epics = new Map<string, PortfolioEpic>();
-  private lifecycleStages = new Map<string, EpicLifecycleStage[]>();
   private wsjfScores = new Map<string, WSJFScore>();
   private blockers = new Map<string, EpicBlocker[]>();
 
@@ -105,7 +96,7 @@ export class EpicLifecycleService {
   async progressEpicState(
     epicId: string,
     targetState: PortfolioKanbanState,
-    gateEvidence?: Record<string, string[]>
+    _gateEvidence?: Record<string, string[]>
   ): Promise<EpicProgressionResult> {
     const epic = this.epics.get(epicId);
     if (!epic) {
@@ -177,7 +168,7 @@ export class EpicLifecycleService {
       previousState: epic.status as PortfolioKanbanState,
       blockers: [],
       unmetCriteria: [],
-      recommendations: [`Epic successfully moved to ${targetState}`],`
+      recommendations: [`Epic successfully moved to $targetState`],`
       nextActions: this.getNextActions(targetState),
     };
   }
@@ -480,9 +471,9 @@ export class EpicLifecycleService {
     const canProgress = unmetCriteria.length === 0;
     const recommendations = canProgress
       ? [`Epic meets all criteria for ${targetState}`]`
-      : [`${unmetCriteria.length} criteria still need to be met`];`
+      : [`$unmetCriteria.lengthcriteria still need to be met`];`
 
-    const nextActions = unmetCriteria.map((c) => `Complete: ${c.criterion}`);`
+    const _nextActions = unmetCriteria.map((c) => `Complete: ${c.criterion}`);`
 
     return {
       canProgress,

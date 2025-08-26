@@ -11,14 +11,13 @@
  * @version 1.0.0
  */
 
-import { readFile } from 'node:fs/promises';
-import { basename, extname } from 'node:path';
+import { extname } from 'node:path';
 import {
+  err,
   getLogger,
   type Logger,
-  Result,
   ok,
-  err,
+  type Result,
 } from '@claude-zen/foundation';
 
 /**
@@ -152,15 +151,14 @@ export class BeamLanguageParser {
   private readonly logger: Logger;
   private readonly options: BeamParserOptions;
 
-  constructor(options: BeamParserOptions = {}) {
+  constructor(_options: BeamParserOptions = {}) {
     this.logger = getLogger('BeamLanguageParser');'
-    this.options = {
+    this.options = 
       includeMetrics: true,
       analyzeFunctionComplexity: true,
       extractDocumentation: true,
       maxFileSize: 10 * 1024 * 1024, // 10MB default
-      ...options,
-    };
+      ...options,;
 
     this.logger.debug('BeamLanguageParser initialized', {'
       options: this.options,
@@ -178,7 +176,7 @@ export class BeamLanguageParser {
 
       // Check file size limit
       if (content.length > (this.options.maxFileSize||10485760)) {
-        return err(new Error(`File too large: ${content.length} bytes`));`
+        return err(new Error(`File too large: $content.lengthbytes`));`
       }
 
       const ext = extname(filePath);
@@ -201,7 +199,7 @@ export class BeamLanguageParser {
           module = await this.parseGleamFile(filePath, content);
           break;
         default:
-          return err(new Error(`Unsupported language: ${language}`));`
+          return err(new Error(`Unsupported language: $language`));`
       }
 
       // Calculate metrics if enabled
@@ -231,7 +229,7 @@ export class BeamLanguageParser {
    */
   async parseFiles(filePaths: string[]): Promise<Result<BeamModule[], Error>> {
     try {
-      this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);`
+      this.logger.info(`Parsing $filePaths.lengthBEAM files in parallel`);`
 
       const results = await Promise.allSettled(
         filePaths.map((path) => this.parseFile(path))
@@ -269,7 +267,7 @@ export class BeamLanguageParser {
 
       return ok(modules);
     } catch (error) {
-      const err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;`
+      const _err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;`
       this.logger.error(err_msg, { error, fileCount: filePaths.length });
       return err(new Error(err_msg));
     }
@@ -325,7 +323,7 @@ export class BeamLanguageParser {
         hasPhoenix: content.includes('use Phoenix'),
         hasEcto: content.includes('use Ecto'),
         hasLiveView: content.includes('use Phoenix.LiveView'),
-        hasOTP: /use\s+(GenServer|GenStateMachine|Agent|Task)/.test(content),
+        hasOTP: /uses+(GenServer|GenStateMachine|Agent|Task)/.test(content),
         protocolImplementations: this.extractElixirProtocols(content),
       },
     };
@@ -400,14 +398,14 @@ export class BeamLanguageParser {
 
   // Enhanced Elixir parsing methods
   private extractElixirModuleName(content: string): string|null {
-    const match = content.match(/defmodule\s+([A-Z][\w.]*)/);
+    const match = content.match(/defmodules+([A-Z][w.]*)/);
     return match ? match[1] : null;
   }
 
   private extractElixirFunctions(content: string): BeamFunction[] {
     const functions: BeamFunction[] = [];
     const defRegex =
-      /(?:def|defp|defmacro|defmacrop)\s+([_a-z]\w*[!?]?)\s*(?:\(([^)]*)\))?/g;
+      /(?:def|defp|defmacro|defmacrop)s+([_a-z]w*[!?]?)s*(?:(([^)]*)))?/g;
 
     let match;
     while ((match = defRegex.exec(content)) !== null) {
@@ -426,12 +424,12 @@ export class BeamLanguageParser {
         name: functionName,
         arity: arity,
         visibility: isPrivate ? 'private' : 'public',
-        signature: `${functionName}(${params})`,`
+        signature: `$functionName($params)`,`
         lineNumber: lineNumber,
         attributes: isMacro ? ['macro'] : [],
       };
 
-      if (this.options.analyzeFunctionComplexity) {
+      if (this._options._analyzeFunctionComplexity) {
         func.complexity = this.calculateFunctionComplexity(
           content,
           match.index
@@ -451,38 +449,35 @@ export class BeamLanguageParser {
     const typeRegex = /@type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'custom',
-      });
+        category: 'custom',);
     }
 
     // @typep (private types)
     const privateTypeRegex =
       /@typep\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     while ((match = privateTypeRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'custom',
-      });
+        category: 'custom',);
     }
 
     // @spec definitions
     const specRegex = /@spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     while ((match = specRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'spec',
-      });
+        category: 'spec',);
     }
 
     return types;
@@ -594,38 +589,35 @@ export class BeamLanguageParser {
     const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'custom',
-      });
+        category: 'custom',);
     }
 
     // -opaque definitions - ReDoS-safe regex with atomic groups and limits
     const opaqueRegex =
       /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
     while ((match = opaqueRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'opaque',
-      });
+        category: 'opaque',);
     }
 
     // -spec definitions
     const specRegex = /-spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
     while ((match = specRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'spec',
-      });
+        category: 'spec',);
     }
 
     return types;
@@ -676,7 +668,7 @@ export class BeamLanguageParser {
 
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
-      const funcs = match[1].split(',').map((f) => f.trim())();'
+      const _funcs = match[1].split(',').map((f) => f.trim())();'
       exports.push(...funcs);
     }
 
@@ -769,25 +761,23 @@ export class BeamLanguageParser {
       /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'custom',
-      });
+        category: 'custom',);
     }
 
     // Type aliases
     const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
     while ((match = aliasRegex.exec(content)) !== null) {
-      const lineNumber = content.substring(0, match.index).split('\n').length;'
-      types.push({
+      const _lineNumber = content.substring(0, match.index).split('\n').length;'
+      types.push(
         name: match[1],
         definition: match[2].trim(),
         lineNumber: lineNumber,
-        category: 'alias',
-      });
+        category: 'alias',);
     }
 
     return types;

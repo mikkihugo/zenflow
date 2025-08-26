@@ -137,18 +137,15 @@ export class ArchitectureReviewManagementService {
     try {
       // Lazy load @claude-zen/agui for approval workflows
       const { AGUISystem } = await import('@claude-zen/agui');'
-      const aguiResult = await AGUISystem({ aguiType: 'terminal' });'
+      const _aguiResult = await AGUISystem({ aguiType: 'terminal' });'
       this.aguiService = aguiResult.agui;
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent review analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -165,10 +162,9 @@ export class ArchitectureReviewManagementService {
 
       // Lazy load @claude-zen/workflows for review workflow orchestration
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 5,
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/teamwork for stakeholder collaboration
@@ -198,7 +194,7 @@ export class ArchitectureReviewManagementService {
   ): Promise<ArchitectureReview> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'initiate_architecture_review''
     );
 
@@ -264,10 +260,9 @@ export class ArchitectureReviewManagementService {
       }
 
       this.performanceTracker.endTimer('initiate_architecture_review');'
-      this.telemetryManager.recordCounter('architecture_reviews_initiated', 1, {'
+      this.telemetryManager.recordCounter('architecture_reviews_initiated', 1, '
         reviewType: request.reviewType,
-        priority: request.priority,
-      });
+        priority: request.priority,);
 
       this.logger.info('Architecture review initiated successfully', {'
         reviewId: review.id,
@@ -290,11 +285,11 @@ export class ArchitectureReviewManagementService {
     reviewId: string,
     decision: 'approved|rejected|conditionally_approved',
     findings: ReviewFinding[],
-    comments?: string
+    _comments?: string
   ): Promise<ArchitectureReview> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'complete_architecture_review');'
 
     try {
@@ -322,7 +317,7 @@ export class ArchitectureReviewManagementService {
           ...findingsAnalysis.additionalRecommendations,
         ],
         decision:
-          comments || `Review ${decision} with ${findings.length} findings`,`
+          comments || `Review $decisionwith ${findings.length} findings`,`
         completedAt: new Date(),
       };
 
@@ -331,10 +326,9 @@ export class ArchitectureReviewManagementService {
       this.completedReviews.set(reviewId, completedReview);
 
       this.performanceTracker.endTimer('complete_architecture_review');'
-      this.telemetryManager.recordCounter('architecture_reviews_completed', 1, {'
+      this.telemetryManager.recordCounter('architecture_reviews_completed', 1, '
         decision,
-        findingsCount: findings.length,
-      });
+        findingsCount: findings.length,);
 
       this.logger.info('Architecture review completed', {'
         reviewId,
@@ -357,7 +351,7 @@ export class ArchitectureReviewManagementService {
   async getArchitectureReviewDashboard(): Promise<ArchitectureReviewDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'generate_review_dashboard');'
 
     try {
@@ -397,11 +391,10 @@ export class ArchitectureReviewManagementService {
 
       this.performanceTracker.endTimer('generate_review_dashboard');'
 
-      this.logger.info('Architecture review dashboard generated', {'
+      this.logger.info('Architecture review dashboard generated', '
         totalReviews: dashboard.totalReviews,
         activeReviews: activeReviews.length,
-        effectivenessScore: dashboard.reviewEffectiveness.overallEffectiveness,
-      });
+        effectivenessScore: dashboard.reviewEffectiveness.overallEffectiveness,);
 
       return dashboard;
     } catch (error) {

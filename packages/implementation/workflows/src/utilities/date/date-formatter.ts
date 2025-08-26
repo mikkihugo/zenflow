@@ -9,6 +9,7 @@
  */
 
 import { dateFns } from '@claude-zen/foundation';
+
 const { format, parseISO, isValid } = dateFns;
 
 /**
@@ -53,7 +54,7 @@ export class DateFormatter {
     if (minutes < 60) return `${minutes}m ago`;`
 
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;`
+    if (hours < 24) return `$hoursh ago`;`
 
     const days = Math.floor(hours / 24);
     return `${days}d ago`;`

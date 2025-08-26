@@ -7,14 +7,13 @@
  * @file TaskMaster API routes for SAFe workflow management.
  */
 
-import { Router, type Request, type Response } from "express";
-
 // Strategic facades for TaskMaster functionality - only import what's used
 import { getTaskMasterSystem } from "@claude-zen/enterprise";
-import { getLogger, generateUUID } from "@claude-zen/foundation";
+import { generateUUID, getLogger } from "@claude-zen/foundation";
+import { type Request, type Response, Router } from "express";
+import type { WebSocketCoordinator } from "../../infrastructure/websocket/socket.coordinator";
 import { asyncHandler } from "../middleware/errors";
 import { LogLevel, log } from "../middleware/logging";
-import type { WebSocketCoordinator } from "../../infrastructure/websocket/socket.coordinator";
 
 const logger = getLogger("TaskMasterRoutes");
 
@@ -341,8 +340,8 @@ function setupFlowMetricsRoutes(
 				});
 
 				// Broadcast real-time metrics if WebSocket available
-				if (manager["webSocketCoordinator"]) {
-					manager["webSocketCoordinator"].broadcast("metrics:updated", {
+				if (manager.webSocketCoordinator) {
+					manager.webSocketCoordinator.broadcast("metrics:updated", {
 						metrics,
 						health,
 					});
@@ -392,8 +391,8 @@ async function handleCreateTask(
 		const task = await handleTaskCreation(taskMaster, req.body, req);
 
 		// Broadcast real-time task creation
-		if (manager["webSocketCoordinator"]) {
-			manager["webSocketCoordinator"].broadcast("task:created", task);
+		if (manager.webSocketCoordinator) {
+			manager.webSocketCoordinator.broadcast("task:created", task);
 		}
 
 		logger.info(`Task created: ${task.id} - ${task.title}`);
@@ -736,8 +735,8 @@ function broadcastTaskMove(
 		reason?: string;
 	},
 ): void {
-	if (manager["webSocketCoordinator"]) {
-		manager["webSocketCoordinator"].broadcast("task:moved", {
+	if (manager.webSocketCoordinator) {
+		manager.webSocketCoordinator.broadcast("task:moved", {
 			taskId: moveData.taskId,
 			fromState: moveData.fromState,
 			toState: moveData.toState,
@@ -1121,7 +1120,7 @@ function setupDashboardRoutes(
 							throughputTrend: "stable", // Would be calculated from historical data
 						},
 						timestamp: new Date().toISOString(),
-						realTimeEnabled: !!manager["webSocketCoordinator"],
+						realTimeEnabled: !!manager.webSocketCoordinator,
 					},
 				});
 			} catch (error) {

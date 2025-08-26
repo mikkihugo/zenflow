@@ -61,15 +61,12 @@
  * @since 1.0.0
  */
 
-import type { Config, Logger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManager,
-  EventManagerFactory,
-  SystemEvent,
 } from '../core/interfaces;
 import type { MemoryEventManager } from '../event-manager-types;
 import type { MemoryEvent } from '../types;
@@ -99,24 +96,6 @@ class MemoryEventManagerImpl
   extends BaseEventManager
   implements MemoryEventManager
 {
-  private memoryMetrics = {
-    cacheHits: 0,
-    cacheMisses: 0,
-    cacheEvictions: 0,
-    totalMemoryUsage: 0,
-    maxMemoryUsage: 0,
-    gcCollections: 0,
-    gcTime: 0,
-    storageOperations: 0,
-    compressionRatio: 0,
-    accessPatterns: new Map<string, number>(),
-    performanceStats: {
-      hitRatio: 0,
-      averageAccessTime: 0,
-      memoryEfficiency: 0,
-      lastCalculated: new Date(),
-    },
-  };
 
   private subscriptions = {
     cache: new Map<string, (event: MemoryEvent) => void>(),
@@ -191,7 +170,7 @@ class MemoryEventManagerImpl
   /**
    * Subscribe to storage events.
    */
-  subscribeStorageEvents(listener: (event: MemoryEvent) => void): string {
+  subscribeStorageEvents(listener: (_event: MemoryEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.storage.set(subscriptionId, listener);
 
@@ -215,7 +194,7 @@ class MemoryEventManagerImpl
   /**
    * Subscribe to lifecycle events.
    */
-  subscribeLifecycleEvents(listener: (event: MemoryEvent) => void): string {
+  subscribeLifecycleEvents(listener: (_event: MemoryEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.lifecycle.set(subscriptionId, listener);
 
@@ -390,26 +369,24 @@ class MemoryEventManagerImpl
     try {
       // Emit memory retrieval event
       await this.emitMemoryEvent({
-        id: `memory-retrieve-${key}-${Date.now()}`,`
+        id: `memory-retrieve-$key-$Date.now()`,`
         timestamp: new Date(),
         source: 'memory-event-retrieval',
         type: 'memory:cache',
         operation: 'get',
-        details: {
+        details: 
           key,
           cacheHit: true, // Simplified for demonstration
-          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
-        },
-        payload: { key, retrieved: true },
-        metadata: {
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,,
+        payload: key, retrieved: true ,
+        metadata: 
           key,
-          retrieveStart: new Date(),
-        },
+          retrieveStart: new Date(),,
       });
 
       // For demonstration, return a simple success indication
       // In a real implementation, this would retrieve actual data
-      const result = { key, retrieved: true, timestamp: new Date() };
+      const _result = { key, retrieved: true, timestamp: new Date() };
       this.logger.info(`Memory event retrieved successfully: ${key}`);`
       return result;
     } catch (error) {
@@ -464,7 +441,7 @@ class MemoryEventManagerImpl
   }
 
   private async handleMemoryEvent(event: MemoryEvent): Promise<void> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     try {
       // Route based on operation type
@@ -512,7 +489,7 @@ class MemoryEventManagerImpl
         if (event.details?.cacheHit) {
           this.logger.debug(`Cache hit: ${event.details?.key}`);`
         } else 
-          this.logger.debug(`Cache miss: ${event.details?.key}`);`
+          this.logger.debug(`Cache miss: $event.details?.key`);`
         }
         break;
       case 'set':'
@@ -590,7 +567,7 @@ class MemoryEventManagerImpl
   }
 
   private async notifyMemorySubscribers(
-    subscribers: Map<string, (event: MemoryEvent) => void>,
+    subscribers: Map<string, (_event: MemoryEvent) => void>,
     event: MemoryEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
@@ -755,7 +732,7 @@ export class MemoryEventManagerFactory
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
 
-    const healthChecks = Array.from(this.managers.entries()).map(
+    const _healthChecks = Array.from(this.managers.entries()).map(
       async ([name, manager]) => {
         try {
           const status = await manager.healthCheck();
@@ -965,7 +942,7 @@ export class MemoryEventManagerFactory
     }
 
     // Set up periodic health checks with a default interval
-    const healthCheckInterval = 30000; // 30 seconds
+    const _healthCheckInterval = 30000; // 30 seconds
     setInterval(async () => {
       try {
         const status = await manager.healthCheck();
@@ -975,7 +952,7 @@ export class MemoryEventManagerFactory
             status.metadata
           );
         }
-      } catch (error) {
+      } catch (_error) {
         this.logger.error(
           `Memory manager health check failed: ${config.name}`,`
           error

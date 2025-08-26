@@ -1,11 +1,11 @@
 // Ripgrep utility functions
-import path from "path"
-import { Global } from "../global"
-import fs from "fs/promises"
+
+import path from "node:path"
 import { z } from "@claude-zen/foundation"
+import { $ } from "bun"
+import { Global } from "../global"
 import { NamedError } from "../util/error"
 import { lazy } from "../util/lazy"
-import { $ } from "bun"
 import { Fzf } from "./fzf"
 
 export namespace Ripgrep {
@@ -121,20 +121,20 @@ export namespace Ripgrep {
     }),
   )
 
-  const state = lazy(async () => {
+  const _state = lazy(async () => {
     let filepath = Bun.which("rg")
     if (filepath) return { filepath }
-    filepath = path.join(Global.Path.bin, "rg" + (process.platform === "win32" ? ".exe" : ""))
+    filepath = path.join(Global.Path.bin, `rg${process.platform === "win32" ? ".exe" : ""}`)
 
     const file = Bun.file(filepath)
     if (!(await file.exists())) {
-      const platformKey = `${process.arch}-${process.platform}` as keyof typeof PLATFORM`
+      const _platformKey = `${process.arch}-${process.platform}` as keyof typeof PLATFORM`
       const config = PLATFORM[platformKey]
       if (!config) throw new UnsupportedPlatformError({ platform: platformKey })
 
       const version = "14.1.1"
-      const filename = `ripgrep-${version}-${config.platform}.${config.extension}``
-      const url = `https://github.com/BurntSushi/ripgrep/releases/download/${version}/${filename}``
+      const filename = `ripgrep-$version-$config.platform.$config.extension``
+      const _url = `https://github.com/BurntSushi/ripgrep/releases/download/${version}/${filename}``
 
       const response = await fetch(url)
       if (!response.ok) throw new DownloadFailedError({ url, status: response.status })
@@ -188,7 +188,7 @@ export namespace Ripgrep {
   }
 
   export async function files(input: { cwd: string; query?: string; glob?: string[]; limit?: number }) {
-    const commands = [`${$.escape(await filepath())} --files --follow --hidden --glob='!.git/*'`]`
+    const commands = [`$$.escape(await filepath())--files --follow --hidden --glob='!.git/*'`]`
 
     if (input.glob) {
       for (const g of input.glob) {
@@ -196,14 +196,14 @@ export namespace Ripgrep {
       }
     }
 
-    if (input.query) commands.push(`${await Fzf.filepath()} --filter=${input.query}`)`
+    if (input.query) commands.push(`$await Fzf.filepath()--filter=$input.query`)`
     if (input.limit) commands.push(`head -n ${input.limit}`)`
     const joined = commands.join("|")
-    const result = await $`${{ raw: joined }}`.cwd(input.cwd).nothrow().text()`
+    const result = await $`$raw: joined `.cwd(input.cwd).nothrow().text()`
     return result.split("\n").filter(Boolean)
   }
 
-  export async function tree(input: { cwd: string; limit?: number }) {
+  export async function _tree(input: { cwd: string; limit?: number }) {
     const files = await Ripgrep.files({ cwd: input.cwd })
     interface Node {
       path: string[]
@@ -241,7 +241,7 @@ export namespace Ripgrep {
       node.children.sort((a, b) => {
         if (!a.children.length && b.children.length) return 1
         if (!b.children.length && a.children.length) return -1
-        return a.path.at(-1)!.localeCompare(b.path.at(-1)!)
+        return a.path.at(-1)?.localeCompare(b.path.at(-1)!)
       })
       for (const child of node.children) {
         sort(child)
@@ -303,7 +303,7 @@ export namespace Ripgrep {
     return lines.join("\n")
   }
 
-  export async function search(input: { cwd: string; pattern: string; glob?: string[]; limit?: number }) {
+  export async function _search(input: { cwd: string; pattern: string; glob?: string[]; limit?: number }) {
     const args = [`${await filepath()}`, "--json", "--hidden", "--glob='!.git/*'"]'
 
     if (input.glob) {
@@ -313,13 +313,13 @@ export namespace Ripgrep {
     }
 
     if (input.limit) {
-      args.push(`--max-count=${input.limit}`)`
+      args.push(`--max-count=$input.limit`)`
     }
 
     args.push(input.pattern)
 
     const command = args.join(" ")
-    const result = await $`${{ raw: command }}`.cwd(input.cwd).quiet().nothrow()`
+    const _result = await $`${{ raw: command }}`.cwd(input.cwd).quiet().nothrow()`
     if (result.exitCode !== 0) {
       return []
     }

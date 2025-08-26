@@ -1,9 +1,9 @@
 import { z } from "@claude-zen/foundation"
-import { Bus } from "../bus"
-import { NamedError } from "../util/error"
-import { Message } from "./message"
 import { convertToModelMessages, type ModelMessage, type UIMessage } from "ai"
+import { Bus } from "../bus"
 import { Identifier } from "../id/id"
+import { NamedError } from "../util/error"
+import type { Message } from "./message"
 
 export namespace MessageV2 {
   export const OutputLengthError = NamedError.create("MessageOutputLengthError", z.object({}))
@@ -248,13 +248,13 @@ export namespace MessageV2 {
           created: v1.metadata.time.created,
           completed: v1.metadata.time.completed,
         },
-        cost: v1.metadata.assistant!.cost,
-        path: v1.metadata.assistant!.path,
-        summary: v1.metadata.assistant!.summary,
-        tokens: v1.metadata.assistant!.tokens,
-        modelID: v1.metadata.assistant!.modelID,
-        providerID: v1.metadata.assistant!.providerID,
-        system: v1.metadata.assistant!.system,
+        cost: v1.metadata.assistant?.cost,
+        path: v1.metadata.assistant?.path,
+        summary: v1.metadata.assistant?.summary,
+        tokens: v1.metadata.assistant?.tokens,
+        modelID: v1.metadata.assistant?.modelID,
+        providerID: v1.metadata.assistant?.providerID,
+        system: v1.metadata.assistant?.system,
         error: v1.metadata.error,
       }
       const parts = v1.parts.flatMap((part): Part[] => {
@@ -430,7 +430,7 @@ export namespace MessageV2 {
               if (part.state.status === "completed")
                 return [
                   {
-                    type: ("tool-" + part.tool) as `tool-${string}`,`
+                    type: (`tool-${part.tool}`) as `tool-${string}`,`
                     state: "output-available",
                     toolCallId: part.callID,
                     input: part.state.input,
@@ -440,7 +440,7 @@ export namespace MessageV2 {
               if (part.state.status === "error")
                 return [
                   {
-                    type: ("tool-" + part.tool) as `tool-${string}`,`
+                    type: (`tool-${part.tool}`) as `tool-${string}`,`
                     state: "output-error",
                     toolCallId: part.callID,
                     input: part.state.input,

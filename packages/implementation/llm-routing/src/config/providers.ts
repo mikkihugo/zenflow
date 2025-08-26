@@ -9,8 +9,8 @@
 
 import type {
   ProviderConfig,
-  RoutingStrategy,
   ProviderRoutingContext,
+  RoutingStrategy,
 } from '../types/index';
 
 export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {

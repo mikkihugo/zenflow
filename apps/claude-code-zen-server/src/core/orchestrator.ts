@@ -1,9 +1,9 @@
 import { getLogger } from "@claude-zen/foundation";
 
-import { CoordinationManager } from "../coordination/coordination-manager";
-import { EventBus } from "../coordination/event-system";
-import { MemoryManager } from "../coordination/memory-manager";
-import { TerminalManager } from "../coordination/terminal-manager";
+import type { CoordinationManager } from "../coordination/coordination-manager";
+import type { EventBus } from "../coordination/event-system";
+import type { MemoryManager } from "../coordination/memory-manager";
+import type { TerminalManager } from "../coordination/terminal-manager";
 
 interface OrchestratorConfig {
 	name: string;
@@ -142,7 +142,7 @@ export class Orchestrator {
 		task: Task,
 		startTime: number,
 	): Promise<TaskResult> {
-		const timeoutPromise = new Promise<TaskResult>((resolve, reject) => {
+		const timeoutPromise = new Promise<TaskResult>((_resolve, reject) => {
 			setTimeout(() => {
 				reject(new Error("Task timeout"));
 			}, this.config.timeout);

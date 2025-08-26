@@ -8,30 +8,30 @@
  * @file Errors implementation.
  */
 
-import { getLogger } from '../../core/logging';
+import { getLogger } from "../../core/logging";
 
 // Define ValidationError and ConfigurationError locally to avoid circular import
 export class ValidationError extends Error {
-  constructor(
-    message: string,
-    public readonly field?: string
-  ) {
-    super(message);
-    this.name = 'ValidationError';
-  }
+	constructor(
+		message: string,
+		public readonly field?: string,
+	) {
+		super(message);
+		this.name = "ValidationError";
+	}
 }
 
 export class ConfigurationError extends Error {
-  constructor(
-    message: string,
-    public readonly configKey?: string
-  ) {
-    super(message);
-    this.name = 'ConfigurationError';
-  }
+	constructor(
+		message: string,
+		public readonly configKey?: string,
+	) {
+		super(message);
+		this.name = "ConfigurationError";
+	}
 }
 
-const logger = getLogger('ErrorSystem');
+const logger = getLogger("ErrorSystem");
 
 // ===============================
 // Core Error Context Interface
@@ -54,24 +54,24 @@ const logger = getLogger('ErrorSystem');
  * ```
  */
 export interface ErrorContext {
-  /** Timestamp when the error occurred. */
-  timestamp: number;
-  /** Component or system where the error originated. */
-  component: string;
-  /** Specific operation that failed (optional). */
-  operation?: string;
-  /** Unique identifier for request correlation (optional). */
-  correlationId?: string;
-  /** Additional metadata about the error context (optional). */
-  metadata?: Record<string, unknown>;
-  /** Stack trace of the error (optional). */
-  stackTrace?: string;
-  /** User ID associated with the error (optional). */
-  userId?: string;
-  /** Session ID for the current session (optional). */
-  sessionId?: string;
-  /** Version of the application (optional). */
-  version?: string;
+	/** Timestamp when the error occurred. */
+	timestamp: number;
+	/** Component or system where the error originated. */
+	component: string;
+	/** Specific operation that failed (optional). */
+	operation?: string;
+	/** Unique identifier for request correlation (optional). */
+	correlationId?: string;
+	/** Additional metadata about the error context (optional). */
+	metadata?: Record<string, unknown>;
+	/** Stack trace of the error (optional). */
+	stackTrace?: string;
+	/** User ID associated with the error (optional). */
+	userId?: string;
+	/** Session ID for the current session (optional). */
+	sessionId?: string;
+	/** Version of the application (optional). */
+	version?: string;
 }
 
 /**
@@ -91,18 +91,18 @@ export interface ErrorContext {
  * ```
  */
 export interface ErrorRecoveryOptions {
-  /** Maximum number of retry attempts (optional). */
-  maxRetries?: number;
-  /** Delay between retries in milliseconds (optional). */
-  retryDelayMs?: number;
-  /** Whether to use exponential backoff for retries (optional). */
-  exponentialBackoff?: boolean;
-  /** Threshold for circuit breaker activation (optional). */
-  circuitBreakerThreshold?: number;
-  /** Whether fallback mechanisms are enabled (optional). */
-  fallbackEnabled?: boolean;
-  /** Whether graceful degradation is enabled (optional). */
-  gracefulDegradation?: boolean;
+	/** Maximum number of retry attempts (optional). */
+	maxRetries?: number;
+	/** Delay between retries in milliseconds (optional). */
+	retryDelayMs?: number;
+	/** Whether to use exponential backoff for retries (optional). */
+	exponentialBackoff?: boolean;
+	/** Threshold for circuit breaker activation (optional). */
+	circuitBreakerThreshold?: number;
+	/** Whether fallback mechanisms are enabled (optional). */
+	fallbackEnabled?: boolean;
+	/** Whether graceful degradation is enabled (optional). */
+	gracefulDegradation?: boolean;
 }
 
 /**
@@ -122,18 +122,18 @@ export interface ErrorRecoveryOptions {
  * ```
  */
 export interface ErrorMetrics {
-  /** Total number of errors recorded. */
-  errorCount: number;
-  /** Error rate as a percentage (0-1). */
-  errorRate: number;
-  /** Timestamp of the most recent error. */
-  lastErrorTime: number;
-  /** Average time to recover from errors in milliseconds. */
-  averageRecoveryTime: number;
-  /** Number of successful error recoveries. */
-  successfulRecoveries: number;
-  /** Number of failed recovery attempts. */
-  failedRecoveries: number;
+	/** Total number of errors recorded. */
+	errorCount: number;
+	/** Error rate as a percentage (0-1). */
+	errorRate: number;
+	/** Timestamp of the most recent error. */
+	lastErrorTime: number;
+	/** Average time to recover from errors in milliseconds. */
+	averageRecoveryTime: number;
+	/** Number of successful error recoveries. */
+	successfulRecoveries: number;
+	/** Number of failed recovery attempts. */
+	failedRecoveries: number;
 }
 
 // ===============================
@@ -167,84 +167,84 @@ export interface ErrorMetrics {
  * ```
  */
 export abstract class BaseClaudeZenError extends Error {
-  /** Error context with tracking information. */
-  public readonly context: ErrorContext;
-  /** Error severity level. */
-  public readonly severity: 'low' | 'medium' | 'high' | 'critical';
-  /** Error category for classification. */
-  public readonly category: string;
-  /** Whether the error is recoverable. */
-  public readonly recoverable: boolean;
-  /** Number of retry attempts made. */
-  public readonly retryCount: number = 0;
+	/** Error context with tracking information. */
+	public readonly context: ErrorContext;
+	/** Error severity level. */
+	public readonly severity: "low" | "medium" | "high" | "critical";
+	/** Error category for classification. */
+	public readonly category: string;
+	/** Whether the error is recoverable. */
+	public readonly recoverable: boolean;
+	/** Number of retry attempts made. */
+	public readonly retryCount: number = 0;
 
-  /**
-   * Creates a new BaseClaudeZenError instance.
-   *
-   * @param message - Error message.
-   * @param options - Error configuration options.
-   */
-  constructor(
-    message: string,
-    options: {
-      category: string;
-      severity?: 'low' | 'medium' | 'high' | 'critical';
-      context?: Partial<ErrorContext>;
-      recoverable?: boolean;
-    }
-  ) {
-    super(message);
-    this.category = options.category;
-    this.severity = options.severity ?? 'medium';
-    this.recoverable = options.recoverable ?? true;
-    this.context = {
-      timestamp: Date.now(),
-      component: this.category,
-      stackTrace: this.stack || '',
-      ...(options.context ?? {}),
-    };
+	/**
+	 * Creates a new BaseClaudeZenError instance.
+	 *
+	 * @param message - Error message.
+	 * @param options - Error configuration options.
+	 */
+	constructor(
+		message: string,
+		options: {
+			category: string;
+			severity?: "low" | "medium" | "high" | "critical";
+			context?: Partial<ErrorContext>;
+			recoverable?: boolean;
+		},
+	) {
+		super(message);
+		this.category = options.category;
+		this.severity = options.severity ?? "medium";
+		this.recoverable = options.recoverable ?? true;
+		this.context = {
+			timestamp: Date.now(),
+			component: this.category,
+			stackTrace: this.stack || "",
+			...(options.context ?? {}),
+		};
 
-    // Log error immediately
-    this.logError();
-  }
+		// Log error immediately
+		this.logError();
+	}
 
-  private logError(): void {
-    const logLevel =
-      this.severity === 'critical'
-        ? 'error'
-        : this.severity === 'high'
-          ? 'warn'
-          : 'info';
+	private logError(): void {
+		const logLevel =
+			this.severity === "critical"
+				? "error"
+				: this.severity === "high"
+					? "warn"
+					: "info";
 
-    logger[logLevel](`[${this.category}] ${this.message}`, {
-      severity: this.severity,
-      context: this.context,
-      recoverable: this.recoverable,
-    });
-  }
+		logger[logLevel](`[${this.category}] ${this.message}`, {
+			severity: this.severity,
+			context: this.context,
+			recoverable: this.recoverable,
+		});
+	}
 
-  /**
-   * Converts the error to a JSON-serializable object.
-   *
-   * @returns JSON representation of the error.
-   * @example
-   * ```typescript
-   * const error = new CustomError('Test error');
-   * const json = error.toJSON();
-   * console.log(JSON.stringify(json, null, 2));
-   * ```
-   */
-  public toJSON(): object {
-    return {
-      name: this.name,
-      message: this.message,
-      category: this.category,
-      severity: this.severity,
-      recoverable: this.recoverable,
-      context: this.context,
-      retryCount: this.retryCount,
-    };
-  }
+	/**
+	 * Converts the error to a JSON-serializable object.
+	 *
+	 * @returns JSON representation of the error.
+	 * @example
+	 * ```typescript
+	 * const error = new CustomError('Test error');
+	 * const json = error.toJSON();
+	 * console.log(JSON.stringify(json, null, 2));
+	 * ```
+	 */
+	public toJSON(): object {
+		return {
+			name: this.name,
+			message: this.message,
+			category: this.category,
+			severity: this.severity,
+			recoverable: this.recoverable,
+			context: this.context,
+			retryCount: this.retryCount,
+		};
+	}
 }
 
 // ===============================
@@ -282,27 +282,27 @@ export abstract class BaseClaudeZenError extends Error {
  * ```
  */
 export class SwarmError extends BaseClaudeZenError {
-  /**
-   * Creates a new SwarmError instance.
-   *
-   * @param message - Error message.
-   * @param swarmId - Unique identifier of the swarm (optional).
-   * @param severity - Error severity level (defaults to 'medium').
-   * @param context - Additional error context (optional).
-   */
-  constructor(
-    message: string,
-    public readonly swarmId?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
-  ) {
-    super(message, {
-      category: 'Swarm',
-      severity,
-      context: { ...context, metadata: { swarmId } },
-    });
-    this.name = 'SwarmError';
-  }
+	/**
+	 * Creates a new SwarmError instance.
+	 *
+	 * @param message - Error message.
+	 * @param swarmId - Unique identifier of the swarm (optional).
+	 * @param severity - Error severity level (defaults to 'medium').
+	 * @param context - Additional error context (optional).
+	 */
+	constructor(
+		message: string,
+		public readonly swarmId?: string,
+		severity: "low" | "medium" | "high" | "critical" = "medium",
+		context: Partial<ErrorContext> = {},
+	) {
+		super(message, {
+			category: "Swarm",
+			severity,
+			context: { ...context, metadata: { swarmId } },
+		});
+		this.name = "SwarmError";
+	}
 }
 
 /**
@@ -321,69 +321,69 @@ export class SwarmError extends BaseClaudeZenError {
  * ```
  */
 export class AgentError extends BaseClaudeZenError {
-  /**
-   * Creates a new AgentError instance.
-   *
-   * @param message - Error message.
-   * @param agentId - Unique identifier of the agent (optional).
-   * @param agentType - Type of agent (e.g., 'researcher', 'coder') (optional).
-   * @param severity - Error severity level (defaults to 'medium').
-   */
-  constructor(
-    message: string,
-    public readonly agentId?: string,
-    public readonly agentType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, {
-      category: 'Agent',
-      severity,
-      context: { metadata: { agentId, agentType } },
-    });
-    this.name = 'AgentError';
-  }
+	/**
+	 * Creates a new AgentError instance.
+	 *
+	 * @param message - Error message.
+	 * @param agentId - Unique identifier of the agent (optional).
+	 * @param agentType - Type of agent (e.g., 'researcher', 'coder') (optional).
+	 * @param severity - Error severity level (defaults to 'medium').
+	 */
+	constructor(
+		message: string,
+		public readonly agentId?: string,
+		public readonly agentType?: string,
+		severity: "low" | "medium" | "high" | "critical" = "medium",
+	) {
+		super(message, {
+			category: "Agent",
+			severity,
+			context: { metadata: { agentId, agentType } },
+		});
+		this.name = "AgentError";
+	}
 }
 
 export class SwarmCommunicationError extends SwarmError {
-  public readonly fromAgent: string;
-  public readonly toAgent: string;
-  public readonly messageType?: string;
+	public readonly fromAgent: string;
+	public readonly toAgent: string;
+	public readonly messageType?: string;
 
-  constructor(
-    message: string,
-    options: {
-      fromAgent: string;
-      toAgent: string;
-      messageType?: string;
-      severity?: 'low' | 'medium' | 'high' | 'critical';
-    }
-  ) {
-    super(message, undefined, options.severity ?? 'high', {
-      metadata: {
-        fromAgent: options.fromAgent,
-        toAgent: options.toAgent,
-        messageType: options.messageType,
-      },
-    });
-    this.name = 'SwarmCommunicationError';
-    this.fromAgent = options.fromAgent;
-    this.toAgent = options.toAgent;
-    this.messageType = options.messageType;
-  }
+	constructor(
+		message: string,
+		options: {
+			fromAgent: string;
+			toAgent: string;
+			messageType?: string;
+			severity?: "low" | "medium" | "high" | "critical";
+		},
+	) {
+		super(message, undefined, options.severity ?? "high", {
+			metadata: {
+				fromAgent: options.fromAgent,
+				toAgent: options.toAgent,
+				messageType: options.messageType,
+			},
+		});
+		this.name = "SwarmCommunicationError";
+		this.fromAgent = options.fromAgent;
+		this.toAgent = options.toAgent;
+		this.messageType = options.messageType;
+	}
 }
 
 export class SwarmCoordinationError extends SwarmError {
-  constructor(
-    message: string,
-    public readonly coordinationType: string,
-    public readonly participantCount?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, undefined, severity, {
-      metadata: { coordinationType, participantCount },
-    });
-    this.name = 'SwarmCoordinationError';
-  }
+	constructor(
+		message: string,
+		public readonly coordinationType: string,
+		public readonly participantCount?: number,
+		severity: "low" | "medium" | "high" | "critical" = "high",
+	) {
+		super(message, undefined, severity, {
+			metadata: { coordinationType, participantCount },
+		});
+		this.name = "SwarmCoordinationError";
+	}
 }
 
 // ===============================
@@ -398,37 +398,37 @@ export class SwarmCoordinationError extends SwarmError {
  * Error for task execution failures (domain-specific).
  */
 export class TaskError extends BaseClaudeZenError {
-  constructor(
-    message: string,
-    public readonly taskId?: string,
-    public readonly taskType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, {
-      category: 'Task',
-      severity,
-      context: { metadata: { taskId, taskType } },
-    });
-    this.name = 'TaskError';
-  }
+	constructor(
+		message: string,
+		public readonly taskId?: string,
+		public readonly taskType?: string,
+		severity: "low" | "medium" | "high" | "critical" = "medium",
+	) {
+		super(message, {
+			category: "Task",
+			severity,
+			context: { metadata: { taskId, taskType } },
+		});
+		this.name = "TaskError";
+	}
 }
 
 /**
  * Error for resource not found (domain-specific).
  */
 export class NotFoundError extends BaseClaudeZenError {
-  constructor(
-    message: string,
-    public readonly resource?: string,
-    public readonly resourceId?: string
-  ) {
-    super(message, {
-      category: 'NotFound',
-      severity: 'medium',
-      context: { metadata: { resource, resourceId } },
-    });
-    this.name = 'NotFoundError';
-  }
+	constructor(
+		message: string,
+		public readonly resource?: string,
+		public readonly resourceId?: string,
+	) {
+		super(message, {
+			category: "NotFound",
+			severity: "medium",
+			context: { metadata: { resource, resourceId } },
+		});
+		this.name = "NotFoundError";
+	}
 }
 
 // ===============================
@@ -464,17 +464,17 @@ export class NotFoundError extends BaseClaudeZenError {
  * ```
  */
 export function isRecoverableError(error: Error): boolean {
-  if (error instanceof BaseClaudeZenError) {
-    return error.recoverable;
-  }
+	if (error instanceof BaseClaudeZenError) {
+		return error.recoverable;
+	}
 
-  // Default classification for non-Claude-Zen errors
-  return !(
-    error instanceof TypeError ||
-    error instanceof ReferenceError ||
-    error.message.includes('out of memory') ||
-    error.message.includes('segmentation fault')
-  );
+	// Default classification for non-Claude-Zen errors
+	return !(
+		error instanceof TypeError ||
+		error instanceof ReferenceError ||
+		error.message.includes("out of memory") ||
+		error.message.includes("segmentation fault")
+	);
 }
 
 /**
@@ -497,20 +497,20 @@ export function isRecoverableError(error: Error): boolean {
  * ```
  */
 export function getErrorSeverity(
-  error: Error
-): 'low' | 'medium' | 'high' | 'critical' {
-  if (error instanceof BaseClaudeZenError) {
-    return error.severity;
-  }
+	error: Error,
+): "low" | "medium" | "high" | "critical" {
+	if (error instanceof BaseClaudeZenError) {
+		return error.severity;
+	}
 
-  // Default severity classification
-  if (error.message.includes('timeout') || error.message.includes('network')) {
-    return 'medium';
-  }
-  if (error.message.includes('memory') || error.message.includes('critical')) {
-    return 'critical';
-  }
-  return 'high';
+	// Default severity classification
+	if (error.message.includes("timeout") || error.message.includes("network")) {
+		return "medium";
+	}
+	if (error.message.includes("memory") || error.message.includes("critical")) {
+		return "critical";
+	}
+	return "high";
 }
 
 /**
@@ -540,16 +540,16 @@ export function getErrorSeverity(
  * ```
  */
 export function shouldRetry(
-  error: Error,
-  attempt: number,
-  maxRetries = 3
+	error: Error,
+	attempt: number,
+	maxRetries = 3,
 ): boolean {
-  return !(
-    attempt >= maxRetries ||
-    !isRecoverableError(error) ||
-    error instanceof ValidationError ||
-    error instanceof ConfigurationError
-  );
+	return !(
+		attempt >= maxRetries ||
+		!isRecoverableError(error) ||
+		error instanceof ValidationError ||
+		error instanceof ConfigurationError
+	);
 }
 
 // ===============================
@@ -560,22 +560,22 @@ export function shouldRetry(
 
 // Export utility functions for validation error handling
 export function isValidationError(error: unknown): error is ValidationError {
-  return error instanceof ValidationError;
+	return error instanceof ValidationError;
 }
 
 export function createValidationError(
-  message: string,
-  field?: string
+	message: string,
+	field?: string,
 ): ValidationError {
-  return new ValidationError(message, field);
+	return new ValidationError(message, field);
 }
 
 export function hasValidationError(error: unknown): boolean {
-  return isValidationError(error);
+	return isValidationError(error);
 }
 
 export function getValidationErrors(errors: unknown[]): ValidationError[] {
-  return errors.filter(isValidationError);
+	return errors.filter(isValidationError);
 }
 
 // Add BaseError alias for backward compatibility
@@ -583,5 +583,5 @@ export { BaseClaudeZenError as BaseError };
 
 // Export isError utility function
 export function isError(value: unknown): value is Error {
-  return value instanceof Error;
+	return value instanceof Error;
 }

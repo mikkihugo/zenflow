@@ -13,78 +13,78 @@
  * - ANTHROPIC_API_KEY - Required for Claude API tests
  */
 
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  test: {
-    // Test file patterns - focused on unit tests
-    include: ['tests/unit/**/*.test.ts', 'tests/basic.test.ts'],
-    exclude: [
-      'node_modules/**',
-      'dist/**',
-      'tests/integration/**',
-      'tests/e2e/**',
-    ],
+	test: {
+		// Test file patterns - focused on unit tests
+		include: ["tests/unit/**/*.test.ts", "tests/basic.test.ts"],
+		exclude: [
+			"node_modules/**",
+			"dist/**",
+			"tests/integration/**",
+			"tests/e2e/**",
+		],
 
-    // Environment setup
-    globals: true,
-    environment: 'node',
-    // Skip broken setup file
-    // setupFiles: ['./tests/setup/vitest.setup.ts'],
+		// Environment setup
+		globals: true,
+		environment: "node",
+		// Skip broken setup file
+		// setupFiles: ['./tests/setup/vitest.setup.ts'],
 
-    // Reduced timeouts for basic tests
-    testTimeout: 30000, // 30 seconds
-    hookTimeout: 10000, // 10 seconds
+		// Reduced timeouts for basic tests
+		testTimeout: 30000, // 30 seconds
+		hookTimeout: 10000, // 10 seconds
 
-    // Coverage configuration - realistic thresholds
-    coverage: {
-      enabled: true,
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      include: ['src/**/*.ts'],
-      exclude: [
-        'tests/**/*.ts',
-        '**/index.ts',
-        'dist/**',
-        'node_modules/**',
-        'scripts/**',
-      ],
-      thresholds: {
-        global: {
-          branches: 60, // Realistic for foundation package
-          functions: 65,
-          lines: 70,
-          statements: 70,
-        },
-      },
-    },
+		// Coverage configuration - realistic thresholds
+		coverage: {
+			enabled: true,
+			provider: "v8",
+			reporter: ["text", "json", "html"],
+			include: ["src/**/*.ts"],
+			exclude: [
+				"tests/**/*.ts",
+				"**/index.ts",
+				"dist/**",
+				"node_modules/**",
+				"scripts/**",
+			],
+			thresholds: {
+				global: {
+					branches: 60, // Realistic for foundation package
+					functions: 65,
+					lines: 70,
+					statements: 70,
+				},
+			},
+		},
 
-    // No retries for basic tests
-    retry: 0,
+		// No retries for basic tests
+		retry: 0,
 
-    // Single fork to avoid memory issues
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-        isolate: false,
-        maxForks: 1,
-        minForks: 1,
-      },
-    },
+		// Single fork to avoid memory issues
+		pool: "forks",
+		poolOptions: {
+			forks: {
+				singleFork: true,
+				isolate: false,
+				maxForks: 1,
+				minForks: 1,
+			},
+		},
 
-    // Simple reporter
-    reporters: ['default'],
+		// Simple reporter
+		reporters: ["default"],
 
-    // Sequential execution to avoid memory issues
-    sequence: {
-      shuffle: false,
-      concurrent: false,
-    },
-  },
+		// Sequential execution to avoid memory issues
+		sequence: {
+			shuffle: false,
+			concurrent: false,
+		},
+	},
 
-  // TypeScript configuration
-  esbuild: {
-    target: 'node18',
-  },
+	// TypeScript configuration
+	esbuild: {
+		target: "node18",
+	},
 });

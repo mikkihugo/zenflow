@@ -5,47 +5,46 @@
  * Import this for basic foundation functionality without heavy dependencies.
  */
 
-// =============================================================================
-// CORE LOGGING SYSTEM
-// =============================================================================
-export {
-  getLogger,
-  updateLoggingConfig,
-  getLoggingConfig,
-  validateLoggingEnvironment,
-  LoggingLevel,
-} from './core/logging';
-export type { Logger, LoggingConfig } from './core/logging';
-
+export type { Config } from "./core/config";
 // =============================================================================
 // CORE CONFIGURATION SYSTEM
 // =============================================================================
 export {
-  getConfig,
-  reloadConfig,
-  validateConfig,
-  configHelpers,
-  isDebugMode,
-  isDevelopment,
-  isProduction,
-  isTest,
-  getEnv,
-  requireEnv,
-  shouldLog,
-} from './core/config';
-export type { Config } from './core/config';
+	configHelpers,
+	getConfig,
+	getEnv,
+	isDebugMode,
+	isDevelopment,
+	isProduction,
+	isTest,
+	reloadConfig,
+	requireEnv,
+	shouldLog,
+	validateConfig,
+} from "./core/config";
+export type { Logger, LoggingConfig } from "./core/logging";
+// =============================================================================
+// CORE LOGGING SYSTEM
+// =============================================================================
+export {
+	getLogger,
+	getLoggingConfig,
+	LoggingLevel,
+	updateLoggingConfig,
+	validateLoggingEnvironment,
+} from "./core/logging";
 
 // =============================================================================
 // CORE TYPES - Essential primitives only
 // =============================================================================
 export type {
-  UUID,
-  Timestamp,
-  Priority,
-  Status,
-  JsonValue,
-  JsonObject,
-  JsonArray,
-  JsonPrimitive,
-  UnknownRecord,
-} from './types/primitives';
+	JsonArray,
+	JsonObject,
+	JsonPrimitive,
+	JsonValue,
+	Priority,
+	Status,
+	Timestamp,
+	UnknownRecord,
+	UUID,
+} from "./types/primitives";

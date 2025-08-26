@@ -27,11 +27,11 @@
  * @interface ServiceInfo
  */
 export interface ServiceInfo {
-  name: string;
-  type: 'class' | 'factory' | 'instance' | 'singleton' | 'async-factory';
-  capabilities: string[];
-  tags: string[];
-  registeredAt: number;
+	name: string;
+	type: "class" | "factory" | "instance" | "singleton" | "async-factory";
+	capabilities: string[];
+	tags: string[];
+	registeredAt: number;
 }
 
 /**
@@ -50,11 +50,11 @@ export interface ServiceInfo {
  * ```
  */
 export interface ServiceDiscoveryOptions {
-  recursive?: boolean;
-  includeTests?: boolean;
-  extensions?: string[];
-  cwd?: string;
-  ignore?: string[];
+	recursive?: boolean;
+	includeTests?: boolean;
+	extensions?: string[];
+	cwd?: string;
+	ignore?: string[];
 }
 
 /**
@@ -64,10 +64,10 @@ export interface ServiceDiscoveryOptions {
  * @interface ContainerStats
  */
 export interface ContainerStats {
-  totalServices: number;
-  healthyServices: number;
-  unhealthyServices: number;
-  lastHealthCheck: number;
+	totalServices: number;
+	healthyServices: number;
+	unhealthyServices: number;
+	lastHealthCheck: number;
 }
 
 /**
@@ -92,77 +92,77 @@ export interface ContainerStats {
  * ```
  */
 export interface Container {
-  // Event emitter methods
-  on(event: string, listener: (...args: unknown[]) => void): this;
-  emit(event: string, ...args: unknown[]): boolean;
-  off(event: string, listener: (...args: unknown[]) => void): this;
+	// Event emitter methods
+	on(event: string, listener: (...args: unknown[]) => void): this;
+	emit(event: string, ...args: unknown[]): boolean;
+	off(event: string, listener: (...args: unknown[]) => void): this;
 
-  // Core registration methods
-  register<T>(
-    token: string,
-    implementation: new (...args: unknown[]) => T,
-    options?: { capabilities?: string[]; tags?: string[] }
-  ): void;
-  registerFunction<T>(
-    token: string,
-    factory: () => T,
-    options?: { capabilities?: string[]; tags?: string[] }
-  ): void;
-  registerInstance<T>(
-    token: string,
-    instance: T,
-    options?: { capabilities?: string[]; tags?: string[] }
-  ): void;
+	// Core registration methods
+	register<T>(
+		token: string,
+		implementation: new (...args: unknown[]) => T,
+		options?: { capabilities?: string[]; tags?: string[] },
+	): void;
+	registerFunction<T>(
+		token: string,
+		factory: () => T,
+		options?: { capabilities?: string[]; tags?: string[] },
+	): void;
+	registerInstance<T>(
+		token: string,
+		instance: T,
+		options?: { capabilities?: string[]; tags?: string[] },
+	): void;
 
-  // New reasonable DI features
-  registerSingleton<T>(
-    token: string,
-    factory: (() => T) | (new (...args: unknown[]) => T),
-    options?: { capabilities?: string[]; tags?: string[] }
-  ): void;
-  registerAsyncFactory<T>(
-    token: string,
-    factory: () => Promise<T>,
-    options?: { capabilities?: string[]; tags?: string[] }
-  ): void;
-  registerConditional<T>(
-    token: string,
-    factory: (() => T) | (new (...args: unknown[]) => T),
-    condition: () => boolean,
-    options?: { capabilities?: string[]; tags?: string[] }
-  ): void;
+	// New reasonable DI features
+	registerSingleton<T>(
+		token: string,
+		factory: (() => T) | (new (...args: unknown[]) => T),
+		options?: { capabilities?: string[]; tags?: string[] },
+	): void;
+	registerAsyncFactory<T>(
+		token: string,
+		factory: () => Promise<T>,
+		options?: { capabilities?: string[]; tags?: string[] },
+	): void;
+	registerConditional<T>(
+		token: string,
+		factory: (() => T) | (new (...args: unknown[]) => T),
+		condition: () => boolean,
+		options?: { capabilities?: string[]; tags?: string[] },
+	): void;
 
-  // Resolution methods
-  resolve<T>(token: string): T;
-  resolveAsync<T>(token: string): Promise<T>;
-  resolveAll<T>(tags: string[]): T[];
+	// Resolution methods
+	resolve<T>(token: string): T;
+	resolveAsync<T>(token: string): Promise<T>;
+	resolveAll<T>(tags: string[]): T[];
 
-  // Service discovery
-  has(token: string): boolean;
-  getServicesByTags(tags: string[]): string[];
-  getServicesByCapabilities(capabilities: string[]): string[];
-  getServiceMetadata(token: string): ServiceInfo | undefined;
-  listServices(): string[];
+	// Service discovery
+	has(token: string): boolean;
+	getServicesByTags(tags: string[]): string[];
+	getServicesByCapabilities(capabilities: string[]): string[];
+	getServiceMetadata(token: string): ServiceInfo | undefined;
+	listServices(): string[];
 
-  // Lifecycle management
-  dispose(): Promise<void>;
+	// Lifecycle management
+	dispose(): Promise<void>;
 
-  // Advanced features (existing)
-  autoDiscoverServices(
-    patterns: string[],
-    options: ServiceDiscoveryOptions
-  ): Promise<ServiceInfo[]>;
-  startHealthMonitoring(interval: number): void;
-  getStats(): ContainerStats;
-  getServicesByCapability?(capability: string): ServiceInfo[];
-  getServicesByTag?(tag: string): ServiceInfo[];
-  getHealthStatus?(): {
-    status: string;
-    serviceCount: number;
-    timestamp: number;
-    uptime: number;
-  };
-  getName?(): string;
+	// Advanced features (existing)
+	autoDiscoverServices(
+		patterns: string[],
+		options: ServiceDiscoveryOptions,
+	): Promise<ServiceInfo[]>;
+	startHealthMonitoring(interval: number): void;
+	getStats(): ContainerStats;
+	getServicesByCapability?(capability: string): ServiceInfo[];
+	getServicesByTag?(tag: string): ServiceInfo[];
+	getHealthStatus?(): {
+		status: string;
+		serviceCount: number;
+		timestamp: number;
+		uptime: number;
+	};
+	getName?(): string;
 }
 
 /**
@@ -187,15 +187,15 @@ export interface Container {
  * });
  * ```
  */
-import { ContainerImpl } from './container-impl';
+import { ContainerImpl } from "./container-impl";
 
 export const createContainer = (): Container => new ContainerImpl();
 
 // Service tokens for common services
 export const TOKENS = {
-  logger: 'logger',
-  config: 'config',
-  database: 'database',
+	logger: "logger",
+	config: "config",
+	database: "database",
 };
 
 // STRATEGIC FORCING EXPORTS - Guide developers to industry-standard patterns

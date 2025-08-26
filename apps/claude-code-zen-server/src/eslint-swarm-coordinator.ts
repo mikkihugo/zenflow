@@ -9,14 +9,13 @@
  * @version 2.0-alpha.73
  */
 
-import { type ChildProcess, execSync, spawn } from "child_process";
-import path from "path";
-
+import { type ChildProcess, execSync, spawn } from "node:child_process";
+import path from "node:path";
 import {
-	getConsoleReplacementLogger,
 	EventEmitter,
-	type LoggerInterface,
+	getConsoleReplacementLogger,
 	getLogger,
+	type LoggerInterface,
 } from "@claude-zen/foundation";
 
 // Import existing coordination infrastructure (will be dynamically imported)
@@ -484,15 +483,17 @@ async function main(): Promise<void> {
 		dryRun: args.includes("--dry-run"),
 		concurrentAgents: parseInt(
 			args.find((arg) => arg.startsWith("--agents="))?.split("=")[1] || "4",
+			10,
 		),
 		timeout: parseInt(
 			args.find((arg) => arg.startsWith("--timeout="))?.split("=")[1] ||
 				"300000",
+			10,
 		),
 	};
 
 	// Get project root from arguments
-	const projectRootIndex = args.findIndex((arg) => arg === "--project-root");
+	const projectRootIndex = args.indexOf("--project-root");
 	if (projectRootIndex !== -1 && args[projectRootIndex + 1]) {
 		options.projectRoot = path.resolve(args[projectRootIndex + 1]);
 	}

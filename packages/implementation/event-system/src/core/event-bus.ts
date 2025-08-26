@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * @fileoverview Event Bus - Professional Battle-Tested Architecture
  *
@@ -38,12 +38,9 @@ import { EventEmitter } from '@claude-zen/foundation';
  */
 
 import { EventEmitter, 
-  err,
   getLogger,
-  ok,
   type Result,
   safeAsync,} from '@claude-zen/foundation';
-import compose from 'koa-compose';
 
 const logger = getLogger('EventBus');
 
@@ -159,9 +156,9 @@ export class EventBus extends EventEmitter {
   @traced('event.emit')'
   @metered('event_bus_emit')'
   async emitSafe(event: string, payload: any): Promise<Result<boolean, Error>> {
-    return withTrace('event.emit', async (span) => {'
+    return withTrace('event.emit', async (_span) => {'
       return safeAsync(async () => {
-        const startTime = Date.now();
+        const _startTime = Date.now();
 
         // Record telemetry metrics
         if (this.config.enableTelemetry) {

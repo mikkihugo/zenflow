@@ -19,8 +19,8 @@
  * @file Documentation management system.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+
 // BrainCoordinator interface - using fallback type if intelligence facade not available
 interface BrainCoordinator {
   store(key: string, data: any, category?: string): Promise<void>;
@@ -62,8 +62,6 @@ export interface DocumentationStats {
  * @example
  */
 export class DocumentationManager extends TypedEventBase {
-  private memory: BrainCoordinator;
-  private configuration: Required<DocumentationManagerConfig>;
   private stats: DocumentationStats;
   private initialized = false;
 
@@ -74,9 +72,9 @@ export class DocumentationManager extends TypedEventBase {
     super();
     this.memory = memory;
     this.config = {
-      autoLink: config?.['autoLink'] !== false,
-      scanPaths: config?.['scanPaths']||['./docs', './src'],
-      maxDepth: config?.['maxDepth']||10,
+      autoLink: config?.autoLink !== false,
+      scanPaths: config?.scanPaths||['./docs', './src'],
+      maxDepth: config?.maxDepth||10,
     };
     this.stats = {
       indexedDocuments: 0,
@@ -104,7 +102,7 @@ export class DocumentationManager extends TypedEventBase {
     await this.ensureInitialized();
 
     // Index the document
-    const docId = `doc-${Date.now()}`;`
+    const _docId = `doc-${Date.now()}`;`
     await this.memory.store(
       docId,
       {
@@ -117,7 +115,7 @@ export class DocumentationManager extends TypedEventBase {
       'documentation');'
 
     this.stats.indexedDocuments++;
-    logger.debug(`Indexed document: ${document.title||document.path}`);`
+    logger.debug(`Indexed document: $document.title||document.path`);`
   }
 
   async scanDocumentation(): Promise<void> {
@@ -139,33 +137,30 @@ export class DocumentationManager extends TypedEventBase {
   async generateDocumentationReport(): Promise<string> {
     const report = [
       '# Documentation Report',
-      `Generated: ${new Date().toISOString()}`,`
+      `Generated: $new Date().toISOString()`,`
       '',
       '## Statistics',
       `- Indexed Documents: ${this.stats.indexedDocuments}`,`
-      `- Total Links: ${this.stats.totalLinks}`,`
+      `- Total Links: $this.stats.totalLinks`,`
       `- Broken Links: ${this.stats.brokenLinks}`,`
       '',
       '## Scan Paths',
-      ...this.config.scanPaths.map((path) => `- ${path}`),`
+      ...this.config.scanPaths.map((path) => `- $path`),`
     ];
 
     return report.join('\n');'
   }
 
-  async getStats(): Promise<DocumentationStats> {
+  async getStats(): Promise<DocumentationStats> 
     return { ...this.stats };
-  }
 
-  async shutdown(): Promise<void> {
+  async shutdown(): Promise<void> 
     logger.info('Shutting down documentation manager...');'
     this.removeAllListeners();
     logger.info('Documentation manager shutdown complete');'
-  }
 
-  private async ensureInitialized(): Promise<void> {
+  private async ensureInitialized(): Promise<void> 
     if (!this.initialized) {
       await this.initialize();
     }
-  }
 }

@@ -1,206 +1,206 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { apiClient } from '../api';
-  import ProjectModeManager from './ProjectModeManager.svelte';
-  
-  // Types
-  interface Project {
-    id: string;
-    name: string;
-    path: string;
-    lastAccessed: string;
-    isCurrent: boolean;
-    status: 'active' | 'inactive';
-  }
+import { onMount } from "svelte";
+import { writable } from "svelte/store";
+import { apiClient } from "../api";
 
-  interface ProjectSwitchResult {
-    success: boolean;
-    projectId: string;
-    projectName: string;
-    projectPath: string;
-    previousProject?: string;
-    switchedAt: string;
-    initializationTime: number;
-  }
+// Types
+interface Project {
+	id: string;
+	name: string;
+	path: string;
+	lastAccessed: string;
+	isCurrent: boolean;
+	status: "active" | "inactive";
+}
 
-  // State
-  export let showDropdown = false;
-  
-  const projects = writable<Project[]>([]);
-  const currentProject = writable<Project | null>(null);
-  const loading = writable(false);
-  const switching = writable(false);
-  const error = writable<string | null>(null);
+interface ProjectSwitchResult {
+	success: boolean;
+	projectId: string;
+	projectName: string;
+	projectPath: string;
+	previousProject?: string;
+	switchedAt: string;
+	initializationTime: number;
+}
 
-  let dropdownElement: HTMLElement;
-  let switchingProjectId: string | null = null;
+// State
+export let showDropdown = false;
 
-  // Reactive variables
-  $: currentProjectName = $currentProject?.name || 'No Project';
-  $: recentProjects = $projects.slice(0, 5); // Show only 5 most recent
+const projects = writable<Project[]>([]);
+const currentProject = writable<Project | null>(null);
+const loading = writable(false);
+const switching = writable(false);
+const error = writable<string | null>(null);
 
-  onMount(() => {
-    loadProjects();
-    loadCurrentProject();
+let dropdownElement: HTMLElement;
+let switchingProjectId: string | null = null;
 
-    // Setup keyboard shortcuts
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
-        e.preventDefault();
-        showDropdown = !showDropdown;
-      }
-      
-      if (e.key === 'Escape' && showDropdown) {
-        showDropdown = false;
-      }
-    };
+// Reactive variables
+$: currentProjectName = $currentProject?.name || "No Project";
+$: recentProjects = $projects.slice(0, 5); // Show only 5 most recent
 
-    document.addEventListener('keydown', handleKeydown);
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  });
+onMount(() => {
+	loadProjects();
+	loadCurrentProject();
 
-  async function loadProjects() {
-    try {
-      loading.set(true);
-      error.set(null);
-      
-      const projectsData = await apiClient.getProjects();
-      
-      projects.set(projectsData || []);
-    } catch (err) {
-      console.error('Failed to load projects:', err);
-      error.set('Failed to load projects');
-    } finally {
-      loading.set(false);
-    }
-  }
+	// Setup keyboard shortcuts
+	const handleKeydown = (e: KeyboardEvent) => {
+		if (e.ctrlKey && e.shiftKey && e.key === "P") {
+			e.preventDefault();
+			showDropdown = !showDropdown;
+		}
 
-  async function loadCurrentProject() {
-    try {
-      const project = await apiClient.getCurrentProject();
-      
-      currentProject.set({
-        ...project,
-        isCurrent: true,
-        status: 'active'
-      });
-    } catch (err) {
-      console.error('Failed to load current project:', err);
-    }
-  }
+		if (e.key === "Escape" && showDropdown) {
+			showDropdown = false;
+		}
+	};
 
-  async function switchToProject(projectId: string) {
-    if (switchingProjectId || projectId === $currentProject?.id) {
-      return;
-    }
+	document.addEventListener("keydown", handleKeydown);
 
-    try {
-      switching.set(true);
-      switchingProjectId = projectId;
-      error.set(null);
+	return () => {
+		document.removeEventListener("keydown", handleKeydown);
+	};
+});
 
-      // Find project name for UI feedback
-      const project = $projects.find(p => p.id === projectId);
-      const projectName = project?.name || projectId;
+async function loadProjects() {
+	try {
+		loading.set(true);
+		error.set(null);
 
-      // Show switching notification
-      showSwitchingNotification(projectName);
+		const projectsData = await apiClient.getProjects();
 
-      const result: ProjectSwitchResult = await apiClient.switchToProject(projectId);
+		projects.set(projectsData || []);
+	} catch (err) {
+		console.error("Failed to load projects:", err);
+		error.set("Failed to load projects");
+	} finally {
+		loading.set(false);
+	}
+}
 
-      if (result.success) {
-        // Update current project
-        currentProject.set({
-          id: result.projectId,
-          name: result.projectName,
-          path: result.projectPath,
-          lastAccessed: result.switchedAt,
-          isCurrent: true,
-          status: 'active'
-        });
+async function loadCurrentProject() {
+	try {
+		const project = await apiClient.getCurrentProject();
 
-        // Reload projects to update last accessed times
-        await loadProjects();
+		currentProject.set({
+			...project,
+			isCurrent: true,
+			status: "active",
+		});
+	} catch (err) {
+		console.error("Failed to load current project:", err);
+	}
+}
 
-        // Show success notification
-        showSuccessNotification(result);
+async function _switchToProject(projectId: string) {
+	if (switchingProjectId || projectId === $currentProject?.id) {
+		return;
+	}
 
-        // Close dropdown
-        showDropdown = false;
+	try {
+		switching.set(true);
+		switchingProjectId = projectId;
+		error.set(null);
 
-        // Reload the page to reinitialize with new project
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+		// Find project name for UI feedback
+		const project = $projects.find((p) => p.id === projectId);
+		const projectName = project?.name || projectId;
 
-      } else {
-        throw new Error('Project switch failed');
-      }
+		// Show switching notification
+		showSwitchingNotification(projectName);
 
-    } catch (err) {
-      console.error('Failed to switch project:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      error.set(`Failed to switch to project: ${errorMessage}`);
-      showErrorNotification(errorMessage);
-    } finally {
-      switching.set(false);
-      switchingProjectId = null;
-    }
-  }
+		const result: ProjectSwitchResult =
+			await apiClient.switchToProject(projectId);
 
-  function showSwitchingNotification(projectName: string) {
-    // This would integrate with a notification system
-    console.info(`Switching to project: ${projectName}...`);
-  }
+		if (result.success) {
+			// Update current project
+			currentProject.set({
+				id: result.projectId,
+				name: result.projectName,
+				path: result.projectPath,
+				lastAccessed: result.switchedAt,
+				isCurrent: true,
+				status: "active",
+			});
 
-  function showSuccessNotification(result: ProjectSwitchResult) {
-    const duration = Math.round(result.initializationTime);
-    console.info(`Successfully switched to ${result.projectName} in ${duration}ms`);
-  }
+			// Reload projects to update last accessed times
+			await loadProjects();
 
-  function showErrorNotification(errorMessage: string) {
-    console.error(`Project switch failed: ${errorMessage}`);
-  }
+			// Show success notification
+			showSuccessNotification(result);
 
-  function toggleDropdown() {
-    showDropdown = !showDropdown;
-  }
+			// Close dropdown
+			showDropdown = false;
 
-  function handleClickOutside(event: Event) {
-    if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-      showDropdown = false;
-    }
-  }
+			// Reload the page to reinitialize with new project
+			setTimeout(() => {
+				window.location.reload();
+			}, 1500);
+		} else {
+			throw new Error("Project switch failed");
+		}
+	} catch (err) {
+		console.error("Failed to switch project:", err);
+		const errorMessage = err instanceof Error ? err.message : "Unknown error";
+		error.set(`Failed to switch to project: ${errorMessage}`);
+		showErrorNotification(errorMessage);
+	} finally {
+		switching.set(false);
+		switchingProjectId = null;
+	}
+}
 
-  function formatLastAccessed(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) {
-      return 'Today';
-    } else if (diffDays === 1) {
-      return 'Yesterday';
-    } else if (diffDays < 7) {
-      return `${diffDays} days ago`;
-    } else {
-      return date.toLocaleDateString();
-    }
-  }
+function showSwitchingNotification(projectName: string) {
+	// This would integrate with a notification system
+	console.info(`Switching to project: ${projectName}...`);
+}
 
-  // Close dropdown when clicking outside
-  $: if (showDropdown) {
-    setTimeout(() => {
-      document.addEventListener('click', handleClickOutside);
-    });
-  } else {
-    document.removeEventListener('click', handleClickOutside);
-  }
+function showSuccessNotification(result: ProjectSwitchResult) {
+	const duration = Math.round(result.initializationTime);
+	console.info(
+		`Successfully switched to ${result.projectName} in ${duration}ms`,
+	);
+}
+
+function showErrorNotification(errorMessage: string) {
+	console.error(`Project switch failed: ${errorMessage}`);
+}
+
+function _toggleDropdown() {
+	showDropdown = !showDropdown;
+}
+
+function handleClickOutside(event: Event) {
+	if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+		showDropdown = false;
+	}
+}
+
+function _formatLastAccessed(dateString: string): string {
+	const date = new Date(dateString);
+	const now = new Date();
+	const diffMs = now.getTime() - date.getTime();
+	const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+	if (diffDays === 0) {
+		return "Today";
+	} else if (diffDays === 1) {
+		return "Yesterday";
+	} else if (diffDays < 7) {
+		return `${diffDays} days ago`;
+	} else {
+		return date.toLocaleDateString();
+	}
+}
+
+// Close dropdown when clicking outside
+$: if (showDropdown) {
+	setTimeout(() => {
+		document.addEventListener("click", handleClickOutside);
+	});
+} else {
+	document.removeEventListener("click", handleClickOutside);
+}
 </script>
 
 <svelte:window on:keydown />

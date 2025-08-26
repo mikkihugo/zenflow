@@ -1,139 +1,168 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { ProgressRadial } from '@skeletonlabs/skeleton';
-  import { aiInsightsEngine, type AIInsight, type AIAnalysisResult } from '../ai-insights';
-  import { notifyInfo, notifySuccess } from '../notifications';
+import { onDestroy, onMount } from "svelte";
+import {
+	type AIAnalysisResult,
+	type AIInsight,
+	aiInsightsEngine,
+} from "../ai-insights";
+import { notifyInfo, notifySuccess } from "../notifications";
 
-  export let systemData: any = null;
-  export let autoRefresh: boolean = true;
-  export let refreshInterval: number = 30000; // 30 seconds
+export const systemData: any = null;
+export const autoRefresh: boolean = true;
+export const refreshInterval: number = 30000; // 30 seconds
 
-  let analysis: AIAnalysisResult | null = null;
-  let insights: AIInsight[] = [];
-  let loading = false;
-  let error: string | null = null;
-  let selectedInsight: AIInsight | null = null;
-  let refreshTimer: NodeJS.Timeout | null = null;
-  let expandedInsights = new Set<string>();
+let analysis: AIAnalysisResult | null = null;
+let insights: AIInsight[] = [];
+let loading = false;
+let _error: string | null = null;
+const _selectedInsight: AIInsight | null = null;
+let refreshTimer: NodeJS.Timeout | null = null;
+let expandedInsights = new Set<string>();
 
-  onMount(() => {
-    if (systemData) {
-      analyzeSystem();
-    }
-    
-    if (autoRefresh) {
-      startAutoRefresh();
-    }
-  });
+onMount(() => {
+	if (systemData) {
+		analyzeSystem();
+	}
 
-  onDestroy(() => {
-    if (refreshTimer) {
-      clearInterval(refreshTimer);
-    }
-  });
+	if (autoRefresh) {
+		startAutoRefresh();
+	}
+});
 
-  function startAutoRefresh(): void {
-    if (refreshTimer) clearInterval(refreshTimer);
-    
-    refreshTimer = setInterval(() => {
-      if (systemData && !loading) {
-        analyzeSystem(false); // Silent refresh
-      }
-    }, refreshInterval);
-  }
+onDestroy(() => {
+	if (refreshTimer) {
+		clearInterval(refreshTimer);
+	}
+});
 
-  async function analyzeSystem(showNotification = true): Promise<void> {
-    if (!systemData) return;
-    
-    loading = true;
-    error = null;
+function startAutoRefresh(): void {
+	if (refreshTimer) clearInterval(refreshTimer);
 
-    try {
-      analysis = await aiInsightsEngine.analyzeSystemState(systemData);
-      insights = analysis.insights;
-      
-      if (showNotification && insights.length > 0) {
-        const criticalCount = insights.filter(i => i.severity === 'critical').length;
-        if (criticalCount > 0) {
-          notifyInfo(`AI Analysis: Found ${criticalCount} critical insights requiring attention`);
-        } else {
-          notifySuccess(`AI Analysis: Generated ${insights.length} insights and recommendations`);
-        }
-      }
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to analyze system';
-      console.error('AI Analysis Error:', err);
-    } finally {
-      loading = false;
-    }
-  }
+	refreshTimer = setInterval(() => {
+		if (systemData && !loading) {
+			analyzeSystem(false); // Silent refresh
+		}
+	}, refreshInterval);
+}
 
-  function getSeverityColor(severity: AIInsight['severity']): string {
-    switch (severity) {
-      case 'critical': return 'error';
-      case 'high': return 'warning';
-      case 'medium': return 'secondary';
-      case 'low': return 'tertiary';
-      default: return 'surface';
-    }
-  }
+async function analyzeSystem(showNotification = true): Promise<void> {
+	if (!systemData) return;
 
-  function getSeverityIcon(severity: AIInsight['severity']): string {
-    switch (severity) {
-      case 'critical': return '🚨';
-      case 'high': return '⚠️';
-      case 'medium': return '💡';
-      case 'low': return 'ℹ️';
-      default: return '📋';
-    }
-  }
+	loading = true;
+	_error = null;
 
-  function getTypeIcon(type: AIInsight['type']): string {
-    switch (type) {
-      case 'performance': return '⚡';
-      case 'optimization': return '🎯';
-      case 'security': return '🔒';
-      case 'usage': return '📊';
-      case 'prediction': return '🔮';
-      case 'anomaly': return '🕵️';
-      default: return '🤖';
-    }
-  }
+	try {
+		analysis = await aiInsightsEngine.analyzeSystemState(systemData);
+		insights = analysis.insights;
 
-  function getHealthScoreColor(score: number): string {
-    if (score >= 90) return 'success';
-    if (score >= 70) return 'secondary';
-    if (score >= 50) return 'warning';
-    return 'error';
-  }
+		if (showNotification && insights.length > 0) {
+			const criticalCount = insights.filter(
+				(i) => i.severity === "critical",
+			).length;
+			if (criticalCount > 0) {
+				notifyInfo(
+					`AI Analysis: Found ${criticalCount} critical insights requiring attention`,
+				);
+			} else {
+				notifySuccess(
+					`AI Analysis: Generated ${insights.length} insights and recommendations`,
+				);
+			}
+		}
+	} catch (err) {
+		_error = err instanceof Error ? err.message : "Failed to analyze system";
+		console.error("AI Analysis Error:", err);
+	} finally {
+		loading = false;
+	}
+}
 
-  function toggleInsightExpansion(insightId: string): void {
-    if (expandedInsights.has(insightId)) {
-      expandedInsights.delete(insightId);
-    } else {
-      expandedInsights.add(insightId);
-    }
-    expandedInsights = new Set(expandedInsights); // Trigger reactivity
-  }
+function _getSeverityColor(severity: AIInsight["severity"]): string {
+	switch (severity) {
+		case "critical":
+			return "error";
+		case "high":
+			return "warning";
+		case "medium":
+			return "secondary";
+		case "low":
+			return "tertiary";
+		default:
+			return "surface";
+	}
+}
 
-  function formatTimestamp(timestamp: string): string {
-    return new Date(timestamp).toLocaleTimeString();
-  }
+function _getSeverityIcon(severity: AIInsight["severity"]): string {
+	switch (severity) {
+		case "critical":
+			return "🚨";
+		case "high":
+			return "⚠️";
+		case "medium":
+			return "💡";
+		case "low":
+			return "ℹ️";
+		default:
+			return "📋";
+	}
+}
 
-  // React to system data changes
-  $: if (systemData) {
-    analyzeSystem();
-  }
+function _getTypeIcon(type: AIInsight["type"]): string {
+	switch (type) {
+		case "performance":
+			return "⚡";
+		case "optimization":
+			return "🎯";
+		case "security":
+			return "🔒";
+		case "usage":
+			return "📊";
+		case "prediction":
+			return "🔮";
+		case "anomaly":
+			return "🕵️";
+		default:
+			return "🤖";
+	}
+}
 
-  // Group insights by type for better organization
-  $: insightsByType = insights.reduce((acc, insight) => {
-    if (!acc[insight.type]) acc[insight.type] = [];
-    acc[insight.type].push(insight);
-    return acc;
-  }, {} as Record<string, AIInsight[]>);
+function _getHealthScoreColor(score: number): string {
+	if (score >= 90) return "success";
+	if (score >= 70) return "secondary";
+	if (score >= 50) return "warning";
+	return "error";
+}
 
-  // Filter insights by actionable status
-  $: actionableInsights = insights.filter(i => i.actionable);
+function _toggleInsightExpansion(insightId: string): void {
+	if (expandedInsights.has(insightId)) {
+		expandedInsights.delete(insightId);
+	} else {
+		expandedInsights.add(insightId);
+	}
+	expandedInsights = new Set(expandedInsights); // Trigger reactivity
+}
+
+function _formatTimestamp(timestamp: string): string {
+	return new Date(timestamp).toLocaleTimeString();
+}
+
+// React to system data changes
+$: if (systemData) {
+	analyzeSystem();
+}
+
+// Group insights by type for better organization
+$: insightsByType = insights.reduce(
+	(acc, insight) => {
+		if (!acc[insight.type]) acc[insight.type] = [];
+		acc[insight.type].push(insight);
+		return acc;
+	},
+	{} as Record<string, AIInsight[]>,
+);
+
+// Filter insights by actionable status
+$: actionableInsights = insights.filter((i) => i.actionable);
 </script>
 
 <div class="ai-insights-widget">

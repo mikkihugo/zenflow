@@ -6,8 +6,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getTaskMasterSystem } from './facades/taskmaster-facade';
 import type { TaskMasterSystem } from './facades/taskmaster-facade';
+import { getTaskMasterSystem } from './facades/taskmaster-facade';
 
 const logger = getLogger('TaskMaster');'
 
@@ -79,24 +79,23 @@ export async function createTaskMaster(config?: {
 // CONVENIENCE EXPORTS FOR MAIN APP INTEGRATION
 // ============================================================================
 
-// Re-export facade for direct access
-export { getTaskMasterSystem, createTaskMasterSystem } from './facades/taskmaster-facade';
-export type { TaskMasterSystem } from './facades/taskmaster-facade';
-
-// Re-export core workflow types
-export type {
-  WorkflowTask,
-  TaskState,
-  TaskPriority,
-  FlowMetrics,
-  WorkflowKanbanConfig,
-  ApprovalGateInstance,
-  PIPlanningEvent
-} from './types/index';
 
 // Re-export main API classes for advanced usage
-export { WorkflowKanban, createWorkflowKanban } from './api/workflow-kanban';
+export { createWorkflowKanban, WorkflowKanban } from './api/workflow-kanban';
 export { ApprovalGateManager } from './core/approval-gate-manager';
+export type { TaskMasterSystem } from './facades/taskmaster-facade';
+// Re-export facade for direct access
+export { createTaskMasterSystem, getTaskMasterSystem } from './facades/taskmaster-facade';
+// Re-export core workflow types
+export type {
+  ApprovalGateInstance,
+  FlowMetrics,
+  PIPlanningEvent, 
+  TaskPriority,
+  TaskState,
+  WorkflowKanbanConfig,
+  WorkflowTask
+} from './types/index';
 
 // ============================================================================
 // DEFAULT EXPORT FOR CONVENIENCE

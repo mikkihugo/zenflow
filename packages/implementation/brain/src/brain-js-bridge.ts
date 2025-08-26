@@ -30,21 +30,19 @@
  * @version 1.0.0
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
 // Database access via infrastructure facade
-import {
-  Result,
-  ok,
-  err,
-  safeAsync,
-  withContext,
-  ContextError,
-  ValidationError,
+import { 
   ConfigurationError,
-} from '@claude-zen/foundation';
+  type ContextError,
+  err,type Logger, 
+  ok,
+  type Result,
+  safeAsync,
+  ValidationError,
+  withContext,} from '@claude-zen/foundation';
 import { getDatabaseAccess } from '@claude-zen/infrastructure';
 
-import type { ModelMetrics, ActivationFunction } from './types/index';
+import type { ActivationFunction, ModelMetrics } from './types/index';
 
 const brain = require('brain.js');'
 
@@ -351,7 +349,7 @@ export class BrainJsBridge {
           });
           break;
 
-        default:
+        default: {
           throw new ValidationError('Unsupported network type', { type });'
       }
 
@@ -378,9 +376,9 @@ export class BrainJsBridge {
 
       // Persist to database
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('neural');'
+        const _kv = await this.dbAccess.getKV('neural');'
         await kv.set(
-          `brainjs:metadata:${id}`,`
+          `brainjs:metadata:$id`,`
           JSON.stringify({
             id,
             type,
@@ -494,9 +492,9 @@ export class BrainJsBridge {
 
       // Store training metrics in database
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('neural');'
+        const _kv = await this.dbAccess.getKV('neural');'
         await kv.set(
-          `brainjs:training:${networkId}:${Date.now()}`,`
+          `brainjs:training:$networkId:$Date.now()`,`
           JSON.stringify({
             iterations: stats.iterations,
             error: stats.error,
@@ -507,7 +505,7 @@ export class BrainJsBridge {
         );
       }
 
-      const metrics: ModelMetrics = {
+      const _metrics: ModelMetrics = {
         accuracy: 1 - stats.error, // Convert error to accuracy
         loss: stats.error,
         time: trainingTime,
@@ -659,15 +657,15 @@ export class BrainJsBridge {
         await kv.delete(`brainjs:metadata:${networkId}`);`
       }
 
-      this.foundationLogger.info(`Removed brain.js network: ${networkId}`);`
+      this.foundationLogger.info(`Removed brain.js network: $networkId`);`
       return true;
+        }
     }).then((result) =>
       result.mapErr((error) =>
-        withContext(error, {
+        withContext(error, 
           component: 'BrainJsBridge',
           operation: 'removeNetwork',
-          networkId,
-        })
+          networkId,)
       )
     );
   }
@@ -759,7 +757,7 @@ export class BrainJsBridge {
         case 'gru':'
           network = new brain.GRUTimeStep();
           break;
-        default:
+        default: {
           throw new ValidationError('Unsupported network type', { type });'
       }
 
@@ -789,9 +787,9 @@ export class BrainJsBridge {
 
       // Persist to database
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('neural');'
+        const _kv = await this.dbAccess.getKV('neural');'
         await kv.set(
-          `brainjs:metadata:${id}`,`
+          `brainjs:metadata:$id`,`
           JSON.stringify({
             id,
             type,
@@ -989,3 +987,5 @@ export async function predictWithBrainJsNetwork(
 ): Promise<Result<BrainJsPredictionResult, ContextError>> {
   return await bridge.predictWithNeuralNet(networkId, input);
 }
+
+        }

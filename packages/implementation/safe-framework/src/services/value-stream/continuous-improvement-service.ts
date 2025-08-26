@@ -12,7 +12,8 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const {
   format,
   addDays,
@@ -20,17 +21,9 @@ const {
   addMonths,
   differenceInDays,
 } = dateFns;
+
 import {
-  groupBy,
-  map,
-  filter,
   orderBy,
-  sumBy,
-  maxBy,
-  minBy,
-  meanBy,
-  uniqBy,
-  countBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -1090,10 +1083,6 @@ export enum LearningCategory {
  * Continuous Improvement Service
  */
 export class ContinuousImprovementService {
-  private readonly logger: Logger;
-  private kaizenCycles = new Map<string, AutomatedKaizenCycle>();
-  private activeImprovements = new Map<string, ImprovementImplementation>();
-  private feedbackLoops = new Map<string, FeedbackLoopConfig>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -1103,10 +1092,10 @@ export class ContinuousImprovementService {
    * Execute automated kaizen cycle
    */
   async executeAutomatedKaizenCycle(
-    config: ContinuousImprovementConfig,
-    currentMetrics: any
+    _config: ContinuousImprovementConfig,
+    _currentMetrics: any
   ): Promise<AutomatedKaizenCycle> {
-    const cycleId = `kaizen-${generateNanoId(12)}`;`
+    const _cycleId = `kaizen-${generateNanoId(12)}`;`
 
     this.logger.info('Executing automated kaizen cycle', {'
       cycleId,
@@ -1234,40 +1223,35 @@ export class ContinuousImprovementService {
       currentMetrics.cycleTime.variance > currentMetrics.cycleTime.average * 0.3
     ) {
       opportunities.push({
-        itemId: `improvement-${generateNanoId(8)}`,`
+        itemId: `improvement-$generateNanoId(8)`,`
         title:'Reduce cycle time variance',
         description:
           'High variance in cycle time indicates process inconsistency',
         category: ImprovementCategory.PROCESS_STREAMLINING,
         priority: ImprovementPriority.HIGH,
-        effort: {
+        effort: 
           timeHours: 40,
           resources: [
-            {
               resourceType: 'people',
               quantity: 2,
               duration: 5,
-              skills: ['Process Analysis', 'Lean'],
-            },
+              skills: ['Process Analysis', 'Lean'],,
           ],
           complexity: EffortComplexity.MODERATE,
-          dependencies: [],
-        },
-        impact: {
+          dependencies: [],,
+        impact: 
           cycleTimeReduction: 15,
           qualityImprovement: 10,
           costSavings: 5000,
           satisfactionIncrease: 8,
-          confidence: 80,
-        },
-        feasibility: {
+          confidence: 80,,
+        feasibility: 
           technical: FeasibilityLevel.HIGH,
           organizational: FeasibilityLevel.MEDIUM,
           financial: FeasibilityLevel.HIGH,
           timeline: FeasibilityLevel.HIGH,
           overall: FeasibilityLevel.HIGH,
-          constraints: [],
-        },
+          constraints: [],,
         proposedBy: 'AI Analysis',
         supportLevel: 85,
       });

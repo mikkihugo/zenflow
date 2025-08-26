@@ -5,12 +5,8 @@
  * between factories.ts and individual adapter files.
  */
 
-import { type Config, getConfig, getLogger } from "@claude-zen/foundation";
-import type {
-	EventManager,
-	EventManagerConfig,
-	EventManagerType,
-} from "./core/interfaces";
+import { getConfig, getLogger } from "@claude-zen/foundation";
+import type { EventManager, EventManagerConfig } from "./core/interfaces";
 
 /**
  * Factory interface for event manager creation.

@@ -9,12 +9,12 @@
  * compatibility with existing coordination code.
  */
 
-import { knowledgeFactSystem } from './fact-system';
 import type {
   CoordinationFact,
   CoordinationFactQuery,
   FactSearchResult,
 } from './fact-system';
+import { knowledgeFactSystem } from './fact-system';
 
 // Re-export types for coordination layer
 export type { CoordinationFact, CoordinationFactQuery, FactSearchResult };
@@ -123,7 +123,7 @@ export async function storeAgentFact(
 
 export async function queryAgentFacts(
   agentId?: string,
-  type?: string,
+  _type?: string,
   limit = 100
 ): Promise<CoordinationFact[]> {
   const query: CoordinationFactQuery = { limit };

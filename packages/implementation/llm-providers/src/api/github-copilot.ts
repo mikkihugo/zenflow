@@ -41,19 +41,16 @@
  * ````
  */
 
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
 
-import { ok, err } from '@claude-zen/foundation';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { getLogger } from '@claude-zen/foundation/logging';
 
 import type {
   APIProvider,
   APIRequest,
   APIResult,
-  APIProviderCapabilities,
-  API_ERROR_CODES,
 } from '../types/api-providers';
 
 import {
@@ -147,7 +144,7 @@ export class GitHubCopilotAPI implements APIProvider {
   /**
    * Execute chat request using GitHub Copilot API
    */
-  async execute(request: APIRequest): Promise<APIResult> {
+  async execute(_request: APIRequest): Promise<APIResult> {
     try {
       logger.info(
         `Executing GitHub Copilot API request with model: ${this.options.model}``
@@ -160,16 +157,15 @@ export class GitHubCopilotAPI implements APIProvider {
           'Content-Type': 'application/json',
           'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
         },
-        body: JSON.stringify({
+        body: JSON.stringify(
           model: this.options.model,
           messages: request.messages,
           max_tokens: this.options.maxTokens,
           temperature: this.options.temperature,
-          stream: this.options.stream,
-        }),
+          stream: this.options.stream,),
       });
 
-      if (!response.ok) {
+      if (!response._ok) {
         const errorText = await response.text();
         logger.error(
           `GitHub Copilot API error: ${response.status} ${response.statusText} - ${errorText}``
@@ -283,7 +279,7 @@ export class GitHubCopilotAPI implements APIProvider {
 
       const modelIds = models.map((m) => m.id);
       const stats = githubCopilotDB.getStats();
-      const primaryModels = githubCopilotDB.getPrimaryModels();
+      const _primaryModels = githubCopilotDB.getPrimaryModels();
 
       logger.info(
         `📋 GitHub Copilot models from database: ${modelIds.length} chat models``
@@ -293,7 +289,7 @@ export class GitHubCopilotAPI implements APIProvider {
       );
       logger.info(`🖼️ Vision models: ${stats.vision}`);`
       logger.info(
-        `📊 By category: versatile:${stats.byCategory.versatile}, lightweight:${stats.byCategory.lightweight}, powerful:${stats.byCategory.powerful}``
+        `📊 By category: versatile:$stats.byCategory.versatile, lightweight:$stats.byCategory.lightweight, powerful:$stats.byCategory.powerful``
       );
       logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);`
 
@@ -316,7 +312,7 @@ export class GitHubCopilotAPI implements APIProvider {
       ];
 
       logger.info(
-        `📋 Using emergency fallback: ${emergencyModels.length} models (high limits)``
+        `📋 Using emergency fallback: $emergencyModels.lengthmodels (high limits)``
       );
       return emergencyModels;
     }

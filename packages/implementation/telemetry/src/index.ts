@@ -32,39 +32,36 @@
  * @version 1.0.0
  */
 
+// OpenTelemetry re-exports for convenience
+export { SpanKind, SpanStatusCode } from "@opentelemetry/api";
+// Default export
 export {
-  TelemetryManager,
-  recordMetric,
-  recordHistogram,
-  recordGauge,
-  recordEvent,
-  startTrace,
-  withTrace,
-  withAsyncTrace,
-  setTraceAttributes,
-  traced,
-  tracedAsync,
-  metered,
-  getTelemetry,
-  initializeTelemetry,
-  shutdownTelemetry,
-} from './telemetry.js';
-
+	getTelemetry,
+	initializeTelemetry,
+	metered,
+	recordEvent,
+	recordGauge,
+	recordHistogram,
+	recordMetric,
+	setTraceAttributes,
+	shutdownTelemetry,
+	startTrace,
+	TelemetryManager,
+	TelemetryManager as default,
+	traced,
+	tracedAsync,
+	withAsyncTrace,
+	withTrace,
+} from "./telemetry.js";
 // Export types
 export type {
-  TelemetryConfig,
-  MetricDefinition,
-  SpanOptions,
-  TelemetryEvent,
-  MetricType,
-  Span,
-  Tracer,
-  Meter,
-  Attributes,
-} from './types.js';
-
-// OpenTelemetry re-exports for convenience
-export { SpanKind, SpanStatusCode } from '@opentelemetry/api';
-
-// Default export
-export { TelemetryManager as default } from './telemetry.js';
+	Attributes,
+	Meter,
+	MetricDefinition,
+	MetricType,
+	Span,
+	SpanOptions,
+	TelemetryConfig,
+	TelemetryEvent,
+	Tracer,
+} from "./types.js";

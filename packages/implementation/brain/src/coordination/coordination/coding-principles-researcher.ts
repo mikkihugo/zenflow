@@ -17,10 +17,7 @@
  * @since 2024-01-01
  */
 
-import { getLogger } from '@claude-zen/foundation';
 
-import type { BehavioralIntelligence } from '../../behavioral-intelligence';
-import type { DSPyLLMBridge } from '../../coordination/dspy-llm-bridge';
 
 /**
  * Language and framework types for principle research
@@ -186,17 +183,9 @@ export interface PromptConfidence {
  * Dynamically researches and learns coding principles for different languages,
  * domains, and roles using AI research and human feedback loops.
  */
-export class CodingPrinciplesResearcher {
-  private cache = new Map<string, CodingPrinciples>();
-  private humanFeedback = new Map<string, HumanFeedback[]>();
-  private agentFeedback = new Map<string, AgentExecutionFeedback[]>();
-  private promptConfidence = new Map<string, PromptConfidence>();
-  private minimumConfidenceThreshold = 0.7; // Minimum confidence before using principles
-  private logger = getLogger('CodingPrinciplesResearcher');'
+export class CodingPrinciplesResearcher {'
 
-  constructor(
-    private dspyBridge: DSPyLLMBridge,
-    private behavioralIntelligence?: BehavioralIntelligence
+  constructor(,
   ) {}
 
   /**
@@ -360,7 +349,7 @@ export class CodingPrinciplesResearcher {
           });
         }
 
-        this.logger.info(`Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)} (target: ${targetConfidence})`);`
+        this.logger.info(`Research attempt ${researchAttempts}: confidence ${researchConfidence.toFixed(3)} (_target: ${targetConfidence})`);`
       } catch (error) {
         this.logger.warn(`Research attempt ${researchAttempts} failed:`, error);`
       }
@@ -374,7 +363,7 @@ export class CodingPrinciplesResearcher {
     // Cache the best principles found
     this.cache.set(cacheKey, bestPrinciples);
 
-    this.logger.info(`Research completed after ${researchAttempts} attempts. Final confidence: ${bestConfidence.toFixed(3)}`);`
+    this.logger.info(`Research completed after $researchAttemptsattempts. Final confidence: $bestConfidence.toFixed(3)`);`
     return bestPrinciples;
   }
 
@@ -784,11 +773,11 @@ Respond in JSON format with structured guidelines that cover all research areas 
 
         coreStandards: {
           repositoryStructure: parsed.coreStandards?.repositoryStructure || [
-            `Use standard ${config.language} project structure`,'Separate source, tests, and documentation',
+            `Use standard $config.languageproject structure`,'Separate source, tests, and documentation',
             'Include clear configuration files',
           ],
           fileNaming: parsed.coreStandards?.fileNaming || [
-            `Use descriptive ${config.language} file names`,'Follow kebab-case convention',
+            `Use descriptive $config.languagefile names`,'Follow kebab-case convention',
             'Include purpose in filename',
           ],
           folderOrganization: parsed.coreStandards?.folderOrganization || ['Group by feature or domain',
@@ -889,7 +878,7 @@ Respond in JSON format with structured guidelines that cover all research areas 
    * Generate human-reviewable template
    */
   private generateReviewableTemplate(principles: CodingPrinciples): string {
-    return `# ${principles.language.toUpperCase()} Coding Principles`
+    return `# $principles.language.toUpperCase()Coding Principles`
 ${principles.domain ? `## Domain: ${principles.domain}` : ''}'
 ${principles.role ? `## Role: ${principles.role}` : ''}'
 
@@ -1042,7 +1031,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
   }
 
   private generateCacheKey(config: PrinciplesResearchConfig): string {
-    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;`
+    return `$config.language-$config.domain || 'general'-$config.role || 'general'-$config.depth || 'intermediate'`;`
   }
 
   private isCacheValid(principles: CodingPrinciples): boolean {
@@ -1054,7 +1043,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
 
   private getFallbackPrinciples(
     config: PrinciplesResearchConfig
-  ): CodingPrinciples {
+  ): CodingPrinciples 
     return {
       language: config.language,
       domain: config.domain,
@@ -1107,21 +1096,19 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         version: '0.1.0-fallback',
       },
     };
-  }
 
-  private async incorporateFeedback(feedback: HumanFeedback): Promise<void> {
+  private async incorporateFeedback(feedback: HumanFeedback): Promise<void> 
     // Use feedback to improve future research prompts and caching
     // This would integrate with the behavioral intelligence system
     await new Promise(resolve => setTimeout(resolve, 0));
     this.logger.info('Incorporating human feedback for principles improvement:', {'
       principlesId: feedback.principlesId
     });
-  }
 
   private async enhancePrinciplesWithLearning(
     principles: CodingPrinciples,
     patterns: any
-  ): Promise<void> {
+  ): Promise<void> 
     // Enhance principles with successful patterns learned from actual projects
     await new Promise(resolve => setTimeout(resolve, 0));
     principles.researchMetadata.lastUpdated = new Date();

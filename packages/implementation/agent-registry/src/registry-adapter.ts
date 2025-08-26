@@ -58,10 +58,9 @@
 import {
   createServiceContainer,
   getLogger,
-  type Logger,
+  type Logger,TypedEventBase 
 } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
-import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
+import type { JsonValue } from '@claude-zen/foundation/types';
 
 /**
  * Generic registry adapter options
@@ -104,7 +103,6 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
   protected readonly container: ReturnType<typeof createServiceContainer>;
   protected readonly logger: Logger;
   protected readonly options: Required<RegistryAdapterOptions>;
-  private migrationStartTime?: number;
 
   constructor(options: RegistryAdapterOptions = {}) {
     super();
@@ -170,7 +168,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
    */
   protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug(`Migration event: ${event}`, data);
+      this.logger.debug(`Migration event: $event`, data);
     }
     this.emit(event, data);
   }
@@ -246,7 +244,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        `Failed to register agent ${agent.id}: ${result.error.message}``
+        `Failed to register agent $agent.id: $result.error.message``
       );
     }
 
@@ -360,7 +358,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     if (criteria.excludeAgents) {
       filteredAgents = agents.filter(
-        (agent) => !criteria.excludeAgents!.includes(agent.id)
+        (agent) => !criteria.excludeAgents?.includes(agent.id)
       );
     }
 
@@ -484,8 +482,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
   private agentHasCapability(agent: JsonValue, capability: string): boolean {
     const capabilities = agent.capabilities||{};
     return (
-      (capabilities.languages && capabilities.languages.includes(capability))||(capabilities.frameworks &&
-        capabilities.frameworks.includes(capability))||(capabilities.domains && capabilities.domains.includes(capability))||(capabilities.tools && capabilities.tools.includes(capability))
+      (capabilities.languages?.includes(capability))||(capabilities.frameworks?.includes(capability))||(capabilities.domains?.includes(capability))||(capabilities.tools?.includes(capability))
     );
   }
 }
@@ -725,10 +722,8 @@ export function replaceRegistry<T>(
   // Copy any existing data if possible
   if (
     existingRegistry &&
-    typeof existingRegistry['getAllServices'] === 'function''
-  ) {
-    // Migration logic would go here
-  }
+    typeof existingRegistry.getAllServices === 'function''
+  ) 
 
   return adapter;
 }

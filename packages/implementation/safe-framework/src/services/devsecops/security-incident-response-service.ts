@@ -12,17 +12,12 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addMinutes, addHours, addDays } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
-  orderBy,
-  sumBy,
-  meanBy,
-  maxBy,
-  sortBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -437,10 +432,6 @@ export interface SLAThresholds {
  * Security Incident Response Service for managing security incidents
  */
 export class SecurityIncidentResponseService {
-  private readonly logger: Logger;
-  private incidents = new Map<string, SecurityIncident>();
-  private responseConfig: IncidentResponseConfig;
-  private responseTeams = new Map<string, ResponseTeam>();
 
   constructor(logger: Logger, config?: IncidentResponseConfig) {
     this.logger = logger;
@@ -459,7 +450,7 @@ export class SecurityIncidentResponseService {
     reportedBy: string;
     initialEvidence?: Partial<IncidentEvidence>[];
   }): SecurityIncident {
-    const incidentId = `incident-${generateNanoId(12)}`;`
+    const _incidentId = `incident-${generateNanoId(12)}`;`
 
     this.logger.info('Creating security incident', {'
       incidentId,
@@ -496,16 +487,16 @@ export class SecurityIncidentResponseService {
       responseTeam,
       timeline: [
         {
-          entryId: `timeline-${generateNanoId(8)}`,`
+          entryId: `timeline-$generateNanoId(8)`,`
           timestamp: new Date(),
           action: 'incident_created',
-          description: `Incident created: ${incidentData.title}`,`
+          description: `Incident created: $incidentData.title`,`
           performer: incidentData.reportedBy,
           category: 'detection',
         },
       ],
       evidence: incidentData.initialEvidence
-        ? this.convertToEvidence(incidentData.initialEvidence)
+        ? this.convertToEvidence(_incidentData._initialEvidence)
         : [],
       impact,
       containment: {
@@ -571,10 +562,10 @@ export class SecurityIncidentResponseService {
 
     // Add timeline entry
     const timelineEntry: IncidentTimelineEntry = {
-      entryId: `timeline-${generateNanoId(8)}`,`
+      entryId: `timeline-$generateNanoId(8)`,`
       timestamp: new Date(),
       action: 'status_updated',
-      description: `Status changed from ${incident.status} to ${status}${notes ? `: ${notes}` : ''}`,`
+      description: `Status changed from $incident.statusto $status$notes ? `: ${notes}` : ''`,`
       performer: updatedBy,
       category: this.getTimelineCategory(status),
     };
@@ -610,16 +601,14 @@ export class SecurityIncidentResponseService {
     }
 
     const newEvidence: IncidentEvidence = {
-      evidenceId: `evidence-${generateNanoId(8)}`,`
+      evidenceId: `evidence-$generateNanoId(8)`,`
       collectedDate: new Date(),
       chainOfCustody: [
-        {
           timestamp: new Date(),
           action: 'collected',
           person: evidence.collectedBy,
           location: 'Digital collection',
-          notes: 'Evidence collected for incident investigation',
-        },
+          notes: 'Evidence collected for incident investigation',,
       ],
       ...evidence,
     };
@@ -670,7 +659,7 @@ export class SecurityIncidentResponseService {
     });
 
     const containmentActions: ContainmentAction[] = actions.map((action) => ({
-      actionId: `action-${generateNanoId(8)}`,`
+      actionId: `action-$generateNanoId(8)`,`
       status: ActionStatus.PLANNED,
       startTime: new Date(),
       ...action,
@@ -737,10 +726,10 @@ export class SecurityIncidentResponseService {
       timeline: [
         ...incident.timeline,
         {
-          entryId: `timeline-${generateNanoId(8)}`,`
+          entryId: `timeline-$generateNanoId(8)`,`
           timestamp: resolutionDate,
           action: 'incident_resolved',
-          description: `Incident resolved: ${resolution.resolutionSummary}`,`
+          description: `Incident resolved: $resolution.resolutionSummary`,`
           performer: resolvedBy,
           category: 'recovery',
         },

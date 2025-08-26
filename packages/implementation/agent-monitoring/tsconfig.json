@@ -1,22 +1,22 @@
 {
-  "extends": "../../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./",
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true
-  },
-  "include": ["src/**/*", "index.ts"],
-  "references": [
-    {
-      "path": "../../foundation"
-    },
-    {
-      "path": "../brain"
-    },
-    {
-      "path": "../event-system"
-    }
-  ]
+	"extends": "../../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./",
+		"composite": true,
+		"declaration": true,
+		"declarationMap": true
+	},
+	"include": ["src/**/*", "index.ts"],
+	"references": [
+		{
+			"path": "../../foundation"
+		},
+		{
+			"path": "../brain"
+		},
+		{
+			"path": "../event-system"
+		}
+	]
 }

@@ -7,15 +7,11 @@
 // Import for default export
 import { NEURAL_PRESETS } from './presets';
 
-export { NEURAL_PRESETS } from './presets';
 export type { NeuralPreset, NeuralPresetMap } from './presets';
 export * from './presets';
-
 // Re-export with alias for backward compatibility
-export { NEURAL_PRESETS as COMPLETE_NEURAL_PRESETS } from './presets';
-
 // Create missing model aliases for compatibility
-export { NEURAL_PRESETS as NeuralModelPresets } from './presets';
+export { NEURAL_PRESETS, NEURAL_PRESETS as COMPLETE_NEURAL_PRESETS, NEURAL_PRESETS as NeuralModelPresets } from './presets';
 
 // Create specific preset aliases
 export const AutoencoderPreset = {

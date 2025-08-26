@@ -3,27 +3,20 @@
  * Parses SARIF results and converts to structured findings
  */
 
-import {
-  getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync,
-  type Logger,
+import type {
+  Logger,
 } from '@claude-zen/foundation';
 
 import type {
-  SARIFResult,
-  SARIFAnalysisResult,
-  SARIFLocation,
-  SARIFPhysicalLocation,
   CodeQLFinding,
-  SourceLocation,
   DataFlowPath,
   DataFlowStep,
-  SecurityClassification,
   FixSuggestion,
-  CodeQLError,
+  SARIFAnalysisResult,
+  SARIFLocation,
+  SARIFResult,
+  SecurityClassification,
+  SourceLocation,
 } from './types/codeql-types';
 
 /**
@@ -226,7 +219,7 @@ export class ResultParser {
    */
   private generateSecurityClassification(
     ruleId: string,
-    rule: any
+    _rule: any
   ): SecurityClassification|undefined {
     // Map common CodeQL security rules to classifications
     const securityMappings: Record<string, Partial<SecurityClassification>> = {'js/sql-injection': {'
@@ -397,16 +390,5 @@ export class ResultParser {
     }
 
     return Math.min(0.99, Math.max(0.1, confidence));
-  }
-
-  private createError(
-    type: CodeQLError['type'],
-    message: string,
-    details: Record<string, unknown> = {}
-  ): CodeQLError {
-    const error = new Error(message) as CodeQLError;
-    error.type = type;
-    Object.assign(error, details);
-    return error;
   }
 }

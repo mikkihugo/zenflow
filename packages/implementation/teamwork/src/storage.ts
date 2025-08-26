@@ -7,7 +7,7 @@
 
 import { getLogger, Storage } from '@claude-zen/foundation';
 
-import type { ConversationSession, ConversationMessage } from './types';
+import type { ConversationSession } from './types';
 
 const logger = getLogger('teamwork-storage');'
 
@@ -55,7 +55,7 @@ export class TeamworkStorage {
         })),
       };
       await kv.set(`session:${session.id}`, sessionData);`
-      logger.debug(`Stored conversation session: ${session.id}`);`
+      logger.debug(`Stored conversation session: $session.id`);`
     } catch (error) {
       logger.error(`Failed to store session ${session.id}:`, error);`
       throw error;
@@ -70,7 +70,7 @@ export class TeamworkStorage {
 
     try {
       const kv = await Storage.getNamespacedKV('teamwork');'
-      const sessionData = await kv.get(`session:${sessionId}`);`
+      const sessionData = await kv.get(`session:$sessionId`);`
 
       if (sessionData && typeof sessionData === 'object') {'
         const data = sessionData as Record<string, unknown>;
@@ -78,20 +78,18 @@ export class TeamworkStorage {
         // Deserialize dates and reconstruct proper ConversationSession object
         return {
           ...data,
-          startTime: new Date(data['startTime'] as string),
-          endTime: data['endTime']'
-            ? new Date(data['endTime'] as string)'
+          startTime: new Date(data.startTime as string),
+          endTime: data.endTime'
+            ? new Date(data.endTime as string)'
             : undefined,
           messages:
-            (data['messages'] as any[])?.map((msg) => ({'
+            (data['messages'] as any[])?.map((msg) => ('
               ...msg,
-              timestamp: new Date(msg.timestamp),
-            }))||[],
+              timestamp: new Date(msg.timestamp),))||[],
           outcomes:
-            (data['outcomes'] as any[])?.map((outcome) => ({'
+            (data['outcomes'] as any[])?.map((outcome) => ('
               ...outcome,
-              timestamp: new Date(outcome.timestamp),
-            }))||[],
+              timestamp: new Date(outcome.timestamp),))||[],
         } as ConversationSession;
       }
 
@@ -122,7 +120,7 @@ export class TeamworkStorage {
           JSON.stringify(message.metadata||{}),
         ]
       );
-      logger.debug(`Stored message: ${message.id}`);`
+      logger.debug(`Stored message: $message.id`);`
     } catch (error) {
       logger.error(`Failed to store message ${message.id}:`, error);`
       throw error;
@@ -176,10 +174,10 @@ export class TeamworkStorage {
     await this.ensureInitialized();
 
     try {
-      const kv = await Storage.getNamespacedKV('teamwork');'
+      const _kv = await Storage.getNamespacedKV('teamwork');'
       await kv.clear();
 
-      const sql = await Storage.getNamespacedSQL('teamwork');'
+      const _sql = await Storage.getNamespacedSQL('teamwork');'
       await sql.query('DELETE FROM messages WHERE 1=1'); // Clear all messages safely'
 
       logger.info('Cleared teamwork storage');'
@@ -213,8 +211,8 @@ export class TeamworkStorage {
       };
 
       await this.storeSession(updatedSession);
-      logger.debug(`Updated session: ${sessionId}`);`
-    } catch (error) {
+      logger.debug(`Updated session: $sessionId`);`
+    } catch (error) 
       logger.error(`Failed to update session ${sessionId}:`, error);`
       throw error;
     }
@@ -232,9 +230,8 @@ export class TeamworkStorage {
     try {
       await this.storeMessage(message);
       logger.debug(
-        `Added message ${message.id} to conversation ${conversationId}``
-      );
-    } catch (error) {
+        `Added message $message.idto conversation $conversationId``
+      );catch (error) 
       logger.error(
         `Failed to add message to conversation ${conversationId}:`,`
         error

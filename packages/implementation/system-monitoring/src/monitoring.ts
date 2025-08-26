@@ -7,23 +7,19 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import {
-  recordMetric,
-  recordHistogram,
-  recordGauge,
-  withAsyncTrace,
   getTelemetry,
   initializeTelemetry,
-  type TelemetryConfig,
+  recordGauge,
+  recordMetric,
+  withAsyncTrace,
 } from '@claude-zen/telemetry';
 import pidusage from 'pidusage';
 import * as si from 'systeminformation';
 
 import type {
-  SystemMetrics,
-  PerformanceMetrics,
   HealthStatus,
   InfrastructureConfig,
-  SystemMonitoringConfig,
+  SystemMetrics,
 } from './types.js';
 
 // =============================================================================
@@ -312,11 +308,11 @@ export class SystemMonitor {
           processCount: (await this.getAllProcessesMetrics()).length,
           memoryDetails: {
             total:
-              Math.round(metrics.memory.total / (1024 * 1024 * 1024)) + ' GB',
+              `${Math.round(metrics.memory.total / (1024 * 1024 * 1024))} GB`,
             used:
-              Math.round(metrics.memory.used / (1024 * 1024 * 1024)) + ' GB',
+              `${Math.round(metrics.memory.used / (1024 * 1024 * 1024))} GB`,
             free:
-              Math.round(metrics.memory.free / (1024 * 1024 * 1024)) + ' GB',
+              `${Math.round(metrics.memory.free / (1024 * 1024 * 1024))} GB`,
           },
         },
       };
@@ -374,9 +370,7 @@ export class SystemMonitor {
 /**
  * Performance tracking for operations
  */
-export class PerformanceTracker {
-  private operations = new Map<string, number[]>();
-  private logger = getLogger('PerformanceTracker');'
+export class PerformanceTracker {'
 
   /**
    * Start timing an operation with high precision
@@ -398,13 +392,13 @@ export class PerformanceTracker {
   async timeAsync<T>(name: string, operation: () => Promise<T>): Promise<T> {
     const timer = this.startTimer(name);
     try {
-      const result = await operation();
+      const _result = await operation();
       timer();
       recordMetric(`operation.${name}.success`, 1);`
       return result;
     } catch (error) {
       timer();
-      recordMetric(`operation.${name}.error`, 1);`
+      recordMetric(`operation.$name.error`, 1);`
       throw error;
     }
   }
@@ -417,11 +411,11 @@ export class PerformanceTracker {
     try {
       const result = operation();
       timer();
-      recordMetric(`operation.${name}.success`, 1);`
+      recordMetric(`operation.$name.success`, 1);`
       return result;
     } catch (error) {
       timer();
-      recordMetric(`operation.${name}.error`, 1);`
+      recordMetric(`operation.$name.error`, 1);`
       throw error;
     }
   }
@@ -443,8 +437,8 @@ export class PerformanceTracker {
     }
 
     // Record to telemetry
-    recordHistogram(`operation.${name}.duration`, duration);`
-    recordMetric(`operation.${name}.count`, 1);`
+    recordHistogram(`operation.$name.duration`, duration);`
+    recordMetric(`operation.$name.count`, 1);`
   }
 
   /**
@@ -589,8 +583,8 @@ export class InfrastructureMetrics {
     duration: number,
     success: boolean
   ): void {
-    recordHistogram(`infrastructure.${operation}.duration`, duration);`
-    recordMetric(`infrastructure.${operation}.calls`, 1, {`
+    recordHistogram(`infrastructure.$operation.duration`, duration);`
+    recordMetric(`infrastructure.$operation.calls`, 1, `
       status: success ? 'success' : 'error',
     });
   }
@@ -599,13 +593,12 @@ export class InfrastructureMetrics {
    * Track resource utilization
    */
   trackResourceUtilization(resource: string, utilization: number): void {
-    recordGauge(`infrastructure.resource.${resource}`, utilization);`
-  }
+    recordGauge(`infrastructure.resource.$resource`, utilization);`
 
   /**
    * Track infrastructure event
    */
-  trackEvent(event: string, attributes: Record<string, any> = {}): void {
+  trackEvent(event: string, attributes: Record<string, any> = {}): void 
     recordMetric(`infrastructure.event.${event}`, 1, attributes);`
   }
 }

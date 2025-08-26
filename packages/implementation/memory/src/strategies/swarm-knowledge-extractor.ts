@@ -6,14 +6,13 @@
  * pattern recognition and knowledge preservation.
  */
 
+import type { Logger } from '@claude-zen/foundation';
 import {
-  TypedEventBase,
   getLogger,
   recordMetric,
+  TypedEventBase,
   withTrace,
-  TelemetryManager,
 } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
 import { DataLifecycleManager } from './data-lifecycle-manager';
 
 // Types for extracted knowledge
@@ -114,7 +113,6 @@ interface ExtractionConfig {
 export class SwarmKnowledgeExtractor extends TypedEventBase {
   private logger: Logger;
   private config: ExtractionConfig;
-  private telemetry: TelemetryManager;
   private lifecycleManager?: DataLifecycleManager;
   private brainCoordinator?: any; // Will be dynamically imported
   private mlCoordinator?: any; // Will be dynamically imported
@@ -126,11 +124,10 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
     super();
     this.config = config;
     this.logger = getLogger('SwarmKnowledgeExtractor');'
-    this.telemetry = new TelemetryManager({
+    this.telemetry = new TelemetryManager(
       serviceName: 'swarm-knowledge-extraction',
       enableTracing: true,
-      enableMetrics: true,
-    });
+      enableMetrics: true,);
   }
 
   async initialize(): Promise<void> {
@@ -208,14 +205,13 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       throw new Error('SwarmKnowledgeExtractor not initialized');'
     }
 
-    return withTrace('extract-swarm-knowledge', async (span) => {'
-      span?.setAttributes({
+    return withTrace('extract-swarm-knowledge', async (_span) => {'
+      span?.setAttributes(
         'session.id': sessionData.sessionId,
         'swarm.type': sessionData.type,
-        'session.duration': sessionData.endTime - sessionData.startTime,
-      });
+        'session.duration': sessionData.endTime - sessionData.startTime,);
 
-      const startTime = Date.now();
+      const _startTime = Date.now();
 
       try {
         // Check if session meets extraction criteria
@@ -304,7 +300,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
         );
 
         return extractedKnowledge;
-      } catch (error) {
+      } catch (error) 
         this.logger.error(
           `Failed to extract knowledge from session ${sessionData.sessionId}:`,`
           error
@@ -337,22 +333,20 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
         `Pre-deletion extraction failed for entry ${entryId}:`,`
         error
       );
-    }
   }
 
-  private async initializeMLTools(): Promise<void> {
+  private async initializeMLTools(): Promise<void> 
     try {
       // Dynamic import to avoid circular dependencies
-      // @ts-ignore - Package may not exist yet, graceful degradation
+      // @ts-expect-error - Package may not exist yet, graceful degradation
       const { MLNeuralCoordinator } = await import('@claude-zen/neural-ml');'
-      // @ts-ignore - Package may not exist yet, graceful degradation
+      // @ts-expect-error - Package may not exist yet, graceful degradation
       const { PatternRecognizer } = await import('@claude-zen/neural-ml');'
 
-      this.mlCoordinator = new MLNeuralCoordinator({
+      this.mlCoordinator = new MLNeuralCoordinator(
         enabled: true,
         modelType: 'pattern-analysis',
-        optimizationStrategy: 'swarm-intelligence',
-      });
+        optimizationStrategy: 'swarm-intelligence',);
 
       this.patternRecognizer = new PatternRecognizer({
         algorithm: 'clustering',
@@ -369,24 +363,19 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       );
       this.configuration.mlEnabled = false;
     }
-  }
 
-  private async initializeBrainTools(): Promise<void> {
+  private async initializeBrainTools(): Promise<void> 
     try {
-      // @ts-ignore - Package may not exist yet, graceful degradation
+      // @ts-expect-error - Package may not exist yet, graceful degradation
       const { BrainCoordinator } = await import('@claude-zen/brain');'
 
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-        optimization: {
+          adaptationThreshold: 0.7,,
+        optimization: 
           strategy: 'swarm-analysis',
-          objectives: ['pattern-recognition', 'performance-prediction'],
-        },
-      });
+          objectives: ['pattern-recognition', 'performance-prediction'],,);
 
       await this.brainCoordinator.initialize();
     } catch (error) {
@@ -396,14 +385,13 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       );
       this.configuration.brainEnabled = false;
     }
-  }
 
-  private async initializeSPARCTools(): Promise<void> {
+  private async initializeSPARCTools(): Promise<void> 
     try {
-      // @ts-ignore - Package may not exist yet, graceful degradation
+      // @ts-expect-error - Package may not exist yet, graceful degradation
       const { SPARCEngineCore } = await import('@claude-zen/sparc');'
 
-      this.sparcEngine = new SPARCEngineCore({
+      this.sparcEngine = new SPARCEngineCore(
         enabled: true,
         analysisMode: 'pattern-extraction',
         phases: [
@@ -412,8 +400,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
           'architecture',
           'refinement',
           'completion',
-        ],
-      });
+        ],);
 
       await this.sparcEngine.initialize();
     } catch (error) {
@@ -423,7 +410,6 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       );
       this.configuration.sparcEnabled = false;
     }
-  }
 
   private shouldExtract(sessionData: SwarmSession): boolean {
     const sessionDuration = sessionData.endTime - sessionData.startTime;
@@ -435,16 +421,15 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
     );
   }
 
-  private shouldExtractFromEntry(entryData: any): boolean {
+  private shouldExtractFromEntry(entryData: any): boolean 
     return (
       entryData &&
       typeof entryData === 'object' &&'
       ('sessionId'in entryData||'swarmId' in entryData) &&'
       ('participants'in entryData||'decisions'in entryData)'
     );
-  }
 
-  private parseSessionData(entryData: any): SwarmSession {
+  private parseSessionData(entryData: any): SwarmSession 
     // Parse and normalize session data from various formats
     return {
       sessionId: entryData.sessionId||entryData.id||`session-${Date.now()}`,`
@@ -458,7 +443,6 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       artifacts: entryData.artifacts||[],
       sparcPhases: entryData.sparcPhases,
     };
-  }
 
   private async extractSuccessPatterns(
     sessionData: SwarmSession
@@ -533,7 +517,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
         const features = [avgTaskCompletion, avgCollaboration, decisionQuality];
         const prediction = await this.brainCoordinator.predict(features);
         adaptabilityScore = prediction.output.adaptability||0.5;
-      } catch (error) {
+      } catch (_error) {
         this.logger.debug('Brain adaptability prediction failed, using default''
         );
       }
@@ -555,14 +539,13 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
     // Extract from successful decisions
     sessionData.decisions
       .filter((d) => d.outcome === 'success')'
-      .forEach((decision) => {
+      .forEach((decision) => 
         outcomes.push({
           topic: 'decision-making',
           insight: `Successful decision in context: ${decision.context}`,`
           confidence: 0.8,
           applicability: ['similar-contexts', 'team-decisions'],
-        });
-      });
+        }););
 
     // Extract from high-quality artifacts
     sessionData.artifacts
@@ -594,7 +577,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
         if (!failureGroups.has(context)) {
           failureGroups.set(context, []);
         }
-        failureGroups.get(context)!.push(failure);
+        failureGroups.get(context)?.push(failure);
       });
 
       failureGroups.forEach((failureList, context) => {
@@ -612,7 +595,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
 
   private async extractSPARCInsights(
     sessionData: SwarmSession
-  ): Promise<ExtractedKnowledge['sparcInsights']|undefined> {'
+  ): Promise<ExtractedKnowledge['sparcInsights']|undefined> '
     if (!sessionData.sparcPhases||!this.sparcEngine) {
       return undefined;
     }
@@ -636,7 +619,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
 
         if (metrics.quality < 0.7) {
           bottlenecks.push(`${phase}: low quality output (${metrics.quality})`);`
-          optimizations.push(`Focus on ${phase} quality improvement`);`
+          optimizations.push(`Focus on $phasequality improvement`);`
         }
       });
 
@@ -649,7 +632,6 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       this.logger.error('Failed to extract SPARC insights:', error);'
       return undefined;
     }
-  }
 
   private async calculateImportance(
     sessionData: SwarmSession
@@ -691,7 +673,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
         const prediction = await this.brainCoordinator.predict(features);
         const mlImportance = prediction.output.importance||0.5;
         importance = (importance + mlImportance) / 2; // Blend manual and ML scores
-      } catch (error) {
+      } catch (_error) {
         this.logger.debug('Brain importance prediction failed, using manual calculation''
         );
       }
@@ -726,7 +708,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
 
   // Public methods
 
-  getExtractionStats() {
+  getExtractionStats() 
     return {
       initialized: this.initialized,
       mlEnabled: this.configuration.mlEnabled,
@@ -735,22 +717,19 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       minSessionDuration: this.configuration.minSessionDuration,
       minImportanceThreshold: this.configuration.minImportanceThreshold,
     };
-  }
 
-  updateConfig(newConfig: Partial<ExtractionConfig>): void {
+  updateConfig(newConfig: Partial<ExtractionConfig>): void 
     this.config = { ...this.config, ...newConfig };
     this.logger.info(
       'Swarm knowledge extractor configuration updated',
       newConfig
     );
-  }
 
-  async shutdown(): Promise<void> {
+  async shutdown(): Promise<void> 
     if (this.lifecycleManager) {
       await this.lifecycleManager.shutdown();
     }
 
     this.initialized = false;
     this.logger.info('Swarm knowledge extractor shut down');'
-  }
 }

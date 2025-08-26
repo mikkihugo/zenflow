@@ -155,7 +155,7 @@ export class WebProcessManager {
 			}
 
 			const pidContent = await readFile(this.pidFile, "utf-8");
-			const pid = Number.parseInt(pidContent.trim());
+			const pid = Number.parseInt(pidContent.trim(), 10);
 
 			if (Number.isNaN(pid)) {
 				this.logger.warn("Invalid PID file content, removing");

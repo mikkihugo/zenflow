@@ -1,29 +1,66 @@
 <script lang="ts">
-	import '../app.postcss';
-	import { page } from '$app/stores';
-	import ConnectionBanner from '$lib/components/ConnectionBanner.svelte';
-	import { writable } from 'svelte/store';
-	
-	// Create connection status store here since export from component isn't working
-	// Start as potentially disconnected until verified
-	const connectionStatus = writable({ connected: false, lastCheck: null, retrying: false });
+import "../app.postcss";
+import { writable } from "svelte/store";
 
-	// Admin navigation items
-	const navItems = [
-		{ href: '/', icon: '🏠', label: 'Dashboard', title: 'Dashboard Overview' },
-		{ href: '/safe', icon: '🎯', label: 'SAFe Platform', title: 'SAFe 6.0 Production Platform' },
-		{ href: '/safe-production', icon: '🚀', label: 'SAFe Production', title: 'Production SAFe Dashboard' },
-		{ href: '/system', icon: '📊', label: 'System', title: 'System Capability Dashboard' },
-		{ href: '/facades', icon: '🏗️', label: 'Facades', title: 'Strategic Facade Monitor' },
-		{ href: '/swarm', icon: '🐝', label: 'Swarm', title: 'Advanced Swarm Management' },
-		{ href: '/agui', icon: '🎛️', label: 'AGUI', title: 'Advanced GUI Interface' },
-		{ href: '/memory', icon: '💾', label: 'Memory', title: 'Memory Management' },
-		{ href: '/database', icon: '🗃️', label: 'Database', title: 'Database Management' },
-		{ href: '/stories', icon: '📖', label: 'User Stories', title: 'SAFe 6.0 User Stories & LPM' },
-	];
+// Create connection status store here since export from component isn't working
+// Start as potentially disconnected until verified
+const _connectionStatus = writable({
+	connected: false,
+	lastCheck: null,
+	retrying: false,
+});
 
-	$: activeUrl = $page.url.pathname;
-	$: bannerVisible = $connectionStatus?.connected === false;
+// Admin navigation items
+const _navItems = [
+	{ href: "/", icon: "🏠", label: "Dashboard", title: "Dashboard Overview" },
+	{
+		href: "/safe",
+		icon: "🎯",
+		label: "SAFe Platform",
+		title: "SAFe 6.0 Production Platform",
+	},
+	{
+		href: "/safe-production",
+		icon: "🚀",
+		label: "SAFe Production",
+		title: "Production SAFe Dashboard",
+	},
+	{
+		href: "/system",
+		icon: "📊",
+		label: "System",
+		title: "System Capability Dashboard",
+	},
+	{
+		href: "/facades",
+		icon: "🏗️",
+		label: "Facades",
+		title: "Strategic Facade Monitor",
+	},
+	{
+		href: "/swarm",
+		icon: "🐝",
+		label: "Swarm",
+		title: "Advanced Swarm Management",
+	},
+	{ href: "/agui", icon: "🎛️", label: "AGUI", title: "Advanced GUI Interface" },
+	{ href: "/memory", icon: "💾", label: "Memory", title: "Memory Management" },
+	{
+		href: "/database",
+		icon: "🗃️",
+		label: "Database",
+		title: "Database Management",
+	},
+	{
+		href: "/stories",
+		icon: "📖",
+		label: "User Stories",
+		title: "SAFe 6.0 User Stories & LPM",
+	},
+];
+
+$: activeUrl = $page.url.pathname;
+$: bannerVisible = $connectionStatus?.connected === false;
 </script>
 
 <!-- Clean Dashboard Layout -->

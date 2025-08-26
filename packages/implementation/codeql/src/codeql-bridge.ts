@@ -3,38 +3,28 @@
  * Primary interface for CodeQL CLI operations and database management
  */
 
+import { spawn } from 'node:child_process';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import {
   getLogger,
-  Result,
-  ok,
-  err,
+  type Logger,
+  type Result,
   safeAsync,
   withRetry,
-  type Logger,
 } from '@claude-zen/foundation';
-
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { spawn } from 'child_process';
 import { glob } from 'glob';
-
+import { DatabaseManager } from './database-manager';
+import { QueryRunner } from './query-runner';
+import { ResultParser } from './result-parser';
 import type {
   CodeQLConfig,
-  CodeQLDatabase,
+  CodeQLError,
   CodeQLLanguage,
   DatabaseCreationOptions,
   DatabaseCreationResult,
   QueryPack,
-  QueryExecutionOptions,
-  QueryExecutionResult,
-  CodeQLAnalysisResult,
-  CodeQLError,
-  SARIFResult,
 } from './types/codeql-types';
-
-import { DatabaseManager } from './database-manager';
-import { QueryRunner } from './query-runner';
-import { ResultParser } from './result-parser';
 
 /**
  * Main CodeQL integration bridge
@@ -43,15 +33,12 @@ import { ResultParser } from './result-parser';
 export class CodeQLBridge {
   private readonly logger: Logger;
   private readonly config: CodeQLConfig;
-  private readonly databaseManager: DatabaseManager;
-  private readonly queryRunner: QueryRunner;
-  private readonly resultParser: ResultParser;
 
   constructor(config: Partial<CodeQLConfig> = {}) {
     this.logger = getLogger('CodeQLBridge');'
 
     // Default configuration
-    this.config = {
+    this.config = 
       codeqlPath: config.codeqlPath||'codeql',
       maxMemory: config.maxMemory||4096,
       threads:
@@ -60,8 +47,7 @@ export class CodeQLBridge {
       timeout: config.timeout||300000, // 5 minutes
       tempDir:
         config.tempDir||path.join(require('os').tmpdir(), 'codeql-zen'),
-      ...config,
-    };
+      ...config,;
 
     // Initialize subsystems
     this.databaseManager = new DatabaseManager(this.config, this.logger);
@@ -341,24 +327,23 @@ export class CodeQLBridge {
         env: process.env,
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
-      const timeoutId = setTimeout(() => {
+      const _timeoutId = setTimeout(() => {
         child.kill('SIGTERM');'
         reject(
-          this.createError('system', 'Command timeout exceeded', {'
+          this.createError('system', 'Command timeout exceeded', '
             command: args.join(' '),
-            timeout,
-          })
+            timeout,)
         );
       }, timeout);
 

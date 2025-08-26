@@ -67,5 +67,4 @@ export declare class MemoryOptimizationEngine extends TypedEventBase {
   updateConfig(newConfig: Partial<OptimizationConfig>): void;
   shutdown(): Promise<void>;
 }
-export {};
 //# sourceMappingURL=memory-optimization-engine.d.ts.map

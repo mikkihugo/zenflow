@@ -1,17 +1,11 @@
 ---
-import config from '../../config.mjs';
-import astroConfig from 'virtual:starlight/user-config';
-import { Icon } from '@astrojs/starlight/components';
-import { HeaderLinks } from 'toolbeam-docs-theme/components';
-import Default from 'toolbeam-docs-theme/overrides/Header.astro';
-import SocialIcons from 'virtual:starlight/components/SocialIcons';
-import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
+import astroConfig from "virtual:starlight/user-config";
+import config from "../../config.mjs";
 
-const path = Astro.url.pathname;
+const _path = Astro.url.pathname;
 
-const links = astroConfig.social || [];
-const headerLinks = config.headerLinks;
-
+const _links = astroConfig.social || [];
+const _headerLinks = config.headerLinks;
 ---
 
 { path.startsWith("/s")

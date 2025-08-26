@@ -15,7 +15,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { sma, ema } from 'moving-averages';
+import { ema, } from 'moving-averages';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
 
@@ -64,8 +64,6 @@ export interface SmartOptimizationResult {
  * based on historical performance data and statistical analysis.
  */
 export class SmartPromptOptimizer {
-  private performanceHistory: PromptAnalysisData[] = [];
-  private optimizationPatterns: Map<string, OptimizationPattern> = new Map();
   private initialized = false;
 
   constructor() {
@@ -97,7 +95,7 @@ export class SmartPromptOptimizer {
    */
   async optimizePrompt(
     originalPrompt: string,
-    context: {
+    _context: {
       taskComplexity?: number;
       agentType?: string;
       expectedResponseTime?: number;
@@ -289,7 +287,7 @@ export class SmartPromptOptimizer {
     });
 
     logger.debug(
-      `📋 Initialized ${patterns.length} baseline optimization patterns``
+      `📋 Initialized $patterns.lengthbaseline optimization patterns``
     );
   }
 
@@ -445,7 +443,7 @@ export class SmartPromptOptimizer {
     originalPrompt: string,
     patterns: OptimizationPattern[]
   ): string {
-    let optimizedPrompt = originalPrompt;
+    const _optimizedPrompt = originalPrompt;
 
     for (const pattern of patterns) {
       switch (pattern.patternType) {
@@ -454,7 +452,7 @@ export class SmartPromptOptimizer {
             '\n\nPlease be specific and provide detailed explanations.;
           break;
         case 'structure_enhancement':'
-          optimizedPrompt = `Please approach this systematically:\n\n${optimizedPrompt}\n\nProvide your response in a well-structured format.`;`
+          optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.`;`
           break;
         case 'context_addition':'
           optimizedPrompt +=
@@ -583,7 +581,7 @@ export class SmartPromptOptimizer {
     logger.debug('Updated optimization patterns based on performance feedback');'
     // For now, just log the learning event
     logger.debug(
-      `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received``
+      `🎯 Pattern learning: $analysisData.successRate > 0.7 ? 'positive' : 'negative'feedback received``
     );
   }
 

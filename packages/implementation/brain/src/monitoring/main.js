@@ -23,35 +23,36 @@
 // =============================================================================
 // PRIMARY INTELLIGENCE SYSTEM - Main implementation
 // =============================================================================
-export { CompleteIntelligenceSystem } from './intelligence-system';
+
 // =============================================================================
 // FACTORY FUNCTIONS - Quick setup methods
 // =============================================================================
 export {
-  createIntelligenceSystem,
-  createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem,
-} from './intelligence-factory';
-// =============================================================================
-// TASK PREDICTION - Core Monitoring Primitives
-// =============================================================================
-export {
-  SimpleTaskPredictor,
-  createTaskPredictor,
-  isHighConfidencePrediction,
-  getPredictionSummary,
-} from './task-predictor';
+	createBasicIntelligenceSystem,
+	createIntelligenceSystem,
+	createProductionIntelligenceSystem,
+} from "./intelligence-factory";
+export { CompleteIntelligenceSystem } from "./intelligence-system";
 // =============================================================================
 // PERFORMANCE TRACKING - Replaces Hook System Performance Tracking
 // =============================================================================
 export {
-  PerformanceTracker,
-  createPerformanceTracker,
-  getGlobalPerformanceTracker,
-  withPerformanceTracking,
-  DEFAULT_PERFORMANCE_CONFIG,
-} from './performance-tracker';
-export { DEFAULT_TASK_PREDICTOR_CONFIG } from './task-predictor';
+	createPerformanceTracker,
+	DEFAULT_PERFORMANCE_CONFIG,
+	getGlobalPerformanceTracker,
+	PerformanceTracker,
+	withPerformanceTracking,
+} from "./performance-tracker";
+// =============================================================================
+// TASK PREDICTION - Core Monitoring Primitives
+// =============================================================================
+export {
+	createTaskPredictor,
+	DEFAULT_TASK_PREDICTOR_CONFIG,
+	getPredictionSummary,
+	isHighConfidencePrediction,
+	SimpleTaskPredictor,
+} from "./task-predictor";
 // =============================================================================
 // DEFAULT CONFIGURATIONS - For easy setup
 // =============================================================================
@@ -60,15 +61,15 @@ export { DEFAULT_TASK_PREDICTOR_CONFIG } from './task-predictor';
  * Package metadata and version information
  */
 export const PACKAGE_INFO = {
-  name: '@claude-zen/agent-monitoring',
-  version: '1.0.0',
-  description: 'Core agent monitoring primitives for Claude Code Zen',
-  features: [
-    'Basic task prediction interfaces',
-    'Simple intelligence system implementations',
-    'Core monitoring types and configurations',
-    'Foundation logging and storage integration',
-    'Tree-shakable exports for optimal bundles',
-  ],
+	name: "@claude-zen/agent-monitoring",
+	version: "1.0.0",
+	description: "Core agent monitoring primitives for Claude Code Zen",
+	features: [
+		"Basic task prediction interfaces",
+		"Simple intelligence system implementations",
+		"Core monitoring types and configurations",
+		"Foundation logging and storage integration",
+		"Tree-shakable exports for optimal bundles",
+	],
 };
 //# sourceMappingURL=main.js.map

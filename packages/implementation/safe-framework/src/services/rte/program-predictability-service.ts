@@ -12,25 +12,15 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, differenceInDays, subDays } = dateFns;
-import {
-  groupBy,
-  map,
-  filter,
-  orderBy,
-  sumBy,
-  meanBy,
-  maxBy,
-  minBy,
-} from 'lodash-es';
+
+
 import type {
-  ProgramIncrement,
-  PIObjective,
   Feature,
-  AgileReleaseTrain,
-  ARTTeam,
   Logger,
+  PIObjective,
 } from '../../types';
 
 /**
@@ -234,7 +224,6 @@ export class ProgramPredictabilityService {
   private predictabilityRecords = new Map<string, ProgramPredictability>();
   private objectiveTracking = new Map<string, ObjectiveCompletionTracking>();
   private velocityTracking = new Map<string, VelocityTracking>();
-  private synchronizationMetrics = new Map<string, ProgramSynchronization>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -359,7 +348,7 @@ export class ProgramPredictabilityService {
       factors: velocity.factors || [],
     };
 
-    this.velocityTracking.set(`${teamId}-${piId}`, tracking);`
+    this.velocityTracking.set(`$teamId-$piId`, tracking);`
 
     this.logger.info('Velocity tracked', {'
       teamId,
@@ -374,7 +363,7 @@ export class ProgramPredictabilityService {
   /**
    * Assess business impact
    */
-  async assessBusinessImpact(impact: {
+  async assessBusinessImpact(_impact: {
     piId: string;
     description: string;
     category: 'customer|revenue|compliance|strategic;
@@ -388,7 +377,7 @@ export class ProgramPredictabilityService {
     mitigationPlan: string;
     owner: string;
   }): Promise<BusinessImpactAssessment> {
-    const impactId = `impact-${generateNanoId(12)}`;`
+    const _impactId = `impact-${generateNanoId(12)}`;`
 
     const assessment: BusinessImpactAssessment = {
       impactId,
@@ -550,7 +539,7 @@ export class ProgramPredictabilityService {
     piId: string,
     artId: string
   ): ProgramPredictability | undefined {
-    return this.predictabilityRecords.get(`${piId}-${artId}`);`
+    return this.predictabilityRecords.get(`$piId-$artId`);`
   }
 
   /**

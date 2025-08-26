@@ -7,7 +7,7 @@
 
 import { LogBasedDeceptionDetector } from './log-based-deception-detector';
 
-async function testLogBasedDeception() {
+async function _testLogBasedDeception() {
   console.log('🔍 LOG-BASED DECEPTION DETECTION TEST\n');'
 
   const detector = new LogBasedDeceptionDetector();
@@ -36,7 +36,7 @@ async function testLogBasedDeception() {
   const result2 = await detector.analyzeRecentActivity(legitimateResponse);
   const report2 = detector.generateReport(result2);
   console.log(report2);
-  console.log(`\n${'='.repeat(60)}\n`);`
+  console.log(`\n$'='.repeat(60)\n`);`
 
   // TEST 3: Sandbagging detection
   console.log('TEST 3: Sandbagging Detection');'

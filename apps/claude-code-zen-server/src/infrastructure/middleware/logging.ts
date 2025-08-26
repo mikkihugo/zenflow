@@ -115,8 +115,8 @@ const generateRequestId = (): string =>
 const getClientIp = (req: Request): string =>
 	(req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
 	(req.headers["x-real-ip"] as string) ||
-	(req.connection && req.connection.remoteAddress) ||
-	(req.socket && req.socket.remoteAddress) ||
+	req.connection?.remoteAddress ||
+	req.socket?.remoteAddress ||
 	"unknown";
 
 /**
@@ -351,7 +351,7 @@ export const requestLogger = (
 		startTime,
 		userAgent: req.headers["user-agent"] as string,
 		remoteIp: getClientIp(req),
-		referer: req.headers["referer"] as string,
+		referer: req.headers.referer as string,
 	} as RequestMetadata;
 
 	// Set request ID header for client tracing
@@ -368,7 +368,7 @@ export const requestLogger = (
 				body: req.method !== "GET" ? sanitizeData(req.body) : undefined,
 				headers: sanitizeData({
 					[CONTENT_TYPE_HEADER]: req.headers[CONTENT_TYPE_HEADER],
-					accept: req.headers["accept"],
+					accept: req.headers.accept,
 					[CACHE_CONTROL_HEADER]: req.headers[CACHE_CONTROL_HEADER],
 				}),
 			},

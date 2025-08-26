@@ -8,7 +8,7 @@
  * Enhanced with DeepCode patterns for better repository intelligence.
  */
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
@@ -328,7 +328,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
           }
         } else if (stats?.isFile()) {
           // Check if file matches include patterns
-          const shouldInclude = this.configuration.includePatterns.some(
+          const _shouldInclude = this.configuration.includePatterns.some(
             (pattern) => {
               const ext = pattern.split('.').pop();'
               return fullPath.endsWith(`.${ext}`);`
@@ -364,7 +364,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
   private extractImports(content: string): string[] {
     const imports: string[] = [];
-    const importRegex = /import\s+.*?from\s+["'`]([^"'`]+)["'`]/g;`
+    const importRegex = /imports+.*?froms+["'`]([^"'`]+)["'`]/g;`
     let match;
 
     while ((match = importRegex.exec(content)) !== null) {
@@ -412,11 +412,10 @@ export class DomainAnalysisEngine extends TypedEventBase {
     return concepts;
   }
 
-  private calculateFileMetrics(content: string): {
+  private calculateFileMetrics(content: string): 
     linesOfCode: number;
     complexity: number;
-    maintainability: number;
-  } {
+    maintainability: number;{
     const lines = content.split('\n');'
     const linesOfCode = lines.filter(
       (line) => line.trim() && !line.trim().startsWith('//')'
@@ -449,7 +448,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
         if (!pathGroups.has(groupKey)) {
           pathGroups.set(groupKey, []);
         }
-        pathGroups.get(groupKey)!.push(filePath);
+        pathGroups.get(groupKey)?.push(filePath);
       }
     }
 
@@ -495,7 +494,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     return domain;
   }
 
-  private getSubdirectories(path: string): string[] {
+  private getSubdirectories(path: string): string[] 
     try {
       if (!existsSync(path)) return [];
 
@@ -511,7 +510,6 @@ export class DomainAnalysisEngine extends TypedEventBase {
     } catch {
       return [];
     }
-  }
 
   private classifyDomainType(
     name: string,
@@ -523,33 +521,29 @@ export class DomainAnalysisEngine extends TypedEventBase {
       nameUpper.includes('core') || '
       nameUpper.includes('domain') || '
       nameUpper.includes('model')'
-    ) {
+    ) 
       return 'core;
-    }
 
     if (
       nameUpper.includes('infra') || '
       nameUpper.includes('database') || '
       nameUpper.includes('storage')'
-    ) {
+    ) 
       return 'infrastructure;
-    }
 
     if (
       nameUpper.includes('ui') || '
       nameUpper.includes('view') || '
       nameUpper.includes('component')'
-    ) {
+    ) 
       return 'presentation;
-    }
 
     if (
       nameUpper.includes('service') || '
       nameUpper.includes('util') || '
       nameUpper.includes('helper')'
-    ) {
+    ) 
       return 'support;
-    }
 
     return 'application;
   }
@@ -606,7 +600,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     return groups;
   }
 
-  private async analyzeRelationships(): Promise<void> {
+  private async analyzeRelationships(): Promise<void> 
     this.relationships = [];
 
     for (const [sourceId, sourceDomain] of this.discoveredDomains.entries()) {
@@ -626,13 +620,12 @@ export class DomainAnalysisEngine extends TypedEventBase {
     logger.debug('Relationship analysis completed', {'
       relationshipCount: this.relationships.length,
     });
-  }
 
   private calculateDomainRelationship(
     source: DomainBoundary,
     target: DomainBoundary
   ): DomainRelationship | null {
-    let connectionCount = 0;
+    let _connectionCount = 0;
     const evidence: string[] = [];
 
     // Analyze imports between domains
@@ -642,7 +635,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
       for (const importPath of codeFile.imports) {
         if (target.files.some((file) => file.includes(importPath))) {
-          connectionCount++;
+          _connectionCount++;
           evidence.push(`${sourceFile} imports from ${importPath}`);`
         }
       }

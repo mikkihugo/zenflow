@@ -22,32 +22,26 @@ import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   Logger,
   MemorySystem,
-  TypeSafeEventBus,
-  EventPriority,
   MultiLevelOrchestrationManager,
-} from '../types';
-import { getLogger, createEvent } from '../types';
-import type {
-  Customer,
-  SAFeIntegrationConfig,
-  ValueFlowStep,
+  TypeSafeEventBus,
   ValueStream,
   ValueStreamMetrics,
 } from '../types';
+import { getLogger } from '../types';
 
 // Note: Types are defined within this file
 
 // Import from specialized service
 export type {
-  ValueStreamMappingConfig,
-  WorkflowValueStreamMapping,
-  WorkflowStepMapping,
-  ValueStreamCreationContext,
   BusinessContext,
-  TechnicalContext,
-  StakeholderContext,
-  MappingValidationResult,
   MappingValidationIssue,
+  MappingValidationResult,
+  StakeholderContext,
+  TechnicalContext,
+  ValueStreamCreationContext,
+  ValueStreamMappingConfig,
+  WorkflowStepMapping,
+  WorkflowValueStreamMapping,
 } from '../services/value-stream/value-stream-mapping-service';
 
 // ============================================================================
@@ -97,13 +91,7 @@ export interface ValueStreamMapperState {
  */
 export class ValueStreamMapper extends TypedEventBase {
   private readonly logger: Logger;
-  private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
   private readonly multilevelOrchestrator: MultiLevelOrchestrationManager;
-  private readonly portfolioOrchestrator: unknown;
-  private readonly programOrchestrator: unknown;
-  private readonly swarmOrchestrator: unknown;
-  private readonly config: ValueStreamMapperConfig;
 
   // Specialized service (lazy-loaded)
   private valueStreamMappingService?: any;
@@ -118,7 +106,7 @@ export class ValueStreamMapper extends TypedEventBase {
   private valueTrackingTimer?: NodeJS.Timeout;
 
   constructor(
-    eventBus: TypeSafeEventBus,
+    _eventBus: TypeSafeEventBus,
     memory: MemorySystem,
     multilevelOrchestrator: MultiLevelOrchestrationManager,
     portfolioOrchestrator: unknown,
@@ -203,7 +191,7 @@ export class ValueStreamMapper extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info('Value Stream Mapper initialized successfully');'
-      this.emit('initialized', {});'
+      this.emit('initialized', );'
     } catch (error) {
       this.logger.error('Failed to initialize Value Stream Mapper:', error);'
       throw error;
@@ -248,7 +236,7 @@ export class ValueStreamMapper extends TypedEventBase {
   async mapWorkflowsToValueStreams(): Promise<Map<string, ValueStream>> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'map_workflows_to_value_streams''
     );
 
@@ -294,7 +282,7 @@ export class ValueStreamMapper extends TypedEventBase {
   ): Promise<ValueStream> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'create_value_stream_from_workflow''
     );
 
@@ -312,10 +300,9 @@ export class ValueStreamMapper extends TypedEventBase {
       this.performanceTracker.endTimer('create_value_stream_from_workflow');'
       this.telemetryManager.recordCounter('value_streams_created', 1);'
 
-      this.emit('value-stream-created', {'
+      this.emit('value-stream-created', '
         workflowId,
-        valueStreamId: valueStream.id,
-      });
+        valueStreamId: valueStream.id,);
       return valueStream;
     } catch (error) {
       this.performanceTracker.endTimer('create_value_stream_from_workflow');'
@@ -346,7 +333,7 @@ export class ValueStreamMapper extends TypedEventBase {
   async identifyValueDeliveryBottlenecks(): Promise<Map<string, any[]>> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('identify_bottlenecks');'
+    const _timer = this.performanceTracker.startTimer('identify_bottlenecks');'
 
     try {
       this.logger.info('Identifying value delivery bottlenecks');'
@@ -354,7 +341,7 @@ export class ValueStreamMapper extends TypedEventBase {
       const allBottlenecks = new Map<string, any[]>();
 
       // Analyze each value stream for bottlenecks
-      for (const [streamId, valueStream] of this.state.valueStreams) {
+      for (const [streamId, _valueStream] of this.state.valueStreams) {
         const analysis = await this.analyzeValueStreamFlow(streamId);
         const bottlenecks = this.detectBottlenecksInFlow(analysis);
 

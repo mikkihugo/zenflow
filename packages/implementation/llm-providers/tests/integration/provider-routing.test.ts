@@ -1,23 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   createLLMProvider,
-  listLLMProviders,
+  getGlobalLLM,
   getLLMProviderByCapability,
   LLMProvider,
+  listLLMProviders,
   setGlobalLLM,
-  getGlobalLLM,
 } from '../../src/index';
-import {
-  createMockLLMProvider,
-  mockProviderRegistry,
-  createMockResponse,
-  createMockError,
-} from '../mocks/llm-mocks';
 
 describe('Provider Routing Integration', () => {'
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  beforeEach(() => 
+    vi.clearAllMocks(););
 
   describe('Provider Discovery and Registration', () => {'
     it('should discover all available providers', () => {'
@@ -31,21 +24,20 @@ describe('Provider Routing Integration', () => {'
       expect(providerIds).toContain('claude-code');'
 
       // Verify provider structure
-      providers.forEach((provider) => {
+      providers.forEach((provider) => 
         expect(provider).toHaveProperty('id');'
         expect(provider).toHaveProperty('name');'
         expect(provider).toHaveProperty('type');'
         expect(provider).toHaveProperty('category');'
         expect(provider).toHaveProperty('available');'
-        expect(['cli', 'api']).toContain(provider.type);'
-      });
+        expect(['cli', 'api']).toContain(provider.type);');
     });
 
     it('should categorize providers correctly', () => {'
       const providers = listLLMProviders();
 
       const cliProviders = providers.filter((p) => p.type === 'cli');'
-      const apiProviders = providers.filter((p) => p.type === 'api');'
+      const _apiProviders = providers.filter((p) => p.type === 'api');'
 
       expect(cliProviders.length).toBeGreaterThan(0);
 
@@ -63,7 +55,7 @@ describe('Provider Routing Integration', () => {'
       });
 
       // Claude Code should always be available
-      const claudeProvider = providers.find((p) => p.id === 'claude-code');'
+      const _claudeProvider = providers.find((p) => p.id === 'claude-code');'
       expect(claudeProvider?.available).toBe(true);
     });
   });
@@ -105,11 +97,11 @@ describe('Provider Routing Integration', () => {'
 
     it('should respect provider preferences for capabilities', () => {'
       // Test that file operations always go to Claude Code
-      const fileOpsProvider = getLLMProviderByCapability('file-operations');'
+      const _fileOpsProvider = getLLMProviderByCapability('file-operations');'
       expect(fileOpsProvider.getProviderId()).toBe('claude-code');'
 
       // Test that inference can go to multiple providers
-      const inferenceProvider = getLLMProviderByCapability('inference');'
+      const _inferenceProvider = getLLMProviderByCapability('inference');'
       expect(inferenceProvider).toBeInstanceOf(LLMProvider);
     });
   });
@@ -182,11 +174,10 @@ describe('Provider Routing Integration', () => {'
       const githubProvider = createLLMProvider('github-models-api');'
 
       // Mock provider responses
-      vi.spyOn(claudeProvider as any, 'executeTask').mockResolvedValue({'
+      vi.spyOn(claudeProvider as any, 'executeTask').mockResolvedValue('
         success: true,
         result: 'File operations completed',
-        provider: 'claude-code',
-      });
+        provider: 'claude-code',);
 
       vi.spyOn(githubProvider as any, 'executeTask').mockResolvedValue({'
         success: true,
@@ -225,7 +216,7 @@ describe('Provider Routing Integration', () => {'
 
       try {
         await primaryProvider.executeTask('test task');'
-      } catch (error) {
+      } catch (_error) {
         // Fallback to secondary provider
         const result = await fallbackProvider.executeTask('test task');'
         expect(result.success).toBe(true);
@@ -253,7 +244,7 @@ describe('Provider Routing Integration', () => {'
         );
       });
 
-      const tasks = Array.from({ length: 10 }, (_, i) => `Task ${i + 1}`);`
+      const _tasks = Array.from({ length: 10 }, (_, i) => `Task ${i + 1}`);`
 
       // Simple round-robin load balancing
       const results = await Promise.all(

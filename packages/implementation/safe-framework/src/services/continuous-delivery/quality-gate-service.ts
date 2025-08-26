@@ -19,13 +19,13 @@ import type { Logger } from '../../types';
 
 // Re-export types from SPARC-CD mapping service
 export type {
-  QualityGate,
-  QualityGateType,
-  QualityGateCriterion,
-  QualityGateResult,
   CriterionResult,
   EscalationRule,
   NotificationRule,
+  QualityGate,
+  QualityGateCriterion,
+  QualityGateResult,
+  QualityGateType,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -155,12 +155,8 @@ export interface QualityGateOptimization {
 // Re-import types from mapping service
 import type {
   QualityGate,
-  QualityGateType,
   QualityGateCriterion,
   QualityGateResult,
-  CriterionResult,
-  EscalationRule,
-  NotificationRule,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -178,13 +174,11 @@ export class QualityGateService {
   private aiSafetyManager?: any;
   private brainCoordinator?: any;
   private performanceTracker?: any;
-  private aguiService?: any;
   private initialized = false;
 
   // Quality gate state
   private qualityGateTemplates = new Map<string, QualityGate>();
   private executionHistory = new Map<string, QualityGateResult[]>();
-  private optimizationCache = new Map<string, QualityGateOptimization>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -204,13 +198,10 @@ export class QualityGateService {
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent optimization
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -246,7 +237,7 @@ export class QualityGateService {
   async createAutomatedQualityGates(): Promise<Map<string, QualityGate>> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('create_quality_gates');'
+    const _timer = this.performanceTracker.startTimer('create_quality_gates');'
 
     try {
       this.logger.info('Creating automated quality gates with AI optimization');'
@@ -296,11 +287,10 @@ export class QualityGateService {
 
       this.performanceTracker.endTimer('create_quality_gates');'
 
-      this.logger.info('Automated quality gates created with AI optimization', {'
+      this.logger.info('Automated quality gates created with AI optimization', '
         gateCount: qualityGates.size,
         optimizationScore: gateOptimization.overallScore || 0.8,
-        aiSafetyEnabled: !!this.aiSafetyManager,
-      });
+        aiSafetyEnabled: !!this.aiSafetyManager,);
 
       return qualityGates;
     } catch (error) {
@@ -318,7 +308,7 @@ export class QualityGateService {
   ): Promise<QualityGateResult> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('execute_quality_gate');'
+    const _timer = this.performanceTracker.startTimer('execute_quality_gate');'
 
     try {
       const gate = this.qualityGateTemplates.get(config.gateId);
@@ -350,8 +340,7 @@ export class QualityGateService {
         // Create AGUI gate for manual review
         const manualReview = await this.aguiService.createApprovalTask({
           taskType: 'quality_gate_safety_review',
-          description: `Quality gate ${gate.name} requires manual safety review`,`
-          context: { config, safetyReasons: safetyValidation.reasons },
+          description: `Quality gate $gate.namerequires manual safety review`,`config, safetyReasons: safetyValidation.reasons ,
           approvers: ['security-team', 'quality-lead'],
           timeout: 1800000, // 30 minutes
         });
@@ -966,7 +955,7 @@ export class QualityGateService {
     criterionResults: CriterionResult[]
   ): string {
     const criticalFailures = criterionResults.filter((r) => !r.passed).length;
-    return `Quality gate ${status} with score ${Math.round(score)}% (${criticalFailures} failed criteria)`;`
+    return `Quality gate $statuswith score $Math.round(score)% ($criticalFailuresfailed criteria)`;`
   }
 
   private async generateIntelligentRecommendations(

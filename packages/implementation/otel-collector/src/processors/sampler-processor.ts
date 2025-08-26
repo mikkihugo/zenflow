@@ -6,10 +6,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { Logger } from '@claude-zen/foundation';
-
+import type { ProcessorConfig, } from '../types.js';
 import type { BaseProcessor } from './index.js';
-import type { TelemetryData, ProcessorConfig } from '../types.js';
 
 /**
  * Sampling strategy types
@@ -33,23 +31,6 @@ interface SamplingRule {
  * Sampler processor implementation
  */
 export class SamplerProcessor implements BaseProcessor {
-  private config: ProcessorConfig;
-  private logger: Logger;
-  private samplingRules: SamplingRule[] = [];
-  private processedCount = 0;
-  private sampledCount = 0;
-  private lastProcessedTime = 0;
-  private lastError: string|null = null;
-
-  // Rate limiting state
-  private rateCounter = 0;
-  private rateResetTime = 0;
-  private rateBucket = 0;
-
-  // Adaptive sampling state
-  private recentSamples: number[] = [];
-  private targetRate = 0.1; // 10% by default
-  private currentRate = 0.1;
 
   constructor(config: ProcessorConfig) {
     this.config = config;
@@ -133,7 +114,7 @@ export class SamplerProcessor implements BaseProcessor {
 
       if (sampledItems.length < dataItems.length) {
         this.logger.debug(
-          `Sampled ${sampledItems.length} out of ${dataItems.length} items``
+          `Sampled $sampledItems.lengthout of $dataItems.lengthitems``
         );
       }
 
@@ -154,7 +135,7 @@ export class SamplerProcessor implements BaseProcessor {
       totalSampled: this.sampledCount,
       sampleRate:
         this.processedCount > 0
-          ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) + '%''
+          ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`'
           : '0%',
       finalAdaptiveRate: this.currentRate,
     });
@@ -197,15 +178,15 @@ export class SamplerProcessor implements BaseProcessor {
   } {
     const actualRate =
       this.processedCount > 0
-        ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) +'%''
+        ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`'
         : '0%;
 
     return {
       processed: this.processedCount,
       sampled: this.sampledCount,
       sampleRate: actualRate,
-      targetRate: (this.targetRate * 100).toFixed(1) + '%',
-      currentAdaptiveRate: (this.currentRate * 100).toFixed(1) + '%',
+      targetRate: `${(this.targetRate * 100).toFixed(1)}%`,
+      currentAdaptiveRate: `${(this.currentRate * 100).toFixed(1)}%`,
     };
   }
 
@@ -302,7 +283,7 @@ export class SamplerProcessor implements BaseProcessor {
     data: TelemetryData,
     rule: SamplingRule
   ): boolean|null {
-    const priority = this.inferPriority(data);
+    const _priority = this.inferPriority(data);
 
     if (!rule.priority) return null;
 
@@ -357,9 +338,8 @@ export class SamplerProcessor implements BaseProcessor {
       data.type === 'traces' &&'
       data.data &&
       (data.data as any).status === 'ERROR''
-    ) {
+    ) 
       return 'high;
-    }
 
     // Check attributes for priority hints
     const priority = data.attributes?.priority||data.attributes?.level;
@@ -387,8 +367,8 @@ export class SamplerProcessor implements BaseProcessor {
    * Adjust adaptive sampling rate based on recent activity
    */
   private adjustAdaptiveSampling(): void {
-    const now = Date.now();
-    const windowDuration = 60000; // 1 minute window
+    const _now = Date.now();
+    const _windowDuration = 60000; // 1 minute window
 
     // Add current sample to history
     this.recentSamples.push(this.processedCount);
@@ -401,7 +381,7 @@ export class SamplerProcessor implements BaseProcessor {
       const recentTotal =
         this.recentSamples[this.recentSamples.length - 1] -
         this.recentSamples[0];
-      const timeSpan = this.recentSamples.length * 30; // 30 second intervals
+      const _timeSpan = this.recentSamples.length * 30; // 30 second intervals
 
       // Adjust rate based on volume
       if (recentTotal > 1000) {
@@ -453,9 +433,9 @@ export class SamplerProcessor implements BaseProcessor {
 
         switch (operator) {
           case '==':'
-            return actualValue == expectedValue;
+            return actualValue === expectedValue;
           case '!=':'
-            return actualValue != expectedValue;
+            return actualValue !== expectedValue;
           case 'contains':'
             return String(actualValue).includes(expectedValue);
           case 'exists':'

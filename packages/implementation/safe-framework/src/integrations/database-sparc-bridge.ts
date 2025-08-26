@@ -19,13 +19,7 @@
  * @author Claude Code Zen Team
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
-import { getSafeFramework } from '@claude-zen/enterprise';
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import {
-  getSafe6DevelopmentManager,
-  createSafe6SolutionTrainManager,
-} from '@claude-zen/development';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // TODO: Import proper types when available
 interface FeatureDocumentEntity {
@@ -123,11 +117,7 @@ export interface ImplementationResult {
  * @example
  */
 export class DatabaseSPARCBridge extends TypedEventBase {
-  private databaseSystem: DatabaseDrivenSystem;
-  private documentService: DocumentManager;
   private sparcSwarm: SPARCSwarmCoordinator;
-  private activeAssignments = new Map<string, WorkAssignment>();
-  private completedWork = new Map<string, ImplementationResult>();
   private logger: Logger;
 
   constructor(
@@ -172,7 +162,7 @@ export class DatabaseSPARCBridge extends TypedEventBase {
     this.setupSPARCListeners();
 
     this.logger.info('✅ Database-SPARC Bridge ready');'
-    this.emit('bridge:initialized', {});'
+    this.emit('bridge:initialized', );'
   }
 
   /**
@@ -184,19 +174,17 @@ export class DatabaseSPARCBridge extends TypedEventBase {
     this.logger.info(`📋 Assigning feature to SPARC swarm: ${feature.title}`);`
 
     const assignment: WorkAssignment = {
-      id: `assignment-feature-${feature.id}`,`
+      id: `assignment-feature-$feature.id`,`
       type: 'feature',
       document: feature,
       assignedTo: 'sparc-swarm',
       priority: this.mapPriority(feature.priority||'medium'),
       requirements: feature.acceptance_criteria||[],
-      context: {
+      context: 
         projectId: feature.project_id ?? this.generateId(),
-        ...(feature.parent_document_id !== undefined && {
-          parentDocumentId: feature.parent_document_id,
-        }),
-        relatedDocuments: feature.related_documents||[],
-      },
+        ...(feature.parent_document_id !== undefined && 
+          parentDocumentId: feature.parent_document_id,),
+        relatedDocuments: feature.related_documents||[],,
     };
 
     this.activeAssignments.set(assignment.id, assignment);
@@ -217,19 +205,17 @@ export class DatabaseSPARCBridge extends TypedEventBase {
     this.logger.info(`🔧 Assigning task to SPARC swarm: ${task.title}`);`
 
     const assignment: WorkAssignment = {
-      id: `assignment-task-${task.id}`,`
+      id: `assignment-task-$task.id`,`
       type: 'task',
       document: task,
       assignedTo: 'sparc-swarm',
       priority: this.mapPriority(task.priority||'medium'),
       requirements: task.implementation_details?.files_to_create||[],
-      context: {
+      context: 
         projectId: task.project_id ?? this.generateId(),
-        ...(task.parent_document_id !== undefined && {
-          parentDocumentId: task.parent_document_id,
-        }),
-        relatedDocuments: task.related_documents||[],
-      },
+        ...(task.parent_document_id !== undefined && 
+          parentDocumentId: task.parent_document_id,),
+        relatedDocuments: task.related_documents||[],,
     };
 
     this.activeAssignments.set(assignment.id, assignment);
@@ -247,12 +233,10 @@ export class DatabaseSPARCBridge extends TypedEventBase {
   async getWorkStatus(): Promise<{
     active: WorkAssignment[];
     completed: ImplementationResult[];
-    metrics: {
       totalAssignments: number;
       completedAssignments: number;
       averageCompletionTime: number;
-      successRate: number;
-    };
+      successRate: number;;
   }> {
     const activeAssignments = Array.from(this.activeAssignments.values())();
     const completedWork = Array.from(this.completedWork.values())();
@@ -298,7 +282,7 @@ export class DatabaseSPARCBridge extends TypedEventBase {
 
     if (!assignment) {
       this.logger.error(
-        `No assignment found for completed SPARC task: ${sparcTask.id}``
+        `No assignment found for completed SPARC task: $sparcTask.id``
       );
       return;
     }
@@ -337,13 +321,13 @@ export class DatabaseSPARCBridge extends TypedEventBase {
     const document = assignment.document;
 
     // Update document with SPARC implementation details
-    const updatedDocument = {
+    const _updatedDocument = {
       ...document,
       status:
         result?.status === 'completed''
           ? ('approved' as const)'
           : ('draft' as const),
-      completion_percentage:
+      _completion_percentage:
         result?.status === 'completed''
           ? 100
           : result?.status === 'partial''
@@ -351,14 +335,13 @@ export class DatabaseSPARCBridge extends TypedEventBase {
             : 0,
       workflow_stage: 'sparc-completed',
       // Add SPARC-specific fields
-      sparc_implementation: {
+      sparc_implementation: 
         task_id: result?.sparcTaskId,
         completion_date: new Date(),
         artifacts: result?.artifacts,
         metrics: result?.metrics,
         methodology_applied: 'SPARC',
-        quality_score: result?.metrics?.qualityScore,
-      },
+        quality_score: result?.metrics?.qualityScore,,
     };
 
     // Save to database
@@ -459,8 +442,8 @@ export class DatabaseSPARCBridge extends TypedEventBase {
 
 ${phases
   .map(
-    (phase: any) => ``
-### ${(phase.phase||'UNKNOWN').toUpperCase()} Phase'
+    (_phase: any) => ``
+### ${(phase._phase||'UNKNOWN').toUpperCase()} Phase'
 - **Status**: ${phase.status}
 - **Agents**: ${phase.metrics?.agentsInvolved?.length||0}
 - **Artifacts**: ${phase.artifacts?.length||0}
@@ -526,11 +509,11 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   private setupEventHandlers(): void {
     // Bridge-specific event handlers
     this.on('work:assigned', (event: any) => {'
-      this.logger.debug(`Work assigned: ${event.assignment.id}`);`
+      this.logger.debug(`Work assigned: $event.assignment.id`);`
     });
 
     this.on('work:completed', (event: any) => {'
-      this.logger.info(`Work completed: ${event.assignment.id}`);`
+      this.logger.info(`Work completed: $event.assignment.id`);`
     });
   }
 

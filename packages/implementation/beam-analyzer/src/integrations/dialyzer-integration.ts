@@ -3,20 +3,18 @@
  * Wrapper for Dialyzer static analysis tool with PLT management
  */
 
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import * as path from 'path';
 
-import { getLogger, Result, ok, err } from '@claude-zen/foundation';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
-  BeamProject,
   BeamAnalysisContext,
-  DialyzerResult,
-  DialyzerWarning,
-  DialyzerWarningType,
-  BeamLocation,
   BeamAnalysisError,
+  BeamLocation,
+  BeamProject,
+  DialyzerResult,
+  DialyzerWarningType,
 } from '../types/beam-types';
 
 export class DialyzerIntegration {
@@ -27,8 +25,8 @@ export class DialyzerIntegration {
    */
   async analyze(
     project: BeamProject,
-    context: BeamAnalysisContext,
-    options: {
+    _context: BeamAnalysisContext,
+    _options: {
       buildPlt?: boolean;
       apps?: string[];
       warnings?: DialyzerWarningType[];
@@ -88,85 +86,15 @@ export class DialyzerIntegration {
       });
     }
   }
-
-  /**
-   * Build PLT (Persistent Lookup Table) for Dialyzer
-   */
-  private async buildPlt(
-    project: BeamProject,
-    context: BeamAnalysisContext,
-    pltPath: string
-  ): Promise<Result<void, BeamAnalysisError>> {
-    return new Promise((resolve) => {
-      const args = ['--build_plt', '--output_plt', pltPath];'
-
-      // Add OTP applications
-      args.push(
-        '--apps',
-        'erts',
-        'kernel',
-        'stdlib',
-        'crypto',
-        'public_key',
-        'ssl''
-      );
-
-      // Add project-specific applications based on language
-      if (project.language === 'elixir') {'
-        args.push('elixir', 'logger', 'runtime_tools');'
-      }
-
-      // Add project applications
-      for (const app of project.applications) {
-        if (app.type === 'application') {'
-          args.push(app.name);
-        }
-      }
-
-      this.logger.debug(
-        `Building PLT with command: dialyzer ${args.join(' ')}``
-      );
-
-      const child = spawn('dialyzer', args, {'
-        cwd: context.workingDirectory,
-        stdio: ['ignore', 'pipe', 'pipe'],
-      });
-
-      let stdout = '';
-      let stderr = '';
-
-      child.stdout.on('data', (data) => {'
-        stdout += data.toString();
-      });
-
-      child.stderr.on('data', (data) => {'
-        stderr += data.toString();
-      });
-
-      child.on('close', (code) => {'
-        if (code === 0) {
-          this.logger.info('PLT build completed successfully');'
-          resolve(ok());
-        } else {
-          this.logger.error(`PLT build failed with code ${code}: ${stderr}`);`
-          resolve(
-            err({
-              code: 'ANALYSIS_FAILED',
-              message: `PLT build failed: ${stderr}`,`
-              tool: 'dialyzer',
-            })
-          );
-        }
       });
 
       child.on('error', (error) => {'
         resolve(
-          err({
+          err(
             code: 'TOOL_NOT_FOUND',
-            message: `Failed to spawn dialyzer: ${error.message}`,`
+            message: `Failed to spawn dialyzer: $error.message`,`
             tool: 'dialyzer',
-            originalError: error,
-          })
+            originalError: error,)
         );
       });
     });
@@ -218,7 +146,7 @@ export class DialyzerIntegration {
       }
 
       this.logger.debug(
-        `Running Dialyzer with command: dialyzer ${args.join(' ')}``
+        `Running Dialyzer with command: dialyzer $args.join(' ')``
       );
 
       const child = spawn('dialyzer', args, {'
@@ -226,14 +154,14 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
@@ -247,7 +175,7 @@ export class DialyzerIntegration {
           resolve(
             err({
               code:'ANALYSIS_FAILED',
-              message: `Dialyzer analysis failed: ${stderr}`,`
+              message: `Dialyzer analysis failed: $stderr`,`
               tool: 'dialyzer',
             })
           );
@@ -256,12 +184,11 @@ export class DialyzerIntegration {
 
       child.on('error', (error) => {'
         resolve(
-          err({
+          err(
             code: 'TOOL_NOT_FOUND',
-            message: `Failed to spawn dialyzer: ${error.message}`,`
+            message: `Failed to spawn dialyzer: $error.message`,`
             tool: 'dialyzer',
-            originalError: error,
-          })
+            originalError: error,)
         );
       });
     });
@@ -332,14 +259,12 @@ export class DialyzerIntegration {
 
     if (
       lowerMessage.includes('no local return')||lowerMessage.includes('no return')'
-    ) {
+    ) 
       return 'no_return;
-    }
     if (
       lowerMessage.includes('unused')||lowerMessage.includes('will never be called')'
-    ) {
+    ) 
       return 'unused_fun;
-    }
     if (lowerMessage.includes('undefined')||lowerMessage.includes('undef')) {'
       return 'undef;
     }
@@ -351,9 +276,8 @@ export class DialyzerIntegration {
     }
     if (
       lowerMessage.includes('race condition')||lowerMessage.includes('race')'
-    ) {
+    ) 
       return 'race_condition;
-    }
     if (lowerMessage.includes('contract') && lowerMessage.includes('type')) {'
       return 'contract_types;
     }
@@ -384,14 +308,14 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
@@ -417,12 +341,11 @@ export class DialyzerIntegration {
 
       child.on('error', (error) => {'
         resolve(
-          err({
+          err(
             code: 'TOOL_NOT_FOUND',
-            message: `Failed to get PLT info: ${error.message}`,`
+            message: `Failed to get PLT info: $error.message`,`
             tool: 'dialyzer',
-            originalError: error,
-          })
+            originalError: error,)
         );
       });
     });

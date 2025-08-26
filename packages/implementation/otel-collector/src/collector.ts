@@ -6,14 +6,12 @@
  */
 
 import { createServer, type Server } from 'node:http';
-
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation/logging';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation/logging';
 
 import { getDefaultConfig } from './config/index.js';
 import { ExporterManager } from './exporters/index.js';
@@ -23,7 +21,6 @@ import type {
   CollectorStats,
   HealthStatus,
   TelemetryData,
-  SignalType,
 } from './types.js';
 
 /**
@@ -107,7 +104,7 @@ export class InternalOTELCollector {
       // Stop HTTP server
       if (this.httpServer) {
         await new Promise<void>((resolve) => {
-          this.httpServer!.close(() => resolve())();
+          this.httpServer?.close(() => resolve())();
         });
         this.httpServer = null;
       }
@@ -253,17 +250,16 @@ export class InternalOTELCollector {
     app.use(express.json({ limit: '10mb' }));'
 
     // Health endpoint
-    app.get('/health', async (req, res) => {'
+    app.get('/health', async (req, res) => '
       try {
         const health = await this.getHealthStatus();
         res.status(health.status === 'healthy' ? 200 : 503).json(health);'
       } catch (error) {
         res.status(500).json({ status: 'unhealthy', error: String(error) });'
-      }
-    });
+      });
 
     // Stats endpoint
-    app.get('/stats', (req, res) => {'
+    app.get('/stats', (_req, res) => {'
       try {
         const stats = this.getStats();
         res.json(stats);
@@ -273,15 +269,15 @@ export class InternalOTELCollector {
     });
 
     // Telemetry ingestion endpoints
-    app.post('/v1/traces', async (req, res) => {'
+    app.post('/v1/traces', async (_req, _res) => {'
       await this.handleTelemetryIngestion(req, res, 'traces');'
     });
 
-    app.post('/v1/metrics', async (req, res) => {'
+    app.post('/v1/metrics', async (_req, _res) => {'
       await this.handleTelemetryIngestion(req, res, 'metrics');'
     });
 
-    app.post('/v1/logs', async (req, res) => {'
+    app.post('/v1/logs', async (_req, _res) => {'
       await this.handleTelemetryIngestion(req, res, 'logs');'
     });
 
@@ -293,7 +289,7 @@ export class InternalOTELCollector {
         res.status(200).json({ success: true });
       } catch (error) {
         this.logger.error('Failed to handle telemetry ingestion', error);'
-        res.status(500).json({ error: String(error) });
+        res.status(500).json(error: String(error) );
       }
     });
 
@@ -305,7 +301,7 @@ export class InternalOTELCollector {
         res.status(200).json({ success: true, count: telemetryData.length });
       } catch (error) {
         this.logger.error('Failed to handle batch telemetry ingestion', error);'
-        res.status(500).json({ error: String(error) });
+        res.status(500).json(error: String(error) );
       }
     });
 
@@ -313,8 +309,8 @@ export class InternalOTELCollector {
     const port = this.config.httpPort||4318;
     this.httpServer = createServer(app);
 
-    await new Promise<void>((resolve, reject) => {
-      this.httpServer!.listen(port, () => {
+    await new Promise<void>((_resolve, _reject) => {
+      this.httpServer?.listen(port, () => {
         this.logger.info(
           `OTEL Collector HTTP server listening on port ${port}``
         );

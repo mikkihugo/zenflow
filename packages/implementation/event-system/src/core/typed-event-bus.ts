@@ -44,22 +44,19 @@
 import mitt, { type Emitter } from 'mitt;
 
 import { 
-  err,
   getLogger,
   metered,
-  ok,
   type Result,
   recordHistogram,
   recordMetric,
   safeAsync,
   traced,
-  withTrace,z, } from '@claude-zen/foundation';
+  withTrace,} from '@claude-zen/foundation';
 import {
   EventValidator,
   BaseEventSchema,
   EventSchemas,
   type BaseEvent,
-  type AllEventTypes,
 } from '../validation/zod-validation;
 
 const logger = getLogger('TypedEventBus');'
@@ -176,7 +173,7 @@ export class TypedEventBus {
             event
           );
           if (!validationResult.isOk()) {
-            const error = new Error(
+            const _error = new Error(
               `Event validation failed for '${String(type)}': ${validationResult.error.message}``
             );
 
@@ -241,7 +238,7 @@ export class TypedEventBus {
   ): void {
     try {
       this.emitter.emit(type, event);
-    } catch (error) {
+    } catch (_error) {
       logger.error(
         `[TypedEventBus] Error emitting event '${String(type)}':`,`
         error

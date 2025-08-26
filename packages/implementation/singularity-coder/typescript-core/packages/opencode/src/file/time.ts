@@ -31,7 +31,7 @@ export namespace FileTime {
     const stats = await Bun.file(filepath).stat()
     if (stats.mtime.getTime() > time.getTime()) {
       throw new Error(
-        `File ${filepath} has been modified since it was last read.\nLast modification: ${stats.mtime.toISOString()}\nLast read: ${time.toISOString()}\n\nPlease read the file again before modifying it.`,`
+        `File $filepathhas been modified since it was last read.\nLast modification: $stats.mtime.toISOString()\nLast read: $time.toISOString()\n\nPlease read the file again before modifying it.`,`
       )
     }
   }

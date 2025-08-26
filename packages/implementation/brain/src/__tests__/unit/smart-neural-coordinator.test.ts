@@ -4,16 +4,16 @@
  * Tests individual methods and functionality in isolation.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { SmartNeuralCoordinator } from '../../smart-neural-coordinator';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
   NeuralBackendConfig,
-  NeuralEmbeddingRequest,
   NeuralClassificationRequest,
+  NeuralEmbeddingRequest,
   NeuralGenerationRequest,
-  NeuralVisionRequest,
   NeuralTaskRequest,
+  NeuralVisionRequest,
 } from '../../smart-neural-coordinator';
+import { SmartNeuralCoordinator } from '../../smart-neural-coordinator';
 
 // Mock external dependencies
 vi.mock('@xenova/transformers', () => ({'
@@ -50,7 +50,7 @@ vi.mock('openai', () => ({'
           {
             embedding: new Array(1536)
               .fill(0)
-              .map((_, i) => Math.random() * 0.2 - 0.1),
+              .map((_, _i) => Math.random() * 0.2 - 0.1),
           },
         ],
       }),
@@ -200,9 +200,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Embedding Generation', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should generate embeddings successfully', async () => {'
       const request: NeuralEmbeddingRequest = {
@@ -294,9 +293,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Caching System', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should cache embeddings when caching is enabled', async () => {'
       const request: NeuralEmbeddingRequest = {
@@ -350,10 +348,9 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
 
     it('should clear cache when requested', async () => {'
       // Add some items to cache
-      await coordinator.generateEmbedding({
+      await coordinator.generateEmbedding(
         text: 'cache item 1',
-        priority: 'medium',
-      });
+        priority: 'medium',);
       await coordinator.generateEmbedding({
         text: 'cache item 2',
         priority: 'medium',
@@ -398,9 +395,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Performance Tracking', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should track performance metrics', async () => {'
       const requests = Array.from({ length: 5 }, (_, i) => ({
@@ -424,9 +420,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
     it('should track failed requests', async () => {'
       // Mock pipeline to fail
       vi.mocked(require('@xenova/transformers').pipeline).mockImplementation('
-        async () => {
+        async () => 
           throw new Error('Model failure');'
-        }
       );
 
       const request: NeuralEmbeddingRequest = {
@@ -443,9 +438,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Fallback System', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should have fallback chain configured', () => {'
       const stats = coordinator.getCoordinatorStats();
@@ -487,9 +481,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Statistics and Monitoring', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should provide comprehensive statistics', () => {'
       const stats = coordinator.getCoordinatorStats();
@@ -536,9 +529,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Text Classification', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should classify text successfully for sentiment analysis', async () => {'
       const request: NeuralClassificationRequest = {
@@ -628,9 +620,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Text Generation', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should generate text successfully', async () => {'
       const request: NeuralGenerationRequest = {
@@ -726,9 +717,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Image Processing', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should process image to text successfully', async () => {'
       const mockImageData = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]); // PNG header
@@ -823,9 +813,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Neural Tasks', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should perform question answering task', async () => {'
       const request: NeuralTaskRequest = {
@@ -947,9 +936,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {'
   });
 
   describe('Multi-Phase Integration', () => {'
-    beforeEach(async () => {
-      await coordinator.initialize();
-    });
+    beforeEach(async () => 
+      await coordinator.initialize(););
 
     it('should handle multiple phases in sequence', async () => {'
       // Test all phases working together

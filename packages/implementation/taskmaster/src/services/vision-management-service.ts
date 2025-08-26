@@ -27,14 +27,13 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import {
+import type { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type {
   CompleteSafeFlowIntegration,
-  CompleteSafeGateCategory,
 } from '../integrations/complete-safe-flow-integration.js';
-import { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type { ApprovalGateId, UserId } from '../types/index.js';
 
-const logger = getLogger('VisionManagementService');'
+const _logger = getLogger('VisionManagementService');'
 
 // ============================================================================
 // VISION MANAGEMENT TYPES
@@ -204,14 +203,10 @@ export interface VisionAlignment {
  */
 export class VisionManagementService {
   private readonly logger = getLogger('VisionManagementService');'
-  private database: any;
-  private taskApprovalSystem: TaskApprovalSystem;
-  private safeFlowIntegration: CompleteSafeFlowIntegration;
 
   // State management
   private visions = new Map<string, VisionArtifact>();
   private visionBoards = new Map<string, VisionBoard>();
-  private alignmentAssessments = new Map<string, VisionAlignment[]>();
 
   constructor(
     taskApprovalSystem: TaskApprovalSystem,
@@ -255,7 +250,7 @@ export class VisionManagementService {
    * Create new vision artifact with approval workflow
    */
   async createVision(
-    visionData: {
+    _visionData: {
       level: VisionLevel;
       title: string;
       description: string;
@@ -268,7 +263,7 @@ export class VisionManagementService {
       stakeholders: any[];
       parentVisionId?: string;
     },
-    requestContext: {
+    _requestContext: {
       userId: UserId;
       reason: string;
     }
@@ -277,7 +272,7 @@ export class VisionManagementService {
     approvalGateId: ApprovalGateId;
     estimatedApprovalTime: Date;
   }> {
-    const visionId = `vision-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+    const _visionId = `vision-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
 
     this.logger.info('Creating new vision artifact', {'
       visionId,
@@ -356,7 +351,7 @@ export class VisionManagementService {
   }> {
     const vision = this.visions.get(visionId);
     if (!vision) {
-      throw new Error(`Vision not found: ${visionId}`);`
+      throw new Error(`Vision not found: $_visionId`);`
     }
 
     this.logger.info('Updating vision artifact', {'
@@ -372,7 +367,7 @@ export class VisionManagementService {
       requestContext.changeImpact
     );
 
-    if (newApprovalRequired) {
+    if (_newApprovalRequired) {
       // Create evolution approval workflow
       vision.state = VisionState.EVOLVING;
       const approvalGateId = await this.createVisionEvolutionWorkflow(
@@ -413,7 +408,7 @@ export class VisionManagementService {
       throw new Error(`Vision not found: ${visionId}`);`
     }
 
-    const visionBoardId = `vision-board-${visionId}`;`
+    const visionBoardId = `vision-board-$visionId`;`
 
     const visionBoard: VisionBoard = {
       id: visionBoardId,
@@ -522,7 +517,7 @@ export class VisionManagementService {
     };
 
     // Store alignment assessment
-    const alignmentId = `alignment-${visionId}-${Date.now()}`;`
+    const alignmentId = `alignment-$visionId-$Date.now()`;`
     const existingAssessments = this.alignmentAssessments.get(visionId)||[];
     existingAssessments.push(alignment);
     this.alignmentAssessments.set(visionId, existingAssessments);
@@ -539,14 +534,13 @@ export class VisionManagementService {
   /**
    * Get vision hierarchy (parent-child relationships)
    */
-  async getVisionHierarchy(rootVisionId?: string): Promise<{
+  async getVisionHierarchy(rootVisionId?: string): Promise<
     hierarchy: Array<{
       level: VisionLevel;
       visions: VisionArtifact[];
       relationships: Array<{ parentId: string; childId: string }>;
     }>;
-    orphanedVisions: VisionArtifact[];
-  }> {
+    orphanedVisions: VisionArtifact[];> {
     const allVisions = Array.from(this.visions.values())();
 
     if (rootVisionId) {
@@ -570,7 +564,7 @@ export class VisionManagementService {
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
 
-  private async createVisionTables(): Promise<void> {
+  private async createVisionTables(): Promise<void> 
     // Create vision artifacts table
     await this.database.schema.createTableIfNotExists('vision_artifacts',
       (table: any) => {
@@ -638,12 +632,11 @@ export class VisionManagementService {
         table.index(['vision_id', 'assessment_date']);'
       }
     );
-  }
 
   private async createVisionApprovalWorkflow(
     vision: VisionArtifact,
     requestContext: any
-  ): Promise<ApprovalGateId> {
+  ): Promise<ApprovalGateId> 
     return await this.taskApprovalSystem.createApprovalTask({
       id: `vision-approval-${vision.id}`,`
       taskType: 'vision_approval',
@@ -662,9 +655,8 @@ export class VisionManagementService {
         businessValue: this.calculateVisionBusinessValue(vision),
       },
     });
-  }
 
-  private determineReviewers(level: VisionLevel): UserId[] {
+  private determineReviewers(level: VisionLevel): UserId[] 
     switch (level) {
       case VisionLevel.SOLUTION:
         return ['business-owner-1', 'solution-architect-1', 'rte-1'];'
@@ -675,9 +667,8 @@ export class VisionManagementService {
       default:
         return [];
     }
-  }
 
-  private estimateApprovalTime(level: VisionLevel): number {
+  private estimateApprovalTime(level: VisionLevel): number 
     // Return milliseconds
     switch (level) {
       case VisionLevel.SOLUTION:
@@ -689,7 +680,6 @@ export class VisionManagementService {
       default:
         return 5 * 24 * 60 * 60 * 1000;
     }
-  }
 
   private requiresNewApproval(
     vision: VisionArtifact,
@@ -726,31 +716,27 @@ export class VisionManagementService {
   }
 
   // Placeholder implementations for complex analysis methods
-  private calculateStakeholderAlignment(feedback: any[]): number {
+  private calculateStakeholderAlignment(feedback: any[]): number 
     return Math.round(
       feedback.reduce((sum, f) => sum + f.alignmentScore, 0) / feedback.length
     );
-  }
 
-  private calculateTeamAlignment(feedback: any[]): number {
+  private calculateTeamAlignment(feedback: any[]): number 
     return Math.round(
       feedback.reduce((sum, f) => sum + f.alignmentScore, 0) / feedback.length
     );
-  }
 
   private async assessStrategicAlignment(
     vision: VisionArtifact
-  ): Promise<number> {
+  ): Promise<number> 
     // Assess alignment with strategic themes and organizational goals
     return 85; // Placeholder
-  }
 
   private async assessArchitecturalAlignment(
     vision: VisionArtifact
-  ): Promise<number> {
+  ): Promise<number> 
     // Assess alignment with architectural runway and technical capabilities
     return 80; // Placeholder
-  }
 
   private identifyAlignmentGaps(
     stakeholder: number,
@@ -779,14 +765,13 @@ export class VisionManagementService {
     return gaps;
   }
 
-  private generateAlignmentActions(gaps: any[]): any[] {
+  private generateAlignmentActions(gaps: any[]): any[] 
     return gaps.map((gap) => ({
       action: gap.recommendation,
       owner: 'product-owner-1',
       dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
       priority: gap.impact,
     }));
-  }
 
   private generateAlignmentRecommendations(
     score: number,
@@ -811,9 +796,9 @@ export class VisionManagementService {
   }
 
   // Persistence and loading methods (simplified)
-  private async persistVision(vision: VisionArtifact): Promise<void> {
+  private async persistVision(vision: VisionArtifact): Promise<void> 
     await this.database('vision_artifacts')'
-      .insert({
+      .insert(
         id: vision.id,
         level: vision.level,
         state: vision.state,
@@ -842,36 +827,31 @@ export class VisionManagementService {
         approved_at: vision.approvedAt,
         next_review_date: vision.nextReviewDate,
         tags: JSON.stringify(vision.tags),
-        attachments: JSON.stringify(vision.attachments),
-      })
+        attachments: JSON.stringify(vision.attachments),)
       .onConflict('id')'
       .merge();
-  }
 
-  private async loadExistingVisions(): Promise<void> {
+  private async loadExistingVisions(): Promise<void> 
     // Load from database
     this.logger.info('Loading existing visions from database...');'
-  }
 
-  private async persistVisionBoard(visionBoard: VisionBoard): Promise<void> {
+  private async persistVisionBoard(visionBoard: VisionBoard): Promise<void> 
     await this.database('vision_boards')'
-      .insert({
+      .insert(
         id: visionBoard.id,
         vision_id: visionBoard.visionId,
         vision_canvas: JSON.stringify(visionBoard.visionCanvas),
         personas: JSON.stringify(visionBoard.personas),
         customer_journey: JSON.stringify(visionBoard.customerJourney),
         created_at: visionBoard.createdAt,
-        last_updated_at: visionBoard.lastUpdatedAt,
-      })
+        last_updated_at: visionBoard.lastUpdatedAt,)
       .onConflict('id')'
       .merge();
-  }
 
   private async persistVisionAlignment(
     alignmentId: string,
     alignment: VisionAlignment
-  ): Promise<void> {
+  ): Promise<void> 
     await this.database('vision_alignments').insert({'
       id: alignmentId,
       vision_id: alignment.visionId,
@@ -885,14 +865,13 @@ export class VisionManagementService {
       overall_score: alignment.overallScore,
       recommendations: JSON.stringify(alignment.recommendations),
     });
-  }
 
   // Additional helper methods (simplified implementations)
   private async createVisionEvolutionWorkflow(
     vision: VisionArtifact,
     updates: any,
     context: any
-  ): Promise<ApprovalGateId> {
+  ): Promise<ApprovalGateId> 
     return `evolution-approval-${vision.id}` as ApprovalGateId;`
   }
 

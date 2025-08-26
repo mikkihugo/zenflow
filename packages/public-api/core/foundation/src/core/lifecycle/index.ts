@@ -4,4 +4,4 @@
  * Graceful process lifecycle management and shutdown handling.
  */
 
-export * from './process.lifecycle';
+export * from "./process.lifecycle";

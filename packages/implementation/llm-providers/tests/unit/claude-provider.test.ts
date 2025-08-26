@@ -1,18 +1,16 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  executeClaudeTask,
-  executeSwarmCoordinationTask,
   ClaudeTaskManager,
+  cleanupGlobalInstances,
+  executeClaudeTask,
+  executeParallelClaudeTasks,
+  executeSwarmCoordinationTask,
+  filterMessagesForClaudeCode,
   getGlobalClaudeTaskManager,
   streamClaudeTask,
-  executeParallelClaudeTasks,
-  filterMessagesForClaudeCode,
-  cleanupGlobalInstances,
 } from '../../src/claude/claude-sdk';
 import {
   mockClaudeSDK,
-  mockTaskManager,
-  mockMessageProcessor,
   mockPermissionHandler,
 } from '../mocks/llm-mocks';
 
@@ -33,10 +31,9 @@ vi.mock('@anthropic-ai/claude-code/sdk.mjs', () => ({'
 }));
 
 describe('Claude Provider', () => {'
-  beforeEach(() => {
+  beforeEach(() => 
     vi.clearAllMocks();
-    cleanupGlobalInstances();
-  });
+    cleanupGlobalInstances(););
 
   afterEach(() => {
     cleanupGlobalInstances();
@@ -44,7 +41,7 @@ describe('Claude Provider', () => {'
 
   describe('executeClaudeTask', () => {'
     it('should execute simple tasks successfully', async () => {'
-      const mockMessages = [
+      const _mockMessages = [
         { role: 'user', content: 'Hello' },
         { role: 'assistant', content: 'Hello! How can I help you today?' },
       ];
@@ -101,12 +98,11 @@ describe('Claude Provider', () => {'
     }, 1000);
 
     it('should handle permission checks', async () => {'
-      mockPermissionHandler.checkPermission.mockResolvedValue({
+      mockPermissionHandler.checkPermission.mockResolvedValue(
         allowed: false,
-        reason: 'Tool not permitted',
-      });
+        reason: 'Tool not permitted',);
 
-      const result = await executeClaudeTask('task requiring permissions', {'
+      const _result = await executeClaudeTask('task requiring permissions', {'
         allowedTools: ['bash'],
       });
 
@@ -191,7 +187,7 @@ describe('Claude Provider', () => {'
     it('should manage completed tasks', () => {'
       const initialCount = taskManager.getCompletedTaskCount();
       taskManager.clearCompletedTasks();
-      const afterClearCount = taskManager.getCompletedTaskCount();
+      const _afterClearCount = taskManager.getCompletedTaskCount();
 
       expect(typeof initialCount).toBe('number');'
       expect(afterClearCount).toBe(0);
@@ -233,10 +229,10 @@ describe('Claude Provider', () => {'
     it('should stream task responses', async () => {'
       const mockStream = async function* () {
         yield { type: 'start', taskId: 'stream-task-123' };'
-        yield { type: 'content', content: 'Streaming' };'
-        yield { type: 'content', content: ' Claude' };'
-        yield { type: 'content', content: ' response' };'
-        yield { type: 'complete', result: 'Streaming Claude response' };'
+        yield type: 'content', content: 'Streaming' ;'
+        yield type: 'content', content: ' Claude' ;'
+        yield type: 'content', content: ' response' ;'
+        yield type: 'complete', result: 'Streaming Claude response' ;'
       };
 
       mockClaudeSDK.streamMessage.mockReturnValue(mockStream())();
@@ -285,8 +281,8 @@ describe('Claude Provider', () => {'
 
       mockClaudeSDK.sendMessage
         .mockResolvedValueOnce({ content: 'Result 1', taskId: '1' })'
-        .mockResolvedValueOnce({ content: 'Result 2', taskId: '2' })'
-        .mockResolvedValueOnce({ content: 'Result 3', taskId: '3' });'
+        .mockResolvedValueOnce(content: 'Result 2', taskId: '2' )'
+        .mockResolvedValueOnce(content: 'Result 3', taskId: '3' );'
 
       const results = await executeParallelClaudeTasks(tasks, {
         maxConcurrency: 3,
@@ -308,7 +304,7 @@ describe('Claude Provider', () => {'
       mockClaudeSDK.sendMessage
         .mockResolvedValueOnce({ content: 'Success 1' })'
         .mockRejectedValueOnce(new Error('Task failed'))'
-        .mockResolvedValueOnce({ content: 'Success 2' });'
+        .mockResolvedValueOnce(content: 'Success 2' );'
 
       const results = await executeParallelClaudeTasks(tasks, {
         failFast: false,
@@ -403,12 +399,11 @@ describe('Claude Provider', () => {'
   });
 
   describe('cleanupGlobalInstances', () => {'
-    it('should cleanup global instances', () => {'
+    it('should cleanup global instances', () => '
       // Create some global state
       getGlobalClaudeTaskManager();
 
-      expect(() => cleanupGlobalInstances()).not.toThrow();
-    });
+      expect(() => cleanupGlobalInstances()).not.toThrow(););
 
     it('should reset global task manager', () => {'
       const manager1 = getGlobalClaudeTaskManager();
@@ -422,13 +417,12 @@ describe('Claude Provider', () => {'
   });
 
   describe('Error Handling and Resilience', () => {'
-    it('should handle Claude SDK initialization errors', async () => {'
+    it('should handle Claude SDK initialization errors', async () => '
       vi.mocked(mockClaudeSDK.createSession).mockRejectedValue(
         new Error('SDK initialization failed')'
       );
 
-      await expect(executeClaudeTask('test')).rejects.toThrow();'
-    });
+      await expect(executeClaudeTask('test')).rejects.toThrow();');
 
     it('should handle network timeouts', async () => {'
       mockClaudeSDK.sendMessage.mockImplementation(
@@ -445,9 +439,8 @@ describe('Claude Provider', () => {'
 
     it('should handle rate limiting', async () => {'
       mockClaudeSDK.sendMessage.mockRejectedValue(
-        Object.assign(new Error('Rate limit exceeded'), {'
-          code: 'RATE_LIMITED',
-        })
+        Object.assign(new Error('Rate limit exceeded'), '
+          code: 'RATE_LIMITED',)
       );
 
       await expect(executeClaudeTask('test')).rejects.toThrow('
@@ -458,7 +451,7 @@ describe('Claude Provider', () => {'
     it('should handle malformed responses', async () => {'
       mockClaudeSDK.sendMessage.mockResolvedValue(null);
 
-      const result = await executeClaudeTask('test');'
+      const _result = await executeClaudeTask('test');'
       expect(result).toBeNull();
     });
   });
@@ -476,7 +469,7 @@ describe('Claude Provider', () => {'
     });
 
     it('should reuse connections efficiently', async () => {'
-      const tasks = Array.from({ length: 5 }, (_, i) => `Task ${i + 1}`);`
+      const _tasks = Array.from({ length: 5 }, (_, i) => `Task ${i + 1}`);`
 
       for (const task of tasks) {
         await executeClaudeTask(task);

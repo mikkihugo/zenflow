@@ -1,185 +1,205 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { ProgressRadial, CodeBlock } from '@skeletonlabs/skeleton';
-	import { apiClient } from '../../lib/api';
+import { onMount } from "svelte";
+import { apiClient } from "../../lib/api";
 
-	// Memory management data
-	let memoryHealth: any = null;
-	let memoryStores: any[] = [];
-	let selectedStore: any = null;
-	let storeKeys: string[] = [];
-	let selectedKey: string | null = null;
-	let keyValue: any = null;
+// Memory management data
+let memoryHealth: any = null;
+let memoryStores: any[] = [];
+let selectedStore: any = null;
+let storeKeys: string[] = [];
+let selectedKey: string | null = null;
+let keyValue: any = null;
 
-	// Loading and error states
-	let healthLoading = true;
-	let storesLoading = true;
-	let keysLoading = false;
-	let valueLoading = false;
-	let healthError: string | null = null;
-	let storesError: string | null = null;
-	let keysError: string | null = null;
-	let valueError: string | null = null;
+// Loading and error states
+let _healthLoading = true;
+let _storesLoading = true;
+let _keysLoading = false;
+let _valueLoading = false;
+let _healthError: string | null = null;
+let _storesError: string | null = null;
+let _keysError: string | null = null;
+let _valueError: string | null = null;
 
-	// Form states
-	let newKeyName = '';
-	let newKeyValue = '';
-	let newKeyTTL = '';
-	let keyPattern = '';
+// Form states
+let newKeyName = "";
+let newKeyValue = "";
+let newKeyTTL = "";
+const keyPattern = "";
 
-	onMount(async () => {
+onMount(async () => {
+	await Promise.all([loadMemoryHealth(), loadMemoryStores()]);
+
+	// Listen for project changes
+	const handleProjectChange = async () => {
 		await Promise.all([loadMemoryHealth(), loadMemoryStores()]);
-
-		// Listen for project changes
-		const handleProjectChange = async () => {
-			await Promise.all([loadMemoryHealth(), loadMemoryStores()]);
-			// Reset selections when project changes
-			selectedStore = null;
-			selectedKey = null;
-			storeKeys = [];
-			keyValue = null;
-		};
-
-		window.addEventListener('projectChanged', handleProjectChange as EventListener);
-
-		return () => {
-			window.removeEventListener('projectChanged', handleProjectChange as EventListener);
-		};
-	});
-
-	async function loadMemoryHealth() {
-		try {
-			healthLoading = true;
-			memoryHealth = await apiClient.getMemoryHealth();
-			healthError = null;
-			console.log('✅ Loaded memory health:', memoryHealth);
-		} catch (error) {
-			healthError = error instanceof Error ? error.message : 'Failed to load memory health';
-			console.error('❌ Failed to load memory health:', error);
-		} finally {
-			healthLoading = false;
-		}
-	}
-
-	async function loadMemoryStores() {
-		try {
-			storesLoading = true;
-			memoryStores = await apiClient.getMemoryStores();
-			storesError = null;
-			console.log('💾 Loaded memory stores:', memoryStores.length);
-		} catch (error) {
-			storesError = error instanceof Error ? error.message : 'Failed to load memory stores';
-			console.error('❌ Failed to load memory stores:', error);
-		} finally {
-			storesLoading = false;
-		}
-	}
-
-	async function selectStore(store: any) {
-		selectedStore = store;
+		// Reset selections when project changes
+		selectedStore = null;
 		selectedKey = null;
+		storeKeys = [];
 		keyValue = null;
+	};
+
+	window.addEventListener(
+		"projectChanged",
+		handleProjectChange as EventListener,
+	);
+
+	return () => {
+		window.removeEventListener(
+			"projectChanged",
+			handleProjectChange as EventListener,
+		);
+	};
+});
+
+async function loadMemoryHealth() {
+	try {
+		_healthLoading = true;
+		memoryHealth = await apiClient.getMemoryHealth();
+		_healthError = null;
+		console.log("✅ Loaded memory health:", memoryHealth);
+	} catch (error) {
+		_healthError =
+			error instanceof Error ? error.message : "Failed to load memory health";
+		console.error("❌ Failed to load memory health:", error);
+	} finally {
+		_healthLoading = false;
+	}
+}
+
+async function loadMemoryStores() {
+	try {
+		_storesLoading = true;
+		memoryStores = await apiClient.getMemoryStores();
+		_storesError = null;
+		console.log("💾 Loaded memory stores:", memoryStores.length);
+	} catch (error) {
+		_storesError =
+			error instanceof Error ? error.message : "Failed to load memory stores";
+		console.error("❌ Failed to load memory stores:", error);
+	} finally {
+		_storesLoading = false;
+	}
+}
+
+async function _selectStore(store: any) {
+	selectedStore = store;
+	selectedKey = null;
+	keyValue = null;
+	await loadStoreKeys();
+}
+
+async function loadStoreKeys() {
+	if (!selectedStore) return;
+
+	try {
+		_keysLoading = true;
+		const result = await apiClient.getMemoryKeys(
+			selectedStore.id,
+			keyPattern || undefined,
+		);
+		storeKeys = result.keys || [];
+		_keysError = null;
+		console.log(`🔑 Loaded keys for ${selectedStore.id}:`, storeKeys.length);
+	} catch (error) {
+		_keysError =
+			error instanceof Error ? error.message : "Failed to load store keys";
+		console.error("❌ Failed to load store keys:", error);
+	} finally {
+		_keysLoading = false;
+	}
+}
+
+async function _selectKey(key: string) {
+	if (!selectedStore) return;
+
+	selectedKey = key;
+	try {
+		_valueLoading = true;
+		keyValue = await apiClient.getMemoryValue(selectedStore.id, key);
+		_valueError = null;
+		console.log(`📄 Loaded value for ${key}:`, keyValue);
+	} catch (error) {
+		_valueError =
+			error instanceof Error ? error.message : "Failed to load key value";
+		console.error("❌ Failed to load key value:", error);
+	} finally {
+		_valueLoading = false;
+	}
+}
+
+async function _createNewKey() {
+	if (!selectedStore || !newKeyName || !newKeyValue) return;
+
+	try {
+		const value = JSON.parse(newKeyValue);
+		const ttl = newKeyTTL ? parseInt(newKeyTTL, 10) : undefined;
+
+		await apiClient.setMemoryValue(selectedStore.id, newKeyName, value, ttl);
+
+		// Clear form and reload keys
+		newKeyName = "";
+		newKeyValue = "";
+		newKeyTTL = "";
+		await loadStoreKeys();
+
+		console.log("✅ Created new key:", newKeyName);
+	} catch (error) {
+		console.error("❌ Failed to create key:", error);
+		alert(
+			`Failed to create key: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
+}
+
+async function _deleteKey(key: string) {
+	if (!selectedStore || !confirm(`Delete key "${key}"?`)) return;
+
+	try {
+		await apiClient.deleteMemoryKey(selectedStore.id, key);
+		await loadStoreKeys();
+		if (selectedKey === key) {
+			selectedKey = null;
+			keyValue = null;
+		}
+		console.log("🗑️ Deleted key:", key);
+	} catch (error) {
+		console.error("❌ Failed to delete key:", error);
+		alert(
+			`Failed to delete key: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
+}
+
+async function _refreshData() {
+	console.log("🔄 Refreshing memory data...");
+	await Promise.all([loadMemoryHealth(), loadMemoryStores()]);
+	if (selectedStore) {
 		await loadStoreKeys();
 	}
+}
 
-	async function loadStoreKeys() {
-		if (!selectedStore) return;
-
-		try {
-			keysLoading = true;
-			const result = await apiClient.getMemoryKeys(selectedStore.id, keyPattern || undefined);
-			storeKeys = result.keys || [];
-			keysError = null;
-			console.log(`🔑 Loaded keys for ${selectedStore.id}:`, storeKeys.length);
-		} catch (error) {
-			keysError = error instanceof Error ? error.message : 'Failed to load store keys';
-			console.error('❌ Failed to load store keys:', error);
-		} finally {
-			keysLoading = false;
-		}
+function _getStatusColor(status: string): string {
+	switch (status?.toLowerCase()) {
+		case "healthy":
+		case "active":
+			return "success";
+		case "warning":
+			return "warning";
+		case "error":
+			return "error";
+		default:
+			return "surface";
 	}
+}
 
-	async function selectKey(key: string) {
-		if (!selectedStore) return;
-
-		selectedKey = key;
-		try {
-			valueLoading = true;
-			keyValue = await apiClient.getMemoryValue(selectedStore.id, key);
-			valueError = null;
-			console.log(`📄 Loaded value for ${key}:`, keyValue);
-		} catch (error) {
-			valueError = error instanceof Error ? error.message : 'Failed to load key value';
-			console.error('❌ Failed to load key value:', error);
-		} finally {
-			valueLoading = false;
-		}
-	}
-
-	async function createNewKey() {
-		if (!selectedStore || !newKeyName || !newKeyValue) return;
-
-		try {
-			const value = JSON.parse(newKeyValue);
-			const ttl = newKeyTTL ? parseInt(newKeyTTL) : undefined;
-			
-			await apiClient.setMemoryValue(selectedStore.id, newKeyName, value, ttl);
-			
-			// Clear form and reload keys
-			newKeyName = '';
-			newKeyValue = '';
-			newKeyTTL = '';
-			await loadStoreKeys();
-			
-			console.log('✅ Created new key:', newKeyName);
-		} catch (error) {
-			console.error('❌ Failed to create key:', error);
-			alert('Failed to create key: ' + (error instanceof Error ? error.message : String(error)));
-		}
-	}
-
-	async function deleteKey(key: string) {
-		if (!selectedStore || !confirm(`Delete key "${key}"?`)) return;
-
-		try {
-			await apiClient.deleteMemoryKey(selectedStore.id, key);
-			await loadStoreKeys();
-			if (selectedKey === key) {
-				selectedKey = null;
-				keyValue = null;
-			}
-			console.log('🗑️ Deleted key:', key);
-		} catch (error) {
-			console.error('❌ Failed to delete key:', error);
-			alert('Failed to delete key: ' + (error instanceof Error ? error.message : String(error)));
-		}
-	}
-
-	async function refreshData() {
-		console.log('🔄 Refreshing memory data...');
-		await Promise.all([loadMemoryHealth(), loadMemoryStores()]);
-		if (selectedStore) {
-			await loadStoreKeys();
-		}
-	}
-
-	function getStatusColor(status: string): string {
-		switch (status?.toLowerCase()) {
-			case 'healthy':
-			case 'active': return 'success';
-			case 'warning': return 'warning';
-			case 'error': return 'error';
-			default: return 'surface';
-		}
-	}
-
-	function formatBytes(bytes: number): string {
-		if (bytes === 0) return '0 B';
-		const k = 1024;
-		const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-	}
+function _formatBytes(bytes: number): string {
+	if (bytes === 0) return "0 B";
+	const k = 1024;
+	const sizes = ["B", "KB", "MB", "GB", "TB"];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`;
+}
 </script>
 
 <svelte:head>

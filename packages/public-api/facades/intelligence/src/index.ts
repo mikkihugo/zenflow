@@ -26,30 +26,30 @@
  * @version 1.0.0
  */
 
-import { registerFacade, getLogger } from '@claude-zen/foundation';
+import { getLogger, registerFacade } from "@claude-zen/foundation";
 
-const logger = getLogger('intelligence');
+const logger = getLogger("intelligence");
 
 // Register intelligence facade with expected packages
 registerFacade(
-  'intelligence',
-  [
-    '@claude-zen/brain',
-    '@claude-zen/memory',
-    '@claude-zen/ai-safety',
-    '@claude-zen/knowledge',
-    '@claude-zen/teamwork',
-    '@claude-zen/llm-providers',
-  ],
-  [
-    'Neural coordination and behavioral intelligence',
-    'Memory systems and persistent storage',
-    'AI safety monitoring and protocols',
-    'Knowledge management and semantic processing',
-    'Agent collaboration and coordination',
-    'LLM provider integrations and management',
-    'Intelligence coordination and management',
-  ]
+	"intelligence",
+	[
+		"@claude-zen/brain",
+		"@claude-zen/memory",
+		"@claude-zen/ai-safety",
+		"@claude-zen/knowledge",
+		"@claude-zen/teamwork",
+		"@claude-zen/llm-providers",
+	],
+	[
+		"Neural coordination and behavioral intelligence",
+		"Memory systems and persistent storage",
+		"AI safety monitoring and protocols",
+		"Knowledge management and semantic processing",
+		"Agent collaboration and coordination",
+		"LLM provider integrations and management",
+		"Intelligence coordination and management",
+	],
 );
 
 // =============================================================================
@@ -57,25 +57,25 @@ registerFacade(
 // =============================================================================
 
 export const getBrainSystem = async () => {
-  try {
-    const { createBrainSystem } = await import('@claude-zen/brain');
-    return createBrainSystem();
-  } catch (error) {
-    throw new Error(
-      'Brain system not available - @claude-zen/brain package required'
-    );
-  }
+	try {
+		const { createBrainSystem } = await import("@claude-zen/brain");
+		return createBrainSystem();
+	} catch (_error) {
+		throw new Error(
+			"Brain system not available - @claude-zen/brain package required",
+		);
+	}
 };
 
 export const createNeuralCoordinator = async (config?: any) => {
-  try {
-    const { NeuralCoordinator } = await import('@claude-zen/brain');
-    return new NeuralCoordinator(config);
-  } catch (error) {
-    throw new Error(
-      'Neural coordinator not available - @claude-zen/brain package required'
-    );
-  }
+	try {
+		const { NeuralCoordinator } = await import("@claude-zen/brain");
+		return new NeuralCoordinator(config);
+	} catch (_error) {
+		throw new Error(
+			"Neural coordinator not available - @claude-zen/brain package required",
+		);
+	}
 };
 
 // =============================================================================
@@ -83,25 +83,25 @@ export const createNeuralCoordinator = async (config?: any) => {
 // =============================================================================
 
 export const getMemorySystem = async () => {
-  try {
-    const { createMemorySystem } = await import('@claude-zen/memory');
-    return createMemorySystem();
-  } catch (error) {
-    throw new Error(
-      'Memory system not available - @claude-zen/memory package required'
-    );
-  }
+	try {
+		const { createMemorySystem } = await import("@claude-zen/memory");
+		return createMemorySystem();
+	} catch (_error) {
+		throw new Error(
+			"Memory system not available - @claude-zen/memory package required",
+		);
+	}
 };
 
 export const createMemoryManager = async (config?: any) => {
-  try {
-    const { MemoryManager } = await import('@claude-zen/memory');
-    return new MemoryManager(config);
-  } catch (error) {
-    throw new Error(
-      'Memory manager not available - @claude-zen/memory package required'
-    );
-  }
+	try {
+		const { MemoryManager } = await import("@claude-zen/memory");
+		return new MemoryManager(config);
+	} catch (_error) {
+		throw new Error(
+			"Memory manager not available - @claude-zen/memory package required",
+		);
+	}
 };
 
 // =============================================================================
@@ -109,25 +109,25 @@ export const createMemoryManager = async (config?: any) => {
 // =============================================================================
 
 export const getAISafetyMonitor = async (config?: any) => {
-  try {
-    const { createSafetyMonitor } = await import('@claude-zen/ai-safety');
-    return createSafetyMonitor(config);
-  } catch (error) {
-    throw new Error(
-      'AI safety monitor not available - @claude-zen/ai-safety package required'
-    );
-  }
+	try {
+		const { createSafetyMonitor } = await import("@claude-zen/ai-safety");
+		return createSafetyMonitor(config);
+	} catch (_error) {
+		throw new Error(
+			"AI safety monitor not available - @claude-zen/ai-safety package required",
+		);
+	}
 };
 
 export const createDeceptionDetector = async (config?: any) => {
-  try {
-    const { DeceptionDetector } = await import('@claude-zen/ai-safety');
-    return new DeceptionDetector(config);
-  } catch (error) {
-    throw new Error(
-      'Deception detector not available - @claude-zen/ai-safety package required'
-    );
-  }
+	try {
+		const { DeceptionDetector } = await import("@claude-zen/ai-safety");
+		return new DeceptionDetector(config);
+	} catch (_error) {
+		throw new Error(
+			"Deception detector not available - @claude-zen/ai-safety package required",
+		);
+	}
 };
 
 // =============================================================================
@@ -135,25 +135,25 @@ export const createDeceptionDetector = async (config?: any) => {
 // =============================================================================
 
 export const getKnowledgeBase = async () => {
-  try {
-    const { createKnowledgeBase } = await import('@claude-zen/knowledge');
-    return createKnowledgeBase();
-  } catch (error) {
-    throw new Error(
-      'Knowledge base not available - @claude-zen/knowledge package required'
-    );
-  }
+	try {
+		const { createKnowledgeBase } = await import("@claude-zen/knowledge");
+		return createKnowledgeBase();
+	} catch (_error) {
+		throw new Error(
+			"Knowledge base not available - @claude-zen/knowledge package required",
+		);
+	}
 };
 
 export const createFactSystem = async (config?: any) => {
-  try {
-    const { FactSystem } = await import('@claude-zen/knowledge');
-    return new FactSystem(config);
-  } catch (error) {
-    throw new Error(
-      'Fact system not available - @claude-zen/knowledge package required'
-    );
-  }
+	try {
+		const { FactSystem } = await import("@claude-zen/knowledge");
+		return new FactSystem(config);
+	} catch (_error) {
+		throw new Error(
+			"Fact system not available - @claude-zen/knowledge package required",
+		);
+	}
 };
 
 // =============================================================================
@@ -161,25 +161,25 @@ export const createFactSystem = async (config?: any) => {
 // =============================================================================
 
 export const getTeamworkOrchestrator = async () => {
-  try {
-    const { createTeamworkOrchestrator } = await import('@claude-zen/teamwork');
-    return createTeamworkOrchestrator();
-  } catch (error) {
-    throw new Error(
-      'Teamwork orchestrator not available - @claude-zen/teamwork package required'
-    );
-  }
+	try {
+		const { createTeamworkOrchestrator } = await import("@claude-zen/teamwork");
+		return createTeamworkOrchestrator();
+	} catch (_error) {
+		throw new Error(
+			"Teamwork orchestrator not available - @claude-zen/teamwork package required",
+		);
+	}
 };
 
 export const createAgentCoordinator = async (config?: any) => {
-  try {
-    const { AgentCoordinator } = await import('@claude-zen/teamwork');
-    return new AgentCoordinator(config);
-  } catch (error) {
-    throw new Error(
-      'Agent coordinator not available - @claude-zen/teamwork package required'
-    );
-  }
+	try {
+		const { AgentCoordinator } = await import("@claude-zen/teamwork");
+		return new AgentCoordinator(config);
+	} catch (_error) {
+		throw new Error(
+			"Agent coordinator not available - @claude-zen/teamwork package required",
+		);
+	}
 };
 
 // =============================================================================
@@ -187,27 +187,27 @@ export const createAgentCoordinator = async (config?: any) => {
 // =============================================================================
 
 export const getLLMProvider = async (
-  type: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
+	type: "claude-code" | "cursor-cli" | "gemini-cli" = "claude-code",
 ) => {
-  try {
-    const { createLLMProvider } = await import('@claude-zen/llm-providers');
-    return createLLMProvider(type);
-  } catch (error) {
-    throw new Error(
-      'LLM providers not available - @claude-zen/llm-providers package required'
-    );
-  }
+	try {
+		const { createLLMProvider } = await import("@claude-zen/llm-providers");
+		return createLLMProvider(type);
+	} catch (_error) {
+		throw new Error(
+			"LLM providers not available - @claude-zen/llm-providers package required",
+		);
+	}
 };
 
 export const createClaudeProvider = async (config?: any) => {
-  try {
-    const { createLLMProvider } = await import('@claude-zen/llm-providers');
-    return createLLMProvider('claude-code', config);
-  } catch (error) {
-    throw new Error(
-      'Claude provider not available - @claude-zen/llm-providers package required'
-    );
-  }
+	try {
+		const { createLLMProvider } = await import("@claude-zen/llm-providers");
+		return createLLMProvider("claude-code", config);
+	} catch (_error) {
+		throw new Error(
+			"Claude provider not available - @claude-zen/llm-providers package required",
+		);
+	}
 };
 
 // =============================================================================
@@ -215,38 +215,38 @@ export const createClaudeProvider = async (config?: any) => {
 // =============================================================================
 
 export const intelligenceSystem = {
-  // Intelligence modules
-  brain: () => import('@claude-zen/brain').catch(() => ({ default: {} })),
-  memory: () => import('@claude-zen/memory').catch(() => ({ default: {} })),
-  aiSafety: () =>
-    import('@claude-zen/ai-safety').catch(() => ({ default: {} })),
-  knowledge: () =>
-    import('@claude-zen/knowledge').catch(() => ({ default: {} })),
-  teamwork: () => import('@claude-zen/teamwork').catch(() => ({ default: {} })),
-  llmProviders: () =>
-    import('@claude-zen/llm-providers').catch(() => ({ default: {} })),
+	// Intelligence modules
+	brain: () => import("@claude-zen/brain").catch(() => ({ default: {} })),
+	memory: () => import("@claude-zen/memory").catch(() => ({ default: {} })),
+	aiSafety: () =>
+		import("@claude-zen/ai-safety").catch(() => ({ default: {} })),
+	knowledge: () =>
+		import("@claude-zen/knowledge").catch(() => ({ default: {} })),
+	teamwork: () => import("@claude-zen/teamwork").catch(() => ({ default: {} })),
+	llmProviders: () =>
+		import("@claude-zen/llm-providers").catch(() => ({ default: {} })),
 
-  // Direct access functions
-  getBrainSystem,
-  getMemorySystem,
-  getAISafetyMonitor,
-  getKnowledgeBase,
-  getTeamworkOrchestrator,
-  getLLMProvider,
+	// Direct access functions
+	getBrainSystem,
+	getMemorySystem,
+	getAISafetyMonitor,
+	getKnowledgeBase,
+	getTeamworkOrchestrator,
+	getLLMProvider,
 
-  // Utilities
-  logger,
-  init: async () => {
-    logger.info('Intelligence system initialized');
-    return { success: true, message: 'Intelligence ready' };
-  },
+	// Utilities
+	logger,
+	init: async () => {
+		logger.info("Intelligence system initialized");
+		return { success: true, message: "Intelligence ready" };
+	},
 };
 
 // =============================================================================
 // TYPE EXPORTS - For external consumers
 // =============================================================================
 
-export type * from './types';
+export type * from "./types";
 
 // Default export for convenience
 export default intelligenceSystem;

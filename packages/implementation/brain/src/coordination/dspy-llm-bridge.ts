@@ -6,10 +6,11 @@
  */
 
 import { getLogger, type Logger } from '@claude-zen/foundation';
+
 // Database access via infrastructure facade
 
 // Simple fallback implementations
-const logger = getLogger('dspy-llm-bridge-fallback');'
+const _logger = getLogger('dspy-llm-bridge-fallback');'
 
 // Use logger for initialization tracking
 logger.info('DSPy LLM Bridge fallback implementation loaded', {'
@@ -85,16 +86,14 @@ export class DSPyLLMBridge {
       configOrDatabaseAccess &&
       typeof configOrDatabaseAccess === 'object' &&'
       'query' in configOrDatabaseAccess'
-    ) {
+    ) 
       // It's a DatabaseAccess object'
-      this.databaseAccess = configOrDatabaseAccess;
-    } else {
+      this.databaseAccess = configOrDatabaseAccess;else 
       // It's a config object, create a fallback database access'
       this.databaseAccess = {
         query: async () => ({ rows: [] }),
         execute: async () => ({ changes: 0 }),
       } as any;
-    }
 
     this.logger.info(
       'DSPy LLM Bridge initialized with fallback implementations',
@@ -157,7 +156,7 @@ export class DSPyLLMBridge {
    */
   async learnFromCoordination(
     task: DSPyCoordinationTask,
-    result: any,
+    _result: any,
     feedback: { success: boolean; improvements?: string[] }
   ): Promise<void> {
     this.logger.info('Learning from coordination feedback (fallback mode)', {'

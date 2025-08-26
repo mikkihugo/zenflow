@@ -12,27 +12,22 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, addHours } = dateFns;
+
 import {
+  filter,
   groupBy,
   map,
-  filter,
   orderBy,
-  sumBy,
-  meanBy,
-  maxBy,
-  minBy,
 } from 'lodash-es';
 import type {
-  ProgramIncrement,
-  PIObjective,
-  Feature,
-  AgileReleaseTrain,
-  ARTTeam,
   Dependency,
-  Risk,
+  Feature,
   Logger,
+  PIObjective,
+  Risk,
 } from '../../types';
 
 /**
@@ -165,8 +160,6 @@ export interface ActionItem {
  */
 export class PIPlanningFacilitationService {
   private readonly logger: Logger;
-  private planningEvents = new Map<string, PIPlanningEventConfig>();
-  private facilitationResults = new Map<string, PlanningFacilitationResult>();
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -189,7 +182,7 @@ export class PIPlanningFacilitationService {
       artId: input.artId,
     });
 
-    const eventId = `pi-planning-${generateNanoId(12)}`;`
+    const _eventId = `pi-planning-${generateNanoId(12)}`;`
 
     const participants = this.generateParticipants(input.artId);
     const agenda = this.generateAgenda(input.duration);
@@ -228,7 +221,7 @@ export class PIPlanningFacilitationService {
   ): Promise<PlanningFacilitationResult> {
     const event = this.planningEvents.get(eventId);
     if (!event) {
-      throw new Error(`Planning event not found: ${eventId}`);`
+      throw new Error(`Planning event not found: $_eventId`);`
     }
 
     this.logger.info('Starting PI planning facilitation', { eventId });'
@@ -394,7 +387,7 @@ export class PIPlanningFacilitationService {
       'team''
     );
 
-    return map(teams, (members, teamId) => ({
+    return map(teams, (_members, teamId) => ({
       teamId,
       capacity: 100,
       objectives: [],

@@ -23,7 +23,6 @@ import type {
 import { DatabaseProviderFactory } from '../../database/providers/database-providers';
 import type {
   FACTKnowledgeEntry,
-  FACTSearchQuery,
   FACTStorageBackend,
   FACTStorageStats,
 } from '../storage-interface';
@@ -150,7 +149,7 @@ export class SQLiteBackend implements FACTStorageBackend {
     }
 
     try {
-      const result = await this.dalAdapter.query(
+      const _result = await this.dalAdapter.query(
         `SELECT * FROM ${this.config.tableName} WHERE id = ?`,`
         [id]
       );
@@ -207,7 +206,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
         if (query.query) {
           conditions.push('(query LIKE ? OR response LIKE ?)');'
-          const searchTerm = `%${query.query}%`;`
+          const searchTerm = `%$query.query%`;`
           params?.push(searchTerm, searchTerm);
         }
 
@@ -223,7 +222,7 @@ export class SQLiteBackend implements FACTStorageBackend {
                 `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)``
             )
             .join(' OR ');'
-          conditions.push(`(${domainConditions})`);`
+          conditions.push(`($domainConditions)`);`
           params?.push(...query.domains);
         }
 
@@ -272,7 +271,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
     try {
       const result = await this.dalAdapter.execute(
-        `DELETE FROM ${this.config.tableName} WHERE id = ?`,`
+        `DELETE FROM $this.config.tableNameWHERE id = ?`,`
         [id]
       );
 
@@ -312,13 +311,12 @@ export class SQLiteBackend implements FACTStorageBackend {
       }
 
       return result?.rowsAffected||0;
-    } catch (error) {
+    } catch (error) 
       logger.error('Failed to cleanup FACT entries:', error);'
       return 0;
-    }
   }
 
-  async getStats(): Promise<Partial<FACTStorageStats>> {
+  async getStats(): Promise<Partial<FACTStorageStats>> 
     if (!this.dalAdapter) {
       throw new Error('SQLite backend not initialized');'
     }
@@ -342,9 +340,8 @@ export class SQLiteBackend implements FACTStorageBackend {
       logger.error('Failed to get FACT storage stats:', error);'
       return {};
     }
-  }
 
-  async clear(): Promise<void> {
+  async clear(): Promise<void> 
     if (!this.dalAdapter) {
       throw new Error('SQLite backend not initialized');'
     }
@@ -354,7 +351,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts``
+          `DELETE FROM $this.config.tableName_fts``
         );
       }
 
@@ -396,11 +393,9 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
 
-      return result?.rowsAffected||0;
-    } catch (error) {
+      return result?.rowsAffected||0;catch (error) 
       logger.error('Failed to clear entries by quality:', error);'
       return 0;
-    }
   }
 
   async clearByAge(maxAgeMs: number): Promise<number> {
@@ -409,8 +404,8 @@ export class SQLiteBackend implements FACTStorageBackend {
     }
 
     try {
-      const cutoffTime = Date.now() - maxAgeMs;
-      const result = await this.dalAdapter.execute(
+      const _cutoffTime = Date.now() - maxAgeMs;
+      const _result = await this.dalAdapter.execute(
         `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,`
         [cutoffTime]
       );
@@ -489,7 +484,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       return {
         optimized: true,
-        details: `Optimization complete: ${operations.join(', ')}`,`
+        details: `Optimization complete: $operations.join(', ')`,`
       };
     } catch (error) {
       logger.error('Failed to optimize storage:', error);'
@@ -515,10 +510,10 @@ export class SQLiteBackend implements FACTStorageBackend {
          AVG(access_count) as avg_access_count
          FROM ${this.config.tableName}``
       );
-      const basicStats = basicStatsResult?.rows?.[0];
+      const _basicStats = basicStatsResult?.rows?.[0];
 
       // Get top domains
-      const domainsResult = await this.dalAdapter.query(
+      const _domainsResult = await this.dalAdapter.query(
         `SELECT JSON_EXTRACT(metadata, '$.domains') as domains, COUNT(*) as count'
          FROM ${this.config.tableName}
          GROUP BY JSON_EXTRACT(metadata, '$.domains')'
@@ -612,11 +607,11 @@ export class SQLiteBackend implements FACTStorageBackend {
     if (!this.dalAdapter) return;
 
     const indexes = [
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_timestamp ON ${this.config.tableName}(timestamp)`,`
+      `CREATE NDEX F NOT EXISTS idx_$this.config.tableName_timestamp ON $this.config.tableName(timestamp)`,`
       `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_expires_at ON ${this.config.tableName}(expires_at)`,`
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_type ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.type'))`,`
+      `CREATE NDEX F NOT EXISTS idx_$this.config.tableName_type ON $this.config.tableName(JSON_EXTRACT(metadata, '$.type'))`,`
       `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,`
-      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_access_count ON ${this.config.tableName}(access_count)`,`
+      `CREATE NDEX F NOT EXISTS idx_$this.config.tableName_access_count ON $this.config.tableName(access_count)`,`
     ];
 
     for (const indexSQL of indexes) {

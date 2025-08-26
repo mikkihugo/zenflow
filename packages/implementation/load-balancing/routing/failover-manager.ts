@@ -7,31 +7,31 @@
  */
 
 export class FailoverManager {
-  private failoverStrategies: Map<string, string> = new Map();
+	private failoverStrategies: Map<string, string> = new Map();
 
-  public async activateFailover(failedAgentId: string): Promise<void> {
-    // Implement failover logic
-    const strategy =
-      this.failoverStrategies.get(failedAgentId) || 'redistribute';
+	public async activateFailover(failedAgentId: string): Promise<void> {
+		// Implement failover logic
+		const strategy =
+			this.failoverStrategies.get(failedAgentId) || "redistribute";
 
-    switch (strategy) {
-      case 'redistribute':
-        await this.redistributeLoad(failedAgentId);
-        break;
-      case 'standby':
-        await this.activateStandbyAgent(failedAgentId);
-        break;
-      case 'graceful_degradation':
-        await this.gracefulDegradation(failedAgentId);
-        break;
-      default:
-        await this.redistributeLoad(failedAgentId);
-    }
-  }
+		switch (strategy) {
+			case "redistribute":
+				await this.redistributeLoad(failedAgentId);
+				break;
+			case "standby":
+				await this.activateStandbyAgent(failedAgentId);
+				break;
+			case "graceful_degradation":
+				await this.gracefulDegradation(failedAgentId);
+				break;
+			default:
+				await this.redistributeLoad(failedAgentId);
+		}
+	}
 
-  private async redistributeLoad(_failedAgentId: string): Promise<void> {}
+	private async redistributeLoad(_failedAgentId: string): Promise<void> {}
 
-  private async activateStandbyAgent(_failedAgentId: string): Promise<void> {}
+	private async activateStandbyAgent(_failedAgentId: string): Promise<void> {}
 
-  private async gracefulDegradation(_failedAgentId: string): Promise<void> {}
+	private async gracefulDegradation(_failedAgentId: string): Promise<void> {}
 }

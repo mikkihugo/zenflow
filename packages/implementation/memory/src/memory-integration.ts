@@ -2,7 +2,7 @@
  * @file Memory management: memory-integration.
  */
 
-import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
+import { createContainer, type DIContainer, TOKENS } from '@claude-zen/foundation';
 
 import { getLogger } from '../config/logging-config';
 
@@ -16,7 +16,6 @@ import { getLogger } from '../config/logging-config';
 import type { DALFactory } from '../database/factory';
 import type { MemoryConfig } from '../memory/interfaces';
 
-import { MemoryController } from './controllers/memory-controller';
 import { MemoryProviderFactory } from './providers/memory-providers';
 
 const logger = getLogger('src-memory-memory-integration');'
@@ -153,12 +152,12 @@ export const memoryBackendSpecs = {
  */
 export function registerMemoryProviders(
   container: DIContainer,
-  customConfigs?: {
+  _customConfigs?: {
     [key: string]: Partial<MemoryConfig>;
   }
 ): void {
   // Register memory provider factory (uses DAL Factory)
-  container.register(MEMORY_TOKENS['ProviderFactory'], {'
+  container.register(MEMORY_TOKENS.ProviderFactory, {'
     type: 'singleton',
     create: (container) =>
       new MemoryProviderFactory(
@@ -169,10 +168,10 @@ export function registerMemoryProviders(
   });
 
   // Register default memory configurations
-  for (const [name, defaultConfig] of Object.entries(
+  for (const [name, _defaultConfig] of Object.entries(
     defaultMemoryConfigurations
   )) {
-    const tokenName =
+    const _tokenName =
       `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;`
 
     container.register(MEMORY_TOKENS[tokenName]||MEMORY_TOKENS.Config, {
@@ -319,7 +318,7 @@ export async function initializeMemorySystem(
     .map((result) => result?.value?.name);
 
   logger.info(
-    `Memory system initialized: ${healthyBackends.length}/${enabledBackends.length} backends healthy``
+    `Memory system initialized: $healthyBackends.length/${enabledBackends.length} backends healthy``
   );
 
   return {
@@ -339,18 +338,18 @@ export async function initializeMemorySystem(
  * @param customConfigs
  * @example
  */
-export function createMemoryContainer(
-  customConfigs?: Parameters<typeof registerMemoryProviders>[1]
+export function _createMemoryContainer(
+  _customConfigs?: Parameters<typeof registerMemoryProviders>[1]
 ): DIContainer {
-  const container = createContainer('memory-integration');'
+  const _container = createContainer('memory-integration');'
 
   // Register core services (would normally come from main app)
-  container.register(CORE_TOKENS.Logger, {
+  container.register(CORE_TOKENS.Logger, 
     type: 'singleton',
-    create: () => ({
-      debug: (msg: string) => {},
-      info: (msg: string) => {},
-      warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),`
+    create: () => (
+      debug: (_msg: string) => {},
+      info: (msg: string) => ,
+      warn: (msg: string) => logger.warn(`[MEMORY WARN] $msg`),`
       error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),`
     }),
   });

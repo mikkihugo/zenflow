@@ -8,11 +8,10 @@
 import { getLogger } from '@claude-zen/foundation';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
 import type { 
-  WorkflowTask, 
   ApprovalGateInstance, 
   ApprovalRecord,
   TaskState,
-  TaskPriority 
+  WorkflowTask 
 } from '../types/index';
 
 const logger = getLogger('DatabaseIntegration');'
@@ -23,7 +22,6 @@ const logger = getLogger('DatabaseIntegration');'
 
 export class TaskMasterDatabaseIntegration {
   private database: any;
-  private initialized = false;
 
   constructor() {
     logger.info('TaskMaster Database Integration initialized');'
@@ -47,31 +45,6 @@ export class TaskMasterDatabaseIntegration {
       
     } catch (error) {
       logger.error('Failed to initialize database integration', error);'
-      throw error;
-    }
-  }
-
-  /**
-   * Verify that TaskMaster schemas are present (from migrations/)
-   */
-  private async verifySchemas(): Promise<void> {
-    try {
-      // Check if tasks table exists (from 001_create_tasks_table.ts)
-      const tasksTableExists = await this.database.schema.hasTable('tasks');'
-      if (!tasksTableExists) {
-        throw new Error('Tasks table not found - run migrations first');'
-      }
-
-      // Check if approval_gates table exists 
-      const approvalsTableExists = await this.database.schema.hasTable('approval_gates');'
-      if (!approvalsTableExists) {
-        logger.warn('Approval gates table not found - will create during runtime');'
-      }
-
-      logger.info('Database schemas verified successfully');'
-      
-    } catch (error) {
-      logger.error('Schema verification failed', error);'
       throw error;
     }
   }
@@ -105,7 +78,7 @@ export class TaskMasterDatabaseIntegration {
         custom_data: JSON.stringify(task.metadata || {})
       }).onConflict('id').merge();'
 
-      logger.debug(`Task saved: ${task.id}`);`
+      logger.debug(`Task saved: $task.id`);`
       
     } catch (error) {
       logger.error('Failed to save task', error, { taskId: task.id });'
@@ -167,7 +140,7 @@ export class TaskMasterDatabaseIntegration {
         metadata: JSON.stringify(gate.metadata)
       }).onConflict('id').merge();'
 
-      logger.debug(`Approval gate saved: ${gate.id}`);`
+      logger.debug(`Approval gate saved: $gate.id`);`
       
     } catch (error) {
       logger.error('Failed to save approval gate', error, { gateId: gate.id });'

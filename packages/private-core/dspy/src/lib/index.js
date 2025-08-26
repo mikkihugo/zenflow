@@ -326,75 +326,76 @@
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Framework
  */
 // PRIMARY SYSTEM INTERFACE - Brain Service
-export {
-  BrainService,
-  getBrainService,
-  initializeBrainService,
-} from '../core/brain-service.js';
-// INTERNAL DSPy ENGINE (use Brain service instead of direct access)
-export { DSPyEngine, createDSPyEngine } from '../core/dspy-engine.js';
-export { getDSPyService, initializeDSPyService } from '../core/service.js';
-// Core primitives
-export { DSPyModule } from '../primitives/module';
-export { Example } from '../primitives/example';
-export { PredictionUtils } from '../primitives/prediction';
-export { SeededRNG } from '../primitives/seeded-rng';
-// Interfaces
-export { BaseLM } from '../interfaces/lm';
-export {
-  DSPyError,
-  ValidationError,
-  OptimizationError,
-  ModelError,
-} from '../interfaces/types';
-export { BaseAdapter } from '../interfaces/adapter';
+
 // Adapters
-export { ChatAdapter } from '../adapters/chat-adapter';
+export { ChatAdapter } from "../adapters/chat-adapter";
+export {
+	BrainService,
+	getBrainService,
+	initializeBrainService,
+} from "../core/brain-service.js";
+// INTERNAL DSPy ENGINE (use Brain service instead of direct access)
+export { createDSPyEngine, DSPyEngine } from "../core/dspy-engine.js";
+export { getDSPyService, initializeDSPyService } from "../core/service.js";
+export { BaseAdapter } from "../interfaces/adapter";
+// Interfaces
+export { BaseLM } from "../interfaces/lm";
+export {
+	DSPyError,
+	ModelError,
+	OptimizationError,
+	ValidationError,
+} from "../interfaces/types";
+export { Example } from "../primitives/example";
+// Core primitives
+export { DSPyModule } from "../primitives/module";
+export { PredictionUtils } from "../primitives/prediction";
+export { SeededRNG } from "../primitives/seeded-rng";
+export { AvatarOptimizer } from "../teleprompters/avatar-optimizer";
+export { BetterTogether } from "../teleprompters/better-together";
+export {
+	BootstrapFewShot,
+	DEFAULT_BOOTSTRAP_CONFIG,
+	LabeledFewShot,
+} from "../teleprompters/bootstrap";
+export {
+	BootstrapFinetune,
+	FailedPrediction,
+	FinetuneTeleprompter,
+} from "../teleprompters/bootstrap-finetune";
+export { BootstrapFewShotWithRandomSearch } from "../teleprompters/bootstrap-random-search";
+export { COPRO } from "../teleprompters/copro";
+export { Ensemble } from "../teleprompters/ensemble";
+export { AUTO_RUN_SETTINGS, DspyGEPAResult, GEPA } from "../teleprompters/gepa";
+export { MIPROv2 } from "../teleprompters/miprov2";
+export { SignatureOptimizer } from "../teleprompters/signature-opt";
 // Teleprompters
-export { Teleprompter } from '../teleprompters/teleprompter';
-export {
-  BootstrapFinetune,
-  FinetuneTeleprompter,
-  FailedPrediction,
-} from '../teleprompters/bootstrap-finetune';
-export { MIPROv2 } from '../teleprompters/miprov2';
-export { Ensemble } from '../teleprompters/ensemble';
-export { GEPA, DspyGEPAResult, AUTO_RUN_SETTINGS } from '../teleprompters/gepa';
-export {
-  BootstrapFewShot,
-  LabeledFewShot,
-  DEFAULT_BOOTSTRAP_CONFIG,
-} from '../teleprompters/bootstrap';
-export { COPRO } from '../teleprompters/copro';
-export { BootstrapFewShotWithRandomSearch } from '../teleprompters/bootstrap-random-search';
-export { SignatureOptimizer } from '../teleprompters/signature-opt';
-export { AvatarOptimizer } from '../teleprompters/avatar-optimizer';
-export { BetterTogether } from '../teleprompters/better-together';
+export { Teleprompter } from "../teleprompters/teleprompter";
 /**
  * Foundation-based Evaluate class for real evaluation
  */
 export class Evaluate {
-  config;
-  constructor(config) {
-    this.config = config;
-  }
-  async evaluate(program, dataset) {
-    try {
-      // Use foundation to perform real evaluation
-      const { getDSPyService } = await import('../core/service.js');
-      const dspyService = await getDSPyService();
-      let totalScore = 0;
-      let validEvaluations = 0;
-      for (const item of dataset) {
-        try {
-          // Execute the program with the test input
-          const result = await program.forward(item.input || item);
-          // Evaluate result using foundation LLM
-          const evaluationPrompt = `
+	config;
+	constructor(config) {
+		this.config = config;
+	}
+	async evaluate(program, dataset) {
+		try {
+			// Use foundation to perform real evaluation
+			const { getDSPyService } = await import("../core/service.js");
+			const dspyService = await getDSPyService();
+			let totalScore = 0;
+			let validEvaluations = 0;
+			for (const item of dataset) {
+				try {
+					// Execute the program with the test input
+					const result = await program.forward(item.input || item);
+					// Evaluate result using foundation LLM
+					const evaluationPrompt = `
 Evaluate this DSPy program output for accuracy and quality:
 
 Input: ${JSON.stringify(item.input || item)}
-Expected: ${JSON.stringify(item.output || item.expected || 'No expected output')}
+Expected: ${JSON.stringify(item.output || item.expected || "No expected output")}
 Actual: ${JSON.stringify(result)}
 
 Rate the accuracy on a scale of 0.0 to 1.0 where:
@@ -405,66 +406,66 @@ Rate the accuracy on a scale of 0.0 to 1.0 where:
 - 0.0-0.3 = Poor or incorrect
 
 Respond with just the numeric score (e.g., 0.85):`;
-          const scoreResponse = await dspyService.executePrompt(
-            evaluationPrompt,
-            {
-              temperature: 0.1,
-              maxTokens: 50,
-              role: 'analyst',
-            }
-          );
-          // Extract numeric score from response
-          const scoreMatch = scoreResponse.match(/([0-1](?:\.\d+)?)/);
-          if (scoreMatch) {
-            const score = parseFloat(scoreMatch[1]);
-            if (!isNaN(score) && score >= 0 && score <= 1) {
-              totalScore += score;
-              validEvaluations++;
-            }
-          }
-        } catch (error) {
-          // Log error but continue evaluation
-          dspyService.getLogger().warn('Evaluation failed for item:', error);
-        }
-      }
-      const finalScore =
-        validEvaluations > 0 ? totalScore / validEvaluations : 0.5;
-      dspyService.getLogger().info('DSPy evaluation completed', {
-        totalItems: dataset.length,
-        validEvaluations,
-        averageScore: finalScore,
-      });
-      return { score: finalScore };
-    } catch (error) {
-      // Fallback to simple heuristic evaluation if foundation fails
-      console.warn('Foundation evaluation failed, using fallback:', error);
-      let totalScore = 0;
-      for (const item of dataset) {
-        try {
-          const result = await program.forward(item.input || item);
-          // Simple string similarity scoring as fallback
-          const expected = item.output || item.expected || '';
-          const actual = JSON.stringify(result);
-          const similarity = this.calculateStringSimilarity(
-            expected.toString(),
-            actual
-          );
-          totalScore += similarity;
-        } catch {
-          totalScore += 0.1; // Small score for failed executions
-        }
-      }
-      return { score: dataset.length > 0 ? totalScore / dataset.length : 0.5 };
-    }
-  }
-  calculateStringSimilarity(str1, str2) {
-    // Simple Jaccard similarity for fallback
-    const set1 = new Set(str1.toLowerCase().split(/\s+/));
-    const set2 = new Set(str2.toLowerCase().split(/\s+/));
-    const intersection = new Set([...set1].filter((x) => set2.has(x)));
-    const union = new Set([...set1, ...set2]);
-    return union.size > 0 ? intersection.size / union.size : 0;
-  }
+					const scoreResponse = await dspyService.executePrompt(
+						evaluationPrompt,
+						{
+							temperature: 0.1,
+							maxTokens: 50,
+							role: "analyst",
+						},
+					);
+					// Extract numeric score from response
+					const scoreMatch = scoreResponse.match(/([0-1](?:\.\d+)?)/);
+					if (scoreMatch) {
+						const score = parseFloat(scoreMatch[1]);
+						if (!Number.isNaN(score) && score >= 0 && score <= 1) {
+							totalScore += score;
+							validEvaluations++;
+						}
+					}
+				} catch (error) {
+					// Log error but continue evaluation
+					dspyService.getLogger().warn("Evaluation failed for item:", error);
+				}
+			}
+			const finalScore =
+				validEvaluations > 0 ? totalScore / validEvaluations : 0.5;
+			dspyService.getLogger().info("DSPy evaluation completed", {
+				totalItems: dataset.length,
+				validEvaluations,
+				averageScore: finalScore,
+			});
+			return { score: finalScore };
+		} catch (error) {
+			// Fallback to simple heuristic evaluation if foundation fails
+			console.warn("Foundation evaluation failed, using fallback:", error);
+			let totalScore = 0;
+			for (const item of dataset) {
+				try {
+					const result = await program.forward(item.input || item);
+					// Simple string similarity scoring as fallback
+					const expected = item.output || item.expected || "";
+					const actual = JSON.stringify(result);
+					const similarity = this.calculateStringSimilarity(
+						expected.toString(),
+						actual,
+					);
+					totalScore += similarity;
+				} catch {
+					totalScore += 0.1; // Small score for failed executions
+				}
+			}
+			return { score: dataset.length > 0 ? totalScore / dataset.length : 0.5 };
+		}
+	}
+	calculateStringSimilarity(str1, str2) {
+		// Simple Jaccard similarity for fallback
+		const set1 = new Set(str1.toLowerCase().split(/\s+/));
+		const set2 = new Set(str2.toLowerCase().split(/\s+/));
+		const intersection = new Set([...set1].filter((x) => set2.has(x)));
+		const union = new Set([...set1, ...set2]);
+		return union.size > 0 ? intersection.size / union.size : 0;
+	}
 }
 // Re-export as named exports for better tree-shaking
 // Note: DSPyModule, Example, etc. are already exported above as named exports

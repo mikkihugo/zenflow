@@ -9,16 +9,16 @@
 
 // Re-export core foundation interfaces for consistency
 export type {
-  SharedConfig as Config,
-  DatabaseAccess as Database,
-  Logger,
-} from '@claude-zen/foundation';
+	DatabaseAccess as Database,
+	Logger,
+	SharedConfig as Config,
+} from "@claude-zen/foundation";
 
 // EventBus interface (will need to be defined or imported from event-system package)
 export interface EventBus {
-  emit(event: string, data?: any): void;
-  on(event: string, handler: (data?: any) => void): void;
-  off(event: string, handler: (data?: any) => void): void;
+	emit(event: string, data?: any): void;
+	on(event: string, handler: (data?: any) => void): void;
+	off(event: string, handler: (data?: any) => void): void;
 }
 
 /**
@@ -27,22 +27,22 @@ export interface EventBus {
  * @example
  */
 export interface DatabaseAdapter {
-  /** Establish database connection */
-  connect(): Promise<void>;
-  /** Close database connection */
-  disconnect(): Promise<void>;
-  /** Execute a SELECT query */
-  query(sql: string, params?: unknown[]): Promise<QueryResult>;
-  /** Execute an INSERT/UPDATE/DELETE command */
-  execute(sql: string, params?: unknown[]): Promise<ExecuteResult>;
-  /** Execute multiple commands in a transaction */
-  transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T>;
-  /** Check database health status */
-  health(): Promise<boolean>;
-  /** Get database schema information */
-  getSchema(): Promise<SchemaInfo>;
-  /** Get connection pool statistics */
-  getConnectionStats(): Promise<ConnectionStats>;
+	/** Establish database connection */
+	connect(): Promise<void>;
+	/** Close database connection */
+	disconnect(): Promise<void>;
+	/** Execute a SELECT query */
+	query(sql: string, params?: unknown[]): Promise<QueryResult>;
+	/** Execute an INSERT/UPDATE/DELETE command */
+	execute(sql: string, params?: unknown[]): Promise<ExecuteResult>;
+	/** Execute multiple commands in a transaction */
+	transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T>;
+	/** Check database health status */
+	health(): Promise<boolean>;
+	/** Get database schema information */
+	getSchema(): Promise<SchemaInfo>;
+	/** Get connection pool statistics */
+	getConnectionStats(): Promise<ConnectionStats>;
 }
 
 /**
@@ -51,18 +51,18 @@ export interface DatabaseAdapter {
  * @example
  */
 export interface QueryResult {
-  /** Result rows */
-  rows: Record<string, unknown>[];
-  /** Number of rows returned */
-  rowCount: number;
-  /** Column metadata */
-  fields?: Array<{
-    name: string;
-    type: string;
-    nullable: boolean;
-  }>;
-  /** Execution time in milliseconds */
-  executionTime: number;
+	/** Result rows */
+	rows: Record<string, unknown>[];
+	/** Number of rows returned */
+	rowCount: number;
+	/** Column metadata */
+	fields?: Array<{
+		name: string;
+		type: string;
+		nullable: boolean;
+	}>;
+	/** Execution time in milliseconds */
+	executionTime: number;
 }
 
 /**
@@ -71,12 +71,12 @@ export interface QueryResult {
  * @example
  */
 export interface ExecuteResult {
-  /** Number of affected rows */
-  affectedRows: number;
-  /** Last inserted ID (if applicable) */
-  insertId?: string | number;
-  /** Execution time in milliseconds */
-  executionTime: number;
+	/** Number of affected rows */
+	affectedRows: number;
+	/** Last inserted ID (if applicable) */
+	insertId?: string | number;
+	/** Execution time in milliseconds */
+	executionTime: number;
 }
 
 /**
@@ -85,14 +85,14 @@ export interface ExecuteResult {
  * @example
  */
 export interface TransactionContext {
-  /** Execute a query within the transaction */
-  query(sql: string, params?: unknown[]): Promise<QueryResult>;
-  /** Execute a command within the transaction */
-  execute(sql: string, params?: unknown[]): Promise<ExecuteResult>;
-  /** Commit the transaction */
-  commit(): Promise<void>;
-  /** Rollback the transaction */
-  rollback(): Promise<void>;
+	/** Execute a query within the transaction */
+	query(sql: string, params?: unknown[]): Promise<QueryResult>;
+	/** Execute a command within the transaction */
+	execute(sql: string, params?: unknown[]): Promise<ExecuteResult>;
+	/** Commit the transaction */
+	commit(): Promise<void>;
+	/** Rollback the transaction */
+	rollback(): Promise<void>;
 }
 
 /**
@@ -101,30 +101,30 @@ export interface TransactionContext {
  * @example
  */
 export interface SchemaInfo {
-  /** Database tables */
-  tables: Array<{
-    name: string;
-    columns: Array<{
-      name: string;
-      type: string;
-      nullable: boolean;
-      defaultValue?: unknown;
-      isPrimaryKey: boolean;
-      isForeignKey: boolean;
-    }>;
-    indexes: Array<{
-      name: string;
-      columns: string[];
-      unique: boolean;
-    }>;
-  }>;
-  /** Database views */
-  views: Array<{
-    name: string;
-    definition: string;
-  }>;
-  /** Database version */
-  version: string;
+	/** Database tables */
+	tables: Array<{
+		name: string;
+		columns: Array<{
+			name: string;
+			type: string;
+			nullable: boolean;
+			defaultValue?: unknown;
+			isPrimaryKey: boolean;
+			isForeignKey: boolean;
+		}>;
+		indexes: Array<{
+			name: string;
+			columns: string[];
+			unique: boolean;
+		}>;
+	}>;
+	/** Database views */
+	views: Array<{
+		name: string;
+		definition: string;
+	}>;
+	/** Database version */
+	version: string;
 }
 
 /**
@@ -133,16 +133,16 @@ export interface SchemaInfo {
  * @example
  */
 export interface ConnectionStats {
-  /** Total number of connections */
-  total: number;
-  /** Number of active connections */
-  active: number;
-  /** Number of idle connections */
-  idle: number;
-  /** Connection pool utilization percentage */
-  utilization: number;
-  /** Average connection time */
-  averageConnectionTime: number;
+	/** Total number of connections */
+	total: number;
+	/** Number of active connections */
+	active: number;
+	/** Number of idle connections */
+	idle: number;
+	/** Connection pool utilization percentage */
+	utilization: number;
+	/** Average connection time */
+	averageConnectionTime: number;
 }
 
 /**
@@ -151,20 +151,20 @@ export interface ConnectionStats {
  * @example
  */
 export interface MemoryStore {
-  /** Initialize the memory store */
-  initialize(): Promise<void>;
-  /** Store data with optional TTL */
-  store(key: string, data: unknown, options?: StoreOptions): Promise<void>;
-  /** Retrieve data by key */
-  retrieve(key: string): Promise<unknown>;
-  /** Delete data by key */
-  delete(key: string): Promise<boolean>;
-  /** Clear all data (optional) */
-  clear?(): Promise<void>;
-  /** Get store statistics */
-  getStats?(): Promise<MemoryStats>;
-  /** Shutdown the store gracefully */
-  shutdown(): Promise<void>;
+	/** Initialize the memory store */
+	initialize(): Promise<void>;
+	/** Store data with optional TTL */
+	store(key: string, data: unknown, options?: StoreOptions): Promise<void>;
+	/** Retrieve data by key */
+	retrieve(key: string): Promise<unknown>;
+	/** Delete data by key */
+	delete(key: string): Promise<boolean>;
+	/** Clear all data (optional) */
+	clear?(): Promise<void>;
+	/** Get store statistics */
+	getStats?(): Promise<MemoryStats>;
+	/** Shutdown the store gracefully */
+	shutdown(): Promise<void>;
 }
 
 /**
@@ -173,14 +173,14 @@ export interface MemoryStore {
  * @example
  */
 export interface StoreOptions {
-  /** Time to live in milliseconds */
-  ttl?: number;
-  /** Tags for categorization */
-  tags?: string[];
-  /** Priority level */
-  priority?: 'low' | 'medium' | 'high';
-  /** Vector data for similarity search */
-  vector?: number[];
+	/** Time to live in milliseconds */
+	ttl?: number;
+	/** Tags for categorization */
+	tags?: string[];
+	/** Priority level */
+	priority?: "low" | "medium" | "high";
+	/** Vector data for similarity search */
+	vector?: number[];
 }
 
 /**
@@ -189,14 +189,14 @@ export interface StoreOptions {
  * @example
  */
 export interface MemoryStats {
-  /** Number of entries */
-  entries: number;
-  /** Total size in bytes */
-  size: number;
-  /** Last modification timestamp */
-  lastModified: number;
-  /** Number of namespaces */
-  namespaces?: number;
+	/** Number of entries */
+	entries: number;
+	/** Total size in bytes */
+	size: number;
+	/** Last modification timestamp */
+	lastModified: number;
+	/** Number of namespaces */
+	namespaces?: number;
 }
 
 /**
@@ -205,18 +205,18 @@ export interface MemoryStats {
  * @example
  */
 export interface NeuralNetworkInterface {
-  /** Initialize the neural network */
-  initialize(config: NeuralConfig): Promise<void>;
-  /** Train the network with data */
-  train(data: TrainingData, options?: TrainingOptions): Promise<TrainingResult>;
-  /** Make a prediction */
-  predict(input: number[]): Promise<number[]>;
-  /** Export model state */
-  export(): Promise<ModelState>;
-  /** Import model state */
-  import(state: ModelState): Promise<void>;
-  /** Get network performance metrics */
-  getMetrics(): Promise<NetworkMetrics>;
+	/** Initialize the neural network */
+	initialize(config: NeuralConfig): Promise<void>;
+	/** Train the network with data */
+	train(data: TrainingData, options?: TrainingOptions): Promise<TrainingResult>;
+	/** Make a prediction */
+	predict(input: number[]): Promise<number[]>;
+	/** Export model state */
+	export(): Promise<ModelState>;
+	/** Import model state */
+	import(state: ModelState): Promise<void>;
+	/** Get network performance metrics */
+	getMetrics(): Promise<NetworkMetrics>;
 }
 
 /**
@@ -225,14 +225,14 @@ export interface NeuralNetworkInterface {
  * @example
  */
 export interface NeuralConfig {
-  /** Network architecture layers */
-  layers: number[];
-  /** Activation function */
-  activation?: string;
-  /** Learning rate */
-  learningRate?: number;
-  /** Use WASM acceleration */
-  useWasm?: boolean;
+	/** Network architecture layers */
+	layers: number[];
+	/** Activation function */
+	activation?: string;
+	/** Learning rate */
+	learningRate?: number;
+	/** Use WASM acceleration */
+	useWasm?: boolean;
 }
 
 /**
@@ -241,10 +241,10 @@ export interface NeuralConfig {
  * @example
  */
 export interface TrainingData {
-  /** Input vectors */
-  inputs: number[][];
-  /** Expected outputs */
-  outputs: number[][];
+	/** Input vectors */
+	inputs: number[][];
+	/** Expected outputs */
+	outputs: number[][];
 }
 
 /**
@@ -253,12 +253,12 @@ export interface TrainingData {
  * @example
  */
 export interface TrainingOptions {
-  /** Number of epochs */
-  epochs?: number;
-  /** Batch size */
-  batchSize?: number;
-  /** Validation split ratio */
-  validationSplit?: number;
+	/** Number of epochs */
+	epochs?: number;
+	/** Batch size */
+	batchSize?: number;
+	/** Validation split ratio */
+	validationSplit?: number;
 }
 
 /**
@@ -267,14 +267,14 @@ export interface TrainingOptions {
  * @example
  */
 export interface TrainingResult {
-  /** Final training error */
-  finalError: number;
-  /** Number of epochs completed */
-  epochsCompleted: number;
-  /** Training duration in milliseconds */
-  duration: number;
-  /** Convergence achieved */
-  converged: boolean;
+	/** Final training error */
+	finalError: number;
+	/** Number of epochs completed */
+	epochsCompleted: number;
+	/** Training duration in milliseconds */
+	duration: number;
+	/** Convergence achieved */
+	converged: boolean;
 }
 
 /**
@@ -283,14 +283,14 @@ export interface TrainingResult {
  * @example
  */
 export interface ModelState {
-  /** Model weights */
-  weights: number[][];
-  /** Model biases */
-  biases: number[][];
-  /** Configuration */
-  config: NeuralConfig;
-  /** Metadata */
-  metadata?: Record<string, unknown>;
+	/** Model weights */
+	weights: number[][];
+	/** Model biases */
+	biases: number[][];
+	/** Configuration */
+	config: NeuralConfig;
+	/** Metadata */
+	metadata?: Record<string, unknown>;
 }
 
 /**
@@ -299,14 +299,14 @@ export interface ModelState {
  * @example
  */
 export interface NetworkMetrics {
-  /** Training accuracy */
-  accuracy: number;
-  /** Training loss */
-  loss: number;
-  /** Prediction time in milliseconds */
-  predictionTime: number;
-  /** Memory usage in bytes */
-  memoryUsage: number;
+	/** Training accuracy */
+	accuracy: number;
+	/** Training loss */
+	loss: number;
+	/** Prediction time in milliseconds */
+	predictionTime: number;
+	/** Memory usage in bytes */
+	memoryUsage: number;
 }
 
 /**
@@ -315,12 +315,12 @@ export interface NetworkMetrics {
  * @example
  */
 export interface WasmNeuralBinding {
-  /** Load WASM module */
-  loadWasm(): Promise<WebAssembly.Module>;
-  /** Check WASM availability */
-  isWasmAvailable(): boolean;
-  /** Get WASM capabilities */
-  getWasmCapabilities(): string[];
-  /** Create neural network instance */
-  createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface>;
+	/** Load WASM module */
+	loadWasm(): Promise<WebAssembly.Module>;
+	/** Check WASM availability */
+	isWasmAvailable(): boolean;
+	/** Get WASM capabilities */
+	getWasmCapabilities(): string[];
+	/** Create neural network instance */
+	createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface>;
 }

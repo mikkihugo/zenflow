@@ -1,14 +1,13 @@
+import os from "node:os"
+import path from "node:path"
 import { App } from "../app/app"
-import { Ripgrep } from "../file/ripgrep"
+import { Config } from "../config/config"
 import { Global } from "../global"
 import { Filesystem } from "../util/filesystem"
-import { Config } from "../config/config"
-import path from "path"
-import os from "os"
 
 import PROMPT_ANTHROPIC from "./prompt/anthropic.txt"
-import PROMPT_BEAST from "./prompt/beast.txt"
 import PROMPT_ANTHROPIC_SPOOF from "./prompt/anthropic_spoof.txt"
+import PROMPT_BEAST from "./prompt/beast.txt"
 import PROMPT_SUMMARIZE from "./prompt/summarize.txt"
 import PROMPT_TITLE from "./prompt/title.txt"
 
@@ -75,7 +74,6 @@ export namespace SystemPrompt {
           const matches = await Filesystem.globUp(instruction, cwd, root)
           found.push(...matches.map((x) => Bun.file(x).text()))
         } catch {
-          continue // Skip invalid glob patterns
         }
       }
     }

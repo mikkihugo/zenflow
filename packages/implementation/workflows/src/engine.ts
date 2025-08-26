@@ -11,9 +11,9 @@
  */
 
 import {
-  getLogger,
-  getKVStore,
   getGlobalLLM,
+  getKVStore,
+  getLogger,
   injectable,
   singleton,
   TypedEventBase,
@@ -21,21 +21,15 @@ import {
 
 // Professional utility imports
 import {
-  DateFormatter,
-  DateCalculator,
   ArrayProcessor,
-  ObjectProcessor,
-  SecureIdGenerator,
-  SchemaValidator,
-  WorkflowStepSchema,
-  WorkflowDefinitionSchema,
-  WorkflowContextSchema,
-  ObservableUtils,
-  AsyncUtils,
+  DateCalculator,
+  DateFormatter,
   ImmutableOps,
-  type WorkflowStep as ValidatedWorkflowStep,
-  type WorkflowDefinition as ValidatedWorkflowDefinition,
-  type WorkflowContext as ValidatedWorkflowContext,
+  ObjectProcessor,
+  ObservableUtils,
+  SchemaValidator,
+  SecureIdGenerator,
+  WorkflowContextSchema,
 } from './utilities/index';
 
 const logger = getLogger('WorkflowEngine');'
@@ -47,12 +41,10 @@ const logger = getLogger('WorkflowEngine');'
  */
 
 import { mkdir } from 'node:fs/promises';
-import { Parser } from 'expr-eval';
 import * as async from 'async';
-import pLimit from 'p-limit';
-import { createMachine, createActor, type ActorRef } from 'xstate';
 // Mermaid will be imported dynamically when needed
 import * as cron from 'node-cron';
+import pLimit from 'p-limit';
 
 export interface WorkflowStep {
   id?: string;
@@ -135,7 +127,6 @@ export interface WorkflowEngineConfig {
 export class WorkflowEngine extends TypedEventBase {
   private config: Required<WorkflowEngineConfig>;
   private activeWorkflows = new Map<string, WorkflowState>();
-  private workflowMetrics = new Map<string, any>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
   private stepHandlers = new Map<
     string,
@@ -143,13 +134,9 @@ export class WorkflowEngine extends TypedEventBase {
   >();
   private isInitialized = false;
   private kvStore: any; // Battle-tested foundation storage
-  private workflowStateMachines = new Map<string, ActorRef<any, any>>(); // XState state machines
-  private scheduledTasks = new Map<string, cron.ScheduledTask>(); // node-cron scheduled tasks
 
   // Enhanced capabilities to match core WorkflowEngine
   public memory?: any;
-  private documentManager?: any;
-  private documentWorkflows = new Map<string, WorkflowDefinition>();
 
   constructor(
     config: WorkflowEngineConfig = {},
@@ -210,67 +197,6 @@ export class WorkflowEngine extends TypedEventBase {
 
     this.isInitialized = true;
     this.emit('initialized', { timestamp: new Date() });'
-  }
-
-  private createWorkflowStateMachine(workflowId: string) {
-    // XState machine for robust workflow state management
-    const workflowMachine = createMachine({
-      id: `workflow-${workflowId}`,`
-      initial: 'pending',
-      context: {
-        workflowId,
-        currentStep: 0,
-        retryCount: 0,
-        errors: [],
-      },
-      states: {
-        pending: {
-          on: {
-            START: 'running',
-          },
-        },
-        running: {
-          on: {
-            PAUSE: 'paused',
-            COMPLETE: 'completed',
-            FAIL: 'failed',
-            CANCEL: 'cancelled',
-          },
-        },
-        paused: {
-          on: {
-            RESUME: 'running',
-            CANCEL: 'cancelled',
-          },
-        },
-        completed: {
-          type: 'final',
-        },
-        failed: {
-          on: {
-            RETRY: 'running',
-            CANCEL: 'cancelled',
-          },
-        },
-        cancelled: {
-          type: 'final',
-        },
-      },
-    });
-
-    const service = createActor(workflowMachine);
-
-    service.subscribe((state) => {
-      // Sync XState with internal workflow state
-      const workflow = this.activeWorkflows.get(workflowId);
-      if (workflow) {
-        workflow.status = state.value as any;
-        this.emit('workflow-state-changed', workflowId, state.value);'
-      }
-    });
-
-    service.start();
-    return service;
   }
 
   private registerBuiltInHandlers(): void {
@@ -367,7 +293,7 @@ export class WorkflowEngine extends TypedEventBase {
 
   async executeStep(
     step: WorkflowStep,
-    context: WorkflowContext
+    _context: WorkflowContext
   ): Promise<unknown> {
     const handler = this.stepHandlers.get(step.type);
     if (!handler) {
@@ -388,7 +314,7 @@ export class WorkflowEngine extends TypedEventBase {
       return expr.evaluate(context as any);
     } catch (error) {
       logger.error(
-        `[WorkflowEngine] Failed to evaluate condition: ${expression}`,`
+        `[WorkflowEngine] Failed to evaluate condition: $expression`,`
         error
       );
       return false;
@@ -451,9 +377,8 @@ export class WorkflowEngine extends TypedEventBase {
         if (
           workflowData &&
           (workflowData.status === 'running'||workflowData.status ==='paused')'
-        ) {
+        ) 
           this.activeWorkflows.set(workflowData.id, workflowData);
-        }
       }
 
       logger.info(
@@ -475,8 +400,8 @@ export class WorkflowEngine extends TypedEventBase {
       const storageKey = `workflow:${workflow.id}`;`
       const kvStore = await this.kvStore;
       await kvStore.set(storageKey, workflow);
-      logger.debug(`[WorkflowEngine] Saved workflow ${workflow.id} to storage`);`
-    } catch (error) {
+      logger.debug(`[WorkflowEngine] Saved workflow $workflow.idto storage`);`
+    } catch (_error) {
       logger.error(
         `[WorkflowEngine] Failed to save workflow ${workflow.id} to storage:`,`
         error
@@ -498,7 +423,7 @@ export class WorkflowEngine extends TypedEventBase {
       logger.warn(`Workflow definition validation failed for ${name}`, validator.getErrors());`
     }
     
-    logger.debug(`Registering workflow definition: ${name}`);`
+    logger.debug(`Registering workflow definition: $name`);`
     this.workflowDefinitions.set(name, definition);
   }
 
@@ -506,7 +431,7 @@ export class WorkflowEngine extends TypedEventBase {
     const workflowId = SecureIdGenerator.generateWorkflowId();
 
     // Register the workflow definition with a unique name
-    const workflowName = `${definition.name}-${workflowId}`;`
+    const _workflowName = `${definition.name}-${workflowId}`;`
     await this.registerWorkflowDefinition(workflowName, definition);
 
     return workflowId;
@@ -613,7 +538,7 @@ export class WorkflowEngine extends TypedEventBase {
     step: WorkflowStep,
     stepIndex: number
   ): Promise<void> {
-    const stepId = `step-${stepIndex}`;`
+    const stepId = `step-$stepIndex`;`
     let retries = 0;
     const maxRetries = step.retries !== undefined ? step.retries : 0;
 
@@ -719,7 +644,7 @@ export class WorkflowEngine extends TypedEventBase {
 
   async pauseWorkflow(
     workflowId: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<success: boolean; error?: string > {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {'
       workflow.status = 'paused';
@@ -733,14 +658,14 @@ export class WorkflowEngine extends TypedEventBase {
 
   async resumeWorkflow(
     workflowId: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<success: boolean; error?: string > {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {'
       workflow.status = 'running';
       workflow.pausedAt = undefined;
 
       // Resume execution
-      this.executeWorkflow(workflow).catch((error) => {
+      this.executeWorkflow(workflow).catch((_error) => {
         logger.error(
           `[WorkflowEngine] Workflow ${workflowId} failed after resume:`,`
           error
@@ -894,9 +819,9 @@ export class WorkflowEngine extends TypedEventBase {
 
       // Add different shapes based on step type
       if (step.type === 'condition') {'
-        lines.push(`    ${nodeId}{${label}}`); // Diamond for conditionals`
+        lines.push(`    $nodeId$label`); // Diamond for conditionals`
       } else if (step.type === 'parallel') {'
-        lines.push(`    ${nodeId}[[${label}]]`); // Double square for parallel`
+        lines.push(`    $nodeId[[${label}]]`); // Double square for parallel`
       } else {
         lines.push(`    ${nodeId}[${label}]`); // Rectangle for normal steps`
       }
@@ -904,11 +829,11 @@ export class WorkflowEngine extends TypedEventBase {
       // Add styling based on status
       if (status === 'completed') {'
         lines.push(
-          `    style ${nodeId} fill:#90EE90,stroke:#006400,stroke-width:2px``
+          `    style $nodeIdfill:#90EE90,stroke:#006400,stroke-width:2px``
         );
       } else if (status === 'current') {'
         lines.push(
-          `    style ${nodeId} fill:#FFD700,stroke:#FF8C00,stroke-width:3px``
+          `    style $nodeIdfill:#FFD700,stroke:#FF8C00,stroke-width:3px``
         );
       } else {
         lines.push(
@@ -919,14 +844,13 @@ export class WorkflowEngine extends TypedEventBase {
       // Connect steps
       if (index === 0) {
         lines.push(`    start --> ${nodeId}`);`
-      } else {
+      } else 
         lines.push(`    step${index - 1} --> ${nodeId}`);`
       }
 
       // Connect last step to end
       if (index === workflow.steps.length - 1) {
-        lines.push(`    ${nodeId} --> end_node`);`
-      }
+        lines.push(`    $nodeId--> end_node`);`
     });
 
     // Add status indicator
@@ -939,7 +863,7 @@ export class WorkflowEngine extends TypedEventBase {
             ? '#FFD700''
             : '#F0F0F0;
 
-    lines.push(`    style start fill:${statusColor}`);`
+    lines.push(`    style start fill:$statusColor`);`
     lines.push(`    style end_node fill:${statusColor}`);`
 
     return lines.join('\n');'
@@ -979,7 +903,7 @@ export class WorkflowEngine extends TypedEventBase {
     scheduleId?: string
   ): string {
     const id =
-      scheduleId||`schedule-${workflowName}-${SecureIdGenerator.generate(8)}`;`
+      scheduleId||`schedule-$workflowName-$SecureIdGenerator.generate(8)`;`
 
     if (!cron.validate(cronExpression)) {
       throw new Error(`Invalid cron expression: ${cronExpression}`);`
@@ -988,7 +912,7 @@ export class WorkflowEngine extends TypedEventBase {
     const task = cron.schedule(cronExpression, async () => {
       try {
         logger.info(
-          `[WorkflowEngine] Starting scheduled workflow: ${workflowName}``
+          `[WorkflowEngine] Starting scheduled workflow: $workflowName``
         );
         const result = await this.startWorkflow(workflowName, {
           ...context,
@@ -1044,7 +968,7 @@ export class WorkflowEngine extends TypedEventBase {
     const task = this.scheduledTasks.get(scheduleId);
     if (task) {
       task.stop();
-      logger.info(`[WorkflowEngine] Stopped schedule: ${scheduleId}`);`
+      logger.info(`[WorkflowEngine] Stopped schedule: $scheduleId`);`
       return true;
     }
     return false;
@@ -1078,7 +1002,7 @@ export class WorkflowEngine extends TypedEventBase {
     // Clean up scheduled tasks
     for (const [id, task] of this.scheduledTasks) {
       task.destroy();
-      logger.info(`[WorkflowEngine] Destroyed scheduled task: ${id}`);`
+      logger.info(`[WorkflowEngine] Destroyed scheduled task: $id`);`
     }
     this.scheduledTasks.clear();
 
@@ -1136,7 +1060,7 @@ export class WorkflowEngine extends TypedEventBase {
       this.documentWorkflows.set(workflow.name, workflow as WorkflowDefinition);
     }
 
-    logger.info(`Registered ${documentWorkflows.length} document workflows`);`
+    logger.info(`Registered $documentWorkflows.lengthdocument workflows`);`
   }
 
   /**
@@ -1145,7 +1069,7 @@ export class WorkflowEngine extends TypedEventBase {
   async processDocumentEvent(
     eventType: string,
     documentData: unknown
-  ): Promise<void> {
+  ): Promise<void> 
     logger.info(`Processing document event: ${eventType}`);`
 
     // Auto-trigger workflows based on document type
@@ -1161,10 +1085,9 @@ export class WorkflowEngine extends TypedEventBase {
         break;
       default:
         logger.debug(
-          `No automatic workflow for document type: ${documentType}``
+          `No automatic workflow for document type: $documentType``
         );
         return;
-    }
 
     // Execute triggered workflows
     for (const workflowName of triggerWorkflows) {
@@ -1190,15 +1113,14 @@ export class WorkflowEngine extends TypedEventBase {
     return {
       id: entity.id,
       type: entity.type,
-      title: entity.title||`${entity.type} Document`,`
+      title: entity.title||`$entity.typeDocument`,`
       content: entity.content || '',
-      metadata: {
+      metadata: 
         entityId: entity.id,
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
         version: entity.version,
-        status: entity.status,
-      },
+        status: entity.status,,
     };
   }
 
@@ -1210,7 +1132,7 @@ export class WorkflowEngine extends TypedEventBase {
     context: WorkflowContext,
     _workflowId: string
   ): Promise<StepExecutionResult> {
-    const startTime = new Date();
+    const _startTime = new Date();
 
     try {
       const handler = this.stepHandlers.get(step.type);
@@ -1268,7 +1190,7 @@ export class WorkflowEngine extends TypedEventBase {
 
     const result = await this.startWorkflow(definition, data.data||{});
     if (!(result.success && result.workflowId)) {
-      throw new Error(`Failed to create workflow: ${result.error}`);`
+      throw new Error(`Failed to create workflow: $result.error`);`
     }
 
     return result.workflowId;
@@ -1308,7 +1230,7 @@ export class WorkflowEngine extends TypedEventBase {
   }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
-      throw new Error(`Workflow ${workflowId} not found`);`
+      throw new Error(`Workflow $workflowIdnot found`);`
     }
 
     // Gather workflow performance data
@@ -1328,15 +1250,15 @@ export class WorkflowEngine extends TypedEventBase {
     const llm = getGlobalLLM();
     llm.setRole('analyst');'
 
-    const analysisPrompt = `Analyze this workflow performance data and provide optimization suggestions:`
+    const _analysisPrompt = `Analyze this workflow performance data and provide optimization suggestions:`
 
-Workflow: ${workflow.definition.name}
-Description: ${workflow.definition.description||'No description'}'
-Steps: ${workflow.definition.steps.length}
-Current Status: ${workflow.status}
+Workflow: $workflow.definition.name
+Description: $workflow.definition.description||'No description''
+Steps: $workflow.definition.steps.length
+Current Status: $workflow.status
 
 Performance Data:
-${JSON.stringify(performanceData, null, 2)}
+$JSON.stringify(performanceData, null, 2)
 
 Please provide:
 1. Performance analysis (bottlenecks, efficiency issues)
@@ -1362,7 +1284,7 @@ Format as JSON with keys: performance, suggestions, optimizations`;`
       });
 
       return parsedAnalysis;
-    } catch (error) {
+    } catch (error) 
       logger.error('Failed to perform intelligent workflow analysis:', error);'
 
       if (error instanceof SyntaxError) {
@@ -1372,18 +1294,15 @@ Format as JSON with keys: performance, suggestions, optimizations`;`
       }
 
       throw new Error('Intelligent workflow analysis failed');'
-    }
   }
 
   /**
    * Generate intelligent workflow documentation using LLM.
    */
-  async generateWorkflowDocumentation(workflowId: string): Promise<{
-    overview: string;
-    stepDescriptions: { [stepName: string]: string };
+  async generateWorkflowDocumentation(workflowId: string): Promise<
+    overview: string;[stepName: string]: string ;
     usageGuide: string;
-    troubleshooting: string[];
-  }> {
+    troubleshooting: string[];> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow ${workflowId} not found`);`
@@ -1394,11 +1313,11 @@ Format as JSON with keys: performance, suggestions, optimizations`;`
 
     const docPrompt = `Generate comprehensive documentation for this workflow:`
 
-Workflow Name: ${workflow.definition.name}
-Description: ${workflow.definition.description||'No description provided'}'
+Workflow Name: $workflow.definition.name
+Description: $workflow.definition.description||'No description provided''
 
 Steps:
-${workflow.definition.steps.map((step, index) => `${index + 1}. ${step.name||step.type} (${step.type})`).join('\n')}'
+$workflow.definition.steps.map((step, index) => `${index + 1}. ${step.name||step.type} (${step.type})`).join('\n')'
 
 Please generate:
 1. Overview - high-level explanation of what this workflow does
@@ -1419,7 +1338,7 @@ Format as JSON with keys: overview, stepDescriptions, usageGuide, troubleshootin
 
       logger.info(`Documentation generated for workflow ${workflowId}`);`
       return parsedDocs;
-    } catch (error) {
+    } catch (error) 
       logger.error('Failed to generate workflow documentation:', error);'
 
       if (error instanceof SyntaxError) {
@@ -1429,7 +1348,6 @@ Format as JSON with keys: overview, stepDescriptions, usageGuide, troubleshootin
       }
 
       throw new Error('Workflow documentation generation failed');'
-    }
   }
 
   /**
@@ -1437,18 +1355,17 @@ Format as JSON with keys: overview, stepDescriptions, usageGuide, troubleshootin
    */
   async suggestWorkflowOptimizations(
     workflowDefinition: WorkflowDefinition
-  ): Promise<{
+  ): Promise<
     structuralSuggestions: string[];
     performanceSuggestions: string[];
     reliabilitySuggestions: string[];
-    maintainabilitySuggestions: string[];
-  }> {
+    maintainabilitySuggestions: string[];> {
     const llm = getGlobalLLM();
     llm.setRole('architect');'
 
-    const optimizationPrompt = `Analyze this workflow definition and suggest optimizations:`
+    const _optimizationPrompt = `Analyze this workflow definition and suggest optimizations:`
 
-${JSON.stringify(workflowDefinition, null, 2)}
+$JSON.stringify(workflowDefinition, null, 2)
 
 Please analyze for:
 1. Structural improvements (step organization, dependencies)
@@ -1501,7 +1418,7 @@ Format as JSON with keys: structuralSuggestions, performanceSuggestions, reliabi
       try {
         await this.cancelWorkflow(workflowId);
       } catch (error) {
-        logger.error(`Error cancelling workflow ${workflowId}:`, error);`
+        logger.error(`Error cancelling workflow $workflowId:`, error);`
       }
     }
 

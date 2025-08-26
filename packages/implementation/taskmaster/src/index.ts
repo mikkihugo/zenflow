@@ -105,9 +105,6 @@
 // MAIN TASKMASTER API EXPORTS - SAFe 6.0 Essentials Interface
 // =============================================================================
 
-// Main TaskMaster system (recommended for most users)
-export { getTaskMaster, createTaskMaster } from './main';
-export type { TaskMasterSystem } from './facades/taskmaster-facade';
 
 // Advanced workflow coordination (for power users)
 export {
@@ -116,9 +113,11 @@ export {
   WorkflowKanban,
   type WorkflowKanbanEvents,
 } from './api/workflow-kanban';
-
 // Approval gate management
 export { ApprovalGateManager } from './core/approval-gate-manager';
+export type { TaskMasterSystem } from './facades/taskmaster-facade';
+// Main TaskMaster system (recommended for most users)
+export { createTaskMaster, getTaskMaster } from './main';
 
 // =============================================================================
 // XSTATE MACHINE EXPORTS - For Advanced Integration
@@ -178,8 +177,6 @@ import type {
   OptimizationStrategy,
   TaskPriority,
   TaskState,
-  WIPLimits,
-  WorkflowTask,
 } from './types/index';
 
 // =============================================================================

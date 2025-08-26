@@ -6,105 +6,105 @@
  * monorepo detection, system capabilities, and environment validation.
  */
 
-import * as os from 'os';
-import * as process from 'process';
+import * as os from "node:os";
+import * as process from "node:process";
 import {
-  WorkspaceDetector,
-  DetectedWorkspace,
-} from './system/monorepo.detector.js';
+	displaySystemStatus,
+	getCapabilityScores,
+	getSystemCapabilityData,
+	type SystemCapabilityData,
+	startSystemMonitoring,
+} from "./system/capability.provider.js";
 import {
-  getSystemCapabilityData,
-  SystemCapabilityData,
-  startSystemMonitoring,
-  displaySystemStatus,
-  getCapabilityScores,
-} from './system/capability.provider.js';
+	type DetectedWorkspace,
+	WorkspaceDetector,
+} from "./system/monorepo.detector.js";
 
-// Re-export system modules for convenience
-export { WorkspaceDetector } from './system/monorepo.detector.js';
-export type { DetectedWorkspace } from './system/monorepo.detector.js';
 // Re-export available functions from capability provider
 export {
-  getSystemCapabilityData,
-  getInstallationSuggestions,
-  displaySystemStatus,
-  startSystemMonitoring,
-  getCapabilityScores,
-  createHealthDataProviders,
-} from './system/capability.provider.js';
+	createHealthDataProviders,
+	displaySystemStatus,
+	getCapabilityScores,
+	getInstallationSuggestions,
+	getSystemCapabilityData,
+	startSystemMonitoring,
+} from "./system/capability.provider.js";
+export type { DetectedWorkspace } from "./system/monorepo.detector.js";
+// Re-export system modules for convenience
+export { WorkspaceDetector } from "./system/monorepo.detector.js";
 
 /**
  * Platform types
  */
 export type Platform =
-  | 'win32'
-  | 'darwin'
-  | 'linux'
-  | 'freebsd'
-  | 'openbsd'
-  | 'android'
-  | 'aix'
-  | 'sunos'
-  | 'unknown';
+	| "win32"
+	| "darwin"
+	| "linux"
+	| "freebsd"
+	| "openbsd"
+	| "android"
+	| "aix"
+	| "sunos"
+	| "unknown";
 
 /**
  * Architecture types
  */
 export type Architecture =
-  | 'x64'
-  | 'arm64'
-  | 'ia32'
-  | 'arm'
-  | 'ppc64'
-  | 's390x'
-  | 'mips'
-  | 'unknown';
+	| "x64"
+	| "arm64"
+	| "ia32"
+	| "arm"
+	| "ppc64"
+	| "s390x"
+	| "mips"
+	| "unknown";
 
 /**
  * System information interface
  */
 export interface SystemInfo {
-  platform: Platform;
-  arch: Architecture;
-  nodeVersion: string;
-  osVersion: string;
-  cpuCount: number;
-  totalMemoryGB: number;
-  availableMemoryGB: number;
-  hostname: string;
-  username: string;
-  homeDir: string;
-  tempDir: string;
-  isCI: boolean;
-  isDocker: boolean;
-  isWSL: boolean;
+	platform: Platform;
+	arch: Architecture;
+	nodeVersion: string;
+	osVersion: string;
+	cpuCount: number;
+	totalMemoryGB: number;
+	availableMemoryGB: number;
+	hostname: string;
+	username: string;
+	homeDir: string;
+	tempDir: string;
+	isCI: boolean;
+	isDocker: boolean;
+	isWSL: boolean;
 }
 
 /**
  * Process information interface
  */
 export interface ProcessInfo {
-  pid: number;
-  ppid: number;
-  title: string;
-  argv: string[];
-  execPath: string;
-  cwd: string;
-  env: Record<string, string | undefined>;
-  uptime: number;
-  memoryUsage: NodeJS.MemoryUsage;
+	pid: number;
+	ppid: number;
+	title: string;
+	argv: string[];
+	execPath: string;
+	cwd: string;
+	env: Record<string, string | undefined>;
+	uptime: number;
+	memoryUsage: NodeJS.MemoryUsage;
 }
 
 /**
  * Environment type
  */
 export type EnvironmentType =
-  | 'development'
-  | 'production'
-  | 'test'
-  | 'staging'
-  | 'preview'
-  | 'unknown';
+	| "development"
+	| "production"
+	| "test"
+	| "staging"
+	| "preview"
+	| "unknown";
 
 /**
  * Get current platform with normalization
@@ -118,23 +118,23 @@ export type EnvironmentType =
  * ```
  */
 export function getPlatform(): Platform {
-  const { platform } = process;
+	const { platform } = process;
 
-  // Handle known platforms
-  if (
-    ['win32', 'darwin', 'linux', 'freebsd', 'openbsd', 'aix', 'sunos'].includes(
-      platform
-    )
-  ) {
-    return platform as Platform;
-  }
+	// Handle known platforms
+	if (
+		["win32", "darwin", "linux", "freebsd", "openbsd", "aix", "sunos"].includes(
+			platform,
+		)
+	) {
+		return platform as Platform;
+	}
 
-  // Check for Android (common in Node.js environments)
-  if (platform === 'linux' && process.env['ANDROID_ROOT']) {
-    return 'android';
-  }
+	// Check for Android (common in Node.js environments)
+	if (platform === "linux" && process.env.ANDROID_ROOT) {
+		return "android";
+	}
 
-  return 'unknown';
+	return "unknown";
 }
 
 /**
@@ -149,16 +149,16 @@ export function getPlatform(): Platform {
  * ```
  */
 export function getArchitecture(): Architecture {
-  const { arch } = process;
+	const { arch } = process;
 
-  // Handle known architectures
-  if (
-    ['x64', 'arm64', 'ia32', 'arm', 'ppc64', 's390x', 'mips'].includes(arch)
-  ) {
-    return arch as Architecture;
-  }
+	// Handle known architectures
+	if (
+		["x64", "arm64", "ia32", "arm", "ppc64", "s390x", "mips"].includes(arch)
+	) {
+		return arch as Architecture;
+	}
 
-  return 'unknown';
+	return "unknown";
 }
 
 /**
@@ -174,7 +174,7 @@ export function getArchitecture(): Architecture {
  * ```
  */
 export function isWindows(): boolean {
-  return getPlatform() === 'win32';
+	return getPlatform() === "win32";
 }
 
 /**
@@ -190,7 +190,7 @@ export function isWindows(): boolean {
  * ```
  */
 export function isMacOS(): boolean {
-  return getPlatform() === 'darwin';
+	return getPlatform() === "darwin";
 }
 
 /**
@@ -206,7 +206,7 @@ export function isMacOS(): boolean {
  * ```
  */
 export function isLinux(): boolean {
-  return getPlatform() === 'linux';
+	return getPlatform() === "linux";
 }
 
 /**
@@ -222,18 +222,18 @@ export function isLinux(): boolean {
  * ```
  */
 export function isCI(): boolean {
-  return !!(
-    process.env['CI'] ||
-    process.env['CONTINUOUS_INTEGRATION'] ||
-    process.env['BUILD_NUMBER'] ||
-    process.env['GITHUB_ACTIONS'] ||
-    process.env['TRAVIS'] ||
-    process.env['CIRCLECI'] ||
-    process.env['JENKINS_URL'] ||
-    process.env['GITLAB_CI'] ||
-    process.env['BUILDKITE'] ||
-    process.env['DRONE']
-  );
+	return !!(
+		process.env.CI ||
+		process.env.CONTINUOUS_INTEGRATION ||
+		process.env.BUILD_NUMBER ||
+		process.env.GITHUB_ACTIONS ||
+		process.env.TRAVIS ||
+		process.env.CIRCLECI ||
+		process.env.JENKINS_URL ||
+		process.env.GITLAB_CI ||
+		process.env.BUILDKITE ||
+		process.env.DRONE
+	);
 }
 
 /**
@@ -249,23 +249,23 @@ export function isCI(): boolean {
  * ```
  */
 export function isDocker(): boolean {
-  try {
-    // Check for .dockerenv file
-    const fs = require('fs');
-    if (fs.existsSync('/.dockerenv')) {
-      return true;
-    }
+	try {
+		// Check for .dockerenv file
+		const fs = require("node:fs");
+		if (fs.existsSync("/.dockerenv")) {
+			return true;
+		}
 
-    // Check for Docker-specific cgroup entries
-    if (fs.existsSync('/proc/1/cgroup')) {
-      const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8');
-      return cgroup.includes('docker') || cgroup.includes('containerd');
-    }
+		// Check for Docker-specific cgroup entries
+		if (fs.existsSync("/proc/1/cgroup")) {
+			const cgroup = fs.readFileSync("/proc/1/cgroup", "utf8");
+			return cgroup.includes("docker") || cgroup.includes("containerd");
+		}
 
-    return false;
-  } catch {
-    return false;
-  }
+		return false;
+	} catch {
+		return false;
+	}
 }
 
 /**
@@ -281,23 +281,23 @@ export function isDocker(): boolean {
  * ```
  */
 export function isWSL(): boolean {
-  if (!isLinux()) {
-    return false;
-  }
+	if (!isLinux()) {
+		return false;
+	}
 
-  try {
-    const fs = require('fs');
+	try {
+		const fs = require("node:fs");
 
-    // Check for WSL-specific files
-    if (fs.existsSync('/proc/version')) {
-      const version = fs.readFileSync('/proc/version', 'utf8').toLowerCase();
-      return version.includes('microsoft') || version.includes('wsl');
-    }
+		// Check for WSL-specific files
+		if (fs.existsSync("/proc/version")) {
+			const version = fs.readFileSync("/proc/version", "utf8").toLowerCase();
+			return version.includes("microsoft") || version.includes("wsl");
+		}
 
-    return false;
-  } catch {
-    return false;
-  }
+		return false;
+	} catch {
+		return false;
+	}
 }
 
 /**
@@ -314,44 +314,44 @@ export function isWSL(): boolean {
  * ```
  */
 export function getEnvironment(): EnvironmentType {
-  const nodeEnv = process.env['NODE_ENV']?.toLowerCase();
+	const nodeEnv = process.env.NODE_ENV?.toLowerCase();
 
-  // Direct NODE_ENV mapping
-  if (nodeEnv === 'production') return 'production';
-  if (nodeEnv === 'development' || nodeEnv === 'dev') return 'development';
-  if (nodeEnv === 'test') return 'test';
-  if (nodeEnv === 'staging') return 'staging';
-  if (nodeEnv === 'preview') return 'preview';
+	// Direct NODE_ENV mapping
+	if (nodeEnv === "production") return "production";
+	if (nodeEnv === "development" || nodeEnv === "dev") return "development";
+	if (nodeEnv === "test") return "test";
+	if (nodeEnv === "staging") return "staging";
+	if (nodeEnv === "preview") return "preview";
 
-  // Infer from other environment variables
-  if (
-    process.env['VERCEL_ENV'] === 'production' ||
-    (process.env['NETLIFY'] && process.env['CONTEXT'] === 'production')
-  ) {
-    return 'production';
-  }
+	// Infer from other environment variables
+	if (
+		process.env.VERCEL_ENV === "production" ||
+		(process.env.NETLIFY && process.env.CONTEXT === "production")
+	) {
+		return "production";
+	}
 
-  if (
-    process.env['VERCEL_ENV'] === 'preview' ||
-    (process.env['NETLIFY'] && process.env['CONTEXT'] === 'deploy-preview')
-  ) {
-    return 'preview';
-  }
+	if (
+		process.env.VERCEL_ENV === "preview" ||
+		(process.env.NETLIFY && process.env.CONTEXT === "deploy-preview")
+	) {
+		return "preview";
+	}
 
-  if (
-    process.env['VERCEL_ENV'] === 'development' ||
-    (process.env['NETLIFY'] && process.env['CONTEXT'] === 'dev')
-  ) {
-    return 'development';
-  }
+	if (
+		process.env.VERCEL_ENV === "development" ||
+		(process.env.NETLIFY && process.env.CONTEXT === "dev")
+	) {
+		return "development";
+	}
 
-  // CI environments usually indicate production-like environments
-  if (isCI()) {
-    return 'production';
-  }
+	// CI environments usually indicate production-like environments
+	if (isCI()) {
+		return "production";
+	}
 
-  // Default to development if no clear indicators
-  return nodeEnv ? 'unknown' : 'development';
+	// Default to development if no clear indicators
+	return nodeEnv ? "unknown" : "development";
 }
 
 /**
@@ -367,7 +367,7 @@ export function getEnvironment(): EnvironmentType {
  * ```
  */
 export function isDevelopment(): boolean {
-  return getEnvironment() === 'development';
+	return getEnvironment() === "development";
 }
 
 /**
@@ -383,7 +383,7 @@ export function isDevelopment(): boolean {
  * ```
  */
 export function isProduction(): boolean {
-  return getEnvironment() === 'production';
+	return getEnvironment() === "production";
 }
 
 /**
@@ -399,7 +399,7 @@ export function isProduction(): boolean {
  * ```
  */
 export function isTest(): boolean {
-  return getEnvironment() === 'test';
+	return getEnvironment() === "test";
 }
 
 /**
@@ -414,31 +414,31 @@ export function isTest(): boolean {
  * ```
  */
 export function getSystemInfo(): SystemInfo {
-  const platform = getPlatform();
-  const arch = getArchitecture();
+	const platform = getPlatform();
+	const arch = getArchitecture();
 
-  // Calculate memory in GB
-  const totalMemory = os.totalmem();
-  const freeMemory = os.freemem();
-  const totalMemoryGB = Math.round((totalMemory / 1024 ** 3) * 100) / 100;
-  const availableMemoryGB = Math.round((freeMemory / 1024 ** 3) * 100) / 100;
+	// Calculate memory in GB
+	const totalMemory = os.totalmem();
+	const freeMemory = os.freemem();
+	const totalMemoryGB = Math.round((totalMemory / 1024 ** 3) * 100) / 100;
+	const availableMemoryGB = Math.round((freeMemory / 1024 ** 3) * 100) / 100;
 
-  return {
-    platform,
-    arch,
-    nodeVersion: process.version,
-    osVersion: os.release(),
-    cpuCount: os.cpus().length,
-    totalMemoryGB,
-    availableMemoryGB,
-    hostname: os.hostname(),
-    username: os.userInfo().username,
-    homeDir: os.homedir(),
-    tempDir: os.tmpdir(),
-    isCI: isCI(),
-    isDocker: isDocker(),
-    isWSL: isWSL(),
-  };
+	return {
+		platform,
+		arch,
+		nodeVersion: process.version,
+		osVersion: os.release(),
+		cpuCount: os.cpus().length,
+		totalMemoryGB,
+		availableMemoryGB,
+		hostname: os.hostname(),
+		username: os.userInfo().username,
+		homeDir: os.homedir(),
+		tempDir: os.tmpdir(),
+		isCI: isCI(),
+		isDocker: isDocker(),
+		isWSL: isWSL(),
+	};
 }
 
 /**
@@ -453,17 +453,17 @@ export function getSystemInfo(): SystemInfo {
  * ```
  */
 export function getProcessInfo(): ProcessInfo {
-  return {
-    pid: process.pid,
-    ppid: process.ppid || 0,
-    title: process.title,
-    argv: process.argv,
-    execPath: process.execPath,
-    cwd: process.cwd(),
-    env: process.env,
-    uptime: process.uptime(),
-    memoryUsage: process.memoryUsage(),
-  };
+	return {
+		pid: process.pid,
+		ppid: process.ppid || 0,
+		title: process.title,
+		argv: process.argv,
+		execPath: process.execPath,
+		cwd: process.cwd(),
+		env: process.env,
+		uptime: process.uptime(),
+		memoryUsage: process.memoryUsage(),
+	};
 }
 
 /**
@@ -481,7 +481,7 @@ export function getProcessInfo(): ProcessInfo {
  * ```
  */
 export function getWorkspaceDetector(): WorkspaceDetector {
-  return new WorkspaceDetector();
+	return new WorkspaceDetector();
 }
 
 /**
@@ -501,10 +501,10 @@ export function getWorkspaceDetector(): WorkspaceDetector {
  * ```
  */
 export async function detectWorkspace(
-  startPath?: string
+	startPath?: string,
 ): Promise<DetectedWorkspace | null> {
-  const detector = getWorkspaceDetector();
-  return detector.detectWorkspaceRoot(startPath);
+	const detector = getWorkspaceDetector();
+	return detector.detectWorkspaceRoot(startPath);
 }
 
 /**
@@ -520,7 +520,7 @@ export async function detectWorkspace(
  * ```
  */
 export function getSystemCapabilities(): Promise<SystemCapabilityData> {
-  return Promise.resolve(getSystemCapabilityData());
+	return Promise.resolve(getSystemCapabilityData());
 }
 
 /**
@@ -533,7 +533,7 @@ export function getSystemCapabilities(): Promise<SystemCapabilityData> {
  * ```
  */
 export async function showSystemStatus(): Promise<void> {
-  return displaySystemStatus();
+	return displaySystemStatus();
 }
 
 /**
@@ -546,7 +546,7 @@ export async function showSystemStatus(): Promise<void> {
  * ```
  */
 export function startMonitoring(): void {
-  startSystemMonitoring();
+	startSystemMonitoring();
 }
 
 /**
@@ -562,7 +562,7 @@ export function startMonitoring(): void {
  * ```
  */
 export async function getCapabilityScoreMap(): Promise<Record<string, number>> {
-  return getCapabilityScores();
+	return getCapabilityScores();
 }
 
 /**
@@ -578,21 +578,21 @@ export async function getCapabilityScoreMap(): Promise<Record<string, number>> {
  * ```
  */
 export function createSystemSummary(): string {
-  const info = getSystemInfo();
-  const env = getEnvironment();
+	const info = getSystemInfo();
+	const env = getEnvironment();
 
-  let summary = `${info.platform} ${info.arch} (Node.js ${info.nodeVersion}) - ${info.cpuCount} CPUs, ${info.totalMemoryGB}GB RAM - ${env}`;
+	let summary = `${info.platform} ${info.arch} (Node.js ${info.nodeVersion}) - ${info.cpuCount} CPUs, ${info.totalMemoryGB}GB RAM - ${env}`;
 
-  const indicators: string[] = [];
-  if (info.isCI) indicators.push('CI');
-  if (info.isDocker) indicators.push('Docker');
-  if (info.isWSL) indicators.push('WSL');
+	const indicators: string[] = [];
+	if (info.isCI) indicators.push("CI");
+	if (info.isDocker) indicators.push("Docker");
+	if (info.isWSL) indicators.push("WSL");
 
-  if (indicators.length > 0) {
-    summary += ` (${indicators.join(', ')})`;
-  }
+	if (indicators.length > 0) {
+		summary += ` (${indicators.join(", ")})`;
+	}
 
-  return summary;
+	return summary;
 }
 
 /**
@@ -615,54 +615,54 @@ export function createSystemSummary(): string {
  * ```
  */
 export function checkSystemRequirements(requirements: {
-  nodeVersion?: string;
-  totalMemoryGB?: number;
-  cpuCount?: number;
-  supportedPlatforms?: Platform[];
+	nodeVersion?: string;
+	totalMemoryGB?: number;
+	cpuCount?: number;
+	supportedPlatforms?: Platform[];
 }): boolean {
-  const info = getSystemInfo();
+	const info = getSystemInfo();
 
-  // Check Node.js version
-  if (requirements.nodeVersion) {
-    const currentVersion = process.version.replace('v', '');
-    const requiredVersion = requirements.nodeVersion.replace('v', '');
+	// Check Node.js version
+	if (requirements.nodeVersion) {
+		const currentVersion = process.version.replace("v", "");
+		const requiredVersion = requirements.nodeVersion.replace("v", "");
 
-    // Simple version comparison (assumes semantic versioning)
-    const currentParts = currentVersion.split('.').map(Number);
-    const requiredParts = requiredVersion.split('.').map(Number);
-    const currentMajor = currentParts[0] ?? 0;
-    const currentMinor = currentParts[1] ?? 0;
-    const requiredMajor = requiredParts[0] ?? 0;
-    const requiredMinor = requiredParts[1] ?? 0;
+		// Simple version comparison (assumes semantic versioning)
+		const currentParts = currentVersion.split(".").map(Number);
+		const requiredParts = requiredVersion.split(".").map(Number);
+		const currentMajor = currentParts[0] ?? 0;
+		const currentMinor = currentParts[1] ?? 0;
+		const requiredMajor = requiredParts[0] ?? 0;
+		const requiredMinor = requiredParts[1] ?? 0;
 
-    if (
-      currentMajor < requiredMajor ||
-      (currentMajor === requiredMajor && currentMinor < requiredMinor)
-    ) {
-      return false;
-    }
-  }
+		if (
+			currentMajor < requiredMajor ||
+			(currentMajor === requiredMajor && currentMinor < requiredMinor)
+		) {
+			return false;
+		}
+	}
 
-  // Check memory
-  if (
-    requirements.totalMemoryGB &&
-    info.totalMemoryGB < requirements.totalMemoryGB
-  ) {
-    return false;
-  }
+	// Check memory
+	if (
+		requirements.totalMemoryGB &&
+		info.totalMemoryGB < requirements.totalMemoryGB
+	) {
+		return false;
+	}
 
-  // Check CPU count
-  if (requirements.cpuCount && info.cpuCount < requirements.cpuCount) {
-    return false;
-  }
+	// Check CPU count
+	if (requirements.cpuCount && info.cpuCount < requirements.cpuCount) {
+		return false;
+	}
 
-  // Check platform support
-  if (
-    requirements.supportedPlatforms &&
-    !requirements.supportedPlatforms.includes(info.platform)
-  ) {
-    return false;
-  }
+	// Check platform support
+	if (
+		requirements.supportedPlatforms &&
+		!requirements.supportedPlatforms.includes(info.platform)
+	) {
+		return false;
+	}
 
-  return true;
+	return true;
 }

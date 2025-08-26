@@ -1,38 +1,38 @@
 query VersionFileContents(
-  $owner: String!
-  $name: String!
-  $expression: String!
+	$owner: String!
+	$name: String!
+	$expression: String!
 ) {
-  repository(owner: $owner, name: $name) {
-    object(expression: $expression) {
-      __typename
-      ... on Blob {
-        text
-        byteSize
-        isBinary
-        oid
-      }
-      ... on Tree {
-        entries {
-          name
-          type
-          mode
-          object {
-            __typename
-            ... on Blob {
-              text
-              byteSize
-              isBinary
-            }
-          }
-        }
-      }
-    }
-  }
-  rateLimit {
-    limit
-    cost
-    remaining
-    resetAt
-  }
+	repository(owner: $owner, name: $name) {
+		object(expression: $expression) {
+			__typename
+			... on Blob {
+				text
+				byteSize
+				isBinary
+				oid
+			}
+			... on Tree {
+				entries {
+					name
+					type
+					mode
+					object {
+						__typename
+						... on Blob {
+							text
+							byteSize
+							isBinary
+						}
+					}
+				}
+			}
+		}
+	}
+	rateLimit {
+		limit
+		cost
+		remaining
+		resetAt
+	}
 }

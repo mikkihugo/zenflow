@@ -10,7 +10,6 @@
  * @version 2.0.0 - Brain Integration
  */
 
-import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import type { TaskFlowState, TaskFlowStatus } from '../types/task-flow-types';
 
@@ -69,7 +68,6 @@ interface ThresholdRecommendation {
  * - Capacity forecasting
  */
 export class TaskFlowIntelligence {
-  private readonly logger: Logger;
   private brainPredictor?: BrainPredictor;
   private flowHistory: FlowMetric[] = [];
   private approvalHistory: ApprovalMetric[] = [];
@@ -78,64 +76,6 @@ export class TaskFlowIntelligence {
   constructor() {
     this.logger = getLogger('TaskFlowIntelligence');'
     this.initializeBrain();
-  }
-
-  /**
-   * Initialize lightweight WASM prediction (if available)
-   */
-  private async initializeBrain(): Promise<void> {
-    try {
-      // Try to load lightweight WASM predictor from your brain's WASM module'
-      const wasmModule = await import('../wasm/task-flow-predictor.wasm');'
-
-      this.brainPredictor = {
-        predictBottleneck: async (history) => {
-          // Use WASM for fast mathematical prediction
-          const result = wasmModule.predict_bottleneck(
-            new Float32Array(history.map((h) => h.wipUsage)),
-            new Float32Array(history.map((h) => h.queueDepth)),
-            new Float32Array(history.map((h) => h.throughput))
-          );
-
-          return {
-            state: result.state,
-            probability: result.probability,
-            timeToBottleneck: result.timeToBottleneck,
-            recommendedActions: result.actions,
-          };
-        },
-
-        optimizeThreshold: async (history) => {
-          const result = wasmModule.optimize_threshold(
-            new Float32Array(history.map((h) => h.confidence)),
-            new Uint8Array(history.map((h) => (h.approved ? 1 : 0)))
-          );
-
-          return {
-            currentThreshold: result.current,
-            recommendedThreshold: result.recommended,
-            confidence: result.confidence,
-            reasoning: result.reasoning,
-          };
-        },
-
-        learnFromDecisions: async (outcomes) => {
-          // Update WASM model with new decision outcomes
-          wasmModule.learn_from_decisions(
-            new Uint8Array(outcomes.map((o) => (o.predictionAccurate ? 1 : 0))),
-            new Uint8Array(outcomes.map((o) => (o.outcomePositive ? 1 : 0)))
-          );
-        },
-      };
-
-      this.logger.info('TaskFlow intelligence initialized with WASM predictor');'
-    } catch (error) {
-      this.logger.info(
-        'WASM predictor not available - using statistical methods',
-        { error }
-      );
-      // Use pure JavaScript statistical methods (no external dependencies)
-    }
   }
 
   /**
@@ -151,7 +91,7 @@ export class TaskFlowIntelligence {
       // Use neural prediction
       const predictions: BottleneckPrediction[] = [];
 
-      for (const [state, usage] of Object.entries(currentStatus.wipUsage)) {
+      for (const [state, _usage] of Object.entries(currentStatus.wipUsage)) {
         const prediction = await this.brainPredictor.predictBottleneck(
           this.getRecentFlowHistory(state as TaskFlowState)
         );
@@ -169,7 +109,7 @@ export class TaskFlowIntelligence {
    * Optimize approval thresholds based on human decision patterns
    */
   async optimizeApprovalThresholds(
-    gateId: string
+    _gateId: string
   ): Promise<ThresholdRecommendation> {
     const gateHistory = this.approvalHistory.filter(
       (h) => h.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000 // Last 7 days
@@ -324,9 +264,8 @@ export class TaskFlowIntelligence {
     }
   }
 
-  private getRecentFlowHistory(state: TaskFlowState): FlowMetric[] {
+  private getRecentFlowHistory(state: TaskFlowState): FlowMetric[] 
     return this.flowHistory.filter((h) => h.state === state).slice(-50); // Last 50 data points for this state
-  }
 
   private statisticalBottleneckPrediction(
     status: TaskFlowStatus

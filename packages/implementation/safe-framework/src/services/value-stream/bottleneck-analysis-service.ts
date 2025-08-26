@@ -12,18 +12,18 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, subDays, differenceInHours } = dateFns;
+
 import {
+  filter,
   groupBy,
   map,
-  filter,
+  maxBy,
+  meanBy,
   orderBy,
   sumBy,
-  maxBy,
-  minBy,
-  meanBy,
-  countBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -439,7 +439,7 @@ export class BottleneckAnalysisService {
 
   private async assessBottleneckImpact(
     bottlenecks: DetectedBottleneck[],
-    config: BottleneckAnalysisConfig
+    _config: BottleneckAnalysisConfig
   ): Promise<ImpactAssessment> {
     const totalCycleTime = sumBy(bottlenecks, (b) => b.cycleTime.average);
     const totalQueueLength = sumBy(
@@ -484,7 +484,7 @@ export class BottleneckAnalysisService {
 
   private async identifyContributingFactors(
     bottlenecks: DetectedBottleneck[],
-    config: BottleneckAnalysisConfig
+    _config: BottleneckAnalysisConfig
   ): Promise<ContributingFactor[]> {
     const factors: ContributingFactor[] = [];
 
@@ -527,8 +527,8 @@ export class BottleneckAnalysisService {
 
   private async generateBottleneckRecommendations(
     bottlenecks: DetectedBottleneck[],
-    rootCause: RootCauseAnalysis,
-    impact: ImpactAssessment
+    _rootCause: RootCauseAnalysis,
+    _impact: ImpactAssessment
   ): Promise<BottleneckRecommendation[]> {
     const recommendations: BottleneckRecommendation[] = [];
 
@@ -616,7 +616,7 @@ export class BottleneckAnalysisService {
     };
   }
 
-  private calculateUtilizationMetrics(stageData: any[]): UtilizationMetrics {
+  private calculateUtilizationMetrics(_stageData: any[]): UtilizationMetrics {
     return {
       utilization: Math.random() * 40 + 60, // 60-100% simulation
       efficiency: Math.random() * 30 + 70, // 70-100% simulation
@@ -625,7 +625,7 @@ export class BottleneckAnalysisService {
     };
   }
 
-  private calculateErrorMetrics(stageData: any[]): ErrorMetrics {
+  private calculateErrorMetrics(_stageData: any[]): ErrorMetrics {
     return {
       errorRate: Math.random() * 10, // 0-10% error rate
       reworkRate: Math.random() * 15, // 0-15% rework rate
@@ -670,7 +670,7 @@ export class BottleneckAnalysisService {
     return BottleneckSeverity.LOW;
   }
 
-  private analyzeTrends(stageData: any[]): TrendAnalysis {
+  private analyzeTrends(_stageData: any[]): TrendAnalysis {
     return {
       direction:'increasing',
       magnitude: 0.15,
@@ -679,7 +679,7 @@ export class BottleneckAnalysisService {
     };
   }
 
-  private analyzeSeasonality(stageData: any[]): SeasonalityPattern[] {
+  private analyzeSeasonality(_stageData: any[]): SeasonalityPattern[] {
     return [
       {
         patternId: `pattern-${generateNanoId(6)}`,`
@@ -707,7 +707,7 @@ export class BottleneckAnalysisService {
 
   private calculateVariance(values: number[]): number {
     const mean = meanBy(values, Number) || 0;
-    const squaredDiffs = values.map((value) => Math.pow(value - mean, 2));
+    const squaredDiffs = values.map((value) => (value - mean) ** 2);
     return meanBy(squaredDiffs, Number) || 0;
   }
 
@@ -749,22 +749,22 @@ export class BottleneckAnalysisService {
   }
 
   private async identifyPotentialCauses(
-    bottleneck: DetectedBottleneck,
-    config: BottleneckAnalysisConfig,
-    flowData: any
+    _bottleneck: DetectedBottleneck,
+    _config: BottleneckAnalysisConfig,
+    _flowData: any
   ): Promise<RootCause[]> {
     return [];
   }
 
   private async evaluateCauses(
     causes: RootCause[],
-    bottleneck: DetectedBottleneck,
-    flowData: any
+    _bottleneck: DetectedBottleneck,
+    _flowData: any
   ): Promise<RootCause[]> {
     return causes;
   }
 
-  private buildCausalChain(causes: RootCause[]): CausalLink[] {
+  private buildCausalChain(_causes: RootCause[]): CausalLink[] {
     return [];
   }
 

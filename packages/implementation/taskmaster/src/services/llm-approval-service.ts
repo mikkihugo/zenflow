@@ -7,20 +7,15 @@
 import { getLogger } from '@claude-zen/foundation';
 import { getBrainSystem } from '@claude-zen/intelligence';
 import {
-  LLMApprovalConfig,
-  LLMApprovalDecision,
-  LLMApprovalContext,
-  LLMApprovalResult,
+  type ApprovalLearning,
   AutoApprovalRule,
-  ApprovalLearning,
-  LLMApprovalMetrics,
-  HumanOverride,
+  type LLMApprovalConfig,
+  type LLMApprovalContext,
+  type LLMApprovalResult,
 } from '../types/llm-approval.js';
 
 export class LLMApprovalService {
   private readonly logger = getLogger('LLMApprovalService');'
-  private brainSystem: any;
-  private learningData: ApprovalLearning[] = [];
 
   async initialize(): Promise<void> {
     this.brainSystem = await getBrainSystem();
@@ -32,11 +27,11 @@ export class LLMApprovalService {
    */
   async evaluateForApproval(
     context: LLMApprovalContext,
-    config: LLMApprovalConfig,
-    rules: AutoApprovalRule[]
+    _config: LLMApprovalConfig,
+    _rules: AutoApprovalRule[]
   ): Promise<LLMApprovalResult> {
-    const startTime = Date.now();
-    const gateId = `gate_${context.task.id}_${Date.now()}`;`
+    const _startTime = Date.now();
+    const _gateId = `gate_${context.task.id}_${Date.now()}`;`
 
     try {
       this.logger.info('Starting LLM approval evaluation', {'
@@ -54,15 +49,14 @@ export class LLMApprovalService {
           decision: {
             approved: true,
             confidence: 1.0,
-            reasoning: `Auto-approved by rule: ${ruleResult.rule!.name}`,`
+            reasoning: `Auto-approved by rule: $ruleResult.rule?.name`,`
             concerns: [],
             suggestedActions: [],
-            metadata: {
+            metadata: 
               model: 'rule-based',
               processingTime: Date.now() - startTime,
               tokenUsage: 0,
-              version: '1.0.0',
-            },
+              version: '1.0.0',,
           },
           autoApproved: true,
           escalatedToHuman: false,
@@ -172,43 +166,42 @@ export class LLMApprovalService {
     return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.`
 
 TASK DETAILS:
-- ID: ${task.id}
-- Title: ${task.title}
-- Description: ${task.description||'None'}'
-- Type: ${task.type}
-- Complexity: ${task.complexity}
-- Priority: ${task.priority}
-- Tags: ${task.tags.join(', ')}'
-- Dependencies: ${task.dependencies.length} dependencies
+- ID: $task.id
+- Title: $task.title
+- Description: $task.description||'None''
+- Type: $task.type
+- Complexity: $task.complexity
+- Priority: $task.priority
+- Tags: $task.tags.join(', ')'
+- Dependencies: $task.dependencies.lengthdependencies
 
 WORKFLOW CONTEXT:
-- Workflow: ${workflow.name}
-- Current State: ${workflow.currentState}
-- Previous States: ${workflow.previousStates.join(' → ')}'
+- Workflow: $workflow.name
+- Current State: $workflow.currentState
+- Previous States: $workflow.previousStates.join(' → ')'
 
 SECURITY ANALYSIS:
-- Has Secrets: ${security.hasSecrets}
-- Risk Level: ${security.riskLevel}
-- Affected Systems: ${security.affectedSystems.join(', ')}'
-- Compliance Flags: ${security.complianceFlags.join(', ')}'
+- Has Secrets: $security.hasSecrets
+- Risk Level: $security.riskLevel
+- Affected Systems: $security.affectedSystems.join(', ')'
+- Compliance Flags: $security.complianceFlags.join(', ')'
 
-${
+$
   codeAnalysis
     ? ``
 CODE ANALYSIS:
-- Files Changed: ${codeAnalysis.changedFiles.length}
-- Lines Added: ${codeAnalysis.linesAdded}
-- Lines Deleted: ${codeAnalysis.linesDeleted}
-- Test Coverage: ${codeAnalysis.testCoverage}%
+- Files Changed: $codeAnalysis.changedFiles.length
+- Lines Added: $codeAnalysis.linesAdded
+- Lines Deleted: $codeAnalysis.linesDeleted
+- Test Coverage: $codeAnalysis.testCoverage%
 ``
     : '''
-}
 
 APPROVAL CRITERIA:
-${config.criteria.map((criterion) => `- ${criterion}`).join('\n')}'
+$config.criteria.map((criterion) => `- ${criterion}`).join('\n')'
 
 HISTORICAL CONTEXT:
-Similar tasks: ${history.similarTasks.length} (${history.similarTasks.filter((t) => t.decision === 'approved').length} approved)'
+Similar tasks: $history.similarTasks.length($history.similarTasks.filter((t) => t.decision === 'approved').lengthapproved)'
 
 INSTRUCTIONS:
 1. Analyze the task against the approval criteria
@@ -217,14 +210,12 @@ INSTRUCTIONS:
 4. Check for patterns in historical decisions
 5. Provide a decision with confidence level (0.0-1.0)
 
-Respond in JSON format:
-{
+Respond in JSON 
   "approved": boolean,
   "confidence": number,
   "reasoning": "Detailed explanation of decision",
   "concerns": ["array", "of", "specific", "concerns"],
   "suggestedActions": ["array", "of", "suggested", "actions"]
-}
 
 Base your decision on:
 - Security and compliance requirements
@@ -311,7 +302,7 @@ Be conservative: when in doubt, escalate to human review.`;`
               'context',
               ``
               const { task, workflow, security, codeAnalysis } = context;
-              return ${condition};
+              return $condition;
             ``
             );
 

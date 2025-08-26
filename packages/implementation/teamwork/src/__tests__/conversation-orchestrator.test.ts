@@ -11,11 +11,11 @@ import { jest } from '@jest/globals';
 // Using teamwork package for conversation framework
 import { ConversationOrchestratorImpl } from '../conversation-orchestrator';
 import type {
+  AgentId,
   ConversationConfig,
   ConversationMemory,
   ConversationMessage,
   ConversationSession,
-  AgentId,
 } from '../types';
 
 describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {'
@@ -235,12 +235,11 @@ describe('ConversationOrchestratorImpl - London TDD (Jest)', () => {'
       expect(existingSession.metrics.participationByAgent['agent-1']).toBe(1);'
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         conversationId,
-        expect.objectContaining({
+        expect.objectContaining(
           messages: expect.arrayContaining([
             expect.objectContaining({ content: { text: 'Hello, world!' } }),
           ]),
-          metrics: expect.objectContaining({ messageCount: 1 }),
-        })
+          metrics: expect.objectContaining(messageCount: 1 ),)
       );
     });
 

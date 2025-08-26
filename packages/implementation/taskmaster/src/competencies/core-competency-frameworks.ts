@@ -44,19 +44,19 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
+import { getDatabaseSystem, } from '@claude-zen/infrastructure';
 import { getBrainSystem } from '@claude-zen/intelligence';
-import { ApprovalGateManager } from '../core/approval-gate-manager.js';
-import { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
 
 import type {
   ApprovalGateId,
-  TaskId,
   ApprovalGateRequirement,
+  TaskId,
 } from '../types/index.js';
 
-const logger = getLogger('CoreCompetencyFrameworks');'
+const _logger = getLogger('CoreCompetencyFrameworks');'
 
 // ============================================================================
 // CORE COMPETENCY TYPES AND INTERFACES
@@ -843,25 +843,7 @@ export interface CompetencyImprovementPlan {
  */
 export class CoreCompetencyFrameworks {
   private readonly logger = getLogger('CoreCompetencyFrameworks');'
-
-  // Core services
-  private approvalGateManager: ApprovalGateManager;
-  private safeIntegration: SafeFrameworkIntegration;
   private taskApprovalSystem: TaskApprovalSystem;
-
-  // Infrastructure
-  private database: any;
-  private eventSystem: any;
-  private brainSystem: any;
-
-  // Practice frameworks
-  private ttaFramework: TeamTechnicalAgilityFramework|null = null;
-  private apdFramework: AgileProductDeliveryFramework|null = null;
-
-  // Assessment state
-  private activeAssessments = new Map<string, CompetencyAssessmentConfig>();
-  private improvementPlans = new Map<string, CompetencyImprovementPlan>();
-  private practiceLibrary = new Map<string, any>();
 
   constructor(
     approvalGateManager: ApprovalGateManager,
@@ -927,7 +909,7 @@ export class CoreCompetencyFrameworks {
     coordinationTraceabilityId: string;
   }> {
     const assessmentId = config.id;
-    const coordinationTraceabilityId = `competency-assessment-${assessmentId}-${Date.now()}`;`
+    const _coordinationTraceabilityId = `competency-assessment-${assessmentId}-${Date.now()}`;`
 
     this.logger.info('Executing Competency Assessment', {'
       assessmentId,
@@ -1103,12 +1085,10 @@ export class CoreCompetencyFrameworks {
    * Get competency assessment status
    */
   async getCompetencyAssessmentStatus(assessmentId: string): Promise<{
-    assessmentProgress: {
       phase:|'preparation|execution|analysis|planning|implementation|completed;
       progress: number; // percentage
       currentActivity: string;
-      nextSteps: string[];
-    };
+      nextSteps: string[];;
     practiceAssessments: Array<{
       practiceArea: string;
       currentMaturity: PracticeMaturityLevel;
@@ -1116,20 +1096,16 @@ export class CoreCompetencyFrameworks {
       assessmentCompleted: boolean;
       improvementActionsCount: number;
     }>;
-    overallCompetency: {
       currentMaturity: PracticeMaturityLevel;
       targetMaturity: PracticeMaturityLevel;
       maturityGap: number;
-      businessImpact: string;
-    };
-    improvementPlan: {
+      businessImpact: string;;
       planExists: boolean;
       phasesTotal: number;
       phasesCompleted: number;
       actionsTotal: number;
       actionsCompleted: number;
-      estimatedCompletion?: Date;
-    };
+      estimatedCompletion?: Date;;
   }> {
     const config = this.activeAssessments.get(assessmentId);
     if (!config) {
@@ -1499,7 +1475,7 @@ export class CoreCompetencyFrameworks {
     traceabilityId: string
   ): Promise<ApprovalGateId> {
     const gateId =
-      `practice-assessment-${practiceArea}-${config.id}` as ApprovalGateId;`
+      `practice-assessment-$practiceArea-$config.id` as ApprovalGateId;`
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
@@ -1522,7 +1498,7 @@ export class CoreCompetencyFrameworks {
       },
     };
 
-    const result = await this.approvalGateManager.createApprovalGate(
+    const _result = await this.approvalGateManager.createApprovalGate(
       requirement,
       `competency-assessment-${config.id}` as TaskId`
     );

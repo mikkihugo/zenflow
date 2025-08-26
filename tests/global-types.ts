@@ -23,7 +23,7 @@ declare global {
   function createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
   function generateNeuralTestData(config: NeuralTestConfig): NeuralTestData[];
   function expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-  function testWithApproach(approach: 'london|classical', testFn: () => void|Promise<void>): void|'Promise<void>;
+  function testWithApproach(approach: 'london|classical', testFn: () => void|Promise<void>): undefined|'Promise<void>;
   function createMemoryTestScenario(type:'sqlite|lancedb|json'): any;
 
   // Classical TDD utilities
@@ -93,5 +93,3 @@ declare global {
     output: number[];
   }
 }
-
-export {};

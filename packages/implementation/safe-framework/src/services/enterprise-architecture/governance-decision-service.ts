@@ -23,7 +23,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -524,7 +523,6 @@ export class GovernanceDecisionService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly decisions = new Map<string, GovernanceDecision>();
   private workflowEngine: any;
-  private aguiSystem: any;
   private factSystem: any;
   private knowledgeManager: any;
   private initialized = false;
@@ -749,7 +747,7 @@ export class GovernanceDecisionService extends TypedEventBase {
   async updateDecisionStatus(
     decisionId: string,
     status: DecisionStatus,
-    reason?: string
+    _reason?: string
   ): Promise<void> {
     const decision = this.decisions.get(decisionId);
     if (!decision) {
@@ -762,13 +760,13 @@ export class GovernanceDecisionService extends TypedEventBase {
       auditTrail: [
         ...decision.auditTrail,
         {
-          id: `audit-${Date.now()}`,`
+          id: `audit-$Date.now()`,`
           timestamp: new Date(),
           actor:'system', // Would be actual user in practice'
           action: 'status_updated',
           target: 'decision',
-          previousState: { status: decision.status },
-          newState: { status },
+          previousState: status: decision.status ,
+          newState: status ,
           reason,
         },
       ],
@@ -776,7 +774,7 @@ export class GovernanceDecisionService extends TypedEventBase {
 
     this.decisions.set(decisionId, updatedDecision);
 
-    this.factSystem.updateFact(decisionId, {
+    this.factSystem.updateFact(_decisionId, {
       status,
       lastUpdated: new Date().toISOString(),
     });

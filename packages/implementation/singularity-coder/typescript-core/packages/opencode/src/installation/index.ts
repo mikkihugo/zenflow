@@ -1,8 +1,8 @@
-import path from "path"
-import { $ } from "bun"
+import path from "node:path"
 import { z } from "@claude-zen/foundation"
-import { NamedError } from "../util/error"
+import { $ } from "bun"
 import { Bus } from "../bus"
+import { NamedError } from "../util/error"
 import { Log } from "../util/log"
 
 declare global {
@@ -10,7 +10,7 @@ declare global {
 }
 
 export namespace Installation {
-  const log = Log.create({ service: "installation" })
+  const _log = Log.create({ service: "installation" })
 
   export type Method = Awaited<ReturnType<typeof method>>
 
@@ -101,7 +101,7 @@ export namespace Installation {
   )
 
   export async function upgrade(method: Method, target: string) {
-    const cmd = (() => {
+    const _cmd = (() => {
       switch (method) {
         case "curl":
           return $`curl -fsSL https://opencode.ai/install | bash`.env({`

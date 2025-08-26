@@ -4,4 +4,4 @@
  * Professional DI container with event support, auto-discovery, and health monitoring.
  */
 
-export * from './container.service';
+export * from "./container.service";

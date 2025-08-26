@@ -60,12 +60,10 @@ export interface MonitoringMetrics {
  */
 // @injectable - Temporarily removed due to constructor type incompatibility
 export class RetrainingMonitor {
-  private intervalId: NodeJS.Timeout | null = null;
-  private dbAccess: any = null; // DatabaseAccess via infrastructure facade
   private isMonitoring = false;
   private logger: Logger;
 
-  constructor(private config: RetrainingConfig) {
+  constructor(_config: RetrainingConfig) {
     this.logger = getLogger('retraining-monitor');'
     this.logger.info(
       'RetrainingMonitor initialized with foundation infrastructure''
@@ -91,7 +89,7 @@ export class RetrainingMonitor {
         );
         return;
       }
-    } catch (error) {
+    } catch (_error) {
       this.logger.info(
         'Operations facade not available, retraining monitor will not start''
       );
@@ -204,7 +202,7 @@ export class RetrainingMonitor {
         currentMetrics.coordinationSuccessRate||0;
 
       this.logger.debug(
-        `Current coordination success rate: ${coordinationSuccessRate} (threshold: ${config.minCoordinationSuccessRateThreshold})``
+        `Current coordination success rate: $coordinationSuccessRate(_threshold: ${config.minCoordinationSuccessRateThreshold})``
       );
 
       if (
@@ -222,7 +220,7 @@ export class RetrainingMonitor {
         };
 
         await this.executeRetrainingWorkflow(trigger);
-      } else {
+      } else 
         this.logger.debug(
           `Coordination success rate (${coordinationSuccessRate}) is healthy``
         );
@@ -253,14 +251,13 @@ export class RetrainingMonitor {
           `retraining:trigger:${trigger.timestamp.getTime()}`,`
           JSON.stringify(trigger)
         );
-      }
 
       // Use LLMProvider for retraining strategy generation (no file tools needed)
-      const retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
+      const _retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
 
-Trigger Reason: ${trigger.reason}
-Current Metrics: ${JSON.stringify(trigger.metrics, null, 2)}
-Strategy Type: ${trigger.strategy}
+Trigger Reason: $trigger.reason
+Current Metrics: $JSON.stringify(trigger.metrics, null, 2)
+Strategy Type: $trigger.strategy
 
 Please provide:
 1. Specific retraining approach (adjust learning rates, add training data, modify architecture)
@@ -322,7 +319,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('brain');'
         await kv.set(
-          `retraining:result:${trigger.timestamp.getTime()}`,`
+          `retraining:result:$trigger.timestamp.getTime()`,`
           JSON.stringify(result)
         );
       }
@@ -349,9 +346,9 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
 
       // Store failed result
       if (this.dbAccess) {
-        const kv = await this.dbAccess.getKV('brain');'
+        const _kv = await this.dbAccess.getKV('brain');'
         await kv.set(
-          `retraining:result:${trigger.timestamp.getTime()}`,`
+          `retraining:result:$trigger.timestamp.getTime()`,`
           JSON.stringify(result)
         );
       }
@@ -420,7 +417,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
     try {
       const today = new Date().toISOString().split('T')[0];'
       const kv = await this.dbAccess.getKV('brain');'
-      const attemptsData = await kv.get(`retraining:attempts:${today}`);`
+      const _attemptsData = await kv.get(`retraining:attempts:${today}`);`
 
       if (!attemptsData) return false;
 

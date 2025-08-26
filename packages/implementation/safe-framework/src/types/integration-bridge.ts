@@ -23,16 +23,12 @@
  */
 
 import type {
-  Feature,
-  PIObjective,
-  ProgramIncrement,
-  ArchitecturalDriver,
-} from '../types';
-import type {
-  SPARCProject,
   SPARCPhase,
-  ProjectSpecification,
+  SPARCProject,
 } from '@claude-zen/sparc';
+import type {
+  Feature,
+} from '../types';
 // Define AgentType locally as it's not exported from teamwork package'
 export type AgentType =|'researcher|coder|analyst|coordinator|specialist;
 

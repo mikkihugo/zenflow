@@ -12,19 +12,14 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, addWeeks, addMonths } = dateFns;
+
 import {
-  groupBy,
-  map,
-  filter,
+  meanBy,
   orderBy,
   sumBy,
-  maxBy,
-  minBy,
-  meanBy,
-  uniqBy,
-  sortBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -758,7 +753,7 @@ export class FlowOptimizationService {
    */
   scoreRecommendation(
     recommendation: FlowOptimizationRecommendation,
-    config: FlowOptimizationConfig
+    _config: FlowOptimizationConfig
   ): number {
     let score = 0;
 
@@ -838,7 +833,7 @@ export class FlowOptimizationService {
 
   private async trainOptimizationModel(
     aiConfig: AIModelConfig,
-    trainingData: any
+    _trainingData: any
   ): Promise<any> {
     const model = this.aiModels.get(aiConfig.modelType);
     if (!model) {
@@ -869,27 +864,25 @@ export class FlowOptimizationService {
     // Generate process optimization recommendations
     if (config.optimizationScope.focusAreas.includes(FocusArea.CYCLE_TIME)) {
       recommendations.push({
-        recommendationId: `rec-${generateNanoId(8)}`,`
+        recommendationId: `rec-$generateNanoId(8)`,`
         title:'Optimize stage handoffs',
         description:
           'Reduce wait time between stages through automated notifications and parallel processing',
         category: RecommendationCategory.PROCESS_OPTIMIZATION,
         priority: RecommendationPriority.HIGH,
         stage: 'cross-stage',
-        expectedImpact: {
+        expectedImpact: 
           cycleTimeReduction: 25,
           throughputIncrease: 15,
           qualityImprovement: 5,
           costReduction: 10,
           timeToRealize: 30,
-          confidence: 85,
-        },
-        implementation: {
+          confidence: 85,,
+        implementation: 
           effort: ImplementationEffort.MEDIUM,
-          timeline: {
+          timeline: 
             estimatedDuration: 45,
             phases: [
-              {
                 phaseId: `phase-${generateNanoId(6)}`,`
                 name: 'Analysis and Design',
                 duration: 15,
@@ -916,18 +909,16 @@ export class FlowOptimizationService {
         },
         risks: [
           {
-            riskId: `risk-${generateNanoId(6)}`,`
+            riskId: `risk-$generateNanoId(6)`,`
             description: 'Resistance to process changes',
             category: RiskCategory.ORGANIZATIONAL,
             probability: RiskProbability.MEDIUM,
             impact: RiskImpact.MODERATE,
             mitigation: ['Change management', 'Training', 'Communication'],
-            owner: 'Change Manager',
-          },
+            owner: 'Change Manager',,
         ],
         dependencies: ['Management approval', 'Team availability'],
         successMetrics: [
-          {
             metricId: `metric-${generateNanoId(6)}`,`
             name: 'Handoff time reduction',
             description: 'Reduction in time between stage completions',
@@ -943,51 +934,45 @@ export class FlowOptimizationService {
     // Generate resource allocation recommendations
     if (config.optimizationScope.focusAreas.includes(FocusArea.THROUGHPUT)) {
       recommendations.push({
-        recommendationId: `rec-${generateNanoId(8)}`,`
+        recommendationId: `rec-$generateNanoId(8)`,`
         title: 'Dynamic resource allocation',
         description:
           'Implement intelligent resource allocation based on real-time demand',
         category: RecommendationCategory.RESOURCE_ALLOCATION,
         priority: RecommendationPriority.HIGH,
         stage: 'all-stages',
-        expectedImpact: {
+        expectedImpact: 
           cycleTimeReduction: 15,
           throughputIncrease: 30,
           qualityImprovement: 10,
           costReduction: 5,
           timeToRealize: 60,
-          confidence: 78,
-        },
-        implementation: {
+          confidence: 78,,
+        implementation: 
           effort: ImplementationEffort.HIGH,
-          timeline: {
+          timeline: 
             estimatedDuration: 90,
             phases: [],
             milestones: [],
-            criticalPath: [],
-          },
+            criticalPath: [],,
           resources: [],
           prerequisites: [],
-          steps: [],
-        },
+          steps: [],,
         risks: [],
         dependencies: [],
-        successMetrics: [],
-      });
-    }
+        successMetrics: [],);
 
     return orderBy(
       recommendations,
       [(rec) => this.scoreRecommendation(rec, config)],
       ['desc']'
     );
-  }
 
   private async generateAlternativeStrategies(
     aiModel: any,
     config: FlowOptimizationConfig,
     recommendations: FlowOptimizationRecommendation[]
-  ): Promise<OptimizationStrategy[]> {
+  ): Promise<OptimizationStrategy[]> 
     return [
       {
         strategyId: `strategy-${generateNanoId(8)}`,`
@@ -999,12 +984,11 @@ export class FlowOptimizationService {
         recommendations: recommendations.slice(0, 3),
       },
     ];
-  }
 
   private async createImplementationRoadmap(
     recommendations: FlowOptimizationRecommendation[],
     config: FlowOptimizationConfig
-  ): Promise<ImplementationRoadmap> {
+  ): Promise<ImplementationRoadmap> 
     return {
       roadmapId: `roadmap-${generateNanoId(8)}`,`
       totalDuration: 180,
@@ -1022,13 +1006,12 @@ export class FlowOptimizationService {
       criticalPath: [],
       riskMitigation: [],
     };
-  }
 
   private async predictExpectedOutcomes(
     aiModel: any,
     recommendations: FlowOptimizationRecommendation[],
     config: FlowOptimizationConfig
-  ): Promise<ExpectedOutcome[]> {
+  ): Promise<ExpectedOutcome[]> 
     return [
       {
         outcomeId: `outcome-${generateNanoId(8)}`,`
@@ -1048,7 +1031,6 @@ export class FlowOptimizationService {
         ],
       },
     ];
-  }
 
   private async assessOptimizationRisks(
     recommendations: FlowOptimizationRecommendation[],
@@ -1072,12 +1054,11 @@ export class FlowOptimizationService {
 
   private calculateOverallConfidence(
     recommendations: FlowOptimizationRecommendation[]
-  ): number {
+  ): number 
     if (recommendations.length === 0) return 0;
     return meanBy(recommendations, (r) => r.expectedImpact.confidence);
-  }
 
-  private mapPriorityToScore(priority: RecommendationPriority): number {
+  private mapPriorityToScore(priority: RecommendationPriority): number 
     switch (priority) {
       case RecommendationPriority.CRITICAL:
         return 100;
@@ -1090,9 +1071,8 @@ export class FlowOptimizationService {
       default:
         return 50;
     }
-  }
 
-  private mapEffortToScore(effort: ImplementationEffort): number {
+  private mapEffortToScore(effort: ImplementationEffort): number 
     switch (effort) {
       case ImplementationEffort.LOW:
         return 20;
@@ -1105,7 +1085,6 @@ export class FlowOptimizationService {
       default:
         return 50;
     }
-  }
 
   private calculateRiskScore(risks: Risk[]): number {
     if (risks.length === 0) return 0;
@@ -1119,7 +1098,7 @@ export class FlowOptimizationService {
     return Math.min(100, totalRiskScore / risks.length);
   }
 
-  private mapProbabilityToScore(probability: RiskProbability): number {
+  private mapProbabilityToScore(probability: RiskProbability): number 
     switch (probability) {
       case RiskProbability.VERY_LOW:
         return 10;
@@ -1134,9 +1113,8 @@ export class FlowOptimizationService {
       default:
         return 50;
     }
-  }
 
-  private mapImpactToScore(impact: RiskImpact): number {
+  private mapImpactToScore(impact: RiskImpact): number 
     switch (impact) {
       case RiskImpact.NEGLIGIBLE:
         return 10;
@@ -1151,7 +1129,6 @@ export class FlowOptimizationService {
       default:
         return 50;
     }
-  }
 }
 
 // Supporting interfaces

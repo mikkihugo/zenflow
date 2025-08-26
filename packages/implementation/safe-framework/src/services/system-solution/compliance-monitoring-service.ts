@@ -27,7 +27,6 @@ export type {
 
 import type {
   ComplianceRequirement,
-  ControlRequirement,
   SystemDesign,
 } from '../../managers/system-solution-architecture-manager';
 
@@ -223,13 +222,10 @@ export class ComplianceMonitoringService {
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent compliance analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -260,10 +256,9 @@ export class ComplianceMonitoringService {
 
       // Lazy load @claude-zen/workflows for compliance workflow orchestration
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 8,
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Start continuous monitoring if enabled
@@ -293,7 +288,7 @@ export class ComplianceMonitoringService {
   ): Promise<ComplianceValidationResult> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('validate_compliance');'
+    const _timer = this.performanceTracker.startTimer('validate_compliance');'
 
     try {
       this.logger.info('Validating compliance with fact-based reasoning', {'
@@ -374,9 +369,8 @@ export class ComplianceMonitoringService {
 
       this.performanceTracker.endTimer('validate_compliance');'
       this.telemetryManager.recordCounter('compliance_validations', 1);'
-      this.telemetryManager.recordGauge('compliance_score', overallCompliance, {'
-        systemDesignId: systemDesign.id,
-      });
+      this.telemetryManager.recordGauge('compliance_score', overallCompliance, '
+        systemDesignId: systemDesign.id,);
 
       this.logger.info('Compliance validation completed', {'
         systemDesignId: systemDesign.id,
@@ -399,7 +393,7 @@ export class ComplianceMonitoringService {
   async getComplianceDashboard(): Promise<ComplianceDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'generate_compliance_dashboard');'
 
     try {
@@ -432,10 +426,9 @@ export class ComplianceMonitoringService {
 
       this.performanceTracker.endTimer('generate_compliance_dashboard');'
 
-      this.logger.info('Compliance dashboard generated', {'
+      this.logger.info('Compliance dashboard generated', '
         overallCompliance: dashboard.overallComplianceRate,
-        criticalViolations: dashboard.criticalViolations.length,
-      });
+        criticalViolations: dashboard.criticalViolations.length,);
 
       return dashboard;
     } catch (error) {
@@ -579,7 +572,7 @@ export class ComplianceMonitoringService {
     analysis: any
   ): 'critical|high|medium|low' {'
     // AI-enhanced severity assessment
-    if (analysis.severityScores && analysis.severityScores[violation.id]) {
+    if (analysis.severityScores?.[violation.id]) {
       const score = analysis.severityScores[violation.id];
       if (score >= 9) return 'critical;
       if (score >= 7) return 'high;
@@ -601,8 +594,7 @@ export class ComplianceMonitoringService {
   ): 'critical|high|medium|low' {'
     // AI-enhanced business risk assessment
     if (
-      analysis.businessRiskScores &&
-      analysis.businessRiskScores[violation.id]
+      analysis.businessRiskScores?.[violation.id]
     ) {
       const score = analysis.businessRiskScores[violation.id];
       if (score >= 9) return 'critical;

@@ -6,25 +6,25 @@
 
 // Simple fallback implementations
 export function createTaskApprovalSystem() {
-  return {
-    approveTask: async () => ({ approved: true }),
-    requestApproval: async () => ({ id: 'fallback' }),
-    getStatus: () => ({ status: 'fallback' }),
-  };
+	return {
+		approveTask: async () => ({ approved: true }),
+		requestApproval: async () => ({ id: "fallback" }),
+		getStatus: () => ({ status: "fallback" }),
+	};
 }
 
 export function createAdvancedGUI() {
-  return {
-    render: () => {},
-    update: () => {},
-    handleInput: () => {},
-  };
+	return {
+		render: () => {},
+		update: () => {},
+		handleInput: () => {},
+	};
 }
 
 // Try to delegate to real implementation
 try {
-  const aguiPackage = require('@claude-zen/agui');
-  Object.assign(exports, aguiPackage);
+	const aguiPackage = require("@claude-zen/agui");
+	Object.assign(exports, aguiPackage);
 } catch {
-  // Use fallbacks above
+	// Use fallbacks above
 }

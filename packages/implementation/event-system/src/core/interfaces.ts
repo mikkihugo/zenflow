@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * @file UEL (Unified Event Layer) Core Interfaces.
  *
@@ -933,7 +933,7 @@ export class EventSubscriptionError extends EventError {
    * @param subscriptionId - D of the subscription that failed.
    * @param cause - Optional underlying error that caused the failure.
    */
-  constructor(manager: string, subscriptionId: string, cause?: Error) {
+  constructor(manager: string, _subscriptionId: string, cause?: Error) {
     super(
       `Event subscription failed for manager: ${manager}`,`
       'SUBSCRIPTION_ERROR',
@@ -959,7 +959,7 @@ export class EventEmissionError extends EventError {
 }
 
 export class EventFilterError extends EventError {
-  constructor(manager: string, filterId: string, cause?: Error) {
+  constructor(manager: string, _filterId: string, cause?: Error) {
     super(
       `Event filter error for manager: ${manager}`,`
       'FILTER_ERROR',
@@ -993,8 +993,8 @@ export class EventRetryExhaustedError extends EventError {
   constructor(
     manager: string,
     attempts: number,
-    eventId?: string,
-    cause?: Error
+    _eventId?: string,
+    _cause?: Error
   ) {
     super(
       `Event retry exhausted (${attempts} attempts) for manager: ${manager}`,`

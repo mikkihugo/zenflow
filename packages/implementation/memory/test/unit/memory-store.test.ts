@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SessionMemoryStore } from '../../src/memory';
 import {
-  mockLogger,
-  mockConfig,
   createMockMemoryConfig,
   createMockResult,
+  mockLogger,
 } from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
@@ -47,21 +46,20 @@ vi.mock('@claude-zen/foundation', () => ({'
 
 describe('SessionMemoryStore', () => {'
   let store: SessionMemoryStore;
-  let config: any;
+  let _config: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    config = createMockMemoryConfig();
+    _config = createMockMemoryConfig();
   });
 
   describe('Constructor', () => {'
-    it('should create store with default options', () => {'
+    it('should create store with default options', () => '
       store = new SessionMemoryStore();
       expect(store).toBeDefined();
       expect(mockLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('Initializing SessionMemoryStore')'
-      );
-    });
+      ););
 
     it('should create store with custom options', () => {'
       const options = {
@@ -87,9 +85,8 @@ describe('SessionMemoryStore', () => {'
   });
 
   describe('Store Operations', () => {'
-    beforeEach(() => {
-      store = new SessionMemoryStore();
-    });
+    beforeEach(() => 
+      store = new SessionMemoryStore(););
 
     it('should store and retrieve basic values', async () => {'
       const key = 'test-key';
@@ -122,11 +119,11 @@ describe('SessionMemoryStore', () => {'
 
     it('should handle null and undefined values', async () => {'
       await store.store('null-key', null);'
-      const nullResult = await store.retrieve('null-key');'
+      const _nullResult = await store.retrieve('null-key');'
       expect(nullResult._unsafeUnwrap()).toBe(null);
 
       await store.store('undefined-key', undefined);'
-      const undefinedResult = await store.retrieve('undefined-key');'
+      const _undefinedResult = await store.retrieve('undefined-key');'
       expect(undefinedResult._unsafeUnwrap()).toBe(undefined);
     });
 
@@ -151,17 +148,16 @@ describe('SessionMemoryStore', () => {'
   });
 
   describe('Delete Operations', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       store = new SessionMemoryStore();
-      await store.store('test-key', 'test-value');'
-    });
+      await store.store('test-key', 'test-value');');
 
     it('should delete existing keys', async () => {'
       const deleteResult = await store.delete('test-key');'
       expect(deleteResult.isOk()).toBe(true);
       expect(deleteResult._unsafeUnwrap()).toBe(true);
 
-      const retrieveResult = await store.retrieve('test-key');'
+      const _retrieveResult = await store.retrieve('test-key');'
       expect(retrieveResult._unsafeUnwrap()).toBe(null);
     });
 
@@ -173,9 +169,8 @@ describe('SessionMemoryStore', () => {'
   });
 
   describe('Batch Operations', () => {'
-    beforeEach(() => {
-      store = new SessionMemoryStore();
-    });
+    beforeEach(() => 
+      store = new SessionMemoryStore(););
 
     it('should handle batch store operations', async () => {'
       const operations = [
@@ -225,17 +220,16 @@ describe('SessionMemoryStore', () => {'
   });
 
   describe('Clear Operations', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       store = new SessionMemoryStore();
       await store.store('key1', 'value1');'
-      await store.store('key2', 'value2');'
-    });
+      await store.store('key2', 'value2');');
 
     it('should clear all stored data', async () => {'
       const clearResult = await store.clear();
       expect(clearResult.isOk()).toBe(true);
 
-      const retrieve1 = await store.retrieve('key1');'
+      const _retrieve1 = await store.retrieve('key1');'
       const retrieve2 = await store.retrieve('key2');'
 
       expect(retrieve1._unsafeUnwrap()).toBe(null);
@@ -244,9 +238,8 @@ describe('SessionMemoryStore', () => {'
   });
 
   describe('Statistics and Health', () => {'
-    beforeEach(() => {
-      store = new SessionMemoryStore();
-    });
+    beforeEach(() => 
+      store = new SessionMemoryStore(););
 
     it('should provide accurate statistics', async () => {'
       await store.store('stats1', 'value1');'
@@ -268,18 +261,17 @@ describe('SessionMemoryStore', () => {'
   });
 
   describe('Error Handling', () => {'
-    beforeEach(() => {
-      store = new SessionMemoryStore();
-    });
+    beforeEach(() => 
+      store = new SessionMemoryStore(););
 
     it('should handle invalid key types gracefully', async () => {'
       // Test with empty string
-      const result1 = await store.store('', 'value');'
+      const _result1 = await store.store('', 'value');'
       expect(result1.isOk()).toBe(true);
 
       // Test with very long key
       const longKey = 'a'.repeat(10000);'
-      const result2 = await store.store(longKey, 'value');'
+      const _result2 = await store.store(longKey, 'value');'
       expect(result2.isOk()).toBe(true);
     });
 
@@ -287,7 +279,7 @@ describe('SessionMemoryStore', () => {'
       const circularObj: any = { name: 'test' };'
       circularObj.self = circularObj;
 
-      const result = await store.store('circular', circularObj);'
+      const _result = await store.store('circular', circularObj);'
       // Should handle serialization gracefully
       expect(result.isOk()||result.isErr()).toBe(true);
     });
@@ -295,12 +287,12 @@ describe('SessionMemoryStore', () => {'
 
   describe('TTL (Time To Live)', () => {'
     it('should respect TTL settings', async () => {'
-      store = new SessionMemoryStore({ ttl: 100 }); // 100ms TTL
+      store = new SessionMemoryStore(ttl: 100 ); // 100ms TTL
 
       await store.store('ttl-key', 'ttl-value');'
 
       // Should exist immediately
-      let result = await store.retrieve('ttl-key');'
+      const _result = await store.retrieve('ttl-key');'
       expect(result._unsafeUnwrap()).toBe('ttl-value');'
 
       // Wait for TTL to expire (in a real implementation)
@@ -314,13 +306,13 @@ describe('SessionMemoryStore', () => {'
 
   describe('Memory Limits', () => {'
     it('should respect maximum size limits', async () => {'
-      store = new SessionMemoryStore({ maxSize: 2 });
+      store = new SessionMemoryStore(maxSize: 2 );
 
       await store.store('limit1', 'value1');'
       await store.store('limit2', 'value2');'
 
       // Third item should either replace existing or be rejected
-      const result = await store.store('limit3', 'value3');'
+      const _result = await store.store('limit3', 'value3');'
       expect(result.isOk() || result.isErr()).toBe(true);
 
       const stats = await store.getStats();

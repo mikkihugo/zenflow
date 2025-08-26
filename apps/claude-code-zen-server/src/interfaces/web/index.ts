@@ -5,11 +5,9 @@
  * with core functionality, infrastructure, and configuration.
  */
 
-// Core web functionality
-export * from "./core";
-
-// Infrastructure components
-export * from "./infrastructure";
-
 // Configuration management
 export * from "./configuration";
+// Core web functionality
+export * from "./core";
+// Infrastructure components
+export * from "./infrastructure";

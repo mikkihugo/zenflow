@@ -22,22 +22,20 @@
  */
 
 import {
-  createMachine,
   assign,
-  sendParent,
-  type ActorRefFrom,
+  createMachine,
   fromPromise,
 } from 'xstate';
-import { getLogger } from '../types';
 import type {
-  ProgramIncrement,
-  PIObjective,
   AgileReleaseTrain,
-  TeamCapacity,
-  Feature,
   Dependency,
+  Feature,
+  PIObjective,
+  ProgramIncrement,
   Risk,
+  TeamCapacity,
 } from '../types';
+import { getLogger } from '../types';
 
 // Simple configuration interface for PI Planning
 interface PIPlanningConfig {
@@ -189,9 +187,9 @@ const piPlanningActions = {
       event: Extract<PIPlanningEvent, { type:'START_PLANNING' }>;'
     }) => event.startTime,
     commitmentLevel: () => 'uncommitted' as const,
-    blockers: () => [],
-    facilitatorNotes: () => [],
-    errorMessage: () => undefined,
+    _blockers: () => [],
+    _facilitatorNotes: () => [],
+    _errorMessage: () => undefined,
   }),
 
   /**
@@ -205,7 +203,7 @@ const piPlanningActions = {
       >;
       return [...context.totalCapacity, teamEvent.capacity];
     },
-    plannedFeatures: ({ context, event }) => {
+    plannedFeatures: (context, event ) => {
       const teamEvent = event as Extract<
         PIPlanningEvent,
         { type: 'TEAM_PLANNING_COMPLETE' }'
@@ -219,16 +217,12 @@ const piPlanningActions = {
    */
   captureDay1Artifacts: assign({
     day1CompletionTime: () => new Date(),
-    dependencies: ({
-      event,
-    }: {
-      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;'
-    }) => event.dependencies,
-    risks: ({
-      event,
-    }: {
-      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;'
-    }) => event.risks,
+    dependencies: (
+      event,: 
+      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;') => event.dependencies,
+    risks: (
+      event,: 
+      event: Extract<PIPlanningEvent, { type: 'DAY1_COMPLETE' }>;') => event.risks,
   }),
 
   /**
@@ -237,9 +231,8 @@ const piPlanningActions = {
   storeObjectives: assign({
     piObjectives: ({
       event,
-    }: {
-      event: Extract<PIPlanningEvent, { type: 'DAY2_COMPLETE' }>;'
-    }) => event.objectives,
+    }: 
+      event: Extract<PIPlanningEvent, { type: 'DAY2_COMPLETE' }>;') => event.objectives,
     day2CompletionTime: () => new Date(),
   }),
 
@@ -249,9 +242,8 @@ const piPlanningActions = {
   recordConfidenceVote: assign({
     confidenceVote: ({
       event,
-    }: {
-      event: Extract<PIPlanningEvent, { type: 'CONFIDENCE_VOTE' }>;'
-    }) => event.vote,
+    }: 
+      event: Extract<PIPlanningEvent, { type: 'CONFIDENCE_VOTE' }>;') => event.vote,
   }),
 
   /**
@@ -260,9 +252,8 @@ const piPlanningActions = {
   handleAdjustments: assign({
     blockers: ({
       event,
-    }: {
-      event: Extract<PIPlanningEvent, { type: 'PLANNING_ADJUSTMENTS_NEEDED' }>;'
-    }) => event.adjustments,
+    }: 
+      event: Extract<PIPlanningEvent, { type: 'PLANNING_ADJUSTMENTS_NEEDED' }>;') => event.adjustments,
   }),
 
   /**

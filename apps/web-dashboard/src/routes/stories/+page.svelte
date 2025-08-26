@@ -1,294 +1,383 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { TabGroup, TabAnchor, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { apiClient } from '../../lib/api';
-	import { webSocketManager } from '../../lib/websocket';
+import { onDestroy, onMount } from "svelte";
+import { apiClient } from "../../lib/api";
+import { webSocketManager } from "../../lib/websocket";
 
-	// SAFe 6.0 Essential artifacts data
-	let stories: any[] = [];
-	let epics: any[] = [];
-	let features: any[] = [];
-	let teams: any[] = [];
-	let safeMetrics: any = null;
-	let selectedStory: any = null;
-	let selectedEpic: any = null;
-	let selectedFeature: any = null;
+// SAFe 6.0 Essential artifacts data
+let stories: any[] = [];
+let _epics: any[] = [];
+let _features: any[] = [];
+let _teams: any[] = [];
+let _safeMetrics: any = null;
+let _selectedStory: any = null;
+let _selectedEpic: any = null;
+let _selectedFeature: any = null;
 
-	// Filter states
-	let storyStatusFilter = '';
-	let storyTypeFilter = '';
-	let priorityFilter = '';
-	let teamFilter = '';
-	let epicFilter = '';
-	let featureFilter = '';
+// Filter states
+const storyStatusFilter = "";
+const storyTypeFilter = "";
+const priorityFilter = "";
+const teamFilter = "";
+const epicFilter = "";
+const featureFilter = "";
 
-	// Loading and error states
-	let storiesLoading = true;
-	let epicsLoading = false;
-	let featuresLoading = false;
-	let teamsLoading = false;
-	let metricsLoading = false;
-	let storiesError: string | null = null;
-	let epicsError: string | null = null;
-	let featuresError: string | null = null;
-	let teamsError: string | null = null;
-	let metricsError: string | null = null;
+// Loading and error states
+let _storiesLoading = true;
+let _epicsLoading = false;
+let _featuresLoading = false;
+let _teamsLoading = false;
+let _metricsLoading = false;
+let _storiesError: string | null = null;
+let _epicsError: string | null = null;
+let _featuresError: string | null = null;
+let _teamsError: string | null = null;
+let _metricsError: string | null = null;
 
-	// WebSocket unsubscribe functions
-	let unsubscribeStories: () => void;
-	let unsubscribeEpics: () => void;
-	let unsubscribeFeatures: () => void;
-	let unsubscribeTeams: () => void;
-	let unsubscribeMetrics: () => void;
+// WebSocket unsubscribe functions
+let unsubscribeStories: () => void;
+let unsubscribeEpics: () => void;
+let unsubscribeFeatures: () => void;
+let unsubscribeTeams: () => void;
+let unsubscribeMetrics: () => void;
 
-	// Form states for creating new SAFe artifacts
-	let newStoryForm = {
-		title: '',
-		description: '',
-		storyType: 'user_story',
-		priority: 'medium',
-		storyPoints: '',
-		businessValue: '',
-		assignedTo: '',
-		assignedTeam: '',
-		acceptanceCriteria: '',
-		tags: '',
-		dependencies: '',
-		dueDate: '',
-		featureId: '',
-		epicId: '',
-		persona: '',
-		enablerType: '',
-		swimlane: ''
+// Form states for creating new SAFe artifacts
+let newStoryForm = {
+	title: "",
+	description: "",
+	storyType: "user_story",
+	priority: "medium",
+	storyPoints: "",
+	businessValue: "",
+	assignedTo: "",
+	assignedTeam: "",
+	acceptanceCriteria: "",
+	tags: "",
+	dependencies: "",
+	dueDate: "",
+	featureId: "",
+	epicId: "",
+	persona: "",
+	enablerType: "",
+	swimlane: "",
+};
+
+const _newEpicForm = {
+	title: "",
+	description: "",
+	status: "backlog",
+	priority: "medium",
+	owner: "",
+	startDate: "",
+	endDate: "",
+	businessObjectives: "",
+	hypotheses: "",
+	mvp: "",
+	acceptanceCriteria: "",
+};
+
+// Tab state
+const _tabSet = 0;
+const _tabs = [
+	"Stories Board",
+	"Backlog",
+	"Epics",
+	"Features",
+	"Teams",
+	"Flow Metrics",
+];
+
+onMount(async () => {
+	// Subscribe to WebSocket SAFe 6.0 channels
+	setupWebSocketSubscriptions();
+
+	// Subscribe to SAFe 6.0 Essential artifact channels
+	webSocketManager.subscribe("stories");
+	webSocketManager.subscribe("epics");
+	webSocketManager.subscribe("features");
+	webSocketManager.subscribe("teams");
+	webSocketManager.subscribe("safe-metrics");
+
+	// Listen for project changes
+	const handleProjectChange = () => {
+		// WebSocket will automatically update data, just reset selections
+		_selectedStory = null;
+		_selectedEpic = null;
+		_selectedFeature = null;
 	};
 
-	let newEpicForm = {
-		title: '',
-		description: '',
-		status: 'backlog',
-		priority: 'medium',
-		owner: '',
-		startDate: '',
-		endDate: '',
-		businessObjectives: '',
-		hypotheses: '',
-		mvp: '',
-		acceptanceCriteria: ''
+	window.addEventListener(
+		"projectChanged",
+		handleProjectChange as EventListener,
+	);
+
+	return () => {
+		window.removeEventListener(
+			"projectChanged",
+			handleProjectChange as EventListener,
+		);
 	};
+});
 
-	// Tab state
-	let tabSet = 0;
-	const tabs = ['Stories Board', 'Backlog', 'Epics', 'Features', 'Teams', 'Flow Metrics'];
+onDestroy(() => {
+	// Clean up WebSocket subscriptions
+	if (unsubscribeStories) unsubscribeStories();
+	if (unsubscribeEpics) unsubscribeEpics();
+	if (unsubscribeFeatures) unsubscribeFeatures();
+	if (unsubscribeTeams) unsubscribeTeams();
+	if (unsubscribeMetrics) unsubscribeMetrics();
+});
 
-	onMount(async () => {
-		// Subscribe to WebSocket SAFe 6.0 channels
-		setupWebSocketSubscriptions();
+/**
+ * Setup WebSocket subscriptions for real-time SAFe 6.0 updates
+ */
+function setupWebSocketSubscriptions() {
+	console.log("🔌 Setting up SAFe 6.0 WebSocket subscriptions...");
 
-		// Subscribe to SAFe 6.0 Essential artifact channels
-		webSocketManager.subscribe('stories');
-		webSocketManager.subscribe('epics');
-		webSocketManager.subscribe('features');
-		webSocketManager.subscribe('teams');
-		webSocketManager.subscribe('safe-metrics');
-
-		// Listen for project changes
-		const handleProjectChange = () => {
-			// WebSocket will automatically update data, just reset selections
-			selectedStory = null;
-			selectedEpic = null;
-			selectedFeature = null;
-		};
-
-		window.addEventListener('projectChanged', handleProjectChange as EventListener);
-
-		return () => {
-			window.removeEventListener('projectChanged', handleProjectChange as EventListener);
-		};
+	// Subscribe to User Stories updates
+	unsubscribeStories = webSocketManager.stories.subscribe((storiesData) => {
+		if (storiesData) {
+			console.log(
+				"📖 Real-time User Stories data received:",
+				storiesData.length,
+			);
+			stories = storiesData;
+			_storiesLoading = false;
+			_storiesError = null;
+		}
 	});
 
-	onDestroy(() => {
-		// Clean up WebSocket subscriptions
-		if (unsubscribeStories) unsubscribeStories();
-		if (unsubscribeEpics) unsubscribeEpics();
-		if (unsubscribeFeatures) unsubscribeFeatures();
-		if (unsubscribeTeams) unsubscribeTeams();
-		if (unsubscribeMetrics) unsubscribeMetrics();
+	// Subscribe to Epics updates
+	unsubscribeEpics = webSocketManager.epics.subscribe((epicsData) => {
+		if (epicsData) {
+			console.log("🏔️ Real-time Epics data received:", epicsData.length);
+			_epics = epicsData;
+			_epicsLoading = false;
+			_epicsError = null;
+		}
 	});
 
-	/**
-	 * Setup WebSocket subscriptions for real-time SAFe 6.0 updates
-	 */
-	function setupWebSocketSubscriptions() {
-		console.log('🔌 Setting up SAFe 6.0 WebSocket subscriptions...');
+	// Subscribe to Features updates
+	unsubscribeFeatures = webSocketManager.features.subscribe((featuresData) => {
+		if (featuresData) {
+			console.log("🎯 Real-time Features data received:", featuresData.length);
+			_features = featuresData;
+			_featuresLoading = false;
+			_featuresError = null;
+		}
+	});
 
-		// Subscribe to User Stories updates
-		unsubscribeStories = webSocketManager.stories.subscribe((storiesData) => {
-			if (storiesData) {
-				console.log('📖 Real-time User Stories data received:', storiesData.length);
-				stories = storiesData;
-				storiesLoading = false;
-				storiesError = null;
-			}
-		});
+	// Subscribe to Teams (ART) updates
+	unsubscribeTeams = webSocketManager.teams.subscribe((teamsData) => {
+		if (teamsData) {
+			console.log("👥 Real-time Teams (ART) data received:", teamsData.length);
+			_teams = teamsData;
+			_teamsLoading = false;
+			_teamsError = null;
+		}
+	});
 
-		// Subscribe to Epics updates
-		unsubscribeEpics = webSocketManager.epics.subscribe((epicsData) => {
-			if (epicsData) {
-				console.log('🏔️ Real-time Epics data received:', epicsData.length);
-				epics = epicsData;
-				epicsLoading = false;
-				epicsError = null;
-			}
-		});
+	// Subscribe to SAFe metrics updates
+	unsubscribeMetrics = webSocketManager.safeMetrics.subscribe((metricsData) => {
+		if (metricsData) {
+			console.log("📊 Real-time SAFe LPM metrics data received:", metricsData);
+			_safeMetrics = metricsData;
+			_metricsLoading = false;
+			_metricsError = null;
+		}
+	});
+}
 
-		// Subscribe to Features updates
-		unsubscribeFeatures = webSocketManager.features.subscribe((featuresData) => {
-			if (featuresData) {
-				console.log('🎯 Real-time Features data received:', featuresData.length);
-				features = featuresData;
-				featuresLoading = false;
-				featuresError = null;
-			}
-		});
-
-		// Subscribe to Teams (ART) updates
-		unsubscribeTeams = webSocketManager.teams.subscribe((teamsData) => {
-			if (teamsData) {
-				console.log('👥 Real-time Teams (ART) data received:', teamsData.length);
-				teams = teamsData;
-				teamsLoading = false;
-				teamsError = null;
-			}
-		});
-
-		// Subscribe to SAFe metrics updates
-		unsubscribeMetrics = webSocketManager.safeMetrics.subscribe((metricsData) => {
-			if (metricsData) {
-				console.log('📊 Real-time SAFe LPM metrics data received:', metricsData);
-				safeMetrics = metricsData;
-				metricsLoading = false;
-				metricsError = null;
-			}
-		});
-	}
-
-	// REST API functions for filtering (until WebSocket supports parameters)
-	async function loadStories() {
-		console.log('🔄 Using REST API for User Stories filtering...');
-		try {
-			storiesLoading = true;
-			const response = await apiClient.get(`/api/v1/projects/default/safe-lpm/stories`, {
+// REST API functions for filtering (until WebSocket supports parameters)
+async function _loadStories() {
+	console.log("🔄 Using REST API for User Stories filtering...");
+	try {
+		_storiesLoading = true;
+		const response = await apiClient.get(
+			`/api/v1/projects/default/safe-lpm/stories`,
+			{
 				params: {
 					...(storyStatusFilter && { status: storyStatusFilter }),
 					...(storyTypeFilter && { storyType: storyTypeFilter }),
 					...(priorityFilter && { priority: priorityFilter }),
 					...(teamFilter && { assignedTeam: teamFilter }),
 					...(epicFilter && { epicId: epicFilter }),
-					...(featureFilter && { featureId: featureFilter })
-				}
-			});
-			stories = response.data?.data || [];
-			storiesError = null;
-			console.log('📖 Loaded User Stories via REST:', stories.length);
-		} catch (error) {
-			storiesError = error instanceof Error ? error.message : 'Failed to load User Stories';
-			console.error('❌ Failed to load User Stories:', error);
-		} finally {
-			storiesLoading = false;
-		}
+					...(featureFilter && { featureId: featureFilter }),
+				},
+			},
+		);
+		stories = response.data?.data || [];
+		_storiesError = null;
+		console.log("📖 Loaded User Stories via REST:", stories.length);
+	} catch (error) {
+		_storiesError =
+			error instanceof Error ? error.message : "Failed to load User Stories";
+		console.error("❌ Failed to load User Stories:", error);
+	} finally {
+		_storiesLoading = false;
 	}
+}
 
-	async function createStory() {
-		if (!newStoryForm.title || !newStoryForm.description) return;
+async function _createStory() {
+	if (!newStoryForm.title || !newStoryForm.description) return;
 
-		try {
-			const storyData = {
-				...newStoryForm,
-				acceptanceCriteria: newStoryForm.acceptanceCriteria.split(',').map(s => s.trim()).filter(Boolean),
-				tags: newStoryForm.tags.split(',').map(s => s.trim()).filter(Boolean),
-				dependencies: newStoryForm.dependencies.split(',').map(s => s.trim()).filter(Boolean),
-				storyPoints: newStoryForm.storyPoints ? parseInt(newStoryForm.storyPoints) : undefined,
-				businessValue: newStoryForm.businessValue ? parseInt(newStoryForm.businessValue) : undefined,
-				createdBy: 'current-user' // TODO: Get from auth context
-			};
+	try {
+		const storyData = {
+			...newStoryForm,
+			acceptanceCriteria: newStoryForm.acceptanceCriteria
+				.split(",")
+				.map((s) => s.trim())
+				.filter(Boolean),
+			tags: newStoryForm.tags
+				.split(",")
+				.map((s) => s.trim())
+				.filter(Boolean),
+			dependencies: newStoryForm.dependencies
+				.split(",")
+				.map((s) => s.trim())
+				.filter(Boolean),
+			storyPoints: newStoryForm.storyPoints
+				? parseInt(newStoryForm.storyPoints, 10)
+				: undefined,
+			businessValue: newStoryForm.businessValue
+				? parseInt(newStoryForm.businessValue, 10)
+				: undefined,
+			createdBy: "current-user", // TODO: Get from auth context
+		};
 
-			await apiClient.post(`/api/v1/projects/default/safe-lpm/stories`, storyData);
-			
-			// Reset form - WebSocket will handle data refresh automatically
-			newStoryForm = {
-				title: '', description: '', storyType: 'user_story', priority: 'medium',
-				storyPoints: '', businessValue: '', assignedTo: '', assignedTeam: '',
-				acceptanceCriteria: '', tags: '', dependencies: '', dueDate: '',
-				featureId: '', epicId: '', persona: '', enablerType: '', swimlane: ''
-			};
-			console.log('✅ Created new User Story - WebSocket will update data automatically');
-		} catch (error) {
-			console.error('❌ Failed to create User Story:', error);
-			alert('Failed to create User Story: ' + (error instanceof Error ? error.message : String(error)));
-		}
+		await apiClient.post(
+			`/api/v1/projects/default/safe-lpm/stories`,
+			storyData,
+		);
+
+		// Reset form - WebSocket will handle data refresh automatically
+		newStoryForm = {
+			title: "",
+			description: "",
+			storyType: "user_story",
+			priority: "medium",
+			storyPoints: "",
+			businessValue: "",
+			assignedTo: "",
+			assignedTeam: "",
+			acceptanceCriteria: "",
+			tags: "",
+			dependencies: "",
+			dueDate: "",
+			featureId: "",
+			epicId: "",
+			persona: "",
+			enablerType: "",
+			swimlane: "",
+		};
+		console.log(
+			"✅ Created new User Story - WebSocket will update data automatically",
+		);
+	} catch (error) {
+		console.error("❌ Failed to create User Story:", error);
+		alert(
+			`Failed to create User Story: ${error instanceof Error ? error.message : String(error)}`,
+		);
 	}
+}
 
-	async function moveStory(story: any, newStatus: string) {
-		try {
-			await apiClient.put(`/api/v1/projects/default/safe-lpm/stories/${story.id}/move`, {
+async function _moveStory(story: any, newStatus: string) {
+	try {
+		await apiClient.put(
+			`/api/v1/projects/default/safe-lpm/stories/${story.id}/move`,
+			{
 				status: newStatus,
-				reason: `Moved to ${newStatus} via dashboard`
-			});
-			console.log('✅ Moved User Story - WebSocket will update data automatically');
-		} catch (error) {
-			console.error('❌ Failed to move User Story:', error);
-			alert('Failed to move User Story: ' + (error instanceof Error ? error.message : String(error)));
-		}
+				reason: `Moved to ${newStatus} via dashboard`,
+			},
+		);
+		console.log(
+			"✅ Moved User Story - WebSocket will update data automatically",
+		);
+	} catch (error) {
+		console.error("❌ Failed to move User Story:", error);
+		alert(
+			`Failed to move User Story: ${error instanceof Error ? error.message : String(error)}`,
+		);
 	}
+}
 
-	async function refreshData() {
-		console.log('🔄 Refreshing SAFe 6.0 data via WebSocket...');
-		// WebSocket handles automatic refresh, but we can re-subscribe to get fresh data
-		webSocketManager.subscribe('stories');
-		webSocketManager.subscribe('epics');
-		webSocketManager.subscribe('features');
-		webSocketManager.subscribe('teams');
-		webSocketManager.subscribe('safe-metrics');
+async function _refreshData() {
+	console.log("🔄 Refreshing SAFe 6.0 data via WebSocket...");
+	// WebSocket handles automatic refresh, but we can re-subscribe to get fresh data
+	webSocketManager.subscribe("stories");
+	webSocketManager.subscribe("epics");
+	webSocketManager.subscribe("features");
+	webSocketManager.subscribe("teams");
+	webSocketManager.subscribe("safe-metrics");
+}
+
+function _getStatusColor(status: string): string {
+	switch (status?.toLowerCase()) {
+		case "done":
+			return "success";
+		case "ready":
+		case "in_progress":
+			return "primary";
+		case "review":
+			return "warning";
+		case "backlog":
+			return "surface";
+		default:
+			return "surface";
 	}
+}
 
-	function getStatusColor(status: string): string {
-		switch (status?.toLowerCase()) {
-			case 'done': return 'success';
-			case 'ready': 
-			case 'in_progress': return 'primary';
-			case 'review': return 'warning';
-			case 'backlog': return 'surface';
-			default: return 'surface';
-		}
+function _getPriorityColor(priority: string): string {
+	switch (priority?.toLowerCase()) {
+		case "urgent":
+			return "error";
+		case "high":
+			return "warning";
+		case "medium":
+			return "primary";
+		case "low":
+			return "secondary";
+		default:
+			return "surface";
 	}
+}
 
-	function getPriorityColor(priority: string): string {
-		switch (priority?.toLowerCase()) {
-			case 'urgent': return 'error';
-			case 'high': return 'warning';
-			case 'medium': return 'primary';
-			case 'low': return 'secondary';
-			default: return 'surface';
-		}
-	}
+function _getStoryTypeIcon(storyType: string): string {
+	return storyType === "enabler_story" ? "⚙️" : "📖";
+}
 
-	function getStoryTypeIcon(storyType: string): string {
-		return storyType === 'enabler_story' ? '⚙️' : '📖';
-	}
+function _formatDate(dateStr: string): string {
+	if (!dateStr) return "";
+	return new Date(dateStr).toLocaleDateString();
+}
 
-	function formatDate(dateStr: string): string {
-		if (!dateStr) return '';
-		return new Date(dateStr).toLocaleDateString();
-	}
-
-	// Kanban board columns based on SAFe 6.0 flow states
-	$: kanbanColumns = [
-		{ id: 'backlog', title: 'Backlog', stories: stories.filter(s => s.status === 'backlog') },
-		{ id: 'ready', title: 'Ready', stories: stories.filter(s => s.status === 'ready') },
-		{ id: 'in_progress', title: 'In Progress', stories: stories.filter(s => s.status === 'in_progress') },
-		{ id: 'review', title: 'Review', stories: stories.filter(s => s.status === 'review') },
-		{ id: 'done', title: 'Done', stories: stories.filter(s => s.status === 'done') }
-	];
+// Kanban board columns based on SAFe 6.0 flow states
+$: kanbanColumns = [
+	{
+		id: "backlog",
+		title: "Backlog",
+		stories: stories.filter((s) => s.status === "backlog"),
+	},
+	{
+		id: "ready",
+		title: "Ready",
+		stories: stories.filter((s) => s.status === "ready"),
+	},
+	{
+		id: "in_progress",
+		title: "In Progress",
+		stories: stories.filter((s) => s.status === "in_progress"),
+	},
+	{
+		id: "review",
+		title: "Review",
+		stories: stories.filter((s) => s.status === "review"),
+	},
+	{
+		id: "done",
+		title: "Done",
+		stories: stories.filter((s) => s.status === "done"),
+	},
+];
 </script>
 
 <svelte:head>

@@ -1,18 +1,18 @@
 {
-  "extends": "../../../tsconfig.base.json",
-  "compilerOptions": {
-    "verbatimModuleSyntax": false,
-    "allowImportingTsExtensions": false,
-    "noEmit": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "types": ["node"]
-  },
-  "exclude": [
-    "dist/**/*",
-    "node_modules/**/*",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "src/__tests__/**/*"
-  ]
+	"extends": "../../../tsconfig.base.json",
+	"compilerOptions": {
+		"verbatimModuleSyntax": false,
+		"allowImportingTsExtensions": false,
+		"noEmit": false,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"types": ["node"]
+	},
+	"exclude": [
+		"dist/**/*",
+		"node_modules/**/*",
+		"**/*.test.ts",
+		"**/*.spec.ts",
+		"src/__tests__/**/*"
+	]
 }

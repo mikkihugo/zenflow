@@ -5,17 +5,16 @@
  * route handlers, data services, and core business logic.
  */
 
-// Route handlers
-export { SystemCapabilityRoutes } from "./routes/system.routes";
+// Type exports
+export type {
+	CommandResult,
+	DocumentData,
+	SwarmData,
+	SystemStatusData,
+	TaskData,
+} from "./handlers/data.handler";
 
 // Data handlers
 export { WebDataService } from "./handlers/data.handler";
-
-// Type exports
-export type {
-	SystemStatusData,
-	SwarmData,
-	TaskData,
-	DocumentData,
-	CommandResult,
-} from "./handlers/data.handler";
+// Route handlers
+export { SystemCapabilityRoutes } from "./routes/system.routes";

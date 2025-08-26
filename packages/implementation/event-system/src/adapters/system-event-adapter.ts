@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+import type { EventEmitter } from '@claude-zen/foundation';
 
 /**
  * @file UEL System Event Adapter.
@@ -15,32 +15,24 @@ import { EventEmitter } from '@claude-zen/foundation';
 
 import type { Logger } from '@claude-zen/foundation';
 // Import logger (using relative path)
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, } from '@claude-zen/foundation';
 // Import types (will be set as any for now to fix type resolution issues)
 // import type { ApplicationCoordinator } from '../core/application-coordinator;
 // import type { CoreSystem } from '../core/core-system;
 import type {
-  EventBatch,
-  EventEmissionOptions,
   EventFilter,
   EventListener,
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
-  EventQueryOptions,
   EventSubscription,
-  EventTransform,
   EventManager,
   SystemEvent,
 } from '../core/interfaces;
 import {
-  EventEmissionError,
   EventManagerTypes,
-  EventTimeoutError,
 } from '../core/interfaces;
-import type { SystemLifecycleEvent } from '../types;
-import { EventPriorityMap } from '../types;
+import type { SystemLifecycleEvent } from '../types;'../types;
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig.
@@ -195,31 +187,11 @@ export class SystemEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new EventEmitter();
   private logger: Logger;
-  private startTime?: Date;
-  private eventCount = 0;
-  private successCount = 0;
-  private errorCount = 0;
-  private totalLatency = 0;
-
-  // System component integration
-  private wrappedComponents = new Map<string, WrappedSystemComponent>();
   private coreSystem?: unknown; // CoreSystem type not available
   private applicationCoordinator?: unknown; // ApplicationCoordinator type not available
-
-  // Event correlation and tracking
-  private eventCorrelations = new Map<string, EventCorrelation>();
-  private systemHealth = new Map<string, SystemHealthEntry>();
-  private metrics: SystemEventMetrics[] = [];
   private subscriptions = new Map<string, EventSubscription>();
   private filters = new Map<string, EventFilter>();
-  private transforms = new Map<string, EventTransform>();
-
-  // Event processing queues.
-  private eventQueue: SystemEvent[] = [];
-  private processingEvents = false;
-  private eventHistory: SystemEvent[] = [];
 
   constructor(config: SystemEventAdapterConfig) {
     this.name = config?.name;
@@ -334,7 +306,7 @@ export class SystemEventAdapter implements EventManager {
       this.logger.info(
         `System event adapter started successfully: $this.name``
       );
-    } catch (error) {
+    } catch (_error) {
       this.logger.error(
         `Failed to start system event adapter ${this.name}:`,`
         error
@@ -1405,21 +1377,17 @@ export class SystemEventAdapter implements EventManager {
         await this.performSystemHealthCheck();
 
         // Emit health status events
-        for (const [component, health] of this.systemHealth.entries()) {
+        for (const [_component, health] of this.systemHealth.entries()) {
           if (health.status !=='healthy') {'
-            await this.emitSystemLifecycleEvent({
-              source: component,
+            await this.emitSystemLifecycleEvent(
+              source: _component,
               type: 'system:health',
               operation: 'status',
               status: health.status === 'unhealthy' ? 'error' : 'warning',
-              payload: {},
-              details: {
-                component,
-                healthScore: (health.metadata as any)?.['healthScore'] as|number|undefined,
-                // errorRate: health.errorRate, // Not part of SystemLifecycleEvent details interface
-                // consecutiveFailures: health.consecutiveFailures, // Not part of SystemLifecycleEvent details interface
-              },
-            });
+              payload: ,
+              details: 
+                _component,
+                healthScore: (health.metadata as any)?.['healthScore'] as|number|undefined,,);
           }
         }
       } catch (error) {
@@ -1432,7 +1400,7 @@ export class SystemEventAdapter implements EventManager {
    * Start correlation cleanup to prevent memory leaks.
    */
   private startCorrelationCleanup(): void {
-    const cleanupInterval = 60000; // 1 minute
+    const _cleanupInterval = 60000; // 1 minute
     const correlationTTL = this.config.correlation?.correlationTTL||300000; // 5 minutes
 
     setInterval(() => {
@@ -1805,7 +1773,7 @@ export class SystemEventAdapter implements EventManager {
  * @param config
  * @example
  */
-export function createSystemEventAdapter(
+export function _createSystemEventAdapter(
   config: SystemEventAdapterConfig
 ): SystemEventAdapter {
   return new SystemEventAdapter(config);
@@ -1818,7 +1786,7 @@ export function createSystemEventAdapter(
  * @param overrides
  * @example
  */
-export function createDefaultSystemEventAdapterConfig(
+export function _createDefaultSystemEventAdapterConfig(
   name: string,
   overrides?: Partial<SystemEventAdapterConfig>
 ): SystemEventAdapterConfig {
@@ -1910,7 +1878,7 @@ export function createDefaultSystemEventAdapterConfig(
 /**
  * Helper functions for system event operations.
  */
-export const SystemEventHelpers = {
+export const _SystemEventHelpers = {
   /**
    * Create system startup event.
    *
@@ -1918,8 +1886,8 @@ export const SystemEventHelpers = {
    * @param details
    */
   createStartupEvent(
-    component: string,
-    details?: {
+    _component: string,
+    _details?: {
       component?: string;
       version?: string;
       duration?: number;
@@ -1945,9 +1913,9 @@ export const SystemEventHelpers = {
    * @param component
    * @param details
    */
-  createShutdownEvent(
-    component: string,
-    details?: {
+  _createShutdownEvent(
+    _component: string,
+    _details?: {
       component?: string;
       version?: string;
       duration?: number;

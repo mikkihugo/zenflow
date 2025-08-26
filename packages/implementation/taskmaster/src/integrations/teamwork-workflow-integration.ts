@@ -24,15 +24,12 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type {
-  WorkflowEngine,
-  WorkflowDefinition,
-  WorkflowContext,
-} from '@claude-zen/workflows';
-import type {
   ConversationOrchestrator,
-  ConversationOutcome,
 } from '@claude-zen/teamwork';
-import type { ApprovalWorkflow, ApprovalGate } from '../core/approval-gates';
+import type {
+  WorkflowDefinition,
+  WorkflowEngine,
+} from '@claude-zen/workflows';
 
 const logger = getLogger('TeamworkWorkflowIntegration');'
 
@@ -79,7 +76,6 @@ export class TeamworkWorkflowIntegration {
   private conversationOrchestrator: ConversationOrchestrator|null = null;
   private activeIntegrations: Map<string, ConversationTriggeredWorkflow> =
     new Map();
-  private conversationWorkflowMappings: Map<string, string[]> = new Map(); // conversation -> workflows
 
   constructor() {
     this.setupEventListeners();

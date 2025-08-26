@@ -64,7 +64,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
       results.safeFramework = { status: 'success', framework: !!safeFramework };'
       logger.info('✅ Safe framework integration working');'
     } catch (error) {
-      const errorMsg = `Safe framework integration failed: ${error}`;`
+      const errorMsg = `Safe framework integration failed: $error`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
       results.safeFramework = { status: 'failed', error: String(error) };'
@@ -94,7 +94,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
           coordination: !!coordination,
         };
         logger.info('✅ Brain SAFe 6.0 coordination working');'
-      } else {
+      } else 
         results.brainCoordination = {
           status: 'partial',
           coordinator: !!coordinator,
@@ -104,7 +104,6 @@ async function testSafe6CrossPackageIntegration(): Promise<{
         logger.warn(
           '⚠️ Brain coordinator available but SAFe 6.0 method not found''
         );
-      }
     } catch (error) {
       const errorMsg = `Brain coordination failed: ${error}`;`
       errors.push(errorMsg);
@@ -195,7 +194,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
       };
       logger.info('✅ SPARC SAFe 6.0 Development Manager working directly');'
     } catch (error) {
-      const errorMsg = `SPARC direct test failed: ${error}`;`
+      const errorMsg = `SPARC direct test failed: $error`;`
       errors.push(errorMsg);
       logger.error(errorMsg);
       results.sparcDirect = { status: 'failed', error: String(error) };'
@@ -233,7 +232,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
     const success = errors.length === 0 && successCount === totalTests;
 
     logger.info(
-      `🎯 Integration test complete: ${successCount}/${totalTests} tests passed``
+      `🎯 Integration test complete: $successCount/${totalTests} tests passed``
     );
 
     if (success) {
@@ -246,7 +245,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
 
     return { success, results, errors };
   } catch (error) {
-    const errorMsg = `Integration test failed: ${error}`;`
+    const errorMsg = `Integration test failed: $error`;`
     errors.push(errorMsg);
     logger.error(errorMsg);
 
@@ -271,7 +270,7 @@ if (require.main === module) {
 
       if (result.errors.length > 0) {
         console.log('\n❌ Errors:');'
-        result.errors.forEach((error) => console.log(`  - ${error}`));`
+        result.errors.forEach((error) => console.log(`  - $error`));`
       }
 
       process.exit(result.success ? 0 : 1);

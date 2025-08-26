@@ -1,9 +1,9 @@
+import path from "node:path"
+import { z } from "@claude-zen/foundation"
 import { App } from "../app/app"
 import { Log } from "../util/log"
 import { LSPClient } from "./client"
-import path from "path"
 import { LSPServer } from "./server"
-import { z } from "@claude-zen/foundation"
 
 export namespace LSP {
   const log = Log.create({ service: "lsp" })

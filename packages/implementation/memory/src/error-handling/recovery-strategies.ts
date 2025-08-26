@@ -8,7 +8,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { BackendInterface } from '../core/memory-system';
 
-import { type MemoryError, MemoryErrorCode } from './memory-errors';
+import type { MemoryError, MemoryErrorCode } from './memory-errors';
 
 export interface RecoveryStrategy {
   name: string;
@@ -52,11 +52,6 @@ export interface RecoveryResult {
  */
 export class RecoveryStrategyManager extends TypedEventBase {
   private strategies = new Map<string, RecoveryStrategy>();
-  private recoveryHistory: Array<{
-    timestamp: number;
-    error: MemoryError;
-    result: RecoveryResult;
-  }> = [];
 
   constructor() {
     super();
@@ -168,11 +163,11 @@ export class RecoveryStrategyManager extends TypedEventBase {
    */
   private async executeWithTimeout(
     strategy: RecoveryStrategy,
-    error: MemoryError,
-    context: RecoveryContext
+    _error: MemoryError,
+    _context: RecoveryContext
   ): Promise<RecoveryResult> {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
+    return new Promise((_resolve, reject) => {
+      const _timeout = setTimeout(() => {
         reject(
           new Error(
             `Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms``

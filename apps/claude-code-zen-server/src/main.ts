@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * @file Claude Code Zen - Minimal Entry Point
  *
@@ -6,25 +7,24 @@
  * The workspace functionality is now handled by the standalone workspace server.
  */
 
+import { getSafeFramework, getWorkflowEngine } from "@claude-zen/enterprise";
 // ✅ FOUNDATION - Direct import (contains primitives and centralized utilities)
 import {
-	getLogger,
+	createCircuitBreaker,
 	createContainer,
 	getConfig,
+	getLogger,
+	getProjectManager,
+	getStorage,
 	initializeTelemetry,
+	recordMetric,
 	withRetry,
 	withTrace,
-	getProjectManager,
-	createCircuitBreaker,
-	recordMetric,
-	getStorage,
 } from "@claude-zen/foundation";
-
+import { getDatabaseSystem, getEventSystem } from "@claude-zen/infrastructure";
 // ✅ STRATEGIC FACADES - Tier 1 Public API
 import { getBrainSystem } from "@claude-zen/intelligence";
-import { getSafeFramework, getWorkflowEngine } from "@claude-zen/enterprise";
 import { getPerformanceTracker } from "@claude-zen/operations";
-import { getDatabaseSystem, getEventSystem } from "@claude-zen/infrastructure";
 
 // Local coordination remains as is
 import { SafetyInterventionProtocols } from "./coordination/safety-intervention-protocols";
@@ -120,9 +120,10 @@ const envPort = process.env.PORT || process.env.ZEN_SERVER_PORT;
 const defaultPort = portArg
 	? parseInt(
 			portArg.split("=")[1] || process.argv[process.argv.indexOf(portArg) + 1],
+			10,
 		)
 	: envPort
-		? parseInt(envPort)
+		? parseInt(envPort, 10)
 		: 3000;
 
 const port = defaultPort;

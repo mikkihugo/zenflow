@@ -262,20 +262,17 @@
  * @since 1.0.0
  */
 
-// ✅ MAIN ENTRY POINT - Use this for everything!
-export { AISafetyOrchestrator as SafetyGuard } from './src/safety-orchestrator';
-export { AISafetyOrchestrator as default } from './src/safety-orchestrator';
-export { AISafetyOrchestrator } from './src/safety-orchestrator'; // Direct export for existing imports'
-export { AIDeceptionDetector } from './src/ai-deception-detector'; // Direct export for existing imports'
 
 // Core detection types
 export type {
   AIInteractionData,
   DeceptionAlert,
 } from './src/ai-deception-detector';
-
+export { AIDeceptionDetector } from './src/ai-deception-detector'; // Direct export for existing imports'
 // Safety orchestrator types
 export type { SafetyMetrics } from './src/safety-orchestrator';
+// ✅ MAIN ENTRY POINT - Use this for everything!
+export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator as default, AISafetyOrchestrator } from './src/safety-orchestrator';
 
 // Additional safety types
 export interface InterventionAction {
@@ -292,10 +289,10 @@ export { NeuralDeceptionDetector } from './src/neural-deception-detector';
 
 // Integration utilities
 export {
+  emergencySafetyShutdown,
+  getSafetyMetrics,
   initializeAISafetySystem,
   monitorAIInteraction,
-  getSafetyMetrics,
-  emergencySafetyShutdown,
   runSafetyMode,
   SAFETY_MODE_INTEGRATION,
 } from './src/safety-integration';
@@ -312,16 +309,15 @@ export {
  */
 
 // Core safety system access with lazy loading
-let safetySystemInstance: any = null;
+const safetySystemInstance: any = null;
 
 export async function getSafetySystemAccess(): Promise<any> {
   if (!safetySystemInstance) {
     const { AISafetyOrchestrator } = await import('./src/safety-orchestrator');'
-    safetySystemInstance = new AISafetyOrchestrator({
+    safetySystemInstance = new AISafetyOrchestrator(
       riskThreshold: 0.7,
       enableNeuralDetection: true,
-      interventionMode: 'automatic',
-    });
+      interventionMode: 'automatic',);
     await safetySystemInstance.initialize();
   }
   return safetySystemInstance;

@@ -14,18 +14,18 @@
 
 // Validation utilities (Zod integration) - RUNTIME SAFETY FOR KANBAN
 export {
-  KanbanConfigSchema,
-  TaskPrioritySchema,
-  TaskStateSchema,
-  ValidationUtils,
-  WIPLimitsSchema,
-  WorkflowTaskSchema,
-} from '../utils/validation';
+	KanbanConfigSchema,
+	TaskPrioritySchema,
+	TaskStateSchema,
+	ValidationUtils,
+	WIPLimitsSchema,
+	WorkflowTaskSchema,
+} from "../utils/validation";
 // Immutable state utilities (Immer integration) - CORE VALUE FOR KANBAN
 export {
-  ImmutableContextUtils,
-  ImmutableMetricsUtils,
-  ImmutableTaskUtils,
-  ImmutableUtils,
-  ImmutableWIPUtils,
-} from './immutable-utils';
+	ImmutableContextUtils,
+	ImmutableMetricsUtils,
+	ImmutableTaskUtils,
+	ImmutableUtils,
+	ImmutableWIPUtils,
+} from "./immutable-utils";

@@ -8,48 +8,48 @@
  * @author Claude Code Zen Team
  * @see {@link https://github.com/stanfordnlp/dspy/blob/main/dspy/teleprompt/mipro_optimizer_v2.py} Original Implementation
  */
-import { Teleprompter } from './teleprompter.js';
-import { DSPyModule } from '../primitives/module';
-import type { Example } from '../primitives/example';
-import type { LMInterface } from '../interfaces/lm';
-import type { MetricFunction } from '../interfaces/types';
+import { Teleprompter } from "./teleprompter.js";
+import { DSPyModule } from "../primitives/module";
+import type { Example } from "../primitives/example";
+import type { LMInterface } from "../interfaces/lm";
+import type { MetricFunction } from "../interfaces/types";
 /**
  * Configuration interface for MIPROv2 teleprompter
  * Exact match with Stanford DSPy MIPROv2 constructor
  */
 export interface MIPROv2Config {
-  /** Metric function for evaluation */
-  metric: MetricFunction;
-  /** Model for prompt generation (defaults to dspy.settings.lm) */
-  prompt_model?: LMInterface | null;
-  /** Model for task execution (defaults to dspy.settings.lm) */
-  task_model?: LMInterface | null;
-  /** Teacher settings for bootstrapping */
-  teacher_settings?: Record<string, any> | null;
-  /** Maximum bootstrapped demonstrations */
-  max_bootstrapped_demos?: number;
-  /** Maximum labeled demonstrations */
-  max_labeled_demos?: number;
-  /** Auto configuration mode */
-  auto?: 'light|medium|heavy' | null;
-  /** Number of candidates (overridden by auto) */
-  num_candidates?: number | null;
-  /** Number of threads for evaluation */
-  num_threads?: number | null;
-  /** Maximum errors allowed */
-  max_errors?: number | null;
-  /** Random seed */
-  seed?: number;
-  /** Initial temperature for instruction generation */
-  init_temperature?: number;
-  /** Verbose logging */
-  verbose?: boolean;
-  /** Track statistics */
-  track_stats?: boolean;
-  /** Log directory for saving candidates */
-  log_dir?: string | null;
-  /** Metric threshold for filtering */
-  metric_threshold?: number | null;
+	/** Metric function for evaluation */
+	metric: MetricFunction;
+	/** Model for prompt generation (defaults to dspy.settings.lm) */
+	prompt_model?: LMInterface | null;
+	/** Model for task execution (defaults to dspy.settings.lm) */
+	task_model?: LMInterface | null;
+	/** Teacher settings for bootstrapping */
+	teacher_settings?: Record<string, any> | null;
+	/** Maximum bootstrapped demonstrations */
+	max_bootstrapped_demos?: number;
+	/** Maximum labeled demonstrations */
+	max_labeled_demos?: number;
+	/** Auto configuration mode */
+	auto?: "light|medium|heavy" | null;
+	/** Number of candidates (overridden by auto) */
+	num_candidates?: number | null;
+	/** Number of threads for evaluation */
+	num_threads?: number | null;
+	/** Maximum errors allowed */
+	max_errors?: number | null;
+	/** Random seed */
+	seed?: number;
+	/** Initial temperature for instruction generation */
+	init_temperature?: number;
+	/** Verbose logging */
+	verbose?: boolean;
+	/** Track statistics */
+	track_stats?: boolean;
+	/** Log directory for saving candidates */
+	log_dir?: string | null;
+	/** Metric threshold for filtering */
+	metric_threshold?: number | null;
 }
 /**
  * Instruction candidates type
@@ -63,14 +63,14 @@ export type DemoCandidates = Record<number, Example[][]>;
  * Trial logs type
  */
 export interface TrialLog {
-  full_eval_program_path?: string;
-  full_eval_score?: number;
-  total_eval_calls_so_far?: number;
-  full_eval_program?: DSPyModule;
-  mb_program_path?: string;
-  mb_score?: number;
-  mb_program?: DSPyModule;
-  [key: string]: any;
+	full_eval_program_path?: string;
+	full_eval_score?: number;
+	total_eval_calls_so_far?: number;
+	full_eval_program?: DSPyModule;
+	mb_program_path?: string;
+	mb_score?: number;
+	mb_program?: DSPyModule;
+	[key: string]: any;
 }
 /**
  * MIPROv2 Teleprompter
@@ -155,60 +155,60 @@ export interface TrialLog {
  * ```
  */
 export declare class MIPROv2 extends Teleprompter {
-  private config;
-  private rng;
-  private promptModelTotalCalls;
-  private totalCalls;
-  private numFewshotCandidates?;
-  private numInstructCandidates?;
-  /**
-   * Initialize MIPROv2 teleprompter
-   * Exact API match with Stanford DSPy constructor
-   */
-  constructor(config: MIPROv2Config);
-  /**
-   * Compile student program using MIPROv2 optimization
-   * Exact API match with Stanford DSPy compile method
-   */
-  compile(
-    student: DSPyModule,
-    options: {
-      trainset: Example[];
-      teacher?: DSPyModule | DSPyModule[] | null;
-      valset?: Example[] | null;
-      num_trials?: number | null;
-      max_bootstrapped_demos?: number | null;
-      max_labeled_demos?: number | null;
-      seed?: number | null;
-      minibatch?: boolean;
-      minibatch_size?: number;
-      minibatch_full_eval_steps?: number;
-      program_aware_proposer?: boolean;
-      data_aware_proposer?: boolean;
-      view_data_batch_size?: number;
-      tip_aware_proposer?: boolean;
-      fewshot_aware_proposer?: boolean;
-      requires_permission_to_run?: boolean;
-      provide_traceback?: boolean | null;
-      strict_minibatch_validation?: boolean;
-    }
-  ): Promise<DSPyModule>;
-  /**
-   * Set random seeds for reproducibility
-   */
-  private setRandomSeeds;
-  /**
-   * Calculate number of trials from number of candidates
-   */
-  private setNumTrialsFromNumCandidates;
-  /**
-   * Set and validate datasets
-   */
-  private setAndValidateDatasets;
-  /**
-   * Get configuration
-   */
-  getConfig(): Required<MIPROv2Config>;
+	private config;
+	private rng;
+	private promptModelTotalCalls;
+	private totalCalls;
+	private numFewshotCandidates?;
+	private numInstructCandidates?;
+	/**
+	 * Initialize MIPROv2 teleprompter
+	 * Exact API match with Stanford DSPy constructor
+	 */
+	constructor(config: MIPROv2Config);
+	/**
+	 * Compile student program using MIPROv2 optimization
+	 * Exact API match with Stanford DSPy compile method
+	 */
+	compile(
+		student: DSPyModule,
+		options: {
+			trainset: Example[];
+			teacher?: DSPyModule | DSPyModule[] | null;
+			valset?: Example[] | null;
+			num_trials?: number | null;
+			max_bootstrapped_demos?: number | null;
+			max_labeled_demos?: number | null;
+			seed?: number | null;
+			minibatch?: boolean;
+			minibatch_size?: number;
+			minibatch_full_eval_steps?: number;
+			program_aware_proposer?: boolean;
+			data_aware_proposer?: boolean;
+			view_data_batch_size?: number;
+			tip_aware_proposer?: boolean;
+			fewshot_aware_proposer?: boolean;
+			requires_permission_to_run?: boolean;
+			provide_traceback?: boolean | null;
+			strict_minibatch_validation?: boolean;
+		},
+	): Promise<DSPyModule>;
+	/**
+	 * Set random seeds for reproducibility
+	 */
+	private setRandomSeeds;
+	/**
+	 * Calculate number of trials from number of candidates
+	 */
+	private setNumTrialsFromNumCandidates;
+	/**
+	 * Set and validate datasets
+	 */
+	private setAndValidateDatasets;
+	/**
+	 * Get configuration
+	 */
+	getConfig(): Required<MIPROv2Config>;
 }
 export { MIPROv2 as MIPROv2Teleprompter };
 export default MIPROv2;

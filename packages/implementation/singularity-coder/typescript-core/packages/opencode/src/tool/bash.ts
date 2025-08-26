@@ -1,7 +1,7 @@
 import { z } from "@claude-zen/foundation"
-import { Tool } from "./tool"
-import DESCRIPTION from "./bash.txt"
 import { App } from "../app/app"
+import DESCRIPTION from "./bash.txt"
+import { Tool } from "./tool"
 
 const MAX_OUTPUT_LENGTH = 30000
 const DEFAULT_TIMEOUT = 1 * 60 * 1000

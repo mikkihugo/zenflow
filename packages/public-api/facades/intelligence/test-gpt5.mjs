@@ -6,9 +6,9 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import {
+  executeClaudeTask,
   getLLMProvider,
   listLLMProviders,
-  executeClaudeTask,
   type CLIRequest,
   type CLIResponse
 } from './index';

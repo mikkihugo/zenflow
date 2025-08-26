@@ -66,7 +66,7 @@ export class ClaudeZenIntegrated {
 		const options: IntegratedOptions = {};
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
-			const result = this.parseArgument(arg, args, i, options);
+			const result = ClaudeZenIntegrated.parseArgument(arg, args, i, options);
 			if (result.skipNext) {
 				i++; // Skip next argument for port parsing
 			}
@@ -91,7 +91,7 @@ export class ClaudeZenIntegrated {
 	): { skipNext: boolean } {
 		switch (arg) {
 			case "--port":
-				return this.parsePortArgument(args, index, options);
+				return ClaudeZenIntegrated.parsePortArgument(args, index, options);
 			case "--daemon":
 				options.daemon = true;
 				return { skipNext: false };
@@ -104,7 +104,7 @@ export class ClaudeZenIntegrated {
 				return { skipNext: false };
 			case "--help":
 			case "-h":
-				this.showHelp();
+				ClaudeZenIntegrated.showHelp();
 				process.exit(0);
 				return { skipNext: false };
 			default:
@@ -181,7 +181,7 @@ Options:
 			// Basic health check endpoint
 			app.get(
 				"/health",
-				(req: unknown, res: { json: (data: HealthResponse) => void }) => {
+				(_req: unknown, res: { json: (data: HealthResponse) => void }) => {
 					res.json({
 						status: "healthy",
 						timestamp: new Date().toISOString(),
@@ -193,7 +193,7 @@ Options:
 			// API status endpoint
 			app.get(
 				"/api/status",
-				(req: unknown, res: { json: (data: StatusResponse) => void }) => {
+				(_req: unknown, res: { json: (data: StatusResponse) => void }) => {
 					res.json({
 						status: "running",
 						mode: this.options.dev ? "development" : "production",
@@ -247,7 +247,7 @@ Options:
 		// Close HTTP server
 		if (this.server?.close) {
 			await new Promise<void>((resolve, reject) => {
-				this.server!.close!((err?: Error) => {
+				this.server?.close?.((err?: Error) => {
 					if (err) reject(err);
 					else resolve();
 				});

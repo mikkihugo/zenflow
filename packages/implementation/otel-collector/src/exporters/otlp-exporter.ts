@@ -5,33 +5,14 @@
  * Supports traces, metrics, and logs.
  */
 
-import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-otlp-http';
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { Logger } from '@claude-zen/foundation';
-
+import type { ExporterConfig, ExportResult, TelemetryData } from '../types.js';
 import type { BaseExporter } from './index.js';
-import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 
 /**
  * OTLP exporter implementation for HTTP and gRPC
  */
 export class OTLPExporter implements BaseExporter {
-  private config: ExporterConfig;
-  private logger: Logger;
-  private traceExporter: OTLPTraceExporter|null = null;
-  private metricExporter: OTLPMetricExporter|null = null;
-  private queue: TelemetryData[] = [];
-  private batchTimer: NodeJS.Timeout|null = null;
-  private isShuttingDown = false;
-  private exportCount = 0;
-  private lastExportTime = 0;
-  private lastError: string|null = null;
-
-  // Configuration
-  private readonly maxQueueSize: number;
-  private readonly batchTimeout: number;
-  private readonly maxBatchSize: number;
 
   constructor(config: ExporterConfig) {
     this.config = config;
@@ -56,15 +37,14 @@ export class OTLPExporter implements BaseExporter {
       if (signals.includes('traces')) {'
         this.traceExporter = new OTLPTraceExporter({
           ...baseConfig,
-          url: `${baseConfig.url}/v1/traces`,`
+          url: `$baseConfig.url/v1/traces`,`
         });
       }
 
       if (signals.includes('metrics')) {'
-        this.metricExporter = new OTLPMetricExporter({
+        this.metricExporter = new OTLPMetricExporter(
           ...baseConfig,
-          url: `${baseConfig.url}/v1/metrics`,`
-        });
+          url: `$baseConfig.url/v1/metrics`,`);
       }
 
       // Start batch processing
@@ -313,7 +293,7 @@ export class OTLPExporter implements BaseExporter {
     if (metrics.length === 0) return 0;
 
     return new Promise<number>((resolve, reject) => {
-      this.metricExporter!.export(metrics, (result) => {
+      this.metricExporter?.export(metrics, (result) => {
         if (result.code === 0) {
           resolve(metrics.length);
         } else {

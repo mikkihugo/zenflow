@@ -48,7 +48,7 @@ describe('Event System Core (Jest)', () => {'
   });
 
   afterEach(async () => {
-    if (eventSystem && eventSystem.destroy) {
+    if (eventSystem?.destroy) {
       await eventSystem.destroy();
     } else if (eventSystem) {
       eventSystem.removeAllListeners();
@@ -97,7 +97,7 @@ describe('Event System Core (Jest)', () => {'
       eventSystem.once('test.once', handler);'
 
       const payload1: TestPayload = { message: 'first', count: 1 };'
-      const payload2: TestPayload = { message: 'second', count: 2 };'
+      const _payload2: TestPayload = { message: 'second', count: 2 };'
 
       eventSystem.emit('test.once', payload1);'
       eventSystem.emit('test.once', payload2);'
@@ -127,7 +127,7 @@ describe('Event System Core (Jest)', () => {'
     it('should handle async event handlers', async () => {'
       const results: string[] = [];
 
-      const asyncHandler = async (payload: TestPayload) => {
+      const _asyncHandler = async (payload: TestPayload) => {
         await new Promise((resolve) => setTimeout(resolve, 10));
         results.push(`processed: ${payload.message}`);`
       };
@@ -294,7 +294,7 @@ describe('Event System Core (Jest)', () => {'
       const payload = { message: 'async emit test', count: 1 };'
 
       if (eventSystem.emitAsync) {
-        const result = await eventSystem.emitAsync('test.async.emit', payload);'
+        const _result = await eventSystem.emitAsync('test.async.emit', payload);'
         expect(result).toBe(true);
       } else {
         // Fallback to regular emit
@@ -335,7 +335,7 @@ describe('Event System Factory and Utilities', () => {'
   it('should validate event system configuration', () => {'
     // Test that invalid configurations don't break the system'
     expect(() => 
-      createEventSystem({ maxListeners: -1 });).not.toThrow(); // EventBus should handle this gracefully
+      createEventSystem(maxListeners: -1 );).not.toThrow(); // EventBus should handle this gracefully
 
     expect(() => {
       createEventSystem({ enableMetrics: 'invalid' as any });'

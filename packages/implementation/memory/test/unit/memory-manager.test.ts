@@ -1,11 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryManager } from '../../src/memory';
 import {
-  mockLogger,
-  mockConfig,
-  createMockMemoryConfig,
   createMockMemoryBackend,
+  createMockMemoryConfig,
   createMockResult,
+  mockLogger,
 } from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
@@ -48,21 +47,20 @@ vi.mock('@claude-zen/foundation', () => ({'
 
 describe('MemoryManager', () => {'
   let manager: MemoryManager;
-  let mockBackend: any;
+  let _mockBackend: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockBackend = createMockMemoryBackend();
+    _mockBackend = createMockMemoryBackend();
   });
 
   describe('Constructor and Initialization', () => {'
-    it('should create manager with default configuration', () => {'
+    it('should create manager with default configuration', () => '
       manager = new MemoryManager();
       expect(manager).toBeDefined();
       expect(mockLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('MemoryManager initialized')'
-      );
-    });
+      ););
 
     it('should create manager with custom configuration', () => {'
       const config = {
@@ -89,9 +87,8 @@ describe('MemoryManager', () => {'
   });
 
   describe('Backend Management', () => {'
-    beforeEach(() => {
-      manager = new MemoryManager();
-    });
+    beforeEach(() => 
+      manager = new MemoryManager(););
 
     it('should register backend successfully', async () => {'
       const backendId = 'test-backend';
@@ -131,7 +128,7 @@ describe('MemoryManager', () => {'
     });
 
     it('should handle unregistering non-existent backend', async () => {'
-      const result = await manager.unregisterBackend('non-existent');'
+      const _result = await manager.unregisterBackend('non-existent');'
       expect(result.isErr()).toBe(true);
     });
 
@@ -153,10 +150,9 @@ describe('MemoryManager', () => {'
   });
 
   describe('Memory Operations', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       manager = new MemoryManager();
-      await manager.registerBackend('default', createMockMemoryConfig())();'
-    });
+      await manager.registerBackend('default', createMockMemoryConfig())();');
 
     it('should store data across backends', async () => {'
       const key = 'test-key';
@@ -194,7 +190,7 @@ describe('MemoryManager', () => {'
         ...createMockMemoryConfig(),
         type: 'memory' as const,
       };
-      const backend2Config = {
+      const _backend2Config = {
         ...createMockMemoryConfig(),
         type: 'json' as const,
       };
@@ -211,10 +207,9 @@ describe('MemoryManager', () => {'
   });
 
   describe('Batch Operations', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       manager = new MemoryManager();
-      await manager.registerBackend('batch-backend', createMockMemoryConfig())();'
-    });
+      await manager.registerBackend('batch-backend', createMockMemoryConfig())();');
 
     it('should handle batch store operations', async () => {'
       const operations = [
@@ -277,10 +272,9 @@ describe('MemoryManager', () => {'
   });
 
   describe('Statistics and Monitoring', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       manager = new MemoryManager();
-      await manager.registerBackend('stats-backend', createMockMemoryConfig())();'
-    });
+      await manager.registerBackend('stats-backend', createMockMemoryConfig())();');
 
     it('should provide comprehensive statistics', async () => {'
       await manager.store('stats1', 'value1');'
@@ -322,9 +316,8 @@ describe('MemoryManager', () => {'
   });
 
   describe('Error Handling and Resilience', () => {'
-    beforeEach(() => {
-      manager = new MemoryManager();
-    });
+    beforeEach(() => 
+      manager = new MemoryManager(););
 
     it('should handle backend failures gracefully', async () => {'
       const failingBackend = {
@@ -339,7 +332,7 @@ describe('MemoryManager', () => {'
 
       await manager.registerBackend('failing', createMockMemoryConfig())();'
 
-      const result = await manager.store('test-key', 'test-value');'
+      const _result = await manager.store('test-key', 'test-value');'
       // Should handle failure gracefully
       expect(result.isOk()||result.isErr()).toBe(true);
     });
@@ -365,7 +358,7 @@ describe('MemoryManager', () => {'
       await manager.registerBackend('validation', createMockMemoryConfig())();'
 
       // Test invalid key
-      const invalidKeyResult = await manager.store(null as any, 'value');'
+      const _invalidKeyResult = await manager.store(null as any, 'value');'
       expect(invalidKeyResult.isErr()).toBe(true);
 
       // Test invalid value (if applicable)
@@ -411,10 +404,9 @@ describe('MemoryManager', () => {'
   });
 
   describe('Cleanup and Shutdown', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       manager = new MemoryManager();
-      await manager.registerBackend('cleanup-test', createMockMemoryConfig())();'
-    });
+      await manager.registerBackend('cleanup-test', createMockMemoryConfig())();');
 
     it('should perform graceful shutdown', async () => {'
       await manager.store('cleanup-key', 'cleanup-value');'
@@ -438,7 +430,7 @@ describe('MemoryManager', () => {'
 
     it('should handle cleanup errors gracefully', async () => {'
       // Mock backend with failing cleanup
-      const failingBackend = {
+      const _failingBackend = {
         ...createMockMemoryBackend(),
         clear: vi.fn().mockRejectedValue(new Error('Cleanup failed')),
       };

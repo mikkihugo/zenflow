@@ -17,8 +17,8 @@
 
 import type {
   Logger,
-  ValueStream,
   MultiLevelOrchestrationManager,
+  ValueStream,
 } from '../../types';
 
 // Define types locally as they don't exist in the manager'
@@ -185,11 +185,6 @@ export class ValueStreamMappingService {
   private aguiService?: any;
   private initialized = false;
 
-  // Mapping state
-  private valueStreamMappings = new Map<string, WorkflowValueStreamMapping>();
-  private validatedMappings = new Map<string, MappingValidationResult>();
-  private mappingHistory = new Map<string, WorkflowValueStreamMapping[]>();
-
   constructor(logger: Logger) {
     this.logger = logger;
   }
@@ -203,13 +198,10 @@ export class ValueStreamMappingService {
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping optimization
       const { BrainCoordinator } = await import('@claude-zen/brain');'
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: {
+      this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
-          adaptationThreshold: 0.7,
-        },
-      });
+          adaptationThreshold: 0.7,,);
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
@@ -218,10 +210,9 @@ export class ValueStreamMappingService {
 
       // Lazy load @claude-zen/workflows for workflow integration
       const { WorkflowEngine } = await import('@claude-zen/workflows');'
-      this.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 5,
-        enableVisualization: true,
-      });
+        enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for mapping approvals
@@ -255,7 +246,7 @@ export class ValueStreamMappingService {
   ): Promise<Map<string, ValueStream>> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer(
+    const _timer = this.performanceTracker.startTimer(
       'map_workflows_to_value_streams''
     );
 
@@ -312,11 +303,10 @@ export class ValueStreamMappingService {
 
       this.performanceTracker.endTimer('map_workflows_to_value_streams');'
 
-      this.logger.info('Workflow to value stream mapping completed', {'
+      this.logger.info('Workflow to value stream mapping completed', '
         valueStreamCount: valueStreams.size,
         mappingStrategy: mappingStrategy.strategy || 'intelligent_auto',
-        validationScore: mappingStrategy.validationScore || 0.8,
-      });
+        validationScore: mappingStrategy.validationScore || 0.8,);
 
       return valueStreams;
     } catch (error) {
@@ -335,7 +325,7 @@ export class ValueStreamMappingService {
   ): Promise<ValueStream> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('create_value_stream');'
+    const _timer = this.performanceTracker.startTimer('create_value_stream');'
 
     try {
       this.logger.info('Creating optimized value stream from workflow', {'

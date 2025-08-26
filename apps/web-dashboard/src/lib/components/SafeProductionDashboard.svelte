@@ -1,487 +1,622 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
-  import type { Writable } from 'svelte/store';
-  import { apiClient } from '$lib/api';
-  // Widget imports disabled due to TailwindCSS compatibility issues
-  // import SafeVisualizationWidget from './SafeVisualizationWidget.svelte';
-  // import SafeCoachingWidget from './SafeCoachingWidget.svelte';
-  // import SafeGamificationWidget from './SafeGamificationWidget.svelte';
-  // import SafePredictionWidget from './SafePredictionWidget.svelte';
-  // import SafeIntegrationWidget from './SafeIntegrationWidget.svelte';
+import { onDestroy, onMount } from "svelte";
+import type { Writable } from "svelte/store";
+import { writable } from "svelte/store";
+import { apiClient } from "$lib/api";
+// Widget imports disabled due to TailwindCSS compatibility issues
+// import SafeVisualizationWidget from './SafeVisualizationWidget.svelte';
+// import SafeCoachingWidget from './SafeCoachingWidget.svelte';
+// import SafeGamificationWidget from './SafeGamificationWidget.svelte';
+// import SafePredictionWidget from './SafePredictionWidget.svelte';
+// import SafeIntegrationWidget from './SafeIntegrationWidget.svelte';
 
-  // Props
-  export let userId: string;
-  export let userRole: 'team_member' | 'scrum_master' | 'po' | 'rte' | 'architect' | 'business_owner';
-  export let immersionLevel: 'basic' | 'enhanced' | 'production' = 'enhanced';
+// Props
+export let userId: string;
+export let userRole:
+	| "team_member"
+	| "scrum_master"
+	| "po"
+	| "rte"
+	| "architect"
+	| "business_owner";
+export const immersionLevel: "basic" | "enhanced" | "production" = "enhanced";
 
-  // Dashboard state
-  interface DashboardWidget {
-    id: string;
-    type: 'visualization' | 'coaching' | 'gamification' | 'prediction' | 'integration';
-    title: string;
-    size: 'small' | 'medium' | 'large' | 'full-width';
-    position: { x: number; y: number };
-    data: any;
-  }
+// Dashboard state
+interface DashboardWidget {
+	id: string;
+	type:
+		| "visualization"
+		| "coaching"
+		| "gamification"
+		| "prediction"
+		| "integration";
+	title: string;
+	size: "small" | "medium" | "large" | "full-width";
+	position: { x: number; y: number };
+	data: any;
+}
 
-  interface DashboardState {
-    widgets: DashboardWidget[];
-    realTimeUpdates: boolean;
-    performanceMetrics: {
-      renderTime: number;
-      userEngagement: number;
-      predictionAccuracy: number;
-      workflowEfficiency: number;
-    };
-  }
+interface DashboardState {
+	widgets: DashboardWidget[];
+	realTimeUpdates: boolean;
+	performanceMetrics: {
+		renderTime: number;
+		userEngagement: number;
+		predictionAccuracy: number;
+		workflowEfficiency: number;
+	};
+}
 
-  // Reactive stores
-  const dashboardState: Writable<DashboardState> = writable({
-    widgets: [],
-    realTimeUpdates: true,
-    performanceMetrics: {
-      renderTime: 0,
-      userEngagement: 0,
-      predictionAccuracy: 0,
-      workflowEfficiency: 0
-    }
-  });
+// Reactive stores
+const dashboardState: Writable<DashboardState> = writable({
+	widgets: [],
+	realTimeUpdates: true,
+	performanceMetrics: {
+		renderTime: 0,
+		userEngagement: 0,
+		predictionAccuracy: 0,
+		workflowEfficiency: 0,
+	},
+});
 
-  const eventLog: Writable<any[]> = writable([]);
-  const connectionStatus: Writable<'connected' | 'connecting' | 'disconnected'> = writable('connecting');
+const eventLog: Writable<any[]> = writable([]);
+const connectionStatus: Writable<"connected" | "connecting" | "disconnected"> =
+	writable("connecting");
 
-  // WebSocket connection for real-time updates
-  let socket: any;
-  let updateInterval: NodeJS.Timeout;
+// WebSocket connection for real-time updates
+let socket: any;
+let updateInterval: NodeJS.Timeout;
 
-  onMount(async () => {
-    await initializeDashboard();
-    startRealTimeUpdates();
-  });
+onMount(async () => {
+	await initializeDashboard();
+	startRealTimeUpdates();
+});
 
-  onDestroy(() => {
-    if (socket) {
-      socket.disconnect();
-    }
-    if (updateInterval) {
-      clearInterval(updateInterval);
-    }
-  });
+onDestroy(() => {
+	if (socket) {
+		socket.disconnect();
+	}
+	if (updateInterval) {
+		clearInterval(updateInterval);
+	}
+});
 
-  async function initializeDashboard() {
-    try {
-      connectionStatus.set('connecting');
-      
-      // Initialize WebSocket connection
-      const { io } = await import('socket.io-client');
-      socket = io('ws://localhost:3000', {
-        auth: { userId, userRole },
-        transports: ['websocket']
-      });
+async function initializeDashboard() {
+	try {
+		connectionStatus.set("connecting");
 
-      socket.on('connect', () => {
-        connectionStatus.set('connected');
-        console.log('Connected to SAFe Production Platform');
-      });
+		// Initialize WebSocket connection
+		const { io } = await import("socket.io-client");
+		socket = io("ws://localhost:3000", {
+			auth: { userId, userRole },
+			transports: ["websocket"],
+		});
 
-      socket.on('disconnect', () => {
-        connectionStatus.set('disconnected');
-        console.log('Disconnected from SAFe Production Platform');
-      });
+		socket.on("connect", () => {
+			connectionStatus.set("connected");
+			console.log("Connected to SAFe Production Platform");
+		});
 
-      // Listen for dashboard updates
-      socket.on('dashboard:updated', (update: any) => {
-        eventLog.update(log => [
-          { timestamp: new Date(), type: 'dashboard_update', data: update },
-          ...log.slice(0, 99) // Keep last 100 events
-        ]);
-        updateDashboardWidgets(update);
-      });
+		socket.on("disconnect", () => {
+			connectionStatus.set("disconnected");
+			console.log("Disconnected from SAFe Production Platform");
+		});
 
-      socket.on('safe:gate_status_changed', (event: any) => {
-        eventLog.update(log => [
-          { timestamp: new Date(), type: 'gate_status', data: event },
-          ...log.slice(0, 99)
-        ]);
-        updateVisualizationWidgets(event);
-      });
+		// Listen for dashboard updates
+		socket.on("dashboard:updated", (update: any) => {
+			eventLog.update((log) => [
+				{ timestamp: new Date(), type: "dashboard_update", data: update },
+				...log.slice(0, 99), // Keep last 100 events
+			]);
+			updateDashboardWidgets(update);
+		});
 
-      socket.on('user:achievement_unlocked', (event: any) => {
-        if (event.userId === userId) {
-          eventLog.update(log => [
-            { timestamp: new Date(), type: 'achievement', data: event },
-            ...log.slice(0, 99)
-          ]);
-          updateGamificationWidgets(event);
-          showAchievementNotification(event);
-        }
-      });
+		socket.on("safe:gate_status_changed", (event: any) => {
+			eventLog.update((log) => [
+				{ timestamp: new Date(), type: "gate_status", data: event },
+				...log.slice(0, 99),
+			]);
+			updateVisualizationWidgets(event);
+		});
 
-      socket.on('brain:prediction_generated', (event: any) => {
-        eventLog.update(log => [
-          { timestamp: new Date(), type: 'prediction', data: event },
-          ...log.slice(0, 99)
-        ]);
-        updatePredictionWidgets(event);
-      });
+		socket.on("user:achievement_unlocked", (event: any) => {
+			if (event.userId === userId) {
+				eventLog.update((log) => [
+					{ timestamp: new Date(), type: "achievement", data: event },
+					...log.slice(0, 99),
+				]);
+				updateGamificationWidgets(event);
+				showAchievementNotification(event);
+			}
+		});
 
-      // Listen for TaskMaster SAFe workflow events
-      socket.on('taskmaster:task_updated', (event: any) => {
-        eventLog.update(log => [
-          { timestamp: new Date(), type: 'taskmaster_task', data: event },
-          ...log.slice(0, 99)
-        ]);
-        // Refresh TaskMaster data when tasks are updated
-        loadTaskMasterData();
-      });
+		socket.on("brain:prediction_generated", (event: any) => {
+			eventLog.update((log) => [
+				{ timestamp: new Date(), type: "prediction", data: event },
+				...log.slice(0, 99),
+			]);
+			updatePredictionWidgets(event);
+		});
 
-      socket.on('taskmaster:metrics_updated', (event: any) => {
-        eventLog.update(log => [
-          { timestamp: new Date(), type: 'taskmaster_metrics', data: event },
-          ...log.slice(0, 99)
-        ]);
-        // Update dashboard metrics immediately
-        dashboardState.update(state => ({
-          ...state,
-          performanceMetrics: {
-            ...state.performanceMetrics,
-            renderTime: event.metrics.averageCycleTime || state.performanceMetrics.renderTime,
-            userEngagement: event.metrics.teamVelocity / 100 || state.performanceMetrics.userEngagement,
-            predictionAccuracy: event.metrics.predictiveAccuracy || state.performanceMetrics.predictionAccuracy,
-            workflowEfficiency: event.metrics.throughput / 10 || state.performanceMetrics.workflowEfficiency
-          }
-        }));
-      });
+		// Listen for TaskMaster SAFe workflow events
+		socket.on("taskmaster:task_updated", (event: any) => {
+			eventLog.update((log) => [
+				{ timestamp: new Date(), type: "taskmaster_task", data: event },
+				...log.slice(0, 99),
+			]);
+			// Refresh TaskMaster data when tasks are updated
+			loadTaskMasterData();
+		});
 
-      socket.on('taskmaster:pi_event', (event: any) => {
-        eventLog.update(log => [
-          { timestamp: new Date(), type: 'taskmaster_pi', data: event },
-          ...log.slice(0, 99)
-        ]);
-        // Show PI Planning notification
-        if (event.type === 'pi_planning_started') {
-          showAchievementNotification({
-            type: 'pi_planning',
-            message: `PI Planning ${event.piNumber} has started`,
-            priority: 'high'
-          });
-        }
-      });
+		socket.on("taskmaster:metrics_updated", (event: any) => {
+			eventLog.update((log) => [
+				{ timestamp: new Date(), type: "taskmaster_metrics", data: event },
+				...log.slice(0, 99),
+			]);
+			// Update dashboard metrics immediately
+			dashboardState.update((state) => ({
+				...state,
+				performanceMetrics: {
+					...state.performanceMetrics,
+					renderTime:
+						event.metrics.averageCycleTime ||
+						state.performanceMetrics.renderTime,
+					userEngagement:
+						event.metrics.teamVelocity / 100 ||
+						state.performanceMetrics.userEngagement,
+					predictionAccuracy:
+						event.metrics.predictiveAccuracy ||
+						state.performanceMetrics.predictionAccuracy,
+					workflowEfficiency:
+						event.metrics.throughput / 10 ||
+						state.performanceMetrics.workflowEfficiency,
+				},
+			}));
+		});
 
-      // Load initial dashboard configuration
-      await loadDashboardConfiguration();
+		socket.on("taskmaster:pi_event", (event: any) => {
+			eventLog.update((log) => [
+				{ timestamp: new Date(), type: "taskmaster_pi", data: event },
+				...log.slice(0, 99),
+			]);
+			// Show PI Planning notification
+			if (event.type === "pi_planning_started") {
+				showAchievementNotification({
+					type: "pi_planning",
+					message: `PI Planning ${event.piNumber} has started`,
+					priority: "high",
+				});
+			}
+		});
 
-      // Load real TaskMaster SAFe data
-      await loadTaskMasterData();
+		// Load initial dashboard configuration
+		await loadDashboardConfiguration();
 
-    } catch (error) {
-      console.error('Failed to initialize dashboard:', error);
-      connectionStatus.set('disconnected');
-    }
-  }
+		// Load real TaskMaster SAFe data
+		await loadTaskMasterData();
+	} catch (error) {
+		console.error("Failed to initialize dashboard:", error);
+		connectionStatus.set("disconnected");
+	}
+}
 
-  async function loadDashboardConfiguration() {
-    // Simulate loading role-specific dashboard configuration
-    const roleConfigs = {
-      team_member: [
-        { type: 'gamification', title: 'Skills & Achievements', size: 'medium', position: { x: 0, y: 0 } },
-        { type: 'visualization', title: '3D Team Universe', size: 'large', position: { x: 1, y: 0 } },
-        { type: 'coaching', title: 'AI Coach', size: 'small', position: { x: 0, y: 1 } },
-        { type: 'prediction', title: 'Personal Insights', size: 'medium', position: { x: 1, y: 1 } }
-      ],
-      scrum_master: [
-        { type: 'visualization', title: 'Team Health Radar', size: 'large', position: { x: 0, y: 0 } },
-        { type: 'integration', title: 'Workflow Orchestration', size: 'medium', position: { x: 1, y: 0 } },
-        { type: 'coaching', title: 'Facilitation Coach', size: 'small', position: { x: 0, y: 1 } },
-        { type: 'prediction', title: 'Team Performance Forecast', size: 'medium', position: { x: 1, y: 1 } }
-      ],
-      po: [
-        { type: 'visualization', title: 'Value Stream Galaxy', size: 'full-width', position: { x: 0, y: 0 } },
-        { type: 'prediction', title: 'Customer Impact Forecast', size: 'large', position: { x: 0, y: 1 } },
-        { type: 'coaching', title: 'Product Strategy Coach', size: 'medium', position: { x: 1, y: 1 } }
-      ],
-      rte: [
-        { type: 'visualization', title: 'ART Constellation', size: 'large', position: { x: 0, y: 0 } },
-        { type: 'integration', title: 'PI Planning Command Center', size: 'large', position: { x: 1, y: 0 } },
-        { type: 'prediction', title: 'PI Success Probability', size: 'medium', position: { x: 0, y: 1 } },
-        { type: 'coaching', title: 'RTE Excellence Coach', size: 'medium', position: { x: 1, y: 1 } }
-      ],
-      architect: [
-        { type: 'visualization', title: 'System Architecture Cosmos', size: 'full-width', position: { x: 0, y: 0 } },
-        { type: 'prediction', title: 'Technical Debt Evolution', size: 'large', position: { x: 0, y: 1 } },
-        { type: 'integration', title: 'Architecture Governance', size: 'medium', position: { x: 1, y: 1 } }
-      ],
-      business_owner: [
-        { type: 'visualization', title: 'Portfolio Universe', size: 'full-width', position: { x: 0, y: 0 } },
-        { type: 'prediction', title: 'Business Outcome Forecasting', size: 'large', position: { x: 0, y: 1 } },
-        { type: 'integration', title: 'Portfolio Command Center', size: 'large', position: { x: 1, y: 1 } }
-      ]
-    };
+async function loadDashboardConfiguration() {
+	// Simulate loading role-specific dashboard configuration
+	const roleConfigs = {
+		team_member: [
+			{
+				type: "gamification",
+				title: "Skills & Achievements",
+				size: "medium",
+				position: { x: 0, y: 0 },
+			},
+			{
+				type: "visualization",
+				title: "3D Team Universe",
+				size: "large",
+				position: { x: 1, y: 0 },
+			},
+			{
+				type: "coaching",
+				title: "AI Coach",
+				size: "small",
+				position: { x: 0, y: 1 },
+			},
+			{
+				type: "prediction",
+				title: "Personal Insights",
+				size: "medium",
+				position: { x: 1, y: 1 },
+			},
+		],
+		scrum_master: [
+			{
+				type: "visualization",
+				title: "Team Health Radar",
+				size: "large",
+				position: { x: 0, y: 0 },
+			},
+			{
+				type: "integration",
+				title: "Workflow Orchestration",
+				size: "medium",
+				position: { x: 1, y: 0 },
+			},
+			{
+				type: "coaching",
+				title: "Facilitation Coach",
+				size: "small",
+				position: { x: 0, y: 1 },
+			},
+			{
+				type: "prediction",
+				title: "Team Performance Forecast",
+				size: "medium",
+				position: { x: 1, y: 1 },
+			},
+		],
+		po: [
+			{
+				type: "visualization",
+				title: "Value Stream Galaxy",
+				size: "full-width",
+				position: { x: 0, y: 0 },
+			},
+			{
+				type: "prediction",
+				title: "Customer Impact Forecast",
+				size: "large",
+				position: { x: 0, y: 1 },
+			},
+			{
+				type: "coaching",
+				title: "Product Strategy Coach",
+				size: "medium",
+				position: { x: 1, y: 1 },
+			},
+		],
+		rte: [
+			{
+				type: "visualization",
+				title: "ART Constellation",
+				size: "large",
+				position: { x: 0, y: 0 },
+			},
+			{
+				type: "integration",
+				title: "PI Planning Command Center",
+				size: "large",
+				position: { x: 1, y: 0 },
+			},
+			{
+				type: "prediction",
+				title: "PI Success Probability",
+				size: "medium",
+				position: { x: 0, y: 1 },
+			},
+			{
+				type: "coaching",
+				title: "RTE Excellence Coach",
+				size: "medium",
+				position: { x: 1, y: 1 },
+			},
+		],
+		architect: [
+			{
+				type: "visualization",
+				title: "System Architecture Cosmos",
+				size: "full-width",
+				position: { x: 0, y: 0 },
+			},
+			{
+				type: "prediction",
+				title: "Technical Debt Evolution",
+				size: "large",
+				position: { x: 0, y: 1 },
+			},
+			{
+				type: "integration",
+				title: "Architecture Governance",
+				size: "medium",
+				position: { x: 1, y: 1 },
+			},
+		],
+		business_owner: [
+			{
+				type: "visualization",
+				title: "Portfolio Universe",
+				size: "full-width",
+				position: { x: 0, y: 0 },
+			},
+			{
+				type: "prediction",
+				title: "Business Outcome Forecasting",
+				size: "large",
+				position: { x: 0, y: 1 },
+			},
+			{
+				type: "integration",
+				title: "Portfolio Command Center",
+				size: "large",
+				position: { x: 1, y: 1 },
+			},
+		],
+	};
 
-    const widgets = roleConfigs[userRole].map((config, index) => ({
-      id: `widget_${index}_${config.type}`,
-      ...config,
-      data: generateInitialWidgetData(config.type)
-    }));
+	const widgets = roleConfigs[userRole].map((config, index) => ({
+		id: `widget_${index}_${config.type}`,
+		...config,
+		data: generateInitialWidgetData(config.type),
+	}));
 
-    dashboardState.update(state => ({
-      ...state,
-      widgets
-    }));
-  }
+	dashboardState.update((state) => ({
+		...state,
+		widgets,
+	}));
+}
 
-  async function loadTaskMasterData() {
-    try {
-      console.log('Loading TaskMaster SAFe data...');
-      
-      // Fetch real-time SAFe metrics from TaskMaster
-      const [metrics, dashboard, health] = await Promise.all([
-        apiClient.getTaskMasterMetrics(),
-        apiClient.getTaskMasterDashboard(),
-        apiClient.getTaskMasterHealth()
-      ]);
+async function loadTaskMasterData() {
+	try {
+		console.log("Loading TaskMaster SAFe data...");
 
-      console.log('TaskMaster data loaded:', { metrics, dashboard, health });
+		// Fetch real-time SAFe metrics from TaskMaster
+		const [metrics, dashboard, health] = await Promise.all([
+			apiClient.getTaskMasterMetrics(),
+			apiClient.getTaskMasterDashboard(),
+			apiClient.getTaskMasterHealth(),
+		]);
 
-      // Update dashboard state with real SAFe data
-      dashboardState.update(state => ({
-        ...state,
-        realTimeUpdates: true,
-        performanceMetrics: {
-          ...state.performanceMetrics,
-          workflowEfficiency: metrics.wipEfficiency || 0.85,
-          predictionAccuracy: health.overallHealth || 0.9,
-        },
-        widgets: state.widgets.map(widget => ({
-          ...widget,
-          data: {
-            ...widget.data,
-            realMetrics: metrics,
-            healthData: health,
-            tasksByState: dashboard.tasksByState,
-            safeMetrics: {
-              totalTasks: metrics.totalTasks,
-              averageCycleTime: metrics.averageCycleTime,
-              throughput: metrics.throughput,
-              systemHealth: health.overallHealth,
-              wipUtilization: health.wipUtilization,
-              activeBottlenecks: health.activeBottlenecks
-            }
-          }
-        }))
-      }));
+		console.log("TaskMaster data loaded:", { metrics, dashboard, health });
 
-      // Log event for dashboard visibility
-      eventLog.update(log => [
-        { 
-          timestamp: new Date(), 
-          type: 'taskmaster_data_loaded', 
-          data: { 
-            totalTasks: metrics.totalTasks,
-            systemHealth: health.overallHealth,
-            message: 'Real TaskMaster SAFe data loaded successfully'
-          }
-        },
-        ...log.slice(0, 99)
-      ]);
+		// Update dashboard state with real SAFe data
+		dashboardState.update((state) => ({
+			...state,
+			realTimeUpdates: true,
+			performanceMetrics: {
+				...state.performanceMetrics,
+				workflowEfficiency: metrics.wipEfficiency || 0.85,
+				predictionAccuracy: health.overallHealth || 0.9,
+			},
+			widgets: state.widgets.map((widget) => ({
+				...widget,
+				data: {
+					...widget.data,
+					realMetrics: metrics,
+					healthData: health,
+					tasksByState: dashboard.tasksByState,
+					safeMetrics: {
+						totalTasks: metrics.totalTasks,
+						averageCycleTime: metrics.averageCycleTime,
+						throughput: metrics.throughput,
+						systemHealth: health.overallHealth,
+						wipUtilization: health.wipUtilization,
+						activeBottlenecks: health.activeBottlenecks,
+					},
+				},
+			})),
+		}));
 
-    } catch (error) {
-      console.error('Failed to load TaskMaster data:', error);
-      
-      // Log error event
-      eventLog.update(log => [
-        { 
-          timestamp: new Date(), 
-          type: 'taskmaster_data_error', 
-          data: { 
-            error: error.message,
-            message: 'Using mock data - TaskMaster API not available'
-          }
-        },
-        ...log.slice(0, 99)
-      ]);
-    }
-  }
+		// Log event for dashboard visibility
+		eventLog.update((log) => [
+			{
+				timestamp: new Date(),
+				type: "taskmaster_data_loaded",
+				data: {
+					totalTasks: metrics.totalTasks,
+					systemHealth: health.overallHealth,
+					message: "Real TaskMaster SAFe data loaded successfully",
+				},
+			},
+			...log.slice(0, 99),
+		]);
+	} catch (error) {
+		console.error("Failed to load TaskMaster data:", error);
 
-  function generateInitialWidgetData(type: string) {
-    const baseData = {
-      loading: false,
-      lastUpdate: new Date(),
-      userRole,
-      immersionLevel
-    };
+		// Log error event
+		eventLog.update((log) => [
+			{
+				timestamp: new Date(),
+				type: "taskmaster_data_error",
+				data: {
+					error: error.message,
+					message: "Using mock data - TaskMaster API not available",
+				},
+			},
+			...log.slice(0, 99),
+		]);
+	}
+}
 
-    switch (type) {
-      case 'visualization':
-        return {
-          ...baseData,
-          scene: {
-            objects: [],
-            connections: [],
-            camera: { position: { x: 0, y: 50, z: 200 } }
-          }
-        };
-      case 'coaching':
-        return {
-          ...baseData,
-          activeSession: null,
-          suggestions: [],
-          progressTracking: {}
-        };
-      case 'gamification':
-        return {
-          ...baseData,
-          currentLevel: { level: 1, progress: 0 },
-          achievements: [],
-          challenges: []
-        };
-      case 'prediction':
-        return {
-          ...baseData,
-          predictions: [],
-          confidence: 0,
-          trends: []
-        };
-      case 'integration':
-        return {
-          ...baseData,
-          connectedTools: [],
-          automations: [],
-          status: 'healthy'
-        };
-      default:
-        return baseData;
-    }
-  }
+function generateInitialWidgetData(type: string) {
+	const baseData = {
+		loading: false,
+		lastUpdate: new Date(),
+		userRole,
+		immersionLevel,
+	};
 
-  function startRealTimeUpdates() {
-    updateInterval = setInterval(async () => {
-      if (socket && socket.connected) {
-        // Request dashboard refresh
-        socket.emit('dashboard:request_update', { userId, userRole });
-        
-        try {
-          // Fetch real TaskMaster data for live updates
-          await loadTaskMasterData();
-          
-          // Update performance metrics with real data
-          const metrics = await apiClient.getTaskMasterMetrics();
-          dashboardState.update(state => ({
-            ...state,
-            performanceMetrics: {
-              ...state.performanceMetrics,
-              renderTime: metrics.averageCycleTime || Math.random() * 50 + 10,
-              userEngagement: metrics.teamVelocity / 100 || Math.random() * 0.3 + 0.7,
-              predictionAccuracy: metrics.predictiveAccuracy || Math.random() * 0.2 + 0.8,
-              workflowEfficiency: metrics.throughput / 10 || Math.random() * 0.25 + 0.75
-            }
-          }));
-        } catch (error) {
-          console.warn('Failed to fetch real-time TaskMaster data, using fallback metrics:', error);
-          // Fallback to simulated metrics if TaskMaster API is unavailable
-          dashboardState.update(state => ({
-            ...state,
-            performanceMetrics: {
-              ...state.performanceMetrics,
-              renderTime: Math.random() * 50 + 10,
-              userEngagement: Math.random() * 0.3 + 0.7,
-              predictionAccuracy: Math.random() * 0.2 + 0.8,
-              workflowEfficiency: Math.random() * 0.25 + 0.75
-            }
-          }));
-        }
-      }
-    }, 30000); // Update every 30 seconds
-  }
+	switch (type) {
+		case "visualization":
+			return {
+				...baseData,
+				scene: {
+					objects: [],
+					connections: [],
+					camera: { position: { x: 0, y: 50, z: 200 } },
+				},
+			};
+		case "coaching":
+			return {
+				...baseData,
+				activeSession: null,
+				suggestions: [],
+				progressTracking: {},
+			};
+		case "gamification":
+			return {
+				...baseData,
+				currentLevel: { level: 1, progress: 0 },
+				achievements: [],
+				challenges: [],
+			};
+		case "prediction":
+			return {
+				...baseData,
+				predictions: [],
+				confidence: 0,
+				trends: [],
+			};
+		case "integration":
+			return {
+				...baseData,
+				connectedTools: [],
+				automations: [],
+				status: "healthy",
+			};
+		default:
+			return baseData;
+	}
+}
 
-  function updateDashboardWidgets(update: any) {
-    dashboardState.update(state => ({
-      ...state,
-      widgets: state.widgets.map(widget => 
-        update.affectedWidgets?.includes(widget.id) 
-          ? { ...widget, data: { ...widget.data, ...update.data } }
-          : widget
-      )
-    }));
-  }
+function startRealTimeUpdates() {
+	updateInterval = setInterval(async () => {
+		if (socket?.connected) {
+			// Request dashboard refresh
+			socket.emit("dashboard:request_update", { userId, userRole });
 
-  function updateVisualizationWidgets(event: any) {
-    dashboardState.update(state => ({
-      ...state,
-      widgets: state.widgets.map(widget => 
-        widget.type === 'visualization' 
-          ? { ...widget, data: { ...widget.data, lastEvent: event, lastUpdate: new Date() } }
-          : widget
-      )
-    }));
-  }
+			try {
+				// Fetch real TaskMaster data for live updates
+				await loadTaskMasterData();
 
-  function updateGamificationWidgets(event: any) {
-    dashboardState.update(state => ({
-      ...state,
-      widgets: state.widgets.map(widget => 
-        widget.type === 'gamification' 
-          ? { 
-              ...widget, 
-              data: { 
-                ...widget.data, 
-                achievements: [event, ...(widget.data.achievements || [])],
-                lastUpdate: new Date() 
-              } 
-            }
-          : widget
-      )
-    }));
-  }
+				// Update performance metrics with real data
+				const metrics = await apiClient.getTaskMasterMetrics();
+				dashboardState.update((state) => ({
+					...state,
+					performanceMetrics: {
+						...state.performanceMetrics,
+						renderTime: metrics.averageCycleTime || Math.random() * 50 + 10,
+						userEngagement:
+							metrics.teamVelocity / 100 || Math.random() * 0.3 + 0.7,
+						predictionAccuracy:
+							metrics.predictiveAccuracy || Math.random() * 0.2 + 0.8,
+						workflowEfficiency:
+							metrics.throughput / 10 || Math.random() * 0.25 + 0.75,
+					},
+				}));
+			} catch (error) {
+				console.warn(
+					"Failed to fetch real-time TaskMaster data, using fallback metrics:",
+					error,
+				);
+				// Fallback to simulated metrics if TaskMaster API is unavailable
+				dashboardState.update((state) => ({
+					...state,
+					performanceMetrics: {
+						...state.performanceMetrics,
+						renderTime: Math.random() * 50 + 10,
+						userEngagement: Math.random() * 0.3 + 0.7,
+						predictionAccuracy: Math.random() * 0.2 + 0.8,
+						workflowEfficiency: Math.random() * 0.25 + 0.75,
+					},
+				}));
+			}
+		}
+	}, 30000); // Update every 30 seconds
+}
 
-  function updatePredictionWidgets(event: any) {
-    dashboardState.update(state => ({
-      ...state,
-      widgets: state.widgets.map(widget => 
-        widget.type === 'prediction' 
-          ? { 
-              ...widget, 
-              data: { 
-                ...widget.data, 
-                predictions: [event, ...(widget.data.predictions || []).slice(0, 4)],
-                lastUpdate: new Date() 
-              } 
-            }
-          : widget
-      )
-    }));
-  }
+function updateDashboardWidgets(update: any) {
+	dashboardState.update((state) => ({
+		...state,
+		widgets: state.widgets.map((widget) =>
+			update.affectedWidgets?.includes(widget.id)
+				? { ...widget, data: { ...widget.data, ...update.data } }
+				: widget,
+		),
+	}));
+}
 
-  function showAchievementNotification(achievement: any) {
-    // Create toast notification for achievement
-    const notification = {
-      type: 'achievement',
-      title: '🏆 Achievement Unlocked!',
-      message: `${achievement.title}: ${achievement.description}`,
-      duration: 5000
-    };
-    
-    // You could dispatch this to a notification store
-    console.log('Achievement notification:', notification);
-  }
+function updateVisualizationWidgets(event: any) {
+	dashboardState.update((state) => ({
+		...state,
+		widgets: state.widgets.map((widget) =>
+			widget.type === "visualization"
+				? {
+						...widget,
+						data: { ...widget.data, lastEvent: event, lastUpdate: new Date() },
+					}
+				: widget,
+		),
+	}));
+}
 
-  function getGridStyle(widget: DashboardWidget) {
-    const sizeMap = {
-      small: { gridColumn: 'span 1', gridRow: 'span 1' },
-      medium: { gridColumn: 'span 2', gridRow: 'span 1' }, 
-      large: { gridColumn: 'span 2', gridRow: 'span 2' },
-      'full-width': { gridColumn: 'span 4', gridRow: 'span 1' }
-    };
-    
-    return sizeMap[widget.size];
-  }
+function updateGamificationWidgets(event: any) {
+	dashboardState.update((state) => ({
+		...state,
+		widgets: state.widgets.map((widget) =>
+			widget.type === "gamification"
+				? {
+						...widget,
+						data: {
+							...widget.data,
+							achievements: [event, ...(widget.data.achievements || [])],
+							lastUpdate: new Date(),
+						},
+					}
+				: widget,
+		),
+	}));
+}
 
-  // Reactive statements
-  $: connectedStatus = $connectionStatus;
-  $: widgets = $dashboardState.widgets;
-  $: metrics = $dashboardState.performanceMetrics;
-  $: recentEvents = $eventLog.slice(0, 5);
+function updatePredictionWidgets(event: any) {
+	dashboardState.update((state) => ({
+		...state,
+		widgets: state.widgets.map((widget) =>
+			widget.type === "prediction"
+				? {
+						...widget,
+						data: {
+							...widget.data,
+							predictions: [
+								event,
+								...(widget.data.predictions || []).slice(0, 4),
+							],
+							lastUpdate: new Date(),
+						},
+					}
+				: widget,
+		),
+	}));
+}
+
+function showAchievementNotification(achievement: any) {
+	// Create toast notification for achievement
+	const notification = {
+		type: "achievement",
+		title: "🏆 Achievement Unlocked!",
+		message: `${achievement.title}: ${achievement.description}`,
+		duration: 5000,
+	};
+
+	// You could dispatch this to a notification store
+	console.log("Achievement notification:", notification);
+}
+
+function _getGridStyle(widget: DashboardWidget) {
+	const sizeMap = {
+		small: { gridColumn: "span 1", gridRow: "span 1" },
+		medium: { gridColumn: "span 2", gridRow: "span 1" },
+		large: { gridColumn: "span 2", gridRow: "span 2" },
+		"full-width": { gridColumn: "span 4", gridRow: "span 1" },
+	};
+
+	return sizeMap[widget.size];
+}
+
+// Reactive statements
+$: connectedStatus = $connectionStatus;
+$: widgets = $dashboardState.widgets;
+$: metrics = $dashboardState.performanceMetrics;
+$: recentEvents = $eventLog.slice(0, 5);
 </script>
 
 <!-- Main Dashboard Container -->

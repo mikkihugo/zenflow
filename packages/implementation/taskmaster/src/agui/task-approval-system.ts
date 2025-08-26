@@ -10,41 +10,20 @@
  * @file Task approval system with AGUI integration.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import {
+import { 
+  createAgentMonitor,
+  createCircuitBreaker,
+  createMLMonitor,
+  createPerformanceTracker,
+  EnhancedError,
   getLogger,
   type Logger,
-  EnhancedError,
-  withRetry,
+  recordEvent,
+  recordHistogram,
   // 🔬 Enterprise Telemetry & Monitoring Systems
   recordMetric,
-  recordHistogram,
-  recordGauge,
-  createCircuitBreaker,
-  startTrace,
-  withTrace,
-  withAsyncTrace,
-  recordEvent,
-  setTraceAttributes,
-  traced,
-  tracedAsync,
-  metered,
-  // 🏥 Comprehensive Monitoring Classes
-  SystemMonitor,
-  PerformanceTracker,
-  AgentMonitor,
-  MLMonitor,
-  createSystemMonitor,
-  createPerformanceTracker,
-  createAgentMonitor,
-  createMLMonitor,
-  createMonitoringSystem,
-  // 🛡️ Enterprise Error Handling & Safety
-  safeAsync,
-  Result,
-  ok,
-  err,
-} from '@claude-zen/foundation';
+  setTraceAttributes,TypedEventBase, 
+  withAsyncTrace,} from '@claude-zen/foundation';
 import type { AGUIInterface, ValidationQuestion } from './interfaces';
 
 // Export additional interfaces for external use
@@ -408,7 +387,7 @@ export interface ApprovalWorkflowConfig {
   requireExplicitRejection: boolean;
 }
 
-const logger = getLogger('TaskApprovalSystem');'
+const _logger = getLogger('TaskApprovalSystem');'
 
 /**
  * Approval decision for a generated task
@@ -482,33 +461,9 @@ export interface ApprovalStatistics {
 export class TaskApprovalSystem extends TypedEventBase {
   private agui: AGUIInterface;
   private config: TaskApprovalConfig;
-  private approvalHistory: TaskApprovalDecision[] = [];
-  private storage: any;
-  private statistics: ApprovalStatistics = {
-    totalTasksProcessed: 0,
-    approvalRate: 0,
-    rejectionRate: 0,
-    modificationRate: 0,
-    averageProcessingTime: 0,
-    topRejectionReasons: [],
-    approvalsByType: {},
-  };
-
-  // 🔬 Foundation Monitoring & Telemetry Systems
-  private systemMonitor: SystemMonitor;
-  private performanceTracker: PerformanceTracker;
-  private agentMonitor: AgentMonitor;
-  private mlMonitor: MLMonitor;
   private logger: Logger;
-
-  // 🛡️ Circuit Breaker Protection
-  private approvalCircuitBreaker: any;
   private storageCircuitBreaker: any;
   private aguiCircuitBreaker: any;
-
-  // 📊 Internal tracking
-  private isInitialized = false;
-  private shutdownInProgress = false;
 
   constructor(agui: AGUIInterface, config: Partial<TaskApprovalConfig> = {}) {
     super();
@@ -517,7 +472,7 @@ export class TaskApprovalSystem extends TypedEventBase {
     this.logger = getLogger('TaskApprovalSystem');'
 
     // 🏥 Initialize Foundation monitoring systems
-    this.systemMonitor = createSystemMonitor({ intervalMs: 5000 });
+    this.systemMonitor = createSystemMonitor(intervalMs: 5000 );
     this.performanceTracker = createPerformanceTracker();
     this.agentMonitor = createAgentMonitor();
     this.mlMonitor = createMLMonitor();
@@ -559,17 +514,16 @@ export class TaskApprovalSystem extends TypedEventBase {
     // 🎯 Mark as initialized and record metrics
     this.isInitialized = true;
     recordMetric('task_approval_system_initialized', 1);'
-    recordEvent('task_approval_system_ready', {'
+    recordEvent('task_approval_system_ready', '
       config: JSON.stringify(this.config),
-      timestamp: Date.now(),
-    });
+      timestamp: Date.now(),);
   }
 
   /**
    * Initialize storage for approval history persistence
    */
   private async initializeStorage(): Promise<void> {
-    return withAsyncTrace('task-approval-storage-init', async (span) => {'
+    return withAsyncTrace('task-approval-storage-init', async (_span) => {'
       const storageInitStartTime = Date.now();
 
       try {
@@ -594,10 +548,9 @@ export class TaskApprovalSystem extends TypedEventBase {
           recordHistogram('task_approval_storage_init_duration', initDuration);'
           recordMetric('task_approval_storage_initialized', 1);'
 
-          setTraceAttributes({
+          setTraceAttributes(
             'storage.initialization': 'completed',
-            'storage.init_duration_ms': initDuration,
-          });
+            'storage.init_duration_ms': initDuration,);
 
           this.logger.debug('Task approval system using memory-only storage', {'
             initDuration,
@@ -650,7 +603,7 @@ export class TaskApprovalSystem extends TypedEventBase {
   async reviewGeneratedTasks(
     scanResults: ScanResults
   ): Promise<BatchApprovalResults> {
-    return withAsyncTrace('task-approval-review-process', async (span) => {'
+    return withAsyncTrace('task-approval-review-process', async (_span) => {'
       const startTime = Date.now();
 
       setTraceAttributes({
@@ -975,7 +928,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           }
 
           // 📝 Create validation question for AGUI with telemetry
-          const questionStartTime = Date.now();
+          const _questionStartTime = Date.now();
           const question = this.createTaskReviewQuestion(task, correlationId);
           const questionCreationDuration = Date.now() - questionStartTime;
 
@@ -991,11 +944,10 @@ export class TaskApprovalSystem extends TypedEventBase {
             const displayDuration = Date.now() - displayStartTime;
 
             recordHistogram('task_details_display_duration', displayDuration);'
-            recordEvent('task_details_displayed', {'
+            recordEvent('task_details_displayed', '
               taskId: task.id,
               displayDuration,
-              correlationId,
-            });
+              correlationId,);
           }
 
           // 💬 Get user decision through AGUI with telemetry
@@ -1004,12 +956,11 @@ export class TaskApprovalSystem extends TypedEventBase {
           const aguiDuration = Date.now() - aguiStartTime;
 
           recordHistogram('agui_question_response_duration', aguiDuration);'
-          recordEvent('agui_response_received', {'
+          recordEvent('agui_response_received', '
             taskId: task.id,
             responseLength: response.length,
             aguiDuration,
-            correlationId,
-          });
+            correlationId,);
 
           // 🧠 Parse decision with telemetry
           const parseStartTime = Date.now();
@@ -1029,13 +980,12 @@ export class TaskApprovalSystem extends TypedEventBase {
             const rationaleDuration = Date.now() - rationaleStartTime;
 
             recordHistogram('rationale_collection_duration', rationaleDuration);'
-            recordEvent('rationale_collected', {'
+            recordEvent('rationale_collected', '
               taskId: task.id,
               decision: decision.decision,
               rationaleLength: rationale.length,
               duration: rationaleDuration,
-              correlationId,
-            });
+              correlationId,);
           }
 
           // 🔧 Get modifications if needed
@@ -1063,7 +1013,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           }
 
           // ✅ Create final approval decision
-          const approvalDecision: TaskApprovalDecision = {
+          const _approvalDecision: TaskApprovalDecision = {
             taskId: task.id,
             approved: decision.approved,
             decision: decision.decision,
@@ -1177,7 +1127,7 @@ export class TaskApprovalSystem extends TypedEventBase {
         // 🛡️ Use circuit breaker protection for AGUI operations
         return await this.aguiCircuitBreaker.execute(async () => {
           await this.agui.showMessage(
-            `\n📋 Reviewing batch of ${tasks.length} tasks`,`
+            `\n📋 Reviewing batch of $tasks.lengthtasks`,`
             'info''
           );
 
@@ -1209,11 +1159,10 @@ export class TaskApprovalSystem extends TypedEventBase {
           const questionDuration = Date.now() - questionStartTime;
 
           recordHistogram('batch_decision_response_duration', questionDuration);'
-          recordEvent('batch_decision_received', {'
+          recordEvent('batch_decision_received', '
             batchSize: tasks.length,
             decision: batchResponse,
-            questionDuration,
-          });
+            questionDuration,);
 
           let result: TaskApprovalDecision[];
           const processingStartTime = Date.now();
@@ -1252,7 +1201,7 @@ export class TaskApprovalSystem extends TypedEventBase {
               recordMetric('batch_bulk_modifications', 1);'
               break;
 
-            default:
+            default: {
               // Review individually with comprehensive telemetry
               recordEvent('batch_individual_review_started', {'
                 batchSize: tasks.length,
@@ -1282,6 +1231,7 @@ export class TaskApprovalSystem extends TypedEventBase {
               recordMetric('batch_individual_reviews', 1);'
               result = decisions;
               break;
+            }
           }
 
           const processingDuration = Date.now() - processingStartTime;
@@ -1322,11 +1272,10 @@ export class TaskApprovalSystem extends TypedEventBase {
         recordMetric('batch_processing_failed', 1);'
         recordHistogram('batch_processing_error_duration', duration);'
 
-        setTraceAttributes({
+        setTraceAttributes(
           'batch.failed': true,
           'batch.error': error instanceof Error ? error.message : String(error),
-          'batch.duration_ms': duration,
-        });
+          'batch.duration_ms': duration,);
 
         this.logger.error('Batch processing failed', {'
           batchSize: tasks.length,
@@ -1348,828 +1297,6 @@ export class TaskApprovalSystem extends TypedEventBase {
       }
     });
   }
-
-  /**
-   * Show scan summary to user
-   */
-  private async showScanSummary(scanResults: ScanResults): Promise<void> {
-    const summary = ``
-🔍 Document Scan Results Summary
-================================
-📁 Files Scanned: ${scanResults.scannedFiles}
-🔍 Issues Found: ${scanResults.totalIssues}
-📋 Tasks Generated: ${scanResults.generatedTasks.length}
-⏱️  Scan Duration: ${Math.round(scanResults.scanDuration / 1000)}s
-
-📊 Issue Severity Breakdown:
-${Object.entries(scanResults.severityCounts)
-  .map(([severity, count]) => `   ${severity}: ${count}`)`
-  .join('\n')}'
-
-📈 Issue Pattern Breakdown:
-${Object.entries(scanResults.patternCounts)
-  .map(([pattern, count]) => `   ${pattern}: ${count}`)`
-  .join('\n')}'
-`;`
-
-    await this.agui.showMessage(summary, 'info');'
-  }
-
-  /**
-   * Display detailed task information
-   */
-  private async displayTaskDetails(task: GeneratedSwarmTask): Promise<void> {
-    const details = ``
-🎯 Task Review: ${task.title}
-${'='.repeat(60)}'
-📝 Description: ${task.description}
-🏷️  Type: ${task.type}
-⚡ Priority: ${task.priority} 
-⏱️  Estimated Hours: ${task.estimatedHours}
-🤖 Suggested Swarm: ${task.suggestedSwarmType}
-👥 Required Agents: ${task.requiredAgentTypes.join(', ')}'
-
-📊 Source Analysis:
-   • File: ${task.sourceAnalysis.filePath}
-   • Line: ${task.sourceAnalysis.lineNumber||'N/A'}'
-   • Type: ${task.sourceAnalysis.type}
-   • Severity: ${task.sourceAnalysis.severity}
-   • Code: ${task.sourceAnalysis.codeSnippet||'N/A'}'
-
-✅ Acceptance Criteria:
-${task.acceptanceCriteria.map((criterion) => `   • ${criterion}`).join('\n')}'
-
-🏷️  Tags: ${task.sourceAnalysis.tags.join(', ')}'
-`;`
-
-    await this.agui.showMessage(details, 'info');'
-  }
-
-  /**
-   * Show batch summary
-   */
-  private async showBatchSummary(tasks: GeneratedSwarmTask[]): Promise<void> {
-    const summary = ``
-📦 Batch Summary (${tasks.length} tasks)
-${'='.repeat(40)}'
-${tasks
-  .map(
-    (task, index) =>
-      `${index + 1}. ${task.title} [${task.priority}] (${task.estimatedHours}h)``
-  )
-  .join('\n')}'
-`;`
-
-    await this.agui.showMessage(summary, 'info');'
-  }
-
-  /**
-   * Show final approval summary
-   */
-  private async showApprovalSummary(
-    results: BatchApprovalResults
-  ): Promise<void> {
-    const summary = ``
-✅ Task Approval Summary
-========================
-📋 Total Tasks: ${results.totalTasks}
-✅ Approved: ${results.approved}
-❌ Rejected: ${results.rejected}
-📝 Modified: ${results.modified}
-⏸️  Deferred: ${results.deferred}
-⏱️  Processing Time: ${Math.round(results.processingTime / 1000)}s
-
-${
-  results.approved > 0
-    ? `\n🚀 ${results.approved} tasks approved and ready for swarm execution!``
-    : '\n⚠️  No tasks were approved for execution.''
-}
-`;`
-
-    await this.agui.showMessage(summary, 'success');'
-  }
-
-  /**
-   * Create validation question for task review
-   */
-  private createTaskReviewQuestion(
-    task: GeneratedSwarmTask,
-    correlationId: string
-  ): ValidationQuestion {
-    return {
-      id: `task-review-${task.id}`,`
-      type: 'review',
-      question: `Do you want to approve this ${task.type}? "${task.title}"`,`
-      context: {
-        task,
-        analysis: task.sourceAnalysis,
-        correlationId,
-      },
-      options: [
-        'Approve - Add to swarm queue',
-        'Modify - Make changes before approval',
-        'Reject - Do not create this task',
-        'Defer - Review later',
-      ],
-      allowCustom: true,
-      confidence: 0.9,
-      priority: task.priority as any,
-      validationReason: `Task generated from ${task.sourceAnalysis.type} analysis`,`
-    };
-  }
-
-  /**
-   * Parse user response to approval question
-   */
-  private parseApprovalResponse(response: string): {
-    decision: TaskApprovalDecision['decision'];'
-    approved: boolean;
-  } {
-    const lowerResponse = response.toLowerCase();
-
-    if (lowerResponse.includes('approve')||lowerResponse ==='1') {'
-      return { decision: 'approve', approved: true };'
-    }
-    if (lowerResponse.includes('modify')||lowerResponse ==='2') {'
-      return { decision: 'modify', approved: true };'
-    }
-    if (lowerResponse.includes('reject')||lowerResponse ==='3') {'
-      return { decision: 'reject', approved: false };'
-    }
-    if (lowerResponse.includes('defer')||lowerResponse ==='4') {'
-      return { decision: 'defer', approved: false };'
-    }
-
-    // Default to approval for positive responses
-    const positiveKeywords = ['yes', 'ok', 'sure', 'good', 'fine'];'
-    if (positiveKeywords.some((keyword) => lowerResponse.includes(keyword))) {
-      return { decision: 'approve', approved: true };'
-    }
-
-    return { decision: 'reject', approved: false };'
-  }
-
-  /**
-   * Extract rationale from response
-   */
-  private extractRationale(response: string): string|undefined {
-    const rationaleMarkers = ['because',
-      'since',
-      'reason:',
-      'rationale:',
-      'due to',
-    ];
-
-    for (const marker of rationaleMarkers) {
-      const index = response.toLowerCase().indexOf(marker);
-      if (index >= 0) {
-        return response.substring(index).trim();
-      }
-    }
-
-    // If response is longer than a simple yes/no, treat it as rationale
-    if (response.length > 10 && !['1', '2', '3', '4'].includes(response)) {'
-      return response;
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Ask for rationale for decision
-   */
-  private async askForRationale(decision: string): Promise<string> {
-    const rationaleQuestion: ValidationQuestion = {
-      id: `rationale-${Date.now()}`,`
-      type: 'review',
-      question: `Please provide a rationale for your ${decision} decision:`,`
-      context: { decision },
-      confidence: 1.0,
-      priority: 'medium',
-    };
-
-    return await this.agui.askQuestion(rationaleQuestion);
-  }
-
-  /**
-   * Get modifications for a task
-   */
-  private async getTaskModifications(
-    task: GeneratedSwarmTask
-  ): Promise<TaskApprovalDecision['modifications']> {'
-    const modifications: TaskApprovalDecision['modifications'] = {};'
-
-    // Ask what to modify
-    const modifyQuestion: ValidationQuestion = {
-      id: `modify-${task.id}`,`
-      type: 'review',
-      question: 'What would you like to modify?',
-      context: { task },
-      options: [
-        'Title',
-        'Description',
-        'Priority',
-        'Estimated Hours',
-        'Required Agent Types',
-        'Acceptance Criteria',
-        'Multiple items',
-      ],
-      confidence: 0.8,
-    };
-
-    const modifyResponse = await this.agui.askQuestion(modifyQuestion);
-
-    // Handle specific modifications based on response
-    if (modifyResponse.includes('Title')||modifyResponse ==='1') {'
-      modifications.title = await this.askForNewValue('title', task.title);'
-    }
-    if (modifyResponse.includes('Description')||modifyResponse ==='2') {'
-      modifications.description = await this.askForNewValue(
-        'description',
-        task.description
-      );
-    }
-    if (modifyResponse.includes('Priority')||modifyResponse ==='3') {'
-      const priorityQuestion: ValidationQuestion = {
-        id: `priority-${task.id}`,`
-        type: 'review',
-        question: 'Select new priority:',
-        options: ['low', 'medium', 'high', 'critical'],
-        context: { currentPriority: task.priority },
-        confidence: 1.0,
-      };
-      const newPriority = await this.agui.askQuestion(priorityQuestion);
-      modifications.priority = newPriority as any;
-    }
-    if (modifyResponse.includes('Hours')||modifyResponse ==='4') {'
-      const hoursStr = await this.askForNewValue(
-        'estimated hours',
-        task.estimatedHours.toString()
-      );
-      modifications.estimatedHours =
-        Number.parseInt(hoursStr)||task.estimatedHours;
-    }
-
-    return modifications;
-  }
-
-  /**
-   * Ask for new value for a field
-   */
-  private async askForNewValue(
-    fieldName: string,
-    currentValue: string
-  ): Promise<string> {
-    const question: ValidationQuestion = {
-      id: `new-${fieldName}-${Date.now()}`,`
-      type:'review',
-      question: `Enter new ${fieldName} (current: "${currentValue}"):`,`
-      context: { fieldName, currentValue },
-      confidence: 1.0,
-    };
-
-    return await this.agui.askQuestion(question);
-  }
-
-  /**
-   * Apply modifications to a task
-   */
-  private applyModifications(
-    task: GeneratedSwarmTask,
-    decision: TaskApprovalDecision
-  ): GeneratedSwarmTask {
-    if (!decision.modifications) {
-      return task;
-    }
-
-    return {
-      ...task,
-      title: decision.modifications.title||task.title,
-      description: decision.modifications.description||task.description,
-      priority: decision.modifications.priority||task.priority,
-      estimatedHours:
-        decision.modifications.estimatedHours||task.estimatedHours,
-      requiredAgentTypes:
-        decision.modifications.requiredAgentTypes||task.requiredAgentTypes,
-      acceptanceCriteria:
-        decision.modifications.acceptanceCriteria||task.acceptanceCriteria,
-    };
-  }
-
-  /**
-   * Approve all tasks in a batch
-   */
-  private approveAllTasks(
-    tasks: GeneratedSwarmTask[],
-    rationale: string
-  ): TaskApprovalDecision[] {
-    return tasks.map((task) => ({
-      taskId: task.id,
-      approved: true,
-      decision:'approve' as const,
-      rationale,
-      decisionMaker: 'user',
-      timestamp: new Date(),
-      correlationId: `batch-approve-${Date.now()}`,`
-    }));
-  }
-
-  /**
-   * Reject all tasks in a batch
-   */
-  private rejectAllTasks(
-    tasks: GeneratedSwarmTask[],
-    rationale: string
-  ): TaskApprovalDecision[] {
-    return tasks.map((task) => ({
-      taskId: task.id,
-      approved: false,
-      decision: 'reject' as const,
-      rationale,
-      decisionMaker: 'user',
-      timestamp: new Date(),
-      correlationId: `batch-reject-${Date.now()}`,`
-    }));
-  }
-
-  /**
-   * Apply bulk modifications to all tasks
-   */
-  private async applyBulkModifications(
-    tasks: GeneratedSwarmTask[]
-  ): Promise<TaskApprovalDecision[]> {
-    // Get bulk modifications
-    const bulkModifications = await this.getBulkModifications();
-
-    return tasks.map((task) => ({
-      taskId: task.id,
-      approved: true,
-      decision: 'modify' as const,
-      ...(bulkModifications !== undefined && {
-        modifications: bulkModifications,
-      }),
-      rationale: 'Bulk modifications applied to entire batch',
-      decisionMaker: 'user',
-      timestamp: new Date(),
-      correlationId: `batch-modify-${Date.now()}`,`
-    }));
-  }
-
-  /**
-   * Get bulk modifications for batch processing
-   */
-  private async getBulkModifications(): Promise<
-    TaskApprovalDecision['modifications']'
-  > {
-    const question: ValidationQuestion = {
-      id: `bulk-modify-${Date.now()}`,`
-      type: 'review',
-      question: 'What bulk modifications would you like to apply?',
-      options: [
-        'Lower all priorities',
-        'Increase estimated hours by 50%',
-        'Add specific agent type to all tasks',
-        'Custom modifications',
-      ],
-      context: {},
-      confidence: 0.8,
-    };
-
-    const response = await this.agui.askQuestion(question);
-
-    // Process bulk modification choice
-    switch (response) {
-      case '1':'
-      case 'Lower all priorities':'
-        return { priority: 'low' };'
-      case '2':'
-      case 'Increase estimated hours by 50%':'
-        return {}; // Would need to calculate per-task
-      default:
-        return {};
-    }
-  }
-
-  /**
-   * Update approval statistics with Foundation telemetry
-   */
-  private updateStatistics(
-    decisions: TaskApprovalDecision[],
-    processingTime: number
-  ): void {
-    withTrace('update-statistics', (span) => {'
-      const startTime = Date.now();
-
-      // Track previous statistics for comparison
-      const previousStats = { ...this.statistics };
-
-      this.statistics.totalTasksProcessed += decisions.length;
-
-      const approved = decisions.filter((d) => d.approved).length;
-      const rejected = decisions.filter((d) => d.decision === 'reject').length;'
-      const modified = decisions.filter((d) => d.decision === 'modify').length;'
-      const deferred = decisions.filter((d) => d.decision === 'defer').length;'
-
-      this.statistics.approvalRate =
-        this.statistics.totalTasksProcessed > 0
-          ? (previousStats.totalTasksProcessed * previousStats.approvalRate +
-              approved) /
-            this.statistics.totalTasksProcessed
-          : 0;
-      this.statistics.rejectionRate =
-        this.statistics.totalTasksProcessed > 0
-          ? (previousStats.totalTasksProcessed * previousStats.rejectionRate +
-              rejected) /
-            this.statistics.totalTasksProcessed
-          : 0;
-      this.statistics.modificationRate =
-        this.statistics.totalTasksProcessed > 0
-          ? (previousStats.totalTasksProcessed *
-              previousStats.modificationRate +
-              modified) /
-            this.statistics.totalTasksProcessed
-          : 0;
-
-      // Update average processing time with weighted average
-      const currentAvg = this.statistics.averageProcessingTime;
-      const newAvg =
-        currentAvg === 0 ? processingTime : (currentAvg + processingTime) / 2;
-      this.statistics.averageProcessingTime = newAvg;
-
-      // Track rejection reasons with telemetry
-      let newRejectionReasons = 0;
-      for (const decision of decisions) {
-        if (decision.decision === 'reject') {'
-          const existingReason = this.statistics.topRejectionReasons.find(
-            (r) => r.reason === decision.rationale
-          );
-          if (existingReason) {
-            existingReason.count++;
-          } else {
-            this.statistics.topRejectionReasons.push({
-              reason: decision.rationale,
-              count: 1,
-            });
-            newRejectionReasons++;
-          }
-        }
-
-        // Track approval by type
-        if (decision.approved) {
-          const taskType = decisions.find((d) => d.taskId === decision.taskId)
-            ?.taskId
-            ? 'unknown''
-            : 'task;
-          this.statistics.approvalsByType[taskType] =
-            (this.statistics.approvalsByType[taskType]||0) + 1;
-        }
-      }
-
-      // Sort rejection reasons by count
-      this.statistics.topRejectionReasons.sort((a, b) => b.count - a.count);
-
-      // 📊 Record comprehensive metrics
-      recordGauge('task_approval_total_processed',
-        this.statistics.totalTasksProcessed
-      );
-      recordGauge('task_approval_approval_rate', this.statistics.approvalRate);'
-      recordGauge(
-        'task_approval_rejection_rate',
-        this.statistics.rejectionRate
-      );
-      recordGauge(
-        'task_approval_modification_rate',
-        this.statistics.modificationRate
-      );
-      recordGauge(
-        'task_approval_average_processing_time',
-        this.statistics.averageProcessingTime
-      );
-
-      recordMetric('statistics_updated', 1);'
-      recordMetric('decisions_processed_in_update', decisions.length);'
-
-      setTraceAttributes({
-        'statistics.decisions_processed': decisions.length,
-        'statistics.approved': approved,
-        'statistics.rejected': rejected,
-        'statistics.modified': modified,
-        'statistics.deferred': deferred,
-        'statistics.new_rejection_reasons': newRejectionReasons,
-        'statistics.total_processed': this.statistics.totalTasksProcessed,
-        'statistics.approval_rate': this.statistics.approvalRate,
-        'statistics.processing_time': processingTime,
-      });
-
-      const updateDuration = Date.now() - startTime;
-      recordHistogram('statistics_update_duration', updateDuration);'
-
-      recordEvent('statistics_updated', {'
-        decisionsProcessed: decisions.length,
-        approved,
-        rejected,
-        modified,
-        deferred,
-        totalProcessed: this.statistics.totalTasksProcessed,
-        approvalRate: this.statistics.approvalRate,
-        rejectionRate: this.statistics.rejectionRate,
-        modificationRate: this.statistics.modificationRate,
-        averageProcessingTime: this.statistics.averageProcessingTime,
-        newRejectionReasons,
-        updateDuration,
-      });
-
-      this.logger.debug('Approval statistics updated successfully', {'
-        decisionsProcessed: decisions.length,
-        approved,
-        rejected,
-        modified,
-        deferred,
-        totalProcessed: this.statistics.totalTasksProcessed,
-        approvalRate: this.statistics.approvalRate,
-        updateDuration,
-      });
-    });
-  }
-
-  /**
-   * Get approval statistics with Foundation telemetry
-   */
-  getStatistics(): ApprovalStatistics {
-    return withTrace('get-approval-statistics', (span) => {'
-      recordEvent('approval_statistics_accessed', {'
-        totalProcessed: this.statistics.totalTasksProcessed,
-        approvalRate: this.statistics.approvalRate,
-        timestamp: Date.now(),
-      });
-
-      setTraceAttributes({
-        'statistics.total_processed': this.statistics.totalTasksProcessed,
-        'statistics.approval_rate': this.statistics.approvalRate,
-        'statistics.rejection_rate': this.statistics.rejectionRate,
-        'statistics.modification_rate': this.statistics.modificationRate,
-      });
-
-      recordMetric('approval_statistics_accessed', 1);'
-
-      return { ...this.statistics };
-    });
-  }
-
-  /**
-   * Get approval history with Foundation telemetry
-   */
-  getApprovalHistory(): TaskApprovalDecision[] {
-    return withTrace('get-approval-history', (span) => {'
-      recordEvent('approval_history_accessed', {'
-        historyLength: this.approvalHistory.length,
-        timestamp: Date.now(),
-      });
-
-      setTraceAttributes({
-        'history.length': this.approvalHistory.length,
-        'history.accessed': true,
-      });
-
-      recordMetric('approval_history_accessed', 1);'
-      recordGauge('approval_history_size', this.approvalHistory.length);'
-
-      return [...this.approvalHistory];
-    });
-  }
-
-  /**
-   * Export approval decisions for audit with Foundation telemetry
-   */
-  exportDecisions(format: 'json' | 'csv' = 'json'): string {'
-    return withTrace('export-approval-decisions', (span) => {'
-      const startTime = Date.now();
-
-      setTraceAttributes({
-        'export.format': format,
-        'export.decisions_count': this.approvalHistory.length,
-      });
-
-      recordEvent('approval_decisions_export_started', {'
-        format,
-        decisionsCount: this.approvalHistory.length,
-        timestamp: Date.now(),
-      });
-
-      try {
-        let result: string;
-
-        if (format === 'csv') {'
-          const headers = [
-            'Task ID',
-            'Decision',
-            'Approved',
-            'Rationale',
-            'Decision Maker',
-            'Timestamp',
-          ];
-          const rows = this.approvalHistory.map((decision) => [
-            decision.taskId,
-            decision.decision,
-            decision.approved.toString(),
-            decision.rationale,
-            decision.decisionMaker,
-            decision.timestamp.toISOString(),
-          ]);
-
-          result = [headers, ...rows]
-            .map((row) => row.map((cell) => `"${cell}"`).join(','))'
-            .join('\n');'
-        } else {
-          result = JSON.stringify(this.approvalHistory, null, 2);
-        }
-
-        const exportDuration = Date.now() - startTime;
-        recordHistogram('approval_decisions_export_duration', exportDuration, {'
-          format,
-          decisions_count: this.approvalHistory.length.toString(),
-        });
-
-        setTraceAttributes({
-          'export.success': true,
-          'export.duration_ms': exportDuration,
-          'export.size_bytes': result.length,
-        });
-
-        recordEvent('approval_decisions_export_completed', {'
-          format,
-          decisionsCount: this.approvalHistory.length,
-          exportSize: result.length,
-          duration: exportDuration,
-          success: true,
-        });
-
-        recordMetric('approval_decisions_exported', 1);'
-
-        this.logger.info('Approval decisions exported successfully', {'
-          format,
-          decisionsCount: this.approvalHistory.length,
-          exportSize: result.length,
-          duration: exportDuration,
-        });
-
-        return result;
-      } catch (error) {
-        const exportDuration = Date.now() - startTime;
-        recordMetric('approval_decisions_export_failed', 1);'
-        recordHistogram(
-          'approval_decisions_export_error_duration',
-          exportDuration
-        );
-
-        setTraceAttributes({
-          'export.failed': true,
-          'export.error':'
-            error instanceof Error ? error.message : String(error),
-          'export.duration_ms': exportDuration,
-        });
-
-        this.logger.error('Approval decisions export failed', {'
-          format,
-          error: error instanceof Error ? error.message : String(error),
-          duration: exportDuration,
-        });
-
-        recordEvent('approval_decisions_export_failed', {'
-          format,
-          error: error instanceof Error ? error.message : String(error),
-          duration: exportDuration,
-        });
-
-        throw new EnhancedError('Failed to export approval decisions', {'
-          cause: error,
-          format,
-          decisionsCount: this.approvalHistory.length,
-          duration: exportDuration,
-        });
-      }
-    });
-  }
-
-  /**
-   * Graceful shutdown with Foundation cleanup
-   */
-  async shutdown(): Promise<void> {
-    return withAsyncTrace('task-approval-shutdown', async (span) => {'
-      if (this.shutdownInProgress) {
-        this.logger.warn('Shutdown already in progress');'
-        return;
-      }
-
-      this.shutdownInProgress = true;
-      const shutdownStartTime = Date.now();
-
-      recordEvent('task_approval_system_shutdown_started', {'
-        timestamp: Date.now(),
-      });
-
-      this.logger.info('Initiating TaskApprovalSystem shutdown...');'
-
-      try {
-        // 🛑 Stop accepting new operations
-        setTraceAttributes({
-          'shutdown.initiated': true,
-          'shutdown.total_decisions': this.approvalHistory.length,
-          'shutdown.total_processed': this.statistics.totalTasksProcessed,
-        });
-
-        // 💾 Save any pending approval data
-        if (this.storage) {
-          await this.storageCircuitBreaker.execute(async () => {
-            // Save approval history if storage is available
-            this.logger.debug('Saving approval history during shutdown');'
-          });
-        }
-
-        // 📊 Record final statistics
-        recordGauge(
-          'task_approval_final_total_processed',
-          this.statistics.totalTasksProcessed
-        );
-        recordGauge(
-          'task_approval_final_approval_rate',
-          this.statistics.approvalRate
-        );
-        recordGauge(
-          'task_approval_final_history_size',
-          this.approvalHistory.length
-        );
-
-        // 🧹 Clean up monitoring systems
-        // Foundation monitoring systems don't need explicit cleanup'
-
-        // 🔌 Clear event listeners
-        this.removeAllListeners();
-
-        // 🎯 Mark as no longer initialized
-        this.isInitialized = false;
-
-        const shutdownDuration = Date.now() - shutdownStartTime;
-        recordHistogram(
-          'task_approval_system_shutdown_duration',
-          shutdownDuration
-        );
-
-        setTraceAttributes({
-          'shutdown.completed': true,
-          'shutdown.duration_ms': shutdownDuration,
-          'shutdown.clean': true,
-        });
-
-        recordEvent('task_approval_system_shutdown_completed', {'
-          totalDecisions: this.approvalHistory.length,
-          totalProcessed: this.statistics.totalTasksProcessed,
-          shutdownDuration,
-          success: true,
-        });
-
-        this.logger.info('TaskApprovalSystem shutdown completed successfully', {'
-          totalDecisions: this.approvalHistory.length,
-          totalProcessed: this.statistics.totalTasksProcessed,
-          shutdownDuration,
-        });
-
-        recordMetric('task_approval_system_shutdown_completed', 1);'
-      } catch (error) {
-        const shutdownDuration = Date.now() - shutdownStartTime;
-        recordMetric('task_approval_system_shutdown_failed', 1);'
-        recordHistogram(
-          'task_approval_system_shutdown_error_duration',
-          shutdownDuration
-        );
-
-        setTraceAttributes({
-          'shutdown.failed': true,
-          'shutdown.error':'
-            error instanceof Error ? error.message : String(error),
-          'shutdown.duration_ms': shutdownDuration,
-        });
-
-        this.logger.error('TaskApprovalSystem shutdown failed', {'
-          error: error instanceof Error ? error.message : String(error),
-          duration: shutdownDuration,
-        });
-
-        recordEvent('task_approval_system_shutdown_failed', {'
-          error: error instanceof Error ? error.message : String(error),
-          duration: shutdownDuration,
-        });
-
-        throw new EnhancedError('TaskApprovalSystem shutdown failed', {'
-          cause: error,
-          duration: shutdownDuration,
-        });
-      } finally {
-        this.shutdownInProgress = false;
-      }
-    });
-  }
-}
 
 /**
  * Create task approval system with AGUI integration

@@ -17,9 +17,8 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 // ============================================================================
 // CORE CONFIGURATION INTERFACES
@@ -178,11 +177,11 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   private config: EnterpriseArchConfig;
   private monitoringTimers = new Map<string, NodeJS.Timeout>();
 
-  constructor(config: Partial<EnterpriseArchConfig> = {}) {
+  constructor(_config: Partial<EnterpriseArchConfig> = {}) {
     super();
     this.logger = getLogger('EnterpriseArchitectureManager');'
 
-    this.config = {
+    this.config = 
       enablePrincipleValidation: true,
       enableTechnologyStandardCompliance: true,
       enableArchitectureGovernance: true,
@@ -195,8 +194,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       maxTechnologyStandards: 100,
       complianceThreshold: 85,
       governanceApprovalTimeout: 604800000, // 7 days
-      ...config,
-    };
+      ...config,;
   }
 
   /**
@@ -868,7 +866,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
   private setupServiceEventForwarding(): void {
     // Forward events from Architecture Principle Service
     if (this.architecturePrincipleService) {
-      this.architecturePrincipleService.on('principle-created', (data: any) => {'
+      this.architecturePrincipleService.on('principle-created', (_data: any) => {'
         this.emit('architecture-principle-created', data);'
       });
       this.architecturePrincipleService.on(
@@ -881,7 +879,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
 
     // Forward events from Technology Standards Service
     if (this.technologyStandardsService) {
-      this.technologyStandardsService.on('standard-created', (data: any) => {'
+      this.technologyStandardsService.on('standard-created', (_data: any) => {'
         this.emit('technology-standard-created', data);'
       });
       this.technologyStandardsService.on(
@@ -1035,7 +1033,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         if (
           decision.status === 'pending_approval' &&'
           decision.approvalDeadline <= now
-        ) {
+        ) 
           this.logger.warn('Governance decision approval overdue', {'
             decisionId: decision.id,
             title: decision.title,
@@ -1047,7 +1045,6 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
             title: decision.title,
             approvalDeadline: decision.approvalDeadline,
           });
-        }
       }
     } catch (error) {
       this.logger.error('Failed to review governance decisions:', error);'

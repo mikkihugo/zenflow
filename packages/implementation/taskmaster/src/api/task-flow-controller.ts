@@ -23,13 +23,11 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { DatabaseProvider } from '@claude-zen/infrastructure';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
-
-import { TaskApprovalSystem } from '../agui/task-approval-system';
 import { AGUISystem } from '../agui/main';
+import { TaskApprovalSystem } from '../agui/task-approval-system';
 import { WorkflowKanban } from './workflow-kanban';
 
 // =============================================================================
@@ -170,12 +168,6 @@ export interface TaskFlowStatus {
  */
 export class TaskFlowController extends TypedEventBase {
   private readonly logger: Logger;
-  private readonly kanban: WorkflowKanban;
-  private readonly agui: AGUISystem;
-  private readonly approvalSystem: TaskApprovalSystem;
-  private readonly config: TaskFlowConfig;
-  private dbProvider: DatabaseProvider | null = null;
-  private isHalted: boolean = false;
 
   constructor(config: TaskFlowConfig) {
     super();
@@ -365,7 +357,7 @@ export class TaskFlowController extends TypedEventBase {
     for (const [state, gate] of Object.entries(this.config.gates)) {
       if (gate.enabled) {
         const pending = await this.getGateQueueDepth(state as TaskFlowState);
-        approvalQueues[`${state}-gate`] = {`
+        approvalQueues[`$state-gate`] = {`
           pending,
           avgWaitTime: await this.getAverageWaitTime(state as TaskFlowState),
         };
@@ -532,15 +524,14 @@ export class TaskFlowController extends TypedEventBase {
     // Request human approval
     try {
       const response = await this.agui.askQuestion({
-        id: `gate-${toState}-${taskId}`,`
+        id: `gate-$toState-$taskId`,`
         type: 'approval',
         question: gate.approvalQuestion,
-        context: {
+        context: 
           taskId,
           toState,
           confidence,
-          queueDepth,
-        },
+          queueDepth,,
         confidence,
         priority: confidence > 0.7 ? 'high' : 'medium',
       });
@@ -565,11 +556,10 @@ export class TaskFlowController extends TypedEventBase {
     const gate = this.config.gates[toState];
 
     if (gate?.onQueueFull === 'spillover' && gate.spilloverTarget) {'
-      this.logger.info('WIP limit reached - redirecting to spillover state', {'
+      this.logger.info('WIP limit reached - redirecting to spillover state', '
         taskId,
         originalState: toState,
-        spilloverState: gate.spilloverTarget,
-      });
+        spilloverState: gate.spilloverTarget,);
       return this.moveTask(taskId, gate.spilloverTarget);
     }
 
@@ -875,16 +865,16 @@ export class TaskFlowController extends TypedEventBase {
     severity: 'low' | 'medium' | 'high' | 'critical;
     historicalFrequency: number;
   }>> {
-    const enhancedBottlenecks = [];
+    const _enhancedBottlenecks = [];
 
-    for (const state of bottlenecks) {
+    for (let state of bottlenecks) {
       const utilization = this.kanban.getStateTaskCount(state) / this.config.wipLimits[state];
       
       // Calculate historical frequency from database
-      let historicalFrequency = 0.5; // Default
+      const _historicalFrequency = 0.5; // Default
       if (this.dbProvider) {
         try {
-          const result = await this.dbProvider.query(``
+          const _result = await this.dbProvider.query(``
             SELECT COUNT(*) as bottleneck_count,
                    (SELECT COUNT(*) FROM task_flow_metrics WHERE state = ?) as total_measurements
             FROM task_flow_metrics 
@@ -967,7 +957,7 @@ export class TaskFlowController extends TypedEventBase {
           try {
             const data = JSON.parse(resolution.event_data);
             if (data.resolution_strategy) {
-              recommendations.push(`Historical success: ${data.resolution_strategy} (${resolution.frequency} times)`);`
+              recommendations.push(`Historical success: $data.resolution_strategy($resolution.frequencytimes)`);`
             }
           } catch (parseError) {
             // Skip malformed data
@@ -983,7 +973,7 @@ export class TaskFlowController extends TypedEventBase {
       recommendations.push(`URGENT: Increase WIP limit for ${state} (currently ${wipLimit}, suggested ${Math.ceil(wipLimit * 1.2)})`);`
       recommendations.push(`Consider temporary task redistribution from ${state}`);`
     } else if (utilization > 0.9) {
-      recommendations.push(`Monitor ${state} closely - approaching critical capacity`);`
+      recommendations.push(`Monitor $stateclosely - approaching critical capacity`);`
       recommendations.push(`Review task complexity in ${state} queue`);`
     }
 
@@ -1100,7 +1090,7 @@ export class TaskFlowController extends TypedEventBase {
     const recommendations: string[] = [];
     const utilization = this.kanban.getStateTaskCount(state) / this.config.wipLimits[state];
 
-    recommendations.push(`Current utilization: ${Math.round(utilization * 100)}%`);`
+    recommendations.push(`Current utilization: $Math.round(utilization * 100)%`);`
     
     if (historicalData.spilloverSuccessRate > 0.8) {
       recommendations.push('Historical spillover success rate is high - consider spillover');'
@@ -1108,14 +1098,14 @@ export class TaskFlowController extends TypedEventBase {
       recommendations.push('Spillover has mixed results - consider alternative approaches');'
     }
 
-    recommendations.push(`Increase WIP limit from ${this.config.wipLimits[state]} to ${Math.ceil(this.config.wipLimits[state] * 1.2)}`);`
+    recommendations.push(`Increase WIP limit from $this.config.wipLimits[state]to $Math.ceil(this.config.wipLimits[state] * 1.2)`);`
     recommendations.push('Review and redistribute existing tasks');'
     recommendations.push('Consider parallel processing if tasks are independent');'
 
     return recommendations;
   }
 
-  private async recordCapacityDecision(taskId: string, state: TaskFlowState, decision: string, recommendations: string[]): Promise<void> {
+  private async recordCapacityDecision(taskId: string, state: TaskFlowState, decision: string, recommendations: string[]): Promise<void> 
     if (!this.dbProvider) return;
 
     try {
@@ -1135,11 +1125,10 @@ export class TaskFlowController extends TypedEventBase {
     } catch (error) {
       this.logger.error('Error recording capacity decision', error);'
     }
-  }
 
 
   // Add missing helper methods for system halt/resume
-  private async gracefullyStopActiveTaskProcessing(): Promise<void> {
+  private async gracefullyStopActiveTaskProcessing(): Promise<void> 
     if (!this.dbProvider) {
       this.logger.warn('Database not available - skipping graceful task processing halt');'
       return;
@@ -1164,9 +1153,8 @@ export class TaskFlowController extends TypedEventBase {
       this.logger.error('Error during graceful task processing halt', error);'
       throw error;
     }
-  }
 
-  private async persistSystemStateForRecovery(): Promise<void> {
+  private async persistSystemStateForRecovery(): Promise<void> 
     if (!this.dbProvider) {
       this.logger.warn('Database not available - skipping state persistence');'
       return;
@@ -1195,9 +1183,8 @@ export class TaskFlowController extends TypedEventBase {
       this.logger.error('Error persisting system state', error);'
       throw error;
     }
-  }
 
-  private async notifySystemHaltToServices(reason: string): Promise<void> {
+  private async notifySystemHaltToServices(reason: string): Promise<void> 
     try {
       // Emit system-wide halt notification
       this.emit('systemHaltNotification', {'
@@ -1215,9 +1202,8 @@ export class TaskFlowController extends TypedEventBase {
       this.logger.error('Error notifying services of system halt', error);'
       // Don't throw - this shouldn't prevent halt'
     }
-  }
 
-  private async updateSystemStatusInDatabase(status: string, reason: string): Promise<void> {
+  private async updateSystemStatusInDatabase(status: string, reason: string): Promise<void> 
     if (!this.dbProvider) return;
 
     try {
@@ -1236,9 +1222,8 @@ export class TaskFlowController extends TypedEventBase {
     } catch (error) {
       this.logger.error('Error updating system status in database', error);'
     }
-  }
 
-  private async restoreSystemStateFromStorage(): Promise<{ taskCount: number }> {
+  private async restoreSystemStateFromStorage(): Promise<taskCount: number > 
     if (!this.dbProvider) {
       return { taskCount: 0 };
     }
@@ -1271,9 +1256,8 @@ export class TaskFlowController extends TypedEventBase {
       this.logger.error('Error restoring system state', error);'
       return { taskCount: 0 };
     }
-  }
 
-  private async reinitializeTaskProcessingQueues(): Promise<void> {
+  private async reinitializeTaskProcessingQueues(): Promise<void> 
     if (!this.dbProvider) return;
 
     try {
@@ -1297,9 +1281,8 @@ export class TaskFlowController extends TypedEventBase {
       this.logger.error('Error reinitializing task processing queues', error);'
       throw error;
     }
-  }
 
-  private async reconnectToExternalServices(): Promise<void> {
+  private async reconnectToExternalServices(): Promise<void> 
     try {
       // Reinitialize components that might have been disconnected
       // This could include database connections, external APIs, etc.
@@ -1317,7 +1300,6 @@ export class TaskFlowController extends TypedEventBase {
       this.logger.error('Error reconnecting to external services', error);'
       throw error;
     }
-  }
 }
 
 // =============================================================================
@@ -1327,7 +1309,7 @@ export class TaskFlowController extends TypedEventBase {
 /**
  * Create a new Task Flow Controller with the specified configuration
  */
-export function createTaskFlowController(
+export function _createTaskFlowController(
   config: TaskFlowConfig
 ): TaskFlowController {
   return new TaskFlowController(config);

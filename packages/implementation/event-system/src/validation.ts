@@ -14,9 +14,7 @@ import type {
   SystemEvent,
 } from './core/interfaces;
 
-import { EventManagerTypes, EventTypeGuards } from './core/interfaces;
-import type { EventManager } from './manager;
-import type { EventRegistry } from './registry;
+import { EventManagerTypes, EventTypeGuards } from './core/interfaces;'./manager;'./registry;
 
 /**
  * Validation result interface.
@@ -225,10 +223,6 @@ export interface IntegrationValidationConfig {
  */
 export class UELValidationFramework {
   private eventTypeSchemas = new Map<string, EventTypeSchema>();
-  private healthConfig: HealthValidationConfig;
-  private integrationConfig: IntegrationValidationConfig;
-  private validationHistory: ValidationResult[] = [];
-  private logger: Logger;
 
   constructor(logger: Logger) {
     this.logger = logger;
@@ -495,14 +489,14 @@ export class UELValidationFramework {
       });
     }
 
-    const validationTime = Date.now() - startTime;
-    const score = this.calculateValidationScore(errors, warnings);
+    const _validationTime = Date.now() - startTime;
+    const _score = this.calculateValidationScore(errors, warnings);
 
     return {
       valid:
         errors.filter((e) => e.severity === 'critical'||e.severity ==='high')'
           .length === 0,
-      score,
+      _score,
       errors,
       warnings,
       recommendations,

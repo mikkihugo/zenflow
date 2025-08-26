@@ -9,7 +9,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 
 import { getLogger } from '../config/logging-config';
 
-import { MemorySystem } from './core/memory-system';
+import type { MemorySystem } from './core/memory-system';
 
 const logger = getLogger('context-manager');'
 
@@ -127,7 +127,6 @@ export const DEFAULT_CONTEXT_CONFIG: ContextManagerConfig = {
  */
 export class ContextManager extends TypedEventBase {
   private config: ContextManagerConfig;
-  private memorySystem: MemorySystem;
   private contextCache: Map<string, { data: unknown; timestamp: number }> =
     new Map();
   private syncTimer?: NodeJS.Timeout;
@@ -263,7 +262,7 @@ export class ContextManager extends TypedEventBase {
       await this.memorySystem.store(id, contextData, namespace);
 
       // Update cache
-      const cacheKey = `${type}:${id}`;`
+      const cacheKey = `$type:$id`;`
       this.contextCache.set(cacheKey, {
         data: contextData,
         timestamp: Date.now(),
@@ -271,11 +270,10 @@ export class ContextManager extends TypedEventBase {
 
       logger.debug('Context saved', { type, id });'
 
-      this.emit('context-saved', {'
+      this.emit('context-saved', '
         type,
         id,
-        success: true,
-      });
+        success: true,);
 
       return true;
     } catch (error) {
@@ -283,11 +281,10 @@ export class ContextManager extends TypedEventBase {
         error instanceof Error ? error.message : String(error);
       logger.error('Context saving failed', { type, id, error: errorMessage });'
 
-      this.emit('context-error', {'
+      this.emit('context-error', '
         type,
         id,
-        error: errorMessage,
-      });
+        error: errorMessage,);
 
       return false;
     }
@@ -473,20 +470,6 @@ export class ContextManager extends TypedEventBase {
     this.contextCache.clear();
     this.emit('shutdown', {});'
     logger.info('ContextManager shutdown');'
-  }
-
-  /**
-   * Get namespace for context type
-   */
-  private getNamespace(type: 'agent|swarm|session|global'): string {'
-    return this.config.namespaces[type];
-  }
-
-  /**
-   * Check if cache entry is valid
-   */
-  private isCacheValid(timestamp: number): boolean {
-    return Date.now() - timestamp < this.config.cacheTimeout;
   }
 
   /**

@@ -6,17 +6,13 @@
  */
 
 import {
-  getLogger,
-  type Logger,
   EnhancedError,
-  withRetry,
-  Result,
-  ok,
-  err,
+  getLogger,
   TypedEventBase,
+  withRetry,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('LanceDBBackend');'
+const _logger = getLogger('LanceDBBackend');'
 
 /**
  * Configuration for LanceDB vector store
@@ -89,11 +85,6 @@ export interface VectorSearchResult {
  * - Foundation integration for logging and monitoring
  */
 export class VectorStore extends TypedEventBase {
-  private readonly logger: Logger;
-  private readonly config: VectorStoreConfig;
-  private isInitialized = false;
-  private connectionPool: unknown[] = [];
-  private indexCache = new Map<string, unknown>();
 
   constructor(config: VectorStoreConfig) {
     super();
@@ -173,7 +164,7 @@ export class VectorStore extends TypedEventBase {
     for (let i = 0; i < maxConnections; i++) {
       // In a real implementation, create actual LanceDB connections
       const connection = {
-        id: `conn_${i}`,`
+        id: `conn_$i`,`
         created: Date.now(),
         active: true,
       };
@@ -243,7 +234,7 @@ export class VectorStore extends TypedEventBase {
       }
 
       // Generate ID if not provided
-      const id = data.id || `vec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
+      const _id = data.id || `vec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
       
       // Process the insertion (in real implementation, use actual LanceDB)
       const processedAt = new Date().toISOString();
@@ -363,9 +354,9 @@ export class VectorStore extends TypedEventBase {
         
         if (!options.threshold || similarity >= options.threshold) {
           results.push({
-            id: `result_${i}_${Date.now()}`,`
+            id: `result_$i_$Date.now()`,`
             similarity,
-            metadata: {
+            metadata: 
               category: `category_${i}`,`
               timestamp: Date.now() - Math.random() * 86400000, // Last 24 hours
               source: 'similarity_search',

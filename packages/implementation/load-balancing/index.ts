@@ -41,39 +41,34 @@
  * ````
  */
 
-// Export main load balancing manager and types
-export * from './main';
-export * from './types';
+// Export algorithm implementations
+export * from "./algorithms/adaptive-learning";
+export * from "./algorithms/least-connections";
+export * from "./algorithms/ml-predictive";
+export * from "./algorithms/resource-aware";
+export * from "./algorithms/weighted-round-robin";
+// Export capacity management
+export * from "./capacity/agent-capacity-manager";
+export * from "./capacity/capacity-predictor";
+export { ResourceMonitor } from "./capacity/resource-monitor";
 // Export interfaces without re-exporting duplicates
 export type {
-  LoadBalancingAlgorithm,
-  HealthChecker as HealthCheckerInterface,
-} from './interfaces';
-
-// Export algorithm implementations
-export * from './algorithms/adaptive-learning';
-export * from './algorithms/least-connections';
-export * from './algorithms/ml-predictive';
-export * from './algorithms/resource-aware';
-export * from './algorithms/weighted-round-robin';
-
-// Export capacity management
-export * from './capacity/agent-capacity-manager';
-export * from './capacity/capacity-predictor';
-export { ResourceMonitor } from './capacity/resource-monitor';
-
-// Export routing components
-export * from './routing/failover-manager';
-export { HealthChecker } from './routing/health-checker';
-export * from './routing/intelligent-routing-engine';
-export * from './routing/task-agent-matcher';
-
+	HealthChecker as HealthCheckerInterface,
+	LoadBalancingAlgorithm,
+} from "./interfaces";
+// Export main load balancing manager and types
+export * from "./main";
+// Default export for convenience
+export { LoadBalancer } from "./main";
 // Export optimization features
-export * from './optimization/emergency-protocol-handler';
-export * from './optimization/network-latency-optimizer';
+export * from "./optimization/emergency-protocol-handler";
+export * from "./optimization/network-latency-optimizer";
+// Export routing components
+export * from "./routing/failover-manager";
+export { HealthChecker } from "./routing/health-checker";
+export * from "./routing/intelligent-routing-engine";
+export * from "./routing/task-agent-matcher";
 
 // Export auto-scaling strategies
-export * from './strategies/auto-scaling-strategy';
-
-// Default export for convenience
-export { LoadBalancer } from './main';
+export * from "./strategies/auto-scaling-strategy";
+export * from "./types";

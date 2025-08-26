@@ -8,7 +8,7 @@ import { createAPIProvider } from './factories/api-provider-factory';
 
 const logger = getLogger('test-github-models');'
 
-async function testGitHubModels() {
+async function _testGitHubModels() {
   try {
     logger.info('🚀 Testing GitHub Models API (NOT Copilot)...');'
 
@@ -22,11 +22,10 @@ async function testGitHubModels() {
     if (models.length > 0) {
       logger.info(`✅ Found ${models.length} GitHub Models API models:`);`
       for (const [index, model] of models.entries()) {
-        logger.info(`   ${index + 1}. ${model}`);`
+        logger.info(`   $index + 1. $model`);`
       }
-    } else {
+    } else 
       logger.warn('⚠️ No models returned from GitHub Models API');'
-    }
 
     // Test health check
     const health = await githubModels.healthCheck();

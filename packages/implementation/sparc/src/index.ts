@@ -8,74 +8,72 @@
 // export { SPARCEngineCore } from './core/sparc-engine';
 // export type { SPARCEngineConfig } from './core/sparc-engine';
 
-// Production SPARC Commander (Full Implementation)
-export { SPARCCommander } from './core/sparc-commander';
 export type {
-  SPARCProject as SPARCCommanderProject,
-  SPARCPhase as SPARCCommanderPhase,
-  SPARCDeliverable,
-  QualityGate,
-  QualityCriteria,
-  PhaseMetrics,
-  DeliverableMetrics,
-  ProjectContext,
-  SPARCConfiguration,
-  PhaseConfiguration,
-  MethodologyResult,
-  ProjectMetrics,
-  SPARCError,
-  SPARCWarning,
-} from './core/sparc-commander';
-
-// SAFe-SPARC Integration Workflow (Production Implementation)
-export { SafeSparcWorkflow } from './core/safe-sparc-workflow';
-export type {
-  SafeSparcWorkflowConfig,
   EpicProposal,
   PortfolioDecision,
+  SafeSparcWorkflowConfig,
   SparcArtifacts,
   SparcExecutionContext,
   SparcExecutionResult,
 } from './core/safe-sparc-workflow';
-
-// SAFe 6.0 Development Manager (Flow-Based Enterprise Development)
-export {
-  Safe6DevelopmentManager,
-  createSafe6DevelopmentManager,
-  createSafe6SolutionTrainManager,
-  createSafe6BusinessAgilityManager,
-} from './safe6-development-manager';
+// SAFe-SPARC Integration Workflow (Production Implementation)
+export { SafeSparcWorkflow } from './core/safe-sparc-workflow';
 export type {
-  Safe6DevelopmentManagerConfig,
-  FlowSystem,
-  FlowMetrics,
-  SolutionTrain,
+  DeliverableMetrics,
+  MethodologyResult,
+  PhaseConfiguration,
+  PhaseMetrics,
+  ProjectContext,
+  ProjectMetrics,
+  QualityCriteria,
+  QualityGate,
+  SPARCConfiguration,
+  SPARCDeliverable,
+  SPARCError,
+  SPARCPhase as SPARCCommanderPhase,
+  SPARCProject as SPARCCommanderProject,
+  SPARCWarning,
+} from './core/sparc-commander';
+// Production SPARC Commander (Full Implementation)
+export { SPARCCommander } from './core/sparc-commander';
+export type {
   Capability,
   Enabler,
   Feature,
-  Safe6DevelopmentTeam,
-  TeamMember,
+  FlowMetrics,
+  FlowSystem,
   Safe6DevelopmentCoordinationResult,
+  Safe6DevelopmentManagerConfig,
+  Safe6DevelopmentTeam,
+  SolutionTrain,
+  TeamMember,
+} from './safe6-development-manager';
+// SAFe 6.0 Development Manager (Flow-Based Enterprise Development)
+export {
+  createSafe6BusinessAgilityManager,
+  createSafe6DevelopmentManager,
+  createSafe6SolutionTrainManager,
+  Safe6DevelopmentManager,
 } from './safe6-development-manager';
 
 // Types
 export type {
-  SPARCProject,
-  SPARCPhase,
-  PhaseResult,
-  ProjectComplexity,
-  ProjectDomain,
-  ProjectSpecification,
-  ProjectPseudocode,
   AlgorithmPseudocode,
-  DataStructure,
-  WorkflowPseudocode,
-  ProjectArchitecture,
   ArchitectureComponent,
   ComponentRelationship,
-  ProjectRefinement,
+  DataStructure,
+  PhaseResult,
+  ProjectArchitecture,
+  ProjectComplexity,
+  ProjectDomain,
   ProjectImplementation,
+  ProjectPseudocode,
+  ProjectRefinement,
+  ProjectSpecification,
+  SPARCPhase,
   SPARCProgress,
+  SPARCProject,
+  WorkflowPseudocode,
 } from './types';
 
 // import { SPARCEngineCore } from './core/sparc-engine';
@@ -103,10 +101,10 @@ export class SPARC {
    * Note: Implementation pending
    */
   static async createProject(
-    name: string,
-    domain: any,
-    requirements: string[],
-    complexity: any = 'moderate''
+    _name: string,
+    _domain: any,
+    _requirements: string[],
+    _complexity: any = 'moderate''
   ): Promise<any> {
     throw new Error(
       'SPARCEngineCore implementation pending - use SPARCCommander instead''
@@ -117,7 +115,7 @@ export class SPARC {
    * Execute complete SPARC workflow.
    * Note: Implementation pending
    */
-  static async executeFullWorkflow(projectId: string): Promise<any[]> {
+  static async executeFullWorkflow(_projectId: string): Promise<any[]> {
     throw new Error(
       'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );
@@ -127,7 +125,7 @@ export class SPARC {
    * Get project by ID.
    * Note: Implementation pending
    */
-  static getProject(projectId: string): any {
+  static getProject(_projectId: string): any {
     throw new Error(
       'SPARCEngineCore implementation pending - use SPARCCommander instead''
     );

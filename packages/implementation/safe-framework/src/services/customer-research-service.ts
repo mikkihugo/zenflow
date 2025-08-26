@@ -12,24 +12,17 @@
  * @version 1.0.0
  */
 
-import { generateNanoId, dateFns, _ } from '@claude-zen/foundation';
+import { _, dateFns, generateNanoId } from '@claude-zen/foundation';
 
 const { addDays, differenceInDays, format } = dateFns;
 const { groupBy, map, filter, orderBy, sumBy, meanBy, maxBy, countBy } = _;
-import type {
-  CustomerSegment,
-  CustomerNeed,
-  CompetitorSatisfaction,
-  BuyingBehavior,
-  DecisionMaker,
-  Influencer,
-  CommonObjection,
-  BuyingProcessStage,
-  MarketOpportunity,
-  CompetitorAnalysis,
-  MarketTrend,
-} from '../types/product-management';
+
 import type { Logger } from '../types';
+import type {
+  CompetitorAnalysis,
+  CustomerNeed,
+  CustomerSegment,
+} from '../types/product-management';
 import { CustomerNeedPriority } from '../types/product-management';
 
 /**
@@ -115,11 +108,7 @@ export interface CompetitivePositioning {
  */
 export class CustomerResearchService {
   private readonly config: CustomerResearchConfig;
-  private readonly logger: Logger;
   private segments = new Map<string, CustomerSegment>();
-  private feedback = new Map<string, CustomerFeedback>();
-  private insights = new Map<string, MarketInsight>();
-  private competitorData = new Map<string, CompetitorAnalysis>();
 
   constructor(config: CustomerResearchConfig, logger: Logger) {
     this.config = config;
@@ -130,14 +119,14 @@ export class CustomerResearchService {
    * Create detailed customer segment
    */
   createCustomerSegment(
-    segmentData: Omit<CustomerSegment, 'id'>'
+    _segmentData: Omit<CustomerSegment, 'id'>'
   ): CustomerSegment {
     if (this.segments.size >= this.config.maxSegments) {
       throw new Error(`Maximum segments reached: ${this.config.maxSegments}`);`
     }
 
     const segment: CustomerSegment = {
-      id: `segment-${generateNanoId(10)}`,
+      id: `segment-$generateNanoId(10)`,
       ...segmentData,
     };
 
@@ -189,7 +178,7 @@ export class CustomerResearchService {
 
       return {
         ...needs[0], // Use first need as base
-        id: `aggregated-${nanoid(8)}`,`
+        id: `aggregated-$nanoid(8)`,`
         description,
         priority: this.scoreToPriority(priorityScore),
         satisfactionLevel: avgSatisfaction,
@@ -199,7 +188,7 @@ export class CustomerResearchService {
 
     // Sort by priority and satisfaction gap
     return orderBy(
-      prioritizedNeeds,
+      _prioritizedNeeds,
       ['priority', (n) => 100 - n.satisfactionLevel],
       ['asc', 'desc']'
     );
@@ -396,7 +385,7 @@ export class CustomerResearchService {
    */
   private calculateOurPosition(competitors: CompetitorAnalysis[]): number {
     // Simplified calculation - in reality this would use more sophisticated metrics
-    const avgCompetitorPosition = meanBy(competitors,'marketShare');'
+    const _avgCompetitorPosition = meanBy(competitors,'marketShare');'
     return Math.max(1, Math.min(10, 5 + Math.random() * 3)); // Mock calculation
   }
 

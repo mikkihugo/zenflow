@@ -7,5 +7,5 @@
  * @since 1.0.0
  */
 
-export { ArrayProcessor } from './array-processor';
-export { ObjectProcessor } from './object-processor';
+export { ArrayProcessor } from "./array-processor";
+export { ObjectProcessor } from "./object-processor";

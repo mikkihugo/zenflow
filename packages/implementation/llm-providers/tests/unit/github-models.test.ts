@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { GitHubModelsAPI, createGitHubModelsProvider, executeGitHubModelsTask } from '../../src/api/github-models';
-import { mockGitHubModels, mockLogger, createMockResponse, createMockError } from '../mocks/llm-mocks';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createGitHubModelsProvider, executeGitHubModelsTask, GitHubModelsAPI } from '../../src/api/github-models';
+import { createMockError, mockGitHubModels, } from '../mocks/llm-mocks';
 
 // Mock external dependencies
 vi.mock('../../src/api/github-models', async () => {'
@@ -80,7 +80,7 @@ describe('GitHub Models API', () => {'
     });
 
     it('should handle missing API key gracefully', () => {'
-      expect(() => new GitHubModelsAPI({ apiKey: '' })).not.toThrow();'
+      expect(() => new GitHubModelsAPI(apiKey: '' )).not.toThrow();'
     });
   });
 
@@ -167,7 +167,7 @@ describe('GitHub Models API', () => {'
 
       mockGitHubModels.sendRequest.mockResolvedValue(mockResponse);
 
-      const response = await api.sendRequest('Hello');'
+      const _response = await api.sendRequest('Hello');'
 
       expect(response).toEqual(mockResponse);
       expect(mockGitHubModels.sendRequest).toHaveBeenCalledWith('Hello');'
@@ -200,8 +200,8 @@ describe('GitHub Models API', () => {'
     it('should handle streaming requests', async () => {'
       const mockStream = async function* () {
         yield { choices: [{ delta: { content: 'Hello' } }] };'
-        yield { choices: [{ delta: { content: ' there!' } }] };'
-        yield { choices: [{ finish_reason: 'stop' }] };'
+        yield choices: [{ delta: { content: ' there!' } }] ;'
+        yield choices: [{ finish_reason: 'stop' }] ;'
       };
 
       api.streamRequest = vi.fn().mockReturnValue(mockStream())();
@@ -291,11 +291,10 @@ describe('GitHub Models API', () => {'
     });
 
     it('should handle health check failures', async () => {'
-      api.getHealth.mockResolvedValue({ 
+      api.getHealth.mockResolvedValue(
         status: 'unhealthy', '
         error: 'Service unavailable',
-        lastCheck: Date.now()
-      });
+        lastCheck: Date.now());
 
       const health = await api.getHealth();
 
@@ -334,12 +333,11 @@ describe('createGitHubModelsProvider', () => {'
 });
 
 describe('executeGitHubModelsTask', () => {'
-  beforeEach(() => {
+  beforeEach(() => 
     mockGitHubModels.sendRequest.mockResolvedValue({
       choices: [{ message: { content: 'Task completed', role: 'assistant' } }],
       usage: { total_tokens: 50 }
-    });
-  });
+    }););
 
   it('should execute simple tasks', async () => {'
     const result = await executeGitHubModelsTask('Simple task');'
@@ -357,7 +355,7 @@ describe('executeGitHubModelsTask', () => {'
       timeout: 30000
     };
 
-    const result = await executeGitHubModelsTask('Complex task', options);'
+    const _result = await executeGitHubModelsTask('Complex task', options);'
 
     expect(result).toBeDefined();
     expect(mockGitHubModels.sendRequest).toHaveBeenCalled();
@@ -381,41 +379,38 @@ describe('executeGitHubModelsTask', () => {'
 
     for (const response of responses) {
       mockGitHubModels.sendRequest.mockResolvedValueOnce(response);
-      const result = await executeGitHubModelsTask('test');'
+      const _result = await executeGitHubModelsTask('test');'
       expect(result).toBeDefined();
     }
   });
 });
 
 describe('Model-Specific Features', () => {'
-  describe('GPT Models', () => {'
+  describe('GPT Models', () => '
     it('should handle GPT-4o specific features', async () => {'
       const gptApi = new GitHubModelsAPI({ model: 'gpt-4o' });'
       
-      mockGitHubModels.sendRequest.mockResolvedValue({
+      mockGitHubModels.sendRequest.mockResolvedValue(
         choices: [{ message: { content: 'GPT-4o response', role: 'assistant' } }],
         model: 'gpt-4o',
-        usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 }
-      });
+        usage: prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 );
 
-      const response = await gptApi.sendRequest('Test GPT-4o');'
+      const _response = await gptApi.sendRequest('Test GPT-4o');'
 
       expect(response.model).toBe('gpt-4o');'
       expect(response.choices[0].message.content).toBe('GPT-4o response');'
-    });
-  });
+    }););
 
   describe('Claude Models', () => {'
     it('should handle Claude-specific features', async () => {'
       const claudeApi = new GitHubModelsAPI({ model: 'claude-3-sonnet' });'
       
-      mockGitHubModels.sendRequest.mockResolvedValue({
+      mockGitHubModels.sendRequest.mockResolvedValue(
         choices: [{ message: { content: 'Claude response', role: 'assistant' } }],
         model: 'claude-3-sonnet',
-        usage: { input_tokens: 15, output_tokens: 25, total_tokens: 40 }
-      });
+        usage: input_tokens: 15, output_tokens: 25, total_tokens: 40 );
 
-      const response = await claudeApi.sendRequest('Test Claude');'
+      const _response = await claudeApi.sendRequest('Test Claude');'
 
       expect(response.model).toBe('claude-3-sonnet');'
       expect(response.choices[0].message.content).toBe('Claude response');'
@@ -426,13 +421,12 @@ describe('Model-Specific Features', () => {'
     it('should handle Llama-specific features', async () => {'
       const llamaApi = new GitHubModelsAPI({ model: 'llama-3-70b' });'
       
-      mockGitHubModels.sendRequest.mockResolvedValue({
+      mockGitHubModels.sendRequest.mockResolvedValue(
         choices: [{ message: { content: 'Llama response', role: 'assistant' } }],
         model: 'llama-3-70b',
-        usage: { prompt_tokens: 12, completion_tokens: 18, total_tokens: 30 }
-      });
+        usage: prompt_tokens: 12, completion_tokens: 18, total_tokens: 30 );
 
-      const response = await llamaApi.sendRequest('Test Llama');'
+      const _response = await llamaApi.sendRequest('Test Llama');'
 
       expect(response.model).toBe('llama-3-70b');'
       expect(response.choices[0].message.content).toBe('Llama response');'
@@ -442,10 +436,10 @@ describe('Model-Specific Features', () => {'
 
 describe('Performance and Optimization', () => {'
   it('should handle concurrent requests efficiently', async () => {'
-    const requests = Array.from({ length: 10 }, (_, i) => `Request ${i + 1}`);`
+    const _requests = Array.from({ length: 10 }, (_, i) => `Request ${i + 1}`);`
     
     mockGitHubModels.sendRequest.mockImplementation(async (request) => ({
-      choices: [{ message: { content: `Response to ${request}`, role: 'assistant' } }],
+      choices: [{ message: { content: `Response to $request`, role: 'assistant' } }],
       usage: { total_tokens: 20 }
     }));
 

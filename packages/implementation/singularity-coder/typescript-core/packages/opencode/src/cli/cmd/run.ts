@@ -1,17 +1,13 @@
 import type { Argv } from "yargs"
-import { Bus } from "../../bus"
+import { Config } from "../../config/config"
+import { Flag } from "../../flag/flag"
 import { Provider } from "../../provider/provider"
 import { Session } from "../../session"
+import { bootstrap } from "../bootstrap"
 import { UI } from "../ui"
 import { cmd } from "./cmd"
-import { Flag } from "../../flag/flag"
-import { Config } from "../../config/config"
-import { bootstrap } from "../bootstrap"
-import { MessageV2 } from "../../session/message-v2"
-import { Mode } from "../../session/mode"
-import { Identifier } from "../../id/id"
 
-const TOOL: Record<string, [string, string]> = {
+const _TOOL: Record<string, [string, string]> = {
   todowrite: ["Todo", UI.Style.TEXT_WARNING_BOLD],
   todoread: ["Todo", UI.Style.TEXT_WARNING_BOLD],
   bash: ["Bash", UI.Style.TEXT_DANGER_BOLD],
@@ -60,9 +56,9 @@ export const RunCommand = cmd({
       })
   },
   handler: async (args) => {
-    let message = args.message.join(" ")
+    let _message = args.message.join(" ")
 
-    if (!process.stdin.isTTY) message += "\n" + (await Bun.stdin.text())
+    if (!process.stdin.isTTY) _message += `\n${await Bun.stdin.text()}`
 
     await bootstrap({ cwd: process.cwd() }, async () => {
       const session = await (async () => {
@@ -92,10 +88,10 @@ export const RunCommand = cmd({
       if (cfg.share === "auto" || Flag.OPENCODE_AUTO_SHARE || args.share) {
         try {
           await Session.share(session.id)
-          UI.println(UI.Style.TEXT_INFO_BOLD + "~  https://opencode.ai/s/" + session.id.slice(-8))
+          UI.println(`${UI.Style.TEXT_INFO_BOLD}~  https://opencode.ai/s/${session.id.slice(-8)}`)
         } catch (error) {
           if (error instanceof Error && error.message.includes("disabled")) {
-            UI.println(UI.Style.TEXT_DANGER_BOLD + "!  " + error.message)
+            UI.println(`${UI.Style.TEXT_DANGER_BOLD}!  ${error.message}`)
           } else {
             throw error
           }
@@ -104,13 +100,13 @@ export const RunCommand = cmd({
       UI.empty()
 
       const { providerID, modelID } = args.model ? Provider.parseModel(args.model) : await Provider.defaultModel()
-      UI.println(UI.Style.TEXT_NORMAL_BOLD + "@ ", UI.Style.TEXT_NORMAL + `${providerID}/${modelID}`)`
+      UI.println(`${UI.Style.TEXT_NORMAL_BOLD}@ `, `${UI.Style.TEXT_NORMAL}${providerID}/${modelID}`)`
       UI.empty()
 
       function printEvent(color: string, type: string, title: string) {
         UI.println(
           color + `|`,`
-          UI.Style.TEXT_NORMAL + UI.Style.TEXT_DIM + ` ${type.padEnd(7, " ")}`,`
+          `${UI.Style.TEXT_NORMAL + UI.Style.TEXT_DIM} ${type.padEnd(7, " ")}`,`
           "",
           UI.Style.TEXT_NORMAL + title,
         )

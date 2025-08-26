@@ -23,7 +23,6 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 
 // ============================================================================
@@ -246,10 +245,9 @@ export class PICompletionService extends TypedEventBase {
   private workflowEngine: any;
   private factSystem: any;
   private performanceTracker: any;
-  private telemetryManager: any;
   private initialized = false;
 
-  constructor(logger: Logger, config: Partial<PICompletionConfiguration> = {}) {
+  constructor(logger: Logger, _config: Partial<PICompletionConfiguration> = {}) {
     super();
     this.logger = logger;
   }
@@ -288,7 +286,7 @@ export class PICompletionService extends TypedEventBase {
 
     this.logger.info('Starting PI completion workflow', { piId });'
 
-    const timer = this.performanceTracker.startTimer('pi_completion');'
+    const _timer = this.performanceTracker.startTimer('pi_completion');'
 
     try {
       // Create completion workflow configuration
@@ -303,7 +301,7 @@ export class PICompletionService extends TypedEventBase {
       };
 
       // Start completion workflow orchestration
-      const workflowId = await this.workflowEngine.startWorkflow({
+      const _workflowId = await this.workflowEngine.startWorkflow({
         workflowType: 'pi_completion',
         entityId: piId,
         participants: stakeholders.map((s) => s.userId),
@@ -352,13 +350,12 @@ export class PICompletionService extends TypedEventBase {
       this.performanceTracker.endTimer('pi_completion');'
       this.telemetryManager.recordCounter('pi_completions', 1);'
 
-      this.emit('pi-completion-finished', {'
+      this.emit('pi-completion-finished', '
         piId,
         workflowId,
         successRate: completionReportWithFeedback.overallSuccessRate,
         achievementCount: completionReportWithFeedback.achievements.length,
-        lessonCount: completionReportWithFeedback.lessonsLearned.length,
-      });
+        lessonCount: completionReportWithFeedback.lessonsLearned.length,);
 
       this.logger.info('PI completion workflow finished successfully', {'
         piId,
@@ -373,10 +370,9 @@ export class PICompletionService extends TypedEventBase {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       this.logger.error('PI completion workflow failed:', errorMessage);'
-      this.emit('pi-completion-failed', {'
+      this.emit('pi-completion-failed', '
         piId,
-        error: errorMessage,
-      });
+        error: errorMessage,);
       throw error;
     }
   }
@@ -593,7 +589,7 @@ export class PICompletionService extends TypedEventBase {
    * Generate completion deliverables
    */
   private async generateCompletionDeliverables(
-    piId: string
+    _piId: string
   ): Promise<CompletionDeliverable[]> {
     return [
       {
@@ -719,7 +715,7 @@ export class PICompletionService extends TypedEventBase {
    * Define archival requirements
    */
   private async defineArchivalRequirements(
-    piId: string
+    _piId: string
   ): Promise<ArchivalRequirement[]> {
     return [
       {
@@ -908,8 +904,8 @@ export class PICompletionService extends TypedEventBase {
    * Generate budget analysis
    */
   private async generateBudgetAnalysis(
-    piId: string,
-    finalMetrics: PIExecutionMetrics
+    _piId: string,
+    _finalMetrics: PIExecutionMetrics
   ): Promise<BudgetAnalysis> {
     // In practice, this would integrate with financial systems
     return {
@@ -960,26 +956,22 @@ export class PICompletionService extends TypedEventBase {
   private async archivePIDataWithMetadata(
     piId: string,
     completionReport: PICompletionReport,
-    requirements: ArchivalRequirement[]
+    _requirements: ArchivalRequirement[]
   ): Promise<void> {
     this.logger.debug('Archiving PI data', { piId });'
 
     // Store in fact system for historical analysis
-    await this.factSystem.store({
-      content: {
+    await this.factSystem.store(
         piId,
         completionReport,
         archivalDate: new Date(),
-        requirements,
-      },
+        requirements,,
       type: 'pi_completion_archive',
       source: 'pi-completion-service',
-      metadata: {
+      metadata: 
         piId,
         successRate: completionReport.overallSuccessRate,
-        completionDate: completionReport.completionDate,
-      },
-    });
+        completionDate: completionReport.completionDate,,);
   }
 
   /**
@@ -1042,18 +1034,18 @@ export class PICompletionService extends TypedEventBase {
    */
   private createBrainCoordinatorFallback() {
     return {
-      analyzeCompletionData: async (data: any) => ({
+      analyzeCompletionData: async (_data: any) => ({
         insights: ['Standard completion analysis'],
         recommendations: ['Continue current practices'],
       }),
-      calculateSuccessMetrics: async (data: any) => ({
+      calculateSuccessMetrics: async (_data: any) => ({
         overallSuccessRate: 85,
         objectivesAchieved: 8,
         totalObjectives: 10,
         featuresDelivered: 15,
         totalFeatures: 18,
       }),
-      identifyAchievements: async (data: any) => [
+      identifyAchievements: async (_data: any) => [
         {
           category: 'delivery' as const,
           title: 'Successful Feature Delivery',
@@ -1063,7 +1055,7 @@ export class PICompletionService extends TypedEventBase {
           contributors: ['team-1', 'team-2'],
         },
       ],
-      identifyChallenges: async (data: any) => [
+      identifyChallenges: async (_data: any) => [
         {
           category: 'process' as const,
           title: 'Planning Accuracy',
@@ -1075,7 +1067,7 @@ export class PICompletionService extends TypedEventBase {
           preventionStrategy: 'Enhanced requirements gathering',
         },
       ],
-      generateLessonsLearned: async (data: any) => [
+      generateLessonsLearned: async (_data: any) => [
         {
           category: 'planning' as const,
           lesson: 'Early stakeholder engagement is critical',
@@ -1086,7 +1078,7 @@ export class PICompletionService extends TypedEventBase {
           priority: 'high' as const,
         },
       ],
-      generateImprovementRecommendations: async (data: any) => [
+      generateImprovementRecommendations: async (_data: any) => [
         {
           area: 'process' as const,
           recommendation: 'Implement continuous planning',
@@ -1101,12 +1093,12 @@ export class PICompletionService extends TypedEventBase {
           ],
         },
       ],
-      generateNextPIRecommendations: async (data: any) => [
+      generateNextPIRecommendations: async (_data: any) => [
         { recommendation: 'Focus on technical debt reduction' },
         { recommendation: 'Enhance cross-team collaboration' },
         { recommendation: 'Invest in automation capabilities' },
       ],
-      analyzeCompletionTrends: async (data: any) => ({
+      analyzeCompletionTrends: async (_data: any) => ({
         trends: ['Improving success rates', 'Better stakeholder satisfaction'],
         insights: ['Teams are learning and adapting well'],
       }),

@@ -28,7 +28,7 @@ declare global {
   // Hybrid testing utilities
   function testWithApproach(
     approach: 'london|classical',
-    testFn: () => void|'Promise<void>
+    testFn: () => undefined|'Promise<void>
   ): void;
   function createMemoryTestScenario(
     type:'sqlite|lancedb|json'

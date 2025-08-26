@@ -3,8 +3,8 @@
  *
  * Factory functions for creating different intelligence system configurations
  */
-import { CompleteIntelligenceSystem } from './intelligence-system';
-import type { IntelligenceSystemConfig } from './types';
+import { CompleteIntelligenceSystem } from "./intelligence-system";
+import type { IntelligenceSystemConfig } from "./types";
 /**
  * Create a basic intelligence system with minimal features
  */
@@ -17,6 +17,6 @@ export declare function createProductionIntelligenceSystem(): CompleteIntelligen
  * Create a custom intelligence system with provided configuration
  */
 export declare function createIntelligenceSystem(
-  config: IntelligenceSystemConfig
+	config: IntelligenceSystemConfig,
 ): CompleteIntelligenceSystem;
 //# sourceMappingURL=intelligence-factory.d.ts.map

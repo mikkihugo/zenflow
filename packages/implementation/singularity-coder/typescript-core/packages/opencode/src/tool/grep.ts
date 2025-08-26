@@ -1,9 +1,8 @@
 import { z } from "@claude-zen/foundation"
-import { Tool } from "./tool"
 import { App } from "../app/app"
 import { Ripgrep } from "../file/ripgrep"
-
 import DESCRIPTION from "./grep.txt"
+import { Tool } from "./tool"
 
 export const GrepTool = Tool.define({
   id: "grep",
@@ -33,7 +32,7 @@ export const GrepTool = Tool.define({
       stderr: "pipe",
     })
 
-    const output = await new Response(proc.stdout).text()
+    const _output = await new Response(proc.stdout).text()
     const errorOutput = await new Response(proc.stderr).text()
     const exitCode = await proc.exited
 
@@ -88,7 +87,7 @@ export const GrepTool = Tool.define({
       }
     }
 
-    const outputLines = [`Found ${finalMatches.length} matches`]`
+    const outputLines = [`Found $finalMatches.lengthmatches`]`
 
     let currentFile = ""
     for (const match of finalMatches) {
@@ -99,7 +98,7 @@ export const GrepTool = Tool.define({
         currentFile = match.path
         outputLines.push(`${match.path}:`)`
       }
-      outputLines.push(`  Line ${match.lineNum}: ${match.lineText}`)`
+      outputLines.push(`  Line $match.lineNum: $match.lineText`)`
     }
 
     if (truncated) {

@@ -6,10 +6,9 @@
 import { getLogger } from '@claude-zen/foundation';
 
 import type {
-  RepositoryMetrics,
-  AnalysisRecommendation,
   AnalysisOptions,
-  EffortEstimate,
+  AnalysisRecommendation,
+  RepositoryMetrics,
 } from '../types/index.js';
 
 export class RecommendationEngine {
@@ -27,7 +26,7 @@ export class RecommendationEngine {
     const recommendations: AnalysisRecommendation[] = [];
 
     // Use analysis options to customize recommendation depth and focus areas
-    const analysisContext = await this.buildAnalysisContext(
+    const _analysisContext = await this.buildAnalysisContext(
       repository,
       options
     );
@@ -323,7 +322,7 @@ export class RecommendationEngine {
         type: 'reduce-coupling',
         priority: 'medium',
         title: 'Reduce System Instability',
-        description: `System instability is ${(dependencies.coupling.instability * 100).toFixed(1)}% (threshold: 80%). High instability makes the system more prone to changes and bugs.`,`
+        description: `System instability is ${(_dependencies._coupling._instability * 100).toFixed(1)}% (threshold: 80%). High instability makes the system more prone to changes and bugs.`,`
         rationale:
           'High instability indicates that many modules depend on external dependencies, making the system fragile to changes.',
         effort: this.estimateEffort(
@@ -427,49 +426,6 @@ export class RecommendationEngine {
           description: `Domain "${domain.name}" should be split (confidence: ${(split.confidence * 100).toFixed(1)}%). ${split.reasons.join('; ')}.`,`
           rationale: `Domain analysis indicates that splitting would improve maintainability and team productivity.`,`
           effort: split.estimatedEffort,
-          benefits: Object.entries(split.benefits).map(
-            ([key, value]) =>
-              `${key.replace(/([A-Z])/g, ' $1').toLowerCase()}: ${value}% improvement``
-          ),
-          risks: split.risks.map((risk) => risk.description),
-          actionItems: split.estimatedEffort.phases.map((phase) => ({
-            description: phase.description,
-            type: 'architecture-change' as const,
-            estimatedHours: phase.estimatedHours,
-            dependencies: phase.dependencies,
-          })),
-        });
-      }
-    }
-
-    return recommendations;
-  }
-
-  /**
-   * Generate git-based recommendations
-   */
-  private generateGitRecommendations(
-    repository: RepositoryMetrics
-  ): AnalysisRecommendation[] {
-    const recommendations: AnalysisRecommendation[] = [];
-    const git = repository.gitMetrics!;
-
-    // Too many hot files
-    if (git.hotFiles.length > 20) {
-      const criticalHotFiles = git.hotFiles.filter((f) => f.riskScore > 0.8);
-
-      recommendations.push({
-        type: 'refactor-hotspot',
-        priority: 'high',
-        title: 'Address Hot Files',
-        description: `Found ${git.hotFiles.length} frequently changed files (${criticalHotFiles.length} high-risk). These files are change-prone and may need refactoring.`,`
-        rationale:
-          'Hot files indicate unstable code that changes frequently, often due to poor design or multiple responsibilities.',
-        effort: this.estimateEffort(
-          criticalHotFiles.length * 6,
-          'medium',
-          'Each hot file needs analysis and potential refactoring''
-        ),
         benefits: [
           'Reduced change frequency and conflicts',
           'Improved code stability',
@@ -776,7 +732,7 @@ export class RecommendationEngine {
     hours: number,
     difficulty: EffortEstimate['difficulty'],
     description: string
-  ): EffortEstimate {
+  ): EffortEstimate 
     return {
       hours: Math.max(1, Math.round(hours)),
       difficulty,
@@ -804,7 +760,6 @@ export class RecommendationEngine {
         },
       ],
     };
-  }
 
   private getPriorityWeight(
     priority: AnalysisRecommendation['priority']'
@@ -824,12 +779,11 @@ export class RecommendationEngine {
   private async buildAnalysisContext(
     repository: RepositoryMetrics,
     options?: AnalysisOptions
-  ): Promise<{
+  ): Promise<
     focusAreas: string[];
     depth: 'shallow' | 'moderate' | 'deep';
     performanceMode: 'fast' | 'balanced' | 'thorough';
-    customThresholds: Record<string, number>;
-  }> {
+    customThresholds: Record<string, number>;> {
     const defaultContext = {
       focusAreas: ['complexity', 'dependencies', 'maintainability'],
       depth: 'moderate' as const,

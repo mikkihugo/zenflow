@@ -1,12 +1,12 @@
+import { z } from "@claude-zen/foundation"
 import { experimental_createMCPClient, type Tool } from "ai"
 import { Experimental_StdioMCPTransport } from "ai/mcp-stdio"
 import { App } from "../app/app"
-import { Config } from "../config/config"
-import { Log } from "../util/log"
-import { NamedError } from "../util/error"
-import { z } from "@claude-zen/foundation"
-import { Session } from "../session"
 import { Bus } from "../bus"
+import { Config } from "../config/config"
+import { Session } from "../session"
+import { NamedError } from "../util/error"
+import { Log } from "../util/log"
 
 export namespace MCP {
   const log = Log.create({ service: "mcp" })
@@ -102,7 +102,7 @@ export namespace MCP {
     const result: Record<string, Tool> = {}
     for (const [clientName, client] of Object.entries(await clients())) {
       for (const [toolName, tool] of Object.entries(await client.tools())) {
-        result[clientName + "_" + toolName] = tool
+        result[`${clientName}_${toolName}`] = tool
       }
     }
     return result

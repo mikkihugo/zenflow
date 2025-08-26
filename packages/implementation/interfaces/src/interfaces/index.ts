@@ -157,6 +157,7 @@ export interface BackendConfig {
   /** Backend-specific configuration options (optional). */
   backendConfig?: Record<string, unknown>;
 }
+
 /**
  * Core base interfaces and fundamental contracts.
  *

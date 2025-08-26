@@ -1,8 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  mockLogger,
-  createMockMemoryConfig,
   createMockResult,
+  mockLogger,
 } from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
@@ -21,9 +20,8 @@ vi.mock('@claude-zen/foundation', () => ({'
 }));
 
 describe('Memory Backends', () => {'
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  beforeEach(() => 
+    vi.clearAllMocks(););
 
   describe('In-Memory Backend', () => {'
     let backend: any;
@@ -82,7 +80,7 @@ describe('Memory Backends', () => {'
 
       // Simulate storing beyond limit
       for (let i = 0; i < 10; i++) {
-        await backend.store(`limit-key-${i}`, `value-${i}`);`
+        await backend.store(`limit-key-$i`, `value-$i`);`
       }
 
       backend.size.mockResolvedValue(5); // Should not exceed maxSize
@@ -349,11 +347,11 @@ describe('Memory Backends', () => {'
       const invalidData = { key: undefined, circular: {} };
       invalidData.circular = invalidData; // Create circular reference
 
-      backend.store.mockImplementation((key: string, value: any) => {
+      backend.store.mockImplementation((_key: string, value: any) => {
         try {
           JSON.stringify(value);
           return Promise.resolve();
-        } catch (error) {
+        } catch (_error) {
           return Promise.reject(new Error('Invalid JSON structure'));'
         }
       });
@@ -399,7 +397,7 @@ describe('Memory Backends', () => {'
     });
 
     it('should handle unknown backend types', async () => {'
-      const factory = {
+      const _factory = {
         createBackend: vi.fn().mockImplementation((config: any) => {
           if (!['memory', 'sqlite', 'lancedb', 'json'].includes(config.type)) {'
             throw new Error(`Unknown backend type: ${config.type}`);`

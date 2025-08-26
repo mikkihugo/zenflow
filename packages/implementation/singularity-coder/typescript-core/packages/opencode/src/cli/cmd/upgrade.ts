@@ -1,7 +1,7 @@
-import type { Argv } from "yargs"
-import { UI } from "../ui"
 import * as prompts from "@clack/prompts"
+import type { Argv } from "yargs"
 import { Installation } from "../../installation"
+import { UI } from "../ui"
 
 export const UpgradeCommand = {
   command: "upgrade [target]",
@@ -35,7 +35,7 @@ export const UpgradeCommand = {
     const target = args.target ?? (await Installation.latest())
 
     if (Installation.VERSION === target) {
-      prompts.log.warn(`opencode upgrade skipped: ${target} is already installed`)`
+      prompts.log.warn(`opencode upgrade skipped: $targetis already installed`)`
       prompts.outro("Done")
       return
     }

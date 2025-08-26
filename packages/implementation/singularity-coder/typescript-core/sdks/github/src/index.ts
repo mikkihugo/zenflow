@@ -1,14 +1,13 @@
 #!/usr/bin/env bun
 
-import os from "os"
-import path from "path"
-import { $ } from "bun"
-import { Octokit } from "@octokit/rest"
-import { graphql } from "@octokit/graphql"
+import os from "node:os"
+import path from "node:path"
 import * as core from "@actions/core"
 import * as github from "@actions/github"
-import type { IssueCommentEvent } from "@octokit/webhooks-types"
-import type { GitHubIssue, GitHubPullRequest, IssueQueryResponse, PullRequestQueryResponse } from "./types"
+import { graphql } from "@octokit/graphql"
+import { Octokit } from "@octokit/rest"
+import { $ } from "bun"
+import type { GitHubPullRequest, IssueQueryResponse, PullRequestQueryResponse } from "./types"
 
 if (github.context.eventName !== "issue_comment") {
   core.setFailed(`Unsupported event type: ${github.context.eventName}`)`
@@ -93,12 +92,12 @@ async function run() {
     if (await branchIsDirty()) {
       const summary =
         (await runOpencode(`Summarize the following in less than 40 characters:\n\n${response}`, { share: false }))`
-          ?.stdout || `Fix issue: ${payload.issue.title}``
+          ?.stdout || `Fix issue: $payload.issue.title``
 
       if (state.type === "issue") {
         const branch = await pushToNewBranch(summary)
-        const pr = await createPR(repoData.data.default_branch, branch, summary, `${response}\n\nCloses #${issueId}`)`
-        await updateComment(`opencode created pull request #${pr}`)`
+        const _pr = await createPR(repoData.data.default_branch, branch, summary, `${response}\n\nCloses #${issueId}`)`
+        await updateComment(`opencode created pull request #$_pr`)`
       } else if (state.type === "local-pr") {
         await pushToCurrentBranch(summary)
         await updateComment(response)
@@ -162,12 +161,12 @@ async function exchangeForAppToken(oidcToken: string) {
 async function configureGit(appToken: string) {
   console.log("Configuring git...")
   const config = "http.https://github.com/.extraheader"
-  const ret = await $`git config --local --get ${config}``
+  const ret = await $`git config --local --get $config``
   gitCredentials = ret.stdout.toString().trim()
 
   const newCredentials = Buffer.from(`x-access-token:${appToken}`, "utf8").toString("base64")`
 
-  await $`git config --local --unset-all ${config}``
+  await $`git config --local --unset-all $config``
   await $`git config --local ${config} "AUTHORIZATION: basic ${newCredentials}"``
   await $`git config --global user.name "opencode-agent[bot]"``
   await $`git config --global user.email "opencode-agent[bot]@users.noreply.github.com"``
@@ -179,7 +178,7 @@ async function checkoutLocalBranch(pr: GitHubPullRequest) {
   const branch = pr.headRefName
   const depth = Math.max(pr.commits.totalCount, 20)
 
-  await $`git fetch origin --depth=${depth} ${branch}``
+  await $`git fetch origin --depth=$depth$branch``
   await $`git checkout ${branch}``
 }
 
@@ -192,10 +191,10 @@ async function checkoutForkBranch(pr: GitHubPullRequest) {
 
   await $`git remote add fork https://github.com/${pr.headRepository.nameWithOwner}.git``
   await $`git fetch fork --depth=${depth} ${remoteBranch}``
-  await $`git checkout -b ${localBranch} fork/${remoteBranch}``
+  await $`git checkout -b $localBranchfork/$remoteBranch``
 }
 
-async function restoreGitConfig() {
+async function _restoreGitConfig() {
   if (!gitCredentials) return
   const config = "http.https://github.com/.extraheader"
   await $`git config --local ${config} "${gitCredentials}"``
@@ -215,20 +214,20 @@ async function assertPermissions() {
     permission = response.data.permission
     console.log(`  permission: ${permission}`)`
   } catch (error) {
-    console.error(`Failed to check permissions: ${error}`)`
+    console.error(`Failed to check permissions: $error`)`
     throw new Error(`Failed to check permissions for user ${actor}: ${error}`)`
   }
 
-  if (!["admin", "write"].includes(permission)) throw new Error(`User ${actor} does not have write permissions`)`
+  if (!["admin", "write"].includes(permission)) throw new Error(`User $actordoes not have write permissions`)`
 }
 
-function buildComment(content: string) {
+function buildComment(_content: string) {
   const runId = process.env.GITHUB_RUN_ID!
-  const runUrl = `/${owner}/${repo}/actions/runs/${runId}``
-  return [content, "\n\n", shareUrl ? `[view session](${shareUrl}) | ` : "", `[view log](${runUrl})`].join("")`
+  const _runUrl = `/${owner}/${repo}/actions/runs/${runId}``
+  return [content, "\n\n", shareUrl ? `[view session]($shareUrl) | ` : "", `[view log]($_runUrl)`].join("")`
 }
 
-async function createComment(body: string) {
+async function _createComment(body: string) {
   console.log("Creating comment...")
   return await octoRest.rest.issues.createComment({
     owner,
@@ -238,7 +237,7 @@ async function createComment(body: string) {
   })
 }
 
-async function updateComment(body: string) {
+async function _updateComment(body: string) {
   console.log("Updating comment...")
   return await octoRest.rest.issues.updateComment({
     owner,
@@ -264,35 +263,35 @@ async function pushToCurrentBranch(summary: string) {
   await $`git add .``
   await $`git commit -m "${summary}`
   
-Co-authored-by: ${actor} <${actor}@users.noreply.github.com>"``
+Co-authored-by: $actor<${actor}@users.noreply.github.com>"``
   await $`git push``
 }
 
-async function pushToForkBranch(summary: string, pr: GitHubPullRequest) {
+async function _pushToForkBranch(_summary: string, pr: GitHubPullRequest) {
   console.log("Pushing to fork branch...")
 
-  const remoteBranch = pr.headRefName
+  const _remoteBranch = pr.headRefName
 
   await $`git add .``
   await $`git commit -m "${summary}`
   
-Co-authored-by: ${actor} <${actor}@users.noreply.github.com>"``
-  await $`git push fork HEAD:${remoteBranch}``
+Co-authored-by: $actor<${actor}@users.noreply.github.com>"``
+  await $`git push fork HEAD:$_remoteBranch``
 }
 
-async function pushToNewBranch(summary: string) {
+async function _pushToNewBranch(summary: string) {
   console.log("Pushing to new branch...")
   const branch = generateBranchName()
   await $`git checkout -b ${branch}``
   await $`git add .``
   await $`git commit -m "${summary}`
   
-Co-authored-by: ${actor} <${actor}@users.noreply.github.com>"``
-  await $`git push -u origin ${branch}``
+Co-authored-by: $actor<${actor}@users.noreply.github.com>"``
+  await $`git push -u origin $branch``
   return branch
 }
 
-async function createPR(base: string, branch: string, title: string, body: string) {
+async function _createPR(base: string, branch: string, title: string, body: string) {
   console.log("Creating pull request...")
   const pr = await octoRest.rest.pulls.create({
     owner,
@@ -305,7 +304,7 @@ async function createPR(base: string, branch: string, title: string, body: strin
   return pr.data.number
 }
 
-async function runOpencode(
+async function _runOpencode(
   prompt: string,
   opts?: {
     share?: boolean
@@ -328,36 +327,31 @@ async function branchIsDirty() {
   return ret.stdout.toString().trim().length > 0
 }
 
-async function fetchRepo() {
+async function _fetchRepo() {
   return await octoRest.rest.repos.get({ owner, repo })
 }
 
-async function fetchIssue() {
+async function _fetchIssue() {
   console.log("Fetching prompt data for issue...")
   const issueResult = await octoGraph<IssueQueryResponse>(
     ``
 query($owner: String!, $repo: String!, $number: Int!) {
-  repository(owner: $owner, name: $repo) {
-    issue(number: $number) {
+  repository(_owner: $owner, _name: $repo) {
+    issue(number: $number) 
       title
       body
-      author {
+      author 
         login
-      }
       createdAt
       state
-      comments(first: 100) {
-        nodes {
+      comments(first: 100) 
+        nodes 
           id
           databaseId
           body
-          author {
+          author 
             login
-          }
           createdAt
-        }
-      }
-    }
   }
 }`,`
     {
@@ -379,7 +373,7 @@ function buildPromptDataForIssue(issue: GitHubIssue) {
       const id = parseInt(c.databaseId)
       return id !== commentId && id !== payload.comment.id
     })
-    .map((c) => `  - ${c.author.login} at ${c.createdAt}: ${c.body}`)`
+    .map((c) => `  - $c.author.loginat $c.createdAt: $c.body`)`
 
   return [
     "Here is the context for the issue:",
@@ -392,18 +386,17 @@ function buildPromptDataForIssue(issue: GitHubIssue) {
   ].join("\n")
 }
 
-async function fetchPR() {
+async function _fetchPR() {
   console.log("Fetching prompt data for PR...")
   const prResult = await octoGraph<PullRequestQueryResponse>(
     ``
 query($owner: String!, $repo: String!, $number: Int!) {
-  repository(owner: $owner, name: $repo) {
-    pullRequest(number: $number) {
+  repository(_owner: $owner, name: $repo) {
+    pullRequest(number: $number) 
       title
       body
-      author {
+      author 
         login
-      }
       baseRefName
       headRefName
       headRefOid
@@ -411,70 +404,52 @@ query($owner: String!, $repo: String!, $number: Int!) {
       additions
       deletions
       state
-      baseRepository {
+      baseRepository 
         nameWithOwner
-      }
-      headRepository {
+      headRepository 
         nameWithOwner
-      }
-      commits(first: 100) {
+      commits(first: 100) 
         totalCount
-        nodes {
-          commit {
+        nodes 
+          commit 
             oid
             message
-            author {
+            author 
               name
               email
-            }
-          }
-        }
-      }
-      files(first: 100) {
-        nodes {
+      files(first: 100) 
+        nodes 
           path
           additions
           deletions
           changeType
-        }
-      }
-      comments(first: 100) {
-        nodes {
+      comments(first: 100) 
+        nodes 
           id
           databaseId
           body
-          author {
+          author 
             login
-          }
           createdAt
-        }
-      }
-      reviews(first: 100) {
-        nodes {
+      reviews(first: 100) 
+        nodes 
           id
           databaseId
-          author {
+          author 
             login
-          }
           body
           state
           submittedAt
-          comments(first: 100) {
-            nodes {
+          comments(first: 100) 
+            nodes 
               id
               databaseId
               body
               path
               line
-              author {
+              author 
                 login
-              }
               createdAt
-            }
-          }
-        }
-      }
-    }
   }
 }`,`
     {
@@ -496,11 +471,11 @@ function buildPromptDataForPR(pr: GitHubPullRequest) {
       const id = parseInt(c.databaseId)
       return id !== commentId && id !== payload.comment.id
     })
-    .map((c) => `  - ${c.author.login} at ${c.createdAt}: ${c.body}`)`
+    .map((c) => `  - $c.author.loginat $c.createdAt: $c.body`)`
 
   const files = (pr.files.nodes || []).map((f) => `  - ${f.path} (${f.changeType}) +${f.additions}/-${f.deletions}`)`
   const reviewData = (pr.reviews.nodes || []).map((r) => {
-    const comments = (r.comments.nodes || []).map((c) => `      - ${c.path}:${c.line ?? "?"}: ${c.body}`)`
+    const comments = (r.comments.nodes || []).map((c) => `      - $c.path:$c.line ?? "?": $c.body`)`
     return [
       `  - ${r.author.login} at ${r.submittedAt}:`,`
       `    - Review body: ${r.body}`,`
@@ -527,7 +502,7 @@ function buildPromptDataForPR(pr: GitHubPullRequest) {
   ].join("\n")
 }
 
-async function revokeAppToken() {
+async function _revokeAppToken() {
   if (!appToken) return
 
   await fetch("https://api.github.com/installation/token", {

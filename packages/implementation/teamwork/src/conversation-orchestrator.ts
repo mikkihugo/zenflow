@@ -8,13 +8,12 @@
 import { getLogger } from '@claude-zen/foundation';
 
 import type {
-  ConversationOrchestrator,
-  ConversationConfig,
-  ConversationSession,
-  ConversationMessage,
-  ConversationOutcome,
-  ConversationMemory,
   AgentId,
+  ConversationConfig,
+  ConversationMemory,
+  ConversationOrchestrator,
+  ConversationOutcome,
+  ConversationSession,
   ModerationAction,
 } from './types';
 
@@ -61,25 +60,24 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Create conversation session
     const session: ConversationSession = {
-      id: `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
+      id: `conv-$Date.now()-$Math.random().toString(36).substr(2, 9)`,`
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
       initiator:
-        config.initialParticipants[0]||({
+        config.initialParticipants[0]||(
           id: '',
           swarmId: '',
           type: 'researcher' as const,
-          instance: 0,
-        } as AgentId),
+          instance: 0,as AgentId),
       orchestrator: config.orchestrator,
       startTime: new Date(),
       endTime: undefined,
       status: 'active', // Start immediately'
-      context: { ...config.context },
+      context: ...config.context ,
       messages: [],
       outcomes: [],
-      metrics: {
+      metrics: 
         messageCount: 0,
         participationByAgent: Object.fromEntries(
           config.initialParticipants.map((agent) => [agent.id, 0])
@@ -87,8 +85,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         averageResponseTime: 0,
         resolutionTime: 0,
         consensusScore: 0,
-        qualityRating: 0,
-      },
+        qualityRating: 0,,
     };
 
     // Store in memory
@@ -100,7 +97,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Update status to active
     await this.memory.updateConversation(session.id, { status: 'active' });'
 
-    this.logger.info('Conversation created successfully', { id: session.id });'
+    this.logger.info('Conversation created successfully', id: session.id );'
     return session;
   }
 
@@ -136,7 +133,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);`
+      throw new Error(`Conversation $conversationIdnot found`);`
     }
 
     // Add agent to participants
@@ -159,7 +156,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   async leaveConversation(
     conversationId: string,
-    agent: AgentId
+    _agent: AgentId
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -187,7 +184,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async sendMessage(message: ConversationMessage): Promise<void> {
     const session = this.activeSessions.get(message.conversationId);
     if (!session) {
-      throw new Error(`Conversation ${message.conversationId} not found`);`
+      throw new Error(`Conversation $message.conversationIdnot found`);`
     }
 
     // Validate sender is participant
@@ -226,7 +223,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   async moderateConversation(
     conversationId: string,
-    action: ModerationAction
+    _action: ModerationAction
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -279,7 +276,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);`
+      throw new Error(`Conversation $conversationIdnot found`);`
     }
 
     // Generate outcomes from conversation
@@ -288,13 +285,12 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Create outcomes from messages with decisions
     for (const message of session.messages) {
       if (message.messageType ==='decision') {'
-        outcomes.push({
+        outcomes.push(
           type: 'decision',
           content: message.content,
           confidence: 0.8, // Default confidence
           contributors: [message.fromAgent],
-          timestamp: message.timestamp,
-        });
+          timestamp: message.timestamp,);
       }
     }
 

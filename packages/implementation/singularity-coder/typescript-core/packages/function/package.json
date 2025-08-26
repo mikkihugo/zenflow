@@ -1,21 +1,21 @@
 {
-  "name": "@opencode/function",
-  "version": "0.0.1",
-  "$schema": "https://json.schemastore.org/package.json",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "type-check": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "4.20250522.0",
-    "typescript": "catalog:",
-    "@types/node": "catalog:"
-  },
-  "dependencies": {
-    "@octokit/auth-app": "8.0.1",
-    "@octokit/rest": "22.0.0",
-    "jose": "6.0.11"
-  }
+	"name": "@opencode/function",
+	"version": "0.0.1",
+	"$schema": "https://json.schemastore.org/package.json",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+		"type-check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "4.20250522.0",
+		"typescript": "catalog:",
+		"@types/node": "catalog:"
+	},
+	"dependencies": {
+		"@octokit/auth-app": "8.0.1",
+		"@octokit/rest": "22.0.0",
+		"jose": "6.0.11"
+	}
 }

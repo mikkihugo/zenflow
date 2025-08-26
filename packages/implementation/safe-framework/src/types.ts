@@ -205,6 +205,7 @@ export function createEvent(
  * This provides structured logging via LogTape with proper production configuration
  */
 export type { Logger } from'@claude-zen/foundation;
+
 export { getLogger } from '@claude-zen/foundation';
 
 /**
@@ -917,32 +918,32 @@ export interface ReviewFinding {
 // SAFE EVENTS TYPES (Re-export from managers)
 // ============================================================================
 
-/**
- * SAFe Events and Architecture Runway types - re-exported for convenience
- * Full type definitions are in respective manager files
- */
-export type {
-  SAFeEventsManagerConfig,
-  SAFeEventConfig,
-  EventParticipant,
-  EventAgendaItem,
-  EventSchedulingPattern,
-  EventExecutionContext,
-  EventOutcome,
-  EventDecision,
-  ActionItem,
-  ParticipantFeedback,
-  EventMetrics,
-} from './managers/safe-events-manager';
 
 /**
  * Architecture Runway types - re-exported for convenience
  */
 export type {
+  ArchitectureCapability,
+  ArchitectureDecisionRecord,
   ArchitectureRunwayConfig,
   ArchitectureRunwayItem,
-  TechnicalDebtItem,
-  ArchitectureDecisionRecord,
-  ArchitectureCapability,
   CapabilityKPI,
+  TechnicalDebtItem,
 } from './managers/architecture-runway-manager';
+/**
+ * SAFe Events and Architecture Runway types - re-exported for convenience
+ * Full type definitions are in respective manager files
+ */
+export type {
+  ActionItem,
+  EventAgendaItem,
+  EventDecision,
+  EventExecutionContext,
+  EventMetrics,
+  EventOutcome,
+  EventParticipant,
+  EventSchedulingPattern,
+  ParticipantFeedback,
+  SAFeEventConfig,
+  SAFeEventsManagerConfig,
+} from './managers/safe-events-manager';

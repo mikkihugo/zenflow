@@ -6,11 +6,11 @@
  */
 
 import {
-	getLogger,
 	EventEmitter,
-	Result,
-	ok,
 	err,
+	getLogger,
+	ok,
+	type Result,
 } from "@claude-zen/foundation";
 
 // Follow foundation's actual pattern - direct foundation + selective strategic facades

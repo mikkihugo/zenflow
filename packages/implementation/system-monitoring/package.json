@@ -1,52 +1,52 @@
 {
-  "name": "@claude-zen/system-monitoring",
-  "version": "1.0.0",
-  "description": "System and infrastructure monitoring for claude-code-zen - CPU, memory, performance tracking",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./types": {
-      "import": "./dist/types.js",
-      "types": "./dist/types.d.ts"
-    }
-  },
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "test": "vitest run",
-    "type-check": "tsc --noEmit"
-  },
-  "keywords": [
-    "system-monitoring",
-    "infrastructure",
-    "performance",
-    "cpu",
-    "memory",
-    "claude-zen"
-  ],
-  "author": "Claude Code Zen Team",
-  "license": "MIT",
-  "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/telemetry": "workspace:*",
-    "pidusage": "^4.0.1",
-    "systeminformation": "^5.27.7"
-  },
-  "devDependencies": {
-    "@types/node": "22.17.1",
-    "@types/pidusage": "^2.0.5",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
-  },
-  "peerDependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/telemetry": "workspace:*"
-  },
-  "private": true
+	"name": "@claude-zen/system-monitoring",
+	"version": "1.0.0",
+	"description": "System and infrastructure monitoring for claude-code-zen - CPU, memory, performance tracking",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./types": {
+			"import": "./dist/types.js",
+			"types": "./dist/types.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"test": "vitest run",
+		"type-check": "tsc --noEmit"
+	},
+	"keywords": [
+		"system-monitoring",
+		"infrastructure",
+		"performance",
+		"cpu",
+		"memory",
+		"claude-zen"
+	],
+	"author": "Claude Code Zen Team",
+	"license": "MIT",
+	"dependencies": {
+		"@claude-zen/foundation": "workspace:*",
+		"@claude-zen/telemetry": "workspace:*",
+		"pidusage": "^4.0.1",
+		"systeminformation": "^5.27.7"
+	},
+	"devDependencies": {
+		"@types/node": "22.17.1",
+		"@types/pidusage": "^2.0.5",
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4"
+	},
+	"peerDependencies": {
+		"@claude-zen/foundation": "workspace:*",
+		"@claude-zen/telemetry": "workspace:*"
+	},
+	"private": true
 }

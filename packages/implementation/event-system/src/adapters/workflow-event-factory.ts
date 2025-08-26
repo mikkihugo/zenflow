@@ -65,8 +65,6 @@ import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
   EventManager,
   EventManagerFactory,
 } from '../core/interfaces;
@@ -200,7 +198,7 @@ class WorkflowEventManagerImpl
   /**
    * Subscribe to task events.
    */
-  subscribeTaskEvents(listener: (event: WorkflowEvent) => void): string {
+  subscribeTaskEvents(listener: (_event: WorkflowEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.task.set(subscriptionId, listener);
 
@@ -226,7 +224,7 @@ class WorkflowEventManagerImpl
   /**
    * Subscribe to performance events.
    */
-  subscribePerformanceEvents(listener: (event: WorkflowEvent) => void): string {
+  subscribePerformanceEvents(listener: (_event: WorkflowEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.performance.set(subscriptionId, listener);
 
@@ -276,7 +274,7 @@ class WorkflowEventManagerImpl
         ? this.workflowMetrics.failedWorkflows / totalWorkflows
         : 0;
 
-    const taskFailureRate =
+    const _taskFailureRate =
       this.workflowMetrics.totalTasks > 0
         ? this.workflowMetrics.failedTasks / this.workflowMetrics.totalTasks
         : 0;
@@ -641,8 +639,7 @@ export class WorkflowEventManagerFactory
   implements EventManagerFactory<EventManagerConfig>
 {
   constructor(
-    private logger: Logger,
-    private config: Config
+    private logger: Logger,_config: Config
   ) {
     this.logger.debug('WorkflowEventManagerFactory initialized');'
   }
@@ -665,72 +662,7 @@ export class WorkflowEventManagerFactory
       `Workflow event manager created successfully: $config.name``
     );
     return manager;
-  }
-
-  private validateConfig(config: EventManagerConfig): void {
-    if (!config.name) {
-      throw new Error('Workflow event manager name is required');'
-    }
-
-    if (config.type !== 'workflow') {'
-      throw new Error('Manager type must be "workflow"');'
-    }
-
-    if (
-      (config.processing as any)?.timeout &&
-      (config.processing as any).timeout < 5000
-    ) {
-      this.logger.warn(
-        'Workflow processing timeout < 5000ms may be too short for complex workflows');'
-    }
-  }
-
-  private applyWorkflowDefaults(
-    config: EventManagerConfig
-  ): EventManagerConfig {
-    return {
-      ...config,
-      maxListeners: config.maxListeners||200,
-      processing: {
-        batchSize: 25, // Moderate batch size for workflows
-        ...config.processing,
-        strategy:'queued', // Workflows need reliable processing (override)'
-      } as any, // Type assertion for workflow-specific properties
-      monitoring: {
-        enabled: true,
-        metricsInterval: 60000, // 1 minute metrics collection
-        trackLatency: true,
-        trackThroughput: true,
-        trackErrors: true,
-        enableProfiling: false,
-        ...config.monitoring,
-      } as any, // Type assertion for workflow-specific properties
-    };
-  }
-
-  private async configureWorkflowManager(
-    manager: WorkflowEventManagerImpl,
-    config: EventManagerConfig
-  ): Promise<void> {
-    if (config.monitoring?.enabled) {
-      await manager.start();
-      this.logger.debug(
-        `Workflow event manager monitoring started: ${config.name}``
-      );
-    }
-
-    if ((config.monitoring as any)?.healthCheckInterval) {
-      setInterval(
-        async () => {
-          try {
-            const status = await manager.healthCheck();
-            if (status.status !== 'healthy') {'
-              this.logger.warn(
-                `Workflow manager health degraded: ${config.name}`,`
-                status.metadata
-              );
-            }
-          } catch (error) {
+  }catch (_error) {
             this.logger.error(
               `Workflow manager health check failed: ${config.name}`,`
               error

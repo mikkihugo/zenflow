@@ -21,14 +21,14 @@ interface NpmDownloadsRange {
   }>
 }
 
-async function fetchNpmDownloads(packageName: string): Promise<number> {
+async function _fetchNpmDownloads(packageName: string): Promise<number> {
   try {
     // Use a range from 2020 to current year + 5 years to ensure it works forever
     const currentYear = new Date().getFullYear()
     const endYear = currentYear + 5
     const response = await fetch(`https://api.npmjs.org/downloads/range/2020-01-01:${endYear}-12-31/${packageName}`)`
     if (!response.ok) {
-      console.warn(`Failed to fetch npm downloads for ${packageName}: ${response.status}`)`
+      console.warn(`Failed to fetch npm downloads for ${packageName}: $response.status`)`
       return 0
     }
     const data: NpmDownloadsRange = await response.json()
@@ -56,7 +56,7 @@ async function fetchReleases(): Promise<Release[]> {
     if (batch.length === 0) break
 
     releases.push(...batch)
-    console.log(`Fetched page ${page} with ${batch.length} releases`)`
+    console.log(`Fetched page $pagewith ${batch.length} releases`)`
 
     if (batch.length < per) break
     page++
@@ -66,7 +66,7 @@ async function fetchReleases(): Promise<Release[]> {
   return releases
 }
 
-function calculate(releases: Release[]) {
+function _calculate(releases: Release[]) {
   let total = 0
   const stats = []
 
@@ -94,7 +94,7 @@ function calculate(releases: Release[]) {
   return { total, stats }
 }
 
-async function save(githubTotal: number, npmDownloads: number) {
+async function _save(githubTotal: number, npmDownloads: number) {
   const file = "STATS.md"
   const date = new Date().toISOString().split("T")[0]
   const total = githubTotal + npmDownloads
@@ -115,9 +115,9 @@ async function save(githubTotal: number, npmDownloads: number) {
           /\|\s*[\d-]+\s*\|\s*([\d,]+)\s*(?:\([^)]*\))?\s*\|\s*([\d,]+)\s*(?:\([^)]*\))?\s*\|\s*([\d,]+)\s*(?:\([^)]*\))?\s*\|/,
         )
         if (match) {
-          previousGithub = parseInt(match[1].replace(/,/g, ""))
-          previousNpm = parseInt(match[2].replace(/,/g, ""))
-          previousTotal = parseInt(match[3].replace(/,/g, ""))
+          previousGithub = parseInt(match[1].replace(/,/g, ""), 10)
+          previousNpm = parseInt(match[2].replace(/,/g, ""), 10)
+          previousTotal = parseInt(match[3].replace(/,/g, ""), 10)
           break
         }
       }
@@ -143,9 +143,9 @@ async function save(githubTotal: number, npmDownloads: number) {
     totalChange > 0
       ? ` (+${totalChange.toLocaleString()})``
       : totalChange < 0
-        ? ` (${totalChange.toLocaleString()})``
+        ? ` ($totalChange.toLocaleString())``
         : " (+0)"
-  const line = `| ${date} | ${githubTotal.toLocaleString()}${githubChangeStr} | ${npmDownloads.toLocaleString()}${npmChangeStr} | ${total.toLocaleString()}${totalChangeStr} |\n``
+  const _line = `| ${date} | ${githubTotal.toLocaleString()}${githubChangeStr} | ${npmDownloads.toLocaleString()}${npmChangeStr} | ${total.toLocaleString()}${totalChangeStr} |\n``
 
   if (!content.includes("# Download Stats")) {
     content =
@@ -156,7 +156,7 @@ async function save(githubTotal: number, npmDownloads: number) {
   await Bun.spawn(["bunx", "prettier", "--write", file]).exited
 
   console.log(
-    `\nAppended stats to ${file}: GitHub ${githubTotal.toLocaleString()}${githubChangeStr}, npm ${npmDownloads.toLocaleString()}${npmChangeStr}, Total ${total.toLocaleString()}${totalChangeStr}`,`
+    `\nAppended stats to $file: GitHub $githubTotal.toLocaleString()$githubChangeStr, npm $npmDownloads.toLocaleString()$npmChangeStr, Total $total.toLocaleString()$totalChangeStr`,`
   )
 }
 
@@ -199,6 +199,6 @@ stats
   })
 
 console.log("-".repeat(60))
-console.log(`GitHub Total: ${githubTotal.toLocaleString()} downloads across ${releases.length} releases`)`
+console.log(`GitHub Total: $githubTotal.toLocaleString()downloads across $releases.lengthreleases`)`
 console.log(`npm Total: ${npmDownloads.toLocaleString()} downloads`)`
-console.log(`Combined Total: ${totalDownloads.toLocaleString()} downloads`)`
+console.log(`Combined Total: $totalDownloads.toLocaleString()downloads`)`

@@ -1,4 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
+
 
 /**
  * @file Type-Safe Event System - Phase 0, Task 0.3 - AGUI Integration Foundation
@@ -25,16 +25,12 @@ import type {
   Task,
   WorkflowContext,
   WorkflowDefinition,
-  WorkflowEvent,
   DomainBoundaryValidator,
-  DomainMetadata,
-  PerformanceMetrics,
-  Result,
   EventBus,
 } from './types;
 import type { EventTypeSchema } from '../validation;
-import { Domain, ContractViolationError, DomainValidationError } from './types;
-import { getDomainValidator, validateCrossDomain } from './domain-validator;
+import { Domain, DomainValidationError } from './types;
+import { getDomainValidator, } from './domain-validator;
 
 // ============================================================================
 // EVENT SYSTEM CORE TYPES - Foundation for all event operations
@@ -682,8 +678,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
   private startTime = Date.now();
 
   constructor(
-    config: EventSystemConfig = {},
-    private readonly systemDomainValidator?: DomainBoundaryValidator
+    config: EventSystemConfig = {},readonly _systemDomainValidator?: DomainBoundaryValidator
   ) {
     super();
 
@@ -1202,7 +1197,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
 
     if (criteria.tags && criteria.tags.length > 0) {
       filteredEvents = filteredEvents.filter((e) =>
-        e.metadata?.tags?.some((tag) => criteria.tags!.includes(tag))
+        e.metadata?.tags?.some((tag) => criteria.tags?.includes(tag))
       );
     }
 
@@ -1365,7 +1360,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
 
     // Initialize domain validators
     if (this.config.domainValidation) {
-      for (const [domain, validator] of this.domainValidators.entries()) {
+      for (const [domain, _validator] of this.domainValidators.entries()) {
         try {
           // Validators are already initialized via getDomainValidator
           this.logger.debug('Domain validator ready', { domain });'
@@ -1422,321 +1417,6 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     this.removeAllListeners();
 
     this.logger.info('TypeSafeEventBus shutdown complete');'
-  }
-
-  // ============================================================================
-  // PRIVATE MPLEMENTATION METHODS
-  // ============================================================================
-
-  private async processEventHandlers<TEvent extends BaseEvent>(
-    event: TEvent,
-    options: { timeout: number }
-  ): Promise<{
-    handlerResults: Array<{
-      handlerId: string;
-      success: boolean;
-      processingTime: number;
-      error?: Error;
-    }>;
-    validationTime: number;
-  }> {
-    const handlerResults: Array<{
-      handlerId: string;
-      success: boolean;
-      processingTime: number;
-      error?: Error;
-    }> = [];
-
-    const validationTime = 0;
-
-    // Get handlers for this specific event type
-    const specificHandlers = this.getHandlers(event.type);
-
-    // Get domain handlers
-    const domainHandlers = this.getHandlers(`domain:${event.domain}`);`
-
-    // Get wildcard handlers
-    const wildcardHandlers = this.getHandlers('*');'
-
-    // Combine and deduplicate handlers
-    const allHandlers = [
-      ...specificHandlers,
-      ...domainHandlers,
-      ...wildcardHandlers,
-    ];
-    const uniqueHandlers = Array.from(
-      new Map(allHandlers.map((h) => [h.id, h])).values()
-    );
-
-    if (uniqueHandlers.length === 0) {
-      return { handlerResults, validationTime };
-    }
-
-    // Create handler context
-    const context: EventHandlerContext = {
-      eventBus: this,
-      logger: this.logger,
-      startTime: new Date(),
-      correlationId:
-        event.metadata?.correlationId||this.generateCorrelationId(),
-      metadata: {},
-    };
-
-    // Process handlers concurrently with timeout
-    const handlerPromises = uniqueHandlers.map(async (handler) => {
-      const handlerStartTime = Date.now();
-
-      try {
-        // Validate event against handler schema if provided
-        if (handler.schema && handler.config.validatePayload) {
-          const schemaValidationStart = Date.now();
-
-          if (this.config.domainValidation) {
-            const validator = this.domainValidators.get(event.domain);
-            if (validator) {
-              validator.validateInput(event, handler.schema);
-            }
-          }
-
-          validationTime += Date.now() - schemaValidationStart;
-        }
-
-        // Execute handler with timeout
-        await Promise.race([
-          handler.handler(event, context),
-          new Promise((_, reject) =>
-            setTimeout(
-              () => reject(new Error('Handler timeout')),
-              handler.config.timeout||options.timeout
-            )
-          ),
-        ]);
-
-        const processingTime = Date.now() - handlerStartTime;
-
-        return {
-          handlerId: handler.id,
-          success: true,
-          processingTime,
-        };
-      } catch (error) {
-        const processingTime = Date.now() - handlerStartTime;
-
-        this.logger.error('Event handler failed', {'
-          handlerId: handler.id,
-          eventType: event.type,
-          eventId: event.id,
-          error: error instanceof Error ? error.message : String(error),
-          processingTime,
-        });
-
-        return {
-          handlerId: handler.id,
-          success: false,
-          processingTime,
-          error: error instanceof Error ? error : new Error(String(error)),
-        };
-      }
-    });
-
-    const results = await Promise.allSettled(handlerPromises);
-
-    for (const result of results) {
-      if (result.status === 'fulfilled') {'
-        handlerResults.push(result.value);
-      } else {
-        handlerResults.push({
-          handlerId: 'unknown',
-          success: false,
-          processingTime: 0,
-          error:
-            result.reason instanceof Error
-              ? result.reason
-              : new Error(String(result.reason)),
-        });
-      }
-    }
-
-    return { handlerResults, validationTime };
-  }
-
-  private async validateEventAtDomainBoundary<TEvent extends BaseEvent>(
-    event: TEvent
-  ): Promise<Result<TEvent>> {
-    const validator = this.domainValidators.get(event.domain);
-    if (!validator) {
-      return {
-        success: true,
-        data: event,
-      };
-    }
-
-    try {
-      // Get or create schema for this event type
-      const schema = this.getEventSchema(event.type);
-
-      if (schema) {
-        const validationResult = validator.validateInput(event, schema);
-        if (validationResult.success && validationResult.data) {
-          return {
-            success: true,
-            data: validationResult.data as TEvent,
-          };
-        } else {
-          return {
-            success: false,
-            error: validationResult.error||new Error('Validation failed'),
-          };
-        }
-      }
-      // If no schema, just validate basic structure
-      const basicSchema: EventTypeSchema = BaseEventSchema;
-      const basicValidationResult = validator.validateInput(event, basicSchema);
-      if (basicValidationResult.success) {
-        return {
-          success: true,
-          data: event,
-        };
-      } else {
-        return {
-          success: false,
-          error:
-            basicValidationResult.error||new Error('Basic validation failed'),
-        };
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error : new Error(String(error)),
-      };
-    }
-  }
-
-  private async validateCrossDomainEvent<TEvent extends BaseEvent>(
-    event: TEvent,
-    fromDomain: Domain,
-    toDomain: Domain
-  ): Promise<Result<TEvent>> {
-    try {
-      const schema = this.getEventSchema(event.type);
-      if (schema) {
-        const validationResult = validateCrossDomain(
-          fromDomain,
-          toDomain,
-          event
-        );
-        if (validationResult.success && validationResult.data) {
-          return {
-            success: true,
-            data: validationResult.data as TEvent,
-          };
-        } else {
-          return {
-            success: false,
-            error:
-              validationResult.error||new Error('Cross-domain validation failed'),
-          };
-        }
-      }
-      return {
-        success: true,
-        data: event,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error : new Error(String(error)),
-      };
-    }
-  }
-
-  private getEventSchema(eventType: string): EventTypeSchema|undefined {
-    // Check cache first
-    if (this.schemaCache.has(eventType)) {
-      return this.schemaCache.get(eventType);
-    }
-
-    // Look up in predefined schemas
-    const schemaKey = eventType
-      .split('.')'
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('');'
-
-    const schema = (EventSchemas as any)[schemaKey];
-    if (schema) {
-      this.schemaCache.set(eventType, schema);
-      return schema;
-    }
-
-    return undefined;
-  }
-
-  private addToEventHistory<TEvent extends BaseEvent>(event: TEvent): void {
-    this.eventHistory.push(event);
-    this.eventCounter++;
-
-    // Maintain history size limit
-    if (this.eventHistory.length > this.config.maxEventHistory) {
-      this.eventHistory.shift();
-    }
-  }
-
-  private trackEventMetrics(
-    eventType: string,
-    processingTime: number,
-    success: boolean
-  ): void {
-    if (!this.processingStats.has(eventType)) {
-      this.processingStats.set(eventType, []);
-    }
-
-    const stats = this.processingStats.get(eventType)!;
-    if (success) {
-      stats.push(processingTime);
-    }
-
-    // Keep only recent metrics
-    if (stats.length > 1000) {
-      stats.splice(0, stats.length - 1000);
-    }
-  }
-
-  private registerSystemEventHandlers(): void {
-    // Register handler for error events to log them
-    this.registerHandler(
-      'error.occurred',
-      async (event: ErrorOccurredEvent) => {
-        this.logger.error('System error occurred', {'
-          error: event.payload.error.message,
-          severity: event.payload.severity,
-          recoverable: event.payload.recoverable,
-          context: event.payload.context,
-        });
-      }
-    );
-
-    // Register handler for system events
-    this.registerHandler(
-      'system.started',
-      async (event: SystemStartedEvent) => {
-        this.logger.info('System started', {'
-          version: event.payload.version,
-          startTime: event.payload.startTime,
-        });
-      }
-    );
-  }
-
-  private generateEventId(): string {
-    return `event-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
-  }
-
-  private generateHandlerId(): string {
-    return `handler-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
-  }
-
-  private generateCorrelationId(): string {
-    return `corr-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
   }
 
   private generateCrossingId(): string {

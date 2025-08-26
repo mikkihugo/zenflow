@@ -7,8 +7,6 @@
  * @file Exporters implementation.
  */
 
-import { mkdir, writeFile } from 'node:fs/promises';
-import * as path from 'node:path';
 
 type ExporterFunction = {
   name: string;
@@ -34,7 +32,6 @@ export interface ExportConfig {
 
 export class ExportSystem {
   private exporters = new Map<string, ExporterFunction>();
-  private exportHistory: ExportResult[] = [];
 
   constructor() {
     this.setupExporters();
@@ -82,13 +79,13 @@ export class ExportSystem {
     });
   }
 
-  async exportData(data: unknown, config: ExportConfig): Promise<ExportResult> {
-    const timestamp = Date.now();
+  async exportData(_data: unknown, config: ExportConfig): Promise<ExportResult> {
+    const _timestamp = Date.now();
 
     try {
-      const exporter = this.exporters.get(config?.['format']);'
+      const exporter = this.exporters.get(config?.format);'
       if (!exporter) {
-        throw new Error(`Unsupported export format: ${config?.['format']}`);`
+        throw new Error(`Unsupported export format: ${config?.format}`);`
       }
 
       const exportedData = exporter.export(data);
@@ -154,7 +151,7 @@ export class ExportSystem {
         }
         return value?.toString()||';
       });
-      csvRows.push(values.join(','));'
+      csvRows.push(_values._join(','));'
     }
 
     return csvRows.join('\n');'
@@ -171,7 +168,7 @@ export class ExportSystem {
 
       if (typeof obj === 'string') {'
         return obj.includes('\n')'
-          ? `|\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}``
+          ? `|\n$spaces$obj.replace(/\n/g, `\n${spaces}  `)``
           : obj;
       }
 
@@ -204,7 +201,7 @@ export class ExportSystem {
   }
 
   public convertToXML(data: unknown): string {
-    const xmlify = (obj: unknown, name = 'root'): string => {'
+    const _xmlify = (obj: unknown, name = 'root'): string => {'
       if (obj === null||obj === undefined) {
         return `<${name}></${name}>`;`
       }
@@ -212,25 +209,25 @@ export class ExportSystem {
       if (
         typeof obj ==='string'||typeof obj ==='number'||typeof obj ==='boolean''
       ) {
-        return `<${name}>${obj}</${name}>`;`
+        return `<$name>$obj</${name}>`;`
       }
 
       if (Array.isArray(obj)) {
-        return `<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</${name}>`;`
+        return `<${name}>${obj.map((item) => _xmlify(item, 'item')).join('')}</${name}>`;`
       }
 
       if (typeof obj === 'object') {'
         const content = Object.entries(obj)
           .map(([key, value]) => xmlify(value, key))
           .join('');'
-        return `<${name}>${content}</${name}>`;`
+        return `<$name>$content</${name}>`;`
       }
 
       return `<${name}>${obj}</${name}>`;`
     };
 
     return `<?xml version="1.0" encoding="UTF-8"?>`
-      ${xmlify(data)}`;`
+      ${_xmlify(data)}`;`
   }
 
   public convertToMarkdown(data: unknown): string {
@@ -255,11 +252,11 @@ export class ExportSystem {
         ) {
           // Convert array of objects to table
           const headers = Object.keys(obj[0]);
-          const headerRow = `|${headers.join('|')}|`;`
-          const separatorRow = `|${headers.map(() => '---').join('|')}|`;`
+          const headerRow = `|$headers.join('|')|`;`
+          const separatorRow = `|$headers.map(() => '---').join('|')|`;`
           const dataRows = obj.map(
             (item) =>
-              `|${headers.map((header) => item?.[header]?.toString() || '').join('|')}|``
+              `|$headers.map((header) => item?.[header]?.toString() || '').join('|')|``
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');'
         }
@@ -272,7 +269,7 @@ export class ExportSystem {
           .map(([key, value]) => {
             const heading = '#'.repeat(level);'
             return `${heading} ${key}`
-      \n${mdify(value, level + 1)}`;`
+      \n$mdify(value, level + 1)`;`
           })
           .join('\n');'
       }

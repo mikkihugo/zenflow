@@ -7,11 +7,11 @@
  * ARCHITECTURAL PATTERN: Uses strategic facade delegation for monitoring.
  */
 
-import { getLogger, ContextError, type Logger } from '@claude-zen/foundation';
+import { ContextError, getLogger, type Logger } from '@claude-zen/foundation';
 // Operations facade for monitoring
 import {
-  getPerformanceTracker,
   getAgentHealthMonitor,
+  getPerformanceTracker,
 } from '@claude-zen/operations';
 
 /**
@@ -209,7 +209,7 @@ export class BrainCoordinator {
     // In a real implementation, this would use DSPy coordination
     return {
       strategy: 'autonomous',
-      prompt: `Optimized: ${request.basePrompt}`,`
+      prompt: `Optimized: $request.basePrompt`,`
       confidence: 0.85,
     };
   }

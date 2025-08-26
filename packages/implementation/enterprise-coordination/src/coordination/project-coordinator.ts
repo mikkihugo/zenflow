@@ -10,8 +10,8 @@
  * @version 1.0.0
  */
 
-import { getLogger, EventEmitter } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 
 /**
  * Project coordination configuration for SAFe LPM
@@ -106,7 +106,7 @@ export class ProjectCoordinator extends EventEmitter {
     const updated = { ...existing, ...updates };
     this.projects.set(projectId, updated);
 
-    this.logger.info(`Project updated: ${projectId}`);`
+    this.logger.info(`Project updated: $projectId`);`
     this.emit('project:updated', { projectId, config: updated });'
   }
 
@@ -136,7 +136,7 @@ export class ProjectCoordinator extends EventEmitter {
   async handlePortfolioEvent(
     projectId: string,
     eventType: string,
-    data: any
+    _data: any
   ): Promise<void> {
     const config = this.projects.get(projectId);
     if (!config) return;
@@ -158,7 +158,7 @@ export class ProjectCoordinator extends EventEmitter {
         this.emit('theme:aligned', { projectId, theme: data });'
         break;
       default:
-        this.logger.debug(`Unknown portfolio event: ${eventType}`);`
+        this.logger.debug(`Unknown portfolio event: $eventType`);`
     }
   }
 
@@ -225,7 +225,7 @@ export class ProjectCoordinator extends EventEmitter {
   /**
    * Process portfolio event asynchronously (async helper method)
    */
-  private async processPortfolioEventAsync(projectId: string, eventType: string, data: any): Promise<void> {
+  private async processPortfolioEventAsync(projectId: string, eventType: string, data: any): Promise<void> 
     await new Promise(resolve => setTimeout(resolve, 25));
     this.logger.debug(`Portfolio event processed: ${eventType} for ${projectId}`, data);`
   }
@@ -236,7 +236,6 @@ export class ProjectCoordinator extends EventEmitter {
   private async cleanupProjectResources(projectId: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
     this.logger.debug(`Resources cleaned up for project ${projectId}`);`
-  }
 }
 
 // Global instance

@@ -1,8 +1,8 @@
-import { describe, it, expect, afterAll } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 import {
+  cleanupGlobalInstances,
   executeClaudeTask,
   getGlobalClaudeTaskManager,
-  cleanupGlobalInstances,
 } from '../../src/claude/claude-sdk';
 
 describe('Claude SDK - Integration Tests (Real API)', () => {'

@@ -22,23 +22,18 @@
  */
 
 import {
-  createServiceContainer,getLogger, 
-  Lifetime,type Logger, 
+  createServiceContainer,getLogger, type Logger, 
   type ServiceContainer,TypedEventBase 
 } from '@claude-zen/foundation';
 
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
   EventManagerType,
-  EventManager,
   EventManagerFactory,
   EventManagerRegistry,
-  SystemEvent,
 } from './core/interfaces;
 import { EventManagerTypes } from './core/interfaces;
-import { EventCategories, EventPriorityMap } from './types;
+import { EventCategories, } from './types;
 
 /**
  * Service Container-based Event Registry
@@ -52,13 +47,10 @@ export class MigratedEventRegistry
 {
   private container: ServiceContainer;
   private logger: Logger;
-  private eventManagers = new Map<string, EventManager>();
   private factories = new Map<EventManagerType, EventManagerFactory>();
-  private eventTypes: Record<string, any> = {};
   private factoryRegistry: Record<string, any> = {};
   private healthMonitoring: any = {};
   private discoveryConfig: any = {};
-  private healthCheckInterval?: NodeJS.Timeout;
   private initialized = false;
 
   constructor() {
@@ -147,7 +139,7 @@ export class MigratedEventRegistry
   ): void {
     try {
       // Register factory with ServiceContainer for enhanced capabilities
-      const registrationResult = this.container.registerInstance(
+      const _registrationResult = this.container.registerInstance(
         `factory:${type}`,`
         factory,
         {
@@ -219,7 +211,7 @@ export class MigratedEventRegistry
 
       // Fallback to legacy storage
       return this.factories.get(type) as EventManagerFactory<T>;
-    } catch (error) {
+    } catch (_error) {
       this.logger.warn(
         `⚠️ Failed to resolve factory ${type}, falling back to legacy:`,`
         error
@@ -282,11 +274,11 @@ export class MigratedEventRegistry
       this.eventManagers.set(name, manager);
 
       // Update factory usage statistics
-      if (this.factoryRegistry[config.type]) {
+      if (this._factoryRegistry[config.type]) {
         this.factoryRegistry[config.type].usage.managersCreated++;
       }
 
-      this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);`
+      this.logger.info(`📝 _Registered _event _manager: ${name} (_${config.type})`);`
       this.emit('manager-registered', { name, manager, factory, config });'
     } catch (error) {
       this.logger.error(`❌ Failed to register manager ${name}:`, error);`
@@ -461,7 +453,7 @@ export class MigratedEventRegistry
    */
   getEventTypeConfig(eventType: string): any|'undefined {'
     try {
-      const result = this.container.resolve<any>(`eventType:${eventType}`);`
+      const _result = this.container.resolve<any>(`eventType:${eventType}`);`
       if (result.isOk()) {
         return result.value;
       }
@@ -630,7 +622,7 @@ export class MigratedEventRegistry
 
       // Shutdown all managers
       const allManagers = this.getAllEventManagers();
-      const shutdownPromises = Array.from(allManagers.values()).map(
+      const _shutdownPromises = Array.from(allManagers.values()).map(
         async (manager) => {
           try {
             await manager.destroy();

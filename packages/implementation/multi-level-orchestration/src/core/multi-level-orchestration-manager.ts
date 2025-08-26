@@ -19,8 +19,7 @@
  * @since 2024-01-01
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { generateNanoId } from '@claude-zen/foundation';
+import { generateNanoId, TypedEventBase } from '@claude-zen/foundation';
 
 // ============================================================================
 // CORE ORCHESTRATION TYPES
@@ -264,8 +263,6 @@ export interface OrchestrationWarning {
  */
 export class MultiLevelOrchestrationManager extends TypedEventBase {
   private readonly orchestrationConfig: MultiLevelOrchestrationConfig;
-  private readonly state: MultiLevelOrchestratorState;
-  private readonly transitionConfigs = new Map<string, LevelTransitionConfig>();
   private readonly intervals = new Map<string, NodeJS.Timeout>();
   private logger: any;
   private isRunning = false;
@@ -455,7 +452,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
       const currentWIP = this.state.portfolioItems.size;
       if (currentWIP >= this.orchestrationConfig.wipLimits.portfolio) {
         throw new Error(
-          `Portfolio WIP limit exceeded: ${currentWIP}/${this.orchestrationConfig.wipLimits.portfolio}``
+          `Portfolio WIP limit exceeded: $currentWIP/${this.orchestrationConfig.wipLimits.portfolio}``
         );
       }
     }
@@ -503,7 +500,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
     this.updateWIPStatus();
 
     this.logger.info(
-      `Added program item: ${programItem.name} (${programItem.id})``
+      `Added program item: $programItem.name($programItem.id)``
     );
     this.emit('program:item-added', { item: programItem });'
 
@@ -542,7 +539,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
     this.updateWIPStatus();
 
     this.logger.info(
-      `Added swarm execution item: ${swarmItem.name} (${swarmItem.id})``
+      `Added swarm execution item: $swarmItem.name($swarmItem.id)``
     );
     this.emit('swarm-execution:item-added', { item: swarmItem });'
 
@@ -735,13 +732,12 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
               message: `Transition ${transition.fromLevel} → ${transition.toLevel} timed out`,`
               timestamp: new Date(),
             });
-          } else {
+          } else 
             transition.status = 'completed';
             transition.completedAt = new Date();
             result.completed++;
-          }
         }
-      } catch (error) {
+      } catch (error) 
         result.errors.push({
           level: transition.fromLevel,
           itemId: transition.itemId,
@@ -750,7 +746,6 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
             error instanceof Error ? error.message : 'Unknown transition error',
           timestamp: new Date(),
         });
-      }
     }
 
     return result;
@@ -765,7 +760,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
       errors: [] as OrchestrationError[],
     };
 
-    for (const [depId, dependency] of this.state.crossLevelDependencies) {
+    for (const [_depId, dependency] of this.state.crossLevelDependencies) {
       try {
         if (dependency.status === 'pending') {'
           // Simple resolution logic - in production would be more sophisticated
@@ -849,7 +844,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
         result.warnings.push({
           level: level as OrchestrationLevel,
           message: violation,
-          recommendation: `Reduce ${level} work items or increase WIP limit`,`
+          recommendation: `Reduce $levelwork items or increase WIP limit`,`
           timestamp: new Date(),
         });
       }
@@ -898,12 +893,12 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
   }
 
   private updateSystemMetrics(): void {
-    const totalItems =
+    const _totalItems =
       this.state.portfolioItems.size +
       this.state.programItems.size +
       this.state.swarmExecutionItems.size;
 
-    const activeItems =
+    const _activeItems =
       [...this.state.portfolioItems.values()].filter(
         (i) => i.status === 'active''
       ).length +
@@ -913,7 +908,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
         (i) => i.status === 'active''
       ).length;
 
-    const completedItems =
+    const _completedItems =
       [...this.state.portfolioItems.values()].filter(
         (i) => i.status === 'completed''
       ).length +
@@ -923,21 +918,19 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
       [...this.state.swarmExecutionItems.values()].filter(
         (i) => i.status === 'completed').length;'
 
-    this.state.systemPerformance = {
-      totalItems,
-      activeItems,
-      completedItems,
+    this.state.systemPerformance = 
+      _totalItems,
+      _activeItems,
+      _completedItems,
       throughputRate: completedItems / totalItems||0,
       averageLeadTime: 120, // Mock value
       systemUtilization: activeItems / totalItems||0,
-      bottleneckAnalysis: this.identifyBottlenecks()||{
+      bottleneckAnalysis: this.identifyBottlenecks()||
         level: null,
         severity:'none',
         impact: ',
-        recommendation: ',
-      },
-      lastUpdated: new Date(),
-    };
+        recommendation: ',,
+      lastUpdated: new Date(),;
   }
 
   private identifyBottleneckLevel(): OrchestrationLevel|null {

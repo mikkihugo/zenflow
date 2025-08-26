@@ -9,14 +9,13 @@ const GITHUB_APP_PRIVATE_KEY = new sst.Secret("GITHUB_APP_PRIVATE_KEY")
 const bucket = new sst.cloudflare.Bucket("Bucket")
 
 export const api = new sst.cloudflare.Worker("Api", {
-  domain: `api.${domain}`,`
+  domain: `api.$domain`,`
   handler: "packages/function/src/api.ts",
-  environment: {
-    WEB_DOMAIN: domain,
-  },
+  environment: 
+    WEB_DOMAIN: domain,,
   url: true,
   link: [bucket, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY],
-  transform: {
+  transform: 
     worker: (args) => {
       args.logpush = true
       args.bindings = $resolve(args.bindings).apply((bindings) => [
@@ -33,8 +32,7 @@ export const api = new sst.cloudflare.Worker("Api", {
         newTag: $app.stage === "production" ? "" : "v1",
         //newSqliteClasses: ["SyncServer"],
       }
-    },
-  },
+    },,
 })
 
 new sst.cloudflare.x.Astro("Web", {

@@ -12,18 +12,16 @@
  * @version 1.0.0
  */
 
-import { dateFns, generateNanoId, z } from '@claude-zen/foundation';
+import { dateFns, generateNanoId, } from '@claude-zen/foundation';
+
 const { format, addDays, startOfWeek, endOfWeek } = dateFns;
+
 import {
-  groupBy,
-  map,
   filter,
-  orderBy,
-  sumBy,
+  map,
   meanBy,
-  countBy,
 } from 'lodash-es';
-import type { ARTTeam, Dependency, Risk, Logger } from '../../types';
+import type { ARTTeam, Dependency, Logger, Risk } from '../../types';
 
 /**
  * Scrum of Scrums meeting configuration
@@ -230,7 +228,6 @@ export interface MeetingEffectiveness {
 export class ScrumOfScrumsService {
   private readonly logger: Logger;
   private configurations = new Map<string, ScrumOfScrumsConfig>();
-  private impediments = new Map<string, ProgramImpediment>();
   private meetingResults = new Map<string, ScrumOfScrumsResult>();
 
   constructor(logger: Logger) {
@@ -289,7 +286,7 @@ export class ScrumOfScrumsService {
 
     this.logger.info('Conducting Scrum of Scrums meeting', { artId });'
 
-    const meetingId = `sos-meeting-${generateNanoId(12)}`;`
+    const meetingId = `sos-meeting-$generateNanoId(12)`;`
     const attendance = this.generateAttendance(config.participants);
 
     const result: ScrumOfScrumsResult = {
@@ -330,8 +327,8 @@ export class ScrumOfScrumsService {
     severity: ImpedimentSeverity;
     affectedTeams: string[];
     impact: string;
-  }): Promise<ProgramImpediment> {
-    const impedimentId = `imp-${generateNanoId(12)}`;`
+  }): Promise<_ProgramImpediment> {
+    const _impedimentId = `imp-${generateNanoId(12)}`;`
 
     const programImpediment: ProgramImpediment = {
       id: impedimentId,
@@ -367,7 +364,7 @@ export class ScrumOfScrumsService {
   ): Promise<void> {
     const impediment = this.impediments.get(impedimentId);
     if (!impediment) {
-      throw new Error(`Impediment not found: ${impedimentId}`);`
+      throw new Error(`Impediment not found: $_impedimentId`);`
     }
 
     const escalatedImpediment = {
@@ -485,7 +482,7 @@ export class ScrumOfScrumsService {
   private generateActionItems(): ScrumActionItem[] {
     return [
       {
-        id: `action-${generateNanoId(8)}`,`
+        id: `action-$generateNanoId(8)`,`
         description:'Follow up on team dependencies',
         owner: 'RTE',
         dueDate: addDays(new Date(), 2),

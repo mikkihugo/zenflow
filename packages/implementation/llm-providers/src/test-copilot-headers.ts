@@ -8,7 +8,7 @@ import { createAPIProvider } from './factories/api-provider-factory';
 
 const logger = getLogger('test-copilot');'
 
-async function testCopilotWithHeaders() {
+async function _testCopilotWithHeaders() {
   try {
     logger.info(
       '🚀 Testing GitHub Copilot API with Copilot-Integration-Id header...''
@@ -39,13 +39,12 @@ async function testCopilotWithHeaders() {
 
     if (result.isOk()) {
       logger.info('✅ GitHub Copilot API responded successfully!');'
-      logger.info(`📝 Response: ${result.value.content.substring(0, 200)}...`);`
+      logger.info(`📝 Response: $result.value.content.substring(0, 200)...`);`
       logger.info(
-        `📊 Metadata: ${JSON.stringify(result.value.metadata, null, 2)}``
+        `📊 Metadata: $JSON.stringify(result.value.metadata, null, 2)``
       );
-    } else {
+    } else 
       logger.error('❌ GitHub Copilot API failed:', result.error);'
-    }
   } catch (error) {
     logger.error('💥 Test failed:', error);'
   }

@@ -25,85 +25,85 @@
  * @version 2.0.0
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from "@claude-zen/foundation";
 
-const logger = getLogger('enterprise');
+const logger = getLogger("enterprise");
 
 // =============================================================================
 // PURE DELEGATION - Direct import and re-export
 // =============================================================================
 
 export const getSafeFramework = async () => {
-  const { createSafeFramework } = await import('@claude-zen/safe-framework');
-  return createSafeFramework();
+	const { createSafeFramework } = await import("@claude-zen/safe-framework");
+	return createSafeFramework();
 };
 
 export const getSPARCEngine = async () => {
-  const { createSPARCEngine } = await import('@claude-zen/sparc');
-  return createSPARCEngine();
+	const { createSPARCEngine } = await import("@claude-zen/sparc");
+	return createSPARCEngine();
 };
 
 export const getAGUISystem = async () => {
-  const { createAGUISystem } = await import('@claude-zen/agui');
-  return createAGUISystem();
+	const { createAGUISystem } = await import("@claude-zen/agui");
+	return createAGUISystem();
 };
 
 export const getKnowledgeManager = async () => {
-  const { createKnowledgeManager } = await import('@claude-zen/knowledge');
-  return createKnowledgeManager();
+	const { createKnowledgeManager } = await import("@claude-zen/knowledge");
+	return createKnowledgeManager();
 };
 
 export const getKanbanManager = async () => {
-  const { createKanbanManager } = await import('@claude-zen/kanban');
-  return createKanbanManager();
+	const { createKanbanManager } = await import("@claude-zen/kanban");
+	return createKanbanManager();
 };
 
 export const getOrchestrationEngine = async () => {
-  const { createOrchestrationEngine } = await import(
-    '@claude-zen/multi-level-orchestration'
-  );
-  return createOrchestrationEngine();
+	const { createOrchestrationEngine } = await import(
+		"@claude-zen/multi-level-orchestration"
+	);
+	return createOrchestrationEngine();
 };
 
 export const getAgentManager = async () => {
-  const { createAgentManager } = await import('@claude-zen/agent-manager');
-  return createAgentManager();
+	const { createAgentManager } = await import("@claude-zen/agent-manager");
+	return createAgentManager();
 };
 
 export const getEnterpriseCoordinator = async () => {
-  const { createEnterpriseCoordinator } = await import(
-    '@claude-zen/enterprise-coordination'
-  );
-  return createEnterpriseCoordinator();
+	const { createEnterpriseCoordinator } = await import(
+		"@claude-zen/enterprise-coordination"
+	);
+	return createEnterpriseCoordinator();
 };
 
 export const getDocumentIntelligence = async () => {
-  const { createDocumentIntelligence } = await import(
-    '@claude-zen/document-intelligence'
-  );
-  return createDocumentIntelligence();
+	const { createDocumentIntelligence } = await import(
+		"@claude-zen/document-intelligence"
+	);
+	return createDocumentIntelligence();
 };
 
 export const getDocumentationManager = async () => {
-  const { createDocumentationManager } = await import(
-    '@claude-zen/documentation'
-  );
-  return createDocumentationManager();
+	const { createDocumentationManager } = await import(
+		"@claude-zen/documentation"
+	);
+	return createDocumentationManager();
 };
 
 export const getExportManager = async () => {
-  const { createExportManager } = await import('@claude-zen/exporters');
-  return createExportManager();
+	const { createExportManager } = await import("@claude-zen/exporters");
+	return createExportManager();
 };
 
 export const getAgentRegistry = async () => {
-  const { createAgentRegistry } = await import('@claude-zen/agent-registry');
-  return createAgentRegistry();
+	const { createAgentRegistry } = await import("@claude-zen/agent-registry");
+	return createAgentRegistry();
 };
 
 export const getInterfaceManager = async () => {
-  const { createInterfaceManager } = await import('@claude-zen/interfaces');
-  return createInterfaceManager();
+	const { createInterfaceManager } = await import("@claude-zen/interfaces");
+	return createInterfaceManager();
 };
 
 // =============================================================================
@@ -111,53 +111,52 @@ export const getInterfaceManager = async () => {
 // =============================================================================
 
 export const enterpriseSystem = {
-  // Core enterprise tools
-  getSafeFramework,
-  getSPARCEngine,
-  getAGUISystem,
-  getKnowledgeManager,
-  getKanbanManager,
-  getOrchestrationEngine,
-  getAgentManager,
-  getEnterpriseCoordinator,
+	// Core enterprise tools
+	getSafeFramework,
+	getSPARCEngine,
+	getAGUISystem,
+	getKnowledgeManager,
+	getKanbanManager,
+	getOrchestrationEngine,
+	getAgentManager,
+	getEnterpriseCoordinator,
 
-  // Document processing tools
-  getDocumentIntelligence,
-  getDocumentationManager,
-  getExportManager,
+	// Document processing tools
+	getDocumentIntelligence,
+	getDocumentationManager,
+	getExportManager,
 
-  // Agent and interface management
-  getAgentRegistry,
-  getInterfaceManager,
+	// Agent and interface management
+	getAgentRegistry,
+	getInterfaceManager,
 
-  // Utilities
-  logger,
-  init: () => {
-    logger.info('Enterprise system initialized');
-    return { success: true, message: 'Enterprise tools ready' };
-  },
+	// Utilities
+	logger,
+	init: () => {
+		logger.info("Enterprise system initialized");
+		return { success: true, message: "Enterprise tools ready" };
+	},
 };
 
 // =============================================================================
 // TYPE EXPORTS - For external consumers
 // =============================================================================
 
-export type * from './types';
-
+export type * from "@claude-zen/agent-manager";
+export type * from "@claude-zen/agent-registry";
+export type * from "@claude-zen/agui";
+export type * from "@claude-zen/document-intelligence";
+export type * from "@claude-zen/documentation";
+export type * from "@claude-zen/enterprise-coordination";
+export type * from "@claude-zen/exporters";
+export type * from "@claude-zen/interfaces";
+export type * from "@claude-zen/kanban";
+export type * from "@claude-zen/knowledge";
+export type * from "@claude-zen/multi-level-orchestration";
 // Re-export package types
-export type * from '@claude-zen/safe-framework';
-export type * from '@claude-zen/sparc';
-export type * from '@claude-zen/agui';
-export type * from '@claude-zen/knowledge';
-export type * from '@claude-zen/kanban';
-export type * from '@claude-zen/multi-level-orchestration';
-export type * from '@claude-zen/agent-manager';
-export type * from '@claude-zen/enterprise-coordination';
-export type * from '@claude-zen/document-intelligence';
-export type * from '@claude-zen/documentation';
-export type * from '@claude-zen/exporters';
-export type * from '@claude-zen/agent-registry';
-export type * from '@claude-zen/interfaces';
+export type * from "@claude-zen/safe-framework";
+export type * from "@claude-zen/sparc";
+export type * from "./types";
 
 // Default export for convenience
 export default enterpriseSystem;

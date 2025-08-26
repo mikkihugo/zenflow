@@ -1,44 +1,44 @@
 {
-  "$schema": "https://json.schemastore.org/package.json",
-  "name": "opencode",
-  "private": true,
-  "type": "module",
-  "packageManager": "pnpm@10.15.0",
-  "scripts": {
-    "dev": "node packages/opencode/src/index.ts",
-    "typecheck": "pnpm --filter='*' typecheck",
-    "lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "stainless": "./scripts/stainless",
-    "postinstall": "./scripts/hooks"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "catalog": {
-      "typescript": "5.8.2",
-      "@types/node": "22.13.9",
-      "zod": "3.25.49",
-      "ai": "5.0.0-beta.18"
-    }
-  },
-  "devDependencies": {
-    "prettier": "3.5.3",
-    "sst": "3.17.8"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sst/opencode"
-  },
-  "license": "MIT",
-  "prettier": {
-    "semi": false,
-    "printWidth": 120
-  },
-  "trustedDependencies": [
-    "esbuild",
-    "protobufjs",
-    "sharp"
-  ],
-  "patchedDependencies": {}
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "opencode",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@10.15.0",
+	"scripts": {
+		"dev": "node packages/opencode/src/index.ts",
+		"typecheck": "pnpm --filter='*' typecheck",
+		"lint": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+		"stainless": "./scripts/stainless",
+		"postinstall": "./scripts/hooks"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		],
+		"catalog": {
+			"typescript": "5.8.2",
+			"@types/node": "22.13.9",
+			"zod": "3.25.49",
+			"ai": "5.0.0-beta.18"
+		}
+	},
+	"devDependencies": {
+		"prettier": "3.5.3",
+		"sst": "3.17.8"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sst/opencode"
+	},
+	"license": "MIT",
+	"prettier": {
+		"semi": false,
+		"printWidth": 120
+	},
+	"trustedDependencies": [
+		"esbuild",
+		"protobufjs",
+		"sharp"
+	],
+	"patchedDependencies": {}
 }

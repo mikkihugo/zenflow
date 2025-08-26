@@ -15,9 +15,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { ema, wma } from 'moving-averages';
-import regression from 'regression';
-import * as ss from 'simple-statistics';
 
 const logger = getLogger('AgentPerformancePredictor');'
 
@@ -62,10 +59,8 @@ export interface PerformanceInsights {
  */
 export class AgentPerformancePredictor {
   private performanceHistory: Map<string, AgentPerformanceData[]> = new Map();
-  private performanceTrends: Map<string, number[]> = new Map();
   private initialized = false;
   private readonly maxHistorySize = 1000;
-  private readonly predictionWindow = 300000; // 5 minutes in milliseconds
 
   constructor() {
     logger.info('📊 Agent Performance Predictor created');'
@@ -208,7 +203,7 @@ export class AgentPerformancePredictor {
       );
 
       return prediction;
-    } catch (error) {
+    } catch (_error) {
       logger.error(
         `❌ Performance prediction failed for agent ${agentId}:`,`
         error
@@ -322,7 +317,7 @@ export class AgentPerformancePredictor {
       await this.recordPerformance(performanceData);
 
       logger.debug(`✅ Performance data updated for agent ${data.agentId}`);`
-    } catch (error) {
+    } catch (error) 
       logger.error(
         `❌ Failed to update performance data for agent ${data.agentId}:`,`
         error
@@ -515,7 +510,7 @@ export class AgentPerformancePredictor {
     // High error rate
     const avgErrorRate = ss.mean(recentData.map((d) => d.errorRate));
     if (avgErrorRate > 0.1) {
-      riskFactors.push(`High error rate: ${(avgErrorRate * 100).toFixed(1)}%`);`
+      riskFactors.push(`High error rate: $(avgErrorRate * 100).toFixed(1)%`);`
     }
 
     // High resource usage
@@ -523,14 +518,13 @@ export class AgentPerformancePredictor {
     const avgMemoryUsage = ss.mean(recentData.map((d) => d.memoryUsage));
 
     if (avgCpuUsage > 0.8) {
-      riskFactors.push(`High CPU usage: ${(avgCpuUsage * 100).toFixed(1)}%`);`
+      riskFactors.push(`High CPU usage: $(avgCpuUsage * 100).toFixed(1)%`);`
     }
 
     if (avgMemoryUsage > 0.8) {
       riskFactors.push(
-        `High memory usage: ${(avgMemoryUsage * 100).toFixed(1)}%``
+        `High memory usage: $(avgMemoryUsage * 100).toFixed(1)%``
       );
-    }
 
     // Declining performance trend
     const trend = this.analyzePerformanceTrend(agentId);
@@ -691,7 +685,7 @@ export class AgentPerformancePredictor {
       };
       
       // In real implementation, this would save to Redis, PostgreSQL, etc.
-      logger.debug(`💾 Persisted performance trends for agent ${agentId}:`, {`
+      logger.debug(`💾 Persisted performance trends for agent ${agentId}:`, `
         dataPoints: successRates.length,
         trend: trendData.trendMetrics.slope > 0 ? 'improving' | 'stable' | 'declining'' : ''improving' | 'stable' | 'declining',
         volatility: trendData.trendMetrics.volatility
@@ -769,9 +763,8 @@ export class AgentPerformancePredictor {
     // Add system-wide predictions
     this.addSystemWideBottlenecks(bottlenecks, systemLoad);
 
-    logger.debug(`🔍 Predicted ${bottlenecks.length} potential bottlenecks`);`
+    logger.debug(`🔍 Predicted $bottlenecks.lengthpotential bottlenecks`);`
     return bottlenecks;
-  }
 
   private async detectAgentBottlenecks(agentId: string, systemLoad: number): Promise<string[]> {
     // Load historical performance data from persistent storage
@@ -856,7 +849,7 @@ export class AgentPerformancePredictor {
     if (metrics.avgCpuUsage > cpuThreshold) {
       const severity = metrics.trends?.cpu === 'increasing' ? 'critical' : 'high';
       const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
-      issues.push(`${severity} CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);`
+      issues.push(`$severityCPU usage (${(_metrics._avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);`
       
       // Log critical performance event for this specific agent
       await this.logCriticalPerformanceEvent(agentId, 'cpu_spike', {'
@@ -874,7 +867,7 @@ export class AgentPerformancePredictor {
     
     if (metrics.avgErrorRate > 0.15) {
       const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility' : ';
-      issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`);`
+      issues.push(`elevated error rate (${(_metrics._avgErrorRate * 100).toFixed(1)}%${volatility})`);`
     }
     
     if (metrics.avgCompletionTime > 30000) {
@@ -958,7 +951,7 @@ export class AgentPerformancePredictor {
         const avgErrorRate = ss.mean(recentData.map((d) => d.errorRate));
 
         if (avgCpuUsage > 0.9 || avgErrorRate > 0.15) {
-          bottlenecks.push(`Agent ${agentId} (high resource usage/errors)`);`
+          bottlenecks.push(`Agent $agentId(high resource usage/errors)`);`
         }
       }
     }
@@ -1143,7 +1136,7 @@ export class AgentPerformancePredictor {
       if (history.length > 1000) {
         history.splice(0, history.length - 1000);
       }
-    } catch (error) {
+    } catch (error) 
       logger.error(`Failed to log performance snapshot for agent ${agentId}:`, error);`
     }
   }
@@ -1186,8 +1179,7 @@ export class AgentPerformancePredictor {
       logger.debug(`Agent profile calculated for ${agentId}`, {`
         completeness: profile.profileCompleteness,
         samples: profile.totalSamples,
-        learningPhase: profile.learningPhase
-      });
+        learningPhase: profile.learningPhase);
 
       return profile;
     } catch (error) {
@@ -1312,7 +1304,7 @@ export class AgentPerformancePredictor {
       const normalizedRisk = factors > 0 ? riskScore / factors : 0;
       const confidenceAdjustedRisk = normalizedRisk * profile.profileCompleteness;
 
-      logger.debug(`Risk score calculated for agent ${agentId}: ${confidenceAdjustedRisk.toFixed(3)}`, {`
+      logger.debug(`Risk score calculated for agent ${agentId}: $confidenceAdjustedRisk.toFixed(3)`, {`
         factors,
         profileCompleteness: profile.profileCompleteness,
         trends: metrics.trends,
@@ -1387,7 +1379,7 @@ export class AgentPerformancePredictor {
         break;
     }
 
-    recommendations.push(`Current risk score: ${eventData.riskScore.toFixed(2)} - monitor closely`);`
+    recommendations.push(`Current risk score: $eventData.riskScore.toFixed(2)- monitor closely`);`
     return recommendations;
   }
 

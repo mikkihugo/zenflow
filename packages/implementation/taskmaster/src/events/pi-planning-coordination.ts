@@ -27,14 +27,13 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import { TaskApprovalSystem } from '../agui/task-approval-system.js';
-import {
+import type { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type {
   CompleteSafeFlowIntegration,
-  CompleteSafeGateCategory,
 } from '../integrations/complete-safe-flow-integration.js';
 import type { ApprovalGateId, UserId } from '../types/index.js';
 
-const logger = getLogger('PIPlanningCoordination');'
+const _logger = getLogger('PIPlanningCoordination');'
 
 // ============================================================================
 // PI PLANNING TYPES
@@ -202,13 +201,6 @@ export interface TeamBreakoutSession {
  */
 export class PIPlanningCoordinationService {
   private readonly logger = getLogger('PIPlanningCoordinationService');'
-  private database: any;
-  private taskApprovalSystem: TaskApprovalSystem;
-  private safeFlowIntegration: CompleteSafeFlowIntegration;
-
-  // Active planning events
-  private activePlanningEvents = new Map<string, PIPlanningEvent>();
-  private teamBreakoutSessions = new Map<string, TeamBreakoutSession[]>();
 
   constructor(
     taskApprovalSystem: TaskApprovalSystem,
@@ -257,7 +249,7 @@ export class PIPlanningCoordinationService {
       teams: any[];
       businessContext: any;
     },
-    requestContext: {
+    _requestContext: {
       userId: UserId;
       reason: string;
     }
@@ -267,7 +259,7 @@ export class PIPlanningCoordinationService {
     nextPhase: PIPlanningPhase;
     estimatedCompletion: Date;
   }> {
-    const planningEventId = `pi-planning-${planningData.artId}-${planningData.planningIntervalNumber}`;`
+    const _planningEventId = `pi-planning-${planningData.artId}-${planningData.planningIntervalNumber}`;`
 
     this.logger.info('Starting PI Planning event', {'
       planningEventId,
@@ -354,7 +346,7 @@ export class PIPlanningCoordinationService {
   }> {
     const planningEvent = this.activePlanningEvents.get(planningEventId);
     if (!planningEvent) {
-      throw new Error(`PI Planning event not found: ${planningEventId}`);`
+      throw new Error(`PI Planning event not found: $_planningEventId`);`
     }
 
     this.logger.info('Executing Day 1 Morning - Business Context', {'
@@ -482,7 +474,7 @@ export class PIPlanningCoordinationService {
   }> {
     const planningEvent = this.activePlanningEvents.get(planningEventId);
     if (!planningEvent) {
-      throw new Error(`PI Planning event not found: ${planningEventId}`);`
+      throw new Error(`PI Planning event not found: $planningEventId`);`
     }
 
     this.logger.info('Executing Day 2 Morning - Management Review', {'
@@ -506,7 +498,7 @@ export class PIPlanningCoordinationService {
     );
 
     // Create dependency resolution approval
-    const dependencyApproval = await this.createDependencyResolutionApproval(
+    const _dependencyApproval = await this.createDependencyResolutionApproval(
       planningEvent,
       managementReview
     );
@@ -537,7 +529,7 @@ export class PIPlanningCoordinationService {
           conditions: string[];
         }>;
       }>;
-      managementResponse: {
+      {
         acceptableConfidenceLevel: number;
         supportCommitments: Array<{
           commitment: string;
@@ -635,27 +627,25 @@ export class PIPlanningCoordinationService {
   ): Promise<any> {
     const businessContextApproval =
       await this.taskApprovalSystem.createApprovalTask({
-        id: `pi-business-context-${planningEvent.id}`,`
+        id: `pi-business-context-$planningEvent.id`,`
         taskType: 'pi_business_context_approval',
-        title: `PI Planning Business Context - PI ${planningEvent.planningIntervalNumber}`,`
+        title: `PI Planning Business Context - PI $planningEvent.planningIntervalNumber`,`
         description: 'Review and approve business context for PI Planning',
-        context: {
+        context: 
           planningEvent: planningEvent.id,
-          phase: 'business_context',
-        },
+          phase: 'business_context',,
         approvers: planningEvent.businessOwners,
-        metadata: {
+        metadata: 
           piNumber: planningEvent.planningIntervalNumber,
-          artId: planningEvent.artId,
-        },
+          artId: planningEvent.artId,,
       });
 
     // Create other approval workflows...
-    const teamPlanningApproval =
+    const _teamPlanningApproval =
       `team-planning-approval-${planningEvent.id}` as ApprovalGateId;`
     const dependencyResolutionApproval =
-      `dependency-resolution-${planningEvent.id}` as ApprovalGateId;`
-    const finalCommitmentApproval =
+      `dependency-resolution-$planningEvent.id` as ApprovalGateId;`
+    const _finalCommitmentApproval =
       `final-commitment-${planningEvent.id}` as ApprovalGateId;`
 
     return {
@@ -709,7 +699,7 @@ export class PIPlanningCoordinationService {
       (team) => team.identifiedDependencies
     );
     return allDependencies.map((dep, index) => ({
-      id: `dep-${index}`,`
+      id: `dep-$index`,`
       fromTeam: dep.fromTeam,
       toTeam: dep.toTeam,
       description: dep.description,
@@ -777,7 +767,7 @@ export class PIPlanningCoordinationService {
     planningEvent: PIPlanningEvent
   ): Promise<void> {
     await this.database('pi_planning_events')'
-      .insert({
+      .insert(
         id: planningEvent.id,
         planning_interval_number: planningEvent.planningIntervalNumber,
         art_id: planningEvent.artId,
@@ -795,8 +785,7 @@ export class PIPlanningCoordinationService {
         commitments: JSON.stringify(planningEvent.commitments),
         created_at: planningEvent.createdAt,
         completed_at: planningEvent.completedAt,
-        status: planningEvent.status,
-      })
+        status: planningEvent.status,)
       .onConflict('id')'
       .merge();
   }

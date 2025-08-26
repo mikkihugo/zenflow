@@ -4,14 +4,12 @@
  * Core orchestration for ag2.ai-inspired multi-agent conversations.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { generateNanoId } from '@claude-zen/foundation';
+import { generateNanoId, getLogger } from '@claude-zen/foundation';
 
 import { getTeamworkStorage } from './storage';
 import type {
   AgentId,
   ConversationConfig,
-  ConversationMessage,
   ConversationOrchestrator,
   ConversationOutcome,
   ConversationSession,
@@ -22,7 +20,7 @@ import type {
 let BrainCoordinator: any;
 try {
   BrainCoordinator = require('@claude-zen/brain').BrainCoordinator;'
-} catch (error) {
+} catch (_error) {
   // Fallback if brain package is not available
   BrainCoordinator = class {
     constructor(config: any) {
@@ -40,11 +38,7 @@ const logger = getLogger('teamwork-orchestrator');'
  */
 export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private activeSessions = new Map<string, ConversationSession>();
-  private eventHandlers = new Map<string, Function[]>();
   private storage = getTeamworkStorage();
-
-  // AI-powered coordination with Brain (initialized in constructor)
-  private brainCoordinator: any;
 
   constructor() {
     // Initialize AI coordination systems
@@ -143,7 +137,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);`
+      throw new Error(`Conversation $conversationIdnot found`);`
     }
 
     if (!session.participants.find((p) => p.id === agent.id)) {
@@ -168,7 +162,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async leaveConversation(
     conversationId: string,
-    agent: AgentId
+    _agent: AgentId
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -196,7 +190,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   async sendMessage(message: ConversationMessage): Promise<void> {
     const session = this.activeSessions.get(message.conversationId);
     if (!session) {
-      throw new Error(`Conversation ${message.conversationId} not found`);`
+      throw new Error(`Conversation $message.conversationIdnot found`);`
     }
 
     if (session.status !== 'active') {'
@@ -241,7 +235,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async moderateConversation(
     conversationId: string,
-    action: ModerationAction
+    _action: ModerationAction
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -291,7 +285,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     if (!session) {
-      throw new Error(`Conversation ${conversationId} not found`);`
+      throw new Error(`Conversation $conversationIdnot found`);`
     }
 
     return [...session.messages]; // Return copy
@@ -302,7 +296,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async terminateConversation(
     conversationId: string,
-    reason?: string
+    _reason?: string
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {

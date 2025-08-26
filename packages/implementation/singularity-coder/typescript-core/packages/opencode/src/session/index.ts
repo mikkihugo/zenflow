@@ -1,44 +1,41 @@
-import path from "path"
-import { Decimal } from "decimal.js"
-import { z, ZodSchema } from "@claude-zen/foundation"
+import path from "node:path"
+import { type ZodSchema, z } from "@claude-zen/foundation"
 import {
+  type Tool as AITool,
   generateText,
+  type LanguageModelUsage,
   LoadAPIKeyError,
+  type ModelMessage,
+  type ProviderMetadata,
+  type StreamTextResult,
+  stepCountIs,
   streamText,
   tool,
   wrapLanguageModel,
-  type Tool as AITool,
-  type LanguageModelUsage,
-  type ProviderMetadata,
-  type ModelMessage,
-  stepCountIs,
-  type StreamTextResult,
 } from "ai"
-
-import PROMPT_INITIALIZE from "../session/prompt/initialize.txt"
-import PROMPT_PLAN from "../session/prompt/plan.txt"
-
+import { Decimal } from "decimal.js"
 import { App } from "../app/app"
 import { Bus } from "../bus"
 import { Config } from "../config/config"
+import { FileTime } from "../file/time"
 import { Flag } from "../flag/flag"
 import { Identifier } from "../id/id"
 import { Installation } from "../installation"
+import { LSP } from "../lsp"
 import { MCP } from "../mcp"
+import type { ModelsDev } from "../provider/models"
 import { Provider } from "../provider/provider"
 import { ProviderTransform } from "../provider/transform"
-import type { ModelsDev } from "../provider/models"
+import PROMPT_PLAN from "../session/prompt/plan.txt"
 import { Share } from "../share/share"
 import { Snapshot } from "../snapshot"
 import { Storage } from "../storage/storage"
-import { Log } from "../util/log"
+import { ReadTool } from "../tool/read"
 import { NamedError } from "../util/error"
-import { SystemPrompt } from "./system"
-import { FileTime } from "../file/time"
+import { Log } from "../util/log"
 import { MessageV2 } from "./message-v2"
 import { Mode } from "./mode"
-import { LSP } from "../lsp"
-import { ReadTool } from "../tool/read"
+import { SystemPrompt } from "./system"
 
 export namespace Session {
   const log = Log.create({ service: "session" })
@@ -144,7 +141,7 @@ export namespace Session {
     }
     log.info("created", result)
     state().sessions.set(result.id, result)
-    await Storage.writeJSON("session/info/" + result.id, result)
+    await Storage.writeJSON(`session/info/${result.id}`, result)
     const cfg = await Config.get()
     if (!result.parentID && (Flag.OPENCODE_AUTO_SHARE || cfg.share === "auto"))
       share(result.id)
@@ -167,13 +164,13 @@ export namespace Session {
     if (result) {
       return result
     }
-    const read = await Storage.readJSON<Info>("session/info/" + id)
+    const read = await Storage.readJSON<Info>(`session/info/${id}`)
     state().sessions.set(id, read)
     return read as Info
   }
 
   export async function getShare(id: string) {
-    return Storage.readJSON<ShareInfo>("session/share/" + id)
+    return Storage.readJSON<ShareInfo>(`session/share/${id}`)
   }
 
   export async function share(id: string) {
@@ -190,12 +187,12 @@ export namespace Session {
         url: share.url,
       }
     })
-    await Storage.writeJSON<ShareInfo>("session/share/" + id, share)
-    await Share.sync("session/info/" + id, session)
+    await Storage.writeJSON<ShareInfo>(`session/share/${id}`, share)
+    await Share.sync(`session/info/${id}`, session)
     for (const msg of await messages(id)) {
-      await Share.sync("session/message/" + id + "/" + msg.info.id, msg.info)
+      await Share.sync(`session/message/${id}/${msg.info.id}`, msg.info)
       for (const part of msg.parts) {
-        await Share.sync("session/part/" + id + "/" + msg.info.id + "/" + part.id, part)
+        await Share.sync(`session/part/${id}/${msg.info.id}/${part.id}`, part)
       }
     }
     return share
@@ -204,7 +201,7 @@ export namespace Session {
   export async function unshare(id: string) {
     const share = await getShare(id)
     if (!share) return
-    await Storage.remove("session/share/" + id)
+    await Storage.remove(`session/share/${id}`)
     await update(id, (draft) => {
       draft.share = undefined
     })
@@ -218,7 +215,7 @@ export namespace Session {
     editor(session)
     session.time.updated = Date.now()
     sessions.set(id, session)
-    await Storage.writeJSON("session/info/" + id, session)
+    await Storage.writeJSON(`session/info/${id}`, session)
     Bus.publish(Event.Updated, {
       info: session,
     })
@@ -230,7 +227,7 @@ export namespace Session {
       info: MessageV2.Info
       parts: MessageV2.Part[]
     }[]
-    for (const p of await Storage.list("session/message/" + sessionID)) {
+    for (const p of await Storage.list(`session/message/${sessionID}`)) {
       const read = await Storage.readJSON<MessageV2.Info>(p)
       result.push({
         info: read,
@@ -242,12 +239,12 @@ export namespace Session {
   }
 
   export async function getMessage(sessionID: string, messageID: string) {
-    return Storage.readJSON<MessageV2.Info>("session/message/" + sessionID + "/" + messageID)
+    return Storage.readJSON<MessageV2.Info>(`session/message/${sessionID}/${messageID}`)
   }
 
   export async function parts(sessionID: string, messageID: string) {
     const result = [] as MessageV2.Part[]
-    for (const item of await Storage.list("session/part/" + sessionID + "/" + messageID)) {
+    for (const item of await Storage.list(`session/part/${sessionID}/${messageID}`)) {
       const read = await Storage.readJSON<MessageV2.Part>(item)
       result.push(read)
     }
@@ -290,7 +287,7 @@ export namespace Session {
       }
       await unshare(sessionID).catch(() => {})
       await Storage.remove(`session/info/${sessionID}`).catch(() => {})`
-      await Storage.removeDir(`session/message/${sessionID}/`).catch(() => {})`
+      await Storage.removeDir(`session/message/$sessionID/`).catch(() => {})`
       state().sessions.delete(sessionID)
       state().messages.delete(sessionID)
       if (emitEvent) {
@@ -304,7 +301,7 @@ export namespace Session {
   }
 
   async function updateMessage(msg: MessageV2.Info) {
-    await Storage.writeJSON("session/message/" + msg.sessionID + "/" + msg.id, msg)
+    await Storage.writeJSON(`session/message/${msg.sessionID}/${msg.id}`, msg)
     Bus.publish(MessageV2.Event.Updated, {
       info: msg,
     })
@@ -340,7 +337,7 @@ export namespace Session {
           msg.info.id > session.revert.messageID ||
           (msg.info.id === session.revert.messageID && session.revert.part === 0)
         ) {
-          await Storage.remove("session/message/" + input.sessionID + "/" + msg.info.id)
+          await Storage.remove(`session/message/${input.sessionID}/${msg.info.id}`)
           await Bus.publish(MessageV2.Event.Removed, {
             sessionID: input.sessionID,
             messageID: msg.info.id,
@@ -364,7 +361,7 @@ export namespace Session {
     const outputLimit = Math.min(model.info.limit.output, OUTPUT_TOKEN_MAX) || OUTPUT_TOKEN_MAX
 
     // auto summarize if too long
-    if (previous && previous.tokens) {
+    if (previous?.tokens) {
       const tokens =
         previous.tokens.input + previous.tokens.cache.read + previous.tokens.cache.write + previous.tokens.output
       if (model.info.limit.context && tokens > Math.max((model.info.limit.context - outputLimit) * 0.9, 0)) {
@@ -397,7 +394,7 @@ export namespace Session {
         if (part.type === "file") {
           const url = new URL(part.url)
           switch (url.protocol) {
-            case "file:":
+            case "file:": {
               // have to normalize, symbol search returns absolute paths
               // Decode the pathname since URL constructor doesn't automatically decode it'
               const pathname = decodeURIComponent(url.pathname)
@@ -405,16 +402,16 @@ export namespace Session {
               const filePath = path.join(app.path.cwd, relativePath)
 
               if (part.mime === "text/plain") {
-                let offset: number | undefined = undefined
-                let limit: number | undefined = undefined
+                let offset: number | undefined 
+                let limit: number | undefined 
                 const range = {
                   start: url.searchParams.get("start"),
                   end: url.searchParams.get("end"),
                 }
                 if (range.start != null) {
                   const filePath = part.url.split("?")[0]
-                  let start = parseInt(range.start)
-                  let end = range.end ? parseInt(range.end) : undefined
+                  let start = parseInt(range.start, 10)
+                  let end = range.end ? parseInt(range.end, 10) : undefined
                   // some LSP servers (eg, gopls) don't give full range in'
                   // workspace/symbol searches, so we'll try to find the'
                   // symbol in the document to get the full range
@@ -466,7 +463,7 @@ export namespace Session {
                 ]
               }
 
-              let file = Bun.file(filePath)
+              const file = Bun.file(filePath)
               FileTime.read(input.sessionID, filePath)
               return [
                 {
@@ -474,7 +471,7 @@ export namespace Session {
                   messageID: userMsg.id,
                   sessionID: input.sessionID,
                   type: "text",
-                  text: `Called the Read tool with the following input: {\"filePath\":\"${pathname}\"}`,`
+                  text: `Called the Read tool with the following input: {"filePath":"${pathname}"}`,`
                   synthetic: true,
                 },
                 {
@@ -482,11 +479,12 @@ export namespace Session {
                   messageID: userMsg.id,
                   sessionID: input.sessionID,
                   type: "file",
-                  url: `data:${part.mime};base64,` + Buffer.from(await file.bytes()).toString("base64"),`
+                  url: `data:${part.mime};base64,${Buffer.from(await file.bytes()).toString("base64")}`,`
                   mime: part.mime,
                   filename: part.filename!,
                 },
               ]
+            }
           }
         }
         return [part]
@@ -697,7 +695,7 @@ export namespace Session {
               type: value.type,
             })
             switch (value.type) {
-              case "start":
+              case "start": {
                 const snapshot = await Snapshot.create(assistantMsg.sessionID)
                 if (snapshot)
                   await updatePart({
@@ -708,8 +706,9 @@ export namespace Session {
                     snapshot,
                   })
                 break
+              }
 
-              case "tool-input-start":
+              case "tool-input-start": {
                 const part = await updatePart({
                   id: Identifier.ascending("part"),
                   messageID: assistantMsg.id,
@@ -723,6 +722,7 @@ export namespace Session {
                 })
                 toolCalls[value.id] = part as MessageV2.ToolPart
                 break
+              }
 
               case "tool-input-delta":
                 break
@@ -816,7 +816,7 @@ export namespace Session {
                 })
                 break
 
-              case "finish-step":
+              case "finish-step": {
                 const usage = getUsage(model, value.usage, value.providerMetadata)
                 assistantMsg.cost += usage.cost
                 assistantMsg.tokens = usage.tokens
@@ -830,6 +830,7 @@ export namespace Session {
                 })
                 await updateMessage(assistantMsg)
                 break
+              }
 
               case "text-start":
                 currentText = {
@@ -852,7 +853,7 @@ export namespace Session {
                 break
 
               case "text-end":
-                if (currentText && currentText.text) {
+                if (currentText?.text) {
                   currentText.time = {
                     start: Date.now(),
                     end: Date.now(),
@@ -1063,9 +1064,9 @@ export namespace Session {
       output: usage.outputTokens ?? 0,
       reasoning: 0,
       cache: {
-        write: (metadata?.["anthropic"]?.["cacheCreationInputTokens"] ??
+        write: (metadata?.anthropic?.cacheCreationInputTokens ??
           // @ts-expect-error
-          metadata?.["bedrock"]?.["usage"]?.["cacheWriteInputTokens"] ??
+          metadata?.bedrock?.usage?.cacheWriteInputTokens ??
           0) as number,
         read: usage.cachedInputTokens ?? 0,
       },

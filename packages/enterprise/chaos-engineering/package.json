@@ -1,56 +1,56 @@
 {
-  "name": "@claude-zen/chaos-engineering",
-  "version": "1.0.0",
-  "description": "INTERNAL: Chaos engineering framework - Private implementation detail of @claude-zen/ai-safety",
-  "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./chaos-engineering": {
-      "types": "./dist/chaos-engineering.d.ts",
-      "import": "./dist/chaos-engineering.js"
-    }
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "clean": "rm -rf dist",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "docs:check": "node scripts/check-tsdoc.mjs",
-    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
-    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
-    "docs:fix": "node scripts/fix-tsdoc.mjs",
-    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
-    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
-  },
-  "dependencies": {
-    "@claude-zen/foundation": "workspace:*"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "@types/node": "22.17.1",
-    "eslint": "^9.0.0",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
-  },
-  "keywords": [
-    "chaos-engineering",
-    "resilience-testing",
-    "failure-injection",
-    "recovery-testing",
-    "system-reliability",
-    "production-ready"
-  ],
-  "author": "Claude Code Zen Team",
-  "license": "MIT"
+	"name": "@claude-zen/chaos-engineering",
+	"version": "1.0.0",
+	"description": "INTERNAL: Chaos engineering framework - Private implementation detail of @claude-zen/ai-safety",
+	"private": true,
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./chaos-engineering": {
+			"types": "./dist/chaos-engineering.d.ts",
+			"import": "./dist/chaos-engineering.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"build:watch": "tsc --watch",
+		"clean": "rm -rf dist",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"docs:check": "node scripts/check-tsdoc.mjs",
+		"docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+		"docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+		"docs:fix": "node scripts/fix-tsdoc.mjs",
+		"docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+		"docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
+	},
+	"dependencies": {
+		"@claude-zen/foundation": "workspace:*"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.0",
+		"@typescript-eslint/parser": "^8.0.0",
+		"@types/node": "22.17.1",
+		"eslint": "^9.0.0",
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4"
+	},
+	"keywords": [
+		"chaos-engineering",
+		"resilience-testing",
+		"failure-injection",
+		"recovery-testing",
+		"system-reliability",
+		"production-ready"
+	],
+	"author": "Claude Code Zen Team",
+	"license": "MIT"
 }

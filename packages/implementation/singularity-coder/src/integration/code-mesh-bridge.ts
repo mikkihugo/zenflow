@@ -6,23 +6,21 @@
  */
 
 // LLM routing integration - fallback if not available
-let getOptimalProvider: any = null;
-let llmRoutingAvailable = false;
+const _getOptimalProvider: any = null;
+let _llmRoutingAvailable = false;
 
 try {
-  const llmRouting = require('@claude-zen/llm-routing');'
+  const _llmRouting = require('@claude-zen/llm-routing');'
   getOptimalProvider = llmRouting.getOptimalProvider;
   // Note: LLM_PROVIDER_CONFIG available if needed
-  llmRoutingAvailable = true;
-} catch (error) {
+  _llmRoutingAvailable = true;
+} catch (_error) {
   console.warn('LLM routing not available, using fallback');'
   llmRoutingAvailable = false;
 }
 
 import type {
   FileAwareRequest,
-  FileAwareResponse,
-  FileChange,
 } from '../types/index';
 
 // Import CodeMesh types (these will be available after proper integration)
@@ -49,10 +47,6 @@ interface CodeMeshToolRegistry {
  * Bridge class that integrates CodeMesh capabilities with claude-code-zen
  */
 export class CodeMeshBridge {
-  private provider: CodeMeshProvider|null = null;
-  private session: CodeMeshSession|null = null;
-  private tools: CodeMeshToolRegistry|'null = null;'
-  private rootPath: string;
 
   constructor(rootPath: string) {
     this.rootPath = rootPath;
@@ -72,7 +66,7 @@ export class CodeMeshBridge {
       await codeMesh.init();
 
       // Create tool registry
-      const toolRegistry = new wasmModule.ToolRegistry();
+      const _toolRegistry = new wasmModule.ToolRegistry();
 
       // Create mock provider and session interfaces
       this.provider = {
@@ -91,7 +85,7 @@ export class CodeMeshBridge {
           console.log(`Session: ${role}: ${content.substring(0, 100)}...`);`
         },
         getMessages: () => [],
-        save: async () => `session_${Date.now()}`,`
+        save: async () => `session_$Date.now()`,`
         load: async (sessionId: string) => {
           console.log(`Loading session: ${sessionId}`);`
         },
@@ -275,7 +269,7 @@ export class CodeMeshBridge {
 
         dependencies.push(...deps);
       } catch (error) {
-        console.warn(`Failed to analyze file ${file}:`, error);`
+        console.warn(`Failed to analyze file $file:`, error);`
       }
     }
 
@@ -283,7 +277,7 @@ export class CodeMeshBridge {
       relevantFiles,
       dependencies,
       symbols,
-      summary: `Analyzed ${relevantFiles.length} files with ${dependencies.length} dependencies`,`
+      summary: `Analyzed $relevantFiles.lengthfiles with ${dependencies.length} dependencies`,`
       complexity:
         relevantFiles.length > 10
           ? 'high''
@@ -298,14 +292,14 @@ export class CodeMeshBridge {
    */
   private extractSymbolsFromContent(content: string, filePath: string): any[] {
     const symbols: any[] = [];
-    const lines = content.split('\n');'
+    const _lines = content.split('\n');'
 
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
       const functionMatch = line.match(
         /(?:function|const|let|var)\s+(\w+)\s*[=:]?\s*(?:function|\()/
       );
-      if (functionMatch && functionMatch[1]) {
+      if (functionMatch?.[1]) {
         symbols.push({
           name: functionMatch[1],
           type:'function',
@@ -317,7 +311,7 @@ export class CodeMeshBridge {
 
       // Extract class declarations
       const classMatch = line.match(/(?:class|interface)\s+(\w+)/);
-      if (classMatch && classMatch[1]) {
+      if (classMatch?.[1]) {
         symbols.push({
           name: classMatch[1],
           type: classMatch[0].includes('class') ? 'class' : 'interface',
@@ -338,13 +332,13 @@ export class CodeMeshBridge {
     request: FileAwareRequest,
     context: any
   ): string {
-    let prompt = `# Task\n${request.task}\n\n`;`
+    const _prompt = `# Task\n${request.task}\n\n`;`
 
-    prompt += `# Context\n${context.summary}\n\n`;`
+    prompt += `# Context\n$context.summary\n\n`;`
 
     prompt += `# Files\n`;`
     for (const file of context.relevantFiles) {
-      prompt += `- ${file}\n`;`
+      prompt += `- $file\n`;`
     }
 
     prompt += `\n# Instructions\n`;`

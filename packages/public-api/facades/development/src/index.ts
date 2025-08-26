@@ -21,75 +21,75 @@
  * @version 2.0.0
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from "@claude-zen/foundation";
 
-const logger = getLogger('development');
+const logger = getLogger("development");
 
 // =============================================================================
 // PURE DELEGATION - Direct import and re-export
 // =============================================================================
 
 export const getCodeAnalyzer = async () => {
-  const { createCodeAnalyzer } = await import('@claude-zen/code-analyzer');
-  return createCodeAnalyzer();
+	const { createCodeAnalyzer } = await import("@claude-zen/code-analyzer");
+	return createCodeAnalyzer();
 };
 
 export const getGitOperationsManager = async () => {
-  const { createGitOperationsManager } = await import(
-    '@claude-zen/git-operations'
-  );
-  return createGitOperationsManager();
+	const { createGitOperationsManager } = await import(
+		"@claude-zen/git-operations"
+	);
+	return createGitOperationsManager();
 };
 
 export const getCodeQLBridge = async () => {
-  const { createCodeQLBridge } = await import('@claude-zen/codeql');
-  return createCodeQLBridge();
+	const { createCodeQLBridge } = await import("@claude-zen/codeql");
+	return createCodeQLBridge();
 };
 
 export const getBeamAnalyzer = async () => {
-  const { createBeamAnalyzer } = await import('@claude-zen/beam-analyzer');
-  return createBeamAnalyzer();
+	const { createBeamAnalyzer } = await import("@claude-zen/beam-analyzer");
+	return createBeamAnalyzer();
 };
 
 export const getRepositoryAnalyzer = async () => {
-  const { createRepositoryAnalyzer } = await import(
-    '@claude-zen/repo-analyzer'
-  );
-  return createRepositoryAnalyzer();
+	const { createRepositoryAnalyzer } = await import(
+		"@claude-zen/repo-analyzer"
+	);
+	return createRepositoryAnalyzer();
 };
 
 export const getAILinter = async () => {
-  const { createAILinter } = await import('@claude-zen/ai-linter');
-  return createAILinter();
+	const { createAILinter } = await import("@claude-zen/ai-linter");
+	return createAILinter();
 };
 
 export const getLanguageParser = async () => {
-  const { createBeamParser } = await import('@claude-zen/language-parsers');
-  return createBeamParser();
+	const { createBeamParser } = await import("@claude-zen/language-parsers");
+	return createBeamParser();
 };
 
 export const getArchitectureValidator = async () => {
-  const { createDomainBoundaryValidator } = await import(
-    '@claude-zen/architecture'
-  );
-  return createDomainBoundaryValidator();
+	const { createDomainBoundaryValidator } = await import(
+		"@claude-zen/architecture"
+	);
+	return createDomainBoundaryValidator();
 };
 
 export const getSafe6DevelopmentManager = async () => {
-  const { Safe6DevelopmentManager } = await import('@claude-zen/sparc');
-  return Safe6DevelopmentManager;
+	const { Safe6DevelopmentManager } = await import("@claude-zen/sparc");
+	return Safe6DevelopmentManager;
 };
 
 export const createSafe6SolutionTrainManager = async (...args: unknown[]) => {
-  const { createSafe6SolutionTrainManager } = await import('@claude-zen/sparc');
-  return createSafe6SolutionTrainManager(...args);
+	const { createSafe6SolutionTrainManager } = await import("@claude-zen/sparc");
+	return createSafe6SolutionTrainManager(...args);
 };
 
 export const createSafe6BusinessAgilityManager = async (...args: unknown[]) => {
-  const { createSafe6BusinessAgilityManager } = await import(
-    '@claude-zen/sparc'
-  );
-  return createSafe6BusinessAgilityManager(...args);
+	const { createSafe6BusinessAgilityManager } = await import(
+		"@claude-zen/sparc"
+	);
+	return createSafe6BusinessAgilityManager(...args);
 };
 
 // =============================================================================
@@ -97,45 +97,44 @@ export const createSafe6BusinessAgilityManager = async (...args: unknown[]) => {
 // =============================================================================
 
 export const developmentSystem = {
-  // Core development tools
-  getCodeAnalyzer,
-  getGitOperationsManager,
-  getCodeQLBridge,
-  getBeamAnalyzer,
-  getRepositoryAnalyzer,
-  getAILinter,
-  getLanguageParser,
-  getArchitectureValidator,
+	// Core development tools
+	getCodeAnalyzer,
+	getGitOperationsManager,
+	getCodeQLBridge,
+	getBeamAnalyzer,
+	getRepositoryAnalyzer,
+	getAILinter,
+	getLanguageParser,
+	getArchitectureValidator,
 
-  // SAFe 6.0 Development Management
-  getSafe6DevelopmentManager,
-  createSafe6SolutionTrainManager,
-  createSafe6BusinessAgilityManager,
+	// SAFe 6.0 Development Management
+	getSafe6DevelopmentManager,
+	createSafe6SolutionTrainManager,
+	createSafe6BusinessAgilityManager,
 
-  // Utilities
-  logger,
-  init: () => {
-    logger.info('Development system initialized');
-    return { success: true, message: 'Development tools ready' };
-  },
+	// Utilities
+	logger,
+	init: () => {
+		logger.info("Development system initialized");
+		return { success: true, message: "Development tools ready" };
+	},
 };
 
 // =============================================================================
 // TYPE EXPORTS - For external consumers
 // =============================================================================
 
-export type * from './types';
-
+export type * from "@claude-zen/ai-linter";
+export type * from "@claude-zen/architecture";
+export type * from "@claude-zen/beam-analyzer";
 // Re-export package types
-export type * from '@claude-zen/code-analyzer';
-export type * from '@claude-zen/git-operations';
-export type * from '@claude-zen/ai-linter';
-export type * from '@claude-zen/language-parsers';
-export type * from '@claude-zen/repo-analyzer';
-export type * from '@claude-zen/codeql';
-export type * from '@claude-zen/beam-analyzer';
-export type * from '@claude-zen/architecture';
-export type * from '@claude-zen/sparc';
+export type * from "@claude-zen/code-analyzer";
+export type * from "@claude-zen/codeql";
+export type * from "@claude-zen/git-operations";
+export type * from "@claude-zen/language-parsers";
+export type * from "@claude-zen/repo-analyzer";
+export type * from "@claude-zen/sparc";
+export type * from "./types";
 
 // Default export for convenience
 export default developmentSystem;

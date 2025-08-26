@@ -157,9 +157,9 @@ export interface SystemEvent {
 	readonly priority: "low" | "medium" | "high" | "critical";
 }
 
-export interface EventHandler<T = unknown> {
-	(event: SystemEvent & { payload: T }): void | Promise<void>;
-}
+export type EventHandler<T = unknown> = (
+	event: SystemEvent & { payload: T },
+) => void | Promise<void>;
 
 export interface EventSubscription {
 	readonly id: string;

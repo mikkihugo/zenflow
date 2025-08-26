@@ -1,14 +1,13 @@
-import { Log } from "../util/log"
-import path from "path"
+
+import path from "node:path"
 import { z } from "@claude-zen/foundation"
-import { App } from "../app/app"
-import { Filesystem } from "../util/filesystem"
-import { ModelsDev } from "../provider/models"
 import { mergeDeep, pipe } from "remeda"
+import { App } from "../app/app"
 import { Global } from "../global"
-import fs from "fs/promises"
+import { ModelsDev } from "../provider/models"
+import { Filesystem } from "../util/filesystem"
 import { lazy } from "../util/lazy"
-import { NamedError } from "../util/error"
+import { Log } from "../util/log"
 
 export namespace Config {
   const log = Log.create({ service: "config" })
@@ -28,7 +27,7 @@ export namespace Config {
     }
 
     if (!result.username) {
-      const os = await import("os")
+      const os = await import("node:os")
       result.username = os.userInfo().username
     }
 
@@ -198,7 +197,7 @@ export namespace Config {
   export type Info = z.output<typeof Info>
 
   export const global = lazy(async () => {
-    let result = pipe(
+    const result = pipe(
       {},
       mergeDeep(await load(path.join(Global.Path.config, "config.json"))),
       mergeDeep(await load(path.join(Global.Path.config, "opencode.json"))),

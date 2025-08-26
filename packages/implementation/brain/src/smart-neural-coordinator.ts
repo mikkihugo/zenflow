@@ -17,34 +17,34 @@
  * @since 2.1.0
  */
 
-import { getLogger, type Logger, ContextError } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
 // Telemetry helpers - will be replaced by operations facade calls
 const recordMetric = (
-  name: string,
-  value: number,
-  metadata?: Record<string, unknown>
+  _name: string,
+  _value: number,
+  _metadata?: Record<string, unknown>
 ) => {};
 const recordHistogram = (
-  name: string,
-  value: number,
-  metadata?: Record<string, unknown>
+  _name: string,
+  _value: number,
+  _metadata?: Record<string, unknown>
 ) => {};
-const recordGauge = (
-  name: string,
-  value: number,
-  metadata?: Record<string, unknown>
+const _recordGauge = (
+  _name: string,
+  _value: number,
+  _metadata?: Record<string, unknown>
 ) => {};
-const withTrace = (name: string, fn: (span: any) => any) => fn({});
-const withAsyncTrace = (name: string, fn: (span: any) => Promise<any>) =>
+const withTrace = (_name: string, fn: (span: any) => any) => fn({});
+const withAsyncTrace = (_name: string, fn: (span: any) => Promise<any>) =>
   fn({});
-const recordEvent = (name: string, data: any) => {};
+const recordEvent = (_name: string, _data: any) => {};
 type Span = any;
 
 // Neural backend imports with smart loading
-let transformersModule: any = null;
+const _transformersModule: any = null;
 let brainJsModule: any = null;
-let onnxModule: any = null;
+const _onnxModule: any = null;
 let openaiModule: any = null;
 
 // Interface definitions
@@ -408,12 +408,6 @@ export class SmartNeuralCoordinator {
   private config: NeuralBackendConfig;
   private initialized = false;
 
-  // Model instances and status tracking
-  private transformerModel: any = null;
-  private brainJsNetwork: any = null;
-  private onnxSession: any = null;
-  private openaiClient: any = null;
-
   private modelStatus: Map<string, ModelStatus> = new Map();
 
   // Smart caching system
@@ -437,30 +431,26 @@ export class SmartNeuralCoordinator {
     qualityDistribution: new Map<string, number>(),
   };
 
-  constructor(config: Partial<NeuralBackendConfig> = {}) {
+  constructor(_config: Partial<NeuralBackendConfig> = {}) {
     this.logger = getLogger('smart-neural-coordinator');'
 
     // Default configuration with intelligent defaults
-    this.config = {
+    this.config = 
       primaryModel: 'all-mpnet-base-v2',
       enableFallbacks: true,
-      cache: {
+      cache: 
         maxSize: 10000,
         ttlMs: 3600000, // 1 hour
-        performanceBasedEviction: true,
-      },
-      loading: {
+        performanceBasedEviction: true,,
+      loading: 
         timeoutMs: 30000, // 30 seconds
         retryAttempts: 3,
-        lazyLoading: true,
-      },
-      performance: {
+        lazyLoading: true,,
+      performance: 
         batchSize: 32,
         maxConcurrency: 4,
-        enableProfiling: true,
-      },
-      ...config,
-    };
+        enableProfiling: true,,
+      ...config,;
 
     this.logger.info(
       'SmartNeuralCoordinator created with intelligent backend configuration''
@@ -1467,9 +1457,8 @@ export class SmartNeuralCoordinator {
 
           this.logger.info('✅ SmartNeuralCoordinator shutdown completed');'
 
-          recordEvent('smart-neural-coordinator-shutdown-complete', {'
-            status: 'success',
-          });
+          recordEvent('smart-neural-coordinator-shutdown-complete', '
+            status: 'success',);
         } catch (error) {
           recordMetric('smart_neural_coordinator_shutdown', 1, {'
             status: 'error',
@@ -1668,7 +1657,7 @@ export class SmartNeuralCoordinator {
         onnxStatus.loadingTime = loadingTime;
       }
 
-      this.logger.info(`✅ ONNX runtime loaded (${loadingTime}ms)`);`
+      this.logger.info(`✅ ONNX runtime loaded ($loadingTimems)`);`
     } catch (error) {
       const onnxStatus = this.modelStatus.get('onnx');'
       if (onnxStatus) {
@@ -1918,7 +1907,7 @@ export class SmartNeuralCoordinator {
   }
 
   private generateCacheKey(request: NeuralEmbeddingRequest): string {
-    const content = `${request.text}${request.context || ''}`;`
+    const content = `$request.text$request.context || ''`;`
     return `${request.qualityLevel || 'standard'}:${this.hashString(content)}`;`
   }
 
@@ -2111,7 +2100,7 @@ export class SmartNeuralCoordinator {
   private generateClassificationCacheKey(
     request: NeuralClassificationRequest
   ): string {
-    const content = `${request.text}${request.taskType}${request.categories?.join(',') || ''}${request.context || ''}`;`
+    const content = `$request.text$request.taskType$request.categories?.join(',') || ''$request.context || ''`;`
     return `classify:${request.qualityLevel || 'standard'}:${this.hashString(content)}`;`
   }
 
@@ -2350,7 +2339,7 @@ export class SmartNeuralCoordinator {
   // =============================================================================
 
   private generateGenerationCacheKey(request: NeuralGenerationRequest): string {
-    const content = `${request.prompt}${request.taskType}${request.temperature||0.7}${request.maxLength||1000}${request.context||''}`;`
+    const content = `$request.prompt$request.taskType$request.temperature||0.7$request.maxLength||1000$request.context||''`;`
     return `generate:${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
   }
 
@@ -2455,11 +2444,10 @@ export class SmartNeuralCoordinator {
       : { format:'unknown', size: 0, valid: true };'
 
     // Include image metadata in cache key for better cache differentiation
-    const content = `${imageHash}${request.taskType}${request.prompt||'}${request.context|||'}${'
-      imageMetadata.format
-    }_${imageMetadata.size}_${imageMetadata.valid ? 'valid' : 'invalid'}`;`
+    const content = `$imageHash$request.taskType$request.prompt||'}${request.context|||'$'
+      imageMetadata.format_$imageMetadata.size_$imageMetadata.valid ? 'valid' : 'invalid'`;`
 
-    const cacheKey = `vision:${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
+    const _cacheKey = `vision:${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
 
     // Log cache key generation with image metadata
     this.logger.debug('Vision cache key generated with image info', {'
@@ -2549,7 +2537,7 @@ export class SmartNeuralCoordinator {
       });
 
       // Return error-specific hash for better debugging
-      return `invalid_image_${errorMessage.replace(/[^\dA-Za-z]/g, '_').substring(0, 20)}`;`
+      return `invalid_image_$errorMessage.replace(/[^\dA-Za-z]/g, '_').substring(0, 20)`;`
     }
   }
 
@@ -2589,7 +2577,7 @@ export class SmartNeuralCoordinator {
     const inputStr = JSON.stringify(request.input).substring(0, 1000); // Limit size
     const paramsStr = JSON.stringify(request.parameters||{});
     const content = `${request.taskType}${inputStr}${paramsStr}`;`
-    return `task:${this.hashString(content)}`;`
+    return `task:$this.hashString(content)`;`
   }
 
   // =============================================================================
@@ -2705,527 +2693,6 @@ export class SmartNeuralCoordinator {
   }
 
   // =============================================================================
-  // BASIC CLASSIFICATION IMPLEMENTATIONS
-  // =============================================================================
-
-  private basicSentimentAnalysis(text: string): any {
-    const positiveWords = [
-      'good',
-      'great',
-      'excellent',
-      'amazing',
-      'wonderful',
-      'fantastic',
-      'awesome',
-      'love',
-      'like',
-      'happy',
-    ];
-    const negativeWords = [
-      'bad',
-      'terrible',
-      'awful',
-      'horrible',
-      'hate',
-      'dislike',
-      'sad',
-      'angry',
-      'disappointed',
-      'frustrated',
-    ];
-
-    const words = text.toLowerCase().split(/\W+/);
-    let positiveScore = 0;
-    let negativeScore = 0;
-
-    words.forEach((word) => {
-      if (positiveWords.includes(word)) positiveScore++;
-      if (negativeWords.includes(word)) negativeScore++;
-    });
-
-    const total = positiveScore + negativeScore;
-    if (total === 0) {
-      return {
-        label: 'neutral',
-        confidence: 0.5,
-        scores: { positive: 0.33, negative: 0.33, neutral: 0.34 },
-      };
-    }
-
-    return positiveScore > negativeScore
-      ? {
-          label: 'positive',
-          confidence: positiveScore / total,
-          scores: {
-            positive: positiveScore / total,
-            negative: negativeScore / total,
-            neutral: 0,
-          },
-        }
-      : {
-          label: 'negative',
-          confidence: negativeScore / total,
-          scores: {
-            positive: positiveScore / total,
-            negative: negativeScore / total,
-            neutral: 0,
-          },
-        };
-  }
-
-  private basicLanguageDetection(text: string): any {
-    // Very basic language detection based on character patterns
-    const englishPattern = /^[\s!"',.:;?A-Za-z-]+$/;'
-    if (englishPattern.test(text)) {
-      return {
-        label: 'english',
-        confidence: 0.7,
-        scores: { english: 0.7, other: 0.3 },
-      };
-    }
-    return {
-      label: 'unknown',
-      confidence: 0.3,
-      scores: { unknown: 0.3, other: 0.7 },
-    };
-  }
-
-  private basicToxicityDetection(text: string): any {
-    const toxicWords = [
-      'hate',
-      'kill',
-      'die',
-      'stupid',
-      'idiot',
-      'moron',
-      'dumb',
-    ];
-    const words = text.toLowerCase().split(/\W+/);
-    const toxicCount = words.filter((word) => toxicWords.includes(word)).length;
-    const toxicityScore = Math.min((toxicCount / words.length) * 5, 1); // Scale up small counts
-
-    return {
-      label: toxicityScore > 0.5 ? 'toxic' : 'non_toxic',
-      confidence: toxicityScore > 0.5 ? toxicityScore : 1 - toxicityScore,
-      scores: { toxic: toxicityScore, non_toxic: 1 - toxicityScore },
-    };
-  }
-
-  // =============================================================================
-  // STUB IMPLEMENTATIONS FOR SPECIFIC TASKS
-  // =============================================================================
-
-  private async classifySentiment(text: string): Promise<any> {
-    return this.basicSentimentAnalysis(text);
-  }
-
-  private async classifyIntent(
-    text: string,
-    categories?: string[]
-  ): Promise<any> {
-    // Use text analysis for intent classification
-    const textLower = text.toLowerCase();
-    const textLength = text.length;
-    const words = text.split(/\s+/);
-
-    // Define default categories or use provided ones
-    const availableCategories =
-      categories && categories.length > 0
-        ? categories
-        : [
-            'question',
-            'request',
-            'complaint',
-            'compliment',
-            'information',
-            'action',
-            'unknown',
-          ];
-
-    // Simple intent analysis based on text patterns
-    let bestIntent = 'unknown';
-    let confidence = 0.3;
-
-    // Question detection
-    if (
-      textLower.includes('?')||textLower.startsWith('what')||textLower.startsWith('how')||textLower.startsWith('why')||textLower.startsWith('when')||textLower.startsWith('where')'
-    ) {
-      bestIntent = availableCategories.includes('question')'
-        ? 'question''
-        : availableCategories[0];
-      confidence = 0.8;
-    }
-    // Request detection
-    else if (
-      textLower.includes('please')||textLower.startsWith('can you')||textLower.startsWith('could you')||textLower.includes('help')'
-    ) {
-      bestIntent = availableCategories.includes('request')'
-        ? 'request''
-        : availableCategories[0];
-      confidence = 0.7;
-    }
-    // Complaint detection
-    else if (
-      textLower.includes('problem')||textLower.includes('issue')||textLower.includes('wrong')||textLower.includes('broken')'
-    ) {
-      bestIntent = availableCategories.includes('complaint')'
-        ? 'complaint''
-        : availableCategories[0];
-      confidence = 0.75;
-    }
-    // Action detection
-    else if (
-      textLower.includes('do')||textLower.includes('execute')||textLower.includes('run')||textLower.includes('perform')'
-    ) {
-      bestIntent = availableCategories.includes('action')'
-        ? 'action''
-        : availableCategories[0];
-      confidence = 0.6;
-    }
-
-    // Create scores for all categories
-    const scores: Record<string, number> = {};
-    for (const category of availableCategories) {
-      scores[category] =
-        category === bestIntent
-          ? confidence
-          : (1 - confidence) / (availableCategories.length - 1);
-    }
-
-    this.logger.debug('Intent classified using text analysis', {'
-      textLength,
-      wordCount: words.length,
-      providedCategories: categories?.length||0,
-      availableCategories: availableCategories.length,
-      bestIntent,
-      confidence,
-    });
-
-    return { label: bestIntent, confidence, scores };
-  }
-
-  private async classifyCategory(
-    text: string,
-    categories?: string[]
-  ): Promise<any> {
-    // Use text content and provided categories for classification
-    const textLower = text.toLowerCase();
-    const words = text.split(/\s+/);
-
-    // Define default categories or use provided ones
-    const availableCategories =
-      categories && categories.length > 0
-        ? categories
-        : ['technology',
-            'business',
-            'science',
-            'art',
-            'sports',
-            'politics',
-            'general',
-          ];
-
-    // Simple category scoring based on keyword matching
-    const categoryScores: Record<string, number> = {};
-
-    for (const category of availableCategories) {
-      let score = 0.1; // Base score
-
-      // Define keywords for each category (simplified)
-      const keywords: Record<string, string[]> = {
-        technology: [
-          'computer',
-          'software',
-          'AI',
-          'tech',
-          'digital',
-          'code',
-          'programming',
-        ],
-        business: [
-          'company',
-          'revenue',
-          'profit',
-          'market',
-          'sales',
-          'business',
-          'corporate',
-        ],
-        science: [
-          'research',
-          'experiment',
-          'data',
-          'analysis',
-          'study',
-          'scientific',
-        ],
-        art: [
-          'design',
-          'creative',
-          'artwork',
-          'visual',
-          'aesthetic',
-          'artistic',
-        ],
-        sports: ['game', 'team', 'player', 'score', 'match', 'athletic'],
-        politics: [
-          'government',
-          'policy',
-          'election',
-          'political',
-          'vote',
-          'democracy',
-        ],
-      };
-
-      // Check for keyword matches
-      const categoryKeywords = keywords[category.toLowerCase()]||[
-        category.toLowerCase(),
-      ];
-      for (const keyword of categoryKeywords) {
-        if (textLower.includes(keyword.toLowerCase())) {
-          score += 0.3;
-        }
-      }
-
-      categoryScores[category] = Math.min(0.95, score);
-    }
-
-    // Find best category
-    const bestCategory = Object.keys(categoryScores).reduce((a, b) =>
-      categoryScores[a] > categoryScores[b] ? a : b
-    );
-    const confidence = categoryScores[bestCategory];
-
-    this.logger.debug('Category classified using text analysis and categories',
-      {
-        textLength: text.length,
-        wordCount: words.length,
-        providedCategories: categories?.length||0,
-        availableCategories: availableCategories.length,
-        bestCategory,
-        confidence,
-        topScores: Object.entries(categoryScores)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 3)
-          .map(([cat, score]) => ({ category: cat, score })),
-      }
-    );
-
-    return { label: bestCategory, confidence, scores: categoryScores };
-  }
-
-  private async classifyToxicity(text: string): Promise<any> {
-    return this.basicToxicityDetection(text);
-  }
-
-  private async classifyLanguage(text: string): Promise<any> {
-    return this.basicLanguageDetection(text);
-  }
-
-  private async classifyCustom(
-    text: string,
-    categories?: string[]
-  ): Promise<any> {
-    // Implement custom classification using text analysis and provided categories
-    if (!categories||categories.length === 0) {
-      this.logger.warn('Custom classification requires categories', {'
-        textLength: text.length,
-        categoriesProvided: false,
-      });
-      return { label: 'unknown', confidence: 0.2, scores: { unknown: 1.0 } };'
-    }
-
-    const textLower = text.toLowerCase();
-    const words = text.split(/\s+/).map((w) => w.toLowerCase())();
-
-    // Custom scoring algorithm based on text similarity to categories
-    const categoryScores: Record<string, number> = {};
-
-    for (const category of categories) {
-      const categoryWords = category.toLowerCase().split(/\s+/);
-      let score = 0;
-
-      // Direct category name matching
-      if (textLower.includes(category.toLowerCase())) {
-        score += 0.5;
-      }
-
-      // Word overlap scoring
-      for (const categoryWord of categoryWords) {
-        if (words.includes(categoryWord)) {
-          score += 0.3;
-        }
-
-        // Partial word matching
-        for (const word of words) {
-          if (word.includes(categoryWord)||categoryWord.includes(word)) {
-            score += 0.1;
-          }
-        }
-      }
-
-      // Text length-based confidence adjustment
-      const lengthFactor = Math.min(1, text.length / 100);
-      score = score * lengthFactor;
-
-      categoryScores[category] = Math.min(0.95, Math.max(0.05, score));
-    }
-
-    // Normalize scores
-    const totalScore = Object.values(categoryScores).reduce(
-      (sum, score) => sum + score,
-      0
-    );
-    if (totalScore > 0) {
-      for (const category of categories) {
-        categoryScores[category] = categoryScores[category] / totalScore;
-      }
-    }
-
-    // Find best match
-    const bestCategory = Object.keys(categoryScores).reduce((a, b) =>
-      categoryScores[a] > categoryScores[b] ? a : b
-    );
-    const confidence = categoryScores[bestCategory];
-
-    this.logger.debug('Custom classification completed using text analysis', {'
-      textLength: text.length,
-      wordCount: words.length,
-      categoriesCount: categories.length,
-      bestCategory,
-      confidence,
-      allScores: categoryScores,
-    });
-
-    return { label: bestCategory, confidence, scores: categoryScores };
-  }
-
-  private convertToClassification(
-    output: any,
-    request: NeuralClassificationRequest
-  ): any {
-    // Convert brain.js output to classification format
-    const values = Object.values(output) as number[];
-    const maxIndex = values.indexOf(Math.max(...values));
-    const categories = request.categories||['category1',
-      'category2',
-      'category3',
-    ];
-
-    return {
-      label: categories[maxIndex]||'unknown',
-      confidence: values[maxIndex]||0.5,
-      scores: categories.reduce(
-        (acc, cat, idx) => {
-          acc[cat] = values[idx]||0;
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
-    };
-  }
-
-  private buildClassificationSystemPrompt(
-    request: NeuralClassificationRequest
-  ): string {
-    switch (request.taskType) {
-      case'sentiment':'
-        return 'Analyze the sentiment of the following text. Respond with: positive, negative, or neutral.;
-      case 'intent':'
-        return 'Classify the intent of the following text.;
-      case 'toxicity':'
-        return 'Determine if the following text is toxic or non-toxic.;
-      default:
-        return 'Classify the following text according to the specified categories.;
-    }
-  }
-
-  private parseOpenAIClassificationResponse(
-    response: string|null,
-    request: NeuralClassificationRequest
-  ): any {
-    if (!response) {
-      return {
-        label:'unknown',
-        confidence: 0.5,
-        scores: { unknown: 0.5, other: 0.5 },
-      };
-    }
-
-    const label = response.toLowerCase().trim();
-    return {
-      label,
-      confidence: 0.9,
-      scores: { [label]: 0.9, other: 0.1 },
-    };
-  }
-
-  // =============================================================================
-  // TEXT GENERATION IMPLEMENTATIONS
-  // =============================================================================
-
-  private async generateTransformersText(
-    request: NeuralGenerationRequest
-  ): Promise<any> {
-    // Placeholder for transformers text generation
-    return {
-      generated: {
-        text: `Generated response for: ${request.prompt.substring(0, 50)}...`,`
-        finishReason: 'completed' as const,
-        tokensGenerated: 100,
-      },
-      model: 'transformers',
-      qualityScore: 0.8,
-    };
-  }
-
-  private async generateBrainJsText(
-    request: NeuralGenerationRequest
-  ): Promise<any> {
-    // Placeholder for brain.js text generation
-    return {
-      generated: {
-        text: `Brain.js generated response for: ${request.prompt.substring(0, 30)}...`,`
-        finishReason: 'completed' as const,
-        tokensGenerated: 50,
-      },
-      model: 'brain-js',
-      qualityScore: 0.6,
-    };
-  }
-
-  private async generateOpenAIText(
-    request: NeuralGenerationRequest
-  ): Promise<any> {
-    // Placeholder for OpenAI text generation
-    const response = await this.openaiClient.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: request.prompt }],
-      max_tokens: request.maxLength||1000,
-      temperature: request.temperature||0.7,
-    });
-
-    return {
-      generated: {
-        text: response.choices[0].message.content||'',
-        finishReason: 'completed'as const,
-        tokensGenerated: response.usage?.completion_tokens||0,
-      },
-      model:'openai',
-      qualityScore: 0.95,
-    };
-  }
-
-  private generateBasicText(request: NeuralGenerationRequest): any {
-    return {
-      text: `Basic completion for: ${request.prompt.substring(0, 100)}... [This is a basic fallback response]`,`
-      finishReason: 'completed' as const,
-      tokensGenerated: 20,
-    };
-  }
-
-  // =============================================================================
   // CACHE AND METRIC HELPER IMPLEMENTATIONS
   // =============================================================================
 
@@ -3289,7 +2756,7 @@ export class SmartNeuralCoordinator {
 
   private recordClassificationError(
     error: any,
-    processingTime: number,
+    _processingTime: number,
     request: NeuralClassificationRequest,
     span: Span
   ): void {
@@ -3307,7 +2774,7 @@ export class SmartNeuralCoordinator {
   }
 
   private createClassificationFallbackResult(
-    text: string,
+    _text: string,
     processingTime: number,
     request: NeuralClassificationRequest,
     error: any
@@ -3338,18 +2805,18 @@ export class SmartNeuralCoordinator {
   // STUB METHODS FOR VISION AND NEURAL TASKS (TO BE FULLY IMPLEMENTED)
   // =============================================================================
 
-  private getCachedVision(cacheKey: string): any|null {
+  private getCachedVision(_cacheKey: string): any|null {
     return null;
   }
   private cacheVision(
-    cacheKey: string,
-    result: any,
-    processingTime: number
+    _cacheKey: string,
+    _result: any,
+    _processingTime: number
   ): void {}
   private async processNewImage(
-    request: NeuralVisionRequest,
-    span: Span,
-    imageInfo: any
+    _request: NeuralVisionRequest,
+    _span: Span,
+    _imageInfo: any
   ): Promise<any> {
     return {
       vision: { description:'Basic image processing' },
@@ -3358,46 +2825,46 @@ export class SmartNeuralCoordinator {
     };
   }
   private createVisionCacheResult(
-    cached: any,
+    _cached: any,
     startTime: number,
     request: NeuralVisionRequest,
-    span: Span,
-    imageInfo: any
+    _span: Span,
+    _imageInfo: any
   ): NeuralVisionResult {
     return this.createVisionErrorResult('Not implemented', startTime, request);'
   }
   private recordVisionMetrics(
-    result: any,
-    processingTime: number,
-    request: NeuralVisionRequest,
-    fromCache: boolean
+    _result: any,
+    _processingTime: number,
+    _request: NeuralVisionRequest,
+    _fromCache: boolean
   ): void {}
   private recordVisionError(
-    error: any,
-    processingTime: number,
-    request: NeuralVisionRequest,
-    span: Span
+    _error: any,
+    _processingTime: number,
+    _request: NeuralVisionRequest,
+    _span: Span
   ): void {}
   private createVisionFallbackResult(
     request: NeuralVisionRequest,
-    processingTime: number,
-    error: any,
-    imageInfo: any
+    _processingTime: number,
+    _error: any,
+    _imageInfo: any
   ): NeuralVisionResult {
     return this.createVisionErrorResult('Fallback error', Date.now(), request);'
   }
 
-  private getCachedNeuralTask(cacheKey: string): any|null {
+  private getCachedNeuralTask(_cacheKey: string): any|null {
     return null;
   }
   private cacheNeuralTask(
-    cacheKey: string,
-    result: any,
-    processingTime: number
+    _cacheKey: string,
+    _result: any,
+    _processingTime: number
   ): void {}
   private async executeNewNeuralTask(
-    request: NeuralTaskRequest,
-    span: Span
+    _request: NeuralTaskRequest,
+    _span: Span
   ): Promise<any> {
     return {
       result: { custom:'Basic task result' },
@@ -3491,10 +2958,8 @@ export class SmartNeuralCoordinator {
 
     this.logger.error(
       `Neural task error: ${error.message} (${processingTime}ms)`,`
-      {
         taskType: request.taskType,
         error: error.message,
-      }
     );
   }
   private createNeuralTaskFallbackResult(
@@ -3539,7 +3004,7 @@ export class SmartNeuralCoordinator {
           qualityScore: 0.1,
         },
       };
-    } catch (fallbackError) {
+    } catch (fallbackError) 
       return this.createNeuralTaskErrorResult(
         `Fallback failed: ${String(fallbackError)}`,`
         Date.now(),
@@ -3622,13 +3087,12 @@ export class SmartNeuralCoordinator {
     this.logger.debug(
       `Generation metrics recorded: ${processingTime}ms, fromCache: ${fromCache}``
     );
-  }
   private recordGenerationError(
     error: any,
     processingTime: number,
     request: NeuralGenerationRequest,
     span: Span
-  ): void {
+  ): void 
     this.performanceMetrics.failedEmbeddings++;
     this.performanceMetrics.totalEmbeddings++;
 
@@ -3655,7 +3119,7 @@ export class SmartNeuralCoordinator {
       const generatedText =
         prompt.length > 50
           ? `${prompt.substring(0, 47)}...``
-          : `${prompt} [Generation unavailable]`;`
+          : `$prompt[Generation unavailable]`;`
 
       return {
         success: true,
@@ -3680,8 +3144,7 @@ export class SmartNeuralCoordinator {
           },
           qualityScore: 0.1,
         },
-      };
-    } catch (fallbackError) {
+      };catch (fallbackError) 
       return this.createGenerationErrorResult(
         `Fallback failed: ${String(fallbackError)}`,`
         Date.now(),

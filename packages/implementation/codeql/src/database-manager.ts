@@ -3,35 +3,26 @@
  * Handles database creation, management, and lifecycle operations
  */
 
+import { spawn } from 'node:child_process';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import {
-  getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync,
   type Logger,
+  safeAsync,
 } from '@claude-zen/foundation';
-
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { spawn } from 'child_process';
 
 import type {
   CodeQLConfig,
   CodeQLDatabase,
-  CodeQLLanguage,
-  DatabaseCreationOptions,
-  DatabaseCreationResult,
   CodeQLError,
+  DatabaseCreationOptions,
 } from './types/codeql-types';
 
 /**
  * Manages CodeQL database operations
  */
 export class DatabaseManager {
-  private readonly logger: Logger;
   private readonly config: CodeQLConfig;
-  private readonly databases: Map<string, CodeQLDatabase> = new Map();
 
   constructor(config: CodeQLConfig, logger: Logger) {
     this.config = config;
@@ -47,7 +38,7 @@ export class DatabaseManager {
   ): Promise<CodeQLDatabase> {
     const absolutePath = path.resolve(repositoryPath);
     const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-    const databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`
+    const _databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`
 
     this.logger.info('Creating CodeQL database', {'
       databaseId,
@@ -90,17 +81,17 @@ export class DatabaseManager {
       // Create exclude file
       const excludeFile = path.join(
         this.config.tempDir!,
-        `${databaseId}.exclude``
+        `$databaseId.exclude``
       );
       await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));'
       args.push('--exclude', excludeFile);'
     }
 
-    if (this.config.threads && this.config.threads > 1) {
+    if (this._config._threads && this.config.threads > 1) {
       args.push('--threads', this.config.threads.toString())();'
     }
 
-    if (this.config.verbose) {
+    if (this._config._verbose) {
       args.push('--verbose');'
     }
 
@@ -263,19 +254,18 @@ export class DatabaseManager {
     const repoName = path.basename(repositoryPath);
     const langString = languages.sort().join('-');'
     const timestamp = Date.now();
-    return `${repoName}_${langString}_${timestamp}`;`
+    return `$repoName_$langString_$timestamp`;`
   }
 
-  private async databaseExists(databasePath: string): Promise<boolean> {
+  private async databaseExists(databasePath: string): Promise<boolean> 
     try {
       const stats = await fs.stat(databasePath);
       return stats.isDirectory();
     } catch {
       return false;
     }
-  }
 
-  private async deleteDatabaseFiles(databasePath: string): Promise<void> {
+  private async deleteDatabaseFiles(databasePath: string): Promise<void> 
     try {
       await fs.rm(databasePath, { recursive: true, force: true });
     } catch (error) {
@@ -285,9 +275,8 @@ export class DatabaseManager {
       });
       throw error;
     }
-  }
 
-  private async calculateDatabaseSize(databasePath: string): Promise<number> {
+  private async calculateDatabaseSize(databasePath: string): Promise<number> 
     try {
       let totalSize = 0;
 
@@ -316,12 +305,11 @@ export class DatabaseManager {
     } catch {
       return 0;
     }
-  }
 
   private async executeCommand(
     args: string[],
     options: { cwd?: string; env?: NodeJS.ProcessEnv } = {}
-  ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  ): Promise<stdout: string; stderr: string; exitCode: number > 
     return new Promise((resolve, reject) => {
       const child = spawn(this.config.codeqlPath!, args, {
         cwd: options.cwd||process.cwd(),
@@ -329,23 +317,22 @@ export class DatabaseManager {
         env: options.env||process.env,
       });
 
-      let stdout = '';
-      let stderr = '';
+      const stdout = '';
+      const stderr = '';
 
-      child.stdout.on('data', (data) => {'
+      child.stdout.on('data', (_data) => {'
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {'
+      child.stderr.on('data', (_data) => {'
         stderr += data.toString();
       });
 
-      const timeoutId = setTimeout(() => {
+      const _timeoutId = setTimeout(() => {
         child.kill('SIGTERM');'
         reject(
-          this.createError('system', 'Database creation timeout', {'
-            timeout: this.config.timeout,
-          })
+          this.createError('system', 'Database creation timeout', '
+            timeout: this.config.timeout,)
         );
       }, this.config.timeout);
 
@@ -374,7 +361,6 @@ export class DatabaseManager {
         );
       });
     });
-  }
 
   private createError(
     type: CodeQLError['type'],
