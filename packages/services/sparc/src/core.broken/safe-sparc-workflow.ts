@@ -40,7 +40,7 @@ export interface EpicProposal {
 // Portfolio decision interface (shared across SAFe integration)
 export interface PortfolioDecision {
   approved: boolean;
-  priority: 'low|medium|high|critical;
+  priority: 'low' | 'medium' | 'high' | 'critical';
   fundingAllocated: number;
   timeline: string;
 }
@@ -50,7 +50,7 @@ export interface SparcArtifacts {
   specification: string;
   architecture: string;
   implementation: string;
-  status: 'pending|in_progress|complete|failed;
+  status: 'pending' | 'in_progress' | 'complete' | 'failed';
 }
 
 // SPARC execution context
@@ -86,15 +86,15 @@ export interface SparcExecutionResult extends SparcArtifacts {
 
 // Define workflow events for type safety
 interface WorkflowEvents {
-  'workflow-initialized': { workflowId: string; capabilities: string[] };'
-  'sparc-started': { epicId: string; projectId: string };'
-  'sparc-completed': {'
+  'workflow-initialized': { workflowId: string; capabilities: string[] };
+  'sparc-started': { epicId: string; projectId: string };
+  'sparc-completed': {
     epicId: string;
     projectId: string;
     result: SparcExecutionResult;
   };
-  'sparc-failed': { epicId: string; error: Error };'
-  'phase-completed': { projectId: string; phase: string; result: any };'
+  'sparc-failed': { epicId: string; error: Error };
+  'phase-completed': { projectId: string; phase: string; result: any };
 }
 
 /**
@@ -113,10 +113,10 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     this.workflowConfig = config;
 
     // Use provided logger or create a simple console logger
-    this.logger = logger||getLogger('SafeSparcWorkflow');'
+    this.logger = logger || getLogger('SafeSparcWorkflow');'
 
     this.logger.info(
-      `SPARC Workflow initialized: $this.workflowConfig.workflowId``
+      `SPARC Workflow initialized: ${this.workflowConfig.workflowId}`
     );
   }
 
@@ -128,11 +128,11 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
     try {
       this.logger.info(
-        'Initializing SPARC Workflow with SPARC Engine and Workflow Engine...''
+        'Initializing SPARC Workflow with SPARC Engine and Workflow Engine...'
       );
 
       // Import SPARCCommander from this package
-      const { SPARCCommander } = await import('./sparc-commander');'
+      const { SPARCCommander } = await import('./sparc-commander');
 
       this.sparcEngine = new SPARCCommander(
         enableQualityGates: true,

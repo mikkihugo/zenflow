@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @fileoverview Array Processing Utilities
  *
@@ -7,52 +8,57 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { chunk, filter, flatten, map, sortBy, uniq } from 'lodash-es';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ArrayProcessor = void 0;
+var lodash_es_1 = require("lodash-es");
 /**
  * Professional array processing utilities
  */
-export class ArrayProcessor {
-  /**
-   * Map array with type safety
-   */
-  static map(items, iteratee) {
-    return map(items, iteratee);
-  }
-  /**
-   * Filter array with type safety
-   */
-  static filter(items, predicate) {
-    return filter(items, predicate);
-  }
-  /**
-   * Sort array by key function
-   */
-  static sortBy(items, keyFn) {
-    return sortBy(items, keyFn);
-  }
-  /**
-   * Get unique values from array
-   */
-  static unique(items) {
-    return uniq(items);
-  }
-  /**
-   * Flatten nested arrays
-   */
-  static flatten(items) {
-    return flatten(items);
-  }
-  /**
-   * Split array into chunks
-   */
-  static chunk(items, size) {
-    return chunk(items, size);
-  }
-  /**
-   * Check if array is empty
-   */
-  static isEmpty(items) {
-    return items.length === 0;
-  }
-}
-//# sourceMappingURL=array-processor.js.map
+var ArrayProcessor = /** @class */ (function () {
+    function ArrayProcessor() {
+    }
+    /**
+     * Map array with type safety
+     */
+    ArrayProcessor.map = function (items, iteratee) {
+        return (0, lodash_es_1.map)(items, iteratee);
+    };
+    /**
+     * Filter array with type safety
+     */
+    ArrayProcessor.filter = function (items, predicate) {
+        return (0, lodash_es_1.filter)(items, predicate);
+    };
+    /**
+     * Sort array by key function
+     */
+    ArrayProcessor.sortBy = function (items, keyFn) {
+        return (0, lodash_es_1.sortBy)(items, keyFn);
+    };
+    /**
+     * Get unique values from array
+     */
+    ArrayProcessor.unique = function (items) {
+        return (0, lodash_es_1.uniq)(items);
+    };
+    /**
+     * Flatten nested arrays
+     */
+    ArrayProcessor.flatten = function (items) {
+        return (0, lodash_es_1.flatten)(items);
+    };
+    /**
+     * Split array into chunks
+     */
+    ArrayProcessor.chunk = function (items, size) {
+        return (0, lodash_es_1.chunk)(items, size);
+    };
+    /**
+     * Check if array is empty
+     */
+    ArrayProcessor.isEmpty = function (items) {
+        return items.length === 0;
+    };
+    return ArrayProcessor;
+}());
+exports.ArrayProcessor = ArrayProcessor;

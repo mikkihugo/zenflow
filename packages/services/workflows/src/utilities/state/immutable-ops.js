@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @fileoverview Immutable Operations
  *
@@ -7,63 +8,67 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { enableMapSet, produce } from 'immer';
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ImmutableOps = void 0;
+var immer_1 = require("immer");
 // Enable Immer support for Map and Set
-enableMapSet();
+(0, immer_1.enableMapSet)();
 /**
  * Professional immutable state utilities
  */
-export class ImmutableOps {
-  /**
-   * Update state immutably with producer function
-   */
-  static update(state, updater) {
-    return produce(state, updater);
-  }
-  /**
-   * Deep clone using Immer's produce
-   */
-  static clone(state) {
-    return produce(state, () => {});
-  }
-  /**
-   * Merge objects immutably
-   */
-  static merge(base, updates) {
-    return produce(base, (draft) => {
-      Object.assign(draft, updates);
-    });
-  }
-  /**
-   * Update array item by ID immutably
-   */
-  static updateArrayItem(array, id, updater) {
-    return produce(array, (draft) => {
-      const index = draft.findIndex((item) => item.id === id);
-      if (index >= 0) {
-        updater(draft[index]);
-      }
-    });
-  }
-  /**
-   * Add item to array immutably
-   */
-  static addToArray(array, item) {
-    return produce(array, (draft) => {
-      draft.push(item);
-    });
-  }
-  /**
-   * Remove item from array immutably
-   */
-  static removeFromArray(array, id) {
-    return produce(array, (draft) => {
-      const index = draft.findIndex((item) => item.id === id);
-      if (index >= 0) {
-        draft.splice(index, 1);
-      }
-    });
-  }
-}
-//# sourceMappingURL=immutable-ops.js.map
+var ImmutableOps = /** @class */ (function () {
+    function ImmutableOps() {
+    }
+    /**
+     * Update state immutably with producer function
+     */
+    ImmutableOps.update = function (state, updater) {
+        return (0, immer_1.produce)(state, updater);
+    };
+    /**
+     * Deep clone using Immer's produce'
+     */
+    ImmutableOps.clone = function (state) {
+        return (0, immer_1.produce)(state, function () { });
+    };
+    /**
+     * Merge objects immutably
+     */
+    ImmutableOps.merge = function (base, updates) {
+        return (0, immer_1.produce)(base, function (draft) {
+            Object.assign(draft, updates);
+        });
+    };
+    /**
+     * Update array item by ID immutably
+     */
+    ImmutableOps.updateArrayItem = function (array, id, updater) {
+        return (0, immer_1.produce)(array, function (draft) {
+            var index = draft.findIndex(function (item) { return item.id === id; });
+            if (index >= 0) {
+                updater(draft[index]);
+            }
+        });
+    };
+    /**
+     * Add item to array immutably
+     */
+    ImmutableOps.addToArray = function (array, item) {
+        return (0, immer_1.produce)(array, function (draft) {
+            draft.push(item);
+        });
+    };
+    /**
+     * Remove item from array immutably
+     */
+    ImmutableOps.removeFromArray = function (array, id) {
+        return (0, immer_1.produce)(array, function (draft) {
+            var index = draft.findIndex(function (item) { return item.id === id; });
+            if (index >= 0) {
+                draft.splice(index, 1);
+            }
+        });
+    };
+    return ImmutableOps;
+}());
+exports.ImmutableOps = ImmutableOps;

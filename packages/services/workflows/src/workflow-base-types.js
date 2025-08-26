@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @fileoverview Base Workflow Types - Foundation types without circular dependencies
  *
@@ -7,4 +8,4 @@
  * These types are extracted from workflow-engine.ts to break the circular dependency:
  * workflow-gate-request.ts → domain-boundary-validator.ts → workflows/types.ts → workflows/workflow-engine.ts
  */
-export {};
+Object.defineProperty(exports, "__esModule", { value: true });

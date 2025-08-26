@@ -1,40 +1,38 @@
+"use strict";
 /**
  * Workflow Coordination Types - Break Circular Dependencies
  *
  * Shared types between workflows and coordination domains to eliminate
  * the circular import chain.
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createWorkflowGateRequest = createWorkflowGateRequest;
+exports.createWorkflowGateResponse = createWorkflowGateResponse;
 /**
  * Factory function for creating workflow gate requests.
  */
-export function createWorkflowGateRequest(
-  gateId,
-  workflowId,
-  stepId,
-  context,
-  options
-) {
-  return {
-    gateId,
-    workflowId,
-    stepId,
-    context,
-    priority: options?.priority || 'medium',
-    timestamp: Date.now(),
-    metadata: options?.metadata,
-  };
+function createWorkflowGateRequest(gateId, workflowId, stepId, context, options, ) {
+    return {
+        gateId: gateId,
+        workflowId: workflowId,
+        stepId: stepId,
+        context: context,
+        priority: (options === null || options === void 0 ? void 0 : options.priority) || 'medium',
+        timestamp: Date.now(),
+        metadata: options === null || options === void 0 ? void 0 : options.metadata,
+    };
 }
 /**
  * Factory function for creating workflow gate responses.
  */
-export function createWorkflowGateResponse(request, status, options) {
-  return {
-    gateId: request.gateId,
-    workflowId: request.workflowId,
-    stepId: request.stepId,
-    status,
-    result: options?.result,
-    message: options?.message,
-    timestamp: Date.now(),
-  };
+function createWorkflowGateResponse(request, status, options, ) {
+    return {
+        gateId: request.gateId,
+        workflowId: request.workflowId,
+        stepId: request.stepId,
+        status: status,
+        result: options === null || options === void 0 ? void 0 : options.result,
+        message: options === null || options === void 0 ? void 0 : options.message,
+        timestamp: Date.now(),
+    };
 }

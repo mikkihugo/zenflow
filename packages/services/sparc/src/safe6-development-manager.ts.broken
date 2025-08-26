@@ -27,7 +27,19 @@
  * @since 2024-01-01
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { 
+  getLogger,
+  now,
+  generateUUID,
+  Result,
+  ok,
+  err,
+  ValidationError,
+  withRetry,
+  type UUID,
+  type Timestamp,
+  type Logger
+} from '@claude-zen/foundation';
 
 const logger = getLogger('safe6-development-manager');'
 
@@ -37,7 +49,7 @@ export interface Safe6ManagerCore {
   /** Manager identifier */
   managerId: string;
   /** Development management mode aligned with SAFe 6.0 */
-  mode:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
+  mode: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin';
   /** Assigned Solution Train */
   assignedSolutionTrain?: string;
   /** Assigned Agile Release Train */

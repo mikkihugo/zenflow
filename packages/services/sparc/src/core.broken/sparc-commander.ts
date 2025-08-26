@@ -25,33 +25,50 @@
  * @since 2024-01-01
  */
 
-import { generateNanoId, TypedEventBase } from '@claude-zen/foundation';
+import { 
+  generateNanoId, 
+  TypedEventBase, 
+  getLogger,
+  now,
+  Result,
+  ok,
+  err,
+  ValidationError,
+  withRetry,
+  withTimeout,
+  z,
+  validateInput,
+  generateUUID,
+  type UUID,
+  type Timestamp,
+  type Logger
+} from '@claude-zen/foundation';
 
 // Core SPARC types
 export interface SPARCProject {
-  id: string;
+  id: UUID;
   name: string;
   domain: string;
   requirements: string[];
   phases: SPARCPhase[];
   context: ProjectContext;
-  status: 'initializing|active|completed|failed;
-  createdAt: Date;
-  updatedAt: Date;
+  status: 'initializing' | 'active' | 'completed' | 'failed';
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface SPARCPhase {
-  name:|'specification|pseudocode|architecture|refinement|completion;
-  status: 'pending|active|completed|failed;
-  startedAt?: Date;
-  completedAt?: Date;
+  name: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+  status: 'pending' | 'active' | 'completed' | 'failed';
+  startedAt?: Timestamp;
+  completedAt?: Timestamp;
   deliverables: SPARCDeliverable[];
   metrics: PhaseMetrics;
   qualityGates: QualityGate[];
 }
 
 export interface SPARCDeliverable {
-  id: string;
+  id: UUID;
   type: string;
   name: string;
   content: string;
@@ -61,7 +78,7 @@ export interface SPARCDeliverable {
 }
 
 export interface QualityGate {
-  id: string;
+  id: UUID;
   name: string;
   criteria: QualityCriteria[];
   passed: boolean;
@@ -231,16 +248,8 @@ export class SPARCCommander extends TypedEventBase {
     };
 
     // Simple logger for package (apps can inject their own)
-    this.logger = {
-      info: (msg: string, ...args: any[]) =>
-        console.log(`[SPARC] ${msg}`, ...args),`
-      warn: (msg: string, ...args: any[]) =>
-        console.warn(`[SPARC] ${msg}`, ...args),`
-      error: (msg: string, ...args: any[]) =>
-        console.error(`[SPARC] ${msg}`, ...args),`
-      debug: (msg: string, ...args: any[]) =>
-        console.debug(`[SPARC] ${msg}`, ...args),`
-    };
+    // Use foundation logger
+    this.logger = getLogger('SPARC');
   }
 
   /**
@@ -253,7 +262,7 @@ export class SPARCCommander extends TypedEventBase {
     workingDirectory?: string;
     outputDirectory?: string;
   }): Promise<SPARCProject> {
-    const projectId = generateNanoId();
+    const projectId = generateUUID();
 
     const project: SPARCProject = {
       id: projectId,
@@ -267,8 +276,8 @@ export class SPARCCommander extends TypedEventBase {
         configuration: this.configuration,
       },
       status: 'initializing',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now(),
+      updatedAt: now(),
     };
 
     this.projects.set(projectId, project);
@@ -285,7 +294,7 @@ export class SPARCCommander extends TypedEventBase {
    * Execute complete SPARC methodology for a project
    */
   async executeMethodology(project: SPARCProject): Promise<MethodologyResult> {
-    const startTime = Date.now();
+    const startTime = now();
 
     this.logger.info(
       `Starting SPARC methodology execution for project: ${project.name}``
@@ -339,7 +348,7 @@ export class SPARCCommander extends TypedEventBase {
       // Calculate final metrics
       result.metrics = this.calculateProjectMetrics(
         project,
-        Date.now() - startTime
+        now() - startTime
       );
       result.success =
         result.completedPhases ===
@@ -381,7 +390,7 @@ export class SPARCCommander extends TypedEventBase {
     errors: SPARCError[];
     warnings: SPARCWarning[];> {
     const _phaseConfig = this.configuration.phases[phase.name];
-    const _startTime = Date.now();
+    const _startTime = now();
 
     phase.status = 'active';
     phase.startedAt = new Date();
@@ -431,7 +440,7 @@ export class SPARCCommander extends TypedEventBase {
       }
 
       // Calculate phase metrics
-      phase.metrics = this.calculatePhaseMetrics(phase, Date.now() - startTime);
+      phase.metrics = this.calculatePhaseMetrics(phase, now() - startTime);
 
       phase.status = 'completed';
       phase.completedAt = new Date();

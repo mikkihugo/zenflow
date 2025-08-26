@@ -233,19 +233,19 @@ export { testSafe6Core };
 if (require.main === module) {
   testSafe6Core()
     .then((result) => {
-      console.log('\n📊 Simple Integration Test Results:');'
-      console.log('Success:', result.success);'
-      console.log('Results:', JSON.stringify(result.results, null, 2));'
+      logger.info('📊 Simple Integration Test Results:');'
+      logger.info('Success:', result.success);'
+      logger.info('Results:', JSON.stringify(result.results, null, 2));'
 
       if (result.errors.length > 0) {
-        console.log('\n❌ Errors:');'
-        result.errors.forEach((error) => console.log(`  - $error`));`
+        logger.error('❌ Errors:');'
+        result.errors.forEach((error) => logger.error(`  - ${error}`));`
       }
 
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('Simple integration test failed:', error);'
+      logger.error('Simple integration test failed:', error);'
       process.exit(1);
     });
 }

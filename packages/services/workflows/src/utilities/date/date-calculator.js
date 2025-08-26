@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @fileoverview Date Calculation Utilities
  *
@@ -7,49 +8,48 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { dateFns } from '@claude-zen/foundation';
-
-const {
-  differenceInMilliseconds,
-  addMinutes,
-  subMinutes,
-  formatDuration,
-  intervalToDuration,
-} = dateFns;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DateCalculator = void 0;
+var date_fns_1 = require("date-fns");
 /**
  * Professional date calculation utilities
  */
-export class DateCalculator {
-  /**
-   * Calculate duration in milliseconds
-   */
-  static getDurationMs(startDate, endDate = new Date()) {
-    return differenceInMilliseconds(endDate, startDate);
-  }
-  /**
-   * Add minutes to date
-   */
-  static addMinutes(date, minutes) {
-    return addMinutes(date, minutes);
-  }
-  /**
-   * Subtract minutes from date
-   */
-  static subMinutes(date, minutes) {
-    return subMinutes(date, minutes);
-  }
-  /**
-   * Format duration in human-readable format
-   */
-  static formatDuration(startDate, endDate = new Date()) {
-    const duration = intervalToDuration({ start: startDate, end: endDate });
-    return formatDuration(duration);
-  }
-  /**
-   * Check if date is within range
-   */
-  static isWithinRange(date, startRange, endRange) {
-    return date >= startRange && date <= endRange;
-  }
-}
-//# sourceMappingURL=date-calculator.js.map
+var DateCalculator = /** @class */ (function () {
+    function DateCalculator() {
+    }
+    /**
+     * Calculate duration in milliseconds
+     */
+    DateCalculator.getDurationMs = function (startDate, endDate) {
+        if (endDate === void 0) { endDate = new Date(); }
+        return (0, date_fns_1.differenceInMilliseconds)(endDate, startDate);
+    };
+    /**
+     * Add minutes to date
+     */
+    DateCalculator.addMinutes = function (date, minutes) {
+        return (0, date_fns_1.addMinutes)(date, minutes);
+    };
+    /**
+     * Subtract minutes from date
+     */
+    DateCalculator.subMinutes = function (date, minutes) {
+        return (0, date_fns_1.subMinutes)(date, minutes);
+    };
+    /**
+     * Format duration in human-readable format
+     */
+    DateCalculator.formatDuration = function (startDate, endDate) {
+        if (endDate === void 0) { endDate = new Date(); }
+        var duration = (0, date_fns_1.intervalToDuration)({ start: startDate, end: endDate });
+        return (0, date_fns_1.formatDuration)(duration);
+    };
+    /**
+     * Check if date is within range
+     */
+    DateCalculator.isWithinRange = function (date, startRange, endRange) {
+        return date >= startRange && date <= endRange;
+    };
+    return DateCalculator;
+}());
+exports.DateCalculator = DateCalculator;

@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @fileoverview Observable Utilities
  *
@@ -7,63 +8,64 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { BehaviorSubject, combineLatest, interval, Subject, timer } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  throttleTime,
-} from 'rxjs/operators';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ObservableUtils = void 0;
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
 /**
  * Professional Observable utilities
  */
-export class ObservableUtils {
-  /**
-   * Create delay observable
-   */
-  static delay(milliseconds) {
-    return timer(milliseconds);
-  }
-  /**
-   * Create subject for event streaming
-   */
-  static createSubject() {
-    return new Subject();
-  }
-  /**
-   * Create behavior subject with initial value
-   */
-  static createBehaviorSubject(initialValue) {
-    return new BehaviorSubject(initialValue);
-  }
-  /**
-   * Create throttled stream
-   */
-  static throttleStream(source, milliseconds) {
-    return source.pipe(throttleTime(milliseconds));
-  }
-  /**
-   * Create debounced stream
-   */
-  static debounceStream(source, milliseconds) {
-    return source.pipe(debounceTime(milliseconds));
-  }
-  /**
-   * Filter distinct values in stream
-   */
-  static distinctStream(source) {
-    return source.pipe(distinctUntilChanged());
-  }
-  /**
-   * Create interval timer
-   */
-  static createInterval(milliseconds) {
-    return interval(milliseconds);
-  }
-  /**
-   * Combine multiple observables
-   */
-  static combineStreams(sources) {
-    return combineLatest(sources);
-  }
-}
-//# sourceMappingURL=observable-utils.js.map
+var ObservableUtils = /** @class */ (function () {
+    function ObservableUtils() {
+    }
+    /**
+     * Create delay observable
+     */
+    ObservableUtils.delay = function (milliseconds) {
+        return (0, rxjs_1.timer)(milliseconds);
+    };
+    /**
+     * Create subject for event streaming
+     */
+    ObservableUtils.createSubject = function () {
+        return new rxjs_1.Subject();
+    };
+    /**
+     * Create behavior subject with initial value
+     */
+    ObservableUtils.createBehaviorSubject = function (initialValue) {
+        return new rxjs_1.BehaviorSubject(initialValue);
+    };
+    /**
+     * Create throttled stream
+     */
+    ObservableUtils.throttleStream = function (source, milliseconds) {
+        return source.pipe((0, operators_1.throttleTime)(milliseconds));
+    };
+    /**
+     * Create debounced stream
+     */
+    ObservableUtils.debounceStream = function (source, milliseconds) {
+        return source.pipe((0, operators_1.debounceTime)(milliseconds));
+    };
+    /**
+     * Filter distinct values in stream
+     */
+    ObservableUtils.distinctStream = function (source) {
+        return source.pipe((0, operators_1.distinctUntilChanged)())();
+    };
+    /**
+     * Create interval timer
+     */
+    ObservableUtils.createInterval = function (milliseconds) {
+        return (0, rxjs_1.interval)(milliseconds);
+    };
+    /**
+     * Combine multiple observables
+     */
+    ObservableUtils.combineStreams = function (sources) {
+        return (0, rxjs_1.combineLatest)(sources);
+    };
+    return ObservableUtils;
+}());
+exports.ObservableUtils = ObservableUtils;

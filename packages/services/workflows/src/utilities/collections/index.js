@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @fileoverview Collections Utilities Index
  *
@@ -6,6 +7,9 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-export { ArrayProcessor } from './array-processor';
-export { ObjectProcessor } from './object-processor';
-//# sourceMappingURL=index.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ObjectProcessor = exports.ArrayProcessor = void 0;
+var array_processor_1 = require("./array-processor");
+Object.defineProperty(exports, "ArrayProcessor", { enumerable: true, get: function () { return array_processor_1.ArrayProcessor; } });
+var object_processor_1 = require("./object-processor");
+Object.defineProperty(exports, "ObjectProcessor", { enumerable: true, get: function () { return object_processor_1.ObjectProcessor; } });
