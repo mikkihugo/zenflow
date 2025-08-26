@@ -18,16 +18,6 @@ logs/
 .bazel-graph/
 bazel-*/
 
-# Rust build artifacts
-target/
-*/target/
-src/bindings/target/
-
-# JavaScript build artifacts in src/
-src/**/*.js
-!src/**/*.config.js
-!src/**/esbuild*.js
-
 # Kuzu database files
 *.kuzu/
 *.kuzu-wal
@@ -36,59 +26,17 @@ src/**/*.js
 /target
 target 
 dist/
-build/
-# Keep essential bin scripts but ignore large build artifacts
-bin/bundle/
-bin/yao/
-bin/pkg/
-bin/wasm/
-bin/working/
-bin/ncc/build/
+bin/claude-zen-node-pkg
 *.exe
 *.bin
 
-# Large binary files and archives - prevent accidental commits
-*.tar.gz
-*.tgz
-*.zip
-*.rar
-*.7z
-# Large compiled binaries
-claude-flow
-claude-zen-linux  
-claude-zen-macos
-claude-zen-win.exe
-test-sea-binary
-*.blob
-sea-config.json
-qdrant
-# Large database files
-*.db-wal
-*.db-shm
-# Archive and release files
-archive/releases/
-releases/
-
-# Package build artifacts - prevent committing compiled output
-packages/**/dist/
-packages/**/*.d.ts
-packages/**/*.js
-packages/**/*.js.map
-!packages/**/*.config.js
-!packages/**/src/**/*
-
-# Rust/Cargo artifacts - prevent massive target directories
+# Rust/Cargo artifacts
 Cargo.lock
 **/target/
-packages/*/rust/*/target/
-packages/private-packages/*/neural-core/target/
-packages/private-packages/*/src/rust/target/
 
 # Environment and config
 .env
 .env.*
-.mcp.json
-.mise.toml
 node_modules
 
 # IDE and system files
@@ -101,7 +49,6 @@ node_modules
 *.swp
 *.swo
 *.bak
-*.backup
 *.tmp
 *.pid
 *.orig
@@ -110,23 +57,14 @@ node_modules
 *.swo
 *.swn
 .venv/
-# Package-specific backup files
-packages/**/*.backup
-packages/**/*.bak
-apps/**/*.backup
-apps/**/*.bak
 
-# Database files and vector storage
+# Database files
 *.db
 *.sqlite
 *.sqlite3
 claude-zen-memory.db
 tasks.db
 qdrant_storage/
-storage/
-# Test and development databases
-test-data/
-.ai-learning-data.json
 
 # Coverage and test reports
 coverage/
@@ -137,9 +75,6 @@ test-results/
 .jest-cache/
 jest-cache/
 **/jest-cache/
-# Package-specific coverage
-packages/*/coverage/
-apps/*/coverage/
 
 # Lint and cache files
 .eslintcache
@@ -151,8 +86,6 @@ node_modules/.cache/
 # TypeScript build artifacts
 .tsbuildinfo
 *.tsbuildinfo
-apps/**/.tsbuildinfo
-packages/**/.tsbuildinfo
 
 # IDE and editor files
 *.swp
@@ -180,19 +113,7 @@ merge_script.sh
 .swarm/
 .hive-mind/
 .ruv-swarm/
-
-# Claude Zen Storage Architecture - CRITICAL PROTECTION
-# The .claude-zen/ directory contains sensitive local data that must NEVER be committed:
-# - Database files (SQLite, KuzuDB, LanceDB) 
-# - Authentication tokens and API keys
-# - Memory storage and cache data
-# - User preferences and session data
-# - Project-specific configuration and logs
-# This directory has its own comprehensive .gitignore for defense-in-depth protection.
 .claude-zen/
-# Svelte build artifacts
-.svelte-kit/
-apps/**/.svelte-kit/
 .nx/workspace-data/
 .genaiscript/
 coverage/
@@ -208,9 +129,6 @@ memory_tasks.json
 analyze-imports.js
 enhanced-issue-*.md
 event-payload-demo.ts
-# Package development backups
-packages/*/backup/
-packages/private-packages/*/backup/
 
 # Additional build artifacts and debug files
 build-*.txt
@@ -221,18 +139,6 @@ build-*.md
 clippy_output.txt
 coordination-log.txt
 
-# OpenTelemetry data and monitoring
-otel-data/
-apps/*/otel-data/
-
-# Development script logs
-failed-files.log
-attempt-tracker.log
-dev-runner.log
-
-# NPM test directories
-npm-test/
-
 # Docker files (not used)
 Dockerfile*
 docker-compose*.yml
@@ -241,10 +147,6 @@ nginx*.conf
 # Python files (not used in Node.js project)
 requirements.txt
 *.py
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
 
 # Config file variants/duplicates
 .eslintrc.*.json
@@ -258,6 +160,3 @@ integration-test-report.json
 *-summary.md
 *-report.md
 *-completion*.md
-.rollup.cache/
-.aider*
-storage/

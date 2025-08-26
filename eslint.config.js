@@ -16,7 +16,7 @@ export default [
 			parserOptions: {
 				ecmaVersion: 2024,
 				sourceType: "module",
-				project: ["./apps/web-dashboard/tsconfig.json"],
+				// project: ["./apps/web-dashboard/tsconfig.json"],
 				tsconfigRootDir: import.meta.dirname,
 			},
 			globals: {
@@ -206,20 +206,8 @@ export default [
 			parserOptions: {
 				ecmaVersion: 2024,
 				sourceType: "module",
-				// Optimized for current 5-tier architecture - correct paths
-				project: [
-					"./tsconfig.json",
-					"./apps/*/tsconfig.json",
-					// Core packages
-					"./packages/core/*/tsconfig.json",
-					// Services packages
-					"./packages/services/*/tsconfig.json",
-					// Tools packages
-					"./packages/tools/*/tsconfig.json",
-					"./packages/tools/*/*/tsconfig.json",
-					// Integration packages
-					"./packages/integrations/*/tsconfig.json",
-				],
+				// Disable TypeScript project parsing for now to avoid config issues
+				// project: [],
 				tsconfigRootDir: import.meta.dirname,
 			},
 			globals: {

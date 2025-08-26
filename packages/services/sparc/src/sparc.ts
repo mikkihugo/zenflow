@@ -13,11 +13,7 @@ import {
   getLogger,
   now,
   generateUUID,
-  Result,
-  ok,
-  err,
   ValidationError,
-  withRetry,
   type UUID,
   type Timestamp,
   type Logger
@@ -85,11 +81,11 @@ export class SPARCManager {
   /**
    * Initialize a new SPARC project
    */
-  async initializeProject(params: {
+  initializeProject(params: {
     name: string;
     domain: string;
     requirements: string[];
-  }): Promise<SparcProject> {
+  }): SparcProject {
     const project: SparcProject = {
       id: generateUUID(),
       name: params.name,
@@ -110,7 +106,7 @@ export class SPARCManager {
   /**
    * Execute SPARC methodology for a project
    */
-  async executeProject(projectId: UUID): Promise<SparcResult> {
+  executeProject(projectId: UUID): SparcResult {
     const project = this.projects.get(projectId);
     if (!project) {
       throw new ValidationError(`Project not found: ${projectId}`);
@@ -123,23 +119,23 @@ export class SPARCManager {
 
     try {
       // Phase 1: Specification
-      await this.executeSpecification(project);
+      this.executeSpecification(project);
       completedPhases++;
 
       // Phase 2: Pseudocode  
-      await this.executePseudocode(project);
+      this.executePseudocode(project);
       completedPhases++;
 
       // Phase 3: Architecture
-      await this.executeArchitecture(project);
+      this.executeArchitecture(project);
       completedPhases++;
 
       // Phase 4: Refinement
-      await this.executeRefinement(project);
+      this.executeRefinement(project);
       completedPhases++;
 
       // Phase 5: Completion
-      await this.executeCompletion(project);
+      this.executeCompletion(project);
       completedPhases++;
 
       const timeSpent = now() - startTime;
@@ -171,35 +167,35 @@ export class SPARCManager {
     }
   }
 
-  private async executeSpecification(project: SparcProject): Promise<void> {
+  private executeSpecification(project: SparcProject): void {
     project.currentPhase = 'specification';
     project.artifacts.specification = `Specification for ${project.name}:\n${project.requirements.join('\n')}`;
     project.updatedAt = now();
     this.logger.debug(`Specification phase completed for: ${project.name}`);
   }
 
-  private async executePseudocode(project: SparcProject): Promise<void> {
+  private executePseudocode(project: SparcProject): void {
     project.currentPhase = 'pseudocode';
     project.artifacts.pseudocode = `Pseudocode for ${project.name}:\n1. Initialize system\n2. Process requirements\n3. Generate output`;
     project.updatedAt = now();
     this.logger.debug(`Pseudocode phase completed for: ${project.name}`);
   }
 
-  private async executeArchitecture(project: SparcProject): Promise<void> {
+  private executeArchitecture(project: SparcProject): void {
     project.currentPhase = 'architecture';
     project.artifacts.architecture = `Architecture for ${project.name}:\n- Component design\n- Data flow\n- Integration points`;
     project.updatedAt = now();
     this.logger.debug(`Architecture phase completed for: ${project.name}`);
   }
 
-  private async executeRefinement(project: SparcProject): Promise<void> {
+  private executeRefinement(project: SparcProject): void {
     project.currentPhase = 'refinement';
     project.artifacts.refinement = `Refinement for ${project.name}:\n- Performance optimization\n- Error handling\n- Edge cases`;
     project.updatedAt = now();
     this.logger.debug(`Refinement phase completed for: ${project.name}`);
   }
 
-  private async executeCompletion(project: SparcProject): Promise<void> {
+  private executeCompletion(project: SparcProject): void {
     project.currentPhase = 'completion';
     project.artifacts.implementation = `Implementation for ${project.name}:\n- Final code\n- Tests\n- Documentation`;
     project.updatedAt = now();
