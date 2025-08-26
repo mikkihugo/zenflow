@@ -1,458 +1,221 @@
 /**
  * @file Coordination Event Adapter - Main Class
- * 
+ *
  * Unified Coordination Event Adapter implementing the EventManager interface.
- * This is the main adapter class that orchestrates coordination events.
  */
 
-import { EventEmitter, getLogger, type Logger } from '@claude-zen/foundation';
+import { type Logger } from '@claude-zen/foundation';
 import type {
+  EventManagerConfig,
   EventManagerStatus,
-  EventManagerType,
   EventManagerMetrics,
-  EventManager,
   SystemEvent,
-  EventFilter,
-  EventTransform,
-  EventSubscription,
-  EventListener,
-  EventBatch,
-  EventEmissionOptions,
-  EventQueryOptions,
-  EventTimeoutError,
-  EventEmissionError,
-  EventPriority
 } from '../../core/interfaces';
-import type { CoordinationEvent } from '../../types';
-import { EventPriorityMap } from '../../types';
+import type { CoordinationEventManager } from '../../event-manager-types';
+import { BaseEventManager } from '../../core/base-event-manager';
 
-import type {
-  CoordinationEventAdapterConfig,
-  CoordinationEventMetrics,
-  CoordinationCorrelation,
-  CoordinationHealthEntry,
-  WrappedCoordinationComponent
-} from './types';
-import { CoordinationEventHelpers, CoordinationEventUtils } from './helpers';
-import { CoordinationEventExtractor } from './extractor';
-
-// Generic interfaces for coordination components
-interface Orchestrator {
-  readonly id: string;
-  readonly type: string;
-  [key: string]: any;
-}
-
-interface SwarmCoordinator {
-  readonly id: string;
-  readonly type: string;
-  [key: string]: any;
-}
-
-interface AgentManager {
-  readonly id: string;
-  readonly type: string;
-  [key: string]: any;
+/**
+ * Coordination-specific event for distributed operations.
+ */
+export interface CoordinationEvent extends SystemEvent {
+  operationId?: string;
+  participants?: string[];
+  status?: 'pending' | 'coordinating' | 'completed' | 'failed';
+  progress?: number;
 }
 
 /**
- * Unified Coordination Event Adapter.
- * 
- * Provides a unified interface to coordination-level EventEmitter patterns
- * while implementing the EventManager interface for UEL compatibility.
+ * Configuration for coordination event adapter.
  */
-export class CoordinationEventAdapter implements EventManager {
-  // Core event manager properties
-  public readonly config: CoordinationEventAdapterConfig;
-  public readonly name: string;
-  public readonly type: EventManagerType;
+export interface CoordinationEventAdapterConfig extends EventManagerConfig {
+  maxParticipants?: number;
+  coordinationTimeout?: number;
+  retryAttempts?: number;
+}
 
-  // Event manager state
-  private running = false;
-  private logger: Logger;
-  private startTime?: Date;
-  private eventEmitter = new EventEmitter();
-  private processingEvents = false;
+/**
+ * Coordination Event Adapter implementation.
+ */
+export class CoordinationEventAdapter extends BaseEventManager implements CoordinationEventManager {
+  private operations = new Map<string, {
+    participants: string[];
+    status: 'pending' | 'coordinating' | 'completed' | 'failed';
+    progress: number;
+    startTime: Date;
+  }>();
 
-  // Event management collections
-  private subscriptions = new Map<string, EventSubscription>();
-  private filters = new Map<string, EventFilter>();
-  private transforms = new Map<string, EventTransform>();
-  private eventQueue: CoordinationEvent[] = [];
-  private eventHistory: CoordinationEvent[] = [];
+  private coordinationStats = {
+    operationsStarted: 0,
+    operationsCompleted: 0,
+    operationsFailed: 0,
+  };
 
-  // Coordination-specific collections
-  private coordinationCorrelations = new Map<string, CoordinationCorrelation>();
-  private coordinationHealth = new Map<string, CoordinationHealthEntry>();
-  private wrappedComponents = new Map<string, WrappedCoordinationComponent>();
-  private swarmCoordinators = new Map<string, SwarmCoordinator>();
-  private agentManagers = new Map<string, AgentManager>();
-  private orchestrators = new Map<string, Orchestrator>();
+  private startTime = new Date();
 
-  // Performance metrics collections
-  private metrics: CoordinationEventMetrics[] = [];
-  private swarmMetrics = new Map<string, any>();
-  private agentMetrics = new Map<string, any>();
-  private taskMetrics = new Map<string, any>();
-  private coordinationPatterns = new Map<string, any>();
-
-  // Performance counters
-  private eventCount = 0;
-  private successCount = 0;
-  private errorCount = 0;
-  private totalLatency = 0;
-
-  constructor(config: CoordinationEventAdapterConfig) {
-    this.name = config?.name || 'coordination-adapter';
-    this.type = config?.type || 'coordination';
-    this.config = this.createDefaultConfig(config);
-
-    this.logger = getLogger(`CoordinationEventAdapter:${this.name}`);
-    this.logger.info(`Creating coordination event adapter: ${this.name}`);
-
-    // Set max listeners to handle many coordination components
-    this.eventEmitter.setMaxListeners(1000);
+  constructor(config: CoordinationEventAdapterConfig, logger?: Logger) {
+    super(config, logger);
   }
 
-  // ============================================
-  // EventManager Interface Implementation
-  // ============================================
+  async coordinateOperation(operationId: string, participants: string[]): Promise<void> {
+    this.coordinationStats.operationsStarted++;
+    
+    this.operations.set(operationId, {
+      participants,
+      status: 'pending',
+      progress: 0,
+      startTime: new Date(),
+    });
 
-  /**
-   * Start the coordination event adapter.
-   */
-  async start(): Promise<void> {
-    if (this.running) {
-      this.logger.warn(`Coordination event adapter ${this.name} is already running`);
-      return;
+    const event: CoordinationEvent = {
+      id: `coord_${operationId}_${Date.now()}`,
+      timestamp: new Date(),
+      source: 'coordination-adapter',
+      type: 'coordination:start',
+      payload: {
+        operationId,
+        participants,
+      },
+      operationId,
+      participants,
+      status: 'pending',
+      progress: 0,
+    };
+
+    await this.emit(event);
+
+    // Simulate coordination logic
+    setTimeout(() => this.completeOperation(operationId), 1000);
+  }
+
+  async getCoordinationStatus(operationId: string): Promise<{
+    status: 'pending' | 'coordinating' | 'completed' | 'failed';
+    participants: string[];
+    progress: number;
+  }> {
+    const operation = this.operations.get(operationId);
+    
+    if (!operation) {
+      throw new Error(`Operation not found: ${operationId}`);
     }
 
-    this.logger.info(`Starting coordination event adapter: ${this.name}`);
-
-    try {
-      // Initialize coordination component integrations
-      await this.initializeCoordinationIntegrations();
-
-      // Start event processing
-      this.startEventProcessing();
-
-      // Start health monitoring if enabled
-      if (this.config.agentHealthMonitoring?.enabled) {
-        this.startCoordinationHealthMonitoring();
-      }
-
-      // Start correlation cleanup if enabled
-      if (this.config.coordination?.enabled) {
-        this.startCoordinationCorrelationCleanup();
-      }
-
-      // Start swarm optimization if enabled
-      if (this.config.swarmOptimization?.enabled) {
-        this.startSwarmOptimization();
-      }
-
-      this.running = true;
-      this.startTime = new Date();
-      this.emitInternal('start');
-
-      this.logger.info(`Coordination event adapter started successfully: ${this.name}`);
-    } catch (error) {
-      this.logger.error(`Failed to start coordination event adapter ${this.name}:`, error);
-      this.emitInternal('error', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Stop the coordination event adapter.
-   */
-  async stop(): Promise<void> {
-    if (!this.running) {
-      this.logger.warn(`Coordination event adapter ${this.name} is not running`);
-      return;
-    }
-
-    this.logger.info(`Stopping coordination event adapter: ${this.name}`);
-
-    try {
-      // Stop event processing
-      this.processingEvents = false;
-
-      // Unwrap coordination components
-      await this.unwrapCoordinationComponents();
-
-      // Clear event queues
-      this.eventQueue.length = 0;
-
-      this.running = false;
-      this.emitInternal('stop');
-
-      this.logger.info(`Coordination event adapter stopped successfully: ${this.name}`);
-    } catch (error) {
-      this.logger.error(`Failed to stop coordination event adapter ${this.name}:`, error);
-      this.emitInternal('error', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Restart the coordination event adapter.
-   */
-  async restart(): Promise<void> {
-    this.logger.info(`Restarting coordination event adapter: ${this.name}`);
-    await this.stop();
-    await this.start();
-  }
-
-  /**
-   * Check if the adapter is running.
-   */
-  isRunning(): boolean {
-    return this.running;
-  }
-
-  // Additional methods would continue here...
-  // This is just the beginning of the refactored adapter
-
-  // ============================================
-  // Private Helper Methods
-  // ============================================
-
-  /**
-   * Create default configuration with overrides.
-   */
-  private createDefaultConfig(config: CoordinationEventAdapterConfig): CoordinationEventAdapterConfig {
     return {
-      // Default configuration values
-      swarmCoordination: {
-        enabled: true,
-        wrapLifecycleEvents: true,
-        wrapPerformanceEvents: true,
-        wrapTopologyEvents: true,
-        wrapHealthEvents: true,
-        coordinators: ['default', 'sparc'],
-        ...config?.swarmCoordination,
-      },
-      agentManagement: {
-        enabled: true,
-        wrapAgentEvents: true,
-        wrapHealthEvents: true,
-        wrapRegistryEvents: true,
-        wrapLifecycleEvents: true,
-        ...config?.agentManagement,
-      },
-      // ... other default configurations
-      ...config,
+      status: operation.status,
+      participants: operation.participants,
+      progress: operation.progress,
     };
   }
 
-  /**
-   * Initialize coordination component integrations.
-   */
-  private async initializeCoordinationIntegrations(): Promise<void> {
-    this.logger.debug('Initializing coordination component integrations');
+  private async completeOperation(operationId: string): Promise<void> {
+    const operation = this.operations.get(operationId);
+    if (!operation) return;
 
-    // Wrap SwarmCoordinator if enabled
-    if (this.config.swarmCoordination?.enabled) {
-      await this.wrapSwarmCoordinators();
-    }
+    operation.status = 'completed';
+    operation.progress = 100;
+    this.coordinationStats.operationsCompleted++;
 
-    // Wrap AgentManager if enabled
-    if (this.config.agentManagement?.enabled) {
-      await this.wrapAgentManagers();
-    }
+    const event: CoordinationEvent = {
+      id: `coord_${operationId}_complete_${Date.now()}`,
+      timestamp: new Date(),
+      source: 'coordination-adapter',
+      type: 'coordination:complete',
+      payload: {
+        operationId,
+        participants: operation.participants,
+        duration: Date.now() - operation.startTime.getTime(),
+      },
+      operationId,
+      participants: operation.participants,
+      status: 'completed',
+      progress: 100,
+    };
 
-    this.logger.debug(`Wrapped ${this.wrappedComponents.size} coordination components`);
+    await this.emit(event);
   }
 
-  /**
-   * Wrap SwarmCoordinator events with UEL integration.
-   */
-  private async wrapSwarmCoordinators(): Promise<void> {
-    // Implementation would go here
-    this.logger.debug('Wrapping SwarmCoordinators');
+  getCoordinationStats() {
+    return {
+      ...this.getStats(),
+      coordination: {
+        ...this.coordinationStats,
+        activeOperations: this.operations.size,
+      },
+    };
   }
 
-  /**
-   * Wrap AgentManager events with UEL integration.
-   */
-  private async wrapAgentManagers(): Promise<void> {
-    // Implementation would go here
-    this.logger.debug('Wrapping AgentManagers');
+  async healthCheck(): Promise<EventManagerStatus> {
+    const stats = this.getStats();
+    const isHealthy = stats.errorCount < 10 && stats.isRunning;
+    
+    return {
+      name: this.name,
+      type: this.type,
+      status: isHealthy ? 'healthy' : 'unhealthy',
+      isRunning: stats.isRunning,
+      isHealthy,
+      subscriptionCount: stats.subscriptions,
+      eventCount: stats.eventsProcessed,
+      errorCount: stats.errorCount,
+      lastEventTime: new Date(),
+      uptime: Date.now() - this.startTime.getTime(),
+    };
   }
 
-  /**
-   * Start event processing loop for coordination events.
-   */
-  private startEventProcessing(): void {
-    this.processingEvents = true;
-    this.logger.debug('Started event processing');
+  async getMetrics(): Promise<EventManagerMetrics> {
+    const stats = this.getStats();
+    
+    return {
+      name: this.name,
+      type: this.type,
+      eventsEmitted: stats.eventsEmitted,
+      eventsReceived: stats.eventsProcessed,
+      eventsProcessed: stats.eventsProcessed,
+      eventsFailed: stats.errorCount,
+      subscriptionsCreated: stats.subscriptionsCreated,
+      subscriptionsRemoved: stats.subscriptionsRemoved,
+      errorCount: stats.errorCount,
+      averageProcessingTime: 0, // TODO: Implement timing tracking
+      maxProcessingTime: 0,
+      minProcessingTime: 0,
+    };
   }
 
-  /**
-   * Start health monitoring for coordination components.
-   */
-  private startCoordinationHealthMonitoring(): void {
-    this.logger.debug('Started coordination health monitoring');
+  // EventEmitter compatibility methods
+  on(event: string, listener: (...args: any[]) => void): this {
+    this.subscribe([event], listener);
+    return this;
   }
 
-  /**
-   * Start coordination correlation cleanup to prevent memory leaks.
-   */
-  private startCoordinationCorrelationCleanup(): void {
-    this.logger.debug('Started coordination correlation cleanup');
-  }
-
-  /**
-   * Start swarm optimization if enabled.
-   */
-  private startSwarmOptimization(): void {
-    this.logger.debug('Started swarm optimization');
-  }
-
-  /**
-   * Unwrap all coordination components.
-   */
-  private async unwrapCoordinationComponents(): Promise<void> {
-    this.logger.debug('Unwrapping coordination components');
-    this.wrappedComponents.clear();
-  }
-
-  /**
-   * Emit wrapper for internal use.
-   */
-  private emitInternal(event: string, data?: unknown): void {
-    this.eventEmitter.emit(event, data);
-  }
-
-  // EventManager interface methods would be implemented here...
-  // This is a simplified version showing the structure
-
-  async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  async emitBatch<T extends SystemEvent>(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  async emitImmediate<T extends SystemEvent>(event: T): Promise<void> {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  subscribe<T extends SystemEvent>(
-    eventTypes: string | string[],
-    listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>
-  ): string {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  unsubscribe(subscriptionId: string): boolean {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  unsubscribeAll(eventType?: string): number {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  addFilter(filter: EventFilter): string {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  removeFilter(filterId: string): boolean {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  addTransform(transform: EventTransform): string {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  removeTransform(transformId: string): boolean {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  async query<T extends SystemEvent>(options: EventQueryOptions): Promise<T[]>{
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  async getEventHistory(eventType: string, limit?: number): Promise<CoordinationEvent[]>{
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  async healthCheck(): Promise<EventManagerStatus>{
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  async getMetrics(): Promise<EventManagerMetrics>{
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  getSubscriptions(): EventSubscription[] {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  updateConfig(config: Partial<CoordinationEventAdapterConfig>): void {
-    // Implementation would be here
-    throw new Error('Method not implemented.');
-  }
-
-  on(event: 'start' | 'stop' | 'error' | 'subscription' | 'emission', handler: (...args: unknown[]) => void): void {
-    this.eventEmitter.on(event, handler);
-  }
-
-  off(event: string, handler?: (...args: unknown[]) => void): void {
-    if (handler) {
-      this.eventEmitter.off(event, handler);
-    } else {
-      this.eventEmitter.removeAllListeners(event);
-    }
-  }
-
-  once(event: string, handler: (...args: unknown[]) => void): void {
-    this.eventEmitter.once(event, handler);
-  }
-
-  async destroy(): Promise<void> {
-    this.logger.info(`Destroying coordination event adapter: ${this.name}`);
-
-    try {
-      if (this.running) {
-        await this.stop();
+  off(event: string, listener: (...args: any[]) => void): this {
+    // Find and remove subscription - simplified implementation
+    for (const [id, subscription] of (this as any)._subscriptions) {
+      if (subscription.eventTypes.includes(event) && subscription.listener === listener) {
+        this.unsubscribe(id);
+        break;
       }
-
-      // Clear all data structures
-      this.subscriptions.clear();
-      this.filters.clear();
-      this.transforms.clear();
-      this.coordinationCorrelations.clear();
-      this.coordinationHealth.clear();
-      this.metrics.length = 0;
-      this.eventHistory.length = 0;
-      this.eventQueue.length = 0;
-
-      // Remove all event listeners
-      this.eventEmitter.removeAllListeners();
-
-      this.logger.info(`Coordination event adapter destroyed successfully: ${this.name}`);
-    } catch (error) {
-      this.logger.error(`Failed to destroy coordination event adapter ${this.name}`, error);
-      throw error;
     }
+    return this;
   }
+
+  emitSimple(eventType: string, ...args: any[]): boolean {
+    const event = {
+      id: `${eventType}_${Date.now()}`,
+      timestamp: new Date(),
+      source: this.name,
+      type: eventType,
+      payload: args.length === 1 ? args[0] : args,
+    };
+    
+    super.emit(event as SystemEvent).catch(() => {});
+    return true;
+  }
+}
+
+/**
+ * Factory function to create coordination event adapter.
+ */
+export function createCoordinationEventAdapter(
+  config: CoordinationEventAdapterConfig,
+  logger?: Logger
+): CoordinationEventAdapter {
+  return new CoordinationEventAdapter(config, logger);
 }

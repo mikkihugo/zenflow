@@ -116,7 +116,7 @@ export class DomainValidationError extends Error {
     public domain: Domain
   ) {
     super(message);
-    this.name = 'DomainValidationError;
+    this.name = 'DomainValidationError';
   }
 }
 
@@ -126,7 +126,7 @@ export class ContractViolationError extends Error {
     public contract: string
   ) {
     super(message);
-    this.name = 'ContractViolationError;
+    this.name = 'ContractViolationError';
   }
 }
 
@@ -144,7 +144,7 @@ export interface DomainBoundaryValidator {
  * Basic event bus interface
  */
 export interface EventBus {
-  emit(event: string, ...args: unknown[]): boolean {;
+  emit(event: string, ...args: unknown[]): boolean;
   on(event: string, listener: (...args: unknown[]) => void): this;
   off(event: string, listener: (...args: unknown[]) => void): this;
   removeAllListeners(event?: string): this;

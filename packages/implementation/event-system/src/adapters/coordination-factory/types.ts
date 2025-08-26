@@ -1,11 +1,13 @@
 /**
  * @file Coordination Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for the coordination event factory system.
  */
 
-import type { EventManager, EventManagerConfig, EventManagerStatus, EventManagerMetrics } from '../../core/interfaces';
-import type { CoordinationEventAdapterConfig, CoordinationEventAdapter } from '../coordination';
+
+
+
+
 
 /**
  * Configuration for the coordination event factory.

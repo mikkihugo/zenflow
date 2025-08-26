@@ -1,6 +1,6 @@
 /**
  * @file System Event Adapter - Main Export
- * 
+ *
  * Exports the system event adapter system with all components.
  */
 
@@ -19,6 +19,9 @@ export type {
 // Adapter function
 export { createSystemEventAdapter } from './adapter';
 
+// Manager implementation
+export { SystemEventManager } from './manager';
+
 // Helper functions and utilities
 export { SystemAdapterHelpers } from './helpers';
 
@@ -32,8 +35,12 @@ export function createSystemAdapter(
   config?: SystemEventAdapterConfig
 ): Promise<import('../../core/interfaces').EventManager> {
   const defaultConfig: SystemEventAdapterConfig = {
-    name: 'system-adapter-' + Date.now(),
+    name: `system-adapter-${  Date.now()}`,
     type: 'system' as any,
+    processing: {
+      strategy: 'immediate',
+      queueSize: 1000,
+    },
     system: {
       enabled: true,
       wrapSystemEvents: true,
@@ -64,7 +71,7 @@ export function createSystemAdapter(
     },
     ...config,
   };
-  
+
   return createSystemEventAdapter(defaultConfig);
 }
 

@@ -1,6 +1,6 @@
 /**
  * @file Workflow Event Factory - Main Export
- * 
+ *
  * Exports the modular workflow event factory system with all components.
  */
 

@@ -1,10 +1,9 @@
 /**
  * @file System Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for system event factory.
  */
 
-import type { EventManagerConfig } from '../../core/interfaces';
 
 export interface SystemEventFactoryConfig {
   enableSystemMonitoring?: boolean;

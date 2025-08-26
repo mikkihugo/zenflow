@@ -1,6 +1,6 @@
 /**
  * @file Coordination Event Helpers
- * 
+ *
  * Helper functions for creating common coordination events
  * and utility functions for event processing.
  */
@@ -150,28 +150,30 @@ export class CoordinationEventUtils {
     eventType: string
   ): CoordinationEvent['operation'] {
     if (
-      eventType.includes('init') || 
-      eventType.includes('start') || 
+      eventType.includes('init') ||
+      eventType.includes('start') ||
       eventType.includes('created')
-    ) return 'init';
-    
+    )
+      return 'init';
+
     if (eventType.includes('spawn') || eventType.includes('added'))
       return 'spawn';
-    
+
     if (
-      eventType.includes('destroy') || 
-      eventType.includes('removed') || 
+      eventType.includes('destroy') ||
+      eventType.includes('removed') ||
       eventType.includes('shutdown')
-    ) return 'destroy';
-    
+    )
+      return 'destroy';
+
     if (eventType.includes('assign') || eventType.includes('distribute'))
       return 'distribute';
-    
+
     if (eventType.includes('complete')) return 'complete';
-    
+
     if (eventType.includes('fail') || eventType.includes('error'))
       return 'fail';
-    
+
     return 'coordinate';
   }
 
@@ -195,22 +197,26 @@ export class CoordinationEventUtils {
   /**
    * Determine event priority based on event type.
    */
-  static determineEventPriority(eventType: string): 'critical' | 'high' | 'medium' | 'low' {
+  static determineEventPriority(
+    eventType: string
+  ): 'critical' | 'high' | 'medium' | 'low' {
     if (
-      eventType.includes('error') || 
-      eventType.includes('fail') || 
+      eventType.includes('error') ||
+      eventType.includes('fail') ||
       eventType.includes('timeout')
-    ) return 'high';
-    
+    )
+      return 'high';
+
     if (
-      eventType.includes('start') || 
-      eventType.includes('init') || 
+      eventType.includes('start') ||
+      eventType.includes('init') ||
       eventType.includes('shutdown')
-    ) return 'high';
-    
+    )
+      return 'high';
+
     if (eventType.includes('complete') || eventType.includes('success'))
       return 'medium';
-    
+
     return 'medium';
   }
 

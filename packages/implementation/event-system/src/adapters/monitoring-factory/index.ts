@@ -1,6 +1,6 @@
 /**
  * @file Monitoring Event Factory - Main Export
- * 
+ *
  * Exports the modular monitoring event factory system with all components.
  */
 

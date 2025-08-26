@@ -1,10 +1,9 @@
 /**
  * @file Monitoring Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for monitoring event factory.
  */
 
-import type { EventManagerConfig } from '../../core/interfaces';
 
 export interface MonitoringEventFactoryConfig {
   enableMonitoring?: boolean;

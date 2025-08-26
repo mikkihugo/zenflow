@@ -1,818 +1,205 @@
 /**
- * @fileoverview Event System Domain Types - Unified Event Layer Domain
+ * @fileoverview Event System Type Definitions
  *
- * Comprehensive type definitions for all event-driven operations, communication,
- * coordination, and messaging within the event system domain. These types define
- * the core domain model for event management, processing, and orchestration.
- *
- * Dependencies: Only imports from @claude-zen/foundation for shared primitives.
- * Domain Independence: Self-contained event system domain types.
- *
- * @package @claude-zen/event-system
- * @since 2.1.0
- * @version 1.0.0
+ * Comprehensive type definitions for the event system including
+ * event patterns, manager types, and processing strategies.
  */
 
-import type {
-  Entity,
-  OperationResult as Result,
-  Timestamp,
-  UUID,
-  ValidationError,
-} from '@claude-zen/foundation';
+// Re-export core interfaces
+export * from '../core/interfaces-clean';
+export type { SystemLifecycleEvent } from '../types';
 
-// =============================================================================
-// CORE EVENT SYSTEM TYPES
-// =============================================================================
-
-/**
- * Event priorities for processing order and urgency
- */
-export type EventPriority = 'low|medium|high|critical;
-
-/**
- * Core system event interface - Base for all events
- */
-export interface SystemEvent extends Entity {
-  type: string;
-  priority: EventPriority;
-  source: string;
-  metadata?: Record<string, unknown>;
-  correlationId?: UUID;
-}
-
-/**
- * Event processing strategies
- */
-export type ProcessingStrategy =|'immediate|queued|batched|throttled|scheduled|async;
-
-/**
- * Event backoff strategies for retry logic
- */
-export type BackoffStrategy =|'exponential|linear|fixed|fibonacci|custom;
-
-/**
- * Event reliability levels
- */
-export enum ReliabilityLevel {
-  BEST_EFFORT = 'best_effort',
-  AT_LEAST_ONCE = 'at_least_once',
-  AT_MOST_ONCE = 'at_most_once',
-  EXACTLY_ONCE = 'exactly_once',
-}
-
-// =============================================================================
-// EVENT MANAGER CONFIGURATION
-// =============================================================================
-
-/**
- * Configuration for event manager instances
- */
-export interface EventManagerConfig {
-  maxListeners: number;
-  processing: ProcessingConfig;
-  retry?: RetryConfig;
-  health?: HealthConfig;
-  monitoring?: MonitoringConfig;
-}
-
-/**
- * Event processing configuration
- */
-export interface ProcessingConfig {
-  strategy: ProcessingStrategy;
-  queueSize: number;
-  batchSize?: number;
-  throttleMs?: number;
-  concurrent?: boolean;
-  priority?: boolean;
-}
-
-/**
- * Retry configuration for failed events
- */
-export interface RetryConfig {
-  attempts: number;
-  delay: number;
-  backoff: BackoffStrategy;
-  maxDelay: number;
-  jitter?: boolean;
-  exponentialBase?: number;
-}
-
-/**
- * Health monitoring configuration
- */
-export interface HealthConfig {
-  checkInterval: number;
-  timeout: number;
-  failureThreshold: number;
-  successThreshold: number;
-  enableAutoRecovery: boolean;
-}
-
-/**
- * Event monitoring configuration
- */
-export interface MonitoringConfig {
-  enabled: boolean;
-  metricsInterval: number;
-  trackLatency: boolean;
-  trackThroughput: boolean;
-  trackErrors: boolean;
-  enableProfiling: boolean;
-}
-
-// =============================================================================
-// SYSTEM LIFECYCLE EVENTS
-// =============================================================================
-
-/**
- * System lifecycle events - Core system operations
- */
-export interface SystemLifecycleEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||system:health;
-  operation: 'start|stop|restart|status|healthcheck;
-  status: 'success|warning|error|critical;
-  details?: {
-    component?: string;
-    version?: string;
-    duration?: number;
-    errorCode?: string;
-    errorMessage?: string;
-    healthScore?: number;
-  };
-}
-
-// =============================================================================
-// COORDINATION EVENTS
-// =============================================================================
-
-/**
- * Coordination events - Multi-agent and swarm coordination
- */
-export interface CoordinationEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
-  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail;
-  targetId: string; // swarmId, agentId, taskId, etc.
-  details?: {
-    agentCount?: number;
-    topology?: 'mesh|hierarchical|ring|star;
-    taskType?: string;
-    assignedTo?: string[];
-    progress?: number;
-    metrics?: {
-      latency: number;
-      throughput: number;
-      reliability: number;
-      {
-        cpu: number;
-        memory: number;
-        network: number;
-      };
-    };
-  };
-}
-
-/**
- * Coordination topologies for multi-agent systems
- */
-export enum CoordinationTopology {
-  CENTRALIZED = 'centralized',
-  DECENTRALIZED = 'decentralized',
-  HIERARCHICAL = 'hierarchical',
-  MESH = 'mesh',
-  RING = 'ring',
-  TREE = 'tree',
-  HYBRID = 'hybrid',
-}
-
-// =============================================================================
-// COMMUNICATION EVENTS
-// =============================================================================
-
-/**
- * Communication events - Network, protocol, and messaging operations
- */
-export interface CommunicationEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||communication:stream;
-  operation:|'connect|disconnect|send|receive|error|timeout|retry;
-  protocol:|''http|https|ws|wss|stdio|tcp|udp | grpc'|custom;
-  endpoint?: string;
-  details?: {
-    requestId?: string;
-    toolName?: string;
-    statusCode?: number;
-    responseTime?: number;
-    dataSize?: number;
-    errorCode?: string;
-    retryAttempt?: number;
-    connectionId?: string;
-    messageId?: string;
-    channelId?: string;
-  };
-}
-
-/**
- * Communication protocol configuration
- */
-export interface CommunicationProtocol {
-  type:|'message_passing|shared_memory|event_driven|rpc|streaming;
-  format: 'json|binary|protobuf|avro|custom;
-  encryption: boolean;
-  compression: boolean;
-  reliability: ReliabilityLevel;
-  timeout?: number;
-  retries?: number;
-}
-
-// =============================================================================
-// MONITORING EVENTS
-// =============================================================================
-
-/**
- * Monitoring events - Metrics, health checks, and performance monitoring
- */
-export interface MonitoringEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||monitoring:trace;
-  operation:|'collect|report|alert|recover|threshold|anomaly|trace;
-  component: string;
-  details?: {
-    metricName?: string;
-    metricValue?: number;
-    threshold?: number;
-    severity?: 'info|warning|error|critical;
-    alertId?: string;
-    healthScore?: number;
-    traceId?: string;
-    spanId?: string;
-    performanceData?: {
-      cpu: number;
-      memory: number;
-      disk: number;
-      network: number;
-      latency: number;
-      throughput: number;
-      errorRate: number;
-    };
-  };
-}
-
-// =============================================================================
-// INTERFACE EVENTS
-// =============================================================================
-
-/**
- * Interface events - User interface and API interactions
- */
-export interface InterfaceEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||interface:mobile|interface:desktop;
-  operation:|''start|stop|command|request|response|interaction|render;
-  interface: 'cli|web|tui|api|mobile|desktop;
-  details?: {
-    command?: string;
-    args?: string[];
-    endpoint?: string;
-    method?: string;
-    statusCode?: number;
-    responseTime?: number;
-    userId?: string;
-    sessionId?: string;
-    deviceId?: string;
-    interactionType?: 'click|key|scroll|focus|input|swipe;
-    renderTime?: number;
-    bundleSize?: number;
-  };
-}
-
-// =============================================================================
-// NEURAL EVENTS
-// =============================================================================
-
-/**
- * Neural events - AI and machine learning operations
- */
-export interface NeuralEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||neural:deployment;
-  operation:|'train|predict|evaluate|optimize|load|save|export|deploy;
-  modelId: string;
-  details?: {
-    modelType?: string;
-    architecture?: string;
-    datasetSize?: number;
-    batchSize?: number;
-    epochs?: number;
-    learningRate?: number;
-    accuracy?: number;
-    loss?: number;
-    f1Score?: number;
-    precision?: number;
-    recall?: number;
-    processingTime?: number;
-    gpuUsage?: number;
-    memoryUsage?: number;
-    modelSize?: number;
-    inferenceSpeed?: number;
-  };
-}
-
-// =============================================================================
-// DATABASE EVENTS
-// =============================================================================
-
-/**
- * Database events - Data persistence and query operations
- */
-export interface DatabaseEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||database:replication;
-  operation:|'select|insert|update|delete|create|drop|index | backup'|restore|replicate;
-  details?: {
-    tableName?: string;
-    databaseName?: string;
-    queryType?: 'read|write|ddl|dcl|dml;
-    recordCount?: number;
-    queryTime?: number;
-    cacheHit?: boolean;
-    indexUsed?: boolean;
-    transactionId?: string;
-    lockTime?: number;
-    errorCode?: string;
-    connectionPoolSize?: number;
-    replicationLag?: number;
-  };
-}
-
-// =============================================================================
-// MEMORY EVENTS
-// =============================================================================
-
-/**
- * Memory events - Memory management and caching operations
- */
-export interface MemoryEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||memory:vector|memory:graph;
-  operation:|''get|set|delete|clear|expire|cleanup|allocate | deallocate'|search|index;
-  details?: {
-    key?: string;
-    keyPattern?: string;
-    size?: number;
-    ttl?: number;
-    cacheHit?: boolean;
-    evictionCount?: number;
-    memoryUsage?: number;
-    poolSize?: number;
-    gcDuration?: number;
-    gcType?: 'minor|major|full|incremental;
-    objectCount?: number;
-    vectorDimensions?: number;
-    similarityScore?: number;
-  };
-}
-
-// =============================================================================
-// WORKFLOW EVENTS
-// =============================================================================
-
-/**
- * Workflow events - Process orchestration and execution
- */
-export interface WorkflowEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||workflow:orchestration|workflow:schedule;
-  operation:|''start|complete|fail|retry|skip|branch|merge | loop'|create|pause | resume'|cancel|schedule;
-  workflowId: string;
-  taskId?: string;
-  details?: {
-    workflowName?: string;
-    taskName?: string;
-    stepNumber?: number;
-    totalSteps?: number;
-    executionTime?: number;
-    inputData?: unknown;
-    outputData?: unknown;
-    errorMessage?: string;
-    retryCount?: number;
-    conditionResult?: boolean;
-    branchTaken?: string;
-    loopIteration?: number;
-    scheduleExpression?: string;
-    nextExecution?: Timestamp;
-  };
-}
-
-// =============================================================================
-// ORCHESTRATION EVENTS
-// =============================================================================
-
-/**
- * Multi-level orchestration events - Enterprise-scale coordination
- */
-export interface OrchestrationEvent extends SystemEvent {
-  type:|''javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||orchestration:bottleneck;
-  operation:|'plan|execute|monitor|optimize|escalate|delegate|coordinate|sync;
-  level: 'portfolio' | 'program' | 'execution;
-  details?: {
-    orchestrationId?: string;
-    parentId?: string;
-    wipLimit?: number;
-    flowRate?: number;
-    bottleneckDetected?: boolean;
-    escalationReason?: string;
-    resourceAllocation?: Record<string, number>;
-    metrics?: {
-      throughput: number;
-      cycleTime: number;
-      leadTime: number;
-      efficiency: number;
-    };
-  };
-}
-
-// =============================================================================
-// SAFE FRAMEWORK EVENTS
-// =============================================================================
-
-/**
- * SAFe (Scaled Agile Framework) events for enterprise agile coordination
- */
-export interface SafeEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||safe:execution;
-  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set;
-  details?: {
-    epicId?: string;
-    piId?: string;
-    valueStreamId?: string;
-    businessValue?: number;
-    confidence?: number;
-    phase?: 'preparation|day1|day2|finalization;
-    investmentHorizon?: 'near' | 'mid' | 'long;
-    budgetAllocation?: number;
-    piObjectives?: Array<{
-      id: string;
-      description: string;
-      businessValue: number;
-      confidence: number;
-    }>;
-  };
-}
-
-// =============================================================================
-// MEMORY ORCHESTRATION EVENTS
-// =============================================================================
-
-/**
- * Advanced memory orchestration events for cross-system coordination
- */
-export interface MemoryOrchestrationEvent extends SystemEvent {
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||memory_orchestration:optimization;
-  operation:|'sync_initiated|sync_completed|coordination_updated|cache_populated|cache_invalidated|cache_refreshed|cache_migrated | consistency_check'|optimization_applied;
-  details?: {
-    systemId?: string;
-    cacheId?: string;
-    syncType?: 'full' | 'incremental' | 'delta;
-    dataSize?: number;
-    keyPattern?: string;
-    consistencyLevel?: 'eventual' | 'strong' | 'weak;
-    optimizationStrategy?: 'lru|lfu|ttl|adaptive;
-    memoryPools?: string[];
-    crossSystemSync?: boolean;
-  };
-}
-
-// =============================================================================
-// UNIFIED EVENT TYPES
-// =============================================================================
-
-/**
- * Union type for all event system domain events
- */
-export type UELEvent =|SystemLifecycleEvent|CoordinationEvent|CommunicationEvent|MonitoringEvent|InterfaceEvent|NeuralEvent|DatabaseEvent|MemoryEvent|WorkflowEvent|OrchestrationEvent|SafeEvent|MemoryOrchestrationEvent;
-
-// =============================================================================
-// EVENT CATEGORIES AND PATTERNS
-// =============================================================================
-
-/**
- * Event category definitions for organization and filtering
- */
-export const EventCategories = {
-  SYSTEM:'system' as const,
-  COORDINATION: 'coordination' as const,
-  COMMUNICATION: 'communication' as const,
-  MONITORING: 'monitoring' as const,
-  INTERFACE: 'interface' as const,
-  NEURAL: 'neural' as const,
-  DATABASE: 'database' as const,
-  MEMORY: 'memory' as const,
-  WORKFLOW: 'workflow' as const,
-  ORCHESTRATION: 'orchestration' as const,
-  SAFE: 'safe' as const,
-  MEMORY_ORCHESTRATION: 'memory_orchestration' as const,
-} as const;
-
-/**
- * Event type patterns for filtering and matching
- */
+// Event type patterns for categorization
 export const EventTypePatterns = {
-  // System events
-  SYSTEM_ALL: 'system:*',
-  SYSTEM_LIFECYCLE:
-    'system:startup|system:shutdown|system:restart|system:error|system:health',
-
-  // Coordination events
-  COORDINATION_ALL: 'coordination:*',
-  COORDINATION_SWARM: 'coordination:swarm',
-  COORDINATION_AGENTS: 'coordination:agent',
-  COORDINATION_TASKS: 'coordination:task',
-
-  // Communication events
-  COMMUNICATION_ALL: 'communication:*',
-  COMMUNICATION_WEBSOCKET: 'communication:websocket',
-  COMMUNICATION_HTTP: 'communication:http',
-
-  // Monitoring events
-  MONITORING_ALL: 'monitoring:*',
-  MONITORING_METRICS: 'monitoring:metrics',
-  MONITORING_HEALTH: 'monitoring:health',
-  MONITORING_ALERTS: 'monitoring:alert',
-
-  // Interface events
-  INTERFACE_ALL: 'interface:*',
-  INTERFACE_CLI: 'interface:cli',
-  INTERFACE_WEB: 'interface:web',
-  INTERFACE_API: 'interface:api',
-
-  // Neural events
-  NEURAL_ALL: 'neural:*',
-  NEURAL_TRAINING: 'neural:training',
-  NEURAL_INFERENCE: 'neural:inference',
-
-  // Database events
-  DATABASE_ALL: 'database:*',
-  DATABASE_QUERIES: 'database:query',
-  DATABASE_TRANSACTIONS: 'database:transaction',
-
-  // Memory events
-  MEMORY_ALL: 'memory:*',
-  MEMORY_CACHE: 'memory:cache',
-  MEMORY_GC: 'memory:gc',
-
-  // Workflow events
-  WORKFLOW_ALL: 'workflow:*',
-  WORKFLOW_EXECUTION: 'workflow:execution',
-  WORKFLOW_TASKS: 'workflow:task',
-
-  // Orchestration events
-  ORCHESTRATION_ALL: 'orchestration:*',
-  ORCHESTRATION_PORTFOLIO: 'orchestration:portfolio',
-  ORCHESTRATION_PROGRAM: 'orchestration:program',
-
-  // SAFe events
-  SAFE_ALL: 'safe:*',
-  SAFE_PORTFOLIO: 'safe:portfolio',
-  SAFE_PI: 'safe:pi',
-
-  // Memory orchestration events
-  MEMORY_ORCHESTRATION_ALL: 'memory_orchestration:*',
-  MEMORY_ORCHESTRATION_SYNC: 'memory_orchestration:sync',
-  MEMORY_ORCHESTRATION_CACHE: 'memory_orchestration:cache',
+  SYSTEM_LIFECYCLE: ['system:startup', 'system:shutdown', 'system:error', 'system:ready'] as const,
+  USER_ACTIONS: ['user:login', 'user:logout', 'user:action', 'user:preference'] as const,
+  WORKFLOW_EVENTS: ['workflow:start', 'workflow:complete', 'workflow:error', 'workflow:pause'] as const,
+  DATABASE_EVENTS: ['db:connect', 'db:disconnect', 'db:query', 'db:error'] as const,
+  API_EVENTS: ['api:request', 'api:response', 'api:error', 'api:timeout'] as const,
+  NEURAL_EVENTS: ['neural:process', 'neural:complete', 'neural:optimize', 'neural:error'] as const,
+  COORDINATION_EVENTS: ['coord:start', 'coord:sync', 'coord:conflict', 'coord:resolve'] as const,
+  MONITORING_EVENTS: ['monitor:metric', 'monitor:alert', 'monitor:health', 'monitor:performance'] as const,
 } as const;
 
-// =============================================================================
-// EVENT PRIORITY MAPPINGS
-// =============================================================================
+// Event priority levels
+export type EventPriorityLevel = 'critical' | 'high' | 'medium' | 'low';
 
-/**
- * Event priority mappings by type for intelligent processing
- */
-export const EventPriorityMap: Record<string, EventPriority> = {
-  // System events - highest priority
-  'system:error': 'critical',
-  'system:shutdown': 'critical',
-  'system:startup': 'high',
-  'system:health': 'medium',
+// Processing strategies
+export type ProcessingStrategyType = 'immediate' | 'queued' | 'batched' | 'throttled';
 
-  // Coordination events - high priority for critical operations
-  'coordination:swarm': 'high',
-  'coordination:agent': 'high',
-  'coordination:task': 'medium',
+// Manager type definitions
+export type ManagerTypeDefinition = 
+  | 'system'
+  | 'coordination'
+  | 'communication'
+  | 'monitoring'
+  | 'interface'
+  | 'neural'
+  | 'database'
+  | 'memory'
+  | 'workflow'
+  | 'custom';
 
-  // Communication events - medium to high priority
-  'communication:websocket': 'high',
-  'communication:http': 'medium',
-
-  // Monitoring events - medium priority with critical alerts
-  'monitoring:alert': 'high',
-  'monitoring:health': 'medium',
-  'monitoring:metrics': 'low',
-
-  // Interface events - medium priority
-  'interface:cli': 'medium',
-  'interface:web': 'medium',
-  'interface:api': 'medium',
-
-  // Neural events - lower priority due to longer processing
-  'neural:training': 'low',
-  'neural:inference': 'medium',
-
-  // Database events - medium priority
-  'database:query': 'medium',
-  'database:transaction': 'high',
-
-  // Memory events - lower priority
-  'memory:cache': 'low',
-  'memory:store': 'medium',
-
-  // Workflow events - medium priority
-  'workflow:execution': 'medium',
-  'workflow:task': 'medium',
-
-  // Orchestration events - high priority
-  'orchestration:portfolio': 'high',
-  'orchestration:program': 'high',
-} as const;
-
-// =============================================================================
-// EVENT CONSTANTS
-// =============================================================================
-
-/**
- * Event system constants for consistent configuration
- */
-export const EventConstants = {
-  // Default values
-  DEFAULT_PRIORITY: 'medium' as EventPriority,
-  DEFAULT_PROCESSING_STRATEGY: 'queued' as const,
-  DEFAULT_BATCH_SIZE: 50,
-  DEFAULT_QUEUE_SIZE: 1000,
-  DEFAULT_TIMEOUT: 30000,
-  DEFAULT_RETRY_ATTEMPTS: 3,
-  DEFAULT_RETRY_DELAY: 1000,
-
-  // Limits
-  MAX_EVENT_SIZE: 1024 * 1024, // 1MB
-  MAX_BATCH_SIZE: 1000,
-  MAX_QUEUE_SIZE: 100000,
-  MAX_LISTENERS: 10000,
-  MAX_METADATA_SIZE: 64 * 1024, // 64KB
-
-  // Timeouts
-  HEALTH_CHECK_TIMEOUT: 5000,
-  METRICS_COLLECTION_TIMEOUT: 10000,
-  EVENT_EMISSION_TIMEOUT: 30000,
-  SUBSCRIPTION_TIMEOUT: 15000,
-
-  // Intervals
-  DEFAULT_HEALTH_CHECK_INTERVAL: 30000,
-  DEFAULT_METRICS_INTERVAL: 10000,
-  DEFAULT_CLEANUP_INTERVAL: 300000, // 5 minutes
-
-  // Patterns
-  EVENT_ID_PATTERN: /^[a-zA-Z0-9-_]+$/,
-  EVENT_TYPE_PATTERN: /^[a-zA-Z0-9]+:[a-zA-Z0-9-_]+$/,
-  SOURCE_PATTERN: /^[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+$/,
-} as const;
-
-// =============================================================================
-// TYPE GUARDS
-// =============================================================================
-
-/**
- * Type guards for runtime event type checking
- */
-export const UELTypeGuards = {
-  isSystemLifecycleEvent: (
-    event: SystemEvent
-  ): event is SystemLifecycleEvent => {
-    return event.type.startsWith('system:');
-  },
-
-  isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => {
-    return event.type.startsWith('coordination:');
-  },
-
-  isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => {
-    return event.type.startsWith('communication:');
-  },
-
-  isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => {
-    return event.type.startsWith('monitoring:');
-  },
-
-  isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => {
-    return event.type.startsWith('interface:');
-  },
-
-  isNeuralEvent: (event: SystemEvent): event is NeuralEvent => {
-    return event.type.startsWith('neural:');
-  },
-
-  isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => {
-    return event.type.startsWith('database:');
-  },
-
-  isMemoryEvent: (event: SystemEvent): event is MemoryEvent => {
-    return event.type.startsWith('memory:');
-  },
-
-  isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
-    return event.type.startsWith('workflow:');
-  },
-
-  isOrchestrationEvent: (event: SystemEvent): event is OrchestrationEvent => {
-    return event.type.startsWith('orchestration:');
-  },
-
-  isSafeEvent: (event: SystemEvent): event is SafeEvent => {
-    return event.type.startsWith('safe:');
-  },
-
-  isMemoryOrchestrationEvent: (
-    event: SystemEvent
-  ): event is MemoryOrchestrationEvent => {
-    return event.type.startsWith('memory_orchestration:');
-  },
-
-  isUELEvent: (event: SystemEvent): event is UELEvent => {
-    const category = event.type.split(':')[0];
-    return Object.values(EventCategories).includes(category as any);
-  },
-} as const;
-
-// =============================================================================
-// RESULT TYPES FOR EVENT OPERATIONS
-// =============================================================================
-
-/**
- * Result types for event system operations
- */
-export type EventResult<T> = Result<T, EventError>;
-export type EventProcessingResult = Result<ProcessingStatus, ProcessingError>;
-export type EventSubscriptionResult = Result<
-  SubscriptionInfo,
-  SubscriptionError
->;
-
-/**
- * Event processing status
- */
-export interface ProcessingStatus {
-  processed: number;
-  failed: number;
-  retried: number;
-  duration: number;
+// Event metadata types
+export interface EventMetadata {
+  source?: string;
+  timestamp?: Date;
+  priority?: EventPriorityLevel;
+  correlationId?: string;
+  tags?: string[];
+  context?: Record<string, unknown>;
 }
 
-/**
- * Event subscription information
- */
-export interface SubscriptionInfo {
-  subscriptionId: UUID;
+// Event filtering types
+export interface EventFilterCriteria {
+  types?: string[];
+  sources?: string[];
+  priorities?: EventPriorityLevel[];
+  tags?: string[];
+  timeRange?: {
+    start: Date;
+    end: Date;
+  };
+  customFilter?: (event: any) => boolean;
+}
+
+// Event transformation types
+export interface EventTransformation {
+  mapper?: (event: any) => any;
+  enricher?: (event: any) => Promise<any>;
+  validator?: (event: any) => boolean;
+  serializer?: (event: any) => string;
+  deserializer?: (data: string) => any;
+}
+
+// Subscription configuration
+export interface SubscriptionConfig {
   eventTypes: string[];
-  active: boolean;
-  createdAt: Timestamp;
+  filter?: EventFilterCriteria;
+  transform?: EventTransformation;
+  priority?: EventPriorityLevel;
+  active?: boolean;
+  metadata?: Record<string, unknown>;
 }
 
-/**
- * Event-specific error types
- */
-export interface EventError extends ValidationError {
-  type: 'EventError;
-  category: 'processing|subscription|emission|configuration;
-  eventId?: UUID;
-  eventType?: string;
+// Manager configuration
+export interface ManagerConfiguration {
+  name: string;
+  type: ManagerTypeDefinition;
+  maxListeners?: number;
+  processing: {
+    strategy: ProcessingStrategyType;
+    batchSize?: number;
+    throttleMs?: number;
+    queueSize?: number;
+  };
+  retry?: {
+    attempts: number;
+    delay: number;
+    backoff: 'linear' | 'exponential' | 'fixed';
+    maxDelay?: number;
+  };
+  metadata?: Record<string, unknown>;
 }
 
-/**
- * Processing-specific error types
- */
-export interface ProcessingError extends EventError {
-  category: 'processing;
-  batchId?: UUID;
-  queueSize?: number;
-  retryCount?: number;
+// Event emission options
+export interface EmissionOptions {
+  priority?: EventPriorityLevel;
+  correlationId?: string;
+  timeout?: number;
+  retry?: boolean;
+  metadata?: Record<string, unknown>;
 }
 
-/**
- * Subscription-specific error types
- */
-export interface SubscriptionError extends EventError {
-  category: 'subscription;
-  subscriptionId?: UUID;
-  listenerCount?: number;
+// Batch processing options
+export interface BatchProcessingOptions {
+  maxBatchSize?: number;
+  maxWaitTime?: number;
+  priority?: EventPriorityLevel;
+  processingMode?: 'parallel' | 'sequential';
 }
 
-// Export default for convenience
-export default {
-  // Enums
-  ReliabilityLevel,
-  CoordinationTopology,
+// Health check types
+export interface HealthCheckResult {
+  healthy: boolean;
+  status: 'ok' | 'degraded' | 'critical';
+  details?: {
+    uptime?: number;
+    eventsProcessed?: number;
+    errorRate?: number;
+    queueSize?: number;
+    subscriptionCount?: number;
+  };
+  timestamp: Date;
+}
 
-  // Constants
-  EventCategories,
-  EventTypePatterns,
-  EventPriorityMap,
-  EventConstants,
+// Performance metrics
+export interface PerformanceMetrics {
+  eventsPerSecond: number;
+  averageProcessingTime: number;
+  errorRate: number;
+  queueUtilization: number;
+  memoryUsage: {
+    used: number;
+    total: number;
+    percentage: number;
+  };
+}
 
-  // Type guards
-  UELTypeGuards,
-};
+// Error types
+export interface EventSystemError {
+  code: string;
+  message: string;
+  manager?: string;
+  eventId?: string;
+  timestamp: Date;
+  cause?: Error;
+  context?: Record<string, unknown>;
+}
+
+// Factory types
+export interface FactoryConfiguration {
+  defaultType: ManagerTypeDefinition;
+  defaultProcessing: ProcessingStrategyType;
+  maxManagers?: number;
+  cleanupInterval?: number;
+  healthCheckInterval?: number;
+}
+
+// Migration types
+export interface MigrationOptions {
+  preserveExistingListeners?: boolean;
+  migrationMode?: 'passive' | 'active';
+  backupEvents?: boolean;
+  validateAfterMigration?: boolean;
+}
+
+// Export common type guards
+export const TypeGuards = {
+  isEventPriority: (value: unknown): value is EventPriorityLevel => typeof value === 'string' && ['critical', 'high', 'medium', 'low'].includes(value),
+
+  isProcessingStrategy: (value: unknown): value is ProcessingStrategyType => typeof value === 'string' && ['immediate', 'queued', 'batched', 'throttled'].includes(value),
+
+  isManagerType: (value: unknown): value is ManagerTypeDefinition => {
+    const validTypes = ['system', 'coordination', 'communication', 'monitoring', 'interface', 'neural', 'database', 'memory', 'workflow', 'custom'];
+    return typeof value === 'string' && validTypes.includes(value);
+  },
+
+  hasEventMetadata: (event: any): event is { metadata: EventMetadata } => event && typeof event === 'object' && 'metadata' in event,
+} as const;
+
+// Export utility functions
+export const EventUtils = {
+  generateEventId: (): string => `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+  
+  generateCorrelationId: (): string => `corr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+  
+  createTimestamp: (): Date => new Date(),
+  
+  validateEventType: (type: string): boolean => typeof type === 'string' && type.length > 0 && /^[\w:-]+$/i.test(type),
+  
+  extractEventCategory: (type: string): string => {
+    const parts = type.split(':');
+    return parts.length > 1 ? parts[0] : 'general';
+  },
+} as const;

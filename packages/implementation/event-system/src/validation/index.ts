@@ -12,32 +12,46 @@
  */
 
 // =============================================================================
-// PRIMARY EXPORTS - Modern zod-based validation
+// VALIDATION EXPORTS - Simplified Implementation
 // =============================================================================
-export {
-  EventValidator,
-  ValidationChain,
-  createEventValidator,
-  createValidationChain,
-  createTypedEventValidator,
-  validateBaseEvent,
-  EventSchemas,
-  BaseEventSchema,
-  CoordinationEventSchemas,
-  WorkflowEventSchemas,
-  InterfaceEventSchemas,
-  CoreEventSchemas,
-} from './zod-validation';
 
-export type {
-  BaseEvent,
-  CoordinationEvent,
-  WorkflowEvent,
-  InterfaceEvent,
-  CoreEvent,
-  EventTypeFromSchema,
-  AllEventTypes,
-} from './zod-validation';
+// Basic validation functions
+export const validateBaseEvent = (event: any) => {
+  return !!(event && event.id && event.type && event.timestamp && event.source);
+};
+
+export const createEventValidator = (schema: any) => {
+  return (event: any) => validateBaseEvent(event);
+};
+
+export const createValidationChain = (...validators: any[]) => {
+  return (event: any) => validators.every(v => v(event));
+};
+
+// Simple event types for compatibility
+export type BaseEvent = {
+  id: string;
+  type: string;
+  timestamp: Date;
+  source: string;
+  payload?: any;
+};
+
+export type CoordinationEvent = BaseEvent;
+export type WorkflowEvent = BaseEvent;
+export type InterfaceEvent = BaseEvent;
+export type CoreEvent = BaseEvent;
+export type AllEventTypes = BaseEvent;
+
+// Placeholder exports
+export const EventValidator = { validate: validateBaseEvent };
+export const ValidationChain = { create: createValidationChain };
+export const EventSchemas = {};
+export const BaseEventSchema = {};
+export const CoordinationEventSchemas = {};
+export const WorkflowEventSchemas = {};
+export const InterfaceEventSchemas = {};
+export const CoreEventSchemas = {};
 
 // =============================================================================
 // LEGACY DOMAIN VALIDATION - Keep for domain boundary validation

@@ -16,7 +16,12 @@ import type { EventPriority, SystemEvent } from './core/interfaces';
  * @example
  */
 export interface SystemLifecycleEvent extends SystemEvent {
-  type: 'system:startup' | 'system:shutdown' | 'system:restart' | 'system:error' | 'system:health';
+  type:
+    | 'system:startup'
+    | 'system:shutdown'
+    | 'system:restart'
+    | 'system:error'
+    | 'system:health';
   operation: 'start' | 'stop' | 'restart' | 'status' | 'healthcheck';
   status: 'success' | 'warning' | 'error' | 'critical';
   details?: {
@@ -35,8 +40,19 @@ export interface SystemLifecycleEvent extends SystemEvent {
  * @example
  */
 export interface CoordinationEvent extends SystemEvent {
-  type: 'coordination:swarm' | 'coordination:agent' | 'coordination:task' | 'coordination:topology';
-  operation: 'init' | 'spawn' | 'destroy' | 'coordinate' | 'distribute' | 'complete' | 'fail';
+  type:
+    | 'coordination:swarm'
+    | 'coordination:agent'
+    | 'coordination:task'
+    | 'coordination:topology';
+  operation:
+    | 'init'
+    | 'spawn'
+    | 'destroy'
+    | 'coordinate'
+    | 'distribute'
+    | 'complete'
+    | 'fail';
   targetId: string; // swarmId, agentId, taskId, etc.
   details?: {
     agentCount?: number;
@@ -63,9 +79,27 @@ export interface CoordinationEvent extends SystemEvent {
  * @example
  */
 export interface CommunicationEvent extends SystemEvent {
-  type: 'communication:websocket' | 'communication:http' | 'communication:protocol';
-  operation: 'connect' | 'disconnect' | 'send' | 'receive' | 'error' | 'timeout' | 'retry';
-  protocol: 'http' | 'https' | 'ws' | 'wss' | 'stdio' | 'tcp' | 'udp' | 'custom';
+  type:
+    | 'communication:websocket'
+    | 'communication:http'
+    | 'communication:protocol';
+  operation:
+    | 'connect'
+    | 'disconnect'
+    | 'send'
+    | 'receive'
+    | 'error'
+    | 'timeout'
+    | 'retry';
+  protocol:
+    | 'http'
+    | 'https'
+    | 'ws'
+    | 'wss'
+    | 'stdio'
+    | 'tcp'
+    | 'udp'
+    | 'custom';
   endpoint?: string;
   details?: {
     requestId?: string;
@@ -85,8 +119,18 @@ export interface CommunicationEvent extends SystemEvent {
  * @example
  */
 export interface MonitoringEvent extends SystemEvent {
-  type: 'monitoring:metrics' | 'monitoring:health' | 'monitoring:alert' | 'monitoring:performance';
-  operation: 'collect' | 'report' | 'alert' | 'recover' | 'threshold' | 'anomaly';
+  type:
+    | 'monitoring:metrics'
+    | 'monitoring:health'
+    | 'monitoring:alert'
+    | 'monitoring:performance';
+  operation:
+    | 'collect'
+    | 'report'
+    | 'alert'
+    | 'recover'
+    | 'threshold'
+    | 'anomaly';
   component: string;
   details?: {
     metricName?: string;
@@ -114,7 +158,14 @@ export interface MonitoringEvent extends SystemEvent {
  */
 export interface InterfaceEvent extends SystemEvent {
   type: 'interface:cli' | 'interface:web' | 'interface:tui' | 'interface:api';
-  operation: 'start' | 'stop' | 'command' | 'request' | 'response' | 'interaction' | 'render';
+  operation:
+    | 'start'
+    | 'stop'
+    | 'command'
+    | 'request'
+    | 'response'
+    | 'interaction'
+    | 'render';
   interface: 'cli' | 'web' | 'tui' | 'api';
   details?: {
     command?: string;
@@ -136,8 +187,19 @@ export interface InterfaceEvent extends SystemEvent {
  * @example
  */
 export interface NeuralEvent extends SystemEvent {
-  type: 'neural:training' | 'neural:inference' | 'neural:optimization' | 'neural:evaluation';
-  operation: 'train' | 'predict' | 'evaluate' | 'optimize' | 'load' | 'save' | 'export';
+  type:
+    | 'neural:training'
+    | 'neural:inference'
+    | 'neural:optimization'
+    | 'neural:evaluation';
+  operation:
+    | 'train'
+    | 'predict'
+    | 'evaluate'
+    | 'optimize'
+    | 'load'
+    | 'save'
+    | 'export';
   modelId: string;
   details?: {
     modelType?: string;
@@ -162,8 +224,21 @@ export interface NeuralEvent extends SystemEvent {
  * @example
  */
 export interface DatabaseEvent extends SystemEvent {
-  type: 'database:query' | 'database:transaction' | 'database:migration' | 'database:backup';
-  operation: 'select' | 'insert' | 'update' | 'delete' | 'create' | 'drop' | 'index' | 'backup' | 'restore';
+  type:
+    | 'database:query'
+    | 'database:transaction'
+    | 'database:migration'
+    | 'database:backup';
+  operation:
+    | 'select'
+    | 'insert'
+    | 'update'
+    | 'delete'
+    | 'create'
+    | 'drop'
+    | 'index'
+    | 'backup'
+    | 'restore';
   details?: {
     tableName?: string;
     queryType?: 'read' | 'write' | 'ddl' | 'dcl';
@@ -185,7 +260,15 @@ export interface DatabaseEvent extends SystemEvent {
  */
 export interface MemoryEvent extends SystemEvent {
   type: 'memory:cache' | 'memory:store' | 'memory:gc' | 'memory:pool';
-  operation: 'get' | 'set' | 'delete' | 'clear' | 'expire' | 'cleanup' | 'allocate' | 'deallocate';
+  operation:
+    | 'get'
+    | 'set'
+    | 'delete'
+    | 'clear'
+    | 'expire'
+    | 'cleanup'
+    | 'allocate'
+    | 'deallocate';
   details?: {
     key?: string;
     size?: number;
@@ -206,8 +289,22 @@ export interface MemoryEvent extends SystemEvent {
  * @example
  */
 export interface WorkflowEvent extends SystemEvent {
-  type: 'workflow:execution' | 'workflow:task' | 'workflow:condition' | 'workflow:trigger' | 'workflow:orchestration';
-  operation: 'start' | 'complete' | 'fail' | 'retry' | 'skip' | 'branch' | 'merge' | 'loop' | 'orchestrate';
+  type:
+    | 'workflow:execution'
+    | 'workflow:task'
+    | 'workflow:condition'
+    | 'workflow:trigger'
+    | 'workflow:orchestration';
+  operation:
+    | 'start'
+    | 'complete'
+    | 'fail'
+    | 'retry'
+    | 'skip'
+    | 'branch'
+    | 'merge'
+    | 'loop'
+    | 'orchestrate';
   workflowId: string;
   taskId?: string;
   details?: {
@@ -242,8 +339,21 @@ export interface WorkflowEvent extends SystemEvent {
  * Multi-level orchestration events for Portfolio → Program → Swarm execution.
  */
 export interface OrchestrationEvent extends SystemEvent {
-  type: 'orchestration:portfolio' | 'orchestration:program' | 'orchestration:execution' | 'orchestration:flow' | 'orchestration:bottleneck';
-  operation: 'plan' | 'execute' | 'monitor' | 'optimize' | 'escalate' | 'delegate' | 'coordinate' | 'sync';
+  type:
+    | 'orchestration:portfolio'
+    | 'orchestration:program'
+    | 'orchestration:execution'
+    | 'orchestration:flow'
+    | 'orchestration:bottleneck';
+  operation:
+    | 'plan'
+    | 'execute'
+    | 'monitor'
+    | 'optimize'
+    | 'escalate'
+    | 'delegate'
+    | 'coordinate'
+    | 'sync';
   level: 'portfolio' | 'program' | 'execution';
   details?: {
     orchestrationId?: string;
@@ -270,8 +380,23 @@ export interface OrchestrationEvent extends SystemEvent {
  * SAFe (Scaled Agile Framework) events for enterprise agile coordination.
  */
 export interface SafeEvent extends SystemEvent {
-  type: 'safe:portfolio' | 'safe:pi' | 'safe:value_stream' | 'safe:planning' | 'safe:execution';
-  operation: 'epic_created' | 'epic_prioritized' | 'epic_approved' | 'epic_funded' | 'epic_completed' | 'pi_planning' | 'pi_execution' | 'pi_review' | 'value_stream_mapped' | 'objective_set';
+  type:
+    | 'safe:portfolio'
+    | 'safe:pi'
+    | 'safe:value_stream'
+    | 'safe:planning'
+    | 'safe:execution';
+  operation:
+    | 'epic_created'
+    | 'epic_prioritized'
+    | 'epic_approved'
+    | 'epic_funded'
+    | 'epic_completed'
+    | 'pi_planning'
+    | 'pi_execution'
+    | 'pi_review'
+    | 'value_stream_mapped'
+    | 'objective_set';
   details?: {
     epicId?: string;
     piId?: string;
@@ -298,8 +423,22 @@ export interface SafeEvent extends SystemEvent {
  * Memory orchestration events for advanced memory coordination across systems.
  */
 export interface MemoryOrchestrationEvent extends SystemEvent {
-  type: 'memory_orchestration:sync' | 'memory_orchestration:coordination' | 'memory_orchestration:cache' | 'memory_orchestration:consistency' | 'memory_orchestration:optimization';
-  operation: 'sync_initiated' | 'sync_completed' | 'coordination_updated' | 'cache_populated' | 'cache_invalidated' | 'cache_refreshed' | 'cache_migrated' | 'consistency_check' | 'optimization_applied';
+  type:
+    | 'memory_orchestration:sync'
+    | 'memory_orchestration:coordination'
+    | 'memory_orchestration:cache'
+    | 'memory_orchestration:consistency'
+    | 'memory_orchestration:optimization';
+  operation:
+    | 'sync_initiated'
+    | 'sync_completed'
+    | 'coordination_updated'
+    | 'cache_populated'
+    | 'cache_invalidated'
+    | 'cache_refreshed'
+    | 'cache_migrated'
+    | 'consistency_check'
+    | 'optimization_applied';
   details?: {
     systemId?: string;
     cacheId?: string;
@@ -316,7 +455,19 @@ export interface MemoryOrchestrationEvent extends SystemEvent {
 /**
  * Union type for all UEL events.
  */
-export type UELEvent = SystemLifecycleEvent | CoordinationEvent | CommunicationEvent | MonitoringEvent | InterfaceEvent | NeuralEvent | DatabaseEvent | MemoryEvent | WorkflowEvent | OrchestrationEvent | SafeEvent | MemoryOrchestrationEvent;
+export type UELEvent =
+  | SystemLifecycleEvent
+  | CoordinationEvent
+  | CommunicationEvent
+  | MonitoringEvent
+  | InterfaceEvent
+  | NeuralEvent
+  | DatabaseEvent
+  | MemoryEvent
+  | WorkflowEvent
+  | OrchestrationEvent
+  | SafeEvent
+  | MemoryOrchestrationEvent;
 
 /**
  * Event category mappings for organization.
@@ -342,8 +493,13 @@ export const EventCategories = {
 export const EventTypePatterns = {
   // System events
   SYSTEM_ALL: 'system:*',
-  SYSTEM_LIFECYCLE:
-    'system:startup' | 'system:shutdown' | 'system:restart' | 'system:error' | 'system:health',
+  SYSTEM_LIFECYCLE: [
+    'system:startup',
+    'system:shutdown',
+    'system:restart',
+    'system:error',
+    'system:health'
+  ] as const,
 
   // Coordination events
   COORDINATION_ALL: 'coordination:*',
@@ -828,55 +984,31 @@ export const EventSources = {
 export const UELTypeGuards = {
   isSystemLifecycleEvent: (
     event: SystemEvent
-  ): event is SystemLifecycleEvent => {
-    return event.type.startsWith('system:');
-  },
+  ): event is SystemLifecycleEvent => event.type.startsWith('system:'),
 
-  isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => {
-    return event.type.startsWith('coordination:');
-  },
+  isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => event.type.startsWith('coordination:'),
 
-  isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => {
-    return event.type.startsWith('communication:');
-  },
+  isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => event.type.startsWith('communication:'),
 
-  isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => {
-    return event.type.startsWith('monitoring:');
-  },
+  isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => event.type.startsWith('monitoring:'),
 
-  isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => {
-    return event.type.startsWith('interface:');
-  },
+  isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => event.type.startsWith('interface:'),
 
-  isNeuralEvent: (event: SystemEvent): event is NeuralEvent => {
-    return event.type.startsWith('neural:');
-  },
+  isNeuralEvent: (event: SystemEvent): event is NeuralEvent => event.type.startsWith('neural:'),
 
-  isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => {
-    return event.type.startsWith('database:');
-  },
+  isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => event.type.startsWith('database:'),
 
-  isMemoryEvent: (event: SystemEvent): event is MemoryEvent => {
-    return event.type.startsWith('memory:');
-  },
+  isMemoryEvent: (event: SystemEvent): event is MemoryEvent => event.type.startsWith('memory:'),
 
-  isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
-    return event.type.startsWith('workflow:');
-  },
+  isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => event.type.startsWith('workflow:'),
 
-  isOrchestrationEvent: (event: SystemEvent): event is OrchestrationEvent => {
-    return event.type.startsWith('orchestration:');
-  },
+  isOrchestrationEvent: (event: SystemEvent): event is OrchestrationEvent => event.type.startsWith('orchestration:'),
 
-  isSafeEvent: (event: SystemEvent): event is SafeEvent => {
-    return event.type.startsWith('safe:');
-  },
+  isSafeEvent: (event: SystemEvent): event is SafeEvent => event.type.startsWith('safe:'),
 
   isMemoryOrchestrationEvent: (
     event: SystemEvent
-  ): event is MemoryOrchestrationEvent => {
-    return event.type.startsWith('memory_orchestration:');
-  },
+  ): event is MemoryOrchestrationEvent => event.type.startsWith('memory_orchestration:'),
 
   isUELEvent: (event: SystemEvent): event is UELEvent => {
     const category = event.type.split(':')[0];
@@ -916,9 +1048,9 @@ export const EventConstants = {
   DEFAULT_CLEANUP_INTERVAL: 300000, // 5 minutes
 
   // Patterns
-  EVENT_ID_PATTERN: /^[a-zA-Z0-9-_]+$/,
-  EVENT_TYPE_PATTERN: /^[a-zA-Z0-9]+:[a-zA-Z0-9-_]+$/,
-  SOURCE_PATTERN: /^[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+$/,
+  EVENT_ID_PATTERN: /^[\w-]+$/,
+  EVENT_TYPE_PATTERN: /^[\dA-Za-z]+:[\w-]+$/,
+  SOURCE_PATTERN: /^[\w-]+:[\w-]+$/,
 } as const;
 
 export default {

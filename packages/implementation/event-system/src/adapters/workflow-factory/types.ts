@@ -1,11 +1,11 @@
 /**
  * @file Workflow Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for workflow event factory operations.
  */
 
-import type { EventManagerConfig, EventManagerStatus } from '../../core/interfaces';
-import type { WorkflowEvent } from '../../types';
+
+
 
 /**
  * Workflow event factory configuration.

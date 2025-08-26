@@ -1,19 +1,24 @@
 /**
  * @file Coordination Event Factory - Main Factory Class
- * 
+ *
  * Main factory class for creating and managing coordination event adapters.
  */
 
-import { getLogger, type Logger, TypedEventBase } from '@claude-zen/foundation';
-import type { EventManager, EventManagerFactory, EventManagerStatus, EventManagerMetrics } from '../../core/interfaces';
+import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
+import type {
+  EventManager,
+  EventManagerFactory,
+  EventManagerStatus,
+  EventManagerMetrics,
+} from '../../core/interfaces';
 import { createCoordinationEventAdapter } from '../coordination';
-import type { CoordinationEventAdapterConfig, CoordinationEventAdapter } from '../coordination';
-import type { 
-  CoordinationEventFactoryConfig, 
+import type {
+  CoordinationEventAdapterConfig,
+  CoordinationEventAdapter,
+} from '../coordination';
+import type {
+  CoordinationEventFactoryConfig,
   CoordinationFactoryMetrics,
-  CoordinationHealthResult,
-  FactoryOperationResult,
-  BulkOperationResult
 } from './types';
 import { CoordinationFactoryHelpers } from './helpers';
 
@@ -23,18 +28,23 @@ import { CoordinationFactoryHelpers } from './helpers';
  * Creates and manages CoordinationEventAdapter instances for coordination-level event management.
  * Integrates with the UEL factory system to provide unified access to coordination events.
  */
-export class CoordinationEventFactory extends TypedEventBase implements EventManagerFactory<CoordinationEventAdapterConfig> {
+export class CoordinationEventFactory
+  extends EventEmitter
+  implements EventManagerFactory<CoordinationEventAdapterConfig>
+{
   private readonly logger: Logger;
   private readonly instances = new Map<string, CoordinationEventAdapter>();
-  private readonly config: CoordinationEventFactoryConfig;
+  private readonly factoryConfig: CoordinationEventFactoryConfig;
   private readonly startTime = new Date();
   private totalCreated = 0;
   private totalErrors = 0;
 
-  constructor(config: CoordinationEventFactoryConfig = { name: 'coordination-factory' }) {
+  constructor(
+    config: CoordinationEventFactoryConfig = { name: 'coordination-factory' }
+  ) {
     super();
     this.logger = getLogger('CoordinationEventFactory');
-    this.config = config;
+    this.factoryConfig = config;
     this.logger.info(`Coordination Event Factory initialized: ${config.name}`);
   }
 
@@ -50,7 +60,9 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
 
       // Check for duplicate names
       if (this.instances.has(config?.name)) {
-        throw new Error(`Coordination event manager with name '${config?.name}' already exists`);
+        throw new Error(
+          `Coordination event manager with name '${config?.name}' already exists`
+        );
       }
 
       // Create adapter instance
@@ -63,13 +75,18 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
       this.instances.set(config?.name, adapter);
       this.totalCreated++;
 
-      this.logger.info(`Coordination event manager created successfully: ${config?.name}`);
+      this.logger.info(
+        `Coordination event manager created successfully: ${config?.name}`
+      );
       this.emit('adapter-created', { name: config?.name, adapter });
 
       return adapter;
     } catch (error) {
       this.totalErrors++;
-      this.logger.error(`Failed to create coordination event manager '${config?.name}':`, error);
+      this.logger.error(
+        `Failed to create coordination event manager '${config?.name}':`,
+        error
+      );
       this.emit('adapter-creation-failed', { name: config?.name, error });
       throw error;
     }
@@ -78,7 +95,9 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
   /**
    * Create multiple coordination event adapters.
    */
-  async createMultiple(configs: CoordinationEventAdapterConfig[]): Promise<EventManager[]> {
+  async createMultiple(
+    configs: CoordinationEventAdapterConfig[]
+  ): Promise<EventManager[]> {
     this.logger.info(`Creating ${configs.length} coordination event managers`);
 
     const results: EventManager[] = [];
@@ -99,14 +118,19 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
     await Promise.all(creationPromises);
 
     if (errors.length > 0) {
-      this.logger.warn(`Failed to create ${errors.length} coordination event managers:`, errors);
+      this.logger.warn(
+        `Failed to create ${errors.length} coordination event managers:`,
+        errors
+      );
       this.emit('multiple-creation-partial-failure', {
         successes: results.length,
         failures: errors,
       });
     }
 
-    this.logger.info(`Successfully created ${results.length}/${configs.length} coordination event managers`);
+    this.logger.info(
+      `Successfully created ${results.length}/${configs.length} coordination event managers`
+    );
     return results;
   }
 
@@ -156,12 +180,17 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
       // Remove from registry
       this.instances.delete(name);
 
-      this.logger.info(`Coordination event manager removed successfully: ${name}`);
+      this.logger.info(
+        `Coordination event manager removed successfully: ${name}`
+      );
       this.emit('adapter-removed', { name });
 
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove coordination event manager '${name}':`, error);
+      this.logger.error(
+        `Failed to remove coordination event manager '${name}':`,
+        error
+      );
       this.emit('adapter-removal-failed', { name, error });
       throw error;
     }
@@ -171,7 +200,9 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
    * Health check all coordination event managers.
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
-    this.logger.debug('Performing health check on all coordination event managers');
+    this.logger.debug(
+      'Performing health check on all coordination event managers'
+    );
 
     const results = new Map<string, EventManagerStatus>();
     const healthPromises: Promise<void>[] = [];
@@ -182,19 +213,20 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
           const status = await adapter.healthCheck();
           results.set(name, status);
         } catch (error) {
-          this.logger.warn(`Health check failed for coordination event manager '${name}':`, error);
+          this.logger.warn(
+            `Health check failed for coordination event manager '${name}':`,
+            error
+          );
           results.set(name, {
             name,
             type: adapter.type,
             status: 'unhealthy',
-            lastCheck: new Date(),
-            subscriptions: 0,
-            queueSize: 0,
-            errorRate: 1,
+            isRunning: false,
+            isHealthy: false,
+            subscriptionCount: 0,
+            eventCount: 0,
+            errorCount: 1,
             uptime: 0,
-            metadata: {
-              error: error instanceof Error ? error.message : 'Unknown error',
-            },
           });
         }
       })();
@@ -204,7 +236,9 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
 
     await Promise.all(healthPromises);
 
-    this.logger.debug(`Health check completed for ${results.size} coordination event managers`);
+    this.logger.debug(
+      `Health check completed for ${results.size} coordination event managers`
+    );
     return results;
   }
 
@@ -212,7 +246,9 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
    * Get metrics for all coordination event managers.
    */
   async getMetricsAll(): Promise<Map<string, EventManagerMetrics>> {
-    this.logger.debug('Collecting metrics from all coordination event managers');
+    this.logger.debug(
+      'Collecting metrics from all coordination event managers'
+    );
 
     const results = new Map<string, EventManagerMetrics>();
     const metricsPromises: Promise<void>[] = [];
@@ -223,22 +259,24 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
           const metrics = await adapter.getMetrics();
           results.set(name, metrics);
         } catch (error) {
-          this.logger.warn(`Metrics collection failed for coordination event manager '${name}':`, error);
+          this.logger.warn(
+            `Metrics collection failed for coordination event manager '${name}':`,
+            error
+          );
           // Create default error metrics
           results.set(name, {
             name,
             type: adapter.type,
-            eventsProcessed: 0,
             eventsEmitted: 0,
+            eventsReceived: 0,
+            eventsProcessed: 0,
             eventsFailed: 1,
-            averageLatency: -1,
-            p95Latency: -1,
-            p99Latency: -1,
-            throughput: 0,
-            subscriptionCount: 0,
-            queueSize: 0,
-            memoryUsage: 0,
-            timestamp: new Date(),
+            subscriptionsCreated: 0,
+            subscriptionsRemoved: 0,
+            errorCount: 1,
+            averageProcessingTime: -1,
+            maxProcessingTime: -1,
+            minProcessingTime: -1,
           });
         }
       })();
@@ -248,7 +286,9 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
 
     await Promise.all(metricsPromises);
 
-    this.logger.debug(`Metrics collected from ${results.size} coordination event managers`);
+    this.logger.debug(
+      `Metrics collected from ${results.size} coordination event managers`
+    );
     return results;
   }
 
@@ -263,8 +303,8 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
    * Get factory metrics.
    */
   getFactoryMetrics(): CoordinationFactoryMetrics {
-    const runningAdapters = this.list().filter((adapter) => 
-      adapter.isRunning && adapter.isRunning()
+    const runningAdapters = this.list().filter(
+      (adapter) => adapter.isRunning && adapter.isRunning()
     ).length;
 
     return CoordinationFactoryHelpers.calculateMetrics(
@@ -294,7 +334,10 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
               await adapter.destroy();
             }
           } catch (error) {
-            this.logger.error(`Failed to shutdown coordination event manager '${name}':`, error);
+            this.logger.error(
+              `Failed to shutdown coordination event manager '${name}':`,
+              error
+            );
           }
         }
       );
@@ -308,9 +351,12 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
       this.removeAllListeners();
 
       this.logger.info('Coordination Event Factory shutdown completed');
-      this.emit('factory-shutdown');
+      this.emit('factory-shutdown', {});
     } catch (error) {
-      this.logger.error('Failed to shutdown Coordination Event Factory:', error);
+      this.logger.error(
+        'Failed to shutdown Coordination Event Factory:',
+        error
+      );
       this.emit('factory-shutdown-failed', error);
       throw error;
     }
@@ -319,7 +365,10 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
   /**
    * Set up event forwarding from adapter to factory.
    */
-  private setupEventForwarding(adapter: CoordinationEventAdapter, name: string): void {
+  private setupEventForwarding(
+    adapter: CoordinationEventAdapter,
+    name: string
+  ): void {
     // Forward important events from adapter to factory
     if (adapter.on) {
       adapter.on('start', () => {
@@ -337,14 +386,14 @@ export class CoordinationEventFactory extends TypedEventBase implements EventMan
       adapter.on('subscription', (data: unknown) => {
         this.emit('adapter-subscription', {
           name,
-          ...(data as object)
+          ...(data as object),
         });
       });
 
       adapter.on('emission', (data: unknown) => {
         this.emit('adapter-emission', {
           name,
-          ...(data as object)
+          ...(data as object),
         });
       });
     }

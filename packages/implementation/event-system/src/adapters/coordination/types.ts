@@ -1,19 +1,14 @@
 /**
  * @file Coordination Event Adapter Types
- * 
+ *
  * Type definitions for the coordination event adapter system,
  * including interfaces, configurations, and enums.
  */
 
 import type {
   EventManagerConfig,
-  EventManagerStatus,
-  EventManagerType,
-  EventManager,
-  SystemEvent,
 } from '../../core/interfaces';
 import type { CoordinationEvent } from '../../types';
-import { EventPriorityMap } from '../../types';
 
 /**
  * Coordination event adapter configuration extending UEL EventManagerConfig.

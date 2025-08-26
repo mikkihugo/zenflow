@@ -49,7 +49,6 @@ export interface EventRetryConfig {
 export interface EventManagerConfig {
   name: string;
   type: EventManagerType;
-  enabled?: boolean;
   maxListeners?: number;
   processing: {
     strategy: EventProcessingStrategy;
@@ -97,8 +96,6 @@ export interface EventManager {
   unsubscribeAll(eventType?: string): number;
 
   // Health and cleanup
-  healthCheck(): Promise<EventManagerStatus>;
-  getMetrics(): Promise<EventManagerMetrics>;
   destroy(): Promise<void>;
 }
 
@@ -109,35 +106,6 @@ export interface EventManagerFactory<TConfig extends EventManagerConfig = EventM
   list(): EventManager[];
   has(name: string): boolean;
   remove(name: string): Promise<boolean>;
-}
-
-export interface EventManagerStatus {
-  name?: string;
-  type?: EventManagerType;
-  status?: string;
-  lastCheck?: Date;
-  isRunning: boolean;
-  isHealthy: boolean;
-  subscriptionCount: number;
-  eventCount: number;
-  errorCount: number;
-  lastEventTime?: Date;
-  uptime: number;
-}
-
-export interface EventManagerMetrics {
-  name?: string;
-  type?: EventManagerType;
-  eventsEmitted: number;
-  eventsReceived: number;
-  eventsProcessed: number;
-  eventsFailed?: number;
-  subscriptionsCreated: number;
-  subscriptionsRemoved: number;
-  errorCount: number;
-  averageProcessingTime: number;
-  maxProcessingTime: number;
-  minProcessingTime: number;
 }
 
 export type EventManagerType = 

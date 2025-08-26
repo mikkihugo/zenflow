@@ -1,6 +1,6 @@
 /**
  * @file System Event Factory - Main Export
- * 
+ *
  * Exports the modular system event factory system with all components.
  */
 

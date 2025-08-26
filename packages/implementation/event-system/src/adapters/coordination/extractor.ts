@@ -1,6 +1,6 @@
 /**
  * @file Coordination Event Data Extractors
- * 
+ *
  * Utility functions for extracting specific data from events,
  * such as swarm IDs, agent IDs, task IDs, etc.
  */
@@ -33,11 +33,12 @@ export class CoordinationEventExtractor {
    */
   static extractAgentId(event: SystemEvent): string | undefined {
     const coordinationEvent = event as CoordinationEvent;
-    const targetId = coordinationEvent.targetId;
+    const {targetId} = coordinationEvent;
     return (
       (coordinationEvent.payload &&
       typeof coordinationEvent.payload === 'object'
-        ? ((coordinationEvent.payload as Record<string, unknown>).agentId as string)
+        ? ((coordinationEvent.payload as Record<string, unknown>)
+            .agentId as string)
         : undefined) ||
       (event.metadata && typeof event.metadata === 'object'
         ? ((event.metadata as Record<string, unknown>).agentId as string)
@@ -53,7 +54,7 @@ export class CoordinationEventExtractor {
    */
   static extractTaskId(event: SystemEvent): string | undefined {
     const coordinationEvent = event as CoordinationEvent;
-    const targetId = coordinationEvent.targetId;
+    const {targetId} = coordinationEvent;
     return (
       (event.payload && typeof event.payload === 'object'
         ? ((event.payload as Record<string, unknown>).taskId as string)
@@ -91,7 +92,8 @@ export class CoordinationEventExtractor {
   ): 'swarm' | 'agent' | 'orchestrator' | 'protocol' {
     if (source.includes('swarm')) return 'swarm';
     if (source.includes('agent')) return 'agent';
-    if (source.includes('orchestrator') || source.includes('task')) return 'orchestrator';
+    if (source.includes('orchestrator') || source.includes('task'))
+      return 'orchestrator';
     return 'protocol';
   }
 
@@ -100,16 +102,16 @@ export class CoordinationEventExtractor {
    */
   static extractCorrelationPatterns(events: CoordinationEvent[]): string[] {
     const patterns: string[] = [];
-    
+
     for (let i = 0; i < events.length - 1; i++) {
       const current = events[i];
       const next = events[i + 1];
-      
+
       if (current.correlationId === next.correlationId) {
         patterns.push(`${current.type}->${next.type}`);
       }
     }
-    
+
     return [...new Set(patterns)]; // Remove duplicates
   }
 
@@ -122,22 +124,24 @@ export class CoordinationEventExtractor {
     network: number;
   } {
     const defaultUsage = { cpu: 0, memory: 0, network: 0 };
-    
+
     if (!event.metadata || typeof event.metadata !== 'object') {
       return defaultUsage;
     }
-    
+
     const metadata = event.metadata as Record<string, unknown>;
     const resourceUsage = metadata.resourceUsage as any;
-    
+
     if (!resourceUsage || typeof resourceUsage !== 'object') {
       return defaultUsage;
     }
-    
+
     return {
       cpu: typeof resourceUsage.cpu === 'number' ? resourceUsage.cpu : 0,
-      memory: typeof resourceUsage.memory === 'number' ? resourceUsage.memory : 0,
-      network: typeof resourceUsage.network === 'number' ? resourceUsage.network : 0,
+      memory:
+        typeof resourceUsage.memory === 'number' ? resourceUsage.memory : 0,
+      network:
+        typeof resourceUsage.network === 'number' ? resourceUsage.network : 0,
     };
   }
 
@@ -146,25 +150,25 @@ export class CoordinationEventExtractor {
    */
   static extractMetrics(event: SystemEvent): Record<string, number> {
     const metrics: Record<string, number> = {};
-    
+
     if (!event.payload || typeof event.payload !== 'object') {
       return metrics;
     }
-    
+
     const payload = event.payload as Record<string, unknown>;
     const eventMetrics = payload.metrics as any;
-    
+
     if (!eventMetrics || typeof eventMetrics !== 'object') {
       return metrics;
     }
-    
+
     // Extract numeric metrics
     for (const [key, value] of Object.entries(eventMetrics)) {
       if (typeof value === 'number') {
         metrics[key] = value;
       }
     }
-    
+
     return metrics;
   }
 
@@ -181,11 +185,11 @@ export class CoordinationEventExtractor {
       errorMessage?: string;
       errorType?: string;
     } = {};
-    
+
     // Check payload first
     if (event.payload && typeof event.payload === 'object') {
       const payload = event.payload as Record<string, unknown>;
-      
+
       if (typeof payload.errorCode === 'string') {
         errorInfo.errorCode = payload.errorCode;
       }
@@ -196,22 +200,25 @@ export class CoordinationEventExtractor {
         errorInfo.errorType = payload.errorType;
       }
     }
-    
+
     // Check metadata as fallback
     if (event.metadata && typeof event.metadata === 'object') {
       const metadata = event.metadata as Record<string, unknown>;
-      
+
       if (!errorInfo.errorCode && typeof metadata.errorCode === 'string') {
         errorInfo.errorCode = metadata.errorCode;
       }
-      if (!errorInfo.errorMessage && typeof metadata.errorMessage === 'string') {
+      if (
+        !errorInfo.errorMessage &&
+        typeof metadata.errorMessage === 'string'
+      ) {
         errorInfo.errorMessage = metadata.errorMessage;
       }
       if (!errorInfo.errorType && typeof metadata.errorType === 'string') {
         errorInfo.errorType = metadata.errorType;
       }
     }
-    
+
     return errorInfo;
   }
 
@@ -228,11 +235,11 @@ export class CoordinationEventExtractor {
       startTime?: Date;
       endTime?: Date;
     } = {};
-    
+
     // Check payload first
     if (event.payload && typeof event.payload === 'object') {
       const payload = event.payload as Record<string, unknown>;
-      
+
       if (typeof payload.duration === 'number') {
         timingInfo.duration = payload.duration;
       }
@@ -243,12 +250,13 @@ export class CoordinationEventExtractor {
         timingInfo.endTime = payload.endTime;
       }
     }
-    
+
     // Calculate duration if start and end times are available
     if (!timingInfo.duration && timingInfo.startTime && timingInfo.endTime) {
-      timingInfo.duration = timingInfo.endTime.getTime() - timingInfo.startTime.getTime();
+      timingInfo.duration =
+        timingInfo.endTime.getTime() - timingInfo.startTime.getTime();
     }
-    
+
     return timingInfo;
   }
 }

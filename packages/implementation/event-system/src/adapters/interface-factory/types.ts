@@ -1,11 +1,11 @@
 /**
  * @file Interface Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for interface event factory operations.
  */
 
-import type { EventManagerConfig, EventManagerStatus } from '../../core/interfaces';
-import type { InterfaceEvent } from '../../types';
+
+
 
 /**
  * Interface event factory configuration.

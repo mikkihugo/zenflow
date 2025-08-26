@@ -1,9 +1,9 @@
 /**
  * @file Coordination Event Factory - Refactored Export
- * 
+ *
  * This file now exports the modular coordination event factory system.
  * The original 900+ line file has been broken down into smaller modules:
- * 
+ *
  * - ./coordination-factory/types.ts - Type definitions and interfaces
  * - ./coordination-factory/helpers.ts - Helper functions and utilities
  * - ./coordination-factory/factory.ts - Main factory class

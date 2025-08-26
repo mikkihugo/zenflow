@@ -5,19 +5,17 @@
  * for convenient access and consistent API.
  */
 
-// Export all factories from adapters
-export { SystemEventManagerFactory } from '../adapters/system-event-factory;
-export { CoordinationEventManagerFactory } from '../adapters/coordination-event-factory;
-export { CommunicationEventFactory } from '../adapters/communication-event-factory;
-export { MonitoringEventFactory } from '../adapters/monitoring-event-factory;
-export { MemoryEventManagerFactory } from '../adapters/memory-event-factory;
-export { DatabaseEventManagerFactory } from '../adapters/database-event-factory;
-export { NeuralEventManagerFactory } from '../adapters/neural-event-factory;
-export { InterfaceEventManagerFactory } from '../adapters/interface-event-factory;
-export { WorkflowEventManagerFactory } from '../adapters/workflow-event-factory;
+// Export available factories from adapters - only those that exist
+export { CoordinationEventFactory } from '../adapters/coordination-factory/index';
 
 // Re-export factory types from core interfaces
 export type {
+  EventManager,
   EventManagerFactory,
   EventManagerConfig,
 } from '../core/interfaces';
+
+// Default exports for convenience
+export default {
+  CoordinationEventFactory,
+};

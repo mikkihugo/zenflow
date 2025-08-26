@@ -5,7 +5,7 @@
  */
 
 // Export system integrations from main file
-export * from '../system-integrations;
+export * from '../system-integrations';
 
 // Add missing exports for index.ts compatibility
 export class SystemIntegration {

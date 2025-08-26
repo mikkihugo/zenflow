@@ -1,6 +1,6 @@
 /**
  * @file Memory Event Factory - Main Export
- * 
+ *
  * Exports the modular memory event factory system with all components.
  */
 

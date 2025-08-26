@@ -9,7 +9,7 @@ import type {
   DomainBoundaryValidator,
   Result,
   TypeSchema,
-} from './types;
+} from './types';
 
 /**
  * Simple domain boundary validator implementation
@@ -18,7 +18,7 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
   validate<T>(data: T, schema: TypeSchema): Result<T> {
     try {
       // Basic validation - just check if data exists and matches basic type
-      if (data === null||data === undefined) {
+      if (data === null || data === undefined) {
         return {
           success: false,
           error: new Error('Data is null or undefined'),
@@ -28,12 +28,13 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
       if (
         schema.type &&
         typeof data !== schema.type &&
-        schema.type !== 'object''
-      ) 
+        schema.type !== 'object'
+      ) {
         return {
           success: false,
-          error: new Error(`Expected type ${schema.type}, got ${typeof data}`),`
+          error: new Error(`Expected type ${schema.type}, got ${typeof data}`),
         };
+      }
 
       return { success: true, data };
     } catch (error) {
@@ -47,7 +48,7 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
   validateCrossDomain<T>(source: Domain, target: Domain, data: T): Result<T> {
     try {
       // Basic cross-domain validation
-      if (!source||!target) {
+      if (!source || !target) {
         return {
           success: false,
           error: new Error('Source and target domains are required'),
@@ -74,7 +75,7 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
   ): void {
     // Track cross-domain operations for audit and monitoring
     console.debug(
-      `Cross-domain operation: ${operation} from ${fromDomain} to ${toDomain}``
+      `Cross-domain operation: ${operation} from ${fromDomain} to ${toDomain}`
     );
   }
 

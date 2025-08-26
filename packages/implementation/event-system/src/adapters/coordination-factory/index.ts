@@ -1,6 +1,6 @@
 /**
  * @file Coordination Event Factory - Main Export
- * 
+ *
  * Exports the modular coordination event factory system with all components.
  */
 
@@ -43,7 +43,7 @@ export async function createSwarmCoordinationAdapter(
   name: string,
   overrides?: Partial<CoordinationEventAdapterConfig>
 ): Promise<import('../../core/interfaces').EventManager> {
-  const config = CoordinationFactoryHelpers.createDefaultConfig(name, {
+  const config = CoordinationFactoryHelpers.createDefaultCoordinationConfig(name, {
     swarmCoordination: {
       enabled: true,
       wrapLifecycleEvents: true,
@@ -65,7 +65,7 @@ export async function createAgentManagementAdapter(
   name: string,
   overrides?: Partial<CoordinationEventAdapterConfig>
 ): Promise<import('../../core/interfaces').EventManager> {
-  const config = CoordinationFactoryHelpers.createDefaultConfig(name, {
+  const config = CoordinationFactoryHelpers.createDefaultCoordinationConfig(name, {
     agentManagement: {
       enabled: true,
       wrapAgentEvents: true,
@@ -86,7 +86,7 @@ export async function createTaskOrchestrationAdapter(
   name: string,
   overrides?: Partial<CoordinationEventAdapterConfig>
 ): Promise<import('../../core/interfaces').EventManager> {
-  const config = CoordinationFactoryHelpers.createDefaultConfig(name, {
+  const config = CoordinationFactoryHelpers.createDefaultCoordinationConfig(name, {
     taskOrchestration: {
       enabled: true,
       wrapTaskEvents: true,
@@ -107,7 +107,7 @@ export async function createProtocolManagementAdapter(
   name: string,
   overrides?: Partial<CoordinationEventAdapterConfig>
 ): Promise<import('../../core/interfaces').EventManager> {
-  const config = CoordinationFactoryHelpers.createDefaultConfig(name, {
+  const config = CoordinationFactoryHelpers.createDefaultCoordinationConfig(name, {
     protocolManagement: {
       enabled: true,
       wrapCommunicationEvents: true,
@@ -128,7 +128,7 @@ export async function createComprehensiveCoordinationAdapter(
   name: string,
   overrides?: Partial<CoordinationEventAdapterConfig>
 ): Promise<import('../../core/interfaces').EventManager> {
-  const config = CoordinationFactoryHelpers.createDefaultConfig(name, {
+  const config = CoordinationFactoryHelpers.createDefaultCoordinationConfig(name, {
     swarmCoordination: { enabled: true },
     agentManagement: { enabled: true },
     taskOrchestration: { enabled: true },

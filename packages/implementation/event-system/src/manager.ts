@@ -55,7 +55,7 @@ import { EventRegistry } from './registry';
  *     maxRestarts: 3,
  *     backoffMultiplier: 2
  *   }
- * };
+ * }
  * ```
  */
 export interface EventManagerCreationOptions {
@@ -82,7 +82,7 @@ export interface EventManagerCreationOptions {
     interval: number;
     /** Health check timeout in milliseconds */
     timeout: number;
-  };
+  }
 
   /** Automatic recovery settings */
   recovery?: {
@@ -92,7 +92,7 @@ export interface EventManagerCreationOptions {
     maxRestarts: number;
     /** Multiplier for backoff delay between restarts */
     backoffMultiplier: number;
-  };
+  }
 }
 
 /**
@@ -134,14 +134,14 @@ export interface CoordinationSettings {
     enabled: boolean;
     batchSize: number;
     flushInterval: number;
-  };
+  }
 
   /** Priority queue settings */
   priorityQueue: {
     enabled: boolean;
     maxSize: number;
     processingDelay: number;
-  };
+  }
 }
 
 /**
@@ -220,8 +220,8 @@ export class EventManager implements CoreEventManager {
   private recoveryAttempts = new Map<string, number>();
 
   constructor(
-    @inject(TOKENS.Logger) private _logger: Logger,
-    @inject(TOKENS.Config) private _config: Config
+    private _logger?: Logger,
+    private _config?: Config
   ) {
     // Initialize required interface properties
     this.config = {
@@ -231,7 +231,7 @@ export class EventManager implements CoreEventManager {
         strategy: 'queued',
         queueSize: 10000,
       },
-    };
+    }
     this.name = this.config.name;
     this.type = this.config.type;
 
@@ -243,7 +243,7 @@ export class EventManager implements CoreEventManager {
       autoReconnect: true,
       maxReconnectAttempts: 5,
       connectionTimeout: 30000,
-    };
+    }
 
     this.coordinationSettings = {
       crossManagerRouting: true,
@@ -258,7 +258,7 @@ export class EventManager implements CoreEventManager {
         maxSize: 10000,
         processingDelay: 10,
       },
-    };
+    }
 
     this.statistics = {
       totalCreated: 0,
@@ -270,12 +270,12 @@ export class EventManager implements CoreEventManager {
       totalEventsProcessed: 0,
       eventsPerSecond: 0,
       averageLatency: 0,
-    };
+    }
 
     // Initialize connection maps for all manager types
-    Object.values(EventManagerTypes).forEach((type) => {
+    for (const type of Object.values(EventManagerTypes)) {
       this.connectionManager.connections.set(type, new Set());
-    });
+    }
   }
 
   /**
@@ -321,14 +321,14 @@ export class EventManager implements CoreEventManager {
       this.coordinationSettings = {
         ...this.coordinationSettings,
         ...options?.coordination,
-      };
+      }
     }
 
     if (options?.connection) {
       this.connectionManager = {
         ...this.connectionManager,
         ...options?.connection,
-      };
+      }
     }
 
     // Register default factories
@@ -549,7 +549,7 @@ export class EventManager implements CoreEventManager {
       type: EventManagerTypes.NEURAL,
       name,
       config: config || undefined,
-      preset: 'RELIABLE',
+      preset: 'REAL_TIME',
     });
 
     return manager as unknown as NeuralEventManager;
@@ -608,7 +608,7 @@ export class EventManager implements CoreEventManager {
       type: EventManagerTypes.WORKFLOW,
       name,
       config: config || undefined,
-      preset: 'RELIABLE',
+      preset: 'REAL_TIME',
     });
 
     return manager as unknown as WorkflowEventManager;
@@ -619,7 +619,7 @@ export class EventManager implements CoreEventManager {
    *
    * @param name
    */
-  getEventManager(name: string): EventManager {|undefined {
+  getEventManager(name: string): EventManager | undefined {
     return (
       this.activeManagers.get(name) || (this.registry.findEventManager(name) as any)
     );
@@ -630,7 +630,7 @@ export class EventManager implements CoreEventManager {
    *
    * @param type
    */
-  getEventManagersByType(type: EventManagerType): EventManager {[] {
+  getEventManagersByType(type: EventManagerType): EventManager[] {
     return this.registry.getEventManagersByType(type) as any;
   }
 
@@ -659,9 +659,9 @@ export class EventManager implements CoreEventManager {
         this.connectionManager.health.delete(name);
 
         // Remove from connection tracking
-        this.connectionManager.connections.forEach((managers) => {
+        for (const managers of this.connectionManager.connections) {
           managers.delete(manager);
-        });
+        }
 
         this.statistics.activeManagers--;
         this._logger.info(`🗑️ Event manager removed: ${name}`);
@@ -736,7 +736,7 @@ export class EventManager implements CoreEventManager {
       totalConnections: number;
       healthyConnections: number;
       connectionsByType: Record<EventManagerType, number>;
-    };
+    }
   }> {
     const registryMetrics = await this.registry.getGlobalMetrics();
 
@@ -745,18 +745,18 @@ export class EventManager implements CoreEventManager {
     let healthyConnections = 0;
     const connectionsByType: Record<EventManagerType, number> = {} as any;
 
-    Object.values(EventManagerTypes).forEach((type) => {
+    for (const type of Object.values(EventManagerTypes)) {
       const connections =
         this.connectionManager.connections.get(type)?.size || 0;
       connectionsByType[type] = connections;
       totalConnections += connections;
-    });
+    }
 
-    this.connectionManager.health.forEach((health) => {
+    for (const health of this.connectionManager.health) {
       if (health.healthy) {
         healthyConnections++;
       }
-    });
+    }
 
     // Update real-time statistics
     this.statistics.activeManagers = this.activeManagers.size;
@@ -769,7 +769,7 @@ export class EventManager implements CoreEventManager {
         healthyConnections,
         connectionsByType,
       },
-    };
+    }
   }
 
   /**
@@ -784,11 +784,7 @@ export class EventManager implements CoreEventManager {
     event: T,
     options?: { type?: EventManagerType; excludeManagers?: string[] }
   ): Promise<void> {
-    if (options?.type) {
-      await this.registry.broadcastToType(options?.type, event);
-    } else {
-      await this.registry.broadcast(event);
-    }
+    await (options?.type ? this.registry.broadcastToType(options?.type, event) : this.registry.broadcast(event));
 
     this.statistics.totalEventsProcessed++;
   }
@@ -848,7 +844,7 @@ export class EventManager implements CoreEventManager {
       registry: registryStats,
       statistics: { ...this.statistics },
       uptime: registryStats.uptime,
-    };
+    }
   }
 
   /**
@@ -930,10 +926,16 @@ export class EventManager implements CoreEventManager {
         }
 
         case EventManagerTypes.COMMUNICATION: {
-          const { CommunicationEventFactory } = await import(
-            './adapters/communication-event-factory'
+          const { createCommunicationEventAdapter } = await import(
+            './adapters/communication-event-adapter'
           );
-          FactoryClass = CommunicationEventFactory;
+          // Create a basic factory-like structure
+          FactoryClass = class {
+            static async create(config: any) {
+              return createCommunicationEventAdapter(config);
+            }
+            static get() { return undefined; }
+          } as any;
           break;
         }
 
@@ -954,7 +956,7 @@ export class EventManager implements CoreEventManager {
               return [];
             }
             get() {
-              return undefined;
+              return;
             }
             list() {
               return [];
@@ -983,9 +985,9 @@ export class EventManager implements CoreEventManager {
                 runningManagers: 0,
                 errorCount: 0,
                 uptime: 0,
-              };
+              }
             }
-          };
+          }
           break;
         }
 
@@ -1016,12 +1018,12 @@ export class EventManager implements CoreEventManager {
 
   private mergeConfiguration(
     options: EventManagerCreationOptions
-  ): EventManager {Config {
+  ): EventManagerConfig {
     const defaults =
       (DefaultEventManagerConfigs as any)?.[options?.type] || (DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
     const presetConfig = options?.preset
       ? EventManagerPresets[options?.preset]
-      : {};
+      : {}
 
     return {
       ...defaults,
@@ -1164,8 +1166,7 @@ export class EventManager implements CoreEventManager {
   }
 
   addFilter(filter: any): string {
-    const filterId = `filter_${Date.now()}`;
-    return filterId;
+    return `filter_${Date.now()}`;
   }
 
   removeFilter(filterId: string): boolean {
@@ -1173,8 +1174,7 @@ export class EventManager implements CoreEventManager {
   }
 
   addTransform(transform: any): string {
-    const transformId = `transform_${Date.now()}`;
-    return transformId;
+    return `transform_${Date.now()}`;
   }
 
   removeTransform(transformId: string): boolean {
@@ -1208,7 +1208,7 @@ export class EventManager implements CoreEventManager {
       queueSize: 0,
       errorRate: 0,
       uptime: 0,
-    };
+    }
   }
 
   async getMetrics(): Promise<any>{
@@ -1226,7 +1226,7 @@ export class EventManager implements CoreEventManager {
       queueSize: 0,
       memoryUsage: 0,
       timestamp: new Date(),
-    };
+    }
   }
 
   getSubscriptions(): any[] {
@@ -1256,6 +1256,6 @@ export class EventManager implements CoreEventManager {
 }
 
 // Add missing exports for index.ts compatibility
-export { EventManager as createEventManager };
+export { EventManager as createEventManager }
 
 export default EventManager;

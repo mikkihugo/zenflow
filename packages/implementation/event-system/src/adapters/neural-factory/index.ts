@@ -1,6 +1,6 @@
 /**
  * @file Neural Event Factory - Main Export
- * 
+ *
  * Exports the modular neural event factory system with all components.
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file Interface Event Factory - Main Export
- * 
+ *
  * Exports the modular interface event factory system with all components.
  */
 

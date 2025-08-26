@@ -1,11 +1,11 @@
 /**
  * @file Neural Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for neural event factory operations.
  */
 
-import type { EventManagerConfig, EventManagerStatus } from '../../core/interfaces';
-import type { NeuralEvent } from '../../types';
+
+
 
 /**
  * Neural event factory configuration.

@@ -1,150 +1,121 @@
 /**
- * @file Memory Event Factory - Helper Functions
+ * @file Memory Factory Helpers
  * 
- * Utility functions and helpers for memory event factory operations.
- */
-
-import type { EventManagerConfig } from '../../core/interfaces';
-import { EventManagerTypes } from '../../core/interfaces';
-
-/**
  * Helper functions for memory event factory operations.
  */
-export class MemoryFactoryHelpers {
-  /**
-   * Create default memory event manager configuration.
-   */
-  static createDefaultConfig(name: string, overrides?: Partial<EventManagerConfig>): EventManagerConfig {
-    return {
-      name,
-      type: EventManagerTypes.MEMORY,
-      processing: {
-        strategy: 'queued',
-        queueSize: 5000,
-      },
-      retry: {
-        attempts: 3,
-        delay: 1000,
-        backoff: 'exponential',
-        maxDelay: 5000,
-      },
-      health: {
-        checkInterval: 60000,
-        timeout: 5000,
-        failureThreshold: 3,
-        successThreshold: 2,
-        enableAutoRecovery: true,
-      },
-      monitoring: {
-        enabled: true,
-        metricsInterval: 15000,
-        trackLatency: true,
-        trackThroughput: true,
-        trackErrors: true,
-        enableProfiling: true,
-      },
-      ...overrides,
-    };
-  }
 
-  /**
-   * Validate memory event manager configuration.
-   */
-  static validateConfig(config: EventManagerConfig): void {
-    if (!config?.name || typeof config?.name !== 'string') {
-      throw new Error('Configuration must have a valid name');
-    }
+import type { Logger } from '@claude-zen/foundation';
+import type { EventManagerConfig } from '../../core/interfaces';
 
-    if (!config?.type || config?.type !== EventManagerTypes.MEMORY) {
-      throw new Error('Configuration must have type "memory"');
-    }
+/**
+ * Helper function to validate memory configuration.
+ */
+export function validateMemoryConfig(config: EventManagerConfig): boolean {
+  return !!(config && config.name && config.type === 'memory');
+}
 
-    // Validate processing strategy
-    if (config?.processing?.strategy) {
-      const validStrategies = ['immediate', 'queued', 'batched', 'throttled'];
-      if (!validStrategies.includes(config?.processing?.strategy)) {
-        throw new Error(`Invalid processing strategy: ${config?.processing?.strategy}`);
-      }
-    }
+/**
+ * Helper function to create default memory config.
+ */
+export function createDefaultMemoryConfig(name: string, overrides?: any): EventManagerConfig {
+  return {
+    name,
+    type: 'memory',
+    enabled: true,
+    maxListeners: 100,
+    processing: {
+      strategy: 'immediate',
+      queueSize: 1000,
+    },
+    ...overrides,
+  };
+}
 
-    // Validate retry configuration
-    if (config?.retry) {
-      if (config?.retry?.attempts && config?.retry?.attempts < 0) {
-        throw new Error('Retry attempts must be non-negative');
-      }
-      if (config?.retry?.delay && config?.retry?.delay < 0) {
-        throw new Error('Retry delay must be non-negative');
-      }
-    }
+/**
+ * Helper function for logging memory events.
+ */
+export function logMemoryEvent(logger: Logger, event: string, data?: any): void {
+  logger.debug(`Memory event: ${event}`, data);
+}
 
-    // Validate health configuration
-    if (config?.health) {
-      if (config?.health?.checkInterval && config?.health?.checkInterval < 1000) {
-        throw new Error('Health check interval must be at least 1000ms');
-      }
-      if (config?.health?.timeout && config?.health?.timeout < 100) {
-        throw new Error('Health check timeout must be at least 100ms');
-      }
-    }
-  }
+/**
+ * Helper function to generate memory event IDs.
+ */
+export function generateMemoryEventId(): string {
+  return `memory_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
 
-  /**
-   * Generate unique instance name with timestamp.
-   */
-  static generateInstanceName(baseName: string): string {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    return `${baseName}-${timestamp}-${random}`;
-  }
+/**
+ * Helper function to validate generic config.
+ */
+export function validateConfig(config: any): boolean {
+  return !!(config && typeof config === 'object');
+}
 
-  /**
-   * Calculate factory metrics from operational data.
-   */
-  static calculateMetrics(
-    totalCreated: number,
-    totalErrors: number,
-    activeInstances: number,
-    runningInstances: number,
-    startTime: Date
-  ) {
-    const uptime = Date.now() - startTime.getTime();
-    const hours = uptime / (1000 * 60 * 60);
-    
-    // Get memory usage information
-    const memoryUsage = process.memoryUsage();
-    
-    return {
-      totalCreated,
-      totalErrors,
-      activeInstances,
-      runningInstances,
-      uptime,
-      creationRate: hours > 0 ? totalCreated / hours : 0,
-      errorRate: totalCreated > 0 ? totalErrors / totalCreated : 0,
-      memoryUsage: {
-        total: memoryUsage.heapTotal,
-        used: memoryUsage.heapUsed,
-        available: memoryUsage.heapTotal - memoryUsage.heapUsed,
-      },
-      timestamp: new Date(),
-    };
-  }
+/**
+ * Helper function to calculate metrics.
+ */
+export function calculateMetrics(
+  totalCreated: number,
+  totalErrors: number,
+  activeInstances: number,
+  runningInstances: number,
+  startTime: Date
+): any {
+  const now = new Date();
+  const uptimeMs = now.getTime() - startTime.getTime();
+  const uptimeMinutes = uptimeMs / (1000 * 60);
+  
+  return {
+    totalCreated,
+    totalErrors,
+    activeInstances,
+    runningInstances,
+    uptime: uptimeMs,
+    creationRate: uptimeMinutes > 0 ? totalCreated / uptimeMinutes : 0,
+    errorRate: totalCreated > 0 ? totalErrors / totalCreated : 0,
+    timestamp: now,
+  };
+}
 
-  /**
-   * Check if memory usage is within acceptable limits.
-   */
-  static checkMemoryHealth(threshold: number = 0.8): boolean {
-    const memoryUsage = process.memoryUsage();
-    const usageRatio = memoryUsage.heapUsed / memoryUsage.heapTotal;
-    return usageRatio < threshold;
-  }
+/**
+ * Helper function to check memory health.
+ */
+export function checkMemoryHealth(): boolean {
+  // Simple memory health check
+  const usage = process.memoryUsage();
+  const totalMem = usage.heapTotal;
+  const usedMem = usage.heapUsed;
+  return usedMem / totalMem < 0.9; // Consider healthy if < 90% used
+}
 
-  /**
-   * Suggest garbage collection if memory usage is high.
-   */
-  static suggestGarbageCollection(): void {
-    if (global.gc && !this.checkMemoryHealth(0.7)) {
-      global.gc();
-    }
+/**
+ * Helper function to suggest garbage collection.
+ */
+export function suggestGarbageCollection(): void {
+  if (global.gc) {
+    global.gc();
   }
 }
+
+/**
+ * Helper function to create default configuration.
+ */
+export function createDefaultConfig(name: string, overrides?: any): EventManagerConfig {
+  return createDefaultMemoryConfig(name, overrides);
+}
+
+/**
+ * Collection of memory factory helpers.
+ */
+export const MemoryFactoryHelpers = {
+  validateMemoryConfig,
+  createDefaultMemoryConfig,
+  createDefaultConfig,
+  logMemoryEvent,
+  generateMemoryEventId,
+  validateConfig,
+  calculateMetrics,
+  checkMemoryHealth,
+  suggestGarbageCollection,
+};

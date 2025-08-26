@@ -46,7 +46,7 @@ interface CommunicationEventConfig {
   enableCorrelation?: boolean;
   enableHealthMonitoring?: boolean;
   enablePerformanceTracking?: boolean;
-  
+
   connection?: {
     maxRetries?: number;
     timeout?: number;
@@ -103,7 +103,18 @@ interface CommunicationCorrelation {
 // Communication health tracking
 interface CommunicationHealthEntry {
   component: string;
-  componentType: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin' | 'protocol';
+  componentType:
+    | 'javascript'
+    | 'typescript'
+    | 'python'
+    | 'java'
+    | 'csharp'
+    | 'cpp'
+    | 'go'
+    | 'ruby'
+    | 'swift'
+    | 'kotlin'
+    | 'protocol';
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   lastCheck: Date;
   consecutiveFailures: number;
@@ -121,7 +132,18 @@ interface CommunicationHealthEntry {
 // Wrapped communication component
 interface WrappedCommunicationComponent {
   component: unknown;
-  componentType: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin' | 'protocol';
+  componentType:
+    | 'javascript'
+    | 'typescript'
+    | 'python'
+    | 'java'
+    | 'csharp'
+    | 'cpp'
+    | 'go'
+    | 'ruby'
+    | 'swift'
+    | 'kotlin'
+    | 'protocol';
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
   eventMappings: Map<string, string>;
@@ -137,21 +159,24 @@ interface WrappedCommunicationComponent {
 
 /**
  * Communication Event Adapter
- * 
+ *
  * Provides unified event management for communication-related events
  * with correlation tracking, health monitoring, and performance analytics.
  */
 export class CommunicationEventAdapter extends EventEmitter {
   private readonly logger: Logger;
-  private readonly config: CommunicationEventConfig;
+  private readonly adapterConfig: CommunicationEventConfig;
   private readonly correlations = new Map<string, CommunicationCorrelation>();
   private readonly healthEntries = new Map<string, CommunicationHealthEntry>();
-  private readonly wrappedComponents = new Map<string, WrappedCommunicationComponent>();
+  private readonly wrappedComponents = new Map<
+    string,
+    WrappedCommunicationComponent
+  >();
 
   constructor(config: CommunicationEventConfig = {}) {
     super();
     this.logger = logger;
-    this.config = config;
+    this.adapterConfig = config;
   }
 
   /**
@@ -159,12 +184,12 @@ export class CommunicationEventAdapter extends EventEmitter {
    */
   async initialize(): Promise<void> {
     this.logger.info('Initializing Communication Event Adapter');
-    
-    if (this.config.enableHealthMonitoring) {
+
+    if (this.adapterConfig.enableHealthMonitoring) {
       this.startHealthMonitoring();
     }
 
-    if (this.config.enablePerformanceTracking) {
+    if (this.adapterConfig.enablePerformanceTracking) {
       this.startPerformanceTracking();
     }
   }
@@ -182,7 +207,11 @@ export class CommunicationEventAdapter extends EventEmitter {
   /**
    * Wrap a communication component for event management
    */
-  wrapComponent(componentId: string, component: any, componentType: string): WrappedCommunicationComponent {
+  wrapComponent(
+    componentId: string,
+    component: any,
+    componentType: string
+  ): WrappedCommunicationComponent {
     const wrapper = new EventEmitter();
     const wrappedComponent: WrappedCommunicationComponent = {
       component,
@@ -197,19 +226,23 @@ export class CommunicationEventAdapter extends EventEmitter {
         errorCount: 0,
         latencySum: 0,
         throughput: 0,
-      }
+      },
     };
 
     this.wrappedComponents.set(componentId, wrappedComponent);
     this.logger.debug(`Wrapped communication component: ${componentId}`);
-    
+
     return wrappedComponent;
   }
 
   /**
    * Start correlation tracking for communication events
    */
-  startCorrelation(correlationId: string, operation: string, protocolType: string): void {
+  startCorrelation(
+    correlationId: string,
+    operation: string,
+    protocolType: string
+  ): void {
     const correlation: CommunicationCorrelation = {
       correlationId,
       events: [],
@@ -224,7 +257,7 @@ export class CommunicationEventAdapter extends EventEmitter {
         communicationEfficiency: 0,
         resourceUtilization: 0,
       },
-      metadata: {}
+      metadata: {},
     };
 
     this.correlations.set(correlationId, correlation);
@@ -234,7 +267,10 @@ export class CommunicationEventAdapter extends EventEmitter {
   /**
    * Update health status for a communication component
    */
-  updateHealthStatus(componentId: string, status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown'): void {
+  updateHealthStatus(
+    componentId: string,
+    status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown'
+  ): void {
     const healthEntry = this.healthEntries.get(componentId);
     if (healthEntry) {
       healthEntry.status = status;
@@ -246,7 +282,11 @@ export class CommunicationEventAdapter extends EventEmitter {
   /**
    * Record communication performance metrics
    */
-  recordPerformanceMetrics(componentId: string, latency: number, throughput: number): void {
+  recordPerformanceMetrics(
+    componentId: string,
+    latency: number,
+    throughput: number
+  ): void {
     const healthEntry = this.healthEntries.get(componentId);
     if (healthEntry) {
       healthEntry.communicationLatency = latency;
@@ -259,7 +299,7 @@ export class CommunicationEventAdapter extends EventEmitter {
    * Start health monitoring
    */
   private startHealthMonitoring(): void {
-    const interval = this.config.healthMonitoring?.interval || 30000;
+    const interval = this.adapterConfig.healthMonitoring?.interval || 30000;
     setInterval(() => {
       this.performHealthCheck();
     }, interval);
@@ -279,12 +319,19 @@ export class CommunicationEventAdapter extends EventEmitter {
     for (const [componentId, component] of this.wrappedComponents) {
       try {
         // Basic health check logic
-        const timeSinceLastSeen = Date.now() - component.healthMetrics.lastSeen.getTime();
+        const timeSinceLastSeen =
+          Date.now() - component.healthMetrics.lastSeen.getTime();
         const isHealthy = timeSinceLastSeen < 60000; // 1 minute threshold
-        
-        this.updateHealthStatus(componentId, isHealthy ? 'healthy' : 'degraded');
+
+        this.updateHealthStatus(
+          componentId,
+          isHealthy ? 'healthy' : 'degraded'
+        );
       } catch (error) {
-        this.logger.error(`Health check failed for component ${componentId}:`, error);
+        this.logger.error(
+          `Health check failed for component ${componentId}:`,
+          error
+        );
         this.updateHealthStatus(componentId, 'unhealthy');
       }
     }
@@ -307,7 +354,9 @@ export class CommunicationEventAdapter extends EventEmitter {
   /**
    * Get wrapped component by ID
    */
-  getWrappedComponent(componentId: string): WrappedCommunicationComponent | undefined {
+  getWrappedComponent(
+    componentId: string
+  ): WrappedCommunicationComponent | undefined {
     return this.wrappedComponents.get(componentId);
   }
 
@@ -319,13 +368,15 @@ export class CommunicationEventAdapter extends EventEmitter {
       activeCorrelations: this.correlations.size,
       healthEntries: this.healthEntries.size,
       wrappedComponents: this.wrappedComponents.size,
-      uptime: Date.now()
+      uptime: Date.now(),
     };
   }
 }
 
 // Factory function for creating communication event adapters
-export function createCommunicationEventAdapter(config?: CommunicationEventConfig): CommunicationEventAdapter {
+export function createCommunicationEventAdapter(
+  config?: CommunicationEventConfig
+): CommunicationEventAdapter {
   return new CommunicationEventAdapter(config);
 }
 

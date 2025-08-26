@@ -1,6 +1,6 @@
 /**
  * @file Monitoring Event Adapter - Main Export
- * 
+ *
  * Exports the monitoring event adapter system with all components.
  */
 
@@ -19,6 +19,9 @@ export type {
 // Adapter function
 export { createMonitoringEventAdapter } from './adapter';
 
+// Manager implementation
+export { MonitoringEventManager } from './manager';
+
 // Helper functions and utilities
 export { MonitoringAdapterHelpers } from './helpers';
 
@@ -32,8 +35,12 @@ export function createMonitoringAdapter(
   config?: MonitoringEventAdapterConfig
 ): Promise<import('../../core/interfaces').EventManager> {
   const defaultConfig: MonitoringEventAdapterConfig = {
-    name: 'monitoring-adapter-' + Date.now(),
+    name: `monitoring-adapter-${  Date.now()}`,
     type: 'monitoring' as any,
+    processing: {
+      strategy: 'immediate',
+      queueSize: 1000,
+    },
     monitoring: {
       enabled: true,
       wrapPerformanceEvents: true,
@@ -59,7 +66,7 @@ export function createMonitoringAdapter(
     },
     ...config,
   };
-  
+
   return createMonitoringEventAdapter(defaultConfig);
 }
 

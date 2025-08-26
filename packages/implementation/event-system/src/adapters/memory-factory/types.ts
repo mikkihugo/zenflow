@@ -1,11 +1,11 @@
 /**
  * @file Memory Event Factory - Type Definitions
- * 
+ *
  * Type definitions and interfaces for memory event factory operations.
  */
 
-import type { EventManagerConfig, EventManagerStatus } from '../../core/interfaces';
-import type { MemoryEvent } from '../../types';
+
+
 
 /**
  * Memory event factory configuration.
