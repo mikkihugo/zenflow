@@ -9,7 +9,6 @@
  * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
-import { getSafeFramework } from "@claude-zen/enterprise";
 import {
 	createContainer,
 	EventEmitter,
@@ -70,7 +69,7 @@ export class ClaudeZenCore {
 
 		// Register enterprise system
 		container.registerFunction(TOKENS.enterprise, () =>
-			createSafeFrameworkAgentRegistry(),
+			getSafeFramework(),
 		);
 
 		// Register brain system

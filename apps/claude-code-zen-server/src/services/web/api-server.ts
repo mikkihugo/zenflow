@@ -75,7 +75,8 @@ export class ApiServer {
 		// - /healthz (Kubernetes-style health check)  
 		// - /readyz (Kubernetes-style readiness probe)
 		// Custom status endpoint with enhanced metrics
-		this.app.get('/status', (_req, res) => {
+		this.app.get('/status', (req, res) => {
+			// req parameter available but not used in this simple status endpoint
 			const memUsage = process.memoryUsage();
 			const cpuUsage = process.cpuUsage();
 			res.json({
@@ -942,7 +943,29 @@ export class ApiServer {
 	 * Create comprehensive health check function for terminus
 	 */
 	private createHealthCheck(type: "health" | "healthz" | "readyz") {
-		return async (): Promise<any> => {
+		return (): Promise<{
+			status: string;
+			timestamp: string;
+			uptime: number;
+			version: string;
+			type: string;
+			memory: {
+				heapUsed: number;
+				heapTotal: number;
+				rss: number;
+				external: number;
+			};
+			cpu: {
+				user: number;
+				system: number;
+			};
+			checks?: {
+				process?: string;
+				memory?: string;
+				uptime?: string;
+				server?: string;
+			};
+		}> => {
 			const memUsage = process.memoryUsage();
 			const cpuUsage = process.cpuUsage();
 			const baseInfo = {
@@ -950,7 +973,7 @@ export class ApiServer {
 				timestamp: new Date().toISOString(),
 				uptime: process.uptime(),
 				version: getVersion(),
-				type: type,
+				type,
 				memory: {
 					heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
 					heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
@@ -983,7 +1006,7 @@ export class ApiServer {
 						status: "ok"
 					};
 					
-				case "readyz":
+				case "readyz": {
 					// Readiness probe - can accept traffic
 					const isReady = process.uptime() > 1; // Ready after 1 second
 					return {
@@ -994,6 +1017,7 @@ export class ApiServer {
 							server: "ok"
 						}
 					};
+				}
 					
 				default:
 					return baseInfo;
@@ -1008,9 +1032,9 @@ export class ApiServer {
 			timeout: process.env.NODE_ENV === "development" ? 5000 : 30000, // Fast restarts in dev
 			healthChecks: {
 				// Kubernetes-style health checks
-				"/health": this.createHealthCheck("health"),
-				"/healthz": this.createHealthCheck("healthz"),
-				"/readyz": this.createHealthCheck("readyz"),
+				'/health': this.createHealthCheck("health"),
+				'/healthz': this.createHealthCheck("healthz"),
+				'/readyz': this.createHealthCheck("readyz"),
 				// Legacy endpoints for backwards compatibility
 				healthzCheck: this.createHealthCheck("healthz"),
 				readyzCheck: this.createHealthCheck("readyz"), 

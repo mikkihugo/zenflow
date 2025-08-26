@@ -196,7 +196,7 @@ async function initiateDeviceFlow(): Promise<DeviceFlowResponse> {
 		headers: {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			Accept: "application/json",
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			 
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
 		body: new URLSearchParams({
@@ -227,7 +227,7 @@ async function pollForToken(
 			headers: {
 				// eslint-disable-next-line @typescript-eslint/naming-convention
 				Accept: "application/json",
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+				 
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
