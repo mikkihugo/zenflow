@@ -138,30 +138,29 @@ claude-code-zen uses a **comprehensive 5-tier architecture** with **50+ packages
 - **Tier 4** (Restricted): Special authorization required - Security-critical systems
 - **Tier 5** (Deep Core): Ultra-restricted - Accessed only by specific Tier 2/3 packages
 
-**✅ CORRECT Import Patterns (TIER 1 ONLY):**
+**✅ DIRECT IMPORT ARCHITECTURE:**
 
 ```typescript
-// ✅ TIER 1 ONLY - These are the ONLY allowed imports
-
-// Foundation (direct import)
+// ✅ Foundation utilities (always allowed)
 import { getLogger, createContainer, getConfig } from '@claude-zen/foundation';
 
-// Direct integrations (direct import)
+// ✅ Direct imports from implementation packages (preferred)
+import { BrainSystem } from '@claude-zen/brain';
+import { MemoryManager } from '@claude-zen/memory';
+import { EventManager } from '@claude-zen/event-system';
+import { DatabaseProvider } from '@claude-zen/database';
+import { SafeFramework } from '@claude-zen/safe-framework';
+import { WorkflowEngine } from '@claude-zen/workflows';
+import { TaskMaster } from '@claude-zen/taskmaster';
+
+// ✅ Supporting packages
 import { ClaudeProvider, GeminiProvider } from '@claude-zen/llm-providers';
 import { RepoAnalyzer } from '@claude-zen/repo-analyzer';
 
-// Strategic facades (delegation only)
-import { getBrainSystem } from '@claude-zen/intelligence';
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import { getSafeFramework } from '@claude-zen/enterprise';
-import { getPerformanceTracker } from '@claude-zen/operations';
-import { getCodeAnalyzer } from '@claude-zen/development';
-
-// ❌ NEVER IMPORT FROM TIERS 2-5 DIRECTLY
-// import { BrainCoordinator } from '@claude-zen/brain';         // Tier 3 - FORBIDDEN!
-// import { DatabaseProvider } from '@claude-zen/database';      // Tier 2 - FORBIDDEN!
-// import { AISafety } from '@claude-zen/ai-safety';            // Tier 4 - FORBIDDEN!
-// import { DSPy } from '@claude-zen/dspy';                     // Tier 5 - FORBIDDEN!
+// ❌ NO MORE FACADES - Direct imports only
+// import { getBrainSystem } from '@claude-zen/intelligence';     // REMOVED
+// import { getDatabaseSystem } from '@claude-zen/infrastructure'; // REMOVED
+// import { getSafeFramework } from '@claude-zen/enterprise';     // REMOVED
 ```
 
 **✅ CORRECT Facade Delegation Pattern:**
@@ -179,18 +178,19 @@ export async function getBrainSystem() {
 }
 ```
 
-**🏗️ 5-Tier Architectural Benefits:**
+**🏗️ Direct Import Architecture Benefits:**
 
-- **70%+ Code Reduction** through intelligent delegation
-- **Zero Breaking Changes** - facades maintain stable interfaces
-- **Lazy Loading** - implementation packages loaded only when needed
-- **Graceful Degradation** - fallbacks when packages unavailable
-- **Enhanced Security** - 5-tier isolation prevents unauthorized access
-- **Simplified Dependencies** - Only Tier 1 imports needed
+- **Explicit Dependencies** - Clear what each package needs
+- **Faster Builds** - No facade indirection layers
+- **Better Debugging** - Direct error traces to source
+- **Simpler Code** - No lazy loading complexity
+- **Clear Failure Points** - Build fails show exactly what's missing
+- **Package Independence** - Fix packages in any order
+- **Easier Maintenance** - One place per functionality
 
-#### **✅ CRITICAL: 5-Tier Import Guide - TIER 1 ONLY**
+#### **✅ SIMPLIFIED: Direct Import Guide**
 
-**✅ TIER 1 - Strategic Facades (USE THESE):**
+**✅ DIRECT IMPORTS (PREFERRED):**
 
 ```typescript
 // Foundation (direct import - contains primitives and centralized utilities)

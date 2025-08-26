@@ -14,23 +14,23 @@ export type Timestamp = number;
 export type ISODateString = string;
 
 export interface BaseEntity {
-	id: UUID;
-	created: Date;
-	updated: Date;
-	metadata?: Record<string, unknown>;
+  id: UUID;
+  created: Date;
+  updated: Date;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Identifiable {
-	id: string;
+  id: string;
 }
 
 export interface Timestamped {
-	timestamp: Date;
+  timestamp: Date;
 }
 
 export interface Versioned {
-	version: string;
-	previousVersion?: string;
+  version: string;
+  previousVersion?: string;
 }
 
 // ============================================================================
@@ -38,39 +38,39 @@ export interface Versioned {
 // ============================================================================
 
 export interface SystemEvent extends Timestamped {
-	id: UUID;
-	type: EventType;
-	source: string;
-	target?: string;
-	payload: unknown;
-	priority: EventPriority;
-	correlationId?: string;
+  id: UUID;
+  type: EventType;
+  source: string;
+  target?: string;
+  payload: unknown;
+  priority: EventPriority;
+  correlationId?: string;
 }
 
 export type EventType =
-	| "system.startup"
-	| "system.shutdown"
-	| "system.error"
-	| "system.config-change"
-	| "swarm.created"
-	| "swarm.updated"
-	| "swarm.deleted"
-	| "agent.connected"
-	| "agent.disconnected"
-	| "task.created"
-	| "task.completed"
-	| "task.failed"
-	| "api.request"
-	| "api.response"
-	| "custom";
+  | 'system.startup'
+  | 'system.shutdown'
+  | 'system.error'
+  | 'system.config-change'
+  | 'swarm.created'
+  | 'swarm.updated'
+  | 'swarm.deleted'
+  | 'agent.connected'
+  | 'agent.disconnected'
+  | 'task.created'
+  | 'task.completed'
+  | 'task.failed'
+  | 'api.request'
+  | 'api.response'
+  | 'custom';
 
-export type EventPriority = "low" | "medium" | "high" | "critical";
+export type EventPriority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface EventEmitter {
-	emit(event: SystemEvent): void;
-	on(type: EventType, handler: EventHandler): void;
-	off(type: EventType, handler?: EventHandler): void;
-	once(type: EventType, handler: EventHandler): void;
+  emit(event: SystemEvent): void;
+  on(type: EventType, handler: EventHandler): void;
+  off(type: EventType, handler?: EventHandler): void;
+  once(type: EventType, handler: EventHandler): void;
 }
 
 export type EventHandler = (event: SystemEvent) => void | Promise<void>;
@@ -80,31 +80,31 @@ export type EventHandler = (event: SystemEvent) => void | Promise<void>;
 // ============================================================================
 
 export interface Service {
-	name: string;
-	version: string;
-	status: ServiceStatus;
-	health: ServiceHealth;
-	dependencies: string[];
+  name: string;
+  version: string;
+  status: ServiceStatus;
+  health: ServiceHealth;
+  dependencies: string[];
 }
 
 export type ServiceStatus =
-	| "starting"
-	| "running"
-	| "stopping"
-	| "stopped"
-	| "error";
+  | 'starting'
+  | 'running'
+  | 'stopping'
+  | 'stopped'
+  | 'error';
 
 export interface ServiceHealth {
-	status: "healthy" | "degraded" | "unhealthy";
-	checks: HealthCheck[];
-	lastCheck: Date;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  checks: HealthCheck[];
+  lastCheck: Date;
 }
 
 export interface HealthCheck {
-	name: string;
-	status: "pass" | "fail" | "warn";
-	duration: number;
-	message?: string;
+  name: string;
+  status: 'pass' | 'fail' | 'warn';
+  duration: number;
+  message?: string;
 }
 
 // ============================================================================
@@ -112,28 +112,28 @@ export interface HealthCheck {
 // ============================================================================
 
 export interface ServiceIntegration {
-	service: string;
-	version: string;
-	endpoint: string;
-	auth?: ServiceAuth;
-	config: IntegrationConfig;
+  service: string;
+  version: string;
+  endpoint: string;
+  auth?: ServiceAuth;
+  config: IntegrationConfig;
 }
 
 export interface ServiceAuth {
-	type: "none" | "bearer" | "basic" | "api-key";
-	credentials?: Record<string, string>;
+  type: 'none' | 'bearer' | 'basic' | 'api-key';
+  credentials?: Record<string, string>;
 }
 
 export interface IntegrationConfig {
-	timeout: number;
-	retries: number;
-	circuitBreaker?: CircuitBreakerConfig;
+  timeout: number;
+  retries: number;
+  circuitBreaker?: CircuitBreakerConfig;
 }
 
 export interface CircuitBreakerConfig {
-	failureThreshold: number;
-	timeout: number;
-	monitoringPeriod: number;
+  failureThreshold: number;
+  timeout: number;
+  monitoringPeriod: number;
 }
 
 // ============================================================================
@@ -141,40 +141,40 @@ export interface CircuitBreakerConfig {
 // ============================================================================
 
 export interface DataSource {
-	type: "memory" | "file" | "database" | "remote";
-	config: DataSourceConfig;
-	schema?: DataSchema;
+  type: 'memory' | 'file' | 'database' | 'remote';
+  config: DataSourceConfig;
+  schema?: DataSchema;
 }
 
 export interface DataSourceConfig {
-	connection: string;
-	options?: Record<string, unknown>;
-	credentials?: Record<string, string>;
+  connection: string;
+  options?: Record<string, unknown>;
+  credentials?: Record<string, string>;
 }
 
 export interface DataSchema {
-	version: string;
-	fields: SchemaField[];
-	indexes?: SchemaIndex[];
+  version: string;
+  fields: SchemaField[];
+  indexes?: SchemaIndex[];
 }
 
 export interface SchemaField {
-	name: string;
-	type: "string" | "number" | "boolean" | "date" | "object" | "array";
-	required: boolean;
-	validation?: ValidationRule[];
+  name: string;
+  type: 'string' | 'number' | 'boolean' | 'date' | 'object' | 'array';
+  required: boolean;
+  validation?: ValidationRule[];
 }
 
 export interface SchemaIndex {
-	name: string;
-	fields: string[];
-	unique: boolean;
+  name: string;
+  fields: string[];
+  unique: boolean;
 }
 
 export interface ValidationRule {
-	type: "regex" | "range" | "length" | "custom";
-	value: unknown;
-	message?: string;
+  type: 'regex' | 'range' | 'length' | 'custom';
+  value: unknown;
+  message?: string;
 }
 
 // ============================================================================
@@ -182,23 +182,23 @@ export interface ValidationRule {
 // ============================================================================
 
 export interface SecurityContext {
-	userId?: string;
-	roles: string[];
-	permissions: string[];
-	sessionId?: string;
-	apiKey?: string;
+  userId?: string;
+  roles: string[];
+  permissions: string[];
+  sessionId?: string;
+  apiKey?: string;
 }
 
 export interface AccessControl {
-	resource: string;
-	action: string;
-	conditions?: AccessCondition[];
+  resource: string;
+  action: string;
+  conditions?: AccessCondition[];
 }
 
 export interface AccessCondition {
-	field: string;
-	operator: "eq" | "ne" | "in" | "not-in" | "gt" | "lt";
-	value: unknown;
+  field: string;
+  operator: 'eq' | 'ne' | 'in' | 'not-in' | 'gt' | 'lt';
+  value: unknown;
 }
 
 // ============================================================================
@@ -206,18 +206,18 @@ export interface AccessCondition {
 // ============================================================================
 
 export type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
 export type DeepRequired<T> = {
-	[P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
+  [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
 };
 
 export type Nullable<T> = T | null;
 export type Optional<T> = T | undefined;
 
 export type KeysOfType<T, U> = {
-	[K in keyof T]: T[K] extends U ? K : never;
+  [K in keyof T]: T[K] extends U ? K : never;
 }[keyof T];
 
 export type Awaitable<T> = T | Promise<T>;
@@ -225,7 +225,7 @@ export type Awaitable<T> = T | Promise<T>;
 export type Constructor<T = {}> = new (...args: unknown[]) => T;
 
 export type Mutable<T> = {
-	-readonly [P in keyof T]: T[P];
+  -readonly [P in keyof T]: T[P];
 };
 
 // ============================================================================
@@ -235,21 +235,21 @@ export type Mutable<T> = {
 export type Result<T, E = Error> = Success<T> | Failure<E>;
 
 export interface Success<T> {
-	success: true;
-	data: T;
+  success: true;
+  data: T;
 }
 
 export interface Failure<E> {
-	success: false;
-	error: E;
+  success: false;
+  error: E;
 }
 
 export function success<T>(data: T): Success<T> {
-	return { success: true, data };
+  return { success: true, data };
 }
 
 export function failure<E>(error: E): Failure<E> {
-	return { success: false, error };
+  return { success: false, error };
 }
 
 // ============================================================================
@@ -257,39 +257,39 @@ export function failure<E>(error: E): Failure<E> {
 // ============================================================================
 
 export function isBaseEntity(obj: unknown): obj is BaseEntity {
-	return (
-		obj &&
-		typeof obj.id === "string" &&
-		obj.created instanceof Date &&
-		obj.updated instanceof Date
-	);
+  return (
+    obj &&
+    typeof obj.id === 'string' &&
+    obj.created instanceof Date &&
+    obj.updated instanceof Date
+  );
 }
 
 export function isSystemEvent(obj: unknown): obj is SystemEvent {
-	return (
-		obj &&
-		typeof obj.id === "string" &&
-		typeof obj.type === "string" &&
-		typeof obj.source === "string" &&
-		obj.timestamp instanceof Date
-	);
+  return (
+    obj &&
+    typeof obj.id === 'string' &&
+    typeof obj.type === 'string' &&
+    typeof obj.source === 'string' &&
+    obj.timestamp instanceof Date
+  );
 }
 
 export function isService(obj: unknown): obj is Service {
-	return (
-		obj &&
-		typeof obj.name === "string" &&
-		typeof obj.version === "string" &&
-		typeof obj.status === "string"
-	);
+  return (
+    obj &&
+    typeof obj.name === 'string' &&
+    typeof obj.version === 'string' &&
+    typeof obj.status === 'string'
+  );
 }
 
 export function isSuccess<T>(result: Result<T, unknown>): result is Success<T> {
-	return result.success === true;
+  return result.success === true;
 }
 
 export function isFailure<E>(result: Result<unknown, E>): result is Failure<E> {
-	return result.success === false;
+  return result.success === false;
 }
 
 // ============================================================================
@@ -302,16 +302,16 @@ export const DEFAULT_PAGE_SIZE = 20;
 export const MAX_PAGE_SIZE = 100;
 
 export const EVENT_PRIORITIES: Record<EventPriority, number> = {
-	low: 1,
-	medium: 2,
-	high: 3,
-	critical: 4,
+  low: 1,
+  medium: 2,
+  high: 3,
+  critical: 4,
 };
 
 export const SERVICE_STATUSES: Record<ServiceStatus, string> = {
-	starting: "Starting",
-	running: "Running",
-	stopping: "Stopping",
-	stopped: "Stopped",
-	error: "Error",
+  starting: 'Starting',
+  running: 'Running',
+  stopping: 'Stopping',
+  stopped: 'Stopped',
+  error: 'Error',
 };

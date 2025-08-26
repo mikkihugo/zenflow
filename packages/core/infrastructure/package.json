@@ -1,0 +1,43 @@
+{
+  "name": "@claude-zen/infrastructure",
+  "version": "1.0.0",
+  "description": "Infrastructure facade - Delegates to database, event-system, and infrastructure implementations",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "infrastructure",
+    "facade",
+    "database",
+    "event-system",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -5,9 +5,23 @@
  * with core functionality, infrastructure, and configuration.
  */
 
-// Configuration management
-export * from "./configuration";
 // Core web functionality
-export * from "./core";
-// Infrastructure components
-export * from "./infrastructure";
+export * from './core';
+
+// Direct package imports - no facades
+export { DatabaseProvider } from '@claude-zen/database';
+export { EventBus } from '@claude-zen/event-system';
+
+// Create database access utility function
+export async function getDatabaseAccess() {
+  return new DatabaseProvider();
+}
+
+// Create infrastructure system utility
+export const infrastructureSystem = {
+  database: new DatabaseProvider(),
+  events: new EventBus()
+};
+
+// TODO: Add configuration module when needed
+// export * from './configuration';

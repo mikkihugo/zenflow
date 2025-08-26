@@ -969,7 +969,7 @@ window.translations = {
 						}
 					}
 					for (var c = 0; c < u.length; c++) {
-						var k = t.FieldRef.fromString(u[c]),
+						const k = t.FieldRef.fromString(u[c]),
 							h = k.docRef;
 						if (V.contains(h) && !A.contains(h)) {
 							var E = this.fieldVectors[k],
@@ -1465,7 +1465,7 @@ window.translations = {
 							case t.QueryLexer.TERM:
 								return t.QueryParser.parseTerm;
 							default: {
-								var r = `expected either a field or a term, found ${n.type}`;
+								let r = `expected either a field or a term, found ${n.type}`;
 								throw (
 									(n.str.length >= 1 && (r += ` with value '${n.str}'`),
 									new t.QueryParseError(r, n.start, n.end))
@@ -1551,7 +1551,7 @@ window.translations = {
 							case t.QueryLexer.PRESENCE:
 								return e.nextClause(), t.QueryParser.parsePresence;
 							default: {
-								var i = `Unexpected lexeme type '${r.type}'`;
+								const i = `Unexpected lexeme type '${r.type}'`;
 								throw new t.QueryParseError(i, r.start, r.end);
 							}
 						}

@@ -7,28 +7,28 @@
  * @file Express logging middleware with performance monitoring.
  */
 
-import { getLogger } from "@claude-zen/foundation";
-import type { NextFunction, Request, Response } from "express";
+import { getLogger } from '@claude-zen/foundation';
+import type { NextFunction, Request, Response } from 'express';
 
-const logger = getLogger("interfaces-api-http-middleware-logging");
+const logger = getLogger('interfaces-api-http-middleware-logging');
 
 // Constants
-const CONTENT_TYPE_HEADER = "content-type";
-const CACHE_CONTROL_HEADER = "cache-control";
-const CONTENT_LENGTH_HEADER = "content-length";
+const CONTENT_TYPE_HEADER = 'content-type';
+const CACHE_CONTROL_HEADER = 'cache-control';
+const CONTENT_LENGTH_HEADER = 'content-length';
 
 /**
  * Log levels following Google Cloud Logging standards.
  */
 export enum LogLevel {
-	DEBUG = "DEBUG",
-	INFO = "INFO",
-	NOTICE = "NOTICE",
-	WARNING = "WARNING",
-	ERROR = "ERROR",
-	CRITICAL = "CRITICAL",
-	ALERT = "ALERT",
-	EMERGENCY = "EMERGENCY",
+  DEBUG = 'DEBUG',
+  INFO = 'INFO',
+  NOTICE = 'NOTICE',
+  WARNING = 'WARNING',
+  ERROR = 'ERROR',
+  CRITICAL = 'CRITICAL',
+  ALERT = 'ALERT',
+  EMERGENCY = 'EMERGENCY',
 }
 
 /**
@@ -51,30 +51,30 @@ export enum LogLevel {
  * ```
  */
 export interface LogEntry {
-	readonly timestamp: string;
-	readonly level: LogLevel;
-	readonly message: string;
-	readonly httpRequest?: {
-		readonly requestMethod: string;
-		readonly requestUrl: string;
-		readonly requestSize?: number;
-		readonly status?: number;
-		readonly responseSize?: number;
-		readonly userAgent?: string;
-		readonly remoteIp?: string;
-		readonly referer?: string;
-		readonly latency?: string;
-		readonly protocol?: string;
-	};
-	readonly trace?: string;
-	readonly spanId?: string;
-	readonly operation?: {
-		readonly id: string;
-		readonly producer: string;
-		readonly first?: boolean;
-		readonly last?: boolean;
-	};
-	readonly metadata?: Record<string, unknown>;
+  readonly timestamp: string;
+  readonly level: LogLevel;
+  readonly message: string;
+  readonly httpRequest?: {
+    readonly requestMethod: string;
+    readonly requestUrl: string;
+    readonly requestSize?: number;
+    readonly status?: number;
+    readonly responseSize?: number;
+    readonly userAgent?: string;
+    readonly remoteIp?: string;
+    readonly referer?: string;
+    readonly latency?: string;
+    readonly protocol?: string;
+  };
+  readonly trace?: string;
+  readonly spanId?: string;
+  readonly operation?: {
+    readonly id: string;
+    readonly producer: string;
+    readonly first?: boolean;
+    readonly last?: boolean;
+  };
+  readonly metadata?: Record<string, unknown>;
 }
 
 /**
@@ -92,11 +92,11 @@ export interface LogEntry {
  * ```
  */
 interface RequestMetadata {
-	readonly requestId: string;
-	readonly startTime: number;
-	readonly userAgent?: string;
-	readonly remoteIp?: string;
-	readonly referer?: string;
+  readonly requestId: string;
+  readonly startTime: number;
+  readonly userAgent?: string;
+  readonly remoteIp?: string;
+  readonly referer?: string;
 }
 
 /**
@@ -104,7 +104,7 @@ interface RequestMetadata {
  * Uses timestamp + random string for uniqueness.
  */
 const generateRequestId = (): string =>
-	`req-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+  `req-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 
 /**
  * Get client IP address from request.
@@ -113,11 +113,11 @@ const generateRequestId = (): string =>
  * @param req Express request object
  */
 const getClientIp = (req: Request): string =>
-	(req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
-	(req.headers["x-real-ip"] as string) ||
-	req.connection?.remoteAddress ||
-	req.socket?.remoteAddress ||
-	"unknown";
+  (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+  (req.headers['x-real-ip'] as string) ||
+  req.connection?.remoteAddress ||
+  req.socket?.remoteAddress ||
+  'unknown';
 
 /**
  * Calculate request body size in bytes.
@@ -126,21 +126,21 @@ const getClientIp = (req: Request): string =>
  * @param req Express request object
  */
 const getRequestSize = (req: Request): number => {
-	const contentLength = req.headers[CONTENT_LENGTH_HEADER];
-	if (contentLength) {
-		return Number.parseInt(contentLength as string, 10);
-	}
+  const contentLength = req.headers[CONTENT_LENGTH_HEADER];
+  if (contentLength) {
+    return Number.parseInt(contentLength as string, 10);
+  }
 
-	// Estimate size from body if available
-	if (req.body) {
-		try {
-			return JSON.stringify(req.body).length;
-		} catch {
-			return 0;
-		}
-	}
+  // Estimate size from body if available
+  if (req.body) {
+    try {
+      return JSON.stringify(req.body).length;
+    } catch {
+      return 0;
+    }
+  }
 
-	return 0;
+  return 0;
 };
 
 /**
@@ -150,11 +150,11 @@ const getRequestSize = (req: Request): number => {
  * @param res Express response object
  */
 const getResponseSize = (res: Response): number => {
-	const contentLength = res.get(CONTENT_LENGTH_HEADER);
-	if (contentLength) {
-		return Number.parseInt(contentLength, 10);
-	}
-	return 0;
+  const contentLength = res.get(CONTENT_LENGTH_HEADER);
+  if (contentLength) {
+    return Number.parseInt(contentLength, 10);
+  }
+  return 0;
 };
 
 /**
@@ -164,10 +164,10 @@ const getResponseSize = (res: Response): number => {
  * @param milliseconds Duration in milliseconds
  */
 const formatDuration = (milliseconds: number): string => {
-	if (milliseconds < 1000) {
-		return `${milliseconds.toFixed(2)}ms`;
-	}
-	return `${(milliseconds / 1000).toFixed(2)}s`;
+  if (milliseconds < 1000) {
+    return `${milliseconds.toFixed(2)}ms`;
+  }
+  return `${(milliseconds / 1000).toFixed(2)}s`;
 };
 
 /**
@@ -177,10 +177,10 @@ const formatDuration = (milliseconds: number): string => {
  * @param statusCode HTTP response status code
  */
 const getLogLevelFromStatus = (statusCode: number): LogLevel => {
-	if (statusCode >= 500) return LogLevel.ERROR;
-	if (statusCode >= 400) return LogLevel.WARNING;
-	if (statusCode >= 300) return LogLevel.INFO;
-	return LogLevel.INFO;
+  if (statusCode >= 500) return LogLevel.ERROR;
+  if (statusCode >= 400) return LogLevel.WARNING;
+  if (statusCode >= 300) return LogLevel.INFO;
+  return LogLevel.INFO;
 };
 
 /**
@@ -191,18 +191,18 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * @param _method HTTP method (unused but available for extension)
  */
 const shouldLog = (path: string, method: string): boolean => {
-	// Skip logging for health checks in production
-	if (process.env.NODE_ENV === "production" && path === "/health") {
-		return false;
-	}
+  // Skip logging for health checks in production
+  if (process.env.NODE_ENV === 'production' && path === '/health') {
+    return false;
+  }
 
-	// Skip static assets
-	if (path.startsWith("/static/") || path.endsWith(".ico")) {
-		return false;
-	}
+  // Skip static assets
+  if (path.startsWith('/static/') || path.endsWith('.ico')) {
+    return false;
+  }
 
-	// Skip OPTIONS requests for CORS preflight (reduce noise)
-	return method !== "OPTIONS";
+  // Skip OPTIONS requests for CORS preflight (reduce noise)
+  return method !== 'OPTIONS';
 };
 
 /**
@@ -212,43 +212,43 @@ const shouldLog = (path: string, method: string): boolean => {
  * @param data Data object to sanitize
  */
 const sanitizeData = (data: unknown): unknown => {
-	if (!data || typeof data !== "object") {
-		return data;
-	}
+  if (!data || typeof data !== 'object') {
+    return data;
+  }
 
-	const sensitiveFields = [
-		"password",
-		"token",
-		"key",
-		"secret",
-		"auth",
-		"authorization",
-		"cookie",
-		"session",
-		"csrf",
-		"api_key",
-		"apikey",
-	];
+  const sensitiveFields = [
+    'password',
+    'token',
+    'key',
+    'secret',
+    'auth',
+    'authorization',
+    'cookie',
+    'session',
+    'csrf',
+    'api_key',
+    'apikey',
+  ];
 
-	const sanitized = { ...data };
-	for (const field of sensitiveFields) {
-		if (field in sanitized) {
-			sanitized[field] = "[REDACTED]";
-		}
-	}
+  const sanitized = { ...data };
+  for (const field of sensitiveFields) {
+    if (field in sanitized) {
+      sanitized[field] = '[REDACTED]';
+    }
+  }
 
-	return sanitized;
+  return sanitized;
 };
 
 /**
  * Parameters for creating a log entry.
  */
 interface CreateLogEntryParams {
-	level: LogLevel;
-	message: string;
-	req: Request;
-	res?: Response;
-	metadata?: Record<string, unknown>;
+  level: LogLevel;
+  message: string;
+  req: Request;
+  res?: Response;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -256,44 +256,44 @@ interface CreateLogEntryParams {
  * Builds standardized log entry with all metadata.
  */
 const createLogEntry = ({
-	level,
-	message,
-	req,
-	res,
-	metadata,
+  level,
+  message,
+  req,
+  res,
+  metadata,
 }: CreateLogEntryParams): LogEntry => {
-	const requestMetadata = req.metadata as RequestMetadata;
-	const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
+  const requestMetadata = req.metadata as RequestMetadata;
+  const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
 
-	const logEntry: LogEntry = {
-		timestamp: new Date().toISOString(),
-		level,
-		message,
-		httpRequest: {
-			requestMethod: req.method,
-			requestUrl: req.originalUrl || req.url,
-			requestSize: getRequestSize(req),
-			status: res?.statusCode,
-			responseSize: res ? getResponseSize(res) : undefined,
-			userAgent: requestMetadata?.userAgent,
-			remoteIp: requestMetadata?.remoteIp,
-			referer: requestMetadata?.referer,
-			latency: duration ? formatDuration(duration) : undefined,
-			protocol: req.protocol,
-		},
-		trace: requestMetadata?.requestId,
-		operation: {
-			id: requestMetadata?.requestId,
-			producer: "claude-zen-flow-api",
-			first: !res,
-			// First log entry for request
-			last: !!res,
-			// Last log entry for response
-		},
-		metadata: metadata ? sanitizeData(metadata) : undefined,
-	};
+  const logEntry: LogEntry = {
+    timestamp: new Date().toISOString(),
+    level,
+    message,
+    httpRequest: {
+      requestMethod: req.method,
+      requestUrl: req.originalUrl || req.url,
+      requestSize: getRequestSize(req),
+      status: res?.statusCode,
+      responseSize: res ? getResponseSize(res) : undefined,
+      userAgent: requestMetadata?.userAgent,
+      remoteIp: requestMetadata?.remoteIp,
+      referer: requestMetadata?.referer,
+      latency: duration ? formatDuration(duration) : undefined,
+      protocol: req.protocol,
+    },
+    trace: requestMetadata?.requestId,
+    operation: {
+      id: requestMetadata?.requestId,
+      producer: 'claude-zen-flow-api',
+      first: !res,
+      // First log entry for request
+      last: !!res,
+      // Last log entry for response
+    },
+    metadata: metadata ? sanitizeData(metadata as Record<string, unknown>) : undefined,
+  };
 
-	return logEntry;
+  return logEntry;
 };
 
 /**
@@ -303,30 +303,30 @@ const createLogEntry = ({
  * @param logEntry Structured log entry to output
  */
 const outputLog = (logEntry: LogEntry): void => {
-	if (process.env.NODE_ENV === "development") {
-		// Pretty print for development
-		const { httpRequest, level, message, metadata } = logEntry;
-		const duration = httpRequest?.latency || "";
-		const status = httpRequest?.status || "";
-		const method = httpRequest?.requestMethod || "";
-		const url = httpRequest?.requestUrl || "";
+  if (process.env.NODE_ENV === 'development') {
+    // Pretty print for development
+    const { httpRequest, level, message, metadata } = logEntry;
+    const duration = httpRequest?.latency || '';
+    const status = httpRequest?.status || '';
+    const method = httpRequest?.requestMethod || '';
+    const url = httpRequest?.requestUrl || '';
 
-		if (httpRequest) {
-			logger.info(`${method} ${url} ${status} ${duration}`);
-			if (level === LogLevel.ERROR && metadata) {
-				logger.error("Error details:", metadata);
-			}
-		} else {
-			logger.info(`${level} ${message}`);
-		}
+    if (httpRequest) {
+      logger.info(`${method} ${url} ${status} ${duration}`);
+      if (level === LogLevel.ERROR && metadata) {
+        logger.error('Error details:', metadata);
+      }
+    } else {
+      logger.info(`${level} ${message}`);
+    }
 
-		if (metadata && level !== LogLevel.ERROR) {
-			logger.debug("Metadata:", metadata);
-		}
-	} else {
-		// Production: JSON format for structured logging
-		logger.info(JSON.stringify(logEntry));
-	}
+    if (metadata && level !== LogLevel.ERROR) {
+      logger.debug('Metadata:', metadata);
+    }
+  } else {
+    // Production: JSON format for structured logging
+    logger.info(JSON.stringify(logEntry));
+  }
 };
 
 /**
@@ -338,74 +338,74 @@ const outputLog = (logEntry: LogEntry): void => {
  * @param next Next middleware function
  */
 export const requestLogger = (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction
 ): void => {
-	const requestId = generateRequestId();
-	const startTime = Date.now();
+  const requestId = generateRequestId();
+  const startTime = Date.now();
 
-	// Attach metadata to request for later use
-	req.metadata = {
-		requestId,
-		startTime,
-		userAgent: req.headers["user-agent"] as string,
-		remoteIp: getClientIp(req),
-		referer: req.headers.referer as string,
-	} as RequestMetadata;
+  // Attach metadata to request for later use
+  req.metadata = {
+    requestId,
+    startTime,
+    userAgent: req.headers['user-agent'] as string,
+    remoteIp: getClientIp(req),
+    referer: req.headers.referer as string,
+  } as RequestMetadata;
 
-	// Set request ID header for client tracing
-	res.setHeader("X-Request-ID", requestId);
+  // Set request ID header for client tracing
+  res.setHeader('X-Request-ID', requestId);
 
-	// Log request start (only if should be logged)
-	if (shouldLog(req.path, req.method)) {
-		const logEntry = createLogEntry({
-			level: LogLevel.INFO,
-			message: "Request started",
-			req,
-			metadata: {
-				query: sanitizeData(req.query),
-				body: req.method !== "GET" ? sanitizeData(req.body) : undefined,
-				headers: sanitizeData({
-					[CONTENT_TYPE_HEADER]: req.headers[CONTENT_TYPE_HEADER],
-					accept: req.headers.accept,
-					[CACHE_CONTROL_HEADER]: req.headers[CACHE_CONTROL_HEADER],
-				}),
-			},
-		});
-		outputLog(logEntry);
-	}
+  // Log request start (only if should be logged)
+  if (shouldLog(req.path, req.method)) {
+    const logEntry = createLogEntry({
+      level: LogLevel.INFO,
+      message: 'Request started',
+      req,
+      metadata: {
+        query: sanitizeData(req.query),
+        body: req.method !== 'GET' ? sanitizeData(req.body) : undefined,
+        headers: sanitizeData({
+          [CONTENT_TYPE_HEADER]: req.headers[CONTENT_TYPE_HEADER],
+          accept: req.headers.accept,
+          [CACHE_CONTROL_HEADER]: req.headers[CACHE_CONTROL_HEADER],
+        }),
+      },
+    });
+    outputLog(logEntry);
+  }
 
-	// Hook into response finish event
-	const originalEnd = res.end;
-	res.end = function (chunk?: unknown, encoding?: string): Response {
-		// Log response completion
-		if (shouldLog(req.path, req.method)) {
-			const level = getLogLevelFromStatus(res.statusCode);
-			const duration = Date.now() - startTime;
+  // Hook into response finish event
+  const originalEnd = res.end;
+  res.end = function (chunk?: unknown, encoding?: string, cb?: () => void): Response {
+    // Log response completion
+    if (shouldLog(req.path, req.method)) {
+      const level = getLogLevelFromStatus(res.statusCode);
+      const duration = Date.now() - startTime;
 
-			const logEntry = createLogEntry({
-				level,
-				message: "Request completed",
-				req,
-				res,
-				metadata: {
-					duration: `${duration}ms`,
-					responseHeaders: sanitizeData({
-						[CONTENT_TYPE_HEADER]: res.get(CONTENT_TYPE_HEADER),
-						[CACHE_CONTROL_HEADER]: res.get(CACHE_CONTROL_HEADER),
-						[CONTENT_LENGTH_HEADER]: res.get(CONTENT_LENGTH_HEADER),
-					}),
-				},
-			});
-			outputLog(logEntry);
-		}
+      const logEntry = createLogEntry({
+        level,
+        message: 'Request completed',
+        req,
+        res,
+        metadata: {
+          duration: `${duration}ms`,
+          responseHeaders: sanitizeData({
+            [CONTENT_TYPE_HEADER]: res.get(CONTENT_TYPE_HEADER),
+            [CACHE_CONTROL_HEADER]: res.get(CACHE_CONTROL_HEADER),
+            [CONTENT_LENGTH_HEADER]: res.get(CONTENT_LENGTH_HEADER),
+          }),
+        },
+      });
+      outputLog(logEntry);
+    }
 
-		// Call original end method
-		return originalEnd.call(this, chunk, encoding);
-	};
+    // Call original end method
+    return originalEnd.call(this, chunk, encoding, cb);
+  };
 
-	next();
+  next();
 };
 
 /**
@@ -417,24 +417,24 @@ export const requestLogger = (
  * @param additionalContext Additional context to include in log
  */
 export const logError = (
-	error: Error,
-	req: Request,
-	additionalContext?: Record<string, unknown>,
+  error: Error,
+  req: Request,
+  additionalContext?: Record<string, unknown>
 ): void => {
-	const logEntry = createLogEntry({
-		level: LogLevel.ERROR,
-		message: `Error: ${error.message}`,
-		req,
-		metadata: {
-			error: {
-				name: error.name,
-				message: error.message,
-				stack: error.stack,
-			},
-			context: additionalContext,
-		},
-	});
-	outputLog(logEntry);
+  const logEntry = createLogEntry({
+    level: LogLevel.ERROR,
+    message: `Error: ${error.message}`,
+    req,
+    metadata: {
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      },
+      context: additionalContext,
+    },
+  });
+  outputLog(logEntry);
 };
 
 /**
@@ -447,23 +447,23 @@ export const logError = (
  * @param metadata Additional performance metadata
  */
 export const logPerformance = (
-	operation: string,
-	duration: number,
-	req: Request,
-	metadata?: Record<string, unknown>,
+  operation: string,
+  duration: number,
+  req: Request,
+  metadata?: Record<string, unknown>
 ): void => {
-	const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
-	const logEntry = createLogEntry({
-		level,
-		message: `Performance: ${operation} took ${formatDuration(duration)}`,
-		req,
-		metadata: {
-			operation,
-			duration: `${duration}ms`,
-			performanceMetric: metadata,
-		},
-	});
-	outputLog(logEntry);
+  const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
+  const logEntry = createLogEntry({
+    level,
+    message: `Performance: ${operation} took ${formatDuration(duration)}`,
+    req,
+    metadata: {
+      operation,
+      duration: `${duration}ms`,
+      performanceMetric: metadata,
+    },
+  });
+  outputLog(logEntry);
 };
 
 /**
@@ -476,36 +476,36 @@ export const logPerformance = (
  * @param metadata Additional metadata to include
  */
 export const log = (
-	level: LogLevel,
-	message: string,
-	req?: Request,
-	metadata?: Record<string, unknown>,
+  level: LogLevel,
+  message: string,
+  req?: Request,
+  metadata?: Record<string, unknown>
 ): void => {
-	if (req) {
-		const logEntry = createLogEntry({ level, message, req, metadata });
-		outputLog(logEntry);
-	} else {
-		// Simple log without request context
-		const logEntry: LogEntry = {
-			timestamp: new Date().toISOString(),
-			level,
-			message,
-			metadata: metadata ? sanitizeData(metadata) : undefined,
-		};
-		outputLog(logEntry);
-	}
+  if (req) {
+    const logEntry = createLogEntry({ level, message, req, metadata });
+    outputLog(logEntry);
+  } else {
+    // Simple log without request context
+    const logEntry: LogEntry = {
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      metadata: metadata ? sanitizeData(metadata as Record<string, unknown>) : undefined,
+    };
+    outputLog(logEntry);
+  }
 };
 
 /**
  * Parameters for database operation logging.
  */
 interface DatabaseOperationParams {
-	operation: string;
-	table: string;
-	duration: number;
-	rowCount: number;
-	req: Request;
-	metadata?: Record<string, unknown>;
+  operation: string;
+  table: string;
+  duration: number;
+  rowCount: number;
+  req: Request;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -513,42 +513,42 @@ interface DatabaseOperationParams {
  * Specialized logging for database operations with query metrics.
  */
 export const logDatabaseOperation = ({
-	operation,
-	table,
-	duration,
-	rowCount,
-	req,
-	metadata,
+  operation,
+  table,
+  duration,
+  rowCount,
+  req,
+  metadata,
 }: DatabaseOperationParams): void => {
-	const level = duration > 1000 ? LogLevel.WARNING : LogLevel.DEBUG;
-	const logEntry = createLogEntry({
-		level,
-		message: `Database: ${operation} on ${table}`,
-		req,
-		metadata: {
-			database: {
-				operation,
-				table,
-				duration: `${duration}ms`,
-				rowCount,
-				slow: duration > 1000,
-			},
-			...metadata,
-		},
-	});
-	outputLog(logEntry);
+  const level = duration > 1000 ? LogLevel.WARNING : LogLevel.DEBUG;
+  const logEntry = createLogEntry({
+    level,
+    message: `Database: ${operation} on ${table}`,
+    req,
+    metadata: {
+      database: {
+        operation,
+        table,
+        duration: `${duration}ms`,
+        rowCount,
+        slow: duration > 1000,
+      },
+      ...metadata,
+    },
+  });
+  outputLog(logEntry);
 };
 
 /**
  * Parameters for external service logging.
  */
 interface ExternalServiceParams {
-	service: string;
-	operation: string;
-	duration: number;
-	statusCode: number;
-	req: Request;
-	metadata?: Record<string, unknown>;
+  service: string;
+  operation: string;
+  duration: number;
+  statusCode: number;
+  req: Request;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -556,49 +556,49 @@ interface ExternalServiceParams {
  * Specialized logging for external service calls with response metrics.
  */
 export const logExternalService = ({
-	service,
-	operation,
-	duration,
-	statusCode,
-	req,
-	metadata,
+  service,
+  operation,
+  duration,
+  statusCode,
+  req,
+  metadata,
 }: ExternalServiceParams): void => {
-	const level =
-		statusCode >= 400 || duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
-	const logEntry = createLogEntry({
-		level,
-		message: `External: ${service} ${operation}`,
-		req,
-		metadata: {
-			externalService: {
-				service,
-				operation,
-				duration: `${duration}ms`,
-				statusCode,
-				success: statusCode < 400,
-				slow: duration > 5000,
-			},
-			...metadata,
-		},
-	});
-	outputLog(logEntry);
+  const level =
+    statusCode >= 400 || duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
+  const logEntry = createLogEntry({
+    level,
+    message: `External: ${service} ${operation}`,
+    req,
+    metadata: {
+      externalService: {
+        service,
+        operation,
+        duration: `${duration}ms`,
+        statusCode,
+        success: statusCode < 400,
+        slow: duration > 5000,
+      },
+      ...metadata,
+    },
+  });
+  outputLog(logEntry);
 };
 
 // Extend Express Request interface to include metadata
 declare global {
-	namespace Express {
-		interface Request {
-			metadata?: RequestMetadata;
-		}
-	}
+  namespace Express {
+    interface Request {
+      metadata?: RequestMetadata;
+    }
+  }
 }
 
 export default {
-	logLevel: LogLevel,
-	requestLogger,
-	logError,
-	logPerformance,
-	log,
-	logDatabaseOperation,
-	logExternalService,
+  logLevel: LogLevel,
+  requestLogger,
+  logError,
+  logPerformance,
+  log,
+  logDatabaseOperation,
+  logExternalService,
 };

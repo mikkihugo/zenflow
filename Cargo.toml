@@ -1,20 +1,26 @@
 [workspace]
 resolver = "2"
 members = [
-    "packages/implementation/brain/rust/core",
-    "packages/implementation/singularity-coder/rust-core/code-mesh-cli",
-    "packages/implementation/singularity-coder/rust-core/code-mesh-core", 
-    "packages/implementation/singularity-coder/rust-core/code-mesh-tui",
-    "packages/implementation/singularity-coder/rust-core/code-mesh-wasm",
-    "packages/private-core/fact-system/src/rust",
-    "packages/private-core/neural-ml/neural-core",
-    "packages/private-core/neural-ml/neural-core/claude-zen-neural-core",
-    "packages/private-core/neural-ml/neural-core/claude-zen-neural-data",
-    "packages/private-core/neural-ml/neural-core/claude-zen-neural-models",
-    "packages/private-core/neural-ml/neural-core/claude-zen-neural-registry",
-    "packages/private-core/neural-ml/neural-core/claude-zen-neural-training",
+    # Core services - new organized structure
+    "packages/services/brain/rust/core",
+    
+    # Tools - singularity coder components (moved to new structure)
+    "packages/tools/singularity-coder/rust-core/code-mesh-cli",
+    "packages/tools/singularity-coder/rust-core/code-mesh-core", 
+    "packages/tools/singularity-coder/rust-core/code-mesh-tui",
+    "packages/tools/singularity-coder/rust-core/code-mesh-wasm",
+    
+    # Core components (moved to new structure)
+    "packages/core/fact-system/src/rust",
+    "packages/core/neural-ml/neural-core",
+    "packages/core/neural-ml/neural-core/claude-zen-neural-core",
+    "packages/core/neural-ml/neural-core/claude-zen-neural-data",
+    "packages/core/neural-ml/neural-core/claude-zen-neural-models",
+    "packages/core/neural-ml/neural-core/claude-zen-neural-registry",
+    "packages/core/neural-ml/neural-core/claude-zen-neural-training",
+    
     # taskmaster wasm has dependency conflicts, exclude for now
-    # "packages/implementation/taskmaster/src/wasm",
+    # "packages/services/taskmaster/src/wasm",
 ]
 
 [workspace.dependencies]

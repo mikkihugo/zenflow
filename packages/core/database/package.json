@@ -1,0 +1,82 @@
+{
+  "name": "@claude-zen/database",
+  "version": "1.0.0",
+  "description": "Multi-database abstraction layer for claude-code-zen",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "NODE_OPTIONS='--max_old_space_size=12288' eslint . --ext .ts",
+    "lint:fix": "NODE_OPTIONS='--max_old_space_size=12288' eslint . --ext .ts --fix",
+    "format": "eslint . --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100"
+  },
+  "keywords": [
+    "database",
+    "sqlite",
+    "lancedb",
+    "kuzu",
+    "multi-database",
+    "abstraction",
+    "claude-code-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@lancedb/lancedb": "^0.21.3",
+    "better-sqlite3": "^12.2.0",
+    "kuzu": "^0.11.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "22.17.1",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js"
+    },
+    "./dao": {
+      "types": "./dist/dao/index.d.ts",
+      "import": "./dist/dao/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/database"
+  }
+}

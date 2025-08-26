@@ -1,0 +1,44 @@
+{
+  "name": "@claude-zen/intelligence",
+  "version": "1.0.0",
+  "description": "Intelligence facade - Delegates to brain, teamwork, and knowledge implementations",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "intelligence",
+    "facade",
+    "brain",
+    "teamwork",
+    "knowledge",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

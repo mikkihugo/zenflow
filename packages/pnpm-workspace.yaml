@@ -1,0 +1,12 @@
+packages:
+  # Core packages - Essential foundation
+  - 'core/*'
+  
+  # Service packages - Business logic
+  - 'services/*'
+  
+  # Tool packages - Development utilities  
+  - 'tools/*'
+  
+  # Integration packages - External systems
+  - 'integrations/*'
