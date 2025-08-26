@@ -8,18 +8,16 @@
 // export { SPARCEngineCore } from './core/sparc-engine';
 // export type { SPARCEngineConfig } from './core/sparc-engine';
 
-// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts
-// export type {
-//   EpicProposal,
-//   PortfolioDecision,
-//   SafeSparcWorkflowConfig,
-//   SparcArtifacts,
-//   SparcExecutionContext,
-//   SparcExecutionResult,
-// } from './core/safe-sparc-workflow';
 // SAFe-SPARC Integration Workflow (Production Implementation)
-// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts
-// export { SafeSparcWorkflow } from './core/safe-sparc-workflow';
+export type {
+  EpicProposal,
+  PortfolioDecision,
+  SafeSparcWorkflowConfig,
+  SparcArtifacts,
+  SparcExecutionContext,
+  SparcExecutionResult,
+} from './core/safe-sparc-workflow';
+export { SafeSparcWorkflow } from './core/safe-sparc-workflow';
 export type {
   DeliverableMetrics,
   MethodologyResult,
