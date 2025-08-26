@@ -28,8 +28,7 @@
  * ````
  */
 
-import { z } from '@claude-zen/foundation';
-import { getLogger, Result, ok, err, safeAsync } from '@claude-zen/foundation';
+import { err, getLogger, ok, type Result, safeAsync, z } from '@claude-zen/foundation';
 
 const logger = getLogger('EventValidation');'
 
@@ -265,7 +264,7 @@ export class EventValidator<T = unknown> {
   /**
    * Async validation with error handling
    */
-  async validateAsync(data: unknown): Promise<Result<T, Error>> {
+  async validateAsync(data: unknown): Promise<Result<T, Error>> 
     return safeAsync(async () => {
       const result = await this.schema.safeParseAsync(data);
 
@@ -275,26 +274,23 @@ export class EventValidator<T = unknown> {
         throw result.error;
       }
     });
-  }
 
   /**
    * Parse data directly (throws on validation error)
    */
-  parse(data: unknown): T {
+  parse(data: unknown): T 
     return this.schema.parse(data);
-  }
 
   /**
    * Check if data matches schema without parsing
    */
-  isValid(data: unknown): boolean {
+  isValid(data: unknown): boolean 
     return this.schema.safeParse(data).success;
-  }
 
   /**
    * Get schema description for debugging
    */
-  getSchemaDescription(): string {
+  getSchemaDescription(): string 
     return this.schema.description||`Schema for ${this.name}`;`
   }
 }

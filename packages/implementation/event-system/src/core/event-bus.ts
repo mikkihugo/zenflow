@@ -37,15 +37,13 @@ import { EventEmitter } from '@claude-zen/foundation';
  * ````
  */
 
-import { EventEmitter } from '@claude-zen/foundation';
-import compose from 'koa-compose';
-import {
-  getLogger,
-  Result,
-  ok,
+import { EventEmitter, 
   err,
-  safeAsync,
-} from '@claude-zen/foundation';
+  getLogger,
+  ok,
+  type Result,
+  safeAsync,} from '@claude-zen/foundation';
+import compose from 'koa-compose';
 
 const logger = getLogger('EventBus');
 
@@ -170,8 +168,7 @@ export class EventBus extends EventEmitter {
           recordMetric('event_bus.events_total', 1, { event_type: event });'
           recordMetric(
             'event_bus.active_listeners',
-            this.listenerCount(event),
-            { event_type: event }
+            this.listenerCount(event),event_type: event 
           );
         }
 

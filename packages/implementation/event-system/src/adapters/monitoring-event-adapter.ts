@@ -1,5 +1,4 @@
-import { EventEmitter } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');'
 
@@ -500,7 +499,7 @@ export class MonitoringEventAdapter implements EventManager {
     };
 
     this.logger = createLogger(`MonitoringEventAdapter:${this.name}`);`
-    this.logger.info(`Creating monitoring event adapter: ${this.name}`);`
+    this.logger.info(`Creating monitoring event adapter: $this.name`);`
 
     // Set max listeners to handle many monitoring components
   }
@@ -549,9 +548,9 @@ export class MonitoringEventAdapter implements EventManager {
       this.emitInternal('start');'
 
       this.logger.info(
-        `Monitoring event adapter started successfully: ${this.name}``
+        `Monitoring event adapter started successfully: $this.name``
       );
-    } catch (error) {
+    } catch (error) 
       this.logger.error(
         `Failed to start monitoring event adapter ${this.name}:`,`
         { error }
@@ -568,7 +567,6 @@ export class MonitoringEventAdapter implements EventManager {
     if (!this.running) {
       this.logger.warn(`Monitoring event adapter ${this.name} is not running`);`
       return;
-    }
 
     this.logger.info(`Stopping monitoring event adapter: ${this.name}`);`
 
@@ -586,7 +584,7 @@ export class MonitoringEventAdapter implements EventManager {
       this.emitInternal('stop');'
 
       this.logger.info(
-        `Monitoring event adapter stopped successfully: ${this.name}``
+        `Monitoring event adapter stopped successfully: $this.name``
       );
     } catch (error) {
       this.logger.error(
@@ -638,7 +636,7 @@ export class MonitoringEventAdapter implements EventManager {
         options?.timeout||this.config.performance?.monitoringInterval||30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
-          () => reject(new Error(`Event timeout after ${timeout}ms`)),`
+          () => reject(new Error(`Event timeout after $timeoutms`)),`
           timeout
         );
       });
@@ -728,7 +726,7 @@ export class MonitoringEventAdapter implements EventManager {
 
     try {
       this.logger.debug(
-        `Emitting monitoring event batch: ${batch.id} (${batch.events.length} events)``
+        `Emitting monitoring event batch: $batch.id($batch.events.lengthevents)``
       );
 
       // Process events based on strategy
@@ -852,7 +850,7 @@ export class MonitoringEventAdapter implements EventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} monitoring subscriptions${eventType ? ` for ${eventType}` : ''}``
+      `Removed $removedCountmonitoring subscriptions$eventType ? ` for ${eventType}` : ''``
     );
     return removedCount;
   }
@@ -877,7 +875,7 @@ export class MonitoringEventAdapter implements EventManager {
   removeFilter(filterId: string): boolean {
     const result = this.filters.delete(filterId);
     if (result) {
-      this.logger.debug(`Removed monitoring event filter: ${filterId}`);`
+      this.logger.debug(`Removed monitoring event filter: $filterId`);`
     }
     return result;
   }
@@ -902,7 +900,7 @@ export class MonitoringEventAdapter implements EventManager {
   removeTransform(transformId: string): boolean {
     const result = this.transforms.delete(transformId);
     if (result) {
-      this.logger.debug(`Removed monitoring event transform: ${transformId}`);`
+      this.logger.debug(`Removed monitoring event transform: $transformId`);`
     }
     return result;
   }
@@ -976,9 +974,8 @@ export class MonitoringEventAdapter implements EventManager {
       status ='unhealthy';
     } else if (
       errorRate > 8||Object.values(componentHealth).some((h) => h.status !=='healthy')'
-    ) {
+    ) 
       status = 'degraded';
-    }
 
     return {
       name: this.name,
@@ -1094,7 +1091,7 @@ export class MonitoringEventAdapter implements EventManager {
    * Cleanup and destroy the adapter.
    */
   async destroy(): Promise<void> {
-    this.logger.info(`Destroying monitoring event adapter: ${this.name}`);`
+    this.logger.info(`Destroying monitoring event adapter: $this.name`);`
 
     try {
       // Stop the adapter if still running
@@ -1644,8 +1641,8 @@ export class MonitoringEventAdapter implements EventManager {
                   : data.status === 'degraded''
                     ? 'warning''
                     : 'info',
-              performanceData: data?.performanceData||{},
-              eventData: data||{},
+              performanceData: data?.performanceData||,
+              eventData: data||,
             },
             details: {
               ...data,
@@ -1725,9 +1722,9 @@ export class MonitoringEventAdapter implements EventManager {
               originalEvent,
               severity: data?.severity||'info',
               performanceData:
-                data?.performanceData||data?.insights?.performance||{},
-              insights: data?.insights||{},
-              eventData: data||{},
+                data?.performanceData||data?.insights?.performance||,
+              insights: data?.insights||,
+              eventData: data||,
             },
             details: {
               ...data,
@@ -1866,7 +1863,7 @@ export class MonitoringEventAdapter implements EventManager {
               componentType: 'dashboard',
               operation: this.extractMonitoringOperation(originalEvent),
               severity: 'info',
-              eventData: data||{},
+              eventData: data||,
             },
             details: {
               ...data,
@@ -2705,21 +2702,19 @@ export class MonitoringEventAdapter implements EventManager {
     return `mon-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
-  private generateSubscriptionId(): string {
+  private generateSubscriptionId(): string 
     return `mon-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateFilterId(): string {
-    return `mon-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
-  }
+    return `mon-flt-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
 
-  private generateTransformId(): string {
+  private generateTransformId(): string 
     return `mon-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateCorrelationId(): string {
-    return `mon-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
-  }
+    return `mon-cor-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
 
   /**
    * Emit wrapper for internal use.
@@ -2727,9 +2722,8 @@ export class MonitoringEventAdapter implements EventManager {
    * @param event
    * @param data
    */
-  private emitInternal(event: string, data?: unknown): void {
+  private emitInternal(event: string, data?: unknown): void 
     this.eventEmitter.emit(event, data);
-  }
 }
 
 /**
@@ -3001,7 +2995,7 @@ export const MonitoringEventHelpers = {
         operation: 'alert',
         source: 'alert-manager',
         helperFunction: 'createAlertEvent',
-        eventData: details||{},
+        eventData: details||,
       },
       details: {
         ...(details as object),

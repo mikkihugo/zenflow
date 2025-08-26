@@ -26,7 +26,7 @@
  * ````
  */
 
-import { getLogger, Result, ok, err, safeAsync } from '@claude-zen/foundation';
+import { err, getLogger, ok, type Result, safeAsync } from '@claude-zen/foundation';
 import type { EventMiddleware, EventContext } from './event-bus;
 
 const logger = getLogger('EventMiddleware');'
@@ -330,7 +330,7 @@ export function createAsyncMiddleware(
           }
           reject(
             new Error(
-              `Middleware timeout after ${timeout}ms for event: ${String(context.event)}``
+              `Middleware timeout after $timeoutms for event: $String(context.event)``
             )
           );
         }, timeout);
@@ -345,4 +345,4 @@ export function createAsyncMiddleware(
   };
 }
 
-export { type EventMiddleware, type EventContext };
+export type { EventMiddleware, EventContext };

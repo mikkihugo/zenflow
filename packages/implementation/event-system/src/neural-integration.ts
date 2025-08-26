@@ -30,18 +30,16 @@
  * ````
  */
 
-import { z } from '@claude-zen/foundation';
-import {
-  getLogger,
-  Result,
-  ok,
+import { 
   err,
-  safeAsync,
-  recordMetric,
-  withTrace,
-  traced,
+  getLogger,
   metered,
-} from '@claude-zen/foundation';
+  ok,
+  type Result,
+  recordMetric,
+  safeAsync,
+  traced,
+  withTrace,z, } from '@claude-zen/foundation';
 // Import the full BrainCoordinator with learnFromResult method
 import {
   BrainCoordinator,
@@ -443,7 +441,7 @@ export class NeuralEventProcessor {
     // Add type-specific routes
     if (event.type.includes('.')) {'
       const [category] = event.type.split('.');'
-      routes.push(`${category}-processor`);`
+      routes.push(`$category-processor`);`
     }
 
     // Add priority-based routes
@@ -535,12 +533,12 @@ export class NeuralEventProcessor {
     const routes: string[] = [];
 
     // Add domain-specific routes
-    routes.push(`${event.domain.toLowerCase()}-handler`);`
+    routes.push(`$event.domain.toLowerCase()-handler`);`
 
     // Add type-specific routes
     if (event.type.includes('.')) {'
       const [category] = event.type.split('.');'
-      routes.push(`${category}-processor`);`
+      routes.push(`$category-processor`);`
     }
 
     // Add priority-based routes based on optimization confidence

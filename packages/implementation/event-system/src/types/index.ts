@@ -14,16 +14,16 @@
  */
 
 import type {
-  UUID,
-  Timestamp,
-  Priority,
-  Status,
-  Entity,
-  OperationResult as Result,
-  ValidationError,
-  Optional,
-  NonEmptyArray,
   Branded as Brand,
+  Entity,
+  NonEmptyArray,
+  Optional,
+  Priority,
+  OperationResult as Result,
+  Status,
+  Timestamp,
+  UUID,
+  ValidationError,
 } from '@claude-zen/foundation';
 
 // =============================================================================
@@ -170,7 +170,7 @@ export interface CoordinationEvent extends SystemEvent {
       latency: number;
       throughput: number;
       reliability: number;
-      resourceUsage: {
+      {
         cpu: number;
         memory: number;
         network: number;

@@ -1,4 +1,5 @@
 import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * @file UEL System Event Adapter.
  *
@@ -12,10 +13,9 @@ import { EventEmitter } from '@claude-zen/foundation';
  * management for system events across Claude-Zen.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 // Import logger (using relative path)
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 // Import types (will be set as any for now to fix type resolution issues)
 // import type { ApplicationCoordinator } from '../core/application-coordinator;
 // import type { CoreSystem } from '../core/core-system;
@@ -290,7 +290,7 @@ export class SystemEventAdapter implements EventManager {
     };
 
     this.logger = getLogger(`SystemEventAdapter:${this.name}`);`
-    this.logger.info(`Creating system event adapter: ${this.name}`);`
+    this.logger.info(`Creating system event adapter: $this.name`);`
 
     // Set max listeners to handle many system components
   }
@@ -308,7 +308,7 @@ export class SystemEventAdapter implements EventManager {
       return;
     }
 
-    this.logger.info(`Starting system event adapter: ${this.name}`);`
+    this.logger.info(`Starting system event adapter: $this.name`);`
 
     try {
       // Initialize system component integrations
@@ -332,7 +332,7 @@ export class SystemEventAdapter implements EventManager {
       this.emitInternal('start');'
 
       this.logger.info(
-        `System event adapter started successfully: ${this.name}``
+        `System event adapter started successfully: $this.name``
       );
     } catch (error) {
       this.logger.error(
@@ -369,7 +369,7 @@ export class SystemEventAdapter implements EventManager {
       this.emitInternal('stop');'
 
       this.logger.info(
-        `System event adapter stopped successfully: ${this.name}``
+        `System event adapter stopped successfully: $this.name``
       );
     } catch (error) {
       this.logger.error(
@@ -499,7 +499,7 @@ export class SystemEventAdapter implements EventManager {
 
     try {
       this.logger.debug(
-        `Emitting event batch: ${batch.id} (${batch.events.length} events)``
+        `Emitting event batch: $batch.id($batch.events.lengthevents)``
       );
 
       // Process events based on strategy
@@ -621,7 +621,7 @@ export class SystemEventAdapter implements EventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} subscriptions${eventType ? ` for ${eventType}` : ''}``
+      `Removed $removedCountsubscriptions$eventType ? ` for ${eventType}` : ''``
     );
     return removedCount;
   }
@@ -646,7 +646,7 @@ export class SystemEventAdapter implements EventManager {
   removeFilter(filterId: string): boolean {
     const result = this.filters.delete(filterId);
     if (result) {
-      this.logger.debug(`Removed event filter: ${filterId}`);`
+      this.logger.debug(`Removed event filter: $filterId`);`
     }
     return result;
   }
@@ -671,7 +671,7 @@ export class SystemEventAdapter implements EventManager {
   removeTransform(transformId: string): boolean {
     const result = this.transforms.delete(transformId);
     if (result) {
-      this.logger.debug(`Removed event transform: ${transformId}`);`
+      this.logger.debug(`Removed event transform: $transformId`);`
     }
     return result;
   }
@@ -745,9 +745,8 @@ export class SystemEventAdapter implements EventManager {
       status ='unhealthy';
     } else if (
       errorRate > 10||Object.values(componentHealth).some((h) => h.status !=='healthy')'
-    ) {
+    ) 
       status = 'degraded';
-    }
 
     return {
       name: this.name,
@@ -857,7 +856,7 @@ export class SystemEventAdapter implements EventManager {
    * Cleanup and destroy the adapter.
    */
   async destroy(): Promise<void> {
-    this.logger.info(`Destroying system event adapter: ${this.name}`);`
+    this.logger.info(`Destroying system event adapter: $this.name`);`
 
     try {
       // Stop the adapter if still running
@@ -1274,7 +1273,7 @@ export class SystemEventAdapter implements EventManager {
 
         this.logger.debug(`Unwrapped component: ${componentName}`);`
       } catch (error) {
-        this.logger.warn(`Failed to unwrap component ${componentName}:`, error);`
+        this.logger.warn(`Failed to unwrap component $componentName:`, error);`
       }
     }
 
@@ -1308,7 +1307,7 @@ export class SystemEventAdapter implements EventManager {
     // Apply global filters
     for (const filter of this.filters.values()) {
       if (!this.applyFilter(event, filter)) {
-        this.logger.debug(`Event ${event.id} filtered out`);`
+        this.logger.debug(`Event $event.idfiltered out`);`
         return;
       }
     }
@@ -1773,24 +1772,22 @@ export class SystemEventAdapter implements EventManager {
    * D generation methods.
    */
   private generateEventId(): string {
-    return `sys-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
+    return `sys-evt-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
   }
 
-  private generateSubscriptionId(): string {
+  private generateSubscriptionId(): string 
     return `sys-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateFilterId(): string {
-    return `sys-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
-  }
+    return `sys-flt-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
 
-  private generateTransformId(): string {
+  private generateTransformId(): string 
     return `sys-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateCorrelationId(): string {
-    return `sys-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
-  }
+    return `sys-cor-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
 
   /**
    * Emit wrapper for internal use.
@@ -1798,9 +1795,8 @@ export class SystemEventAdapter implements EventManager {
    * @param event
    * @param data
    */
-  private emitInternal(event: string, data?: unknown): void {
+  private emitInternal(event: string, data?: unknown): void 
     this.eventEmitter.emit(event, data);
-  }
 }
 
 /**

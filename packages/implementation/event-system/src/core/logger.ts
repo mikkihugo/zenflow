@@ -99,7 +99,7 @@ export class ConsoleLogger implements Logger {
    * @param args - Additional arguments to include in info output
    */
   info(message: string, ...args: unknown[]): void {
-    console.info(`[${this.prefix}] ${message}`, ...args);`
+    console.info(`[$this.prefix] $message`, ...args);`
   }
 
   /**
@@ -119,7 +119,7 @@ export class ConsoleLogger implements Logger {
    * @param args - Additional arguments to include in error output
    */
   error(message: string, ...args: unknown[]): void {
-    console.error(`[${this.prefix}] ${message}`, ...args);`
+    console.error(`[$this.prefix] $message`, ...args);`
   }
 }
 

@@ -11,8 +11,7 @@
  * @file Interface implementation: communication-event-factory.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
+import { EventEmitter, getLogger, type Logger, TypedEventBase } from '@claude-zen/foundation';
 import type {
   EventManagerMetrics,
   EventManagerStatus,
@@ -132,7 +131,7 @@ export class CommunicationEventFactory
 
     if (errors.length > 0) {
       this.logger.warn(
-        `Failed to create ${errors.length} communication event adapters:`,`
+        `Failed to create $errors.lengthcommunication event adapters:`,`
         errors
       );
       this.emit('multiple-creation-partial-failure', {'
@@ -437,15 +436,14 @@ export class CommunicationEventFactory
       this.removeAllListeners();
 
       this.logger.info('Communication Event Factory shutdown completed');'
-      this.emit('factory-shutdown', {});'
-    } catch (error) {
+      this.emit('factory-shutdown', );'
+    } catch (error) 
       this.logger.error(
         'Failed to shutdown Communication Event Factory:',
         error
       );
       this.emit('factory-shutdown-failed', error);'
       throw error;
-    }
   }
 
   /**
@@ -623,9 +621,9 @@ export class CommunicationEventFactory
   }> {
     const healthResults = await this.healthCheckAll();
 
-    let healthyCount = 0;
-    let degradedCount = 0;
-    let unhealthyCount = 0;
+    const healthyCount = 0;
+    const degradedCount = 0;
+    const unhealthyCount = 0;
     const connectionHealth: Record<string, unknown> = {};
     const protocolHealth: Record<string, unknown> = {};
 
@@ -833,29 +831,27 @@ export class CommunicationEventFactory
   private setupEventForwarding(adapter: CommunicationEventAdapter): void {
     // Forward important events from adapter to factory
     adapter.on('start', () => {'
-      this.emit('adapter-started', { name: adapter.name });'
+      this.emit('adapter-started', name: adapter.name );'
     });
 
     adapter.on('stop', () => {'
-      this.emit('adapter-stopped', { name: adapter.name });'
+      this.emit('adapter-stopped', name: adapter.name );'
     });
 
     adapter.on('error', (error) => {'
-      this.emit('adapter-error', { name: adapter.name, error });'
+      this.emit('adapter-error', name: adapter.name, error );'
     });
 
     adapter.on('subscription', (data) => {'
-      this.emit('adapter-subscription', {'
+      this.emit('adapter-subscription', '
         name: adapter.name,
-        ...(data as object),
-      });
+        ...(data as object),);
     });
 
     adapter.on('emission', (data) => {'
-      this.emit('adapter-emission', {'
+      this.emit('adapter-emission', '
         name: adapter.name,
-        ...(data as object),
-      });
+        ...(data as object),);
     });
   }
 }

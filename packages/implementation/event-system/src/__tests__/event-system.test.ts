@@ -18,12 +18,11 @@ import { jest } from '@jest/globals;
 
 // Mock logger to avoid actual logging during tests
 jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({'
-  getLogger: () => ({
+  getLogger: () => (
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn(),
-  }),
+    error: jest.fn(),),
 }));
 
 import { EventBus as EventSystem, createEventSystem } from '../index;
@@ -57,10 +56,9 @@ describe('Event System Core (Jest)', () => {'
   });
 
   describe('Basic Event Handling', () => {'
-    it('should create event system successfully', () => {'
+    it('should create event system successfully', () => '
       expect(eventSystem).toBeDefined();
-      expect(eventSystem).toBeInstanceOf(EventSystem);
-    });
+      expect(eventSystem).toBeInstanceOf(EventSystem););
 
     it('should emit and handle basic events', async () => {'
       const handler = jest.fn();
@@ -113,14 +111,14 @@ describe('Event System Core (Jest)', () => {'
       eventSystem.on('test.remove', handler);'
 
       // Emit before removal
-      eventSystem.emit('test.remove', { message: 'before', count: 1 });'
+      eventSystem.emit('test.remove', message: 'before', count: 1 );'
       expect(handler).toHaveBeenCalledTimes(1);
 
       // Remove listener
       eventSystem.off('test.remove', handler);'
 
       // Emit after removal
-      eventSystem.emit('test.remove', { message: 'after', count: 2 });'
+      eventSystem.emit('test.remove', message: 'after', count: 2 );'
       expect(handler).toHaveBeenCalledTimes(1); // Should still be 1
     });
   });
@@ -277,7 +275,7 @@ describe('Event System Core (Jest)', () => {'
 
       // Emit many events rapidly
       for (let i = 0; i < eventCount; i++) {
-        eventSystem.emit('test.highfreq', { message: `event ${i}`, count: i });`
+        eventSystem.emit('test.highfreq', { message: `event $i`, count: i });`
       }
 
       const endTime = Date.now();
@@ -336,9 +334,8 @@ describe('Event System Factory and Utilities', () => {'
 
   it('should validate event system configuration', () => {'
     // Test that invalid configurations don't break the system'
-    expect(() => {
-      createEventSystem({ maxListeners: -1 });
-    }).not.toThrow(); // EventBus should handle this gracefully
+    expect(() => 
+      createEventSystem({ maxListeners: -1 });).not.toThrow(); // EventBus should handle this gracefully
 
     expect(() => {
       createEventSystem({ enableMetrics: 'invalid' as any });'

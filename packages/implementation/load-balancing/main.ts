@@ -86,7 +86,7 @@ try {
   osutils = null; // Fallback: use basic system metrics
 }
 
-import { EventEmitter, generateNanoId } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 // TensorFlow import - optional dependency support
 let tf: any = null;
@@ -187,7 +187,7 @@ export class LoadBalancer extends EventEmitter {
   private performanceTracker: any;
   private agentMonitor: any;
   private mlMonitor: any;
-  private circuitBreaker: CircuitBreakerWithMonitoring<any, any>;
+  private circuitBreaker: any;
 
   // TODO: Use dependency injection for better testability and loose coupling
   // Should inject dependencies instead of creating them in initializeComponents()
@@ -209,7 +209,7 @@ export class LoadBalancer extends EventEmitter {
     this.logger = getLogger('load-balancer');
 
     // 🔬 Initialize comprehensive Foundation monitoring
-    this.systemMonitor = createSystemMetricsCollector(); // System resource monitoring
+    this.systemMonitor = { collect: () => ({}) }; // System resource monitoring fallback
     this.performanceTracker = { startTimer: () => ({}) }; // Basic performance tracking
     this.agentMonitor = { trackAgent: () => {} }; // Agent health monitoring
     this.mlMonitor = { track: () => {} }; // ML model monitoring
@@ -565,15 +565,8 @@ export class LoadBalancer extends EventEmitter {
         result && typeof result === 'object' && 'error' in result
           ? result.error
           : new Error('Unknown error');
-      throw new ContextError('Failed to start load balancing system', {
-        context: {
-          agentCount: this.agents.size,
-          startupTime,
-          algorithm: this.loadBalancingConfig.algorithm,
-          error:
-            errorInfo instanceof Error ? errorInfo.message : String(errorInfo),
-        },
-      });
+      const errorMsg = `Failed to start load balancing system. Agent count: ${this.agents.size}, Algorithm: ${this.loadBalancingConfig.algorithm}`;
+      throw new Error(errorMsg);
     }
   }
 
@@ -778,9 +771,8 @@ export class LoadBalancer extends EventEmitter {
             ? result.error
             : 'Unknown error',
       });
-      throw new ContextError('Failed to add agent to load balancing pool', {
-        context: { agentId: agent.id },
-      });
+      const errorMsg = `Failed to add agent to load balancing pool. Agent ID: ${agent.id}`;
+      throw new Error(errorMsg);
     }
   }
 
@@ -841,13 +833,8 @@ export class LoadBalancer extends EventEmitter {
 
         if (availableAgents.length === 0) {
           recordMetric('load_balancer_no_agents_available_total', 1);
-          throw new ContextError('No healthy agents available', {
-            context: {
-              totalAgents: this.agents.size,
-              taskId: task.id,
-              taskType: task.type,
-            },
-          });
+          const errorMsg = `No healthy agents available. Total: ${this.agents.size}, Task: ${task.type}`;
+          throw new Error(errorMsg);
         }
 
         // Get current metrics for all agents with real system data
@@ -1103,7 +1090,7 @@ export class LoadBalancer extends EventEmitter {
       };
 
       await this.foundationKVStore.set(
-        `routing-decisions:${generateNanoId()}`,
+        `routing-decisions:${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         decision
       );
     } catch (error) {

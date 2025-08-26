@@ -30,12 +30,11 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
         schema.type &&
         typeof data !== schema.type &&
         schema.type !== 'object''
-      ) {
+      ) 
         return {
           success: false,
           error: new Error(`Expected type ${schema.type}, got ${typeof data}`),`
         };
-      }
 
       return { success: true, data };
     } catch (error) {

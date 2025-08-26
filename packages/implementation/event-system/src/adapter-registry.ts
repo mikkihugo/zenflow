@@ -5,12 +5,12 @@
  * between factories.ts and individual adapter files.
  */
 
+import { type Config, getConfig, getLogger } from "@claude-zen/foundation";
 import type {
-  EventManagerType,
-  EventManager,
-  EventManagerConfig,
-} from './core/interfaces';
-import { getConfig, getLogger, type Config } from '@claude-zen/foundation';
+	EventManager,
+	EventManagerConfig,
+	EventManagerType,
+} from "./core/interfaces";
 
 /**
  * Factory interface for event manager creation.
@@ -22,14 +22,14 @@ import { getConfig, getLogger, type Config } from '@claude-zen/foundation';
  * @interface EventManagerFactory
  */
 interface EventManagerFactory {
-  /**
-   * Create a new event manager instance from configuration.
-   *
-   * @param config - Event manager configuration
-   * @returns Promise resolving to the created event manager
-   * @throws {Error} If manager creation fails
-   */
-  create(config: EventManagerConfig): Promise<EventManager>;
+	/**
+	 * Create a new event manager instance from configuration.
+	 *
+	 * @param config - Event manager configuration
+	 * @returns Promise resolving to the created event manager
+	 * @throws {Error} If manager creation fails
+	 */
+	create(config: EventManagerConfig): Promise<EventManager>;
 }
 
 /**
@@ -55,45 +55,45 @@ interface EventManagerFactory {
  * ````
  */
 class EventAdapterRegistry {
-  private adapters = new Map<string, () => Promise<EventManagerFactory>>();
+	private adapters = new Map<string, () => Promise<EventManagerFactory>>();
 
-  /**
-   * Register an adapter factory with lazy loading.
-   *
-   * @param name - Unique name for the adapter
-   * @param loader - Function that returns a Promise resolving to the factory
-   * @throws {Error} If name is already registered
-   */
-  register(name: string, loader: () => Promise<EventManagerFactory>): void {
-    this.adapters.set(name, loader);
-  }
+	/**
+	 * Register an adapter factory with lazy loading.
+	 *
+	 * @param name - Unique name for the adapter
+	 * @param loader - Function that returns a Promise resolving to the factory
+	 * @throws {Error} If name is already registered
+	 */
+	register(name: string, loader: () => Promise<EventManagerFactory>): void {
+		this.adapters.set(name, loader);
+	}
 
-  /**
-   * Get an adapter factory by name, loading it if necessary.
-   *
-   * @param name - Name of the adapter to retrieve
-   * @returns Promise resolving to the factory, or null if not found
-   * @throws {Error} If adapter loading fails
-   */
-  async get(name: string): Promise<EventManagerFactory|null> {
-    const loader = this.adapters.get(name);
-    if (!loader) return null;
-    return loader();
-  }
+	/**
+	 * Get an adapter factory by name, loading it if necessary.
+	 *
+	 * @param name - Name of the adapter to retrieve
+	 * @returns Promise resolving to the factory, or null if not found
+	 * @throws {Error} If adapter loading fails
+	 */
+	async get(name: string): Promise<EventManagerFactory | null> {
+		const loader = this.adapters.get(name);
+		if (!loader) return null;
+		return loader();
+	}
 
-  /**
-   * Get all registered adapter names.
-   */
-  getRegisteredNames(): string[] {
-    return Array.from(this.adapters.keys())();
-  }
+	/**
+	 * Get all registered adapter names.
+	 */
+	getRegisteredNames(): string[] {
+		return Array.from(this.adapters.keys())();
+	}
 
-  /**
-   * Check if an adapter is registered.
-   */
-  has(name: string): boolean {
-    return this.adapters.has(name);
-  }
+	/**
+	 * Check if an adapter is registered.
+	 */
+	has(name: string): boolean {
+		return this.adapters.has(name);
+	}
 }
 
 /**
@@ -118,45 +118,45 @@ export const adapterRegistry = new EventAdapterRegistry();
  * ````
  */
 export function registerDefaultAdapters(): void {
-  // Register workflow event factory
-  adapterRegistry.register('workflow', async () => {
-    const module = await import('./adapters/workflow-event-factory');
-    const logger = getLogger('WorkflowEventFactory');
-    const config = getConfig();
-    return new module.WorkflowEventManagerFactory(logger, config);
-  });
+	// Register workflow event factory
+	adapterRegistry.register("workflow", async () => {
+		const module = await import("./adapters/workflow-event-factory");
+		const logger = getLogger("WorkflowEventFactory");
+		const config = getConfig();
+		return new module.WorkflowEventManagerFactory(logger, config);
+	});
 
-  // Register neural event factory
-  adapterRegistry.register('neural', async () => {
-    const module = await import('./adapters/neural-event-factory');
-    const logger = getLogger('NeuralEventFactory');
-    const config = getConfig();
-    return new module.NeuralEventManagerFactory(logger, config);
-  });
+	// Register neural event factory
+	adapterRegistry.register("neural", async () => {
+		const module = await import("./adapters/neural-event-factory");
+		const logger = getLogger("NeuralEventFactory");
+		const config = getConfig();
+		return new module.NeuralEventManagerFactory(logger, config);
+	});
 
-  // Register memory event factory
-  adapterRegistry.register('memory', async () => {
-    const module = await import('./adapters/memory-event-factory');
-    const logger = getLogger('MemoryEventFactory');
-    const config = getConfig();
-    return new module.MemoryEventManagerFactory(logger, config);
-  });
+	// Register memory event factory
+	adapterRegistry.register("memory", async () => {
+		const module = await import("./adapters/memory-event-factory");
+		const logger = getLogger("MemoryEventFactory");
+		const config = getConfig();
+		return new module.MemoryEventManagerFactory(logger, config);
+	});
 
-  // Register interface event factory
-  adapterRegistry.register('interface', async () => {
-    const module = await import('./adapters/interface-event-factory');
-    const logger = getLogger('InterfaceEventFactory');
-    const config = getConfig();
-    return new module.InterfaceEventManagerFactory(logger, config);
-  });
+	// Register interface event factory
+	adapterRegistry.register("interface", async () => {
+		const module = await import("./adapters/interface-event-factory");
+		const logger = getLogger("InterfaceEventFactory");
+		const config = getConfig();
+		return new module.InterfaceEventManagerFactory(logger, config);
+	});
 
-  // Register database event factory
-  adapterRegistry.register('database', async () => {
-    const module = await import('./adapters/database-event-factory');
-    const logger = getLogger('DatabaseEventFactory');
-    const config = getConfig();
-    return new module.DatabaseEventManagerFactory(logger, config);
-  });
+	// Register database event factory
+	adapterRegistry.register("database", async () => {
+		const module = await import("./adapters/database-event-factory");
+		const logger = getLogger("DatabaseEventFactory");
+		const config = getConfig();
+		return new module.DatabaseEventManagerFactory(logger, config);
+	});
 }
 
 /**
@@ -176,7 +176,7 @@ export function registerDefaultAdapters(): void {
  * ````
  */
 export function initializeAdapterRegistry(): void {
-  registerDefaultAdapters();
+	registerDefaultAdapters();
 }
 
 export default adapterRegistry;

@@ -1,4 +1,5 @@
 import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * @file Type-Safe Event System - Phase 0, Task 0.3 - AGUI Integration Foundation
  *
@@ -17,9 +18,8 @@ import { EventEmitter } from '@claude-zen/foundation';
  * - Performance optimized for production workloads
  */
 
-import { EventEmitter } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 import type {
   Agent,
   Task,
@@ -1070,7 +1070,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
           validator.trackCrossings(
             fromDomain,
             toDomain,
-            `event_routing:${operation}``
+            `event_routing:$operation``
           );
         }
 
@@ -1447,7 +1447,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       error?: Error;
     }> = [];
 
-    let validationTime = 0;
+    const validationTime = 0;
 
     // Get handlers for this specific event type
     const specificHandlers = this.getHandlers(event.type);
@@ -1728,7 +1728,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
   }
 
   private generateEventId(): string {
-    return `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+    return `event-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
   }
 
   private generateHandlerId(): string {
@@ -1736,7 +1736,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
   }
 
   private generateCorrelationId(): string {
-    return `corr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
+    return `corr-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
   }
 
   private generateCrossingId(): string {
@@ -1830,7 +1830,7 @@ export function createEvent<TEvent extends BaseEvent>(
   metadata?: Partial<EventMetadata>
 ): TEvent {
   return {
-    id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
+    id: `event-$Date.now()-$Math.random().toString(36).substr(2, 9)`,`
     type,
     domain,
     timestamp: new Date(),

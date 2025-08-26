@@ -62,7 +62,7 @@
  * @since 1.0.0
  */
 
-import { getLogger, type Logger, type Config } from '@claude-zen/foundation';
+import { type Config, getLogger, type Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
@@ -191,7 +191,7 @@ class DatabaseEventManagerImpl
     this.subscriptions.transaction.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Transaction event subscription created: ${subscriptionId}``
+      `Transaction event subscription created: $subscriptionId``
     );
     return subscriptionId;
   }
@@ -429,7 +429,7 @@ class DatabaseEventManagerImpl
           // 1 second threshold
           this.databaseMetrics.slowQueries++;
           this.logger.warn(
-            `Slow query detected: ${event.details.queryTime}ms - table: ${event.details?.tableName}``
+            `Slow query detected: $event.details.queryTimems - table: $event.details?.tableName``
           );
         }
         break;
@@ -540,7 +540,7 @@ class DatabaseEventManagerImpl
    * Required by DatabaseEventManager interface.
    */
   async processTransaction(transactionId: string): Promise<void> {
-    this.logger.debug(`Processing transaction: ${transactionId}`);`
+    this.logger.debug(`Processing transaction: $transactionId`);`
 
     try {
       // Emit transaction processing event
@@ -560,7 +560,7 @@ class DatabaseEventManagerImpl
       this.logger.info(`Transaction processed successfully: ${transactionId}`);`
     } catch (error) {
       this.logger.error(
-        `Failed to process transaction ${transactionId}:`,`
+        `Failed to process transaction $transactionId:`,`
         error
       );
       throw error;
@@ -577,16 +577,15 @@ class DatabaseEventManagerImpl
     try {
       // Emit schema change event
       await this.emitDatabaseEvent({
-        id: `schema-change-${changeId}`,`
+        id: `schema-change-$changeId`,`
         timestamp: new Date(),
         source: 'database-schema-manager',
         type: 'database:migration',
         operation: 'create',
-        payload: { changeId },
-        metadata: {
+        payload: changeId ,
+        metadata: 
           changeId,
-          changeStart: new Date(),
-        },
+          changeStart: new Date(),,
       });
 
       this.logger.info(`Schema change handled successfully: ${changeId}`);`
@@ -620,7 +619,7 @@ class DatabaseEventManagerImpl
 
       this.logger.info(`Query optimized successfully: ${queryId}`);`
     } catch (error) {
-      this.logger.error(`Failed to optimize query ${queryId}:`, error);`
+      this.logger.error(`Failed to optimize query $queryId:`, error);`
       throw error;
     }
   }
@@ -684,7 +683,7 @@ export class DatabaseEventManagerFactory
    * @returns Promise resolving to configured manager instance
    */
   async create(config: EventManagerConfig): Promise<EventManager> {
-    this.logger.info(`Creating database event manager: ${config.name}`);`
+    this.logger.info(`Creating database event manager: $config.name`);`
 
     // Validate database-specific configuration
     this.validateConfig(config);
@@ -735,7 +734,7 @@ export class DatabaseEventManagerFactory
     if (errors.length > 0) {
       this.logger.error(`${errors.length} managers failed to create:`, errors);`
       throw new Error(
-        `Failed to create ${errors.length} out of ${configs.length} managers``
+        `Failed to create $errors.lengthout of $configs.lengthmanagers``
       );
     }
 
@@ -779,7 +778,7 @@ export class DatabaseEventManagerFactory
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to remove database event manager ${name}:`,`
+        `Failed to remove database event manager $name:`,`
         error
       );
       throw error;
@@ -852,7 +851,7 @@ export class DatabaseEventManagerFactory
           await manager.start();
           this.logger.debug(`Started database event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to start manager ${name}:`, error);`
+          this.logger.error(`Failed to start manager $name:`, error);`
           throw error;
         }
       }
@@ -863,7 +862,7 @@ export class DatabaseEventManagerFactory
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to start ${failures.length} out of ${results.length} managers``
+        `Failed to start $failures.lengthout of $results.lengthmanagers``
       );
     }
   }
@@ -878,7 +877,7 @@ export class DatabaseEventManagerFactory
           await manager.stop();
           this.logger.debug(`Stopped database event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to stop manager ${name}:`, error);`
+          this.logger.error(`Failed to stop manager $name:`, error);`
           throw error;
         }
       }
@@ -889,7 +888,7 @@ export class DatabaseEventManagerFactory
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to stop ${failures.length} out of ${results.length} managers``
+        `Failed to stop $failures.lengthout of $results.lengthmanagers``
       );
     }
   }
@@ -1023,7 +1022,7 @@ export class DatabaseEventManagerFactory
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Database event manager monitoring started: ${config.name}``
+        `Database event manager monitoring started: $config.name``
       );
     }
 
@@ -1034,7 +1033,7 @@ export class DatabaseEventManagerFactory
         const status = await manager.healthCheck();
         if (status.status !== 'healthy') {'
           this.logger.warn(
-            `Database manager health degraded: ${config.name}`,`
+            `Database manager health degraded: $config.name`,`
             status.metadata
           );
         }

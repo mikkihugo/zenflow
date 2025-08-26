@@ -23,12 +23,11 @@ import { SystemEventManagerFactory } from '../system-event-factory;
 
 // Mock logger to avoid console output during tests
 vi.mock('../../../../utils/logger', () => ({'
-  createLogger: vi.fn(() => ({
+  createLogger: vi.fn(() => (
     debug: vi.fn(),
     info: vi.fn(),
     warn: vi.fn(),
-    error: vi.fn(),
-  })),
+    error: vi.fn(),)),
 }));
 
 describe('SystemEventAdapter', () => {'
@@ -52,12 +51,11 @@ describe('SystemEventAdapter', () => {'
   // ============================================
 
   describe('Lifecycle Management (London TDD)', () => {'
-    it('should initialize with correct configuration', () => {'
+    it('should initialize with correct configuration', () => '
       expect(adapter.name).toBe('test-system-adapter');'
       expect(adapter.type).toBe(EventManagerTypes['SYSTEM']);'
       expect(adapter.config.name).toBe('test-system-adapter');'
-      expect(adapter.isRunning()).toBe(false);
-    });
+      expect(adapter.isRunning()).toBe(false););
 
     it('should start successfully and emit start event', async () => {'
       const startHandler = vi.fn();
@@ -104,9 +102,8 @@ describe('SystemEventAdapter', () => {'
   });
 
   describe('Event Emission (London TDD)', () => {'
-    beforeEach(async () => {
-      await adapter.start();
-    });
+    beforeEach(async () => 
+      await adapter.start(););
 
     it('should emit system lifecycle event successfully', async () => {'
       const mockListener = vi.fn();
@@ -181,9 +178,8 @@ describe('SystemEventAdapter', () => {'
   });
 
   describe('Event Subscription (London TDD)', () => {'
-    beforeEach(async () => {
-      await adapter.start();
-    });
+    beforeEach(async () => 
+      await adapter.start(););
 
     it('should create subscription and return subscription ID', () => {'
       const mockListener = vi.fn();
@@ -263,9 +259,8 @@ describe('SystemEventAdapter', () => {'
   });
 
   describe('Event Filtering and Transformation (London TDD)', () => {'
-    beforeEach(async () => {
-      await adapter.start();
-    });
+    beforeEach(async () => 
+      await adapter.start(););
 
     it('should add and remove event filters', () => {'
       const filter = {
@@ -434,7 +429,7 @@ describe('SystemEventAdapter', () => {'
   // ============================================
 
   describe('Event Correlation Logic (Classical TDD)', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       config['correlation'] = {'
         enabled: true,
         strategy: 'component',
@@ -446,8 +441,7 @@ describe('SystemEventAdapter', () => {'
         ],
       };
       adapter = createSystemEventAdapter(config);
-      await adapter.start();
-    });
+      await adapter.start(););
 
     it('should create correlation when emitting correlated events', async () => {'
       const correlationId = 'test-correlation-123;
@@ -549,7 +543,7 @@ describe('SystemEventAdapter', () => {'
   });
 
   describe('Health Calculation Logic (Classical TDD)', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       config['healthMonitoring'] = {'
         enabled: true,
         healthCheckInterval: 1000,
@@ -560,8 +554,7 @@ describe('SystemEventAdapter', () => {'
         autoRecoveryEnabled: true,
       };
       adapter = createSystemEventAdapter(config);
-      await adapter.start();
-    });
+      await adapter.start(););
 
     it('should calculate health status correctly based on error rates', async () => {'
       // Simulate successful operations
@@ -642,7 +635,7 @@ describe('SystemEventAdapter', () => {'
   });
 
   describe('Performance Metrics Calculation (Classical TDD)', () => {'
-    beforeEach(async () => {
+    beforeEach(async () => 
       config['performance'] = {'
         enableEventCorrelation: true,
         maxConcurrentEvents: 100,
@@ -650,8 +643,7 @@ describe('SystemEventAdapter', () => {'
         enablePerformanceTracking: true,
       };
       adapter = createSystemEventAdapter(config);
-      await adapter.start();
-    });
+      await adapter.start(););
 
     it('should calculate average latency correctly', async () => {'
       const events = [{ delay: 100 }, { delay: 200 }, { delay: 300 }];
@@ -758,7 +750,7 @@ describe('SystemEventAdapter', () => {'
       expect(event['operation']).toBe('start');'
       expect(event['status']).toBe('success');'
       expect(event['priority']).toBe('high');'
-      expect(event['details']).toEqual({ version: '1.0.0' });'
+      expect(event['details']).toEqual(version: '1.0.0' );'
     });
 
     it('should create shutdown event with correct properties', () => {'
@@ -772,7 +764,7 @@ describe('SystemEventAdapter', () => {'
       expect(event['operation']).toBe('stop');'
       expect(event['status']).toBe('success');'
       expect(event['priority']).toBe('critical');'
-      expect(event['details']).toEqual({ reason: 'maintenance' });'
+      expect(event['details']).toEqual(reason: 'maintenance' );'
     });
 
     it('should create health event with correct status based on score', () => {'

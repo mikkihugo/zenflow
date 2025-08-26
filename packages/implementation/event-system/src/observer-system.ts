@@ -376,21 +376,21 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
     switch (event.type) {
       case 'swarm': {'
         const swarmEvent = event as SwarmEvent;
-        return `Swarm ${swarmEvent.operation}: ${swarmEvent.swarmId} (${swarmEvent.agentCount} agents)`;`
+        return `Swarm $swarmEvent.operation: $swarmEvent.swarmId($swarmEvent.agentCountagents)`;`
       }
 
       case 'mcp': {'
         const mcpEvent = event as MCPEvent;
-        return `MCP ${mcpEvent.operation}: ${mcpEvent.toolName} (${mcpEvent.executionTime}ms)`;`
+        return `MCP $mcpEvent.operation: $mcpEvent.toolName($mcpEvent.executionTimems)`;`
       }
 
       case 'neural': {'
         const neuralEvent = event as NeuralEvent;
-        return `Neural ${neuralEvent.operation}: ${neuralEvent.modelId} (${neuralEvent.processingTime}ms)`;`
+        return `Neural $neuralEvent.operation: $neuralEvent.modelId($neuralEvent.processingTimems)`;`
       }
 
       default:
-        return `${event.type} event from ${event.source}`;`
+        return `$event.typeevent from $event.source`;`
     }
   }
 }
@@ -470,7 +470,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
   }
 
   private recordExecutionTime(type: string, time: number): void {
-    const key = `${type}:execution_time`;`
+    const key = `$type:execution_time`;`
     const current = this.metrics.get(key)||{
       sum: 0,
       count: 0,
@@ -522,7 +522,7 @@ export class SystemEventManager extends TypedEventBase {
 
     this.observers.set(eventType, observers);
 
-    this.logger?.debug(`Observer subscribed to ${eventType}`, {`
+    this.logger?.debug(`Observer subscribed to $eventType`, {`
       observerType: observer.getObserverType(),
       priority: observer.getPriority(),
     });
@@ -599,7 +599,7 @@ export class SystemEventManager extends TypedEventBase {
 
     // Notify all observers of shutdown
     const _shutdownEvent: SystemEvent = {
-      id: `shutdown-${Date.now()}`,`
+      id: `shutdown-$Date.now()`,`
       timestamp: new Date(),
       source:'system',
       type: 'system:shutdown',

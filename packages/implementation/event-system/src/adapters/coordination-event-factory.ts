@@ -14,12 +14,12 @@
  * @file Interface implementation: coordination-event-factory.
  */
 
-import { getLogger, type Logger, getConfig } from '@claude-zen/foundation';
+import { getConfig, getLogger, type Logger } from '@claude-zen/foundation';
 import type { EventManager, EventManagerFactory } from '../core/interfaces;
 import { EventManagerTypes } from '../core/interfaces;
 import type { CoordinationEventAdapterConfig } from './coordination-event-adapter;
 import {
-  CoordinationEventAdapter,
+  type CoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
 } from './coordination-event-adapter;
 
@@ -61,7 +61,7 @@ export class CoordinationEventManagerFactory
       this.instances.set(config?.name, adapter);
 
       this.logger.info(
-        `Coordination event manager created successfully: ${config?.name}``
+        `Coordination event manager created successfully: $config?.name``
       );
       return adapter as EventManager;
     } catch (error) {
@@ -105,7 +105,7 @@ export class CoordinationEventManagerFactory
       this.logger.warn(
         `Created ${managers.length}/${configs.length} coordination event managers, ${errors.length} failed``
       );
-    } else {
+    } else 
       this.logger.info(
         `Successfully created ${managers.length} coordination event managers``
       );
@@ -164,11 +164,10 @@ export class CoordinationEventManagerFactory
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to remove coordination event manager ${name}:`,`
+        `Failed to remove coordination event manager $name:`,`
         error
       );
       return false;
-    }
   }
 
   /**
@@ -320,11 +319,10 @@ export class CoordinationEventManagerFactory
   /**
    * Get active manager count.
    */
-  getActiveCount(): number {
+  getActiveCount(): number 
     return Array.from(this.instances.values()).filter((manager) =>
       manager.isRunning()
     ).length;
-  }
 
   /**
    * Get factory metrics.
@@ -345,7 +343,7 @@ export class CoordinationEventManagerFactory
    *
    * @param config
    */
-  private validateConfig(config: CoordinationEventAdapterConfig): void {
+  private validateConfig(config: CoordinationEventAdapterConfig): void 
     if (!config?.name||typeof config?.name !=='string') {'
       throw new Error(
         'Coordination event manager configuration must have a valid name''

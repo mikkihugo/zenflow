@@ -16,12 +16,11 @@
  * PATTERN: Matches memory package's comprehensive foundation integration
  */
 
-import { EventEmitter } from '@claude-zen/foundation';
-import { getLogger, inject, type Logger } from '@claude-zen/foundation';
+import { EventEmitter, getLogger, inject, type Logger } from '@claude-zen/foundation';
 
 // Simple utilities to replace missing foundation imports
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16)|0;
     const v = c == 'x' ? r : (r & 0x3)|0x8;
     return v.toString(16);
@@ -148,10 +147,9 @@ export class FoundationEventBus extends TypedEventBase {
       this.performanceTracker.endTimer('event_bus_initialize');'
       recordMetric('event_bus_initialized', 1);'
 
-      this.logger.info('Foundation event bus initialized successfully', {'
+      this.logger.info('Foundation event bus initialized successfully', '
         config: this.config,
-        telemetryEnabled: this.telemetryInitialized,
-      });
+        telemetryEnabled: this.telemetryInitialized,);
 
       return ok(undefined);
     } catch (error) {
@@ -235,12 +233,11 @@ export class FoundationEventBus extends TypedEventBase {
         recordMetric('event_bus_events_emitted', 1);'
         recordHistogram('event_bus_emit_latency', latency);'
 
-        this.logger.debug('Event emitted successfully', {'
+        this.logger.debug('Event emitted successfully', '
           eventId,
           eventType,
           latency,
-          payloadSize: JSON.stringify(payload).length,
-        });
+          payloadSize: JSON.stringify(payload).length,);
 
         return ok(true);
       } catch (error) {
@@ -875,7 +872,7 @@ export class DomainValidator extends EventValidator {
       this.allowedDomains.length > 0 &&
       !this.allowedDomains.includes(event.domain)
     ) {
-      return { valid: false, errors: [`Domain ${event.domain} not allowed`] };`
+      return { valid: false, errors: [`Domain $event.domainnot allowed`] };`
     }
 
     return { valid: true, errors: [] };

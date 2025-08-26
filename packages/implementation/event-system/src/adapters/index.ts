@@ -12,7 +12,7 @@ import {
   createCommunicationEventAdapter as _createCommunicationEventAdapter,
   createDefaultCommunicationEventAdapterConfig as _createDefaultCommunicationEventAdapterConfig,
   CommunicationEventAdapter,
-  CommunicationEventAdapterConfig,
+  type CommunicationEventAdapterConfig,
   CommunicationEventHelpers,
 } from './communication-event-adapter;
 import { CommunicationEventFactory } from './communication-event-factory;
@@ -20,7 +20,7 @@ import {
   createCoordinationEventAdapter as _createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig as _createDefaultCoordinationEventAdapterConfig,
   CoordinationEventAdapter,
-  CoordinationEventAdapterConfig,
+  type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
 } from './coordination-event-adapter;
 import { CoordinationEventManagerFactory } from './coordination-event-factory;
@@ -28,7 +28,7 @@ import {
   createDefaultMonitoringEventAdapterConfig as _createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter as _createMonitoringEventAdapter,
   MonitoringEventAdapter,
-  MonitoringEventAdapterConfig,
+  type MonitoringEventAdapterConfig,
   MonitoringEventHelpers,
 } from './monitoring-event-adapter;
 import { MonitoringEventFactory } from './monitoring-event-factory;
@@ -37,7 +37,7 @@ import {
   createDefaultSystemEventAdapterConfig as _createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter as _createSystemEventAdapter,
   SystemEventAdapter,
-  SystemEventAdapterConfig,
+  type SystemEventAdapterConfig,
   SystemEventHelpers,
 } from './system-event-adapter;
 // Import factory classes first to ensure they're available'

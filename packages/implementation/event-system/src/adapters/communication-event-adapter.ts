@@ -11,7 +11,7 @@
  * management for communication events across Claude-Zen.
  */
 
-import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
+import { EventEmitter, getLogger, type Logger } from '@claude-zen/foundation';
 
 const logger = getLogger(
   'interfaces-events-adapters-communication-event-adapter'
@@ -58,11 +58,13 @@ interface HTTPRPCServer {
     requestCount?: number;
   }>;
 }
+
 import type {
   EventBatch,
   EventEmissionOptions,
   EventFilter,
   EventListener,
+  EventManager,
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
@@ -71,7 +73,6 @@ import type {
   EventQueryOptions,
   EventSubscription,
   EventTransform,
-  EventManager,
   SystemEvent,
 } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
@@ -533,9 +534,9 @@ export class CommunicationEventAdapter implements EventManager {
       this.emitInternal('stop');'
 
       this.logger.info(
-        `Communication event adapter stopped successfully: ${this.name}``
+        `Communication event adapter stopped successfully: $this.name``
       );
-    } catch (error) {
+    } catch (error) 
       this.logger.error(
         `Failed to stop communication event adapter ${this.name}:`,`
         error
@@ -585,10 +586,9 @@ export class CommunicationEventAdapter implements EventManager {
         options?.timeout||this.config.performance?.connectionTimeout||30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
-          () => reject(new Error(`Event timeout after ${timeout}ms`)),`
+          () => reject(new Error(`Event timeout after $timeoutms`)),`
           timeout
-        );
-      });
+        ););
 
       // Process event emission with timeout
       const emissionPromise = this.processCommunicationEventEmission(
@@ -823,7 +823,7 @@ export class CommunicationEventAdapter implements EventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} communication subscriptions${eventType ? ` for ${eventType}` : ''}``
+      `Removed $removedCountcommunication subscriptions$eventType ? ` for ${eventType}` : ''``
     );
     return removedCount;
   }
@@ -848,7 +848,7 @@ export class CommunicationEventAdapter implements EventManager {
   removeFilter(filterId: string): boolean {
     const result = this.filters.delete(filterId);
     if (result) {
-      this.logger.debug(`Removed communication event filter: ${filterId}`);`
+      this.logger.debug(`Removed communication event filter: $filterId`);`
     }
     return result;
   }
@@ -874,7 +874,7 @@ export class CommunicationEventAdapter implements EventManager {
     const result = this.transforms.delete(transformId);
     if (result) {
       this.logger.debug(
-        `Removed communication event transform: ${transformId}``
+        `Removed communication event transform: $transformId``
       );
     }
     return result;
@@ -965,9 +965,8 @@ export class CommunicationEventAdapter implements EventManager {
       status ='unhealthy';
     } else if (
       errorRate > 10||Object.values(componentHealth).some((h) => h.status !=='healthy')'
-    ) {
+    ) 
       status = 'degraded';
-    }
 
     return {
       name: this.name,
@@ -1082,7 +1081,7 @@ export class CommunicationEventAdapter implements EventManager {
    * Cleanup and destroy the adapter.
    */
   async destroy(): Promise<void> {
-    this.logger.info(`Destroying communication event adapter: ${this.name}`);`
+    this.logger.info(`Destroying communication event adapter: $this.name`);`
 
     try {
       // Stop the adapter if still running
@@ -1981,7 +1980,7 @@ export class CommunicationEventAdapter implements EventManager {
                 responseTime: health.communicationLatency,
                 errorCode: 'HEALTH_DEGRADED',
               },
-              details: {
+              details: 
                 requestId: `health-${Date.now()}`,`
                 responseTime: health.communicationLatency,
                 errorCode: 'HEALTH_DEGRADED',
@@ -2025,9 +2024,8 @@ export class CommunicationEventAdapter implements EventManager {
 
       if (expiredCorrelations.length > 0) {
         this.logger.debug(
-          `Cleaned up ${expiredCorrelations.length} expired communication correlations``
+          `Cleaned up $expiredCorrelations.lengthexpired communication correlations``
         );
-      }
     }, cleanupInterval);
   }
 
@@ -2538,21 +2536,19 @@ export class CommunicationEventAdapter implements EventManager {
     return `comm-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
-  private generateSubscriptionId(): string {
+  private generateSubscriptionId(): string 
     return `comm-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateFilterId(): string {
-    return `comm-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
-  }
+    return `comm-flt-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
 
-  private generateTransformId(): string {
+  private generateTransformId(): string 
     return `comm-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
   private generateCorrelationId(): string {
-    return `comm-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
-  }
+    return `comm-cor-$Date.now()-$Math.random().toString(36).substring(2, 11)`;`
 
   /**
    * Emit wrapper for internal use.
@@ -2560,9 +2556,8 @@ export class CommunicationEventAdapter implements EventManager {
    * @param event
    * @param data
    */
-  private emitInternal(event: string, data?: unknown): void {
+  private emitInternal(event: string, data?: unknown): void 
     this.eventEmitter.emit(event, data);
-  }
 }
 
 /**

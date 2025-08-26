@@ -108,12 +108,11 @@ export class UEL {
       try {
         if (
           this.compatibilityFactory &&'initialize' in this.compatibilityFactory'
-        ) {
+        ) 
           await (this.compatibilityFactory as any).initialize(
             this.eventManager,
             logger
           );
-        }
       } catch (error) {
         logger.warn('Failed to initialize compatibility factory:', error);'
       }

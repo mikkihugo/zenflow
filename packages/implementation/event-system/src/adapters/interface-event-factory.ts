@@ -171,7 +171,7 @@ class InterfaceEventManagerImpl
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.web.set(subscriptionId, listener);
 
-    this.logger.debug(`Web event subscription created: ${subscriptionId}`);`
+    this.logger.debug(`Web event subscription created: $subscriptionId`);`
     return subscriptionId;
   }
 
@@ -194,7 +194,7 @@ class InterfaceEventManagerImpl
     this.subscriptions.websocket.set(subscriptionId, listener);
 
     this.logger.debug(
-      `WebSocket event subscription created: ${subscriptionId}``
+      `WebSocket event subscription created: $subscriptionId``
     );
     return subscriptionId;
   }
@@ -413,25 +413,23 @@ class InterfaceEventManagerImpl
    * Handle UI interaction operations.
    * Required by InterfaceEventManager interface.
    */
-  async handleUIInteraction(element: string, action: string): Promise<void> {
+  async handleUIInteraction(element: string, action: string): Promise<void> 
     this.logger.debug(`Handling UI interaction: ${element} - ${action}`);`
 
     try {
       // Emit UI interaction event
       await this.emitInterfaceEvent({
-        id: `ui-interaction-${element}-${Date.now()}`,`
+        id: `ui-interaction-$element-$Date.now()`,`
         timestamp: new Date(),
         source: 'interface-ui-handler',
         type: 'interface:web',
         interface: 'web',
         operation: 'interaction',
-        payload: { element, action },
-        metadata: {
+        payload: element, action ,
+        metadata: 
           element,
           action,
-          interactionStart: new Date(),
-        },
-      });
+          interactionStart: new Date(),,);
 
       this.logger.info(
         `UI interaction handled successfully: ${element} - ${action}``
@@ -455,17 +453,16 @@ class InterfaceEventManagerImpl
     try {
       // Emit interface update event
       await this.emitInterfaceEvent({
-        id: `interface-update-${componentId}-${Date.now()}`,`
+        id: `interface-update-$componentId-$Date.now()`,`
         timestamp: new Date(),
         source: 'interface-state-manager',
         type: 'interface:web',
         interface: 'web',
         operation: 'render',
-        payload: { componentId, state },
-        metadata: {
+        payload: componentId, state ,
+        metadata: 
           componentId,
-          updateStart: new Date(),
-        },
+          updateStart: new Date(),,
       });
 
       this.logger.info(
@@ -490,17 +487,16 @@ class InterfaceEventManagerImpl
     try {
       // Emit component refresh event
       await this.emitInterfaceEvent({
-        id: `component-refresh-${componentId}-${Date.now()}`,`
+        id: `component-refresh-$componentId-$Date.now()`,`
         timestamp: new Date(),
         source: 'interface-component-manager',
         type: 'interface:web',
         interface: 'web',
         operation: 'render',
-        payload: { componentId, action: 'refresh' },
-        metadata: {
+        payload: componentId, action: 'refresh' ,
+        metadata: 
           componentId,
-          refreshStart: new Date(),
-        },
+          refreshStart: new Date(),,
       });
 
       this.logger.info(
@@ -591,7 +587,7 @@ export class InterfaceEventManagerFactory
     this.managers.set(config.name, manager as unknown as EventManager);
 
     this.logger.info(
-      `Interface event manager created successfully: ${config.name}``
+      `Interface event manager created successfully: $config.name``
     );
     return manager as unknown as EventManager;
   }
@@ -615,7 +611,7 @@ export class InterfaceEventManagerFactory
       } else {
         errors.push(
           new Error(
-            `Failed to create manager ${configs[index]?.name}: ${result.reason}``
+            `Failed to create manager $configs[index]?.name: $result.reason``
           )
         );
       }
@@ -624,7 +620,7 @@ export class InterfaceEventManagerFactory
     if (errors.length > 0) {
       this.logger.error(`${errors.length} managers failed to create:`, errors);`
       throw new Error(
-        `Failed to create ${errors.length} out of ${configs.length} managers``
+        `Failed to create $errors.lengthout of $configs.lengthmanagers``
       );
     }
 
@@ -741,7 +737,7 @@ export class InterfaceEventManagerFactory
           await manager.start();
           this.logger.debug(`Started interface event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to start manager ${name}:`, error);`
+          this.logger.error(`Failed to start manager $name:`, error);`
           throw error;
         }
       }
@@ -752,7 +748,7 @@ export class InterfaceEventManagerFactory
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to start ${failures.length} out of ${results.length} managers``
+        `Failed to start $failures.lengthout of $results.lengthmanagers``
       );
     }
   }
@@ -767,7 +763,7 @@ export class InterfaceEventManagerFactory
           await manager.stop();
           this.logger.debug(`Stopped interface event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to stop manager ${name}:`, error);`
+          this.logger.error(`Failed to stop manager $name:`, error);`
           throw error;
         }
       }
@@ -778,7 +774,7 @@ export class InterfaceEventManagerFactory
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to stop ${failures.length} out of ${results.length} managers``
+        `Failed to stop $failures.lengthout of $results.lengthmanagers``
       );
     }
   }
@@ -902,7 +898,7 @@ export class InterfaceEventManagerFactory
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Interface event manager monitoring started: ${config.name}``
+        `Interface event manager monitoring started: $config.name``
       );
     }
 

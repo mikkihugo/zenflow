@@ -678,7 +678,8 @@ pub struct DefaultInputPreprocessor<T: Float + Send + Sync + 'static> {
 
 impl<T: Float + Send + Sync + 'static> DefaultInputPreprocessor<T> {
   /// Create a new default input preprocessor
-  pub fn new() -> Self {
+  #[must_use]
+  pub const fn new() -> Self {
     Self {
       config: PreprocessorConfig {
         scaling_method: ScalingMethod::Standard,
@@ -690,6 +691,12 @@ impl<T: Float + Send + Sync + 'static> DefaultInputPreprocessor<T> {
         normalization: None,
       },
     }
+  }
+}
+
+impl<T: Float + Send + Sync + 'static> Default for DefaultInputPreprocessor<T> {
+  fn default() -> Self {
+    Self::new()
   }
 }
 
@@ -740,6 +747,12 @@ impl<T: Float + Send + Sync + 'static> DefaultOutputPostprocessor<T> {
       },
       _phantom: PhantomData,
     }
+  }
+}
+
+impl<T: Float + Send + Sync + 'static> Default for DefaultOutputPostprocessor<T> {
+  fn default() -> Self {
+    Self::new()
   }
 }
 

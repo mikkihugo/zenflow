@@ -22,12 +22,10 @@
  */
 
 import {
-  ServiceContainer,
-  createServiceContainer,
-  Lifetime,
+  createServiceContainer,getLogger, 
+  Lifetime,type Logger, 
+  type ServiceContainer,TypedEventBase 
 } from '@claude-zen/foundation';
-import { getLogger, type Logger } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   EventManagerConfig,
@@ -71,14 +69,13 @@ export class MigratedEventRegistry
     this.logger = getLogger('MigratedEventRegistry');'
 
     // Initialize default configurations
-    this.healthMonitoring = {
+    this.healthMonitoring = 
       checkInterval: 30000, // 30 seconds
       timeout: 5000,
       failureThreshold: 3,
       autoRecovery: true,
       maxRecoveryAttempts: 3,
-      notifyOnStatusChange: true,
-    };
+      notifyOnStatusChange: true,;
 
     this.discoveryConfig = {
       autoDiscover: true,
@@ -195,7 +192,7 @@ export class MigratedEventRegistry
       this.logger.debug(`📋 Registered event manager factory: ${type}`);`
       this.emit('factory-registered', type, factory);'
     } catch (error) {
-      this.logger.error(`❌ Failed to register factory ${type}:`, error);`
+      this.logger.error(`❌ Failed to register factory $type:`, error);`
       throw error;
     }
   }
@@ -209,7 +206,7 @@ export class MigratedEventRegistry
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<EventManagerFactory<T>>(
-        `factory:${type}``
+        `factory:$type``
       );
 
       if (result.isOk()) {
@@ -312,7 +309,7 @@ export class MigratedEventRegistry
       // Fallback to legacy storage
       return this.eventManagers.get(name);
     } catch (error) {
-      this.logger.warn(`⚠️ Failed to resolve event manager ${name}:`, error);`
+      this.logger.warn(`⚠️ Failed to resolve event manager $name:`, error);`
       return this.eventManagers.get(name);
     }
   }
@@ -393,7 +390,7 @@ export class MigratedEventRegistry
     try {
       // Register with ServiceContainer
       const registrationResult = this.container.registerInstance(
-        `eventType:${eventType}`,`
+        `eventType:$eventType`,`
         config,
         {
           capabilities: ['event-type', config.category, ...config.managerTypes],
@@ -775,7 +772,7 @@ export class MigratedEventRegistry
 
     if (result.isOk()) {
       this.logger.debug(
-        `${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} manager: ${name}``
+        `$enabled ? '✅' : '❌'$enabled ? 'Enabled' : 'Disabled'manager: $name``
       );
       this.emit('manager-status-changed', { name, enabled });'
     }
@@ -793,7 +790,7 @@ export class MigratedEventRegistry
 
     if (manager.type) capabilities.push(manager.type);
     if (manager.name) capabilities.push(`name:${manager.name}`);`
-    if (config.type) capabilities.push(`config-type:${config.type}`);`
+    if (config.type) capabilities.push(`config-type:$config.type`);`
 
     // Extract capabilities from manager properties
     if (typeof manager === 'object') {'
@@ -805,7 +802,7 @@ export class MigratedEventRegistry
     return capabilities;
   }
 
-  private performFactoryHealthCheck(factory: EventManagerFactory): boolean {
+  private performFactoryHealthCheck(factory: EventManagerFactory): boolean 
     try {
       // Basic health check - more sophisticated checks can be added
       if (typeof factory === 'object' && factory !== null) {'
@@ -813,9 +810,8 @@ export class MigratedEventRegistry
         if (
           'healthCheck' in factory &&'
           typeof factory.healthCheck === 'function''
-        ) {
+        ) 
           return factory.healthCheck();
-        }
 
         // Default: assume healthy if factory exists
         return true;
@@ -868,18 +864,17 @@ export class MigratedEventRegistry
     }, this.healthMonitoring.checkInterval);
 
     this.logger.debug(
-      `💓 Health monitoring started (interval: ${this.healthMonitoring.checkInterval}ms)``
+      `💓 Health monitoring started (interval: $this.healthMonitoring.checkIntervalms)``
     );
   }
 
-  private stopHealthMonitoring(): void {
+  private stopHealthMonitoring(): void 
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = undefined;
     }
 
     this.logger.debug('💓 Health monitoring stopped');'
-  }
 
   private async registerDefaultEventTypes(): Promise<void> {
     const defaultEventTypes = [

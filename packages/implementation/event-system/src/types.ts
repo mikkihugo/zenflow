@@ -48,7 +48,7 @@ export interface CoordinationEvent extends SystemEvent {
       latency: number;
       throughput: number;
       reliability: number;
-      resourceUsage: {
+      {
         cpu: number;
         memory: number;
         network: number;

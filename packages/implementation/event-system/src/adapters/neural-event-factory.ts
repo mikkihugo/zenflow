@@ -189,7 +189,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     this.subscriptions.inference.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Inference event subscription created: ${subscriptionId}``
+      `Inference event subscription created: $subscriptionId``
     );
     return subscriptionId;
   }
@@ -213,7 +213,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}``
+      `Performance event subscription created: $subscriptionId``
     );
     return subscriptionId;
   }
@@ -371,7 +371,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
           );
           break;
         default:
-          this.logger.warn(`Unknown neural operation type: ${operationType}`);`
+          this.logger.warn(`Unknown neural operation type: $operationType`);`
       }
 
       // Track processing time
@@ -537,7 +537,7 @@ export class NeuralEventManagerFactory
    * @returns Promise resolving to configured manager instance
    */
   async create(config: EventManagerConfig): Promise<NeuralEventManager> {
-    this.logger.info(`Creating neural event manager: ${config.name}`);`
+    this.logger.info(`Creating neural event manager: $config.name`);`
 
     // Validate neural-specific configuration
     this.validateConfig(config);
@@ -621,7 +621,7 @@ export class NeuralEventManagerFactory
           const status = await manager.healthCheck();
           if (status.status !== 'healthy') {'
             this.logger.warn(
-              `Neural manager health degraded: ${config.name}`,`
+              `Neural manager health degraded: $config.name`,`
               status.metadata
             );
           }

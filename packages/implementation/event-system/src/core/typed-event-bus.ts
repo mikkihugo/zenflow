@@ -42,19 +42,18 @@
  */
 
 import mitt, { type Emitter } from 'mitt;
-import { z } from '@claude-zen/foundation';
-import {
-  getLogger,
-  Result,
-  ok,
+
+import { 
   err,
-  safeAsync,
-  recordMetric,
-  recordHistogram,
-  withTrace,
-  traced,
+  getLogger,
   metered,
-} from '@claude-zen/foundation';
+  ok,
+  type Result,
+  recordHistogram,
+  recordMetric,
+  safeAsync,
+  traced,
+  withTrace,z, } from '@claude-zen/foundation';
 import {
   EventValidator,
   BaseEventSchema,

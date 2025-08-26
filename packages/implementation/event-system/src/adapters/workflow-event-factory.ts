@@ -61,8 +61,7 @@
  * @since 1.0.0
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import type { Config } from '@claude-zen/foundation';
+import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager;
 import type {
   EventManagerConfig,
@@ -219,7 +218,7 @@ class WorkflowEventManagerImpl
     this.subscriptions.orchestration.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Orchestration event subscription created: ${subscriptionId}``
+      `Orchestration event subscription created: $subscriptionId``
     );
     return subscriptionId;
   }
@@ -253,33 +252,24 @@ class WorkflowEventManagerImpl
   /**
    * Get workflow-specific metrics and performance data.
    */
-  async getWorkflowMetrics(): Promise<{
+  async getWorkflowMetrics(): Promise<
     activeWorkflows: number;
     completedTasks: number;
     failureRate: number;
-    performance: {
       successRate: number;
       averageExecutionTime: number;
       averageTaskTime: number;
-      longestWorkflow: number;
-    };
-    execution: {
+      longestWorkflow: number;;
       totalWorkflows: number;
       completedWorkflows: number;
       failedWorkflows: number;
-      retryCount: number;
-    };
-    tasks: {
+      retryCount: number;;
       total: number;
       completed: number;
       failed: number;
-      bottlenecks: string[];
-    };
-    orchestration: {
+      bottlenecks: string[];;
       events: number;
-      dependencyResolutions: number;
-    };
-  }> {
+      dependencyResolutions: number;;> {
     const totalWorkflows = this.workflowMetrics.totalWorkflows;
     const failureRate =
       totalWorkflows > 0
@@ -379,7 +369,7 @@ class WorkflowEventManagerImpl
    * Private helper methods.
    */
 
-  private initializeWorkflowHandlers(): void {
+  private initializeWorkflowHandlers(): void 
     this.logger.debug('Initializing workflow event handlers');'
 
     // Set up event type routing
@@ -393,9 +383,8 @@ class WorkflowEventManagerImpl
       ],
       this.handleWorkflowEvent.bind(this)
     );
-  }
 
-  private async handleWorkflowEvent(event: WorkflowEvent): Promise<void> {
+  private async handleWorkflowEvent(event: WorkflowEvent): Promise<void> 
     try {
       // Route based on operation type
       const operationType = event.type.split(':')[1];'
@@ -673,7 +662,7 @@ export class WorkflowEventManagerFactory
     this.managers.set(config.name, manager);
 
     this.logger.info(
-      `Workflow event manager created successfully: ${config.name}``
+      `Workflow event manager created successfully: $config.name``
     );
     return manager;
   }

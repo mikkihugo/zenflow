@@ -184,7 +184,7 @@ class MemoryEventManagerImpl
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.gc.set(subscriptionId, listener);
 
-    this.logger.debug(`GC event subscription created: ${subscriptionId}`);`
+    this.logger.debug(`GC event subscription created: $subscriptionId`);`
     return subscriptionId;
   }
 
@@ -207,7 +207,7 @@ class MemoryEventManagerImpl
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}``
+      `Performance event subscription created: $subscriptionId``
     );
     return subscriptionId;
   }
@@ -355,29 +355,27 @@ class MemoryEventManagerImpl
     try {
       // Emit memory storage event
       await this.emitMemoryEvent({
-        id: `memory-store-${key}-${Date.now()}`,`
+        id: `memory-store-$key-$Date.now()`,`
         timestamp: new Date(),
         source: 'memory-event-store',
         type: 'memory:store',
         operation: 'set',
-        details: {
+        details: 
           key,
           size: JSON.stringify(data).length,
-          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
-        },
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,,
         payload:
           typeof data ==='object' && data !== null'
             ? (data as Record<string, unknown>)
-            : { data },
-        metadata: {
+            : data ,
+        metadata: 
           key,
-          storeStart: new Date(),
-        },
+          storeStart: new Date(),,
       });
 
       this.logger.info(`Memory event stored successfully: ${key}`);`
     } catch (error) {
-      this.logger.error(`Failed to store memory event ${key}:`, error);`
+      this.logger.error(`Failed to store memory event $key:`, error);`
       throw error;
     }
   }
@@ -387,7 +385,7 @@ class MemoryEventManagerImpl
    * Required by MemoryEventManager interface.
    */
   async retrieveMemoryEvent(key: string): Promise<unknown> {
-    this.logger.debug(`Retrieving memory event: ${key}`);`
+    this.logger.debug(`Retrieving memory event: $key`);`
 
     try {
       // Emit memory retrieval event
@@ -415,7 +413,7 @@ class MemoryEventManagerImpl
       this.logger.info(`Memory event retrieved successfully: ${key}`);`
       return result;
     } catch (error) {
-      this.logger.error(`Failed to retrieve memory event ${key}:`, error);`
+      this.logger.error(`Failed to retrieve memory event $key:`, error);`
       throw error;
     }
   }
@@ -430,18 +428,16 @@ class MemoryEventManagerImpl
     try {
       // Emit memory cache clear event
       await this.emitMemoryEvent({
-        id: `memory-clear-${Date.now()}`,`
+        id: `memory-clear-$Date.now()`,`
         timestamp: new Date(),
         source: 'memory-event-cache',
         type: 'memory:cache',
         operation: 'clear',
-        details: {
-          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
-        },
-        payload: { cleared: true },
-        metadata: {
-          clearStart: new Date(),
-        },
+        details: 
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,,
+        payload: cleared: true ,
+        metadata: 
+          clearStart: new Date(),,
       });
 
       // Clear internal metrics
@@ -515,21 +511,21 @@ class MemoryEventManagerImpl
       case 'get':'
         if (event.details?.cacheHit) {
           this.logger.debug(`Cache hit: ${event.details?.key}`);`
-        } else {
+        } else 
           this.logger.debug(`Cache miss: ${event.details?.key}`);`
         }
         break;
       case 'set':'
-        this.logger.debug(`Cache set: ${event.details?.key}`);`
+        this.logger.debug(`Cache set: $event.details?.key`);`
         break;
       case 'delete':'
-        this.logger.debug(`Cache delete: ${event.details?.key}`);`
+        this.logger.debug(`Cache delete: $event.details?.key`);`
         break;
       case 'clear':'
         this.logger.debug('Cache cleared');'
         break;
       case 'expire':'
-        this.logger.debug(`Cache item expired: ${event.details?.key}`);`
+        this.logger.debug(`Cache item expired: $event.details?.key`);`
         break;
       case 'cleanup':'
         this.logger.debug('Memory cleanup performed');'
@@ -538,12 +534,11 @@ class MemoryEventManagerImpl
         }
         break;
       case 'allocate':'
-        this.logger.debug(`Memory allocated: ${event.details?.size} bytes`);`
+        this.logger.debug(`Memory allocated: $event.details?.sizebytes`);`
         break;
       case 'deallocate':'
-        this.logger.debug(`Memory deallocated: ${event.details?.size} bytes`);`
+        this.logger.debug(`Memory deallocated: $event.details?.sizebytes`);`
         break;
-    }
 
     // Update memory usage tracking
     if (event.details?.memoryUsage) {
@@ -661,7 +656,7 @@ export class MemoryEventManagerFactory
    * Create a new MemoryEventManager instance.
    */
   async create(config: EventManagerConfig): Promise<EventManager> {
-    this.logger.info(`Creating memory event manager: ${config.name}`);`
+    this.logger.info(`Creating memory event manager: $config.name`);`
 
     this.validateConfig(config);
     const optimizedConfig = this.applyMemoryDefaults(config);
@@ -705,7 +700,7 @@ export class MemoryEventManagerFactory
     if (errors.length > 0) {
       this.logger.error(`${errors.length} managers failed to create:`, errors);`
       throw new Error(
-        `Failed to create ${errors.length} out of ${configs.length} managers``
+        `Failed to create $errors.lengthout of $configs.lengthmanagers``
       );
     }
 
@@ -722,16 +717,14 @@ export class MemoryEventManagerFactory
   /**
    * List all event managers managed by this factory.
    */
-  list(): EventManager[] {
+  list(): EventManager[] 
     return Array.from(this.managers.values())();
-  }
 
   /**
    * Check if an event manager exists.
    */
-  has(name: string): boolean {
+  has(name: string): boolean 
     return this.managers.has(name);
-  }
 
   /**
    * Remove and destroy an event manager.
@@ -749,7 +742,7 @@ export class MemoryEventManagerFactory
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to remove memory event manager ${name}:`,`
+        `Failed to remove memory event manager $name:`,`
         error
       );
       throw error;
@@ -822,7 +815,7 @@ export class MemoryEventManagerFactory
           await manager.start();
           this.logger.debug(`Started memory event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to start manager ${name}:`, error);`
+          this.logger.error(`Failed to start manager $name:`, error);`
           throw error;
         }
       }
@@ -833,7 +826,7 @@ export class MemoryEventManagerFactory
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to start ${failures.length} out of ${results.length} managers``
+        `Failed to start $failures.lengthout of $results.lengthmanagers``
       );
     }
   }
@@ -848,7 +841,7 @@ export class MemoryEventManagerFactory
           await manager.stop();
           this.logger.debug(`Stopped memory event manager: ${name}`);`
         } catch (error) {
-          this.logger.error(`Failed to stop manager ${name}:`, error);`
+          this.logger.error(`Failed to stop manager $name:`, error);`
           throw error;
         }
       }
@@ -859,7 +852,7 @@ export class MemoryEventManagerFactory
 
     if (failures.length > 0) {
       throw new Error(
-        `Failed to stop ${failures.length} out of ${results.length} managers``
+        `Failed to stop $failures.lengthout of $results.lengthmanagers``
       );
     }
   }
@@ -967,7 +960,7 @@ export class MemoryEventManagerFactory
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Memory event manager monitoring started: ${config.name}``
+        `Memory event manager monitoring started: $config.name``
       );
     }
 
@@ -978,7 +971,7 @@ export class MemoryEventManagerFactory
         const status = await manager.healthCheck();
         if (status.status !== 'healthy') {'
           this.logger.warn(
-            `Memory manager health degraded: ${config.name}`,`
+            `Memory manager health degraded: $config.name`,`
             status.metadata
           );
         }

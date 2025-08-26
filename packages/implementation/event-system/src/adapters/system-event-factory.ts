@@ -8,13 +8,13 @@
  * @file Interface implementation: system-event-factory.
  */
 
-import { getLogger, type Logger, type Config } from '@claude-zen/foundation';
+import { type Config, getLogger, type Logger } from '@claude-zen/foundation';
 import type { EventManager, EventManagerFactory } from '../core/interfaces;
 import { EventManagerTypes } from '../core/interfaces;
 import type { SystemEventAdapterConfig } from './system-event-adapter;
 import {
   createDefaultSystemEventAdapterConfig,
-  SystemEventAdapter,
+  type SystemEventAdapter,
 } from './system-event-adapter;
 
 /**
@@ -34,7 +34,7 @@ export class SystemEventManagerFactory
 
   constructor(logger?: Logger, config?: Config) {
     this.logger = logger||getLogger('SystemEventManagerFactory');'
-    this.config = config||({} as any);
+    this.config = config||(as any);
     this.logger.debug('SystemEventManagerFactory initialized');'
   }
 
@@ -57,7 +57,7 @@ export class SystemEventManagerFactory
       this.instances.set(config?.name, adapter);
 
       this.logger.info(
-        `System event manager created successfully: ${config?.name}``
+        `System event manager created successfully: $config?.name``
       );
       return adapter;
     } catch (error) {
@@ -101,7 +101,7 @@ export class SystemEventManagerFactory
       this.logger.warn(
         `Created ${managers.length}/${configs.length} system event managers, ${errors.length} failed``
       );
-    } else {
+    } else 
       this.logger.info(
         `Successfully created ${managers.length} system event managers``
       );
@@ -160,11 +160,10 @@ export class SystemEventManagerFactory
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to remove system event manager ${name}:`,`
+        `Failed to remove system event manager $name:`,`
         error
       );
       return false;
-    }
   }
 
   /**
@@ -308,11 +307,10 @@ export class SystemEventManagerFactory
   /**
    * Get active manager count.
    */
-  getActiveCount(): number {
+  getActiveCount(): number 
     return Array.from(this.instances.values()).filter((manager) =>
       manager.isRunning()
     ).length;
-  }
 
   /**
    * Get factory metrics.
@@ -333,7 +331,7 @@ export class SystemEventManagerFactory
    *
    * @param config
    */
-  private validateConfig(config: SystemEventAdapterConfig): void {
+  private validateConfig(config: SystemEventAdapterConfig): void 
     if (!config?.name||typeof config?.name !=='string') {'
       throw new Error(
         'System event manager configuration must have a valid name''

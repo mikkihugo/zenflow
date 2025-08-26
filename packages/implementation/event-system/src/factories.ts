@@ -11,15 +11,15 @@
 
 import type { Config, Logger, RetryOptions } from '@claude-zen/foundation';
 import {
+  EnhancedError,
+  getDatabaseAccess,
   inject,
   injectable,
+  Storage,
+  safeAsync,
   TOKENS,
   withRetry,
   withTimeout,
-  safeAsync,
-  EnhancedError,
-  Storage,
-  getDatabaseAccess,
 } from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
@@ -46,7 +46,7 @@ import type {
 } from './event-manager-types;
 
 import {
-  EventManagerPresets,
+  type EventManagerPresets,
   EventManagerTypes,
   EventTypeGuards,
 } from './core/interfaces;
@@ -303,7 +303,7 @@ export class UELFactory {
       return cachedManager as EventManagerTypeMap<T>;
     }
 
-    this._logger.info(`Creating new event manager: ${managerType}/${name}`);`
+    this._logger.info(`Creating new event manager: $managerType/${name}`);`
 
     try {
       // Validate configuration
@@ -578,7 +578,7 @@ export class UELFactory {
    *   }
    * ]);
    *
-   * console.log(`Transaction ${transaction.id}: ${transaction.status}`);`
+   * console.log(`Transaction $transaction.id: $transaction.status`);`
    * ````
    */
   async executeTransaction(
@@ -622,7 +622,7 @@ export class UELFactory {
             case 'unsubscribe':'
               return manager.unsubscribe((op.data as any).subscriptionId);
             default:
-              throw new Error(`Unknown operation: ${op.operation}`);`
+              throw new Error(`Unknown operation: $op.operation`);`
           }
         })
       );
@@ -662,7 +662,7 @@ export class UELFactory {
           await entry.manager.stop();
           await entry.manager.destroy();
         } catch (error) {
-          this._logger.warn(`Failed to shutdown event manager: ${error}`);`
+          this._logger.warn(`Failed to shutdown event manager: $error`);`
         }
       }
     );
@@ -697,13 +697,12 @@ export class UELFactory {
   /**
    * Get factory statistics.
    */
-  getStats(): {
+  getStats(): 
     totalManagers: number;
     managersByType: Record<EventManagerType, number>;
     managersByStatus: Record<string, number>;
     cacheSize: number;
-    transactions: number;
-  } {
+    transactions: number;{
     const managersByType: Record<EventManagerType, number> = {} as any;
     const managersByStatus: Record<string, number> = {};
 
@@ -741,11 +740,8 @@ export class UELFactory {
    * Private methods for internal operations.
    */
 
-  private async initializeFactories(): Promise<void> {
+  private async initializeFactories(): Promise<void> 
     this._logger.debug('Initializing event manager factories');'
-    // Placeholder for factory initialization
-    // Real implementation would load specific factory classes
-  }
 
   private async getOrCreateFactory(
     managerType: EventManagerType
@@ -851,7 +847,7 @@ export class UELFactory {
     _config?: Partial<EventManagerConfig>
   ): void {
     if (!EventTypeGuards.isEventManagerType(managerType)) {
-      throw new Error(`Invalid event manager type: ${managerType}`);`
+      throw new Error(`Invalid event manager type: $managerType`);`
     }
 
     if (!name||typeof name !=='string') {'
@@ -911,7 +907,7 @@ export class UELFactory {
     managerType: EventManagerType,
     name: string
   ): string {
-    return `${managerType}:${name}`;`
+    return `$managerType:$name`;`
   }
 
   private generateManagerId(config: EventManagerConfig): string {
@@ -919,7 +915,7 @@ export class UELFactory {
   }
 
   private generateTransactionId(): string {
-    return `tx:${Date.now()}:${Math.random().toString(36).substring(2, 11)}`;`
+    return `tx:$Date.now():$Math.random().toString(36).substring(2, 11)`;`
   }
 }
 
@@ -1205,6 +1201,6 @@ export async function createMonitoringEventBus(
 
 // Add missing exports for index.ts compatibility
 export { UELFactory as EventFactory };
-export { createEventManager as createEvent };
+export type { createEventManager as createEvent };
 
 export default UELFactory;

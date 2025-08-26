@@ -1,4 +1,5 @@
 import { EventEmitter } from '@claude-zen/foundation';
+
 /**
  * UEL (Unified Event Layer) - Backward Compatibility Layer.
  *
@@ -8,8 +9,8 @@ import { EventEmitter } from '@claude-zen/foundation';
  * @file Backward Compatibility Implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   EventManagerType,
   EventManager as IEventManager,
@@ -98,7 +99,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
 
     // UEL integration if enabled
     if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {'
-      this.emitToUEL(eventName, args).catch((error) => {
+      this.emitToUEL(eventName, args).catch((error) => 
         this.logger?.error(`UEL emit failed for ${eventName}:`, error);`
       });
     }
@@ -124,8 +125,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
         this.logger?.error(
           `UEL subscription tracking failed for ${eventName}:`,`
           error
-        );
-      });
+        ););
     }
 
     return result;
@@ -145,8 +145,8 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
 
     // Track one-time UEL subscriptions if enabled
     if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {'
-      this.trackUELSubscription(eventName, listener, { once: true }).catch(
-        (error) => {
+      this.trackUELSubscription(eventName, listener, once: true ).catch(
+        (error) => 
           this.logger?.error(
             `UEL once subscription failed for ${eventName}:`,`
             error
@@ -213,15 +213,14 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
       if (this.migrationMode ==='active') {'
         throw error;
       }
-      this.logger?.warn(`UEL emit failed (passive mode): ${eventName}`, error);`
-    }
+      this.logger?.warn(`UEL emit failed (passive mode): $eventName`, error);`
   }
 
   private async trackUELSubscription(
     eventName: string,
     listener: (...args: unknown[]) => void,
     options?: { once?: boolean }
-  ): Promise<void> {
+  ): Promise<void> 
     if (!this.uelManager) return;
 
     try {
@@ -255,13 +254,12 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
         error
       );
     }
-  }
 
   private createUELEvent(
     uelEventType: string,
     originalEvent: string,
     args: unknown[]
-  ): SystemEvent {
+  ): SystemEvent 
     return {
       id: `compat-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,`
       timestamp: new Date(),
@@ -281,9 +279,8 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
         compatibility: true,
       },
     };
-  }
 
-  private convertUELEventToArgs(event: SystemEvent): unknown[] {
+  private convertUELEventToArgs(event: SystemEvent): unknown[] 
     // Extract original args from metadata if available
     if (event.metadata?.['args'] && Array.isArray(event.metadata['args'])) {'
       return event.metadata['args'];'
@@ -291,7 +288,6 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
 
     // Fallback to event object itself
     return [event];
-  }
 
   private async migrateExistingListeners(): Promise<void> {
     const eventNames = this.eventNames();
@@ -422,10 +418,10 @@ export class EventEmitterMigrationHelper {
       });
 
       this.migrationStats.migrated++;
-      this.logger?.info(`✅ Successfully wrapped EventEmitter: ${managerName}`);`
+      this.logger?.info(`✅ Successfully wrapped EventEmitter: $managerName`);`
 
       return compatibleEmitter;
-    } catch (error) {
+    } catch (error) 
       this.migrationStats.failed++;
       this.logger?.error(
         `❌ Failed to wrap EventEmitter ${managerName}:`,`

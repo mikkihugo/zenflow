@@ -247,14 +247,13 @@ export class EventRegistry implements EventManagerRegistry {
 
   constructor(private _logger?: Logger) {
     this._logger = _logger||getLogger('EventRegistry');'
-    this.healthMonitoring = {
+    this.healthMonitoring = 
       checkInterval: 30000, // 30 seconds
       timeout: 5000,
       failureThreshold: 3,
       autoRecovery: true,
       maxRecoveryAttempts: 3,
-      notifyOnStatusChange: true,
-    };
+      notifyOnStatusChange: true,;
 
     this.discoveryConfig = {
       autoDiscover: true,
@@ -453,7 +452,7 @@ export class EventRegistry implements EventManagerRegistry {
     }
 
     this._logger?.info(
-      `📝 Registered event manager: ${name} (${config?.type})``
+      `📝 Registered event manager: $name($config?.type)``
     );
   }
 
@@ -543,13 +542,12 @@ export class EventRegistry implements EventManagerRegistry {
           : 2),
       schema: config?.schema,
       managerTypes: config?.managerTypes,
-      config: config?.options||{},
+      config: config?.options||,
       registered: new Date(),
-      usage: {
+      usage: 
         totalEmissions: 0,
         totalSubscriptions: 0,
-        averageLatency: 0,
-      },
+        averageLatency: 0,,
     };
 
     this._logger?.debug(`🏷️ Registered event type: ${eventType}`);`
@@ -920,7 +918,7 @@ export class EventRegistry implements EventManagerRegistry {
     }
   }
 
-  private startHealthMonitoring(): void {
+  private startHealthMonitoring(): void 
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
@@ -1016,9 +1014,8 @@ export class EventRegistry implements EventManagerRegistry {
     this._logger?.debug(
       `🏷️ Registered ${defaultEventTypes.length} default event types``
     );
-  }
 
-  private async performEventDiscovery(): Promise<void> {
+  private async performEventDiscovery(): Promise<void> 
     try {
       // Event discovery implementation would scan specified paths
       // and automatically register discovered event types
@@ -1026,7 +1023,6 @@ export class EventRegistry implements EventManagerRegistry {
     } catch (error) {
       this._logger?.warn('⚠️ Event discovery failed:', error);'
     }
-  }
 }
 
 // Global registry instance for convenience

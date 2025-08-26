@@ -436,13 +436,12 @@ export class UELValidationFramework {
 
     // Validate required fields
     if (!config?.name||typeof config?.name !=='string') {'
-      errors.push({
+      errors.push(
         code: 'INVALID_MANAGER_NAME',
         message: 'Event manager name is required and must be a string',
         severity: 'critical',
         category: 'config',
-        suggestion: 'Provide a valid string name for the event manager',
-      });
+        suggestion: 'Provide a valid string name for the event manager',);
     }
 
     if (!EventTypeGuards.isEventManagerType(config?.type)) {
@@ -507,17 +506,15 @@ export class UELValidationFramework {
       errors,
       warnings,
       recommendations,
-      metrics: {
+      metrics: 
         validationTime,
         checkCount: errors.length + warnings.length,
-        complexity: 'low',
-      },
-      metadata: {
+        complexity: 'low',,
+      metadata: 
         validator: 'UELValidationFramework.validateManagerConfig',
         timestamp: new Date(),
         version: '1.0.0',
-        context: { managerType: config?.type, managerName: config?.name },
-      },
+        context: managerType: config?.type, managerName: config?.name ,,
     };
   }
 
@@ -839,12 +836,10 @@ export class UELValidationFramework {
     health: ValidationResult;
     integration: ValidationResult;
     events: ValidationResult[];
-    summary: {
       totalScore: number;
       criticalIssues: number;
       recommendations: number;
-      validationTime: number;
-    };
+      validationTime: number;;
   }> {
     const startTime = Date.now();
 
@@ -1132,7 +1127,7 @@ export class UELValidationFramework {
     errors: ValidationError[],
     warnings: ValidationWarning[]
   ): number {
-    let score = 100;
+    const score = 100;
 
     // Deduct points for errors based on severity
     errors.forEach((error) => {
