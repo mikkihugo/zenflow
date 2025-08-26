@@ -42,17 +42,24 @@ jobs:
           # Specify '22.x' to automatically use the latest available patch release for Node.js v22.
           # This ensures access to the latest security fixes and improvements without manual updates. [8, 9]
           node-version: '22.x'
-          # Enable built-in caching for npm. This significantly speeds up subsequent runs by caching dependencies.
-          # The cache key is generated from the hash of the 'package-lock.json' file. [6, 10]
-          cache: 'npm'
+          # Enable built-in caching for pnpm. This significantly speeds up subsequent runs by caching dependencies.
+          # The cache key is generated from the hash of the 'pnpm-lock.yaml' file. [6, 10]
+          cache: 'pnpm'
 
-      # Step 3: Install Node.js Dependencies
-      # Use 'npm ci' instead of 'npm install'. 'npm ci' provides faster, more reliable, and deterministic builds
-      # by installing dependencies directly from the 'package-lock.json' file, which is ideal for CI environments. [10]
+      # Step 3: Setup PNPM
+      # This step installs pnpm itself, which is required before we can install the project dependencies.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      # Step 4: Install Node.js Dependencies
+      # Use 'pnpm install' instead of 'npm ci'. 'pnpm install' provides faster, more reliable, and deterministic builds
+      # by installing dependencies directly from the 'pnpm-lock.yaml' file, which is ideal for CI environments. [10]
       - name: Install Node.js Dependencies
-        run: npm ci
+        run: pnpm install
 
-      # Step 4: Setup Rust Stable Toolchain
+      # Step 5: Setup Rust Stable Toolchain
       # Configures the Rust environment using a modern, well-maintained action.
       - name: Setup Rust Stable Toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1

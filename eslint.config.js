@@ -206,19 +206,19 @@ export default [
 			parserOptions: {
 				ecmaVersion: 2024,
 				sourceType: "module",
-				// Optimized for 4-tier architecture - specific paths for all tiers
+				// Optimized for current 5-tier architecture - correct paths
 				project: [
 					"./tsconfig.json",
 					"./apps/*/tsconfig.json",
-					// Public API packages
-					"./packages/public-api/*/tsconfig.json",
-					"./packages/public-api/*/*/tsconfig.json",
-					// Implementation packages
-					"./packages/implementation/*/tsconfig.json",
-					// Enterprise packages
-					"./packages/enterprise/*/tsconfig.json",
-					// Private core packages
-					"./packages/private-core/*/tsconfig.json",
+					// Core packages
+					"./packages/core/*/tsconfig.json",
+					// Services packages
+					"./packages/services/*/tsconfig.json",
+					// Tools packages
+					"./packages/tools/*/tsconfig.json",
+					"./packages/tools/*/*/tsconfig.json",
+					// Integration packages
+					"./packages/integrations/*/tsconfig.json",
 				],
 				tsconfigRootDir: import.meta.dirname,
 			},
