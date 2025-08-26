@@ -944,8 +944,9 @@ export class ${project.name.replace(/\s+/g, ')} '
   private generateTestSuite(project: SPARCProject): string
     return `// Test Suite for ${project.name}`
 
-import { describe, it, expect } from vitest';
-import { $project.name.replace(/\s+/g, ')from ./implementation';
+import { describe, it, expect } from 'vitest'
+// Malformed import - needs manual fix
+// import'./implementation'
 
 describe('${project.name}', () => {
   let instance: $project.name.replace(/\s+/g, )}';'
@@ -982,7 +983,8 @@ npm install;
 
 ## Usage';
 \`\`\`typescript`
-import { $project.name.replace(/\s+/g, ')from ./${project.name.toLowerCase()}';
+// Malformed import - needs manual fix
+// import'./${project.name.toLowerCase()}'
 
 const _instance = new $project.name.replace(/\s+/g, ')();'
 await instance.execute();
@@ -1075,3 +1077,4 @@ export default SPARCCommander;
 
 }
 }
+}}}}}}))))))]

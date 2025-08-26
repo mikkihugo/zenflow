@@ -6,9 +6,9 @@
 
 // Core engine (commented out - missing implementation)
 // export { SPARCEngineCore } from './core/sparc-engine';
-// export type { SPARCEngineConfig } from ./core/sparc-engine;
+// export type { SPARCEngineConfig } from './core/sparc-engine;
 
-// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts';
+// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts'
 // export type {
 //   EpicProposal,
 //   PortfolioDecision,
@@ -19,7 +19,7 @@
 // } from './core/safe-sparc-workflow';
 // SAFe-SPARC Integration Workflow (Production Implementation)
 // TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts;
-// export { SafeSparcWorkflow } from ./core/safe-sparc-workflow';
+// export { SafeSparcWorkflow } from './core/safe-sparc-workflow'
 export type {
   DeliverableMetrics,
   MethodologyResult,
@@ -37,7 +37,7 @@ export type {
   SPARCWarning,
 } from './core/sparc-commander';
 // Production SPARC Commander (Full Implementation)
-export { SPARCCommander } from ./core/sparc-commander';
+export { SPARCCommander } from './core/sparc-commander'
 export type {
   Capability,
   Enabler,
@@ -56,9 +56,9 @@ export {
   createSafe6DevelopmentManager,
   createSafe6SolutionTrainManager,
   Safe6DevelopmentManager,
-} from ./safe6-development-manager;
+} from './safe6-development-manager;
 
-// Types';
+// Types'
 export type {
   AlgorithmPseudocode,
   ArchitectureComponent,
@@ -78,7 +78,7 @@ export type {
   WorkflowPseudocode,
 } from './types';
 
-// import { SPARCEngineCore } from ./core/sparc-engine';
+// import { SPARCEngineCore } from './core/sparc-engine'
 // import type { PhaseResult, SPARCProject, ProjectDomain, ProjectComplexity } from './types';
 
 /**
@@ -146,3 +146,4 @@ export class SPARC {
 export default SPARC;
 
 }
+}}

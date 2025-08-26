@@ -40,7 +40,7 @@ export interface EpicProposal {
 // Portfolio decision interface (shared across SAFe integration)
 export interface PortfolioDecision {
   approved: boolean
-  priority: 'low' | 'medium' | 'high' | critical
+  priority: 'low' | 'medium' | 'high' | 'critical'
   fundingAllocated: number
   timeline: string
 }
@@ -50,8 +50,7 @@ export interface SparcArtifacts {
   specification: string
   architecture: string
   implementation: string
-  status: 'pending' | 'in_progress' | 'complete' | failed
-}
+  status: 'pending' | 'in_progress' | 'complete'  | 'failed'}
 
 // SPARC execution context;
 export interface SparcExecutionContext {
@@ -113,7 +112,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     this.workflowConfig = config;
 
     // Use provided logger or create a simple console logger;
-    this.logger = logger || getLogger(SafeSparcWorkflow);
+    this.logger = logger || getLogger('SafeSparcWorkflow');
 
     this.logger.info(
       `SPARC Workflow initialized: ${this.workflowConfig.workflowId}`
@@ -131,7 +130,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         'Initializing SPARC Workflow with SPARC Engine and Workflow Engine...'
       );
 
-      // Import SPARCCommander from this package;
+      // Import SPARCCommander from 'this package;
       const { SPARCCommander } = await import(./sparc-commander);
 
       this.sparcEngine = new SPARCCommander(
@@ -143,7 +142,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         qualityThreshold: 0.8
       };
 
-      // Use actual workflow engine from @claude-zen/workflows package';
+      // Use actual workflow engine from @claude-zen/workflows package'
       try {
         const { WorkflowEngine } = await import('@claude-zen/workflows);
 
@@ -208,7 +207,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     try {
       const startTime = Date.now();
 
-      // Create SPARC project from epic;
+      // Create SPARC project from 'epic;
       const sparcProject = await this.createSparcProjectFromEpic(context);
 
       // Execute SPARC methodology using SPARCCommander;
@@ -227,7 +226,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         methodologyResult;
       );
 
-      // Create final result with SAFe integration';
+      // Create final result with SAFe integration'
       const result: SparcExecutionResult = {
         projectId: sparcProject.id,
         specification:
@@ -528,3 +527,4 @@ export default SafeSparcWorkflow';
 }
 }
 }
+}}]

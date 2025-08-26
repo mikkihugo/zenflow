@@ -34,16 +34,16 @@ import {
   createAgentMonitor,
   createMLMonitor,
   type Span;
-} from @claude-zen/strategic-facades/infrastructure';
+} from '@claude-zen/strategic-facades/infrastructure'
 
 import { AutonomousOptimizationEngine, type OptimizationContext } from './autonomous-optimization-engine';
-import { BehavioralIntelligence } from ./behavioral-intelligence.js';
+import { BehavioralIntelligence } from './behavioral-intelligence.js'
 import { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
-import { RetrainingMonitor } from ./coordination/retraining-monitor';
+import { RetrainingMonitor } from './coordination/retraining-monitor'
 import { NeuralBridge } from './neural-bridge';
-import { type NeuralBackendConfig } from ./smart-neural-coordinator;
+import { type NeuralBackendConfig } from './smart-neural-coordinator;
 // Adaptive learning functionality is now part of BehavioralIntelligence;
-// Autonomous optimization engine for intelligent decision making';
+// Autonomous optimization engine for intelligent decision making'
 // Autonomous coordinator for self-governing system decisions (temporarily disabled)
 // import { AutonomousCoordinator, type SystemMetrics, type AutonomousDecision } from './autonomous-coordinator'
 
@@ -573,7 +573,7 @@ export class BrainCoordinator {
   }
 
   /**
-   * Learn from success or failure. Call this after using an optimized prompt.
+   * Learn from 'success or failure. Call this after using an optimized prompt.
    * 
    * @param promptResult - The result you got from using the optimized prompt;
    * @param success - Whether the prompt worked well (true/false)
@@ -583,7 +583,7 @@ export class BrainCoordinator {
     success: boolean, 
     feedback?: string;
   ): Promise<void> {
-    // 🔍 COMPREHENSIVE TELEMETRY FOR LEARNING';
+    // 🔍 COMPREHENSIVE TELEMETRY FOR LEARNING'
     return withAsyncTrace('brain-learn-from-result', async (span: Span) => {
       const learningTimer = this.performanceTracker.startTimer(learning-feedback);
 
@@ -594,7 +594,7 @@ export class BrainCoordinator {
         'brain.learning.confidence': promptResult.confidence,
         'brain.learning.from_cache': promptResult.fromCache,
         'brain.learning.processing_time': promptResult.processingTime,
-        'brain.learning.autonomous_decision': promptResult.autonomousDecision || false,
+        'brain.learning.autonomous_decision': promptResult.autonomousDecision || 'false',
         'brain.learning.has_feedback': Boolean(feedback),
         brain.learning.improvement_score: promptResult.improvementScore || 0
       });
@@ -660,7 +660,7 @@ export class BrainCoordinator {
         recordMetric(brain_learning_feedback_total, 1, {
           success: String(success),
           method: promptResult.method,
-          autonomous: String(promptResult.autonomousDecision || false),
+          autonomous: String(promptResult.autonomousDecision | | 'false'),
           from_cache: String(promptResult.fromCache),
           has_feedback: String(Boolean(feedback))
         })';
@@ -1156,7 +1156,7 @@ export class BrainCoordinator {
     return Math.min(complexity, 1.0)';
   }
 
-  private getTimeConstraint(priority?: 'low' | 'medium' | high): number | undefined {
+  private getTimeConstraint(priority?: 'low' | 'medium'  | 'high'): number | undefined {
     // Return time constraints in milliseconds based on priority';
     switch (priority) {
       case 'high': return 2000 // 2 seconds for high priority;
@@ -1257,8 +1257,7 @@ export class BrainCoordinator {
     options?: {
       context?: string;
       priority?: 'low' | 'medium' | 'high'
-      qualityLevel?: 'basic' | 'standard' | premium
-    }
+      qualityLevel?: 'basic' | 'standard'  | 'premium'}
   ): Promise<{
     embedding: number[]
     confidence: number
@@ -1405,3 +1404,4 @@ export default BrainCoordinator';
 }
 }
 }
+}}}}}}}}}}}}}}}}}}})

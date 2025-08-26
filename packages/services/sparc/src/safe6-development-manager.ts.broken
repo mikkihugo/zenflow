@@ -41,7 +41,7 @@ import {
   type Logger;
 } from '@claude-zen/foundation';
 
-const logger = getLogger(safe6-development-manager);
+const logger = getLogger('safe6-development-manager');
 
 // SAFe 6.0 Flow-Based Enterprise interfaces;
 // Core Manager Configuration';
@@ -94,7 +94,7 @@ export class Safe6ConfigValidator {
   static validateManagerCore(core: Safe6ManagerCore): string[] {
     const errors: string[] = []
 
-    if (!core.managerId   || | core.managerId.trim() === '') {
+    if (!core.managerId   || | core.managerId.trim() === ') {
       errors.push(Manager ID is required and cannot be empty)';
     }
 
@@ -369,8 +369,7 @@ export interface Safe6DevelopmentCoordinationResult {
     averageFlowVelocity: number
     flowEfficiencyTrend: 'improving' | 'stable' | 'declining' | 'improving' | 'stable' | 'declining' | declining
     businessAgilityTrend: 'improving' | 'stable' | 'declining' | 'improving' | 'stable' | 'declining' | declining
-    employeeEngagementTrend: 'improving' | 'stable' | 'declining' | 'improving' | 'stable' | declining | declining
-  };
+    employeeEngagementTrend: 'improving' | 'stable' | 'declining' | 'improving' | 'stable'  | 'declining' | 'declining'};
   recommendations: string[]
   nextActions: string[]
 }
@@ -1238,26 +1237,6 @@ export function createSafe6BusinessAgilityManager(
   return new Safe6DevelopmentManager(config);
 }
 
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
 }
 }
 }
