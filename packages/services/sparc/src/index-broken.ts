@@ -1,5 +1,5 @@
 /**
- * @fileoverview SPARC Methodology Package
+ * @fileoverview SPARC Methodology Package;
  *
  * Clean SPARC implementation with minimal dependencies.
  */
@@ -8,7 +8,7 @@
 // export { SPARCEngineCore } from './core/sparc-engine';
 // export type { SPARCEngineConfig } from './core/sparc-engine';
 
-// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts
+// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts;
 // export type {
 //   EpicProposal,
 //   PortfolioDecision,
@@ -18,7 +18,7 @@
 //   SparcExecutionResult,
 // } from './core/safe-sparc-workflow';
 // SAFe-SPARC Integration Workflow (Production Implementation)
-// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts
+// TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts;
 // export { SafeSparcWorkflow } from './core/safe-sparc-workflow';
 export type {
   DeliverableMetrics,
@@ -58,7 +58,7 @@ export {
   Safe6DevelopmentManager,
 } from './safe6-development-manager';
 
-// Types
+// Types;
 export type {
   AlgorithmPseudocode,
   ArchitectureComponent,
@@ -83,63 +83,63 @@ export type {
 
 /**
  * Main SPARC facade for easy usage.
- * Note: SPARCEngineCore implementation pending - using SPARCCommander for now
+ * Note: SPARCEngineCore implementation pending - using SPARCCommander for now;
  */
 export class SPARC {
   // private static instance: SPARCEngineCore;
 
   /**
    * Get singleton SPARC engine instance.
-   * Note: Implementation pending
+   * Note: Implementation pending;
    */
   static getEngine(): any {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead''
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
     );
   }
 
   /**
    * Quick project initialization with SPARC methodology.
-   * Note: Implementation pending
+   * Note: Implementation pending;
    */
   static async createProject(
     _name: string,
     _domain: any,
     _requirements: string[],
-    _complexity: any = 'moderate''
+    _complexity: any = 'moderate'
   ): Promise<any> {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead''
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
     );
   }
 
   /**
    * Execute complete SPARC workflow.
-   * Note: Implementation pending
+   * Note: Implementation pending;
    */
   static async executeFullWorkflow(_projectId: string): Promise<any[]> {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead''
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
     );
   }
 
   /**
    * Get project by ID.
-   * Note: Implementation pending
+   * Note: Implementation pending;
    */
   static getProject(_projectId: string): any {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead''
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
     );
   }
 
   /**
    * List all projects.
-   * Note: Implementation pending
+   * Note: Implementation pending;
    */
   static listProjects(): any[] {
     throw new Error(
-      'SPARCEngineCore implementation pending - use SPARCCommander instead''
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
     );
   }
 }
