@@ -1,11 +1,11 @@
 import forms from "@tailwindcss/forms";
 import typography from "@tailwindcss/typography";
-import type { Config } from "tailwindcss";
 
+/** @type {import('tailwindcss').Config} */
 export default {
-	darkMode: "class",
 	content: [
 		"./src/**/*.{html,js,svelte,ts}",
+		"./node_modules/flowbite/**/*.js",
 		"./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}",
 	],
 	theme: {
@@ -16,7 +16,7 @@ export default {
 			colors: {
 				primary: {
 					50: "#eff6ff",
-					100: "#dbeafe",
+					100: "#dbeafe", 
 					200: "#bfdbfe",
 					300: "#93c5fd",
 					400: "#60a5fa",
@@ -29,5 +29,5 @@ export default {
 			},
 		},
 	},
-	plugins: [forms, typography, require("flowbite/plugin")],
-} satisfies Config;
+	plugins: [forms, typography],
+};

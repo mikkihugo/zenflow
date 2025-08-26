@@ -138,7 +138,7 @@ function _enterEnhancedDashboard(role: string) {
       
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
         {#each safeRoles as roleData}
-          <div style="background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(8px); border-radius: 1rem; border: 1px solid rgba(51, 65, 85, 0.5); padding: 1.5rem; transition: all 0.3s ease;" 
+          <div role="button" tabindex="0" style="background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(8px); border-radius: 1rem; border: 1px solid rgba(51, 65, 85, 0.5); padding: 1.5rem; transition: all 0.3s ease;" 
                on:mouseenter={e => e.target.style.borderColor = 'rgba(96, 165, 250, 0.5)'}
                on:mouseleave={e => e.target.style.borderColor = 'rgba(51, 65, 85, 0.5)'}>
             <!-- Role Header -->

@@ -11,7 +11,7 @@ export interface NotificationOptions {
 	duration?: number;
 	dismissible?: boolean;
 	position?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
-	id?: string;
+	id?: number;
 }
 
 /**

@@ -27,24 +27,24 @@ let _agentSpawnError: string | null = null;
 let _taskCreationError: string | null = null;
 
 // Form states
-const _activeTab = 0;
+let activeTab = 0;
 
 // Swarm initialization form
-const swarmTopology = "mesh";
-const swarmMaxAgents = 5;
-const swarmStrategy = "adaptive";
+let swarmTopology = "mesh";
+let swarmMaxAgents = 5;
+let swarmStrategy = "adaptive";
 
 // Agent spawning form
 let agentSwarmId = "";
-const agentType = "general";
+let agentType = "general";
 let agentName = "";
 let agentCapabilities = "coordination,analysis";
 
 // Task orchestration form
 let taskDescription = "";
-const taskStrategy = "adaptive";
-const taskPriority = "medium";
-const taskMaxAgents = 3;
+let taskStrategy = "adaptive";
+let taskPriority = "medium";
+let taskMaxAgents = 3;
 
 const _topologies = ["mesh", "hierarchical", "ring", "star"];
 const _strategies = ["adaptive", "parallel", "sequential", "balanced"];
@@ -654,8 +654,8 @@ function _formatUptime(seconds: number): string {
 									<div class="space-y-3">
 										{#each Array(3) as _}
 											<div class="card variant-soft-surface p-4 animate-pulse">
-												<div class="w-32 h-4 bg-surface-300-600-token rounded mb-2"></div>
-												<div class="w-24 h-3 bg-surface-300-600-token rounded"></div>
+												<div class="w-32 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+												<div class="w-24 h-3 bg-gray-300 dark:bg-gray-600 rounded"></div>
 											</div>
 										{/each}
 									</div>
@@ -774,7 +774,7 @@ function _formatUptime(seconds: number): string {
 
 <style lang="postcss">
 	.progress-bar {
-		@apply w-full h-2 bg-surface-300-600-token rounded-full overflow-hidden;
+		@apply w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden;
 	}
 	.progress-fill {
 		@apply h-full rounded-full transition-all duration-500;

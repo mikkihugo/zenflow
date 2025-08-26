@@ -1,6 +1,8 @@
 <script lang="ts">
 import "../app.postcss";
 import { writable } from "svelte/store";
+import { page } from "$app/stores";
+import ConnectionBanner from "../lib/components/ConnectionBanner.svelte";
 
 // Create connection status store here since export from component isn't working
 // Start as potentially disconnected until verified
@@ -60,7 +62,7 @@ const _navItems = [
 ];
 
 $: activeUrl = $page.url.pathname;
-$: bannerVisible = $connectionStatus?.connected === false;
+$: bannerVisible = $_connectionStatus?.connected === false;
 </script>
 
 <!-- Clean Dashboard Layout -->
@@ -90,7 +92,7 @@ $: bannerVisible = $connectionStatus?.connected === false;
 	</nav>
 
 	<!-- Connection Status Banner (shows when API is disconnected) -->
-	<ConnectionBanner {connectionStatus} />
+	<ConnectionBanner connectionStatus={$_connectionStatus} />
 
 	<!-- Sidebar -->
 	<aside class="fixed left-0 z-40 w-64 h-screen transition-transform bg-white border-r border-gray-200" 
@@ -98,7 +100,7 @@ $: bannerVisible = $connectionStatus?.connected === false;
 	       style="top: {bannerVisible ? '7rem' : '4rem'};">
 		<div class="h-full px-3 py-4 overflow-y-auto">
 			<ul class="space-y-2 font-medium">
-				{#each navItems as item}
+				{#each _navItems as item}
 					<li>
 						<a 
 							href={item.href} 

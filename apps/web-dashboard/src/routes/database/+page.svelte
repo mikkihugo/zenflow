@@ -24,12 +24,12 @@ let _queryError: string | null = null;
 let _commandError: string | null = null;
 
 // Form states
-const _activeTab = 0;
+let activeTab = 0;
 let querySQL =
 	"SELECT COUNT(*) as total_records FROM information_schema.tables;";
 let queryParams = "[]";
-const commandSQL = "";
-const commandParams = "[]";
+let commandSQL = "";
+let commandParams = "[]";
 
 // Pre-defined queries
 const _sampleQueries = [

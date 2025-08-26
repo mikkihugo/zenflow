@@ -48,6 +48,11 @@ export default defineConfig({
 	build: {
 		target: "esnext",
 	},
+	resolve: {
+		alias: {
+			"@claude-zen/foundation": "/home/mhugo/code/claude-code-zen/packages/public-api/core/foundation/src/browser.ts"
+		}
+	},
 	optimizeDeps: {
 		include: ["chart.js", "date-fns", "socket.io-client"],
 	},

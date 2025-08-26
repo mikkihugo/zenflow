@@ -14,12 +14,12 @@ let _selectedEpic: any = null;
 let _selectedFeature: any = null;
 
 // Filter states
-const storyStatusFilter = "";
-const storyTypeFilter = "";
-const priorityFilter = "";
-const teamFilter = "";
-const epicFilter = "";
-const featureFilter = "";
+let storyStatusFilter = "";
+let storyTypeFilter = "";
+let priorityFilter = "";
+let teamFilter = "";
+let epicFilter = "";
+let featureFilter = "";
 
 // Loading and error states
 let _storiesLoading = true;
@@ -76,7 +76,7 @@ const _newEpicForm = {
 };
 
 // Tab state
-const _tabSet = 0;
+let tabSet = 0;
 const _tabs = [
 	"Stories Board",
 	"Backlog",
@@ -549,8 +549,8 @@ $: kanbanColumns = [
 				<div class="card variant-soft-surface p-4">
 					<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 						<div>
-							<label class="label">Status Filter</label>
-							<select class="select" bind:value={storyStatusFilter} on:change={loadStories}>
+							<label class="label" for="status-filter">Status Filter</label>
+							<select id="status-filter" class="select" bind:value={storyStatusFilter} on:change={loadStories}>
 								<option value="">All Statuses</option>
 								<option value="backlog">Backlog</option>
 								<option value="ready">Ready</option>
@@ -560,16 +560,16 @@ $: kanbanColumns = [
 							</select>
 						</div>
 						<div>
-							<label class="label">Story Type</label>
-							<select class="select" bind:value={storyTypeFilter} on:change={loadStories}>
+							<label class="label" for="story-type-filter">Story Type</label>
+							<select id="story-type-filter" class="select" bind:value={storyTypeFilter} on:change={loadStories}>
 								<option value="">All Types</option>
 								<option value="user_story">User Story</option>
 								<option value="enabler_story">Enabler Story</option>
 							</select>
 						</div>
 						<div>
-							<label class="label">Priority Filter</label>
-							<select class="select" bind:value={priorityFilter} on:change={loadStories}>
+							<label class="label" for="priority-filter">Priority Filter</label>
+							<select id="priority-filter" class="select" bind:value={priorityFilter} on:change={loadStories}>
 								<option value="">All Priorities</option>
 								<option value="urgent">Urgent</option>
 								<option value="high">High</option>
@@ -666,15 +666,15 @@ $: kanbanColumns = [
 							
 							<div class="grid grid-cols-2 gap-4">
 								<div>
-									<label class="label">Story Type</label>
-									<select class="select" bind:value={newStoryForm.storyType}>
+									<label class="label" for="new-story-type">Story Type</label>
+									<select id="new-story-type" class="select" bind:value={newStoryForm.storyType}>
 										<option value="user_story">User Story</option>
 										<option value="enabler_story">Enabler Story</option>
 									</select>
 								</div>
 								<div>
-									<label class="label">Priority</label>
-									<select class="select" bind:value={newStoryForm.priority}>
+									<label class="label" for="new-story-priority">Priority</label>
+									<select id="new-story-priority" class="select" bind:value={newStoryForm.priority}>
 										<option value="low">Low</option>
 										<option value="medium">Medium</option>
 										<option value="high">High</option>
