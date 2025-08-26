@@ -54,8 +54,8 @@ export interface SparcArtifacts {
 
 // SPARC execution context;
 export interface SparcExecutionContext {
-  epic: EpicProposal
-  portfolioDecision: PortfolioDecision
+  epic: 'EpicProposal'
+  portfolioDecision: 'PortfolioDecision'
   projectId?: string;
 }
 
@@ -63,12 +63,11 @@ export interface SparcExecutionContext {
 export interface SparcExecutionResult extends SparcArtifacts {
   projectId: string
   phases: {
-    specification: any
-    pseudocode: any
-    architecture: any
-    refinement: any
-    completion: any
-  };
+    specification: 'any'
+    pseudocode: 'any'
+    architecture: 'any'
+    refinement: 'any'
+    completion: 'any'};
   metrics: {
     totalDuration: number
     phasesDuration: Record<string, number>;
@@ -90,10 +89,9 @@ interface WorkflowEvents {
   'sparc-completed': {
     epicId: string
     projectId: string
-    result: SparcExecutionResult
-  };
-  sparc-failed: { epicId: string error: Error }';
-  'phase-completed': { projectId: string phase: string result: any };
+    result: 'SparcExecutionResult'};
+  sparc-failed: { epicId: string error: 'Error'}';
+  'phase-completed': { projectId: string phase: string result: 'any'};
 }
 
 /**
@@ -101,11 +99,11 @@ interface WorkflowEvents {
  */
 export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   private logger: ReturnType<typeof getLogger>
-  private workflowConfig: SafeSparcWorkflowConfig
+  private workflowConfig: 'SafeSparcWorkflowConfig'
   private initialized = false;
 
   constructor(
-    config: SafeSparcWorkflowConfig,
+    config: 'SafeSparcWorkflowConfig',
     logger?: ReturnType<typeof getLogger>
   ) {
     super();
@@ -154,11 +152,11 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
             retryCount: 2,
             strategy: 'exponential-backoff',,);
 
-        this.logger.info(Workflow engine initialized successfully)';'
+        this.logger.'info(Workflow engine initialized successfully')';'
       } catch (_workflowError) {
-        this.logger.warn(
+        this.logger.'warn(
           @claude-zen/workflows not available, using minimal workflow engine
-        );
+        ');
 
         // Fallback to minimal workflow engine';
         this.workflowEngine = {
@@ -169,7 +167,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
           executeWorkflow: (_id: string) =>
             Promise.resolve({ success: true, duration: 1000 }),
           getWorkflowStatus: (_id: string) => ({
-            status: completed,
+            status: 'completed',
             progress: 100,
           }),
         };
@@ -196,7 +194,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   /**
    * Execute complete SPARC process for an approved epic;
    */
-  async executeSparcProcess(context: SparcExecutionContext
+  async executeSparcProcess(context: 'SparcExecutionContext'
   ): Promise<SparcExecutionResult> {
     if (!this.initialized) await this.initialize();
 
@@ -322,7 +320,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     };
   }
 
-  private async createSparcProjectFromEpic(context: SparcExecutionContext
+  private async createSparcProjectFromEpic(context: 'SparcExecutionContext'
   ): Promise<any> {
     // Convert epic to SPARC project requirements;
     const requirements = [
@@ -339,15 +337,15 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     // Create SPARC project using SPARCCommander;
     return await this.sparcEngine.initializeProject({
       name: `epic-${context.epic.id}-${context.epic.title.toLowerCase().replace(/\s+/g, -)}`,`
-      domain: domain,
-      requirements: requirements,
+      domain: 'domain',
+      requirements: 'requirements',
       workingDirectory: process.cwd(),
       outputDirectory: `./sparc-output/epic-${context.epic.id}`,`
     });
   }
 
-  private async executeSafeSparcIntegration(project: any,
-    methodologyResult: any
+  private async executeSafeSparcIntegration(project: 'any',
+    methodologyResult: 'any'
   ): Promise<any> {
     try {
       this.logger.info(
@@ -356,7 +354,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
       // Use safe-framework placeholder for now';
       const sparcCDService = {
-        mapSPARCToCD: async (project: any, result: any) => ({
+        mapSPARCToCD: async (project: 'any', result: any) => ({
           pipelineId: `cd-pipeline-${project.id}`,`
           stages: ['build', 'test', 'deploy'],
           qualityGates: ['code-quality', 'security-scan', performance-test],
@@ -376,12 +374,12 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         pipelineType: 'standard',
       };
     } catch (error) {
-      this.logger.error(SAFe-SPARC integration failed:, error)';'
+      this.logger.'error(SAFe-SPARC integration failed:, error')';'
       throw error;
     }
 
-  private async executeWorkflowOrchestration(project: any,
-    methodologyResult: any
+  private async executeWorkflowOrchestration(project: 'any',
+    methodologyResult: 'any'
   ): Promise<any> {
     // Create workflow definition for SPARC process;
     const workflowDefinition = {
@@ -402,7 +400,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         },
         {
           id: 'create-implementation-plan',
-          type: planning,
+          type: 'planning',
           action: async () =>
             this.createImplementationPlan(project, methodologyResult),
         },
@@ -483,16 +481,16 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     return durations;
   }
 
-  private async validateMethodologyResult(methodologyResult: any
+  private async validateMethodologyResult(methodologyResult: 'any'
   ): Promise<any> {
     return {
       isValid: methodologyResult?.success === true,
-      validationDetails: methodologyResult,
+      validationDetails: 'methodologyResult',
     };
   }
 
-  private async generateProjectDocumentation(project: any,
-    methodologyResult: any
+  private async generateProjectDocumentation(project: 'any',
+    methodologyResult: 'any'
   ): Promise<any> {
     return {
       documentation: {
@@ -504,8 +502,8 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     };
   }
 
-  private async createImplementationPlan(project: any,
-    methodologyResult: any
+  private async createImplementationPlan(project: 'any',
+    methodologyResult: 'any'
   ): Promise<any> {
     return {
       implementationPlan: {
@@ -527,4 +525,5 @@ export default SafeSparcWorkflow';
 }
 }
 }
+}}]
 }}]

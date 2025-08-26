@@ -16,6 +16,7 @@
 //   SparcArtifacts,
 //   SparcExecutionContext,
 //   SparcExecutionResult,
+}
 // } from './core/safe-sparc-workflow';
 // SAFe-SPARC Integration Workflow (Production Implementation)
 // TEMPORARILY DISABLED - syntax issues in safe-sparc-workflow.ts;
@@ -56,7 +57,7 @@ export {
   createSafe6DevelopmentManager,
   createSafe6SolutionTrainManager,
   Safe6DevelopmentManager,
-} from './safe6-development-manager;
+} from './safe6-development-manager';
 
 // Types'
 export type {
@@ -86,8 +87,7 @@ export type {
  * Note: SPARCEngineCore implementation pending - using SPARCCommander for now
  */
 export class SPARC {
-  // private static instance: SPARCEngineCore
-
+  // private static instance: 'SPARCEngineCore'
   /**
    * Get singleton SPARC engine instance.
    * Note: Implementation pending
@@ -104,7 +104,7 @@ export class SPARC {
    */
   static async createProject(
     _name: string,
-    _domain: any,
+    _domain: 'any',
     _requirements: string[],
     _complexity: any = 'moderate'
   ): Promise<any> {
@@ -145,5 +145,3 @@ export class SPARC {
 
 export default SPARC;
 
-}
-}}
