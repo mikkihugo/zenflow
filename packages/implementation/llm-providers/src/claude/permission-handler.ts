@@ -178,7 +178,7 @@ export async function createPermissionHandler(
 
     default:
       logger.warn(
-        `Unknown permission mode: $mode, defaulting to interactive`
+        `Unknown permission mode: ${{mode}}, defaulting to interactive`
       );
       return createInteractiveHandler();
   }

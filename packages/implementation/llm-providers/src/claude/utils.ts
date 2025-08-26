@@ -69,7 +69,7 @@ export function findProjectRoot(
     for (const projectFile of projectFiles) {
       const projectPath = path.join(currentPath, projectFile);
       if (fs.existsSync(projectPath)) {
-        logger.debug(`Found project root at: $currentPath($projectFile)`);`
+        logger.debug(`Found project root at: ${{currentPath}}(${{projectFile}})`);`
         return currentPath;
       }
     }
@@ -141,7 +141,7 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
 
   if (!fs.existsSync(resolved)) {
     logger.warn(
-      `Working directory $resolveddoes not exist, using current directory`
+      `Working directory ${{resolveddoes}} not exist, using current directory`
     );
     return process.cwd();
   }
@@ -164,7 +164,7 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
 export function ensureDirectory(directoryPath: string): void {
   if (!fs.existsSync(directoryPath)) {
     fs.mkdirSync(directoryPath, { recursive: true });
-    logger.debug(`Created directory: $directoryPath`);`
+    logger.debug(`Created directory: ${{directoryPath}}`);`
   }
 }
 
@@ -186,7 +186,7 @@ export function _truncateForLogging(str: string, maxLength = 200): string {
  * Generate unique session ID
  */
 export function generateSessionId(): string {
-  return `claude-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
+  return `claude-${{Date}}.now()-${{Math}}.random().toString(36).substr(2, 9)`;`
 }
 
 /**
@@ -239,7 +239,7 @@ export function sanitizeFilePath(filePath: string): string {
 
   for (const dangerousPath of dangerousPaths) {
     if (
-      resolvedPath.startsWith(`$dangerousPath/`) || resolvedPath === dangerousPath`
+      resolvedPath.startsWith(`${{dangerousPath}}/`) || resolvedPath === dangerousPath`
     ) 
       throw new Error(`Access to ${dangerousPath} is not allowed`);`
     }

@@ -88,7 +88,7 @@ export class ModelRegistry extends TypedEventBase {
    * Unregister a provider
    */
   unregisterProvider(providerId: string): void {
-    logger.info(`🗑️ Unregistering provider: $providerId`);`
+    logger.info(`🗑️ Unregistering provider: ${{providerId}}`);`
 
     const provider = this.providers.get(providerId);
     if (provider) {

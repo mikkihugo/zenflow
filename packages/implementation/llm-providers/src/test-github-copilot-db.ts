@@ -26,9 +26,9 @@ async function _testGitHubCopilotDatabase() {
     const anthropicModels = githubCopilotDB.getModelsByVendor('Anthropic');
     const googleModels = githubCopilotDB.getModelsByVendor('Google');
 
-    logger.info(`🤖 OpenAI models: $openaiModels.length`);`
+    logger.info(`🤖 OpenAI models: ${{openaiModels}}.length`);`
     logger.info(`🧠 Anthropic models: ${anthropicModels.length}`);`
-    logger.info(`🔍 Google models: $googleModels.length`);`
+    logger.info(`🔍 Google models: ${{googleModels}}.length`);`
 
     // Test by category
     const versatileModels = githubCopilotDB.getModelsByCategory('versatile');
@@ -36,22 +36,22 @@ async function _testGitHubCopilotDatabase() {
       githubCopilotDB.getModelsByCategory('lightweight');
     const powerfulModels = githubCopilotDB.getModelsByCategory('powerful');
 
-    logger.info(`🎯 Versatile models: $versatileModels.length`);`
+    logger.info(`🎯 Versatile models: ${{versatileModels}}.length`);`
     logger.info(`⚡ Lightweight models: ${lightweightModels.length}`);`
-    logger.info(`💪 Powerful models: $powerfulModels.length`);`
+    logger.info(`💪 Powerful models: ${{powerfulModels}}.length`);`
 
     // Test primary models (enabled in picker)
     const primaryModels = githubCopilotDB.getPrimaryModels();
     logger.info(`🌟 Primary models: ${primaryModels.length}`);`
     primaryModels.forEach((model) => {
-      logger.info(`   - $model.id($model.name) - $model.category`);`
+      logger.info(`   - ${{model}}.id(${{model}}.name) - ${{model}}.category`);`
     });
 
     // Test chat vs embedding models
     const chatModels = githubCopilotDB.getChatModels();
     const embeddingModels = githubCopilotDB.getEmbeddingModels();
     logger.info(`💬 Chat models: ${chatModels.length}`);`
-    logger.info(`📊 Embedding models: $embeddingModels.length`);`
+    logger.info(`📊 Embedding models: ${{embeddingModels}}.length`);`
 
     // Test vision models
     const visionModels = githubCopilotDB.getVisionModels();
@@ -60,7 +60,7 @@ async function _testGitHubCopilotDatabase() {
       visionModels.forEach((model) => {
         const limits = model.visionLimits;
         logger.info(
-          `   - $model.id: $limits?.maxImagesimages, $limits?.supportedFormats.join(', ')`
+          `   - ${{model}}.id: ${{limits}}?.maxImagesimages, ${{limits}}?.supportedFormats.join(', ')`
         );
       });
     }
@@ -69,14 +69,14 @@ async function _testGitHubCopilotDatabase() {
     const gpt5 = githubCopilotDB.getModel('gpt-5');
     if (gpt5) {
       logger.info(`🎯 GPT-5 Details:`);`
-      logger.info(`   Context: $gpt5.contextWindow.toLocaleString()tokens`);`
+      logger.info(`   Context: ${{gpt5}}.contextWindow.toLocaleString()tokens`);`
       logger.info(`   Output: ${gpt5.maxOutputTokens.toLocaleString()} tokens`);`
-      logger.info(`   Category: $gpt5.category`);`
+      logger.info(`   Category: ${{gpt5}}.category`);`
       logger.info(`   Vision: ${gpt5.supportsVision ? '✅' : '❌'}`);`
-      logger.info(`   Tool calls: $gpt5.supportsToolCalls ? '✅' : '❌'`);`
+      logger.info(`   Tool calls: ${{gpt5}}.supportsToolCalls ? '✅' : '❌'`);`
       logger.info(`   Streaming: ${gpt5.supportsStreaming ? '✅' : '❌'}`);`
       logger.info(
-        `   Structured outputs: $gpt5.supportsStructuredOutputs ? '✅' : '❌'`
+        `   Structured outputs: ${{gpt5}}.supportsStructuredOutputs ? '✅' : '❌'`
       );
     }
 
@@ -87,7 +87,7 @@ async function _testGitHubCopilotDatabase() {
     if (claudeThinking) {
       logger.info(`🤔 Claude 3.7 Sonnet Thinking:`);`
       logger.info(
-        `   Context: $claudeThinking.contextWindow.toLocaleString()tokens`
+        `   Context: ${{claudeThinking}}.contextWindow.toLocaleString()tokens`
       );
       logger.info(
         `   Output: ${claudeThinking.maxOutputTokens.toLocaleString()} tokens`

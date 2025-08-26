@@ -206,11 +206,11 @@ export class BaseMemoryBackend extends EventEmitter {
      * Concrete implementation of search for BackendInterface compatibility.
      *
      * @param pattern - Search pattern to match keys
-     * @param _namespace - Optional namespace (unused in base implementation)
+     * @param namespace - Optional namespace (unused in base implementation)
      */
     async search(pattern, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _namespace) {
+    namespace) {
         // Base implementation - override in subclasses.
         const results = await this.list(pattern);
         const resultMap = {};
@@ -227,7 +227,7 @@ export class BaseMemoryBackend extends EventEmitter {
         // Enhanced with async size calculation and real-time counting
         await new Promise(resolve => setTimeout(resolve, 1));
         // Update stats before returning size
-        await this.updateStats('size_check', 0);
+        this.updateStats('size_check', 0);
         return this.stats.totalEntries;
     }
     /** Get health status for MemoryBackend interface compatibility */
@@ -246,7 +246,7 @@ export class BaseMemoryBackend extends EventEmitter {
         // Enhanced with async cleanup process and resource deallocation
         await new Promise(resolve => setTimeout(resolve, 1));
         // Perform async cleanup tasks
-        await this.updateStats('cleanup', 0);
+        this.updateStats('cleanup', 0);
         // Override in subclasses for specific cleanup logic
         this.removeAllListeners();
         this.isInitialized = false;

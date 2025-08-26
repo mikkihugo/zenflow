@@ -439,7 +439,7 @@ describe('Performance and Optimization', () => {'
     const _requests = Array.from({ length: 10 }, (_, i) => `Request ${i + 1}`);`
     
     mockGitHubModels.sendRequest.mockImplementation(async (request) => ({
-      choices: [{ message: { content: `Response to $request`, role: 'assistant' } }],
+      choices: [{ message: { content: `Response to ${{request}}`, role: 'assistant' } }],
       usage: { total_tokens: 20 }
     }));
 

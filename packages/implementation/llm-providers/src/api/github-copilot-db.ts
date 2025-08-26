@@ -5,7 +5,6 @@
  * Updates models hourly from GitHub Copilot API
  */
 
-
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -136,7 +135,7 @@ class GitHubCopilotDatabase {
       const data = await response.json();
       const updatedModels = new Map<string, GitHubCopilotModelMetadata>();
 
-      for (const modelData of data.data||[]) {
+      for (const modelData of data.data || []) {
         const { capabilities = {} } = modelData;
         const { limits = {}, supports = {} } = capabilities;
         const { vision } = limits;
@@ -144,13 +143,13 @@ class GitHubCopilotDatabase {
         const model: GitHubCopilotModelMetadata = {
           id: modelData.id,
           name: modelData.name,
-          vendor: modelData.vendor||'Unknown',
-          family: capabilities?.family||'unknown',
-          version: modelData.version||modelData.id,
-          contextWindow: limits.max_context_window_tokens||128000,
-          maxOutputTokens: limits.max_output_tokens||4096,
-          maxPromptTokens: limits.max_prompt_tokens||128000,
-          category: modelData.model_picker_category||'versatile',
+          vendor: modelData.vendor || 'Unknown',
+          family: capabilities?.family || 'unknown',
+          version: modelData.version || modelData.id,
+          contextWindow: limits.max_context_window_tokens || 128000,
+          maxOutputTokens: limits.max_output_tokens || 4096,
+          maxPromptTokens: limits.max_prompt_tokens || 128000,
+          category: modelData.model_picker_category || 'versatile',
           supportsVision: !!vision,
           supportsToolCalls: !!supports.tool_calls,
           supportsStreaming: !!supports.streaming,
@@ -158,23 +157,23 @@ class GitHubCopilotDatabase {
           supportsStructuredOutputs: !!supports.structured_outputs,
           modelPickerEnabled: !!modelData.model_picker_enabled,
           preview: !!modelData.preview,
-          tokenizer: capabilities?.tokenizer||'unknown',
-          type: capabilities?.type||'chat',
+          tokenizer: capabilities?.tokenizer || 'unknown',
+          type: capabilities?.type || 'chat',
           lastUpdated: new Date(),
         };
 
         if (vision) {
           model.visionLimits = {
-            maxImageSize: vision.max_prompt_image_size||0,
-            maxImages: vision.max_prompt_images||0,
-            supportedFormats: vision.supported_media_types||[],
+            maxImageSize: vision.max_prompt_image_size || 0,
+            maxImages: vision.max_prompt_images || 0,
+            supportedFormats: vision.supported_media_types || [],
           };
         }
 
-        if (supports.max_thinking_budget||supports.min_thinking_budget) {
+        if (supports.max_thinking_budget || supports.min_thinking_budget) {
           model.thinkingBudget = {
-            min: supports.min_thinking_budget||0,
-            max: supports.max_thinking_budget||0,
+            min: supports.min_thinking_budget || 0,
+            max: supports.max_thinking_budget || 0,
           };
         }
 
@@ -211,7 +210,7 @@ class GitHubCopilotDatabase {
   /**
    * Get model by ID
    */
-  getModel(id: string): GitHubCopilotModelMetadata|undefined {
+  getModel(id: string): GitHubCopilotModelMetadata | undefined {
     return this.models.get(id);
   }
 
@@ -267,7 +266,8 @@ class GitHubCopilotDatabase {
    */
   getEmbeddingModels(): GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
-      (model) => model.type === 'embeddings');
+      (model) => model.type === 'embeddings'
+    );
   }
 
   /**
@@ -276,7 +276,7 @@ class GitHubCopilotDatabase {
   getVendorStats(): string {
     const stats = new Map<string, number>();
     for (const model of this.models.values()) {
-      stats.set(model.vendor, (stats.get(model.vendor)||0) + 1);
+      stats.set(model.vendor, (stats.get(model.vendor) || 0) + 1);
     }
     return Array.from(stats.entries())
       .map(([vendor, count]) => `${vendor}:${count}`)
@@ -292,7 +292,7 @@ class GitHubCopilotDatabase {
       if (model.type === 'chat') {
         analysis.set(
           model.contextWindow,
-          (analysis.get(model.contextWindow)||0) + 1
+          (analysis.get(model.contextWindow) || 0) + 1
         );
       }
     }

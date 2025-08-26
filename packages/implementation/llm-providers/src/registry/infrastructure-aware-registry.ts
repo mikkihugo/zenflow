@@ -155,7 +155,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     providerModels: any[], 
     transformer: (model: any) => RichModelInfo
   ): Promise<void> {
-    logger.info(`🔄 Syncing $providerIdmodels...`);`
+    logger.info(`🔄 Syncing ${{providerIdmodels}}...`);`
     
     const transformedModels = providerModels.map(transformer);
     let changesCount = 0;
@@ -234,7 +234,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     }
 
     this.emit('models:synced', { provider: providerId, changes: changesCount });
-    logger.info(`✅ Synced $transformedModels.lengthmodels for ${providerId} (${changesCount} changes)`);`
+    logger.info(`✅ Synced ${{transformedModels}}.lengthmodels for ${providerId} (${changesCount} changes)`);`
   }
 
   /**
@@ -304,10 +304,10 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
         dbQuery['baseInfo.provider'] = query.provider;
       }
       if (query.family) {
-        dbQuery['baseInfo.family'] = { $regex: query.family, $options: 'i' };
+        dbQuery['baseInfo.family'] = { ${{regex}}: query.family, ${{options}}: 'i' };
       }
       if (query.minContextWindow) {
-        dbQuery['baseInfo.contextWindow'] = { $gte: query.minContextWindow };
+        dbQuery['baseInfo.contextWindow'] = { ${{gte}}: query.minContextWindow };
       }
       if (query.requiresVision !== undefined) {
         dbQuery['baseInfo.supportsVision'] = query.requiresVision;
@@ -453,7 +453,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     return {
       modelId: best.model.id,
       confidence: Math.min(best.score / 100, 1.0),
-      reasoning: [`Selected $best.model.namefor ${requirements.task} task`],`
+      reasoning: [`Selected ${{best}}.model.namefor ${requirements.task} task`],`
       alternatives: scored.slice(1, 3).map(s => ({
         modelId: s.model.id,
         reason: `Alternative with ${s.model.contextWindow} context`,`

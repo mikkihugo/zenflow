@@ -64,7 +64,7 @@ export const DEFAULT_WEB_CONFIG: Required<
 	theme: "dark",
 	realTime: true,
 	coreSystem: undefined,
-	container: undefined,
+	container: undefined as any,
 };
 
 /**
@@ -83,6 +83,7 @@ export function createWebConfig(config: WebConfig = {}): Required<
 		...DEFAULT_WEB_CONFIG,
 		...config,
 		auth: {
+			enabled: DEFAULT_WEB_CONFIG?.auth?.enabled ?? false,
 			...DEFAULT_WEB_CONFIG?.auth,
 			...config?.auth,
 		},

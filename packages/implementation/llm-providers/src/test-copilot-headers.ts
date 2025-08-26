@@ -39,9 +39,9 @@ async function _testCopilotWithHeaders() {
 
     if (result.isOk()) {
       logger.info('✅ GitHub Copilot API responded successfully!');
-      logger.info(`📝 Response: $result.value.content.substring(0, 200)...`);`
+      logger.info(`📝 Response: ${{result}}.value.content.substring(0, 200)...`);`
       logger.info(
-        `📊 Metadata: $JSON.stringify(result.value.metadata, null, 2)`
+        `📊 Metadata: ${{JSON}}.stringify(result.value.metadata, null, 2)`
       );
     } else 
       logger.error('❌ GitHub Copilot API failed:', result.error);

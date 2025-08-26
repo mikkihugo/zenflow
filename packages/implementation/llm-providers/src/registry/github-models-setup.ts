@@ -228,7 +228,7 @@ export async function setupGitHubModelsDefault(): Promise<ModelRegistryService> 
     logger.info('📊 GitHub Models setup complete:');
     logger.info(`   Total Models: ${summary.totalModels}`);`
     logger.info(
-      `   Providers: $Object.keys(summary.providerCounts).join(', ')`
+      `   Providers: ${{Object}}.keys(summary.providerCounts).join(', ')`
     );
     logger.info(
       `   Capabilities: ${summary.capabilities.slice(0, 5).join(', ')}${summary.capabilities.length > 5 ? '...' : ''}`

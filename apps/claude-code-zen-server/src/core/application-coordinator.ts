@@ -74,6 +74,7 @@ export class ApplicationCoordinator extends EventEmitter {
 	private startTime: number;
 	private initialized = false;
 	private activeWorkspaceId?: string;
+	private configuration: ApplicationCoordinatorConfig;
 
 	constructor(config: ApplicationCoordinatorConfig = {}) {
 		super();

@@ -407,7 +407,7 @@ export class LLMProvider extends TypedEventBase {
 
     const prompt = context
       ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:`
-      : `Coding task: $task`;`
+      : `Coding task: ${{task}}`;`
     return this.complete(prompt, options);
   }
 
@@ -436,8 +436,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = scope
-      ? `Research topic: $topic\nScope: $scope\n\nPlease provide comprehensive research:`
-      : `Research topic: $topic\n\nPlease provide comprehensive research:`;`
+      ? `Research topic: ${{topic}}\nScope: ${{scope}}\n\nPlease provide comprehensive research:`
+      : `Research topic: ${{topic}}\n\nPlease provide comprehensive research:`;`
     return this.complete(prompt, options);
   }
 
@@ -452,8 +452,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = teamContext
-      ? `Coordination task: $task\nTeam context: $teamContext\n\nPlease provide coordination plan:`
-      : `Coordination task: $task\n\nPlease provide coordination plan:`;`
+      ? `Coordination task: ${{task}}\nTeam context: ${{teamContext}}\n\nPlease provide coordination plan:`
+      : `Coordination task: ${{task}}\n\nPlease provide coordination plan:`;`
     return this.complete(prompt, options);
   }
 
@@ -468,8 +468,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = requirements
-      ? `Feature to test: $feature\nRequirements: $requirements\n\nPlease provide test plan and cases:`
-      : `Feature to test: $feature\n\nPlease provide test plan and cases:`;`
+      ? `Feature to test: ${{feature}}\nRequirements: ${{requirements}}\n\nPlease provide test plan and cases:`
+      : `Feature to test: ${{feature}}\n\nPlease provide test plan and cases:`;`
     return this.complete(prompt, options);
   }
 
@@ -484,8 +484,8 @@ export class LLMProvider extends TypedEventBase {
     }
 
     const prompt = requirements
-      ? `System to architect: $system\nRequirements: $requirements\n\nPlease provide architectural design:`
-      : `System to architect: $system\n\nPlease provide architectural design:`;`
+      ? `System to architect: ${{system}}\nRequirements: ${{requirements}}\n\nPlease provide architectural design:`
+      : `System to architect: ${{system}}\n\nPlease provide architectural design:`;`
     return this.complete(prompt, options);
   }
 
@@ -511,7 +511,7 @@ export class LLMProvider extends TypedEventBase {
     data: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const prompt = `Task: $task\n\nData to analyze:\n$data\n\nPlease provide your analysis:`;`
+    const prompt = `Task: ${{task}}\n\nData to analyze:\n${{data}}\n\nPlease provide your analysis:`;`
     return this.complete(prompt, options);
   }
 
@@ -612,7 +612,7 @@ export async function executeSwarmTask(
       if (roleResult.isErr()) {
         results.push({
           role: agent.role,
-          output: `Role error: $roleResult.error.message`,`
+          output: `Role error: ${{roleResult}}.error.message`,`
         });
         continue;
       }

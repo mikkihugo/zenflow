@@ -21,7 +21,6 @@ import compression from "compression";
 import cors from "cors";
 import express, { type Express, type Request, type Response } from "express";
 import rateLimit from "express-rate-limit";
-import statusMonitor from "express-status-monitor";
 import helmet from "helmet";
 import morgan from "morgan";
 import { createTaskMasterRoutes } from "../api/taskmaster";
@@ -71,44 +70,22 @@ export class ApiServer {
 	private setupMiddleware(): void {
 		this.logger.info("🔒 Setting up production middleware...");
 
-		// Status monitoring dashboard (visit /status for real-time metrics)
-		this.app.use(
-			statusMonitor({
-				title: "Claude Code Zen API Health",
-				path: "/status",
-				spans: [
-					{
-						interval: 1, // Every second
-						retention: 60, // Keep 60 seconds of data
-					},
-					{
-						interval: 5, // Every 5 seconds
-						retention: 60, // Keep 5 minutes of data
-					},
-					{
-						interval: 15, // Every 15 seconds
-						retention: 60, // Keep 15 minutes of data
-					},
-				],
-				chartVisibility: {
-					cpu: true,
-					mem: true,
-					load: true,
-					heap: true,
-					responseTime: true,
-					rps: true,
-					statusCodes: true,
+		// Simple status endpoint (replaced heavy status monitor to remove axios dependency)
+		this.app.get('/status', (_req, res) => {
+			const memUsage = process.memoryUsage();
+			res.json({
+				status: 'healthy',
+				uptime: process.uptime(),
+				timestamp: new Date().toISOString(),
+				memory: {
+					used: Math.round(memUsage.heapUsed / 1024 / 1024),
+					total: Math.round(memUsage.heapTotal / 1024 / 1024),
+					external: Math.round(memUsage.external / 1024 / 1024)
 				},
-				healthChecks: [
-					{
-						protocol: "http",
-						host: DEFAULT_HOST,
-						path: HEALTH_ENDPOINT,
-						port: this.config.port,
-					},
-				],
-			}),
-		);
+				pid: process.pid,
+				version: process.env.npm_package_version || '1.0.0'
+			});
+		});
 
 		// Basic middleware
 		this.app.use(express.json());

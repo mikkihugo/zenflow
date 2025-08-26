@@ -26,25 +26,25 @@ async function testGitHubModelsDatabase() {
     const metaModels = githubModelsDB.getModelsByProvider('meta');
     const mistralModels = githubModelsDB.getModelsByProvider('mistral-ai');
 
-    logger.info(`🤖 OpenAI models: $openaiModels.length`);`
+    logger.info(`🤖 OpenAI models: ${{openaiModels}}.length`);`
     logger.info(`🦙 Meta models: ${metaModels.length}`);`
-    logger.info(`🌀 Mistral models: $mistralModels.length`);`
+    logger.info(`🌀 Mistral models: ${{mistralModels}}.length`);`
 
     // Test by category
     const highModels = githubModelsDB.getModelsByCategory('high');
     const mediumModels = githubModelsDB.getModelsByCategory('medium');
     const lowModels = githubModelsDB.getModelsByCategory('low');
 
-    logger.info(`⚡ High-tier models: $highModels.length`);`
+    logger.info(`⚡ High-tier models: ${{highModels}}.length`);`
     logger.info(`🔶 Medium-tier models: ${mediumModels.length}`);`
-    logger.info(`🔷 Low-tier models: $lowModels.length`);`
+    logger.info(`🔷 Low-tier models: ${{lowModels}}.length`);`
 
     // Test multimodal models
     const multimodalModels = githubModelsDB.getMultimodalModels();
     logger.info(`🖼️ Multimodal models: ${multimodalModels.length}`);`
     if (multimodalModels.length > 0) {
       multimodalModels.forEach((model) => {
-        logger.info(`   - $model.id($model.name)`);`
+        logger.info(`   - ${{model}}.id(${{model}}.name)`);`
       });
     }
 
@@ -52,9 +52,9 @@ async function testGitHubModelsDatabase() {
     const gpt5 = githubModelsDB.getModel('openai/gpt-5');
     if (gpt5) {
       logger.info(`🎯 GPT-5 Details:`);`
-      logger.info(`   Context: $gpt5.contextWindowtokens`);`
+      logger.info(`   Context: ${{gpt5}}.contextWindowtokens`);`
       logger.info(`   Output: ${gpt5.maxOutputTokens} tokens`);`
-      logger.info(`   Category: $gpt5.category`);`
+      logger.info(`   Category: ${{gpt5}}.category`);`
       logger.info(
         `   Rate Limits: ${gpt5.rateLimits.requestsPerMinute}/min, ${gpt5.rateLimits.requestsPerDay}/day`
       );

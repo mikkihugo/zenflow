@@ -22,7 +22,7 @@ async function _testListModels() {
     if (models.length > 0) {
       logger.info(`✅ Found ${models.length} available models:`);`
       for (const [index, model] of models.entries()) {
-        logger.info(`   $index + 1. $model`);`
+        logger.info(`   ${{index}} + 1. ${{model}}`);`
       }
     } else 
       logger.warn('⚠️ No models returned or API call failed');

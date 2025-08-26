@@ -33,7 +33,7 @@ export interface MemoryQueryOptions {
     limit?: number;
     offset?: number;
     orderBy?: string;
-    orderDirection?: 'asc|desc';
+    orderDirection?: 'asc' | 'desc';
 }
 export interface MemorySearchResult {
     key: string;
@@ -56,7 +56,7 @@ export declare abstract class BaseMemoryBackend extends EventEmitter {
     protected stats: MemoryStats;
     constructor(config: MemoryConfig);
     abstract initialize(): Promise<void>;
-    abstract store(key: string, value: unknown, namespace?: string): Promise<void>;
+    abstract store(key: string, value: unknown): Promise<void>;
     abstract retrieve<T = unknown>(key: string): Promise<T | null>;
     abstract delete(key: string): Promise<boolean>;
     abstract list(pattern?: string): Promise<string[]>;
@@ -98,9 +98,9 @@ export declare abstract class BaseMemoryBackend extends EventEmitter {
      * Concrete implementation of search for BackendInterface compatibility.
      *
      * @param pattern - Search pattern to match keys
-     * @param _namespace - Optional namespace (unused in base implementation)
+     * @param namespace - Optional namespace (unused in base implementation)
      */
-    search(pattern: string, _namespace?: string): Promise<Record<string, JSONValue>>;
+    search(pattern: string, namespace?: string): Promise<Record<string, JSONValue>>;
     /** Get size for MemoryBackend interface compatibility */
     size(): Promise<number>;
     /** Get health status for MemoryBackend interface compatibility */

@@ -69,8 +69,8 @@ export async function executeClaudeTask(
   }, config.timeout);
 
   try {
-    logger.info(`Executing Claude task with model: ${config.model}`);`
-    logger.debug(`Working directory: ${workingDirectory}`);`
+    logger.info(`Executing Claude task with model: ${config.model}`);
+    logger.debug(`Working directory: ${workingDirectory}`);
 
     // Prepare SDK options
     const sdkOptions = {
@@ -95,11 +95,11 @@ export async function executeClaudeTask(
       shouldRetry: (error: Error) => {
         const message = error.message.toLowerCase();
         return (
-          message.includes('timeout') ||;
-          message.includes('network') ||;
-          message.includes('connection') ||;
-          message.includes('econnreset') ||;
-          message.includes('rate limit');
+          message.includes('timeout') ||
+          message.includes('network') ||
+          message.includes('connection') ||
+          message.includes('econnreset') ||
+          message.includes('rate limit')
         );
       },
     };
@@ -111,18 +111,19 @@ export async function executeClaudeTask(
         retryOptions
       );
 
-    // Use foundation's timeout protection;
+    // Use foundation's timeout protection
     const retryResult = await executeWithRetry();
     if (
       retryResult &&
-      typeof retryResult === 'object' &&;
-      'isErr' in retryResult &&;
+      typeof retryResult === 'object' &&
+      'isErr' in retryResult &&
       retryResult.isErr()
-    ) 
+    ) {
       throw retryResult.error;
+    }
 
     const resultValue =
-      retryResult && typeof retryResult === 'object' && 'value' in retryResult;
+      retryResult && typeof retryResult === 'object' && 'value' in retryResult
         ? retryResult.value
         : retryResult;
     const _result = await withTimeout(
@@ -159,14 +160,12 @@ export async function executeClaudeTask(
       throw new Error('No valid messages returned from Claude SDK');
     }
 
-    logger.info(
-      `Task completed successfully, returned $validMessages.lengthmessages`
-    );
+    logger.info('Task completed successfully, returned ' + validMessages.length + ' messages');
     return validMessages;
   } catch (error) {
     logger.error('Claude task execution failed:', error);
     throw new Error(
-      `Claude task failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      'Claude task failed: ' + (error instanceof Error ? error.message : 'Unknown error')
     );
   } finally {
     clearTimeout(timeoutId);
@@ -186,7 +185,7 @@ export function executeSwarmCoordinationTask(
   const swarmOptions = {
     ...options,
     systemPrompt:
-      `${options.systemPrompt || ''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),`
+      ((options.systemPrompt || '') + '\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.').trim(),
   };
 
   return executeClaudeTask(prompt, swarmOptions);
@@ -227,7 +226,7 @@ export async function executeParallelClaudeTasks(
   tasks: Array<{ prompt: string; options?: ClaudeSDKOptions }>,
   globalOptions: ClaudeSDKOptions = {}
 ): Promise<ClaudeMessage[][]> {
-  logger.info(`Executing ${tasks.length} Claude tasks in parallel`);`
+  logger.info('Executing ' + tasks.length + ' Claude tasks in parallel');
 
   if (tasks.length === 0) {
     return [];
@@ -239,17 +238,17 @@ export async function executeParallelClaudeTasks(
 
   const _taskPromises = tasks.map(async (task, index) => {
     const _taskOptions = { ...globalOptions, ...task.options };
-    logger.debug(`Starting parallel task ${index + 1}/${tasks.length}`);`
+    logger.debug('Starting parallel task ' + (index + 1) + '/' + tasks.length);
 
     try {
       return await executeClaudeTask(task.prompt, taskOptions);
     } catch (error) {
-      logger.error(`Parallel task $index + 1failed:`, error);`
+      logger.error('Parallel task ' + (index + 1) + ' failed:', error);
       // Return error message instead of throwing
       return [
         {
           type: 'system' as const,
-          content: `Task failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
+          content: 'Task failed: ' + (error instanceof Error ? error.message : 'Unknown error'),
           timestamp: Date.now(),
           metadata: {
             level: 'error' as const,
@@ -262,7 +261,7 @@ export async function executeParallelClaudeTasks(
   });
 
   const results = await Promise.all(taskPromises);
-  logger.info(`Completed ${results.length} parallel tasks`);`
+  logger.info('Completed ' + results.length + ' parallel tasks');
 
   return results;
 }
@@ -304,7 +303,7 @@ export class ClaudeTaskManager {
 
   clearHistory(): void {
     this.history = [];
-    logger.debug(`Cleared history for session: ${this.sessionId}`);`
+    logger.debug('Cleared history for session: ' + this.sessionId);
   }
 
   getSessionId(): string {

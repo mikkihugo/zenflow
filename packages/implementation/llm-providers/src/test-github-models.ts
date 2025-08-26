@@ -22,7 +22,7 @@ async function _testGitHubModels() {
     if (models.length > 0) {
       logger.info(`✅ Found ${models.length} GitHub Models API models:`);`
       for (const [index, model] of models.entries()) {
-        logger.info(`   $index + 1. $model`);`
+        logger.info(`   ${{index}} + 1. ${{model}}`);`
       }
     } else 
       logger.warn('⚠️ No models returned from GitHub Models API');

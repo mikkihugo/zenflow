@@ -145,7 +145,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
     const modelCount = database.getAllModels().length;
     
     this.emit('database:registered', { providerId, modelCount });
-    logger.info(`📊 Registered $providerIddatabase with ${modelCount} models`);`
+    logger.info(`📊 Registered ${{providerIddatabase}} with ${modelCount} models`);`
   }
 
   /**
@@ -303,7 +303,7 @@ export class ProviderDatabaseRegistry extends TypedEventBase<ProviderDatabaseReg
           const modelCount = db.getAllModels().length;
           
           this.emit('database:updated', { providerId, modelCount });
-          logger.info(`🔄 Updated $providerIddatabase (${modelCount} models)`);`
+          logger.info(`🔄 Updated ${{providerIddatabase}} (${modelCount} models)`);`
         } catch (error) {
           logger.error(`Failed to update ${providerId} database:`, error);`
         }

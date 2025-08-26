@@ -42,8 +42,8 @@ class ExporterFactory {
     switch (config.type) {
       case 'jaeger':
         return new JaegerExporter(config);
-      case 'otlp-http':'
-      case 'otlp-grpc':'
+      case 'otlp-http':
+      case 'otlp-grpc':
         return new OTLPExporter(config);
       case 'prometheus':
         return new PrometheusExporter(config);

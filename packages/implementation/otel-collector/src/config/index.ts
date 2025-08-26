@@ -454,24 +454,24 @@ export function _createDevelopmentConfig(): CollectorConfig {
  */
 export function _createProductionConfig(): CollectorConfig {
   const config = new ConfigManager();
-  const prodConfig = config.getDefaultConfig();'
+  const prodConfig = config.getDefaultConfig();
 
   // Disable console exporter for production
   const consoleExporter = prodConfig.exporters.find(
-    (e) => e.name === 'console''
+    (e) => e.name === 'console'
   );
   if (consoleExporter) {
     consoleExporter.enabled = false;
   }
 
   // Enable file exporter for production
-  const fileExporter = prodConfig.exporters.find((e) => e.name === 'file');'
+  const fileExporter = prodConfig.exporters.find((e) => e.name === 'file');
   if (fileExporter) {
     fileExporter.enabled = true;
   }
 
   // Increase batch sizes for efficiency
-  const batchProcessor = prodConfig.processors.find((p) => p.name === 'batch');'
+  const batchProcessor = prodConfig.processors.find((p) => p.name === 'batch');
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 500;
     batchProcessor.config.batchTimeout = 10000;

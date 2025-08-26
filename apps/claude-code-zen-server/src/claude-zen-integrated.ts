@@ -226,7 +226,7 @@ Options:
 				logger.error("Server error:", err);
 				if (
 					hasErrorCode(err) &&
-					(err as { code: string }).code === "EADDRINUSE"
+					(err as unknown as { code: string }).code === "EADDRINUSE"
 				) {
 					logger.error(`Port ${this.options.port} is already in use`);
 				}
@@ -245,9 +245,9 @@ Options:
 		logger.info("🛑 Shutting down Claude Code Zen Integrated");
 
 		// Close HTTP server
-		if (this.server?.close) {
+		if ((this.server as any)?.close) {
 			await new Promise<void>((resolve, reject) => {
-				this.server?.close?.((err?: Error) => {
+				(this.server as any)?.close?.((err?: Error) => {
 					if (err) reject(err);
 					else resolve();
 				});

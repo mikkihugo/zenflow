@@ -390,7 +390,7 @@ export class EnhancedModelRegistry extends TypedEventBase<EnhancedModelRegistryE
   private generateReasoning(model: RichModelInfo, requirements: TaskRequirements): string[] {
     const reasons: string[] = [];
     
-    reasons.push(`Selected $model.namefrom $model.provider`);`
+    reasons.push(`Selected ${{model}}.namefrom ${{model}}.provider`);`
     
     if (requirements.needsVision && model.supportsVision) {
       reasons.push('Supports vision processing as required');

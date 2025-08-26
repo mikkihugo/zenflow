@@ -11,7 +11,7 @@ import { EventEmitter, getLogger } from "@claude-zen/foundation";
 import {
 	getTaskMasterService,
 	type TaskMasterService,
-} from "../services/taskmaster/taskmaster-service";
+} from "../services/api/taskmaster";
 
 const logger = getLogger("core-system");
 
@@ -71,6 +71,7 @@ export class System extends EventEmitter {
 	private status: SystemStatus["status"] = "initializing";
 	private startTime: number;
 	private initialized = false;
+	private configuration: SystemConfig;
 
 	// Component placeholders - using facade types
 	private brainSystem?: unknown;

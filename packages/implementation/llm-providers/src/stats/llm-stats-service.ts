@@ -248,7 +248,7 @@ export class LLMStatsService {
   // Private helper methods
 
   private generateCallId(): string {
-    return `llm-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
+    return `llm-${{Date}}.now()-${{Math}}.random().toString(36).substr(2, 9)`;`
   }
 
   private addCallRecord(record: LLMCallRecord): void {
@@ -760,7 +760,7 @@ export class LLMStatsService {
         bottlenecks.push(`${provider.displayName} has low success rate`);`
       }
       if (provider.averageResponseTime > 5000) {
-        bottlenecks.push(`$provider.displayNamehas high latency`);`
+        bottlenecks.push(`${{provider}}.displayNamehas high latency`);`
       }
     });
 
