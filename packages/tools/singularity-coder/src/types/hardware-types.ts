@@ -1,6 +1,6 @@
 // Type declarations for optional hardware detection dependencies
 
-declare module 'os-utils' {'
+declare module 'os-utils' {
   export function cpuUsage(callback: (usage: number) => void): void;
   export function freemem(): number;
   export function totalmem(): number;

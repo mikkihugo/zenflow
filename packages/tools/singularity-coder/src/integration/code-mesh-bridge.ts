@@ -1,22 +1,22 @@
 /**
  * @fileoverview CodeMesh Integration Bridge
  *
- * Bridges CodeMesh's Rust/TypeScript file-aware AI capabilities with'
- * claude-code-zen's LLM routing system for seamless integration.'
+ * Bridges CodeMesh's Rust/TypeScript file-aware AI capabilities with
+ * claude-code-zen's LLM routing system for seamless integration.
  */
 
 // LLM routing integration - fallback if not available
-const _getOptimalProvider: any = null;
+let _getOptimalProvider: any = null;
 let _llmRoutingAvailable = false;
 
 try {
-  const _llmRouting = require('@claude-zen/llm-routing');'
-  getOptimalProvider = llmRouting.getOptimalProvider;
+  const _llmRouting = require('@claude-zen/llm-routing');
+  _getOptimalProvider = llmRouting.getOptimalProvider;
   // Note: LLM_PROVIDER_CONFIG available if needed
   _llmRoutingAvailable = true;
 } catch (_error) {
-  console.warn('LLM routing not available, using fallback');'
-  llmRoutingAvailable = false;
+  console.warn('LLM routing not available, using fallback');
+  _llmRoutingAvailable = false;
 }
 
 import type {
