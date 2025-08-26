@@ -70,20 +70,38 @@ export class ApiServer {
 	private setupMiddleware(): void {
 		this.logger.info("🔒 Setting up production middleware...");
 
-		// Simple status endpoint (replaced heavy status monitor to remove axios dependency)
+		// Terminus provides health checks at:
+		// - /health (Kubernetes-style liveness probe)
+		// - /healthz (Kubernetes-style health check)  
+		// - /readyz (Kubernetes-style readiness probe)
+		// Custom status endpoint with enhanced metrics
 		this.app.get('/status', (_req, res) => {
 			const memUsage = process.memoryUsage();
+			const cpuUsage = process.cpuUsage();
 			res.json({
 				status: 'healthy',
 				uptime: process.uptime(),
 				timestamp: new Date().toISOString(),
 				memory: {
-					used: Math.round(memUsage.heapUsed / 1024 / 1024),
-					total: Math.round(memUsage.heapTotal / 1024 / 1024),
-					external: Math.round(memUsage.external / 1024 / 1024)
+					heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
+					heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
+					external: Math.round(memUsage.external / 1024 / 1024),
+					rss: Math.round(memUsage.rss / 1024 / 1024)
 				},
-				pid: process.pid,
-				version: process.env.npm_package_version || '1.0.0'
+				cpu: {
+					user: cpuUsage.user,
+					system: cpuUsage.system
+				},
+				process: {
+					pid: process.pid,
+					version: process.version,
+					platform: process.platform,
+					arch: process.arch
+				},
+				application: {
+					version: process.env.npm_package_version || '1.0.0',
+					environment: process.env.NODE_ENV || 'development'
+				}
 			});
 		});
 
@@ -920,31 +938,83 @@ export class ApiServer {
 		});
 	}
 
+	/**
+	 * Create comprehensive health check function for terminus
+	 */
+	private createHealthCheck(type: "health" | "healthz" | "readyz") {
+		return async (): Promise<any> => {
+			const memUsage = process.memoryUsage();
+			const cpuUsage = process.cpuUsage();
+			const baseInfo = {
+				status: "ok",
+				timestamp: new Date().toISOString(),
+				uptime: process.uptime(),
+				version: getVersion(),
+				type: type,
+				memory: {
+					heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
+					heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
+					rss: Math.round(memUsage.rss / 1024 / 1024),
+					external: Math.round(memUsage.external / 1024 / 1024)
+				},
+				cpu: {
+					user: cpuUsage.user,
+					system: cpuUsage.system
+				}
+			};
+
+			// Add specific checks based on endpoint type
+			switch (type) {
+				case "health":
+					// Liveness probe - basic process health
+					return {
+						...baseInfo,
+						status: "healthy",
+						checks: {
+							process: "ok",
+							memory: memUsage.heapUsed < memUsage.heapTotal * 0.9 ? "ok" : "warning"
+						}
+					};
+				
+				case "healthz":
+					// Kubernetes health check
+					return {
+						...baseInfo,
+						status: "ok"
+					};
+					
+				case "readyz":
+					// Readiness probe - can accept traffic
+					const isReady = process.uptime() > 1; // Ready after 1 second
+					return {
+						...baseInfo,
+						status: isReady ? "ready" : "starting",
+						checks: {
+							uptime: isReady ? "ok" : "starting",
+							server: "ok"
+						}
+					};
+					
+				default:
+					return baseInfo;
+			}
+		};
+	}
+
 	private setupTerminus(): void {
 		this.logger.info("🛡️ Setting up terminus for graceful shutdown...");
 		createTerminus(this.server, {
 			signals: ["SIGTERM", "SIGINT", "SIGUSR2"],
 			timeout: process.env.NODE_ENV === "development" ? 5000 : 30000, // Fast restarts in dev
 			healthChecks: {
-				healthzCheck: () =>
-					Promise.resolve({
-						status: "ok",
-						timestamp: new Date().toISOString(),
-						uptime: process.uptime(),
-					}),
-				readyzCheck: () =>
-					Promise.resolve({
-						status: "ready",
-						timestamp: new Date().toISOString(),
-						uptime: process.uptime(),
-					}),
-				healthCheck: () =>
-					Promise.resolve({
-						status: "healthy",
-						timestamp: new Date().toISOString(),
-						uptime: process.uptime(),
-						version: getVersion(),
-					}),
+				// Kubernetes-style health checks
+				"/health": this.createHealthCheck("health"),
+				"/healthz": this.createHealthCheck("healthz"),
+				"/readyz": this.createHealthCheck("readyz"),
+				// Legacy endpoints for backwards compatibility
+				healthzCheck: this.createHealthCheck("healthz"),
+				readyzCheck: this.createHealthCheck("readyz"), 
+				healthCheck: this.createHealthCheck("health"),
 			},
 			beforeShutdown: () => {
 				// Keep connections alive briefly for zero-downtime restarts
