@@ -2,6 +2,7 @@
  * @fileoverview Workflows Package - Professional Battle-Tested Architecture
  *
  * Advanced workflow engine with comprehensive battle-tested npm dependencies for production reliability.
+ * Now includes integrated multi-level orchestration for Portfolio → Program → Swarm coordination.
  *
  * **BATTLE-TESTED DEPENDENCIES INTEGRATED:**
  * - expr-eval: Safe expression evaluation (replaces dangerous new Function())
@@ -25,9 +26,10 @@
  * - Security-first architecture (no arbitrary code execution)
  * - Foundation storage integration (leverages existing battle-tested infrastructure)
  * - Type-safe workflow orchestration
+ * - Multi-level orchestration (Portfolio → Program → Swarm execution)
  *
  * @example Basic workflow engine usage
- * ```typescript`
+ * ```typescript
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -37,20 +39,19 @@
  *
  * await engine.initialize();
  * const result = await engine.startWorkflow(workflowDefinition);
- * ````
+ * ```
  *
- * @example Advanced scheduling and state management
- * ```typescript`
- * import { WorkflowEngine } from '@claude-zen/workflows';
+ * @example Multi-level orchestration usage
+ * ```typescript
+ * import { OrchestrationLevel, type WIPLimits } from '@claude-zen/workflows';
  *
- * const engine = new WorkflowEngine();
- *
- * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
- *
- * // Generate Mermaid visualization
- * const diagram = engine.generateWorkflowVisualization(workflow);
- * ````
+ * const wipLimits: WIPLimits = {
+ *   portfolioItems: 5,
+ *   programItems: 10,
+ *   executionItems: 20,
+ *   totalSystemItems: 35
+ * };
+ * ```
  */
 
 // =============================================================================
@@ -98,98 +99,27 @@ export {
 export type {
   AccessPolicy,
   ArtifactType,
-  BackoffStrategy,
-  CheckpointConfig,
-  CompensationAction,
-  CompensationConfig,
-  // Configuration types
-  ConcurrencyConfig,
-  DependencyCondition,
-  DependencyType,
-  ErrorHandlingConfig,
-  ErrorStrategy,
-  ExecutionConfig,
-  ExecutionError,
-  ExecutionId,
-  // Logging and audit
-  ExecutionLog,
-  // Monitoring and metrics
-  ExecutionMetrics,
-  ExecutionResult,
-  ExecutionStrategy,
-  ExecutionTrigger,
-  InputSpecification,
-  LatencyMetrics,
-  LockType,
-  LogLevel,
-  OutputSpecification,
-  ParameterType,
-  PerformanceConfig,
-  PerformanceMetrics,
-  Permission,
-  ResourceConfig,
-  ResourceConstraints,
-  ResourceLimits,
-  ResourceRequests,
-  ResourceUsage,
-  RetentionPolicy,
-  RetryConfig,
-  // Advanced features
-  RollbackConfig,
-  RollbackStrategy,
-  // Scheduling and dependencies
-  ScheduleInfo,
-  StateCheckpoint,
-  StateLock,
-  StepAction,
-  StepArtifact,
-  StepCondition,
-  StepError,
-  StepExecution,
-  StepExecutionError,
-  StepId,
-  StepLog,
-  StepMetrics,
-  StepResult,
-  StepStatus,
-  StepType,
-  StepValidation,
-  TemplateDocumentation,
-  TemplateExample,
-  TemplateParameter,
-  TimeoutConfig,
-  TriggerType,
-  // Artifacts and output
+  CoordinationEvent,
+  CoordinationEventType,
+  CoordinationLevel,
+  CoordinationMetadata,
+  CoordinationType,
+  DocumentImportOptions,
+  DocumentImportResult,
+  DocumentType,
+  ErrorHandlingPolicy,
+  ImportedWorkflowStep,
+  ParallelCoordinationMode,
+  Priority,
+  ResourceRequirement,
   WorkflowArtifact,
-  WorkflowCategory,
-  WorkflowConfig,
-  WorkflowContext,
-  // Core workflow interfaces
-  WorkflowDefinition,
-  WorkflowDependency,
-  // Engine configuration
-  WorkflowEngineConfig,
-  WorkflowError,
-  WorkflowEventType,
-  WorkflowExecution,
-  WorkflowId,
-  WorkflowPermissions,
-  // Result types
-  WorkflowResult,
-  // Utility types
-  WorkflowState,
-  // Core workflow types
-  WorkflowStatus,
-  WorkflowStep,
-  // Templates and registry
-  WorkflowTemplate,
-  // Validation and permissions
-  WorkflowValidation,
+  WorkflowCoordinationConfig,
+  WorkflowCoordinationType,
+  WorkflowDocumentImport,
+  WorkflowImportConfig,
+  WorkflowImportMetadata,
+  WorkflowImportResult,
 } from './types/index';
-
-// =============================================================================
-// LEGACY TYPE COMPATIBILITY - Re-exports from old types.ts
-// =============================================================================
 
 // Re-export legacy workflow types for backward compatibility
 export type {
@@ -208,6 +138,46 @@ export type {
 } from './types';
 
 // =============================================================================
+// MULTI-LEVEL ORCHESTRATION - Integrated Portfolio → Program → Swarm coordination
+// =============================================================================
+
+export {
+  // Orchestration enums
+  OrchestrationLevel,
+  SPARCPhase,
+} from './multi-level/index';
+
+export type {
+  // Core orchestration types
+  WIPLimits,
+  FlowMetrics,
+  BottleneckInfo,
+  StreamStatus,
+  StreamMetrics,
+  StreamConfiguration,
+  WorkflowStream,
+  
+  // Work item types
+  PortfolioItem,
+  ProgramItem,
+  SwarmExecutionItem,
+  SuccessMetric,
+  TechnicalSpecification,
+  CodeArtifact,
+  QualityGate,
+  QualityGateResult,
+  
+  // Coordination types
+  CrossLevelDependency,
+  OptimizationRecommendation,
+  MultiLevelOrchestratorState,
+  SystemPerformanceMetrics,
+  
+  // SPARC integration
+  SPARCProjectRef,
+} from './multi-level/index';
+
+// =============================================================================
 // METADATA - Package information with battle-tested features
 // =============================================================================
 
@@ -215,7 +185,7 @@ export const WORKFLOWS_INFO = {
   version: '1.0.0',
   name: '@claude-zen/workflows',
   description:
-    'Production-ready workflow engine with battle-tested npm dependencies',
+    'Production-ready workflow engine with battle-tested npm dependencies and multi-level orchestration',
   battleTestedDependencies: [
     'expr-eval: Safe expression evaluation',
     'async: Professional async utilities',
@@ -242,6 +212,7 @@ export const WORKFLOWS_INFO = {
     'Runtime validation (zod)',
     'Reactive programming (rxjs)',
     'Immutable state management (immer)',
+    'Multi-level orchestration (Portfolio → Program → Swarm)',
   ],
   security: {
     safeExpressionEvaluation: true,

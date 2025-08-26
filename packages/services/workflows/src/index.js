@@ -3,6 +3,7 @@
  * @fileoverview Workflows Package - Professional Battle-Tested Architecture
  *
  * Advanced workflow engine with comprehensive battle-tested npm dependencies for production reliability.
+ * Now includes integrated multi-level orchestration for Portfolio → Program → Swarm coordination.
  *
  * **BATTLE-TESTED DEPENDENCIES INTEGRATED:**
  * - expr-eval: Safe expression evaluation (replaces dangerous new Function())
@@ -26,9 +27,10 @@
  * - Security-first architecture (no arbitrary code execution)
  * - Foundation storage integration (leverages existing battle-tested infrastructure)
  * - Type-safe workflow orchestration
+ * - Multi-level orchestration (Portfolio → Program → Swarm execution)
  *
  * @example Basic workflow engine usage
- * ```typescript`
+ * ```typescript
  * import { WorkflowEngine } from '@claude-zen/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -38,20 +40,19 @@
  *
  * await engine.initialize();
  * const result = await engine.startWorkflow(workflowDefinition);
- * ````
+ * ```
  *
- * @example Advanced scheduling and state management
- * ```typescript`
- * import { WorkflowEngine } from '@claude-zen/workflows';
+ * @example Multi-level orchestration usage
+ * ```typescript
+ * import { OrchestrationLevel, type WIPLimits } from '@claude-zen/workflows';
  *
- * const engine = new WorkflowEngine();
- *
- * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
- *
- * // Generate Mermaid visualization
- * const diagram = engine.generateWorkflowVisualization(workflow);
- * ````
+ * const wipLimits: WIPLimits = {
+ *   portfolioItems: 5,
+ *   programItems: 10,
+ *   executionItems: 20,
+ *   totalSystemItems: 35
+ * };
+ * ```
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WORKFLOWS_INFO = exports.WorkflowStepSchema = exports.WorkflowExecutionResultSchema = exports.WorkflowDefinitionSchema = exports.WorkflowContextSchema = exports.SecureIdGenerator = exports.SchemaValidator = exports.ObservableUtils = exports.ObjectProcessor = exports.ImmutableOps = exports.DateFormatter = exports.DateCalculator = exports.AsyncUtils = exports.ArrayProcessor = exports.WorkflowEngine = exports.default = void 0;
@@ -90,7 +91,7 @@ Object.defineProperty(exports, "WorkflowStepSchema", { enumerable: true, get: fu
 exports.WORKFLOWS_INFO = {
     version: '1.0.0',
     name: '@claude-zen/workflows',
-    description: 'Production-ready workflow engine with battle-tested npm dependencies',
+    description: 'Production-ready workflow engine with battle-tested npm dependencies and multi-level orchestration',
     battleTestedDependencies: [
         'expr-eval: Safe expression evaluation',
         'async: Professional async utilities',
@@ -117,6 +118,7 @@ exports.WORKFLOWS_INFO = {
         'Runtime validation (zod)',
         'Reactive programming (rxjs)',
         'Immutable state management (immer)',
+        'Multi-level orchestration (Portfolio → Program → Swarm)',
     ],
     security: {
         safeExpressionEvaluation: true,
