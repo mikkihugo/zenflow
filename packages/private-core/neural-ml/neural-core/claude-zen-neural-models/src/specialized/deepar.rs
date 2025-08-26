@@ -274,7 +274,7 @@ impl<T: Float> DeepAR<T> {
     
     /// Sample from distribution given parameters
     fn sample_from_distribution(&self, params: &[T]) -> Result<T, ModelError> {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         
         match self.config.distribution {
             DistributionType::Gaussian => {
@@ -489,7 +489,7 @@ impl<T: Float> BaseModel<T> for DeepAR<T> {
             
             // Simplified prediction (in practice would use the actual networks)
             let mut predictions = Vec::new();
-            let mut rng = rand::thread_rng();
+            let mut rng = rand::rng();
             let last_value = *input_sequence.last().unwrap();
             
             for i in 0..self.config.horizon {

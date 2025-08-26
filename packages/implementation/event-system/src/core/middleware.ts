@@ -15,7 +15,7 @@
  *
  * @example Basic middleware usage
  * ```typescript`
- * import { createLoggingMiddleware, createTimingMiddleware } from '@claude-zen/event-system/core;
+ * import { createLoggingMiddleware, createTimingMiddleware } from '@claude-zen/event-system/core';
  *
  * const eventBus = new EventBus();
  *
@@ -26,10 +26,10 @@
  * ````
  */
 
-import { err, getLogger, type Result, } from '@claude-zen/foundation';
-import type { EventMiddleware, EventContext } from './event-bus;
+import { err, getLogger, type Result } from '@claude-zen/foundation';
+import type { EventMiddleware, EventContext } from './event-bus';
 
-const logger = getLogger('EventMiddleware');'
+const logger = getLogger('EventMiddleware');
 
 // =============================================================================
 // BUILT-IN MIDDLEWARE FACTORIES - Common patterns
@@ -41,7 +41,7 @@ const logger = getLogger('EventMiddleware');'
  */
 export function createLoggingMiddleware(
   options: {
-    logLevel?: 'debug|info|warn|error;
+    logLevel?: 'debug' | 'info' | 'warn' | 'error';
     includePayload?: boolean;
     loggerName?: string;
   } = {}
@@ -68,7 +68,7 @@ export function createLoggingMiddleware(
     );
 
     // Add to processed chain
-    context.processedBy.push('logging-middleware');'
+    context.processedBy.push('logging-middleware');
 
     await next();
   };
@@ -99,7 +99,7 @@ export function createTimingMiddleware(
       (context as any).timing = { startTime };
     }
 
-    context.processedBy.push('timing-middleware');'
+    context.processedBy.push('timing-middleware');
 
     try {
       await next();
@@ -143,7 +143,7 @@ export function createValidationMiddleware<T>(
     if (validationResult.isOk()) {
       // Update context with validated payload
       context.payload = validationResult.value;
-      context.processedBy.push('validation-middleware');'
+      context.processedBy.push('validation-middleware');
       await next();
     } else {
       const _error = validationResult.error;
@@ -163,7 +163,7 @@ export function createValidationMiddleware<T>(
         throw error;
       } else {
         // Skip to next middleware but mark as failed validation
-        context.processedBy.push('validation-middleware-failed');'
+        context.processedBy.push('validation-middleware-failed');
         await next();
       }
     }
@@ -185,7 +185,7 @@ export function createErrorHandlingMiddleware(
 
   return async (context: EventContext, next: () => Promise<void>) => {
     try {
-      context.processedBy.push('error-handling-middleware');'
+      context.processedBy.push('error-handling-middleware');
       await next();
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -256,7 +256,7 @@ export function createRateLimitingMiddleware(
       );
 
       if (skipOnLimit) {
-        context.processedBy.push('rate-limiting-middleware-skipped');'
+        context.processedBy.push('rate-limiting-middleware-skipped');
         return; // Skip processing
       } else {
         throw new Error(`Rate limit exceeded for event: ${eventKey}`);`
@@ -266,7 +266,7 @@ export function createRateLimitingMiddleware(
     // Increment count and process
     current.count++;
     eventCounts.set(eventKey, current);
-    context.processedBy.push('rate-limiting-middleware');'
+    context.processedBy.push('rate-limiting-middleware');
 
     await next();
   };
@@ -320,7 +320,7 @@ export function createAsyncMiddleware(
   const { timeout, onTimeout } = options;
 
   return async (context: EventContext, next: () => Promise<void>) => {
-    context.processedBy.push('async-middleware');'
+    context.processedBy.push('async-middleware');
 
     if (timeout) {
       const timeoutPromise = new Promise<void>((_, reject) => {
@@ -330,7 +330,7 @@ export function createAsyncMiddleware(
           }
           reject(
             new Error(
-              `Middleware timeout after $timeoutms for event: $String(context.event)``
+              `Middleware timeout after ${timeout}ms for event: ${String(context.event)}`
             )
           );
         }, timeout);

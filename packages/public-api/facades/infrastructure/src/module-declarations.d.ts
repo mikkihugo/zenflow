@@ -20,20 +20,7 @@ declare module "@claude-zen/otel-collector" {
 	): OtelCollectorManager;
 }
 
-declare module "@claude-zen/service-container" {
-	export interface ServiceContainer {
-		register<T>(name: string, service: T): void;
-		resolve<T>(name: string): T;
-		has(name: string): boolean;
-	}
-
-	export class ServiceContainerManager {
-		constructor();
-		createContainer(): ServiceContainer;
-	}
-
-	export function createServiceContainer(): ServiceContainer;
-}
+// Service container functionality is provided by foundation package
 
 declare module "@claude-zen/system-monitoring" {
 	export interface SystemMetrics {

@@ -461,7 +461,6 @@ impl<T: Float + Send + Sync> LossFunction<T> for SMAPELoss<T> {
 
     let n = T::from(predictions.len()).unwrap();
     let hundred = T::from(100.0).unwrap();
-    let two = T::from(2.0).unwrap();
 
     let gradients = predictions
       .iter()
@@ -1109,10 +1108,9 @@ impl<T: Float + Send + Sync> LossFunction<T> for QuantileLoss<T> {
     let n = T::from(predictions.len()).unwrap();
 
     for (i, &quantile) in self.quantiles.iter().enumerate() {
-      for j in 0..targets.len() {
+      for (j, &target) in targets.iter().enumerate() {
         let idx = j * self.quantiles.len() + i;
         let pred = predictions[idx];
-        let target = targets[j];
 
         gradients[idx] = if target >= pred {
           -quantile / n
@@ -1310,7 +1308,7 @@ mod tests {
     assert_relative_eq!(result, 0.5, epsilon = 1e-6);
 
     let gradients = loss.backward(&predictions, &targets).unwrap();
-    let expected = vec![-1.0 / 3.0, -1.0 / 3.0, 1.0 / 3.0];
+    let expected = [-1.0 / 3.0, -1.0 / 3.0, 1.0 / 3.0];
     for (g, e) in gradients.iter().zip(expected.iter()) {
       assert_relative_eq!(g, e, epsilon = 1e-6);
     }

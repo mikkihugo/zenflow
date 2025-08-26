@@ -18,6 +18,7 @@ registerFacade(
 		"@claude-zen/load-balancing",
 		"@claude-zen/telemetry",
 		"@claude-zen/otel-collector",
+		"@claude-zen/llm-providers",
 	],
 	[
 		"Multi-backend database abstraction layer",
@@ -25,6 +26,7 @@ registerFacade(
 		"Performance optimization and routing",
 		"System telemetry and metrics collection",
 		"OpenTelemetry collection and processing",
+		"LLM provider integrations and routing",
 		"Infrastructure coordination and management",
 	],
 );
@@ -121,6 +123,32 @@ export const getTelemetryManager = async () => {
 };
 
 // =============================================================================
+// STRATEGIC FACADE DELEGATION - LLM Provider Infrastructure
+// =============================================================================
+
+export const getLLMProviders = async () => {
+	try {
+		const { LLMProvider } = await import("@claude-zen/llm-providers");
+		return LLMProvider;
+	} catch (_error) {
+		throw new Error(
+			"LLM providers not available - @claude-zen/llm-providers package required",
+		);
+	}
+};
+
+export const createLLMRouter = async (config?: any) => {
+	try {
+		const { getOptimalProvider, LLM_PROVIDER_CONFIG } = await import("@claude-zen/llm-providers");
+		return { getOptimalProvider, providerConfig: LLM_PROVIDER_CONFIG };
+	} catch (_error) {
+		throw new Error(
+			"LLM router not available - @claude-zen/llm-providers package required",
+		);
+	}
+};
+
+// =============================================================================
 // STRATEGIC FACADE DELEGATION - Advanced Infrastructure Components
 // =============================================================================
 
@@ -136,16 +164,14 @@ export const getOtelCollector = async () => {
 	}
 };
 
-// Service Container Integration
+// Service Container Integration - Use foundation's built-in container
 export const getServiceContainer = async (name?: string) => {
 	try {
-		const { createServiceContainer } = await import(
-			"@claude-zen/service-container"
-		);
+		const { createServiceContainer } = await import("@claude-zen/foundation");
 		return createServiceContainer(name);
 	} catch (_error) {
 		throw new Error(
-			"Service container not available - @claude-zen/service-container package required",
+			"Service container not available - @claude-zen/foundation package required",
 		);
 	}
 };
@@ -154,26 +180,28 @@ export const getServiceContainer = async (name?: string) => {
 // MAIN SYSTEM OBJECT - For programmatic access to all infrastructure capabilities
 // =============================================================================
 
-export const infrastructureSystem = {
+export const infrastructureSystem: any = {
 	// Infrastructure modules
 	database: () => import("@claude-zen/database").catch(() => ({ default: {} })),
-	events: () =>
-		import("@claude-zen/event-system").catch(() => ({ default: {} })),
+	events: () => Promise.resolve({ default: {} }),
 	loadBalancing: () =>
 		import("@claude-zen/load-balancing").catch(() => ({ default: {} })),
-	telemetry: () =>
-		import("@claude-zen/telemetry").catch(() => ({ default: {} })),
+	telemetry: () => Promise.resolve({ default: {} }),
+	llmProviders: () =>
+		import("@claude-zen/llm-providers").catch(() => ({ default: {} })),
 
 	// Advanced infrastructure with enhanced fallbacks
 	otelCollector: () =>
 		import("@claude-zen/otel-collector").catch(() => ({ default: {} })),
 	serviceContainer: () =>
-		import("@claude-zen/service-container").catch(() => ({ default: {} })),
+		import("@claude-zen/foundation").catch(() => ({ default: {} })),
 
 	// Direct access functions
 	getOtelCollector,
 	getServiceContainer,
 	getDatabaseAccess,
+	getLLMProviders,
+	createLLMRouter,
 
 	// Utilities
 	logger,

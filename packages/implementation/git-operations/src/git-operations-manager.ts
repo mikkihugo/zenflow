@@ -898,7 +898,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'push',
       projectId,
-      `push-${options.branch||'current'}`'
+      `push-${options.branch||'current'}`
     );
 
     try {
@@ -949,7 +949,7 @@ export class GitOperationsManager extends Commander {
   ): Promise<ConflictResolution|null> {
     const operation = this.createOperation('pull',
       projectId,
-      `pull-${options.branch||'current'}`'
+      `pull-${options.branch||'current'}`
     );
 
     try {
@@ -1592,7 +1592,7 @@ Respond in JSON format:
       const operation = this.createOperation(
         'branch',
         project.id,
-        `setup-${project.id}`'
+        `setup-${project.id}`
       );
 
       try {
@@ -1726,7 +1726,7 @@ Respond in JSON format:
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       const sandbox = await this.sandbox.createSandbox(
-        `${projectId}-${Date.now()}`'
+        `${projectId}-${Date.now()}`
       );
       return sandbox.id;
     }

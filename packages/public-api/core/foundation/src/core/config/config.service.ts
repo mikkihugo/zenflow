@@ -212,22 +212,22 @@ function parseEnvValue(value: string | undefined): unknown {
  */
 function buildConfigFromEnv(): unknown {
 	return {
-		env: parseEnvValue(process.env.NODE_ENV),
+		env: parseEnvValue(process.env['NODE_ENV']),
 		logging: {
-			level: parseEnvValue(process.env.ZEN_LOG_LEVEL),
-			format: parseEnvValue(process.env.ZEN_LOG_FORMAT),
-			console: parseEnvValue(process.env.ZEN_LOG_CONSOLE),
-			file: parseEnvValue(process.env.ZEN_LOG_FILE),
-			timestamp: parseEnvValue(process.env.ZEN_LOG_TIMESTAMP),
+			level: parseEnvValue(process.env['ZEN_LOG_LEVEL']),
+			format: parseEnvValue(process.env['ZEN_LOG_FORMAT']),
+			console: parseEnvValue(process.env['ZEN_LOG_CONSOLE']),
+			file: parseEnvValue(process.env['ZEN_LOG_FILE']),
+			timestamp: parseEnvValue(process.env['ZEN_LOG_TIMESTAMP']),
 		},
 		system: {
-			hostname: parseEnvValue(process.env.HOSTNAME),
-			instanceId: parseEnvValue(process.env.ZEN_INSTANCE_ID),
+			hostname: parseEnvValue(process.env['HOSTNAME']),
+			instanceId: parseEnvValue(process.env['ZEN_INSTANCE_ID']),
 		},
 		development: {
-			debug: parseEnvValue(process.env.ZEN_DEBUG_MODE),
-			inNixShell: parseEnvValue(process.env.IN_NIX_SHELL),
-			flakeDevShell: parseEnvValue(process.env.FLAKE_DEVSHELL),
+			debug: parseEnvValue(process.env['ZEN_DEBUG_MODE']),
+			inNixShell: parseEnvValue(process.env['IN_NIX_SHELL']),
+			flakeDevShell: parseEnvValue(process.env['FLAKE_DEVSHELL']),
 		},
 		project: {
 			/**
@@ -248,7 +248,7 @@ function buildConfigFromEnv(): unknown {
 			 * # Results in: ./.my-claude-zen/ or ~/.my-claude-zen/
 			 * ```
 			 */
-			configDir: parseEnvValue(process.env.ZEN_PROJECT_CONFIG_DIR),
+			configDir: parseEnvValue(process.env['ZEN_PROJECT_CONFIG_DIR']),
 
 			/**
 			 * Environment override for Claude Zen storage location selection.
@@ -273,15 +273,15 @@ function buildConfigFromEnv(): unknown {
 			 * # Results in: ~/.claude-zen/ (user-global)
 			 * ```
 			 */
-			storeInUserHome: parseEnvValue(process.env.ZEN_STORE_CONFIG_IN_USER_HOME),
+			storeInUserHome: parseEnvValue(process.env['ZEN_STORE_CONFIG_IN_USER_HOME']),
 		},
 		otel: {
-			enabled: parseEnvValue(process.env.ZEN_OTEL_ENABLED),
+			enabled: parseEnvValue(process.env['ZEN_OTEL_ENABLED']),
 			useInternalCollector: parseEnvValue(
-				process.env.ZEN_USE_INTERNAL_OTEL_COLLECTOR,
+				process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'],
 			),
 			internalCollectorEndpoint: parseEnvValue(
-				process.env.ZEN_INTERNAL_COLLECTOR_ENDPOINT,
+				process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'],
 			),
 		},
 	};
@@ -375,7 +375,7 @@ export class FoundationConfig {
 		} catch (error) {
 			logger.error("Foundation configuration initialization failed:", error);
 			throw new Error(
-				`Configuration error: ${error instanceof Error ? error.message : "Unknown error"}`,
+				`Configuration error: ${error instanceof Error ? error['message'] : "Unknown error"}`,
 			);
 		}
 	}

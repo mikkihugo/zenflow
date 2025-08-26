@@ -12,7 +12,7 @@ import type { UELFactory, UELRegistry } from '../factories;
 import type { EventManager } from '../manager;
 import type { EventRegistry } from '../registry;
 import type { UELValidationFramework } from '../validation;
-import type { EventManagerConfig } from './interfaces;
+import type { EventManagerConfig } from './interfaces';
 
 /**
  * UEL Main Interface - Primary entry point for the Unified Event Layer.
@@ -51,12 +51,12 @@ export class UEL {
     }
 
     // Dynamic imports to avoid circular dependencies
-    const { UELFactory, UELRegistry } = await import('../factories');'
-    const { EventManager } = await import('../manager');'
-    const { EventRegistry } = await import('../registry');'
-    const { UELValidationFramework } = await import('../validation');'
-    const { CompatibilityFactory } = await import('../compatibility');'
-    const { DIContainer } = await import('@claude-zen/foundation');'
+    const { UELFactory, UELRegistry } = await import('../factories');
+    const { EventManager } = await import('../manager');
+    const { EventRegistry } = await import('../registry');
+    const { UELValidationFramework } = await import('../validation');
+    const { CompatibilityFactory } = await import('../compatibility');
+    const { DIContainer } = await import('@claude-zen/foundation');
 
     const container = new DIContainer();
 
@@ -80,7 +80,7 @@ export class UEL {
         set: (key: string, value: unknown): void => {
           (configData as any)[key] = value;
         },
-        has: (key: string): boolean => {
+        has: (key: string): boolean { => {
           return key in configData;
         },
       };
@@ -114,7 +114,7 @@ export class UEL {
             logger
           );
       } catch (error) {
-        logger.warn('Failed to initialize compatibility factory:', error);'
+        logger.warn('Failed to initialize compatibility factory:', error);
       }
     }
 
@@ -132,7 +132,7 @@ export class UEL {
     );
 
     this.initialized = true;
-    logger.info('🚀 UEL System fully initialized');'
+    logger.info('🚀 UEL System fully initialized');
   }
 
   isInitialized(): boolean {
@@ -141,7 +141,7 @@ export class UEL {
 
   getEventManager(): EventManager {
     if (!this.eventManager) {
-      throw new Error('UEL not initialized. Call initialize() first.');'
+      throw new Error('UEL not initialized. Call initialize() first.');
     }
     return this.eventManager;
   }
@@ -149,14 +149,14 @@ export class UEL {
   async createSystemEventManager(
     name: string,
     config?: Partial<EventManagerConfig>
-  ): Promise<unknown> {
+  ): Promise<unknown>{
     if (!this.initialized) {
       await this.initialize();
     }
     return this.factory?.createSystemEventManager(name, config);
   }
 
-  async getSystemStatus(): Promise<unknown> {
+  async getSystemStatus(): Promise<unknown>{
     return {
       initialized: this.initialized,
       components: {
@@ -172,7 +172,7 @@ export class UEL {
 
   getEventRegistry(): EventRegistry {
     if (!this.eventRegistry) {
-      throw new Error('UEL not initialized. Call initialize() first.');'
+      throw new Error('UEL not initialized. Call initialize() first.');
     }
     return this.eventRegistry;
   }
@@ -188,7 +188,7 @@ export class UEL {
   async createCoordinationEventManager(
     name: string,
     config?: Partial<EventManagerConfig>
-  ): Promise<unknown> {
+  ): Promise<unknown>{
     if (!this.initialized) {
       await this.initialize();
     }
@@ -198,7 +198,7 @@ export class UEL {
   async createCommunicationEventManager(
     name: string,
     config?: Partial<EventManagerConfig>
-  ): Promise<unknown> {
+  ): Promise<unknown>{
     if (!this.initialized) {
       await this.initialize();
     }
@@ -208,7 +208,7 @@ export class UEL {
   async createMonitoringEventManager(
     name: string,
     config?: Partial<EventManagerConfig>
-  ): Promise<unknown> {
+  ): Promise<unknown>{
     if (!this.initialized) {
       await this.initialize();
     }
@@ -218,7 +218,7 @@ export class UEL {
   async createInterfaceEventManager(
     name: string,
     config?: Partial<EventManagerConfig>
-  ): Promise<unknown> {
+  ): Promise<unknown>{
     if (!this.initialized) {
       await this.initialize();
     }
@@ -282,12 +282,12 @@ export class UEL {
     },
     _name: string,
     _type: string
-  ): Promise<unknown> {
+  ): Promise<unknown>{
     if (!this.compatibilityFactory) {
       return null;
     }
     // Basic migration implementation - wrap the EventEmitter
-    const { UELCompatibleEventEmitter } = await import('../compatibility');'
+    const { UELCompatibleEventEmitter } = await import('../compatibility');
     const compatibleEmitter = new UELCompatibleEventEmitter({
       enableUEL: true,
       uelManager: this.eventManager as any,
@@ -311,8 +311,8 @@ export class UEL {
   async createEnhancedEventBus(config?: {
     enableUEL?: boolean;
     managerName?: string;
-  }): Promise<unknown> {
-    const { UELEnhancedEventBus } = await import('../system-integrations');'
+  }): Promise<unknown>{
+    const { UELEnhancedEventBus } = await import('../system-integrations');
     return new UELEnhancedEventBus(config);
   }
 
@@ -324,7 +324,7 @@ export class UEL {
       enableCompatibility?: boolean;
       healthMonitoring?: boolean;
     };
-  }): Promise<unknown> {
+  }): Promise<unknown>{
     const { UELEnhancedApplicationCoordinator } = await import(
       '../system-integrations''
     );
@@ -333,7 +333,7 @@ export class UEL {
 
   async createEnhancedObserverSystem(config?: {
     enableUEL?: boolean;
-  }): Promise<unknown> {
+  }): Promise<unknown>{
     const { UELEnhancedObserverSystem } = await import(
       '../system-integrations''
     );
@@ -342,7 +342,7 @@ export class UEL {
 
   async analyzeSystemEventEmitters(systems: {
     [key: string]: unknown;
-  }): Promise<{ migrationRecommendations: string[] }> {
+  }): Promise<{ migrationRecommendations: string[] }>{
     if (!this.compatibilityFactory) {
       return { migrationRecommendations: [] };
     }
@@ -401,7 +401,7 @@ export async function createUEL(config?: {
   enableValidation?: boolean;
   enableCompatibility?: boolean;
   healthMonitoring?: boolean;
-}): Promise<UEL> {
+}): Promise<UEL>{
   const instance = UEL.getInstance();
   await instance.initialize(config);
   return instance;

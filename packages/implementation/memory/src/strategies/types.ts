@@ -7,7 +7,7 @@
 
 export interface CacheEvictionConfig {
   enabled: boolean;
-  algorithm: 'lru|lfu|fifo|ttl|random|adaptive;
+  algorithm: 'lru|lfu|fifo|ttl|random|adaptive';
   maxSize: number;
   maxMemory: number;
   ttl: number;
@@ -34,7 +34,7 @@ export type EvictionReason = 'size_limit' | 'memory_limit' | 'ttl_expired' | 'lr
 
 export interface OptimizationConfig {
   enabled: boolean;
-  mode: 'conservative' | 'balanced' | 'aggressive';
+  mode: 'conservative|balanced|aggressive';
   targets: {
     memoryUsage: number;
     responseTime: number;
@@ -82,7 +82,7 @@ export interface OptimizationMetrics {
   };
   health: {
     score: number;
-    status: 'optimal|good|warning|critical;
+    status: 'optimal|good|warning|critical';
     issues: string[];
     recommendations: string[];
   };
@@ -181,7 +181,7 @@ export type TuningAction = 'increase_cache_size' | 'decrease_cache_size' | 'chan
 
 export interface TuningRecommendation {
   action: TuningAction;
-  priority: 'low' | 'medium' | 'high' | 'critical;
+  priority: 'low' | 'medium' | 'high' | 'critical';
   impact: {
     performance: number;
     memory: number;

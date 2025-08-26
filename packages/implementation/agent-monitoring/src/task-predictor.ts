@@ -5,8 +5,14 @@
  * Business logic and complex prediction algorithms should be implemented in the main app.
  */
 
-import { getLogger } from "@claude-zen/foundation";
-import type { AgentId } from "./types";
+// Simple logger placeholder
+const getLogger = (name: string) => ({
+	info: (msg: string, meta?: unknown) => console.log(`[INFO:${name}] ${msg}`, meta || ''),
+	debug: (msg: string, meta?: unknown) => console.log(`[DEBUG:${name}] ${msg}`, meta || ''),
+	warn: (msg: string, meta?: unknown) => console.warn(`[WARN:${name}] ${msg}`, meta || ''),
+	error: (msg: string, meta?: unknown) => console.error(`[ERROR:${name}] ${msg}`, meta || '')
+});
+import type { AgentId, PredictionRequest } from "./types";
 
 const logger = getLogger("agent-monitoring-task-predictor");
 
@@ -215,6 +221,40 @@ export class SimpleTaskPredictor implements TaskPredictor {
 	}
 
 	/**
+	 * Generic predict method (wrapper for predictTaskDuration)
+	 */
+	async predict(request: PredictionRequest): Promise<TaskPrediction> {
+		// Convert string agentId to AgentId object and use default task type
+		const agentId: AgentId = {
+			id: request.agentId || 'unknown',
+			swarmId: request.swarmId || 'default',
+			type: 'coordinator',
+			instance: 1
+		};
+		return await this.predictTaskDuration(
+			agentId,
+			'general-task',
+			request.context
+		);
+	}
+
+	/**
+	 * Update learning from task completion records
+	 */
+	updateLearning(records: TaskCompletionRecord[]): void {
+		records.forEach(record => {
+			this.recordTaskCompletion(
+				record.agentId,
+				record.taskType,
+				record.duration,
+				record.success,
+				record.metadata
+			);
+		});
+		logger.info(`Updated learning with ${records.length} records`);
+	}
+
+	/**
 	 * Clear prediction cache and historical data
 	 */
 	clearCache(olderThanMs?: number): void {
@@ -282,8 +322,8 @@ export class SimpleTaskPredictor implements TaskPredictor {
 
 		const improvement = (firstAvg - secondAvg) / firstAvg;
 
-		if (improvement > 0.1) return "improving"; // Times getting shorter = improving'
-		if (improvement < -0.1) return "declining"; // Times getting longer = 'improving' | 'stable' | 'declining'
+		if (improvement > 0.1) return "improving"; // Times getting shorter = improving
+		if (improvement < -0.1) return "declining"; // Times getting longer = declining
 		return "stable";
 	}
 

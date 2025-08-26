@@ -259,14 +259,18 @@ export class KuzuAdapter implements DatabaseConnection {
 						? queryResult[0]
 						: queryResult;
 
-					if (!result.isSuccess()) {
-						throw new Error(result.getErrorMessage());
+					if (!result) {
+						throw new Error('Query result is null or undefined');
 					}
 
-					const rows = await result.getAll();
-					const columnNames = result.getColumnNames();
+					if (!result.isSuccess()) {
+						throw new Error(result?.getErrorMessage() || 'Unknown query error');
+					}
 
-					await result.close();
+					const rows = await result?.getAll() || [];
+					const columnNames = result?.getColumnNames() || [];
+
+					await result?.close();
 
 					return {
 						rows: rows as T[],
@@ -274,7 +278,7 @@ export class KuzuAdapter implements DatabaseConnection {
 						executionTimeMs: Date.now() - startTime,
 						fields: columnNames,
 						metadata: {
-							columnDataTypes: result.getColumnDataTypes(),
+							columnDataTypes: result?.getColumnDataTypes() || [],
 						},
 					};
 				},

@@ -11,12 +11,21 @@
  */
 
 export { SQLiteAdapter } from "./adapters/sqlite-adapter.js";
-// Re-export factory functions
+import {
+	createDatabaseConnection,
+	createStorageConfig,
+	getDatabaseFactory,
+	createOptimalConfig,
+	createOptimalStorageConfig,
+} from "./factory/database-factory";
+
 export {
 	createDatabaseConnection,
-	createOptimalStorageConfig,
+	createStorageConfig,
 	getDatabaseFactory,
-} from "./factory/database-factory.js";
+	createOptimalConfig,
+	createOptimalStorageConfig,
+};
 export { getLogger } from "./logger.js";
 export { KeyValueStorageImpl } from "./storage/key-value-storage.js";
 export * from "./types/index.js";
@@ -66,6 +75,30 @@ export async function createKeyValueStorage(database: string) {
 		database,
 		options: { enableCache: true, maxCacheSize: 1000 },
 	});
+}
+
+export function createDatabaseAccess(config?: any) {
+	return {
+		createConnection: (dbConfig: any) => createDatabase(dbConfig.type || 'sqlite', dbConfig.database),
+		createKeyValueStorage,
+		getDatabaseFactory,
+		createStorageConfig,
+		createOptimalConfig,
+		createOptimalStorageConfig,
+	};
+}
+
+// Provider class expected by infrastructure facade  
+export class DatabaseProvider {
+	constructor(private config?: any) {}
+	
+	async createConnection(type: 'sqlite' | 'memory', database: string) {
+		return createDatabase(type, database);
+	}
+	
+	async createKeyValue(database: string) {
+		return createKeyValueStorage(database);
+	}
 }
 
 export const version = "1.0.0";

@@ -1,13 +1,13 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
-  createMockMemoryConfig,
+  mockLogger,
   mockConfig,
   mockDIContainer,
-  mockLogger,
+  createMockMemoryConfig,
 } from '../mocks/foundation-mocks';
 
 // Mock the entire foundation module
-vi.mock('@claude-zen/foundation', () => ({'
+vi.mock('@claude-zen/foundation', () => ({
   getLogger: () => mockLogger,
   DIContainer: vi.fn(() => mockDIContainer),
   injectable: vi.fn((target) => target),
@@ -43,7 +43,7 @@ vi.mock('@claude-zen/foundation', () => ({'
   },
 }));
 
-describe('Memory System DI Integration', () => {'
+describe('Memory System DI Integration', () => {
   let container: any;
   let memoryConfig: any;
 
@@ -54,9 +54,9 @@ describe('Memory System DI Integration', () => {'
 
     // Setup container mock responses
     container.resolve.mockImplementation((token: any) => {
-      if (token.toString().includes('Logger')) return mockLogger;'
-      if (token.toString().includes('Config')) return mockConfig;'
-      if (token.toString().includes('MemoryConfig')) return memoryConfig;'
+      if (token.toString().includes('Logger')) return mockLogger;
+      if (token.toString().includes('Config')) return mockConfig;
+      if (token.toString().includes('MemoryConfig')) return memoryConfig;
       return null;
     });
 
@@ -68,11 +68,11 @@ describe('Memory System DI Integration', () => {'
     vi.clearAllMocks();
   });
 
-  describe('Service Registration', () => {'
-    it('should register memory services with DI container', async () => {'
+  describe('Service Registration', () => {
+    it('should register memory services with DI container', async () => {
       // Import the memory providers module
       const { registerMemoryProviders } = await import(
-        '../../src/providers/memory-providers''
+        '../../src/providers/memory-providers'
       );
 
       // Register memory services
@@ -85,39 +85,40 @@ describe('Memory System DI Integration', () => {'
       );
 
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Memory providers registered')'
+        expect.stringContaining('Memory providers registered')
       );
     });
 
-    it('should register memory controller with dependencies', async () => {'
+    it('should register memory controller with dependencies', async () => {
       const { MemoryController } = await import(
-        '../../src/controllers/memory-controller''
+        '../../src/controllers/memory-controller'
       );
 
       // Register controller
-      container.register('MemoryController', () => {'
-        const logger = container.resolve('Logger');'
-        const config = container.resolve('MemoryConfig');'
+      container.register('MemoryController', () => {
+        const logger = container.resolve('Logger');
+        const config = container.resolve('MemoryConfig');
         return new MemoryController(logger, config);
       });
 
       // Resolve controller
-      const _controller = container.resolve('MemoryController');'
+      const controller = container.resolve('MemoryController');
 
       expect(controller).toBeDefined();
-      expect(container.resolve).toHaveBeenCalledWith('Logger');'
-      expect(container.resolve).toHaveBeenCalledWith('MemoryConfig');'
+      expect(container.resolve).toHaveBeenCalledWith('Logger');
+      expect(container.resolve).toHaveBeenCalledWith('MemoryConfig');
     });
 
-    it('should handle missing dependencies gracefully', async () => {'
-      container.resolve.mockImplementation((token: any) => 
-        if (token.toString().includes('MissingService')) {'
-          throw new Error('Service not found');'
+    it('should handle missing dependencies gracefully', async () => {
+      container.resolve.mockImplementation((token: any) => {
+        if (token.toString().includes('MissingService')) {
+          throw new Error('Service not found');
         }
-        return mockLogger;);
+        return mockLogger;
+      });
 
       try {
-        const _result = container.resolve('MissingService');'
+        const result = container.resolve('MissingService');
         expect(result).toBeUndefined();
       } catch (error) {
         expect(error).toBeDefined();
@@ -125,10 +126,10 @@ describe('Memory System DI Integration', () => {'
     });
   });
 
-  describe('Memory Provider Factory Integration', () => {'
-    it('should create memory providers through DI', async () => {'
+  describe('Memory Provider Factory Integration', () => {
+    it('should create memory providers through DI', async () => {
       const { MemoryProviderFactory } = await import(
-        '../../src/providers/memory-providers''
+        '../../src/providers/memory-providers'
       );
 
       // Create factory instance
@@ -136,13 +137,13 @@ describe('Memory System DI Integration', () => {'
 
       expect(factory).toBeDefined();
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('MemoryProviderFactory created')'
+        expect.stringContaining('MemoryProviderFactory created')
       );
     });
 
-    it('should create different backend types through factory', async () => {'
+    it('should create different backend types through factory', async () => {
       const { MemoryProviderFactory } = await import(
-        '../../src/providers/memory-providers''
+        '../../src/providers/memory-providers'
       );
 
       const factory = new MemoryProviderFactory(mockLogger, mockConfig);
@@ -159,34 +160,34 @@ describe('Memory System DI Integration', () => {'
         const provider = factory.createProvider(config as any);
         expect(provider).toBeDefined();
         expect(mockLogger.debug).toHaveBeenCalledWith(
-          expect.stringContaining(`Creating ${config.type} backend`)`
+          expect.stringContaining(`Creating ${config.type} backend`)
         );
       }
     });
 
-    it('should handle invalid backend types', async () => {'
+    it('should handle invalid backend types', async () => {
       const { MemoryProviderFactory } = await import(
-        '../../src/providers/memory-providers''
+        '../../src/providers/memory-providers'
       );
 
       const factory = new MemoryProviderFactory(mockLogger, mockConfig);
 
-      const invalidConfig = { type: 'invalid-backend', maxSize: 1000 };'
+      const invalidConfig = { type: 'invalid-backend', maxSize: 1000 };
 
       expect(() => {
         factory.createProvider(invalidConfig as any);
       }).toThrow();
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        expect.stringContaining('Unsupported backend type')'
+        expect.stringContaining('Unsupported backend type')
       );
     });
   });
 
-  describe('Memory Controller DI Integration', () => {'
-    it('should inject dependencies into memory controller', async () => {'
+  describe('Memory Controller DI Integration', () => {
+    it('should inject dependencies into memory controller', async () => {
       const { MemoryController } = await import(
-        '../../src/controllers/memory-controller''
+        '../../src/controllers/memory-controller'
       );
 
       // Mock provider factory
@@ -201,9 +202,9 @@ describe('Memory System DI Integration', () => {'
       };
 
       container.resolve.mockImplementation((token: any) => {
-        if (token.toString().includes('Logger')) return mockLogger;'
-        if (token.toString().includes('Config')) return mockConfig;'
-        if (token.toString().includes('ProviderFactory'))'
+        if (token.toString().includes('Logger')) return mockLogger;
+        if (token.toString().includes('Config')) return mockConfig;
+        if (token.toString().includes('ProviderFactory'))
           return mockProviderFactory;
         return null;
       });
@@ -211,18 +212,18 @@ describe('Memory System DI Integration', () => {'
       const controller = new MemoryController(
         container.resolve('Logger'),
         container.resolve('Config'),
-        container.resolve('ProviderFactory')'
+        container.resolve('ProviderFactory')
       );
 
       expect(controller).toBeDefined();
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('MemoryController initialized')'
+        expect.stringContaining('MemoryController initialized')
       );
     });
 
-    it('should handle memory operations through DI-injected services', async () => {'
+    it('should handle memory operations through DI-injected services', async () => {
       const { MemoryController } = await import(
-        '../../src/controllers/memory-controller''
+        '../../src/controllers/memory-controller'
       );
 
       const mockBackend = {
@@ -251,34 +252,34 @@ describe('Memory System DI Integration', () => {'
 
       const storeResult = await controller.storeMemory(storeRequest);
       expect(storeResult.isOk()).toBe(true);
-      expect(mockBackend.store).toHaveBeenCalledWith('test-key', 'test-value');'
+      expect(mockBackend.store).toHaveBeenCalledWith('test-key', 'test-value');
 
       // Test retrieve operation
-      const retrieveResult = await controller.retrieveMemory('test-key');'
+      const retrieveResult = await controller.retrieveMemory('test-key');
       expect(retrieveResult.isOk()).toBe(true);
-      expect(mockBackend.retrieve).toHaveBeenCalledWith('test-key');'
+      expect(mockBackend.retrieve).toHaveBeenCalledWith('test-key');
     });
   });
 
-  describe('Memory System Manager Integration', () => {'
-    it('should create memory system with full DI integration', async () => {'
+  describe('Memory System Manager Integration', () => {
+    it('should create memory system with full DI integration', async () => {
       // Setup comprehensive DI container
       const setupMemoryDI = () => {
-        container.register('Logger', () => mockLogger);'
-        container.register('Config', () => mockConfig);'
-        container.register('MemoryConfig', () => memoryConfig);'
+        container.register('Logger', () => mockLogger);
+        container.register('Config', () => mockConfig);
+        container.register('MemoryConfig', () => memoryConfig);
 
         // Register memory-specific services
-        container.register('MemoryProviderFactory', (c: any) => {'
-          const logger = c.resolve('Logger');'
-          const config = c.resolve('Config');'
+        container.register('MemoryProviderFactory', (c: any) => {
+          const logger = c.resolve('Logger');
+          const config = c.resolve('Config');
           return { createProvider: vi.fn() };
         });
 
-        container.register('MemoryController', (c: any) => {'
-          const logger = c.resolve('Logger');'
-          const config = c.resolve('MemoryConfig');'
-          const factory = c.resolve('MemoryProviderFactory');'
+        container.register('MemoryController', (c: any) => {
+          const logger = c.resolve('Logger');
+          const config = c.resolve('MemoryConfig');
+          const factory = c.resolve('MemoryProviderFactory');
           return { logger, config, factory };
         });
       };
@@ -286,37 +287,37 @@ describe('Memory System DI Integration', () => {'
       setupMemoryDI();
 
       // Verify all services can be resolved
-      const logger = container.resolve('Logger');'
-      const config = container.resolve('Config');'
-      const controller = container.resolve('MemoryController');'
+      const logger = container.resolve('Logger');
+      const config = container.resolve('Config');
+      const controller = container.resolve('MemoryController');
 
       expect(logger).toBe(mockLogger);
       expect(config).toBe(mockConfig);
       expect(controller).toBeDefined();
     });
 
-    it('should handle circular dependencies gracefully', async () => {'
+    it('should handle circular dependencies gracefully', async () => {
       // Setup potential circular dependency scenario
-      container.register('ServiceA', (c: any) => {'
-        const serviceB = c.resolve('ServiceB');'
-        return { name: 'A', dependency: serviceB };'
+      container.register('ServiceA', (c: any) => {
+        const serviceB = c.resolve('ServiceB');
+        return { name: 'A', dependency: serviceB };
       });
 
-      container.register('ServiceB', (c: any) => {'
+      container.register('ServiceB', (c: any) => {
         // This would normally create a circular dependency
         // DI container should handle this appropriately
-        return { name: 'B' };'
+        return { name: 'B' };
       });
 
       expect(() => {
-        const serviceA = container.resolve('ServiceA');'
+        const serviceA = container.resolve('ServiceA');
         expect(serviceA).toBeDefined();
       }).not.toThrow();
     });
   });
 
-  describe('Configuration Integration', () => {'
-    it('should use configuration from DI container', async () => {'
+  describe('Configuration Integration', () => {
+    it('should use configuration from DI container', async () => {
       const testConfig = {
         memory: {
           defaultBackend: 'sqlite',
@@ -337,7 +338,7 @@ describe('Memory System DI Integration', () => {'
       };
 
       mockConfig.get.mockImplementation((key: string) => {
-        const keys = key.split('.');'
+        const keys = key.split('.');
         let value = testConfig as any;
         for (const k of keys) {
           value = value[k];
@@ -347,15 +348,15 @@ describe('Memory System DI Integration', () => {'
       });
 
       // Test configuration access
-      expect(mockConfig.get('memory.defaultBackend')).toBe('sqlite');'
-      expect(mockConfig.get('memory.maxSize')).toBe(10000);'
-      expect(mockConfig.get('backends.sqlite.path')).toBe('./data/memory.db');'
+      expect(mockConfig.get('memory.defaultBackend')).toBe('sqlite');
+      expect(mockConfig.get('memory.maxSize')).toBe(10000);
+      expect(mockConfig.get('backends.sqlite.path')).toBe('./data/memory.db');
     });
 
-    it('should handle missing configuration gracefully', async () => {'
+    it('should handle missing configuration gracefully', async () => {
       mockConfig.get.mockReturnValue(undefined);
 
-      const result = mockConfig.get('nonexistent.config.key');'
+      const result = mockConfig.get('nonexistent.config.key');
       expect(result).toBeUndefined();
 
       // System should use defaults when config is missing
@@ -366,8 +367,8 @@ describe('Memory System DI Integration', () => {'
     });
   });
 
-  describe('Event System Integration', () => {'
-    it('should integrate with event system through DI', async () => {'
+  describe('Event System Integration', () => {
+    it('should integrate with event system through DI', async () => {
       const mockEventBus = {
         emit: vi.fn(),
         on: vi.fn(),
@@ -375,12 +376,12 @@ describe('Memory System DI Integration', () => {'
         publish: vi.fn(),
       };
 
-      container.register('EventBus', () => mockEventBus);'
+      container.register('EventBus', () => mockEventBus);
 
       // Memory system should be able to publish events
-      const eventBus = container.resolve('EventBus');'
+      const eventBus = container.resolve('EventBus');
 
-      eventBus.publish('memory.operation.store', {'
+      eventBus.publish('memory.operation.store', {
         key: 'test-key',
         backend: 'sqlite',
         timestamp: Date.now(),
@@ -395,7 +396,7 @@ describe('Memory System DI Integration', () => {'
       );
     });
 
-    it('should handle event subscription and cleanup', async () => {'
+    it('should handle event subscription and cleanup', async () => {
       const mockEventBus = {
         on: vi.fn(),
         off: vi.fn(),
@@ -403,20 +404,20 @@ describe('Memory System DI Integration', () => {'
         unsubscribe: vi.fn(),
       };
 
-      container.register('EventBus', () => mockEventBus);'
+      container.register('EventBus', () => mockEventBus);
 
-      const eventBus = container.resolve('EventBus');'
+      const eventBus = container.resolve('EventBus');
       const handler = vi.fn();
 
       // Subscribe to events
-      eventBus.on('memory.health.check', handler);'
+      eventBus.on('memory.health.check', handler);
       expect(mockEventBus.on).toHaveBeenCalledWith(
         'memory.health.check',
         handler
       );
 
       // Cleanup
-      eventBus.off('memory.health.check', handler);'
+      eventBus.off('memory.health.check', handler);
       expect(mockEventBus.off).toHaveBeenCalledWith(
         'memory.health.check',
         handler
@@ -424,24 +425,24 @@ describe('Memory System DI Integration', () => {'
     });
   });
 
-  describe('Error Handling Integration', () => {'
-    it('should handle DI resolution errors', async () => {'
+  describe('Error Handling Integration', () => {
+    it('should handle DI resolution errors', async () => {
       container.resolve.mockImplementation((token: any) => {
-        if (token.toString().includes('FailingService')) {'
-          throw new Error('Service resolution failed');'
+        if (token.toString().includes('FailingService')) {
+          throw new Error('Service resolution failed');
         }
         return mockLogger;
       });
 
       expect(() => {
-        container.resolve('FailingService');'
-      }).toThrow('Service resolution failed');'
+        container.resolve('FailingService');
+      }).toThrow('Service resolution failed');
 
       // System should handle this gracefully
       expect(mockLogger.error).not.toHaveBeenCalled(); // Will be called in actual implementation
     });
 
-    it('should handle dependency injection failures gracefully', async () => {'
+    it('should handle dependency injection failures gracefully', async () => {
       const originalResolve = container.resolve;
 
       // Simulate intermittent failures
@@ -449,14 +450,14 @@ describe('Memory System DI Integration', () => {'
       container.resolve.mockImplementation((token: any) => {
         callCount++;
         if (callCount % 3 === 0) {
-          throw new Error('Intermittent failure');'
+          throw new Error('Intermittent failure');
         }
         return originalResolve(token);
       });
 
       // System should retry or use fallbacks
       try {
-        const service = container.resolve('Logger');'
+        const service = container.resolve('Logger');
         expect(service).toBeDefined();
       } catch (error) {
         // Should have fallback behavior

@@ -6,7 +6,7 @@
 
 import { getLogger, type Logger } from '@claude-zen/foundation';
 
-const logger = getLogger('interfaces-events-observer-system');'
+const logger = getLogger('interfaces-events-observer-system');
 
 import { TypedEventBase } from '@claude-zen/foundation';
 
@@ -20,29 +20,29 @@ export interface SystemEvent {
 }
 
 export interface SwarmEvent extends SystemEvent {
-  type: 'swarm;
+  type: 'swarm';
   swarmId: string;
   agentCount: number;
   status: SwarmStatus;
   topology: SwarmTopology;
   metrics: SwarmMetrics;
-  operation: 'init|update|destroy|coordinate;
+  operation: 'init' | 'update' | 'destroy' | 'coordinate';
 }
 
 export interface MCPEvent extends SystemEvent {
-  type: 'mcp;
+  type: 'mcp';
   toolName: string;
   executionTime: number;
   result: ToolResult;
-  protocol: 'http|stdio;
-  operation: 'execute' | 'validate' | 'error;
+  protocol: 'http' | 'stdio';
+  operation: 'execute' | 'validate' | 'error';
   requestId: string;
 }
 
 export interface NeuralEvent extends SystemEvent {
-  type: 'neural;
+  type: 'neural';
   modelId: string;
-  operation: 'train|predict|evaluate|optimize;
+  operation: 'train' | 'predict' | 'evaluate' | 'optimize';
   accuracy?: number;
   loss?: number;
   dataSize?: number;
@@ -50,8 +50,8 @@ export interface NeuralEvent extends SystemEvent {
 }
 
 export interface DatabaseEvent extends SystemEvent {
-  type: 'database;
-  operation: 'query|insert|update|delete|index;
+  type: 'database';
+  operation: 'query' | 'insert' | 'update' | 'delete' | 'index';
   tableName: string;
   recordCount: number;
   queryTime: number;
@@ -59,8 +59,8 @@ export interface DatabaseEvent extends SystemEvent {
 }
 
 export interface MemoryEvent extends SystemEvent {
-  type: 'memory;
-  operation: 'store|retrieve|delete|cleanup;
+  type: 'memory';
+  operation: 'store' | 'retrieve' | 'delete' | 'cleanup';
   key: string;
   size?: number;
   hit?: boolean;
@@ -68,22 +68,22 @@ export interface MemoryEvent extends SystemEvent {
 }
 
 export interface InterfaceEvent extends SystemEvent {
-  type: 'interface;
-  interface: 'web|cli|tui|api;
-  operation: 'start|stop|request|response|error;
+  type: 'interface';
+  interface: 'web' | 'cli' | 'tui' | 'api';
+  operation: 'start' | 'stop' | 'request' | 'response' | 'error';
   endpoint?: string;
   statusCode?: number;
   responseTime?: number;
 }
 
 // Union type for all system events
-export type AllSystemEvents =|SwarmEvent|MCPEvent|NeuralEvent|DatabaseEvent|MemoryEvent|InterfaceEvent;
+export type AllSystemEvents = SwarmEvent | MCPEvent | NeuralEvent | DatabaseEvent | MemoryEvent | InterfaceEvent;
 
 // Priority levels for event handling
-export type EventPriority ='critical|high|medium|low;
+export type EventPriority = 'critical' | 'high' | 'medium' | 'low';
 
 // Observer type definitions
-export type ObserverType =|'websocket|database|logger|metrics|notification|custom;
+export type ObserverType = 'websocket' | 'database' | 'logger' | 'metrics' | 'notification' | 'custom';
 
 // Supporting interfaces
 export interface SwarmStatus {
@@ -111,15 +111,15 @@ export interface ToolResult {
   warnings?: string[];
 }
 
-export type SwarmTopology = 'mesh|hierarchical|ring|star;
+export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
 
 // Generic observer interface with event typing and priority
 export interface SystemObserver<T extends SystemEvent = SystemEvent> {
-  update(event: T): void|Promise<void>;
+  update(event: T): void | Promise<void>;
   getObserverType(): ObserverType;
   getPriority(): EventPriority;
   getEventTypes(): string[];
-  isHealthy(): boolean;
+  isHealthy(): boolean {;
   handleError?(error: Error, event: T): void;
 }
 
@@ -132,7 +132,7 @@ class PriorityQueue<T> {
     this.items.sort((a, b) => b.priority - a.priority);
   }
 
-  dequeue(): T|undefined {
+  dequeue(): T | undefined {
     return this.items.shift()?.item;
   }
 
@@ -147,7 +147,7 @@ class PriorityQueue<T> {
 
 // Concrete observer implementations
 export class WebSocketObserver
-  implements SystemObserver<SwarmEvent|MCPEvent|InterfaceEvent>
+  implements SystemObserver<SwarmEvent | MCPEvent | InterfaceEvent>
 {
   private connections: Set<any> = new Set();
   private healthy = true;
@@ -162,7 +162,7 @@ export class WebSocketObserver
     this.connections.delete(socket);
   }
 
-  update(event: SwarmEvent|MCPEvent|InterfaceEvent): void {
+  update(event: SwarmEvent | MCPEvent | InterfaceEvent): void {
     try {
       const payload = this.formatEventForWebSocket(event);
 
@@ -176,20 +176,20 @@ export class WebSocketObserver
       // Emit specific event types
       this.connections.forEach((_socket) => {
         switch (event.type) {
-          case'swarm':'
-            socket.emit('swarm:update', event);'
+          case 'swarm':
+            socket.emit('swarm:update', event);
             break;
-          case 'mcp':'
-            socket.emit('mcp:execution', event);'
+          case 'mcp':
+            socket.emit('mcp:execution', event);
             break;
-          case 'interface':'
-            socket.emit('interface:activity', event);'
+          case 'interface':
+            socket.emit('interface:activity', event);
             break;
         }
       });
     } catch (error) {
       this.healthy = false;
-      this.logger?.error('WebSocket observer error:', error);'
+      this.logger?.error('WebSocket observer error:', error);
     }
   }
 
@@ -198,11 +198,11 @@ export class WebSocketObserver
   }
 
   getPriority(): EventPriority {
-    return 'high;
+    return 'high';
   }
 
   getEventTypes(): string[] {
-    return ['swarm', 'mcp', 'interface'];'
+    return ['swarm', 'mcp', 'interface'];
   }
 
   isHealthy(): boolean {
@@ -211,9 +211,9 @@ export class WebSocketObserver
 
   handleError(
     error: Error,
-    event: SwarmEvent|MCPEvent|InterfaceEvent
+    event: SwarmEvent | MCPEvent | InterfaceEvent
   ): void {
-    this.logger?.error('WebSocket observer error handling event:', {'
+    this.logger?.error('WebSocket observer error handling event:', {
       error,
       event,
     });
@@ -264,20 +264,20 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
       this.updateMetrics(event);
     } catch (error) {
       this.healthy = false;
-      this.logger?.error('Database observer error:', error);'
+      this.logger?.error('Database observer error:', error);
     }
   }
 
   getObserverType(): ObserverType {
-    return 'database;
+    return 'database';
   }
 
   getPriority(): EventPriority {
-    return 'medium;
+    return 'medium';
   }
 
   getEventTypes(): string[] {
-    return ['swarm', 'mcp', 'neural', 'database', 'memory', 'interface'];'
+    return ['swarm', 'mcp', 'neural', 'database', 'memory', 'interface'];
   }
 
   isHealthy(): boolean {
@@ -310,7 +310,7 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
       );
     } catch (error) {
       this.healthy = false;
-      this.logger?.error('Failed to flush event batch to database:', error);'
+      this.logger?.error('Failed to flush event batch to database:', error);
       // Re-add events to batch for retry
       this.eventBatch.unshift(...this.eventBatch);
     }
@@ -318,7 +318,7 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
 
   private updateMetrics(event: SystemEvent): void {
     // Update real-time metrics based on event type
-    const _metricsKey = `events:${event.type}:count`;`
+    const _metricsKey = `events:${event.type}:count`;
     // This would integrate with actual metrics service
   }
 }
@@ -341,56 +341,56 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
       });
     } catch (error) {
       this.healthy = false;
-      logger.error('Logger observer error:', error);'
+      logger.error('Logger observer error:', error);
     }
   }
 
   getObserverType(): ObserverType {
-    return 'logger;
+    return 'logger';
   }
 
   getPriority(): EventPriority {
-    return 'low;
+    return 'low';
   }
 
   getEventTypes(): string[] {
-    return ['swarm', 'mcp', 'neural', 'database', 'memory', 'interface'];'
+    return ['swarm', 'mcp', 'neural', 'database', 'memory', 'interface'];
   }
 
   isHealthy(): boolean {
     return this.healthy;
   }
 
-  private getLogLevel(event: SystemEvent): 'info|warn|error' {'
-    if ('success' in event && !event.success) return 'error;
+  private getLogLevel(event: SystemEvent): 'info' | 'warn' | 'error' {
+    if ('success' in event && !event.success) return 'error';
     if (
-      'errors' in event &&'
+      'errors' in event &&
       Array.isArray(event.errors) &&
       event.errors.length > 0
     )
-      return 'warn;
-    return 'info;
+      return 'warn';
+    return 'info';
   }
 
   private formatLogMessage(event: SystemEvent): string {
     switch (event.type) {
-      case 'swarm': {'
+      case 'swarm': {
         const swarmEvent = event as SwarmEvent;
-        return `Swarm $swarmEvent.operation: $swarmEvent.swarmId($swarmEvent.agentCountagents)`;`
+        return `Swarm ${swarmEvent.operation}: ${swarmEvent.swarmId} (${swarmEvent.agentCount} agents)`;
       }
 
-      case 'mcp': {'
+      case 'mcp': {
         const mcpEvent = event as MCPEvent;
-        return `MCP $mcpEvent.operation: $mcpEvent.toolName($mcpEvent.executionTimems)`;`
+        return `MCP ${mcpEvent.operation}: ${mcpEvent.toolName} (${mcpEvent.executionTime}ms)`;
       }
 
-      case 'neural': {'
+      case 'neural': {
         const neuralEvent = event as NeuralEvent;
-        return `Neural $neuralEvent.operation: $neuralEvent.modelId($neuralEvent.processingTimems)`;`
+        return `Neural ${neuralEvent.operation}: ${neuralEvent.modelId} (${neuralEvent.processingTime}ms)`;
       }
 
       default:
-        return `$event.typeevent from $event.source`;`
+        return `${event.type} event from ${event.source}`;
     }
   }
 }
@@ -412,20 +412,20 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
       }
     } catch (error) {
       this.healthy = false;
-      logger.error('Metrics observer error:', error);'
+      logger.error('Metrics observer error:', error);
     }
   }
 
   getObserverType(): ObserverType {
-    return 'metrics;
+    return 'metrics';
   }
 
   getPriority(): EventPriority {
-    return 'medium;
+    return 'medium';
   }
 
   getEventTypes(): string[] {
-    return ['swarm', 'mcp', 'neural', 'database', 'memory', 'interface'];'
+    return ['swarm', 'mcp', 'neural', 'database', 'memory', 'interface'];
   }
 
   isHealthy(): boolean {
@@ -438,7 +438,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
 
   private collectMetrics(event: SystemEvent): void {
     const key = `${event.type}:${event.source}`;`
-    const current = this.metrics.get(key)||{ count: 0, lastSeen: null };
+    const current = this.metrics.get(key) || { count: 0, lastSeen: null };
 
     this.metrics.set(key, {
       count: current?.count + 1,
@@ -449,29 +449,29 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
 
     // Collect specific metrics based on event type
     switch (event.type) {
-      case'mcp': {'
+      case 'mcp': {
         const mcpEvent = event as MCPEvent;
-        this.recordExecutionTime('mcp', mcpEvent.executionTime);'
+        this.recordExecutionTime('mcp', mcpEvent.executionTime);
         break;
       }
 
-      case 'neural': {'
+      case 'neural': {
         const neuralEvent = event as NeuralEvent;
-        this.recordExecutionTime('neural', neuralEvent.processingTime);'
+        this.recordExecutionTime('neural', neuralEvent.processingTime);
         break;
       }
 
-      case 'database': {'
+      case 'database': {
         const dbEvent = event as DatabaseEvent;
-        this.recordExecutionTime('database', dbEvent.queryTime);'
+        this.recordExecutionTime('database', dbEvent.queryTime);
         break;
       }
     }
   }
 
   private recordExecutionTime(type: string, time: number): void {
-    const key = `$type:execution_time`;`
-    const current = this.metrics.get(key)||{
+    const key = `${type}:execution_time`;
+    const current = this.metrics.get(key) || {
       sum: 0,
       count: 0,
       avg: 0,
@@ -510,7 +510,7 @@ export class SystemEventManager extends TypedEventBase {
     eventType: T['type'],
     observer: SystemObserver<T>
   ): void {
-    const observers = this.observers.get(eventType)||[];
+    const observers = this.observers.get(eventType) || [];
     observers.push(observer as SystemObserver);
 
     // Sort by priority (critical = 4, high = 3, medium = 2, low = 1)
@@ -522,7 +522,7 @@ export class SystemEventManager extends TypedEventBase {
 
     this.observers.set(eventType, observers);
 
-    this.logger?.debug(`Observer subscribed to $eventType`, {`
+    this.logger?.debug(`Observer subscribed to ${eventType}`, {
       observerType: observer.getObserverType(),
       priority: observer.getPriority(),
     });
@@ -532,21 +532,21 @@ export class SystemEventManager extends TypedEventBase {
     eventType: T['type'],
     observer: SystemObserver<T>
   ): void {
-    const observers = this.observers.get(eventType)||[];
+    const observers = this.observers.get(eventType) || [];
     const index = observers.indexOf(observer as SystemObserver);
 
     if (index > -1) {
       observers.splice(index, 1);
       this.observers.set(eventType, observers);
 
-      this.logger?.debug(`Observer unsubscribed from ${eventType}`, {`
+      this.logger?.debug(`Observer unsubscribed from ${eventType}`, {
         observerType: observer.getObserverType(),
       });
     }
   }
 
   async notify<T extends SystemEvent>(event: T): Promise<void> {
-    const observers = this.observers.get(event.type)||[];
+    const observers = this.observers.get(event.type) || [];
 
     if (observers.length === 0) {
       this.logger?.warn(`No observers for event type: ${event.type}`);`
@@ -563,7 +563,7 @@ export class SystemEventManager extends TypedEventBase {
 
   // Immediate notification for critical events (bypasses queue)
   async notifyImmediate<T extends SystemEvent>(event: T): Promise<void> {
-    const observers = this.observers.get(event.type)||[];
+    const observers = this.observers.get(event.type) || [];
     await this.processEventWithObservers(event, observers, true);
   }
 
@@ -599,7 +599,7 @@ export class SystemEventManager extends TypedEventBase {
 
     // Notify all observers of shutdown
     const _shutdownEvent: SystemEvent = {
-      id: `shutdown-$Date.now()`,`
+      id: `shutdown-${Date.now()}`,
       timestamp: new Date(),
       source:'system',
       type: 'system:shutdown',
@@ -612,7 +612,7 @@ export class SystemEventManager extends TypedEventBase {
             await (observer as any).destroy();
           }
         } catch (error) {
-          this.logger?.error('Error shutting down observer:', error);'
+          this.logger?.error('Error shutting down observer:', error);
         }
       }
     }
@@ -729,7 +729,7 @@ export class SystemEventManager extends TypedEventBase {
           try {
             observer.handleError(error as Error, event);
           } catch (handlerError) {
-            this.logger?.error('Observer error handler failed:', handlerError);'
+            this.logger?.error('Observer error handler failed:', handlerError);
           }
         }
 
@@ -789,7 +789,7 @@ export class EventBuilder {
     operation: MCPEvent['operation'],
     executionTime: number,
     result: ToolResult,
-    protocol: 'http|stdio'',
+    protocol: 'http' | 'stdio',
     requestId: string,
     source = 'mcp-server''
   ): MCPEvent {
@@ -821,7 +821,7 @@ export class EventBuilder {
     return {
       id: `neural-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,`
       timestamp: new Date(),
-      source: options?.source||'neural-service',
+      source: options?.source || 'neural-service',
       type: 'neural',
       modelId,
       operation,
@@ -836,11 +836,11 @@ export class EventBuilder {
 // Add missing exports for index.ts compatibility
 export interface ObserverEvent extends SystemEvent {
   observerType: string;
-  priority: 'critical|high|medium|low;
+  priority: 'critical' | 'high' | 'medium' | 'low';
 }
 
 export interface ObserverConfig {
   enableLogging?: boolean;
-  priorityThreshold?: 'critical|high|medium|low;
+  priorityThreshold?: 'critical' | 'high' | 'medium' | 'low';
   bufferSize?: number;
 }

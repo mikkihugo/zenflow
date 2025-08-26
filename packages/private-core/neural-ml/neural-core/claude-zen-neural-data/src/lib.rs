@@ -53,7 +53,6 @@
 
 use num_traits::Float;
 use std::fmt;
-use std::marker::PhantomData;
 
 #[cfg(feature = "serde_support")]
 use serde::{Deserialize, Serialize};
@@ -477,12 +476,12 @@ impl<T: Float> TimeSeriesDataset<T> {
   }
 
   /// Create an iterator over the series
-  pub fn iter(&self) -> std::slice::Iter<TimeSeriesData<T>> {
+  pub fn iter(&self) -> std::slice::Iter<'_, TimeSeriesData<T>> {
     self.series.iter()
   }
 
   /// Create a mutable iterator over the series
-  pub fn iter_mut(&mut self) -> std::slice::IterMut<TimeSeriesData<T>> {
+  pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, TimeSeriesData<T>> {
     self.series.iter_mut()
   }
 }

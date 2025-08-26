@@ -15,6 +15,7 @@
  * • @claude-zen/beam-analyzer: BEAM ecosystem analysis (Erlang/Elixir/Gleam/LFE)
  * • @claude-zen/architecture: Domain boundary validation and architecture management
  * • @claude-zen/sparc: SAFe 6.0 Development Management with SPARC methodology
+ * • @claude-zen/singularity-coder: Advanced coding system with Rust/TypeScript hybrid architecture
  *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
@@ -92,6 +93,11 @@ export const createSafe6BusinessAgilityManager = async (...args: unknown[]) => {
 	return createSafe6BusinessAgilityManager(...args);
 };
 
+export const getSingularityCoder = async () => {
+	const { createFileAwareAI } = await import("@claude-zen/singularity-coder");
+	return createFileAwareAI();
+};
+
 // =============================================================================
 // MAIN SYSTEM OBJECT - Pure delegation system
 // =============================================================================
@@ -111,6 +117,9 @@ export const developmentSystem = {
 	getSafe6DevelopmentManager,
 	createSafe6SolutionTrainManager,
 	createSafe6BusinessAgilityManager,
+
+	// Advanced coding systems
+	getSingularityCoder,
 
 	// Utilities
 	logger,
@@ -133,6 +142,7 @@ export type * from "@claude-zen/codeql";
 export type * from "@claude-zen/git-operations";
 export type * from "@claude-zen/language-parsers";
 export type * from "@claude-zen/repo-analyzer";
+export type * from "@claude-zen/singularity-coder";
 export type * from "@claude-zen/sparc";
 export type * from "./types";
 

@@ -976,6 +976,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
  * @example
  */
 class DefaultPredictionEngine implements PredictionEngine {
+	private model: any = null;
+
 	async predict(features: Record<string, number>): Promise<number> {
 		// Simple linear model for demonstration
 		const weights = {

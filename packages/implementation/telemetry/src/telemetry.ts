@@ -5,7 +5,7 @@
  * Provides metrics, tracing, and event logging primitives.
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
+import { getLogger } from '@claude-zen/foundation';
 import type { SpanOptions, TelemetryConfig, } from './types.js';
 
 // =============================================================================
@@ -28,19 +28,19 @@ const _defaultConfig: Required<TelemetryConfig> = {
  */
 export class TelemetryManager {
   private config: Required<TelemetryConfig>;
-  private logger = getLogger('TelemetryManager');'
+  private logger = getLogger('TelemetryManager');
   private initialized = false;
   private metrics = new Map<string, any>();
   private traces = new Map<string, any>();
 
-  constructor(_config: TelemetryConfig = { serviceName: 'claude-zen-service' }) {'
-    this.config = ...defaultConfig, ...config ;
+  constructor(_config: TelemetryConfig = { serviceName: 'claude-zen-service' }) {
+    this.config = { ..._defaultConfig, ..._config };
   }
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    this.logger.info('Initializing telemetry manager', {'
+    this.logger.info('Initializing telemetry manager', {
       serviceName: this.config.serviceName,
       enableTracing: this.config.enableTracing,
       enableMetrics: this.config.enableMetrics,
@@ -53,7 +53,7 @@ export class TelemetryManager {
     this.metrics.clear();
     this.traces.clear();
     this.initialized = false;
-    this.logger.info('Telemetry manager shut down');'
+    this.logger.info('Telemetry manager shut down');
   }
 
   isInitialized(): boolean {
@@ -78,8 +78,8 @@ export class TelemetryManager {
       timestamp: Date.now(),
     };
 
-    this.metrics.set(`${name}-${Date.now()}`, metric);`
-    this.logger.debug('Recorded metric', metric);'
+    this.metrics.set(`${name}-${Date.now()}`, metric);
+    this.logger.debug('Recorded metric', metric);
   }
 
   recordHistogram(
@@ -87,7 +87,7 @@ export class TelemetryManager {
     value: number,
     attributes?: Record<string, any>
   ): void {
-    this.recordMetric(`$name.histogram`, value, attributes);`
+    this.recordMetric(`${name}.histogram`, value, attributes);
   }
 
   recordGauge(
@@ -95,17 +95,17 @@ export class TelemetryManager {
     value: number,
     attributes?: Record<string, any>
   ): void {
-    this.recordMetric(`$name.gauge`, value, attributes);`
+    this.recordMetric(`${name}.gauge`, value, attributes);
   }
 
   recordEvent(name: string, data?: any): void {
-    const event: TelemetryEvent = {
+    const event = {
       name,
       timestamp: Date.now(),
       attributes: data ? { data } : {},
     };
 
-    this.logger.info('Telemetry event', event);'
+    this.logger.info('Telemetry event', event);
   }
 
   startTrace(name: string, options?: SpanOptions): any {
@@ -113,19 +113,19 @@ export class TelemetryManager {
       return { setAttributes: () => {}, end: () => {} };
     }
 
-    const traceId = `$name-$Date.now()-$Math.random().toString(36).substr(2, 9)`;`
+    const traceId = `${name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const trace = {
       name,
       traceId,
       startTime: Date.now(),
       endTime: 0,
       duration: 0,
-      attributes: options?.attributes||{},
-      status:'active',
+      attributes: options?.attributes || {},
+      status: 'active',
     };
 
     this.traces.set(traceId, trace);
-    this.logger.debug('Started trace', { name, traceId });'
+    this.logger.debug('Started trace', { name, traceId });
 
     return {
       setAttributes: (attributes: Record<string, any>) => {
@@ -135,7 +135,7 @@ export class TelemetryManager {
         trace.status = 'completed';
         trace.endTime = Date.now();
         trace.duration = trace.endTime - trace.startTime;
-        this.logger.debug('Ended trace', {'
+        this.logger.debug('Ended trace', {
           name: trace.name,
           traceId: trace.traceId,
           duration: trace.duration,
@@ -148,8 +148,8 @@ export class TelemetryManager {
   withTrace<T>(name: string, fn: () => T): T;
   withTrace<T>(nameOrFn: string|(() => T), fn?: () => T): T {
     // Handle both signatures: withTrace(fn) and withTrace(name, fn)
-    if (typeof nameOrFn ==='function') {'
-      const span = this.startTrace('anonymous');'
+    if (typeof nameOrFn === 'function') {
+      const span = this.startTrace('anonymous');
       try {
         const result = nameOrFn();
         span.end();
@@ -162,7 +162,7 @@ export class TelemetryManager {
     } else {
       const span = this.startTrace(nameOrFn);
       try {
-        const result = fn?.();
+        const result = fn!();
         span.end();
         return result;
       } catch (error) {
@@ -180,8 +180,8 @@ export class TelemetryManager {
     fn?: () => Promise<T>
   ): Promise<T> {
     // Handle both signatures: withAsyncTrace(fn) and withAsyncTrace(name, fn)
-    if (typeof nameOrFn ==='function') {'
-      const span = this.startTrace('async-anonymous');'
+    if (typeof nameOrFn === 'function') {
+      const span = this.startTrace('async-anonymous');
       try {
         const result = await nameOrFn();
         span.end();
@@ -194,7 +194,7 @@ export class TelemetryManager {
     } else {
       const span = this.startTrace(nameOrFn);
       try {
-        const result = await fn?.();
+        const result = await fn!();
         span.end();
         return result;
       } catch (error) {
@@ -218,7 +218,7 @@ export class TelemetryManager {
 // GLOBAL TELEMETRY INSTANCE
 // =============================================================================
 
-let globalTelemetry: TelemetryManager|null = null;
+let globalTelemetry: TelemetryManager | null = null;
 
 export async function initializeTelemetry(
   config?: TelemetryConfig
@@ -283,7 +283,7 @@ export function startTrace(name: string, options?: SpanOptions): any {
 export function withTrace<T>(fn: () => T): T;
 export function withTrace<T>(name: string, fn: () => T): T;
 export function withTrace<T>(nameOrFn: string|(() => T), fn?: () => T): T {
-  if (typeof nameOrFn ==='function') {'
+  if (typeof nameOrFn === 'function') {
     return getTelemetry().withTrace(nameOrFn);
   } else {
     return getTelemetry().withTrace(nameOrFn, fn!);
@@ -299,7 +299,7 @@ export async function withAsyncTrace<T>(
   nameOrFn: string|(() => Promise<T>),
   fn?: () => Promise<T>
 ): Promise<T> {
-  if (typeof nameOrFn ==='function') {'
+  if (typeof nameOrFn === 'function') {
     return getTelemetry().withAsyncTrace(nameOrFn);
   } else {
     return getTelemetry().withAsyncTrace(nameOrFn, fn!);
@@ -318,7 +318,7 @@ export function traced(name?: string) {
   ) => {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
-      const traceName = name||`${target.constructor.name}.${propertyKey}`;`
+      const traceName = name || `${target.constructor.name}.${propertyKey}`;
       return withTrace(traceName, () => originalMethod.apply(this, args));
     };
   };
@@ -332,7 +332,7 @@ export function tracedAsync(name?: string) {
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any[]) {
-      const traceName = name||`$target.constructor.name.$propertyKey`;`
+      const traceName = name || `${target.constructor.name}.${propertyKey}`;
       return withAsyncTrace(traceName, () => originalMethod.apply(this, args));
     };
   };
@@ -345,11 +345,11 @@ export function metered(name?: string) {
     descriptor: PropertyDescriptor
   ) => {
     const _originalMethod = descriptor.value;
-    descriptor.value = (..._args: any[]) => {
+    descriptor.value = function(this: any, ..._args: any[]) {
       const _metricName =
-        name||`${target.constructor.name}.${propertyKey}.calls`;`
-      recordMetric(metricName, 1);
-      return originalMethod.apply(this, args);
+        name || `${target.constructor.name}.${propertyKey}.calls`;
+      recordMetric(_metricName, 1);
+      return _originalMethod.apply(this, _args);
     };
   };
 }
@@ -360,7 +360,7 @@ export function metered(name?: string) {
 
 export function setTraceAttributes(attributes: Record<string, any>): void {
   // Simple implementation - log attributes
-  getLogger('TelemetryManager').debug('Trace attributes set', attributes);'
+  getLogger('TelemetryManager').debug('Trace attributes set', attributes);
 }
 
 export type Span = ReturnType<typeof startTrace>;

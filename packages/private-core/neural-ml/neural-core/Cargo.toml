@@ -131,7 +131,7 @@ linfa-linear = { version = "0.7.1", optional = true }  # Linear models
 linfa-reduction = { version = "0.7.1", optional = true }  # Dimensionality reduction
 argmin = { version = "0.10", optional = true }  # Optimization algorithms
 statrs = { version = "0.17", optional = true }  # Statistics and distributions
-rustlearn = { version = "0.5", optional = true }  # Additional ML algorithms
+# rustlearn = { version = "0.5", optional = true }  # Additional ML algorithms - REMOVED due to crossbeam 0.2.12 vulnerability
 optimization = { version = "0.2", optional = true }  # Multi-objective optimization
 distances = { version = "1.8", optional = true }  # Distance metrics
 kdtree = { version = "0.7", optional = true }  # K-d tree for nearest neighbors
@@ -215,29 +215,9 @@ wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_pani
 no_std = []
 
 
-[[test]]
-name = "memory_tests"
-path = "tests/performance/memory_tests.rs"
+# Performance tests directory doesn't exist - removed missing tests
 
-[[test]]
-name = "scaling_tests"
-path = "tests/performance/scaling_tests.rs"
-
-[[example]]
-name = "basic_usage"
-path = "examples/basic_usage.rs"
-
-[[example]]
-name = "lstm_forecasting"
-path = "examples/lstm_forecasting.rs"
-
-[[example]]
-name = "multiple_models"
-path = "examples/multiple_models.rs"
-
-[[example]]
-name = "cross_validation"
-path = "examples/cross_validation.rs"
+# Only examples that actually exist
 
 [[example]]
 name = "complete_workflow"
@@ -248,8 +228,12 @@ name = "ensemble_forecasting"
 path = "examples/ensemble_forecasting.rs"
 
 [[example]]
-name = "advanced_features"
-path = "examples/advanced_features.rs"
+name = "adaptive_optimization"
+path = "examples/adaptive_optimization.rs"
+
+[[example]]
+name = "neural_features"
+path = "examples/neural_features.rs"
 
 [[test]]
 name = "integration"

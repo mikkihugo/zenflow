@@ -144,7 +144,7 @@ export interface DomainBoundaryValidator {
  * Basic event bus interface
  */
 export interface EventBus {
-  emit(event: string, ...args: unknown[]): boolean;
+  emit(event: string, ...args: unknown[]): boolean {;
   on(event: string, listener: (...args: unknown[]) => void): this;
   off(event: string, listener: (...args: unknown[]) => void): this;
   removeAllListeners(event?: string): this;

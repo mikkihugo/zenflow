@@ -11,7 +11,7 @@ import type { JsonObject } from '@claude-zen/foundation/types';
 import type { ClaudeMessage } from './types';
 import { truncateForLogging } from './utils';
 
-const logger = getLogger('claude-message-processor');'
+const logger = getLogger('claude-message-processor');
 
 // =============================================================================
 // Message Processing Functions
@@ -28,8 +28,8 @@ export function processClaudeMessage(
 
   try {
     // Validate basic structure
-    if (!message||typeof message !=='object') {'
-      throw new Error('Invalid message structure');'
+    if (!message||typeof message !=='object') {;
+      throw new Error('Invalid message structure');
     }
 
     const msg = message as Record<string, unknown>;
@@ -55,7 +55,7 @@ export function processClaudeMessage(
       },
     } as ClaudeMessage;
 
-    logger.debug(`Processed $typemessage: $truncateForLogging(content)`);`
+    logger.debug(`Processed ${type} message: ${truncateForLogging}(content)`);`
     return processedMessage;
   } catch (error) {
     logger.error(`Error processing message ${messageCount}:`, error);`
@@ -85,7 +85,7 @@ function _extractMessageTypeAndContent(msg: Record<string, unknown>): {
   content: string;
 } {
   // Check for explicit type field
-  if (msg.type && typeof msg.type === 'string') {'
+  if (msg.type && typeof msg.type === 'string') {;
     return {
       type: msg.type,
       content: extractContent(msg),
@@ -93,7 +93,7 @@ function _extractMessageTypeAndContent(msg: Record<string, unknown>): {
   }
 
   // Infer type from content structure
-  if (msg.role) {'
+  if (msg.role) {;
     return {
       type: String(msg.role),
       content: extractContent(msg),
@@ -101,7 +101,7 @@ function _extractMessageTypeAndContent(msg: Record<string, unknown>): {
   }
 
   // Check for result indicators
-  if (msg.success !== undefined||msg.exitCode !== undefined) {'
+  if (msg.success !== undefined||msg.exitCode !== undefined) {;
     return {
       type: 'result',
       content: extractContent(msg),
@@ -109,7 +109,7 @@ function _extractMessageTypeAndContent(msg: Record<string, unknown>): {
   }
 
   // Check for system message indicators
-  if (msg.level||msg.source === 'system') {'
+  if (msg.level||msg.source === 'system') {;
     return {
       type: 'system',
       content: extractContent(msg),
@@ -128,37 +128,37 @@ function _extractMessageTypeAndContent(msg: Record<string, unknown>): {
  */
 function extractContent(msg: Record<string, unknown>): string {
   // Direct content field
-  if (msg.content && typeof msg.content === 'string') {'
-    return msg.content;'
+  if (msg.content && typeof msg.content === 'string') {;
+    return msg.content;
   }
 
   // Message field
-  if (msg.message && typeof msg.message === 'string') {'
-    return msg.message;'
+  if (msg.message && typeof msg.message === 'string') {;
+    return msg.message;
   }
 
   // Text field
-  if (msg.text && typeof msg.text === 'string') {'
-    return msg.text;'
+  if (msg.text && typeof msg.text === 'string') {;
+    return msg.text;
   }
 
   // Array of content parts (for complex messages)
-  if (Array.isArray(msg.content)) {'
-    return msg.content'
+  if (Array.isArray(msg.content)) {;
+    return msg.content;
       .map((part) => 
-        if (typeof part === 'string') {'
+        if (typeof part === 'string') {;
           return part;
         }
-        if (part && typeof part === 'object' && 'text' in part) {'
-          return String((part as JsonObject).text);'
+        if (part && typeof part === 'object' && 'text' in part) {;
+          return String((part as JsonObject).text);
         }
         return String(part);)
-      .join(' ');'
+      .join(' ');
   }
 
   // Fallback to string representation
   return String(
-    msg.content||msg.message||msg.text||'Empty message''
+    msg.content||msg.message||msg.text||'Empty message';
   );
 }
 
@@ -176,16 +176,16 @@ function _extractMessageMetadata(
   const baseMetadata: Record<string, unknown> = {};
 
   switch (type) {
-    case 'assistant':'
+    case 'assistant':;
       return extractAssistantMetadata(msg, baseMetadata);
 
-    case 'user':'
+    case 'user':;
       return extractUserMetadata(msg, baseMetadata);
 
-    case 'result':'
+    case 'result':;
       return extractResultMetadata(msg, baseMetadata);
 
-    case 'system':'
+    case 'system':;
       return extractSystemMetadata(msg, baseMetadata);
 
     default:
@@ -223,8 +223,8 @@ function extractUserMetadata(
     source: msg['source'],
     priority: msg['priority'],
     context: msg['context'],
-    attachments: Array.isArray(msg['attachments'])'
-      ? msg['attachments']'
+    attachments: Array.isArray(msg['attachments']);
+      ? msg['attachments'];
       : undefined,
   };
 }
@@ -271,28 +271,28 @@ function extractSystemMetadata(
 export function validateProcessedMessage(
   message: unknown
 ): message is ClaudeMessage {
-  if (!message||typeof message !=='object') {'
+  if (!message||typeof message !=='object') {;
     return false;
   }
 
   const msg = message as Record<string, unknown>;
 
   // Check required fields
-  if (typeof msg['type'] !== 'string'||!msg['type']) {'
+  if (typeof msg['type'] !== 'string'||!msg['type']) {;
     return false;
   }
 
-  if (typeof msg['content'] !== 'string') {'
+  if (typeof msg['content'] !== 'string') {;
     return false;
   }
 
-  if (typeof msg['timestamp'] !== 'number') {'
+  if (typeof msg['timestamp'] !== 'number') {;
     return false;
   }
 
   // Validate type-specific structure
-  const validTypes = ['assistant', 'user', 'result', 'system'];'
-  if (!validTypes.includes(msg['type'] as string)) {'
+  const validTypes = ['assistant', 'user', 'result', 'system'];
+  if (!validTypes.includes(msg['type'] as string)) {;
     return false;
   }
 
@@ -302,7 +302,7 @@ export function validateProcessedMessage(
 /**
  * Filter messages by type
  */
-export function filterMessagesByType<T extends ClaudeMessage['type']>('
+export function filterMessagesByType<T extends ClaudeMessage['type']>(;
   messages: ClaudeMessage[],
   type: T
 ): Extract<ClaudeMessage, { type: T }>[] {

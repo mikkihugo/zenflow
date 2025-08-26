@@ -54,7 +54,7 @@ describe("Config Service - Working Features", () => {
 
 	describe("Environment Detection", () => {
 		it("should detect development environment", () => {
-			process.env.NODE_ENV = "development";
+			process.env['NODE_ENV'] = "development";
 			reloadConfig();
 			expect(isDevelopment()).toBe(true);
 			expect(isProduction()).toBe(false);
@@ -62,7 +62,7 @@ describe("Config Service - Working Features", () => {
 		});
 
 		it("should detect production environment", () => {
-			process.env.NODE_ENV = "production";
+			process.env['NODE_ENV'] = "production";
 			reloadConfig();
 			expect(isDevelopment()).toBe(false);
 			expect(isProduction()).toBe(true);
@@ -70,7 +70,7 @@ describe("Config Service - Working Features", () => {
 		});
 
 		it("should detect test environment", () => {
-			process.env.NODE_ENV = "test";
+			process.env['NODE_ENV'] = "test";
 			reloadConfig();
 			expect(isDevelopment()).toBe(false);
 			expect(isProduction()).toBe(false);
@@ -80,14 +80,14 @@ describe("Config Service - Working Features", () => {
 
 	describe("Environment Variable Helpers", () => {
 		it("should get environment variable with default", () => {
-			process.env.TEST_VAR = "test-value";
+			process.env['TEST_VAR'] = "test-value";
 			expect(getEnv("TEST_VAR")).toBe("test-value");
 			expect(getEnv("MISSING_VAR", "default")).toBe("default");
 			expect(getEnv("MISSING_VAR")).toBe("");
 		});
 
 		it("should require environment variable", () => {
-			process.env.REQUIRED_VAR = "required-value";
+			process.env['REQUIRED_VAR'] = "required-value";
 			expect(requireEnv("REQUIRED_VAR")).toBe("required-value");
 
 			// Test missing required var throws
@@ -137,7 +137,7 @@ describe("Config Service - Working Features", () => {
 
 	describe("Edge Cases", () => {
 		it("should handle undefined NODE_ENV", () => {
-			delete process.env.NODE_ENV;
+			delete process.env['NODE_ENV'];
 			reloadConfig();
 
 			// Should not throw with undefined NODE_ENV

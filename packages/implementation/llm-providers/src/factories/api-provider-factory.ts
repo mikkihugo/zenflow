@@ -8,40 +8,40 @@
 import { getLogger } from '@claude-zen/foundation/logging';
 
 
-const logger = getLogger('APIProviderFactory');'
+const logger = getLogger('APIProviderFactory');
 
 /**
  * Create an API provider instance
  */
 export async function createAPIProvider(
   providerId: 
-    | 'github-models-api''
-    | 'github-copilot-api''
-    | 'anthropic-api''
+    | 'github-models-api';
+    | 'github-copilot-api';
+    | 'anthropic-api';
     | 'openai-api',
   options: Record<string, unknown> = {}
 ): Promise<APIProvider> {
   logger.info(`Creating API provider: ${providerId}`);`
 
   switch (providerId) {
-    case 'github-models-api':'
-      const { GitHubModelsAPI } = await import('../api/github-models');'
+    case 'github-models-api':;
+      const { GitHubModelsAPI } = await import('../api/github-models');
       return new GitHubModelsAPI({
         token: process.env.GITHUB_TOKEN || '',
         ...options,
       } as any);
 
-    case 'github-copilot-api':'
+    case 'github-copilot-api':;
       const { createGitHubCopilotProvider } = await import(
-        '../api/github-copilot''
+        '../api/github-copilot';
       );
       return createGitHubCopilotProvider(options as any);
 
-    case 'anthropic-api':'
-      throw new Error('Anthropic API provider not yet implemented');'
+    case 'anthropic-api':;
+      throw new Error('Anthropic API provider not yet implemented');
 
-    case 'openai-api':'
-      throw new Error('OpenAI API provider not yet implemented');'
+    case 'openai-api':;
+      throw new Error('OpenAI API provider not yet implemented');
 
     default:
       throw new Error(`Unknown API provider: $providerId`);`

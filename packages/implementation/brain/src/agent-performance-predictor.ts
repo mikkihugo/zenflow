@@ -15,8 +15,28 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+import * as ss from 'simple-statistics';
+import regression from 'regression';
 
-const logger = getLogger('AgentPerformancePredictor');'
+const logger = getLogger('AgentPerformancePredictor');
+
+// Simple weighted moving average function
+function wma(data: number[], weights?: number[]): number[] {
+  if (data.length === 0) return [];
+  if (!weights || weights.length !== data.length) {
+    // Default exponential weights
+    weights = data.map((_, i) => Math.exp(i / data.length));
+  }
+  
+  const weightSum = weights.reduce((sum, w) => sum + w, 0);
+  const normalizedWeights = weights.map(w => w / weightSum);
+  
+  return data.map((_, i) => {
+    const windowData = data.slice(0, i + 1);
+    const windowWeights = normalizedWeights.slice(0, i + 1);
+    return windowData.reduce((sum, val, idx) => sum + val * windowWeights[idx], 0);
+  });
+}
 
 export interface AgentPerformanceData {
   readonly agentId: string;
@@ -39,7 +59,7 @@ export interface PerformancePrediction {
   readonly confidence: number;
   readonly loadForecast: number; // Expected load in next time window
   readonly recommendedTaskCount: number;
-  readonly performanceTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly performanceTrend: 'improving' | 'stable' | 'declining';
   readonly riskFactors: string[];
 }
 
@@ -63,7 +83,7 @@ export class AgentPerformancePredictor {
   private readonly maxHistorySize = 1000;
 
   constructor() {
-    logger.info('📊 Agent Performance Predictor created');'
+    logger.info('Agent Performance Predictor created');
   }
 
   /**
@@ -73,7 +93,7 @@ export class AgentPerformancePredictor {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Agent Performance Prediction System...');'
+      logger.info('Initializing Agent Performance Prediction System...');
 
       // Initialize prediction models and historical data loading
       await this.loadHistoricalData();
@@ -81,10 +101,10 @@ export class AgentPerformancePredictor {
       await this.setupPerformanceMonitoring();
 
       this.initialized = true;
-      logger.info('✅ Agent Performance Predictor initialized successfully');'
+      logger.info('Agent Performance Predictor initialized successfully');
     } catch (error) {
       logger.error(
-        '❌ Failed to initialize Agent Performance Predictor:',
+        'Failed to initialize Agent Performance Predictor:',
         error
       );
       throw error;
@@ -117,10 +137,10 @@ export class AgentPerformancePredictor {
       await this.updatePerformanceTrends(data.agentId, history);
 
       logger.debug(
-        `📈 Performance recorded for agent ${data.agentId}: success rate ${data.successRate.toFixed(2)}``
+        `Performance recorded for agent ${data.agentId}: success rate ${data.successRate.toFixed(2)}`
       );
     } catch (error) {
-      logger.error('❌ Failed to record performance:', error);'
+      logger.error('Failed to record performance:', error);
     }
   }
 
@@ -199,13 +219,13 @@ export class AgentPerformancePredictor {
       };
 
       logger.info(
-        `🔮 Performance prediction for ${agentId}: ${predictedSuccessRate.toFixed(2)} success rate, ${predictedCompletionTime.toFixed(0)}ms completion time``
+        `Performance prediction for ${agentId}: ${predictedSuccessRate.toFixed(2)} success rate, ${predictedCompletionTime.toFixed(0)}ms completion time`
       );
 
       return prediction;
     } catch (_error) {
       logger.error(
-        `❌ Performance prediction failed for agent ${agentId}:`,`
+        `Performance prediction failed for agent ${agentId}:`,
         error
       );
       return this.getDefaultPrediction(agentId);
@@ -272,7 +292,7 @@ export class AgentPerformancePredictor {
         optimizationSuggestions,
       };
     } catch (error) {
-      logger.error('❌ Failed to generate performance insights:', error);'
+      logger.error('Failed to generate performance insights:', error);
       return {
         topPerformers: [],
         underPerformers: [],
@@ -297,7 +317,7 @@ export class AgentPerformancePredictor {
     errorCount?: number;
   }): Promise<void> {
     try {
-      logger.debug(`📊 Updating performance data for agent ${data.agentId}`);`
+      logger.debug(`Updating performance data for agent ${data.agentId}`);
 
       // Convert to AgentPerformanceData format
       const performanceData: AgentPerformanceData = {
@@ -316,10 +336,10 @@ export class AgentPerformancePredictor {
       // Record the performance data
       await this.recordPerformance(performanceData);
 
-      logger.debug(`✅ Performance data updated for agent ${data.agentId}`);`
-    } catch (error) 
+      logger.debug(`Performance data updated for agent ${data.agentId}`);
+    } catch (error) {
       logger.error(
-        `❌ Failed to update performance data for agent ${data.agentId}:`,`
+        `Failed to update performance data for agent ${data.agentId}:`,
         error
       );
     }
@@ -342,7 +362,7 @@ export class AgentPerformancePredictor {
         totalTasks: 0,
         averageSuccessRate: 0,
         averageCompletionTime: 0,
-        performanceTrend:'unknown',
+        performanceTrend: 'stable',
         dataPoints: 0,
       };
     }
@@ -381,10 +401,10 @@ export class AgentPerformancePredictor {
 
   private analyzePerformanceTrend(
     agentId: string
-  ):'improving' | 'stable' | 'declining'{'
+  ): 'improving' | 'stable' | 'declining' {
     const history = this.performanceHistory.get(agentId)||[];
 
-    if (history.length < 5) return'stable';
+    if (history.length < 5) return 'stable';
 
     // Analyze recent trend using linear regression
     const recentData = history.slice(-10);
@@ -397,11 +417,11 @@ export class AgentPerformancePredictor {
       const result = regression.linear(dataPoints);
       const slope = result.equation[0];
 
-      if (slope > 0.01) return 'improving' | 'stable' | 'declining';
-      if (slope < -0.01) return 'declining;
+      if (slope > 0.01) return 'improving';
+      if (slope < -0.01) return 'declining';
       return 'stable';
     } catch (error) {
-      logger.warn('Error analyzing performance trend:', error);'
+      logger.warn('Error analyzing performance trend:', error);
       return 'stable';
     }
   }
@@ -501,7 +521,7 @@ export class AgentPerformancePredictor {
     const riskFactors: string[] = [];
 
     if (data.length < 3) {
-      riskFactors.push('Insufficient historical data');'
+      riskFactors.push('Insufficient historical data');
       return riskFactors;
     }
 
@@ -510,7 +530,7 @@ export class AgentPerformancePredictor {
     // High error rate
     const avgErrorRate = ss.mean(recentData.map((d) => d.errorRate));
     if (avgErrorRate > 0.1) {
-      riskFactors.push(`High error rate: $(avgErrorRate * 100).toFixed(1)%`);`
+      riskFactors.push(`High error rate: ${(avgErrorRate * 100).toFixed(1)}%`);
     }
 
     // High resource usage
@@ -518,18 +538,19 @@ export class AgentPerformancePredictor {
     const avgMemoryUsage = ss.mean(recentData.map((d) => d.memoryUsage));
 
     if (avgCpuUsage > 0.8) {
-      riskFactors.push(`High CPU usage: $(avgCpuUsage * 100).toFixed(1)%`);`
+      riskFactors.push(`High CPU usage: ${(avgCpuUsage * 100).toFixed(1)}%`);
     }
 
     if (avgMemoryUsage > 0.8) {
       riskFactors.push(
-        `High memory usage: $(avgMemoryUsage * 100).toFixed(1)%``
+        `High memory usage: ${(avgMemoryUsage * 100).toFixed(1)}%`
       );
+    }
 
     // Declining performance trend
     const trend = this.analyzePerformanceTrend(agentId);
-    if (trend === ''improving' | 'stable' | 'declining') {'
-      riskFactors.push('Performance 'improving' | 'stable' | 'declining');'
+    if (trend === 'declining') {
+      riskFactors.push('Performance declining');
     }
 
     return riskFactors;
@@ -549,9 +570,9 @@ export class AgentPerformancePredictor {
       // Update local cache
       this.performanceTrends.set(agentId, successRates);
       
-      logger.debug(`Updated performance trends for agent ${agentId}`);`
+      logger.debug(`Updated performance trends for agent ${agentId}`);
     } catch (error) {
-      logger.warn(`Failed to update performance trends for ${agentId}:`, error);`
+      logger.warn(`Failed to update performance trends for ${agentId}:`, error);
     }
   }
 
@@ -605,7 +626,7 @@ export class AgentPerformancePredictor {
       
       return Math.min(1, baseUtilization * systemFactor);
     } catch (error) {
-      logger.error('❌ Failed to calculate capacity utilization:', error);'
+      logger.error('Failed to calculate capacity utilization:', error);
       // Fallback to basic calculation without system data
       const allAgents = Array.from(this.performanceHistory.keys());
       if (allAgents.length === 0) return 0;
@@ -654,10 +675,10 @@ export class AgentPerformancePredictor {
         memoryUtilization: Math.random() * 60 + 20, // Memory usage (20-80%)
       };
       
-      logger.debug('📊 Loaded system capacity data:', systemMetrics);'
+      logger.debug('Loaded system capacity data:', systemMetrics);
       return systemMetrics;
     } catch (error) {
-      logger.warn('⚠️ Failed to load system capacity data, using defaults:', error);'
+      logger.warn('Failed to load system capacity data, using defaults:', error);
       return null;
     }
   }
@@ -685,14 +706,14 @@ export class AgentPerformancePredictor {
       };
       
       // In real implementation, this would save to Redis, PostgreSQL, etc.
-      logger.debug(`💾 Persisted performance trends for agent ${agentId}:`, `
+      logger.debug(`Persisted performance trends for agent ${agentId}:`, {
         dataPoints: successRates.length,
-        trend: trendData.trendMetrics.slope > 0 ? 'improving' | 'stable' | 'declining'' : ''improving' | 'stable' | 'declining',
+        trend: trendData.trendMetrics.slope > 0 ? 'improving' : trendData.trendMetrics.slope < -0.1 ? 'declining' : 'stable',
         volatility: trendData.trendMetrics.volatility
       });
       
     } catch (error) {
-      logger.warn(`⚠️ Failed to persist performance trends for ${agentId}:`, error);`
+      logger.warn(`Failed to persist performance trends for ${agentId}:`, error);
     }
   }
 
@@ -742,7 +763,7 @@ export class AgentPerformancePredictor {
     try {
       return await this.performEnhancedBottleneckDetection();
     } catch (error) {
-      logger.error('❌ Failed to predict bottlenecks:', error);'
+      logger.error('Failed to predict bottlenecks:', error);
       return this.performBasicBottleneckDetection();
     }
   }
@@ -763,8 +784,9 @@ export class AgentPerformancePredictor {
     // Add system-wide predictions
     this.addSystemWideBottlenecks(bottlenecks, systemLoad);
 
-    logger.debug(`🔍 Predicted $bottlenecks.lengthpotential bottlenecks`);`
+    logger.debug(`Predicted ${bottlenecks.length} potential bottlenecks`);
     return bottlenecks;
+  }
 
   private async detectAgentBottlenecks(agentId: string, systemLoad: number): Promise<string[]> {
     // Load historical performance data from persistent storage
@@ -783,7 +805,7 @@ export class AgentPerformancePredictor {
     // Perform advanced bottleneck analysis
     const issues = await this.identifyAdvancedPerformanceIssues(enhancedMetrics, systemLoad, agentId);
 
-    return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`] : [];`
+    return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`] : [];
   }
 
   private async loadPersistedMetrics(agentId: string): Promise<any> {
@@ -793,7 +815,7 @@ export class AgentPerformancePredictor {
       // In production, this would query the database for agent metrics
       return this.performanceHistory.get(agentId)?.slice(-50) || null;
     } catch (error) {
-      logger.warn(`Failed to load persisted metrics for agent ${agentId}:`, error);`
+      logger.warn(`Failed to load persisted metrics for agent ${agentId}:`, error);
       return null;
     }
   }
@@ -862,35 +884,35 @@ export class AgentPerformancePredictor {
     
     if (metrics.avgMemoryUsage > 0.80) {
       const trend = metrics.trends?.memory === 'increasing' ? ' trending up' : '';
-      issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`);`
+      issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`);
     }
     
     if (metrics.avgErrorRate > 0.15) {
-      const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility' : ';
-      issues.push(`elevated error rate (${(_metrics._avgErrorRate * 100).toFixed(1)}%${volatility})`);`
+      const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility' : '';
+      issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`);
     }
     
     if (metrics.avgCompletionTime > 30000) {
-      issues.push(`slow response times (avg: ${(metrics.avgCompletionTime / 1000).toFixed(1)}s)`);`
+      issues.push(`slow response times (avg: ${(metrics.avgCompletionTime / 1000).toFixed(1)}s)`);
     }
     
     // System-wide correlation analysis
     if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-      issues.push('system overload correlation detected');'
+      issues.push('system overload correlation detected');
     }
 
     // Trend-based predictive warnings
-    if (metrics.trends?.cpu === 'increasing' && metrics.avgCpuUsage > 0.6) {'
-      issues.push('CPU usage trending toward capacity limits');'
+    if (metrics.trends?.cpu === 'increasing' && metrics.avgCpuUsage > 0.6) {
+      issues.push('CPU usage trending toward capacity limits');
     }
 
-    if (metrics.trends?.memory === 'increasing' && metrics.avgMemoryUsage > 0.5) {'
-      issues.push('memory usage showing upward trend');'
+    if (metrics.trends?.memory === 'increasing' && metrics.avgMemoryUsage > 0.5) {
+      issues.push('memory usage showing upward trend');
     }
 
     // Volatility warnings
     if (metrics.volatility?.errors > 0.2) {
-      issues.push('unstable error patterns detected');'
+      issues.push('unstable error patterns detected');
     }
 
     return issues;
@@ -909,24 +931,24 @@ export class AgentPerformancePredictor {
     const issues: string[] = [];
 
     if (metrics.avgCpuUsage > 0.85) {
-      issues.push('high CPU usage');'
+      issues.push('high CPU usage');
     }
     
     if (metrics.avgMemoryUsage > 0.80) {
-      issues.push('high memory usage');'
+      issues.push('high memory usage');
     }
     
     if (metrics.avgErrorRate > 0.15) {
-      issues.push('high error rate');'
+      issues.push('high error rate');
     }
     
     if (metrics.avgCompletionTime > 30000) {
-      issues.push('slow completion times');'
+      issues.push('slow completion times');
     }
     
     // System-wide bottleneck detection
     if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-      issues.push('system overload');'
+      issues.push('system overload');
     }
 
     return issues;
@@ -934,7 +956,7 @@ export class AgentPerformancePredictor {
 
   private addSystemWideBottlenecks(bottlenecks: string[], systemLoad: number): void {
     if (systemLoad > 75) {
-      bottlenecks.push('System-wide: High load trend detected');'
+      bottlenecks.push('System-wide: High load trend detected');
     }
   }
 
@@ -998,14 +1020,14 @@ export class AgentPerformancePredictor {
     try {
       // Load historical agent performance data from persistent storage
       // This would typically connect to a database or file system
-      logger.debug('Loading historical performance data...');'
+      logger.debug('Loading historical performance data...');
       
       // Simulate loading data with small delay
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      logger.debug('Historical data loaded successfully');'
+      logger.debug('Historical data loaded successfully');
     } catch (error) {
-      logger.error('Failed to load historical data:', error);'
+      logger.error('Failed to load historical data:', error);
       throw error;
     }
   }
@@ -1015,15 +1037,15 @@ export class AgentPerformancePredictor {
    */
   private async initializePredictionModels(): Promise<void> {
     try {
-      logger.debug('Initializing prediction models...');'
+      logger.debug('Initializing prediction models...');
       
       // Initialize ML models for performance prediction
       // This would set up neural networks, regression models, etc.
       await new Promise(resolve => setTimeout(resolve, 50));
       
-      logger.debug('Prediction models initialized');'
+      logger.debug('Prediction models initialized');
     } catch (error) {
-      logger.error('Failed to initialize prediction models:', error);'
+      logger.error('Failed to initialize prediction models:', error);
       throw error;
     }
   }
@@ -1033,15 +1055,15 @@ export class AgentPerformancePredictor {
    */
   private async setupPerformanceMonitoring(): Promise<void> {
     try {
-      logger.debug('Setting up performance monitoring...');'
+      logger.debug('Setting up performance monitoring...');
       
       // Setup monitoring for real-time performance tracking
       // This would establish connections to monitoring systems
       await new Promise(resolve => setTimeout(resolve, 50));
       
-      logger.debug('Performance monitoring setup complete');'
+      logger.debug('Performance monitoring setup complete');
     } catch (error) {
-      logger.error('Failed to setup performance monitoring:', error);'
+      logger.error('Failed to setup performance monitoring:', error);
       throw error;
     }
   }
@@ -1289,9 +1311,9 @@ export class AgentPerformancePredictor {
 
       // Trend risk factor
       let trendRisk = 0;
-      if (metrics.trends?.cpu === 'increasing') trendRisk += 0.3;'
-      if (metrics.trends?.memory === 'increasing') trendRisk += 0.2;'
-      if (metrics.trends?.errors === 'increasing') trendRisk += 0.5;'
+      if (metrics.trends?.cpu === 'increasing') trendRisk += 0.3;
+      if (metrics.trends?.memory === 'increasing') trendRisk += 0.2;
+      if (metrics.trends?.errors === 'increasing') trendRisk += 0.5;
       riskScore += trendRisk * 0.1; // 10% weight for trends
 
       // Volatility risk factor
@@ -1362,24 +1384,24 @@ export class AgentPerformancePredictor {
     const recommendations = [];
 
     switch (eventType) {
-      case 'cpu_spike':'
-        recommendations.push('Consider implementing request queuing to smooth CPU load');'
-        recommendations.push('Review recent code changes for CPU-intensive operations');'
+      case 'cpu_spike':
+        recommendations.push('Consider implementing request queuing to smooth CPU load');
+        recommendations.push('Review recent code changes for CPU-intensive operations');
         if (eventData.riskScore > 0.7) {
-          recommendations.push('Scale horizontally by adding additional agent instances');'
+          recommendations.push('Scale horizontally by adding additional agent instances');
         }
         break;
-      case 'memory_leak':'
-        recommendations.push('Monitor for memory leaks in long-running operations');'
-        recommendations.push('Implement memory profiling and garbage collection monitoring');'
+      case 'memory_leak':
+        recommendations.push('Monitor for memory leaks in long-running operations');
+        recommendations.push('Implement memory profiling and garbage collection monitoring');
         break;
-      case 'error_spike':'
-        recommendations.push('Review error logs for patterns and root causes');'
-        recommendations.push('Implement circuit breaker patterns for external dependencies');'
+      case 'error_spike':
+        recommendations.push('Review error logs for patterns and root causes');
+        recommendations.push('Implement circuit breaker patterns for external dependencies');
         break;
     }
 
-    recommendations.push(`Current risk score: $eventData.riskScore.toFixed(2)- monitor closely`);`
+    recommendations.push(`Current risk score: ${eventData.riskScore.toFixed(2)} - monitor closely`);
     return recommendations;
   }
 
@@ -1392,11 +1414,11 @@ export class AgentPerformancePredictor {
 
       // Simulated automated actions (in production, these would be real)
       switch (eventType) {
-        case 'cpu_spike':'
+        case 'cpu_spike':
           // Could trigger auto-scaling, load balancing adjustments, etc.
           logger.info(`Automated action: Adjusting load balancing for agent ${agentId}`);`
           break;
-        case 'memory_leak':'
+        case 'memory_leak':
           // Could trigger garbage collection, memory analysis, or agent restart
           logger.info(`Automated action: Initiating memory optimization for agent ${agentId}`);`
           break;

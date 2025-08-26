@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
-  createMockResult,
   mockLogger,
+  createMockMemoryConfig,
+  createMockResult,
 } from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
-vi.mock('@claude-zen/foundation', () => ({'
+vi.mock('@claude-zen/foundation', () => ({
   getLogger: () => mockLogger,
   Result: createMockResult,
   ok: createMockResult.ok,
@@ -19,11 +20,12 @@ vi.mock('@claude-zen/foundation', () => ({'
   },
 }));
 
-describe('Memory Backends', () => {'
-  beforeEach(() => 
-    vi.clearAllMocks(););
+describe('Memory Backends', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-  describe('In-Memory Backend', () => {'
+  describe('In-Memory Backend', () => {
     let backend: any;
 
     beforeEach(async () => {
@@ -44,9 +46,9 @@ describe('Memory Backends', () => {'
       };
     });
 
-    it('should store and retrieve data', async () => {'
+    it('should store and retrieve data', async () => {
       const key = 'memory-key';
-      const value = { data: 'test' };'
+      const value = { data: 'test' };
 
       backend.retrieve.mockResolvedValue(value);
 
@@ -58,15 +60,15 @@ describe('Memory Backends', () => {'
       expect(result).toEqual(value);
     });
 
-    it('should handle large data sets efficiently', async () => {'
+    it('should handle large data sets efficiently', async () => {
       const largeData = Array.from({ length: 1000 }, (_, i) => ({
         id: i,
-        data: `test-data-${i}`,`
+        data: `test-data-${i}`,
         timestamp: Date.now(),
       }));
 
       for (let i = 0; i < largeData.length; i++) {
-        await backend.store(`key-${i}`, largeData[i]);`
+        await backend.store(`key-${i}`, largeData[i]);
       }
 
       backend.size.mockResolvedValue(largeData.length);
@@ -75,12 +77,12 @@ describe('Memory Backends', () => {'
       expect(backend.store).toHaveBeenCalledTimes(largeData.length);
     });
 
-    it('should respect memory limits', async () => {'
+    it('should respect memory limits', async () => {
       const config = { ...createMockMemoryConfig(), maxSize: 5 };
 
       // Simulate storing beyond limit
       for (let i = 0; i < 10; i++) {
-        await backend.store(`limit-key-$i`, `value-$i`);`
+        await backend.store(`limit-key-${i}`, `value-${i}`);
       }
 
       backend.size.mockResolvedValue(5); // Should not exceed maxSize
@@ -88,7 +90,7 @@ describe('Memory Backends', () => {'
       expect(size).toBeLessThanOrEqual(config.maxSize);
     });
 
-    it('should provide accurate statistics', async () => {'
+    it('should provide accurate statistics', async () => {
       const stats = {
         size: 42,
         maxSize: 1000,
@@ -105,7 +107,7 @@ describe('Memory Backends', () => {'
     });
   });
 
-  describe('SQLite Backend', () => {'
+  describe('SQLite Backend', () => {
     let backend: any;
 
     beforeEach(() => {
@@ -122,9 +124,9 @@ describe('Memory Backends', () => {'
       };
     });
 
-    it('should persist data across sessions', async () => {'
+    it('should persist data across sessions', async () => {
       const key = 'persistent-key';
-      const value = { persistent: true, data: 'test' };'
+      const value = { persistent: true, data: 'test' };
 
       await backend.store(key, value);
       backend.retrieve.mockResolvedValue(value);
@@ -136,7 +138,7 @@ describe('Memory Backends', () => {'
       expect(result).toEqual(value);
     });
 
-    it('should handle SQL transactions', async () => {'
+    it('should handle SQL transactions', async () => {
       const operations = [
         { key: 'tx-1', value: 'value-1' },
         { key: 'tx-2', value: 'value-2' },
@@ -155,7 +157,7 @@ describe('Memory Backends', () => {'
       expect(transactionFn).toHaveBeenCalled();
     });
 
-    it('should support SQL queries', async () => {'
+    it('should support SQL queries', async () => {
       const mockResults = [
         { key: 'query-1', value: 'result-1' },
         { key: 'query-2', value: 'result-2' },
@@ -164,39 +166,39 @@ describe('Memory Backends', () => {'
       backend.query.mockResolvedValue(mockResults);
 
       const sql = 'SELECT * FROM memory WHERE key LIKE ?';
-      const params = ['query-%'];'
+      const params = ['query-%'];
       const results = await backend.query(sql, params);
 
       expect(backend.query).toHaveBeenCalledWith(sql, params);
       expect(results).toEqual(mockResults);
     });
 
-    it('should handle connection errors gracefully', async () => {'
-      backend.store.mockRejectedValue(new Error('Database connection failed'));'
+    it('should handle connection errors gracefully', async () => {
+      backend.store.mockRejectedValue(new Error('Database connection failed'));
 
       try {
-        await backend.store('error-key', 'error-value');'
+        await backend.store('error-key', 'error-value');
       } catch (error) {
         expect(error).toBeDefined();
-        expect(error.message).toContain('connection failed');'
+        expect(error.message).toContain('connection failed');
       }
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        expect.stringContaining('Database error')'
+        expect.stringContaining('Database error')
       );
     });
 
-    it('should support proper cleanup', async () => {'
+    it('should support proper cleanup', async () => {
       await backend.close();
       expect(backend.close).toHaveBeenCalled();
 
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('SQLite backend closed')'
+        expect.stringContaining('SQLite backend closed')
       );
     });
   });
 
-  describe('LanceDB Backend', () => {'
+  describe('LanceDB Backend', () => {
     let backend: any;
 
     beforeEach(() => {
@@ -213,7 +215,7 @@ describe('Memory Backends', () => {'
       };
     });
 
-    it('should store and retrieve vector data', async () => {'
+    it('should store and retrieve vector data', async () => {
       const key = 'vector-key';
       const vectorData = {
         embedding: [0.1, 0.2, 0.3, 0.4, 0.5],
@@ -228,7 +230,7 @@ describe('Memory Backends', () => {'
       expect(backend.store).toHaveBeenCalledWith(key, vectorData);
     });
 
-    it('should support vector similarity search', async () => {'
+    it('should support vector similarity search', async () => {
       const queryVector = [0.1, 0.2, 0.3, 0.4, 0.5];
       const similarResults = [
         { key: 'similar-1', distance: 0.1, metadata: {} },
@@ -242,7 +244,7 @@ describe('Memory Backends', () => {'
       expect(results).toEqual(similarResults);
     });
 
-    it('should handle high-dimensional vectors', async () => {'
+    it('should handle high-dimensional vectors', async () => {
       const highDimVector = Array.from({ length: 1536 }, () => Math.random())();
       const key = 'high-dim-vector';
 
@@ -250,7 +252,7 @@ describe('Memory Backends', () => {'
       expect(backend.addVector).toHaveBeenCalledWith(key, highDimVector);
     });
 
-    it('should support metadata filtering', async () => {'
+    it('should support metadata filtering', async () => {
       const query = {
         vector: [0.1, 0.2, 0.3],
         filter: { type: 'document', category: 'technical' },
@@ -273,7 +275,7 @@ describe('Memory Backends', () => {'
     });
   });
 
-  describe('JSON Backend', () => {'
+  describe('JSON Backend', () => {
     let backend: any;
 
     beforeEach(() => {
@@ -290,7 +292,7 @@ describe('Memory Backends', () => {'
       };
     });
 
-    it('should store data in JSON format', async () => {'
+    it('should store data in JSON format', async () => {
       const data = {
         'json-key-1': { type: 'test', value: 123 },
         'json-key-2': { type: 'test', value: 456 },
@@ -307,8 +309,8 @@ describe('Memory Backends', () => {'
       expect(backend.store).toHaveBeenCalledTimes(Object.keys(data).length);
     });
 
-    it('should handle file I/O operations', async () => {'
-      const testData = { 'file-key': 'file-value' };'
+    it('should handle file I/O operations', async () => {
+      const testData = { 'file-key': 'file-value' };
 
       await backend.save(testData);
       expect(backend.save).toHaveBeenCalledWith(testData);
@@ -318,54 +320,54 @@ describe('Memory Backends', () => {'
       expect(loaded).toEqual(testData);
     });
 
-    it('should support data backup and restore', async () => {'
+    it('should support data backup and restore', async () => {
       const backupPath = '/tmp/memory-backup.json';
 
       await backend.backup(backupPath);
       expect(backend.backup).toHaveBeenCalledWith(backupPath);
 
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Backup created')'
+        expect.stringContaining('Backup created')
       );
     });
 
-    it('should handle file corruption gracefully', async () => {'
-      backend.load.mockRejectedValue(new Error('File corrupted'));'
+    it('should handle file corruption gracefully', async () => {
+      backend.load.mockRejectedValue(new Error('File corrupted'));
 
       try {
         await backend.load();
       } catch (error) {
-        expect(error.message).toContain('corrupted');'
+        expect(error.message).toContain('corrupted');
       }
 
       expect(mockLogger.error).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to load')'
+        expect.stringContaining('Failed to load')
       );
     });
 
-    it('should validate JSON structure', async () => {'
+    it('should validate JSON structure', async () => {
       const invalidData = { key: undefined, circular: {} };
       invalidData.circular = invalidData; // Create circular reference
 
-      backend.store.mockImplementation((_key: string, value: any) => {
+      backend.store.mockImplementation((key: string, value: any) => {
         try {
           JSON.stringify(value);
           return Promise.resolve();
-        } catch (_error) {
-          return Promise.reject(new Error('Invalid JSON structure'));'
+        } catch (error) {
+          return Promise.reject(new Error('Invalid JSON structure'));
         }
       });
 
       try {
-        await backend.store('invalid', invalidData);'
+        await backend.store('invalid', invalidData);
       } catch (error) {
-        expect(error.message).toContain('Invalid JSON');'
+        expect(error.message).toContain('Invalid JSON');
       }
     });
   });
 
-  describe('Backend Factory', () => {'
-    it('should create appropriate backend based on config', async () => {'
+  describe('Backend Factory', () => {
+    it('should create appropriate backend based on config', async () => {
       const configs = [
         { type: 'memory', maxSize: 1000 },
         { type: 'sqlite', path: ':memory:', maxSize: 5000 },
@@ -396,27 +398,27 @@ describe('Memory Backends', () => {'
       expect(factory.createBackend).toHaveBeenCalledTimes(configs.length);
     });
 
-    it('should handle unknown backend types', async () => {'
-      const _factory = {
+    it('should handle unknown backend types', async () => {
+      const factory = {
         createBackend: vi.fn().mockImplementation((config: any) => {
-          if (!['memory', 'sqlite', 'lancedb', 'json'].includes(config.type)) {'
-            throw new Error(`Unknown backend type: ${config.type}`);`
+          if (!['memory', 'sqlite', 'lancedb', 'json'].includes(config.type)) {
+            throw new Error(`Unknown backend type: ${config.type}`);
           }
           return { type: config.type };
         }),
       };
 
-      const unknownConfig = { type: 'unknown', maxSize: 1000 };'
+      const unknownConfig = { type: 'unknown', maxSize: 1000 };
 
       expect(() => {
         factory.createBackend(unknownConfig);
-      }).toThrow('Unknown backend type: unknown');'
+      }).toThrow('Unknown backend type: unknown');
     });
   });
 
-  describe('Backend Health Monitoring', () => {'
-    it('should monitor backend health status', async () => {'
-      const backends = ['memory', 'sqlite', 'lancedb', 'json'].map((type) => ({'
+  describe('Backend Health Monitoring', () => {
+    it('should monitor backend health status', async () => {
+      const backends = ['memory', 'sqlite', 'lancedb', 'json'].map((type) => ({
         type,
         health: vi.fn().mockResolvedValue(true),
         getStats: vi.fn().mockResolvedValue({ status: 'healthy' }),
@@ -427,11 +429,11 @@ describe('Memory Backends', () => {'
         expect(health).toBe(true);
 
         const stats = await backend.getStats();
-        expect(stats.status).toBe('healthy');'
+        expect(stats.status).toBe('healthy');
       }
     });
 
-    it('should detect unhealthy backends', async () => {'
+    it('should detect unhealthy backends', async () => {
       const unhealthyBackend = {
         health: vi.fn().mockResolvedValue(false),
         getStats: vi
@@ -446,18 +448,18 @@ describe('Memory Backends', () => {'
       expect(health).toBe(false);
 
       const stats = await unhealthyBackend.getStats();
-      expect(stats.status).toBe('unhealthy');'
+      expect(stats.status).toBe('unhealthy');
       expect(stats.error).toBeDefined();
     });
 
-    it('should handle health check timeouts', async () => {'
+    it('should handle health check timeouts', async () => {
       const timeoutBackend = {
         health: vi
           .fn()
           .mockImplementation(
             () =>
               new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Health check timeout')), 100)'
+                setTimeout(() => reject(new Error('Health check timeout')), 100)
               )
           ),
       };
@@ -466,11 +468,11 @@ describe('Memory Backends', () => {'
         await Promise.race([
           timeoutBackend.health(),
           new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), 50)'
+            setTimeout(() => reject(new Error('Timeout')), 50)
           ),
         ]);
       } catch (error) {
-        expect(error.message).toContain('Timeout');'
+        expect(error.message).toContain('Timeout');
       }
     });
   });

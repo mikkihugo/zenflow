@@ -10,7 +10,6 @@
  * • @claude-zen/agent-monitoring: Agent health and performance tracking
  * • @claude-zen/chaos-engineering: Chaos testing and resilience validation
  * • @claude-zen/load-balancing: Performance optimization and routing
- * • @claude-zen/llm-routing: LLM provider routing and management
  * • @claude-zen/system-monitoring: System and infrastructure performance monitoring
  *
  * STANDARD FACADE PATTERN:
@@ -37,14 +36,12 @@ registerFacade(
 		"@claude-zen/agent-monitoring",
 		"@claude-zen/chaos-engineering",
 		"@claude-zen/load-balancing",
-		"@claude-zen/llm-routing",
 		"@claude-zen/system-monitoring",
 	],
 	[
 		"Agent performance tracking and health checks",
 		"Chaos engineering and resilience testing",
 		"Load balancing and performance optimization",
-		"LLM provider routing and management",
 		"System and infrastructure performance monitoring",
 		"Real-time operational metrics and alerting",
 	],
@@ -56,7 +53,6 @@ registerFacade(
 
 export * from "./agent-monitoring";
 export * from "./chaos-engineering";
-export * from "./llm-routing";
 export * from "./monitoring";
 
 // Re-export key facade functions for direct access
@@ -184,8 +180,6 @@ export const operationsSystem = {
 	// Chaos engineering
 	chaos: () => import("./chaos-engineering"),
 
-	// LLM routing
-	llm: () => import("./llm-routing"),
 
 	// Direct access functions
 	getSystemMonitor,

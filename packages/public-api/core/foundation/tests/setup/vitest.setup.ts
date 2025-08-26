@@ -14,8 +14,8 @@ beforeAll(async () => {
 	logger.info("🧪 Starting Foundation test suite");
 
 	// Set test environment variables
-	process.env.NODE_ENV = "test";
-	process.env.LOG_LEVEL = "warn"; // Reduce noise during tests
+	process.env['NODE_ENV'] = "test";
+	process.env['LOG_LEVEL'] = "warn"; // Reduce noise during tests
 });
 
 afterAll(async () => {

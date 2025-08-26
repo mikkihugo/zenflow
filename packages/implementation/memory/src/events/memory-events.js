@@ -11,11 +11,11 @@
  * Type guard for coordination events
  */
 export function isCoordinationEvent(event) {
-	return event.type.startsWith("memory:system:");
+    return event.type.startsWith('memory:system:');
 }
 /**
  * Type guard for cache events
  */
 export function isCacheEvent(event) {
-	return event.type.startsWith("memory:cache:");
+    return event.type.startsWith('memory:cache:');
 }

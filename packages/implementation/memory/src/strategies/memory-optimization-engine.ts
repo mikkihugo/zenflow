@@ -5,12 +5,13 @@
  * automated tuning, and predictive optimization strategies.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { 
+import { TypedEventBase ,
   getLogger,
-  recordMetric,TypedEventBase ,
+  recordMetric,
+  TelemetryManager,
   withTrace,
 } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
 import type {
   OptimizationConfig,
@@ -29,7 +30,7 @@ interface OptimizationSample {
 
 interface OptimizationAction {
   id: string;
-  type: 'memory|cache|performance|configuration;
+  type: 'memory|cache|performance|configuration';
   action: string;
   parameters: Record<string, unknown>;
   expectedImpact: number;
@@ -44,19 +45,23 @@ interface OptimizationAction {
 export class MemoryOptimizationEngine extends TypedEventBase {
   private logger: Logger;
   private config: OptimizationConfig;
+  private telemetry: TelemetryManager;
   private metrics: OptimizationMetrics;
   private samples: OptimizationSample[] = [];
+  private appliedActions: OptimizationAction[] = [];
+  private optimizationTimer?: NodeJS.Timeout;
   private initialized = false;
   private baselineMetrics?: OptimizationSample;
 
   constructor(config: OptimizationConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('MemoryOptimizationEngine');'
-    this.telemetry = new TelemetryManager(
+    this.logger = getLogger('MemoryOptimizationEngine');
+    this.telemetry = new TelemetryManager({
       serviceName: 'memory-optimization',
       enableTracing: true,
-      enableMetrics: true,);
+      enableMetrics: true,
+    });
     this.initializeMetrics();
   }
 
@@ -64,7 +69,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      await withTrace('memory-optimization-init', async () => {'
+      await withTrace('memory-optimization-init', async () => {
         await this.telemetry.initialize();
 
         // Collect baseline metrics
@@ -76,11 +81,11 @@ export class MemoryOptimizationEngine extends TypedEventBase {
         }
 
         this.initialized = true;
-        this.logger.info('Memory optimization engine initialized', {'
+        this.logger.info('Memory optimization engine initialized', {
           mode: this.config.mode,
           enabled: this.config.enabled,
         });
-        recordMetric('memory_optimization_initialized', 1);'
+        recordMetric('memory_optimization_initialized', 1);
       });
     } catch (error) {
       this.logger.error(
@@ -96,10 +101,11 @@ export class MemoryOptimizationEngine extends TypedEventBase {
       return this.metrics;
     }
 
-    return withTrace('memory-optimization-cycle', async (_span) => {'
-      span?.setAttributes(
+    return withTrace('memory-optimization-cycle', async (span) => {
+      span?.setAttributes({
         'optimization.mode': this.config.mode,
-        'optimization.samples': this.samples.length,);
+        'optimization.samples': this.samples.length,
+      });
 
       const startTime = Date.now();
 
@@ -126,7 +132,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
         this.updateOptimizationMetrics(currentSample, appliedOptimizations);
 
         // Emit optimization completed event
-        this.emit('optimizationCompleted', {'
+        this.emit('optimizationCompleted', {
           sample: currentSample,
           analysis,
           recommendations,
@@ -134,15 +140,15 @@ export class MemoryOptimizationEngine extends TypedEventBase {
           duration: Date.now() - startTime,
         });
 
-        recordMetric('memory_optimization_cycle_completed', 1, {'
+        recordMetric('memory_optimization_cycle_completed', 1, {
           mode: this.config.mode,
           optimizationsApplied: appliedOptimizations.length,
         });
 
         return this.metrics;
       } catch (error) {
-        this.logger.error('Memory optimization cycle failed:', error);'
-        recordMetric('memory_optimization_cycle_failed', 1);'
+        this.logger.error('Memory optimization cycle failed:', error);
+        recordMetric('memory_optimization_cycle_failed', 1);
         throw error;
       }
     });
@@ -181,7 +187,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
 
   private async collectBaselineMetrics(): Promise<void> {
     this.baselineMetrics = await this.collectPerformanceSample();
-    this.logger.info('Baseline metrics collected', this.baselineMetrics);'
+    this.logger.info('Baseline metrics collected', this.baselineMetrics);
   }
 
   private async collectPerformanceSample(): Promise<OptimizationSample> {
@@ -230,7 +236,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
   }
 
   private analyzePerformanceTrends(): {
-    trends: Record<string, 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading'>;'
+    trends: Record<string, 'improving|stable|degrading'>;
     anomalies: string[];
     bottlenecks: string[];
     opportunities: string[];
@@ -247,7 +253,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     const recent = this.samples.slice(-10); // Last 10 samples
     const older = this.samples.slice(-20, -10); // Previous 10 samples
 
-    const trends: Record<string, 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading'> = {};'
+    const trends: Record<string, 'improving|stable|degrading'> = {};
     const anomalies: string[] = [];
     const bottlenecks: string[] = [];
     const opportunities: string[] = [];
@@ -296,55 +302,55 @@ export class MemoryOptimizationEngine extends TypedEventBase {
       recentAvgResponseTime >
       this.config.monitoring.alertThresholds.responseTime
     ) {
-      anomalies.push('High response time detected');'
-      bottlenecks.push('Response time exceeds threshold');'
+      anomalies.push('High response time detected');
+      bottlenecks.push('Response time exceeds threshold');
     }
 
     if (recentAvgMemory > this.config.monitoring.alertThresholds.memoryUsage) {
-      anomalies.push('High memory usage detected');'
-      bottlenecks.push('Memory usage exceeds threshold');'
+      anomalies.push('High memory usage detected');
+      bottlenecks.push('Memory usage exceeds threshold');
     }
 
     const recentAvgErrorRate = this.average(recent.map((s) => s.errorRate));
     if (recentAvgErrorRate > this.config.monitoring.alertThresholds.errorRate) {
-      anomalies.push('High error rate detected');'
-      bottlenecks.push('Error rate exceeds threshold');'
+      anomalies.push('High error rate detected');
+      bottlenecks.push('Error rate exceeds threshold');
     }
 
     // Identify optimization opportunities
     if (recentAvgCacheHit < this.config.targets.cacheHitRate) {
-      opportunities.push('Cache hit rate can be improved');'
+      opportunities.push('Cache hit rate can be improved');
     }
 
     if (recentAvgThroughput < this.config.targets.throughput) {
-      opportunities.push('Throughput can be increased');'
+      opportunities.push('Throughput can be increased');
     }
 
     return { trends, anomalies, bottlenecks, opportunities };
   }
 
   private getTrend(
-    _recent: number,
-    _older: number,
-    _target: number,
-    _inverse = false
-  ): 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading' {'
-    if (_older === 0) return 'stable';
+    recent: number,
+    older: number,
+    target: number,
+    inverse = false
+  ): 'improving|stable|degrading' {
+    if (older === 0) return 'stable';
 
     const change = (recent - older) / older;
     const threshold = 0.05; // 5% change threshold
 
-    if (_Math._abs(_change) < _threshold) {
+    if (Math.abs(change) < threshold) {
       return 'stable';
     }
 
     // For metrics where lower is better (like memory usage, response time)
     if (inverse) {
-      return change < 0 ? 'improving' | 'stable' | 'declining'' : 'degrading;
+      return change < 0 ? 'improving' : 'degrading';
     }
 
     // For metrics where higher is better (like throughput, cache hit rate)
-    return change > 0 ? 'improving' | 'stable' | 'declining'' : 'degrading;
+    return change > 0 ? 'improving' : 'degrading';
   }
 
   private average(values: number[]): number {
@@ -363,9 +369,9 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     let actionId = 0;
 
     // Generate recommendations based on trends and issues
-    if (analysis.trends.memoryUsage === 'degrading') {'
-      recommendations.push(
-        id: `opt-${++actionId}`,`
+    if (analysis.trends.memoryUsage === 'degrading') {
+      recommendations.push({
+        id: `opt-${++actionId}`,
         type: 'memory',
         action: 'increase_cache_eviction_frequency',
         parameters: { multiplier: 1.5 },
@@ -374,19 +380,20 @@ export class MemoryOptimizationEngine extends TypedEventBase {
       });
     }
 
-    if (analysis.trends.responseTime === 'degrading') {'
+    if (analysis.trends.responseTime === 'degrading') {
       recommendations.push({
-        id: `opt-$++actionId`,`
+        id: `opt-${++actionId}`,
         type: 'performance',
         action: 'enable_compression',
-        parameters: level: 6 ,
+        parameters: { level: 6 },
         expectedImpact: 0.15,
-        appliedAt: 0,);
+        appliedAt: 0,
+      });
     }
 
-    if (analysis.trends.cacheHitRate === 'degrading') {'
-      recommendations.push(
-        id: `opt-${++actionId}`,`
+    if (analysis.trends.cacheHitRate === 'degrading') {
+      recommendations.push({
+        id: `opt-${++actionId}`,
         type: 'cache',
         action: 'increase_cache_size',
         parameters: { sizeFactor: 1.2 },
@@ -395,14 +402,15 @@ export class MemoryOptimizationEngine extends TypedEventBase {
       });
     }
 
-    if (analysis.trends.throughput === 'degrading') {'
+    if (analysis.trends.throughput === 'degrading') {
       recommendations.push({
-        id: `opt-$++actionId`,`
+        id: `opt-${++actionId}`,
         type: 'performance',
         action: 'enable_prefetching',
-        parameters: enabled: true, lookahead: 3 ,
+        parameters: { enabled: true, lookahead: 3 },
         expectedImpact: 0.25,
-        appliedAt: 0,);
+        appliedAt: 0,
+      });
     }
 
     // Sort by expected impact (highest first)
@@ -440,14 +448,15 @@ export class MemoryOptimizationEngine extends TypedEventBase {
           applied.push(recommendation);
           this.appliedActions.push(recommendation);
 
-          this.emit('optimizationApplied', recommendation);'
-          recordMetric('memory_optimization_applied', 1, '
+          this.emit('optimizationApplied', recommendation);
+          recordMetric('memory_optimization_applied', 1, {
             type: recommendation.type,
-            action: recommendation.action,);
+            action: recommendation.action,
+          });
         }
-      } catch (_error) {
+      } catch (error) {
         this.logger.error(
-          `Failed to apply optimization ${recommendation.id}:`,`
+          `Failed to apply optimization ${recommendation.id}:`,
           error
         );
         recommendation.result = {
@@ -463,11 +472,11 @@ export class MemoryOptimizationEngine extends TypedEventBase {
 
   private getMaxOptimizations(): number {
     switch (this.config.mode) {
-      case 'conservative':'
+      case 'conservative':
         return 1;
-      case 'balanced':'
+      case 'balanced':
         return 2;
-      case 'aggressive':'
+      case 'aggressive':
         return 4;
       default:
         return 1;
@@ -481,19 +490,19 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate work
 
     this.logger.info(
-      `Applied optimization: ${action.action}`,`
+      `Applied optimization: ${action.action}`,
       action.parameters
     );
 
     // Simulate success rate based on mode
-    const successRate = this.config.mode === 'aggressive' ? 0.8 : 0.95;'
+    const successRate = this.config.mode === 'aggressive' ? 0.8 : 0.95;
     return Math.random() < successRate;
   }
 
   private updateOptimizationMetrics(
     sample: OptimizationSample,
     applied: OptimizationAction[]
-  ): void 
+  ): void {
     // Update current metrics
     this.metrics.memoryUsage.current = sample.memoryUsage;
     this.metrics.memoryUsage.peak = Math.max(
@@ -529,8 +538,9 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     this.metrics.operations.reads += Math.floor(sample.throughput / 2);
     this.metrics.operations.writes += Math.floor(sample.throughput / 4);
     this.metrics.operations.compressions += applied.filter((a) =>
-      a.action.includes('compression')'
+      a.action.includes('compression')
     ).length;
+  }
 
   private updateHealthScore(sample: OptimizationSample): void {
     let score = 100;
@@ -540,33 +550,33 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     // Penalize based on targets
     if (sample.responseTime > this.config.targets.responseTime) {
       score -= 20;
-      issues.push('Response time exceeds target');'
-      recommendations.push('Consider enabling caching or compression');'
+      issues.push('Response time exceeds target');
+      recommendations.push('Consider enabling caching or compression');
     }
 
     if (sample.memoryUsage > this.config.targets.memoryUsage) {
       score -= 25;
-      issues.push('Memory usage exceeds target');'
-      recommendations.push('Increase cache eviction frequency');'
+      issues.push('Memory usage exceeds target');
+      recommendations.push('Increase cache eviction frequency');
     }
 
     if (sample.throughput < this.config.targets.throughput) {
       score -= 15;
-      issues.push('Throughput below target');'
-      recommendations.push('Enable prefetching and optimize queries');'
+      issues.push('Throughput below target');
+      recommendations.push('Enable prefetching and optimize queries');
     }
 
     if (sample.cacheHitRate < this.config.targets.cacheHitRate) {
       score -= 10;
-      issues.push('Cache hit rate below target');'
-      recommendations.push('Increase cache size or adjust eviction policy');'
+      issues.push('Cache hit rate below target');
+      recommendations.push('Increase cache size or adjust eviction policy');
     }
 
     if (sample.errorRate > 0.01) {
       // 1% error rate threshold
       score -= 30;
-      issues.push('High error rate detected');'
-      recommendations.push('Investigate and fix error sources');'
+      issues.push('High error rate detected');
+      recommendations.push('Investigate and fix error sources');
     }
 
     this.metrics.health.score = Math.max(0, score);
@@ -584,31 +594,36 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     }
   }
 
-  private startOptimizationMonitoring(): void 
+  private startOptimizationMonitoring(): void {
     this.optimizationTimer = setInterval(async () => {
       try {
         await this.optimize();
       } catch (error) {
-        this.logger.error('Optimization monitoring cycle failed:', error);'
+        this.logger.error('Optimization monitoring cycle failed:', error);
       }
     }, this.config.monitoring.interval);
+  }
 
   // Public methods
 
-  getMetrics(): OptimizationMetrics 
+  getMetrics(): OptimizationMetrics {
     return { ...this.metrics };
+  }
 
-  getOptimizationHistory(): OptimizationAction[] 
+  getOptimizationHistory(): OptimizationAction[] {
     return [...this.appliedActions];
+  }
 
-  getPerformanceSamples(limit = 100): OptimizationSample[] 
+  getPerformanceSamples(limit = 100): OptimizationSample[] {
     return this.samples.slice(-limit);
+  }
 
-  async forceOptimization(): Promise<OptimizationMetrics> 
-    this.logger.info('Force optimization requested');'
+  async forceOptimization(): Promise<OptimizationMetrics> {
+    this.logger.info('Force optimization requested');
     return this.optimize();
+  }
 
-  updateConfig(newConfig: Partial<OptimizationConfig>): void 
+  updateConfig(newConfig: Partial<OptimizationConfig>): void {
     this.config = { ...this.config, ...newConfig };
 
     // Restart monitoring if interval changed
@@ -621,13 +636,15 @@ export class MemoryOptimizationEngine extends TypedEventBase {
       }
     }
 
-    this.logger.info('Optimization configuration updated', newConfig);'
+    this.logger.info('Optimization configuration updated', newConfig);
+  }
 
-  async shutdown(): Promise<void> 
+  async shutdown(): Promise<void> {
     if (this.optimizationTimer) {
       clearInterval(this.optimizationTimer);
     }
 
     this.initialized = false;
-    this.logger.info('Memory optimization engine shut down');'
+    this.logger.info('Memory optimization engine shut down');
+  }
 }

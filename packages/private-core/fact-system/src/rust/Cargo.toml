@@ -14,6 +14,7 @@ categories = ["algorithms", "caching", "command-line-utilities", "web-programmin
 [lib]
 name = "fact_tools"
 path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "fact-tools"

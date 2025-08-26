@@ -254,7 +254,7 @@ export class JsonSchemaManager {
 		if (!isValid) {
 			const errors = schemaEntry.validator.errors?.map((err) => {
 				const error = err as unknown as UnknownRecord;
-				return `${error.instancePath || error.schemaPath || "root"}: ${error.message || "Unknown error"}`;
+				return `${error['instancePath'] || error['schemaPath'] || "root"}: ${error['message'] || "Unknown error"}`;
 			}) || ["Unknown validation error"];
 
 			return { isValid: false, errors };
@@ -328,8 +328,8 @@ export class JsonSchemaManager {
 			!Array.isArray(documentWithDefaults)
 		) {
 			const doc = documentWithDefaults as JsonObject;
-			doc.schema_version = this.getSchemaVersion(documentType, mode);
-			doc.schema_mode = mode;
+			doc['schema_version'] = this.getSchemaVersion(documentType, mode);
+			doc['schema_mode'] = mode;
 		}
 
 		// Validate with error throwing
@@ -360,8 +360,8 @@ export class JsonSchemaManager {
 					!Array.isArray(prop)
 				) {
 					const propObj = prop as JsonObject;
-					if (propObj.default !== undefined) {
-						result[key] = propObj.default;
+					if (propObj['default'] !== undefined) {
+						result[key] = propObj['default'];
 					}
 				}
 			}
@@ -418,7 +418,7 @@ export class JsonSchemaManager {
 		} catch (error) {
 			this.logger.error(`Failed to load schema from ${uri}:`, error);
 			throw new Error(
-				`Schema loading failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+				`Schema loading failed: ${error instanceof Error ? error['message'] : "Unknown error"}`,
 			);
 		}
 	}
@@ -502,7 +502,7 @@ export function validateInput<T>(schema: ZodSchema<T>, data: unknown): T {
 	} catch (error) {
 		if (error instanceof ZodError) {
 			throw new Error(
-				`Validation failed: ${error.errors.map((e) => e.message).join(", ")}`,
+				`Validation failed: ${error.errors.map((e) => e['message']).join(", ")}`,
 			);
 		}
 		throw error;
@@ -520,7 +520,7 @@ export function createValidator<T>(schema: ZodSchema<T>) {
 					isValid: false,
 					errors: error.errors.map((e) => ({
 						path: e.path.join("."),
-						message: e.message,
+						message: e['message'],
 						code: e.code,
 					})),
 					data: undefined,

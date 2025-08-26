@@ -10,11 +10,15 @@
 
 import type { BackendInterface } from '../core/memory-system';
 import type { MemoryConfig } from '../types';
+import { getLogger } from '@claude-zen/foundation';
 
-import type { BaseMemoryBackend } from './base-backend';
+import { type BackendCapabilities, BaseMemoryBackend } from './base-backend';
+
+// Logger for factory operations
+const logger = getLogger('memory:factory');
 
 // Additional types needed for factory
-export type MemoryBackendType = 'memory|file|sqlite|jsonb';
+export type MemoryBackendType = 'sqlite' | 'json' | 'lancedb' | 'memory';
 
 // Backend registry for dynamic loading
 const backendRegistry = new Map<
@@ -65,8 +69,8 @@ export class MemoryBackendFactory {
     config: Partial<MemoryConfig> = {},
     instanceId?: string
   ): Promise<BaseMemoryBackend & BackendInterface> {
-    const _fullConfig = this.mergeConfig(config);
-    const _id = instanceId||`${type}-${Date.now()}`;`
+    const fullConfig = this.mergeConfig(config);
+    const id = instanceId||`${type}-${Date.now()}`;
 
     // Check if backend is already created
     if (this.backends.has(id)) {
@@ -74,10 +78,10 @@ export class MemoryBackendFactory {
     }
 
     // Get backend constructor
-    const BackendClass = await this.getBackendClass(type);
+    const backendClass = await this.getBackendClass(type);
 
     // Create backend instance
-    const backend = new (BackendClass as any)(fullConfig) as BaseMemoryBackend &
+    const backend = new (backendClass as any)(fullConfig) as BaseMemoryBackend &
       BackendInterface;
 
     // Initialize backend
@@ -87,7 +91,7 @@ export class MemoryBackendFactory {
     this.backends.set(id, backend);
 
     // Setup cleanup on close
-    backend.once('close', () => {'
+    backend.once('close', () => {
       this.backends.delete(id);
     });
 
@@ -152,8 +156,8 @@ export class MemoryBackendFactory {
   public async getBackendCapabilities(
     type: MemoryBackendType
   ): Promise<BackendCapabilities> {
-    const BackendClass = await this.getBackendClass(type);
-    const tempBackend = new (BackendClass as any)(this.defaultConfig);
+    const backendClass = await this.getBackendClass(type);
+    const tempBackend = new (backendClass as any)(this.defaultConfig);
     return tempBackend.getCapabilities();
   }
 
@@ -183,7 +187,7 @@ export class MemoryBackendFactory {
    * Get all supported backend types.
    */
   public getSupportedBackends(): MemoryBackendType[] {
-    return Array.from(backendRegistry.keys())();
+    return Array.from(backendRegistry.keys());
   }
 
   /**
@@ -195,10 +199,10 @@ export class MemoryBackendFactory {
     config: Partial<MemoryConfig> = {}
   ): Promise<BaseMemoryBackend> {
     // Enhanced with async backend detection and performance validation
-    const detectedType = await new Promise<BackendType>(resolve => {
+    const detectedType = await new Promise<MemoryBackendType>(resolve => {
       setTimeout(() => {
         const type = this.detectOptimalBackend(config);
-        logger.info(`Auto-detected optimal backend type: $typefor config:`, config);`
+        logger.info(`Auto-detected optimal backend type: ${type} for config:`, config);
         resolve(type);
       }, 1);
     });
@@ -221,7 +225,7 @@ export class MemoryBackendFactory {
     
     // Async validation of backend type and configuration
     await new Promise(resolve => setTimeout(resolve, 1));
-    logger.debug(`Creating backend of type: $typewith static factory method`);`
+    logger.debug(`Creating backend of type: ${type} with static factory method`);
     
     return factory.createBackend(type, config);
   }
@@ -251,10 +255,27 @@ export class MemoryBackendFactory {
 
   private registerDefaultBackends(): void {
     // Register built-in backends with lazy loading
-    backendRegistry.set('memory', () => this.loadMemoryBackend())();'
-    backendRegistry.set('file', () => this.loadFileBackend())();'
-    backendRegistry.set('sqlite', () => this.loadSQLiteBackend())();'
-    backendRegistry.set('jsonb', () => this.loadJSONBBackend())();'
+    backendRegistry.set('memory', () => this.loadMemoryBackend());
+    backendRegistry.set('json', () => this.loadJSONBBackend());
+    backendRegistry.set('sqlite', () => this.loadSQLiteBackend());
+    backendRegistry.set('lancedb', () => this.loadLanceDBBackend());
+  }
+
+  private async getBackendClass(
+    type: MemoryBackendType
+  ): Promise<new (config: MemoryConfig) => BaseMemoryBackend> {
+    const loader = backendRegistry.get(type);
+    if (!loader) {
+      throw new Error(`Unsupported backend type: ${type}`);
+    }
+
+    try {
+      return await loader();
+    } catch (error) {
+      throw new Error(
+        `Failed to load backend '${type}': ${(error as Error).message}`
+      );
+    }
   }
 
   private mergeConfig(config: Partial<MemoryConfig>): MemoryConfig {
@@ -265,18 +286,88 @@ export class MemoryBackendFactory {
     } as MemoryConfig;
   }
 
+  private detectOptimalBackend(
+    config: Partial<MemoryConfig>
+  ): MemoryBackendType {
+    // Auto-detect optimal backend based on requirements
+    const wantsPersistent =
+      config?.type === 'sqlite'||config?.type ==='lancedb';
+    if (wantsPersistent) {
+      return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
+        ? 'sqlite'
+        : 'json';
+    }
+
+    if (config?.maxSize && config?.maxSize > 100 * 1024 * 1024) {
+      return 'sqlite';
+    }
+
+    return 'memory';
+  }
+
   // Backend loaders - delegate to FoundationMemoryBackend
   private async loadMemoryBackend(): Promise<
     new (config: MemoryConfig) => BaseMemoryBackend
   > {
-    const { FoundationMemoryBackend } = await import('./foundation-adapter');'
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
 
     return class InMemoryBackend extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
-          storageType: 'kv', // In-memory uses KV with no persistence'
+          storageType: 'kv', // In-memory uses KV with no persistence
           databaseType: 'sqlite',
+        } as any);
+      }
+    };
+  }
+
+
+  private async loadSQLiteBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+
+    return class extends FoundationMemoryBackend {
+      public constructor(config: MemoryConfig) {
+        super({
+          ...config,
+          storageType: 'database',
+          databaseType: 'sqlite',
+        } as any);
+      }
+    };
+  }
+
+  private async loadJSONBBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
+    // LanceDB backend using Foundation's database access (closest to JSONB)
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+
+    return class extends FoundationMemoryBackend {
+      public constructor(config: MemoryConfig) {
+        super({
+          ...config,
+          storageType: 'database',
+          databaseType: 'lancedb',
+        } as any);
+      }
+    };
+  }
+
+  private async loadLanceDBBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
+    // LanceDB vector backend
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+
+    return class LanceDBBackend extends FoundationMemoryBackend {
+      public constructor(config: MemoryConfig) {
+        super({
+          ...config,
+          storageType: 'database',
+          databaseType: 'lancedb',
         } as any);
       }
     };

@@ -7,11 +7,15 @@
  */
 
 import type { DALFactory } from '../../database/factory';
+import type {
+  CoordinationRepository,
+  VectorRepository,
+} from '../../database/interfaces';
 import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
-  type Config,
   DATABASE_TOKENS,
+  type Config,
   type Logger,
 } from '../../di/tokens/core-tokens';
 
@@ -43,7 +47,7 @@ export interface MemoryBackend {
  */
 export interface MemoryConfig {
   /** Type of memory backend to use */
-  type:'sqlite|lancedb|json|memory;
+  type:'sqlite|lancedb|json|memory';
   /** Optional path for file-based backends */
   path?: string;
   /** Maximum size limit */
@@ -73,9 +77,9 @@ export interface MemoryConfig {
 @injectable
 export class MemoryProviderFactory {
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: Logger,
-    @inject(CORE_TOKENS.Config) private _config: Config,
-    @inject(DATABASE_TOKENS.DALFactory) private _dalFactory: DALFactory
+    @inject(CORE_TOKENS.Logger) private logger: Logger,
+    @inject(CORE_TOKENS.Config) private config: Config,
+    @inject(DATABASE_TOKENS.DALFactory) private dalFactory: DALFactory
   ) {}
 
   /**
@@ -85,24 +89,24 @@ export class MemoryProviderFactory {
    * @returns Appropriate memory backend implementation.
    */
   createProvider(config: MemoryConfig): MemoryBackend {
-    this.logger.info(`Creating memory provider: ${config?.type}`);`
+    this.logger.info(`Creating memory provider: ${config?.type}`);
 
     try {
       switch (config?.type) {
-        case 'sqlite':'
+        case 'sqlite':
           return new SqliteMemoryBackend(config, this.logger, this.dalFactory);
-        case 'lancedb':'
+        case 'lancedb':
           return new LanceDBMemoryBackend(config, this.logger, this.dalFactory);
-        case 'json':'
+        case 'json':
           return new JsonMemoryBackend(config, this.logger);
-        case 'memory':'
+        case 'memory':
         default:
           return new InMemoryBackend(config, this.logger);
       }
     } catch (error) {
-      this.logger.error(`Failed to create memory provider: $error`);`
+      this.logger.error(`Failed to create memory provider: ${error}`);
       throw new Error(
-        `Memory provider creation failed: ${error instanceof Error ? error.message : 'Unknown error'}``
+        `Memory provider creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -132,7 +136,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
   ) {}
 
   async store(key: string, value: unknown): Promise<void> {
-    this.logger.debug(`Storing key: ${key} in SQLite backend`);`
+    this.logger.debug(`Storing key: ${key} in SQLite backend`);
     await this.ensureInitialized();
 
     try {
@@ -142,15 +146,15 @@ export class SqliteMemoryBackend implements MemoryBackend {
         createdAt: new Date().toISOString(),
         metadata: { type: 'memory_entry'},
       });
-      this.logger.debug(`Successfully stored key: $key`);`
+      this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
-      this.logger.error(`Failed to store key ${key}: ${error}`);`
+      this.logger.error(`Failed to store key ${key}: ${error}`);
       throw error;
     }
   }
 
   async retrieve<T = unknown>(key: string): Promise<T|null> {
-    this.logger.debug(`Retrieving key: $keyfrom SQLite backend`);`
+    this.logger.debug(`Retrieving key: ${key} from SQLite backend`);
     await this.ensureInitialized();
 
     try {
@@ -158,34 +162,34 @@ export class SqliteMemoryBackend implements MemoryBackend {
       const filtered = results?.filter((r) => r.id === key);
       return filtered.length > 0 ? (filtered[0]?.data as T) : null;
     } catch (error) {
-      this.logger.error(`Failed to retrieve key ${key}: ${error}`);`
+      this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
     }
   }
 
   async delete(key: string): Promise<boolean> {
-    this.logger.debug(`Deleting key: $keyfrom SQLite backend`);`
+    this.logger.debug(`Deleting key: ${key} from SQLite backend`);
     await this.ensureInitialized();
 
     try {
       // First check if the key exists
       const existing = await this.retrieve(key);
       if (existing === null) {
-        this.logger.debug(`Key ${key} does not exist, nothing to delete`);`
+        this.logger.debug(`Key ${key} does not exist, nothing to delete`);
         return false;
       }
 
       await this.repository.delete(key);
-      this.logger.debug(`Successfully deleted key: $key`);`
+      this.logger.debug(`Successfully deleted key: ${key}`);
       return true;
-    } catch (error) 
-      this.logger.error(`Failed to delete key ${key}: ${error}`);`
+    } catch (error) {
+      this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
     }
   }
 
   async clear(): Promise<void> {
-    this.logger.info('Clearing all data from SQLite backend');'
+    this.logger.info('Clearing all data from SQLite backend');
     await this.ensureInitialized();
 
     try {
@@ -193,20 +197,21 @@ export class SqliteMemoryBackend implements MemoryBackend {
       for (const entry of allEntries) {
         await this.repository.delete(entry.id);
       }
-      this.logger.info('Successfully cleared all data');'
+      this.logger.info('Successfully cleared all data');
     } catch (error) {
-      this.logger.error(`Failed to clear data: $error`);`
+      this.logger.error(`Failed to clear data: ${error}`);
       throw error;
+    }
   }
 
-  async size(): Promise<number> 
+  async size(): Promise<number> {
     await this.ensureInitialized();
 
     try {
       const allEntries = await this.repository.findAll({});
       return allEntries.length;
     } catch (error) {
-      this.logger.error(`Failed to get size: ${error}`);`
+      this.logger.error(`Failed to get size: ${error}`);
       throw error;
     }
   }
@@ -218,21 +223,22 @@ export class SqliteMemoryBackend implements MemoryBackend {
       await this.repository.findAll({ limit: 1 });
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed: $error`);`
+      this.logger.error(`Health check failed: ${error}`);
       return false;
     }
+  }
 
-  private async ensureInitialized(): Promise<void> 
+  private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
 
     try {
       // Create coordination repository using DAL Factory
       this.repository =
-        await this.dalFactory.createCoordinationRepository('MemoryStore');'
+        await this.dalFactory.createCoordinationRepository('MemoryStore');
       this.initialized = true;
-      this.logger.info('SQLite memory backend initialized via DAL Factory');'
+      this.logger.info('SQLite memory backend initialized via DAL Factory');
     } catch (error) {
-      this.logger.error(`Failed to initialize SQLite backend: ${error}`);`
+      this.logger.error(`Failed to initialize SQLite backend: ${error}`);
       throw error;
     }
   }
@@ -266,7 +272,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
   ) {}
 
   async store(key: string, value: unknown): Promise<void> {
-    this.logger.debug(`Storing key: $keyin LanceDB backend`);`
+    this.logger.debug(`Storing key: ${key} in LanceDB backend`);
     await this.ensureInitialized();
 
     try {
@@ -284,15 +290,15 @@ export class LanceDBMemoryBackend implements MemoryBackend {
           },
         },
       ]);
-      this.logger.debug(`Successfully stored key: $key`);`
-    } catch (error) 
-      this.logger.error(`Failed to store key ${key}: ${error}`);`
+      this.logger.debug(`Successfully stored key: ${key}`);
+    } catch (error) {
+      this.logger.error(`Failed to store key ${key}: ${error}`);
       throw error;
     }
   }
 
   async retrieve<T = unknown>(key: string): Promise<T|null> {
-    this.logger.debug(`Retrieving key: $keyfrom LanceDB backend`);`
+    this.logger.debug(`Retrieving key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
 
     try {
@@ -302,45 +308,45 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       const match = results?.find((r) => r.id === key);
       // Ensure metadata exists on VectorSearchResult and access originalValue safely
       if (
-        match &&'metadata' in match &&'
+        match &&'metadata' in match &&
         match.metadata &&
-        typeof match.metadata === 'object' &&'
+        typeof match.metadata === 'object' &&
         match.metadata !== null &&
-        'originalValue' in match.metadata'
+        'originalValue' in match.metadata
       ) {
-        const metadata = match.metadata as VectorMemoryRecord['metadata'];'
+        const metadata = match.metadata as VectorMemoryRecord['metadata'];
         return metadata.originalValue as T;
       }
       return null;
     } catch (error) {
-      this.logger.error(`Failed to retrieve key ${key}: ${error}`);`
+      this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
     }
   }
 
   async delete(key: string): Promise<boolean> {
-    this.logger.debug(`Deleting key: $keyfrom LanceDB backend`);`
+    this.logger.debug(`Deleting key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
 
     try {
       // First check if the key exists
       const existing = await this.retrieve(key);
       if (existing === null) {
-        this.logger.debug(`Key ${key} does not exist, nothing to delete`);`
+        this.logger.debug(`Key ${key} does not exist, nothing to delete`);
         return false;
       }
 
       await this.repository.delete(key);
-      this.logger.debug(`Successfully deleted key: $key`);`
+      this.logger.debug(`Successfully deleted key: ${key}`);
       return true;
-    } catch (error) 
-      this.logger.error(`Failed to delete key ${key}: ${error}`);`
+    } catch (error) {
+      this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
     }
   }
 
   async clear(): Promise<void> {
-    this.logger.info('Clearing all data from LanceDB backend');'
+    this.logger.info('Clearing all data from LanceDB backend');
     await this.ensureInitialized();
 
     try {
@@ -349,17 +355,18 @@ export class LanceDBMemoryBackend implements MemoryBackend {
         limit: 10000,
       });
       for (const vector of allVectors) {
-        if (vector && 'id' in vector && typeof vector.id === 'string') {'
+        if (vector && 'id' in vector && typeof vector.id === 'string') {
           await this.repository.delete(vector.id);
         }
       }
-      this.logger.info('Successfully cleared all data');'
+      this.logger.info('Successfully cleared all data');
     } catch (error) {
-      this.logger.error(`Failed to clear data: $error`);`
+      this.logger.error(`Failed to clear data: ${error}`);
       throw error;
+    }
   }
 
-  async size(): Promise<number> 
+  async size(): Promise<number> {
     await this.ensureInitialized();
 
     try {
@@ -368,7 +375,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       });
       return allVectors ? allVectors.length : 0;
     } catch (error) {
-      this.logger.error(`Failed to get size: ${error}`);`
+      this.logger.error(`Failed to get size: ${error}`);
       throw error;
     }
   }
@@ -380,11 +387,12 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       await this.repository.similaritySearch([0], { limit: 1 });
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed: $error`);`
+      this.logger.error(`Health check failed: ${error}`);
       return false;
     }
+  }
 
-  private async ensureInitialized(): Promise<void> 
+  private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
 
     try {
@@ -394,16 +402,16 @@ export class LanceDBMemoryBackend implements MemoryBackend {
         384 // Default vector size
       );
       this.initialized = true;
-      this.logger.info('LanceDB memory backend initialized via DAL Factory');'
+      this.logger.info('LanceDB memory backend initialized via DAL Factory');
     } catch (error) {
-      this.logger.error(`Failed to initialize LanceDB backend: ${error}`);`
+      this.logger.error(`Failed to initialize LanceDB backend: ${error}`);
       throw error;
     }
   }
 
   private generateVectorFromValue(value: unknown): number[] {
     // Simple hash-based vector generation for demo purposes
-    // In production, you'd use proper embeddings'
+    // In production, you'd use proper embeddings
     const str = JSON.stringify(value);
     const vector = new Array(384).fill(0) as number[];
 
@@ -431,34 +439,34 @@ export class JsonMemoryBackend implements MemoryBackend {
   ) {}
 
   async store(key: string, value: unknown): Promise<void> {
-    this.logger.debug(`Storing key: $keyin JSON backend`);`
+    this.logger.debug(`Storing key: ${key} in JSON backend`);
     await this.ensureInitialized();
 
     try {
       this.data.set(key, value);
       await this.persistToFile();
-      this.logger.debug(`Successfully stored key: $key`);`
-    } catch (error) 
-      this.logger.error(`Failed to store key ${key}: ${error}`);`
+      this.logger.debug(`Successfully stored key: ${key}`);
+    } catch (error) {
+      this.logger.error(`Failed to store key ${key}: ${error}`);
       throw error;
     }
   }
 
   async retrieve<T = unknown>(key: string): Promise<T|null> {
-    this.logger.debug(`Retrieving key: $keyfrom JSON backend`);`
+    this.logger.debug(`Retrieving key: ${key} from JSON backend`);
     await this.ensureInitialized();
 
     try {
       const value = this.data.get(key);
       return value !== undefined ? (value as T) : null;
     } catch (error) {
-      this.logger.error(`Failed to retrieve key ${key}: ${error}`);`
+      this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
     }
   }
 
   async delete(key: string): Promise<boolean> {
-    this.logger.debug(`Deleting key: $keyfrom JSON backend`);`
+    this.logger.debug(`Deleting key: ${key} from JSON backend`);
     await this.ensureInitialized();
 
     try {
@@ -466,41 +474,42 @@ export class JsonMemoryBackend implements MemoryBackend {
       const deleted = this.data.delete(key);
       if (deleted) {
         await this.persistToFile();
-        this.logger.debug(`Successfully deleted key: ${key}`);`
+        this.logger.debug(`Successfully deleted key: ${key}`);
       } else {
-        this.logger.debug(`Key $keydoes not exist, nothing to delete`);`
+        this.logger.debug(`Key ${key} does not exist, nothing to delete`);
       }
       return existed;
     } catch (error) {
-      this.logger.error(`Failed to delete key ${key}: ${error}`);`
+      this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
     }
   }
 
   async clear(): Promise<void> {
-    this.logger.info('Clearing all data from JSON backend');'
+    this.logger.info('Clearing all data from JSON backend');
     await this.ensureInitialized();
 
     try {
       this.data.clear();
       await this.persistToFile();
-      this.logger.info('Successfully cleared all data');'
+      this.logger.info('Successfully cleared all data');
     } catch (error) {
-      this.logger.error(`Failed to clear data: $error`);`
+      this.logger.error(`Failed to clear data: ${error}`);
       throw error;
     }
   }
 
-  async size(): Promise<number> 
+  async size(): Promise<number> {
     await this.ensureInitialized();
     return this.data.size;
+  }
 
-  async health(): Promise<boolean> 
+  async health(): Promise<boolean> {
     try {
       await this.ensureInitialized();
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed: ${error}`);`
+      this.logger.error(`Health check failed: ${error}`);
       return false;
     }
   }
@@ -511,21 +520,25 @@ export class JsonMemoryBackend implements MemoryBackend {
     try {
       await this.loadFromFile();
       this.initialized = true;
-      this.logger.info('JSON memory backend initialized');'
+      this.logger.info('JSON memory backend initialized');
     } catch (error) {
-      this.logger.error(`Failed to initialize JSON backend: $error`);`
+      this.logger.error(`Failed to initialize JSON backend: ${error}`);
       throw error;
     }
+  }
 
-  private async loadFromFile(): Promise<void> 
+  private async loadFromFile(): Promise<void> {
     // File loading implementation would go here
     // For now, just initialize empty
     this.data = new Map();
+  }
 
-  private async persistToFile(): Promise<void> 
+  private async persistToFile(): Promise<void> {
     // File persistence implementation would go here
     // For now, just log
-    this.logger.debug('JSON data persisted to file');'
+    this.logger.debug('JSON data persisted to file');
+  }
+}
 
 /**
  * In-memory backend implementation (fastest, no persistence).
@@ -534,87 +547,90 @@ export class JsonMemoryBackend implements MemoryBackend {
  */
 @injectable
 export class InMemoryBackend implements MemoryBackend {
+  private data = new Map<string, unknown>();
   private readonly maxSize: number;
 
-  constructor(config: MemoryConfig,
+  constructor(
+    private config: MemoryConfig,
     private logger: Logger
   ) {
     this.maxSize = config?.maxSize||10000;
     this.logger.info(
-      `Initialized in-memory backend with max size: ${this.maxSize}``
+      `Initialized in-memory backend with max size: ${this.maxSize}`
     );
   }
 
   async store(key: string, value: unknown): Promise<void> {
-    this.logger.debug(`Storing key: ${key} in memory backend`);`
+    this.logger.debug(`Storing key: ${key} in memory backend`);
 
     try {
       // Check size limits
       if (this.data.size >= this.maxSize && !this.data.has(key)) {
-        throw new Error(`Memory limit exceeded. Max size: $this.maxSize`);`
+        throw new Error(`Memory limit exceeded. Max size: ${this.maxSize}`);
       }
 
       this.data.set(key, value);
-      this.logger.debug(`Successfully stored key: ${key}`);`
-    } catch (error) 
-      this.logger.error(`Failed to store key ${key}: ${error}`);`
+      this.logger.debug(`Successfully stored key: ${key}`);
+    } catch (error) {
+      this.logger.error(`Failed to store key ${key}: ${error}`);
       throw error;
     }
   }
 
   async retrieve<T = unknown>(key: string): Promise<T|null> {
-    this.logger.debug(`Retrieving key: $keyfrom memory backend`);`
+    this.logger.debug(`Retrieving key: ${key} from memory backend`);
 
     try {
       const value = this.data.get(key);
       return value !== undefined ? (value as T) : null;
     } catch (error) {
-      this.logger.error(`Failed to retrieve key ${key}: ${error}`);`
+      this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
     }
   }
 
   async delete(key: string): Promise<boolean> {
-    this.logger.debug(`Deleting key: $keyfrom memory backend`);`
+    this.logger.debug(`Deleting key: ${key} from memory backend`);
 
     try {
       const deleted = this.data.delete(key);
       if (deleted) {
-        this.logger.debug(`Successfully deleted key: ${key}`);`
+        this.logger.debug(`Successfully deleted key: ${key}`);
       } else {
-        this.logger.debug(`Key not found for deletion: $key`);`
+        this.logger.debug(`Key not found for deletion: ${key}`);
       }
       return deleted;
     } catch (error) {
-      this.logger.error(`Failed to delete key ${key}: ${error}`);`
+      this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
     }
   }
 
   async clear(): Promise<void> {
-    this.logger.info('Clearing all data from memory backend');'
+    this.logger.info('Clearing all data from memory backend');
 
     try {
       this.data.clear();
-      this.logger.info('Successfully cleared all data');'
+      this.logger.info('Successfully cleared all data');
     } catch (error) {
-      this.logger.error(`Failed to clear data: $error`);`
+      this.logger.error(`Failed to clear data: ${error}`);
       throw error;
     }
   }
 
-  async size(): Promise<number> 
+  async size(): Promise<number> {
     return this.data.size;
+  }
 
-  async health(): Promise<boolean> 
+  async health(): Promise<boolean> {
     try {
       // Check if we can perform basic operations
       const testKey = '__health_check__';
-      this.data.set(testKey, 'test');'
+      this.data.set(testKey, 'test');
       this.data.delete(testKey);
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed: ${error}`);`
+      this.logger.error(`Health check failed: ${error}`);
       return false;
     }
   }

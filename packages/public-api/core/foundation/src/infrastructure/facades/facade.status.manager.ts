@@ -396,7 +396,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
 	): void {
 		packageInfo.status = PackageStatus.UNAVAILABLE;
 		packageInfo.error =
-			error instanceof Error ? error.message : "Unknown error";
+			error instanceof Error ? error['message'] : "Unknown error";
 
 		logger.debug(`Package ${packageName} is unavailable`, {
 			error: packageInfo.error,
@@ -462,7 +462,7 @@ export class FacadeStatusManager extends EventEmitter<FacadeStatusEvents> {
 
 		// Register the entire module as a service
 		if (packageInfo.serviceName) {
-			registrations[packageInfo.serviceName] = asValue(module);
+			registrations[packageInfo.serviceName] = asValue(module as any);
 		}
 
 		return registrations;

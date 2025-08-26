@@ -11,7 +11,7 @@ import {
   EventManagerTypes,
   type SystemLifecycleEvent,
   type SystemEvent,
-} from '../../core/interfaces;
+} from '../../core/interfaces';
 import {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
@@ -35,7 +35,7 @@ describe('SystemEventAdapter', () => {'
   let config: SystemEventAdapterConfig;
 
   beforeEach(() => {
-    config = createDefaultSystemEventAdapterConfig('test-system-adapter');'
+    config = createDefaultSystemEventAdapterConfig('test-system-adapter');
     adapter = createSystemEventAdapter(config);
   });
 
@@ -52,14 +52,14 @@ describe('SystemEventAdapter', () => {'
 
   describe('Lifecycle Management (London TDD)', () => {'
     it('should initialize with correct configuration', () => '
-      expect(adapter.name).toBe('test-system-adapter');'
-      expect(adapter.type).toBe(EventManagerTypes['SYSTEM']);'
-      expect(adapter.config.name).toBe('test-system-adapter');'
+      expect(adapter.name).toBe('test-system-adapter');
+      expect(adapter.type).toBe(EventManagerTypes['SYSTEM']);
+      expect(adapter.config.name).toBe('test-system-adapter');
       expect(adapter.isRunning()).toBe(false););
 
     it('should start successfully and emit start event', async () => {'
       const startHandler = vi.fn();
-      adapter.on('start', startHandler);'
+      adapter.on('start', startHandler);
 
       await adapter.start();
 
@@ -69,7 +69,7 @@ describe('SystemEventAdapter', () => {'
 
     it('should stop successfully and emit stop event', async () => {'
       const stopHandler = vi.fn();
-      adapter.on('stop', stopHandler);'
+      adapter.on('stop', stopHandler);
 
       await adapter.start();
       await adapter.stop();
@@ -107,7 +107,7 @@ describe('SystemEventAdapter', () => {'
 
     it('should emit system lifecycle event successfully', async () => {'
       const mockListener = vi.fn();
-      adapter.subscribe(['system:startup'], mockListener);'
+      adapter.subscribe(['system:startup'], mockListener);
 
       const event: SystemLifecycleEvent = {
         id: 'test-event-1',
@@ -127,7 +127,7 @@ describe('SystemEventAdapter', () => {'
 
     it('should emit immediate event with timeout', async () => {'
       const mockListener = vi.fn();
-      adapter.subscribe(['system:health'], mockListener);'
+      adapter.subscribe(['system:health'], mockListener);
 
       const event: SystemLifecycleEvent = {
         id: 'test-event-2',
@@ -168,7 +168,7 @@ describe('SystemEventAdapter', () => {'
       };
 
       // Mock a slow emission
-      const _originalEmit = adapter.processEventEmission;'
+      const _originalEmit = adapter.processEventEmission;
       adapter['processEventEmission'] = vi.fn('
         () => new Promise<void>((resolve) => setTimeout(resolve, 100))
       );
@@ -189,7 +189,7 @@ describe('SystemEventAdapter', () => {'
       );
 
       expect(subscriptionId).toBeDefined();
-      expect(typeof subscriptionId).toBe('string');'
+      expect(typeof subscriptionId).toBe('string');
       expect(subscriptionId).toMatch(/^sys-sub-/);
     });
 
@@ -223,7 +223,7 @@ describe('SystemEventAdapter', () => {'
     });
 
     it('should return false when unsubscribing non-existent subscription', () => {'
-      const _result = adapter.unsubscribe('non-existent-id');'
+      const _result = adapter.unsubscribe('non-existent-id');
       expect(result).toBe(false);
     });
 
@@ -231,11 +231,11 @@ describe('SystemEventAdapter', () => {'
       const mockListener1 = vi.fn();
       const _mockListener2 = vi.fn();
 
-      adapter.subscribe(['system:startup'], mockListener1);'
-      adapter.subscribe(['system:startup'], mockListener2);'
-      adapter.subscribe(['system:health'], mockListener1);'
+      adapter.subscribe(['system:startup'], mockListener1);
+      adapter.subscribe(['system:startup'], mockListener2);
+      adapter.subscribe(['system:health'], mockListener1);
 
-      const _removedCount = adapter.unsubscribeAll('system:startup');'
+      const _removedCount = adapter.unsubscribeAll('system:startup');
       expect(removedCount).toBe(2);
 
       const subscriptions = adapter.getSubscriptions();
@@ -249,8 +249,8 @@ describe('SystemEventAdapter', () => {'
 
     it('should unsubscribe all listeners when no event type specified', () => {'
       const mockListener = vi.fn();
-      adapter.subscribe(['system:startup'], mockListener);'
-      adapter.subscribe(['system:health'], mockListener);'
+      adapter.subscribe(['system:startup'], mockListener);
+      adapter.subscribe(['system:health'], mockListener);
 
       const removedCount = adapter.unsubscribeAll();
       expect(removedCount).toBe(2);
@@ -270,7 +270,7 @@ describe('SystemEventAdapter', () => {'
 
       const filterId = adapter.addFilter(filter);
       expect(filterId).toBeDefined();
-      expect(typeof filterId).toBe('string');'
+      expect(typeof filterId).toBe('string');
 
       const result = adapter.removeFilter(filterId);
       expect(result).toBe(true);
@@ -284,7 +284,7 @@ describe('SystemEventAdapter', () => {'
 
       const transformId = adapter.addTransform(transform);
       expect(transformId).toBeDefined();
-      expect(typeof transformId).toBe('string');'
+      expect(typeof transformId).toBe('string');
 
       const result = adapter.removeTransform(transformId);
       expect(result).toBe(true);
@@ -296,7 +296,7 @@ describe('SystemEventAdapter', () => {'
         sources: ['allowed-component'],
       };
 
-      adapter.subscribe(['system:startup'], mockListener, { filter });'
+      adapter.subscribe(['system:startup'], mockListener, { filter });
 
       // Event from allowed source should pass
       const allowedEvent: SystemLifecycleEvent = {
@@ -336,7 +336,7 @@ describe('SystemEventAdapter', () => {'
           ({ ...event, transformed: true }) as SystemEvent,
       };
 
-      adapter.subscribe(['system:startup'], mockListener, { transform });'
+      adapter.subscribe(['system:startup'], mockListener, { transform });
 
       const originalEvent: SystemLifecycleEvent = {
         id: 'transform-event',
@@ -462,8 +462,8 @@ describe('SystemEventAdapter', () => {'
       const correlation = adapter.getCorrelatedEvents(correlationId);
       expect(correlation).toBeDefined();
       expect(correlation?.events).toHaveLength(1);
-      expect(correlation?.events?.[0]?.id).toBe('startup-event');'
-      expect(correlation?.status).toBe('active');'
+      expect(correlation?.events?.[0]?.id).toBe('startup-event');
+      expect(correlation?.status).toBe('active');
     });
 
     it('should update correlation with related events', async () => {'
@@ -532,12 +532,12 @@ describe('SystemEventAdapter', () => {'
       await adapter.emit(startupEvent);
 
       let correlation = adapter.getCorrelatedEvents(correlationId);
-      expect(correlation?.status).toBe('active');'
+      expect(correlation?.status).toBe('active');
 
       await adapter.emit(healthEvent);
 
       correlation = adapter.getCorrelatedEvents(correlationId);
-      expect(correlation?.status).toBe('completed');'
+      expect(correlation?.status).toBe('completed');
     });
   });
 
@@ -582,7 +582,7 @@ describe('SystemEventAdapter', () => {'
 
       // With 20% error rate, status should be degraded (not healthy, not unhealthy)
       expect(healthStatus.errorRate).toBeCloseTo(0.2);
-      expect(healthStatus.status).toBe('degraded');'
+      expect(healthStatus.status).toBe('degraded');
     });
 
     it('should determine healthy status with low error rate', async () => {'
@@ -612,7 +612,7 @@ describe('SystemEventAdapter', () => {'
 
       const healthStatus = await adapter.healthCheck();
       expect(healthStatus.errorRate).toBeCloseTo(0.05);
-      expect(healthStatus.status).toBe('healthy');'
+      expect(healthStatus.status).toBe('healthy');
     });
 
     it('should determine unhealthy status with high error rate', async () => {'
@@ -627,7 +627,7 @@ describe('SystemEventAdapter', () => {'
 
       const healthStatus = await adapter.healthCheck();
       expect(healthStatus.errorRate).toBeGreaterThan(0.2);
-      expect(healthStatus.status).toBe('unhealthy');'
+      expect(healthStatus.status).toBe('unhealthy');
     });
   });
 
@@ -741,12 +741,12 @@ describe('SystemEventAdapter', () => {'
         version: '1.0.0',
       });
 
-      expect(event.source).toBe('test-component');'
-      expect(event.type).toBe('system:startup');'
-      expect(event['operation']).toBe('start');'
-      expect(event['status']).toBe('success');'
-      expect(event['priority']).toBe('high');'
-      expect(event['details']).toEqual(version: '1.0.0' );'
+      expect(event.source).toBe('test-component');
+      expect(event.type).toBe('system:startup');
+      expect(event['operation']).toBe('start');
+      expect(event['status']).toBe('success');
+      expect(event['priority']).toBe('high');
+      expect(event['details']).toEqual(version: '1.0.0' );
     });
 
     it('should create shutdown event with correct properties', () => {'
@@ -755,12 +755,12 @@ describe('SystemEventAdapter', () => {'
         errorMessage: 'maintenance',
       });
 
-      expect(event.source).toBe('test-component');'
-      expect(event.type).toBe('system:shutdown');'
-      expect(event['operation']).toBe('stop');'
-      expect(event['status']).toBe('success');'
-      expect(event['priority']).toBe('critical');'
-      expect(event['details']).toEqual(reason: 'maintenance' );'
+      expect(event.source).toBe('test-component');
+      expect(event.type).toBe('system:shutdown');
+      expect(event['operation']).toBe('stop');
+      expect(event['status']).toBe('success');
+      expect(event['priority']).toBe('critical');
+      expect(event['details']).toEqual(reason: 'maintenance' );
     });
 
     it('should create health event with correct status based on score', () => {'
@@ -768,23 +768,23 @@ describe('SystemEventAdapter', () => {'
         'test-component',
         0.9
       );
-      expect(healthyEvent.status).toBe('success');'
+      expect(healthyEvent.status).toBe('success');
 
       const warningEvent = SystemEventHelpers.createHealthEvent(
         'test-component',
         0.6
       );
-      expect(warningEvent.status).toBe('warning');'
+      expect(warningEvent.status).toBe('warning');
 
       const errorEvent = SystemEventHelpers.createHealthEvent(
         'test-component',
         0.3
       );
-      expect(errorEvent.status).toBe('error');'
+      expect(errorEvent.status).toBe('error');
     });
 
     it('should create error event with error details', () => {'
-      const error = new Error('Test error message');'
+      const error = new Error('Test error message');
       const event = SystemEventHelpers.createErrorEvent(
         'test-component',
         error,
@@ -793,13 +793,13 @@ describe('SystemEventAdapter', () => {'
         }
       );
 
-      expect(event.source).toBe('test-component');'
-      expect(event.type).toBe('system:error');'
-      expect(event['status']).toBe('error');'
-      expect(event['priority']).toBe('high');'
-      expect(event['details']?.['errorCode']).toBe('Error');'
-      expect(event['details']?.['errorMessage']).toBe('Test error message');'
-      expect((event['details'] as any)?.context).toBe('test');'
+      expect(event.source).toBe('test-component');
+      expect(event.type).toBe('system:error');
+      expect(event['status']).toBe('error');
+      expect(event['priority']).toBe('high');
+      expect(event['details']?.['errorCode']).toBe('Error');
+      expect(event['details']?.['errorMessage']).toBe('Test error message');
+      expect((event['details'] as any)?.context).toBe('test');
     });
   });
 });
@@ -817,13 +817,13 @@ describe('SystemEventManagerFactory', () => {'
 
   describe('Factory Operations (London TDD)', () => {'
     it('should create system event manager successfully', async () => {'
-      const config = createDefaultSystemEventAdapterConfig('factory-test');'
+      const config = createDefaultSystemEventAdapterConfig('factory-test');
       const manager = await factory.create(config);
 
       expect(manager).toBeDefined();
-      expect(manager.name).toBe('factory-test');'
-      expect(manager.type).toBe(EventManagerTypes['SYSTEM']);'
-      expect(factory.has('factory-test')).toBe(true);'
+      expect(manager.name).toBe('factory-test');
+      expect(manager.type).toBe(EventManagerTypes['SYSTEM']);
+      expect(factory.has('factory-test')).toBe(true);
     });
 
     it('should create multiple managers', async () => {'
@@ -840,28 +840,28 @@ describe('SystemEventManagerFactory', () => {'
     });
 
     it('should get existing manager by name', async () => {'
-      const _config = createDefaultSystemEventAdapterConfig('get-test');'
+      const _config = createDefaultSystemEventAdapterConfig('get-test');
       await factory.create(config);
 
-      const manager = factory.get('get-test');'
+      const manager = factory.get('get-test');
       expect(manager).toBeDefined();
-      expect(manager?.name).toBe('get-test');'
+      expect(manager?.name).toBe('get-test');
     });
 
     it('should remove manager successfully', async () => {'
-      const _config = createDefaultSystemEventAdapterConfig('remove-test');'
+      const _config = createDefaultSystemEventAdapterConfig('remove-test');
       await factory.create(config);
 
-      expect(factory.has('remove-test')).toBe(true);'
+      expect(factory.has('remove-test')).toBe(true);
 
-      const _removed = await factory.remove('remove-test');'
+      const _removed = await factory.remove('remove-test');
       expect(removed).toBe(true);
-      expect(factory.has('remove-test')).toBe(false);'
+      expect(factory.has('remove-test')).toBe(false);
     });
 
     it('should perform health check on all managers', async () => {'
-      const _config1 = createDefaultSystemEventAdapterConfig('health-1');'
-      const config2 = createDefaultSystemEventAdapterConfig('health-2');'
+      const _config1 = createDefaultSystemEventAdapterConfig('health-1');
+      const config2 = createDefaultSystemEventAdapterConfig('health-2');
 
       await factory.create(config1);
       await factory.create(config2);
@@ -869,12 +869,12 @@ describe('SystemEventManagerFactory', () => {'
       const healthResults = await factory.healthCheckAll();
 
       expect(healthResults.size).toBe(2);
-      expect(healthResults?.has('health-1')).toBe(true);'
-      expect(healthResults?.has('health-2')).toBe(true);'
+      expect(healthResults?.has('health-1')).toBe(true);
+      expect(healthResults?.has('health-2')).toBe(true);
     });
 
     it('should start and stop all managers', async () => {'
-      const config = createDefaultSystemEventAdapterConfig('lifecycle-test');'
+      const config = createDefaultSystemEventAdapterConfig('lifecycle-test');
       const manager = await factory.create(config);
 
       expect(manager.isRunning()).toBe(false);
@@ -900,8 +900,8 @@ describe('SystemEventManagerFactory', () => {'
     it('should track active manager count correctly', async () => {'
       expect(factory.getActiveCount()).toBe(0);
 
-      const config1 = createDefaultSystemEventAdapterConfig('active-1');'
-      const config2 = createDefaultSystemEventAdapterConfig('active-2');'
+      const config1 = createDefaultSystemEventAdapterConfig('active-1');
+      const config2 = createDefaultSystemEventAdapterConfig('active-2');
 
       const manager1 = await factory.create(config1);
       const manager2 = await factory.create(config2);

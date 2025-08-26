@@ -58,6 +58,9 @@ claude-flow
 claude-zen-linux  
 claude-zen-macos
 claude-zen-win.exe
+test-sea-binary
+*.blob
+sea-config.json
 qdrant
 # Large database files
 *.db-wal

@@ -6,7 +6,7 @@ import {
 } from "../../src/cli-tools/claude/claude-sdk";
 
 describe("Claude SDK - Integration Tests (Real API)", () => {
-	const runIntegration = process.env.RUN_INTEGRATION === "true";
+	const runIntegration = process.env['RUN_INTEGRATION'] === "true";
 	const itIntegration = runIntegration ? it : it.skip;
 
 	afterAll(() => {

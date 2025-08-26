@@ -9,7 +9,7 @@
  * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
-import { createSafeFrameworkAgentRegistry } from "@claude-zen/enterprise";
+import { getSafeFramework } from "@claude-zen/enterprise";
 import {
 	createContainer,
 	EventEmitter,
@@ -147,20 +147,20 @@ export class ClaudeZenCore {
 			);
 
 			// Initialize all coordinators
-			if (this.enterprise && typeof this.enterprise.initialize === "function") {
-				await this.enterprise.initialize();
+			if (this.enterprise && typeof (this.enterprise as any).initialize === "function") {
+				await (this.enterprise as any).initialize();
 			}
-			if (this.brain && typeof this.brain.initialize === "function") {
-				await this.brain.initialize();
+			if (this.brain && typeof (this.brain as any).initialize === "function") {
+				await (this.brain as any).initialize();
 			}
-			if (this.teamwork && typeof this.teamwork.initialize === "function") {
-				await this.teamwork.initialize();
+			if (this.teamwork && typeof (this.teamwork as any).initialize === "function") {
+				await (this.teamwork as any).initialize();
 			}
 			if (
 				this.agentCoordinator &&
-				typeof this.agentCoordinator.start === "function"
+				typeof (this.agentCoordinator as any).start === "function"
 			) {
-				await this.agentCoordinator.start();
+				await (this.agentCoordinator as any).start();
 			}
 
 			// Note: Systems initialize through facade patterns
@@ -233,20 +233,20 @@ export class ClaudeZenCore {
 
 		try {
 			// Stop all systems
-			if (this.enterprise && typeof this.enterprise.shutdown === "function") {
-				await this.enterprise.shutdown();
+			if (this.enterprise && typeof (this.enterprise as any).shutdown === "function") {
+				await (this.enterprise as any).shutdown();
 			}
-			if (this.brain && typeof this.brain.shutdown === "function") {
-				await this.brain.shutdown();
+			if (this.brain && typeof (this.brain as any).shutdown === "function") {
+				await (this.brain as any).shutdown();
 			}
-			if (this.teamwork && typeof this.teamwork.shutdown === "function") {
-				await this.teamwork.shutdown();
+			if (this.teamwork && typeof (this.teamwork as any).shutdown === "function") {
+				await (this.teamwork as any).shutdown();
 			}
 			if (
 				this.agentCoordinator &&
-				typeof this.agentCoordinator.stop === "function"
+				typeof (this.agentCoordinator as any).stop === "function"
 			) {
-				await this.agentCoordinator.stop();
+				await (this.agentCoordinator as any).stop();
 			}
 
 			// Clear the DI container

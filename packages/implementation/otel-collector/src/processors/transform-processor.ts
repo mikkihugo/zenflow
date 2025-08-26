@@ -136,7 +136,7 @@ export class TransformProcessor implements BaseProcessor {
   } {
     const transformRate =
       this.processedCount > 0
-        ? `${((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`'
+        ? `${((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`
         : '0%;
 
     return {

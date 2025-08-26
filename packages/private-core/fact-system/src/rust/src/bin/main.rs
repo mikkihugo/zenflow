@@ -1,6 +1,6 @@
 //! FACT CLI - Fast Augmented Context Tools Command Line Interface
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use clap::{Parser, Subcommand};
 #[cfg(feature = "github")]
 use fact_tools::github::{GitHubAnalyzer, RepoAnalysis};

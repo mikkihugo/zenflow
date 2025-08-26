@@ -33,7 +33,7 @@ import { cleanupGlobalInstances } from "../claude-sdk";
 import { createToken } from "../di/tokens/token-factory";
 
 describe("Foundation Integration Tests", () => {
-	const runIntegration = process.env.RUN_INTEGRATION === "true";
+	const runIntegration = process.env['RUN_INTEGRATION'] === "true";
 	const itIntegration = runIntegration ? it : it.skip;
 
 	afterAll(() => {
@@ -356,7 +356,7 @@ describe("Foundation Integration Tests", () => {
 	});
 
 	describe("Performance and Scalability", () => {
-		const runPerformance = process.env.RUN_PERFORMANCE === "true";
+		const runPerformance = process.env['RUN_PERFORMANCE'] === "true";
 		const itPerformance = runPerformance ? it : it.skip;
 
 		itPerformance(

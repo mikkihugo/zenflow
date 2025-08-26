@@ -72,3 +72,48 @@ export * from "./routing/task-agent-matcher";
 // Export auto-scaling strategies
 export * from "./strategies/auto-scaling-strategy";
 export * from "./types";
+
+// Import LoadBalancer class
+import { LoadBalancer } from "./main";
+
+// Factory functions expected by infrastructure facade
+export function createLoadBalancer(config?: any) {
+  return new LoadBalancer(config);
+}
+
+export function createPerformanceTracker(config?: any) {
+  // Performance tracking functionality from the load balancer
+  const { LoadBalancer } = require('./main');
+  const loadBalancer = new LoadBalancer(config);
+  return {
+    track: (metric: string, value: number) => {
+      // Track performance metrics via load balancer
+    },
+    getMetrics: () => loadBalancer.getEnhancedStats(),
+    getStatistics: () => loadBalancer.getStatistics()
+  };
+}
+
+// Provider class expected by infrastructure facade
+export class LoadBalancingProvider {
+  constructor(private config?: any) {}
+  
+  async createLoadBalancer(config?: any) {
+    return createLoadBalancer({ ...this.config, ...config });
+  }
+  
+  async createPerformanceTracker(config?: any) {
+    return createPerformanceTracker({ ...this.config, ...config });
+  }
+}
+
+// Main factory function for infrastructure facade
+export function createLoadBalancingAccess(config?: any) {
+  return {
+    createLoadBalancer,
+    createPerformanceTracker,
+    createProvider: (providerConfig?: any) => new LoadBalancingProvider(providerConfig),
+    LoadBalancer,
+    LoadBalancingProvider
+  };
+}

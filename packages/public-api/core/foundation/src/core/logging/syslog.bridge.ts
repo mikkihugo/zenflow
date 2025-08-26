@@ -122,7 +122,7 @@ export class LogTapeSyslogBridge {
 			loggerProcess.unref();
 		} catch (error) {
 			// Fallback to direct stdout if logger command fails (avoid circular logging)
-			const errorMsg = error instanceof Error ? error.message : String(error);
+			const errorMsg = error instanceof Error ? error['message'] : String(error);
 			process.stdout.write(
 				`SYSLOG[${level.toUpperCase()}] ${this.componentName}: ${message}\n`,
 			);
@@ -160,7 +160,7 @@ export class LogTapeSyslogBridge {
 			entry.level === "fatal"
 				? this.logger.error
 				: this.logger[entry.level] || this.logger.info;
-		logMethod.call(this.logger, entry.message, {
+		logMethod.call(this.logger, entry['message'], {
 			component: entry.component,
 			metadata: entry.metadata,
 			sessionId: entry.sessionId,

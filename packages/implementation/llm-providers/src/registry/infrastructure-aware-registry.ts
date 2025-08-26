@@ -15,7 +15,7 @@ import type {
   RichModelInfo,
 } from '../types/enhanced-models';
 
-const logger = getLogger('InfrastructureAwareRegistry');'
+const logger = getLogger('InfrastructureAwareRegistry');
 
 /**
  * Model cache interface for infrastructure database
@@ -43,10 +43,10 @@ interface ProviderSyncStatus {
  * Infrastructure-aware model registry events
  */
 export interface InfrastructureAwareRegistryEvents {
-  'models:cached': { count: number; provider: string };'
-  'models:synced': { provider: string; changes: number };'
-  'cache:updated': { totalModels: number };'
-  'provider:error': { provider: string; error: string };'
+  'models:cached': { count: number; provider: string };
+  'models:synced': { provider: string; changes: number };
+  'cache:updated': { totalModels: number };
+  'provider:error': { provider: string; error: string };
 }
 
 /**
@@ -65,7 +65,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
    * Initialize with infrastructure database system
    */
   async initialize(): Promise<void> {
-    logger.info('🚀 Initializing Infrastructure-Aware Model Registry...');'
+    logger.info('🚀 Initializing Infrastructure-Aware Model Registry...');
     
     try {
       // ✅ TIER 1 COMPLIANT: Use infrastructure facade
@@ -78,12 +78,12 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
       await this.loadFromCache();
       
       this.initialized = true;
-      logger.info('✅ Infrastructure-Aware Model Registry initialized');'
+      logger.info('✅ Infrastructure-Aware Model Registry initialized');
     } catch (error) {
-      logger.error('❌ Failed to initialize registry:', error);'
+      logger.error('❌ Failed to initialize registry:', error);
       
       // Graceful degradation - fall back to in-memory only
-      logger.warn('🔄 Falling back to in-memory operation');'
+      logger.warn('🔄 Falling back to in-memory operation');
       this.initialized = true;
     }
   }
@@ -96,7 +96,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
 
     try {
       // Setup model cache table/collection structure
-      await this.databaseSystem.createCollection('model_cache', {'
+      await this.databaseSystem.createCollection('model_cache', {;
         indexes: [
           { fields: ['modelId'], unique: true },
           { fields: ['providerType'] },
@@ -107,16 +107,16 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
       });
 
       // Setup provider sync status table
-      await this.databaseSystem.createCollection('provider_sync_status', {'
+      await this.databaseSystem.createCollection('provider_sync_status', {;
         indexes: [
           { fields: ['providerId'], unique: true },
           { fields: ['lastSync'] },
         ]
       });
 
-      logger.info('📊 Model cache storage initialized');'
+      logger.info('📊 Model cache storage initialized');
     } catch (error) {
-      logger.warn('Could not setup model cache storage:', error);'
+      logger.warn('Could not setup model cache storage:', error);
     }
   }
 
@@ -127,8 +127,8 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     if (!this.databaseSystem) return;
 
     try {
-      const cachedModels = await this.databaseSystem.query('model_cache', {'
-        orderBy: [{ field: 'lastUpdated', direction: 'desc' }]'
+      const cachedModels = await this.databaseSystem.query('model_cache', {;
+        orderBy: [{ field: 'lastUpdated', direction: 'desc' }];
       });
 
       for (const cached of cachedModels) {
@@ -143,7 +143,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
 
       logger.info(`📚 Loaded ${cachedModels.length} models from cache`);`
     } catch (error) {
-      logger.warn('Could not load from cache:', error);'
+      logger.warn('Could not load from cache:', error);
     }
   }
 
@@ -196,8 +196,8 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
         }));
 
         // Batch upsert to infrastructure database
-        await this.databaseSystem.batchUpsert('model_cache', cacheEntries, {'
-          conflictField: 'modelId''
+        await this.databaseSystem.batchUpsert('model_cache', cacheEntries, {;
+          conflictField: 'modelId';
         });
 
         // Update sync status
@@ -208,8 +208,8 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
           errors: [],
         };
         
-        await this.databaseSystem.upsert('provider_sync_status', syncStatus, {'
-          conflictField: 'providerId''
+        await this.databaseSystem.upsert('provider_sync_status', syncStatus, {;
+          conflictField: 'providerId';
         });
 
         this.syncStatus.set(providerId, syncStatus);
@@ -226,14 +226,14 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
         };
         this.syncStatus.set(providerId, errorStatus);
         
-        this.emit('provider:error', { '
+        this.emit('provider:error', { ;
           provider: providerId, 
           error: error instanceof Error ? error.message : String(error)
         });
       }
     }
 
-    this.emit('models:synced', { provider: providerId, changes: changesCount });'
+    this.emit('models:synced', { provider: providerId, changes: changesCount });
     logger.info(`✅ Synced $transformedModels.lengthmodels for ${providerId} (${changesCount} changes)`);`
   }
 
@@ -301,22 +301,22 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
       
       // Build database query
       if (query.provider) {
-        dbQuery['baseInfo.provider'] = query.provider;'
+        dbQuery['baseInfo.provider'] = query.provider;
       }
       if (query.family) {
-        dbQuery['baseInfo.family'] = { $regex: query.family, $options: 'i' };'
+        dbQuery['baseInfo.family'] = { $regex: query.family, $options: 'i' };
       }
       if (query.minContextWindow) {
-        dbQuery['baseInfo.contextWindow'] = { $gte: query.minContextWindow };'
+        dbQuery['baseInfo.contextWindow'] = { $gte: query.minContextWindow };
       }
       if (query.requiresVision !== undefined) {
-        dbQuery['baseInfo.supportsVision'] = query.requiresVision;'
+        dbQuery['baseInfo.supportsVision'] = query.requiresVision;
       }
       if (query.requiresToolCalls !== undefined) {
-        dbQuery['baseInfo.supportsToolCalls'] = query.requiresToolCalls;'
+        dbQuery['baseInfo.supportsToolCalls'] = query.requiresToolCalls;
       }
       if (query.requiresStreaming !== undefined) {
-        dbQuery['baseInfo.supportsStreaming'] = query.requiresStreaming;'
+        dbQuery['baseInfo.supportsStreaming'] = query.requiresStreaming;
       }
 
       const _options: any = {};
@@ -324,14 +324,14 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
         const _sortField = `baseInfo.${query.sortBy}`;`
         options.orderBy = [{ 
           field: sortField, 
-          direction: query.sortOrder === 'desc' ? 'desc' : 'asc' '
+          direction: query.sortOrder === 'desc' ? 'desc' : 'asc' ;
         }];
       }
       if (query.limit) {
         options.limit = query.limit;
       }
 
-      const results = await this.databaseSystem.query('model_cache', dbQuery, options);'
+      const results = await this.databaseSystem.query('model_cache', dbQuery, options);
       
       return results.map((cached: ModelCacheEntry) => ({
         ...cached.baseInfo,
@@ -340,7 +340,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
       }));
       
     } catch (error) {
-      logger.warn('Database query failed, falling back to memory:', error);'
+      logger.warn('Database query failed, falling back to memory:', error);
       return this.queryFromMemory(query);
     }
   }
@@ -383,15 +383,15 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
         let bVal: number;
         
         switch (query.sortBy) {
-          case 'contextWindow':'
+          case 'contextWindow':;
             aVal = a.contextWindow;
             bVal = b.contextWindow;
             break;
-          case 'cost':'
+          case 'cost':;
             aVal = a.pricing?.inputTokens || 0;
             bVal = b.pricing?.inputTokens || 0;
             break;
-          case 'updated':'
+          case 'updated':;
             aVal = a.lastUpdated.getTime();
             bVal = b.lastUpdated.getTime();
             break;
@@ -399,7 +399,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
             return 0;
         }
         
-        return query.sortOrder === 'desc' ? bVal - aVal : aVal - bVal;'
+        return query.sortOrder === 'desc' ? bVal - aVal : aVal - bVal;
       });
     }
 
@@ -469,8 +469,8 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     let score = 50;
 
     // Task-specific scoring
-    if (requirements.task === 'coding' && model.supportsToolCalls) score += 20;'
-    if (requirements.task === 'vision' && model.supportsVision) score += 30;'
+    if (requirements.task === 'coding' && model.supportsToolCalls) score += 20;
+    if (requirements.task === 'vision' && model.supportsVision) score += 30;
     
     // Context requirements
     if (requirements.minContextTokens && model.contextWindow >= requirements.minContextTokens) {
@@ -478,7 +478,7 @@ export class InfrastructureAwareModelRegistry extends TypedEventBase<Infrastruct
     }
 
     // Priority adjustments
-    if (requirements.priority === 'quality' && model.family?.includes('gpt-4')) {'
+    if (requirements.priority === 'quality' && model.family?.includes('gpt-4')) {;
       score += 20;
     }
 

@@ -24,8 +24,8 @@ export default defineConfig({
   ],
   onSuccess: () => {
     // Copy WASM files after build
-    const pkgDir = resolve(__dirname, 'rust-core/code-mesh-wasm/pkg');'
-    const distDir = resolve(__dirname, 'dist');'
+    const pkgDir = resolve(__dirname, 'rust-core/code-mesh-wasm/pkg');
+    const distDir = resolve(__dirname, 'dist');
 
     const wasmFiles = [
       'code_mesh_wasm_bg.wasm',

@@ -27,9 +27,9 @@ export interface MemoryEvent {
  * Memory system synchronization event
  */
 export interface MemorySystemSyncEvent extends MemoryEvent {
-  readonly type: 'memory:system:sync_initiated;
+  readonly type: 'memory:system:sync_initiated';
   readonly systemId: string;
-  readonly syncType: 'full' | 'incremental' | 'delta';
+  readonly syncType: 'full|incremental|delta';
   readonly dataSize: number;
 }
 
@@ -37,9 +37,9 @@ export interface MemorySystemSyncEvent extends MemoryEvent {
  * Cache coordination event
  */
 export interface CacheCoordinationEvent extends MemoryEvent {
-  readonly type: 'memory:cache:coordination_updated;
+  readonly type: 'memory:cache:coordination_updated';
   readonly cacheId: string;
-  readonly operation: 'populate|invalidate|refresh|migrate;
+  readonly operation: 'populate|invalidate|refresh|migrate';
   readonly keyPattern: string;
 }
 
@@ -62,7 +62,7 @@ export type MemoryEventType = MemorySystemSyncEvent|CacheCoordinationEvent;
 export function isCoordinationEvent(
   event: MemoryEventType
 ): event is MemorySystemSyncEvent {
-  return event.type.startsWith('memory:system:');'
+  return event.type.startsWith('memory:system:');
 }
 
 /**
@@ -71,5 +71,5 @@ export function isCoordinationEvent(
 export function isCacheEvent(
   event: MemoryEventType
 ): event is CacheCoordinationEvent {
-  return event.type.startsWith('memory:cache:');'
+  return event.type.startsWith('memory:cache:');
 }

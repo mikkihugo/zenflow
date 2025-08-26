@@ -135,7 +135,7 @@ export class SamplerProcessor implements BaseProcessor {
       totalSampled: this.sampledCount,
       sampleRate:
         this.processedCount > 0
-          ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`'
+          ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
           : '0%',
       finalAdaptiveRate: this.currentRate,
     });
@@ -178,7 +178,7 @@ export class SamplerProcessor implements BaseProcessor {
   } {
     const actualRate =
       this.processedCount > 0
-        ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`'
+        ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
         : '0%;
 
     return {

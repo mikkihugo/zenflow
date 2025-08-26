@@ -2,7 +2,7 @@
  * @fileoverview Generic LLM Provider with Pluggable CLI Tools
  *
  * Generic LLM provider that can use different CLI tools (Claude, Gemini, etc.)
- * through a pluggable provider architecture. Refactored to use foundation's'
+ * through a pluggable provider architecture. Refactored to use foundation's;
  * Result pattern, error handling, retry logic, and proper validation.
  */
 
@@ -37,7 +37,7 @@ export type {
 } from './types/cli-providers';
 export const SWARM_AGENT_ROLES = CLAUDE_SWARM_AGENT_ROLES;
 
-// Validation schemas using foundation's Zod integration'
+// Validation schemas using foundation's Zod integration;
 const cliRequestSchema = z.object({
   messages: z
     .array(
@@ -62,7 +62,7 @@ const cliProviderConfigSchema = z.object({
   metadata: z.record(z.unknown()).optional(),
 });
 
-const logger = getLogger('llm-provider');'
+const logger = getLogger('llm-provider');
 
 // Generic LLM Provider with pluggable CLI tool backends and event system integration
 export class LLMProvider extends TypedEventBase {
@@ -75,13 +75,13 @@ export class LLMProvider extends TypedEventBase {
     super();
     this.providerId = providerId;
 
-    // Validate and set configuration using foundation's validation'
+    // Validate and set configuration using foundation's validation;
     const configResult = validateInput(cliProviderConfigSchema, config);
     if (configResult.isErr()) {
       const _error = new Error(
-        `Invalid LLM provider configuration: ${configResult.error.message}``
+        `Invalid LLM provider configuration: ${configResult.error.message}`
       );
-      logger.error('Configuration validation failed', {'
+      logger.error('Configuration validation failed', {;
         error: configResult.error,
         providerId,
       });
@@ -91,8 +91,8 @@ export class LLMProvider extends TypedEventBase {
 
     // Initialize provider lazily to avoid circular dependencies
     this.initializeProvider().catch((error) => {
-      logger.error('Failed to initialize provider', { error, providerId });'
-      this.emit('provider:error', {'
+      logger.error('Failed to initialize provider', { error, providerId });
+      this.emit('provider:error', {;
         providerId: this.providerId,
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: Date.now(),
@@ -100,7 +100,7 @@ export class LLMProvider extends TypedEventBase {
     });
 
     // Emit provider initialization event
-    this.emit('provider:initialized', {'
+    this.emit('provider:initialized', {;
       providerId: this.providerId,
       config: this.llmConfig,
       timestamp: Date.now(),
@@ -111,42 +111,42 @@ export class LLMProvider extends TypedEventBase {
     try {
       // Lazy load based on provider type
       switch (this.providerId) {
-        case 'claude-code': {'
-          const { ClaudeProvider } = await import('./claude/claude-provider');'
+        case 'claude-code': {;
+          const { ClaudeProvider } = await import('./claude/claude-provider');
           this.cliProvider = new ClaudeProvider();
           break;
         }
-        case 'github-models-api':'
-        case 'github-copilot-api':'
+        case 'github-models-api':;
+        case 'github-copilot-api':;
           throw new Error(
-            `Provider ${this.providerId} is an API provider, not a CLI provider. Use createAPIProvider() instead.``
+            `Provider ${this.providerId} is an API provider, not a CLI provider. Use createAPIProvider() instead.`
           );
-        case 'cursor-cli': {'
-          const { CursorCLI } = await import('./cursor');'
+        case 'cursor-cli': {;
+          const { CursorCLI } = await import('./cursor');
           this.cliProvider = new CursorCLI();
           break;
         }
-        case 'gemini-cli': {'
-          const { GeminiCLI } = await import('./gemini');'
+        case 'gemini-cli': {;
+          const { GeminiCLI } = await import('./gemini');
           this.cliProvider = new GeminiCLI();
           break;
         }
         default: {
           // Fallback to Claude Code
           const { ClaudeProvider: DefaultProvider } = await import(
-            './claude/claude-provider''
+            './claude/claude-provider';
           );
           this.cliProvider = new DefaultProvider();
           break;
         }
       }
 
-      this.emit('provider:ready', {'
+      this.emit('provider:ready', {;
         providerId: this.providerId,
         timestamp: Date.now(),
       });
     } catch (error) {
-      this.emit('provider:error', {'
+      this.emit('provider:error', {;
         providerId: this.providerId,
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: Date.now(),
@@ -168,7 +168,7 @@ export class LLMProvider extends TypedEventBase {
     if (!(roleName in SWARM_AGENT_ROLES)) {
       return err({
         code: CLI_ERROR_CODES.ROLE_ERROR,
-        message: `Invalid role: ${roleName}`,`
+        message: `Invalid role: ${roleName}`,
         details: {
           providerId: this.providerId,
           availableRoles: Object.keys(SWARM_AGENT_ROLES),
@@ -178,7 +178,7 @@ export class LLMProvider extends TypedEventBase {
 
     try {
       const result = this.cliProvider.setRole(roleName);
-      logger.debug('Role set successfully', {'
+      logger.debug('Role set successfully', {;
         providerId: this.providerId,
         role: roleName,
       });
@@ -186,7 +186,7 @@ export class LLMProvider extends TypedEventBase {
     } catch (error) {
       return err({
         code: CLI_ERROR_CODES.ROLE_ERROR,
-        message: `Failed to set role: ${error instanceof Error ? error.message : 'Unknown error'}`,`
+        message: `Failed to set role: ${error instanceof Error ? error.message : 'Unknown error'}`,
         details: { providerId: this.providerId, role: roleName },
         cause: error instanceof Error ? error : undefined,
       });
@@ -212,8 +212,8 @@ export class LLMProvider extends TypedEventBase {
     if (
       currentRole &&
       this.cliProvider &&
-      'setRole' in this.cliProvider &&'
-      typeof this.cliProvider.setRole === 'function''
+      'setRole' in this.cliProvider &&;
+      typeof this.cliProvider.setRole === 'function';
     ) 
       this.cliProvider.setRole(currentRole.role);
   }
@@ -222,7 +222,7 @@ export class LLMProvider extends TypedEventBase {
   getProviderInfo(): { id: string; name: string; capabilities: CLIProviderCapabilities } {
     if (!this.cliProvider) {
       throw new Error(
-        'Provider not initialized. Call initializeProvider() first.''
+        'Provider not initialized. Call initializeProvider() first.';
       );
     }
     return {
@@ -263,7 +263,7 @@ export class LLMProvider extends TypedEventBase {
     if (validationResult.isErr()) {
       return err({
         code: CLI_ERROR_CODES.VALIDATION_ERROR,
-        message: `Invalid request: ${validationResult.error.message}`,`
+        message: `Invalid request: ${validationResult.error.message}`,
         details: { providerId: this.providerId },
       });
     }
@@ -298,7 +298,7 @@ export class LLMProvider extends TypedEventBase {
     const _result = await withTimeout(
       () => Promise.resolve(retryResult.value),
       timeout,
-      `LLM request timed out after ${timeout}ms``
+      `LLM request timed out after ${timeout}ms`
     );
 
     return this.processResult(result);
@@ -317,7 +317,7 @@ export class LLMProvider extends TypedEventBase {
 
     // Handle successful result
     const actualResult = result.value;
-    if (actualResult && typeof actualResult === 'object' && 'isOk' in actualResult) {'
+    if (actualResult && typeof actualResult === 'object' && 'isOk' in actualResult) {;
       return actualResult as CLIResult;
     }
 
@@ -325,15 +325,15 @@ export class LLMProvider extends TypedEventBase {
   }
 
   private logSuccessfulRequest(result: Result<unknown, Error>): void {
-    logger.debug('Request completed successfully', {'
+    logger.debug('Request completed successfully', {;
       providerId: this.providerId,
       requestCount: this.requestCount,
       responseLength:
         result &&
-        typeof result === 'object' &&'
-        'isOk' in result &&'
+        typeof result === 'object' &&;
+        'isOk' in result &&;
         result.isOk() &&
-        typeof result.value === 'string''
+        typeof result.value === 'string';
           ? result.value.length
           : 0,
     });
@@ -342,7 +342,7 @@ export class LLMProvider extends TypedEventBase {
   private createErrorFromException(error: unknown): CLIError {
     const cliError: CLIError = {
       code: CLI_ERROR_CODES.UNKNOWN_ERROR,
-      message: `LLM request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,`
+      message: `LLM request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       details: {
         providerId: this.providerId,
         requestCount: this.requestCount,
@@ -356,7 +356,7 @@ export class LLMProvider extends TypedEventBase {
       cliError.code = this.determineErrorCode(error.message);
     }
 
-    logger.error('CLI provider call failed', {'
+    logger.error('CLI provider call failed', {;
       error: cliError,
       providerId: this.providerId,
     });
@@ -367,16 +367,16 @@ export class LLMProvider extends TypedEventBase {
   private determineErrorCode(message: string): string {
     const lowerMessage = message.toLowerCase();
     
-    if (lowerMessage.includes('timeout')) {'
+    if (lowerMessage.includes('timeout')) {;
       return CLI_ERROR_CODES.TIMEOUT_ERROR;
     }
-    if (lowerMessage.includes('network') || lowerMessage.includes('connection')) {'
+    if (lowerMessage.includes('network') || lowerMessage.includes('connection')) {;
       return CLI_ERROR_CODES.NETWORK_ERROR;
     }
-    if (lowerMessage.includes('auth') || lowerMessage.includes('unauthorized')) {'
+    if (lowerMessage.includes('auth') || lowerMessage.includes('unauthorized')) {;
       return CLI_ERROR_CODES.AUTH_ERROR;
     }
-    if (lowerMessage.includes('rate limit')) {'
+    if (lowerMessage.includes('rate limit')) {;
       return CLI_ERROR_CODES.RATE_LIMIT_ERROR;
     }
     
@@ -388,7 +388,7 @@ export class LLMProvider extends TypedEventBase {
     prompt: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('assistant');'
+    const roleResult = this.setRole('assistant');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
@@ -400,13 +400,13 @@ export class LLMProvider extends TypedEventBase {
     context?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('coder');'
+    const roleResult = this.setRole('coder');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = context
-      ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:``
+      ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:`
       : `Coding task: $task`;`
     return this.complete(prompt, options);
   }
@@ -416,7 +416,7 @@ export class LLMProvider extends TypedEventBase {
     analysisType: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('analyst');'
+    const roleResult = this.setRole('analyst');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
@@ -430,13 +430,13 @@ export class LLMProvider extends TypedEventBase {
     scope?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('researcher');'
+    const roleResult = this.setRole('researcher');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = scope
-      ? `Research topic: $topic\nScope: $scope\n\nPlease provide comprehensive research:``
+      ? `Research topic: $topic\nScope: $scope\n\nPlease provide comprehensive research:`
       : `Research topic: $topic\n\nPlease provide comprehensive research:`;`
     return this.complete(prompt, options);
   }
@@ -446,13 +446,13 @@ export class LLMProvider extends TypedEventBase {
     teamContext?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('coordinator');'
+    const roleResult = this.setRole('coordinator');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = teamContext
-      ? `Coordination task: $task\nTeam context: $teamContext\n\nPlease provide coordination plan:``
+      ? `Coordination task: $task\nTeam context: $teamContext\n\nPlease provide coordination plan:`
       : `Coordination task: $task\n\nPlease provide coordination plan:`;`
     return this.complete(prompt, options);
   }
@@ -462,13 +462,13 @@ export class LLMProvider extends TypedEventBase {
     requirements?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('tester');'
+    const roleResult = this.setRole('tester');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = requirements
-      ? `Feature to test: $feature\nRequirements: $requirements\n\nPlease provide test plan and cases:``
+      ? `Feature to test: $feature\nRequirements: $requirements\n\nPlease provide test plan and cases:`
       : `Feature to test: $feature\n\nPlease provide test plan and cases:`;`
     return this.complete(prompt, options);
   }
@@ -478,13 +478,13 @@ export class LLMProvider extends TypedEventBase {
     requirements?: string,
     options?: Partial<CLIRequest>
   ): Promise<Result<string, CLIError>> {
-    const roleResult = this.setRole('architect');'
+    const roleResult = this.setRole('architect');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
 
     const prompt = requirements
-      ? `System to architect: $system\nRequirements: $requirements\n\nPlease provide architectural design:``
+      ? `System to architect: $system\nRequirements: $requirements\n\nPlease provide architectural design:`
       : `System to architect: $system\n\nPlease provide architectural design:`;`
     return this.complete(prompt, options);
   }
@@ -561,8 +561,8 @@ let globalLLM: LLMProvider|null = null;
 
 export function getGlobalLLM(providerId?: string): LLMProvider {
   if (!globalLLM||providerId) {
-    globalLLM = new LLMProvider(providerId); // Defaults to Claude provider with'coder' role'
-    globalLLM.setRole('coder'); // Set coder role with dangerous permissions'
+    globalLLM = new LLMProvider(providerId); // Defaults to Claude provider with'coder' role;
+    globalLLM.setRole('coder'); // Set coder role with dangerous permissions;
   }
   return globalLLM;
 }
@@ -573,15 +573,15 @@ export function setGlobalLLM(llm: LLMProvider): void {
 
 // Provider-specific convenience functions
 export function getClaudeLLM(): LLMProvider {
-  return getGlobalLLM('claude-code');'
+  return getGlobalLLM('claude-code');
 }
 
 export function getGeminiLLM(): LLMProvider {
-  return getGlobalLLM('gemini-cli');'
+  return getGlobalLLM('gemini-cli');
 }
 
 export function getCursorLLM(): LLMProvider {
-  return getGlobalLLM('cursor-cli');'
+  return getGlobalLLM('cursor-cli');
 }
 
 // Swarm coordination helpers using the same shared LLM provider
@@ -604,7 +604,7 @@ export async function executeSwarmTask(
 ): Promise<SwarmTaskResult[]> {
   const results: SwarmTaskResult[] = [];
 
-  if (task.coordination === 'sequential') {'
+  if (task.coordination === 'sequential') {;
     // Sequential execution - reuse global LLM
     const llm = getGlobalLLM();
     for (const agent of task.agents) {

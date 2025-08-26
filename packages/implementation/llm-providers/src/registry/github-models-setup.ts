@@ -16,7 +16,7 @@ import {
   type ModelRegistryService,
 } from './model-registry';
 
-const logger = getLogger('GitHubModelsSetup');'
+const logger = getLogger('GitHubModelsSetup');
 
 /**
  * GitHub Models configuration
@@ -72,7 +72,7 @@ export class GitHubModelsContainer {
 
   constructor(config: Partial<GitHubModelsConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    logger.info('🏭 GitHubModelsContainer initialized with DI pattern');'
+    logger.info('🏭 GitHubModelsContainer initialized with DI pattern');
   }
 
   /**
@@ -80,22 +80,22 @@ export class GitHubModelsContainer {
    */
   private setupModelsApi(): APIProvider|null {
     if (!this.config.modelsApi.enabled) {
-      logger.info('⏭️ GitHub Models API disabled, skipping...');'
+      logger.info('⏭️ GitHub Models API disabled, skipping...');
       return null;
     }
 
     try {
       const token = this.config.modelsApi.token||process.env.GITHUB_TOKEN;
       if (!token) {
-        logger.warn('⚠️ No GitHub token found for Models API, skipping...');'
+        logger.warn('⚠️ No GitHub token found for Models API, skipping...');
         return null;
       }
 
       const provider = new GitHubModelsAPI({ token });
-      logger.info('✅ GitHub Models API provider configured');'
+      logger.info('✅ GitHub Models API provider configured');
       return provider;
     } catch (error) {
-      logger.error('❌ Failed to setup GitHub Models API:', error);'
+      logger.error('❌ Failed to setup GitHub Models API:', error);
       return null;
     }
   }
@@ -105,16 +105,16 @@ export class GitHubModelsContainer {
    */
   private setupCopilotApi(): APIProvider|null {
     if (!this.config.copilotApi.enabled) {
-      logger.info('⏭️ GitHub Copilot API disabled, skipping...');'
+      logger.info('⏭️ GitHub Copilot API disabled, skipping...');
       return null;
     }
 
     try {
       const provider = createGitHubCopilotProvider();
-      logger.info('✅ GitHub Copilot API provider configured');'
+      logger.info('✅ GitHub Copilot API provider configured');
       return provider;
     } catch (error) {
-      logger.error('❌ Failed to setup GitHub Copilot API:', error);'
+      logger.error('❌ Failed to setup GitHub Copilot API:', error);
       return null;
     }
   }
@@ -123,7 +123,7 @@ export class GitHubModelsContainer {
    * Initialize all GitHub providers
    */
   async initialize(): Promise<ModelRegistryService> {
-    logger.info('🚀 Initializing GitHub Models with DI container...');'
+    logger.info('🚀 Initializing GitHub Models with DI container...');
 
     // Setup providers
     const modelsProvider = this.setupModelsApi();
@@ -138,7 +138,7 @@ export class GitHubModelsContainer {
 
     if (this.providers.length === 0) {
       throw new Error(
-        'No GitHub providers could be initialized. Check your configuration and tokens.');'
+        'No GitHub providers could be initialized. Check your configuration and tokens.');
     }
 
     // Create registry service
@@ -151,7 +151,7 @@ export class GitHubModelsContainer {
     await this.registryService.initialize();
 
     logger.info(
-      `✅ GitHub Models container initialized with ${this.providers.length} providers``
+      `✅ GitHub Models container initialized with ${this.providers.length} providers`
     );
     return this.registryService;
   }
@@ -218,25 +218,25 @@ export async function setupGitHubModels(
  * Quick setup with default configuration
  */
 export async function setupGitHubModelsDefault(): Promise<ModelRegistryService> {
-  logger.info('🎯 Setting up GitHub Models with default configuration...');'
+  logger.info('🎯 Setting up GitHub Models with default configuration...');
 
   try {
     const registryService = await setupGitHubModels();
     const container = new GitHubModelsContainer();
     const summary = container.getModelsSummary();
 
-    logger.info('📊 GitHub Models setup complete:');'
+    logger.info('📊 GitHub Models setup complete:');
     logger.info(`   Total Models: ${summary.totalModels}`);`
     logger.info(
-      `   Providers: $Object.keys(summary.providerCounts).join(', ')``
+      `   Providers: $Object.keys(summary.providerCounts).join(', ')`
     );
     logger.info(
-      `   Capabilities: ${summary.capabilities.slice(0, 5).join(', ')}${summary.capabilities.length > 5 ? '...' : ''}``
+      `   Capabilities: ${summary.capabilities.slice(0, 5).join(', ')}${summary.capabilities.length > 5 ? '...' : ''}`
     );
 
     return registryService;
   } catch (error) {
-    logger.error('❌ Failed to setup GitHub Models:', error);'
+    logger.error('❌ Failed to setup GitHub Models:', error);
     throw error;
   }
 }
@@ -268,7 +268,7 @@ export async function setupGitHubModelsAdvanced(options: {
 
     for (const model of allModels) {
       if (!options.filterModels!(model.id)) {
-        // Note: In a real implementation, we'd add a method to disable/filter models'
+        // Note: In a real implementation, we'd add a method to disable/filter models;
         logger.debug(`🚫 Filtering out model: ${model.id}`);`
       }
     }

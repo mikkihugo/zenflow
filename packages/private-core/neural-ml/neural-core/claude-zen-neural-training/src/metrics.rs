@@ -34,6 +34,12 @@ pub struct MetricCalculator<T: Float + Send + Sync> {
   metrics: HashMap<String, Box<dyn Metric<T>>>,
 }
 
+impl<T: Float + Send + Sync> Default for MetricCalculator<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> MetricCalculator<T> {
   pub fn new() -> Self {
     Self {
@@ -70,6 +76,12 @@ pub struct MAE<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for MAE<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> MAE<T> {
   pub fn new() -> Self {
     Self {
@@ -101,6 +113,12 @@ impl<T: Float + Send + Sync> Metric<T> for MAE<T> {
 /// Mean Squared Error (MSE)
 pub struct MSE<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
+}
+
+impl<T: Float + Send + Sync> Default for MSE<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> MSE<T> {
@@ -136,6 +154,12 @@ pub struct RMSE<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for RMSE<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> RMSE<T> {
   pub fn new() -> Self {
     Self {
@@ -159,6 +183,12 @@ impl<T: Float + Send + Sync> Metric<T> for RMSE<T> {
 /// Mean Absolute Percentage Error (MAPE)
 pub struct MAPE<T: Float + Send + Sync> {
   epsilon: T,
+}
+
+impl<T: Float + Send + Sync> Default for MAPE<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> MAPE<T> {
@@ -205,6 +235,12 @@ impl<T: Float + Send + Sync> Metric<T> for MAPE<T> {
 /// Symmetric Mean Absolute Percentage Error (SMAPE)
 pub struct SMAPE<T: Float + Send + Sync> {
   epsilon: T,
+}
+
+impl<T: Float + Send + Sync> Default for SMAPE<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> SMAPE<T> {
@@ -280,6 +316,12 @@ pub struct R2<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for R2<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> R2<T> {
   pub fn new() -> Self {
     Self {
@@ -331,6 +373,12 @@ impl<T: Float + Send + Sync> Metric<T> for R2<T> {
 /// Pearson Correlation Coefficient
 pub struct PearsonCorrelation<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
+}
+
+impl<T: Float + Send + Sync> Default for PearsonCorrelation<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> PearsonCorrelation<T> {
@@ -391,6 +439,12 @@ pub struct SpearmanCorrelation<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for SpearmanCorrelation<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> SpearmanCorrelation<T> {
   pub fn new() -> Self {
     Self {
@@ -446,6 +500,12 @@ impl<T: Float + Send + Sync> SpearmanCorrelation<T> {
 /// Median Absolute Error
 pub struct MedianAbsoluteError<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
+}
+
+impl<T: Float + Send + Sync> Default for MedianAbsoluteError<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> MedianAbsoluteError<T> {
@@ -530,6 +590,12 @@ pub struct CoverageProbability<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for CoverageProbability<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> CoverageProbability<T> {
   pub fn new() -> Self {
     Self {
@@ -585,6 +651,12 @@ pub struct CRPS<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for CRPS<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> CRPS<T> {
   pub fn new() -> Self {
     Self {
@@ -611,6 +683,12 @@ pub struct EnergyScore<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
 }
 
+impl<T: Float + Send + Sync> Default for EnergyScore<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync> EnergyScore<T> {
   pub fn new() -> Self {
     Self {
@@ -634,6 +712,12 @@ impl<T: Float + Send + Sync> Metric<T> for EnergyScore<T> {
 /// Log Score
 pub struct LogScore<T: Float + Send + Sync> {
   epsilon: T,
+}
+
+impl<T: Float + Send + Sync> Default for LogScore<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> LogScore<T> {
@@ -674,6 +758,7 @@ impl<T: Float + Send + Sync> Metric<T> for LogScore<T> {
 
 /// Calibration Error
 pub struct CalibrationError<T: Float + Send + Sync> {
+  #[allow(dead_code)]
   n_bins: usize,
   _phantom: std::marker::PhantomData<T>,
 }
@@ -688,7 +773,7 @@ impl<T: Float + Send + Sync> CalibrationError<T> {
 }
 
 impl<T: Float + Send + Sync> Metric<T> for CalibrationError<T> {
-  fn calculate(&self, y_true: &[T], y_pred: &[T]) -> TrainingResult<T> {
+  fn calculate(&self, _y_true: &[T], _y_pred: &[T]) -> TrainingResult<T> {
     // Simplified implementation
     // For full implementation, need probabilistic predictions
     Ok(T::zero())
@@ -702,6 +787,12 @@ impl<T: Float + Send + Sync> Metric<T> for CalibrationError<T> {
 /// Sharpness
 pub struct Sharpness<T: Float + Send + Sync> {
   _phantom: std::marker::PhantomData<T>,
+}
+
+impl<T: Float + Send + Sync> Default for Sharpness<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T: Float + Send + Sync> Sharpness<T> {
@@ -777,6 +868,7 @@ impl<T: Float + Send + Sync> IntervalScore<T> {
 
 /// Winkler Score
 pub struct WinklerScore<T: Float + Send + Sync> {
+  #[allow(dead_code)]
   alpha: T,
 }
 
@@ -787,7 +879,7 @@ impl<T: Float + Send + Sync> WinklerScore<T> {
 }
 
 impl<T: Float + Send + Sync> Metric<T> for WinklerScore<T> {
-  fn calculate(&self, y_true: &[T], y_pred: &[T]) -> TrainingResult<T> {
+  fn calculate(&self, _y_true: &[T], _y_pred: &[T]) -> TrainingResult<T> {
     // Winkler score requires interval predictions
     // This is a placeholder implementation
     Ok(T::zero())

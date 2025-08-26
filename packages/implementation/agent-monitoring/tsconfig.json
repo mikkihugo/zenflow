@@ -5,18 +5,14 @@
 		"rootDir": "./",
 		"composite": true,
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+		"target": "ES2022",
+		"downlevelIteration": true
 	},
 	"include": ["src/**/*", "index.ts"],
 	"references": [
 		{
-			"path": "../../foundation"
-		},
-		{
-			"path": "../brain"
-		},
-		{
-			"path": "../event-system"
+			"path": "../../public-api/core/foundation"
 		}
 	]
 }

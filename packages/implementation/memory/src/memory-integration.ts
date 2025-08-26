@@ -2,7 +2,7 @@
  * @file Memory management: memory-integration.
  */
 
-import { createContainer, type DIContainer, TOKENS } from '@claude-zen/foundation';
+import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
 
 import { getLogger } from '../config/logging-config';
 
@@ -16,9 +16,10 @@ import { getLogger } from '../config/logging-config';
 import type { DALFactory } from '../database/factory';
 import type { MemoryConfig } from '../memory/interfaces';
 
+import { MemoryController } from './controllers/memory-controller';
 import { MemoryProviderFactory } from './providers/memory-providers';
 
-const logger = getLogger('src-memory-memory-integration');'
+const logger = getLogger('src-memory-memory-integration');
 
 // Use foundation tokens instead of local ones
 const CORE_TOKENS = TOKENS;
@@ -43,8 +44,8 @@ export const defaultMemoryConfigurations = {
     /**
      * Session storage path following Claude Zen storage architecture.
      * 
-     * **Storage Location**: `./.claude-zen/memory/sessions``
-     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory`
+     * **Storage Location**: `./.claude-zen/memory/sessions`
+     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory
      * - **Purpose**: Persistent session storage with SQLite backend
      * - **Features**: ACID compliance, 24-hour TTL, compression enabled
      * - **Use case**: User sessions, authentication state, temporary data
@@ -69,8 +70,8 @@ export const defaultMemoryConfigurations = {
     /**
      * Semantic memory storage path following Claude Zen storage architecture.
      * 
-     * **Storage Location**: `./.claude-zen/memory/vectors``
-     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory`
+     * **Storage Location**: `./.claude-zen/memory/vectors`
+     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory
      * - **Purpose**: Vector embeddings and semantic search using LanceDB
      * - **Features**: High-performance vector operations, no compression for speed
      * - **Use case**: AI embeddings, semantic search, similarity matching
@@ -94,8 +95,8 @@ export const defaultMemoryConfigurations = {
     /**
      * Debug memory storage path following Claude Zen storage architecture.
      * 
-     * **Storage Location**: `./.claude-zen/memory/debug.json``
-     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory  `
+     * **Storage Location**: `./.claude-zen/memory/debug.json`
+     * - **Project-local**: Uses project's `.claude-zen/memory/` subdirectory  
      * - **Purpose**: Development debugging and inspection storage
      * - **Features**: Human-readable JSON format, small size limit
      * - **Use case**: Development debugging, memory inspection, testing
@@ -152,12 +153,12 @@ export const memoryBackendSpecs = {
  */
 export function registerMemoryProviders(
   container: DIContainer,
-  _customConfigs?: {
+  customConfigs?: {
     [key: string]: Partial<MemoryConfig>;
   }
 ): void {
   // Register memory provider factory (uses DAL Factory)
-  container.register(MEMORY_TOKENS.ProviderFactory, {'
+  container.register(MEMORY_TOKENS['ProviderFactory'], {
     type: 'singleton',
     create: (container) =>
       new MemoryProviderFactory(
@@ -168,11 +169,11 @@ export function registerMemoryProviders(
   });
 
   // Register default memory configurations
-  for (const [name, _defaultConfig] of Object.entries(
+  for (const [name, defaultConfig] of Object.entries(
     defaultMemoryConfigurations
   )) {
-    const _tokenName =
-      `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;`
+    const tokenName =
+      `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;
 
     container.register(MEMORY_TOKENS[tokenName]||MEMORY_TOKENS.Config, {
       type:'singleton',
@@ -189,7 +190,7 @@ export function registerMemoryProviders(
     create: (container) =>
       new MemoryController(
         container.resolve(
-          MEMORY_TOKENS['ProviderFactory']'
+          MEMORY_TOKENS['ProviderFactory']
         ) as MemoryProviderFactory,
         container.resolve(MEMORY_TOKENS.Config) as MemoryConfig,
         container.resolve(CORE_TOKENS.Logger)
@@ -210,7 +211,7 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
   debug: unknown;
 }> {
   const factory = container.resolve(
-    MEMORY_TOKENS['ProviderFactory']'
+    MEMORY_TOKENS['ProviderFactory']
   ) as MemoryProviderFactory;
 
   return {
@@ -255,7 +256,7 @@ export async function initializeMemorySystem(
   };
 }> {
   const logger = container.resolve(CORE_TOKENS.Logger);
-  logger.info('Initializing memory system with DAL Factory integration');'
+  logger.info('Initializing memory system with DAL Factory integration');
 
   // Create controller
   const controller = container.resolve(MEMORY_TOKENS.Controller);
@@ -264,40 +265,40 @@ export async function initializeMemorySystem(
   const backends: Record<string, unknown> = {};
   const enabledBackends: string[] = [];
 
-  if (options?.['enableCache']) {'
+  if (options?.['enableCache']) {
     backends.cache = (
       container.resolve(
-        MEMORY_TOKENS['ProviderFactory']'
+        MEMORY_TOKENS['ProviderFactory']
       ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.cache);
-    enabledBackends.push('cache');'
+    enabledBackends.push('cache');
   }
 
-  if (options?.['enableSessions']) {'
+  if (options?.['enableSessions']) {
     backends.session = (
       container.resolve(
-        MEMORY_TOKENS['ProviderFactory']'
+        MEMORY_TOKENS['ProviderFactory']
       ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.session);
-    enabledBackends.push('session');'
+    enabledBackends.push('session');
   }
 
-  if (options?.['enableSemantic']) {'
+  if (options?.['enableSemantic']) {
     backends.semantic = (
       container.resolve(
-        MEMORY_TOKENS['ProviderFactory']'
+        MEMORY_TOKENS['ProviderFactory']
       ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.semantic);
-    enabledBackends.push('semantic');'
+    enabledBackends.push('semantic');
   }
 
-  if (options?.['enableDebug']) {'
+  if (options?.['enableDebug']) {
     backends.debug = (
       container.resolve(
-        MEMORY_TOKENS['ProviderFactory']'
+        MEMORY_TOKENS['ProviderFactory']
       ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.debug);
-    enabledBackends.push('debug');'
+    enabledBackends.push('debug');
   }
 
   // Test all backends
@@ -313,12 +314,12 @@ export async function initializeMemorySystem(
       (
         result
       ): result is PromiseFulfilledResult<{ name: string; healthy: boolean }> =>
-        result?.status === 'fulfilled' && result?.value?.healthy'
+        result?.status === 'fulfilled' && result?.value?.healthy
     )
     .map((result) => result?.value?.name);
 
   logger.info(
-    `Memory system initialized: $healthyBackends.length/${enabledBackends.length} backends healthy``
+    `Memory system initialized: ${healthyBackends.length}/${enabledBackends.length} backends healthy`
   );
 
   return {
@@ -338,19 +339,19 @@ export async function initializeMemorySystem(
  * @param customConfigs
  * @example
  */
-export function _createMemoryContainer(
-  _customConfigs?: Parameters<typeof registerMemoryProviders>[1]
+export function createMemoryContainer(
+  customConfigs?: Parameters<typeof registerMemoryProviders>[1]
 ): DIContainer {
-  const _container = createContainer('memory-integration');'
+  const container = createContainer('memory-integration');
 
   // Register core services (would normally come from main app)
-  container.register(CORE_TOKENS.Logger, 
+  container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
-    create: () => (
-      debug: (_msg: string) => {},
-      info: (msg: string) => ,
-      warn: (msg: string) => logger.warn(`[MEMORY WARN] $msg`),`
-      error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),`
+    create: () => ({
+      debug: (msg: string) => {},
+      info: (msg: string) => {},
+      warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
+      error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
     }),
   });
 
@@ -367,10 +368,10 @@ export function _createMemoryContainer(
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
-      const { DALFactory } = require('../database/factory');'
+      const { DALFactory } = require('../database/factory');
       const {
         DatabaseProviderFactory,
-      } = require('../database/providers/database-providers');'
+      } = require('../database/providers/database-providers');
 
       return new DALFactory(
         container.resolve(CORE_TOKENS.Logger),

@@ -13,11 +13,11 @@
  * @interface Logger
  * @example
  * ```typescript`
- * const logger: Logger = new ConsoleLogger('my-component');'
+ * const logger: Logger = new ConsoleLogger('my-component');
  *
- * logger.info('Component initialized', { version: '1.0.0' });'
- * logger.warn('Performance threshold exceeded', { cpu: 85 });'
- * logger.error('Operation failed', error);'
+ * logger.info('Component initialized', { version: '1.0.0' });
+ * logger.warn('Performance threshold exceeded', { cpu: 85 });
+ * logger.error('Operation failed', error);
  * ````
  */
 export interface Logger {
@@ -65,12 +65,12 @@ export interface Logger {
  * @example
  * ```typescript`
  * // Create logger with custom prefix
- * const logger = new ConsoleLogger('my-component');'
+ * const logger = new ConsoleLogger('my-component');
  *
  * // Use default prefix
  * const defaultLogger = new ConsoleLogger();
  *
- * logger.info('Component started successfully');'
+ * logger.info('Component started successfully');
  * // Output: [my-component] Component started successfully
  * ````
  */
@@ -135,13 +135,13 @@ export class ConsoleLogger implements Logger {
  * @example
  * ```typescript`
  * // Create loggers for different components
- * const eventLogger = getLogger('event-manager');'
- * const adapterLogger = getLogger('coordination-adapter');'
+ * const eventLogger = getLogger('event-manager');
+ * const adapterLogger = getLogger('coordination-adapter');
  *
- * eventLogger.info('Event manager started');'
+ * eventLogger.info('Event manager started');
  * // Output: [event-manager] Event manager started
  *
- * adapterLogger.debug('Processing coordination event');'
+ * adapterLogger.debug('Processing coordination event');
  * // Output: [coordination-adapter] Processing coordination event
  * ````
  */

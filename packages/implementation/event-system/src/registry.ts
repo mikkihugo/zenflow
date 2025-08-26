@@ -17,8 +17,8 @@ import type {
   EventManagerFactory,
   EventManagerRegistry,
   SystemEvent,
-} from './core/interfaces;
-import { EventManagerTypes } from './core/interfaces;
+} from './core/interfaces';
+import { EventManagerTypes } from './core/interfaces';
 import { EventPriorityMap } from './types;
 
 /**
@@ -224,7 +224,7 @@ export interface EventDiscoveryConfig {
  *
  * // Register factory and managers
  * registry.registerFactory(EventManagerTypes.SYSTEM, systemFactory);
- * registry.registerManager('system-1', manager, factory, config);'
+ * registry.registerManager('system-1', manager, factory, config);
  *
  * // Health monitoring and metrics
  * const healthStatus = await registry.healthCheckAll();
@@ -245,7 +245,7 @@ export class EventRegistry implements EventManagerRegistry {
   private initialized = false;
 
   constructor(private _logger?: Logger) {
-    this._logger = _logger||getLogger('EventRegistry');'
+    this._logger = _logger||getLogger('EventRegistry');
     this.healthMonitoring = 
       checkInterval: 30000, // 30 seconds
       timeout: 5000,
@@ -325,7 +325,7 @@ export class EventRegistry implements EventManagerRegistry {
     }
 
     this.initialized = true;
-    this._logger?.info('✅ Event Registry initialized successfully');'
+    this._logger?.info('✅ Event Registry initialized successfully');
   }
 
   /**
@@ -375,7 +375,7 @@ export class EventRegistry implements EventManagerRegistry {
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>|undefined {
+  ): EventManager {Factory<T>|undefined {
     const factory = this.factories.get(type);
 
     if (factory && this.factoryRegistry[type]) {
@@ -391,7 +391,7 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * List all registered factory types.
    */
-  listFactoryTypes(): EventManagerType[] {
+  listFactoryTypes(): EventManager {Type[] {
     return Array.from(this.factories.keys())();
   }
 
@@ -458,7 +458,7 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Find event manager by name.
    */
-  findEventManager(name: string): EventManager|undefined {
+  findEventManager(name: string): EventManager {|undefined {
     const entry = this.eventManagers.get(name);
 
     if (entry) {
@@ -488,7 +488,7 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Get event managers by type.
    */
-  getEventManagersByType(type: EventManagerType): EventManager[] {
+  getEventManagersByType(type: EventManagerType): EventManager {[] {
     const managers: EventManager[] = [];
 
     for (const [, entry] of this.eventManagers) {
@@ -507,7 +507,7 @@ export class EventRegistry implements EventManagerRegistry {
    */
   getEventManagersByStatus(
     status: EventRegistryEntry['status']'
-  ): EventManager[] {
+  ): EventManager {[] {
     const managers: EventManager[] = [];
 
     for (const [, entry] of this.eventManagers) {
@@ -745,7 +745,7 @@ export class EventRegistry implements EventManagerRegistry {
    * Shutdown all event managers.
    */
   async shutdownAll(): Promise<void> {
-    this._logger?.info('🔄 Shutting down all event managers...');'
+    this._logger?.info('🔄 Shutting down all event managers...');
 
     // Stop health monitoring
     this.stopHealthMonitoring();
@@ -775,7 +775,7 @@ export class EventRegistry implements EventManagerRegistry {
     this.factoryRegistry = {} as FactoryRegistry;
     this.initialized = false;
 
-    this._logger?.info('✅ All event managers shut down');'
+    this._logger?.info('✅ All event managers shut down');
   }
 
   /**
@@ -792,7 +792,7 @@ export class EventRegistry implements EventManagerRegistry {
   } {
     const managers = Array.from(this.eventManagers.values())();
     const healthyManagers = managers.filter(
-      (entry) => entry.status === 'healthy').length;'
+      (entry) => entry.status === 'healthy').length;
 
     const managersByType: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
@@ -832,7 +832,7 @@ export class EventRegistry implements EventManagerRegistry {
       type: EventManagerType;
       config: EventManagerConfig;
       status: string;
-      usage: EventRegistryEntry['usage'];'
+      usage: EventRegistryEntry['usage'];
     }>;
   } {
     const managers = Array.from(this.eventManagers.entries()).map(
@@ -860,7 +860,7 @@ export class EventRegistry implements EventManagerRegistry {
   private async performHealthCheck(
     name: string,
     entry: EventRegistryEntry
-  ): Promise<EventManagerStatus> {
+  ): Promise<EventManagerStatus>{
     const startTime = Date.now();
 
     try {
@@ -926,7 +926,7 @@ export class EventRegistry implements EventManagerRegistry {
       try {
         await this.healthCheckAll();
       } catch (error) {
-        this._logger?.error('❌ Health monitoring cycle failed:', error);'
+        this._logger?.error('❌ Health monitoring cycle failed:', error);
       }
     }, this.healthMonitoring.checkInterval);
 
@@ -941,7 +941,7 @@ export class EventRegistry implements EventManagerRegistry {
       this.healthCheckInterval = undefined;
     }
 
-    this._logger?.debug('💓 Health monitoring stopped');'
+    this._logger?.debug('💓 Health monitoring stopped');
   }
 
   private async registerDefaultEventTypes(): Promise<void> {
@@ -1014,13 +1014,13 @@ export class EventRegistry implements EventManagerRegistry {
       `🏷️ Registered ${defaultEventTypes.length} default event types``
     );
 
-  private async performEventDiscovery(): Promise<void> 
+  private async performEventDiscovery(): Promise<void> { 
     try {
       // Event discovery implementation would scan specified paths
       // and automatically register discovered event types
-      this._logger?.debug('🔍 Event discovery completed');'
+      this._logger?.debug('🔍 Event discovery completed');
     } catch (error) {
-      this._logger?.warn('⚠️ Event discovery failed:', error);'
+      this._logger?.warn('⚠️ Event discovery failed:', error);
     }
 }
 

@@ -327,7 +327,7 @@ export class EnvironmentDetector extends EventEmitter {
 		} catch (error) {
 			this.logger.error("Environment detection failed:", error);
 			throw new EnvironmentDetectionError(
-				`Failed to detect environment: ${error instanceof Error ? error.message : "Unknown error"}`,
+				`Failed to detect environment: ${error instanceof Error ? error['message'] : "Unknown error"}`,
 			);
 		} finally {
 			this.isDetecting = false;
@@ -346,7 +346,7 @@ export class EnvironmentDetector extends EventEmitter {
 	/**
 	 * Get predefined tool definitions
 	 */
-	private getToolDefinitions() {
+	private getToolDefinitions(): Array<{ name: string; type: EnvironmentTool['type']; command: string }> {
 		return [
 			// Package Managers
 			{
@@ -439,7 +439,7 @@ export class EnvironmentDetector extends EventEmitter {
 	 * Detect tools in parallel
 	 */
 	private async detectToolsParallel(
-		toolsToDetect: Array<{ name: string; type: string; command: string }>,
+		toolsToDetect: Array<{ name: string; type: EnvironmentTool['type']; command: string }>,
 	) {
 		return await Promise.allSettled(
 			toolsToDetect.map(async (tool) => {
@@ -476,7 +476,7 @@ export class EnvironmentDetector extends EventEmitter {
 		this.logger.debug("Tool detection failed - security audit", {
 			toolName: tool.name,
 			toolType: tool.type,
-			error: error instanceof Error ? error.message : String(error),
+			error: error instanceof Error ? error['message'] : String(error),
 		});
 	}
 
@@ -485,8 +485,8 @@ export class EnvironmentDetector extends EventEmitter {
 	 */
 	private processToolResults(
 		results: PromiseSettledResult<EnvironmentTool>[],
-		toolsToDetect: Array<{ name: string; type: string }>,
-	) {
+		toolsToDetect: Array<{ name: string; type: EnvironmentTool['type']; command: string }>,
+	): EnvironmentTool[] {
 		return results.map((result, index) =>
 			result.status === "fulfilled"
 				? result.value
@@ -660,10 +660,10 @@ export class EnvironmentDetector extends EventEmitter {
 	 * Get current Nix shell information
 	 */
 	private getCurrentNixShell(): string | null {
-		if (process.env.IN_NIX_SHELL) {
+		if (process.env['IN_NIX_SHELL']) {
 			return "nix-shell";
 		}
-		if (process.env.FLAKE_DEVSHELL) {
+		if (process.env['FLAKE_DEVSHELL']) {
 			return "flake-devshell";
 		}
 		return null;
@@ -1189,7 +1189,7 @@ export class NixIntegration {
         pkgs = nixpkgs.legacyPackages.\${system};
       in
       {
-        devShells.default = pkgs.mkShell {
+        devShells['default'] = pkgs.mkShell {
           buildInputs = with pkgs; [
             # Node.js ecosystem
             nodejs_20

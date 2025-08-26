@@ -257,7 +257,7 @@ export async function withTimeout<T>(
 				setTimeout(() => {
 					reject(
 						new Error(
-							config.message || `Operation timed out after ${config.timeout}ms`,
+							config['message'] || `Operation timed out after ${config.timeout}ms`,
 						),
 					);
 				}, config.timeout);

@@ -148,7 +148,7 @@ mod tests {
 
   #[test]
   fn test_export_network_info() {
-    let network = NetworkBuilder::new().layers(&[2, 3, 1]).build();
+    let network: Network<f32> = NetworkBuilder::new().layers_from_sizes(&[2, 3, 1]).build();
 
     let temp_path = std::env::temp_dir().join("test_network_info.txt");
 
@@ -162,7 +162,7 @@ mod tests {
   #[cfg(feature = "io")]
   #[test]
   fn test_save_load_network() {
-    let network = NetworkBuilder::new().layers(&[2, 3, 1]).build();
+    let network: Network<f32> = NetworkBuilder::new().layers_from_sizes(&[2, 3, 1]).build();
 
     let temp_path = std::env::temp_dir().join("test_network.bin");
 

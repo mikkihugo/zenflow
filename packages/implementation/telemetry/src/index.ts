@@ -65,3 +65,35 @@ export type {
 	TelemetryEvent,
 	Tracer,
 } from "./types.js";
+
+// Import TelemetryManager class
+import { TelemetryManager } from "./telemetry.js";
+
+// Factory function expected by infrastructure facade
+export function createTelemetryManager(config?: any) {
+  return new TelemetryManager(config);
+}
+
+// Provider class expected by infrastructure facade  
+export class TelemetryProvider {
+  constructor(private config?: any) {}
+  
+  async createTelemetryManager(config?: any) {
+    return createTelemetryManager({ ...this.config, ...config });
+  }
+  
+  async createCollector(config?: any) {
+    return createTelemetryManager({ ...this.config, ...config });
+  }
+}
+
+// Main factory function for infrastructure facade
+export function createTelemetryAccess(_config?: any) {
+  return {
+    createTelemetryManager,
+    createCollector: createTelemetryManager,
+    createProvider: (providerConfig?: any) => new TelemetryProvider(providerConfig),
+    TelemetryManager,
+    TelemetryProvider
+  };
+}

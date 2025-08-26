@@ -23,9 +23,8 @@
 //! - Support for cyclic and one-cycle policies
 //! - Integration with early stopping mechanisms
 
-use crate::{TrainingError, TrainingResult};
+use crate::TrainingResult;
 use num_traits::Float;
-use std::collections::VecDeque;
 use std::marker::PhantomData;
 
 /// Core trait for learning rate schedulers

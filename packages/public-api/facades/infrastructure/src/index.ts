@@ -11,7 +11,7 @@
  * • @claude-zen/load-balancing: Performance optimization and routing
  * • @claude-zen/telemetry: System telemetry and metrics collection
  * • @claude-zen/otel-collector: OpenTelemetry collection and processing
- * • @claude-zen/service-container: Service container and dependency injection
+ * • @claude-zen/llm-providers: LLM provider integrations and routing
  *
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:

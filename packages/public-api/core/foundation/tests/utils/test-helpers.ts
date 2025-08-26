@@ -60,9 +60,9 @@ export const asyncUtils = {
 
 // Environment helpers
 export const envHelpers = {
-	isIntegrationTest: () => process.env.RUN_INTEGRATION === "true",
-	isPerformanceTest: () => process.env.RUN_PERFORMANCE === "true",
-	hasApiKey: () => Boolean(process.env.CLAUDE_CODE_OAUTH_TOKEN),
+	isIntegrationTest: () => process.env['RUN_INTEGRATION'] === "true",
+	isPerformanceTest: () => process.env['RUN_PERFORMANCE'] === "true",
+	hasApiKey: () => Boolean(process.env['CLAUDE_CODE_OAUTH_TOKEN']),
 
 	requireIntegration: () => {
 		if (!envHelpers.isIntegrationTest()) {

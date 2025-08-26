@@ -8,32 +8,32 @@
 // CORE TYPES (WORKING)
 // ===================================================================
 
-
-// Core system types
-export type { BackendInterface, JSONValue } from './core/memory-system';
 // Core memory types from types.ts
 export type {
+  MemoryStore,
+  MemoryStats,
+  StoreOptions,
+  MemoryConfig,
+  SessionState,
+  SessionMemoryStoreOptions,
   CacheEntry,
   MemoryBackendType,
-  MemoryCapacityError,
-  MemoryConfig,
-  MemoryConnectionError,
   MemoryError,
-  MemoryStats,
+  MemoryConnectionError,
   MemoryStorageError,
-  MemoryStore,
-  SessionMemoryStoreOptions,
-  SessionState,
-  StoreOptions,
+  MemoryCapacityError,
 } from './types';
+
+// Core system types
+export type { JSONValue, BackendInterface } from './core/memory-system';
 
 // ===================================================================
 // BACKEND SYSTEM (WORKING)
 // ===================================================================
 
-export type { BackendCapabilities, MemoryEntry } from './backends/base-backend';
 // Base backend and capabilities
 export { BaseMemoryBackend } from './backends/base-backend';
+export type { BackendCapabilities, MemoryEntry } from './backends/base-backend';
 
 // Backend factory - excluded from compilation for now
 // export { MemoryBackendFactory, memoryBackendFactory } from './backends/factory';
@@ -43,8 +43,10 @@ export { BaseMemoryBackend } from './backends/base-backend';
 // ===================================================================
 
 // Main memory classes - only export if working
+export { MemoryManager, SessionMemoryStore } from './memory';
+
 // Alias for compatibility
-export { MemoryManager, MemoryManager as MemorySystem, SessionMemoryStore } from './memory';
+export { MemoryManager as MemorySystem } from './memory';
 
 // ===================================================================
 // SIMPLE FACTORY
@@ -59,11 +61,11 @@ export class SimpleMemoryFactory {
    */
   static async createBasicMemory(
     config: {
-      type?: 'sqlite' | 'memory;
+      type?: 'sqlite' | 'memory';
       path?: string;
     } = {}
   ) {
-    const { MemoryManager } = await import('./memory');'
+    const { MemoryManager } = await import('./memory');
 
     const manager = new MemoryManager({
       backendConfig: {
@@ -109,7 +111,7 @@ export async function getMemorySystemAccess(
 export async function getMemoryManager(
   config?: MemoryConfig
 ): Promise<MemoryManager> {
-  const { MemoryManager } = await import('./memory');'
+  const { MemoryManager } = await import('./memory');
   const manager = new MemoryManager(
     config||{
       backendConfig: { type:'sqlite', path: './memory.db' },
@@ -142,7 +144,7 @@ export async function getSessionMemory(
   config?: MemoryConfig
 ): Promise<any> {
   const system = await getMemorySystemAccess(config);
-  const _sessionStore = await system.createStore(`session:${sessionId}`);`
+  const sessionStore = await system.createStore(`session:${sessionId}`);
   return {
     save: (key: string, value: any) => sessionStore.store(key, value),
     load: (key: string) => sessionStore.retrieve(key),
@@ -161,12 +163,12 @@ export async function getMemoryCoordination(
     coordinate: (storeId: string) => system.getStore(storeId),
     orchestrate: (operation: string, ...args: any[]) => {
       switch (operation) {
-        case 'createStore':'
+        case 'createStore':
           return system.createStore(args[0], args[1]);
-        case 'removeStore':'
+        case 'removeStore':
           return system.removeStore(args[0]);
         default:
-          throw new Error(`Unknown operation: $operation`);`
+          throw new Error(`Unknown operation: ${operation}`);
       }
     },
     monitor: () => system.getGlobalStats(),

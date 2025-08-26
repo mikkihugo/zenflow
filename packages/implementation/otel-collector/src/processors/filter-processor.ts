@@ -6,7 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { ProcessorConfig, } from '../types.js';
+import type { ProcessorConfig, TelemetryData } from '../types.js';
 import type { BaseProcessor } from './index.js';
 
 /**
@@ -14,7 +14,7 @@ import type { BaseProcessor } from './index.js';
  */
 interface FilterRule {
   field: string;
-  operator:|'equals|contains|startsWith|endsWith|regex|exists;
+  operator: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'regex' | 'exists';
   value?: any;
   regex?: RegExp;
 }
@@ -23,26 +23,37 @@ interface FilterRule {
  * Filter processor implementation
  */
 export class FilterProcessor implements BaseProcessor {
+  readonly name: string;
+  private readonly config: ProcessorConfig;
+  private readonly logger: any;
+  private readonly includeRules: FilterRule[];
+  private readonly excludeRules: FilterRule[];
+  private readonly filterMode: string;
+  private processedCount = 0;
+  private filteredCount = 0;
+  private lastProcessedTime = 0;
+  private lastError: string | null = null;
 
   constructor(config: ProcessorConfig) {
+    this.name = config.name;
     this.config = config;
-    this.logger = getLogger(`FilterProcessor:${config.name}`);`
+    this.logger = getLogger(`FilterProcessor:${config.name}`);
 
     // Parse filter rules
-    this.includeRules = this.parseFilterRules(config.config?.include||[]);
-    this.excludeRules = this.parseFilterRules(config.config?.exclude||[]);
-    this.filterMode = config.config?.mode||'exclude;
+    this.includeRules = this.parseFilterRules(config.config?.include || []);
+    this.excludeRules = this.parseFilterRules(config.config?.exclude || []);
+    this.filterMode = config.config?.mode || 'exclude';
   }
 
   async initialize(): Promise<void> {
-    this.logger.info('Filter processor initialized', {'
+    this.logger.info('Filter processor initialized', {
       includeRules: this.includeRules.length,
       excludeRules: this.excludeRules.length,
       filterMode: this.filterMode,
     });
   }
 
-  async process(data: TelemetryData): Promise<TelemetryData|null> {
+  async process(data: TelemetryData): Promise<TelemetryData | null> {
     try {
       const shouldInclude = this.shouldIncludeData(data);
 
@@ -52,7 +63,7 @@ export class FilterProcessor implements BaseProcessor {
 
       if (!shouldInclude) {
         this.filteredCount++;
-        this.logger.debug('Data filtered out', {'
+        this.logger.debug('Data filtered out', {
           service: data.service.name,
           type: data.type,
         });
@@ -63,7 +74,7 @@ export class FilterProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Filter processing failed', error);'
+      this.logger.error('Filter processing failed', error);
 
       // Return original data on error
       return data;
@@ -86,7 +97,7 @@ export class FilterProcessor implements BaseProcessor {
 
       if (filteredItems.length < dataItems.length) {
         this.logger.debug(
-          `Filtered $dataItems.length - filteredItems.lengthout of $dataItems.lengthitems``
+          `Filtered ${dataItems.length - filteredItems.length} out of ${dataItems.length} items`
         );
       }
 
@@ -94,7 +105,7 @@ export class FilterProcessor implements BaseProcessor {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Filter batch processing failed', error);'
+      this.logger.error('Filter batch processing failed', error);
 
       // Return original data on error
       return dataItems;
@@ -102,12 +113,12 @@ export class FilterProcessor implements BaseProcessor {
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Filter processor shut down', {'
+    this.logger.info('Filter processor shut down', {
       totalProcessed: this.processedCount,
       totalFiltered: this.filteredCount,
       filterRate:
         this.processedCount > 0
-          ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`'
+          ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`
           : '0%',
     });
   }
@@ -119,8 +130,8 @@ export class FilterProcessor implements BaseProcessor {
   }> {
     return {
       status: this.lastError ? 'unhealthy' : 'healthy',
-      lastProcessed: this.lastProcessedTime||undefined,
-      lastError: this.lastError||undefined,
+      lastProcessed: this.lastProcessedTime || undefined,
+      lastError: this.lastError || undefined,
     };
   }
 
@@ -136,8 +147,8 @@ export class FilterProcessor implements BaseProcessor {
     const passed = this.processedCount - this.filteredCount;
     const filterRate =
       this.processedCount > 0
-        ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`'
-        : '0%;
+        ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`
+        : '0%';
 
     return {
       processed: this.processedCount,
@@ -152,20 +163,20 @@ export class FilterProcessor implements BaseProcessor {
    */
   private shouldIncludeData(data: TelemetryData): boolean {
     switch (this.filterMode) {
-      case 'include':'
+      case 'include':
         // Must match at least one include rule
         return (
-          this.includeRules.length === 0||this.includeRules.some((rule) => this.matchesRule(data, rule))
+          this.includeRules.length === 0 || this.includeRules.some((rule) => this.matchesRule(data, rule))
         );
 
-      case'exclude':'
+      case 'exclude':
         // Must not match any exclude rule
         return !this.excludeRules.some((rule) => this.matchesRule(data, rule));
 
-      case 'both': {'
+      case 'both': {
         // Must match include rules AND not match exclude rules
         const passesInclude =
-          this.includeRules.length === 0||this.includeRules.some((rule) => this.matchesRule(data, rule));
+          this.includeRules.length === 0 || this.includeRules.some((rule) => this.matchesRule(data, rule));
         const passesExclude = !this.excludeRules.some((rule) =>
           this.matchesRule(data, rule)
         );
@@ -184,26 +195,26 @@ export class FilterProcessor implements BaseProcessor {
     const fieldValue = this.getFieldValue(data, rule.field);
 
     if (fieldValue === undefined) {
-      return rule.operator !=='exists';'
+      return rule.operator !== 'exists';
     }
 
     switch (rule.operator) {
-      case 'exists':'
+      case 'exists':
         return fieldValue !== undefined;
 
-      case 'equals':'
+      case 'equals':
         return fieldValue === rule.value;
 
-      case 'contains':'
+      case 'contains':
         return String(fieldValue).includes(String(rule.value));
 
-      case 'startsWith':'
+      case 'startsWith':
         return String(fieldValue).startsWith(String(rule.value));
 
-      case 'endsWith':'
+      case 'endsWith':
         return String(fieldValue).endsWith(String(rule.value));
 
-      case 'regex':'
+      case 'regex':
         if (!rule.regex) return false;
         return rule.regex.test(String(fieldValue));
 
@@ -216,11 +227,11 @@ export class FilterProcessor implements BaseProcessor {
    * Get field value from telemetry data using dot notation
    */
   private getFieldValue(data: TelemetryData, fieldPath: string): any {
-    const parts = fieldPath.split('.');'
+    const parts = fieldPath.split('.');
     let value: any = data;
 
     for (const part of parts) {
-      if (value === null||value === undefined) {
+      if (value === null || value === undefined) {
         return undefined;
       }
       value = value[part];
@@ -236,16 +247,16 @@ export class FilterProcessor implements BaseProcessor {
     return rules.map((rule: any) => {
       const parsed: FilterRule = {
         field: rule.field,
-        operator: rule.operator||'equals',
+        operator: rule.operator || 'equals',
         value: rule.value,
       };
 
       // Compile regex if needed
-      if (parsed.operator === 'regex' && typeof rule.value === 'string') {'
+      if (parsed.operator === 'regex' && typeof rule.value === 'string') {
         try {
-          parsed.regex = new RegExp(rule.value, rule.flags||'i');'
+          parsed.regex = new RegExp(rule.value, rule.flags || 'i');
         } catch (error) {
-          this.logger.warn(`Invalid regex pattern: ${rule.value}`, error);`
+          this.logger.warn(`Invalid regex pattern: ${rule.value}`, error);
           // Fallback to contains operator
           parsed.operator = 'contains';
         }

@@ -48,7 +48,7 @@ export interface RichModelInfo extends BaseModelInfo {
   providerMetadata: GitHubCopilotModelMetadata | GitHubModelMetadata | Record<string, unknown>;
   
   // Provider type for type-safe access
-  providerType: 'github-copilot' | 'github-models' | 'anthropic' | 'openai' | string;'
+  providerType: 'github-copilot' | 'github-models' | 'anthropic' | 'openai' | string;
 }
 
 /**
@@ -71,7 +71,7 @@ export interface ModelQuery {
   
   // Sorting
   sortBy?: 'contextWindow' | 'cost' | 'performance' | 'updated;
-  sortOrder?: 'asc' | 'desc;
+  sortOrder?: 'asc' | 'desc';
   
   // Limits
   limit?: number;
@@ -105,8 +105,8 @@ export interface ProviderDatabase<T = unknown> {
  * Type-safe provider metadata access
  */
 export type ProviderMetadata<P extends string> = 
-  P extends 'github-copilot' ? GitHubCopilotModelMetadata :'
-  P extends 'github-models' ? GitHubModelMetadata :'
+  P extends 'github-copilot' ? GitHubCopilotModelMetadata :;
+  P extends 'github-models' ? GitHubModelMetadata :;
   Record<string, unknown>;
 
 /**

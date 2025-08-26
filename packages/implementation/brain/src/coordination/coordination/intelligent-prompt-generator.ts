@@ -1221,7 +1221,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     if (flags.includeTesting) activeFeatures.push('Testing');'
 
     const contextualIntro = activeFeatures.length > 0 ? 
-      `\n### 🎯 **Enhanced Features**: ${activeFeatures.join(', ')} optimization enabled` : ';
+      `\n### 🎯 **Enhanced Features**: ${activeFeatures.join(', ')} optimization enabled` : `;
 
     return {
       contextualIntro,

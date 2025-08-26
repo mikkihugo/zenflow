@@ -11,15 +11,15 @@ import * as process from "node:process";
  * Environment detection utilities
  */
 export function isDevelopment(): boolean {
-	return process.env.NODE_ENV === "development";
+	return process.env['NODE_ENV'] === "development";
 }
 
 export function isProduction(): boolean {
-	return process.env.NODE_ENV === "production";
+	return process.env['NODE_ENV'] === "production";
 }
 
 export function isTest(): boolean {
-	return process.env.NODE_ENV === "test";
+	return process.env['NODE_ENV'] === "test";
 }
 
 export function getEnvironment():
@@ -27,7 +27,7 @@ export function getEnvironment():
 	| "production"
 	| "test"
 	| "unknown" {
-	const env = process.env.NODE_ENV;
+	const env = process.env['NODE_ENV'];
 	if (env === "development" || env === "production" || env === "test") {
 		return env;
 	}
@@ -96,10 +96,10 @@ export function isLinux(): boolean {
  */
 export function isCI(): boolean {
 	return !!(
-		process.env.CI ||
-		process.env.CONTINUOUS_INTEGRATION ||
-		process.env.BUILD_NUMBER ||
-		process.env.RUN_ID
+		process.env['CI'] ||
+		process.env['CONTINUOUS_INTEGRATION'] ||
+		process.env['BUILD_NUMBER'] ||
+		process.env['RUN_ID']
 	);
 }
 

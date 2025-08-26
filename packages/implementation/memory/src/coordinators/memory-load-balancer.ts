@@ -5,13 +5,14 @@
  * including round-robin, least-connections, weighted, and resource-aware strategies.
  */
 
+import { TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, recordMetric } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger, recordMetric, TypedEventBase } from '@claude-zen/foundation';
-import type { MemoryNode } from './types';
+import type { MemoryNode, MemoryLoadMetrics } from './types';
 
 interface LoadBalancingConfig {
   enabled: boolean;
-  algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware;
+  algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'resource-aware';
   weights?: Record<string, number>;
   thresholds?: {
     maxLatency: number;
@@ -33,24 +34,26 @@ export class MemoryLoadBalancer extends TypedEventBase {
   private logger: Logger;
   private config: LoadBalancingConfig;
   private nodes = new Map<string, MemoryNode>();
+  private roundRobinIndex = 0;
   private stats: LoadBalancingStats;
 
   constructor(config: LoadBalancingConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('MemoryLoadBalancer');'
-    this.stats = 
+    this.logger = getLogger('MemoryLoadBalancer');
+    this.stats = {
       totalRequests: 0,
-      nodeDistribution: ,
+      nodeDistribution: {},
       averageLatency: 0,
       overloadedNodes: [],
-      algorithm: config.algorithm,;
+      algorithm: config.algorithm,
+    };
   }
 
   addNode(node: MemoryNode): void {
     this.nodes.set(node.id, node);
     this.stats.nodeDistribution[node.id] = 0;
-    this.logger.debug(`Added node to load balancer: ${node.id}`);`
+    this.logger.debug(`Added node to load balancer: ${node.id}`);
   }
 
   removeNode(nodeId: string): void {
@@ -59,12 +62,12 @@ export class MemoryLoadBalancer extends TypedEventBase {
     this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
       (id) => id !== nodeId
     );
-    this.logger.debug(`Removed node from load balancer: $nodeId`);`
+    this.logger.debug(`Removed node from load balancer: ${nodeId}`);
   }
 
   selectNode(availableNodes: MemoryNode[]): MemoryNode {
     if (!this.config.enabled||availableNodes.length === 0) {
-      throw new Error('No nodes available for load balancing');'
+      throw new Error('No nodes available for load balancing');
     }
 
     if (availableNodes.length === 1) {
@@ -74,19 +77,19 @@ export class MemoryLoadBalancer extends TypedEventBase {
     let selectedNode: MemoryNode;
 
     switch (this.config.algorithm) {
-      case 'round-robin':'
+      case 'round-robin':
         selectedNode = this.selectRoundRobin(availableNodes);
         break;
 
-      case 'least-connections':'
+      case 'least-connections':
         selectedNode = this.selectLeastConnections(availableNodes);
         break;
 
-      case 'weighted':'
+      case 'weighted':
         selectedNode = this.selectWeighted(availableNodes);
         break;
 
-      case 'resource-aware':'
+      case 'resource-aware':
         selectedNode = this.selectResourceAware(availableNodes);
         break;
 
@@ -101,12 +104,112 @@ export class MemoryLoadBalancer extends TypedEventBase {
     // Check for overloaded nodes
     this.checkNodeOverload(selectedNode);
 
-    recordMetric('memory_load_balancer_request', 1, {'
+    recordMetric('memory_load_balancer_request', 1, {
       algorithm: this.config.algorithm,
       nodeId: selectedNode.id,
     });
 
     return selectedNode;
+  }
+
+  private selectRoundRobin(nodes: MemoryNode[]): MemoryNode {
+    const nodeIndex = this.roundRobinIndex % nodes.length;
+    this.roundRobinIndex++;
+    return nodes[nodeIndex];
+  }
+
+  private selectLeastConnections(nodes: MemoryNode[]): MemoryNode {
+    return nodes.reduce((least, current) => {
+      if (current.metrics.connections < least.metrics.connections) {
+        return current;
+      }
+      if (current.metrics.connections === least.metrics.connections) {
+        // Secondary sort by response time
+        return current.metrics.averageResponseTime <
+          least.metrics.averageResponseTime
+          ? current
+          : least;
+      }
+      return least;
+    });
+  }
+
+  private selectWeighted(nodes: MemoryNode[]): MemoryNode {
+    const weights = this.config.weights||{};
+
+    // Calculate total weight
+    const totalWeight = nodes.reduce((sum, node) => {
+      const weight = weights[node.id]||node.weight||1;
+      return sum + weight;
+    }, 0);
+
+    // Random selection based on weights
+    let random = Math.random() * totalWeight;
+
+    for (const node of nodes) {
+      const weight = weights[node.id]||node.weight||1;
+      random -= weight;
+      if (random <= 0) {
+        return node;
+      }
+    }
+
+    // Fallback to first node
+    return nodes[0];
+  }
+
+  private selectResourceAware(nodes: MemoryNode[]): MemoryNode {
+    // Score nodes based on multiple factors
+    const scoredNodes = nodes.map((node) => ({
+      node,
+      score: this.calculateNodeScore(node),
+    }));
+
+    // Sort by score (higher is better)
+    scoredNodes.sort((a, b) => b.score - a.score);
+
+    return scoredNodes[0].node;
+  }
+
+  private calculateNodeScore(node: MemoryNode): number {
+    const metrics = node.metrics;
+    const thresholds = this.config.thresholds||{
+      maxLatency: 100,
+      maxErrorRate: 0.05,
+      maxConnectionsPerNode: 100,
+      maxMemoryUsage: 0.8,
+    };
+
+    // Base score
+    let score = 100;
+
+    // Penalize high latency
+    if (metrics.averageResponseTime > thresholds.maxLatency) {
+      score -= (metrics.averageResponseTime / thresholds.maxLatency) * 20;
+    }
+
+    // Penalize high error rate
+    if (node.status.errorRate > thresholds.maxErrorRate) {
+      score -= (node.status.errorRate / thresholds.maxErrorRate) * 30;
+    }
+
+    // Penalize high connection count
+    if (metrics.connections > thresholds.maxConnectionsPerNode) {
+      score -= (metrics.connections / thresholds.maxConnectionsPerNode) * 15;
+    }
+
+    // Penalize high memory usage
+    if (metrics.memoryUsage > thresholds.maxMemoryUsage) {
+      score -= (metrics.memoryUsage / thresholds.maxMemoryUsage) * 25;
+    }
+
+    // Bonus for high cache hit rate
+    score += metrics.cacheHitRate * 10;
+
+    // Apply node weight multiplier
+    score *= node.weight;
+
+    return Math.max(0, score);
   }
 
   private checkNodeOverload(node: MemoryNode): void {
@@ -124,23 +227,23 @@ export class MemoryLoadBalancer extends TypedEventBase {
 
     if (isOverloaded && !wasOverloaded) {
       this.stats.overloadedNodes.push(node.id);
-      this.emit('overloaded', node.id);'
-      this.logger.warn(`Node overloaded: $node.id`, {`
+      this.emit('overloaded', node.id);
+      this.logger.warn(`Node overloaded: ${node.id}`, {
         latency: node.metrics.averageResponseTime,
         errorRate: node.status.errorRate,
         connections: node.metrics.connections,
         memoryUsage: node.metrics.memoryUsage,
       });
 
-      recordMetric('memory_load_balancer_overload', 1, { nodeId: node.id });'
-    } else if (!_isOverloaded && _wasOverloaded) {
+      recordMetric('memory_load_balancer_overload', 1, { nodeId: node.id });
+    } else if (!isOverloaded && wasOverloaded) {
       this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
         (id) => id !== node.id
       );
-      this.emit('recovered', node.id);'
-      this.logger.info(`Node recovered from overload: $node.id`);`
+      this.emit('recovered', node.id);
+      this.logger.info(`Node recovered from overload: ${node.id}`);
 
-      recordMetric('memory_load_balancer_recovery', 1, { nodeId: node.id });'
+      recordMetric('memory_load_balancer_recovery', 1, { nodeId: node.id });
     }
   }
 
@@ -231,24 +334,24 @@ export class MemoryLoadBalancer extends TypedEventBase {
     }
 
     this.roundRobinIndex = 0;
-    this.logger.info('Load balancer statistics reset');'
+    this.logger.info('Load balancer statistics reset');
   }
 
-  setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void {'
+  setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void {
     this.config.algorithm = algorithm;
     this.stats.algorithm = algorithm;
-    this.logger.info(`Load balancing algorithm changed to: ${algorithm}`);`
+    this.logger.info(`Load balancing algorithm changed to: ${algorithm}`);
 
-    recordMetric('memory_load_balancer_algorithm_change', 1, { algorithm });'
+    recordMetric('memory_load_balancer_algorithm_change', 1, { algorithm });
   }
 
   setWeights(weights: Record<string, number>): void {
     this.config.weights = weights;
-    this.logger.info('Load balancing weights updated', weights);'
+    this.logger.info('Load balancing weights updated', weights);
   }
 
-  setThresholds(thresholds: LoadBalancingConfig['thresholds']): void {'
+  setThresholds(thresholds: LoadBalancingConfig['thresholds']): void {
     this.config.thresholds = { ...this.config.thresholds, ...thresholds };
-    this.logger.info('Load balancing thresholds updated', thresholds);'
+    this.logger.info('Load balancing thresholds updated', thresholds);
   }
 }

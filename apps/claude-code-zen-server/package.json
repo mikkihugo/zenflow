@@ -66,7 +66,7 @@
 		"@claude-zen/workflows": "workspace:*",
 		"@claude-zen/system-monitoring": "workspace:*",
 		"@claude-zen/telemetry": "workspace:*",
-		"@claude-zen/llm-routing": "workspace:*",
+		"@claude-zen/llm-providers": "workspace:*",
 		"@claude-zen/chaos-engineering": "workspace:*",
 		"@claude-zen/dspy": "workspace:*",
 		"@claude-zen/neural-ml": "workspace:*",

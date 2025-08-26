@@ -4,7 +4,13 @@
  * Factory functions for creating different intelligence system configurations
  */
 
-import { getLogger } from "@claude-zen/foundation";
+// Simple logger placeholder
+const getLogger = (name: string) => ({
+	info: (msg: string, meta?: unknown) => console.log(`[INFO:${name}] ${msg}`, meta || ''),
+	debug: (msg: string, meta?: unknown) => console.log(`[DEBUG:${name}] ${msg}`, meta || ''),
+	warn: (msg: string, meta?: unknown) => console.warn(`[WARN:${name}] ${msg}`, meta || ''),
+	error: (msg: string, meta?: unknown) => console.error(`[ERROR:${name}] ${msg}`, meta || '')
+});
 import { CompleteIntelligenceSystem } from "./intelligence-system";
 import type { IntelligenceSystemConfig } from "./types";
 
@@ -13,7 +19,7 @@ const logger = getLogger("agent-monitoring-intelligence-factory");
 /**
  * Create a basic intelligence system with minimal features
  */
-export function createBasicIntelligenceSystem(): CompleteIntelligenceSystem {
+export function createBasicIntelligenceSystem(inputConfig?: IntelligenceSystemConfig): CompleteIntelligenceSystem {
 	const config: IntelligenceSystemConfig = {
 		taskPrediction: {
 			enabled: true,
@@ -37,13 +43,14 @@ export function createBasicIntelligenceSystem(): CompleteIntelligenceSystem {
 	};
 
 	logger.info("Creating basic intelligence system");
-	return new CompleteIntelligenceSystem(config);
+	const finalConfig = { ...config, ...inputConfig };
+	return new CompleteIntelligenceSystem(finalConfig);
 }
 
 /**
  * Create a production-ready intelligence system with all features
  */
-export function createProductionIntelligenceSystem(): CompleteIntelligenceSystem {
+export function createProductionIntelligenceSystem(inputConfig?: IntelligenceSystemConfig): CompleteIntelligenceSystem {
 	const config: IntelligenceSystemConfig = {
 		taskPrediction: {
 			enabled: true,
@@ -82,7 +89,8 @@ export function createProductionIntelligenceSystem(): CompleteIntelligenceSystem
 	};
 
 	logger.info("Creating production intelligence system");
-	return new CompleteIntelligenceSystem(config);
+	const finalConfig = { ...config, ...inputConfig };
+	return new CompleteIntelligenceSystem(finalConfig);
 }
 
 /**

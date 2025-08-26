@@ -906,8 +906,8 @@ impl<T: Float + Send + Sync> ForecastingAdam<T> {
     let prev_gradients =
       &self.gradient_history[self.gradient_history.len() - 2];
 
-    for (layer_idx, (current_grads, prev_grads)) in
-      gradients.iter_mut().zip(prev_gradients.iter()).enumerate()
+    for (current_grads, prev_grads) in
+      gradients.iter_mut().zip(prev_gradients.iter())
     {
       for (grad, &prev_grad) in current_grads.iter_mut().zip(prev_grads.iter())
       {
@@ -925,8 +925,8 @@ impl<T: Float + Send + Sync> ForecastingAdam<T> {
     }
 
     // Detect seasonal patterns in gradients and apply correction
-    for layer_idx in 0..gradients.len() {
-      for param_idx in 0..gradients[layer_idx].len() {
+    for (layer_idx, layer_grads) in gradients.iter_mut().enumerate() {
+      for (param_idx, param_grad) in layer_grads.iter_mut().enumerate() {
         let mut seasonal_avg = T::zero();
         let mut count = 0;
 
@@ -944,8 +944,8 @@ impl<T: Float + Send + Sync> ForecastingAdam<T> {
         if count > 0 {
           seasonal_avg = seasonal_avg / T::from(count).unwrap();
           let correction = T::from(0.1).unwrap();
-          gradients[layer_idx][param_idx] = (T::one() - correction)
-            * gradients[layer_idx][param_idx]
+          *param_grad = (T::one() - correction)
+            * *param_grad
             + correction * seasonal_avg;
         }
       }
@@ -1082,7 +1082,7 @@ impl<T: Float + Send + Sync> Default for OptimizerBuilder<T> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use approx::assert_relative_eq;
+  
 
   #[test]
   fn test_adam_optimizer() {
@@ -1179,7 +1179,7 @@ mod tests {
     }
 
     // Check that gradient history is being maintained
-    assert!(optimizer.gradient_history.len() > 0);
+    assert!(!optimizer.gradient_history.is_empty());
     assert!(optimizer.gradient_history.len() <= optimizer.lookback_window);
   }
 }

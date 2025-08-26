@@ -7,7 +7,7 @@
 
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
-import type { ExporterConfig, } from '../types.js';
+import type { ExporterConfig, ExportResult, TelemetryData } from '../types.js';
 import type { BaseExporter } from './index.js';
 
 /**
@@ -16,16 +16,19 @@ import type { BaseExporter } from './index.js';
 export class ConsoleExporter implements BaseExporter {
   private config: ExporterConfig;
   private logger: Logger;
+  private exportCount = 0;
+  private lastExportTime: number | null = null;
+  private lastError: string | null = null;
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger(`ConsoleExporter:${config.name}`);`
+    this.logger = getLogger(`ConsoleExporter:${config.name}`);
   }
 
   async initialize(): Promise<void> {
-    this.logger.info('Console exporter initialized', {'
+    this.logger.info('Console exporter initialized', {
       name: this.config.name,
-      signals: this.config.signals||['traces', 'metrics', 'logs'],
+      signals: this.config.signals || ['traces', 'metrics', 'logs'],
     });
   }
 
@@ -61,7 +64,7 @@ export class ConsoleExporter implements BaseExporter {
   async exportBatch(dataItems: TelemetryData[]): Promise<ExportResult> {
     try {
       this.logger.info(
-        `📦 Batch Export ($dataItems.lengthitems) - $this.config.name``
+        `📦 Batch Export (${dataItems.length} items) - ${this.config.name}`
       );
 
       for (const data of dataItems) {
@@ -81,7 +84,7 @@ export class ConsoleExporter implements BaseExporter {
     } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
-      this.logger.error('Console batch export failed', error);'
+      this.logger.error('Console batch export failed', error);
 
       return {
         success: false,
@@ -94,7 +97,7 @@ export class ConsoleExporter implements BaseExporter {
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Console exporter shut down', {'
+    this.logger.info('Console exporter shut down', {
       totalExported: this.exportCount,
     });
   }
@@ -110,8 +113,8 @@ export class ConsoleExporter implements BaseExporter {
   }> {
     return {
       status: this.lastError ? 'degraded' : 'healthy',
-      lastSuccess: this.lastExportTime||undefined,
-      lastError: this.lastError||undefined,
+      lastSuccess: this.lastExportTime || undefined,
+      lastError: this.lastError || undefined,
     };
   }
 
@@ -120,45 +123,45 @@ export class ConsoleExporter implements BaseExporter {
    */
   private formatAndLog(data: TelemetryData): void {
     const timestamp = new Date(data.timestamp).toISOString();
-    const _service = `${data.service.name}${data.service.version ? `@${data.service.version}` :''}`;`
+    const service = `${data.service.name}${data.service.version ? `@${data.service.version}` : ''}`;
 
     let emoji = '📊';
     let color = '';
 
     switch (data.type) {
-      case 'traces':'
+      case 'traces':
         emoji = '🔍';
-        color = '\x1b[36m'; // Cyan'
+        color = '\x1b[36m'; // Cyan
         break;
-      case 'metrics':'
+      case 'metrics':
         emoji = '📊';
-        color = '\x1b[32m'; // Green'
+        color = '\x1b[32m'; // Green
         break;
-      case 'logs':'
+      case 'logs':
         emoji = '📝';
-        color = '\x1b[33m'; // Yellow'
+        color = '\x1b[33m'; // Yellow
         break;
     }
 
     const reset = '\x1b[0m';
 
     console.log(
-      `$color$emoji[${timestamp}] $data.type.toUpperCase()$_service$reset``
+      `${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`
     );
 
     // Format the data payload
-    if (data.type === 'traces') {'
+    if (data.type === 'traces') {
       this.logTraceData(data);
-    } else if (data.type === 'metrics') {'
+    } else if (data.type === 'metrics') {
       this.logMetricData(data);
-    } else if (data.type === 'logs') {'
+    } else if (data.type === 'logs') {
       this.logLogData(data);
     }
 
     // Log attributes if present
     if (data.attributes && Object.keys(data.attributes).length > 0) {
       console.log(
-        `   ${color}Attributes:${reset}`,`
+        `   ${color}Attributes:${reset}`,
         JSON.stringify(data.attributes, null, 2)
       );
     }

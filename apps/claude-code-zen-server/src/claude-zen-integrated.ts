@@ -197,7 +197,7 @@ Options:
 					res.json({
 						status: "running",
 						mode: this.options.dev ? "development" : "production",
-						daemon: this.options.daemon,
+						daemon: this.options.daemon ?? false,
 						uptime: process.uptime(),
 					});
 				},

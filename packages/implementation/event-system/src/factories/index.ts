@@ -20,4 +20,4 @@ export { WorkflowEventManagerFactory } from '../adapters/workflow-event-factory;
 export type {
   EventManagerFactory,
   EventManagerConfig,
-} from '../core/interfaces;
+} from '../core/interfaces';

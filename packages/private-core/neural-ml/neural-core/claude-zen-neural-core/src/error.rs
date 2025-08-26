@@ -188,21 +188,16 @@ pub struct ErrorBuilder {
 }
 
 /// Internal error type enumeration for the builder
-#[allow(dead_code)]
 enum ErrorType {
   Config,
   Data,
   Training,
   Prediction,
   Memory,
-  #[allow(dead_code)]
   Compatibility,
-  #[allow(dead_code)]
   Math,
-  #[allow(dead_code)]
   Parallel,
   TimeSeries,
-  #[allow(dead_code)]
   Serialization,
 }
 
@@ -261,6 +256,46 @@ impl ErrorBuilder {
   pub fn time_series<S: Into<String>>(message: S) -> Self {
     Self {
       error_type: ErrorType::TimeSeries,
+      message: message.into(),
+      source: None,
+      context: std::collections::HashMap::new(),
+    }
+  }
+
+  /// Create a new compatibility error builder
+  pub fn compatibility<S: Into<String>>(message: S) -> Self {
+    Self {
+      error_type: ErrorType::Compatibility,
+      message: message.into(),
+      source: None,
+      context: std::collections::HashMap::new(),
+    }
+  }
+
+  /// Create a new math error builder
+  pub fn math<S: Into<String>>(message: S) -> Self {
+    Self {
+      error_type: ErrorType::Math,
+      message: message.into(),
+      source: None,
+      context: std::collections::HashMap::new(),
+    }
+  }
+
+  /// Create a new parallel processing error builder
+  pub fn parallel<S: Into<String>>(message: S) -> Self {
+    Self {
+      error_type: ErrorType::Parallel,
+      message: message.into(),
+      source: None,
+      context: std::collections::HashMap::new(),
+    }
+  }
+
+  /// Create a new serialization error builder
+  pub fn serialization<S: Into<String>>(message: S) -> Self {
+    Self {
+      error_type: ErrorType::Serialization,
       message: message.into(),
       source: None,
       context: std::collections::HashMap::new(),

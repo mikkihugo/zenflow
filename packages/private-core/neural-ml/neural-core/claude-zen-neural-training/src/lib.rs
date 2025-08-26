@@ -44,7 +44,9 @@ pub mod optimizer;
 pub mod scheduler;
 
 // Re-export main types for convenience
+#[allow(ambiguous_glob_reexports)]
 pub use loss::*;
+#[allow(ambiguous_glob_reexports)]
 pub use metrics::*;
 pub use optimizer::*;
 pub use scheduler::*;
@@ -284,8 +286,8 @@ pub mod utils {
 
   /// Initialize random seed for reproducibility
   pub fn set_seed(seed: u64) {
-    use rand::{Rng, SeedableRng};
-    let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+    use rand::SeedableRng;
+    let _rng = rand::rngs::StdRng::seed_from_u64(seed);
     // Set global seed for consistent behavior
   }
 

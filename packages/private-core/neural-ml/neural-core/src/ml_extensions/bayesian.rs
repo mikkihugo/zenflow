@@ -1205,7 +1205,7 @@ impl MLEnsembleOptimizer {
             
             if let Some(prior_dist) = self.prior_distributions.get(&param_name) {
                 // Sample from prior and scale to bounds
-                let sample = prior_dist.sample(&mut rand::thread_rng());
+                let sample = prior_dist.sample(&mut rand::rng());
                 suggestion[i] = low + sample * (high - low);
             } else {
                 // Fallback to uniform sampling

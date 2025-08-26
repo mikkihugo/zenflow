@@ -33,7 +33,6 @@ pub struct NetworkAdapter<T: Float + Send + Sync + 'static> {
   /// Output postprocessing pipeline
   output_postprocessor: Box<dyn OutputPostprocessor<T>>,
   /// Activation function mapper
-  #[allow(dead_code)]
   activation_mapper: ActivationMapper,
   /// Network configuration metadata
   config: NetworkAdapterConfig<T>,
@@ -445,23 +444,33 @@ impl<T: Float + Send + Sync + 'static + 'static> NetworkAdapter<T> {
   }
 
   /// Get underlying network for direct access
-  pub fn network(&self) -> &Network<T> {
+  #[must_use]
+  pub const fn network(&self) -> &Network<T> {
     &self.network
   }
 
   /// Get mutable reference to underlying network
-  pub fn network_mut(&mut self) -> &mut Network<T> {
+  #[must_use]
+  pub const fn network_mut(&mut self) -> &mut Network<T> {
     &mut self.network
   }
 
   /// Get adapter configuration
-  pub fn config(&self) -> &NetworkAdapterConfig<T> {
+  #[must_use]
+  pub const fn config(&self) -> &NetworkAdapterConfig<T> {
     &self.config
   }
 
   /// Get training state
-  pub fn training_state(&self) -> Option<&NetworkTrainingState<T>> {
+  #[must_use]
+  pub const fn training_state(&self) -> Option<&NetworkTrainingState<T>> {
     self.training_state.as_ref()
+  }
+
+  /// Get activation function mapper
+  #[must_use]
+  pub const fn activation_mapper(&self) -> &ActivationMapper {
+    &self.activation_mapper
   }
 
   /// Reset adapter state
@@ -474,6 +483,11 @@ impl<T: Float + Send + Sync + 'static + 'static> NetworkAdapter<T> {
 
 impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
   /// Create new training bridge with algorithm
+  ///
+  /// # Panics
+  ///
+  /// May panic if float type conversion fails during configuration setup.
+  #[must_use]
   pub fn new(algorithm: Box<dyn TrainingAlgorithm<T>>) -> Self {
     let config = TrainingBridgeConfig {
       max_epochs: 1000,
@@ -502,6 +516,14 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
   }
 
   /// Train network using ruv-FANN algorithms
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if training data preparation fails or network training encounters issues.
+  ///
+  /// # Panics
+  ///
+  /// May panic if the training state mutex is poisoned.
   pub fn train_network(
     &mut self,
     network: &mut Network<T>,
@@ -509,7 +531,7 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
     config: &TrainingBridgeConfig<T>,
   ) -> NeuroDivergentResult<T> {
     // Convert time series data to ruv-FANN training format
-    let training_data = self.prepare_training_data(data)?;
+    let training_data = Self::prepare_training_data(data);
 
     // Update configuration
     self.config = config.clone();
@@ -558,9 +580,8 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
 
   /// Prepare time series data for ruv-FANN training
   fn prepare_training_data(
-    &self,
     dataset: &TimeSeriesDataset<T>,
-  ) -> NeuroDivergentResult<TrainingData<T>> {
+  ) -> TrainingData<T> {
     let mut inputs = Vec::new();
     let mut outputs = Vec::new();
 
@@ -583,11 +604,15 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
       }
     }
 
-    Ok(TrainingData { inputs, outputs })
+    TrainingData { inputs, outputs }
   }
 
   /// Setup cascade correlation training
-  pub fn setup_cascade_training(
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if cascade correlation configuration fails.
+  pub const fn setup_cascade_training(
     &mut self,
     _config: CascadeConfig<T>,
   ) -> NeuroDivergentResult<()> {
@@ -601,6 +626,10 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
   }
 
   /// Check if training should continue
+  ///
+  /// # Panics
+  ///
+  /// May panic if the training state mutex is poisoned.
   pub fn should_continue_training(&self) -> bool {
     let state = self.state.lock().unwrap();
     state.training_active && state.epoch < self.config.max_epochs
@@ -622,6 +651,7 @@ pub struct CascadeConfig<T: Float + Send + Sync + 'static> {
 
 impl ActivationMapper {
   /// Create new activation mapper
+  #[must_use]
   pub fn new() -> Self {
     let mut function_map = HashMap::new();
 
@@ -661,11 +691,13 @@ impl ActivationMapper {
   }
 
   /// Map string name to activation function
+  #[must_use]
   pub fn map_function(&self, name: &str) -> Option<ActivationFunction> {
     self.function_map.get(name).copied()
   }
 
   /// Get all available function names
+  #[must_use]
   pub fn available_functions(&self) -> Vec<&String> {
     self.function_map.keys().collect()
   }

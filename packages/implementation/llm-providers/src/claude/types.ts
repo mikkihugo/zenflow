@@ -19,9 +19,9 @@ export type CanUseTool = (
 ) => Promise<PermissionResult>;
 
 export type PermissionMode =
-  | 'allow-all''
-  | 'deny-all''
-  | 'interactive''
+  | 'allow-all';
+  | 'deny-all';
+  | 'interactive';
   | 'custom;
 
 // =============================================================================
@@ -149,7 +149,7 @@ export const DEFAULT_TIMEOUTS = {
 } as const;
 
 export const DEFAULT_SDK_OPTIONS: Omit<
-  Required<ClaudeSDKOptions>,'customPermissionHandler''
+  Required<ClaudeSDKOptions>,'customPermissionHandler';
 > & { customPermissionHandler?: CanUseTool } = {
   model: 'claude-3-sonnet',
   maxTokens: 4096,

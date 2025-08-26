@@ -4,7 +4,13 @@
  * Stub implementation for the main intelligence system
  */
 
-import { getLogger } from "@claude-zen/foundation";
+// Simple logger placeholder
+const getLogger = (name: string) => ({
+	info: (msg: string, meta?: unknown) => console.log(`[INFO:${name}] ${msg}`, meta || ''),
+	debug: (msg: string, meta?: unknown) => console.log(`[DEBUG:${name}] ${msg}`, meta || ''),
+	warn: (msg: string, meta?: unknown) => console.warn(`[WARN:${name}] ${msg}`, meta || ''),
+	error: (msg: string, meta?: unknown) => console.error(`[ERROR:${name}] ${msg}`, meta || '')
+});
 import type {
 	AdaptiveLearningUpdate,
 	AgentHealth,
@@ -28,9 +34,39 @@ const logger = getLogger("agent-monitoring-intelligence-system");
  * Complete Intelligence System - Main implementation
  */
 export class CompleteIntelligenceSystem implements IntelligenceSystem {
+	private config: IntelligenceSystemConfig;
+	private initialized = false;
+
 	constructor(config: IntelligenceSystemConfig) {
 		this.config = config;
+		this.initialized = true;
 		logger.info("CompleteIntelligenceSystem initialized", { config });
+	}
+
+	async initialize(): Promise<void> {
+		this.initialized = true;
+		logger.info("CompleteIntelligenceSystem initialized");
+	}
+
+	async predict(request: any): Promise<any> {
+		return { prediction: "placeholder", request };
+	}
+
+	getAgentHealth(_agentId: AgentId): AgentHealth | null {
+		return null;
+	}
+
+	async updateAgentHealth(_agentId: AgentId, _health: any): Promise<void> {
+		// Placeholder
+	}
+
+	async getIntelligenceMetrics(): Promise<any> {
+		return { metrics: "placeholder" };
+	}
+
+	async shutdown(): Promise<void> {
+		this.initialized = false;
+		logger.info("CompleteIntelligenceSystem shutdown");
 	}
 
 	async predictTaskDuration(
@@ -77,9 +113,6 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 		logger.debug("Agent performance updated", { agentId: agentId.id, success });
 	}
 
-	getAgentHealth(_agentId: AgentId): AgentHealth | null {
-		return null;
-	}
 
 	async forecastPerformanceOptimization(
 		swarmId: SwarmId,
@@ -155,8 +188,4 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 		};
 	}
 
-	async shutdown(): Promise<void> {
-		logger.info("CompleteIntelligenceSystem shutting down");
-		this.initialized = false;
-	}
 }

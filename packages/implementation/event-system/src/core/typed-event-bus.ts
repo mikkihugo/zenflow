@@ -29,7 +29,7 @@
  * // Type-safe event handling with validation
  * eventBus.on('user.login', (event) => {'
  *   // event is fully typed from schema
- *   console.log('User logged in:', event.payload.userId);'
+ *   console.log('User logged in:', event.payload.userId);
  * });
  *
  * // Emit with automatic validation
@@ -59,7 +59,7 @@ import {
   type BaseEvent,
 } from '../validation/zod-validation;
 
-const logger = getLogger('TypedEventBus');'
+const logger = getLogger('TypedEventBus');
 
 // =============================================================================
 // TYPE-SAFE EVENT SYSTEM CONFIGURATION
@@ -83,7 +83,7 @@ export interface TypedEventBusConfig {
 // Event map for type safety with mitt
 export interface TypedEventMap {
   // Base events
-  '*': BaseEvent;'
+  '*': BaseEvent;
   [key: string]: any;
   [key: symbol]: any;
 }
@@ -149,7 +149,7 @@ export class TypedEventBus {
   async emit<K extends keyof TypedEventMap>(
     type: K,
     event: TypedEventMap[K]
-  ): Promise<Result<void, Error>> {
+  ): Promise<Result<void, Error>{> {
     return withTrace('typed_event.emit', async (span) => {'
       return safeAsync(async () => {
         const startTime = Date.now();
@@ -332,18 +332,18 @@ export class TypedEventBus {
    */
   onAny(handler: WildcardHandler): void {
     if (!this.config.enableWildcards) {
-      logger.warn('[TypedEventBus] Wildcard listeners disabled in config');'
+      logger.warn('[TypedEventBus] Wildcard listeners disabled in config');
       return;
     }
 
-    this.emitter.on('*', handler as any);'
+    this.emitter.on('*', handler as any);
   }
 
   /**
    * Remove wildcard listener.
    */
   offAny(handler: WildcardHandler): void {
-    this.emitter.off('*', handler as any);'
+    this.emitter.off('*', handler as any);
   }
 
   // =============================================================================
@@ -370,13 +370,13 @@ export class TypedEventBus {
   private async validateEvent(
     eventType: string,
     event: unknown
-  ): Promise<Result<unknown, Error>> {
+  ): Promise<Result<unknown, Error>{> {
     const validator =
-      this.validators.get(eventType)||this.validators.get('*');'
+      this.validators.get(eventType)||this.validators.get('*');
 
     if (!validator) {
       // Try base event validation as fallback
-      const baseValidator = new EventValidator(BaseEventSchema, 'BaseEvent');'
+      const baseValidator = new EventValidator(BaseEventSchema, 'BaseEvent');
       return baseValidator.validate(event);
     }
 
@@ -388,7 +388,7 @@ export class TypedEventBus {
    */
   private initializeValidators(): void {
     // Register base event validator
-    this.validators.set('*', new EventValidator(BaseEventSchema, 'BaseEvent'));'
+    this.validators.set('*', new EventValidator(BaseEventSchema, 'BaseEvent'));
 
     // Register specific event type validators from EventSchemas
     for (const [schemaName, schema] of Object.entries(EventSchemas)) {
@@ -440,7 +440,7 @@ export class TypedEventBus {
     this.listenerCounts.clear();
 
     if (this.config.enableLogging) {
-      logger.info('[TypedEventBus] Cleared all event listeners');'
+      logger.info('[TypedEventBus] Cleared all event listeners');
     }
   }
 

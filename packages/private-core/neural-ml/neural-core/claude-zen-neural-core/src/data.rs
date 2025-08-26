@@ -3,8 +3,6 @@
 //! This module provides comprehensive support for time series data handling,
 //! including data validation, preprocessing, and transformation operations.
 
-#![allow(clippy::missing_errors_doc)]
-#![allow(clippy::missing_panics_doc)]
 
 use std::collections::HashMap;
 use std::marker::PhantomData;
@@ -853,6 +851,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Validate data integrity
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if validation cannot be completed due to data corruption or schema issues.
   pub fn validate(&self) -> NeuroDivergentResult<ValidationReport> {
     let mut errors = Vec::new();
     let warnings = Vec::new();
@@ -900,11 +902,19 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Get number of time series
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if unique ID extraction fails.
   pub fn n_series(&self) -> NeuroDivergentResult<usize> {
     Ok(self.unique_ids()?.len())
   }
 
   /// Get time range
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if timestamp extraction fails or data format is invalid.
   pub const fn time_range(
     &self,
   ) -> NeuroDivergentResult<(DateTime<Utc>, DateTime<Utc>)> {
@@ -916,6 +926,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Export to CSV
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if file creation fails or CSV writing encounters issues.
   pub fn to_csv<P: AsRef<Path>>(&self, path: P) -> NeuroDivergentResult<()> {
     let mut file = std::fs::File::create(path).map_err(|e| {
       ErrorBuilder::data(format!("Failed to create CSV file: {e}")).build()
@@ -931,6 +945,10 @@ impl<T: Float> TimeSeriesDataFrame<T> {
   }
 
   /// Export to Parquet
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if file creation fails or Parquet writing encounters issues.
   pub fn to_parquet<P: AsRef<Path>>(
     &self,
     path: P,
@@ -1019,6 +1037,10 @@ impl<T: Float> TimeSeriesDatasetBuilder<T> {
   }
 
   /// Build the schema
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if required columns are not specified or schema validation fails.
   pub fn build(self) -> NeuroDivergentResult<TimeSeriesSchema> {
     let unique_id_col = self
       .unique_id_col

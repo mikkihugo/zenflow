@@ -68,7 +68,6 @@
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
 #![warn(clippy::all, clippy::pedantic, clippy::nursery)]
-#![allow(clippy::module_name_repetitions)]
 
 // Re-export essential types from dependencies
 pub use chrono::{DateTime, Utc};

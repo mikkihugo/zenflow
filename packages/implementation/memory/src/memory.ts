@@ -9,31 +9,46 @@
  */
 
 import {
-  BasicTelemetryManager,
-  createCircuitBreaker,
-  createErrorAggregator,
-  ensureError,
-  err,
   getLogger,
-  injectable,
+  Result,
   ok,
-  PerformanceTracker,
-  type Result,
-  recordMetric,
-  Storage,
+  err,
   safeAsync,
-  type TelemetryConfig,
-  TypedEventBase,
   withRetry,
+  withTimeout,
+  withContext,
+  PerformanceTracker,
+  BasicTelemetryManager,
+  TelemetryConfig,
+  Storage,
+  KeyValueStore,
+  StorageError,
+  injectable,
+  createErrorAggregator,
+  createCircuitBreaker,
+  recordMetric,
+  recordHistogram,
   withTrace,
+  ensureError,
+  TypedEventBase,
 } from '@claude-zen/foundation';
+import type { ServiceEvents } from '@claude-zen/foundation';
+
 import type {
-  MemoryConnectionError,
   MemoryStore,
+  MemoryStats,
+  StoreOptions,
   SessionMemoryStoreOptions as SessionMemoryStoreOptionsType,
+  MemoryError,
+  MemoryStorageError,
+  MemoryConnectionError,
+  SessionState,
+  CacheEntry,
 } from './types';
 
-const logger = getLogger('memory:store');'
+import type { BackendInterface, JSONValue } from './core/memory-system';
+
+const logger = getLogger('memory:store');
 const performanceTracker = new PerformanceTracker();
 
 // Initialize telemetry for memory operations
@@ -44,13 +59,21 @@ const telemetryConfig: TelemetryConfig = {
 };
 const telemetry = new BasicTelemetryManager(telemetryConfig);
 
-type BackendConfig = SessionMemoryStoreOptionsType['backendConfig'];'
+type BackendConfig = SessionMemoryStoreOptionsType['backendConfig'];
 type SessionMemoryStoreOptions = SessionMemoryStoreOptionsType;
 
 @injectable()
 export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
+  private backend: BackendInterface|null = null;
   private initialized = false;
+  private sessions = new Map<string, SessionState>();
   private options: Required<SessionMemoryStoreOptions>;
+
+  private cache = new Map<string, CacheEntry>();
+  private cacheKeys: string[] = [];
+
+  private storage: KeyValueStore|null = null;
+  private circuitBreaker: any;
   private errorAggregator = createErrorAggregator();
   private telemetryInitialized = false;
 
@@ -58,12 +81,12 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     super();
 
     this.options = {
-      backendConfig: options?.backendConfig,
-      enableCache: options?.enableCache ?? true,
-      cacheSize: options?.cacheSize ?? 1000,
-      cacheTTL: options?.cacheTTL ?? 300000, // 5 minutes'
-      enableVectorStorage: options?.enableVectorStorage ?? false,
-      vectorDimensions: options?.vectorDimensions ?? 512,
+      backendConfig: options?.['backendConfig'],
+      enableCache: options?.['enableCache'] ?? true,
+      cacheSize: options?.['cacheSize'] ?? 1000,
+      cacheTTL: options?.['cacheTTL'] ?? 300000, // 5 minutes
+      enableVectorStorage: options?.['enableVectorStorage'] ?? false,
+      vectorDimensions: options?.['vectorDimensions'] ?? 512,
     };
 
     // Initialize circuit breaker for resilient storage operations
@@ -74,18 +97,20 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
         errorThresholdPercentage: 50,
         resetTimeout: 30000,
       },
-      'memory-storage-circuit-breaker''
+      'memory-storage-circuit-breaker'
     );
 
     // Record construction metrics
-    recordMetric('memory_store_instances_created', 1);'
+    recordMetric('memory_store_instances_created', 1);
 
     logger.debug(
       'SessionMemoryStore constructed with comprehensive foundation integration',
+      {
         cacheEnabled: this.options.enableCache,
         cacheSize: this.options.cacheSize,
         vectorEnabled: this.options.enableVectorStorage,
         backendType: this.options.backendConfig?.type||'unknown',
+      }
     );
 
     // Storage will be created during initialization using foundation
@@ -94,9 +119,9 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   async initialize(): Promise<Result<void, MemoryConnectionError>> {
     if (this.initialized) return ok(undefined);
 
-    const timer = performanceTracker.startTimer('memory_initialize');'
+    const timer = performanceTracker.startTimer('memory_initialize');
 
-    return withTrace('memory-store-initialize', () =>'
+    return withTrace('memory-store-initialize', () =>
       withRetry(
         async () => {
           return safeAsync(async () => {
@@ -114,7 +139,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
               const telemetryResult = await telemetry.initialize();
               if (telemetryResult.isOk()) {
                 this.telemetryInitialized = true;
-                logger.debug('Telemetry initialized successfully');'
+                logger.debug('Telemetry initialized successfully');
               } else {
                 logger.warn(
                   'Failed to initialize telemetry:',
@@ -123,10 +148,10 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
               }
             }
 
-            // Use foundation's storage system instead of custom backend'
+            // Use foundation's storage system instead of custom backend
             try {
-              this.storage = await Storage.getNamespacedKV('memory-sessions');'
-              logger.debug('Foundation KV storage initialized successfully');'
+              this.storage = await Storage.getNamespacedKV('memory-sessions');
+              logger.debug('Foundation KV storage initialized successfully');
             } catch (storageError) {
               const error = new MemoryConnectionError(
                 'Failed to initialize foundation storage',
@@ -134,40 +159,41 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
                 { originalError: storageError }
               );
               this.errorAggregator.add(error);
-              recordMetric('memory_initialization_errors', 1);'
+              recordMetric('memory_initialization_errors', 1);
               throw error;
             }
 
             await this.loadFromStorage();
             this.initialized = true;
 
-            performanceTracker.endTimer('memory_initialize');'
-            const _initTime = timer.duration||0;
+            performanceTracker.endTimer('memory_initialize');
+            const initTime = timer.duration||0;
 
             // Record comprehensive metrics
-            recordMetric('memory_store_initializations', 1);'
-            recordHistogram('memory_initialization_duration_ms', initTime);'
-            recordMetric('memory_sessions_loaded', this.sessions.size);'
+            recordMetric('memory_store_initializations', 1);
+            recordHistogram('memory_initialization_duration_ms', initTime);
+            recordMetric('memory_sessions_loaded', this.sessions.size);
 
-            logger.info('Session memory store initialized successfully', '
+            logger.info('Session memory store initialized successfully', {
               initializationTime: initTime,
               sessionsLoaded: this.sessions.size,
               hasCircuitBreaker: !!this.circuitBreaker,
-              telemetryEnabled: this.telemetryInitialized,);
+              telemetryEnabled: this.telemetryInitialized,
+            });
 
-            this.emit('initialized', {});'
+            this.emit('initialized', {});
           });
         },
         {
           retries: 3,
           minTimeout: 1000,
           maxTimeout: 5000,
-          onFailedAttempt: (_error, attemptNumber) => {
+          onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              `Memory initialization attempt ${attemptNumber} failed:`,`
+              `Memory initialization attempt ${attemptNumber} failed:`,
               error
             );
-            recordMetric('memory_initialization_retries', 1);'
+            recordMetric('memory_initialization_retries', 1);
           },
         }
       )
@@ -179,7 +205,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
           { originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_initialization_failures', 1);'
+        recordMetric('memory_initialization_failures', 1);
         logger.error(
           'Session memory store initialization failed',
           error.toObject()
@@ -213,7 +239,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     let data: unknown;
     let storeOptions: StoreOptions|undefined;
 
-    if (typeof keyOrData ==='string') {'
+    if (typeof keyOrData ==='string') {
       // (sessionId, key, data, options) overload
       sessionId = sessionIdOrKey;
       key = keyOrData;
@@ -229,10 +255,10 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
     this.ensureInitialized();
 
-    const timer = performanceTracker.startTimer('memory_store');'
-    const storeKey = `${sessionId}:${key}`;`
+    const timer = performanceTracker.startTimer('memory_store');
+    const storeKey = `${sessionId}:${key}`;
 
-    return withTrace('memory-store-operation', async () => {'
+    return withTrace('memory-store-operation', async () => {
       return withRetry(
         async () => {
           return safeAsync(async () => {
@@ -253,7 +279,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
                 vectors: new Map(),
               };
               this.sessions.set(sessionId, session);
-              recordMetric('memory_sessions_created', 1);'
+              recordMetric('memory_sessions_created', 1);
             }
 
             session.data[key] = data;
@@ -262,7 +288,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
             if (storeOptions?.vector && this.options.enableVectorStorage) {
               session.vectors?.set(key, storeOptions?.vector);
-              recordMetric('memory_vector_stores', 1);'
+              recordMetric('memory_vector_stores', 1);
             }
 
             // Use circuit breaker for resilient storage operations
@@ -277,18 +303,18 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
             if (this.options.enableCache) {
               this.updateCache(sessionId, key, data);
-              recordMetric('memory_cache_updates', 1);'
+              recordMetric('memory_cache_updates', 1);
             }
 
-            performanceTracker.endTimer('memory_store');'
+            performanceTracker.endTimer('memory_store');
             const storeTime = timer.duration||0;
 
             // Record comprehensive metrics
-            recordMetric('memory_store_operations', 1);'
-            recordHistogram('memory_store_duration_ms', storeTime);'
-            recordMetric('memory_data_size_bytes', JSON.stringify(data).length);'
+            recordMetric('memory_store_operations', 1);
+            recordHistogram('memory_store_duration_ms', storeTime);
+            recordMetric('memory_data_size_bytes', JSON.stringify(data).length);
 
-            logger.debug('Memory store operation completed', {'
+            logger.debug('Memory store operation completed', {
               sessionId,
               key: storeKey,
               dataSize: JSON.stringify(data).length,
@@ -302,22 +328,22 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
           minTimeout: 500,
           onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              `Memory store attempt $attemptNumberfailed for key ${storeKey}:`,`
+              `Memory store attempt ${attemptNumber} failed for key ${storeKey}:`,
               error
             );
-            recordMetric('memory_store_retries', 1);'
+            recordMetric('memory_store_retries', 1);
           },
         }
       );
-    }).then((_result) => {
+    }).then((result) => {
       if (result.isErr()) {
         const error = ensureError(result.error);
         this.errorAggregator.add(error);
-        recordMetric('memory_store_errors', 1);'
-        logger.error('Memory store operation failed', {'
+        recordMetric('memory_store_errors', 1);
+        logger.error('Memory store operation failed', {
           sessionId,
           key: storeKey,
-          error.message,
+          error: error.message,
         });
         throw error;
       }
@@ -334,15 +360,15 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     key?: string
   ): Promise<T|null> {
     // Handle both overloads
-    const actualSessionId = key ? sessionIdOrKey :'default;
+    const actualSessionId = key ? sessionIdOrKey :'default';
     const actualKey = key||sessionIdOrKey;
-    const retrieveKey = `${actualSessionId}:${actualKey}`;`
+    const retrieveKey = `${actualSessionId}:${actualKey}`;
 
     this.ensureInitialized();
 
-    const timer = performanceTracker.startTimer('memory_retrieve');'
+    const timer = performanceTracker.startTimer('memory_retrieve');
 
-    return withTrace('memory-retrieve-operation', async () => {'
+    return withTrace('memory-retrieve-operation', async () => {
       return withRetry(
         async () => {
           return safeAsync(async () => {
@@ -350,21 +376,21 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             if (this.options.enableCache) {
               const cached = this.getCachedData(actualSessionId, actualKey);
               if (cached !== null) {
-                performanceTracker.endTimer('memory_retrieve');'
-                recordMetric('memory_cache_hits', 1);'
+                performanceTracker.endTimer('memory_retrieve');
+                recordMetric('memory_cache_hits', 1);
                 recordHistogram(
                   'memory_retrieve_duration_ms',
                   timer.duration||0
                 );
 
-                logger.debug('Memory retrieve cache hit', {'
+                logger.debug('Memory retrieve cache hit', {
                   key: retrieveKey,
                   duration: timer.duration||0,
                 });
 
                 return cached as T;
               } else {
-                recordMetric('memory_cache_misses', 1);'
+                recordMetric('memory_cache_misses', 1);
               }
             }
 
@@ -376,24 +402,24 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
             const result = (session?.data[actualKey] as T) ?? null;
 
-            performanceTracker.endTimer('memory_retrieve');'
+            performanceTracker.endTimer('memory_retrieve');
             const retrieveTime = timer.duration||0;
 
             // Record comprehensive metrics
-            recordMetric('memory_retrieve_operations', 1);'
-            recordHistogram('memory_retrieve_duration_ms', retrieveTime);'
+            recordMetric('memory_retrieve_operations', 1);
+            recordHistogram('memory_retrieve_duration_ms', retrieveTime);
 
             if (result !== null) {
-              recordMetric('memory_retrieve_successes', 1);'
+              recordMetric('memory_retrieve_successes', 1);
               recordMetric(
                 'memory_retrieved_data_size_bytes',
                 JSON.stringify(result).length
               );
             } else {
-              recordMetric('memory_retrieve_not_found', 1);'
+              recordMetric('memory_retrieve_not_found', 1);
             }
 
-            logger.debug('Memory retrieve operation completed', {'
+            logger.debug('Memory retrieve operation completed', {
               key: retrieveKey,
               found: result !== null,
               dataSize: result ? JSON.stringify(result).length : 0,
@@ -408,10 +434,10 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
           minTimeout: 300,
           onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              `Memory retrieve attempt $attemptNumberfailed for key ${retrieveKey}:`,`
+              `Memory retrieve attempt ${attemptNumber} failed for key ${retrieveKey}:`,
               error
             );
-            recordMetric('memory_retrieve_retries', 1);'
+            recordMetric('memory_retrieve_retries', 1);
           },
         }
       );
@@ -419,10 +445,11 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
       if (result.isErr()) {
         const error = ensureError(result.error);
         this.errorAggregator.add(error);
-        recordMetric('memory_retrieve_errors', 1);'
-        logger.error('Memory retrieve operation failed', '
+        recordMetric('memory_retrieve_errors', 1);
+        logger.error('Memory retrieve operation failed', {
           key: retrieveKey,
-          error: error.message,);
+          error: error.message,
+        });
         throw error;
       }
       return result.value;
@@ -437,7 +464,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     }
 
     if (this.storage) {
-      const _sessionDataStr = await this.storage.get(`session:${sessionId}`);`
+      const sessionDataStr = await this.storage.get(`session:${sessionId}`);
       if (sessionDataStr) {
         try {
           const session = JSON.parse(sessionDataStr) as SessionState;
@@ -445,7 +472,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
           return session;
         } catch (parseError) {
           logger.error(
-            `Failed to parse session data for ${sessionId}:`,`
+            `Failed to parse session data for ${sessionId}:`,
             parseError
           );
         }
@@ -459,25 +486,25 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   async delete(key: string): Promise<boolean>;
   async delete(sessionIdOrKey: string, key?: string): Promise<boolean> {
     // Handle both overloads
-    const actualSessionId = key ? sessionIdOrKey :'default;
+    const actualSessionId = key ? sessionIdOrKey :'default';
     const actualKey = key||sessionIdOrKey;
-    const _deleteKey = `${actualSessionId}:${actualKey}`;`
+    const deleteKey = `${actualSessionId}:${actualKey}`;
 
     this.ensureInitialized();
 
-    const timer = performanceTracker.startTimer('memory_delete');'
+    const timer = performanceTracker.startTimer('memory_delete');
 
-    return withTrace('memory-delete-operation', async () => {'
+    return withTrace('memory-delete-operation', async () => {
       return withRetry(
         async () => {
           return safeAsync(async () => {
             const session = this.sessions.get(actualSessionId);
             if (!(session && actualKey in session.data)) {
-              performanceTracker.endTimer('memory_delete');'
-              recordMetric('memory_delete_not_found', 1);'
-              recordHistogram('memory_delete_duration_ms', timer.duration||0);'
+              performanceTracker.endTimer('memory_delete');
+              recordMetric('memory_delete_not_found', 1);
+              recordHistogram('memory_delete_duration_ms', timer.duration||0);
 
-              logger.debug('Memory delete operation - key not found', {'
+              logger.debug('Memory delete operation - key not found', {
                 key: deleteKey,
                 duration: timer.duration||0,
               });
@@ -501,25 +528,26 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             }
 
             // Remove from cache with metrics
-            const cacheKey = `$actualSessionId:$actualKey`;`
+            const cacheKey = `${actualSessionId}:${actualKey}`;
             if (this.cache.has(cacheKey)) {
               this.cache.delete(cacheKey);
-              recordMetric('memory_cache_deletions', 1);'
+              recordMetric('memory_cache_deletions', 1);
             }
 
-            performanceTracker.endTimer('memory_delete');'
-            const _deleteTime = timer.duration||0;
+            performanceTracker.endTimer('memory_delete');
+            const deleteTime = timer.duration||0;
 
             // Record comprehensive metrics
-            recordMetric('memory_delete_operations', 1);'
-            recordMetric('memory_delete_successes', 1);'
-            recordHistogram('memory_delete_duration_ms', deleteTime);'
-            recordMetric('memory_deleted_data_size_bytes', dataSize);'
+            recordMetric('memory_delete_operations', 1);
+            recordMetric('memory_delete_successes', 1);
+            recordHistogram('memory_delete_duration_ms', deleteTime);
+            recordMetric('memory_deleted_data_size_bytes', dataSize);
 
-            logger.debug('Memory delete operation completed successfully', '
+            logger.debug('Memory delete operation completed successfully', {
               key: deleteKey,
               dataSize,
-              duration: deleteTime,);
+              duration: deleteTime,
+            });
 
             return true;
           });
@@ -527,12 +555,12 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
         {
           retries: 2,
           minTimeout: 300,
-          onFailedAttempt: (error, attemptNumber) => 
+          onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              `Memory delete attempt ${attemptNumber} failed for key ${deleteKey}:`,`
+              `Memory delete attempt ${attemptNumber} failed for key ${deleteKey}:`,
               error
             );
-            recordMetric('memory_delete_retries', 1);'
+            recordMetric('memory_delete_retries', 1);
           },
         }
       );
@@ -540,8 +568,8 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
       if (result.isErr()) {
         const error = ensureError(result.error);
         this.errorAggregator.add(error);
-        recordMetric('memory_delete_errors', 1);'
-        logger.error('Memory delete operation failed', {'
+        recordMetric('memory_delete_errors', 1);
+        logger.error('Memory delete operation failed', {
           key: deleteKey,
           error: error.message,
         });
@@ -577,26 +605,26 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
       return ok(undefined);
     }
 
-    const timer = performanceTracker.startTimer('memory_shutdown');'
+    const timer = performanceTracker.startTimer('memory_shutdown');
 
     return safeAsync(async () => {
       await this.saveToStorage();
       this.initialized = false;
       this.storage = null;
 
-      performanceTracker.endTimer('memory_shutdown');'
-      logger.info('Session memory store shutdown successfully', {'
+      performanceTracker.endTimer('memory_shutdown');
+      logger.info('Session memory store shutdown successfully', {
         shutdownTime: timer.duration,
       });
 
-      this.emit('shutdown', {});'
+      this.emit('shutdown', {});
     }).then((result) => {
       if (result.isErr()) {
         const error = new MemoryError(
           'Failed to shutdown session memory store',
           { originalError: result.error.message }
         );
-        logger.error('Session memory store shutdown failed', error.toObject())();'
+        logger.error('Session memory store shutdown failed', error.toObject())();
         return err(error);
       }
       return ok(undefined);
@@ -613,7 +641,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     // Clear storage data if needed
     if (this.storage) {
       const allKeys = await this.storage.keys();
-      const sessionKeys = allKeys.filter((key) => key.startsWith('session:'));'
+      const sessionKeys = allKeys.filter((key) => key.startsWith('session:'));
 
       for (const key of sessionKeys) {
         await this.storage.delete(key);
@@ -648,27 +676,28 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
     try {
       const allKeys = await this.storage.keys();
-      const sessionKeys = allKeys.filter((key) => key.startsWith('session:'));'
+      const sessionKeys = allKeys.filter((key) => key.startsWith('session:'));
 
       for (const key of sessionKeys) {
         const sessionDataStr = await this.storage.get(key);
         if (sessionDataStr) {
           try {
             const session = JSON.parse(sessionDataStr) as SessionState;
-            const sessionId = key.replace('session:', '');'
+            const sessionId = key.replace('session:', '');
             this.sessions.set(sessionId, session);
           } catch (parseError) {
             logger.error(
-              `Failed to parse session data for key ${key}:`,`
+              `Failed to parse session data for key ${key}:`,
               parseError
             );
+          }
         }
       }
 
-      logger.debug(`Loaded ${this.sessions.size} sessions from storage`);`
+      logger.debug(`Loaded ${this.sessions.size} sessions from storage`);
     } catch (error) {
-      logger.error('Failed to load sessions from storage:', error);'
-      throw new MemoryStorageError('Failed to load sessions from storage', {'
+      logger.error('Failed to load sessions from storage:', error);
+      throw new MemoryStorageError('Failed to load sessions from storage', {
         originalError: error,
       });
     }
@@ -679,19 +708,20 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
     try {
       for (const [sessionId, session] of Array.from(this.sessions.entries())) {
-        await this.storage.set(`session:${sessionId}`, session);`
+        await this.storage.set(`session:${sessionId}`, session);
       }
 
-      logger.debug(`Saved $this.sessions.sizesessions to storage`);`
-    } catch (error) 
-      logger.error('Failed to save sessions to storage:', error);'
-      throw new MemoryStorageError('Failed to save sessions to storage', {'
+      logger.debug(`Saved ${this.sessions.size} sessions to storage`);
+    } catch (error) {
+      logger.error('Failed to save sessions to storage:', error);
+      throw new MemoryStorageError('Failed to save sessions to storage', {
         originalError: error,
       });
+    }
   }
 
   private updateCache(sessionId: string, key: string, data: unknown): void {
-    const cacheKey = `${sessionId}:${key}`;`
+    const cacheKey = `${sessionId}:${key}`;
     if (this.cache.size >= this.options.cacheSize) {
       const oldestKey = this.cacheKeys.shift();
       if (oldestKey) {
@@ -703,7 +733,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   }
 
   private getCachedData(sessionId: string, key: string): unknown {
-    const cacheKey = `$sessionId:$key`;`
+    const cacheKey = `${sessionId}:${key}`;
     const entry = this.cache.get(cacheKey);
     if (!entry) return null;
 
@@ -715,22 +745,23 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     return entry.data;
   }
 
-  private ensureInitialized(): void 
+  private ensureInitialized(): void {
     if (!(this.initialized && this.storage)) {
       const error = new MemoryError(
         'Session memory store not initialized. Call initialize() first.',
         { initialized: this.initialized, hasStorage: !!this.storage }
       );
       this.errorAggregator.add(error);
-      recordMetric('memory_initialization_errors', 1);'
+      recordMetric('memory_initialization_errors', 1);
       throw error;
     }
+  }
 
   /**
    * Circuit breaker operation handler with comprehensive error handling and metrics
    */
   private async performStorageOperation(params: {
-    operation: 'store' | 'retrieve;
+    operation: 'store' | 'retrieve';
     sessionId: string;
     key?: string;
     data?: any;
@@ -738,40 +769,40 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     return safeAsync(async () => {
       if (!this.storage) {
         throw new MemoryError(
-          'Storage not available for circuit breaker operation''
+          'Storage not available for circuit breaker operation'
         );
       }
 
       const { operation, sessionId, key, data } = params;
-      const _storageKey = `session:${sessionId}`;`
+      const storageKey = `session:${sessionId}`;
 
       switch (operation) {
-        case 'store':'
+        case 'store':
           await this.storage.set(storageKey, data);
-          recordMetric('memory_circuit_breaker_stores', 1);'
-          logger.debug('Circuit breaker store operation completed', {'
+          recordMetric('memory_circuit_breaker_stores', 1);
+          logger.debug('Circuit breaker store operation completed', {
             sessionId,
             key,
           });
           return { success: true };
 
-        case 'retrieve':'
+        case 'retrieve':
           const sessionDataStr = await this.storage.get(storageKey);
           if (sessionDataStr) {
             try {
               const session = JSON.parse(sessionDataStr) as SessionState;
               this.sessions.set(sessionId, session);
-              recordMetric('memory_circuit_breaker_retrieves', 1);'
-              logger.debug('Circuit breaker retrieve operation completed', {'
+              recordMetric('memory_circuit_breaker_retrieves', 1);
+              logger.debug('Circuit breaker retrieve operation completed', {
                 sessionId,
               });
               return session;
             } catch (parseError) {
               const error = new MemoryError(
-                `Failed to parse session data for ${sessionId}`,`
+                `Failed to parse session data for ${sessionId}`,
                 { sessionId, parseError: ensureError(parseError).message }
               );
-              recordMetric('memory_circuit_breaker_parse_errors', 1);'
+              recordMetric('memory_circuit_breaker_parse_errors', 1);
               throw error;
             }
           }
@@ -779,14 +810,14 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 
         default:
           throw new MemoryError(
-            `Unsupported circuit breaker operation: ${operation}``
+            `Unsupported circuit breaker operation: ${operation}`
           );
       }
     }).then((result) => {
       if (result.isErr()) {
         const error = ensureError(result.error);
-        recordMetric('memory_circuit_breaker_errors', 1);'
-        logger.error('Circuit breaker operation failed', {'
+        recordMetric('memory_circuit_breaker_errors', 1);
+        logger.error('Circuit breaker operation failed', {
           operation,
           sessionId,
           error: error.message,
@@ -801,7 +832,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
 @injectable()
 export class MemoryManager {
   private errorAggregator = createErrorAggregator();
-  private managerLogger = getLogger('memory:manager');'
+  private managerLogger = getLogger('memory:manager');
   private performanceTracker = new PerformanceTracker();
   private store: SessionMemoryStore;
   private circuitBreaker: any;
@@ -819,7 +850,7 @@ export class MemoryManager {
         errorThresholdPercentage: 60,
         resetTimeout: 45000,
       },
-      'memory-manager-circuit-breaker''
+      'memory-manager-circuit-breaker'
     );
 
     // Initialize telemetry for manager
@@ -829,7 +860,7 @@ export class MemoryManager {
       enableMetrics: true,
     });
 
-    recordMetric('memory_managers_created', 1);'
+    recordMetric('memory_managers_created', 1);
     this.managerLogger.debug(
       'Memory manager initialized with comprehensive foundation integration',
       {
@@ -845,17 +876,17 @@ export class MemoryManager {
     }
 
     const timer = this.performanceTracker.startTimer(
-      'memory_manager_initialize''
+      'memory_manager_initialize'
     );
 
-    return withTrace('memory-manager-initialize', async () => {'
+    return withTrace('memory-manager-initialize', async () => {
       return withRetry(
         async () => {
           return safeAsync(async () => {
             // Initialize telemetry first
             const telemetryResult = await this.telemetryManager.initialize();
             if (telemetryResult.isOk()) {
-              this.managerLogger.debug('Memory manager telemetry initialized');'
+              this.managerLogger.debug('Memory manager telemetry initialized');
             } else {
               this.managerLogger.warn(
                 'Failed to initialize manager telemetry:',
@@ -874,16 +905,16 @@ export class MemoryManager {
             }
 
             this.managerInitialized = true;
-            this.performanceTracker.endTimer('memory_manager_initialize');'
+            this.performanceTracker.endTimer('memory_manager_initialize');
 
             const initTime = timer.duration||0;
-            recordMetric('memory_manager_initializations', 1);'
+            recordMetric('memory_manager_initializations', 1);
             recordHistogram(
               'memory_manager_initialization_duration_ms',
               initTime
             );
 
-            this.managerLogger.info('Memory manager initialized successfully', {'
+            this.managerLogger.info('Memory manager initialized successfully', {
               initializationTime: initTime,
               storeInitialized: true,
               telemetryEnabled: telemetryResult.isOk(),
@@ -895,10 +926,10 @@ export class MemoryManager {
           minTimeout: 1500,
           onFailedAttempt: (error, attemptNumber) => {
             this.managerLogger.warn(
-              `Memory manager initialization attempt ${attemptNumber} failed:`,`
+              `Memory manager initialization attempt ${attemptNumber} failed:`,
               error
             );
-            recordMetric('memory_manager_initialization_retries', 1);'
+            recordMetric('memory_manager_initialization_retries', 1);
           },
         }
       );
@@ -910,7 +941,7 @@ export class MemoryManager {
           { originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_initialization_failures', 1);'
+        recordMetric('memory_manager_initialization_failures', 1);
         return err(error);
       }
       return ok(undefined);
@@ -922,9 +953,9 @@ export class MemoryManager {
     data: unknown,
     options?: StoreOptions
   ): Promise<Result<void, MemoryError>> {
-    const timer = this.performanceTracker.startTimer('memory_manager_store');'
+    const timer = this.performanceTracker.startTimer('memory_manager_store');
 
-    return withTrace('memory-manager-store', async () => {'
+    return withTrace('memory-manager-store', async () => {
       return withRetry(
         async () => {
           return safeAsync(async () => {
@@ -935,17 +966,17 @@ export class MemoryManager {
               options,
             });
 
-            this.performanceTracker.endTimer('memory_manager_store');'
+            this.performanceTracker.endTimer('memory_manager_store');
             const storeTime = timer.duration||0;
 
-            recordMetric('memory_manager_store_operations', 1);'
-            recordHistogram('memory_manager_store_duration_ms', storeTime);'
+            recordMetric('memory_manager_store_operations', 1);
+            recordHistogram('memory_manager_store_duration_ms', storeTime);
             recordMetric(
               'memory_manager_stored_data_size_bytes',
               JSON.stringify(data).length
             );
 
-            this.managerLogger.debug('Memory manager store completed', {'
+            this.managerLogger.debug('Memory manager store completed', {
               key,
               dataSize: JSON.stringify(data).length,
               duration: storeTime,
@@ -957,10 +988,10 @@ export class MemoryManager {
           minTimeout: 500,
           onFailedAttempt: (error, attemptNumber) => {
             this.managerLogger.warn(
-              `Memory manager store attempt ${attemptNumber} failed for key ${key}:`,`
+              `Memory manager store attempt ${attemptNumber} failed for key ${key}:`,
               error
             );
-            recordMetric('memory_manager_store_retries', 1);'
+            recordMetric('memory_manager_store_retries', 1);
           },
         }
       );
@@ -971,7 +1002,7 @@ export class MemoryManager {
           { key, originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_store_errors', 1);'
+        recordMetric('memory_manager_store_errors', 1);
         return err(error);
       }
       return ok(undefined);
@@ -981,9 +1012,9 @@ export class MemoryManager {
   async retrieve<T = unknown>(
     key: string
   ): Promise<Result<T|null, MemoryError>> {
-    const timer = this.performanceTracker.startTimer('memory_manager_retrieve');'
+    const timer = this.performanceTracker.startTimer('memory_manager_retrieve');
 
-    return withTrace('memory-manager-retrieve', async () => {'
+    return withTrace('memory-manager-retrieve', async () => {
       return withRetry(
         async () => {
           return safeAsync(async () => {
@@ -992,26 +1023,26 @@ export class MemoryManager {
               key,
             });
 
-            this.performanceTracker.endTimer('memory_manager_retrieve');'
+            this.performanceTracker.endTimer('memory_manager_retrieve');
             const retrieveTime = timer.duration||0;
 
-            recordMetric('memory_manager_retrieve_operations', 1);'
+            recordMetric('memory_manager_retrieve_operations', 1);
             recordHistogram(
               'memory_manager_retrieve_duration_ms',
               retrieveTime
             );
 
             if (result !== null) {
-              recordMetric('memory_manager_retrieve_successes', 1);'
+              recordMetric('memory_manager_retrieve_successes', 1);
               recordMetric(
                 'memory_manager_retrieved_data_size_bytes',
                 JSON.stringify(result).length
               );
             } else {
-              recordMetric('memory_manager_retrieve_not_found', 1);'
+              recordMetric('memory_manager_retrieve_not_found', 1);
             }
 
-            this.managerLogger.debug('Memory manager retrieve completed', {'
+            this.managerLogger.debug('Memory manager retrieve completed', {
               key,
               found: result !== null,
               dataSize: result ? JSON.stringify(result).length : 0,
@@ -1026,10 +1057,10 @@ export class MemoryManager {
           minTimeout: 300,
           onFailedAttempt: (error, attemptNumber) => {
             this.managerLogger.warn(
-              `Memory manager retrieve attempt ${attemptNumber} failed for key ${key}:`,`
+              `Memory manager retrieve attempt ${attemptNumber} failed for key ${key}:`,
               error
             );
-            recordMetric('memory_manager_retrieve_retries', 1);'
+            recordMetric('memory_manager_retrieve_retries', 1);
           },
         }
       );
@@ -1040,7 +1071,7 @@ export class MemoryManager {
           { key, originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_retrieve_errors', 1);'
+        recordMetric('memory_manager_retrieve_errors', 1);
         return err(error);
       }
       return ok(result.value);
@@ -1048,9 +1079,9 @@ export class MemoryManager {
   }
 
   async shutdown(): Promise<Result<void, MemoryError>> {
-    const timer = this.performanceTracker.startTimer('memory_manager_shutdown');'
+    const timer = this.performanceTracker.startTimer('memory_manager_shutdown');
 
-    return withTrace('memory-manager-shutdown', async () => {'
+    return withTrace('memory-manager-shutdown', async () => {
       return safeAsync(async () => {
         // Shutdown telemetry first
         await this.telemetryManager.shutdown();
@@ -1062,22 +1093,23 @@ export class MemoryManager {
         }
 
         this.managerInitialized = false;
-        this.performanceTracker.endTimer('memory_manager_shutdown');'
+        this.performanceTracker.endTimer('memory_manager_shutdown');
 
-        const _shutdownTime = timer.duration||0;
-        recordMetric('memory_manager_shutdowns', 1);'
-        recordHistogram('memory_manager_shutdown_duration_ms', shutdownTime);'
+        const shutdownTime = timer.duration||0;
+        recordMetric('memory_manager_shutdowns', 1);
+        recordHistogram('memory_manager_shutdown_duration_ms', shutdownTime);
 
-        this.managerLogger.info('Memory manager shutdown completed', '
-          duration: shutdownTime,);
+        this.managerLogger.info('Memory manager shutdown completed', {
+          duration: shutdownTime,
+        });
       });
     }).then((result) => {
       if (result.isErr()) {
-        const error = new MemoryError('Failed to shutdown memory manager', {'
+        const error = new MemoryError('Failed to shutdown memory manager', {
           originalError: result.error.message,
         });
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_shutdown_errors', 1);'
+        recordMetric('memory_manager_shutdown_errors', 1);
         return err(error);
       }
       return ok(undefined);
@@ -1085,22 +1117,23 @@ export class MemoryManager {
   }
 
   async clear(): Promise<Result<void, MemoryError>> {
-    const timer = this.performanceTracker.startTimer('memory_manager_clear');'
+    const timer = this.performanceTracker.startTimer('memory_manager_clear');
 
-    return withTrace('memory-manager-clear', async () => {'
+    return withTrace('memory-manager-clear', async () => {
       return safeAsync(async () => {
         await this.circuitBreaker.execute({
           operation: 'clear',
         });
 
-        this.performanceTracker.endTimer('memory_manager_clear');'
-        const _clearTime = timer.duration||0;
+        this.performanceTracker.endTimer('memory_manager_clear');
+        const clearTime = timer.duration||0;
 
-        recordMetric('memory_manager_clear_operations', 1);'
-        recordHistogram('memory_manager_clear_duration_ms', clearTime);'
+        recordMetric('memory_manager_clear_operations', 1);
+        recordHistogram('memory_manager_clear_duration_ms', clearTime);
 
-        this.managerLogger.info('Memory manager clear completed', '
-          duration: clearTime,);
+        this.managerLogger.info('Memory manager clear completed', {
+          duration: clearTime,
+        });
       });
     }).then((result) => {
       if (result.isErr()) {
@@ -1109,7 +1142,7 @@ export class MemoryManager {
           { originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_clear_errors', 1);'
+        recordMetric('memory_manager_clear_errors', 1);
         return err(error);
       }
       return ok(undefined);
@@ -1117,70 +1150,70 @@ export class MemoryManager {
   }
 
   async size(): Promise<number> {
-    return withTrace('memory-manager-size', async () => {'
-      const _timer = this.performanceTracker.startTimer('memory_manager_size');'
+    return withTrace('memory-manager-size', async () => {
+      const timer = this.performanceTracker.startTimer('memory_manager_size');
       const size = await this.store.size();
-      this.performanceTracker.endTimer('memory_manager_size');'
+      this.performanceTracker.endTimer('memory_manager_size');
 
-      recordMetric('memory_manager_size_operations', 1);'
-      recordHistogram('memory_manager_size_duration_ms', timer.duration||0);'
+      recordMetric('memory_manager_size_operations', 1);
+      recordHistogram('memory_manager_size_duration_ms', timer.duration||0);
 
       return size;
     });
   }
 
   async health(): Promise<boolean> {
-    return withTrace('memory-manager-health', async () => {'
-      const _timer = this.performanceTracker.startTimer('memory_manager_health');'
+    return withTrace('memory-manager-health', async () => {
+      const timer = this.performanceTracker.startTimer('memory_manager_health');
       const isHealthy = await this.store.health();
-      this.performanceTracker.endTimer('memory_manager_health');'
+      this.performanceTracker.endTimer('memory_manager_health');
 
-      recordMetric('memory_manager_health_checks', 1);'
-      recordMetric('memory_manager_health_status', isHealthy ? 1 : 0);'
-      recordHistogram('memory_manager_health_duration_ms', timer.duration||0);'
+      recordMetric('memory_manager_health_checks', 1);
+      recordMetric('memory_manager_health_status', isHealthy ? 1 : 0);
+      recordHistogram('memory_manager_health_duration_ms', timer.duration||0);
 
       return isHealthy;
     });
   }
 
   async stats(): Promise<MemoryStats> {
-    return withTrace('memory-manager-stats', async () => {'
-      const _timer = this.performanceTracker.startTimer('memory_manager_stats');'
+    return withTrace('memory-manager-stats', async () => {
+      const timer = this.performanceTracker.startTimer('memory_manager_stats');
       const stats = await this.store.stats();
-      this.performanceTracker.endTimer('memory_manager_stats');'
+      this.performanceTracker.endTimer('memory_manager_stats');
 
-      recordMetric('memory_manager_stats_operations', 1);'
-      recordHistogram('memory_manager_stats_duration_ms', timer.duration||0);'
-      recordMetric('memory_manager_current_entries', stats.entries);'
-      recordMetric('memory_manager_current_size_bytes', stats.size);'
+      recordMetric('memory_manager_stats_operations', 1);
+      recordHistogram('memory_manager_stats_duration_ms', timer.duration||0);
+      recordMetric('memory_manager_current_entries', stats.entries);
+      recordMetric('memory_manager_current_size_bytes', stats.size);
 
       return stats;
     });
   }
 
   async delete(key: string): Promise<Result<boolean, MemoryError>> {
-    const timer = this.performanceTracker.startTimer('memory_manager_delete');'
+    const timer = this.performanceTracker.startTimer('memory_manager_delete');
 
-    return withTrace('memory-manager-delete', async () => {'
+    return withTrace('memory-manager-delete', async () => {
       return safeAsync(async () => {
         const result = await this.circuitBreaker.execute({
           operation: 'delete',
           key,
         });
 
-        this.performanceTracker.endTimer('memory_manager_delete');'
+        this.performanceTracker.endTimer('memory_manager_delete');
         const deleteTime = timer.duration||0;
 
-        recordMetric('memory_manager_delete_operations', 1);'
-        recordHistogram('memory_manager_delete_duration_ms', deleteTime);'
+        recordMetric('memory_manager_delete_operations', 1);
+        recordHistogram('memory_manager_delete_duration_ms', deleteTime);
 
         if (result) {
-          recordMetric('memory_manager_delete_successes', 1);'
+          recordMetric('memory_manager_delete_successes', 1);
         } else {
-          recordMetric('memory_manager_delete_not_found', 1);'
+          recordMetric('memory_manager_delete_not_found', 1);
         }
 
-        this.managerLogger.debug('Memory manager delete completed', {'
+        this.managerLogger.debug('Memory manager delete completed', {
           key,
           deleted: result,
           duration: deleteTime,
@@ -1195,7 +1228,7 @@ export class MemoryManager {
           { key, originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_delete_errors', 1);'
+        recordMetric('memory_manager_delete_errors', 1);
         return err(error);
       }
       return ok(result.value);
@@ -1206,7 +1239,7 @@ export class MemoryManager {
    * Circuit breaker operation handler for manager operations
    */
   private async performManagerOperation(params: {
-    operation: 'store|retrieve|delete|clear;
+    operation: 'store|retrieve|delete|clear';
     key?: string;
     data?: unknown;
     options?: StoreOptions;
@@ -1214,25 +1247,25 @@ export class MemoryManager {
     const { operation, key, data, options } = params;
 
     switch (operation) {
-      case 'store':'
-        if (!key) throw new MemoryError('Key required for store operation');'
-        await this.store.store('default', key, data, options);'
+      case 'store':
+        if (!key) throw new MemoryError('Key required for store operation');
+        await this.store.store('default', key, data, options);
         return { success: true };
 
-      case 'retrieve':'
-        if (!key) throw new MemoryError('Key required for retrieve operation');'
-        return await this.store.retrieve('default', key);'
+      case 'retrieve':
+        if (!key) throw new MemoryError('Key required for retrieve operation');
+        return await this.store.retrieve('default', key);
 
-      case 'delete':'
-        if (!key) throw new MemoryError('Key required for delete operation');'
-        return await this.store.delete('default', key);'
+      case 'delete':
+        if (!key) throw new MemoryError('Key required for delete operation');
+        return await this.store.delete('default', key);
 
-      case 'clear':'
+      case 'clear':
         await this.store.clear();
         return { success: true };
 
       default:
-        throw new MemoryError(`Unsupported manager operation: ${operation}`);`
+        throw new MemoryError(`Unsupported manager operation: ${operation}`);
     }
   }
 }

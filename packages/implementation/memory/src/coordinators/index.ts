@@ -5,14 +5,14 @@
  * leveraging Foundation utilities and integrating with coordination-core.
  */
 
-export { MemoryCoordinationSystem } from "./memory-coordination-system";
-export { MemoryHealthMonitor } from "./memory-health-monitor";
-export { MemoryLoadBalancer } from "./memory-load-balancer";
+export { MemoryCoordinationSystem } from './memory-coordination-system';
+export { MemoryLoadBalancer } from './memory-load-balancer';
+export { MemoryHealthMonitor } from './memory-health-monitor';
 
 export type {
-	MemoryCoordinationConfig,
-	MemoryDistributionStrategy,
-	MemoryHealthStatus,
-	MemoryLoadMetrics,
-	MemoryNode,
-} from "./types";
+  MemoryCoordinationConfig,
+  MemoryNode,
+  MemoryDistributionStrategy,
+  MemoryHealthStatus,
+  MemoryLoadMetrics,
+} from './types';

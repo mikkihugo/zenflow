@@ -152,7 +152,7 @@ fn load_time_series_data(path: &str) -> Result<TimeSeriesDataFrame<f32>> {
 /// Generate synthetic sales data for demonstration
 fn generate_synthetic_sales_data() -> Result<TimeSeriesDataFrame<f32>> {
   use rand::Rng;
-  let mut rng = rand::thread_rng();
+  let mut rng = rand::rng();
 
   let n_stores = 5;
   let n_days = 730; // 2 years

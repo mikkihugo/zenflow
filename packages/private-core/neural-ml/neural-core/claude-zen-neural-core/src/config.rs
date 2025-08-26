@@ -120,22 +120,81 @@ pub enum LogFormat {
   Pretty,
 }
 
+/// Performance feature options
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum PerformanceFeature {
+  /// SIMD optimizations
+  Simd,
+  /// GPU acceleration  
+  Gpu,
+  /// Automatic mixed precision
+  Amp,
+  /// Performance profiling
+  Profiling,
+}
+
+/// Performance feature configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PerformanceFeatures {
+  /// Enabled performance features
+  pub enabled_features: Vec<PerformanceFeature>,
+}
+
+impl PerformanceFeatures {
+  /// Check if a feature is enabled
+  #[must_use]
+  pub fn is_enabled(&self, feature: &PerformanceFeature) -> bool {
+    self.enabled_features.contains(feature)
+  }
+
+  /// Enable a feature
+  pub fn enable(&mut self, feature: PerformanceFeature) {
+    if !self.enabled_features.contains(&feature) {
+      self.enabled_features.push(feature);
+    }
+  }
+
+  /// Disable a feature
+  pub fn disable(&mut self, feature: &PerformanceFeature) {
+    self.enabled_features.retain(|f| f != feature);
+  }
+
+  /// Legacy accessor for simd
+  #[must_use]
+  pub fn simd(&self) -> bool {
+    self.is_enabled(&PerformanceFeature::Simd)
+  }
+
+  /// Legacy accessor for gpu
+  #[must_use]
+  pub fn gpu(&self) -> bool {
+    self.is_enabled(&PerformanceFeature::Gpu)
+  }
+}
+
+impl Default for PerformanceFeatures {
+  fn default() -> Self {
+    Self {
+      enabled_features: vec![PerformanceFeature::Simd],
+    }
+  }
+}
+
+impl PartialEq for PerformanceFeature {
+  fn eq(&self, other: &Self) -> bool {
+    std::mem::discriminant(self) == std::mem::discriminant(other)
+  }
+}
+
 /// Performance configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[allow(clippy::struct_excessive_bools)]
 pub struct PerformanceConfig {
-  /// Enable SIMD optimizations
-  pub enable_simd: bool,
-  /// Enable GPU acceleration (if available)
-  pub enable_gpu: bool,
+  /// Performance features to enable
+  pub features: PerformanceFeatures,
   /// Preferred GPU device ID
   pub gpu_device_id: Option<usize>,
-  /// Enable automatic mixed precision
-  pub enable_amp: bool,
   /// CPU optimization level
   pub cpu_optimization: CpuOptimization,
-  /// Enable performance profiling
-  pub enable_profiling: bool,
   /// Performance profiling output directory
   pub profiling_output_dir: Option<PathBuf>,
 }
@@ -183,22 +242,92 @@ pub enum AllocationStrategy {
   Custom(String),
 }
 
+/// Parallel processing feature types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ParallelFeature {
+  /// Enable parallel training
+  Training,
+  /// Enable parallel prediction
+  Prediction,
+  /// Enable data parallelism
+  Data,
+  /// Enable model parallelism
+  Model,
+}
+
+/// Parallel processing features configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParallelFeatures {
+  /// Enabled parallel features
+  pub enabled_features: Vec<ParallelFeature>,
+}
+
+impl ParallelFeatures {
+  /// Check if a feature is enabled
+  #[must_use]
+  pub fn is_enabled(&self, feature: &ParallelFeature) -> bool {
+    self.enabled_features.contains(feature)
+  }
+
+  /// Enable a feature
+  pub fn enable(&mut self, feature: ParallelFeature) {
+    if !self.enabled_features.contains(&feature) {
+      self.enabled_features.push(feature);
+    }
+  }
+
+  /// Disable a feature
+  pub fn disable(&mut self, feature: &ParallelFeature) {
+    self.enabled_features.retain(|f| f != feature);
+  }
+
+  /// Legacy accessor for training
+  #[must_use]
+  pub fn training(&self) -> bool {
+    self.is_enabled(&ParallelFeature::Training)
+  }
+
+  /// Legacy accessor for prediction
+  #[must_use]
+  pub fn prediction(&self) -> bool {
+    self.is_enabled(&ParallelFeature::Prediction)
+  }
+
+  /// Legacy accessor for data
+  #[must_use]
+  pub fn data(&self) -> bool {
+    self.is_enabled(&ParallelFeature::Data)
+  }
+
+  /// Legacy accessor for model
+  #[must_use]
+  pub fn model(&self) -> bool {
+    self.is_enabled(&ParallelFeature::Model)
+  }
+}
+
+impl Default for ParallelFeatures {
+  fn default() -> Self {
+    Self {
+      enabled_features: vec![
+        ParallelFeature::Training,
+        ParallelFeature::Prediction,
+        ParallelFeature::Data,
+      ],
+    }
+  }
+}
+
 /// Parallel processing configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[allow(clippy::struct_excessive_bools)]
+#[derive(Default)]
 pub struct ParallelConfig {
   /// Number of threads (None for automatic)
   pub num_threads: Option<usize>,
   /// Thread pool configuration
   pub thread_pool: ThreadPoolConfig,
-  /// Enable parallel training
-  pub enable_parallel_training: bool,
-  /// Enable parallel prediction
-  pub enable_parallel_prediction: bool,
-  /// Enable data parallelism
-  pub enable_data_parallelism: bool,
-  /// Enable model parallelism
-  pub enable_model_parallelism: bool,
+  /// Parallel processing features
+  pub features: ParallelFeatures,
 }
 
 /// Thread pool configuration
@@ -287,22 +416,81 @@ pub struct RetryConfig {
   pub enable_jitter: bool,
 }
 
+/// Debug feature types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum DebugFeature {
+  /// Save intermediate results
+  Intermediates,
+  /// Enable detailed timing
+  Timing,
+  /// Enable memory tracking
+  Memory,
+  /// Enable network visualization
+  Visualization,
+}
+
+/// Debug features configuration
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct DebugFeatures {
+  /// Enabled debug features
+  pub enabled_features: Vec<DebugFeature>,
+}
+
+impl DebugFeatures {
+  /// Check if a feature is enabled
+  #[must_use]
+  pub fn is_enabled(&self, feature: &DebugFeature) -> bool {
+    self.enabled_features.contains(feature)
+  }
+
+  /// Enable a feature
+  pub fn enable(&mut self, feature: DebugFeature) {
+    if !self.enabled_features.contains(&feature) {
+      self.enabled_features.push(feature);
+    }
+  }
+
+  /// Disable a feature
+  pub fn disable(&mut self, feature: &DebugFeature) {
+    self.enabled_features.retain(|f| f != feature);
+  }
+
+  /// Legacy accessor for intermediates
+  #[must_use]
+  pub fn intermediates(&self) -> bool {
+    self.is_enabled(&DebugFeature::Intermediates)
+  }
+
+  /// Legacy accessor for timing
+  #[must_use]
+  pub fn timing(&self) -> bool {
+    self.is_enabled(&DebugFeature::Timing)
+  }
+
+  /// Legacy accessor for memory
+  #[must_use]
+  pub fn memory(&self) -> bool {
+    self.is_enabled(&DebugFeature::Memory)
+  }
+
+  /// Legacy accessor for visualization
+  #[must_use]
+  pub fn visualization(&self) -> bool {
+    self.is_enabled(&DebugFeature::Visualization)
+  }
+}
+
+
+
 /// Debug configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[allow(clippy::struct_excessive_bools)]
 pub struct DebugConfig {
   /// Enable debug mode
   pub enabled: bool,
   /// Debug output directory
   pub output_dir: Option<PathBuf>,
-  /// Save intermediate results
-  pub save_intermediates: bool,
-  /// Enable detailed timing
-  pub detailed_timing: bool,
-  /// Enable memory tracking
-  pub memory_tracking: bool,
-  /// Enable network visualization
-  pub network_visualization: bool,
+  /// Debug features to enable
+  pub features: DebugFeatures,
   /// Debug verbosity level
   pub verbosity: DebugVerbosity,
 }
@@ -320,25 +508,140 @@ pub enum DebugVerbosity {
   VeryVerbose,
 }
 
-/// Feature flags for experimental features
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-#[allow(clippy::struct_excessive_bools)]
-pub struct FeatureFlags {
+/// Experimental feature types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ExperimentalFeature {
   /// Enable experimental GPU kernels
-  pub experimental_gpu_kernels: bool,
+  GpuKernels,
   /// Enable experimental optimizations
-  pub experimental_optimizations: bool,
+  Optimizations,
   /// Enable experimental model architectures
-  pub experimental_models: bool,
+  Models,
   /// Enable experimental data formats
-  pub experimental_data_formats: bool,
-  /// Enable automatic hyperparameter tuning
-  pub auto_hyperparameter_tuning: bool,
-  /// Enable automatic model selection
-  pub auto_model_selection: bool,
-  /// Enable distributed training
-  pub distributed_training: bool,
+  DataFormats,
 }
+
+/// Experimental features configuration
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ExperimentalFeatures {
+  /// Enabled experimental features
+  pub enabled_features: Vec<ExperimentalFeature>,
+}
+
+impl ExperimentalFeatures {
+  /// Check if a feature is enabled
+  #[must_use]
+  pub fn is_enabled(&self, feature: &ExperimentalFeature) -> bool {
+    self.enabled_features.contains(feature)
+  }
+
+  /// Enable a feature
+  pub fn enable(&mut self, feature: ExperimentalFeature) {
+    if !self.enabled_features.contains(&feature) {
+      self.enabled_features.push(feature);
+    }
+  }
+
+  /// Disable a feature
+  pub fn disable(&mut self, feature: &ExperimentalFeature) {
+    self.enabled_features.retain(|f| f != feature);
+  }
+
+  /// Legacy accessor for `gpu_kernels`
+  #[must_use]
+  pub fn gpu_kernels(&self) -> bool {
+    self.is_enabled(&ExperimentalFeature::GpuKernels)
+  }
+
+  /// Legacy accessor for optimizations
+  #[must_use]
+  pub fn optimizations(&self) -> bool {
+    self.is_enabled(&ExperimentalFeature::Optimizations)
+  }
+
+  /// Legacy accessor for models
+  #[must_use]
+  pub fn models(&self) -> bool {
+    self.is_enabled(&ExperimentalFeature::Models)
+  }
+
+  /// Legacy accessor for `data_formats`
+  #[must_use]
+  pub fn data_formats(&self) -> bool {
+    self.is_enabled(&ExperimentalFeature::DataFormats)
+  }
+}
+
+
+
+/// Automatic feature types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum AutoFeature {
+  /// Enable automatic hyperparameter tuning
+  HyperparameterTuning,
+  /// Enable automatic model selection
+  ModelSelection,
+  /// Enable distributed training
+  DistributedTraining,
+}
+
+/// Automatic features configuration
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct AutoFeatures {
+  /// Enabled automatic features
+  pub enabled_features: Vec<AutoFeature>,
+}
+
+impl AutoFeatures {
+  /// Check if a feature is enabled
+  #[must_use]
+  pub fn is_enabled(&self, feature: &AutoFeature) -> bool {
+    self.enabled_features.contains(feature)
+  }
+
+  /// Enable a feature
+  pub fn enable(&mut self, feature: AutoFeature) {
+    if !self.enabled_features.contains(&feature) {
+      self.enabled_features.push(feature);
+    }
+  }
+
+  /// Disable a feature
+  pub fn disable(&mut self, feature: &AutoFeature) {
+    self.enabled_features.retain(|f| f != feature);
+  }
+
+  /// Legacy accessor for `hyperparameter_tuning`
+  #[must_use]
+  pub fn hyperparameter_tuning(&self) -> bool {
+    self.is_enabled(&AutoFeature::HyperparameterTuning)
+  }
+
+  /// Legacy accessor for `model_selection`
+  #[must_use]
+  pub fn model_selection(&self) -> bool {
+    self.is_enabled(&AutoFeature::ModelSelection)
+  }
+
+  /// Legacy accessor for `distributed_training`
+  #[must_use]
+  pub fn distributed_training(&self) -> bool {
+    self.is_enabled(&AutoFeature::DistributedTraining)
+  }
+}
+
+
+
+/// Feature flags for experimental features
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
+pub struct FeatureFlags {
+  /// Experimental features
+  pub experimental: ExperimentalFeatures,
+  /// Automatic features
+  pub auto: AutoFeatures,
+}
+
 
 /// Configuration validation result
 #[derive(Debug, Clone)]
@@ -965,12 +1268,9 @@ impl Default for LoggingConfig {
 impl Default for PerformanceConfig {
   fn default() -> Self {
     Self {
-      enable_simd: true,
-      enable_gpu: false,
+      features: PerformanceFeatures::default(),
       gpu_device_id: None,
-      enable_amp: false,
       cpu_optimization: CpuOptimization::Native,
-      enable_profiling: false,
       profiling_output_dir: None,
     }
   }
@@ -989,18 +1289,6 @@ impl Default for MemoryConfig {
   }
 }
 
-impl Default for ParallelConfig {
-  fn default() -> Self {
-    Self {
-      num_threads: None,
-      thread_pool: ThreadPoolConfig::default(),
-      enable_parallel_training: true,
-      enable_parallel_prediction: true,
-      enable_data_parallelism: true,
-      enable_model_parallelism: false,
-    }
-  }
-}
 
 impl Default for ThreadPoolConfig {
   fn default() -> Self {
@@ -1044,10 +1332,7 @@ impl Default for DebugConfig {
     Self {
       enabled: false,
       output_dir: None,
-      save_intermediates: false,
-      detailed_timing: false,
-      memory_tracking: false,
-      network_visualization: false,
+      features: DebugFeatures::default(),
       verbosity: DebugVerbosity::Normal,
     }
   }
@@ -1162,9 +1447,9 @@ mod tests {
     let config = SystemConfig::default();
 
     assert_eq!(config.logging.level, "info");
-    assert!(config.performance.enable_simd);
+    assert!(config.performance.features.simd());
     assert!(!config.debug.enabled);
-    assert!(!config.features.experimental_gpu_kernels);
+    assert!(!config.features.experimental.gpu_kernels());
   }
 
   #[test]

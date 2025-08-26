@@ -2,35 +2,35 @@
  * Foundation Storage Adapter for Memory Backend - Simplified Implementation
  */
 
-import type {
-  KeyValueStore,
-  Logger,
-} from '@claude-zen/foundation';
 import {
   getLogger,
   recordMetric,
   withTrace,
+  type Logger,
 } from '@claude-zen/foundation';
 
+import { getDatabaseFactory, type KeyValueStorageImpl } from '@claude-zen/database';
+
+import type { JSONValue } from '../core/memory-system';
 import type { MemoryConfig } from '../providers/memory-providers';
 
-import { BaseMemoryBackend } from './base-backend';
+import { BaseMemoryBackend, type BackendCapabilities } from './base-backend';
 
 interface FoundationMemoryConfig extends MemoryConfig {
-  storageType: 'kv' | 'database' | 'hybrid';
-  databaseType?: 'sqlite' | 'lancedb' | 'kuzu';
+  storageType: 'kv|database|hybrid';
+  databaseType?: 'sqlite|lancedb|kuzu';
 }
 
 export class FoundationMemoryBackend extends BaseMemoryBackend {
   private logger: Logger;
-  private kvStore?: KeyValueStore;
+  private kvStore?: KeyValueStorageImpl;
   private initialized = false;
   protected override memoryConfig: FoundationMemoryConfig;
 
   constructor(config: FoundationMemoryConfig) {
     super(config);
     this.memoryConfig = config;
-    this.logger = getLogger('FoundationMemoryBackend');'
+    this.logger = getLogger('FoundationMemoryBackend');
   }
 
   override async initialize(): Promise<void> {
@@ -39,20 +39,21 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     const config = this.memoryConfig;
 
     try {
-      withTrace('memory-backend-init', async () => {'
+      withTrace('memory-backend-init', async () => {
         // Use KV store for all storage types for now
-        this.kvStore = await getKVStore('sqlite');'
+        const dbFactory = getDatabaseFactory();
+        this.kvStore = await dbFactory.createKeyValueStorage('sqlite', this.memoryConfig.path || './memory.db');
         this.initialized = true;
         this.logger.info(
-          `Foundation backend initialized with ${config.storageType} storage``
+          `Foundation backend initialized with ${config.storageType} storage`
         );
-        recordMetric('memory_backend_initialized', 1, {'
+        recordMetric('memory_backend_initialized', 1, {
           storageType: config.storageType,
         });
       });
     } catch (error) {
-      this.logger.error('Failed to initialize Foundation backend:', error);'
-      recordMetric('memory_backend_init_errors', 1);'
+      this.logger.error('Failed to initialize Foundation backend:', error);
+      recordMetric('memory_backend_init_errors', 1);
       throw error;
     }
   }
@@ -60,11 +61,11 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   override async store(
     key: string,
     value: JSONValue,
-    namespace = 'default''
+    namespace = 'default'
   ): Promise<void> {
     await this.ensureInitialized();
 
-    const finalKey = `${namespace}:${key}`;`
+    const finalKey = `${namespace}:${key}`;
     const entry = {
       key,
       value,
@@ -76,28 +77,28 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       await this.kvStore.set(finalKey, JSON.stringify(entry));
     }
 
-    recordMetric('memory_operations_total', 1, {'
+    recordMetric('memory_operations_total', 1, {
       operation: 'store',
       namespace,
     });
   }
 
   override async set(key: string, value: JSONValue): Promise<void> {
-    return this.store(key, value);
+    await this.store(key, value);
   }
 
   override async retrieve<T = JSONValue>(
     key: string,
-    namespace = 'default'): Promise<T|null> {'
+    namespace = 'default'): Promise<T|null> {
     await this.ensureInitialized();
 
-    const finalKey = `$namespace:$key`;`
+    const finalKey = `${namespace}:${key}`;
 
     if (this.kvStore) {
       const data = await this.kvStore.get(finalKey);
       if (data) {
         const entry = JSON.parse(data);
-        recordMetric('memory_operations_total', 1, {'
+        recordMetric('memory_operations_total', 1, {
           operation: 'retrieve_hit',
           namespace,
         });
@@ -105,20 +106,21 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       }
     }
 
-    recordMetric('memory_operations_total', 1, {'
+    recordMetric('memory_operations_total', 1, {
       operation: 'retrieve_miss',
       namespace,
     });
     return null;
   }
 
-  override async get<T = JSONValue>(key: string): Promise<T|null> 
-    return this.retrieve<T>(key);
+  override async get<T = JSONValue>(key: string): Promise<T|null> {
+    return await this.retrieve<T>(key);
+  }
 
-  override async delete(key: string, namespace ='default'): Promise<boolean> {'
+  override async delete(key: string, namespace ='default'): Promise<boolean> {
     await this.ensureInitialized();
 
-    const _finalKey = `${namespace}:${key}`;`
+    const finalKey = `${namespace}:${key}`;
     let deleted = false;
 
     if (this.kvStore) {
@@ -130,7 +132,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     }
 
     if (deleted) {
-      recordMetric('memory_operations_total', 1, {'
+      recordMetric('memory_operations_total', 1, {
         operation: 'delete',
         namespace,
       });
@@ -141,14 +143,14 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
   override async list(
     pattern?: string,
-    namespace = 'default'): Promise<string[]> {'
+    namespace = 'default'): Promise<string[]> {
     await this.ensureInitialized();
 
     let keys: string[] = [];
 
     if (this.kvStore) {
       const allKeys = await this.kvStore.keys();
-      const namespacePrefix = `$namespace:`;`
+      const namespacePrefix = `${namespace}:`;
 
       keys = allKeys
         .filter((key) => key.startsWith(namespacePrefix))
@@ -165,7 +167,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     if (this.kvStore) {
       if (namespace) {
         const allKeys = await this.kvStore.keys();
-        const namespacePrefix = `$namespace:`;`
+        const namespacePrefix = `${namespace}:`;
 
         for (const key of allKeys) {
           if (key.startsWith(namespacePrefix)) {
@@ -177,7 +179,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       }
     }
 
-    recordMetric('memory_operations_total', 1, {'
+    recordMetric('memory_operations_total', 1, {
       operation: 'clear',
       namespace: namespace||'all',
     });
@@ -187,8 +189,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     if (!this.initialized) return;
 
     this.initialized = false;
-    recordMetric('memory_backend_closed', 1);'
-    this.logger.info('Foundation backend closed');'
+    recordMetric('memory_backend_closed', 1);
+    this.logger.info('Foundation backend closed');
   }
 
   override getCapabilities(): BackendCapabilities {
@@ -215,7 +217,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       const namespaces = new Set<string>();
 
       for (const key of allKeys) {
-        const colonIndex = key.indexOf(':');'
+        const colonIndex = key.indexOf(':');
         if (colonIndex > 0) {
           namespaces.add(key.substring(0, colonIndex));
         }
@@ -239,8 +241,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   }
 
   private validateKey(key: string): void {
-    if (!key||typeof key !=='string') {'
-      throw new Error('Key must be a non-empty string');'
+    if (!key||typeof key !=='string') {
+      throw new Error('Key must be a non-empty string');
     }
   }
 
@@ -248,7 +250,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // Enhanced stats tracking with operation logging and size metrics
     const timestamp = Date.now();
     
-    logger.debug(`Memory operation: $operationat $timestamp`, {`
+    this.logger.debug(`Memory operation: ${operation} at ${timestamp}`, {
       operation,
       size: size || 0,
       backend: 'foundation-adapter',
@@ -257,13 +259,13 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     
     // Track operation counts and data size metrics
     if (size && size > 0) {
-      logger.debug(`Operation ${operation} processed ${size} bytes of data`);`
+      this.logger.debug(`Operation ${operation} processed ${size} bytes of data`);
     }
   }
 
   private matchesPattern(str: string, pattern: string): boolean {
-    const regexPattern = pattern.replace(/*/g, '.*');'
-    const regex = new RegExp(`^$regexPattern$`, 'i');'
+    const regexPattern = pattern.replace(/\*/g, '.*');
+    const regex = new RegExp(`^${regexPattern}$`, 'i');
     return regex.test(str);
   }
 }

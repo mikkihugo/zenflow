@@ -15,7 +15,7 @@ import type {
   CLIProvider,
 } from '../types/cli-providers';
 
-const logger = getLogger('ModelRegistry');'
+const logger = getLogger('ModelRegistry');
 
 /**
  * Model information interface
@@ -65,7 +65,7 @@ export class ModelRegistry extends TypedEventBase {
       ...config,
     };
 
-    logger.info('🏭 ModelRegistry initialized with DI pattern');'
+    logger.info('🏭 ModelRegistry initialized with DI pattern');
 
     if (this.registryConfig.autoDiscovery) {
       this.startAutoDiscovery();
@@ -81,7 +81,7 @@ export class ModelRegistry extends TypedEventBase {
     this.providers.set(provider.id, provider);
     this.loadProviderModels(provider);
 
-    this.emit('provider:registered', { providerId: provider.id, provider });'
+    this.emit('provider:registered', { providerId: provider.id, provider });
   }
 
   /**
@@ -100,7 +100,7 @@ export class ModelRegistry extends TypedEventBase {
       }
 
       this.providers.delete(providerId);
-      this.emit('provider:unregistered', { providerId, provider });'
+      this.emit('provider:unregistered', { providerId, provider });
     }
   }
 

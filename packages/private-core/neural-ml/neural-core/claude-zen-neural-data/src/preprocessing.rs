@@ -6,10 +6,8 @@
 use crate::{
   DataPipelineError, DataTransform, FittableTransform, Result, TimeSeriesData,
 };
-use ndarray::{Array1, Array2, ArrayView1};
+use ndarray::Array1;
 use num_traits::Float;
-use std::collections::HashMap;
-use std::marker::PhantomData;
 
 #[cfg(feature = "serde_support")]
 use serde::{Deserialize, Serialize};
@@ -534,7 +532,7 @@ impl<T: Float> Scaler<T> for QuantileTransformer<T> {
     let sample_data = if let Some(subsample_size) = self.subsample {
       if data.len() > subsample_size {
         use rand::seq::SliceRandom;
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         let mut sample: Vec<T> = data.to_vec();
         sample.shuffle(&mut rng);
         sample.truncate(subsample_size);
@@ -951,6 +949,12 @@ pub struct BoxCoxTransformer<T: Float> {
   fitted_lambda: Option<T>,
 }
 
+impl<T: Float> Default for BoxCoxTransformer<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float> BoxCoxTransformer<T> {
   /// Create a Box-Cox transformer with automatic lambda selection
   pub fn new() -> Self {
@@ -978,6 +982,7 @@ impl<T: Float> BoxCoxTransformer<T> {
   }
 
   /// Inverse Box-Cox transformation
+  #[allow(dead_code)]
   fn inv_box_cox(value: T, lambda: T) -> T {
     if lambda == T::zero() {
       value.exp()

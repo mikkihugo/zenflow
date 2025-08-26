@@ -21,7 +21,7 @@ use std::collections::HashMap;
 
 fn main() -> Result<()> {
   println!("🎯 Neuro-Divergent Ensemble Forecasting Example");
-  println!("=".repeat(50));
+  println!("{}", "=".repeat(50));
 
   // Generate complex data with multiple patterns
   println!("\n📊 Generating multi-pattern time series data...");
@@ -122,7 +122,7 @@ fn main() -> Result<()> {
 /// Generate data with multiple patterns
 fn generate_multi_pattern_data() -> Result<TimeSeriesDataFrame<f32>> {
   use rand::Rng;
-  let mut rng = rand::thread_rng();
+  let mut rng = rand::rng();
 
   let patterns = vec![
     // Pattern 1: Strong trend with weekly seasonality

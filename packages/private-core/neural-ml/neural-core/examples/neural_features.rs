@@ -109,7 +109,7 @@ fn main() -> Result<()> {
 /// Generate advanced dataset with multiple features
 fn generate_advanced_dataset() -> Result<TimeSeriesDataFrame<f32>> {
   use rand::Rng;
-  let mut rng = rand::thread_rng();
+  let mut rng = rand::rng();
 
   // Configuration
   let n_stores = 10;

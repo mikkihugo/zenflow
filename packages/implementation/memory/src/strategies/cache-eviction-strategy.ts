@@ -5,16 +5,17 @@
  * strategies with intelligent priority management and performance optimization.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { 
+import { TypedEventBase ,
   getLogger,
   recordMetric,
-  type TelemetryManager,TypedEventBase ,
+  TelemetryManager,
 } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
 import type {
-  CacheEntry,
   CacheEvictionConfig,
+  CacheEntry,
+  EvictionReason,
   StrategyMetrics,
 } from './types';
 
@@ -24,18 +25,20 @@ export class CacheEvictionStrategy extends TypedEventBase {
   private cache = new Map<string, CacheEntry>();
   private accessOrder = new Map<string, number>(); // LRU tracking
   private frequencyMap = new Map<string, number>(); // LFU tracking
+  private cleanupTimer?: NodeJS.Timeout;
   private telemetry: TelemetryManager;
-  private metrics: StrategyMetrics['cacheEviction'];'
+  private metrics: StrategyMetrics['cacheEviction'];
   private accessCounter = 0;
 
   constructor(config: CacheEvictionConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('CacheEvictionStrategy');'
-    this.telemetry = new TelemetryManager(
+    this.logger = getLogger('CacheEvictionStrategy');
+    this.telemetry = new TelemetryManager({
       serviceName: 'cache-eviction',
       enableTracing: true,
-      enableMetrics: true,);
+      enableMetrics: true,
+    });
     this.metrics = {
       totalEvictions: 0,
       evictionsByReason: {
@@ -59,14 +62,14 @@ export class CacheEvictionStrategy extends TypedEventBase {
   async initialize(): Promise<void> {
     try {
       await this.telemetry.initialize();
-      this.logger.info('Cache eviction strategy initialized', {'
+      this.logger.info('Cache eviction strategy initialized', {
         algorithm: this.config.algorithm,
         maxSize: this.config.maxSize,
         maxMemory: this.config.maxMemory,
       });
-      recordMetric('cache_eviction_initialized', 1);'
+      recordMetric('cache_eviction_initialized', 1);
     } catch (error) {
-      this.logger.error('Failed to initialize cache eviction strategy:', error);'
+      this.logger.error('Failed to initialize cache eviction strategy:', error);
       throw error;
     }
   }
@@ -114,8 +117,8 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.accessOrder.set(key, ++this.accessCounter);
     this.frequencyMap.set(key, 1);
 
-    this.emit('entryAdded', { key, entry });'
-    recordMetric('cache_entry_added', 1, algorithm: this.config.algorithm );'
+    this.emit('entryAdded', { key, entry });
+    recordMetric('cache_entry_added', 1, { algorithm: this.config.algorithm });
 
     return true;
   }
@@ -132,14 +135,14 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     // Check TTL expiration
     if (this.isExpired(entry)) {
-      this.evictEntry(key,'ttl_expired');'
+      this.evictEntry(key,'ttl_expired');
       return undefined;
     }
 
     // Update access tracking
     this.updateAccessTracking(entry);
 
-    recordMetric('cache_hit', 1, { algorithm: this.config.algorithm });'
+    recordMetric('cache_hit', 1, { algorithm: this.config.algorithm });
     return entry.value;
   }
 
@@ -153,7 +156,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       return false;
     }
 
-    this.evictEntry(key, 'manual_eviction');'
+    this.evictEntry(key, 'manual_eviction');
     return true;
   }
 
@@ -169,7 +172,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     // Check TTL expiration
     if (this.isExpired(entry)) {
-      this.evictEntry(key, 'ttl_expired');'
+      this.evictEntry(key, 'ttl_expired');
       return false;
     }
 
@@ -186,9 +189,9 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.accessOrder.clear();
     this.frequencyMap.clear();
 
-    this.emit('cacheCleared', { clearedCount });'
-    recordMetric('cache_cleared', clearedCount);'
-    this.logger.info(`Cache cleared, removed $clearedCountentries`);`
+    this.emit('cacheCleared', { clearedCount });
+    recordMetric('cache_cleared', clearedCount);
+    this.logger.info(`Cache cleared, removed ${clearedCount} entries`);
   }
 
   private canAccommodate(size: number): boolean {
@@ -217,7 +220,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       const entry = this.cache.get(key);
       if (entry) {
         spaceReclaimed += entry.size;
-        this.evictEntry(key, 'ttl_expired');'
+        this.evictEntry(key, 'ttl_expired');
         evicted++;
       }
     }
@@ -247,20 +250,20 @@ export class CacheEvictionStrategy extends TypedEventBase {
       (this.metrics.averageEvictionTime + evictionTime) / 2;
     this.metrics.memoryReclaimed += spaceReclaimed;
 
-    this.emit('evictionCompleted', {'
+    this.emit('evictionCompleted', {
       evicted,
       spaceReclaimed,
       evictionTime,
     });
 
-    recordMetric('cache_eviction_completed', evicted, {'
+    recordMetric('cache_eviction_completed', evicted, {
       algorithm: this.config.algorithm,
       spaceReclaimed,
       evictionTime,
     });
 
     this.logger.debug(
-      `Eviction completed: ${evicted} entries, ${spaceReclaimed} bytes reclaimed``
+      `Eviction completed: ${evicted} entries, ${spaceReclaimed} bytes reclaimed`
     );
   }
 
@@ -269,22 +272,22 @@ export class CacheEvictionStrategy extends TypedEventBase {
     let estimatedSpace = 0;
 
     switch (this.config.algorithm) {
-      case 'lru':'
+      case 'lru':
         candidates.push(...this.selectLRUCandidates())();
         break;
-      case 'lfu':'
+      case 'lfu':
         candidates.push(...this.selectLFUCandidates())();
         break;
-      case 'fifo':'
+      case 'fifo':
         candidates.push(...this.selectFIFOCandidates())();
         break;
-      case 'ttl':'
+      case 'ttl':
         candidates.push(...this.selectTTLCandidates())();
         break;
-      case 'random':'
+      case 'random':
         candidates.push(...this.selectRandomCandidates())();
         break;
-      case 'adaptive':'
+      case 'adaptive':
         candidates.push(...this.selectAdaptiveCandidates())();
         break;
     }
@@ -424,8 +427,8 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.metrics.totalEvictions++;
     this.metrics.evictionsByReason[reason]++;
 
-    this.emit('entryEvicted', { key, entry, reason });'
-    recordMetric('cache_entry_evicted', 1, {'
+    this.emit('entryEvicted', { key, entry, reason });
+    recordMetric('cache_entry_evicted', 1, {
       reason,
       algorithm: this.config.algorithm,
     });
@@ -465,19 +468,19 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
   private getEvictionReason(): EvictionReason {
     if (this.cache.size >= this.config.maxSize) {
-      return'size_limit;
+      return'size_limit';
     }
     if (this.getCurrentMemoryUsage() >= this.config.maxMemory) {
-      return 'memory_limit;
+      return 'memory_limit';
     }
 
     switch (this.config.algorithm) {
-      case 'lru':'
-        return 'lru_eviction;
-      case 'lfu':'
-        return 'lfu_eviction;
+      case 'lru':
+        return 'lru_eviction';
+      case 'lfu':
+        return 'lfu_eviction';
       default:
-        return 'size_limit;
+        return 'size_limit';
     }
   }
 
@@ -491,13 +494,13 @@ export class CacheEvictionStrategy extends TypedEventBase {
     const expiredKeys = this.findExpiredEntries();
     if (expiredKeys.length > 0) {
       for (const key of expiredKeys) {
-        this.evictEntry(key, 'ttl_expired');'
+        this.evictEntry(key, 'ttl_expired');
       }
 
       this.logger.debug(
-        `Periodic cleanup: removed ${expiredKeys.length} expired entries``
+        `Periodic cleanup: removed ${expiredKeys.length} expired entries`
       );
-      recordMetric('cache_periodic_cleanup', expiredKeys.length);'
+      recordMetric('cache_periodic_cleanup', expiredKeys.length);
     }
   }
 
@@ -529,7 +532,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     const candidates = this.selectEvictionCandidates(0).slice(0, count);
     for (const key of candidates) {
-      this.evictEntry(key, 'manual_eviction');'
+      this.evictEntry(key, 'manual_eviction');
     }
 
     return candidates.length;
@@ -548,7 +551,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       }
     }
 
-    this.logger.info('Cache eviction configuration updated', newConfig);'
+    this.logger.info('Cache eviction configuration updated', newConfig);
   }
 
   async shutdown(): Promise<void> {
@@ -557,6 +560,6 @@ export class CacheEvictionStrategy extends TypedEventBase {
     }
 
     this.clear();
-    this.logger.info('Cache eviction strategy shut down');'
+    this.logger.info('Cache eviction strategy shut down');
   }
 }

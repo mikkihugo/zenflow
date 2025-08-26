@@ -2,10 +2,10 @@
  * Type declarations for @anthropic-ai/claude-code/sdk.mjs
  *
  * This provides TypeScript type definitions for the Claude Code SDK
- * that's imported as a .mjs module.'
+ * that's imported as a .mjs module.;
  */
 
-declare module '@anthropic-ai/claude-code/sdk.mjs' {'
+declare module '@anthropic-ai/claude-code/sdk.mjs' {;
   export interface ClaudeCodeMessage {
     role: 'user' | 'assistant' | 'system;
     content: string;

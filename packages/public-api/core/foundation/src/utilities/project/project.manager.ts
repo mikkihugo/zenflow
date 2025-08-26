@@ -1091,14 +1091,14 @@ target/`;
 		projectPath: string,
 		workspaceFile: string,
 		type: "monorepo" | "bazel",
-		buildSystem: string,
+		buildSystem: "custom" | "pnpm" | "lerna" | "rush" | "bazel" | "nx" | "gradle" | "maven" | undefined,
 	): ProjectInfo["workspace"] {
 		const structure = this.analyzeProjectStructure(projectPath);
-		const subProjects = this.detectSubProjects(projectPath, buildSystem);
+		const subProjects = this.detectSubProjects(projectPath, buildSystem || "custom");
 		const isComplex = this.isComplexWorkspace(
 			structure,
 			subProjects,
-			buildSystem,
+			buildSystem || "custom",
 		);
 
 		return {

@@ -176,24 +176,24 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 	}
 
 	/**
-	 * Creates optimal storage configuration for given storage type
+	 * Creates storage configuration for given storage type
 	 */
-	createOptimalConfig(
+	createStorageConfig(
 		storageType: StorageType,
 		database: string,
 		baseConfig?: Partial<DatabaseConfig>,
 	): DatabaseConfig {
-		// Determine optimal backend for storage type
-		const optimalBackend = this.getOptimalBackend(storageType);
+		// Determine recommended backend for storage type
+		const recommendedBackend = this.getRecommendedBackend(storageType);
 
-		// Create optimized configuration
+		// Create configuration
 		const config: DatabaseConfig = {
-			type: optimalBackend,
+			type: recommendedBackend,
 			database: `${database}_${storageType}`,
 			...baseConfig,
 			options: {
-				// Storage-specific optimizations
-				...this.getStorageOptimizations(storageType, optimalBackend),
+				// Storage-specific settings
+				...this.getStorageSettings(storageType, recommendedBackend),
 				...baseConfig?.options,
 			},
 		};
@@ -221,8 +221,8 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 	/**
 	 * Gets recommended database type for storage paradigm
 	 */
-	getOptimalBackend(storageType: StorageType): DatabaseType {
-		const optimalBackends: Record<StorageType, DatabaseType> = {
+	getRecommendedBackend(storageType: StorageType): DatabaseType {
+		const recommendedBackends: Record<StorageType, DatabaseType> = {
 			keyValue: "sqlite",
 			sql: "sqlite",
 			vector: "lancedb",
@@ -230,7 +230,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 			hybrid: "sqlite", // Default fallback
 		};
 
-		return optimalBackends[storageType];
+		return recommendedBackends[storageType];
 	}
 
 	/**
@@ -433,14 +433,14 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 		}
 	}
 
-	private getStorageOptimizations(
+	private getStorageSettings(
 		storageType: StorageType,
 		databaseType: DatabaseType,
 	): Record<string, unknown> {
-		const optimizations: Record<string, Record<string, unknown>> = {
+		const settings: Record<string, Record<string, unknown>> = {
 			keyValue: {
 				sqlite: {
-					// Optimize for key-value workload
+					// Settings for key-value workload
 					pragma: {
 						cache_size: 2000,
 						journal_mode: "WAL",
@@ -450,7 +450,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 			},
 			sql: {
 				sqlite: {
-					// Optimize for OLTP workload
+					// Settings for OLTP workload
 					pragma: {
 						cache_size: 5000,
 						journal_mode: "WAL",
@@ -461,14 +461,14 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 			},
 			vector: {
 				lancedb: {
-					// Optimize for vector operations
+					// Settings for vector operations
 					writeMode: "append",
 					readConsistencyInterval: 1000,
 				},
 			},
 			graph: {
 				kuzu: {
-					// Optimize for graph operations
+					// Settings for graph operations
 					bufferPoolSize: 2 * 1024 * 1024 * 1024, // 2GB
 					maxNumThreads: 8,
 					enableCompression: true,
@@ -476,7 +476,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 			},
 		};
 
-		return (optimizations[storageType]?.[databaseType] || {}) as Record<
+		return (settings[storageType]?.[databaseType] || {}) as Record<
 			string,
 			unknown
 		>;
@@ -527,22 +527,26 @@ export function createDatabaseConnection(
 }
 
 /**
- * Creates optimal storage configuration
+ * Creates storage configuration
  */
-export function createOptimalStorageConfig(
+export function createStorageConfig(
 	storageType: StorageType,
 	database: string,
 	baseConfig?: Partial<DatabaseConfig>,
 ): DatabaseConfig {
-	return getDatabaseFactory().createOptimalConfig(
+	return getDatabaseFactory().createStorageConfig(
 		storageType,
 		database,
 		baseConfig,
 	);
 }
 
+// Backward compatibility aliases
+export const createOptimalConfig = createStorageConfig;
+export const createOptimalStorageConfig = createStorageConfig;
+
 /**
- * Helper function to create storage instances with optimal backends
+ * Helper function to create storage instances with recommended backends
  */
 export function createStorage<T extends StorageType>(
 	type: T,
@@ -558,7 +562,7 @@ export function createStorage<T extends StorageType>(
 				? GraphStorage
 				: never {
 	const factory = getDatabaseFactory();
-	const config = factory.createOptimalConfig(type, database, baseConfig);
+	const config = factory.createStorageConfig(type, database, baseConfig);
 
 	switch (type) {
 		case "keyValue":

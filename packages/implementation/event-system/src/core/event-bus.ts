@@ -30,10 +30,10 @@
  *
  * // Type-safe event handling
  * eventBus.on('userAction', (payload) => {'
- *   console.log('User action:', payload);'
+ *   console.log('User action:', payload);
  * });
  *
- * eventBus.emit('userAction', { action: 'click', target: 'button' });'
+ * eventBus.emit('userAction', { action: 'click', target: 'button' });
  * ````
  */
 
@@ -136,7 +136,7 @@ export class EventBus extends EventEmitter {
    * Initialize event bus with foundation integration.
    * Should be called after construction.
    */
-  async initialize(): Promise<Result<void, Error>> {
+  async initialize(): Promise<Result<void, Error>{> {
     return safeAsync(async () => {
       logger.info('[EventBus] Initialized successfully', {'
         config: this.config,
@@ -155,14 +155,14 @@ export class EventBus extends EventEmitter {
    */
   @traced('event.emit')'
   @metered('event_bus_emit')'
-  async emitSafe(event: string, payload: any): Promise<Result<boolean, Error>> {
+  async emitSafe(event: string, payload: any): Promise<Result<boolean, Error>{> {
     return withTrace('event.emit', async (_span) => {'
       return safeAsync(async () => {
         const _startTime = Date.now();
 
         // Record telemetry metrics
         if (this.config.enableTelemetry) {
-          recordMetric('event_bus.events_total', 1, { event_type: event });'
+          recordMetric('event_bus.events_total', 1, { event_type: event });
           recordMetric(
             'event_bus.active_listeners',
             this.listenerCount(event),event_type: event 
@@ -269,7 +269,7 @@ export class EventBus extends EventEmitter {
       recordMetric('event_bus.listeners_registered', 1, {'
         event_type: String(event),
       });
-      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);'
+      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);
     }
 
     return this;
@@ -296,7 +296,7 @@ export class EventBus extends EventEmitter {
       recordMetric('event_bus.listeners_removed', 1, {'
         event_type: String(event),
       });
-      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);'
+      recordMetric('event_bus.total_listeners', this.metrics.listenerCount);
     }
 
     return this;
@@ -310,8 +310,8 @@ export class EventBus extends EventEmitter {
 
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('event_bus.middleware_added', 1);'
-      recordMetric('event_bus.middleware_count', this.middleware.length);'
+      recordMetric('event_bus.middleware_added', 1);
+      recordMetric('event_bus.middleware_count', this.middleware.length);
     }
   }
 
@@ -372,7 +372,7 @@ export class EventBus extends EventEmitter {
 
       // Record telemetry for middleware errors
       if (this.config.enableTelemetry) {
-        recordMetric('event_bus.middleware_errors', 1, { event_type: event });'
+        recordMetric('event_bus.middleware_errors', 1, { event_type: event });
       }
 
       logger.error(`[EventBus] Middleware error for event '${event}':`, error);`

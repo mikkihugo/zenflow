@@ -695,7 +695,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       domainValidation: config.domainValidation ?? true,
     };
 
-    this.logger = getLogger('type-safe-event-bus');'
+    this.logger = getLogger('type-safe-event-bus');
 
     // Initialize domain validators if domain validation is enabled
     if (this.config.domainValidation) {
@@ -725,7 +725,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       priority?: EventPriority;
       correlationId?: string;
     } = {}
-  ): Promise<EventProcessingResult> {
+  ): Promise<EventProcessingResult>{
     const startTime = Date.now();
     const eventId = event.id||this.generateEventId();
 
@@ -853,7 +853,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       timeout?: number;
       maxConcurrency?: number;
     } = {}
-  ): Promise<EventProcessingResult[]> {
+  ): Promise<EventProcessingResult[]>{
     const startTime = Date.now();
     const maxConcurrency = options.maxConcurrency ?? this.config.maxConcurrency;
 
@@ -999,7 +999,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     handler: EventHandler<BaseEvent>,
     config: EventHandlerConfig = {}
   ): string {
-    return this.registerHandler('*', handler, config);'
+    return this.registerHandler('*', handler, config);
   }
 
   /**
@@ -1054,7 +1054,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     fromDomain: Domain,
     toDomain: Domain,
     operation: string
-  ): Promise<Result<EventProcessingResult>> {
+  ): Promise<Result<EventProcessingResult>{> {
     const startTime = Date.now();
 
     try {
@@ -1234,7 +1234,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
   public clearEventHistory(): void {
     this.eventHistory.length = 0;
     this.eventCache.clear();
-    this.logger.info('Event history cleared');'
+    this.logger.info('Event history cleared');
   }
 
   // ============================================================================
@@ -1343,7 +1343,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     this.processingStats.clear();
     this.eventCounter = 0;
     this.startTime = Date.now();
-    this.logger.info('Performance metrics reset');'
+    this.logger.info('Performance metrics reset');
   }
 
   // ============================================================================
@@ -1363,7 +1363,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       for (const [domain, _validator] of this.domainValidators.entries()) {
         try {
           // Validators are already initialized via getDomainValidator
-          this.logger.debug('Domain validator ready', { domain });'
+          this.logger.debug('Domain validator ready', { domain });
         } catch (error) {
           this.logger.error('Failed to initialize domain validator', {'
             domain,
@@ -1377,14 +1377,14 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     // Register system event handlers
     this.registerSystemEventHandlers();
 
-    this.logger.info('TypeSafeEventBus initialized successfully');'
+    this.logger.info('TypeSafeEventBus initialized successfully');
   }
 
   /**
    * Shutdown the event system gracefully
    */
   public async shutdown(): Promise<void> {
-    this.logger.info('Shutting down TypeSafeEventBus');'
+    this.logger.info('Shutting down TypeSafeEventBus');
 
     // Emit system shutdown event
     try {
@@ -1416,7 +1416,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     // Remove all listeners
     this.removeAllListeners();
 
-    this.logger.info('TypeSafeEventBus shutdown complete');'
+    this.logger.info('TypeSafeEventBus shutdown complete');
   }
 
   private generateCrossingId(): string {
@@ -1531,7 +1531,7 @@ export function createCorrelationId(): string {
  * Type guard to check if an object is a valid base event
  */
 export function isBaseEvent(obj: unknown): obj is BaseEvent {
-  if (!obj||typeof obj !=='object') return false;'
+  if (!obj||typeof obj !=='object') return false;
 
   const event = obj as any;
   return (

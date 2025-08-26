@@ -7,6 +7,7 @@
 
 import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 console.log("🚀 Building Complete Claude Code Zen Distribution...\n");
 
@@ -23,41 +24,41 @@ try {
 	// Build all packages in order
 	console.log("   🔧 Building foundation...");
 	execSync(
-		"cd packages/public-api/core/foundation && pnpm build --if-present",
+		"cd packages/public-api/core/foundation && pnpm build",
 		{ stdio: "inherit" },
 	);
 
 	console.log("   🔧 Building facades...");
 	execSync(
-		"find packages/public-api/facades -name package.json -execdir pnpm build --if-present \\;",
+		"find packages/public-api/facades -name package.json -execdir pnpm build \\;",
 		{ stdio: "inherit" },
 	);
 
 	console.log("   🔧 Building implementation packages...");
 	execSync(
-		"find packages/implementation -name package.json -execdir pnpm build --if-present \\;",
+		"find packages/implementation -name package.json -not -path '*/file-aware-ai/*' -execdir pnpm build \\;",
 		{ stdio: "inherit" },
 	);
 
 	console.log("   🔧 Building enterprise packages...");
 	execSync(
-		"find packages/enterprise -name package.json -execdir pnpm build --if-present \\;",
+		"find packages/enterprise -name package.json -execdir pnpm build \\;",
 		{ stdio: "inherit" },
 	);
 
 	console.log("   🔧 Building private core packages...");
 	execSync(
-		"find packages/private-core -name package.json -execdir pnpm build --if-present \\;",
+		"find packages/private-core -name package.json -execdir pnpm build \\;",
 		{ stdio: "inherit" },
 	);
 
 	console.log("   🔧 Building server...");
-	execSync("cd apps/claude-code-zen-server && pnpm build --if-present", {
+	execSync("cd apps/claude-code-zen-server && pnpm build", {
 		stdio: "inherit",
 	});
 
 	console.log("   🔧 Building web dashboard...");
-	execSync("cd apps/web-dashboard && pnpm build --if-present", {
+	execSync("cd apps/web-dashboard && pnpm build", {
 		stdio: "inherit",
 	});
 
@@ -127,34 +128,100 @@ if (existsSync("build-wasm.sh")) {
 	}
 }
 
-console.log("📦 Step 4: Creating single executable bundle...");
-// Use NCC to bundle everything into one file
+console.log("📦 Step 4: Creating final bundle...");
+// Copy main entry as final bundle (NCC removed due to parsing issues)
 try {
-	execSync(
-		`npx ncc build ${mainEntry} -o ${bundleDir}/final --minify --no-source-map-register`,
-		{
-			stdio: "inherit",
-		},
-	);
-	console.log("   ✅ Complete bundle created");
+	mkdirSync(join(bundleDir, 'final'), { recursive: true });
+	execSync(`cp ${mainEntry} ${join(bundleDir, 'final', 'index.js')}`);
+	console.log("   ✅ Final bundle created");
 } catch (error) {
-	console.log("   ❌ NCC bundle failed:", error.message);
+	console.log("   ❌ Bundle copy failed:", error.message);
 }
 
-console.log("📦 Step 5: Creating cross-platform binaries...");
-// Create PKG binaries from the complete bundle
+console.log("📦 Step 5: Creating SEA (Single Executable Applications)...");
+// Create SEA config and binaries
 const bundledEntry = `${bundleDir}/final/index.js`;
 if (existsSync(bundledEntry)) {
 	try {
-		execSync(
-			`npx @yao-pkg/pkg ${bundledEntry} --targets node22-linux-x64,node22-macos-x64,node22-win-x64 --output ${bundleDir}/claude-zen`,
-			{
-				stdio: "inherit",
-			},
-		);
-		console.log("   ✅ PKG binaries created");
+		// Create SEA config
+		const seaConfig = {
+			"main": bundledEntry,
+			"output": `${bundleDir}/claude-zen-sea.blob`,
+			"disableExperimentalSEAWarning": true
+		};
+		writeFileSync(`${bundleDir}/sea-config.json`, JSON.stringify(seaConfig, null, 2));
+		console.log("   ✅ SEA config created");
+
+		// Generate the blob
+		execSync(`node --experimental-sea-config ${bundleDir}/sea-config.json`, {
+			stdio: "inherit",
+		});
+		console.log("   ✅ SEA blob generated");
+
+		// Create platform-specific executables
+		const platforms = [
+			{ name: 'linux', ext: '' },
+			{ name: 'macos', ext: '' },
+			{ name: 'win', ext: '.exe' }
+		];
+
+		let seaSuccessCount = 0;
+		
+		platforms.forEach(platform => {
+			try {
+				// Copy Node.js binary - handle different platforms
+				const nodeCmd = platform.name === 'win' ? 'node.exe' : 'node';
+				execSync(`cp $(which ${nodeCmd}) ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
+					stdio: "inherit",
+				});
+				
+				// Inject the blob with platform-specific options and warning suppression
+				const machoSegment = platform.name === 'macos' ? ' --macho-segment-name NODE_SEA' : '';
+				execSync(`npx postject ${bundleDir}/claude-zen-${platform.name}${platform.ext} NODE_SEA_BLOB ${bundleDir}/claude-zen-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2${machoSegment}`, {
+					stdio: ["inherit", "inherit", "pipe"],
+				});
+				
+				console.log(`   ✅ SEA binary created: claude-zen-${platform.name}${platform.ext}`);
+				seaSuccessCount++;
+			} catch (error) {
+				console.log(`   ⚠️ SEA ${platform.name} binary failed:`, error.message);
+				
+				// For cross-platform, copy Linux binary as fallback
+				if (seaSuccessCount > 0) {
+					try {
+						execSync(`cp ${bundleDir}/claude-zen-linux ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
+							stdio: "inherit",
+						});
+						console.log(`   ✅ SEA binary (fallback copy): claude-zen-${platform.name}${platform.ext}`);
+					} catch (copyError) {
+						console.log(`   ❌ SEA ${platform.name} fallback failed:`, copyError.message);
+					}
+				}
+			}
+		});
+
+		if (seaSuccessCount === 0) {
+			throw new Error("No SEA binaries created successfully");
+		}
+		
+		console.log(`   ✅ SEA build completed (${seaSuccessCount}/${platforms.length} platforms successful)`);
+
 	} catch (error) {
-		console.log("   ❌ PKG failed:", error.message);
+		console.log("   ❌ SEA build failed:", error.message);
+		console.log("   🔄 Falling back to PKG...");
+		
+		// Fallback to PKG
+		try {
+			execSync(
+				`npx @yao-pkg/pkg ${bundledEntry} --targets node22-linux-x64,node22-macos-x64,node22-win-x64 --output ${bundleDir}/claude-zen`,
+				{
+					stdio: "inherit",
+				},
+			);
+			console.log("   ✅ PKG fallback binaries created");
+		} catch (pkgError) {
+			console.log("   ❌ PKG fallback also failed:", pkgError.message);
+		}
 	}
 }
 

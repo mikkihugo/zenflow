@@ -39,10 +39,10 @@ const logger = getLogger("comprehensive-claude-sdk-test");
 // Test configuration
 const TEST_CONFIG = {
 	// Control which test suites to run
-	RUN_INTEGRATION: process.env.RUN_INTEGRATION === "true",
-	RUN_PERFORMANCE: process.env.RUN_PERFORMANCE === "true",
-	RUN_STREAMING: process.env.RUN_STREAMING === "true",
-	RUN_PARALLEL: process.env.RUN_PARALLEL === "true",
+	RUN_INTEGRATION: process.env['RUN_INTEGRATION'] === "true",
+	RUN_PERFORMANCE: process.env['RUN_PERFORMANCE'] === "true",
+	RUN_STREAMING: process.env['RUN_STREAMING'] === "true",
+	RUN_PARALLEL: process.env['RUN_PARALLEL'] === "true",
 
 	// Test timeouts
 	QUICK_TIMEOUT: 30000, // 30 seconds

@@ -91,10 +91,10 @@ The memory package integrates with the strategic facade architecture through:
 ## Usage
 
 ```typescript
-import {
-  getMemorySystem,
-  createMemoryContainer,
-  registerMemoryProviders,
+import { 
+  getMemorySystem, 
+  createMemoryContainer, 
+  registerMemoryProviders 
 } from '@claude-zen/memory';
 
 // Initialize memory system with DI
@@ -116,7 +116,7 @@ await memorySystem.store('semantic:doc', embedding, { backend: 'lancedb' });
 This package demonstrates professional software engineering practices:
 
 - **Type-safe architecture** with comprehensive TypeScript typing
-- **Enterprise DI patterns** using foundation container system
+- **Enterprise DI patterns** using foundation container system  
 - **Comprehensive testing** with unit, integration, and system tests
 - **Error handling** with Result patterns and circuit breakers
 - **Performance monitoring** with metrics and telemetry

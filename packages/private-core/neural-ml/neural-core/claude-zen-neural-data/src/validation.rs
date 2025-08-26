@@ -4,7 +4,7 @@
 //! including data quality checks, temporal consistency validation, and statistical tests.
 
 use crate::{DataPipelineError, Result, TimeSeriesData, TimeSeriesDataset};
-use chrono::{DateTime, Duration, Utc};
+use chrono::Duration;
 use num_traits::Float;
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -869,7 +869,6 @@ impl<T: Float> DataValidator<T> {
     let values = data.values();
     if values.len() < 24 {
       // Need at least 24 points for basic seasonality detection
-      return;
     }
 
     // This is a placeholder for seasonality detection

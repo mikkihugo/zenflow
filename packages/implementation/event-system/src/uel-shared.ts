@@ -6,7 +6,7 @@
  * to eliminate the circular import.
  */
 
-import type { EventManagerConfig } from './core/interfaces;
+import type { EventManagerConfig } from './core/interfaces';
 
 /**
  * UEL Enhanced Event Bus Interface.
@@ -21,11 +21,11 @@ import type { EventManagerConfig } from './core/interfaces;
  * const eventBus: UELEnhancedEventBus = await createUELEventBus();
  *
  * // Emit events with data
- * await eventBus.emit('user:action', { userId: '123', action: 'login' });'
+ * await eventBus.emit('user:action', { userId: '123', action: 'login' });
  *
  * // Listen for events
  * eventBus.on('user:action', (data) => {'
- *   console.log('User action:', data);'
+ *   console.log('User action:', data);
  * });
  * ````
  */
@@ -38,7 +38,7 @@ export interface UELEnhancedEventBus {
    * @returns Promise that resolves when event emission is complete
    * @throws {Error} If event emission fails
    */
-  emit(event: string, data: unknown): Promise<void>;
+  emit(event: string, data: unknown)(): Promise<void>;
 
   /**
    * Register an event handler for a specific event type.
@@ -66,7 +66,7 @@ export interface UELEnhancedEventBus {
    * @returns Promise resolving to the event data when event is triggered
    * @throws {Error} If one-time handler registration fails
    */
-  once(event: string, handler: (data: unknown) => void): Promise<unknown>;
+  once(event: string, handler: (data: unknown) => void): Promise<unknown>{;
 
   /**
    * Get the event history for a specific event type.
@@ -103,7 +103,7 @@ export interface UELEnhancedEventBus {
  *
  * // Check system status
  * const status = await integration.getStatus();
- * console.log('UEL Status:', status);'
+ * console.log('UEL Status:', status);
  * ````
  */
 export interface UELSystemIntegration {
@@ -129,7 +129,7 @@ export interface UELSystemIntegration {
    * @returns Promise resolving to system status ('initializing', 'running', 'stopping', 'stopped', 'error')'
    * @throws {Error} If status retrieval fails
    */
-  getStatus(): Promise<string>;
+  getStatus(): Promise<string>{;
 
   /**
    * Restart the UEL system (shutdown followed by initialize).
@@ -181,7 +181,7 @@ export const UEL_CONFIG = {
  * ```typescript`
  * // Listen for UEL initialization
  * eventBus.on(UEL_EVENTS.INITIALIZED, (data) => {
- *   console.log('UEL system initialized:', data);'
+ *   console.log('UEL system initialized:', data);
  * });
  *
  * // Emit system error
@@ -225,7 +225,7 @@ export const UEL_EVENTS = {
  */
 export function createUELConfig(
   partial?: Partial<EventManagerConfig>
-): EventManagerConfig {
+): EventManager {Config {
   return {
     timeout: UEL_CONFIG.DEFAULT_TIMEOUT,
     retries: UEL_CONFIG.MAX_RETRIES,

@@ -273,7 +273,7 @@ export function setupProcessLifecycle(
 ): ProcessLifecycleManager {
 	return new ProcessLifecycleManager({
 		onShutdown: shutdownHandler,
-		onError: (error: Error) => {
+		onError: async (error: Error) => {
 			logger.error("🔥 Application error during shutdown:", error);
 		},
 	});

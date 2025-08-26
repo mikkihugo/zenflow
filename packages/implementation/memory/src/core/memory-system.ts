@@ -128,7 +128,7 @@ export interface BackendInterface {
  * @example
  */
 export interface BackendConfig {
-  type:'sqlite|lancedb|json|memory;
+  type:'sqlite|lancedb|json|memory';
   path?: string;
   maxSize?: number;
   ttl?: number;
@@ -161,7 +161,7 @@ export interface MemoryEntryMetadata {
   size: number;
   ttl?: number;
   tags?: string[];
-  priority?: 'low' | 'medium' | 'high';
+  priority?: 'low|medium|high';
 }
 
 /**

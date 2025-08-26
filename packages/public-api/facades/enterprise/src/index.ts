@@ -19,6 +19,8 @@
  * • @claude-zen/exporters: Data export management and formatting
  * • @claude-zen/agent-registry: Centralized agent registration and lifecycle management
  * • @claude-zen/interfaces: Interface management and detection systems
+ * • @claude-zen/workflows: Enterprise workflow engine and business process automation
+ * • @claude-zen/taskmaster: SAFe 6.0 task flow management with approval gates and compliance
  *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
@@ -106,6 +108,16 @@ export const getInterfaceManager = async () => {
 	return createInterfaceManager();
 };
 
+export const getWorkflowEngine = async () => {
+	const { WorkflowEngine } = await import("@claude-zen/workflows");
+	return new WorkflowEngine();
+};
+
+export const getTaskMaster = async () => {
+	const { createTaskMaster } = await import("@claude-zen/taskmaster");
+	return createTaskMaster();
+};
+
 // =============================================================================
 // MAIN SYSTEM OBJECT - Pure delegation system
 // =============================================================================
@@ -130,6 +142,10 @@ export const enterpriseSystem = {
 	getAgentRegistry,
 	getInterfaceManager,
 
+	// Business process automation
+	getWorkflowEngine,
+	getTaskMaster,
+
 	// Utilities
 	logger,
 	init: () => {
@@ -153,6 +169,8 @@ export type * from "@claude-zen/interfaces";
 export type * from "@claude-zen/kanban";
 export type * from "@claude-zen/knowledge";
 export type * from "@claude-zen/multi-level-orchestration";
+export type * from "@claude-zen/workflows";
+export type * from "@claude-zen/taskmaster";
 // Re-export package types
 export type * from "@claude-zen/safe-framework";
 export type * from "@claude-zen/sparc";

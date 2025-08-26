@@ -13,13 +13,21 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
-import { getDefaultConfig } from './config/index.js';
+import { configManager } from './config/index.js';
+
+/**
+ * Get default configuration
+ */
+function getDefaultConfig() {
+  return configManager.loadConfig();
+}
 import { ExporterManager } from './exporters/index.js';
 import { ProcessorManager } from './processors/index.js';
 import type {
   CollectorConfig,
   CollectorStats,
   HealthStatus,
+  SignalType,
   TelemetryData,
 } from './types.js';
 
@@ -41,12 +49,12 @@ export class InternalOTELCollector {
 
   constructor(config: Partial<CollectorConfig> = {}) {
     this.config = { ...getDefaultConfig(), ...config };
-    this.logger = getLogger('InternalOTELCollector');'
+    this.logger = getLogger('InternalOTELCollector');
     this.startTime = Date.now();
 
     // Initialize managers
-    this.exporterManager = new ExporterManager(this.config.exporters||[]);
-    this.processorManager = new ProcessorManager(this.config.processors||[]);
+    this.exporterManager = new ExporterManager(this.config.exporters || []);
+    this.processorManager = new ProcessorManager(this.config.processors || []);
 
     // Initialize stats
     this.stats = {
@@ -64,7 +72,7 @@ export class InternalOTELCollector {
    */
   async start(): Promise<void> {
     if (this.isRunning) {
-      this.logger.warn('Collector is already running');'
+      this.logger.warn('Collector is already running');
       return;
     }
 
@@ -82,14 +90,14 @@ export class InternalOTELCollector {
       this.startPeriodicTasks();
 
       this.isRunning = true;
-      this.logger.info('Internal OTEL Collector started', {'
-        httpPort: this.config.httpPort,
-        grpcPort: this.config.grpcPort,
-        exporters: this.config.exporters?.length||0,
-        processors: this.config.processors?.length||0,
+      this.logger.info('Internal OTEL Collector started', {
+        httpPort: this.config.http?.port,
+        grpcPort: this.config.grpc?.port,
+        exporters: this.config.exporters?.length || 0,
+        processors: this.config.processors?.length || 0,
       });
     } catch (error) {
-      this.logger.error('Failed to start OTEL collector', error);'
+      this.logger.error('Failed to start OTEL collector', error);
       throw error;
     }
   }
@@ -104,7 +112,7 @@ export class InternalOTELCollector {
       // Stop HTTP server
       if (this.httpServer) {
         await new Promise<void>((resolve) => {
-          this.httpServer?.close(() => resolve())();
+          this.httpServer?.close(() => resolve());
         });
         this.httpServer = null;
       }
@@ -116,9 +124,9 @@ export class InternalOTELCollector {
       await this.processorManager.shutdown();
 
       this.isRunning = false;
-      this.logger.info('Internal OTEL Collector stopped');'
+      this.logger.info('Internal OTEL Collector stopped');
     } catch (error) {
-      this.logger.error('Error stopping OTEL collector', error);'
+      this.logger.error('Error stopping OTEL collector', error);
       throw error;
     }
   }
@@ -128,7 +136,7 @@ export class InternalOTELCollector {
    */
   async ingest(data: TelemetryData): Promise<void> {
     if (!this.isRunning) {
-      throw new Error('Collector is not running');'
+      throw new Error('Collector is not running');
     }
 
     try {
@@ -147,11 +155,11 @@ export class InternalOTELCollector {
           this.stats.exported[data.type]++;
         } else {
           this.stats.errors[result.backend] =
-            (this.stats.errors[result.backend]||0) + 1;
+            (this.stats.errors[result.backend] || 0) + 1;
         }
       }
     } catch (error) {
-      this.logger.error('Failed to ingest telemetry data', {'
+      this.logger.error('Failed to ingest telemetry data', {
         error,
         dataType: data.type,
       });
@@ -167,9 +175,9 @@ export class InternalOTELCollector {
       dataItems.map((data) => this.ingest(data))
     );
 
-    const failed = results.filter((r) => r.status === 'rejected').length;'
+    const failed = results.filter((r) => r.status === 'rejected').length;
     if (failed > 0) {
-      this.logger.warn('Some batch items failed to ingest', {'
+      this.logger.warn('Some batch items failed to ingest', {
         total: dataItems.length,
         failed,
       });
@@ -202,13 +210,13 @@ export class InternalOTELCollector {
 
     // Determine overall status
     const hasUnhealthyExporter = Object.values(exporterHealth).some(
-      (h) => h.status === 'unhealthy''
+      (h) => h.status === 'unhealthy'
     );
     const hasDegradedExporter = Object.values(exporterHealth).some(
-      (h) => h.status === 'degraded''
+      (h) => h.status === 'degraded'
     );
 
-    let overallStatus: 'healthy|degraded|unhealthy' = 'healthy';
+    let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (hasUnhealthyExporter) {
       overallStatus = 'unhealthy';
     } else if (hasDegradedExporter) {
@@ -226,12 +234,12 @@ export class InternalOTELCollector {
       resources: {
         memory:
           memUsagePercent > 90
-            ? 'critical''
+            ? 'critical'
             : memUsagePercent > 75
-              ? 'warning''
+              ? 'warning'
               : 'ok',
-        disk: 'ok', // TODO: Implement disk usage check'
-        cpu: 'ok', // TODO: Implement CPU usage check'
+        disk: 'ok', // TODO: Implement disk usage check
+        cpu: 'ok', // TODO: Implement CPU usage check
       },
       timestamp: Date.now(),
     };
@@ -244,22 +252,23 @@ export class InternalOTELCollector {
     const app = express();
 
     // Security middleware
-    app.use(helmet())();
-    app.use(cors())();
-    app.use(compression())();
-    app.use(express.json({ limit: '10mb' }));'
+    app.use(helmet());
+    app.use(cors());
+    app.use(compression());
+    app.use(express.json({ limit: '10mb' }));
 
     // Health endpoint
-    app.get('/health', async (req, res) => '
+    app.get('/health', async (req, res) => {
       try {
         const health = await this.getHealthStatus();
-        res.status(health.status === 'healthy' ? 200 : 503).json(health);'
+        res.status(health.status === 'healthy' ? 200 : 503).json(health);
       } catch (error) {
-        res.status(500).json({ status: 'unhealthy', error: String(error) });'
-      });
+        res.status(500).json({ status: 'unhealthy', error: String(error) });
+      }
+    });
 
     // Stats endpoint
-    app.get('/stats', (_req, res) => {'
+    app.get('/stats', (_req, res) => {
       try {
         const stats = this.getStats();
         res.json(stats);
@@ -269,55 +278,55 @@ export class InternalOTELCollector {
     });
 
     // Telemetry ingestion endpoints
-    app.post('/v1/traces', async (_req, _res) => {'
-      await this.handleTelemetryIngestion(req, res, 'traces');'
+    app.post('/v1/traces', async (req, res) => {
+      await this.handleTelemetryIngestion(req, res, 'traces');
     });
 
-    app.post('/v1/metrics', async (_req, _res) => {'
-      await this.handleTelemetryIngestion(req, res, 'metrics');'
+    app.post('/v1/metrics', async (req, res) => {
+      await this.handleTelemetryIngestion(req, res, 'metrics');
     });
 
-    app.post('/v1/logs', async (_req, _res) => {'
-      await this.handleTelemetryIngestion(req, res, 'logs');'
+    app.post('/v1/logs', async (req, res) => {
+      await this.handleTelemetryIngestion(req, res, 'logs');
     });
 
     // Generic ingestion endpoint
-    app.post('/v1/telemetry', async (req, res) => {'
+    app.post('/v1/telemetry', async (req, res) => {
       try {
         const telemetryData = req.body as TelemetryData;
         await this.ingest(telemetryData);
         res.status(200).json({ success: true });
       } catch (error) {
-        this.logger.error('Failed to handle telemetry ingestion', error);'
-        res.status(500).json(error: String(error) );
+        this.logger.error('Failed to handle telemetry ingestion', error);
+        res.status(500).json({ error: String(error) });
       }
     });
 
     // Batch ingestion endpoint
-    app.post('/v1/telemetry/batch', async (req, res) => {'
+    app.post('/v1/telemetry/batch', async (req, res) => {
       try {
         const telemetryData = req.body as TelemetryData[];
         await this.ingestBatch(telemetryData);
         res.status(200).json({ success: true, count: telemetryData.length });
       } catch (error) {
-        this.logger.error('Failed to handle batch telemetry ingestion', error);'
-        res.status(500).json(error: String(error) );
+        this.logger.error('Failed to handle batch telemetry ingestion', error);
+        res.status(500).json({ error: String(error) });
       }
     });
 
     // Start server
-    const port = this.config.httpPort||4318;
+    const port = this.config.http?.port || 4318;
     this.httpServer = createServer(app);
 
-    await new Promise<void>((_resolve, _reject) => {
+    await new Promise<void>((resolve, reject) => {
       this.httpServer?.listen(port, () => {
         this.logger.info(
-          `OTEL Collector HTTP server listening on port ${port}``
+          `OTEL Collector HTTP server listening on port ${port}`
         );
         resolve();
       });
 
-      this.httpServer!.on('error', reject);'
+      this.httpServer!.on('error', reject);
     });
   }
 
@@ -334,7 +343,7 @@ export class InternalOTELCollector {
         type: signalType,
         timestamp: Date.now(),
         service: {
-          name: (req.headers['x-service-name'] as string)||'unknown',
+          name: (req.headers['x-service-name'] as string) || 'unknown',
           version: req.headers['x-service-version'] as string,
           instance: req.headers['x-service-instance'] as string,
         },
@@ -345,7 +354,7 @@ export class InternalOTELCollector {
       await this.ingest(telemetryData);
       res.status(200).json({ success: true });
     } catch (error) {
-      this.logger.error(`Failed to handle ${signalType} ingestion`, error);`
+      this.logger.error(`Failed to handle ${signalType} ingestion`, error);
       res.status(500).json({ error: String(error) });
     }
   }
@@ -363,11 +372,11 @@ export class InternalOTELCollector {
     setInterval(async () => {
       try {
         const health = await this.getHealthStatus();
-        if (health.status !== 'healthy') {'
-          this.logger.warn('Collector health status degraded', health);'
+        if (health.status !== 'healthy') {
+          this.logger.warn('Collector health status degraded', health);
         }
       } catch (error) {
-        this.logger.error('Failed to perform health check', error);'
+        this.logger.error('Failed to perform health check', error);
       }
     }, 60000);
   }

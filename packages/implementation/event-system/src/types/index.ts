@@ -683,57 +683,57 @@ export const UELTypeGuards = {
   isSystemLifecycleEvent: (
     event: SystemEvent
   ): event is SystemLifecycleEvent => {
-    return event.type.startsWith('system:');'
+    return event.type.startsWith('system:');
   },
 
   isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => {
-    return event.type.startsWith('coordination:');'
+    return event.type.startsWith('coordination:');
   },
 
   isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => {
-    return event.type.startsWith('communication:');'
+    return event.type.startsWith('communication:');
   },
 
   isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => {
-    return event.type.startsWith('monitoring:');'
+    return event.type.startsWith('monitoring:');
   },
 
   isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => {
-    return event.type.startsWith('interface:');'
+    return event.type.startsWith('interface:');
   },
 
   isNeuralEvent: (event: SystemEvent): event is NeuralEvent => {
-    return event.type.startsWith('neural:');'
+    return event.type.startsWith('neural:');
   },
 
   isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => {
-    return event.type.startsWith('database:');'
+    return event.type.startsWith('database:');
   },
 
   isMemoryEvent: (event: SystemEvent): event is MemoryEvent => {
-    return event.type.startsWith('memory:');'
+    return event.type.startsWith('memory:');
   },
 
   isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
-    return event.type.startsWith('workflow:');'
+    return event.type.startsWith('workflow:');
   },
 
   isOrchestrationEvent: (event: SystemEvent): event is OrchestrationEvent => {
-    return event.type.startsWith('orchestration:');'
+    return event.type.startsWith('orchestration:');
   },
 
   isSafeEvent: (event: SystemEvent): event is SafeEvent => {
-    return event.type.startsWith('safe:');'
+    return event.type.startsWith('safe:');
   },
 
   isMemoryOrchestrationEvent: (
     event: SystemEvent
   ): event is MemoryOrchestrationEvent => {
-    return event.type.startsWith('memory_orchestration:');'
+    return event.type.startsWith('memory_orchestration:');
   },
 
   isUELEvent: (event: SystemEvent): event is UELEvent => {
-    const category = event.type.split(':')[0];'
+    const category = event.type.split(':')[0];
     return Object.values(EventCategories).includes(category as any);
   },
 } as const;

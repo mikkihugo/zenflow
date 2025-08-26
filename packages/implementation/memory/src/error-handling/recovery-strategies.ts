@@ -8,7 +8,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { BackendInterface } from '../core/memory-system';
 
-import type { MemoryError, MemoryErrorCode } from './memory-errors';
+import { type MemoryError, MemoryErrorCode } from './memory-errors';
 
 export interface RecoveryStrategy {
   name: string;
@@ -52,6 +52,11 @@ export interface RecoveryResult {
  */
 export class RecoveryStrategyManager extends TypedEventBase {
   private strategies = new Map<string, RecoveryStrategy>();
+  private recoveryHistory: Array<{
+    timestamp: number;
+    error: MemoryError;
+    result: RecoveryResult;
+  }> = [];
 
   constructor() {
     super();
@@ -65,7 +70,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
    */
   registerStrategy(strategy: RecoveryStrategy): void {
     this.strategies.set(strategy.name, strategy);
-    this.emit('strategyRegistered', strategy);'
+    this.emit('strategyRegistered', strategy);
   }
 
   /**
@@ -79,7 +84,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
     context: RecoveryContext
   ): Promise<RecoveryResult> {
     const startTime = Date.now();
-    this.emit('recoveryStarted', { error, context });'
+    this.emit('recoveryStarted', { error, context });
 
     try {
       // Find applicable strategies
@@ -91,7 +96,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
           strategy: 'none',
           action: 'no_applicable_strategy',
           duration: Date.now() - startTime,
-          error: `No recovery strategy found for error code: ${error.code}`,`
+          error: `No recovery strategy found for error code: ${error.code}`,
         };
       }
 
@@ -101,7 +106,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
       // Try strategies in order
       for (const strategy of applicableStrategies) {
         try {
-          this.emit('strategyAttempted', { strategy: strategy.name, error });'
+          this.emit('strategyAttempted', { strategy: strategy.name, error });
 
           const result = await this.executeWithTimeout(
             strategy,
@@ -111,17 +116,17 @@ export class RecoveryStrategyManager extends TypedEventBase {
 
           if (result?.success) {
             this.recordRecovery(error, result);
-            this.emit('recoverySucceeded', { error, result });'
+            this.emit('recoverySucceeded', { error, result });
             return result;
           }
 
-          this.emit('strategyFailed', {'
+          this.emit('strategyFailed', {
             strategy: strategy.name,
             error,
             result,
           });
         } catch (strategyError) {
-          this.emit('strategyError', {'
+          this.emit('strategyError', {
             strategy: strategy.name,
             error: strategyError,
           });
@@ -138,7 +143,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
       };
 
       this.recordRecovery(error, result);
-      this.emit('recoveryFailed', { error, result });'
+      this.emit('recoveryFailed', { error, result });
       return result;
     } catch (recoveryError) {
       const result: RecoveryResult = {
@@ -149,7 +154,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
         error: recoveryError.message,
       };
 
-      this.emit('recoveryError', { error, recoveryError });'
+      this.emit('recoveryError', { error, recoveryError });
       return result;
     }
   }
@@ -163,14 +168,14 @@ export class RecoveryStrategyManager extends TypedEventBase {
    */
   private async executeWithTimeout(
     strategy: RecoveryStrategy,
-    _error: MemoryError,
-    _context: RecoveryContext
+    error: MemoryError,
+    context: RecoveryContext
   ): Promise<RecoveryResult> {
-    return new Promise((_resolve, reject) => {
-      const _timeout = setTimeout(() => {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
         reject(
           new Error(
-            `Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms``
+            `Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms`
           )
         );
       }, strategy.timeoutMs);
@@ -254,15 +259,15 @@ export class RecoveryStrategyManager extends TypedEventBase {
           await backend.initialize?.();
 
           // Test connectivity with method compatibility
-          if ('get' in backend && typeof backend.get === 'function') {'
-            await backend.get('__health_check__');'
+          if ('get' in backend && typeof backend.get === 'function') {
+            await backend.get('__health_check__');
           } else if (
-            'retrieve' in backend &&'
-            typeof backend.retrieve === 'function''
+            'retrieve' in backend &&
+            typeof backend.retrieve === 'function'
           ) {
-            await backend.retrieve('__health_check__');'
+            await backend.retrieve('__health_check__');
           } else {
-            throw new Error('Backend lacks required methods');'
+            throw new Error('Backend lacks required methods');
           }
 
           return {
@@ -317,11 +322,11 @@ export class RecoveryStrategyManager extends TypedEventBase {
           for (const [id, backend] of Array.from(context.backends.entries())) {
             try {
               let data;
-              if ('get' in backend && typeof backend.get === 'function') {'
+              if ('get' in backend && typeof backend.get === 'function') {
                 data = await backend.get(key);
               } else if (
-                'retrieve' in backend &&'
-                typeof backend.retrieve === 'function') {'
+                'retrieve' in backend &&
+                typeof backend.retrieve === 'function') {
                 data = await backend.retrieve(key);
               } else {
                 continue; // Skip backends without compatible methods
@@ -365,17 +370,17 @@ export class RecoveryStrategyManager extends TypedEventBase {
           const repairPromises = Array.from(context.backends.entries()).map(
             async ([id, backend]) => {
               try {
-                if ('set' in backend && typeof backend.set === 'function') {'
+                if ('set' in backend && typeof backend.set === 'function') {
                   await backend.set(key, consensusData);
                 } else if (
-                  'store' in backend &&'
-                  typeof backend.store === 'function''
+                  'store' in backend &&
+                  typeof backend.store === 'function'
                 ) {
                   await backend.store(key, consensusData);
                 } else {
-                  throw new Error('Backend lacks required set/store method');'
+                  throw new Error('Backend lacks required set/store method');
                 }
-                return { id, status: 'repaired' };'
+                return { id, status: 'repaired' };
               } catch (repairError) {
                 return {
                   id,
@@ -388,7 +393,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
 
           const repairResults = await Promise.all(repairPromises);
           const successfulRepairs = repairResults?.filter(
-            (r) => r.status === 'repaired''
+            (r) => r.status === 'repaired'
           ).length;
 
           return {
@@ -495,18 +500,18 @@ export class RecoveryStrategyManager extends TypedEventBase {
               const backend = Array.from(context.backends.values())[0];
 
               switch (context.operation) {
-                case 'read': {'
+                case 'read': {
                   let data;
-                  if ('get' in backend && typeof backend.get === 'function') {'
+                  if ('get' in backend && typeof backend.get === 'function') {
                     data = await backend.get(context.key);
                   } else if (
-                    'retrieve' in backend &&'
-                    typeof backend.retrieve === 'function''
+                    'retrieve' in backend &&
+                    typeof backend.retrieve === 'function'
                   ) {
                     data = await backend.retrieve(context.key);
                   } else {
                     throw new Error(
-                      'Backend lacks required get/retrieve method''
+                      'Backend lacks required get/retrieve method'
                     );
                   }
                   return {
@@ -519,16 +524,16 @@ export class RecoveryStrategyManager extends TypedEventBase {
                   };
                 }
 
-                case 'write':'
-                  if ('set' in backend && typeof backend.set === 'function') {'
+                case 'write':
+                  if ('set' in backend && typeof backend.set === 'function') {
                     await backend.set(context.key, context.originalValue);
                   } else if (
-                    'store' in backend &&'
-                    typeof backend.store === 'function''
+                    'store' in backend &&
+                    typeof backend.store === 'function'
                   ) {
                     await backend.store(context.key, context.originalValue);
                   } else {
-                    throw new Error('Backend lacks required set/store method');'
+                    throw new Error('Backend lacks required set/store method');
                   }
                   return {
                     success: true,
@@ -540,7 +545,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
               }
             }
 
-            // If we can't retry the specific operation, just wait and return success'
+            // If we can't retry the specific operation, just wait and return success
             return {
               success: true,
               strategy: 'retry_with_backoff',
@@ -593,21 +598,21 @@ export class RecoveryStrategyManager extends TypedEventBase {
           const degradationActions: string[] = [];
 
           // Reduce memory usage
-          if (error.code === MemoryErrorCode['RESOURCE_EXHAUSTED']) {'
-            degradationActions.push('reduced_cache_size');'
-            degradationActions.push('enabled_compression');'
+          if (error.code === MemoryErrorCode['RESOURCE_EXHAUSTED']) {
+            degradationActions.push('reduced_cache_size');
+            degradationActions.push('enabled_compression');
           }
 
           // Use single node instead of quorum
-          if (error.code === MemoryErrorCode['QUORUM_NOT_REACHED']) {'
-            degradationActions.push('fallback_to_single_node');'
-            degradationActions.push('reduced_consistency_guarantee');'
+          if (error.code === MemoryErrorCode['QUORUM_NOT_REACHED']) {
+            degradationActions.push('fallback_to_single_node');
+            degradationActions.push('reduced_consistency_guarantee');
           }
 
           // Archive old data
-          if (error.code === MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED']) {'
-            degradationActions.push('archived_old_data');'
-            degradationActions.push('reduced_retention_period');'
+          if (error.code === MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED']) {
+            degradationActions.push('archived_old_data');
+            degradationActions.push('reduced_retention_period');
           }
 
           return {

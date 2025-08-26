@@ -102,7 +102,7 @@ describe("Logging System - 100% Coverage", () => {
 	describe("validateLoggingEnvironment", () => {
 		it("should validate clean environment", () => {
 			process.env = { ...originalEnv };
-			delete process.env.LOG_LEVEL;
+			delete process.env['LOG_LEVEL'];
 
 			const result = validateLoggingEnvironment();
 			expect(result).toHaveProperty("isValid");
@@ -112,7 +112,7 @@ describe("Logging System - 100% Coverage", () => {
 		});
 
 		it("should validate with LOG_LEVEL set", () => {
-			process.env.LOG_LEVEL = "debug";
+			process.env['LOG_LEVEL'] = "debug";
 
 			const result = validateLoggingEnvironment();
 			expect(result).toHaveProperty("isValid");
@@ -122,7 +122,7 @@ describe("Logging System - 100% Coverage", () => {
 		});
 
 		it("should handle invalid LOG_LEVEL", () => {
-			process.env.LOG_LEVEL = "invalid";
+			process.env['LOG_LEVEL'] = "invalid";
 
 			const result = validateLoggingEnvironment();
 			expect(result).toHaveProperty("isValid");
@@ -132,9 +132,9 @@ describe("Logging System - 100% Coverage", () => {
 		});
 
 		it("should validate with multiple env vars", () => {
-			process.env.LOG_LEVEL = "info";
-			process.env.LOG_FORMAT = "json";
-			process.env.LOG_FILE = "/tmp/test.log";
+			process.env['LOG_LEVEL'] = "info";
+			process.env['LOG_FORMAT'] = "json";
+			process.env['LOG_FILE'] = "/tmp/test.log";
 
 			const result = validateLoggingEnvironment();
 			expect(result).toHaveProperty("isValid");

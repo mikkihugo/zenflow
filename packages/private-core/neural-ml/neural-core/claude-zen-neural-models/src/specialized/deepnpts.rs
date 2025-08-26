@@ -567,7 +567,7 @@ impl<T: Float> BaseModel<T> for DeepNPTS<T> {
         let mut forecasts = Vec::new();
         let mut timestamps = Vec::new();
         let mut current_time = *data.timestamps.last().unwrap();
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         
         for _ in 0..self.config.horizon {
             // Simplified prediction logic
@@ -651,7 +651,7 @@ impl<T: Float> DeepNPTS<T> {
         
         let mut predicted_events = Vec::new();
         let mut current_time = data.time_range.1;
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         
         for _ in 0..self.config.horizon {
             // Simple event generation (in practice would use learned intensity)

@@ -231,7 +231,7 @@ function checkDangerousPatterns(
 			const issue: PromptIssue = {
 				type: dangerousPattern.type,
 				severity: dangerousPattern.severity,
-				message: `${dangerousPattern.message} (found ${matches.length} occurrence${matches.length > 1 ? "s" : ""})`,
+				message: `${dangerousPattern['message']} (found ${matches.length} occurrence${matches.length > 1 ? "s" : ""})`,
 				suggestion: dangerousPattern.suggestion,
 			};
 
@@ -265,7 +265,7 @@ function checkQualityPatterns(prompt: string, issues: PromptIssue[]): void {
 			issues.push({
 				type: qualityPattern.type,
 				severity: qualityPattern.severity,
-				message: qualityPattern.message,
+				message: qualityPattern['message'],
 			});
 		}
 	}
@@ -451,7 +451,7 @@ export function validateAndRejectPrompt(prompt: string): string {
 
 		throw new Error(
 			`Prompt validation failed with ${criticalIssues.length} critical issue(s): ${criticalIssues
-				.map((i) => i.message)
+				.map((i) => i['message'])
 				.join("; ")}`,
 		);
 	}
@@ -495,7 +495,7 @@ export function createSafePrompt(
 		throw new Error(
 			`Prompt rejected due to safety concerns: ${validation.issues
 				.filter((i) => i.severity === "critical")
-				.map((i) => i.message)
+				.map((i) => i['message'])
 				.join("; ")}`,
 		);
 	}

@@ -6,6 +6,7 @@
  */
 
 import { getLogger as getLogTapeLogger } from "@logtape/logtape";
+import type { Sink, LoggerConfig } from "@logtape/logtape";
 
 import type { UnknownRecord } from "../../types/primitives";
 
@@ -77,7 +78,7 @@ export interface LoggingConfig {
  * ```typescript
  * const logger = getLogger('myservice');
  * logger.info('Service started', { port: 3000 });
- * logger.error('Database connection failed', { error: err.message });
+ * logger.error('Database connection failed', { error: err['message'] });
  * logger.success?.('Operation completed successfully');
  * ```
  */
@@ -118,7 +119,7 @@ class LoggingConfigurationManager {
 				.catch((error) => {
 					// Enhanced error handling for logging initialization
 					console.error("LogTape initialization failed:", {
-						error: error.message,
+						error: error['message'],
 						timestamp: new Date().toISOString(),
 						fallback: "Console logging will be used",
 					});
@@ -144,16 +145,16 @@ class LoggingConfigurationManager {
 	}
 
 	private getDefaultLogLevel(): LoggingLevel {
-		const nodeEnv = process.env.NODE_ENV || "development";
+		const nodeEnv = process.env['NODE_ENV'] || "development";
 		return nodeEnv === "development" ? LoggingLevel.DEBUG : LoggingLevel.INFO;
 	}
 
 	private buildBaseConfig(defaultLevel: LoggingLevel): LoggingConfig {
-		const zenLogLevel = process.env.ZEN_LOG_LEVEL as LoggingLevel;
-		const zenLogFormat = process.env.ZEN_LOG_FORMAT as "json" | "text";
-		const zenLogConsole = process.env.ZEN_LOG_CONSOLE;
-		const zenLogFile = process.env.ZEN_LOG_FILE;
-		const zenLogTimestamp = process.env.ZEN_LOG_TIMESTAMP;
+		const zenLogLevel = process.env['ZEN_LOG_LEVEL'] as LoggingLevel;
+		const zenLogFormat = process.env['ZEN_LOG_FORMAT'] as "json" | "text";
+		const zenLogConsole = process.env['ZEN_LOG_CONSOLE'];
+		const zenLogFile = process.env['ZEN_LOG_FILE'];
+		const zenLogTimestamp = process.env['ZEN_LOG_TIMESTAMP'];
 
 		return {
 			level: zenLogLevel || defaultLevel,
@@ -180,7 +181,7 @@ class LoggingConfigurationManager {
 	private logFallbackWarning(error: unknown): void {
 		console.warn("[LoggingConfig] Configuration fallback activated:", {
 			reason: "Central config failed",
-			error: error instanceof Error ? error.message : String(error),
+			error: error instanceof Error ? error['message'] : String(error),
 			fallback: "Environment variables",
 			timestamp: new Date().toISOString(),
 		});
@@ -199,8 +200,8 @@ class LoggingConfigurationManager {
 		);
 
 		await configure({
-			sinks: sinkConfig as Record<string, (record: UnknownRecord) => void>,
-			loggers: loggerConfig,
+			sinks: sinkConfig as unknown as Record<string, Sink>,
+			loggers: loggerConfig as unknown as LoggerConfig<string, string>[],
 		});
 
 		this.initialized = true;
@@ -248,11 +249,11 @@ class LoggingConfigurationManager {
 	private loadOtelEnvironmentConfig() {
 		return {
 			useInternalOtelCollector:
-				process.env.ZEN_USE_INTERNAL_OTEL_COLLECTOR !== "false",
-			zenOtelEnabled: process.env.ZEN_OTEL_ENABLED === "true",
+				process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== "false",
+			zenOtelEnabled: process.env['ZEN_OTEL_ENABLED'] === "true",
 			internalCollectorEndpoint:
-				process.env.ZEN_INTERNAL_COLLECTOR_ENDPOINT || "http://localhost:4318",
-			otelLogsExporter: process.env.OTEL_LOGS_EXPORTER,
+				process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || "http://localhost:4318",
+			otelLogsExporter: process.env['OTEL_LOGS_EXPORTER'],
 		};
 	}
 
@@ -322,7 +323,7 @@ class LoggingConfigurationManager {
 			collectorConfig.useInternalCollector &&
 			collectorConfig.internalCollectorSink
 		) {
-			sinkConfig.collector = collectorConfig.internalCollectorSink;
+			sinkConfig['collector'] = collectorConfig.internalCollectorSink;
 		}
 
 		return sinkConfig;
@@ -338,16 +339,16 @@ class LoggingConfigurationManager {
 			}
 
 			const timestamp = this.config.timestamp
-				? `[${new Date(record.timestamp as string | number | Date).toISOString()}] `
+				? `[${new Date(record['timestamp'] as string | number | Date).toISOString()}] `
 				: "";
-			const level = String(record.level).toUpperCase().padStart(5);
-			const category = Array.isArray(record.category)
-				? record.category.join(".")
-				: String(record.category || "unknown");
-			const message = Array.isArray(record.message)
-				? record.message.join("")
-				: String(record.message || "");
-			const properties = (record.properties || {}) as UnknownRecord;
+			const level = String(record['level']).toUpperCase().padStart(5);
+			const category = Array.isArray(record['category'])
+				? record['category'].join(".")
+				: String(record['category'] || "unknown");
+			const message = Array.isArray(record['message'])
+				? record['message'].join("")
+				: String(record['message'] || "");
+			const properties = (record['properties'] || {}) as UnknownRecord;
 			const props =
 				Object.keys(properties).length > 0
 					? ` ${JSON.stringify(properties)}`
@@ -399,14 +400,14 @@ class LoggingConfigurationManager {
 		return async (record: UnknownRecord) => {
 			try {
 				const { timestamp } = record;
-				const level = String(record.level || "info");
-				const category = Array.isArray(record.category)
-					? record.category
-					: [String(record.category || "unknown")];
-				const message = Array.isArray(record.message)
-					? record.message
-					: [String(record.message || "")];
-				const properties = (record.properties || {}) as UnknownRecord;
+				const level = String(record['level'] || "info");
+				const category = Array.isArray(record['category'])
+					? record['category']
+					: [String(record['category'] || "unknown")];
+				const message = Array.isArray(record['message'])
+					? record['message']
+					: [String(record['message'] || "")];
+				const properties = (record['properties'] || {}) as UnknownRecord;
 
 				// Convert LogTape record to our internal telemetry format
 				const telemetryData = {
@@ -415,7 +416,7 @@ class LoggingConfigurationManager {
 					service: {
 						name: "claude-zen-foundation",
 						version: "1.0.0",
-						instance: process.env.HOSTNAME || "localhost",
+						instance: process.env['HOSTNAME'] || "localhost",
 					},
 					data: {
 						logs: [
@@ -451,7 +452,7 @@ class LoggingConfigurationManager {
 						// Silently ignore fetch errors to avoid logging loops
 						console.debug(
 							"Failed to send log to internal collector:",
-							fetchError.message,
+							fetchError['message'],
 						);
 					});
 			} catch (error) {

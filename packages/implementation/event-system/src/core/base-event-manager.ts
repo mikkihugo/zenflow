@@ -1,4 +1,4 @@
-import { EnhancedError, EventEmitter } from '@claude-zen/foundation';
+import { EnhancedError, type EventEmitter } from '@claude-zen/foundation';
 /**
  * @fileoverview Base Event Manager Implementation
  *
@@ -35,7 +35,7 @@ import type {
   EventManager,
   EventManagerType,
   SystemEvent,
-} from './interfaces;
+} from './interfaces';
 
 /**
  * Base Event Manager providing core event management functionality.
@@ -76,14 +76,14 @@ import type {
  * await manager.start();
  *
  * const subscriptionId = manager.subscribe(['custom:event'], (event) => {'
- *   console.log('Event received:', event);'
+ *   console.log('Event received:', event);
  * });
  *
  * await manager.emit({
  *   id: 'custom-001',
  *   type: 'custom:event',
  *   timestamp: new Date(),
- *   source: 'test'* });'
+ *   source: 'test'* });
  * ````
  */
 export abstract class BaseEventManager implements EventManager {
@@ -401,7 +401,7 @@ export abstract class BaseEventManager implements EventManager {
     }
 
     this.logger.debug(
-      `Subscription created: $subscriptionIdfor types ${types.join(', ')}``
+      `Subscription created: $subscriptionIdfor types $types.join(', ')``
     );
     return subscriptionId;
 
@@ -430,7 +430,7 @@ export abstract class BaseEventManager implements EventManager {
   /**
    * Get event manager metrics.
    */
-  async getMetrics(): Promise<EventManagerMetrics> {
+  async getMetrics(): Promise<EventManagerMetrics>{
     const uptime = Date.now() - this.metrics.startTime.getTime();
 
     return {
@@ -455,7 +455,7 @@ export abstract class BaseEventManager implements EventManager {
   /**
    * Perform health check on the event manager.
    */
-  async healthCheck(): Promise<EventManagerStatus> {
+  async healthCheck(): Promise<EventManagerStatus>{
     const metrics = await this.getMetrics();
     const queueBacklog =
       this.eventQueue.length > (this.config.processing?.queueSize||1000);
@@ -545,7 +545,7 @@ export abstract class BaseEventManager implements EventManager {
       metadata?: Record<string, unknown>;
     },
     options?: priority?: EventPriority; timeout?: number; retries?: number 
-  ): Promise<void> 
+  ): Promise<void> { 
     this.logger.debug(`Emitting batch of $batch.events.lengthevents`);`
 
     // Process all events in the batch
@@ -755,7 +755,7 @@ export abstract class BaseEventManager implements EventManager {
     sortBy?: 'timestamp' | 'priority' | 'type' | 'source;
     sortOrder?: 'asc' | 'desc;
     includeMetadata?: boolean;
-  }): Promise<T[]> {
+  }): Promise<T[]>{
     const startTime = Date.now();
     const queryId = `query-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
@@ -806,7 +806,7 @@ export abstract class BaseEventManager implements EventManager {
         }
         
         const comparison = valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
-        return sortOrder === 'asc' ? comparison : -comparison;'
+        return sortOrder === 'asc' ? comparison : -comparison;
       });
 
       // Apply pagination
@@ -861,7 +861,7 @@ export abstract class BaseEventManager implements EventManager {
   async getEventHistory(
     eventType: string,
     limit?: number
-  ): Promise<SystemEvent[]> {
+  ): Promise<SystemEvent[]>{
     const _startTime = Date.now();
     const _historyId = `history-${Date.now()}-${Math.random().toString(36).substring(2)}`;`
     
@@ -981,7 +981,7 @@ export abstract class BaseEventManager implements EventManager {
       return;
 
     if (!event || typeof event !== 'string') {'
-      this.logger.warn('Invalid event name provided for removal', event );'
+      this.logger.warn('Invalid event name provided for removal', event );
       return;
     }
 
@@ -991,7 +991,7 @@ export abstract class BaseEventManager implements EventManager {
       this.lifecycleEmitter.removeAllListeners(event);
     }
     
-    this.logger.debug(`Lifecycle listener(s) removed for event: $event`, {`
+    this.logger.debug(`Lifecycle listener(s) removed for event: $event`, `
       event,
       managerName: this.name,
       removedSpecificHandler: !!handler,
@@ -1025,20 +1025,18 @@ export abstract class BaseEventManager implements EventManager {
 
     this.lifecycleEmitter.once(event, handler);
     
-    this.logger.debug(`One-time lifecycle listener added for event: ${event}`, {`
+    this.logger.debug(`One-time lifecycle listener added for event: $event`, {`
       event,
       managerName: this.name,
-      totalListenerCount: this.lifecycleEmitter.listenerCount(event),
-    });
+      totalListenerCount: this.lifecycleEmitter.listenerCount(event),);
   }
 
   /**
    * Protected methods for extension by subclasses.
    */
 
-  protected async processEventImmediate(event: SystemEvent): Promise<void> {
+  protected async processEventImmediate(event: SystemEvent): Promise<void> { 
     await this.notifySubscribers(event);
-  }
 
   protected async processEventThrottled(event: SystemEvent): Promise<void> {
     // Simple throttling - could be made more sophisticated
@@ -1063,7 +1061,7 @@ export abstract class BaseEventManager implements EventManager {
         batch.map((event) => this.notifySubscribers(event))
       );
     } catch (error) {
-      this.logger.error('Batch processing failed:', error);'
+      this.logger.error('Batch processing failed:', error);
     } finally {
       this.isProcessing = false;
     }
@@ -1083,7 +1081,7 @@ export abstract class BaseEventManager implements EventManager {
         await this.processEventImmediate(event);
       }
     } catch (error) {
-      this.logger.error('Queue processing failed:', error);'
+      this.logger.error('Queue processing failed:', error);
       this.metrics.errorCount++;
     } finally {
       this.isProcessing = false;
@@ -1156,7 +1154,7 @@ export abstract class BaseEventManager implements EventManager {
   ): boolean {
     // Support wildcard matching
     if (subscriptionType.includes('*')) {'
-      const pattern = subscriptionType.replace(/*/g, '.*');'
+      const pattern = subscriptionType.replace(/*/g, '.*');
       return new RegExp(`^$pattern$`).test(eventType);`
     }
 
@@ -1203,7 +1201,7 @@ export abstract class BaseEventManager implements EventManager {
     return true;
   }
 
-  protected generateSubscriptionId(): string {
+  protected generateSubscriptionId(): string { 
     return `${this.name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
   }
 
@@ -1245,7 +1243,6 @@ export abstract class BaseEventManager implements EventManager {
             `Event manager health check failed: $this.name`,`
             status
           );
-        }
       } catch (error) {
         this.logger.error(
           `Health check error for manager ${this.name}:`,`

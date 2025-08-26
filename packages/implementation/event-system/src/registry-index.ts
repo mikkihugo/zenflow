@@ -70,7 +70,7 @@ export function createEnhancedEventRegistry(config?: {
 
   // Auto-initialize with provided config
   registry.initialize(config).catch((error) => {
-    console.error('Failed to initialize enhanced event registry:', error);'
+    console.error('Failed to initialize enhanced event registry:', error);
   });
 
   return registry;

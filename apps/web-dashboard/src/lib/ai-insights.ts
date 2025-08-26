@@ -74,27 +74,27 @@ export class AIInsightsEngine {
 
 		// Performance Analysis
 		if (data.performance) {
-			insights.push(...this.analyzePerformance(data.performance, timestamp));
+			insights.push(...this.analyzePerformance(data.performance as Record<string, unknown>, timestamp));
 		}
 
 		// Agent Analysis
-		if (data.agents?.length > 0) {
-			insights.push(...this.analyzeAgents(data.agents, timestamp));
+		if (Array.isArray(data.agents) && data.agents.length > 0) {
+			insights.push(...this.analyzeAgents(data.agents as Array<Record<string, unknown>>, timestamp));
 		}
 
 		// Task Analysis
-		if (data.tasks?.length > 0) {
-			insights.push(...this.analyzeTasks(data.tasks, timestamp));
+		if (Array.isArray(data.tasks) && data.tasks.length > 0) {
+			insights.push(...this.analyzeTasks(data.tasks as Array<Record<string, unknown>>, timestamp));
 		}
 
 		// System Health Analysis
 		if (data.health) {
-			insights.push(...this.analyzeSystemHealth(data.health, timestamp));
+			insights.push(...this.analyzeSystemHealth(data.health as Record<string, unknown>, timestamp));
 		}
 
 		// Usage Pattern Analysis
 		if (data.usage) {
-			insights.push(...this.analyzeUsagePatterns(data.usage, timestamp));
+			insights.push(...this.analyzeUsagePatterns(data.usage as Record<string, unknown>, timestamp));
 		}
 
 		// Cross-correlation Analysis
@@ -113,69 +113,69 @@ export class AIInsightsEngine {
 		const insights: AIInsight[] = [];
 
 		// CPU Analysis
-		if (performance.cpu > 80) {
+		if (typeof performance.cpu === 'number' && performance.cpu > 80) {
 			insights.push({
 				id: `cpu-high-${Date.now()}`,
 				type: "performance",
-				severity: performance.cpu > 95 ? "critical" : "high",
+				severity: (performance.cpu as number) > 95 ? "critical" : "high",
 				title: "High CPU Usage Detected",
-				description: `CPU usage is at ${performance.cpu.toFixed(1)}%, indicating potential performance bottlenecks.`,
+				description: `CPU usage is at ${(performance.cpu as number).toFixed(1)}%, indicating potential performance bottlenecks.`,
 				recommendation:
 					"Consider optimizing resource-intensive processes or scaling horizontally. Monitor agent workload distribution.",
 				confidence: 92,
 				timestamp,
-				data: { cpu: performance.cpu },
+				data: { cpu: performance.cpu as number },
 				actionable: true,
 				tags: ["performance", "cpu", "optimization"],
 			});
-		} else if (performance.cpu < 10) {
+		} else if (typeof performance.cpu === 'number' && performance.cpu < 10) {
 			insights.push({
 				id: `cpu-underutilized-${Date.now()}`,
 				type: "optimization",
 				severity: "low",
 				title: "CPU Underutilization Opportunity",
-				description: `CPU usage is only ${performance.cpu.toFixed(1)}%, suggesting potential for increased workload capacity.`,
+				description: `CPU usage is only ${(performance.cpu as number).toFixed(1)}%, suggesting potential for increased workload capacity.`,
 				recommendation:
 					"Consider increasing agent concurrency or processing more tasks in parallel to improve resource utilization.",
 				confidence: 75,
 				timestamp,
-				data: { cpu: performance.cpu },
+				data: { cpu: performance.cpu as number },
 				actionable: true,
 				tags: ["optimization", "efficiency", "scaling"],
 			});
 		}
 
 		// Memory Analysis
-		if (performance.memory > 85) {
+		if (typeof performance.memory === 'number' && performance.memory > 85) {
 			insights.push({
 				id: `memory-high-${Date.now()}`,
 				type: "performance",
-				severity: performance.memory > 95 ? "critical" : "high",
+				severity: (performance.memory as number) > 95 ? "critical" : "high",
 				title: "High Memory Usage Warning",
-				description: `Memory usage at ${performance.memory.toFixed(1)}% may lead to performance degradation or system instability.`,
+				description: `Memory usage at ${(performance.memory as number).toFixed(1)}% may lead to performance degradation or system instability.`,
 				recommendation:
 					"Review memory-intensive agents and consider implementing memory pooling or garbage collection optimizations.",
 				confidence: 88,
 				timestamp,
-				data: { memory: performance.memory },
+				data: { memory: performance.memory as number },
 				actionable: true,
 				tags: ["performance", "memory", "stability"],
 			});
 		}
 
 		// Response Time Analysis
-		if (performance.avgResponse > 1000) {
+		if (typeof performance.avgResponse === 'number' && performance.avgResponse > 1000) {
 			insights.push({
 				id: `response-slow-${Date.now()}`,
 				type: "performance",
-				severity: performance.avgResponse > 5000 ? "high" : "medium",
+				severity: (performance.avgResponse as number) > 5000 ? "high" : "medium",
 				title: "Slow Response Times Detected",
-				description: `Average response time of ${performance.avgResponse}ms exceeds optimal thresholds.`,
+				description: `Average response time of ${performance.avgResponse as number}ms exceeds optimal thresholds.`,
 				recommendation:
 					"Analyze request processing pipeline, consider caching strategies, and optimize database queries.",
 				confidence: 85,
 				timestamp,
-				data: { avgResponse: performance.avgResponse },
+				data: { avgResponse: performance.avgResponse as number },
 				actionable: true,
 				tags: ["performance", "latency", "optimization"],
 			});
@@ -329,7 +329,7 @@ export class AIInsightsEngine {
 		const insights: AIInsight[] = [];
 
 		// Uptime Analysis
-		if (health.uptime) {
+		if (typeof health.uptime === 'number') {
 			const uptimeHours = health.uptime / 3600;
 			if (uptimeHours > 720) {
 				// 30 days
@@ -381,7 +381,7 @@ export class AIInsightsEngine {
 		const insights: AIInsight[] = [];
 
 		// Request rate analysis
-		if (usage.requestsPerMin) {
+		if (typeof usage.requestsPerMin === 'number') {
 			if (usage.requestsPerMin < 10) {
 				insights.push({
 					id: `usage-low-${Date.now()}`,
@@ -428,13 +428,15 @@ export class AIInsightsEngine {
 		const insights: AIInsight[] = [];
 
 		// Performance vs Agent correlation
-		if (data.performance && data.agents) {
+		if (data.performance && Array.isArray(data.agents)) {
+			const agents = data.agents as Array<Record<string, unknown>>;
 			const activeAgentRatio =
-				data.agents.filter(
+				agents.filter(
 					(a: Record<string, unknown>) => (a.status as string) === "active",
-				).length / data.agents.length;
+				).length / agents.length;
 
-			if (data.performance.cpu > 70 && activeAgentRatio > 0.8) {
+			const performance = data.performance as Record<string, unknown>;
+			if (typeof performance.cpu === 'number' && performance.cpu > 70 && activeAgentRatio > 0.8) {
 				insights.push({
 					id: `correlation-cpu-agents-${Date.now()}`,
 					type: "prediction",
@@ -447,7 +449,7 @@ export class AIInsightsEngine {
 					confidence: 81,
 					timestamp,
 					data: {
-						cpu: data.performance.cpu,
+						cpu: performance.cpu as number,
 						agentUtilization: activeAgentRatio,
 					},
 					actionable: true,
@@ -457,14 +459,16 @@ export class AIInsightsEngine {
 		}
 
 		// Memory vs Task correlation
-		if (data.performance && data.tasks) {
+		if (data.performance && Array.isArray(data.tasks)) {
+			const tasks = data.tasks as Array<Record<string, unknown>>;
 			const inProgressRatio =
-				data.tasks.filter(
+				tasks.filter(
 					(t: Record<string, unknown>) =>
 						(t.status as string) === "in-progress",
-				).length / data.tasks.length;
+				).length / tasks.length;
 
-			if (data.performance.memory > 80 && inProgressRatio > 0.3) {
+			const performance = data.performance as Record<string, unknown>;
+			if (typeof performance.memory === 'number' && performance.memory > 80 && inProgressRatio > 0.3) {
 				insights.push({
 					id: `correlation-memory-tasks-${Date.now()}`,
 					type: "prediction",
@@ -477,7 +481,7 @@ export class AIInsightsEngine {
 					confidence: 76,
 					timestamp,
 					data: {
-						memory: data.performance.memory,
+						memory: performance.memory as number,
 						taskUtilization: inProgressRatio,
 					},
 					actionable: true,
@@ -561,14 +565,14 @@ export class AIInsightsEngine {
 		// In a real implementation, this would analyze historical data
 		return {
 			performance:
-				data.performance?.cpu > 80
+				(data.performance as any)?.cpu > 80
 					? "declining"
-					: data.performance?.cpu < 30
+					: (data.performance as any)?.cpu < 30
 						? "stable"
 						: "stable",
-			usage: data.usage?.requestsPerMin > 500 ? "increasing" : "stable",
+			usage: (data.usage as any)?.requestsPerMin > 500 ? "increasing" : "stable",
 			efficiency:
-				data.performance?.cpu < 50 && data.performance?.memory < 70
+				(data.performance as any)?.cpu < 50 && (data.performance as any)?.memory < 70
 					? "optimized"
 					: "normal",
 		};

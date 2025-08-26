@@ -403,9 +403,8 @@ export async function withRetry<T>(
 	);
 
 	const giveUpListener = retryPolicy.onGiveUp(
-		(data: { error?: Error; reason?: unknown }) => {
-			const error =
-				"error" in data ? data.error : new Error(String(data.reason || data));
+		(data: any) => {
+			const error = data.error || new Error(String(data.reason || data.value || data));
 			logger.error("Retry failed permanently:", error);
 		},
 	);

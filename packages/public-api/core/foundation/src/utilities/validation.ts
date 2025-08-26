@@ -374,5 +374,5 @@ export function getValidationErrors(
 	result: Result<unknown, ZodError>,
 ): string[] {
 	if (result.isOk()) return [];
-	return result.error.issues.map((issue) => issue.message);
+	return result.error.issues.map((issue) => issue['message']);
 }

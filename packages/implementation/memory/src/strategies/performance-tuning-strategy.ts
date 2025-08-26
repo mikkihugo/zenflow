@@ -5,17 +5,19 @@
  * automated parameter adjustment, and continuous optimization feedback loops.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { 
+import { TypedEventBase ,
   getLogger,
-  recordMetric,TypedEventBase ,
+  recordMetric,
+  TelemetryManager,
   withTrace,
 } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
 import type {
   PerformanceConfig,
   TuningAction,
   TuningRecommendation,
+  StrategyMetrics,
 } from './types';
 
 interface PerformanceSnapshot {
@@ -53,18 +55,25 @@ interface TuningResult {
 export class PerformanceTuningStrategy extends TypedEventBase {
   private logger: Logger;
   private config: PerformanceConfig;
+  private telemetry: TelemetryManager;
   private snapshots: PerformanceSnapshot[] = [];
-  private tuningParameters = new Map<string, TuningParameter>();'
+  private tuningParameters = new Map<string, TuningParameter>();
+  private tuningHistory: TuningResult[] = [];
+  private tuningTimer?: NodeJS.Timeout;
+  private metrics: StrategyMetrics['performance'];
   private initialized = false;
+  private stabilityCounter = 0;
+  private lastTuningTime = 0;
 
   constructor(config: PerformanceConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('PerformanceTuningStrategy');'
-    this.telemetry = new TelemetryManager(
+    this.logger = getLogger('PerformanceTuningStrategy');
+    this.telemetry = new TelemetryManager({
       serviceName: 'performance-tuning',
       enableTracing: true,
-      enableMetrics: true,);
+      enableMetrics: true,
+    });
     this.initializeMetrics();
     this.initializeTuningParameters();
   }
@@ -73,7 +82,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      await withTrace('performance-tuning-init', async () => {'
+      await withTrace('performance-tuning-init', async () => {
         await this.telemetry.initialize();
 
         // Start performance monitoring
@@ -82,11 +91,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
         }
 
         this.initialized = true;
-        this.logger.info('Performance tuning strategy initialized', {'
+        this.logger.info('Performance tuning strategy initialized', {
           autoTune: this.config.tuning.autoTune,
           interval: this.config.tuning.interval,
         });
-        recordMetric('performance_tuning_initialized', 1);'
+        recordMetric('performance_tuning_initialized', 1);
       });
     } catch (error) {
       this.logger.error(
@@ -102,10 +111,11 @@ export class PerformanceTuningStrategy extends TypedEventBase {
       return [];
     }
 
-    return withTrace('performance-tuning-cycle', async (_span) => {'
-      span?.setAttributes(
+    return withTrace('performance-tuning-cycle', async (span) => {
+      span?.setAttributes({
         'tuning.auto': this.config.tuning.autoTune,
-        'tuning.snapshots': this.snapshots.length,);
+        'tuning.snapshots': this.snapshots.length,
+      });
 
       try {
         // Take performance snapshot
@@ -127,20 +137,20 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           await this.applyTuning(recommendations.slice(0, 3)); // Apply top 3 recommendations
         }
 
-        this.emit('tuningAnalysisCompleted', {'
+        this.emit('tuningAnalysisCompleted', {
           snapshot: currentSnapshot,
           analysis,
           recommendations,
         });
 
-        recordMetric('performance_tuning_analysis_completed', 1, {'
+        recordMetric('performance_tuning_analysis_completed', 1, {
           recommendationsCount: recommendations.length,
         });
 
         return recommendations;
       } catch (error) {
-        this.logger.error('Performance tuning cycle failed:', error);'
-        recordMetric('performance_tuning_cycle_failed', 1);'
+        this.logger.error('Performance tuning cycle failed:', error);
+        recordMetric('performance_tuning_cycle_failed', 1);
         throw error;
       }
     });
@@ -157,7 +167,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
 
   private initializeTuningParameters(): void {
     // Cache size parameter
-    this.tuningParameters.set('cacheSize', {'
+    this.tuningParameters.set('cacheSize', {
       name: 'cacheSize',
       currentValue: 1000,
       minValue: 100,
@@ -168,7 +178,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     });
 
     // Cache TTL parameter
-    this.tuningParameters.set('cacheTtl', {'
+    this.tuningParameters.set('cacheTtl', {
       name: 'cacheTtl',
       currentValue: 300000, // 5 minutes
       minValue: 60000, // 1 minute
@@ -179,7 +189,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     });
 
     // Connection pool size
-    this.tuningParameters.set('connectionPoolSize', {'
+    this.tuningParameters.set('connectionPoolSize', {
       name: 'connectionPoolSize',
       currentValue: 10,
       minValue: 5,
@@ -190,7 +200,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     });
 
     // Batch size
-    this.tuningParameters.set('batchSize', {'
+    this.tuningParameters.set('batchSize', {
       name: 'batchSize',
       currentValue: 50,
       minValue: 10,
@@ -201,7 +211,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     });
 
     // Compression level
-    this.tuningParameters.set('compressionLevel', {'
+    this.tuningParameters.set('compressionLevel', {
       name: 'compressionLevel',
       currentValue: 6,
       minValue: 1,
@@ -270,9 +280,9 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   }
 
   private analyzePerformanceTrends(): {
-    responseTimeTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
-    throughputTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
-    memoryTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
+    responseTimeTrend: 'improving|stable|degrading';
+    throughputTrend: 'improving|stable|degrading';
+    memoryTrend: 'improving|stable|degrading';
     overallHealth: number;
     bottlenecks: string[];
   } {
@@ -336,19 +346,19 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     // Identify bottlenecks
     const bottlenecks: string[] = [];
     if (recentAvgResponseTime > this.config.targets.responseTime * 1.5) {
-      bottlenecks.push('High response time');'
+      bottlenecks.push('High response time');
     }
     if (latestSnapshot.queueSize > 10) {
-      bottlenecks.push('High queue size');'
+      bottlenecks.push('High queue size');
     }
     if (latestSnapshot.cpuUsage > 0.8) {
-      bottlenecks.push('High CPU usage');'
+      bottlenecks.push('High CPU usage');
     }
     if (
       latestSnapshot.memoryUsage >
       this.config.targets.memoryEfficiency * 1000
     ) {
-      bottlenecks.push('High memory usage');'
+      bottlenecks.push('High memory usage');
     }
 
     return {
@@ -361,23 +371,23 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   }
 
   private getTrend(
-    _recent: number,
-    _older: number,
-    _higherIsBetter: boolean
-  ): 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading' {'
-    if (_older === 0) return 'stable';
+    recent: number,
+    older: number,
+    higherIsBetter: boolean
+  ): 'improving|stable|degrading' {
+    if (older === 0) return 'stable';
 
     const change = (recent - older) / older;
     const threshold = 0.05; // 5% change threshold
 
-    if (_Math._abs(_change) < _threshold) {
+    if (Math.abs(change) < threshold) {
       return 'stable';
     }
 
     if (higherIsBetter) {
-      return change > 0 ? 'improving' | 'stable' | 'declining'' : 'degrading;
+      return change > 0 ? 'improving' : 'degrading';
     } else {
-      return change < 0 ? 'improving' | 'stable' | 'declining'' : 'degrading;
+      return change < 0 ? 'improving' : 'degrading';
     }
   }
 
@@ -395,8 +405,8 @@ export class PerformanceTuningStrategy extends TypedEventBase {
 
     // Response time optimization
     if (
-      analysis.responseTimeTrend === 'degrading'||snapshot.responseTime > this.config.targets.responseTime'
-    ) 
+      analysis.responseTimeTrend === 'degrading'||snapshot.responseTime > this.config.targets.responseTime
+    ) {
       if (this.config.actions.adjustCacheSize) {
         recommendations.push({
           action:'increase_cache_size',
@@ -410,9 +420,9 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           parameters: {
             currentSize: this.tuningParameters.get('cacheSize')?.currentValue,
             newSize: Math.min(
-              (this.tuningParameters.get('cacheSize')?.currentValue||1000) *'
+              (this.tuningParameters.get('cacheSize')?.currentValue||1000) *
                 1.2,
-              this.tuningParameters.get('cacheSize')?.maxValue||10000'
+              this.tuningParameters.get('cacheSize')?.maxValue||10000
             ),
           },
           estimatedImprovement: {
@@ -444,11 +454,12 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           },
         });
       }
+    }
 
     // Throughput optimization
     if (
-      analysis.throughputTrend === 'degrading'||snapshot.throughput < this.config.targets.throughput'
-    ) 
+      analysis.throughputTrend === 'degrading'||snapshot.throughput < this.config.targets.throughput
+    ) {
       if (this.config.actions.balanceLoad) {
         recommendations.push({
           action:'rebalance_load',
@@ -493,11 +504,12 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           },
         });
       }
+    }
 
     // Memory optimization
     if (
-      analysis.memoryTrend === 'degrading'||snapshot.memoryUsage > this.config.targets.memoryEfficiency * 1000'
-    ) 
+      analysis.memoryTrend === 'degrading'||snapshot.memoryUsage > this.config.targets.memoryEfficiency * 1000
+    ) {
       recommendations.push({
         action:'increase_cleanup_frequency',
         priority: 'medium',
@@ -517,6 +529,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           memoryUsage: -0.25,
         },
       });
+    }
 
     // Cache efficiency optimization
     if (snapshot.cacheHitRate < this.config.targets.cacheEfficiency) {
@@ -555,7 +568,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   private calculateOptimalTtl(snapshot: PerformanceSnapshot): number {
     // Simple heuristic: adjust TTL based on cache hit rate
     const currentTtl =
-      this.tuningParameters.get('cacheTtl')?.currentValue||300000;'
+      this.tuningParameters.get('cacheTtl')?.currentValue||300000;
 
     if (snapshot.cacheHitRate < 0.7) {
       // Low hit rate, increase TTL
@@ -577,7 +590,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
       return false;
     }
 
-    // Check stability - don't tune if system is unstable'
+    // Check stability - don't tune if system is unstable
     if (this.stabilityCounter < this.config.tuning.stabilityThreshold) {
       return false;
     }
@@ -617,24 +630,25 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           this.tuningHistory.push(result);
           this.updateMetrics(result);
 
-          this.emit('tuningApplied', { recommendation, result });'
-          recordMetric('performance_tuning_applied', 1, '
+          this.emit('tuningApplied', { recommendation, result });
+          recordMetric('performance_tuning_applied', 1, {
             action: recommendation.action,
-            improvement,);
+            improvement,
+          });
 
           this.lastTuningTime = Date.now();
 
-          this.logger.info(`Applied tuning: ${recommendation.action}`, {`
+          this.logger.info(`Applied tuning: ${recommendation.action}`, {
             improvement,
             parameters: recommendation.parameters,
           });
         }
-      } catch (_error) {
+      } catch (error) {
         this.logger.error(
-          `Failed to apply tuning: ${recommendation.action}`,`
+          `Failed to apply tuning: ${recommendation.action}`,
           error
         );
-        recordMetric('performance_tuning_failed', 1, {'
+        recordMetric('performance_tuning_failed', 1, {
           action: recommendation.action,
         });
       }
@@ -646,31 +660,31 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   ): Promise<boolean> {
     // Mock implementation - in real scenario, would apply actual configuration changes
     switch (recommendation.action) {
-      case 'increase_cache_size': {'
+      case 'increase_cache_size': {
         const newSize = recommendation.parameters.newSize as number;
-        this.updateTuningParameter('cacheSize', newSize);'
+        this.updateTuningParameter('cacheSize', newSize);
         break;
       }
 
-      case 'enable_compression':'
-        this.updateTuningParameter('compressionLevel', 6);'
+      case 'enable_compression':
+        this.updateTuningParameter('compressionLevel', 6);
         break;
 
-      case 'rebalance_load':'
+      case 'rebalance_load':
         // Would trigger load balancer reconfiguration
         break;
 
-      case 'adjust_prefetching':'
+      case 'adjust_prefetching':
         // Would update prefetching parameters
         break;
 
-      case 'increase_cleanup_frequency':'
+      case 'increase_cleanup_frequency':
         // Would update cleanup interval
         break;
 
-      case 'optimize_ttl': {'
+      case 'optimize_ttl': {
         const newTtl = recommendation.parameters.ttl as number;
-        this.updateTuningParameter('cacheTtl', newTtl);'
+        this.updateTuningParameter('cacheTtl', newTtl);
         break;
       }
     }
@@ -745,14 +759,14 @@ export class PerformanceTuningStrategy extends TypedEventBase {
       try {
         await this.tune();
       } catch (error) {
-        this.logger.error('Performance tuning monitoring cycle failed:', error);'
+        this.logger.error('Performance tuning monitoring cycle failed:', error);
       }
     }, this.config.tuning.interval);
   }
 
   // Public methods
 
-  getMetrics(): StrategyMetrics['performance'] {'
+  getMetrics(): StrategyMetrics['performance'] {
     return { ...this.metrics };
   }
 
@@ -769,7 +783,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   }
 
   async forceOptimization(): Promise<TuningRecommendation[]> {
-    this.logger.info('Force optimization requested');'
+    this.logger.info('Force optimization requested');
     return this.tune();
   }
 
@@ -784,7 +798,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     param.currentValue = value;
     param.lastAdjusted = Date.now();
 
-    this.logger.info(`Tuning parameter updated: ${name} = ${value}`);`
+    this.logger.info(`Tuning parameter updated: ${name} = ${value}`);
     return true;
   }
 
@@ -801,7 +815,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
       }
     }
 
-    this.logger.info('Performance tuning configuration updated', newConfig);'
+    this.logger.info('Performance tuning configuration updated', newConfig);
   }
 
   async shutdown(): Promise<void> {
@@ -813,6 +827,6 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     this.tuningHistory = [];
     this.initialized = false;
 
-    this.logger.info('Performance tuning strategy shut down');'
+    this.logger.info('Performance tuning strategy shut down');
   }
 }

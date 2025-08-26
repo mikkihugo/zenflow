@@ -12,30 +12,30 @@
 /**
  * Event priority levels for processing order.
  */
-export type EventPriority = 'critical|high|medium|low;
+export type EventPriority = 'critical' | 'high' | 'medium' | 'low';
 
 // Re-export SystemLifecycleEvent from types for backwards compatibility
-export type { SystemLifecycleEvent } from '../types;
+export type { SystemLifecycleEvent } from '../types';
 
 /**
  * Event processing strategies.
  */
-export type EventProcessingStrategy =|'immediate|queued|batched|throttled;
+export type EventProcessingStrategy = 'immediate' | 'queued' | 'batched' | 'throttled';
 
 /**
  * Event filtering criteria for selective event processing.
  *
  * @interface EventFilter
  * @example
- * ```typescript`
+ * ```typescript
  * const filter: EventFilter = {
  *   types: ['system:lifecycle', 'coordination:swarm'],
  *   sources: ['agent-manager', 'swarm-coordinator'],
  *   priorities: ['critical', 'high'],
  *   metadata: { component: 'core' },
- *   customFilter: (event) => event.timestamp > new Date('2024-01-01')'
+ *   customFilter: (event) => event.timestamp > new Date('2024-01-01')
  * };
- * ````
+ * ```
  */
 export interface EventFilter {
   /** Array of event types to include in filtering */
@@ -55,16 +55,16 @@ export interface EventFilter {
  *
  * @interface EventTransform
  * @example
- * ```typescript`
+ * ```typescript
  * const transform: EventTransform = {
  *   mapper: (event) => ({ ...event, processedAt: new Date() }),
  *   enricher: async (event) => ({
  *     ...event,
  *     metadata: { ...event.metadata, enriched: true }
  *   }),
- *   validator: (event) => event.type.startsWith('system:')'
+ *   validator: (event) => event.type.startsWith('system:')
  * };
- * ````
+ * ```
  */
 export interface EventTransform {
   /** Synchronous event transformation function */
@@ -80,17 +80,17 @@ export interface EventTransform {
  *
  * @interface EventRetryConfig
  * @example
- * ```typescript`
+ * ```typescript
  * const retryConfig: EventRetryConfig = {
  *   attempts: 3,
  *   delay: 1000,
  *   backoff: 'exponential',
  *   maxDelay: 10000,
  *   retryCondition: (error, event) => {
- *     return error.code !== 'VALIDATION_ERROR' && event.priority !== 'low;
+ *     return error.code !== 'VALIDATION_ERROR' && event.priority !== 'low';
  *   }
  * };
- * ````
+ * ```
  */
 export interface EventRetryConfig {
   /** Maximum number of retry attempts */
@@ -98,7 +98,7 @@ export interface EventRetryConfig {
   /** Initial delay between retries in milliseconds */
   delay: number;
   /** Backoff strategy for increasing delay between retries */
-  backoff: 'linear' | 'exponential' | 'fixed;
+  backoff: 'linear' | 'exponential' | 'fixed';
   /** Maximum delay between retries in milliseconds */
   maxDelay?: number;
   /** Function to determine if an error/event combination should be retried */
@@ -160,7 +160,7 @@ export interface EventManagerConfig {
  *
  * @interface SystemEvent
  * @example
- * ```typescript`
+ * ```typescript
  * const systemEvent: SystemEvent = {
  *   id: 'evt_12345',
  *   timestamp: new Date(),
@@ -172,7 +172,7 @@ export interface EventManagerConfig {
  *   parentEventId: 'evt_11111',
  *   sequence: 1
  * };
- * ````
+ * ```
  */
 export interface SystemEvent {
   /** Unique identifier for the event */
@@ -191,7 +191,7 @@ export interface SystemEvent {
   metadata?: Record<string, unknown>;
   /** Correlation ID for tracking related events */
   correlationId?: string;
-  /** D of parent event if this is a child event */
+  /** ID of parent event if this is a child event */
   parentEventId?: string;
   /** Sequence number for ordered events */
   sequence?: number;
@@ -204,18 +204,18 @@ export interface SystemEvent {
  * @param event - The event to handle.
  * @returns Void or Promise<void> for async handlers.
  * @example
- * ```typescript`
+ * ```typescript
  * // Synchronous listener
  * const syncListener: EventListener = (event) => {
- *   console.log('Received event:', event.type);'
+ *   console.log('Received event:', event.type);
  * };
  *
  * // Asynchronous listener
  * const asyncListener: EventListener = async (event) => {
  *   await processEvent(event);
- *   console.log('Processed event:', event.id);'
+ *   console.log('Processed event:', event.id);
  * };
- * ````
+ * ```
  */
 export type EventListener<T extends SystemEvent = SystemEvent> = (
   event: T
@@ -227,7 +227,7 @@ export type EventListener<T extends SystemEvent = SystemEvent> = (
  * @template T - Event type extending SystemEvent.
  * @interface EventSubscription
  * @example
- * ```typescript`
+ * ```typescript
  * const subscription: EventSubscription = {
  *   id:'sub_12345',
  *   eventTypes: ['system:lifecycle', 'coordination:swarm'],
@@ -237,9 +237,9 @@ export type EventListener<T extends SystemEvent = SystemEvent> = (
  *   priority: 'high',
  *   created: new Date(),
  *   active: true,
- *   metadata: { component: 'event-processor' }'
+ *   metadata: { component: 'event-processor' }
  * };
- * ````
+ * ```
  */
 export interface EventSubscription<T extends SystemEvent = SystemEvent> {
   /** Unique identifier for the subscription */
@@ -270,7 +270,7 @@ export interface EventSubscription<T extends SystemEvent = SystemEvent> {
 export interface EventManagerStatus {
   name: string;
   type: EventManagerType;
-  status: 'healthy|degraded|unhealthy|stopped;
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'stopped';
   lastCheck: Date;
   subscriptions: number;
   queueSize: number;
@@ -336,8 +336,8 @@ export interface EventQueryOptions {
   filter?: EventFilter;
   limit?: number;
   offset?: number;
-  sortBy?: 'timestamp|priority|type|source;
-  sortOrder?: 'asc|desc;
+  sortBy?: 'timestamp' | 'priority' | 'type' | 'source';
+  sortOrder?: 'asc' | 'desc';
   includeMetadata?: boolean;
 }
 
@@ -346,7 +346,7 @@ export interface EventQueryOptions {
  *
  * @interface EventManager
  * @example
- * ```typescript`
+ * ```typescript
  * class MyEventManager implements EventManager {
  *   async start(): Promise<void> {
  *     // Initialize event processing
@@ -361,10 +361,10 @@ export interface EventQueryOptions {
  *     listener: EventListener<T>
  *   ): string {
  *     // Register event listener and return subscription ID
- *     return 'sub_12345;
+ *     return 'sub_12345';
  *   }
  * }
- * ````
+ * ```
  */
 export interface EventManager {
   // Configuration
@@ -402,7 +402,7 @@ export interface EventManager {
    *
    * @returns True if manager is actively processing events.
    */
-  isRunning(): boolean;
+  isRunning(): boolean {;
 
   // Event emission
   /**
@@ -416,7 +416,7 @@ export interface EventManager {
   emit<T extends SystemEvent>(
     event: T,
     options?: EventEmissionOptions
-  ): Promise<void>;
+  )(): Promise<void>;
 
   /**
    * Emit a batch of events efficiently.
@@ -429,7 +429,7 @@ export interface EventManager {
   emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
     options?: EventEmissionOptions
-  ): Promise<void>;
+  )(): Promise<void>;
 
   /**
    * Emit an event with immediate processing (bypassing queues).
@@ -438,7 +438,7 @@ export interface EventManager {
    * @param event - The event to emit immediately.
    * @throws {EventEmissionError} If immediate emission fails.
    */
-  emitImmediate<T extends SystemEvent>(event: T): Promise<void>;
+  emitImmediate<T extends SystemEvent>(event: T)(): Promise<void>;
 
   // Event subscription.
   /**
@@ -455,15 +455,15 @@ export interface EventManager {
     eventTypes: string|string[],
     listener: EventListener<T>,
     options?: Partial<EventSubscription<T>>
-  ): string;
+  ): string {;
 
   /**
    * Unsubscribe from events using subscription ID.
    *
-   * @param subscriptionId - D returned from subscribe().
+   * @param subscriptionId - ID returned from subscribe().
    * @returns True if subscription was found and removed.
    */
-  unsubscribe(subscriptionId: string): boolean;
+  unsubscribe(subscriptionId: string): boolean {;
 
   /**
    * Unsubscribe all listeners for an event type or all listeners.
@@ -481,15 +481,15 @@ export interface EventManager {
    * @returns Unique filter ID for later removal.
    * @throws {EventFilterError} If filter is invalid.
    */
-  addFilter(filter: EventFilter): string;
+  addFilter(filter: EventFilter): string {;
 
   /**
    * Remove a previously added filter.
    *
-   * @param filterId - D returned from addFilter().
+   * @param filterId - ID returned from addFilter().
    * @returns True if filter was found and removed.
    */
-  removeFilter(filterId: string): boolean;
+  removeFilter(filterId: string): boolean {;
 
   /**
    * Add a global event transformation.
@@ -497,15 +497,15 @@ export interface EventManager {
    * @param transform - Transform configuration.
    * @returns Unique transform ID for later removal.
    */
-  addTransform(transform: EventTransform): string;
+  addTransform(transform: EventTransform): string {;
 
   /**
    * Remove a previously added transformation.
    *
-   * @param transformId - D returned from addTransform().
+   * @param transformId - ID returned from addTransform().
    * @returns True if transform was found and removed.
    */
-  removeTransform(transformId: string): boolean;
+  removeTransform(transformId: string): boolean {;
 
   // Event querying and history
   /**
@@ -516,7 +516,7 @@ export interface EventManager {
    * @returns Array of events matching the query.
    * @throws {Error} If query execution fails.
    */
-  query<T extends SystemEvent>(options: EventQueryOptions): Promise<T[]>;
+  query<T extends SystemEvent>(options: EventQueryOptions): Promise<T[]>{;
 
   /**
    * Get event history for a specific event type.
@@ -525,7 +525,7 @@ export interface EventManager {
    * @param limit - Optional maximum number of events to return.
    * @returns Array of historical events in chronological order.
    */
-  getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]>;
+  getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]>{;
 
   // Health monitoring
   /**
@@ -534,14 +534,14 @@ export interface EventManager {
    * @returns Current health status including metrics.
    * @throws {Error} If health check fails.
    */
-  healthCheck(): Promise<EventManagerStatus>;
+  healthCheck(): Promise<EventManagerStatus>{;
 
   /**
    * Get current performance metrics.
    *
    * @returns Detailed performance and usage metrics.
    */
-  getMetrics(): Promise<EventManagerMetrics>;
+  getMetrics(): Promise<EventManagerMetrics>{;
 
   /**
    * Get all active subscriptions.
@@ -567,7 +567,7 @@ export interface EventManager {
    * @param handler - Function to handle the lifecycle event.
    */
   on(
-    event:'start|stop|error|subscription|emission',
+    event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
     handler: (...args: unknown[]) => void
   ): void;
 
@@ -602,17 +602,17 @@ export interface EventManager {
  * @template TConfig - Configuration type extending EventManagerConfig.
  * @interface EventManagerFactory
  * @example
- * ```typescript`
+ * ```typescript
  * class SystemEventManagerFactory implements EventManagerFactory {
- *   async create(config: EventManagerConfig): Promise<EventManager> {
+ *   async create(config: EventManagerConfig): Promise<EventManager>{
  *     return new SystemEventManager(config);
  *   }
  *
- *   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]> {
+ *   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]>{
  *     return Promise.all(configs.map(config => this.create(config)));
  *   }
  * }
- * ````
+ * ```
  */
 export interface EventManagerFactory<
   TConfig extends EventManagerConfig = EventManagerConfig,
@@ -634,7 +634,7 @@ export interface EventManagerFactory<
    * @returns Promise resolving to array of created event managers.
    * @throws {Error} If any manager creation fails.
    */
-  createMultiple(configs: TConfig[]): Promise<EventManager[]>;
+  createMultiple(configs: TConfig[]): Promise<EventManager[]>{;
 
   // Event manager management
   /**
@@ -643,14 +643,14 @@ export interface EventManagerFactory<
    * @param name - Name of the event manager.
    * @returns Event manager instance or undefined if not found.
    */
-  get(name: string): EventManager|undefined;
+  get(name: string): EventManager { | undefined;
 
   /**
    * List all event managers managed by this factory.
    *
    * @returns Array of all event manager instances.
    */
-  list(): EventManager[];
+  list(): EventManager {[];
 
   /**
    * Check if an event manager exists.
@@ -658,7 +658,7 @@ export interface EventManagerFactory<
    * @param name - Name of the event manager.
    * @returns True if manager exists.
    */
-  has(name: string): boolean;
+  has(name: string): boolean {;
 
   /**
    * Remove and destroy an event manager.
@@ -667,7 +667,7 @@ export interface EventManagerFactory<
    * @returns Promise resolving to true if manager was found and removed.
    * @throws {Error} If removal fails.
    */
-  remove(name: string): Promise<boolean>;
+  remove(name: string): Promise<boolean> {;
 
   // Batch operations
   /**
@@ -741,11 +741,11 @@ export interface EventManagerFactory<
  *   id:'global-shutdown',
  *   timestamp: new Date(),
  *   source: 'system',
- *   type: 'system:shutdown'* });'
+ *   type: 'system:shutdown'* });
  *
  * // Get metrics across all managers
  * const metrics = await registry.getGlobalMetrics();
- * ````
+ * ```
  */
 export interface EventManagerRegistry {
   // Factory registration
@@ -771,14 +771,14 @@ export interface EventManagerRegistry {
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>|undefined;
+  ): EventManager {Factory<T>|undefined;
 
   /**
    * List all registered factory types.
    *
    * @returns Array of event manager types with registered factories.
    */
-  listFactoryTypes(): EventManagerType[];
+  listFactoryTypes(): EventManager {Type[];
 
   // Event manager management across all factories
   /**
@@ -794,7 +794,7 @@ export interface EventManagerRegistry {
    * @param name - Name of the event manager to find.
    * @returns Event manager instance or undefined if not found.
    */
-  findEventManager(name: string): EventManager|undefined;
+  findEventManager(name: string): EventManager {|undefined;
 
   /**
    * Get all event managers of a specific type.
@@ -802,7 +802,7 @@ export interface EventManagerRegistry {
    * @param type - Event manager type to filter by.
    * @returns Array of event managers of the specified type.
    */
-  getEventManagersByType(type: EventManagerType): EventManager[];
+  getEventManagersByType(type: EventManagerType): EventManager {[];
 
   // Global operations
   /**
@@ -840,7 +840,7 @@ export interface EventManagerRegistry {
    * @param event - Event to broadcast.
    * @throws {EventEmissionError} If broadcast fails.
    */
-  broadcast<T extends SystemEvent>(event: T): Promise<void>;
+  broadcast<T extends SystemEvent>(event: T)(): Promise<void>;
 
   /**
    * Broadcast an event to all event managers of a specific type.
@@ -853,7 +853,7 @@ export interface EventManagerRegistry {
   broadcastToType<T extends SystemEvent>(
     type: EventManagerType,
     event: T
-  ): Promise<void>;
+  )(): Promise<void>;
 }
 
 /**
@@ -891,7 +891,7 @@ export const EventManagerTypes = {
  *   'evt_12345',
  *   originalError
  * );
- * ````
+ * ```
  */
 export class EventError extends Error {
   /**
@@ -922,8 +922,8 @@ export class EventError extends Error {
  * @augments EventError
  * @example
  * ```typescript`
- * throw new EventSubscriptionError('system-manager', 'sub_12345', originalError);'
- * ````
+ * throw new EventSubscriptionError('system-manager', 'sub_12345', originalError);
+ * ```
  */
 export class EventSubscriptionError extends EventError {
   /**
@@ -1100,7 +1100,7 @@ export const EventManagerPresets = {
  *   // data is now typed as SystemEvent
  *   await eventManager.emit(data);
  * }
- * ````
+ * ```
  */
 export const EventTypeGuards = {
   /**

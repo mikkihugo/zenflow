@@ -12,7 +12,7 @@ import { getLogger } from '@claude-zen/foundation/logging';
 import validator from 'validator';
 
 
-const logger = getLogger('claude-sdk-utils');'
+const logger = getLogger('claude-sdk-utils');
 
 // =============================================================================
 // File System Utilities
@@ -44,7 +44,7 @@ export function findWorkspaceRoot(startPath: string): string|null {
     currentPath = path.dirname(currentPath);
   }
 
-  logger.debug('No workspace root found');'
+  logger.debug('No workspace root found');
   return null;
 }
 
@@ -77,7 +77,7 @@ export function findProjectRoot(
     currentPath = path.dirname(currentPath);
   }
 
-  logger.debug('No project root found, using current directory');'
+  logger.debug('No project root found, using current directory');
   return startPath;
 }
 
@@ -92,37 +92,37 @@ export function validateTaskInputs(
   prompt: string,
   options: ClaudeSDKOptions = {}
 ): void {
-  if (!prompt||typeof prompt !=='string'||prompt.trim().length === 0) {'
-    throw new Error('Prompt must be a non-empty string');'
+  if (!prompt||typeof prompt !=='string'||prompt.trim().length === 0) {;
+    throw new Error('Prompt must be a non-empty string');
   }
 
   if (prompt.length > 100000) {
-    logger.warn('Prompt is very long (>100k chars), may hit token limits');'
+    logger.warn('Prompt is very long (>100k chars), may hit token limits');
   }
 
   if (
     options.maxTokens &&
     (options.maxTokens < 1||options.maxTokens > 200000)
   ) {
-    throw new Error('maxTokens must be between 1 and 200000');'
+    throw new Error('maxTokens must be between 1 and 200000');
   }
 
   if (
     options.temperature &&
     (options.temperature < 0||options.temperature > 2)
   ) {
-    throw new Error('temperature must be between 0 and 2');'
+    throw new Error('temperature must be between 0 and 2');
   }
 
   if (options.topP && (options.topP < 0||options.topP > 1)) {
-    throw new Error('topP must be between 0 and 1');'
+    throw new Error('topP must be between 0 and 1');
   }
 
   if (options.timeout && options.timeout < 1000) {
-    throw new Error('timeout must be at least 1000ms');'
+    throw new Error('timeout must be at least 1000ms');
   }
 
-  logger.debug('Task inputs validated successfully');'
+  logger.debug('Task inputs validated successfully');
 }
 
 // =============================================================================
@@ -141,7 +141,7 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
 
   if (!fs.existsSync(resolved)) {
     logger.warn(
-      `Working directory $resolveddoes not exist, using current directory``
+      `Working directory $resolveddoes not exist, using current directory`
     );
     return process.cwd();
   }
@@ -149,7 +149,7 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
   const stats = fs.statSync(resolved);
   if (!stats.isDirectory()) {
     logger.warn(
-      `Working directory ${resolved} is not a directory, using current directory``
+      `Working directory ${resolved} is not a directory, using current directory`
     );
     return process.cwd();
   }
@@ -193,13 +193,13 @@ export function generateSessionId(): string {
  * Battle-tested input sanitization using validator.js
  */
 export function _sanitizeString(str: string): string {
-  if (typeof str !== 'string') {'
-    throw new Error('Input must be a string');'
+  if (typeof str !== 'string') {;
+    throw new Error('Input must be a string');
   }
 
   // Limit length first to prevent memory exhaustion
   if (str.length > 100000) {
-    logger.warn('Input truncated due to excessive length');'
+    logger.warn('Input truncated due to excessive length');
     str = str.substring(0, 100000);
   }
 
@@ -209,10 +209,10 @@ export function _sanitizeString(str: string): string {
 
   // Additional security patterns
   sanitized = sanitized
-    .replace(/javascript:/gi, '')'
-    .replace(/vbscript:/gi, '')'
-    .replace(/data:/gi, '')'
-    .replace(/[$&;`|]/g, ''); // Command injection chars'
+    .replace(/javascript:/gi, '');
+    .replace(/vbscript:/gi, '');
+    .replace(/data:/gi, '');
+    .replace(/[$&;`|]/g, ''); // Command injection chars;
 
   return sanitized;
 }
@@ -221,20 +221,20 @@ export function _sanitizeString(str: string): string {
  * Battle-tested file path validation
  */
 export function sanitizeFilePath(filePath: string): string {
-  if (typeof filePath !== 'string') {'
-    throw new Error('File path must be a string');'
+  if (typeof filePath !== 'string') {;
+    throw new Error('File path must be a string');
   }
 
   // Normalize the path to prevent traversal attacks
   const normalized = path.normalize(filePath);
 
   // Ensure no path traversal
-  if (normalized.includes('..')||normalized.includes('~')) {'
-    throw new Error('Path traversal detected');'
+  if (normalized.includes('..')||normalized.includes('~')) {;
+    throw new Error('Path traversal detected');
   }
 
   // Block access to sensitive system directories
-  const dangerousPaths = ['/etc', '/proc', '/sys', '/dev', '/root', '/home'];'
+  const dangerousPaths = ['/etc', '/proc', '/sys', '/dev', '/root', '/home'];
   const resolvedPath = path.resolve(normalized);
 
   for (const dangerousPath of dangerousPaths) {
@@ -252,7 +252,7 @@ export function sanitizeFilePath(filePath: string): string {
  * Battle-tested command validation
  */
 export function validateCommand(command: string): boolean {
-  if (typeof command !=='string') {'
+  if (typeof command !=='string') {;
     return false;
   }
 
@@ -287,7 +287,7 @@ export function validateCommand(command: string): boolean {
 
   // Check for dangerous patterns
   if (/[$&;<>`|]/.test(command)) {`
-    logger.warn('Command contains dangerous characters');'
+    logger.warn('Command contains dangerous characters');
     return false;
   }
 

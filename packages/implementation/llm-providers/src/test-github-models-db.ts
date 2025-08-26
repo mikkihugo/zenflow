@@ -8,11 +8,11 @@ import {
   githubModelsDB,
 } from './api/github-models-db';
 
-const logger = getLogger('test-github-models-db');'
+const logger = getLogger('test-github-models-db');
 
 async function testGitHubModelsDatabase() {
   try {
-    logger.info('🚀 Testing GitHub Models Database...');'
+    logger.info('🚀 Testing GitHub Models Database...');
 
     // Initialize database
     await initializeGitHubModelsDB();
@@ -22,18 +22,18 @@ async function testGitHubModelsDatabase() {
     logger.info(`✅ Total models in database: ${allModels.length}`);`
 
     // Test by provider
-    const openaiModels = githubModelsDB.getModelsByProvider('openai');'
-    const metaModels = githubModelsDB.getModelsByProvider('meta');'
-    const mistralModels = githubModelsDB.getModelsByProvider('mistral-ai');'
+    const openaiModels = githubModelsDB.getModelsByProvider('openai');
+    const metaModels = githubModelsDB.getModelsByProvider('meta');
+    const mistralModels = githubModelsDB.getModelsByProvider('mistral-ai');
 
     logger.info(`🤖 OpenAI models: $openaiModels.length`);`
     logger.info(`🦙 Meta models: ${metaModels.length}`);`
     logger.info(`🌀 Mistral models: $mistralModels.length`);`
 
     // Test by category
-    const highModels = githubModelsDB.getModelsByCategory('high');'
-    const mediumModels = githubModelsDB.getModelsByCategory('medium');'
-    const lowModels = githubModelsDB.getModelsByCategory('low');'
+    const highModels = githubModelsDB.getModelsByCategory('high');
+    const mediumModels = githubModelsDB.getModelsByCategory('medium');
+    const lowModels = githubModelsDB.getModelsByCategory('low');
 
     logger.info(`⚡ High-tier models: $highModels.length`);`
     logger.info(`🔶 Medium-tier models: ${mediumModels.length}`);`
@@ -49,19 +49,19 @@ async function testGitHubModelsDatabase() {
     }
 
     // Test specific model lookup
-    const gpt5 = githubModelsDB.getModel('openai/gpt-5');'
+    const gpt5 = githubModelsDB.getModel('openai/gpt-5');
     if (gpt5) {
       logger.info(`🎯 GPT-5 Details:`);`
       logger.info(`   Context: $gpt5.contextWindowtokens`);`
       logger.info(`   Output: ${gpt5.maxOutputTokens} tokens`);`
       logger.info(`   Category: $gpt5.category`);`
       logger.info(
-        `   Rate Limits: ${gpt5.rateLimits.requestsPerMinute}/min, ${gpt5.rateLimits.requestsPerDay}/day``
+        `   Rate Limits: ${gpt5.rateLimits.requestsPerMinute}/min, ${gpt5.rateLimits.requestsPerDay}/day`
       );
     }
 
     // Test context window insights
-    logger.info('📊 Context Window Analysis:');'
+    logger.info('📊 Context Window Analysis:');
     const contextSummary = new Map<number, number>();
     allModels.forEach((model) => {
       const current = contextSummary.get(model.contextWindow)||0;
@@ -76,28 +76,28 @@ async function testGitHubModelsDatabase() {
 
     // Test database stats
     const stats = githubModelsDB.getStats();
-    logger.info('📈 Database Statistics:');'
-    logger.info(`   Total: $stats.total`);`
+    logger.info('📈 Database Statistics:');
+    logger.info(`   Total: ${stats.total`);`
     logger.info(`   Last Update: ${stats.lastUpdate.toISOString()}`);`
-    logger.info(`   Providers: $stats.providers.join(', ')`);`
+    logger.info(`   Providers: ${stats.providers.join(', ')`);`
 
-    logger.info('');'
-    logger.info('🔄 Note: Database updates hourly from "gh models list"');'
+    logger.info('');
+    logger.info('🔄 Note: Database updates hourly from "gh models list"');
     logger.info(
-      '📋 All models limited to 8k input / 4k output on GitHub Models''
+      '📋 All models limited to 8k input / 4k output on GitHub Models';
     );
   } catch (error) {
-    logger.error('💥 GitHub Models Database test failed:', error);'
+    logger.error('💥 GitHub Models Database test failed:', error);
   }
 }
 
 // Run the test
 testGitHubModelsDatabase()
   .then(() => {
-    logger.info('✅ Database test completed successfully');'
+    logger.info('✅ Database test completed successfully');
     process.exit(0);
   })
   .catch((error) => {
-    logger.error('❌ Database test failed:', error);'
+    logger.error('❌ Database test failed:', error);
     process.exit(1);
   });

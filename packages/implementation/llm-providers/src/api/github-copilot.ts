@@ -1,7 +1,7 @@
 /**
  * @fileoverview GitHub Copilot Chat API Integration
  *
- * GitHub Copilot Chat API provides access to GitHub's Copilot AI models.'
+ * GitHub Copilot Chat API provides access to GitHub's Copilot AI models.;
  *
  * IMPORTANT: This is DIFFERENT from GitHub Models API:
  * - GitHub Models API: Uses PAT tokens (ghp_xxx) at models.inference.ai.azure.com
@@ -22,25 +22,24 @@
  * // IMPORTANT: Requires GitHub Copilot OAuth token (gho_xxx), not PAT (ghp_xxx)
  * const copilot = new GitHubCopilotAPI({
  *   token: process.env.GITHUB_COPILOT_TOKEN,  // Must be gho_xxx OAuth token
- *   model: 'gpt-4''
+ *   model: 'gpt-4';
  * });
  *
  * // Automatically includes required Copilot-Integration-Id: vscode-chat header
  * const response = await copilot.execute({
- *   messages: [{ role: 'user', content: 'Write a React component for user authentication' }]'
+ *   messages: [{ role: 'user', content: 'Write a React component for user authentication' }];
  * });
- * ````
+ * ```
  *
  * @example Token Setup
  * ```bash`
  * # Save OAuth token to config file:
- * echo '{"access_token": "gho_your_oauth_token_here"}' > ~/.claude-zen/copilot-token.json'
+ * echo '{"access_token": "gho_your_oauth_token_here"}' > ~/.claude-zen/copilot-token.json
  *
  * # Or set environment variable:
  * export GITHUB_COPILOT_TOKEN=gho_your_oauth_token_here
- * ````
+ * ```
  */
-
 
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -51,14 +50,18 @@ import type {
   APIProvider,
   APIRequest,
   APIResult,
+  APIProviderCapabilities,
+  API_ERROR_CODES,
 } from '../types/api-providers';
+
+import { ok, err } from '@claude-zen/foundation';
 
 import {
   githubCopilotDB,
   initializeGitHubCopilotDB,
 } from './github-copilot-db';
 
-const logger = getLogger('GitHubCopilotAPI');'
+const logger = getLogger('GitHubCopilotAPI');
 
 // Constants for GitHub Copilot API
 const COPILOT_INTEGRATION_ID = 'vscode-chat';
@@ -74,24 +77,24 @@ function loadCopilotToken(): string {
     const configPath = path.join(
       os.homedir(),
       '.claude-zen',
-      'copilot-token.json''
+      'copilot-token.json'
     );
     if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));'
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
       logger.info(
-        '✅ Loaded GitHub Copilot OAuth token from ~/.claude-zen/copilot-token.json''
+        '✅ Loaded GitHub Copilot OAuth token from ~/.claude-zen/copilot-token.json'
       );
       return config.access_token;
     }
   } catch (error) {
-    logger.warn('Failed to load Copilot OAuth token from config:', error);'
+    logger.warn('Failed to load Copilot OAuth token from config:', error);
   }
 
   // Fallback to environment variables (should be OAuth token, not PAT)
-  const token = process.env.GITHUB_COPILOT_TOKEN||';
-  if (token && !token.startsWith('gho_')) {'
+  const token = process.env.GITHUB_COPILOT_TOKEN || '';
+  if (token && !token.startsWith('gho_')) {
     logger.warn(
-      '⚠️ Token may not be a valid GitHub Copilot OAuth token. Expected format: gho_xxx''
+      '⚠️ Token may not be a valid GitHub Copilot OAuth token. Expected format: gho_xxx'
     );
   }
   return token;
@@ -109,19 +112,19 @@ export interface GitHubCopilotOptions {
 /**
  * GitHub Copilot Chat API Provider - Real conversational AI
  *
- * Uses GitHub's Copilot models for development conversations.'
+ * Uses GitHub's Copilot models for development conversations.;
  * Best for code completion, debugging, and development assistance.
  */
 export class GitHubCopilotAPI implements APIProvider {
   readonly id = 'github-copilot-api';
   readonly name = 'GitHub Copilot Chat API';
-  readonly type = 'api' as const;'
+  readonly type = 'api' as const;
 
   private options: Required<GitHubCopilotOptions>;
 
   constructor(options: GitHubCopilotOptions) {
     this.options = {
-      model: 'gpt-4.1', // Updated default to gpt-4.1 (primary model)'
+      model: 'gpt-4.1', // Updated default to gpt-4.1 (primary model);
       baseURL: 'https://api.githubcopilot.com',
       maxTokens: 16384, // Updated to realistic Copilot limits
       temperature: 0.7,
@@ -137,7 +140,7 @@ export class GitHubCopilotAPI implements APIProvider {
     try {
       await initializeGitHubCopilotDB();
     } catch (error) {
-      logger.warn('Failed to initialize GitHub Copilot database:', error);'
+      logger.warn('Failed to initialize GitHub Copilot database:', error);
     }
   }
 
@@ -147,33 +150,34 @@ export class GitHubCopilotAPI implements APIProvider {
   async execute(_request: APIRequest): Promise<APIResult> {
     try {
       logger.info(
-        `Executing GitHub Copilot API request with model: ${this.options.model}``
+        `Executing GitHub Copilot API request with model: ${this.options.model}`
       );
 
-      const response = await fetch(`${this.options.baseURL}/chat/completions`, {`
+      const response = await fetch(`${this.options.baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.options.token}`,`
+          Authorization: `Bearer ${this.options.token}`,
           'Content-Type': 'application/json',
           'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
         },
-        body: JSON.stringify(
+        body: JSON.stringify({
           model: this.options.model,
           messages: request.messages,
           max_tokens: this.options.maxTokens,
           temperature: this.options.temperature,
-          stream: this.options.stream,),
+          stream: this.options.stream,
+        }),
       });
 
-      if (!response._ok) {
+      if (!response.ok) {
         const errorText = await response.text();
         logger.error(
-          `GitHub Copilot API error: ${response.status} ${response.statusText} - ${errorText}``
+          `GitHub Copilot API error: ${response.status} ${response.statusText} - ${errorText}`
         );
 
         return err({
           code: API_ERROR_CODES.MODEL_ERROR,
-          message: `GitHub Copilot API error: ${response.status} ${response.statusText}`,`
+          message: `GitHub Copilot API error: ${response.status} ${response.statusText}`,
           details: {
             status: response.status,
             statusText: response.statusText,
@@ -184,10 +188,10 @@ export class GitHubCopilotAPI implements APIProvider {
 
       const data = await response.json();
       const content =
-        data.choices?.[0]?.message?.content||'No response content;
+        data.choices?.[0]?.message?.content || 'No response content';
 
       logger.info(
-        `GitHub Copilot API response received: ${content.length} characters``
+        `GitHub Copilot API response received: ${content.length} characters`
       );
 
       return ok({
@@ -202,11 +206,11 @@ export class GitHubCopilotAPI implements APIProvider {
         },
       });
     } catch (error) {
-      logger.error('GitHub Copilot API execution failed:', error);'
+      logger.error('GitHub Copilot API execution failed:', error);
 
       return err({
         code: API_ERROR_CODES.NETWORK_ERROR,
-        message: `GitHub Copilot API network error: ${error}`,`
+        message: `GitHub Copilot API network error: ${error}`,
         details: {
           error: error instanceof Error ? error.message : String(error),
         },
@@ -219,7 +223,7 @@ export class GitHubCopilotAPI implements APIProvider {
    */
   getCapabilities(): APIProviderCapabilities {
     const models = githubCopilotDB.getAllModels();
-    const chatModels = models.filter((m) => m.type === 'chat');'
+    const chatModels = models.filter((m) => m.type === 'chat');
     const hasVision = models.some((m) => m.supportsVision);
     const maxContext = Math.max(
       ...chatModels.map((m) => m.contextWindow),
@@ -271,7 +275,7 @@ export class GitHubCopilotAPI implements APIProvider {
       const models = githubCopilotDB.getChatModels(); // Only chat models for conversations
 
       if (models.length === 0) {
-        logger.warn('📋 No models in database, forcing update...');'
+        logger.warn('📋 No models in database, forcing update...');
         await githubCopilotDB.updateModels();
         const updatedModels = githubCopilotDB.getChatModels();
         return updatedModels.map((m) => m.id);
@@ -282,16 +286,16 @@ export class GitHubCopilotAPI implements APIProvider {
       const _primaryModels = githubCopilotDB.getPrimaryModels();
 
       logger.info(
-        `📋 GitHub Copilot models from database: ${modelIds.length} chat models``
+        `📋 GitHub Copilot models from database: ${modelIds.length} chat models`
       );
       logger.info(
-        `🎯 Primary models: ${primaryModels.map((m) => m.id).join(', ')}``
+        `🎯 Primary models: ${_primaryModels.map((m) => m.id).join(', ')}`
       );
-      logger.info(`🖼️ Vision models: ${stats.vision}`);`
+      logger.info(`🖼️ Vision models: ${stats.vision}`);
       logger.info(
-        `📊 By category: versatile:$stats.byCategory.versatile, lightweight:$stats.byCategory.lightweight, powerful:$stats.byCategory.powerful``
+        `📊 By category: versatile:${stats.byCategory.versatile}, lightweight:${stats.byCategory.lightweight}, powerful:${stats.byCategory.powerful}`
       );
-      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);`
+      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);
 
       return modelIds;
     } catch (error) {
@@ -302,17 +306,17 @@ export class GitHubCopilotAPI implements APIProvider {
 
       // Emergency fallback with real context sizes
       const emergencyModels = [
-        'gpt-4.1', // 128k context, 16k output, vision'
-        'gpt-5', // 128k context, 64k output, vision'
-        'claude-sonnet-4', // 128k context, 16k output, vision'
-        'claude-3.7-sonnet', // 200k context, 16k output, vision'
-        'o3-mini', // 200k context, 100k output'
-        'o4-mini', // 128k context, 16k output, vision'
-        'gemini-2.5-pro', // 128k context, 64k output, vision'
+        'gpt-4.1', // 128k context, 16k output, vision;
+        'gpt-5', // 128k context, 64k output, vision;
+        'claude-sonnet-4', // 128k context, 16k output, vision;
+        'claude-3.7-sonnet', // 200k context, 16k output, vision;
+        'o3-mini', // 200k context, 100k output;
+        'o4-mini', // 128k context, 16k output, vision;
+        'gemini-2.5-pro', // 128k context, 64k output, vision;
       ];
 
       logger.info(
-        `📋 Using emergency fallback: $emergencyModels.lengthmodels (high limits)``
+        `📋 Using emergency fallback: ${emergencyModels.length} models (high limits)`
       );
       return emergencyModels;
     }
@@ -323,10 +327,10 @@ export class GitHubCopilotAPI implements APIProvider {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.options.baseURL}/models`, {`
+      const response = await fetch(`${this.options.baseURL}/models`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${this.options.token}`,`
+          Authorization: `Bearer ${this.options.token}`,
           'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
         },
       });
@@ -352,16 +356,16 @@ export function createGitHubCopilotProvider(
   };
 
   if (!defaultOptions.token) {
-    throw new Error(``
+    throw new Error(`
       GitHub Copilot OAuth token required. This is different from GitHub PAT tokens.
       
       Setup options:
       1. Save OAuth token to ~/.claude-zen/copilot-token.json: {"access_token": "gho_xxx"}
       2. Set GITHUB_COPILOT_TOKEN environment variable with OAuth token (gho_xxx format)
       
-      Note: Personal Access Tokens (ghp_xxx) won't work for Copilot API.'
+      Note: Personal Access Tokens (ghp_xxx) won't work for Copilot API.;
       You need VSCode-style OAuth tokens obtained through GitHub Copilot subscription.
-    `);`
+    `);
   }
 
   return new GitHubCopilotAPI(defaultOptions);
@@ -374,8 +378,8 @@ export async function executeGitHubCopilotTask(
   prompt: string,
   options: {
     token: string;
-    model?: 'gpt-4' | 'gpt-4-turbo' | 'gpt-3.5-turbo' | 'claude-3-sonnet;
-  } = { token: '' }'
+    model?: 'gpt-4' | 'gpt-4-turbo' | 'gpt-3.5-turbo' | 'claude-3-sonnet';
+  } = { token: '' }
 ): Promise<string> {
   const provider = createGitHubCopilotProvider(options);
 
@@ -386,7 +390,7 @@ export async function executeGitHubCopilotTask(
   if (result.isOk()) {
     return result.value.content;
   } else {
-    throw new Error(`GitHub Copilot task failed: ${result.error.message}`);`
+    throw new Error(`GitHub Copilot task failed: ${result.error.message}`);
   }
 }
 

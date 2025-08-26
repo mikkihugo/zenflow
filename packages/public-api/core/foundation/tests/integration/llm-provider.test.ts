@@ -324,7 +324,7 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 
 	// Skip these tests by default to avoid API costs during normal testing
 	// Run with: npm test -- --testNamePattern="Integration" to include these
-	const runIntegration = process.env.RUN_INTEGRATION === "true";
+	const runIntegration = process.env['RUN_INTEGRATION'] === "true";
 	const itIntegration = runIntegration ? it : it.skip;
 
 	describe("Real Claude API Calls", () => {

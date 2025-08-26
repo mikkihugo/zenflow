@@ -42,12 +42,12 @@ interface EventManagerFactory {
  *
  * // Register an adapter with lazy loading
  * registry.register('custom', async () => {'
- *   const module = await import('./custom-adapter');'
+ *   const module = await import('./custom-adapter');
  *   return new module.CustomAdapterFactory();
  * });
  *
  * // Get adapter when needed
- * const factory = await registry.get('custom');'
+ * const factory = await registry.get('custom');
  * ````
  */
 class EventAdapterRegistry {
@@ -81,7 +81,7 @@ class EventAdapterRegistry {
 	 * Get all registered adapter names.
 	 */
 	getRegisteredNames(): string[] {
-		return Array.from(this.adapters.keys())();
+		return Array.from(this.adapters.keys());
 	}
 
 	/**
@@ -110,7 +110,7 @@ export const adapterRegistry = new EventAdapterRegistry();
  * registerDefaultAdapters();
  *
  * // Now adapters can be retrieved as needed
- * const workflowFactory = await adapterRegistry.get('workflow');'
+ * const workflowFactory = await adapterRegistry.get('workflow');
  * ````
  */
 export function registerDefaultAdapters(): void {
@@ -168,7 +168,7 @@ export function registerDefaultAdapters(): void {
  * initializeAdapterRegistry();
  *
  * // Registry is now ready for use
- * const factory = await adapterRegistry.get('neural');'
+ * const factory = await adapterRegistry.get('neural');
  * ````
  */
 export function initializeAdapterRegistry(): void {

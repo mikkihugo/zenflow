@@ -8,8 +8,9 @@
  * @file Memory management: base-backend.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 import type { MemoryConfig } from '../types';
+import type { JSONValue } from '../core/memory-system';
 
 // Define BackendCapabilities here to avoid circular dependency
 export interface BackendCapabilities {
@@ -38,7 +39,7 @@ export interface MemoryQueryOptions {
   limit?: number;
   offset?: number;
   orderBy?: string;
-  orderDirection?: 'asc|desc;
+  orderDirection?: 'asc' | 'desc';
 }
 
 export interface MemorySearchResult {
@@ -58,7 +59,7 @@ export interface MemoryStats {
   modified: number;
 }
 
-export abstract class BaseMemoryBackend extends TypedEventBase {
+export abstract class BaseMemoryBackend extends EventEmitter {
   protected memoryConfig: MemoryConfig;
   protected isInitialized: boolean = false;
   protected stats: MemoryStats;
@@ -81,10 +82,8 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   abstract initialize(): Promise<void>;
   abstract store(
     key: string,
-    value: unknown,
-    namespace?: string
-  ): Promise<void>;
-  abstract retrieve<T = unknown>(key: string): Promise<T|null>;
+    value: unknown): Promise<void>;
+  abstract retrieve<T = unknown>(key: string): Promise<T | null>;
   abstract delete(key: string): Promise<boolean>;
   abstract list(pattern?: string): Promise<string[]>;
   abstract clear(): Promise<void>;
@@ -101,7 +100,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     if (!this.isInitialized) {
       await this.initialize();
       this.isInitialized = true;
-      this.emit('initialized', { timestamp: new Date() });'
+      this.emit('initialized', { timestamp: new Date() });
     }
   }
 
@@ -112,8 +111,8 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     const currentTime = Date.now();
     const updatedStats = {
       ...this.stats,
-      lastUpdated: currentTime,
-      uptime: currentTime - (this.stats.lastUpdated || currentTime),
+      lastAccessed: currentTime,
+      uptime: currentTime - (this.stats.lastAccessed || currentTime),
     };
     
     this.stats = updatedStats;
@@ -135,23 +134,23 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
 
   // Protected utility methods for subclasses
   protected updateStats(
-    operation: 'read|write|delete',
+    operation: 'read' | 'write' | 'delete' | 'size_check' | 'cleanup',
     size?: number
   ): void {
     this.stats.lastAccessed = Date.now();
     this.stats.modified = Date.now();
 
-    if (operation === 'write') {'
+    if (operation === 'write') {
       this.stats.totalEntries++;
       if (size) {
         this.stats.totalSize += size;
       }
-    } else if (operation === 'delete') {'
+    } else if (operation === 'delete') {
       this.stats.totalEntries = Math.max(0, this.stats.totalEntries - 1);
       if (size) {
         this.stats.totalSize = Math.max(0, this.stats.totalSize - size);
       }
-    } else if (operation === 'read') {'
+    } else if (operation === 'read') {
       this.stats.cacheHits++;
     }
   }
@@ -164,7 +163,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     return {
       key,
       value,
-      metadata: metadata||{},
+      metadata: metadata || {},
       timestamp: Date.now(),
       size: this.calculateSize(value),
       type: this.detectType(value),
@@ -180,19 +179,19 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   }
 
   protected detectType(value: unknown): string {
-    if (value === null) return'null;
-    if (Array.isArray(value)) return 'array;
-    if (value instanceof Date) return 'date;
-    if (value instanceof Buffer) return 'buffer;
+    if (value === null) return 'null';
+    if (Array.isArray(value)) return 'array';
+    if (value instanceof Date) return 'date';
+    if (value instanceof Buffer) return 'buffer';
     return typeof value;
   }
 
   protected validateKey(key: string): void {
-    if (!key||typeof key !=='string') {'
-      throw new Error('Key must be a non-empty string');'
+    if (!key || typeof key !== 'string') {
+      throw new Error('Key must be a non-empty string');
     }
     if (key.length > 255) {
-      throw new Error('Key cannot exceed 255 characters');'
+      throw new Error('Key cannot exceed 255 characters');
     }
   }
 
@@ -202,16 +201,16 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     // Simple glob pattern matching
     const regex = new RegExp(
       pattern
-        .replace(/\*/g, '.*')'
-        .replace(/\?/g, '.')'
-        .replace(/\[([^\]]*)\]/g, '[$1]')'
+        .replace(/\*/g, '.*')
+        .replace(/\?/g, '.')
+        .replace(/\[([^\]]*)\]/g, '[$1]')
     );
 
     return regex.test(key);
   }
 
   protected emitError(error: Error, operation: string): void {
-    this.emit('error', {'
+    this.emit('error', {
       error,
       operation,
       timestamp: Date.now(),
@@ -224,7 +223,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     key: string,
     success: boolean
   ): void {
-    this.emit('operation', {'
+    this.emit('operation', {
       operation,
       key,
       success,
@@ -240,13 +239,13 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     capabilities: BackendCapabilities;
     stats: MemoryStats;
   }> {
-    const _start = Date.now();
-    const _healthy = false;
+    const start = Date.now();
+    let healthy = false;
 
     try {
       await this.ensureInitialized();
       // Test basic operations
-      const _testKey = `__health_check_${Date.now()}`;`
+      const testKey = `__health_check_${Date.now()}`;
       await this.store(testKey, { test: true });
       const retrieved = await this.retrieve(testKey);
       await this.delete(testKey);
@@ -254,7 +253,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       healthy = retrieved !== null && (retrieved as any)?.test === true;
     } catch (error) {
       healthy = false;
-      this.emitError(error as Error, 'healthCheck');'
+      this.emitError(error as Error, 'healthCheck');
     }
 
     return {
@@ -280,8 +279,8 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
 
   public async batchRetrieve<T = unknown>(
     keys: string[]
-  ): Promise<Record<string, T|null>> {
-    const results: Record<string, T|null> = {};
+  ): Promise<Record<string, T | null>> {
+    const results: Record<string, T | null> = {};
     for (const key of keys) {
       results[key] = await this.retrieve<T>(key);
     }
@@ -301,7 +300,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     try {
       return JSON.stringify(value);
     } catch (error) {
-      throw new Error(`Failed to serialize value: $(error as Error).message`);`
+      throw new Error(`Failed to serialize value: ${(error as Error).message}`);
     }
   }
 
@@ -311,7 +310,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       return JSON.parse(value) as T;
     } catch (error) {
       throw new Error(
-        `Failed to deserialize value: ${(error as Error).message}``
+        `Failed to deserialize value: ${(error as Error).message}`
       );
     }
   }
@@ -322,11 +321,12 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
    * Concrete implementation of search for BackendInterface compatibility.
    *
    * @param pattern - Search pattern to match keys
-   * @param _namespace - Optional namespace (unused in base implementation)
+   * @param namespace - Optional namespace (unused in base implementation)
    */
   public async search(
     pattern: string,
-    _namespace?: string
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    namespace?: string
   ): Promise<Record<string, JSONValue>> {
     // Base implementation - override in subclasses.
     const results = await this.list(pattern);
@@ -346,7 +346,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     await new Promise(resolve => setTimeout(resolve, 1));
     
     // Update stats before returning size
-    await this.updateStats('size_check', 0);'
+    this.updateStats('size_check', 0);
     return this.stats.totalEntries;
   }
 
@@ -357,7 +357,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       return healthStatus.healthy;
     } catch (error) {
       this.emitError(
-        error instanceof Error ? error : new Error(String(error)),'health''
+        error instanceof Error ? error : new Error(String(error)), 'health'
       );
       return false;
     }
@@ -369,7 +369,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     await new Promise(resolve => setTimeout(resolve, 1));
     
     // Perform async cleanup tasks
-    await this.updateStats('cleanup', 0);'
+    this.updateStats('cleanup', 0);
     
     // Override in subclasses for specific cleanup logic
     this.removeAllListeners();

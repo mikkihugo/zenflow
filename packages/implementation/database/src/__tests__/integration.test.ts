@@ -378,18 +378,18 @@ describe("Database Package Integration Tests - Database Factory", () => {
 		expect(typeof connection.transaction).toBe("function");
 	});
 
-	test("should create optimal storage configurations", () => {
+	test("should create storage configurations", () => {
 		const factory = getDatabaseFactory();
 
-		const kvConfig = factory.createOptimalConfig("keyValue", "test");
+		const kvConfig = factory.createStorageConfig("keyValue", "test");
 		expect(kvConfig.type).toBe("sqlite");
 		expect(kvConfig.database).toBe("test_keyValue");
 
-		const vectorConfig = factory.createOptimalConfig("vector", "test");
+		const vectorConfig = factory.createStorageConfig("vector", "test");
 		expect(vectorConfig.type).toBe("lancedb");
 		expect(vectorConfig.database).toBe("test_vector");
 
-		const graphConfig = factory.createOptimalConfig("graph", "test");
+		const graphConfig = factory.createStorageConfig("graph", "test");
 		expect(graphConfig.type).toBe("kuzu");
 		expect(graphConfig.database).toBe("test_graph");
 	});

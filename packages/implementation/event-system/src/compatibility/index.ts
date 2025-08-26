@@ -18,7 +18,7 @@ export class CompatibilityLayer {
 }
 
 export class MigrationHelper {
-  static async migrateEvents(events: any[]): Promise<any[]> {
+  static async migrateEvents(events: any[]): Promise<any[]>{
     return events.map((event) => ({ ...event, migrated: true }));
   }
 }

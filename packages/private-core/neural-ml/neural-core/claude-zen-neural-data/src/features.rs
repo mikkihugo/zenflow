@@ -4,11 +4,10 @@
 //! for time series forecasting, including lag features, rolling statistics, temporal features,
 //! and Fourier transformations.
 
-use crate::{DataPipelineError, DataPoint, Result, TimeSeriesData};
+use crate::{DataPipelineError, Result, TimeSeriesData};
 use chrono::{DateTime, Datelike, Timelike, Utc, Weekday};
 use ndarray::{s, Array1, Array2};
 use num_traits::Float;
-use rustfft::{num_complex::Complex, FftPlanner};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
@@ -288,11 +287,38 @@ pub struct FeatureEngine<T: Float> {
 /// Statistics for features (used for normalization/scaling)
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
-struct FeatureStats<T: Float> {
+pub struct FeatureStats<T: Float> {
   mean: T,
   std: T,
   min: T,
   max: T,
+}
+
+impl<T: Float> FeatureStats<T> {
+  /// Create new feature statistics
+  pub fn new(mean: T, std: T, min: T, max: T) -> Self {
+    Self { mean, std, min, max }
+  }
+
+  /// Get the mean value
+  pub fn mean(&self) -> T {
+    self.mean
+  }
+
+  /// Get the standard deviation
+  pub fn std(&self) -> T {
+    self.std
+  }
+
+  /// Get the minimum value
+  pub fn min(&self) -> T {
+    self.min
+  }
+
+  /// Get the maximum value
+  pub fn max(&self) -> T {
+    self.max
+  }
 }
 
 impl<T: Float> FeatureEngine<T> {
@@ -823,7 +849,7 @@ impl<T: Float> FeatureEngine<T> {
     let n_samples = data.len();
     let n_exog_features = config.feature_names.len();
 
-    let mut feature_names = config.feature_names.clone();
+    let feature_names = config.feature_names.clone();
     let mut feature_matrix = Array2::zeros((n_samples, n_exog_features));
 
     // Extract exogenous features from data points
@@ -839,6 +865,7 @@ impl<T: Float> FeatureEngine<T> {
   }
 
   /// Compute rolling window statistic
+  #[allow(clippy::only_used_in_recursion)]
   fn compute_rolling_statistic(
     &self,
     window_data: &[T],
@@ -1007,6 +1034,22 @@ impl<T: Float> FeatureEngine<T> {
     }
 
     Ok(combined)
+  }
+
+  /// Check if the feature engine has been fitted
+  pub fn is_fitted(&self) -> bool {
+    self.fitted
+  }
+
+  /// Get feature statistics
+  pub fn feature_stats(&self) -> &HashMap<String, FeatureStats<T>> {
+    &self.feature_stats
+  }
+
+  /// Mark the engine as fitted with computed statistics
+  pub fn set_fitted(&mut self, stats: HashMap<String, FeatureStats<T>>) {
+    self.fitted = true;
+    self.feature_stats = stats;
   }
 }
 

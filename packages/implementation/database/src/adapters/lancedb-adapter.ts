@@ -587,8 +587,8 @@ export class LanceDBAdapter implements DatabaseConnection {
 	async getCurrentMigrationVersion(): Promise<string | null> {
 		try {
 			const table = await this.database?.openTable("_migrations");
-			const results = await table.search([]).limit(1).toArray();
-			return (results[0] as unknown as { version?: string })?.version || null;
+			const results = await table?.search([]).limit(1).toArray();
+			return (results?.[0] as unknown as { version?: string })?.version || null;
 		} catch {
 			// Migrations table doesn't exist yet
 			return null;
@@ -617,7 +617,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 		try {
 			const tables = await this.database?.tableNames();
 			logger.debug("Analyze operation completed for LanceDB", {
-				tableCount: tables.length,
+				tableCount: tables?.length || 0,
 			});
 		} catch (error) {
 			logger.warn("Analyze operation failed", { error });
@@ -716,7 +716,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 					...v.metadata,
 				}));
 
-				await table.add(data);
+				await table?.add(data);
 
 				logger.debug("Vector batch processed", {
 					correlationId,
@@ -767,7 +767,11 @@ export class LanceDBAdapter implements DatabaseConnection {
 
 		try {
 			const table = await this.database?.openTable(tableName);
-			let query = table.vectorSearch([...queryVector]);
+			let query = table?.vectorSearch([...queryVector]);
+
+			if (!query) {
+				throw new Error('Failed to create vector search query');
+			}
 
 			// Apply distance type
 			if (options.distanceType) {
@@ -776,20 +780,20 @@ export class LanceDBAdapter implements DatabaseConnection {
 
 			// Apply limit
 			if (options.limit) {
-				query = query.limit(options.limit);
+				query = query?.limit(options.limit) || query;
 			}
 
 			// Apply filtering
 			if (options.filter) {
-				query = query.where(options.filter);
+				query = query?.where(options.filter) || query;
 			}
 
 			// Apply column selection
 			if (options.select) {
-				query = query.select(options.select);
+				query = query?.select(options.select) || query;
 			}
 
-			const results = await query.toArray();
+			const results = await query?.toArray() || [];
 
 			// Filter by threshold if specified
 			let filteredResults = results;
@@ -925,7 +929,10 @@ export class LanceDBAdapter implements DatabaseConnection {
 
 			// Perform vector search if vector query provided
 			if (query.vector) {
-				let vectorQuery = table.vectorSearch([...query.vector]);
+				let vectorQuery = table?.vectorSearch([...query.vector]);
+			if (!vectorQuery) {
+				throw new Error('Failed to create vector search query');
+			}
 
 				if (options.filter) {
 					vectorQuery = vectorQuery.where(options.filter);
@@ -1081,17 +1088,17 @@ export class LanceDBAdapter implements DatabaseConnection {
 
 			// Try to get row count
 			try {
-				const countResult = await table.search([]).limit(1).toArray();
+				const countResult = await table?.search([]).limit(1).toArray();
 				// This is a simplified approach - actual row count would need table.countRows()
-				tableInfo.rowCount = countResult.length > 0 ? 1000 : 0; // Placeholder
+				tableInfo.rowCount = countResult && countResult.length > 0 ? 1000 : 0; // Placeholder
 			} catch {
 				tableInfo.rowCount = 0;
 			}
 
 			// Get schema information from table structure
 			try {
-				const sample = await table.search([]).limit(1).toArray();
-				if (sample.length > 0) {
+				const sample = await table?.search([]).limit(1).toArray();
+				if (sample && sample.length > 0) {
 					const sampleRow = sample[0] as Record<string, unknown>;
 					Object.keys(sampleRow).forEach((key) => {
 						const value = sampleRow[key];
@@ -1146,6 +1153,9 @@ export class LanceDBAdapter implements DatabaseConnection {
 
 		try {
 			const table = await this.database?.openTable(tableName);
+			if (!table) {
+				throw new Error(`Failed to open table: ${tableName}`);
+			}
 			let query = table.vectorSearch([...vector]);
 
 			if (options?.limit) {
@@ -1209,7 +1219,11 @@ export class LanceDBAdapter implements DatabaseConnection {
 			let table: LanceDBTable;
 
 			try {
-				table = await this.database?.openTable(tableName);
+				const openedTable = await this.database?.openTable(tableName);
+				if (!openedTable) {
+					throw new Error(`Failed to open table: ${tableName}`);
+				}
+				table = openedTable;
 			} catch {
 				// Table doesn't exist, create it
 				const sampleData = vectors.slice(0, 1).map((v) => ({
@@ -1217,10 +1231,14 @@ export class LanceDBAdapter implements DatabaseConnection {
 					vector: [...v.vector],
 					...v.metadata,
 				}));
-				table = await this.database?.createTable({
+				const createdTable = await this.database?.createTable({
 					name: tableName,
 					data: sampleData,
 				});
+				if (!createdTable) {
+					throw new Error(`Failed to create table: ${tableName}`);
+				}
+				table = createdTable;
 			}
 
 			const data = vectors.map((v) => ({
@@ -1274,7 +1292,8 @@ export class LanceDBAdapter implements DatabaseConnection {
 		const sqlUpper = sql.trim().toUpperCase();
 
 		if (sqlUpper.startsWith("SHOW TABLES")) {
-			return (await this.database?.tableNames()).map((name) => ({
+			const tableNames = await this.database?.tableNames();
+			return (tableNames || []).map((name) => ({
 				table_name: name,
 			}));
 		}
@@ -1286,7 +1305,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 				const tableName = tableMatch[1];
 				try {
 					const table = await this.database?.openTable(tableName);
-					return await table.search([]).limit(100).toArray();
+					return await table?.search([]).limit(100).toArray() || [];
 				} catch {
 					return [];
 				}
@@ -1394,7 +1413,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 	private async recordMigration(version: string, name: string): Promise<void> {
 		try {
 			const table = await this.database?.openTable("_migrations");
-			await table.add([
+			await table?.add([
 				{
 					version,
 					name,

@@ -9,9 +9,10 @@
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { getLogger } from '@claude-zen/foundation/logging';
+import { ok, err, Result } from '@claude-zen/foundation';
 
-const logger = getLogger('GitHubModelsDB');'
-const _execAsync = promisify(exec);
+const logger = getLogger('GitHubModelsDB');
+const execAsync = promisify(exec);
 
 export interface GitHubModelMetadata {
   id: string;
@@ -19,7 +20,7 @@ export interface GitHubModelMetadata {
   provider: string;
   contextWindow: number;
   maxOutputTokens: number;
-  category: 'low' | 'medium' | 'high' | 'embedding;
+  category: 'low' | 'medium' | 'high' | 'embedding';
   supportsVision: boolean;
   supportsMultimodal: boolean;
   rateLimits: {
@@ -36,7 +37,7 @@ export interface GitHubModelMetadata {
  */
 const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   // OpenAI Models - Limited context on GitHub
-  'openai/gpt-4.1': {'
+  'openai/gpt-4.1': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -48,7 +49,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'openai/gpt-4.1-mini': {'
+  'openai/gpt-4.1-mini': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -60,7 +61,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'openai/gpt-4.1-nano': {'
+  'openai/gpt-4.1-nano': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -72,7 +73,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'openai/gpt-4o': {'
+  'openai/gpt-4o': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -84,7 +85,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'openai/gpt-4o-mini': {'
+  'openai/gpt-4o-mini': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -96,7 +97,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'openai/gpt-5': {'
+  'openai/gpt-5': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -108,7 +109,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'openai/gpt-5-chat': {'
+  'openai/gpt-5-chat': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -120,7 +121,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'openai/gpt-5-mini': {'
+  'openai/gpt-5-mini': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -132,7 +133,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'openai/gpt-5-nano': {'
+  'openai/gpt-5-nano': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -144,7 +145,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'openai/o1': {'
+  'openai/o1': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -156,7 +157,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'openai/o1-mini': {'
+  'openai/o1-mini': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -168,7 +169,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'openai/o1-preview': {'
+  'openai/o1-preview': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -182,7 +183,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // Meta Llama Models
-  'meta/llama-3.2-11b-vision-instruct': {'
+  'meta/llama-3.2-11b-vision-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -194,7 +195,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'meta/llama-3.2-90b-vision-instruct': {'
+  'meta/llama-3.2-90b-vision-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -206,7 +207,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'meta/llama-3.3-70b-instruct': {'
+  'meta/llama-3.3-70b-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -218,7 +219,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'meta/llama-4-maverick-17b-128e-instruct-fp8': {'
+  'meta/llama-4-maverick-17b-128e-instruct-fp8': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -230,7 +231,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'meta/llama-4-scout-17b-16e-instruct': {'
+  'meta/llama-4-scout-17b-16e-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -242,7 +243,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'meta/meta-llama-3-70b-instruct': {'
+  'meta/meta-llama-3-70b-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -254,7 +255,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'meta/meta-llama-3-8b-instruct': {'
+  'meta/meta-llama-3-8b-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -266,7 +267,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'meta/meta-llama-3.1-405b-instruct': {'
+  'meta/meta-llama-3.1-405b-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -278,7 +279,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'meta/meta-llama-3.1-70b-instruct': {'
+  'meta/meta-llama-3.1-70b-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -290,7 +291,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'meta/meta-llama-3.1-8b-instruct': {'
+  'meta/meta-llama-3.1-8b-instruct': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -304,7 +305,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // Mistral Models
-  'mistral-ai/codestral-2501': {'
+  'mistral-ai/codestral-2501': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -316,7 +317,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'mistral-ai/ministral-3b': {'
+  'mistral-ai/ministral-3b': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -328,7 +329,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'mistral-ai/mistral-large-2407': {'
+  'mistral-ai/mistral-large-2407': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -340,7 +341,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'mistral-ai/mistral-large-2411': {'
+  'mistral-ai/mistral-large-2411': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -352,7 +353,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'mistral-ai/mistral-medium-2505': {'
+  'mistral-ai/mistral-medium-2505': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -364,7 +365,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'mistral-ai/mistral-nemo': {'
+  'mistral-ai/mistral-nemo': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -376,7 +377,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'mistral-ai/mistral-small': {'
+  'mistral-ai/mistral-small': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -388,7 +389,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'mistral-ai/mistral-small-2503': {'
+  'mistral-ai/mistral-small-2503': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -402,7 +403,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // DeepSeek Models
-  'deepseek/deepseek-r1': {'
+  'deepseek/deepseek-r1': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -414,7 +415,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'deepseek/deepseek-r1-0528': {'
+  'deepseek/deepseek-r1-0528': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -426,7 +427,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'deepseek/deepseek-v3': {'
+  'deepseek/deepseek-v3': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -438,7 +439,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'deepseek/deepseek-v3-0324': {'
+  'deepseek/deepseek-v3-0324': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -452,7 +453,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // XAI Grok Models
-  'xai/grok-3': {'
+  'xai/grok-3': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -464,7 +465,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'xai/grok-3-mini': {'
+  'xai/grok-3-mini': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -478,7 +479,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // Cohere Models
-  'cohere/cohere-command-a': {'
+  'cohere/cohere-command-a': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -490,7 +491,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'cohere/cohere-command-r': {'
+  'cohere/cohere-command-r': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -502,7 +503,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'cohere/cohere-command-r-08-2024': {'
+  'cohere/cohere-command-r-08-2024': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -514,7 +515,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'cohere/cohere-command-r-plus': {'
+  'cohere/cohere-command-r-plus': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -526,7 +527,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'cohere/cohere-command-r-plus-08-2024': {'
+  'cohere/cohere-command-r-plus-08-2024': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -540,7 +541,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // AI21 Models
-  'ai21-labs/ai21-jamba-1.5-large': {'
+  'ai21-labs/ai21-jamba-1.5-large': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -552,7 +553,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 3,
     },
   },
-  'ai21-labs/ai21-jamba-1.5-mini': {'
+  'ai21-labs/ai21-jamba-1.5-mini': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'low',
@@ -566,7 +567,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
   },
 
   // Other Models
-  'core42/jais-30b-chat': {'
+  'core42/jais-30b-chat': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'medium',
@@ -578,7 +579,7 @@ const _MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
       concurrentRequests: 5,
     },
   },
-  'microsoft/mai-ds-r1': {'
+  'microsoft/mai-ds-r1': {
     contextWindow: 8000,
     maxOutputTokens: 4000,
     category: 'high',
@@ -601,7 +602,7 @@ class GitHubModelsDatabase {
    * Initialize the database and start hourly updates
    */
   async initialize(): Promise<void> {
-    logger.info('🚀 Initializing GitHub Models Database');'
+    logger.info('🚀 Initializing GitHub Models Database');
 
     // Load initial models
     await this.updateModels();
@@ -610,14 +611,14 @@ class GitHubModelsDatabase {
     this.updateInterval = setInterval(
       () => {
         this.updateModels().catch((error) => {
-          logger.error('❌ Failed to update models:', error);'
+          logger.error('❌ Failed to update models:', error);
         });
       },
       60 * 60 * 1000
     ); // 1 hour
 
     logger.info(
-      `✅ GitHub Models Database initialized with ${this.models.size} models``
+      `✅ GitHub Models Database initialized with ${this.models.size} models`
     );
   }
 
@@ -626,20 +627,20 @@ class GitHubModelsDatabase {
    */
   async updateModels(): Promise<Result<void, Error>> {
     try {
-      logger.info('🔄 Updating GitHub Models from CLI...');'
+      logger.info('🔄 Updating GitHub Models from CLI...');
 
       // Get models from GitHub CLI
-      const { stdout } = await execAsync('gh models list');'
-      const lines = stdout.trim().split('\n');'
+      const { stdout } = await execAsync('gh models list');
+      const lines = stdout.trim().split('\n');
 
       const updatedModels = new Map<string, GitHubModelMetadata>();
 
       for (const line of lines) {
-        const [id, name] = line.split('\t');'
+        const [id, name] = line.split('\t');
         if (!id||!name) continue;
 
-        const provider = id.split('/')[0];'
-        const metadata = MODEL_CONTEXT_SIZES[id];
+        const provider = id.split('/')[0];
+        const metadata = _MODEL_CONTEXT_SIZES[id];
 
         const model: GitHubModelMetadata = {
           id,
@@ -664,14 +665,14 @@ class GitHubModelsDatabase {
       this.models = updatedModels;
       this.lastUpdate = new Date();
 
-      logger.info(`✅ Updated ${this.models.size} GitHub Models`);`
-      logger.info(`📊 Models by provider: ${this.getProviderStats()}`);`
+      logger.info(`✅ Updated ${this.models.size} GitHub Models`);
+      logger.info(`📊 Models by provider: ${this.getProviderStats()}`);
 
       return ok(void 0);
     } catch (error) {
-      logger.error('❌ Failed to update GitHub Models:', error);'
+      logger.error('❌ Failed to update GitHub Models:', error);
       return err(
-        error instanceof Error ? error : new Error('Failed to update models')'
+        error instanceof Error ? error : new Error('Failed to update models')
       );
     }
   }
@@ -703,7 +704,7 @@ class GitHubModelsDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category: 'low' | 'medium' | 'high' | 'embedding'): GitHubModelMetadata[] {'
+    category: 'low' | 'medium' | 'high' | 'embedding'): GitHubModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model.category === category
     );
@@ -727,8 +728,8 @@ class GitHubModelsDatabase {
       stats.set(model.provider, (stats.get(model.provider)||0) + 1);
     }
     return Array.from(stats.entries())
-      .map(([provider, count]) => `$provider:$count`)`
-      .join(', ');'
+      .map(([provider, count]) => `${provider}:${count}`)
+      .join(', ');
   }
 
   /**

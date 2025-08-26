@@ -130,7 +130,7 @@ export function getPlatform(): Platform {
 	}
 
 	// Check for Android (common in Node.js environments)
-	if (platform === "linux" && process.env.ANDROID_ROOT) {
+	if (platform === "linux" && process.env['ANDROID_ROOT']) {
 		return "android";
 	}
 
@@ -223,16 +223,16 @@ export function isLinux(): boolean {
  */
 export function isCI(): boolean {
 	return !!(
-		process.env.CI ||
-		process.env.CONTINUOUS_INTEGRATION ||
-		process.env.BUILD_NUMBER ||
-		process.env.GITHUB_ACTIONS ||
-		process.env.TRAVIS ||
-		process.env.CIRCLECI ||
-		process.env.JENKINS_URL ||
-		process.env.GITLAB_CI ||
-		process.env.BUILDKITE ||
-		process.env.DRONE
+		process.env['CI'] ||
+		process.env['CONTINUOUS_INTEGRATION'] ||
+		process.env['BUILD_NUMBER'] ||
+		process.env['GITHUB_ACTIONS'] ||
+		process.env['TRAVIS'] ||
+		process.env['CIRCLECI'] ||
+		process.env['JENKINS_URL'] ||
+		process.env['GITLAB_CI'] ||
+		process.env['BUILDKITE'] ||
+		process.env['DRONE']
 	);
 }
 
@@ -314,7 +314,7 @@ export function isWSL(): boolean {
  * ```
  */
 export function getEnvironment(): EnvironmentType {
-	const nodeEnv = process.env.NODE_ENV?.toLowerCase();
+	const nodeEnv = process.env['NODE_ENV']?.toLowerCase();
 
 	// Direct NODE_ENV mapping
 	if (nodeEnv === "production") return "production";
@@ -325,22 +325,22 @@ export function getEnvironment(): EnvironmentType {
 
 	// Infer from other environment variables
 	if (
-		process.env.VERCEL_ENV === "production" ||
-		(process.env.NETLIFY && process.env.CONTEXT === "production")
+		process.env['VERCEL_ENV'] === "production" ||
+		(process.env['NETLIFY'] && process.env['CONTEXT'] === "production")
 	) {
 		return "production";
 	}
 
 	if (
-		process.env.VERCEL_ENV === "preview" ||
-		(process.env.NETLIFY && process.env.CONTEXT === "deploy-preview")
+		process.env['VERCEL_ENV'] === "preview" ||
+		(process.env['NETLIFY'] && process.env['CONTEXT'] === "deploy-preview")
 	) {
 		return "preview";
 	}
 
 	if (
-		process.env.VERCEL_ENV === "development" ||
-		(process.env.NETLIFY && process.env.CONTEXT === "dev")
+		process.env['VERCEL_ENV'] === "development" ||
+		(process.env['NETLIFY'] && process.env['CONTEXT'] === "dev")
 	) {
 		return "development";
 	}

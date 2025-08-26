@@ -1,0 +1,268 @@
+/**
+ * @fileoverview Agent Performance Prediction System
+ *
+ * Uses time series analysis and machine learning to predict agent performance,
+ * helping with intelligent task routing and resource optimization.
+ *
+ * Features:
+ * - Time series forecasting using moving averages
+ * - Performance trend analysis
+ * - Load prediction and capacity planning
+ * - Real-time performance monitoring
+ *
+ * @author Claude Code Zen Team
+ * @since 2.1.0
+ */
+
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('AgentPerformancePredictor');
+
+export interface AgentPerformanceData {
+  readonly agentId: string;
+  readonly timestamp: number;
+  readonly taskType: string;
+  readonly complexity: number; // 0-1 scale
+  readonly completionTime: number; // milliseconds
+  readonly successRate: number; // 0-1 scale
+  readonly errorRate: number; // 0-1 scale
+  readonly cpuUsage: number; // 0-1 scale
+  readonly memoryUsage: number; // 0-1 scale
+  readonly concurrentTasks: number;
+}
+
+export interface PerformancePrediction {
+  readonly agentId: string;
+  readonly predictedCompletionTime: number;
+  readonly predictedSuccessRate: number;
+  readonly predictedScore?: number; // Overall predicted performance score
+  readonly confidence: number;
+  readonly loadForecast: number; // Expected load in next time window
+  readonly recommendedTaskCount: number;
+  readonly performanceTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly riskFactors: string[];
+}
+
+export interface PerformanceInsights {
+  readonly topPerformers: string[];
+  readonly underPerformers: string[];
+  readonly capacityUtilization: number;
+  readonly predictedBottlenecks: string[];
+  readonly optimizationSuggestions: string[];
+}
+
+/**
+ * Agent Performance Prediction System
+ *
+ * Analyzes historical performance data to predict future agent behavior
+ * and optimize task distribution across the swarm.
+ */
+export class AgentPerformancePredictor {
+  private performanceHistory: Map<string, AgentPerformanceData[]> = new Map();
+  private initialized = false;
+  private readonly maxHistorySize = 1000;
+
+  constructor() {
+    logger.info('Agent Performance Predictor created');
+  }
+
+  /**
+   * Initialize the prediction system
+   */
+  async initialize(): Promise<void> {
+    if (this.initialized) return;
+
+    try {
+      logger.info('Initializing Agent Performance Prediction System...');
+
+      // Initialize prediction models and historical data loading
+      await this.loadHistoricalData();
+      await this.initializePredictionModels();
+      await this.setupPerformanceMonitoring();
+
+      this.initialized = true;
+      logger.info('Agent Performance Predictor initialized successfully');
+    } catch (error) {
+      logger.error(
+        'Failed to initialize Agent Performance Predictor:',
+        error
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Record agent performance data
+   */
+  async recordPerformance(data: AgentPerformanceData): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    try {
+      // Get or create performance history for agent
+      let history = this.performanceHistory.get(data.agentId)||[];
+
+      // Add new data point
+      history.push(data);
+
+      // Maintain history size limit
+      if (history.length > this.maxHistorySize) {
+        history = history.slice(-this.maxHistorySize);
+      }
+
+      this.performanceHistory.set(data.agentId, history);
+
+      // Update performance trends
+      await this.updatePerformanceTrends(data.agentId, history);
+
+      logger.debug(
+        ` Performance recorded for agent ${data.agentId}: success rate ${data.successRate.toFixed(2)}``
+      );
+    } catch (error) {
+      logger.error('Failed to record performance:', error);'
+    }
+  }
+
+  /**
+   * Predict agent performance for a given task
+   */
+  async predictPerformance(
+    agentId: string,
+    taskType: string,
+    complexity: number
+  ): Promise<PerformancePrediction> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    try {
+      const history = this.performanceHistory.get(agentId)||[];
+
+      if (history.length < 3) {
+        // Not enough data, return conservative estimates
+        return this.getDefaultPrediction(agentId);
+      }
+
+      // Filter relevant historical data
+      const relevantData = history.filter(
+        (d) =>
+          d.taskType === taskType||Math.abs(d.complexity - complexity) < 0.2
+      );
+
+      // Time series analysis for completion time
+      const completionTimes = relevantData.map((d) => d.completionTime);
+      const predictedCompletionTime =
+        this.predictTimeSeriesValue(completionTimes);
+
+      // Success rate prediction using exponential moving average
+      const successRates = relevantData.map((d) => d.successRate);
+      const predictedSuccessRate = this.predictSuccessRate(successRates);
+
+      // Performance trend analysis
+      const performanceTrend = this.analyzePerformanceTrend(agentId);
+
+      // Load forecasting
+      const loadForecast = await this.forecastAgentLoad(agentId);
+
+      // Calculate confidence based on data quality
+      const confidence = this.calculatePredictionConfidence(
+        relevantData,
+        history
+      );
+
+      // Determine recommended task count
+      const recommendedTaskCount = this.calculateOptimalTaskCount(
+        agentId,
+        loadForecast
+      );
+
+      // Identify risk factors
+      const riskFactors = this.identifyRiskFactors(agentId, relevantData);
+
+      // Calculate overall predicted score
+      const predictedScore =
+        predictedSuccessRate *
+        (1 / (predictedCompletionTime / 1000 + 1)) *
+        confidence;
+
+      const prediction: PerformancePrediction = {
+        agentId,
+        predictedCompletionTime,
+        predictedSuccessRate,
+        predictedScore,
+        confidence,
+        loadForecast,
+        recommendedTaskCount,
+        performanceTrend,
+        riskFactors,
+      };
+
+      logger.info(
+        `Performance prediction for ${agentId}: ${predictedSuccessRate.toFixed(2)} success rate, ${predictedCompletionTime.toFixed(0)}ms completion time`
+      );
+
+      return prediction;
+    } catch (_error) {
+      logger.error(
+        `Performance prediction failed for agent ${agentId}:`,
+        error
+      );
+      return this.getDefaultPrediction(agentId);
+    }
+  }
+
+  /**
+   * Get system-wide performance insights
+   */
+  async getPerformanceInsights(): Promise<PerformanceInsights> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    try {
+      const allAgents = Array.from(this.performanceHistory.keys())();
+      const agentScores = new Map<string, number>();
+
+      // Calculate performance scores for each agent
+      for (const agentId of allAgents) {
+        const history = this.performanceHistory.get(agentId)||[];
+        const recentData = history.slice(-20); // Last 20 data points
+
+        if (recentData.length > 0) {
+          const avgSuccessRate = ss.mean(recentData.map((d) => d.successRate));
+          const avgCompletionTime = ss.mean(
+            recentData.map((d) => d.completionTime)
+          );
+
+          // Score combines success rate and speed (lower completion time is better)
+          const score = avgSuccessRate * (1 / (avgCompletionTime / 1000 + 1));
+          agentScores.set(agentId, score);
+        }
+      }
+
+      // Sort agents by performance
+      const sortedAgents = Array.from(agentScores.entries())
+        .sort(([, a], [, b]) => b - a)
+        .map(([agentId]) => agentId);
+
+      const topPerformers = sortedAgents.slice(
+        0,
+        Math.ceil(sortedAgents.length * 0.3)
+      );
+      const underPerformers = sortedAgents.slice(
+        -Math.ceil(sortedAgents.length * 0.2)
+      );
+
+      // Calculate capacity utilization
+      const capacityUtilization = await this.calculateCapacityUtilization();
+
+      // Predict bottlenecks
+      const predictedBottlenecks = await this.predictBottlenecks();
+
+      // Generate optimization suggestions
+      const optimizationSuggestions =
+        await this.generateOptimizationSuggestions(agentScores);
+
+      return {
+        topPerformers,
