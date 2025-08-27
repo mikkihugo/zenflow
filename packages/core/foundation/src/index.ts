@@ -185,7 +185,7 @@ export {
 // Validation and schema utilities
 export {
 	createValidator,
-	EmailSchema,
+	emailSchema,
 	getValidationErrors,
 	hasValidationError,
 	isEmail,
@@ -196,10 +196,10 @@ export {
 	isURL,
 	isUUID,
 	isValidJSON,
-	NonEmptyStringSchema,
-	PositiveNumberSchema,
-	URLSchema,
-	UUIDSchema,
+	nonEmptyStringSchema,
+	positiveNumberSchema,
+	urlSchema,
+	uuidSchema,
 	validateInput,
 	z,
 } from "./utilities/validation.js";

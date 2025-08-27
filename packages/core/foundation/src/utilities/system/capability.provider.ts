@@ -294,7 +294,8 @@ export function createHealthDataProviders() {
 export function startSystemMonitoring(): void {
 	facadeStatusManager.on(
 		"package-loaded",
-		(data: { packageName: string; version?: string; timestamp: Date }) => {
+		(...args: unknown[]) => {
+			const data = args[0] as { packageName: string; version?: string; timestamp: Date };
 			logger.info(`📦 Package ${data.packageName} loaded successfully`, {
 				version: data.version || "unknown",
 				timestamp: data.timestamp.toISOString(),
@@ -304,7 +305,8 @@ export function startSystemMonitoring(): void {
 
 	facadeStatusManager.on(
 		"facade-registered",
-		(data: { facadeName: string; timestamp: Date }) => {
+		(...args: unknown[]) => {
+			const data = args[0] as { facadeName: string; timestamp: Date };
 			logger.info(`🏗️ Facade ${data.facadeName} registered`, {
 				timestamp: data.timestamp.toISOString(),
 			});
@@ -313,7 +315,8 @@ export function startSystemMonitoring(): void {
 
 	facadeStatusManager.on(
 		"system-status-changed",
-		(data: { status: string; healthScore: number; timestamp: Date }) => {
+		(...args: unknown[]) => {
+			const data = args[0] as { status: string; healthScore: number; timestamp: Date };
 			logger.debug("📊 System status updated", {
 				overall: data.status,
 				healthScore: data.healthScore,

@@ -28,29 +28,16 @@
  * }
  * ```
  */
-
 // Foundation re-exports zod - use internal import to avoid circular dependency
-import { ZodError, type ZodSchema, type ZodType, z as zodInstance } from "zod";
-import { err, ok, type Result } from "../error-handling/index.js";
-import type {
-	Email,
-	ISODateString,
-	JsonPrimitive,
-	Timestamp,
-	UUID,
-} from "../types/primitives";
-
+import { ZodError, z as zodInstance } from "zod";
+import { err, ok } from "../error-handling/index.js";
 // =============================================================================
 // ZOD SCHEMA UTILITIES - Re-export for convenience
 // =============================================================================
-
 export { zodInstance as z, ZodError };
-export type { ZodSchema, ZodType };
-
 // =============================================================================
 // INPUT VALIDATION WITH RESULT PATTERN
 // =============================================================================
-
 /**
  * Validate input data against a Zod schema with Result pattern.
  * Returns Result<T, ZodError> for type-safe error handling.
@@ -70,29 +57,24 @@ export type { ZodSchema, ZodType };
  * }
  * ```
  */
-export function validateInput<T>(
-	schema: ZodSchema<T>,
-	data: unknown,
-): Result<T, ZodError> {
-	try {
-		const validated = schema.parse(data);
-		return ok(validated);
-	} catch (error) {
-		if (error instanceof ZodError) {
-			return err(error);
-		}
-		return err(
-			new ZodError([
-				{
-					code: "custom",
-					message: "Unknown validation error",
-					path: [],
-				},
-			]),
-		);
-	}
+export function validateInput(schema, data) {
+    try {
+        const validated = schema.parse(data);
+        return ok(validated);
+    }
+    catch (error) {
+        if (error instanceof ZodError) {
+            return err(error);
+        }
+        return err(new ZodError([
+            {
+                code: "custom",
+                message: "Unknown validation error",
+                path: [],
+            },
+        ]));
+    }
 }
-
 /**
  * Create a reusable validator function from a Zod schema.
  * Returns a function that validates data and returns Result.
@@ -107,16 +89,12 @@ export function validateInput<T>(
  * const result2 = validateUser(userData2);
  * ```
  */
-export function createValidator<T>(
-	schema: ZodSchema<T>,
-): (data: unknown) => Result<T, ZodError> {
-	return (data: unknown) => validateInput(schema, data);
+export function createValidator(schema) {
+    return (data) => validateInput(schema, data);
 }
-
 // =============================================================================
 // TYPE GUARDS - Branded types and primitives
 // =============================================================================
-
 /**
  * Check if value is a valid UUID format.
  * Supports UUID v1, v3, v4, and v5.
@@ -131,15 +109,10 @@ export function createValidator<T>(
  * }
  * ```
  */
-export function isUUID(value: unknown): value is UUID {
-	return (
-		typeof value === "string" &&
-		/^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-			value,
-		)
-	);
+export function isUUID(value) {
+    return (typeof value === "string" &&
+        /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value));
 }
-
 /**
  * Check if value is a valid email format.
  * Basic email format validation.
@@ -154,10 +127,9 @@ export function isUUID(value: unknown): value is UUID {
  * }
  * ```
  */
-export function isEmail(value: unknown): value is Email {
-	return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+export function isEmail(value) {
+    return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
-
 /**
  * Check if value is a valid timestamp.
  * Must be positive number representing milliseconds since epoch.
@@ -171,10 +143,9 @@ export function isEmail(value: unknown): value is Email {
  * }
  * ```
  */
-export function isTimestamp(value: unknown): value is Timestamp {
-	return typeof value === "number" && value > 0 && Number.isInteger(value);
+export function isTimestamp(value) {
+    return typeof value === "number" && value > 0 && Number.isInteger(value);
 }
-
 /**
  * Check if value is a valid ISO date string.
  * Validates format and parsability.
@@ -188,14 +159,11 @@ export function isTimestamp(value: unknown): value is Timestamp {
  * }
  * ```
  */
-export function isISODateString(value: unknown): value is ISODateString {
-	return (
-		typeof value === "string" &&
-		!Number.isNaN(Date.parse(value)) &&
-		/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/.test(value)
-	);
+export function isISODateString(value) {
+    return (typeof value === "string" &&
+        !Number.isNaN(Date.parse(value)) &&
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/.test(value));
 }
-
 /**
  * Check if value is a primitive type.
  * Includes string, number, boolean, null, undefined.
@@ -209,16 +177,13 @@ export function isISODateString(value: unknown): value is ISODateString {
  * }
  * ```
  */
-export function isPrimitive(value: unknown): value is JsonPrimitive {
-	return (
-		value === null ||
-		value === undefined ||
-		typeof value === "string" ||
-		typeof value === "number" ||
-		typeof value === "boolean"
-	);
+export function isPrimitive(value) {
+    return (value === null ||
+        value === undefined ||
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean");
 }
-
 /**
  * Check if array is non-empty.
  * Type guard for arrays with at least one element.
@@ -233,10 +198,9 @@ export function isPrimitive(value: unknown): value is JsonPrimitive {
  * }
  * ```
  */
-export function isNonEmptyArray<T>(arr: T[]): arr is [T, ...T[]] {
-	return Array.isArray(arr) && arr.length > 0;
+export function isNonEmptyArray(arr) {
+    return Array.isArray(arr) && arr.length > 0;
 }
-
 /**
  * Check if value is a valid URL.
  * Uses URL constructor for validation.
@@ -250,20 +214,21 @@ export function isNonEmptyArray<T>(arr: T[]): arr is [T, ...T[]] {
  * }
  * ```
  */
-export function isURL(value: unknown): value is string {
-	if (typeof value !== "string") return false;
-	try {
-		if (typeof globalThis.URL !== 'undefined') {
-			new globalThis.URL(value);
-			return true;
-		}
-		// Basic URL pattern fallback when URL constructor not available
-		return /^https?:\/\/.+/.test(value);
-	} catch {
-		return false;
-	}
+export function isURL(value) {
+    if (typeof value !== "string")
+        return false;
+    try {
+        if (typeof globalThis.URL !== 'undefined') {
+            new globalThis.URL(value);
+            return true;
+        }
+        // Basic URL pattern fallback when URL constructor not available
+        return /^https?:\/\/.+/.test(value);
+    }
+    catch {
+        return false;
+    }
 }
-
 /**
  * Check if value is valid JSON.
  * Attempts to parse and returns boolean.
@@ -277,19 +242,18 @@ export function isURL(value: unknown): value is string {
  * }
  * ```
  */
-export function isValidJSON(value: string): boolean {
-	try {
-		JSON.parse(value);
-		return true;
-	} catch {
-		return false;
-	}
+export function isValidJSON(value) {
+    try {
+        JSON.parse(value);
+        return true;
+    }
+    catch {
+        return false;
+    }
 }
-
 // =============================================================================
 // COMMON VALIDATION SCHEMAS - Pre-built for convenience
 // =============================================================================
-
 /**
  * Pre-built Zod schema for UUID validation.
  * @example
@@ -302,18 +266,15 @@ export const emailSchema = zodInstance.string().email();
 export const urlSchema = zodInstance.string().url();
 export const nonEmptyStringSchema = zodInstance.string().min(1);
 export const positiveNumberSchema = zodInstance.number().positive();
-
 // Legacy exports removed - use camelCase versions instead
 // export const UUIDSchema = uuidSchema;
 // export const EmailSchema = emailSchema;
 // export const URLSchema = urlSchema;
 // export const NonEmptyStringSchema = nonEmptyStringSchema;
 // export const PositiveNumberSchema = positiveNumberSchema;
-
 // =============================================================================
 // VALIDATION RESULT HELPERS
 // =============================================================================
-
 /**
  * Check if validation result contains specific error code.
  * Useful for handling specific validation failures.
@@ -329,14 +290,11 @@ export const positiveNumberSchema = zodInstance.number().positive();
  * }
  * ```
  */
-export function hasValidationError(
-	result: Result<unknown, ZodError>,
-	code: string,
-): boolean {
-	if (result.isOk()) return false;
-	return result.error.issues.some((issue) => issue.code === code);
+export function hasValidationError(result, code) {
+    if (result.isOk())
+        return false;
+    return result.error.issues.some((issue) => issue.code === code);
 }
-
 /**
  * Extract all validation error messages from Result.
  * Returns array of human-readable error messages.
@@ -350,9 +308,8 @@ export function hasValidationError(
  * errors.forEach(error => console.log(error));
  * ```
  */
-export function getValidationErrors(
-	result: Result<unknown, ZodError>,
-): string[] {
-	if (result.isOk()) return [];
-	return result.error.issues.map((issue) => issue['message']);
+export function getValidationErrors(result) {
+    if (result.isOk())
+        return [];
+    return result.error.issues.map((issue) => issue['message']);
 }

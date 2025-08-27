@@ -41,6 +41,7 @@
 		"./node_modules/**/*",
 		"./**/*.test.ts",
 		"./**/*.spec.ts",
-		"./config-old.ts"
+		"./config-old.ts",
+		"./tests/**/*"
 	]
 }

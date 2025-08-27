@@ -43,8 +43,6 @@ export class EventEmitter<T extends EventMap = EventMap> extends NodeEventEmitte
   /**
    * Typed on method - supports both typed and untyped usage
    */
-  override on<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  override on(event: string | symbol, listener: (...args: unknown[]) => void): this;
   override on(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.on(event, listener);
   }
@@ -52,8 +50,6 @@ export class EventEmitter<T extends EventMap = EventMap> extends NodeEventEmitte
   /**
    * Typed once method - supports both typed and untyped usage
    */
-  override once<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  override once(event: string | symbol, listener: (...args: unknown[]) => void): this;
   override once(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.once(event, listener);
   }
@@ -61,8 +57,6 @@ export class EventEmitter<T extends EventMap = EventMap> extends NodeEventEmitte
   /**
    * Typed off method - supports both typed and untyped usage
    */
-  override off<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  override off(event: string | symbol, listener: (...args: unknown[]) => void): this;
   override off(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.off(event, listener);
   }
@@ -70,8 +64,6 @@ export class EventEmitter<T extends EventMap = EventMap> extends NodeEventEmitte
   /**
    * Typed removeListener method - supports both typed and untyped usage
    */
-  override removeListener<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  override removeListener(event: string | symbol, listener: (...args: unknown[]) => void): this;
   override removeListener(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.removeListener(event, listener);
   }
@@ -79,17 +71,13 @@ export class EventEmitter<T extends EventMap = EventMap> extends NodeEventEmitte
   /**
    * Typed listeners method - supports both typed and untyped usage
    */
-  override listeners<K extends keyof T>(event: K): ((...args: EventArgs<T, K>) => void)[];
-  override listeners(event: string | symbol): ((...args: unknown[]) => void)[];
   override listeners(event: string | symbol): ((...args: unknown[]) => void)[] {
-    return super.listeners(event);
+    return super.listeners(event) as ((...args: unknown[]) => void)[];
   }
 
   /**
    * Typed listenerCount method - supports both typed and untyped usage
    */
-  override listenerCount<K extends keyof T>(event: K): number;
-  override listenerCount(event: string | symbol): number;
   override listenerCount(event: string | symbol): number {
     return super.listenerCount(event);
   }

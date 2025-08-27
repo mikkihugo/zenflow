@@ -89,7 +89,7 @@ export async function concurrent<T>(
 /**
  * Timeout promise wrapper
  */
-export async function withTimeout<T>(
+export function withTimeout<T>(
 	promise: Promise<T>,
 	ms: number,
 	message?: string,

@@ -30,8 +30,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // Foundation provides validation via zod - use internal import to avoid circular dependency
-import type { ValidateFunction } from "ajv";
-import Ajv from "ajv";
+import Ajv, { type ValidateFunction } from "ajv";
 
 import type { Logger } from "../../core/logging/index.js";
 import type {
@@ -122,7 +121,7 @@ export class SchemaValidationError extends Error {
  * ```
  */
 export class JsonSchemaManager {
-	private ajv: import("ajv").Ajv;
+	private ajv: InstanceType<typeof Ajv>;
 	private schemas: SchemaRegistry = {};
 	private logger: Logger;
 	private schemasPath: string;
@@ -491,8 +490,7 @@ export function createJsonSchemaManager(
 }
 
 // Foundation provides validation via zod - use internal import to avoid circular dependency
-import { ZodError, type ZodSchema } from "zod";
-import { z as zodInstance } from "zod";
+import { z as zodInstance, ZodError, type ZodSchema } from "zod";
 
 // Export Zod for foundation integration
 export { zodInstance as z };

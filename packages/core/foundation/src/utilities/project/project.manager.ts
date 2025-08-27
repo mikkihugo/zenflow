@@ -28,6 +28,15 @@ import * as path from "node:path";
 
 import { type Config, getConfig } from "../../core/config/index.js";
 import { getLogger } from "../../core/logging/index.js";
+
+// Constants for duplicate string literals
+const PROJECT_TYPES = {
+	MONOREPO: "monorepo" as const
+} as const;
+
+const BUILD_FILES = {
+	BUILD_GRADLE: "build.gradle" as const
+} as const;
 import type { UnknownRecord } from "../../types/primitives";
 
 const logger = getLogger("project-manager");
@@ -963,27 +972,27 @@ target/`;
 		return [
 			{
 				file: "pnpm-workspace.yaml",
-				type: "monorepo" as const,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "pnpm" as const,
 			},
 			{
 				file: "lerna.json",
-				type: "monorepo" as const,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "lerna" as const,
 			},
 			{
 				file: "rush.json",
-				type: "monorepo" as const,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "rush" as const,
 			},
 			{
 				file: "nx.json",
-				type: "monorepo" as const,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "nx" as const,
 			},
 			{
 				file: "workspace.json",
-				type: "monorepo" as const,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "nx" as const,
 			},
 			{
@@ -1002,13 +1011,13 @@ target/`;
 				buildSystem: "bazel" as const,
 			},
 			{
-				file: "build.gradle",
-				type: "monorepo" as const,
+				file: BUILD_FILES.BUILD_GRADLE,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "gradle" as const,
 			},
 			{
 				file: "pom.xml",
-				type: "monorepo" as const,
+				type: PROJECT_TYPES.MONOREPO,
 				buildSystem: "maven" as const,
 			},
 		];
@@ -1312,7 +1321,7 @@ target/`;
 			PACKAGE_JSON_FILENAME, // Node.js/TypeScript/React Native
 			"Cargo.toml", // Rust
 			"go.mod", // Go
-			"build.gradle", // Android
+			BUILD_FILES.BUILD_GRADLE, // Android
 			"build.gradle.kts", // Android (Kotlin DSL)
 			"app.json", // React Native/Expo
 			"expo.json", // Expo
@@ -1468,7 +1477,7 @@ target/`;
 				"WORKSPACE",
 				"WORKSPACE.bazel",
 				"MODULE.bazel",
-				"build.gradle",
+				BUILD_FILES.BUILD_GRADLE,
 				"pom.xml",
 			];
 
@@ -1677,7 +1686,7 @@ target/`;
 				".claude",
 				"Cargo.toml", // Rust
 				"go.mod", // Go
-				"build.gradle", // Android
+				BUILD_FILES.BUILD_GRADLE, // Android
 				"build.gradle.kts", // Android (Kotlin DSL)
 				"app.json", // React Native/Expo
 				"expo.json", // Expo
