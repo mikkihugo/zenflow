@@ -1,0 +1,41 @@
+/**
+ * Database Package
+ *
+ * A simplified multi-database abstraction layer with:
+ * - Real SQLite adapter with connection pooling
+ * - Type-safe interfaces
+ * - Comprehensive error handling
+ * - Health monitoring
+ * - Transaction support
+ * - Key-value storage abstraction
+ */
+export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
+import { createDatabaseConnection, createStorageConfig, getDatabaseFactory, createOptimalConfig, createOptimalStorageConfig } from './factory/database-factory';
+export { createDatabaseConnection, createStorageConfig, getDatabaseFactory, createOptimalConfig, createOptimalStorageConfig, };
+export { getLogger } from './logger.js';
+export { KeyValueStorageImpl } from './storage/key-value-storage.js';
+export * from './types/index.js';
+export declare function createDatabase(type: 'sqlite' | 'memory', database: string): Promise<import("./index.js").SQLiteAdapter>;
+export declare function createKeyValueStorage(database: string): Promise<import("./index.js").KeyValueStorageImpl>;
+export declare function createDatabaseAccess(config?: unknown): {
+    createConnection: (dbConfig: {
+        type?: string;
+        database: string;
+    }) => Promise<import("./index.js").SQLiteAdapter>;
+    createKeyValueStorage: typeof createKeyValueStorage;
+    getDatabaseFactory: typeof getDatabaseFactory;
+    createStorageConfig: typeof createStorageConfig;
+    createOptimalConfig: typeof createStorageConfig;
+    createOptimalStorageConfig: typeof createStorageConfig;
+    getConfig: () => {
+        [x: string]: unknown;
+    };
+};
+export declare class DatabaseProvider {
+    private config?;
+    constructor(config?: unknown);
+    createConnection(type: 'sqlite' | 'memory', database: string): Promise<import("./index.js").SQLiteAdapter>;
+    createKeyValue(database: string): Promise<import("./index.js").KeyValueStorageImpl>;
+}
+export declare const version = "1.0.0";
+//# sourceMappingURL=index.d.ts.map
