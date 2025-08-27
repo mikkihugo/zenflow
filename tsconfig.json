@@ -1,68 +1,17 @@
 {
-	"compilerOptions": {
-		"rootDir": ".",
-		"outDir": "build",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"types": ["vitest/globals", "node"],
-		"skipLibCheck": true,
-		"allowImportingTsExtensions": false,
-		"declaration": true,
-		"declarationMap": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"strict": true, // Keep strict for development
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedIndexedAccess": false,
-		"exactOptionalPropertyTypes": false,
-		"target": "ES2022",
-		"downlevelIteration": true,
-		"noEmit": false,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"useDefineForClassFields": true,
-		"noImplicitAny": false,
-		"noImplicitThis": true,
-		"noImplicitOverride": false,
-		"noPropertyAccessFromIndexSignature": false,
-		"verbatimModuleSyntax": false
-	},
-	"include": [
-		// 5-Tier Architecture - Updated paths
-		"packages/tier1-public/*/src/**/*.ts",
-		"packages/tier1-public/*/*/src/**/*.ts",
-		"packages/tier2-private/*/src/**/*.ts",
-		"packages/tier3-internal/*/src/**/*.ts",
-		"packages/tier4-restricted/*/src/**/*.ts",
-		"packages/tier5-deepcore/*/src/**/*.ts",
-		"packages/tier*/*/index.ts",
-		"packages/tier*/*/*.ts",
-		"apps/*/src/**/*.ts",
-		"scripts/**/*.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"build",
-		"dist",
-		"docs",
-		"scripts",
-		"security",
-		"templates",
-		"bin",
-		"config",
-		"**/*.config.js",
-		"**/*.config.ts",
-		"src/__tests__/**/*",
-		"tests/**/*",
-		"**/*.test.ts",
-		"**/*.spec.ts",
-		"apps/claude-code-zen-server/src/types/api-translation-layer.ts",
-		"apps/claude-code-zen-server/src/types/service-integration-layer.ts",
-		"packages/safe-framework/src/services/program-increment/pi-completion-service.ts"
-	]
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "target": "ES2022",
+    "downlevelIteration": true
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
