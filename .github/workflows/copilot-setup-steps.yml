@@ -51,8 +51,8 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
-
+          version: 9
+          
       # Step 4: Install Node.js Dependencies
       # Use 'pnpm install' instead of 'npm ci'. 'pnpm install' provides faster, more reliable, and deterministic builds
       # by installing dependencies directly from the 'pnpm-lock.yaml' file, which is ideal for CI environments. [10]
