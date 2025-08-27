@@ -44,7 +44,7 @@
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, ok, err } from '@claude-zen/foundation';
 
 import type {
   APIProvider,
@@ -52,9 +52,15 @@ import type {
   APIResult,
   APIProviderCapabilities,
 } from '../types/api-providers';
-import { API_ERROR_CODES } from '../types/api-providers';
 
-import { ok, err } from '@claude-zen/foundation';
+// Error codes enum for API responses
+export const API_ERROR_CODES = {
+  MODEL_ERROR: 'MODEL_ERROR',
+  NETWORK_ERROR: 'NETWORK_ERROR',
+  AUTH_ERROR: 'AUTH_ERROR',
+  RATE_LIMIT: 'RATE_LIMIT',
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+} as const;
 
 import {
   githubCopilotDB,
@@ -147,7 +153,7 @@ export class GitHubCopilotAPI implements APIProvider {
   /**
    * Execute chat request using GitHub Copilot API
    */
-  async execute(_request: APIRequest): Promise<APIResult> {
+  async execute(request: APIRequest): Promise<APIResult> {
     try {
       logger.info(
         `Executing GitHub Copilot API request with model: ${this.options.model}`
@@ -156,13 +162,16 @@ export class GitHubCopilotAPI implements APIProvider {
       const response = await fetch(`${this.options.baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.options.token}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'Authorization': `Bearer ${this.options.token}`,
+           
           'Content-Type': 'application/json',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
         },
         body: JSON.stringify({
           model: this.options.model,
-          messages: _request.messages,
+          messages: request.messages,
           max_tokens: this.options.maxTokens,
           temperature: this.options.temperature,
           stream: this.options.stream,
@@ -267,14 +276,44 @@ export class GitHubCopilotAPI implements APIProvider {
   }
 
   /**
-   * List available models from GitHub Copilot database (updated hourly)
+   * List available models from GitHub Copilot API (real-time)
    */
   async listModels(): Promise<string[]> {
     try {
-      // Get models from database (updated hourly from Copilot API)
-      const models = githubCopilotDB.getChatModels(); // Only chat models for conversations
+      // Try real API first
+      const response = await fetch(`${this.options.baseURL}/models`, {
+        method: 'GET',
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'Authorization': `Bearer ${this.options.token}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
+        },
+      });
 
-      if (models['length'] === 0) {
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && Array.isArray(data.data)) {
+          // Extract model IDs from real API response
+          const modelIds = data.data
+            .filter(model => model.capabilities?.type === 'chat' || !model.capabilities?.type) // Chat models only
+            .map(model => model.id)
+            .filter(Boolean);
+
+          logger.info(`📋 GitHub Copilot models from real API: ${modelIds.length} chat models`);
+          logger.info(`🎯 First few models: ${modelIds.slice(0, 5).join(', ')}${modelIds.length > 5 ? '...' : ''}`);
+          
+          return modelIds;
+        }
+      } else {
+        logger.warn(`GitHub Copilot models API returned ${response.status}: ${response.statusText}`);
+      }
+      
+      // Fallback to database if API fails
+      logger.info('📋 Falling back to database for model list...');
+      const models = githubCopilotDB.getChatModels();
+      
+      if (models.length === 0) {
         logger.warn('📋 No models in database, forcing update...');
         await githubCopilotDB.updateModels();
         const updatedModels = githubCopilotDB.getChatModels();
@@ -282,29 +321,13 @@ export class GitHubCopilotAPI implements APIProvider {
       }
 
       const modelIds = models.map((m) => m.id);
-      const stats = githubCopilotDB.getStats();
-      const _primaryModels = githubCopilotDB.getPrimaryModels();
-
-      logger.info(
-        `📋 GitHub Copilot models from database: ${modelIds.length} chat models`
-      );
-      logger.info(
-        `🎯 Primary models: ${_primaryModels.map((m) => m.id).join(', ')}`
-      );
-      logger.info(`🖼️ Vision models: ${stats.vision}`);
-      logger.info(
-        ` By category: versatile:${stats.byCategory.versatile}, lightweight:${stats.byCategory.lightweight}, powerful:${stats.byCategory.powerful}`
-      );
-      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);
-
+      logger.info(`📋 GitHub Copilot models from database: ${modelIds.length} chat models`);
       return modelIds;
+      
     } catch (error) {
-      logger.error(
-        'Failed to list GitHub Copilot models from database:',
-        error
-      );
+      logger.error('Failed to list GitHub Copilot models from API:', error);
 
-      // Emergency fallback with real context sizes
+      // Final emergency fallback with real context sizes
       const emergencyModels = [
         'gpt-4.1', // 128k context, 16k output, vision
         'gpt-5', // 128k context, 64k output, vision
@@ -330,7 +353,9 @@ export class GitHubCopilotAPI implements APIProvider {
       const response = await fetch(`${this.options.baseURL}/models`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${this.options.token}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'Authorization': `Bearer ${this.options.token}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
         },
       });
@@ -416,6 +441,7 @@ export const gitHubCopilotConfig = {
       'OAuth token (gho_xxx format)',
     ],
     requiredHeaders: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
     },
     note: 'Different from GitHub Models API - requires OAuth tokens, not PAT tokens',

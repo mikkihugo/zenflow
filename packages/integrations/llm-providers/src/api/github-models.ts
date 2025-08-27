@@ -19,8 +19,7 @@
  * ```
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { ok, err } from '@claude-zen/foundation';
+import { getLogger, ok, err } from '@claude-zen/foundation';
 
 import type {
   APIProvider,
@@ -98,10 +97,8 @@ export class GitHubModelsAPI implements APIProvider {
         {
           method: 'POST',
           headers: {
-            Accept: 'application/vnd.github+json',
-            Authorization: `Bearer ${this.options.token}`,
-            'X-GitHub-Api-Version': '2022-11-28',
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.options.token}`,
           },
           body: JSON.stringify({
             model: this.options.model,
@@ -145,29 +142,114 @@ export class GitHubModelsAPI implements APIProvider {
   }
 
   /**
-   * Get provider capabilities
+   * Get detailed model information from catalog
    */
-  getCapabilities(): APIProviderCapabilities {
+  async getModelDetails(modelId?: string) {
+    try {
+      const catalogEndpoint = 'https://models.github.ai/catalog/models';
+      const response = await fetch(catalogEndpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'Authorization': `Bearer ${this.options.token}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+
+      if (response.ok) {
+        const models = await response.json();
+        
+        if (modelId) {
+          // Return specific model details
+          const model = models.find((m: any) => m.id === modelId);
+          return model || null;
+        }
+        
+        // Return all model details with context sizes and limits
+        return models.map((model: any) => ({
+          id: model.id,
+          name: model.name,
+          publisher: model.publisher,
+          summary: model.summary,
+          maxInputTokens: model.limits?.max_input_tokens || 0,
+          maxOutputTokens: model.limits?.max_output_tokens || 0,
+          rateLimitTier: model.rate_limit_tier,
+          supportedInputModalities: model.supported_input_modalities || [],
+          supportedOutputModalities: model.supported_output_modalities || [],
+          capabilities: model.capabilities || [],
+          tags: model.tags || [],
+          version: model.version,
+          htmlUrl: model.html_url,
+        }));
+      }
+    } catch (error) {
+      logger.error('Failed to get model details from catalog:', error);
+    }
+    return null;
+  }
+
+  /**
+   * Get provider capabilities based on real catalog data
+   */
+  async getCapabilities(): Promise<APIProviderCapabilities> {
+    try {
+      const modelDetails = await this.getModelDetails();
+      
+      if (modelDetails && Array.isArray(modelDetails)) {
+        const hasStreaming = modelDetails.some((m: any) => m.capabilities?.includes('streaming'));
+        const hasMultimodal = modelDetails.some((m: any) => m.supportedInputModalities?.includes('image'));
+        const hasReasoning = modelDetails.some((m: any) => m.capabilities?.includes('reasoning'));
+        const hasToolCalling = modelDetails.some((m: any) => m.capabilities?.includes('tool-calling'));
+        
+        const maxInputTokens = Math.max(...modelDetails.map((m: any) => m.maxInputTokens || 0));
+        const maxOutputTokens = Math.max(...modelDetails.map((m: any) => m.maxOutputTokens || 0));
+        
+        return {
+          features: {
+            streaming: hasStreaming,
+            multimodal: hasMultimodal,
+            reasoning: hasReasoning,
+            coding: true, // Many models support coding
+            planning: true, // Most models support planning
+            imageGeneration: false, // No image generation
+            webAccess: false, // No web browsing
+            customTools: hasToolCalling,
+          },
+          models: modelDetails.map((m: any) => m.id),
+          maxTokens: maxOutputTokens,
+          contextWindow: maxInputTokens,
+          pricing: {
+            inputTokens: 0.00025, // Approximate, varies by model
+            outputTokens: 0.001, // Approximate, varies by model
+            currency: 'USD',
+          },
+        };
+      }
+    } catch (error) {
+      logger.error('Failed to get capabilities from catalog:', error);
+    }
+
+    // Fallback to basic capabilities
     const models = githubModelsDB.getAllModels();
     const hasMultimodal = models.some((m) => m.supportsMultimodal);
 
     return {
       features: {
-        streaming: false, // No streaming support yet
-        multimodal: hasMultimodal, // Based on available models
-        reasoning: true, // Advanced reasoning
-        coding: true, // Excellent for coding
-        planning: true, // Good for planning
-        imageGeneration: false, // Text only
-        webAccess: false, // No web browsing
-        customTools: false, // No custom tools
+        streaming: false,
+        multimodal: hasMultimodal,
+        reasoning: true,
+        coding: true,
+        planning: true,
+        imageGeneration: false,
+        webAccess: false,
+        customTools: false,
       },
       models: models.map((m) => m.id),
-      maxTokens: 4000, // GitHub Models output limit
-      contextWindow: 8000, // GitHub Models input limit (most models)
+      maxTokens: 4000,
+      contextWindow: 8000,
       pricing: {
-        inputTokens: 0.00025, // Approximate, varies by model
-        outputTokens: 0.001, // Approximate, varies by model
+        inputTokens: 0.00025,
+        outputTokens: 0.001,
         currency: 'USD',
       },
     };
@@ -184,51 +266,105 @@ export class GitHubModelsAPI implements APIProvider {
   }
 
   /**
-   * List available models from GitHub Models database (updated hourly)
+   * List available models from GitHub Models API (real-time)
    */
   async listModels(): Promise<string[]> {
     try {
-      // Get models from database (updated hourly from 'gh models list')
-      const models = githubModelsDB.getAllModels();
+      // Use the correct GitHub Models catalog endpoint
+      const catalogEndpoint = 'https://models.github.ai/catalog/models';
+      
+      logger.info(`🔍 Calling GitHub Models catalog: ${catalogEndpoint}`);
+      const response = await fetch(catalogEndpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'Authorization': `Bearer ${this.options.token}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
 
-      if (models['length'] === 0) {
-        logger.warn('📋 No models in database, forcing update...');
-        await githubModelsDB.updateModels();
-        const updatedModels = githubModelsDB.getAllModels();
-        return updatedModels.map((m) => m.id);
+      if (response.ok) {
+        const models = await response.json();
+        
+        if (Array.isArray(models) && models.length > 0) {
+          // Extract model IDs from catalog response
+          const modelIds = models
+            .map(model => model.id || model.name)
+            .filter(Boolean);
+
+          logger.info(`📋 GitHub Models from catalog API: ${modelIds.length} models`);
+          logger.info(`🎯 First few models: ${modelIds.slice(0, 5).join(', ')}${modelIds.length > 5 ? '...' : ''}`);
+          
+          return modelIds;
+        }
+      } else {
+        logger.warn(`GitHub Models catalog returned ${response.status}: ${response.statusText}`);
       }
 
-      const modelIds = models.map((m) => m.id);
-      const stats = githubModelsDB.getStats();
-
-      logger.info(`📋 GitHub Models from database: ${modelIds.length} models`);
-      logger.info(
-        ` Categories: low:${stats.byCategory.low}, medium:${stats.byCategory.medium}, high:${stats.byCategory.high}`
-      );
-      logger.info(`🖼️ Multimodal models: ${stats.multimodal}`);
-      logger.info(`🔄 Last updated: ${stats.lastUpdate.toISOString()}`);
-
-      return modelIds;
-    } catch (error) {
-      logger.error('Failed to list GitHub Models from database:', error);
-
-      // Emergency fallback with context sizes noted
-      const emergencyModels = [
-        'openai/gpt-4.1', // 8k context, 4k output
-        'openai/gpt-4o', // 8k context, 4k output, multimodal
-        'openai/gpt-5', // 8k context, 4k output
-        'openai/o1', // 8k context, 4k output
-        'meta/llama-3.3-70b-instruct', // 8k context, 4k output
-        'mistral-ai/mistral-large-2411', // 8k context, 4k output
-        'deepseek/deepseek-r1', // 8k context, 4k output
-        'xai/grok-3', // 8k context, 4k output
+      // Try legacy endpoints as fallback
+      const legacyEndpoints = [
+        `${this.options.baseURL}/models`,
+        `${this.options.baseURL}/inference/models`
       ];
 
-      logger.info(
-        `📋 Using emergency fallback: ${emergencyModels.length} models (all 8k/4k limits)`
-      );
-      return emergencyModels;
+      for (const endpoint of legacyEndpoints) {
+        try {
+          logger.info(`🔍 Trying fallback endpoint: ${endpoint}`);
+          const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${this.options.token}`,
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            let modelIds: string[] = [];
+
+            if (Array.isArray(data)) {
+              modelIds = data.map(model => model.id || model.name).filter(Boolean);
+            } else if (data.data && Array.isArray(data.data)) {
+              modelIds = data.data.map(model => model.id || model.name).filter(Boolean);
+            }
+
+            if (modelIds.length > 0) {
+              logger.info(`📋 GitHub Models from fallback (${endpoint}): ${modelIds.length} models`);
+              return modelIds;
+            }
+          }
+        } catch (endpointError) {
+          logger.warn(`Failed to fetch from ${endpoint}:`, endpointError);
+          continue;
+        }
+      }
+
+      // Final database fallback
+      logger.info('📋 Falling back to database for GitHub Models...');
+      const models = githubModelsDB.getAllModels();
+      if (models.length > 0) {
+        const modelIds = models.map((m) => m.id);
+        logger.info(`📋 GitHub Models from database: ${modelIds.length} models`);
+        return modelIds;
+      }
+    } catch (error) {
+      logger.error('Failed to list GitHub Models from all sources:', error);
     }
+
+    // Known working models from successful API tests (final fallback)
+    const workingModels = [
+      'openai/gpt-4.1',
+      'openai/gpt-4o', 
+      'openai/gpt-4o-mini',
+      'openai/o1',
+      'meta/llama-3.3-70b-instruct',
+      'mistral-ai/mistral-large-2411',
+      'deepseek/deepseek-r1',
+    ];
+
+    logger.info(`📋 Using known working models (final fallback): ${workingModels.length} models`);
+    return workingModels;
   }
 
   /**
@@ -236,9 +372,12 @@ export class GitHubModelsAPI implements APIProvider {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      // Health check doesn't need auth for GitHub Models
-      const response = await fetch(`${this.options.baseURL}/models`, {
+      // Health check with auth for GitHub Models
+      const response = await fetch(`${this.options.baseURL}/inference/models`, {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.options.token}`,
+        },
       });
       return response.ok;
     } catch {
