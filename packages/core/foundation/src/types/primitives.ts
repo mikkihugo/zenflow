@@ -84,7 +84,15 @@ export function isNonEmptyArray<T>(arr: T[]): boolean {
 
 // Utility functions
 export function generateUUID(): UUID {
-	return crypto.randomUUID() as UUID;
+	if (typeof globalThis.crypto !== 'undefined' && globalThis.crypto.randomUUID) {
+		return globalThis.crypto.randomUUID() as UUID;
+	}
+	// Fallback UUID v4 generation for Node.js environments without crypto.randomUUID
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+		const r = Math.random() * 16 | 0;
+		const v = c === 'x' ? r : (r & 0x3 | 0x8);
+		return v.toString(16);
+	}) as UUID;
 }
 
 export function now(): Timestamp {

@@ -9,7 +9,7 @@ import {
   type Logger,
 } from '@claude-zen/foundation';
 
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 
 import type { JSONValue } from '../core/memory-system';
 import type { MemoryConfig } from '../providers/memory-providers';
@@ -40,7 +40,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     const config = this.memoryConfig;
 
     try {
-      this.databaseSystem = await getDatabaseAccess();
+      this.databaseSystem = new DatabaseProvider();
+      await this.databaseSystem.connect();
       this.initialized = true;
       this.logger.info(
         `Foundation backend initialized with ${config.storageType} storage`

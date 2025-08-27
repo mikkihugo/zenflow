@@ -6,8 +6,9 @@
  */
 
 // =============================================================================
-// AWILIX RE-EXPORTS - Professional DI system
+// AWILIX RE-EXPORTS - Professional DI system (internal foundation implementation)
 // =============================================================================
+// eslint-disable-next-line no-restricted-imports
 export {
 	AwilixRegistrationError,
 	AwilixResolutionError,

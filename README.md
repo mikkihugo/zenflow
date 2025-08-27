@@ -13,7 +13,7 @@ Complete AI development platform with GitHub Copilot integration, web dashboard,
 - **🖥️ Complete Server Stack**: Full backend with all 52+ packages included
 - **🌐 Web Dashboard**: Svelte-based real-time monitoring and control interface
 - **🧠 Neural WASM Modules**: High-performance neural processing capabilities
-- **📦 5-Tier Architecture**: Strategic facades with comprehensive implementation packages
+- **📦 5-Tier Architecture**: Direct package imports with comprehensive implementation layers
 - **⚡ Cross-Platform Binaries**: Self-contained executables for Linux, macOS, Windows
 - **🔧 Development Tools**: Complete AI development toolkit
 
@@ -61,7 +61,7 @@ claude-zen.cmd --port 3001
 
 **5-Tier Package System** with 52+ packages:
 
-- **Tier 1 (Public)**: Strategic facades and foundation utilities
+- **Tier 1 (Public)**: Foundation utilities and package integrations
 - **Tier 2 (Private)**: Core implementation packages
 - **Tier 3 (Internal)**: Advanced coordination systems
 - **Tier 4 (Restricted)**: Security-critical components

@@ -115,9 +115,10 @@ export class NeuralBridge {
     );
 
     try {
-      // Initialize database access for model persistence via infrastructure facade
-      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');'
-      this.dbAccess = getDatabaseAccess();
+      // Initialize database access for model persistence
+      const { DatabaseProvider } = await import('@claude-zen/database');
+      this.dbAccess = new DatabaseProvider();
+      await this.dbAccess.connect();
 
       // Initialize SmartNeuralCoordinator for intelligent neural backend
       if (this.config.smartNeuralBackend !== undefined) {

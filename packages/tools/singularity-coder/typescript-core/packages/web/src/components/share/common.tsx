@@ -22,7 +22,7 @@ export function AnchorIcon(props: AnchorProps) {
 
           navigator.clipboard
             .writeText(`${origin}${pathname}${search}${hash}`)
-            .catch((err) => console.error("Copy failed", err))
+            .catch((error) => console.error("Copy failed", error))
 
           setCopied(true)
           setTimeout(() => setCopied(false), 3000)

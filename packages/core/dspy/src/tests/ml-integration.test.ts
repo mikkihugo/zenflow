@@ -27,7 +27,7 @@ import { MIPROv2ML } from "../teleprompters/miprov2-ml";
 // Mock external dependencies for testing
 vi.mock("@claude-zen/brain", () => ({
 	BrainCoordinator: vi.fn().mockImplementation(() => ({
-		initialize: vi.fn().mockResolvedValue(undefined),
+		initialize: vi.fn().mockResolvedValue(),
 		processOptimizationTask: vi.fn().mockResolvedValue({
 			id: "test-result",
 			success: true,
@@ -45,34 +45,34 @@ vi.mock("@claude-zen/brain", () => ({
 				metrics: { accuracy: 0.92 },
 			}),
 		}),
-		destroy: vi.fn().mockResolvedValue(undefined),
+		destroy: vi.fn().mockResolvedValue(),
 	})),
 }));
 
 vi.mock("../../neural-ml/src/ml-engine", () => ({
 	createMLEngine: vi.fn().mockResolvedValue({
-		initialize: vi.fn().mockResolvedValue(undefined),
+		initialize: vi.fn().mockResolvedValue(),
 		bayesianOptimizer: {
-			configure: vi.fn().mockResolvedValue(undefined),
+			configure: vi.fn().mockResolvedValue(),
 			optimize: vi.fn().mockResolvedValue({
 				bestParams: [0.8, 0.02, 0.1, 0.75],
 				bestScore: 0.92,
 			}),
 		},
 		onlineLearner: {
-			configure: vi.fn().mockResolvedValue(undefined),
+			configure: vi.fn().mockResolvedValue(),
 			predict: vi.fn().mockResolvedValue(0.85),
-			update: vi.fn().mockResolvedValue(undefined),
+			update: vi.fn().mockResolvedValue(),
 			detectDrift: vi.fn().mockResolvedValue({
 				driftDetected: false,
 				driftStrength: 0.1,
 				confidence: 0.8,
 			}),
-			reset: vi.fn().mockResolvedValue(undefined),
-			adaptLearningRate: vi.fn().mockResolvedValue(undefined),
+			reset: vi.fn().mockResolvedValue(),
+			adaptLearningRate: vi.fn().mockResolvedValue(),
 		},
 		patternLearner: {
-			configure: vi.fn().mockResolvedValue(undefined),
+			configure: vi.fn().mockResolvedValue(),
 			trainPatterns: vi
 				.fn()
 				.mockResolvedValue([
@@ -346,13 +346,13 @@ describe("ML Integration Tests", () => {
 			expect(results).toBeInstanceOf(Array);
 			expect(results).toHaveLength(3); // MIPROv2ML, COPROML, GRPOML
 
-			results.forEach((result) => {
+			for (const result of results) {
 				expect(result.variantName).toBeDefined();
 				expect(result.capabilities).toBeInstanceOf(Array);
 				expect(result.executionTime).toBeGreaterThanOrEqual(0);
 				expect(typeof result.success).toBe("boolean");
 				expect(result.insights).toBeInstanceOf(Array);
-			});
+			}
 		});
 
 		it("should provide comprehensive ecosystem status", async () => {

@@ -18,5 +18,5 @@ export type {
 
 // Default exports for convenience
 export default {
-  CoordinationEventFactory: CoordinationEventFactory,
+  CoordinationEventFactory,
 };

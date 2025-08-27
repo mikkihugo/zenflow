@@ -97,7 +97,7 @@ class MockModule extends DSPyModule {
 	}
 
 	setLM(lm: MockLM): void {
-		this.mockPredictors.forEach((pred) => (pred.lm = lm));
+		for (const pred of this.mockPredictors) (pred.lm = lm);
 	}
 }
 
@@ -105,9 +105,7 @@ class MockModule extends DSPyModule {
 const exactMatch: MetricFunction = (
 	example: Example,
 	prediction: Prediction,
-): number => {
-	return prediction.data?.answer === example.data.answer ? 1 : 0;
-};
+): number => prediction.data?.answer === example.data.answer ? 1 : 0;
 
 describe("BootstrapFinetune Teleprompter", () => {
 	let bootstrapFinetune: BootstrapFinetune;
@@ -222,7 +220,7 @@ describe("BootstrapFinetune Teleprompter", () => {
 				metric: exactMatch,
 				multitask: false,
 				train_kwargs: trainKwargs,
-				adapter: adapter,
+				adapter,
 				exclude_demos: true,
 				num_threads: 4,
 			};
@@ -308,7 +306,6 @@ describe("BootstrapFinetune Teleprompter", () => {
 			const result = await bootstrapFinetune.compile(
 				mockStudent,
 				trainset,
-				undefined,
 			);
 
 			expect(result).toBeDefined();
@@ -488,7 +485,7 @@ describe("BootstrapFinetune Teleprompter", () => {
 				outputs: { data: { answer: "12" } },
 			});
 
-			const messages = formatted.messages;
+			const {messages} = formatted;
 			expect(messages.length).toBeGreaterThan(0);
 
 			// Should have user and assistant messages

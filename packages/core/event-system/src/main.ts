@@ -9,8 +9,7 @@
 // CORE EVENT SYSTEM - Foundation event handling
 // =============================================================================
 export { EventBus } from './core/event-bus';
-export { TypedEventBus } from './core/typed-event-bus';
-export { TypeSafeEventSystem } from './core/type-safe-event-system';
+export { EventSystem, TypeSafeEventSystem } from './core/type-safe-event-system';
 export { BaseEventManager } from './core/base-event-manager';
 
 // =============================================================================
@@ -147,8 +146,8 @@ export type AllEventTypes = string;
 /**
  * Create a typed event bus with configuration.
  */
-export function createTypedEventBus(config: any = {}) {
-  return new TypedEventBus(config);
+export function createEventBus(config: any = {}) {
+  return new EventBus(config);
 }
 
 /**

@@ -571,21 +571,10 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
 
   private async initializeStrategicFacades(): Promise<void> {
     try {
-      // Lazy load strategic facades as needed
-      const { getDatabaseSystem } = await import('@claude-zen/infrastructure');
-      const { getPerformanceTracker } = await import('@claude-zen/operations');
-
-      // Register facades in service container
-      this.serviceContainer.register('databaseSystem', () =>
-        getDatabaseSystem()
-      );
-      this.serviceContainer.register('performanceTracker', () =>
-        getPerformanceTracker()
-      );
-
-      logger.debug('Strategic facades initialized', { serverId: this.id });
+      // No strategic facades currently available - all removed
+      logger.debug('Strategic facades skipped (none available)', { serverId: this.id });
     } catch (error) {
-      logger.warn('Some strategic facades not available, using fallbacks', {
+      logger.warn('Strategic facades initialization skipped', {
         serverId: this.id,
         error: error instanceof Error ? error.message : String(error),
       });

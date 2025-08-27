@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MemoryManager } from '../../src/memory';
 import {
   mockLogger,
-  mockConfig,
   createMockMemoryConfig,
   createMockMemoryBackend,
   createMockResult,
@@ -231,9 +230,9 @@ describe('MemoryManager', () => {
 
       const batchResults = results._unsafeUnwrap();
       expect(batchResults).toHaveLength(operations.length);
-      batchResults.forEach((result) => {
+      for (const result of batchResults) {
         expect(result.success).toBe(true);
-      });
+      }
     });
 
     it('should handle batch retrieve operations', async () => {

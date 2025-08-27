@@ -1,33 +1,125 @@
 /**
  * @fileoverview GitHub Copilot Chat API Integration
  *
- * GitHub Copilot Chat API provides access to GitHub's Copilot AI models.
+ * **Enterprise-grade GitHub Copilot Chat API integration with full model support**
+ * 
+ * This module provides direct access to GitHub Copilot Chat AI models through their
+ * official API. Offers conversational AI, code generation, and advanced reasoning
+ * capabilities with enterprise authentication and comprehensive error handling.
  *
- * IMPORTANT: This is DIFFERENT from GitHub Models API:
- * - GitHub Models API: Uses PAT tokens (ghp_xxx) at models.inference.ai.azure.com
- * - GitHub Copilot API: Uses OAuth tokens (gho_xxx) at api.githubcopilot.com
+ * **🔐 CRITICAL AUTHENTICATION DIFFERENCE:**
+ * - **GitHub Copilot API**: Uses OAuth tokens (`gho_xxx`) at `api.githubcopilot.com`
+ * - **GitHub Models API**: Uses PAT tokens (`ghp_xxx`) at `models.inference.ai.azure.com`
+ * 
+ * **Key Features:**
+ * - **OAuth2 Authentication**: VSCode-style OAuth flow with Copilot subscription
+ * - **Enterprise-Grade Models**: Access to GPT-4o, Claude, and other premium models
+ * - **Streaming Support**: Real-time response streaming with proper event handling
+ * - **Conversation Memory**: Maintains context across multiple turns
+ * - **Rate Limit Handling**: Automatic retry with exponential backoff
+ * - **Rich Metadata**: Model capabilities, context windows, and pricing information
  *
- * References:
- * - https://aider.chat/docs/llms/github.html
- * - https://dev.to/ericc/i-turned-github-copilot-into-openai-api-compatible-provider-1fb8
+ * **Supported Models:**
+ * - `gpt-4o`: Latest GPT-4 with vision and tool calling
+ * - `gpt-4o-mini`: Faster, cost-effective variant  
+ * - `claude-3.5-sonnet`: Anthropic's Claude for reasoning
+ * - `o1-preview`: OpenAI's reasoning model
+ * - See {@link GitHubCopilotModelMetadata} for complete list
  *
- * AUTHENTICATION:
- * - Uses GitHub OAuth tokens (gho_xxx format) - NOT Personal Access Tokens
- * - Requires VSCode-style authentication flow with GitHub Copilot subscription
- * - DIFFERENT from GitHub Models API (which uses PAT tokens)
- * - REQUIRED HEADER: Copilot-Integration-Id: vscode-chat
+ * **Authentication Requirements:**
+ * - GitHub Copilot subscription (paid plan)
+ * - OAuth token with `gho_` prefix (NOT personal access tokens)
+ * - Required header: `Copilot-Integration-Id: vscode-chat`
+ * - Token scopes: `copilot`, `read:user`
  *
- * @example Basic Usage
+ * @package @claude-zen/llm-providers  
+ * @version 2.0.0
+ * @since 1.0.0
+ * @access public
+ *
+ * @example Basic Conversational AI
  * ```typescript
- * // IMPORTANT: Requires GitHub Copilot OAuth token (gho_xxx), not PAT (ghp_xxx)
+ * import { GitHubCopilotAPI } from '@claude-zen/llm-providers';
+ * 
+ * // CRITICAL: Must use OAuth token (gho_xxx), NOT PAT token (ghp_xxx)
  * const copilot = new GitHubCopilotAPI({
- *   token: process.env['GITHUB_COPILOT_TOKEN'],  // Must be gho_xxx OAuth token
- *   model: 'gpt-4'
- * })
+ *   token: process.env['GITHUB_COPILOT_TOKEN'],  // OAuth token required
+ *   model: 'gpt-4o'
+ * });
  *
- * // Automatically includes required Copilot-Integration-Id: vscode-chat header
+ * // Simple conversation
  * const response = await copilot.execute({
- *   messages: [{ role: 'user', content: 'Write a React component for user authentication' }]
+ *   messages: [{ 
+ *     role: 'user', 
+ *     content: 'Explain microservices architecture pros and cons' 
+ *   }]
+ * });
+ * 
+ * if (response.isOk()) {
+ *   console.log('Response:', response.value.content);
+ * }
+ * ```
+ *
+ * @example Advanced Code Generation
+ * ```typescript
+ * const copilot = new GitHubCopilotAPI({
+ *   token: process.env['GITHUB_COPILOT_TOKEN'],
+ *   model: 'gpt-4o',
+ *   temperature: 0.1  // Deterministic for code generation
+ * });
+ *
+ * const codeResult = await copilot.execute({
+ *   messages: [
+ *     { role: 'system', content: 'You are an expert TypeScript developer' },
+ *     { role: 'user', content: `
+ *       Create a React hook for managing user authentication state.
+ *       Include login, logout, and token refresh functionality.
+ *       Use TypeScript with proper error handling.
+ *     `}
+ *   ],
+ *   temperature: 0.1,
+ *   maxTokens: 2000
+ * });
+ * ```
+ *
+ * @example Streaming Responses
+ * ```typescript
+ * const copilot = new GitHubCopilotAPI({
+ *   token: process.env['GITHUB_COPILOT_TOKEN'],
+ *   model: 'claude-3.5-sonnet'
+ * });
+ *
+ * // Stream real-time responses
+ * const stream = copilot.stream({
+ *   messages: [{ 
+ *     role: 'user', 
+ *     content: 'Write a detailed analysis of REST vs GraphQL' 
+ *   }]
+ * });
+ *
+ * for await (const chunk of stream) {
+ *   if (chunk.isOk()) {
+ *     process.stdout.write(chunk.value.content);
+ *   }
+ * }
+ * ```
+ *
+ * @example Multi-Turn Conversation
+ * ```typescript
+ * const conversation = [
+ *   { role: 'user', content: 'What is Docker?' },
+ *   { role: 'assistant', content: 'Docker is a containerization platform...' },
+ *   { role: 'user', content: 'How does it compare to virtual machines?' }
+ * ];
+ *
+ * const response = await copilot.execute({
+ *   messages: conversation
+ * });
+ * ```
+ *
+ * @see {@link https://aider.chat/docs/llms/github.html} - GitHub Copilot integration guide
+ * @see {@link GitHubCopilotModelMetadata} - Available models and capabilities
+ * @see {@link createGitHubCopilotProvider} - Factory function for easy setup
  * })
  * ```
  *

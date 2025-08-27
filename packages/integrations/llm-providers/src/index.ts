@@ -152,8 +152,48 @@ export {
 } from './factories/api-provider-factory';
 
 /**
- * Create a CLI provider instance (INTERNAL USE ONLY)
- * Supports CLI tools only (file ops, agentic development)
+ * Create a CLI provider instance with pluggable backend selection
+ *
+ * **Factory function for creating LLM provider instances.** Supports multiple CLI tool
+ * backends for different use cases. Each provider is optimized for specific tasks
+ * and has unique capabilities and performance characteristics.
+ *
+ * @param providerId - CLI provider backend to use (defaults to 'claude-code')
+ *   - `'claude-code'`: **Recommended** for file operations and agentic development
+ *   - `'cursor-cli'`: Code completion and IDE integration (experimental)  
+ *   - `'gemini-cli'`: Reasoning and analysis tasks (experimental)
+ *
+ * @returns LLMProvider instance configured with the specified backend
+ *
+ * @throws {Error} When provider initialization fails or invalid providerId
+ *
+ * @example Default Provider (Recommended)
+ * ```typescript
+ * import { createLLMProvider } from '@claude-zen/llm-providers';
+ * 
+ * // Creates Claude Code provider (best for most use cases)
+ * const provider = createLLMProvider();
+ * 
+ * const result = await provider.executeAsCoder(
+ *   'Create a TypeScript interface for user data'
+ * );
+ * ```
+ *
+ * @example Specialized Providers
+ * ```typescript
+ * // For advanced reasoning tasks
+ * const analyst = createLLMProvider('gemini-cli');
+ * const analysis = await analyst.executeAsAnalyst(
+ *   salesData, 
+ *   'trend analysis'
+ * );
+ * 
+ * // For IDE integration (when available)
+ * const codeAssistant = createLLMProvider('cursor-cli');
+ * ```
+ *
+ * @internal INTERNAL USE ONLY - Use through intelligence facade
+ * @since 1.0.0
  */
 export function createLLMProvider(
   providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
@@ -162,8 +202,48 @@ export function createLLMProvider(
 }
 
 /**
- * List all available LLM providers (INTERNAL USE ONLY)
- * Includes CLI tools and direct APIs
+ * List all available LLM providers with capabilities and availability
+ *
+ * **Discovery function for available providers.** Returns comprehensive metadata
+ * about each provider including capabilities, availability status, and recommended
+ * use cases. Useful for dynamic provider selection and capability checking.
+ *
+ * @returns Array of provider metadata objects with detailed information
+ *   - `id`: Unique provider identifier
+ *   - `name`: Human-readable provider name  
+ *   - `type`: Provider type ('cli' for CLI tools, 'api' for direct APIs)
+ *   - `category`: Primary use case category
+ *   - `available`: Whether provider is currently available
+ *
+ * @example Provider Discovery
+ * ```typescript
+ * import { listLLMProviders } from '@claude-zen/llm-providers';
+ * 
+ * const providers = listLLMProviders();
+ * 
+ * // Find available coding providers
+ * const codingProviders = providers.filter(
+ *   p => p.category === 'file-operations' && p.available
+ * );
+ * 
+ * console.log('Available coding providers:', codingProviders);
+ * // Output: [{ id: 'claude-code', name: 'Claude Code CLI', ... }]
+ * ```
+ *
+ * @example Dynamic Provider Selection  
+ * ```typescript
+ * const providers = listLLMProviders();
+ * const bestProvider = providers.find(
+ *   p => p.category === 'inference' && p.available
+ * );
+ * 
+ * if (bestProvider) {
+ *   const llm = createLLMProvider(bestProvider.id);
+ * }
+ * ```
+ *
+ * @internal INTERNAL USE ONLY - Use through intelligence facade  
+ * @since 1.0.0
  */
 export function listLLMProviders(): Array<{
   id: string;

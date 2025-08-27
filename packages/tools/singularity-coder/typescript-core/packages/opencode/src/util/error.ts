@@ -39,7 +39,7 @@ export abstract class NamedError extends Error {
 
       toObject() {
         return {
-          name: name,
+          name,
           data: this.data,
         }
       }

@@ -77,27 +77,29 @@ export async function createKeyValueStorage(database: string) {
   });
 }
 
-export function createDatabaseAccess(config?: any) {
+export function createDatabaseAccess(config?: unknown) {
+  const configuration = config ? { ...config as Record<string, unknown> } : {};
   return {
-    createConnection: (dbConfig: any) =>
+    createConnection: (dbConfig: { type?: string; database: string }) =>
       createDatabase(dbConfig.type || 'sqlite', dbConfig.database),
     createKeyValueStorage,
     getDatabaseFactory,
     createStorageConfig,
     createOptimalConfig,
     createOptimalStorageConfig,
+    getConfig: () => configuration,
   };
 }
 
 // Provider class expected by infrastructure facade
 export class DatabaseProvider {
-  constructor(private config?: any) {}
+  constructor(private config?: unknown) {}
 
-  async createConnection(type: 'sqlite' | 'memory', database: string) {
+  createConnection(type: 'sqlite' | 'memory', database: string) {
     return createDatabase(type, database);
   }
 
-  async createKeyValue(database: string) {
+  createKeyValue(database: string) {
     return createKeyValueStorage(database);
   }
 }

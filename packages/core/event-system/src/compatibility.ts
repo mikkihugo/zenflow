@@ -8,7 +8,7 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { EventEmitter } from '@claude-zen/foundation';
+import { EventEmitter } from './base-event-emitter';
 import type {
   EventManagerType,
   SystemEvent,

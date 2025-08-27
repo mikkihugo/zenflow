@@ -232,16 +232,16 @@ export class CompleteIntelligenceSystem {
       predictedPerformance *= 0.85; // Reduce confidence for long-term forecasts
       implementationComplexity *= 1.3; // Higher complexity for long-term optimizations
       logger.debug('Long-term forecast requested', {
-        swarmId: swarmId,
-        horizonDays: horizonDays,
+        swarmId,
+        horizonDays,
         adjustedPerformance: predictedPerformance,
       });
     } else if (horizonDays < 3) {
       predictedPerformance *= 1.1; // Higher confidence for short-term forecasts
       implementationComplexity *= 0.8; // Lower complexity for short-term optimizations
       logger.debug('Short-term forecast requested', {
-        swarmId: swarmId,
-        horizonDays: horizonDays,
+        swarmId,
+        horizonDays,
         adjustedPerformance: predictedPerformance,
       });
     }
@@ -250,8 +250,8 @@ export class CompleteIntelligenceSystem {
       horizonDays <= 1 ? 0.9 : horizonDays <= 7 ? 0.8 : 0.6;
     if (horizonConfidence < 0.7) {
       logger.warn('Low confidence horizon specified', {
-        swarmId: swarmId,
-        horizonDays: horizonDays,
+        swarmId,
+        horizonDays,
         confidence: horizonConfidence,
       });
     }

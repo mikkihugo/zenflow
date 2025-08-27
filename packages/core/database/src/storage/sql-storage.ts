@@ -24,7 +24,7 @@ const logger = getLogger("sql-storage");
 class TransactionSQLStorageImpl implements SqlStorage {
 	constructor(
 		private txConnection: TransactionConnection,
-		_config: DatabaseConfig,
+		private config: DatabaseConfig,
 	) {}
 
 	async query<T = unknown>(
@@ -38,9 +38,12 @@ class TransactionSQLStorageImpl implements SqlStorage {
 		return await this.txConnection.execute(sql, params);
 	}
 
-	async transaction<T>(_fn: (tx: SqlStorage) => Promise<T>): Promise<T> {
-		// Nested transactions not supported in most SQL databases
-		throw new Error("Nested transactions are not supported");
+	transaction<T>(
+		fn: (tx: SqlStorage) => Promise<T>
+	): Promise<T> {
+		// Execute function with current storage instance as transaction
+		// For proper transaction support, this would need connection-level transaction handling
+		return fn(this);
 	}
 
 	async createTable(name: string, schema: TableSchema): Promise<void> {
@@ -91,9 +94,12 @@ class TransactionSQLStorageImpl implements SqlStorage {
 
 	async dropIndex(
 		name: string,
-		_options?: { ifExists?: boolean },
+		options?: { ifExists?: boolean }
 	): Promise<void> {
-		await this.execute(`DROP INDEX IF EXISTS ${name}`);
+		const query = options?.ifExists 
+			? `DROP INDEX IF EXISTS ${name}` 
+			: `DROP INDEX ${name}`;
+		await this.execute(query);
 	}
 
 	async getTableSchema(name: string): Promise<TableSchema | null> {
@@ -171,10 +177,11 @@ export class SQLStorageImpl implements SqlStorage {
 	async execute(
 		sql: string,
 		params?: unknown[],
-		_options?: { correlationId?: string },
+		options?: { correlationId?: string }
 	): Promise<QueryResult> {
 		try {
 			logger.debug("Executing SQL command", {
+				correlationId: options?.correlationId,
 				sql: sql.slice(0, 100),
 				paramCount: params?.length || 0,
 			});
@@ -243,7 +250,7 @@ export class SQLStorageImpl implements SqlStorage {
 			// Build CREATE TABLE statement from schema
 			const columns =
 				schema.columns
-					?.map((col: any) => {
+					?.map((col: { name: string; type: string; nullable?: boolean; primaryKey?: boolean }) => {
 						let columnDef = `${col.name} ${col.type}`;
 						if (!col.nullable) columnDef += " NOT NULL";
 						if (col.defaultValue !== undefined)
@@ -458,12 +465,15 @@ export class SQLStorageImpl implements SqlStorage {
 
 	async dropIndex(
 		indexName: string,
-		_options?: { ifExists?: boolean },
+		options?: { ifExists?: boolean }
 	): Promise<void> {
 		try {
-			logger.debug("Dropping index", { indexName });
+			logger.debug("Dropping index", { indexName, options });
 
-			await this.execute(`DROP INDEX IF EXISTS ${indexName}`);
+			const query = options?.ifExists 
+				? `DROP INDEX IF EXISTS ${indexName}`
+				: `DROP INDEX ${indexName}`;
+			await this.execute(query);
 
 			logger.info("Index dropped successfully", { indexName });
 		} catch (error) {

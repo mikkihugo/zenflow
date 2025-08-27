@@ -11,7 +11,7 @@
  * their respective implementation packages.
  */
 
-import { z } from "zod";
+import { z as zodInstance } from "../../utilities/validation.js";
 import type { JsonObject } from "../../types/primitives";
 import { getLogger } from "../logging/index.js";
 
@@ -34,34 +34,34 @@ const logger = getLogger("foundation-config");
  * - Project configuration directories
  * - OpenTelemetry basic settings for observability
  */
-const configSchema = z.object({
+const configSchema = zodInstance.object({
 	// Environment Configuration
-	env: z.enum(["production", "development", "test"]).default("development"),
+	env: zodInstance.enum(["production", "development", "test"]).default("development"),
 
 	// Logging Configuration (Foundation Core System)
-	logging: z.object({
-		level: z.enum(["error", "warn", "info", "debug"]).default("info"),
-		format: z.enum(["json", "text"]).default("text"),
-		console: z.boolean().default(true),
-		file: z.string().default(""),
-		timestamp: z.boolean().default(true),
+	logging: zodInstance.object({
+		level: zodInstance.enum(["error", "warn", "info", "debug"]).default("info"),
+		format: zodInstance.enum(["json", "text"]).default("text"),
+		console: zodInstance.boolean().default(true),
+		file: zodInstance.string().default(""),
+		timestamp: zodInstance.boolean().default(true),
 	}),
 
 	// System Configuration
-	system: z.object({
-		hostname: z.string().default("localhost"),
-		instanceId: z.string().default("foundation-default"),
+	system: zodInstance.object({
+		hostname: zodInstance.string().default("localhost"),
+		instanceId: zodInstance.string().default("foundation-default"),
 	}),
 
 	// Development Environment Detection
-	development: z.object({
-		debug: z.boolean().default(false),
-		inNixShell: z.boolean().default(false),
-		flakeDevShell: z.boolean().default(false),
+	development: zodInstance.object({
+		debug: zodInstance.boolean().default(false),
+		inNixShell: zodInstance.boolean().default(false),
+		flakeDevShell: zodInstance.boolean().default(false),
 	}),
 
 	// Basic Project Configuration (for foundation config storage only)
-	project: z.object({
+	project: zodInstance.object({
 		/**
 		 * Configuration directory name following Claude Zen storage architecture.
 		 *
@@ -105,7 +105,7 @@ const configSchema = z.object({
 		 * @see {@link storeInUserHome} for location selection logic
 		 * @since 1.0.0
 		 */
-		configDir: z.string().default(".claude-zen"),
+		configDir: zodInstance.string().default(".claude-zen"),
 
 		/**
 		 * Controls whether configuration and data are stored in user home or project directory.
@@ -143,14 +143,14 @@ const configSchema = z.object({
 		 * @see {@link configDir} for directory structure details
 		 * @since 1.0.0
 		 */
-		storeInUserHome: z.boolean().default(true),
+		storeInUserHome: zodInstance.boolean().default(true),
 	}),
 
 	// OpenTelemetry Configuration (foundation-only, basic settings)
-	otel: z.object({
-		enabled: z.boolean().default(false),
-		useInternalCollector: z.boolean().default(true),
-		internalCollectorEndpoint: z.string().default("http://localhost:4318"),
+	otel: zodInstance.object({
+		enabled: zodInstance.boolean().default(false),
+		useInternalCollector: zodInstance.boolean().default(true),
+		internalCollectorEndpoint: zodInstance.string().default("http://localhost:4318"),
 	}),
 });
 

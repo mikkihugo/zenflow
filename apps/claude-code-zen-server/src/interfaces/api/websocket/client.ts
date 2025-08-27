@@ -87,7 +87,7 @@ export class WebSocketClient extends EventEmitter {
           clearTimeout(timeout);
           this.isConnected = false;
           this.stopHeartbeat();
-          this.emit('disconnected', event.code, event.reason);
+          this.emit('disconnected', { code: event.code, reason: event.reason });
 
           if (
             this.options.reconnect &&

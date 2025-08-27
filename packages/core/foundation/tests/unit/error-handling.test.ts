@@ -50,9 +50,7 @@ describe("Foundation Error Handling", () => {
 		it("should handle successful async operations", async () => {
 			const { safeAsync } = await import("../../src/error-handling");
 
-			const result = await safeAsync(async () => {
-				return "async success";
-			});
+			const result = await safeAsync(async () => "async success");
 
 			expect(result.isOk()).toBe(true);
 			if (result.isOk()) {
@@ -77,9 +75,7 @@ describe("Foundation Error Handling", () => {
 		it("should handle promise rejections", async () => {
 			const { safeAsync } = await import("../../src/error-handling");
 
-			const result = await safeAsync(async () => {
-				return Promise.reject(new Error("rejected promise"));
-			});
+			const result = await safeAsync(async () => Promise.reject(new Error("rejected promise")));
 
 			expect(result.isErr()).toBe(true);
 			if (result.isErr()) {

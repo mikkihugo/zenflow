@@ -238,8 +238,8 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
     async initializeSPARCTools() {
         try {
             // @ts-ignore - Package may not exist yet, graceful degradation
-            const { SPARCEngineCore } = await import('@claude-zen/sparc');
-            this.sparcEngine = new SPARCEngineCore({
+            const { SPARCManager } = await import('@claude-zen/coordination/sparc');
+            this.sparcEngine = new SPARCManager({
                 enabled: true,
                 analysisMode: 'pattern-extraction',
                 phases: [

@@ -202,7 +202,7 @@ describe("Logging System - 100% Coverage", () => {
 			expect(() => logger.info({ object: "data" })).not.toThrow();
 			expect(() => logger.info(["array", "data"])).not.toThrow();
 			expect(() => logger.info(null)).not.toThrow();
-			expect(() => logger.info(undefined)).not.toThrow();
+			expect(() => logger.info()).not.toThrow();
 		});
 	});
 
@@ -216,9 +216,9 @@ describe("Logging System - 100% Coverage", () => {
 				"test/logger",
 			];
 
-			specialNames.forEach((name) => {
+			for (const name of specialNames) {
 				expect(() => getLogger(name)).not.toThrow();
-			});
+			}
 		});
 
 		it("should handle very long logger names", () => {

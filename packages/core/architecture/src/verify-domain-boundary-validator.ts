@@ -15,13 +15,13 @@ import {
 interface TestAgent {
   id: string;
   capabilities: string[];
-  status: 'idle' | 'busy;
+  status: 'idle' | 'busy';
 }
 
 interface TestTask {
   id: string;
   description: string;
-  strategy: 'parallel|sequential|adaptive|consensus;
+  strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus';
   dependencies: string[];
   requiredCapabilities: string[];
   maxAgents: number;
@@ -29,15 +29,15 @@ interface TestTask {
 }
 
 async function verifyDomainBoundaryValidator(): Promise<void> {
-  console.log('🧪 Verifying Domain Boundary Validator Implementation');'
-  console.log('='.repeat(60));'
+  console.log('🧪 Verifying Domain Boundary Validator Implementation');
+  console.log('='.repeat(60));
 
   try {
     // 1. Basic Validation Test
-    console.log('✅ Testing basic validation...');'
+    console.log('✅ Testing basic validation...');
     const validator = new DomainBoundaryValidator(Domain.CORE);
 
-    const stringSchema: TypeSchema<string> = { type: 'string', required: true };'
+    const stringSchema: TypeSchema<string> = { type: 'string', required: true };
     const _result = validator.validateInput('test-string', stringSchema);'
     console.log(`   - String validation: $_result`);`
 
@@ -138,7 +138,7 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
     console.log(`   - First validation: ${time1}ms`);`
     console.log(`   - Second validation (cached): $_time2ms`);`
 
-    console.log('='.repeat(60));'
+    console.log('='.repeat(60));
     console.log('🎉 All Domain Boundary Validator tests passed!');'
     console.log('🏗️  Phase 0, Task 0.2 implementation is complete and working');'
   } catch (error) {

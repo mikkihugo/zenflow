@@ -32,11 +32,13 @@
  */
 
 import { setTimeout as nodeSetTimeout } from "node:timers/promises";
+// Foundation re-exports date-fns internally to avoid circular dependency
 import { format } from "date-fns";
+import * as dateFnsLib from "date-fns";
 import type { ISODateString, Timestamp } from "../types/primitives";
 
 // Re-export date-fns for comprehensive date operations
-export * as dateFns from "date-fns";
+export const dateFns = dateFnsLib;
 export {
 	addDays,
 	addHours,

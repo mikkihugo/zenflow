@@ -4,7 +4,8 @@
  * Main factory class for creating and managing coordination event adapters.
  */
 
-import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
+import { EventEmitter, type EventMap } from '@claude-zen/foundation';
 import type {
   EventManager,
   EventManagerFactory,
@@ -29,7 +30,7 @@ import { CoordinationFactoryHelpers } from './helpers';
  * Integrates with the UEL factory system to provide unified access to coordination events.
  */
 export class CoordinationEventFactory
-  extends EventEmitter
+  extends EventEmitter<EventMap>
   implements EventManagerFactory<CoordinationEventAdapterConfig>
 {
   private readonly logger: Logger;

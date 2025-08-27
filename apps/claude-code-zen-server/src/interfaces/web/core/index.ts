@@ -7,14 +7,12 @@
 
 // Type exports
 export type {
-  CommandResult,
-  DocumentData,
-  SwarmData,
   SystemStatusData,
-  TaskData,
-} from './handlers/data.handler';
+  SwarmStatusData,
+  TaskMetricsData,
+} from '../../../services/web/data.handler';
 
 // Data handlers
-export { WebDataService } from './handlers/data.handler';
+export { WebDataService } from '../../../services/web/data.handler';
 // Route handlers
-export { SystemCapabilityRoutes } from './routes/system.routes';
+export { SystemCapabilityRoutes } from '../../../services/web/system.routes';

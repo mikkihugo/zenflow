@@ -105,10 +105,10 @@ describe("Config Service - Working Features", () => {
 
 		it("should handle different log levels", () => {
 			const levels = ["error", "warn", "info", "debug"] as const;
-			levels.forEach((level) => {
+			for (const level of levels) {
 				const result = shouldLog(level);
 				expect(typeof result).toBe("boolean");
-			});
+			}
 		});
 	});
 

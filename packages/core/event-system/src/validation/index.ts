@@ -16,17 +16,11 @@
 // =============================================================================
 
 // Basic validation functions
-export const validateBaseEvent = (event: any) => {
-  return !!(event && event.id && event.type && event.timestamp && event.source);
-};
+export const validateBaseEvent = (event: any) => !!(event && event.id && event.type && event.timestamp && event.source);
 
-export const createEventValidator = (schema: any) => {
-  return (event: any) => validateBaseEvent(event);
-};
+export const createEventValidator = (schema: any) => (event: any) => validateBaseEvent(event);
 
-export const createValidationChain = (...validators: any[]) => {
-  return (event: any) => validators.every(v => v(event));
-};
+export const createValidationChain = (...validators: any[]) => (event: any) => validators.every(v => v(event));
 
 // Simple event types for compatibility
 export type BaseEvent = {

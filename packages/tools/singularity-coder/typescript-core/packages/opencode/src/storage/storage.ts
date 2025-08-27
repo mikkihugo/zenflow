@@ -43,7 +43,7 @@ export namespace Storage {
 								2,
 							),
 						);
-					} catch (_e) {
+					} catch (error) {
 						await fs.rename(file, file.replace("storage", "broken"));
 					}
 				}
@@ -79,7 +79,7 @@ export namespace Storage {
 						);
 					}
 					await Bun.write(file, JSON.stringify(info, null, 2));
-				} catch (_e) {}
+				} catch (error) {}
 			}
 		},
 	];

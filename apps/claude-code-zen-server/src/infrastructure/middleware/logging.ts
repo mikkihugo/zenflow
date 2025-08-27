@@ -211,9 +211,9 @@ const shouldLog = (path: string, method: string): boolean => {
  *
  * @param data Data object to sanitize
  */
-const sanitizeData = (data: unknown): unknown => {
+const sanitizeData = (data: unknown): Record<string, unknown> => {
   if (!data || typeof data !== 'object') {
-    return data;
+    return { value: data };
   }
 
   const sensitiveFields = [
@@ -239,6 +239,11 @@ const sanitizeData = (data: unknown): unknown => {
 
   return sanitized;
 };
+
+/**
+ * Type guard to check if metadata is a proper record
+ */
+const isValidMetadata = (metadata: unknown): metadata is Record<string, unknown> => metadata !== null && metadata !== undefined && typeof metadata === 'object' && !Array.isArray(metadata);
 
 /**
  * Parameters for creating a log entry.
@@ -290,7 +295,7 @@ const createLogEntry = ({
       last: !!res,
       // Last log entry for response
     },
-    metadata: metadata ? sanitizeData(metadata as Record<string, unknown>) : undefined,
+    metadata: isValidMetadata(metadata) ? sanitizeData(metadata) : undefined,
   };
 
   return logEntry;
@@ -378,7 +383,7 @@ export const requestLogger = (
 
   // Hook into response finish event
   const originalEnd = res.end;
-  res.end = function (chunk?: unknown, encoding?: string, cb?: () => void): Response {
+  res.end = function (chunk?: any, encoding?: any, cb?: any): Response {
     // Log response completion
     if (shouldLog(req.path, req.method)) {
       const level = getLogLevelFromStatus(res.statusCode);
@@ -490,7 +495,7 @@ export const log = (
       timestamp: new Date().toISOString(),
       level,
       message,
-      metadata: metadata ? sanitizeData(metadata as Record<string, unknown>) : undefined,
+      metadata: isValidMetadata(metadata) ? sanitizeData(metadata) : undefined,
     };
     outputLog(logEntry);
   }

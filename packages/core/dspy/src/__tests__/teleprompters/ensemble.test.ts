@@ -286,7 +286,7 @@ describe("Ensemble Teleprompter", () => {
 		it("should handle programs without predictors method", () => {
 			const mockProgramWithoutPredictors = {
 				forward: async () => ({ data: { answer: "test" } }),
-				deepcopy: function () {
+				deepcopy () {
 					return this;
 				},
 			};
@@ -303,7 +303,7 @@ describe("Ensemble Teleprompter", () => {
 			const mockProgramWithoutNamedPredictors = {
 				forward: async () => ({ data: { answer: "test" } }),
 				predictors: () => [],
-				deepcopy: function () {
+				deepcopy () {
 					return this;
 				},
 			};
@@ -459,9 +459,9 @@ describe("Ensemble Teleprompter", () => {
 			const results = await Promise.all(promises);
 
 			expect(results).toHaveLength(5);
-			results.forEach((result) => {
+			for (const result of results) {
 				expect(result.data?.outputs).toHaveLength(2);
-			});
+			}
 		});
 	});
 });

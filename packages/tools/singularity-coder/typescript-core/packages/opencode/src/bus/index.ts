@@ -92,7 +92,7 @@ export namespace Bus {
 
   function raw(type: string, callback: (event: any) => void) {
     log.info("subscribing", { type })
-    const subscriptions = state().subscriptions
+    const {subscriptions} = state()
     const match = subscriptions.get(type) ?? []
     match.push(callback)
     subscriptions.set(type, match)

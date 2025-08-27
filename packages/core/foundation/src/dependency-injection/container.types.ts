@@ -60,8 +60,8 @@ export interface ContainerStats {
  * Provides full featured dependency injection with monitoring and health checks.
  */
 export interface Container {
-	register<T>(name: string, implementation: new (...args: any[]) => T): void;
-	registerFunction<T>(name: string, factory: (...args: any[]) => T): void;
+	register<T>(name: string, implementation: new (...args: unknown[]) => T): void;
+	registerFunction<T>(name: string, factory: (...args: unknown[]) => T): void;
 	registerInstance<T>(name: string, instance: T): void;
 	resolve<T>(name: string): T;
 	has(name: string): boolean;

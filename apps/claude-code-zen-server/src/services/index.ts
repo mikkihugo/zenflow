@@ -10,8 +10,6 @@ import { createContainer, getLogger } from '@claude-zen/foundation';
 const logger = getLogger('services');
 
 // Re-export service modules using foundation patterns
-export * from './api';
-export * from './coordination';
 export * from './web';
 
 /**

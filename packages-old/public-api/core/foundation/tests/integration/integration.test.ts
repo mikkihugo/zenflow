@@ -119,13 +119,11 @@ describe("Foundation Integration Tests", () => {
 				const logger = getLogger("error-test");
 
 				// Test error handling with LLM system
-				const result = await safeAsync(async () => {
-					return executeClaudeTask("This is a test", {
+				const result = await safeAsync(async () => executeClaudeTask("This is a test", {
 						maxTurns: 1,
 						timeoutMs: 5000, // Short timeout to potentially trigger error
 						allowedTools: [],
-					});
-				});
+					}));
 
 				if (result.success) {
 					logger.info("Claude task succeeded", {
@@ -313,13 +311,11 @@ describe("Foundation Integration Tests", () => {
 					},
 
 					// Operation 2: Might fail
-					async () => {
-						return executeClaudeTask("Test task", {
+					async () => executeClaudeTask("Test task", {
 							maxTurns: 1,
 							timeoutMs: 10000,
 							allowedTools: [],
-						});
-					},
+						}),
 
 					// Operation 3: Storage operation (if available)
 					async () => {
@@ -341,7 +337,7 @@ describe("Foundation Integration Tests", () => {
 				const successes = results.filter((r) => r.status === "fulfilled");
 				expect(successes.length).toBeGreaterThan(0);
 
-				results.forEach((result, index) => {
+				for (const [index, result] of results.entries()) {
 					if (result.status === "fulfilled") {
 						logger.info(`Operation ${index + 1} succeeded`);
 					} else {
@@ -349,7 +345,7 @@ describe("Foundation Integration Tests", () => {
 							error: result.reason,
 						});
 					}
-				});
+				}
 			},
 			120000,
 		);

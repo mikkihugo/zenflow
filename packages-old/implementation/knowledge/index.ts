@@ -1023,14 +1023,14 @@ export async function getReasoningEngine(config?: any): Promise<any> {
 // Professional knowledge system object with proper naming (matches Storage/Telemetry patterns)
 export const knowledgeSystem = {
   getAccess: getKnowledgeSystemAccess,
-  getIntelligenceHub: getIntelligenceHub,
+  getIntelligenceHub,
   getCollectiveCoordinator: getCollectiveIntelligenceCoordinator,
   getCrossAgentIntegration: getCrossAgentKnowledgeIntegration,
   getDistributedLearning: getDistributedLearningSystem,
   getValidator: getKnowledgeValidator,
-  getPerformanceOptimizer: getPerformanceOptimizer,
+  getPerformanceOptimizer,
   getSwarm: getKnowledgeSwarm,
-  getReasoningEngine: getReasoningEngine,
+  getReasoningEngine,
 };
 
 // Type definitions for external consumers

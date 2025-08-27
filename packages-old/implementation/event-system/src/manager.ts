@@ -8,17 +8,14 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import {
-  inject,
-  TOKENS,
-} from '@claude-zen/foundation';
+
+
 import type {
   EventManagerConfig,
   EventManagerType,
   EventManager as CoreEventManager,
   EventManagerFactory,
   EventManagerStatus,
-  EventManagerMetrics,
   SystemEvent,
 } from './core/interfaces';
 import { EventManagerPresets, EventManagerTypes } from './core/interfaces';
@@ -937,7 +934,7 @@ export class EventManager implements CoreEventManager {
             static async create(config: any) {
               return createCommunicationEventAdapter(config);
             }
-            static get() { return undefined; }
+            static get() { return; }
           } as any;
           break;
         }

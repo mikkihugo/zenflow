@@ -5,8 +5,7 @@
  * use this shared logging configuration with ZEN_ environment variables.
  */
 
-import { getLogger as getLogTapeLogger } from "@logtape/logtape";
-import type { Sink, LoggerConfig } from "@logtape/logtape";
+import { getLogger as getLogTapeLogger, type Sink, type LoggerConfig } from "@logtape/logtape";
 
 import type { UnknownRecord } from "../../types/primitives";
 
@@ -93,10 +92,19 @@ export interface Logger {
 	warn(message: string, meta?: unknown): void;
 	/** Log error messages */
 	error(message: string, meta?: unknown): void;
+	/** Log fatal error messages */
+	fatal(message: string, meta?: unknown): void;
 	/** Optional success logging for positive outcomes */
 	success?(message: string, meta?: unknown): void;
 	/** Optional progress logging for long-running operations */
 	progress?(message: string, meta?: unknown): void;
+}
+
+interface LogTapeLogger {
+	debug(message: string): void;
+	info(message: string): void;
+	warn(message: string): void;
+	error(message: string): void;
 }
 
 class LoggingConfigurationManager {
@@ -444,6 +452,7 @@ class LoggingConfigurationManager {
 					.fetch(`${collectorEndpoint}/ingest`, {
 						method: "POST",
 						headers: {
+							// eslint-disable-next-line @typescript-eslint/naming-convention
 							"content-type": "application/json",
 						},
 						body: JSON.stringify(telemetryData),
@@ -477,115 +486,78 @@ class LoggingConfigurationManager {
 		return severityMap[level.toLowerCase()] || 9;
 	}
 
+	private createLoggerMethod(
+		name: string, 
+		level: LoggingLevel, 
+		logTapeMethod: (message: string) => void,
+		componentLevel: string
+	) {
+		return (message: string, meta?: unknown) => {
+			if (this.shouldLog(level.toLowerCase(), componentLevel)) {
+				const formattedMessage = this.formatMessage(message, meta);
+				logTapeMethod(formattedMessage);
+				addLogEntry({
+					timestamp: new Date().toISOString(),
+					level,
+					category: name,
+					message: formattedMessage,
+					meta: meta as UnknownRecord | undefined
+				});
+			}
+		};
+	}
+
+	private createWrappedLogger(name: string, logTapeLogger: LogTapeLogger, componentLevel: string): Logger {
+		return {
+			trace: this.createLoggerMethod(name, LoggingLevel.TRACE, logTapeLogger.debug.bind(logTapeLogger), componentLevel),
+			debug: this.createLoggerMethod(name, LoggingLevel.DEBUG, logTapeLogger.debug.bind(logTapeLogger), componentLevel),
+			info: this.createLoggerMethod(name, LoggingLevel.INFO, logTapeLogger.info.bind(logTapeLogger), componentLevel),
+			warn: this.createLoggerMethod(name, LoggingLevel.WARN, logTapeLogger.warn.bind(logTapeLogger), componentLevel),
+			error: this.createLoggerMethod(name, LoggingLevel.ERROR, logTapeLogger.error.bind(logTapeLogger), componentLevel),
+			fatal: this.createLoggerMethod(name, LoggingLevel.FATAL, logTapeLogger.error.bind(logTapeLogger), componentLevel),
+		};
+	}
+
 	getLogger(name: string): Logger {
 		if (this.loggers.has(name)) {
 			const logger = this.loggers.get(name);
 			if (!logger) {
-				throw new Error(`Logger'${name}'not found`);
+				throw new Error(`Logger '${name}' not found`);
 			}
 			return logger;
 		}
 
-		// Get component-specific log level if configured
-		const componentLevel =
-			this.config.components[name.toLowerCase()] || this.config.level;
-
-		// Create LogTape logger
+		const componentLevel = this.config.components[name.toLowerCase()] || this.config.level;
 		const logTapeLogger = getLogTapeLogger(name);
+		const logger = this.createWrappedLogger(name, logTapeLogger, componentLevel);
 
-		// Wrap with our interface and add extra methods
-		const logger: Logger = {
-			trace: (message: string, meta?: unknown) => {
-				if (this.shouldLog("trace", componentLevel)) {
-					const formattedMessage = this.formatMessage(message, meta);
-					logTapeLogger.debug(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.TRACE,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
-			debug: (message: string, meta?: unknown) => {
-				if (this.shouldLog("debug", componentLevel)) {
-					const formattedMessage = this.formatMessage(message, meta);
-					logTapeLogger.debug(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.DEBUG,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
-			info: (message: string, meta?: unknown) => {
-				if (this.shouldLog("info", componentLevel)) {
-					const formattedMessage = this.formatMessage(message, meta);
-					logTapeLogger.info(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.INFO,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
-			warn: (message: string, meta?: unknown) => {
-				if (this.shouldLog("warning", componentLevel)) {
-					const formattedMessage = this.formatMessage(message, meta);
-					logTapeLogger.warn(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.WARN,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
-			error: (message: string, meta?: unknown) => {
-				if (this.shouldLog("error", componentLevel)) {
-					const formattedMessage = this.formatMessage(message, meta);
-					logTapeLogger.error(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.ERROR,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
-			success: (message: string, meta?: unknown) => {
-				if (this.shouldLog("info", componentLevel)) {
-					const formattedMessage = `✅ ${this.formatMessage(message, meta)}`;
-					logTapeLogger.info(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.INFO,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
-			progress: (message: string, meta?: unknown) => {
-				if (this.shouldLog("info", componentLevel)) {
-					const formattedMessage = `🔄 ${this.formatMessage(message, meta)}`;
-					logTapeLogger.info(formattedMessage);
-					addLogEntry({
-						timestamp: new Date().toISOString(),
-						level: LoggingLevel.INFO,
-						category: name,
-						message: formattedMessage,
-						meta: meta as UnknownRecord | undefined
-					});
-				}
-			},
+		// Add success and progress methods
+		logger.success = (message: string, meta?: unknown) => {
+			if (this.shouldLog("info", componentLevel)) {
+				const formattedMessage = `✅ ${this.formatMessage(message, meta)}`;
+				logTapeLogger.info(formattedMessage);
+				addLogEntry({
+					timestamp: new Date().toISOString(),
+					level: LoggingLevel.INFO,
+					category: name,
+					message: formattedMessage,
+					meta: meta as UnknownRecord | undefined
+				});
+			}
+		};
+
+		logger.progress = (message: string, meta?: unknown) => {
+			if (this.shouldLog("info", componentLevel)) {
+				const formattedMessage = `🔄 ${this.formatMessage(message, meta)}`;
+				logTapeLogger.info(formattedMessage);
+				addLogEntry({
+					timestamp: new Date().toISOString(),
+					level: LoggingLevel.INFO,
+					category: name,
+					message: formattedMessage,
+					meta: meta as UnknownRecord | undefined
+				});
+			}
 		};
 
 		this.loggers.set(name, logger);

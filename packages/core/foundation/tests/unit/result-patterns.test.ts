@@ -310,9 +310,9 @@ describe("Result Patterns - 100% Coverage", () => {
 			expect(results).toHaveLength(1000);
 
 			// All should be successful (all even numbers after * 2)
-			results.forEach((result) => {
+			for (const result of results) {
 				expect(result.isOk()).toBe(true);
-			});
+			}
 
 			expect(duration).toBeLessThan(100); // Should be fast
 		});
@@ -321,7 +321,7 @@ describe("Result Patterns - 100% Coverage", () => {
 	describe("Edge Cases", () => {
 		it("should handle null and undefined values", () => {
 			const nullResult = ok(null);
-			const undefinedResult = ok(undefined);
+			const undefinedResult = ok();
 			const zeroResult = ok(0);
 			const emptyStringResult = ok("");
 

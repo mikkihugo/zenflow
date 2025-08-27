@@ -65,16 +65,14 @@ const config = {
 			legacyHeaders: false,
 			skipSuccessfulRequests: false,
 			skipFailedRequests: false,
-			keyGenerator: (req: any) => {
-				return (
+			keyGenerator: (req: any) => (
 					req.ip ||
 					req.connection.remoteAddress ||
 					req.socket.remoteAddress ||
 					(req.connection.socket
 						? req.connection.socket.remoteAddress
 						: "127.0.0.1")
-				);
-			},
+				),
 			handler: (_req: any, res: any) => {
 				res.status(429).json({
 					error: "Too Many Requests",

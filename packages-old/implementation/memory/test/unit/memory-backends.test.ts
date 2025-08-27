@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   mockLogger,
   createMockMemoryConfig,
@@ -31,10 +31,10 @@ describe('Memory Backends', () => {
     beforeEach(async () => {
       // Mock in-memory backend implementation
       backend = {
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         size: vi.fn().mockResolvedValue(0),
         health: vi.fn().mockResolvedValue(true),
         getStats: vi.fn().mockResolvedValue({
@@ -67,8 +67,8 @@ describe('Memory Backends', () => {
         timestamp: Date.now(),
       }));
 
-      for (let i = 0; i < largeData.length; i++) {
-        await backend.store(`key-${i}`, largeData[i]);
+      for (const [i, largeDatum] of largeData.entries()) {
+        await backend.store(`key-${i}`, largeDatum);
       }
 
       backend.size.mockResolvedValue(largeData.length);
@@ -112,15 +112,15 @@ describe('Memory Backends', () => {
 
     beforeEach(() => {
       backend = {
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         size: vi.fn().mockResolvedValue(0),
         health: vi.fn().mockResolvedValue(true),
         query: vi.fn().mockResolvedValue([]),
         transaction: vi.fn().mockImplementation((fn) => fn()),
-        close: vi.fn().mockResolvedValue(undefined),
+        close: vi.fn().mockResolvedValue(),
       };
     });
 
@@ -203,14 +203,14 @@ describe('Memory Backends', () => {
 
     beforeEach(() => {
       backend = {
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         size: vi.fn().mockResolvedValue(0),
         health: vi.fn().mockResolvedValue(true),
         search: vi.fn().mockResolvedValue([]),
-        addVector: vi.fn().mockResolvedValue(undefined),
+        addVector: vi.fn().mockResolvedValue(),
         searchSimilar: vi.fn().mockResolvedValue([]),
       };
     });
@@ -280,15 +280,15 @@ describe('Memory Backends', () => {
 
     beforeEach(() => {
       backend = {
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         size: vi.fn().mockResolvedValue(0),
         health: vi.fn().mockResolvedValue(true),
         load: vi.fn().mockResolvedValue({}),
-        save: vi.fn().mockResolvedValue(undefined),
-        backup: vi.fn().mockResolvedValue(undefined),
+        save: vi.fn().mockResolvedValue(),
+        backup: vi.fn().mockResolvedValue(),
       };
     });
 
@@ -376,8 +376,7 @@ describe('Memory Backends', () => {
       ];
 
       const factory = {
-        createBackend: vi.fn().mockImplementation((config: any) => {
-          return {
+        createBackend: vi.fn().mockImplementation((config: any) => ({
             type: config.type,
             config,
             store: vi.fn(),
@@ -385,8 +384,7 @@ describe('Memory Backends', () => {
             delete: vi.fn(),
             clear: vi.fn(),
             health: vi.fn().mockResolvedValue(true),
-          };
-        }),
+          })),
       };
 
       for (const config of configs) {

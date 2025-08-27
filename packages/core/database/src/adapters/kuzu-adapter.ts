@@ -8,6 +8,9 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { getLogger } from '../logger.js';
+
+// Constants to avoid string duplication
+const SHOW_TABLES_QUERY = 'CALL show_tables()';
 import {
   ConnectionError,
   type ConnectionStats,
@@ -466,7 +469,7 @@ export class KuzuAdapter implements DatabaseConnection {
   async getSchema(): Promise<SchemaInfo> {
     try {
       // Get basic schema information (simplified to avoid unused results)
-      await this.query('CALL show_tables()');
+      await this.query(SHOW_TABLES_QUERY);
 
       return {
         tables: [], // Graph databases don't have traditional table schemas
@@ -571,7 +574,7 @@ export class KuzuAdapter implements DatabaseConnection {
   async analyze(): Promise<void> {
     // Run some graph statistics queries instead
     try {
-      await this.query('CALL show_tables()');
+      await this.query(SHOW_TABLES_QUERY);
       logger.debug('Analyze operation completed for Kuzu');
     } catch (error) {
       logger.warn('Analyze operation failed', { error });
@@ -688,11 +691,6 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const node of nodes) {
         const properties = Object.keys(node);
         const values = Object.values(node);
-        const _paramPlaceholders = values
-          .map((_, i) => `$param${i}`)
-          .join(', ');
-        const _propertyList = properties.join(', ');
-
         const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}: $param${i}`).join(', ')}})`;
 
         // Convert values array to params object
@@ -858,7 +856,7 @@ export class KuzuAdapter implements DatabaseConnection {
     try {
       // Get node table names
       const nodeTablesResult = await this.query(
-        'CALL show_tables()',
+        SHOW_TABLES_QUERY,
         undefined,
         { correlationId }
       );

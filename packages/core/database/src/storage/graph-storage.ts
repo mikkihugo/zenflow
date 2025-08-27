@@ -21,7 +21,7 @@ const logger = getLogger("graph-storage");
 export class GraphStorageImpl implements GraphStorage {
 	constructor(
 		private connection: DatabaseConnection,
-		_config: DatabaseConfig,
+		private config: DatabaseConfig,
 	) {}
 
 	async addNode(
@@ -563,8 +563,11 @@ export class GraphStorageImpl implements GraphStorage {
 				propertyCount: Object.keys(properties || {}).length,
 			});
 
-			// For SQLite fallback, we just log this - no schema enforcement
-			logger.info("Node label registered (SQLite fallback)", {
+			// Create constraint for node uniqueness
+			const constraintQuery = `CREATE TABLE IF NOT EXISTS node_labels_${label} (id TEXT PRIMARY KEY)`;
+			await this.connection.execute(constraintQuery);
+
+			logger.info("Node label created", {
 				label,
 				properties,
 			});
@@ -593,8 +596,11 @@ export class GraphStorageImpl implements GraphStorage {
 				propertyCount: Object.keys(properties || {}).length,
 			});
 
-			// For SQLite fallback, we just log this - no schema enforcement
-			logger.info("Edge type registered (SQLite fallback)", {
+			// Create table for edge type
+			const edgeTableQuery = `CREATE TABLE IF NOT EXISTS edge_types_${type} (from_id TEXT, to_id TEXT, properties TEXT)`;
+			await this.connection.execute(edgeTableQuery);
+
+			logger.info("Edge type created", {
 				type,
 				properties,
 			});

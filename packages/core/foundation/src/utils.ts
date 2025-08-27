@@ -5,37 +5,68 @@
  * Import this for general utility functions.
  */
 
+// Foundation re-exports commander - use internal import to avoid circular dependency
 export type { CommanderError, Help, Option } from "commander";
-export { Command, program } from "commander";
+import { Command as CommanderCommand, program as commanderProgram } from "commander";
+export { CommanderCommand as Command, commanderProgram as program };
 // =============================================================================
-// DATE UTILITIES - date-fns re-exports
+// DATE UTILITIES - Foundation re-exports date-fns internally
 // =============================================================================
-export * as dateFns from "date-fns";
-export {
-	addDays,
-	addHours,
-	addMinutes,
-	differenceInDays,
-	differenceInHours,
-	differenceInMinutes,
-	endOfDay,
-	endOfMonth,
-	endOfWeek,
-	format,
-	isAfter,
-	isBefore,
-	isEqual,
-	parseISO,
-	startOfDay,
-	startOfMonth,
-	startOfWeek,
-	subDays,
+import * as dateFnsLib from "date-fns";
+import {
+	addDays as dateFnsAddDays,
+	addHours as dateFnsAddHours,
+	addMinutes as dateFnsAddMinutes,
+	differenceInDays as dateFnsDifferenceInDays,
+	differenceInHours as dateFnsDifferenceInHours,
+	differenceInMinutes as dateFnsDifferenceInMinutes,
+	endOfDay as dateFnsEndOfDay,
+	endOfMonth as dateFnsEndOfMonth,
+	endOfWeek as dateFnsEndOfWeek,
+	format as dateFnsFormat,
+	isAfter as dateFnsIsAfter,
+	isBefore as dateFnsIsBefore,
+	isEqual as dateFnsIsEqual,
+	parseISO as dateFnsParseISO,
+	startOfDay as dateFnsStartOfDay,
+	startOfMonth as dateFnsStartOfMonth,
+	startOfWeek as dateFnsStartOfWeek,
+	subDays as dateFnsSubDays,
 } from "date-fns";
+
+export const dateFns = dateFnsLib;
+export {
+	dateFnsAddDays as addDays,
+	dateFnsAddHours as addHours,
+	dateFnsAddMinutes as addMinutes,
+	dateFnsDifferenceInDays as differenceInDays,
+	dateFnsDifferenceInHours as differenceInHours,
+	dateFnsDifferenceInMinutes as differenceInMinutes,
+	dateFnsEndOfDay as endOfDay,
+	dateFnsEndOfMonth as endOfMonth,
+	dateFnsEndOfWeek as endOfWeek,
+	dateFnsFormat as format,
+	dateFnsIsAfter as isAfter,
+	dateFnsIsBefore as isBefore,
+	dateFnsIsEqual as isEqual,
+	dateFnsParseISO as parseISO,
+	dateFnsStartOfDay as startOfDay,
+	dateFnsStartOfMonth as startOfMonth,
+	dateFnsStartOfWeek as startOfWeek,
+	dateFnsSubDays as subDays,
+};
 // =============================================================================
-// COMMON UTILITIES - Battle-tested libraries
+// COMMON UTILITIES - Foundation re-exports utilities internally
 // =============================================================================
-export { default as _, default as lodash } from "lodash";
-export { customAlphabet, nanoid, nanoid as generateNanoId } from "nanoid";
+import lodashLib from "lodash";
+import { customAlphabet as nanoidCustomAlphabet, nanoid as nanoidGenerator } from "nanoid";
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const _ = lodashLib;
+export const lodash = lodashLib;
+export const customAlphabet = nanoidCustomAlphabet;
+export const nanoid = nanoidGenerator;
+export const generateNanoId = nanoidGenerator;
 
 // =============================================================================
 // UUID UTILITIES

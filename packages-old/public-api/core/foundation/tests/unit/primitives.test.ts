@@ -14,10 +14,10 @@ describe("Foundation Primitives - 100% Coverage", () => {
 			const uuid2 = generateUUID();
 
 			expect(uuid1).toMatch(
-				/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+				/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i,
 			);
 			expect(uuid2).toMatch(
-				/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+				/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i,
 			);
 			expect(uuid1).not.toBe(uuid2);
 		});
@@ -46,11 +46,11 @@ describe("Foundation Primitives - 100% Coverage", () => {
 			const uuids = Array.from({ length: 1000 }, () => generateUUID());
 
 			// All should be valid UUID format
-			uuids.forEach((uuid) => {
+			for (const uuid of uuids) {
 				expect(uuid).toMatch(
-					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+					/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i,
 				);
-			});
+			}
 
 			// All should be unique
 			expect(new Set(uuids).size).toBe(1000);
@@ -65,9 +65,9 @@ describe("Foundation Primitives - 100% Coverage", () => {
 				"550e8400-e29b-41d4-a716-446655440000",
 			];
 
-			validUUIDs.forEach((uuid) => {
+			for (const uuid of validUUIDs) {
 				expect(isUUID(uuid)).toBe(true);
-			});
+			}
 		});
 
 		it("should reject invalid UUIDs", () => {
@@ -83,9 +83,9 @@ describe("Foundation Primitives - 100% Coverage", () => {
 				123,
 			];
 
-			invalidUUIDs.forEach((uuid) => {
+			for (const uuid of invalidUUIDs) {
 				expect(isUUID(uuid)).toBe(false);
-			});
+			}
 		});
 	});
 });

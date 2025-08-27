@@ -495,7 +495,7 @@ export default [
 		},
 	},
 
-	// JavaScript files - Simplified rules
+	// JavaScript files - Simplified rules (no TypeScript-specific rules)
 	{
 		files: ["**/*.{js,jsx,mjs,cjs}"],
 		languageOptions: {
@@ -528,7 +528,7 @@ export default [
 			unicorn: unicorn,
 		},
 		rules: {
-			// Basic quality rules for JS files
+			// Basic quality rules for JS files (NO TypeScript rules)
 			"no-console": "warn", // Allow console in JS scripts
 			"no-unused-vars": "error",
 			"unused-imports/no-unused-imports": "error",
@@ -542,6 +542,83 @@ export default [
 			// SonarJS basics
 			"sonarjs/cognitive-complexity": ["warn", 20],
 			"sonarjs/no-duplicate-string": ["warn", { threshold: 5 }],
+
+			// Import organization (JS compatible)
+			"no-duplicate-imports": "error",
+
+			// Foundation Exports Enforcement for JS files
+			"no-restricted-imports": [
+				"error",
+				{
+					patterns: [
+						{
+							group: ["lodash", "lodash/*"],
+							message:
+								'Use foundation exports: const { _, lodash } = require("@claude-zen/foundation")',
+						},
+						{
+							group: ["uuid", "uuid/*"],
+							message:
+								'Use foundation exports: const { generateUUID } = require("@claude-zen/foundation")',
+						},
+					],
+				},
+			],
+
+			// Modern JavaScript patterns
+			"prefer-template": "error",
+			"object-shorthand": "error",
+			"prefer-arrow-callback": "error",
+
+			// NO TypeScript-specific rules for JS files
+			// "@typescript-eslint/naming-convention" - REMOVED for JS files
+		},
+	},
+
+	// Test files - Environment with Jest/Vitest globals
+	{
+		files: ["**/*.test.{ts,tsx,js,jsx}", "**/*.spec.{ts,tsx,js,jsx}", "**/tests/**/*.{ts,tsx,js,jsx}"],
+		languageOptions: {
+			parser: tsparser,
+			parserOptions: {
+				ecmaVersion: 2024,
+				sourceType: "module",
+			},
+			globals: {
+				describe: "readonly",
+				it: "readonly", 
+				test: "readonly",
+				expect: "readonly",
+				beforeAll: "readonly",
+				afterAll: "readonly",
+				beforeEach: "readonly",
+				afterEach: "readonly",
+				vi: "readonly",
+				vitest: "readonly",
+				jest: "readonly",
+				// Also include Node.js globals
+				console: "readonly",
+				process: "readonly",
+				Buffer: "readonly",
+				__dirname: "readonly",
+				__filename: "readonly",
+				global: "readonly",
+			},
+		},
+		plugins: {
+			"@typescript-eslint": tseslint,
+			import: importPlugin,
+			sonarjs: sonarjs,
+			"unused-imports": unusedImports,
+			unicorn: unicorn,
+		},
+		rules: {
+			// Relax rules for test files but keep sonarjs/complexity working
+			"@typescript-eslint/no-explicit-any": "warn",
+			"max-lines-per-function": "off",
+			"sonarjs/cognitive-complexity": ["warn", 50],  // Higher threshold for tests
+			"@typescript-eslint/naming-convention": "off",
+			"complexity": "off",  // Turn off basic complexity for tests
 		},
 	},
 
@@ -556,6 +633,8 @@ export default [
 			"packages/**/dist/**/*",
 			"apps/**/dist/**/*",
 			"apps/**/.svelte-kit/**/*",
+			"apps/**/build/**/*",          // Critical: Web dashboard build directory
+			"apps/web-dashboard/build/**", // Explicit web dashboard build exclusion
 
 			// Node modules and dependencies
 			"coverage/**/*",
@@ -569,8 +648,24 @@ export default [
 			"jest.config.js",
 			"**/*.tsbuildinfo",
 
-			// Generated files
+			// Generated files - TypeScript compilation output
 			"**/*.d.ts",
+			"**/*.d.ts.map",
+			"**/*.js.map",
+			
+			// All compiled JavaScript files in source directories
+			"packages/**/src/**/*.js",    // Compiled JS files in package src directories
+			"packages/**/test/**/*.js",   // Compiled JS files in package test directories
+			"apps/**/src/**/*.js",        // Compiled JS files in app src directories
+			
+			// Critical: Specific build artifacts causing massive lint failures
+			"apps/web-dashboard/build/_app/**/*",    // Svelte build output
+			"apps/web-dashboard/build/**/*.js",      // All built JS files  
+			"apps/web-dashboard/build/**/*.ts",      // All built TS files
+			"**/build/_app/immutable/chunks/**/*",   // Minified chunks
+			"**/build/_app/immutable/**/*",          // All immutable assets
+			
+			// Legacy patterns (keep for backward compatibility)
 			"packages/**/*.js",
 			"packages/**/*.js.map",
 
@@ -592,6 +687,9 @@ export default [
 			".github/**/*", // GitHub workflows
 			"tmp/**/*",
 			"logs/**/*",
+			
+			// Legacy/old packages - completely ignore during restructuring
+			"packages-old/**/*",
 
 			// Test setup files not in tsconfig
 			"tests/setup*.ts",

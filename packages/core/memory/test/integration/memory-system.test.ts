@@ -1,7 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   mockLogger,
-  createMockMemoryConfig,
   createMockResult,
 } from '../mocks/foundation-mocks';
 
@@ -37,28 +36,28 @@ describe('Memory System Integration', () => {
     mockBackends = {
       cache: {
         type: 'memory',
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         health: vi.fn().mockResolvedValue(true),
         size: vi.fn().mockResolvedValue(0),
       },
       session: {
         type: 'sqlite',
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         health: vi.fn().mockResolvedValue(true),
         size: vi.fn().mockResolvedValue(0),
       },
       semantic: {
         type: 'lancedb',
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue(null),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         health: vi.fn().mockResolvedValue(true),
         search: vi.fn().mockResolvedValue([]),
       },
@@ -198,9 +197,7 @@ describe('Memory System Integration', () => {
 
       memorySystem.semanticSearch = vi
         .fn()
-        .mockImplementation(async (vector: number[], options: any = {}) => {
-          return mockBackends.semantic.search(vector, options);
-        });
+        .mockImplementation(async (vector: number[], options: any = {}) => mockBackends.semantic.search(vector, options));
 
       const results = await memorySystem.semanticSearch(queryVector, {
         limit: 5,
@@ -309,7 +306,7 @@ describe('Memory System Integration', () => {
       );
 
       // But session backend still works
-      mockBackends.session.store.mockResolvedValue(undefined);
+      mockBackends.session.store.mockResolvedValue();
 
       memorySystem.store.mockImplementation(
         async (key: string, value: any, options: any = {}) => {
@@ -547,7 +544,7 @@ describe('Memory System Integration', () => {
           mockBackends[name] = {
             type: config.type,
             config,
-            store: vi.fn().mockResolvedValue(undefined),
+            store: vi.fn().mockResolvedValue(),
             retrieve: vi.fn().mockResolvedValue(null),
             delete: vi.fn().mockResolvedValue(true),
             health: vi.fn().mockResolvedValue(true),
@@ -600,9 +597,9 @@ describe('Memory System Integration', () => {
       });
 
       // Add close methods to backends
-      mockBackends.cache.close = vi.fn().mockResolvedValue(undefined);
-      mockBackends.session.close = vi.fn().mockResolvedValue(undefined);
-      mockBackends.semantic.close = vi.fn().mockResolvedValue(undefined);
+      mockBackends.cache.close = vi.fn().mockResolvedValue();
+      mockBackends.session.close = vi.fn().mockResolvedValue();
+      mockBackends.semantic.close = vi.fn().mockResolvedValue();
 
       const shutdownResult = await memorySystem.shutdown();
 

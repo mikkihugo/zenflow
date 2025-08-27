@@ -61,17 +61,17 @@ interface Connection {
     <T>(options: CreateTableOptions<T>): Promise<Table<T>>;
     (
       name: string,
-      data: Table<any> | Record<string, unknown>[],
+      data: Table<unknown> | Record<string, unknown>[],
       options?: WriteOptions
     ): Promise<Table<number[]>>;
     <T>(
       name: string,
-      data: Table<any> | Record<string, unknown>[],
+      data: Table<unknown> | Record<string, unknown>[],
       embeddings: EmbeddingFunction<T>
     ): Promise<Table<T>>;
     <T>(
       name: string,
-      data: Table<any> | Record<string, unknown>[],
+      data: Table<unknown> | Record<string, unknown>[],
       embeddings: EmbeddingFunction<T>,
       options: WriteOptions
     ): Promise<Table<T>>;
@@ -87,8 +87,8 @@ interface Connection {
 
 interface CreateTableOptions<T> {
   name: string;
-  data?: Table<any> | Record<string, unknown>[];
-  schema?: Schema<any>;
+  data?: Table<T> | Record<string, unknown>[];
+  schema?: Schema<T>;
   embeddingFunction?: EmbeddingFunction<T>;
   writeOptions?: WriteOptions;
 }
@@ -98,11 +98,16 @@ interface WriteOptions {
   existOk?: boolean;
 }
 
-type EmbeddingFunction<_T> = {};
+type EmbeddingFunction<T = unknown> = {
+  readonly __type?: T;
+};
 
-type Schema<_T> = {};
+type Schema<T = unknown> = {
+  readonly __type?: T;
+};
 
-interface Table<_T> {
+interface Table<T = unknown> {
+  readonly __type?: T;
   name: string;
   add(data: Record<string, unknown>[]): Promise<AddResult>;
   search(query: number[]): Query;
@@ -116,7 +121,7 @@ interface Table<_T> {
   }): Promise<void>;
   countRows(): Promise<number>;
   schema: unknown;
-  createIndex?(column: string, options?: { config?: any }): Promise<void>;
+  createIndex?(column: string, options?: { config?: unknown }): Promise<void>;
   close(): void;
 }
 
@@ -136,8 +141,7 @@ interface Query {
 
 // Type aliases for our internal use
 type LanceDBConnection = Connection;
-type LanceDBTable = Table<any>;
-type LanceDBQuery = Query;
+type LanceDBTable = Table<unknown>;
 
 export class LanceDBAdapter implements DatabaseConnection {
   private lancedbModule: LanceDBModule | null = null;
@@ -171,7 +175,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       try {
         const lancedbImport = await import('@lancedb/lancedb');
         this.lancedbModule = {
-          connect: lancedbImport.connect as any,
+          connect: lancedbImport.connect as LanceDBModule['connect'],
         };
         logger.debug('Successfully imported LanceDB module', { correlationId });
       } catch (importError) {
@@ -196,7 +200,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       try {
         this.database = (await this.lancedbModule?.connect(
           this.config.database
-        )) as any;
+        )) as LanceDBConnection;
         this.isConnectedState = true;
         this.stats.connectionCreated++;
 
@@ -636,7 +640,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       vectorColumn?: string;
       dimensions?: number;
     },
-    _embeddingFunction?: {
+    embeddingFunction?: {
       model: string;
       apiKey?: string;
     }
@@ -665,7 +669,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         },
       ];
 
-      await (this.database as any).createTable(tableName, sampleData, {
+      await (this.database as LanceDBConnection).createTable(tableName, sampleData, {
         mode: 'overwrite',
       });
 
@@ -675,6 +679,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         schema: schema.columns,
         vectorColumn: schema.vectorColumn || 'vector',
         dimensions: schema.dimensions || 384,
+        embeddingModel: embeddingFunction?.model || 'default',
       });
     } catch (error) {
       logger.error('Failed to create table with embedding', {
@@ -774,8 +779,9 @@ export class LanceDBAdapter implements DatabaseConnection {
       }
 
       // Apply distance type
-      if (options.distanceType) {
-        query = (query as any).distanceType?.(options.distanceType) || query;
+      if (options.distanceType && 'distanceType' in query) {
+        const queryWithDistance = query as { distanceType: (type: string) => typeof query };
+        query = queryWithDistance.distanceType(options.distanceType) || query;
       }
 
       // Apply limit
@@ -871,8 +877,9 @@ export class LanceDBAdapter implements DatabaseConnection {
       }
 
       // For HNSW or default
-      if ((table as any).createIndex) {
-        await (table as any).createIndex(
+      if (table && 'createIndex' in table) {
+        const indexableTable = table as { createIndex: (column: string, config: Record<string, unknown>) => Promise<void> };
+        await indexableTable.createIndex(
           options.column || 'vector',
           indexConfig
         );
@@ -941,12 +948,12 @@ export class LanceDBAdapter implements DatabaseConnection {
         const vectorResults = await vectorQuery.limit(limit * 2).toArray();
 
         // Normalize vector scores
-        vectorResults.forEach((result: unknown) => {
+        for (const result of vectorResults) {
           const row = result as { _distance?: number; _score?: number };
           if (row._distance !== undefined) {
             row._score = (1 - row._distance) * vectorWeight;
           }
-        });
+        }
 
         results = vectorResults;
       }
@@ -954,9 +961,15 @@ export class LanceDBAdapter implements DatabaseConnection {
       // Perform text search if text query provided
       if (query.text && query.textColumn) {
         try {
-          let textQuery = (table as any).search
-            ? (table as any).search(query.text)
-            : (table as any).query();
+          let textQuery: { where: (filter: string) => typeof textQuery; limit: (n: number) => typeof textQuery; toArray: () => Promise<unknown[]> };
+          
+          if (table && 'search' in table) {
+            const searchableTable = table as { search: (text: string) => typeof textQuery };
+            textQuery = searchableTable.search(query.text);
+          } else {
+            const queryableTable = table as { query: () => typeof textQuery };
+            textQuery = queryableTable.query();
+          }
 
           if (options.filter) {
             textQuery = textQuery.where(options.filter);

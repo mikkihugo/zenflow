@@ -1,9 +1,86 @@
 /**
  * @fileoverview Generic LLM Provider with Pluggable CLI Tools
  *
- * Generic LLM provider that can use different CLI tools (Claude, Gemini, etc.)
- * through a pluggable provider architecture. Refactored to use foundation's
- * Result pattern, error handling, retry logic, and proper validation.
+ * **Enterprise-grade LLM provider abstraction with pluggable CLI tool backends**
+ * 
+ * This module provides a generic LLM provider that can use different CLI tools 
+ * (Claude Code, Gemini CLI, Cursor CLI) through a pluggable provider architecture. 
+ * Fully integrated with foundation's Result pattern, error handling, retry logic, 
+ * and proper validation.
+ *
+ * **Key Features:**
+ * - **Multi-Provider Support**: Claude Code, GitHub Copilot, Gemini CLI, Cursor CLI
+ * - **Swarm Agent Coordination**: 7 specialized agent roles for collaborative problem-solving
+ * - **Enterprise Error Handling**: Result pattern with comprehensive error codes
+ * - **Automatic Retry Logic**: Configurable retry with exponential backoff
+ * - **Event-Driven Architecture**: TypedEventBase integration for real-time coordination
+ * - **Battle-Tested Validation**: Zod schemas with detailed error messages
+ *
+ * **Architecture:**
+ * ```
+ * LLMProvider (Generic Interface)
+ *     ├── ClaudeProvider (File operations, agentic development)
+ *     ├── GeminiCLI (Reasoning, analysis)
+ *     ├── CursorCLI (Code completion, IDE integration)  
+ *     └── GitHubCopilotAPI (Conversational AI, inference)
+ * ```
+ *
+ * @package @claude-zen/llm-providers
+ * @version 2.1.0
+ * @since 1.0.0
+ * @access public
+ *
+ * @example Basic Usage
+ * ```typescript
+ * import { LLMProvider } from '@claude-zen/llm-providers';
+ *
+ * // Create provider with default Claude Code backend
+ * const provider = new LLMProvider();
+ *
+ * // Execute a coding task
+ * const result = await provider.executeAsCoder(
+ *   'Create a React component for user authentication',
+ *   'TypeScript with hooks and error handling'
+ * );
+ *
+ * if (result.isOk()) {
+ *   console.log('Code generated:', result.value);
+ * } else {
+ *   console.error('Error:', result.error.message);
+ * }
+ * ```
+ *
+ * @example Swarm Coordination
+ * ```typescript
+ * import { LLMProvider, executeSwarmTask } from '@claude-zen/llm-providers';
+ *
+ * // Multi-agent collaborative task
+ * const result = await executeSwarmTask({
+ *   description: 'Design and implement a user authentication system',
+ *   agents: [
+ *     { role: 'architect', model: 'opus' },
+ *     { role: 'coder', model: 'sonnet' },
+ *     { role: 'tester', model: 'sonnet' }
+ *   ],
+ *   coordination: 'sequential'
+ * });
+ *
+ * // Each agent contributes specialized expertise
+ * console.log('Architecture:', result[0].output);
+ * console.log('Implementation:', result[1].output);  
+ * console.log('Test Suite:', result[2].output);
+ * ```
+ *
+ * @example Advanced Configuration
+ * ```typescript
+ * const provider = new LLMProvider('claude-code', {
+ *   timeout: 60000,          // 1 minute timeout
+ *   retries: 5,              // 5 retry attempts
+ *   retryDelay: 2000,        // 2 second delay between retries
+ *   maxTokens: 100000,       // Large context support
+ *   temperature: 0.1         // Precise, deterministic output
+ * });
+ * ```
  */
 
 // Use CLI tools architecture with foundation integration
@@ -61,10 +138,88 @@ const cliProviderConfigSchema = z.object({
 
 const logger = getLogger('llm-provider');
 
-// Generic LLM Provider with pluggable CLI tool backends and event system integration
+/**
+ * **Enterprise-grade LLM Provider with Pluggable CLI Tool Backends**
+ * 
+ * Generic LLM provider that can use different CLI tools (Claude Code, Gemini CLI, 
+ * Cursor CLI) through a pluggable provider architecture. Provides unified interface
+ * for file operations, agentic development, conversational AI, and swarm coordination.
+ *
+ * **Features:**
+ * - **Event-Driven**: Inherits from TypedEventBase for real-time coordination
+ * - **Auto-Retry**: Configurable retry logic with exponential backoff  
+ * - **Validation**: Zod schema validation for all inputs
+ * - **Error Handling**: Result pattern with comprehensive error codes
+ * - **Agent Roles**: 7 specialized roles (architect, coder, analyst, etc.)
+ * - **Provider Switching**: Hot-swap between different CLI tools
+ *
+ * **Supported Providers:**
+ * - `claude-code`: File operations, agentic development (default)
+ * - `github-copilot-api`: Conversational AI, inference  
+ * - `gemini-cli`: Reasoning, analysis
+ * - `cursor-cli`: Code completion, IDE integration
+ *
+ * @since 1.0.0
+ */
 export class LLMProvider extends TypedEventBase {
   private providerId: string;
+  private llmConfig: CLIProviderConfig;
+  private cliProvider: any;
+  private requestCount: number = 0;
+  private lastRequestTime: number = 0;
 
+  /**
+   * Create a new LLM Provider instance with pluggable CLI backend
+   *
+   * @param providerId - CLI provider identifier (defaults to 'claude-code')
+   *   - `'claude-code'`: Best for file operations and agentic development
+   *   - `'github-copilot-api'`: Best for conversational AI and inference  
+   *   - `'gemini-cli'`: Best for reasoning and analysis
+   *   - `'cursor-cli'`: Best for code completion and IDE integration
+   *
+   * @param config - Provider configuration options
+   * @param config.timeout - Request timeout in milliseconds (1000-300000, default: 30000)
+   * @param config.retries - Number of retry attempts (0-5, default: 3) 
+   * @param config.retryDelay - Delay between retries in milliseconds (100-10000, default: 1000)
+   * @param config.maxTokens - Maximum tokens for responses (1-200000)
+   * @param config.temperature - Randomness in responses (0-2, lower = more deterministic)
+   * @param config.metadata - Additional provider-specific metadata
+   *
+   * @throws {Error} When configuration validation fails or provider initialization fails
+   * 
+   * @fires provider:initialized - When provider is successfully initialized
+   * @fires provider:error - When provider initialization or operation fails
+   * @fires provider:ready - When underlying CLI provider is ready for requests
+   *
+   * @example Basic Usage
+   * ```typescript
+   * // Default Claude Code provider
+   * const provider = new LLMProvider();
+   * 
+   * // GitHub Copilot for conversational AI
+   * const copilot = new LLMProvider('github-copilot-api');
+   * 
+   * // Custom configuration  
+   * const customProvider = new LLMProvider('claude-code', {
+   *   timeout: 60000,      // 1 minute timeout
+   *   retries: 5,          // More retry attempts
+   *   temperature: 0.1     // Very deterministic
+   * });
+   * ```
+   *
+   * @example Event Handling
+   * ```typescript
+   * const provider = new LLMProvider();
+   * 
+   * provider.on('provider:ready', () => {
+   *   console.log('Provider is ready for requests');
+   * });
+   * 
+   * provider.on('provider:error', (error) => {
+   *   console.error('Provider error:', error.error);
+   * });
+   * ```
+   */
   constructor(
     providerId: string = 'claude-code',
     config: Partial<CLIProviderConfig> = {}
@@ -152,7 +307,64 @@ export class LLMProvider extends TypedEventBase {
     }
   }
 
-  // Set the agent role for specialized behavior with Result pattern
+  /**
+   * Set the agent role for specialized behavior and expertise
+   *
+   * Changes the provider's behavior to match a specific agent role, enabling
+   * specialized responses and capabilities. Essential for swarm coordination
+   * where different agents handle different aspects of complex tasks.
+   *
+   * **Available Roles:**
+   * - `'assistant'`: General-purpose conversational assistance
+   * - `'coder'`: Code generation, debugging, file operations  
+   * - `'analyst'`: Data analysis, pattern recognition, insights
+   * - `'researcher'`: Information gathering, fact-checking, citations
+   * - `'coordinator'`: Task delegation, workflow management, team coordination
+   * - `'tester'`: Test case generation, quality assurance, validation
+   * - `'architect'`: System design, technical architecture, scalability
+   *
+   * @param roleName - The agent role to adopt from SWARM_AGENT_ROLES
+   * 
+   * @returns Result<void, CLIError> - Success or detailed error information
+   *   - **Success**: Role successfully set, provider behavior updated
+   *   - **Error**: Invalid role name or provider not initialized
+   *
+   * @throws Never throws - all errors returned via Result pattern
+   *
+   * @example Role-Specific Behavior
+   * ```typescript
+   * const provider = new LLMProvider();
+   * 
+   * // Set as code specialist
+   * const result = provider.setRole('coder');
+   * if (result.isOk()) {
+   *   // Provider now optimized for code generation
+   *   const code = await provider.complete('Create a React component');
+   * }
+   * 
+   * // Switch to architecture role  
+   * provider.setRole('architect');
+   * const design = await provider.complete('Design a microservices architecture');
+   * ```
+   *
+   * @example Swarm Coordination
+   * ```typescript
+   * const agents = [
+   *   { provider: new LLMProvider(), role: 'architect' as const },
+   *   { provider: new LLMProvider(), role: 'coder' as const },
+   *   { provider: new LLMProvider(), role: 'tester' as const }
+   * ];
+   * 
+   * // Each agent specializes in their domain
+   * for (const agent of agents) {
+   *   agent.provider.setRole(agent.role);
+   * }
+   * ```
+   *
+   * @see {@link SWARM_AGENT_ROLES} for complete role definitions
+   * @see {@link getRole} to retrieve current role
+   * @see {@link executeSwarmTask} for multi-agent coordination
+   */
   setRole(roleName: keyof typeof SWARM_AGENT_ROLES): Result<void, CLIError> {
     if (!this.cliProvider) {
       return err({
@@ -396,7 +608,37 @@ export class LLMProvider extends TypedEventBase {
     return CLI_ERROR_CODES.UNKNOWN_ERROR;
   }
 
-  // Role-specific helper methods with Result pattern and proper error handling
+  // =============================================================================
+  // ROLE-SPECIFIC EXECUTION METHODS - Specialized agent behaviors
+  // =============================================================================
+
+  /**
+   * Execute a task using the Assistant agent role
+   *
+   * General-purpose conversational assistance for open-ended tasks, 
+   * Q&A, explanations, and general problem-solving. Best for tasks
+   * that don't require specialized domain expertise.
+   *
+   * @param prompt - The task or question to process
+   * @param options - Optional CLI request configuration
+   * @param options.model - Specific model to use ('sonnet' | 'opus')
+   * @param options.temperature - Randomness level (0-2, default varies by provider)  
+   * @param options.maxTokens - Maximum response length
+   *
+   * @returns Promise<Result<string, CLIError>> - Assistant response or error details
+   *
+   * @example General Assistance
+   * ```typescript
+   * const provider = new LLMProvider();
+   * const result = await provider.executeAsAssistant(
+   *   "Explain the concept of microservices architecture"
+   * );
+   * 
+   * if (result.isOk()) {
+   *   console.log('Explanation:', result.value);
+   * }
+   * ```
+   */
   executeAsAssistant(
     prompt: string,
     options?: Partial<CLIRequest>
@@ -408,6 +650,51 @@ export class LLMProvider extends TypedEventBase {
     return this.complete(prompt, options);
   }
 
+  /**
+   * Execute a task using the Coder agent role  
+   *
+   * **Specialized for code generation, debugging, and file operations.** 
+   * Optimized for software development tasks including writing functions,
+   * debugging issues, code reviews, and technical implementations.
+   *
+   * @param task - The coding task to accomplish
+   * @param context - Optional context about the codebase, requirements, or constraints
+   * @param options - Optional CLI request configuration
+   * @param options.model - Specific model to use ('sonnet' recommended for code)
+   * @param options.temperature - Lower values (0.1-0.3) recommended for deterministic code
+   *
+   * @returns Promise<Result<string, CLIError>> - Generated code or error details
+   *
+   * @example Basic Code Generation
+   * ```typescript
+   * const provider = new LLMProvider();
+   * const result = await provider.executeAsCoder(
+   *   "Create a React component for user authentication",
+   *   "TypeScript, use hooks, include error handling"
+   * );
+   * 
+   * if (result.isOk()) {
+   *   console.log('Generated code:', result.value);
+   * }
+   * ```
+   *
+   * @example Complex Implementation
+   * ```typescript
+   * const context = `
+   * Existing codebase uses:
+   * - Next.js 14 with app router
+   * - Tailwind CSS for styling  
+   * - Zod for validation
+   * - Custom auth context at /lib/auth
+   * `;
+   * 
+   * const result = await provider.executeAsCoder(
+   *   "Create a protected route HOC with role-based access",
+   *   context,
+   *   { temperature: 0.1 } // Very deterministic for code
+   * );
+   * ```
+   */
   executeAsCoder(
     task: string,
     context?: string,
@@ -597,21 +884,120 @@ export function getCursorLLM(): LLMProvider {
   return getGlobalLLM('cursor-cli');
 }
 
-// Swarm coordination helpers using the same shared LLM provider
+// =============================================================================
+// SWARM COORDINATION - Multi-agent collaborative task execution
+// =============================================================================
+
+/**
+ * **Configuration for multi-agent collaborative task execution**
+ * 
+ * Defines a complex task that requires multiple specialized agents working
+ * together. Each agent brings domain expertise and the coordination strategy
+ * determines how they interact.
+ */
 export interface SwarmTask {
+  /** The main task description that all agents will work on */
   description: string;
+  
+  /** Array of specialized agents with their roles and model preferences */
   agents: Array<{
+    /** Agent role determining behavior and expertise area */
     role: keyof typeof SWARM_AGENT_ROLES;
+    /** Preferred model for this agent ('sonnet' for speed, 'opus' for quality) */
     model?: 'sonnet' | 'opus';
   }>;
+  
+  /** Coordination strategy - 'sequential' builds on previous work, 'parallel' works independently */
   coordination?: 'parallel' | 'sequential';
 }
 
+/**
+ * **Result from a single agent in a swarm task**
+ * 
+ * Contains the agent's contribution to the overall task, including
+ * their specialized perspective and any errors encountered.
+ */
 export interface SwarmTaskResult {
+  /** The agent role that produced this result */
   role: string;
+  /** The agent's contribution or error message */
   output: string;
 }
 
+/**
+ * Execute a complex task using multiple specialized AI agents
+ *
+ * **Multi-agent swarm coordination for complex problem-solving.** Leverages
+ * specialized agent roles working together on a single task. Each agent contributes
+ * their domain expertise, and the coordination strategy determines how they interact.
+ *
+ * **Agent Specializations:**
+ * - `architect`: System design, technical architecture, scalability planning
+ * - `coder`: Implementation, debugging, code generation  
+ * - `analyst`: Data analysis, pattern recognition, insights
+ * - `researcher`: Information gathering, fact-checking, citations
+ * - `coordinator`: Task delegation, workflow management, team coordination
+ * - `tester`: Test case generation, quality assurance, validation
+ * - `assistant`: General support, documentation, explanations
+ *
+ * **Coordination Strategies:**
+ * - `sequential`: Agents build on each other's work (default)
+ * - `parallel`: Agents work independently for diverse perspectives
+ *
+ * @param task - Swarm task configuration with agents and coordination strategy
+ * @param task.description - The main task all agents will work on
+ * @param task.agents - Array of agents with roles and model preferences  
+ * @param task.coordination - How agents coordinate ('sequential' | 'parallel')
+ *
+ * @returns Promise<SwarmTaskResult[]> - Results from each agent in execution order
+ *
+ * @example Software Architecture Design
+ * ```typescript
+ * import { executeSwarmTask } from '@claude-zen/llm-providers';
+ * 
+ * const results = await executeSwarmTask({
+ *   description: 'Design a scalable e-commerce platform architecture',
+ *   agents: [
+ *     { role: 'architect', model: 'opus' },    // High-level design
+ *     { role: 'coder', model: 'sonnet' },      // Implementation details  
+ *     { role: 'tester', model: 'sonnet' }      // Testing strategy
+ *   ],
+ *   coordination: 'sequential'  // Each builds on the previous
+ * });
+ * 
+ * console.log('Architecture:', results[0].output);
+ * console.log('Implementation Plan:', results[1].output);
+ * console.log('Testing Strategy:', results[2].output);
+ * ```
+ *
+ * @example Research and Analysis  
+ * ```typescript
+ * const results = await executeSwarmTask({
+ *   description: 'Analyze market trends for AI development tools',
+ *   agents: [
+ *     { role: 'researcher', model: 'opus' },   // Gather information
+ *     { role: 'analyst', model: 'opus' },      // Analyze data
+ *     { role: 'coordinator', model: 'sonnet' } // Synthesize insights
+ *   ],
+ *   coordination: 'sequential'
+ * });
+ * ```
+ *
+ * @example Parallel Perspectives
+ * ```typescript  
+ * const results = await executeSwarmTask({
+ *   description: 'Evaluate database options for high-traffic application',
+ *   agents: [
+ *     { role: 'architect', model: 'opus' },    // Architecture perspective
+ *     { role: 'coder', model: 'sonnet' },      // Implementation perspective
+ *     { role: 'analyst', model: 'opus' }       // Performance perspective
+ *   ],
+ *   coordination: 'parallel'  // Independent evaluations
+ * });
+ * ```
+ *
+ * @since 1.0.0
+ */
 export async function executeSwarmTask(
   task: SwarmTask
 ): Promise<SwarmTaskResult[]> {

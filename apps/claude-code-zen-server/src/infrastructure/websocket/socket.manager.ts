@@ -67,12 +67,12 @@ export class WebSocketManager {
       });
 
       // Handle client subscription events
-      socket.on('subscribe', (channel: string) => {
+      socket.on('subscribe', async (channel: string) => {
         socket.join(channel);
         this.logger.debug(`Client ${socket.id} subscribed to ${channel}`);
 
         // Send initial data for the subscribed channel
-        this.sendChannelData(socket, channel);
+        await this.sendChannelData(socket, channel);
       });
 
       socket.on('unsubscribe', (channel: string) => {
@@ -105,7 +105,7 @@ export class WebSocketManager {
    * Send initial data for a specific channel.
    */
   private async sendChannelData(
-    socket: Record<string, unknown>,
+    socket: Socket,
     channel: string
   ): Promise<void> {
     try {

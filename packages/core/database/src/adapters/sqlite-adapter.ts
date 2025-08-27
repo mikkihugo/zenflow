@@ -945,11 +945,9 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           const stmt = this.db.prepare(sql);
           // Use instance method for transaction connections
-          const paramArray = (this as any).normalizeParams
-            ? (this as any).normalizeParams(params)
-            : Array.isArray(params)
-              ? [...params]
-              : Object.values(params || {});
+          const paramArray = Array.isArray(params)
+            ? [...params]
+            : Object.values(params || {});
 
           let rows: unknown[];
           if (

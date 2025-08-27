@@ -5,7 +5,7 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import { EventEmitter } from '@claude-zen/foundation';
+import { EventEmitter, type EventMap } from '@claude-zen/foundation';
 import type {
   EventManager,
   EventManagerConfig,
@@ -26,7 +26,7 @@ import { NeuralFactoryHelpers } from './helpers';
  * with comprehensive lifecycle management and neural model optimization.
  */
 export class NeuralEventFactory
-  extends EventEmitter
+  extends EventEmitter<EventMap>
   implements EventManagerFactory<EventManagerConfig>
 {
   private readonly logger: Logger;

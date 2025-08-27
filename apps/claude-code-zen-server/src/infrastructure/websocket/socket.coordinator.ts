@@ -112,7 +112,7 @@ export class WebSocketCoordinator {
     if (!this.config.realTime) return;
 
     this.io.emit(event, {
-      ...data,
+      ...(data && typeof data === 'object' ? data as Record<string, unknown> : {}),
       timestamp: new Date().toISOString(),
     });
 
@@ -130,7 +130,7 @@ export class WebSocketCoordinator {
     }
 
     socket.emit(event, {
-      ...data,
+      ...(data && typeof data === 'object' ? data as Record<string, unknown> : {}),
       timestamp: new Date().toISOString(),
     });
 

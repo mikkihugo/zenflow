@@ -107,19 +107,19 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 				"architect",
 			];
 
-			validRoles.forEach((role) => {
+			for (const role of validRoles) {
 				expect(() => llmProvider.setRole(role)).not.toThrow();
 				expect(llmProvider.getRole()?.role).toBe(role);
-			});
+			}
 		});
 
 		it("should provide role descriptions", () => {
-			Object.keys(SWARM_AGENT_ROLES).forEach((role) => {
+			for (const role of Object.keys(SWARM_AGENT_ROLES)) {
 				llmProvider.setRole(role as SwarmAgentRole);
 				const roleInfo = llmProvider.getRole();
 				expect(roleInfo?.description).toBeDefined();
 				expect(roleInfo?.description).toMatch(/\w+/); // Should have some content
-			});
+			}
 		});
 	});
 
@@ -232,11 +232,11 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			// Test invalid maxTokens
 			expect(() => {
 				llmProvider.updateConfig({ maxTokens: -100 });
-			}).toThrow(/maxTokens/i);
+			}).toThrow(/maxtokens/i);
 
 			expect(() => {
 				llmProvider.updateConfig({ maxTokens: 0 });
-			}).toThrow(/maxTokens/i);
+			}).toThrow(/maxtokens/i);
 		});
 	});
 
@@ -492,10 +492,10 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 
 				const results = await Promise.all(promises);
 				expect(results).toHaveLength(3);
-				results.forEach((result) => {
+				for (const result of results) {
 					expect(result).toBeTruthy();
 					expect(typeof result).toBe("string");
-				});
+				}
 			},
 			120000,
 		);

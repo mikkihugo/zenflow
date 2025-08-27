@@ -8,14 +8,27 @@
  */
 
 // Direct package imports - no facades
-import { TaskMaster } from '@claude-zen/taskmaster';
+import { TaskMaster } from '@claude-zen/coordination/orchestration';
 import { generateUUID, getLogger } from '@claude-zen/foundation';
 import { type Request, type Response, Router } from 'express';
 import type { WebSocketCoordinator } from '../../infrastructure/websocket/socket.coordinator';
-import { asyncHandler } from '../middleware/errors';
-import { LogLevel, log } from '../middleware/logging';
+import { LogLevel, log } from '../../infrastructure/middleware/logging';
 
 const logger = getLogger('TaskMasterRoutes');
+
+// Simple async error handler utility
+const asyncHandler = (fn: (req: Request, res: Response) => Promise<void>) => 
+  (req: Request, res: Response) => 
+    Promise.resolve(fn(req, res)).catch((error) => {
+      logger.error('AsyncHandler error:', error);
+      if (!res.headersSent) {
+        res.status(500).json({ 
+          success: false, 
+          error: 'Internal server error',
+          message: error instanceof Error ? error.message : 'Unknown error'
+        });
+      }
+    });
 
 // Valid task states type
 type TaskState =
@@ -120,6 +133,11 @@ class TaskMasterManager {
           enableRealTimeMetrics: true,
           webSocketCoordinator: this.webSocketCoordinator,
         }) as TaskMasterSystem;
+
+        // Initialize the TaskMaster system asynchronously
+        if (this.taskMasterSystem.initialize) {
+          await this.taskMasterSystem.initialize();
+        }
 
         logger.info('TaskMaster system initialized successfully');
       } catch (error) {
@@ -1199,6 +1217,11 @@ export interface TaskMasterService {
 
 export async function getTaskMasterService(): Promise<TaskMasterService> {
   const taskMaster = new TaskMaster() as TaskMasterSystemInterface | null;
+  
+  // Initialize the TaskMaster service
+  if (taskMaster && taskMaster.initialize) {
+    await taskMaster.initialize();
+  }
   return {
     initialize: async () => {
       if (taskMaster && taskMaster.initialize) {

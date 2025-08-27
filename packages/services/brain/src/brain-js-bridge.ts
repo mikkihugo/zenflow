@@ -43,7 +43,7 @@ import {
   ValidationError,
   withContext
 } from '@claude-zen/foundation';
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 
 import type { ActivationFunction, ModelMetrics } from './types/index';
 
@@ -245,7 +245,8 @@ export class BrainJsBridge {
       );
 
       // Initialize database access for network persistence
-      this.dbAccess = getDatabaseAccess();
+      this.dbAccess = new DatabaseProvider();
+      await this.dbAccess.connect();
 
       // Initialize database schema
       await this.initializeDatabaseSchema();

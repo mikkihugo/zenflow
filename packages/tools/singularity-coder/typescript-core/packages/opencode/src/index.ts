@@ -56,8 +56,8 @@ const cli = yargs(hideBin(process.argv))
           Log.setLevel(defaultLevel)
         }
       })
-    } catch (e) {
-      Log.Default.error("failed to load config", { error: e })
+    } catch (error) {
+      Log.Default.error("failed to load config", { error })
     }
 
     Log.Default.info("opencode", {
@@ -85,36 +85,36 @@ const cli = yargs(hideBin(process.argv))
 
 try {
   await cli.parse()
-} catch (e) {
+} catch (error) {
   const data: Record<string, any> = {}
-  if (e instanceof NamedError) {
-    const obj = e.toObject()
+  if (error instanceof NamedError) {
+    const obj = error.toObject()
     Object.assign(data, {
       ...obj.data,
     })
   }
 
-  if (e instanceof Error) {
+  if (error instanceof Error) {
     Object.assign(data, {
-      name: e.name,
-      message: e.message,
-      cause: e.cause?.toString(),
+      name: error.name,
+      message: error.message,
+      cause: error.cause?.toString(),
     })
   }
 
-  if (e instanceof ResolveMessage) {
+  if (error instanceof ResolveMessage) {
     Object.assign(data, {
-      name: e.name,
-      message: e.message,
-      code: e.code,
-      specifier: e.specifier,
-      referrer: e.referrer,
-      position: e.position,
-      importKind: e.importKind,
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      specifier: error.specifier,
+      referrer: error.referrer,
+      position: error.position,
+      importKind: error.importKind,
     })
   }
   Log.Default.error("fatal", data)
-  const formatted = FormatError(e)
+  const formatted = FormatError(error)
   if (formatted) UI.error(formatted)
   if (formatted === undefined) UI.error(`Unexpected error, check log file at ${Log.file()} for more details`)
   process.exitCode = 1

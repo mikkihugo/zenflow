@@ -147,7 +147,7 @@ describe('GitHub Copilot Real API Integration', () => {
       for (const model of testModels) {
         const testAPI = new GitHubCopilotAPI({
           token: copilotToken,
-          model: model
+          model
         });
 
         const result = await testAPI.execute({

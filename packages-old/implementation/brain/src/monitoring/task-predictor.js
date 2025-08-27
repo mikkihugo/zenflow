@@ -123,7 +123,7 @@ export class SimpleTaskPredictor {
         {
           name: 'Historical Average',
           impact: 1.0,
-          confidence: confidence,
+          confidence,
           description: `Based on ${recentHistory.length} recent completions`,
         },
         ...contextAdjustmentFactors,

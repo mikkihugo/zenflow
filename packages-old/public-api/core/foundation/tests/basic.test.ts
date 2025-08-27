@@ -18,7 +18,7 @@ describe("Foundation Package - Core Functionality", () => {
 
 		it("should have proper exports configuration", () => {
 			const pkg = require("../package.json");
-			const exports = pkg.exports;
+			const {exports} = pkg;
 
 			expect(exports["."]).toBeDefined();
 			expect(exports["./core"]).toBeDefined();

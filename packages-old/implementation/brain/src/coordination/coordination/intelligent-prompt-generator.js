@@ -266,7 +266,7 @@ const IntelligentPromptGenerator = /** @class */ (() => {
                   ),
                   qualityMetrics:
                     this.convertPrinciplesToMetrics(adaptivePrinciples),
-                  complexityScore: complexityScore,
+                  complexityScore,
                   // Add meta-learning metadata
                   metadata: {
                     principlesId: this.generatePrinciplesId(researchConfig),
@@ -303,7 +303,7 @@ const IntelligentPromptGenerator = /** @class */ (() => {
                   codingStandards: dspyOptimizedPrompt.codingStandards,
                   phaseGuidelines: dspyOptimizedPrompt.phaseGuidelines,
                   qualityMetrics: dspyOptimizedPrompt.qualityMetrics,
-                  complexityScore: complexityScore,
+                  complexityScore,
                 },
               ];
             }
@@ -340,21 +340,21 @@ const IntelligentPromptGenerator = /** @class */ (() => {
               2 /*return*/,
               {
                 content: enhancedContent,
-                codingStandards: codingStandards,
-                phaseGuidelines: phaseGuidelines,
-                qualityMetrics: qualityMetrics,
-                complexityScore: complexityScore,
+                codingStandards,
+                phaseGuidelines,
+                qualityMetrics,
+                complexityScore,
               },
             ];
           case 9:
             return [
               2 /*return*/,
               {
-                content: content,
-                codingStandards: codingStandards,
-                phaseGuidelines: phaseGuidelines,
-                qualityMetrics: qualityMetrics,
-                complexityScore: complexityScore,
+                content,
+                codingStandards,
+                phaseGuidelines,
+                qualityMetrics,
+                complexityScore,
               },
             ];
         }
@@ -655,7 +655,7 @@ const IntelligentPromptGenerator = /** @class */ (() => {
                   ' lines)\n\nGenerate a complete, ready-to-use development prompt.'
                 ),
               context: {
-                phase: phase,
+                phase,
                 projectName: context.name,
                 domain: context.domain,
                 requirements: context.requirements || [],
@@ -1196,7 +1196,7 @@ const IntelligentPromptGenerator = /** @class */ (() => {
               return [2 /*return*/];
             }
             agentFeedback = {
-              principlesId: principlesId,
+              principlesId,
               agentId: feedback.agentId,
               taskType: feedback.taskType,
               accuracy: feedback.accuracy,

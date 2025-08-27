@@ -23,7 +23,7 @@ export class VectorStorageImpl implements VectorStorage {
 
 	constructor(
 		private connection: DatabaseConnection,
-		_config: DatabaseConfig,
+		private config: DatabaseConfig,
 	) {}
 
 	async insert(

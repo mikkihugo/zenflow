@@ -304,14 +304,14 @@ const MultiSwarmABTesting = /** @class */ (() => {
               insights = this.generateInsights(results, comparison);
               endTime = new Date();
               testResult = {
-                testId: testId,
+                testId,
                 description: taskDescription,
-                strategies: strategies,
-                results: results,
-                comparison: comparison,
+                strategies,
+                results,
+                comparison,
                 metadata: {
-                  startTime: startTime,
-                  endTime: endTime,
+                  startTime,
+                  endTime,
                   totalDuration: endTime.getTime() - startTime.getTime(),
                   parallelExecution: options.parallelExecution !== false,
                   gitTreesUsed: !!((_b = options.gitConfig) === null ||
@@ -319,7 +319,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
                     ? void 0
                     : _b.useGitWorktrees),
                 },
-                insights: insights,
+                insights,
               };
               // Store test result for learning
               this.testHistory.push(testResult);
@@ -594,7 +594,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
               .concat(maxWorktrees),
             {
               strategies: strategies.length,
-              maxWorktrees: maxWorktrees,
+              maxWorktrees,
               willLimitTo: maxWorktrees,
             }
           );
@@ -606,10 +606,10 @@ const MultiSwarmABTesting = /** @class */ (() => {
             ' git worktrees...'
           ),
           {
-            baseBranch: baseBranch,
-            branchPrefix: branchPrefix,
-            cleanupAfterTest: cleanupAfterTest,
-            maxWorktrees: maxWorktrees,
+            baseBranch,
+            branchPrefix,
+            cleanupAfterTest,
+            maxWorktrees,
           }
         );
         for (
@@ -628,9 +628,9 @@ const MultiSwarmABTesting = /** @class */ (() => {
             '\uD83D\uDCC1 Creating worktree for '.concat(strategy.name),
             {
               strategyId: strategy.id,
-              branchName: branchName,
-              worktreePath: worktreePath,
-              baseBranch: baseBranch,
+              branchName,
+              worktreePath,
+              baseBranch,
               modelBackend: strategy.modelBackend,
             }
           );
@@ -646,7 +646,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
         // Log final worktree configuration summary
         logger.info('Git worktree preparation completed', {
           totalWorktrees: Object.keys(worktreePaths).length,
-          cleanupAfterTest: cleanupAfterTest,
+          cleanupAfterTest,
           worktreeIds: Object.keys(worktreePaths),
         });
         return [2 /*return*/, worktreePaths];
@@ -772,7 +772,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
               throw error_2;
             }
             failureResult = {
-              strategy: strategy,
+              strategy,
               success: false,
               duration: 0,
               qualityMetrics: {
@@ -932,12 +932,12 @@ const MultiSwarmABTesting = /** @class */ (() => {
                         2 /*return*/,
                         {
                           value: {
-                            strategy: strategy,
+                            strategy,
                             success: true,
                             duration: duration_1,
                             qualityMetrics: executionResult.qualityMetrics,
                             artifacts: executionResult.artifacts,
-                            worktreePath: worktreePath,
+                            worktreePath,
                             modelMetadata: {
                               backend: strategy.modelBackend,
                               tokenUsage: executionResult.tokenUsage,
@@ -1009,9 +1009,9 @@ const MultiSwarmABTesting = /** @class */ (() => {
               return [
                 2 /*return*/,
                 {
-                  strategy: strategy,
+                  strategy,
                   success: false,
-                  duration: duration,
+                  duration,
                   qualityMetrics: {
                     codeQuality: 0,
                     requirementsCoverage: 0,
@@ -1026,7 +1026,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
                     functionsCreated: 0,
                     testsGenerated: 0,
                   },
-                  worktreePath: worktreePath,
+                  worktreePath,
                   error:
                     (lastError === null || lastError === void 0
                       ? void 0
@@ -1304,9 +1304,9 @@ const MultiSwarmABTesting = /** @class */ (() => {
     });
     return {
       winner: winner.strategy,
-      confidence: confidence,
-      significance: significance,
-      performanceDelta: performanceDelta,
+      confidence,
+      significance,
+      performanceDelta,
     };
   };
   MultiSwarmABTesting.prototype.generateInsights = (results, comparison) => {
@@ -1383,7 +1383,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
         const topology = _a[0],
           scores = _a[1];
         return {
-          topology: topology,
+          topology,
           avgScore:
             scores.reduce((sum, score) => sum + score, 0) / scores.length,
         };
@@ -1460,8 +1460,8 @@ const MultiSwarmABTesting = /** @class */ (() => {
             // Validate strategy ID and path before cleanup
             if (!strategyId || !path) {
               logger.warn('Invalid strategyId or path for cleanup', {
-                strategyId: strategyId,
-                path: path,
+                strategyId,
+                path,
               });
               continue;
             }
@@ -1497,7 +1497,7 @@ const MultiSwarmABTesting = /** @class */ (() => {
   MultiSwarmABTesting.prototype.recordCleanupMetrics = (strategyId, path) => {
     // Record cleanup metrics for monitoring and analytics
     logger.debug('Recording cleanup metrics', {
-      strategyId: strategyId,
+      strategyId,
       pathLength: path.length,
       timestamp: Date.now(),
       cleanupType: 'git_worktree',
@@ -1548,7 +1548,7 @@ function quickABTest(_taskDescription_1) {
         return [
           2 /*return*/,
           abTesting.executeABTest(taskDescription, strategies, {
-            gitConfig: gitConfig,
+            gitConfig,
             timeoutMs: options.timeoutMs || 300000, // 5 minute default timeout
             parallelExecution: true,
             collectDetailedMetrics: true,

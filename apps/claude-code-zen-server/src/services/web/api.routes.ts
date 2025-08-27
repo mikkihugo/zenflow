@@ -47,16 +47,17 @@
  * **REDUCTION ACHIEVED: 1,854 → 420 lines (77.3% reduction) through strategic delegation**
  */
 
-// ✅ TIER 1 ONLY - 5-Tier Architecture Compliance
+// ✅ Direct package imports
 import {
   assertDefined,
   getErrorMessage,
   getLogger,
 } from '@claude-zen/foundation';
-// Direct package imports - no facades
-import { DatabaseProvider } from '@claude-zen/database';
+
+// Direct imports from packages
 import { BrainCoordinator } from '@claude-zen/brain';
-import { SystemMonitor } from '@claude-zen/system-monitoring';
+import { DatabaseProvider } from '@claude-zen/database';
+import { PerformanceTracker, SystemMonitor } from '@claude-zen/system-monitoring';
 
 // Constants to avoid string duplication
 const ERROR_MESSAGES = {
@@ -65,6 +66,14 @@ const ERROR_MESSAGES = {
 
 // External dependencies
 import type { Express, Request, Response } from 'express';
+
+// TaskMaster interface type (without importing restricted package)
+interface TaskMasterGUIInterface {
+  initialize?(): Promise<void>;
+  shutdown?(): Promise<void>;
+  getConfiguration?(): Record<string, unknown>;
+  [key: string]: unknown;
+}
 
 // Add missing interface definitions
 interface WebConfig {
@@ -115,6 +124,9 @@ export class WebApiRoutes {
   private webMiddleware: unknown | null = null;
   private collaborationEngine: unknown | null = null;
   private documentationManager: unknown | null = null;
+  private sessionManager: WebSessionManager;
+  private dataService: WebDataService;
+  private advancedGUI: TaskMasterGUIInterface | null = null;
   private initialized = false;
 
   constructor(
@@ -137,25 +149,27 @@ export class WebApiRoutes {
       // Note: AGUI functionality delegated to TaskMaster service
       // Advanced GUI capabilities provided through TaskMaster API endpoints
 
-      // Delegate to @claude-zen/intelligence for task orchestration
-      // Delegate to @claude-zen/intelligence for task orchestration
-      const brainSystem = await getBrainSystem();
+      // Direct brain system instantiation
+      const brainSystem = new BrainCoordinator();
+      await brainSystem.initialize();
       this.workflowEngine = brainSystem.getWorkflowEngine({
         enableWebIntegration: true,
         enableRESTAPI: true,
       });
       await this.workflowEngine?.initialize();
 
-      // Delegate to @claude-zen/operations for health and metrics
-      const performanceTracker = await getPerformanceTracker();
-      this.healthMonitor = performanceTracker.getSystemMonitor({
+      // Direct performance tracker instantiation
+      const performanceTracker = new PerformanceTracker();
+      await performanceTracker.initialize();
+      this.healthMonitor = new SystemMonitor({
         enableWebEndpoints: true,
         enableMetricsCollection: true,
       });
       await this.healthMonitor?.initialize();
 
-      // Delegate to @claude-zen/infrastructure for database access
-      const databaseSystem = await getDatabaseSystem();
+      // Direct database system instantiation
+      const databaseSystem = new DatabaseProvider();
+      await databaseSystem.initialize();
       this.collaborationEngine = databaseSystem.getCollaborationEngine({
         enableWebAPI: true,
         enableRealTimeUpdates: true,

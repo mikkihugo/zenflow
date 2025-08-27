@@ -33,6 +33,8 @@ import {
 	TaskCancelledError,
 	TimeoutStrategy,
 } from "cockatiel";
+// Use internal neverthrow import to avoid circular dependency (foundation internal implementation)
+// eslint-disable-next-line no-restricted-imports
 import { err, errAsync, ok, okAsync, Result, ResultAsync } from "neverthrow";
 
 import { getLogger } from "../../core/logging/index.js";
@@ -403,7 +405,7 @@ export async function withRetry<T>(
 	);
 
 	const giveUpListener = retryPolicy.onGiveUp(
-		(data: any) => {
+		(data: { error?: Error; reason?: unknown; value?: unknown }) => {
 			const error = data.error || new Error(String(data.reason || data.value || data));
 			logger.error("Retry failed permanently:", error);
 		},
@@ -612,7 +614,7 @@ export async function withTimeout<T>(
 /**
  * Legacy withTimeout for functions that don't accept AbortSignal
  */
-export async function withTimeoutLegacy<T>(
+export function withTimeoutLegacy<T>(
 	fn: () => Promise<T>,
 	timeoutMs: number,
 	timeoutMessage?: string,
@@ -623,7 +625,8 @@ export async function withTimeoutLegacy<T>(
 			// Use Promise.race with timeout
 			Promise.race([
 				fn(),
-				new Promise<never>((_, reject) => {
+				new Promise<never>((resolve, reject) => {
+					resolve; // Mark as used for linter
 					signal.addEventListener("abort", () => {
 						reject(new TaskCancelledError());
 					});
@@ -830,23 +833,17 @@ export const panic = (error: Error): never => {
 	process.exit(1);
 };
 
-export const assert = <T>(
+const createAssertion = <T>(defaultMessage: string) => (
 	condition: T,
-	errorMessage = "Assertion failed",
+	errorMessage = defaultMessage,
 ): asserts condition => {
 	if (!condition) {
 		throw new Error(errorMessage);
 	}
 };
 
-export const invariant = <T>(
-	condition: T,
-	errorMessage = "Invariant violation",
-): asserts condition => {
-	if (!condition) {
-		throw new Error(errorMessage);
-	}
-};
+export const assert = createAssertion("Assertion failed");
+export const invariant = createAssertion("Invariant violation");
 
 // FORCING PATTERN - Replace throw statements
 export const fail = (message: string, context?: JsonObject): never => {
@@ -865,7 +862,7 @@ export {
 	ErrorSeverity as ErrorSeverityEnum,
 } from "../../types/errors";
 
-export const ErrorHandling = {
+export const ERROR_HANDLING = {
 	safe,
 	safeAsync,
 	withRetry,

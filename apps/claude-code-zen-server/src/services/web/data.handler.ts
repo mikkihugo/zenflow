@@ -10,9 +10,9 @@ import { DatabaseProvider } from '@claude-zen/database';
 import { EventBus } from '@claude-zen/event-system';
 import { BrainCoordinator } from '@claude-zen/brain';
 import { MemoryManager } from '@claude-zen/memory';
-import { SafeFramework } from '@claude-zen/safe-framework';
-import { TaskMaster } from '@claude-zen/taskmaster';
-import { WorkflowEngine } from '@claude-zen/workflows';
+import { SafeFramework } from '@claude-zen/coordination/safe';
+import { TaskMaster } from '@claude-zen/coordination/orchestration';
+import { WorkflowEngine } from '@claude-zen/coordination';
 import { SystemMonitor } from '@claude-zen/system-monitoring';
 import { TelemetryCollector } from '@claude-zen/telemetry';
 import { CodeAnalyzer } from '@claude-zen/code-analyzer';
@@ -87,6 +87,21 @@ export interface TaskMetricsData {
   peakLoad: number;
   bottlenecks: string[];
   recommendations: string[];
+}
+
+// Agent interface for swarm data creation
+interface AgentData {
+  id?: string;
+  name?: string;
+  type?: 'queen' | 'commander' | 'agent';
+  status?: 'active' | 'idle' | 'busy' | 'error';
+  performance?: {
+    efficiency?: number;
+    responseTime?: number;
+    successRate?: number;
+  };
+  lastActive?: string;
+  [key: string]: unknown; // Allow additional properties
 }
 
 /**
@@ -445,7 +460,7 @@ export class WebDataService {
     return swarms;
   }
 
-  private createSwarmDataFromAgent(agent: any, index: number): SwarmStatusData {
+  private createSwarmDataFromAgent(agent: AgentData, index: number): SwarmStatusData {
     return {
       id: agent.id || `swarm-${index}`,
       name: agent.name || `Swarm ${index + 1}`,

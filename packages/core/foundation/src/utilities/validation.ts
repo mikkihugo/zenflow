@@ -29,7 +29,8 @@
  * ```
  */
 
-import { ZodError, type ZodSchema, type ZodType, z } from "zod";
+// Foundation re-exports zod - use internal import to avoid circular dependency
+import { ZodError, type ZodSchema, type ZodType, z as zodInstance } from "zod";
 import { err, ok, type Result } from "../error-handling/index.js";
 import type {
 	Email,
@@ -43,7 +44,7 @@ import type {
 // ZOD SCHEMA UTILITIES - Re-export for convenience
 // =============================================================================
 
-export { z, ZodError };
+export { zodInstance as z, ZodError };
 export type { ZodSchema, ZodType };
 
 // =============================================================================
@@ -252,8 +253,12 @@ export function isNonEmptyArray<T>(arr: T[]): arr is [T, ...T[]] {
 export function isURL(value: unknown): value is string {
 	if (typeof value !== "string") return false;
 	try {
-		new URL(value);
-		return true;
+		if (typeof globalThis.URL !== 'undefined') {
+			new globalThis.URL(value);
+			return true;
+		}
+		// Basic URL pattern fallback when URL constructor not available
+		return /^https?:\/\/.+/.test(value);
 	} catch {
 		return false;
 	}
@@ -292,43 +297,18 @@ export function isValidJSON(value: string): boolean {
  * const result = validateInput(UUIDSchema, userInput);
  * ```
  */
-export const UUIDSchema = z.string().uuid();
+export const uuidSchema = zodInstance.string().uuid();
+export const emailSchema = zodInstance.string().email();
+export const urlSchema = zodInstance.string().url();
+export const nonEmptyStringSchema = zodInstance.string().min(1);
+export const positiveNumberSchema = zodInstance.number().positive();
 
-/**
- * Pre-built Zod schema for email validation.
- * @example
- * ```typescript
- * const result = validateInput(EmailSchema, userInput);
- * ```
- */
-export const EmailSchema = z.string().email();
-
-/**
- * Pre-built Zod schema for URL validation.
- * @example
- * ```typescript
- * const result = validateInput(URLSchema, userInput);
- * ```
- */
-export const URLSchema = z.string().url();
-
-/**
- * Pre-built Zod schema for non-empty string validation.
- * @example
- * ```typescript
- * const result = validateInput(NonEmptyStringSchema, userInput);
- * ```
- */
-export const NonEmptyStringSchema = z.string().min(1);
-
-/**
- * Pre-built Zod schema for positive number validation.
- * @example
- * ```typescript
- * const result = validateInput(PositiveNumberSchema, userInput);
- * ```
- */
-export const PositiveNumberSchema = z.number().positive();
+// Legacy exports for compatibility
+export const UUIDSchema = uuidSchema;
+export const EmailSchema = emailSchema;
+export const URLSchema = urlSchema;
+export const NonEmptyStringSchema = nonEmptyStringSchema;
+export const PositiveNumberSchema = positiveNumberSchema;
 
 // =============================================================================
 // VALIDATION RESULT HELPERS

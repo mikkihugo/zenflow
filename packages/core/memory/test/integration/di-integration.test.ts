@@ -61,7 +61,7 @@ describe('Memory System DI Integration', () => {
     });
 
     container.has.mockReturnValue(true);
-    container.register.mockReturnValue(undefined);
+    container.register.mockReturnValue();
   });
 
   afterEach(() => {
@@ -193,10 +193,10 @@ describe('Memory System DI Integration', () => {
       // Mock provider factory
       const mockProviderFactory = {
         createProvider: vi.fn().mockReturnValue({
-          store: vi.fn().mockResolvedValue(undefined),
+          store: vi.fn().mockResolvedValue(),
           retrieve: vi.fn().mockResolvedValue(null),
           delete: vi.fn().mockResolvedValue(true),
-          clear: vi.fn().mockResolvedValue(undefined),
+          clear: vi.fn().mockResolvedValue(),
           health: vi.fn().mockResolvedValue(true),
         }),
       };
@@ -227,10 +227,10 @@ describe('Memory System DI Integration', () => {
       );
 
       const mockBackend = {
-        store: vi.fn().mockResolvedValue(undefined),
+        store: vi.fn().mockResolvedValue(),
         retrieve: vi.fn().mockResolvedValue('test-value'),
         delete: vi.fn().mockResolvedValue(true),
-        clear: vi.fn().mockResolvedValue(undefined),
+        clear: vi.fn().mockResolvedValue(),
         health: vi.fn().mockResolvedValue(true),
       };
 
@@ -303,11 +303,11 @@ describe('Memory System DI Integration', () => {
         return { name: 'A', dependency: serviceB };
       });
 
-      container.register('ServiceB', (c: any) => {
+      container.register('ServiceB', (c: any) => 
         // This would normally create a circular dependency
         // DI container should handle this appropriately
-        return { name: 'B' };
-      });
+         ({ name: 'B' })
+      );
 
       expect(() => {
         const serviceA = container.resolve('ServiceA');
@@ -354,7 +354,7 @@ describe('Memory System DI Integration', () => {
     });
 
     it('should handle missing configuration gracefully', async () => {
-      mockConfig.get.mockReturnValue(undefined);
+      mockConfig.get.mockReturnValue();
 
       const result = mockConfig.get('nonexistent.config.key');
       expect(result).toBeUndefined();

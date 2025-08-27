@@ -8,10 +8,8 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import {
-  inject,
-  TOKENS,
-} from '@claude-zen/foundation';
+
+
 import type {
   EventManagerConfig,
   EventManagerType,
@@ -934,7 +932,7 @@ export class EventManager implements CoreEventManager {
             static async create(config: any) {
               return createCommunicationEventAdapter(config);
             }
-            static get() { return undefined; }
+            static get() { return; }
           } as any;
           break;
         }

@@ -37,7 +37,7 @@
 
 ### Technical Foundation:
 
-- **5-Tier Package Architecture** - 50+ packages with strategic facades and strict access control
+- **Direct Package Architecture** - 50+ packages with direct imports and clear dependencies
 - **Multi-Database Backends** - SQLite, LanceDB, Kuzu for enterprise persistence
 - **Event-Driven Coordination** - Comprehensive TypedEventBase communication system
 - **RESTful API** - OpenAPI 3.0 web interface for monitoring and control
@@ -53,7 +53,7 @@ pnpm build          # Builds everything: all packages + binaries
 
 **Build Process:**
 
-1. **📦 Builds ALL packages** (foundation, facades, implementation, enterprise, private-core)
+1. **📦 Builds ALL packages** (foundation, core, services, tools, integrations)
 2. **🏗️ Builds apps** (server + web dashboard)
 3. **🧠 Includes WASM** (neural modules)
 4. **📱 Creates entry point** (claude-zen.js with auth + server)
@@ -83,60 +83,50 @@ claude-zen
 
 ## 🚀 System Architecture
 
-### **5-Tier Strategic Package Architecture - ENTERPRISE READY**
+### **Direct Package Architecture - ENTERPRISE READY**
 
-claude-code-zen uses a **comprehensive 5-tier architecture** with **50+ packages** providing enterprise coordination, systematic development, and tool integration:
+claude-code-zen uses **direct package imports** with **50+ packages** providing enterprise coordination, systematic development, and tool integration:
 
-#### **🏗️ 5-Tier Enterprise Architecture:**
+#### **🏗️ Package Organization:**
 
 ```
-📦 Tier 1: Public API (Strategic Facades + Foundation)
+📦 Core Packages (packages/core/):
 ├── @claude-zen/foundation       ✅ Core utilities, centralized common utilities
+├── @claude-zen/database         ✅ Database adapters (SQLite, LanceDB, Kuzu)
+├── @claude-zen/event-system     ✅ Type-safe event communication
+├── @claude-zen/memory           ✅ Memory management and persistence
+├── @claude-zen/neural-ml        ✅ Neural networks and ML models
+├── @claude-zen/dspy             ✅ DSPy neural optimization
+├── @claude-zen/fact-system      ✅ Knowledge facts and reasoning
+└── @claude-zen/architecture     ✅ System architecture validation
+
+🔧 Services Packages (packages/services/):
+├── @claude-zen/brain            ✅ AI coordination and optimization
+├── @claude-zen/teamwork         ✅ Multi-agent coordination
+├── @claude-zen/knowledge        ✅ Knowledge management
+├── @claude-zen/safe-framework   ✅ SAFe 6.0 enterprise planning
+├── @claude-zen/sparc            ✅ SPARC development methodology  
+├── @claude-zen/workflows        ✅ XState process orchestration
+├── @claude-zen/taskmaster       ✅ SOC2-compliant task management
+├── @claude-zen/load-balancing   ✅ Intelligent load distribution
+├── @claude-zen/system-monitoring ✅ Performance and health tracking
+└── @claude-zen/telemetry        ✅ Metrics collection and analysis
+
+🛠️ Tools Packages (packages/tools/):
+├── @claude-zen/code-analyzer    ✅ Static code analysis
+├── @claude-zen/git-operations   ✅ Git workflow automation
+├── @claude-zen/repo-analyzer    ✅ Repository analysis
+├── @claude-zen/beam-analyzer    ✅ Beam language support
+├── @claude-zen/codeql           ✅ Security analysis
+└── @claude-zen/ai-linter        ✅ AI-powered code quality
+
+🔌 Integration Packages (packages/integrations/):
 ├── @claude-zen/llm-providers    ✅ LLM provider integrations
-├── @claude-zen/repo-analyzer    ✅ Repository analysis tools
-└── Strategic Facades (delegation to implementation):
-    ├── @claude-zen/intelligence     ✅ Facades → brain, teamwork, knowledge
-    ├── @claude-zen/enterprise       ✅ Facades → safe-framework, sparc, workflows
-    ├── @claude-zen/operations       ✅ Facades → telemetry, system-monitoring
-    ├── @claude-zen/infrastructure   ✅ Facades → database, event-system
-    └── @claude-zen/development      ✅ Facades → code-analyzer, git-operations
-
-🔒 Tier 2: Private Implementation (Business Logic)
-├── Core Systems: database, memory, event-system, teamwork
-├── Infrastructure: load-balancing, system-monitoring, telemetry
-├── Document Systems: document-intelligence, documentation, exporters
-├── Language Support: language-parsers, file-aware-ai, interfaces
-└── Agent Systems: agent-monitoring, agent-registry, llm-routing
-
-🔐 Tier 3: Internal Specialized (Advanced Coordination)
-├── Enterprise Planning: safe-framework (SAFe 6.0), sparc (SPARC methodology)
-├── Neural/AI Coordination: brain, knowledge (DSPy integration)
-├── Process Management: workflows (XState), agui (approval gates)
-├── Development Tools: code-analyzer, git-operations, architecture
-├── Analysis Systems: beam-analyzer, codeql, document-processing
-└── Advanced Coordination: enterprise-coordination, multi-level-orchestration
-
-🚫 Tier 4: Restricted Access (Security Critical)
-├── ai-safety           → AI deception detection and safety monitoring
-├── chaos-engineering   → System fault injection and resilience testing
-└── taskmaster         → SOC2-compliant task approval and audit systems
-
-⛔ Tier 5: Deep Core (Ultra Restricted)
-├── dspy               → DSPy neural optimization (accessed via brain only)
-├── neural-ml          → Neural networks (accessed via brain only)
-├── fact-system        → Knowledge facts (accessed via knowledge only)
-└── memory-root        → Core memory (accessed via memory only)
+├── @claude-zen/exporters        ✅ Data export functionality
+└── @claude-zen/otel-collector   ✅ OpenTelemetry integration
 ```
 
-#### **⚠️ CRITICAL: 5-Tier Architecture Rules**
-
-**🎯 TIER SEPARATION PRINCIPLES:**
-
-- **Tier 1** (Public): Strategic facades + foundation - ONLY packages users import
-- **Tier 2** (Private): Implementation packages - Internal business logic
-- **Tier 3** (Internal): Specialized systems - Advanced internal functionality
-- **Tier 4** (Restricted): Special authorization required - Security-critical systems
-- **Tier 5** (Deep Core): Ultra-restricted - Accessed only by specific Tier 2/3 packages
+#### **🎯 Direct Import Principles:**
 
 **✅ DIRECT IMPORT ARCHITECTURE:**
 
@@ -144,8 +134,8 @@ claude-code-zen uses a **comprehensive 5-tier architecture** with **50+ packages
 // ✅ Foundation utilities (always allowed)
 import { getLogger, createContainer, getConfig } from '@claude-zen/foundation';
 
-// ✅ Direct imports from implementation packages (preferred)
-import { BrainSystem } from '@claude-zen/brain';
+// ✅ Direct imports from packages (current approach)
+import { BrainCoordinator } from '@claude-zen/brain';
 import { MemoryManager } from '@claude-zen/memory';
 import { EventManager } from '@claude-zen/event-system';
 import { DatabaseProvider } from '@claude-zen/database';
@@ -153,47 +143,26 @@ import { SafeFramework } from '@claude-zen/safe-framework';
 import { WorkflowEngine } from '@claude-zen/workflows';
 import { TaskMaster } from '@claude-zen/taskmaster';
 
-// ✅ Supporting packages
-import { ClaudeProvider, GeminiProvider } from '@claude-zen/llm-providers';
-import { RepoAnalyzer } from '@claude-zen/repo-analyzer';
-
-// ❌ NO MORE FACADES - Direct imports only
-// import { getBrainSystem } from '@claude-zen/intelligence';     // REMOVED
-// import { getDatabaseSystem } from '@claude-zen/infrastructure'; // REMOVED
-// import { getSafeFramework } from '@claude-zen/enterprise';     // REMOVED
-```
-
-**✅ CORRECT Facade Delegation Pattern:**
-
-```typescript
-// Facades are DELEGATION ONLY with lazy loading and fallbacks
-export async function getBrainSystem() {
-  try {
-    const { BrainSystem } = await import('@claude-zen/brain');
-    return new BrainSystem();
-  } catch (error) {
-    // Graceful fallback when implementation not available
-    return createCompatibilityBrainSystem();
-  }
-}
+// ✅ Integration packages
+import { LLMProvider } from '@claude-zen/llm-providers';
+import { RepositoryAnalyzer } from '@claude-zen/repo-analyzer';
+import { CodeAnalyzer } from '@claude-zen/code-analyzer';
 ```
 
 **🏗️ Direct Import Architecture Benefits:**
 
 - **Explicit Dependencies** - Clear what each package needs
-- **Faster Builds** - No facade indirection layers
+- **Faster Builds** - No indirection layers
 - **Better Debugging** - Direct error traces to source
 - **Simpler Code** - No lazy loading complexity
 - **Clear Failure Points** - Build fails show exactly what's missing
 - **Package Independence** - Fix packages in any order
 - **Easier Maintenance** - One place per functionality
 
-#### **✅ SIMPLIFIED: Direct Import Guide**
-
-**✅ DIRECT IMPORTS (PREFERRED):**
+#### **✅ Current Import Patterns:**
 
 ```typescript
-// Foundation (direct import - contains primitives and centralized utilities)
+// Foundation (centralized utilities)
 import {
   // Core utilities
   getLogger,
@@ -204,7 +173,7 @@ import {
   generateUUID,
   generateNanoId,
 
-  // Centralized utilities (replaces direct imports)
+  // Centralized utilities
   _,
   lodash, // Lodash utilities
   dateFns,
@@ -214,8 +183,6 @@ import {
   program, // CLI command parsing
   z,
   validateInput, // Schema validation
-  nanoid,
-  customAlphabet, // Short ID generation
 
   // Configuration and environment
   getConfig,
@@ -223,15 +190,9 @@ import {
   num,
   bool,
   port,
-  url,
-  email,
   isDevelopment,
   isProduction,
   isTest,
-
-  // Process lifecycle
-  onExit,
-  pTimeout,
 
   // Error handling
   safeAsync,
@@ -249,55 +210,16 @@ import {
   createTypedEventBase,
 } from '@claude-zen/foundation';
 
-// LLM Provider integrations (direct import - contains provider APIs)
-import { ClaudeProvider, GeminiProvider } from '@claude-zen/llm-providers';
-
-// Strategic facades (delegation to implementation packages)
-import { getBrainSystem } from '@claude-zen/intelligence';
-import { getSafeFramework } from '@claude-zen/enterprise';
-import { getPerformanceTracker } from '@claude-zen/operations';
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
-import {
-  getCodeAnalyzer,
-  getRepoAnalyzer,
-  getAILinter,
-} from '@claude-zen/development';
+// Direct package imports
+import { DatabaseProvider } from '@claude-zen/database';
+import { EventManager } from '@claude-zen/event-system';
+import { BrainCoordinator } from '@claude-zen/brain';
+import { MemoryManager } from '@claude-zen/memory';
+import { SafeFramework } from '@claude-zen/safe-framework';
+import { WorkflowEngine } from '@claude-zen/workflows';
+import { TaskMaster } from '@claude-zen/taskmaster';
+import { LLMProvider } from '@claude-zen/llm-providers';
 ```
-
-**❌ TIER 2-5 - NEVER IMPORT THESE DIRECTLY:**
-
-```typescript
-// ❌ TIER 2 - Private Implementation (FORBIDDEN)
-// import { DatabaseProvider } from '@claude-zen/database';
-// import { EventBus } from '@claude-zen/event-system';
-// import { MemoryManager } from '@claude-zen/memory';
-// import { LoadBalancer } from '@claude-zen/load-balancing';
-// import { TelemetryCollector } from '@claude-zen/telemetry';
-
-// ❌ TIER 3 - Internal Specialized (FORBIDDEN)
-// import { BrainCoordinator } from '@claude-zen/brain';
-// import { KnowledgeBase } from '@claude-zen/knowledge';
-// import { SafeFramework } from '@claude-zen/safe-framework';
-// import { SPARCEngine } from '@claude-zen/sparc';
-// import { CodeAnalyzer } from '@claude-zen/code-analyzer';
-
-// ❌ TIER 4 - Restricted Access (FORBIDDEN)
-// import { AISafety } from '@claude-zen/ai-safety';
-// import { ChaosEngine } from '@claude-zen/chaos-engineering';
-// import { TaskMaster } from '@claude-zen/taskmaster';
-
-// ❌ TIER 5 - Deep Core Ultra Restricted (FORBIDDEN)
-// import { DSPy } from '@claude-zen/dspy';
-// import { NeuralML } from '@claude-zen/neural-ml';
-// import { FactSystem } from '@claude-zen/fact-system';
-// import { MemoryRoot } from '@claude-zen/memory-root';
-```
-
-**🎯 KEY PRINCIPLE: TIER 1 ONLY**
-
-- ✅ **Import**: Only Tier 1 packages (foundation, facades, direct integrations)
-- ❌ **Never**: Import from Tiers 2-5 directly
-- 🏗️ **Access**: Lower tiers accessed via Tier 1 facades only
 
 **🚫 FORBIDDEN - Direct Utility Imports (USE FOUNDATION INSTEAD):**
 
@@ -330,7 +252,7 @@ pnpm run validate:architecture
 - **Battle-Tested Logic** via proven package implementations
 - **Lazy Loading** for optimal performance
 - **Type Safety** with comprehensive TypeScript support
-- **Zero Breaking Changes** through facade compatibility layers
+- **Zero Breaking Changes** through package compatibility patterns
 - **Professional Patterns** matching enterprise architecture standards
 - **Security Isolation** through 5-tier access control
 - **Dependency Simplification** - import only from Tier 1
@@ -377,10 +299,11 @@ pnpm run validate:architecture
 claude-code-zen features **complete automatic DSPy optimization** with sophisticated decision-making:
 
 ```typescript
-// Automatic DSPy optimization via intelligence facade
-import { getBrainSystem } from '@claude-zen/intelligence';
+// Automatic DSPy optimization via brain system
+import { BrainCoordinator } from '@claude-zen/brain';
 
-const brainSystem = await getBrainSystem();
+const brainSystem = new BrainCoordinator();
+await brainSystem.initialize();
 const coordinator = brainSystem.createCoordinator();
 
 // Automatic optimization selection based on complexity, resources, and context
@@ -482,7 +405,7 @@ import {
   inject,
 } from '@claude-zen/foundation';
 
-// ✅ Strategic Facades - Use these for all functionality
+// ✅ Package Integrations - Available for core functionality
 import { getBrainSystem, getMemorySystem } from '@claude-zen/intelligence';
 import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
 import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
@@ -492,7 +415,7 @@ import {
 } from '@claude-zen/operations';
 import { getCodeAnalyzer, getGitOperations } from '@claude-zen/development';
 
-// ✅ Supporting packages (temporary - will become facades)
+// ✅ Supporting packages (direct imports)
 import { LLMProvider } from '@claude-zen/llm-providers';
 import { RepositoryAnalyzer } from '@claude-zen/repo-analyzer';
 ```
@@ -502,7 +425,7 @@ import { RepositoryAnalyzer } from '@claude-zen/repo-analyzer';
 These packages are `"private": true` and should NEVER be imported directly:
 
 ```typescript
-// ❌ NEVER IMPORT THESE - Use facades instead
+// ❌ NEVER IMPORT THESE - Tier 2+ packages are private
 // Core implementations
 // import { BrainCoordinator } from '@claude-zen/brain';
 // import { DatabaseProvider } from '@claude-zen/database';
@@ -530,16 +453,16 @@ These packages can ONLY be accessed by specific Tier 2 packages:
 // @claude-zen/neural-ml    → Only @claude-zen/brain can import
 // @claude-zen/fact-system  → Only @claude-zen/knowledge can import
 
-// Even facades cannot directly access Tier 3!
+// Even Tier 1 packages cannot directly access Tier 3!
 ```
 
 ### **🎯 Architecture Benefits**
 
-1. **🚪 Single Point of Entry**: All functionality via strategic facades
+1. **🚪 Single Point of Entry**: All functionality via foundation and direct imports
 2. **🔒 Encapsulation**: Implementation details completely hidden
 3. **⚡ Lazy Loading**: Packages loaded only when actually needed
 4. **🛡️ Graceful Degradation**: Fallbacks when packages unavailable
-5. **💥 Zero Breaking Changes**: Stable facade interfaces forever
+5. **💥 Zero Breaking Changes**: Stable package interfaces with clear boundaries
 6. **📦 Dependency Management**: Clean, predictable import graph
 
 **Continue using these foundation packages directly:**
@@ -633,7 +556,7 @@ Workflow Orchestration → TaskMaster Management → Claude Code Implementation
 - **Trust the coordination system:** Let event system manage complex workflows and agent coordination
 - **Use Claude Code appropriately:** Focus on code implementation tasks when invoked by the system
 - **Maintain enterprise compliance:** Respect TaskMaster approval gates and audit requirements
-- **Follow tier separation:** Only import from Tier 1 packages, let facades handle delegation
+- **Follow tier separation:** Only import from Tier 1 packages, respect package boundaries
 
 ### ❌ DON'T:
 
@@ -668,7 +591,7 @@ When using enterprise coordination with systematic methodologies:
 ## Integration Guidelines
 
 1. **Understand Your Role**: You are Claude Code, a tool in the enterprise orchestration system
-2. **Use Strategic Facades**: Only import from Tier 1 packages (@claude-zen/foundation and facades)
+2. **Use Foundation and Direct Imports**: Only import from Tier 1 packages (@claude-zen/foundation and package integrations)
 3. **Respect the Coordination Flow**: Let the event system coordinate, focus on implementation
 4. **Follow Enterprise Patterns**: Work within SAFe planning, SPARC development, and TaskMaster approval workflows
 5. **Use Tools Naturally**: Read, Write, Edit, Bash as needed without artificial constraints

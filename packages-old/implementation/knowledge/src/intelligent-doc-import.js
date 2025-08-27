@@ -938,7 +938,7 @@ export class IntelligentDocImport extends EventEmitter {
         await this.documentManager.saveDocument({
           type: analysis.documentType || 'task',
           title: analysis.filePath,
-          content: content,
+          content,
           metadata: {
             originalPath: analysis.filePath,
             analysisResults: analysis,

@@ -15,9 +15,9 @@ export interface TypedEvent<T = unknown> {
 }
 
 /**
- * Type-safe event system.
+ * Event system with generic type safety.
  */
-export class TypeSafeEventSystem<TEventMap extends Record<string, unknown> = Record<string, unknown>> extends EventEmitter {
+export class EventSystem<TEventMap extends Record<string, unknown> = Record<string, unknown>> extends EventEmitter {
   
   emitTyped<K extends keyof TEventMap>(eventType: K, payload: TEventMap[K]): boolean {
     return this.emit(String(eventType), payload);
@@ -31,3 +31,6 @@ export class TypeSafeEventSystem<TEventMap extends Record<string, unknown> = Rec
     return this.off(String(eventType), listener as (data: unknown) => void);
   }
 }
+
+// Compatibility export
+export { EventSystem as TypeSafeEventSystem };

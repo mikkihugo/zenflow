@@ -40,7 +40,7 @@ import { access, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
-import { EventEmitter } from "../../events/typed.event.base.js";
+import { EventEmitter } from "../../events/event-emitter.js";
 import {
 	type DetectedWorkspace,
 	WorkspaceDetector,

@@ -13,7 +13,7 @@
 
 import { getLogger, type Logger } from '@claude-zen/foundation';
 // Database access via infrastructure facade
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 
 export interface RetrainingConfig {
   checkIntervalMs: number;
@@ -98,7 +98,8 @@ export class RetrainingMonitor {
 
     try {
       // Initialize database access for metrics and history storage
-      this.dbAccess = getDatabaseAccess();
+      this.dbAccess = new DatabaseProvider();
+      await this.dbAccess.connect();
 
       const retrainingConfig = this.getRetrainingConfig();
 
@@ -461,7 +462,8 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
       this.logger.info('Initializing RetrainingMonitor with configuration');'
 
       // Initialize database access
-      this.dbAccess = await getDatabaseAccess();
+      this.dbAccess = new DatabaseProvider();
+      await this.dbAccess.connect();
 
       // Apply configuration if provided
       if (config) {

@@ -25,17 +25,17 @@ const logger = getLogger("prompt-validation");
 // Configuration for prompt validation
 export const PROMPT_VALIDATION_CONFIG = {
 	/** Maximum prompt length to prevent excessive processing */
-	MAX_PROMPT_LENGTH: 100000,
+	maxPromptLength: 100000,
 	/** Minimum prompt length to ensure meaningful requests */
-	MIN_PROMPT_LENGTH: 10,
+	minPromptLength: 10,
 	/** Maximum lines in a single prompt */
-	MAX_PROMPT_LINES: 1000,
+	maxPromptLines: 1000,
 	/** Enable strict content validation */
-	STRICT_VALIDATION: true,
+	strictValidation: true,
 	/** Enable output parsing protection */
-	OUTPUT_PARSING_PROTECTION: true,
+	outputParsingProtection: true,
 	/** Log validation failures for debugging */
-	LOG_VALIDATION_FAILURES: true,
+	logValidationFailures: true,
 } as const;
 
 // Validation result types
@@ -162,17 +162,17 @@ function validatePromptLength(
 ): "low" | "medium" | "high" | "critical" {
 	let risk: "low" | "medium" | "high" | "critical" = "low";
 
-	if (prompt.length > PROMPT_VALIDATION_CONFIG.MAX_PROMPT_LENGTH) {
+	if (prompt.length > PROMPT_VALIDATION_CONFIG.maxPromptLength) {
 		issues.push({
 			type: "performance",
 			severity: "error",
-			message: `Prompt exceeds maximum length of ${PROMPT_VALIDATION_CONFIG.MAX_PROMPT_LENGTH} characters`,
+			message: `Prompt exceeds maximum length of ${PROMPT_VALIDATION_CONFIG.maxPromptLength} characters`,
 			suggestion: "Break down the prompt into smaller, focused requests",
 		});
 		risk = "high";
 	}
 
-	if (prompt.length < PROMPT_VALIDATION_CONFIG.MIN_PROMPT_LENGTH) {
+	if (prompt.length < PROMPT_VALIDATION_CONFIG.minPromptLength) {
 		issues.push({
 			type: "quality",
 			severity: "warning",
@@ -182,7 +182,7 @@ function validatePromptLength(
 	}
 
 	const lines = prompt.split("\n");
-	if (lines.length > PROMPT_VALIDATION_CONFIG.MAX_PROMPT_LINES) {
+	if (lines.length > PROMPT_VALIDATION_CONFIG.maxPromptLines) {
 		issues.push({
 			type: "performance",
 			severity: "error",
@@ -240,7 +240,7 @@ function checkDangerousPatterns(
 
 			// Apply filtering if configured
 			if (
-				PROMPT_VALIDATION_CONFIG.OUTPUT_PARSING_PROTECTION &&
+				PROMPT_VALIDATION_CONFIG.outputParsingProtection &&
 				dangerousPattern.type === "parsing"
 			) {
 				filteredPrompt = filteredPrompt.replace(
@@ -307,7 +307,7 @@ function logValidationResults(
 	issues: PromptIssue[],
 ): void {
 	if (
-		PROMPT_VALIDATION_CONFIG.LOG_VALIDATION_FAILURES &&
+		PROMPT_VALIDATION_CONFIG.logValidationFailures &&
 		(!isValid || issues.length > 0)
 	) {
 		const criticalIssues = issues.filter((i) => i.severity === "critical");
@@ -474,11 +474,11 @@ export function createSafePrompt(
 	const config = {
 		enableFiltering:
 			options.enableFiltering ??
-			PROMPT_VALIDATION_CONFIG.OUTPUT_PARSING_PROTECTION,
+			PROMPT_VALIDATION_CONFIG.outputParsingProtection,
 		strictValidation:
-			options.strictValidation ?? PROMPT_VALIDATION_CONFIG.STRICT_VALIDATION,
+			options.strictValidation ?? PROMPT_VALIDATION_CONFIG.strictValidation,
 		logValidation:
-			options.logValidation ?? PROMPT_VALIDATION_CONFIG.LOG_VALIDATION_FAILURES,
+			options.logValidation ?? PROMPT_VALIDATION_CONFIG.logValidationFailures,
 	};
 
 	// Always validate the prompt

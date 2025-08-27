@@ -136,9 +136,9 @@ function validatePresetConfig(config) {
 }
 exports.default = {
 	NEURAL_PRESETS: exports.NEURAL_PRESETS,
-	getPreset: getPreset,
-	getRecommendedPreset: getRecommendedPreset,
-	searchPresetsByUseCase: searchPresetsByUseCase,
-	getCategoryPresets: getCategoryPresets,
-	validatePresetConfig: validatePresetConfig,
+	getPreset,
+	getRecommendedPreset,
+	searchPresetsByUseCase,
+	getCategoryPresets,
+	validatePresetConfig,
 };

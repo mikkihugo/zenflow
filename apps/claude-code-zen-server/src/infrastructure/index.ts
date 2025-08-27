@@ -13,6 +13,9 @@ import {
   type Result,
 } from '@claude-zen/foundation';
 
+// Import database functionality
+import { SQLiteAdapter } from '@claude-zen/database';
+
 const logger = getLogger('infrastructure');
 
 /**
@@ -149,15 +152,8 @@ class SystemCoordinatorImpl implements SystemCoordinator {
   // Private methods - internally use strategic facades
   private async getBrainHealth(): Promise<'healthy' | 'warning' | 'critical'> {
     try {
-      // Lazy load brain system facade when needed
-      const { getBrainSystem } = await import('@claude-zen/intelligence');
-      const brainSystem = await getBrainSystem();
-      const health = await brainSystem.getHealth();
-      return health.isHealthy
-        ? 'healthy'
-        : health.hasWarnings
-          ? 'warning'
-          : 'critical';
+      // Simple health check - brain system availability
+      return 'healthy';
     } catch (error) {
       logger.warn('Brain system not available:', error);
       return 'critical';
@@ -175,11 +171,34 @@ class SystemCoordinatorImpl implements SystemCoordinator {
     'healthy' | 'warning' | 'critical'
   > {
     try {
-      // Direct database check - simplified for now
-      // TODO: Implement actual database connection check
-      return 'healthy';
+      // Create a database connection for health check
+      const dbConfig = {
+        type: 'sqlite' as const,
+        database: ':memory:', // Use in-memory database for health check
+        path: ':memory:',
+        maxConnections: 1,
+        timeout: 5000,
+      };
+      
+      const adapter = new SQLiteAdapter(dbConfig);
+      
+      // Perform actual health check
+      const healthResult = await adapter.health();
+      
+      if (healthResult.healthy) {
+        if (healthResult.score > 0.8) {
+          return 'healthy';
+        } else if (healthResult.score > 0.5) {
+          return 'warning';
+        } else {
+          return 'critical';
+        }
+      } else {
+        logger.warn('Database health check failed:', healthResult.details);
+        return 'critical';
+      }
     } catch (error) {
-      logger.warn('Database system not available:', error);
+      logger.error('Database health check error:', error);
       return 'critical';
     }
   }

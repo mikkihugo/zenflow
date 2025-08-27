@@ -49,7 +49,7 @@ export default function Share(props: {
   let scrollSentinel: HTMLElement | undefined
   let scrollObserver: IntersectionObserver | undefined
 
-  const id = props.id
+  const {id} = props
   const params = new URLSearchParams(window.location.search)
   const debug = params.get("debug") === "true"
 
@@ -263,8 +263,7 @@ export default function Share(props: {
     result.created = props.info.time.created
 
     const msgs = messages()
-    for (let i = 0; i < msgs.length; i++) {
-      const msg = msgs[i]
+    for (const msg of msgs) {
 
       result.messages.push(msg)
 

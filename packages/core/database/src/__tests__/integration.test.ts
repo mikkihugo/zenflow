@@ -40,8 +40,15 @@ async function performBasicSQLiteTests(adapter: SQLiteAdapter): Promise<void> {
   expect(health.score).toBeGreaterThan(0);
 }
 
-async function transactionCallback(tx: any): Promise<void> {
-  // Use any to avoid import issues
+async function transactionCallback(tx: { 
+   
+  // eslint-disable-next-line no-unused-vars
+  execute: (sql: string, params?: unknown[]) => Promise<unknown>; 
+   
+  // eslint-disable-next-line no-unused-vars 
+  query: (sql: string) => Promise<{ rows: { count: number }[] }> 
+}): Promise<void> {
+  // Transaction callback for testing
   await tx.execute(INSERT_TEST_SQL, [TRANSACTION_TEST]);
   const txResult = await tx.query(COUNT_QUERY);
   expect(txResult.rows[0].count).toBe(2);

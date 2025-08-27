@@ -135,13 +135,13 @@ window.translations = {
 			}),
 				(t.Set.complete = {
 					intersect: (e) => e,
-					union: function () {
+					union () {
 						return this;
 					},
 					contains: () => !0,
 				}),
 				(t.Set.empty = {
-					intersect: function () {
+					intersect () {
 						return this;
 					},
 					union: (e) => e,
@@ -1012,11 +1012,11 @@ window.translations = {
 						c = t.Pipeline.load(e.pipeline);
 					e.version !== t.version &&
 						t.utils.warn(
-							"Version mismatch when loading serialised index. Current version of lunr '" +
-								t.version +
-								"' does not match serialized index '" +
-								e.version +
-								"'",
+							`Version mismatch when loading serialised index. Current version of lunr '${ 
+								t.version 
+								}' does not match serialized index '${ 
+								e.version 
+								}'`,
 						);
 					for (var l = 0; l < i.length; l++) {
 						var d = i[l],

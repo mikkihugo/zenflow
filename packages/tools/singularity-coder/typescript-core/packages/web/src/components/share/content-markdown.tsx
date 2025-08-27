@@ -30,9 +30,7 @@ interface Props {
 export function ContentMarkdown(props: Props) {
   const [html] = createResource(
     () => strip(props.text),
-    async (markdown) => {
-      return markedWithShiki.parse(markdown)
-    },
+    async (markdown) => markedWithShiki.parse(markdown),
   )
   const [expanded, setExpanded] = createSignal(false)
   const overflow = createOverflow()
@@ -61,7 +59,7 @@ export function ContentMarkdown(props: Props) {
 }
 
 function strip(text: string): string {
-  const wrappedRe = /^\s*<([A-Za-z]\w*)>\s*([\s\S]*?)\s*<\/\1>\s*$/
+  const wrappedRe = /^\s*<([A-Za-z]\w*)>\s*([\S\s]*?)\s*<\/\1>\s*$/
   const match = text.match(wrappedRe)
   return match ? match[2] : text
 }

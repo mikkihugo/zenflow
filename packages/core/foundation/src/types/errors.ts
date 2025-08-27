@@ -372,7 +372,11 @@ export function createValidationError(
 		code: "VALIDATION_FAILED",
 		message,
 		timestamp: Date.now() as Timestamp,
-		errorId: crypto.randomUUID() as UUID,
+		errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+			const r = Math.random() * 16 | 0;
+			const v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		})) as UUID,
 		retryable: false,
 		logLevel: LogLevel.WARN,
 		field: options?.field,
@@ -405,7 +409,11 @@ export function createSystemError(
 		code: "SYSTEM_ERROR",
 		message,
 		timestamp: Date.now() as Timestamp,
-		errorId: crypto.randomUUID() as UUID,
+		errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+			const r = Math.random() * 16 | 0;
+			const v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		})) as UUID,
 		retryable: true,
 		logLevel: LogLevel.ERROR,
 		component: options?.component,
@@ -438,7 +446,11 @@ export function createNetworkError(
 		code: "NETWORK_ERROR",
 		message,
 		timestamp: Date.now() as Timestamp,
-		errorId: crypto.randomUUID() as UUID,
+		errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+			const r = Math.random() * 16 | 0;
+			const v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		})) as UUID,
 		retryable: !options?.isTimeout,
 		logLevel: LogLevel.ERROR,
 		url: options?.url,
@@ -471,7 +483,11 @@ export function createResourceError(
 		code: "RESOURCE_ERROR",
 		message,
 		timestamp: Date.now() as Timestamp,
-		errorId: crypto.randomUUID() as UUID,
+		errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+			const r = Math.random() * 16 | 0;
+			const v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		})) as UUID,
 		retryable: true,
 		logLevel: LogLevel.ERROR,
 		resourceId: options?.resourceId,

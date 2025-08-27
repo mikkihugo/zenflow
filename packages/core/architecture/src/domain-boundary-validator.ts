@@ -265,12 +265,12 @@ export class DomainBoundaryValidator implements DomainBoundary {
       maxCrossingLogSize?: number;
     } = {}
   ) {
-    this.logger = getLogger(`domain-boundary-${domain}`);`
+    this.logger = getLogger(`domain-boundary-${domain}`);
     this.cacheEnabled = options.cacheEnabled ?? true;
     this.maxCacheSize = options.maxCacheSize ?? 1000;
     this.maxCrossingLogSize = options.maxCrossingLogSize ?? 10000;
 
-    this.logger.info(`Initialized domain boundary validator for ${domain}`, {`
+    this.logger.info(`Initialized domain boundary validator for ${domain}`, {
       cacheEnabled: this.cacheEnabled,
       maxCacheSize: this.maxCacheSize,
     });

@@ -14,7 +14,6 @@
  */
 
 // Direct package imports - no facades
-import { WebDashboard } from '@claude-zen/brain';
 
 // Utility function to replace facade
 function getWebDashboardURL(options?: { protocol?: string }): string {
@@ -70,10 +69,11 @@ export const apiUtils = {
     response: unknown
   ): { success: boolean; data?: unknown; error?: string } => {
     if (response && typeof response === 'object') {
-      if (response?.error) {
+      const resp = response as { error?: string; data?: unknown };
+      if (resp.error) {
         return {
           success: false,
-          error: response?.error,
+          error: resp.error,
         };
       }
       return {

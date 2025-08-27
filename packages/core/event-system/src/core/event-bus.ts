@@ -36,12 +36,26 @@
  * ```
  */
 
-import { EventEmitter, 
-  getLogger,
-  type Result,
-  safeAsync } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
-const logger = getLogger('EventBus');
+// Simple logger for event-system to avoid circular dependency
+const logger = {
+  info: (msg: string, data?: any) => console.info(`[EventBus] ${msg}`, data || ''),
+  error: (msg: string, data?: any) => console.error(`[EventBus] ${msg}`, data || ''),
+  warn: (msg: string, data?: any) => console.warn(`[EventBus] ${msg}`, data || ''),
+  debug: (msg: string, data?: any) => console.debug(`[EventBus] ${msg}`, data || '')
+};
+
+// Simple Result type to avoid foundation dependency
+type Result<T, E> = { isOk(): boolean; isErr(): boolean; value?: T; error?: E };
+const safeAsync = async <T>(fn: () => Promise<T>): Promise<Result<T, Error>> => {
+  try {
+    const result = await fn();
+    return { isOk: () => true, isErr: () => false, value: result };
+  } catch (error) {
+    return { isOk: () => false, isErr: () => true, error: error as Error };
+  }
+};
 
 export interface EventBusConfig {
   maxListeners: number;

@@ -38,7 +38,7 @@ describe("Process Lifecycle Management - Simplified", () => {
 				"../../src/core/lifecycle"
 			);
 
-			const shutdownHandler = vi.fn().mockResolvedValue(undefined);
+			const shutdownHandler = vi.fn().mockResolvedValue();
 			const manager = new ProcessLifecycleManager({
 				onShutdown: shutdownHandler,
 			});
@@ -107,7 +107,7 @@ describe("Process Lifecycle Management - Simplified", () => {
 				"../../src/core/lifecycle"
 			);
 
-			const shutdownHandler = vi.fn().mockResolvedValue(undefined);
+			const shutdownHandler = vi.fn().mockResolvedValue();
 			const manager = setupProcessLifecycle(shutdownHandler);
 
 			expect(manager).toBeDefined();

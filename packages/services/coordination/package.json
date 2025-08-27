@@ -1,0 +1,93 @@
+{
+  "name": "@claude-zen/coordination",
+  "version": "1.0.0",
+  "description": "Unified coordination package - SPARC methodology, SAFe framework, workflows, orchestration, and teamwork",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./sparc": {
+      "types": "./dist/sparc/index.d.ts",
+      "import": "./dist/sparc/index.js"
+    },
+    "./safe": {
+      "types": "./dist/safe/index.d.ts", 
+      "import": "./dist/safe/index.js"
+    },
+    "./workflows": {
+      "types": "./dist/workflows/index.d.ts",
+      "import": "./dist/workflows/index.js"
+    },
+    "./orchestration": {
+      "types": "./dist/orchestration/index.d.ts",
+      "import": "./dist/orchestration/index.js"
+    },
+    "./teamwork": {
+      "types": "./dist/teamwork/index.d.ts",
+      "import": "./dist/teamwork/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
+    "@claude-zen/brain": "workspace:*",
+    "@claude-zen/knowledge": "workspace:*",
+    "@claude-zen/ai-safety": "workspace:*",
+    "@claude-zen/telemetry": "workspace:*",
+    "@statelyai/inspect": "^0.4.0",
+    "@xstate/inspect": "^0.8.0",
+    "expr-eval": "^2.0.2",
+    "async": "^3.2.4",
+    "p-limit": "^5.0.0",
+    "xstate": "^5.20.2",
+    "mermaid": "^11.4.0",
+    "node-cron": "^3.0.3",
+    "lodash-es": "^4.17.21",
+    "date-fns": "^4.1.0",
+    "nanoid": "^5.0.9",
+    "zod": "^4.1.1",
+    "rxjs": "^7.8.2",
+    "immer": "^10.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.17.1",
+    "@types/lodash": "^4.17.7",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "eslint": "^9.33.0"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "coordination",
+    "sparc",
+    "safe",
+    "workflows", 
+    "orchestration",
+    "teamwork",
+    "enterprise",
+    "agile",
+    "task-management",
+    "multi-agent"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

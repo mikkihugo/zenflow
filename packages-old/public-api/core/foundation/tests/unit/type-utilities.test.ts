@@ -90,9 +90,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					1672531200000, // Jan 1, 2023Date.now(),
 				];
 
-				validTimestamps.forEach((ts) => {
+				for (const ts of validTimestamps) {
 					expect(isTimestamp(ts)).toBe(true);
-				});
+				}
 			});
 
 			it("should reject invalid timestamps", () => {
@@ -106,9 +106,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					undefined,
 				];
 
-				invalidTimestamps.forEach((ts) => {
+				for (const ts of invalidTimestamps) {
 					expect(isTimestamp(ts)).toBe(false);
-				});
+				}
 			});
 		});
 
@@ -121,9 +121,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					new Date().toISOString(),
 				];
 
-				validDates.forEach((date) => {
+				for (const date of validDates) {
 					expect(isISODateString(date)).toBe(true);
-				});
+				}
 			});
 
 			it("should reject invalid ISO date strings", () => {
@@ -139,9 +139,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					123,
 				];
 
-				invalidDates.forEach((date) => {
+				for (const date of invalidDates) {
 					expect(isISODateString(date)).toBe(false);
-				});
+				}
 			});
 		});
 
@@ -154,9 +154,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					"valid@123.456.789.012", // IP addresses
 				];
 
-				validEmails.forEach((email) => {
+				for (const email of validEmails) {
 					expect(isEmail(email)).toBe(true);
-				});
+				}
 			});
 
 			it("should reject invalid email addresses", () => {
@@ -172,9 +172,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					123,
 				];
 
-				invalidEmails.forEach((email) => {
+				for (const email of invalidEmails) {
 					expect(isEmail(email)).toBe(false);
-				});
+				}
 			});
 		});
 
@@ -188,17 +188,17 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					[undefined],
 				];
 
-				nonEmptyArrays.forEach((arr) => {
+				for (const arr of nonEmptyArrays) {
 					expect(isNonEmptyArray(arr)).toBe(true);
-				});
+				}
 			});
 
 			it("should reject empty arrays", () => {
 				const emptyArrays = [[]];
 
-				emptyArrays.forEach((arr) => {
+				for (const arr of emptyArrays) {
 					expect(isNonEmptyArray(arr)).toBe(false);
-				});
+				}
 			});
 		});
 
@@ -215,17 +215,17 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 					BigInt(123),
 				];
 
-				primitives.forEach((primitive) => {
+				for (const primitive of primitives) {
 					expect(isPrimitive(primitive)).toBe(true);
-				});
+				}
 			});
 
 			it("should reject non-primitive values", () => {
 				const nonPrimitives = [{}, [], () => {}, new Date(), /regex/];
 
-				nonPrimitives.forEach((nonPrimitive) => {
+				for (const nonPrimitive of nonPrimitives) {
 					expect(isPrimitive(nonPrimitive)).toBe(false);
-				});
+				}
 			});
 		});
 	});
@@ -321,13 +321,13 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 				primitive: i,
 			}));
 
-			testData.forEach((data) => {
+			for (const data of testData) {
 				expect(isEmail(data.email)).toBe(true);
 				expect(isTimestamp(data.timestamp)).toBe(true);
 				expect(isUUID(data.uuid)).toBe(true);
 				expect(isNonEmptyArray(data.array)).toBe(true);
 				expect(isPrimitive(data.primitive)).toBe(true);
-			});
+			}
 
 			const duration = performance.now() - start;
 			expect(duration).toBeLessThan(1000); // Should be fast
@@ -356,9 +356,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 				Date.now() + 1000 * 60 * 60 * 24 * 364, // almost 1 year in future
 			];
 
-			edgeCases.forEach((ts) => {
+			for (const ts of edgeCases) {
 				expect(isTimestamp(ts)).toBe(true);
-			});
+			}
 		});
 
 		it("should handle edge case emails", () => {
@@ -368,9 +368,9 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 				"123@456.789", // numeric
 			];
 
-			edgeEmails.forEach((email) => {
+			for (const email of edgeEmails) {
 				expect(isEmail(email)).toBe(true);
-			});
+			}
 		});
 
 		it("should handle special characters in UUIDs", () => {

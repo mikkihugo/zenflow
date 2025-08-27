@@ -86,9 +86,10 @@ export {
 	withRetry,
 	withTimeout,
 } from "./error-handling/index.js";
-// EVENT SYSTEM - Type-safe event management
+// EVENT SYSTEM - Fully typed EventEmitter replacement
 // =============================================================================
-export { default as EventEmitter } from "./events/typed.event.base.js";
+export { EventEmitter } from "./events/event-emitter.js";
+export type { EventMap, EventArgs } from "./events/event-emitter.js";
 // TYPE SYSTEM - All types and type utilities
 // =============================================================================
 // Type utilities and advanced types

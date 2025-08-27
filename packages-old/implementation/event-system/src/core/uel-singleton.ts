@@ -210,8 +210,7 @@ export class UEL {
         this.logger.debug(`All subscriptions cleared in ${config.name}${eventType ? ` for ${eventType}` : ''}`);
         return 0;
       },
-      healthCheck: async () => {
-        return {
+      healthCheck: async () => ({
           name: config.name,
           type: config.type,
           status: 'healthy',
@@ -221,10 +220,8 @@ export class UEL {
           eventCount: 0,
           errorCount: 0,
           uptime: Date.now() - Date.now(),
-        };
-      },
-      getMetrics: async () => {
-        return {
+        }),
+      getMetrics: async () => ({
           name: config.name,
           type: config.type,
           eventsEmitted: 0,
@@ -237,8 +234,7 @@ export class UEL {
           averageProcessingTime: 0,
           maxProcessingTime: 0,
           minProcessingTime: 0,
-        };
-      },
+        }),
     };
   }
 

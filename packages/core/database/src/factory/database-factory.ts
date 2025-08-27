@@ -5,6 +5,7 @@
  * validation, and fallback mechanisms for enterprise applications.
  */
 
+import { URL } from 'node:url';
 import { KuzuAdapter } from '../adapters/kuzu-adapter.js';
 import { LanceDBAdapter } from '../adapters/lancedb-adapter.js';
 import { SQLiteAdapter } from '../adapters/sqlite-adapter.js';
@@ -566,13 +567,13 @@ export function createStorage<T extends StorageType>(
 
   switch (type) {
     case 'keyValue':
-      return factory.createKeyValueStorage(config) as any;
+      return factory.createKeyValueStorage(config);
     case 'sql':
-      return factory.createSqlStorage(config) as any;
+      return factory.createSqlStorage(config);
     case 'vector':
-      return factory.createVectorStorage(config) as any;
+      return factory.createVectorStorage(config);
     case 'graph':
-      return factory.createGraphStorage(config) as any;
+      return factory.createGraphStorage(config);
     default:
       throw new Error(`Unsupported storage type: ${type}`);
   }

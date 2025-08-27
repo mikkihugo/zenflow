@@ -591,7 +591,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'clone',
       projectId,
-      'clone-' + projectId
+      `clone-${  projectId}`
     );
 
     try {
@@ -644,7 +644,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'branch',
       projectId,
-      'branch-' + branchName
+      `branch-${  branchName}`
     );
 
     try {
@@ -692,7 +692,7 @@ export class GitOperationsManager extends Commander {
     const operation = this.createOperation(
       'branch',
       projectId,
-      'delete-' + branchName
+      `delete-${  branchName}`
     );
 
     try {
@@ -1129,7 +1129,7 @@ export class GitOperationsManager extends Commander {
     const conflictMarkers = this.parseConflictMarkers(fileContent);
     const suggestions: ConflictSuggestion['conflicts'] = [];
 
-    for (let conflict of conflictMarkers) {
+    for (const conflict of conflictMarkers) {
       try {
         const response = await this.claude.messages.create({
           model: 'claude-3-5-sonnet-20241022',

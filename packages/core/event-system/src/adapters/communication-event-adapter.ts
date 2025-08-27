@@ -7,7 +7,8 @@
  * event correlation, performance tracking, and unified communication functionality.
  */
 
-import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 const logger = getLogger('communication-event-adapter');
 

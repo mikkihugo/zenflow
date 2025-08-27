@@ -65,7 +65,7 @@ export function Part(props: PartProps) {
               const { origin, pathname, search } = window.location
               navigator.clipboard
                 .writeText(`${origin}${pathname}${search}${hash}`)
-                .catch((err) => console.error("Copy failed", err))
+                .catch((error) => console.error("Copy failed", error))
 
               setCopied(true)
               setTimeout(() => setCopied(false), 3000)
@@ -703,14 +703,14 @@ function flattenToolArgs(obj: any, prefix: string = ""): Array<[string, any]> {
 
     if (value !== null && typeof value === "object") {
       if (Array.isArray(value)) {
-        value.forEach((item, index) => {
+        for (const [index, item] of value.entries()) {
           const arrayPath = `${path}[${index}]`
           if (item !== null && typeof item === "object") {
             entries.push(...flattenToolArgs(item, arrayPath))
           } else {
             entries.push([arrayPath, item])
           }
-        })
+        }
       } else {
         entries.push(...flattenToolArgs(value, path))
       }

@@ -35,7 +35,7 @@ export namespace App {
     services: Map<any, { state: any; shutdown?: (input: any) => Promise<void> }>
   }>("app")
 
-  export const use = ctx.use
+  export const {use} = ctx
 
   const APP_JSON = "app.json"
 
@@ -89,8 +89,7 @@ export namespace App {
 
     return ctx.provide(app, async () => {
       try {
-        const result = await cb(app.info)
-        return result
+        return await cb(app.info)
       } finally {
         for (const [key, entry] of app.services.entries()) {
           if (!entry.shutdown) continue
@@ -108,7 +107,7 @@ export namespace App {
   ) {
     return () => {
       const app = ctx.use()
-      const services = app.services
+      const {services} = app
       if (!services.has(key)) {
         log.info("registering service", { name: key })
         services.set(key, {
@@ -140,6 +139,6 @@ export namespace App {
       .split(path.sep)
       .filter(Boolean)
       .join("-")
-      .replace(/[^A-Za-z0-9_]/g, "-")
+      .replace(/\W/g, "-")
   }
 }

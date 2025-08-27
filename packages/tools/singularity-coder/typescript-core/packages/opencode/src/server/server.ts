@@ -45,7 +45,7 @@ export namespace Server {
   function app() {
     const app = new Hono()
 
-    const result = app
+    return app
       .onError((err, c) => {
         if (err instanceof NamedError) {
           return c.json(err.toObject(), {
@@ -135,9 +135,7 @@ export namespace Server {
             },
           },
         }),
-        async (c) => {
-          return c.json(App.info())
-        },
+        async (c) => c.json(App.info()),
       )
       .post(
         "/app/init",
@@ -174,9 +172,7 @@ export namespace Server {
             },
           },
         }),
-        async (c) => {
-          return c.json(await Config.get())
-        },
+        async (c) => c.json(await Config.get()),
       )
       .get(
         "/session",
@@ -302,9 +298,7 @@ export namespace Server {
             id: z.string(),
           }),
         ),
-        async (c) => {
-          return c.json(Session.abort(c.req.valid("param").id))
-        },
+        async (c) => c.json(Session.abort(c.req.valid("param").id)),
       )
       .post(
         "/session/:id/share",
@@ -328,7 +322,7 @@ export namespace Server {
           }),
         ),
         async (c) => {
-          const id = c.req.valid("param").id
+          const {id} = c.req.valid("param")
           await Session.share(id)
           const session = await Session.get(id)
           return c.json(session)
@@ -356,7 +350,7 @@ export namespace Server {
           }),
         ),
         async (c) => {
-          const id = c.req.valid("param").id
+          const {id} = c.req.valid("param")
           await Session.unshare(id)
           const session = await Session.get(id)
           return c.json(session)
@@ -391,7 +385,7 @@ export namespace Server {
           }),
         ),
         async (c) => {
-          const id = c.req.valid("param").id
+          const {id} = c.req.valid("param")
           const body = c.req.valid("json")
           await Session.summarize({ ...body, sessionID: id })
           return c.json(true)
@@ -519,7 +513,7 @@ export namespace Server {
         ),
         async (c) => {
           const app = App.info()
-          const pattern = c.req.valid("query").pattern
+          const {pattern} = c.req.valid("query")
           const result = await Ripgrep.search({
             cwd: app.path.cwd,
             pattern,
@@ -550,7 +544,7 @@ export namespace Server {
           }),
         ),
         async (c) => {
-          const query = c.req.valid("query").query
+          const {query} = c.req.valid("query")
           const app = App.info()
           const result = await Ripgrep.files({
             cwd: app.path.cwd,
@@ -582,7 +576,7 @@ export namespace Server {
           }),
         ),
         async (c) => {
-          const query = c.req.valid("query").query
+          const {query} = c.req.valid("query")
           const result = await LSP.workspaceSymbol(query)
           return c.json(result)
         },
@@ -614,7 +608,7 @@ export namespace Server {
           }),
         ),
         async (c) => {
-          const path = c.req.valid("query").path
+          const {path} = c.req.valid("query")
           const content = await File.read(path)
           log.info("read file", {
             path,
@@ -711,13 +705,11 @@ export namespace Server {
           return c.json(modes)
         },
       )
-
-    return result
   }
 
   export async function openapi() {
     const a = app()
-    const result = await generateSpecs(a, {
+    return await generateSpecs(a, {
       documentation: {
         info: {
           title: "opencode",
@@ -727,16 +719,14 @@ export namespace Server {
         openapi: "3.0.0",
       },
     })
-    return result
   }
 
   export function listen(opts: { port: number; hostname: string }) {
-    const server = Bun.serve({
+    return Bun.serve({
       port: opts.port,
       hostname: opts.hostname,
       idleTimeout: 0,
       fetch: app().fetch,
     })
-    return server
   }
 }

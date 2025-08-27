@@ -161,14 +161,12 @@ export const safeAsync = async <T>(fn: () => Promise<T>): Promise<Result<T, Erro
 	}
 };
 
-export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
-	return Promise.race([
+export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => Promise.race([
 		promise,
 		new Promise<T>((_, reject) => 
 			setTimeout(() => reject(new TimeoutError(`Operation timed out after ${ms}ms`)), ms)
 		),
 	]);
-};
 
 export const withRetry = async <T>(
 	fn: () => Promise<T>,
@@ -264,9 +262,9 @@ export const _ = {
 	isEmpty: (value: any) => !value || (Array.isArray(value) && value.length === 0),
 	pick: <T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
 		const result = {} as Pick<T, K>;
-		keys.forEach(key => {
+		for (const key of keys) {
 			if (key in obj) result[key] = obj[key];
-		});
+		}
 		return result;
 	},
 };
@@ -276,8 +274,8 @@ export const dateFns = {
 	format: (date: Date, formatStr: string) => date.toLocaleDateString(),
 	addDays: (date: Date, days: number) => new Date(date.getTime() + days * 24 * 60 * 60 * 1000),
 };
-export const format = dateFns.format;
-export const addDays = dateFns.addDays;
+export const {format} = dateFns;
+export const {addDays} = dateFns;
 
 // Browser-compatible ID generation
 export const nanoid = (size: number = 21): string => {
@@ -340,9 +338,7 @@ export const PositiveNumberSchema = z.number().positive();
 export const URLSchema = z.string().url();
 export const UUIDSchema = z.string().uuid();
 
-export const isEmail = (value: unknown): boolean => {
-	return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-};
+export const isEmail = (value: unknown): boolean => typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export const isURL = (value: unknown): boolean => {
 	if (typeof value !== "string") return false;

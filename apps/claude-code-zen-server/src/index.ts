@@ -36,9 +36,9 @@ class ClaudeZenServer {
       app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
       // Get current directory for static files
-      const __filename = fileURLToPath(import.meta.url);
-      const __dirname = path.dirname(__filename);
-      const buildPath = path.resolve(__dirname, '../../web-dashboard/build');
+      const currentFilename = fileURLToPath(import.meta.url);
+      const currentDirname = path.dirname(currentFilename);
+      const buildPath = path.resolve(currentDirname, '../../web-dashboard/build');
 
       // Serve static dashboard files
       app.use(express.static(buildPath));
@@ -90,7 +90,7 @@ class ClaudeZenServer {
         server.on('error', reject);
       });
       
-      return ok(undefined);
+      return ok();
     } catch (error) {
       logger.error('❌ Failed to start server:', error);
       return err(error instanceof Error ? error : new Error(String(error)));
@@ -102,10 +102,10 @@ class ClaudeZenServer {
 const server = new ClaudeZenServer();
 server.start().then(result => {
   if (result.isErr()) {
-    console.error('Failed to start server:', result.error);
+    logger.error('Failed to start server:', result.error);
     process.exit(1);
   }
 }).catch(error => {
-  console.error('Unexpected error:', error);
+  logger.error('Unexpected error:', error);
   process.exit(1);
 });

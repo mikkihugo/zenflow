@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SessionMemoryStore } from '../../src/memory';
 import {
   mockLogger,
-  mockConfig,
   createMockMemoryConfig,
   createMockResult,
 } from '../mocks/foundation-mocks';
@@ -125,7 +124,7 @@ describe('SessionMemoryStore', () => {
       const nullResult = await store.retrieve('null-key');
       expect(nullResult._unsafeUnwrap()).toBe(null);
 
-      await store.store('undefined-key', undefined);
+      await store.store('undefined-key');
       const undefinedResult = await store.retrieve('undefined-key');
       expect(undefinedResult._unsafeUnwrap()).toBe(undefined);
     });
@@ -188,9 +187,9 @@ describe('SessionMemoryStore', () => {
         operations.map((op) => store.store(op.key, op.value))
       );
 
-      results.forEach((result) => {
+      for (const result of results) {
         expect(result.isOk()).toBe(true);
-      });
+      }
 
       // Verify all values were stored
       for (const op of operations) {
@@ -216,11 +215,11 @@ describe('SessionMemoryStore', () => {
         Object.keys(testData).map((key) => store.retrieve(key))
       );
 
-      results.forEach((result, index) => {
+      for (const [index, result] of results.entries()) {
         const expectedValue = Object.values(testData)[index];
         expect(result.isOk()).toBe(true);
         expect(result._unsafeUnwrap()).toBe(expectedValue);
-      });
+      }
     });
   });
 
@@ -300,7 +299,7 @@ describe('SessionMemoryStore', () => {
       await store.store('ttl-key', 'ttl-value');
 
       // Should exist immediately
-      let result = await store.retrieve('ttl-key');
+      const result = await store.retrieve('ttl-key');
       expect(result._unsafeUnwrap()).toBe('ttl-value');
 
       // Wait for TTL to expire (in a real implementation)

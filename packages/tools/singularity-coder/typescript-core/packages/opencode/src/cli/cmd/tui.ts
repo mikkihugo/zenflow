@@ -41,7 +41,7 @@ export const TuiCommand = cmd({
       const cwd = args.project ? path.resolve(args.project) : process.cwd()
       try {
         process.chdir(cwd)
-      } catch (_e) {
+      } catch (error) {
         UI.error(`Failed to change directory to ${cwd}`)
         return
       }

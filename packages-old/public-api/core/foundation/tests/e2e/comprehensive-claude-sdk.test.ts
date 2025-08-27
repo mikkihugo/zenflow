@@ -128,13 +128,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				];
 
 				for (const prompt of maliciousPrompts) {
-					const result = await safeAsync(async () => {
-						return executeClaudeTask(prompt, {
+					const result = await safeAsync(async () => executeClaudeTask(prompt, {
 							maxTurns: 1,
 							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
 							allowedTools: [], // No tools allowed
-						});
-					});
+						}));
 
 					// Should either succeed with safe response or fail safely
 					if (result.success) {
@@ -195,13 +193,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				for (const permissionMode of permissionModes) {
 					logger.info(`Testing permission mode: ${permissionMode}`);
 
-					const result = await safeAsync(async () => {
-						return executeClaudeTask("Create a simple test file", {
+					const result = await safeAsync(async () => executeClaudeTask("Create a simple test file", {
 							permissionMode,
 							maxTurns: 2,
 							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-						});
-					});
+						}));
 
 					// All modes should work (or fail safely)
 					if (result.success) {
@@ -456,13 +452,13 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(results.length).toBe(tasks.length);
 
 				// Check all tasks completed
-				results.forEach((result, index) => {
+				for (const [index, result] of results.entries()) {
 					expect(result.messages).toBeTruthy();
 					expect(result.messages.length).toBeGreaterThan(0);
 					logger.info(
 						`Task ${index + 1}: ${result.success ? "Success" : "Failed"}`,
 					);
-				});
+				}
 
 				const successful = results.filter((r) => r.success).length;
 				logger.info(
@@ -501,7 +497,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				let successes = 0;
 				let failures = 0;
 
-				results.forEach((result, index) => {
+				for (const [index, result] of results.entries()) {
 					if (result.success) {
 						successes++;
 						logger.info(`Task ${index + 1}: Success`);
@@ -509,7 +505,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 						failures++;
 						logger.info(`Task ${index + 1}: Failed - ${result.error}`);
 					}
-				});
+				}
 
 				logger.info(
 					`✅ Parallel failure handling: ${successes} succeeded, ${failures} failed`,
@@ -618,14 +614,12 @@ describe("Comprehensive Claude SDK Tests", () => {
 				for (const scenario of errorScenarios) {
 					logger.info(`Testing error scenario: ${scenario.name}`);
 
-					const result = await safeAsync(async () => {
-						return executeClaudeTask(scenario.prompt, {
+					const result = await safeAsync(async () => executeClaudeTask(scenario.prompt, {
 							maxTurns: 1,
 							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
 							allowedTools: [],
 							...scenario.options,
-						});
-					});
+						}));
 
 					if (scenario.expectError) {
 						expect(result.success).toBe(false);

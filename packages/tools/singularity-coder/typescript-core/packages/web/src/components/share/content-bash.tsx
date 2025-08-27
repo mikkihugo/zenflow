@@ -13,28 +13,24 @@ interface Props {
 export function ContentBash(props: Props) {
   const [commandHtml] = createResource(
     () => props.command,
-    async (command) => {
-      return codeToHtml(command || "", {
+    async (command) => codeToHtml(command || "", {
         lang: "bash",
         themes: {
           light: "github-light",
           dark: "github-dark",
         },
-      })
-    },
+      }),
   )
 
   const [outputHtml] = createResource(
     () => props.output,
-    async (output) => {
-      return codeToHtml(output || "", {
+    async (output) => codeToHtml(output || "", {
         lang: "console",
         themes: {
           light: "github-light",
           dark: "github-dark",
         },
-      })
-    },
+      }),
   )
 
   const [expanded, setExpanded] = createSignal(false)

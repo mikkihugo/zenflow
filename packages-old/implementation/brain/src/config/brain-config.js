@@ -208,7 +208,7 @@ function getBrainConfig() {
     const environment =
       process.env.NODE_ENV || (debugMode ? 'development' : 'production');
     logger.info('Loading brain config for environment: '.concat(environment), {
-      debugMode: debugMode,
+      debugMode,
     });
     // Merge configurations with proper precedence
     const brainConfig = __assign(
@@ -237,7 +237,7 @@ function getBrainConfig() {
     logger.info('Brain configuration loaded successfully', {
       wasmEnabled: !!brainConfig.wasmPath,
       gpuEnabled: brainConfig.enableGPU,
-      environment: environment,
+      environment,
     });
     return __assign(__assign({}, brainConfig), sharedConfig);
   } catch (error) {
@@ -309,8 +309,8 @@ function initializeBrainSystem() {
   });
 }
 exports.default = {
-  getBrainConfig: getBrainConfig,
-  validateBrainConfig: validateBrainConfig,
-  initializeBrainSystem: initializeBrainSystem,
+  getBrainConfig,
+  validateBrainConfig,
+  initializeBrainSystem,
   DEFAULT_BRAIN_CONFIG: exports.DEFAULT_BRAIN_CONFIG,
 };

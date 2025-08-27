@@ -71,9 +71,7 @@ const mockLM = {
 const exactMatch: MetricFunction = (
 	example: Example,
 	prediction: Prediction,
-): number => {
-	return prediction.data?.answer === example.data.answer ? 1 : 0;
-};
+): number => prediction.data?.answer === example.data.answer ? 1 : 0;
 
 describe("MIPROv2 Teleprompter", () => {
 	let miprov2: MIPROv2;
@@ -525,7 +523,7 @@ describe("MIPROv2 Teleprompter", () => {
 				forward: async () => ({ data: { answer: "test" } }),
 				predictors: () => [],
 				namedPredictors: () => [],
-				deepcopy: function () {
+				deepcopy () {
 					return this;
 				},
 			};

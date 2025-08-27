@@ -56,11 +56,25 @@
  * ```
  */
 
-import { err, ok, type Result } from "neverthrow";
+// Foundation re-exports Result types - use internal imports to avoid circular dependency
+import { err, ok, type Result } from "../../types/result.js";
 
 import { getLogger, type Logger } from "../../core/logging/index.js";
-import type { ServiceEvents } from "../../events/index.js";
-import { EventEmitter } from "../../events/index.js";
+import { EventEmitter } from "../../events/event-emitter.js";
+
+// Constants for duplicate string literals
+const ERROR_RECOVERY_NAME = "error-recovery";
+const ERROR_RECOVERY_SYSTEM_NAME = "error-recovery-system";
+const SERVICE_STOPPED_EVENT = "service-stopped";
+
+// Service event types for EventEmitter
+interface ServiceEvents {
+	service_started: { serviceName: string; timestamp: Date };
+	service_stopped: { serviceName: string; timestamp: Date };
+	service_error: { serviceName: string; error: Error; timestamp: Date };
+	health_check: { serviceName: string; healthy: boolean; timestamp: Date };
+	[key: string]: unknown;
+}
 
 // =============================================================================
 // CORE INTERFACES
@@ -264,7 +278,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
 			maxListeners: 30,
 		});
 
-		this.logger = getLogger("error-recovery-system");
+		this.logger = getLogger(SERVICE_NAMES.ERROR_RECOVERY_SYSTEM);
 
 		// Set defaults
 		this.recoveryConfig = {
@@ -474,7 +488,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
 
 		this.activeRecoveries.clear();
 		this.emit("service-stopped", {
-			serviceName: "error-recovery-system",
+			serviceName: SERVICE_NAMES.ERROR_RECOVERY_SYSTEM,
 			timestamp: new Date(),
 		});
 	}

@@ -1051,9 +1051,9 @@ export const brainSystem = {
   getSmartCoordinator: getSmartNeuralCoordinator,
   getOrchestrator: getNeuralOrchestrator,
   getComplexityEstimator: getTaskComplexityEstimator,
-  getAutonomousOptimizer: getAutonomousOptimizer,
-  getBehavioralIntelligence: getBehavioralIntelligence,
-  getNeuralBridge: getNeuralBridge,
+  getAutonomousOptimizer,
+  getBehavioralIntelligence,
+  getNeuralBridge,
 };
 // =============================================================================
 // MONITORING SYSTEM - Internal agent monitoring (formerly @claude-zen/agent-monitoring)

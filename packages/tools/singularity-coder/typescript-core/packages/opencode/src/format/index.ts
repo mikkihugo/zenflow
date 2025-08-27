@@ -40,7 +40,7 @@ export namespace Format {
   export function init() {
     log.info("init")
     Bus.subscribe(File.Event.Edited, async (payload) => {
-      const file = payload.properties.file
+      const {file} = payload.properties
       log.info("formatting", { file })
       const ext = path.extname(file)
 

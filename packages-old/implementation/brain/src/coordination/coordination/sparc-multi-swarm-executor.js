@@ -298,19 +298,19 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
                 (r) => r.gitTreeInfo.worktreePath
               ).length;
               multiSwarmResult = {
-                testId: testId,
-                taskDescription: taskDescription,
+                testId,
+                taskDescription,
                 strategies: sparcStrategies,
-                results: results,
-                comparison: comparison,
-                recommendations: recommendations,
+                results,
+                comparison,
+                recommendations,
                 metadata: {
-                  startTime: startTime,
-                  endTime: endTime,
+                  startTime,
+                  endTime,
                   totalDuration: endTime.getTime() - startTime.getTime(),
                   parallelExecution: options.parallelExecution !== false,
                   gitTreesUsed: options.useGitTrees !== false,
-                  totalWorktreesCreated: totalWorktreesCreated,
+                  totalWorktreesCreated,
                 },
               };
               logger.info(
@@ -617,7 +617,7 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
     _options
   ) {
     return __awaiter(this, void 0, void 0, function () {
-      var startTime, sparcResult, _duration, error_2, duration;
+      let startTime, sparcResult, _duration, error_2, duration;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
@@ -645,9 +645,9 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
             return [
               2 /*return*/,
               {
-                strategy: strategy,
+                strategy,
                 success: true,
-                duration: duration,
+                duration,
                 sparcMetrics: sparcResult.sparcMetrics,
                 qualityMetrics: sparcResult.qualityMetrics,
                 deliverables: sparcResult.deliverables,
@@ -665,9 +665,9 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
             return [
               2 /*return*/,
               {
-                strategy: strategy,
+                strategy,
                 success: false,
-                duration: duration,
+                duration,
                 sparcMetrics: {
                   phaseCompletionRate: 0,
                   requirementsCoverage: 0,
@@ -785,9 +785,9 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
                   testsGenerated: Math.floor(5 + Math.random() * 15),
                 },
                 gitTreeInfo: {
-                  worktreePath: worktreePath,
-                  branchName: branchName,
-                  commitsCreated: commitsCreated,
+                  worktreePath,
+                  branchName,
+                  commitsCreated,
                   mergedToMain: overallScore > 75, // Only merge successful executions
                 },
                 insights: [
@@ -942,10 +942,10 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
     });
     return {
       winner: winner.strategy,
-      confidence: confidence,
-      significance: significance,
-      sparcPerformanceDelta: sparcPerformanceDelta,
-      qualityDelta: qualityDelta,
+      confidence,
+      significance,
+      sparcPerformanceDelta,
+      qualityDelta,
     };
   };
   /**
@@ -974,7 +974,7 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
         const methodology = _a[0],
           scores = _a[1];
         return {
-          methodology: methodology,
+          methodology,
           avgScore:
             scores.reduce((sum, score) => sum + score, 0) / scores.length,
         };
@@ -1030,7 +1030,7 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
     return {
       bestMethodology: bestMethodology.methodology,
       optimalConfiguration: winner.strategy.sparcConfig,
-      reasoning: reasoning,
+      reasoning,
     };
   };
   return SPARCMultiSwarmExecutor;
