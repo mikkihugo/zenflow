@@ -617,7 +617,7 @@ const SPARCMultiSwarmExecutor = /** @class */ (() => {
     _options
   ) {
     return __awaiter(this, void 0, void 0, function () {
-      var startTime, sparcResult, _duration, error_2, duration;
+      let startTime, sparcResult, _duration, error_2, duration;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:

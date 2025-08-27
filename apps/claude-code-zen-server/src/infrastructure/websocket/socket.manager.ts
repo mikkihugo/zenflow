@@ -6,7 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { Server as SocketIOServer, Socket } from 'socket.io';
+import type { Server as SocketIOServer } from 'socket.io';
 
 const getVersion = () => '1.0.0';
 

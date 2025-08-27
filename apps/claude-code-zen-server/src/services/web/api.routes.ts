@@ -54,9 +54,6 @@ import {
   getLogger,
 } from '@claude-zen/foundation';
 // Direct package imports - no facades
-import { DatabaseProvider } from '@claude-zen/database';
-import { BrainCoordinator } from '@claude-zen/brain';
-import { SystemMonitor } from '@claude-zen/system-monitoring';
 
 // Constants to avoid string duplication
 const ERROR_MESSAGES = {

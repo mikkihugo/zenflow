@@ -5,9 +5,14 @@
  * Provides installation feedback and setup guidance
  */
 
-const { platform } = require('os');
-const { existsSync } = require('fs');
-const { join } = require('path');
+import { platform } from 'os';
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 console.log('\n🎉 Claude Code Zen installed successfully!');
 

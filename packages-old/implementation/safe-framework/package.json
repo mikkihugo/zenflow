@@ -35,7 +35,7 @@
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/knowledge": "workspace:*",
-    "@claude-zen/sparc": "file:../sparc",
+    "@claude-zen/sparc": "workspace:*",
     "@claude-zen/teamwork": "workspace:*",
     "@claude-zen/telemetry": "workspace:*",
     "@claude-zen/workflows": "workspace:*",

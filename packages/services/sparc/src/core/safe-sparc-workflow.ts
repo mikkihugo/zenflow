@@ -134,24 +134,27 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
       // Import SPARCCommander from this package
       const { SPARCCommander } = await import('./sparc-commander');
 
-      this.sparcEngine = new SPARCCommander(
+      this.sparcEngine = new SPARCCommander({
         enableQualityGates: true,
         enableMetrics: true,
         enableDocumentation: true,
         enableTesting: true,
-        qualityThreshold: 0.8,);
+        qualityThreshold: 0.8
+      });
 
       // Use actual workflow engine from @claude-zen/workflows package
       try {
         const { WorkflowEngine } = await import('@claude-zen/workflows');
 
-        this.workflowEngine = new WorkflowEngine(
+        this.workflowEngine = new WorkflowEngine({
           enableVisualization: true,
           persistWorkflows: true,
           timeout: 300000, // 5 minute timeout per phase
-          errorHandling: 
+          errorHandling: {
             retryCount: 2,
-            strategy: 'exponential-backoff' });
+            strategy: 'exponential-backoff'
+          }
+        });
 
         this.logger.info('Workflow engine initialized successfully');
       } catch (_workflowError) {
@@ -176,10 +179,10 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
       this.initialized = true;
       this.logger.info(
-        'SPARC Workflow initialized successfully with SPARC engine''
+        'SPARC Workflow initialized successfully with SPARC engine'
       );
 
-      this.emit('workflow-initialized', {'
+      this.emit('workflow-initialized', {
         workflowId: this.workflowConfig.workflowId,
         capabilities: [
           'sparc-methodology',
@@ -188,7 +191,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         ],
       });
     } catch (error) {
-      this.logger.error('Failed to initialize SPARC Workflow:', error);'
+      this.logger.error('Failed to initialize SPARC Workflow:', error);
       throw error;
     }
   }
@@ -251,7 +254,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
           pseudocode: this.findPhaseByName(sparcProject.phases, 'pseudocode'),
           architecture: this.findPhaseByName(
             sparcProject.phases,
-            'architecture''
+            'architecture'
           ),
           refinement: this.findPhaseByName(sparcProject.phases, 'refinement'),
           completion: this.findPhaseByName(sparcProject.phases, 'completion'),
@@ -267,7 +270,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         },
         safeIntegration: {
           cdPipelineId: safeSparcIntegration.pipelineId,
-          valueStreamId: `vs-${context.epic.id}`,`
+          valueStreamId: `vs-${context.epic.id}`,
           stages: safeSparcIntegration.stages,
           qualityGates: safeSparcIntegration.qualityGates,
         },
@@ -277,7 +280,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
       this.executedProjects.push(result);
 
       // Emit completion event
-      this.emit('sparc-completed', {'
+      this.emit('sparc-completed', {
         epicId: context.epic.id,
         projectId: result.projectId,
         result,
@@ -289,7 +292,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
       return result;
     } catch (error) {
       this.logger.error(
-        `SAFe-SPARC process failed for epic ${context.epic.title}:`,`
+        `SAFe-SPARC process failed for epic ${context.epic.title}:`,
         error
       );
       throw error;
@@ -317,7 +320,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
       return testProject !== null && workflowHealth;
     } catch (error) {
-      this.logger.error('SPARC Workflow health check failed:', error);'
+      this.logger.error('SPARC Workflow health check failed:', error);
       return false;
     }
   }
@@ -351,11 +354,11 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   ): Promise<any> {
     // Convert epic to SPARC project requirements
     const requirements = [
-      `Business Case: ${context.epic.businessCase}`,`
-      `Expected Value: $${context.epic.estimatedValue}`,`
-      `Budget Constraint: $${context.epic.estimatedCost}`,`
-      `Timeline: ${context.epic.timeframe}`,`
-      `Risk Level: ${context.epic.riskLevel}`,`
+      `Business Case: ${context.epic.businessCase}`,
+      `Expected Value: $${context.epic.estimatedValue}`,
+      `Budget Constraint: $${context.epic.estimatedCost}`,
+      `Timeline: ${context.epic.timeframe}`,
+      `Risk Level: ${context.epic.riskLevel}`,
     ];
 
     // Determine project domain based on epic characteristics
@@ -363,11 +366,11 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
     // Create SPARC project using SPARCCommander
     return await this.sparcEngine.initializeProject({
-      name: `epic-${context.epic.id}-${context.epic.title.toLowerCase().replace(/\s+/g, '-')}`,`
+      name: `epic-${context.epic.id}-${context.epic.title.toLowerCase().replace(/\s+/g, '-')}`,
       domain: domain,
       requirements: requirements,
       workingDirectory: process.cwd(),
-      outputDirectory: `./sparc-output/epic-${context.epic.id}`,`
+      outputDirectory: `./sparc-output/epic-${context.epic.id}`,
     });
   }
 
@@ -383,7 +386,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
       // Use safe-framework placeholder for now
       const sparcCDService = {
         mapSPARCToCD: async (project: any, result: any) => ({
-          pipelineId: `cd-pipeline-${project.id}`,`
+          pipelineId: `cd-pipeline-${project.id}`,
           stages: ['build', 'test', 'deploy'],
           qualityGates: ['code-quality', 'security-scan', 'performance-test'],
         }),
@@ -413,8 +416,8 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   ): Promise<any> {
     // Create workflow definition for SPARC process
     const workflowDefinition = {
-      id: `sparc-workflow-${project.id}`,`
-      name: `SPARC Workflow for ${project.name}`,`
+      id: `sparc-workflow-${project.id}`,
+      name: `SPARC Workflow for ${project.name}`,
       description: 'Orchestrated SPARC methodology execution',
       steps: [
         {
@@ -448,22 +451,22 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
   private determineProjectDomain(epic: EpicProposal): string {
     // Simple heuristic to determine domain from epic title/business case
-    const _text = `${epic.title} ${epic.businessCase}`.toLowerCase();`
+    const text = `${epic.title} ${epic.businessCase}`.toLowerCase();
 
     if (
-      text.includes('web')||text.includes('frontend')||text.includes('ui')'
+      text.includes('web') || text.includes('frontend') || text.includes('ui')
     ) {
-      return 'web-development;
+      return 'web-development';
     } else if (
-      text.includes('api')||text.includes('backend')||text.includes('service')'
+      text.includes('api') || text.includes('backend') || text.includes('service')
     ) {
-      return 'backend-development;
+      return 'backend-development';
     } else if (
-      text.includes('data')||text.includes('analytics')||text.includes('ml')'
+      text.includes('data') || text.includes('analytics') || text.includes('ml')
     ) {
-      return 'data-science;
-    } else if (text.includes('mobile')||text.includes('app')) {'
-      return 'mobile-development;
+      return 'data-science';
+    } else if (text.includes('mobile') || text.includes('app')) {
+      return 'mobile-development';
     } else {
       return 'system'; // Default domain'
     }

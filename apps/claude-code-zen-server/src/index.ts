@@ -90,7 +90,7 @@ class ClaudeZenServer {
         server.on('error', reject);
       });
       
-      return ok(undefined);
+      return ok();
     } catch (error) {
       logger.error('❌ Failed to start server:', error);
       return err(error instanceof Error ? error : new Error(String(error)));

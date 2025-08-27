@@ -14,7 +14,6 @@
  */
 
 // Direct package imports - no facades
-import { WebDashboard } from '@claude-zen/brain';
 
 // Utility function to replace facade
 function getWebDashboardURL(options?: { protocol?: string }): string {
