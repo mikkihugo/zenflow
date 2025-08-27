@@ -139,12 +139,7 @@ export { PredictiveAnalyticsService } from './services/value-stream/predictive-a
 // INTEGRATIONS - SAFe framework integrations
 // ============================================================================
 
-export type {
-  ImplementationResult,
-  WorkAssignment,
-} from './integrations/database-sparc-bridge';
-// Database-SPARC Bridge integration
-export { DatabaseSPARCBridge } from './integrations/database-sparc-bridge';
+// Database-SPARC integration now handled via event system - no direct bridge needed
 export type {
   SafePortfolioKanbanState,
   SafeProgramKanbanState,
