@@ -329,7 +329,7 @@ export class SPARCCommander extends TypedEventBase {
           continue;
         }
 
-        this.logger.info(`Executing phase: $phase.name`);`
+        this.logger.info(`Executing phase: ${phase.name}`);
 
         const phaseResult = await this.executePhase(project, phase);
 
@@ -362,7 +362,7 @@ export class SPARCCommander extends TypedEventBase {
         `SPARC methodology execution completed. Success: ${result.success}`
       );
       this.emit('methodology:completed', { project, result });
-    } catch (error) 
+    } catch (error) {
       result.errors.push({
         phase: 'methodology',
         code: 'EXECUTION_ERROR',
@@ -394,7 +394,7 @@ export class SPARCCommander extends TypedEventBase {
 
     phase.status = 'active';
     phase.startedAt = new Date();
-    this.activePhases.set(`${project.id}:${phase.name}`, phase);`
+    this.activePhases.set(`${project.id}:${phase.name}`, phase);
 
     const result = {
       success: false,
@@ -431,7 +431,7 @@ export class SPARCCommander extends TypedEventBase {
           result.errors.push({
             phase: phase.name,
             code: 'QUALITY_GATE_FAILED',
-            message: `Quality gates failed for phase ${phase.name}`,`
+            message: `Quality gates failed for phase ${phase.name}`,
             { qualityResult },
             timestamp: new Date(),
           });
@@ -458,7 +458,7 @@ export class SPARCCommander extends TypedEventBase {
 
       this.emit('phase:failed', { project, phase, error });'
     } finally {
-      this.activePhases.delete(`$project.id:$phase.name`);`
+      this.activePhases.delete(`${project.id}:${phase.name}`);
     }
 
     return result;
@@ -479,7 +479,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'requirements',
       name: 'Requirements Document',
       content: requirementsDoc,
-      path: `${project.context.outputDirectory}/requirements.md`,`
+      path: `${project.context.outputDirectory}/requirements.md`,
       validated: false,
       metrics: {
         size: requirementsDoc.length,
@@ -496,7 +496,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'acceptance-criteria',
       name: 'Acceptance Criteria',
       content: acceptanceCriteria,
-      path: `${project.context.outputDirectory}/acceptance-criteria.md`,`
+      path: `${project.context.outputDirectory}/acceptance-criteria.md`,
       validated: false,
       metrics: {
         size: acceptanceCriteria.length,
@@ -521,7 +521,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'pseudocode',
       name: 'Algorithm Pseudocode',
       content: pseudocode,
-      path: `${project.context.outputDirectory}/pseudocode.txt`,`
+      path: `${project.context.outputDirectory}/pseudocode.txt`,
       validated: false,
       metrics: {
         size: pseudocode.length,
@@ -538,7 +538,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'data-flow',
       name: 'Data Flow Diagram',
       content: dataFlow,
-      path: `${project.context.outputDirectory}/data-flow.md`,`
+      path: `${project.context.outputDirectory}/data-flow.md`,
       validated: false,
       metrics: {
         size: dataFlow.length,
@@ -563,7 +563,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'architecture',
       name: 'System Architecture',
       content: architecture,
-      path: `${project.context.outputDirectory}/architecture.md`,`
+      path: `${project.context.outputDirectory}/architecture.md`,
       validated: false,
       metrics: {
         size: architecture.length,
@@ -580,7 +580,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'components',
       name: 'Component Specifications',
       content: components,
-      path: `${project.context.outputDirectory}/components.md`,`
+      path: `${project.context.outputDirectory}/components.md`,
       validated: false,
       metrics: {
         size: components.length,
@@ -605,7 +605,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'implementation',
       name: 'Optimized Implementation',
       content: implementation,
-      path: `${project.context.outputDirectory}/implementation.ts`,`
+      path: `${project.context.outputDirectory}/implementation.ts`,
       validated: false,
       metrics: {
         size: implementation.length,
@@ -622,7 +622,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'optimizations',
       name: 'Performance Optimizations',
       content: optimizations,
-      path: `${project.context.outputDirectory}/optimizations.md`,`
+      path: `${project.context.outputDirectory}/optimizations.md`,
       validated: false,
       metrics: {
         size: optimizations.length,
@@ -647,7 +647,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'tests',
       name: 'Test Suite',
       content: tests,
-      path: `${project.context.outputDirectory}/tests.ts`,`
+      path: `${project.context.outputDirectory}/tests.ts`,
       validated: false,
       metrics: {
         size: tests.length,
@@ -665,7 +665,7 @@ export class SPARCCommander extends TypedEventBase {
       type: 'documentation',
       name: 'Project Documentation',
       content: documentation,
-      path: `${project.context.outputDirectory}/README.md`,`
+      path: `${project.context.outputDirectory}/README.md`,
       validated: false,
       metrics: {
         size: documentation.length,
@@ -805,7 +805,7 @@ FUNCTION main():
     END FOR
     RETURN success
 END FUNCTION
-`;`
+`;
 
   private generateDataFlowDiagram(project: SPARCProject): string 
     return `# Data Flow Diagram for ${project.name}`
@@ -822,7 +822,7 @@ $project.requirements.map((req) => `- ${req} → Processing → Output`).join('\
 - User Interface
 - Database Storage
 - External Services
-`;`
+`;
   }
 
   private generateArchitectureDocument(project: SPARCProject): string {
@@ -850,7 +850,7 @@ ${project.requirements
 - Framework: Node.js
 - Database: PostgreSQL
 - Cache: Redis
-`;`
+`;
   }
 
   private generateComponentSpecifications(project: SPARCProject): string {
@@ -906,7 +906,7 @@ All components integrate through standardized interfaces and event systems.
 - Response time: < 100ms
 - Memory usage: < 50MB per component
 - CPU utilization: < 10% under normal load
-`;`
+`;
   }
 
   private generateImplementation(project: SPARCProject): string {
@@ -933,7 +933,7 @@ export class ${project.name.replace(/\s+/g, '')} '
       console.error('Execution failed:', error);
       return false;
     }
-`;`
+`;
 
   private generateOptimizations(project: SPARCProject): string 
     return `# Performance Optimizations for ${project.name}`
@@ -956,7 +956,7 @@ export class ${project.name.replace(/\s+/g, '')} '
 - Response time improvement: 40%
 - Memory usage reduction: 25%
 - CPU utilization improvement: 30%
-`;`
+`;
 
   private generateTestSuite(project: SPARCProject): string 
     return `// Test Suite for ${project.name}`
@@ -984,7 +984,7 @@ describe('${project.name}', () => {'
     // Test error handling
     expect(() => instance.execute()).not.toThrow(););
 });
-`;`
+`;
 
   private generateDocumentation(project: SPARCProject): string 
     return `# ${project.name}`
@@ -1018,7 +1018,7 @@ npm test
 
 ## Contributing
 Please follow the SPARC methodology for all contributions.
-`;`
+`;
   }
 
   private initializePhases(): SPARCPhase[] {

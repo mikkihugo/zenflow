@@ -474,26 +474,26 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
   private determinePipelineType(project: any): string {
     // Determine pipeline type based on project characteristics
-    const domain = project.domain||'system;
+    const domain = project.domain || 'system';
 
-    if (domain === 'microservice'||project.name.includes('microservice')) {'
-      return 'microservice;
-    } else if (domain === 'library'||project.name.includes('library')) {'
-      return 'library;
+    if (domain === 'microservice' || project.name.includes('microservice')) {
+      return 'microservice';
+    } else if (domain === 'library' || project.name.includes('library')) {
+      return 'library';
     } else if (project.context?.epic?.estimatedCost > 1000000) {
-      return 'enterprise;
+      return 'enterprise';
     } else {
-      return 'standard;
+      return 'standard';
     }
   }
 
   private extractDeliverablesByType(
     deliverables: any[],
     type: string
-  ): string|null {
+  ): string | null {
     const matching = deliverables.filter((d) => d.type === type);
     return matching.length > 0
-      ? matching.map((d) => d.content).join('\n\n')'
+      ? matching.map((d) => d.content).join('\n\n')
       : null;
   }
 
