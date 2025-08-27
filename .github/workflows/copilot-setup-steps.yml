@@ -49,7 +49,7 @@ jobs:
       # Step 3: Setup PNPM
       # This step installs pnpm itself, which is required before we can install the project dependencies.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v2
         with:
           version: 8
 
