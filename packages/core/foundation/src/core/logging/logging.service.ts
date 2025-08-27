@@ -33,6 +33,8 @@ export enum LoggingLevel {
 	WARN = "warning",
 	/** Error messages for failure conditions */
 	ERROR = "error",
+	/** Fatal errors that require immediate attention */
+	FATAL = "fatal",
 }
 
 /**
@@ -452,7 +454,7 @@ class LoggingConfigurationManager {
 					.fetch(`${collectorEndpoint}/ingest`, {
 						method: "POST",
 						headers: {
-							// eslint-disable-next-line @typescript-eslint/naming-convention
+							 
 							"content-type": "application/json",
 						},
 						body: JSON.stringify(telemetryData),
@@ -493,7 +495,7 @@ class LoggingConfigurationManager {
 		componentLevel: string
 	) {
 		return (message: string, meta?: unknown) => {
-			if (this.shouldLog(level.toLowerCase(), componentLevel)) {
+			if (this.shouldLog(level, componentLevel as LoggingLevel)) {
 				const formattedMessage = this.formatMessage(message, meta);
 				logTapeMethod(formattedMessage);
 				addLogEntry({

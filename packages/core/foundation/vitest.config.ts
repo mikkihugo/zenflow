@@ -29,6 +29,9 @@ export default defineConfig({
 		// Environment setup
 		globals: true,
 		environment: "node",
+		
+		// Add performance API for browser compatibility testing
+		setupFiles: ['./tests/setup/globals.ts'],
 		// Skip broken setup file
 		// setupFiles: ['./tests/setup/vitest.setup.ts'],
 

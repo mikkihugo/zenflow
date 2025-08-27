@@ -1009,9 +1009,11 @@ mod tests {
   #[test]
   fn test_extract_capabilities() {
     let registry = ModelRegistry::new();
-    let mut capabilities = ModelCapabilities::default();
-    capabilities.online_learning = true;
-    capabilities.gpu_acceleration = true;
+    let capabilities = ModelCapabilities {
+      online_learning: true,
+      gpu_acceleration: true,
+      ..Default::default()
+    };
 
     let caps = registry.extract_capabilities(&capabilities);
     assert!(caps.contains(&"online_learning".to_string()));

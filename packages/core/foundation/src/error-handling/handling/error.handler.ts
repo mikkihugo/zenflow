@@ -34,7 +34,7 @@ import {
 	TimeoutStrategy,
 } from "cockatiel";
 // Use internal neverthrow import to avoid circular dependency (foundation internal implementation)
-// eslint-disable-next-line no-restricted-imports
+ 
 import { err, errAsync, ok, okAsync, Result, ResultAsync } from "neverthrow";
 
 import { getLogger } from "../../core/logging/index.js";

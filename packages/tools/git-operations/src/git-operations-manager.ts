@@ -234,6 +234,8 @@ export interface GitOperationConfig {
   intelligentBranching: boolean;
   /** Enable automated maintenance */
   automatedMaintenance: boolean;
+  /** Always use git worktrees for isolation */
+  alwaysUseWorktrees: boolean;
   /** Maximum concurrent git operations */
   maxConcurrentOps: number;
   /** Git operation timeout (ms) */
@@ -396,6 +398,7 @@ export class GitOperationsManager extends Commander {
       maxConcurrentOps: 10,
       operationTimeout: 300000, // 5 minutes
       remotes: [],
+      alwaysUseWorktrees: true, // DEFAULT: Always use worktrees for isolation
       ...config,
     };
 
@@ -1932,6 +1935,170 @@ Respond in JSON format:
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
+    }
+  }
+
+  // ====================================================================
+  // GIT WORKTREE OPERATIONS - For parallel development workflows
+  // ====================================================================
+
+  /**
+   * Create git worktree for parallel development
+   */
+  async createWorktree(
+    projectId: string,
+    worktreeName: string,
+    options: {
+      branch?: string;
+      baseBranch?: string;
+      path?: string;
+    } = {}
+  ): Promise<string> {
+    const operation = this.createOperation(
+      'branch',
+      projectId,
+      `worktree-${worktreeName}`
+    );
+
+    try {
+      const sandbox = await this.getSandboxForProject(projectId);
+      const branch = options.branch || `worktree/${worktreeName}`;
+      const baseBranch = options.baseBranch || 'main';
+      const worktreePath = options.path || `../worktrees/${worktreeName}`;
+
+      await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
+        // Create new branch from base branch
+        await git.checkout(baseBranch);
+        await git.checkoutLocalBranch(branch);
+        
+        // Create worktree
+        await git.raw(['worktree', 'add', worktreePath, branch]);
+      });
+
+      this.completeOperation(operation, { 
+        worktreeName,
+        branch,
+        path: worktreePath,
+      });
+
+      logger.info('✅ Git worktree created successfully', {
+        commanderId: this.commanderId,
+        projectId,
+        worktreeName,
+        branch,
+        path: worktreePath,
+      });
+
+      return worktreePath;
+    } catch (error) {
+      this.failOperation(operation, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Remove git worktree and cleanup
+   */
+  async removeWorktree(
+    projectId: string,
+    worktreeName: string,
+    options: {
+      deleteBranch?: boolean;
+      force?: boolean;
+    } = {}
+  ): Promise<void> {
+    const operation = this.createOperation(
+      'branch',
+      projectId,
+      `remove-worktree-${worktreeName}`
+    );
+
+    try {
+      const sandbox = await this.getSandboxForProject(projectId);
+      const worktreePath = `../worktrees/${worktreeName}`;
+
+      await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
+        const removeFlags = options.force ? ['--force'] : [];
+        
+        // Remove worktree
+        await git.raw(['worktree', 'remove', worktreePath, ...removeFlags]);
+        
+        // Delete branch if requested
+        if (options.deleteBranch) {
+          const branch = `worktree/${worktreeName}`;
+          const deleteFlag = options.force ? '-D' : '-d';
+          await git.raw(['branch', deleteFlag, branch]);
+        }
+      });
+
+      this.completeOperation(operation, { 
+        worktreeName,
+        deletedBranch: options.deleteBranch,
+      });
+
+      logger.info('✅ Git worktree removed successfully', {
+        commanderId: this.commanderId,
+        projectId,
+        worktreeName,
+        deletedBranch: options.deleteBranch,
+      });
+    } catch (error) {
+      this.failOperation(operation, error);
+      throw error;
+    }
+  }
+
+  /**
+   * List all git worktrees
+   */
+  async listWorktrees(projectId: string): Promise<Array<{
+    path: string;
+    branch: string;
+    commit: string;
+    isMain: boolean;
+  }>> {
+    try {
+      const sandbox = await this.getSandboxForProject(projectId);
+      const worktrees: Array<{
+        path: string;
+        branch: string;
+        commit: string;
+        isMain: boolean;
+      }> = [];
+
+      await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
+        const result = await git.raw(['worktree', 'list', '--porcelain']);
+        const lines = result.split('\n');
+        
+        let currentWorktree: any = {};
+        
+        for (const line of lines) {
+          if (line.startsWith('worktree ')) {
+            if (currentWorktree.path) {
+              worktrees.push(currentWorktree);
+            }
+            currentWorktree = { path: line.substring(9), isMain: false };
+          } else if (line.startsWith('branch ')) {
+            currentWorktree.branch = line.substring(7);
+          } else if (line.startsWith('HEAD ')) {
+            currentWorktree.commit = line.substring(5);
+          } else if (line === 'bare') {
+            currentWorktree.isMain = true;
+          }
+        }
+        
+        if (currentWorktree.path) {
+          worktrees.push(currentWorktree);
+        }
+      });
+
+      return worktrees;
+    } catch (error) {
+      logger.warn('Failed to list worktrees', {
+        projectId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      return [];
     }
   }
 }

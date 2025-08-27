@@ -30,6 +30,10 @@
     "./teamwork": {
       "types": "./dist/teamwork/index.d.ts",
       "import": "./dist/teamwork/index.js"
+    },
+    "./agui": {
+      "types": "./dist/agui/index.d.ts",
+      "import": "./dist/agui/index.js"
     }
   },
   "scripts": {
@@ -41,7 +45,6 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/brain": "workspace:*",
     "@claude-zen/knowledge": "workspace:*",
     "@claude-zen/ai-safety": "workspace:*",

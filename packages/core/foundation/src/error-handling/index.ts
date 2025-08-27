@@ -56,7 +56,7 @@ export {
 	createErrorChain,
 	EnhancedError,
 	ErrorAggregator,
-	ErrorHandling,
+	ERROR_HANDLING,
 	ensureError,
 	err,
 	errAsync,

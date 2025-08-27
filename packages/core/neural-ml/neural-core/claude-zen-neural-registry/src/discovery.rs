@@ -997,9 +997,11 @@ mod tests {
   #[test]
   fn test_extract_capability_names() {
     let discovery = ModelDiscovery::default();
-    let mut capabilities = ModelCapabilities::default();
-    capabilities.online_learning = true;
-    capabilities.gpu_acceleration = true;
+    let capabilities = ModelCapabilities {
+      online_learning: true,
+      gpu_acceleration: true,
+      ..Default::default()
+    };
 
     let names = discovery.extract_capability_names(&capabilities);
     assert!(names.contains("online_learning"));

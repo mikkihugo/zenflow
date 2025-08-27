@@ -10,7 +10,7 @@ import { expect, vi } from "vitest";
 import "./global-types";
 
 // Set up proper event handling to prevent memory leaks and hangs
-import { EventEmitter } from "eventemitter3";
+import { EventEmitter } from "@claude-zen/foundation";
 
 // Increase max listeners globally to prevent warnings
 EventEmitter.defaultMaxListeners = 20;

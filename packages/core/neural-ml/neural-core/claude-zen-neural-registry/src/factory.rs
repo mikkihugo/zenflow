@@ -646,8 +646,10 @@ mod tests {
 
   #[test]
   fn test_creation_stats_clone() {
-    let mut stats = CreationStats::default();
-    stats.total_created = 5;
+    let mut stats = CreationStats {
+      total_created: 5,
+      ..Default::default()
+    };
     stats.by_category.insert(ModelCategory::Basic, 3);
 
     let cloned = stats.clone();

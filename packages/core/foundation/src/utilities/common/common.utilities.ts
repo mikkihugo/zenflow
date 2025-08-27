@@ -64,10 +64,15 @@
 // Re-export zod for type-safe validation
 // Foundation integration utilities
 import type { CleanedEnv, Spec } from "envalid";
-import { cleanEnv, bool as envBool, str as envStr } from "envalid";
+import { bool, cleanEnv, email, host, json, num, port, str, url } from "envalid";
 import { type ZodType, z } from "zod";
 import { getLogger } from "../../core/logging/index.js";
 import { err, ok, type Result } from "../../error-handling/index.js";
+
+// Constants for duplicate string literals
+const ERROR_MESSAGES = {
+	UNKNOWN_ERROR: "Unknown error"
+} as const;
 
 /**
  * Common environment configuration schema and validation utilities.
@@ -84,9 +89,9 @@ export {
 	parseISO,
 	subDays,
 } from "date-fns";
-export type { CleanedEnv, Spec } from "envalid";
+export type { CleanedEnv, Spec };
 // Re-export envalid for environment validation
-export { bool, email, host, json, num, port, str, url } from "envalid";
+export { bool, email, host, json, num, port, str, url };
 
 // Re-export exit-hook for process lifecycle
 export { default as onExit } from "exit-hook";
@@ -269,15 +274,15 @@ export async function withTimeout<T>(
 }
 
 export const commonEnvSchema = {
-	NODE_ENV: envStr({
+	NODE_ENV: str({
 		choices: ["development", "production", "test"],
 		default: "development",
 	}),
-	LOG_LEVEL: envStr({
+	LOG_LEVEL: str({
 		choices: ["error", "warn", "info", "debug"],
 		default: "info",
 	}),
-	DEBUG: envBool({ default: false }),
+	DEBUG: bool({ default: false }),
 } as const;
 
 /**
@@ -323,7 +328,7 @@ export function parseJSON<T = unknown>(text: string): Result<T, Error> {
 	} catch (error) {
 		return err(
 			new Error(
-				`Invalid JSON: ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Invalid JSON: ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -346,7 +351,7 @@ export function stringifyJSON(
 	} catch (error) {
 		return err(
 			new Error(
-				`JSON serialization failed: ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`JSON serialization failed: ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -444,7 +449,7 @@ export function safeGet<T>(
 	} catch (error) {
 		return err(
 			new Error(
-				`Failed to access property '${path}': ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Failed to access property '${path}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -482,7 +487,7 @@ export async function readFile(
 	} catch (error) {
 		return err(
 			new Error(
-				`Failed to read file '${filePath}': ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Failed to read file '${filePath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -514,7 +519,7 @@ export async function writeFile(
 	} catch (error) {
 		return err(
 			new Error(
-				`Failed to write file '${filePath}': ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Failed to write file '${filePath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -536,7 +541,7 @@ export async function directoryExists(
 		}
 		return err(
 			new Error(
-				`Failed to check directory '${dirPath}': ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Failed to check directory '${dirPath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -558,7 +563,7 @@ export async function fileExists(
 		}
 		return err(
 			new Error(
-				`Failed to check file '${filePath}': ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Failed to check file '${filePath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}
@@ -582,7 +587,7 @@ export function safePath(...segments: string[]): Result<string, Error> {
 	} catch (error) {
 		return err(
 			new Error(
-				`Invalid path: ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Invalid path: ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`,
 			),
 		);
 	}

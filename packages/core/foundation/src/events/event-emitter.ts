@@ -11,7 +11,7 @@ import { EventEmitter as NodeEventEmitter } from 'events';
  * Fully typed event map interface
  */
 export interface EventMap {
-  [key: string]: any[];
+  [key: string]: unknown[];
 }
 
 /**
@@ -34,63 +34,63 @@ export class EventEmitter<T extends EventMap = EventMap> extends NodeEventEmitte
   /**
    * Typed emit method - supports both typed and untyped usage
    */
-  emit<K extends keyof T>(event: K, ...args: EventArgs<T, K>): boolean;
-  emit(event: string | symbol, ...args: any[]): boolean;
-  override emit(event: any, ...args: any[]): boolean {
+  override emit<K extends keyof T>(event: K, ...args: EventArgs<T, K>): boolean;
+  override emit(event: string | symbol, ...args: unknown[]): boolean;
+  override emit(event: string | symbol, ...args: unknown[]): boolean {
     return super.emit(event, ...args);
   }
 
   /**
    * Typed on method - supports both typed and untyped usage
    */
-  on<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  on(event: string | symbol, listener: (...args: any[]) => void): this;
-  override on(event: any, listener: any): this {
+  override on<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
+  override on(event: string | symbol, listener: (...args: unknown[]) => void): this;
+  override on(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.on(event, listener);
   }
 
   /**
    * Typed once method - supports both typed and untyped usage
    */
-  once<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  once(event: string | symbol, listener: (...args: any[]) => void): this;
-  override once(event: any, listener: any): this {
+  override once<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
+  override once(event: string | symbol, listener: (...args: unknown[]) => void): this;
+  override once(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.once(event, listener);
   }
 
   /**
    * Typed off method - supports both typed and untyped usage
    */
-  off<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  off(event: string | symbol, listener: (...args: any[]) => void): this;
-  override off(event: any, listener: any): this {
+  override off<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
+  override off(event: string | symbol, listener: (...args: unknown[]) => void): this;
+  override off(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.off(event, listener);
   }
 
   /**
    * Typed removeListener method - supports both typed and untyped usage
    */
-  removeListener<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
-  removeListener(event: string | symbol, listener: (...args: any[]) => void): this;
-  override removeListener(event: any, listener: any): this {
+  override removeListener<K extends keyof T>(event: K, listener: (...args: EventArgs<T, K>) => void): this;
+  override removeListener(event: string | symbol, listener: (...args: unknown[]) => void): this;
+  override removeListener(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.removeListener(event, listener);
   }
 
   /**
    * Typed listeners method - supports both typed and untyped usage
    */
-  listeners<K extends keyof T>(event: K): ((...args: EventArgs<T, K>) => void)[];
-  listeners(event: string | symbol): Function[];
-  override listeners(event: any): Function[] {
+  override listeners<K extends keyof T>(event: K): ((...args: EventArgs<T, K>) => void)[];
+  override listeners(event: string | symbol): ((...args: unknown[]) => void)[];
+  override listeners(event: string | symbol): ((...args: unknown[]) => void)[] {
     return super.listeners(event);
   }
 
   /**
    * Typed listenerCount method - supports both typed and untyped usage
    */
-  listenerCount<K extends keyof T>(event: K): number;
-  listenerCount(event: string | symbol): number;
-  override listenerCount(event: any): number {
+  override listenerCount<K extends keyof T>(event: K): number;
+  override listenerCount(event: string | symbol): number;
+  override listenerCount(event: string | symbol): number {
     return super.listenerCount(event);
   }
 }

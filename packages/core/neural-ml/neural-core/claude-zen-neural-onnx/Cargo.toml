@@ -1,0 +1,41 @@
+[package]
+name = "claude-zen-neural-onnx"
+version = "0.1.0"
+edition = "2021"
+authors = ["claude-code-zen Team"]
+description = "ONNX Runtime in Rust - replaces onnxruntime-node with native performance"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "claude_zen_neural_onnx"
+path = "src/lib.rs"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+# Core dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+log = { workspace = true }
+
+# ONNX Runtime bindings
+ort = { workspace = true }
+tract-onnx = { workspace = true }
+
+# Data handling
+ndarray = { workspace = true }
+polars = { workspace = true }
+
+# Async support
+tokio = { workspace = true }
+
+# HTTP for model downloading
+reqwest = { workspace = true, features = ["json"] }
+
+
+[features]
+default = ["ort-backend", "gpu"]
+ort-backend = []
+tract-backend = []
+gpu = []

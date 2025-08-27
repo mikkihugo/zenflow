@@ -2,7 +2,7 @@
 resolver = "2"
 members = [
     # Core services - new organized structure
-    "packages/services/brain/rust/core",
+    # "packages/services/brain/rust/core",  # Disabled - path does not exist
     
     # Tools - singularity coder components (moved to new structure)
     "packages/tools/singularity-coder/rust-core/code-mesh-cli",

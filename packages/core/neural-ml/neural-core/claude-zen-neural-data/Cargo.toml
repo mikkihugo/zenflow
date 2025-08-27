@@ -50,7 +50,7 @@ rand_distr = "0.5"
 # Data format support
 csv = "1.2"
 arrow = { version = "56.0", features = ["csv", "json"] }
-polars = { version = "0.50", features = ["lazy", "temporal", "csv", "json", "parquet"] }
+polars = { version = "0.41", features = ["lazy", "temporal", "csv", "json", "parquet"] }
 
 # Interpolation and numerical methods
 interpolation = "0.3"  # Stable interpolation library

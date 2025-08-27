@@ -242,11 +242,10 @@ describe("Foundation Type Utilities - 100% Coverage", () => {
 
 			it("should have consistent enum values", () => {
 				const values = Object.values(Priority);
-				expect(values).toContain("low");
-				expect(values).toContain("medium");
-				expect(values).toContain("high");
-				expect(values).toContain("critical");
-				expect(values).toContain("urgent");
+				const expectedValues = ["low", "medium", "high", "critical", "urgent"];
+				expectedValues.forEach(value => {
+					expect(values).toContain(value);
+				});
 				expect(values).toHaveLength(5);
 			});
 		});

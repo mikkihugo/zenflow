@@ -7,7 +7,7 @@
  * @file TaskMaster API routes for SAFe workflow management.
  */
 // Direct package imports - no facades
-import { TaskMaster } from '@claude-zen/coordination/orchestration';
+import { TaskMaster } from '@claude-zen/coordination';
 import { generateUUID, getLogger } from '@claude-zen/foundation';
 import { Router } from 'express';
 import { asyncHandler } from '../middleware/errors';

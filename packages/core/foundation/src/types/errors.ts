@@ -23,8 +23,7 @@
  * ```
  */
 
-import type { Timestamp, UUID } from "./primitives";
-import { LogLevel } from "./primitives";
+import { LogLevel, type Timestamp, type UUID } from "./primitives";
 
 // =============================================================================
 // BASE ERROR TYPES - Foundation error interfaces

@@ -8,6 +8,5 @@
  * - Lazy loading simulation
  * - Metrics collection
  */
-declare function testNeuralOrchestrator(): Promise<void>;
-export { testNeuralOrchestrator };
+export {};
 //# sourceMappingURL=test-neural-orchestrator.d.ts.map

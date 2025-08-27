@@ -3,9 +3,10 @@
   "compilerOptions": {
     "downlevelIteration": true
   },
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
-    { "path": "../../public-api/core/foundation" },
+    { "path": "../foundation" },
     { "path": "../event-system" },
     { "path": "../database" }
   ]

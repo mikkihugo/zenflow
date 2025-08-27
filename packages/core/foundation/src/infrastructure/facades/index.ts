@@ -4,4 +4,4 @@
  * Infrastructure service facades and status management.
  */
 
-export * from "./facade.status.manager.js";
+export * from "./system.status.manager.js";

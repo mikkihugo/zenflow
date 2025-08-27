@@ -448,7 +448,7 @@ export class AgentPerformancePredictor {
       // Simple load forecast based on recent patterns
       return Math.min(1, hybridPrediction); // Normalize to 0-1 scale
     } catch (error) {
-      logger.warn(`Error forecasting load for agent ${agentId}:`, error);`
+      logger.warn(`Error forecasting load for agent ${agentId}:`, error);
       // Fallback to simple calculation
       const concurrentTaskCounts = history.map((d) => d.concurrentTasks);
       const recentAverage = mean(concurrentTaskCounts.slice(-10));
@@ -841,7 +841,7 @@ export class AgentPerformancePredictor {
       trends: {
         cpu: cpuTrend > 0.1 ? 'increasing' : cpuTrend < -0.1 ? 'decreasing' : 'stable',
         memory: memoryTrend > 0.1 ? 'increasing' : memoryTrend < -0.1 ? 'decreasing' : 'stable',
-        errors: errorTrend > 0.05 ? 'increasing' : errorTrend < -0.05 ? 'decreasing' : 'stable''
+        errors: errorTrend > 0.05 ? 'increasing' : errorTrend < -0.05 ? 'decreasing' : 'stable'
       },
       volatility: {
         cpu: this.calculateVolatility(persistedMetrics.map((d: any) => d.cpuUsage)),
@@ -871,10 +871,10 @@ export class AgentPerformancePredictor {
     if (metrics.avgCpuUsage > cpuThreshold) {
       const severity = metrics.trends?.cpu === 'increasing' ? 'critical' : 'high';
       const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
-      issues.push(`$severityCPU usage (${(_metrics._avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);`
+      issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);
       
       // Log critical performance event for this specific agent
-      await this.logCriticalPerformanceEvent(agentId, 'cpu_spike', {'
+      await this.logCriticalPerformanceEvent(agentId, 'cpu_spike', {
         current: metrics.avgCpuUsage,
         baseline: agentBaseline.cpu,
         threshold: cpuThreshold,
@@ -1083,7 +1083,7 @@ export class AgentPerformancePredictor {
         queueSize: Math.floor(Math.random() * 20)
       };
     } catch (error) {
-      logger.warn(`Failed to load realtime metrics for ${agentId}:`, error);`
+      logger.warn(`Failed to load realtime metrics for ${agentId}:`, error);
       return {};
     }
   }

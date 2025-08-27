@@ -1,0 +1,47 @@
+[package]
+name = "claude-zen-neural-language"
+version = "0.1.0"
+edition = "2021"
+authors = ["claude-code-zen Team"]
+description = "Language model pipelines - HuggingFace/transformers replacement with ONNX, tokenization, text classification, Q&A"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "claude_zen_neural_language"
+path = "src/lib.rs"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+# Core dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+log = { workspace = true }
+
+# ML frameworks
+burn = { workspace = true, features = ["wgpu", "ndarray"] }
+burn-core = { workspace = true }
+burn-tensor = { workspace = true }
+burn-autodiff = { workspace = true }
+
+# ONNX for model loading (HuggingFace compatibility)
+ort = { workspace = true }
+tract-onnx = { workspace = true }
+
+# Text processing
+tokenizers = "0.20"
+regex = "1.10"
+
+# Data handling
+ndarray = { workspace = true }
+
+# HTTP for model downloading
+reqwest = { workspace = true, features = ["json"], optional = true }
+tokio = { workspace = true }
+
+[features]
+default = ["burn-backend", "onnx"]
+burn-backend = []
+onnx = []
+huggingface = ["reqwest"]

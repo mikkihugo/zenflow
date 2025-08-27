@@ -14,3 +14,16 @@ export {
   DocumentWorkflowSystem,
   DocumentWorkflowSystem as ProductFlowSystem,
 } from './document-workflow-system';
+
+// Document workflow service - moved from coordination
+export { DocumentWorkflowService } from './services/document-workflow-service';
+export type {
+  DocumentContent,
+  DocumentWorkflowDefinition,
+  DocumentWorkflowStep,
+  DocumentWorkflowResult,
+} from './services/document-workflow-service';
+
+// Document task coordination
+export { DocumentTaskCoordinator } from './services/document-task-coordinator';
+export { StrategicVisionService } from './services/strategic-vision-service';

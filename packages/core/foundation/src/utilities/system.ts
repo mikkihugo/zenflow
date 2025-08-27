@@ -130,7 +130,8 @@ export function getPlatform(): Platform {
 	}
 
 	// Check for Android (common in Node.js environments)
-	if (platform === "linux" && process.env['ANDROID_ROOT']) {
+	const { env } = process;
+	if (platform === "linux" && env['ANDROID_ROOT']) {
 		return "android";
 	}
 
@@ -500,7 +501,7 @@ export function getWorkspaceDetector(): WorkspaceDetector {
  * }
  * ```
  */
-export async function detectWorkspace(
+export function detectWorkspace(
 	startPath?: string,
 ): Promise<DetectedWorkspace | null> {
 	const detector = getWorkspaceDetector();
@@ -532,7 +533,7 @@ export function getSystemCapabilities(): Promise<SystemCapabilityData> {
  * // Outputs detailed system status with colors and emojis
  * ```
  */
-export async function showSystemStatus(): Promise<void> {
+export function showSystemStatus(): Promise<void> {
 	return displaySystemStatus();
 }
 
@@ -561,7 +562,7 @@ export function startMonitoring(): void {
  * console.log('Infrastructure capability:', scores.infrastructure);
  * ```
  */
-export async function getCapabilityScoreMap(): Promise<Record<string, number>> {
+export function getCapabilityScoreMap(): Promise<Record<string, number>> {
 	return getCapabilityScores();
 }
 

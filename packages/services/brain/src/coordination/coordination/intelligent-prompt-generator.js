@@ -16,869 +16,1177 @@
  * @version 1.0.0
  * @since 2024-01-01
  */
-var __assign =
-  (this && this.__assign) ||
-  function () {
-    __assign =
-      Object.assign ||
-      ((t) => {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-          s = arguments[i];
-          for (const p in s) if (Object.hasOwn(s, p)) t[p] = s[p];
-        }
-        return t;
-      });
-    return __assign.apply(this, arguments);
-  };
-const __awaiter =
-  (this && this.__awaiter) ||
-  ((thisArg, _arguments, P, generator) => {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P((resolve) => {
-            resolve(value);
-          });
-    }
-    return new (P || (P = Promise))((resolve, reject) => {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator.throw(value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function step(result) {
-        result.done
-          ? resolve(result.value)
-          : adopt(result.value).then(fulfilled, rejected);
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-  });
-const __generator =
-  (this && this.__generator) ||
-  ((thisArg, body) => {
-    let _ = {
-        label: 0,
-        sent: () => {
-          if (t[0] & 1) throw t[1];
-          return t[1];
-        },
-        trys: [],
-        ops: [],
-      },
-      f,
-      y,
-      t,
-      g = Object.create(
-        (typeof Iterator === 'function' ? Iterator : Object).prototype
-      );
-    return (
-      (g.next = verb(0)),
-      (g.throw = verb(1)),
-      (g.return = verb(2)),
-      typeof Symbol === 'function' &&
-        (g[Symbol.iterator] = function () {
-          return this;
-        }),
-      g
-    );
-    function verb(n) {
-      return (v) => step([n, v]);
-    }
-    function step(op) {
-      if (f) throw new TypeError('Generator is already executing.');
-      while ((g && ((g = 0), op[0] && (_ = 0)), _))
-        try {
-          if (
-            ((f = 1),
-            y &&
-              (t =
-                op[0] & 2
-                  ? y.return
-                  : op[0]
-                    ? y.throw || ((t = y.return) && t.call(y), 0)
-                    : y.next) &&
-              !(t = t.call(y, op[1])).done)
-          )
-            return t;
-          if (((y = 0), t)) op = [op[0] & 2, t.value];
-          switch (op[0]) {
-            case 0:
-            case 1:
-              t = op;
-              break;
-            case 4:
-              _.label++;
-              return { value: op[1], done: false };
-            case 5:
-              _.label++;
-              y = op[1];
-              op = [0];
-              continue;
-            case 7:
-              op = _.ops.pop();
-              _.trys.pop();
-              continue;
-            default:
-              if (
-                !((t = _.trys), (t = t.length > 0 && t[t.length - 1])) &&
-                (op[0] === 6 || op[0] === 2)
-              ) {
-                _ = 0;
-                continue;
-              }
-              if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
-                _.label = op[1];
-                break;
-              }
-              if (op[0] === 6 && _.label < t[1]) {
-                _.label = t[1];
-                t = op;
-                break;
-              }
-              if (t && _.label < t[2]) {
-                _.label = t[2];
-                _.ops.push(op);
-                break;
-              }
-              if (t[2]) _.ops.pop();
-              _.trys.pop();
-              continue;
-          }
-          op = body.call(thisArg, _);
-        } catch (e) {
-          op = [6, e];
-          y = 0;
-        } finally {
-          f = t = 0;
-        }
-      if (op[0] & 5) throw op[1];
-      return { value: op[0] ? op[1] : void 0, done: true };
-    }
-  });
-const __spreadArray =
-  (this && this.__spreadArray) ||
-  ((to, from, pack) => {
-    if (pack || arguments.length === 2)
-      for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-          ar[i] = from[i];
-        }
-      }
-    return to.concat(ar || Array.prototype.slice.call(from));
-  });
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.DEFAULT_CODING_STANDARDS = exports.IntelligentPromptGenerator = void 0;
-exports.createIntelligentPromptGenerator = createIntelligentPromptGenerator;
-const foundation_1 = require('@claude-zen/foundation');
 /**
  * Intelligent Prompt Generator
  *
  * Generates context-aware, high-quality development prompts with
  * integrated coding standards and best practices.
  */
-const IntelligentPromptGenerator = /** @class */ (() => {
-  function IntelligentPromptGenerator(
-    behavioralIntelligence,
-    codingPrinciplesResearcher
-  ) {
-    this.logger = (0, foundation_1.getLogger)('IntelligentPromptGenerator');
-    this.behavioralIntelligence = behavioralIntelligence;
-    this.codingPrinciplesResearcher = codingPrinciplesResearcher;
-    this.defaultConfig = {
-      language: 'typescript',
-      maxComplexity: 10,
-      maxLinesPerFunction: 30,
-      maxParameters: 5,
-      fileNaming: 'kebab-case',
-      includePerformance: true,
-      includeSecurity: true,
-    };
-  }
-  /**
-   * Generate intelligent prompt for development phase using meta-learning with confidence tracking
-   */
-  IntelligentPromptGenerator.prototype.generatePrompt = function (
-    phase,
-    context,
-    config
-  ) {
-    return __awaiter(this, void 0, void 0, function () {
-      let mergedConfig,
-        complexityScore,
-        researchConfig,
-        adaptivePrinciples,
-        content_1,
-        error_1,
-        dspyOptimizedPrompt,
-        error_2,
-        codingStandards,
-        phaseGuidelines,
-        qualityMetrics,
-        content,
-        enhancedContent;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            mergedConfig = __assign(__assign({}, this.defaultConfig), config);
-            complexityScore = this.calculateComplexityScore(context, phase);
-            _a.label = 1;
-            break;
-          case 1:
-            _a.trys.push([1, 3, undefined, 4]);
-            researchConfig = {
-              language: mergedConfig.language,
-              domain: this.inferDomainFromContext(context),
-              role: this.inferRoleFromPhase(phase),
-              includePerformance: mergedConfig.includePerformance,
-              includeSecurity: mergedConfig.includeSecurity,
-              includeTesting: true,
-              depth: complexityScore > 7 ? 'advanced' : 'intermediate',
+export class IntelligentPromptGenerator {
+    ';
+    constructor(behavioralIntelligence, codingPrinciplesResearcher) {
+        this.behavioralIntelligence = behavioralIntelligence;
+        this.codingPrinciplesResearcher = codingPrinciplesResearcher;
+        this.defaultConfig = {
+            language: 'typescript',
+            maxComplexity: 10,
+            maxLinesPerFunction: 30,
+            maxParameters: 5,
+            fileNaming: 'kebab-case',
+            includePerformance: true,
+            includeSecurity: true,
+        };
+    }
+    /**
+     * Generate intelligent prompt for development phase using meta-learning with confidence tracking
+     */
+    async generatePrompt(phase, context, config) {
+        const mergedConfig = { ...this.defaultConfig, ...config };
+        const complexityScore = this.calculateComplexityScore(context, phase);
+        try {
+            // Use enhanced coding principles researcher with meta-learning
+            const researchConfig = {
+                language: mergedConfig.language,
+                domain: this.inferDomainFromContext(context),
+                role: this.inferRoleFromPhase(phase),
+                includePerformance: mergedConfig.includePerformance,
+                includeSecurity: mergedConfig.includeSecurity,
+                includeTesting: true,
+                depth: complexityScore > 7
+                    ? 'advanced' : , ': 'intermediate',
             };
-            return [4 /*yield*/, this.getAdaptivePrinciples(researchConfig)];
-          case 2:
-            adaptivePrinciples = _a.sent();
+            // Get adaptive principles that improve over time with agent feedback
+            const adaptivePrinciples = await this.getAdaptivePrinciples(researchConfig);
             if (adaptivePrinciples) {
-              content_1 = this.buildMetaLearningPromptContent(
-                phase,
-                context,
-                adaptivePrinciples
-              );
-              return [
-                2 /*return*/,
-                {
-                  content: content_1,
-                  codingStandards: adaptivePrinciples.template,
-                  phaseGuidelines: this.generatePhaseGuidelines(
-                    phase,
-                    context,
-                    mergedConfig
-                  ),
-                  qualityMetrics:
-                    this.convertPrinciplesToMetrics(adaptivePrinciples),
-                  complexityScore: complexityScore,
-                  // Add meta-learning metadata
-                  metadata: {
-                    principlesId: this.generatePrinciplesId(researchConfig),
-                    researchConfidence:
-                      adaptivePrinciples.researchMetadata.confidence,
-                    usesPrinciplesResearch: true,
-                    researchedAt:
-                      adaptivePrinciples.researchMetadata.researchedAt,
-                  },
-                },
-              ];
+                const content = this.buildMetaLearningPromptContent(phase, context, adaptivePrinciples);
+                return {
+                    content,
+                    codingStandards: adaptivePrinciples.template,
+                    phaseGuidelines: this.generatePhaseGuidelines(phase, context, mergedConfig),
+                    qualityMetrics: this.convertPrinciplesToMetrics(adaptivePrinciples),
+                    complexityScore,
+                    // Add meta-learning metadata
+                    metadata: {
+                        principlesId: this.generatePrinciplesId(researchConfig),
+                        researchConfidence: adaptivePrinciples.researchMetadata.confidence,
+                        usesPrinciplesResearch: true,
+                        researchedAt: adaptivePrinciples.researchMetadata.researchedAt,
+                    },
+                };
             }
-            return [3 /*break*/, 4];
-          case 3:
-            error_1 = _a.sent();
-            logger.warn(
-              'Meta-learning prompt generation failed, falling back to DSPy optimization:',
-              error_1
-            );
-            return [3 /*break*/, 4];
-          case 4:
-            _a.trys.push([4, 6, undefined, 7]);
-            return [
-              4 /*yield*/,
-              this.generateWithDSPy(phase, context, mergedConfig),
-            ];
-          case 5:
-            dspyOptimizedPrompt = _a.sent();
-            if (dspyOptimizedPrompt) {
-              return [
-                2 /*return*/,
-                {
-                  content: dspyOptimizedPrompt.content,
-                  codingStandards: dspyOptimizedPrompt.codingStandards,
-                  phaseGuidelines: dspyOptimizedPrompt.phaseGuidelines,
-                  qualityMetrics: dspyOptimizedPrompt.qualityMetrics,
-                  complexityScore: complexityScore,
-                },
-              ];
-            }
-            return [3 /*break*/, 7];
-          case 6:
-            error_2 = _a.sent();
-            logger.warn(
-              'DSPy prompt generation failed, falling back to static templates:',
-              error_2
-            );
-            return [3 /*break*/, 7];
-          case 7:
-            codingStandards = this.generateCodingStandards(mergedConfig);
-            phaseGuidelines = this.generatePhaseGuidelines(
-              phase,
-              context,
-              mergedConfig
-            );
-            qualityMetrics = this.generateQualityMetrics(phase, mergedConfig);
-            content = this.buildPromptContent(
-              phase,
-              context,
-              codingStandards,
-              phaseGuidelines
-            );
-            if (!this.behavioralIntelligence) return [3 /*break*/, 9];
-            return [
-              4 /*yield*/,
-              this.enhanceWithBehavioralIntelligence(content, context),
-            ];
-          case 8:
-            enhancedContent = _a.sent();
-            return [
-              2 /*return*/,
-              {
-                content: enhancedContent,
-                codingStandards: codingStandards,
-                phaseGuidelines: phaseGuidelines,
-                qualityMetrics: qualityMetrics,
-                complexityScore: complexityScore,
-              },
-            ];
-          case 9:
-            return [
-              2 /*return*/,
-              {
-                content: content,
-                codingStandards: codingStandards,
-                phaseGuidelines: phaseGuidelines,
-                qualityMetrics: qualityMetrics,
-                complexityScore: complexityScore,
-              },
-            ];
         }
-      });
-    });
-  };
-  /**
-   * Generate comprehensive coding standards
-   */
-  IntelligentPromptGenerator.prototype.generateCodingStandards = (config) => {
-    const language = config.language,
-      maxComplexity = config.maxComplexity,
-      maxLinesPerFunction = config.maxLinesPerFunction,
-      maxParameters = config.maxParameters,
-      fileNaming = config.fileNaming;
-    let standards = '\n## \uD83C\uDFAF Coding Standards & Best Practices ('
-      .concat(
-        language.toUpperCase(),
-        ')\n\n### \uD83D\uDCC1 File Organization & Naming:\n- **Descriptive filenames**: Use clear, descriptive names that indicate file purpose\n  - \u2705 user-authentication-service.'
-      )
-      .concat(
-        language === 'typescript' ? 'ts' : 'js',
-        '\n  - \u2705 product-catalog-manager.'
-      )
-      .concat(
-        language === 'typescript' ? 'ts' : 'js',
-        '\n  - \u2705 order-validation-utils.'
-      )
-      .concat(language === 'typescript' ? 'ts' : 'js', '\n  - \u274C helper.')
-      .concat(language === 'typescript' ? 'ts' : 'js', ', utils.')
-      .concat(language === 'typescript' ? 'ts' : 'js', ', data.')
-      .concat(
-        language === 'typescript' ? 'ts' : 'js',
-        '\n- **Single responsibility**: Each file should have ONE clear purpose\n- **Naming convention**: Use '
-      )
-      .concat(
-        fileNaming,
-        ' for files\n- **Max functions per file**: 5-7 focused functions maximum\n\n### \u26A1 Function Quality Guidelines:\n- **Single responsibility**: Each function does ONE thing well\n- **Max '
-      )
-      .concat(
-        maxLinesPerFunction,
-        ' lines**: Keep functions focused and readable\n- **Max '
-      )
-      .concat(
-        maxParameters,
-        ' parameters**: Use objects for complex parameter sets\n- **Cyclomatic complexity**: Keep below '
-      )
-      .concat(
-        maxComplexity,
-        '\n- **Pure functions**: Prefer pure functions when possible\n- **Clear naming**: Function names should describe what they do'
-      );
-    if (language === 'typescript') {
-      standards +=
-        "\n\n### \uD83D\uDD37 TypeScript Quality Standards:\n- **Strict typing**: Always use explicit types, avoid 'any'\n- **Interface definitions**: Define clear interfaces for all data structures\n- **Generic types**: Use generics for reusable components\n- **Null safety**: Handle undefined/null cases explicitly\n- **Union types**: Use union types for controlled variants\n- **Type guards**: Implement proper type guards for runtime checks";
+        catch (error) {
+            this.logger.warn('Meta-learning prompt generation failed, falling back to DSPy optimization:', error);
+            ';
+        }
+        try {
+            // Fallback to DSPy optimization
+            const dspyOptimizedPrompt = await this.generateWithDSPy(phase, context, mergedConfig);
+            if (dspyOptimizedPrompt) {
+                return {
+                    content: dspyOptimizedPrompt.content,
+                    codingStandards: dspyOptimizedPrompt.codingStandards,
+                    phaseGuidelines: dspyOptimizedPrompt.phaseGuidelines,
+                    qualityMetrics: dspyOptimizedPrompt.qualityMetrics,
+                    complexityScore,
+                };
+            }
+        }
+        catch (error) {
+            this.logger.warn('DSPy prompt generation failed, falling back to static templates:', error);
+            ';
+        }
+        // Final fallback to static generation
+        const codingStandards = this.generateCodingStandards(mergedConfig);
+        const phaseGuidelines = this.generatePhaseGuidelines(phase, context, mergedConfig);
+        const qualityMetrics = this.generateQualityMetrics(phase, mergedConfig);
+        const content = this.buildPromptContent(phase, context, codingStandards, phaseGuidelines);
+        // Use behavioral intelligence if available
+        if (this.behavioralIntelligence) {
+            const enhancedContent = await this.enhanceWithBehavioralIntelligence(content, context);
+            return {
+                content: enhancedContent,
+                codingStandards,
+                phaseGuidelines,
+                qualityMetrics,
+                complexityScore,
+            };
+        }
+        return {
+            content,
+            codingStandards,
+            phaseGuidelines,
+            qualityMetrics,
+            complexityScore,
+        };
     }
-    if (config.includePerformance) {
-      standards +=
-        '\n\n### \u26A1 Performance Guidelines:\n- **Big O awareness**: Consider algorithmic complexity\n- **Memory management**: Avoid memory leaks and excessive allocations\n- **Lazy loading**: Load resources only when needed\n- **Caching strategies**: Implement appropriate caching\n- **Bundle optimization**: Minimize bundle size and dependencies';
+    /**
+     * Generate comprehensive coding standards
+     */
+    generateCodingStandards(config) {
+        const { language, maxComplexity, maxLinesPerFunction, maxParameters, fileNaming, includePerformance, includeSecurity, includeTesting, } = config;
+        // Advanced feature analysis system using the include flags
+        const featureAnalysis = await this.analyzeProjectFeatureRequirements({
+            includePerformance,
+            includeSecurity,
+            includeTesting,
+            language,
+            maxComplexity,
+            maxLinesPerFunction
+        });
+        // Generate context-aware recommendations based on feature flags
+        const performanceRecommendations = includePerformance ?
+            await this.generatePerformanceRecommendations(language, featureAnalysis) : [];
+        const securityRecommendations = includeSecurity ?
+            await this.generateSecurityRecommendations(language, featureAnalysis) : [];
+        const testingRecommendations = includeTesting ?
+            await this.generateTestingRecommendations(language, featureAnalysis) : [];
+        // Merge recommendations into enhanced standards
+        const enhancedStandards = await this.mergeFeatureRecommendations({ includePerformance, includeSecurity, includeTesting }, { performanceRecommendations, securityRecommendations, testingRecommendations });
+        let _standards = ``;
+        #;
+        #;
+        Coding;
+        Standards & Best;
+        Practices($language.toUpperCase());
+        $enhancedStandards.contextualIntro;
+        #;
+        #;
+        #;
+        File;
+        Organization & Naming;
+        - ** Descriptive;
+        filenames ** ;
+        Use;
+        clear, descriptive;
+        names;
+        that;
+        indicate;
+        file;
+        purpose
+            - ;
+        user - authentication - service.$language === 'typescript' ? 'ts' : 'js';
+        '
+            - ;
+        product - catalog - manager.$language === 'typescript' ? 'ts' : 'js';
+        '
+            - ;
+        order - validation - utils.$language === 'typescript' ? 'ts' : 'js';
+        '
+            - ;
+        helper.$language === 'typescript' ? 'ts' : 'js', utils.$language === 'typescript' ? 'ts' : 'js', data.$language === 'typescript' ? 'ts' : 'js';
+        '
+            -  ** Single;
+        responsibility ** ;
+        Each;
+        file;
+        should;
+        have;
+        ONE;
+        clear;
+        purpose
+            -  ** Naming;
+        convention ** ;
+        Use;
+        $fileNamingfor;
+        files
+            -  ** Max;
+        functions;
+        per;
+        file ** ;
+        5 - 7;
+        focused;
+        functions;
+        maximum;
+        #;
+        #;
+        #;
+        Function;
+        Quality;
+        Guidelines: - ** Single;
+        responsibility ** ;
+        Each;
+        function _does() { }
+        ONE;
+        thing;
+        well
+            -  ** Max;
+        $maxLinesPerFunctionlines ** ;
+        Keep;
+        functions;
+        focused;
+        and;
+        readable
+            -  ** Max;
+        $maxParametersparameters ** ;
+        Use;
+        objects;
+        for (complex; parameter; sets
+            -  ** Cyclomatic)
+            complexity ** ;
+        Keep;
+        below;
+        $maxComplexity
+            -  ** Pure;
+        functions ** ;
+        Prefer;
+        pure;
+        functions;
+        when;
+        possible
+            -  ** Clear;
+        naming ** ;
+        Function;
+        names;
+        should;
+        describe;
+        what;
+        they;
+        do
+            `;`;
+        while ();
+        if (language === 'typescript') {
+            ';
+            standards += ``;
+            #;
+            #;
+            #;
+            TypeScript;
+            Quality;
+            Standards: - ** Strict;
+            typing ** ;
+            Always;
+            use;
+            explicit;
+            types, avoid;
+            'any';
+            '
+                -  ** Interface;
+            definitions ** ;
+            Define;
+            clear;
+            interfaces;
+            for (all; data; structures
+                -  ** Generic)
+                types ** ;
+            Use;
+            generics;
+            for (reusable; components
+                -  ** Null; safety ** )
+                : Handle;
+            undefined / null;
+            cases;
+            explicitly
+                -  ** Union;
+            types ** ;
+            Use;
+            union;
+            types;
+            for (controlled; variants
+                -  ** Type; guards ** )
+                : Implement;
+            proper;
+            runtime;
+            checks `;`;
+        }
+        if (config.includePerformance) {
+            _standards += ``;
+            #;
+            #;
+            #;
+            Performance;
+            Guidelines: - ** Big;
+            O;
+            awareness ** ;
+            Consider;
+            algorithmic;
+            complexity
+                -  ** Memory;
+            management ** ;
+            Avoid;
+            memory;
+            leaks;
+            and;
+            excessive;
+            allocations
+                -  ** Lazy;
+            loading ** ;
+            Load;
+            resources;
+            only;
+            when;
+            needed
+                -  ** Caching;
+            strategies ** ;
+            Implement;
+            appropriate;
+            caching
+                -  ** Bundle;
+            optimization ** ;
+            Minimize;
+            bundle;
+            size;
+            and;
+            dependencies `;`;
+        }
+        if (config.includeSecurity) {
+            standards += ``;
+            #;
+            #;
+            #;
+            Security;
+            Best;
+            Practices: - ** Input;
+            validation ** ;
+            Validate;
+            all;
+            external;
+            inputs
+                -  ** Error;
+            handling ** ;
+            Don;
+            't expose sensitive information in errors'
+                -  ** Authentication ** ;
+            Implement;
+            proper;
+            authentication;
+            and;
+            authorization
+                -  ** Data;
+            sanitization ** ;
+            Sanitize;
+            user;
+            inputs;
+            to;
+            prevent;
+            injection;
+            attacks
+                -  ** Dependency;
+            security ** ;
+            Regularly;
+            update;
+            and;
+            audit;
+            dependencies `;`;
+        }
+        return standards;
     }
-    if (config.includeSecurity) {
-      standards +=
-        "\n\n### \uD83D\uDD12 Security Best Practices:\n- **Input validation**: Validate all external inputs\n- **Error handling**: Don't expose sensitive information in errors\n- **Authentication**: Implement proper authentication and authorization\n- **Data sanitization**: Sanitize user inputs to prevent injection attacks\n- **Dependency security**: Regularly update and audit dependencies";
+    /**
+     * Generate phase-specific guidelines
+     */
+    generatePhaseGuidelines(phase, context, config) {
+        switch (phase) {
+            case 'specification':
+                ';
+                return ``;
+                #;
+                #;
+                #;
+                Specification;
+                Phase;
+                Guidelines: - ** Clear;
+                requirements ** ;
+                Each;
+                requirement;
+                should;
+                be;
+                testable;
+                and;
+                specific
+                    -  ** Domain;
+                modeling ** ;
+                Use;
+                $;
+                {
+                    config.language === 'typescript' ? 'TypeScript interfaces' : 'clear data structures';
+                }
+                to;
+                model;
+                domain;
+                entities;
+                '
+                    -  ** API;
+                contracts ** ;
+                Define;
+                clear;
+                input / output;
+                interfaces
+                    -  ** Validation;
+                rules ** ;
+                Specify;
+                data;
+                validation;
+                requirements
+                    -  ** User;
+                stories ** ;
+                Write;
+                clear;
+                user;
+                stories;
+                with (acceptance)
+                    criteria
+                        -  ** Edge;
+                cases ** ;
+                Identify;
+                and;
+                document;
+                edge;
+                cases;
+                and;
+                error;
+                scenarios `;`;
+            case 'pseudocode':
+                ';
+                return ``;
+                #;
+                #;
+                #;
+                Pseudocode;
+                Phase;
+                Guidelines: - ** Algorithm;
+                clarity ** ;
+                Write;
+                self - documenting;
+                pseudocode
+                    -  ** Data;
+                structures ** ;
+                Choose;
+                appropriate;
+                data;
+                structures(Map, Set, Array)
+                    -  ** Error;
+                handling ** ;
+                Plan;
+                for (error; scenarios; and)
+                    edge;
+                cases
+                    -  ** Performance;
+                considerations ** ;
+                Consider;
+                Big;
+                O;
+                complexity
+                    -  ** Step - by - step;
+                logic ** ;
+                Break;
+                down;
+                complex;
+                operations;
+                into;
+                clear;
+                steps
+                    -  ** Variable;
+                naming ** ;
+                Use;
+                descriptive;
+                names in pseudocode `;`;
+            case 'architecture':
+                ';
+                return ``;
+                #;
+                #;
+                #;
+                Architecture;
+                Phase;
+                Guidelines: - ** Modular;
+                design ** ;
+                Create;
+                loosely;
+                coupled, highly;
+                cohesive;
+                modules
+                    -  ** Separation;
+                of;
+                concerns ** ;
+                Separate;
+                business;
+                logic;
+                from;
+                presentation / data;
+                layers
+                    -  ** Dependency;
+                injection ** ;
+                Use;
+                DI;
+                for (testability; and; flexibility
+                    -  ** Interface)
+                    segregation ** ;
+                Create;
+                focused, specific;
+                interfaces
+                    -  ** Package;
+                structure ** ;
+                Organize;
+                code;
+                into;
+                logical;
+                packages / folders
+                    -  ** Scalability;
+                patterns ** ;
+                Design;
+                for (future; growth; and)
+                    changes `;`;
+            case 'refinement':
+                ';
+                return ``;
+                #;
+                #;
+                #;
+                Refinement;
+                Phase;
+                Guidelines: - ** Performance;
+                optimization ** ;
+                Profile;
+                and;
+                optimize;
+                critical;
+                paths
+                    -  ** Code;
+                review;
+                practices ** ;
+                Focus;
+                on;
+                readability;
+                and;
+                maintainability
+                    -  ** Testing;
+                coverage ** ;
+                Aim;
+                for (80 % +test; coverage
+                    -  ** Documentation ** ; )
+                    : Add;
+                comprehensive;
+                documentation;
+                for (public; APIs
+                    -  ** Refactoring ** ; )
+                    : Eliminate;
+                code;
+                smells;
+                and;
+                technical;
+                debt
+                    -  ** Error;
+                handling ** ;
+                Robust;
+                error;
+                handling;
+                and;
+                logging `;`;
+            case 'completion':
+                ';
+                return ``;
+                #;
+                #;
+                #;
+                Completion;
+                Phase;
+                Guidelines: - ** Production;
+                readiness ** ;
+                Ensure;
+                error;
+                handling, logging, monitoring
+                    -  ** Security;
+                validation ** ;
+                Check;
+                for (common; security; vulnerabilities
+                    -  ** Performance)
+                    benchmarks ** ;
+                Meet;
+                defined;
+                performance;
+                criteria
+                    -  ** Documentation;
+                completeness ** ;
+                README, API;
+                docs, deployment;
+                guides
+                    -  ** CI / CD;
+                pipeline ** ;
+                Automated;
+                testing;
+                and;
+                deployment
+                    -  ** Monitoring ** ;
+                Implement;
+                proper;
+                monitoring;
+                and;
+                alerting `;`;
+            default:
+                return ``;
+                #;
+                #;
+                #;
+                General;
+                Development;
+                Guidelines: - ** Code;
+                quality ** ;
+                Follow;
+                established;
+                coding;
+                standards
+                    -  ** Documentation ** ;
+                Write;
+                clear, comprehensive;
+                documentation
+                    -  ** Testing ** ;
+                Implement;
+                thorough;
+                testing;
+                strategies
+                    -  ** Performance ** ;
+                Consider;
+                performance;
+                implications
+                    -  ** Security ** ;
+                Follow;
+                security;
+                best;
+                practices
+                    -  ** Maintainability ** ;
+                Write;
+                code;
+                that;
+                's easy to maintain and extend`;`;
+        }
     }
-    return standards;
-  };
-  /**
-   * Generate phase-specific guidelines
-   */
-  IntelligentPromptGenerator.prototype.generatePhaseGuidelines = (
-    phase,
-    _context,
-    config
-  ) => {
-    switch (phase) {
-      case 'specification':
-        return '\n### \uD83D\uDCCB Specification Phase Guidelines:\n- **Clear requirements**: Each requirement should be testable and specific\n- **Domain modeling**: Use '.concat(
-          config.language === 'typescript'
-            ? 'TypeScript interfaces'
-            : 'clear data structures',
-          ' to model domain entities\n- **API contracts**: Define clear input/output interfaces\n- **Validation rules**: Specify data validation requirements\n- **User stories**: Write clear user stories with acceptance criteria\n- **Edge cases**: Identify and document edge cases and error scenarios'
-        );
-      case 'pseudocode':
-        return '\n### \uD83D\uDD04 Pseudocode Phase Guidelines:\n- **Algorithm clarity**: Write self-documenting pseudocode\n- **Data structures**: Choose appropriate data structures (Map, Set, Array)\n- **Error handling**: Plan for error scenarios and edge cases\n- **Performance considerations**: Consider Big O complexity\n- **Step-by-step logic**: Break down complex operations into clear steps\n- **Variable naming**: Use descriptive names in pseudocode';
-      case 'architecture':
-        return '\n### \uD83C\uDFD7\uFE0F Architecture Phase Guidelines:\n- **Modular design**: Create loosely coupled, highly cohesive modules\n- **Separation of concerns**: Separate business logic from presentation/data layers\n- **Dependency injection**: Use DI for testability and flexibility\n- **Interface segregation**: Create focused, specific interfaces\n- **Package structure**: Organize code into logical packages/folders\n- **Scalability patterns**: Design for future growth and changes';
-      case 'refinement':
-        return '\n### \u26A1 Refinement Phase Guidelines:\n- **Performance optimization**: Profile and optimize critical paths\n- **Code review practices**: Focus on readability and maintainability\n- **Testing coverage**: Aim for 80%+ test coverage\n- **Documentation**: Add comprehensive documentation for public APIs\n- **Refactoring**: Eliminate code smells and technical debt\n- **Error handling**: Robust error handling and logging';
-      case 'completion':
-        return '\n### \u2705 Completion Phase Guidelines:\n- **Production readiness**: Ensure error handling, logging, monitoring\n- **Security validation**: Check for common security vulnerabilities\n- **Performance benchmarks**: Meet defined performance criteria\n- **Documentation completeness**: README, API docs, deployment guides\n- **CI/CD pipeline**: Automated testing and deployment\n- **Monitoring**: Implement proper monitoring and alerting';
-      default:
-        return "\n### \uD83C\uDFAF General Development Guidelines:\n- **Code quality**: Follow established coding standards\n- **Documentation**: Write clear, comprehensive documentation\n- **Testing**: Implement thorough testing strategies\n- **Performance**: Consider performance implications\n- **Security**: Follow security best practices\n- **Maintainability**: Write code that's easy to maintain and extend";
-    }
-  };
-  /**
-   * Generate quality metrics for the phase
-   */
-  IntelligentPromptGenerator.prototype.generateQualityMetrics = (
-    phase,
-    config
-  ) => {
-    const baseMetrics = [
-      'Cyclomatic complexity: < '.concat(config.maxComplexity),
-      'Function length: < '.concat(config.maxLinesPerFunction, ' lines'),
-      'Parameter count: < '.concat(config.maxParameters),
+    /**
+     * Generate quality metrics for the phase
+     */
+    generateQualityMetrics(phase, config) {
+        const baseMetrics = [
+            `Cyclomatic complexity: < ${config.maxComplexity}`, `
+      `, Function, length, { config, : .maxLinesPerFunction }, lines `,` `Parameter count: < ${config.maxParameters}`, `
       'Code coverage: > 80%',
       'Documentation coverage: > 90%',
     ];
+
     switch (phase) {
-      case 'specification':
-        return __spreadArray(
-          __spreadArray([], baseMetrics, true),
-          [
-            'Requirements clarity: 100%',
-            'Testable requirements: 100%',
-            'Domain model completeness: > 95%',
-          ],
-          false
-        );
-      case 'architecture':
-        return __spreadArray(
-          __spreadArray([], baseMetrics, true),
-          [
-            'Module coupling: Low',
-            'Module cohesion: High',
-            'Interface segregation: 100%',
-          ],
-          false
-        );
-      case 'completion':
-        return __spreadArray(
-          __spreadArray([], baseMetrics, true),
-          [
-            'Security scan: 0 vulnerabilities',
-            'Performance benchmarks: Met',
-            'Production readiness: 100%',
-          ],
-          false
-        );
+      case 'specification':'
+        return [
+          ...baseMetrics,
+          'Requirements clarity: 100%',
+          'Testable requirements: 100%',
+          'Domain model completeness: > 95%',
+        ];
+      case 'architecture':'
+        return [
+          ...baseMetrics,
+          'Module coupling: Low',
+          'Module cohesion: High',
+          'Interface segregation: 100%',
+        ];
+      case 'completion':'
+        return [
+          ...baseMetrics,
+          'Security scan: 0 vulnerabilities',
+          'Performance benchmarks: Met',
+          'Production readiness: 100%',
+        ];
       default:
         return baseMetrics;
     }
-  };
+  }
+
   /**
    * Build the main prompt content
    */
-  IntelligentPromptGenerator.prototype.buildPromptContent = (
-    phase,
-    context,
-    codingStandards,
-    phaseGuidelines
-  ) => {
-    let _a, _b;
-    return '\n# \uD83D\uDE80 '
-      .concat(
-        phase.charAt(0).toUpperCase() + phase.slice(1),
-        ' Phase Development Prompt\n\n## \uD83D\uDCCB Project Context:\n- **Project**: '
-      )
-      .concat(context.name, '\n- **Domain**: ')
-      .concat(context.domain, '\n- **Requirements**: ')
-      .concat(
-        ((_a = context.requirements) === null || _a === void 0
-          ? void 0
-          : _a.length) || 0,
-        ' defined\n- **Tech Stack**: '
-      )
-      .concat(
-        ((_b = context.techStack) === null || _b === void 0
-          ? void 0
-          : _b.join(', ')) || 'To be determined',
-        '\n\n'
-      )
-      .concat(codingStandards, '\n\n')
-      .concat(
-        phaseGuidelines,
-        '\n\n## \uD83C\uDFAF Implementation Focus:\n1. **Follow naming conventions** - Use descriptive, purpose-driven filenames\n2. **Maintain function complexity** - Keep functions simple and focused\n3. **Ensure type safety** - Use explicit typing throughout\n4. **Write clean code** - Self-documenting, maintainable code\n5. **Plan for testing** - Design with testability in mind\n\n## \uD83D\uDD0D Quality Checklist:\n- [ ] Descriptive filenames that indicate purpose\n- [ ] Single responsibility per file/function\n- [ ] Appropriate complexity levels\n- [ ] Comprehensive error handling\n- [ ] Clear documentation and comments\n- [ ] Type safety (for TypeScript)\n- [ ] Performance considerations\n- [ ] Security best practices\n\nRemember: Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.'
-      );
-  };
+  private buildPromptContent(
+    phase: DevelopmentPhase,
+    context: ProjectContext,
+    codingStandards: string,
+    phaseGuidelines: string
+  ): string {
+    return ` `
+# 🚀 $phase.charAt(0).toUpperCase() + phase.slice(1)Phase Development Prompt
+
+## 📋 Project Context:
+- **Project**: $context.name
+- **Domain**: $context.domain
+- **Requirements**: $context.requirements?.length || 0defined
+- **Tech Stack**: $context.techStack?.join(', ') || 'To be determined''
+
+$codingStandards
+
+$phaseGuidelines
+
+## 🎯 Implementation Focus:
+1. **Follow naming conventions** - Use descriptive, purpose-driven filenames
+2. **Maintain function _complexity** - Keep functions simple and focused
+3. **Ensure type safety** - Use explicit typing throughout
+4. **Write clean code** - Self-documenting, maintainable code
+5. **Plan for testing** - Design with testability in mind
+
+## 🔍 Quality Checklist:
+- [ ] Descriptive filenames that indicate purpose
+- [ ] Single responsibility per file/function
+- [ ] Appropriate _complexity levels
+- [ ] Comprehensive error handling
+- [ ] Clear documentation and comments
+- [ ] Type safety (for TypeScript)
+- [ ] Performance considerations
+- [ ] Security best practices
+
+Remember: Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.`
+        ];
+        `
+  }
+
   /**
    * Calculate complexity score based on context and phase
    */
-  IntelligentPromptGenerator.prototype.calculateComplexityScore = (
-    context,
-    phase
-  ) => {
-    let _a, _b;
+  private calculateComplexityScore(
+    context: ProjectContext,
+    phase: DevelopmentPhase
+  ): number {
     let score = 1; // Base complexity
+
     // Add complexity based on requirements
-    score +=
-      (((_a = context.requirements) === null || _a === void 0
-        ? void 0
-        : _a.length) || 0) * 0.1;
+    score += (context.requirements?.length || 0) * 0.1;
+
     // Add complexity based on tech stack
-    score +=
-      (((_b = context.techStack) === null || _b === void 0
-        ? void 0
-        : _b.length) || 0) * 0.2;
+    score += (context.techStack?.length || 0) * 0.2;
+
     // Phase-specific complexity adjustments
     switch (phase) {
-      case 'specification':
+      case'specification':'
         score *= 0.8; // Specification is typically less complex
         break;
-      case 'architecture':
+      case 'architecture':'
         score *= 1.5; // Architecture is more complex
         break;
-      case 'completion':
+      case 'completion':'
         score *= 1.3; // Completion has integration complexity
         break;
     }
+
     return Math.min(Math.max(score, 1), 10); // Clamp between 1-10
-  };
+  }
+
   /**
    * Generate prompt using DSPy optimization
    */
-  IntelligentPromptGenerator.prototype.generateWithDSPy = function (
-    phase,
-    context,
-    config
-  ) {
-    return __awaiter(this, void 0, void 0, function () {
-      let DSPyLLMBridge,
-        NeuralBridge,
-        getLogger_1,
-        logger,
-        neuralBridge,
-        dspyBridge,
-        promptTask,
-        result,
-        dspyResult,
-        error_3;
-      let _a, _b;
-      return __generator(this, function (_c) {
-        switch (_c.label) {
-          case 0:
-            _c.trys.push([0, 6, undefined, 7]);
-            return [
-              4 /*yield*/,
-              Promise.resolve().then(() =>
-                require('../../coordination/dspy-llm-bridge')
-              ),
-            ];
-          case 1:
-            DSPyLLMBridge = _c.sent().DSPyLLMBridge;
-            return [
-              4 /*yield*/,
-              Promise.resolve().then(() => require('../../neural-bridge')),
-            ];
-          case 2:
-            NeuralBridge = _c.sent().NeuralBridge;
-            return [
-              4 /*yield*/,
-              Promise.resolve().then(() => require('@claude-zen/foundation')),
-            ];
-          case 3:
-            getLogger_1 = _c.sent().getLogger;
-            logger = getLogger_1('NeuralBridge');
-            neuralBridge = new NeuralBridge(logger);
-            dspyBridge = new DSPyLLMBridge(
-              {
-                teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization
-                maxTokens: 16384,
-                optimizationSteps: 3,
-                coordinationFeedback: true,
-                hybridMode: true,
-              },
-              neuralBridge
-            );
-            return [4 /*yield*/, dspyBridge.initialize()];
-          case 4:
-            _c.sent();
-            promptTask = {
-              id: 'prompt-gen-'.concat(phase, '-').concat(Date.now()),
-              type: 'generation',
-              input: 'Generate a high-quality development prompt for '
-                .concat(phase, ' phase.\n\nProject: "')
-                .concat(context.name, '" in ')
-                .concat(context.domain, ' domain\nLanguage: ')
-                .concat(config.language, '\nRequirements: ')
-                .concat(
-                  ((_a = context.requirements) === null || _a === void 0
-                    ? void 0
-                    : _a.join(', ')) || 'To be determined',
-                  '\nTech Stack: '
-                )
-                .concat(
-                  ((_b = context.techStack) === null || _b === void 0
-                    ? void 0
-                    : _b.join(', ')) || 'To be determined',
-                  '\n\nThe prompt should include:\n1. Project context section\n2. Coding standards for '
-                )
-                .concat(config.language, '\n3. Phase-specific guidelines for ')
-                .concat(
-                  phase,
-                  '\n4. Critical instructions emphasizing descriptive filenames\n5. Quality metrics (complexity < '
-                )
-                .concat(config.maxComplexity, ', length < ')
-                .concat(
-                  config.maxLinesPerFunction,
-                  ' lines)\n\nGenerate a complete, ready-to-use development prompt.'
-                ),
-              context: {
-                phase: phase,
-                projectName: context.name,
-                domain: context.domain,
-                requirements: context.requirements || [],
-                techStack: context.techStack || [],
-                language: config.language,
-                maxComplexity: config.maxComplexity,
-                maxLinesPerFunction: config.maxLinesPerFunction,
-                includePerformance: config.includePerformance,
-                includeSecurity: config.includeSecurity,
-                fewShotExamples: this.generateFewShotPromptExamples(
-                  phase,
-                  config
-                ),
-              },
-              priority: 'high',
-            };
-            return [
-              4 /*yield*/,
-              dspyBridge.processCoordinationTask(promptTask),
-            ];
-          case 5:
-            result = _c.sent();
-            if (result.success && result.result) {
-              dspyResult =
-                typeof result.result === 'string'
-                  ? JSON.parse(result.result)
-                  : result.result;
-              return [
-                2 /*return*/,
-                {
-                  content:
-                    dspyResult.content ||
-                    dspyResult.result ||
-                    'DSPy generated prompt content',
-                  codingStandards:
-                    dspyResult.codingStandards ||
-                    this.generateCodingStandards(config),
-                  phaseGuidelines:
-                    dspyResult.phaseGuidelines ||
-                    this.generatePhaseGuidelines(phase, context, config),
-                  qualityMetrics:
-                    dspyResult.qualityMetrics ||
-                    this.generateQualityMetrics(phase, config),
-                  complexityScore: this.calculateComplexityScore(
-                    context,
-                    phase
-                  ),
-                },
-              ];
-            }
-            return [2 /*return*/, null];
-          case 6:
-            error_3 = _c.sent();
-            logger.warn('DSPy prompt generation failed:', error_3);
-            return [2 /*return*/, null];
-          case 7:
-            return [2 /*return*/];
+  private async generateWithDSPy(
+    phase: DevelopmentPhase,
+    context: ProjectContext,
+    config: Required<CodingStandardsConfig>
+  ): Promise<IntelligentPrompt | null> {
+    try {
+      // Import DSPy LLM Bridge for prompt optimization
+      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge''
+      );
+      const { NeuralBridge } = await import('../../neural-bridge');'
+
+      // Initialize DSPy bridge if not available
+      const { getLogger } = await import('@claude-zen/foundation');'
+      const logger = getLogger('NeuralBridge');'
+      const neuralBridge = new NeuralBridge(logger);
+      const dspyBridge = new DSPyLLMBridge(
+        {
+          teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization'
+          maxTokens: 16384,
+          optimizationSteps: 3,
+          coordinationFeedback: true,
+          hybridMode: true,
+        },
+        neuralBridge
+      );
+
+      await dspyBridge.initialize();
+
+      // Create coordination task with DSPy examples for prompt generation
+      const _promptTask = {
+        id: `;
+        prompt - gen - $;
+        {
+            phase;
         }
-      });
-    });
-  };
-  /**
-   * Get phase-specific example guidelines for DSPy training
-   */
-  IntelligentPromptGenerator.prototype.getPhaseExampleGuidelines = (phase) => {
-    switch (phase) {
-      case 'specification':
-        return '- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints';
-      case 'pseudocode':
-        return '- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases';
-      case 'architecture':
-        return '- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability';
-      case 'refinement':
-        return '- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage';
-      case 'completion':
-        return '- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation';
-      default:
-        return '- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing';
+        -$;
+        {
+            Date.now();
+        }
+        `,`;
+        type: 'generation',
+            input;
+        `Generate a high-quality development prompt for ${phase} phase.`;
+        Project: "${context.name}" in $;
+        {
+            context.domain;
+        }
+        domain;
+        Language: $config.language;
+        Requirements: $context.requirements?.join(', ') || 'To be determined';
+        ';
+        Tech;
+        Stack: $context.techStack?.join(', ') || 'To be determined';
+        ';
+        The;
+        prompt;
+        should;
+        include: 1.;
+        Project;
+        context;
+        section;
+        2.;
+        Coding;
+        standards;
+        for ($; { config, : .language }; 3.)
+            Phase - specific;
+        guidelines;
+        for ($; { phase }; 4.)
+            Critical;
+        instructions;
+        emphasizing;
+        descriptive;
+        filenames;
+        5.;
+        Quality;
+        metrics(complexity < $, { config, : .maxComplexity }, length < $, { config, : .maxLinesPerFunction }, lines);
+        Generate;
+        a;
+        complete, ready - to - use;
+        development;
+        prompt. `,`;
+        phase,
+            projectName;
+        context.name,
+            domain;
+        context.domain,
+            requirements;
+        context.requirements || [],
+            techStack;
+        context.techStack || [],
+            language;
+        config.language,
+            maxComplexity;
+        config.maxComplexity,
+            maxLinesPerFunction;
+        config.maxLinesPerFunction,
+            includePerformance;
+        config.includePerformance,
+            includeSecurity;
+        config.includeSecurity,
+            fewShotExamples;
+        this.generateFewShotPromptExamples(phase, config), ,
+            priority;
+        'high',
+        ;
     }
-  };
-  /**
-   * Generate few-shot examples for DSPy prompt optimization
-   */
-  IntelligentPromptGenerator.prototype.generateFewShotPromptExamples = (
-    phase,
-    config
-  ) => [
-    {
-      input: 'Generate '
-        .concat(
-          phase,
-          ' phase prompt for e-commerce API project in rest-api domain using '
-        )
-        .concat(config.language),
-      output: '# Development Prompt for '
-        .concat(
-          phase,
-          ' Phase\n\n## \uD83D\uDCCB Project Context\n## \uD83C\uDFAF Coding Standards\n## \uD83D\uDCDD CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow '
-        )
-        .concat(config.language, ' best practices'),
-    },
-    {
-      input: 'Generate '
-        .concat(
-          phase,
-          ' phase prompt for mobile app project in mobile domain using '
-        )
-        .concat(config.language),
-      output: '# Development Prompt for '
-        .concat(
-          phase,
-          ' Phase\n\n## \uD83D\uDCCB Project Context\n## \uD83C\uDFAF Coding Standards\n## \uD83D\uDCDD CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow '
-        )
-        .concat(config.language, ' best practices'),
-    },
-  ];
-  /**
-   * Enhance prompt with behavioral intelligence
-   */
-  IntelligentPromptGenerator.prototype.enhanceWithBehavioralIntelligence =
-    function (content, context) {
-      return __awaiter(this, void 0, void 0, function () {
-        let projectTags,
-          complexityLevel,
-          agentProfiles,
-          enhancedStats,
-          contextualInsights;
-        return __generator(this, function (_a) {
-          if (!this.behavioralIntelligence) {
-            return [2 /*return*/, content];
-          }
-          try {
-            projectTags = this.extractProjectTags(context);
-            complexityLevel = this.assessProjectComplexity(context);
-            agentProfiles = this.behavioralIntelligence.getAllAgentProfiles();
-            enhancedStats = this.behavioralIntelligence.getEnhancedStats();
-            contextualInsights = '';
-            if (context.currentPhase) {
-              contextualInsights += '- Project phase: '.concat(
-                context.currentPhase,
-                ' - applying phase-specific patterns\n'
-              );
-            }
-            if (context.domainSpecific) {
-              contextualInsights += '- Domain: '.concat(
-                context.domainSpecific,
-                ' - leveraging domain expertise\n'
-              );
-            }
-            if (complexityLevel > 0.7) {
-              contextualInsights += '- High complexity detected ('.concat(
-                (complexityLevel * 100).toFixed(1),
-                '%) - extra attention needed\n'
-              );
-            }
-            // Include agent performance insights relevant to project type
-            if (enhancedStats.averagePerformance > 0.8) {
-              contextualInsights +=
-                '- High-performing agent patterns available ('.concat(
-                  (enhancedStats.averagePerformance * 100).toFixed(1),
-                  '%)\n'
-                );
-            }
-            return [
-              2 /*return*/,
-              ''
-                .concat(
-                  content,
-                  '\n\n## \uD83E\uDDE0 AI-Enhanced Recommendations:\nBased on '
-                )
-                .concat(
-                  agentProfiles.size,
-                  ' agent profiles and project context analysis:\n'
-                )
-                .concat(contextualInsights, '\n- Focus on areas where similar ')
-                .concat(
-                  projectTags.join(', '),
-                  ' projects typically encounter issues\n- Leverage patterns that have proven successful in comparable domains\n- Pay special attention to complexity hotspots identified by behavioral analysis\n- Apply lessons from '
-                )
-                .concat(
-                  enhancedStats.totalAgents,
-                  " agents' collective experience"
-                ),
-            ];
-          } catch (error) {
-            this.logger.warn(
-              'Error enhancing prompt with behavioral intelligence:',
-              error
-            );
-            return [2 /*return*/, content];
-          }
-          return [2 /*return*/];
-        });
-      });
+    ;
+    // Use DSPy to generate optimized prompt
+    result = await dspyBridge.processCoordinationTask(promptTask);
+    if(result, success) { }
+}
+ && result.result;
+{
+    // Parse DSPy result into structured prompt components
+    const dspyResult = typeof result.result === 'string' ? JSON.parse(result.result) : ;
+    ';
+    result.result;
+    return {
+        content: dspyResult.content || dspyResult.result || 'DSPy generated prompt content',
+        codingStandards: dspyResult.codingStandards || this.generateCodingStandards(config),
+        phaseGuidelines: dspyResult.phaseGuidelines || this.generatePhaseGuidelines(phase, context, config),
+        qualityMetrics: dspyResult.qualityMetrics || this.generateQualityMetrics(phase, config),
+        complexityScore: this.calculateComplexityScore(context, phase),
     };
-  /**
-   * Extract project tags from context for behavioral analysis
-   */
-  IntelligentPromptGenerator.prototype.extractProjectTags = (context) => {
+}
+return null;
+try { }
+catch (error) {
+}
+this.logger.warn('DSPy prompt generation failed:', error);
+';
+return null;
+getPhaseExampleGuidelines(phase, DevelopmentPhase);
+string;
+{
+    switch (phase) {
+        case 'specification':
+            ';
+            return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`;
+            `
+      case 'pseudocode':'
+        return ` - Write;
+            self - documenting;
+            algorithm;
+            steps;
+            n - Choose;
+            appropriate;
+            data;
+            structures;
+            n - Plan;
+            error;
+            handling;
+            and;
+            edge;
+            cases `;`;
+        case 'architecture':
+            ';
+            return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;
+            `
+      case 'refinement': {'
+        return ` - Optimize;
+            performance;
+            critical;
+            paths;
+            n - Eliminate;
+            code;
+            smells;
+            and;
+            technical;
+            debt;
+            n - Achieve;
+            80 % +test;
+            coverage `;`;
+        case 'completion':
+            ';
+            return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`;
+            `
+      default:
+        return ` - Follow;
+            established;
+            coding;
+            standards;
+            n - Write;
+            maintainable, self - documenting;
+            code;
+            n - Ensure;
+            comprehensive;
+            testing `;`;
+    }
+}
+generateFewShotPromptExamples(phase, DevelopmentPhase, config, (Required));
+Array < { input: string, output: string } > {
+    return: [
+        {
+            input: `Generate $phasephase prompt for e-commerce API project in rest-api domain using $config.language`,
+        } `
+        output: `, #, Development, Prompt
+    ], for: $
+};
+{
+    phase;
+}
+Phase;
+n;
+n;
+#;
+#;
+Project;
+Context;
+n;
+#;
+#;
+Coding;
+Standards;
+n;
+#;
+#;
+CRITICAL;
+INSTRUCTIONS;
+n1.Use;
+descriptive, purpose - driven;
+filenames;
+n2.Keep;
+functions;
+simple;
+and;
+focused;
+n3.Follow;
+$;
+{
+    config.language;
+}
+best;
+practices `,`;
+{
+    input: `Generate $phasephase prompt for mobile app project in mobile domain using $config.language`, `
+        output: `;
+    #;
+    Development;
+    Prompt;
+    for ($; { phase }; Phase)
+        ;
+    n;
+    n;
+    #;
+    #;
+    Project;
+    Context;
+    n;
+    #;
+    #;
+    Coding;
+    Standards;
+    n;
+    #;
+    #;
+    CRITICAL;
+    INSTRUCTIONS;
+    n1.Use;
+    descriptive, purpose - driven;
+    filenames;
+    n2.Optimize;
+    for (mobile; performance; )
+        ;
+    n3.Follow;
+    $;
+    {
+        config.language;
+    }
+    best;
+    practices `,`;
+}
+;
+async;
+enhanceWithBehavioralIntelligence(content, string, context, ProjectContext);
+Promise < string > {
+    : .behavioralIntelligence
+};
+{
+    return content;
+}
+try {
+    // Allow event loop processing for behavioral intelligence
+    await new Promise(resolve => setTimeout(resolve, 0));
+    // Use project context to get relevant behavioral patterns
+    const projectTags = this.extractProjectTags(context);
+    const complexityLevel = this.assessProjectComplexity(context);
+    // Get behavioral insights based on context
+    const agentProfiles = this.behavioralIntelligence.getAllAgentProfiles();
+    const enhancedStats = this.behavioralIntelligence.getEnhancedStats();
+    // Build context-specific recommendations
+    let contextualInsights = '';
+    if (context.currentPhase) {
+        contextualInsights += `- Project phase: $context.currentPhase- applying phase-specific patterns\n`;
+        `
+      }
+
+      if (context.domainSpecific) {
+        contextualInsights += ` - Domain;
+        $context.domainSpecific - leveraging;
+        domain;
+        expertise;
+        n `;`;
+    }
+    if (complexityLevel > 0.7) {
+        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;
+        `
+      }
+
+      // Include agent performance insights relevant to project type
+      if (enhancedStats.averagePerformance > 0.8) {
+        contextualInsights += ` - High - performing;
+        agent;
+        patterns;
+        available($, {}(_enhancedStats._averagePerformance * 100).toFixed(1));
+    }
+     % ;
+    n `;`;
+}
+finally {
+}
+return `$content`;
+#;
+#;
+AI - Enhanced;
+Recommendations: Based;
+on;
+$;
+{
+    agentProfiles.size;
+}
+agent;
+profiles;
+and;
+project;
+context;
+analysis: $;
+{
+    contextualInsights;
+}
+-Focus;
+on;
+areas;
+where;
+similar;
+$;
+{
+    projectTags.join(', ');
+}
+projects;
+typically;
+encounter;
+issues;
+'
+    - Leverage;
+patterns;
+that;
+have;
+proven;
+successful in comparable;
+domains
+    - Pay;
+special;
+attention;
+to;
+complexity;
+hotspots;
+identified;
+by;
+behavioral;
+analysis
+    - Apply;
+lessons;
+from;
+$;
+{
+    enhancedStats.totalAgents;
+}
+agents;
+' collective experience`;`;
+try { }
+catch (error) {
+    this.logger.warn('Error enhancing prompt with behavioral intelligence:', error);
+    return content;
+}
+extractProjectTags(context, ProjectContext);
+string[];
+{
     const tags = [];
-    if (context.currentPhase) tags.push(context.currentPhase);
-    if (context.domainSpecific) tags.push(String(context.domainSpecific));
+    if (context.currentPhase)
+        tags.push(context.currentPhase);
+    if (context.domainSpecific)
+        tags.push(String(context.domainSpecific));
     // Add additional tags based on context properties
     if (context.requirements && context.requirements.length > 0) {
-      tags.push(''.concat(context.requirements.length, '-requirements'));
+        tags.push(`$context.requirements.length-requirements`);
+        `
+      }
     }
+
     if (tags.length === 0) {
-      tags.push('general');
+      tags.push('general');'
     }
+
     return tags;
-  };
+  }
+
   /**
    * Assess project complexity based on context
    */
-  IntelligentPromptGenerator.prototype.assessProjectComplexity = (context) => {
+  private assessProjectComplexity(context: ProjectContext): number {
     let complexity = 0.5; // Base complexity
+
     // Factor in requirements count
     if (context.requirements) {
       complexity += Math.min(context.requirements.length * 0.05, 0.3);
     }
+
     // Factor in phase complexity
     if (context.currentPhase) {
-      const phaseComplexity = {
+      const phaseComplexity: Record<string, number> = {
         specification: 0.1,
         pseudocode: 0.2,
         architecture: 0.4,
@@ -887,402 +1195,766 @@ const IntelligentPromptGenerator = /** @class */ (() => {
       };
       complexity += phaseComplexity[context.currentPhase] || 0.2;
     }
+
     // Domain-specific complexity
     if (context.domainSpecific) {
-      const domainComplexity = {
+      const domainComplexity: Record<string, number> = {
         ml: 0.3,
         ai: 0.3,
         distributed: 0.4,
         security: 0.4,
         performance: 0.3,
       };
+
       const domain = String(context.domainSpecific).toLowerCase();
-      for (
-        let _i = 0, _a = Object.entries(domainComplexity);
-        _i < _a.length;
-        _i++
-      ) {
-        const _b = _a[_i],
-          key = _b[0],
-          value = _b[1];
+      for (const [key, value] of Object.entries(domainComplexity)) {
         if (domain.includes(key)) {
           complexity += value;
           break;
         }
       }
     }
+
     return Math.min(complexity, 1.0);
-  };
+  }
+
   /**
    * Get adaptive principles using the coding principles researcher
    */
-  IntelligentPromptGenerator.prototype.getAdaptivePrinciples = function (
-    config
-  ) {
-    return __awaiter(this, void 0, void 0, function () {
-      let error_4;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            if (!this.codingPrinciplesResearcher) {
-              return [2 /*return*/, null];
-            }
-            _a.label = 1;
-            break;
-          case 1:
-            _a.trys.push([1, 3, undefined, 4]);
-            return [
-              4 /*yield*/,
-              this.codingPrinciplesResearcher.getAdaptivePrinciples(config),
-            ];
-          case 2:
-            return [2 /*return*/, _a.sent()];
-          case 3:
-            error_4 = _a.sent();
-            logger.warn('Failed to get adaptive principles:', error_4);
-            return [2 /*return*/, null];
-          case 4:
-            return [2 /*return*/];
-        }
-      });
-    });
-  };
+  private async getAdaptivePrinciples(config: any): Promise<any> {
+    if (!this.codingPrinciplesResearcher) {
+      return null;
+    }
+
+    try {
+      return await this.codingPrinciplesResearcher.getAdaptivePrinciples(
+        config
+      );
+    } catch (error) {
+      this.logger.warn('Failed to get adaptive principles:', error);'
+      return null;
+    }
+  }
+
   /**
    * Infer domain from project context
    */
-  IntelligentPromptGenerator.prototype.inferDomainFromContext = (context) => {
-    let _a;
-    const domain =
-      (_a = context.domain) === null || _a === void 0
-        ? void 0
-        : _a.toLowerCase();
+  private inferDomainFromContext(
+    context: ProjectContext
+  ): TaskDomain | undefined {
+    const domain = context.domain?.toLowerCase();
+
     if (
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('api')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('rest')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('service'))
-    ) {
-      return 'rest-api';
+      domain?.includes('api') || domain?.includes('rest') || domain?.includes('service')'
+    ) 
+      return 'rest-api;
+    if (
+      domain?.includes('web') || domain?.includes('frontend') || domain?.includes('react') || domain?.includes('vue')'
+    ) 
+      return 'web-app;
+    if (
+      domain?.includes('mobile') || domain?.includes('ios') || domain?.includes('android')'
+    ) 
+      return 'mobile-app;
+    if (domain?.includes('microservice')) {'
+      return 'microservices;
     }
     if (
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('web')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('frontend')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('react')) ||
-      (domain === null || domain === void 0 ? void 0 : domain.includes('vue'))
-    ) {
-      return 'web-app';
-    }
+      domain?.includes('data') || domain?.includes('pipeline') || domain?.includes('etl')'
+    ) 
+      return 'data-pipeline;
     if (
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('mobile')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('ios')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('android'))
-    ) {
-      return 'mobile-app';
+      domain?.includes('ml') || domain?.includes('machine-learning') || domain?.includes('ai')'
+    ) 
+      return 'ml-model;
+    if (domain?.includes('game')) {'
+      return 'game-dev;
     }
-    if (
-      domain === null || domain === void 0
-        ? void 0
-        : domain.includes('microservice')
-    ) {
-      return 'microservices';
+    if (domain?.includes('blockchain') || domain?.includes('crypto')) {'
+      return 'blockchain;
     }
-    if (
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('data')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('pipeline')) ||
-      (domain === null || domain === void 0 ? void 0 : domain.includes('etl'))
-    ) {
-      return 'data-pipeline';
+    if (domain?.includes('embedded') || domain?.includes('iot')) {'
+      return 'embedded;
     }
-    if (
-      (domain === null || domain === void 0 ? void 0 : domain.includes('ml')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('machine-learning')) ||
-      (domain === null || domain === void 0 ? void 0 : domain.includes('ai'))
-    ) {
-      return 'ml-model';
+    if (domain?.includes('desktop')) {'
+      return 'desktop-app;
     }
-    if (
-      domain === null || domain === void 0 ? void 0 : domain.includes('game')
-    ) {
-      return 'game-dev';
-    }
-    if (
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('blockchain')) ||
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('crypto'))
-    ) {
-      return 'blockchain';
-    }
-    if (
-      (domain === null || domain === void 0
-        ? void 0
-        : domain.includes('embedded')) ||
-      (domain === null || domain === void 0 ? void 0 : domain.includes('iot'))
-    ) {
-      return 'embedded';
-    }
-    if (
-      domain === null || domain === void 0 ? void 0 : domain.includes('desktop')
-    ) {
-      return 'desktop-app';
-    }
+
     return undefined;
-  };
+  }
+
   /**
    * Infer role from development phase
    */
-  IntelligentPromptGenerator.prototype.inferRoleFromPhase = (phase) => {
+  private inferRoleFromPhase(
+    phase: DevelopmentPhase
+  ): DevelopmentRole | undefined {
     switch (phase) {
-      case 'architecture':
-        return 'architect';
-      case 'specification':
-        return 'tech-lead';
-      case 'pseudocode':
-      case 'refinement':
-      case 'completion':
-        return 'fullstack-developer';
+      case'architecture':'
+        return 'architect;
+      case 'specification':'
+        return 'tech-lead;
+      case 'pseudocode':'
+      case 'refinement':'
+      case 'completion':'
+        return 'fullstack-developer;
       default:
         return undefined;
     }
-  };
+  }
+
   /**
    * Build meta-learning prompt content using researched principles
    */
-  IntelligentPromptGenerator.prototype.buildMetaLearningPromptContent = (
-    phase,
-    context,
-    principles
-  ) => {
-    let _a, _b;
-    return '# \uD83D\uDE80 '
-      .concat(
-        phase.charAt(0).toUpperCase() + phase.slice(1),
-        ' Phase Development Prompt\n## META-LEARNING ENABLED \u2728\n\n## \uD83D\uDCCB Project Context:\n- **Project**: '
-      )
-      .concat(context.name, '\n- **Domain**: ')
-      .concat(context.domain, '\n- **Requirements**: ')
-      .concat(
-        ((_a = context.requirements) === null || _a === void 0
-          ? void 0
-          : _a.length) || 0,
-        ' defined\n- **Tech Stack**: '
-      )
-      .concat(
-        ((_b = context.techStack) === null || _b === void 0
-          ? void 0
-          : _b.join(', ')) || 'To be determined',
-        '\n- **Research Confidence**: '
-      )
-      .concat(
-        (principles.researchMetadata.confidence * 100).toFixed(1),
-        '%\n\n## \uD83C\uDFAF AI-Researched Standards:\n'
-      )
-      .concat(
-        principles.template,
-        '\n\n## \uD83D\uDD0D Quality Metrics (Research-Based):\n- **Complexity**: '
-      )
-      .concat(principles.qualityMetrics.complexity.metric, ' < ')
-      .concat(
-        principles.qualityMetrics.complexity.threshold,
-        '\n- **Coverage**: '
-      )
-      .concat(principles.qualityMetrics.coverage.metric, ' > ')
-      .concat(
-        principles.qualityMetrics.coverage.threshold,
-        '%\n- **Maintainability**: '
-      )
-      .concat(principles.qualityMetrics.maintainability.metric, ' > ')
-      .concat(
-        principles.qualityMetrics.maintainability.threshold,
-        '\n- **Performance**: '
-      )
-      .concat(principles.qualityMetrics.performance.metric, ' < ')
-      .concat(
-        principles.qualityMetrics.performance.threshold,
-        "ms\n\n## \uD83E\uDDE0 Meta-Learning Instructions:\n1. **Track your execution**: Note what works well and what doesn't\n2. **Report feedback**: Identify missing guidelines or incorrect assumptions\n3. **Continuous improvement**: This prompt adapts based on your feedback\n4. **Second opinion validation**: Your work may be reviewed by another AI for accuracy\n\n## \uD83D\uDCDD CRITICAL INSTRUCTIONS:\n1. **Follow research-based guidelines** above - these improve over time\n2. **Use descriptive, purpose-driven filenames** \n3. **Maintain function complexity** within researched thresholds\n4. **Consider domain-specific patterns** for "
-      )
-      .concat(
-        context.domain || 'general',
-        ' applications\n5. **Plan for validation** - another AI may review your work for accuracy\n\nRemember: This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.'
-      );
-  };
+  private buildMetaLearningPromptContent(
+    phase: DevelopmentPhase,
+    context: ProjectContext,
+    principles: any
+  ): string {
+    return `;
+        #;
+        $;
+        {
+            phase.charAt(0).toUpperCase() + phase.slice(1);
+        }
+        Phase;
+        Development;
+        Prompt `
+## META-LEARNING ENABLED ✨
+
+## 📋 Project Context:
+- **Project**: $context.name
+- **Domain**: $context.domain
+- **Requirements**: $context.requirements?.length || 0defined
+- **Tech Stack**: $context.techStack?.join(', ') || 'To be determined''
+- **Research Confidence**: $(principles.researchMetadata.confidence * 100).toFixed(1)%
+
+## 🎯 AI-Researched Standards:
+$principles.template
+
+## 🔍 Quality Metrics (Research-Based):
+- **Complexity**: $principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
+- **Coverage**: $principles.qualityMetrics.coverage.metric> $principles.qualityMetrics.coverage.threshold%
+- **Maintainability**: $principles.qualityMetrics.maintainability.metric> $principles.qualityMetrics.maintainability.threshold
+- **Performance**: $principles.qualityMetrics.performance.metric< ${principles.qualityMetrics.performance.threshold}ms
+
+## 🧠 Meta-Learning Instructions:
+1. **Track your execution**: Note what works well and what doesn't'
+2. **Report feedback**: Identify missing guidelines or incorrect assumptions
+3. **Continuous improvement**: This prompt adapts based on your feedback
+4. **Second opinion validation**: Your work may be reviewed by another AI for accuracy
+
+## 📝 CRITICAL INSTRUCTIONS:
+1. **Follow research-based guidelines** above - these improve over time
+2. **Use descriptive, purpose-driven filenames** 
+3. **Maintain function _complexity** within researched thresholds
+4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications'
+5. **Plan for validation** - another AI may review your work for accuracy
+
+Remember: This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.`;
+        `
+  }
+
   /**
    * Convert principles to quality metrics
    */
-  IntelligentPromptGenerator.prototype.convertPrinciplesToMetrics = (
-    principles
-  ) => {
-    const metrics = [];
+  private convertPrinciplesToMetrics(principles: any): string[] {
+    const metrics: string[] = [];
+
     if (principles.qualityMetrics.complexity) {
       metrics.push(
-        'Complexity: '
-          .concat(principles.qualityMetrics.complexity.metric, ' < ')
-          .concat(principles.qualityMetrics.complexity.threshold)
-      );
+        `;
+        Complexity: $principles.qualityMetrics.complexity.metric < $;
+        {
+            principles.qualityMetrics.complexity.threshold;
+        }
+        ``;
+        ;
     }
     if (principles.qualityMetrics.coverage) {
-      metrics.push(
-        'Coverage: '
-          .concat(principles.qualityMetrics.coverage.metric, ' > ')
-          .concat(principles.qualityMetrics.coverage.threshold, '%')
+        metrics.push(`Coverage: ${principles.qualityMetrics.coverage.metric} > ${principles.qualityMetrics.coverage.threshold}%` `
       );
     }
     if (principles.qualityMetrics.maintainability) {
       metrics.push(
-        'Maintainability: '
-          .concat(principles.qualityMetrics.maintainability.metric, ' > ')
-          .concat(principles.qualityMetrics.maintainability.threshold)
-      );
+        `, Maintainability, $, { principles, : .qualityMetrics.maintainability.metric } > $, { principles, : .qualityMetrics.maintainability.threshold } ``);
     }
     if (principles.qualityMetrics.performance) {
-      metrics.push(
-        'Performance: '
-          .concat(principles.qualityMetrics.performance.metric, ' < ')
-          .concat(principles.qualityMetrics.performance.threshold, 'ms')
+        metrics.push(`Performance: ${principles.qualityMetrics.performance.metric} < ${principles.qualityMetrics.performance.threshold}ms` `
       );
     }
+
     return metrics;
-  };
+  }
+
   /**
    * Generate principles ID for tracking
    */
-  IntelligentPromptGenerator.prototype.generatePrinciplesId = (config) =>
-    ''
-      .concat(config.language, '-')
-      .concat(config.domain || 'general', '-')
-      .concat(config.role || 'general', '-')
-      .concat(config.depth || 'intermediate');
-  /**
-   * Submit agent execution feedback for continuous improvement
-   */
-  IntelligentPromptGenerator.prototype.submitAgentFeedback = function (
-    principlesId,
-    feedback
-  ) {
-    return __awaiter(this, void 0, void 0, function () {
-      let agentFeedback;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            if (!this.codingPrinciplesResearcher) {
-              logger.warn(
-                'Cannot submit feedback: CodingPrinciplesResearcher not available'
-              );
-              return [2 /*return*/];
-            }
-            agentFeedback = {
-              principlesId: principlesId,
-              agentId: feedback.agentId,
-              taskType: feedback.taskType,
-              accuracy: feedback.accuracy,
-              completeness: feedback.completeness,
-              usefulness: feedback.usefulness,
-              missingAreas: feedback.missingAreas,
-              incorrectGuidelines: feedback.incorrectGuidelines,
-              additionalNeeds: feedback.additionalNeeds,
-              actualCodeQuality: feedback.actualCodeQuality,
-              executionTime: feedback.executionTime,
-              context: {
-                language: this.defaultConfig.language,
-                taskComplexity: feedback.taskComplexity,
-                requirementsCount: feedback.requirementsCount,
-              },
-              timestamp: new Date(),
-            };
-            return [
-              4 /*yield*/,
-              this.codingPrinciplesResearcher.submitAgentFeedback(
-                agentFeedback
-              ),
-            ];
-          case 1:
-            _a.sent();
-            logger.info(
-              'Agent feedback submitted for principles '
-                .concat(principlesId, ': accuracy=')
-                .concat(feedback.accuracy, ', usefulness=')
-                .concat(feedback.usefulness)
-            );
-            return [2 /*return*/];
-        }
-      });
+  private generatePrinciplesId(config: any): string {
+    return `, $, { config, : .language } - $, { config, : .domain || 'general' } - $, { config, : .role || 'general' } - $, { config, : .depth || 'intermediate' } `;`);
+    }
+    /**
+     * Submit agent execution feedback for continuous improvement
+     */
+    async;
+    submitAgentFeedback(principlesId, string, feedback, {
+        agentId: string,
+        taskType: string,
+        accuracy: number,
+        completeness: number,
+        usefulness: number,
+        missingAreas: string[],
+        incorrectGuidelines: string[],
+        additionalNeeds: string[],
+        actualCodeQuality: number,
+        executionTime: number,
+        taskComplexity: 'simple' | 'moderate' | 'complex',
+        requirementsCount: number
     });
-  };
+    Promise < void  > {
+        : .codingPrinciplesResearcher
+    };
+    {
+        this.logger.warn('Cannot submit feedback: CodingPrinciplesResearcher not available');
+        ';
+        return;
+    }
+    const agentFeedback = {
+        principlesId,
+        agentId: feedback.agentId,
+        taskType: feedback.taskType,
+        accuracy: feedback.accuracy,
+        completeness: feedback.completeness,
+        usefulness: feedback.usefulness,
+        missingAreas: feedback.missingAreas,
+        incorrectGuidelines: feedback.incorrectGuidelines,
+        additionalNeeds: feedback.additionalNeeds,
+        actualCodeQuality: feedback.actualCodeQuality,
+        executionTime: feedback.executionTime,
+        context: {
+            language: this.defaultConfig.language,
+            taskComplexity: feedback.taskComplexity,
+            requirementsCount: feedback.requirementsCount,
+        },
+        timestamp: new Date(),
+    };
+    await this.codingPrinciplesResearcher.submitAgentFeedback(agentFeedback);
+    this.logger.info(`Agent feedback submitted for principles ${principlesId}: accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}`);
+    `
+  }
+
   /**
    * Generate second opinion validation prompt
    *
    * Based on user suggestion: launch a 2nd opinion that validates what was done
    * and identifies misunderstandings
    */
-  IntelligentPromptGenerator.prototype.generateSecondOpinionPrompt = function (
-    originalPrompt,
-    agentResponse,
-    context
-  ) {
-    return __awaiter(this, void 0, void 0, function () {
-      let _a;
-      return __generator(this, (_b) => [
-        2 /*return*/,
-        '# \uD83D\uDD0D SECOND OPINION VALIDATION\n\n## Original Task Prompt:\n```\n'
-          .concat(originalPrompt, "\n```\n\n## Agent's Implementation:\n```\n")
-          .concat(
-            agentResponse,
-            '\n```\n\n## Project Context:\n- **Project**: '
-          )
-          .concat(context.name, '\n- **Domain**: ')
-          .concat(context.domain, '\n- **Requirements**: ')
-          .concat(
-            ((_a = context.requirements) === null || _a === void 0
-              ? void 0
-              : _a.join(', ')) || 'Not specified',
-            '\n\n## Validation Instructions:\n\n### 1. \uD83D\uDCCB Requirement Compliance Check\n- Did the agent address all requirements from the original prompt?\n- Are there any missing or misunderstood requirements?\n- Rate compliance: 0-100%\n\n### 2. \uD83C\uDFAF Quality Standards Validation  \n- Does the implementation follow the coding standards specified?\n- Are naming conventions, complexity, and structure appropriate?\n- Rate quality adherence: 0-100%\n\n### 3. \uD83D\uDD0D Misunderstanding Detection\n- Identify any apparent misunderstandings of the task\n- Note any implementations that don\'t match the intent\n- Highlight areas where clarification might have helped\n\n### 4. \u2705 Correctness Assessment\n- Is the implementation functionally correct?\n- Are there logical errors or potential bugs?\n- Does it solve the intended problem?\n\n### 5. \uD83D\uDE80 Improvement Opportunities\n- What could be improved in the implementation?\n- Are there better approaches or patterns?\n- What additional considerations were missed?\n\n## Output Format:\nProvide your validation in JSON format:\n```json\n{\n  "compliance_score": 85,\n  "quality_score": 90,\n  "correctness_score": 95,\n  "misunderstandings": ["Example: Agent interpreted X as Y instead of Z"],\n  "missing_requirements": ["Example: Error handling was not implemented"],\n  "improvement_suggestions": ["Example: Could use more descriptive variable names"],\n  "overall_assessment": "Good implementation with minor areas for improvement",\n  "validation_confidence": 0.9\n}\n```\n\nBe thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.'
-          ),
-      ]);
-    });
-  };
-  return IntelligentPromptGenerator;
-})();
-exports.IntelligentPromptGenerator = IntelligentPromptGenerator;
+  async generateSecondOpinionPrompt(
+    originalPrompt: string,
+    agentResponse: string,
+    context: ProjectContext
+  ): Promise<string> {
+    // Allow event loop processing for prompt generation
+    await new Promise(resolve => setTimeout(resolve, 0));
+    return `;
+    #;
+    SECOND;
+    OPINION;
+    VALIDATION `
+
+## Original Task Prompt:
+\`\`\``;
+    $originalPrompt;
+    `\`\``;
+    #;
+    #;
+    Agent;
+    's Implementation:';
+    `\`\``;
+    $agentResponse;
+    `\`\``;
+    #;
+    #;
+    Project;
+    Context: - ** Project ** ;
+    $context.name
+        -  ** Domain ** ;
+    $context.domain
+        -  ** Requirements ** ;
+    $context.requirements?.join(', ') || 'Not specified';
+    ';
+    #;
+    #;
+    Validation;
+    Instructions: #;
+    #;
+    #;
+    1.;
+    Requirement;
+    Compliance;
+    Check
+        - Did;
+    the;
+    agent;
+    address;
+    all;
+    requirements;
+    from;
+    the;
+    original;
+    prompt ?
+        -Are : ;
+    there;
+    any;
+    missing;
+    or;
+    misunderstood;
+    requirements ?
+        -Rate : ;
+    compliance: 0 - 100 %
+        #;
+    #;
+    #;
+    2.;
+    Quality;
+    Standards;
+    Validation
+        - Does;
+    the;
+    implementation;
+    follow;
+    the;
+    coding;
+    standards;
+    specified ?
+        -Are : ;
+    naming;
+    conventions, complexity, and;
+    structure;
+    appropriate ?
+        -Rate : ;
+    quality;
+    adherence: 0 - 100 %
+        #;
+    #;
+    #;
+    3.;
+    Misunderstanding;
+    Detection
+        - Identify;
+    any;
+    apparent;
+    misunderstandings;
+    of;
+    the;
+    task
+        - Note;
+    any;
+    implementations;
+    that;
+    don;
+    't match the intent'
+        - Highlight;
+    areas;
+    where;
+    clarification;
+    might;
+    have;
+    helped;
+    #;
+    #;
+    #;
+    4.;
+    Correctness;
+    Assessment
+        - Is;
+    the;
+    implementation;
+    functionally;
+    correct ?
+        -Are : ;
+    there;
+    logical;
+    errors;
+    or;
+    potential;
+    bugs ?
+        -Does : ;
+    it;
+    solve;
+    the;
+    intended;
+    problem ?
+        # : ;
+    #;
+    #;
+    5.;
+    Improvement;
+    Opportunities
+        - What;
+    could;
+    be;
+    improved in the;
+    implementation ?
+        -Are : ;
+    there;
+    better;
+    approaches;
+    or;
+    patterns ?
+        -What : ;
+    additional;
+    considerations;
+    were;
+    missed ?
+        # : ;
+    #;
+    Output;
+    Format: Provide;
+    your;
+    validation in JSON;
+    format: ;
+    `\`\`json`;
+    "compliance_score";
+    85,
+        "quality_score";
+    90,
+        "correctness_score";
+    95,
+        "misunderstandings";
+    ["Example: Agent interpreted X as Y instead of Z"],
+        "missing_requirements";
+    ["Example: Error handling was not implemented"],
+        "improvement_suggestions";
+    ["Example: Could use more descriptive variable names"],
+        "overall_assessment";
+    "Good implementation with minor areas for improvement",
+        "validation_confidence";
+    0.9;
+    `\`\``;
+    Be;
+    thorough;
+    but;
+    constructive.Focus;
+    on;
+    helping;
+    improve;
+    both;
+    the;
+    implementation;
+    and;
+    future;
+    prompt;
+    clarity. `;`;
+}
+async;
+analyzeProjectFeatureRequirements(config, any);
+Promise < any > {
+    await, new: Promise(resolve => setTimeout(resolve, 10)), // Simulate analysis time
+    const: analysis = {
+        performanceProfile: config.includePerformance ? {
+            requiresOptimization: config.maxComplexity > 15 || config.maxLinesPerFunction > 50,
+            complexityLevel: config.maxComplexity > 20 ? 'high' : config.maxComplexity > 10 ? 'medium' : 'low',
+            languageSpecific: this.getLanguageSpecificPerformanceTips(config.language),
+            recommendedTools: this.getPerformanceTools(config.language)
+        } : null,
+        securityProfile: config.includeSecurity ? {
+            riskLevel: this.assessSecurityRiskLevel(config.language),
+            vulnerabilityTypes: this.getCommonVulnerabilities(config.language),
+            securityFrameworks: this.getSecurityFrameworks(config.language),
+            complianceRequirements: this.getComplianceRequirements()
+        } : null,
+        testingProfile: config.includeTesting ? {
+            testingStrategy: this.determineTestingStrategy(config.language, config.maxComplexity),
+            recommendedFrameworks: this.getTestingFrameworks(config.language),
+            coverageTargets: this.getCoverageTargets(config.maxComplexity),
+            testTypes: this.getRecommendedTestTypes(config.language)
+        } : null,
+        projectMetadata: {
+            language: config.language,
+            complexity: config.maxComplexity,
+            codebaseSize: config.maxLinesPerFunction > 100 ? 'large' : 'medium',
+            analysisTimestamp: new Date()
+        }
+    },
+    this: .logger.debug('Feature analysis completed', { ': hasPerformance }, analysis.performanceProfile, hasSecurity, !!analysis.securityProfile, hasTesting, !!analysis.testingProfile, language, config.language)
+};
+;
+return analysis;
+async;
+generatePerformanceRecommendations(language, string, analysis, any);
+Promise < string[] > {
+    await, new: Promise(resolve => setTimeout(resolve, 5)),
+    const: recommendations = [
+        '⚡ **Performance Optimization Guidelines**',
+        `- Big O complexity: Keep algorithms under O(n log n) when possible`, `
+      ` - Memory, management, $, { this: .getMemoryTips(language) } `,` `- Lazy loading: Implement for ${this.getLazyLoadingOpportunities(language)}`, `
+      '- Caching strategies: Use memoization for expensive computations',
+      '- Bundle optimization: Tree-shake unused code and minimize dependencies''
+    ];
+
+    if (analysis.performanceProfile?.requiresOptimization) {
+      recommendations.push(
+        '- **Critical**: High complexity detected - implement performance monitoring',
+        '- Consider code splitting and async loading for large modules',
+        '- Use performance profiling tools for bottleneck identification''
+      );
+    }
+
+    recommendations.push(...analysis.performanceProfile?.recommendedTools.map((tool: string) => 
+      ` - Use, $, { tool }
+    ], for: performance, monitoring
+} ``;
+ || [];
+;
+return recommendations;
+async;
+generateSecurityRecommendations(language, string, analysis, any);
+Promise < string[] > {
+    await, new: Promise(resolve => setTimeout(resolve, 5)),
+    const: recommendations = [
+        '🔒 **Security Best Practices**',
+        '- Input validation: Sanitize and validate all user inputs',
+        '- Authentication: Use strong, multi-factor authentication',
+        '- Authorization: Implement principle of least privilege',
+        '- Data encryption: Encrypt sensitive data at rest and in transit', '
+    ],
+    if(analysis) { }, : .securityProfile
+};
+{
+    recommendations.push(`- **${language} Security**: ${this.getLanguageSecurityTips(language)}`, `
+        ...analysis.securityProfile.vulnerabilityTypes.map((vuln: string) => 
+          ` - Prevent, $, { vuln }, $, { this: .getVulnerabilityPreventionTip(vuln) } ``),
+    ;
+    analysis.securityProfile.securityFrameworks.map((framework) => `- Consider ${framework} for enhanced security` `
+        )
+      );
+    }
+
+    return recommendations;
+  }
+
+  /**
+   * Generate testing-specific recommendations
+   */
+  private async generateTestingRecommendations(language: string, analysis: any): Promise<string[]> {
+    await new Promise(resolve => setTimeout(resolve, 5));
+    
+    const recommendations = [
+      '🧪 **Testing Excellence Guidelines**',
+      '- Unit tests: Achieve 80%+ code coverage for critical functions',
+      '- Integration tests: Test component interactions and data flow',
+      '- End-to-end tests: Validate complete user workflows''
+    ];
+
+    if (analysis.testingProfile) {
+      recommendations.push(
+        ` -  ** Testing, Strategy ** , $, { analysis, : .testingProfile.testingStrategy } `,` `- **Coverage Target**: ${analysis.testingProfile.coverageTargets}`, `
+        ...analysis.testingProfile.recommendedFrameworks.map((framework: string) => 
+          ` - Use, $, { framework });
+    for ($; { language }; testing ``)
+        ,
+        ;
+    analysis.testingProfile.testTypes.map((testType) => `- Implement ${testType} tests for comprehensive coverage` `
+        )
+      );
+    }
+
+    return recommendations;
+  }
+
+  /**
+   * Merge feature recommendations into enhanced standards
+   */
+  private async mergeFeatureRecommendations(
+    flags: { includePerformance: boolean, includeSecurity: boolean, includeTesting: boolean },
+    recommendations: { performanceRecommendations: string[], securityRecommendations: string[], testingRecommendations: string[] }
+  ): Promise<any> {
+    await new Promise(resolve => setTimeout(resolve, 2));
+    
+    const activeFeatures = [];
+    if (flags.includePerformance) activeFeatures.push('Performance');'
+    if (flags.includeSecurity) activeFeatures.push('Security');  '
+    if (flags.includeTesting) activeFeatures.push('Testing');'
+
+    const contextualIntro = activeFeatures.length > 0 ? 
+      `, n, #, #, #,  ** Enhanced, Features ** , $, { activeFeatures, : .join(', ') }, optimization, enabled ` : `);
+    return {
+        contextualIntro,
+        allRecommendations: [
+            ...recommendations.performanceRecommendations,
+            ...recommendations.securityRecommendations,
+            ...recommendations.testingRecommendations
+        ].filter(Boolean),
+        featureMatrix: {
+            performance: flags.includePerformance,
+            security: flags.includeSecurity,
+            testing: flags.includeTesting,
+            totalFeatures: activeFeatures.length
+        }
+    };
+}
+getLanguageSpecificPerformanceTips(language, string);
+string[];
+{
+    const tips = {
+        typescript: ['Use type-only imports', 'Leverage tree-shaking', 'Optimize TypeScript compilation'],
+        javascript: ['Use WeakMap for metadata', 'Implement code splitting', 'Optimize event listeners'],
+        python: ['Use list comprehensions', 'Leverage asyncio', 'Profile with cProfile'],
+        java: ['Use StringBuilder', 'Optimize garbage collection', 'Implement connection pooling'], ': 
+    };
+    return tips[language] || tips.javascript;
+}
+getPerformanceTools(language, string);
+string[];
+{
+    const tools = {
+        typescript: ['webpack-bundle-analyzer', 'Lighthouse', '@typescript-eslint/performance'],
+        javascript: ['Chrome DevTools', 'Web Vitals', 'bundle-analyzer'],
+        python: ['cProfile', 'memory_profiler', 'py-spy'],
+        java: ['JProfiler', 'VisualVM', 'Java Flight Recorder'], ': 
+    };
+    return tools[language] || tools.javascript;
+}
+getMemoryTips(language, string);
+string;
+{
+    const tips = {
+        typescript: 'Use object pooling and avoid memory leaks with proper cleanup',
+        javascript: 'Use WeakMap/WeakSet for metadata and clean up event listeners',
+        python: 'Use generators for large datasets and del unused references',
+        java: 'Implement proper object lifecycle management and connection pooling', ': 
+    };
+    return tips[language] || tips.javascript;
+}
+getLazyLoadingOpportunities(language, string);
+string;
+{
+    const opportunities = {
+        typescript: 'components, modules, and heavy libraries',
+        javascript: 'images, scripts, and route-based code splitting',
+        python: 'modules, data processing pipelines, and ML models',
+        java: 'classes, resources, and database connections', ': 
+    };
+    return opportunities[language] || opportunities.javascript;
+}
+assessSecurityRiskLevel(language, string);
+string;
+{
+    const riskLevels = {
+        typescript: 'Medium - Web-based vulnerabilities',
+        javascript: 'High - Client-side exposure and injection risks',
+        python: 'Medium - Server-side and data processing risks',
+        java: 'Medium - Enterprise and injection vulnerabilities', ': 
+    };
+    return riskLevels[language] || 'Medium;;
+}
+getCommonVulnerabilities(language, string);
+string[];
+{
+    const vulnerabilities = {
+        typescript: ['XSS', 'CSRF', 'Prototype pollution', 'Dependency vulnerabilities'],
+        javascript: ['XSS', 'CSRF', 'Injection attacks', 'DOM manipulation'],
+        python: ['SQL Injection', 'Command Injection', 'Deserialization', 'Path traversal'],
+        java: ['SQL Injection', 'XML External Entities', 'Deserialization', 'LDAP Injection'], ': 
+    };
+    return vulnerabilities[language] || vulnerabilities.javascript;
+}
+getSecurityFrameworks(language, string);
+string[];
+{
+    const frameworks = {
+        typescript: ['Helmet.js', 'OWASP ZAP', 'Snyk', 'SonarQube'],
+        javascript: ['Helmet.js', 'Express-rate-limit', 'Joi validation'],
+        python: ['Django Security', 'Flask-Security', 'Bandit', 'Safety'],
+        java: ['Spring Security', 'OWASP ESAPI', 'Shiro', 'FindBugs'], ': 
+    };
+    return frameworks[language] || frameworks.javascript;
+}
+getComplianceRequirements();
+string[];
+{
+    return ['GDPR', 'CCPA', 'SOX', 'HIPAA', 'PCI-DSS'];
+    ';
+}
+getLanguageSecurityTips(language, string);
+string;
+{
+    const tips = {
+        typescript: 'Enable strict type checking and use ESLint security rules',
+        javascript: 'Avoid eval(), validate inputs, use Content Security Policy',
+        python: 'Use parameterized queries, validate file paths, sanitize user input',
+        java: 'Use prepared statements, validate XML input, implement proper authentication', ': 
+    };
+    return tips[language] || tips.javascript;
+}
+getVulnerabilityPreventionTip(vulnerability, string);
+string;
+{
+    const tips = {
+        'XSS': 'Escape output and use Content Security Policy',
+        'CSRF': 'Implement anti-CSRF tokens and SameSite cookies',
+        'SQL Injection': 'Use parameterized queries and input validation',
+        'Command Injection': 'Avoid system calls and validate all inputs',
+        'Prototype pollution': 'Use Object.create(null) and validate object keys', ': 
+    };
+    return tips[vulnerability] || 'Implement input validation and secure coding practices;;
+}
+determineTestingStrategy(language, string, complexity, number);
+string;
+{
+    if (complexity > 20)
+        return 'Comprehensive testing with unit, integration, and E2E tests;;
+    if (complexity > 10)
+        return 'Balanced testing with focus on critical paths;;
+    return 'Focused unit testing with selective integration tests;;
+}
+getTestingFrameworks(language, string);
+string[];
+{
+    const frameworks = {
+        typescript: ['Jest', 'Vitest', 'Playwright', 'Cypress'],
+        javascript: ['Jest', 'Mocha', 'Jasmine', 'Cypress'],
+        python: ['pytest', 'unittest', 'Selenium', 'hypothesis'],
+        java: ['JUnit 5', 'TestNG', 'Mockito', 'Selenium'], ': 
+    };
+    return frameworks[language] || frameworks.javascript;
+}
+getCoverageTargets(complexity, number);
+string;
+{
+    if (complexity > 20)
+        return '90%+ for critical functions, 80%+ overall;;
+    if (complexity > 10)
+        return '80%+ for critical functions, 70%+ overall;;
+    return '70%+ for critical functions, 60%+ overall;;
+}
+getRecommendedTestTypes(language, string);
+string[];
+{
+    const testTypes = {
+        typescript: ['Unit', 'Integration', 'Component', 'E2E'],
+        javascript: ['Unit', 'Integration', 'Visual regression', 'Performance'],
+        python: ['Unit', 'Integration', 'Property-based', 'Load'],
+        java: ['Unit', 'Integration', 'Contract', 'Performance'], ': 
+    };
+    return testTypes[language] || testTypes.javascript;
+}
 /**
  * Export convenient factory function
  */
-function createIntelligentPromptGenerator(behavioralIntelligence) {
-  return new IntelligentPromptGenerator(behavioralIntelligence);
+export function createIntelligentPromptGenerator(behavioralIntelligence) {
+    return new IntelligentPromptGenerator(behavioralIntelligence);
 }
 /**
  * Export default configuration
  */
-exports.DEFAULT_CODING_STANDARDS = {
-  language: 'typescript',
-  maxComplexity: 10,
-  maxLinesPerFunction: 30,
-  maxParameters: 5,
-  fileNaming: 'kebab-case',
-  includePerformance: true,
-  includeSecurity: true,
+export const DEFAULT_CODING_STANDARDS = {
+    language: 'typescript',
+    maxComplexity: 10,
+    maxLinesPerFunction: 30,
+    maxParameters: 5,
+    fileNaming: 'kebab-case',
+    includePerformance: true,
+    includeSecurity: true,
 };

@@ -26,7 +26,7 @@
 export const isDevelopment = () => typeof globalThis !== 'undefined' && typeof globalThis.window !== 'undefined' && globalThis.window.location?.hostname === 'localhost';
 export const isProduction = () => !isDevelopment() && typeof window !== 'undefined';
 export const isTest = () => false;
-export const getEnv = (key: string, defaultValue?: string) => defaultValue || '';
+export const getEnv = (_key: string, defaultValue?: string) => defaultValue || '';
 export const isDebug = () => isDevelopment();
 export const shouldLog = () => true;
 
@@ -331,7 +331,14 @@ export const z = {
 		email: () => ({ parse: (val: string) => val }),
 		url: () => ({ parse: (val: string) => val }),
 		uuid: () => ({ parse: (val: string) => val }),
-		min: () => ({ parse: (val: string) => val }),
+		min: (minLength: number) => ({ 
+			parse: (val: string) => {
+				if (val.length < minLength) {
+					throw new Error(`String must be at least ${minLength} characters`);
+				}
+				return val;
+			}
+		}),
 	}),
 	number: () => ({
 		positive: () => ({ parse: (val: number) => val }),

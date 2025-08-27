@@ -6,8 +6,11 @@
 		"noEmit": false,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
-		"types": ["node"]
+		"types": ["node"],
+		"rootDir": ".",
+		"outDir": "./dist"
 	},
+	"include": ["index.ts", "src/**/*.ts"],
 	"exclude": [
 		"dist/**/*",
 		"node_modules/**/*",

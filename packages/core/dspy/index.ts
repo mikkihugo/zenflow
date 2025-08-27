@@ -334,13 +334,13 @@ export {
 	ChatAdapter,
 	type ChatAdapterConfig,
 	type ChatMessage,
-} from "./src/adapters/chat-adapter.js";
+} from "./src/adapters/chat-adapter";
 export type {
 	Config,
 	SharedLLMService,
 	SharedLogger,
 	SharedStorage,
-} from "./src/core/service.js";
+} from "./src/core/service";
 export {
 	type Adapter,
 	BaseAdapter,
@@ -350,7 +350,7 @@ export {
 	type FinetuneDataOutput,
 	type InferenceDataInput,
 	type InferenceDataOutput,
-} from "./src/interfaces/adapter.js";
+} from "./src/interfaces/adapter";
 // Export interfaces
 export {
 	BaseLM,
@@ -358,7 +358,7 @@ export {
 	type LMInterface,
 	type ModelInfo,
 	type ModelUsage,
-} from "./src/interfaces/lm.js";
+} from "./src/interfaces/lm";
 export type { DSPyKV } from "./src/main";
 // =============================================================================
 // MAIN ENTRY POINT - Complete DSPy system
@@ -374,14 +374,14 @@ export {
 	getDSPyService,
 	initializeDSPyService,
 } from "./src/main";
-export { Example } from "./src/primitives/example.js";
+export { Example } from "./src/primitives/example";
 // Export core DSPy components only - working modules without complex Stanford DSPy issues
-export { DSPyModule } from "./src/primitives/module.js";
+export { DSPyModule } from "./src/primitives/module";
 export {
 	type Prediction,
 	PredictionUtils,
-} from "./src/primitives/prediction.js";
-export { SeededRNG } from "./src/primitives/seeded-rng.js";
+} from "./src/primitives/prediction";
+export { SeededRNG } from "./src/primitives/seeded-rng";
 // Export all DSPy types
 export type {
 	DSPyConfig,
@@ -398,7 +398,7 @@ export type {
 	DSPyPromptVariation,
 	DSPyStorage,
 	DSPyTaskConfig,
-} from "./src/types/interfaces.js";
+} from "./src/types/interfaces";
 
 // Import the necessary functions
 import { createDSPyEngine, DSPyEngine, dspyUtils } from "./src/main";

@@ -22,7 +22,7 @@ describe("Type Guards", () => {
 				"../../src/types/guards/advanced.type.guards"
 			);
 			expect(advanced).toBeDefined();
-		} catch (_error) {
+		} catch {
 			// File might not exist, that's OK
 			expect(true).toBe(true);
 		}

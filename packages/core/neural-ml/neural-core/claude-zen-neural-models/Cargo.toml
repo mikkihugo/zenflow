@@ -10,8 +10,8 @@ keywords = ["neural-network", "time-series", "forecasting", "lstm", "rnn"]
 categories = ["science", "algorithms", "mathematics"]
 
 [dependencies]
-# Core ruv-FANN dependency
-ruv-fann = "0.1.6"
+# Use our own superior Pure Rust FANN implementation
+claude-zen-neural-feedforward = { path = "../claude-zen-neural-feedforward" }
 
 # Essential dependencies
 num-traits = "0.2"
@@ -21,7 +21,7 @@ serde_json = { version = "1.0", optional = true }
 
 # Time series and data handling
 chrono = { version = "0.4", features = ["serde"] }
-polars = { version = "0.50", features = ["lazy", "temporal", "csv", "parquet"], optional = true }
+polars = { version = "0.41", features = ["lazy", "temporal", "csv", "parquet"], optional = true }
 
 # Mathematical operations
 ndarray = { version = "0.16", features = ["rayon"] }
@@ -55,10 +55,10 @@ tokio = { version = "1.0", features = ["full"] }
 default = ["std", "auto-optimization"]
 std = []
 auto-optimization = []
-serde = ["dep:serde", "dep:serde_json", "ruv-fann/serde"]
+serde = ["dep:serde", "dep:serde_json", "claude-zen-neural-feedforward/serde"]
 polars = ["dep:polars"]
 nalgebra = ["dep:nalgebra"]
-parallel = ["dep:rayon", "ruv-fann/parallel"]
+parallel = ["dep:rayon", "claude-zen-neural-feedforward/parallel"]
 testing = ["dep:approx"]
 
 # Specialized model features

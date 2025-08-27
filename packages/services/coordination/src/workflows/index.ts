@@ -1,135 +1,252 @@
 /**
- * @fileoverview Workflows Domain - Core Workflow Engine with Multi-Level Orchestration
- * 
- * Clean workflow implementation with multi-level coordination
+ * @fileoverview Workflows Package - Professional Battle-Tested Architecture
+ *
+ * Advanced workflow engine with comprehensive battle-tested npm dependencies for production reliability.
+ *
+ * **BATTLE-TESTED DEPENDENCIES INTEGRATED:**
+ * - expr-eval: Safe expression evaluation (replaces dangerous new Function())
+ * - async: Professional async utilities for step execution
+ * - p-limit: Controlled concurrency for parallel operations
+ * - eventemitter3: High-performance event system
+ * - xstate: Robust state management for workflows
+ * - mermaid: Professional workflow visualization
+ * - node-cron: Production-ready scheduling
+ * - foundation storage: Battle-tested persistence layer
+ * - **lodash-es: Data manipulation utilities (40M+ weekly downloads)**
+ * - **date-fns: Date calculations and formatting (15M+ weekly downloads)**
+ * - **nanoid: Secure ID generation (10M+ weekly downloads)**
+ * - **zod: Schema validation (10M+ weekly downloads)**
+ * - **rxjs: Reactive programming (15M+ weekly downloads)**
+ * - **immer: Immutable updates (10M+ weekly downloads)**
+ *
+ * Key Features:
+ * - Tree-shakable exports for optimal bundle size
+ * - Professional naming conventions
+ * - Security-first architecture (no arbitrary code execution)
+ * - Foundation storage integration (leverages existing battle-tested infrastructure)
+ * - Type-safe workflow orchestration
+ *
+ * @example Basic workflow engine usage
+ * ```typescript`
+ * import { WorkflowEngine } from '@claude-zen/workflows';
+ *
+ * const engine = new WorkflowEngine({
+ *   persistWorkflows: true,
+ *   enableVisualization: true
+ * });
+ *
+ * await engine.initialize();
+ * const result = await engine.startWorkflow(workflowDefinition);
+ * ````
+ *
+ * @example Advanced scheduling and state management
+ * ```typescript`
+ * import { WorkflowEngine } from '@claude-zen/workflows';
+ *
+ * const engine = new WorkflowEngine();
+ *
+ * // Schedule workflow with cron
+ * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
+ *
+ * // Generate Mermaid visualization
+ * const diagram = engine.generateWorkflowVisualization(workflow);
+ * ````
  */
 
-// Multi-level orchestration types (preserved from original)
-export enum OrchestrationLevel {
-  PORTFOLIO = 'portfolio',
-  PROGRAM = 'program', 
-  SwarmExecution = 'execution'
-}
+// =============================================================================
+// MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
+// =============================================================================
 
-export interface WIPLimits {
-  readonly portfolioItems: number;
-  readonly programItems: number;
-  readonly executionItems: number;
-  readonly totalSystemItems: number;
-}
+export { WorkflowEngine as default, WorkflowEngine } from './main';
 
-export interface FlowMetrics {
-  readonly throughput: number;
-  readonly cycleTime: number;
-  readonly leadTime: number;
-  readonly wipUtilization: number;
-}
+// =============================================================================
+// PROFESSIONAL UTILITIES - Library Integrations
+// =============================================================================
 
-// Portfolio level work item
-export interface PortfolioItem {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly businessValue: number;
-  readonly status: 'draft' | 'review' | 'approved' | 'in_progress' | 'completed';
-}
+export {
+  // Collection utilities
+  ArrayProcessor,
+  AsyncUtils,
+  DateCalculator,
+  // Date utilities
+  DateFormatter,
+  // State management utilities
+  ImmutableOps,
+  ObjectProcessor,
+  // Reactive utilities
+  ObservableUtils,
+  // Validation utilities
+  SchemaValidator,
+  // ID generation utilities
+  SecureIdGenerator,
+  type WorkflowContext as ValidatedWorkflowContext,
+  WorkflowContextSchema,
+  type WorkflowDefinition as ValidatedWorkflowDefinition,
+  WorkflowDefinitionSchema,
+  type WorkflowExecutionResult as ValidatedWorkflowExecutionResult,
+  WorkflowExecutionResultSchema,
+  // Professional types
+  type WorkflowStep as ValidatedWorkflowStep,
+  WorkflowStepSchema,
+} from './utilities/index';
 
-// Program level work item
-export interface ProgramItem {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly portfolioItemId: string;
-  readonly status: 'planning' | 'analysis' | 'development' | 'testing' | 'done';
-}
+// =============================================================================
+// WORKFLOW DOMAIN TYPES - Comprehensive workflow domain types
+// =============================================================================
 
-// Execution level work item
-export interface SwarmExecutionItem {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly programItemId: string;
-  readonly status: 'queued' | 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion' | 'done';
-}
+// Export comprehensive workflow domain types from types/index.ts
+export type {
+  AccessPolicy,
+  ArtifactType,
+  BackoffStrategy,
+  CheckpointConfig,
+  CompensationAction,
+  CompensationConfig,
+  // Configuration types
+  ConcurrencyConfig,
+  DependencyCondition,
+  DependencyType,
+  ErrorHandlingConfig,
+  ErrorStrategy,
+  ExecutionConfig,
+  ExecutionError,
+  ExecutionId,
+  // Logging and audit
+  ExecutionLog,
+  // Monitoring and metrics
+  ExecutionMetrics,
+  ExecutionResult,
+  ExecutionStrategy,
+  ExecutionTrigger,
+  InputSpecification,
+  LatencyMetrics,
+  LockType,
+  LogLevel,
+  OutputSpecification,
+  ParameterType,
+  PerformanceConfig,
+  PerformanceMetrics,
+  Permission,
+  ResourceConfig,
+  ResourceConstraints,
+  ResourceLimits,
+  ResourceRequests,
+  ResourceUsage,
+  RetentionPolicy,
+  RetryConfig,
+  // Advanced features
+  RollbackConfig,
+  RollbackStrategy,
+  // Scheduling and dependencies
+  ScheduleInfo,
+  StateCheckpoint,
+  StateLock,
+  StepAction,
+  StepArtifact,
+  StepCondition,
+  StepError,
+  StepExecution,
+  StepExecutionError,
+  StepId,
+  StepLog,
+  StepMetrics,
+  StepResult,
+  StepStatus,
+  StepType,
+  StepValidation,
+  TemplateDocumentation,
+  TemplateExample,
+  TemplateParameter,
+  TimeoutConfig,
+  TriggerType,
+  // Artifacts and output
+  WorkflowArtifact,
+  WorkflowCategory,
+  WorkflowConfig,
+  WorkflowContext,
+  // Core workflow interfaces
+  WorkflowDefinition,
+  WorkflowDependency,
+  // Engine configuration
+  WorkflowEngineConfig,
+  WorkflowError,
+  WorkflowEventType,
+  WorkflowExecution,
+  WorkflowId,
+  WorkflowPermissions,
+  // Result types
+  WorkflowResult,
+  // Utility types
+  WorkflowState,
+  // Core workflow types
+  WorkflowStatus,
+  WorkflowStep,
+  // Templates and registry
+  WorkflowTemplate,
+  // Validation and permissions
+  WorkflowValidation,
+} from './types/index';
 
-// Basic workflow definitions
-export interface WorkflowStep {
-  id: string;
-  name: string;
-  type: 'task' | 'decision' | 'parallel' | 'sequential';
-  dependencies: string[];
-}
+// =============================================================================
+// LEGACY TYPE COMPATIBILITY - Re-exports from old types.ts
+// =============================================================================
 
-export interface WorkflowDefinition {
-  id: string;
-  name: string;
-  description: string;
-  steps: WorkflowStep[];
-}
+// Re-export legacy workflow types for backward compatibility
+export type {
+  DocumentContent,
+  StepExecutionResult,
+  WorkflowContext as WorkflowContextLegacy,
+  WorkflowData,
+  WorkflowDefinition as WorkflowDefinitionLegacy,
+  WorkflowEngineConfig as WorkflowEngineConfigLegacy,
+  WorkflowEvent,
+  WorkflowExecution as WorkflowExecutionLegacy,
+  WorkflowRegistry,
+  WorkflowState as WorkflowStateLegacy,
+  WorkflowStep as WorkflowStepLegacy,
+  WorkflowTemplate as WorkflowTemplateLegacy,
+} from './types';
 
-export interface WorkflowContext {
-  workflowId: string;
-  currentStep: string;
-  data: Record<string, unknown>;
-  variables: Record<string, unknown>;
-}
+// =============================================================================
+// METADATA - Package information with battle-tested features
+// =============================================================================
 
-export interface WorkflowExecutionResult {
-  success: boolean;
-  result: unknown;
-  error?: string;
-  context: WorkflowContext;
-}
-
-// Workflow Engine class
-export class WorkflowEngine {
-  private workflows: Map<string, WorkflowDefinition> = new Map();
-  
-  constructor(private config: { persistWorkflows?: boolean; enableVisualization?: boolean } = {}) {}
-
-  async initialize(): Promise<void> {
-    // Initialize workflow engine
-  }
-
-  async registerWorkflow(workflow: WorkflowDefinition): Promise<void> {
-    this.workflows.set(workflow.id, workflow);
-  }
-
-  async startWorkflow(workflowId: string, initialData: Record<string, unknown> = {}): Promise<WorkflowExecutionResult> {
-    const workflow = this.workflows.get(workflowId);
-    if (!workflow) {
-      throw new Error(`Workflow not found: ${workflowId}`);
-    }
-
-    const context: WorkflowContext = {
-      workflowId,
-      currentStep: workflow.steps[0]?.id || '',
-      data: initialData,
-      variables: {}
-    };
-
-    return {
-      success: true,
-      result: context.data,
-      context
-    };
-  }
-}
-
-// Multi-level orchestration
-export interface MultiLevelOrchestrator {
-  portfolioLevel: OrchestrationLevel.PORTFOLIO;
-  programLevel: OrchestrationLevel.PROGRAM;
-  executionLevel: OrchestrationLevel.SwarmExecution;
-}
-
-export function createMultiLevelOrchestrator(_wipLimits: WIPLimits): MultiLevelOrchestrator {
-  return {
-    portfolioLevel: OrchestrationLevel.PORTFOLIO,
-    programLevel: OrchestrationLevel.PROGRAM,
-    executionLevel: OrchestrationLevel.SwarmExecution
-  };
-}
-
-// Export default workflow engine
-export default WorkflowEngine;
+export const WORKFLOWS_INFO = {
+  version: '1.0.0',
+  name: '@claude-zen/workflows',
+  description:
+    'Production-ready workflow engine with battle-tested npm dependencies',
+  battleTestedDependencies: [
+    'expr-eval: Safe expression evaluation',
+    'async: Professional async utilities',
+    'p-limit: Controlled concurrency',
+    'eventemitter3: High-performance events',
+    'xstate: Robust state management',
+    'mermaid: Professional visualization',
+    'node-cron: Production scheduling',
+    'foundation: Battle-tested storage',
+  ],
+  capabilities: [
+    'Secure workflow orchestration (no arbitrary code execution)',
+    'Foundation storage integration',
+    'XState-powered state management',
+    'Professional async utilities',
+    'Controlled concurrency with p-limit',
+    'High-performance eventemitter3 events',
+    'Mermaid workflow visualization',
+    'Production cron scheduling',
+    'Battle-tested persistence layer',
+    'Professional data manipulation (lodash-es)',
+    'Secure ID generation (nanoid)',
+    'Advanced date/time handling (date-fns)',
+    'Runtime validation (zod)',
+    'Reactive programming (rxjs)',
+    'Immutable state management (immer)',
+  ],
+  security: {
+    safeExpressionEvaluation: true,
+    noArbitraryCodeExecution: true,
+    foundationStorageIntegration: true,
+    productionReady: true,
+  },
+};

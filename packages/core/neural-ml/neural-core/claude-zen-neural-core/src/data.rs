@@ -415,7 +415,7 @@ impl TimeSeriesSchema {
     let columns: Vec<String> = df
       .get_column_names()
       .into_iter()
-      .map(polars::prelude::PlSmallStr::to_string)
+      .map(|s| s.to_string())
       .collect();
 
     // Check required columns
@@ -532,9 +532,8 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     path: P,
     schema: TimeSeriesSchema,
   ) -> NeuroDivergentResult<Self> {
-    use polars_utils::plpath::PlPath;
     let df = LazyFrame::scan_parquet(
-      PlPath::Local(Arc::from(path.as_ref())),
+      path.as_ref(),
       ScanArgsParquet::default(),
     )
     .map_err(|e| {

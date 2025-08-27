@@ -4,5 +4,19 @@
  * Type definitions for agent monitoring, health tracking, learning systems,
  * and predictive analytics.
  */
+'
+    | 'coder';
+'
+    | 'analyst';
+'
+    | 'optimizer';
+'
+    | 'coordinator';
+'
+    | 'tester';
+'
+    | 'architect;;
+';
+';
+';
 export {};
-//# sourceMappingURL=types.js.map

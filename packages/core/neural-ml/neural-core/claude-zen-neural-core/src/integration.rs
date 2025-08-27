@@ -12,8 +12,7 @@ use ndarray::Array2;
 use num_traits::Float;
 use serde::{Deserialize, Serialize};
 
-use ruv_fann::training::TrainingAlgorithm;
-use ruv_fann::{ActivationFunction, Network, TrainingData};
+use claude_zen_neural_feedforward::{ActivationFunction, Network, TrainingData, TrainingAlgorithmTrait as TrainingAlgorithm};
 
 use crate::{
   data::TimeSeriesDataset,

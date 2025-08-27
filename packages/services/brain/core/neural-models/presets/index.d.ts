@@ -6,26 +6,26 @@
  * @file Presets module exports.
  */
 export interface NeuralPreset {
-	id: string;
-	name: string;
-	type: string;
-	architecture: string;
-	layers: number[];
-	activation: string;
-	outputActivation: string;
-	learningRate: number;
-	batchSize: number;
-	useCase: string[];
-	dropout?: number;
-	config?: Record<string, unknown>;
-	model?: string;
-	description?: string;
-	performance?: {
-		accuracy?: number;
-		latency?: number;
-		memoryUsage?: number;
-		[key: string]: unknown;
-	};
+    id: string;
+    name: string;
+    type: string;
+    architecture: string;
+    layers: number[];
+    activation: string;
+    outputActivation: string;
+    learningRate: number;
+    batchSize: number;
+    useCase: string[];
+    dropout?: number;
+    config?: Record<string, unknown>;
+    model?: string;
+    description?: string;
+    performance?: {
+        accuracy?: number;
+        latency?: number;
+        memoryUsage?: number;
+        [key: string]: unknown;
+    };
 }
 export type NeuralPresetMap = Record<string, NeuralPreset>;
 export declare const NEURAL_PRESETS: NeuralPresetMap;
@@ -36,10 +36,7 @@ export declare const NEURAL_PRESETS: NeuralPresetMap;
  * @param presetName
  * @example
  */
-export declare function getPreset(
-	category: string,
-	presetName?: string,
-): NeuralPreset | undefined;
+export declare function getPreset(category: string, presetName?: string): NeuralPreset | undefined;
 /**
  * Get recommended preset for use case.
  *
@@ -67,16 +64,14 @@ export declare function getCategoryPresets(category: string): NeuralPreset[];
  * @param config
  * @example
  */
-export declare function validatePresetConfig(
-	config: Partial<NeuralPreset>,
-): boolean;
+export declare function validatePresetConfig(config: Partial<NeuralPreset>): boolean;
 declare const _default: {
-	NEURAL_PRESETS: NeuralPresetMap;
-	getPreset: typeof getPreset;
-	getRecommendedPreset: typeof getRecommendedPreset;
-	searchPresetsByUseCase: typeof searchPresetsByUseCase;
-	getCategoryPresets: typeof getCategoryPresets;
-	validatePresetConfig: typeof validatePresetConfig;
+    NEURAL_PRESETS: NeuralPresetMap;
+    getPreset: typeof getPreset;
+    getRecommendedPreset: typeof getRecommendedPreset;
+    searchPresetsByUseCase: typeof searchPresetsByUseCase;
+    getCategoryPresets: typeof getCategoryPresets;
+    validatePresetConfig: typeof validatePresetConfig;
 };
 export default _default;
 //# sourceMappingURL=index.d.ts.map

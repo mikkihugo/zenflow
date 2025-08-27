@@ -1,0 +1,47 @@
+[package]
+name = "claude-zen-neural-framework"
+version = "0.1.0"
+edition = "2021"
+authors = ["claude-code-zen Team"]
+description = "Deep learning framework - TensorFlow.js replacement with Burn/Candle, GPU acceleration, automatic differentiation"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "claude_zen_neural_framework"
+path = "src/lib.rs"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+# Core dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+log = { workspace = true }
+num-traits = { workspace = true }
+
+# Burn deep learning framework
+burn = { workspace = true, features = ["wgpu", "ndarray"] }
+burn-core = { workspace = true }
+burn-tensor = { workspace = true }
+burn-autodiff = { workspace = true }
+burn-wgpu = { workspace = true, optional = true }
+burn-ndarray = { workspace = true }
+
+# Candle alternative (optional)
+candle-core = { version = "0.9", optional = true }
+candle-nn = { version = "0.9", optional = true }
+
+# Data handling
+ndarray = { workspace = true }
+polars = { workspace = true }
+
+# WASM support
+wasm-bindgen = { workspace = true, optional = true }
+
+[features]
+default = ["burn-backend", "gpu"]
+burn-backend = []
+candle-backend = ["dep:candle-core", "dep:candle-nn"]
+gpu = ["burn-wgpu"]
+wasm = ["dep:wasm-bindgen"]

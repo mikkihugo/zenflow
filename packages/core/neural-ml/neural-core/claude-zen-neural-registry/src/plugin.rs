@@ -422,6 +422,7 @@ impl Plugin {
 
   /// Get plugin interface from library
   #[cfg(feature = "plugin-system")]
+  #[allow(dead_code)]
   fn get_plugin_interface(
     _library: &Library,
   ) -> RegistryResult<Box<dyn PluginInterface + Send + Sync>> {
@@ -827,7 +828,7 @@ pub fn load_plugins_from_directory<P: AsRef<Path>>(
     {
       if path
         .extension()
-        .map_or(false, |ext| ext == "so" || ext == "dylib" || ext == "dll")
+        .is_some_and(|ext| ext == "so" || ext == "dylib" || ext == "dll")
       {
         match Plugin::load_from_path(path, config.clone()) {
           Ok(plugin) => {

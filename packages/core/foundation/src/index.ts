@@ -86,10 +86,15 @@ export {
 	withRetry,
 	withTimeout,
 } from "./error-handling/index.js";
-// EVENT SYSTEM - Fully typed EventEmitter replacement
+// EVENT SYSTEM - Complete event system with EventEmitter and EventBus
 // =============================================================================
 export { EventEmitter } from "./events/event-emitter.js";
 export type { EventMap, EventArgs } from "./events/event-emitter.js";
+
+// Modern event bus with full TypeScript generics  
+export { EventBus } from "./events/event-bus.js";
+export type { EventBusConfig, EventListener, EventMetrics, EventContext, EventMiddleware } from "./events/event-bus.js";
+export type { Event as EventBusEvent } from "./events/event-bus.js";
 // TYPE SYSTEM - All types and type utilities
 // =============================================================================
 // Type utilities and advanced types
@@ -135,7 +140,7 @@ export type {
 // INFRASTRUCTURE - Facade system and infrastructure utilities
 // =============================================================================
 export {
-	FacadeStatusManager,
+	facadeStatusManager,
 	getSystemStatus,
 	hasService,
 	registerFacade,

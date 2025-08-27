@@ -139,7 +139,7 @@ const asFunction = (fn: JsonValue, options?: JsonObject) => {
 	return fn;
 };
 const asValue = (val: JsonValue) => val;
-const Lifetime = { SINGLETON: "SINGLETON" };
+const LIFETIME = { SINGLETON: "SINGLETON" };
 
 const logger = getLogger("facade-status-manager");
 
@@ -214,6 +214,7 @@ export interface ServiceStatus {
 export interface SystemStatus {
 	overall: CapabilityLevel;
 	services: Record<string, ServiceStatus>;
+	facades: Record<string, FacadeStatus>;
 	totalPackages: number;
 	availablePackages: number;
 	registeredServices: number;
@@ -222,29 +223,46 @@ export interface SystemStatus {
 }
 
 /**
+ * Facade status information for infrastructure tracking.
+ */
+export interface FacadeStatus {
+	name: string;
+	available: boolean;
+	healthScore: number;
+	lastChecked: number;
+	capabilities: string[];
+	capability: CapabilityLevel;
+	dependencies: string[];
+	packages: Record<string, PackageInfo>;
+	registeredServices: string[];
+	features: string[];
+	missingPackages: string[];
+}
+
+/**
  * Service status events interface for type safety
  */
 interface ServiceStatusEvents {
-	"service-registered": { serviceName: string; timestamp: Date };
-	"service-health-changed": {
+	"service-registered": [{ serviceName: string; timestamp: Date }];
+	"service-health-changed": [{
 		serviceName: string;
 		healthy: boolean;
 		timestamp: Date;
-	};
-	"system-status-changed": {
+	}];
+	"system-status-changed": [{
 		status: string;
 		healthScore: number;
 		timestamp: Date;
-	};
-	"package-loaded": { packageName: string; version?: string; timestamp: Date };
-	"package-failed": { packageName: string; error: Error; timestamp: Date };
-	"service-resolved": { serviceName: string; timestamp: Date };
-	"service-resolution-failed": {
+	}];
+	"package-loaded": [{ packageName: string; version?: string; timestamp: Date }];
+	"package-failed": [{ packageName: string; error: Error; timestamp: Date }];
+	"service-resolved": [{ serviceName: string; timestamp: Date }];
+	"service-resolution-failed": [{
 		serviceName: string;
 		error: Error;
 		timestamp: Date;
-	};
-	[key: string]: unknown;
+	}];
+	[key: string]: unknown[];
 }
 
 /**
@@ -258,13 +276,11 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 	private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 	private container: AwilixContainer;
 	private statusUpdateInterval: NodeJS.Timeout | null = null;
+	private facadeStatus = new Map<string, FacadeStatus>();
 
 	constructor() {
 		super({
-			enableValidation: true,
-			enableMetrics: true,
-			enableHistory: false,
-			maxListeners: 50,
+			captureRejections: true,
 		});
 		this.container = createContainer();
 		this.initializeStatusTracking();
@@ -448,21 +464,21 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 				const serviceName = exportName.replace("create", "").toLowerCase();
 				registrations[serviceName] = asFunction(
 					exportValue as unknown as JsonValue,
-					{ lifetime: Lifetime.SINGLETON },
+					{ lifetime: LIFETIME.SINGLETON },
 				);
 			}
 			if (typeof exportValue === "function" && exportName.startsWith("get")) {
 				const serviceName = exportName.replace("get", "").toLowerCase();
 				registrations[serviceName] = asFunction(
 					exportValue as unknown as JsonValue,
-					{ lifetime: Lifetime.SINGLETON },
+					{ lifetime: LIFETIME.SINGLETON },
 				);
 			}
 		}
 
 		// Register the entire module as a service
 		if (packageInfo.serviceName) {
-			registrations[packageInfo.serviceName] = asValue(module as any);
+			registrations[packageInfo.serviceName] = asValue(module as JsonValue);
 		}
 
 		return registrations;
@@ -673,6 +689,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 
 		return {
 			overall,
+			services: Object.fromEntries(this.serviceStatus),
 			facades,
 			totalPackages,
 			availablePackages,
@@ -791,6 +808,37 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 	/**
 	 * Cleanup resources
 	 */
+	/**
+	 * Register a facade with status tracking
+	 */
+	async registerFacade(
+		facadeName: string,
+		expectedPackages: string[],
+		features: string[] = []
+	): Promise<void> {
+		const facadeStatus: FacadeStatus = {
+			name: facadeName,
+			available: true,
+			healthScore: 100,
+			lastChecked: Date.now(),
+			capabilities: features,
+			capability: CapabilityLevel.FULL,
+			dependencies: [],
+			packages: {},
+			registeredServices: [],
+			features,
+			missingPackages: expectedPackages.filter(pkg => !this.packageCache.has(pkg))
+		};
+		this.facadeStatus.set(facadeName, facadeStatus);
+	}
+
+	/**
+	 * Get facade status
+	 */
+	getFacadeStatus(facadeName: string): FacadeStatus | null {
+		return this.facadeStatus.get(facadeName) || null;
+	}
+
 	shutdown(): void {
 		if (this.statusUpdateInterval) {
 			clearInterval(this.statusUpdateInterval);
@@ -798,12 +846,12 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 		}
 		this.container.dispose();
 		this.removeAllListeners();
-		FacadeStatusManager.instance = null;
+		SystemStatusManager.instance = null;
 	}
 }
 
 // Global instance for easy access
-export const facadeStatusManager = FacadeStatusManager.getInstance();
+export const facadeStatusManager = SystemStatusManager.getInstance();
 
 // Convenience functions
 export function getFacadeStatus(facadeName: string): FacadeStatus | null {

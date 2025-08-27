@@ -12,8 +12,8 @@ categories = ["science", "algorithms", "mathematics"]
 [dependencies]
 # Internal dependencies
 claude-zen-neural-core = { version = "0.1.0", path = "../claude-zen-neural-core" }
-# Core dependencies
-ruv-fann = "0.1"
+# Use our own superior Pure Rust FANN implementation
+claude-zen-neural-feedforward = { path = "../claude-zen-neural-feedforward" }
 num-traits = "0.2"
 thiserror = "2.0"
 serde = { version = "1.0", features = ["derive"], optional = true }

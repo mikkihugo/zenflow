@@ -495,6 +495,56 @@ export default [
 		},
 	},
 
+	// Foundation Package Exception - Allow internal imports for implementation
+	{
+		files: ["packages/core/foundation/**/*.{ts,tsx}"],
+		languageOptions: {
+			parser: tsparser,
+			parserOptions: {
+				ecmaVersion: 2024,
+				sourceType: "module",
+				tsconfigRootDir: import.meta.dirname,
+			},
+			globals: {
+				console: "readonly",
+				process: "readonly",
+				Buffer: "readonly",
+				__filename: "readonly",
+				__dirname: "readonly",
+				global: "readonly",
+			},
+		},
+		plugins: {
+			"@typescript-eslint": tseslint,
+			import: importPlugin,
+			sonarjs,
+			unicorn,
+			"unused-imports": unusedImports,
+		},
+		rules: {
+			// Allow foundation to import its own internals - it implements the utilities
+			"no-restricted-imports": "off",
+			
+			// Other standard rules still apply
+			"no-console": "warn", // Allow console in implementation
+			"@typescript-eslint/no-explicit-any": "error",
+			"@typescript-eslint/no-unused-vars": "error", 
+			"unused-imports/no-unused-imports": "error",
+			"require-await": "error",
+			"no-duplicate-imports": "error",
+			"sonarjs/no-duplicate-string": "error",
+			"@typescript-eslint/naming-convention": [
+				"warn",
+				{ selector: "variable", format: ["camelCase", "UPPER_CASE"] },
+				{ selector: "function", format: ["camelCase"] },
+				{ selector: "method", format: ["camelCase"] },
+				{ selector: "class", format: ["PascalCase"] },
+				{ selector: "interface", format: ["PascalCase"] },
+				{ selector: "typeAlias", format: ["PascalCase"] },
+			],
+		},
+	},
+
 	// JavaScript files - Simplified rules (no TypeScript-specific rules)
 	{
 		files: ["**/*.{js,jsx,mjs,cjs}"],

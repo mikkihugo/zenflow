@@ -47,6 +47,13 @@ export * from './teamwork';
 export * as teamwork from './teamwork';
 
 // =============================================================================
+// AGUI - Autonomous Graphical User Interface for human-in-the-loop approvals
+// =============================================================================
+
+export * from './agui';
+export * as agui from './agui';
+
+// =============================================================================
 // UNIFIED COORDINATION API - High-level coordination interface
 // =============================================================================
 
@@ -56,18 +63,20 @@ export interface CoordinationSystem {
   workflows: typeof import('./workflows');
   orchestration: typeof import('./orchestration');
   teamwork: typeof import('./teamwork');
+  agui: typeof import('./agui');
 }
 
 /**
  * Create unified coordination system with all methodologies
  */
 export async function createCoordinationSystem(): Promise<CoordinationSystem> {
-  const [sparc, safe, workflows, orchestration, teamwork] = await Promise.all([
+  const [sparc, safe, workflows, orchestration, teamwork, agui] = await Promise.all([
     import('./sparc'),
     import('./safe'),
     import('./workflows'),
     import('./orchestration'),
-    import('./teamwork')
+    import('./teamwork'),
+    import('./agui')
   ]);
 
   return {
@@ -75,7 +84,8 @@ export async function createCoordinationSystem(): Promise<CoordinationSystem> {
     safe,
     workflows,
     orchestration,
-    teamwork
+    teamwork,
+    agui
   };
 }
 
@@ -92,7 +102,8 @@ export const COORDINATION_PACKAGE_INFO = {
     'SAFe framework - Scaled Agile Framework integration', 
     'Workflows - Core workflow engine with multi-level orchestration',
     'Orchestration - Task flow management and coordination',
-    'Teamwork - Multi-agent conversation and collaboration'
+    'Teamwork - Multi-agent conversation and collaboration',
+    'AGUI - Human-in-the-loop approval gates and task approval workflows'
   ],
   benefits: [
     'Eliminates coordination overlap between packages',

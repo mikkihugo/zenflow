@@ -8,6 +8,10 @@
 		"declaration": true,
 		"declarationMap": true,
 
+		/* Output Configuration */
+		"rootDir": "./src",
+		"outDir": "./dist",
+
 		/* Strict Type Checking - Best Practices */
 		"strict": true,
 		"noImplicitAny": true,

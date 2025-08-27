@@ -1,33 +1,18 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": false,
-    "noEmit": false,
-    "composite": false,
-    "incremental": false
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts"],
   "exclude": [
     "dist/**/*",
     "node_modules/**/*",
     "rust-core/**/*",
-    "typescript-core/**/*"
-  ],
-  "references": [
-    { "path": "../foundation" },
-    { "path": "../implementation-packages/llm-routing" }
+    "typescript-core/**/*",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ]
 }

@@ -224,10 +224,7 @@ export class EnvironmentDetector extends EventEmitter {
 		logger?: Logger,
 	) {
 		super({
-			enableValidation: true,
-			enableMetrics: true,
-			enableHistory: false,
-			maxListeners: 20,
+			captureRejections: true,
 		});
 
 		this.logger = logger || getLogger("EnvironmentDetector");

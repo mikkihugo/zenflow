@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Claude Code <noreply@anthropic.com>"]
 license = "MIT OR Apache-2.0"
-description = "Core foundation for neuro-divergent neural forecasting library"
-repository = "https://github.com/your-org/ruv-FANN"
-homepage = "https://github.com/your-org/ruv-FANN"
+description = "Core foundation for claude-zen neural forecasting library"
+repository = "https://github.com/zen-neural/claude-code-zen"
+homepage = "https://github.com/zen-neural/claude-code-zen"
 documentation = "https://docs.rs/claude-zen-neural-core"
 keywords = ["neural-network", "forecasting", "time-series", "machine-learning", "rust"]
 categories = ["science", "algorithms", "mathematics"]
@@ -29,8 +29,8 @@ anyhow = "1.0"
 
 # Data structures and processing
 ndarray = "0.16"
-polars = { version = "0.50", features = ["lazy", "temporal", "csv", "parquet", "json"] }
-polars-utils = "0.50"
+polars = { version = "0.41", features = ["lazy", "temporal", "csv", "parquet", "json"] }
+polars-utils = "0.41"
 
 # Parallel processing
 rayon = "1.10"
@@ -42,8 +42,8 @@ rand_distr = "0.4"
 # Mathematical operations
 nalgebra = "0.34"
 
-# ruv-FANN integration
-ruv-fann = "0.1.6"
+# Use our own Pure Rust FANN implementation
+claude-zen-neural-feedforward = { path = "../claude-zen-neural-feedforward" }
 
 # Optional GPU acceleration
 candle-core = { version = "0.9", optional = true }

@@ -15,6 +15,7 @@ export const mockLogger: Logger = {
 	info: vi.fn(),
 	warn: vi.fn(),
 	error: vi.fn(),
+	fatal: vi.fn(),
 };
 
 // Test data generators
