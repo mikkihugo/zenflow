@@ -1,107 +1,83 @@
-/**
- * @fileoverview @claude-zen/repo-analyzer - Battle-hardened repository analysis toolkit
- *
- * Professional-grade repository analysis with comprehensive metrics:
- * - Code complexity analysis using multiple battle-tested NPM tools
- * - Dependency analysis with circular dependency detection
- * - Workspace analysis supporting Nx, Bazel, Moon, Turbo, Rush, Lerna, and Nix
- * - Git repository analysis with hotspot detection
- * - Domain analysis and splitting recommendations
- * - AI-powered recommendations for improvements
- * - Multiple export formats (JSON, YAML, CSV, HTML, Markdown, PDF, GraphML, DOT)
- */
+import { DomainBoundaryValidator } from './domain/domain-boundary-validator.js';
 
+export { DomainBoundaryValidator } from './domain/domain-boundary-validator.js';
 
-// Individual analyzers
-export { ComplexityAnalyzer } from './analyzers/complexity-analyzer.js';
-export { DependencyAnalyzer } from './analyzers/dependency-analyzer.js';
-export { GitAnalyzer } from './analyzers/git-analyzer.js';
-export { WorkspaceAnalyzer } from './analyzers/workspace-analyzer.js';
-export { DomainAnalyzer } from './domain/domain-analyzer.js';
-// Engines
-export { RecommendationEngine } from './recommendations/recommendation-engine.js';
-export { ReportGenerator } from './reporting/report-generator.js';
-// Main analyzer
-export { RepositoryAnalyzer, RepositoryAnalyzer } from './repository-analyzer.js';
-// Types
-export type * from './types/index.js';
-// Re-export specific interfaces for convenience
-export type {
-  AnalysisOptions,
-  AnalysisRecommendation,
-  AnalysisResult,
-  ComplexityMetrics,
-  DependencyMetrics,
-  Domain,
-  ExportFormat,
-  GitMetrics,
-  RepositoryMetrics,
-} from './types/index.js';
+// Simple EventEmitter for RepoAnalyzer
+class EventEmitter {
+  private events: Map<string, Function[]> = new Map();
 
-/**
- * Quick analysis function for simple use cases
- */
-export async function analyzeRepository(
-  repositoryPath: string,
-  options?: import('./types/index.js').AnalysisOptions'
-): Promise<import('./types/index.js').AnalysisResult> {'
-  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');'
-  const analyzer = new RepositoryAnalyzer(repositoryPath);
-  return analyzer.analyze(options);
+  on(event: string, listener: Function) {
+    const listeners = this.events.get(event) || [];
+    listeners.push(listener);
+    this.events.set(event, listeners);
+    return this;
+  }
+
+  emit(event: string, ...args: any[]) {
+    const listeners = this.events.get(event) || [];
+    for (const listener of listeners) listener(...args);
+    return listeners.length > 0;
+  }
+
+  off(event: string, listener?: Function) {
+    if (!listener) {
+      this.events.delete(event);
+      return this;
+    }
+    const listeners = this.events.get(event) || [];
+    const index = listeners.indexOf(listener);
+    if (index > -1) {
+      listeners.splice(index, 1);
+      this.events.set(event, listeners);
+    }
+    return this;
+  }
 }
 
-/**
- * Quick health score function
- */
-export async function getRepositoryHealthScore(
-  repositoryPath: string,
-  options?: import('./types/index.js').AnalysisOptions'
-): Promise<{
-  score: number;
-  breakdown: Record<string, number>;
-  criticalIssues: string[];
-}> {
-  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');'
-  const analyzer = new RepositoryAnalyzer(repositoryPath);
-  return analyzer.getHealthScore(options);
+export interface RepoAnalyzerConfig {
+  rootPath: string;
+  includePatterns?: string[];
+  excludePatterns?: string[];
 }
 
-/**
- * Factory function for creating repository analyzer
- */
-export async function createRepositoryAnalyzer(
-  repositoryPath: string
-): Promise<import('./repository-analyzer.js').RepositoryAnalyzer> {'
-  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');'
-  return new RepositoryAnalyzer(repositoryPath);
+export class RepoAnalyzer extends EventEmitter {
+  constructor(private config: RepoAnalyzerConfig) {
+    super();
+    this.emit('analyzer:initialized', { rootPath: config.rootPath, timestamp: new Date() });
+  }
+
+  async analyzeDomainBoundaries() {
+    this.emit('analysis:domain:started', { rootPath: this.config.rootPath, timestamp: new Date() });
+    
+    try {
+      const validator = new DomainBoundaryValidator();
+      
+      // Forward validator events
+      validator.on('repository:validation:started', (data: any) => 
+        this.emit('repository:validation:started', data));
+      validator.on('repository:validation:completed', (data: any) => 
+        this.emit('repository:validation:completed', data));
+      validator.on('repository:validation:failed', (data: any) => 
+        this.emit('repository:validation:failed', data));
+      
+      const result = await validator.validateRepository(this.config.rootPath);
+      
+      this.emit('analysis:domain:completed', { 
+        rootPath: this.config.rootPath, 
+        result, 
+        timestamp: new Date() 
+      });
+      
+      return result;
+    } catch (error) {
+      this.emit('analysis:domain:failed', { 
+        rootPath: this.config.rootPath, 
+        error, 
+        timestamp: new Date() 
+      });
+      throw error;
+    }
+  }
 }
 
-/**
- * Version information
- */
-export const VERSION = '1.0.0';
-
-/**
- * Default analysis options
- */
-export const DEFAULT_ANALYSIS_OPTIONS: import('./types/index.js').AnalysisOptions ='
-  {
-    includeTests: false,
-    includeNodeModules: false,
-    includeDotFiles: false,
-    analysisDepth: 'moderate',
-    enableGitAnalysis: true,
-    enableComplexityAnalysis: true,
-    enableDependencyAnalysis: true,
-    enableDomainAnalysis: true,
-    performanceMode: 'balanced',
-    complexityThresholds: 
-      cyclomaticComplexity: 10,
-      maintainabilityIndex: 20,
-      linesOfCode: 300,
-      parameters: 7,
-      nestingDepth: 4,,
-  };
-
-// Export default analyzer class
-export default RepositoryAnalyzer;
+export default RepoAnalyzer;
