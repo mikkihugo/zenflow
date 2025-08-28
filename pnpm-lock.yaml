@@ -865,6 +865,9 @@ importers:
       '@logtape/logtape':
         specifier: ^1.0.4
         version: 1.0.4
+      ajv:
+        specifier: ^8.17.1
+        version: 8.17.1
       awilix:
         specifier: ^12.0.5
         version: 12.0.5
