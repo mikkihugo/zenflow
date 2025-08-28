@@ -303,15 +303,15 @@ function _formatUptime(seconds: number): string {
 <div class="mb-8">
 	<div class="flex justify-between items-center">
 		<div>
-			<h1 class="h1 text-primary-500 mb-2">🐝 Swarm Management</h1>
-			<p class="text-surface-600-300-token">Advanced swarm orchestration, agent management, and task coordination</p>
+			<h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">🐝 Swarm Management</h1>
+			<p class="text-gray-600 dark:text-gray-300">Advanced swarm orchestration, agent management, and task coordination</p>
 		</div>
 		<div class="flex gap-2">
-			<button class="btn variant-filled-primary" on:click={loadSwarmStatus}>
+			<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={loadSwarmStatus}>
 				<span>🔄</span>
 				<span>Refresh</span>
 			</button>
-			<button class="btn variant-filled-error" on:click={shutdownSwarm}>
+			<button class="bg-red-600 dark:bg-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-700 dark:hover:bg-red-600 transition-colors" on:click={shutdownSwarm}>
 				<span>🛑</span>
 				<span>Shutdown</span>
 			</button>
@@ -320,47 +320,44 @@ function _formatUptime(seconds: number): string {
 </div>
 
 <!-- Swarm Status Overview -->
-<div class="card variant-glass-surface mb-8">
-	<header class="card-header">
-		<h3 class="h3 text-primary-500">🐝 Swarm Status</h3>
-	</header>
+<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mb-8">
+	<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+		<h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">🐝 Swarm Status</h3>
+	</div>
 	<section class="p-4">
 		{#if statusLoading}
 			<div class="flex items-center justify-center py-12">
 				<div class="flex flex-col items-center gap-4">
-					<div class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+					<div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
 					<p class="text-sm opacity-75">Loading swarm status...</p>
 				</div>
 			</div>
 		{:else if statusError}
-			<div class="text-center text-error-500 py-8">
+			<div class="text-center text-red-600 dark:text-red-400 py-8">
 				<p class="text-sm">❌ {statusError}</p>
-				<button on:click={loadSwarmStatus} class="btn btn-sm variant-ghost-error mt-2">Retry</button>
+				<button on:click={loadSwarmStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 			</div>
 		{:else if swarmStatus}
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 				<!-- Swarm Status -->
 				<div class="text-center">
 					<div class="mb-2">
-						<ProgressRadial 
-							value={swarmStatus.data?.status === 'active' ? 95 : swarmStatus.data?.status === 'idle' ? 50 : 25} 
-							width="w-16" 
-							class="text-{getStatusColor(swarmStatus.data?.status)}-500 mx-auto"
-						>
-							<span class="text-xs font-bold">
+						<div class="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center mx-auto relative">
+							<div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 animate-pulse"></div>
+							<span class="text-xs font-bold text-blue-600 dark:text-blue-400">
 								{swarmStatus.data?.status === 'active' ? '95%' : swarmStatus.data?.status === 'idle' ? '50%' : '25%'}
 							</span>
-						</ProgressRadial>
+						</div>
 					</div>
 					<div class="font-medium text-sm">Swarm Status</div>
-					<div class="badge variant-soft-{getStatusColor(swarmStatus.data?.status)} text-xs mt-1">
+					<div class="bg-{getStatusColor(swarmStatus.data?.status)}-100 dark:bg-{getStatusColor(swarmStatus.data?.status)}-900 text-{getStatusColor(swarmStatus.data?.status)}-800 dark:text-{getStatusColor(swarmStatus.data?.status)}-200 px-2 py-1 rounded text-xs mt-1">
 						{swarmStatus.data?.status || 'Unknown'}
 					</div>
 				</div>
 
 				<!-- Active Agents -->
 				<div class="text-center">
-					<div class="text-2xl font-bold text-secondary-500 mb-1">
+					<div class="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
 						{swarmStatus.data?.activeAgents || 0}
 					</div>
 					<div class="text-sm font-medium">Active Agents</div>
@@ -371,7 +368,7 @@ function _formatUptime(seconds: number): string {
 
 				<!-- Active Tasks -->
 				<div class="text-center">
-					<div class="text-2xl font-bold text-tertiary-500 mb-1">
+					<div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-1">
 						{swarmStatus.data?.activeTasks || 0}
 					</div>
 					<div class="text-sm font-medium">Active Tasks</div>
@@ -382,7 +379,7 @@ function _formatUptime(seconds: number): string {
 
 				<!-- Uptime -->
 				<div class="text-center">
-					<div class="text-xl font-bold text-warning-500 mb-1">
+					<div class="text-xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
 						{swarmStatus.data?.uptime ? formatUptime(swarmStatus.data.uptime) : 'N/A'}
 					</div>
 					<div class="text-sm font-medium">Uptime</div>
@@ -394,19 +391,19 @@ function _formatUptime(seconds: number): string {
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
 					{#if swarmStatus.data.topology}
 						<div class="text-center">
-							<span class="badge variant-soft-surface">{swarmStatus.data.topology}</span>
+							<span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-xs">{swarmStatus.data.topology}</span>
 							<div class="text-xs opacity-75 mt-1">Topology</div>
 						</div>
 					{/if}
 					{#if swarmStatus.data.strategy}
 						<div class="text-center">
-							<span class="badge variant-soft-surface">{swarmStatus.data.strategy}</span>
+							<span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-xs">{swarmStatus.data.strategy}</span>
 							<div class="text-xs opacity-75 mt-1">Strategy</div>
 						</div>
 					{/if}
 					{#if swarmStatus.data.maxAgents}
 						<div class="text-center">
-							<span class="badge variant-soft-surface">{swarmStatus.data.maxAgents}</span>
+							<span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-xs">{swarmStatus.data.maxAgents}</span>
 							<div class="text-xs opacity-75 mt-1">Max Agents</div>
 						</div>
 					{/if}
@@ -417,17 +414,19 @@ function _formatUptime(seconds: number): string {
 </div>
 
 <!-- Swarm Operations -->
-<div class="card variant-soft-surface">
-	<header class="card-header">
-		<h3 class="h3 text-primary-500">⚡ Swarm Operations</h3>
-	</header>
+<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+	<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+		<h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">⚡ Swarm Operations</h3>
+	</div>
 	<section class="p-4">
-		<TabGroup bind:active={activeTab}>
-			<Tab value={0}>🚀 Initialize</Tab>
-			<Tab value={1}>🤖 Spawn Agents</Tab>
-			<Tab value={2}>📋 Tasks</Tab>
-			<Tab value={3}>📊 Statistics</Tab>
-		</TabGroup>
+		<div class="border-b border-gray-200 dark:border-gray-700">
+			<nav class="-mb-px flex space-x-8">
+				<button class="{activeTab === 0 ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" on:click={() => activeTab = 0}>🚀 Initialize</button>
+				<button class="{activeTab === 1 ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" on:click={() => activeTab = 1}>🤖 Spawn Agents</button>
+				<button class="{activeTab === 2 ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" on:click={() => activeTab = 2}>📋 Tasks</button>
+				<button class="{activeTab === 3 ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" on:click={() => activeTab = 3}>📊 Statistics</button>
+			</nav>
+		</div>
 
 		<div class="mt-6">
 			{#if activeTab === 0}
@@ -436,7 +435,7 @@ function _formatUptime(seconds: number): string {
 					<h5 class="text-lg font-medium">Initialize New Swarm</h5>
 					
 					{#if initError}
-						<div class="alert variant-filled-error">
+						<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600/50 rounded-lg p-4">
 							<div class="alert-message">
 								<p>❌ {initError}</p>
 							</div>
@@ -444,29 +443,29 @@ function _formatUptime(seconds: number): string {
 					{/if}
 
 					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-						<label class="label">
-							<span>Topology</span>
-							<select bind:value={swarmTopology} class="select">
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Topology</span>
+							<select bind:value={swarmTopology} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 								{#each topologies as topology}
 									<option value={topology}>{topology}</option>
 								{/each}
 							</select>
 						</label>
 
-						<label class="label">
-							<span>Max Agents</span>
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Agents</span>
 							<input
 								type="number"
 								bind:value={swarmMaxAgents}
-								class="input"
+								class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 								min="1"
 								max="100"
 							/>
 						</label>
 
-						<label class="label">
-							<span>Strategy</span>
-							<select bind:value={swarmStrategy} class="select">
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Strategy</span>
+							<select bind:value={swarmStrategy} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 								{#each strategies as strategy}
 									<option value={strategy}>{strategy}</option>
 								{/each}
@@ -475,7 +474,7 @@ function _formatUptime(seconds: number): string {
 					</div>
 
 					<button 
-						class="btn variant-filled-primary w-full md:w-auto" 
+						class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors w-full md:w-auto" 
 						on:click={initializeSwarm}
 						disabled={initLoading}
 					>
@@ -494,7 +493,7 @@ function _formatUptime(seconds: number): string {
 					<h5 class="text-lg font-medium">Spawn New Agent</h5>
 					
 					{#if agentSpawnError}
-						<div class="alert variant-filled-error">
+						<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600/50 rounded-lg p-4">
 							<div class="alert-message">
 								<p>❌ {agentSpawnError}</p>
 							</div>
@@ -502,48 +501,48 @@ function _formatUptime(seconds: number): string {
 					{/if}
 
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<label class="label">
-							<span>Swarm ID *</span>
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Swarm ID *</span>
 							<input
 								type="text"
 								bind:value={agentSwarmId}
-								class="input"
+								class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 								placeholder="swarm-xxx-xxx"
 							/>
 						</label>
 
-						<label class="label">
-							<span>Agent Type</span>
-							<select bind:value={agentType} class="select">
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent Type</span>
+							<select bind:value={agentType} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 								{#each agentTypes as type}
 									<option value={type}>{type}</option>
 								{/each}
 							</select>
 						</label>
 
-						<label class="label">
-							<span>Agent Name (optional)</span>
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent Name (optional)</span>
 							<input
 								type="text"
 								bind:value={agentName}
-								class="input"
+								class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 								placeholder="Leave empty for auto-generated name"
 							/>
 						</label>
 
-						<label class="label">
-							<span>Capabilities (comma-separated)</span>
+						<label class="block">
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Capabilities (comma-separated)</span>
 							<input
 								type="text"
 								bind:value={agentCapabilities}
-								class="input"
+								class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 								placeholder="coordination,analysis,planning"
 							/>
 						</label>
 					</div>
 
 					<button 
-						class="btn variant-filled-secondary w-full md:w-auto" 
+						class="bg-purple-600 dark:bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors w-full md:w-auto" 
 						on:click={spawnAgent}
 						disabled={agentSpawningLoading || !agentSwarmId}
 					>
@@ -564,7 +563,7 @@ function _formatUptime(seconds: number): string {
 						<h5 class="text-lg font-medium">Orchestrate New Task</h5>
 						
 						{#if taskCreationError}
-							<div class="alert variant-filled-error">
+							<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600/50 rounded-lg p-4">
 								<div class="alert-message">
 									<p>❌ {taskCreationError}</p>
 								</div>
@@ -572,41 +571,41 @@ function _formatUptime(seconds: number): string {
 						{/if}
 
 						<div class="space-y-3">
-							<label class="label">
-								<span>Task Description *</span>
+							<label class="block">
+								<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Task Description *</span>
 								<textarea
 									bind:value={taskDescription}
-									class="textarea"
+									class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 									rows="3"
 									placeholder="Describe the task to be executed by the swarm..."
 								></textarea>
 							</label>
 
 							<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-								<label class="label">
-									<span>Strategy</span>
-									<select bind:value={taskStrategy} class="select">
+								<label class="block">
+									<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Strategy</span>
+									<select bind:value={taskStrategy} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 										{#each strategies as strategy}
 											<option value={strategy}>{strategy}</option>
 										{/each}
 									</select>
 								</label>
 
-								<label class="label">
-									<span>Priority</span>
-									<select bind:value={taskPriority} class="select">
+								<label class="block">
+									<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</span>
+									<select bind:value={taskPriority} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 										{#each priorities as priority}
 											<option value={priority}>{priority}</option>
 										{/each}
 									</select>
 								</label>
 
-								<label class="label">
-									<span>Max Agents</span>
+								<label class="block">
+									<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Agents</span>
 									<input
 										type="number"
 										bind:value={taskMaxAgents}
-										class="input"
+										class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 										min="1"
 										max="20"
 									/>
@@ -614,7 +613,7 @@ function _formatUptime(seconds: number): string {
 							</div>
 
 							<button 
-								class="btn variant-filled-tertiary w-full md:w-auto" 
+								class="bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors w-full md:w-auto" 
 								on:click={orchestrateTask}
 								disabled={taskCreationLoading || !taskDescription}
 							>
@@ -634,7 +633,7 @@ function _formatUptime(seconds: number): string {
 						<div class="flex justify-between items-center">
 							<h5 class="text-lg font-medium">Active Tasks</h5>
 							<button 
-								class="btn btn-sm variant-ghost-surface" 
+								class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
 								on:click={loadSwarmTasks}
 								disabled={tasksLoading}
 							>
@@ -653,27 +652,27 @@ function _formatUptime(seconds: number): string {
 								{#if tasksLoading}
 									<div class="space-y-3">
 										{#each Array(3) as _}
-											<div class="card variant-soft-surface p-4 animate-pulse">
+											<div class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 animate-pulse">
 												<div class="w-32 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
 												<div class="w-24 h-3 bg-gray-300 dark:bg-gray-600 rounded"></div>
 											</div>
 										{/each}
 									</div>
 								{:else if tasksError}
-									<div class="text-center text-error-500 py-8">
+									<div class="text-center text-red-600 dark:text-red-400 py-8">
 										<p class="text-sm">❌ {tasksError}</p>
-										<button on:click={loadSwarmTasks} class="btn btn-sm variant-ghost-error mt-2">Retry</button>
+										<button on:click={loadSwarmTasks} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 									</div>
 								{:else if swarmTasks.length > 0}
 									<div class="space-y-2">
 										{#each swarmTasks as task}
 											<button 
-												class="card variant-soft-surface p-4 w-full text-left hover:variant-soft-primary transition-colors"
+												class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 w-full text-left hover:bg-blue-50 dark:hover:bg-blue-800/20 transition-colors"
 												on:click={() => loadTaskDetails(task.id)}
 											>
 												<div class="flex justify-between items-start mb-2">
 													<h6 class="font-medium text-sm">{task.id}</h6>
-													<span class="badge variant-soft-{getStatusColor(task.status)} text-xs">
+													<span class="bg-{getStatusColor(task.status)}-100 dark:bg-{getStatusColor(task.status)}-900 text-{getStatusColor(task.status)}-800 dark:text-{getStatusColor(task.status)}-200 px-2 py-1 rounded text-xs">
 														{task.status}
 													</span>
 												</div>
@@ -683,7 +682,7 @@ function _formatUptime(seconds: number): string {
 												{#if task.progress !== undefined}
 													<div class="mt-2">
 														<div class="progress-bar">
-															<div class="progress-fill bg-primary-500" style="width: {task.progress}%"></div>
+															<div class="progress-fill bg-blue-500" style="width: {task.progress}%"></div>
 														</div>
 													</div>
 												{/if}
@@ -701,22 +700,18 @@ function _formatUptime(seconds: number): string {
 							<!-- Task Details -->
 							<div>
 								<h6 class="text-sm font-medium mb-2">Task Details</h6>
-								<div class="card variant-soft-surface p-4">
+								<div class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
 									{#if taskDetailsLoading}
 										<div class="text-center py-8">
-											<div class="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+											<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
 											<p class="text-sm opacity-75">Loading task details...</p>
 										</div>
 									{:else if taskDetailsError}
-										<div class="text-center text-error-500 py-8">
+										<div class="text-center text-red-600 dark:text-red-400 py-8">
 											<p class="text-sm">❌ {taskDetailsError}</p>
 										</div>
 									{:else if selectedTask}
-										<CodeBlock 
-											language="json" 
-											code={JSON.stringify(selectedTask, null, 2)} 
-											class="max-h-64 overflow-y-auto"
-										/>
+										<pre class="bg-gray-900 text-green-400 p-4 rounded text-sm overflow-x-auto max-h-64 overflow-y-auto">{JSON.stringify(selectedTask, null, 2)}</pre>
 									{:else}
 										<p class="text-sm opacity-75 text-center py-8">Select a task to view its details</p>
 									{/if}
@@ -732,7 +727,7 @@ function _formatUptime(seconds: number): string {
 					<div class="flex justify-between items-center">
 						<h5 class="text-lg font-medium">Swarm Statistics</h5>
 						<button 
-							class="btn btn-sm variant-ghost-surface" 
+							class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
 							on:click={loadSwarmStats}
 							disabled={statsLoading}
 						>
@@ -745,23 +740,19 @@ function _formatUptime(seconds: number): string {
 						</button>
 					</div>
 
-					<div class="card variant-soft-surface p-4">
+					<div class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
 						{#if statsLoading}
 							<div class="text-center py-12">
-								<div class="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+								<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
 								<p class="text-sm opacity-75">Loading swarm statistics...</p>
 							</div>
 						{:else if statsError}
-							<div class="text-center text-error-500 py-8">
+							<div class="text-center text-red-600 dark:text-red-400 py-8">
 								<p class="text-sm">❌ {statsError}</p>
-								<button on:click={loadSwarmStats} class="btn btn-sm variant-ghost-error mt-2">Retry</button>
+								<button on:click={loadSwarmStats} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 							</div>
 						{:else if swarmStats}
-							<CodeBlock 
-								language="json" 
-								code={JSON.stringify(swarmStats, null, 2)} 
-								class="max-h-96 overflow-y-auto"
-							/>
+							<pre class="bg-gray-900 text-green-400 p-4 rounded text-sm overflow-x-auto max-h-96 overflow-y-auto">{JSON.stringify(swarmStats, null, 2)}</pre>
 						{:else}
 							<p class="text-sm opacity-75 text-center py-8">Click "Load Stats" to retrieve swarm performance statistics</p>
 						{/if}

@@ -93,40 +93,40 @@ onMount(() => {
     </div>
 
     <!-- Production Status -->
-    <div class="card variant-ghost-surface bg-surface-800 border-surface-600 p-6">
-      <h3 class="h3 text-surface-100 mb-4">Production Status</h3>
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Production Status</h3>
       <div class="space-y-4">
-        <div class="flex items-center justify-between p-3 bg-surface-700 rounded-lg">
+        <div class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
           <div class="flex items-center gap-3">
             <div class="w-4 h-4 bg-success-500 rounded-full"></div>
             <div>
-              <div class="font-medium text-surface-100">Frontend Services</div>
-              <div class="text-sm text-surface-400">All systems operational</div>
+              <div class="font-medium text-gray-900 dark:text-white">Frontend Services</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">All systems operational</div>
             </div>
           </div>
-          <span class="text-success-400 font-medium">Healthy</span>
+          <span class="text-green-600 dark:text-green-400 font-medium">Healthy</span>
         </div>
         
-        <div class="flex items-center justify-between p-3 bg-surface-700 rounded-lg">
+        <div class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
           <div class="flex items-center gap-3">
             <div class="w-4 h-4 bg-success-500 rounded-full"></div>
             <div>
-              <div class="font-medium text-surface-100">API Gateway</div>
-              <div class="text-sm text-surface-400">Processing requests normally</div>
+              <div class="font-medium text-gray-900 dark:text-white">API Gateway</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Processing requests normally</div>
             </div>
           </div>
-          <span class="text-success-400 font-medium">Healthy</span>
+          <span class="text-green-600 dark:text-green-400 font-medium">Healthy</span>
         </div>
         
-        <div class="flex items-center justify-between p-3 bg-surface-700 rounded-lg">
+        <div class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
           <div class="flex items-center gap-3">
             <div class="w-4 h-4 bg-warning-500 rounded-full animate-pulse"></div>
             <div>
-              <div class="font-medium text-surface-100">Database Cluster</div>
-              <div class="text-sm text-surface-400">Minor performance degradation</div>
+              <div class="font-medium text-gray-900 dark:text-white">Database Cluster</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Minor performance degradation</div>
             </div>
           </div>
-          <span class="text-warning-400 font-medium">Degraded</span>
+          <span class="text-yellow-600 dark:text-yellow-400 font-medium">Degraded</span>
         </div>
       </div>
     </div>

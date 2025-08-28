@@ -391,7 +391,7 @@ $: kanbanColumns = [
 			<h1 class="h1 text-primary-500 mb-2">📖 SAFe 6.0 User Stories</h1>
 			<p class="text-surface-600-300-token">Scaled Agile Framework 6.0 Essential - Lean Portfolio Management</p>
 		</div>
-		<button class="btn variant-filled-primary" on:click={refreshData}>
+		<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={refreshData}>
 			<span>🔄</span>
 			<span>Refresh</span>
 		</button>
@@ -412,35 +412,35 @@ $: kanbanColumns = [
 				<!-- SAFe Metrics Overview -->
 				{#if safeMetrics && !metricsError}
 					<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-						<div class="card variant-glass-primary p-4 text-center">
-							<div class="text-2xl font-bold text-primary-500 mb-1">
+						<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-600/50 rounded-lg p-4 text-center">
+							<div class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
 								{safeMetrics.totalStories || 0}
 							</div>
-							<div class="text-xs opacity-75">Total Stories</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">Total Stories</div>
 						</div>
-						<div class="card variant-glass-secondary p-4 text-center">
-							<div class="text-2xl font-bold text-secondary-500 mb-1">
+						<div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-600/50 rounded-lg p-4 text-center">
+							<div class="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
 								{safeMetrics.totalEpics || 0}
 							</div>
-							<div class="text-xs opacity-75">Portfolio Epics</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">Portfolio Epics</div>
 						</div>
-						<div class="card variant-glass-tertiary p-4 text-center">
-							<div class="text-2xl font-bold text-tertiary-500 mb-1">
+						<div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-600/50 rounded-lg p-4 text-center">
+							<div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-1">
 								{safeMetrics.totalFeatures || 0}
 							</div>
-							<div class="text-xs opacity-75">Program Features</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">Program Features</div>
 						</div>
-						<div class="card variant-glass-success p-4 text-center">
-							<div class="text-2xl font-bold text-success-500 mb-1">
+						<div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-600/50 rounded-lg p-4 text-center">
+							<div class="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
 								{safeMetrics.flowEfficiency ? `${(safeMetrics.flowEfficiency * 100).toFixed(1)}%` : '0%'}
 							</div>
-							<div class="text-xs opacity-75">Flow Efficiency</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">Flow Efficiency</div>
 						</div>
-						<div class="card variant-glass-warning p-4 text-center">
-							<div class="text-2xl font-bold text-warning-500 mb-1">
+						<div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600/50 rounded-lg p-4 text-center">
+							<div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
 								{safeMetrics.avgCycleTime?.toFixed(1) || '0.0'}
 							</div>
-							<div class="text-xs opacity-75">Avg Cycle Time (days)</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">Avg Cycle Time (days)</div>
 						</div>
 					</div>
 				{/if}
@@ -448,19 +448,19 @@ $: kanbanColumns = [
 				<!-- SAFe 6.0 Kanban Board -->
 				<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
 					{#each kanbanColumns as column}
-						<div class="card variant-soft-{getStatusColor(column.id)}">
-							<header class="card-header">
-								<h3 class="h5 font-semibold">
+						<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+							<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+								<h3 class="text-lg font-semibold text-gray-900 dark:text-white">
 									{column.title}
-									<span class="badge variant-soft-surface ml-2">{column.stories.length}</span>
+									<span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-xs ml-2">{column.stories.length}</span>
 								</h3>
-							</header>
+							</div>
 							<section class="p-3 space-y-3 min-h-[400px]">
 								{#if storiesLoading && column.id === 'backlog'}
 									{#each Array(3) as _}
-										<div class="card variant-soft-surface p-3 animate-pulse">
-											<div class="w-24 h-4 bg-surface-300-600-token rounded mb-2"></div>
-											<div class="w-16 h-3 bg-surface-300-600-token rounded"></div>
+										<div class="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 animate-pulse">
+											<div class="w-24 h-4 bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
+											<div class="w-16 h-3 bg-gray-200 dark:bg-gray-600 rounded"></div>
 										</div>
 									{/each}
 								{:else if column.stories.length > 0}

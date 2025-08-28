@@ -219,7 +219,7 @@ function _formatDuration(ms: number): string {
 			<h1 class="h1 text-primary-500 mb-2">🗃️ Database Management</h1>
 			<p class="text-surface-600-300-token">Database operations, schema management, and analytics</p>
 		</div>
-		<button class="btn variant-filled-primary" on:click={loadDatabaseStatus}>
+		<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={loadDatabaseStatus}>
 			<span>🔄</span>
 			<span>Refresh</span>
 		</button>
@@ -227,11 +227,11 @@ function _formatDuration(ms: number): string {
 </div>
 
 <!-- Database Status -->
-<div class="card variant-glass-surface mb-8">
-	<header class="card-header">
-		<h3 class="h3 text-primary-500">⚡ Database Status</h3>
-	</header>
-	<section class="p-4">
+<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mb-8">
+	<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+		<h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">⚡ Database Status</h3>
+	</div>
+	<div class="p-4">
 		{#if statusLoading}
 			<div class="flex items-center justify-center py-12">
 				<div class="flex flex-col items-center gap-4">
@@ -242,13 +242,13 @@ function _formatDuration(ms: number): string {
 		{:else if statusError}
 			<div class="text-center text-error-500 py-8">
 				<p class="text-sm">❌ {statusError}</p>
-				<button on:click={loadDatabaseStatus} class="btn btn-sm variant-ghost-error mt-2">Retry</button>
+				<button on:click={loadDatabaseStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 			</div>
 		{:else if databaseStatus}
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 				<!-- Connection Status -->
 				<div class="text-center">
-					<div class="badge variant-soft-{getStatusColor(databaseStatus.data?.status)} text-lg mb-2">
+					<div class="bg-{getStatusColor(databaseStatus.data?.status)}-100 dark:bg-{getStatusColor(databaseStatus.data?.status)}-900 text-{getStatusColor(databaseStatus.data?.status)}-800 dark:text-{getStatusColor(databaseStatus.data?.status)}-200 px-3 py-1 rounded text-lg mb-2">
 						{databaseStatus.data?.status || 'Unknown'}
 					</div>
 					<div class="text-sm font-medium">Connection Status</div>
@@ -295,11 +295,11 @@ function _formatDuration(ms: number): string {
 				</div>
 			{/if}
 		{/if}
-	</section>
+	</div>
 </div>
 
 <!-- Database Operations -->
-<div class="card variant-soft-surface">
+<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
 	<header class="card-header">
 		<h3 class="h3 text-primary-500">⚡ Database Operations</h3>
 	</header>
@@ -321,7 +321,7 @@ function _formatDuration(ms: number): string {
 						<div class="flex flex-wrap gap-2">
 							{#each sampleQueries as query}
 								<button 
-									class="btn btn-sm variant-ghost-surface"
+									class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
 									on:click={() => loadSampleQuery(query)}
 								>
 									{query.name}
@@ -352,7 +352,7 @@ function _formatDuration(ms: number): string {
 								/>
 							</label>
 							<button 
-								class="btn variant-filled-secondary w-full" 
+								class="bg-purple-600 dark:bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors w-full" 
 								on:click={executeQuery}
 								disabled={queryLoading || !querySQL}
 							>
@@ -391,7 +391,7 @@ function _formatDuration(ms: number): string {
 			{:else if activeTab === 1}
 				<!-- Commands Tab -->
 				<div class="space-y-4">
-					<div class="alert variant-filled-warning">
+					<div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600/50 rounded-lg p-4">
 						<div class="alert-message">
 							<h6 class="font-bold">⚠️ Warning</h6>
 							<p class="text-sm">Commands can modify your database. Use with caution!</p>
@@ -419,7 +419,7 @@ function _formatDuration(ms: number): string {
 								/>
 							</label>
 							<button 
-								class="btn variant-filled-warning w-full" 
+								class="bg-yellow-600 dark:bg-yellow-700 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600 transition-colors w-full" 
 								on:click={executeCommand}
 								disabled={commandLoading || !commandSQL}
 							>
@@ -461,7 +461,7 @@ function _formatDuration(ms: number): string {
 					<div class="flex justify-between items-center">
 						<h5 class="text-sm font-medium">Database Schema</h5>
 						<button 
-							class="btn btn-sm variant-ghost-surface" 
+							class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
 							on:click={loadDatabaseSchema}
 							disabled={schemaLoading}
 						>
@@ -483,7 +483,7 @@ function _formatDuration(ms: number): string {
 						{:else if schemaError}
 							<div class="text-center text-error-500 py-8">
 								<p class="text-sm">❌ {schemaError}</p>
-								<button on:click={loadDatabaseSchema} class="btn btn-sm variant-ghost-error mt-2">Retry</button>
+								<button on:click={loadDatabaseSchema} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 							</div>
 						{:else if databaseSchema}
 							<CodeBlock 
@@ -503,7 +503,7 @@ function _formatDuration(ms: number): string {
 					<div class="flex justify-between items-center">
 						<h5 class="text-sm font-medium">Database Analytics</h5>
 						<button 
-							class="btn btn-sm variant-ghost-surface" 
+							class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
 							on:click={loadDatabaseAnalytics}
 							disabled={analyticsLoading}
 						>
@@ -525,7 +525,7 @@ function _formatDuration(ms: number): string {
 						{:else if analyticsError}
 							<div class="text-center text-error-500 py-8">
 								<p class="text-sm">❌ {analyticsError}</p>
-								<button on:click={loadDatabaseAnalytics} class="btn btn-sm variant-ghost-error mt-2">Retry</button>
+								<button on:click={loadDatabaseAnalytics} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 							</div>
 						{:else if databaseAnalytics}
 							<CodeBlock 

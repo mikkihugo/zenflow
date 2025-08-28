@@ -9,9 +9,9 @@ import { type Writable, writable} from "svelte/store";
 
 // Simple browser logger
 const logger = {
-  info: (msg: string, ...args: unknown[]) => console.log(`[websocket] ${msg}`, ...args),
-  warn: (msg: string, ...args: unknown[]) => console.warn(`[websocket] ${msg}`, ...args),
-  error: (msg: string, ...args: unknown[]) => console.error(`[websocket] ${msg}`, ...args)
+  info: (msg: string, ...args: unknown[]) => logger.info(`[websocket] ${msg}`, ...args),
+  warn: (msg: string, ...args: unknown[]) => logger.warn(`[websocket] ${msg}`, ...args),
+  error: (msg: string, ...args: unknown[]) => logger.error(`[websocket] ${msg}`, ...args)
 };
 
 interface WebSocketData {

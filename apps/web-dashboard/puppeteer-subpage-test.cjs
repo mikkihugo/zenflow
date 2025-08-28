@@ -29,7 +29,7 @@ async function testSubPages() {
     const page = await browser.newPage();
     const url = `${baseUrl}${subPage}`;
     
-    console.log(`\n=== Testing ${url} ===`);
+    logger.info(`\n=== Testing ${url} ===`);
     
     const result = {
       url,
@@ -46,7 +46,7 @@ async function testSubPages() {
       page.on('console', msg => {
         if (msg.type() === 'error') {
           result.errors.push(msg.text());
-          console.log(`Console Error: ${msg.text()}`);
+          logger.info(`Console Error: ${msg.text()}`);
         }
       });
 
@@ -54,11 +54,11 @@ async function testSubPages() {
       page.on('response', response => {
         if (!response.ok()) {
           result.networkErrors.push(`${response.status()} ${response.url()}`);
-          console.log(`Network Error: ${response.status()} ${response.url()}`);
+          logger.info(`Network Error: ${response.status()} ${response.url()}`);
         }
       });
 
-      console.log(`Loading ${url}...`);
+      logger.info(`Loading ${url}...`);
       
       // Navigate to the page
       const response = await page.goto(url, { 
@@ -67,7 +67,7 @@ async function testSubPages() {
       });
 
       result.status = response.status();
-      console.log(`Response status: ${result.status}`);
+      logger.info(`Response status: ${result.status}`);
 
       // Wait a bit for SPA to potentially load
       await page.waitForTimeout(3000);
@@ -75,7 +75,7 @@ async function testSubPages() {
       // Take screenshot
       const screenshotPath = path.join(screenshotsDir, result.screenshot);
       await page.screenshot({ path: screenshotPath, fullPage: true });
-      console.log(`Screenshot saved: ${screenshotPath}`);
+      logger.info(`Screenshot saved: ${screenshotPath}`);
 
       // Check if page has meaningful content (not just white screen)
       const bodyText = await page.$eval('body', el => el.textContent);
@@ -111,12 +111,12 @@ async function testSubPages() {
                  document.querySelector('.loading') ||
                  document.querySelector('.spinner')));
 
-      console.log(`Has content: ${hasVisibleContent}`);
-      console.log(`Body text length: ${result.bodyTextLength}`);
-      console.log(`Has SvelteKit elements: ${hasSvelteKit}`);
-      console.log(`Has loading indicator: ${hasLoadingIndicator}`);
-      console.log(`Console errors: ${result.errors.length}`);
-      console.log(`Network errors: ${result.networkErrors.length}`);
+      logger.info(`Has content: ${hasVisibleContent}`);
+      logger.info(`Body text length: ${result.bodyTextLength}`);
+      logger.info(`Has SvelteKit elements: ${hasSvelteKit}`);
+      logger.info(`Has loading indicator: ${hasLoadingIndicator}`);
+      logger.info(`Console errors: ${result.errors.length}`);
+      logger.info(`Network errors: ${result.networkErrors.length}`);
 
       // Additional checks for white screen detection
       const backgroundColor = await page.evaluate(() => window.getComputedStyle(document.body).backgroundColor);
@@ -125,23 +125,23 @@ async function testSubPages() {
       
       if (!hasVisibleContent && result.bodyTextLength < 50) {
         result.status = 'WHITE_SCREEN';
-        console.log('🚨 WHITE SCREEN DETECTED');
+        logger.info('🚨 WHITE SCREEN DETECTED');
       } else {
         result.status = 'CONTENT_LOADED';
-        console.log('✅ Content appears to be loaded');
+        logger.info('✅ Content appears to be loaded');
       }
 
     } catch (error) {
       result.status = 'ERROR';
       result.errors.push(error.message);
-      console.log(`Error loading page: ${error.message}`);
+      logger.info(`Error loading page: ${error.message}`);
       
       // Still try to take a screenshot for debugging
       try {
         const screenshotPath = path.join(screenshotsDir, result.screenshot);
         await page.screenshot({ path: screenshotPath, fullPage: true });
       } catch (screenshotError) {
-        console.log(`Could not take screenshot: ${screenshotError.message}`);
+        logger.info(`Could not take screenshot: ${screenshotError.message}`);
       }
     }
 
@@ -152,28 +152,28 @@ async function testSubPages() {
   await browser.close();
 
   // Generate report
-  console.log(`\n${  '='.repeat(60)}`);
-  console.log('FINAL REPORT');
-  console.log('='.repeat(60));
+  logger.info(`\n${  '='.repeat(60)}`);
+  logger.info('FINAL REPORT');
+  logger.info('='.repeat(60));
 
   for (const result of results) {
-    console.log(`\n📄 ${result.url}`);
-    console.log(`   Status: ${result.status}`);
-    console.log(`   Has Content: ${result.hasContent}`);
-    console.log(`   Body Text Length: ${result.bodyTextLength}`);
-    console.log(`   Background Color: ${result.backgroundColor || 'N/A'}`);
-    console.log(`   Console Errors: ${result.errors.length}`);
-    console.log(`   Network Errors: ${result.networkErrors.length}`);
-    console.log(`   Screenshot: ${result.screenshot}`);
+    logger.info(`\n📄 ${result.url}`);
+    logger.info(`   Status: ${result.status}`);
+    logger.info(`   Has Content: ${result.hasContent}`);
+    logger.info(`   Body Text Length: ${result.bodyTextLength}`);
+    logger.info(`   Background Color: ${result.backgroundColor || 'N/A'}`);
+    logger.info(`   Console Errors: ${result.errors.length}`);
+    logger.info(`   Network Errors: ${result.networkErrors.length}`);
+    logger.info(`   Screenshot: ${result.screenshot}`);
     
     if (result.errors.length > 0) {
-      console.log(`   🚨 Console Errors:`);
-      for (const error of result.errors) console.log(`     - ${error}`);
+      logger.info(`   🚨 Console Errors:`);
+      for (const error of result.errors) logger.info(`     - ${error}`);
     }
     
     if (result.networkErrors.length > 0) {
-      console.log(`   🌐 Network Errors:`);
-      for (const error of result.networkErrors) console.log(`     - ${error}`);
+      logger.info(`   🌐 Network Errors:`);
+      for (const error of result.networkErrors) logger.info(`     - ${error}`);
     }
   }
 
@@ -181,25 +181,25 @@ async function testSubPages() {
   const whiteScreenPages = results.filter(r => r.status === 'WHITE_SCREEN');
   const errorPages = results.filter(r => r.status === 'ERROR');
 
-  console.log(`\n📊 SUMMARY:`);
-  console.log(`   ✅ Working pages: ${workingPages.length}`);
-  console.log(`   ⚪ White screen pages: ${whiteScreenPages.length}`);
-  console.log(`   ❌ Error pages: ${errorPages.length}`);
+  logger.info(`\n📊 SUMMARY:`);
+  logger.info(`   ✅ Working pages: ${workingPages.length}`);
+  logger.info(`   ⚪ White screen pages: ${whiteScreenPages.length}`);
+  logger.info(`   ❌ Error pages: ${errorPages.length}`);
 
   if (whiteScreenPages.length > 0) {
-    console.log(`\n🚨 WHITE SCREEN PAGES:`);
-    for (const page of whiteScreenPages) console.log(`   - ${page.url}`);
+    logger.info(`\n🚨 WHITE SCREEN PAGES:`);
+    for (const page of whiteScreenPages) logger.info(`   - ${page.url}`);
   }
 
   if (errorPages.length > 0) {
-    console.log(`\n❌ ERROR PAGES:`);
-    for (const page of errorPages) console.log(`   - ${page.url}: ${page.errors.join(', ')}`);
+    logger.info(`\n❌ ERROR PAGES:`);
+    for (const page of errorPages) logger.info(`   - ${page.url}: ${page.errors.join(', ')}`);
   }
 
   // Save detailed report to JSON
   const reportPath = path.join(__dirname, 'subpage-test-report.json');
   fs.writeFileSync(reportPath, JSON.stringify(results, null, 2));
-  console.log(`\n📄 Detailed report saved to: ${reportPath}`);
+  logger.info(`\n📄 Detailed report saved to: ${reportPath}`);
 
   return results;
 }

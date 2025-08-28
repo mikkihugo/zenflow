@@ -5,9 +5,9 @@
 
 // Simple browser logger for web dashboard
 const logger = {
-  info: (msg: string, ...args: unknown[]) => console.log(`[api-client] ${msg}`, ...args),
-  warn: (msg: string, ...args: unknown[]) => console.warn(`[api-client] ${msg}`, ...args),
-  error: (msg: string, ...args: unknown[]) => console.error(`[api-client] ${msg}`, ...args)
+  info: (msg: string, ...args: unknown[]) => logger.info(`[api-client] ${msg}`, ...args),
+  warn: (msg: string, ...args: unknown[]) => logger.warn(`[api-client] ${msg}`, ...args),
+  error: (msg: string, ...args: unknown[]) => logger.error(`[api-client] ${msg}`, ...args)
 };
 const API_BASE_URL = "http://localhost:3000/api";
 
