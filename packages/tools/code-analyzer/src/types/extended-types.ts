@@ -7,7 +7,7 @@
 export interface ImportSpecifier {
   name:string;
   alias?:string;
-  kind:'named' | ' default' | ' namespace;
+  kind:'named' | 'default' | 'namespace';
 }
 
 export interface TypeProperty {
@@ -21,13 +21,13 @@ export interface TypeMethod {
   name:string;
   parameters:TypeProperty[];
   returnType:string;
-  accessibility:'public' | ' private' | ' protected;
+  accessibility:'public' | 'private' | 'protected';
 }
 
 // Control flow types
 export interface ControlFlowNode {
   id:string;
-  type:'entry' | ' exit' | ' statement' | ' condition' | ' loop;
+  type:'entry' | 'exit' | 'statement' | 'condition' | 'loop';
   statement?:string;
   location:CodeLocation;
 }
@@ -43,7 +43,7 @@ export interface ControlFlowEdge {
 export interface DataFlowNode {
   id:string;
   variable:string;
-  type:'definition' | ' use' | ' kill;
+  type:'definition' | 'use' | 'kill';
   location:CodeLocation;
 }
 
@@ -51,7 +51,7 @@ export interface DataFlowEdge {
   from:string;
   to:string;
   variable:string;
-  flowType:'def-use' | ' use-def' | ' def-def;
+  flowType:'def-use' | 'use-def' | 'def-def';
 }
 
 export interface Definition {
@@ -71,7 +71,7 @@ export interface Use {
 export interface CallGraphNode {
   id:string;
   name:string;
-  type:'function' | ' method' | ' constructor' | ' external;
+  type:'function' | 'method' | 'constructor' | 'external';
   location?:CodeLocation;
   signature?:string;
 }
@@ -79,7 +79,7 @@ export interface CallGraphNode {
 export interface CallGraphEdge {
   from:string;
   to:string;
-  callType:'direct' | ' indirect' | ' virtual' | ' dynamic;
+  callType:'direct' | 'indirect' | 'virtual' | 'dynamic';
   location:CodeLocation;
 }
 
@@ -258,7 +258,7 @@ export interface ChangeFrequency {
   daily:number;
   weekly:number;
   monthly:number;
-  trend:'increasing' |' improving' | ' stable' | ' declining'| ' decreasing;
+  trend:'increasing' | 'improving' | 'stable' | 'declining' | 'decreasing';
 }
 
 export interface EvolutionaryHotspot {

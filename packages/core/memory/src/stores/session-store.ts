@@ -818,7 +818,8 @@ export class MemoryManager {
         errorThresholdPercentage:60,
         resetTimeout:45000,
 },
-      'memory-manager-circuit-breaker')    );
+      'memory-manager-circuit-breaker'
+    );
 
     // Initialize telemetry for manager
     this.telemetryManager = new BasicTelemetryManager({
@@ -841,7 +842,8 @@ export class MemoryManager {
 }
 
     const timer = this.performanceTracker.startTimer(
-      'memory_manager_initialize')    );
+      'memory_manager_initialize'
+    );
 
     return withTrace('memory-manager-initialize', async () => withRetry(
         async () => safeAsync(async () => {
@@ -851,7 +853,8 @@ export class MemoryManager {
               this.managerLogger.debug('Memory manager telemetry initialized');
 } else {
               this.managerLogger.warn(
-                'Failed to initialize manager telemetry: ','                telemetryResult.error
+                'Failed to initialize manager telemetry: ',
+                telemetryResult.error
               );
 }
 

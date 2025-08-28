@@ -456,7 +456,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       // Use ML pattern recognition if available
       if (this.patternRecognizer) {
         const successfulDecisions = sessionData.decisions.filter(
-          (d) => d.outcome === 'success')        );
+          (d) => d.outcome === 'success'
+        );
         if (successfulDecisions.length > 0) {
           const mlPatterns =
             await this.patternRecognizer.extractPatterns(successfulDecisions);
@@ -484,7 +485,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       patterns.push(...collaborationSuccess);
 } catch (error) {
       this.logger.error('Failed to extract success patterns: ', error);
-'}
+}
 
     return patterns;
 }
@@ -493,7 +494,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     sessionData:SwarmSession
   ):Promise<ExtractedKnowledge['performanceMetrics']> {
     const successfulDecisions = sessionData.decisions.filter(
-      (d) => d.outcome === 'success')    ).length;
+      (d) => d.outcome === 'success'
+    ).length;
     const totalDecisions = sessionData.decisions.length;
     const avgTaskCompletion =
       totalDecisions > 0 ? successfulDecisions / totalDecisions:0;

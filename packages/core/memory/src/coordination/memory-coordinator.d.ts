@@ -132,11 +132,10 @@ export declare class MemoryCoordinator extends EventEmitter {
         };
         decisions: {
             total: number;
-            pending: CoordinationDecision[];
-            "": any;
-            executing: CoordinationDecision[];
-            completed: CoordinationDecision[];
-            failed: CoordinationDecision[];
+            pending: number;
+            executing: number;
+            completed: number;
+            failed: number;
         };
         config: any;
     };

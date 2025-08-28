@@ -529,7 +529,13 @@ export type DatabaseListResult = Result<CodeQLDatabase[], CodeQLError>;
 
 // Event Types for Integration
 export interface CodeQLEvents {
-    'database-created':{ database: CodeQLDatabase};')  'database-deleted':{ databaseId: string};')  'analysis-started':{ database: CodeQLDatabase; queryPacks: QueryPack[]};')  'analysis-completed':{ result: CodeQLAnalysisResult};')  'analysis-failed':{ error: CodeQLError};')  'finding-discovered':{ finding: CodeQLFinding};')}
+  'database-created': { database: CodeQLDatabase };
+  'database-deleted': { databaseId: string };
+  'analysis-started': { database: CodeQLDatabase; queryPacks: QueryPack[] };
+  'analysis-completed': { result: CodeQLAnalysisResult };
+  'analysis-failed': { error: CodeQLError };
+  'finding-discovered': { finding: CodeQLFinding };
+}
 
 // Utility Types
 export type CodeQLEventType = keyof CodeQLEvents;

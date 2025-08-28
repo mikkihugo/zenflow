@@ -82,7 +82,8 @@
  * ```typescript`
  * const copilot = new GitHubCopilotAPI({
  *   token:process.env['GITHUB_COPILOT_TOKEN'],
- *   model:'claude-3.5-sonnet') *});
+ *   model:'claude-3.5-sonnet'
+ * });
  *
  * // Stream real-time responses
  * const stream = copilot.stream({

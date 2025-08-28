@@ -4,227 +4,331 @@
  * Brain system that coordinates with DSPy via events instead of direct calls.
  * Provides ML-powered coordination through event architecture.
  */
-import { EventBus, getLogger, EventLogger } from '@claude-zen/foundation';
+
+import { EventBus, getLogger } from '@claude-zen/foundation';
 import type {
   DspyOptimizationRequest,
   DspyOptimizationResult,
   DspyLlmRequest,
   DspyLlmResponse
 } from '../dspy/event-driven-dspy.js';
+
 const logger = getLogger('EventDrivenBrain');
+
 /**
- * Brain prediction request
+ * Brain prediction request interface
  */
 export interface BrainPredictionRequest {
-  requestId: new Map<string, BrainPredictionRequest>();
+  requestId: string;
+  domain: string;
+  context: {
+    complexity: number;
+    priority: string;
+    timeLimit?: number;
+  };
+  useAdvancedOptimization?: boolean;
+  prompt?: string;
+  data?: any;
+}
+
+/**
+ * Brain prediction result interface
+ */
+export interface BrainPredictionResult {
+  requestId: string;
+  predictions: any[];
+  confidence: number;
+  strategy: 'dspy' | 'neural' | 'hybrid' | 'basic';
+  optimizationUsed?: boolean;
+  metadata?: any;
+  timestamp: Date;
+}
+
+/**
+ * Event-driven brain system for ML coordination
+ */
+export class EventDrivenBrain extends EventBus {
+  private activePredictions = new Map<string, BrainPredictionRequest>();
   private predictionHistory = new Map<string, BrainPredictionResult[]>();
   private dspySystemAvailable = false;
   private llmSystemAvailable = false;
+
   constructor() {
     super();
-    this.setupEventHandlers()`;
-    this.detectAvailableSystems();'
-    logger.info(Event-driven Brain system initialized```;
-}
+    this.setupEventHandlers();
+    this.detectAvailableSystems();
+    logger.info('Event-driven Brain system initialized');
+  }
+
   /**
    * Setup event handlers for Brain coordination
    */
-  private setupEventHandlers():void {
-    // Handle prediction requests    this.on(`brain: predict-request`, this.handlePredictionRequest.bind(this));``;
+  private setupEventHandlers(): void {
+    // Handle prediction requests
+    this.on('brain:predict-request', this.handlePredictionRequest.bind(this));
     
-    // Handle DSPy optimization results    this.on(`dspy: optimization-complete`, this.handleDspyResult.bind(this));``;
+    // Handle DSPy optimization results
+    this.on('dspy:optimization-complete', this.handleDspyResult.bind(this));
     
-    // Handle DSPy LLM requests (Brain coordinates LLM calls)    this.on(`dspy: llm-request`, this.handleDspyLlmRequest.bind(this));``;
+    // Handle DSPy LLM requests (Brain coordinates LLM calls)
+    this.on('dspy:llm-request', this.handleDspyLlmRequest.bind(this));
     
-    // Handle LLM responses for DSPy    this.on(`llm: inference-response`, this.handleLlmResponse.bind(this));``;
+    // Handle LLM responses for DSPy
+    this.on('llm:inference-response', this.handleLlmResponse.bind(this));
     
-    // System availability detection    this.on(`system: dspy-available`, () => { this.dspySystemAvailable = true;});    this.on(`system: llm-available`, () => { this.llmSystemAvailable = true;});``;
-}
+    // System availability detection
+    this.on('system:dspy-available', () => { this.dspySystemAvailable = true; });
+    this.on('system:llm-available', () => { this.llmSystemAvailable = true; });
+  }
+
   /**
    * Detect available systems for coordination
    */
-  private detectAvailableSystems():void {
-    // Emit detection events    EventLogger.log(`brain: system-detection`, { timestamp: new Date()});    this.emit(`brain: system-detection`, { timestamp: new Date()});``;
+  private detectAvailableSystems(): void {
+    // Emit detection events
+    this.emit('brain:system-detection', { timestamp: new Date() });
     
     // Assume systems are available if they respond within 1 second
     setTimeout(() => {
-      logger.info(`Brain systems detected - DSPy: ``brain-`${Date.now()}-${Math.random().toString(36).substr(2, 9)};`;
-    const fullRequest: {
-      ...request;
-      requestId;
+      logger.info(`Brain systems detected - DSPy: ${this.dspySystemAvailable}, LLM: ${this.llmSystemAvailable}`);
+    }, 1000);
+  }
+
+  /**
+   * Handle brain prediction requests
+   */
+  private async handlePredictionRequest(request: BrainPredictionRequest): Promise<void> {
+    const requestId = request.requestId || `brain-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    const fullRequest: BrainPredictionRequest = {
+      ...request,
+      requestId,
       useAdvancedOptimization: request.useAdvancedOptimization !== false // Default to true
-    }`;
-    logger.info(`Brain prediction requested: ${request.domain} - complexity ${request.context.complexity});`;
-    return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(() => {
-        this.activePredictions.delete(requestId)`;
-        reject(new Error(`Brain prediction timeout: (result: BrainPredictionResult) => {`
-        if (result.requestId === requestId) {
-          clearTimeout(timeoutId);
-          this.off(``brain: Date.now();
-;
+    };
+
+    this.activePredictions.set(requestId, fullRequest);
+    logger.info(`Brain prediction requested: ${request.domain} - complexity ${request.context.complexity}`);
+
+    try {
       // Determine prediction strategy based on complexity and available systems
       const strategy = this.selectPredictionStrategy(request);
-      let predictions: false`;
+      let predictions: any[] = [];
+      let optimizationUsed = false;
+
       switch (strategy) {
-            case ``dspy':;;
-          ({ predictions, optimizationUsed} = await this.predictViaDSPy(request));
-          break;'
-        case 'neural':;;
+        case 'dspy':
+          ({ predictions, optimizationUsed } = await this.predictViaDSPy(request));
+          break;
+        case 'neural':
           predictions = await this.predictViaNeural(request);
-          break;'
-        case 'hybrid:;;
-          ({ predictions, optimizationUsed} = await this.predictViaHybrid(request)`);
-
-          break;'
-        case 'heuristic':;`;
-        default: this.predictViaHeuristics(request);
           break;
-}
-      const processingTime = Date.now() - startTime;
-      const result: {
-        requestId: {
-        requestId: request.context;
-    const { useAdvancedOptimization} = request`;
-    // High complexity + DSPy available + advanced optimization requested
-    if (complexity > 7 && this.dspySystemAvailable && useAdvancedOptimization) {
-      return`dspy};`;
-    // Medium complexity + both systems available
-    if (complexity > 4 && complexity <= 7 && this.dspySystemAvailable && this.llmSystemAvailable) {
-      return`hybrid`};`;
-    // Simple neural prediction for medium complexity
-    if (complexity > 2) {
-      return`neural};`;
-    // Heuristics for simple cases
-    return`heuristic`};`;
-  /**
-   * Predict via DSPy optimization (event-driven)
-   */
-  private async predictViaDSPy(request: {``;
-      domain: await import('../dspy/event-driven-dspy.js';
-    const result = await eventDrivenDSPy.requestOptimization(dspyRequest);
-    // Extract predictions from optimized prompt result
-    const predictions = this.extractPredictionsFromOptimization(result, request);
-    return { predictions, optimizationUsed: request.context;
-;
-    const predictions: {}
-;
-    for (const metric of request.targetMetrics) {
-      switch (metric) {'
-    '        case 'maxTokens':;;
-          predictions.maxTokens = this.neuralPredictTokens(complexity, size, history);
-          break;'
-        case 'temperature':;;
-          predictions.temperature = this.neuralPredictTemperature(complexity, history);
-          break;'
-        case 'timeout':;;
-          predictions.timeout = this.neuralPredictTimeout(complexity, size);
-          break;'
-        case 'llmStrategy':;;
-          predictions.llmStrategy = this.neuralPredictStrategy(complexity, size);
+        case 'hybrid':
+          ({ predictions, optimizationUsed } = await this.predictViaHybrid(request));
           break;
-        default: this.neuralPredictGeneric(metric, complexity, history);
-}
-}
-    return predictions;
-}
-  /**
-   * Predict via hybrid approach (neural + heuristics)
-   */
-  private async predictViaHybrid(request: await this.predictViaNeural(request);
-    const heuristicPredictions = this.predictViaHeuristics(request);
-    const predictions: {}
-;
-    for (const metric of request.targetMetrics) {
-      const neural = neuralPredictions[metric];
-      const heuristic = heuristicPredictions[metric];
-;
-      // Weighted combination based on confidence
-      predictions[metric] = neural && heuristic ? (neural * 0.7) + (heuristic * 0.3) :neural|| heuristic;
-}
-    return { predictions, optimizationUsed: request.context;
-    const predictions: {}
-;
-    for (const metric of request.targetMetrics) {
-      switch (metric) {'
-        case 'maxTokens':;;
-          predictions.maxTokens = Math.round(4000 + (complexity * 2000));
-          break;'
-        case 'temperature':;;
-          predictions.temperature = Math.max(0.1, Math.min(1.0, 0.3 + (complexity * 0.1)));
-          break;'
-        case 'timeout:;;
-          predictions.timeout = Math.round(60000 + (complexity * 30000)`);
+        default:
+          predictions = await this.predictViaBasic(request);
+          break;
+      }
 
-          break;'
-        case 'llmStrategy':;;'
-          predictions.llmStrategy = complexity > 6 ? 'claude' :complexity > 3 ? ` gpt` : complexity * 0.1;
-}
-}
-    return predictions`;
-}
-  /**
-   * Handle DSPy LLM requests (Brain coordinates LLM for DSPy)
-   */
-  private async handleDspyLlmRequest(request: {
-        requestId: {
-        requestId: {
-        requestId: {
-        requestId: 4000 + (complexity * 1500);
-    const sizeAdjustment = Math.log(size + 1) * 200;
-    const historyAdjustment = history.length > 0 ? (history.reduce((a, b) => a + b, 0) / history.length) * 1000: 0.3 + (complexity * 0.05);
-    const historyAdjustment = history.length > 0 ? (history.reduce((a, b) => a + b, 0) / history.length) * 0.2: 60000 + (complexity * 20000);
-    const sizeAdjustment = Math.log(size + 1) * 10000;
-    return Math.round(base + sizeAdjustment)`;
-}
-  private neuralPredictStrategy(complexity: number, size: number): string {
-        if (complexity > 8|| size > 50000) return`claude`    if (complexity > 5) return`gpt    return`gemini`};;
-  private neuralPredictGeneric(metric: string, complexity: number, history: number[]): any {
-    return complexity * 0.1 + (history.length > 0 ? history.reduce((a, b) => a + b, 0) / history.length: {}
-;
-    for (const metric of request.targetMetrics) {
-      // Use optimization confidence and performance to inform predictions
-      switch (metric) {'
-        case 'maxTokens':;;
-          predictions.maxTokens = Math.round(8000 + (result.confidence * 8000));
-          break;'
-        case 'temperature':;;
-          predictions.temperature = Math.max(0.1, Math.min(1.0, result.confidence));
-          break;'
-        case 'timeout:;;
-          predictions.timeout = Math.round(120000 + (result.metrics.latency * 2)`);
+      const result: BrainPredictionResult = {
+        requestId,
+        predictions,
+        confidence: this.calculateConfidence(predictions, strategy),
+        strategy,
+        optimizationUsed,
+        timestamp: new Date()
+      };
 
-          break;'
-        case 'llmStrategy':;;'
-          predictions.llmStrategy = result.confidence > 0.8 ? 'claude' :result.confidence > 0.5 ? ' gpt` : result.confidence;
-}
-}
-    return predictions;
-}
-  private calculateConfidence(predictions: request.context.history.length > 0 ? ;
-      request.context.history.reduce((a, b) => a + b, 0) / request.context.history.length: this.predictionHistory.get(domain)|| [];
-      history.push(result);
-      if (history.length > 100) {
-        history.shift();
-}
-;
-      this.predictionHistory.set(domain, history)`;
-} catch (error) {
-      logger.warn(`Failed to store prediction result: ${error});`;
-}
-}
+      // Store in history
+      if (!this.predictionHistory.has(request.domain)) {
+        this.predictionHistory.set(request.domain, []);
+      }
+      this.predictionHistory.get(request.domain)!.push(result);
+
+      // Emit result
+      this.emit('brain:prediction-complete', result);
+      
+    } catch (error) {
+      logger.error(`Brain prediction failed: ${error}`);
+      this.emit('brain:prediction-error', { requestId, error: error.message });
+    } finally {
+      this.activePredictions.delete(requestId);
+    }
+  }
+
   /**
-   * Get Brain system statistics
+   * Select optimal prediction strategy
    */
-  getBrainStats() {
+  private selectPredictionStrategy(request: BrainPredictionRequest): 'dspy' | 'neural' | 'hybrid' | 'basic' {
+    const { complexity, priority, timeLimit } = request.context;
+    
+    // High complexity + available DSPy = DSPy strategy
+    if (complexity > 0.7 && this.dspySystemAvailable) {
+      return 'dspy';
+    }
+    
+    // Medium complexity + both systems = Hybrid
+    if (complexity > 0.5 && this.dspySystemAvailable && this.llmSystemAvailable) {
+      return 'hybrid';
+    }
+    
+    // Low complexity or time constraints = Basic
+    if (complexity < 0.3 || (timeLimit && timeLimit < 5000)) {
+      return 'basic';
+    }
+    
+    return 'neural';
+  }
+
+  /**
+   * Predict via DSPy optimization
+   */
+  private async predictViaDSPy(request: BrainPredictionRequest): Promise<{ predictions: any[]; optimizationUsed: boolean }> {
+    return new Promise((resolve, reject) => {
+      const dspyRequest: DspyOptimizationRequest = {
+        requestId: request.requestId,
+        prompt: request.prompt || '',
+        context: request.context,
+        useOptimization: request.useAdvancedOptimization !== false
+      };
+
+      const timeout = setTimeout(() => {
+        reject(new Error('DSPy prediction timeout'));
+      }, request.context.timeLimit || 30000);
+
+      const handler = (result: DspyOptimizationResult) => {
+        if (result.requestId === request.requestId) {
+          clearTimeout(timeout);
+          this.off('dspy:optimization-complete', handler);
+          resolve({
+            predictions: result.predictions || [],
+            optimizationUsed: result.optimizationUsed || false
+          });
+        }
+      };
+
+      this.on('dspy:optimization-complete', handler);
+      this.emit('dspy:optimization-request', dspyRequest);
+    });
+  }
+
+  /**
+   * Predict via neural networks
+   */
+  private async predictViaNeural(request: BrainPredictionRequest): Promise<any[]> {
+    // Placeholder for neural network predictions
+    logger.info(`Neural prediction for ${request.domain}`);
+    return [{ type: 'neural', confidence: 0.8, result: 'neural-prediction' }];
+  }
+
+  /**
+   * Predict via hybrid approach
+   */
+  private async predictViaHybrid(request: BrainPredictionRequest): Promise<{ predictions: any[]; optimizationUsed: boolean }> {
+    // Combine DSPy and neural approaches
+    const [dspyResult, neuralResult] = await Promise.allSettled([
+      this.predictViaDSPy(request),
+      this.predictViaNeural(request)
+    ]);
+
+    const predictions: any[] = [];
+    let optimizationUsed = false;
+
+    if (dspyResult.status === 'fulfilled') {
+      predictions.push(...dspyResult.value.predictions);
+      optimizationUsed = dspyResult.value.optimizationUsed;
+    }
+
+    if (neuralResult.status === 'fulfilled') {
+      predictions.push(...neuralResult.value);
+    }
+
+    return { predictions, optimizationUsed };
+  }
+
+  /**
+   * Basic prediction fallback
+   */
+  private async predictViaBasic(request: BrainPredictionRequest): Promise<any[]> {
+    logger.info(`Basic prediction for ${request.domain}`);
+    return [{ type: 'basic', confidence: 0.6, result: 'basic-prediction' }];
+  }
+
+  /**
+   * Calculate prediction confidence
+   */
+  private calculateConfidence(predictions: any[], strategy: string): number {
+    if (!predictions || predictions.length === 0) return 0;
+    
+    const baseConfidence = predictions.reduce((sum, pred) => {
+      return sum + (pred.confidence || 0.5);
+    }, 0) / predictions.length;
+
+    // Adjust based on strategy
+    const strategyMultiplier = {
+      dspy: 1.2,
+      hybrid: 1.1,
+      neural: 1.0,
+      basic: 0.8
+    };
+
+    return Math.min(1.0, baseConfidence * (strategyMultiplier[strategy] || 1.0));
+  }
+
+  /**
+   * Handle DSPy optimization results
+   */
+  private handleDspyResult(result: DspyOptimizationResult): void {
+    logger.info(`DSPy optimization complete: ${result.requestId}`);
+    // Result is handled by the prediction promise handler
+  }
+
+  /**
+   * Handle DSPy LLM requests
+   */
+  private handleDspyLlmRequest(request: DspyLlmRequest): void {
+    logger.info(`DSPy LLM request: ${request.requestId}`);
+    // Forward to LLM system
+    this.emit('llm:inference-request', request);
+  }
+
+  /**
+   * Handle LLM responses
+   */
+  private handleLlmResponse(response: DspyLlmResponse): void {
+    logger.info(`LLM response received: ${response.requestId}`);
+    // Forward back to DSPy system
+    this.emit('dspy:llm-response', response);
+  }
+
+  /**
+   * Get prediction history for a domain
+   */
+  public getPredictionHistory(domain: string): BrainPredictionResult[] {
+    return this.predictionHistory.get(domain) || [];
+  }
+
+  /**
+   * Get system status
+   */
+  public getSystemStatus(): {
+    dspyAvailable: boolean;
+    llmAvailable: boolean;
+    activePredictions: number;
+    totalHistoryEntries: number;
+  } {
+    let totalHistoryEntries = 0;
+    for (const entries of this.predictionHistory.values()) {
+      totalHistoryEntries += entries.length;
+    }
+
     return {
-      systemsAvailable: { dspy: this.dspySystemAvailable, llm: this.llmSystemAvailable}
-      activePredictions: this.activePredictions.size;
-      totalDomains: this.predictionHistory.size;
-      totalPredictions: Array.from(this.predictionHistory.values()).reduce((sum, history) => sum + history.length, 0);
-}`;
+      dspyAvailable: this.dspySystemAvailable,
+      llmAvailable: this.llmSystemAvailable,
+      activePredictions: this.activePredictions.size,
+      totalHistoryEntries
+    };
+  }
 }
-;`";";
-// Export default instance";;'
-export const eventDrivenBrain = new EventDrivenBrain();
-`;
+
+export default EventDrivenBrain;

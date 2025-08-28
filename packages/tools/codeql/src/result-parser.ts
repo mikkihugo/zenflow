@@ -26,7 +26,7 @@ export class ResultParser {
   private readonly logger:Logger;
 
   constructor(logger:Logger) {
-    this.logger = logger.child({ component: 'ResultParser'});')}
+    this.logger = logger.child({ component: 'ResultParser'});
 
   /**
    * Parse SARIF results into CodeQL findings

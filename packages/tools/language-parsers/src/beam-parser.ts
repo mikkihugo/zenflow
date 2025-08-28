@@ -63,7 +63,7 @@ export interface BeamFunction {
   arity:number;
 
   /** Visibility scope */
-  visibility:'public' | ' private;
+  visibility:'public' | 'private';
 
   /** Function signature */
   signature:string;

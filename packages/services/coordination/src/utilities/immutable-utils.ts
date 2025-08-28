@@ -11,7 +11,9 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { type Draft, enableMapSet, produce} from 'immer')// Enable Immer support for Map and Set';
+import { type Draft, enableMapSet, produce } from 'immer';
+
+// Enable Immer support for Map and Set
 enableMapSet();
 /**
  * Immutable task utilities using battle-tested Immer
@@ -29,8 +31,8 @@ export class ImmutableTaskUtils {
       const taskIndex = draft.findIndex((t) => t.id === taskId);
       if (taskIndex >= 0) {
         updater(draft[taskIndex]);
-}
-});
+      }
+    });
 }
   /**
    * Add task to collection immutably
@@ -38,7 +40,7 @@ export class ImmutableTaskUtils {
   static addTask<T>(tasks: T[], newTask: T): T[] {
     return produce(tasks, (draft) => {
       draft.push(newTask as Draft<T>);
-});
+    });
 }
   /**
    * Remove task from collection immutably
@@ -48,8 +50,8 @@ export class ImmutableTaskUtils {
       const index = draft.findIndex((t) => t.id === taskId);
       if (index >= 0) {
         draft.splice(index, 1);
-}
-});
+      }
+    });
 }
 }
 /**
@@ -62,14 +64,14 @@ export class ImmutableWIPUtils {
   static updateWIPLimits<T extends Record<string, number>>(
     limits: T,
     updates: Partial<T>
-  ):T {
+  ): T {
     return produce(limits, (draft) => {
       Object.entries(updates).forEach(([key, value]) => {
         if (value !== undefined && value >= 0 && key in draft) {
           (draft as Record<string, number>)[key] = value;
-}
-});
-});
+        }
+      });
+    });
 }
   /**
    * Optimize WIP limits based on utilization
@@ -77,7 +79,7 @@ export class ImmutableWIPUtils {
   static optimizeWIPLimits<T extends Record<string, number>>(
     currentLimits: T,
     utilizationData: Record<string, { current: number; target: number}>
-  ):T {
+  ): T {
     return produce(currentLimits, (draft) => {
       const draftLimits = draft as Record<string, number>;
       Object.entries(utilizationData).forEach(([state, data]) => {
@@ -87,12 +89,12 @@ export class ImmutableWIPUtils {
           // Increase limit if highly utilized (>0.9), decrease if underutilized (<0.5)
           if (utilizationRatio > 0.9) {
             draftLimits[state] = Math.ceil(currentLimit * 1.2);
-} else if (utilizationRatio < 0.5) {
-            draftLimits[state] = Math.max(1, Math.floor(currentLimit * 0.8);
-}
-}
-});
-});
+          } else if (utilizationRatio < 0.5) {
+            draftLimits[state] = Math.max(1, Math.floor(currentLimit * 0.8));
+          }
+        }
+      });
+    });
 }
 }
 // Task interface for metrics calculations - compatible with WorkflowTask
@@ -145,19 +147,28 @@ export class ImmutableMetricsUtils {
           (1000 * 60 * 60);
       ); // hours
     const averageCycleTime =
-      cycleTimes.length > 0;
-        ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length: completedTasks
+      cycleTimes.length > 0
+        ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length
+        : 0;
+
+    // Calculate lead times
+    const leadTimes = completedTasks
       .filter((t) => t.completedAt)
       .map(
         (t) =>
           ((t.completedAt?.getTime()|| 0) - t.createdAt.getTime()) /
-          (1000 * 60 * 60);
+          (1000 * 60 * 60)
       ); // hours
+
     const averageLeadTime =
-      leadTimes.length > 0;
-        ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length: Date.now() - 24 * 60 * 60 * 1000;
+      leadTimes.length > 0
+        ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length
+        : 0;
+
+    // Calculate recent completions (last 24 hours)
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
     const recentCompletions = completedTasks.filter(
-      (t) => t.completedAt && t.completedAt.getTime() > oneDayAgo;
+      (t) => t.completedAt && t.completedAt.getTime() > oneDayAgo
     );
     const throughput = recentCompletions.length;
     return {
@@ -165,11 +176,11 @@ export class ImmutableMetricsUtils {
       cycleTime: averageCycleTime,
       leadTime: averageLeadTime,
       wipEfficiency: calculators.wipEfficiency,
-      blockageRate: allTasks.length > 0 ? blockedTasks.length / allTasks.length: 0,
-      flowEfficiency: cycleTimes.length > 0 ? Math.min(1, 168 / averageCycleTime) :1, // Efficiency relative to 1 week
+      blockageRate: allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
+      flowEfficiency: cycleTimes.length > 0 ? Math.min(1, 168 / averageCycleTime) : 1, // Efficiency relative to 1 week
       predictability: calculators.predictabilityCalculator(cycleTimes),
       qualityIndex: calculators.qualityCalculator(completedTasks),
-};
+    };
 }
   /**
    * Update metrics state immutably
@@ -177,14 +188,14 @@ export class ImmutableMetricsUtils {
   static updateMetrics<T extends Record<string, any>>(
     currentMetrics: T,
     newMetrics: Partial<T>
-  ):T {
+  ): T {
     return produce(currentMetrics, (draft) => {
       Object.entries(newMetrics).forEach(([key, value]) => {
         if (value !== undefined) {
           (draft as any)[key] = value;
-}
-});
-});
+        }
+      });
+    });
 }
 }
 /**
@@ -205,9 +216,10 @@ export class ImmutableContextUtils {
       draft.errors.push({
         ...error,
         timestamp: new Date(),
-        id,    ')});
-});
-}
+        id: Math.random().toString(36).substr(2, 9),
+      });
+    });
+  }
 }
 /**
  * General immutable utilities using battle-tested Immer (legacy support)
@@ -218,14 +230,13 @@ export class ImmutableUtils {
    */
   static deepClone<T>(obj: T): T {
     return produce(obj, () => {});
-}
+  }
   /**
    * Safe merge of objects without mutation
    */
   static merge<T extends Record<string, any>>(base: T, updates: Partial<T>): T {
     return produce(base, (draft) => {
       Object.assign(draft, updates);
-});
-}
-}
-;)';
+    });
+  }
+};

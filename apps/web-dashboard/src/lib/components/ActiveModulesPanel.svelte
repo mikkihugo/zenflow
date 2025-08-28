@@ -21,7 +21,7 @@
   // Component state
   let activeModules: ActiveModule[] = [];
   let selectedModule: ActiveModule | null = null;
-  let updateInterval: NodeJS.Timer;
+  let updateInterval: ReturnType<typeof setInterval> | null = null;
   let isConnected = false;
   let websocket: WebSocket | null = null;
   
@@ -300,7 +300,10 @@
       {#each activeModules as module (module.id)}
         <div 
           class="p-4 cursor-pointer hover:bg-gray-50 transition-colors {selectedModule?.id === module.id ? 'bg-blue-50' : ''}"
+          role="button"
+          tabindex="0"
           on:click={() => selectModule(module)}
+          on:keydown={(e) => e.key === 'Enter' || e.key === ' ' ? selectModule(module) : null}
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">

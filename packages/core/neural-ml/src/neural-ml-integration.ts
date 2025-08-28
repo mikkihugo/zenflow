@@ -1034,7 +1034,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
 	async startTrainingJob(
 		modelId:string, 
 		config:any, 
-		sparc_phase:'specification' | ' pseudocode' | ' architecture' | ' refinement' | ' completion' = ' refinement')	):Promise<string> {
+		sparc_phase:'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion' = 'refinement'
+	):Promise<string> {
 		const trainingId = `train_${modelId}_${Date.now()}`;
 		
 		// Create workflow state event

@@ -657,7 +657,8 @@ class GitHubModelsDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category:'low' | ' medium' | ' high' | ' embedding')  ):GitHubModelMetadata[] {
+    category:'low' | 'medium' | 'high' | 'embedding'
+  ):GitHubModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model['category'] === category
     );

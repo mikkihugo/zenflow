@@ -1086,7 +1086,7 @@ Please analyze this merge conflict and provide:
 3. **Reasoning**:Why this resolution is best
 
 Respond in JSON format:
-\`\`\`json`
+\`\`\`json
 {
   "resolution":"recommended code here",
   "confidence":85,

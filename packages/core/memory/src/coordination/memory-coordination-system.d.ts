@@ -5,7 +5,7 @@
  * load balancing, health monitoring, and automatic failover.
  */
 import { EventEmitter } from '@claude-zen/foundation';
-import type { MemoryCoordinationConfig, MemoryOperationResult } from './types';
+import type { MemoryCoordinationConfig, MemoryNode, MemoryOperationResult } from './types';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { JSONValue } from '../core/memory-system';
 export declare class MemoryCoordinationSystem extends EventEmitter {
@@ -39,7 +39,28 @@ export declare class MemoryCoordinationSystem extends EventEmitter {
     delete(key: string, namespace?: string, options?: {
         consistency?: 'strong' | ' eventual';
     }): Promise<MemoryOperationResult<boolean>>;
-    list(pattern?: string, namespace?: string): any;
-    Promise<MemoryOperationResult>(): any;
+    list(pattern?: string, namespace?: string): Promise<MemoryOperationResult<string[]>>;
+    search(pattern: string, namespace?: string): Promise<MemoryOperationResult<Record<string, JSONValue>>>;
+    clear(namespace?: string): Promise<MemoryOperationResult>;
+    private executeOperation;
+    private selectNodes;
+    private selectShardedNodes;
+    private selectTieredNodes;
+    private selectIntelligentNodes;
+    private executeSingleNode;
+    private executeReplicated;
+    private executeSharded;
+    private executeTiered;
+    private executeIntelligent;
+    private updateNodeMetrics;
+    private handleNodeUnhealthy;
+    private handleNodeRecovered;
+    private handleNodeOverloaded;
+    private selectNewPrimaryNode;
+    private hashKey;
+    private ensureInitialized;
+    getNodes(): Map<string, MemoryNode>;
+    getHealthStatus(): Record<string, any>;
+    shutdown(): Promise<void>;
 }
 //# sourceMappingURL=memory-coordination-system.d.ts.map

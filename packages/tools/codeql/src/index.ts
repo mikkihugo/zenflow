@@ -49,9 +49,12 @@ export const DEFAULT_CODEQL_CONFIG:Partial<
 export async function analyzeRepository(
   repositoryPath:string,
   options:{
-    languages?:import('./types/codeql-types').CodeQLLanguage[];')    queryPacks?:import('./types/codeql-types').QueryPack[];')    config?:Partial<import('./types/codeql-types').CodeQLConfig>;')} = {}
+    languages?:import('./types/codeql-types').CodeQLLanguage[];
+    queryPacks?:import('./types/codeql-types').QueryPack[];
+    config?:Partial<import('./types/codeql-types').CodeQLConfig>;
+  } = {}
 ):Promise<import('./types/codeql-types').QueryExecutionResult> {
-    ')  const bridge = createCodeQLBridge(options.config);
+  const bridge = createCodeQLBridge(options.config);
 
   // Use provided query packs or defaults
   const queryPacks =

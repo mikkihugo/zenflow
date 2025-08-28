@@ -37,6 +37,14 @@ export declare class SessionMemoryStore extends EventEmitter implements MemorySt
     health(): Promise<boolean>;
     stats(): Promise<MemoryStats>;
     private loadFromStorage;
+    private saveToStorage;
+    private updateCache;
+    private getCachedData;
+    private ensureInitialized;
+    /**
+     * Circuit breaker operation handler with comprehensive error handling and metrics
+     */
+    private performStorageOperation;
 }
 export declare class MemoryManager {
     private errorAggregator;

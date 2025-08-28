@@ -257,7 +257,8 @@ class GitHubCopilotDatabase {
    */
   getEmbeddingModels():GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
-      (model) => model['type'] === ' embeddings')    );
+      (model) => model['type'] === 'embeddings'
+    );
 }
 
   /**

@@ -26,7 +26,7 @@ export class DatabaseManager {
 
   constructor(config:CodeQLConfig, logger:Logger) {
     this.config = config;
-    this.logger = logger.child({ component: 'DatabaseManager'});')}
+    this.logger = logger.child({ component: 'DatabaseManager'});
 
   /**
    * Create a new CodeQL database

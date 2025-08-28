@@ -10,10 +10,7 @@ import * as path from 'node:path';
 import { 
   getLogger, 
   Result, 
-  ok, 
-  err, 
-  safeAsync, 
-  withRetry,
+  safeAsync,
   getWorkspaceDetector
 } from '@claude-zen/foundation';
 
@@ -343,7 +340,7 @@ export class RepoAnalyzer {
     const violations: DomainViolation[] = [];
     
     // Extract import statements
-    const importPattern = /import\s+.*?\s+from\s+['"`]([^'"`]+)['"`]/g;
+    const importPattern = /import\s+.*?\s+from\s+["'`]([^"'`]+)["'`]/g;
     let match;
     
     while ((match = importPattern.exec(content)) !== null) {

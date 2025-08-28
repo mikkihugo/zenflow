@@ -35,17 +35,17 @@ export class CodeQLBridge {
   private readonly config:CodeQLConfig;
 
   constructor(config:Partial<CodeQLConfig> = {}) {
-    this.logger = getLogger('CodeQLBridge');')
+    this.logger = getLogger('CodeQLBridge');
     // Default configuration
-    this.config = 
-      codeqlPath:config.codeqlPath||'codeql',      maxMemory:config.maxMemory||4096,
-      threads:
-        config.threads||Math.max(1, Math.floor(require('os').cpus().length / 2)),
-      verbose:config.verbose ?? false,
-      timeout:config.timeout||300000, // 5 minutes
-      tempDir:
-        config.tempDir||path.join(require('os').tmpdir(), ' codeql-zen'),
-      ...config,;
+    this.config = {
+      codeqlPath: config.codeqlPath || 'codeql',
+      maxMemory: config.maxMemory || 4096,
+      threads: config.threads || Math.max(1, Math.floor(require('os').cpus().length / 2)),
+      verbose: config.verbose ?? false,
+      timeout: config.timeout || 300000, // 5 minutes
+      tempDir: config.tempDir || path.join(require('os').tmpdir(), 'codeql-zen'),
+      ...config,
+    };
 
     // Initialize subsystems
     this.databaseManager = new DatabaseManager(this.config, this.logger);
@@ -53,7 +53,7 @@ export class CodeQLBridge {
     this.resultParser = new ResultParser(this.logger);
 
     this.logger.info('CodeQL Bridge initialized', {
-    ')      codeqlPath:this.config.codeqlPath,
+      codeqlPath:this.config.codeqlPath,
       maxMemory:this.config.maxMemory,
       threads:this.config.threads,
 });

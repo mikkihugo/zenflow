@@ -1,13 +1,14 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
     { "path": "../foundation" },
-    { "path": "../event-system" },
     { "path": "../database" }
   ]
 }

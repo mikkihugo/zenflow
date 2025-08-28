@@ -387,15 +387,17 @@
       
       <!-- Payload Toggle -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Display Options</label>
-        <label class="flex items-center">
-          <input
-            type="checkbox"
-            bind:checked={showPayload}
-            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-          <span class="ml-2 text-sm text-gray-700">Show Payloads</span>
-        </label>
+        <fieldset>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">Display Options</legend>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              bind:checked={showPayload}
+              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span class="ml-2 text-sm text-gray-700">Show Payloads</span>
+          </label>
+        </fieldset>
       </div>
     </div>
   </div>
@@ -412,7 +414,10 @@
         {#each filteredEvents as event (event.name)}
           <div 
             class="p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors {selectedEvent?.name === event.name ? 'bg-blue-50 border-blue-200' : ''}"
+            role="button"
+            tabindex="0"
             on:click={() => selectEvent(event)}
+            on:keydown={(e) => e.key === 'Enter' || e.key === ' ' ? selectEvent(event) : null}
           >
             <div class="flex items-center justify-between">
               <div class="flex-1">

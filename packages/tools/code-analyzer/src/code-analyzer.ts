@@ -32,7 +32,8 @@ let getEventSystem:any;
 
 // Try to import strategic facades, with enhanced fallbacks if not available
 try {
-  const _intelligence = require('@claude-zen/intelligence');')  getBrainSystem = intelligence.getBrainSystem;
+  const intelligence = require('@claude-zen/intelligence');
+  getBrainSystem = intelligence.getBrainSystem;
 } catch {
   getBrainSystem = async () => ({
     createCoordinator:() => ({
@@ -41,8 +42,8 @@ try {
         strategy: 'fallback',}),
 }),
     storeEmbedding:async (collection: string, id:string, data:any) => {
-      logger.debug('Brain system fallback:storing embedding', {
-    ')        collection,
+      logger.debug('Brain system fallback: storing embedding', {
+        collection,
         id,
         data,
 });
@@ -51,7 +52,8 @@ try {
 }
 
 try {
-  const _operations = require('@claude-zen/operations');')  getPerformanceTracker = operations.getPerformanceTracker;
+  const operations = require('@claude-zen/operations');
+  getPerformanceTracker = operations.getPerformanceTracker;
 } catch {
   getPerformanceTracker = async () => ({
     startSession:async (id: string) => ({
@@ -63,23 +65,28 @@ try {
 }
 
 try {
-  const infrastructure = require('@claude-zen/infrastructure');')  getDatabaseSystem = infrastructure.getDatabaseSystem;
+  const infrastructure = require('@claude-zen/infrastructure');
+  getDatabaseSystem = infrastructure.getDatabaseSystem;
   getEventSystem = infrastructure.getEventSystem;
 } catch {
   getDatabaseSystem = async () => ({
     store:async (collection: string, id:string, data:any) => {
-      logger.debug('Database fallback:storing', { collection, id, data});')},
-    storeGraph:async (nodeType: string, id:string, data:any) => {
-      logger.debug('Graph fallback:storing node', { nodeType, id, data});')},
+      logger.debug('Database fallback: storing', { collection, id, data });
+    },
+    storeGraph: async (nodeType: string, id: string, data: any) => {
+      logger.debug('Graph fallback: storing node', { nodeType, id, data });
+    },
 });
   getEventSystem = async () => ({
     emit:async (event: string, data:any) => {
-      logger.debug('Event fallback', { event, data});')},
-    on:(event: string, callback:Function) => {
-      logger.debug('Event listener fallback', { event});')      if (callback) {
+      logger.debug('Event fallback', { event, data });
+    },
+    on: (event: string, callback: Function) => {
+      logger.debug('Event listener fallback', { event });
+      if (callback) {
         callback();
-}
-},
+      }
+    },
 });
 }
 
@@ -121,7 +128,7 @@ type EnhancedAnalysisOptions = Merge<
   Partial<CodeAnalysisOptions>
 >;
 
-const logger = getLogger('CodeAnalyzer');')
+const logger = getLogger('CodeAnalyzer');
 // Initialize foundation systems using refactored DI
 const diContainer = getGlobalContainer();
 
@@ -222,8 +229,10 @@ export class CodeAnalyzer {
       this.databaseSystem = database;
       this.eventSystem = events;
 
-      logger.info('All strategic facades initialized successfully');')} catch (error) {
-      logger.error('Failed to initialize strategic facades', { error});')      throw error;
+      logger.info('All strategic facades initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize strategic facades', { error });
+      throw error;
 }
 }
 
@@ -275,18 +284,19 @@ export class CodeAnalyzer {
         // Store session via infrastructure database system
         if (this.databaseSystem) {
           await this.databaseSystem.store('analysis_sessions', sessionId, {
-    ')            repositoryPath:this.repositoryPath,
-            startTime:startTime.toISOString(),
-            options:session.options,
-            status:session.status,
-            filesAnalyzed:session.filesAnalyzed,
-});
+            repositoryPath: this.repositoryPath,
+            startTime: startTime.toISOString(),
+            options: session.options,
+            status: session.status,
+            filesAnalyzed: session.filesAnalyzed,
+          });
 
           // Store in graph database for relationship analysis
           await this.databaseSystem.storeGraph('AnalysisSession', sessionId, {
-    ')            repositoryPath:this.repositoryPath,
-            startTime:startTime.toISOString(),
-            type: 'live_analysis',});
+            repositoryPath: this.repositoryPath,
+            startTime: startTime.toISOString(),
+            type: 'live_analysis',
+          });
 
           // Brain system automatically handles embeddings via infrastructure
           if (this.brainSystem) {

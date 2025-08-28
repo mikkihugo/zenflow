@@ -119,6 +119,79 @@ export declare class MemoryMonitor extends EventEmitter {
      * @param metrics
      */
     private checkAlerts;
-    if(metrics: any, cacheHitRate: any, : any, thresholds: any, cacheHitRate: any): void;
+    /**
+     * Create and emit an alert.
+     *
+     * @param alertData
+     */
+    private createAlert;
+    /**
+     * Acknowledge an alert.
+     *
+     * @param alertId
+     */
+    acknowledgeAlert(alertId: string): boolean;
+    /**
+     * Resolve an alert.
+     *
+     * @param alertId
+     */
+    resolveAlert(alertId: string): boolean;
+    /**
+     * Get current metrics.
+     */
+    getCurrentMetrics(): MemoryMetrics | null;
+    /**
+     * Get metrics for a time range.
+     *
+     * @param startTime
+     * @param endTime
+     */
+    getMetricsRange(startTime: number, endTime: number): MemoryMetrics[];
+    /**
+     * Get recent metrics.
+     *
+     * @param count
+     */
+    getRecentMetrics(count?: number): MemoryMetrics[];
+    /**
+     * Get active alerts.
+     */
+    getActiveAlerts(): MemoryAlert[];
+    /**
+     * Get all alerts.
+     */
+    getAllAlerts(): MemoryAlert[];
+    /**
+     * Get monitoring statistics.
+     */
+    getStats(): {
+        monitoring: {
+            enabled: any;
+            collecting: boolean;
+            metricsCollected: number;
+            operationsTracked: number;
+        };
+        current: MemoryMetrics;
+        alerts: {
+            total: number;
+            active: number;
+            bySeverity: Record<string, number>;
+        };
+        components: {
+            backends: number;
+            coordinator: boolean;
+            optimizer: boolean;
+        };
+    };
+    /**
+     * Generate a health report.
+     */
+    generateHealthReport(): {
+        overall: 'healthy|warning|critical';
+        score: number;
+        details: Record<string, unknown>;
+        recommendations: string[];
+    };
 }
 //# sourceMappingURL=monitor.d.ts.map

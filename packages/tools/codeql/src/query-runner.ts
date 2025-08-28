@@ -27,7 +27,8 @@ export class QueryRunner {
 
   constructor(config:CodeQLConfig, logger:Logger) {
     this.config = config;
-    this.logger = logger.child({ component: 'QueryRunner'});')    this.resultParser = new ResultParser(this.logger);
+    this.logger = logger.child({ component: 'QueryRunner'});
+    this.resultParser = new ResultParser(this.logger);
 }
 
   /**
@@ -39,7 +40,7 @@ export class QueryRunner {
     options:QueryExecutionOptions
   ):Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
     this.logger.info('Executing CodeQL queries', {
-    ')      databaseId:database.id,
+      databaseId:database.id,
       queryPackCount:queryPacks.length,
       format:options.format,
 });

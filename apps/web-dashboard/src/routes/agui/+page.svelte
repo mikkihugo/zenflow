@@ -229,11 +229,11 @@ function clearLog() {
 						<span>{result.test}</span>
 						<div class="flex items-center space-x-2">
 							{#if result.status === 'pending'}
-								<span class="badge variant-filled-surface">Pending</span>
+								<span class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-xs">Pending</span>
 							{:else if result.status === 'success'}
-								<span class="badge variant-filled-success">Success</span>
+								<span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded text-xs">Success</span>
 							{:else if result.status === 'error'}
-								<span class="badge variant-filled-error">Error</span>
+								<span class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-2 py-1 rounded text-xs">Error</span>
 							{/if}
 							{#if result.message}
 								<span class="text-sm opacity-75" title={result.message}>
@@ -258,13 +258,13 @@ function clearLog() {
 		<div class="card p-4 space-y-4">
 			<h3 class="h3">Manual Controls</h3>
 			<div class="flex flex-wrap gap-2">
-				<button class="btn variant-filled-primary" on:click={triggerManualTest}>
+				<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={triggerManualTest}>
 					Trigger Manual Test
 				</button>
-				<button class="btn variant-filled-secondary" on:click={() => runBasicTests()}>
+				<button class="bg-purple-600 dark:bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors" on:click={() => runBasicTests()}>
 					Re-run Tests
 				</button>
-				<button class="btn variant-filled-surface" on:click={clearLog}>
+				<button class="bg-gray-600 dark:bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors" on:click={clearLog}>
 					Clear Log
 				</button>
 			</div>
@@ -274,7 +274,7 @@ function clearLog() {
 		<div class="card p-4 space-y-4">
 			<div class="flex items-center justify-between">
 				<h3 class="h3">Activity Log</h3>
-				<span class="badge variant-filled-primary">{log.length} entries</span>
+				<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs">{log.length} entries</span>
 			</div>
 			<div class="bg-surface-900 text-surface-100 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
 				{#if log.length === 0}
@@ -290,13 +290,13 @@ function clearLog() {
 		<!-- Integration Status -->
 		<div class="text-center">
 			{#if aguiInstance}
-				<div class="alert variant-filled-success">
-					<h4>🎉 Integration Successful!</h4>
-					<p>AGUI WebInterface is successfully integrated into Svelte dashboard.</p>
+				<div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-600/50 rounded-lg p-4">
+					<h4 class="text-green-800 dark:text-green-200 font-semibold">🎉 Integration Successful!</h4>
+					<p class="text-green-700 dark:text-green-300">AGUI WebInterface is successfully integrated into Svelte dashboard.</p>
 				</div>
 			{:else}
-				<div class="alert variant-filled-warning">
-					<h4>⏳ Initializing Integration...</h4>
+				<div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600/50 rounded-lg p-4">
+					<h4 class="text-yellow-800 dark:text-yellow-200 font-semibold">⏳ Initializing Integration...</h4>
 					<p>Setting up AGUI WebInterface connection...</p>
 				</div>
 			{/if}

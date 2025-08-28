@@ -32,14 +32,20 @@ export { BeamLanguageParser} from './beam-parser';
  * Supported language families
  */
 export const SUPPORTED_LANGUAGE_FAMILIES = [
-  'beam', // Elixir, Erlang, Gleam')] as const;
+  'beam', // Elixir, Erlang, Gleam
+] as const;
 
 /**
  * Supported file extensions mapped to their parsers
  */
 export const SUPPORTED_EXTENSIONS = {
   // BEAM Languages
-  '.ex': ' beam',  '.exs': ' beam',  '.erl': ' beam',  '.hrl': ' beam',  '.gleam': ' beam',} as const;
+  '.ex': 'beam',
+  '.exs': 'beam',
+  '.erl': 'beam',
+  '.hrl': 'beam',
+  '.gleam': 'beam',
+} as const;
 
 /**
  * Language detection utility

@@ -9,7 +9,35 @@ import { EventEmitter } from '@claude-zen/foundation';
 interface SwarmSession {
     sessionId: string;
     swarmId: string;
-    type: 'dev-swarm';
+    type: 'dev-swarm' | 'ops-swarm' | 'coordination-swarm' | 'hybrid-swarm' | 'sparc-swarm';
+    startTime: number;
+    endTime: number;
+    participants: Array<{
+        agentId: string;
+        role: string;
+        performanceMetrics: Record<string, number>;
+    }>;
+    decisions: Array<{
+        decisionId: string;
+        context: string;
+        outcome: 'success|failure|partial';
+        metrics: Record<string, number>;
+    }>;
+    collaborationPatterns: Array<{
+        pattern: string;
+        effectiveness: number;
+        frequency: number;
+    }>;
+    artifacts: Array<{
+        type: 'code|documentation|decision|analysis';
+        content: string;
+        quality: number;
+    }>;
+    sparcPhases?: Record<string, {
+        duration: number;
+        quality: number;
+        iterations: number;
+    }>;
 }
 interface ExtractedKnowledge {
     sessionId: string;

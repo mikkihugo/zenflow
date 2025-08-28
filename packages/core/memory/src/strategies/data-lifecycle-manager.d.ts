@@ -6,6 +6,13 @@
  */
 import { EventEmitter } from '@claude-zen/foundation';
 import type { LifecycleConfig, LifecycleEntry, LifecycleStage, StrategyMetrics } from './types';
+interface StageStats {
+    count: number;
+    totalSize: number;
+    averageAge: number;
+    accessFrequency: number;
+    utilizationRate: number;
+}
 export declare class DataLifecycleManager extends EventEmitter {
     private logger;
     private config;
@@ -48,10 +55,14 @@ export declare class DataLifecycleManager extends EventEmitter {
     private compressValue;
     private performStageCleanup;
     private performPeriodicCleanup;
+    getStageStats(): Record<LifecycleStage, StageStats>;
     private getStageUtilization;
     getMetrics(): StrategyMetrics['lifecycle'];
     getEntryInfo(key: string): LifecycleEntry | null;
     listKeys(stage?: LifecycleStage): string[];
-    forceMigration(key: string, targetStage: LifecycleStage, reason?: string): any;
+    forceMigration(key: string, targetStage: LifecycleStage, reason?: string): boolean;
+    updateConfig(newConfig: Partial<LifecycleConfig>): void;
+    shutdown(): Promise<void>;
 }
+export {};
 //# sourceMappingURL=data-lifecycle-manager.d.ts.map

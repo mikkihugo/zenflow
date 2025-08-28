@@ -12,7 +12,7 @@ export interface CodeAnalysisOptions {
   excludePatterns?:string[];
 
   // Analysis depth
-  analysisMode?:'syntax' | ' semantic' | ' intelligent' | ' comprehensive;
+  analysisMode?:'syntax' | 'semantic' | 'intelligent' | 'comprehensive';
   realTimeAnalysis?:boolean;
   enableWatching?:boolean;
 
@@ -39,7 +39,7 @@ export interface CodeAnalysisOptions {
   enableCIIntegration?:boolean;
 }
 
-export type SupportedLanguage = 'typescript' | ' javascript' | ' tsx' | ' jsx' | ' vue' | ' svelte' | ' python' | ' go' | ' rust' | ' java' | ' cpp' | ' csharp';
+export type SupportedLanguage = 'typescript' | 'javascript' | 'tsx' | 'jsx' | 'vue' | 'svelte' | 'python' | 'go' | 'rust' | 'java' | 'cpp' | 'csharp';
 
 export interface CodeAnalysisResult {
   id:string;
@@ -113,7 +113,7 @@ export interface CodeQualityMetrics {
 export interface CodeSuggestion {
   id:string;
   type:SuggestionType;
-  severity:'info' | ' warning' | ' error' | ' critical;
+  severity:'info' | 'warning' | 'error' | 'critical';
   title:string;
   description:string;
 
@@ -167,7 +167,7 @@ export interface LiveAnalysisSession {
   watchedDirectories:string[];
 
   // Session state
-  status:'active' | ' paused' | ' stopped' | ' error;
+  status:'active' | 'paused' | 'stopped' | 'error';
   filesAnalyzed:number;
   errorsFound:number;
   suggestionsGenerated:number;
@@ -185,7 +185,7 @@ export interface LiveAnalysisSession {
 export interface AnalysisQueueItem {
   id:string;
   filePath:string;
-  priority:'low' | ' normal' | ' high' | ' urgent;
+  priority:'low' | 'normal' | 'high' | 'urgent';
   queuedAt:Date;
   startedAt?:Date;
   completedAt?:Date;
