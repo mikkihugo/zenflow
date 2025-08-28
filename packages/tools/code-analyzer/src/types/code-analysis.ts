@@ -133,7 +133,7 @@ export interface CodeSuggestion {
   learnMoreUrl?:string;
 }
 
-export type SuggestionType = 'syntax-error' | ' type-error' | ' code-smell' | ' performance' | ' security' | ' accessibility' | ' best-practice' | ' refactoring' | ' modernization' | ' optimization';
+export type SuggestionType = 'syntax-error' | 'type-error' | 'code-smell' | 'performance' | 'security' | 'accessibility' | 'best-practice' | 'refactoring' | 'modernization' | 'optimization';
 
 export interface AICodeInsights {
   // AI-powered analysis
@@ -398,18 +398,18 @@ export interface CohesionMetrics {
 
 export interface CodeSmell {
   type:CodeSmellType;
-  severity:'minor' | ' major' | ' critical;
+  severity: 'minor' | 'major' | 'critical';
   description:string;
   location:SourceRange;
   suggestion:string;
   autoFixable:boolean;
 }
 
-export type CodeSmellType = 'long-method' | ' large-class' | ' duplicate-code' | ' dead-code' | ' god-class' | ' feature-envy' | ' data-clumps' | ' primitive-obsession' | ' switch-statements' | ' lazy-class' | ' speculative-generality' | ' temporary-field' | ' message-chains' | ' middle-man' | ' inappropriate-intimacy' | ' alternative-classes-with-different-interfaces' | ' refused-bequest' | ' comments';
+export type CodeSmellType = 'long-method' | 'large-class' | 'duplicate-code' | 'dead-code' | 'god-class' | 'feature-envy' | 'data-clumps' | 'primitive-obsession' | 'switch-statements' | 'lazy-class' | 'speculative-generality' | 'temporary-field' | 'message-chains' | 'middle-man' | 'inappropriate-intimacy' | 'alternative-classes-with-different-interfaces' | 'refused-bequest' | 'comments';
 
 export interface AntiPattern {
   name:string;
-  category:'architectural' | ' design' | ' implementation' | ' organizational;
+  category: 'architectural' | 'design' | 'implementation' | 'organizational';
   description:string;
   consequences:string[];
   refactoringApproach:string[];
@@ -419,7 +419,7 @@ export interface AntiPattern {
 
 export interface DesignPattern {
   name:string;
-  category:'creational' | ' structural' | ' behavioral;
+  category: 'creational' | 'structural' | 'behavioral';
   description:string;
   participants:string[];
   location:SourceRange;
@@ -430,7 +430,7 @@ export interface DesignPattern {
 
 export interface SecurityIssue {
   type:SecurityIssueType;
-  severity:'low' | ' medium' | ' high' | ' critical;
+  severity: 'low' | 'medium' | 'high' | 'critical';
   title:string;
   description:string;
   location:SourceRange;
@@ -440,12 +440,12 @@ export interface SecurityIssue {
   falsePositive:boolean;
 }
 
-export type SecurityIssueType = 'injection' | ' authentication' | ' authorization' | ' data-exposure' | ' xml-entities' | ' broken-access-control' | ' security-misconfiguration' | ' xss' | ' insecure-deserialization' | ' vulnerable-components' | ' insufficient-logging';
+export type SecurityIssueType = 'injection' | 'authentication' | 'authorization' | 'data-exposure' | 'xml-entities' | 'broken-access-control' | 'security-misconfiguration' | 'xss' | 'insecure-deserialization' | 'vulnerable-components' | 'insufficient-logging';
 
 export interface Vulnerability {
   id:string;
-  type:'dependency' | ' code' | ' configuration;
-  severity:'low' | ' medium' | ' high' | ' critical;
+  type: 'dependency' | 'code' | 'configuration';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   package?:string;
   version?:string;
   fixedVersion?:string;
@@ -479,18 +479,18 @@ export interface TextEdit {
 }
 
 export interface ImportEdit {
-  action:'add' | ' remove' | ' modify;
+  action: 'add' | 'remove' | 'modify';
   source:string;
   specifiers:string[];
   location?:SourceRange;
 }
 
 export interface ImpactAssessment {
-  scope:'file' | ' module' | ' project' | ' codebase;
+  scope: 'file' | 'module' | 'project' | 'codebase';
   breakingChange:boolean;
   testingRequired:boolean;
-  performanceImpact:'positive' | ' neutral' | ' negative;
-  maintainabilityImpact:'positive' | ' neutral' | ' negative;
+  performanceImpact: 'positive' | 'neutral' | 'negative';
+  maintainabilityImpact: 'positive' | 'neutral' | 'negative';
   estimatedEffort:number; // in minutes
 }
 
@@ -504,7 +504,7 @@ export interface IntentAnalysis {
 }
 
 export interface ComplexityAssessment {
-  overallComplexity:'low' | ' medium' | ' high' | ' very-high;
+  overallComplexity: 'low' | 'medium' | 'high' | 'very-high';
   complexityFactors:ComplexityFactor[];
   reductionOpportunities:ComplexityReduction[];
   cognitiveLoad:number;
@@ -577,16 +577,16 @@ export interface SkillGapAnalysis {
 
 export interface Skill {
   name:string;
-  category:'language' | ' framework' | ' tool' | ' pattern' | ' domain;
-  level:'beginner' | ' intermediate' | ' advanced' | ' expert;
+  category: 'language' | 'framework' | 'tool' | 'pattern' | 'domain';
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
   confidence:number;
 }
 
 export interface SkillGap {
   skill:string;
-  required:'beginner' | ' intermediate' | ' advanced' | ' expert;
-  current:'beginner' | ' intermediate' | ' advanced' | ' expert' | ' none;
-  priority:'low' | ' medium' | ' high' | ' critical;
+  required: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  current: 'beginner' | 'intermediate' | 'advanced' | 'expert' | 'none';
+  priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface LearningResource {
@@ -600,7 +600,7 @@ export interface LearningResource {
 
 export interface LearningRecommendation {
   skill:string;
-  priority:'low' | ' medium' | ' high;
+  priority: 'low' | 'medium' | 'high';
   resources:LearningResource[];
   estimatedTime:number;
   prerequisites:string[];
@@ -612,11 +612,11 @@ export interface EventHandler {
   handler:(data: any) => void;
 }
 
-export type AnalysisEvent = 'analysis-started' | ' analysis-completed' | ' analysis-failed' | ' file-changed' | ' suggestion-generated' | ' error-detected' | ' performance-threshold-exceeded';
+export type AnalysisEvent = 'analysis-started' | 'analysis-completed' | 'analysis-failed' | 'file-changed' | 'suggestion-generated' | 'error-detected' | 'performance-threshold-exceeded';
 
 export interface Notification {
   id:string;
-  type:'info' | ' warning' | ' error' | ' success;
+  type: 'info' | 'warning' | 'error' | 'success';
   title:string;
   message:string;
   timestamp:Date;
