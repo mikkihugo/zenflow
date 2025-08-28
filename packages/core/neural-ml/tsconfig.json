@@ -12,5 +12,8 @@
 		"**/*.test.ts",
 		"**/*.spec.ts",
 		"neuro-divergent/**/*"
+	],
+	"references": [
+		{ "path": "../foundation" }
 	]
 }
