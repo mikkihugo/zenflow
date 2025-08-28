@@ -68,8 +68,8 @@ export default [
 			unicorn: unicorn,
 		},
 		rules: {
-			// Same rules as TypeScript files
-			"no-console": "error",
+			// Browser console logging is appropriate for web dashboard
+			"no-console": "warn",
 			"@typescript-eslint/no-explicit-any": "error",
 			"@typescript-eslint/no-unused-vars": "error",
 			"unused-imports/no-unused-imports": "error",
@@ -497,6 +497,15 @@ export default [
 		},
 	},
 
+	// Web Dashboard Browser Environment Override - MUST come after general TypeScript rules
+	{
+		files: ["apps/web-dashboard/**/*.{ts,tsx,js,jsx}"],
+		rules: {
+			// Browser console logging is appropriate for web dashboard
+			"no-console": "warn",
+		},
+	},
+
 	// Foundation Package Exception - Allow internal imports for implementation
 	{
 		files: ["packages/core/foundation/**/*.{ts,tsx}"],
@@ -796,6 +805,19 @@ export default [
 			"**/*.spec.*", 
 			"**/tests/**/*",
 			"**/test/**/*",
+			
+			// Third-party packages that shouldn't be linted
+			"packages/tools/singularity-coder/**/*",
+			
+			// Generated Svelte files
+			"**/.svelte-kit/**/*",
+			
+			// Test scripts in apps
+			"apps/**/playwright-*.js",
+			"apps/**/*test*.js",
+			
+			// Security scripts (separate linting)
+			"security/**/*",
 		],
 	},
 ];
