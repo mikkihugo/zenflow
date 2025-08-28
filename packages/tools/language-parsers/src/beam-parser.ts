@@ -242,35 +242,36 @@ export class BeamLanguageParser {
         const result = results[i];
         if (result.status === 'fulfilled' && result.value.isOk()) {
           modules.push(result.value._unsafeUnwrap());
-} else {
+        } else {
           const error =
             result.status === 'rejected' ? result.reason
               : result.value._unsafeUnwrapErr();
           errors.push(`${filePaths[i]}: ${error.message}`);
-}
+        }
+      }
 }
 
       if (errors.length > 0) {
         this.logger.warn('Some files failed to parse', {
           errorCount:errors.length,
           successCount:modules.length,
-          errors:errors.slice(0, 5), // Log first 5 errors
-});
-}
+          errors: errors.slice(0, 5), // Log first 5 errors
+        });
+      }
 
-      this.logger.info(`Parsed ${modules.length} BEAM modules successfully`, {`
-        totalAttempted:filePaths.length,
-        successCount:modules.length,
-        errorCount:errors.length,
-});
+      this.logger.info(`Parsed ${modules.length} BEAM modules successfully`, {
+        totalAttempted: filePaths.length,
+        successCount: modules.length,
+        errorCount: errors.length,
+      });
 
       return ok(modules);
-} catch (error) {
-      const _err_msg = `Failed to parse BEAM files:${error instanceof Error ? error.message : String(error)}`;`
-      this.logger.error(err_msg, { error, fileCount:filePaths.length});
-      return err(new Error(err_msg));
-}
-}
+    } catch (error) {
+      const _err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;
+      this.logger.error(_err_msg, { error, fileCount: filePaths.length });
+      return err(new Error(_err_msg));
+    }
+  }
 
   /**
    * Detect language from file extension
@@ -293,7 +294,8 @@ export class BeamLanguageParser {
     content:string
   ):Promise<BeamModule> {
     const moduleName =
-      this.extractElixirModuleName(content)||basename(filePath,'.ex');')    const functions = this.extractElixirFunctions(content);
+      this.extractElixirModuleName(content) || basename(filePath, '.ex');
+    const functions = this.extractElixirFunctions(content);
     const types = this.extractElixirTypes(content);
     const docs = this.options.extractDocumentation
       ? this.extractElixirDocs(content)
@@ -329,7 +331,8 @@ export class BeamLanguageParser {
     content:string
   ):Promise<BeamModule> {
     const moduleName =
-      this.extractErlangModuleName(content)||basename(filePath,'.erl');')    const functions = this.extractErlangFunctions(content);
+      this.extractErlangModuleName(content) || basename(filePath, '.erl');
+    const functions = this.extractErlangFunctions(content);
     const types = this.extractErlangTypes(content);
     const docs = this.options.extractDocumentation
       ? this.extractErlangDocs(content)
@@ -360,7 +363,8 @@ export class BeamLanguageParser {
     filePath:string,
     content:string
   ):Promise<BeamModule> {
-    const moduleName = basename(filePath, '.gleam');')    const functions = this.extractGleamFunctions(content);
+    const moduleName = basename(filePath, '.gleam');
+    const functions = this.extractGleamFunctions(content);
     const types = this.extractGleamTypes(content);
     const docs = this.options.extractDocumentation
       ? this.extractGleamDocs(content)
@@ -401,15 +405,17 @@ export class BeamLanguageParser {
       const params = match[2]||';
       const arity = params ? params.split(',    ').length:0;')      const lineNumber = content.substring(0, match.index).split('\n').length;')      const isPrivate = content
         .substring(Math.max(0, match.index - 10), match.index)
-        .includes('defp');')      const isMacro = content
+        .includes('defp');
+      const isMacro = content
         .substring(Math.max(0, match.index - 10), match.index)
-        .includes('defmacro');')
-      const func:BeamFunction = {
-        name:functionName,
-        arity:arity,
-        visibility:isPrivate ? 'private' : ' public',        signature:`$functionName($params)`,`
-        lineNumber:lineNumber,
-        attributes:isMacro ? ['macro'] : [],
+        .includes('defmacro');
+      const func: BeamFunction = {
+        name: functionName,
+        arity: arity,
+        visibility: isPrivate ? 'private' : 'public',
+        signature: `${functionName}(${params})`,
+        lineNumber: lineNumber,
+        attributes: isMacro ? ['macro'] : [],
 };
 
       if (this._options._analyzeFunctionComplexity) {
@@ -597,10 +603,10 @@ export class BeamLanguageParser {
     return types;
 }
 
-  private extractErlangDocs(content:string): string[] {
+  private extractErlangDocs(content: string): string[] {
     // Erlang typically uses %% comments for documentation
-    const docs:string[] = [];
-    const lines = content.split('\n');')
+    const docs: string[] = [];
+    const lines = content.split('\n');
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed.startsWith('%%') && trimmed.length > 3) {
@@ -693,15 +699,18 @@ export class BeamLanguageParser {
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
       const functionName = match[1];
-      const params = match[2]||';
-      const arity = params ? params.split(',    ').length:0;')      const lineNumber = content.substring(0, match.index).split('\n').length;')      const isPublic = content
+      const params = match[2] || '';
+      const arity = params ? params.split(',').length : 0;
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      const isPublic = content
         .substring(Math.max(0, match.index - 10), match.index)
-        .includes('pub');')
-      const func:BeamFunction = {
-        name:functionName,
-        arity:arity,
-        visibility:isPublic ? 'public' : ' private',        signature:`${functionName}(${params})`,`
-        lineNumber:lineNumber,
+        .includes('pub');
+      const func: BeamFunction = {
+        name: functionName,
+        arity: arity,
+        visibility: isPublic ? 'public' : 'private',
+        signature: `${functionName}(${params})`,
+        lineNumber: lineNumber,
 };
 
       if (this.options.analyzeFunctionComplexity) {
@@ -814,20 +823,25 @@ export class BeamLanguageParser {
 
   private findFunctionEnd(content:string, start:number): number {
     // Simple heuristic to find function end - look for next 'def' or ' end'const fromStart = content.substring(start);')    const nextDef = fromStart.search(/\n\s*(?:def|end)/);
-    return nextDef > 0 ? start + nextDef:content.length;
-}
+    return nextDef > 0 ? start + nextDef : content.length;
+  }
 
   private calculateModuleMetrics(
-    module:BeamModule,
-    content:string
-  ):BeamModuleMetrics {
-    const lines = content.split('\n');')    const linesOfCode = lines.filter(
+    module: BeamModule,
+    content: string
+  ): BeamModuleMetrics {
+    const lines = content.split('\n');
+    const linesOfCode = lines.filter(
       (line) =>
         line.trim().length > 0 &&
-        !line.trim().startsWith('#') &&')        !line.trim().startsWith('%')')    ).length;
+        !line.trim().startsWith('#') &&
+        !line.trim().startsWith('%')
+    ).length;
 
     const publicFunctions = module.exports.filter(
-      (f) => f.visibility === 'public');')    const documentsedFunctions = module.exports.filter(
+      (f) => f.visibility === 'public'
+    );
+    const documentedFunctions = module.exports.filter(
       (f) => f.documentation
     ).length;
 
