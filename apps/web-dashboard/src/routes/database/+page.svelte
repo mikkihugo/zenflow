@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { apiClient } from "$lib/api";
 
 // Database management data
 let databaseStatus: any = null;
