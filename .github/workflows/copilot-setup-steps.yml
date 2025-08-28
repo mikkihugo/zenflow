@@ -49,9 +49,10 @@ jobs:
       # Step 3: Setup PNPM
       # This step installs pnpm itself, which is required before we can install the project dependencies.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10.15.0
+          run_install: false
           
       # Step 4: Install Node.js Dependencies
       # Use 'pnpm install' instead of 'npm ci'. 'pnpm install' provides faster, more reliable, and deterministic builds

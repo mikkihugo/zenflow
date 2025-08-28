@@ -520,7 +520,7 @@ export interface RefactoringOpportunity {
   prerequisites:string[];
 }
 
-export type RefactoringType = 'extract-method' | ' extract-class' | ' move-method' | ' rename' | ' introduce-parameter' | ' inline-method' | ' replace-conditional' | ' decompose-conditional' | ' consolidate-conditional' | ' replace-nested-conditional' | ' introduce-null-object' | ' replace-type-code' | ' replace-subclass' | ' extract-interface' | ' collapse-hierarchy' | ' form-template-method' | ' substitute-algorithm';
+export type RefactoringType = 'extract-method' | 'extract-class' | 'move-method' | 'rename' | 'introduce-parameter' | 'inline-method' | 'replace-conditional' | 'decompose-conditional' | 'consolidate-conditional' | 'replace-nested-conditional' | 'introduce-null-object' | 'replace-type-code' | 'replace-subclass' | 'extract-interface' | 'collapse-hierarchy' | 'form-template-method' | 'substitute-algorithm';
 
 export interface BusinessLogicAnalysis {
   businessRules:BusinessRule[];
@@ -543,7 +543,7 @@ export interface TechnicalDebtAssessment {
   totalDebt:number; // in hours
   debtByCategory:Record<string, number>;
   hotspots:TechnicalDebtHotspot[];
-  trend:'improving' | ' stable' | ' declining'' |' improving' | ' stable' | ' declining'| ' worsening;
+  trend: 'improving' | 'stable' | 'declining' | 'worsening';
   payoffStrategies:PayoffStrategy[];
 }
 
@@ -590,10 +590,10 @@ export interface SkillGap {
 }
 
 export interface LearningResource {
-  type: 'documentation|tutorial|course|book|practice;
-'  title:string;
+  type: 'documentation' | 'tutorial' | 'course' | 'book' | 'practice';
+  title:string;
   url?:string;
-  difficulty:'beginner' | ' intermediate' | ' advanced;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
   estimatedTime:string;
   skills:string[];
 }
